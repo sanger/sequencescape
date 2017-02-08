@@ -84,10 +84,10 @@ module Sanger
                 # the developer who is potentially creating ActiveRecord objects outside the test transaction!
                 user_details = params[:user] || :user
                 @user = case
-                  when user_details.is_a?(Symbol) then create(user_details)
-                  when user_details.is_a?(Proc) then user_details.call
-                  else raise StandardError, "You are potentially creating objects outside of a transaction: #{user_details.inspect}"
-                end
+                        when user_details.is_a?(Symbol) then create(user_details)
+                        when user_details.is_a?(Proc) then user_details.call
+                        else raise StandardError, "You are potentially creating objects outside of a transaction: #{user_details.inspect}"
+                        end
 
                 # All our things need a user to be logged in
                 session[:user] = @user.id

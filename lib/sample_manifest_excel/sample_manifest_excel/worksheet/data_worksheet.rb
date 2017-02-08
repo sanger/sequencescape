@@ -18,13 +18,13 @@ module SampleManifestExcel
 
       def type
         @type ||= case sample_manifest.asset_type
-        when "1dtube", "multiplexed_library"
-          "Tubes"
-        when "plate"
-          "Plates"
-        else
-          ""
-        end
+                  when "1dtube", "multiplexed_library"
+                    "Tubes"
+                  when "plate"
+                    "Plates"
+                  else
+                    ""
+                  end
       end
 
       # Using axlsx worksheet creates data worksheet with title, description, all required columns, values,

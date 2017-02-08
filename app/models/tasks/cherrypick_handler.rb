@@ -114,12 +114,13 @@ module Tasks::CherrypickHandler
       asset_shape_id = plate_purpose.asset_shape_id
 
       # Configure the cherrypicking action based on the parameters
-      cherrypicker = case params[:cherrypick_action]
+      cherrypicker =
+        case params[:cherrypick_action]
         when 'nano_grams_per_micro_litre' then create_nano_grams_per_micro_litre_picker(params[:nano_grams_per_micro_litre])
         when 'nano_grams'                 then create_nano_grams_picker(params[:nano_grams])
         when 'micro_litre'                then create_micro_litre_picker(params[:micro_litre])
         else raise StandardError, "Invalid cherrypicking type #{params[:cherrypick_action]}"
-      end
+        end
 
       # We can preload the well locations so that we can do efficient lookup later.
       well_locations = Hash[Map.where_plate_size(partial_plate.try(:size) || size).where_plate_shape(partial_plate.try(:asset_shape) || asset_shape_id).in_row_major_order.map do |location|
@@ -155,11 +156,12 @@ module Tasks::CherrypickHandler
         plate_params.each do |row, row_params|
           row = row.to_i
           row_params.each do |col, request_id|
-            request, well = case
+            request, well =
+              case
               when request_id.blank?           then next
               when request_id.match(/control/) then create_control_request_and_add_to_batch(task, request_id)
               else request_and_well[request_id.gsub('well_', '').to_i] or raise ActiveRecord::RecordNotFound, "Cannot find request #{request_id.inspect}"
-            end
+              end
 
             # NOTE: Performance enhancement here
             # This collects the wells together for the plate they should be on, and modifies

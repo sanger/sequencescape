@@ -102,11 +102,11 @@ class Task < ActiveRecord::Base
     define_method(name) do
       value = get_subclass_attribute_value name, default_value # we love closure :)
       value and case cast
-      when :int
-        value.to_i
-      else
-        value
-      end
+                when :int
+                  value.to_i
+                else
+                  value
+                end
     end
 
     define_method("#{name}=") do |value|

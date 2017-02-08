@@ -117,15 +117,13 @@ class Sample < ActiveRecord::Base
   }
 
   def shorten_sanger_sample_id
-    short_sanger_id = case sanger_sample_id
-      when blank? then name
-      when sanger_sample_id.size < 10 then sanger_sample_id
-      when /([\d]{7})$/ then $1
-      else
-        sanger_sample_id
+    case sanger_sample_id
+    when blank? then name
+    when sanger_sample_id.size < 10 then sanger_sample_id
+    when /([\d]{7})$/ then $1
+    else
+      sanger_sample_id
     end
-
-    short_sanger_id
   end
 
   # Note: Samples don't tend to get released through Sequencescape
@@ -362,8 +360,6 @@ class Sample < ActiveRecord::Base
       self.sample_sra_hold = 'Public'
       save!
     end
-
-
   end
 
   # Together these two validations ensure that the first study exists and is valid for the ENA submission.

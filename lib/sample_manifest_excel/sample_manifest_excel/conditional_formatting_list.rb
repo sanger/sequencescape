@@ -59,10 +59,10 @@ module SampleManifestExcel
       self.conditional_formattings.tap do |cf|
         conditional_formattings.each do |key, conditional_formatting|
           cf[key] = if conditional_formatting.kind_of?(Hash)
-            ConditionalFormatting.new(conditional_formatting)
-          else
-            conditional_formatting.dup
-          end
+                      ConditionalFormatting.new(conditional_formatting)
+                    else
+                      conditional_formatting.dup
+                    end
         end
       end
     end

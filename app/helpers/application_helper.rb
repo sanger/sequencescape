@@ -188,11 +188,11 @@ module ApplicationHelper
   end
 
   def display_empty_table(display_text, link = nil)
-    unless link.nil?
-      content_tag(:div, link_to(display_text, link), class: "empty_table", id: "empty_table")
-    else
+    if link.nil?
       content_tag(:div, display_text, class: "empty_table", id: "empty_table")
-   end
+    else
+      content_tag(:div, link_to(display_text, link), class: "empty_table", id: "empty_table")
+    end
   end
 
   ## From Pipelines

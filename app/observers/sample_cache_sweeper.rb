@@ -18,11 +18,12 @@ class SampleCacheSweeper < ActiveRecord::Observer
   # We shorten the query conditions for studies and receptacles because we do not need to perform
   # a JOIN against their table, considering we go through a JOIN table anyway.
   def through(record, &block)
-    model, conditions = case
+    model, conditions =
+      case
       when record.is_a?(StudySample)         then ['study',      query_conditions_for(record)]
       when record.is_a?(Aliquot)             then ['receptacle', query_conditions_for(record)]
       when record.is_a?(Aliquot::Receptacle) then ['receptacle', "aliquots.receptacle_id=#{record.id}"]
-    end
+      end
     yield(Array(THROUGH_JOINS[model]), conditions)
   end
   private :through

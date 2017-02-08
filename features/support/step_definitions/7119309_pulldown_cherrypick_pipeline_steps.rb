@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
-Given /^plate "([^"]*)" with (\d+) samples in study "([^"]*)" has a "([^"]*)" submission$/ do |plate_barcode, number_of_samples, study_name, submission_name|
+Given(/^plate "([^"]*)" with (\d+) samples in study "([^"]*)" has a "([^"]*)" submission$/) do |plate_barcode, number_of_samples, study_name, submission_name|
   step(%Q{I have a plate "#{plate_barcode}" in study "#{study_name}" with #{number_of_samples} samples in asset group "Plate asset group #{plate_barcode}"})
   step(%Q{plate "#{plate_barcode}" has concentration results})
   step(%Q{plate "#{plate_barcode}" has measured volume results})
@@ -37,7 +37,7 @@ Given /^plate "([^"]*)" with (\d+) samples in study "([^"]*)" has a "([^"]*)" su
   step("1 pending delayed jobs are processed")
 end
 
-Given /^plate "([^"]*)" with (\d+) samples in study "([^"]*)" has a "([^"]*)" submission for cherrypicking$/ do |plate_barcode, number_of_samples, study_name, submission_name|
+Given(/^plate "([^"]*)" with (\d+) samples in study "([^"]*)" has a "([^"]*)" submission for cherrypicking$/) do |plate_barcode, number_of_samples, study_name, submission_name|
   step(%Q{I have a plate "#{plate_barcode}" in study "#{study_name}" with #{number_of_samples} samples in asset group "Plate asset group #{plate_barcode}"})
   step(%Q{plate "#{plate_barcode}" has concentration results})
 
@@ -59,20 +59,20 @@ Given /^plate "([^"]*)" with (\d+) samples in study "([^"]*)" has a "([^"]*)" su
   step("1 pending delayed jobs are processed")
 end
 
-Given /^plate "([^"]*)" with (\d+) samples in study "([^"]*)" exists$/ do |plate_barcode, number_of_samples, study_name|
+Given(/^plate "([^"]*)" with (\d+) samples in study "([^"]*)" exists$/) do |plate_barcode, number_of_samples, study_name|
   step(%Q{I have a plate "#{plate_barcode}" in study "#{study_name}" with #{number_of_samples} samples in asset group "Plate asset group #{plate_barcode}"})
   step(%Q{plate "#{plate_barcode}" has concentration results})
   step(%Q{plate "#{plate_barcode}" has measured volume results})
 end
 
-Given /^plate "([^"]*)" has concentration results$/ do |plate_barcode|
+Given(/^plate "([^"]*)" has concentration results$/) do |plate_barcode|
   plate = Plate.find_by_barcode(plate_barcode)
   plate.wells.each_with_index do |well, index|
     well.well_attribute.update_attributes!(concentration: index * 40)
   end
 end
 
-Given /^plate "([^"]*)" has nonzero concentration results$/ do |plate_barcode|
+Given(/^plate "([^"]*)" has nonzero concentration results$/) do |plate_barcode|
  step(%Q{plate "#{plate_barcode}" has concentration results})
 
   plate = Plate.find_by_barcode(plate_barcode)
@@ -83,14 +83,14 @@ Given /^plate "([^"]*)" has nonzero concentration results$/ do |plate_barcode|
   end
 end
 
-Given /^plate "([^\"]+)" has no concentration results$/ do |plate_barcode|
+Given(/^plate "([^\"]+)" has no concentration results$/) do |plate_barcode|
   plate = Plate.find_by_barcode(plate_barcode) or raise StandardError, "Cannot find plate #{plate_barcode.inspect}"
   plate.wells.each do |well|
     well.well_attribute.update_attributes!(concentration: nil)
   end
 end
 
-Given /^plate "([^"]*)" has measured volume results$/ do |plate_barcode|
+Given(/^plate "([^"]*)" has measured volume results$/) do |plate_barcode|
   plate = Plate.find_by_barcode(plate_barcode)
   plate.wells.each_with_index do |well, index|
     well.well_attribute.update_attributes!(measured_volume: index * 11)
@@ -109,14 +109,14 @@ Then /^I should see the (MRI |JRuby |)cherrypick worksheet table:$/ do |interpre
       expected_results_table.map_column!(column_name.to_s) { |text| text.squish }
     end
     expected_results_table.diff!(actual_table)
-   end
+  end
 end
 
 When /^I look at the pulldown report for the batch it should be:$/ do |expected_results_table|
   expected_results_table.diff!(CSV.parse(page.source).collect { |r| r.collect { |c| c ? c : "" } })
 end
 
-Given /^I have a tag group called "([^"]*)" with (\d+) tags$/ do |tag_group_name, number_of_tags|
+Given(/^I have a tag group called "([^"]*)" with (\d+) tags$/) do |tag_group_name, number_of_tags|
   oligos = %w(ATCACG CGATGT TTAGGC TGACCA)
   tag_group = TagGroup.create!(name: tag_group_name)
   tags = []
@@ -137,7 +137,7 @@ When /^I set (PacBioLibraryTube|Plate|Sample|Multiplexed Library|Library|Pulldow
   asset.update_attributes!(location: location)
 end
 
-Given /^I have a pulldown batch$/ do
+Given(/^I have a pulldown batch$/) do
   step('plate "1234567" with 8 samples in study "Test study" has a "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing" submission')
   step('plate "222" with 8 samples in study "Study A" has a "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing" submission')
   step('plate "1234567" has nonzero concentration results')
@@ -161,7 +161,7 @@ Given /^I have a pulldown batch$/ do
   step('I press "Submit"')
 end
 
-Given /^I have 2 pulldown plates$/ do
+Given(/^I have 2 pulldown plates$/) do
   step('plate "1234567" with 1 samples in study "Test study" has a "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing" submission')
   step('plate "1234567" has nonzero concentration results')
   step('plate "1234567" has measured volume results')
@@ -191,7 +191,7 @@ Given /^I have 2 pulldown plates$/ do
   step('I set Plate "1220088888782" to be in freezer "Pulldown freezer"')
 end
 
-Given /^all library tube barcodes are set to know values$/ do
+Given(/^all library tube barcodes are set to know values$/) do
   PulldownMultiplexedLibraryTube.all.each_with_index do |tube, index|
     tube.update_attributes!(barcode: (index + 1).to_s)
   end
@@ -206,12 +206,12 @@ Then /^library "([^"]*)" should have (\d+) sequencing requests$/ do |library_bar
   assert_equal number_of_sequencing_requests.to_i, SequencingRequest.count(conditions: ["asset_id = #{library.id}"])
 end
 
-Given /^the CherrypickForPulldownPipeline pipeline has a max batch size of (\d+)$/ do |max_size|
+Given(/^the CherrypickForPulldownPipeline pipeline has a max batch size of (\d+)$/) do |max_size|
   pipeline = Pipeline.find_by_name('Cherrypicking for Pulldown')
   pipeline.update_attributes!(max_size: max_size)
 end
 
-Given /^I have a plate "([^"]*)" with the following wells:$/ do |plate_barcode, well_details|
+Given(/^I have a plate "([^"]*)" with the following wells:$/) do |plate_barcode, well_details|
   plate = FactoryGirl.create :plate, barcode: plate_barcode
   well_details.hashes.each do |well_detail|
     well = Well.create!(map: Map.find_by_description_and_asset_size(well_detail[:well_location], 96), plate: plate)
@@ -219,7 +219,7 @@ Given /^I have a plate "([^"]*)" with the following wells:$/ do |plate_barcode, 
   end
 end
 
-Given /^I have a "([^"]*)" submission with 2 plates$/ do |submission_template_name|
+Given(/^I have a "([^"]*)" submission with 2 plates$/) do |submission_template_name|
     project = FactoryGirl.create :project
     study = FactoryGirl.create :study
     plate_1 = FactoryGirl.create :plate, barcode: "333"

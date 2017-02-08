@@ -424,21 +424,20 @@ class StudiesController < ApplicationController
 
   def studies_from_scope(scope)
     studies = case scope
-    when "interesting"                 then Study.of_interest_to(current_user)
-    when "followed"                    then Study.followed_by(current_user)
-    when "managed & active"            then Study.managed_by(current_user).is_active
-    when "managed & inactive"          then Study.managed_by(current_user).is_inactive
-    when "pending"                     then Study.is_pending
-    when "pending ethical approval"    then Study.awaiting_ethical_approval
-    when "contaminated with human dna" then Study.contaminated_with_human_dna
-    when "remove x and autosomes"      then Study.with_remove_x_and_autosomes
-    when "active"                      then Study.is_active
-    when "inactive"                    then Study.is_inactive
-    when "collaborations"              then Study.collaborated_with(current_user)
-    when "all"                         then Study
-    else                               raise StandardError, "Unknown scope '#{scope}'" # Study.of_interest_to(current_user)
-    end
-
+              when "interesting"                 then Study.of_interest_to(current_user)
+              when "followed"                    then Study.followed_by(current_user)
+              when "managed & active"            then Study.managed_by(current_user).is_active
+              when "managed & inactive"          then Study.managed_by(current_user).is_inactive
+              when "pending"                     then Study.is_pending
+              when "pending ethical approval"    then Study.awaiting_ethical_approval
+              when "contaminated with human dna" then Study.contaminated_with_human_dna
+              when "remove x and autosomes"      then Study.with_remove_x_and_autosomes
+              when "active"                      then Study.is_active
+              when "inactive"                    then Study.is_inactive
+              when "collaborations"              then Study.collaborated_with(current_user)
+              when "all"                         then Study
+              else                               raise StandardError, "Unknown scope '#{scope}'"
+              end
     return studies.newest_first
   end
 

@@ -25,13 +25,14 @@ class BatchCacheSweeper < ActiveRecord::Observer
   end
 
   def through(record, &block)
-    model, conditions = case
+    model, conditions =
+      case
       when record.is_a?(BatchRequest) then ['batch_requests', query_conditions_for(record)]
       when record.is_a?(Request)      then ['batch_requests', "batch_requests.request_id=#{record.id}"]
       when record.is_a?(Asset)        then ['requests',       "(requests.asset_id=#{record.id} OR requests.target_asset_id=#{record.id})"]
       when record.is_a?(Aliquot)      then ['aliquots',       query_conditions_for(record)]
       when record.is_a?(Tag)          then ['aliquots',       "aliquots.tag_id=#{record.id}"]
-    end
+      end
     yield(JOINS.values.slice(0, JOINS.keys.index(model) + 1), conditions)
   end
   private :through

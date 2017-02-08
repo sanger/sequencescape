@@ -8,18 +8,18 @@ require "test_helper"
 
 class StripTubeCreationTest < TaskTestBase
   class DummyWorkflowController < WorkflowsController
-  attr_accessor :batch, :pipeline
-  attr_accessor :flash, :tubes_requested, :tubes_available, :options
+    attr_accessor :batch, :pipeline
+    attr_accessor :flash, :tubes_requested, :tubes_available, :options
 
-  def initialize(pipeline)
-    @pipeline = pipeline
-    @flash = {}
-  end
+    def initialize(pipeline)
+      @pipeline = pipeline
+      @flash = {}
+    end
 
-  def current_user
-    @current_user ||= create :user
+    def current_user
+      @current_user ||= create :user
+    end
   end
-end
 
   context "StripTubeCreation task" do
     setup do

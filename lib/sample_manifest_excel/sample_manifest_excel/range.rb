@@ -33,10 +33,10 @@ module SampleManifestExcel
     # the number of options minus one.
     def last_column
       @last_column ||= if options.empty?
-        first_column
-      else
-        options.length + (first_column - 1)
-      end
+                         first_column
+                       else
+                         options.length + (first_column - 1)
+                       end
     end
 
     ##

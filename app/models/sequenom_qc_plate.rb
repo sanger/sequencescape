@@ -108,15 +108,15 @@ class SequenomQcPlate < Plate
   # ---------------------------
   def quadrant_row_col_offset(quadrant)
     col_offset = case quadrant
-       when 1 then 1
-       when 3 then 1
-       else 0
-       end
+                 when 1 then 1
+                 when 3 then 1
+                 else 0
+                 end
     row_offset = case quadrant
-       when 2 then 1
-       when 3 then 1
-       else 0
-       end
+                 when 2 then 1
+                 when 3 then 1
+                 else 0
+                 end
 
     [row_offset, col_offset]
   end

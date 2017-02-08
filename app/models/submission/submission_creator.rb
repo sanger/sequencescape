@@ -150,21 +150,21 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
     raise InvalidInputException, "No Samples found" if input_methods.empty?
     raise InvalidInputException, "Samples cannot be added from multiple sources at the same time." unless input_methods.size == 1
 
-    return case input_methods.first
-      when :asset_group_id    then { asset_group: find_asset_group }
-      when :sample_names_text then
-        {
-          assets: wells_on_specified_plate_purpose_for(
-            plate_purpose,
-            find_samples_from_text(sample_names_text)
-          )
-        }
-      when :barcodes_wells_text then
-        {
-          assets: find_assets_from_text(barcodes_wells_text)
-        }
+    case input_methods.first
+    when :asset_group_id    then { asset_group: find_asset_group }
+    when :sample_names_text then
+      {
+        assets: wells_on_specified_plate_purpose_for(
+          plate_purpose,
+          find_samples_from_text(sample_names_text)
+        )
+      }
+    when :barcodes_wells_text then
+      {
+        assets: find_assets_from_text(barcodes_wells_text)
+      }
 
-      else raise StandardError, "No way to determine assets for input choice #{input_methods.first}"
+    else raise StandardError, "No way to determine assets for input choice #{input_methods.first}"
     end
   end
 
