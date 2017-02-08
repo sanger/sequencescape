@@ -71,17 +71,6 @@ Lint/IneffectiveAccessModifier:
     - 'lib/authenticated_system.rb'
     - 'lib/tecan_file_generation.rb'
 
-# Offense count: 5
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: runtime_error, standard_error
-Lint/InheritException:
-  Exclude:
-    - 'app/models/change_tag.rb'
-    - 'app/models/study_report.rb'
-    - 'lib/exceptions.rb'
-    - 'lib/pipeline_exception.rb'
-
 # Offense count: 1
 Lint/LiteralInCondition:
   Exclude:

@@ -7,7 +7,7 @@
 class StudyReport < ActiveRecord::Base
   extend DbFile::Uploader
 
-  class ProcessingError < Exception
+  class ProcessingError < RuntimeError
   end
 
   self.per_page = 50

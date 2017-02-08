@@ -5,9 +5,9 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 module ChangeTagException
-  class MissingTag < Exception
+  class MissingTag < RuntimeError
   end
-  class MissingLibraryTube < Exception
+  class MissingLibraryTube < RuntimeError
   end
 end
 
