@@ -7,20 +7,20 @@ module Hiseq2500Helper
     RequestType.create!(
         key: "illumina_#{pl}_hiseq_2500_#{ended}_end_sequencing",
         name: "Illumina-#{pl.upcase} HiSeq 2500 #{ended.titleize} end sequencing",
-        workflow: Submission::Workflow.find_by_key('short_read_sequencing'),
+        workflow: Submission::Workflow.find_by(key: 'short_read_sequencing'),
         asset_type: 'LibraryTube',
         order: 2,
         initial_state: 'pending',
         multiples_allowed: true,
         request_class_name: 'HiSeqSequencingRequest',
-        product_line: ProductLine.find_by_name("Illumina-#{pl.upcase}")
+        product_line: ProductLine.find_by(name: "Illumina-#{pl.upcase}")
       )
   end
 
   def self.template(settings)
     {
       name: settings[:name],
-      product_line: ProductLine.find_by_name("Illumina-#{settings[:pipeline].upcase}"),
+      product_line: ProductLine.find_by(name: "Illumina-#{settings[:pipeline].upcase}"),
       submission_class_name: "LinearSubmission",
       submission_parameters: {
         workflow_id: 1,
@@ -31,16 +31,16 @@ module Hiseq2500Helper
   end
 
   def self.sequencing_request_type(settings)
-    RequestType.find_by_key("illumina_#{settings[:pipeline]}_hiseq_2500_#{settings[:ended] || 'paired'}_end_sequencing")
+    RequestType.find_by(key: "illumina_#{settings[:pipeline]}_hiseq_2500_#{settings[:ended] || 'paired'}_end_sequencing")
   end
 
   def self.library_request_type(settings)
     # Ugh, our production and seeded database differ
-    RequestType.find_by_key(settings[:library_creation].first) || RequestType.find_by_key(settings[:library_creation].last)
+    RequestType.find_by(key: settings[:library_creation].first) || RequestType.find_by(key: settings[:library_creation].last)
   end
 
   def self.request_types(settings)
-    rts = settings[:cherrypick] ? [[RequestType.find_by_key(settings[:cherrypick]).id]] : []
+    rts = settings[:cherrypick] ? [[RequestType.find_by(key: settings[:cherrypick]).id]] : []
     rts << [library_request_type(settings).id] << [sequencing_request_type(settings).id]
   end
 

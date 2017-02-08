@@ -15,7 +15,7 @@ FactoryGirl.define do
 
   factory :lib_pcr_xp_plate, parent: :plate do
     size 96
-    plate_purpose { |_| PlatePurpose.find_by_name('Lib PCR-XP') }
+    plate_purpose { |_| PlatePurpose.find_by(name: 'Lib PCR-XP') }
 
     after(:create) do |plate|
       plate.wells.import(

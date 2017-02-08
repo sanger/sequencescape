@@ -10,7 +10,7 @@ class CreatorTest < ActiveSupport::TestCase
   attr_reader :creator
 
   def setup
-    @creator = create :plate_creator, plate_purpose: PlatePurpose.find_by_name("Stock plate")
+    @creator = create :plate_creator, plate_purpose: PlatePurpose.find_by(name: "Stock plate")
   end
 
   test "should send request to print labels" do

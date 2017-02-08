@@ -198,13 +198,6 @@ Metrics/PerceivedComplexity:
 Rails/Date:
   Enabled: false
 
-# Offense count: 1128
-# Cop supports --auto-correct.
-# Configuration parameters: Whitelist.
-# Whitelist: find_by_sql
-Rails/DynamicFindBy:
-  Enabled: false
-
 # Offense count: 7
 # Cop supports --auto-correct.
 # Configuration parameters: Include.

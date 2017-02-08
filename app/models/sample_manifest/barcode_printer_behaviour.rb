@@ -12,7 +12,7 @@ module SampleManifest::BarcodePrinterBehaviour
 
   def applicable_barcode_printers
     printer_type = ASSET_TYPE_TO_PRINTER_TYPE[asset_type]
-    printers     = BarcodePrinterType.find_by_name(printer_type).barcode_printers unless printer_type.nil?
+    printers     = BarcodePrinterType.find_by(name: printer_type).barcode_printers unless printer_type.nil?
     printers     = BarcodePrinter.alphabetical if printers.blank?
     printers
   end

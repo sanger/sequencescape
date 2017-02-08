@@ -34,18 +34,18 @@ Given /^a robot exists$/ do
 end
 
 Then /^the manifest for study "([^"]*)" with plate "([^"]*)" should be:$/ do |study_name, plate_barcode, expected_results_table|
-  study = Study.find_by_name(study_name)
-  plate = Plate.find_by_barcode(plate_barcode)
+  study = Study.find_by(name: study_name)
+  plate = Plate.find_by(barcode: plate_barcode)
   manifest = CSV.parse(ManifestGenerator.generate_manifest_for_plate_ids([plate.id], study))
   manifest.shift(3)
   expected_results_table.diff!(manifest)
 end
 
 Given /^I have a plate "([^"]*)" in study "([^"]*)" with (\d+) samples in asset group "([^"]*)"$/ do |plate_barcode, study_name, number_of_samples, asset_group_name|
-  study = Study.find_by_name(study_name)
-  plate = FactoryGirl.create(:plate, barcode: plate_barcode, location: Location.find_by_name("Sample logistics freezer"))
+  study = Study.find_by(name: study_name)
+  plate = FactoryGirl.create(:plate, barcode: plate_barcode, location: Location.find_by(name: "Sample logistics freezer"))
 
-  asset_group = study.asset_groups.find_by_name(asset_group_name) || study.asset_groups.create!(name: asset_group_name)
+  asset_group = study.asset_groups.find_by(name: asset_group_name) || study.asset_groups.create!(name: asset_group_name)
   asset_group.assets << (1..number_of_samples.to_i).map do |index|
     FactoryGirl.create(:well, plate: plate, map_id: index).tap do |well|
       well.aliquots.create!(sample: FactoryGirl.create(:sample, name: "Sample_#{plate_barcode}_#{index}"),
@@ -55,8 +55,8 @@ Given /^I have a plate "([^"]*)" in study "([^"]*)" with (\d+) samples in asset 
 end
 
 Given /^plate "([^"]*)" in study "([^"]*)" is in asset group "([^"]*)"$/ do |plate_barcode, study_name, asset_group_name|
-  study = Study.find_by_name(study_name)
-  plate = Plate.find_by_barcode(plate_barcode)
+  study = Study.find_by(name: study_name)
+  plate = Plate.find_by(barcode: plate_barcode)
   asset_group = AssetGroup.find_or_create_by(name: asset_group_name, study_id: study.id)
   plate.wells.each do |well|
     asset_group.assets << well
@@ -118,13 +118,13 @@ Given /^I have a cherrypicked plate with barcode "([^"]*)" and plate purpose "([
 end
 
 Given /^well "([^"]*)" on plate "([^"]*)" has a genotyping_done status of "([^"]*)"$/ do |well_description, plate_barcode, genotyping_status|
-  plate = Plate.find_by_barcode(plate_barcode)
+  plate = Plate.find_by(barcode: plate_barcode)
   well = plate.find_well_by_name(well_description)
   well.primary_aliquot.sample.external_properties.create!(key: 'genotyping_done', value: genotyping_status)
 end
 
 Given /^well "([^"]*)" has a genotyping status of "([^"]*)"$/ do |uuid, genotyping_status|
-  well = Uuid.find_by_external_id(uuid).resource
+  well = Uuid.find_by(external_id: uuid).resource
 
   sample = FactoryGirl.create(:sample, name: "Testing_the_JSON_API")
   sample.external_properties.create!(key: 'genotyping_done', value: genotyping_status)
@@ -139,9 +139,9 @@ Given /^I have a DNA QC submission for plate "([^"]*)"$/ do |plate_barcode|
 end
 
 Given /^I have a "([^"]*)" submission for plate "([^"]*)" with project "([^"]*)" and study "([^"]*)"$/ do |submission_template_name, plate_barcode, project_name, study_name|
-  plate = Plate.find_by_barcode(plate_barcode)
-  project = Project.find_by_name(project_name)
-  study = Study.find_by_name(study_name)
+  plate = Plate.find_by(barcode: plate_barcode)
+  project = Project.find_by(name: project_name)
+  study = Study.find_by(name: study_name)
 
   # Maintain the order of the wells as though they have been submitted by the user, rather than
   # relying on the ordering within sequencescape.  Some of the plates are created with less than
@@ -150,11 +150,11 @@ Given /^I have a "([^"]*)" submission for plate "([^"]*)" with project "([^"]*)"
   plate.wells.walk_in_column_major_order { |well, _| wells << well }
   wells.compact!
 
-  submission_template = SubmissionTemplate.find_by_name(submission_template_name)
+  submission_template = SubmissionTemplate.find_by(name: submission_template_name)
   submission = submission_template.create_and_build_submission!(
     study: study,
     project: project,
-    workflow: Submission::Workflow.find_by_key('microarray_genotyping'),
+    workflow: Submission::Workflow.find_by(key: 'microarray_genotyping'),
     user: User.last,
     assets: wells
     )
@@ -162,15 +162,15 @@ Given /^I have a "([^"]*)" submission for plate "([^"]*)" with project "([^"]*)"
 end
 
 Given /^I have a Cherrypicking submission for asset group "([^"]*)"$/ do |asset_group_name|
-  project = Project.find_by_name("Test project")
-  study = Study.find_by_name("Test study")
-  asset_group = AssetGroup.find_by_name(asset_group_name)
+  project = Project.find_by(name: "Test project")
+  study = Study.find_by(name: "Test study")
+  asset_group = AssetGroup.find_by(name: asset_group_name)
 
-  submission_template = SubmissionTemplate.find_by_name('Cherrypick')
+  submission_template = SubmissionTemplate.find_by(name: 'Cherrypick')
   submission = submission_template.create_and_build_submission!(
     study: study,
     project: project,
-    workflow: Submission::Workflow.find_by_key('microarray_genotyping'),
+    workflow: Submission::Workflow.find_by(key: 'microarray_genotyping'),
     user: User.last,
     assets: asset_group.assets
     )

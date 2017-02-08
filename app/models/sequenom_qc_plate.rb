@@ -68,7 +68,7 @@ class SequenomQcPlate < Plate
 
       # Plate name e.g. QC1234_1235_1236_1237_20100801
       self.name = "#{plate_prefix}#{plate_number(input_plate_names)}#{plate_date}"
-      self.plate_purpose = PlatePurpose.find_by_name("Sequenom")
+      self.plate_purpose = PlatePurpose.find_by(name: "Sequenom")
       self.barcode = PlateBarcode.create.barcode
     end
     true

@@ -70,7 +70,7 @@ class StudiesControllerTest < ActionController::TestCase
           @study_count = Study.count
           post :create, "study" => {
             "name" => "hello",
-            "reference_genome_id" => ReferenceGenome.find_by_name("").id,
+            "reference_genome_id" => ReferenceGenome.find_by(name: "").id,
             'study_metadata_attributes' => {
               'faculty_sponsor_id' => FacultySponsor.create!(name: 'Me'),
               'study_description' => 'some new study',
@@ -78,9 +78,9 @@ class StudiesControllerTest < ActionController::TestCase
               'contains_human_dna' => 'No',
               'contaminated_human_dna' => 'No',
               'commercially_available' => 'No',
-              'data_release_study_type_id' => DataReleaseStudyType.find_by_name('genomic sequencing'),
+              'data_release_study_type_id' => DataReleaseStudyType.find_by(name: 'genomic sequencing'),
               'data_release_strategy' => 'open',
-              'study_type_id' => StudyType.find_by_name("Not specified").id
+              'study_type_id' => StudyType.find_by(name: "Not specified").id
             }
           }
         end
@@ -112,7 +112,7 @@ class StudiesControllerTest < ActionController::TestCase
           # Program.new(:name => 'testing program').save
           post :create, "study" => {
             "name" => "hello 4",
-            "reference_genome_id" => ReferenceGenome.find_by_name("").id,
+            "reference_genome_id" => ReferenceGenome.find_by(name: "").id,
             'study_metadata_attributes' => {
               'faculty_sponsor_id' => FacultySponsor.create!(name: 'Me').id,
               'study_description' => 'some new study',
@@ -120,14 +120,14 @@ class StudiesControllerTest < ActionController::TestCase
               'program_id' => @program.id,
               'contaminated_human_dna' => 'No',
               'commercially_available' => 'No',
-              'data_release_study_type_id' => DataReleaseStudyType.find_by_name('genomic sequencing').id,
+              'data_release_study_type_id' => DataReleaseStudyType.find_by(name: 'genomic sequencing').id,
               'data_release_strategy' => 'open',
-              'study_type_id' => StudyType.find_by_name("Not specified").id
+              'study_type_id' => StudyType.find_by(name: "Not specified").id
             }
           }
         end
         should "create a study with a new program" do
-          assert_equal Study.find_by_name("hello 4").study_metadata.program.name, @program.name
+          assert_equal Study.find_by(name: "hello 4").study_metadata.program.name, @program.name
         end
       end
       context "creating a new study without program" do
@@ -135,16 +135,16 @@ class StudiesControllerTest < ActionController::TestCase
           @study_count = Study.count
           post :create, "study" => {
             "name" => "hello 4",
-            "reference_genome_id" => ReferenceGenome.find_by_name("").id,
+            "reference_genome_id" => ReferenceGenome.find_by(name: "").id,
             'study_metadata_attributes' => {
               'faculty_sponsor_id' => FacultySponsor.create!(name: 'Me').id,
               'study_description' => 'some new study',
               'contains_human_dna' => 'No',
               'contaminated_human_dna' => 'No',
               'commercially_available' => 'No',
-              'data_release_study_type_id' => DataReleaseStudyType.find_by_name('genomic sequencing').id,
+              'data_release_study_type_id' => DataReleaseStudyType.find_by(name: 'genomic sequencing').id,
               'data_release_strategy' => 'open',
-              'study_type_id' => StudyType.find_by_name("Not specified").id
+              'study_type_id' => StudyType.find_by(name: "Not specified").id
             }
           }
         end
@@ -158,7 +158,7 @@ class StudiesControllerTest < ActionController::TestCase
           @study_count = Study.count
           post :create, "study" => {
             "name" => "hello 3",
-            "reference_genome_id" => ReferenceGenome.find_by_name("").id,
+            "reference_genome_id" => ReferenceGenome.find_by(name: "").id,
             'study_metadata_attributes' => {
               'faculty_sponsor_id' => FacultySponsor.create!(name: 'Me').id,
               'study_description' => 'some new study',
@@ -166,9 +166,9 @@ class StudiesControllerTest < ActionController::TestCase
               'program_id' => @program.id,
               'contaminated_human_dna' => 'No',
               'commercially_available' => 'No',
-              'data_release_study_type_id' => DataReleaseStudyType.find_by_name('genomic sequencing').id,
+              'data_release_study_type_id' => DataReleaseStudyType.find_by(name: 'genomic sequencing').id,
               'data_release_strategy' => 'open',
-              'study_type_id' => StudyType.find_by_name("Not specified").id
+              'study_type_id' => StudyType.find_by(name: "Not specified").id
             }
           }
         end

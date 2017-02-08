@@ -31,7 +31,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
         pp.save!
       end
 
-      @pipeline = Pipeline.find_by_name('Cherrypick') or raise StandardError, "Cannot find cherrypick pipeline"
+      @pipeline = Pipeline.find_by(name: 'Cherrypick') or raise StandardError, "Cannot find cherrypick pipeline"
       @task = CherrypickTask.new(workflow: @pipeline.workflow)
 
       @barcode = 10000

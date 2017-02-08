@@ -16,11 +16,11 @@ Given /^I have a batch in "([^\"]*)"$/ do |pipeline|
 end
 
 Given /^I have a "([^\"]*)" batch in "([^\"]*)"$/ do |state, pipeline|
-  @batch = FactoryGirl.create :batch, pipeline: Pipeline.find_by_name(pipeline), state: state, production_state: nil
+  @batch = FactoryGirl.create :batch, pipeline: Pipeline.find_by(name: pipeline), state: state, production_state: nil
 end
 
 Given /^I have a control called "([^\"]*)" for "([^\"]*)"$/ do |name, pipeline_name|
-  control = FactoryGirl.create :control, name: name, pipeline: Pipeline.find_by_name(pipeline_name)
+  control = FactoryGirl.create :control, name: name, pipeline: Pipeline.find_by(name: pipeline_name)
 end
 
 def pipeline_name_to_asset_type(pipeline_name)
@@ -30,7 +30,7 @@ def pipeline_name_to_asset_type(pipeline_name)
 end
 
 def create_request_for_pipeline(pipeline_name, options = {})
-  pipeline = Pipeline.find_by_name(pipeline_name) or raise StandardError, "Cannot find pipeline #{pipeline_name.inspect}"
+  pipeline = Pipeline.find_by(name: pipeline_name) or raise StandardError, "Cannot find pipeline #{pipeline_name.inspect}"
   request_metadata = FactoryGirl.create :"request_metadata_for_#{pipeline.request_types.first.key}"
   request_parameters = options.merge(request_type: pipeline.request_types.last, asset: FactoryGirl.create(pipeline_name_to_asset_type(pipeline_name)), request_metadata: request_metadata)
   FactoryGirl.create(:request, request_parameters).tap do |request|
@@ -43,7 +43,7 @@ Given /^I have a request for "([^\"]*)"$/ do |pipeline_name|
 end
 
 Given /^I have (\d+) requests for "([^"]*)" that are part of the same submission$/ do |count, pipeline_name|
-  pipeline   = Pipeline.find_by_name(pipeline_name) or raise StandardError, "Cannot find pipeline #{pipeline_name.inspect}"
+  pipeline   = Pipeline.find_by(name: pipeline_name) or raise StandardError, "Cannot find pipeline #{pipeline_name.inspect}"
   submission = FactoryGirl.create(:submission, request_types: [pipeline.request_types.last.id])
   (1..count.to_i).each do |_|
     create_request_for_pipeline(pipeline_name, submission: submission)
@@ -73,14 +73,14 @@ When /^I check request "(\d+)" for pipeline "([^"]+)"/ do |request_number, pipel
   # TODO find the request checkboxes in the current page (by name "request_... ") so we don't need
   # do give the pipelin name
   request_number = request_number.to_i
-  pipeline = Pipeline.find_by_name(pipeline_name)
+  pipeline = Pipeline.find_by(name: pipeline_name)
 
   request = pipeline.requests.inbox[request_number - 1]
   check("request_#{request.id}")
 end
 
 Then /^the requests from "([^\"]+)" batches should not be in the inbox$/ do |name|
-  pipeline = Pipeline.find_by_name(name) or raise StandardError, "Cannot find pipeline #{name.inspect}"
+  pipeline = Pipeline.find_by(name: name) or raise StandardError, "Cannot find pipeline #{name.inspect}"
   raise StandardError, "There are no batches in #{name.inspect}" if pipeline.batches.empty?
   pipeline.batches.each do |batch|
     batch.requests.each do |request|
@@ -117,8 +117,8 @@ Given /^Microarray genotyping is set up$/ do
   genotyping = FactoryGirl.create :request_type, key: "genotyping", name: "Genotyping", workflow: submission_workflow, order: 3, asset_type: "Well"
 
   # Workflows and tasks
-  cherrypick_pipeline = FactoryGirl.create :pipeline, name: "Cherrypick", request_type_id: cherrypick.id, group_by_parent: true, location_id: Location.find_by_name("Sample logistics freezer").id
-  dna_qc_pipeline = FactoryGirl.create :pipeline, name: "DNA QC", request_type_id: dna_qc.id, group_by_parent: true, location_id: Location.find_by_name("Sample logistics freezer").id, next_pipeline_id: cherrypick_pipeline.id
+  cherrypick_pipeline = FactoryGirl.create :pipeline, name: "Cherrypick", request_type_id: cherrypick.id, group_by_parent: true, location_id: Location.find_by(name: "Sample logistics freezer").id
+  dna_qc_pipeline = FactoryGirl.create :pipeline, name: "DNA QC", request_type_id: dna_qc.id, group_by_parent: true, location_id: Location.find_by(name: "Sample logistics freezer").id, next_pipeline_id: cherrypick_pipeline.id
 
   dna_qc_workflow = FactoryGirl.create :lab_workflow, name: "DNA QC", pipeline: dna_qc_pipeline
   FactoryGirl.create :task, name: "Duplicate Samples Check", sti_type: "DuplicateSamplesCheckTask", sorted: 0, workflow: dna_qc_workflow, batched: 0
@@ -152,13 +152,13 @@ When /^I click on the last "([^\"]*)" batch$/ do |status|
 end
 
 Given /^the maximum batch size for the pipeline "([^\"]+)" is (\d+)$/ do |name, max_size|
-  pipeline = Pipeline.find_by_name(name) or raise StandardError, "Cannot find pipeline #{name.inspect}"
+  pipeline = Pipeline.find_by(name: name) or raise StandardError, "Cannot find pipeline #{name.inspect}"
   pipeline.update_attributes!(max_size: max_size.to_i)
 end
 
 Given /^the pipeline "([^\"]+)" accepts "([^\"]+)" requests$/ do |pipeline_name, request_name|
-  pipeline     = Pipeline.find_by_name(pipeline_name) or raise StandardError, "Cannot find pipeline #{pipeline_name.inspect}"
-  request_type = RequestType.find_by_name(request_name) or raise StandardError, "Cannot find request type #{request_name.inspect}"
+  pipeline     = Pipeline.find_by(name: pipeline_name) or raise StandardError, "Cannot find pipeline #{pipeline_name.inspect}"
+  request_type = RequestType.find_by(name: request_name) or raise StandardError, "Cannot find request type #{request_name.inspect}"
   pipeline.update_attributes!(request_types: [request_type])
 end
 

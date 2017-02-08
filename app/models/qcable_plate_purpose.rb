@@ -17,7 +17,7 @@ class QcablePlatePurpose < PlatePurpose
     private
 
     def qcable_for(plate)
-      Qcable.find_by_asset_id(plate.id)
+      Qcable.find_by(asset_id: plate.id)
     end
   end
 

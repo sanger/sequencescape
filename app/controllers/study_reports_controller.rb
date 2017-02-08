@@ -21,7 +21,7 @@ class StudyReportsController < ApplicationController
   end
 
   def create
-    study = Study.find_by_id(params[:study_report][:study])
+    study = Study.find_by(id: params[:study_report][:study])
     study_report = StudyReport.create!(study: study, user: @current_user)
 
     study_report.perform

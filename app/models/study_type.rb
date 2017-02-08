@@ -15,7 +15,7 @@ class StudyType < ActiveRecord::Base
   scope :for_selection, ->() { order(:name).where(valid_for_creation: true) }
 
   def self.include?(studytype_name)
-    study_type = StudyType.find_by_name(studytype_name)
+    study_type = StudyType.find_by(name: studytype_name)
     unless study_type.nil?
       return study_type.valid_type
     end

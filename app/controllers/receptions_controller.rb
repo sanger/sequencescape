@@ -118,7 +118,7 @@ class ReceptionsController < ApplicationController
     @errors = []
 
     barcodes.scan(/\d+/).each do |plate_barcode|
-      plate = Plate.find_by_barcode(plate_barcode)
+      plate = Plate.find_by(barcode: plate_barcode)
       if plate.nil?
         @snp_plates << plate_barcode
       else

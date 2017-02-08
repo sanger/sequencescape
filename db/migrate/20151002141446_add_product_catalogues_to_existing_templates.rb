@@ -63,7 +63,7 @@ class AddProductCataloguesToExistingTemplates < ActiveRecord::Migration
         product = product_by_role(template)
         product ||= product_by_name(template)
         say "Setting to #{product}"
-        template.product_catalogue = ProductCatalogue.find_by_name!(product)
+        template.product_catalogue = ProductCatalogue.find_by!(name: product)
         template.save
       end
     end

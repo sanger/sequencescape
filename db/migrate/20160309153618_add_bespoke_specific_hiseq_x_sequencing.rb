@@ -13,13 +13,13 @@ class AddBespokeSpecificHiseqXSequencing < ActiveRecord::Migration
         name: "Bespoke HiSeq X Paired end sequencing",
         no_target_asset: false,
         order: 2,
-        product_line_id: ProductLine.find_by_name!('Illumina-C'),
+        product_line_id: ProductLine.find_by!(name: 'Illumina-C'),
         request_class_name: "HiSeqSequencingRequest",
         request_purpose: RequestPurpose.standard,
-        workflow_id: Submission::Workflow.find_by_key('short_read_sequencing')
+        workflow_id: Submission::Workflow.find_by(key: 'short_read_sequencing')
       )
       ["Standard", "HiSeqX PCR free", "qPCR only", "Pre-quality controlled"].each do |name|
-        rt.library_types << LibraryType.find_by_name!(name)
+        rt.library_types << LibraryType.find_by!(name: name)
       end
       rt.request_type_validators.build([
         { request_option: "read_length", valid_options: [150] },
@@ -28,14 +28,14 @@ class AddBespokeSpecificHiseqXSequencing < ActiveRecord::Migration
         { request_option: "fragment_size_required_from", valid_options: ["350", "450"] }
       ])
       rt.save!
-      Pipeline.find_by_name('HiSeq X PE (spiked in controls)').request_types << rt
-      Pipeline.find_by_name('HiSeq X PE (no controls)').request_types << rt
+      Pipeline.find_by(name: 'HiSeq X PE (spiked in controls)').request_types << rt
+      Pipeline.find_by(name: 'HiSeq X PE (no controls)').request_types << rt
     end
   end
 
   def down
     ActiveRecord::Base.transaction do
-      RequestType.find_by_key!('bespoke_hiseq_x_paired_end_sequencing').destroy
+      RequestType.find_by!(key: 'bespoke_hiseq_x_paired_end_sequencing').destroy
     end
   end
 end

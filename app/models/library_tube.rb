@@ -77,8 +77,8 @@ class LibraryTube < Tube
   end
 
   def find_tag(tag_info)
-    tag_group = Uuid.with_resource_type('TagGroup').include_resource.find_by_external_id!(tag_info['tag_group']).resource
-    tag_group.tags.find_by_map_id!(tag_info['tag_index'])
+    tag_group = Uuid.with_resource_type('TagGroup').include_resource.find_by!(external_id: tag_info['tag_group']).resource
+    tag_group.tags.find_by!(map_id: tag_info['tag_index'])
   end
   private :find_tag
 

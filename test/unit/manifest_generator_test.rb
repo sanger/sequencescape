@@ -250,7 +250,7 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
       [["A1", "A01"], ["C2", "C02"], ["H12", "H12"], ["G9", "G09"]].each do |input_map, expected_map|
         context "for #{input_map}" do
           setup do
-            @well = create :well, map: Map.find_by_description_and_asset_size(input_map, 96)
+            @well = create :well, map: Map.find_by(description: input_map, asset_size: 96)
             @description = ManifestGenerator.well_map_description(@well)
           end
           should "return expected description of #{expected_map}" do
@@ -308,7 +308,7 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
               @sample.sanger_sample_id = sample_name
               @sample.save
 
-              @map = Map.find_by_description(map_description)
+              @map = Map.find_by(description: map_description)
               @well.aliquots.create!(sample: @sample)
               @well.map = @map
               @well.set_requested_volume(volume)

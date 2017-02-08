@@ -24,7 +24,7 @@ module Tasks::PlateTransferHandler
     source_wells = batch_requests.map { |r| r.asset }
     raise InvalidBatch if unsuitable_wells?(source_wells)
 
-    transfer_request_to_plate = RequestType.find_by_target_purpose_id(task.purpose_id) || RequestType.transfer
+    transfer_request_to_plate = RequestType.find_by(target_purpose_id: task.purpose_id) || RequestType.transfer
     transfer_request_from_plate = RequestType.transfer
     task.purpose.create!.tap do |target|
       well_map = Hash[target.wells.map { |well| [well.map_id, well] }]

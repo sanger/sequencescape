@@ -204,5 +204,5 @@ class Project < ActiveRecord::Base
     'project'
   end
 
-  scope :with_unallocated_budget_division, -> { joins(:project_metadata).where(project_metadata: { budget_division_id: BudgetDivision.find_by_name('Unallocated') }) }
+  scope :with_unallocated_budget_division, -> { joins(:project_metadata).where(project_metadata: { budget_division_id: BudgetDivision.find_by(name: 'Unallocated') }) }
 end

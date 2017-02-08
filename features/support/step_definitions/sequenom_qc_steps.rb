@@ -46,7 +46,7 @@ When /^I try to create a Sequenom QC plate from the input plate$/ do
 end
 
 When /^plate "([^"]*)" should have a size of (\d+)$/ do |plate_barcode, plate_size|
-  assert_equal plate_size.to_i, Plate.find_by_barcode(plate_barcode).size
+  assert_equal plate_size.to_i, Plate.find_by(barcode: plate_barcode).size
 end
 
 When /^well "([^"]*)" should come from well "([^"]*)" on plate "([^"]*)"$/ do |seq_well_description, source_well_description, plate_barcode|

@@ -83,7 +83,7 @@ class PlateVolume < ActiveRecord::Base
     end
 
     def find_for_filename(filename)
-      find_by_uploaded_file_name(filename) or
+      find_by(uploaded_file_name: filename) or
       ->(filename, file) { PlateVolume.create!(uploaded_file_name: filename, updated_at: file.stat.mtime, uploaded: file) }
     end
   end

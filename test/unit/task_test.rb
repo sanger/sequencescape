@@ -123,7 +123,7 @@ class TaskTest < ActiveSupport::TestCase
         end
 
         should "have this value in the database" do
-          a = SubclassAttribute.find_by_value!(@initial_value)
+          a = SubclassAttribute.find_by!(value: @initial_value)
           assert a
           assert_equal @task.id, a.attributable_id # sti doesn't work with class defined on the flight, so a.attributable doesn't work
         end
@@ -133,7 +133,7 @@ class TaskTest < ActiveSupport::TestCase
           @task.att = new_value
           @task.save!
 
-          a = SubclassAttribute.find_by_value!(new_value)
+          a = SubclassAttribute.find_by!(value: new_value)
           assert a
           assert_equal @task.id, a.attributable_id
         end

@@ -30,7 +30,7 @@ module Tasks::AssignTubesToWellsHandler
           raise "Not enough well positions to satisfy requests" if well_position.nil?
 
           well = find_target_asset_from_requests(requests_for_library)
-          well.update_attributes!(map: Map.find_by_description_and_asset_size(well_position, 96), plate: plate)
+          well.update_attributes!(map: Map.find_by(description: well_position, asset_size: 96), plate: plate)
           assign_requests_to_well(requests_for_library, well)
         end
       end

@@ -30,7 +30,7 @@ module ModelExtensions::Plate
   end
 
   def plate_purpose_or_stock_plate
-    plate_purpose || PlatePurpose.find_by_name('Stock Plate')
+    plate_purpose || PlatePurpose.find_by(name: 'Stock Plate')
   end
 
   def source_plate

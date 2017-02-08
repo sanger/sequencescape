@@ -30,7 +30,7 @@ Given /^the plate barcode webservice returns "([1-9][0-9]*)\.\.([1-9][0-9]*)"$/ 
 end
 
 Given /^the "([^\"]+)" barcode printer "([^\"]+)" exists$/ do |type_name, name|
-  printer_type = BarcodePrinterType.find_by_name(type_name) or raise StandardError, "Cannot find barcode printer type #{type_name.inspect}"
+  printer_type = BarcodePrinterType.find_by(name: type_name) or raise StandardError, "Cannot find barcode printer type #{type_name.inspect}"
   BarcodePrinter.create!(name: name, barcode_printer_type: printer_type, active: true)
 end
 
@@ -43,7 +43,7 @@ Transform /^the last multiplexed library tube$/ do |_|
 end
 
 Transform /^the plate "([^\"]+)"$/ do |name|
-  Plate.find_by_name(name) or raise StandardError, "Could not find the plate #{name.inspect}"
+  Plate.find_by(name: name) or raise StandardError, "Could not find the plate #{name.inspect}"
 end
 
 Transform /^the plate with ID (\d+)$/ do |id|

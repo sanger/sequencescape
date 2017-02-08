@@ -29,7 +29,7 @@ module SampleManifest::InputBehaviour
       spreadsheet_offset.upto(csv.size - 1) do |n|
         sanger_sample_id = SampleManifest.read_column_by_name(csv, n, 'SANGER SAMPLE ID', column_map)
         next if sanger_sample_id.blank?
-        sample = Sample.find_by_sanger_sample_id(sanger_sample_id) or next
+        sample = Sample.find_by(sanger_sample_id: sanger_sample_id) or next
         return sample.sample_manifest
       end
       nil
@@ -231,7 +231,7 @@ module SampleManifest::InputBehaviour
       # Sanity check that the sample being updated is in the same container that it was defined against.
       #
       # NOTE: Do not include the primary_receptacle here as it will cause the wrong one to be loaded!
-      sample = samples.find_by_sanger_sample_id(sanger_sample_id)
+      sample = samples.find_by(sanger_sample_id: sanger_sample_id)
 
       errors = false
 

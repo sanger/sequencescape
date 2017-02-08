@@ -257,7 +257,7 @@ class Map < ActiveRecord::Base
   end
 
   def self.find_for_cell_location(cell_location, asset_size)
-    find_by_description_and_asset_size(cell_location.sub(/0(\d)$/, '\1'), asset_size)
+    find_by(description: cell_location.sub(/0(\d)$/, '\1'), asset_size: asset_size)
   end
 
   def self.pad_description(map)

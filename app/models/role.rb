@@ -56,7 +56,7 @@ class Role < ActiveRecord::Base
 
       def has_many_users_through_roles(name)
         define_method(name.to_s.pluralize.to_sym) do
-          role = roles.find_by_name(name.to_s.singularize)
+          role = roles.find_by(name: name.to_s.singularize)
           role.nil? ? [] : role.users
         end
       end

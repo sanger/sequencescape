@@ -9,7 +9,7 @@ class SequenomQcPlatesController < ApplicationController
 # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   def new
-    @barcode_printers  = BarcodePrinterType.find_by_name("384 Well Plate").barcode_printers
+    @barcode_printers  = BarcodePrinterType.find_by(name: "384 Well Plate").barcode_printers
     @barcode_printers  = BarcodePrinter.order(:name) if @barcode_printers.blank?
     @input_plate_names = input_plate_names()
   end

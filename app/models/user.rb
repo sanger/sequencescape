@@ -242,7 +242,7 @@ class User < ActiveRecord::Base
   def self.lookup_by_barcode(user_barcode)
     barcode = Barcode.barcode_to_human(user_barcode)
     if barcode
-      return User.find_by_barcode(barcode)
+      return User.find_by(barcode: barcode)
     end
 
     nil

@@ -49,11 +49,11 @@ class SequenomControllerTest < ActionController::TestCase
         end
 
         should 'create the non-existent plate in the database' do
-          assert_not_nil Plate.find_by_barcode('99999')
+          assert_not_nil Plate.find_by(barcode: '99999')
         end
 
         should 'redirect to the Sequenom plate view' do
-          assert_redirected_to sequenom_plate_path(Plate.find_by_barcode('99999'))
+          assert_redirected_to sequenom_plate_path(Plate.find_by(barcode: '99999'))
         end
       end
 
@@ -148,7 +148,7 @@ class SequenomControllerTest < ActionController::TestCase
             end
 
             should 'add the Sequenom step completed event' do
-              assert_not_nil Plate.find(@plate.id).events.find_by_message_and_created_by("#{step.name} step completed", @user.login)
+              assert_not_nil Plate.find(@plate.id).events.find_by(message: "#{step.name} step completed", created_by: @user.login)
             end
           end
         end

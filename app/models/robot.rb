@@ -29,7 +29,7 @@ class Robot < ActiveRecord::Base
 
   def self.find_from_barcode(code)
     human_robot_barcode = Barcode.number_to_human(code)
-    Robot.find_by_barcode(human_robot_barcode) || Robot.find_by_id(human_robot_barcode)
+    Robot.find_by(barcode: human_robot_barcode) || Robot.find_by(id: human_robot_barcode)
   end
 
   def self.valid_barcode?(code)

@@ -58,7 +58,7 @@ module LabelPrinter
     end
 
     def find_printer
-      BarcodePrinter.find_by_name(printer_name) or raise BarcodePrinter::BarcodePrinterException.new, "Could not find barcode printer #{printer_name.inspect}"
+      BarcodePrinter.find_by(name: printer_name) or raise BarcodePrinter::BarcodePrinterException.new, "Could not find barcode printer #{printer_name.inspect}"
     end
 
     def success

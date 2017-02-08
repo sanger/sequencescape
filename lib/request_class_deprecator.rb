@@ -18,7 +18,7 @@ module RequestClassDeprecator
   end
 
   def transfer_request
-    RequestType.find_by_key!('transfer')
+    RequestType.find_by!(key: 'transfer')
   end
 
   def deprecate_class(request_class_name, options = {})

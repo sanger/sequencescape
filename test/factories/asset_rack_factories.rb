@@ -7,7 +7,7 @@ FactoryGirl.define do
   factory :strip_tube_purpose, class: PlatePurpose do
     name               { FactoryGirl.generate :purpose_name }
     size               "8"
-    asset_shape        { AssetShape.find_by_name!('StripTubeColumn') }
+    asset_shape        { AssetShape.find_by!(name: 'StripTubeColumn') }
     barcode_for_tecan  'ean13_barcode'
   end
 

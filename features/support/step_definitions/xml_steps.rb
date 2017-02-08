@@ -57,7 +57,7 @@ When /^I request XML for (.+)$/ do |page_name|
 end
 
 When /^I make a request for XML for a custom text identified by "([^"]*)"$/ do |identifier|
-  custom_text = CustomText.find_by_identifier(identifier) or raise StandardError, "Cannot find custom text #{identifier.inspect}"
+  custom_text = CustomText.find_by(identifier: identifier) or raise StandardError, "Cannot find custom text #{identifier.inspect}"
   page.driver.get("#{path_to('the custom texts admin page')}/#{custom_text.id}", nil, 'HTTP_ACCEPT' => 'application/xml')
 end
 

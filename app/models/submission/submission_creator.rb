@@ -64,7 +64,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
   delegate :cross_compatible?, to: :order
 
   def create_order
-    order_role = Order::OrderRole.find_by_role(order_params.delete('order_role')) if order_params.present?
+    order_role = Order::OrderRole.find_by(role: order_params.delete('order_role')) if order_params.present?
     new_order = template.new_order(
       study: study,
       project: project,
@@ -102,7 +102,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
   end
 
   def project
-    @project ||= Project.find_by_name(@project_name)
+    @project ||= Project.find_by(name: @project_name)
   end
 
   # Creates a new submission and adds an initial order on the submission using
@@ -259,7 +259,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
   # Returns the SubmissionTemplate (OrderTemplate) to be used for this Submission.
   def template
     # We can't get the template from a saved order, have to find by name.... :(
-    @template = SubmissionTemplate.find_by_name(order.template_name) if try(:submission).try(:orders).present?
+    @template = SubmissionTemplate.find_by(name: order.template_name) if try(:submission).try(:orders).present?
     @template ||= SubmissionTemplate.find(@template_id)
   end
 

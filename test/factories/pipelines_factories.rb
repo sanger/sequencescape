@@ -22,7 +22,7 @@ FactoryGirl.define do
   end
 
   factory :plate do
-    plate_purpose { PlatePurpose.find_by_name('Stock plate') }
+    plate_purpose { PlatePurpose.find_by(name: 'Stock plate') }
     name                "Plate name"
     value               ""
     qc_state            ""
@@ -54,7 +54,7 @@ FactoryGirl.define do
 
       after(:create) do |plate, evaluator|
         (0...evaluator.sample_count).map do |vertical_index|
-          map = Map.where_plate_size(plate.size).where_plate_shape(AssetShape.find_by_name('Standard')).where(column_order: vertical_index).first or raise StandardError
+          map = Map.where_plate_size(plate.size).where_plate_shape(AssetShape.find_by(name: 'Standard')).where(column_order: vertical_index).first or raise StandardError
           create(:untagged_well, map: map, plate: plate)
         end
       end
@@ -69,7 +69,7 @@ FactoryGirl.define do
   end
 
   factory :control_plate do
-    plate_purpose { |_| PlatePurpose.find_by_name('Stock plate') }
+    plate_purpose { |_| PlatePurpose.find_by(name: 'Stock plate') }
     name                "Control Plate name"
     value               ""
     descriptors         []
@@ -81,35 +81,35 @@ FactoryGirl.define do
   end
 
   factory :dilution_plate do
-    plate_purpose { |_| PlatePurpose.find_by_name!('Stock plate') }
+    plate_purpose { |_| PlatePurpose.find_by!(name: 'Stock plate') }
     barcode
   end
   factory :gel_dilution_plate do
-    plate_purpose { |_| PlatePurpose.find_by_name!('Gel Dilution') }
+    plate_purpose { |_| PlatePurpose.find_by!(name: 'Gel Dilution') }
     barcode
   end
   factory :pico_assay_a_plate do
-    plate_purpose { |_| PlatePurpose.find_by_name!('Pico Assay A') }
+    plate_purpose { |_| PlatePurpose.find_by!(name: 'Pico Assay A') }
     barcode
   end
   factory :pico_assay_b_plate do
-    plate_purpose { |_| PlatePurpose.find_by_name!('Pico Assay B') }
+    plate_purpose { |_| PlatePurpose.find_by!(name: 'Pico Assay B') }
     barcode
   end
   factory :pico_assay_plate do
-    plate_purpose { |_| PlatePurpose.find_by_name!('Stock plate') }
+    plate_purpose { |_| PlatePurpose.find_by!(name: 'Stock plate') }
     barcode
   end
   factory :pico_dilution_plate do
-    plate_purpose { |_| PlatePurpose.find_by_name!('Pico Dilution') }
+    plate_purpose { |_| PlatePurpose.find_by!(name: 'Pico Dilution') }
     barcode
   end
   factory :sequenom_qc_plate do
-    plate_purpose { |_| PlatePurpose.find_by_name!('Sequenom') }
+    plate_purpose { |_| PlatePurpose.find_by!(name: 'Sequenom') }
     barcode
   end
   factory :working_dilution_plate do
-    plate_purpose { |_| PlatePurpose.find_by_name!('Working Dilution') }
+    plate_purpose { |_| PlatePurpose.find_by!(name: 'Working Dilution') }
     barcode
   end
 
@@ -243,7 +243,7 @@ FactoryGirl.define do
   end
 
   factory :library_completion, class: IlluminaHtp::Requests::LibraryCompletion do |_request|
-    request_type { |_target| RequestType.find_by_name('Illumina-B Pooled') or raise StandardError, "Could not find 'Illumina-B Pooled' request type" }
+    request_type { |_target| RequestType.find_by(name: 'Illumina-B Pooled') or raise StandardError, "Could not find 'Illumina-B Pooled' request type" }
     asset        { |target| target.association(:well_with_sample_and_plate) }
     target_asset { |target| target.association(:empty_well) }
     request_purpose
@@ -418,7 +418,7 @@ FactoryGirl.define do
   end
 
   factory :plate_transfer_task do |_t|
-    purpose_id { Purpose.find_by_name('PacBio Sheared').id }
+    purpose_id { Purpose.find_by(name: 'PacBio Sheared').id }
   end
 
   factory :sample_tube_without_barcode, class: Tube do |_tube|
@@ -499,11 +499,11 @@ FactoryGirl.define do
   # A plate that has exactly the right number of wells!
   factory(:plate_for_strip_tubes, class: Plate) do |_plate|
     size 96
-    plate_purpose { PlatePurpose.find_by_name('Stock plate') }
+    plate_purpose { PlatePurpose.find_by(name: 'Stock plate') }
     after(:create) do |plate|
       plate.wells.import(
         %w(A1 B1 C1 D1 E1 F1 G1 H1).map do |location|
-          map = Map.where_description(location).where_plate_size(plate.size).where_plate_shape(AssetShape.find_by_name('Standard')).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
+          map = Map.where_description(location).where_plate_size(plate.size).where_plate_shape(AssetShape.find_by(name: 'Standard')).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
           create(:tagged_well, map: map)
         end
       )

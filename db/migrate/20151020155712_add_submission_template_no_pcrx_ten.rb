@@ -16,12 +16,12 @@ class AddSubmissionTemplateNoPcrxTen < ActiveRecord::Migration
           workflow: "short_read_sequencing"
         })
       lt = LibraryType.find_or_create_by(name: "HiSeqX PCR free")
-      rt = RequestType.find_by_key("illumina_c_nopcr").library_types << lt
+      rt = RequestType.find_by(key: "illumina_c_nopcr").library_types << lt
       ["illumina_a_hiseq_x_paired_end_sequencing", "illumina_b_hiseq_x_paired_end_sequencing"].each do |xtlb_name|
-        RequestType.find_by_key(xtlb_name).library_types << lt
+        RequestType.find_by(key: xtlb_name).library_types << lt
       end
 
-      tag_group = TagGroup.find_by_name('NEXTflex-96 barcoded adapters') || TagGroup.first
+      tag_group = TagGroup.find_by(name: 'NEXTflex-96 barcoded adapters') || TagGroup.first
 
       TagLayoutTemplate.create!(
         name: "NEXTflex-96 barcoded adapters tags in rows (first oligo: AACGTGAT)",
@@ -34,10 +34,10 @@ class AddSubmissionTemplateNoPcrxTen < ActiveRecord::Migration
 
   def self.down
     ActiveRecord::Base.transaction do |_t|
-      hiseqlt = LibraryType.find_by_name("HiSeqX PCR free")
+      hiseqlt = LibraryType.find_by(name: "HiSeqX PCR free")
       unless hiseqlt.nil?
         ["illumina_c_nopcr", "illumina_a_hiseq_x_paired_end_sequencing", "illumina_b_hiseq_x_paired_end_sequencing"].each do |rt_name|
-          rt = RequestType.find_by_key(rt_name)
+          rt = RequestType.find_by(key: rt_name)
           lib_types = rt.library_types
           unless lib_types.nil?
             rt.library_types = lib_types.reject { |lt| lt == hiseqlt }
@@ -45,8 +45,8 @@ class AddSubmissionTemplateNoPcrxTen < ActiveRecord::Migration
         end
         hiseqlt.destroy
       end
-      TagLayoutTemplate.find_by_name("NEXTflex-96 barcoded adapters tags in rows (first oligo: AACGTGAT)").destroy
-      SubmissionTemplate.find_by_name("Illumina-C - General no PCR - HiSeq-X sequencing").destroy
+      TagLayoutTemplate.find_by(name: "NEXTflex-96 barcoded adapters tags in rows (first oligo: AACGTGAT)").destroy
+      SubmissionTemplate.find_by(name: "Illumina-C - General no PCR - HiSeq-X sequencing").destroy
     end
   end
 end

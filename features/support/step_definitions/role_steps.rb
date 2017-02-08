@@ -21,12 +21,12 @@ Given /^the role "([^"]*)" exists$/ do |role_name|
 end
 
 Given /^user "([^\"]+)" is an administrator$/ do |login|
-  user = User.find_by_login(login) or raise StandardError, "Cannot find user with login #{login.inspect}"
+  user = User.find_by(login: login) or raise StandardError, "Cannot find user with login #{login.inspect}"
   user.roles.create!(name: 'administrator')
 end
 
 Given /^user "([^\"]+)" is a manager of "([^\"]+)"$/ do |login, name|
-  user  = User.find_by_login(login) or raise StandardError, "Cannot find user with login #{login.inspect}"
-  study = Study.find_by_name(name) or raise StandardError, "Cannot find study #{name.inspect}"
+  user  = User.find_by(login: login) or raise StandardError, "Cannot find user with login #{login.inspect}"
+  study = Study.find_by(name: name) or raise StandardError, "Cannot find study #{name.inspect}"
   user.has_role('manager', study)
 end

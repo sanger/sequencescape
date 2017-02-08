@@ -77,7 +77,7 @@ FactoryGirl.define do
     study_type                  { StudyType.find_or_create_by(name: 'Not specified') }
     # This is probably a bit grim as well
     data_release_study_type     { DataReleaseStudyType.find_or_create_by(name: 'genomic sequencing') }
-    reference_genome            { ReferenceGenome.find_by_name!("") }
+    reference_genome            { ReferenceGenome.find_by!(name: "") }
     data_release_strategy       'open'
     study_name_abbreviation     'WTCCC'
     data_access_group           'something'
@@ -90,7 +90,7 @@ FactoryGirl.define do
     state                "active"
     enforce_data_release false
     enforce_accessioning false
-    reference_genome     { ReferenceGenome.find_by_name("") }
+    reference_genome     { ReferenceGenome.find_by(name: "") }
 
     # study_metadata
 
@@ -560,7 +560,7 @@ FactoryGirl.define do
   end
 
   factory(:library_creation_request_for_testing_sequencing_requests, class: Request::LibraryCreation) do
-    request_type { |_target| RequestType.find_by_name!('Library creation') }
+    request_type { |_target| RequestType.find_by!(name: 'Library creation') }
     request_purpose { |rp| rp.association(:request_purpose) }
     asset        { |target| target.association(:well_with_sample_and_plate) }
     target_asset { |target| target.association(:empty_well) }

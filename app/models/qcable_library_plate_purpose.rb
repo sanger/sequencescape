@@ -17,7 +17,7 @@ class QcableLibraryPlatePurpose < PlatePurpose
     private
 
     def qcable_for(plate)
-      Qcable.find_by_asset_id(plate.id)
+      Qcable.find_by(asset_id: plate.id)
     end
 
     # Ensure that the library information within the aliquots of the well is correct.

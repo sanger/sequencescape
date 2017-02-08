@@ -129,7 +129,7 @@ class Asset < ActiveRecord::Base
 
     # If We're a Sanger Human barcode
     if match = /\A([A-z]{2})(\d{1,7})[A-z]{0,1}\z/.match(query)
-      prefix_id = BarcodePrefix.find_by_prefix(match[1]).try(:id)
+      prefix_id = BarcodePrefix.find_by(prefix: match[1]).try(:id)
       number = match[2]
       search << ' OR (assets.barcode = :barcode AND assets.barcode_prefix_id = :prefix_id)' unless prefix_id.nil?
       arguments[:barcode] = number
@@ -354,7 +354,7 @@ class Asset < ActiveRecord::Base
   def self.find_by_human_barcode(barcode, location)
     data = Barcode.split_human_barcode(barcode)
     if data[0] == 'DN'
-      plate = Plate.find_by_barcode(data[1])
+      plate = Plate.find_by(barcode: data[1])
       well = plate.find_well_by_name(location)
       return well if well
     end
@@ -385,7 +385,7 @@ class Asset < ActiveRecord::Base
       when /^\d{13}$/ # An EAN13 barcode
         barcode_number = Barcode.number_to_human(source_barcode)
         prefix_string  = Barcode.prefix_from_barcode(source_barcode)
-        barcode_prefix = BarcodePrefix.find_by_prefix(prefix_string)
+        barcode_prefix = BarcodePrefix.find_by(prefix: prefix_string)
 
         if barcode_number.nil? or prefix_string.nil? or barcode_prefix.nil?
           { query: 'FALSE' }
@@ -429,10 +429,10 @@ class Asset < ActiveRecord::Base
     elsif source_barcode.size == 13 && Barcode.check_EAN(source_barcode)
       with_machine_barcode(source_barcode).first
     elsif match = /\A([A-z]{2})([0-9]{1,7})\w{0,1}\z/.match(source_barcode) # Human Readable
-      prefix = BarcodePrefix.find_by_prefix(match[1])
-      find_by_barcode_and_barcode_prefix_id(match[2], prefix.id)
+      prefix = BarcodePrefix.find_by(prefix: match[1])
+      find_by(barcode: match[2], barcode_prefix_id: prefix.id)
     elsif /\A[0-9]{1,7}\z/ =~ source_barcode # Just a number
-      find_by_barcode(source_barcode)
+      find_by(barcode: source_barcode)
     end
   end
 

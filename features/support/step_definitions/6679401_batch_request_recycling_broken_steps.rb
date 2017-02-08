@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 Given /^study "([^\"]+)" has an asset group called "([^\"]+)" with (\d+) wells$/ do |study_name, group_name, count|
-  study = Study.find_by_name(study_name) or raise StandardError, "Cannot find the study #{study_name.inspect}"
+  study = Study.find_by(name: study_name) or raise StandardError, "Cannot find the study #{study_name.inspect}"
 
   plate = FactoryGirl.create(:plate)
   study.asset_groups.create!(name: group_name).tap do |asset_group|
@@ -14,7 +14,7 @@ Given /^study "([^\"]+)" has an asset group called "([^\"]+)" with (\d+) wells$/
 end
 
 Given /^I have a "([^\"]+)" submission of asset group "([^\"]+)" under project "([^\"]+)"$/ do |template_name, group_name, project_name|
-  asset_group = AssetGroup.find_by_name(group_name) or raise StandardError, "Cannot find the asset group #{group_name.inspect}"
+  asset_group = AssetGroup.find_by(name: group_name) or raise StandardError, "Cannot find the asset group #{group_name.inspect}"
 
   # NOTE: Working with Submission from the code at this point is a nightmare, so use the UI!
   step(%Q{I am on the show page for study "#{asset_group.study.name}"})
@@ -29,7 +29,7 @@ Given /^I have a "([^\"]+)" submission of asset group "([^\"]+)" under project "
 end
 
 Given /^all assets for requests in the "([^\"]+)" pipeline have been scanned into the lab$/ do |name|
-  pipeline = Pipeline.find_by_name(name) or raise StandardError, "Cannot find pipeline #{name.inspect}"
+  pipeline = Pipeline.find_by(name: name) or raise StandardError, "Cannot find pipeline #{name.inspect}"
   pipeline.requests.each { |request| request.asset.container.update_attributes!(location: pipeline.location) }
 end
 
@@ -40,7 +40,7 @@ When /^I check "([^\"]+)" for (\d+) to (\d+)$/ do |label_root, start, finish|
 end
 
 Given /^all of the requests in the "([^\"]+)" pipeline are in the "([^\"]+)" state$/ do |name, state|
-  pipeline = Pipeline.find_by_name(name) or raise StandardError, "Cannot find pipeline #{name.inspect}"
+  pipeline = Pipeline.find_by(name: name) or raise StandardError, "Cannot find pipeline #{name.inspect}"
   pipeline.requests.each { |request| request.update_attributes!(state: state) }
 end
 
@@ -90,7 +90,7 @@ end
 # shouldn't be merging these steps into generic ones as they are fairly specific.
 #########################################################################################################
 def build_batch_for(name, count)
-  pipeline           = Pipeline.find_by_name(name) or raise StandardError, "Cannot find pipeline #{name.inspect}"
+  pipeline           = Pipeline.find_by(name: name) or raise StandardError, "Cannot find pipeline #{name.inspect}"
   submission_details = yield(pipeline)
 
   user = FactoryGirl.create(:user)
@@ -133,7 +133,7 @@ def build_batch_for(name, count)
 end
 
 def requests_for_pipeline(name, count)
-  pipeline          = Pipeline.find_by_name(name) or raise StandardError, "Cannot find pipeline #{name.inspect}"
+  pipeline          = Pipeline.find_by(name: name) or raise StandardError, "Cannot find pipeline #{name.inspect}"
   requests_in_inbox = pipeline.requests.ready_in_storage.full_inbox.all
 
   # There should be requests in the inbox and they should be clones of original requests.
@@ -165,7 +165,7 @@ Given /^I have a batch with (\d+) requests? for the "(#{SEQUENCING_PIPELINES})" 
       request_options: {
         fragment_size_required_from: 1,
         fragment_size_required_to: 100,
-        read_length: pipeline.request_types.last.request_type_validators.find_by_request_option('read_length').valid_options.first
+        read_length: pipeline.request_types.last.request_type_validators.find_by(request_option: 'read_length').valid_options.first
       }
     }
   end

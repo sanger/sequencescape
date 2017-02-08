@@ -88,7 +88,7 @@ private
         barcode = params[:"#{ name }_barcode"]
         raise EmptyBarcode, "The #{name} barcode appears to be empty" if barcode.blank?
         human_barcode = Barcode.barcode_to_human!(barcode, model_class.prefix)
-        object = model_class.find_by_barcode(block.call(barcode, human_barcode))
+        object = model_class.find_by(barcode: block.call(barcode, human_barcode))
         raise ActiveRecord::RecordNotFound, "Could not find a #{name} with barcode #{barcode}" if object.nil?
         instance_variable_set("@#{name}", object)
       rescue StandardError => exception

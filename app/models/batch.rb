@@ -74,7 +74,7 @@ class Batch < ActiveRecord::Base
   # Named scope for search by query string behavior
  scope :for_search_query, ->(query, _with_includes) {
     conditions = ['id=?', query]
-    if user = User.find_by_login(query)
+    if user = User.find_by(login: query)
       conditions = ['user_id=?', user.id]
     end
     where(conditions)
@@ -249,7 +249,7 @@ class Batch < ActiveRecord::Base
 
   def output_plate_in_batch?(barcode)
     return false if barcode.nil?
-    return false if Plate.find_by_barcode(barcode).nil?
+    return false if Plate.find_by(barcode: barcode).nil?
     output_plates.any? { |plate| plate.barcode == barcode }
   end
 
@@ -397,8 +397,8 @@ class Batch < ActiveRecord::Base
     return false if batch_info.empty?
 
     # Find the two lanes that are to be swapped
-    batch_request_left  = BatchRequest.find_by_batch_id_and_position(batch_info['batch_1']['id'], batch_info['batch_1']['lane']) or errors.add("Swap: ", "The first lane cannot be found")
-    batch_request_right = BatchRequest.find_by_batch_id_and_position(batch_info['batch_2']['id'], batch_info['batch_2']['lane']) or errors.add("Swap: ", "The second lane cannot be found")
+    batch_request_left  = BatchRequest.find_by(batch_id: batch_info['batch_1']['id'], position: batch_info['batch_1']['lane']) or errors.add("Swap: ", "The first lane cannot be found")
+    batch_request_right = BatchRequest.find_by(batch_id: batch_info['batch_2']['id'], position: batch_info['batch_2']['lane']) or errors.add("Swap: ", "The second lane cannot be found")
     return unless batch_request_left.present? and batch_request_right.present?
 
     ActiveRecord::Base.transaction do
@@ -430,7 +430,7 @@ class Batch < ActiveRecord::Base
   end
 
   def add_control(control_name, control_count)
-    asset = Asset.find_by_name_and_resource(control_name, true)
+    asset = Asset.find_by(name: control_name, resource: true)
 
     control_count = space_left if control_count == 0
 
@@ -481,8 +481,8 @@ class Batch < ActiveRecord::Base
 
   def self.find_from_barcode(code)
     human_batch_barcode = Barcode.number_to_human(code)
-    batch = Batch.find_by_barcode(human_batch_barcode)
-    batch ||= Batch.find_by_id(human_batch_barcode)
+    batch = Batch.find_by(barcode: human_batch_barcode)
+    batch ||= Batch.find_by(id: human_batch_barcode)
 
     batch
   end

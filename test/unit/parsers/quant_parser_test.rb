@@ -29,7 +29,7 @@ class QuantParserTest < ActiveSupport::TestCase
         setup do
           @parser = Parsers.parser_for(@filename, nil, @content)
           @barcode = "999991"
-          @plate = PlatePurpose.find_by_name("Stock Plate").plates.create!
+          @plate = PlatePurpose.find_by(name: "Stock Plate").plates.create!
           @plate.update_attributes(barcode: @barcode)
           @plate.wells.construct!
           @plate.wells.each do |well|
@@ -71,7 +71,7 @@ class QuantParserTest < ActiveSupport::TestCase
         setup do
           @parser = Parsers.parser_for(@filename, nil, @content)
           @barcode = "999991"
-          @plate = PlatePurpose.find_by_name("Stock Plate").plates.create!
+          @plate = PlatePurpose.find_by(name: "Stock Plate").plates.create!
           @plate.update_attributes(barcode: @barcode)
           @plate.wells.construct!
           @plate.wells.each do |well|

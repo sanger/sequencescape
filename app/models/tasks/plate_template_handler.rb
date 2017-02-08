@@ -50,7 +50,7 @@ module Tasks::PlateTemplateHandler
     return if request_id.blank? or request_id.to_i == 0
     return if destination_well.blank? or destination_well.to_i > 0
 
-    location = Map.find_by_description_and_asset_size(destination_well, plate_size) or return
+    location = Map.find_by(description: destination_well, asset_size: plate_size) or return
     plate_key = "default plate 1" if plate_key.blank?
     yield(plate_key, request_id.to_i, location)
   end

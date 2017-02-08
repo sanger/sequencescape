@@ -401,7 +401,7 @@ class Plate < Asset
 
   def add_well_by_map_description(well, map_description)
     add_well_holder(well)
-    well.map = Map.find_by_description_and_asset_size(map_description, size)
+    well.map = Map.find_by(description: map_description, asset_size: size)
     well.save!
   end
 
@@ -471,7 +471,7 @@ class Plate < Asset
 
   def obtain_storage_location
     # From LabWhere
-    info_from_labwhere = LabWhereClient::Labware.find_by_barcode(ean13_barcode)
+    info_from_labwhere = LabWhereClient::Labware.find_by(barcode: ean13_barcode)
     unless info_from_labwhere.nil? || info_from_labwhere.location.nil?
       @storage_location_service = 'LabWhere'
       return info_from_labwhere.location.location_info
@@ -514,7 +514,7 @@ class Plate < Asset
       if row.last.strip.blank?
         well = plate.wells.create(map_id: map.id)
       else
-        asset = Asset.find_by_two_dimensional_barcode(row.last.strip)
+        asset = Asset.find_by(two_dimensional_barcode: row.last.strip)
         if asset.nil?
           well = plate.wells.create(map_id: map.id)
         else
@@ -584,7 +584,7 @@ class Plate < Asset
   end
 
   def genotyping_submission_workflow
-    Submission::Workflow.find_by_key("microarray_genotyping")
+    Submission::Workflow.find_by(key: "microarray_genotyping")
   end
 
   def self.create_plates_submission(project, study, plates, user)
@@ -706,7 +706,7 @@ class Plate < Asset
     barcode    = args.first || attributes[:barcode]
     # If this gets called on plate_purpose.plates it implicitly scopes
     # plate to the plate purpose of choice.
-    barcode    = nil if barcode.present? and unscoped.find_by_barcode(barcode).present?
+    barcode    = nil if barcode.present? and unscoped.find_by(barcode: barcode).present?
     barcode  ||= PlateBarcode.create.barcode
     create!(attributes.merge(barcode: barcode), &block)
   end
@@ -722,7 +722,7 @@ class Plate < Asset
   #++
   def self.plates_from_scanned_plates_and_typed_plate_ids(source_plate_barcodes)
     scanned_plates = source_plate_barcodes.scan(/\d+/).map { |v| find_from_machine_barcode(v) }
-    typed_plates   = source_plate_barcodes.scan(/\d+/).map { |v| find_by_barcode(v) }
+    typed_plates   = source_plate_barcodes.scan(/\d+/).map { |v| find_by(barcode: v) }
 
     (scanned_plates | typed_plates).compact
   end
@@ -755,7 +755,7 @@ class Plate < Asset
   def set_plate_name_and_size
     self.name = "Plate #{barcode}" if name.blank?
     self.size = default_plate_size if size.nil?
-    self.location = Location.find_by_name("Sample logistics freezer") if location_id.nil?
+    self.location = Location.find_by(name: "Sample logistics freezer") if location_id.nil?
   end
   private :set_plate_name_and_size
 

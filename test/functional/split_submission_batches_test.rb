@@ -14,7 +14,7 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
       @controller = SubmissionsController.new
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
-      @plate_purpose = PlatePurpose.find_by_name('Stock plate')
+      @plate_purpose = PlatePurpose.find_by(name: 'Stock plate')
       @controller.stubs(:logged_in?).returns(@user)
       session[:user] = @user.id
       @project = FactoryGirl.create :project
@@ -25,14 +25,14 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
       @asset4 = FactoryGirl.create :sample_tube
       @asset_group = FactoryGirl.create :asset_group
       @asset_group.assets << @asset1 << @asset2 << @asset3 << @asset4
-      @sequencing_pipeline = Pipeline.find_by_name('Cluster formation SE')
+      @sequencing_pipeline = Pipeline.find_by(name: 'Cluster formation SE')
     end
 
     context "which is single plexed" do
       setup do
         # We're using the submissions controller as things are a bit screwy if we go to the plate creator (PlateCreater) directly
         # However, as this seems to relate to the multiplier, it may be related to out problem.
-        @submission_template = SubmissionTemplate.find_by_name!('Illumina-C - Library creation - Single ended sequencing')
+        @submission_template = SubmissionTemplate.find_by!(name: 'Illumina-C - Library creation - Single ended sequencing')
 
         post(:create,
           submission: {
@@ -98,8 +98,8 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
            # We're using the submissions controller as things are a bit screwy if we go to the plate creator (PlateCreater) directly
            # However, as this seems to relate to the multiplier, it may be related to out problem.
            # @asset_group.assets.each_with_index {|a,i| tag=FactoryGirl.create :tag; a.aliquots.first.update_attributes!(:tag=>tag)}
-           @submission_template = SubmissionTemplate.find_by_name!('Illumina-C - Multiplexed Library Creation - Single ended sequencing')
-           @library_pipeline = Pipeline.find_by_name!('Illumina-B MX Library Preparation')
+           @submission_template = SubmissionTemplate.find_by!(name: 'Illumina-C - Multiplexed Library Creation - Single ended sequencing')
+           @library_pipeline = Pipeline.find_by!(name: 'Illumina-B MX Library Preparation')
 
            post(:create, submission: {
              is_a_sequencing_order: "true",

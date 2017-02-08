@@ -39,7 +39,7 @@ class PlateTest < ActiveSupport::TestCase
         context "for #{plate_size} plate" do
           setup do
             @well = Well.new
-            @plate = Plate.new(name: "Test Plate", size: plate_size, purpose: Purpose.find_by_name('Stock Plate'))
+            @plate = Plate.new(name: "Test Plate", size: plate_size, purpose: Purpose.find_by(name: 'Stock Plate'))
           end
           context "with valid row and col combinations" do
             (0..row_size).step(1) do |row|
@@ -72,7 +72,7 @@ class PlateTest < ActiveSupport::TestCase
     context "#control_well_exists?" do
       setup do
         @control_plate = create :control_plate, barcode: 134443
-        map = Map.find_by_description_and_asset_size("A1", 96)
+        map = Map.find_by(description: "A1", asset_size: 96)
         @control_well_asset = Well.new(map: map)
         @control_plate.add_and_save_well @control_well_asset
         @control_plate.reload
@@ -384,9 +384,9 @@ class PlateTest < ActiveSupport::TestCase
       setup do
         @plate = Plate.new
         @plate.wells.build([
-          { map: Map.find_by_description('A1') },
-          { map: Map.find_by_description('B1') },
-          { map: Map.find_by_description('C1') }
+          { map: Map.find_by(description: 'A1') },
+          { map: Map.find_by(description: 'B1') },
+          { map: Map.find_by(description: 'C1') }
         ])
         @plate.wells.first.set_concentration('12')
         @plate.wells.first.set_molarity('34')

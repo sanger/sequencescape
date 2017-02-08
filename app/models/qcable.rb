@@ -42,7 +42,7 @@ class Qcable < ActiveRecord::Base
     query_details = barcodes.flatten.map do |source_barcode|
       barcode_number = Barcode.number_to_human(source_barcode)
       prefix_string  = Barcode.prefix_from_barcode(source_barcode)
-      barcode_prefix = BarcodePrefix.find_by_prefix(prefix_string)
+      barcode_prefix = BarcodePrefix.find_by(prefix: prefix_string)
 
       if barcode_number.nil? or prefix_string.nil? or barcode_prefix.nil?
         { query: 'FALSE' }

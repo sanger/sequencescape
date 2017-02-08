@@ -84,11 +84,11 @@ RequestType.find_each do |request_type|
 end
 
 ['a', 'b', 'c'].each do |pipeline|
-  rt = RequestType.find_by_key("illumina_#{pipeline}_hiseq_v4_paired_end_sequencing")
+  rt = RequestType.find_by(key: "illumina_#{pipeline}_hiseq_v4_paired_end_sequencing")
   RequestType::Validator.create!(request_type: rt, request_option: "read_length", valid_options: [125, 75])
 end
 
-rt = RequestType.find_by_key("illumina_c_hiseq_v4_single_end_sequencing")
+rt = RequestType.find_by(key: "illumina_c_hiseq_v4_single_end_sequencing")
 RequestType::Validator.create!(request_type: rt, request_option: "read_length", valid_options: [29, 50])
 
 ## New library types Illumina C
@@ -99,7 +99,7 @@ library_types = LibraryType.create!([
   "Nextera dual index pre quality controlled", "Bisulphate pre quality controlled"].map { |name| { name: name } })
 
 [:illumina_c_multiplexed_library_creation, :illumina_c_library_creation].each do |request_class_symbol|
-  request_type = RequestType.find_by_key(request_class_symbol.to_s)
+  request_type = RequestType.find_by(key: request_class_symbol.to_s)
   library_types.each do |library_type|
     LibraryTypesRequestType.create!(request_type: request_type, library_type: library_type, is_default: false)
   end
@@ -111,20 +111,20 @@ end
 
 libs_ribozero.each do |lib|
   [:illumina_c_pcr, :illumina_c_pcr_no_pool].each do |request_class_symbol|
-    request_type = RequestType.find_by_key(request_class_symbol.to_s)
+    request_type = RequestType.find_by(key: request_class_symbol.to_s)
     LibraryTypesRequestType.create!(request_type: request_type, library_type: lib, is_default: false)
   end
 end
 
-RequestType.find_by_key('illumina_c_chromium_library').library_types = LibraryType.create!(['Chromium genome', 'Chromium exome', 'Chromium single cell'].map { |name| { name: name } })
+RequestType.find_by(key: 'illumina_c_chromium_library').library_types = LibraryType.create!(['Chromium genome', 'Chromium exome', 'Chromium single cell'].map { |name| { name: name } })
 RequestType::Validator.create!(
-  request_type: RequestType.find_by_key('illumina_c_chromium_library'),
+  request_type: RequestType.find_by(key: 'illumina_c_chromium_library'),
   request_option: 'library_type',
-  valid_options: RequestType::Validator::LibraryTypeValidator.new(RequestType.find_by_key('illumina_c_chromium_library').id)
+  valid_options: RequestType::Validator::LibraryTypeValidator.new(RequestType.find_by(key: 'illumina_c_chromium_library').id)
 )
 # PCR Free Hiseq X10 RequestTypeValidator
 lt = LibraryType.find_or_create_by(name: "HiSeqX PCR free")
-rt_pf = RequestType.find_by_key("htp_pcr_free_lib")
+rt_pf = RequestType.find_by(key: "htp_pcr_free_lib")
 rt_v = RequestType::Validator.create!(
   request_type: rt_pf,
   request_option: 'library_type',
@@ -132,9 +132,9 @@ rt_v = RequestType::Validator.create!(
 )
 
 ['a', 'b'].each do |pipeline|
-  rt = RequestType.find_by_key!("illumina_#{pipeline}_hiseq_x_paired_end_sequencing")
+  rt = RequestType.find_by!(key: "illumina_#{pipeline}_hiseq_x_paired_end_sequencing")
   RequestType::Validator.create!(request_type: rt, request_option: "read_length", valid_options: [150])
-  rt.library_types << LibraryType.find_by_name('Standard')
+  rt.library_types << LibraryType.find_by(name: 'Standard')
   RequestType::Validator.create!(request_type: rt, request_option: "library_type", valid_options: RequestType::Validator::LibraryTypeValidator.new(rt.id))
   RequestType::Validator.create!(request_type: rt, request_option: "fragment_size_required_to", valid_options: ['350'])
   RequestType::Validator.create!(request_type: rt, request_option: "fragment_size_required_from", valid_options: ['350'])

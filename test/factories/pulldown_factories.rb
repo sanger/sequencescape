@@ -10,7 +10,7 @@ FactoryGirl.define do
     after(:create) do |plate|
       plate.wells.import(
         ['A1', 'B1', 'C1'].map do |location|
-          map = Map.where_description(location).where_plate_size(plate.size).where_plate_shape(AssetShape.find_by_name('Standard')).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
+          map = Map.where_description(location).where_plate_size(plate.size).where_plate_shape(AssetShape.find_by(name: 'Standard')).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
           create(:tagged_well, map: map)
         end
       )
@@ -25,7 +25,7 @@ FactoryGirl.define do
     after(:create) do |plate|
       plate.wells.import(
         %w(A1 B1 C1 D1 E1 F1).map do |location|
-          map = Map.where_description(location).where_plate_size(plate.size).where_plate_shape(AssetShape.find_by_name('Standard')).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
+          map = Map.where_description(location).where_plate_size(plate.size).where_plate_shape(AssetShape.find_by(name: 'Standard')).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
           create(:tagged_well, map: map)
         end
       )
@@ -34,19 +34,19 @@ FactoryGirl.define do
 
   factory(:source_transfer_plate, parent: :transfer_plate) do |_plate|
     after(:build) do |plate|
-      plate.plate_purpose = PlatePurpose.find_by_name('Parent plate purpose') || create(:parent_plate_purpose)
+      plate.plate_purpose = PlatePurpose.find_by(name: 'Parent plate purpose') || create(:parent_plate_purpose)
     end
   end
 
   factory(:destination_transfer_plate, parent: :transfer_plate) do |_plate|
     after(:build) do |plate|
-      plate.plate_purpose = PlatePurpose.find_by_name('Child plate purpose') || create(:child_plate_purpose)
+      plate.plate_purpose = PlatePurpose.find_by(name: 'Child plate purpose') || create(:child_plate_purpose)
     end
   end
 
   factory(:initial_downstream_plate, parent: :transfer_plate) do |_plate|
     after(:build) do |plate|
-      plate.plate_purpose = PlatePurpose.find_by_name('Initial downstream plate purpose') || create(:initial_downstream_plate_purpose)
+      plate.plate_purpose = PlatePurpose.find_by(name: 'Initial downstream plate purpose') || create(:initial_downstream_plate_purpose)
     end
   end
 
@@ -54,7 +54,7 @@ FactoryGirl.define do
     size 96
 
     after(:build) do |plate|
-      plate.plate_purpose = PlatePurpose.find_by_name('Parent plate purpose') || create(:parent_plate_purpose)
+      plate.plate_purpose = PlatePurpose.find_by(name: 'Parent plate purpose') || create(:parent_plate_purpose)
     end
 
     after(:create) do |plate|
@@ -203,8 +203,8 @@ FactoryGirl.define do
     parent { |target| target.association(:full_plate) }
 
     after(:build) do |plate_creation|
-      plate_creation.parent.plate_purpose = PlatePurpose.find_by_name('Parent plate purpose') || create(:parent_plate_purpose)
-      plate_creation.child_purpose        = PlatePurpose.find_by_name('Child plate purpose')  || create(:child_plate_purpose)
+      plate_creation.parent.plate_purpose = PlatePurpose.find_by(name: 'Parent plate purpose') || create(:parent_plate_purpose)
+      plate_creation.child_purpose        = PlatePurpose.find_by(name: 'Child plate purpose')  || create(:child_plate_purpose)
     end
   end
 
@@ -219,8 +219,8 @@ FactoryGirl.define do
     after(:build) do |tube_creation|
       user = create(:user)
 
-      tube_creation.parent.plate_purpose = PlatePurpose.find_by_name('Parent plate purpose') || create(:parent_plate_purpose)
-      tube_creation.child_purpose        = Tube::Purpose.find_by_name('Child tube purpose')  || create(:child_tube_purpose)
+      tube_creation.parent.plate_purpose = PlatePurpose.find_by(name: 'Parent plate purpose') || create(:parent_plate_purpose)
+      tube_creation.child_purpose        = Tube::Purpose.find_by(name: 'Child tube purpose')  || create(:child_tube_purpose)
       mock_request_type                  = create(:library_creation_request_type)
 
       # Ensure that the parent plate will pool into two children by setting up a dummy stock plate
@@ -254,7 +254,7 @@ FactoryGirl.define do
   end
 
   factory(:pulldown_wgs_request, class: Pulldown::Requests::WgsLibraryRequest) do |_request|
-    request_type { |_target| RequestType.find_by_name('Pulldown WGS') or raise StandardError, "Could not find 'Pulldown WGS' request type" }
+    request_type { |_target| RequestType.find_by(name: 'Pulldown WGS') or raise StandardError, "Could not find 'Pulldown WGS' request type" }
     asset        { |target| target.association(:well_with_sample_and_plate) }
     target_asset { |target| target.association(:empty_well) }
     after(:build) do |request|
@@ -264,7 +264,7 @@ FactoryGirl.define do
     request_purpose { |rp| rp.association(:request_purpose) }
   end
   factory(:pulldown_sc_request, class: Pulldown::Requests::ScLibraryRequest) do |_request|
-    request_type { |_target| RequestType.find_by_name('Pulldown SC') or raise StandardError, "Could not find 'Pulldown SC' request type" }
+    request_type { |_target| RequestType.find_by(name: 'Pulldown SC') or raise StandardError, "Could not find 'Pulldown SC' request type" }
     asset        { |target| target.association(:well_with_sample_and_plate) }
     target_asset { |target| target.association(:empty_well) }
     after(:build) do |request|
@@ -275,7 +275,7 @@ FactoryGirl.define do
     request_purpose { |rp| rp.association(:request_purpose) }
   end
   factory(:pulldown_isc_request, class: Pulldown::Requests::IscLibraryRequest) do |_request|
-    request_type { |_target| RequestType.find_by_name('Pulldown ISC') or raise StandardError, "Could not find 'Pulldown ISC' request type" }
+    request_type { |_target| RequestType.find_by(name: 'Pulldown ISC') or raise StandardError, "Could not find 'Pulldown ISC' request type" }
     asset        { |target| target.association(:well_with_sample_and_plate) }
     target_asset { |target| target.association(:empty_well) }
     request_purpose { |rp| rp.association(:request_purpose) }

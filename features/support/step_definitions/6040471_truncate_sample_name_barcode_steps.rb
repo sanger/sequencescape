@@ -27,12 +27,12 @@ When /^I print the following labels in the asset group$/ do |table|
 end
 
 Given /^I have an asset group "([^"]*)" which is part of "([^"]*)"$/ do |asset_group_name, study_name|
-  AssetGroup.create!(name: asset_group_name, study: Study.find_by_name(study_name))
+  AssetGroup.create!(name: asset_group_name, study: Study.find_by(name: study_name))
 end
 
 Given /^asset group "([^\"]*)" contains a "([^\"]*)" called "([^\"]*)"$/ do |asset_group_name, asset_type, asset_name|
   asset = eval(asset_type).create!(name: asset_name, barcode: "17")
-  asset_group = AssetGroup.find_by_name(asset_group_name)
+  asset_group = AssetGroup.find_by(name: asset_group_name)
   asset_group.assets << asset
   asset_group.save!
 end

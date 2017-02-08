@@ -38,7 +38,7 @@ module Tasks::CherrypickHandler
 
     if @plate_barcode.present?
       plate_barcode_id = @plate_barcode.to_i > 11 ? Barcode.number_to_human(@plate_barcode) : @plate_barcode
-      @plate = Plate.find_by_barcode(plate_barcode_id)
+      @plate = Plate.find_by(barcode: plate_barcode_id)
       if @plate.nil?
         flash[:error] = "Invalid plate barcode"
         redirect_to action: 'stage', batch_id: @batch.id, workflow_id: @workflow.id, id: (@stage - 1).to_s
@@ -103,10 +103,10 @@ module Tasks::CherrypickHandler
       # Determine if there is a standard plate to use.
       partial_plate, plate_barcode, fluidigm_plate = nil, params[:plate_barcode], params[:fluidigm_plate]
       unless plate_barcode.nil?
-        partial_plate = Plate.find_by_barcode(plate_barcode) or raise ActiveRecord::RecordNotFound, "No plate with barcode #{plate_barcode.inspect}"
+        partial_plate = Plate.find_by(barcode: plate_barcode) or raise ActiveRecord::RecordNotFound, "No plate with barcode #{plate_barcode.inspect}"
       end
       if fluidigm_plate.present?
-        partial_plate = Plate::Metadata.find_by_fluidigm_barcode(fluidigm_plate).try(:plate)
+        partial_plate = Plate::Metadata.find_by(fluidigm_barcode: fluidigm_plate).try(:plate)
       end
 
       # Ensure that we have a plate purpose for any plates we are creating

@@ -6,8 +6,8 @@
 
 module Tasks::MovieLengthHandler
   def render_movie_length_task(task, params)
-    @valid_movie_lengths = task.descriptors.find_by_name('Movie length').selection
-    @default_movie_length = task.descriptors.find_by_name('Movie length').value.to_i
+    @valid_movie_lengths = task.descriptors.find_by(name: 'Movie length').selection
+    @default_movie_length = task.descriptors.find_by(name: 'Movie length').value.to_i
     @assets = task.find_batch_requests(params[:batch_id]).map { |request| request.asset }.uniq
   end
 

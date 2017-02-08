@@ -17,7 +17,7 @@ class LibPoolNormTubeGenerator
   end
 
   def transfer_template
-    @transfer_template ||= TransferTemplate.find_by_name("Transfer from tube to tube by submission")
+    @transfer_template ||= TransferTemplate.find_by(name: "Transfer from tube to tube by submission")
   end
 
   def plate=(barcode)
@@ -51,7 +51,7 @@ class LibPoolNormTubeGenerator
           end
 
           @asset_group = AssetGroup.create(assets: destination_tubes, study: study, name: "#{plate.sanger_human_barcode}_qc_completed_tubes")
-          Location.find_by_name("Cluster formation freezer").set_locations(destination_tubes)
+          Location.find_by(name: "Cluster formation freezer").set_locations(destination_tubes)
         end
         true
       rescue => e

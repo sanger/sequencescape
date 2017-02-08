@@ -247,7 +247,7 @@ class CherrypickTask < Task
   def get_well_from_control_param(control_param)
     control_param.scan(/([\d]+)/)
     well_id = $1.to_i
-    Well.find_by_id(well_id)
+    Well.find_by(id: well_id)
   end
   private :get_well_from_control_param
 

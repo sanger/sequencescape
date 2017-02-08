@@ -45,9 +45,9 @@ class Admin::ProgramsControllerTest < ActionController::TestCase
       should "edit the name of the new program" do
         post :update, id: @program.id, program: { name: 'A new name for the program' }
 
-        assert_equal true, Program.find_by_name('My program name').nil?
-        assert_equal false, Program.find_by_name('A new name for the program').nil?
-        assert_equal @program.id, Program.find_by_name('A new name for the program').id
+        assert_equal true, Program.find_by(name: 'My program name').nil?
+        assert_equal false, Program.find_by(name: 'A new name for the program').nil?
+        assert_equal @program.id, Program.find_by(name: 'A new name for the program').id
       end
     end
 

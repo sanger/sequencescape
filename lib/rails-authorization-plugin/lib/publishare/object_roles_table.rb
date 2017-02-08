@@ -22,7 +22,7 @@ module Authorization
         # If roles aren't explicitly defined in user class then check roles table
         def has_role?(role_name, authorizable_obj = nil)
           if authorizable_obj.nil?
-            roles.find_by_name(role_name) || roles.member?(get_role(role_name, authorizable_obj)) ? true : false # If we ask a general role question, return true if any role is defined.
+            roles.find_by(name: role_name) || roles.member?(get_role(role_name, authorizable_obj)) ? true : false # If we ask a general role question, return true if any role is defined.
           else
             role = get_role(role_name, authorizable_obj)
             role ? roles.exists?(role.id) : false

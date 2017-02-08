@@ -197,7 +197,7 @@ class SampleRegistrarTest < ActiveSupport::TestCase
         end
 
         should 'not registered the ignored sample' do
-          assert_nil(Sample.find_by_name('ignored_sample'))
+          assert_nil(Sample.find_by(name: 'ignored_sample'))
         end
       end
 
@@ -258,17 +258,17 @@ class SampleRegistrarTest < ActiveSupport::TestCase
         end
 
         should 'put samples 1 and 3 into asset group 1' do
-          group = AssetGroup.find_by_name('asset_group_1')
-          assert_contains(group.assets, SampleTube.find_by_name('valid_sample_1'))
-          assert_contains(group.assets, SampleTube.find_by_name('valid_sample_3'))
+          group = AssetGroup.find_by(name: 'asset_group_1')
+          assert_contains(group.assets, SampleTube.find_by(name: 'valid_sample_1'))
+          assert_contains(group.assets, SampleTube.find_by(name: 'valid_sample_3'))
         end
 
         should 'put sample 2 into asset group 2' do
-          assert_contains(AssetGroup.find_by_name('asset_group_2').assets, SampleTube.find_by_name('valid_sample_2'))
+          assert_contains(AssetGroup.find_by(name: 'asset_group_2').assets, SampleTube.find_by(name: 'valid_sample_2'))
         end
 
         should 'not have created sample 3' do
-          assert_nil(Sample.find_by_name('ignored_sample_1'))
+          assert_nil(Sample.find_by(name: 'ignored_sample_1'))
         end
       end
     end

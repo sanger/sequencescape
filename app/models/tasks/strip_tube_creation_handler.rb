@@ -9,7 +9,7 @@ module Tasks::StripTubeCreationHandler
     @tubes_requested = @batch.requests.first.asset.requests.for_pipeline(task.workflow.pipeline).count
     @tubes_available = @batch.requests.first.asset.requests.for_pipeline(task.workflow.pipeline).pending.count
 
-    strip_count = task.descriptors.find_by_key!('strips_to_create')
+    strip_count = task.descriptors.find_by!(key: 'strips_to_create')
 
     @options = strip_count.selection.select { |v| v <= (@tubes_available) }
     @default = strip_count.value || @options.last
@@ -41,7 +41,7 @@ module Tasks::StripTubeCreationHandler
 
     base_name = source_plate.sanger_human_barcode
 
-    strip_purpose = Purpose.find_by_name(task.descriptors.find_by_key!('strip_tube_purpose').value)
+    strip_purpose = Purpose.find_by(name: task.descriptors.find_by!(key: 'strip_tube_purpose').value)
 
     (0...tubes_to_create).each do |tube_number|
       tube = strip_purpose.create!(name: "#{base_name}:#{tube_number + 1}", location: @batch.pipeline.location)

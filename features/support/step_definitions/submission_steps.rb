@@ -5,8 +5,8 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 Given /^I have a plate in study "([^"]*)" with samples with known sanger_sample_ids$/ do |study_name|
-  study = Study.find_by_name(study_name)
-  plate = PlatePurpose.stock_plate_purpose.create!(true, barcode: "1234567", location: Location.find_by_name("Sample logistics freezer"))
+  study = Study.find_by(name: study_name)
+  plate = PlatePurpose.stock_plate_purpose.create!(true, barcode: "1234567", location: Location.find_by(name: "Sample logistics freezer"))
   1.upto(4) do |i|
     Well.create!(plate: plate, map_id: i).aliquots.create!(sample: Sample.create!(name: "Sample_#{i}", sanger_sample_id: "ABC_#{i}"))
   end
@@ -50,8 +50,8 @@ Given /^the request type "([^\"]+)" exists$/ do |name|
 end
 
 Then /^the (library tube) "([^\"]+)" should have (\d+) "([^\"]+)" requests$/ do |asset_model, asset_name, count, request_type_name|
-  asset        = asset_model.gsub(/\s+/, '_').classify.constantize.find_by_name(asset_name) or raise StandardError, "Could not find #{asset_model} #{asset_name.inspect}"
-  request_type = RequestType.find_by_name(request_type_name) or raise StandardError, "Could not find request type #{request_type_name.inspect}"
+  asset        = asset_model.gsub(/\s+/, '_').classify.constantize.find_by(name: asset_name) or raise StandardError, "Could not find #{asset_model} #{asset_name.inspect}"
+  request_type = RequestType.find_by(name: request_type_name) or raise StandardError, "Could not find request type #{request_type_name.inspect}"
   assert_equal(count.to_i, asset.requests.where(request_type_id: request_type.id).count, "Number of #{request_type_name.inspect} requests incorrect")
 end
 
@@ -111,7 +111,7 @@ SENSIBLE_DEFAULTS_FOR_REQUEST_TYPE = {
 }
 
 def with_request_type_scope(name, &block)
-  request_type = RequestType.find_by_name(name) or raise StandardError, "Cannot find request type #{name.inspect}"
+  request_type = RequestType.find_by(name: name) or raise StandardError, "Cannot find request type #{name.inspect}"
   with_scope("#request_type_options_for_#{request_type.id}", &block)
 end
 
@@ -136,14 +136,14 @@ When /^I select "([^\"]+)" from "([^\"]+)" for the "([^\"]+)" request type$/ do 
 end
 
 Then /^the source asset of the last "([^\"]+)" request should be a "([^\"]+)"$/ do |request_type_name, asset_type|
-  request_type = RequestType.find_by_name(request_type_name) or raise StandardError, "Cannot find request type #{request_type_name.inspect}"
+  request_type = RequestType.find_by(name: request_type_name) or raise StandardError, "Cannot find request type #{request_type_name.inspect}"
   request      = request_type.requests.last or raise StandardError, "There are no #{request_type_name.inspect} requests!"
   assert_equal(asset_type.gsub(/\s+/, '_').classify.constantize, request.asset.class, "Source asset is of invalid type")
 end
 
 Given /^the last submission wants (\d+) runs of the "([^\"]+)" requests$/ do |count, type|
   submission   = Submission.last or raise StandardError, "There appear to be no submissions"
-  request_type = RequestType.find_by_name(type) or raise StandardError, "Cannot find request type #{type.inspect}"
+  request_type = RequestType.find_by(name: type) or raise StandardError, "Cannot find request type #{type.inspect}"
   submission.request_options              ||= {}
   submission.request_options[:multiplier] ||= Hash[submission.request_types.map { |t| [t, 1] }]
   submission.request_options[:multiplier][request_type.id.to_i] = count.to_i
@@ -151,7 +151,7 @@ Given /^the last submission wants (\d+) runs of the "([^\"]+)" requests$/ do |co
 end
 
 Given /^the sample tubes are part of submission "([^\"]*)"$/ do |submission_uuid|
-  submission = Uuid.find_by_external_id(submission_uuid).resource or raise StandardError, "Couldnt find object for UUID"
+  submission = Uuid.find_by(external_id: submission_uuid).resource or raise StandardError, "Couldnt find object for UUID"
   Asset.all.map { |asset| submission.orders.first.assets << asset }
 end
 
@@ -162,7 +162,7 @@ Then /^I create the order and submit the submission/ do
 end
 
 Given /^I have a "([^\"]*)" submission with the following setup:$/ do |template_name, table|
-  submission_template = SubmissionTemplate.find_by_name(template_name)
+  submission_template = SubmissionTemplate.find_by(name: template_name)
   params = table.rows_hash
   request_options = {}
   request_type_ids = submission_template.new_order.request_types
@@ -182,9 +182,9 @@ Given /^I have a "([^\"]*)" submission with the following setup:$/ do |template_
 
   Submission.build!(
     template: submission_template,
-    project: Project.find_by_name(params['Project']),
-    study: Study.find_by_name(params['Study']),
-    asset_group: AssetGroup.find_by_name(params['Asset Group']),
+    project: Project.find_by(name: params['Project']),
+    study: Study.find_by(name: params['Study']),
+    asset_group: AssetGroup.find_by(name: params['Asset Group']),
     workflow: Submission::Workflow.first,
     user: @current_user,
     request_options: request_options

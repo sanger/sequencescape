@@ -14,10 +14,10 @@ end
 
 Given /^the tube "([^"]*)" is the target of a (started|passed|pending) "([^"]*)" from "([^"]*)"$/ do |tube_name, state, request_type, source_name|
   submission = Submission.last || FactoryGirl.create(:submission)
-  tube = Tube.find_by_name(tube_name)
-  source = Asset.find_by_name(source_name)
+  tube = Tube.find_by(name: tube_name)
+  source = Asset.find_by(name: source_name)
   source = source.wells.first if source.is_a?(Plate)
-  RequestType.find_by_name(request_type).create!(
+  RequestType.find_by(name: request_type).create!(
     { state: state,
     asset: source,
     target_asset: tube,
@@ -27,7 +27,7 @@ Given /^the tube "([^"]*)" is the target of a (started|passed|pending) "([^"]*)"
 end
 
 Given /^a (started|passed|pending) transfer from the stock tube "([^"]*)" to the MX tube$/ do |state, source_name|
-  source = Tube.find_by_name(source_name) or raise "Cannot find source tube #{source_name.inspect}"
+  source = Tube.find_by(name: source_name) or raise "Cannot find source tube #{source_name.inspect}"
   Transfer::BetweenTubesBySubmission.create!(
     source: source,
     user: User.last || User.create(login: 'no_one')

@@ -22,7 +22,7 @@ class TransferRequestTest < ActiveSupport::TestCase
     end
 
     should 'have the correct attributes' do
-      assert @transfer_request.request_type == RequestType.find_by_key('transfer')
+      assert @transfer_request.request_type == RequestType.find_by(key: 'transfer')
       assert @transfer_request.sti_type == 'TransferRequest'
       assert @transfer_request.state == 'pending'
       assert @transfer_request.asset_id == @source.id

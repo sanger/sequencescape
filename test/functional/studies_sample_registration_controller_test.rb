@@ -167,7 +167,7 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
           end
 
           should 'not have registered sample 2' do
-            assert_nil(Sample.find_by_name('Sam2'))
+            assert_nil(Sample.find_by(name: 'Sam2'))
           end
         end
 
@@ -202,7 +202,7 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
 
           context 'sample 1' do
             setup do
-              @sample = Sample.find_by_name("Sam1")
+              @sample = Sample.find_by(name: "Sam1")
             end
 
             should 'have the 2D barcode on the asset' do
@@ -212,7 +212,7 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
 
           context 'sample 2' do
             setup do
-              @sample = Sample.find_by_name('Sam2')
+              @sample = Sample.find_by(name: 'Sam2')
             end
 
             should 'have the 2D barcode on the asset' do

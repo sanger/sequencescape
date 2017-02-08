@@ -75,7 +75,7 @@ FactoryGirl.define do
     state 'active'
 
     after(:build) do |study|
-      user = User.find_by_login('listing_studies_user') or create(:listing_studies_user)
+      user = User.find_by(login: 'listing_studies_user') or create(:listing_studies_user)
       user.has_role('manager', study)
     end
   end
@@ -84,7 +84,7 @@ FactoryGirl.define do
     state 'inactive'
 
     after(:build) do |study|
-      user = User.find_by_login('listing_studies_user') or create(:listing_studies_user)
+      user = User.find_by(login: 'listing_studies_user') or create(:listing_studies_user)
       user.has_role('manager', study)
     end
   end
@@ -92,7 +92,7 @@ FactoryGirl.define do
     name 'Study: Followed'
 
     after(:build) do |study|
-      user = User.find_by_login('listing_studies_user') or create(:listing_studies_user)
+      user = User.find_by(login: 'listing_studies_user') or create(:listing_studies_user)
       user.has_role('follower', study)
     end
   end
@@ -100,7 +100,7 @@ FactoryGirl.define do
     name 'Study: Collaborations'
 
     after(:build) do |study|
-      user = User.find_by_login('listing_studies_user') or create(:listing_studies_user)
+      user = User.find_by(login: 'listing_studies_user') or create(:listing_studies_user)
       user.has_role('collaborator', study)
     end
   end
@@ -109,7 +109,7 @@ FactoryGirl.define do
 
     # NOTE: Doesn't appear to matter what role the user has!
     after(:build) do |study|
-      user = User.find_by_login('listing_studies_user') or create(:listing_studies_user)
+      user = User.find_by(login: 'listing_studies_user') or create(:listing_studies_user)
       user.has_role('follower', study)
     end
   end

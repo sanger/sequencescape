@@ -17,11 +17,11 @@ class PicoAssayPlate < Plate
     end
 
     def target_map
-      Map.find_by_description_and_asset_size(map, parent_plate.stock_plate.size)
+      Map.find_by(description: map, asset_size: parent_plate.stock_plate.size)
     end
 
     def target_well
-      @target_well ||= parent_plate.stock_plate.wells.find_by_map_id(target_map.id)
+      @target_well ||= parent_plate.stock_plate.wells.find_by(map_id: target_map.id)
     end
 
     def concentration

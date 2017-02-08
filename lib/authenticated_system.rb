@@ -63,7 +63,7 @@ module AuthenticatedSystem
           self.current_user = user
         end
       elsif params[:api_key]
-        user = User.find_by_api_key(params[:api_key])
+        user = User.find_by(api_key: params[:api_key])
         if user.nil?
           self.current_user = :false
         else
@@ -193,7 +193,7 @@ module AuthenticatedSystem
     # cookie and log the user back in if apropriate
     def login_from_cookie
       return unless cookies[:auth_token] && !logged_in?
-      user = User.find_by_remember_token(cookies[:auth_token])
+      user = User.find_by(remember_token: cookies[:auth_token])
       if user && user.remember_token?
         user.remember_me
         self.current_user = user

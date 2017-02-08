@@ -47,7 +47,7 @@ class AssetsController < ApplicationController
   def new
     @asset = Asset.new
     @asset_types = { "Library Tube" => 'LibraryTube', "Hybridization Buffer Spiked" => "SpikedBuffer" }
-    @phix_tag = TagGroup.find_by_name(configatron.phix_tag.tag_group_name).tags.select do |t|
+    @phix_tag = TagGroup.find_by(name: configatron.phix_tag.tag_group_name).tags.select do |t|
       t.map_id == configatron.phix_tag.tag_map_id
     end.first
 
@@ -84,7 +84,7 @@ class AssetsController < ApplicationController
       # Find the parent asset up front
       parent, parent_param = nil, first_param(:parent_asset)
       if parent_param.present?
-        parent = Asset.find_from_machine_barcode(parent_param) || Asset.find_by_name(parent_param) || Asset.find_by_id(parent_param)
+        parent = Asset.find_from_machine_barcode(parent_param) || Asset.find_by(name: parent_param) || Asset.find_by(id: parent_param)
         raise StandardError, "Cannot find the parent asset #{parent_param.inspect}" if parent.nil?
       end
 
@@ -371,10 +371,10 @@ class AssetsController < ApplicationController
     elsif barcode.size == 13 && Barcode.check_EAN(barcode)
       @asset = Asset.with_machine_barcode(barcode).first
     elsif match = /\A([A-z]{2})([0-9]{1,7})[A-z]{0,1}\z/.match(barcode) # Human Readable
-      prefix = BarcodePrefix.find_by_prefix(match[1])
-      @asset = Asset.find_by_barcode_and_barcode_prefix_id(match[2], prefix.id) if prefix
+      prefix = BarcodePrefix.find_by(prefix: match[1])
+      @asset = Asset.find_by(barcode: match[2], barcode_prefix_id: prefix.id) if prefix
     elsif /\A[0-9]{1,7}\z/ =~ barcode # Just a number
-      @asset = Asset.find_by_barcode(barcode)
+      @asset = Asset.find_by(barcode: barcode)
     else
       flash[:error] = "'#{barcode}' is not a recognized barcode format"
       redirect_to action: "find_by_barcode"
@@ -424,7 +424,7 @@ class AssetsController < ApplicationController
       elsif !(params[:asset_group_id] == "0") && !(params[:new_assets_name].empty?)
         flash[:error] = "You can select only an Asset Group!"
         return false
-      elsif AssetGroup.find_by_name(params[:new_assets_name])
+      elsif AssetGroup.find_by(name: params[:new_assets_name])
         flash[:error] = "The name of Asset Group exists!"
         return false
       end

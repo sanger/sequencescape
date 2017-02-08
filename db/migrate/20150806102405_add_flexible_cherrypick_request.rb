@@ -23,13 +23,13 @@ class AddFlexibleCherrypickRequest < ActiveRecord::Migration
         no_target_asset: false,
         order: 1,
         request_class_name: "PooledCherrypickRequest",
-        workflow_id: Submission::Workflow.find_by_name("Microarray genotyping").id)
+        workflow_id: Submission::Workflow.find_by(name: "Microarray genotyping").id)
     end
   end
 
   def self.down
     ActiveRecord::Base.transaction do
-      RequestType.find_by_name("Flexible Cherrypick").destroy
+      RequestType.find_by(name: "Flexible Cherrypick").destroy
     end
   end
 end

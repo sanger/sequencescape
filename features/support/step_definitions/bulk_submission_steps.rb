@@ -23,7 +23,7 @@ When /^I have a study '(.*)'$/ do |study_name|
 end
 
 When /^I have a plate '(.*)' that has a well in location 'A1' that contains the sample '(.*)'$/ do |asset_name, sample_name|
-  sample = Sample.find_by_name(sample_name)
+  sample = Sample.find_by(name: sample_name)
   plate =  FactoryGirl.create :plate, name: asset_name
   plate.wells.construct!
   well = plate.wells.first
@@ -31,12 +31,12 @@ When /^I have a plate '(.*)' that has a well in location 'A1' that contains the 
 end
 
 When /^the plate '(.*)' has a barcode '(.*)'$/ do |name, barcode|
-  Plate.find_by_name(name).update_attributes(barcode: barcode)
+  Plate.find_by(name: name).update_attributes(barcode: barcode)
 end
 
 When /^the sample '(.*)' belongs to study '(.*)'$/ do |sample_name, study_name|
-  sample = Sample.find_by_name(sample_name)
-  study = Study.find_by_name(study_name)
+  sample = Sample.find_by(name: sample_name)
+  study = Study.find_by(name: study_name)
   sample.studies << study
 end
 
@@ -45,11 +45,11 @@ When /^I upload a file with a plate 'AssetTest' with a well in location 'A1' tha
 end
 
 Then /^the sample '(.*)' should belong to study '(.*)'$/ do |sample_name, study_name|
-  assert_equal true, Sample.find_by_name(sample_name).studies.include?(Study.find_by_name(study_name))
+  assert_equal true, Sample.find_by(name: sample_name).studies.include?(Study.find_by(name: study_name))
 end
 
 Then /^the sample '(.*)' should not belong to study '(.*)'$/ do |sample_name, study_name|
-  assert_equal false, Sample.find_by_name(sample_name).studies.include?(Study.find_by_name(study_name))
+  assert_equal false, Sample.find_by(name: sample_name).studies.include?(Study.find_by(name: study_name))
 end
 
 When /^I upload a file with (.*) data for (\d+) submissions$/ do |type, number|

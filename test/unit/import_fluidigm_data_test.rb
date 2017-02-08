@@ -35,7 +35,7 @@ class ImportFluidigmDataTest < ActiveSupport::TestCase
     def create_stock_plate(barcode)
       plate_source = create :plate, name: "Stock plate #{barcode}",
         size: 192,
-        purpose: Purpose.find_by_name('Stock Plate'),
+        purpose: Purpose.find_by(name: 'Stock Plate'),
         barcode: barcode
       @sample = create :sample, name: "abc"
             well_source = Well.create!.tap { |well| well.aliquots.create!(sample: @sample) }
@@ -54,11 +54,11 @@ class ImportFluidigmDataTest < ActiveSupport::TestCase
       well_target = Well.new
       plate_target.add_and_save_well(well_target)
 
-      RequestType.find_by_key("pick_to_fluidigm").create!(state: 'passed',
+      RequestType.find_by(key: "pick_to_fluidigm").create!(state: 'passed',
         asset: stock_plate.wells.first,
         target_asset: well_target,
         request_metadata_attributes: {
-            target_purpose_id: PlatePurpose.find_by_name("Fluidigm 192-24").id
+            target_purpose_id: PlatePurpose.find_by(name: "Fluidigm 192-24").id
           })
       plate_target
     end

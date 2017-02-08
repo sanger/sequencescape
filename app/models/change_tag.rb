@@ -54,7 +54,7 @@ class ChangeTag
   end
 
   def asset_from_id(asset_id)
-    Asset.find_by_id(asset_id) || Asset.find_by_barcode(asset_id)
+    Asset.find_by(id: asset_id) || Asset.find_by(barcode: asset_id)
   end
 
   def tubes_have_tags!

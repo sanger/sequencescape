@@ -20,7 +20,7 @@ class GelsController < ApplicationController
   end
 
   def lookup
-    @plate = Plate.find_by_barcode_and_barcode_prefix_id(params[:barcode], BarcodePrefix.find_by_prefix(Plate.prefix))
+    @plate = Plate.find_by(barcode: params[:barcode], barcode_prefix_id: BarcodePrefix.find_by(prefix: Plate.prefix))
     if !@plate
       flash[:error] = "plate not found"
       render action: :find

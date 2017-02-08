@@ -19,14 +19,14 @@ end
 Given /^I have a bait library called "([^\"]*)"$/ do |name|
   BaitLibrary.create!(
     name: name,
-    bait_library_type: BaitLibraryType.find_by_visible(true),
-    bait_library_supplier: BaitLibrary::Supplier.find_by_visible(true),
+    bait_library_type: BaitLibraryType.find_by(visible: true),
+    bait_library_supplier: BaitLibrary::Supplier.find_by(visible: true),
     target_species: 'Dragon'
     )
 end
 
 Then /^the supplier_identifier for "([^\"]*)" should be nil$/ do |name|
-  assert BaitLibrary.find_by_name(name).supplier_identifier.nil?
+  assert BaitLibrary.find_by(name: name).supplier_identifier.nil?
 end
 
 Given /^I have a bait library type called "([^\"]*)"$/ do |name|
@@ -38,7 +38,7 @@ Given /^I have a supplier called "([^\"]*)"$/ do |name|
 end
 
 Then /^the "([^\"]*)" called "([^\"]*)" should exist$/ do |class_name, name|
-  matching = class_name.constantize.find_by_name(name)
+  matching = class_name.constantize.find_by(name: name)
   assert matching
 end
 

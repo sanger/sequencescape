@@ -40,7 +40,7 @@ class ::Sample
 end
 
 # Only ever process those samples that actually need an accession number to be generated for them.
-current_user = User.find_by_api_key(configatron.accession_local_key) or raise StandardError, "Cannot find accessioning user"
+current_user = User.find_by(api_key: configatron.accession_local_key) or raise StandardError, "Cannot find accessioning user"
 Sample.requiring_accession_number.includes(:sample_metadata, studies: :study_metadata).find_each do |sample|
   begin
     sample.validate_ena_required_fields!

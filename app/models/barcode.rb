@@ -32,7 +32,7 @@ class Barcode
     end
 
     def set_default_prefix
-      self.barcode_prefix ||= BarcodePrefix.find_by_prefix(prefix)
+      self.barcode_prefix ||= BarcodePrefix.find_by(prefix: prefix)
     end
     private :set_default_prefix
 
@@ -195,10 +195,10 @@ class Barcode
 
     case prefix
       when "ID"
-        user = User.find_by_barcode human_code
+        user = User.find_by barcode: human_code
         return user.login if user
       when "LE"
-        implement = Implement.find_by_barcode human_code
+        implement = Implement.find_by barcode: human_code
         return implement.name if implement
     end
 

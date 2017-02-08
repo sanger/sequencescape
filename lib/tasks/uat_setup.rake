@@ -186,9 +186,9 @@ tasks transfer_templates users
         name: 'UAT study A',
         study_metadata_attributes: {
           study_ebi_accession_number: 'YYYY',
-          study_type: StudyType.find_by_name('Exome Sequencing'),
+          study_type: StudyType.find_by(name: 'Exome Sequencing'),
           faculty_sponsor: FacultySponsor.last,
-          data_release_study_type: DataReleaseStudyType.find_by_name('genomic sequencing'),
+          data_release_study_type: DataReleaseStudyType.find_by(name: 'genomic sequencing'),
           study_description: 'A seeded test study',
           contaminated_human_dna: 'No',
           contains_human_dna: 'No',
@@ -200,9 +200,9 @@ tasks transfer_templates users
         name: 'UAT study B',
         study_metadata_attributes: {
           study_ebi_accession_number: 'YYYY',
-          study_type: StudyType.find_by_name('Exome Sequencing'),
+          study_type: StudyType.find_by(name: 'Exome Sequencing'),
           faculty_sponsor: FacultySponsor.last,
-          data_release_study_type: DataReleaseStudyType.find_by_name('genomic sequencing'),
+          data_release_study_type: DataReleaseStudyType.find_by(name: 'genomic sequencing'),
           study_description: 'A seeded test study',
           contaminated_human_dna: 'No',
           contains_human_dna: 'No',
@@ -214,9 +214,9 @@ tasks transfer_templates users
         name: 'UAT study C',
         study_metadata_attributes: {
           study_ebi_accession_number: 'YYYY',
-          study_type: StudyType.find_by_name('Exome Sequencing'),
+          study_type: StudyType.find_by(name: 'Exome Sequencing'),
           faculty_sponsor: FacultySponsor.last,
-          data_release_study_type: DataReleaseStudyType.find_by_name('genomic sequencing'),
+          data_release_study_type: DataReleaseStudyType.find_by(name: 'genomic sequencing'),
           study_description: 'A seeded test study with mock human data',
           contaminated_human_dna: 'No',
           contains_human_dna: 'Yes',
@@ -251,21 +251,21 @@ tasks transfer_templates users
           puts "Stock: #{plate.ean13_barcode}-#{plate.sanger_human_barcode}"
         end
         (1..4).each do |i|
-          child = Purpose.find_by_name('Cherrypicked').create!(barcode: i + (10 * study.id), location: Location.find_by_name('Illumina high throughput freezer'))
+          child = Purpose.find_by(name: 'Cherrypicked').create!(barcode: i + (10 * study.id), location: Location.find_by(name: 'Illumina high throughput freezer'))
           child.wells.each { |w| w.aliquots << stock.wells.located_at(w.map_description).first.aliquots.first.clone }
           puts "Cherrypicked: #{child.ean13_barcode}-#{child.sanger_human_barcode}"
         end
         (1..4).each do |i|
-          child = Purpose.find_by_name('ILC Stock').create!(barcode: i + 4 + (10 * study.id), location: Location.find_by_name('Illumina high throughput freezer'))
+          child = Purpose.find_by(name: 'ILC Stock').create!(barcode: i + 4 + (10 * study.id), location: Location.find_by(name: 'Illumina high throughput freezer'))
           child.wells.each { |w| w.aliquots << stock.wells.located_at(w.map_description).first.aliquots.first.clone }
           puts "ILC Stock: #{child.ean13_barcode}-#{child.sanger_human_barcode}"
         end
       end
       user = User.last
       puts "Setting up tag plates..."
-      lot = LotType.find_by_name('IDT Tags').lots.create!(
+      lot = LotType.find_by(name: 'IDT Tags').lots.create!(
         lot_number: 'UATTaglot',
-        template: TagLayoutTemplate.find_by_name('Sanger_168tags - 10 mer tags in columns ignoring pools (first oligo: ATCACGTT)'),
+        template: TagLayoutTemplate.find_by(name: 'Sanger_168tags - 10 mer tags in columns ignoring pools (first oligo: ATCACGTT)'),
         user: user,
         received_at: DateTime.now
       )

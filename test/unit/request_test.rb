@@ -389,7 +389,7 @@ class RequestTest < ActiveSupport::TestCase
 
         # The sequencing request will be created with a 76 read length (Standard sequencing), so the request
         # type needs to include this value in its read_length validation list (for example, single_ended_sequencing)
-        @request_type = RequestType.find_by_key("single_ended_sequencing")
+        @request_type = RequestType.find_by(key: "single_ended_sequencing")
 
         @sequencing_request = create(:sequencing_request, asset: @library_tube, request_type: @request_type)
       end

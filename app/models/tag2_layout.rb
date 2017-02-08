@@ -62,6 +62,6 @@ class Tag2Layout < ActiveRecord::Base
   end
 
   def layout_template
-    @layout_template || Tag2LayoutTemplate.find_by_tag_id(tag)
+    @layout_template || Tag2LayoutTemplate.find_by(tag_id: tag)
   end
 end

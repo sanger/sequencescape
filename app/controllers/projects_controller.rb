@@ -133,7 +133,7 @@ class ProjectsController < ApplicationController
   def grant_role
     @user    = User.find(params[:role][:user])
     @project = Project.find(params[:id])
-    @role    = Role.find_by_name(params[:role][:authorizable_type])
+    @role    = Role.find_by(name: params[:role][:authorizable_type])
 
     if request.xhr?
       if params[:role]
@@ -156,7 +156,7 @@ class ProjectsController < ApplicationController
   def remove_role
     @user    = User.find(params[:role][:user])
     @project = Project.find(params[:id])
-    @role    = Role.find_by_name(params[:role][:authorizable_type])
+    @role    = Role.find_by(name: params[:role][:authorizable_type])
 
     if request.xhr?
       if params[:role]

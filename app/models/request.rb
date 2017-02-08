@@ -39,7 +39,7 @@ class Request < ActiveRecord::Base
   }
 
   def validator_for(request_option)
-    request_type.request_type_validators.find_by_request_option!(request_option.to_s)
+    request_type.request_type_validators.find_by!(request_option: request_option.to_s)
   end
 
   scope :customer_requests, ->() { where(sti_type: [CustomerRequest, *CustomerRequest.descendants].map(&:name)) }
@@ -352,7 +352,7 @@ class Request < ActiveRecord::Base
   end
 
   def value_for(name, batch = nil)
-    rit = RequestInformationType.find_by_name(name)
+    rit = RequestInformationType.find_by(name: name)
     rit_value = get_value(rit) if rit.present?
     return rit_value if rit_value.present?
 

@@ -616,7 +616,7 @@ class BatchesController < ApplicationController
 
   def find_batch_by_barcode
     # Caution! This isn't actually a rails finder.
-    batch_id = LabEvent.find_by_barcode(params[:id])
+    batch_id = LabEvent.find_by(barcode: params[:id])
     if batch_id.zero?
       @batch_error = "Batch id not found."
       render action: "batch_error", format: :xml

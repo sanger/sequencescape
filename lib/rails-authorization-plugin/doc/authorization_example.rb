@@ -16,20 +16,20 @@ class MeetingController < ApplicationController
   end
 
   def find_apprentice
-    @founder = User.find_by_name('matz')
+    @founder = User.find_by(name: 'matz')
     permit "'inner circle' of :founder" do
       if request.post?
-        apprentice = User.find_by_skillset(params[:uber_hacker])
-        ruby_community = Group.find_by_name('Ruby')
+        apprentice = User.find_by(skillset: params[:uber_hacker])
+        ruby_community = Group.find_by(name: 'Ruby')
         ruby_community.accepts_role 'yarv_builder', apprentice
       end
     end
   end
 
   def rails_conf
-    @meeting = Meeting.find_by_name('RailsConf')
+    @meeting = Meeting.find_by(name: 'RailsConf')
     permit "attendees of :meeting or swedish_mensa_supermodels" do
-      venue = Hotel.find_by_name("Wyndham O'Hare")
+      venue = Hotel.find_by(name: "Wyndham O'Hare")
       current_user.is_traveller_to venue
       if permit? "traveller to :venue and not speaker"
         Partay.all_night_long

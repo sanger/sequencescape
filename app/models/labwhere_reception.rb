@@ -25,7 +25,7 @@ class LabwhereReception
   end
 
   def location
-     @location ||= Location.find_by_id(location_id)
+     @location ||= Location.find_by(id: location_id)
   end
 
   def id; nil; end

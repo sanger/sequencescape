@@ -12,7 +12,7 @@ class Search::FindOutstandingIlluminaBPrePcrPlates < Search
   end
 
   def self.pre_pcr_plate_purpose
-    PlatePurpose.find_by_name('ILB_STD_PREPCR')
+    PlatePurpose.find_by(name: 'ILB_STD_PREPCR')
   end
   delegate :pre_pcr_plate_purpose, to: 'self.class'
 end

@@ -50,7 +50,7 @@ class Api::PlateIO < Api::Base
     map_attribute_to_json_attribute(:uuid, 'plate_purpose_uuid')
 
     def self.stock_plate_purpose
-      PlatePurpose.find_by_name('Stock Plate')
+      PlatePurpose.find_by(name: 'Stock Plate')
     end
   end
 

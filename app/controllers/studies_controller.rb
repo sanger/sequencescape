@@ -178,7 +178,7 @@ class StudiesController < ApplicationController
 
     if pr = params[:related_study]
       relation_type_name = pr[:relation_type]
-      related_study = Study.find_by_id pr[:study_id]
+      related_study = Study.find_by id: pr[:study_id]
 
       begin
         yield(relation_type_name, related_study)
@@ -331,7 +331,7 @@ class StudiesController < ApplicationController
 
      plates = []
      params[:studies][:barcodes].scan(/\d+/).each do |plate_barcode|
-       plate = Plate.find_by_barcode(plate_barcode)
+       plate = Plate.find_by(barcode: plate_barcode)
        if plate.nil?
          @study.errors.add("Plate", "Couldnt find plate #{plate_barcode}")
        else

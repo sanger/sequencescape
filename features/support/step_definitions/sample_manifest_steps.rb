@@ -9,12 +9,12 @@ Given /^a supplier called "(.*)" exists$/ do |supplier_name|
 end
 
 Given /^the study "(.*)" has a abbreviation$/ do |study_name|
-  study = Study.find_by_name(study_name)
+  study = Study.find_by(name: study_name)
   study.study_metadata.study_name_abbreviation = "TEST"
 end
 
 Given /^sample information is updated from the manifest for study "([^"]*)"$/ do |study_name|
-  study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
+  study = Study.find_by(name: study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
   study.samples.each_with_index do |sample, index|
     sample.update_attributes!(
       sanger_sample_id: sample.name,
@@ -70,7 +70,7 @@ Given /^I reset all of the sanger sample ids to a known number sequence$/ do
 end
 
 Then /^sample "([^"]*)" should have empty supplier name set to "([^"]*)"$/ do |sanger_sample_id, boolean_string|
-  sample = Sample.find_by_sanger_sample_id(sanger_sample_id)
+  sample = Sample.find_by(sanger_sample_id: sanger_sample_id)
   if boolean_string == "true"
     assert sample.empty_supplier_sample_name
   else
@@ -89,7 +89,7 @@ end
 Then /^the samples table should look like:$/ do |table|
   table.hashes.each do |expected_data|
     sanger_sample_id = expected_data[:sanger_sample_id]
-    sample = Sample.find_by_sanger_sample_id(sanger_sample_id) or raise StandardError, "Could not find sample #{sanger_sample_id}"
+    sample = Sample.find_by(sanger_sample_id: sanger_sample_id) or raise StandardError, "Could not find sample #{sanger_sample_id}"
 
     if expected_data[:empty_supplier_sample_name] == "true"
       assert(sample.empty_supplier_sample_name, "Supplier sample name not nil for #{sanger_sample_id}")
@@ -122,7 +122,7 @@ end
 Then /^the sample reference genomes should be:$/ do |table|
   table.hashes.each do |expected_data|
     sanger_sample_id = expected_data[:sanger_sample_id]
-    sample = Sample.find_by_sanger_sample_id(sanger_sample_id) or raise StandardError, "Could not find sample #{sanger_sample_id}"
+    sample = Sample.find_by(sanger_sample_id: sanger_sample_id) or raise StandardError, "Could not find sample #{sanger_sample_id}"
     assert_equal(expected_data[:reference_genome], sample.sample_metadata.reference_genome.name)
   end
 end
@@ -130,7 +130,7 @@ end
 Then /^the samples should be tagged in library and multiplexed library tubes with:$/ do |table|
   pooled_aliquots = MultiplexedLibraryTube.last.aliquots.map { |a| [a.sample.sanger_sample_id, a.tag.map_id, a.library_id] }
   table.hashes.each do |expected_data|
-    lt = LibraryTube.find_by_barcode(expected_data[:tube_barcode].gsub('NT', ''))
+    lt = LibraryTube.find_by(barcode: expected_data[:tube_barcode].gsub('NT', ''))
     assert_equal 1, lt.aliquots.count, "Wrong number of aliquots"
     assert_equal expected_data[:sanger_sample_id], lt.aliquots.first.sample.sanger_sample_id, "sanger_sample_id: #{expected_data[:sanger_sample_id]} #{lt.aliquots.first.sample.sanger_sample_id}"
     assert_equal expected_data[:tag_group], lt.aliquots.first.tag.try(:tag_group).try(:name), "tag_group: #{expected_data[:tag_group]} #{lt.aliquots.first.tag.try(:tag_group).try(:name)}"
@@ -157,7 +157,7 @@ end
 
 Then /^the sample controls and resubmits should look like:$/ do |table|
   found = table.hashes.map do |expected_data|
-    sample = Sample.find_by_sanger_sample_id(expected_data[:sanger_sample_id]) or raise StandardError, "Cannot find sample by sanger ID #{expected_data[:sanger_sample_id]}"
+    sample = Sample.find_by(sanger_sample_id: expected_data[:sanger_sample_id]) or raise StandardError, "Cannot find sample by sanger ID #{expected_data[:sanger_sample_id]}"
     {
       'sanger_sample_id' => expected_data[:sanger_sample_id],
       'supplier_name' => sample.sample_metadata.supplier_name,
@@ -173,7 +173,7 @@ When /^I visit the sample manifest new page without an asset type$/ do
 end
 
 Given /^plate "([^"]*)" has samples with known sanger_sample_ids$/ do |plate_barcode|
-  sequence_sanger_sample_ids_for(Plate.find_by_barcode(plate_barcode)) do |index|
+  sequence_sanger_sample_ids_for(Plate.find_by(barcode: plate_barcode)) do |index|
     "ABC_#{index}"
   end
 end
@@ -199,13 +199,13 @@ end
 
 When /^the sample manifest with ID (\d+) is owned by study "([^\"]+)"$/ do |id, name|
   manifest = SampleManifest.find(id)
-  study    = Study.find_by_name(name) or raise StandardError, "Cannot find study #{name.inspect}"
+  study    = Study.find_by(name: name) or raise StandardError, "Cannot find study #{name.inspect}"
   manifest.update_attributes!(study: study)
 end
 
 When /^the sample manifest with ID (\d+) is supplied by "([^\"]+)"$/ do |id, name|
   manifest = SampleManifest.find(id)
-  supplier = Supplier.find_by_name(name) or raise StandardError, "Cannot find supplier #{name.inspect}"
+  supplier = Supplier.find_by(name: name) or raise StandardError, "Cannot find supplier #{name.inspect}"
   manifest.update_attributes!(supplier: supplier)
 end
 

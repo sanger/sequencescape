@@ -22,7 +22,7 @@ puts "#{sample_names.size} Sample Names read from file"
 
 asset_group = AssetGroup.create(name: "#{project_id}_asset_group_#{Time.now}")
 sample_names.each do |sample_name|
-  sample = Sample.find_by_name(sample_name)
+  sample = Sample.find_by(name: sample_name)
   raise "Cannot find #{sample_name}" if sample.nil?
   raise "sample has no asset" if sample.assets.blank?
   well = sample.assets.first
@@ -40,4 +40,4 @@ assets.each do |asset|
 end
 
 project = Project.find(project_id)
-submission = LinearSubmission.build(nil, study, project, Submission::Workflow.find(2), User.find_by_login('nts'), asset_list, [], Submission::Workflow.find(2).request_types.map { |r| r.id }, [], [])
+submission = LinearSubmission.build(nil, study, project, Submission::Workflow.find(2), User.find_by(login: 'nts'), asset_list, [], Submission::Workflow.find(2).request_types.map { |r| r.id }, [], [])

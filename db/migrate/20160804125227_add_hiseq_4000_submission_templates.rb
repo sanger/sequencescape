@@ -12,7 +12,7 @@ class AddHiseq4000SubmissionTemplates < ActiveRecord::Migration
   def down
     ActiveRecord::Base.transaction do
       each_template do |params|
-        SubmissionTemplate.find_by_name(params[:name]).destroy
+        SubmissionTemplate.find_by(name: params[:name]).destroy
       end
     end
   end

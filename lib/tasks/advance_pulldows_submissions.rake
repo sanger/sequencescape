@@ -32,7 +32,7 @@ namespace :benchmark do
       $stderr.puts "Building #{plate_count} Plates"
       plate_count.times do
         $stderr.print '.'
-        SubmissionTemplate.find_by_name("Cherrypick for pulldown - #{pipeline} - HiSeq Paired end sequencing").create_with_submission!(
+        SubmissionTemplate.find_by(name: "Cherrypick for pulldown - #{pipeline} - HiSeq Paired end sequencing").create_with_submission!(
           user: user, study: study, project: project,
           assets: stock_plate.wells,
           request_options: {
@@ -49,7 +49,7 @@ namespace :benchmark do
     $stderr.puts "Advancing submissions"
     Submission.all.each do |sub|
       $stderr.puts "Making Plate"
-      plate = PlatePurpose.find_by_name('WGS stock DNA').create!(:without_wells)
+      plate = PlatePurpose.find_by(name: 'WGS stock DNA').create!(:without_wells)
       $stderr.puts "Passing Requests"
       sub.requests.each do |r|
         $stderr.print "."

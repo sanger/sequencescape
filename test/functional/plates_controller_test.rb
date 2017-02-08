@@ -13,18 +13,18 @@ class PlatesControllerTest < ActionController::TestCase
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
 
-      @pico_assay_plate_creator = FactoryGirl.create :plate_creator, plate_purpose: PlatePurpose.find_by_name!('Pico Assay Plates')
+      @pico_assay_plate_creator = FactoryGirl.create :plate_creator, plate_purpose: PlatePurpose.find_by!(name: 'Pico Assay Plates')
       ['Pico Assay A', 'Pico Assay B'].map do |s|
-        PlatePurpose.find_by_name!(s)
+        PlatePurpose.find_by!(name: s)
       end.map do |p|
         create :plate_creator_purpose, plate_purpose: p, plate_creator: @pico_assay_plate_creator
       end
-      @dilution_plates_creator = FactoryGirl.create :plate_creator, plate_purpose: PlatePurpose.find_by_name!('Working dilution')
+      @dilution_plates_creator = FactoryGirl.create :plate_creator, plate_purpose: PlatePurpose.find_by!(name: 'Working dilution')
 
-      create :plate_creator_purpose, plate_purpose: PlatePurpose.find_by_name!('Working dilution'),
+      create :plate_creator_purpose, plate_purpose: PlatePurpose.find_by!(name: 'Working dilution'),
         plate_creator: @dilution_plates_creator
 
-      @gel_dilution_plates_creator = FactoryGirl.create :plate_creator, plate_purpose: PlatePurpose.find_by_name!('Gel Dilution Plates')
+      @gel_dilution_plates_creator = FactoryGirl.create :plate_creator, plate_purpose: PlatePurpose.find_by!(name: 'Gel Dilution Plates')
 
       @barcode_printer = create :barcode_printer
       @plate_barcode = mock("plate barcode")
@@ -261,7 +261,7 @@ class PlatesControllerTest < ActionController::TestCase
 
               should "add a child to the parent plate" do
                 assert Plate.find(@parent_plate.id).children.first.is_a?(Plate)
-                assert_equal PlatePurpose.find_by_name("Pico Assay A"), Plate.find(@parent_plate.id).children.first.plate_purpose
+                assert_equal PlatePurpose.find_by(name: "Pico Assay A"), Plate.find(@parent_plate.id).children.first.plate_purpose
               end
 
               should respond_with :redirect
@@ -303,7 +303,7 @@ class PlatesControllerTest < ActionController::TestCase
             should "have child plates" do
               [@parent_plate, @parent_plate2, @parent_plate3].each do |plate|
                 assert Plate.find(plate.id).children.first.is_a?(Plate)
-                assert_equal PlatePurpose.find_by_name("Pico Assay A"), Plate.find(plate.id).children.first.plate_purpose
+                assert_equal PlatePurpose.find_by(name: "Pico Assay A"), Plate.find(plate.id).children.first.plate_purpose
               end
             end
             should respond_with :redirect

@@ -33,7 +33,7 @@ class PlatesController < ApplicationController
       source_plate_barcodes = params[:plates][:source_plates]
 
       user_barcode = Barcode.barcode_to_human(params[:plates][:user_barcode])
-      scanned_user = User.find_by_barcode(user_barcode) if user_barcode
+      scanned_user = User.find_by(barcode: user_barcode) if user_barcode
 
       respond_to do |format|
         if scanned_user.nil?
@@ -71,7 +71,7 @@ class PlatesController < ApplicationController
       if asset_group = Plate.create_sample_tubes_asset_group_and_print_barcodes(plates, barcode_printer, location, study)
         flash[:notice] = 'Created tubes and printed barcodes'
         # makes request properties partial show
-        @current_user.workflow = Submission::Workflow.find_by_key("short_read_sequencing")
+        @current_user.workflow = Submission::Workflow.find_by(key: "short_read_sequencing")
         @current_user.save!
         format.html { redirect_to(new_submission_path(study_id: asset_group.study.id)) }
         format.xml  { render xml: asset_group, status: :created }

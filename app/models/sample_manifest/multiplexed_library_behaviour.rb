@@ -105,7 +105,7 @@ module SampleManifest::MultiplexedLibraryBehaviour
         yield  "#{sample.sanger_sample_id} #{field.downcase} should be greater than 0." unless row[field].to_i > 0
       end
 
-      yield "Couldn't find the library type #{row['LIBRARY TYPE']} for #{sample.sanger_sample_id}." if LibraryType.find_by_name(row['LIBRARY TYPE']).nil?
+      yield "Couldn't find the library type #{row['LIBRARY TYPE']} for #{sample.sanger_sample_id}." if LibraryType.find_by(name: row['LIBRARY TYPE']).nil?
 
       return yield "#{sample.sanger_sample_id} has no tag group specified." if row[SampleManifest::Headers::TAG_GROUP_FIELD].blank?
 
@@ -161,7 +161,7 @@ module SampleManifest::MultiplexedLibraryBehaviour
   def sample_tube_sample_creation(samples_data, _study_id)
     study.samples << samples_data.map do |barcode, sanger_sample_id, _prefix|
       create_sample(sanger_sample_id).tap do |sample|
-        sample_tube = LibraryTube.find_by_barcode(barcode) or raise ActiveRecord::RecordNotFound, "Cannot find library tube with barcode #{barcode.inspect}"
+        sample_tube = LibraryTube.find_by(barcode: barcode) or raise ActiveRecord::RecordNotFound, "Cannot find library tube with barcode #{barcode.inspect}"
         sample_tube.aliquots.create!(sample: sample)
       end
     end

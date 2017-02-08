@@ -9,13 +9,13 @@ class ActiveRecord::Base
     def find_by_id_or_name!(id, name)
       return find(id) unless id.blank?
       raise StandardError, "Must specify at least ID or name" if name.blank?
-      find_by_name!(name)
+      find_by!(name: name)
     end
 
     def find_by_id_or_name(id, name)
       return find(id) unless id.blank?
       raise StandardError, "Must specify at least ID or name" if name.blank?
-      find_by_name(name)
+      find_by(name: name)
     end
   end
 end
@@ -144,7 +144,7 @@ class BulkSubmission
       ActiveRecord::Base.transaction do
         submission_details.each do |submissions|
           submissions.each do |submission_name, orders|
-            user = User.find_by_login(orders.first['user login'])
+            user = User.find_by(login: orders.first['user login'])
             if user.nil?
               errors.add :spreadsheet, orders.first["user login"].nil? ? "No user specified for #{submission_name}" : "Cannot find user #{orders.first["user login"].inspect}"
               next
@@ -254,7 +254,7 @@ class BulkSubmission
       # Retrieve common attributes
       study   = Study.find_by_id_or_name!(details['study id'], details['study name'])
       project = Project.find_by_id_or_name!(details['project id'], details['project name'])
-      user    = User.find_by_login(details['user login']) or raise StandardError, "Cannot find user #{details['user login'].inspect}"
+      user    = User.find_by(login: details['user login']) or raise StandardError, "Cannot find user #{details['user login'].inspect}"
 
       # The order attributes are initially
       attributes = {
@@ -335,7 +335,7 @@ class BulkSubmission
 
   # Returns the SubmissionTemplate and checks that it is valid
   def find_template(template_name)
-    template = SubmissionTemplate.find_by_name(template_name) or raise StandardError, "Cannot find template #{template_name}"
+    template = SubmissionTemplate.find_by(name: template_name) or raise StandardError, "Cannot find template #{template_name}"
     raise(StandardError, "Template: '#{template_name}' is deprecated and no longer in use.") unless template.visible
     template
   end

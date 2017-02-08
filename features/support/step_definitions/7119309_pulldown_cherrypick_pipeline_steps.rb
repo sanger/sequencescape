@@ -13,11 +13,11 @@ Given(/^plate "([^"]*)" with (\d+) samples in study "([^"]*)" has a "([^"]*)" su
   # relying on the ordering within sequencescape.  Some of the plates are created with less than
   # the total wells needed (which is bad).
   wells = []
-  Plate.find_by_barcode(plate_barcode).wells.walk_in_column_major_order { |well, _| wells << well }
+  Plate.find_by(barcode: plate_barcode).wells.walk_in_column_major_order { |well, _| wells << well }
   wells.compact!
 
-  study = Study.find_by_name(study_name)
-  project = Project.find_by_name("Test project")
+  study = Study.find_by(name: study_name)
+  project = Project.find_by(name: "Test project")
   # we need to set the study on aliquots
   wells.each do |well|
     well.aliquots.each do |a|
@@ -25,11 +25,11 @@ Given(/^plate "([^"]*)" with (\d+) samples in study "([^"]*)" has a "([^"]*)" su
     end
   end
 
-  submission_template = SubmissionTemplate.find_by_name(submission_name)
+  submission_template = SubmissionTemplate.find_by(name: submission_name)
   submission = submission_template.create_and_build_submission!(
     study: study,
     project: project,
-    workflow: Submission::Workflow.find_by_key('short_read_sequencing'),
+    workflow: Submission::Workflow.find_by(key: 'short_read_sequencing'),
     user: User.last,
     assets: wells,
     request_options: { :multiplier => { "1" => "1", "3" => "1" }, "read_length" => "100", "fragment_size_required_to" => "400", "fragment_size_required_from" => "300", "library_type" => "Standard" }
@@ -45,14 +45,14 @@ Given(/^plate "([^"]*)" with (\d+) samples in study "([^"]*)" has a "([^"]*)" su
   # relying on the ordering within sequencescape.  Some of the plates are created with less than
   # the total wells needed (which is bad).
   wells = []
-  Plate.find_by_barcode(plate_barcode).wells.walk_in_column_major_order { |well, _| wells << well }
+  Plate.find_by(barcode: plate_barcode).wells.walk_in_column_major_order { |well, _| wells << well }
   wells.compact!
 
-  submission_template = SubmissionTemplate.find_by_name(submission_name)
+  submission_template = SubmissionTemplate.find_by(name: submission_name)
   submission = submission_template.create_and_build_submission!(
-    study: Study.find_by_name(study_name),
-    project: Project.find_by_name("Test project"),
-    workflow: Submission::Workflow.find_by_key('short_read_sequencing'),
+    study: Study.find_by(name: study_name),
+    project: Project.find_by(name: "Test project"),
+    workflow: Submission::Workflow.find_by(key: 'short_read_sequencing'),
     user: User.last,
     assets: wells
     )
@@ -66,7 +66,7 @@ Given(/^plate "([^"]*)" with (\d+) samples in study "([^"]*)" exists$/) do |plat
 end
 
 Given(/^plate "([^"]*)" has concentration results$/) do |plate_barcode|
-  plate = Plate.find_by_barcode(plate_barcode)
+  plate = Plate.find_by(barcode: plate_barcode)
   plate.wells.each_with_index do |well, index|
     well.well_attribute.update_attributes!(concentration: index * 40)
   end
@@ -75,7 +75,7 @@ end
 Given(/^plate "([^"]*)" has nonzero concentration results$/) do |plate_barcode|
  step(%Q{plate "#{plate_barcode}" has concentration results})
 
-  plate = Plate.find_by_barcode(plate_barcode)
+  plate = Plate.find_by(barcode: plate_barcode)
   plate.wells.each_with_index do |well, _index|
     if well.well_attribute.concentration == 0.0
       well.well_attribute.update_attributes!(concentration: 1)
@@ -84,14 +84,14 @@ Given(/^plate "([^"]*)" has nonzero concentration results$/) do |plate_barcode|
 end
 
 Given(/^plate "([^\"]+)" has no concentration results$/) do |plate_barcode|
-  plate = Plate.find_by_barcode(plate_barcode) or raise StandardError, "Cannot find plate #{plate_barcode.inspect}"
+  plate = Plate.find_by(barcode: plate_barcode) or raise StandardError, "Cannot find plate #{plate_barcode.inspect}"
   plate.wells.each do |well|
     well.well_attribute.update_attributes!(concentration: nil)
   end
 end
 
 Given(/^plate "([^"]*)" has measured volume results$/) do |plate_barcode|
-  plate = Plate.find_by_barcode(plate_barcode)
+  plate = Plate.find_by(barcode: plate_barcode)
   plate.wells.each_with_index do |well, index|
     well.well_attribute.update_attributes!(measured_volume: index * 11)
   end
@@ -133,7 +133,7 @@ end
 
 When /^I set (PacBioLibraryTube|Plate|Sample|Multiplexed Library|Library|Pulldown Multiplexed Library) "([^"]*)" to be in freezer "([^"]*)"$/ do |_asset_type, plate_barcode, freezer_name|
   asset = Asset.find_from_machine_barcode(plate_barcode)
-  location = Location.find_by_name(freezer_name)
+  location = Location.find_by(name: freezer_name)
   asset.update_attributes!(location: location)
 end
 
@@ -207,14 +207,14 @@ Then /^library "([^"]*)" should have (\d+) sequencing requests$/ do |library_bar
 end
 
 Given(/^the CherrypickForPulldownPipeline pipeline has a max batch size of (\d+)$/) do |max_size|
-  pipeline = Pipeline.find_by_name('Cherrypicking for Pulldown')
+  pipeline = Pipeline.find_by(name: 'Cherrypicking for Pulldown')
   pipeline.update_attributes!(max_size: max_size)
 end
 
 Given(/^I have a plate "([^"]*)" with the following wells:$/) do |plate_barcode, well_details|
   plate = FactoryGirl.create :plate, barcode: plate_barcode
   well_details.hashes.each do |well_detail|
-    well = Well.create!(map: Map.find_by_description_and_asset_size(well_detail[:well_location], 96), plate: plate)
+    well = Well.create!(map: Map.find_by(description: well_detail[:well_location], asset_size: 96), plate: plate)
     well.well_attribute.update_attributes!(concentration: well_detail[:measured_concentration], measured_volume: well_detail[:measured_volume])
   end
 end
@@ -228,12 +228,12 @@ Given(/^I have a "([^"]*)" submission with 2 plates$/) do |submission_template_n
       Well.create!(map_id: 1, plate: plate)
     end
 
-    submission_template = SubmissionTemplate.find_by_name(submission_template_name)
+    submission_template = SubmissionTemplate.find_by(name: submission_template_name)
 
     submission = submission_template.create_and_build_submission!(
       study: study,
       project: project,
-      workflow: Submission::Workflow.find_by_key('short_read_sequencing'),
+      workflow: Submission::Workflow.find_by(key: 'short_read_sequencing'),
       user: User.last,
       assets: Well.all,
       request_options: { :multiplier => { "1" => "1", "3" => "1" }, "read_length" => "100", "fragment_size_required_to" => "300", "fragment_size_required_from" => "250", "library_type" => 'Standard' }

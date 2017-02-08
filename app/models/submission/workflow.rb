@@ -10,7 +10,7 @@ class Submission::Workflow < ActiveRecord::Base
   has_many :items
 
   def self.default_workflow
-    find_by_name('Next-gen sequencing') or raise StandardError, "Cannot find submission workflow 'Next-gen sequencing'"
+    find_by(name: 'Next-gen sequencing') or raise StandardError, "Cannot find submission workflow 'Next-gen sequencing'"
   end
 
   FIELDS_TO_WORKFLOWS = {

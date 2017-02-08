@@ -12,7 +12,7 @@ module ModelExtensions::Stamp
   private
 
   def locate_qcable(d)
-    d['qcable'] = Uuid.find_by_external_id(d['qcable']).resource
+    d['qcable'] = Uuid.find_by(external_id: d['qcable']).resource
     d
   end
 end
