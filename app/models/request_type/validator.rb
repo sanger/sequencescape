@@ -67,9 +67,7 @@ class RequestType::Validator < ActiveRecord::Base
   validates :request_type, :request_option, :valid_options, presence: true
   serialize :valid_options
 
-  def include?(option)
-    valid_options.include?(option)
-  end
+  delegate :include?, to: :valid_options
 
   def options
     valid_options.to_a

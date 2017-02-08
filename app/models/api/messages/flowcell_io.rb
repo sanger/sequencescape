@@ -10,9 +10,7 @@ class Api::Messages::FlowcellIO < Api::Base
   module LaneExtensions # Included in SequencingRequest
     def self.included(base)
       base.class_eval do
-        def position
-          batch_request.position
-        end
+        delegate :position, to: :batch_request
 
         def mx_library
           asset.external_identifier
@@ -63,9 +61,7 @@ class Api::Messages::FlowcellIO < Api::Base
   module ControlLaneExtensions
     def self.included(base)
       base.class_eval do
-        def position
-          batch_request.position
-        end
+        delegate :position, to: :batch_request
 
         def mx_library
           asset.external_identifier || "UNKNOWN"

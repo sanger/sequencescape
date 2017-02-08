@@ -14,9 +14,7 @@ class AssetCreation < ActiveRecord::Base
 
   validates_presence_of :parent
 
-  def parent_nil?
-    parent.nil?
-  end
+  delegate :nil?, to: :parent, prefix: true
   private :parent_nil?
 
   belongs_to :child_purpose, class_name: 'Purpose'

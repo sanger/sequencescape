@@ -61,9 +61,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
     @order = create_order
   end
 
-  def cross_compatible?
-    order.cross_compatible?
-  end
+  delegate :cross_compatible?, to: :order
 
   def create_order
     order_role = Order::OrderRole.find_by_role(order_params.delete('order_role')) if order_params.present?

@@ -198,23 +198,6 @@ Metrics/PerceivedComplexity:
 Rails/Date:
   Enabled: false
 
-# Offense count: 14
-# Cop supports --auto-correct.
-Rails/Delegate:
-  Exclude:
-    - 'app/models/api/messages/flowcell_io.rb'
-    - 'app/models/asset_creation.rb'
-    - 'app/models/cherrypick_for_fluidigm_request.rb'
-    - 'app/models/illumina_htp/requests.rb'
-    - 'app/models/request/library_manufacture.rb'
-    - 'app/models/request_type/validator.rb'
-    - 'app/models/stock_multiplexed_library_tube.rb'
-    - 'app/models/submission/submission_creator.rb'
-    - 'app/models/submission/submission_presenter.rb'
-    - 'app/uploaders/polymorphic_uploader.rb'
-    - 'features/support/step_definitions/pulldown_steps.rb'
-    - 'lib/sample_manifest_excel/sample_manifest_excel/range.rb'
-
 # Offense count: 1128
 # Cop supports --auto-correct.
 # Configuration parameters: Whitelist.

@@ -34,9 +34,7 @@ module CarrierWave
           @path
         end
 
-        def size
-          current_data.size
-        end
+        delegate :size, to: :current_data
 
         # Reads the contents of the file
         def read

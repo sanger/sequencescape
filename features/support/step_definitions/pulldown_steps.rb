@@ -42,9 +42,7 @@ class WellRange
     end
   end
 
-  def size
-    to_a.size
-  end
+  delegate :size, to: :to_a
 end
 
 Transform /^([A-H]\d+)-([A-H]\d+)$/ do |start, finish|

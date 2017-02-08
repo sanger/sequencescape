@@ -15,9 +15,7 @@ module IlluminaHtp::Requests
       pool_information[:request_type] = request_type.key
     end
 
-    def role
-      order.role
-    end
+    delegate :role, to: :order
   end
 
   class SharedLibraryPrep < StdLibraryRequest
