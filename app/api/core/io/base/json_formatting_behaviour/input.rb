@@ -151,7 +151,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
     end
     private :load_uuid_resource
 
-    def handle_has_many(attributes, attribute, json, object)
+    def handle_has_many(attributes, attribute, json, _object)
       if json.first.is_a?(Hash)
         uuids             = Uuid.include_resource.lookup_many_uuids(json.map { |j| j['uuid'] })
         uuid_to_resource  = Hash[uuids.map { |uuid| [uuid.external_id, uuid.resource] }]

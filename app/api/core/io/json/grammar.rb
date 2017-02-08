@@ -52,7 +52,7 @@ module ::Core::Io::Json::Grammar
       @children.values.inspect
     end
 
-    def duplicate(&block)
+    def duplicate
       yield(Hash[@children.map { |k, v| [k, v.dup] }])
     end
     private :duplicate
@@ -157,7 +157,7 @@ module ::Core::Io::Json::Grammar
       self.class.new(name, attribute)
     end
 
-    def merge(node)
+    def merge(_node)
       raise "Cannot merge into a leaf as it is attribute only!"
     end
 

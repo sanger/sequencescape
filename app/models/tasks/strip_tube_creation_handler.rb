@@ -5,7 +5,7 @@
 # Copyright (C) 2014,2015 Genome Research Ltd.
 
 module Tasks::StripTubeCreationHandler
-  def render_strip_tube_creation_task(task, params)
+  def render_strip_tube_creation_task(task, _params)
     @tubes_requested = @batch.requests.first.asset.requests.for_pipeline(task.workflow.pipeline).count
     @tubes_available = @batch.requests.first.asset.requests.for_pipeline(task.workflow.pipeline).pending.count
 

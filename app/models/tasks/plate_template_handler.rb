@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2012,2013,2015,2016 Genome Research Ltd.
 
 module Tasks::PlateTemplateHandler
-  def render_plate_template_task(task, params)
+  def render_plate_template_task(task, _params)
     @robots = Robot.all
     set_plate_purpose_options(task)
     suitable_sizes = @plate_purpose_options.map { |o| o[1] }.uniq
@@ -20,7 +20,7 @@ module Tasks::PlateTemplateHandler
     @plate_purpose_options = task.plate_purpose_options(@batch)
   end
 
-  def do_plate_template_task(task, params)
+  def do_plate_template_task(_task, params)
     return true if params[:file].blank?
 
     plate_size = if params[:plate_template].blank?
@@ -46,7 +46,7 @@ module Tasks::PlateTemplateHandler
   end
   private :parse_uploaded_spreadsheet_layout
 
-  def parse_spreadsheet_row(plate_size, request_id, asset_name, plate_key, destination_well)
+  def parse_spreadsheet_row(plate_size, request_id, _asset_name, plate_key, destination_well)
     return if request_id.blank? or request_id.to_i == 0
     return if destination_well.blank? or destination_well.to_i > 0
 

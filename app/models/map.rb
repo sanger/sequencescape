@@ -210,11 +210,11 @@ class Map < ActiveRecord::Base
     )
   end
 
-  def self.horizontal_to_vertical(well_position, plate_size, plate_shape = nil)
+  def self.horizontal_to_vertical(well_position, plate_size, _plate_shape = nil)
     Map::Coordinate.horizontal_to_vertical(well_position, plate_size)
   end
 
-  def self.vertical_to_horizontal(well_position, plate_size, plate_shape = nil)
+  def self.vertical_to_horizontal(well_position, plate_size, _plate_shape = nil)
     Map::Coordinate.vertical_to_horizontal(well_position, plate_size)
   end
 
@@ -283,7 +283,7 @@ class Map < ActiveRecord::Base
     end
 
     # Walking in column major order goes by the columns: A1, B1, C1, ... A2, B2, ...
-    def walk_plate_in_column_major_order(size, asset_shape = nil, &block)
+    def walk_plate_in_column_major_order(size, asset_shape = nil)
       asset_shape ||= AssetShape.default_id
       where(asset_size: size, asset_shape_id: asset_shape).order(:column_order).each do |position|
         yield(position, position.column_order)
@@ -292,7 +292,7 @@ class Map < ActiveRecord::Base
     alias_method(:walk_plate_vertically, :walk_plate_in_column_major_order)
 
     # Walking in row major order goes by the rows: A1, A2, A3, ... B1, B2, B3 ....
-    def walk_plate_in_row_major_order(size, asset_shape = nil, &block)
+    def walk_plate_in_row_major_order(size, asset_shape = nil)
       asset_shape ||= AssetShape.default_id
       where(asset_size: size, asset_shape_id: asset_shape).order(:row_order).each do |position|
         yield(position, position.row_order)

@@ -194,7 +194,7 @@ module SampleManifest::InputBehaviour
     end
   end
 
-  def each_csv_row(&block)
+  def each_csv_row
     csv = CSV.parse(LinefeedFix.scrub!(uploaded.current_data))
     clean_up_sheet(csv)
 

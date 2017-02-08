@@ -7,7 +7,7 @@
 module ActiveRecord::StringSanitizer
   def self.extended(base)
     base.instance_eval do
-      def squishify(*names)
+      def squishify(*_names)
         line = __LINE__ + 1
         class_eval("
           before_save do |record|

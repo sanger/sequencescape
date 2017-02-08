@@ -6,7 +6,7 @@
 
 module Core::Endpoint::BasicHandler::Actions
   class UnsupportedAction < StandardError
-    def initialize(action, request)
+    def initialize(action, _request)
       super(action.to_s)
     end
   end

@@ -11,7 +11,7 @@ module Tasks::CherrypickHandler
     end
   end
 
-  def render_cherrypick_task(task, params)
+  def render_cherrypick_task(_task, params)
     unless flash[:error].blank?
       redirect_to action: 'stage', batch_id: @batch.id, workflow_id: @workflow.id, id: (@stage - 1).to_s
       return

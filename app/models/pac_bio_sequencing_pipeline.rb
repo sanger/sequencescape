@@ -19,7 +19,7 @@ class PacBioSequencingPipeline < Pipeline
     false
   end
 
-  def post_release_batch(batch, user)
+  def post_release_batch(batch, _user)
     batch.requests.each(&:transfer_aliquots)
     Messenger.create!(target: batch, template: 'PacBioRunIO', root: 'pac_bio_run')
   end

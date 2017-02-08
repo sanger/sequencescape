@@ -89,7 +89,7 @@ end
 # These are the steps for the general checking of the batch request behaviour.  Note that you probably
 # shouldn't be merging these steps into generic ones as they are fairly specific.
 #########################################################################################################
-def build_batch_for(name, count, &block)
+def build_batch_for(name, count)
   pipeline           = Pipeline.find_by_name(name) or raise StandardError, "Cannot find pipeline #{name.inspect}"
   submission_details = yield(pipeline)
 
@@ -132,7 +132,7 @@ def build_batch_for(name, count, &block)
   batch = Batch.create!(pipeline: pipeline, user: user, requests: requests)
 end
 
-def requests_for_pipeline(name, count, &block)
+def requests_for_pipeline(name, count)
   pipeline          = Pipeline.find_by_name(name) or raise StandardError, "Cannot find pipeline #{name.inspect}"
   requests_in_inbox = pipeline.requests.ready_in_storage.full_inbox.all
 

@@ -23,7 +23,7 @@ class Core::Endpoint::BasicHandler
       []
     end
 
-    def tree_for(object, options)
+    def tree_for(_object, _options)
       associations, actions = {}, {}
       related.each { |r| r.separate(associations, actions) }
       Core::Io::Json::Grammar::Root.new(

@@ -95,7 +95,7 @@ class PlatePurpose < Purpose
   # Updates the state of the specified plate to the specified state.  The basic implementation does this by updating
   # all of the TransferRequest instances to the state specified.  If contents is blank then the change is assumed to
   # relate to all wells of the plate, otherwise only the selected ones are updated.
-  def transition_to(plate, state, user, contents = nil, customer_accepts_responsibility = false)
+  def transition_to(plate, state, _user, contents = nil, customer_accepts_responsibility = false)
     wells = plate.wells
     wells = wells.located_at(contents) unless contents.blank?
 
@@ -208,7 +208,7 @@ class PlatePurpose < Purpose
     cherrypick_direction == 'row'
   end
 
-  def attatched?(plate)
+  def attatched?(_plate)
     true
   end
 

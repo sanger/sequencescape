@@ -5,11 +5,11 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 module Tasks::AttachInfiniumBarcodeHandler
-  def render_attach_infinium_barcode_task(task, params)
+  def render_attach_infinium_barcode_task(_task, _params)
     @studies = @batch.studies
   end
 
-  def do_attach_infinium_barcode_task(task, params)
+  def do_attach_infinium_barcode_task(_task, params)
     barcodes = params[:barcodes]
     barcodes.each do |plate_id, barcode|
       next if barcode.blank?

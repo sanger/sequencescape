@@ -10,7 +10,7 @@ class IlluminaHtp::InitialStockTubePurpose < IlluminaHtp::StockTubePurpose
       target_state != 'started' || outer_request.pending?
     end
 
-    def transition_to(tube, state, user, _ = nil, customer_accepts_responsibility = false)
+    def transition_to(tube, state, _user, _ = nil, customer_accepts_responsibility = false)
       ActiveRecord::Base.transaction do
         tube.requests_as_target.where.not(state: terminated_states).each do |request|
           request.transition_to(state)

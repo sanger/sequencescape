@@ -153,7 +153,7 @@ class Api::Base
   class_attribute :nested_has_many_associations
   self.nested_has_many_associations = {}
 
-  def self.newer_than(object, timestamp, &block)
+  def self.newer_than(object, timestamp)
     return if object.nil? or timestamp.nil?
     modified, object_timestamp = false, ((object.respond_to?(:updated_at) ? object.updated_at : timestamp) || timestamp)
     timestamp, modified = object_timestamp, true if object_timestamp > timestamp
@@ -201,7 +201,7 @@ class Api::Base
     !!lookup_by
   end
 
-  def self.lookup_associated_record_from(json_attributes, &block)
+  def self.lookup_associated_record_from(json_attributes)
     attributes = convert_json_attributes_to_attributes(json_attributes)
     return unless attributes.key?(lookup_by)
     search_parameters = { lookup_by => attributes[lookup_by] }

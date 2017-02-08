@@ -17,7 +17,7 @@ class SampleCacheSweeper < ActiveRecord::Observer
 
   # We shorten the query conditions for studies and receptacles because we do not need to perform
   # a JOIN against their table, considering we go through a JOIN table anyway.
-  def through(record, &block)
+  def through(record)
     model, conditions =
       case
       when record.is_a?(StudySample)         then ['study',      query_conditions_for(record)]

@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
 
 module Tasks::SetDescriptorsHandler
-  def do_set_descriptors_task(task, params)
+  def do_set_descriptors_task(_task, params)
     @batch = Batch.includes(:requests, :pipeline, :lab_events).find(params[:batch_id])
     @rits = @batch.pipeline.request_information_types
     @requests = @batch.ordered_requests
@@ -111,7 +111,7 @@ module Tasks::SetDescriptorsHandler
     false
   end
 
-  def render_set_descriptors_task(task, params)
+  def render_set_descriptors_task(_task, params)
     @batch = Batch.includes(:requests, :pipeline, :lab_events).find(params[:batch_id])
     @rits = @batch.pipeline.request_information_types
     @requests = @batch.ordered_requests

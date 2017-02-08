@@ -13,7 +13,7 @@ module TagLayout::WalkManualWellsByPools
     TagLayout::WalkManualWellsByPools.walking_by
   end
 
-  def walk_wells(&block)
+  def walk_wells
     # This is much simple than the automated method
     wells_in_pools = wells_in_walking_order.with_pool_id.group_by(&:pool_id)
 

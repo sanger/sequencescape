@@ -18,7 +18,7 @@ class GenerateManifestsTask < Task
     workflow.render_generate_manifest_task(self, params)
   end
 
-  def do_task(workflow, params)
+  def do_task(_workflow, _params)
     true
   end
 end

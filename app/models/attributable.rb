@@ -160,7 +160,7 @@ module Attributable
       FieldInfo::SELECTION
     end
 
-    def find_default(*args)
+    def find_default(*_args)
       nil
     end
 
@@ -172,7 +172,7 @@ module Attributable
       get_scoped_selection.all.map(&@method.to_sym).sort
     end
 
-    def to_field_info(*args)
+    def to_field_info(*_args)
       FieldInfo.new(
         display_name: display_name,
         key: assignable_attribute_name,

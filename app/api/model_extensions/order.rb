@@ -112,7 +112,7 @@ module ModelExtensions::Order
       Hash.new.deep_merge(@store)
     end
 
-    def node_and_leaf(*keys, &block)
+    def node_and_leaf(*keys)
       leaf = keys.pop
       node = keys.inject(@store) { |h, k| h[k] ||= ActiveSupport::HashWithIndifferentAccess.new }
       yield(node, leaf)
@@ -120,7 +120,7 @@ module ModelExtensions::Order
     private :node_and_leaf
   end
 
-  def request_type_multiplier(&block)
+  def request_type_multiplier
     yield(request_types.last.to_s.to_sym) unless request_types.blank?
   end
 

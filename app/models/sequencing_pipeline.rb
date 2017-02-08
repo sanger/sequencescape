@@ -63,7 +63,7 @@ class SequencingPipeline < Pipeline
     BroadcastEvent::SequencingStart.create!(seed: batch, user: user, properties: {}, created_at: DateTime.now)
   end
 
-  def post_release_batch(batch, user)
+  def post_release_batch(batch, _user)
     # We call compact to handle ControlRequests which may have no target asset.
     # In practice this isn't required, as we don't use control lanes any more.
     # However some old feature tests still use them, and until this behaviour is completely

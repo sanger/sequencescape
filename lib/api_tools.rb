@@ -13,7 +13,7 @@ module ApiTools
     end
   end
 
-  def for_api(options = {})
+  def for_api(_options = {})
     self.class.render_class.to_hash(self)
   end
 
@@ -25,12 +25,12 @@ module ApiTools
     renamed_keys.to_xml(options)
   end
 
-  def list_json(options = {})
+  def list_json(_options = {})
     self.class.render_class.to_hash_for_list(self)
   end
 
   # TODO: Add relationships for object
-  def as_json(options = {})
+  def as_json(_options = {})
     { json_root => self.class.render_class.to_hash(self), 'lims' => configatron.amqp.lims_id! }
   end
 

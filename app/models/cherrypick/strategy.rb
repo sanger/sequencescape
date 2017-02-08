@@ -81,7 +81,7 @@ class Cherrypick::Strategy
 
     # Ensures that all of the plexes are internally ordered based on their position in the submission
     class InternallyOrderPlexBySubmission
-      def call(plexes, current_plate)
+      def call(plexes, _current_plate)
         plexes.map do |plex|
           plex.sort_by(&:index_in_submission)
         end
@@ -89,7 +89,7 @@ class Cherrypick::Strategy
     end
 
     class InRowOrder
-      def call(plexes, current_plate)
+      def call(plexes, _current_plate)
         plexes.map do |plex|
           plex.sort_by(&:row_index)
         end
@@ -97,7 +97,7 @@ class Cherrypick::Strategy
     end
 
     class InColumnOrder
-      def call(plexes, current_plate)
+      def call(plexes, _current_plate)
         plexes.map do |plex|
           plex.sort_by(&:column_index)
         end

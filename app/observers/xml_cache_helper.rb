@@ -100,7 +100,7 @@ module XmlCacheHelper
   end
   private :query_conditions_for
 
-  def metadata(record, &block)
+  def metadata(record)
     metadata = "#{caching_for_model.to_s.singularize}_metadata"
     yield(
       "INNER JOIN #{metadata} ON #{metadata}.#{caching_for_model.to_s.singularize}_id=#{caching_for_model.to_s.pluralize}.id",
@@ -108,7 +108,7 @@ module XmlCacheHelper
   end
   private :metadata
 
-  def metadata_association(type, record, &block)
+  def metadata_association(type, record)
     metadata = "#{caching_for_model.to_s.singularize}_metadata"
     yield(
       "INNER JOIN #{metadata} ON #{metadata}.#{caching_for_model.to_s.singularize}_id=#{caching_for_model.to_s.pluralize}.id",

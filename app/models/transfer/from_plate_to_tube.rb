@@ -19,7 +19,7 @@ class Transfer::FromPlateToTube < Transfer
     end
   end
 
-  def each_transfer(&block)
+  def each_transfer
     # Partition the source plate wells into ones that are good and others that are bad.  The
     # bad wells will be eliminated after we've done the transfers for the good ones.
     bad_wells, good_wells = source.wells.located_at_position(transfers).with_pool_id.partition do |well|

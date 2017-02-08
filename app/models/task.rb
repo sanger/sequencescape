@@ -26,7 +26,7 @@ class Task < ActiveRecord::Base
     default
   end
 
-  def set_descriptor_value(name, value, kind = nil)
+  def set_descriptor_value(name, value, _kind = nil)
     name_s = name.to_s
     descriptors.each do |desc|
       if desc.name.eql?(name_s)
@@ -51,7 +51,7 @@ class Task < ActiveRecord::Base
     default
   end
 
-  def set_subclass_attribute_value(name, value, kind = nil)
+  def set_subclass_attribute_value(name, value, _kind = nil)
     name_s = name.to_s
     subclass_attributes.each do |desc|
       if desc.name.eql?(name_s)
@@ -143,7 +143,7 @@ class Task < ActiveRecord::Base
     request && RenderElement.new(request)
   end
 
-  def do_task(controller, params)
+  def do_task(_controller, _params)
     raise NotImplementedError, "Please Implement a do_task for #{self.class.name}"
   end
 
@@ -154,7 +154,7 @@ class Task < ActiveRecord::Base
     asset.children.select { |a| family_map[a.sti_type] }
   end
 
-  def sub_events_for(event)
+  def sub_events_for(_event)
     []
   end
 

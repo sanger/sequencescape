@@ -166,7 +166,7 @@ class Order < ActiveRecord::Base
     Submission.build!({ template: self }.merge(options))
   end
 
-  def self.extended(base)
+  def self.extended(_base)
     class_eval do
       def self.build!(*args)
         Order::build!(*args)
@@ -185,7 +185,7 @@ class Order < ActiveRecord::Base
 
   delegate :left_building_state?, to: :submission, allow_nil: true
 
-  def create_request_of_type!(request_type, attributes = {}, &block)
+  def create_request_of_type!(request_type, attributes = {})
     em = request_type.extract_metadata_from_hash(request_options)
     request_type.create!(attributes) do |request|
       request.submission_id               = submission_id

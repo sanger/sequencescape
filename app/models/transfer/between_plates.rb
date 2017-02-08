@@ -37,7 +37,7 @@ class Transfer::BetweenPlates < Transfer
   # plate has been put on the robot, as the number of columns transfered could be less than
   # an entire plate.  Subsequent plates are therefore only partially complete.
   #++
-  def each_transfer(&block)
+  def each_transfer
     # Partition the source plate wells into ones that are good and others that are bad.  The
     # bad wells will be eliminated after we've done the transfers for the good ones.
     bad_wells, good_wells = source.wells.located_at_position(transfers.keys).with_pool_id.partition(&method(:should_well_not_be_transferred?))
@@ -71,7 +71,7 @@ class Transfer::BetweenPlates < Transfer
   private :each_transfer
 
   # Request type for transfers is based on the plates, not the wells we're transferring
-  def request_type_between(ignored_a, ignored_b)
+  def request_type_between(_ignored_a, _ignored_b)
     destination.transfer_request_type_from(source)
   end
   private :request_type_between

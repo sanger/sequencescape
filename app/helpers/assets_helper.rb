@@ -74,13 +74,13 @@ module AssetsHelper
     asset.is_a?(SampleTube) and current_user.is_administrator?
   end
 
-  def current_user_can_make_additional_requests_on?(asset, study)
+  def current_user_can_make_additional_requests_on?(_asset, study)
     return false unless study.present?              # Study must be specified ...
     return true if current_user.is_administrator?   # ... user could be an administrator ...
     current_user.is_manager?(study)                 # ... or the manager of the specified study
   end
 
-  def current_user_studies_from(asset)
+  def current_user_studies_from(_asset)
     return Study if current_user.is_administrator?
 
     # Bit of a hack in that we want to provide the same interface as would be seen if this were an

@@ -151,7 +151,7 @@ class Transfer < ActiveRecord::Base
       end
     end
 
-    def each_transfer(&block)
+    def each_transfer
       well_to_destination.each do |source, destination_and_additional_information|
         destination, *extra_information = Array(destination_and_additional_information)
         yield(source, destination)

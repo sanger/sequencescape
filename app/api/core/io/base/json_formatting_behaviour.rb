@@ -17,7 +17,7 @@ module Core::Io::Base::JsonFormattingBehaviour
   end
 
   # NOTE: This one is OK!
-  def as_json(options = nil, &block)
+  def as_json(options = nil)
     options ||= {}
     object    = options.delete(:object)
     object_json(object, options)
@@ -66,7 +66,7 @@ module Core::Io::Base::JsonFormattingBehaviour
 
   VALID_LINE_REGEXP = /^\s*((?:[a-z_][\w_]*\.)*[a-z_][\w_]*[?!]?)\s*(<=|<=>|=>)\s*((?:[a-z_][\w_]*\.)*[a-z_][\w_]*)\s*$/
 
-  def parse_mapping_rules(mapping, &block)
+  def parse_mapping_rules(mapping)
     attribute_to_json, json_to_attribute = [], []
     StringIO.new(mapping).each_line do |line|
       next if line.blank? or line =~ /^\s*#/

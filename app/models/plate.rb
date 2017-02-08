@@ -183,7 +183,7 @@ class Plate < Asset
       s
     end
 
-    def count(*args)
+    def count(*_args)
       s = super(:all)
       return s.length if s.respond_to?(:length)
       s
@@ -267,12 +267,12 @@ class Plate < Asset
     end
 
     # Walks the wells A1, B1, C1, ... A2, B2, C2, ... H12
-    def walk_in_column_major_order(&block)
+    def walk_in_column_major_order
       in_column_major_order.each { |well| yield(well, well.map.column_order) }
     end
 
     # Walks the wells A1, A2, ... B1, B2, ... H12
-    def walk_in_row_major_order(&block)
+    def walk_in_row_major_order
       in_row_major_order.each { |well| yield(well, well.map.row_order) }
     end
 
@@ -502,7 +502,7 @@ class Plate < Asset
     plate_metadata.save!
   end
 
-  def valid_infinium_barcode?(barcode)
+  def valid_infinium_barcode?(_barcode)
     true
   end
 
@@ -568,7 +568,7 @@ class Plate < Asset
     end
   end
 
-  def create_plate_submission(project, study, user, current_time)
+  def create_plate_submission(project, study, user, _current_time)
     LinearSubmission.build!(
       study: study,
       project: project,

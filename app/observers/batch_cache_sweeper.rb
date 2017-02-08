@@ -24,7 +24,7 @@ class BatchCacheSweeper < ActiveRecord::Observer
     joins['aliquots']       = "INNER JOIN aliquots ON (aliquots.receptacle_id=requests.asset_id OR aliquots.receptacle_id=requests.target_asset_id)"
   end
 
-  def through(record, &block)
+  def through(record)
     model, conditions =
       case
       when record.is_a?(BatchRequest) then ['batch_requests', query_conditions_for(record)]

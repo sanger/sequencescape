@@ -28,7 +28,7 @@ class RobotVerification
     valid_plates_on_robot?(beds, plates, "DEST", robot, batch, all_expected_plate_layout[0])
   end
 
-  def valid_plates_on_robot?(beds, plates, bed_prefix, robot, batch, expected_plate_layout)
+  def valid_plates_on_robot?(beds, plates, bed_prefix, robot, _batch, expected_plate_layout)
     return false if expected_plate_layout.blank?
     expected_plate_layout.each do |plate_barcode, bed_number|
       scanned_bed_barcode = Barcode.number_to_human(beds[bed_number.to_s].strip)

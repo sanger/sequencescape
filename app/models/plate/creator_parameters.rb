@@ -28,7 +28,7 @@ class Plate::CreatorParameters
     (!params[:dilution_factor].nil?) && (!params[:dilution_factor].to_s.empty?)
   end
 
-  def plate_parameters(plate, parent_plate = nil)
+  def plate_parameters(_plate, parent_plate = nil)
     params = @params.clone
 
     parent_dilution_factor = plate_dilution_factor(parent_plate)

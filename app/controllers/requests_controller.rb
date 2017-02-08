@@ -146,7 +146,7 @@ class RequestsController < ApplicationController
     @tasks = Task.all
   end
 
-  def expanded(options = {})
+  def expanded(_options = {})
     render text: "", status: :gone
   end
 
@@ -154,7 +154,7 @@ class RequestsController < ApplicationController
     render text: "", status: :gone
   end
 
-  def incomplete_requests_for_family(options = {})
+  def incomplete_requests_for_family(_options = {})
     render text: "", status: :gone
   end
 

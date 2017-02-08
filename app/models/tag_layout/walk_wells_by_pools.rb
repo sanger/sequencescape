@@ -13,7 +13,7 @@ module TagLayout::WalkWellsByPools
     TagLayout::WalkWellsByPools.walking_by
   end
 
-  def walk_wells(&block)
+  def walk_wells
     # Adjust each of the groups so that any wells that are in the same pool as those at the same position
     # in the group to the left are moved to a non-clashing position.  Effectively this makes the view of the
     # plate slightly jagged.

@@ -7,7 +7,7 @@
 module Tasks::PlateTransferHandler
   class InvalidBatch < StandardError; end
 
-  def render_plate_transfer_task(task, params)
+  def render_plate_transfer_task(task, _params)
     ActiveRecord::Base.transaction do
       @target = find_or_create_target(task)
     end
@@ -58,7 +58,7 @@ module Tasks::PlateTransferHandler
   end
   private :unsuitable_wells?
 
-  def do_plate_transfer_task(task, params)
+  def do_plate_transfer_task(_task, _params)
     target_plate.transition_to('passed', current_user) unless target_plate.state == 'passed'
     true
   end

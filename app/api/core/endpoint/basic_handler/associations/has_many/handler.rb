@@ -37,7 +37,7 @@ class Core::Endpoint::BasicHandler::Associations::HasMany::Handler < Core::Endpo
   end
   private :association_from
 
-  def nested_action(request, path, association, &block)
+  def nested_action(request, _path, association)
     uuid = request.target.uuid
     association_details_for(request) do |association_io|
       request.io = association_io

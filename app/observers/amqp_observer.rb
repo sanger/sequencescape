@@ -78,7 +78,7 @@ class AmqpObserver < ActiveRecord::Observer
     # raised (when it is marked as bad), and broadcast our buffer iff the transaction is good and
     # there's stuff to broadcast.
     #++
-    def transaction(&block)
+    def transaction
       # JG: This code took me a while to get my head around.
       # If thread buffer is unset (Ie. we are in the outermost transaction) then
       # create a new MostRecentBuffer and also set current buffer equal to this

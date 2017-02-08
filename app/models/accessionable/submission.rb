@@ -20,7 +20,7 @@ class Accessionable::Submission < Accessionable::Base
     @accessionables.map(&:alias).join(" - ") << DateTime.now.strftime('%Y%m%dT%H%M')
   end
 
-  def <<(accessionable)
+  def <<(_accessionable)
     @accessionables << accesionable
   end
 
@@ -89,7 +89,7 @@ class Accessionable::Submission < Accessionable::Base
     @accessionables + [self]
   end
 
-  def update_accession_number!(user, accession_number)
+  def update_accession_number!(_user, accession_number)
     @accession_number = accession_number
   end
 

@@ -21,7 +21,7 @@ module TagLayout::AsGroupByPlate
     @tags_per_well || DEFAULT_TAGS_PER_WELL
   end
 
-  def walk_wells(&block)
+  def walk_wells
     wells_in_walking_order.with_aliquots.each_with_index do |well, well_index|
       tags_per_well.times do |tag_index|
         index = well_index * tags_per_well + tag_index

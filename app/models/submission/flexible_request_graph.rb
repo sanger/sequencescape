@@ -216,7 +216,7 @@ module Submission::FlexibleRequestGraph
       end
     end
 
-    def source_assets_doublet_with_index(&block)
+    def source_assets_doublet_with_index
       source_assets_qc_metrics.each_with_index do |doublet, index|
         yield(doublet, index)
       end
@@ -224,7 +224,7 @@ module Submission::FlexibleRequestGraph
   end
 
   module OrderMethods
-    def build_request_graph!(multiplexing_assets = nil, &block)
+    def build_request_graph!(multiplexing_assets = nil)
       ActiveRecord::Base.transaction do
         RequestChain.new(self, assets, multiplexing_assets).tap do |chain|
           chain.build!

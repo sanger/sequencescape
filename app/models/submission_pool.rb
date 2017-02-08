@@ -70,7 +70,7 @@ class SubmissionPool < ActiveRecord::Base
     .group('submissions.id')
   } do
 
-      def count(*args)
+      def count(*_args)
         # Horrid hack due to the behaviour of count with a group_by
         # We can't use uniq alone, as the outer_request_id makes
         # the vairous rows unique.

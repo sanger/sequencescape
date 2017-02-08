@@ -2,7 +2,7 @@
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2007-2011,2011,2012 Genome Research Ltd.
-def open_barcode_stream(&block)
+def open_barcode_stream
   user = "read_only"
   password = "read_only"
   connection = "cas"

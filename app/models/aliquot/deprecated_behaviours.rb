@@ -40,7 +40,7 @@ module Aliquot::DeprecatedBehaviours
     end
     deprecate :sample_name?
 
-    def sample_name(default = nil, &block)
+    def sample_name(default = nil)
       # return the name of the underlying samples
       # used mainly for compatibility with the old codebase
       # # default is used if no smaple

@@ -6,7 +6,7 @@
 
 class ::Endpoints::Searches < ::Core::Endpoint::Base
   module SearchActions
-    def search_action(name, &block)
+    def search_action(name)
       bind_action(:create, to: name.to_s, as: name.to_sym) do |action, request, response|
         # To a is called here to avoid the need for pagination. In practice we probably
         # want to paginate search results, but this is sadly a breaking change.

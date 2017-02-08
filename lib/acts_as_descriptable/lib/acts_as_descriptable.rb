@@ -91,7 +91,7 @@ module ActiveRecord # :nodoc:
             end
           end
 
-          def each_descriptor(&block)
+          def each_descriptor
             descriptor_hash = read_descriptor_hash
             read_descriptor_fields.each do |field|
               next if field.blank?

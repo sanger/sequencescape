@@ -54,7 +54,7 @@ module BootstrapHelper
   #     </table>
   #   </div>
   # </div>
-  def summary(type = :default, options = {}, &block)
+  def summary(type = :default, options = {})
     bs_type = bootstrapify(type.to_s)
     title = options.delete(:title) || 'Summary'
     size = options.delete(:size) || '6'

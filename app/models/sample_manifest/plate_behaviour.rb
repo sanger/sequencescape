@@ -30,7 +30,7 @@ module SampleManifest::PlateBehaviour
     # This method ensures that each of the plates is handled by an individual job.  If it doesn't do this we run
     # the risk that the 'handler' column in the database for the delayed job will not be large enough and will
     # truncate the data.
-    def generate_wells_for_plates(well_data, plates, &block)
+    def generate_wells_for_plates(well_data, plates)
       cloned_well_data = well_data.dup
       plates.each do |plate|
         yield(cloned_well_data.slice!(0, plate.size), plate)
@@ -38,7 +38,7 @@ module SampleManifest::PlateBehaviour
     end
     private :generate_wells_for_plates
 
-    def validate_sample_container(sample, row, &block)
+    def validate_sample_container(sample, row)
       manifest_barcode, manifest_location = row['SANGER PLATE ID'], row['WELL']
       primary_barcode, primary_location   = sample.primary_receptacle.plate.sanger_human_barcode, sample.primary_receptacle.map.description
       return if primary_barcode == manifest_barcode and primary_location == manifest_location
@@ -115,7 +115,7 @@ module SampleManifest::PlateBehaviour
       end
     end
 
-    def details(&block)
+    def details
       samples.each do |sample|
         well = sample.wells.includes([:container, :map]).first
         yield({

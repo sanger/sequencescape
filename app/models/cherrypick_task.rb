@@ -20,7 +20,7 @@ class CherrypickTask < Task
       @control_added
     end
 
-    def create_control_request_view_details(&block)
+    def create_control_request_view_details
       # NOTE: 'sample' here is not a Sequencescape sample but a random selection from the wells.
       @owner.send(:generate_control_request, ControlPlate.first.illumina_wells.sample).tap do |request|
         @batch.requests << request
@@ -165,7 +165,7 @@ class CherrypickTask < Task
     end
   end
 
-  def perform_pick(requests, robot, batch, &block)
+  def perform_pick(requests, robot, batch)
     max_plates = robot.max_beds
     raise StandardError, 'The chosen robot has no beds!' if max_plates.zero?
 

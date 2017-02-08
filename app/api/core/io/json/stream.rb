@@ -10,7 +10,7 @@ module ::Core::Io::Json
       @buffer, @have_output_value = buffer, []
     end
 
-    def open(&block)
+    def open
       flush do
         unencoded('{')
         yield(self)
@@ -18,7 +18,7 @@ module ::Core::Io::Json
       end
     end
 
-    def array(attribute, objects, &block)
+    def array(attribute, objects)
       named(attribute) do
         array_encode(objects) { |v| yield(self, v) }
       end
@@ -65,7 +65,7 @@ module ::Core::Io::Json
     end
     private :object_encode
 
-    def named(attribute, &block)
+    def named(attribute)
       unencoded(',') if have_output_value?
       encode(attribute)
       unencoded(':')
@@ -83,7 +83,7 @@ module ::Core::Io::Json
     end
     private :hash_encode
 
-    def array_encode(array, &block)
+    def array_encode(array)
       unencoded('[')
       # Use length rather than size, as otherwise we perform
       # a count query. Not only is this unnecessary, but seems
@@ -106,7 +106,7 @@ module ::Core::Io::Json
     end
     private :unencoded
 
-    def flush(&block)
+    def flush
       @have_output_value[0] = false
       yield
       @buffer.flush

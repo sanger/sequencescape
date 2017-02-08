@@ -12,7 +12,7 @@ module BroadcastEvent::MetadataHelpers
       @method = method
     end
 
-    def for(seed, event)
+    def for(seed, _event)
       [name, seed.send(method)]
     end
   end

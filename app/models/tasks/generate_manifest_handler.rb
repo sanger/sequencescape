@@ -19,7 +19,7 @@ module Tasks::GenerateManifestHandler
       disposition: 'attachment'
   end
 
-  def render_generate_manifest_task(task, params)
+  def render_generate_manifest_task(_task, _params)
     @studies = @batch.studies
   end
 end

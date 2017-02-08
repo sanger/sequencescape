@@ -47,7 +47,7 @@ module Tasks::CherrypickGroupBySubmissionHandler
     false
   end
 
-  def render_cherrypick_group_by_submission_task(task, params)
+  def render_cherrypick_group_by_submission_task(task, _params)
     @plate_purpose_options = task.plate_purpose_options(@batch)
   end
 end

@@ -14,23 +14,23 @@ class EraAccessionService < AccessionService
   end
 
   # Most uses of this feature have been human error, so its better to hold off on releasing data than accidentally releasing data
-  def sample_visibility(sample)
+  def sample_visibility(_sample)
     # sample_hold = sample.sample_sra_hold
     # sample_hold.blank? ? 'hold' : sample_hold
     Hold
   end
 
-  def study_visibility(study)
+  def study_visibility(_study)
     # study_hold = study.study_sra_hold
     # study_hold.blank? ? 'hold' : study_hold
     Hold
   end
 
-  def policy_visibility(study)
+  def policy_visibility(_study)
     Hold
   end
 
-  def dac_visibility(study)
+  def dac_visibility(_study)
     Hold
   end
 
@@ -38,11 +38,11 @@ class EraAccessionService < AccessionService
     nil
   end
 
-  def submit_policy_for_user(user, study)
+  def submit_policy_for_user(_user, _study)
     raise NumberNotGenerated, "no need to submit Policy to ERA"
   end
 
-  def submit_dac_for_user(user, study)
+  def submit_dac_for_user(_user, _study)
     raise NumberNotGenerated, "no need to submit DAC  to ERA"
   end
 end

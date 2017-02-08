@@ -108,7 +108,7 @@ class Pipeline < ActiveRecord::Base
     false
   end
 
-  def is_read_length_consistent_for_batch?(batch)
+  def is_read_length_consistent_for_batch?(_batch)
     true
   end
 
@@ -119,7 +119,7 @@ class Pipeline < ActiveRecord::Base
     request.save!
   end
 
-  def update_detached_request(batch, request)
+  def update_detached_request(_batch, request)
     request.remove_unused_assets
   end
 
@@ -235,7 +235,7 @@ class Pipeline < ActiveRecord::Base
     grouping_parser.count(selected_values_from(selected_groups)) <= max_number_of_groups
   end
 
-  def all_requests_from_submissions_selected?(request_ids)
+  def all_requests_from_submissions_selected?(_request_ids)
     true
   end
 

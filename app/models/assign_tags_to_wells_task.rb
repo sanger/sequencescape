@@ -153,7 +153,7 @@ class AssignTagsToWellsTask < Task
     nil
   end
 
-  def create_tag_instances_and_link_to_wells(requests, params)
+  def create_tag_instances_and_link_to_wells(_requests, params)
     params[:tag].map do |well_id, tag_id|
       ActiveRecord::Base.transaction do
         Tag.find(tag_id).tag!(Well.find(well_id))

@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 module Tasks::AssignTagsToTubesHandler
-  def do_assign_tags_to_destination_task(task, params)
+  def do_assign_tags_to_destination_task(_task, params)
     @tag_group = TagGroup.find(params[:tag_group])
 
     ActiveRecord::Base.transaction do

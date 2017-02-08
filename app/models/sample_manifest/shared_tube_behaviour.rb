@@ -32,7 +32,7 @@ module SampleManifest::SharedTubeBehaviour
   end
   handle_asynchronously :delayed_generate_asset_requests
 
-  def tube_sample_creation(samples_data, study_id)
+  def tube_sample_creation(samples_data, _study_id)
     study.samples << samples_data.map do |barcode, sanger_sample_id, _prefix|
       create_sample(sanger_sample_id).tap do |sample|
         sample_tube = Tube.find_by_barcode(barcode) or raise ActiveRecord::RecordNotFound, "Cannot find sample tube with barcode #{barcode.inspect}"

@@ -80,7 +80,7 @@ module Api
         end
       end
 
-      def file_model_action(action, http_method)
+      def file_model_action(_action, http_method)
         send(http_method, %r{^/([^\d/][^/]+(?:/[^/]+){0,2})$}, file_requested: true) do
           report("model") do
             raise Core::Service::ContentFiltering::InvalidRequestedContentType
@@ -139,7 +139,7 @@ module Api
       self.class.registered_mimetypes
     end
 
-    def lookup_for_class(model, &block)
+    def lookup_for_class(model)
       ::Core::Io::Registry.instance.lookup_for_class(model)
     rescue ::Core::Registry::UnregisteredError => exception
       yield(exception)
@@ -147,7 +147,7 @@ module Api
     private :lookup_for_class
 
     # Report the performance and status of any request
-    def report(handler, &block)
+    def report(handler)
       start = Time.now
       Rails.logger.info("API[start]: #{handler}: #{request.fullpath}")
       yield

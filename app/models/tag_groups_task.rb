@@ -25,7 +25,7 @@ class TagGroupsTask < Task
     workflow.render_tag_groups_task(self, params)
   end
 
-  def do_task(workflow, params)
+  def do_task(_workflow, _params)
     true
   end
 end

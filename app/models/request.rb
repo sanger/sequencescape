@@ -457,7 +457,7 @@ class Request < ActiveRecord::Base
     submission.try(:priority) || 0
   end
 
-  def request_type_updatable?(new_request_type)
+  def request_type_updatable?(_new_request_type)
     pending?
   end
 

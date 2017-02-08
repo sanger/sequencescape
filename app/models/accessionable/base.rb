@@ -50,7 +50,7 @@ class Accessionable::Base
           accession_number = element && element.attributes['accession']
   end
 
-  def update_accession_number!(user, accession_number)
+  def update_accession_number!(_user, _accession_number)
     raise NotImplementedError, "abstract method"
   end
 

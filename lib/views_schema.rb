@@ -45,7 +45,7 @@ module ViewsSchema
     end.flatten
   end
 
-  def self.create_view(name, definition)
+  def self.create_view(_name, definition)
     ActiveRecord::Base.connection.execute(definition)
   end
 

@@ -206,7 +206,7 @@ class Asset < ActiveRecord::Base
     study.try(:id)
   end
 
-  def ancestor_of_purpose(ancestor_purpose_id)
+  def ancestor_of_purpose(_ancestor_purpose_id)
     # If it's not a tube or a plate, defaults to stock_plate
     stock_plate
   end
@@ -341,7 +341,7 @@ class Asset < ActiveRecord::Base
     end
   end
 
-  def update_external_release(&block)
+  def update_external_release
     external_release_nil_before = external_release.nil?
     yield
     save!
@@ -511,7 +511,7 @@ class Asset < ActiveRecord::Base
   end
 
   # We only support wells for the time being
-  def latest_stock_metrics(product, *args)
+  def latest_stock_metrics(_product, *_args)
     []
   end
 

@@ -9,7 +9,7 @@ module SampleManifest::CoreBehaviour
   module NoSpecializedValidation
     def validate_specialized_fields(*args); end
 
-    def specialized_fields(*args); {}; end
+    def specialized_fields(*_args); {}; end
   end
 
   def self.included(base)

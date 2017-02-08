@@ -31,7 +31,7 @@ class WellRange
   end
   private :include_well_location?
 
-  def to_a(&block)
+  def to_a
     [].tap do |wells|
       (1..12).each do |column|
         ('A'..'H').each do |row|

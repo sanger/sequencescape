@@ -17,7 +17,7 @@ class CherrypickForPulldownPipeline < CherrypickingPipeline
     # Nothing, we don't want all the requests to be completed
   end
 
-  def post_release_batch(batch, user)
+  def post_release_batch(batch, _user)
     batch.release_pending_requests()
   end
 

@@ -42,7 +42,7 @@ module Core::Initializable
   end
 
   module InstanceMethods
-    def initialize(&block)
+    def initialize
       yield(self.class::Initializer.new(self)) if block_given?
     end
   end

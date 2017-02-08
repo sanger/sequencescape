@@ -293,7 +293,7 @@ module ApplicationHelper
     '&nbsp;'.html_safe
   end
 
-  def help_text(label_text = nil, suggested_id = nil, &block)
+  def help_text(_label_text = nil, suggested_id = nil, &block)
     content = capture(&block)
     return if content.blank?
     tooltip_id = "prop_#{suggested_id || content.hash}_help"

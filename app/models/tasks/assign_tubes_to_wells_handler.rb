@@ -68,7 +68,7 @@ module Tasks::AssignTubesToWellsHandler
     true
   end
 
-  def do_assign_pick_volume_task(task, params)
+  def do_assign_pick_volume_task(_task, params)
     @batch.requests.each do |r|
       next if r.target_asset.nil?
       r.target_asset.set_picked_volume(params[:micro_litre_volume_required].to_i)
@@ -145,7 +145,7 @@ module Tasks::AssignTubesToWellsHandler
     @asbi ||= assets_from_requests.sort_by(&:id)
   end
 
-  def calculate_number_of_wells_library_needs_to_use(task, params)
+  def calculate_number_of_wells_library_needs_to_use(_task, _params)
     tubes_for_wells = []
     assets = assets_from_requests_sorted_by_id
     physical_library_tubes = uniq_assets_from_requests

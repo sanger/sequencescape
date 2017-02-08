@@ -41,7 +41,7 @@ class SubmissionTemplate < ActiveRecord::Base
     self.superceded_by_id = SUPERCEDED_BY_UNKNOWN_TEMPLATE
   end
 
-  def supercede(&block)
+  def supercede
     ActiveRecord::Base.transaction do
       dup.tap do |cloned|
         yield(cloned) if block_given?

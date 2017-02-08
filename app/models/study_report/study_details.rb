@@ -27,7 +27,7 @@ module StudyReport::StudyDetails
   end
 
   # Similar to find in batches, we pluck out the relevant asset ids in batches of 1000
-  def handle_wells(join, study_condition, plate_purpose_id, &block)
+  def handle_wells(join, study_condition, plate_purpose_id)
     asset_ids = well_batch_from(0, join, study_condition, plate_purpose_id)
     while asset_ids.any?
       yield asset_ids
@@ -62,7 +62,7 @@ module StudyReport::StudyDetails
       ]
   end
 
-  def progress_report_on_all_assets(&block)
+  def progress_report_on_all_assets
     yield(progress_report_header)
     each_stock_well_id_in_study_in_batches do |asset_ids|
       # eager loading of well_attribute , can only be done on  wells ...

@@ -34,7 +34,7 @@ module Core::Service::ErrorHandling
         @error = error
       end
 
-      def each(&block)
+      def each
         yield JSON.generate(@error)
         # Yajl::Encoder.new.encode(@error, &block)
       end

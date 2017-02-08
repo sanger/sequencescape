@@ -49,7 +49,7 @@ module Core
     end
 
     # Report the performance and status of any request
-    def report(handler, &block)
+    def report(handler)
       Rails.logger.info("API[start]: #{handler}: #{request.fullpath}")
       yield
     ensure
@@ -64,7 +64,7 @@ module Core
     # This ensures that our Sinatra applications behave properly within the Rails environment.
     # Without this you'll find that only one of the services actually behaves properly, the others
     # will all fail with 404 errors.
-    def handle_not_found!(boom)
+    def handle_not_found!(_boom)
       @response.status               = 404
       @response.headers['X-Cascade'] = 'pass'
       @response.body                 = nil
@@ -153,14 +153,14 @@ module Core
 
       # Safe way to push a particular value on to the request target stack.  Ensures that the
       # original value is reset when the block is exitted.
-      def push(value, &block)
+      def push(value)
         target_before, @target = @target, value
         yield
       ensure
         @target = target_before
       end
 
-      def attributes(object = nil)
+      def attributes(_object = nil)
         io.map_parameters_to_attributes(json, nil)
       end
 

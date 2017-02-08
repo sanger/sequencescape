@@ -431,19 +431,19 @@ class Study < ActiveRecord::Base
   end
 
   # Yields information on the state of all request types in a convenient fashion for displaying in a table.
-  def request_progress(&block)
+  def request_progress
     yield(initial_requests.progress_statistics)
   end
 
   # Yields information on the state of all assets in a convenient fashion for displaying in a table.
-  def asset_progress(assets = nil, &block)
+  def asset_progress(assets = nil)
     wheres = {}
     wheres = { asset_id: assets.map(&:id) } unless assets.blank?
     yield(initial_requests.asset_statistics(wheres))
   end
 
   # Yields information on the state of all samples in a convenient fashion for displaying in a table.
-  def sample_progress(samples = nil, &block)
+  def sample_progress(samples = nil)
     if samples.blank?
       requests.sample_statistics_new
     else

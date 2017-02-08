@@ -20,7 +20,7 @@ class ApiRoutingTest < ActionController::TestCase
       end
     end
 
-    def resource_routes(*resources, &block)
+    def resource_routes(*resources)
       resources_with_nesting = resources.extract_options!
 
       resources.each do |resource|

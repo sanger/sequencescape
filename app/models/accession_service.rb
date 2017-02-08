@@ -109,7 +109,7 @@ class AccessionService
     submit(user, Accessionable::Study.new(study))
   end
 
-  def submit_dac_for_user(study, user)
+  def submit_dac_for_user(_study, _user)
     raise NumberNotRequired, "No need to"
   end
 
@@ -130,19 +130,19 @@ class AccessionService
     Accessionable::Dac.new(study).xml
   end
 
-  def sample_visibility(sample)
+  def sample_visibility(_sample)
     Protect
   end
 
-  def study_visibility(study)
+  def study_visibility(_study)
     Protect
   end
 
-  def policy_visibility(study)
+  def policy_visibility(_study)
     Protect
   end
 
-  def dac_visibility(study)
+  def dac_visibility(_study)
     Protect
   end
 

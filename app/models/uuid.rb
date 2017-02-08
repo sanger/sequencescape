@@ -78,7 +78,7 @@ class Uuid < ActiveRecord::Base
       end
       private :generate_missing_uuids
 
-      def records_for_missing_uuids(&block)
+      def records_for_missing_uuids
         connection.select_all(%Q{
           SELECT r.id AS id
           FROM #{quoted_table_name} r

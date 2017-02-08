@@ -4,7 +4,7 @@ module Informatics
       class List
         attr_accessor :items
 
-        def initialize(options = {})
+        def initialize(_options = {})
           @items = []
         end
 

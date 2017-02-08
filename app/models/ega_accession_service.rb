@@ -13,11 +13,11 @@ class EgaAccessionService < AccessionService
     configatron.accession.ega!.to_hash
   end
 
-  def sample_visibility(sample)
+  def sample_visibility(_sample)
     Protect
   end
 
-  def study_visibility(study)
+  def study_visibility(_study)
     Protect
   end
 
