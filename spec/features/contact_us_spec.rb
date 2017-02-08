@@ -10,7 +10,6 @@ feature 'Contact us' do
     click_link 'HELP'
     expect(page).to have_content('Please, fill in this form')
     expect(find_field('Your email').value).to eq 'login@example.com'
-
     expect(find('#user_query_url', visible: false).value).to eq 'http://www.example.com/'
     fill_in("Your email", with: "new_email@example.com")
     fill_in("What were you trying to do?", with: "Do some stuff")
