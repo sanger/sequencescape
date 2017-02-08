@@ -36,6 +36,5 @@ module Accession
       return configatron.accession.ega!.to_hash if ega?
       return configatron.accession.ena!.to_hash if ena?
     end
-
   end
 end

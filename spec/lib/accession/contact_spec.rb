@@ -1,14 +1,13 @@
 require 'rails_helper'
 
 RSpec.describe Accession::Contact, type: :model, accession: true do
-
   before(:all) do
     @email = configatron.default_email_domain
     configatron.default_email_domain = "example.com"
   end
 
-  let!(:user)     { create(:user, login: "user1", first_name: "Santa", last_name: "Claus")}
-  subject   { Accession::Contact.new(user) }
+  let!(:user) { create(:user, login: "user1", first_name: "Santa", last_name: "Claus") }
+  subject { Accession::Contact.new(user) }
 
   it "should have a name" do
     expect(subject.name).to eq("Santa Claus")

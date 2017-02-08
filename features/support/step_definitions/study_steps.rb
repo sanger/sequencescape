@@ -267,7 +267,7 @@ end
 Given /^study "([^\"]*)" has an accession number$/ do |name|
   study = Study.find_by_name(name) or raise StandardError, "Cannot find study with name '#{name}'"
   study.study_metadata.study_ebi_accession_number = 9999
-  study.study_metadata.data_release_strategy      ||= 'managed'
+  study.study_metadata.data_release_strategy ||= 'managed'
   study.save!
 end
 

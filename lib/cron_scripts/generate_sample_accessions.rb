@@ -1,6 +1,6 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2013,2014,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+# Copyright (C) 2007-2011,2011,2013,2014,2016 Genome Research Ltd.
 class ::Sample
   # This returns all samples that require an accession number to be generated based on the conditions of their
   # studies and themselves.  It comes from a long (and highly frustrating) experience of decoding the
@@ -15,7 +15,7 @@ class ::Sample
       'INNER JOIN study_samples AS iss_ss ON iss_ss.sample_id = samples.id',
       'INNER JOIN study_metadata AS iss_sm ON iss_sm.study_id = iss_ss.study_id',
     ]).where('iss_sm.study_ebi_accession_number <> ""').
-    where(iss_sm: { data_release_strategy:  [ Study::DATA_RELEASE_STRATEGY_OPEN, Study::DATA_RELEASE_STRATEGY_MANAGED ], data_release_timing: Study::DATA_RELEASE_TIMINGS}).uniq
+    where(iss_sm: { data_release_strategy: [Study::DATA_RELEASE_STRATEGY_OPEN, Study::DATA_RELEASE_STRATEGY_MANAGED], data_release_timing: Study::DATA_RELEASE_TIMINGS }).uniq
   }
 
   scope :with_taxon_and_common_name, ->() {
@@ -29,7 +29,7 @@ class ::Sample
   }
 
   scope :with_required_data, ->() {
-    select('samples.*').preload(:sample_metadata, { :studies => :study_metadata })
+    select('samples.*').preload(:sample_metadata, { studies: :study_metadata })
   }
 end
 
@@ -41,9 +41,9 @@ Sample.requiring_accession_number.with_required_data.find_each do |sample|
     sample.validate_ena_required_fields!
     sample.accession_service.submit_sample_for_user(sample, current_user) unless sample.accession_service.nil?
   rescue ActiveRecord::RecordInvalid => exception
-    #warn "Please fill in the required fields for sample: #{sample.name}"
+    # warn "Please fill in the required fields for sample: #{sample.name}"
   rescue AccessionService::NumberNotRequired => exception
-    #warn "An accession number is not required for this study.  Study name: #{sample.study.name}"
+    # warn "An accession number is not required for this study.  Study name: #{sample.study.name}"
   rescue AccessionService::NumberNotGenerated => exception
     warn 'No accession number was generated'
   rescue AccessionService::AccessionServiceError => exception

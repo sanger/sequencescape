@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Accession::Tag, type: :model, accession: true do
-
   it "should only be valid with a name and groups" do
     expect(Accession::Tag.new(name: :tag_1, groups: :a)).to be_valid
     expect(Accession::Tag.new(name: :tag_1)).to_not be_valid
@@ -46,5 +45,4 @@ RSpec.describe Accession::Tag, type: :model, accession: true do
     expect(build(:accession_tag)).to eq(build(:accession_tag))
     expect(build(:sample_taxon_id_accession_tag)).to_not eq(build(:accession_tag))
   end
-    
 end

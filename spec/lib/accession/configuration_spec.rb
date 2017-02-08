@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Accession::Accessionable, type: :model, accession: true do
-
   let(:configuration) { Accession::Configuration.new }
 
   it "should be comparable" do
@@ -16,7 +15,6 @@ RSpec.describe Accession::Accessionable, type: :model, accession: true do
   end
 
   context "without a folder" do
-
     it "should not be loaded" do
       configuration.load!
       expect(configuration).to_not be_loaded
@@ -24,7 +22,6 @@ RSpec.describe Accession::Accessionable, type: :model, accession: true do
   end
 
   context "with a valid folder" do
-
     let(:folder)  { File.join("spec", "data", "accession") }
 
     before(:each) do
@@ -44,5 +41,4 @@ RSpec.describe Accession::Accessionable, type: :model, accession: true do
       expect(configuration.tags).to be_frozen
     end
   end
-
 end

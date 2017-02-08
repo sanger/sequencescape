@@ -15,4 +15,8 @@ SampleAccessioningJob = Struct.new(:sample) do
   def max_attempts
     3
   end
+
+  def queue_name
+    'sample_accessioning'
+  end
 end

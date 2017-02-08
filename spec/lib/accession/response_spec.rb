@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Accession::Response, type: :model, accession: true do
-
   include MockAccession
 
   it "should be successful if the status code is in the correct range" do
@@ -40,5 +39,4 @@ RSpec.describe Accession::Response, type: :model, accession: true do
     expect(response.accession_number).to_not be_present
     expect(response.errors).to eq(["Error 1", "Error 2"])
   end
-
 end

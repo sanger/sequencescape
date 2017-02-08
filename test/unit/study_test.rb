@@ -369,7 +369,6 @@ class StudyTest < ActiveSupport::TestCase
     end
 
     context "#for_sample_accessioning" do
-
       attr_reader :study_1, :study_4, :study_7, :study_8
 
       setup do
@@ -402,8 +401,6 @@ class StudyTest < ActiveSupport::TestCase
         studies = Study.for_sample_accessioning
         refute studies.include?(study_8)
       end
-
     end
-
   end
 end

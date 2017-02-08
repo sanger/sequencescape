@@ -201,7 +201,7 @@ class Study < ActiveRecord::Base
   scope :for_sample_accessioning, ->() {
           joins(:study_metadata)
           .where("study_metadata.study_ebi_accession_number <> ''")
-          .where(study_metadata: { data_release_strategy:  [ Study::DATA_RELEASE_STRATEGY_OPEN, Study::DATA_RELEASE_STRATEGY_MANAGED ], data_release_timing: Study::DATA_RELEASE_TIMINGS})
+          .where(study_metadata: { data_release_strategy: [Study::DATA_RELEASE_STRATEGY_OPEN, Study::DATA_RELEASE_STRATEGY_MANAGED], data_release_timing: Study::DATA_RELEASE_TIMINGS })
         }
 
   extend Metadata
@@ -389,7 +389,6 @@ class Study < ActiveRecord::Base
       return nil if self.snp_study_id.nil?
       self.class.where(snp_parent_study_id: self.snp_study_id).includes(:study).map(&:study)
     end
-
   end
 
   # We only need to validate the field if we are enforcing data release

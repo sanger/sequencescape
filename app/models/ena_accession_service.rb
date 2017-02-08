@@ -17,8 +17,9 @@ class EnaAccessionService < AccessionService
   end
 
   def accession_login
-    configatron.ena_accession_login or raise RuntimeError, "Can't find ENA accession login in configuration file"
+    configatron.ena_accession_login or raise "Can't find ENA accession login in configuration file"
   end
+
   # Most uses of this feature have been human error, so its better to hold off on releasing data than accidentally releasing data
   def sample_visibility(sample)
     Hold

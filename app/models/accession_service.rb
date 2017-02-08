@@ -176,7 +176,6 @@ private
   end
 
   def post_files(file_params)
-
     rc = rest_client_resource
 
     if configatron.disable_web_proxy == true

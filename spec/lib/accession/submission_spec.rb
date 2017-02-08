@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Accession::Submission, type: :model, accession: true do
-
   let!(:user)     { create(:user) }
   let!(:sample)   { build(:accession_sample) }
 
@@ -44,7 +43,7 @@ RSpec.describe Accession::Submission, type: :model, accession: true do
   it "should create a payload" do
     payload = Accession::Submission.new(user, sample).payload
     expect(payload.count).to eq(2)
-    expect(payload.all? { |_, file| File.file?(file)}).to be_truthy
+    expect(payload.all? { |_, file| File.file?(file) }).to be_truthy
     expect(payload.all? { |key, _| key.match(/\p{Lower}/).nil? }).to be_truthy
   end
 
@@ -58,7 +57,6 @@ RSpec.describe Accession::Submission, type: :model, accession: true do
     allow(Accession::Request).to receive(:post).with(submission).and_return(build(:failed_accession_response))
     submission.post
     expect(submission).to_not be_accessioned
-
   end
 
   it "should update the accession number if the submission is successfully posted" do

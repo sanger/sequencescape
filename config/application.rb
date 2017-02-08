@@ -53,12 +53,12 @@ module Sequencescape
 
     # Add additional load paths for your own custom dirs
     # config.load_paths += %W( #{Rails.root}/extras )
-    config.autoload_paths += %W{ #{Rails.root}/app/observers }
-    config.autoload_paths += %W{ #{Rails.root}/app/metal }
-    config.autoload_paths += %W{ #{Rails.root}/app }
-    config.autoload_paths += %W{ #{Rails.root}/lib }
-    config.autoload_paths += %W{ #{Rails.root}/lib/sample_manifest_excel }
-    config.autoload_paths += %W{ #{Rails.root}/lib/accession }
+    config.autoload_paths += %W{#{Rails.root}/app/observers}
+    config.autoload_paths += %W{#{Rails.root}/app/metal}
+    config.autoload_paths += %W{#{Rails.root}/app}
+    config.autoload_paths += %W{#{Rails.root}/lib}
+    config.autoload_paths += %W{#{Rails.root}/lib/sample_manifest_excel}
+    config.autoload_paths += %W{#{Rails.root}/lib/accession}
 
     config.middleware.insert_after ActionDispatch::ParamsParser, ActionDispatch::XmlParamsParser
 

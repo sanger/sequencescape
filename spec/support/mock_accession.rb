@@ -1,8 +1,8 @@
 module MockAccession
   Response = Struct.new(:code, :body)
-  
+
   def successful_accession_response
-    Response.new(200, 
+    Response.new(200,
       '<RECEIPT success="true"><SAMPLE accession="EGA00001000240" /></RECEIPT>')
   end
 

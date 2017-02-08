@@ -1,6 +1,6 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+# Copyright (C) 2016 Genome Research Ltd.
 
 class UnsuitableAccessionService < AccessionService
   self.no_study_accession_needed = true
@@ -14,11 +14,11 @@ class UnsuitableAccessionService < AccessionService
   end
 
   def submit(user, *accessionables)
-    raise AccessionService::NumberNotGenerated, I18n.t(:no_suitable_study,:scope=>'accession_service.unsuitable',study_ids:@study_ids.to_sentence)
+    raise AccessionService::NumberNotGenerated, I18n.t(:no_suitable_study, scope: 'accession_service.unsuitable', study_ids: @study_ids.to_sentence)
   end
 
   def submit_sample_for_user(sample, user)
-    raise AccessionService::NumberNotGenerated, I18n.t(:no_suitable_study,:scope=>'accession_service.unsuitable',study_ids:@study_ids.to_sentence)
+    raise AccessionService::NumberNotGenerated, I18n.t(:no_suitable_study, scope: 'accession_service.unsuitable', study_ids: @study_ids.to_sentence)
   end
 
   def submit_study_for_user(study, user)

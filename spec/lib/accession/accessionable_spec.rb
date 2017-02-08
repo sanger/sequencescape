@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Accession::Accessionable, type: :model, accession: true do
-
   class Accessionobubble
     include Accession::Accessionable
 
@@ -35,5 +34,4 @@ RSpec.describe Accession::Accessionable, type: :model, accession: true do
     expect(file.original_filename).to eq(accessionable.filename)
     file.close!
   end
-
 end

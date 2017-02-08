@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Accession::Request, type: :model, accession: true do
-
   include MockAccession
 
   let(:submission) { build(:accession_submission) }
@@ -18,7 +17,7 @@ RSpec.describe Accession::Request, type: :model, accession: true do
     proxy = configatron.disable_web_proxy
     configatron.proxy = "mockproxy"
 
-    configatron.disable_web_proxy = false 
+    configatron.disable_web_proxy = false
     request = Accession::Request.new(submission)
     expect(RestClient.proxy).to eq(configatron.proxy)
     expect(request.resource.options[:headers]).to have_key(:user_agent)
@@ -26,15 +25,13 @@ RSpec.describe Accession::Request, type: :model, accession: true do
     configatron.disable_web_proxy = true
     request = Accession::Request.new(submission)
     expect(RestClient.proxy).to_not be_present
-    expect(request.resource.options.has_key?(:headers)).to be_falsey
+    expect(request.resource.options.key?(:headers)).to be_falsey
 
     configatron.disable_web_proxy = proxy
     configatron.proxy = nil
-
   end
 
   context "#post" do
-
     it "should return nothing if the submission is not valid" do
       expect(Accession::Request.new(nil).post).to be_nil
     end
@@ -65,6 +62,5 @@ RSpec.describe Accession::Request, type: :model, accession: true do
 
       expect(request.post).to_not be_accessioned
     end
-    
   end
 end

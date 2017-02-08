@@ -40,5 +40,4 @@ class EgaAccessionService < AccessionService
   def private?
     true
   end
-
 end

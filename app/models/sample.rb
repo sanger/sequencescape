@@ -274,7 +274,9 @@ class Sample < ActiveRecord::Base
   end
 
   def accession
-    Delayed::Job.enqueue SampleAccessioningJob.new(self) #if valid?
+    if configatron.accession_samples
+      Delayed::Job.enqueue SampleAccessioningJob.new(self)
+    end
   end
 
   GC_CONTENTS     = ['Neutral', 'High AT', 'High GC']

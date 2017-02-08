@@ -1,5 +1,4 @@
 FactoryGirl.define do
-
   factory :sample_metadata_for_accessioning, class: Sample::Metadata do
     sample_taxon_id 1
     sample_common_name "A common name"
@@ -16,12 +15,12 @@ FactoryGirl.define do
   end
 
   factory :sample_for_accessioning_with_open_study, parent: :sample do
-    studies           { [ create(:open_study, accession_number: "ENA123") ] }
+    studies           { [create(:open_study, accession_number: "ENA123")] }
     sample_metadata   { create(:sample_metadata_for_accessioning) }
   end
 
   factory :sample_for_accessioning_with_managed_study, parent: :sample do
-    studies           { [ create(:managed_study, accession_number: "ENA123") ] }
+    studies           { [create(:managed_study, accession_number: "ENA123")] }
     sample_metadata   { create(:sample_metadata_for_accessioning) }
   end
 
@@ -32,8 +31,10 @@ FactoryGirl.define do
     initialize_with { new(standard_tags, sample) }
 
     factory :invalid_accession_sample do
-      sample { create(:sample_for_accessioning_with_open_study, 
-        sample_metadata: create(:sample_metadata_with_accession_number))}
+      sample {
+        create(:sample_for_accessioning_with_open_study,
+        sample_metadata: create(:sample_metadata_with_accession_number))
+      }
     end
   end
 end

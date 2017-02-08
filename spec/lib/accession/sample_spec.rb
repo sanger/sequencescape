@@ -1,8 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Accession::Sample, type: :model, accession: true do
-
-  let(:tag_list)        { build(:standard_accession_tag_list) }
+  let(:tag_list) { build(:standard_accession_tag_list) }
 
   it "should not be sent for accessioning if the sample has already been accessioned" do
     sample = create(:sample_for_accessioning_with_open_study, sample_metadata: create(:sample_metadata_for_accessioning, sample_ebi_accession_number: "ENA123"))
@@ -15,11 +14,9 @@ RSpec.describe Accession::Sample, type: :model, accession: true do
 
     sample = create(:sample, studies: [create(:open_study, accession_number: "ENA123"), create(:managed_study, accession_number: "ENA123")])
     expect(Accession::Sample.new(tag_list, sample)).to_not be_valid
-
   end
 
   it "should not be sent for accessioning if the sample doesn't have the required fields" do
-
     sample = create(:sample_for_accessioning_with_open_study, sample_metadata: create(:sample_metadata_for_accessioning, sample_taxon_id: nil))
     expect(Accession::Sample.new(tag_list, sample)).to_not be_valid
 
@@ -40,7 +37,6 @@ RSpec.describe Accession::Sample, type: :model, accession: true do
 
     sample = create(:sample_for_accessioning_with_managed_study, sample_metadata: create(:sample_metadata_for_accessioning, sample_common_name: nil))
     expect(Accession::Sample.new(tag_list, sample)).to_not be_valid
-
   end
 
   it "an appropriate service should be chosen based on the associated study" do
@@ -52,7 +48,6 @@ RSpec.describe Accession::Sample, type: :model, accession: true do
 
     sample = create(:sample, studies: [create(:open_study)])
     expect(Accession::Sample.new(tag_list, sample).service).to_not be_valid
-
   end
 
   it "should have a name and a title" do
@@ -96,7 +91,6 @@ RSpec.describe Accession::Sample, type: :model, accession: true do
     xml = Nokogiri::XML::Document.parse(sample.to_xml)
     sample_attributes_tags = xml.at("SAMPLE_ATTRIBUTES")
     expect(sample_attributes_tags.search("TAG").collect(&:text) & tags.array_express_labels).to be_empty
-
   end
 
   it "can update accession number for sample" do
@@ -104,6 +98,4 @@ RSpec.describe Accession::Sample, type: :model, accession: true do
     expect(sample.update_accession_number("ENA1234")).to be_truthy
     expect(sample.ebi_accession_number).to eq("ENA1234")
   end
-
-
 end

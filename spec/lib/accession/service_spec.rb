@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Accession::Service, type: :model, accession: true do
-
   it "can have a provider" do
     service = Accession::Service.new("open")
     expect(service.provider).to eq(:ENA)
@@ -55,5 +54,4 @@ RSpec.describe Accession::Service, type: :model, accession: true do
     service = Accession::Service.new("closed")
     expect(service.login).to be_nil
   end
-
 end

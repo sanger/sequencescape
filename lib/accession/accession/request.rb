@@ -45,6 +45,5 @@ module Accession
         resource.options[:headers] = { user_agent: "Sequencescape Accession Client (#{Rails.env})" }
       end
     end
-
   end
 end
