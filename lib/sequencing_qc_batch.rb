@@ -125,7 +125,7 @@ qc_completed
   def submit_to_qc_queue
     logger.debug "Batch #{id} attempting to be added to QC queue. State is #{qc_state}"
     # Get QC workflow and its tasks
-    workflow = LabInterface::Workflow.find_by_name("quality control", include: [:tasks])
+    workflow = LabInterface::Workflow.includes(:tasks).find_by!(name: "quality control")
     tasks    = workflow.tasks
     if qc_state == "qc_pending"
       # Submit requests for all tasks in the workflow

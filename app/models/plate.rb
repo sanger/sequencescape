@@ -195,25 +195,24 @@ class Plate < Asset
   end
 
   def priority
-    Submission.select('MAX(submissions.priority) AS priority')
-      .joins([
+    Submission.joins([
         'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
         'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.asset_id'
       ])
-      .where(['caplp.container_id = ?', id]).first.try(:priority) ||
-    Submission.select('MAX(submissions.priority) AS priority')
-      .joins([
+      .where(['caplp.container_id = ?', id]).maximum('submissions.priority') ||
+    Submission.joins([
         'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
         'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.target_asset_id'
       ])
-      .where(['caplp.container_id = ?', id]).first.try(:priority) || 0
+      .where(['caplp.container_id = ?', id]).maximum('submissions.priority') ||
+    0
   end
 
   def study
     wells.first.try(:study)
   end
 
-  contains :wells do # , :order => '`assets`.map_id ASC' do
+  contains :wells do
     # After importing wells we need to also create the AssetLink and WellAttribute information for them.
     def post_import(links_data)
       time_now = Time.now
@@ -659,7 +658,7 @@ class Plate < Asset
 
   def lookup_stock_plate
     spp = PlatePurpose.considered_stock_plate.pluck(:id)
-    ancestors.order('created_at DESC').where(plate_purpose_id: spp).first
+    ancestors.order('created_at DESC').find_by(plate_purpose_id: spp)
   end
   private :lookup_stock_plate
 
@@ -669,7 +668,7 @@ class Plate < Asset
 
   def ancestor_of_purpose(ancestor_purpose_id)
     return self if plate_purpose_id == ancestor_purpose_id
-    ancestors.order('created_at DESC').where(plate_purpose_id: ancestor_purpose_id).first
+    ancestors.order(created_at: :desc).find_by(plate_purpose_id: ancestor_purpose_id)
   end
 
   def ancestors_of_purpose(ancestor_purpose_id)
@@ -828,7 +827,7 @@ class Plate < Asset
         'INNER JOIN requests ON requests.request_type_id = request_types.id',
         'INNER JOIN well_links ON well_links.source_well_id = requests.asset_id AND well_links.type = "stock"',
         'INNER JOIN container_associations AS ca ON ca.content_id = well_links.target_well_id'
-      ]).where(['ca.container_id = ?', id]).first.try(:name) || 'UNKNOWN'
+      ]).find_by(['ca.container_id = ?', id]).try(:name) || 'UNKNOWN'
   end
 
   # Barcode is stored as a string, jet in a number of places is treated as

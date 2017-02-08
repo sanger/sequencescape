@@ -78,7 +78,7 @@ private
   # should take two parameters (the barcode and the human version of that barcode) and return the
   # value that can be used by +model_class.find_by_barcode+.  +filter_options+ are exactly as
   # would be specified for a +before_action+.
-  def self.find_by_barcode_filter(model_class, filter_options, &block)
+  def self.define_find_from_barcode_filter(model_class, filter_options, &block)
     name                        = model_class.name.underscore
     filter_name                 = :"find_#{ name }_from_barcode"
     rescue_exception_for_filter = :"rescue_#{ filter_name }"
@@ -118,8 +118,8 @@ private
     before_action(filter_name, filter_options)
   end
 
-  find_by_barcode_filter(User,  only: [:update, :quick_update]) { |_barcode, human_barcode| human_barcode }
-  find_by_barcode_filter(Plate, only: [:search, :quick_update]) { |barcode, _human_barcode| Barcode.number_to_human(barcode) }
+  define_find_from_barcode_filter(User,  only: [:update, :quick_update]) { |_barcode, human_barcode| human_barcode }
+  define_find_from_barcode_filter(Plate, only: [:search, :quick_update]) { |barcode, _human_barcode| Barcode.number_to_human(barcode) }
 
   # Handle the case where ActiveRecord::RecordNotFound is raised when looking for a Plate by
   # physically creating the Plate in the database!

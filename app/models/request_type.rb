@@ -35,7 +35,7 @@ class RequestType < ActiveRecord::Base
   has_many :extended_validators, through: :request_type_extended_validators, dependent: :destroy
 
   def default_library_type
-    library_types.where(library_types_request_types: { is_default: true }).first
+    library_types.find_by(library_types_request_types: { is_default: true })
   end
 
   # Returns a collect of pipelines for which this RequestType is valid control.
