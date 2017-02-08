@@ -4,11 +4,11 @@
 
 <%= form_for(:user_query, url: {action: "create"}) do |f| %>
 
-  <%= f.hidden_field 'url', value: @user_query.url %>
+  <%= f.hidden_field :url, value: @user_query.url %>
 
   <div class="form-group">
-    <%= f.label :user_name, 'Name: ' %>
-    <%= f.text_field :user_name %>
+    <%= f.label :user_email, 'Your email: ' %>
+    <%= f.email_field :user_email %>
   </div>
 
   <div class="form-group">

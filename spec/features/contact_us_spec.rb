@@ -2,22 +2,22 @@
 require 'rails_helper'
 
 feature 'Contact us' do
+  let(:user) { create :user, email: 'login@example.com' }
 
-  let(:user) { create :user }
-
-  scenario 'user contact us if something is wrong' do
+  scenario 'user can ask for help' do
     login_user user
     visit root_path
-    click_link 'contact us'
+    click_link 'HELP'
     expect(page).to have_content('Please, fill in this form')
-    click_button('Send')
-    expect(page).to have_content("User name can't be blank")
-    fill_in("Name", with: "John")
+    expect(find_field('Your email').value).to eq 'login@example.com'
+
+    expect(find('#user_query_url', visible: false).value).to eq 'http://www.example.com/'
+    fill_in("Your email", with: "new_email@example.com")
     fill_in("What were you trying to do?", with: "Do some stuff")
     fill_in("What has happened?", with: "Something went wrong")
     fill_in("What did you expect to happen?", with: "Sqsc to work")
     click_button('Send')
-    expect(page).to have_content('Thank you for your request. We will contact you shortly')
+    expect(page).to have_content('Thank you for your request. We will contact you shortly (via new_email@example.com)')
   end
 
   def login_user(user)
