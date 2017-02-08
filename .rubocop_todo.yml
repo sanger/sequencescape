@@ -591,21 +591,6 @@ Style/DoubleNegation:
     - 'app/models/submission/state_machine.rb'
     - 'features/support/developing.rb'
 
-# Offense count: 12
-# Cop supports --auto-correct.
-Style/EachWithObject:
-  Exclude:
-    - 'app/controllers/pipelines_controller.rb'
-    - 'app/controllers/studies/sample_registration_controller.rb'
-    - 'app/models/lab_event.rb'
-    - 'app/models/sample.rb'
-    - 'app/models/study.rb'
-    - 'app/models/submission_template.rb'
-    - 'app/models/tasks/assign_tubes_to_wells_handler.rb'
-    - 'app/models/transfer/between_plates.rb'
-    - 'features/support/step_definitions/api_steps.rb'
-    - 'test/functional/workflows_controller_test.rb'
-
 # Offense count: 8
 # Cop supports --auto-correct.
 Style/ElseAlignment:

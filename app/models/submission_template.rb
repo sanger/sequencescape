@@ -101,17 +101,16 @@ class SubmissionTemplate < ActiveRecord::Base
   # the ActiveRecord::Base derived classes when params contains their instances.  It'll appear as insecure
   # method errors somewhere else in the code.
   def safely_duplicate(params)
-    params.inject({}) do |cloned, (k, v)|
+    params.each_with_object({}) do |(k, v), cloned|
       cloned[k] = if v.is_a?(ActiveRecord::Base)
-        v
+                    v
                   elsif v.is_a?(Array) and v.first.is_a?(ActiveRecord::Base)
-        v.dup                           # Duplicate the array, but not the contents
+                    v.dup                           # Duplicate the array, but not the contents
                   elsif v.is_a?(Array) or v.is_a?(Hash)
-        Marshal.load(Marshal.dump(v))   # Make safe copies of arrays and hashes
+                    Marshal.load(Marshal.dump(v))   # Make safe copies of arrays and hashes
                   else
-        v
+                    v
                   end
-      cloned
     end
   end
   private :safely_duplicate

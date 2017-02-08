@@ -277,10 +277,8 @@ class Sample < ActiveRecord::Base
       gender: GENDERS,
       dna_source: DNA_SOURCES,
       sample_sra_hold: SRA_HOLD_VALUES
-#      :reference_genome        => ??
-    }.inject({}) do |h, (k, v)|
-      h[k] = v.inject({}) { |a, b| a[b.downcase] = b; a }
-      h
+    }.each_with_object({}) do |(k, v), h|
+      h[k] = v.each_with_object({}) { |b, a| a[b.downcase] = b }
     end
 
     before_validation do |record|

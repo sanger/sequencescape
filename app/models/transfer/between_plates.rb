@@ -50,13 +50,12 @@ class Transfer::BetweenPlates < Transfer
     transfers.each { |source, dests| dests.each { |dest| dest_sources[dest] << source } } if destination.supports_multiple_submissions?
 
     pcg = source.pre_cap_groups
-    location_subs = dest_sources.inject({}) do |store, dest_source|
+    location_subs = dest_sources.each_with_object({}) do |dest_source, store|
       dest_loc, sources = *dest_source
       uuid, transfer_details = pcg.detect { |k, v| v[:wells].sort == sources.sort }
       raise StandardError, "Could not find appropriate pool" if transfer_details.nil?
       pcg.delete(uuid)
       store[dest_loc] = transfer_details[:submission_id]
-      store
     end
 
     source_wells.each do |location, source_well|

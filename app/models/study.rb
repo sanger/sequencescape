@@ -273,9 +273,8 @@ class Study < ActiveRecord::Base
       study_sra_hold: STUDY_SRA_HOLDS,
       contains_human_dna: YES_OR_NO,
       commercially_available: YES_OR_NO
-    }.inject({}) do |h, (k, v)|
-      h[k] = v.inject({}) { |a, b| a[b.downcase] = b; a }
-      h
+    }.each_with_object({}) do |(k, v), h|
+      h[k] = v.each_with_object({}) { |b, a| a[b.downcase] = b }
     end
 
     before_validation do |record|

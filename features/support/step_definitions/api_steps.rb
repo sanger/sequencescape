@@ -33,13 +33,10 @@ def assert_hash_equal(h1, h2, *args)
   assert_equal(d1, d2, *args)
 end
 
-# def assert_hash_equal(*args) assert_equal(*args) end
-
 def walk_hash_structure(hash_data, &block)
   if hash_data.is_a?(Hash)
-    hash_data.inject({}) do |hash, (key, value)|
+    hash_data.each_with_object({}) do |(key, value), hash|
       hash[key] = walk_hash_structure(value, &block) unless yield(key)
-      hash
     end
   elsif hash_data.is_a?(Array)
     hash_data.map { |entry| walk_hash_structure(entry, &block) }
