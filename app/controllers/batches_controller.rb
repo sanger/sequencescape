@@ -509,7 +509,7 @@ class BatchesController < ApplicationController
 
   def swap
     if @batch.swap(current_user, 'batch_1' => { 'id' => params['batch']['1'], 'lane' => params['batch']['position']['1'] },
-                    'batch_2' => { 'id' => params['batch']['2'], 'lane' => params['batch']['position']['2'] })
+                                 'batch_2' => { 'id' => params['batch']['2'], 'lane' => params['batch']['position']['2'] })
       flash[:notice] = 'Successfully swapped lane positions'
       redirect_to batch_path(@batch)
     else
@@ -521,8 +521,8 @@ class BatchesController < ApplicationController
   def download_spreadsheet
     csv_string = Tasks::PlateTemplateHandler.generate_spreadsheet(@batch)
     send_data csv_string, type: 'text/plain',
-     filename: "#{@batch.id}_cherrypick_layout.csv",
-     disposition: 'attachment'
+                          filename: "#{@batch.id}_cherrypick_layout.csv",
+                          disposition: 'attachment'
   end
 
   def gwl_file
@@ -531,8 +531,8 @@ class BatchesController < ApplicationController
                                                              @batch.total_volume_to_cherrypick,
                                                              params[:plate_type])
     send_data tecan_gwl_file_as_string, type: 'text/plain',
-     filename: "#{@batch.id}_batch_#{@plate_barcode}.gwl",
-     disposition: 'attachment'
+                                        filename: "#{@batch.id}_batch_#{@plate_barcode}.gwl",
+                                        disposition: 'attachment'
   end
 
   def find_batch_by_id
@@ -596,22 +596,22 @@ class BatchesController < ApplicationController
   def pulldown_batch_report
     csv_string = @batch.pulldown_batch_report
     send_data csv_string, type: 'text/plain',
-     filename: "batch_#{@batch.id}_report.csv",
-     disposition: 'attachment'
+                          filename: "batch_#{@batch.id}_report.csv",
+                          disposition: 'attachment'
   end
 
   def pacbio_sample_sheet
     csv_string = PacBio::SampleSheet.new.create_csv_from_batch(@batch)
     send_data csv_string, type: 'text/plain',
-     filename: "batch_#{@batch.id}_sample_sheet.csv",
-     disposition: 'attachment'
+                          filename: "batch_#{@batch.id}_sample_sheet.csv",
+                          disposition: 'attachment'
   end
 
   def sample_prep_worksheet
     csv_string = PacBio::Worksheet.new.create_csv_from_batch(@batch)
     send_data csv_string, type: 'text/plain',
-     filename: "batch_#{@batch.id}_worksheet.csv",
-     disposition: 'attachment'
+                          filename: "batch_#{@batch.id}_worksheet.csv",
+                          disposition: 'attachment'
   end
 
   def find_batch_by_barcode

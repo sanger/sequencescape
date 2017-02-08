@@ -26,11 +26,11 @@ class BatchPlateTest < ActiveSupport::TestCase
     options = { count: '3', printable: printable, batch: batch }
     @plate_label = LabelPrinter::Label::BatchPlate.new(options)
     @label = { top_left: (Date.today.strftime('%e-%^b-%Y')).to_s,
-            bottom_left: (plate1.sanger_human_barcode).to_s,
-            top_right: (study_abbreviation).to_s,
-            bottom_right: "#{role} #{purpose} #{barcode1}",
-            top_far_right: nil,
-            barcode: (plate1.ean13_barcode).to_s }
+               bottom_left: (plate1.sanger_human_barcode).to_s,
+               top_right: (study_abbreviation).to_s,
+               bottom_right: "#{role} #{purpose} #{barcode1}",
+               top_far_right: nil,
+               barcode: (plate1.ean13_barcode).to_s }
   end
 
   test 'should have count' do

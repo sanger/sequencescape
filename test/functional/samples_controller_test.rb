@@ -30,11 +30,11 @@ class SamplesControllerTest < ActionController::TestCase
              reference_genome_id: FactoryGirl.create(:reference_genome).id
             }
         },
-        formats: ['html'],
-        ignore_actions: %w(show create destroy),
-        protect_on_update: [:name],
-        extra_on_update: { sample_metadata_attributes: { check: { genotype: 'false', phenotype: 'true' } } },
-        user: -> { user = FactoryGirl.create(:user); user.is_administrator; user }
+                formats: ['html'],
+                ignore_actions: %w(show create destroy),
+                protect_on_update: [:name],
+                extra_on_update: { sample_metadata_attributes: { check: { genotype: 'false', phenotype: 'true' } } },
+                user: -> { user = FactoryGirl.create(:user); user.is_administrator; user }
     )
 
     # TODO: Test without admin

@@ -32,11 +32,11 @@ class SequenomQcPlatesControllerTest < ActionController::TestCase
       RestClient.expects(:post)
 
       post :create, 'user_barcode' => (Barcode.human_to_machine_barcode(@user.barcode)).to_s,
-        'input_plate_names' => { '1' => (plate1.ean13_barcode).to_s, '2' => (plate2.ean13_barcode).to_s, '3' => '', '4' => '' },
-        'plate_prefix' => 'QC',
-        'gender_check_bypass' => '1',
-        'barcode_printer' => { 'id' => (barcode_printer.id).to_s },
-        'number_of_barcodes' => '1'
+                    'input_plate_names' => { '1' => (plate1.ean13_barcode).to_s, '2' => (plate2.ean13_barcode).to_s, '3' => '', '4' => '' },
+                    'plate_prefix' => 'QC',
+                    'gender_check_bypass' => '1',
+                    'barcode_printer' => { 'id' => (barcode_printer.id).to_s },
+                    'number_of_barcodes' => '1'
     end
   end
 end

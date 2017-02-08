@@ -24,16 +24,16 @@ module SetupLibraryTypes
   def self.existing_defaults_for(request_type)
     {
       'LibraryCreationRequest' => 'Standard',
-     'MultiplexedLibraryCreationRequest' => 'Standard',
-     'Pulldown::Requests::WgsLibraryRequest' => 'Standard',
-     'Pulldown::Requests::ScLibraryRequest' => 'Agilent Pulldown',
-     'Pulldown::Requests::IscLibraryRequest' => 'Agilent Pulldown',
-     'IlluminaB::Requests::StdLibraryRequest' => 'Standard',
-     'IlluminaHtp::Requests::SharedLibraryPrep' => 'Standard',
-     'IlluminaHtp::Requests::LibraryCompletion' => 'Standard',
-     'Pulldown::Requests::IscLibraryRequestPart' => 'Agilent Pulldown',
-     'IlluminaC::Requests::PcrLibraryRequest' => 'Manual Standard WGS (Plate)',
-     'IlluminaC::Requests::NoPcrLibraryRequest' => 'No PCR (Plate)'
+      'MultiplexedLibraryCreationRequest' => 'Standard',
+      'Pulldown::Requests::WgsLibraryRequest' => 'Standard',
+      'Pulldown::Requests::ScLibraryRequest' => 'Agilent Pulldown',
+      'Pulldown::Requests::IscLibraryRequest' => 'Agilent Pulldown',
+      'IlluminaB::Requests::StdLibraryRequest' => 'Standard',
+      'IlluminaHtp::Requests::SharedLibraryPrep' => 'Standard',
+      'IlluminaHtp::Requests::LibraryCompletion' => 'Standard',
+      'Pulldown::Requests::IscLibraryRequestPart' => 'Agilent Pulldown',
+      'IlluminaC::Requests::PcrLibraryRequest' => 'Manual Standard WGS (Plate)',
+      'IlluminaC::Requests::NoPcrLibraryRequest' => 'No PCR (Plate)'
    }[request_type.request_class_name]
   end
 end

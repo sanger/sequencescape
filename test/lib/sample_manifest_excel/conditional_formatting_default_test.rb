@@ -6,8 +6,8 @@ class ConditionalFormattingDefaultTest < ActiveSupport::TestCase
   context 'basic' do
     setup do
       @options = { style: { bg_color: '82CAFA', type: :dxf },
-                  options: { type: :cellIs, formula: 'FALSE', operator: :equal, priority: 1 },
-                  type: 'a_type' }.with_indifferent_access
+                   options: { type: :cellIs, formula: 'FALSE', operator: :equal, priority: 1 },
+                   type: 'a_type' }.with_indifferent_access
       @conditional_formatting_default = SampleManifestExcel::ConditionalFormattingDefault.new(options)
     end
 
@@ -39,8 +39,8 @@ class ConditionalFormattingDefaultTest < ActiveSupport::TestCase
   context 'expression' do
     setup do
         @options = { style: { bg_color: 'FF0000', type: :dxf },
-                  options: { type: :expression, priority: 2 },
-                  type: :another_type }.with_indifferent_access
+                     options: { type: :expression, priority: 2 },
+                     type: :another_type }.with_indifferent_access
       @conditional_formatting_default = SampleManifestExcel::ConditionalFormattingDefault.new(options)
     end
 
@@ -58,8 +58,8 @@ class ConditionalFormattingDefaultTest < ActiveSupport::TestCase
   context 'with formula' do
     setup do
         @options = { style: { bg_color: 'FF0000', type: :dxf },
-                  options: { type: :expression, priority: 2 },
-                  type: :len }.with_indifferent_access
+                     options: { type: :expression, priority: 2 },
+                     type: :len }.with_indifferent_access
       @conditional_formatting_default = SampleManifestExcel::ConditionalFormattingDefault.new(options)
     end
 

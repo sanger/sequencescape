@@ -757,7 +757,7 @@ class BatchTest < ActiveSupport::TestCase
             assert(
               @left_batch.swap(
                 @user,                   'batch_1' => { 'id' => @left_batch.id.to_s, 'lane' => left_position.to_s },
-                  'batch_2' => { 'id' => @right_batch.id.to_s, 'lane' => right_position.to_s }
+                                         'batch_2' => { 'id' => @right_batch.id.to_s, 'lane' => right_position.to_s }
              )
             )
 

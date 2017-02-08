@@ -206,11 +206,11 @@ class Order < ActiveRecord::Base
   def duplicate(&block)
     create_parameters = template_parameters
     new_order = Order.create(create_parameters.merge(study: study, workflow: workflow,
-          user: user, assets: assets, state: state,
-          request_types: request_types,
-          request_options: request_options,
-          comments: comments,
-          project_id: project_id), &block)
+                                                     user: user, assets: assets, state: state,
+                                                     request_types: request_types,
+                                                     request_options: request_options,
+                                                     comments: comments,
+                                                     project_id: project_id), &block)
     new_order.save
     new_order
   end

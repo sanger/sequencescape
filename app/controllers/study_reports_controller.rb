@@ -44,7 +44,7 @@ class StudyReportsController < ApplicationController
   def show
     study_report = StudyReport.find(params[:id])
     send_data(study_report.report.read, type: 'text/plain',
-    filename: "#{study_report.study.dehumanise_abbreviated_name}_progress_report.csv",
-    disposition: 'attachment')
+                                        filename: "#{study_report.study.dehumanise_abbreviated_name}_progress_report.csv",
+                                        disposition: 'attachment')
   end
 end

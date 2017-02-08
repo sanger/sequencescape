@@ -17,8 +17,8 @@ class SessionsControllerTest < ActionController::TestCase
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
     @user = FactoryGirl.create(:user, login: 'john', email: 'john@beatles.com',
-      password: 'test', password_confirmation: 'test',
-      created_at: 5.days.ago.to_s)
+                                      password: 'test', password_confirmation: 'test',
+                                      created_at: 5.days.ago.to_s)
   end
 
   def test_should_login_and_redirect

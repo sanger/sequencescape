@@ -15,7 +15,7 @@ class PopulateAncestorsFromPlateToTube < ActiveRecord::Migration
                               plate_purpose_id: purpose.id
                             }
                           },
-            joins: [
+                          joins: [
               'INNER JOIN assets as destinations on destinations.id=destination_id'
               ]) do |t|
 

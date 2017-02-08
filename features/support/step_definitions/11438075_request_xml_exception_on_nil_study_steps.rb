@@ -21,8 +21,8 @@ Given /^I have a request (\d+) without a request type$/ do |request_id|
   project = FactoryGirl.create(:project, id: 1)
   request = FactoryGirl.create(
     :request, id: request_id,
-    study: study, project: project,
-    asset: FactoryGirl.create(:sample_tube)
+              study: study, project: project,
+              asset: FactoryGirl.create(:sample_tube)
   )
   request.update_attributes!(request_type: nil)
 end

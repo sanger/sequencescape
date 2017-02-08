@@ -59,7 +59,7 @@ class SampleRegistrationTest < ActionDispatch::PerformanceTest
                   'donor_id' => 'test'
                 }
               },
-            'sample_tube_attributes' => {
+              'sample_tube_attributes' => {
                 'two_dimensional_barcode' => 'test'
               }
             }

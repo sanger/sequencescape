@@ -294,9 +294,9 @@ class Well < Aliquot::Receptacle
 
   def qc_data
     { pico: get_pico_pass,
-     gel: get_gel_pass,
-     sequenom: get_sequenom_pass,
-     concentration: get_concentration }
+      gel: get_gel_pass,
+      sequenom: get_sequenom_pass,
+      concentration: get_concentration }
   end
 
   def buffer_required?

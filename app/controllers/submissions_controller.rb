@@ -23,12 +23,12 @@ class SubmissionsController < ApplicationController
 
     if @presenter.save
       render partial: 'saved_order',
-        locals: {
+             locals: {
           presenter: @presenter,
           order: @presenter.order,
           form: :dummy_form_symbol
         },
-        layout: false
+             layout: false
     else
       render partial: 'order_errors', layout: false, status: 422
     end

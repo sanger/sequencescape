@@ -106,7 +106,7 @@ class RequestsControllerTest < ActionController::TestCase
 
         @project = FactoryGirl.create(:project_with_order, name: 'Prj1')
          @reqwest = FactoryGirl.create :request, user: @user, request_type: FactoryGirl.create(:request_type), study: FactoryGirl.create(:study, name: 'ReqCon XXX'),
-                                  workflow: FactoryGirl.create(:submission_workflow), project: @project
+                                                 workflow: FactoryGirl.create(:submission_workflow), project: @project
       end
 
       context 'update invalid and failed' do

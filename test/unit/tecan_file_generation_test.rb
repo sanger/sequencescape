@@ -24,7 +24,7 @@ class GeneratorTest < ActiveSupport::TestCase
           'plate_size' => 96,
           }
         },
-        'destination' => {
+      'destination' => {
           '119572' => {
             'name' => 'ABgene 0800',
             'plate_size' => 96,

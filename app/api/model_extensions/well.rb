@@ -13,7 +13,7 @@ module ModelExtensions::Well
               # :uuid_object is included elsewhere, and trying to also include it here
               # actually disrupts the eager loading.
                               plate: :uuid_object,
-                aliquots: [
+                              aliquots: [
                   :bait_library, {
                     tag: :tag_group,
                     sample: [

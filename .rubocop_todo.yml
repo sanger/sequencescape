@@ -280,13 +280,6 @@ Style/AlignArray:
     - 'test/unit/manifest_generator_test.rb'
     - 'test/unit/parsers/bioanalysis_csv_parser_test.rb'
 
-# Offense count: 2041
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedHashRocketStyle, EnforcedColonStyle, EnforcedLastArgumentHashStyle, SupportedLastArgumentHashStyles.
-# SupportedLastArgumentHashStyles: always_inspect, always_ignore, ignore_implicit, ignore_explicit
-Style/AlignHash:
-  Enabled: false
-
 # Offense count: 64
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles, IndentationWidth.

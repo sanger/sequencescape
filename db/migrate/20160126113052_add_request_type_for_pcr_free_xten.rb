@@ -42,10 +42,10 @@ illumina_b_hiseq_x_paired_end_sequencing illumina_a_hiseq_x_paired_end_sequencin
       end
 
       st = SubmissionSerializer.construct!(name: 'IHTP - PCR Free Auto - HiSeq-X sequencing',
-        submission_class_name: 'FlexibleSubmission',
-        product_line: 'Illumina-HTP',
-        product_catalogue: 'PFHSqX',
-        submission_parameters: {
+                                           submission_class_name: 'FlexibleSubmission',
+                                           product_line: 'Illumina-HTP',
+                                           product_catalogue: 'PFHSqX',
+                                           submission_parameters: {
           request_types: [
             'htp_pcr_free_lib',
             'illumina_htp_strip_tube_creation',

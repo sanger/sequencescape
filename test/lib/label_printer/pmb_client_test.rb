@@ -14,13 +14,13 @@ class PmbClientTest < ActiveSupport::TestCase
       'body' => [
         { 'location' => {
           'location' => 'location',
-            'parent_location' => 'parent_location',
-            'barcode' => 'barcode'
+          'parent_location' => 'parent_location',
+          'barcode' => 'barcode'
         } },
         { 'location' => {
           'location' => 'location',
-            'parent_location' => 'parent_location',
-            'barcode' => 'barcode'
+          'parent_location' => 'parent_location',
+          'barcode' => 'barcode'
         } }
       ]
     }
@@ -32,8 +32,8 @@ class PmbClientTest < ActiveSupport::TestCase
 
   test 'sends a print job to the API' do
     attributes = { 'printer_name' => 'd304bc',
-                  'label_template_id' => 1,
-                  'labels' => labels }
+                   'label_template_id' => 1,
+                   'labels' => labels }
 
     RestClient.expects(:post).with('http://localhost:9292/v1/print_jobs',
                         { 'data' => { 'attributes' => attributes } }.to_json,

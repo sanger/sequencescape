@@ -91,11 +91,11 @@ module IlluminaC::Requests
         }
       ].each do |params|
          params.merge!(workflow: Submission::Workflow.find_by(name: 'Next-gen sequencing'),
-          asset_type: 'Well',
-          order: 1,
-          initial_state: 'pending',
-          billable: true,
-          product_line: ProductLine.find_by(name: 'Illumina-C'))
+                       asset_type: 'Well',
+                       order: 1,
+                       initial_state: 'pending',
+                       billable: true,
+                       product_line: ProductLine.find_by(name: 'Illumina-C'))
         yield(params)
       end
     end

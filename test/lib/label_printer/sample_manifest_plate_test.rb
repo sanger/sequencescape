@@ -21,12 +21,12 @@ class SampleManifestPlateTest < ActiveSupport::TestCase
 
       options = { sample_manifest: manifest, only_first_label: false }
       @plate_label = LabelPrinter::Label::SampleManifestPlate.new(options)
-      @label =  { top_left: (Date.today.strftime('%e-%^b-%Y')).to_s,
-                bottom_left: (plate1.sanger_human_barcode).to_s,
-                top_right: (purpose).to_s,
-                bottom_right: "#{study_abbreviation} #{barcode1}",
-                top_far_right: nil,
-                barcode: (plate1.ean13_barcode).to_s }
+      @label = { top_left: (Date.today.strftime('%e-%^b-%Y')).to_s,
+                 bottom_left: (plate1.sanger_human_barcode).to_s,
+                 top_right: (purpose).to_s,
+                 bottom_right: "#{study_abbreviation} #{barcode1}",
+                 top_far_right: nil,
+                 barcode: (plate1.ean13_barcode).to_s }
     end
 
     should 'have the right plates' do

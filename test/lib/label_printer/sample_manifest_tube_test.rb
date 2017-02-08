@@ -21,11 +21,11 @@ class SampleManifestTubeTest < ActiveSupport::TestCase
     options = { sample_manifest: @manifest, only_first_label: false }
     @tube_label = LabelPrinter::Label::SampleManifestTube.new(options)
     @label = { top_line: (manifest.study.abbreviation).to_s,
-              middle_line: barcode1,
-              bottom_line: (Date.today.strftime('%e-%^b-%Y')).to_s,
-              round_label_top_line: prefix,
-              round_label_bottom_line: barcode1,
-              barcode: tube1.ean13_barcode }
+               middle_line: barcode1,
+               bottom_line: (Date.today.strftime('%e-%^b-%Y')).to_s,
+               round_label_top_line: prefix,
+               round_label_bottom_line: barcode1,
+               barcode: tube1.ean13_barcode }
   end
 
   test 'should return the right list of tubes' do

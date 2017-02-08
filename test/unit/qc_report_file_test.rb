@@ -65,9 +65,9 @@ class QcReport::FileTest < ActiveSupport::TestCase
         @study = create :study, name: 'Example study'
         Timecop.freeze(DateTime.parse('01/01/2015')) do
           @report = create :qc_report, study: @study,
-            exclude_existing: false,
-            product_criteria: @criteria,
-            state: 'awaiting_proceed'
+                                       exclude_existing: false,
+                                       product_criteria: @criteria,
+                                       state: 'awaiting_proceed'
         end
         @asset_ids = []
         2.times do |i|
@@ -107,9 +107,9 @@ class QcReport::FileTest < ActiveSupport::TestCase
         @study = FactoryGirl.build :study, name: 'Example study'
         Timecop.freeze(DateTime.parse('01/01/2015')) do
           @report = create :qc_report, study: @study,
-            exclude_existing: false,
-            product_criteria: @criteria,
-            state: 'awaiting_proceed'
+                                       exclude_existing: false,
+                                       product_criteria: @criteria,
+                                       state: 'awaiting_proceed'
         end
         @asset_ids = []
         2.times do |i|
@@ -138,9 +138,9 @@ class QcReport::FileTest < ActiveSupport::TestCase
         @study = FactoryGirl.build :study, name: 'Example study'
         Timecop.freeze(DateTime.parse('01/01/2015')) do
           @report = create :qc_report, study: @study,
-            exclude_existing: false,
-            product_criteria: @criteria,
-            state: 'awaiting_proceed'
+                                       exclude_existing: false,
+                                       product_criteria: @criteria,
+                                       state: 'awaiting_proceed'
         end
         @asset_ids = []
         2.times do |i|

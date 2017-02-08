@@ -49,7 +49,7 @@ Given /^I have a plate "([^"]*)" in study "([^"]*)" with (\d+) samples in asset 
   asset_group.assets << (1..number_of_samples.to_i).map do |index|
     FactoryGirl.create(:well, plate: plate, map_id: index).tap do |well|
       well.aliquots.create!(sample: FactoryGirl.create(:sample, name: "Sample_#{plate_barcode}_#{index}"),
-                                              study: study)
+                            study: study)
     end
   end
 end

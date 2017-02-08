@@ -119,8 +119,8 @@ class Aliquot < ActiveRecord::Base
   # ie aliquots sharing the sample, tag information, descending the requess graph
   def descendants(include_self = false)
     (include_self ? self : requests).walk_objects(Aliquot => :receptacle,
-      Receptacle => [:aliquots, :requests_as_source],
-      Request => :target_asset) do |object|
+                                                  Receptacle => [:aliquots, :requests_as_source],
+                                                  Request => :target_asset) do |object|
       case object
       when Aliquot
         # we cut the walk if the new aliquot doesn't "match" the current one

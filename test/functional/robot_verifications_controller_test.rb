@@ -276,9 +276,9 @@ class RobotVerificationsControllerTest < ActionController::TestCase
       context 'with valid inputs' do
         setup do
           post :submission, barcodes: { batch_barcode: '550006262686',
-                                          robot_barcode: '4880000001780',
-                                          destination_plate_barcode: '1220142334774',
-                                          user_barcode: '2470041440697' }
+                                        robot_barcode: '4880000001780',
+                                        destination_plate_barcode: '1220142334774',
+                                        user_barcode: '2470041440697' }
         end
         should 'be successful' do
           assert_response :success
@@ -287,9 +287,9 @@ class RobotVerificationsControllerTest < ActionController::TestCase
       context 'with invalid batch' do
         setup do
           post :submission, barcodes: { batch_barcode: '1111111111111',
-                                          robot_barcode: '4880000001780',
-                                          destination_plate_barcode: '1220142334774',
-                                          user_barcode: '2470041440697' }
+                                        robot_barcode: '4880000001780',
+                                        destination_plate_barcode: '1220142334774',
+                                        user_barcode: '2470041440697' }
         end
         should 'redirect and set the flash to error' do
           assert_response :redirect
@@ -299,9 +299,9 @@ class RobotVerificationsControllerTest < ActionController::TestCase
       context 'with invalid robot' do
         setup do
           post :submission, barcodes: { batch_barcode: '550006262686',
-                                          robot_barcode: '111111111111',
-                                          destination_plate_barcode: '1220142334774',
-                                          user_barcode: '2470041440697' }
+                                        robot_barcode: '111111111111',
+                                        destination_plate_barcode: '1220142334774',
+                                        user_barcode: '2470041440697' }
         end
         should 'redirect and set the flash to error' do
           assert_response :redirect
@@ -311,9 +311,9 @@ class RobotVerificationsControllerTest < ActionController::TestCase
       context 'with invalid destination plate' do
         setup do
           post :submission, barcodes: { batch_barcode: '550006262686',
-                                          robot_barcode: '4880000001780',
-                                          destination_plate_barcode: '111111111111',
-                                          user_barcode: '2470041440697' }
+                                        robot_barcode: '4880000001780',
+                                        destination_plate_barcode: '111111111111',
+                                        user_barcode: '2470041440697' }
         end
         should 'redirect and set the flash to error' do
           assert_response :redirect
@@ -323,9 +323,9 @@ class RobotVerificationsControllerTest < ActionController::TestCase
       context 'with invalid user' do
         setup do
           post :submission, barcodes: { batch_barcode: '550006262686',
-                                          robot_barcode: '4880000001780',
-                                          destination_plate_barcode: '1220142334774',
-                                          user_barcode: '1111111111111' }
+                                        robot_barcode: '4880000001780',
+                                        destination_plate_barcode: '1220142334774',
+                                        user_barcode: '1111111111111' }
         end
         should 'redirect and set the flash to error' do
           assert_response :redirect

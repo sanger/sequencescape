@@ -7,8 +7,8 @@ class ExampleLabel
 
   def create_label(asset)
     { left: asset.name,
-    right: asset.prefix,
-    barcode: asset.barcode }
+      right: asset.prefix,
+      barcode: asset.barcode }
   end
 end
 
@@ -22,28 +22,28 @@ class ExampleLabelTest < ActiveSupport::TestCase
     @plate3 = create :plate, name: 'Plate 3', barcode: '3333'
     @plate4 = create :plate, name: 'Plate 4', barcode: '4444'
     @label = { left: 'Plate 1',
-              right: 'DN',
-              barcode: '1111' }
+               right: 'DN',
+               barcode: '1111' }
 
     @labels = { body: [{ main_label:
                         { left: 'Plate 1',
-                        right: 'DN',
-                        barcode: '1111' }
+                          right: 'DN',
+                          barcode: '1111' }
                       },
                        { main_label:
                          { left: 'Plate 2',
-                         right: 'DN',
-                         barcode: '2222' }
+                           right: 'DN',
+                           barcode: '2222' }
                        },
                        { main_label:
                          { left: 'Plate 3',
-                         right: 'DN',
-                         barcode: '3333' }
+                           right: 'DN',
+                           barcode: '3333' }
                        },
                        { main_label:
                          { left: 'Plate 4',
-                         right: 'DN',
-                         barcode: '4444' }
+                           right: 'DN',
+                           barcode: '4444' }
                        }
               ] }
   end

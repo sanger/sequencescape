@@ -9,9 +9,9 @@ class AddSubmissionTemplateNoPcrxTen < ActiveRecord::Migration
   def self.up
     ActiveRecord::Base.transaction do |_t|
       st = SubmissionSerializer.construct!(name: 'Illumina-C - General no PCR - HiSeq-X sequencing',
-        submission_class_name: 'LinearSubmission',
-        product_line: 'Illumina-C',
-        submission_parameters: {
+                                           submission_class_name: 'LinearSubmission',
+                                           product_line: 'Illumina-C',
+                                           submission_parameters: {
           request_types: ['illumina_c_nopcr', 'illumina_b_hiseq_x_paired_end_sequencing'],
           workflow: 'short_read_sequencing'
         })

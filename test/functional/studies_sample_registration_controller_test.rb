@@ -101,7 +101,7 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
           setup do
             @sscount = @study.samples.count
             post :create, study_id: @study,
-              sample_registrars: {
+                          sample_registrars: {
                 '1' => {
                   asset_group_name: 'asset_group_name',
                   sample_attributes: { name: 'hello' }
@@ -120,7 +120,7 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
           setup do
             @sscount = @study.samples.count
             post :create, study_id: @study,
-              sample_registrars: {
+                          sample_registrars: {
                 '1' => {
                   asset_group_name: 'asset_group_0',
                   sample_attributes: { name: 'Sam1' }
@@ -143,7 +143,7 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
           setup do
             @sscount = @study.samples.count
             post :create, study_id: @study,
-              sample_registrars: {
+                          sample_registrars: {
                 '1' => {
                   asset_group_name: 'asset_group_0',
                   sample_attributes: { name: 'Sam1' }
@@ -176,7 +176,7 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
             @sscount = @study.samples.count
             @asset_count = Asset.count
             post :create, study_id: @study,
-                sample_registrars: {
+                          sample_registrars: {
                   '1' => {
                     asset_group_name: 'asset_group_0',
                     sample_tube_attributes: { two_dimensional_barcode: 'SI0000012345' },
@@ -224,7 +224,7 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
         context 'when sample information is missing' do
           setup do
             post :create, study_id: @study,
-              sample_registrars: { '1' => {} }
+                          sample_registrars: { '1' => {} }
           end
           should render_template :new
         end

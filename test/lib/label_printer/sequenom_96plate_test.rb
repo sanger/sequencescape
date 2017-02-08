@@ -15,11 +15,11 @@ class Sequenom96PlateTest < ActiveSupport::TestCase
     @purpose = 'Sequenom'
     @plate_label = LabelPrinter::Label::Sequenom96Plate.new(options)
     @label = { top_left: (Date.today.strftime('%e-%^b-%Y')).to_s,
-            bottom_left: (plate1.sanger_human_barcode).to_s,
-            top_right: (top).to_s,
-            bottom_right: (bottom).to_s,
-            top_far_right: (purpose).to_s,
-            barcode: (plate1.ean13_barcode).to_s }
+               bottom_left: (plate1.sanger_human_barcode).to_s,
+               top_right: (top).to_s,
+               bottom_right: (bottom).to_s,
+               top_far_right: (purpose).to_s,
+               barcode: (plate1.ean13_barcode).to_s }
   end
 
   test 'should have assets' do

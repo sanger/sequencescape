@@ -25,7 +25,7 @@ class DilutionPlate < Plate
     { pico_dilution: {
         child_barcodes: pico_children.map { |plate| plate.barcode_dilution_factor_created_at_hash }
       }.merge(barcode_dilution_factor_created_at_hash),
-        study_name: study_name
+      study_name: study_name
     }
   end
 

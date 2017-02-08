@@ -15,11 +15,11 @@ class AssetPlateTest < ActiveSupport::TestCase
     @plates = [plate1, plate2]
     @plate_label = LabelPrinter::Label::AssetPlate.new(plates)
     @label = { top_left: (Date.today.strftime('%e-%^b-%Y')).to_s,
-            bottom_left: (plate1.sanger_human_barcode).to_s,
-            top_right: "#{prefix} #{barcode1}",
-            bottom_right: "#{plate_name} #{barcode1}",
-            top_far_right: nil,
-            barcode: (plate1.ean13_barcode).to_s }
+               bottom_left: (plate1.sanger_human_barcode).to_s,
+               top_right: "#{prefix} #{barcode1}",
+               bottom_right: "#{plate_name} #{barcode1}",
+               top_far_right: nil,
+               barcode: (plate1.ean13_barcode).to_s }
   end
 
   test 'should return the right plates' do

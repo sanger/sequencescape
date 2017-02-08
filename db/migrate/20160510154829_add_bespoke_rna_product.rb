@@ -74,8 +74,8 @@ class AddBespokeRnaProduct < ActiveRecord::Migration
   def up
     ActiveRecord::Base.transaction do
       ProductCriteria.create!(product: rna_product,
-        stage: 'stock',
-        configuration: RNA_CONFIG)
+                              stage: 'stock',
+                              configuration: RNA_CONFIG)
       process_dna_and_rna_with_action(:link_product_to_catalogue)
     end
   end

@@ -10,16 +10,16 @@ class PrintJobTest < ActiveSupport::TestCase
     @plate = plates[0]
     @plate_purpose = plate.plate_purpose
     @attributes = { printer_name: barcode_printer.name,
-                labels: { body:
+                    labels: { body:
                   [{ main_label:
                     { top_left: (Date.today.strftime('%e-%^b-%Y')).to_s,
-                    bottom_left: (plate.sanger_human_barcode).to_s,
-                    top_right: (plate_purpose.name).to_s,
-                    bottom_right: "user #{plate.find_study_abbreviation_from_parent}",
-                    top_far_right: (plate.parent.try(:barcode)).to_s,
-                    barcode: (plate.ean13_barcode).to_s } }]
+                      bottom_left: (plate.sanger_human_barcode).to_s,
+                      top_right: (plate_purpose.name).to_s,
+                      bottom_right: "user #{plate.find_study_abbreviation_from_parent}",
+                      top_far_right: (plate.parent.try(:barcode)).to_s,
+                      barcode: (plate.ean13_barcode).to_s } }]
                   },
-                label_template_id: 15,
+                    label_template_id: 15,
                 }
     @print_job = LabelPrinter::PrintJob.new(barcode_printer.name, LabelPrinter::Label::PlateCreator, plates: plates, plate_purpose: plate_purpose, user_login: 'user')
   end

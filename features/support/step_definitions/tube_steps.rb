@@ -19,9 +19,9 @@ Given /^the tube "([^"]*)" is the target of a (started|passed|pending) "([^"]*)"
   source = source.wells.first if source.is_a?(Plate)
   RequestType.find_by(name: request_type).create!(
     { state: state,
-    asset: source,
-    target_asset: tube,
-    submission: submission
+      asset: source,
+      target_asset: tube,
+      submission: submission
     }.merge(request_defaults(request_type))
   )
 end
