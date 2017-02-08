@@ -3,7 +3,6 @@
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
-
 class ActiveRecord::Base
   class << self
     def find_by_id_or_name!(id, name)

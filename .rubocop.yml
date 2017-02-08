@@ -50,5 +50,5 @@ Rails/HttpPositionalArguments:
 Rails/DynamicFindBy:
   Whitelist:
     - find_by_sql
-    - find_by_find_by_id_or_name
-    - find_by_find_by_id_or_name!
+    - find_by_id_or_name
+    - find_by_id_or_name!
