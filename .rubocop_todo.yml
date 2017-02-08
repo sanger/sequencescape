@@ -192,20 +192,6 @@ Metrics/ParameterLists:
 Metrics/PerceivedComplexity:
   Max: 40
 
-# Offense count: 15
-# Cop supports --auto-correct.
-# Configuration parameters: MaxKeyValuePairs.
-Performance/RedundantMerge:
-  Exclude:
-    - 'app/api/endpoints/order_templates.rb'
-    - 'app/api/endpoints/submissions.rb'
-    - 'app/controllers/studies/workflows_controller.rb'
-    - 'app/models/asset.rb'
-    - 'app/models/library_tube.rb'
-    - 'features/support/step_definitions/49061511_qc_file_steps.rb'
-    - 'features/support/step_definitions/api_steps.rb'
-    - 'test/shoulda_macros/sanger_macros/resource_test.rb'
-
 # Offense count: 5
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles, Include.

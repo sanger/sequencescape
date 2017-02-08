@@ -72,7 +72,8 @@ class Studies::WorkflowsController < ApplicationController
         @asset_type = Aliquot::Receptacle.descendants.detect { |cls| cls.name == params[:asset_type] } || Aliquot::Receptacle
         @asset_type_name = params.fetch(:asset_type, 'All Assets').underscore.humanize
         @page_elements = @study.assets_through_aliquots.of_type(@asset_type).paginate(page_params)
-        @cache.merge!(passed: @passed_asset_request, failed: @failed_asset_request)
+        @cache[:passed] = @passed_asset_request
+        @cache[:failed] = @failed_asset_request
         render partial: "asset_progress"
       when "Summary"
         @page_elements = @study.assets_through_requests.for_summary.paginate(page_params)

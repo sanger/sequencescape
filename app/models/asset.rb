@@ -123,7 +123,8 @@ class Asset < ActiveRecord::Base
     # The entire string consists of one of more numeric characters, treat it as an id or barcode
     if /\A\d+\z/ === query
       search << ' OR (assets.id = :id) OR (assets.barcode = :barcode)'
-      arguments.merge!(id: query.to_i, barcode: query.to_s)
+      arguments[:id] = query.to_i
+      arguments[:barcode] = query.to_s
     end
 
     # If We're a Sanger Human barcode
@@ -131,7 +132,8 @@ class Asset < ActiveRecord::Base
       prefix_id = BarcodePrefix.find_by_prefix(match[1]).try(:id)
       number = match[2]
       search << ' OR (assets.barcode = :barcode AND assets.barcode_prefix_id = :prefix_id)' unless prefix_id.nil?
-      arguments.merge!(barcode: number, prefix_id: prefix_id)
+      arguments[:barcode] = number
+      arguments[:prefix_id] = prefix_id
     end
 
     search << ')'

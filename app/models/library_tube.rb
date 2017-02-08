@@ -60,7 +60,7 @@ class LibraryTube < Tube
       insert_size_from: aliquots.first.insert_size_from,
       insert_size_to: aliquots.first.insert_size_to
     }.tap do |tag_hash|
-      tag_hash.merge!(tag: tag.summary) if tag
+      tag_hash[:tag] = tag.summary if tag
       tag_hash.merge!(tag2: tag2.summary) if tag2
     end
   end

@@ -8,7 +8,7 @@ class Endpoints::Submissions < Core::Endpoint::Base
   model do
     action(:create) do |request, _|
       attributes = ::Io::Submission.map_parameters_to_attributes(request.json)
-      attributes.merge!(user: request.user) if request.user.present?
+      attributes[:user] = request.user if request.user.present?
       request.target.create!(attributes)
     end
   end

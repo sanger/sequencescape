@@ -47,10 +47,8 @@ module Sanger
                 grand_parent = create grand_parent_resource
                 parent       = create parent_resource
 
-                @factory_options.merge!(
-                  grand_parent_resource.to_sym => grand_parent,
-                  parent_resource.to_sym       => parent
-                )
+                @factory_options[grand_parent_resource.to_sym] = grand_parent
+                @factory_options[parent_resource.to_sym] = parent
 
                 @input_params.merge!(
                   "#{grand_parent_resource}_id" => grand_parent.id,
@@ -64,9 +62,7 @@ module Sanger
               setup do
                 parent = create parent_resource
 
-                @factory_options.merge!(
-                  parent_resource.to_sym => parent
-                )
+                @factory_options[parent_resource.to_sym] = parent
 
                 @input_params.merge!(
                   "#{parent_resource}_id" => parent.id
