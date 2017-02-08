@@ -11,7 +11,7 @@ class SubmissionsController < ApplicationController
 
   before_action :lab_manager_login_required, only: [:change_priority]
 
-  after_filter :set_cache_disabled!, only: [:new, :index]
+  after_action :set_cache_disabled!, only: [:new, :index]
 
   def new
     expires_now

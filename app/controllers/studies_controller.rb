@@ -18,7 +18,7 @@ class StudiesController < ApplicationController
   before_action :admin_login_required, only: [:new_plate_submission, :create_plate_submission, :settings, :administer, :manage, :managed_update, :grant_role, :remove_role]
   before_action :manager_login_required, only: [:close, :open, :related_studies, :relate_study, :unrelate_study]
 
-  around_filter :rescue_validation, only: [:close, :open]
+  around_action :rescue_validation, only: [:close, :open]
 
   def setup_studies_from_scope(exclude_nested_resource = false)
     if logged_in? and not exclude_nested_resource

@@ -13,7 +13,7 @@ class PipelinesController < ApplicationController
 
   before_action :lab_manager_login_required, only: [:update_priority, :deactivate, :activate]
 
-  after_filter :set_cache_disabled!, only: [:show]
+  after_action :set_cache_disabled!, only: [:show]
 
   def index
     @pipelines = Pipeline.active.internally_managed.alphabetical.all

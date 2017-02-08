@@ -192,19 +192,6 @@ Metrics/ParameterLists:
 Metrics/PerceivedComplexity:
   Max: 40
 
-# Offense count: 5
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles, Include.
-# SupportedStyles: action, filter
-# Include: app/controllers/**/*.rb
-Rails/ActionFilter:
-  Exclude:
-    - 'app/controllers/api/base_controller.rb'
-    - 'app/controllers/get_your_qc_completed_tubes_here_controller.rb'
-    - 'app/controllers/pipelines_controller.rb'
-    - 'app/controllers/studies_controller.rb'
-    - 'app/controllers/submissions_controller.rb'
-
 # Offense count: 32
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 # SupportedStyles: strict, flexible
