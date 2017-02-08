@@ -100,7 +100,7 @@ Given /^I have an active study called "([^\"]*)"$/ do |study_name|
   step %Q{study "#{study_name}" status is "active"}
 end
 
-Given /^I am visiting "([^\"]*)" page with ID "([^\"]*)" homepage$/ do |page, id|
+Given /^I am visiting "([^\"]*)" page with ID "([^\"]*)" homepage$/ do |_page, id|
   visit study_workflow_path(Study.find(id), Submission::Workflow.first)
 end
 

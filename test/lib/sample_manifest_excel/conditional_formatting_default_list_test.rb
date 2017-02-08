@@ -21,7 +21,7 @@ class ConditionalFormattingDefaultListTest < ActiveSupport::TestCase
   end
 
   test "each default should have the correct type" do
-    rules.each do |k, v|
+    rules.each do |k, _v|
       assert_equal k.to_sym, defaults.find_by(k).type
     end
   end

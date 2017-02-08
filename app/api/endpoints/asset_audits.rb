@@ -6,7 +6,7 @@
 
 class ::Endpoints::AssetAudits < ::Core::Endpoint::Base
   model do
-    action(:create) do |request, response|
+    action(:create) do |request, _response|
       request.create!
     end
   end

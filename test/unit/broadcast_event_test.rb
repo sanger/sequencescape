@@ -85,12 +85,12 @@ class BroadcastEventTest < ActiveSupport::TestCase
     # Methods that yield an array
     has_subjects :many, :many_relation
     # Blocks that define more complicated relationships
-    has_subject(:block) { |ts, e| ts.dynamic_relation.target }
+    has_subject(:block) { |ts, _e| ts.dynamic_relation.target }
 
     has_metadata :data_a, :data_method_a
-    has_metadata(:data_b) { |ts, e| ts.dynamic_relation.data_method_b }
+    has_metadata(:data_b) { |ts, _e| ts.dynamic_relation.data_method_b }
 
-    has_metadata(:data_c) { |ts, e| e.accessible }
+    has_metadata(:data_c) { |_ts, e| e.accessible }
 
     def accessible
       'value_c'

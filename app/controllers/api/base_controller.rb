@@ -26,7 +26,7 @@ class Api::BaseController < ApplicationController
     end
   end
 
-  rescue_from ActiveRecord::RecordNotFound do |exception|
+  rescue_from ActiveRecord::RecordNotFound do |_exception|
     head(:not_found)
   end
 

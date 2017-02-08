@@ -251,7 +251,7 @@ class Order < ActiveRecord::Base
       info_differential: info_differential,
       customize_partial: customize_partial,
       asset_input_methods: asset_input_methods != DefaultAssetInputMethods ? asset_input_methods : nil
-    }.reject { |k, v| v.nil? }
+    }.reject { |_k, v| v.nil? }
   end
 
   def request_types_list

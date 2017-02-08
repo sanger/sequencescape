@@ -46,7 +46,7 @@ Given /^the UUID for the order template "([^\"]+)" is "([^\"]+)"$/ do |name, uui
   set_uuid_for(object, uuid_value)
 end
 
-Then /^the (string |)request options for the order with UUID "([^\"]+)" should be:$/ do |string, uuid, options_table|
+Then /^the (string |)request options for the order with UUID "([^\"]+)" should be:$/ do |_string, uuid, options_table|
   order = Uuid.with_external_id(uuid).first.try(:resource) or raise StandardError, "Could not find order with UUID #{uuid.inspect}"
   stringified_options = order.request_options.stringify_keys # Needed because of inconsistencies in keys (symbols & strings)
   options_table.rows_hash.each do |k, v|

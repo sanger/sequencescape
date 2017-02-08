@@ -96,7 +96,7 @@ class WorksheetTest < ActiveSupport::TestCase
 
     should "should add the attributes for each details" do
       [sample_manifest.details_array.first, sample_manifest.details_array.last].each do |detail|
-        worksheet.columns.each do |k, column|
+        worksheet.columns.each do |_k, column|
           assert_equal column.attribute_value(detail), spreadsheet.sheet(0).cell(sample_manifest.details_array.index(detail) + 10, column.number)
         end
       end
@@ -143,7 +143,7 @@ class WorksheetTest < ActiveSupport::TestCase
     should "set absolute references in ranges" do
       range = range_list.ranges.values.first
       assert_equal "Ranges!#{range.fixed_reference}", range.absolute_reference
-      assert range_list.all? { |k, range| range.absolute_reference.present? }
+      assert range_list.all? { |_k, range| range.absolute_reference.present? }
     end
   end
 

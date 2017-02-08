@@ -130,7 +130,7 @@ private
 
     def merge_instance_defaults
       # Replace attributes with the default if the value is nil
-      self.attributes = instance_defaults.merge(attributes.symbolize_keys) { |key, default, attribute| attribute.nil? ? default : attribute }
+      self.attributes = instance_defaults.merge(attributes.symbolize_keys) { |_key, default, attribute| attribute.nil? ? default : attribute }
     end
 
     include Attributable

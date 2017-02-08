@@ -206,7 +206,7 @@ Given /^the study "([^"]*)" has a reference genome of "([^"]*)"$/ do |study_name
   Study.find_by_name(study_name).study_metadata.update_attributes!(reference_genome: ReferenceGenome.find_by_name(reference_genome_name))
 end
 
-Then /^the default protocols should be:$/ do |expected_results_table|
+Then /^the default protocols should be:$/ do |_expected_results_table|
     actual_table = table(fetch_table('table#reference_sequence'))
 end
 

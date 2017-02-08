@@ -304,7 +304,7 @@ class Asset < ActiveRecord::Base
     [nil, '']
   ]
 
-  QC_STATES.reject { |k, v| k.nil? }.each do |state, qc_state|
+  QC_STATES.reject { |k, _v| k.nil? }.each do |state, qc_state|
     line = __LINE__ + 1
     class_eval("
       def qc_#{qc_state}

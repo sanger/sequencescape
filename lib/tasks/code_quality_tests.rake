@@ -58,7 +58,7 @@ namespace :test do
     end
 
     desc "Analyze for code design issues"
-    task roodi: :load_rails_env do |t|
+    task roodi: :load_rails_env do |_t|
       require 'roodi'
       require 'roodi_task'
       print "Design..."
@@ -70,7 +70,7 @@ namespace :test do
     end
 
     desc "Analyze for code design issues"
-    task roodi_strict: :load_rails_env do |t|
+    task roodi_strict: :load_rails_env do |_t|
       require 'roodi'
       require 'roodi_task'
       print "Design (new things)..."
@@ -83,7 +83,7 @@ namespace :test do
       puts "OK"
     end
     desc "Show warnings from the Ruby interpreter"
-    task :warnings do |t|
+    task :warnings do |_t|
       warnings = []
       # RUBYOPT added by Bundler causes significant startup cost, so we empty it
       super_find_cmd = '(RUBYOPT="" find . \( -not -path "*generators*" -not -path "*templates*" \)' +

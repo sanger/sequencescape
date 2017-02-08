@@ -21,7 +21,7 @@ class RangeListTest < ActiveSupport::TestCase
   end
 
   test "#set_worksheet_names should set worksheet names" do
-    range_list.set_worksheet_names('Ranges').each do |k, range|
+    range_list.set_worksheet_names('Ranges').each do |_k, range|
       assert_equal "Ranges", range.worksheet_name
     end
   end

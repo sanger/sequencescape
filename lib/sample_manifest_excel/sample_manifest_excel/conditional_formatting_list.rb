@@ -35,7 +35,7 @@ module SampleManifestExcel
     # If the attributes contain a worksheet will add all of the
     # options for the list to a reference in the worksheet.
     def update(attributes = {})
-      each do |k, conditional_formatting|
+      each do |_k, conditional_formatting|
         conditional_formatting.update(attributes)
       end
 

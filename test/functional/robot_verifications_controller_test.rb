@@ -32,7 +32,7 @@ class RobotVerificationsControllerTest < ActionController::TestCase
     context "#download" do
       setup do
         @expected_layout = [{ "142334" => 1 }, { "127168" => 3, "134443" => 4, "127162" => 1, "127167" => 2 }]
-        @expected_layout[0].each do |barcode, bed_number|
+        @expected_layout[0].each do |_barcode, bed_number|
           @robot.robot_properties.create(key: "DEST#{bed_number}", value: "5")
         end
         count = 1;

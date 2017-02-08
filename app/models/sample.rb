@@ -80,7 +80,7 @@ class Sample < ActiveRecord::Base
 
   scope :with_name, ->(*names) { where(name: names.flatten) }
 
-  scope :for_search_query, ->(query, with_includes) {
+  scope :for_search_query, ->(query, _with_includes) {
     # Note: This search is performed in two stages so that we can make best use of our indicies
     # A naive search forces a full table lookup for all queries, ignoring the index in the sample metadata table
     # instead favouring the sample_id index. Rather than trying to bend MySQL to our will, we'll solve the
@@ -361,7 +361,7 @@ class Sample < ActiveRecord::Base
   end
 
   # Together these two validations ensure that the first study exists and is valid for the ENA submission.
-  validates_each(:ena_study, if: :validating_ena_required_fields?) do |record, attr, value|
+  validates_each(:ena_study, if: :validating_ena_required_fields?) do |record, _attr, value|
     record.errors.add(:base, 'Sample has no study') if value.blank?
   end
   validates_associated(:ena_study, allow_blank: true, if: :validating_ena_required_fields?)

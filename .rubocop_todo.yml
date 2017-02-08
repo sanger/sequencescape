@@ -118,12 +118,6 @@ Lint/UnreachableCode:
   Exclude:
     - 'lib/rails-authorization-plugin/lib/publishare/parser.rb'
 
-# Offense count: 351
-# Cop supports --auto-correct.
-# Configuration parameters: IgnoreEmptyBlocks, AllowUnusedKeywordArguments.
-Lint/UnusedBlockArgument:
-  Enabled: false
-
 # Offense count: 270
 # Cop supports --auto-correct.
 # Configuration parameters: AllowUnusedKeywordArguments, IgnoreEmptyMethods.

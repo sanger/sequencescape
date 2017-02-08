@@ -32,8 +32,8 @@ module Authorization
         filter_keys = [:only, :except]
         filter_args, eval_args = {}, {}
         if args.last.is_a? Hash
-          filter_args.merge!(args.last.reject { |k, v| not filter_keys.include? k })
-          eval_args.merge!(args.last.reject { |k, v| filter_keys.include? k })
+          filter_args.merge!(args.last.reject { |k, _v| not filter_keys.include? k })
+          eval_args.merge!(args.last.reject { |k, _v| filter_keys.include? k })
         end
         before_action(filter_args) do |controller|
           controller.permit(authorization_expression, eval_args)

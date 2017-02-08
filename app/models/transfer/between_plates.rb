@@ -21,7 +21,7 @@ class Transfer::BetweenPlates < Transfer
 
   # The values in the transfers must be a hash and must be valid well positions on both the
   # source and destination plates.
-  validates_each(:transfers) do |record, attribute, value|
+  validates_each(:transfers) do |record, _attribute, value|
     if not value.is_a?(Hash)
       record.errors.add(:transfers, 'must be a map from source to destination location')
     elsif record.source.present? and not record.source.valid_positions?(value.keys)
@@ -52,7 +52,7 @@ class Transfer::BetweenPlates < Transfer
     pcg = source.pre_cap_groups
     location_subs = dest_sources.each_with_object({}) do |dest_source, store|
       dest_loc, sources = *dest_source
-      uuid, transfer_details = pcg.detect { |k, v| v[:wells].sort == sources.sort }
+      uuid, transfer_details = pcg.detect { |_k, v| v[:wells].sort == sources.sort }
       raise StandardError, "Could not find appropriate pool" if transfer_details.nil?
       pcg.delete(uuid)
       store[dest_loc] = transfer_details[:submission_id]

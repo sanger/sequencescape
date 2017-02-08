@@ -105,7 +105,7 @@ class SampleRegistrar < ActiveRecord::Base
   attr_accessor :asset_group_helper
   attr_accessor :asset_group_name
   belongs_to :asset_group, validate: true, autosave: true
-  validates_each(:asset_group_name, if: :new_record?) do |record, attr, value|
+  validates_each(:asset_group_name, if: :new_record?) do |record, _attr, value|
     record.errors.add(:asset_group, "#{value} already exists, please enter another name") if record.asset_group_helper.existing_asset_group?(value)
   end
 

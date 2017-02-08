@@ -124,7 +124,7 @@ class Study < ActiveRecord::Base
   end
   private :set_default_ethical_approval
 
- scope :for_search_query, ->(query, with_includes) {
+ scope :for_search_query, ->(query, _with_includes) {
     joins(:study_metadata).where(['name LIKE ? OR studies.id=? OR prelim_id=?', "%#{query}%", query, query])
                           }
 

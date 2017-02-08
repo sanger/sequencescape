@@ -21,7 +21,7 @@ class AssetCreation < ActiveRecord::Base
 
   belongs_to :child_purpose, class_name: 'Purpose'
   validates :child_purpose, presence: true, unless: :multiple_purposes
-  validates_each(:child_purpose, unless: :parent_nil?, allow_blank: true) do |record, attr, child_purpose|
+  validates_each(:child_purpose, unless: :parent_nil?, allow_blank: true) do |record, _attr, child_purpose|
     record.errors.add(:child_purpose, 'is not a valid child type') unless record.parent.purpose.child_purposes.include?(child_purpose)
   end
 

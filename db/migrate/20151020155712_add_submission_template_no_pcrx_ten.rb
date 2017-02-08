@@ -7,7 +7,7 @@ require 'submission_serializer'
 
 class AddSubmissionTemplateNoPcrxTen < ActiveRecord::Migration
   def self.up
-    ActiveRecord::Base.transaction do |t|
+    ActiveRecord::Base.transaction do |_t|
       st = SubmissionSerializer.construct!(name: "Illumina-C - General no PCR - HiSeq-X sequencing",
         submission_class_name: "LinearSubmission",
         product_line: "Illumina-C",
@@ -33,7 +33,7 @@ class AddSubmissionTemplateNoPcrxTen < ActiveRecord::Migration
   end
 
   def self.down
-    ActiveRecord::Base.transaction do |t|
+    ActiveRecord::Base.transaction do |_t|
       hiseqlt = LibraryType.find_by_name("HiSeqX PCR free")
       unless hiseqlt.nil?
         ["illumina_c_nopcr", "illumina_a_hiseq_x_paired_end_sequencing", "illumina_b_hiseq_x_paired_end_sequencing"].each do |rt_name|

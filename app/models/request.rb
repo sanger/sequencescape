@@ -311,7 +311,7 @@ class Request < ActiveRecord::Base
   scope :for_workflow, ->(workflow) { joins(:workflow).where(workflow: { key: workflow }) }
   scope :for_request_types, ->(types) { joins(:request_type).where(request_types: { key: types }) }
 
-  scope :for_search_query, ->(query, with_includes) {
+  scope :for_search_query, ->(query, _with_includes) {
      where(['id=?', query])
                            }
 

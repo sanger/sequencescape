@@ -41,7 +41,7 @@ class QuantParserTest < ActiveSupport::TestCase
         should "update well attributes with the file contents" do
           [["A1", 35, 7.5],
            ["A2", 56, 8.1],
-           ["A3", 89, 4.3]].each do |location, concentration, rin|
+           ["A3", 89, 4.3]].each do |location, concentration, _rin|
               assert_equal concentration, @plate.wells.located_at(location).first.get_concentration
           end
         end
@@ -83,7 +83,7 @@ class QuantParserTest < ActiveSupport::TestCase
         should "update well attributes with the file contents" do
           [["A1", 134.47, 7.5],
            ["A2", 81.96, 8.1],
-           ["A3", 36.76, 4.3]].each do |location, concentration, rin|
+           ["A3", 36.76, 4.3]].each do |location, concentration, _rin|
               assert_equal concentration, @plate.wells.located_at(location).first.get_concentration
           end
         end

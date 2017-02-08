@@ -39,13 +39,13 @@ module Presenters
     end
 
     def each_field_header
-      valid_fields.each do |field, method, condition|
+      valid_fields.each do |field, _method, _condition|
         yield field
       end
     end
 
     def each_method
-      valid_fields.each do |field, method, condition|
+      valid_fields.each do |_field, method, _condition|
         yield method
       end
     end
@@ -69,7 +69,7 @@ module Presenters
     end
 
     def valid_fields
-      @valid_fields ||= self.class.fields.select { |n, m, c| c.nil? || send(c) }
+      @valid_fields ||= self.class.fields.select { |_n, _m, c| c.nil? || send(c) }
     end
 
     def purpose_important?

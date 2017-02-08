@@ -151,14 +151,14 @@ class ColumnTest < ActiveSupport::TestCase
     end
 
     should "still have the validations" do
-      key = columns.find { |k, v| v[:validation].present? }.first
+      key = columns.find { |_k, v| v[:validation].present? }.first
       assert SampleManifestExcel::Column.build_arguments(columns[key], key, defaults)[:validation].present?
     end
 
     should "combine the conditional formattings correctly" do
       arguments = SampleManifestExcel::Column.build_arguments(columns[:gender], "gender", defaults)
       assert_equal columns[:gender][:conditional_formattings].length, arguments[:conditional_formattings].length
-      arguments[:conditional_formattings].each do |k, conditional_formatting|
+      arguments[:conditional_formattings].each do |k, _conditional_formatting|
         assert_equal defaults.find_by(k).combine(columns[:gender][:conditional_formattings][k]), arguments[:conditional_formattings][k]
       end
     end

@@ -179,7 +179,7 @@ Given /^well "([^"]*)" is holded by plate "([^"]*)"$/ do |well_uuid, plate_uuid|
   plate.update_attributes!(barcode: 1)
 end
 
-Then /^plate "([^"]*)" should have a purpose of "([^"]*)"$/ do |plate_barcode, plate_purpose_name|
+Then /^plate "([^"]*)" should have a purpose of "([^"]*)"$/ do |_plate_barcode, plate_purpose_name|
   assert_equal plate_purpose_name, Plate.find_by_barcode("1234567").plate_purpose.name
 end
 

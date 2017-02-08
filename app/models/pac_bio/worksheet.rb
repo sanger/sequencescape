@@ -12,7 +12,7 @@ class PacBio::Worksheet
     csv_string = CSV.generate(row_sep: "\r\n") do |csv|
       header_metadata(batch).each { |header_row| csv << header_row }
       csv << column_headers
-      batch.requests.each_with_index do |request, index|
+      batch.requests.each_with_index do |request, _index|
         csv << (row(request))
       end
     end

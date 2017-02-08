@@ -7,9 +7,9 @@
 class Core::Endpoint::BasicHandler
   module Json
     def actions(object, options)
-      Hash[@actions.select do |name, behaviour|
+      Hash[@actions.select do |_name, behaviour|
         accessible_action?(self, behaviour, options[:response].request, object)
-      end.map do |name, behaviour|
+      end.map do |name, _behaviour|
         [name, core_path(options)]
       end]
     end

@@ -15,7 +15,7 @@ module SampleManifestExcel
       # Adds ranges on the worksheet. One range one row.
 
       def add_ranges
-        ranges.each { |k, range| add_row range.options }
+        ranges.each { |_k, range| add_row range.options }
         self
       end
     end

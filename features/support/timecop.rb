@@ -33,7 +33,7 @@ After('@javascript') do
   end
 end
 
-After do |s|
+After do |_s|
   # If we're lost in time then we need to return to the present...
   Timecop.return
 

@@ -534,7 +534,7 @@ class Plate < Asset
 
   def self.create_plates_with_barcodes(params)
     begin
-      params[:snp_plates].each do |index, plate_barcode_id|
+      params[:snp_plates].each do |_index, plate_barcode_id|
         next if plate_barcode_id.blank?
         plate = Plate.create(barcode: plate_barcode_id.to_s, name: "Plate #{plate_barcode_id}", size: DEFAULT_SIZE)
         storage_location = Location.find(params[:asset][:location_id])

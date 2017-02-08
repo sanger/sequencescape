@@ -20,7 +20,7 @@ module SampleManifestExcel
       # Adds n empty rows
 
       def add_rows(n)
-        n.times { |i| add_row }
+        n.times { |_i| add_row }
       end
 
       # Assigns name to a worksheet depending on axlsx worksheet name. Used to assign

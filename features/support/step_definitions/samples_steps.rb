@@ -164,7 +164,7 @@ Given /^the sample "([^"]*)" has a supplier name of "([^"]*)"$/ do |sample_name,
   sample.sample_metadata.update_attributes!(supplier_name: supplier_name)
 end
 
-Given /^the sample "([^\"]+)" is in the (sample tube|well) "([^\"]+)"$/ do |sample_name, asset_type, asset_name|
+Given /^the sample "([^\"]+)" is in the (sample tube|well) "([^\"]+)"$/ do |sample_name, _asset_type, asset_name|
   sample = Sample.find_by_name(sample_name) or raise StandardError, "Cannot find sample #{sample_name.inspect}"
   asset = Asset.find_by_name(asset_name) or raise StandardError, "Cannot find sample tube #{asset_name.inspect}"
   asset.aliquots.clear
@@ -198,7 +198,7 @@ When /^I (create|update) an? accession number for sample "([^\"]+)"$/ do |action
  step(%Q{I follow "#{action_str}"})
 end
 
-Then /^I (should|should not) have (sent|received) the attribute "([^\"]*)" for the sample element (to|from) the accessioning service$/ do |state_action, type_action, attr_name, dest|
+Then /^I (should|should not) have (sent|received) the attribute "([^\"]*)" for the sample element (to|from) the accessioning service$/ do |state_action, type_action, attr_name, _dest|
   xml = (type_action == "sent") ? FakeAccessionService.instance.sent.last["SAMPLE"] : FakeAccessionService.instance.last_received
   assert_equal (state_action == "should"), Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/@#{attr_name}").map(&:to_s).present?, "XML was: #{xml}"
 end

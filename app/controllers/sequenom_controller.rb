@@ -118,8 +118,8 @@ private
     before_action(filter_name, filter_options)
   end
 
-  find_by_barcode_filter(User,  only: [:update, :quick_update]) { |barcode, human_barcode| human_barcode }
-  find_by_barcode_filter(Plate, only: [:search, :quick_update]) { |barcode, human_barcode| Barcode.number_to_human(barcode) }
+  find_by_barcode_filter(User,  only: [:update, :quick_update]) { |_barcode, human_barcode| human_barcode }
+  find_by_barcode_filter(Plate, only: [:search, :quick_update]) { |barcode, _human_barcode| Barcode.number_to_human(barcode) }
 
   # Handle the case where ActiveRecord::RecordNotFound is raised when looking for a Plate by
   # physically creating the Plate in the database!

@@ -191,7 +191,7 @@ LIBRARY_CREATION_PIPELINES = [
 ].map(&Regexp.method(:escape)).join('|')
 
 Given /^I have a batch with (\d+) requests? for the "(#{LIBRARY_CREATION_PIPELINES})" pipeline$/ do |count, name|
-  build_batch_for(name, count.to_i) do |pipeline|
+  build_batch_for(name, count.to_i) do |_pipeline|
     {
       asset_type: :sample_tube,
       request_options: {
@@ -218,7 +218,7 @@ GENOTYPING_PIPELINES = [
 ].map(&Regexp.method(:escape)).join('|')
 
 Given /^I have a batch with (\d+) requests? for the "(#{GENOTYPING_PIPELINES})" pipeline$/ do |count, name|
-  build_batch_for(name, count.to_i) do |pipeline|
+  build_batch_for(name, count.to_i) do |_pipeline|
     {
       asset_type: :well,
       holder_type: :plate

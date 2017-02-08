@@ -5,7 +5,7 @@
 # Copyright (C) 2016 Genome Research Ltd.
 class AddRequestTypeForPcrFreeXten < ActiveRecord::Migration
   def self.up
-    ActiveRecord::Base.transaction do |t|
+    ActiveRecord::Base.transaction do |_t|
       rt = RequestType.create!(
         name: 'HTP PCR Free Library',
         key: 'htp_pcr_free_lib',
@@ -56,7 +56,7 @@ illumina_b_hiseq_x_paired_end_sequencing illumina_a_hiseq_x_paired_end_sequencin
   end
 
   def self.down
-    ActiveRecord::Base.transaction do |t|
+    ActiveRecord::Base.transaction do |_t|
       hiseqlt = LibraryType.find_by_name("HiSeqX PCR free")
       unless hiseqlt.nil?
         ["illumina_a_hiseq_x_paired_end_sequencing", "illumina_b_hiseq_x_paired_end_sequencing"].each do |rt_name|

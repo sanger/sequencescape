@@ -60,6 +60,6 @@ class Parsers::QuantParser
     end
 
     def qc_values_for_row(row)
-      Hash[method_set_list.zip(row).reject { |header, value| header.nil? }]
+      Hash[method_set_list.zip(row).reject { |header, _value| header.nil? }]
     end
 end

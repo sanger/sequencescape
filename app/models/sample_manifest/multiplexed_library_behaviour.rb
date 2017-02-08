@@ -159,7 +159,7 @@ module SampleManifest::MultiplexedLibraryBehaviour
   end
 
   def sample_tube_sample_creation(samples_data, study_id)
-    study.samples << samples_data.map do |barcode, sanger_sample_id, prefix|
+    study.samples << samples_data.map do |barcode, sanger_sample_id, _prefix|
       create_sample(sanger_sample_id).tap do |sample|
         sample_tube = LibraryTube.find_by_barcode(barcode) or raise ActiveRecord::RecordNotFound, "Cannot find library tube with barcode #{barcode.inspect}"
         sample_tube.aliquots.create!(sample: sample)

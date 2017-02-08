@@ -44,7 +44,7 @@ class LibPoolNormTubeGenerator
   def create!
     if valid?
       begin
-        ActiveRecord::Base.transaction do |t|
+        ActiveRecord::Base.transaction do |_t|
           lib_pool_tubes.each do |tube|
             pass_and_complete(tube)
             pass_and_complete(create_lib_pool_norm_tube(tube))

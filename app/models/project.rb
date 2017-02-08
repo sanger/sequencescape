@@ -61,7 +61,7 @@ class Project < ActiveRecord::Base
   validates_presence_of :name, :state
   validates_uniqueness_of :name, on: :create, message: "already in use (#{name})"
 
-  scope :for_search_query, ->(query, with_includes) {
+  scope :for_search_query, ->(query, _with_includes) {
     where(['name LIKE ? OR id=?', "%#{query}%", query])
   }
 

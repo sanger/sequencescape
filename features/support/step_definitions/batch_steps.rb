@@ -38,7 +38,7 @@ end
 Then /^all of the downstream requests from the "([^\"]+)" pipeline of the request with UUID "([^\"]+)" should be "([^\"]+)"$/ do |name, uuid, state|
   pipeline = Pipeline.find_by_name(name) or raise StandardError, "Cannot find pipeline #{name.inspect}"
   uuid     = Uuid.with_external_id(uuid).first or raise StandardError, "Cannot find UUID #{uuid.inspect}"
-  requests = uuid.resource.next_requests(pipeline) { |request| true }
+  requests = uuid.resource.next_requests(pipeline) { |_request| true }
   raise StandardError, "There are no downstream requests of #{uuid.inspect} (#{uuid.resource.inspect})" if requests.empty?
   assert(requests.all?(&:"#{state}?"), "Some of the requests are not #{state}")
 end
@@ -46,7 +46,7 @@ end
 Then /^(\d+) of the downstream requests from the "([^\"]+)" pipeline of the request with UUID "([^\"]+)" should be "([^\"]+)"$/ do |count, name, uuid, state|
   pipeline = Pipeline.find_by_name(name) or raise StandardError, "Cannot find pipeline #{name.inspect}"
   uuid     = Uuid.with_external_id(uuid).first or raise StandardError, "Cannot find UUID #{uuid.inspect}"
-  requests = uuid.resource.next_requests(pipeline) { |request| true }
+  requests = uuid.resource.next_requests(pipeline) { |_request| true }
   raise StandardError, "There are no downstream requests of #{uuid.inspect} (#{uuid.resource.inspect})" if requests.empty?
 
   assert_equal(count.to_i, requests.select(&:"#{state}?").length, "Some of the requests are not #{state}")

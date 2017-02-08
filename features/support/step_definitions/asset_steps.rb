@@ -21,7 +21,7 @@ Given /^(?:I have )?a (sample|library) tube called "([^\"]+)"$/ do |tube_type, n
   FactoryGirl.create(:"#{ tube_type }_tube", name: name)
 end
 
-Given /^(?:I have )?a well called "([^\"]+)"$/ do |name|
+Given /^(?:I have )?a well called "([^\"]+)"$/ do |_name|
   sample = FactoryGirl.create(:sample)
   FactoryGirl.create(:well, sample: sample)
 end

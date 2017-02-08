@@ -76,7 +76,7 @@ Given(/^plate "([^"]*)" has nonzero concentration results$/) do |plate_barcode|
  step(%Q{plate "#{plate_barcode}" has concentration results})
 
   plate = Plate.find_by_barcode(plate_barcode)
-  plate.wells.each_with_index do |well, index|
+  plate.wells.each_with_index do |well, _index|
     if well.well_attribute.concentration == 0.0
       well.well_attribute.update_attributes!(concentration: 1)
     end
@@ -131,7 +131,7 @@ Then /^the default plates to wells table should look like:$/ do |expected_result
   expected_results_table.diff!(actual_table)
 end
 
-When /^I set (PacBioLibraryTube|Plate|Sample|Multiplexed Library|Library|Pulldown Multiplexed Library) "([^"]*)" to be in freezer "([^"]*)"$/ do |asset_type, plate_barcode, freezer_name|
+When /^I set (PacBioLibraryTube|Plate|Sample|Multiplexed Library|Library|Pulldown Multiplexed Library) "([^"]*)" to be in freezer "([^"]*)"$/ do |_asset_type, plate_barcode, freezer_name|
   asset = Asset.find_from_machine_barcode(plate_barcode)
   location = Location.find_by_name(freezer_name)
   asset.update_attributes!(location: location)
@@ -248,6 +248,6 @@ end
 
 When /^the last batch is sorted in row and plate order$/ do
   source = Batch.last.batch_requests.group_by { |br| br.request.asset.plate.id }
-  order = source.sort_by(&:first).map { |plate, br| br.sort_by { |br| br.request.asset.map.row_order }.map(&:id) }.flatten
+  order = source.sort_by(&:first).map { |_plate, br| br.sort_by { |br| br.request.asset.map.row_order }.map(&:id) }.flatten
   Batch.last.batch_requests.map { |br| br.update_attributes!(position: order.index(br.id)) }
 end

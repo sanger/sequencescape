@@ -45,7 +45,7 @@ module ActiveRecord # :nodoc:
           end
 
           def create_descriptors(params)
-            descriptors << params.sort_by { |k, _| k.to_i }.each_with_index.map do |(field_id, value), index|
+            descriptors << params.sort_by { |k, _| k.to_i }.each_with_index.map do |(_field_id, value), index|
               value[:required] = (value[:required] == 'on') ? 1 : 0
               Descriptor.new(value.merge(sorter: index + 1))
             end

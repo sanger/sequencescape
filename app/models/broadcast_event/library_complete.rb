@@ -18,7 +18,7 @@ class BroadcastEvent::LibraryComplete < BroadcastEvent
 
   has_subjects(:library_source_labware, :library_source_plates)
 
-  has_subject(:multiplexed_library) { |tube, e| tube }
+  has_subject(:multiplexed_library) { |tube, _e| tube }
 
   has_subjects(:stock_plate, :original_stock_plates)
   has_subjects(:sample) do |tube, e|
@@ -37,5 +37,5 @@ class BroadcastEvent::LibraryComplete < BroadcastEvent
   has_metadata(:order_type) { |_, e| e.order.order_role.try(:role) || 'UNKNOWN' }
   has_metadata(:submission_template) { |_, e| e.order.template_name }
 
-  has_metadata(:team) { |tube, e| tube.team || 'UNKNOWN' }
+  has_metadata(:team) { |tube, _e| tube.team || 'UNKNOWN' }
 end

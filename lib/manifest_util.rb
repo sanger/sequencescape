@@ -5,7 +5,7 @@ module ManifestUtil
 
   def filter_end_of_header(header_row)
     found_end_of_header = false
-    header_row.reject.each_with_index do |value, pos|
+    header_row.reject.each_with_index do |_value, pos|
       found_end_of_header ||= is_end_of_header?(header_row, pos)
     end
   end

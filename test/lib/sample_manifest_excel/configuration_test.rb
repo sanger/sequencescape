@@ -69,7 +69,7 @@ class ConfigurationTest < ActiveSupport::TestCase
       assert configuration.ranges.frozen?
       assert configuration.columns.frozen?
       assert configuration.columns.all.frozen?
-      configuration.manifest_types.each do |k, v|
+      configuration.manifest_types.each do |k, _v|
         assert configuration.columns.send(k).frozen?
       end
     end

@@ -55,7 +55,7 @@ class Submission < ActiveRecord::Base
 
   scope :latest_first, -> { order('id DESC') }
 
-  scope :for_search_query, ->(query, with_includes) { where(name: query) }
+  scope :for_search_query, ->(query, _with_includes) { where(name: query) }
 
   before_destroy :building?, :empty_of_orders?
 
@@ -166,7 +166,7 @@ class Submission < ActiveRecord::Base
   def each_submission_warning
     store = { samples: [], submissions: [] }
     orders.each do |order|
-      order.duplicates_within(1.month) do |samples, orders, submissions|
+      order.duplicates_within(1.month) do |samples, _orders, submissions|
         store[:samples].concat(samples)
         store[:submissions].concat(submissions)
       end

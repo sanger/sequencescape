@@ -44,7 +44,7 @@ class SequenomQcPlate < Plate
 
   def add_event_to_stock_plates(user_barcode)
     return false unless user_barcode_exist?(user_barcode)
-    source_plates.each_with_index do |plate, index|
+    source_plates.each_with_index do |plate, _index|
       next if plate.nil?
       stock_plate = plate.stock_plate
       next if stock_plate.nil?
@@ -150,7 +150,7 @@ class SequenomQcPlate < Plate
   end
 
   def input_plates_exist?(input_plate_names)
-    input_plate_names.each do |source_plate_number, source_plate_barcode|
+    input_plate_names.each do |_source_plate_number, source_plate_barcode|
       next if source_plate_barcode.blank?
 
       source_plate = Plate.find_from_machine_barcode(source_plate_barcode)
@@ -186,7 +186,7 @@ end
 
   # Source plates should exist, obviously, and have contain at least one sample with a gender
   def source_plates_genders_valid?(input_plate_names)
-    input_plate_names.each do |source_plate_number, source_plate_barcode|
+    input_plate_names.each do |_source_plate_number, source_plate_barcode|
       next if source_plate_barcode.blank?
 
       source_plate = Plate.find_from_machine_barcode(source_plate_barcode)
@@ -240,7 +240,7 @@ end
 
   #  ...to give "plate1_plate2_plate3_plate4"
   def plate_number(input_plate_names)
-    input_plate_names.inject("") do |return_value, (index, barcode)|
+    input_plate_names.inject("") do |return_value, (_index, barcode)|
       human_plate_name = Barcode.number_to_human(barcode) || ""
       return_value << human_plate_name << "_"
     end

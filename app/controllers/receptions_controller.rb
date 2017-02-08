@@ -29,7 +29,7 @@ class ReceptionsController < ApplicationController
 
     all_barcodes_blank = true
 
-    barcodes.each do |index, barcode_ws|
+    barcodes.each do |_index, barcode_ws|
       # We don't perform strip! as this results in modification of the parameters themselves, which affects logging and
       # exception notification. This can hinder investigation of any issues, as it changes apparent user input.
       barcode = barcode_ws.strip
@@ -83,7 +83,7 @@ class ReceptionsController < ApplicationController
       @errors = []
       asset_count = 0
 
-      assets.each do |index, asset_id|
+      assets.each do |_index, asset_id|
         asset = Asset.find_by(id: asset_id)
         if asset.nil?
           @errors << "Asset not found with asset ID #{asset_id}"

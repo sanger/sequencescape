@@ -346,7 +346,7 @@ class BatchesController < ApplicationController
 
     @output_assets = @batch.plate_group_barcodes || []
 
-    @output_assets.each do |parent, children|
+    @output_assets.each do |parent, _children|
       unless parent.nil?
         plate_barcode = parent.barcode
         unless plate_barcode.blank?

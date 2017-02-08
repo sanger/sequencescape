@@ -42,7 +42,7 @@ class FluidigmFileTest < ActiveSupport::TestCase
 
     should "find 95 wells" do
       count = 0
-      @fluidigm.each_well do |well|
+      @fluidigm.each_well do |_well|
         count += 1
       end
       assert_equal 95, count
@@ -66,7 +66,7 @@ class FluidigmFileTest < ActiveSupport::TestCase
     end
 
     should "let us fetch individual wells" do
-      @well_maps.each do |loc, properties|
+      @well_maps.each do |loc, _properties|
         well = @fluidigm.well_at(loc)
         assert well.is_a?(FluidigmFile::FluidigmWell)
         assert_equal loc, well.description

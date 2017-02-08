@@ -36,7 +36,7 @@ module Request::Statemachine
     # Determines the most likely event that should be fired when transitioning between the two states.  If there is
     # only one option then that is what is returned, otherwise an exception is raised.
     def suggested_transition_between(current, target)
-      aasm.state_machine.events.select do |name, event|
+      aasm.state_machine.events.select do |_name, event|
         event.transitions_from_state(current.to_sym).any? do |transition|
           transition.to == target.to_sym
         end

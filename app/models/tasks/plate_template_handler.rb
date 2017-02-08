@@ -57,7 +57,7 @@ module Tasks::PlateTemplateHandler
   private :parse_spreadsheet_row
 
   def map_parsed_spreadsheet_to_plate(mapped_plate_wells, batch, plate_size)
-    plates = mapped_plate_wells.map do |plate_key, mapped_wells|
+    plates = mapped_plate_wells.map do |_plate_key, mapped_wells|
       (0...plate_size).map do |i|
         well, location, request_id = CherrypickTask::EMPTY_WELL, *mapped_wells[i]
         if request_id.present?

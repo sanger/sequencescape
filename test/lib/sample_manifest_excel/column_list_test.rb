@@ -31,7 +31,7 @@ class ColumnListTest < ActiveSupport::TestCase
   end
 
   test "each column should have a number" do
-    column_list.each_with_index do |(k, v), i|
+    column_list.each_with_index do |(k, _v), i|
       assert_equal i + 1, column_list.find_by(k).number
     end
   end
@@ -70,7 +70,7 @@ class ColumnListTest < ActiveSupport::TestCase
 
   test "#update should update columns" do
     column_list.update(10, 15, ranges, Axlsx::Workbook.new.add_worksheet)
-    assert column_list.all? { |k, column| column.updated? }
+    assert column_list.all? { |_k, column| column.updated? }
   end
 
   test "should be comparable" do
@@ -82,6 +82,6 @@ class ColumnListTest < ActiveSupport::TestCase
   test "should duplicate correctly" do
     dupped = column_list.dup
     column_list.update(10, 15, ranges, Axlsx::Workbook.new.add_worksheet)
-    refute dupped.any? { |k, column| column.updated? }
+    refute dupped.any? { |_k, column| column.updated? }
   end
 end

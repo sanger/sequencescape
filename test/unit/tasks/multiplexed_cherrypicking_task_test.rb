@@ -135,7 +135,7 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
         should "set target assets appropriately" do
           assert_equal nil, @workflows_controller.flash[:error]
           assert @task.do_task(@workflows_controller, params), "Task returned false"
-          @requests.each_with_index do |r, i|
+          @requests.each_with_index do |r, _i|
             assert_equal request_location_hash[r.id.to_s], r.target_asset.map_description
             assert_equal @purpose.plates.last, r.target_asset.plate
             assert_equal @purpose, r.target_asset.plate.purpose
@@ -153,7 +153,7 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
         setup do
           @tag = create :tag
           @sample = create :sample
-          @requests = (1..8).map do |i|
+          @requests = (1..8).map do |_i|
             r = create :pooled_cherrypick_request
             r.asset.aliquots.first.update_attributes!(tag: @tag, sample: @sample)
             r
@@ -167,7 +167,7 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
         should "set target assets appropriately" do
           assert_equal nil, @workflows_controller.flash[:error]
           assert @task.do_task(@workflows_controller, params), "Task returned false"
-          @requests.each_with_index do |r, i|
+          @requests.each_with_index do |r, _i|
             assert_equal request_location_hash[r.id.to_s], r.target_asset.map_description
             assert_equal @purpose.plates.last, r.target_asset.plate
             assert_equal @purpose, r.target_asset.plate.purpose

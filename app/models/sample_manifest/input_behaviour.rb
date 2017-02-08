@@ -57,7 +57,7 @@ module SampleManifest::InputBehaviour
 
           # These need to be checked when updating from a sample manifest.  We need to be able to display
           # the sample ID so this can't be done with validates_presence_of
-          validates_each(:volume, :concentration, if: :updating_from_manifest?) do |record, attr, value|
+          validates_each(:volume, :concentration, if: :updating_from_manifest?) do |record, attr, _value|
             record.errors.add_on_blank(attr, message: "can't be blank for #{record.sample.sanger_sample_id}")
           end
         end
@@ -77,7 +77,7 @@ module SampleManifest::InputBehaviour
         extend ValidationStateGuard
 
         # You cannot create a sample through updating the sample manifest
-        validates_each(:id, on: :create, if: :updating_from_manifest?) do |record, attr, value|
+        validates_each(:id, on: :create, if: :updating_from_manifest?) do |record, _attr, value|
           record.errors.add(:base, "Could not find sample #{record.sanger_sample_id}") if value.blank?
         end
 
@@ -200,7 +200,7 @@ module SampleManifest::InputBehaviour
 
     headers = get_headers(csv)
 
-    headers.each_with_index.map do |name, index|
+    headers.each_with_index.map do |name, _index|
       "Header '#{name}' not recognised!" unless name.blank? || SampleManifest::Headers.valid?(name)
     end.compact.tap do |headers_with_errors|
       raise InvalidManifest, headers_with_errors unless headers_with_errors.empty?

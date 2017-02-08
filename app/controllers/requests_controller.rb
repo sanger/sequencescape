@@ -13,7 +13,7 @@ class RequestsController < ApplicationController
   before_action :set_permitted_params, only: [:update]
 
   def set_permitted_params
-    @parameters = params[:request].reject { |k, v| !['request_metadata_attributes'].include?(k.to_s) }
+    @parameters = params[:request].reject { |k, _v| !['request_metadata_attributes'].include?(k.to_s) }
   end
   attr_reader :parameters
  # before_action :find_request_from_id, :only => [ :filter_change_decision, :change_decision ]

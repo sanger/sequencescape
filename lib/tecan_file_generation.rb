@@ -34,7 +34,7 @@ module Sanger
         def self.source_barcode_to_plate_index(destination)
           all_barcodes = []
           barcode_lookup = {}
-          destination.each do |plate_id, plate_info|
+          destination.each do |_plate_id, plate_info|
             plate_info["mapping"].each do |map_well|
               well = map_well["src_well"]
               all_barcodes << well[0]
@@ -64,7 +64,7 @@ module Sanger
               mapping_by_well[destination_position] << mapping
             end
 
-            mapping_by_well.sort { |a, b| a[0] <=> b[0] }.each do |dest_position, mappings|
+            mapping_by_well.sort { |a, b| a[0] <=> b[0] }.each do |_dest_position, mappings|
               mappings.each do |mapping|
                 yield(mapping, dest_plate_barcode, plate_details)
               end

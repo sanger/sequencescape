@@ -12,7 +12,7 @@ class Map < ActiveRecord::Base
     # TODO: These methods are only valid for standard plates. Moved them here to make that more explicit
     # (even if its not strictly appropriate) They could do with refactoring/removing.
 
-    PLATE_DIMENSIONS = Hash.new { |h, k| [] }.merge(
+    PLATE_DIMENSIONS = Hash.new { |_h, _k| [] }.merge(
       96  => [12, 8],
       384 => [24, 16]
     )
