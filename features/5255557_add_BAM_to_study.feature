@@ -32,4 +32,7 @@ Feature: Study creation with a checkbox for BAM file.
     When I follow "Edit"
     Then I should see "Alignments in BAM"
     And the checkbox labeled "Alignments in BAM" should not be checked
-
+    When I follow "Back to study"
+    Then I should see "Study details"
+    When I follow "Study details"
+    Then I should see "Alignments in BAM: Not specified"
