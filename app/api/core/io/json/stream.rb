@@ -41,13 +41,13 @@ module ::Core::Io::Json
       when TrueClass                     === object    then unencoded('true')
       when FalseClass                    === object    then unencoded('false')
       when String                        === object    then string_encode(object)
-      when Fixnum                        === object    then unencoded(object.to_s)
+      when Integer                       === object    then unencoded(object.to_s)
       when Float                         === object    then unencoded(object.to_s)
       when Date                          === object    then string_encode(object)
       when ActiveSupport::TimeWithZone   === object    then string_encode(object.to_s)
       when Time                          === object    then string_encode(object.to_s(:compatible))
       when Hash                          === object    then hash_encode(object, options)
-      when object.respond_to?(:zip) then array_encode(object) { |o| encode(o, options) }
+      when object.respond_to?(:zip)                    then array_encode(object) { |o| encode(o, options) }
       else object_encode(object, options)
       end
     end

@@ -180,7 +180,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
 
         should "save request_types as array of Fixnums" do
           assert_kind_of Array, @submission.orders.first.request_types
-          assert @submission.orders.first.request_types.all? { |sample| sample.kind_of?(Fixnum) }
+          assert @submission.orders.first.request_types.all? { |sample| sample.kind_of?(Integer) }
         end
 
         should "save a comment if there's one passed in" do
