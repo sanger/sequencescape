@@ -34,7 +34,7 @@ module LabelPrinter
       end
 
       def date_today
-        Date.today.strftime("%e-%^b-%Y")
+        Date.today.strftime('%e-%^b-%Y')
       end
 
       def plates

@@ -39,7 +39,7 @@ module RequestClassDeprecator
           say "Moved: #{mig}", true
         end
 
-        say "Updating requests:"
+        say 'Updating requests:'
         mig = rt_requests.update_all(sti_type: new_class_name, request_type_id: new_request_type.id)
         say "Updated: #{mig}", true
         PlatePurpose::Relationship.where(transfer_request_type_id: rt.id).update_all(transfer_request_type_id: new_request_type.id)

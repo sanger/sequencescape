@@ -14,8 +14,8 @@ FactoryGirl.define do
 
   factory :asset do
     name                { |_a| FactoryGirl.generate :asset_name }
-    value               ""
-    qc_state            ""
+    value               ''
+    qc_state            ''
     resource            nil
     barcode
     barcode_prefix { |b| b.association(:barcode_prefix) }
@@ -23,9 +23,9 @@ FactoryGirl.define do
 
   factory :plate do
     plate_purpose { PlatePurpose.find_by(name: 'Stock plate') }
-    name                "Plate name"
-    value               ""
-    qc_state            ""
+    name                'Plate name'
+    value               ''
+    qc_state            ''
     resource            nil
     barcode
     size 96
@@ -70,13 +70,13 @@ FactoryGirl.define do
 
   factory :control_plate do
     plate_purpose { |_| PlatePurpose.find_by(name: 'Stock plate') }
-    name                "Control Plate name"
-    value               ""
+    name                'Control Plate name'
+    value               ''
     descriptors         []
     descriptor_fields   []
-    qc_state            ""
+    qc_state            ''
     resource            nil
-    sti_type            "ControlPlate"
+    sti_type            'ControlPlate'
     barcode
   end
 
@@ -117,9 +117,9 @@ FactoryGirl.define do
     item_limit 4
     user
     pipeline
-    state                 "pending"
-    qc_pipeline_id        ""
-    qc_state              "qc_pending"
+    state                 'pending'
+    qc_pipeline_id        ''
+    qc_state              'qc_pending'
     assignee_id           { |user| user.association(:user) }
     production_state      nil
 
@@ -133,28 +133,28 @@ FactoryGirl.define do
   end
 
   factory :control do |_c|
-    name "New control"
+    name 'New control'
     pipeline
   end
 
   factory :descriptor do |_d|
-    name                "Desc name"
-    value               ""
-    selection           ""
+    name                'Desc name'
+    value               ''
+    selection           ''
     task
-    kind                ""
+    kind                ''
     required            0
     sorter              nil
-    key                 ""
+    key                 ''
   end
 
   factory :lab_event do |e|
   end
 
   factory :family do |_f|
-    name                  "New Family name"
-    description           "Something goes here"
-    relates_to            ""
+    name                  'New Family name'
+    description           'Something goes here'
+    relates_to            ''
     task                  { |task|     task.association(:task) }
     workflow              { |workflow| workflow.association(:lab_workflow) }
   end
@@ -162,7 +162,7 @@ FactoryGirl.define do
   factory :lab_workflow_for_pipeline, class: LabInterface::Workflow do |_w|
     name                  { |_a| FactoryGirl.generate :lab_workflow_name }
     item_limit            2
-    locale                "Internal"
+    locale                'Internal'
   end
 
   factory :pipeline do
@@ -269,16 +269,16 @@ FactoryGirl.define do
   end
 
   factory :task do |_t|
-    name                  "New task"
+    name                  'New task'
     workflow              { |workflow| workflow.association(:lab_workflow) }
     sorted                nil
     batched               nil
-    location              ""
+    location              ''
     interactive           nil
   end
 
   factory :pipeline_admin, class: User do |_u|
-    login         "ad1"
+    login         'ad1'
     email         { |a| "#{a.login}@example.com".downcase }
     workflow      { |workflow| workflow.association(:submission_workflow) }
     pipeline_administrator true
@@ -287,7 +287,7 @@ FactoryGirl.define do
   factory :lab_workflow, class: LabInterface::Workflow do |_w|
     name                  { |_a| FactoryGirl.generate :lab_workflow_name }
     item_limit            2
-    locale                "Internal"
+    locale                'Internal'
 
     after(:create) do |workflow|
       workflow.pipeline = create(:pipeline, workflow: workflow)
@@ -301,16 +301,16 @@ FactoryGirl.define do
   end
 
   factory :delayed_message do |_dm|
-    message            "1"
+    message            '1'
     queue_attempt_at   Time.current.to_s
-    queue_name         "3"
+    queue_name         '3'
   end
 
   factory :request_information_type do |_w|
-    name                   ""
-    key                    ""
-    label                  ""
-    hide_in_inbox          ""
+    name                   ''
+    key                    ''
+    label                  ''
+    hide_in_inbox          ''
   end
 
   factory :pipeline_request_information_type do |_prit|
@@ -319,7 +319,7 @@ FactoryGirl.define do
   end
 
   factory :location do |_l|
-    name "Some fridge"
+    name 'Some fridge'
   end
 
   factory :request_information do |_ri|
@@ -329,20 +329,20 @@ FactoryGirl.define do
   end
 
   factory :implement do |_i|
-    name                "CS03"
-    barcode             "LE6G"
-    equipment_type      "Cluster Station"
+    name                'CS03'
+    barcode             'LE6G'
+    equipment_type      'Cluster Station'
   end
 
   factory :robot do |_robot|
-    name      "myrobot"
-    location  "lab"
+    name      'myrobot'
+    location  'lab'
   end
 
   factory :robot_property do |_p|
-    name      "myrobot"
-    value     "lab"
-    key       "key_robot"
+    name      'myrobot'
+    value     'lab'
+    key       'key_robot'
   end
 
   factory :pico_set do |_ps|
@@ -353,15 +353,15 @@ FactoryGirl.define do
   end
 
   factory :map do
-    description      "A2"
-    asset_size       "96"
+    description      'A2'
+    asset_size       '96'
     location_id      2
     row_order        1
     column_order     8
   end
 
   factory :plate_template do |_p|
-    name      "testtemplate"
+    name      'testtemplate'
     value     96
     size      96
   end
@@ -423,10 +423,10 @@ FactoryGirl.define do
 
   factory :sample_tube_without_barcode, class: Tube do |_tube|
     name                { |_a| FactoryGirl.generate :asset_name }
-    value               ""
+    value               ''
     descriptors         []
     descriptor_fields   []
-    qc_state            ""
+    qc_state            ''
     resource            nil
     barcode             nil
     purpose             { Tube::Purpose.standard_sample_tube }
@@ -434,10 +434,10 @@ FactoryGirl.define do
 
   factory :empty_sample_tube, class: SampleTube do |_sample_tube|
     name                { |_a| FactoryGirl.generate :asset_name }
-    value               ""
+    value               ''
     descriptors         []
     descriptor_fields   []
-    qc_state            ""
+    qc_state            ''
     resource            nil
     barcode
     purpose { Tube::Purpose.standard_sample_tube }
@@ -456,16 +456,16 @@ FactoryGirl.define do
   end
 
   factory :cherrypick_task do |_t|
-    name "New task"
+    name 'New task'
     pipeline_workflow_id { |workflow| workflow.association(:lab_workflow) }
     sorted                nil
     batched               nil
-    location              ""
+    location              ''
     interactive           nil
   end
 
   factory :assign_plate_purpose_task do |_assign_plate_purpose_task|
-    name "Assign a Purpose for Output Plates"
+    name 'Assign a Purpose for Output Plates'
     sorted 3
   end
 
@@ -493,7 +493,7 @@ FactoryGirl.define do
   end
 
   factory :barcode_prefix do |_b|
-    prefix  "DN"
+    prefix  'DN'
   end
 
   # A plate that has exactly the right number of wells!

@@ -7,7 +7,7 @@
 require File.dirname(__FILE__) + '/../../test_helper'
 
 class ProductCriteriaBasicTest < ActiveSupport::TestCase
-  context "a configured criteria" do
+  context 'a configured criteria' do
     setup do
       @params = {
         concentration: { greater_than: 5 },
@@ -18,9 +18,9 @@ class ProductCriteriaBasicTest < ActiveSupport::TestCase
       }
     end
 
-    context "with a bad well" do
+    context 'with a bad well' do
       setup do
-        @well_attribute = create :well_attribute, concentration: 1, current_volume: 30000, gel_pass: 'OKAY', gender_markers: ["M", "M", "U"]
+        @well_attribute = create :well_attribute, concentration: 1, current_volume: 30000, gel_pass: 'OKAY', gender_markers: ['M', 'M', 'U']
         @well = create :well, well_attribute: @well_attribute
         @sample = create :sample, sample_metadata_attributes: { gender: 'female' }
         @well.samples << @sample
@@ -44,9 +44,9 @@ class ProductCriteriaBasicTest < ActiveSupport::TestCase
       end
     end
 
-    context "with a good well" do
+    context 'with a good well' do
       setup do
-        @well_attribute = create :well_attribute, concentration: 800, current_volume: 100, gel_pass: 'OKAY', gender_markers: ["M", "M", "U"]
+        @well_attribute = create :well_attribute, concentration: 800, current_volume: 100, gel_pass: 'OKAY', gender_markers: ['M', 'M', 'U']
         @well = create :well, well_attribute: @well_attribute
         @sample = create :sample, sample_metadata_attributes: { gender: 'male' }
         @well.samples << @sample

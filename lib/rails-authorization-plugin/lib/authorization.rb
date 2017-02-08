@@ -5,16 +5,16 @@ module Authorization
   module Base
     # Modify these constants in your environment.rb to tailor the plugin to
     # your authentication system
-    if not Object.constants.include? "LOGIN_REQUIRED_REDIRECTION"
+    if not Object.constants.include? 'LOGIN_REQUIRED_REDIRECTION'
       LOGIN_REQUIRED_REDIRECTION = {
         controller: 'session',
         action: 'new'
       }
     end
-    if not Object.constants.include? "PERMISSION_DENIED_REDIRECTION"
+    if not Object.constants.include? 'PERMISSION_DENIED_REDIRECTION'
       PERMISSION_DENIED_REDIRECTION = ''
     end
-    if not Object.constants.include? "STORE_LOCATION_METHOD"
+    if not Object.constants.include? 'STORE_LOCATION_METHOD'
       STORE_LOCATION_METHOD = :store_location
     end
 
@@ -94,10 +94,10 @@ module Authorization
         # authentication
         send(STORE_LOCATION_METHOD) if respond_to? STORE_LOCATION_METHOD
         if @current_user && @current_user != :false
-          flash[:notice] = @options[:permission_denied_message] || "Permission denied. You cannot access the requested page."
+          flash[:notice] = @options[:permission_denied_message] || 'Permission denied. You cannot access the requested page.'
           redirect_to @options[:permission_denied_redirection] || PERMISSION_DENIED_REDIRECTION
         else
-          flash[:notice] = @options[:login_required_message] || "Login is required to access the requested page."
+          flash[:notice] = @options[:login_required_message] || 'Login is required to access the requested page.'
           redirect_to @options[:login_required_redirection] || LOGIN_REQUIRED_REDIRECTION
         end
         false # Want to short-circuit the filters

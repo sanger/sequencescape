@@ -31,7 +31,7 @@ Given /^I try to create a "([^\"]*)" order with the following setup:$/ do |templ
   params = table.rows_hash
   request_options = {}
   params.each do |k, v|
-    key = k.underscore.gsub(/\W+/, "_")
+    key = k.underscore.gsub(/\W+/, '_')
     request_options[key] = v
   end
 
@@ -70,7 +70,7 @@ Then /^the order should (not |)be built$/ do |n|
 end
 
 Given /^batch "([^"]*)" in "Pulldown library preparation" has been setup with "([^"]*)" for feature 27224545$/ do |id, asset_group|
-  pipeline    = Pipeline.find_by(name: "Pulldown library preparation") or raise StandardError, "Cannot find pipeline 'Pulldown library preparation'"
+  pipeline    = Pipeline.find_by(name: 'Pulldown library preparation') or raise StandardError, "Cannot find pipeline 'Pulldown library preparation'"
   batch       = Batch.find(id)
   asset_group = AssetGroup.find_by(name: asset_group)
   requests = []

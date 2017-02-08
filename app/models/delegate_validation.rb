@@ -13,7 +13,7 @@
 module DelegateValidation
   def delegate_validation(*args)
     options           = args.extract_options!
-    delegation_target = options.delete(:to) or raise StandardError, "Cannot delegate validation without :to!"
+    delegation_target = options.delete(:to) or raise StandardError, 'Cannot delegate validation without :to!'
     attribute_tag     = options[:as]
     args.push(options)
 

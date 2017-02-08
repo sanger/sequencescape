@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2014,2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class StripTubeCreationTest < TaskTestBase
   class DummyWorkflowController < WorkflowsController
@@ -21,7 +21,7 @@ class StripTubeCreationTest < TaskTestBase
     end
   end
 
-  context "StripTubeCreation task" do
+  context 'StripTubeCreation task' do
     setup do
       @workflow_c = DummyWorkflowController.new(@pipeline)
       @pipeline       = create :pipeline
@@ -39,21 +39,21 @@ class StripTubeCreationTest < TaskTestBase
       @pipeline.request_types << @request_type
     end
 
-    context "#render_task" do
+    context '#render_task' do
       setup do
         @workflow_c.batch = @batch
         params = {}
         @task.render_task(@workflow_c, params)
       end
 
-      should "set expected variables" do
+      should 'set expected variables' do
         assert_equal 2,     @workflow_c.tubes_requested
         assert_equal 2,     @workflow_c.tubes_available
         assert_equal [1, 2], @workflow_c.options
       end
     end
 
-    context "#do_task with all tubes" do
+    context '#do_task with all tubes' do
       setup do
         @workflow_c.batch = @batch
         params = { 'tubes_to_create' => 2, 'source_plate_barcode' => @plate.ean13_barcode }
@@ -64,7 +64,7 @@ class StripTubeCreationTest < TaskTestBase
       should 'create 2 strip tubes' do
         assert_equal 2, StripTube.count - @before
         assert_equal 2, @plate.wells.located_at('B1').first.requests.count
-        assert_equal "S2", @plate.wells.located_at('B1').first.requests.first.target_asset.map_description
+        assert_equal 'S2', @plate.wells.located_at('B1').first.requests.first.target_asset.map_description
       end
 
       should 'start all requests' do
@@ -73,7 +73,7 @@ class StripTubeCreationTest < TaskTestBase
       end
     end
 
-    context "#do_task with incorrect barcode" do
+    context '#do_task with incorrect barcode' do
       setup do
         @workflow_c.batch = @batch
         params = { 'tubes_to_create' => 2, 'source_plate_barcode' => 'not a barcode' }
@@ -91,7 +91,7 @@ class StripTubeCreationTest < TaskTestBase
       end
     end
 
-    context "#do_task with remaining tubes" do
+    context '#do_task with remaining tubes' do
       setup do
         @workflow_c.batch = @batch
         params = { 'tubes_to_create' => 1, 'source_plate_barcode' => @plate.ean13_barcode }

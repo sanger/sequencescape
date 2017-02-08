@@ -41,7 +41,7 @@ module ::Core::Io::Json::Grammar
                  when @children.key?(k) && node.children.key?(k) then node.children[k].merge(@children[k])
                  when @children.key?(k)                          then @children[k]
                  when node.children.key?(k)                      then node.children[k]
-                 else raise "Odd, how did that happen?"
+                 else raise 'Odd, how did that happen?'
                  end
 
         store[k] = cloned
@@ -158,7 +158,7 @@ module ::Core::Io::Json::Grammar
     end
 
     def merge(_node)
-      raise "Cannot merge into a leaf as it is attribute only!"
+      raise 'Cannot merge into a leaf as it is attribute only!'
     end
 
     def merge_children_with(node)
@@ -202,7 +202,7 @@ module ::Core::Io::Json::Grammar
     end
 
     def merge(_)
-      raise "Cannot merge into an actions leaf as it is actions only!"
+      raise 'Cannot merge into an actions leaf as it is actions only!'
     end
 
     def dup

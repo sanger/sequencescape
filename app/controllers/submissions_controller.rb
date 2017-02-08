@@ -73,7 +73,7 @@ class SubmissionsController < ApplicationController
     ActiveRecord::Base.transaction do
       submission = Submission::SubmissionPresenter.new(current_user, id: params[:id])
       if submission.destroy
-        flash[:notice] = "Submission successfully deleted!"
+        flash[:notice] = 'Submission successfully deleted!'
       else
         flash[:error] = "This submission can't be deleted"
       end

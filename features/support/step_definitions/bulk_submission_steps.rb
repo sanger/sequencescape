@@ -5,13 +5,13 @@
 # Copyright (C) 2011,2012,2013,2015 Genome Research Ltd.
 
 def upload_submission_spreadsheet(name)
-  attach_file("bulk_submission_spreadsheet", File.join(Rails.root, 'features', 'submission', 'csv', "#{name}.csv"))
-  click_button "Create Bulk submission"
+  attach_file('bulk_submission_spreadsheet', File.join(Rails.root, 'features', 'submission', 'csv', "#{name}.csv"))
+  click_button 'Create Bulk submission'
 end
 
 def upload_custom_row_submission
-  attach_file("bulk_submission_spreadsheet", File.join(Rails.root, 'features', 'submission', 'csv', "template_for_bulk_submission.csv"))
-  click_button "Create Bulk submission"
+  attach_file('bulk_submission_spreadsheet', File.join(Rails.root, 'features', 'submission', 'csv', 'template_for_bulk_submission.csv'))
+  click_button 'Create Bulk submission'
 end
 
 When /^I have a sample '(.*)'$/ do |sample_name|
@@ -57,31 +57,31 @@ When /^I upload a file with (.*) data for (\d+) submissions$/ do |type, number|
 end
 
 When /^I upload a file with valid data for 1 tube submissions$/ do
-  upload_submission_spreadsheet("1_tube_submission")
+  upload_submission_spreadsheet('1_tube_submission')
 end
 
 When /^I upload a file with 2 valid SC submissions$/ do
-  upload_submission_spreadsheet("2_valid_sc_submissions")
+  upload_submission_spreadsheet('2_valid_sc_submissions')
 end
 
 When /^I upload a file with 1 invalid submission and 1 valid submission$/ do
-  upload_submission_spreadsheet("1_valid_1_invalid")
+  upload_submission_spreadsheet('1_valid_1_invalid')
 end
 
 When /^I upload an empty file$/ do
-  upload_submission_spreadsheet("no_rows")
+  upload_submission_spreadsheet('no_rows')
 end
 
 When /^I submit an empty form$/ do
-  click_button "Create Bulk submission"
+  click_button 'Create Bulk submission'
 end
 
 When /^I upload a file with an invalid header row$/ do
-  upload_submission_spreadsheet("bad_header")
+  upload_submission_spreadsheet('bad_header')
 end
 
 Then /^there should be no submissions$/ do
-  assert_equal(0, Submission.count, "There should have been no submissions")
+  assert_equal(0, Submission.count, 'There should have been no submissions')
 end
 
 Then /^there should be an order with the bait library name set to "([^\"]+)"$/ do |name|

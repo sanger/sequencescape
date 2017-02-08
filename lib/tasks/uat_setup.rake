@@ -1,6 +1,6 @@
 require_relative 'uat_filters'
 namespace :uat do
-  desc "Establishes an environment for UAT..."
+  desc 'Establishes an environment for UAT...'
   # Built from this task as the seeds don't guarantee an accurate reflection of some key production tables
   # Plus there a whole load of useful things in the database that nonetheless don't belong in seeds
   task :setup, [:db_file, :expected_env] => :environment do |_t, args|
@@ -21,52 +21,52 @@ namespace :uat do
 
     def sample_named(name, study, user)
       {
-          "sample_tube_attributes" => { "two_dimensional_barcode" => "" },
-          "study" => study,
-          "asset_group_name" => "asset_group_#{study.id}",
-          "sample_attributes" => {
-            "name" => name,
-            "sample_metadata_attributes" => {
-              "replicate" => "",
-              "organism" => "",
-              "sample_strain_att" => "",
-              "cell_type" => "",
-              "immunoprecipitate" => "",
-              "ethnicity" => "",
-              "gc_content" => "Neutral",
-              "compound" => "",
-              "dna_source" => "Genomic",
-              "supplier_plate_id" => "",
-              "mother" => "",
-              "sample_public_name" => "",
-              "sample_common_name" => "",
-              "sample_ebi_accession_number" => "XXX",
-              "disease_state" => "",
-              "reference_genome_id" => "1",
-              "organism_part" => "",
-              "gender" => "",
-              "country_of_origin" => "",
-              "sample_taxon_id" => "",
-              "genotype" => "",
-              "growth_condition" => "",
-              "subject" => "",
-              "volume" => "100",
-              "treatment" => "",
-              "geographical_region" => "",
-              "sample_sra_hold" => "Hold",
-              "rnai" => "", "time_point" => "",
-              "sample_description" => "",
-              "age" => "",
-              "developmental_stage" => "",
-              "dose" => "",
-              "cohort" => "",
-              "father" => "",
-              "phenotype" => "",
-              "disease" => ""
+          'sample_tube_attributes' => { 'two_dimensional_barcode' => '' },
+          'study' => study,
+          'asset_group_name' => "asset_group_#{study.id}",
+          'sample_attributes' => {
+            'name' => name,
+            'sample_metadata_attributes' => {
+              'replicate' => '',
+              'organism' => '',
+              'sample_strain_att' => '',
+              'cell_type' => '',
+              'immunoprecipitate' => '',
+              'ethnicity' => '',
+              'gc_content' => 'Neutral',
+              'compound' => '',
+              'dna_source' => 'Genomic',
+              'supplier_plate_id' => '',
+              'mother' => '',
+              'sample_public_name' => '',
+              'sample_common_name' => '',
+              'sample_ebi_accession_number' => 'XXX',
+              'disease_state' => '',
+              'reference_genome_id' => '1',
+              'organism_part' => '',
+              'gender' => '',
+              'country_of_origin' => '',
+              'sample_taxon_id' => '',
+              'genotype' => '',
+              'growth_condition' => '',
+              'subject' => '',
+              'volume' => '100',
+              'treatment' => '',
+              'geographical_region' => '',
+              'sample_sra_hold' => 'Hold',
+              'rnai' => '', 'time_point' => '',
+              'sample_description' => '',
+              'age' => '',
+              'developmental_stage' => '',
+              'dose' => '',
+              'cohort' => '',
+              'father' => '',
+              'phenotype' => '',
+              'disease' => ''
             }
           },
-          "user" => user,
-          "ignore" => "0"
+          'user' => user,
+          'ignore' => '0'
         }
     end
 
@@ -135,22 +135,22 @@ tasks transfer_templates users
       raise StandardError, 'Must specify a production dump path e.g rake uat:setup[file_path,environment]' if db_file.nil?
       raise StandardError, "Could not find #{db_file}" unless File.exist?(db_file)
 
-      puts "Importing production information..."
+      puts 'Importing production information...'
       `pv -per #{db_file} | gunzip -c | ruby ./lib/tasks/sql_filter.rb | ./script/dbconsole -p`
-      puts "Production imported."
+      puts 'Production imported.'
 
-      puts "Resetting primary key counters"
+      puts 'Resetting primary key counters'
       UATFilters::FILTERED_TABLES.each do |table|
         ActiveRecord::Base.connection.execute("ALTER TABLE #{table} AUTO_INCREMENT = 1;")
       end
 
-      puts "Seeding!"
+      puts 'Seeding!'
 
-      puts "Creating basic template..."
+      puts 'Creating basic template...'
 
       PlateTemplate.create!(name: 'Empty Template')
 
-      puts "Setting up projects..."
+      puts 'Setting up projects...'
       Project.create!(
         name: 'UAT project A',
         enforce_quotas: true,
@@ -176,11 +176,11 @@ tasks transfer_templates users
         }
       )
 
-      puts "Faking a sponsor..."
+      puts 'Faking a sponsor...'
 
       FacultySponsor.create!(name: 'UAT Sponsor')
 
-      puts "Setting up studies..."
+      puts 'Setting up studies...'
 
       Study.create!(
         name: 'UAT study A',
@@ -224,13 +224,13 @@ tasks transfer_templates users
         }
       ).activate!
 
-      puts "Adding UAT user"
+      puts 'Adding UAT user'
 
       user = User.create!(login: 'UAT user', swipecard_code: 'uat_test', workflow_id: 1).tap do |u|
         u.roles.create!(name: 'administrator')
       end
 
-      puts "Registering samples/assets"
+      puts 'Registering samples/assets'
 
       Study.find_each do |study|
         print '.'
@@ -262,7 +262,7 @@ tasks transfer_templates users
         end
       end
       user = User.last
-      puts "Setting up tag plates..."
+      puts 'Setting up tag plates...'
       lot = LotType.find_by(name: 'IDT Tags').lots.create!(
         lot_number: 'UATTaglot',
         template: TagLayoutTemplate.find_by(name: 'Sanger_168tags - 10 mer tags in columns ignoring pools (first oligo: ATCACGTT)'),
@@ -274,7 +274,7 @@ tasks transfer_templates users
 
     else
       # We should never be hitting here
-      raise StandardError, "The task has found itself in an unexpected state."
+      raise StandardError, 'The task has found itself in an unexpected state.'
     end
   end
 end

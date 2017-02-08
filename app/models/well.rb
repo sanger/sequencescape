@@ -46,7 +46,7 @@ class Well < Aliquot::Receptacle
 
   scope :with_concentration, ->() {
     joins(:well_attribute)
-    .where("well_attributes.concentration IS NOT NULL")
+    .where('well_attributes.concentration IS NOT NULL')
   }
 
   has_many :qc_metrics, inverse_of: :asset, foreign_key: :asset_id
@@ -84,7 +84,7 @@ class Well < Aliquot::Receptacle
       'LEFT OUTER JOIN product_criteria AS wr_pc ON wr_pc.id = wr_qcr.product_criteria_id'
     ])
     .group('assets.id')
-    .having("NOT BIT_OR(wr_pc.product_id = ? AND wr_pc.stage = ?)", product_criteria.product_id, product_criteria.stage)
+    .having('NOT BIT_OR(wr_pc.product_id = ? AND wr_pc.stage = ?)', product_criteria.product_id, product_criteria.stage)
   }
 
   has_many :target_well_links, ->() { where(type: 'stock') }, class_name: 'Well::Link', foreign_key: :source_well_id
@@ -142,8 +142,8 @@ class Well < Aliquot::Receptacle
 
   scope :with_blank_samples, -> {
     joins([
-      "INNER JOIN aliquots ON aliquots.receptacle_id=assets.id",
-      "INNER JOIN samples ON aliquots.sample_id=samples.id"
+      'INNER JOIN aliquots ON aliquots.receptacle_id=assets.id',
+      'INNER JOIN samples ON aliquots.sample_id=samples.id'
     ])
     .where(['samples.empty_supplier_sample_name=?', true])
   }
@@ -268,7 +268,7 @@ class Well < Aliquot::Receptacle
   end
 
   def map_description
-    return read_attribute("map_description") if read_attribute("map_description").present?
+    return read_attribute('map_description') if read_attribute('map_description').present?
     return nil if map.nil?
     return nil unless map.description.is_a?(String)
 
@@ -309,7 +309,7 @@ class Well < Aliquot::Receptacle
   end
 
   validate(on: :save) do |record|
-    record.errors.add(:name, "cannot be specified for a well") unless record.name.blank?
+    record.errors.add(:name, 'cannot be specified for a well') unless record.name.blank?
   end
 
   def display_name

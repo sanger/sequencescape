@@ -59,7 +59,7 @@ class Purpose < ActiveRecord::Base
 
   validates_format_of :name, with: /\A\w[\s\w._-]+\w\z/i
   validates_presence_of :name
-  validates_uniqueness_of :name, message: "already in use"
+  validates_uniqueness_of :name, message: 'already in use'
   validates_inclusion_of :barcode_for_tecan, in: ['ean13_barcode', 'fluidigm_barcode']
 
  scope :where_is_a?, ->(clazz) { where(type: [clazz, *clazz.descendants].map(&:name)) }

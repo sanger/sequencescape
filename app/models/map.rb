@@ -190,7 +190,7 @@ class Map < ActiveRecord::Base
   end
 
   def snp_id
-    raise StandardError, "Only standard maps can be converted to SNP" unless map.standard?
+    raise StandardError, 'Only standard maps can be converted to SNP' unless map.standard?
     horizontal_plate_position
   end
 

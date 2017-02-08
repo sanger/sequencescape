@@ -48,7 +48,7 @@ module CarrierWave
 
         # Would returns the url
         def url
-          raise NotImplementedError, "Files are stored in the database, so are not available directly through a URL"
+          raise NotImplementedError, 'Files are stored in the database, so are not available directly through a URL'
         end
 
         # Stores the file in the DbFiles model - split across many rows if size > 200KB

@@ -4,9 +4,9 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
-require "net/ldap"
-require "openssl"
-require "digest/sha1"
+require 'net/ldap'
+require 'openssl'
+require 'digest/sha1'
 # require 'curb'
 
 class User < ActiveRecord::Base
@@ -54,11 +54,11 @@ class User < ActiveRecord::Base
   end
 
   def study_roles
-    user_roles("Study")
+    user_roles('Study')
   end
 
   def project_roles
-    user_roles("Project")
+    user_roles('Project')
   end
 
   def study_and_project_roles
@@ -74,10 +74,10 @@ class User < ActiveRecord::Base
   end
 
   def logout_path
-    if configatron.authentication == "sanger-sso"
+    if configatron.authentication == 'sanger-sso'
       (configatron.sso_logout_url).to_s
     else
-      "/logout"
+      '/logout'
     end
   end
 

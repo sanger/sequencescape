@@ -38,17 +38,17 @@ RequestType.create!(
   request_purpose: int
 )
 RequestType.create!(
-  asset_type: "LibraryTube",
+  asset_type: 'LibraryTube',
   billable: false,
   deprecated: false,
   for_multiplexing: true,
-  initial_state: "pending",
-  key: "external_multiplexed_library_creation",
+  initial_state: 'pending',
+  key: 'external_multiplexed_library_creation',
   morphology: 0,
   order: 0,
   multiples_allowed: false,
-  name: "External Multiplexed Library Creation",
+  name: 'External Multiplexed Library Creation',
   no_target_asset: false,
-  request_class_name: "ExternalLibraryCreationRequest",
+  request_class_name: 'ExternalLibraryCreationRequest',
   request_purpose: std
 )

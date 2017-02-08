@@ -5,7 +5,7 @@ namespace :working do
    self.site = configatron.plate_barcode_service
    def self.create
      if @barcode.nil?
-       @barcode = Plate.where.not(barcode: nil).where.not(barcode: "9999999").where('length(barcode)=7')
+       @barcode = Plate.where.not(barcode: nil).where.not(barcode: '9999999').where('length(barcode)=7')
        .order(barcode: :desc).first.try(:barcode).to_i
        @barcode = 9000000 if @barcode.zero? and not Plate.count.zero?
      end
@@ -63,7 +63,7 @@ namespace :working do
 
         Supplier.create!(name: 'Test Supplier')
 
-        puts "Setting up tag plates..."
+        puts 'Setting up tag plates...'
         lot = LotType.find_by(name: 'IDT Tags').lots.create!(
           lot_number: 'UATTaglot',
           template: TagLayoutTemplate.find_by(name: 'Sanger_168tags - 10 mer tags in columns ignoring pools (first oligo: ATCACGTT)'),
@@ -132,52 +132,52 @@ namespace :working do
 
     def sample_named(name, study)
       {
-          "sample_tube_attributes" => { "two_dimensional_barcode" => "" },
-          "study" => study,
-          "asset_group_name" => "asset_group",
-          "sample_attributes" => {
-            "name" => name,
-            "sample_metadata_attributes" => {
-              "replicate" => "",
-              "organism" => "",
-              "sample_strain_att" => "",
-              "cell_type" => "",
-              "immunoprecipitate" => "",
-              "ethnicity" => "",
-              "gc_content" => "Neutral",
-              "compound" => "",
-              "dna_source" => "Genomic",
-              "supplier_plate_id" => "",
-              "mother" => "",
-              "sample_public_name" => "",
-              "sample_common_name" => "",
-              "sample_ebi_accession_number" => "",
-              "disease_state" => "",
-              "reference_genome_id" => "1",
-              "organism_part" => "",
-              "gender" => "",
-              "country_of_origin" => "",
-              "sample_taxon_id" => "",
-              "genotype" => "",
-              "growth_condition" => "",
-              "subject" => "",
-              "volume" => "",
-              "treatment" => "",
-              "geographical_region" => "",
-              "sample_sra_hold" => "Hold",
-              "rnai" => "", "time_point" => "",
-              "sample_description" => "",
-              "age" => "",
-              "developmental_stage" => "",
-              "dose" => "",
-              "cohort" => "",
-              "father" => "",
-              "phenotype" => "",
-              "disease" => ""
+          'sample_tube_attributes' => { 'two_dimensional_barcode' => '' },
+          'study' => study,
+          'asset_group_name' => 'asset_group',
+          'sample_attributes' => {
+            'name' => name,
+            'sample_metadata_attributes' => {
+              'replicate' => '',
+              'organism' => '',
+              'sample_strain_att' => '',
+              'cell_type' => '',
+              'immunoprecipitate' => '',
+              'ethnicity' => '',
+              'gc_content' => 'Neutral',
+              'compound' => '',
+              'dna_source' => 'Genomic',
+              'supplier_plate_id' => '',
+              'mother' => '',
+              'sample_public_name' => '',
+              'sample_common_name' => '',
+              'sample_ebi_accession_number' => '',
+              'disease_state' => '',
+              'reference_genome_id' => '1',
+              'organism_part' => '',
+              'gender' => '',
+              'country_of_origin' => '',
+              'sample_taxon_id' => '',
+              'genotype' => '',
+              'growth_condition' => '',
+              'subject' => '',
+              'volume' => '',
+              'treatment' => '',
+              'geographical_region' => '',
+              'sample_sra_hold' => 'Hold',
+              'rnai' => '', 'time_point' => '',
+              'sample_description' => '',
+              'age' => '',
+              'developmental_stage' => '',
+              'dose' => '',
+              'cohort' => '',
+              'father' => '',
+              'phenotype' => '',
+              'disease' => ''
             }
           },
-          "user" => user,
-          "ignore" => "0"
+          'user' => user,
+          'ignore' => '0'
         }
     end
   end

@@ -57,7 +57,7 @@ class ReceptionsController < ApplicationController
     end
 
     if all_barcodes_blank
-      @errors << "No barcodes have been entered or scanned"
+      @errors << 'No barcodes have been entered or scanned'
     end
 
     if @errors.size > 0
@@ -97,14 +97,14 @@ class ReceptionsController < ApplicationController
       if @errors.size > 0
         respond_to do |format|
           flash[:error] = "Could not update some locations: #{@errors.join(';')}"
-          format.html { render action: "reception" }
+          format.html { render action: 'reception' }
           format.xml  { render xml: @errors, status: :unprocessable_entity }
           format.json { render json: @errors, status: :unprocessable_entity }
         end
       else
         respond_to do |format|
           flash[:notice] = "Successfully updated #{asset_count} samples"
-          format.html { render action: "reception" }
+          format.html { render action: 'reception' }
           format.xml  { head :ok }
           format.json { head :ok }
         end
@@ -128,7 +128,7 @@ class ReceptionsController < ApplicationController
 
     if @errors.size > 0
       respond_to do |format|
-        format.html { render action: "snp_import" }
+        format.html { render action: 'snp_import' }
         format.xml  { render xml: @errors, status: :unprocessable_entity }
         format.json { render json: @errors, status: :unprocessable_entity }
       end
@@ -145,13 +145,13 @@ class ReceptionsController < ApplicationController
     ActiveRecord::Base.transaction do
       respond_to do |format|
         if Plate.create_plates_with_barcodes(params)
-          flash[:notice] = "Plates queued to be imported"
-          format.html { redirect_to action: "snp_import" }
+          flash[:notice] = 'Plates queued to be imported'
+          format.html { redirect_to action: 'snp_import' }
           format.xml  { head :ok }
           format.json { head :ok }
         else
-          flash[:errors] = "Plates could not be created"
-          format.html { render action: "snp_import" }
+          flash[:errors] = 'Plates could not be created'
+          format.html { render action: 'snp_import' }
           format.xml  { render xml: @errors, status: :unprocessable_entity }
           format.json { render json: @errors, status: :unprocessable_entity }
         end

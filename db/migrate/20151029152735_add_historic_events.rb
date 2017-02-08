@@ -6,7 +6,7 @@
 
 class AddHistoricEvents < ActiveRecord::Migration
   def self.up
-    say "Adding Library Start Events"
+    say 'Adding Library Start Events'
 
     start_purpose_id = Purpose.find_by(name: 'Shear').id
     ActiveRecord::Base.transaction do

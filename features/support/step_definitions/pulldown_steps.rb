@@ -184,7 +184,7 @@ Transform /^the study "([^\"]+)"$/ do |name|
 end
 
 Then /^the state of (the .+) should be "([^\"]+)"$/ do |target, state|
-  assert_equal(state, target.state, "State is invalid")
+  assert_equal(state, target.state, 'State is invalid')
 end
 
 Given /^all of the wells on (the plate .+) are in an asset group called "([^"]+)" owned by (the study .+)$/ do |plate, name, study|
@@ -204,7 +204,7 @@ Then /^all "([^\"]+)" requests should have the following details:$/ do |name, ta
     value = value.to_i if ['fragment_size_required_from', 'fragment_size_required_to'].include?(attribute)
     [attribute, value]
   end]
-  assert_equal([expected], results, "Request details are not identical")
+  assert_equal([expected], results, 'Request details are not identical')
 end
 
 Given /^"([^\"]+-[^\"]+)" of the plate with ID (\d+) are empty$/ do |range, id|
@@ -212,7 +212,7 @@ Given /^"([^\"]+-[^\"]+)" of the plate with ID (\d+) are empty$/ do |range, id|
 end
 
 Given /^all requests are in the last submission$/ do
-  submission = Submission.last or raise StandardError, "There are no submissions!"
+  submission = Submission.last or raise StandardError, 'There are no submissions!'
   Request.update_all("submission_id=#{submission.id}")
 end
 

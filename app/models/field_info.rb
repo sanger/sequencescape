@@ -15,17 +15,17 @@ class FieldInfo
   attr_accessor :display_name, :key, :kind, :default_value, :parameters
 
   def initialize(args)
-    self.display_name = args.delete(:display_name) || args.delete("display_name")
-    self.key = args.delete(:key) || args.delete("key")
-    self.kind = args.delete(:kind) || args.delete("kind")
-    self.default_value = args.delete(:default_value) || args.delete("default_value")
-    params = args.delete(:parameters) || args.delete("parameters")
+    self.display_name = args.delete(:display_name) || args.delete('display_name')
+    self.key = args.delete(:key) || args.delete('key')
+    self.kind = args.delete(:kind) || args.delete('kind')
+    self.default_value = args.delete(:default_value) || args.delete('default_value')
+    params = args.delete(:parameters) || args.delete('parameters')
     args.merge!(params) if params
     self.parameters = args
   end
 
   def value
-    default_value || ""
+    default_value || ''
   end
 
   # the following methods are Selection related. Move them in a subclass if needed

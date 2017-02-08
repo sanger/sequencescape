@@ -34,7 +34,7 @@ class FluidigmFile
       end
 
       def content(index = nil)
-        raise StandardError, "Multiple files found" if data.size > 1 && index.nil?
+        raise StandardError, 'Multiple files found' if data.size > 1 && index.nil?
         @data[index || 0].retrive
       end
     end

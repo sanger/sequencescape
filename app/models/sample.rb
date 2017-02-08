@@ -53,7 +53,7 @@ class Sample < ActiveRecord::Base
   validates_presence_of :name
   validates_format_of :name, with: /\A[\w_-]+\z/i, message: I18n.t('samples.name_format'), if: :new_name_format, on: :create
   validates_format_of :name, with: /\A[\(\)\+\s\w._-]+\z/i, message: I18n.t('samples.name_format'), if: :new_name_format, on: :update
-  validates_uniqueness_of :name, on: :create, message: "already in use", unless: :sample_manifest_id?
+  validates_uniqueness_of :name, on: :create, message: 'already in use', unless: :sample_manifest_id?
 
   validate :name_unchanged, if: :name_changed?, on: :update
 
@@ -73,7 +73,7 @@ class Sample < ActiveRecord::Base
   before_destroy :safe_to_destroy
 
   def safe_to_destroy
-    errors.add(:base, "samples cannot be destroyed.")
+    errors.add(:base, 'samples cannot be destroyed.')
     false
   end
   private :safe_to_destroy
@@ -158,7 +158,7 @@ class Sample < ActiveRecord::Base
   end
 
   def error
-    "Default error message"
+    'Default error message'
   end
 
   def sample_external_name
@@ -187,9 +187,9 @@ class Sample < ActiveRecord::Base
   def genotyping_snp_plate_id
     s = genotyping_done
     if s && s =~ /:/
-      s.split(":").second.to_i # take the firt integer
+      s.split(':').second.to_i # take the firt integer
     else # old value
-      ""
+      ''
     end
   end
 

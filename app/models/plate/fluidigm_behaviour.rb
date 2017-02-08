@@ -36,7 +36,7 @@ module Plate::FluidigmBehaviour
   end
 
   def apply_fluidigm_data(fluidigm_file)
-    raise FluidigmError, "File does not match plate" unless fluidigm_file.for_plate?(fluidigm_barcode)
+    raise FluidigmError, 'File does not match plate' unless fluidigm_file.for_plate?(fluidigm_barcode)
 
     wells.located_at(fluidigm_file.well_locations).include_stock_wells.each do |well|
       well.stock_wells.each do |sw|

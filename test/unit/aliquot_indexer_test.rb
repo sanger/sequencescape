@@ -4,11 +4,11 @@
 # authorship of this file.
 # Copyright (C) 2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class AliquotIndexerTest < ActiveSupport::TestCase
-  context "when given a sensible number of aliquots" do
-    context "which are dual indexed" do
+  context 'when given a sensible number of aliquots' do
+    context 'which are dual indexed' do
       setup do
         @pre_count = AliquotIndex.count
         @lane = create :lane
@@ -19,7 +19,7 @@ class AliquotIndexerTest < ActiveSupport::TestCase
         @aliquot_index = [1, 4, 2, 3]
       end
 
-      should "Apply consecutive tags from 1" do
+      should 'Apply consecutive tags from 1' do
         AliquotIndexer.index(@lane)
 
         assert_equal 4, AliquotIndex.count - @pre_count, "#{AliquotIndex.count} indexes were created, 4 expected"
@@ -35,7 +35,7 @@ class AliquotIndexerTest < ActiveSupport::TestCase
         end
       end
 
-      context "when phix is added" do
+      context 'when phix is added' do
         setup do
           @phix = create :spiked_buffer do |sb|
             sb.aliquots { |a| a.association(:aliquot, receptacle: sb, tag: @tags[2]) }
@@ -46,7 +46,7 @@ class AliquotIndexerTest < ActiveSupport::TestCase
           @aliquot_index = [1, 5, 3, 4]
         end
 
-        should "skip the phix map_id" do
+        should 'skip the phix map_id' do
           AliquotIndexer.index(@lane)
 
           assert_equal 4, AliquotIndex.count - @pre_count, "#{AliquotIndex.count} indexes were created, 4 expected"
@@ -64,7 +64,7 @@ class AliquotIndexerTest < ActiveSupport::TestCase
       end
     end
 
-    context "which are single indexed" do
+    context 'which are single indexed' do
       setup do
         @pre_count = AliquotIndex.count
         @lane = create :lane
@@ -74,7 +74,7 @@ class AliquotIndexerTest < ActiveSupport::TestCase
         @aliquot_index = [1, 4, 2, 3]
       end
 
-      should "Apply consecutive tags from 1" do
+      should 'Apply consecutive tags from 1' do
         AliquotIndexer.index(@lane)
 
         assert_equal 4, AliquotIndex.count - @pre_count, "#{AliquotIndex.count} indexes were created, 4 expected"
@@ -90,7 +90,7 @@ class AliquotIndexerTest < ActiveSupport::TestCase
         end
       end
 
-      context "when phix is added" do
+      context 'when phix is added' do
         setup do
           @phix = create :spiked_buffer do |sb|
             sb.aliquots { |a| a.association(:aliquot, receptacle: sb, tag: @tags[2]) }
@@ -101,7 +101,7 @@ class AliquotIndexerTest < ActiveSupport::TestCase
           @aliquot_index = [1, 5, 3, 4]
         end
 
-        should "skip the phix map_id" do
+        should 'skip the phix map_id' do
           AliquotIndexer.index(@lane)
 
           assert_equal 4, AliquotIndex.count - @pre_count, "#{AliquotIndex.count} indexes were created, 4 expected"

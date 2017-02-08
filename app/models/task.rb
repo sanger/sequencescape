@@ -5,13 +5,13 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 class Task < ActiveRecord::Base
-  belongs_to :workflow, class_name: "LabInterface::Workflow", foreign_key: :pipeline_workflow_id
+  belongs_to :workflow, class_name: 'LabInterface::Workflow', foreign_key: :pipeline_workflow_id
   has_many :families
-  has_many :descriptors, class_name: "Descriptor", dependent: :destroy
+  has_many :descriptors, class_name: 'Descriptor', dependent: :destroy
 
   acts_as_descriptable :active
 
-  self.inheritance_column = "sti_type"
+  self.inheritance_column = 'sti_type'
 
   # BEGIN descriptor_to_attribute, could be move into a mixin
 
@@ -161,7 +161,7 @@ class Task < ActiveRecord::Base
   def generate_events_from_descriptors(asset)
     event = LabEvent.new(description: asset.sti_type)
     asset.descriptors.each do |descriptor|
-      event.add_descriptor(descriptor) if descriptor.name != "family_id"
+      event.add_descriptor(descriptor) if descriptor.name != 'family_id'
     end
     event
   end

@@ -34,7 +34,7 @@ Then /^the last report for "([^"]*)" should be:$/ do |study_name, expected_resul
 end
 
 Given /^study "([^"]*)" has a plate "([^"]*)"$/ do |study_name, plate_barcode|
-  plate = Plate.create!(barcode: plate_barcode, plate_purpose: PlatePurpose.find_by(name: "Stock Plate"))
+  plate = Plate.create!(barcode: plate_barcode, plate_purpose: PlatePurpose.find_by(name: 'Stock Plate'))
   samples = []
   1.upto(3) do |i|
     well = Well.create!(plate: plate, map_id: i)
@@ -43,8 +43,8 @@ Given /^study "([^"]*)" has a plate "([^"]*)"$/ do |study_name, plate_barcode|
       gender_markers: %w(F F F F),
       sequenom_count: 29,
       concentration: 1,
-      pico_pass: "Pass",
-      gel_pass: "Pass",
+      pico_pass: 'Pass',
+      gel_pass: 'Pass',
       measured_volume: 500.0
     )
     samples << well.primary_aliquot.sample
@@ -52,13 +52,13 @@ Given /^study "([^"]*)" has a plate "([^"]*)"$/ do |study_name, plate_barcode|
   study = Study.find_by(name: study_name)
   RequestFactory.create_assets_requests(plate.wells, study)
 
-  samples[0].external_properties.create!(key: 'genotyping_done', value: "DNAlab completed: 13")
-  samples[1].external_properties.create!(key: 'genotyping_done', value: "Imported to Illumina: 123")
-  samples[2].external_properties.create!(key: 'genotyping_done', value: "Imported to Illumina: 51| DNAlab completed: 17")
+  samples[0].external_properties.create!(key: 'genotyping_done', value: 'DNAlab completed: 13')
+  samples[1].external_properties.create!(key: 'genotyping_done', value: 'Imported to Illumina: 123')
+  samples[2].external_properties.create!(key: 'genotyping_done', value: 'Imported to Illumina: 51| DNAlab completed: 17')
 end
 
 Given /^study "([^"]*)" has a plate "([^"]*)" to be volume checked$/ do |study_name, plate_barcode|
-  plate = Plate.create!(barcode: plate_barcode, plate_purpose: PlatePurpose.find_by(name: "Stock Plate"))
+  plate = Plate.create!(barcode: plate_barcode, plate_purpose: PlatePurpose.find_by(name: 'Stock Plate'))
   1.upto(24) do |i|
     well = Well.create!(plate: plate, map_id: i)
     well.aliquots.create!(sample: Sample.create!(name: "Sample_#{plate_barcode}_#{i}"))
@@ -71,7 +71,7 @@ end
 Given /^a study report is generated for study "([^"]*)"$/ do |study_name|
   study_report = StudyReport.create!(study: Study.find_by(name: study_name))
   study_report.perform
-  step("2 pending delayed jobs are processed")
+  step('2 pending delayed jobs are processed')
 end
 
 Then /^each sample name and sanger ID exists in study "([^"]*)"$/ do |study_name|

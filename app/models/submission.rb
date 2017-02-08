@@ -49,9 +49,9 @@ class Submission < ActiveRecord::Base
          :user] }
   ])}
 
-  scope :building, -> { where(state: "building") }
-  scope :pending,  -> { where(state: "pending") }
-  scope :ready,    -> { where(state: "ready") }
+  scope :building, -> { where(state: 'building') }
+  scope :pending,  -> { where(state: 'pending') }
+  scope :ready,    -> { where(state: 'ready') }
 
   scope :latest_first, -> { order('id DESC') }
 
@@ -70,7 +70,7 @@ class Submission < ActiveRecord::Base
 
   def cancel_all_requests_on_destruction
     ActiveRecord::Base.transaction do
-      requests.all.each do |request|
+      requests.each do |request|
         request.submission_cancelled! # Cancel first to prevent event doing something stupid
         request.events.create!(message: "Submission #{id} as destroyed")
       end
@@ -94,7 +94,7 @@ class Submission < ActiveRecord::Base
   end
 
   def url_name
-    "submission"
+    'submission'
   end
   alias_method(:json_root, :url_name)
 
@@ -122,7 +122,7 @@ class Submission < ActiveRecord::Base
   end
 
   def safe_to_delete?
-    ActiveSupport::Deprecation.warn "Submission#safe_to_delete? may not recognise all states"
+    ActiveSupport::Deprecation.warn 'Submission#safe_to_delete? may not recognise all states'
     if ready?
       return true
     else
@@ -141,7 +141,7 @@ class Submission < ActiveRecord::Base
 
       PreCapturePool::Builder.new(self).build!
 
-      errors.add(:requests, "No requests have been created for this submission") if requests.empty?
+      errors.add(:requests, 'No requests have been created for this submission') if requests.empty?
       raise ActiveRecord::RecordInvalid, self if errors.present?
     end
   end
@@ -156,7 +156,7 @@ class Submission < ActiveRecord::Base
     if multiplexed?
       requests = Request.where(submission_id: id)
       states = requests.map(&:state).uniq
-      if (states.include?("started") || states.include?("passed"))
+      if (states.include?('started') || states.include?('passed'))
         multiplex_started_passed_result = true
       end
     end
@@ -191,9 +191,9 @@ class Submission < ActiveRecord::Base
   # not order, because it is submission
   # which decide if orders are compatible or not
   def check_orders_compatible?(a, b)
-    errors.add(:request_types, "are incompatible") if a.request_types != b.request_types
-    errors.add(:request_options, "are incompatible") if !request_options_compatible?(a, b)
-    errors.add(:item_options, "are incompatible") if a.item_options != b.item_options
+    errors.add(:request_types, 'are incompatible') if a.request_types != b.request_types
+    errors.add(:request_options, 'are incompatible') if !request_options_compatible?(a, b)
+    errors.add(:item_options, 'are incompatible') if a.item_options != b.item_options
     check_studies_compatible?(a.study, b.study)
   end
 
@@ -272,7 +272,7 @@ class Submission < ActiveRecord::Base
 
   def study_names
     # TODO: Should probably be re-factored, although we'll only fall back to the intensive code in the case of cross study re-requests
-    orders.map { |o| o.study.try(:name) || o.assets.map { |a| a.aliquots.map { |al| al.study.try(:name) } } }.flatten.compact.sort.uniq.join("|")
+    orders.map { |o| o.study.try(:name) || o.assets.map { |a| a.aliquots.map { |al| al.study.try(:name) } } }.flatten.compact.sort.uniq.join('|')
   end
 
  def cross_project?

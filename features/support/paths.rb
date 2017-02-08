@@ -72,7 +72,7 @@ module NavigationHelpers
 
     when /the (show|edit|related studies) page for study "([^\"]+)"/
       page, name = $1, $2
-      page_for_model(Study, page.sub(" ", "_"), name)
+      page_for_model(Study, page.sub(' ', '_'), name)
 
     when /the show accession page for study named "([^\"]+)"/
       study_name = $1
@@ -166,9 +166,9 @@ module NavigationHelpers
     when /the Submissions Inbox page/
       submissions_path
     when /the create bulk submissions page/
-      "/bulk_submissions"
+      '/bulk_submissions'
     when /the show page for the last submission/
-      submission = Submission.last or raise StandardError, "There are no submissions!"
+      submission = Submission.last or raise StandardError, 'There are no submissions!'
       order = submission.orders.first
       # study_workflow_submission_path(order.study, order.workflow, submission)
       submission_path(submission)
@@ -198,7 +198,7 @@ module NavigationHelpers
       sample_logistics_path
 
     when /the delayed jobs admin page/
-      url_for(controller: "admin/delayed_jobs", action: :index)
+      url_for(controller: 'admin/delayed_jobs', action: :index)
 
     when /the management page for (study|project) "([^\"]+)"/
       model, model_name = $1, $2
@@ -207,7 +207,7 @@ module NavigationHelpers
 
     when /the details page for (study) "([^"]+)"/
       page, name = $1, $2
-      page_for_model(Study, "properties", name)
+      page_for_model(Study, 'properties', name)
 
     when /the asset group "([^"]+)" page for study "([^"]+)"$/
       asset_group_name, study_name = $1, $2
@@ -230,7 +230,7 @@ module NavigationHelpers
 
     # Add more page name => path mappings here
     when /the request page for the last request/
-      request = Request.last or raise StandardError, "Cannot find the last request"
+      request = Request.last or raise StandardError, 'Cannot find the last request'
       request_path(request)
 
     when /the Tag Group index page/
@@ -305,7 +305,7 @@ module NavigationHelpers
     # Add more page name => path mappings above here
     else
       raise "Can't find mapping from \"#{page_name}\" to a path.\n" +
-        "Now, go and add a mapping in features/support/paths.rb"
+        'Now, go and add a mapping in features/support/paths.rb'
     end
   end
 end

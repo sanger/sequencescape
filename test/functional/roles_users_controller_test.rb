@@ -4,11 +4,11 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 require 'samples_controller'
 
 class Admin::Roles::UsersControllerTest < ActionController::TestCase
-  context "Admin::Roles::UsersControllercontroller" do
+  context 'Admin::Roles::UsersControllercontroller' do
     setup do
       @controller = Admin::Roles::UsersController.new
       @request    = ActionController::TestRequest.new

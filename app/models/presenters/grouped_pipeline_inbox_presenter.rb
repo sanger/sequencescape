@@ -102,7 +102,7 @@ module Presenters
     end
 
     def group_id
-      group.join(", ")
+      group.join(', ')
     end
 
     def request_group_id
@@ -168,7 +168,7 @@ module Presenters
     end
 
     def stock_barcode
-      parent.source_plate.try(:sanger_human_barcode) || "Unknown"
+      parent.source_plate.try(:sanger_human_barcode) || 'Unknown'
     end
 
     def still_required

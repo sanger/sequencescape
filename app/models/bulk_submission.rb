@@ -7,13 +7,13 @@ class ActiveRecord::Base
   class << self
     def find_by_id_or_name!(id, name)
       return find(id) unless id.blank?
-      raise StandardError, "Must specify at least ID or name" if name.blank?
+      raise StandardError, 'Must specify at least ID or name' if name.blank?
       find_by!(name: name)
     end
 
     def find_by_id_or_name(id, name)
       return find(id) unless id.blank?
-      raise StandardError, "Must specify at least ID or name" if name.blank?
+      raise StandardError, 'Must specify at least ID or name' if name.blank?
       find_by(name: name)
     end
   end
@@ -62,17 +62,17 @@ class BulkSubmission
     # TODO (jr) Find a better way of verifying the CSV file?
     unless spreadsheet.blank?
       if spreadsheet.size == 0
-        errors.add(:spreadsheet, "The supplied file was empty")
+        errors.add(:spreadsheet, 'The supplied file was empty')
       else
         if spreadsheet.original_filename.end_with?('.csv')
           process
         else
-          errors.add(:spreadsheet, "The supplied file was not a CSV file")
+          errors.add(:spreadsheet, 'The supplied file was not a CSV file')
         end
       end
     end
   rescue CSV::MalformedCSVError
-    errors.add(:spreadsheet, "The supplied file was not a valid CSV file (try opening it with MS Excel)")
+    errors.add(:spreadsheet, 'The supplied file was not a valid CSV file (try opening it with MS Excel)')
   end
 
   def headers
@@ -87,11 +87,11 @@ class BulkSubmission
 
   def header_index
     @header_index ||= @csv_rows.each_with_index do |row, index|
-      next if index == 0 && row[0] == "This row is guidance only"
+      next if index == 0 && row[0] == 'This row is guidance only'
       return index if header_row?(row)
     end
     # We've got through all rows without finding a header
-    errors.add(:spreadsheet, "The supplied file does not contain a valid header row (try downloading a template)")
+    errors.add(:spreadsheet, 'The supplied file does not contain a valid header row (try downloading a template)')
     nil
   end
   private :header_index
@@ -109,7 +109,7 @@ class BulkSubmission
 
   def valid_header?
     return false if headers.nil?
-    return true if headers.include? "submission name"
+    return true if headers.include? 'submission name'
     errors.add :spreadsheet, "You submitted an incompatible spreadsheet. Please ensure your spreadsheet contains the 'submission name' column"
     false
   end
@@ -145,7 +145,7 @@ class BulkSubmission
           submissions.each do |submission_name, orders|
             user = User.find_by(login: orders.first['user login'])
             if user.nil?
-              errors.add :spreadsheet, orders.first["user login"].nil? ? "No user specified for #{submission_name}" : "Cannot find user #{orders.first["user login"].inspect}"
+              errors.add :spreadsheet, orders.first['user login'].nil? ? "No user specified for #{submission_name}" : "Cannot find user #{orders.first["user login"].inspect}"
               next
             end
 
@@ -217,7 +217,7 @@ class BulkSubmission
       end
     end.map do |submission_name, rows|
       order = rows.group_by do |details|
-        details["asset group name"]
+        details['asset group name']
       end.map do |_group_name, rows|
 
         Hash[shared_options!(rows)].tap do |details|

@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2013,2014,2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class DummyWorkflowController < WorkflowsController
   attr_accessor :batch
@@ -20,11 +20,11 @@ class DummyWorkflowController < WorkflowsController
 end
 
 class PlateTransferTaskTest < ActiveSupport::TestCase
-  context "PlateTransferHandler" do
+  context 'PlateTransferHandler' do
     setup do
       @workflows_controller = DummyWorkflowController.new
       @task                 = create :plate_transfer_task
-      @params               = "UNUSED_PARAMS"
+      @params               = 'UNUSED_PARAMS'
       @batch                = create :batch
       @workflows_controller.batch = @batch
       @source_plate         = create :plate
@@ -39,8 +39,8 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
 
     context '#render_plate_transfer_task' do
       setup do
-        plate_barcode = mock("plate barcode")
-        plate_barcode.stubs(:barcode).returns("1234567")
+        plate_barcode = mock('plate barcode')
+        plate_barcode.stubs(:barcode).returns('1234567')
         PlateBarcode.stubs(:create).returns(plate_barcode)
       end
 
@@ -52,12 +52,12 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
           @task.render_task(@workflows_controller, params)
         end
 
-         should "change Plate.count by 1" do
-           assert_equal 1,  Plate.count - @plate_count, "Expected Plate.count to change by 1"
+         should 'change Plate.count by 1' do
+           assert_equal 1,  Plate.count - @plate_count, 'Expected Plate.count to change by 1'
          end
 
-         should "change TransferRequest.count by 6" do
-           assert_equal 6,  TransferRequest.count - @transferrequest_count, "Expected TransferRequest.count to change by 6"
+         should 'change TransferRequest.count by 6' do
+           assert_equal 6,  TransferRequest.count - @transferrequest_count, 'Expected TransferRequest.count to change by 6'
          end
 
         should 'mimic the original layout' do
@@ -88,8 +88,8 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
           @task.render_task(@workflows_controller, params)
         end
 
-         should "change Plate.count by 1" do
-           assert_equal 1,  Plate.count - @plate_count, "Expected Plate.count to change by 1"
+         should 'change Plate.count by 1' do
+           assert_equal 1,  Plate.count - @plate_count, 'Expected Plate.count to change by 1'
          end
 
         should 'find the existing plate' do
@@ -116,10 +116,10 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
       end
     end
 
-    context "#do_plate_transfer_task" do
+    context '#do_plate_transfer_task' do
       setup do
-        plate_barcode = mock("plate barcode")
-        plate_barcode.stubs(:barcode).returns("1234567")
+        plate_barcode = mock('plate barcode')
+        plate_barcode.stubs(:barcode).returns('1234567')
         PlateBarcode.stubs(:create).returns(plate_barcode)
 
         params = { plate_transfer_task: {}, batch_id: @batch.id }

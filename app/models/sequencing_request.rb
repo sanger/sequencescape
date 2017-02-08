@@ -61,11 +61,11 @@ class SequencingRequest < CustomerRequest
   end
 
   def concentration
-    return " " if lab_events_for_batch(batch).empty?
-    conc = lab_events_for_batch(batch).first.descriptor_value("Concentration")
+    return ' ' if lab_events_for_batch(batch).empty?
+    conc = lab_events_for_batch(batch).first.descriptor_value('Concentration')
     return "#{conc}μl" if conc.present?
-    dna = lab_events_for_batch(batch).first.descriptor_value("DNA Volume")
-    rsb = lab_events_for_batch(batch).first.descriptor_value("RSB Volume")
+    dna = lab_events_for_batch(batch).first.descriptor_value('DNA Volume')
+    rsb = lab_events_for_batch(batch).first.descriptor_value('RSB Volume')
     "#{dna}μl DNA in #{rsb}μl RSB"
   end
 end

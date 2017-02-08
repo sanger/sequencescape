@@ -19,9 +19,9 @@ class BatchCacheSweeper < ActiveRecord::Observer
   # This is an ordered hash, mapping from a model name to the SQL JOIN that needs to be added.
   # It's used to automatically generate the correct query to find the associated batch for a record.
   JOINS = ActiveSupport::OrderedHash.new.tap do |joins|
-    joins['batch_requests'] = "INNER JOIN batch_requests ON batch_requests.batch_id=batches.id"
-    joins['requests']       = "INNER JOIN requests ON requests.id=batch_requests.request_id"
-    joins['aliquots']       = "INNER JOIN aliquots ON (aliquots.receptacle_id=requests.asset_id OR aliquots.receptacle_id=requests.target_asset_id)"
+    joins['batch_requests'] = 'INNER JOIN batch_requests ON batch_requests.batch_id=batches.id'
+    joins['requests']       = 'INNER JOIN requests ON requests.id=batch_requests.request_id'
+    joins['aliquots']       = 'INNER JOIN aliquots ON (aliquots.receptacle_id=requests.asset_id OR aliquots.receptacle_id=requests.target_asset_id)'
   end
 
   def through(record)

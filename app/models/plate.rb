@@ -284,7 +284,7 @@ class Plate < Asset
 
   # has_many :wells, :as => :holder, :class_name => "Well"
   DEFAULT_SIZE = 96
-  self.prefix = "DN"
+  self.prefix = 'DN'
 
   self.per_page = 50
 
@@ -292,7 +292,7 @@ class Plate < Asset
 
   scope :qc_started_plates, -> {
     select('DISTINCT assets.*')
-    .joins("LEFT OUTER JOIN `events` ON events.eventful_id = assets.id LEFT OUTER JOIN `asset_audits` ON asset_audits.asset_id = assets.id")
+    .joins('LEFT OUTER JOIN `events` ON events.eventful_id = assets.id LEFT OUTER JOIN `asset_audits` ON asset_audits.asset_id = assets.id')
     .where(["(events.family = 'create_dilution_plate_purpose' OR asset_audits.key = 'slf_receive_plates') AND plate_purpose_id = ?", PlatePurpose.stock_plate_purpose.id])
     .order('assets.id DESC')
     .includes(:events, :asset_audits)
@@ -300,20 +300,20 @@ class Plate < Asset
 
   # TODO: Make these more railsy
   scope :with_sample, ->(sample) {
-      select("assets.*").uniq
+      select('assets.*').uniq
       .joins([
-        "LEFT OUTER JOIN container_associations AS wscas ON wscas.container_id = assets.id",
-        "LEFT JOIN assets AS wswells ON wswells.id = content_id",
-        "LEFT JOIN aliquots AS wsaliquots ON wsaliquots.receptacle_id = wswells.id"
+        'LEFT OUTER JOIN container_associations AS wscas ON wscas.container_id = assets.id',
+        'LEFT JOIN assets AS wswells ON wswells.id = content_id',
+        'LEFT JOIN aliquots AS wsaliquots ON wsaliquots.receptacle_id = wswells.id'
       ])
-      .where(["wsaliquots.sample_id IN(?)", Array(sample)])
+      .where(['wsaliquots.sample_id IN(?)', Array(sample)])
   }
 
  scope :with_requests, ->(requests) {
-   select("assets.*").uniq
+   select('assets.*').uniq
    .joins([
-        "INNER JOIN container_associations AS wrca ON wrca.container_id = assets.id",
-        "INNER JOIN requests AS wrr ON wrr.asset_id = wrca.content_id"
+        'INNER JOIN container_associations AS wrca ON wrca.container_id = assets.id',
+        'INNER JOIN requests AS wrr ON wrr.asset_id = wrca.content_id'
     ]).where([
       'wrr.id IN (?)',
       requests.map(&:id)
@@ -335,8 +335,8 @@ class Plate < Asset
       .where(container_associations: { content_id: wells.map(&:id) })
   }
   #->() {where(:assets=>{:sti_type=>[Plate,*Plate.descendants].map(&:name)})},
-  has_many :descendant_plates, class_name: "Plate", through: :links_as_ancestor, foreign_key: :ancestor_id, source: :descendant
-  has_many :descendant_lanes,  class_name: "Lane", through: :links_as_ancestor, foreign_key: :ancestor_id, source: :descendant
+  has_many :descendant_plates, class_name: 'Plate', through: :links_as_ancestor, foreign_key: :ancestor_id, source: :descendant
+  has_many :descendant_lanes,  class_name: 'Lane', through: :links_as_ancestor, foreign_key: :ancestor_id, source: :descendant
   has_many :tag_layouts
 
   scope :with_descendants_owned_by, ->(user) {
@@ -347,7 +347,7 @@ class Plate < Asset
 
   scope :source_plates, -> {
     joins(:plate_purpose)
-    .where("plate_purposes.id = plate_purposes.source_purpose_id")
+    .where('plate_purposes.id = plate_purposes.source_purpose_id')
   }
 
   scope :with_wells_and_requests, ->() {
@@ -415,11 +415,11 @@ class Plate < Asset
   alias :find_well_by_map_description :find_well_by_name
 
   def plate_header
-    [""] + plate_columns
+    [''] + plate_columns
   end
 
   def plate_rows
-    ("A"..((?A.getbyte(0) + height - 1).chr).to_s).to_a
+    ('A'..((?A.getbyte(0) + height - 1).chr).to_s).to_a
   end
 
   def plate_columns
@@ -435,12 +435,12 @@ class Plate < Asset
   end
 
   def set_plate_type(result)
-    add_descriptor(Descriptor.new(name: "Plate Type", value: result))
+    add_descriptor(Descriptor.new(name: 'Plate Type', value: result))
     save
   end
 
   def stock_plate_name
-    (get_plate_type == "Stock Plate" || get_plate_type.blank?) ? PlatePurpose.cherrypickable_as_source.first.name : get_plate_type
+    (get_plate_type == 'Stock Plate' || get_plate_type.blank?) ? PlatePurpose.cherrypickable_as_source.first.name : get_plate_type
   end
 
   def details
@@ -478,8 +478,8 @@ class Plate < Asset
 
     # From ETS
     @storage_location_service = 'ETS'
-    return "Control" if is_a?(ControlPlate)
-    return "" if barcode.blank?
+    return 'Control' if is_a?(ControlPlate)
+    return '' if barcode.blank?
     return %w(storage_area storage_device building_area building).map do |key|
       get_external_value(key)
     end.compact.join(' - ')
@@ -528,7 +528,7 @@ class Plate < Asset
   end
 
   def submission_time(current_time)
-    current_time.strftime("%Y-%m-%dT%H_%M_%SZ")
+    current_time.strftime('%Y-%m-%dT%H_%M_%SZ')
   end
 
   def self.create_plates_with_barcodes(params)
@@ -583,7 +583,7 @@ class Plate < Asset
   end
 
   def genotyping_submission_workflow
-    Submission::Workflow.find_by(key: "microarray_genotyping")
+    Submission::Workflow.find_by(key: 'microarray_genotyping')
   end
 
   def self.create_plates_submission(project, study, plates, user)
@@ -611,7 +611,7 @@ class Plate < Asset
       events.create!(message: I18n.t('studies.submissions.plate.event.success', barcode: barcode, submission_id: submission.id), created_by: user.login)
     else
       events.create!(message: I18n.t('studies.submissions.plate.event.failed', barcode: barcode), created_by: user.login)
-      study.errors.add("plate_barcode", "Couldnt create submission for plate #{plate_barcode}")
+      study.errors.add('plate_barcode', "Couldnt create submission for plate #{plate_barcode}")
     end
   end
 
@@ -754,7 +754,7 @@ class Plate < Asset
   def set_plate_name_and_size
     self.name = "Plate #{barcode}" if name.blank?
     self.size = default_plate_size if size.nil?
-    self.location = Location.find_by(name: "Sample logistics freezer") if location_id.nil?
+    self.location = Location.find_by(name: 'Sample logistics freezer') if location_id.nil?
   end
   private :set_plate_name_and_size
 

@@ -31,7 +31,7 @@ class PlateTemplate < Plate
   end
 
   def set_control_well(result)
-    add_descriptor(Descriptor.new(name: "control_well", value: result))
+    add_descriptor(Descriptor.new(name: 'control_well', value: result))
     save
   end
 
@@ -46,6 +46,6 @@ class PlateTemplate < Plate
   end
 
   scope :with_sizes, ->(sizes) {
-    where(["size IN (?)", sizes])
+    where(['size IN (?)', sizes])
   }
 end

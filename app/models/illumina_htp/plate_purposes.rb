@@ -145,7 +145,7 @@ module IlluminaHtp::PlatePurposes
   }
 
   def self.request_type_prefix
-    "Illumina"
+    'Illumina'
   end
 
   module PurposeHelpers
@@ -157,7 +157,7 @@ module IlluminaHtp::PlatePurposes
 
     def create_tube_flow(flow_o)
       flow = flow_o.clone
-      raise "Flow already exists" if Purpose.find_by(name: flow.first).present?
+      raise 'Flow already exists' if Purpose.find_by(name: flow.first).present?
       create_tube_purpose(flow.pop, target_type: 'MultiplexedLibraryTube')
       flow.each(&method(:create_tube_purpose))
     end
@@ -170,7 +170,7 @@ module IlluminaHtp::PlatePurposes
 
     def create_plate_flow(flow_o)
       flow = flow_o.clone
-      raise "Flow already exists" if Purpose.find_by(name: flow.first).present?
+      raise 'Flow already exists' if Purpose.find_by(name: flow.first).present?
       stock_plate = create_plate_purpose(
         flow.shift,
         can_be_considered_a_stock_plate: true,
@@ -239,7 +239,7 @@ module IlluminaHtp::PlatePurposes
     private :request_type_between
 
     def library_creation_freezer
-      Location.find_by(name: "Illumina high throughput freezer") or raise "Cannot find Illumina high throughput freezer"
+      Location.find_by(name: 'Illumina high throughput freezer') or raise 'Cannot find Illumina high throughput freezer'
     end
     private :library_creation_freezer
 

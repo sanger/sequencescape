@@ -39,7 +39,7 @@ class LabInterface::Workflow < ActiveRecord::Base
     collection
   end
 
-  def deep_copy(suffix = "_dup", skip_pipeline = false)
+  def deep_copy(suffix = '_dup', skip_pipeline = false)
     dup.tap do |new_workflow|
       ActiveRecord::Base.transaction do
         new_workflow.name = new_workflow.name + suffix

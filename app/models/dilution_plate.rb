@@ -30,6 +30,6 @@ class DilutionPlate < Plate
   end
 
   def study_name
-    study.try(:name) || ""
+    study.try(:name) || ''
   end
 end

@@ -42,7 +42,7 @@ class Studies::SampleRegistrationController < ApplicationController
   end
 
   def spreadsheet
-    flash.now[:notice] = "Processing your file: please wait a few minutes..."
+    flash.now[:notice] = 'Processing your file: please wait a few minutes...'
     @sample_registrars = SampleRegistrar.from_spreadsheet(params['file'], @study, current_user)
     flash.now[:notice] = 'Your file has been processed'
     render :new

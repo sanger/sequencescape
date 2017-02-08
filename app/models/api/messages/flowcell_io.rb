@@ -21,7 +21,7 @@ class Api::Messages::FlowcellIO < Api::Base
         end
 
         def flowcell_identifier
-          "Chip Barcode"
+          'Chip Barcode'
         end
 
         def flowcell_barcode
@@ -64,7 +64,7 @@ class Api::Messages::FlowcellIO < Api::Base
         delegate :position, to: :batch_request
 
         def mx_library
-          asset.external_identifier || "UNKNOWN"
+          asset.external_identifier || 'UNKNOWN'
         end
 
         def manual_qc

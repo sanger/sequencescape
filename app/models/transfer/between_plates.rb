@@ -53,7 +53,7 @@ class Transfer::BetweenPlates < Transfer
     location_subs = dest_sources.each_with_object({}) do |dest_source, store|
       dest_loc, sources = *dest_source
       uuid, transfer_details = pcg.detect { |_k, v| v[:wells].sort == sources.sort }
-      raise StandardError, "Could not find appropriate pool" if transfer_details.nil?
+      raise StandardError, 'Could not find appropriate pool' if transfer_details.nil?
       pcg.delete(uuid)
       store[dest_loc] = transfer_details[:submission_id]
     end

@@ -17,7 +17,7 @@ class Accessionable::Submission < Accessionable::Base
   end
 
   def alias
-    @accessionables.map(&:alias).join(" - ") << DateTime.now.strftime('%Y%m%dT%H%M')
+    @accessionables.map(&:alias).join(' - ') << DateTime.now.strftime('%Y%m%dT%H%M')
   end
 
   def <<(_accessionable)
@@ -81,7 +81,7 @@ class Accessionable::Submission < Accessionable::Base
     if @accessionables.size >= 1
       @accessionables.first.name
     else
-      "empty"
+      'empty'
     end
   end
 
@@ -100,7 +100,7 @@ private
     def initialize(user)
       @inform_on_error = "#{user.login}@#{configatron.default_email_domain}"
       @inform_on_status = inform_on_error
-      @name = user.first_name + " " + user.last_name
+      @name = user.first_name + ' ' + user.last_name
     end
 
     def build(markup)

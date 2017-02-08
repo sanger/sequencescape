@@ -11,7 +11,7 @@ class Barcode
       base.class_eval do
         before_create :set_default_prefix
         class_attribute :prefix
-        self.prefix = "NT"
+        self.prefix = 'NT'
 
         if ActiveRecord::Base.observers.include?(:amqp_observer)
           after_save :broadcast_barcode, if: :barcode_changed?
@@ -123,7 +123,7 @@ class Barcode
     if code.size > 11 && code.size < 14
       # Pad with zeros
       while code.size < 13
-        code = "0" + code
+        code = '0' + code
       end
     end
     if /^(...)(.*)(..)(.)$/ =~ code
@@ -160,7 +160,7 @@ class Barcode
     #  undefined method `+' for nil:NilClass app/models/barcode.rb:101:in `calculate_checksum'
     # Incorrect barcode format
     if human_prefix.nil? || Barcode.calculate_checksum(human_prefix, bcode) != human_suffix
-      raise InvalidBarcode, "The human readable barcode was invalid, perhaps it was mistyped?"
+      raise InvalidBarcode, 'The human readable barcode was invalid, perhaps it was mistyped?'
     else
       calculate_barcode(human_prefix, bcode.to_i)
     end
@@ -194,10 +194,10 @@ class Barcode
     return nil unless human_code
 
     case prefix
-      when "ID"
+      when 'ID'
         user = User.find_by barcode: human_code
         return user.login if user
-      when "LE"
+      when 'LE'
         implement = Implement.find_by barcode: human_code
         return implement.name if implement
     end

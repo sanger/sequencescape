@@ -44,7 +44,7 @@ class RequestType::Validator < ActiveRecord::Base
     attr_accessor :default
 
     def initialize(array, default)
-      raise StandardError, "Default is not in array" unless array.include?(default)
+      raise StandardError, 'Default is not in array' unless array.include?(default)
       @default = default
       @array = array
     end

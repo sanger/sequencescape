@@ -15,7 +15,7 @@ module Submission::AssetSubmissionFinder
 
   def find_all_assets_by_id_or_name_including_samples!(ids, names)
     return Aliquot::Receptacle.including_samples.find(*ids) unless ids.blank?
-    raise StandardError, "Must specify at least an ID or a name" if names.blank?
+    raise StandardError, 'Must specify at least an ID or a name' if names.blank?
     Aliquot::Receptacle.including_samples.where(name: names).tap do |found|
       missing = names - found.map(&:name)
       raise ActiveRecord::RecordNotFound, "Could not find #{name} with names #{missing.inspect}" unless missing.blank?
@@ -24,10 +24,10 @@ module Submission::AssetSubmissionFinder
 
   def find_wells_including_samples_for!(details)
     barcodes, well_list = details['barcode'], details['plate well']
-    errors.add(:spreadsheet, "You can only specify one plate per asset group") unless barcodes.uniq.one?
+    errors.add(:spreadsheet, 'You can only specify one plate per asset group') unless barcodes.uniq.one?
     barcode = barcodes.first
 
-    match = /^([A-Z]{2})(\d+)[A-Z]$/.match(barcode) or raise StandardError, "Plate Barcode should be human readable (e.g. DN111111K)"
+    match = /^([A-Z]{2})(\d+)[A-Z]$/.match(barcode) or raise StandardError, 'Plate Barcode should be human readable (e.g. DN111111K)'
     prefix = BarcodePrefix.find_by(prefix: match[1]) or raise StandardError, "Cannot find barcode prefix #{match[1].inspect} for #{details['rows']}"
     plate  = Plate.find_by(barcode_prefix_id: prefix.id, barcode: match[2]) or raise StandardError, "Cannot find plate with barcode #{barcode} for #{details['rows']}"
 
@@ -41,7 +41,7 @@ module Submission::AssetSubmissionFinder
     prefix_cache = Hash.new { |cache, prefix| cache[prefix] = BarcodePrefix.find_by(prefix: prefix) }
 
     details['barcode'].map do |barcode|
-      match = /^([A-Z]{2})(\d+)[A-Z]$/.match(barcode) or raise StandardError, "Tube Barcode should be human readable (e.g. NT2P)"
+      match = /^([A-Z]{2})(\d+)[A-Z]$/.match(barcode) or raise StandardError, 'Tube Barcode should be human readable (e.g. NT2P)'
       prefix = prefix_cache[match[1]] or raise StandardError, "Cannot find barcode prefix #{match[1].inspect} for #{details['rows']}"
       Tube.including_samples.find_by(barcode_prefix_id: prefix.id, barcode: match[2]) or raise StandardError, "Cannot find tube with barcode #{barcode} for #{details['rows']}."
     end

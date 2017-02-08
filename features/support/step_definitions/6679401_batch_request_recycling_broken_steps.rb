@@ -23,9 +23,9 @@ Given /^I have a "([^\"]+)" submission of asset group "([^\"]+)" under project "
   step('I press "Next"')
   step(%Q{I select "#{project_name}" from "Select a financial project"})
   step(%Q{I select "#{group_name}" from "Select a group to submit"})
-  step("I create the order and submit the submission")
+  step('I create the order and submit the submission')
 
-  step("all pending delayed jobs are processed")
+  step('all pending delayed jobs are processed')
 end
 
 Given /^all assets for requests in the "([^\"]+)" pipeline have been scanned into the lab$/ do |name|
@@ -49,7 +49,7 @@ Then /^the inbox should contain (\d+) requests?$/ do |count|
     if page.respond_to? :should
       page.should have_xpath('//td[contains(@class, "request")]', count: count.to_i)
     else
-      assert page.has_xpath?('//td[contains(@class, "request")]', count: count.to_i), "Page missing xpath"
+      assert page.has_xpath?('//td[contains(@class, "request")]', count: count.to_i), 'Page missing xpath'
     end
   end
 end
@@ -71,10 +71,10 @@ end
 When /^I drag (\d+) wells to the scratch pad$/ do |count|
   # The new style moves the scratch pad outside the viewport, we enlarge the viewport for this test
   page.driver.resize(1440, 2000)
-  dest_pad = find("#scratch_pad tr:first-child td:first-child") or raise StandardError, "Could not find scratch pad"
+  dest_pad = find('#scratch_pad tr:first-child td:first-child') or raise StandardError, 'Could not find scratch pad'
 
   (1..count.to_i).each do |index|
-    src_well = first("#plate_1 td.colour0") or raise StandardError, "Could not find the #{index} well in the plate"
+    src_well = first('#plate_1 td.colour0') or raise StandardError, "Could not find the #{index} well in the plate"
     src_id = src_well[:id]
     src_well.drag_to(dest_pad)
 
@@ -123,7 +123,7 @@ def build_batch_for(name, count)
     # Request parameter options
     request_options: submission_details[:request_options]
   )
-  step("all pending delayed jobs are processed")
+  step('all pending delayed jobs are processed')
 
   # step build a batch that will hold all of these requests, ensuring that it appears to be at least started
   # in some form.
@@ -143,7 +143,7 @@ end
 
 # Bad, I know, but it gets the job done for the genotyping pipelines!
 Given /^the batch and all its requests are pending$/ do
-  batch = Batch.first or raise StandardError, "There appears to be no batches!"
+  batch = Batch.first or raise StandardError, 'There appears to be no batches!'
   batch.update_attributes!(state: 'pending')
   batch.requests.each { |r| r.update_attributes!(state: 'pending') }
 end

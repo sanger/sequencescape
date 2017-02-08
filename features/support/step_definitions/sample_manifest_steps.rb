@@ -10,7 +10,7 @@ end
 
 Given /^the study "(.*)" has a abbreviation$/ do |study_name|
   study = Study.find_by(name: study_name)
-  study.study_metadata.study_name_abbreviation = "TEST"
+  study.study_metadata.study_name_abbreviation = 'TEST'
 end
 
 Given /^sample information is updated from the manifest for study "([^"]*)"$/ do |study_name|
@@ -19,9 +19,9 @@ Given /^sample information is updated from the manifest for study "([^"]*)"$/ do
     sample.update_attributes!(
       sanger_sample_id: sample.name,
       sample_metadata_attributes: {
-        gender: "Female",
-        dna_source: "Blood",
-        sample_sra_hold: "Hold"
+        gender: 'Female',
+        dna_source: 'Blood',
+        sample_sra_hold: 'Hold'
       }
     )
     sample.name = "#{study.abbreviation}#{index + 1}"
@@ -30,7 +30,7 @@ Given /^sample information is updated from the manifest for study "([^"]*)"$/ do
 end
 
 Given /^the last sample has been updated by a manifest$/ do
-  sample = Sample.last or raise StandardError, "There appear to be no samples"
+  sample = Sample.last or raise StandardError, 'There appear to be no samples'
   sample.update_attributes!(updated_by_manifest: true)
 end
 
@@ -71,7 +71,7 @@ end
 
 Then /^sample "([^"]*)" should have empty supplier name set to "([^"]*)"$/ do |sanger_sample_id, boolean_string|
   sample = Sample.find_by(sanger_sample_id: sanger_sample_id)
-  if boolean_string == "true"
+  if boolean_string == 'true'
     assert sample.empty_supplier_sample_name
   else
     assert !sample.empty_supplier_sample_name
@@ -91,7 +91,7 @@ Then /^the samples table should look like:$/ do |table|
     sanger_sample_id = expected_data[:sanger_sample_id]
     sample = Sample.find_by(sanger_sample_id: sanger_sample_id) or raise StandardError, "Could not find sample #{sanger_sample_id}"
 
-    if expected_data[:empty_supplier_sample_name] == "true"
+    if expected_data[:empty_supplier_sample_name] == 'true'
       assert(sample.empty_supplier_sample_name, "Supplier sample name not nil for #{sanger_sample_id}")
     else
       assert_equal(expected_data[:supplier_name], sample.sample_metadata.supplier_name, "Supplier sample name invalid for #{sanger_sample_id}")
@@ -131,7 +131,7 @@ Then /^the samples should be tagged in library and multiplexed library tubes wit
   pooled_aliquots = MultiplexedLibraryTube.last.aliquots.map { |a| [a.sample.sanger_sample_id, a.tag.map_id, a.library_id] }
   table.hashes.each do |expected_data|
     lt = LibraryTube.find_by(barcode: expected_data[:tube_barcode].gsub('NT', ''))
-    assert_equal 1, lt.aliquots.count, "Wrong number of aliquots"
+    assert_equal 1, lt.aliquots.count, 'Wrong number of aliquots'
     assert_equal expected_data[:sanger_sample_id], lt.aliquots.first.sample.sanger_sample_id, "sanger_sample_id: #{expected_data[:sanger_sample_id]} #{lt.aliquots.first.sample.sanger_sample_id}"
     assert_equal expected_data[:tag_group], lt.aliquots.first.tag.try(:tag_group).try(:name), "tag_group: #{expected_data[:tag_group]} #{lt.aliquots.first.tag.try(:tag_group).try(:name)}"
     assert_equal expected_data[:tag_index].to_i, lt.aliquots.first.tag.try(:map_id), "tag_index: #{expected_data[:tag_index]} #{lt.aliquots.first.tag.try(:map_id)}"
@@ -148,11 +148,11 @@ end
 
 Given /^a manifest has been created for "([^"]*)"$/ do |study_name|
   study = Study.find_by!(name: study_name)
-  supplier = Supplier.find_by!(name: "Test supplier name")
+  supplier = Supplier.find_by!(name: 'Test supplier name')
   sample_manifest = FactoryGirl.create :sample_manifest, study: study, supplier: supplier, user: User.find_by(first_name: 'john')
   sample_manifest.generate
   visit(url_for(sample_manifest))
-  step("I reset all of the sanger sample ids to a known number sequence")
+  step('I reset all of the sanger sample ids to a known number sequence')
 end
 
 Then /^the sample controls and resubmits should look like:$/ do |table|
@@ -227,7 +227,7 @@ end
 Given /^the sample manifest with ID (\d+) has been processed$/ do |id|
   manifest = SampleManifest.find(id)
   manifest.generate
-  step("3 pending delayed jobs are processed")
+  step('3 pending delayed jobs are processed')
 end
 
 Given /^sample tubes are expected by the last manifest$/ do
@@ -240,9 +240,9 @@ end
 
 Then /^print any manifest errors for debugging$/ do
   if SampleManifest.last.last_errors.present?
-    puts "=" * 80
+    puts '=' * 80
     SampleManifest.last.last_errors.each { |error| puts error }
-    puts "=" * 80
+    puts '=' * 80
   end
 end
 
@@ -252,7 +252,7 @@ end
 
 Given(/^the configuration exists for creating sample manifest Excel spreadsheets$/) do
   SampleManifestExcel.configure do |config|
-    config.folder = File.join("test", "data", "sample_manifest_excel")
+    config.folder = File.join('test', 'data', 'sample_manifest_excel')
     config.load!
   end
 end

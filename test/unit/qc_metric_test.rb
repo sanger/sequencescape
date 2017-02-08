@@ -4,10 +4,10 @@
 # authorship of this file.
 # Copyright (C) 2015,2016 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class QcMetricTest < ActiveSupport::TestCase
-  context "QcMetric" do
+  context 'QcMetric' do
     should belong_to :asset
     should belong_to :qc_report
 
@@ -15,7 +15,7 @@ class QcMetricTest < ActiveSupport::TestCase
     should validate_presence_of :qc_report
   end
 
-  context "A QcMetric #poor_quality_proceed" do
+  context 'A QcMetric #poor_quality_proceed' do
     [
       ['passed',          true,  false],
       ['passed',          false, false],

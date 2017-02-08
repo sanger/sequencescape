@@ -70,7 +70,7 @@ def check_tag_layout(name, well_range, expected_wells_to_oligos)
   wells_to_oligos = Hash[
     plate.wells.map do |w|
       next unless well_range.include?(w)
-      [w.map.description, w.primary_aliquot.try(:tag).try(:oligo) || ""]
+      [w.map.description, w.primary_aliquot.try(:tag).try(:oligo) || '']
     end.compact
   ]
   if expected_wells_to_oligos != wells_to_oligos
@@ -85,7 +85,7 @@ def check_tag2_layout(name, well_range, expected_wells_to_oligos)
   wells_to_oligos = Hash[
     plate.wells.map do |w|
       next unless well_range.include?(w)
-      [w.map.description, w.primary_aliquot.try(:tag2).try(:oligo) || ""]
+      [w.map.description, w.primary_aliquot.try(:tag2).try(:oligo) || '']
     end.compact
   ]
   if expected_wells_to_oligos != wells_to_oligos

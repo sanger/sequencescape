@@ -18,9 +18,9 @@ Given /^I have a sample tube "([^"]*)" in study "([^"]*)" in asset group "([^"]*
 end
 
 Given /^I have a PacBio submission$/ do
-  step("I have a plate for PacBio")
-  project = Project.find_by(name: "Test project")
-  study = Study.find_by(name: "Test study")
+  step('I have a plate for PacBio')
+  project = Project.find_by(name: 'Test project')
+  study = Study.find_by(name: 'Test study')
 
   submission_template = SubmissionTemplate.find_by(name: 'PacBio')
   submission = submission_template.create_and_build_submission!(
@@ -29,9 +29,9 @@ Given /^I have a PacBio submission$/ do
     workflow: Submission::Workflow.find_by(key: 'short_read_sequencing'),
     user: User.last,
     assets: Plate.find_by(barcode: 1234567).wells.all,
-    request_options: { :multiplier => { "1" => "1", "3" => "1" }, "insert_size" => "500", "sequencing_type" => "Standard" }
+    request_options: { :multiplier => { '1' => '1', '3' => '1' }, 'insert_size' => '500', 'sequencing_type' => 'Standard' }
     )
-  step("1 pending delayed jobs are processed")
+  step('1 pending delayed jobs are processed')
 end
 
 Then /^I should have (\d+) PacBioSequencingRequests$/ do |number_of_requests|
@@ -43,13 +43,13 @@ Given /^I have a plate for PacBio$/ do
     plate.wells.build(map: Map.find_by(asset_size: 96, description: 'A1'), aliquots: SampleTube.find_by(barcode: 111).aliquots.map(&:dup))
     plate.wells.build(map: Map.find_by(asset_size: 96, description: 'B1'), aliquots: SampleTube.find_by(barcode: 222).aliquots.map(&:dup)) if SampleTube.find_by(barcode: 222).present?
     plate.location = Location.find_by(name: 'PacBio library prep freezer')
-    AssetGroup.create!(name: "PacBio group", study: Study.find_by(name: 'Test study')).assets << plate.wells
+    AssetGroup.create!(name: 'PacBio group', study: Study.find_by(name: 'Test study')).assets << plate.wells
   end
 end
 
 Given /^I have a PacBio Library Prep batch$/ do
   step('I have a sample tube "222" in study "Test study" in asset group "Test study group"')
-  step("I have a PacBio submission")
+  step('I have a PacBio submission')
   step('I am on the show page for pipeline "PacBio Library Prep"')
   step('I check "Select DN1234567T for batch"')
   step('I press the first "Submit"')
@@ -72,13 +72,13 @@ end
 Given /^I have a fast PacBio sequencing batch$/ do
   step('I have a sample tube "111" in study "Test study" in asset group "Test study group"')
   step('I have a sample tube "222" in study "Test study" in asset group "Test study group"')
-  step("the sample tubes are part of the study")
-  step("I have a PacBio submission")
-  location = Location.find_by(name: "PacBio sequencing freezer")
-  library_1 = PacBioLibraryTube.create!(location: location, barcode: "333", aliquots: SampleTube.find_by(barcode: 111).aliquots.map(&:dup))
-  library_1.pac_bio_library_tube_metadata.update_attributes!(prep_kit_barcode: "999", smrt_cells_available: 3)
-  library_2 = PacBioLibraryTube.create!(location: location, barcode: "444", aliquots: SampleTube.find_by(barcode: 222).aliquots.map(&:dup))
-  library_2.pac_bio_library_tube_metadata.update_attributes!(prep_kit_barcode: "999", smrt_cells_available: 1)
+  step('the sample tubes are part of the study')
+  step('I have a PacBio submission')
+  location = Location.find_by(name: 'PacBio sequencing freezer')
+  library_1 = PacBioLibraryTube.create!(location: location, barcode: '333', aliquots: SampleTube.find_by(barcode: 111).aliquots.map(&:dup))
+  library_1.pac_bio_library_tube_metadata.update_attributes!(prep_kit_barcode: '999', smrt_cells_available: 3)
+  library_2 = PacBioLibraryTube.create!(location: location, barcode: '444', aliquots: SampleTube.find_by(barcode: 222).aliquots.map(&:dup))
+  library_2.pac_bio_library_tube_metadata.update_attributes!(prep_kit_barcode: '999', smrt_cells_available: 1)
   PacBioSequencingRequest.first.update_attributes!(asset: library_1)
   PacBioSequencingRequest.last.update_attributes!(asset: library_2)
   step('I am on the show page for pipeline "PacBio Sequencing"')
@@ -90,7 +90,7 @@ Given /^I have a fast PacBio sequencing batch$/ do
 end
 
 Given /^I have a PacBio sequencing batch$/ do
-  step("I have a PacBio Library Prep batch")
+  step('I have a PacBio Library Prep batch')
   step('I follow "DNA Template Prep Kit Box Barcode"')
   step('I fill in "DNA Template Prep Kit Box Barcode" with "999"')
   step('I press "Next step"')
@@ -106,16 +106,16 @@ Given /^I have a PacBio sequencing batch$/ do
   step('I check the invisible "Select Request 0"')
   step('I check the invisible "Select Request 1"')
   step('I press the first "Submit"')
-  step("the sample tubes are part of the study")
+  step('the sample tubes are part of the study')
 end
 
 Given /^the sample tubes are part of the study$/ do
   sample_tube = SampleTube.find_by(barcode: 111)
-  sample_tube.primary_aliquot.sample.sample_metadata.update_attributes!(sample_common_name: "Homo Sapien", sample_taxon_id: 9606)
+  sample_tube.primary_aliquot.sample.sample_metadata.update_attributes!(sample_common_name: 'Homo Sapien', sample_taxon_id: 9606)
   Study.find_by(name: 'Test study').samples << sample_tube.primary_aliquot.sample
 
   sample_tube = SampleTube.find_by(barcode: 222)
-  sample_tube.primary_aliquot.sample.sample_metadata.update_attributes!(sample_common_name: "Flu", sample_taxon_id: 123, sample_strain_att: "H1N1")
+  sample_tube.primary_aliquot.sample.sample_metadata.update_attributes!(sample_common_name: 'Flu', sample_taxon_id: 123, sample_strain_att: 'H1N1')
   Study.find_by(name: 'Test study').samples << sample_tube.primary_aliquot.sample
 end
 
@@ -172,7 +172,7 @@ Then /^the PacBio sample prep worksheet should look like:$/ do |expected_results
 end
 
 Given /^I have progressed to the Reference Sequence task$/ do
-  step("I have a PacBio sequencing batch")
+  step('I have a PacBio sequencing batch')
   step('I follow "Binding Kit Box Barcode"')
   step('I fill in "Binding Kit Box Barcode" with "777"')
   step('I press "Next step"')

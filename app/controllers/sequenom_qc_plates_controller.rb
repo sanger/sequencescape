@@ -9,7 +9,7 @@ class SequenomQcPlatesController < ApplicationController
 # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   def new
-    @barcode_printers  = BarcodePrinterType.find_by(name: "384 Well Plate").barcode_printers
+    @barcode_printers  = BarcodePrinterType.find_by(name: '384 Well Plate').barcode_printers
     @barcode_printers  = BarcodePrinter.order(:name) if @barcode_printers.blank?
     @input_plate_names = input_plate_names()
   end
@@ -63,7 +63,7 @@ class SequenomQcPlatesController < ApplicationController
     respond_to do |format|
       if bad_plate
         # Something's gone wrong, render the errors on the first plate that failed
-        flash[:error] = bad_plate.errors.full_messages || "Failed to create Sequenom QC Plate"
+        flash[:error] = bad_plate.errors.full_messages || 'Failed to create Sequenom QC Plate'
         format.html { render :new }
       else
         print_job = LabelPrinter::PrintJob.new(barcode_printer.name,
@@ -103,7 +103,7 @@ class SequenomQcPlatesController < ApplicationController
 
   def input_plate_names
     input_plate_names = {}
-    (1..4).each { |i| input_plate_names[i] = params[:input_plate_names].try(:[], i.to_s) || "" }
+    (1..4).each { |i| input_plate_names[i] = params[:input_plate_names].try(:[], i.to_s) || '' }
     input_plate_names
   end
 end

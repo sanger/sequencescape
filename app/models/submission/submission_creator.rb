@@ -34,7 +34,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
     begin
       submission.built!
     rescue AASM::InvalidTransition
-      submission.errors.add(:base, "Submissions can not be edited once they are submitted for building.")
+      submission.errors.add(:base, 'Submissions can not be edited once they are submitted for building.')
     rescue ActiveRecord::RecordInvalid => exception
       exception.record.errors.full_messages.each do |message|
         submission.errors.add(:base, message)
@@ -145,8 +145,8 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
   def order_assets
     input_methods = [:asset_group_id, :sample_names_text, :barcodes_wells_text].select { |input_method| send(input_method).present? }
 
-    raise InvalidInputException, "No Samples found" if input_methods.empty?
-    raise InvalidInputException, "Samples cannot be added from multiple sources at the same time." unless input_methods.size == 1
+    raise InvalidInputException, 'No Samples found' if input_methods.empty?
+    raise InvalidInputException, 'Samples cannot be added from multiple sources at the same time.' unless input_methods.size == 1
 
     case input_methods.first
     when :asset_group_id    then { asset_group: find_asset_group }

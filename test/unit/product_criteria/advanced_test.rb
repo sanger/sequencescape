@@ -9,7 +9,7 @@
 require 'test_helper'
 
 class ProductCriteriaAdvancedTest < ActiveSupport::TestCase
-  context "a configured criteria" do
+  context 'a configured criteria' do
     setup do
       @params = {
         'failed' => {
@@ -23,28 +23,28 @@ class ProductCriteriaAdvancedTest < ActiveSupport::TestCase
       }
     end
 
-    context "with a list of target wells" do
+    context 'with a list of target wells' do
       setup do
-        @well_attribute = create :well_attribute, concentration: 800, current_volume: 100, gel_pass: 'OKAY', gender_markers: ["M", "M", "U"]
+        @well_attribute = create :well_attribute, concentration: 800, current_volume: 100, gel_pass: 'OKAY', gender_markers: ['M', 'M', 'U']
         @well = create :well, well_attribute: @well_attribute
 
         @target_wells = create_list :well, 7
         @target_wells.last.set_concentration(30)
         @criteria = ProductCriteria::Advanced.new(@params, @well, @target_wells)
       end
-      should "get the most recent target well from the supplied list" do
+      should 'get the most recent target well from the supplied list' do
         assert_equal @criteria.most_recent_concentration_from_target_well_by_updating_date, @target_wells.last.get_concentration
         @criteria2 = ProductCriteria::Advanced.new(@params, @well, nil)
         assert_equal nil, @criteria2.most_recent_concentration_from_target_well_by_updating_date
       end
-      should "get the most recent concentration from normalization" do
+      should 'get the most recent concentration from normalization' do
         assert_equal @criteria.concentration_from_normalization, 30
         @criteria2 = ProductCriteria::Advanced.new(@params, @well, nil)
         assert_equal nil, @criteria2.concentration_from_normalization
       end
     end
 
-    context "with a good well" do
+    context 'with a good well' do
       setup do
         @well_attribute = create :well_attribute, concentration: 800, measured_volume: 200
         @well = create :well, well_attribute: @well_attribute
@@ -57,7 +57,7 @@ class ProductCriteriaAdvancedTest < ActiveSupport::TestCase
       end
     end
 
-    context "with a bad well" do
+    context 'with a bad well' do
       setup do
         @well_attribute = create :well_attribute, concentration: 200, measured_volume: 50
         @well = create :well, well_attribute: @well_attribute
@@ -70,7 +70,7 @@ class ProductCriteriaAdvancedTest < ActiveSupport::TestCase
       end
     end
 
-    context "with a very bad well" do
+    context 'with a very bad well' do
       setup do
         @well_attribute = create :well_attribute, concentration: 1, measured_volume: 30000
         @well = create :well, well_attribute: @well_attribute

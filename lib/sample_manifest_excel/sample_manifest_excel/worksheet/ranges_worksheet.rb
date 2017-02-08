@@ -7,7 +7,7 @@ module SampleManifestExcel
       # conditional formattings use ranges absolute references in formulas).
 
       def create_worksheet
-        insert_axlsx_worksheet("Ranges")
+        insert_axlsx_worksheet('Ranges')
         add_ranges
         ranges.set_worksheet_names(name)
       end

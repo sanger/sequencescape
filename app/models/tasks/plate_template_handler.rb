@@ -26,7 +26,7 @@ module Tasks::PlateTemplateHandler
     plate_size = if params[:plate_template].blank?
       PlatePurpose.find(params[:plate_purpose_id]).size
                  else
-      PlateTemplate.find(params[:plate_template]["0"].to_i).size
+      PlateTemplate.find(params[:plate_template]['0'].to_i).size
                  end
 
     parsed_plate_details = parse_uploaded_spreadsheet_layout(params[:file].read, plate_size)
@@ -38,7 +38,7 @@ module Tasks::PlateTemplateHandler
   def parse_uploaded_spreadsheet_layout(layout_data, plate_size)
     (Hash.new { |h, k| h[k] = {} }).tap do |parsed_plates|
       CSV.parse(layout_data, headers: :first_row) do |row|
-        parse_spreadsheet_row(plate_size, row["Request ID"], row["Sample Name"], row["Plate"], row["Destination Well"]) do |plate_key, request_id, location|
+        parse_spreadsheet_row(plate_size, row['Request ID'], row['Sample Name'], row['Plate'], row['Destination Well']) do |plate_key, request_id, location|
           parsed_plates[plate_key][location.column_order] = [location, request_id]
         end
       end
@@ -51,7 +51,7 @@ module Tasks::PlateTemplateHandler
     return if destination_well.blank? or destination_well.to_i > 0
 
     location = Map.find_by(description: destination_well, asset_size: plate_size) or return
-    plate_key = "default plate 1" if plate_key.blank?
+    plate_key = 'default plate 1' if plate_key.blank?
     yield(plate_key, request_id.to_i, location)
   end
   private :parse_spreadsheet_row
@@ -74,8 +74,8 @@ module Tasks::PlateTemplateHandler
 
   def self.generate_spreadsheet(batch)
     CSV.generate(row_sep: "\r\n") do |csv|
-      csv << ["Request ID", "Sample Name", "Plate", "Destination Well"]
-      batch.requests.each { |r| csv << [r.id, r.asset.sample.name, "", ""] }
+      csv << ['Request ID', 'Sample Name', 'Plate', 'Destination Well']
+      batch.requests.each { |r| csv << [r.id, r.asset.sample.name, '', ''] }
     end
   end
 end

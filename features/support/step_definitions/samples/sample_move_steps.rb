@@ -28,7 +28,7 @@ When /^I move sample "([^\"]*)" from study "([^\"]*)" to "([^\"]*)", to asset gr
 end
 
  When /^I move samples between studies using the spreadsheet "([^\"]*)"$/ do |file_name|
-  step("I am on the sample move using spreadsheet page")
+  step('I am on the sample move using spreadsheet page')
   step(%Q{I fill in "file" with "data/#{file_name}"})
   step 'I press "Upload spreadsheet"'
  end

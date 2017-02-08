@@ -6,7 +6,7 @@ FactoryGirl.define do
     initialize_with { new(options: options, style: style) }
 
     factory :conditional_formatting_with_formula, class: SampleManifestExcel::ConditionalFormatting do
-      formula ({ type: :len, operator: ">", operand: 10 })
+      formula ({ type: :len, operator: '>', operand: 10 })
       initialize_with { new(options: options, style: style, formula: formula) }
     end
   end

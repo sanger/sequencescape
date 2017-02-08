@@ -6,7 +6,7 @@ class AddChromiumRequestType < ActiveRecord::Migration
         key: 'illumina_c_chromium_library',
         request_class_name: 'IlluminaC::Requests::LibraryRequest', # See class deprecation notice above
         for_multiplexing: true,
-        workflow: Submission::Workflow.find_by(name: "Next-gen sequencing"),
+        workflow: Submission::Workflow.find_by(name: 'Next-gen sequencing'),
         asset_type: 'Well',
         order: 1,
         initial_state: 'pending',

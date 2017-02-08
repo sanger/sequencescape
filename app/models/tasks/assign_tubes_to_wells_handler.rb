@@ -27,7 +27,7 @@ module Tasks::AssignTubesToWellsHandler
         library_well_positions = all_well_positions_for_library_tube(tubes_to_well_positions, library_tube)
         requests.select { |request| request.asset == library_tube }.each_slice(MAX_SMRT_CELLS_PER_WELL) do |requests_for_library|
           well_position = library_well_positions.shift
-          raise "Not enough well positions to satisfy requests" if well_position.nil?
+          raise 'Not enough well positions to satisfy requests' if well_position.nil?
 
           well = find_target_asset_from_requests(requests_for_library)
           well.update_attributes!(map: Map.find_by(description: well_position, asset_size: 96), plate: plate)

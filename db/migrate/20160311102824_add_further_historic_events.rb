@@ -16,7 +16,7 @@ class AddFurtherHistoricEvents < ActiveRecord::Migration
       print '.'
     end
 
-    say "Adding lib_pcr_xp_created"
+    say 'Adding lib_pcr_xp_created'
     xp_purpose_id = Purpose.find_by!(name: 'Lib PCR-XP').id
 
     StateChange.joins(:target).where(target_state: 'passed', assets: { plate_purpose_id: xp_purpose_id }).find_each do |sc|

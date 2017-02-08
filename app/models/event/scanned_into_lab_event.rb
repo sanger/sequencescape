@@ -13,7 +13,7 @@ class Event::ScannedIntoLabEvent < Event
       eventful: asset,
       message: "Scanned into #{location.name}",
       content: Date.today.to_s,
-      family: "scanned_into_lab"
+      family: 'scanned_into_lab'
     )
   end
 
@@ -22,6 +22,6 @@ class Event::ScannedIntoLabEvent < Event
   end
 
   def test?
-    (asset.qc_state == "passed" || asset.qc_state == "failed")
+    (asset.qc_state == 'passed' || asset.qc_state == 'failed')
   end
 end

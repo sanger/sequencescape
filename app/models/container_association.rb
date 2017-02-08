@@ -7,8 +7,8 @@
 class ContainerAssociation < ActiveRecord::Base
   # We don't define the class, so will get an error if being used directly
   # in fact , the class need to be definend otherwise, eager loading through doesn't work
-  belongs_to :container, class_name: "Asset"
-  belongs_to :content, class_name: "Asset"
+  belongs_to :container, class_name: 'Asset'
+  belongs_to :content, class_name: 'Asset'
 
   # NOTE: This was originally on the content asset but this causes massive performance issues.
   # It causes the plate and it's metadata to be loaded for each well, which would be cached if

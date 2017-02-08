@@ -10,14 +10,14 @@ Given /^study "([^\"]*)" has property "([^\"]*)" set to "([^\"]*)"$/ do |study_n
 end
 
 Given /^I have a study called "([^\"]*)"$/ do |study|
-  FactoryGirl.create :study, name: study, state: "pending"
+  FactoryGirl.create :study, name: study, state: 'pending'
 end
 
 Given /^I have a study called "([^\"]*)" that requires ethical approval and has HMDMC approval number "(.*?)"$/ do |study, number|
   study = FactoryGirl.create :study, name: study
-  study.study_metadata.contains_human_dna = "Yes"
-  study.study_metadata.contaminated_human_dna = "No"
-  study.study_metadata.commercially_available = "No"
+  study.study_metadata.contains_human_dna = 'Yes'
+  study.study_metadata.contaminated_human_dna = 'No'
+  study.study_metadata.commercially_available = 'No'
   study.study_metadata.hmdmc_approval_number = number
   study.save
 end
@@ -28,7 +28,7 @@ end
 
 Given /^study "([^\"]*)" status is "([^\"]*)"$/ do |study, status|
   proj = Study.find_by(name: study)
-  status == "active" ? proj.activate! : proj.deactivate!
+  status == 'active' ? proj.activate! : proj.deactivate!
   proj.save
 end
 
@@ -40,35 +40,35 @@ end
 Given /^study "([^\"]*)" has samples registered$/ do |study|
   proj = Study.find_by(name: study)
   user = User.find_by login: 'user'
-  new_sample_group = FactoryGirl.create :sample_group, name: "new_sample_group", user: user, study: proj
+  new_sample_group = FactoryGirl.create :sample_group, name: 'new_sample_group', user: user, study: proj
   samples = {
-    "0" => {
-      "name" => "SUPPLIER SAMPLE NAME",
-      "sample_metadata_attributes" => {
-        "organism" => "COHORT",
-        "gc_content" => "Neutral",
-        "scientific_rationale" => "GEOGRAPHICAL REGION",
-        "concentration" => "COUNTRY OF ORIGIN"
+    '0' => {
+      'name' => 'SUPPLIER SAMPLE NAME',
+      'sample_metadata_attributes' => {
+        'organism' => 'COHORT',
+        'gc_content' => 'Neutral',
+        'scientific_rationale' => 'GEOGRAPHICAL REGION',
+        'concentration' => 'COUNTRY OF ORIGIN'
       }
     },
-    "1" => {
-      "name" => "Sample_987654",
-      "sample_metadata_attributes" => {
-        "organism" => "BSP",
-        "gc_content" => "Neutral",
-        "scientific_rationale" => "north ",
-        "concentration" => "123456"
+    '1' => {
+      'name' => 'Sample_987654',
+      'sample_metadata_attributes' => {
+        'organism' => 'BSP',
+        'gc_content' => 'Neutral',
+        'scientific_rationale' => 'north ',
+        'concentration' => '123456'
       }
     }
   }
   sample_registrar = SampleRegistrar.new
-  sample_registrar.create("samples" => samples, "study_id" => proj.id, "sample_group" => { "id" => new_sample_group.id.to_s }, "current_user" => user)
+  sample_registrar.create('samples' => samples, 'study_id' => proj.id, 'sample_group' => { 'id' => new_sample_group.id.to_s }, 'current_user' => user)
 end
 
 Given /^study "([^\"]*)" has assets registered$/ do |study|
   proj = Study.find_by(name: study)
   user = User.find_by login: 'user'
-  new_sample_group = FactoryGirl.create :asset_group, name: "new_asset_group", user: user, study: proj
+  new_sample_group = FactoryGirl.create :asset_group, name: 'new_asset_group', user: user, study: proj
 end
 
 Given /^the following user records$/ do |table|
@@ -234,7 +234,7 @@ Given /^study "([^\"]*)" has asset and assetgroup$/ do |study|
   proj = Study.find_by(name: study)
   user = User.find_by login: 'user'
 
-  id_asset_group = FactoryGirl.create :asset_group, name: "new_asset_group", user: user, study: proj
+  id_asset_group = FactoryGirl.create :asset_group, name: 'new_asset_group', user: user, study: proj
 #  id_asset = FactoryGirl.create :asset, :name => 'Cucumberirbattle', :sti_type => 'SampleTube', :barcode => 'barcode', :sample_id => '1', :closed => '0'
   id_asset = FactoryGirl.create :sample_tube, name: 'Cucumberirbattle', barcode: 'barcode', closed: '0'
   id_aga = FactoryGirl.create :asset_group_asset, asset_id: id_asset.id, asset_group_id: id_asset_group.id
@@ -253,7 +253,7 @@ Given /^study "([^\"]*)" has plate and assetgroup$/ do |study_name|
   study = Study.find_by(name: study_name)
   user = User.find_by login: 'user'
 
-  id_asset_group = FactoryGirl.create :asset_group, name: "new_asset_group", user: user, study: study
+  id_asset_group = FactoryGirl.create :asset_group, name: 'new_asset_group', user: user, study: study
   sample = FactoryGirl.create :sample
   study.samples << sample
   map   = FactoryGirl.create :map
@@ -351,9 +351,9 @@ Then /^I should exactly see "([^"]*)"$/ do |text|
 end
 
 When /^I generate an? (dac|policy|array express) accession number for study "([^\"]+)"$/ do |type, study_name|
- type = { "dac" => "DAC", "policy" => "Policy", "array express" => "" }.fetch(type, type)
+ type = { 'dac' => 'DAC', 'policy' => 'Policy', 'array express' => '' }.fetch(type, type)
  step %Q{I am on the workflow page for study "#{study_name}"}
- step %Q{I follow "Generate #{type} Accession Number"}.gsub(/  +/, " ")
+ step %Q{I follow "Generate #{type} Accession Number"}.gsub(/  +/, ' ')
 end
 
 When /^I generate an? accession number for study "([^\"]+)"$/ do |study_name|
@@ -406,7 +406,7 @@ Given /^study "([^"]*)" has an ENA project ID of "([^"]*)"$/ do |study_name, ena
 end
 
 Given /^I create study "([^"]*)" with faculty sponsor "([^"]*)"$/ do |study_name, faculty_sponsor|
-  step("I am on the homepage")
+  step('I am on the homepage')
   step('I follow "Create Study"')
   step(%Q{I fill in "Study name" with "#{study_name}"})
   step('I select "Not suitable for alignment" from "Reference genome"')
@@ -428,7 +428,7 @@ When /^I have an? (managed|open) study without a data release group called "(.*?
   Study.create!(
       name: study_name,
       study_metadata_attributes: {
-        program: Program.find_by(name: "General"),
+        program: Program.find_by(name: 'General'),
         faculty_sponsor: FactoryGirl.create(:faculty_sponsor),
         study_type: StudyType.last,
         data_release_strategy: managed,

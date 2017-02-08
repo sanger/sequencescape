@@ -77,7 +77,7 @@ module XmlCacheHelper
     rescue Errno::EACCES => exception
       i += 1
       retry unless i > 2
-      Rails.logger.warn { "Cannot clear cached XML file as it is inaccessible" }
+      Rails.logger.warn { 'Cannot clear cached XML file as it is inaccessible' }
     end
   end
   private :clear_cache

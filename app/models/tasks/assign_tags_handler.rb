@@ -14,12 +14,12 @@ module Tasks::AssignTagsHandler
 
   def do_assign_tags_task(_task, params)
     if params[:mx_library_name].blank?
-      flash[:warning] = "Multiplexed library needs a name"
+      flash[:warning] = 'Multiplexed library needs a name'
       redirect_to action: 'stage', batch_id: @batch.id, workflow_id: @workflow.id, id: (@stage - 1).to_s
       return false
     end
     if MultiplexedLibraryTube.where(name: params[:mx_library_name]).size > 0
-      flash[:warning] = "Name already in use."
+      flash[:warning] = 'Name already in use.'
       redirect_to action: 'stage', batch_id: @batch.id, workflow_id: @workflow.id, id: (@stage - 1).to_s
       return false
     end

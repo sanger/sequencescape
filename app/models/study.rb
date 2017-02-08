@@ -75,11 +75,11 @@ class Study < ActiveRecord::Base
   has_many :study_reports
 
   # load all the associated requests with attemps and request type
-  has_many :eager_items, ->() { includes(requests: :request_type) }, class_name: "Item", through: :requests, source: :item
+  has_many :eager_items, ->() { includes(requests: :request_type) }, class_name: 'Item', through: :requests, source: :item
 
   has_many :aliquots
-  has_many :assets_through_aliquots,  ->() { distinct }, class_name: "Asset", through: :aliquots, source: :receptacle
-  has_many :assets_through_requests,  ->() { distinct }, class_name: "Asset", through: :initial_requests, source: :asset
+  has_many :assets_through_aliquots,  ->() { distinct }, class_name: 'Asset', through: :aliquots, source: :receptacle
+  has_many :assets_through_requests,  ->() { distinct }, class_name: 'Asset', through: :initial_requests, source: :asset
 
   has_many :requests, through: :assets_through_aliquots, source: :requests_as_source
   has_many :items, ->() { distinct }, through: :requests
@@ -87,7 +87,7 @@ class Study < ActiveRecord::Base
   # New version
   has_many :projects, ->() { distinct }, through: :orders
 
-  has_many :initial_requests, class_name: "Request", foreign_key: :initial_study_id
+  has_many :initial_requests, class_name: 'Request', foreign_key: :initial_study_id
 
   has_many :comments, as: :commentable
   has_many :events, ->() { order('created_at ASC, id ASC') }, as: :eventful
@@ -107,7 +107,7 @@ class Study < ActiveRecord::Base
   validate :validate_ethically_approved
   def validate_ethically_approved
     return true if valid_ethically_approved?
-    message = ethical_approval_required? ? "should be either true or false for this study." : "should be not applicable (null) not false."
+    message = ethical_approval_required? ? 'should be either true or false for this study.' : 'should be not applicable (null) not false.'
     errors.add(:ethically_approved, message)
     false
   end
@@ -160,7 +160,7 @@ class Study < ActiveRecord::Base
   YES = 'Yes'
   NO  = 'No'
   YES_OR_NO = [YES, NO]
-  Other_type = "Other"
+  Other_type = 'Other'
 
   STUDY_SRA_HOLDS = ['Hold', 'Public']
 
@@ -345,7 +345,7 @@ class Study < ActiveRecord::Base
     end
 
     def study_type_valid?
-      errors.add(:study_type, "is not specified") if study_type.name == "Not specified"
+      errors.add(:study_type, 'is not specified') if study_type.name == 'Not specified'
     end
 
     def valid_policy_url?
@@ -353,7 +353,7 @@ class Study < ActiveRecord::Base
       # use the inbuilt ruby URI parser, a bit like here:
       # http://www.simonecarletti.com/blog/2009/04/validating-the-format-of-an-url-with-rails/
       return true if dac_policy.blank?
-      dac_policy.insert(0, "http://") if /:\/\//.match(dac_policy).nil? # Add an http protocol if no protocol is defined
+      dac_policy.insert(0, 'http://') if /:\/\//.match(dac_policy).nil? # Add an http protocol if no protocol is defined
       begin
         uri = URI.parse(dac_policy)
         raise URI::InvalidURIError if configatron.invalid_policy_url_domains.include?(uri.host)
@@ -393,7 +393,7 @@ class Study < ActiveRecord::Base
   def warnings
     # These studies are now invalid, but the warning should remain until existing studies are fixed.
     if study_metadata.managed? && study_metadata.data_access_group.blank?
-      "No user group specified for a managed study. Please specify a valid Unix user group to ensure study data is visible to the correct people."
+      'No user group specified for a managed study. Please specify a valid Unix user group to ensure study data is visible to the correct people.'
     end
   end
 
@@ -410,7 +410,7 @@ class Study < ActiveRecord::Base
   end
 
   def text_comments
-    comments.collect { |c| c.description unless c.description.blank? }.compact.join(", ")
+    comments.collect { |c| c.description unless c.description.blank? }.compact.join(', ')
   end
 
   def completed(workflow = nil)
@@ -452,7 +452,7 @@ class Study < ActiveRecord::Base
   end
 
   def study_status
-    inactive? ? "closed" : "open"
+    inactive? ? 'closed' : 'open'
   end
 
   def dac_refname
@@ -552,8 +552,8 @@ class Study < ActiveRecord::Base
 
   def accession_service
     case data_release_strategy
-    when "open" then EraAccessionService.new
-    when "managed" then EgaAccessionService.new
+    when 'open' then EraAccessionService.new
+    when 'managed' then EgaAccessionService.new
     else NoAccessionService.new(self)
     end
   end

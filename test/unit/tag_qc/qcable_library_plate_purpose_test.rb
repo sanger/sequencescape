@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2014,2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class QcableLibraryPlatePurposeTest < ActiveSupport::TestCase
   class MockAliquot
@@ -12,8 +12,8 @@ class QcableLibraryPlatePurposeTest < ActiveSupport::TestCase
     def save!; true; end
   end
 
-  context "A Qcable Library Plate Purpose" do
-    context "#QcableLibraryPlatePurpose" do
+  context 'A Qcable Library Plate Purpose' do
+    context '#QcableLibraryPlatePurpose' do
       should 'set library type on aliquots' do
         @purpose = QcableLibraryPlatePurpose.new(name: 'test_purpose')
 

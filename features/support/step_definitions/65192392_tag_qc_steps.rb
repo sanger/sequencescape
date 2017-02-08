@@ -60,7 +60,7 @@ Given /^I am set up for testing qcable ordering$/ do
   lot = Lot.find_by(lot_number: '1234567890')
   user = User.last
   step 'the plate barcode webservice returns "1000001..1000009"'
-  step "a robot exists"
+  step 'a robot exists'
   qccreate = QcableCreator.create!(lot: lot, user: user, count: 6)
 
   step 'all of this is happening at exactly "23-Oct-2010 23:00:00+01:00"'

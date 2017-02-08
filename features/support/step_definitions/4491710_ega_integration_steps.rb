@@ -13,7 +13,7 @@ Given /^an accessioning webservice exists that errors with "([^\"]+)"$/ do |mess
 end
 
 Given /^an accessioning service exists which returns an array express accession number "([^\"]+)"/ do |ae_an|
-  FakeAccessionService.instance.success("Study", "EGAS00001000241", <<-XML)
+  FakeAccessionService.instance.success('Study', 'EGAS00001000241', <<-XML)
   <EXT_ID accession="#{ae_an}" type="ArrayExpress"/>
   XML
 end

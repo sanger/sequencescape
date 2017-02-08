@@ -6,8 +6,8 @@
 
 FactoryGirl.define do
   factory :well do |_well|
-    value               ""
-    qc_state            ""
+    value               ''
+    qc_state            ''
     resource            nil
     barcode             nil
     well_attribute

@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2014,2015,2016 Genome Research Ltd.
 
-rt = rt = RequestType.find_by(key: "qc_miseq_sequencing")
+rt = rt = RequestType.find_by(key: 'qc_miseq_sequencing')
 tube = BarcodePrinterType.find_by(name: '1D Tube')
 plate = BarcodePrinterType.find_by(name: '96 Well PLate')
 
@@ -34,8 +34,8 @@ ActiveRecord::Base.transaction do
   Purpose::Relationship.create!(parent: Purpose.find_by(name: 'Pre Stamped Tag Plate'), child: Purpose.find_by(name: 'Tag PCR'), transfer_request_type: RequestType.transfer)
 end
 
-mi_seq_freezer = Location.find_by(name: "MiSeq freezer")
-SequencingPipeline.create!(name: "MiSeq sequencing QC") do |pipeline|
+mi_seq_freezer = Location.find_by(name: 'MiSeq freezer')
+SequencingPipeline.create!(name: 'MiSeq sequencing QC') do |pipeline|
   pipeline.asset_type = 'Lane'
   pipeline.sorter     = 2
   pipeline.automated  = false
@@ -45,17 +45,17 @@ SequencingPipeline.create!(name: "MiSeq sequencing QC") do |pipeline|
 
   pipeline.request_types << rt
 
-  pipeline.workflow = LabInterface::Workflow.create!(name: "MiSeq sequencing QC") do |workflow|
+  pipeline.workflow = LabInterface::Workflow.create!(name: 'MiSeq sequencing QC') do |workflow|
     workflow.locale     = 'External'
     workflow.item_limit = 1
   end.tap do |workflow|
       t1 = SetDescriptorsTask.create!(name: 'Specify Dilution Volume', sorted: 0, workflow: workflow)
-      Descriptor.create!(kind: "Text", sorter: 1, name: "Concentration", task: t1)
+      Descriptor.create!(kind: 'Text', sorter: 1, name: 'Concentration', task: t1)
       t2 = SetDescriptorsTask.create!(name: 'Cluster Generation', sorted: 0, workflow: workflow)
-      Descriptor.create!(kind: "Text", sorter: 1, name: "Chip barcode", task: t2)
-      Descriptor.create!(kind: "Text", sorter: 2, name: "Cartridge barcode", task: t2)
-      Descriptor.create!(kind: "Text", sorter: 3, name: "Operator", task: t2)
-      Descriptor.create!(kind: "Text", sorter: 4, name: "Machine name", task: t2)
+      Descriptor.create!(kind: 'Text', sorter: 1, name: 'Chip barcode', task: t2)
+      Descriptor.create!(kind: 'Text', sorter: 2, name: 'Cartridge barcode', task: t2)
+      Descriptor.create!(kind: 'Text', sorter: 3, name: 'Operator', task: t2)
+      Descriptor.create!(kind: 'Text', sorter: 4, name: 'Machine name', task: t2)
   end
 end.tap do |pipeline|
   create_request_information_types(pipeline, 'fragment_size_required_from', 'fragment_size_required_to', 'library_type', 'read_length')

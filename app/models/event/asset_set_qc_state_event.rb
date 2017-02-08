@@ -10,7 +10,7 @@ class Event::AssetSetQcStateEvent < Event
       define_method(:"create_#{ type }!") do |asset, reason|
         create!(
           eventful: asset,
-          family: "update",
+          family: 'update',
           content: reason,
           message: reason
         )

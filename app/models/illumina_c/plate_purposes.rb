@@ -66,7 +66,7 @@ module IlluminaC::PlatePurposes
   }
 
   def self.request_type_prefix
-    "Illumina-C"
+    'Illumina-C'
   end
 
   extend IlluminaHtp::PlatePurposes::PurposeHelpers

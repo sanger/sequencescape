@@ -138,7 +138,7 @@ FactoryGirl.define do
     target_asset { |asset| asset.association(:empty_library_tube) }
   end
 
-  factory :request_without_item, class: "Request" do
+  factory :request_without_item, class: 'Request' do
     study
     project
     user

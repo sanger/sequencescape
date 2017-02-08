@@ -56,7 +56,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
           if model.nil?
             [nil, step]
           elsif association = model.reflections[step]
-            raise StandardError, "Nested attributes only works with belongs_to or has_one" unless [:belongs_to, :has_one].include?(association.macro.to_sym)
+            raise StandardError, 'Nested attributes only works with belongs_to or has_one' unless [:belongs_to, :has_one].include?(association.macro.to_sym)
             [association.klass, :"#{step}_attributes"]
           else
             [nil, step]
@@ -72,7 +72,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
       path.inject(initial_structure) { |part, step| part[step] ||= {} }
       code << "process_if_present(params, #{json.split('.').inspect}) do |value|"
       code << if path.empty?
-        "  attributes.tap do |section|"
+        '  attributes.tap do |section|'
               else
         "  #{path.inspect}.inject(attributes) { |a,s| a[s] }.tap do |section|"
               end
@@ -86,8 +86,8 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
               else
         "    section[:#{leaf}] = value"
               end
-      code << "  end"
-      code << "end"
+      code << '  end'
+      code << 'end'
     end
 
     low_level(('-' * 30) << name << ('-' * 30))

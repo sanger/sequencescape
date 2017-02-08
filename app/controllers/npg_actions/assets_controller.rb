@@ -48,8 +48,8 @@ class NpgActions::AssetsController < ApplicationController
     }, __FILE__, line)
   end
 
-  construct_action_for_qc_state("pass")
-  construct_action_for_qc_state("fail")
+  construct_action_for_qc_state('pass')
+  construct_action_for_qc_state('fail')
 
   private
 
@@ -65,25 +65,25 @@ class NpgActions::AssetsController < ApplicationController
   end
 
   def xml_valid?
-   raise XmlInvalid, "XML invalid" if params[:qc_information].nil?
+   raise XmlInvalid, 'XML invalid' if params[:qc_information].nil?
   end
 
   def npg_action_invalid?
    @asset ||= Asset.find(params[:asset_id])
    request = @asset.source_request
    npg_events = Event.npg_events(request.id)
-   raise NPGActionInvalid, "NPG user run this action. Please, contact USG" if npg_events.size > 0
+   raise NPGActionInvalid, 'NPG user run this action. Please, contact USG' if npg_events.size > 0
   end
 
   def rescue_error(exception)
     respond_to do |format|
-      format.xml { render xml: "<error><message>#{exception.message}</message></error>", status: "404" }
+      format.xml { render xml: "<error><message>#{exception.message}</message></error>", status: '404' }
     end
   end
 
   def rescue_error_internal_server_error(exception)
     respond_to do |format|
-      format.xml { render xml: "<error><message>#{exception.message}</message></error>", status: "500" }
+      format.xml { render xml: "<error><message>#{exception.message}</message></error>", status: '500' }
     end
   end
 end

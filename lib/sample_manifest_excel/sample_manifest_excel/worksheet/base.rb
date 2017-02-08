@@ -49,7 +49,7 @@ module SampleManifestExcel
       # Creates a worksheet, empty one in this case
 
       def create_worksheet
-        insert_axlsx_worksheet("Base")
+        insert_axlsx_worksheet('Base')
       end
     end
   end

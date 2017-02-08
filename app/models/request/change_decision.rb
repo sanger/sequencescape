@@ -49,11 +49,11 @@ class Request::ChangeDecision
   end
 
   def state_change?
-    change_decision_check_box == "1"
+    change_decision_check_box == '1'
   end
 
   def asset_qc_state_absent?
-    asset_qc_state_check_box == "0" || asset_qc_state_check_box.nil?
+    asset_qc_state_check_box == '0' || asset_qc_state_check_box.nil?
   end
 
   def execute!
@@ -84,7 +84,7 @@ private
     previous_state = request.state
     ActiveRecord::Base.transaction do
       request.change_decision!
-      request.events.create!(message: "Change state from #{previous_state} to  #{state}", created_by: user.login, family: "update")
+      request.events.create!(message: "Change state from #{previous_state} to  #{state}", created_by: user.login, family: 'update')
       request.comments.create!(description: comment, user_id: user.id)
     end
   end

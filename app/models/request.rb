@@ -26,7 +26,7 @@ class Request < ActiveRecord::Base
   has_many_events
   has_many_lab_events
 
-  self.inheritance_column = "sti_type"
+  self.inheritance_column = 'sti_type'
 
   def self.delegate_validator
     DelegateValidation::AlwaysValidValidator
@@ -126,7 +126,7 @@ class Request < ActiveRecord::Base
 
   belongs_to :request_type, inverse_of: :requests
   delegate :billable?, to: :request_type, allow_nil: true
-  belongs_to :workflow, class_name: "Submission::Workflow"
+  belongs_to :workflow, class_name: 'Submission::Workflow'
 
   belongs_to :user
   belongs_to :request_purpose
@@ -148,14 +148,14 @@ class Request < ActiveRecord::Base
 
   # project is read only so we can set it everywhere
   # but it will be only used in specific and controlled place
-  belongs_to :initial_project, class_name: "Project"
+  belongs_to :initial_project, class_name: 'Project'
 
   def current_request_event
     request_events.current.last
   end
 
   def project_id=(project_id)
-    raise RuntimeError, "Initial project already set" if initial_project_id
+    raise RuntimeError, 'Initial project already set' if initial_project_id
     self.initial_project_id = project_id
   end
 
@@ -176,10 +176,10 @@ class Request < ActiveRecord::Base
   end
 
   # same as project with study
-  belongs_to :initial_study, class_name: "Study"
+  belongs_to :initial_study, class_name: 'Study'
 
   def study_id=(study_id)
-    raise RuntimeError, "Initial study already set" if initial_study_id
+    raise RuntimeError, 'Initial study already set' if initial_study_id
     self.initial_study_id = study_id
   end
 
@@ -206,7 +206,7 @@ class Request < ActiveRecord::Base
   scope :where_is_not_a?, ->(clazz) { where(['sti_type NOT IN (?)', [clazz, *clazz.descendants].map(&:name)]) }
   scope :where_has_a_submission, -> { where('submission_id IS NOT NULL') }
 
-  scope :full_inbox, -> { where(state: ["pending", "hold"]) }
+  scope :full_inbox, -> { where(state: ['pending', 'hold']) }
 
   scope :with_asset,  -> { where('asset_id is not null') }
   scope :with_target, -> { where('target_asset_id is not null and (target_asset_id <> asset_id)') }
@@ -221,13 +221,13 @@ class Request < ActiveRecord::Base
 
   # Use container location
   scope :holder_located, ->(location_id) {
-    joins(["INNER JOIN container_associations hl ON hl.content_id = asset_id", "INNER JOIN location_associations ON location_associations.locatable_id = hl.container_id"])
+    joins(['INNER JOIN container_associations hl ON hl.content_id = asset_id', 'INNER JOIN location_associations ON location_associations.locatable_id = hl.container_id'])
     .where(['location_associations.location_id = ?', location_id])
     .readonly(false)
   }
 
   scope :holder_not_control, -> {
-    joins(["INNER JOIN container_associations hncca ON hncca.content_id = asset_id", "INNER JOIN assets AS hncc ON hncc.id = hncca.container_id"])
+    joins(['INNER JOIN container_associations hncca ON hncca.content_id = asset_id', 'INNER JOIN assets AS hncc ON hncc.id = hncca.container_id'])
     .where(['hncc.sti_type != ?', 'ControlPlate'])
     .readonly(false)
   }
@@ -236,9 +236,9 @@ class Request < ActiveRecord::Base
   scope :excluding_states, ->(states) {
     where.not(state: states)
   }
-  scope :ordered, -> { order("id ASC") }
-  scope :full_inbox, -> { where(state: ["pending", "hold"]) }
-  scope :hold, -> { where(state: "hold") }
+  scope :ordered, -> { order('id ASC') }
+  scope :full_inbox, -> { where(state: ['pending', 'hold']) }
+  scope :hold, -> { where(state: 'hold') }
 
   # Note: These scopes use preload due to a limitation in the way rails handles custom selects with eager loading
   # https://github.com/rails/rails/issues/15185
@@ -256,7 +256,7 @@ class Request < ActiveRecord::Base
     target = options[:by_target] ? 'target_asset_id' : 'asset_id'
     groupings = options.delete(:group) || {}
 
-    select("requests.*, tca.container_id AS container_id, tca.content_id AS content_id")
+    select('requests.*, tca.container_id AS container_id, tca.content_id AS content_id')
     .joins("INNER JOIN container_associations tca ON tca.content_id=#{target}")
     .readonly(false)
     .preload(:request_metadata)
@@ -327,8 +327,8 @@ class Request < ActiveRecord::Base
 
   # TODO: There is probably a MUCH better way of getting this information. This is just a rewrite of the old approach
   def self.get_target_plate_ids(request_ids)
-    ContainerAssociation.joins("INNER JOIN requests ON content_id = target_asset_id")
-      .where(["requests.id IN  (?)", request_ids]).uniq.pluck(:container_id)
+    ContainerAssociation.joins('INNER JOIN requests ON content_id = target_asset_id')
+      .where(['requests.id IN  (?)', request_ids]).uniq.pluck(:container_id)
   end
 
   # The options that are required for creation.  In other words, the truly required options that must
@@ -358,7 +358,7 @@ class Request < ActiveRecord::Base
 
     list = (batch.present? ? lab_events_for_batch(batch) : lab_events)
     list.each { |event| desc = event.descriptor_value_for(name) and return desc }
-    ""
+    ''
   end
 
   def has_passed(batch, task)
@@ -435,8 +435,8 @@ class Request < ActiveRecord::Base
     events.map do |event|
       next if event.family.nil? or not ['pass', 'fail'].include?(event.family.downcase)
 
-      message = event.message || "(No message was specified)"
-      { "event_id" => event.id, "status" => event.family.downcase, "message" => message, "created_at" => event.created_at }
+      message = event.message || '(No message was specified)'
+      { 'event_id' => event.id, 'status' => event.family.downcase, 'message' => message, 'created_at' => event.created_at }
     end.compact
   end
 

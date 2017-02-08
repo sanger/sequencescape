@@ -11,16 +11,16 @@ module StudyReport::StudyDetails
   def each_stock_well_id_in_study_in_batches(&block)
     # Stock wells are determined by the requests leading from the stock plate
     handle_wells(
-      "INNER JOIN requests ON requests.asset_id=assets.id",
-      "requests.initial_study_id",
+      'INNER JOIN requests ON requests.asset_id=assets.id',
+      'requests.initial_study_id',
       PlatePurpose.where(name: Study::STOCK_PLATE_PURPOSES).pluck(:id),
       &block
     )
 
     # Aliquot 1,2,3,4 & 5 plates are determined by the aliquots in their wells
     handle_wells(
-      "INNER JOIN aliquots ON aliquots.receptacle_id=assets.id",
-      "aliquots.study_id",
+      'INNER JOIN aliquots ON aliquots.receptacle_id=assets.id',
+      'aliquots.study_id',
       PlatePurpose.where(name: ['Aliquot 1', 'Aliquot 2', 'Aliquot 3', 'Aliquot 4', 'Aliquot 1', 'Pre-Extracted Plate']).pluck(:id),
       &block
     )
@@ -39,7 +39,7 @@ module StudyReport::StudyDetails
 
   def well_batch_from(initial_id, join, study_condition, plate_purpose_id)
     Well.select('DISTINCT assets.id').joins([
-        "INNER JOIN container_associations ON assets.id=container_associations.content_id",
+        'INNER JOIN container_associations ON assets.id=container_associations.content_id',
         "INNER JOIN assets AS plates ON container_associations.container_id=plates.id AND plates.sti_type='Plate'",
         join
       ])
@@ -54,11 +54,11 @@ module StudyReport::StudyDetails
 
   def progress_report_header
     [
-      "Status", "Study", "Supplier", "Sanger Sample Name", "Supplier Sample Name", "Plate", "Well", "Supplier Volume",
-      "Supplier Gender", "Concentration", "Initial Volume", "Current Volume", "Total Micrograms", "Sequenome Count",
-      "Sequenome Gender", "Pico", "Gel", "Qc Status", "QC started date", "Pico date", "Gel QC date", "Seq stamp date",
-      "Genotyping Status", "Genotyping Chip", "Genotyping Infinium Barcode", "Genotyping Barcode", "Genotyping Well",
-      "Cohort", "Country of Origin", "Geographical Region", "Ethnicity", "DNA Source", "Is Resubmitted", "Control", "Is in Fluidigm"
+      'Status', 'Study', 'Supplier', 'Sanger Sample Name', 'Supplier Sample Name', 'Plate', 'Well', 'Supplier Volume',
+      'Supplier Gender', 'Concentration', 'Initial Volume', 'Current Volume', 'Total Micrograms', 'Sequenome Count',
+      'Sequenome Gender', 'Pico', 'Gel', 'Qc Status', 'QC started date', 'Pico date', 'Gel QC date', 'Seq stamp date',
+      'Genotyping Status', 'Genotyping Chip', 'Genotyping Infinium Barcode', 'Genotyping Barcode', 'Genotyping Well',
+      'Cohort', 'Country of Origin', 'Geographical Region', 'Ethnicity', 'DNA Source', 'Is Resubmitted', 'Control', 'Is in Fluidigm'
       ]
   end
 
@@ -66,7 +66,8 @@ module StudyReport::StudyDetails
     yield(progress_report_header)
     each_stock_well_id_in_study_in_batches do |asset_ids|
       # eager loading of well_attribute , can only be done on  wells ...
-      Well.for_study_report.where(id: asset_ids).each do |asset|
+      # We've already split into batches, so find_each here only slows things down.
+      Well.for_study_report.where(id: asset_ids).each do |asset| # rubocop:disable Rails/FindEach
         asset_progress_data = asset.qc_report
         next if asset_progress_data.nil?
 

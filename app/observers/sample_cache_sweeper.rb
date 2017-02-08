@@ -11,8 +11,8 @@ class SampleCacheSweeper < ActiveRecord::Observer
   set_caching_for_model 'samples'
 
   THROUGH_JOINS = {
-    'study'      => "INNER JOIN study_samples ON study_samples.sample_id=samples.id",
-    'receptacle' => "INNER JOIN aliquots ON aliquots.sample_id=samples.id"
+    'study'      => 'INNER JOIN study_samples ON study_samples.sample_id=samples.id',
+    'receptacle' => 'INNER JOIN aliquots ON aliquots.sample_id=samples.id'
   }
 
   # We shorten the query conditions for studies and receptacles because we do not need to perform

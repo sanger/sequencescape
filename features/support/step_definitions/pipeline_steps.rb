@@ -8,7 +8,7 @@ Given /^I have a pipeline called "([^\"]*)"$/ do |name|
   request_type = FactoryGirl.create :request_type
   pipeline = FactoryGirl.create :pipeline, name: name, request_types: [request_type]
   pipeline.workflow.update_attributes!(item_limit: 8)
-  task = FactoryGirl.create :task, name: "Task1", workflow: pipeline.workflow
+  task = FactoryGirl.create :task, name: 'Task1', workflow: pipeline.workflow
 end
 
 Given /^I have a batch in "([^\"]*)"$/ do |pipeline|
@@ -101,36 +101,36 @@ end
 Then /^I have added some output plates$/ do
   batch = Batch.last
   well = FactoryGirl.create :well
-  FactoryGirl.create :map, description: "A1"
+  FactoryGirl.create :map, description: 'A1'
   well_request = FactoryGirl.create :request, target_asset: well
   plate = FactoryGirl.create :plate
-  plate.add_well_by_map_description(well, "A1")
+  plate.add_well_by_map_description(well, 'A1')
   batch.requests << well_request
   batch.save
 end
 
 Given /^Microarray genotyping is set up$/ do
   # Submission and request types
-  submission_workflow = FactoryGirl.create :submission_workflow, key: "microarray_genotyping", name: "Microarray genotyping"
-  dna_qc = FactoryGirl.create :request_type, key: "dna_qc", name: "DNA QC", workflow: submission_workflow, order: 1, asset_type: "Well", initial_state: "pending"
-  cherrypick = FactoryGirl.create :request_type, key: "cherrypick", name: "Cherrypick", workflow: submission_workflow, order: 2, initial_state: "blocked", asset_type: "Well"
-  genotyping = FactoryGirl.create :request_type, key: "genotyping", name: "Genotyping", workflow: submission_workflow, order: 3, asset_type: "Well"
+  submission_workflow = FactoryGirl.create :submission_workflow, key: 'microarray_genotyping', name: 'Microarray genotyping'
+  dna_qc = FactoryGirl.create :request_type, key: 'dna_qc', name: 'DNA QC', workflow: submission_workflow, order: 1, asset_type: 'Well', initial_state: 'pending'
+  cherrypick = FactoryGirl.create :request_type, key: 'cherrypick', name: 'Cherrypick', workflow: submission_workflow, order: 2, initial_state: 'blocked', asset_type: 'Well'
+  genotyping = FactoryGirl.create :request_type, key: 'genotyping', name: 'Genotyping', workflow: submission_workflow, order: 3, asset_type: 'Well'
 
   # Workflows and tasks
-  cherrypick_pipeline = FactoryGirl.create :pipeline, name: "Cherrypick", request_type_id: cherrypick.id, group_by_parent: true, location_id: Location.find_by(name: "Sample logistics freezer").id
-  dna_qc_pipeline = FactoryGirl.create :pipeline, name: "DNA QC", request_type_id: dna_qc.id, group_by_parent: true, location_id: Location.find_by(name: "Sample logistics freezer").id, next_pipeline_id: cherrypick_pipeline.id
+  cherrypick_pipeline = FactoryGirl.create :pipeline, name: 'Cherrypick', request_type_id: cherrypick.id, group_by_parent: true, location_id: Location.find_by(name: 'Sample logistics freezer').id
+  dna_qc_pipeline = FactoryGirl.create :pipeline, name: 'DNA QC', request_type_id: dna_qc.id, group_by_parent: true, location_id: Location.find_by(name: 'Sample logistics freezer').id, next_pipeline_id: cherrypick_pipeline.id
 
-  dna_qc_workflow = FactoryGirl.create :lab_workflow, name: "DNA QC", pipeline: dna_qc_pipeline
-  FactoryGirl.create :task, name: "Duplicate Samples Check", sti_type: "DuplicateSamplesCheckTask", sorted: 0, workflow: dna_qc_workflow, batched: 0
-  FactoryGirl.create :task, name: "QC result", sti_type: "DnaQcTask", sorted: 1, workflow: dna_qc_workflow, batched: 1
+  dna_qc_workflow = FactoryGirl.create :lab_workflow, name: 'DNA QC', pipeline: dna_qc_pipeline
+  FactoryGirl.create :task, name: 'Duplicate Samples Check', sti_type: 'DuplicateSamplesCheckTask', sorted: 0, workflow: dna_qc_workflow, batched: 0
+  FactoryGirl.create :task, name: 'QC result', sti_type: 'DnaQcTask', sorted: 1, workflow: dna_qc_workflow, batched: 1
 
-  cherrypick_workflow = FactoryGirl.create :lab_workflow, name: "Cherrypick", pipeline: cherrypick_pipeline
-  FactoryGirl.create :task, name: "Filter Samples", sti_type: "FilterSamplesTask", sorted: 0, workflow: cherrypick_workflow
-  FactoryGirl.create :task, name: "Select Plate Template", sti_type: "PlateTemplateTask", sorted: 1, workflow: cherrypick_workflow
-  FactoryGirl.create :task, name: "Approve Plate Layout", sti_type: "CherrypickTask", sorted: 2, workflow: cherrypick_workflow
-  FactoryGirl.create :task, name: "Assign a Purpose for Output Plates", sti_type: "AssignPlatePurposeTask", sorted: 3, workflow: cherrypick_workflow
-  FactoryGirl.create :plate_purpose, name: "Frag"
-  FactoryGirl.create :task, name: "Set Location", sti_type: "SetLocationTask", sorted: 4, workflow: cherrypick_workflow
+  cherrypick_workflow = FactoryGirl.create :lab_workflow, name: 'Cherrypick', pipeline: cherrypick_pipeline
+  FactoryGirl.create :task, name: 'Filter Samples', sti_type: 'FilterSamplesTask', sorted: 0, workflow: cherrypick_workflow
+  FactoryGirl.create :task, name: 'Select Plate Template', sti_type: 'PlateTemplateTask', sorted: 1, workflow: cherrypick_workflow
+  FactoryGirl.create :task, name: 'Approve Plate Layout', sti_type: 'CherrypickTask', sorted: 2, workflow: cherrypick_workflow
+  FactoryGirl.create :task, name: 'Assign a Purpose for Output Plates', sti_type: 'AssignPlatePurposeTask', sorted: 3, workflow: cherrypick_workflow
+  FactoryGirl.create :plate_purpose, name: 'Frag'
+  FactoryGirl.create :task, name: 'Set Location', sti_type: 'SetLocationTask', sorted: 4, workflow: cherrypick_workflow
 #  FactoryGirl.create :task, :name => "Export Plate to SNP", :sti_type => "ExportPlateTask", :sorted => 4, :workflow => cherrypick_workflow
 
   # Registering submissin template

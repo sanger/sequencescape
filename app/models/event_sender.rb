@@ -17,22 +17,22 @@ class EventSender
   # <identifier>123</identifier>
   # </event>
   def self.format_message(hash)
-    doc = hash.to_xml(root: "event", skip_types: true)
+    doc = hash.to_xml(root: 'event', skip_types: true)
     doc.to_s.tr!('-', '_').gsub!('UTF_8', 'UTF-8')
   end
 
   def self.send_fail_event(request_id, reason, comment, batch_id, user = nil, options = nil)
-    hash = { eventful_id: request_id, eventful_type: 'Request', family: "fail", content: reason, message: comment, identifier: batch_id, key: "failure", created_by: user }
+    hash = { eventful_id: request_id, eventful_type: 'Request', family: 'fail', content: reason, message: comment, identifier: batch_id, key: 'failure', created_by: user }
     publishing_to_queue(hash.merge(options || {}))
   end
 
   def self.send_cancel_event(request_id, reason, comment, options = nil)
-    hash = { eventful_id: request_id, eventful_type: 'Request', family: "cancel", content: reason, message: comment, identifier: request_id, key: "cancel" }
+    hash = { eventful_id: request_id, eventful_type: 'Request', family: 'cancel', content: reason, message: comment, identifier: request_id, key: 'cancel' }
     publishing_to_queue(hash.merge(options || {}))
   end
 
   def self.send_pass_event(request_id, reason, comment, batch_id, user = nil, options = nil)
-    hash = { eventful_id: request_id, eventful_type: 'Request', family: "pass", content: reason, message: comment, identifier: batch_id, key: "pass", created_by: user }
+    hash = { eventful_id: request_id, eventful_type: 'Request', family: 'pass', content: reason, message: comment, identifier: batch_id, key: 'pass', created_by: user }
     publishing_to_queue(hash.merge(options || {}))
   end
 

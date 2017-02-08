@@ -130,7 +130,7 @@ class Uuid < ActiveRecord::Base
 
   def self.find_uuid_instance!(resource_type, resource_id)
     with_resource_by_type_and_id(resource_type, resource_id).first or
-      raise ActiveRecord::RecordNotFound, "Unable to find UUID"
+      raise ActiveRecord::RecordNotFound, 'Unable to find UUID'
   end
 
   # Find the uuid corresponding id and system.

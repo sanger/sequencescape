@@ -31,7 +31,7 @@ Given /^plate "([^"]*)" has QC results$/ do |barcode|
     measured_volume: 5 * index,
     concentration: 10 * index,
     sequenom_count: index,
-    gel_pass: "OK"
+    gel_pass: 'OK'
     )
   end
 end

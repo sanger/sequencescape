@@ -11,9 +11,9 @@ module Tasks::SetDescriptorsHandler
     @requests = @batch.ordered_requests
 
     # if qc_state is qc_manual then update it
-    if @batch.qc_state == "qc_manual"
-      @batch.lab_events.create(description: "Manual QC", message: "Manual QC started for batch #{@batch.id}", user_id: current_user.id)
-      @batch.lab_events.create(description: "Manual QC", message: "Manual QC started for batch #{@batch.id}", user_id: current_user.id)
+    if @batch.qc_state == 'qc_manual'
+      @batch.lab_events.create(description: 'Manual QC', message: "Manual QC started for batch #{@batch.id}", user_id: current_user.id)
+      @batch.lab_events.create(description: 'Manual QC', message: "Manual QC started for batch #{@batch.id}", user_id: current_user.id)
       @batch.qc_state = @batch.qc_next_state
       @batch.save
     end
@@ -86,7 +86,7 @@ module Tasks::SetDescriptorsHandler
               end
 
               unless request.asset.try(:resource)
-                EventSender.send_request_update(request.id, "update", "Passed: #{@task.name}")
+                EventSender.send_request_update(request.id, 'update', "Passed: #{@task.name}")
               end
             end
           end

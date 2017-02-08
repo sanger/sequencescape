@@ -17,7 +17,7 @@ module Tasks::MovieLengthHandler
         asset = Asset.find(asset_id)
 
         unless task.valid_movie_length?(movie_length)
-          flash[:error] = "Invalid movie length"
+          flash[:error] = 'Invalid movie length'
           return false
         end
 

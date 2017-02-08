@@ -11,7 +11,7 @@ end
 
 Given /^project "([^\"]*)" approval is "([^\"]*)"$/ do |project, approval|
   proj = Project.find_by(name: project)
-  proj.approved = (approval == "approved" ? true : false)
+  proj.approved = (approval == 'approved' ? true : false)
   proj.save
 end
 
@@ -26,7 +26,7 @@ Given /^project "([^\"]*)" has enforced quotas$/ do |name|
 end
 
 Given /^last submission is processed$/ do
-  step("1 pending delayed jobs are processed")
+  step('1 pending delayed jobs are processed')
 end
 
 Given /^the project "([^\"]+)" has an active study called "([^\"]+)"$/ do |project_name, study_name|

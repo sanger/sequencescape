@@ -14,6 +14,6 @@ module Core::Io::Base::EagerLoadingBehaviour
   end
 
   def eager_loading_for(model)
-    model or raise StandardError, "nil model does not make sense here at all!"
+    model or raise StandardError, 'nil model does not make sense here at all!'
   end
 end

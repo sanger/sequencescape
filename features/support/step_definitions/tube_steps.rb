@@ -46,8 +46,8 @@ Given /^I am setup to test tubes with plate set (\d+)$/ do |num|
 end
 
 Given(/^the tube with ID (\d+) has a custom metadatum collection with UUID "(.*?)"$/) do |id, uuid|
-    metadata = [FactoryGirl.build(:custom_metadatum, key: "Key1", value: "Value1"),
-                FactoryGirl.build(:custom_metadatum, key: "Key2", value: "Value2")]
+    metadata = [FactoryGirl.build(:custom_metadatum, key: 'Key1', value: 'Value1'),
+                FactoryGirl.build(:custom_metadatum, key: 'Key2', value: 'Value2')]
     collection = FactoryGirl.create(:custom_metadatum_collection, custom_metadata: metadata, asset_id: id)
     set_uuid_for(collection, uuid)
 end

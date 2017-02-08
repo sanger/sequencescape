@@ -289,7 +289,7 @@ FactoryGirl.define do
   factory(:state_change) do
     user
     target { |target| target.association(:plate) }
-    target_state "passed"
+    target_state 'passed'
   end
 
   factory(:plate_owner) do

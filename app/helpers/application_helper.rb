@@ -16,19 +16,19 @@ module ApplicationHelper
       # .debug
       #  "No custom text found for #{identifier} #{differential}." if custom_text.nil?
 
-      custom_text.try(:content) || ""
+      custom_text.try(:content) || ''
     end
   end
 
-  def loading_bar(identifier = "loading")
-    content_tag("div", id: identifier, class: "loading_bar", style: "display:none") do
-      image_tag "loader-bar.gif", size: "200x19"
+  def loading_bar(identifier = 'loading')
+    content_tag('div', id: identifier, class: 'loading_bar', style: 'display:none') do
+      image_tag 'loader-bar.gif', size: '200x19'
     end
   end
 
-  def remote_error(identifier = "remote_error")
-    content_tag("div", id: identifier, class: "error", style: "display:none;") do
-      "An error has occurred and the results can not be shown at the moment"
+  def remote_error(identifier = 'remote_error')
+    content_tag('div', id: identifier, class: 'error', style: 'display:none;') do
+      'An error has occurred and the results can not be shown at the moment'
     end
   end
 
@@ -36,7 +36,7 @@ module ApplicationHelper
     display = true
     if logged_in?
       if current_user.setting_for? setting
-        if current_user.value_for(setting) == "hide"
+        if current_user.value_for(setting) == 'hide'
           display = false
         end
       end
@@ -45,7 +45,7 @@ module ApplicationHelper
   end
 
   def required_marker
-    content_tag(:span, "&raquo;".html_safe, class: 'required')
+    content_tag(:span, '&raquo;'.html_safe, class: 'required')
   end
 
   def render_flashes
@@ -122,25 +122,25 @@ module ApplicationHelper
 
   def display_follow(item, user, msg)
     if user.following?(item)
-      "Unfollow " + msg
+      'Unfollow ' + msg
     else
-      "Follow " + msg
+      'Follow ' + msg
     end
   end
 
   def progress_bar(count)
-    color = ""
+    color = ''
     if count < 25
-      color = "ccaaaa"
+      color = 'ccaaaa'
     elsif count > 99
-      color = "aaddaa"
+      color = 'aaddaa'
     else
-      color = "DAEE34"
+      color = 'DAEE34'
     end
 
     # TODO: Refactor this to use the bootstrap styles
-    content_tag(:span, count, style: "display:none") <<
-    content_tag(:div, style: "width: 100px; background-color: #CCCCCC; color: inherit;") do
+    content_tag(:span, count, style: 'display:none') <<
+    content_tag(:div, style: 'width: 100px; background-color: #CCCCCC; color: inherit;') do
       content_tag(:div, "#{count}%", style: "width: #{count}px; background-color: ##{color}; color: inherit; text-align:center")
     end
   end
@@ -180,7 +180,7 @@ module ApplicationHelper
   end
 
   def study_state(state)
-    if state == "active"
+    if state == 'active'
       "<span style='color:green;'>#{state}</span>".html_safe
     else
       "<span style='color:red;'>#{state}</span>".html_safe
@@ -189,19 +189,19 @@ module ApplicationHelper
 
   def display_empty_table(display_text, link = nil)
     if link.nil?
-      content_tag(:div, display_text, class: "empty_table", id: "empty_table")
+      content_tag(:div, display_text, class: 'empty_table', id: 'empty_table')
     else
-      content_tag(:div, link_to(display_text, link), class: "empty_table", id: "empty_table")
+      content_tag(:div, link_to(display_text, link), class: 'empty_table', id: 'empty_table')
     end
   end
 
   ## From Pipelines
 
-  def render_title(title = "")
+  def render_title(title = '')
     add :title, title
   end
 
-  def render_help(help = "")
+  def render_help(help = '')
     add :help, help
   end
 
@@ -210,7 +210,7 @@ module ApplicationHelper
     objects = params.collect { |object_name| instance_variable_get("@#{object_name}") }.compact
     count   = objects.inject(0) { |sum, object| sum + object.errors.count }
     if count.zero?
-      ""
+      ''
     else
       error_messages = objects.map { |object| object.errors.full_messages.map { |msg| content_tag(:div, msg) } }.join
       [content_tag(:td, class: 'error item') do
@@ -223,13 +223,13 @@ module ApplicationHelper
   end
 
   def horizontal_tab(name, key, related_div, tab_no, selected = false)
-    link_to raw(name.to_s), "javascript:void(0);", 'data-tab-refers': "##{related_div}", 'data-tab-group': tab_no, id: key.to_s, class: "#{selected ? "selected " : ""}tab#{tab_no}"
+    link_to raw(name.to_s), 'javascript:void(0);', 'data-tab-refers': "##{related_div}", 'data-tab-group': tab_no, id: key.to_s, class: "#{selected ? "selected " : ""}tab#{tab_no}"
     # link_to raw("#{name}"), "javascript:void(0);", :onclick => %Q{swap_tab("#{key}", "#{related_div}", "#{tab_no}");}, :id => "#{key}", :class => "#{selected ? "selected " : ""}tab#{tab_no}"
   end
 
   def item_status(item)
     if item.failures.empty?
-      ""
+      ''
     else
       '<span style="color:red;">FAILED</span>'
     end
@@ -238,38 +238,38 @@ module ApplicationHelper
   def display_complex_content(hash_content)
     hash_content.each do |key, value|
       case key
-      when "criterion"
-        output = ""
+      when 'criterion'
+        output = ''
         value.each do |v|
           output = output + content_tag(:span, "<strong>#{v.inspect}</strong>")
           output = output + content_tag(:br)
         end
         return output
-      when "link"
-        return link_to(value["label"], value["href"])
+      when 'link'
+        return link_to(value['label'], value['href'])
       end
     end
   end
 
   def display_ready_for_manual_qc(v)
     if v
-      image_tag("accept.png")
+      image_tag('accept.png')
     else
-      image_tag("error.png")
+      image_tag('error.png')
     end
   end
 
   def display_request_information(request, rit, batch = nil)
     r = request.value_for(rit.name, batch)
-    (!r || r.empty?) ? "NA" : r
+    (!r || r.empty?) ? 'NA' : r
   end
 
   def display_boolean_results(result)
-    return "NA" if (!result || result.empty?)
-    if result == "pass" || result == "1" || result == "true"
-      return image_tag("accept.png", title: result)
+    return 'NA' if (!result || result.empty?)
+    if result == 'pass' || result == '1' || result == 'true'
+      return image_tag('accept.png', title: result)
     else
-      return image_tag("error.png", title: result)
+      return image_tag('error.png', title: result)
     end
   end
 
@@ -302,7 +302,7 @@ module ApplicationHelper
 
   # The admin email address should be stored in config.yml for the current environment
   def help_email_link
-    admin_address = configatron.admin_email || "admin@test.com"
+    admin_address = configatron.admin_email || 'admin@test.com'
     link_to admin_address.to_s, "mailto:#{admin_address}"
   end
 end

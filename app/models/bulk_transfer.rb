@@ -32,9 +32,9 @@ class BulkTransfer < ActiveRecord::Base
   private :build_transfers!
 
   def each_transfer
-    well_transfers.group_by { |tf| [tf["source_uuid"], tf["destination_uuid"]] }.each do |source_dest, all_transfers|
+    well_transfers.group_by { |tf| [tf['source_uuid'], tf['destination_uuid']] }.each do |source_dest, all_transfers|
       transfers = Hash.new { |h, i| h[i] = [] }
-      all_transfers.each { |t| transfers[t["source_location"]] << t["destination_location"] }
+      all_transfers.each { |t| transfers[t['source_location']] << t['destination_location'] }
 
       source = Uuid.find_by(external_id: source_dest.first).resource
       destination = Uuid.find_by(external_id: source_dest.last).resource

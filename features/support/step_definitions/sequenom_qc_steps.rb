@@ -20,7 +20,7 @@ class Plate
 
       # Unless we say otherwise give the first sample on the plate
       plate.wells.first.primary_aliquot.sample.sample_metadata.update_attributes!(
-        gender: "male"
+        gender: 'male'
       ) if first_well_gender
     end
   end

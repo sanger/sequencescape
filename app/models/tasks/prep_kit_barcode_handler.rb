@@ -11,7 +11,7 @@ module Tasks::PrepKitBarcodeHandler
   def do_prep_kit_barcode_task(_task, params)
     barcode = params[:prep_kit_barcode].strip
     if barcode.blank?
-      flash[:error] = "Please enter a Kit Barcode"
+      flash[:error] = 'Please enter a Kit Barcode'
       return false
     end
 

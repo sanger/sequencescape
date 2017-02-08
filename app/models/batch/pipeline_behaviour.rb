@@ -50,9 +50,9 @@ module Batch::PipelineBehaviour
 
   def complete_events
     @efct ||= if lab_events.loaded
-                lab_events.select { |le| le.description == "Complete" }
+                lab_events.select { |le| le.description == 'Complete' }
               else
-                lab_events.where(description: "Complete")
+                lab_events.where(description: 'Complete')
               end
   end
 

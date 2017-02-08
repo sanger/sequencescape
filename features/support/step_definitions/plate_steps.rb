@@ -62,7 +62,7 @@ Given /^plate "([^"]*)" has concentration and sequenom results$/ do |plate_barco
   plate = Plate.find_from_machine_barcode(plate_barcode)
   plate.wells.walk_in_column_major_order do |well, index|
     well.well_attribute.update_attributes!(
-      pico_pass: "Pass",
+      pico_pass: 'Pass',
       concentration: 5 + (index % 50),
       sequenom_count: index % 30,
       gender_markers: %w(F F F F)
@@ -113,9 +113,9 @@ Then /^plate "([^"]*)" should have a child plate of type "([^"]*)"$/ do |machine
 end
 
 Then(/^output all plates for debugging purposes$/) do
-  puts "ALL PLATES:"
+  puts 'ALL PLATES:'
   p Plate.all.to_a
-  puts "ALL ASSETS:"
+  puts 'ALL ASSETS:'
   p Asset.all.to_a
 end
 
@@ -151,9 +151,9 @@ end
 
 Given /^a stock plate with barcode "([^"]*)" exists$/ do |machine_barcode|
   @stock_plate = FactoryGirl.create(:plate,
-    name: "A_TEST_STOCK_PLATE",
+    name: 'A_TEST_STOCK_PLATE',
     barcode: Barcode.number_to_human(machine_barcode.to_s),
-    plate_purpose: PlatePurpose.find_by(name: "Stock Plate")
+    plate_purpose: PlatePurpose.find_by(name: 'Stock Plate')
   )
 end
 
@@ -180,7 +180,7 @@ Given /^well "([^"]*)" is holded by plate "([^"]*)"$/ do |well_uuid, plate_uuid|
 end
 
 Then /^plate "([^"]*)" should have a purpose of "([^"]*)"$/ do |_plate_barcode, plate_purpose_name|
-  assert_equal plate_purpose_name, Plate.find_by(barcode: "1234567").plate_purpose.name
+  assert_equal plate_purpose_name, Plate.find_by(barcode: '1234567').plate_purpose.name
 end
 
 Given /^the well with ID (\d+) contains the sample "([^\"]+)"$/ do |well_id, name|
@@ -268,8 +268,8 @@ Then /^the plate with the barcode "(.*?)" should have a label of "(.*?)"$/ do |b
 end
 
 Given(/^the plate with ID (\d+) has a custom metadatum collection with UUID "(.*?)"$/) do |id, uuid|
-    metadata = [FactoryGirl.build(:custom_metadatum, key: "Key1", value: "Value1"),
-                FactoryGirl.build(:custom_metadatum, key: "Key2", value: "Value2")]
+    metadata = [FactoryGirl.build(:custom_metadatum, key: 'Key1', value: 'Value1'),
+                FactoryGirl.build(:custom_metadatum, key: 'Key2', value: 'Value2')]
     collection = FactoryGirl.create(:custom_metadatum_collection, custom_metadata: metadata, asset_id: id)
     set_uuid_for(collection, uuid)
 end

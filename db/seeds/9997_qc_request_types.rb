@@ -5,14 +5,14 @@
 # Copyright (C) 2015,2016 Genome Research Ltd.
 
 rt = RequestType.create!(
-  key: "qc_miseq_sequencing",
-  name: "MiSeq sequencing QC",
+  key: 'qc_miseq_sequencing',
+  name: 'MiSeq sequencing QC',
   workflow: Submission::Workflow.find_by(key: 'short_read_sequencing'),
   asset_type: 'LibraryTube',
   order: 1,
   initial_state: 'pending',
   multiples_allowed: false,
-  request_class_name: "MiSeqSequencingRequest",
+  request_class_name: 'MiSeqSequencingRequest',
   morphology: 0,
   for_multiplexing: false,
   billable: true,

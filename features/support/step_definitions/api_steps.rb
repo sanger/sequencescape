@@ -71,7 +71,7 @@ Given /^the WTSI single sign-on service does not recognise "([^\"]+)"$/ do |cook
 end
 
 def api_request(action, path, body)
-  raise StandardError, "You must explicitly set the API version you are using" if @api_path.nil?
+  raise StandardError, 'You must explicitly set the API version you are using' if @api_path.nil?
   @cookies ||= {}
 
   headers = {}
@@ -147,7 +147,7 @@ end
 
 When /^I retrieve the JSON for all requests related to the (sample|library) tube "([^\"]+)"$/ do |tube_type, name|
   tube = "#{tube_type}_tube".classify.constantize.find_by(name: name) or raise StandardError, "Cannot find #{tube_type} tube called #{name.inspect}"
-  visit(url_for(:controller => "api/requests", :action => 'index', :"#{ tube_type }_tube_id" => tube.id, :format => :json))
+  visit(url_for(:controller => 'api/requests', :action => 'index', :"#{ tube_type }_tube_id" => tube.id, :format => :json))
 end
 
 When /^I retrieve the JSON for the (sample|study) "([^\"]+)"$/ do |model, name|
@@ -158,7 +158,7 @@ end
 When /^I retrieve the JSON for the last request in the study "([^\"]+)"$/ do |name|
   study = Study.find_by(name: name) or raise StandardError, "Cannot find the study #{name.inspect}"
   raise StandardError, "It appears there are no requests for study #{name.inspect}" if study.requests.empty?
-  visit(url_for(controller: "api/requests", action: 'show', id: study.requests.last, format: :json))
+  visit(url_for(controller: 'api/requests', action: 'show', id: study.requests.last, format: :json))
 end
 
 Then /^show me the HTTP response body$/ do
@@ -245,7 +245,7 @@ Then /^the HTTP response should be "([^\"]+)"$/ do |status|
   begin
   assert_equal(match[1].to_i, page.driver.status_code)
   rescue MiniTest::Assertion => e
-    step "show me the HTTP response body"
+    step 'show me the HTTP response body'
     raise e
   end
 end
@@ -320,22 +320,22 @@ Given /^the sample "([^\"]+)" is in (\d+) sample tubes? with sequential IDs star
 end
 
 Given /^the pathogen project called "([^"]*)" exists$/ do |project_name|
-  project = FactoryGirl.create :project, name: project_name, approved: true, state: "active"
+  project = FactoryGirl.create :project, name: project_name, approved: true, state: 'active'
   project.update_attributes!(project_metadata_attributes: {
     project_manager: ProjectManager.find_by(name: 'Unallocated'),
-    project_cost_code: "ABC",
-    funding_comments: "External funding",
-    collaborators: "No collaborators",
-    external_funding_source: "EU",
+    project_cost_code: 'ABC',
+    funding_comments: 'External funding',
+    collaborators: 'No collaborators',
+    external_funding_source: 'EU',
     budget_division: BudgetDivision.find_by(name: 'Pathogen (including malaria)'),
-    sequencing_budget_cost_centre: "Sanger",
-    project_funding_model: "Internal"
+    sequencing_budget_cost_centre: 'Sanger',
+    project_funding_model: 'Internal'
   })
 end
 
 Given /^project "([^"]*)" has an owner called "([^"]*)"$/ do |project_name, login_name|
   project = Project.find_by(name: project_name)
-  user = FactoryGirl.create :user, login: login_name, first_name: "John", last_name: "Doe", email: "#{login_name}@example.com"
+  user = FactoryGirl.create :user, login: login_name, first_name: 'John', last_name: 'Doe', email: "#{login_name}@example.com"
   user.is_owner_of(project)
 end
 

@@ -19,10 +19,10 @@ module Tasks::CherrypickHandler
 
     plate_template = nil
     unless params[:plate_template].blank?
-      plate_template = PlateTemplate.find(params[:plate_template]["0"].to_i)
+      plate_template = PlateTemplate.find(params[:plate_template]['0'].to_i)
     end
     if plate_template.nil?
-      flash[:error] = "Please select a template"
+      flash[:error] = 'Please select a template'
       redirect_to action: 'stage', batch_id: @batch.id, workflow_id: @workflow.id, id: (@stage - 1).to_s
       return
     end
@@ -40,13 +40,13 @@ module Tasks::CherrypickHandler
       plate_barcode_id = @plate_barcode.to_i > 11 ? Barcode.number_to_human(@plate_barcode) : @plate_barcode
       @plate = Plate.find_by(barcode: plate_barcode_id)
       if @plate.nil?
-        flash[:error] = "Invalid plate barcode"
+        flash[:error] = 'Invalid plate barcode'
         redirect_to action: 'stage', batch_id: @batch.id, workflow_id: @workflow.id, id: (@stage - 1).to_s
         return
       end
     elsif @fluidigm_plate.present?
       if @fluidigm_plate.size > 10
-        flash[:error] = "Invalid fluidigm barcode"
+        flash[:error] = 'Invalid fluidigm barcode'
         redirect_to action: 'stage', batch_id: @batch.id, workflow_id: @workflow.id, id: (@stage - 1).to_s
         return
       end
@@ -54,7 +54,7 @@ module Tasks::CherrypickHandler
     end
 
     @plate_purpose = PlatePurpose.find(params[:plate_purpose_id])
-    flash.now[:warning] = I18n.t("cherrypick.picking_by_row") if @plate_purpose.cherrypick_in_rows?
+    flash.now[:warning] = I18n.t('cherrypick.picking_by_row') if @plate_purpose.cherrypick_in_rows?
 
     @workflow = LabInterface::Workflow.includes(:tasks).find(params[:workflow_id])
     @map_info = if @spreadsheet_layout
@@ -200,7 +200,7 @@ module Tasks::CherrypickHandler
   end
 
   def create_control_request_and_add_to_batch(task, control_param)
-    control_request = task.create_control_request_from_well(control_param) or raise StandardError, "Control request not created!"
+    control_request = task.create_control_request_from_well(control_param) or raise StandardError, 'Control request not created!'
     @batch.requests << control_request
     [control_request, control_request.target_asset]
   end

@@ -124,7 +124,7 @@ class QcReport < ActiveRecord::Base
   after_create :generate!
 
   scope :for_report_page, ->(conditions) {
-      order("id desc")
+      order('id desc')
       .where(conditions)
       .joins(:product_criteria)
   }

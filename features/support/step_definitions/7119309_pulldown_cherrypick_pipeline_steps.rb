@@ -17,7 +17,7 @@ Given(/^plate "([^"]*)" with (\d+) samples in study "([^"]*)" has a "([^"]*)" su
   wells.compact!
 
   study = Study.find_by(name: study_name)
-  project = Project.find_by(name: "Test project")
+  project = Project.find_by(name: 'Test project')
   # we need to set the study on aliquots
   wells.each do |well|
     well.aliquots.each do |a|
@@ -32,9 +32,9 @@ Given(/^plate "([^"]*)" with (\d+) samples in study "([^"]*)" has a "([^"]*)" su
     workflow: Submission::Workflow.find_by(key: 'short_read_sequencing'),
     user: User.last,
     assets: wells,
-    request_options: { :multiplier => { "1" => "1", "3" => "1" }, "read_length" => "100", "fragment_size_required_to" => "400", "fragment_size_required_from" => "300", "library_type" => "Standard" }
+    request_options: { :multiplier => { '1' => '1', '3' => '1' }, 'read_length' => '100', 'fragment_size_required_to' => '400', 'fragment_size_required_from' => '300', 'library_type' => 'Standard' }
     )
-  step("1 pending delayed jobs are processed")
+  step('1 pending delayed jobs are processed')
 end
 
 Given(/^plate "([^"]*)" with (\d+) samples in study "([^"]*)" has a "([^"]*)" submission for cherrypicking$/) do |plate_barcode, number_of_samples, study_name, submission_name|
@@ -51,12 +51,12 @@ Given(/^plate "([^"]*)" with (\d+) samples in study "([^"]*)" has a "([^"]*)" su
   submission_template = SubmissionTemplate.find_by(name: submission_name)
   submission = submission_template.create_and_build_submission!(
     study: Study.find_by(name: study_name),
-    project: Project.find_by(name: "Test project"),
+    project: Project.find_by(name: 'Test project'),
     workflow: Submission::Workflow.find_by(key: 'short_read_sequencing'),
     user: User.last,
     assets: wells
     )
-  step("1 pending delayed jobs are processed")
+  step('1 pending delayed jobs are processed')
 end
 
 Given(/^plate "([^"]*)" with (\d+) samples in study "([^"]*)" exists$/) do |plate_barcode, number_of_samples, study_name|
@@ -113,7 +113,7 @@ Then /^I should see the (MRI |JRuby |)cherrypick worksheet table:$/ do |interpre
 end
 
 When /^I look at the pulldown report for the batch it should be:$/ do |expected_results_table|
-  expected_results_table.diff!(CSV.parse(page.source).collect { |r| r.collect { |c| c ? c : "" } })
+  expected_results_table.diff!(CSV.parse(page.source).collect { |r| r.collect { |c| c ? c : '' } })
 end
 
 Given(/^I have a tag group called "([^"]*)" with (\d+) tags$/) do |tag_group_name, number_of_tags|
@@ -222,8 +222,8 @@ end
 Given(/^I have a "([^"]*)" submission with 2 plates$/) do |submission_template_name|
     project = FactoryGirl.create :project
     study = FactoryGirl.create :study
-    plate_1 = FactoryGirl.create :plate, barcode: "333"
-    plate_2 = FactoryGirl.create :plate, barcode: "222"
+    plate_1 = FactoryGirl.create :plate, barcode: '333'
+    plate_2 = FactoryGirl.create :plate, barcode: '222'
     [plate_1, plate_2].each do |plate|
       Well.create!(map_id: 1, plate: plate)
     end
@@ -236,9 +236,9 @@ Given(/^I have a "([^"]*)" submission with 2 plates$/) do |submission_template_n
       workflow: Submission::Workflow.find_by(key: 'short_read_sequencing'),
       user: User.last,
       assets: Well.all,
-      request_options: { :multiplier => { "1" => "1", "3" => "1" }, "read_length" => "100", "fragment_size_required_to" => "300", "fragment_size_required_from" => "250", "library_type" => 'Standard' }
+      request_options: { :multiplier => { '1' => '1', '3' => '1' }, 'read_length' => '100', 'fragment_size_required_to' => '300', 'fragment_size_required_from' => '250', 'library_type' => 'Standard' }
       )
-    step("1 pending delayed jobs are processed")
+    step('1 pending delayed jobs are processed')
 end
 
 When /^the last batch is sorted in row order$/ do

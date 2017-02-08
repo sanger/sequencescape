@@ -34,9 +34,9 @@ class Event::PlateCreationEvent < Event
   def self.create_sequenom_stamp_for_asset!(asset, user)
     create!(
       eventful: asset,
-      message: "Stock plate appears on a plate for Sequenom",
+      message: 'Stock plate appears on a plate for Sequenom',
       content: Date.today.to_s,
-      family: "create_for_sequenom",
+      family: 'create_for_sequenom',
       created_by: user ? user.login : nil
     )
   end
@@ -44,9 +44,9 @@ class Event::PlateCreationEvent < Event
   def self.create_sequenom_plate_for_asset!(asset, user)
     create!(
       eventful: asset,
-      message: "Created Sequenom plate",
+      message: 'Created Sequenom plate',
       content: Date.today.to_s,
-      family: "create_sequenom_plate",
+      family: 'create_sequenom_plate',
       created_by: user ? user.login : nil
     )
   end

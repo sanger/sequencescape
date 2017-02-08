@@ -10,7 +10,7 @@ class DataReleaseStudyType < ActiveRecord::Base
   has_many :study
 
   validates_presence_of :name
-  validates_uniqueness_of :name, message: "of data release study type already present in database"
+  validates_uniqueness_of :name, message: 'of data release study type already present in database'
 
  scope :assay_types, -> { where(is_assay_type: true) }
  scope :non_assay_types, -> { where(is_assay_type: false) }

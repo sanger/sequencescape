@@ -322,29 +322,29 @@ end
 (1..5).each do |index|
   PlatePurpose.create!(name: "Aliquot #{index}", qc_display: true, can_be_considered_a_stock_plate: true, cherrypickable_target: true)
 end
-PlatePurpose.create!(name: "ABgene_0765", can_be_considered_a_stock_plate: false, cherrypickable_source: true, cherrypickable_target: false)
-PlatePurpose.create!(name: "ABgene_0800", can_be_considered_a_stock_plate: false, cherrypickable_source: true, cherrypickable_target: true)
-PlatePurpose.create!(name: "FluidX075", can_be_considered_a_stock_plate: false, cherrypickable_source: true, cherrypickable_target: false)
+PlatePurpose.create!(name: 'ABgene_0765', can_be_considered_a_stock_plate: false, cherrypickable_source: true, cherrypickable_target: false)
+PlatePurpose.create!(name: 'ABgene_0800', can_be_considered_a_stock_plate: false, cherrypickable_source: true, cherrypickable_target: true)
+PlatePurpose.create!(name: 'FluidX075', can_be_considered_a_stock_plate: false, cherrypickable_source: true, cherrypickable_target: false)
 
 # Build the links between the parent and child plate purposes
 relationships = {
-  "Working Dilution"    => ["Working Dilution", "Pico Dilution"],
-  "Pico Dilution"       => ["Working Dilution", "Pico Dilution"],
-  "Pico Assay A"        => ["Pico Assay A", "Pico Assay B"],
-  "Pulldown"            => ["Pulldown Aliquot"],
-  "Dilution Plates"     => ["Working Dilution", "Pico Dilution"],
-  "Pico Assay Plates"   => ["Pico Assay A", "Pico Assay B"],
-  "Pico Assay B"        => ["Pico Assay A", "Pico Assay B"],
-  "Gel Dilution Plates" => ["Gel Dilution"],
-  "Pulldown Aliquot"    => ["Sonication"],
-  "Sonication"          => ["Run of Robot"],
-  "Run of Robot"        => ["EnRichment 1"],
-  "EnRichment 1"        => ["EnRichment 2"],
-  "EnRichment 2"        => ["EnRichment 3"],
-  "EnRichment 3"        => ["EnRichment 4"],
-  "EnRichment 4"        => ["Sequence Capture"],
-  "Sequence Capture"    => ["Pulldown PCR"],
-  "Pulldown PCR"        => ["Pulldown qPCR"]
+  'Working Dilution'    => ['Working Dilution', 'Pico Dilution'],
+  'Pico Dilution'       => ['Working Dilution', 'Pico Dilution'],
+  'Pico Assay A'        => ['Pico Assay A', 'Pico Assay B'],
+  'Pulldown'            => ['Pulldown Aliquot'],
+  'Dilution Plates'     => ['Working Dilution', 'Pico Dilution'],
+  'Pico Assay Plates'   => ['Pico Assay A', 'Pico Assay B'],
+  'Pico Assay B'        => ['Pico Assay A', 'Pico Assay B'],
+  'Gel Dilution Plates' => ['Gel Dilution'],
+  'Pulldown Aliquot'    => ['Sonication'],
+  'Sonication'          => ['Run of Robot'],
+  'Run of Robot'        => ['EnRichment 1'],
+  'EnRichment 1'        => ['EnRichment 2'],
+  'EnRichment 2'        => ['EnRichment 3'],
+  'EnRichment 3'        => ['EnRichment 4'],
+  'EnRichment 4'        => ['Sequence Capture'],
+  'Sequence Capture'    => ['Pulldown PCR'],
+  'Pulldown PCR'        => ['Pulldown qPCR']
 }
 
 ActiveRecord::Base.transaction do

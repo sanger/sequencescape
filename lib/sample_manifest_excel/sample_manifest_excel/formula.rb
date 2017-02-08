@@ -10,7 +10,7 @@ module SampleManifestExcel
   class Formula
     include HashAttributes
 
-    set_attributes :type, :first_cell_reference, :absolute_reference, :operator, :operand, defaults: { type: :len, operator: ">", operand: 999 }
+    set_attributes :type, :first_cell_reference, :absolute_reference, :operator, :operand, defaults: { type: :len, operator: '>', operand: 999 }
 
     def initialize(attributes = {})
       create_attributes(attributes)

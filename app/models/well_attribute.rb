@@ -41,7 +41,7 @@ class WellAttribute < ActiveRecord::Base
   # to use a different transition name.
   def pico_pass
     case self[:pico_pass]
-    when 'Too Low To Normalise' then "Fail"
+    when 'Too Low To Normalise' then 'Fail'
     when nil, '' then 'ungraded'
     else self[:pico_pass]
     end

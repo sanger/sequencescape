@@ -77,12 +77,12 @@ Then /^I should be able to (enter|edit) the following fields$/ do |action, table
     step(%Q{I fill in "#{hash[:label]}" with "#{hash[:value]}"})
   end
 
-  step "I press \"Save Custom text\""
+  step 'I press "Save Custom text"'
   case action
-  when "enter"
-    step "I should see \"Custom text successfully created\""
-  when "edit"
-    step "I should see \"Details have been updated\""
+  when 'enter'
+    step 'I should see "Custom text successfully created"'
+  when 'edit'
+    step 'I should see "Details have been updated"'
   end
   table.hashes.each do |hash|
     step "I should see \"#{hash[:value]}\""

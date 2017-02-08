@@ -26,5 +26,5 @@ end
 Given /^the "([^\"]+)" plate is created from the plate with barcode "([^\"]+)"$/ do |plate_purpose_name, barcode|
   creator = Plate::Creator.find_by(name: plate_purpose_name) or raise StandardError, "Cannot find plate purpose #{plate_purpose_name.inspect}"
   plates = creator.send(:create_plates, barcode, User.last)
-  raise StandardError, "Appears that plates could not be created" if plates.blank?
+  raise StandardError, 'Appears that plates could not be created' if plates.blank?
 end

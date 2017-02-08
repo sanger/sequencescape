@@ -3,15 +3,15 @@ class AddBespokeRnaProduct < ActiveRecord::Migration
     # No DNA libraries
   ]
   RNA_LIBRARIES = [
-    "RNA-seq dUTP",
-    "RNA-seq dUTP eukaryotic",
-    "RNA-seq dUTP prokaryotic",
-    "Ribozero RNA depletion",
-    "Ribozero RNA-seq (Bacterial)",
-    "Ribozero RNA-seq (HMR)",
-    "Small RNA",
-    "TruSeq mRNA (RNA Seq)",
-    "DAFT-seq"
+    'RNA-seq dUTP',
+    'RNA-seq dUTP eukaryotic',
+    'RNA-seq dUTP prokaryotic',
+    'Ribozero RNA depletion',
+    'Ribozero RNA-seq (Bacterial)',
+    'Ribozero RNA-seq (HMR)',
+    'Small RNA',
+    'TruSeq mRNA (RNA Seq)',
+    'DAFT-seq'
   ]
 
   RNA_CONFIG = {
@@ -22,7 +22,7 @@ class AddBespokeRnaProduct < ActiveRecord::Migration
     }
 
   def product_catalogue
-    @product_catalogue ||= ProductCatalogue.find_by!(name: "GenericPCR")
+    @product_catalogue ||= ProductCatalogue.find_by!(name: 'GenericPCR')
   end
 
   def dna_product

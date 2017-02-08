@@ -42,7 +42,7 @@ module SampleManifest::InputBehaviour
     end
 
     def compute_column_map(names)
-      Hash[names.each_with_index.map { |name, index| [name && name.strip.gsub(/\s+/, " "), index] }].tap do |columns|
+      Hash[names.each_with_index.map { |name, index| [name && name.strip.gsub(/\s+/, ' '), index] }].tap do |columns|
         raise StandardError, "No 'SANGER SAMPLE ID' column in #{columns.keys.inspect}" unless columns.key?('SANGER SAMPLE ID')
       end
     end
@@ -65,7 +65,7 @@ module SampleManifest::InputBehaviour
         def accession_number_from_manifest=(new_value)
           self.sample_ebi_accession_number ||= new_value
           if new_value.present? && new_value != sample_ebi_accession_number
-            errors.add(:sample_ebi_accession_number, "can not be changed")
+            errors.add(:sample_ebi_accession_number, 'can not be changed')
             raise ActiveRecord::RecordInvalid, self
           end
         end
@@ -163,7 +163,7 @@ module SampleManifest::InputBehaviour
   private :convert_yes_no_to_boolean
 
   def clean_up_value(value)
-    return "" if value.nil?
+    return '' if value.nil?
     value.strip
   end
   private :clean_up_value
@@ -180,7 +180,7 @@ module SampleManifest::InputBehaviour
   private :clean_up_sheet
 
   def strip_non_word_characters(value)
-    return "" if value.nil?
+    return '' if value.nil?
     value.gsub(/[^:alnum:]+/, '')
   end
   private :strip_non_word_characters

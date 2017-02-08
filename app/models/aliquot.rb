@@ -112,7 +112,7 @@ class Aliquot < ActiveRecord::Base
   end
 
   def clone
-    raise StandardError, "The Behaviour of clone has changed in Rails 3. Please use dup instead!"
+    raise StandardError, 'The Behaviour of clone has changed in Rails 3. Please use dup instead!'
   end
 
   # return all aliquots originated from the current one
@@ -144,7 +144,7 @@ class Aliquot < ActiveRecord::Base
     when sample_id != object.sample_id                                                   then false # The samples don't match
     when object.library_id.present?      && (library_id      != object.library_id)       then false # Our librarys don't match.
     when object.bait_library_id.present? && (bait_library_id != object.bait_library_id)  then false # We have different bait libraries
-    when untagged? && object.tagged?                                                     then raise StandardError, "Tag missing from downstream aliquot" # The downstream aliquot is untagged, but is tagged upstream. Something is wrong!
+    when untagged? && object.tagged?                                                     then raise StandardError, 'Tag missing from downstream aliquot' # The downstream aliquot is untagged, but is tagged upstream. Something is wrong!
     when object.untagged? && object.no_tag2? then true # The upstream aliquot was untagged, we don't need to check tags
     else (object.untagged? || (tag_id == object.tag_id)) && (object.no_tag2? || (tag2_id == object.tag2_id)) # Both aliquots are tagged, we need to check if they match
     end

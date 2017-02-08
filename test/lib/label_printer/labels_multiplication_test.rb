@@ -48,18 +48,18 @@ class ExampleLabelTest < ActiveSupport::TestCase
               ] }
   end
 
-  test "should return the right label" do
+  test 'should return the right label' do
     assert_equal ({ main_label: label }), example_label.label(plate1)
   end
 
-  test "should return the right labels" do
+  test 'should return the right labels' do
     assert_equal [], example_label.labels
     example_label.assets = [plate1, plate2, plate3, plate4]
     assert_equal labels, example_label.labels
     assert_equal ({ labels: labels }), example_label.to_h
   end
 
-  test "should return the right labels if count changes" do
+  test 'should return the right labels if count changes' do
     example_label.assets = [plate1]
     example_label.count = 3
     labels = { body: [{ main_label: label }, { main_label: label }, { main_label: label }] }

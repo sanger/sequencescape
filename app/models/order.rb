@@ -24,7 +24,7 @@ class Order < ActiveRecord::Base
 
   include Workflowed
 
-  self.inheritance_column = "sti_type"
+  self.inheritance_column = 'sti_type'
 
   # Required at initial construction time ...
   belongs_to :study
@@ -142,7 +142,7 @@ class Order < ActiveRecord::Base
   end
 
   def url_name
-    "order"
+    'order'
   end
   alias_method(:json_root, :url_name)
 
@@ -198,7 +198,7 @@ class Order < ActiveRecord::Base
       request.order                       = self
 
       if request.asset.present?
-        raise AssetTypeError, "Asset type does not match that expected by request type." unless is_asset_applicable_to_type?(request_type, request.asset)
+        raise AssetTypeError, 'Asset type does not match that expected by request type.' unless is_asset_applicable_to_type?(request_type, request.asset)
       end
     end
   end
@@ -232,7 +232,7 @@ class Order < ActiveRecord::Base
 
   attr_accessor :info_differential # aggrement text to display when creating a new submission
   attr_accessor :customize_partial # the name of a partial to render.
-  DefaultAssetInputMethods = ["select an asset group"]
+  DefaultAssetInputMethods = ['select an asset group']
   # DefaultAssetInputMethods = ["select an asset group", "enter a list of asset ids", "enter a list of asset names", "enter a list of sample names"]
   attr_writer :asset_input_methods
   def asset_input_methods; @asset_input_methods ||= DefaultAssetInputMethods; end
@@ -401,7 +401,7 @@ class Order < ActiveRecord::Base
 
   def study_is_active
     if study.present? && !study.active?
-      errors.add(:study, "is not active")
+      errors.add(:study, 'is not active')
     end
   end
 end

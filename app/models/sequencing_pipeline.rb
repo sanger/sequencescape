@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2013,2014,2015 Genome Research Ltd.
 
 class SequencingPipeline < Pipeline
-  self.batch_worksheet = "simplified_worksheet"
+  self.batch_worksheet = 'simplified_worksheet'
 
   def sequencing?
     true

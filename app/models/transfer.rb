@@ -68,7 +68,7 @@ class Transfer < ActiveRecord::Base
               # assets to the plates, then look for the wells, rather than vice-versa.  The former query takes fractions
               # of a second, the latter over 60.
               query_conditions, join_options = 'transfer_requests_as_target.state IN (?)', [
-                "STRAIGHT_JOIN `container_associations` ON (`assets`.`id` = `container_associations`.`container_id`)",
+                'STRAIGHT_JOIN `container_associations` ON (`assets`.`id` = `container_associations`.`container_id`)',
                 "INNER JOIN `assets` wells_assets ON (`wells_assets`.`id` = `container_associations`.`content_id`) AND (`wells_assets`.`sti_type` = 'Well')",
                 "LEFT OUTER JOIN `requests` transfer_requests_as_target ON transfer_requests_as_target.target_asset_id = wells_assets.id AND (transfer_requests_as_target.`sti_type` IN (#{[TransferRequest, *TransferRequest.descendants].map(&:name).map(&:inspect).join(',')}))"
               ]
@@ -78,7 +78,7 @@ class Transfer < ActiveRecord::Base
               # pulldown at least).
               query_conditions = 'transfer_requests_as_target.state IN (?)'
               if states.include?('pending')
-                join_options << "INNER JOIN `plate_purposes` ON (`plate_purposes`.`id` = `assets`.`plate_purpose_id`)"
+                join_options << 'INNER JOIN `plate_purposes` ON (`plate_purposes`.`id` = `assets`.`plate_purpose_id`)'
                 query_conditions << ' OR (transfer_requests_as_target.state IS NULL AND plate_purposes.can_be_considered_a_stock_plate=TRUE)'
               end
 
@@ -163,7 +163,7 @@ class Transfer < ActiveRecord::Base
 
   include Uuid::Uuidable
 
-  self.inheritance_column = "sti_type"
+  self.inheritance_column = 'sti_type'
 
   # So we can track who is requesting the transfer
   belongs_to :user

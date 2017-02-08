@@ -10,7 +10,7 @@ class Event::SequenomLoading < Event
       eventful: asset,
       message: "Updated gender results from #{resource}",
       content: resource,
-      family: "update_gender_markers"
+      family: 'update_gender_markers'
     )
   end
 
@@ -19,7 +19,7 @@ class Event::SequenomLoading < Event
       eventful: asset,
       message: "Updated sequenom results from #{resource}",
       content: resource,
-      family: "update_sequenom_count"
+      family: 'update_sequenom_count'
     )
   end
 
@@ -28,7 +28,7 @@ class Event::SequenomLoading < Event
       eventful: asset,
       message: "Updated fluidigm plate from #{resource}",
       content: resource,
-      family: "update_fluidigm_plate"
+      family: 'update_fluidigm_plate'
     )
   end
 end

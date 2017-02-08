@@ -1,6 +1,6 @@
 namespace :benchmark do
   task plate_creation: :environment do
-    $stdout.puts "Warming up..."
+    $stdout.puts 'Warming up...'
     15.times do
       PlatePurpose.find_by(name: 'Stock Plate').create!
     end

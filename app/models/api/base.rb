@@ -43,7 +43,7 @@ class Api::Base
       return {} if object.nil?
 
       json_attributes = {}
-      json_attributes["deleted_at"] = Time.now if object.destroyed?
+      json_attributes['deleted_at'] = Time.now if object.destroyed?
 
       attribute_to_json_attribute_mappings.each do |attribute, json_attribute|
         json_attributes[json_attribute] = object.send(attribute)
@@ -102,11 +102,11 @@ class Api::Base
 
         # TODO[xxx]: It's better that some of these are decided at generation, rather than execution, time.
         extra_json_attributes do |object, json_attributes|
-          json_attributes["uuid"] = object.uuid if object.respond_to?(:uuid)
+          json_attributes['uuid'] = object.uuid if object.respond_to?(:uuid)
 
           # Users and roles
           if object.respond_to?(:user)
-            json_attributes["user"] = object.user.nil? ? "unknown" : object.user.login
+            json_attributes['user'] = object.user.nil? ? 'unknown' : object.user.login
           end
           if object.respond_to?(:roles)
             object.roles.each do |role|

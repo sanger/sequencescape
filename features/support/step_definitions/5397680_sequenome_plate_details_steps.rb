@@ -6,10 +6,10 @@
 
 Given /^I have created a sequenom plate$/ do
   input_plate_names = {
-    1 => "1220125054743",
-    2 => "1220125056761",
-    3 => "1220125069815",
-    4 => "1220125048766"
+    1 => '1220125054743',
+    2 => '1220125056761',
+    3 => '1220125069815',
+    4 => '1220125048766'
   }
 
   step('there is a 1 well "Working Dilution" plate with a barcode of "1220125054743"')
@@ -23,7 +23,7 @@ Given /^I have created a sequenom plate$/ do
   step('asset with barcode "1220125048766" belongs to study "Study B"')
 
   seq_plate = SequenomQcPlate.new(
-    plate_prefix: "QC",
+    plate_prefix: 'QC',
     user_barcode: '2470000100730'
   )
   seq_plate.compute_and_set_name(input_plate_names)
@@ -31,7 +31,7 @@ Given /^I have created a sequenom plate$/ do
   seq_plate.save!
   seq_plate.connect_input_plates(input_plate_names.values)
 
-  step("1 pending delayed jobs are processed")
+  step('1 pending delayed jobs are processed')
 end
 
 Given /^there is a (\d+) well "([^"]*)" plate with a barcode of "([^"]*)"$/ do |number_of_wells, plate_purpose_name, plate_barcode|
@@ -46,7 +46,7 @@ Given /^there is a (\d+) well "([^"]*)" plate with a barcode of "([^"]*)"$/ do |
   end
 
   new_plate.wells.first.primary_aliquot.sample.sample_metadata.update_attributes!(
-    gender: "male"
+    gender: 'male'
   )
 end
 

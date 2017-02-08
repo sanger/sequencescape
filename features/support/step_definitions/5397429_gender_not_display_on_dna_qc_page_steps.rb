@@ -16,11 +16,11 @@ When /^I upload "([^\"]+)" as a sample manifest for study "([^\"]+)"$/ do |filen
   step(%Q{I attach the relative file "#{filename}" to "File to upload"})
   step('I press "Upload manifest"')
 
-  step("the manifests are successfully processed")
+  step('the manifests are successfully processed')
 end
 
 Given /^the manifests are successfully processed$/ do
-  step("1 pending delayed jobs are processed")
+  step('1 pending delayed jobs are processed')
 
   manifests = SampleManifest.all
   assert(manifests.all? { |m| m.last_errors.blank? }, "There are sample manifests with errors: #{manifests.inspect}")
@@ -33,7 +33,7 @@ When /^I create a submission with plate "([^\"]+)" for study "([^\"]+)" under pr
   step(%Q{I fill in "Barcodes" with "#{plate}"})
   step('I press "Submit"')
 
-  step("1 pending delayed jobs are processed")
+  step('1 pending delayed jobs are processed')
 end
 
 When /^I start request (\d+) in the "([^\"]+)" pipeline$/ do |index, pipeline|

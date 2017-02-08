@@ -24,9 +24,9 @@ class ActsAsDescriptableTest < Test::Unit::TestCase
     descriptors = retrieve_post.descriptors
     assert_kind_of Descriptor, descriptors[0]
     assert_equal :field_1, descriptors[0].name
-    assert_equal "test_controller", descriptors[0].value
+    assert_equal 'test_controller', descriptors[0].value
     assert_equal :field_2, descriptors[1].name
-    assert_equal "test_action", descriptors[1].value
+    assert_equal 'test_action', descriptors[1].value
     assert_equal array, retrieve_post.descriptor_fields
   end
 
@@ -148,6 +148,6 @@ class ActsAsDescriptableTest < Test::Unit::TestCase
     post.descriptors = hash
     post.descriptor_fields = array
     xml = post.descriptor_xml
-    assert_equal "<?xml version=\"1.0\" encoding=\"UTF-8\"?><descriptors><descriptor><name>controller</name><value>test_controller</value></descriptor><descriptor><name>action</name><value>test_action</value></descriptor></descriptors>", xml
+    assert_equal '<?xml version="1.0" encoding="UTF-8"?><descriptors><descriptor><name>controller</name><value>test_controller</value></descriptor><descriptor><name>action</name><value>test_action</value></descriptor></descriptors>', xml
   end
 end

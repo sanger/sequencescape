@@ -32,7 +32,7 @@ Then /^the sample "([^"]*)" should belong to the study named "([^"]*)" only once
   sample = Sample.find_by(name: sample_name) or raise StandardError, "Cannot find sample #{sample_name.inspect}"
   study  = Study.find_by(name: study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
   sample_study_bindings = sample.studies.select { |x| x == study }
-  assert_equal(1, sample_study_bindings.size, "looks like the sample is bound too many times")
+  assert_equal(1, sample_study_bindings.size, 'looks like the sample is bound too many times')
 end
 
 Then /^(?:|I )should see one link with text "([^"]*)"$/ do |regexp|

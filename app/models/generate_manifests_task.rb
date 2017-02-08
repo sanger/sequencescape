@@ -10,7 +10,7 @@ class GenerateManifestsTask < Task
   end
 
   def partial
-    "generate_manifests"
+    'generate_manifests'
   end
 
   def render_task(workflow, params)

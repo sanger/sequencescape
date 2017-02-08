@@ -33,7 +33,7 @@ private
   # NOTE: Ripped directly from InstanceTag in form_helper.rb
   #++
   def sanitized_object_name
-    @object_name.gsub(/\]\[|[^-a-zA-Z0-9:.]/, "_").sub(/_$/, "")
+    @object_name.gsub(/\]\[|[^-a-zA-Z0-9:.]/, '_').sub(/_$/, '')
   end
 
   def localised_sections(field)

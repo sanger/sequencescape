@@ -67,7 +67,7 @@ private
   def perform_rename_action_for_sample!
     samples_to_rename = study.samples.with_name(list_samples_to_rename)
     samples_to_rename.each { |sample| sample.rename_to!(sample.name.gsub(replace, with)) }
-    study.comments.create(description: "Renamed Samples names: " + replace + " to " + with, user_id: user.id)
+    study.comments.create(description: 'Renamed Samples names: ' + replace + ' to ' + with, user_id: user.id)
   end
 
   def perform_rename_action_for_asset!
@@ -76,6 +76,6 @@ private
       new_name = asset.name.gsub(replace, with)
       asset.update_attributes!(name: new_name)
     end
-    study.comments.create(description: "Renamed Asset names: " + replace + " to " + with, user_id: user.id)
+    study.comments.create(description: 'Renamed Asset names: ' + replace + ' to ' + with, user_id: user.id)
   end
 end

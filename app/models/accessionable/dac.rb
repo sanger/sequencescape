@@ -9,7 +9,7 @@ class Accessionable::Dac < Accessionable::Base
   def initialize(study)
     @study = study
     @name = study.dac_refname
-    @contacts = study.send("Data Access Contacts").map do |contact|
+    @contacts = study.send('Data Access Contacts').map do |contact|
       {
         email: contact.email,
         name: contact.name,
@@ -23,7 +23,7 @@ class Accessionable::Dac < Accessionable::Base
   def errors
     [].tap do |errors|
       if @contacts.empty?
-        errors << "Data Access Contacts Empty. Please add a contact"
+        errors << 'Data Access Contacts Empty. Please add a contact'
       end
     end
   end

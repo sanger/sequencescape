@@ -72,7 +72,7 @@ class FakeAccessionService
     @sent = []
   end
 
-  def success(type, accession, body = "")
+  def success(type, accession, body = '')
     model = type.upcase
     bodies << <<-XML
       <RECEIPT success="true">

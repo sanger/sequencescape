@@ -17,7 +17,7 @@ class TagGroupsTask < Task
   end
 
   def partial
-    "tag_groups_batches"
+    'tag_groups_batches'
   end
 
   def render_task(workflow, params)

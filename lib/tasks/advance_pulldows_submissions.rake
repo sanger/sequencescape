@@ -4,7 +4,7 @@
 namespace :benchmark do
   task setup: :environment do
     plate_count = ENV['PLATECOUNT'] || 25
-    $stderr.puts "Building WGS submissions ..."
+    $stderr.puts 'Building WGS submissions ...'
 
     # Printers we need
     BarcodePrinterType.find(1).barcode_printers.create!(name: 'h126bc')  # 1D tube printer
@@ -46,13 +46,13 @@ namespace :benchmark do
     $stderr.puts "\tBuilding submission request graphs. This might take some time..."
     LinearSubmission.all.each(&:build_request_graph!)
 
-    $stderr.puts "Advancing submissions"
+    $stderr.puts 'Advancing submissions'
     Submission.all.each do |sub|
-      $stderr.puts "Making Plate"
+      $stderr.puts 'Making Plate'
       plate = PlatePurpose.find_by(name: 'WGS stock DNA').create!(:without_wells)
-      $stderr.puts "Passing Requests"
+      $stderr.puts 'Passing Requests'
       sub.requests.each do |r|
-        $stderr.print "."
+        $stderr.print '.'
         next unless r.is_a?(CherrypickRequest)
         next if r.passed?
         r.start!
@@ -61,7 +61,7 @@ namespace :benchmark do
         r.target_asset.update_attributes!(map_id: r.asset.map_id)
         r.save!
       end
-      $stderr.puts ""
+      $stderr.puts ''
     end
   end
 end

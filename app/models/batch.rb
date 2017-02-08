@@ -5,14 +5,14 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 require 'timeout'
-require "tecan_file_generation"
+require 'tecan_file_generation'
 require 'aasm'
 
 class Batch < ActiveRecord::Base
   self.per_page = 500
 
-  belongs_to :user, foreign_key: "user_id"
-  belongs_to :assignee, class_name: "User", foreign_key: "assignee_id"
+  belongs_to :user, foreign_key: 'user_id'
+  belongs_to :assignee, class_name: 'User', foreign_key: 'assignee_id'
 
   has_many :failures, as: :failable
   has_many :messengers, as: :target, inverse_of: :target
@@ -45,13 +45,13 @@ class Batch < ActiveRecord::Base
   def all_requests_are_ready?
     # Checks that SequencingRequests have at least one LibraryCreationRequest in passed status before being processed (as refered by #75102998)
     unless requests.all?(&:ready?)
-      errors.add :base, "All requests must be ready to be added to a batch"
+      errors.add :base, 'All requests must be ready to be added to a batch'
     end
   end
 
   def cluster_formation_requests_must_be_over_minimum
     if (!pipeline.min_size.nil?) && (requests.size < pipeline.min_size)
-      errors.add :base, "You must create batches of at least " + pipeline.min_size.to_s + " requests in the pipeline " + pipeline.name
+      errors.add :base, 'You must create batches of at least ' + pipeline.min_size.to_s + ' requests in the pipeline ' + pipeline.name
     end
   end
 
@@ -96,7 +96,7 @@ class Batch < ActiveRecord::Base
   def fail(reason, comment, ignore_requests = false)
     # We've deprecated the ability to fail a batch but not its requests.
     # Keep this check here until we're sure we haven't missed anything.
-    raise StandardError, "Can not fail batch without failing requests" if ignore_requests
+    raise StandardError, 'Can not fail batch without failing requests' if ignore_requests
     # create failures
     failures.create(reason: reason, comment: comment, notify_remote: false)
 
@@ -107,7 +107,7 @@ class Batch < ActiveRecord::Base
       end
     end
 
-    self.production_state = "fail"
+    self.production_state = 'fail'
     save!
   end
 
@@ -116,9 +116,9 @@ class Batch < ActiveRecord::Base
     checkpoint = true
 
     requests.each do |key, value|
-      if value == "on"
+      if value == 'on'
         logger.debug "SENDING FAIL FOR REQUEST #{key}, BATCH #{id}, WITH REASON #{reason}"
-        unless key == "control"
+        unless key == 'control'
           ActiveRecord::Base.transaction do
             request = self.requests.find(key)
             request.customer_accepts_responsibility! if fail_but_charge
@@ -137,13 +137,13 @@ class Batch < ActiveRecord::Base
   def update_batch_state(reason, comment)
     if requests.all?(&:terminated?)
       failures.create(reason: reason, comment: comment, notify_remote: false)
-      self.production_state = "fail"
+      self.production_state = 'fail'
       save!
     end
   end
 
   def failed?
-    production_state == "fail"
+    production_state == 'fail'
   end
 
   # Used in auto_batch view to disable the submit button if the batch was already passed to Auto QC
@@ -173,7 +173,7 @@ class Batch < ActiveRecord::Base
   # Sets the position of the requests in the batch to their index in the array.
   def assign_positions_to_requests!(request_ids_in_position_order)
     disparate_ids = batch_requests.map(&:request_id) - request_ids_in_position_order
-    raise StandardError, "Can only sort all requests at once" unless disparate_ids.empty?
+    raise StandardError, 'Can only sort all requests at once' unless disparate_ids.empty?
 
     BatchRequest.transaction do
       batch_requests.each do |batch_request|
@@ -269,7 +269,7 @@ class Batch < ActiveRecord::Base
   end
 
   def mpx_library_name
-    mpx_name = ""
+    mpx_name = ''
     if multiplexed? && requests.size > 0
       mpx_library_tube = requests[0].target_asset.child
       if !mpx_library_tube.nil?
@@ -290,8 +290,8 @@ class Batch < ActiveRecord::Base
     unless ev.empty?
       ev.sort_by { |i| i[:created_at] }.each do |t|
         if t.descriptors
-          if g = t.descriptor_value("task")
-            d << { "task" => g, "description" => t.description, "message" => t.message, "data" => t.data, "created_at" => t.created_at }
+          if g = t.descriptor_value('task')
+            d << { 'task' => g, 'description' => t.description, 'message' => t.message, 'data' => t.data, 'created_at' => t.created_at }
           end
         end
       end
@@ -311,14 +311,14 @@ class Batch < ActiveRecord::Base
   def verify_tube_layout(barcodes, user = nil)
     requests.each do |request|
       barcode = barcodes[(request.position).to_s]
-      unless barcode.blank? || barcode == "0"
+      unless barcode.blank? || barcode == '0'
         unless barcode.to_i == request.asset.barcode.to_i
           errors.add(:base, "The tube at position #{request.position} is incorrect.")
         end
       end
     end
     if errors.empty?
-      lab_events.create(description: "Tube layout verified", user: user)
+      lab_events.create(description: 'Tube layout verified', user: user)
       return true
     else
       return false
@@ -397,8 +397,8 @@ class Batch < ActiveRecord::Base
     return false if batch_info.empty?
 
     # Find the two lanes that are to be swapped
-    batch_request_left  = BatchRequest.find_by(batch_id: batch_info['batch_1']['id'], position: batch_info['batch_1']['lane']) or errors.add("Swap: ", "The first lane cannot be found")
-    batch_request_right = BatchRequest.find_by(batch_id: batch_info['batch_2']['id'], position: batch_info['batch_2']['lane']) or errors.add("Swap: ", "The second lane cannot be found")
+    batch_request_left  = BatchRequest.find_by(batch_id: batch_info['batch_1']['id'], position: batch_info['batch_1']['lane']) or errors.add('Swap: ', 'The first lane cannot be found')
+    batch_request_right = BatchRequest.find_by(batch_id: batch_info['batch_2']['id'], position: batch_info['batch_2']['lane']) or errors.add('Swap: ', 'The second lane cannot be found')
     return unless batch_request_left.present? and batch_request_right.present?
 
     ActiveRecord::Base.transaction do
@@ -414,8 +414,8 @@ class Batch < ActiveRecord::Base
       batch_request_right = BatchRequest.create!(batch_id: original_left_batch_id, position: original_left_position, request_id: original_right_request_id)
 
       # Finally record the fact that the batch was swapped
-      batch_request_left.batch.lab_events.create!(description: "Lane swap", message: "Lane #{batch_request_right.position} moved to #{batch_request_left.batch_id} lane #{batch_request_left.position}", user_id: current_user.id)
-      batch_request_right.batch.lab_events.create!(description: "Lane swap", message: "Lane #{batch_request_left.position} moved to #{batch_request_right.batch_id} lane #{batch_request_right.position}", user_id: current_user.id)
+      batch_request_left.batch.lab_events.create!(description: 'Lane swap', message: "Lane #{batch_request_right.position} moved to #{batch_request_left.batch_id} lane #{batch_request_left.position}", user_id: current_user.id)
+      batch_request_right.batch.lab_events.create!(description: 'Lane swap', message: "Lane #{batch_request_left.position} moved to #{batch_request_right.batch_id} lane #{batch_request_right.position}", user_id: current_user.id)
     end
 
     true
@@ -458,11 +458,11 @@ class Batch < ActiveRecord::Base
   def robot_verified!(user_id)
     return if has_event('robot verified')
     pipeline.robot_verified!(self)
-    lab_events.create(description: "Robot verified", message: 'Robot verification completed and source volumes updated.', user_id: user_id)
+    lab_events.create(description: 'Robot verified', message: 'Robot verification completed and source volumes updated.', user_id: user_id)
   end
 
   def self.prefix
-    "BA"
+    'BA'
   end
 
   def self.valid_barcode?(code)
@@ -553,7 +553,7 @@ class Batch < ActiveRecord::Base
     end
 
     if complete
-     self.state = "released"
+     self.state = 'released'
      qc_complete
      save!
     end

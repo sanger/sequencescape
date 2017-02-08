@@ -57,7 +57,7 @@ class AssetsController < ApplicationController
     end
 
     def assert_valid_location(location_id)
-      raise StandardError, "Location out of bounds" unless (1..size).cover?(location_id)
+      raise StandardError, 'Location out of bounds' unless (1..size).cover?(location_id)
     end
   end
 end

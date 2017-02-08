@@ -49,7 +49,7 @@ module Aliquot::DeprecatedBehaviours
       when samples.size == 0 then default
       when samples.size == 1 then samples.first.name
       when block_given?      then yield(samples)
-      else                        samples.map(&:name).join(" | ")
+      else                        samples.map(&:name).join(' | ')
       end
     end
     deprecate :sample_name

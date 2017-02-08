@@ -16,7 +16,7 @@ class StudyReport < ActiveRecord::Base
   scope :for_user, ->(user) { where(user_id: user.id) }
   # named_scope :without_files, -> { select_without_file_columns_for(:report) }
 
-  has_uploaded :report, serialization_column: "report_filename"
+  has_uploaded :report, serialization_column: 'report_filename'
 
   belongs_to :study
   belongs_to :user
@@ -24,10 +24,10 @@ class StudyReport < ActiveRecord::Base
 
   def headers
     [
-      "Study", "Sample Name", "Plate", "Supplier Volume", "Supplier Concentration",
-      "Supplier Sample Name", "Supplier Gender", "Concentration",
-      "Sequenome Count", "Sequenome Gender", "Pico", "Gel", "Qc Status",
-      "Genotyping Status", "Genotyping Chip", "Is in Fluidigm"
+      'Study', 'Sample Name', 'Plate', 'Supplier Volume', 'Supplier Concentration',
+      'Supplier Sample Name', 'Supplier Gender', 'Concentration',
+      'Sequenome Count', 'Sequenome Gender', 'Pico', 'Gel', 'Qc Status',
+      'Genotyping Status', 'Genotyping Chip', 'Is in Fluidigm'
     ]
   end
 

@@ -21,10 +21,10 @@ module Authorization
           method_name = method_sym.to_s
           authorizable_object = args.empty? ? nil : args[0]
 
-          base_regex = "is_(\\w+)"
+          base_regex = 'is_(\\w+)'
           fancy_regex = base_regex + "_(#{Authorization::Base::VALID_PREPOSITIONS_PATTERN})"
           is_either_regex = '^((' + fancy_regex + ')|(' + base_regex + '))'
-          base_not_regex = "is_no[t]?_(\\w+)"
+          base_not_regex = 'is_no[t]?_(\\w+)'
           fancy_not_regex = base_not_regex + "_(#{Authorization::Base::VALID_PREPOSITIONS_PATTERN})"
           is_not_either_regex = '^((' + fancy_not_regex + ')|(' + base_not_regex + '))'
 

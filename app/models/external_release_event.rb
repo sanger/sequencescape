@@ -13,7 +13,7 @@ class ExternalReleaseEvent < Event
     create!(
       eventful: asset,
       message: "Data to be released externally set #{asset.external_release}",
-      created_by: "", family: "update", of_interest_to: "administrators",
+      created_by: '', family: 'update', of_interest_to: 'administrators',
       send_email: sendmail
     )
   end
@@ -24,7 +24,7 @@ class ExternalReleaseEvent < Event
 
   def physically_send_email
     study = Asset.find(eventful_id).studies.map do |study|
-      EventfulMailer.confirm_external_release_event(study.mailing_list_of_managers.reject(&:blank?), eventful, message, content, "No Milestone").deliver
+      EventfulMailer.confirm_external_release_event(study.mailing_list_of_managers.reject(&:blank?), eventful, message, content, 'No Milestone').deliver
     end
   end
 end

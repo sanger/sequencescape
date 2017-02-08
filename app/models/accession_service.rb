@@ -14,8 +14,8 @@ class AccessionService
   NumberNotGenerated    = Class.new(AccessionServiceError)
 
   CenterName = 'SC'.freeze # TODO [xxx] use confing file
-  Protect = "protect".freeze
-  Hold = "hold".freeze
+  Protect = 'protect'.freeze
+  Hold = 'hold'.freeze
 
   def provider; end
 
@@ -75,7 +75,7 @@ class AccessionService
           raise NumberNotGenerated, 'Service gave no numbers back' unless number_generated
 
         elsif success == 'false'
-          errors = xmldoc.root.elements.to_a("//ERROR").map(&:text)
+          errors = xmldoc.root.elements.to_a('//ERROR').map(&:text)
           raise AccessionServiceError, "Could not get accession number. Error in submitted data: #{$!} #{errors.map { |e| "\n  - #{e}" }}"
         else
           raise AccessionServiceError, "Could not get accession number. Error in submitted data: #{$!}"
@@ -110,7 +110,7 @@ class AccessionService
   end
 
   def submit_dac_for_user(_study, _user)
-    raise NumberNotRequired, "No need to"
+    raise NumberNotRequired, 'No need to'
   end
 
   def accession_study_xml(study)
@@ -164,7 +164,7 @@ private
           xml.CENTER_NAME         studydata[:center_name]
           xml.STUDY_ABSTRACT      studydata[:study_abstract]
 
-          xml.PROJECT_ID(studydata[:study_id] || "0")
+          xml.PROJECT_ID(studydata[:study_id] || '0')
           study_type = studydata[:existing_study_type]
           if StudyType.include?(study_type)
             xml.STUDY_TYPE(existing_study_type: study_type)
@@ -223,7 +223,7 @@ private
           if accession_number.blank?
             xml.ADD(source: submission[:source], schema: submission[:schema])
           else
-            xml.MODIFY(source: submission[:source], target: "")
+            xml.MODIFY(source: submission[:source], target: '')
           end
         }
         xml.ACTION {
@@ -243,7 +243,7 @@ private
   include REXML
 
   def accession_options
-    raise NotImplemented, "abstract method"
+    raise NotImplemented, 'abstract method'
   end
 
   def rest_client_resource
@@ -276,7 +276,7 @@ private
       $! = nil
       raise AccessionServiceError
     else
-    return ""
+    return ''
     end
   rescue StandardError => exception
     raise AccessionServiceError, "Could not get accession number. EBI may be down or invalid data submitted: #{$!}"

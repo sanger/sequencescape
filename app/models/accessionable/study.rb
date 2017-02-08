@@ -30,7 +30,7 @@ module Accessionable
       @description = study_desc unless study_desc.blank?
 
       @tags = []
-      @tags << Tag.new(label_scope, "ArrayExpress", nil) if study.for_array_express?
+      @tags << Tag.new(label_scope, 'ArrayExpress', nil) if study.for_array_express?
       super(study.study_metadata.study_ebi_accession_number)
 
       @related_studies = []
@@ -60,7 +60,7 @@ module Accessionable
         xml.CENTER_NAME         center_name
         xml.STUDY_ABSTRACT      study_abstract
 
-        xml.PROJECT_ID(accessionable_id || "0")
+        xml.PROJECT_ID(accessionable_id || '0')
         study_type = existing_study_type
         if StudyType.include?(study_type)
           xml.STUDY_TYPE(existing_study_type: study_type)
@@ -139,7 +139,7 @@ module Accessionable
     end
 
     def db_label
-      I18n.t("metadata.study.metadata.#{@role}.ebi_db", default: "")
+      I18n.t("metadata.study.metadata.#{@role}.ebi_db", default: '')
     end
   end
 end

@@ -10,7 +10,7 @@ class AdjustRequestTypeAllocationToPipelines < ActiveRecord::Migration
   end
 
   def self.qc_keys
-     ["qc_miseq_sequencing"]
+     ['qc_miseq_sequencing']
   end
 
   def self.standard_keys

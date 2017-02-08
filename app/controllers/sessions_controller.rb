@@ -23,7 +23,7 @@ class SessionsController < ApplicationController
     return unless request.post?
     self.current_user = User.authenticate(params[:login], params[:password])
     if logged_in?
-      flash[:notice] = "Logged in successfully"
+      flash[:notice] = 'Logged in successfully'
       redirect_back_or_default(controller: :studies)
     else
       if params
@@ -36,7 +36,7 @@ class SessionsController < ApplicationController
     current_user.forget_me if logged_in?
     cookies.delete :auth_token
     reset_session
-    flash[:notice] = "You have been logged out."
+    flash[:notice] = 'You have been logged out.'
     redirect_back_or_default(controller: :studies)
   end
 end

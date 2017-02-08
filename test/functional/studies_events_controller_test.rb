@@ -4,10 +4,10 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class Studies::EventsControllerTest < ActionController::TestCase
-  context "Studies controller" do
+  context 'Studies controller' do
     setup do
       @controller = Studies::EventsController.new
       @request    = ActionController::TestRequest.new
@@ -20,7 +20,7 @@ class Studies::EventsControllerTest < ActionController::TestCase
 
     should_require_login(:index)
 
-     context "#index" do
+     context '#index' do
         setup do
           get :index, study_id: @study.id
         end

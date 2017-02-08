@@ -35,7 +35,7 @@ class PlatePurpose < Purpose
     purpose.nil? ?
       where('FALSE') :
       where(["(target_type is null and 'Plate'=?)  or target_type=?", purpose.target_plate_type, purpose.target_plate_type])
-        .order("name ASC")
+        .order('name ASC')
   }
 
   scope :cherrypickable_as_target, -> { where(cherrypickable_target: true) }
@@ -139,7 +139,7 @@ class PlatePurpose < Purpose
       conditions << "(#{condition[0]} AND #{condition[1]})"
       parameters.concat(args)
     end
-    raise "Apparently there are not requests on these wells?" if conditions.empty?
+    raise 'Apparently there are not requests on these wells?' if conditions.empty?
     Request.where_is_not_a?(TransferRequest).where(["(#{conditions.join(' OR ')})", *parameters]).map do |request|
       # This can probably be switched for an each, as I don't think the array is actually used for anything.
       request.request_metadata.update_attributes!(customer_accepts_responsibility: true) if customer_accepts_responsibility
@@ -154,7 +154,7 @@ class PlatePurpose < Purpose
       .select('pool_uuids.external_id AS pool_uuid')
       .readonly(false)
       .tap do |wells_with_pool|
-        raise StandardError, "Cannot deal with a well in multiple pools" if wells_with_pool.group_by(&:id).any? { |_, multiple_pools| multiple_pools.uniq.size > 1 }
+        raise StandardError, 'Cannot deal with a well in multiple pools' if wells_with_pool.group_by(&:id).any? { |_, multiple_pools| multiple_pools.uniq.size > 1 }
       end
   end
 

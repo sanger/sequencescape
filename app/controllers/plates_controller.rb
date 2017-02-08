@@ -12,8 +12,8 @@ class PlatesController < ApplicationController
 
   def new
     @plate_creators   = Plate::Creator.order(:name)
-    @barcode_printers = BarcodePrinterType.find_by(name: "96 Well Plate").barcode_printers
-    @barcode_printers = BarcodePrinter.order("name asc") if @barcode_printers.blank?
+    @barcode_printers = BarcodePrinterType.find_by(name: '96 Well Plate').barcode_printers
+    @barcode_printers = BarcodePrinter.order('name asc') if @barcode_printers.blank?
 
     respond_to do |format|
       format.html
@@ -71,7 +71,7 @@ class PlatesController < ApplicationController
       if asset_group = Plate.create_sample_tubes_asset_group_and_print_barcodes(plates, barcode_printer, location, study)
         flash[:notice] = 'Created tubes and printed barcodes'
         # makes request properties partial show
-        @current_user.workflow = Submission::Workflow.find_by(key: "short_read_sequencing")
+        @current_user.workflow = Submission::Workflow.find_by(key: 'short_read_sequencing')
         @current_user.save!
         format.html { redirect_to(new_submission_path(study_id: asset_group.study.id)) }
         format.xml  { render xml: asset_group, status: :created }
@@ -90,7 +90,7 @@ class PlatesController < ApplicationController
       @plate = Plate.find(params[:id])
       @parents = @plate.parents
       respond_to do |format|
-        format.csv { render csv: @plate, content_type: "text/csv" }
+        format.csv { render csv: @plate, content_type: 'text/csv' }
       end
     end
   end

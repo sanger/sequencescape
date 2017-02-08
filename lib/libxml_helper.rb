@@ -2,7 +2,7 @@
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2007-2011,2012 Genome Research Ltd.
-require "xml/libxml"
+require 'xml/libxml'
 
 class XML::Node
   ##
@@ -64,7 +64,7 @@ class XML::Node
         return
       end
     end
-    raise "No default namespace found"
+    raise 'No default namespace found'
   end
 
   # register a namespace, of the form "foo:http://example.com/ns"

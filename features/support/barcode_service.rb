@@ -41,7 +41,7 @@ class FakeBarcodeService
   end
 
   def next_barcode!
-    barcodes.shift or raise StandardError, "No more values set!"
+    barcodes.shift or raise StandardError, 'No more values set!'
   end
 end
 

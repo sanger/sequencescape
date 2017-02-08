@@ -21,12 +21,12 @@ class Pipeline < ActiveRecord::Base
   include SharedBehaviour::Named
 
   class_attribute :batch_worksheet
-  self.batch_worksheet = "detailed_worksheet"
+  self.batch_worksheet = 'detailed_worksheet'
 
   INBOX_PARTIAL               = 'default_inbox'
   ALWAYS_SHOW_RELEASE_ACTIONS = false # Override this in subclasses if you want to display action links for released batches
 
-  self.inheritance_column = "sti_type"
+  self.inheritance_column = 'sti_type'
 
   delegate :item_limit, :has_batch_limit?, to: :workflow
   validates_presence_of :workflow
@@ -36,7 +36,7 @@ class Pipeline < ActiveRecord::Base
   belongs_to :next_pipeline,     class_name: 'Pipeline'
   belongs_to :previous_pipeline, class_name: 'Pipeline'
 
-  has_one :workflow, class_name: "LabInterface::Workflow", inverse_of: :pipeline
+  has_one :workflow, class_name: 'LabInterface::Workflow', inverse_of: :pipeline
 
   has_many :controls
   has_many :pipeline_request_information_types
@@ -55,7 +55,7 @@ class Pipeline < ActiveRecord::Base
 
   validates_presence_of :request_types
   validates_presence_of :name
-  validates_uniqueness_of :name, on: :create, message: "name already in use"
+  validates_uniqueness_of :name, on: :create, message: 'name already in use'
 
   scope :externally_managed, -> { where(externally_managed: true) }
   scope :internally_managed, -> { where(externally_managed: false) }
@@ -168,11 +168,11 @@ class Pipeline < ActiveRecord::Base
   def completed_request_as_part_of_release_batch(request)
     if library_creation?
       unless request.failed?
-        EventSender.send_pass_event(request.id, "", "Passed #{name}.", id)
-        EventSender.send_request_update(request.id, "complete", "Completed pipeline: #{name}")
+        EventSender.send_pass_event(request.id, '', "Passed #{name}.", id)
+        EventSender.send_request_update(request.id, 'complete', "Completed pipeline: #{name}")
       end
     else
-      EventSender.send_request_update(request.id, "complete", "Completed pipeline: #{name}")
+      EventSender.send_request_update(request.id, 'complete', "Completed pipeline: #{name}")
     end
   end
 
@@ -216,12 +216,12 @@ class Pipeline < ActiveRecord::Base
   private :selected_values_from
 
   def extract_requests_from_input_params(params)
-    if (request_ids = params["request"]).present?
+    if (request_ids = params['request']).present?
       requests.inputs(true).order(:id).find(selected_values_from(request_ids).map(&:first))
-    elsif (selected_groups = params["request_group"]).present?
+    elsif (selected_groups = params['request_group']).present?
       grouping_parser.all(selected_values_from(selected_groups))
     else
-      raise StandardError, "Unknown manner in which to extract requests!"
+      raise StandardError, 'Unknown manner in which to extract requests!'
     end
   end
 

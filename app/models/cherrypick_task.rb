@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 class CherrypickTask < Task
-  EMPTY_WELL          = [0, "Empty", ""]
+  EMPTY_WELL          = [0, 'Empty', '']
   TEMPLATE_EMPTY_WELL = [0, '---', '']
 
   def create_render_element(request)
@@ -203,7 +203,7 @@ class CherrypickTask < Task
   private :perform_pick
 
   def partial
-    "cherrypick_batches"
+    'cherrypick_batches'
   end
 
   def render_task(workflow, params)

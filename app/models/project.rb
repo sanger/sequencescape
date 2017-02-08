@@ -53,7 +53,7 @@ class Project < ActiveRecord::Base
 
   has_many :roles, as: :authorizable
   has_many :orders
-  has_many :studies, ->() { distinct }, class_name: "Study", through: :orders, source: :study
+  has_many :studies, ->() { distinct }, class_name: 'Study', through: :orders, source: :study
   has_many :submissions,  ->() { distinct }, through: :orders, source: :submission
   has_many :sample_manifests
   has_many :aliquots
@@ -126,7 +126,7 @@ class Project < ActiveRecord::Base
   end
 
   def owners
-    role = roles.detect { |r| r.name == "owner" }
+    role = roles.detect { |r| r.name == 'owner' }
     if role.nil?
       []
     else
@@ -140,7 +140,7 @@ class Project < ActiveRecord::Base
   end
 
   def manager
-    role = roles.detect { |r| r.name == "manager" }
+    role = roles.detect { |r| r.name == 'manager' }
     if role.nil?
       nil
     else
@@ -154,7 +154,7 @@ class Project < ActiveRecord::Base
 
   def submittable?
     return true if project_metadata.project_funding_model.present?
-    errors.add(:base, "No funding model specified")
+    errors.add(:base, 'No funding model specified')
     false
   end
 
@@ -172,9 +172,9 @@ class Project < ActiveRecord::Base
 
   PROJECT_FUNDING_MODELS = [
     '',
-    "Internal",
-    "External",
-    "External - own machine"
+    'Internal',
+    'External',
+    'External - own machine'
   ]
 
   extend Metadata

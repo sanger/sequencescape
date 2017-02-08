@@ -33,7 +33,7 @@ module Submission::FlexibleRequestGraph
     end
 
     def build!
-      raise RequestChainError, "Request chains can only be built once" if built?
+      raise RequestChainError, 'Request chains can only be built once' if built?
       raise StandardError, 'No request types specified!' if request_types.empty?
       request_types.inject(source_assets_qc_metrics) do |source_assets_qc_metrics_memo, request_type|
         link = ChainLink.build!(request_type, multiplier_for(request_type), source_assets_qc_metrics_memo, self)
@@ -130,7 +130,7 @@ module Submission::FlexibleRequestGraph
     private
 
     def comments
-      (chain.order.comments || "").split("\n")
+      (chain.order.comments || '').split("\n")
     end
 
     def user

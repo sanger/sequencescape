@@ -25,7 +25,7 @@ class Cherrypick::Strategy::FilterTest < ActiveSupport::TestCase
       plexes.each_with_index { |p, i| p.expects(:slice).with(0, 10).returns("short #{i + 1}") }
 
       assert_equal(
-        ["short 1", "short 2"],
+        ['short 1', 'short 2'],
         @target.call(plexes, OpenStruct.new(available: 10))
       )
     end

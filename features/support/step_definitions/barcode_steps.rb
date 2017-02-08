@@ -35,11 +35,11 @@ Given /^the "([^\"]+)" barcode printer "([^\"]+)" exists$/ do |type_name, name|
 end
 
 Transform /^the last plate$/ do |_|
-  Plate.last or raise StandardError, "There appear to be no plates"
+  Plate.last or raise StandardError, 'There appear to be no plates'
 end
 
 Transform /^the last multiplexed library tube$/ do |_|
-  MultiplexedLibraryTube.last or raise StandardError, "There appear to be no multiplexed library tubes"
+  MultiplexedLibraryTube.last or raise StandardError, 'There appear to be no multiplexed library tubes'
 end
 
 Transform /^the plate "([^\"]+)"$/ do |name|
@@ -55,7 +55,7 @@ Given /^(the .+) has a barcode of "([^\"]+)"$/ do |asset, barcode|
 end
 
 Given /^the barcode of the last sample tube is "([^\"]+)"$/ do |barcode|
-  tube = SampleTube.last or raise StandardError, "There appear to be no sample tubes"
+  tube = SampleTube.last or raise StandardError, 'There appear to be no sample tubes'
   tube.update_attributes!(barcode: barcode)
 end
 

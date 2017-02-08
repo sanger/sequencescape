@@ -8,11 +8,11 @@ class RobotVerification
   attr_reader :errors
 
   def validate_barcode_params(barcode_hash)
-    return yield("No barcodes specified")      if barcode_hash.nil?
-    yield("Worksheet barcode invalid")         if barcode_hash[:batch_barcode].nil?             or not Batch.valid_barcode?(barcode_hash[:batch_barcode])
-    yield("Tecan robot barcode invalid")       if barcode_hash[:robot_barcode].nil?             or not Robot.valid_barcode?(barcode_hash[:robot_barcode])
-    yield("User barcode invalid")              if barcode_hash[:user_barcode].nil?              or not User.valid_barcode?(barcode_hash[:user_barcode])
-    yield("Destination plate barcode invalid") if barcode_hash[:destination_plate_barcode].nil? or Plate.find_by(barcode: Barcode.number_to_human(barcode_hash[:destination_plate_barcode])).nil?
+    return yield('No barcodes specified')      if barcode_hash.nil?
+    yield('Worksheet barcode invalid')         if barcode_hash[:batch_barcode].nil?             or not Batch.valid_barcode?(barcode_hash[:batch_barcode])
+    yield('Tecan robot barcode invalid')       if barcode_hash[:robot_barcode].nil?             or not Robot.valid_barcode?(barcode_hash[:robot_barcode])
+    yield('User barcode invalid')              if barcode_hash[:user_barcode].nil?              or not User.valid_barcode?(barcode_hash[:user_barcode])
+    yield('Destination plate barcode invalid') if barcode_hash[:destination_plate_barcode].nil? or Plate.find_by(barcode: Barcode.number_to_human(barcode_hash[:destination_plate_barcode])).nil?
   end
 
   def expected_layout(batch, destination_plate_barcode)
@@ -21,11 +21,11 @@ class RobotVerification
   end
 
   def valid_source_plates_on_robot?(beds, plates, robot, batch, all_expected_plate_layout)
-    valid_plates_on_robot?(beds, plates, "SCRC", robot, batch, all_expected_plate_layout[1])
+    valid_plates_on_robot?(beds, plates, 'SCRC', robot, batch, all_expected_plate_layout[1])
   end
 
   def valid_destination_plates_on_robot?(beds, plates, robot, batch, all_expected_plate_layout)
-    valid_plates_on_robot?(beds, plates, "DEST", robot, batch, all_expected_plate_layout[0])
+    valid_plates_on_robot?(beds, plates, 'DEST', robot, batch, all_expected_plate_layout[0])
   end
 
   def valid_plates_on_robot?(beds, plates, bed_prefix, robot, _batch, expected_plate_layout)
@@ -56,22 +56,22 @@ class RobotVerification
 
     @errors = []
     @errors << "Could not find batch #{params[:batch_id]}" if batch.nil?
-    @eerors << "Could not find robot" if robot.nil?
-    @errors << "Could not find user" if user.nil?
-    @errors << "No destination barcode specified" if destination_plate_barcode.blank?
+    @eerors << 'Could not find robot' if robot.nil?
+    @errors << 'Could not find user' if user.nil?
+    @errors << 'No destination barcode specified' if destination_plate_barcode.blank?
     return false unless @errors.empty?
 
     expected_plate_layout = expected_layout(batch, destination_plate_barcode)
 
     if valid_plate_locations?(params, batch, robot, expected_plate_layout)
       batch.events.create(
-        message: I18n.t("bed_verification.layout.valid", plate_barcode: destination_plate_barcode),
+        message: I18n.t('bed_verification.layout.valid', plate_barcode: destination_plate_barcode),
         created_by: user.login)
     else
       batch.events.create(
-        message: I18n.t("bed_verification.layout.invalid", plate_barcode: destination_plate_barcode),
+        message: I18n.t('bed_verification.layout.invalid', plate_barcode: destination_plate_barcode),
         created_by: user.login)
-      @errors << "Bed layout invalid"
+      @errors << 'Bed layout invalid'
       return false
     end
 

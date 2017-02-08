@@ -14,18 +14,18 @@ module ActiveRecord # :nodoc:
 
       module SingletonMethods
         def search(descriptors)
-          conditions = ""
+          conditions = ''
           for descriptor in descriptors
             conditions += "descriptors LIKE '%"
-            conditions += descriptor.name + ": \"" + descriptor.value + "\"%' or "
+            conditions += descriptor.name + ': "' + descriptor.value + "\"%' or "
           end
-          conditions.gsub!(/ or $/, "")
-          logger.info "Searching for: " + conditions
+          conditions.gsub!(/ or $/, '')
+          logger.info 'Searching for: ' + conditions
           where(conditions)
         end
 
         def find_descriptors
-          logger.info "Finding all descriptors"
+          logger.info 'Finding all descriptors'
           response = []
           find_each do |object|
             object.descriptors.each do |descriptor|

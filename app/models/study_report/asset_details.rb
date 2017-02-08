@@ -13,7 +13,7 @@ module StudyReport::AssetDetails
     sample = primary_aliquot.try(:sample)
     if sample.present?
       supplier_sample_name = if sample.empty_supplier_sample_name
-        "Blank"
+        'Blank'
                              else
         sample.sample_metadata.supplier_name || sample.sanger_sample_id || sample.name
                              end

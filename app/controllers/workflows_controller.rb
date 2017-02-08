@@ -91,7 +91,7 @@ class WorkflowsController < ApplicationController
         format.html { redirect_to workflow_url(@workflow) }
         format.xml  { head :created, location: workflow_url(@workflow) }
       else
-        format.html { render action: "new" }
+        format.html { render action: 'new' }
         format.xml  { render xml: @workflow.errors.to_xml }
       end
     end
@@ -104,14 +104,14 @@ class WorkflowsController < ApplicationController
         format.html { redirect_to workflow_url(@workflow) }
         format.xml  { head :ok }
       else
-        format.html { render action: "edit" }
+        format.html { render action: 'edit' }
         format.xml  { render xml: @workflow.errors.to_xml }
       end
     end
   end
 
   def destroy
-    flash[:error] = "Sorry. The ability to delete workflows has been removed."
+    flash[:error] = 'Sorry. The ability to delete workflows has been removed.'
 
     respond_to do |format|
       format.html { redirect_to workflows_url }
@@ -153,7 +153,7 @@ class WorkflowsController < ApplicationController
         eager_loading = @task.included_for_do_task
         @batch ||= Batch.includes(eager_loading).find(params[:batch_id])
         unless @batch.editable?
-          flash[:error] = "You cannot make changes to a completed batch."
+          flash[:error] = 'You cannot make changes to a completed batch.'
           redirect_to :back
           return false
         end
@@ -207,7 +207,7 @@ class WorkflowsController < ApplicationController
         flat_hash.merge!(flatten_hash(v, names))
       else
         key = flat_hash_key(names)
-        key += "[]" if v.is_a?(Array)
+        key += '[]' if v.is_a?(Array)
         flat_hash[key] = v
       end
     end
@@ -230,7 +230,7 @@ class WorkflowsController < ApplicationController
 
   def eventify_batch(batch, task)
     event = batch.lab_events.build(
-      description: "Complete",
+      description: 'Complete',
       user: current_user,
       batch: batch
     )

@@ -12,13 +12,13 @@ class ::Endpoints::Pipelines < ::Core::Endpoint::Base
     has_many(
       :inbox, scoped: 'ready_in_storage.full_inbox.order_most_recently_created_first',
       include: [],
-      json: "requests", to: "requests"
+      json: 'requests', to: 'requests'
     )
 
     has_many(
       :batches, scoped: 'order_most_recently_updated_first',
       include: [],
-      json: "batches", to: "batches"
+      json: 'batches', to: 'batches'
     ) do
       action(:create) do |request, _|
         ActiveRecord::Base.transaction do

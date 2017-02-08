@@ -136,14 +136,14 @@ module Request::Statemachine
 
      scope :completed,        -> { where(state: COMPLETED_STATE) }
 
-     scope :pipeline_pending, -> { where(state: "pending") } #  we don't want the blocked one here }
-     scope :pending,          -> { where(state: ["pending", "blocked"]) } # block is a kind of substate of pending }
+     scope :pipeline_pending, -> { where(state: 'pending') } #  we don't want the blocked one here }
+     scope :pending,          -> { where(state: ['pending', 'blocked']) } # block is a kind of substate of pending }
 
-     scope :started,          -> { where(state: "started") }
-     scope :cancelled,        -> { where(state: "cancelled") }
+     scope :started,          -> { where(state: 'started') }
+     scope :cancelled,        -> { where(state: 'cancelled') }
 
      scope :opened,           -> { where(state: OPENED_STATE) }
-     scope :closed,           -> { where(state: ["passed", "failed", "cancelled"]) }
+     scope :closed,           -> { where(state: ['passed', 'failed', 'cancelled']) }
     end
   end
 
@@ -172,7 +172,7 @@ module Request::Statemachine
     Rails.logger.warn('Change decision is being deprecated in favour of retrospective_pass and retrospective_fail!')
     return retrospective_fail! if passed?
     return retrospective_pass! if failed?
-    raise StandardError, "Can only use change decision on passed or failed requests"
+    raise StandardError, 'Can only use change decision on passed or failed requests'
   end
   deprecate :change_decision!
 
@@ -212,11 +212,11 @@ module Request::Statemachine
   end
 
   def open?
-    ["pending", "started"].include?(state)
+    ['pending', 'started'].include?(state)
   end
 
   def cancellable?
-    ["pending", "cancelled"].include?(state)
+    ['pending', 'cancelled'].include?(state)
   end
 
   def transition_to(target_state)

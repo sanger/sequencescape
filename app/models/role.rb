@@ -21,7 +21,7 @@ class Role < ActiveRecord::Base
   belongs_to :authorizable, polymorphic: true
 
   validates_presence_of :name
-  scope :general_roles, -> { where("authorizable_type IS NULL") }
+  scope :general_roles, -> { where('authorizable_type IS NULL') }
 
   def self.keys
     Role.all.map { |r| r.name }.uniq

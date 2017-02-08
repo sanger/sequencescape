@@ -21,13 +21,13 @@ module Tasks::StripTubeCreationHandler
     locations_requests = @batch.requests.with_asset_location.pending.group_by { |r| r.asset.map.column_order }
 
     if locations_requests.any? { |_k, v| v.count < tubes_to_create }
-      flash[:error] = "There are insufficient requests remaining for the requested number of tubes."
-      flash[:error].concat(" Some wells of the plate have different numbers of requests.") if locations_requests.values.map(&:count).uniq.count > 1
+      flash[:error] = 'There are insufficient requests remaining for the requested number of tubes.'
+      flash[:error].concat(' Some wells of the plate have different numbers of requests.') if locations_requests.values.map(&:count).uniq.count > 1
       return false
     end
 
     if locations_requests.keys.sort != [0, 1, 2, 3, 4, 5, 6, 7]
-      flash[:error] = "This pipeline only supports wells in the first column."
+      flash[:error] = 'This pipeline only supports wells in the first column.'
       return false
     end
 

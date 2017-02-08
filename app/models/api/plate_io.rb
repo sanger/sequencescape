@@ -22,7 +22,7 @@ class Api::PlateIO < Api::Base
     end
 
     def url_name
-      "plate"
+      'plate'
     end
   end
   renders_model(::Plate)

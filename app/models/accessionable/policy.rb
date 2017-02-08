@@ -20,7 +20,7 @@ class Accessionable::Policy < Accessionable::Base
 
   def errors
     [].tap do |errors|
-      errors << "DAC Accession number not found. Please get an accession number for the DAC." unless @dac_accession_number
+      errors << 'DAC Accession number not found. Please get an accession number for the DAC.' unless @dac_accession_number
     end
   end
 

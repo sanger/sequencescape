@@ -22,7 +22,7 @@ class Api::SampleIO < Api::Base
     end
 
     def url_name
-      "sample"
+      'sample'
     end
   end
 

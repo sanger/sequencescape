@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2015,2016 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class ProductCatalogueTest < ActiveSupport::TestCase
   context 'A product catalogue' do

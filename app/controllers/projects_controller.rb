@@ -62,17 +62,17 @@ class ProjectsController < ApplicationController
 
     # TODO[5002667]: ... to here.
 
-    flash[:notice] = "Your project has been created"
+    flash[:notice] = 'Your project has been created'
     respond_to do |format|
       format.html { redirect_to project_path(@project) }
       format.xml  { render xml: @project, status: :created, location: @project }
       format.json { render json: @project, status: :created, location: @project }
     end
   rescue ActiveRecord::RecordInvalid => exception
-    flash.now[:error] = "Problems creating your new project"
+    flash.now[:error] = 'Problems creating your new project'
     respond_to do |format|
       format.html {
-        render action: "new"
+        render action: 'new'
       }
       format.xml  { render xml: @project.errors, status: :unprocessable_entity }
       format.json { render json: @project.errors, status: :unprocessable_entity }
@@ -86,7 +86,7 @@ class ProjectsController < ApplicationController
         format.html { redirect_to(@project) }
         format.xml  { head :ok }
       else
-        format.html { render action: "edit" }
+        format.html { render action: 'edit' }
         format.xml  { render xml: @project.errors, status: :unprocessable_entity }
       end
     end
@@ -113,8 +113,8 @@ class ProjectsController < ApplicationController
 
   def collaborators
     @project    = Project.find(params[:id])
-    @all_roles  = Role.where(name: ["owner", "follower", "manager"]).select(:name).distinct
-    @roles      = Role.where(authorizable_id: @project.id, authorizable_type: "Project")
+    @all_roles  = Role.where(name: ['owner', 'follower', 'manager']).select(:name).distinct
+    @roles      = Role.where(authorizable_id: @project.id, authorizable_type: 'Project')
     @users      = User.order(:first_name)
   end
 
@@ -139,17 +139,17 @@ class ProjectsController < ApplicationController
       if params[:role]
         @user.has_role(params[:role][:authorizable_type].to_s, @project)
         @roles = @project.roles
-        flash[:notice] = "Role added"
-        render partial: "roles", status: 200
+        flash[:notice] = 'Role added'
+        render partial: 'roles', status: 200
       else
         @roles = @project.roles
-        flash[:error] = "A problem occurred while adding the role"
-        render partial: "roles", status: 500
+        flash[:error] = 'A problem occurred while adding the role'
+        render partial: 'roles', status: 500
       end
     else
       @roles = @project.roles
-      flash[:error] = "A problem occurred while adding the role"
-      render partial: "roles", status: 401
+      flash[:error] = 'A problem occurred while adding the role'
+      render partial: 'roles', status: 401
     end
   end
 
@@ -162,17 +162,17 @@ class ProjectsController < ApplicationController
       if params[:role]
         @user.has_no_role(params[:role][:authorizable_type].to_s, @project)
         @roles = @project.roles
-        flash[:error] = "Role was removed"
-        render partial: "roles", status: 200
+        flash[:error] = 'Role was removed'
+        render partial: 'roles', status: 200
       else
         @roles = @project.roles
-        flash[:error] = "A problem occurred while removing the role"
-        render partial: "roles", status: 500
+        flash[:error] = 'A problem occurred while removing the role'
+        render partial: 'roles', status: 500
       end
     else
       @roles = @project.roles
-      flash[:error] = "A problem occurred while removing the role"
-      render partial: "roles", status: 401
+      flash[:error] = 'A problem occurred while removing the role'
+      render partial: 'roles', status: 401
     end
   end
 

@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
 
 class PicoAssayPlate < Plate
-  self.prefix = "PA"
+  self.prefix = 'PA'
 
   class WellDetail
     attr_accessor :map, :parent_plate
@@ -32,8 +32,8 @@ class PicoAssayPlate < Plate
     # to #grade_as_passed and #grade_as_failed
     def grade_as!(state)
       case state
-      when "passed" then grade_as_passed
-      when "failed" then grade_as_failed
+      when 'passed' then grade_as_passed
+      when 'failed' then grade_as_failed
       end
 
       update_well_concentraion!

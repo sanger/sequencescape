@@ -119,19 +119,19 @@ class RequestType < ActiveRecord::Base
   end
 
   def self.dna_qc
-    find_by(key: "dna_qc") or raise "Cannot find dna_qc request type"
+    find_by(key: 'dna_qc') or raise 'Cannot find dna_qc request type'
   end
 
   def self.genotyping
-    find_by(key: "genotyping") or raise "Cannot find genotyping request type"
+    find_by(key: 'genotyping') or raise 'Cannot find genotyping request type'
   end
 
   def self.transfer
-    find_by(key: "transfer") or raise "Cannot find transfer request type"
+    find_by(key: 'transfer') or raise 'Cannot find transfer request type'
   end
 
   def self.initial_transfer
-    find_by(key: "initial_transfer") or raise "Cannot find initial request type"
+    find_by(key: 'initial_transfer') or raise 'Cannot find initial request type'
   end
 
   def extract_metadata_from_hash(request_options)

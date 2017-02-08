@@ -3,9 +3,9 @@ module SampleManifestExcel
     # DataWorksheet creates a data worksheet to be filled in by a client.
 
     class DataWorksheet < Base
-       STYLES = { unlocked: { locked: false, border: { style: :thin, color: "00" } },
+       STYLES = { unlocked: { locked: false, border: { style: :thin, color: '00' } },
                   wrap_text: { alignment: { horizontal: :center, vertical: :center, wrap_text: true },
-                  border: { style: :thin, color: "00", edges: [:left, :right, :top, :bottom] } }
+                  border: { style: :thin, color: '00', edges: [:left, :right, :top, :bottom] } }
                 }
 
       def initialize(attributes = {})
@@ -18,12 +18,12 @@ module SampleManifestExcel
 
       def type
         @type ||= case sample_manifest.asset_type
-                  when "1dtube", "multiplexed_library"
-                    "Tubes"
-                  when "plate"
-                    "Plates"
+                  when '1dtube', 'multiplexed_library'
+                    'Tubes'
+                  when 'plate'
+                    'Plates'
                   else
-                    ""
+                    ''
                   end
       end
 
@@ -31,17 +31,17 @@ module SampleManifestExcel
       # data validations, conditional formattings, freezes panes at required place.
 
       def create_worksheet
-        insert_axlsx_worksheet("DNA Collections Form")
+        insert_axlsx_worksheet('DNA Collections Form')
       end
 
       # Adds title and description (study abbreviation, supplier name, number of assets sent)
       # to a worksheet.
 
       def add_title_and_description
-        add_row ["DNA Collections Form"]
+        add_row ['DNA Collections Form']
         add_rows(3)
-        add_row ["Study:", sample_manifest.study.abbreviation]
-        add_row ["Supplier:", sample_manifest.supplier.name]
+        add_row ['Study:', sample_manifest.study.abbreviation]
+        add_row ['Supplier:', sample_manifest.supplier.name]
         add_row ["No. #{type} Sent:", sample_manifest.count]
         add_rows(1)
       end

@@ -43,7 +43,7 @@ FactoryGirl.define do
   factory :lib_pcr_xp_request_type, parent: :request_type do
     asset_type 'Well'
     request_class CustomerRequest
-    key "Illumina_Lib_PCR_XP_Lib_Pool"
+    key 'Illumina_Lib_PCR_XP_Lib_Pool'
   end
 
   factory :illumina_htp_mx_tube_purpose, class: IlluminaHtp::MxTubePurpose do

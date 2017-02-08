@@ -16,8 +16,8 @@ class Parsers::BioanalysisCsvParser
 
   def field_name_for(sym_name)
     {
-      concentration: "Conc. [ng/µl]",
-      molarity: "Molarity [nmol/l]"
+      concentration: 'Conc. [ng/µl]',
+      molarity: 'Molarity [nmol/l]'
     }[sym_name]
   end
 

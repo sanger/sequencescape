@@ -29,9 +29,9 @@ class UsersController < ApplicationController
       @user.update_attributes(params[:user])
     end
     if @user.save
-      flash[:notice] = "Profile updated"
+      flash[:notice] = 'Profile updated'
     else
-      flash[:error] = "Problem updating profile."
+      flash[:error] = 'Problem updating profile.'
     end
     redirect_to action: :show, id: @user.id
   end

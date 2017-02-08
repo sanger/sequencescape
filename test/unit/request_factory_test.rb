@@ -4,10 +4,10 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class RequestcreateTest < ActiveSupport::TestCase
-  context "Requestcreate" do
+  context 'Requestcreate' do
     context '.copy_request' do
       setup do
         @project = create(:project)

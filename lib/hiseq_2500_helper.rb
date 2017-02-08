@@ -21,7 +21,7 @@ module Hiseq2500Helper
     {
       name: settings[:name],
       product_line: ProductLine.find_by(name: "Illumina-#{settings[:pipeline].upcase}"),
-      submission_class_name: "LinearSubmission",
+      submission_class_name: 'LinearSubmission',
       submission_parameters: {
         workflow_id: 1,
         request_type_ids_list: request_types(settings),
@@ -46,14 +46,14 @@ module Hiseq2500Helper
 
   def self.input_fields(sizes, libraries)
     [
-          FieldInfo.new(kind: "Text", default_value: "", parameters: {}, display_name: "Fragment size required (from)", key: "fragment_size_required_from"),
-          FieldInfo.new(kind: "Text", default_value: "", parameters: {}, display_name: "Fragment size required (to)", key: "fragment_size_required_to"),
+          FieldInfo.new(kind: 'Text', default_value: '', parameters: {}, display_name: 'Fragment size required (from)', key: 'fragment_size_required_from'),
+          FieldInfo.new(kind: 'Text', default_value: '', parameters: {}, display_name: 'Fragment size required (to)', key: 'fragment_size_required_to'),
           FieldInfo.new(
-            kind: "Selection", default_value: "Standard", parameters: { selection: libraries },
-            display_name: "Library type",
-            key: "library_type"
+            kind: 'Selection', default_value: 'Standard', parameters: { selection: libraries },
+            display_name: 'Library type',
+            key: 'library_type'
           ),
-          FieldInfo.new(kind: "Selection", default_value: sizes.last, parameters: { selection: sizes }, display_name: "Read length", key: "read_length")
+          FieldInfo.new(kind: 'Selection', default_value: sizes.last, parameters: { selection: sizes }, display_name: 'Read length', key: 'read_length')
         ]
   end
 
@@ -64,15 +64,15 @@ module Hiseq2500Helper
     when :ill_c_single
       {}
     when :sc
-      { request_options: { "fragment_size_required_to" => "400", "fragment_size_required_from" => "100", "library_type" => "Agilent Pulldown" } }
+      { request_options: { 'fragment_size_required_to' => '400', 'fragment_size_required_from' => '100', 'library_type' => 'Agilent Pulldown' } }
     when :wgs
-      { request_options: { "fragment_size_required_to" => "500", "fragment_size_required_from" => "300", "library_type" => "Standard" } }
+      { request_options: { 'fragment_size_required_to' => '500', 'fragment_size_required_from' => '300', 'library_type' => 'Standard' } }
     when :ill_b
       {}
     when :ill_b_single
       {}
     else
-      raise "Invalid submission parameters"
+      raise 'Invalid submission parameters'
     end
   end
 end

@@ -17,9 +17,9 @@ module Sanger
           ignore_actions   = params[:ignore_actions] || []
           actions          = params[:actions] || (RESTFUL_ACTIONS - ignore_actions)
           untested_actions = (RESTFUL_ACTIONS - ignore_actions) - actions
-          path_prefix      = params[:with_prefix] || ""
+          path_prefix      = params[:with_prefix] || ''
 
-          raise Exception.new, ":actions need to be an Array" unless actions.instance_of?(Array)
+          raise Exception.new, ':actions need to be an Array' unless actions.instance_of?(Array)
 
           other_actions   = params[:other_actions] || []
           formats         = params[:formats] || ['html', 'xml', 'json']
@@ -73,7 +73,7 @@ module Sanger
             setup    { params[:setup].call    } if params.key?(:setup)
             teardown { params[:teardown].call } if params.key?(:teardown)
 
-            context "when logged in" do
+            context 'when logged in' do
               setup do
                 # Determine what to do with the :user parameter passed.  If it's a Symbol then it's a factory; if it's nil we
                 # default to the :user factory; if it's a proc then we can call it; otherwise we should explode in the face of
@@ -90,7 +90,7 @@ module Sanger
                 @controller.stubs(:logged_in?).returns(@user)
               end
               if actions.include?('index')
-                context "should get index" do
+                context 'should get index' do
                   setup do
                     get :index, @input_params
                   end
@@ -100,7 +100,7 @@ module Sanger
               end
 
               if actions.include?('new')
-                context "should get new" do
+                context 'should get new' do
                   setup do
                     get :new, @input_params
                   end
@@ -109,13 +109,13 @@ module Sanger
               end
 
               if actions.include?('create')
-                context "should create" do
+                context 'should create' do
                   setup do
                     @input_params[resource_name] = @create_options
                     post :create, @input_params
                   end
                   # assert eval "@object".valid?
-                  should redirect_to("show page") { eval(show_url) }
+                  should redirect_to('show page') { eval(show_url) }
                 end
               end
 
@@ -131,7 +131,7 @@ module Sanger
               end
 
               if actions.include?('edit')
-                context "should get edit" do
+                context 'should get edit' do
                   setup do
                     @object = create resource_name, @factory_options
                     @input_params[:id] = @object.id
@@ -142,29 +142,29 @@ module Sanger
               end
 
               if actions.include?('update')
-                context "should update" do
+                context 'should update' do
                   setup do
                     @object = create resource_name
                     @input_params[resource_name] = @create_options
                     @input_params[:id] = @object.id
                     put :update, @input_params
                   end
-                  should redirect_to("show page") { eval(show_url) }
+                  should redirect_to('show page') { eval(show_url) }
                 end
               end
 
               if actions.include?('destroy')
-                context "should destroy" do
+                context 'should destroy' do
                   setup do
                     @object = create resource_name
                     @input_params[:id] = @object.id
                     delete :destroy, @input_params
                   end
-                  should redirect_to("index page") { eval(index_url) }
+                  should redirect_to('index page') { eval(index_url) }
                 end
               end
 
-              context "should not have untested action" do
+              context 'should not have untested action' do
                 untested_actions.each do |action|
                   should action.to_s do
                     assert_raise AbstractController::ActionNotFound do
@@ -174,9 +174,9 @@ module Sanger
                 end
               end unless untested_actions.empty?
 
-              context "SequenceScape actions" do
+              context 'SequenceScape actions' do
                 if other_actions.include?('status')
-                  context "should show status" do
+                  context 'should show status' do
                     setup do
                       @object = create resource_name
                       get :status, id: @object.id
@@ -185,32 +185,32 @@ module Sanger
                   end
                 end
               end
-              context "API access" do
+              context 'API access' do
                 if formats.include?('xml')
                   if actions.include?('index')
-                    context "when using XML to access a list " do
+                    context 'when using XML to access a list ' do
                       setup do
                         @object = create resource_name, @factory_options
-                        @request.accept = "application/xml"
+                        @request.accept = 'application/xml'
                         get :index, @input_params
                       end
                       should respond_with :success
-                      should "have api version attribute on root object" do
-                        assert_tag tag: (resource_name.to_s.pluralize).to_s, attributes: { api_version: "0.6" }
+                      should 'have api version attribute on root object' do
+                        assert_tag tag: (resource_name.to_s.pluralize).to_s, attributes: { api_version: '0.6' }
                         assert_tag tag: (resource_name.to_s.pluralize).to_s
                       end
                     end
                   end
                   if actions.include?('show')
-                    context "when using XML to access a single object" do
+                    context 'when using XML to access a single object' do
                       setup do
-                        @request.accept = "application/xml"
+                        @request.accept = 'application/xml'
                         @object = create resource_name, @factory_options
                         @input_params[:id] = @object.id
                         get :show, @input_params
                       end
                       should respond_with :success
-                      should "show xml" do
+                      should 'show xml' do
                         assert_tag tag: resource_name.to_s, attributes: { api_version: RELEASE.api_version }
                         assert_tag tag: resource_name.to_s
                       end
@@ -219,28 +219,28 @@ module Sanger
                 end
                 if formats.include?('json')
                   if actions.include?('index')
-                    context "when using JSON to access a list " do
+                    context 'when using JSON to access a list ' do
                       setup do
                         @object = create resource_name, @factory_options
-                        @request.accept = "text/x-json"
+                        @request.accept = 'text/x-json'
                         get :index, @input_params
                       end
                       should respond_with :success
-                      should "be JSON" do
+                      should 'be JSON' do
                         assert ActiveSupport::JSON.decode(@response.body).size > 0
                       end
                     end
                   end
                   if actions.include?('show')
-                    context "when using JSON to access a single object" do
+                    context 'when using JSON to access a single object' do
                       setup do
                         @object = create resource_name, @factory_options
-                        @request.accept = "text/x-json"
+                        @request.accept = 'text/x-json'
                         @input_params[:id] = @object.id
                         get :show, @input_params
                       end
                       should respond_with :success
-                      should "be JSON" do
+                      should 'be JSON' do
                         assert_equal @object.to_json, @response.body
                       end
                     end

@@ -45,7 +45,7 @@ class TransferRequestTest < ActiveSupport::TestCase
       assert_raises(ActiveRecord::RecordInvalid) { RequestType.transfer.create!(asset: asset, target_asset: asset) }
     end
 
-    context "with a tag clash" do
+    context 'with a tag clash' do
       setup do
         tag = create :tag
         tag2 = create :tag

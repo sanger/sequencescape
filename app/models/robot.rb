@@ -24,7 +24,7 @@ class Robot < ActiveRecord::Base
   end
 
   def self.prefix
-    "RB"
+    'RB'
   end
 
   def self.find_from_barcode(code)

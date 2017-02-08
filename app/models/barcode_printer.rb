@@ -20,7 +20,7 @@ class BarcodePrinter < ActiveRecord::Base
   delegate :printer_type_id, to: :barcode_printer_type
 
   def plate384_printer?
-    barcode_printer_type.name == "384 Well Plate"
+    barcode_printer_type.name == '384 Well Plate'
   end
 
   def register_printer_in_pmb

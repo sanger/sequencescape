@@ -10,7 +10,7 @@ Given /^I have the following library tubes with tags( multiplexed in a tube)?:$/
 
   mx_tube = FactoryGirl.create(:multiplexed_library_tube) if create_mx_tube
   table.hashes.each do |row|
-    barcode, tag_id = ["barcode", "tag id"].map { |k| row[k] }
+    barcode, tag_id = ['barcode', 'tag id'].map { |k| row[k] }
     tube = FactoryGirl.create(:full_library_tube, barcode: barcode.to_i)
     tag  = Tag.find_by(map_id: tag_id.match(/(\d+)/)[1].to_i) or raise StandardError, "Cannot find tag #{tag_id.inspect}"
     # tube.aliquots.create!(:tag => tag, :sample => Sample.create!(:name => "sample for tube #{tube.barcode}".gsub(" ","_")))
@@ -26,7 +26,7 @@ end
 
 Then /^the library tubes should have the following tags:$/ do |table|
   table.hashes.each do |row|
-    barcode, tag_id = ["barcode", "tag id"].map { |k| row[k] }
+    barcode, tag_id = ['barcode', 'tag id'].map { |k| row[k] }
     assert_equal tag_id.to_i, LibraryTube.find_by(barcode: barcode).primary_aliquot.tag_id
   end
 end
@@ -35,7 +35,7 @@ When /^I change the tags of the library tubes:$/ do |table|
   library_tubes = []
   tube_to_tags = {}
   table.hashes.each do |row|
-    barcode, tag_id = ["barcode", "tag id"].map { |k| row[k] }
+    barcode, tag_id = ['barcode', 'tag id'].map { |k| row[k] }
     tube = LibraryTube.find_by(barcode: barcode) or raise StandardError, "Cannot find library tube with barcode #{barcode.inspect}"
     library_tubes << tube
 
@@ -43,7 +43,7 @@ When /^I change the tags of the library tubes:$/ do |table|
     tube_to_tags[tube.id] = tag.name
   end
 
-  step "I am on the tag changing page"
+  step 'I am on the tag changing page'
   step(%Q{I fill in "change_tags_library_tube_ids" with "#{library_tubes.map(&:id).join('\n')}"})
   step 'I press "Submit"'
   # assign the correct tag

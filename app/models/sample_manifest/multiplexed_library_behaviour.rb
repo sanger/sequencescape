@@ -42,7 +42,7 @@ module SampleManifest::MultiplexedLibraryBehaviour
     end
 
     def multiplexed_library_tube
-      @mx_tube || raise(MxLibraryTubeException.new, "Mx tube not found")
+      @mx_tube || raise(MxLibraryTubeException.new, 'Mx tube not found')
     end
 
     def printables
@@ -116,7 +116,7 @@ module SampleManifest::MultiplexedLibraryBehaviour
 
       # Keep track if our first row is dual indexed or not.
       @dual_indexed = row[SampleManifest::Headers::TAG2_GROUP_FIELD].present? if @dual_indexed.nil?
-      return yield "All samples in pool must have the same number of tags" unless @dual_indexed == row[SampleManifest::Headers::TAG2_GROUP_FIELD].present?
+      return yield 'All samples in pool must have the same number of tags' unless @dual_indexed == row[SampleManifest::Headers::TAG2_GROUP_FIELD].present?
       return unless @dual_indexed
 
       tag2_group = tag_group_cache(row[SampleManifest::Headers::TAG2_GROUP_FIELD])

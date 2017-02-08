@@ -57,7 +57,7 @@ class TasksController < ApplicationController
         format.html { redirect_to task_url(@task) }
         format.xml  { head :created, location: task_url(@task) }
       else
-        format.html { render action: "new" }
+        format.html { render action: 'new' }
         format.xml  { render xml: @task.errors.to_xml }
       end
     end
@@ -72,7 +72,7 @@ class TasksController < ApplicationController
         format.html { redirect_to task_url(@task) }
         format.xml  { head :ok }
       else
-        format.html { render action: "edit" }
+        format.html { render action: 'edit' }
         format.xml  { render xml: @task.errors.to_xml }
       end
     end

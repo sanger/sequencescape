@@ -20,7 +20,7 @@ qc_completed
       # TODO[xxx]: Isn't qc_state supposed to be initialised to 'qc_pending' rather than blank?
       validates_inclusion_of :qc_state, in: VALID_QC_STATES, allow_blank: true
 
-      belongs_to :qc_pipeline, class_name: "Pipeline"
+      belongs_to :qc_pipeline, class_name: 'Pipeline'
       before_create :qc_pipeline_update
     end
   end
@@ -62,7 +62,7 @@ qc_completed
   def qc_previous_state!(current_user)
     previous_state = qc_previous_state
     if previous_state
-      lab_events.create(description: "QC Rollback", message: "Manual QC moved from #{qc_state} to #{previous_state}", user_id: current_user.id)
+      lab_events.create(description: 'QC Rollback', message: "Manual QC moved from #{qc_state} to #{previous_state}", user_id: current_user.id)
       self.qc_state = previous_state
     end
     self.state = 'started'
@@ -99,7 +99,7 @@ qc_completed
   end
 
   def qc_pipeline_workflow_id
-    pipeline = Pipeline.find_by!(name: "quality control", automated: true)
+    pipeline = Pipeline.find_by!(name: 'quality control', automated: true)
     pipeline.workflow.id
   end
 
@@ -111,13 +111,13 @@ qc_completed
   end
 
   def qc_manual_in_progress
-    self.qc_state = "qc_manual_in_progress"
+    self.qc_state = 'qc_manual_in_progress'
     save
   end
 
   def qc_pipeline_update
-    self.qc_pipeline = Pipeline.find_by(name: "quality control", automated: true)
-    self.qc_state    = "qc_pending"
+    self.qc_pipeline = Pipeline.find_by(name: 'quality control', automated: true)
+    self.qc_state    = 'qc_pending'
   end
   private :qc_pipeline_update
 
@@ -125,9 +125,9 @@ qc_completed
   def submit_to_qc_queue
     logger.debug "Batch #{id} attempting to be added to QC queue. State is #{qc_state}"
     # Get QC workflow and its tasks
-    workflow = LabInterface::Workflow.includes(:tasks).find_by!(name: "quality control")
+    workflow = LabInterface::Workflow.includes(:tasks).find_by!(name: 'quality control')
     tasks    = workflow.tasks
-    if qc_state == "qc_pending"
+    if qc_state == 'qc_pending'
       # Submit requests for all tasks in the workflow
       tasks.each do |task|
         # Constructing the XML file to use in sending the request
@@ -135,13 +135,13 @@ qc_completed
         batch_requests.each do |b_request|
           h_doc["lane_#{b_request.position}"] = b_request.id
         end
-        h_doc["task_id"] = task.id
-        h_doc["batch"] = id
-        h_doc["keys"] = {}
+        h_doc['task_id'] = task.id
+        h_doc['batch'] = id
+        h_doc['keys'] = {}
         task.descriptors.each do |t|
-          h_doc["keys"][(t.key).to_s] = t.value
+          h_doc['keys'][(t.key).to_s] = t.value
         end
-        doc = h_doc.to_xml(root: "criteria", skip_types: true)
+        doc = h_doc.to_xml(root: 'criteria', skip_types: true)
         # A *Hacky* solution to get the XML readable for Chainlink
         doc = doc.to_s.tr!('-', '_').gsub!('UTF_8', 'UTF-8')
         # logger.debug doc
@@ -175,21 +175,21 @@ qc_completed
                     grouped_descriptors[(task.name).to_s][(descriptor.name).to_s] = descriptor.value
                   end
                 end
-                temp_variable[item.to_s]["qc_data"] = grouped_descriptors
+                temp_variable[item.to_s]['qc_data'] = grouped_descriptors
               end
             end
           end
         end
       end
     end
-    batch["items"] = temp_variable
+    batch['items'] = temp_variable
     batch
   end
 
   private
 
     def assets_qc_tasks_results
-      auto_qc_pipeline = Pipeline.firind_by!(name: "quality control", automated: true)
+      auto_qc_pipeline = Pipeline.firind_by!(name: 'quality control', automated: true)
       qc_workflow = LabInterface::Workflow.find_by pipeline_id: auto_qc_pipeline.id
       qc_tasks = qc_workflow.tasks
       results = []

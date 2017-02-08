@@ -88,57 +88,57 @@ end
 
 Then /^the XML root attribute "([^\"]+)" sent to the accession service for sample "([^\"]+)" should be not present$/ do |xml_attr, sample_name|
   sample = Sample.find_by(name: sample_name) or raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
-  xml = FakeAccessionService.instance.sent.last["SAMPLE"].to_s
+  xml = FakeAccessionService.instance.sent.last['SAMPLE'].to_s
   assert_equal(true, Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/@#{xml_attr}").length == 0)
 end
 
 Then /^the XML root attribute "([^\"]+)" sent to the accession service for sample "([^\"]+)" should be "(.*?)"$/ do |xml_attr, sample_name, value|
   sample = Sample.find_by(name: sample_name) or raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
-  xml = FakeAccessionService.instance.sent.last["SAMPLE"].to_s
+  xml = FakeAccessionService.instance.sent.last['SAMPLE'].to_s
   assert_equal(value, Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/@#{xml_attr}").map(&:to_s)[0])
 end
 
 Then /^the XML sent for sample "([^\"]+)" validates with the schema "([^\"]+)"$/ do |sample_name, schema|
   sample = Sample.find_by(name: sample_name) or raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
-  xml = FakeAccessionService.instance.sent.last["SAMPLE"].to_s
+  xml = FakeAccessionService.instance.sent.last['SAMPLE'].to_s
   # Schema downloaded from http://www.ebi.ac.uk/ena/submit/data-formats
   xsd = Nokogiri::XML::Schema(File.open(schema))
   result = xsd.validate(Nokogiri(xml))
-  assert(result.length == 0, result.map(&:message).join(""))
+  assert(result.length == 0, result.map(&:message).join(''))
 end
 
 Then /^the XML identifier tag "([^\"]+)" sent to the accession service for sample "([^\"]+)" should be not present$/ do |xml_attr, sample_name|
   sample = Sample.find_by(name: sample_name) or raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
-  xml = FakeAccessionService.instance.sent.last["SAMPLE"].to_s
+  xml = FakeAccessionService.instance.sent.last['SAMPLE'].to_s
   assert_equal(true, Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/IDENTIFIERS/#{xml_attr}").length == 0)
 end
 
 Then /^the XML tag "([^\"]+)" sent to the accession service for sample "([^\"]+)" should be not present$/ do |xml_attr, sample_name|
   sample = Sample.find_by(name: sample_name) or raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
-  xml = FakeAccessionService.instance.sent.last["SAMPLE"].to_s
+  xml = FakeAccessionService.instance.sent.last['SAMPLE'].to_s
   assert_equal(true, Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/#{xml_attr}").length == 0)
 end
 
 Then /^the XML identifier tag "([^\"]+)" sent to the accession service for sample "([^\"]+)" should be "(.*?)"$/ do |xml_attr, sample_name, value|
   sample = Sample.find_by(name: sample_name) or raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
-  xml = FakeAccessionService.instance.sent.last["SAMPLE"].to_s
+  xml = FakeAccessionService.instance.sent.last['SAMPLE'].to_s
   assert_equal(value, Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/IDENTIFIERS/#{xml_attr}").text)
 end
 
 Then /^the XML tag "([^\"]+)" sent to the accession service for sample "([^\"]+)" should be "(.*?)"$/ do |xml_attr, sample_name, value|
   sample = Sample.find_by(name: sample_name) or raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
-  xml = FakeAccessionService.instance.sent.last["SAMPLE"].to_s
+  xml = FakeAccessionService.instance.sent.last['SAMPLE'].to_s
   assert_equal(value, Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/#{xml_attr}").text)
 end
 
 Given /^the metadata attribute "(.*?)" of the sample "(.*?)" is "(.*?)"$/ do |attr_name, sample_name, value|
   sample = Sample.find_by(name: sample_name) or raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
-  sample.sample_metadata.update_attributes(Hash[attr_name, (value unless value == "empty")])
+  sample.sample_metadata.update_attributes(Hash[attr_name, (value unless value == 'empty')])
 end
 
 Given /^the attribute "(.*?)" of the sample "(.*?)" is "(.*?)"$/ do |attr_name, sample_name, value|
   sample = Sample.find_by(name: sample_name) or raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
-  sample.update_attributes(Hash[attr_name, (value unless value == "empty")])
+  sample.update_attributes(Hash[attr_name, (value unless value == 'empty')])
 end
 
 Then /^the sample "([^\"]+)" should exist$/ do |name|
@@ -199,8 +199,8 @@ When /^I (create|update) an? accession number for sample "([^\"]+)"$/ do |action
 end
 
 Then /^I (should|should not) have (sent|received) the attribute "([^\"]*)" for the sample element (to|from) the accessioning service$/ do |state_action, type_action, attr_name, _dest|
-  xml = (type_action == "sent") ? FakeAccessionService.instance.sent.last["SAMPLE"] : FakeAccessionService.instance.last_received
-  assert_equal (state_action == "should"), Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/@#{attr_name}").map(&:to_s).present?, "XML was: #{xml}"
+  xml = (type_action == 'sent') ? FakeAccessionService.instance.sent.last['SAMPLE'] : FakeAccessionService.instance.last_received
+  assert_equal (state_action == 'should'), Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/@#{attr_name}").map(&:to_s).present?, "XML was: #{xml}"
 end
 
 Given /^sample "([^"]*)" came from a sample manifest$/ do |sample_name|
@@ -245,7 +245,7 @@ Given /^a sample named "([^\"]+)" exists for accession/ do |sample_name|
 end
 
 Given /^the Sanger sample ID of the last sample is "([^\"]+)"$/ do |id|
-  sample = Sample.last or raise StandardError, "There appear to be no samples"
+  sample = Sample.last or raise StandardError, 'There appear to be no samples'
   sample.update_attributes!(sanger_sample_id: id)
 end
 
@@ -256,7 +256,7 @@ Given /^all samples have a Sanger sample ID based on "([^\"]+)"$/ do |id|
 end
 
 Given /^the supplier sample name of the last sample is "([^\"]+)"$/ do |name|
-  sample = Sample.last or raise StandardError, "There appear to be no samples"
+  sample = Sample.last or raise StandardError, 'There appear to be no samples'
   sample.update_attributes!(sample_metadata_attributes: { supplier_name: name })
 end
 

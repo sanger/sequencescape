@@ -22,7 +22,7 @@ class EgaAccessionService < AccessionService
   end
 
   def broker
-    "EGA"
+    'EGA'
   end
 
   def submit_dac_for_user(study, user)

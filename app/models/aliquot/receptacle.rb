@@ -13,12 +13,12 @@ class Aliquot::Receptacle < Asset
   has_many :transfer_requests_as_target, class_name: 'TransferRequest', foreign_key: :target_asset_id
 
   has_many :requests, inverse_of: :asset, foreign_key: :asset_id
-  has_one  :source_request, ->() { includes(:request_metadata) }, class_name: "Request", foreign_key: :target_asset_id
+  has_one  :source_request, ->() { includes(:request_metadata) }, class_name: 'Request', foreign_key: :target_asset_id
   has_many :requests_as_source, ->() { includes(:request_metadata) }, class_name: 'Request', foreign_key: :asset_id
   has_many :requests_as_target, ->() { includes(:request_metadata) }, class_name: 'Request', foreign_key: :target_asset_id
 
-  has_many :creation_batches, class_name: "Batch", through: :requests_as_target, source: :batch
-  has_many :source_batches, class_name: "Batch", through: :requests_as_source, source: :batch
+  has_many :creation_batches, class_name: 'Batch', through: :requests_as_target, source: :batch
+  has_many :source_batches, class_name: 'Batch', through: :requests_as_source, source: :batch
 
   def default_state
     nil

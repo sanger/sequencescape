@@ -7,7 +7,7 @@
 # This ensures that any features tagged with '@api' have the correct Capybara driver.  This means that we can change
 # the default driver and these tests will work.
 Before('@api') do
-  @api_version = "0_5"
+  @api_version = '0_5'
   Capybara.current_driver = :rack_test
 end
 

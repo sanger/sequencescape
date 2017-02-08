@@ -15,7 +15,7 @@ module Tasks::SetLocationHandler
       task.set_location(asset_id, location_id)
     end
     else
-      raise RuntimeError, "Not implemented yet"
+      raise RuntimeError, 'Not implemented yet'
     end
   end
 end

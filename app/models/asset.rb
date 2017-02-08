@@ -45,7 +45,7 @@ class Asset < ActiveRecord::Base
   end
 
   self.per_page = 500
-  self.inheritance_column = "sti_type"
+  self.inheritance_column = 'sti_type'
 
   has_many :asset_group_assets, dependent: :destroy
   has_many :asset_groups, through: :asset_group_assets
@@ -55,7 +55,7 @@ class Asset < ActiveRecord::Base
 
   # TODO: Remove 'requests' and 'source_request' as they are abiguous
   has_many :requests
-  has_one  :source_request,     ->() { includes(:request_metadata) }, class_name: "Request", foreign_key: :target_asset_id
+  has_one  :source_request,     ->() { includes(:request_metadata) }, class_name: 'Request', foreign_key: :target_asset_id
   has_many :requests_as_source, ->() { includes(:request_metadata) },  class_name: 'Request', foreign_key: :asset_id
   has_many :requests_as_target, ->() { includes(:request_metadata) },  class_name: 'Request', foreign_key: :target_asset_id
   has_many :state_changes, foreign_key: :target_id
@@ -84,10 +84,10 @@ class Asset < ActiveRecord::Base
 
   belongs_to :map
   belongs_to :barcode_prefix
-  scope :sorted, ->() { order("map_id ASC") }
+  scope :sorted, ->() { order('map_id ASC') }
 
   scope :position_name, ->(*args) {
-    joins(:map).where(["description = ? AND asset_size = ?", args[0], args[1]])
+    joins(:map).where(['description = ? AND asset_size = ?', args[0], args[1]])
   }
   scope :for_summary, -> { includes([:map, :barcode_prefix]) }
 
@@ -445,8 +445,8 @@ class Asset < ActiveRecord::Base
   end
 
   def external_release_text
-    return "Unknown" if external_release.nil?
-    external_release? ? "Yes" : "No"
+    return 'Unknown' if external_release.nil?
+    external_release? ? 'Yes' : 'No'
   end
 
   def add_parent(parent)
@@ -468,7 +468,7 @@ class Asset < ActiveRecord::Base
 
   def transfer(max_transfer_volume)
     transfer_volume = [max_transfer_volume.to_f, volume || 0.0].min
-    raise VolumeError, "not enough volume left" if transfer_volume <= 0
+    raise VolumeError, 'not enough volume left' if transfer_volume <= 0
 
     self.class.create!(name: name) do |new_asset|
       new_asset.aliquots = aliquots.map(&:dup)
