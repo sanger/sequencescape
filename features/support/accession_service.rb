@@ -74,7 +74,7 @@ class FakeAccessionService
 
   def success(type, accession, body = "")
     model = type.upcase
-    self.bodies << <<-XML
+    bodies << <<-XML
       <RECEIPT success="true">
         <#{model} accession="#{accession}">#{body}</#{model}>
         <SUBMISSION accession="EGA00001000240" />
@@ -83,11 +83,11 @@ class FakeAccessionService
   end
 
   def failure(message)
-    self.bodies << %Q{<RECEIPT success="false"><ERROR>#{message}</ERROR></RECEIPT>}
+    bodies << %Q{<RECEIPT success="false"><ERROR>#{message}</ERROR></RECEIPT>}
   end
 
   def next!
-    @last_received = self.bodies.pop
+    @last_received = bodies.pop
   end
 
   def service

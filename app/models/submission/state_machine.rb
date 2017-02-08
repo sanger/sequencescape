@@ -24,7 +24,7 @@ module Submission::StateMachine
   module InstanceMethods
     # TODO[xxx]: This should be a guard but what the heck ...
     def left_building_state?
-      not self.building? or !!@leaving_building_state
+      not building? or !!@leaving_building_state
     end
 
     def valid_for_leaving_building_state

@@ -100,26 +100,26 @@ class Study < ActiveRecord::Base
   squishify :name
 
   validates_presence_of :name
-  validates_uniqueness_of :name, on: :create, message: "already in use (#{self.name})"
+  validates_uniqueness_of :name, on: :create, message: "already in use (#{name})"
   validates_length_of :name, maximum: 200
   validates_format_of :abbreviation, with: /\A[\w_-]+\z/i, allow_blank: false, message: 'cannot contain spaces or be blank'
 
   validate :validate_ethically_approved
   def validate_ethically_approved
     return true if valid_ethically_approved?
-    message = self.ethical_approval_required? ? "should be either true or false for this study." : "should be not applicable (null) not false."
+    message = ethical_approval_required? ? "should be either true or false for this study." : "should be not applicable (null) not false."
     errors.add(:ethically_approved, message)
     false
   end
 
   def valid_ethically_approved?
-    self.ethical_approval_required? ? !ethically_approved.nil? : ethically_approved != false
+    ethical_approval_required? ? !ethically_approved.nil? : ethically_approved != false
   end
   private :valid_ethically_approved?
 
   before_validation :set_default_ethical_approval
   def set_default_ethical_approval
-    self.ethically_approved ||= self.ethical_approval_required? ? false : nil
+    self.ethically_approved ||= ethical_approval_required? ? false : nil
     true
   end
   private :set_default_ethical_approval
@@ -134,7 +134,7 @@ class Study < ActiveRecord::Base
  scope :is_inactive, -> { where(state: 'inactive') }
  scope :is_pending,  -> { where(state: 'pending') }
 
-  scope :newest_first, -> { order("#{self.quoted_table_name}.created_at DESC") }
+  scope :newest_first, -> { order("#{quoted_table_name}.created_at DESC") }
   scope :with_user_included, -> { includes(:user) }
 
   scope :in_assets, ->(assets) {
@@ -374,13 +374,13 @@ class Study < ActiveRecord::Base
     end
 
     def snp_parent_study
-      return nil if self.snp_parent_study_id.nil?
-      self.class.where(snp_study_id: self.snp_parent_study_id).includes(:study).try(:study)
+      return nil if snp_parent_study_id.nil?
+      self.class.where(snp_study_id: snp_parent_study_id).includes(:study).try(:study)
     end
 
     def snp_child_studies
-      return nil if self.snp_study_id.nil?
-      self.class.where(snp_parent_study_id: self.snp_study_id).includes(:study).map(&:study)
+      return nil if snp_study_id.nil?
+      self.class.where(snp_parent_study_id: snp_study_id).includes(:study).map(&:study)
     end
   end
 
@@ -399,13 +399,13 @@ class Study < ActiveRecord::Base
 
   def mark_deactive
     unless inactive?
-      logger.warn "Study deactivation failed! #{self.errors.map { |e| e.to_s }}"
+      logger.warn "Study deactivation failed! #{errors.map { |e| e.to_s }}"
     end
   end
 
   def mark_active
     unless active?
-      logger.warn "Study activation failed! #{self.errors.map { |e| e.to_s }}"
+      logger.warn "Study activation failed! #{errors.map { |e| e.to_s }}"
     end
   end
 
@@ -415,11 +415,11 @@ class Study < ActiveRecord::Base
 
   def completed(workflow = nil)
     rts = workflow.present? ? workflow.request_types.map(&:id) : RequestType.all.map(&:id)
-    total = self.requests.request_type(rts).count
-    failed = self.requests.failed.request_type(rts).count
-    cancelled = self.requests.cancelled.request_type(rts).count
+    total = requests.request_type(rts).count
+    failed = requests.failed.request_type(rts).count
+    cancelled = requests.cancelled.request_type(rts).count
     if (total - failed - cancelled) > 0
-      completed_percent = ((self.requests.passed.request_type(rts).count.to_f / (total - failed - cancelled).to_f) * 100)
+      completed_percent = ((requests.passed.request_type(rts).count.to_f / (total - failed - cancelled).to_f) * 100)
       completed_percent.to_i
     else
       return 0
@@ -432,14 +432,14 @@ class Study < ActiveRecord::Base
 
   # Yields information on the state of all request types in a convenient fashion for displaying in a table.
   def request_progress(&block)
-    yield(self.initial_requests.progress_statistics)
+    yield(initial_requests.progress_statistics)
   end
 
   # Yields information on the state of all assets in a convenient fashion for displaying in a table.
   def asset_progress(assets = nil, &block)
     wheres = {}
     wheres = { asset_id: assets.map(&:id) } unless assets.blank?
-    yield(self.initial_requests.asset_statistics(wheres))
+    yield(initial_requests.asset_statistics(wheres))
   end
 
   # Yields information on the state of all samples in a convenient fashion for displaying in a table.
@@ -452,11 +452,11 @@ class Study < ActiveRecord::Base
   end
 
   def study_status
-    self.inactive? ? "closed" : "open"
+    inactive? ? "closed" : "open"
   end
 
   def dac_refname
-    "DAC for study - #{name} - ##{self.id}"
+    "DAC for study - #{name} - ##{id}"
   end
 
   def unprocessed_submissions?
@@ -479,7 +479,7 @@ class Study < ActiveRecord::Base
   end
 
   def locale
-    self.funding_source
+    funding_source
   end
 
   scope :awaiting_ethical_approval, ->() {
@@ -513,32 +513,30 @@ class Study < ActiveRecord::Base
   }
 
   def ebi_accession_number
-    self.study_metadata.study_ebi_accession_number
+    study_metadata.study_ebi_accession_number
   end
 
   def dac_accession_number
-    self.study_metadata.ega_dac_accession_number
+    study_metadata.ega_dac_accession_number
   end
 
   def policy_accession_number
-    self.study_metadata.ega_policy_accession_number
+    study_metadata.ega_policy_accession_number
   end
 
   def accession_number?
     not ebi_accession_number.blank?
   end
 
-  def data_release_strategy
-    self.study_metadata.data_release_strategy
-  end
+  delegate :data_release_strategy, to: :study_metadata
 
   def abbreviation
-    abbreviation = self.study_metadata.study_name_abbreviation
-    abbreviation.blank? ? "#{self.id}STDY" : abbreviation
+    abbreviation = study_metadata.study_name_abbreviation
+    abbreviation.blank? ? "#{id}STDY" : abbreviation
   end
 
   def dehumanise_abbreviated_name
-    self.abbreviation.downcase.gsub(/ +/, '_')
+    abbreviation.downcase.gsub(/ +/, '_')
   end
 
   def approved?
@@ -547,9 +545,9 @@ class Study < ActiveRecord::Base
   end
 
   def ethical_approval_required?
-    (self.study_metadata.contains_human_dna == Study::YES &&
-    self.study_metadata.contaminated_human_dna == Study::NO &&
-    self.study_metadata.commercially_available == Study::NO)
+    (study_metadata.contains_human_dna == Study::YES &&
+    study_metadata.contaminated_human_dna == Study::NO &&
+    study_metadata.commercially_available == Study::NO)
   end
 
   def accession_service
@@ -562,13 +560,13 @@ class Study < ActiveRecord::Base
 
   def validate_ena_required_fields!
     self.validating_ena_required_fields = true
-    self.valid? or raise ActiveRecord::RecordInvalid, self
+    valid? or raise ActiveRecord::RecordInvalid, self
   ensure
     self.validating_ena_required_fields = false
   end
 
   def mailing_list_of_managers
-    receiver = self.managers.pluck(:email).compact.uniq
+    receiver = managers.pluck(:email).compact.uniq
     receiver = User.all_administrators_emails if receiver.empty?
     receiver
   end

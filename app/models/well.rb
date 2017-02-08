@@ -185,7 +185,7 @@ class Well < Aliquot::Receptacle
 
   # hotfix
   def well_attribute_with_creation
-    self.well_attribute_without_creation || self.build_well_attribute
+    well_attribute_without_creation || build_well_attribute
   end
   alias_method_chain(:well_attribute, :creation)
 
@@ -240,30 +240,30 @@ class Well < Aliquot::Receptacle
   end
 
   def update_gender_markers!(gender_markers, resource)
-    if self.well_attribute.gender_markers == gender_markers
-      gender_marker_event = self.events.where(family: 'update_gender_markers').order('id desc').first
+    if well_attribute.gender_markers == gender_markers
+      gender_marker_event = events.where(family: 'update_gender_markers').order('id desc').first
       if gender_marker_event.blank?
-        self.events.update_gender_markers!(resource)
+        events.update_gender_markers!(resource)
       elsif resource == 'SNP' && gender_marker_event.content != resource
-        self.events.update_gender_markers!(resource)
+        events.update_gender_markers!(resource)
       end
     else
-      self.events.update_gender_markers!(resource)
+      events.update_gender_markers!(resource)
     end
 
-    self.well_attribute.update_attributes!(gender_markers: gender_markers)
+    well_attribute.update_attributes!(gender_markers: gender_markers)
   end
 
   def update_sequenom_count!(sequenom_count, resource)
-    unless self.well_attribute.sequenom_count == sequenom_count
-      self.events.update_sequenom_count!(resource)
+    unless well_attribute.sequenom_count == sequenom_count
+      events.update_sequenom_count!(resource)
     end
-    self.well_attribute.update_attributes!(sequenom_count: sequenom_count)
+    well_attribute.update_attributes!(sequenom_count: sequenom_count)
   end
 
   # The sequenom pass value is either the string 'Unknown' or it is the combination of gender marker values.
   def get_sequenom_pass
-    markers = self.well_attribute.gender_markers
+    markers = well_attribute.gender_markers
     markers.is_a?(Array) ? markers.join : markers
   end
 
@@ -276,7 +276,7 @@ class Well < Aliquot::Receptacle
   end
 
   def valid_well_on_plate
-    return false unless self.is_a?(Well)
+    return false unless is_a?(Well)
     well_plate = plate
     return false unless well_plate.is_a?(Plate)
     return false if well_plate.barcode.blank?
@@ -287,16 +287,16 @@ class Well < Aliquot::Receptacle
   end
 
   def create_child_sample_tube
-    Tube::Purpose.standard_sample_tube.create!(map: self.map, aliquots: aliquots.map(&:dup)).tap do |sample_tube|
+    Tube::Purpose.standard_sample_tube.create!(map: map, aliquots: aliquots.map(&:dup)).tap do |sample_tube|
       AssetLink.create_edge(self, sample_tube)
     end
   end
 
   def qc_data
-    { pico: self.get_pico_pass,
-     gel: self.get_gel_pass,
-     sequenom: self.get_sequenom_pass,
-     concentration: self.get_concentration }
+    { pico: get_pico_pass,
+     gel: get_gel_pass,
+     sequenom: get_sequenom_pass,
+     concentration: get_concentration }
   end
 
   def buffer_required?
@@ -313,7 +313,7 @@ class Well < Aliquot::Receptacle
   end
 
   def display_name
-    plate_name = self.plate.present? ? self.plate.sanger_human_barcode : '(not on a plate)'
+    plate_name = plate.present? ? plate.sanger_human_barcode : '(not on a plate)'
     plate_name ||= plate.display_name # In the even the plate is barcodeless (ie strip tubes) use its name
     "#{plate_name}:#{map ? map.description : ''}"
   end

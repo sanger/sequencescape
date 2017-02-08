@@ -21,7 +21,7 @@ class UpdateDilutionFactorForWdAndPd < ActiveRecord::Migration
 
   def self.up
     ActiveRecord::Base.transaction do |t|
-      self.types.each do |c|
+      types.each do |c|
         Purpose.find_by_name!(c[:purpose_name]).plates.find_each do |plate|
           plate.dilution_factor = c[:value]
           plate.save!
@@ -32,7 +32,7 @@ class UpdateDilutionFactorForWdAndPd < ActiveRecord::Migration
 
   def self.down
     ActiveRecord::Base.transaction do |t|
-      self.types.each do |c|
+      types.each do |c|
         Purpose.find_by_name!(c[:purpose_name]).plates.find_each do |plate|
           plate.dilution_factor = 1.0
           plate.save!

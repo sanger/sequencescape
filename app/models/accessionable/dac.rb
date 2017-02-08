@@ -32,9 +32,9 @@ class Accessionable::Dac < Accessionable::Base
     xml = Builder::XmlMarkup.new
     xml.instruct!
     xml.DAC_SET('xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance') {
-      xml.DAC(alias: self.alias, accession: self.accession_number, center_name: self.center_name) {
+      xml.DAC(alias: self.alias, accession: accession_number, center_name: center_name) {
       xml.CONTACTS {
-      self.contacts.each do |contact|
+      contacts.each do |contact|
       xml.CONTACT({
         name: contact[:name],
         email: contact[:email],

@@ -76,7 +76,7 @@ module Attributable
       attribute.configure(self)
 
       if override_previous
-        self.attribute_details = self.attribute_details.reject { |a| a.name == name }
+        self.attribute_details = attribute_details.reject { |a| a.name == name }
         self.attribute_details += [attribute]
       elsif self.attribute_details.detect { |a| a.name == name }.nil?
         self.attribute_details += [attribute]
@@ -123,7 +123,7 @@ module Attributable
 
       module InstanceMethods
         def for_select_dropdown
-          [self.name, self.id]
+          [name, id]
         end
       end
     end
@@ -141,7 +141,7 @@ module Attributable
     end
 
     def optional?
-      not self.required?
+      not required?
     end
 
     def assignable_attribute_name
@@ -214,7 +214,7 @@ module Attributable
     end
 
     def from(record)
-      record[self.name]
+      record[name]
     end
 
     def default_from(origin = nil)
@@ -231,7 +231,7 @@ module Attributable
     end
 
     def optional?
-      not self.required?
+      not required?
     end
 
     def numeric?
@@ -285,15 +285,15 @@ module Attributable
 
       model.with_options(conditions) do |object|
         # false.blank? == true, so we exclude booleans here, they handle themselves further down.
-        object.validates_presence_of(name) if self.required? && !self.boolean?
-        object.with_options(allow_nil: self.optional?, allow_blank: allow_blank) do |required|
-          required.validates_inclusion_of(name, in: [true, false]) if self.boolean?
-          required.validates_numericality_of(name, only_integer: true) if self.numeric?
-          required.validates_numericality_of(name, greater_than: 0) if self.float?
-          required.validates_inclusion_of(name, in: self.selection_values, allow_false: true) if self.fixed_selection?
-          required.validates_format_of(name, with: self.valid_format) if self.valid_format?
-          required.validates name, custom: true if self.validator?
-          required.validate(self.validate_method) if self.method?
+        object.validates_presence_of(name) if required? && !boolean?
+        object.with_options(allow_nil: optional?, allow_blank: allow_blank) do |required|
+          required.validates_inclusion_of(name, in: [true, false]) if boolean?
+          required.validates_numericality_of(name, only_integer: true) if numeric?
+          required.validates_numericality_of(name, greater_than: 0) if float?
+          required.validates_inclusion_of(name, in: selection_values, allow_false: true) if fixed_selection?
+          required.validates_format_of(name, with: valid_format) if valid_format?
+          required.validates name, custom: true if validator?
+          required.validate(validate_method) if method?
         end
       end
 
@@ -334,13 +334,13 @@ module Attributable
     end
 
     def find_default(object = nil, metadata = nil)
-      default_from(metadata) || object.try(self.name) || self.default
+      default_from(metadata) || object.try(name) || default
     end
 
     def kind
-      return FieldInfo::SELECTION if self.selection?
-      return FieldInfo::BOOLEAN if self.boolean?
-      return FieldInfo::NUMERIC if self.numeric? || self.float?
+      return FieldInfo::SELECTION if selection?
+      return FieldInfo::BOOLEAN if boolean?
+      return FieldInfo::NUMERIC if numeric? || float?
       FieldInfo::TEXT
     end
 
@@ -350,7 +350,7 @@ module Attributable
     end
 
     def selection_options(metadata)
-      self.selection_values || selection_from_metadata(metadata) || []
+      selection_values || selection_from_metadata(metadata) || []
     end
 
     def to_field_info(object = nil, metadata = nil)
@@ -362,9 +362,9 @@ module Attributable
         kind: kind,
         required: required?
       }
-      options.update(selection: selection_options(metadata)) if self.selection?
-      options.update(step: 1, min: self.minimum) if self.numeric?
-      options.update(step: 0.1, min: 0) if self.float?
+      options.update(selection: selection_options(metadata)) if selection?
+      options.update(step: 1, min: minimum) if numeric?
+      options.update(step: 0.1, min: 0) if float?
       FieldInfo.new(options)
     end
   end

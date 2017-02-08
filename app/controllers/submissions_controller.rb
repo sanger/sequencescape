@@ -14,7 +14,7 @@ class SubmissionsController < ApplicationController
   after_filter :set_cache_disabled!, only: [:new, :index]
 
   def new
-    self.expires_now
+    expires_now
     @presenter = Submission::SubmissionCreator.new(current_user, study_id: params[:study_id])
   end
 
@@ -56,7 +56,7 @@ class SubmissionsController < ApplicationController
 
   def index
     # Disable cache of this page
-    self.expires_now
+    expires_now
 
     @building = Submission.building.order(created_at: :desc).where(user_id: current_user.id)
     @pending = Submission.pending.order(created_at: :desc).where(user_id: current_user.id)

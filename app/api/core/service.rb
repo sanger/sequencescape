@@ -21,7 +21,7 @@ module Core
         end
 
         def api_error(response)
-          response.general_error(self.class.api_error_code, [self.class.api_error_message || self.api_error_message])
+          response.general_error(self.class.api_error_code, [self.class.api_error_message || api_error_message])
         end
       end
 
@@ -164,14 +164,14 @@ module Core
         io.map_parameters_to_attributes(json, nil)
       end
 
-      def create!(instance_attributes = self.attributes)
+      def create!(instance_attributes = attributes)
         ActiveRecord::Base.transaction do
           record = target.create!(instance_attributes)
           ::Core::Io::Registry.instance.lookup_for_object(record).eager_loading_for(record.class).include_uuid.find(record.id)
         end
       end
 
-      def update!(instance_attributes = self.attributes(target))
+      def update!(instance_attributes = attributes(target))
         ActiveRecord::Base.transaction do
           target.tap { |o| o.update_attributes!(instance_attributes) }
         end

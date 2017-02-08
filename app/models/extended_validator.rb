@@ -27,7 +27,7 @@ class ExtendedValidator < ActiveRecord::Base
   def import_behaviour
     return if behaviour.nil?
     behavior_module = "ExtendedValidator::#{behaviour}".constantize
-    self.class_eval do
+    class_eval do
       include(behavior_module)
     end
   end

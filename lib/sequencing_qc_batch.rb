@@ -60,20 +60,20 @@ qc_completed
   end
 
   def qc_previous_state!(current_user)
-    previous_state = self.qc_previous_state
+    previous_state = qc_previous_state
     if previous_state
-      self.lab_events.create(description: "QC Rollback", message: "Manual QC moved from #{self.qc_state} to #{previous_state}", user_id: current_user.id)
+      lab_events.create(description: "QC Rollback", message: "Manual QC moved from #{qc_state} to #{previous_state}", user_id: current_user.id)
       self.qc_state = previous_state
     end
     self.state = 'started'
-    self.save
+    save
   end
 
   def self.adjacent_state_helper(direction, offset, delimiter)
     define_method(:"qc_#{ direction }_state") do
-      raise StandardError, "Current QC state appears to be invalid: '#{self.qc_state}'" unless qc_states.include?(self.qc_state.to_s)
-      return nil if self.qc_state.to_s == qc_states.send(delimiter)
-      return qc_states[qc_states.index(self.qc_state.to_s) + offset]
+      raise StandardError, "Current QC state appears to be invalid: '#{qc_state}'" unless qc_states.include?(qc_state.to_s)
+      return nil if qc_state.to_s == qc_states.send(delimiter)
+      return qc_states[qc_states.index(qc_state.to_s) + offset]
     end
   end
 
@@ -85,7 +85,7 @@ qc_completed
   def self.state_transition_helper(name)
     # TODO[xxx]: Really we should restrict the state transitions
     define_method(:"qc_#{ name }") do
-      self.update_attribute(:qc_state, self.qc_next_state) unless self.qc_next_state.nil?
+      update_attribute(:qc_state, qc_next_state) unless qc_next_state.nil?
     end
   end
 
@@ -95,7 +95,7 @@ qc_completed
   state_transition_helper(:complete)
 
   def processing_in_manual_qc?
-    ['qc_manual_in_progress', 'qc_manual'].include?(self.qc_state)
+    ['qc_manual_in_progress', 'qc_manual'].include?(qc_state)
   end
 
   def qc_pipeline_workflow_id
@@ -105,14 +105,14 @@ qc_completed
 
   def qc_ready_for_manual
     ActiveRecord::Base.transaction do
-      p = Pipeline.find(self.qc_pipeline_id)
-      self.update_attributes!(qc_pipeline_id: p.next_pipeline_id, qc_state: 'qc_manual')
+      p = Pipeline.find(qc_pipeline_id)
+      update_attributes!(qc_pipeline_id: p.next_pipeline_id, qc_state: 'qc_manual')
     end
   end
 
   def qc_manual_in_progress
     self.qc_state = "qc_manual_in_progress"
-    self.save
+    save
   end
 
   def qc_pipeline_update
@@ -123,20 +123,20 @@ qc_completed
 
   # POST /batches/submit_to_qc_queue/:id.xml
   def submit_to_qc_queue
-    logger.debug "Batch #{self.id} attempting to be added to QC queue. State is #{self.qc_state}"
+    logger.debug "Batch #{id} attempting to be added to QC queue. State is #{qc_state}"
     # Get QC workflow and its tasks
     workflow = LabInterface::Workflow.find_by_name("quality control", include: [:tasks])
     tasks    = workflow.tasks
-    if self.qc_state == "qc_pending"
+    if qc_state == "qc_pending"
       # Submit requests for all tasks in the workflow
       tasks.each do |task|
         # Constructing the XML file to use in sending the request
         h_doc = {}
-        self.batch_requests.each do |b_request|
+        batch_requests.each do |b_request|
           h_doc["lane_#{b_request.position}"] = b_request.id
         end
         h_doc["task_id"] = task.id
-        h_doc["batch"] = self.id
+        h_doc["batch"] = id
         h_doc["keys"] = {}
         task.descriptors.each do |t|
           h_doc["keys"][(t.key).to_s] = t.value
@@ -148,7 +148,7 @@ qc_completed
         # Publishing the request to AMQ
         publish :qc_requests, doc
       end
-      self.qc_submitted
+      qc_submitted
       return true
     else
       return false
@@ -194,7 +194,7 @@ qc_completed
       qc_tasks = qc_workflow.tasks
       results = []
       qc_tasks.each do |task|
-        self.requests.each do |request|
+        requests.each do |request|
           if request.asset && request.asset.resource.nil?
             results << request.has_passed(self, task)
           end

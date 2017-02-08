@@ -33,8 +33,8 @@ class Robot < ActiveRecord::Base
   end
 
   def self.valid_barcode?(code)
-    Barcode.barcode_to_human!(code, self.prefix)
-    self.find_from_barcode(code) # an exception is raise if not found
+    Barcode.barcode_to_human!(code, prefix)
+    find_from_barcode(code) # an exception is raise if not found
     true
   rescue
     false

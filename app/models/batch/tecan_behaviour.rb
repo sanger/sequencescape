@@ -85,7 +85,7 @@ module Batch::TecanBehaviour
         FileUtils.mkdir base_directory
       end
       destinationbarcode = data_object["destination"].keys.join("_")
-      gwl_file = File.new("#{base_directory}/#{destinationbarcode}_batch_#{self.id}.gwl", "w")
+      gwl_file = File.new("#{base_directory}/#{destinationbarcode}_batch_#{id}.gwl", "w")
       gwl_file.write(gwl_data)
       gwl_file.close
     rescue

@@ -200,26 +200,26 @@ module Request::Statemachine
   end
 
   def finished?
-    self.passed? || self.failed?
+    passed? || failed?
   end
 
   def terminated?
-    self.failed? || self.cancelled?
+    failed? || cancelled?
   end
 
   def closed?
-    %w(passed failed cancelled aborted).include?(self.state)
+    %w(passed failed cancelled aborted).include?(state)
   end
 
   def open?
-    ["pending", "started"].include?(self.state)
+    ["pending", "started"].include?(state)
   end
 
   def cancellable?
-    ["pending", "cancelled"].include?(self.state)
+    ["pending", "cancelled"].include?(state)
   end
 
   def transition_to(target_state)
-    send("#{self.class.suggested_transition_between(self.state, target_state)}!")
+    send("#{self.class.suggested_transition_between(state, target_state)}!")
   end
 end

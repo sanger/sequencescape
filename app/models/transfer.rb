@@ -45,13 +45,13 @@ class Transfer < ActiveRecord::Base
     # The state of an asset is based on the transfer requests for the asset.  If they are all in the same
     # state then it takes that state.  Otherwise we take the "most optimum"!
     def state
-      state_from(self.transfer_requests)
+      state_from(transfer_requests)
     end
 
     def state_from(state_requests)
       unique_states = state_requests.map(&:state).uniq
       return unique_states.first if unique_states.size == 1
-      ALL_STATES.detect { |s| unique_states.include?(s) } || self.default_state || 'unknown'
+      ALL_STATES.detect { |s| unique_states.include?(s) } || default_state || 'unknown'
     end
     private :state_from
 

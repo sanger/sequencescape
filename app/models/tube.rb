@@ -51,7 +51,7 @@ class Tube < Aliquot::Receptacle
   end
 
   def ancestor_of_purpose(ancestor_purpose_id)
-    return self if self.plate_purpose_id == ancestor_purpose_id
+    return self if plate_purpose_id == ancestor_purpose_id
     ancestors.order(created_at: :desc).where(plate_purpose_id: ancestor_purpose_id).first
   end
 
@@ -73,7 +73,7 @@ class Tube < Aliquot::Receptacle
   delegate :barcode_type, to: :purpose
 
   def name_for_label
-    (primary_aliquot.nil? or primary_aliquot.sample.sanger_sample_id.blank?) ? self.name : primary_aliquot.sample.shorten_sanger_sample_id
+    (primary_aliquot.nil? or primary_aliquot.sample.sanger_sample_id.blank?) ? name : primary_aliquot.sample.shorten_sanger_sample_id
   end
 
   def details

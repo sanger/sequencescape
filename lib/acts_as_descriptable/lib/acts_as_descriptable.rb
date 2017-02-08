@@ -21,13 +21,13 @@ module ActiveRecord # :nodoc:
           end
           conditions.gsub!(/ or $/, "")
           logger.info "Searching for: " + conditions
-          self.where(conditions)
+          where(conditions)
         end
 
         def find_descriptors
           logger.info "Finding all descriptors"
           response = []
-          self.find_each do |object|
+          find_each do |object|
             object.descriptors.each do |descriptor|
               response.push descriptor
             end
@@ -45,7 +45,7 @@ module ActiveRecord # :nodoc:
           end
 
           def create_descriptors(params)
-            self.descriptors << params.sort_by { |k, _| k.to_i }.each_with_index.map do |(field_id, value), index|
+            descriptors << params.sort_by { |k, _| k.to_i }.each_with_index.map do |(field_id, value), index|
               value[:required] = (value[:required] == 'on') ? 1 : 0
               Descriptor.new(value.merge(sorter: index + 1))
             end

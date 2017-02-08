@@ -4,7 +4,7 @@ module Informatics
     attr_accessor :service_uri, :service_port, :balanced_ports, :html_root, :nginx_binaries
 
     def self.configure(options)
-      a = self.new
+      a = new
       c = options[:with]
       a.cap = c
       yield a

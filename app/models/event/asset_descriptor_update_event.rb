@@ -10,7 +10,7 @@ module Event::AssetDescriptorUpdateEvent
   end
 
   def update_descriptors_for_asset
-    self.eventful.add_descriptor(Descriptor.new(name: self.descriptor_key, value: self.content))
-    self.eventful.save!
+    eventful.add_descriptor(Descriptor.new(name: descriptor_key, value: content))
+    eventful.save!
   end
 end

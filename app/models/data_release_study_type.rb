@@ -23,11 +23,11 @@ class DataReleaseStudyType < ActiveRecord::Base
   end
 
   def studies_excluded_for_release?
-    DATA_RELEASE_TYPES_STUDIES.include?(self.name)
+    DATA_RELEASE_TYPES_STUDIES.include?(name)
   end
 
   def samples_excluded_for_release?
-    DATA_RELEASE_TYPES_SAMPLES.include?(self.name)
+    DATA_RELEASE_TYPES_SAMPLES.include?(name)
   end
 
   def self.default

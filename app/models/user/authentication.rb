@@ -20,7 +20,7 @@ module User::Authentication
   def update_profile_via_ldap
     ldap = Net::LDAP.new(host: configatron.ldap_server, port: configatron.ldap_port)
 
-    filter = Net::LDAP::Filter.eq("uid", self.login)
+    filter = Net::LDAP::Filter.eq("uid", login)
     treebase = "ou=people,dc=sanger,dc=ac,dc=uk"
 
     ldap_profile = ldap.search(base: treebase, filter: filter)[0]
@@ -29,7 +29,7 @@ module User::Authentication
     { email: "mail", first_name: "givenname", last_name: "sn" }.each do |attr, ldap_attr|
       self[attr] = ldap_profile[ldap_attr][0] if self[attr].blank?
     end
-    self.save if self.changed?
+    save if changed?
 
   rescue StandardError => e
     logger.error "Profile failed for user #{login}: result code #{ldap.get_operation_result.code} message #{ldap.get_operation_result.message} - #{e}"

@@ -14,7 +14,7 @@ class Event::SampleLogisticsQcEvent < Event
   end
 
   def self.gel_qc_message(asset, message, family, user)
-    self.create!(
+    create!(
       eventful: asset,
       message: message,
       content: Date.today.to_s,
@@ -24,7 +24,7 @@ class Event::SampleLogisticsQcEvent < Event
   end
 
   def self.pico_qc_message(asset, message, family)
-    self.create!(
+    create!(
       eventful: asset,
       message: message,
       content: Date.today.to_s,

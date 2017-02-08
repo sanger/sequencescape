@@ -20,7 +20,7 @@ class Implement < ActiveRecord::Base
   end
 
   def human_barcode
-    Barcode.barcode_to_human self.barcode
+    Barcode.barcode_to_human barcode
   end
 
   def save_and_generate_barcode

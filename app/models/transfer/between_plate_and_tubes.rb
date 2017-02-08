@@ -103,7 +103,7 @@ class Transfer::BetweenPlateAndTubes < Transfer
   after_create :build_well_to_tube_transfers
   def build_well_to_tube_transfers
     tube_to_stock_wells = Hash.new { |h, k| h[k] = [] }
-    self.well_to_tubes.build(@transfers.map do |source, (destination, stock_wells)|
+    well_to_tubes.build(@transfers.map do |source, (destination, stock_wells)|
       tube_to_stock_wells[destination].concat(stock_wells)
       { source: source, destination: destination }
     end).map(&:save!)

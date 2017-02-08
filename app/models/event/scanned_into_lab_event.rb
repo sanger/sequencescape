@@ -9,7 +9,7 @@ class Event::ScannedIntoLabEvent < Event
   alias_method :asset, :eventful
 
   def self.create_for_asset!(asset, location)
-    self.create!(
+    create!(
       eventful: asset,
       message: "Scanned into #{location.name}",
       content: Date.today.to_s,
@@ -18,10 +18,10 @@ class Event::ScannedIntoLabEvent < Event
   end
 
   def set_qc_state_pending
-    self.asset.qc_pending
+    asset.qc_pending
   end
 
   def test?
-    (self.asset.qc_state == "passed" || self.asset.qc_state == "failed")
+    (asset.qc_state == "passed" || asset.qc_state == "failed")
   end
 end

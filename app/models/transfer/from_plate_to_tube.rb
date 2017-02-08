@@ -29,7 +29,7 @@ class Transfer::FromPlateToTube < Transfer
     good_wells.each { |well| yield(well, destination) }
 
     # Eliminate any of the transfers that were not made because of the bad source wells
-    self.transfers = self.transfers - bad_wells.map { |well| well.map.description }
+    self.transfers = transfers - bad_wells.map { |well| well.map.description }
   end
   private :each_transfer
 

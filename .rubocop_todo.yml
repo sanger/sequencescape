@@ -1093,11 +1093,6 @@ Style/RedundantException:
 Style/RedundantParentheses:
   Enabled: false
 
-# Offense count: 898
-# Cop supports --auto-correct.
-Style/RedundantSelf:
-  Enabled: false
-
 # Offense count: 13
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles, AllowInnerSlashes.

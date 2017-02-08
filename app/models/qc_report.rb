@@ -152,7 +152,7 @@ class QcReport < ActiveRecord::Base
   private
 
   def identifier_required?
-    self.report_identifier.nil?
+    report_identifier.nil?
   end
 
   # Note: You won't be able to generate two reports for the

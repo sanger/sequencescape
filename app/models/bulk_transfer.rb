@@ -24,7 +24,7 @@ class BulkTransfer < ActiveRecord::Base
           destination: destination,
           user: user,
           transfers: transfers,
-          bulk_transfer_id: self.id
+          bulk_transfer_id: id
         )
       end
     end

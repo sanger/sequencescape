@@ -44,6 +44,6 @@ module Plate::FluidigmBehaviour
         sw.update_sequenom_count!(fluidigm_file.well_at(well.map_description).count, 'FLUIDIGM')
       end
     end
-    self.events.updated_fluidigm_plate!('FLUIDIGM_DATA')
+    events.updated_fluidigm_plate!('FLUIDIGM_DATA')
   end
 end

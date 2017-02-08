@@ -151,10 +151,10 @@ module SampleManifest::PlateBehaviour
   handle_asynchronously :generate_wells_asynchronously
 
   def generate_plates
-    study_abbreviation = self.study.abbreviation
+    study_abbreviation = study.abbreviation
 
     well_data = []
-    plates    = Array.new(self.count) do
+    plates    = Array.new(count) do
       Plate.create_with_barcode!(plate_purpose: stock_plate_purpose)
     end.sort_by(&:barcode).map do |plate|
       plate.tap do |plate|
@@ -183,7 +183,7 @@ module SampleManifest::PlateBehaviour
       end
     end
 
-    plate.events.created_using_sample_manifest!(self.user)
+    plate.events.created_using_sample_manifest!(user)
 
     RequestFactory.create_assets_requests(plate.wells, study)
   end

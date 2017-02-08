@@ -8,10 +8,10 @@
 class CustomerRequest < Request
   def update_responsibilities!
     return if qc_metrics.stock_metric.empty?
-    self.customer_accepts_responsibility! if qc_metrics.stock_metric.all?(&:poor_quality_proceed)
+    customer_accepts_responsibility! if qc_metrics.stock_metric.all?(&:poor_quality_proceed)
   end
 
   def customer_accepts_responsibility!
-    self.request_metadata.update_attributes!(customer_accepts_responsibility: true)
+    request_metadata.update_attributes!(customer_accepts_responsibility: true)
   end
 end

@@ -29,12 +29,12 @@ class Accessionable::Submission < Accessionable::Base
     xml.instruct!
     xml.SUBMISSION(
       'xmlns:xsi'      => 'http://www.w3.org/2001/XMLSchema-instance',
-      :center_name     => self.center_name,
-      :broker_name     => self.broker,
+      :center_name     => center_name,
+      :broker_name     => broker,
       :alias           => self.alias,
-      :submission_date => self.date
+      :submission_date => date
     ) {
-      xml.CONTACTS { self.contact.build(xml) }
+      xml.CONTACTS { contact.build(xml) }
       xml.ACTIONS {
         # You can only perform additions with protect or hold, or you can do a modification.  So separate the
         # accessionable instances into additions and modifications.

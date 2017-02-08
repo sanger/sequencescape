@@ -14,7 +14,7 @@ module XmlCacheHelper
         response.body,
         url_for(
           controller: self.class.controller_name,
-          action: self.action_name,
+          action: action_name,
           id: record.id,
           format: :xml,
           only_path: true

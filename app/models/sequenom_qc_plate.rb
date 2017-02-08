@@ -17,13 +17,13 @@ class SequenomQcPlate < Plate
   after_create :populate_wells_from_source_plates
 
   def source_plates
-    return [] if self.parents.empty?
+    return [] if parents.empty?
     ordered_source_plates = []
     source_barcodes.each do |plate_barcode|
       ordered_source_plates << if plate_barcode.blank?
         nil
                                else
-        self.parents.select { |plate| plate.barcode == plate_barcode }.first
+        parents.select { |plate| plate.barcode == plate_barcode }.first
                                end
     end
 
@@ -50,7 +50,7 @@ class SequenomQcPlate < Plate
       next if stock_plate.nil?
       stock_plate.events.create_sequenom_stamp!(User.lookup_by_barcode(user_barcode))
     end
-    self.events.create_sequenom_plate!(User.lookup_by_barcode(user_barcode))
+    events.create_sequenom_plate!(User.lookup_by_barcode(user_barcode))
   end
 
   def compute_and_set_name(input_plate_names)
@@ -94,7 +94,7 @@ class SequenomQcPlate < Plate
 
   def destination_map_based_on_source_row_col_and_quadrant(quadrant, row, col)
     row_offset, col_offset = quadrant_row_col_offset(quadrant)
-    self.find_map_by_rowcol((row * 2) + row_offset, (col * 2) + col_offset)
+    find_map_by_rowcol((row * 2) + row_offset, (col * 2) + col_offset)
   end
 
   # ---------------------------

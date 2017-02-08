@@ -50,7 +50,7 @@ module Asset::Ownership
 
     def change_owner_to(owner, source_event)
       if plate_owner.nil?
-        self.update_attributes!(plate_owner: PlateOwner.create!(user: owner, eventable: source_event, plate: self))
+        update_attributes!(plate_owner: PlateOwner.create!(user: owner, eventable: source_event, plate: self))
       else
         plate_owner.update_attributes!(user: owner, eventable: source_event)
       end

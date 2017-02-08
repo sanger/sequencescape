@@ -59,7 +59,7 @@ class Project < ActiveRecord::Base
   has_many :aliquots
 
   validates_presence_of :name, :state
-  validates_uniqueness_of :name, on: :create, message: "already in use (#{self.name})"
+  validates_uniqueness_of :name, on: :create, message: "already in use (#{name})"
 
   scope :for_search_query, ->(query, with_includes) {
     where(['name LIKE ? OR id=?', "%#{query}%", query])
@@ -83,7 +83,7 @@ class Project < ActiveRecord::Base
 
   def ended_billable_lanes(ended)
     events = []
-    self.samples.each do |sample|
+    samples.each do |sample|
       if sample.ended.casecmp(ended).zero?
         events << sample.billable_events
       end
@@ -93,7 +93,7 @@ class Project < ActiveRecord::Base
 
   def billable_events
     e = []
-    self.samples.each do |sample|
+    samples.each do |sample|
      e << sample.billable_events
     end
     e.flatten
@@ -126,7 +126,7 @@ class Project < ActiveRecord::Base
   end
 
   def owners
-    role = self.roles.detect { |r| r.name == "owner" }
+    role = roles.detect { |r| r.name == "owner" }
     unless role.nil?
       role.users
     else
@@ -140,7 +140,7 @@ class Project < ActiveRecord::Base
   end
 
   def manager
-    role = self.roles.detect { |r| r.name == "manager" }
+    role = roles.detect { |r| r.name == "manager" }
     unless role.nil?
       role.users.first
     else
@@ -149,7 +149,7 @@ class Project < ActiveRecord::Base
   end
 
   def actionable?
-    self.project_metadata.budget_division.name != 'Unallocated'
+    project_metadata.budget_division.name != 'Unallocated'
   end
 
   def submittable?
@@ -159,11 +159,11 @@ class Project < ActiveRecord::Base
   end
 
   def r_and_d?
-    self.project_metadata.budget_division.name == configatron.r_and_d_division
+    project_metadata.budget_division.name == configatron.r_and_d_division
   end
 
   def sequencing_budget_division
-    self.project_metadata.budget_division.name
+    project_metadata.budget_division.name
   end
 
   alias_attribute :friendly_name, :name

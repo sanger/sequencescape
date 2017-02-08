@@ -61,7 +61,7 @@ class RobotVerification
     @errors << "No destination barcode specified" if destination_plate_barcode.blank?
     return false unless @errors.empty?
 
-    expected_plate_layout = self.expected_layout(batch, destination_plate_barcode)
+    expected_plate_layout = expected_layout(batch, destination_plate_barcode)
 
     if valid_plate_locations?(params, batch, robot, expected_plate_layout)
       batch.events.create(

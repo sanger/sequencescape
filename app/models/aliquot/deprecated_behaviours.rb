@@ -27,13 +27,11 @@ module Aliquot::DeprecatedBehaviours
     # ---
     # Nope, they are used all over the place.
     def tag
-      self.target_asset.primary_aliquot.try(:tag)
+      target_asset.primary_aliquot.try(:tag)
     end
     deprecate :tag
 
-    def tags
-      self.asset.tags
-    end
+    delegate :tags, to: :asset
     deprecate :tags
     # ---
 

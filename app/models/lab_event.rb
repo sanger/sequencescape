@@ -26,7 +26,7 @@ class LabEvent < ActiveRecord::Base
     batch_id = 0
 
     search = "%Chip Barcode: #{barcode}%"
-    requests = self.barcode_code(search)
+    requests = barcode_code(search)
     batch = requests.map(&:batch_id).uniq
     batch_id = batch[0] unless batch.size != 1
 
@@ -34,7 +34,7 @@ class LabEvent < ActiveRecord::Base
   end
 
   def descriptor_value_for(name)
-    self.descriptors.each do |desc|
+    descriptors.each do |desc|
       if desc.name.casecmp(name.to_s).zero?
         return desc.value
       end

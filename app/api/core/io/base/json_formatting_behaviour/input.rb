@@ -12,7 +12,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
     end
 
     def api_error(response)
-      response.content_error(422, @attribute => [self.message])
+      response.content_error(422, @attribute => [message])
     end
   end
 
@@ -90,9 +90,9 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
       code << "end"
     end
 
-    low_level(('-' * 30) << self.name << ('-' * 30))
+    low_level(('-' * 30) << name << ('-' * 30))
     code.map(&method(:low_level))
-    low_level(('=' * 30) << self.name << ('=' * 30))
+    low_level(('=' * 30) << name << ('=' * 30))
 
     # Generate the code that the instance will actually use ...
     line = __LINE__ + 1

@@ -61,7 +61,7 @@ module Core::Endpoint::BasicHandler::Actions
   end
 
   def does_not_require_an_io_class
-    self.singleton_class.class_eval("def check_request_io_class!(_) ; end", __FILE__, __LINE__)
+    singleton_class.class_eval("def check_request_io_class!(_) ; end", __FILE__, __LINE__)
   end
 
   def disable(*actions)

@@ -33,7 +33,7 @@ class ::Endpoints::Uuids < ::Core::Endpoint::Base
     class CriteriaInvalid < ::Core::Service::Error
       def initialize(*args)
         super
-        @errors = { lookup: [self.message] }
+        @errors = { lookup: [message] }
       end
 
       def api_error(response)
@@ -72,7 +72,7 @@ class ::Endpoints::Uuids < ::Core::Endpoint::Base
     end
 
     def self.create!(attributes)
-      search = self.new(attributes)
+      search = new(attributes)
       search.validate! {}
       search
     end

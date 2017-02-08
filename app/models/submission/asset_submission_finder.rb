@@ -18,13 +18,13 @@ module Submission::AssetSubmissionFinder
     raise StandardError, "Must specify at least an ID or a name" if names.blank?
     Aliquot::Receptacle.including_samples.where(name: names).tap do |found|
       missing = names - found.map(&:name)
-      raise ActiveRecord::RecordNotFound, "Could not find #{self.name} with names #{missing.inspect}" unless missing.blank?
+      raise ActiveRecord::RecordNotFound, "Could not find #{name} with names #{missing.inspect}" unless missing.blank?
     end
   end
 
   def find_wells_including_samples_for!(details)
     barcodes, well_list = details['barcode'], details['plate well']
-    self.errors.add(:spreadsheet, "You can only specify one plate per asset group") unless barcodes.uniq.one?
+    errors.add(:spreadsheet, "You can only specify one plate per asset group") unless barcodes.uniq.one?
     barcode = barcodes.first
 
     match = /^([A-Z]{2})(\d+)[A-Z]$/.match(barcode) or raise StandardError, "Plate Barcode should be human readable (e.g. DN111111K)"

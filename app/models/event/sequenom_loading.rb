@@ -6,7 +6,7 @@
 
 class Event::SequenomLoading < Event
   def self.created_update_gender_makers!(asset, resource)
-    self.create!(
+    create!(
       eventful: asset,
       message: "Updated gender results from #{resource}",
       content: resource,
@@ -15,7 +15,7 @@ class Event::SequenomLoading < Event
   end
 
   def self.created_update_sequenom_count!(asset, resource)
-    self.create!(
+    create!(
       eventful: asset,
       message: "Updated sequenom results from #{resource}",
       content: resource,
@@ -24,7 +24,7 @@ class Event::SequenomLoading < Event
   end
 
   def self.updated_fluidigm_plate!(asset, resource)
-    self.create!(
+    create!(
       eventful: asset,
       message: "Updated fluidigm plate from #{resource}",
       content: resource,

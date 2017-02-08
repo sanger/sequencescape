@@ -13,7 +13,7 @@ class Parsers::QuantParser
   end
 
   def self.is_quant_file?(content)
-    (content[0][0] == 'Assay Plate Barcode') && self.headers_index(content)
+    (content[0][0] == 'Assay Plate Barcode') && headers_index(content)
   end
 
   def each_well_and_parameters

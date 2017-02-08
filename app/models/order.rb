@@ -57,14 +57,14 @@ class Order < ActiveRecord::Base
   scope :containing_samples, ->(samples) { joins(assets: :samples).where(samples: { id: samples }) }
 
   def is_building_submission?
-    self.submission.building?
+    submission.building?
   end
 
   def on_delete_destroy_submission
     if is_building_submission?
       # After destroying an order, if it is the last order on it's submission
       # destroy the submission too.
-      orders = self.submission.orders
+      orders = submission.orders
       submission.destroy unless orders.size > 1
       return true
     end
@@ -175,7 +175,7 @@ class Order < ActiveRecord::Base
   end
 
   def multiplexed?
-    RequestType.find(self.request_types).any?(&:for_multiplexing?)
+    RequestType.find(request_types).any?(&:for_multiplexing?)
   end
 
   def is_asset_applicable_to_type?(request_type, asset)
@@ -205,18 +205,18 @@ class Order < ActiveRecord::Base
 
   def duplicate(&block)
     create_parameters = template_parameters
-    new_order = Order.create(create_parameters.merge(study: self.study, workflow: self.workflow,
-          user: self.user, assets: self.assets, state: self.state,
-          request_types: self.request_types,
-          request_options: self.request_options,
-          comments: self.comments,
-          project_id: self.project_id), &block)
+    new_order = Order.create(create_parameters.merge(study: study, workflow: workflow,
+          user: user, assets: assets, state: state,
+          request_types: request_types,
+          request_options: request_options,
+          comments: comments,
+          project_id: project_id), &block)
     new_order.save
     new_order
   end
 
   def duplicates_within(timespan)
-    matching_orders = Order.containing_samples(all_samples).where(template_name: template_name).includes(:submission, assets: :samples).where('orders.id != ?', self.id).where('orders.created_at > ?', DateTime.current - timespan)
+    matching_orders = Order.containing_samples(all_samples).where(template_name: template_name).includes(:submission, assets: :samples).where('orders.id != ?', id).where('orders.created_at > ?', DateTime.current - timespan)
     return false if matching_orders.empty?
     matching_samples = matching_orders.map(&:samples).flatten & all_samples
     matching_submissions = matching_orders.map(&:submission).uniq
@@ -299,7 +299,7 @@ class Order < ActiveRecord::Base
         default_value: default,
         kind: kind
       }
-      values.update(selection: options) if self.selection?
+      values.update(selection: options) if selection?
       FieldInfo.new(values)
     end
   end
@@ -362,7 +362,7 @@ class Order < ActiveRecord::Base
 
   # Are we still able to modify this instance?
   def building?
-    self.submission.nil?
+    submission.nil?
   end
 
   # Returns true if this is an order for sequencing

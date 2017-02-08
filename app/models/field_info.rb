@@ -31,18 +31,18 @@ class FieldInfo
   # the following methods are Selection related. Move them in a subclass if needed
   def selection
     return nil unless kind == SELECTION
-    self.parameters[:selection]
+    parameters[:selection]
   end
 
   def set_selection(selection)
     self.kind = SELECTION
-    self.parameters[:selection] = selection
+    parameters[:selection] = selection
   end
 
   def reapply(object)
     value = nil
-    value = object.send(self.key) unless object.nil? or self.key.blank?
-    value ||= self.default_value
+    value = object.send(key) unless object.nil? or key.blank?
+    value ||= default_value
     self.default_value = value
   end
 end

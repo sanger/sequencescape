@@ -54,7 +54,7 @@ class Plate::Creator < ActiveRecord::Base
   end
 
   def create_plate_without_parent(creator_parameters)
-    plate = self.plate_purpose.plates.create_with_barcode!
+    plate = plate_purpose.plates.create_with_barcode!
 
     creator_parameters.set_plate_parameters(plate) unless creator_parameters.nil?
 
@@ -75,7 +75,7 @@ class Plate::Creator < ActiveRecord::Base
         Plate.with_machine_barcode(scanned).includes(:location, wells: :aliquots).first or
           raise ActiveRecord::RecordNotFound, "Could not find plate with machine barcode #{scanned.inspect}"
       unless can_create_plates?(plate, plate_purposes)
-        raise PlateCreationError, "Scanned plate #{scanned} has a purpose #{plate.purpose.name} not valid for creating [#{self.plate_purposes.map(&:name).join(',')}]"
+        raise PlateCreationError, "Scanned plate #{scanned} has a purpose #{plate.purpose.name} not valid for creating [#{plate_purposes.map(&:name).join(',')}]"
       end
       create_child_plates_from(plate, current_user, creator_parameters)
     end.flatten

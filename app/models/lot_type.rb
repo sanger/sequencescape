@@ -20,9 +20,7 @@ class LotType < ActiveRecord::Base
     template_class.constantize
   end
 
-  def create!(options)
-    self.lots.create!(options)
-  end
+  delegate :create!, to: :lots
 
   def printer_type
     target_purpose.barcode_printer_type.name

@@ -49,16 +49,16 @@ module Core::Io::Base::JsonFormattingBehaviour
   end
 
   def json_root
-    @json_root or raise StandardError, "JSON root is not set for #{self.name}"
+    @json_root or raise StandardError, "JSON root is not set for #{name}"
   end
 
   def api_root
-    self.json_root.to_s.pluralize
+    json_root.to_s.pluralize
   end
 
   def define_attribute_and_json_mapping(mapping)
     parse_mapping_rules(mapping) do |attribute_to_json, json_to_attribute|
-      self.attribute_to_json_field.merge!(Hash[attribute_to_json])
+      attribute_to_json_field.merge!(Hash[attribute_to_json])
       generate_object_to_json_mapping(attribute_to_json)
       generate_json_to_object_mapping(json_to_attribute)
     end

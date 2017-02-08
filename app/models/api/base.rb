@@ -45,15 +45,15 @@ class Api::Base
       json_attributes = {}
       json_attributes["deleted_at"] = Time.now if object.destroyed?
 
-      self.attribute_to_json_attribute_mappings.each do |attribute, json_attribute|
+      attribute_to_json_attribute_mappings.each do |attribute, json_attribute|
         json_attributes[json_attribute] = object.send(attribute)
       end
-      self.associations.each do |association, helper|
+      associations.each do |association, helper|
         value = object.send(association)
         json_attributes.update(helper.to_hash(value))
         helper.newer_than(value, json_attributes['updated_at']) { |timestamp| json_attributes['updated_at'] = timestamp }
       end
-      self.nested_has_many_associations.each do |association, helper|
+      nested_has_many_associations.each do |association, helper|
         values = object.send(association)
         all_targets = values.map do |value|
           helper.newer_than(value, json_attributes['updated_at']) { |timestamp| json_attributes['updated_at'] = timestamp }
@@ -61,10 +61,10 @@ class Api::Base
         end
         json_attributes.update(helper.alias.to_s => all_targets)
       end
-      self.related_resources.each do |relation|
+      related_resources.each do |relation|
         json_attributes[relation.to_s] = File.join(object.url, relation.to_s)
       end
-      self.extra_json_attribute_handlers.each do |handler|
+      extra_json_attribute_handlers.each do |handler|
         handler.call(object, json_attributes)
       end
       json_attributes
@@ -74,7 +74,7 @@ class Api::Base
       raise StandardError, 'The object is nil, which is highly unexpected!' if object.nil?
 
       json_attributes = {}
-      self.attribute_to_json_attribute_mappings_for_list.each do |attribute, json_attribute|
+      attribute_to_json_attribute_mappings_for_list.each do |attribute, json_attribute|
         json_attributes[json_attribute] = object.send(attribute)
       end
       json_attributes
@@ -138,7 +138,7 @@ class Api::Base
 
   # TODO[xxx]: Need to warn about 'id' not being 'internal_id'
   def self.map_attribute_to_json_attribute(attribute, json_attribute = attribute)
-    self.attribute_to_json_attribute_mappings = self.attribute_to_json_attribute_mappings.merge(attribute.to_sym => json_attribute.to_s)
+    self.attribute_to_json_attribute_mappings = attribute_to_json_attribute_mappings.merge(attribute.to_sym => json_attribute.to_s)
   end
 
   # Contains a list of resources that are related and should be exposed as URLs
@@ -157,10 +157,10 @@ class Api::Base
     return if object.nil? or timestamp.nil?
     modified, object_timestamp = false, ((object.respond_to?(:updated_at) ? object.updated_at : timestamp) || timestamp)
     timestamp, modified = object_timestamp, true if object_timestamp > timestamp
-    self.associations.each do |association, helper|
+    associations.each do |association, helper|
       helper.newer_than(object.send(association), timestamp) { |t| timestamp, modified = t, true }
     end
-    self.nested_has_many_associations.each do |association, helper|
+    nested_has_many_associations.each do |association, helper|
       object.send(association).each do |child|
         helper.newer_than(child, timestamp) { |t| timestamp, modified = t, true }
       end
@@ -182,8 +182,8 @@ class Api::Base
       define_method(:lookup_by) { options[:lookup_by] }
       define_method(:association) { association }
     end
-    self.associations = Hash.new if self.associations.empty?
-    self.associations[association.to_sym] = association_helper
+    self.associations = Hash.new if associations.empty?
+    associations[association.to_sym] = association_helper
   end
 
   def self.with_nested_has_many_association(association, options = {}, &block)
@@ -193,19 +193,19 @@ class Api::Base
       define_method(:association) { association }
       define_method(:alias) { options[:as] || association }
     end
-    self.nested_has_many_associations = Hash.new if self.nested_has_many_associations.empty?
-    self.nested_has_many_associations[association.to_sym] = association_helper
+    self.nested_has_many_associations = Hash.new if nested_has_many_associations.empty?
+    nested_has_many_associations[association.to_sym] = association_helper
   end
 
   def self.performs_lookup?
-    !!self.lookup_by
+    !!lookup_by
   end
 
   def self.lookup_associated_record_from(json_attributes, &block)
     attributes = convert_json_attributes_to_attributes(json_attributes)
-    return unless attributes.key?(self.lookup_by)
-    search_parameters = { self.lookup_by => attributes[self.lookup_by] }
-    yield(self.association.to_s.classify.constantize.find_by(search_parameters))
+    return unless attributes.key?(lookup_by)
+    search_parameters = { lookup_by => attributes[lookup_by] }
+    yield(association.to_s.classify.constantize.find_by(search_parameters))
   end
 
   # Contains the mapping from the ActiveRecord attribute to the key in the JSON hash when listing objects
@@ -224,23 +224,23 @@ class Api::Base
   self.extra_json_attribute_handlers = []
 
   def self.extra_json_attributes(&block)
-    self.extra_json_attribute_handlers = Array.new if self.extra_json_attribute_handlers.empty?
-    self.extra_json_attribute_handlers.push(block)
+    self.extra_json_attribute_handlers = Array.new if extra_json_attribute_handlers.empty?
+    extra_json_attribute_handlers.push(block)
   end
 
   class << self
     def attributes_from_json(params)
-      convert_json_attributes_to_attributes(params[self.model_class.name.underscore])
+      convert_json_attributes_to_attributes(params[model_class.name.underscore])
     end
 
     def convert_json_attributes_to_attributes(json_attributes)
       return {} if json_attributes.blank?
 
       attributes = {}
-      self.attribute_to_json_attribute_mappings.each do |attribute, json_attribute|
+      attribute_to_json_attribute_mappings.each do |attribute, json_attribute|
         attributes[attribute] = json_attributes[json_attribute] if json_attributes.key?(json_attribute)
       end
-      self.associations.each do |association, helper|
+      associations.each do |association, helper|
         if helper.performs_lookup?
           helper.lookup_associated_record_from(json_attributes) do |associated_record|
             attributes[:"#{ association }_id"] = associated_record.try(:id)
@@ -254,16 +254,16 @@ class Api::Base
     end
 
     def json_attribute_for_attribute(attribute_or_association, *rest)
-      json_attribute = self.attribute_to_json_attribute_mappings[attribute_or_association.to_sym]
+      json_attribute = attribute_to_json_attribute_mappings[attribute_or_association.to_sym]
       if json_attribute.blank?
         # If we have reached the end of the line, and the attribute_or_association is for what looks like
         # an association, then we'll look it up without the '_id' and return that value.
         if attribute_or_association.to_s =~ /_id$/ and rest.empty?
-          association = self.associations[attribute_or_association.to_s.sub(/_id$/, '').to_sym]
+          association = associations[attribute_or_association.to_s.sub(/_id$/, '').to_sym]
           raise StandardError, "Unexpected association #{attribute_or_association.inspect}" if association.nil?
           return association.json_attribute_for_attribute(:name)
         end
-        json_attribute = self.associations[attribute_or_association.to_sym].json_attribute_for_attribute(*rest)
+        json_attribute = associations[attribute_or_association.to_sym].json_attribute_for_attribute(*rest)
       end
       raise StandardError, "Unexpected attribute #{attribute_or_association.inspect} does not appear to be mapped" if json_attribute.blank?
       json_attribute

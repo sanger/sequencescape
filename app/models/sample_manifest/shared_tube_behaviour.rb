@@ -6,11 +6,11 @@
 
 module SampleManifest::SharedTubeBehaviour
   def generate_tubes(purpose)
-    sanger_ids = generate_sanger_ids(self.count)
-    study_abbreviation = self.study.abbreviation
+    sanger_ids = generate_sanger_ids(count)
+    study_abbreviation = study.abbreviation
 
     tubes, samples_data = [], []
-    (0...self.count).each do |_|
+    (0...count).each do |_|
       tube = purpose.create!
       sanger_sample_id = SangerSampleId.generate_sanger_sample_id!(study_abbreviation, sanger_ids.shift)
 
@@ -20,8 +20,8 @@ module SampleManifest::SharedTubeBehaviour
 
     self.barcodes = tubes.map(&:sanger_human_barcode)
 
-    tube_sample_creation(samples_data, self.study.id)
-    delayed_generate_asset_requests(tubes.map(&:id), self.study.id)
+    tube_sample_creation(samples_data, study.id)
+    delayed_generate_asset_requests(tubes.map(&:id), study.id)
     save!
     tubes
   end

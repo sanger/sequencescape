@@ -22,7 +22,7 @@ class Event < ActiveRecord::Base
   end
 
   def request?
-    self.eventful_type == "Request" ? true : false
+    eventful_type == "Request" ? true : false
   end
 
   private
@@ -35,12 +35,12 @@ class Event < ActiveRecord::Base
   end
 
   def update_request
-    if self.request?
-      request = self.eventful
+    if request?
+      request = eventful
       unless request.nil? or request.failed? or request.cancelled?
-        if self.family == "fail"
+        if family == "fail"
           request.fail!
-        elsif self.family == "pass" # && !request.project.nil?
+        elsif family == "pass" # && !request.project.nil?
           request.pass!
         end
       end

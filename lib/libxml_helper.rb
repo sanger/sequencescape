@@ -17,12 +17,12 @@ class XML::Node
 
   # find the child node with the given xpath
   def at(xpath)
-    self.find_first(xpath)
+    find_first(xpath)
   end
 
   # find the array of child nodes matching the given xpath
   def search(xpath)
-    results = self.find(xpath).to_a
+    results = find(xpath).to_a
     if block_given?
       results.each do |result|
         yield result
@@ -48,17 +48,17 @@ class XML::Node
 
   # return this node and its contents as an xml string
   def to_xml
-    self.to_s
+    to_s
   end
 
   # alias for path
   def xpath
-    self.path
+    path
   end
 
   # provide a name for the default namespace
   def register_default_namespace(name)
-    self.namespace.each do |n|
+    namespace.each do |n|
       if n.to_s == nil
         register_namespace("#{name}:#{n.href}")
         return

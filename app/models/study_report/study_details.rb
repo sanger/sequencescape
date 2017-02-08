@@ -46,7 +46,7 @@ module StudyReport::StudyDetails
       .where([
         "plates.plate_purpose_id IN (?) AND #{study_condition}=? AND assets.id > ?",
         plate_purpose_id,
-        self.id,
+        id,
         initial_id
       ]).order('id ASC').limit(BATCH_SIZE).pluck(:id)
   end
@@ -72,7 +72,7 @@ module StudyReport::StudyDetails
 
         yield([
           asset_progress_data[:status],
-          self.name,
+          name,
           asset_progress_data[:supplier],
           asset_progress_data[:sanger_sample_id],
           asset_progress_data[:sample_name],

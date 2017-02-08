@@ -88,7 +88,7 @@ module Authorization
 
       # Handle redirection within permit if authorization is denied.
       def handle_redirection
-        return if not self.respond_to?(:redirect_to)
+        return if not respond_to?(:redirect_to)
 
         # Store url in session for return if this is available from
         # authentication
@@ -109,7 +109,7 @@ module Authorization
           @options[:user]
         elsif @options[:get_user_method]
           send(@options[:get_user_method])
-        elsif self.respond_to? :current_user
+        elsif respond_to? :current_user
           current_user
         elsif not @options[:allow_guests]
           raise(CannotObtainUserObject, "Couldn't find #current_user or @user, and nothing appropriate found in hash")

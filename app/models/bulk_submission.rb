@@ -138,7 +138,7 @@ class BulkSubmission
     if spreadsheet_valid?
       submission_details = submission_structure
 
-      raise ActiveRecord::RecordInvalid, self if self.errors.count > 0
+      raise ActiveRecord::RecordInvalid, self if errors.count > 0
       # Within a single transaction process each of the rows of the CSV file as a separate submission.  Any name
       # fields need to be mapped to IDs, and the 'assets' field needs to be split up and processed if present.
       ActiveRecord::Base.transaction do
@@ -237,7 +237,7 @@ class BulkSubmission
     # Builds an array of the common fields. Raises and exception if the fields are inconsistent
     COMMON_FIELDS.map do |field|
       option = rows.map { |r| r[field] }.uniq
-      self.errors.add(:spreadsheet, "Column, #{field}, should be identical for all requests in asset group #{rows.first['asset group name']}") if option.count > 1
+      errors.add(:spreadsheet, "Column, #{field}, should be identical for all requests in asset group #{rows.first['asset group name']}") if option.count > 1
       [field, option.first]
     end
   end

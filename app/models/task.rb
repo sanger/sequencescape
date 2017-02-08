@@ -18,7 +18,7 @@ class Task < ActiveRecord::Base
   # TODO move into SetDescriptorsTask
   def get_descriptor_value(name, default = nil)
     name_s = name.to_s
-    self.descriptors.each do |desc|
+    descriptors.each do |desc|
       if desc.name.eql?(name_s)
         return desc.value
       end
@@ -28,13 +28,13 @@ class Task < ActiveRecord::Base
 
   def set_descriptor_value(name, value, kind = nil)
     name_s = name.to_s
-    self.descriptors.each do |desc|
+    descriptors.each do |desc|
       if desc.name.eql?(name_s)
         desc.value = value
         return
       end
     end
-    self.descriptors << Descriptor.new(name: name_s, value: value)
+    descriptors << Descriptor.new(name: name_s, value: value)
 #    self.descriptors.save
   end
   # END descriptors
@@ -43,7 +43,7 @@ class Task < ActiveRecord::Base
   has_many :subclass_attributes, as: :attributable, dependent: :destroy, autosave: true
   def get_subclass_attribute_value(name, default = nil)
     name_s = name.to_s
-    self.subclass_attributes.each do |desc|
+    subclass_attributes.each do |desc|
       if desc.name.eql?(name_s)
         return desc.value
       end
@@ -53,13 +53,13 @@ class Task < ActiveRecord::Base
 
   def set_subclass_attribute_value(name, value, kind = nil)
     name_s = name.to_s
-    self.subclass_attributes.each do |desc|
+    subclass_attributes.each do |desc|
       if desc.name.eql?(name_s)
         desc.value = value
         return
       end
     end
-    self.subclass_attributes << SubclassAttribute.new(name: name_s, value: value)
+    subclass_attributes << SubclassAttribute.new(name: name_s, value: value)
 #    self.subclass.save
   end
 

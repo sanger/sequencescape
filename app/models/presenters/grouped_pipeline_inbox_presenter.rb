@@ -69,7 +69,7 @@ module Presenters
     end
 
     def valid_fields
-      @valid_fields ||= self.class.fields.select { |n, m, c| c.nil? || self.send(c) }
+      @valid_fields ||= self.class.fields.select { |n, m, c| c.nil? || send(c) }
     end
 
     def purpose_important?

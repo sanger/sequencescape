@@ -35,21 +35,21 @@ class PlateVolume < ActiveRecord::Base
   private :update_well_volumes
 
   def extract_well_volumes
-    return if self.uploaded.nil?
-    head, *tail = CSV.parse(self.uploaded.file.read)
+    return if uploaded.nil?
+    head, *tail = CSV.parse(uploaded.file.read)
     tail.each { |(barcode, location, volume)| yield(location, volume) }
   end
   private :extract_well_volumes
 
   # Is an update required given the timestamp specified
   def update_required?(modified_timestamp = Time.now)
-    self.updated_at < modified_timestamp
+    updated_at < modified_timestamp
   end
 
   def call(filename, file)
     return unless update_required?(file.stat.mtime)
     db_files.map(&:destroy)
-    self.reload
+    reload
     update_attributes!(uploaded_file_name: filename, updated_at: file.stat.mtime, uploaded: file)
   end
 
@@ -83,7 +83,7 @@ class PlateVolume < ActiveRecord::Base
     end
 
     def find_for_filename(filename)
-      self.find_by_uploaded_file_name(filename) or
+      find_by_uploaded_file_name(filename) or
       ->(filename, file) { PlateVolume.create!(uploaded_file_name: filename, updated_at: file.stat.mtime, uploaded: file) }
     end
   end

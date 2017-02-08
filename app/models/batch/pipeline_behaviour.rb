@@ -31,11 +31,11 @@ module Batch::PipelineBehaviour
   end
 
   def externally_released?
-    workflow.source_is_internal? && self.released?
+    workflow.source_is_internal? && released?
   end
 
   def internally_released?
-    workflow.source_is_external? && self.released?
+    workflow.source_is_external? && released?
   end
 
   def show_actions?

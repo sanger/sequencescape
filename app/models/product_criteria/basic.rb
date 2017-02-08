@@ -166,7 +166,7 @@ class ProductCriteria::Basic
     if @well_or_metric.is_a?(Hash)
       @well_or_metric[attribute]
     else
-      self.send(attribute)
+      send(attribute)
     end
   end
 

@@ -54,11 +54,11 @@ class User < ActiveRecord::Base
   end
 
   def study_roles
-    self.user_roles("Study")
+    user_roles("Study")
   end
 
   def project_roles
-    self.user_roles("Project")
+    user_roles("Project")
   end
 
   def study_and_project_roles
@@ -70,7 +70,7 @@ class User < ActiveRecord::Base
   end
 
   def following?(item)
-    self.has_role? 'follower', item
+    has_role? 'follower', item
   end
 
   def logout_path
@@ -98,11 +98,11 @@ class User < ActiveRecord::Base
   end
 
   def name
-    name_incomplete? ? self.login : "#{self.first_name} #{self.last_name}"
+    name_incomplete? ? login : "#{first_name} #{last_name}"
   end
 
   def projects
-    return Project.all if self.is_administrator?
+    return Project.all if is_administrator?
     atuhorized = authorized_projects
     return Project.all if ((atuhorized.blank?) && (privileged?))
     atuhorized
@@ -196,7 +196,7 @@ class User < ActiveRecord::Base
   end
 
   def new_api_key(length = 32)
-    u = Digest::SHA1.hexdigest(self.login)[0..12]
+    u = Digest::SHA1.hexdigest(login)[0..12]
     k = Digest::SHA1.hexdigest(Time.now.to_s + rand(12341234).to_s)[1..length]
     self.api_key = "#{u}-#{k}"
   end
@@ -230,7 +230,7 @@ class User < ActiveRecord::Base
 
   def self.valid_barcode?(code)
     begin
-      human_code = Barcode.barcode_to_human!(code, self.prefix)
+      human_code = Barcode.barcode_to_human!(code, prefix)
     rescue
       return false
     end

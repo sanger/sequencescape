@@ -32,18 +32,18 @@ class Barcode
     end
 
     def set_default_prefix
-      self.barcode_prefix ||= BarcodePrefix.find_by_prefix(self.prefix)
+      self.barcode_prefix ||= BarcodePrefix.find_by_prefix(prefix)
     end
     private :set_default_prefix
 
     def sanger_human_barcode
-      return nil if self.barcode.nil?
-      self.prefix + self.barcode.to_s + Barcode.calculate_checksum(self.prefix, self.barcode)
+      return nil if barcode.nil?
+      prefix + barcode.to_s + Barcode.calculate_checksum(prefix, barcode)
     end
 
     def ean13_barcode
       return nil unless barcode.present? and prefix.present?
-      Barcode.calculate_barcode(self.prefix, self.barcode.to_i).to_s
+      Barcode.calculate_barcode(prefix, barcode.to_i).to_s
     end
     alias_method :machine_barcode, :ean13_barcode
 
@@ -168,8 +168,8 @@ class Barcode
 
   def self.barcode_to_human(code)
     bcode = nil
-    prefix, number, check = self.split_barcode(code)
-    human_prefix = self.prefix_to_human(prefix)
+    prefix, number, check = split_barcode(code)
+    human_prefix = prefix_to_human(prefix)
     if calculate_barcode(human_prefix, number.to_i) == code.to_i
       bcode = "#{human_prefix}#{number}#{check.chr}"
     end
@@ -188,9 +188,9 @@ class Barcode
   end
 
   def self.barcode_lookup(code)
-    prefix, number, check = self.split_barcode(code)
+    prefix, number, check = split_barcode(code)
     prefix = prefix_to_human(prefix)
-    human_code = self.barcode_to_human(code)
+    human_code = barcode_to_human(code)
     return nil unless human_code
 
     case prefix

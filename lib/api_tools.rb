@@ -18,7 +18,7 @@ module ApiTools
   end
 
   def to_xml(options = {})
-    renamed_keys = self.for_api.inject({}) do |renamed_keys, (key, value)|
+    renamed_keys = for_api.inject({}) do |renamed_keys, (key, value)|
       renamed_keys.tap { renamed_keys[key.underscore] = value }
     end
     options.reverse_merge!(root: self.class.to_s.underscore, skip_types: true)
@@ -31,11 +31,11 @@ module ApiTools
 
   # TODO: Add relationships for object
   def as_json(options = {})
-    { self.json_root => self.class.render_class.to_hash(self), 'lims' => configatron.amqp.lims_id! }
+    { json_root => self.class.render_class.to_hash(self), 'lims' => configatron.amqp.lims_id! }
   end
 
   def to_yaml(options = {})
-    self.for_api.to_yaml(options)
+    for_api.to_yaml(options)
   end
 
   def url_name
@@ -44,7 +44,7 @@ module ApiTools
   alias_method(:json_root, :url_name)
 
   def url
-    [configatron.api_url, API_VERSION, self.url_name.pluralize, self.uuid].join('/')
+    [configatron.api_url, API_VERSION, url_name.pluralize, uuid].join('/')
   end
 end
 

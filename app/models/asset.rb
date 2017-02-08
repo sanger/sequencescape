@@ -195,7 +195,7 @@ class Asset < ActiveRecord::Base
   end
 
   def tube_name
-    (primary_aliquot.nil? or primary_aliquot.sample.sanger_sample_id.blank?) ? self.name : primary_aliquot.sample.shorten_sanger_sample_id
+    (primary_aliquot.nil? or primary_aliquot.sample.sanger_sample_id.blank?) ? name : primary_aliquot.sample.shorten_sanger_sample_id
   end
 
   def study
@@ -208,7 +208,7 @@ class Asset < ActiveRecord::Base
 
   def ancestor_of_purpose(ancestor_purpose_id)
     # If it's not a tube or a plate, defaults to stock_plate
-    self.stock_plate
+    stock_plate
   end
 
   has_one :creation_request, class_name: 'Request', foreign_key: :target_asset_id
@@ -259,21 +259,21 @@ class Asset < ActiveRecord::Base
   private :name_needs_to_be_generated?
 
   def generate_name_with_id
-    self.update_attributes!(name: "#{self.name} #{self.id}")
+    update_attributes!(name: "#{name} #{id}")
   end
 
   def generate_name(new_name)
     self.name = new_name
-    @name_needs_to_be_generated = self.library_prep?
+    @name_needs_to_be_generated = library_prep?
   end
 
   # todo unify with parent/children
   def parent
-    self.parents.first
+    parents.first
   end
 
   def child
-    self.children.last
+    children.last
   end
 
   # Labware reflects the physical piece of plastic corresponding to an asset
@@ -286,11 +286,11 @@ class Asset < ActiveRecord::Base
   end
 
   def display_name
-    self.name.blank? ? "#{self.sti_type} #{self.id}" : self.name
+    name.blank? ? "#{sti_type} #{id}" : name
   end
 
   def external_identifier
-    "#{self.sti_type}#{self.id}"
+    "#{sti_type}#{id}"
   end
 
   def details
@@ -320,12 +320,12 @@ class Asset < ActiveRecord::Base
 
   def set_qc_state(state)
     self.qc_state = QC_STATES.rassoc(state).try(:first) || state
-    self.save
-    self.set_external_release(self.qc_state)
+    save
+    set_external_release(qc_state)
   end
 
   def has_been_through_qc?
-    not self.qc_state.blank?
+    not qc_state.blank?
   end
 
   def set_external_release(state)
@@ -345,7 +345,7 @@ class Asset < ActiveRecord::Base
     external_release_nil_before = external_release.nil?
     yield
     save!
-    events.create_external_release!(!external_release_nil_before) unless self.external_release.nil?
+    events.create_external_release!(!external_release_nil_before) unless external_release.nil?
   end
   private :update_external_release
 
@@ -443,15 +443,15 @@ class Asset < ActiveRecord::Base
   end
 
   def external_release_text
-    return "Unknown" if self.external_release.nil?
-    self.external_release? ? "Yes" : "No"
+    return "Unknown" if external_release.nil?
+    external_release? ? "Yes" : "No"
   end
 
   def add_parent(parent)
     return unless parent
     # should be self.parents << parent but that doesn't work
 
-    self.save!
+    save!
     parent.save!
     AssetLink.create_edge!(parent, self)
   end
@@ -465,13 +465,13 @@ class Asset < ActiveRecord::Base
   end
 
   def transfer(max_transfer_volume)
-    transfer_volume = [max_transfer_volume.to_f, self.volume || 0.0].min
+    transfer_volume = [max_transfer_volume.to_f, volume || 0.0].min
     raise VolumeError, "not enough volume left" if transfer_volume <= 0
 
-    self.class.create!(name: self.name) do |new_asset|
-      new_asset.aliquots = self.aliquots.map(&:dup)
+    self.class.create!(name: name) do |new_asset|
+      new_asset.aliquots = aliquots.map(&:dup)
       new_asset.volume   = transfer_volume
-      update_attributes!(volume: self.volume - transfer_volume) #  Update ourselves
+      update_attributes!(volume: volume - transfer_volume) #  Update ourselves
     end.tap do |new_asset|
       new_asset.add_parent(self)
     end
@@ -486,11 +486,11 @@ class Asset < ActiveRecord::Base
   end
 
   def has_many_requests?
-    Request.find_all_target_asset(self.id).size > 1
+    Request.find_all_target_asset(id).size > 1
   end
 
   def is_a_resource
-   self.resource == true
+   resource == true
   end
 
   def can_be_created?

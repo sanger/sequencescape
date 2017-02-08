@@ -27,7 +27,7 @@ class PipelinesController < ApplicationController
   end
 
   def show
-    self.expires_now
+    expires_now
     @show_held_requests = (params[:view] == 'all')
     @current_page       = params[:page]
 

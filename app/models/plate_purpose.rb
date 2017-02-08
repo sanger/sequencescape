@@ -171,7 +171,7 @@ class PlatePurpose < Purpose
   has_many :plates, foreign_key: :plate_purpose_id
 
   def target_plate_type
-    self.target_type || 'Plate'
+    target_type || 'Plate'
   end
 
   def self.stock_plate_purpose

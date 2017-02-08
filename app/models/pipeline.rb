@@ -115,7 +115,7 @@ class Pipeline < ActiveRecord::Base
   # This is the old behaviour for every other pipeline.
   def detach_request_from_batch(batch, request)
     request.return_for_inbox!
-    self.update_detached_request(batch, request)
+    update_detached_request(batch, request)
     request.save!
   end
 
@@ -166,13 +166,13 @@ class Pipeline < ActiveRecord::Base
   end
 
   def completed_request_as_part_of_release_batch(request)
-    if self.library_creation?
+    if library_creation?
       unless request.failed?
-        EventSender.send_pass_event(request.id, "", "Passed #{self.name}.", self.id)
-        EventSender.send_request_update(request.id, "complete", "Completed pipeline: #{self.name}")
+        EventSender.send_pass_event(request.id, "", "Passed #{name}.", id)
+        EventSender.send_request_update(request.id, "complete", "Completed pipeline: #{name}")
       end
     else
-      EventSender.send_request_update(request.id, "complete", "Completed pipeline: #{self.name}")
+      EventSender.send_request_update(request.id, "complete", "Completed pipeline: #{name}")
     end
   end
 
@@ -190,7 +190,7 @@ class Pipeline < ActiveRecord::Base
   end
 
   def has_controls?
-    self.controls.empty? ? false : true
+    controls.empty? ? false : true
   end
 
   def pulldown?

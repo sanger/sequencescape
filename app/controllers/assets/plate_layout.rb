@@ -29,7 +29,7 @@ class AssetsController < ApplicationController
     end
 
     def cell_name_for_well_at(row, column)
-      Map.find_by_location_id_and_asset_size(((row * self.width) + column + 1), self.size).description
+      Map.find_by_location_id_and_asset_size(((row * width) + column + 1), size).description
     end
 
     def location_for_well_at(row, column)
@@ -57,7 +57,7 @@ class AssetsController < ApplicationController
     end
 
     def assert_valid_location(location_id)
-      raise StandardError, "Location out of bounds" unless (1..self.size).cover?(location_id)
+      raise StandardError, "Location out of bounds" unless (1..size).cover?(location_id)
     end
   end
 end

@@ -109,11 +109,11 @@ class Plate < Asset
   end
 
   def self.derived_classes
-    [self, *self.descendants].map(&:name)
+    [self, *descendants].map(&:name)
   end
 
   def prefix
-    self.barcode_prefix.try(:prefix) || self.class.prefix
+    barcode_prefix.try(:prefix) || self.class.prefix
   end
 
   def submissions
@@ -122,14 +122,14 @@ class Plate < Asset
         'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
         'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.asset_id'
       ])
-      .where(['caplp.container_id = ?', self.id])
+      .where(['caplp.container_id = ?', id])
     return s unless s.blank?
     Submission.select('submissions.*',).uniq
       .joins([
         'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
         'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.target_asset_id'
       ])
-      .where(['caplp.container_id = ?', self.id])
+      .where(['caplp.container_id = ?', id])
   end
 
   def barcode_dilution_factor_created_at_hash
@@ -200,13 +200,13 @@ class Plate < Asset
         'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
         'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.asset_id'
       ])
-      .where(['caplp.container_id = ?', self.id]).first.try(:priority) ||
+      .where(['caplp.container_id = ?', id]).first.try(:priority) ||
     Submission.select('MAX(submissions.priority) AS priority')
       .joins([
         'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
         'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.target_asset_id'
       ])
-      .where(['caplp.container_id = ?', self.id]).first.try(:priority) || 0
+      .where(['caplp.container_id = ?', id]).first.try(:priority) || 0
   end
 
   def study
@@ -249,7 +249,7 @@ class Plate < Asset
 
     def map_from_locations
       {}.tap do |location_to_well|
-        self.walk_in_column_major_order do |well, _|
+        walk_in_column_major_order do |well, _|
           raise "Duplicated well at #{well.map.description}" if location_to_well.key?(well.map)
           location_to_well[well.map] = well
         end
@@ -268,12 +268,12 @@ class Plate < Asset
 
     # Walks the wells A1, B1, C1, ... A2, B2, C2, ... H12
     def walk_in_column_major_order(&block)
-      self.in_column_major_order.each { |well| yield(well, well.map.column_order) }
+      in_column_major_order.each { |well| yield(well, well.map.column_order) }
     end
 
     # Walks the wells A1, A2, ... B1, B2, ... H12
     def walk_in_row_major_order(&block)
-      self.in_row_major_order.each { |well| yield(well, well.map.row_order) }
+      in_row_major_order.each { |well| yield(well, well.map.row_order) }
     end
 
     def in_preferred_order
@@ -382,9 +382,9 @@ class Plate < Asset
   end
 
   def find_well_by_rowcol(row, col)
-    map = self.find_map_by_rowcol(row, col)
+    map = find_map_by_rowcol(row, col)
     return nil if map.nil?
-    self.find_well_by_name(map.description)
+    find_well_by_name(map.description)
   end
 
   def add_well_holder(well)
@@ -406,12 +406,12 @@ class Plate < Asset
   end
 
   def add_and_save_well(well, row = nil, col = nil)
-    self.add_well(well, row, col)
+    add_well(well, row, col)
     well.save!
   end
 
   def find_well_by_name(well_name)
-    self.wells.located_at_position(well_name).first
+    wells.located_at_position(well_name).first
   end
   alias :find_well_by_map_description :find_well_by_name
 
@@ -428,20 +428,20 @@ class Plate < Asset
   end
 
   def get_plate_type
-    if self.descriptor_value('Plate Type').nil?
-      plate_type = self.get_external_value('plate_type_description')
+    if descriptor_value('Plate Type').nil?
+      plate_type = get_external_value('plate_type_description')
       set_plate_type(plate_type)
     end
-    self.descriptor_value('Plate Type')
+    descriptor_value('Plate Type')
   end
 
   def set_plate_type(result)
-    self.add_descriptor(Descriptor.new(name: "Plate Type", value: result))
-    self.save
+    add_descriptor(Descriptor.new(name: "Plate Type", value: result))
+    save
   end
 
   def stock_plate_name
-    (self.get_plate_type == "Stock Plate" || self.get_plate_type.blank?) ? PlatePurpose.cherrypickable_as_source.first.name : self.get_plate_type
+    (get_plate_type == "Stock Plate" || get_plate_type.blank?) ? PlatePurpose.cherrypickable_as_source.first.name : get_plate_type
   end
 
   def details
@@ -456,7 +456,7 @@ class Plate < Asset
 
   # A plate has a sample with the specified name if any of its wells have that sample.
   def sample?(sample_name)
-    self.wells.any? do |well|
+    wells.any? do |well|
       well.aliquots.any? { |aliquot| aliquot.sample.name == sample_name }
     end
   end
@@ -479,10 +479,10 @@ class Plate < Asset
 
     # From ETS
     @storage_location_service = 'ETS'
-    return "Control" if self.is_a?(ControlPlate)
-    return "" if self.barcode.blank?
+    return "Control" if is_a?(ControlPlate)
+    return "" if barcode.blank?
     return %w(storage_area storage_device building_area building).map do |key|
-      self.get_external_value(key)
+      get_external_value(key)
     end.compact.join(' - ')
 
   rescue LabWhereClient::LabwhereException => e
@@ -495,13 +495,11 @@ class Plate < Asset
     plate_purpose.present? ? send(:"#{plate_purpose.barcode_for_tecan}") : ean13_barcode
   end
 
-  def infinium_barcode
-    self.plate_metadata.infinium_barcode
-  end
+  delegate :infinium_barcode, to: :plate_metadata
 
   def infinium_barcode=(barcode)
-    self.plate_metadata.infinium_barcode = barcode
-    self.plate_metadata.save!
+    plate_metadata.infinium_barcode = barcode
+    plate_metadata.save!
   end
 
   def valid_infinium_barcode?(barcode)
@@ -509,7 +507,7 @@ class Plate < Asset
   end
 
   def self.create_from_rack_csv(file_location, plate_barcode)
-    plate = self.create(name: "Plate #{plate_barcode}", barcode: plate_barcode, size: 96)
+    plate = create(name: "Plate #{plate_barcode}", barcode: plate_barcode, size: 96)
 
     CSV.foreach(file_location) do |row|
       map = Map.find_for_cell_location(row.first, plate.size)
@@ -563,10 +561,10 @@ class Plate < Asset
   end
 
   def plate_asset_group_name(current_time)
-    if self.barcode
-      self.barcode + "_asset_group_#{submission_time(current_time)}"
+    if barcode
+      barcode + "_asset_group_#{submission_time(current_time)}"
     else
-      self.id + "_asset_group_#{submission_time(current_time)}"
+      id + "_asset_group_#{submission_time(current_time)}"
     end
   end
 
@@ -609,11 +607,11 @@ class Plate < Asset
   end
 
   def generate_plate_submission(project, study, user, current_time)
-    submission = self.create_plate_submission(project, study, user, current_time)
+    submission = create_plate_submission(project, study, user, current_time)
     if submission
-      self.events.create!(message: I18n.t('studies.submissions.plate.event.success', barcode: self.barcode, submission_id: submission.id), created_by: user.login)
+      events.create!(message: I18n.t('studies.submissions.plate.event.success', barcode: barcode, submission_id: submission.id), created_by: user.login)
     else
-      self.events.create!(message: I18n.t('studies.submissions.plate.event.failed', barcode: self.barcode), created_by: user.login)
+      events.create!(message: I18n.t('studies.submissions.plate.event.failed', barcode: barcode), created_by: user.login)
       study.errors.add("plate_barcode", "Couldnt create submission for plate #{plate_barcode}")
     end
   end
@@ -651,8 +649,8 @@ class Plate < Asset
   end
 
   def stock_plate?
-    return true if self.plate_purpose.nil?
-    self.plate_purpose.can_be_considered_a_stock_plate? && self.plate_purpose.attatched?(self)
+    return true if plate_purpose.nil?
+    plate_purpose.can_be_considered_a_stock_plate? && plate_purpose.attatched?(self)
   end
 
   def stock_plate
@@ -661,7 +659,7 @@ class Plate < Asset
 
   def lookup_stock_plate
     spp = PlatePurpose.considered_stock_plate.pluck(:id)
-    self.ancestors.order('created_at DESC').where(plate_purpose_id: spp).first
+    ancestors.order('created_at DESC').where(plate_purpose_id: spp).first
   end
   private :lookup_stock_plate
 
@@ -670,8 +668,8 @@ class Plate < Asset
   end
 
   def ancestor_of_purpose(ancestor_purpose_id)
-    return self if self.plate_purpose_id == ancestor_purpose_id
-    self.ancestors.order('created_at DESC').where(plate_purpose_id: ancestor_purpose_id).first
+    return self if plate_purpose_id == ancestor_purpose_id
+    ancestors.order('created_at DESC').where(plate_purpose_id: ancestor_purpose_id).first
   end
 
   def ancestors_of_purpose(ancestor_purpose_id)
@@ -680,7 +678,7 @@ class Plate < Asset
   end
 
   def child_dilution_plates_filtered_by_type(parent_model)
-    self.children.select { |p| p.is_a?(parent_model) }
+    children.select { |p| p.is_a?(parent_model) }
   end
 
   def children_of_dilution_plates(parent_model, child_model)
@@ -700,7 +698,7 @@ class Plate < Asset
   end
 
   def find_study_abbreviation_from_parent
-    self.parent.try(:wells).try(:first).try(:study).try(:abbreviation)
+    parent.try(:wells).try(:first).try(:study).try(:abbreviation)
   end
 
   def self.create_with_barcode!(*args, &block)
@@ -730,7 +728,7 @@ class Plate < Asset
   end
 
   def number_of_blank_samples
-    self.wells.with_blank_samples.count
+    wells.with_blank_samples.count
   end
 
   def default_plate_size
@@ -746,18 +744,18 @@ class Plate < Asset
   end
 
   def valid_positions?(positions)
-    unique_positions_on_plate, unique_positions_from_caller = Map.where_description(positions).where_plate_size(self.size).where_plate_shape(self.asset_shape).all.map(&:description).sort.uniq, positions.sort.uniq
+    unique_positions_on_plate, unique_positions_from_caller = Map.where_description(positions).where_plate_size(size).where_plate_shape(asset_shape).all.map(&:description).sort.uniq, positions.sort.uniq
     unique_positions_on_plate == unique_positions_from_caller
   end
 
   def name_for_label
-    self.name
+    name
   end
 
   def set_plate_name_and_size
-    self.name = "Plate #{barcode}" if self.name.blank?
-    self.size = default_plate_size if self.size.nil?
-    self.location = Location.find_by_name("Sample logistics freezer") if self.location_id.nil?
+    self.name = "Plate #{barcode}" if name.blank?
+    self.size = default_plate_size if size.nil?
+    self.location = Location.find_by_name("Sample logistics freezer") if location_id.nil?
   end
   private :set_plate_name_and_size
 
@@ -769,10 +767,10 @@ class Plate < Asset
 
   def barcode_label_for_printing
     PrintBarcode::Label.new(
-      number: self.barcode,
-      study: self.find_study_abbreviation_from_parent,
-      suffix: self.parent.try(:barcode),
-      prefix: self.barcode_prefix.prefix
+      number: barcode,
+      study: find_study_abbreviation_from_parent,
+      suffix: parent.try(:barcode),
+      prefix: barcode_prefix.prefix
     )
   end
 
@@ -794,11 +792,11 @@ class Plate < Asset
   end
 
   def convert_to(new_purpose)
-    self.update_attributes!(plate_purpose: new_purpose)
+    update_attributes!(plate_purpose: new_purpose)
   end
 
   def compatible_purposes
-    PlatePurpose.compatible_with_purpose(self.purpose)
+    PlatePurpose.compatible_with_purpose(purpose)
   end
 
   def update_qc_values_with_parser(parser)
@@ -817,11 +815,11 @@ class Plate < Asset
   end
 
   def samples_in_order(order_id)
-    Sample.for_plate_and_order(self.id, order_id)
+    Sample.for_plate_and_order(id, order_id)
   end
 
   def samples_in_order_by_target(order_id)
-    Sample.for_plate_and_order_as_target(self.id, order_id)
+    Sample.for_plate_and_order_as_target(id, order_id)
   end
 
   def team
@@ -830,7 +828,7 @@ class Plate < Asset
         'INNER JOIN requests ON requests.request_type_id = request_types.id',
         'INNER JOIN well_links ON well_links.source_well_id = requests.asset_id AND well_links.type = "stock"',
         'INNER JOIN container_associations AS ca ON ca.content_id = well_links.target_well_id'
-      ]).where(['ca.container_id = ?', self.id]).first.try(:name) || 'UNKNOWN'
+      ]).where(['ca.container_id = ?', id]).first.try(:name) || 'UNKNOWN'
   end
 
   # Barcode is stored as a string, jet in a number of places is treated as

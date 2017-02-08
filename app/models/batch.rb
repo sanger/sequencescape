@@ -98,17 +98,17 @@ class Batch < ActiveRecord::Base
     # Keep this check here until we're sure we haven't missed anything.
     raise StandardError, "Can not fail batch without failing requests" if ignore_requests
     # create failures
-    self.failures.create(reason: reason, comment: comment, notify_remote: false)
+    failures.create(reason: reason, comment: comment, notify_remote: false)
 
-    self.requests.each do |request|
+    requests.each do |request|
       request.failures.create(reason: reason, comment: comment, notify_remote: true)
       unless request.asset && request.asset.resource?
-        EventSender.send_fail_event(request.id, reason, comment, self.id)
+        EventSender.send_fail_event(request.id, reason, comment, id)
       end
     end
 
     self.production_state = "fail"
-    self.save!
+    save!
   end
 
   # Fail specific items on this batch
@@ -117,13 +117,13 @@ class Batch < ActiveRecord::Base
 
     requests.each do |key, value|
       if value == "on"
-        logger.debug "SENDING FAIL FOR REQUEST #{key}, BATCH #{self.id}, WITH REASON #{reason}"
+        logger.debug "SENDING FAIL FOR REQUEST #{key}, BATCH #{id}, WITH REASON #{reason}"
         unless key == "control"
           ActiveRecord::Base.transaction do
             request = self.requests.find(key)
             request.customer_accepts_responsibility! if fail_but_charge
             request.failures.create(reason: reason, comment: comment, notify_remote: true)
-            EventSender.send_fail_event(request.id, reason, comment, self.id)
+            EventSender.send_fail_event(request.id, reason, comment, id)
           end
         end
       else
@@ -135,22 +135,22 @@ class Batch < ActiveRecord::Base
   end
 
   def update_batch_state(reason, comment)
-    if self.requests.all?(&:terminated?)
-      self.failures.create(reason: reason, comment: comment, notify_remote: false)
+    if requests.all?(&:terminated?)
+      failures.create(reason: reason, comment: comment, notify_remote: false)
       self.production_state = "fail"
-      self.save!
+      save!
     end
   end
 
   def failed?
-    self.production_state == "fail"
+    production_state == "fail"
   end
 
   # Used in auto_batch view to disable the submit button if the batch was already passed to Auto QC
   def in_process?
     statuses = qc_states
     statuses.delete_at(0)
-    statuses.include?(self.qc_state)
+    statuses.include?(qc_state)
   end
 
   # Tests whether this Batch has any associated LabEvents
@@ -270,8 +270,8 @@ class Batch < ActiveRecord::Base
 
   def mpx_library_name
     mpx_name = ""
-    if self.multiplexed? && self.requests.size > 0
-      mpx_library_tube = self.requests[0].target_asset.child
+    if multiplexed? && requests.size > 0
+      mpx_library_tube = requests[0].target_asset.child
       if !mpx_library_tube.nil?
         mpx_name = mpx_library_tube.name
       end
@@ -280,12 +280,12 @@ class Batch < ActiveRecord::Base
   end
 
   def display_tags?
-    self.multiplexed?
+    multiplexed?
   end
 
   # Returns meaningful events excluding discriptors/descriptor_fields clutter
   def formatted_events
-    ev = self.lab_events
+    ev = lab_events
     d = []
     unless ev.empty?
       ev.sort_by { |i| i[:created_at] }.each do |t|
@@ -309,16 +309,16 @@ class Batch < ActiveRecord::Base
   end
 
   def verify_tube_layout(barcodes, user = nil)
-    self.requests.each do |request|
+    requests.each do |request|
       barcode = barcodes[(request.position).to_s]
       unless barcode.blank? || barcode == "0"
         unless barcode.to_i == request.asset.barcode.to_i
-          self.errors.add(:base, "The tube at position #{request.position} is incorrect.")
+          errors.add(:base, "The tube at position #{request.position} is incorrect.")
         end
       end
     end
-    if self.errors.empty?
-      self.lab_events.create(description: "Tube layout verified", user: user)
+    if errors.empty?
+      lab_events.create(description: "Tube layout verified", user: user)
       return true
     else
       return false
@@ -340,7 +340,7 @@ class Batch < ActiveRecord::Base
         request = Request.find(request_id)
         next if request.nil?
         request.failures.create(reason: reason, comment: comment, notify_remote: true)
-        self.detach_request(request)
+        detach_request(request)
       end
       update_batch_state(reason, comment)
     end
@@ -351,14 +351,14 @@ class Batch < ActiveRecord::Base
   # the pending queue.
   def detach_request(request, current_user = nil)
     ActiveRecord::Base.transaction do
-      request.add_comment("Used to belong to Batch #{self.id} removed at #{Time.now()}", current_user) unless current_user.nil?
-      self.pipeline.detach_request_from_batch(self, request)
+      request.add_comment("Used to belong to Batch #{id} removed at #{Time.now()}", current_user) unless current_user.nil?
+      pipeline.detach_request_from_batch(self, request)
     end
   end
 
   def return_request_to_inbox(request, current_user = nil)
     ActiveRecord::Base.transaction do
-      request.add_comment("Used to belong to Batch #{self.id} returned to inbox unstarted at #{Time.now}", current_user) unless current_user.nil?
+      request.add_comment("Used to belong to Batch #{id} returned to inbox unstarted at #{Time.now}", current_user) unless current_user.nil?
       request.return_pending_to_inbox!
     end
   end
@@ -369,11 +369,11 @@ class Batch < ActiveRecord::Base
 
   def reset!(current_user)
     ActiveRecord::Base.transaction do
-      self.discard!
+      discard!
 
-      self.requests.each do |request|
-        self.remove_link(request) # Remove link in all types of pipelines
-        self.return_request_to_inbox(request, current_user)
+      requests.each do |request|
+        remove_link(request) # Remove link in all types of pipelines
+        return_request_to_inbox(request, current_user)
       end
 
       if requests.last.submission_id.present?
@@ -397,8 +397,8 @@ class Batch < ActiveRecord::Base
     return false if batch_info.empty?
 
     # Find the two lanes that are to be swapped
-    batch_request_left  = BatchRequest.find_by_batch_id_and_position(batch_info['batch_1']['id'], batch_info['batch_1']['lane']) or self.errors.add("Swap: ", "The first lane cannot be found")
-    batch_request_right = BatchRequest.find_by_batch_id_and_position(batch_info['batch_2']['id'], batch_info['batch_2']['lane']) or self.errors.add("Swap: ", "The second lane cannot be found")
+    batch_request_left  = BatchRequest.find_by_batch_id_and_position(batch_info['batch_1']['id'], batch_info['batch_1']['lane']) or errors.add("Swap: ", "The first lane cannot be found")
+    batch_request_right = BatchRequest.find_by_batch_id_and_position(batch_info['batch_2']['id'], batch_info['batch_2']['lane']) or errors.add("Swap: ", "The second lane cannot be found")
     return unless batch_request_left.present? and batch_request_right.present?
 
     ActiveRecord::Base.transaction do
@@ -422,25 +422,25 @@ class Batch < ActiveRecord::Base
   end
 
   def plate_ids_in_study(study)
-    Plate.plate_ids_from_requests(self.requests.for_studies(study))
+    Plate.plate_ids_from_requests(requests.for_studies(study))
   end
 
   def space_left
-    [self.item_limit - self.batch_requests.count, 0].max
+    [item_limit - batch_requests.count, 0].max
   end
 
   def add_control(control_name, control_count)
     asset = Asset.find_by_name_and_resource(control_name, true)
 
-    control_count = self.space_left if control_count == 0
+    control_count = space_left if control_count == 0
 
-    first_control = [3, (self.item_limit - control_count)].min
+    first_control = [3, (item_limit - control_count)].min
 
     ActiveRecord::Base.transaction do
-      self.shift_item_positions(first_control + 1, control_count)
+      shift_item_positions(first_control + 1, control_count)
       (1..control_count).each do |index|
-        self.batch_requests.create!(
-          request: self.pipeline.control_request_type.create_control!(asset: asset, study_id: 198),
+        batch_requests.create!(
+          request: pipeline.control_request_type.create_control!(asset: asset, study_id: 198),
           position: first_control + index
         )
       end
@@ -467,12 +467,12 @@ class Batch < ActiveRecord::Base
 
   def self.valid_barcode?(code)
     begin
-      Barcode.barcode_to_human!(code, self.prefix)
+      Barcode.barcode_to_human!(code, prefix)
     rescue
       return false
     end
 
-    if self.find_from_barcode(code).nil?
+    if find_from_barcode(code).nil?
       return false
     end
 
@@ -495,7 +495,7 @@ class Batch < ActiveRecord::Base
     report_data = CSV.generate(row_sep: "\r\n") do |csv|
       csv << pulldown_report_headers
 
-      self.requests.each do |request|
+      requests.each do |request|
         raise 'Invalid request data' unless request.valid_request_for_pulldown_report?
         well = request.asset
         # TODO[mb14] DRY it
@@ -537,13 +537,13 @@ class Batch < ActiveRecord::Base
   end
 
   def show_actions?
-    self.released? == false or
-      self.pipeline.class.const_get(:ALWAYS_SHOW_RELEASE_ACTIONS)
+    released? == false or
+      pipeline.class.const_get(:ALWAYS_SHOW_RELEASE_ACTIONS)
   end
 
   def npg_set_state
     complete = true
-    self.requests.each do |request|
+    requests.each do |request|
       unless request.asset.is_a_resource
         event = request.events.family_pass_and_fail.first
         if (event.nil?)
@@ -554,12 +554,12 @@ class Batch < ActiveRecord::Base
 
     if complete
      self.state = "released"
-     self.qc_complete
-     self.save!
+     qc_complete
+     save!
     end
   end
 
   def show_fail_link?
-    self.released? && self.pipeline.sequencing?
+    released? && pipeline.sequencing?
   end
 end

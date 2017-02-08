@@ -127,7 +127,7 @@ class Parsers::BioanalysisCsvParser
       end
       [group[0], next_index]
     end.reduce({}) do |memo, group|
-      memo.merge(self.parse_sample group)
+      memo.merge(parse_sample group)
     end
   end
 

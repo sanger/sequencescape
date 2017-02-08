@@ -38,7 +38,7 @@ class QcDecision < ActiveRecord::Base
   validate :user_has_permission, if: :user
 
   def decisions=(decisions)
-    self.qc_decision_qcables.build(decisions)
+    qc_decision_qcables.build(decisions)
   end
 
   private

@@ -65,7 +65,7 @@ module SampleManifest::InputBehaviour
         def accession_number_from_manifest=(new_value)
           self.sample_ebi_accession_number ||= new_value
           if new_value.present? && new_value != sample_ebi_accession_number
-            self.errors.add(:sample_ebi_accession_number, "can not be changed")
+            errors.add(:sample_ebi_accession_number, "can not be changed")
             raise ActiveRecord::RecordInvalid, self
           end
         end
@@ -128,7 +128,7 @@ module SampleManifest::InputBehaviour
     def can_override_previous_manifest?
       # Have to use the previous value of 'updated_by_manifest' here as it may have been changed by
       # the current update.
-      not self.updated_by_manifest_was or override_previous_manifest?
+      not updated_by_manifest_was or override_previous_manifest?
     end
 
     # Resets all of the attributes to their previous values
@@ -216,12 +216,12 @@ module SampleManifest::InputBehaviour
   private :each_csv_row
 
   def process(user_updating_manifest, override_sample_information = false)
-    Delayed::Job.enqueue SampleManifest::InputBehaviour::Process.new(self.id, user_updating_manifest.id, override_sample_information)
+    Delayed::Job.enqueue SampleManifest::InputBehaviour::Process.new(id, user_updating_manifest.id, override_sample_information)
   end
 
   # Always allow 'empty' samples to be updated, but non-empty samples need to have the override checkbox set for an update to occur
   def process_job(user_updating_manifest, override_sample_information = false)
-    self.start!
+    start!
 
     samples_to_updated_attributes, sample_errors = [], []
     each_csv_row do |row|
@@ -283,7 +283,7 @@ module SampleManifest::InputBehaviour
     end
 
     self.last_errors = nil
-    self.finished!
+    finished!
   rescue ActiveRecord::RecordInvalid => exception
     errors.add(:base, exception.message)
     fail_with_errors!(errors.full_messages)

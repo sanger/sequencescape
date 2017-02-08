@@ -102,6 +102,6 @@ module Qcable::Statemachine
   def on_used; end
 
   def transition_to(target_state)
-    send("#{self.class.suggested_transition_between(self.state, target_state)}!")
+    send("#{self.class.suggested_transition_between(state, target_state)}!")
   end
 end

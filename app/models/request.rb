@@ -345,32 +345,32 @@ class Request < ActiveRecord::Base
   end
 
   def get_value(request_information_type)
-    return '' unless self.request_metadata.respond_to?(request_information_type.key.to_sym)
-    value = self.request_metadata.send(request_information_type.key.to_sym)
+    return '' unless request_metadata.respond_to?(request_information_type.key.to_sym)
+    value = request_metadata.send(request_information_type.key.to_sym)
     return value.to_s if value.blank? or request_information_type.data_type != 'Date'
     value.to_date.strftime('%d %B %Y')
   end
 
   def value_for(name, batch = nil)
     rit = RequestInformationType.find_by_name(name)
-    rit_value = self.get_value(rit) if rit.present?
+    rit_value = get_value(rit) if rit.present?
     return rit_value if rit_value.present?
 
-    list = (batch.present? ? self.lab_events_for_batch(batch) : self.lab_events)
+    list = (batch.present? ? lab_events_for_batch(batch) : lab_events)
     list.each { |event| desc = event.descriptor_value_for(name) and return desc }
     ""
   end
 
   def has_passed(batch, task)
-    self.lab_events_for_batch(batch).any? { |event| event.description == task.name }
+    lab_events_for_batch(batch).any? { |event| event.description == task.name }
   end
 
   def lab_events_for_batch(batch)
-    self.lab_events.where(batch_id: batch.id)
+    lab_events.where(batch_id: batch.id)
   end
 
   def event_with_key_value(k, v = nil)
-    v.nil? ? false : self.lab_events.with_descriptor(k, v).first
+    v.nil? ? false : lab_events.with_descriptor(k, v).first
   end
 
   # This is used for the default next or previous request check.  It means that if the caller does not specify a
@@ -404,11 +404,11 @@ class Request < ActiveRecord::Base
   end
 
   def previous_failed_requests
-    self.asset.requests.select { |previous_failed_request| (previous_failed_request.failed? or previous_failed_request.blocked?) }
+    asset.requests.select { |previous_failed_request| (previous_failed_request.failed? or previous_failed_request.blocked?) }
   end
 
   def add_comment(comment, user)
-    self.comments.create(description: comment, user: user)
+    comments.create(description: comment, user: user)
   end
 
   def self.number_expected_for_submission_id_and_request_type_id(submission_id, request_type_id)
@@ -423,16 +423,16 @@ class Request < ActiveRecord::Base
   def remove_unused_assets
     ActiveRecord::Base.transaction do
       return if target_asset.nil?
-      self.target_asset.ancestors.clear
-      self.target_asset.destroy
-      self.save!
+      target_asset.ancestors.clear
+      target_asset.destroy
+      save!
     end
   end
 
   def format_qc_information
-    return [] if self.lab_events.empty?
+    return [] if lab_events.empty?
 
-    self.events.map do |event|
+    events.map do |event|
       next if event.family.nil? or not ['pass', 'fail'].include?(event.family.downcase)
 
       message = event.message || "(No message was specified)"
@@ -445,7 +445,7 @@ class Request < ActiveRecord::Base
   end
 
   def cancelable?
-    self.batch_request.nil? && (pending? || blocked?)
+    batch_request.nil? && (pending? || blocked?)
   end
 
   def update_priority
@@ -458,7 +458,7 @@ class Request < ActiveRecord::Base
   end
 
   def request_type_updatable?(new_request_type)
-    self.pending?
+    pending?
   end
 
   def customer_accepts_responsibility!

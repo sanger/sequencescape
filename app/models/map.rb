@@ -24,7 +24,7 @@ class Map < ActiveRecord::Base
     def self.description_to_horizontal_plate_position(well_description, plate_size)
       return nil unless Map.valid_well_description_and_plate_size?(well_description, plate_size)
       split_well = Map.split_well_description(well_description)
-      width = self.plate_width(plate_size)
+      width = plate_width(plate_size)
       return nil if width.nil?
       (width * split_well[:row]) + split_well[:col]
     end
@@ -32,7 +32,7 @@ class Map < ActiveRecord::Base
     def self.description_to_vertical_plate_position(well_description, plate_size)
       return nil unless Map.valid_well_description_and_plate_size?(well_description, plate_size)
       split_well = Map.split_well_description(well_description)
-      length = self.plate_length(plate_size)
+      length = plate_length(plate_size)
       return nil if length.nil?
       (length * (split_well[:col] - 1)) + split_well[:row] + 1
     end
@@ -162,7 +162,7 @@ class Map < ActiveRecord::Base
   end
 
   def vertical_plate_position
-    self.column_order + 1
+    column_order + 1
   end
 
   def height
@@ -176,22 +176,22 @@ class Map < ActiveRecord::Base
   ##
   # Column of particular map location. Zero indexed integer
   def column
-    self.row_order % width
+    row_order % width
   end
 
   ##
   # Row of particular map location. Zero indexed integer
   def row
-    self.column_order % height
+    column_order % height
   end
 
   def horizontal_plate_position
-    self.row_order + 1
+    row_order + 1
   end
 
   def snp_id
     raise StandardError, "Only standard maps can be converted to SNP" unless map.standard?
-    self.horizontal_plate_position
+    horizontal_plate_position
   end
 
   def self.location_from_row_and_column(row, column)
@@ -257,7 +257,7 @@ class Map < ActiveRecord::Base
   end
 
   def self.find_for_cell_location(cell_location, asset_size)
-    self.find_by_description_and_asset_size(cell_location.sub(/0(\d)$/, '\1'), asset_size)
+    find_by_description_and_asset_size(cell_location.sub(/0(\d)$/, '\1'), asset_size)
   end
 
   def self.pad_description(map)

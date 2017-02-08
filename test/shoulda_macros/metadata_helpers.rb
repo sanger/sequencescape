@@ -17,7 +17,7 @@ module Sanger
         end
 
         def should_default_everything(properties_type)
-          self.should_default_everything_but(properties_type)
+          should_default_everything_but(properties_type)
         end
       end
     end

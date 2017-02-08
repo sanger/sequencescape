@@ -32,7 +32,7 @@ class SequencingRequest < CustomerRequest
     puldown_mx_library = PulldownMultiplexedLibraryTube.create!(name: barcode.to_s, barcode: barcode)
     lane = Lane.create!(name: puldown_mx_library.name)
 
-    self.update_attributes!(asset: puldown_mx_library, target_asset: lane)
+    update_attributes!(asset: puldown_mx_library, target_asset: lane)
   end
 
   class RequestOptionsValidator < DelegateValidation::Validator

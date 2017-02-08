@@ -38,7 +38,7 @@ class Sample < ActiveRecord::Base
 
   receptacle_alias(:assets) do
     def first_of_type(asset_class)
-      self.detect { |asset| asset.is_a?(asset_class) }
+      detect { |asset| asset.is_a?(asset_class) }
     end
   end
   receptacle_alias(:wells,        class_name: 'Well')
@@ -131,19 +131,19 @@ class Sample < ActiveRecord::Base
   delegate :released?, :release, to: :sample_metadata
 
   def ebi_accession_number
-    self.sample_metadata.sample_ebi_accession_number
+    sample_metadata.sample_ebi_accession_number
   end
 
   def accession_number?
-    not self.ebi_accession_number.blank?
+    not ebi_accession_number.blank?
   end
 
   # If there is no existing ebi_accession_number and we have a taxon id
   # and we have a common name for the sample return true else false
   def accession_could_be_generated?
-    return false unless self.sample_metadata.sample_ebi_accession_number.blank?
+    return false unless sample_metadata.sample_ebi_accession_number.blank?
     required_tags.each do |tag|
-      return false if self.sample_metadata.send(tag).blank?
+      return false if sample_metadata.send(tag).blank?
     end
     # We have everything needed to generate an accession so...
     true
@@ -162,11 +162,11 @@ class Sample < ActiveRecord::Base
   end
 
   def sample_external_name
-    self.name
+    name
   end
 
-  def sample_empty?(supplier_sample_name = self.name)
-    return true if self.empty_supplier_sample_name
+  def sample_empty?(supplier_sample_name = name)
+    return true if empty_supplier_sample_name
     sample_supplier_name_empty?(supplier_sample_name)
   end
 
@@ -175,13 +175,13 @@ class Sample < ActiveRecord::Base
   end
 
   def accession_service
-    return nil if self.studies.empty?
-    self.studies.first.accession_service
+    return nil if studies.empty?
+    studies.first.accession_service
   end
 
   # at the moment return a string which is a comma separated list of snp plate id
   def genotyping_done
-    self.get_external_value('genotyping_done')
+    get_external_value('genotyping_done')
   end
 
   def genotyping_snp_plate_id
@@ -378,11 +378,11 @@ class Sample < ActiveRecord::Base
 
   def validate_ena_required_fields!
     # Do not alter the order of this line, otherwise @ena_study won't be set correctly!
-    @ena_study, self.validating_ena_required_fields = self.studies.first, true
-    self.valid? or raise ActiveRecord::RecordInvalid, self
+    @ena_study, self.validating_ena_required_fields = studies.first, true
+    valid? or raise ActiveRecord::RecordInvalid, self
   rescue ActiveRecord::RecordInvalid => exception
     @ena_study.errors.full_messages.each do |message|
-      self.errors.add(:base, "#{message} on study")
+      errors.add(:base, "#{message} on study")
     end unless @ena_study.nil?
     raise exception
   ensure
@@ -397,7 +397,7 @@ class Sample < ActiveRecord::Base
   end
 
   def withdraw_consent
-    self.update_attribute(:consent_withdrawn, true)
+    update_attribute(:consent_withdrawn, true)
   end
 
   def subject_type

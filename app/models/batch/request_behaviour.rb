@@ -35,9 +35,9 @@ module Batch::RequestBehaviour
 
   def recycle_from_batch!
     ActiveRecord::Base.transaction do
-      self.return_for_inbox!
-      self.batch_request.destroy if self.batch_request.present?
-      self.save!
+      return_for_inbox!
+      batch_request.destroy if batch_request.present?
+      save!
     end
   end
 
@@ -49,7 +49,7 @@ module Batch::RequestBehaviour
   def return_for_inbox!
     # Valid for started, cancelled and pending batches
     # Will raise an exception outside of this
-    self.cancel! if self.started?
-    self.detach! unless self.pending?
+    cancel! if started?
+    detach! unless pending?
   end
 end

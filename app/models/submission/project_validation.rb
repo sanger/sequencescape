@@ -38,13 +38,13 @@ module Submission::ProjectValidation
   Error = Class.new(Exception)
 
   def check_project_details!
-    raise Submission::ProjectValidation::Error, self.errors.full_messages.join("\n") unless self.submittable?
+    raise Submission::ProjectValidation::Error, errors.full_messages.join("\n") unless submittable?
   end
   private :check_project_details!
 
   def multiplier_for(request_type)
-    return 1 if self.request_options.blank? or not self.request_options.key?(:multiplier)
-    self.request_options[:multiplier][request_type.id.to_i] || 1
+    return 1 if request_options.blank? or not request_options.key?(:multiplier)
+    request_options[:multiplier][request_type.id.to_i] || 1
   end
   private :multiplier_for
 

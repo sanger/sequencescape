@@ -6,7 +6,7 @@ module Informatics
       attr_accessor :keys
 
       def self.available
-        d = self.new
+        d = new
         yield d
         @@defaults = d
       end

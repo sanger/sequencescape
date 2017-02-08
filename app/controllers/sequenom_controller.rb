@@ -19,7 +19,7 @@ class SequenomController < ApplicationController
     end
 
     def update_plate(plate, user)
-      plate.events.create!(message: I18n.t('sequenom.events.message', step: self.name), created_by: user.login)
+      plate.events.create!(message: I18n.t('sequenom.events.message', step: name), created_by: user.login)
       yield(self)
     end
   end
@@ -28,7 +28,7 @@ class SequenomController < ApplicationController
   STEPS = ['PCR Mix', 'SAP Mix', 'IPLEX Mix', 'HPLC Water'].map { |name| SequenomStep.new(name) }
   class << STEPS
     def for(step_name)
-      self.find { |step| step.name == step_name } or raise "Cannot find the Sequenom step '#{step_name}'"
+      find { |step| step.name == step_name } or raise "Cannot find the Sequenom step '#{step_name}'"
     end
   end
 
