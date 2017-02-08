@@ -38,9 +38,9 @@ module LabInterface::WorkflowsHelper
 
   def batch_tag_index
     @tag_hash ||= Hash[
-      Tag.joins(:aliquots).
-        where(aliquots: { receptacle_id: @batch.requests.map(&:asset_id).uniq }).
-        pluck(:receptacle_id, :map_id)].tap { |th| th.default = '-' }
+      Tag.joins(:aliquots)
+        .where(aliquots: { receptacle_id: @batch.requests.map(&:asset_id).uniq })
+        .pluck(:receptacle_id, :map_id)].tap { |th| th.default = '-' }
   end
 
   def qc_select_box(request, status, html_options = {})

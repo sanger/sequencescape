@@ -138,21 +138,21 @@ class Study < ActiveRecord::Base
   scope :with_user_included, -> { includes(:user) }
 
   scope :in_assets, ->(assets) {
-    select('DISTINCT studies.*').
-    joins([
+    select('DISTINCT studies.*')
+    .joins([
       'LEFT JOIN aliquots ON aliquots.study_id = studies.id',
-    ]).
-    where(['aliquots.receptacle_id IN (?)', assets.map(&:id)])
+    ])
+    .where(['aliquots.receptacle_id IN (?)', assets.map(&:id)])
   }
 
   STOCK_PLATE_PURPOSES = ['Stock Plate', 'Stock RNA Plate']
 
   def each_well_for_qc_report_in_batches(exclude_existing, product_criteria)
-    base_scope = Well.on_plate_purpose(PlatePurpose.where(name: STOCK_PLATE_PURPOSES)).
-      for_study_through_aliquot(self).
-      without_blank_samples.
-      includes(:well_attribute, samples: :sample_metadata).
-      readonly(true)
+    base_scope = Well.on_plate_purpose(PlatePurpose.where(name: STOCK_PLATE_PURPOSES))
+      .for_study_through_aliquot(self)
+      .without_blank_samples
+      .includes(:well_attribute, samples: :sample_metadata)
+      .readonly(true)
     scope = exclude_existing ? base_scope.without_report(product_criteria) : base_scope
     scope.find_in_batches { |wells| yield wells }
   end
@@ -484,8 +484,8 @@ class Study < ActiveRecord::Base
   end
 
   scope :awaiting_ethical_approval, ->() {
-    joins(:study_metadata).
-    where(
+    joins(:study_metadata)
+    .where(
       ethically_approved: false,
       study_metadata: {
         contains_human_dna: Study::YES,
@@ -496,8 +496,8 @@ class Study < ActiveRecord::Base
   }
 
   scope :contaminated_with_human_dna, ->() {
-    joins(:study_metadata).
-    where(
+    joins(:study_metadata)
+    .where(
       study_metadata: {
         contaminated_human_dna: Study::YES
       }
@@ -505,8 +505,8 @@ class Study < ActiveRecord::Base
   }
 
   scope :with_remove_x_and_autosomes, ->() {
-    joins(:study_metadata).
-    where(
+    joins(:study_metadata)
+    .where(
       study_metadata: {
         remove_x_and_autosomes: Study::YES
       }

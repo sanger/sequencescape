@@ -103,8 +103,8 @@ class Sample < ActiveRecord::Base
       'INNER JOIN container_associations AS ca ON ca.content_id = aliquots.receptacle_id',
       'INNER JOIN well_links ON target_well_id = aliquots.receptacle_id AND well_links.type = "stock"',
       'INNER JOIN requests ON requests.asset_id = well_links.source_well_id'
-    ]).
-    where(['ca.container_id = ? AND requests.order_id = ?', plate_id, order_id])
+    ])
+    .where(['ca.container_id = ? AND requests.order_id = ?', plate_id, order_id])
   }
 
   scope :for_plate_and_order_as_target, ->(plate_id, order_id) {
@@ -112,8 +112,8 @@ class Sample < ActiveRecord::Base
       'INNER JOIN aliquots ON aliquots.sample_id = samples.id',
       'INNER JOIN container_associations AS ca ON ca.content_id = aliquots.receptacle_id',
       'INNER JOIN requests ON requests.target_asset_id = aliquots.receptacle_id'
-    ]).
-    where(['ca.container_id = ? AND requests.order_id = ?', plate_id, order_id])
+    ])
+    .where(['ca.container_id = ? AND requests.order_id = ?', plate_id, order_id])
   }
 
   def shorten_sanger_sample_id

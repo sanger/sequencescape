@@ -124,9 +124,9 @@ class QcReport < ActiveRecord::Base
   after_create :generate!
 
   scope :for_report_page, ->(conditions) {
-      order("id desc").
-      where(conditions).
-      joins(:product_criteria)
+      order("id desc")
+      .where(conditions)
+      .joins(:product_criteria)
   }
 
   validates_presence_of :product_criteria, :study, :state

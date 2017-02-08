@@ -42,8 +42,8 @@ module StudyReport::StudyDetails
         "INNER JOIN container_associations ON assets.id=container_associations.content_id",
         "INNER JOIN assets AS plates ON container_associations.container_id=plates.id AND plates.sti_type='Plate'",
         join
-      ]).
-      where([
+      ])
+      .where([
         "plates.plate_purpose_id IN (?) AND #{study_condition}=? AND assets.id > ?",
         plate_purpose_id,
         self.id,

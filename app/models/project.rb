@@ -46,9 +46,9 @@ class Project < ActiveRecord::Base
   end
 
   scope :in_assets, ->(assets) {
-    select('projects.*').uniq.
-    joins(:aliquots).
-    where(aliquots: { receptacle_id: assets })
+    select('projects.*').uniq
+    .joins(:aliquots)
+    .where(aliquots: { receptacle_id: assets })
   }
 
   has_many :roles, as: :authorizable

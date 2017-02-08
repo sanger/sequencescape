@@ -42,8 +42,8 @@ module Asset::Ownership
         has_one :owner, source: :user, through: :plate_owner
 
          scope :for_user, ->(user) {
-            joins(:plate_owner).
-            where(plate_owners: { user_id: user })
+            joins(:plate_owner)
+            .where(plate_owners: { user_id: user })
                           }
       end
     end

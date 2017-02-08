@@ -13,9 +13,9 @@ class ::Sample
       'LEFT JOIN sample_metadata AS tcnan_sm ON samples.id = tcnan_sm.sample_id',
       'LEFT JOIN study_metadata AS trea_sm ON trea_sm.study_id = studies.id',
       'LEFT JOIN data_release_study_types AS trea_drst ON trea_drst.id = trea_sm.data_release_study_type_id'
-    ]).
-    readonly(false).
-    where(["
+    ])
+    .readonly(false)
+    .where(["
       (tcnan_sm.sample_ebi_accession_number IS NULL OR TRIM(tcnan_sm.sample_ebi_accession_number) = '') AND
       (tcnan_sm.sample_taxon_id IS NOT NULL) AND
       (tcnan_sm.sample_common_name IS NOT NULL AND TRIM(tcnan_sm.sample_common_name) != '') AND

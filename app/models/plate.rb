@@ -89,17 +89,17 @@ class Plate < Asset
 
   # About 10x faster than going through the wells
   def submission_ids
-    @siat ||=  container_associations.
-      joins('LEFT JOIN requests ON requests.target_asset_id = container_associations.content_id').
-      where.not(requests: { submission_id: nil }).where.not(requests: { state: Request::Statemachine::INACTIVE }).
-      uniq.pluck(:submission_id)
+    @siat ||=  container_associations
+      .joins('LEFT JOIN requests ON requests.target_asset_id = container_associations.content_id')
+      .where.not(requests: { submission_id: nil }).where.not(requests: { state: Request::Statemachine::INACTIVE })
+      .uniq.pluck(:submission_id)
   end
 
   def submission_ids_as_source
-    @sias ||= container_associations.
-      joins('LEFT JOIN requests ON requests.asset_id = container_associations.content_id').
-      where(['requests.submission_id IS NOT NULL AND requests.state NOT IN (?)', Request::Statemachine::INACTIVE]).
-      uniq.pluck(:submission_id)
+    @sias ||= container_associations
+      .joins('LEFT JOIN requests ON requests.asset_id = container_associations.content_id')
+      .where(['requests.submission_id IS NOT NULL AND requests.state NOT IN (?)', Request::Statemachine::INACTIVE])
+      .uniq.pluck(:submission_id)
   end
 
   def all_submission_ids
@@ -117,19 +117,19 @@ class Plate < Asset
   end
 
   def submissions
-    s = Submission.select('submissions.*',).uniq.
-      joins([
+    s = Submission.select('submissions.*',).uniq
+      .joins([
         'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
         'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.asset_id'
-      ]).
-      where(['caplp.container_id = ?', self.id])
+      ])
+      .where(['caplp.container_id = ?', self.id])
     return s unless s.blank?
-    Submission.select('submissions.*',).uniq.
-      joins([
+    Submission.select('submissions.*',).uniq
+      .joins([
         'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
         'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.target_asset_id'
-      ]).
-      where(['caplp.container_id = ?', self.id])
+      ])
+      .where(['caplp.container_id = ?', self.id])
   end
 
   def barcode_dilution_factor_created_at_hash
@@ -195,18 +195,18 @@ class Plate < Asset
   end
 
   def priority
-    Submission.select('MAX(submissions.priority) AS priority').
-      joins([
+    Submission.select('MAX(submissions.priority) AS priority')
+      .joins([
         'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
         'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.asset_id'
-      ]).
-      where(['caplp.container_id = ?', self.id]).first.try(:priority) ||
-    Submission.select('MAX(submissions.priority) AS priority').
-      joins([
+      ])
+      .where(['caplp.container_id = ?', self.id]).first.try(:priority) ||
+    Submission.select('MAX(submissions.priority) AS priority')
+      .joins([
         'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
         'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.target_asset_id'
-      ]).
-      where(['caplp.container_id = ?', self.id]).first.try(:priority) || 0
+      ])
+      .where(['caplp.container_id = ?', self.id]).first.try(:priority) || 0
   end
 
   def study
@@ -292,27 +292,27 @@ class Plate < Asset
   before_create :set_plate_name_and_size
 
   scope :qc_started_plates, -> {
-    select('DISTINCT assets.*').
-    joins("LEFT OUTER JOIN `events` ON events.eventful_id = assets.id LEFT OUTER JOIN `asset_audits` ON asset_audits.asset_id = assets.id").
-    where(["(events.family = 'create_dilution_plate_purpose' OR asset_audits.key = 'slf_receive_plates') AND plate_purpose_id = ?", PlatePurpose.stock_plate_purpose.id]).
-    order('assets.id DESC').
-    includes(:events, :asset_audits)
+    select('DISTINCT assets.*')
+    .joins("LEFT OUTER JOIN `events` ON events.eventful_id = assets.id LEFT OUTER JOIN `asset_audits` ON asset_audits.asset_id = assets.id")
+    .where(["(events.family = 'create_dilution_plate_purpose' OR asset_audits.key = 'slf_receive_plates') AND plate_purpose_id = ?", PlatePurpose.stock_plate_purpose.id])
+    .order('assets.id DESC')
+    .includes(:events, :asset_audits)
   }
 
   # TODO: Make these more railsy
   scope :with_sample, ->(sample) {
-      select("assets.*").uniq.
-      joins([
+      select("assets.*").uniq
+      .joins([
         "LEFT OUTER JOIN container_associations AS wscas ON wscas.container_id = assets.id",
         "LEFT JOIN assets AS wswells ON wswells.id = content_id",
         "LEFT JOIN aliquots AS wsaliquots ON wsaliquots.receptacle_id = wswells.id"
-      ]).
-      where(["wsaliquots.sample_id IN(?)", Array(sample)])
+      ])
+      .where(["wsaliquots.sample_id IN(?)", Array(sample)])
   }
 
  scope :with_requests, ->(requests) {
-   select("assets.*").uniq.
-   joins([
+   select("assets.*").uniq
+   .joins([
         "INNER JOIN container_associations AS wrca ON wrca.container_id = assets.id",
         "INNER JOIN requests AS wrr ON wrr.asset_id = wrca.content_id"
     ]).where([
@@ -326,14 +326,14 @@ class Plate < Asset
           content: {
             requests_as_target: :batch
           }
-        }).
-      where(['batches.id = ?', batch.id])
+        })
+      .where(['batches.id = ?', batch.id])
   }
 
   scope :with_wells, ->(wells) {
-      select('DISTINCT assets.*').
-      joins(:container_associations).
-      where(container_associations: { content_id: wells.map(&:id) })
+      select('DISTINCT assets.*')
+      .joins(:container_associations)
+      .where(container_associations: { content_id: wells.map(&:id) })
   }
   #->() {where(:assets=>{:sti_type=>[Plate,*Plate.descendants].map(&:name)})},
   has_many :descendant_plates, class_name: "Plate", through: :links_as_ancestor, foreign_key: :ancestor_id, source: :descendant
@@ -341,14 +341,14 @@ class Plate < Asset
   has_many :tag_layouts
 
   scope :with_descendants_owned_by, ->(user) {
-    joins(descendant_plates: :plate_owner).
-    where(plate_owners: { user_id: user }).
-    uniq
+    joins(descendant_plates: :plate_owner)
+    .where(plate_owners: { user_id: user })
+    .uniq
   }
 
   scope :source_plates, -> {
-    joins(:plate_purpose).
-    where("plate_purposes.id = plate_purposes.source_purpose_id")
+    joins(:plate_purpose)
+    .where("plate_purposes.id = plate_purposes.source_purpose_id")
   }
 
   scope :with_wells_and_requests, ->() {

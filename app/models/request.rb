@@ -33,9 +33,9 @@ class Request < ActiveRecord::Base
   end
 
   scope :for_pipeline, ->(pipeline) {
-      joins('LEFT JOIN pipelines_request_types prt ON prt.request_type_id=requests.request_type_id').
-      where(['prt.pipeline_id=?', pipeline.id]).
-      readonly(false)
+      joins('LEFT JOIN pipelines_request_types prt ON prt.request_type_id=requests.request_type_id')
+      .where(['prt.pipeline_id=?', pipeline.id])
+      .readonly(false)
   }
 
   def validator_for(request_option)
@@ -45,9 +45,9 @@ class Request < ActiveRecord::Base
   scope :customer_requests, ->() { where(sti_type: [CustomerRequest, *CustomerRequest.descendants].map(&:name)) }
 
    scope :for_pipeline, ->(pipeline) {
-      joins('LEFT JOIN pipelines_request_types prt ON prt.request_type_id=requests.request_type_id').
-      where(['prt.pipeline_id=?', pipeline.id]).
-      readonly(false)
+      joins('LEFT JOIN pipelines_request_types prt ON prt.request_type_id=requests.request_type_id')
+      .where(['prt.pipeline_id=?', pipeline.id])
+      .readonly(false)
                         }
 
   scope :for_pooling_of, ->(plate) {
@@ -62,15 +62,15 @@ class Request < ActiveRecord::Base
         ]
       end
 
-    select('uuids.external_id AS pool_id, GROUP_CONCAT(DISTINCT pw_location.description ORDER BY pw.map_id ASC SEPARATOR ",") AS pool_into, MIN(requests.id) AS id, MIN(requests.sti_type) AS sti_type, MIN(requests.submission_id) AS submission_id, MIN(requests.request_type_id) AS request_type_id').
-    joins(add_joins + [
+    select('uuids.external_id AS pool_id, GROUP_CONCAT(DISTINCT pw_location.description ORDER BY pw.map_id ASC SEPARATOR ",") AS pool_into, MIN(requests.id) AS id, MIN(requests.sti_type) AS sti_type, MIN(requests.submission_id) AS submission_id, MIN(requests.request_type_id) AS request_type_id')
+    .joins(add_joins + [
         'INNER JOIN maps AS pw_location ON pw.map_id=pw_location.id',
         'INNER JOIN container_associations ON container_associations.content_id=pw.id',
         'INNER JOIN uuids ON uuids.resource_id=requests.submission_id AND uuids.resource_type="Submission"'
-      ]).
-    group('uuids.external_id').
-    customer_requests.
-    where([
+      ])
+    .group('uuids.external_id')
+    .customer_requests
+    .where([
         'container_associations.container_id=? AND requests.submission_id IN (?)',
         plate.id, submission_ids
     ])
@@ -87,18 +87,18 @@ class Request < ActiveRecord::Base
         ]
       end
 
-      select('min(uuids.external_id) AS group_id, GROUP_CONCAT(DISTINCT pw_location.description SEPARATOR ",") AS group_into, MIN(requests.id) AS id, MIN(requests.submission_id) AS submission_id, MIN(requests.request_type_id) AS request_type_id').
-      joins(add_joins + [
+      select('min(uuids.external_id) AS group_id, GROUP_CONCAT(DISTINCT pw_location.description SEPARATOR ",") AS group_into, MIN(requests.id) AS id, MIN(requests.submission_id) AS submission_id, MIN(requests.request_type_id) AS request_type_id')
+      .joins(add_joins + [
         'INNER JOIN maps AS pw_location ON pw.map_id = pw_location.id',
         'INNER JOIN container_associations ON container_associations.content_id=pw.id',
         'INNER JOIN pre_capture_pool_pooled_requests ON requests.id=pre_capture_pool_pooled_requests.request_id',
         'INNER JOIN uuids ON uuids.resource_id = pre_capture_pool_pooled_requests.pre_capture_pool_id AND uuids.resource_type="PreCapturePool"'
         ]
-      ).
-      group('pre_capture_pool_pooled_requests.pre_capture_pool_id').
-      customer_requests.
-      where(state: 'pending').
-      where([
+      )
+      .group('pre_capture_pool_pooled_requests.pre_capture_pool_id')
+      .customer_requests
+      .where(state: 'pending')
+      .where([
         'container_associations.container_id=?',
         plate.id
       ])
@@ -160,10 +160,10 @@ class Request < ActiveRecord::Base
   end
 
   def submission_plate_count
-    submission.requests.
-      where(request_type_id: request_type_id).
-      joins('LEFT JOIN container_associations AS spca ON spca.content_id = requests.asset_id').
-      count('DISTINCT(spca.container_id)')
+    submission.requests
+      .where(request_type_id: request_type_id)
+      .joins('LEFT JOIN container_associations AS spca ON spca.content_id = requests.asset_id')
+      .count('DISTINCT(spca.container_id)')
   end
 
   def update_responsibilities!
@@ -221,15 +221,15 @@ class Request < ActiveRecord::Base
 
   # Use container location
   scope :holder_located, ->(location_id) {
-    joins(["INNER JOIN container_associations hl ON hl.content_id = asset_id", "INNER JOIN location_associations ON location_associations.locatable_id = hl.container_id"]).
-    where(['location_associations.location_id = ?', location_id]).
-    readonly(false)
+    joins(["INNER JOIN container_associations hl ON hl.content_id = asset_id", "INNER JOIN location_associations ON location_associations.locatable_id = hl.container_id"])
+    .where(['location_associations.location_id = ?', location_id])
+    .readonly(false)
   }
 
   scope :holder_not_control, -> {
-    joins(["INNER JOIN container_associations hncca ON hncca.content_id = asset_id", "INNER JOIN assets AS hncc ON hncc.id = hncca.container_id"]).
-    where(['hncc.sti_type != ?', 'ControlPlate']).
-    readonly(false)
+    joins(["INNER JOIN container_associations hncca ON hncca.content_id = asset_id", "INNER JOIN assets AS hncc ON hncc.id = hncca.container_id"])
+    .where(['hncc.sti_type != ?', 'ControlPlate'])
+    .readonly(false)
   }
   scope :without_asset, -> { where('asset_id is null') }
   scope :without_target, -> { where('target_asset_id is null') }
@@ -256,18 +256,18 @@ class Request < ActiveRecord::Base
     target = options[:by_target] ? 'target_asset_id' : 'asset_id'
     groupings = options.delete(:group) || {}
 
-    select("requests.*, tca.container_id AS container_id, tca.content_id AS content_id").
-    joins("INNER JOIN container_associations tca ON tca.content_id=#{target}").
-    readonly(false).
-    preload(:request_metadata).
-    group(groupings)
+    select("requests.*, tca.container_id AS container_id, tca.content_id AS content_id")
+    .joins("INNER JOIN container_associations tca ON tca.content_id=#{target}")
+    .readonly(false)
+    .preload(:request_metadata)
+    .group(groupings)
   end
 
   scope :for_submission_id, ->(id) { where(submission_id: id) }
   scope :for_asset_id, ->(id) { where(asset_id: id) }
   scope :for_study_ids, ->(ids) {
-       joins('INNER JOIN aliquots AS al ON requests.asset_id = al.receptacle_id').
-       where(['al.study_id IN (?)', ids]).uniq
+       joins('INNER JOIN aliquots AS al ON requests.asset_id = al.receptacle_id')
+       .where(['al.study_id IN (?)', ids]).uniq
                         }
 
   scope :for_study_id, ->(id) { for_study_ids(id) }
@@ -287,8 +287,8 @@ class Request < ActiveRecord::Base
     scrubbed_atts = attributes.map { |k, v| "#{k.to_s.gsub(/[^\w\.]/, '')}.#{v.to_s.gsub(/[^\w\.]/, '')}" }
     scrubbed_atts << 'requests.request_type_id'
 
-    group(scrubbed_atts).
-    select([
+    group(scrubbed_atts)
+    .select([
       'MIN(requests.id) AS id',
       'MIN(requests.submission_id) AS submission_id',
       'MAX(requests.priority) AS max_priority',
@@ -296,8 +296,8 @@ class Request < ActiveRecord::Base
       'count(DISTINCT requests.id) AS request_count',
       'MIN(requests.asset_id) AS asset_id',
       'MIN(requests.target_asset_id) AS target_asset_id'
-    ]).
-    select(scrubbed_atts)
+    ])
+    .select(scrubbed_atts)
   }
 
   def self.for_study(study)
@@ -327,8 +327,8 @@ class Request < ActiveRecord::Base
 
   # TODO: There is probably a MUCH better way of getting this information. This is just a rewrite of the old approach
   def self.get_target_plate_ids(request_ids)
-    ContainerAssociation.joins("INNER JOIN requests ON content_id = target_asset_id").
-      where(["requests.id IN  (?)", request_ids]).uniq.pluck(:container_id)
+    ContainerAssociation.joins("INNER JOIN requests ON content_id = target_asset_id")
+      .where(["requests.id IN  (?)", request_ids]).uniq.pluck(:container_id)
   end
 
   # The options that are required for creation.  In other words, the truly required options that must

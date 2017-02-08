@@ -26,8 +26,8 @@ class AssetGroup < ActiveRecord::Base
   end
 
   def unaccessioned_samples
-    Sample.joins(:aliquots, :sample_metadata).
-      where(aliquots: { receptacle_id: assets.map(&:id) }, sample_metadata: { sample_ebi_accession_number: nil })
+    Sample.joins(:aliquots, :sample_metadata)
+      .where(aliquots: { receptacle_id: assets.map(&:id) }, sample_metadata: { sample_ebi_accession_number: nil })
   end
 
   def self.find_or_create_asset_group(new_assets_name, study)

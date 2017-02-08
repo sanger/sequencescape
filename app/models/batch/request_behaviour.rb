@@ -20,9 +20,9 @@ module Batch::RequestBehaviour
       # Identifies all requests that are not part of a batch.
       # Note: we join, rather than includes due to custom select limitations.
       scope :unbatched, ->() {
-        joins('LEFT OUTER JOIN batch_requests ON batch_requests.request_id = requests.id').
-        readonly(false).
-        where(batch_requests: { request_id: nil })
+        joins('LEFT OUTER JOIN batch_requests ON batch_requests.request_id = requests.id')
+        .readonly(false)
+        .where(batch_requests: { request_id: nil })
       }
 
       delegate :position, to: :batch_request, allow_nil: true
