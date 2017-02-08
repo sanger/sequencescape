@@ -216,7 +216,7 @@ class Order < ActiveRecord::Base
   end
 
   def duplicates_within(timespan)
-    matching_orders = Order.containing_samples(all_samples).where(template_name: template_name).includes(:submission, { assets: :samples }).where('orders.id != ?', self.id).where('orders.created_at > ?', DateTime.current - timespan)
+    matching_orders = Order.containing_samples(all_samples).where(template_name: template_name).includes(:submission, assets: :samples).where('orders.id != ?', self.id).where('orders.created_at > ?', DateTime.current - timespan)
     return false if matching_orders.empty?
     matching_samples = matching_orders.map(&:samples).flatten & all_samples
     matching_submissions = matching_orders.map(&:submission).uniq

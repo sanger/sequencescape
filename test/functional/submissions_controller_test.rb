@@ -37,7 +37,7 @@ C1 C2 C3
       setup do
         @user.is_lab_manager
         @submission = Submission.create!(priority: 1, user: @user)
-        post :change_priority, { id: @submission.id, submission: { priority: 3 } }
+        post :change_priority, id: @submission.id, submission: { priority: 3 }
       end
 
       should 'allow update of priorities' do

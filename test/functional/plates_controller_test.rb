@@ -13,20 +13,16 @@ class PlatesControllerTest < ActionController::TestCase
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
 
-      @pico_assay_plate_creator = FactoryGirl.create :plate_creator, {
-        plate_purpose: PlatePurpose.find_by_name!('Pico Assay Plates')
-      }
+      @pico_assay_plate_creator = FactoryGirl.create :plate_creator, plate_purpose: PlatePurpose.find_by_name!('Pico Assay Plates')
       ['Pico Assay A', 'Pico Assay B'].map do |s|
         PlatePurpose.find_by_name!(s)
       end.map do |p|
-        create :plate_creator_purpose, { plate_purpose: p, plate_creator: @pico_assay_plate_creator }
+        create :plate_creator_purpose, plate_purpose: p, plate_creator: @pico_assay_plate_creator
       end
       @dilution_plates_creator = FactoryGirl.create :plate_creator, plate_purpose: PlatePurpose.find_by_name!('Working dilution')
 
-      create :plate_creator_purpose, {
-        plate_purpose: PlatePurpose.find_by_name!('Working dilution'),
+      create :plate_creator_purpose, plate_purpose: PlatePurpose.find_by_name!('Working dilution'),
         plate_creator: @dilution_plates_creator
-      }
 
       @gel_dilution_plates_creator = FactoryGirl.create :plate_creator, plate_purpose: PlatePurpose.find_by_name!('Gel Dilution Plates')
 
@@ -34,7 +30,7 @@ class PlatesControllerTest < ActionController::TestCase
       @plate_barcode = mock("plate barcode")
       @plate_barcode.stubs(:barcode).returns("1234567")
       PlateBarcode.stubs(:create).returns(@plate_barcode)
-      LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns({ 'data' => [{ 'id' => 15 }] })
+      LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns('data' => [{ 'id' => 15 }])
       LabelPrinter::PmbClient.stubs(:print).returns(200)
     end
 

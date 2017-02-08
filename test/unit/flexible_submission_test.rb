@@ -23,7 +23,7 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
         @project  = create :project
         @user     = create :user
 
-        @library_creation_request_type = create :well_request_type, { target_purpose: nil, for_multiplexing: true, pooling_method: @pooling }
+        @library_creation_request_type = create :well_request_type, target_purpose: nil, for_multiplexing: true, pooling_method: @pooling
         @sequencing_request_type = create :sequencing_request_type
 
         @request_type_ids = [@library_creation_request_type.id, @sequencing_request_type.id]
@@ -201,7 +201,7 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
         @project  = create :project
         @user     = create :user
 
-        @library_creation_request_type = create :well_request_type, { for_multiplexing: true, target_asset_type: 'MultiplexedLibraryTube', pooling_method: @pooling }
+        @library_creation_request_type = create :well_request_type, for_multiplexing: true, target_asset_type: 'MultiplexedLibraryTube', pooling_method: @pooling
         @sequencing_request_type = create :sequencing_request_type
 
         @request_type_ids = [@library_creation_request_type.id, @sequencing_request_type.id]
@@ -262,8 +262,8 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
         @project = create :project
         @user = create :user
 
-        @ux_request_type = create :well_request_type, { target_purpose: nil, for_multiplexing: false }
-        @mx_request_type = create :well_request_type, { target_purpose: nil, for_multiplexing: true, pooling_method: @pooling }
+        @ux_request_type = create :well_request_type, target_purpose: nil, for_multiplexing: false
+        @mx_request_type = create :well_request_type, target_purpose: nil, for_multiplexing: true, pooling_method: @pooling
         @pe_request_type = create :request_type, asset_type: "LibraryTube", initial_state: "pending", name: "PE sequencing", order: 2, key: "pe_sequencing"
 
         @request_type_ids = [@mx_request_type.id, @pe_request_type.id]
@@ -302,8 +302,8 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
         @project = create :project
         @user = create :user
 
-        @ux_request_type = create :well_request_type, { target_purpose: nil, for_multiplexing: false }
-        @mx_request_type = create :well_request_type, { target_purpose: nil, for_multiplexing: true, pooling_method: @pooling }
+        @ux_request_type = create :well_request_type, target_purpose: nil, for_multiplexing: false
+        @mx_request_type = create :well_request_type, target_purpose: nil, for_multiplexing: true, pooling_method: @pooling
         @pe_request_type = create :request_type, asset_type: "LibraryTube", initial_state: "pending", name: "PE sequencing", order: 2, key: "pe_sequencing"
 
         @mx_request_type_ids = [@mx_request_type.id, @pe_request_type.id]

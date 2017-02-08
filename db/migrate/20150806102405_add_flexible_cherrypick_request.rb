@@ -11,8 +11,7 @@ class AddFlexibleCherrypickRequest < ActiveRecord::Migration
 
   def self.up
     ActiveRecord::Base.transaction do
-      RequestType.create!({
-        asset_type: "Well",
+      RequestType.create!(asset_type: "Well",
         billable: false,
         deprecated: false,
         for_multiplexing: false,
@@ -24,8 +23,7 @@ class AddFlexibleCherrypickRequest < ActiveRecord::Migration
         no_target_asset: false,
         order: 1,
         request_class_name: "PooledCherrypickRequest",
-        workflow_id: Submission::Workflow.find_by_name("Microarray genotyping").id
-      })
+        workflow_id: Submission::Workflow.find_by_name("Microarray genotyping").id)
     end
   end
 

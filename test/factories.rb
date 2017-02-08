@@ -141,7 +141,7 @@ FactoryGirl.define do
   factory :submission_template do
     submission_class_name LinearSubmission.name
     name                  "my_template"
-    submission_parameters({ workflow_id: 1, request_type_ids_list: [] })
+    submission_parameters(workflow_id: 1, request_type_ids_list: [])
     product_catalogue { |pc| pc.association(:single_product_catalogue) }
   end
 
@@ -260,7 +260,7 @@ FactoryGirl.define do
 
   factory :extended_validator do
     behaviour 'SpeciesValidator'
-    options({ taxon_id: 9606 })
+    options(taxon_id: 9606)
   end
 
   factory :validated_request_type, parent: :request_type do
@@ -680,7 +680,7 @@ FactoryGirl.define do
 
   factory(:pooling_method, class: 'RequestType::PoolingMethod') do
     pooling_behaviour 'PlateRow'
-    pooling_options({ pool_count: 8 })
+    pooling_options(pool_count: 8)
   end
 
   factory :tag2_layout_template do |itlt|

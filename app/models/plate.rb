@@ -322,13 +322,11 @@ class Plate < Asset
                        }
 
   scope :output_by_batch, ->(batch) {
-      joins({
-        container_associations: {
+      joins(container_associations: {
           content: {
             requests_as_target: :batch
           }
-        }
-      }).
+        }).
       where(['batches.id = ?', batch.id])
   }
 
@@ -354,8 +352,7 @@ class Plate < Asset
   }
 
   scope :with_wells_and_requests, ->() {
-    includes({
-      wells: [
+    includes(wells: [
         :uuid_object, :map,
         {
           requests_as_target: [
@@ -364,8 +361,7 @@ class Plate < Asset
             { asset: { aliquots: :sample } }
           ]
         }
-      ]
-    })
+      ])
   }
 
   def wells_sorted_by_map_id
@@ -440,7 +436,7 @@ class Plate < Asset
   end
 
   def set_plate_type(result)
-    self.add_descriptor(Descriptor.new({ name: "Plate Type", value: result }))
+    self.add_descriptor(Descriptor.new(name: "Plate Type", value: result))
     self.save
   end
 

@@ -39,7 +39,7 @@ class TasksControllerTest < ActionController::TestCase
 
     context "#new" do
       setup do
-        get :new, { workflow_id: @workflow.id }
+        get :new, workflow_id: @workflow.id
       end
 
       should "render new" do

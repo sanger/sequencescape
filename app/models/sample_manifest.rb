@@ -29,8 +29,8 @@ class SampleManifest < ActiveRecord::Base
     end
   end
 
-  has_uploaded_document :uploaded, { differentiator: "uploaded" }
-  has_uploaded_document :generated, { differentiator: "generated" }
+  has_uploaded_document :uploaded, differentiator: "uploaded"
+  has_uploaded_document :generated, differentiator: "generated"
 
   attr_accessor :override
   attr_reader :manifest_errors

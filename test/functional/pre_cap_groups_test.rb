@@ -10,11 +10,9 @@ class PreCapGroupsTest < ActiveSupport::TestCase
   def with_pools(*pools)
     pools.each_with_index do |well_locs, index|
       @plate.wells.located_at(well_locs).each do |well|
-       FactoryGirl.create(:pulldown_isc_request, {
-          asset: well,
+       FactoryGirl.create(:pulldown_isc_request, asset: well,
           pre_capture_pool: @pools[index],
-          submission_id: index + 1
-        })
+          submission_id: index + 1)
       end
     end
   end

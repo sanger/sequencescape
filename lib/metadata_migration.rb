@@ -49,7 +49,7 @@ class MetadataMigration < ActiveRecord::Migration
         # Create new objects that can be validated.
         objects = records.map do |record|
           metadata_class.new(
-            properties.inject({ self.reference_id.to_s => record.id }) do |attributes, (property, definition)|
+            properties.inject(self.reference_id.to_s => record.id) do |attributes, (property, definition)|
               returning(attributes) do
                 attributes[property.to_s] = record.properties.detect { |p|
                   p.property_definition_id == definition.id

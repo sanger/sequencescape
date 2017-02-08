@@ -20,8 +20,7 @@ class SamplesControllerTest < ActionController::TestCase
     should_require_login
 
     resource_test(
-      'sample', {
-        defaults: {
+      'sample', defaults: {
           name: "Sample22",
           sample_metadata_attributes: {
              cohort: 'Cohort',
@@ -36,7 +35,6 @@ class SamplesControllerTest < ActionController::TestCase
         protect_on_update: [:name],
         extra_on_update: { sample_metadata_attributes: { check: { genotype: 'false', phenotype: 'true' } } },
         user: -> { user = FactoryGirl.create(:user); user.is_administrator; user }
-      }
     )
 
     # TODO: Test without admin

@@ -62,7 +62,7 @@ Given /^study "([^\"]*)" has samples registered$/ do |study|
     }
   }
   sample_registrar = SampleRegistrar.new
-  sample_registrar.create({ "samples" => samples, "study_id" => proj.id, "sample_group" => { "id" => new_sample_group.id.to_s }, "current_user" => user })
+  sample_registrar.create("samples" => samples, "study_id" => proj.id, "sample_group" => { "id" => new_sample_group.id.to_s }, "current_user" => user)
 end
 
 Given /^study "([^\"]*)" has assets registered$/ do |study|
@@ -183,7 +183,7 @@ end
 def GivenFacultySponsor(attribute, regexp)
   Given(regexp) do |name, value|
     study = Study.find_by_name(name) or raise StandardError, "There appears to be no study named '#{name}'"
-    faculty_sponsor = FacultySponsor.create!({ name: value })
+    faculty_sponsor = FacultySponsor.create!(name: value)
     study.study_metadata.send(:"#{ attribute }=", faculty_sponsor)
     study.save!
   end

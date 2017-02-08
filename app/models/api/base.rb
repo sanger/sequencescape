@@ -59,7 +59,7 @@ class Api::Base
           helper.newer_than(value, json_attributes['updated_at']) { |timestamp| json_attributes['updated_at'] = timestamp }
           helper.to_hash(value)
         end
-        json_attributes.update({ helper.alias.to_s => all_targets })
+        json_attributes.update(helper.alias.to_s => all_targets)
       end
       self.related_resources.each do |relation|
         json_attributes[relation.to_s] = File.join(object.url, relation.to_s)

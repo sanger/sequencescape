@@ -34,7 +34,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
       context 'multiplexed submission' do
         context 'Customer decision propagation' do
           setup do
-            @mpx_request_type = create :well_request_type, { target_purpose: @purpose, for_multiplexing: true }
+            @mpx_request_type = create :well_request_type, target_purpose: @purpose, for_multiplexing: true
             @mpx_request_type_ids = [@mpx_request_type.id, @sequencing_request_type.id]
             @our_product_criteria = create :product_criteria
 
@@ -73,7 +73,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
             @mpx_assets = (1..MX_ASSET_COUNT).map { |i| create(:sample_tube, name: "MX-asset#{i}") }
             @mpx_asset_group = create :asset_group, name: "MPX", assets: @mpx_assets
 
-            @mpx_request_type = create :multiplexed_library_creation_request_type, { target_purpose: @purpose }
+            @mpx_request_type = create :multiplexed_library_creation_request_type, target_purpose: @purpose
             @mpx_request_type_ids = [@mpx_request_type.id, @sequencing_request_type.id]
 
             @basic_options = {
@@ -218,7 +218,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
 
             context 'request type 1' do
               setup do
-                @request_to_check = @submission.items.first.requests.find_by!({ request_type_id: @request_type_1.id })
+                @request_to_check = @submission.items.first.requests.find_by!(request_type_id: @request_type_1.id)
               end
 
               subject { @request_to_check.request_metadata }
@@ -227,7 +227,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
 
             context 'library creation request type' do
               setup do
-                @request_to_check = @submission.items.first.requests.find_by!({ request_type_id: @library_creation_request_type.id })
+                @request_to_check = @submission.items.first.requests.find_by!(request_type_id: @library_creation_request_type.id)
               end
 
               subject { @request_to_check.request_metadata }
@@ -241,7 +241,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
 
             context 'sequencing request type' do
               setup do
-                @request_to_check = @submission.items.first.requests.find_by!({ request_type_id: @sequencing_request_type.id })
+                @request_to_check = @submission.items.first.requests.find_by!(request_type_id: @sequencing_request_type.id)
               end
 
               subject { @request_to_check.request_metadata }

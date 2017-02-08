@@ -461,13 +461,6 @@ Style/BlockEndNewline:
     - 'app/models/submission.rb'
     - 'lib/tasks/uat_setup.rake'
 
-# Offense count: 186
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: braces, no_braces, context_dependent
-Style/BracesAroundHashParameters:
-  Enabled: false
-
 # Offense count: 25
 Style/CaseEquality:
   Exclude:

@@ -18,13 +18,11 @@ class StudiesControllerTest < ActionController::TestCase
     should_require_login
 
     resource_test(
-      'study', {
-        defaults: { name: "study name" },
+      'study',         defaults: { name: "study name" },
         user: :admin,
         other_actions: ['properties', 'study_status'],
         ignore_actions: %w(show create update destroy),
         formats: ['xml']
-      }
     )
   end
 

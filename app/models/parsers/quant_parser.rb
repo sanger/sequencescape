@@ -47,11 +47,9 @@ class Parsers::QuantParser
         "concentration" => :set_concentration,
         "volume"        => :set_current_volume,
         "rin"           => :set_rin
-      }.merge({
-        localization_text("concentration").strip.downcase => :set_concentration,
+      }.merge(localization_text("concentration").strip.downcase => :set_concentration,
         localization_text("volume").strip.downcase        => :set_current_volume,
-        localization_text("rin").strip.downcase           => :set_rin
-      })
+        localization_text("rin").strip.downcase           => :set_rin)
     end
 
     def method_set_list

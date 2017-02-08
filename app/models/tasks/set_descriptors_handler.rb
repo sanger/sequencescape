@@ -65,7 +65,7 @@ module Tasks::SetDescriptorsHandler
                 params[:upload].each_key do |key|
                   event.filename = params[:upload][key].original_filename.gsub(/[^a-zA-Z0-9.]/, '_')
                   event.data = params[:upload][key].read
-                  event.add_descriptor Descriptor.new({ name: key, value: event.filename })
+                  event.add_descriptor Descriptor.new(name: key, value: event.filename)
                 end
               end
 
@@ -78,7 +78,7 @@ module Tasks::SetDescriptorsHandler
                   asset = Asset.new()
                   asset.sti_type = Family.find(params[:asset][key][:family_id]).name
                   params[:asset][key].each_key do |field|
-                    asset.add_descriptor Descriptor.new({ name: field, value: params[:asset][key][field] })
+                    asset.add_descriptor Descriptor.new(name: field, value: params[:asset][key][field])
                   end
                   asset.save
                   asset.parents << request.asset

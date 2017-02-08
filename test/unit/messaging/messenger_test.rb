@@ -17,7 +17,7 @@ class MessengerTest < ActiveSupport::TestCase
 
     context "to_json" do
       setup do
-        Api::Messages::FlowcellIO.expects(:to_hash).with(@target).returns({ 'example' => 'hash' })
+        Api::Messages::FlowcellIO.expects(:to_hash).with(@target).returns('example' => 'hash')
       end
 
       should 'render the json' do

@@ -27,8 +27,7 @@ module StudyReport::WellDetails
 
     qc_data = super
 
-    qc_data.merge!({
-      well: self.map.description,
+    qc_data.merge!(well: self.map.description,
       concentration: self.well_attribute.concentration,
       sequenom_count: "#{self.get_sequenom_count.to_i}/30",
       sequenom_gender: self.get_gender_markers,
@@ -43,8 +42,7 @@ module StudyReport::WellDetails
       qc_started_date: self.plate.qc_started_date,
       sequenom_stamp_date: self.plate.sequenom_stamp_date,
       quantity: self.well_attribute.quantity_in_micro_grams.try(:round, 3),
-      initial_volume: self.well_attribute.initial_volume
-    })
+      initial_volume: self.well_attribute.initial_volume)
     qc_data[:genotyping_status] = self.genotyping_status
     qc_data[:genotyping_barcode] = self.primary_aliquot.sample.genotyping_snp_plate_id if primary_aliquot.present?
 

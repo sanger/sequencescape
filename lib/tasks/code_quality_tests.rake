@@ -41,7 +41,7 @@ namespace :test do
       require 'flay'
       print "Duplication..."
       STDOUT.flush
-      flay = Flay.new({ fuzzy: false, verbose: false, mass: (FLAY_DUPLICATION_THRESHOLD + 1) })
+      flay = Flay.new(fuzzy: false, verbose: false, mass: (FLAY_DUPLICATION_THRESHOLD + 1))
 
       files = Flay.expand_dirs_to_files(['app'])
       exclude_files = YAML.load(File.read("#{Rails.root}/config/analytics/flay_whitelist.yml"))

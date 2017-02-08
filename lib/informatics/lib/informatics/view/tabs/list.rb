@@ -9,7 +9,7 @@ module Informatics
         end
 
         def add_item(options)
-          @items.push Informatics::View::Tabs::Item.new({ text: options[:text], link: options[:link] })
+          @items.push Informatics::View::Tabs::Item.new(text: options[:text], link: options[:link])
         end
       end
     end

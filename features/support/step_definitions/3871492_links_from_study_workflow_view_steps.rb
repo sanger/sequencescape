@@ -23,8 +23,8 @@ Given /^study "([^"]+)" has made the following "([^"]+)" requests:$/ do |study_n
 
   table.hashes.each do |row|
     state, asset_name, sample_name = row['state'], row['asset'], row['sample']
-    asset  = Asset.find_by!({ name: asset_name })
-    sample = Sample.find_by!({ name: sample_name })
+    asset  = Asset.find_by!(name: asset_name)
+    sample = Sample.find_by!(name: sample_name)
 
     if asset.respond_to?(:aliquots)
       asset.aliquots.each do |aliquot|

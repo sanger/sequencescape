@@ -41,8 +41,7 @@ illumina_b_hiseq_x_paired_end_sequencing illumina_a_hiseq_x_paired_end_sequencin
         RequestType.find_by_key(xtlb_name).library_types << lt
       end
 
-      st = SubmissionSerializer.construct!({
-        name: "IHTP - PCR Free Auto - HiSeq-X sequencing",
+      st = SubmissionSerializer.construct!(name: "IHTP - PCR Free Auto - HiSeq-X sequencing",
         submission_class_name: "FlexibleSubmission",
         product_line: "Illumina-HTP",
         product_catalogue: "PFHSqX",
@@ -52,8 +51,7 @@ illumina_b_hiseq_x_paired_end_sequencing illumina_a_hiseq_x_paired_end_sequencin
             'illumina_htp_strip_tube_creation',
             'illumina_b_hiseq_x_paired_end_sequencing'],
           workflow: "short_read_sequencing"
-        }
-      })
+        })
     end
   end
 

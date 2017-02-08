@@ -190,7 +190,7 @@ class AssetsController < ApplicationController
   end
 
   def summary
-    @summary = UiHelper::Summary.new({ per_page: 25, page: params[:page] })
+    @summary = UiHelper::Summary.new(per_page: 25, page: params[:page])
     @summary.load_asset(@asset)
   end
 
@@ -254,7 +254,7 @@ class AssetsController < ApplicationController
   private :prepare_asset
 
   def new_request_for_current_asset
-    new_request_asset_path(@asset, { study_id: @study.try(:id), project_id: @project.try(:id), request_type_id: @request_type.try(:id) })
+    new_request_asset_path(@asset, study_id: @study.try(:id), project_id: @project.try(:id), request_type_id: @request_type.try(:id))
   end
   private :new_request_for_current_asset
 

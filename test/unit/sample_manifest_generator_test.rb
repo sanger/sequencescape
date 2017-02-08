@@ -95,7 +95,7 @@ class SampleManifestGeneratorTest < ActiveSupport::TestCase
   end
 
   test "should print labels if barcode printer is present" do
-    LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns({ 'data' => [{ 'id' => 15 }] })
+    LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns('data' => [{ 'id' => 15 }])
     @generator = SampleManifestGenerator.new(attributes.merge(barcode_printer: barcode_printer.name,
                                        only_first_label: "0"), user, configuration)
 
@@ -106,7 +106,7 @@ class SampleManifestGeneratorTest < ActiveSupport::TestCase
   end
 
   test "print job should not be valid with invalid printer name" do
-    LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns({ 'data' => [{ 'id' => 15 }] })
+    LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns('data' => [{ 'id' => 15 }])
     @generator = SampleManifestGenerator.new(attributes.merge(barcode_printer: "dodgy_printer",
                                        only_first_label: "0"), user, configuration)
     assert generator.print_job_required?

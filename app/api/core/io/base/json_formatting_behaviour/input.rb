@@ -12,7 +12,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
     end
 
     def api_error(response)
-      response.content_error(422, { @attribute => [self.message] })
+      response.content_error(422, @attribute => [self.message])
     end
   end
 

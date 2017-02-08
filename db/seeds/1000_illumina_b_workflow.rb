@@ -24,7 +24,7 @@ ActiveRecord::Base.transaction do
         no_target_asset: false
   }
 
-  shared_options_a = shared_options_b.clone.merge({ product_line_id: ProductLine.find_by_name('Illumina-A') })
+  shared_options_a = shared_options_b.clone.merge(product_line_id: ProductLine.find_by_name('Illumina-A'))
 
   [
     {

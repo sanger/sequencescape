@@ -19,11 +19,11 @@ class CreatorTest < ActiveSupport::TestCase
     PlateBarcode.stubs(:create).returns(barcode)
 
     barcode_printer = create :barcode_printer
-    LabelPrinter::PmbClient.expects(:get_label_template_by_name).returns({ 'data' => [{ 'id' => 15 }] })
+    LabelPrinter::PmbClient.expects(:get_label_template_by_name).returns('data' => [{ 'id' => 15 }])
     scanned_user = create :user
 
     RestClient.expects(:post)
 
-    creator.execute("", barcode_printer, scanned_user, Plate::CreatorParameters.new({ "user_barcode" => "2470000099652", "source_plates" => "", "creator_id" => "1", "dilution_factor" => "1", "barcode_printer" => "1" }))
+    creator.execute("", barcode_printer, scanned_user, Plate::CreatorParameters.new("user_barcode" => "2470000099652", "source_plates" => "", "creator_id" => "1", "dilution_factor" => "1", "barcode_printer" => "1"))
   end
 end

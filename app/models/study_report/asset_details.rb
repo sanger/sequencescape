@@ -18,8 +18,7 @@ module StudyReport::AssetDetails
         sample.sample_metadata.supplier_name || sample.sanger_sample_id || sample.name
                              end
 
-      qc_data.merge!({
-        supplier: sample.sample_manifest.try(:supplier).try(:name),
+      qc_data.merge!(supplier: sample.sample_manifest.try(:supplier).try(:name),
         sample_name: supplier_sample_name,
         sanger_sample_id: sample.sanger_sample_id,
         control: sample.control,
@@ -31,8 +30,7 @@ module StudyReport::AssetDetails
         geographical_region: sample.sample_metadata.geographical_region,
         ethnicity: sample.sample_metadata.ethnicity,
         dna_source: sample.sample_metadata.dna_source,
-        is_resubmitted: sample.sample_metadata.is_resubmitted
-      })
+        is_resubmitted: sample.sample_metadata.is_resubmitted)
     end
 
     qc_data

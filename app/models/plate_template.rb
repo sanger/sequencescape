@@ -31,7 +31,7 @@ class PlateTemplate < Plate
   end
 
   def set_control_well(result)
-    self.add_descriptor(Descriptor.new({ name: "control_well", value: result }))
+    self.add_descriptor(Descriptor.new(name: "control_well", value: result))
     self.save
   end
 

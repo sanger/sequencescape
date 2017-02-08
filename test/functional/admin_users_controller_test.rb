@@ -18,8 +18,7 @@ class Admin::UsersControllerTest < ActionController::TestCase
     should_require_login
 
     resource_test(
-      'user', {
-        ignore_actions: ['update'],
+      'user', ignore_actions: ['update'],
         actions: ['show', 'edit', 'index'],
         formats: ['html'],
         defaults: { login: "abc1234" },
@@ -27,7 +26,6 @@ class Admin::UsersControllerTest < ActionController::TestCase
 
         # Setup needed because 'edit' assumes presence of at least one Study and Project
         setup: -> { FactoryGirl.create(:study); FactoryGirl.create(:project) }
-      }
     )
 
     context "#filter" do

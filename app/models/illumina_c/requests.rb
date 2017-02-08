@@ -90,14 +90,12 @@ module IlluminaC::Requests
           target_purpose:     Purpose.find_by_name('ILC Lib Pool Norm')
         }
       ].each do |params|
-         params.merge!({
-          workflow: Submission::Workflow.find_by_name("Next-gen sequencing"),
+         params.merge!(workflow: Submission::Workflow.find_by_name("Next-gen sequencing"),
           asset_type: 'Well',
           order: 1,
           initial_state: 'pending',
           billable: true,
-          product_line: ProductLine.find_by_name('Illumina-C')
-        })
+          product_line: ProductLine.find_by_name('Illumina-C'))
         yield(params)
       end
     end

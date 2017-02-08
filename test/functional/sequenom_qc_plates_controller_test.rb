@@ -24,7 +24,7 @@ class SequenomQcPlatesControllerTest < ActionController::TestCase
       PlateBarcode.stubs(:create).returns(barcode)
 
       barcode_printer = create :barcode_printer
-      LabelPrinter::PmbClient.expects(:get_label_template_by_name).returns({ 'data' => [{ 'id' => 15 }] })
+      LabelPrinter::PmbClient.expects(:get_label_template_by_name).returns('data' => [{ 'id' => 15 }])
 
       plate1 = create :plate, barcode: "9168137"
       plate2 = create :plate, barcode: "163993"

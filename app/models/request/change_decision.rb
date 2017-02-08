@@ -84,7 +84,7 @@ private
     previous_state = self.request.state
     ActiveRecord::Base.transaction do
       self.request.change_decision!
-      self.request.events.create!({ message: "Change state from #{previous_state} to  #{state}", created_by: self.user.login, family: "update" })
+      self.request.events.create!(message: "Change state from #{previous_state} to  #{state}", created_by: self.user.login, family: "update")
       self.request.comments.create!(description: self.comment, user_id: self.user.id)
     end
   end

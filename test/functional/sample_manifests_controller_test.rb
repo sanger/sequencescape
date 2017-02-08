@@ -52,7 +52,7 @@ class SampleManifestsControllerTest < ActionController::TestCase
         supplier.save
 
         barcode_printer = create :barcode_printer
-        LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns({ 'data' => [{ 'id' => 15 }] })
+        LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns('data' => [{ 'id' => 15 }])
 
         RestClient.expects(:post)
         post :create, sample_manifest: { template: "plate_default",

@@ -79,7 +79,7 @@ class WellTest < ActiveSupport::TestCase
 
   should "return a correct hash of target wells" do
     purposes = create_list :plate_purpose, 4
-    stock_plate = create :plate, { wells: create_list(:well, 96) }
+    stock_plate = create :plate, wells: create_list(:well, 96)
     norm_plates = create_list :plate, 4
     norm_plates.each_with_index do |plate, index|
       plate.update_attributes(plate_purpose: purposes[index], wells: create_list(:well, 96))

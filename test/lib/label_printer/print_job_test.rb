@@ -5,7 +5,7 @@ class PrintJobTest < ActiveSupport::TestCase
 
   def setup
     @barcode_printer = create :barcode_printer
-    LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns({ 'data' => [{ 'id' => 15 }] })
+    LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns('data' => [{ 'id' => 15 }])
     @plates = [(create :child_plate)]
     @plate = plates[0]
     @plate_purpose = plate.plate_purpose

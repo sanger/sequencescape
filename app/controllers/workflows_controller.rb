@@ -234,8 +234,8 @@ class WorkflowsController < ApplicationController
       user: current_user,
       batch: batch
     )
-    event.add_descriptor Descriptor.new({ name: 'task_id', value: task.id })
-    event.add_descriptor Descriptor.new({ name: 'task', value: task.name })
+    event.add_descriptor Descriptor.new(name: 'task_id', value: task.id)
+    event.add_descriptor Descriptor.new(name: 'task', value: task.name)
     event.save!
   end
 end

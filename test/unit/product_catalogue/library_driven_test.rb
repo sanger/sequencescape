@@ -8,11 +8,9 @@ class LibraryDrivenTest < ActiveSupport::TestCase
   context "When using a ProductCatalogue that is library driven" do
     setup do
       def link_product_with_pc(product, product_catalogue, library_type_name)
-        FactoryGirl.create :product_product_catalogue, {
-          product: product,
+        FactoryGirl.create :product_product_catalogue, product: product,
           product_catalogue: product_catalogue,
           selection_criterion: library_type_name
-        }
       end
 
       # We'll create a product catalogue that will contain [@product, @product2, @product3]
@@ -34,23 +32,19 @@ class LibraryDrivenTest < ActiveSupport::TestCase
       context "using a submission template that belongs to that catalogue" do
         context "with no library or incorrect type" do
           setup do
-            @submission_template = FactoryGirl.create :submission_template, {
-              name: "ST 1",
+            @submission_template = FactoryGirl.create :submission_template, name: "ST 1",
              product_catalogue: @product_catalogue,
              submission_parameters: {
                workflow_id: 1,
                request_type_ids_list: [],
                request_options: { library_type: "Another library" } }
-            }
 
-            @submission_template2 = FactoryGirl.create :submission_template, {
-              name: "ST 2",
+            @submission_template2 = FactoryGirl.create :submission_template, name: "ST 2",
              product_catalogue: @product_catalogue,
              submission_parameters: {
                workflow_id: 1,
                request_type_ids_list: []
                }
-            }
           end
           should "not select any product (return nil)" do
             order = @submission_template.new_order
@@ -71,23 +65,19 @@ class LibraryDrivenTest < ActiveSupport::TestCase
       context "using a submission template that belongs to that catalogue" do
         context "with a library type selected" do
           setup do
-            @submission_template = FactoryGirl.create :submission_template, {
-              name: "ST 1",
+            @submission_template = FactoryGirl.create :submission_template, name: "ST 1",
              product_catalogue: @product_catalogue,
              submission_parameters: {
                workflow_id: 1,
                request_type_ids_list: [],
                request_options: { library_type: @library_type.name } }
-            }
 
-            @submission_template2 = FactoryGirl.create :submission_template, {
-              name: "ST 2",
+            @submission_template2 = FactoryGirl.create :submission_template, name: "ST 2",
              product_catalogue: @product_catalogue,
              submission_parameters: {
                workflow_id: 1,
                request_type_ids_list: [],
                request_options: { library_type: @library_type2.name } }
-            }
           end
 
           should "selects the right product for this submission using the library type" do
@@ -101,14 +91,12 @@ class LibraryDrivenTest < ActiveSupport::TestCase
 
         context "without a library type selected" do
           setup do
-            @submission_template3 = FactoryGirl.create :submission_template, {
-              name: "ST 3",
+            @submission_template3 = FactoryGirl.create :submission_template, name: "ST 3",
              product_catalogue: @product_catalogue,
              submission_parameters: {
                workflow_id: 1,
                request_type_ids_list: []
              }
-            }
           end
 
           should "select the first product of the default products" do
@@ -118,14 +106,12 @@ class LibraryDrivenTest < ActiveSupport::TestCase
         end
         context "with a library type unsupported by the product catalogue" do
           setup do
-            @submission_template4 = FactoryGirl.create :submission_template, {
-              name: "ST 4",
+            @submission_template4 = FactoryGirl.create :submission_template, name: "ST 4",
              product_catalogue: @product_catalogue,
              submission_parameters: {
                workflow_id: 1,
                request_type_ids_list: [],
                request_options: { library_type: "Standard" } }
-             }
           end
           should "select the first product of the default products" do
             order = @submission_template4.new_order
@@ -138,14 +124,12 @@ class LibraryDrivenTest < ActiveSupport::TestCase
 
             link_product_with_pc(@product4, @product_catalogue, @library_type.name)
 
-            @submission_template5 = FactoryGirl.create :submission_template, {
-              name: "ST 5",
+            @submission_template5 = FactoryGirl.create :submission_template, name: "ST 5",
              product_catalogue: @product_catalogue,
              submission_parameters: {
                workflow_id: 1,
                request_type_ids_list: [],
                request_options: { library_type: @library_type.name } }
-             }
           end
           should "select the first product of the default products" do
             order = @submission_template5.new_order

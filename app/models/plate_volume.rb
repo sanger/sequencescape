@@ -9,7 +9,7 @@ require 'carrierwave'
 class PlateVolume < ActiveRecord::Base
   extend DbFile::Uploader
 
-  has_uploaded :uploaded, { serialization_column: "uploaded_file_name" }
+  has_uploaded :uploaded, serialization_column: "uploaded_file_name"
 
   before_save :calculate_barcode_from_filename
   after_save :update_well_volumes

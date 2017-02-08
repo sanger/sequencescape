@@ -27,7 +27,7 @@ class BatchesControllerTest < ActionController::TestCase
 
           @study, @project = FactoryGirl.create(:study), FactoryGirl.create(:project)
           @sample = FactoryGirl.create :sample
-          @submission = FactoryGirl.create :submission_without_order, { priority: 3 }
+          @submission = FactoryGirl.create :submission_without_order, priority: 3
 
           @library = FactoryGirl.create(:empty_library_tube).tap do |library_tube|
             library_tube.aliquots.create!(sample: @sample, project: @project, study: @study, library: library_tube, library_type: 'Standard')
@@ -293,7 +293,7 @@ class BatchesControllerTest < ActionController::TestCase
         @batch.requests << request
         r = @batch.requests.first
         @e = r.lab_events.create(description: "Cluster generation")
-        @e.add_descriptor Descriptor.new({ name: "Chip Barcode", value: "Chip Barcode: 62c7gaaxx" })
+        @e.add_descriptor Descriptor.new(name: "Chip Barcode", value: "Chip Barcode: 62c7gaaxx")
         @e.batch_id = @batch.id
         @e.save
         get :find_batch_by_barcode, id: "62c7gaaxx", format: :xml
@@ -325,7 +325,7 @@ class BatchesControllerTest < ActionController::TestCase
         @user = create :user
         @controller.stubs(:current_user).returns(@user)
         @barcode_printer = create :barcode_printer
-        LabelPrinter::PmbClient.expects(:get_label_template_by_name).returns({ 'data' => [{ 'id' => 15 }] })
+        LabelPrinter::PmbClient.expects(:get_label_template_by_name).returns('data' => [{ 'id' => 15 }])
       end
 
       should "#print_plate_barcodes should send print request" do

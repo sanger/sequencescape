@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 Given /^a supplier called "(.*)" exists$/ do |supplier_name|
-  Supplier.create!({ name: supplier_name })
+  Supplier.create!(name: supplier_name)
 end
 
 Given /^the study "(.*)" has a abbreviation$/ do |study_name|

@@ -28,12 +28,12 @@ class LabwhereReceptionsControllerTest < ActionController::TestCase
             location_barcode: 'labwhere_location', user_code: 'ID123', labware_barcodes: ["1220000001831", "1220000002845", "3980000001795"]
           ).returns(MockResponse.new(true, ''))
 
-          post :create, { labwhere_reception: {
+          post :create, labwhere_reception: {
             barcodes: { "1" => "1220000001831", "2" => " 1220000002845 ", "3" => "3980000001795" },
             location_id: @location.id,
             user_code: 'ID123',
             location_barcode: 'labwhere_location'
-          } }
+          }
         end
 
         should 'Move items in sequencescape' do
@@ -60,12 +60,12 @@ class LabwhereReceptionsControllerTest < ActionController::TestCase
             location_barcode: '', user_code: 'ID123', labware_barcodes: ["1220000001831", "1220000002845", "3980000001795"]
           ).returns(MockResponse.new(true, ''))
 
-          post :create, { labwhere_reception: {
+          post :create, labwhere_reception: {
             barcodes: { "1" => "1220000001831", "2" => " 1220000002845 ", "3" => "3980000001795" },
             location_id: @location.id,
             user_code: 'ID123',
             location_barcode: ''
-          } }
+          }
         end
 
         should 'Move items in sequencescape' do

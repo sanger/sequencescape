@@ -97,11 +97,9 @@ class Well < Aliquot::Receptacle
 
   scope :target_wells_for, ->(wells) {
     select('assets.*, well_links.source_well_id AS stock_well_id').
-    joins(:stock_well_links).where({
-      well_links: {
+    joins(:stock_well_links).where(well_links: {
         source_well_id: wells
-        }
-    })
+        })
   }
 
   scope :located_at_position, ->(position) { joins(:map).readonly(false).where(maps: { description: position }) }

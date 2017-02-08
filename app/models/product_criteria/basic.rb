@@ -64,7 +64,7 @@ class ProductCriteria::Basic
   end
 
   def metrics
-    values.merge({ comment: @comment.join(';') })
+    values.merge(comment: @comment.join(';'))
   end
 
   def well_location

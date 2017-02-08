@@ -18,13 +18,11 @@ class Admin::Roles::UsersControllerTest < ActionController::TestCase
     should_require_login
 
     resource_test(
-      'user', {
-        parent: 'role',
+      'user', parent: 'role',
         actions: ['index'],
         ignore_actions: ['show', 'create'],
         user: -> { user = FactoryGirl.create(:user); user.is_administrator; user },
         formats: ['html']
-      }
     )
   end
 end

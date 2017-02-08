@@ -110,8 +110,8 @@ class Request < ActiveRecord::Base
     customer_requests.in_order(order).where(state: 'passed')
   }
 
-  scope :including_samples_from_target, ->() { includes({ target_asset: { aliquots: :sample } }) }
-  scope :including_samples_from_source, ->() { includes({ asset: { aliquots: :sample } }) }
+  scope :including_samples_from_target, ->() { includes(target_asset: { aliquots: :sample }) }
+  scope :including_samples_from_source, ->() { includes(asset: { aliquots: :sample }) }
 
   scope :for_order_including_submission_based_requests, ->(order) {
     # To obtain the requests for an order and the sequencing requests of its submission (as they are defined
@@ -408,7 +408,7 @@ class Request < ActiveRecord::Base
   end
 
   def add_comment(comment, user)
-    self.comments.create({ description: comment, user: user })
+    self.comments.create(description: comment, user: user)
   end
 
   def self.number_expected_for_submission_id_and_request_type_id(submission_id, request_type_id)

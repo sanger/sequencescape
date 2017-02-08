@@ -468,13 +468,13 @@ class BatchTest < ActiveSupport::TestCase
 
       should "return true if the tubes are scanned in in the correct order" do
         number_of_batch_events = @batch.lab_events.size
-        assert @batch.verify_tube_layout({ "1" => "654321", "2" => "123456" })
+        assert @batch.verify_tube_layout("1" => "654321", "2" => "123456")
         assert_equal number_of_batch_events + 1, @batch.lab_events.size
       end
 
       should "return false and add errors to the batch if the tubes are not in the correct order" do
         number_of_batch_events = @batch.lab_events.size
-        assert !@batch.verify_tube_layout({ "1" => "123456", "2" => "654321" })
+        assert !@batch.verify_tube_layout("1" => "123456", "2" => "654321")
         assert !@batch.errors.empty?
         assert_equal number_of_batch_events, @batch.lab_events.size
       end
@@ -756,10 +756,8 @@ class BatchTest < ActiveSupport::TestCase
           should "swap lanes given 2 batches and swap requests." do
             assert(
               @left_batch.swap(
-                @user, {
-                  "batch_1" => { "id" => @left_batch.id.to_s,  "lane" => left_position.to_s },
+                @user,                   "batch_1" => { "id" => @left_batch.id.to_s, "lane" => left_position.to_s },
                   "batch_2" => { "id" => @right_batch.id.to_s, "lane" => right_position.to_s }
-                }
              )
             )
 
@@ -899,7 +897,7 @@ class BatchTest < ActiveSupport::TestCase
       @request_type = @batch.pipeline.request_types.first
       @request_type_validator = RequestType::Validator.create!(request_type: @request_type, request_option: 'read_length', valid_options: [76])
       @request_type.request_type_validators << @request_type_validator
-      @sequencing_request = create(:sequencing_request, { asset: @library_tube, request_type: @request_type })
+      @sequencing_request = create(:sequencing_request, asset: @library_tube, request_type: @request_type)
       @batch.requests << @sequencing_request
     end
 

@@ -21,11 +21,11 @@ module Presenters
       @batch = batch
       @pipeline = @batch.pipeline
 
-      set_defaults({ controller: :batches, id: @batch.id, only_path: true })
+      set_defaults(controller: :batches, id: @batch.id, only_path: true)
     end
 
     def build_submenu
-      add_submenu_option "View summary", { controller: :pipelines, action: :summary }
+      add_submenu_option "View summary", controller: :pipelines, action: :summary
       add_submenu_option pluralize(@batch.comments.size, "comment"), batch_comments_path(@batch)
       load_pipeline_options
       add_submenu_option "NPG run data", "#{configatron.run_data_by_batch_id_url}#{@batch.id}"
@@ -102,7 +102,7 @@ module Presenters
 
         if @pipeline.prints_a_worksheet_per_task? and !pacbio_sample_pipeline?
           @tasks.each do |task|
-            add_submenu_option "Print worksheet for #{task.name}", { action: :print, task_id: task.id }
+            add_submenu_option "Print worksheet for #{task.name}", action: :print, task_id: task.id
           end
         else
           add_submenu_option "Print worksheet", :print

@@ -10,7 +10,7 @@ class PlateTest < ActiveSupport::TestCase
   def create_plate_with_fluidigm(fluidigm_barcode)
     barcode = "12345678"
     purpose = create :plate_purpose
-    purpose.create!(:do_not_create_wells, { name: "Cherrypicked #{barcode}", size: 192, barcode: barcode, plate_metadata_attributes: { fluidigm_barcode: fluidigm_barcode } })
+    purpose.create!(:do_not_create_wells, name: "Cherrypicked #{barcode}", size: 192, barcode: barcode, plate_metadata_attributes: { fluidigm_barcode: fluidigm_barcode })
   end
 
   context "" do
@@ -437,7 +437,7 @@ class PlateTest < ActiveSupport::TestCase
       plate = create :plate
       10.times { plate.add_and_save_well(create :well_with_sample_and_without_plate) }
       barcode_printer = create :barcode_printer
-      LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns({ 'data' => [{ 'id' => 15 }] })
+      LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns('data' => [{ 'id' => 15 }])
 
       RestClient.expects(:post)
 
