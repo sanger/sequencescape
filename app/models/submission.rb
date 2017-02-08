@@ -160,7 +160,7 @@ class Submission < ActiveRecord::Base
         multiplex_started_passed_result = true
       end
     end
-    return multiplex_started_passed_result
+    multiplex_started_passed_result
   end
 
   def each_submission_warning

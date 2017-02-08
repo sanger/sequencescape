@@ -25,13 +25,13 @@ class FieldInfo
   end
 
   def value
-    return default_value || ""
+    default_value || ""
   end
 
   # the following methods are Selection related. Move them in a subclass if needed
   def selection
     return nil unless kind == SELECTION
-    return self.parameters[:selection]
+    self.parameters[:selection]
   end
 
   def set_selection(selection)

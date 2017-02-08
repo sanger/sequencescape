@@ -24,7 +24,7 @@ def recursive_diff(h1, h2)
   elsif h1 == h2
     return nil
   end
-  return h1
+  h1
 end
 
 def assert_hash_equal(h1, h2, *args)

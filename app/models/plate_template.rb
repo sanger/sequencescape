@@ -37,12 +37,12 @@ class PlateTemplate < Plate
 
   def control_well?
     return false if descriptors.nil?
-    return 1 == descriptor_value('control_well').to_i
+    1 == descriptor_value('control_well').to_i
   end
 
   def without_control_wells?
     return true if descriptors.nil?
-    return 0 == descriptor_value('control_well').to_i
+    0 == descriptor_value('control_well').to_i
   end
 
   scope :with_sizes, ->(sizes) {

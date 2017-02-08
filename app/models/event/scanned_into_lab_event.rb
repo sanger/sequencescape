@@ -22,6 +22,6 @@ class Event::ScannedIntoLabEvent < Event
   end
 
   def test?
-    return (self.asset.qc_state == "passed" || self.asset.qc_state == "failed")
+    (self.asset.qc_state == "passed" || self.asset.qc_state == "failed")
   end
 end

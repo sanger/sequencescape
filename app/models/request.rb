@@ -348,7 +348,7 @@ class Request < ActiveRecord::Base
     return '' unless self.request_metadata.respond_to?(request_information_type.key.to_sym)
     value = self.request_metadata.send(request_information_type.key.to_sym)
     return value.to_s if value.blank? or request_information_type.data_type != 'Date'
-    return value.to_date.strftime('%d %B %Y')
+    value.to_date.strftime('%d %B %Y')
   end
 
   def value_for(name, batch = nil)

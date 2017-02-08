@@ -26,7 +26,7 @@ module PlatePurpose::Stock
     end
 
     return UNREADY_STATE unless wells_states.count == ids_of_wells_with_aliquots.count
-    return calculate_state_of_plate(wells_states)
+    calculate_state_of_plate(wells_states)
   end
 
   def calculate_state_of_plate(wells_states)

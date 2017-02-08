@@ -257,14 +257,14 @@ class Batch < ActiveRecord::Base
     return nil unless pipeline.group_by_parent || requests.first.target_asset.is_a?(Well)
     latest_plate_group = output_plate_group
     return latest_plate_group unless latest_plate_group.empty?
-    return input_plate_group
+    input_plate_group
   end
 
   def plate_barcode(barcode)
     if barcode
-      return barcode
+      barcode
     else
-      return requests.first.target_asset.plate.barcode
+      requests.first.target_asset.plate.barcode
     end
   end
 
@@ -418,7 +418,7 @@ class Batch < ActiveRecord::Base
       batch_request_right.batch.lab_events.create!(description: "Lane swap", message: "Lane #{batch_request_left.position} moved to #{batch_request_right.batch_id} lane #{batch_request_right.position}", user_id: current_user.id)
     end
 
-    return true
+    true
   end
 
   def plate_ids_in_study(study)

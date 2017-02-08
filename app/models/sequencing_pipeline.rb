@@ -39,7 +39,7 @@ class SequencingPipeline < Pipeline
     # There are some requests that don't have the read_length_attribute
     return false if read_length_list.size != batch.requests.size
 
-    return (read_length_list.uniq.size == 1)
+    (read_length_list.uniq.size == 1)
   end
 
   # The guys in sequencing want to be able to re-run a request in another batch.  What we've agreed is that

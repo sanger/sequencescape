@@ -28,7 +28,7 @@ class XML::Node
         yield result
       end
     end
-    return results
+    results
   end
 
   # alias for search
@@ -91,6 +91,6 @@ class String
   def to_libxml_doc
     xp = XML::Parser.new
     xp.string = self
-    return xp.parse
+    xp.parse
   end
 end

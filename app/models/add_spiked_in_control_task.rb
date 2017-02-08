@@ -24,6 +24,6 @@ class AddSpikedInControlTask < Task
     end
 
     control_asset.save!
-    return true
+    true
   end
 end

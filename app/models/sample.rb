@@ -74,7 +74,7 @@ class Sample < ActiveRecord::Base
 
   def safe_to_destroy
     errors.add(:base, "samples cannot be destroyed.")
-    return false
+    false
   end
   private :safe_to_destroy
 
@@ -154,7 +154,7 @@ class Sample < ActiveRecord::Base
 
     study = Study.find(study_id)
     asset_group_assets = AssetGroupAsset.where(asset_group_id: asset_group_id)
-    return study.submissions.that_submitted_asset_id(asset_group_assets.first.asset_id).all
+    study.submissions.that_submitted_asset_id(asset_group_assets.first.asset_id).all
   end
 
   def error

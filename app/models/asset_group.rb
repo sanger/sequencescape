@@ -36,7 +36,7 @@ class AssetGroup < ActiveRecord::Base
     if new_assets_name.present?
       asset_group = AssetGroup.create_with(study: study).find_or_create_by(name: new_assets_name)
     end
-    return asset_group
+    asset_group
   end
 
   def automatic_move?

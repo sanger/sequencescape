@@ -55,7 +55,7 @@ module ApplicationHelper
         Array(message).reduce(String.new.html_safe) { |buffer, m| buffer << content_tag(:div, m) }
       end
     end
-    return output
+    output
   end
 
   def api_data
@@ -181,9 +181,9 @@ module ApplicationHelper
 
   def study_state(state)
     if state == "active"
-      return "<span style='color:green;'>#{state}</span>".html_safe
+      "<span style='color:green;'>#{state}</span>".html_safe
     else
-      return "<span style='color:red;'>#{state}</span>".html_safe
+      "<span style='color:red;'>#{state}</span>".html_safe
     end
   end
 

@@ -200,6 +200,6 @@ qc_completed
           end
         end
       end
-      return results
+      results
     end
 end

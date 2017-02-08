@@ -34,7 +34,7 @@ class CherrypickForPulldownPipeline < CherrypickingPipeline
   end
 
   def request_types_and_submissions_for(requests)
-    return requests.map(&:request_type_id).uniq, requests.map(&:submission_id).uniq
+    [requests.map(&:request_type_id).uniq, requests.map(&:submission_id).uniq]
   end
   private :request_types_and_submissions_for
 

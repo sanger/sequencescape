@@ -200,7 +200,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
     found_set = Set.new(samples.map { |s| [s.name, s.sanger_sample_id] }.flatten)
     not_found = name_set - found_set
     raise InvalidInputException, "#{Sample.table_name} #{not_found.to_a.join(", ")} not found" unless not_found.empty?
-    return samples
+    samples
   end
   private :find_samples_from_text
 

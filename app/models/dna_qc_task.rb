@@ -33,7 +33,7 @@ class DnaQcTask < Task
       status = [gel_status, pico_status, sequenom_status, concentration_status, gender_status, sample_name_empty]
 
       return "fail" if genotyping_done_status == "fail"
-      return case
+      case
              when status.map { |s| s == "pass" or s == "*" }.all? then "pass"
              when status.map { |s| s == "fail" or s == "*" or s.nil? }.all? then "fail"
              when status.map { |s| s == "fail" }.select { |b| b == true }.size >= 3 then "fail"

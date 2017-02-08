@@ -30,7 +30,7 @@ class LabEvent < ActiveRecord::Base
     batch = requests.map(&:batch_id).uniq
     batch_id = batch[0] unless batch.size != 1
 
-    return batch_id
+    batch_id
   end
 
   def descriptor_value_for(name)
@@ -39,7 +39,7 @@ class LabEvent < ActiveRecord::Base
         return desc.value
       end
     end
-    return nil
+    nil
   end
 
   def add_new_descriptor(name, value)

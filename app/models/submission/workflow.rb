@@ -35,6 +35,6 @@ class Submission::Workflow < ActiveRecord::Base
 
   def visible_attribute?(field_path)
     workflows_accepting_field = FIELDS_TO_WORKFLOWS[field_path.join('.')]
-    return (workflows_accepting_field.blank? || workflows_accepting_field.include?(self.name))
+    (workflows_accepting_field.blank? || workflows_accepting_field.include?(self.name))
   end
 end

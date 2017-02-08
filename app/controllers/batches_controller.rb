@@ -637,7 +637,7 @@ class BatchesController < ApplicationController
       flash[:error] = message
       format.html { redirect_to pipeline_url(@pipeline) }
     end
-    return
+    nil
   end
 
   def hide_from_inbox(requests)

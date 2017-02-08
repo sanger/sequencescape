@@ -115,7 +115,7 @@ class SampleManifest < ActiveRecord::Base
       self.barcodes = []
       core_behaviour.generate
     end
-    return nil
+    nil
   end
 
   def create_sample(sanger_sample_id)

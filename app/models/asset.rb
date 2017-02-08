@@ -208,7 +208,7 @@ class Asset < ActiveRecord::Base
 
   def ancestor_of_purpose(ancestor_purpose_id)
     # If it's not a tube or a plate, defaults to stock_plate
-    return self.stock_plate
+    self.stock_plate
   end
 
   has_one :creation_request, class_name: 'Request', foreign_key: :target_asset_id
@@ -423,7 +423,7 @@ class Asset < ActiveRecord::Base
 
   def self.find_from_any_barcode(source_barcode)
     if source_barcode.blank?
-      return
+      nil
     elsif source_barcode.size == 13 && Barcode.check_EAN(source_barcode)
       with_machine_barcode(source_barcode).first
     elsif match = /\A([A-z]{2})([0-9]{1,7})\w{0,1}\z/.match(source_barcode) # Human Readable
@@ -444,7 +444,7 @@ class Asset < ActiveRecord::Base
 
   def external_release_text
     return "Unknown" if self.external_release.nil?
-    return self.external_release? ? "Yes" : "No"
+    self.external_release? ? "Yes" : "No"
   end
 
   def add_parent(parent)
@@ -478,11 +478,11 @@ class Asset < ActiveRecord::Base
   end
 
   def spiked_in_buffer
-    return nil
+    nil
   end
 
   def has_stock_asset?
-    return false
+    false
   end
 
   def has_many_requests?

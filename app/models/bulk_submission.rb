@@ -342,6 +342,6 @@ class BulkSubmission
 
   # This is used to present a list of successes
   def completed_submissions
-    return @submission_ids, @completed_submissions
+    [@submission_ids, @completed_submissions]
   end
 end

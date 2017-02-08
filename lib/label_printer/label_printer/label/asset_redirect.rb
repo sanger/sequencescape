@@ -9,9 +9,9 @@ module LabelPrinter
 
       def to_h
         if assets.first.is_a? Plate
-          return AssetPlate.new(assets).to_h
+          AssetPlate.new(assets).to_h
         elsif assets.first.is_a? Tube
-          return AssetTube.new(assets).to_h
+          AssetTube.new(assets).to_h
         end
       end
 

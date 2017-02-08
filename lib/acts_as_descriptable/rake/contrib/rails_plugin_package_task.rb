@@ -214,7 +214,7 @@ module Rake
       else
         x_links = "<a href=\"#{@extra_links}\">#{@extra_links}</a>"
       end
-      return x_links
+      x_links
     end
   end
 end

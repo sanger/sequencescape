@@ -46,7 +46,7 @@ class Accessionable::Dac < Accessionable::Base
       }
       }
     }
-    return xml.target!
+    xml.target!
   end
 
   def update_accession_number!(user, accession_number)

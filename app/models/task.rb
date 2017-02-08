@@ -23,7 +23,7 @@ class Task < ActiveRecord::Base
         return desc.value
       end
     end
-    return default
+    default
   end
 
   def set_descriptor_value(name, value, kind = nil)
@@ -48,7 +48,7 @@ class Task < ActiveRecord::Base
         return desc.value
       end
     end
-    return default
+    default
   end
 
   def set_subclass_attribute_value(name, value, kind = nil)
@@ -151,11 +151,11 @@ class Task < ActiveRecord::Base
     return [] unless asset
     sub_assets = []
     family_map = families.index_by(&:name)
-    return asset.children.select { |a| family_map[a.sti_type] }
+    asset.children.select { |a| family_map[a.sti_type] }
   end
 
   def sub_events_for(event)
-    return []
+    []
   end
 
   def generate_events_from_descriptors(asset)
@@ -163,7 +163,7 @@ class Task < ActiveRecord::Base
     asset.descriptors.each do |descriptor|
       event.add_descriptor(descriptor) if descriptor.name != "family_id"
     end
-    return event
+    event
   end
 
   def find_batch(batch_id)

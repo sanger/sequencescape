@@ -38,7 +38,7 @@ module SampleManifest::InputBehaviour
     def read_column_by_name(csv, row, name, column_map, default_value = nil)
       col = column_map[name]
       return default_value unless col
-      return csv[row][col]
+      csv[row][col]
     end
 
     def compute_column_map(names)

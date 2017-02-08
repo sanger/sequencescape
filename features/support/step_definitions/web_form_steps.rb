@@ -66,7 +66,7 @@ def locate_labeled_field_type(label_text, field_type)
   when 'textarea' then field.tag_name == 'textarea' or raise Capybara::ElementNotFound, "Field #{label_text.inspect} is not a textarea field"
   else raise StandardError, "Unrecognised field type '#{field_type}'"
   end
-  return field
+  field
 end
 
 Then /^I should see the (required )?(text|select|textarea) field "([^\"]+)"$/ do |required, type, field|

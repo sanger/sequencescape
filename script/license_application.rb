@@ -60,7 +60,7 @@ module WTSI
       files_to_license.each do |filename|
         TargetFile.new(filename, self).apply_license
       end
-      return 0
+      0
     end
 
     ##

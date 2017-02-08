@@ -34,7 +34,7 @@ class SetBaseRequestPurposes < ActiveRecord::Migration
     return purpose('qc')        if qc_type?(rt)
     return purpose('control')   if control_request?(rt)
     return purpose('internal')  if internal?(rt)
-    return purpose('standard')
+    purpose('standard')
   end
 
   def self.up

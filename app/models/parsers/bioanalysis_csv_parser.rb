@@ -22,11 +22,11 @@ class Parsers::BioanalysisCsvParser
   end
 
   def concentration(plate_position)
-    return get_parsed_attribute(plate_position, field_name_for(:concentration))
+    get_parsed_attribute(plate_position, field_name_for(:concentration))
   end
 
   def molarity(plate_position)
-    return get_parsed_attribute(plate_position, field_name_for(:molarity))
+    get_parsed_attribute(plate_position, field_name_for(:molarity))
   end
 
   def table_content_hash(group)

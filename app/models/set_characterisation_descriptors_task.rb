@@ -24,6 +24,6 @@ class SetCharacterisationDescriptorsTask < Task
       # we don't want anything except fragment gel so far ...
       asset.is_a?(Fragment) && self.name == "Gel"
     end
-    return subassets.map { |a| generate_events_from_descriptors(a) }
+    subassets.map { |a| generate_events_from_descriptors(a) }
   end
 end

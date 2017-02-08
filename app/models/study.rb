@@ -361,7 +361,7 @@ class Study < ActiveRecord::Base
         errors.add(:dac_policy, ": #{dac_policy} is not a valid URL")
         return false
       end
-      return true
+      true
     end
 
     with_options(if: :validating_ena_required_fields?) do |ena_required_fields|
@@ -570,7 +570,7 @@ class Study < ActiveRecord::Base
   def mailing_list_of_managers
     receiver = self.managers.pluck(:email).compact.uniq
     receiver = User.all_administrators_emails if receiver.empty?
-    return receiver
+    receiver
   end
 
   alias_attribute :friendly_name, :name

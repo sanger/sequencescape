@@ -123,7 +123,7 @@ module Authorization
       def parse_authorization_expression(str)
         @stack = []
         raise AuthorizationExpressionInvalid, "Cannot parse authorization (#{str})" if not parse_expr(str)
-        return @stack.pop
+        @stack.pop
       end
 
       def parse_expr(str)

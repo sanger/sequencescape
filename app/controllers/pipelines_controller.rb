@@ -18,7 +18,7 @@ class PipelinesController < ApplicationController
   def index
     @pipelines = Pipeline.active.internally_managed.alphabetical.all
     store = Hash.new { |h, k| h[k] = [] }
-    @grouping  = @pipelines.each_with_object(store) { |p, h| h[p.group_name] << p }
+    @grouping = @pipelines.each_with_object(store) { |p, h| h[p.group_name] << p }
 
     respond_to do |format|
       format.html

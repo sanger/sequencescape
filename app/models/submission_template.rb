@@ -119,7 +119,7 @@ class SubmissionTemplate < ActiveRecord::Base
   def self.new_from_submission(name, submission)
     submission_template = new(name: name)
     submission_template.update_from_submission(submission)
-    return submission_template
+    submission_template
   end
 
   def update_from_submission(submission)
@@ -138,9 +138,9 @@ class SubmissionTemplate < ActiveRecord::Base
 
   def self.unserialize(object)
     if object.respond_to? :map
-      return object.map { |o| unserialize(o) }
+      object.map { |o| unserialize(o) }
     else
-      return object
+      object
     end
   end
 end

@@ -83,7 +83,7 @@ module Accessionable
       } unless self.tags.blank?
         }
       }
-      return xml.target!
+      xml.target!
     end
 
     def accessionable_id

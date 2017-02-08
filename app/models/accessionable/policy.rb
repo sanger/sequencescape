@@ -36,7 +36,7 @@ class Accessionable::Policy < Accessionable::Base
       xml.POLICY_FILE self.policy_url
       }
     }
-    return xml.target!
+    xml.target!
   end
 
   def update_accession_number!(user, accession_number)

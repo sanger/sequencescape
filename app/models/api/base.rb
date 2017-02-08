@@ -121,7 +121,7 @@ class Api::Base
           end
         end
       end
-      return render_class
+      render_class
     end
   end
 

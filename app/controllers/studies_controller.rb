@@ -438,7 +438,7 @@ class StudiesController < ApplicationController
               when "all"                         then Study
               else                               raise StandardError, "Unknown scope '#{scope}'"
               end
-    return studies.newest_first
+    studies.newest_first
   end
 
   def rescue_validation

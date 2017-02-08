@@ -72,7 +72,7 @@ class AssetsController < ApplicationController
       found_set = Set.new(objects.map(&:name))
       not_found = name_set - found_set
       raise InvalidInputException, "#{Asset.table_name} #{not_found.to_a.join(", ")} not founds" unless not_found.empty?
-      return objects
+      objects
   end
 
   def create
@@ -429,6 +429,6 @@ class AssetsController < ApplicationController
         return false
       end
     end
-    return true
+    true
   end
 end

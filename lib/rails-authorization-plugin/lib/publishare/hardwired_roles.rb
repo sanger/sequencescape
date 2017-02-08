@@ -58,7 +58,7 @@ module Authorization
 
       module InstanceMethods
         def accepts_role?(role, user)
-          return false
+          false
         end
 
         def accepts_role(role, user)

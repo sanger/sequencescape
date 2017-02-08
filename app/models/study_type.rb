@@ -19,7 +19,7 @@ class StudyType < ActiveRecord::Base
     unless study_type.nil?
       return study_type.valid_type
     end
-    return false
+    false
   end
 
   module Associations

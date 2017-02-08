@@ -75,9 +75,9 @@ class User < ActiveRecord::Base
 
   def logout_path
     if configatron.authentication == "sanger-sso"
-      return (configatron.sso_logout_url).to_s
+      (configatron.sso_logout_url).to_s
     else
-      return "/logout"
+      "/logout"
     end
   end
 

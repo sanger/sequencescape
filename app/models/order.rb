@@ -68,7 +68,7 @@ class Order < ActiveRecord::Base
       submission.destroy unless orders.size > 1
       return true
     end
-    return false
+    false
   end
 
   serialize :request_types
@@ -212,7 +212,7 @@ class Order < ActiveRecord::Base
           comments: self.comments,
           project_id: self.project_id), &block)
     new_order.save
-    return new_order
+    new_order
   end
 
   def duplicates_within(timespan)
@@ -263,7 +263,7 @@ class Order < ActiveRecord::Base
   end
 
   def filter_asset_groups(asset_groups)
-    return asset_groups
+    asset_groups
   end
 
   class CompositeAttribute
@@ -333,7 +333,7 @@ class Order < ActiveRecord::Base
   # Unless you are doing something fancy, fall back on the defaults
   def input_field_infos
     return @input_field_infos if @input_field_infos
-    return @cache_calc ||= compute_input_field_infos
+    @cache_calc ||= compute_input_field_infos
   end
 
   # we don't call it input_field_infos= because it has a slightly different meanings

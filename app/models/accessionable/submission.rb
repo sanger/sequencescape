@@ -66,7 +66,7 @@ class Accessionable::Submission < Accessionable::Base
         end
       }
     }
-    return xml.target!
+    xml.target!
   end
 
   def state_action(accessionable)

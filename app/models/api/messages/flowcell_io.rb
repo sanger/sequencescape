@@ -76,7 +76,7 @@ class Api::Messages::FlowcellIO < Api::Base
         end
 
         def samples
-          return []
+          []
         end
 
         def product_line

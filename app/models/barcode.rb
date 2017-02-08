@@ -55,11 +55,11 @@ class Barcode
     def no_role?
       case
       when stock_plate.nil?
-        return true
+        true
       when stock_plate.wells.first.nil?
-        return true
+        true
       when stock_plate.wells.first.requests.first.nil?
-        return true
+        true
       else
         false
       end
@@ -87,7 +87,7 @@ class Barcode
     second = prefix.getbyte(1) - 64
     first  = 0 if first < 0
     second = 0 if second < 0
-    return ((first * 27) + second) * 1000000000
+    ((first * 27) + second) * 1000000000
   end
 
   # NT23432S => 398002343283
@@ -115,7 +115,7 @@ class Barcode
       sum += byte * len
       len = len - 1
     end
-    return (sum % 23 + 'A'.getbyte(0)).chr
+    (sum % 23 + 'A'.getbyte(0)).chr
   end
 
   def self.split_barcode(code)
@@ -141,13 +141,13 @@ class Barcode
   def self.number_to_human(code)
     barcode = barcode_to_human(code)
     prefix, number, check = split_human_barcode(barcode)
-    return number
+    number
   end
 
   def self.prefix_from_barcode(code)
     barcode = barcode_to_human(code)
     prefix, number, check = split_human_barcode(barcode)
-    return prefix
+    prefix
   end
 
   def self.prefix_to_human(prefix)
@@ -202,7 +202,7 @@ class Barcode
         return implement.name if implement
     end
 
-    return human_code
+    human_code
   end
 
   def self.check_EAN(code)

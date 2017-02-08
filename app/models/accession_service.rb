@@ -106,7 +106,7 @@ class AccessionService
     ebi_accession_number = study.study_metadata.study_ebi_accession_number
     # raise NumberNotGenerated, 'No need to' if not ebi_accession_number.blank? and not /ER/.match(ebi_accession_number)
 
-    return submit(user, Accessionable::Study.new(study))
+    submit(user, Accessionable::Study.new(study))
   end
 
   def submit_dac_for_user(study, user)
@@ -174,7 +174,7 @@ private
         }
       }
     }
-    return xml.target!
+    xml.target!
   end
 
   def accession_sample_set_xml_quarantine(sample, sampledata)
@@ -198,7 +198,7 @@ private
         xml.SAMPLE_LINKS {} unless sampledata[:links].blank?
       }
     }
-    return xml.target!
+    xml.target!
   end
 
   def accession_submission_xml(submission, accession_number)
@@ -235,7 +235,7 @@ private
         }
       }
     }
-    return xml.target!
+    xml.target!
   end
 
   require 'rexml/document'
