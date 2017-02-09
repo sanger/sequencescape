@@ -470,7 +470,7 @@ class Plate < Asset
 
   def obtain_storage_location
     # From LabWhere
-    info_from_labwhere = LabWhereClient::Labware.find_by(barcode: ean13_barcode)
+    info_from_labwhere = LabWhereClient::Labware.find_by_barcode(ean13_barcode) # rubocop:disable Rails/DynamicFindBy
     unless info_from_labwhere.nil? || info_from_labwhere.location.nil?
       @storage_location_service = 'LabWhere'
       return info_from_labwhere.location.location_info
