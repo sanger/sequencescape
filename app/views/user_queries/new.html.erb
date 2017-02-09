@@ -4,7 +4,7 @@
 
 <%= form_for(@user_query) do |f| %>
 
-  <%= f.hidden_field :url, value: @user_query.url %>
+  <%= f.hidden_field :url %>
 
   <div class="form-group">
     <%= f.label :user_email, 'Your email: ' %>
