@@ -75,7 +75,7 @@ class BulkSubmission
       end
     end
   rescue CSV::MalformedCSVError
-    errors.add(:spreadsheet, "The supplied file was not a valid CSV file (try opening it with MS Excel)")
+    errors.add(:spreadsheet, 'The supplied file was not a valid CSV file (try opening it with MS Excel)')
   rescue Encoding::InvalidByteSequenceError
     errors.add(:encoding, "didn't match for the provided file.")
   end

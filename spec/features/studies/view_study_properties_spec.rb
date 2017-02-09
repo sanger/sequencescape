@@ -8,8 +8,8 @@ feature 'View study properties' do
     login_user(user)
     visit study_path(study)
     click_link 'Study details'
-    expect(page).to have_content("Alignments in BAM: true")
-    expect(page).not_to have_content("HMDMC approval number: ")
+    expect(page).to have_content('Alignments in BAM: true')
+    expect(page).not_to have_content('HMDMC approval number: ')
   end
 
   scenario 'view properties of a study that requires ethical approval' do
@@ -20,7 +20,7 @@ feature 'View study properties' do
     login_user(user)
     visit study_path(study)
     click_link 'Study details'
-    expect(page).to have_content("HMDMC approval number: 12345")
+    expect(page).to have_content('HMDMC approval number: 12345')
   end
 
   def login_user(user)
