@@ -5,6 +5,8 @@
 # Copyright (C) 2016 Genome Research Ltd.
 
 class NoAccessionService < AccessionService
+  self.no_study_accession_needed = true
+
   def initialize(study)
     @study_id = study.id
   end

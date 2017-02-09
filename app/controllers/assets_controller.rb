@@ -269,7 +269,20 @@ class AssetsController < ApplicationController
 
   def new_request
     @request_types = RequestType.applicable_for_asset(@asset)
-    @study = @asset.studies.first
+    # In rare cases the user links in to the 'new request' page
+    # with a specific study specified. In even rarer cases this may
+    # conflict with the assets primary study.
+    # ./features/7711055_new_request_links_broken.feature:29
+    # This resolves the issue, but the code could do with a significant
+    # refactor. I'm delaying this currently as we NEED to get SS434 completed.
+    # 1. This should probably be RequestsController::new
+    # 2. We should use Request.new(...) and form helpers
+    # 3. This will allow us to instance_variable_or_id_param helpers.
+    @study = if params[:study_id]
+               Study.find(params[:study_id])
+             else
+               @asset.studies.first
+             end
     @project = @asset.projects.first || @asset.studies.first && @asset.studies.first.projects.first
   end
 

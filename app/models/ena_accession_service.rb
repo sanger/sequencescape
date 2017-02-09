@@ -2,27 +2,30 @@
 # GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
-# Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
+# Copyright (C) 2007-2011,2013,2015,2016 Genome Research Ltd.
 
-class EraAccessionService < AccessionService
+class EnaAccessionService < AccessionService
+  self.priority = 1
+  self.operational = true
+
   def provider
-    :ERA
+    :ENA
   end
 
   def accession_options
     configatron.accession.ena!.to_hash
   end
 
+  def accession_login
+    configatron.ena_accession_login or raise "Can't find ENA accession login in configuration file"
+  end
+
   # Most uses of this feature have been human error, so its better to hold off on releasing data than accidentally releasing data
   def sample_visibility(sample)
-    # sample_hold = sample.sample_sra_hold
-    # sample_hold.blank? ? 'hold' : sample_hold
     Hold
   end
 
   def study_visibility(study)
-    # study_hold = study.study_sra_hold
-    # study_hold.blank? ? 'hold' : study_hold
     Hold
   end
 
@@ -39,10 +42,10 @@ class EraAccessionService < AccessionService
   end
 
   def submit_policy_for_user(user, study)
-    raise NumberNotGenerated, "no need to submit Policy to ERA"
+    raise NumberNotGenerated, "no need to submit Policy to ENA"
   end
 
   def submit_dac_for_user(user, study)
-    raise NumberNotGenerated, "no need to submit DAC  to ERA"
+    raise NumberNotGenerated, "no need to submit DAC  to ENA"
   end
 end
