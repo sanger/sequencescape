@@ -315,9 +315,9 @@ def assign_asset_to_study(asset, study_name)
   study = Study.find_by!(name: study_name)
 
   asset_ids = if asset.respond_to?(:wells)
-                [asset.id]
-              else
                 asset.wells.pluck(:id)
+              else
+                [asset.id]
               end
 
   if asset.can_be_created? || (asset.respond_to?(:wells) && (asset.stock_plate?))
