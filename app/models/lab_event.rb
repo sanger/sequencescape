@@ -14,7 +14,15 @@ class LabEvent < ActiveRecord::Base
 
   scope :with_descriptor, ->(k, v) { where(['descriptors LIKE ?', "%#{k}: #{v}%"]) }
 
-  scope :barcode_code, ->(*args) { where(["(description = 'Cluster generation' or description = 'Add flowcell chip barcode') and eventful_type = 'Request' and descriptors like ? ", args[0]]) }
+  scope :barcode_code, ->(barcode) do
+    where(
+      description: ['Cluster generation', 'Add flowcell chip barcode'],
+      eventful_type: 'Request'
+    ).where([
+      'descriptors like ?',
+      "%Chip Barcode: #{barcode}%"
+    ])
+  end
 
   def unescape_for_descriptors
     self[:descriptors] = (self[:descriptors] || {}).each_with_object({}) do |(key, value), hash|
@@ -22,15 +30,10 @@ class LabEvent < ActiveRecord::Base
     end
   end
 
-  def self.find_by_barcode(barcode)
-    batch_id = 0
-
-    search = "%Chip Barcode: #{barcode}%"
-    requests = barcode_code(search)
-    batch = requests.map(&:batch_id).uniq
-    batch_id = batch[0] unless batch.size != 1
-
-    batch_id
+  def self.find_batch_id_by_barcode(barcode)
+    events = barcode_code(barcode)
+    batch_ids = events.pluck(:batch_id).uniq
+    batch_ids.first if batch_ids.one?
   end
 
   def descriptor_value_for(name)
