@@ -1,3 +1,4 @@
+# Encoding: utf-8
 # This file is part of SEQUENCESCAPE; it is distributed under the terms of
 # GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
@@ -7,9 +8,7 @@
 class ActiveRecord::Base
   class << self
     def find_by_id_or_name!(id, name)
-      return find(id) unless id.blank?
-      raise StandardError, "Must specify at least ID or name" if name.blank?
-      find_by_name!(name)
+      find_by_id_or_name(id, name) || raise(ActiveRecord::RecordNotFound, "Could not find #{self.name}: #{id || name}")
     end
 
     def find_by_id_or_name(id, name)
@@ -35,6 +34,9 @@ class Array
 end
 
 class BulkSubmission
+  # This is the default output from excel
+  DEFAULT_ENCODING = 'Windows-1252'
+
   include ActiveModel::AttributeMethods
   include ActiveModel::Validations
   include ActiveModel::Conversion
@@ -42,7 +44,7 @@ class BulkSubmission
 
   include Submission::AssetSubmissionFinder
 
-  attr_accessor :spreadsheet
+  attr_accessor :spreadsheet, :encoding
   define_attribute_methods [:spreadsheet]
 
   validates_presence_of :spreadsheet
@@ -54,6 +56,7 @@ class BulkSubmission
 
   def initialize(attrs = {})
     self.spreadsheet = attrs[:spreadsheet]
+    self.encoding = attrs.fetch(:encoding, DEFAULT_ENCODING)
   end
 
   include ManifestUtil
@@ -74,6 +77,8 @@ class BulkSubmission
     end
   rescue CSV::MalformedCSVError
     errors.add(:spreadsheet, "The supplied file was not a valid CSV file (try opening it with MS Excel)")
+  rescue Encoding::InvalidByteSequenceError
+    errors.add(:encoding, "didn't match for the provided file.")
   end
 
   def headers
@@ -133,7 +138,9 @@ class BulkSubmission
     # Store the details of the successful submissions so the user can be presented with a summary
     @submission_ids = []
     @completed_submissions = {}
-    @csv_rows = CSV.parse(spreadsheet.read)
+
+    csv_content = spreadsheet.read
+    @csv_rows = CSV.parse(csv_content.encode!('utf-8', encoding))
 
     if spreadsheet_valid?
       submission_details = submission_structure

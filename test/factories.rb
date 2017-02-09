@@ -495,7 +495,15 @@ FactoryGirl.define do
   factory :asset_group do
     name { |a| generate :asset_group_name }
     study
-    assets []
+
+    transient do
+      asset_type :untagged_well
+      asset_count 0
+    end
+
+    assets do
+      Array.new(asset_count) { create asset_type }
+    end
   end
 
   factory :asset_group_asset do
