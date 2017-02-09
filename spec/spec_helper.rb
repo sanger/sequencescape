@@ -21,6 +21,7 @@ require 'factory_girl'
 require 'capybara/rspec'
 require 'capybara/poltergeist'
 require 'webmock/rspec'
+require 'support/user_login'
 
 Capybara.javascript_driver = :poltergeist
 
@@ -105,6 +106,8 @@ RSpec.configure do |config|
   # the seed, which is printed after each run.
   #     --seed 1234
   config.order = :random
+
+  config.include UserLogin
 
   # Seed global randomization in this process using the `--seed` CLI option.
   # Setting this allows you to use `--seed` to deterministically reproduce

@@ -43,12 +43,4 @@ feature 'Asset submission', js: true do
       expect(asset.requests.where(request_type_id: request_type.id).count).to equal 2
     end
   end
-
-  def login_user(user)
-    visit login_path
-    fill_in 'Username', with: user.login
-    fill_in 'Password', with: 'password'
-    click_button 'Login'
-    true
-  end
 end

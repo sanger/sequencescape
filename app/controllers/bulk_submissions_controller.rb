@@ -1,3 +1,4 @@
+# Encoding: utf-8
 # This file is part of SEQUENCESCAPE; it is distributed under the terms of
 # GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
@@ -26,7 +27,7 @@ class BulkSubmissionsController < ApplicationController
 
   def create
     begin
-      @bulk_submission = BulkSubmission.new(spreadsheet: params.fetch(:bulk_submission, {})[:spreadsheet])
+      @bulk_submission = BulkSubmission.new(params.fetch(:bulk_submission, {}))
       if @bulk_submission.valid?
         flash.now[:notice] = 'File was processed successfully'
         sub_ids, @sub_details = @bulk_submission.completed_submissions
