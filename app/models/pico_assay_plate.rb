@@ -55,7 +55,7 @@ class PicoAssayPlate < Plate
   end
 
   def upload_pico_results(state, failure_reason, well_details)
-    return false if state.nil? || well_details.blank? || stock_plate().nil?
+    return false if state.nil? || well_details.blank? || stock_plate.nil?
 
     ActiveRecord::Base.transaction do
       event = stock_plate.events.create_pico!(state)

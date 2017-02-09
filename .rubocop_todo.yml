@@ -627,26 +627,6 @@ Style/LineEndConcatenation:
     - 'lib/tasks/code_quality_tests.rake'
     - 'test/unit/tasks/generate_manifest_task_test.rb'
 
-# Offense count: 20
-# Cop supports --auto-correct.
-Style/MethodCallParentheses:
-  Exclude:
-    - 'app/controllers/api/samples_controller.rb'
-    - 'app/controllers/sequenom_qc_plates_controller.rb'
-    - 'app/models/batch.rb'
-    - 'app/models/cherrypick_for_pulldown_pipeline.rb'
-    - 'app/models/cherrypick_pipeline.rb'
-    - 'app/models/dna_qc_pipeline.rb'
-    - 'app/models/pico_assay_plate.rb'
-    - 'app/models/plate_template.rb'
-    - 'app/models/qcable.rb'
-    - 'app/models/sequencing_pipeline.rb'
-    - 'app/models/tasks/set_descriptors_handler.rb'
-    - 'lib/acts_as_descriptable/rake/contrib/rails_plugin_package_task.rb'
-    - 'test/unit/aliquot_test.rb'
-    - 'test/unit/api_application_test.rb'
-    - 'test/unit/cherrypick/strategy/filter_test.rb'
-
 # Offense count: 11
 Style/MethodMissing:
   Exclude:

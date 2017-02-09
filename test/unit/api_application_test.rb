@@ -17,7 +17,7 @@ class ApiApplicationTest < ActiveSupport::TestCase
     end
 
     should 'automatically generate a key if no present' do
-      @app = ApiApplication.create()
+      @app = ApiApplication.create
       assert @app.key.present?, 'No key generated'
       assert @app.key.length >= 20, 'Key too short'
     end

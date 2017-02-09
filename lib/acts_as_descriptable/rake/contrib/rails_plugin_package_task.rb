@@ -147,7 +147,7 @@ module Rake
           end
         end
 
-        generate_index_files()
+        generate_index_files
       end
 
       desc 'Remove package files'
@@ -168,7 +168,7 @@ module Rake
           index.write("<html><head><title>#{title}</title></head>\n")
           index.write("<body>\n")
           index.write("<h2>#{title}</h2>\n")
-          extra_links = create_extra_links()
+          extra_links = create_extra_links
           index.write("<p>#{extra_links}</p>\n") if extra_links
           files.each { |fn|
             puts("  - Adding #{fn}") if @verbose

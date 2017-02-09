@@ -33,13 +33,13 @@ class AliquotTest < ActiveSupport::TestCase
     end
 
     should ' match aliquots with missing tags ' do
-      assert Aliquot.new(tag: @tag1) =~ Aliquot.new()
-      assert Aliquot.new(tag: @tag1).matches?(Aliquot.new())
+      assert Aliquot.new(tag: @tag1) =~ Aliquot.new
+      assert Aliquot.new(tag: @tag1).matches?(Aliquot.new)
     end
 
     should ' match aliquots with missing tag 2 ' do
-      assert Aliquot.new(tag2: @tag1) =~ Aliquot.new()
-      assert Aliquot.new(tag2: @tag1).matches?(Aliquot.new())
+      assert Aliquot.new(tag2: @tag1) =~ Aliquot.new
+      assert Aliquot.new(tag2: @tag1).matches?(Aliquot.new)
     end
 
     should ' match aliquots with missing tags but present tag 2s ' do

@@ -11,11 +11,11 @@ class SequenomQcPlatesController < ApplicationController
   def new
     @barcode_printers  = BarcodePrinterType.find_by(name: '384 Well Plate').barcode_printers
     @barcode_printers  = BarcodePrinter.order(:name) if @barcode_printers.blank?
-    @input_plate_names = input_plate_names()
+    @input_plate_names = input_plate_names
   end
 
   def create
-    @input_plate_names = input_plate_names()
+    @input_plate_names = input_plate_names
     @barcode_printers  = BarcodePrinter.all
     barcode_printer    = BarcodePrinter.find(params[:barcode_printer][:id])
     number_of_barcodes = params[:number_of_barcodes].to_i

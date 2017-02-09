@@ -21,7 +21,7 @@ class CherrypickPipeline < CherrypickingPipeline
         EventSender.send_pick_event(stock.id, target_purpose, "Pickup well #{request.asset.id}")
       end
     end
-    batch.release_pending_requests()
+    batch.release_pending_requests
     batch.output_plates.each(&:cherrypick_completed)
   end
 

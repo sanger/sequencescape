@@ -18,7 +18,7 @@ class CherrypickForPulldownPipeline < CherrypickingPipeline
   end
 
   def post_release_batch(batch, _user)
-    batch.release_pending_requests()
+    batch.release_pending_requests
   end
 
   def update_detached_request(batch, request)

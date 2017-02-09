@@ -122,7 +122,7 @@ class Cherrypick::Strategy::FilterTest < ActiveSupport::TestCase
     end
 
     should 'give back the plexes unchanged when the plate is empty' do
-      @plate, @expected = plate(), @plexes
+      @plate, @expected = plate, @plexes
     end
   end
 

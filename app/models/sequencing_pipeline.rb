@@ -53,7 +53,7 @@ class SequencingPipeline < Pipeline
       request.dup.tap do |request_clone|
         rma = request.request_metadata.attributes.merge(request: request_clone)
         request_clone.update_attributes!(state: 'pending', target_asset_id: nil, request_metadata_attributes: rma)
-        request_clone.comments.create!(description: "Automatically created clone of request #{request.id} which was removed from Batch #{batch.id} at #{DateTime.now()}")
+        request_clone.comments.create!(description: "Automatically created clone of request #{request.id} which was removed from Batch #{batch.id} at #{DateTime.now}")
         request.comments.create!(description: "The request #{request_clone.id} is an automatically created clone of this one")
       end
     end

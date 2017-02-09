@@ -351,7 +351,7 @@ class Batch < ActiveRecord::Base
   # the pending queue.
   def detach_request(request, current_user = nil)
     ActiveRecord::Base.transaction do
-      request.add_comment("Used to belong to Batch #{id} removed at #{Time.now()}", current_user) unless current_user.nil?
+      request.add_comment("Used to belong to Batch #{id} removed at #{Time.now}", current_user) unless current_user.nil?
       pipeline.detach_request_from_batch(self, request)
     end
   end

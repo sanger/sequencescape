@@ -74,6 +74,6 @@ class Qcable < ActiveRecord::Base
 
   def create_asset!
     return true if lot.nil?
-    self.asset ||= asset_purpose.create!()
+    self.asset ||= asset_purpose.create!
   end
 end

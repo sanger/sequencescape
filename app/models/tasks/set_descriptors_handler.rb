@@ -75,7 +75,7 @@ module Tasks::SetDescriptorsHandler
 
               if params[:asset]
                 params[:asset].keys.each do |key|
-                  asset = Asset.new()
+                  asset = Asset.new
                   asset.sti_type = Family.find(params[:asset][key][:family_id]).name
                   params[:asset][key].each_key do |field|
                     asset.add_descriptor Descriptor.new(name: field, value: params[:asset][key][field])

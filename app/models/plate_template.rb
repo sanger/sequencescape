@@ -17,7 +17,7 @@ class PlateTemplate < Plate
     unless details[:wells].nil?
       empty_wells = details[:wells].keys
       empty_wells.each do |well|
-        add_well_by_map_description(Well.create!(), well)
+        add_well_by_map_description(Well.create!, well)
       end
     end
   end
