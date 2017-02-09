@@ -2,7 +2,7 @@
   <h3>Please, fill in this form</h3>
 </div>
 
-<%= form_for(:user_query, url: {action: "create"}) do |f| %>
+<%= form_for(@user_query) do |f| %>
 
   <%= f.hidden_field :url, value: @user_query.url %>
 
