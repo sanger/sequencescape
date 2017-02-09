@@ -55,7 +55,7 @@ class SamplesController < ApplicationController
   end
 
   def show
-    @sample  = Sample.find(params[:id])
+    @sample  = Sample.includes(:assets, :studies).find(params[:id])
     @studies = Study.where(state: ['pending', 'active']).alphabetical
 
     respond_to do |format|
