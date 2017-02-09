@@ -367,5 +367,40 @@ class StudyTest < ActiveSupport::TestCase
         assert_equal 'Squish double spaces and flanking whitespace but not double letters', @study.name
       end
     end
+
+    context "#for_sample_accessioning" do
+      attr_reader :study_1, :study_4, :study_7, :study_8
+
+      setup do
+        @study_1 = create(:open_study)
+        @study_2 = create(:open_study, name: "Study 2", accession_number: "ENA123")
+        @study_3 = create(:open_study, name: "Study 3", accession_number: "ENA456")
+        @study_4 = create(:managed_study)
+        @study_5 = create(:managed_study, name: "Study 4", accession_number: "ENA666")
+        @study_6 = create(:managed_study, name: "Study 5", accession_number: "ENA777")
+        @study_7 = create(:managed_study, name: "Study 6", accession_number: "ENA888")
+        @study_8 = create(:not_app_study)
+      end
+
+      should "include studies that adhere to accessioning guidelines" do
+        assert_equal(5, Study.for_sample_accessioning.count)
+      end
+
+      should "not include studies that do not have accession numbers" do
+        studies = Study.for_sample_accessioning
+        refute studies.include?(study_1)
+        refute studies.include?(study_4)
+      end
+
+      should "not include studies that do not have the correct data release timings" do
+        study_7.study_metadata.update_attributes!(data_release_timing: Study::DATA_RELEASE_TIMING_NEVER, data_release_prevention_reason: 'data validity', data_release_prevention_approval: 'Yes', data_release_prevention_reason_comment: "blah, blah, blah")
+        assert_equal(4, Study.for_sample_accessioning.count)
+      end
+
+      should "not include studies that do not have the correct data release strategies" do
+        studies = Study.for_sample_accessioning
+        refute studies.include?(study_8)
+      end
+    end
   end
 end

@@ -65,10 +65,10 @@ class Study < ActiveRecord::Base
 
   belongs_to :user
 
-  has_many :study_samples
+  has_many :study_samples, inverse_of: :study
   has_many :orders
   has_many :submissions, through: :orders
-  has_many :samples, through: :study_samples
+  has_many :samples, through: :study_samples, inverse_of: :studies
   has_many :batches
 
   has_many :asset_groups
@@ -197,6 +197,12 @@ class Study < ActiveRecord::Base
   DATA_RELEASE_DELAY_LONG  = ['6 months', '9 months', '12 months', '18 months']
   DATA_RELEASE_DELAY_SHORT = ['3 months']
   DATA_RELEASE_DELAY_PERIODS = DATA_RELEASE_DELAY_SHORT + DATA_RELEASE_DELAY_LONG
+
+  scope :for_sample_accessioning, ->() {
+          joins(:study_metadata)
+          .where("study_metadata.study_ebi_accession_number <> ''")
+          .where(study_metadata: { data_release_strategy: [Study::DATA_RELEASE_STRATEGY_OPEN, Study::DATA_RELEASE_STRATEGY_MANAGED], data_release_timing: Study::DATA_RELEASE_TIMINGS })
+        }
 
   extend Metadata
   has_metadata do
@@ -526,7 +532,7 @@ class Study < ActiveRecord::Base
   end
 
   def accession_number?
-    not ebi_accession_number.blank?
+    ebi_accession_number.present?
   end
 
   def data_release_strategy
@@ -555,10 +561,14 @@ class Study < ActiveRecord::Base
 
   def accession_service
     case data_release_strategy
-    when "open" then EraAccessionService.new
+    when "open" then EnaAccessionService.new
     when "managed" then EgaAccessionService.new
     else NoAccessionService.new(self)
     end
+  end
+
+  def send_samples_to_service?
+    accession_service.no_study_accession_needed || ((!study_metadata.never_release?) && accession_number?)
   end
 
   def validate_ena_required_fields!

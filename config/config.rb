@@ -14,6 +14,8 @@ configatron.amqp.maximum_frame = 131072
 configatron.team_name = "LIMS and Informatics"
 configatron.team_url = "http://www.sanger.ac.uk/science/groups/production-software-development"
 
+configatron.accession_samples = false
+
 configatron.accession do |accession|
   accession.url = "http://localhost:9999/accession_service/"
   accession.view_url = "http://localhost:9999/view_accession/"

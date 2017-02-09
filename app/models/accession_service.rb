@@ -25,6 +25,18 @@ class AccessionService
     attr_accessor :original_filename
   end
 
+  # When samples belong to multiple studies, the submission service with the highest priority will be selected
+  class_attribute :priority, instance_writer: false
+  # When true, allows the accessioning of samples prior to accessioning of the study
+  class_attribute :no_study_accession_needed, instance_writer: false
+  # Indicates that the class reflects a real accessioning service. Set to false for dummy services. This allow
+  # scripts like the accessioning cron to break out prematurely for dummy services
+  class_attribute :operational, instance_writer: false
+
+  self.priority = 0
+  self.no_study_accession_needed = false
+  self.operational = false
+
   def submit(user, *accessionables)
     ActiveRecord::Base.transaction do
       submission = Accessionable::Submission.new(self, user, *accessionables)
@@ -46,7 +58,6 @@ class AccessionService
             { name: acc.schema_type.upcase, local_name: file.path, remote_name: acc.file_name }
           end
          )
-
         Rails::logger.debug { xml_result }
         raise AccessionServiceError, "EBI Server Error. Couldnt get accession number: #{xml_result}" if xml_result =~ /(Server error|Auth required|Login failed)/
 
@@ -89,7 +100,7 @@ class AccessionService
   end
 
   def submit_sample_for_user(sample, user)
-    raise NumberNotRequired, 'Does not require an accession number' unless sample.studies.first.ena_accession_required?
+    # raise NumberNotRequired, 'Does not require an accession number' unless sample.studies.first.ena_accession_required?
 
     ebi_accession_number = sample.sample_metadata.sample_ebi_accession_number
     # raise NumberNotGenerated, 'No need to' if not ebi_accession_number.blank? and not /ERS/.match(ebi_accession_number)
@@ -151,92 +162,6 @@ class AccessionService
   end
 
 private
-
-  def accession_study_set_xml_quarantine(study, studydata)
-    xml = Builder::XmlMarkup.new
-    xml.instruct!
-    xml.STUDY_SET('xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance') {
-      xml.STUDY(alias: studydata[:alias], accession: study.study_metadata.study_ebi_accession_number) {
-        xml.DESCRIPTOR {
-          xml.STUDY_TITLE         studydata[:study_title]
-          xml.STUDY_DESCRIPTION   studydata[:description]
-          xml.CENTER_PROJECT_NAME studydata[:center_study_name]
-          xml.CENTER_NAME         studydata[:center_name]
-          xml.STUDY_ABSTRACT      studydata[:study_abstract]
-
-          xml.PROJECT_ID(studydata[:study_id] || "0")
-          study_type = studydata[:existing_study_type]
-          if StudyType.include?(study_type)
-            xml.STUDY_TYPE(existing_study_type: study_type)
-          else
-            xml.STUDY_TYPE(existing_study_type: Study::Other_type, new_study_type: study_type)
-          end
-        }
-            }
-      }
-    return xml.target!
-  end
-
-  def accession_sample_set_xml_quarantine(sample, sampledata)
-    xml = Builder::XmlMarkup.new
-    xml.instruct!
-    xml.SAMPLE_SET('xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance') {
-      xml.SAMPLE(alias: sampledata[:alias], accession: sample.sample_metadata.sample_ebi_accession_number) {
-        xml.SAMPLE_NAME {
-          xml.COMMON_NAME  sampledata[:sample_common_name]
-          xml.TAXON_ID     sampledata[:taxon_id]
-        }
-        xml.SAMPLE_ATTRIBUTES {
-          sampledata[:tags].each do |tagpair|
-            xml.SAMPLE_ATTRIBUTE {
-              xml.TAG   tagpair[:tag]
-              xml.VALUE tagpair[:value]
-            }
-          end
-        } unless sampledata[:tags].blank?
-
-        xml.SAMPLE_LINKS {} unless sampledata[:links].blank?
-      }
-    }
-    return xml.target!
-  end
-
-  def accession_submission_xml(submission, accession_number)
-    xml = Builder::XmlMarkup.new
-    xml.instruct!
-    xml.SUBMISSION(
-      'xmlns:xsi'      => 'http://www.w3.org/2001/XMLSchema-instance',
-      :center_name     => submission[:center_name],
-      :broker_name     => submission[:broker],
-      :alias           => submission[:submission_id],
-      :submission_date => submission[:submission_date]
-    ) {
-      xml.CONTACTS {
-        xml.CONTACT(
-          inform_on_error: submission[:contact_inform_on_error],
-          inform_on_status: submission[:contact_inform_on_status],
-          name: submission[:name]
-        )
-      }
-      xml.ACTIONS {
-        xml.ACTION {
-          if accession_number.blank?
-            xml.ADD(source: submission[:source], schema: submission[:schema])
-          else
-            xml.MODIFY(source: submission[:source], target: "")
-          end
-        }
-        xml.ACTION {
-          if submission[:hold] == AccessionService::Protect
-            xml.PROTECT
-          else
-            xml.HOLD
-          end
-        }
-      }
-    }
-    return xml.target!
-  end
 
   require 'rexml/document'
   # require 'curb'
