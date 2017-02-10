@@ -4,6 +4,7 @@ Also print out the barcodes in the same order as they appear in the manifest
 
   Background:
     Given I am an "External" user logged in as "john"
+    And the configuration exists for creating sample manifest Excel spreadsheets
     And the "96 Well Plate" barcode printer "xyz" exists
       And the plate barcode webservice returns "666"
       And the plate barcode webservice returns "222"
@@ -21,7 +22,7 @@ Also print out the barcodes in the same order as they appear in the manifest
 
     Scenario: Out of order barcodes should be sorted in the manifest
       When I follow "Create manifest for plates"
-       And I select "default layout" from "Template"
+       And I select "Default Plate" from "Template"
        And I select "Test study" from "Study"
        And I select "Test supplier name" from "Supplier"
        And I select "xyz" from "Barcode printer"

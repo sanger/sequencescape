@@ -367,7 +367,7 @@ Feature: Interacting with samples through the API
       {
         "sample": {
           "reference_genome": "Staphylococcus_aureus (NCTC_8325)"
-        }, "lims": "SQSCP"
+        }
       }
       """
     Then the HTTP response should be "200 OK"

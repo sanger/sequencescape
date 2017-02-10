@@ -1,19 +1,16 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2014,2015 Genome Research Ltd.
 
 class Api::Messages::FlowcellIO < Api::Base
-
-  MANUAL_QC_BOOLS = {'passed'=>true,'failed'=>false }
+  MANUAL_QC_BOOLS = { 'passed' => true, 'failed' => false }
 
   module LaneExtensions # Included in SequencingRequest
-
     def self.included(base)
       base.class_eval do
-
-        def position
-          batch_request.position
-        end
+        delegate :position, to: :batch_request
 
         def mx_library
           asset.external_identifier
@@ -24,11 +21,11 @@ class Api::Messages::FlowcellIO < Api::Base
         end
 
         def flowcell_identifier
-          "Chip Barcode"
+          'Chip Barcode'
         end
 
         def flowcell_barcode
-          lab_events.each {|e| e.descriptor_value_for(flowcell_identifier).tap {|bc| return bc unless bc.nil? } }
+          lab_events.each { |e| e.descriptor_value_for(flowcell_identifier).tap { |bc| return bc unless bc.nil? } }
         end
 
         def samples
@@ -39,7 +36,7 @@ class Api::Messages::FlowcellIO < Api::Base
           end
         end
 
-        delegate :spiked_in_buffer, :external_release, :to=>:target_asset, :allow_nil => true
+        delegate :spiked_in_buffer, :external_release, to: :target_asset, allow_nil: true
 
         def controls
           spiked_in_buffer.present? ? spiked_in_buffer.aliquots : []
@@ -57,7 +54,6 @@ class Api::Messages::FlowcellIO < Api::Base
         def request_purpose_key
           request_purpose.try(:key)
         end
-
       end
     end
   end
@@ -65,13 +61,10 @@ class Api::Messages::FlowcellIO < Api::Base
   module ControlLaneExtensions
     def self.included(base)
       base.class_eval do
-
-        def position
-          batch_request.position
-        end
+        delegate :position, to: :batch_request
 
         def mx_library
-          asset.external_identifier||"UNKNOWN"
+          asset.external_identifier || 'UNKNOWN'
         end
 
         def manual_qc
@@ -79,7 +72,7 @@ class Api::Messages::FlowcellIO < Api::Base
         end
 
         def samples
-          return []
+          []
         end
 
         def product_line
@@ -89,6 +82,7 @@ class Api::Messages::FlowcellIO < Api::Base
         def spiked_in_buffer
           false
         end
+
         def external_release
          false
         end
@@ -104,7 +98,6 @@ class Api::Messages::FlowcellIO < Api::Base
         def request_purpose_key
           request_purpose.try(:key)
         end
-
       end
     end
   end
@@ -128,7 +121,6 @@ class Api::Messages::FlowcellIO < Api::Base
         def external_library_id
           library.external_identifier
         end
-
       end
     end
   end
@@ -156,7 +148,7 @@ class Api::Messages::FlowcellIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        scope :including_associations_for_json, -> { includes([ :uuid_object, :user, :assignee, { :pipeline => :uuid_object }])}
+        scope :including_associations_for_json, -> { includes([:uuid_object, :user, :assignee, { pipeline: :uuid_object }]) }
 
         def flowcell_barcode
           requests.first.flowcell_barcode
@@ -169,7 +161,6 @@ class Api::Messages::FlowcellIO < Api::Base
         alias :reverse_read_length :read_length
 
         def lanes; requests; end
-
       end
     end
   end
@@ -177,25 +168,23 @@ class Api::Messages::FlowcellIO < Api::Base
   renders_model(::Batch)
 
   map_attribute_to_json_attribute(:flowcell_barcode)
-  map_attribute_to_json_attribute(:id,'flowcell_id')
-  map_attribute_to_json_attribute(:read_length,'forward_read_length')
-  map_attribute_to_json_attribute(:reverse_read_length,'reverse_read_length')
+  map_attribute_to_json_attribute(:id, 'flowcell_id')
+  map_attribute_to_json_attribute(:read_length, 'forward_read_length')
+  map_attribute_to_json_attribute(:reverse_read_length, 'reverse_read_length')
 
   map_attribute_to_json_attribute(:updated_at)
 
   with_nested_has_many_association(:lanes) do # actually requests
-
     map_attribute_to_json_attribute(:manual_qc)
     map_attribute_to_json_attribute(:position)
     map_attribute_to_json_attribute(:priority)
-    map_attribute_to_json_attribute(:mx_library,'id_pool_lims')
-    map_attribute_to_json_attribute(:external_release,'external_release')
+    map_attribute_to_json_attribute(:mx_library, 'id_pool_lims')
+    map_attribute_to_json_attribute(:external_release, 'external_release')
     map_attribute_to_json_attribute(:lane_identifier, 'entity_id_lims')
-    map_attribute_to_json_attribute(:product_line,'team')
-    map_attribute_to_json_attribute(:request_purpose_key,'purpose')
+    map_attribute_to_json_attribute(:product_line, 'team')
+    map_attribute_to_json_attribute(:request_purpose_key, 'purpose')
 
     with_nested_has_many_association(:samples) do # actually aliquots
-
       map_attribute_to_json_attribute(:aliquot_index_value, 'tag_index')
 
       with_association(:tag) do
@@ -232,7 +221,7 @@ class Api::Messages::FlowcellIO < Api::Base
       end
       map_attribute_to_json_attribute(:external_library_id, 'id_library_lims')
       map_attribute_to_json_attribute(:library_id, 'legacy_library_id')
-      map_attribute_to_json_attribute(:aliquot_type,'entity_type')
+      map_attribute_to_json_attribute(:aliquot_type, 'entity_type')
     end
 
     with_nested_has_many_association(:controls) do
@@ -253,11 +242,7 @@ class Api::Messages::FlowcellIO < Api::Base
       end
       map_attribute_to_json_attribute(:library_id, 'legacy_library_id')
       map_attribute_to_json_attribute(:external_library_id, 'id_library_lims')
-      map_attribute_to_json_attribute(:control_aliquot_type,'entity_type')
+      map_attribute_to_json_attribute(:control_aliquot_type, 'entity_type')
     end
   end
-
-
 end
-
-

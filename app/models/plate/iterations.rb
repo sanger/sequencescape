@@ -1,16 +1,17 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2013,2015 Genome Research Ltd.
 
 module Plate::Iterations
-
-    def iteration
-    return nil if parent.nil?  # No parent means no iteration, not a 0 iteration.
+  def iteration
+    return nil if parent.nil? # No parent means no iteration, not a 0 iteration.
 
     # NOTE: This is how to do row numbering with MySQL!  It essentially joins the assets and asset_links
     # tables to find all of the child plates of our parent that have the same plate purpose, numbering
     # those rows to give the iteration number for each plate.
-    iteration_of_plate = connection.select_one(%Q{
+    iteration_of_plate = self.class.connection.select_one("
       SELECT iteration
       FROM (
         SELECT iteration_plates.id, @rownum:=@rownum+1 AS iteration
@@ -23,11 +24,9 @@ module Plate::Iterations
         ) AS iteration_plates,
         (SELECT @rownum:=0) AS r
       ) AS a
-      WHERE a.id=#{self.id}
-    }, "Plate #{self.id} iteration query")
+      WHERE a.id=#{id}
+    ", "Plate #{id} iteration query")
 
     iteration_of_plate['iteration'].to_i
   end
-
-
 end

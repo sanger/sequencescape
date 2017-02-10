@@ -1,10 +1,11 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2014,2015 Genome Research Ltd.
 # encoding: utf-8
 
 class Parsers::BioanalysisCsvParser
-
   class InvalidFile < StandardError; end
 
   attr_reader :content
@@ -15,17 +16,17 @@ class Parsers::BioanalysisCsvParser
 
   def field_name_for(sym_name)
     {
-      :concentration => "Conc. [ng/µl]",
-      :molarity => "Molarity [nmol/l]"
+      concentration: 'Conc. [ng/µl]',
+      molarity: 'Molarity [nmol/l]'
     }[sym_name]
   end
 
   def concentration(plate_position)
-    return get_parsed_attribute(plate_position, field_name_for(:concentration))
+    get_parsed_attribute(plate_position, field_name_for(:concentration))
   end
 
   def molarity(plate_position)
-    return get_parsed_attribute(plate_position, field_name_for(:molarity))
+    get_parsed_attribute(plate_position, field_name_for(:molarity))
   end
 
   def table_content_hash(group)
@@ -33,9 +34,9 @@ class Parsers::BioanalysisCsvParser
     starting_line = group[0]
     ending_line = group[1]
     type = content[starting_line][0]
-    fields = content[starting_line+1]
+    fields = content[starting_line + 1]
 
-    for pos in (starting_line+2) .. (ending_line) do
+    for pos in (starting_line + 2)..(ending_line) do
       values = content[pos]
       unless values.nil? && (values.length != fields.length)
         content_hash.merge!(Hash[fields.zip(values)])
@@ -46,11 +47,11 @@ class Parsers::BioanalysisCsvParser
 
   def build_range(range)
     if range == nil
-      range = [0, content.length-1]
+      range = [0, content.length - 1]
     else
       range = range.dup
     end
-    range.push(content.length-1) if (range.length==1)
+    range.push(content.length - 1) if (range.length == 1)
     range
   end
 
@@ -59,7 +60,7 @@ class Parsers::BioanalysisCsvParser
   # - regexp -> Regular expression to be matched in the first column as beginning of range
   # - range -> In case it is specified, restricts the searching process to this range of lines
   # instead of using all the content of the CSV file
-  def get_groups(regexp, range=nil)
+  def get_groups(regexp, range = nil)
     groups = []
     group = []
     range = build_range(range)
@@ -67,18 +68,17 @@ class Parsers::BioanalysisCsvParser
     group_contents = get_group_content(range)
 
     group_contents.each_with_index do |line, pos|
-
       if line[0].present? && line[0].match(regexp) && group.empty?
         group.push(pos)
-      elsif (line.empty? && group.one? )
-        group.push(pos-1)
+      elsif (line.empty? && group.one?)
+        group.push(pos - 1)
       end
 
       if group.length == 2
         groups.push [group[0] + range[0], group[1] + range[0]]
         group = []
       end
-      if ((group.length ==1) && (pos==(group_contents.length-1)))
+      if ((group.length == 1) && (pos == (group_contents.length - 1)))
         groups.push [group[0] + range[0], pos + range[0]]
       end
     end
@@ -86,7 +86,7 @@ class Parsers::BioanalysisCsvParser
   end
 
   def get_group_content(group)
-    content.slice(group[0], group[1]-group[0]+1)
+    content.slice(group[0], group[1] - group[0] + 1)
   end
 
   def parse_peak_table(group)
@@ -109,9 +109,9 @@ class Parsers::BioanalysisCsvParser
   def parse_sample(group)
     {
       parse_cell(group) => {
-        :peak_table => parse_peak_table(group),
-        :region_table => parse_region_table(group),
-        :overall => parse_overall(group)
+        peak_table: parse_peak_table(group),
+        region_table: parse_region_table(group),
+        overall: parse_overall(group)
       }
     }
   end
@@ -123,17 +123,17 @@ class Parsers::BioanalysisCsvParser
       if (pos == (groups.length - 1))
         next_index = @content.length - 1
       else
-        next_index = groups[pos+1][0]-1
+        next_index = groups[pos + 1][0] - 1
       end
       [group[0], next_index]
     end.reduce({}) do |memo, group|
-      memo.merge(self.parse_sample group)
+      memo.merge(parse_sample group)
     end
   end
 
   def parsed_content
     @parsed_content ||= parse_samples
-  rescue NoMethodError => e  #Ugh! I want to catch these where they happen
+  rescue NoMethodError => e # Ugh! I want to catch these where they happen
     raise InvalidFile
   end
 
@@ -143,11 +143,13 @@ class Parsers::BioanalysisCsvParser
   end
 
   def each_well_and_parameters
-    parsed_content.each do |well,values|
-      yield(well,values[:peak_table][field_name_for(:concentration)],values[:peak_table][field_name_for(:molarity)])
+    parsed_content.each do |well, values|
+      yield(well, {
+        set_concentration: values[:peak_table][field_name_for(:concentration)],
+        set_molarity: values[:peak_table][field_name_for(:molarity)]
+        })
     end
   end
-
 
   def self.is_bioanalyzer?(content)
     # We don't go through the whole file

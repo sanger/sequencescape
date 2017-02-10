@@ -1,9 +1,14 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 class WorkflowsController < ApplicationController
-  before_filter :find_workflow_by_id, :only =>[:auto_batch, :show, :edit, :duplicate, :batches, :update, :destroy, :reorder_tasks]
+# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  before_action :evil_parameter_hack!
+  before_action :find_workflow_by_id, only: [:auto_batch, :show, :edit, :duplicate, :batches, :update, :destroy, :reorder_tasks]
 
   include Tasks::AddSpikedInControlHandler
   include Tasks::AssignTagsHandler
@@ -35,7 +40,7 @@ class WorkflowsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.xml { render :xml => @workflows.to_xml}
+      format.xml { render xml: @workflows.to_xml }
     end
   end
 
@@ -48,7 +53,7 @@ class WorkflowsController < ApplicationController
   def show
     respond_to do |format|
       format.html
-      format.xml  { render :xml => @workflow.to_xml }
+      format.xml { render xml: @workflow.to_xml }
     end
   end
 
@@ -73,8 +78,8 @@ class WorkflowsController < ApplicationController
 
   def batches
     @workflow = LabInterface::Workflow.find(params[:id])
-    #TODO association broken here - something to do with the attachables polymorph?
-    @batches = Batch.find_all_by_workflow_id(@workflow.id).sort_by {|batch| batch.id}.reverse
+    # TODO association broken here - something to do with the attachables polymorph?
+    @batches = Batch.where(workflow_id: @workflow.id).sort_by { |batch| batch.id }.reverse
   end
 
   def create
@@ -84,10 +89,10 @@ class WorkflowsController < ApplicationController
       if @workflow.save
         flash[:notice] = 'Workflow was successfully created.'
         format.html { redirect_to workflow_url(@workflow) }
-        format.xml  { head :created, :location => workflow_url(@workflow) }
+        format.xml  { head :created, location: workflow_url(@workflow) }
       else
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @workflow.errors.to_xml }
+        format.html { render action: 'new' }
+        format.xml  { render xml: @workflow.errors.to_xml }
       end
     end
   end
@@ -99,14 +104,14 @@ class WorkflowsController < ApplicationController
         format.html { redirect_to workflow_url(@workflow) }
         format.xml  { head :ok }
       else
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @workflow.errors.to_xml }
+        format.html { render action: 'edit' }
+        format.xml  { render xml: @workflow.errors.to_xml }
       end
     end
   end
 
   def destroy
-    @workflow.destroy
+    flash[:error] = 'Sorry. The ability to delete workflows has been removed.'
 
     respond_to do |format|
       format.html { redirect_to workflows_url }
@@ -124,7 +129,7 @@ class WorkflowsController < ApplicationController
       task.sorted = params['task_list'].index(task.id.to_s) + 1
       task.save
     end
-    render :nothing => true
+    render nothing: true
   end
 
   # TODO: This needs to be made RESTful.
@@ -134,11 +139,11 @@ class WorkflowsController < ApplicationController
   # 4: Some tasks rely on parameters passed in from the previous task. This isn't ideal, but it might
   #    be worth maintaining the behaviour until we solve the problems.
   # 5: We need to improve the repeatability of tasks.
+  # 6: GET should be Idempotent. doing a task should be a POST
   def stage
-    @workflow = LabInterface::Workflow.find(params[:workflow_id], :include => [:tasks])
+    @workflow = LabInterface::Workflow.includes(:tasks).find(params[:workflow_id])
     @stage = params[:id].to_i
     @task = @workflow.tasks[@stage]
-
 
     ActiveRecord::Base.transaction do
       # If params[:next_stage] is nil then just render the current task
@@ -146,17 +151,17 @@ class WorkflowsController < ApplicationController
       unless params[:next_stage].nil?
 
         eager_loading = @task.included_for_do_task
-        @batch ||= Batch.find(params[:batch_id], :include => eager_loading )
+        @batch ||= Batch.includes(eager_loading).find(params[:batch_id])
         unless @batch.editable?
-          flash[:error] = "You cannot make changes to a completed batch."
+          flash[:error] = 'You cannot make changes to a completed batch.'
           redirect_to :back
           return false
         end
 
         if @task.do_task(self, params)
           # Task completed, start the batch is necessary and display the next one
-          do_start_batch_task(@task,params)
-          @stage +=  1
+          do_start_batch_task(@task, params)
+          @stage += 1
           params[:id] = @stage
           @task = @workflow.tasks[@stage]
         end
@@ -168,7 +173,7 @@ class WorkflowsController < ApplicationController
         redirect_to finish_batch_url(@batch)
       else
         if @batch.nil? || @task.included_for_render_task != eager_loading
-          @batch = Batch.find(params[:batch_id], :include => @task.included_for_render_task )
+          @batch = Batch.includes(@task.included_for_render_task).find(params[:batch_id])
         end
         @task.render_task(self, params)
       end
@@ -179,7 +184,7 @@ class WorkflowsController < ApplicationController
     @rits = @batch.pipeline.request_information_types
     @requests = @batch.requests
 
-    @workflow = LabInterface::Workflow.find(params[:workflow_id], :include => [:tasks])
+    @workflow = LabInterface::Workflow.includes(:tasks).find(params[:workflow_id])
     @task = task
   end
 
@@ -187,7 +192,7 @@ class WorkflowsController < ApplicationController
 
   def ordered_fields(fields)
     response = Array.new
-    fields.keys.sort_by{|key| key.to_i}.each do |key|
+    fields.keys.sort_by { |key| key.to_i }.each do |key|
       response.push fields[key]
     end
     response
@@ -202,7 +207,7 @@ class WorkflowsController < ApplicationController
         flat_hash.merge!(flatten_hash(v, names))
       else
         key = flat_hash_key(names)
-        key += "[]" if v.is_a?(Array)
+        key += '[]' if v.is_a?(Array)
         flat_hash[key] = v
       end
     end
@@ -224,12 +229,13 @@ class WorkflowsController < ApplicationController
   end
 
   def eventify_batch(batch, task)
-    event = batch.lab_events.create({})
-    event.description = "Complete"
-    event.add_descriptor Descriptor.new({ :name => 'task_id', :value => task.id })
-    event.add_descriptor Descriptor.new({ :name => 'task', :value => task.name })
-    event.batch = batch
-    event.user  = current_user
-    event.save
+    event = batch.lab_events.build(
+      description: 'Complete',
+      user: current_user,
+      batch: batch
+    )
+    event.add_descriptor Descriptor.new(name: 'task_id', value: task.id)
+    event.add_descriptor Descriptor.new(name: 'task', value: task.name)
+    event.save!
   end
 end

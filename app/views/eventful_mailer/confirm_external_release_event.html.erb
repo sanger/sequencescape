@@ -1,0 +1,25 @@
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.%>
+
+Hello,
+
+<p><%= @eventful.class %> <%= @eventful.id %>: <%= @message %></p>
+
+<pre><%= @content %></pre>
+
+<p>
+You can manage this asset here:<br />
+
+<% link = url_for(:host => configatron.site_url, :controller => 'assets', :action => 'edit', :id => @eventful) %>
+</p>
+<a href="<%= link %>"><%= link %></a></p>
+<% source_request = Asset.find(@eventful.id).source_request
+   @study_id = source_request.study_id unless source_request.nil?
+%>
+<p>The study is: <%= @study_id %>
+</p>
+<p>Many thanks,<br />
+<em>Sequencescape</em></p>

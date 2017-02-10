@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 class Api::LibraryTubeIO < Api::Base
   module Extensions
@@ -17,8 +19,8 @@ class Api::LibraryTubeIO < Api::Base
         scope :including_associations_for_json, -> { includes([
             :uuid_object,
             :barcode_prefix, {
-              :source_request => [:uuid_object, :request_metadata],
-              :primary_aliquot => { :sample => :uuid_object, :tag => [ :uuid_object, { :tag_group => :uuid_object } ] }
+              source_request: [:uuid_object, :request_metadata],
+              primary_aliquot: { sample: :uuid_object, tag: [:uuid_object, { tag_group: :uuid_object }] }
             },
             :scanned_into_lab_event
           ])}
@@ -28,7 +30,7 @@ class Api::LibraryTubeIO < Api::Base
     end
 
     def url_name
-      "library_tube"
+      'library_tube'
     end
   end
 
@@ -63,15 +65,15 @@ class Api::LibraryTubeIO < Api::Base
     end
 
     with_association(:tag) do
-      map_attribute_to_json_attribute(:uuid  , 'tag_uuid')
-      map_attribute_to_json_attribute(:id    , 'tag_internal_id')
-      map_attribute_to_json_attribute(:oligo , 'expected_sequence')
+      map_attribute_to_json_attribute(:uuid, 'tag_uuid')
+      map_attribute_to_json_attribute(:id, 'tag_internal_id')
+      map_attribute_to_json_attribute(:oligo, 'expected_sequence')
       map_attribute_to_json_attribute(:map_id, 'tag_map_id')
 
       with_association(:tag_group) do
         map_attribute_to_json_attribute(:name, 'tag_group_name')
         map_attribute_to_json_attribute(:uuid, 'tag_group_uuid')
-        map_attribute_to_json_attribute(:id  , 'tag_group_internal_id')
+        map_attribute_to_json_attribute(:id, 'tag_group_internal_id')
       end
     end
   end
@@ -81,12 +83,12 @@ class Api::LibraryTubeIO < Api::Base
     map_attribute_to_json_attribute(:uuid, 'source_request_uuid')
 
     extra_json_attributes do |object, json_attributes|
-      json_attributes["read_length"]                 = object.request_metadata.read_length  if object.is_a?(SequencingRequest)
-      json_attributes["library_type"]                = object.request_metadata.library_type if object.is_a?(LibraryCreationRequest)
-      json_attributes["fragment_size_required_from"] = object.request_metadata.fragment_size_required_from   if object.respond_to?(:fragment_size_required_from)
-      json_attributes["fragment_size_required_to"]   = object.request_metadata.fragment_size_required_to     if object.respond_to?(:fragment_size_required_to)
+      json_attributes['read_length']                 = object.request_metadata.read_length  if object.is_a?(SequencingRequest)
+      json_attributes['library_type']                = object.request_metadata.library_type if object.is_a?(LibraryCreationRequest)
+      json_attributes['fragment_size_required_from'] = object.request_metadata.fragment_size_required_from   if object.respond_to?(:fragment_size_required_from)
+      json_attributes['fragment_size_required_to']   = object.request_metadata.fragment_size_required_to     if object.respond_to?(:fragment_size_required_to)
     end
   end
 
-  self.related_resources = [ :lanes, :requests ]
+  self.related_resources = [:lanes, :requests]
 end

@@ -14,20 +14,20 @@ module ActiveRecord # :nodoc:
 
       module SingletonMethods
         def search(descriptors)
-          conditions = ""
+          conditions = ''
           for descriptor in descriptors
             conditions += "descriptors LIKE '%"
-            conditions += descriptor.name + ": \"" + descriptor.value + "\"%' or "
+            conditions += descriptor.name + ': "' + descriptor.value + "\"%' or "
           end
-          conditions.gsub!(/ or $/, "")
-          logger.info "Searching for: " + conditions
-          self.find(:all, :conditions => conditions)
+          conditions.gsub!(/ or $/, '')
+          logger.info 'Searching for: ' + conditions
+          where(conditions)
         end
 
         def find_descriptors
-          logger.info "Finding all descriptors"
+          logger.info 'Finding all descriptors'
           response = []
-          self.find(:all).each do |object|
+          find_each do |object|
             object.descriptors.each do |descriptor|
               response.push descriptor
             end
@@ -40,14 +40,14 @@ module ActiveRecord # :nodoc:
         module Active
           def self.included(base)
             base.class_eval do
-              has_many :descriptors, :order => 'sorter', :dependent => :destroy
+              has_many :descriptors, ->() { order('sorter') }, dependent: :destroy
             end
           end
 
           def create_descriptors(params)
-            self.descriptors << params.sort_by { |k,_| k.to_i }.each_with_index.map do |(field_id, value), index|
+            descriptors << params.sort_by { |k, _| k.to_i }.each_with_index.map do |(_field_id, value), index|
               value[:required] = (value[:required] == 'on') ? 1 : 0
-              Descriptor.new(value.merge(:sorter => index+1))
+              Descriptor.new(value.merge(sorter: index + 1))
             end
           end
 
@@ -57,7 +57,7 @@ module ActiveRecord # :nodoc:
           end
 
           def delete_descriptors
-            self.descriptors.clear
+            descriptors.clear
           end
         end
 
@@ -70,11 +70,11 @@ module ActiveRecord # :nodoc:
           end
 
           def descriptor_xml(options = {})
-            xml = options[:builder] ||= Builder::XmlMarkup.new(:indent => options[:indent])
+            xml = options[:builder] ||= Builder::XmlMarkup.new(indent: options[:indent])
             xml.instruct! unless options[:skip_instruct]
 
             xml.descriptors {
-              self.descriptors.each do |field|
+              descriptors.each do |field|
                 xml.descriptor {
                   descriptor.name  field.name.to_s
                   descriptor.value field.value
@@ -86,12 +86,12 @@ module ActiveRecord # :nodoc:
           def descriptors
             [].tap do |response|
               each_descriptor do |field, value|
-                response.push(Descriptor.new(:name => field, :value => value))
+                response.push(Descriptor.new(name: field, value: value))
               end
             end
           end
 
-          def each_descriptor(&block)
+          def each_descriptor
             descriptor_hash = read_descriptor_hash
             read_descriptor_fields.each do |field|
               next if field.blank?
@@ -101,6 +101,12 @@ module ActiveRecord # :nodoc:
 
           def descriptor_value(key)
             read_descriptor_hash.fetch(key, '')
+          end
+
+          # I'm going to unpick this completely soon
+          # but need to work out exactly what's used
+          def descriptor_value_allow_nil(key)
+            read_descriptor_hash[key]
           end
 
           def add_descriptor(descriptor)
@@ -114,7 +120,7 @@ module ActiveRecord # :nodoc:
           private :read_descriptor_hash
 
           def read_descriptor_fields
-            read_attribute(:descriptor_fields) || []
+            descriptor_fields || []
           end
           private :read_descriptor_fields
         end

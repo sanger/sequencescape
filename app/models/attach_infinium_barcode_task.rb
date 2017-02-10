@@ -1,9 +1,10 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 class AttachInfiniumBarcodeTask < Task
-
   class AttachInfiniumBarcodeData < Task::RenderElement
     def initialize(request)
       super(request)
@@ -15,7 +16,7 @@ class AttachInfiniumBarcodeTask < Task
   end
 
   def partial
-    "attach_infinium_barcode_batches"
+    'attach_infinium_barcode_batches'
   end
 
   def render_task(workflow, params)
@@ -26,5 +27,4 @@ class AttachInfiniumBarcodeTask < Task
   def do_task(workflow, params)
     workflow.do_attach_infinium_barcode_task(self, params)
   end
-
 end

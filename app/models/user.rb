@@ -1,11 +1,13 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
-require "net/ldap"
-require "openssl"
-require "digest/sha1"
-#require 'curb'
+require 'net/ldap'
+require 'openssl'
+require 'digest/sha1'
+# require 'curb'
 
 class User < ActiveRecord::Base
   include Authentication
@@ -22,26 +24,28 @@ class User < ActiveRecord::Base
   has_many :settings
   has_many :roles
   has_many :submissions
-  has_many :project_roles, :class_name => 'Role', :conditions => {authorizable_type:'Project'}
-  has_many :study_roles, :class_name => 'Role', :conditions => {authorizable_type:'Study'}
+  has_many :project_roles, ->() { where(authorizable_type: 'Project') }, class_name: 'Role'
+  has_many :study_roles,   ->() { where(authorizable_type: 'Study') },   class_name: 'Role'
   has_many :study_roles
   has_many :batches
-  has_many :assigned_batches, :class_name => 'Batch', :foreign_key => :assignee_id, :inverse_of => :assignee
-  has_many :pipelines, :through => :batches, :order => 'batches.id DESC', :uniq => true
+  has_many :assigned_batches, class_name: 'Batch', foreign_key: :assignee_id, inverse_of: :assignee
+  has_many :pipelines, ->() { order('batches.id DESC').distinct }, through: :batches
 
   before_save :encrypt_password
   before_create { |record| record.new_api_key if record.api_key.blank? }
   before_create { |record| record.workflow ||= Submission::Workflow.default_workflow }
 
   validates_presence_of :login
-  validates_confirmation_of :password, :if => :password_required?
+  validates_uniqueness_of :login
 
-  scope :with_login, ->(*logins) { { :conditions => { :login => logins.flatten } } }
-  scope :all_administrators, -> { joins(:roles).where(:roles=>{:name=>'administrator'}) }
+  validates_confirmation_of :password, if: :password_required?
+
+  scope :with_login, ->(*logins) { where(login: logins.flatten) }
+  scope :all_administrators, -> { joins(:roles).where(roles: { name: 'administrator' }) }
 
   acts_as_authorized_user
 
-  scope :owners, ->() { where('last_name IS NOT NULL').joins(:roles).where(:roles=>{:name=>'owner'}).order('last_name ASC').uniq }
+  scope :owners, ->() { where.not(last_name: nil).joins(:roles).where(roles: { name: 'owner' }).order(:last_name).uniq }
 
   attr_accessor :password
 
@@ -50,11 +54,11 @@ class User < ActiveRecord::Base
   end
 
   def study_roles
-    self.user_roles("Study")
+    user_roles('Study')
   end
 
   def project_roles
-    self.user_roles("Project")
+    user_roles('Project')
   end
 
   def study_and_project_roles
@@ -62,18 +66,18 @@ class User < ActiveRecord::Base
   end
 
   def user_roles(authorizable_class_name)
-    roles.where(authorizable_type:authorizable_class_name)
+    roles.where(authorizable_type: authorizable_class_name)
   end
 
   def following?(item)
-    self.has_role? 'follower', item
+    has_role? 'follower', item
   end
 
   def logout_path
-    if configatron.authentication == "sanger-sso"
-      return "#{configatron.sso_logout_url}"
+    if configatron.authentication == 'sanger-sso'
+      (configatron.sso_logout_url).to_s
     else
-      return "/logout"
+      '/logout'
     end
   end
 
@@ -94,14 +98,13 @@ class User < ActiveRecord::Base
   end
 
   def name
-    name_incomplete? ? self.login : "#{self.first_name} #{self.last_name}"
+    name_incomplete? ? login : "#{first_name} #{last_name}"
   end
 
   def projects
-    # We use where(true) to get a scope. In Later versions of rails all is a scope
-    return Project.where(true) if self.is_administrator?
+    return Project.all if is_administrator?
     atuhorized = authorized_projects
-    return Project.where(true) if ( (atuhorized.blank?) && (privileged?) )
+    return Project.all if ((atuhorized.blank?) && (privileged?))
     atuhorized
   end
 
@@ -110,73 +113,68 @@ class User < ActiveRecord::Base
   end
 
   def sorted_project_names_and_ids
-    projects.alphabetical.map{|p| [p.name, p.id] }
+    projects.alphabetical.pluck(:name, :id)
   end
 
   def sorted_valid_project_names_and_ids
-    valid_projects.map{|p| [p.name, p.id] }
+    valid_projects.pluck(:name, :id)
   end
 
   def valid_projects
     projects.valid.alphabetical
   end
 
-
   def sorted_study_names_and_ids
-    interesting_studies.alphabetical.map{|p| [p.name, p.id] }
+    interesting_studies.alphabetical.pluck(:name, :id)
   end
 
   def workflow_name
-    self.workflow and self.workflow.name
+    workflow && workflow.name
   end
 
   def has_preference_for(key)
     setting_for?(key)
   end
 
-  def privileged?(item=nil)
-    privileged = false
-    privileged = true if manager_or_administrator?
-    unless item.nil?
-      privileged = true if self.owner?(item)
-    end
-    privileged
+  def privileged?(item = nil)
+    manager_or_administrator? || owner?(item)
   end
 
   def internal?
-    self.has_role? 'internal'
+    has_role? 'internal'
   end
 
   def qa_manager?
-    self.has_role? 'qa_manager'
+    has_role? 'qa_manager'
   end
 
   def lab_manager?
-    self.has_role? 'lab_manager'
+    has_role? 'lab_manager'
   end
 
   def slf_manager?
-    self.has_role? 'slf_manager'
+    has_role? 'slf_manager'
   end
 
   def slf_gel?
-    self.has_role? 'slf_gel'
+    has_role? 'slf_gel'
   end
 
   def lab?
-    self.has_role? 'lab'
+    has_role? 'lab'
   end
 
   def owner?(item)
-    self.has_role? 'owner', item
+    return false if item.nil?
+    has_role? 'owner', item
   end
 
   def data_access_coordinator?
-    self.has_role? 'data_access_coordinator'
+    has_role? 'data_access_coordinator'
   end
 
   def manager_or_administrator?
-    self.is_administrator? || self.is_manager?
+    is_administrator? || is_manager?
   end
 
   def manager?
@@ -189,7 +187,7 @@ class User < ActiveRecord::Base
 
   # returns emails of all admins
   def self.all_administrators_emails
-    self.all_administrators.map(&:email).compact.uniq
+    all_administrators.pluck(:email).compact.uniq
   end
 
   # Encrypts some data with the salt.
@@ -198,7 +196,7 @@ class User < ActiveRecord::Base
   end
 
   def new_api_key(length = 32)
-    u = Digest::SHA1.hexdigest(self.login)[0..12]
+    u = Digest::SHA1.hexdigest(login)[0..12]
     k = Digest::SHA1.hexdigest(Time.now.to_s + rand(12341234).to_s)[1..length]
     self.api_key = "#{u}-#{k}"
   end
@@ -216,13 +214,13 @@ class User < ActiveRecord::Base
   def remember_me
     self.remember_token_expires_at = 2.weeks.from_now.utc
     self.remember_token            = encrypt("#{email}--#{remember_token_expires_at}")
-    save(:validate => false)
+    save(validate: false)
   end
 
   def forget_me
     self.remember_token_expires_at = nil
     self.remember_token            = nil
-    save(:validate => false)
+    save(validate: false)
   end
 
   # User has a relationship by role to these studies
@@ -232,11 +230,11 @@ class User < ActiveRecord::Base
 
   def self.valid_barcode?(code)
     begin
-      human_code = Barcode.barcode_to_human!(code, self.prefix)
+      human_code = Barcode.barcode_to_human!(code, prefix)
     rescue
       return false
     end
-    return false unless User.find_by_barcode(human_code)
+    return false unless User.find_by(barcode: human_code)
 
     true
   end
@@ -244,22 +242,22 @@ class User < ActiveRecord::Base
   def self.lookup_by_barcode(user_barcode)
     barcode = Barcode.barcode_to_human(user_barcode)
     if barcode
-      return User.find_by_barcode(barcode)
+      return User.find_by(barcode: barcode)
     end
 
     nil
   end
 
   protected
+
     # before filter
     def encrypt_password
       return if password.blank?
-      self.salt = Digest::SHA1.hexdigest("--#{Time.now.to_s}--#{login}--") if new_record?
+      self.salt = Digest::SHA1.hexdigest("--#{Time.now}--#{login}--") if new_record?
       self.crypted_password = encrypt(password)
     end
 
     def password_required?
       crypted_password.blank? || !password.blank?
     end
-
 end

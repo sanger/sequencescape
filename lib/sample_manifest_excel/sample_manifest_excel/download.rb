@@ -1,6 +1,5 @@
 module SampleManifestExcel
-	class Download
-
+  class Download
     attr_reader :sample_manifest, :data_worksheet, :range_list, :ranges_worksheet, :column_list
 
     def initialize(sample_manifest, column_list, range_list)
@@ -26,7 +25,5 @@ module SampleManifestExcel
     def workbook
       @workbook ||= xls.workbook
     end
-
   end
-
 end

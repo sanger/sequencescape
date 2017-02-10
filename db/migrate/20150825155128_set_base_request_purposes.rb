@@ -1,9 +1,10 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2015 Genome Research Ltd.
 
 class SetBaseRequestPurposes < ActiveRecord::Migration
-
   class RequestType < ActiveRecord::Base
     self.table_name = 'request_types'
   end
@@ -17,7 +18,7 @@ class SetBaseRequestPurposes < ActiveRecord::Migration
   end
 
   def self.purpose(key)
-    @rp||=Hash[RequestPurpose.all.map {|rp| [rp.key,rp]}]
+    @rp ||= Hash[RequestPurpose.all.map { |rp| [rp.key, rp] }]
     @rp[key]
   end
 
@@ -33,7 +34,7 @@ class SetBaseRequestPurposes < ActiveRecord::Migration
     return purpose('qc')        if qc_type?(rt)
     return purpose('control')   if control_request?(rt)
     return purpose('internal')  if internal?(rt)
-    return purpose('standard')
+    purpose('standard')
   end
 
   def self.up

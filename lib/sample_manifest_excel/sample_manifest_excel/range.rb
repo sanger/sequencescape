@@ -1,12 +1,10 @@
 module SampleManifestExcel
-
   ##
   # A range of cells signified by a reference.
   # The options are a range of text values which are used to validate a value.
   # The first row is the only mandatory field everything else can be inferred.
   # Each field that is not passed in the initializer is lazy loaded.
   class Range
-
     include HashAttributes
 
     set_attributes :options, :first_row, :last_row, :first_column, :last_column, :worksheet_name
@@ -35,10 +33,10 @@ module SampleManifestExcel
     # the number of options minus one.
     def last_column
       @last_column ||= if options.empty?
-        first_column
-      else
-        options.length + (first_column - 1)
-      end
+                         first_column
+                       else
+                         options.length + (first_column - 1)
+                       end
     end
 
     ##
@@ -65,11 +63,15 @@ module SampleManifestExcel
       "#{first_cell.fixed}:#{last_cell.fixed}"
     end
 
+    # rubocop:disable Rails/Delegate
+    # Would change this to:
+    # delegate :reference, to: :first_cell, prefix: true
     ##
     # The reference of the first cell.
     def first_cell_reference
       first_cell.reference
     end
+    # rubocop:enable Rails/Delegate
 
     ##
     # An absolute reference is defined as a reference preceded by the name of the
@@ -79,7 +81,7 @@ module SampleManifestExcel
       if worksheet_name.present?
         "#{worksheet_name}!#{fixed_reference}"
       else
-        "#{fixed_reference}"
+        (fixed_reference).to_s
       end
     end
 
@@ -107,7 +109,5 @@ module SampleManifestExcel
         absolute_reference: absolute_reference
       }
     end
-
   end
-
 end

@@ -7,6 +7,7 @@ Feature: Studies have a release agreement
     And I fill in "Study name" with "Testing release agreements"
     And I select "Jack Sponsor" from "Faculty Sponsor"
     And I fill in "Study description" with "Checking that release agreements behave properly"
+    And I fill in "Data access group" with "mygroup"
     And I select "No" from "Do any of the samples in this study contain human DNA?"
     And I select "No" from "Does this study contain samples that are contaminated with human DNA which must be removed prior to analysis?"
     And I select "Managed (EGA)" from "What is the data release strategy for this study?"

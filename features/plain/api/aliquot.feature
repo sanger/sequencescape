@@ -11,6 +11,7 @@ Feature: Interacting with aliquot through the API
   Scenario: Listing all of the aliquots that exist
     Given I am logged in as "John Smith"
     Given I have a study called "test study"
+    And study "test study" status is "active"
     Given study "test study" has a registered sample "sample"
     And all assets have sequential UUIDs based on "aaaaaaaa-1111-2222-3333"
     And all samples have sequential UUIDs based on "bbbbbbbb-1111-2222-3333"

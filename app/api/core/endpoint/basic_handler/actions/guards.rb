@@ -1,17 +1,19 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 module ::Core::Endpoint::BasicHandler::Actions::Guards
   class Guard
     def initialize(method = nil, &block)
       if method.present?
         line = __LINE__ + 1
-        singleton_class.class_eval(%Q{
+        singleton_class.class_eval("
           def execute(object)
             object.#{method}
           end
-        }, __FILE__, line)
+        ", __FILE__, line)
       elsif block_given?
         singleton_class.send(:define_method, :execute, &block)
       else
@@ -25,7 +27,7 @@ module ::Core::Endpoint::BasicHandler::Actions::Guards
       @guards = []
     end
 
-    delegate :push, :to => :@guards
+    delegate :push, to: :@guards
 
     def execute(object)
       return true if @guards.empty?
@@ -33,7 +35,7 @@ module ::Core::Endpoint::BasicHandler::Actions::Guards
     end
   end
 
-  class GuardProxy < ActiveSupport::BasicObject
+  class GuardProxy < ActiveSupport::ProxyObject
     def initialize(request, object)
       @request, @object = request, object
     end
@@ -54,7 +56,7 @@ module ::Core::Endpoint::BasicHandler::Actions::Guards
   end
   private :check_authorisation!
 
-  def accessible_action?(handler, action, request, object)
+  def accessible_action?(_handler, action, request, object)
     guard_for(action).execute(GuardProxy.new(request, object))
   end
   private :accessible_action?
@@ -64,7 +66,7 @@ module ::Core::Endpoint::BasicHandler::Actions::Guards
   end
 
   def guard_for(name)
-    @guards ||= Hash.new { |h,k| h[k] = GuardChain.new }
+    @guards ||= Hash.new { |h, k| h[k] = GuardChain.new }
     @guards[name.to_sym]
   end
   private :guard_for

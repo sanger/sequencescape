@@ -1,13 +1,15 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 class Core::Endpoint::BasicHandler
   module Json
     def actions(object, options)
-      Hash[@actions.select do |name, behaviour|
+      Hash[@actions.select do |_name, behaviour|
         accessible_action?(self, behaviour, options[:response].request, object)
-      end.map do |name, behaviour|
+      end.map do |name, _behaviour|
         [name, core_path(options)]
       end]
     end
@@ -21,7 +23,7 @@ class Core::Endpoint::BasicHandler
       []
     end
 
-    def tree_for(object, options)
+    def tree_for(_object, _options)
       associations, actions = {}, {}
       related.each { |r| r.separate(associations, actions) }
       Core::Io::Json::Grammar::Root.new(

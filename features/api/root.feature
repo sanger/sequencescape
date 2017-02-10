@@ -322,6 +322,16 @@ And I have a "full" authorised user with the key "cucumber"
             "read": "http://www.example.com/api/1/tube_from_tube_creations"
           }
         },
+        "custom_metadatum_collections": {
+          "actions": {
+            "read": "http://www.example.com/api/1/custom_metadatum_collections"
+          }
+        },
+        "volume_updates": {
+          "actions": {
+            "read": "http://www.example.com/api/1/volume_updates"
+          }
+        },
         "reference_genomes": {
           "actions": {
             "read": "http://www.example.com/api/1/reference_genomes"
@@ -670,6 +680,18 @@ And I have a "full" authorised user with the key "cucumber"
           "actions": {
             "read": "http://www.example.com/api/1/tube_from_tube_creations",
             "create": "http://www.example.com/api/1/tube_from_tube_creations"
+          }
+        },
+        "custom_metadatum_collections": {
+          "actions": {
+            "read": "http://www.example.com/api/1/custom_metadatum_collections",
+            "create": "http://www.example.com/api/1/custom_metadatum_collections"
+          }
+        },
+        "volume_updates": {
+          "actions": {
+            "read": "http://www.example.com/api/1/volume_updates",
+            "create": "http://www.example.com/api/1/volume_updates"
           }
         },
         "reference_genomes": {

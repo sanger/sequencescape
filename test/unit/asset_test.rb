@@ -1,43 +1,43 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class AssetTest < ActiveSupport::TestCase
-
-  context "An asset" do
-
-    context "with a barcode" do
+  context 'An asset' do
+    context 'with a barcode' do
       setup do
         @asset = create :asset
         @result_hash = @asset.barcode_and_created_at_hash
       end
-      should "return a hash with the barcode and created_at time" do
-        assert ! @result_hash.blank?
+      should 'return a hash with the barcode and created_at time' do
+        assert !@result_hash.blank?
         assert @result_hash.is_a?(Hash)
         assert @result_hash[:barcode].is_a?(String)
         assert @result_hash[:created_at].is_a?(ActiveSupport::TimeWithZone)
       end
     end
 
-    context "without a barcode" do
+    context 'without a barcode' do
       setup do
-        @asset = create :asset, :barcode => nil
+        @asset = create :asset, barcode: nil
         @result_hash = @asset.barcode_and_created_at_hash
       end
-      should "return an empty hash" do
+      should 'return an empty hash' do
         assert @result_hash.blank?
       end
     end
 
-    context "#scanned_in_date" do
+    context '#scanned_in_date' do
       setup do
         @scanned_in_asset = create :asset
         @unscanned_in_asset = create :asset
-        @scanned_in_event = create :event, :content => Date.today.to_s, :message => "scanned in", :family => "scanned_into_lab", :eventful_type => "Asset", :eventful_id => @scanned_in_asset.id
+        @scanned_in_event = create :event, content: Date.today.to_s, message: 'scanned in', family: 'scanned_into_lab', eventful_type: 'Asset', eventful_id: @scanned_in_asset.id
       end
-      should "return a date if it has been scanned in" do
+      should 'return a date if it has been scanned in' do
         assert_equal Date.today.to_s, @scanned_in_asset.scanned_in_date
       end
 
@@ -47,8 +47,8 @@ class AssetTest < ActiveSupport::TestCase
     end
   end
 
-  context "#assign_relationships" do
-    context "with the correct arguments" do
+  context '#assign_relationships' do
+    context 'with the correct arguments' do
       setup do
         @asset = create :asset
         @parent_asset_1 = create :asset
@@ -59,24 +59,24 @@ class AssetTest < ActiveSupport::TestCase
         @asset.assign_relationships(@parents, @child_asset)
       end
 
-      should "add 2 parents to the asset" do
+      should 'add 2 parents to the asset' do
         assert_equal 2, @asset.parents.size
       end
 
-      should "add 1 child to the asset" do
+      should 'add 1 child to the asset' do
         assert_equal 1, @asset.children.size
       end
 
-      should "set the correct child" do
+      should 'set the correct child' do
         assert_equal @child_asset, @asset.children.first
       end
 
-      should "set the correct parents" do
+      should 'set the correct parents' do
         assert_equal @parents, @asset.parents
       end
     end
 
-    context "with the wrong arguments" do
+    context 'with the wrong arguments' do
       setup do
         @asset = create :asset
         @parent_asset_1 = create :asset
@@ -87,14 +87,13 @@ class AssetTest < ActiveSupport::TestCase
         @asset.assign_relationships(@parent_asset_2, [])
       end
 
-      should "not create any parents" do
+      should 'not create any parents' do
         assert @asset.parents.empty?
       end
 
-      should "not create any children" do
+      should 'not create any children' do
         assert @asset.child.nil?
       end
     end
-
   end
 end

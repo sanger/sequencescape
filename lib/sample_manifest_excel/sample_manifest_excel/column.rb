@@ -1,28 +1,31 @@
 module SampleManifestExcel
-
   ##
   # Column creates a particular column with all the information about this column (name, heading,
   # value, type, attribute, should it be locked or unlocked, position of the column,
   # validation, conditional formatting rules)
   # A column is only valid if it has a name and heading.
   class Column
-
     include HashAttributes
     include ActiveModel::Validations
 
-    set_attributes :name, :heading, :number, :type, :validation, :value, :unlocked, :conditional_formattings, 
-                    defaults: {number: 0, type: :string, conditional_formattings: {}}
+    set_attributes :name, :heading, :number, :type, :validation, :value, :unlocked, :conditional_formattings, :attribute,
+                    defaults: { number: 0, type: :string, conditional_formattings: {} }
 
     attr_reader :range
+
+    ##
+    # Defaults to a NullValidation object
+    attr_reader :validation
 
     validates_presence_of :name, :heading
 
     delegate :range_name, to: :validation
 
     def initialize(attributes = {})
+      @validation = NullValidation.new
       create_attributes(attributes)
 
-      @attribute = Attributes.find(name) if valid?
+      # @attribute = Attributes.find(name) if valid?
     end
 
     ##
@@ -30,10 +33,10 @@ module SampleManifestExcel
     # create a new validation object
     def validation=(validation)
       @validation = if validation.kind_of?(Hash)
-        Validation.new(validation)
-      else
-        validation.dup
-      end
+                      Validation.new(validation)
+                    else
+                      validation.dup
+                    end
     end
 
     ##
@@ -41,20 +44,20 @@ module SampleManifestExcel
     # otherwise create a new conditional formatting list
     def conditional_formattings=(conditional_formattings)
       @conditional_formattings = if conditional_formattings.kind_of?(Hash)
-        ConditionalFormattingList.new(conditional_formattings)
-      else
-        conditional_formattings.dup
-      end
+                                   ConditionalFormattingList.new(conditional_formattings)
+                                 else
+                                   conditional_formattings.dup
+                                 end
     end
 
     ##
     # Creates a new Range object.
     def range=(attributes)
-      @range = unless attributes.empty?
-        Range.new(attributes)
-      else
-        NullRange.new
-      end
+      @range = if attributes.empty?
+                 NullRange.new
+               else
+                 Range.new(attributes)
+               end
     end
 
     ##
@@ -65,14 +68,12 @@ module SampleManifestExcel
 
     ##
     # Some columns relate to a specific value. If that is null we return the column value.
-    def attribute_value(sample)
-      attribute.value(sample) || value
-    end
+    # def attribute_value(sample)
+    #   attribute.value(sample) || value
+    # end
 
-    ##
-    # Defaults to a NullValidation object
-    def validation
-      @validation || NullValidation.new
+    def attribute_value(detail)
+      detail[attribute] || value
     end
 
     ##
@@ -87,9 +88,9 @@ module SampleManifestExcel
     # Update the column validation using the passed worksheet and found range.
     # Update the conditional formatting based on a range and worksheet.
     def update(first_row, last_row, ranges, worksheet)
-      self.range = {first_column: number, first_row: first_row, last_row: last_row}
+      self.range = { first_column: number, first_row: first_row, last_row: last_row }
 
-      range = ranges.find_by(range_name)  || NullRange.new
+      range = ranges.find_by(range_name) || NullRange.new
       validation.update(range: range, reference: self.range.reference, worksheet: worksheet)
 
       conditional_formattings.update(
@@ -119,7 +120,6 @@ module SampleManifestExcel
     end
 
     class ArgumentBuilder
-
       attr_reader :arguments
 
       def initialize(args, key, default_conditional_formattings)
@@ -145,7 +145,5 @@ module SampleManifestExcel
   private
 
     attr_reader :attribute
-
   end
-
 end

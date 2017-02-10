@@ -1,13 +1,13 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2014,2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class LotTest < ActiveSupport::TestCase
-  context "A Lot" do
-
-
+  context 'A Lot' do
     should validate_presence_of :lot_number
 
     should have_many :qcables
@@ -17,7 +17,7 @@ class LotTest < ActiveSupport::TestCase
     should validate_presence_of :received_at
     should belong_to :template
 
-    context "when validating" do
+    context 'when validating' do
       setup do
         create :lot
       end
@@ -25,10 +25,9 @@ class LotTest < ActiveSupport::TestCase
       should validate_uniqueness_of :lot_number
     end
 
-
-    context "#lot" do
+    context '#lot' do
       setup do
-        PlateBarcode.stubs(:create).returns(OpenStruct.new(:barcode => (FactoryGirl.generate :barcode)))
+        PlateBarcode.stubs(:create).returns(OpenStruct.new(barcode: (FactoryGirl.generate :sanger_barcode)))
         @lot = create :lot
         @mock_asset = Asset.new
         @mock_asset.stubs(:save!).returns(true)
@@ -39,8 +38,8 @@ class LotTest < ActiveSupport::TestCase
         @user = create :user
       end
 
-      should "validate the template type" do
-        @lot.template = create :tag_layout_template, :name => 'lot_test'
+      should 'validate the template type' do
+        @lot.template = create :tag_layout_template, name: 'lot_test'
         assert !@lot.valid?, 'Lot should be invalid'
       end
 
@@ -49,7 +48,5 @@ class LotTest < ActiveSupport::TestCase
         @lot.delete
       end
     end
-
   end
-
 end

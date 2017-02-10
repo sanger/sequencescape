@@ -9,21 +9,21 @@ require 'daemons'
 
 options = {
   #:app_name   => "projects-poller",
-  :dir_mode   => :normal,
-  :dir        => tmp_dir,
-  :multiple   => false,
-  :ontop      => false,
-  :mode       => :load,
-  :backtrace  => true,
-  :monitor    => true,
-  :log_output => true
+  dir_mode: :normal,
+  dir: tmp_dir,
+  multiple: false,
+  ontop: false,
+  mode: :load,
+  backtrace: true,
+  monitor: true,
+  log_output: true
 }
 
-if ENV.has_key?('Rails.env')
-  options[:app_name] = "#{ENV['Rails.env']}-qc_evaluations-mini_poller"
-else
-  options[:app_name] = "development-qc_evaluations-mini_poller"
-end
+options[:app_name] = if ENV.has_key?('Rails.env')
+  "#{ENV['Rails.env']}-qc_evaluations-mini_poller"
+                     else
+  'development-qc_evaluations-mini_poller'
+                     end
 
 ARGV.each do |arg|
   if arg.include?('=')
@@ -32,4 +32,4 @@ ARGV.each do |arg|
   end
 end
 
-Daemons.run(script_file,options)
+Daemons.run(script_file, options)

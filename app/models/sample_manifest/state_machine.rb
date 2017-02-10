@@ -1,7 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
-
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 require 'aasm'
 
@@ -15,26 +16,25 @@ module SampleManifest::StateMachine
   end
 
   def configure_state_machine
-    aasm_column :state
-    aasm_state :pending
-    aasm_state :processing
-    aasm_state :failed
-    aasm_state :completed
-    aasm_initial_state :pending
+    aasm column: :state, whiny_persistence: true do
+      state :pending, initial: true
+      state :processing
+      state :failed
+      state :completed
 
-    # State Machine events
-    aasm_event :start do
-      transitions :to => :processing, :from => [:pending, :failed, :completed, :processing]
-    end
+      # State Machine events
+      event :start do
+        transitions to: :processing, from: [:pending, :failed, :completed, :processing]
+      end
 
-    aasm_event :finished do
-      transitions :to => :completed, :from => [:processing]
-    end
+      event :finished do
+        transitions to: :completed, from: [:processing]
+      end
 
-    aasm_event :fail do
-      transitions :to => :failed, :from => [:processing]
+      event :fail do
+        transitions to: :failed, from: [:processing]
+      end
     end
   end
   private :configure_state_machine
-
 end

@@ -3,7 +3,12 @@ xml.instruct!
 xml.sample(api_data) {
   xml.id @sample.id
   xml.name @sample.name
-  xml.study_id @sample.studies.first.id unless @sample.studies.empty?
+  # We're experiencing some significant performance issues with this page
+  # which currently accounts for 96% of ALL our traffic. This is ultra
+  # optimized. Really though this is a bit misleading as samples can belong to
+  # multiple studies.
+  study_id = @sample.studies.limit(1).pluck(:id).first
+  xml.study_id study_id if study_id
   xml.consent_withdrawn @sample.consent_withdrawn?
   # Descriptors
 
@@ -22,21 +27,14 @@ xml.sample(api_data) {
         xml.name(REXML::Text.unnormalize(attribute.to_field_info.display_name))
         if (attribute.to_field_info.display_name == "Reference Genome") && (value.blank?)
           xml.value(nil)
-        else 
+        else
           xml.value(value)
         end
       }
     end
   }
 
-  unless @sample.assets.empty?
-    xml.assets {
-      @sample.assets.each do |asset|
-        xml.asset(:id => asset.id, :href => asset_path(asset))
-      end
-    }
-  end
-  if @sample.studies.size > 0
-    xml.study_id @sample.studies.first.id
+  if study_id # Not sure why this appears twice.
+    xml.study_id study_id
   end
 }

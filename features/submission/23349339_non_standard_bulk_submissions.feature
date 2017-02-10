@@ -15,7 +15,7 @@ Feature: Non-standard Bulk Submission files
     And the study "abc123_study" has an asset group of 1 samples in "well" called "assetgroup123"
     And study "abc123_study" has assets registered
     When I go to the create bulk submissions page
-    Then I should see "Create a bulk submission"
+    Then I should see "Bulk Submission New"
 
   Scenario: Uploading a file with an empty column
     When I upload a file with an empty column

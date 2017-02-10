@@ -9,16 +9,16 @@ module AuthenticatedTestHelper
   end
 
   def accept(accept)
-    @request.env["HTTP_ACCEPT"] = accept
+    @request.env['HTTP_ACCEPT'] = accept
   end
 
   def authorize_as(user)
     if user
-      @request.env["HTTP_AUTHORIZATION"] = "Basic #{Base64.encode64("#{users(user).login}:test")}"
+      @request.env['HTTP_AUTHORIZATION'] = "Basic #{Base64.encode64("#{users(user).login}:test")}"
       accept       'application/xml'
       content_type 'application/xml'
     else
-      @request.env["HTTP_AUTHORIZATION"] = nil
+      @request.env['HTTP_AUTHORIZATION'] = nil
       accept       nil
       content_type nil
     end
@@ -73,6 +73,7 @@ class BaseLoginProxy
   end
 
   private
+
     def authenticated
       raise NotImplementedError
     end
@@ -91,17 +92,19 @@ end
 
 class HttpLoginProxy < BaseLoginProxy
   protected
+
     def authenticate
       @controller.login_as @login if @login
     end
 
     def check
-      @controller.assert_redirected_to :controller => 'sessions', :action => 'login'
+      @controller.assert_redirected_to controller: 'sessions', action: 'login'
     end
 end
 
 class XmlLoginProxy < BaseLoginProxy
   protected
+
     def authenticate
       @controller.accept 'application/xml'
       @controller.authorize_as @login if @login

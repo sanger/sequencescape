@@ -1,7 +1,8 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012 Genome Research Ltd.
-#require 'active_support'
+# This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012 Genome Research Ltd.
+# require 'active_support'
 module ImportPulledData
   # import into the database a list of object from a yaml file
   def self.import_from_yaml(file_name, names_map = {})
@@ -20,8 +21,8 @@ module ImportPulledData
       object_id = parameter[:id]
       attributes = parameter[:attributes]
       # map name from table
-      if name=attributes["name"]
-        attributes["name"] = names_map.fetch(name, name)
+      if name = attributes['name']
+        attributes['name'] = names_map.fetch(name, name)
       end
 
       object = klass.new(attributes) { |r| r.id = object_id }
@@ -32,5 +33,4 @@ module ImportPulledData
       end
     end
   end
-
 end

@@ -1,11 +1,13 @@
-<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
 
-<ul id="study_annotations_<%= @study.id %>" style="list-style-type:none;padding:0;">
+<ul id="study_annotations_<%= @study.id %>" class="list-group">
   <% if @study.comments.size > 0 %>
     <% @comments.each do |comment| %>
-      <li><%= render :partial => "comment" , :locals => {:comment => comment, :study => @study}%></li>
+      <li class="list-group-item"><%= render partial: "comment" , locals: { comment: comment, commentable: @study }%></li>
     <% end %>
   <% else %>
     <%= display_user_guide(I18n.t('studies.comments.no_comments')) %>
