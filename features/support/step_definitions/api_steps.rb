@@ -24,7 +24,7 @@ def recursive_diff(h1, h2)
   elsif h1 == h2
     return nil
   end
-  return h1
+  h1
 end
 
 def assert_hash_equal(h1, h2, *args)
@@ -33,13 +33,10 @@ def assert_hash_equal(h1, h2, *args)
   assert_equal(d1, d2, *args)
 end
 
-# def assert_hash_equal(*args) assert_equal(*args) end
-
 def walk_hash_structure(hash_data, &block)
   if hash_data.is_a?(Hash)
-    hash_data.inject({}) do |hash, (key, value)|
+    hash_data.each_with_object({}) do |(key, value), hash|
       hash[key] = walk_hash_structure(value, &block) unless yield(key)
-      hash
     end
   elsif hash_data.is_a?(Array)
     hash_data.map { |entry| walk_hash_structure(entry, &block) }
@@ -70,17 +67,17 @@ Given /^the WTSI single sign-on service recognises "([^\"]+)" as "([^\"]+)"$/ do
 end
 
 Given /^the WTSI single sign-on service does not recognise "([^\"]+)"$/ do |cookie|
-  User.find_by_api_key(cookie).update_attributes!(api_key: nil)
+  User.find_by(api_key: cookie).update_attributes!(api_key: nil)
 end
 
 def api_request(action, path, body)
-  raise StandardError, "You must explicitly set the API version you are using" if @api_path.nil?
+  raise StandardError, 'You must explicitly set the API version you are using' if @api_path.nil?
   @cookies ||= {}
 
   headers = {}
-  headers.merge!('HTTP_ACCEPT' => 'application/json')
-  headers.merge!('CONTENT_TYPE' => 'application/json') unless body.nil?
-  headers.merge!('HTTP_COOKIE' => @cookies.map { |k, v| "#{k}=#{v}" }.join(';')) unless @cookies.blank?
+  headers['HTTP_ACCEPT'] = 'application/json'
+  headers['CONTENT_TYPE'] = 'application/json' unless body.nil?
+  headers['HTTP_COOKIE'] = @cookies.map { |k, v| "#{k}=#{v}" }.join(';') unless @cookies.blank?
   yield(headers) if block_given?
 
   page.driver.send(action.downcase, "#{@api_path}#{path}", body, headers)
@@ -149,19 +146,19 @@ When /^I retrieve the JSON for all (studies|samples|requests)$/ do |model|
 end
 
 When /^I retrieve the JSON for all requests related to the (sample|library) tube "([^\"]+)"$/ do |tube_type, name|
-  tube = "#{tube_type}_tube".classify.constantize.find_by_name(name) or raise StandardError, "Cannot find #{tube_type} tube called #{name.inspect}"
-  visit(url_for(:controller => "api/requests", :action => 'index', :"#{ tube_type }_tube_id" => tube.id, :format => :json))
+  tube = "#{tube_type}_tube".classify.constantize.find_by(name: name) or raise StandardError, "Cannot find #{tube_type} tube called #{name.inspect}"
+  visit(url_for(:controller => 'api/requests', :action => 'index', :"#{ tube_type }_tube_id" => tube.id, :format => :json))
 end
 
 When /^I retrieve the JSON for the (sample|study) "([^\"]+)"$/ do |model, name|
-  object = model.classify.constantize.find_by_name(name) or raise "Cannot find #{model} #{name.inspect}"
+  object = model.classify.constantize.find_by(name: name) or raise "Cannot find #{model} #{name.inspect}"
   visit(url_for(controller: "api/#{model.pluralize}", action: 'show', id: object, format: :json))
 end
 
 When /^I retrieve the JSON for the last request in the study "([^\"]+)"$/ do |name|
-  study = Study.find_by_name(name) or raise StandardError, "Cannot find the study #{name.inspect}"
+  study = Study.find_by(name: name) or raise StandardError, "Cannot find the study #{name.inspect}"
   raise StandardError, "It appears there are no requests for study #{name.inspect}" if study.requests.empty?
-  visit(url_for(controller: "api/requests", action: 'show', id: study.requests.last, format: :json))
+  visit(url_for(controller: 'api/requests', action: 'show', id: study.requests.last, format: :json))
 end
 
 Then /^show me the HTTP response body$/ do
@@ -248,7 +245,7 @@ Then /^the HTTP response should be "([^\"]+)"$/ do |status|
   begin
   assert_equal(match[1].to_i, page.driver.status_code)
   rescue MiniTest::Assertion => e
-    step "show me the HTTP response body"
+    step 'show me the HTTP response body'
     raise e
   end
 end
@@ -292,8 +289,8 @@ Given /^(\d+) samples exist with the core name "([^\"]+)" and IDs starting at (\
 end
 
 Given /^the (library tube|plate) "([^\"]+)" is a child of the (sample tube|plate) "([^\"]+)"$/ do |child_model, child_name, parent_model, parent_name|
-  parent = parent_model.gsub(/\s+/, '_').classify.constantize.find_by_name(parent_name) or raise StandardError, "Cannot find the #{parent_model} #{parent_name.inspect}"
-  child  = child_model.gsub(/\s+/, '_').classify.constantize.find_by_name(child_name) or raise StandardError, "Cannot find the #{child_model} #{child_name.inspect}"
+  parent = parent_model.gsub(/\s+/, '_').classify.constantize.find_by(name: parent_name) or raise StandardError, "Cannot find the #{parent_model} #{parent_name.inspect}"
+  child  = child_model.gsub(/\s+/, '_').classify.constantize.find_by(name: child_name) or raise StandardError, "Cannot find the #{child_model} #{child_name.inspect}"
   parent.children << child
   if [parent, child].all? { |a| a.is_a?(Aliquot::Receptacle) }
     child.aliquots = []
@@ -303,8 +300,8 @@ Given /^the (library tube|plate) "([^\"]+)" is a child of the (sample tube|plate
 end
 
 Given /^the well "([^\"]+)" is a child of the well "([^\"]+)"$/ do |child_name, parent_name|
-  parent = Uuid.find_by_external_id(parent_name).resource or raise StandardError, "Cannot find #{parent_name.inspect}"
-  child  = Uuid.find_by_external_id(child_name).resource or raise StandardError, "Cannot find #{child_name.inspect}"
+  parent = Uuid.find_by(external_id: parent_name).resource or raise StandardError, "Cannot find #{parent_name.inspect}"
+  child  = Uuid.find_by(external_id: child_name).resource or raise StandardError, "Cannot find #{child_name.inspect}"
   parent.children << child
   if [parent, child].all? { |a| a.is_a?(Aliquot::Receptacle) }
     child.aliquots = []
@@ -314,7 +311,7 @@ Given /^the well "([^\"]+)" is a child of the well "([^\"]+)"$/ do |child_name, 
 end
 
 Given /^the sample "([^\"]+)" is in (\d+) sample tubes? with sequential IDs starting at (\d+)$/ do |name, count, base_id|
-  sample = Sample.find_by_name(name) or raise StandardError, "Cannot find the sample #{name.inspect}"
+  sample = Sample.find_by(name: name) or raise StandardError, "Cannot find the sample #{name.inspect}"
   (1..count.to_i).each do |index|
     FactoryGirl.create(:empty_sample_tube, name: "#{name} sample tube #{index}", id: (base_id.to_i + index - 1)).tap do |sample_tube|
       sample_tube.aliquots.create!(sample: sample)
@@ -323,22 +320,22 @@ Given /^the sample "([^\"]+)" is in (\d+) sample tubes? with sequential IDs star
 end
 
 Given /^the pathogen project called "([^"]*)" exists$/ do |project_name|
-  project = FactoryGirl.create :project, name: project_name, approved: true, state: "active"
+  project = FactoryGirl.create :project, name: project_name, approved: true, state: 'active'
   project.update_attributes!(project_metadata_attributes: {
-    project_manager: ProjectManager.find_by_name('Unallocated'),
-    project_cost_code: "ABC",
-    funding_comments: "External funding",
-    collaborators: "No collaborators",
-    external_funding_source: "EU",
-    budget_division: BudgetDivision.find_by_name('Pathogen (including malaria)'),
-    sequencing_budget_cost_centre: "Sanger",
-    project_funding_model: "Internal"
+    project_manager: ProjectManager.find_by(name: 'Unallocated'),
+    project_cost_code: 'ABC',
+    funding_comments: 'External funding',
+    collaborators: 'No collaborators',
+    external_funding_source: 'EU',
+    budget_division: BudgetDivision.find_by(name: 'Pathogen (including malaria)'),
+    sequencing_budget_cost_centre: 'Sanger',
+    project_funding_model: 'Internal'
   })
 end
 
 Given /^project "([^"]*)" has an owner called "([^"]*)"$/ do |project_name, login_name|
-  project = Project.find_by_name(project_name)
-  user = FactoryGirl.create :user, login: login_name, first_name: "John", last_name: "Doe", email: "#{login_name}@example.com"
+  project = Project.find_by(name: project_name)
+  user = FactoryGirl.create :user, login: login_name, first_name: 'John', last_name: 'Doe', email: "#{login_name}@example.com"
   user.is_owner_of(project)
 end
 
@@ -355,7 +352,7 @@ Given /^the sanger sample id for sample "([^"]*)" is "([^"]*)"$/ do |uuid_value,
 end
 
 Given /^the infinium barcode for plate "([^"]*)" is "([^"]*)"$/ do |plate_name, infinium_barcode|
-  plate = Plate.find_by_name(plate_name)
+  plate = Plate.find_by(name: plate_name)
   plate.plate_metadata.update_attributes!(infinium_barcode: infinium_barcode)
 end
 

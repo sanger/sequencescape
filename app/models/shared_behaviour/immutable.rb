@@ -16,7 +16,7 @@ module SharedBehaviour::Immutable
   private
 
   def save_allowed?
-    return true if (self.changed - MUTABLE).empty?
+    return true if (changed - MUTABLE).empty?
     raise ActiveRecord::RecordNotSaved, 'This record is immutable. Deprecate it and create a replacement instead.'
   end
 end

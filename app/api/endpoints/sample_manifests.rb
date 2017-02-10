@@ -13,10 +13,10 @@ class ::Endpoints::SampleManifests < ::Core::Endpoint::Base
   end
 
   instance do
-    belongs_to(:study, json: "study")
-    belongs_to(:supplier, json: "supplier")
+    belongs_to(:study, json: 'study')
+    belongs_to(:supplier, json: 'supplier')
 
-    action(:update) do |request, response|
+    action(:update) do |request, _response|
       ActiveRecord::Base.transaction do
         request.target.tap do |manifest|
           manifest.update_attributes!(request.attributes(request.target), request.user)

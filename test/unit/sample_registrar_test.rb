@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2014,2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class SampleRegistrarTest < ActiveSupport::TestCase
   context 'SampleRegistrar' do
@@ -27,20 +27,20 @@ class SampleRegistrarTest < ActiveSupport::TestCase
         )
       end
 
-      should "change Sample.count by 1" do
-        assert_equal 1,  Sample.count           - @sample_count, "Expected Sample.count to change by 1"
+      should 'change Sample.count by 1' do
+        assert_equal 1,  Sample.count           - @sample_count, 'Expected Sample.count to change by 1'
       end
 
-      should "change SampleTube.count by 1" do
-        assert_equal 1,  SampleTube.count       - @sampletube_count, "Expected SampleTube.count to change by 1"
+      should 'change SampleTube.count by 1' do
+        assert_equal 1,  SampleTube.count       - @sampletube_count, 'Expected SampleTube.count to change by 1'
       end
-      should "not change AssetGroup.count" do
+      should 'not change AssetGroup.count' do
         assert_equal @initial_agc,  AssetGroup.count
-       end
+      end
 
-      should "not change SampleRegistrar.count" do
+      should 'not change SampleRegistrar.count' do
         assert_equal @initial_src,  SampleRegistrar.count
-       end
+      end
 
       should 'put the sample in the sample tube' do
         assert_equal(Sample.last, SampleTube.last.primary_aliquot.sample)
@@ -82,8 +82,8 @@ class SampleRegistrarTest < ActiveSupport::TestCase
           )
         end
 
-        should "change AssetGroup.count by 1" do
-          assert_equal 1, AssetGroup.count - @assetgroup_count, "Expected AssetGroup.count to change by 1"
+        should 'change AssetGroup.count by 1' do
+          assert_equal 1, AssetGroup.count - @assetgroup_count, 'Expected AssetGroup.count to change by 1'
         end
 
         should 'put the sample tube into the asset groups' do
@@ -113,9 +113,9 @@ class SampleRegistrarTest < ActiveSupport::TestCase
             end
           end
 
-          should "not change Sample.count" do
+          should 'not change Sample.count' do
             assert_equal @initial_sc, Sample.count
-           end
+          end
         end
       end
     end
@@ -181,23 +181,23 @@ class SampleRegistrarTest < ActiveSupport::TestCase
           ])
         end
 
-        should "not change SampleRegistrar.count" do
+        should 'not change SampleRegistrar.count' do
           assert_equal @initial_src, SampleRegistrar.count
-         end
-
-        should "change Sample.count by 1" do
-          assert_equal 1,  Sample.count           - @sample_count, "Expected Sample.count to change by 1"
         end
 
-        should "change SampleTube.count by 1" do
-          assert_equal 1,  SampleTube.count       - @sampletube_count, "Expected SampleTube.count to change by 1"
+        should 'change Sample.count by 1' do
+          assert_equal 1,  Sample.count           - @sample_count, 'Expected Sample.count to change by 1'
         end
-        should "not change AssetGroup.count" do
+
+        should 'change SampleTube.count by 1' do
+          assert_equal 1,  SampleTube.count       - @sampletube_count, 'Expected SampleTube.count to change by 1'
+        end
+        should 'not change AssetGroup.count' do
           assert_equal @initial_agc, AssetGroup.count
-         end
+        end
 
         should 'not registered the ignored sample' do
-          assert_nil(Sample.find_by_name('ignored_sample'))
+          assert_nil(Sample.find_by(name: 'ignored_sample'))
         end
       end
 
@@ -241,34 +241,34 @@ class SampleRegistrarTest < ActiveSupport::TestCase
           ])
         end
 
-        should "not change SampleRegistrar.count" do
+        should 'not change SampleRegistrar.count' do
           assert_equal @initial_sample_registrar, SampleRegistrar.count
         end
 
-        should "change Sample.count by 4" do
-          assert_equal 4,  Sample.count           - @sample_count, "Expected Sample.count to change by 4"
+        should 'change Sample.count by 4' do
+          assert_equal 4,  Sample.count           - @sample_count, 'Expected Sample.count to change by 4'
         end
 
-        should "change SampleTube.count by 4" do
-          assert_equal 4,  SampleTube.count       - @sampletube_count, "Expected SampleTube.count to change by 4"
+        should 'change SampleTube.count by 4' do
+          assert_equal 4,  SampleTube.count       - @sampletube_count, 'Expected SampleTube.count to change by 4'
         end
 
-        should "change AssetGroup.count by 2" do
-          assert_equal 2,  AssetGroup.count       - @assetgroup_count, "Expected AssetGroup.count to change by 2"
+        should 'change AssetGroup.count by 2' do
+          assert_equal 2,  AssetGroup.count       - @assetgroup_count, 'Expected AssetGroup.count to change by 2'
         end
 
         should 'put samples 1 and 3 into asset group 1' do
-          group = AssetGroup.find_by_name('asset_group_1')
-          assert_contains(group.assets, SampleTube.find_by_name('valid_sample_1'))
-          assert_contains(group.assets, SampleTube.find_by_name('valid_sample_3'))
+          group = AssetGroup.find_by(name: 'asset_group_1')
+          assert_contains(group.assets, SampleTube.find_by(name: 'valid_sample_1'))
+          assert_contains(group.assets, SampleTube.find_by(name: 'valid_sample_3'))
         end
 
         should 'put sample 2 into asset group 2' do
-          assert_contains(AssetGroup.find_by_name('asset_group_2').assets, SampleTube.find_by_name('valid_sample_2'))
+          assert_contains(AssetGroup.find_by(name: 'asset_group_2').assets, SampleTube.find_by(name: 'valid_sample_2'))
         end
 
         should 'not have created sample 3' do
-          assert_nil(Sample.find_by_name('ignored_sample_1'))
+          assert_nil(Sample.find_by(name: 'ignored_sample_1'))
         end
       end
     end

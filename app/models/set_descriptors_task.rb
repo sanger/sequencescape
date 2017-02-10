@@ -18,8 +18,8 @@ class SetDescriptorsTask < Task
     return [] unless event.eventful.respond_to?(:asset)
     subassets = subassets_for_asset(event.eventful.asset).select do |asset|
       # we don't want anything except fragment gel so far ...
-      asset.is_a?(Fragment) && self.name == "Gel"
+      asset.is_a?(Fragment) && name == 'Gel'
     end
-    return subassets.map { |a| generate_events_from_descriptors(a) }
+    subassets.map { |a| generate_events_from_descriptors(a) }
   end
 end

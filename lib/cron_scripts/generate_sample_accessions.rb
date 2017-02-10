@@ -13,9 +13,9 @@ class ::Sample
       'LEFT JOIN sample_metadata AS tcnan_sm ON samples.id = tcnan_sm.sample_id',
       'LEFT JOIN study_metadata AS trea_sm ON trea_sm.study_id = studies.id',
       'LEFT JOIN data_release_study_types AS trea_drst ON trea_drst.id = trea_sm.data_release_study_type_id'
-    ]).
-    readonly(false).
-    where(["
+    ])
+    .readonly(false)
+    .where(["
       (tcnan_sm.sample_ebi_accession_number IS NULL OR TRIM(tcnan_sm.sample_ebi_accession_number) = '') AND
       (tcnan_sm.sample_taxon_id IS NOT NULL) AND
       (tcnan_sm.sample_common_name IS NOT NULL AND TRIM(tcnan_sm.sample_common_name) != '') AND
@@ -40,8 +40,8 @@ class ::Sample
 end
 
 # Only ever process those samples that actually need an accession number to be generated for them.
-current_user = User.find_by_api_key(configatron.accession_local_key) or raise StandardError, "Cannot find accessioning user"
-Sample.requiring_accession_number.includes(:sample_metadata, { studies: :study_metadata }).find_each do |sample|
+current_user = User.find_by(api_key: configatron.accession_local_key) or raise StandardError, 'Cannot find accessioning user'
+Sample.requiring_accession_number.includes(:sample_metadata, studies: :study_metadata).find_each do |sample|
   begin
     sample.validate_ena_required_fields!
     sample.accession_service.submit_sample_for_user(sample, current_user) unless sample.accession_service.nil?

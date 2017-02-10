@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2013,2014,2015 Genome Research Ltd.
 
 class SequencingPipeline < Pipeline
-  self.batch_worksheet = "simplified_worksheet"
+  self.batch_worksheet = 'simplified_worksheet'
 
   def sequencing?
     true
@@ -39,7 +39,7 @@ class SequencingPipeline < Pipeline
     # There are some requests that don't have the read_length_attribute
     return false if read_length_list.size != batch.requests.size
 
-    return (read_length_list.uniq.size == 1)
+    (read_length_list.uniq.size == 1)
   end
 
   # The guys in sequencing want to be able to re-run a request in another batch.  What we've agreed is that
@@ -53,7 +53,7 @@ class SequencingPipeline < Pipeline
       request.dup.tap do |request_clone|
         rma = request.request_metadata.attributes.merge(request: request_clone)
         request_clone.update_attributes!(state: 'pending', target_asset_id: nil, request_metadata_attributes: rma)
-        request_clone.comments.create!(description: "Automatically created clone of request #{request.id} which was removed from Batch #{batch.id} at #{DateTime.now()}")
+        request_clone.comments.create!(description: "Automatically created clone of request #{request.id} which was removed from Batch #{batch.id} at #{DateTime.now}")
         request.comments.create!(description: "The request #{request_clone.id} is an automatically created clone of this one")
       end
     end
@@ -63,7 +63,7 @@ class SequencingPipeline < Pipeline
     BroadcastEvent::SequencingStart.create!(seed: batch, user: user, properties: {}, created_at: DateTime.now)
   end
 
-  def post_release_batch(batch, user)
+  def post_release_batch(batch, _user)
     # We call compact to handle ControlRequests which may have no target asset.
     # In practice this isn't required, as we don't use control lanes any more.
     # However some old feature tests still use them, and until this behaviour is completely

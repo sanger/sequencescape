@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2014,2015 Genome Research Ltd.
 
 Given /^user "([^"]*)" exists$/ do |user_name|
-  FactoryGirl.create :user, login: user_name, first_name: user_name.titlecase, last_name: "Smith"
+  FactoryGirl.create :user, login: user_name, first_name: user_name.titlecase, last_name: 'Smith'
 end
 
 Given /^a user with an api key of "([^"]*)" exists$/ do |api_key|

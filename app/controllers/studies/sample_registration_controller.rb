@@ -16,9 +16,8 @@ class Studies::SampleRegistrationController < ApplicationController
   def create
     # We have to remap the contents of the 'sample_registrars' parameter from a hash to an array, because
     # that's what it actually is: a map from index to attributes for that SampleRegistrar instance.
-    attributes = clean_params_from_check(params['sample_registrars']).inject([]) do |attributes, (index_as_string, parameters)|
-      attributes[index_as_string.to_i] = parameters.merge(study: @study, user: current_user)
-      attributes
+    attributes = clean_params_from_check(params['sample_registrars']).each_with_object([]) do |(index_as_string, parameters), store|
+      store[index_as_string.to_i] = parameters.merge(study: @study, user: current_user)
     end.compact
 
     @sample_registrars = SampleRegistrar.register!(attributes)
@@ -43,7 +42,7 @@ class Studies::SampleRegistrationController < ApplicationController
   end
 
   def spreadsheet
-    flash.now[:notice] = "Processing your file: please wait a few minutes..."
+    flash.now[:notice] = 'Processing your file: please wait a few minutes...'
     @sample_registrars = SampleRegistrar.from_spreadsheet(params['file'], @study, current_user)
     flash.now[:notice] = 'Your file has been processed'
     render :new

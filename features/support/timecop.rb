@@ -9,7 +9,7 @@ require 'timecop'
 class Timecop
   class << self
     # Block the use of Timecop.freeze as it upsets the Capybara...
-    def freeze_with_warning(time)
+    def freeze_with_warning(_time)
       raise "\n\n#{'*' * 90}\nTimecop.freeze() interferes with Capybara's javascript timeouts.\nCould you either use Timecop.travel instead or not use JavaScript in this scenario?  \n\n#{'*' * 90}\n\n"
     end
   end
@@ -33,7 +33,7 @@ After('@javascript') do
   end
 end
 
-After do |s|
+After do |_s|
   # If we're lost in time then we need to return to the present...
   Timecop.return
 

@@ -24,7 +24,7 @@ class BulkTransfer < ActiveRecord::Base
           destination: destination,
           user: user,
           transfers: transfers,
-          bulk_transfer_id: self.id
+          bulk_transfer_id: id
         )
       end
     end
@@ -32,12 +32,12 @@ class BulkTransfer < ActiveRecord::Base
   private :build_transfers!
 
   def each_transfer
-    well_transfers.group_by { |tf| [tf["source_uuid"], tf["destination_uuid"]] }.each do |source_dest, all_transfers|
+    well_transfers.group_by { |tf| [tf['source_uuid'], tf['destination_uuid']] }.each do |source_dest, all_transfers|
       transfers = Hash.new { |h, i| h[i] = [] }
-      all_transfers.each { |t| transfers[t["source_location"]] << t["destination_location"] }
+      all_transfers.each { |t| transfers[t['source_location']] << t['destination_location'] }
 
-      source = Uuid.find_by_external_id(source_dest.first).resource
-      destination = Uuid.find_by_external_id(source_dest.last).resource
+      source = Uuid.find_by(external_id: source_dest.first).resource
+      destination = Uuid.find_by(external_id: source_dest.last).resource
       errors.add(:source, 'is not a plate') unless source.is_a?(Plate)
       errors.add(:destination, 'is not a plate') unless destination.is_a?(Plate)
       raise ActiveRecord::RecordInvalid, self if errors.count > 0

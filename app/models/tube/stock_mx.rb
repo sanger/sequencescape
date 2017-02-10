@@ -1,5 +1,5 @@
 class Tube::StockMx < Tube::Purpose
-  def transition_to(tube, state, user, _ = nil, customer_accepts_responsibility = false)
+  def transition_to(tube, state, _user, _ = nil, _customer_accepts_responsibility = false)
     tube.requests_as_target.opened.each do |request|
       request.transition_to(state)
     end

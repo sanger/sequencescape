@@ -4,7 +4,6 @@
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
-
 class ActiveRecord::Base
   class << self
     def find_by_id_or_name!(id, name)
@@ -13,8 +12,8 @@ class ActiveRecord::Base
 
     def find_by_id_or_name(id, name)
       return find(id) unless id.blank?
-      raise StandardError, "Must specify at least ID or name" if name.blank?
-      find_by_name(name)
+      raise StandardError, 'Must specify at least ID or name' if name.blank?
+      find_by(name: name)
     end
   end
 end
@@ -66,17 +65,17 @@ class BulkSubmission
     # TODO (jr) Find a better way of verifying the CSV file?
     unless spreadsheet.blank?
       if spreadsheet.size == 0
-        errors.add(:spreadsheet, "The supplied file was empty")
+        errors.add(:spreadsheet, 'The supplied file was empty')
       else
         if spreadsheet.original_filename.end_with?('.csv')
           process
         else
-          errors.add(:spreadsheet, "The supplied file was not a CSV file")
+          errors.add(:spreadsheet, 'The supplied file was not a CSV file')
         end
       end
     end
   rescue CSV::MalformedCSVError
-    errors.add(:spreadsheet, "The supplied file was not a valid CSV file (try opening it with MS Excel)")
+    errors.add(:spreadsheet, 'The supplied file was not a valid CSV file (try opening it with MS Excel)')
   rescue Encoding::InvalidByteSequenceError
     errors.add(:encoding, "didn't match for the provided file.")
   end
@@ -93,11 +92,11 @@ class BulkSubmission
 
   def header_index
     @header_index ||= @csv_rows.each_with_index do |row, index|
-      next if index == 0 && row[0] == "This row is guidance only"
+      next if index == 0 && row[0] == 'This row is guidance only'
       return index if header_row?(row)
     end
     # We've got through all rows without finding a header
-    errors.add(:spreadsheet, "The supplied file does not contain a valid header row (try downloading a template)")
+    errors.add(:spreadsheet, 'The supplied file does not contain a valid header row (try downloading a template)')
     nil
   end
   private :header_index
@@ -115,7 +114,7 @@ class BulkSubmission
 
   def valid_header?
     return false if headers.nil?
-    return true if headers.include? "submission name"
+    return true if headers.include? 'submission name'
     errors.add :spreadsheet, "You submitted an incompatible spreadsheet. Please ensure your spreadsheet contains the 'submission name' column"
     false
   end
@@ -145,15 +144,15 @@ class BulkSubmission
     if spreadsheet_valid?
       submission_details = submission_structure
 
-      raise ActiveRecord::RecordInvalid, self if self.errors.count > 0
+      raise ActiveRecord::RecordInvalid, self if errors.count > 0
       # Within a single transaction process each of the rows of the CSV file as a separate submission.  Any name
       # fields need to be mapped to IDs, and the 'assets' field needs to be split up and processed if present.
       ActiveRecord::Base.transaction do
         submission_details.each do |submissions|
           submissions.each do |submission_name, orders|
-            user = User.find_by_login(orders.first['user login'])
+            user = User.find_by(login: orders.first['user login'])
             if user.nil?
-              errors.add :spreadsheet, orders.first["user login"].nil? ? "No user specified for #{submission_name}" : "Cannot find user #{orders.first["user login"].inspect}"
+              errors.add :spreadsheet, orders.first['user login'].nil? ? "No user specified for #{submission_name}" : "Cannot find user #{orders.first["user login"].inspect}"
               next
             end
 
@@ -225,8 +224,8 @@ class BulkSubmission
       end
     end.map do |submission_name, rows|
       order = rows.group_by do |details|
-        details["asset group name"]
-      end.map do |group_name, rows|
+        details['asset group name']
+      end.map do |_group_name, rows|
 
         Hash[shared_options!(rows)].tap do |details|
           details['rows']          = rows.comma_separate_field_list_for_display('row')
@@ -244,7 +243,7 @@ class BulkSubmission
     # Builds an array of the common fields. Raises and exception if the fields are inconsistent
     COMMON_FIELDS.map do |field|
       option = rows.map { |r| r[field] }.uniq
-      self.errors.add(:spreadsheet, "Column, #{field}, should be identical for all requests in asset group #{rows.first['asset group name']}") if option.count > 1
+      errors.add(:spreadsheet, "Column, #{field}, should be identical for all requests in asset group #{rows.first['asset group name']}") if option.count > 1
       [field, option.first]
     end
   end
@@ -261,7 +260,7 @@ class BulkSubmission
       # Retrieve common attributes
       study   = Study.find_by_id_or_name!(details['study id'], details['study name'])
       project = Project.find_by_id_or_name!(details['project id'], details['project name'])
-      user    = User.find_by_login(details['user login']) or raise StandardError, "Cannot find user #{details['user login'].inspect}"
+      user    = User.find_by(login: details['user login']) or raise StandardError, "Cannot find user #{details['user login'].inspect}"
 
       # The order attributes are initially
       attributes = {
@@ -342,13 +341,13 @@ class BulkSubmission
 
   # Returns the SubmissionTemplate and checks that it is valid
   def find_template(template_name)
-    template = SubmissionTemplate.find_by_name(template_name) or raise StandardError, "Cannot find template #{template_name}"
+    template = SubmissionTemplate.find_by(name: template_name) or raise StandardError, "Cannot find template #{template_name}"
     raise(StandardError, "Template: '#{template_name}' is deprecated and no longer in use.") unless template.visible
     template
   end
 
   # This is used to present a list of successes
   def completed_submissions
-    return @submission_ids, @completed_submissions
+    [@submission_ids, @completed_submissions]
   end
 end

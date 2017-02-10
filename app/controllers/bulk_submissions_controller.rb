@@ -17,7 +17,7 @@ class BulkSubmissionsController < ApplicationController
   DEFAULT_SUBMISSION_TEMPLATE_GROUP = 'General'
 
   def index
-    redirect_to action: "new"
+    redirect_to action: 'new'
   end
 
   def new
@@ -29,17 +29,17 @@ class BulkSubmissionsController < ApplicationController
     begin
       @bulk_submission = BulkSubmission.new(params.fetch(:bulk_submission, {}))
       if @bulk_submission.valid?
-        flash.now[:notice] = "File was processed successfully"
+        flash.now[:notice] = 'File was processed successfully'
         sub_ids, @sub_details = @bulk_submission.completed_submissions
         @these_subs = Submission.find(sub_ids)
       else
-        flash.now[:error] = "There was a problem with your upload"
-        render action: "new"
+        flash.now[:error] = 'There was a problem with your upload'
+        render action: 'new'
       end
     rescue ActiveRecord::RecordInvalid => exception
-      flash.now[:error] = "There was a problem when building your submissions"
+      flash.now[:error] = 'There was a problem when building your submissions'
       @bulk_submission.errors.add(:base, exception.message)
-      render action: "new"
+      render action: 'new'
     end
   end
 

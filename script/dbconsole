@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 require File.dirname(__FILE__) + '/../config/boot'
 
-if RUBY_PLATFORM == "java"
+if RUBY_PLATFORM == 'java'
   require 'spoon'
   # If we are using jruby, ensure output is sent to the console
   def exec(*args)

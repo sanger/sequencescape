@@ -10,14 +10,14 @@ end
 
 Given /^the order with UUID "([^\"]+)" is for (\d+) "([^\"]+)" requests$/ do |uuid, count, name|
   order = Uuid.with_external_id(uuid).first.try(:resource) or raise StandardError, "Could not find order with UUID #{uuid.inspect}"
-  request_type = RequestType.find_by_name(name) or raise StandardError, "Could not find request type #{name.inspect}"
+  request_type = RequestType.find_by(name: name) or raise StandardError, "Could not find request type #{name.inspect}"
   order.request_options[:multiplier] ||= {}
   order.request_options[:multiplier][request_type.id] = count
   order.save!
 end
 
 Given /^I have an order created with the following details based on the template "([^\"]+)":$/ do |name, details|
-  template = SubmissionTemplate.find_by_name(name) or raise StandardError, "Cannot find submission template #{name.inspect}"
+  template = SubmissionTemplate.find_by(name: name) or raise StandardError, "Cannot find submission template #{name.inspect}"
   order_attributes = details.rows_hash.map do |k, v|
     v =
       case k
@@ -42,11 +42,11 @@ Given /^an order template called "([^\"]+)" with UUID "([^"]+)"$/ do |name, uuid
 end
 
 Given /^the UUID for the order template "([^\"]+)" is "([^\"]+)"$/ do |name, uuid_value|
-  object = SubmissionTemplate.find_by_name!(name)
+  object = SubmissionTemplate.find_by!(name: name)
   set_uuid_for(object, uuid_value)
 end
 
-Then /^the (string |)request options for the order with UUID "([^\"]+)" should be:$/ do |string, uuid, options_table|
+Then /^the (string |)request options for the order with UUID "([^\"]+)" should be:$/ do |_string, uuid, options_table|
   order = Uuid.with_external_id(uuid).first.try(:resource) or raise StandardError, "Could not find order with UUID #{uuid.inspect}"
   stringified_options = order.request_options.stringify_keys # Needed because of inconsistencies in keys (symbols & strings)
   options_table.rows_hash.each do |k, v|

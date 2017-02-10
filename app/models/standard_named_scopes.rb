@@ -11,7 +11,7 @@ module StandardNamedScopes
       # "order_most_recently_updated_last".  These names seem more readable and understandable.
       [:created, :updated].each do |field|
         { first: 'DESC', last: 'ASC' }.each do |position, order_by|
-          scope :"order_most_recently_#{field}_#{position}", -> { order("#{self.quoted_table_name}.#{field}_at #{order_by}") }
+          scope :"order_most_recently_#{field}_#{position}", -> { order("#{quoted_table_name}.#{field}_at #{order_by}") }
         end
       end
     end

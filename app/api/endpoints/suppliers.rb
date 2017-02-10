@@ -9,6 +9,6 @@ class ::Endpoints::Suppliers < ::Core::Endpoint::Base
   end
 
   instance do
-    has_many(:sample_manifests, include: [], json: "sample_manifests", to: "sample_manifests")
+    has_many(:sample_manifests, include: [], json: 'sample_manifests', to: 'sample_manifests')
   end
 end

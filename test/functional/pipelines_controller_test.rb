@@ -4,11 +4,11 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 require 'pipelines_controller'
 
 class PipelinesControllerTest < ActionController::TestCase
-  context "Pipelines controller" do
+  context 'Pipelines controller' do
     setup do
       @controller = PipelinesController.new
       @request    = ActionController::TestRequest.new
@@ -18,7 +18,7 @@ class PipelinesControllerTest < ActionController::TestCase
     end
     should_require_login
 
-    context "#index" do
+    context '#index' do
       setup do
         get :index
       end
@@ -26,11 +26,11 @@ class PipelinesControllerTest < ActionController::TestCase
       should respond_with :success
     end
 
-    context "#batches" do
+    context '#batches' do
       setup do
         @pipeline = FactoryGirl.create :pipeline
       end
-      context "without any pipeline batches" do
+      context 'without any pipeline batches' do
         setup do
           get :batches, id: @pipeline.id.to_s
         end
@@ -38,7 +38,7 @@ class PipelinesControllerTest < ActionController::TestCase
         should respond_with :success
       end
 
-      context "with 1 batch" do
+      context 'with 1 batch' do
         setup do
          FactoryGirl.create :batch, pipeline: @pipeline
           get :batches, id: @pipeline.id.to_s
@@ -48,14 +48,14 @@ class PipelinesControllerTest < ActionController::TestCase
       end
     end
 
-    context "#show" do
+    context '#show' do
       setup do
         @pipeline = FactoryGirl.create :pipeline
         get :show, id: @pipeline
       end
 
       should respond_with :success
-      context "and no batches" do
+      context 'and no batches' do
         setup do
           @pipeline = FactoryGirl.create :pipeline
           get :show, id: @pipeline
@@ -65,7 +65,7 @@ class PipelinesControllerTest < ActionController::TestCase
       end
     end
 
-    context "#setup_inbox" do
+    context '#setup_inbox' do
       setup do
         @pipeline = FactoryGirl.create :pipeline
         get :setup_inbox, id: @pipeline.id.to_s
@@ -74,7 +74,7 @@ class PipelinesControllerTest < ActionController::TestCase
       should respond_with :success
     end
 
-    context "#training_batch" do
+    context '#training_batch' do
       setup do
         @pipeline = FactoryGirl.create :pipeline
         get :training_batch, id: @pipeline.id.to_s
@@ -83,7 +83,7 @@ class PipelinesControllerTest < ActionController::TestCase
       should respond_with :success
     end
 
-    context "#activate" do
+    context '#activate' do
       setup do
         @pipeline = FactoryGirl.create :pipeline
         get :activate, id: @pipeline.id.to_s
@@ -92,7 +92,7 @@ class PipelinesControllerTest < ActionController::TestCase
       should respond_with :redirect
     end
 
-    context "#deactivate" do
+    context '#deactivate' do
       setup do
         @pipeline = FactoryGirl.create :pipeline
         get :deactivate, id: @pipeline.id.to_s

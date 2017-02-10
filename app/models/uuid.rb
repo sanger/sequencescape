@@ -74,14 +74,14 @@ class Uuid < ActiveRecord::Base
       end
 
       def generate_missing_uuids
-        records_for_missing_uuids { |id| Uuid.create!(resouce_type: self.name, resource_id: id, external_id: Uuid.generate_uuid) }
+        records_for_missing_uuids { |id| Uuid.create!(resouce_type: name, resource_id: id, external_id: Uuid.generate_uuid) }
       end
       private :generate_missing_uuids
 
-      def records_for_missing_uuids(&block)
-        self.connection.select_all(%Q{
+      def records_for_missing_uuids
+        connection.select_all(%Q{
           SELECT r.id AS id
-          FROM #{self.quoted_table_name} r
+          FROM #{quoted_table_name} r
           LEFT OUTER JOIN #{Uuid.quoted_table_name} u
           ON r.id=u.resource_id AND u.resource_type="#{self}"
           WHERE u.id IS NULL
@@ -100,7 +100,7 @@ class Uuid < ActiveRecord::Base
 
   # TODO[xxx]: remove this and use resource everywhere!
   def object
-    self.resource
+    resource
   end
 
   scope :with_resource_type, ->(type) { where(resource_type: type.to_s) }
@@ -114,7 +114,7 @@ class Uuid < ActiveRecord::Base
   end
 
   def uuid
-    self.external_id
+    external_id
   end
 
   def self.generate_uuid
@@ -124,13 +124,13 @@ class Uuid < ActiveRecord::Base
   def self.translate_uuids_to_ids_in_params(params)
     params.keys.each do |key|
       next unless params[key] =~ ValidRegexp
-      params[key] = self.find_id(params[key])
+      params[key] = find_id(params[key])
     end
   end
 
   def self.find_uuid_instance!(resource_type, resource_id)
-    self.with_resource_by_type_and_id(resource_type, resource_id).first or
-      raise ActiveRecord::RecordNotFound, "Unable to find UUID"
+    with_resource_by_type_and_id(resource_type, resource_id).first or
+      raise ActiveRecord::RecordNotFound, 'Unable to find UUID'
   end
 
   # Find the uuid corresponding id and system.
@@ -164,7 +164,7 @@ class Uuid < ActiveRecord::Base
   def self.generate_uuids!(resource_type, resource_ids)
     return if resource_ids.empty?
     ids_missing_uuids = filter_uncreated_uuids(resource_type, resource_ids)
-    uuids_to_create = ids_missing_uuids.map { |id| create!(resource_type: resource_type, resource_id: id, external_id: self.generate_uuid) }
+    uuids_to_create = ids_missing_uuids.map { |id| create!(resource_type: resource_type, resource_id: id, external_id: generate_uuid) }
     # Uuid.import uuids_to_create unless uuids_to_create.empty?
 
     nil

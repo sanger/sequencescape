@@ -4,38 +4,38 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class ManifestGeneratorTest < ActiveSupport::TestCase
   def remove_date(csv_string)
-    csv_string.slice(0...(csv_string.index("Date:"))) + csv_string.slice(csv_string.index("Comments:")..csv_string.size)
+    csv_string.slice(0...(csv_string.index('Date:'))) + csv_string.slice(csv_string.index('Comments:')..csv_string.size)
   end
 
   headers =  "Institute Name:,WTSI,,,,,,,,,,,,,,,,\n"
   headers += "Comments:,STUDY\n"
-  headers += "Row,Institute Plate Label,Well,Is Control,Institute Sample Label,Species,Sex,"
-  headers += "Comments,Volume (ul),Conc (ng/ul),Extraction Method,WGA Method (if Applicable),"
+  headers += 'Row,Institute Plate Label,Well,Is Control,Institute Sample Label,Species,Sex,'
+  headers += 'Comments,Volume (ul),Conc (ng/ul),Extraction Method,WGA Method (if Applicable),'
   headers += "Mass of DNA used in WGA,Parent 1,Parent 2,Replicate(s),Tissue Source\n"
 
-  context "A manifest" do
-    context "#remove_empty_quotes" do
+  context 'A manifest' do
+    context '#remove_empty_quotes' do
       setup do
-        @row_data = "!!,B,!!,A,!!,!!"
+        @row_data = '!!,B,!!,A,!!,!!'
       end
-      should "remove exclaimation marks" do
-        assert_equal ",B,,A,,", ManifestGenerator.remove_empty_quotes(@row_data)
+      should 'remove exclaimation marks' do
+        assert_equal ',B,,A,,', ManifestGenerator.remove_empty_quotes(@row_data)
       end
     end
 
-    context "#create_header" do
+    context '#create_header' do
       setup do
         @study = create :study
-        @expected_header = [["Institute Name:", "WTSI", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
-         ["Date:", "2010-5-7"],
-         ["Comments:", (@study.abbreviation).to_s],
-         ["Row", "Institute Plate Label", "Well", "Is Control", "Institute Sample Label", "Species",
-          "Sex", "Comments", "Volume (ul)", "Conc (ng/ul)", "Extraction Method", "WGA Method (if Applicable)",
-          "Mass of DNA used in WGA", "Parent 1", "Parent 2", "Replicate(s)", "Tissue Source"]]
+        @expected_header = [['Institute Name:', 'WTSI', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+         ['Date:', '2010-5-7'],
+         ['Comments:', (@study.abbreviation).to_s],
+         ['Row', 'Institute Plate Label', 'Well', 'Is Control', 'Institute Sample Label', 'Species',
+          'Sex', 'Comments', 'Volume (ul)', 'Conc (ng/ul)', 'Extraction Method', 'WGA Method (if Applicable)',
+          'Mass of DNA used in WGA', 'Parent 1', 'Parent 2', 'Replicate(s)', 'Tissue Source']]
         @manifest_header = ManifestGenerator.create_header([], @study)
       end
       [0, 2, 3].each do |header_line_index|
@@ -45,27 +45,27 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
       end
     end
 
-    context "well_concentration" do
+    context 'well_concentration' do
       setup do
         @well = create :well
       end
-      context "with set concentration" do
+      context 'with set concentration' do
         setup do
           @well.set_concentration(567)
           @well.save
         end
-        should "return inputted concentrations" do
+        should 'return inputted concentrations' do
           concentration = ManifestGenerator.well_concentration(@well)
           assert_equal 567, concentration
           assert concentration.is_a?(Integer)
         end
       end
-      context "with no set concentration" do
+      context 'with no set concentration' do
         setup do
           @well.well_attribute.concentration = nil
           @well.well_attribute.save
         end
-        should "return default value" do
+        should 'return default value' do
           concentration = ManifestGenerator.well_concentration(@well)
           assert_equal 50, concentration
           assert concentration.is_a?(Integer)
@@ -73,23 +73,23 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
       end
     end
 
-    context "well_volume" do
+    context 'well_volume' do
       setup do
         @well = create :well
       end
-      context "with set volume" do
+      context 'with set volume' do
         setup do
           @well.set_requested_volume(567)
           @well.save
         end
-        should "return inputted volume" do
+        should 'return inputted volume' do
           volume = ManifestGenerator.well_volume(@well)
           assert_equal 567, volume
           assert volume.is_a?(Integer)
         end
       end
-      context "with no set volume" do
-        should "return default value" do
+      context 'with no set volume' do
+        should 'return default value' do
           volume = ManifestGenerator.well_volume(@well)
           assert_equal 13, volume
           assert volume.is_a?(Integer)
@@ -97,67 +97,67 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
       end
     end
 
-    context "#well_sample_species" do
+    context '#well_sample_species' do
       setup do
         @well = create :well
         @sample = create :sample
       end
-      context "with no sample" do
-        should "throw an exeption" do
+      context 'with no sample' do
+        should 'throw an exeption' do
           assert_raises StandardError do
             ManifestGenerator.well_sample_species(@well)
           end
         end
       end
-      context "with a sample" do
+      context 'with a sample' do
         setup do
           @well.aliquots.create!(sample: @sample)
         end
-        context "with no set species" do
-          should "return the default species" do
-            assert_equal "Homo sapiens", ManifestGenerator.well_sample_species(@well)
+        context 'with no set species' do
+          should 'return the default species' do
+            assert_equal 'Homo sapiens', ManifestGenerator.well_sample_species(@well)
           end
         end
-        context "with species property set" do
+        context 'with species property set' do
           setup do
             @sample.sample_metadata.sample_common_name = 'Species 1'
             @sample.save
           end
-          should "return the species from the property" do
-            assert_equal "Species 1", ManifestGenerator.well_sample_species(@well)
+          should 'return the species from the property' do
+            assert_equal 'Species 1', ManifestGenerator.well_sample_species(@well)
           end
         end
       end
     end
 
-    context "#well_sample_is_control" do
+    context '#well_sample_is_control' do
       setup do
         @well = create :well
         @sample = create :sample
       end
-      context "with no sample" do
-        should "throw an exeption" do
+      context 'with no sample' do
+        should 'throw an exeption' do
           assert_raises StandardError do
             ManifestGenerator.well_sample_is_control(@well)
           end
         end
       end
-      context "with a sample" do
+      context 'with a sample' do
         setup do
           @well.aliquots.create!(sample: @sample)
         end
-        context "and no external value set" do
-          should "return default value" do
+        context 'and no external value set' do
+          should 'return default value' do
             control = ManifestGenerator.well_sample_is_control(@well)
             assert_equal 0, control
             assert control.is_a?(Integer)
           end
         end
-        context "with external value set" do
+        context 'with external value set' do
           setup do
             @sample.update_attributes!(control: true)
           end
-          should "return external value" do
+          should 'return external value' do
             control = ManifestGenerator.well_sample_is_control(@well)
             assert_equal 1, control
             assert control.is_a?(Integer)
@@ -166,31 +166,31 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
       end
     end
 
-    context "#well_sample_gender" do
+    context '#well_sample_gender' do
       setup do
         @well = create :well
         @sample = create :sample
       end
-      context "with no sample" do
-        should "throw an exeption" do
+      context 'with no sample' do
+        should 'throw an exeption' do
           assert_raises StandardError do
             ManifestGenerator.well_sample_gender(@well)
           end
         end
       end
-      context "with a sample" do
+      context 'with a sample' do
         setup do
           @well.aliquots.create!(sample: @sample)
           @well.save
         end
-        context "and no external value set" do
-          should "return default value" do
+        context 'and no external value set' do
+          should 'return default value' do
             control = ManifestGenerator.well_sample_gender(@well)
-            assert_equal "U", control
+            assert_equal 'U', control
             assert control.is_a?(String)
           end
         end
-        context "with external value set" do
+        context 'with external value set' do
           {
             'M' => 'Male',
             'F' => 'Female',
@@ -207,36 +207,36 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
       end
     end
 
-    context "#well_sample_parent" do
+    context '#well_sample_parent' do
       ['mother', 'father'].each do |parent|
         context "for #{parent}" do
           setup do
             @well = create :well
             @sample = create :sample
           end
-          context "with no sample" do
-            should "throw an exeption" do
+          context 'with no sample' do
+            should 'throw an exeption' do
               assert_raises StandardError do
                 ManifestGenerator.well_sample_parent(@well, parent)
               end
             end
           end
-          context "with a sample" do
+          context 'with a sample' do
             setup do
               @well.aliquots.create!(sample: @sample)
               @well.save
             end
-            context "and no external value set" do
-              should "return default value" do
+            context 'and no external value set' do
+              should 'return default value' do
                 parent_value = ManifestGenerator.well_sample_parent(@well, parent)
                 assert_nil parent_value
               end
             end
-            context "with external value set" do
+            context 'with external value set' do
               setup do
                 @sample.sample_metadata.update_attributes!(parent => 2)
               end
-              should "return external value" do
+              should 'return external value' do
                 parent_value = ManifestGenerator.well_sample_parent(@well, parent)
                 assert parent_value.is_a?(Integer), "#{parent.inspect} is not an integer (#{parent_value})"
               end
@@ -246,11 +246,11 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
       end
     end
 
-    context "#well_map_description" do
-      [["A1", "A01"], ["C2", "C02"], ["H12", "H12"], ["G9", "G09"]].each do |input_map, expected_map|
+    context '#well_map_description' do
+      [['A1', 'A01'], ['C2', 'C02'], ['H12', 'H12'], ['G9', 'G09']].each do |input_map, expected_map|
         context "for #{input_map}" do
           setup do
-            @well = create :well, map: Map.find_by_description_and_asset_size(input_map, 96)
+            @well = create :well, map: Map.find_by(description: input_map, asset_size: 96)
             @description = ManifestGenerator.well_map_description(@well)
           end
           should "return expected description of #{expected_map}" do
@@ -261,41 +261,41 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
       end
     end
 
-    context "#generate_manifest_row" do
+    context '#generate_manifest_row' do
       setup do
         @well = create :well
         @sample = create :sample
-        @plate_barcode = "141865"
-        @plate_label = "AAA"
+        @plate_barcode = '141865'
+        @plate_label = 'AAA'
       end
-      context "where well has no sample" do
-        should "throw an exeption" do
+      context 'where well has no sample' do
+        should 'throw an exeption' do
           assert_raises StandardError do
             ManifestGenerator.generate_manifest_row(@well, @plate_barcode, @plate_label)
           end
         end
       end
-      context "with rows from a real manifest" do
-        [["WG0109325-DNA", "A1", 0, "141865", "MIG683233", "Homo sapiens", "female", 13, 50,
-          "WG0109325-DNA,A01,0,141865_A01_MIG683233,Homo sapiens,F,,13,50,-,,0,,,,-"],
-         ["WG0109326-DNA", "G12", 0, "141864", "MIG683178", "Homo sapiens", "male", 13, 50,
-          "WG0109326-DNA,G12,0,141864_G12_MIG683178,Homo sapiens,M,,13,50,-,,0,,,,-"],
-         ["WG0110521-DNA", "D2", 0, "135653", "ALSPAC09892966", "Homo sapiens", "male", 13, 50,
-          "WG0110521-DNA,D02,0,135653_D02_ALSPAC09892966,Homo sapiens,M,,13,50,-,,0,,,,-"],
-         ["WG0109379-DNA", "F1", 0, "135649", "Exo_2302555", "Homo sapiens", "female", 13, 50,
-          "WG0109379-DNA,F01,0,135649_F01_Exo_2302555,Homo sapiens,F,,13,50,-,,0,,,,-"],
-         ["WG0017826-DNA", "C2", 0, "124189", "MET_MAG954712", "Homo sapiens", "female", 13, 50,
-          "WG0017826-DNA,C02,0,124189_C02_MET_MAG954712,Homo sapiens,F,,13,50,-,,0,,,,-"],
-         ["WG0017827-DNA", "F12", 0, "124188", "WTCCCT480976", "Homo sapiens", "female", 30, 50,
-          "WG0017827-DNA,F12,0,124188_F12_WTCCCT480976,Homo sapiens,F,,30,50,-,,0,,,,-"],
-         ["WG0011534-DNA", "A10", 0, "122849", "MET_T2D974341", "Homo sapiens", "female", 30, 50,
-          "WG0011534-DNA,A10,0,122849_A10_MET_T2D974341,Homo sapiens,F,,30,50,-,,0,,,,-"],
-         ["WG0011534-DNA", "E3", 0, "122849", "MET_T2D974238", "Homo sapiens", "male", 13, 50,
-          "WG0011534-DNA,E03,0,122849_E03_MET_T2D974238,Homo sapiens,M,,13,50,-,,0,,,,-"],
-         ["WG0017831-DNA", "F11", 0, "124184", "WTCCCT480968", "Homo sapiens", "male", 30, 50,
-          "WG0017831-DNA,F11,0,124184_F11_WTCCCT480968,Homo sapiens,M,,30,50,-,,0,,,,-"],
-         ["WG0109327-DNA", "D6", 0, "141863", "MIG682626", "Homo sapiens", "female", 13, 50,
-          "WG0109327-DNA,D06,0,141863_D06_MIG682626,Homo sapiens,F,,13,50,-,,0,,,,-"]
+      context 'with rows from a real manifest' do
+        [['WG0109325-DNA', 'A1', 0, '141865', 'MIG683233', 'Homo sapiens', 'female', 13, 50,
+          'WG0109325-DNA,A01,0,141865_A01_MIG683233,Homo sapiens,F,,13,50,-,,0,,,,-'],
+         ['WG0109326-DNA', 'G12', 0, '141864', 'MIG683178', 'Homo sapiens', 'male', 13, 50,
+          'WG0109326-DNA,G12,0,141864_G12_MIG683178,Homo sapiens,M,,13,50,-,,0,,,,-'],
+         ['WG0110521-DNA', 'D2', 0, '135653', 'ALSPAC09892966', 'Homo sapiens', 'male', 13, 50,
+          'WG0110521-DNA,D02,0,135653_D02_ALSPAC09892966,Homo sapiens,M,,13,50,-,,0,,,,-'],
+         ['WG0109379-DNA', 'F1', 0, '135649', 'Exo_2302555', 'Homo sapiens', 'female', 13, 50,
+          'WG0109379-DNA,F01,0,135649_F01_Exo_2302555,Homo sapiens,F,,13,50,-,,0,,,,-'],
+         ['WG0017826-DNA', 'C2', 0, '124189', 'MET_MAG954712', 'Homo sapiens', 'female', 13, 50,
+          'WG0017826-DNA,C02,0,124189_C02_MET_MAG954712,Homo sapiens,F,,13,50,-,,0,,,,-'],
+         ['WG0017827-DNA', 'F12', 0, '124188', 'WTCCCT480976', 'Homo sapiens', 'female', 30, 50,
+          'WG0017827-DNA,F12,0,124188_F12_WTCCCT480976,Homo sapiens,F,,30,50,-,,0,,,,-'],
+         ['WG0011534-DNA', 'A10', 0, '122849', 'MET_T2D974341', 'Homo sapiens', 'female', 30, 50,
+          'WG0011534-DNA,A10,0,122849_A10_MET_T2D974341,Homo sapiens,F,,30,50,-,,0,,,,-'],
+         ['WG0011534-DNA', 'E3', 0, '122849', 'MET_T2D974238', 'Homo sapiens', 'male', 13, 50,
+          'WG0011534-DNA,E03,0,122849_E03_MET_T2D974238,Homo sapiens,M,,13,50,-,,0,,,,-'],
+         ['WG0017831-DNA', 'F11', 0, '124184', 'WTCCCT480968', 'Homo sapiens', 'male', 30, 50,
+          'WG0017831-DNA,F11,0,124184_F11_WTCCCT480968,Homo sapiens,M,,30,50,-,,0,,,,-'],
+         ['WG0109327-DNA', 'D6', 0, '141863', 'MIG682626', 'Homo sapiens', 'female', 13, 50,
+          'WG0109327-DNA,D06,0,141863_D06_MIG682626,Homo sapiens,F,,13,50,-,,0,,,,-']
           ].each do |plate_label, map_description, control, plate_barcode, sample_name, species, gender, volume, concentration, target_row|
           context "for #{plate_label} #{map_description} #{sample_name}" do
             setup do
@@ -308,7 +308,7 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
               @sample.sanger_sample_id = sample_name
               @sample.save
 
-              @map = Map.find_by_description(map_description)
+              @map = Map.find_by(description: map_description)
               @well.aliquots.create!(sample: @sample)
               @well.map = @map
               @well.set_requested_volume(volume)
@@ -318,23 +318,23 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
               @target_row = target_row
               @generated_row = ManifestGenerator.generate_manifest_row(@well, @plate_barcode, @plate_label)
             end
-            should "generate the same row" do
+            should 'generate the same row' do
               assert @generated_row.is_a?(Array)
               assert_equal 16, @generated_row.size
-              assert_equal @target_row, @generated_row.join(",")
+              assert_equal @target_row, @generated_row.join(',')
             end
           end
         end
       end
     end
 
-    context "Single Plate and Single Study" do
+    context 'Single Plate and Single Study' do
       setup do
         @user = create :user
 
-        @sample1 = create(:sample, name: "Sample1", sanger_sample_id: "STUDY_1_1", sample_metadata_attributes: { sample_common_name: 'Species 1' })
-        @sample2 = create :sample, name: "Sample2", sanger_sample_id: "STUDY_1_1"
-        @sample3 = create :sample, name: "Sample3", sanger_sample_id: "STUDY_1_1"
+        @sample1 = create(:sample, name: 'Sample1', sanger_sample_id: 'STUDY_1_1', sample_metadata_attributes: { sample_common_name: 'Species 1' })
+        @sample2 = create :sample, name: 'Sample2', sanger_sample_id: 'STUDY_1_1'
+        @sample3 = create :sample, name: 'Sample3', sanger_sample_id: 'STUDY_1_1'
 
         @study1 = create :study, user: @user
         @study1.samples << @sample1
@@ -342,7 +342,7 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
 
         @study1.study_metadata.study_name_abbreviation = 'STUDY'
 
-        @plate1 = create(:plate, barcode: 11111, size: 96, name: "Plate 1", plate_metadata_attributes: { infinium_barcode: '12345' })
+        @plate1 = create(:plate, barcode: 11111, size: 96, name: 'Plate 1', plate_metadata_attributes: { infinium_barcode: '12345' })
 
         @well1 = create(:well).tap { |well| well.aliquots.create!(sample: @sample1) }
         @well2 = create(:well).tap { |well| well.aliquots.create!(sample: @sample2) }
@@ -369,7 +369,7 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
         @manifest = ManifestGenerator.generate_manifests(@batch, @study1)
       end
 
-      should "Create a single manifest file" do
+      should 'Create a single manifest file' do
         data =  "1,#{@plate1.infinium_barcode},A01,0,#{@plate1.barcode}_A01_#{@sample1.sanger_sample_id},Species 1,U,,15,50,-,,0,,,,-\n"
         data += "2,#{@plate1.infinium_barcode},A02,0,#{@plate1.barcode}_A02_#{@sample2.sanger_sample_id},Homo sapiens,U,,15,50,-,,0,,,,-\n"
         data += "3,#{@plate1.infinium_barcode},B01,0,#{@plate1.barcode}_B01_#{@sample3.sanger_sample_id},Homo sapiens,U,,15,50,-,,0,,,,-\n"
@@ -379,11 +379,11 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
         assert_equal template.split(/\n/), remove_date(@manifest).split(/\n/)
       end
 
-      context "Several Plates and Single Study" do
+      context 'Several Plates and Single Study' do
         setup do
-          @plate2 = create(:plate, barcode: 22222, size: 96, name: "Plate 2", plate_metadata_attributes: { infinium_barcode: '987654' })
+          @plate2 = create(:plate, barcode: 22222, size: 96, name: 'Plate 2', plate_metadata_attributes: { infinium_barcode: '987654' })
 
-          @sample4 = create :sample, name: "Sample4", sanger_sample_id: "STUDY_1_4"
+          @sample4 = create :sample, name: 'Sample4', sanger_sample_id: 'STUDY_1_4'
           @study1.samples << @sample4
 
           @well4 = create(:well).tap { |well| well.aliquots.create!(sample: @sample4) }
@@ -409,7 +409,7 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
           @manifest = ManifestGenerator.generate_manifests(@batch, @study1)
         end
 
-        should "Create a single manifest file" do
+        should 'Create a single manifest file' do
           data =  "1,#{@plate1.infinium_barcode},A01,0,#{@plate1.barcode}_A01_#{@sample1.sanger_sample_id},Species 1,U,,15,50,-,,0,,,,-\n"
           data += "2,#{@plate1.infinium_barcode},A02,0,#{@plate1.barcode}_A02_#{@sample2.sanger_sample_id},Homo sapiens,U,,15,50,-,,0,,,,-\n"
           data += "3,#{@plate1.infinium_barcode},B01,0,#{@plate1.barcode}_B01_#{@sample3.sanger_sample_id},Homo sapiens,U,,15,50,-,,0,,,,-\n"

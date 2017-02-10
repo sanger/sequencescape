@@ -9,12 +9,12 @@ class Descriptor < ActiveRecord::Base
   serialize :selection
 
   def is_required?
-    self.required
+    required
   end
 
   def matches?(search)
     search.descriptors.each do |descriptor|
-      if descriptor.name == self.name && descriptor.value == self.value
+      if descriptor.name == name && descriptor.value == value
         return true
       end
     end

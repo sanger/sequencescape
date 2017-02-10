@@ -19,13 +19,13 @@ class BroadcastEvent::OrderMade < BroadcastEvent
 
   has_subjects(:sample, :samples)
 
-  has_subjects(:order_source_plate) do |order, event|
+  has_subjects(:order_source_plate) do |_order, event|
     event.plates
   end
 
-  has_subjects(:order_source_tubes) { |order, event| order.assets.select { |a| a.is_a?(Tube) } }
+  has_subjects(:order_source_tubes) { |order, _event| order.assets.select { |a| a.is_a?(Tube) } }
 
-  has_subjects(:stock_plate) { |order, event| event.plates.map(&:original_stock_plates).flatten.uniq }
+  has_subjects(:stock_plate) { |_order, event| event.plates.map(&:original_stock_plates).flatten.uniq }
 
   def plates
     return @plates if @plates
@@ -34,12 +34,12 @@ class BroadcastEvent::OrderMade < BroadcastEvent
     @plates = Plate.with_wells(wells)
   end
 
-  has_metadata(:library_type) { |order, e| order.request_options['library_type'] }
-  has_metadata(:fragment_size_from) { |order, e| order.request_options['fragment_size_required_from'] }
-  has_metadata(:fragment_size_to) { |order, e| order.request_options['fragment_size_required_to'] }
-  has_metadata(:read_length) { |order, e| order.request_options[:read_length] }
-  has_metadata(:bait_library) { |order, e| order.request_options[:bait_library_name] }
+  has_metadata(:library_type) { |order, _e| order.request_options['library_type'] }
+  has_metadata(:fragment_size_from) { |order, _e| order.request_options['fragment_size_required_from'] }
+  has_metadata(:fragment_size_to) { |order, _e| order.request_options['fragment_size_required_to'] }
+  has_metadata(:read_length) { |order, _e| order.request_options[:read_length] }
+  has_metadata(:bait_library) { |order, _e| order.request_options[:bait_library_name] }
 
-  has_metadata(:order_type) { |order, e| order.order_role.try(:role) || 'UNKNOWN' }
-  has_metadata(:submission_template) { |order, e| order.template_name }
+  has_metadata(:order_type) { |order, _e| order.order_role.try(:role) || 'UNKNOWN' }
+  has_metadata(:submission_template) { |order, _e| order.template_name }
 end

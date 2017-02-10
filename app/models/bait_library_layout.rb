@@ -34,7 +34,7 @@ class BaitLibraryLayout < ActiveRecord::Base
   def record_bait_library_assignment(well, bait_library)
     # Note: The serialization of the hash prevents the use of a block
     # to set default values etc.
-    (self.layout[bait_library.name] ||= []).push(well.map.description)
+    (layout[bait_library.name] ||= []).push(well.map.description)
   end
   private :record_bait_library_assignment
 
@@ -57,7 +57,7 @@ class BaitLibraryLayout < ActiveRecord::Base
   end
   private :layout_bait_libraries_on_plate
 
-  def each_bait_library_assignment(&block)
+  def each_bait_library_assignment
     plate.stock_wells.each do |well, stock_wells|
       bait_library = stock_wells.map { |w| w.requests_as_source.where_is_not_a?(TransferRequest).for_submission_id(well.pool_id).first }.compact.map(&:request_metadata).map(&:bait_library).uniq
       raise StandardError, "Multiple bait libraries found for #{well.map.description} on plate #{well.plate.sanger_human_barcode}" if bait_library.size > 1

@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class SequenomControllerTest < ActionController::TestCase
   should_require_login
@@ -33,12 +33,12 @@ class SequenomControllerTest < ActionController::TestCase
       should render_template :index
       should_have_a_form_to('#sequenom_search') { sequenom_search_path }
 
-      should "have a field for the plate barcode" do
-        assert_select "form#sequenom_search input[name=plate_barcode]"
+      should 'have a field for the plate barcode' do
+        assert_select 'form#sequenom_search input[name=plate_barcode]'
       end
 
-      should "have a search submission button" do
-        assert_select "form#sequenom_search input[type=submit]"
+      should 'have a search submission button' do
+        assert_select 'form#sequenom_search input[type=submit]'
       end
     end
 
@@ -49,11 +49,11 @@ class SequenomControllerTest < ActionController::TestCase
         end
 
         should 'create the non-existent plate in the database' do
-          assert_not_nil Plate.find_by_barcode('99999')
+          assert_not_nil Plate.find_by(barcode: '99999')
         end
 
         should 'redirect to the Sequenom plate view' do
-          assert_redirected_to sequenom_plate_path(Plate.find_by_barcode('99999'))
+          assert_redirected_to sequenom_plate_path(Plate.find_by(barcode: '99999'))
         end
       end
 
@@ -95,7 +95,7 @@ class SequenomControllerTest < ActionController::TestCase
         end
 
         should 'set the flash[:error] information' do
-          assert_equal "The plate you requested does not appear to exist", flash[:error]
+          assert_equal 'The plate you requested does not appear to exist', flash[:error]
         end
       end
 
@@ -110,7 +110,7 @@ class SequenomControllerTest < ActionController::TestCase
         end
 
         should 'set the flash[:error] information' do
-          assert_equal "There appears to be no user with barcode 2470099999680 (ID99999D)", flash[:error]
+          assert_equal 'There appears to be no user with barcode 2470099999680 (ID99999D)', flash[:error]
         end
       end
 
@@ -148,7 +148,7 @@ class SequenomControllerTest < ActionController::TestCase
             end
 
             should 'add the Sequenom step completed event' do
-              assert_not_nil Plate.find(@plate.id).events.find_by_message_and_created_by("#{step.name} step completed", @user.login)
+              assert_not_nil Plate.find(@plate.id).events.find_by(message: "#{step.name} step completed", created_by: @user.login)
             end
           end
         end
@@ -166,7 +166,7 @@ class SequenomControllerTest < ActionController::TestCase
         end
 
         should 'set the flash[:error] information' do
-          assert_equal "The plate you requested does not appear to exist", flash[:error]
+          assert_equal 'The plate you requested does not appear to exist', flash[:error]
         end
       end
 

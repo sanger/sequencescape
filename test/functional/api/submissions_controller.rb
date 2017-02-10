@@ -4,10 +4,10 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class Api::SubmissionsControllerTest < ActionController::TestCase
-  context "submission" do
+  context 'submission' do
     setup do
       @controller = Api::SubmissionsController.new
       @request    = ActionController::TestRequest.new
@@ -17,7 +17,7 @@ class Api::SubmissionsControllerTest < ActionController::TestCase
       session[:user] = @user.id
     end
 
-    context "#create" do
+    context '#create' do
       setup do
         @submission_count = Submission.count
         template = FactoryGirl.create :submission_template
@@ -28,15 +28,15 @@ class Api::SubmissionsControllerTest < ActionController::TestCase
         rt = FactoryGirl.create :request_type, workflow: workflow
         template.request_types << rt
 
-        post :create, order: { project_id: project.id, study_id: study.id, sample_tubes: [sample_tube.id.to_s], number_of_lanes: "2", type: template.key }
+        post :create, order: { project_id: project.id, study_id: study.id, sample_tubes: [sample_tube.id.to_s], number_of_lanes: '2', type: template.key }
       end
 
-      should "change Submission.count by 1" do
-        assert_equal 1, Submission.count - @submission_count, "Expected Submission.count to change by 1"
+      should 'change Submission.count by 1' do
+        assert_equal 1, Submission.count - @submission_count, 'Expected Submission.count to change by 1'
       end
 
-      should "output a correct error message" do
-        assert_equal "\"Submission created\"", @response.body
+      should 'output a correct error message' do
+        assert_equal '"Submission created"', @response.body
       end
     end
   end

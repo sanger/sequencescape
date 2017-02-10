@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 require 'sessions_controller'
 
 class SessionsControllerTest < ActionController::TestCase
@@ -16,9 +16,9 @@ class SessionsControllerTest < ActionController::TestCase
     @controller = SessionsController.new
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
-    @user = FactoryGirl.create(:user, login: "john", email: "john@beatles.com",
-      password: 'test', password_confirmation: 'test',
-      created_at: 5.days.ago.to_s)
+    @user = FactoryGirl.create(:user, login: 'john', email: 'john@beatles.com',
+                                      password: 'test', password_confirmation: 'test',
+                                      created_at: 5.days.ago.to_s)
   end
 
   def test_should_login_and_redirect

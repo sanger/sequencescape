@@ -24,8 +24,8 @@ module Plate::Iterations
         ) AS iteration_plates,
         (SELECT @rownum:=0) AS r
       ) AS a
-      WHERE a.id=#{self.id}
-    ", "Plate #{self.id} iteration query")
+      WHERE a.id=#{id}
+    ", "Plate #{id} iteration query")
 
     iteration_of_plate['iteration'].to_i
   end

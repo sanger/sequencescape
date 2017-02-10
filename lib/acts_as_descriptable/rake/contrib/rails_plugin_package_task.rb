@@ -114,14 +114,14 @@ module Rake
       @extra_links = nil
       @package_files = Rake::FileList.new
       @plugin_files = Rake::FileList.new
-      @package_dir = "pkg/"
+      @package_dir = 'pkg/'
       @folders = {}
       @verbose = false
     end
 
     # Define the rails_plugin task
     def define
-      desc "Create Ruby on Rails plug-in package"
+      desc 'Create Ruby on Rails plug-in package'
       task :rails_plugin do
         @dest = "#@package_dir/#{@name}"
         makedirs(@dest, verbose: false)
@@ -147,7 +147,7 @@ module Rake
           end
         end
 
-        generate_index_files()
+        generate_index_files
       end
 
       desc 'Remove package files'
@@ -163,18 +163,18 @@ module Rake
     def generate_index_files
       @folders.each do |folder, files|
         puts " + Creating #{@dest}/#{folder}/index.html" if @verbose
-        File.open("#{@dest}/#{folder}/index.html", "w") do |index|
+        File.open("#{@dest}/#{folder}/index.html", 'w') do |index|
           title = "Rails Plug-in for #@name #@version"
           index.write("<html><head><title>#{title}</title></head>\n")
           index.write("<body>\n")
           index.write("<h2>#{title}</h2>\n")
-          extra_links = create_extra_links()
+          extra_links = create_extra_links
           index.write("<p>#{extra_links}</p>\n") if extra_links
           files.each { |fn|
             puts("  - Adding #{fn}") if @verbose
             index.write("&nbsp;&nbsp;<a href=\"#{fn}\">#{fn}</a><br/>\n")
           }
-          index.write("<hr size=\"1\"/><p style=\"font-size: x-small\">Generated with RailsPluginPackageTask<p>")
+          index.write('<hr size="1"/><p style="font-size: x-small">Generated with RailsPluginPackageTask<p>')
           index.write("</body>\n")
           index.write("</html>\n")
         end
@@ -185,7 +185,7 @@ module Rake
 
     # Add a file to the folders hash
     def add_file(filename)
-      dir = File.dirname(filename).gsub(@dest.to_s, ".")
+      dir = File.dirname(filename).gsub(@dest.to_s, '.')
       fn = File.basename(filename)
       folder = @folders[dir] || @folders[dir] = []
       folder << fn
@@ -193,8 +193,8 @@ module Rake
 
     # Add a folder to the folders hash
     def add_folder(folder_name)
-      dir = File.dirname(folder_name).gsub(@dest.to_s, ".").gsub("./", "")
-      fn = File.basename(folder_name) + "/"
+      dir = File.dirname(folder_name).gsub(@dest.to_s, '.').gsub('./', '')
+      fn = File.basename(folder_name) + '/'
       folder = @folders[dir] || @folders[dir] = []
       folder << fn
     end
@@ -202,7 +202,7 @@ module Rake
     # Create the anchor tag for extra links
     def create_extra_links
       return nil unless @extra_links
-      x_links = ""
+      x_links = ''
       if (@extra_links.class == Hash)
         @extra_links.each do |k, v|
           x_links << "<a href=\"#{v}\">#{k}</a>&nbsp;"
@@ -214,7 +214,7 @@ module Rake
       else
         x_links = "<a href=\"#{@extra_links}\">#{@extra_links}</a>"
       end
-      return x_links
+      x_links
     end
   end
 end

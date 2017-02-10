@@ -13,7 +13,7 @@ class DnaQcPipeline < GenotypingPipeline
     # Nothing, we don't want all the requests to be completed
   end
 
-  def post_release_batch(batch, user)
-    batch.release_pending_requests()
+  def post_release_batch(batch, _user)
+    batch.release_pending_requests
   end
 end

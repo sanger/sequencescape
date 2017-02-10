@@ -36,25 +36,23 @@ module ::Core::Io::Json::Grammar
     end
 
     def merge_children_with(node)
-      Hash[
-        (node.children.keys + @children.keys).uniq.map do |k|
-          cloned = case
-          when @children.key?(k) && node.children.key?(k) then node.children[k].merge(@children[k])
-          when @children.key?(k)                          then @children[k]
-          when node.children.key?(k)                      then node.children[k]
-          else raise "Odd, how did that happen?"
-          end
+      (node.children.keys + @children.keys).uniq.each_with_object({}) do |k, store|
+        cloned = case
+                 when @children.key?(k) && node.children.key?(k) then node.children[k].merge(@children[k])
+                 when @children.key?(k)                          then @children[k]
+                 when node.children.key?(k)                      then node.children[k]
+                 else raise 'Odd, how did that happen?'
+                 end
 
-          [k, cloned]
-        end
-      ]
+        store[k] = cloned
+      end
     end
 
     def inspect
       @children.values.inspect
     end
 
-    def duplicate(&block)
+    def duplicate
       yield(Hash[@children.map { |k, v| [k, v.dup] }])
     end
     private :duplicate
@@ -159,8 +157,8 @@ module ::Core::Io::Json::Grammar
       self.class.new(name, attribute)
     end
 
-    def merge(node)
-      raise "Cannot merge into a leaf as it is attribute only!"
+    def merge(_node)
+      raise 'Cannot merge into a leaf as it is attribute only!'
     end
 
     def merge_children_with(node)
@@ -204,7 +202,7 @@ module ::Core::Io::Json::Grammar
     end
 
     def merge(_)
-      raise "Cannot merge into an actions leaf as it is actions only!"
+      raise 'Cannot merge into an actions leaf as it is actions only!'
     end
 
     def dup

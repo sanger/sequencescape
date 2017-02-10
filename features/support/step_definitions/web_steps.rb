@@ -12,7 +12,7 @@
 
 require 'uri'
 require 'cgi'
-require_relative "../paths"
+require_relative '../paths'
 require 'webmock/cucumber'
 WebMock.disable_net_connect!(allow_localhost: true)
 
@@ -50,7 +50,7 @@ When /^(?:|I )follow "([^"]*)"(?: within "([^"]*)")?$/ do |link, selector|
 end
 
 When /^I follow first "(.*?)"$/ do |link|
-  first("a", text: link).click
+  first('a', text: link).click
 end
 
 When /^(?:|I )fill in "([^"]*)" with "([^"]*)"(?: within "([^"]*)")?$/ do |field, value, selector|
@@ -114,7 +114,7 @@ When /^(?:|I )select "([^"]*)" from the first "([^"]*)"(?: within "([^"]*)")?$/ 
 end
 
 When /^(?:|I )check (the invisible )?"([^"]*)"(?: within "([^"]*)")?$/ do |invisible, field, selector|
-  visible = invisible != "the invisible "
+  visible = invisible != 'the invisible '
   with_scope(selector) do
     check(field, visible: visible)
   end
@@ -304,7 +304,7 @@ Then /^Pmb is down$/ do
 end
 
 Then /^Pmb has the required label templates$/ do
-  body = "{\"data\":[{\"id\":\"1\"}]}"
+  body = '{"data":[{"id":"1"}]}'
 
   stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}sqsc_96plate_label_template")
     .with(headers: LabelPrinter::PmbClient.headers)

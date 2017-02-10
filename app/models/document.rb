@@ -38,7 +38,7 @@ class Document < ActiveRecord::Base
   belongs_to :documentable, polymorphic: true
 
   # CarrierWave uploader - gets the uploaded_data file, but saves the identifier to the "filename" column
-  has_uploaded :uploaded_data, { serialization_column: "filename" }
+  has_uploaded :uploaded_data, serialization_column: 'filename'
 
   # Method provided for backwards compatibility
   def current_data

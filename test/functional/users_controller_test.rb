@@ -4,11 +4,11 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 require 'users_controller'
 
 class UsersControllerTest < ActionController::TestCase
-  context "Users controller" do
+  context 'Users controller' do
     setup do
       @controller = UsersController.new
       @request    = ActionController::TestRequest.new

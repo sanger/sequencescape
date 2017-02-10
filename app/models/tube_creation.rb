@@ -17,7 +17,7 @@ class TubeCreation < AssetCreation
   has_many :child_tubes, class_name: 'TubeCreation::ChildTube'
   has_many :children, through: :child_tubes, source: :tube
 
-  validates_each(:parent, unless: :no_pooling_expected?, allow_blank: true) do |record, attr, value|
+  validates_each(:parent, unless: :no_pooling_expected?, allow_blank: true) do |record, _attr, _value|
     record.errors.add(:parent, 'has no pooling information') if record.parent.pools.empty?
   end
 

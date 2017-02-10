@@ -37,13 +37,13 @@ module IlluminaC::Requests
         RequestType.create!(params)
       end
       IlluminaC::PlatePurposes::STOCK_PLATE_PURPOSE_TO_OUTER_REQUEST.each do |purpose, request|
-        RequestType.find_by(key: request).acceptable_plate_purposes << Purpose.find_by_name(purpose)
+        RequestType.find_by(key: request).acceptable_plate_purposes << Purpose.find_by(name: purpose)
       end
     end
 
     def destroy_request_types
       each_request_type do |params|
-        RequestType.find_by_name(params[:name]).destroy
+        RequestType.find_by(name: params[:name]).destroy
       end
     end
 
@@ -54,14 +54,14 @@ module IlluminaC::Requests
           key: 'illumina_c_pcr',
           for_multiplexing: true,
           request_class_name: 'IlluminaC::Requests::PcrLibraryRequest',
-          target_purpose: Purpose.find_by_name('ILC Lib Pool Norm')
+          target_purpose: Purpose.find_by(name: 'ILC Lib Pool Norm')
         },
         {
           name: 'Illumina-C Library Creation No PCR',
           key: 'illumina_c_nopcr',
           for_multiplexing: true,
           request_class_name: 'IlluminaC::Requests::NoPcrLibraryRequest',
-          target_purpose: Purpose.find_by_name('ILC Lib Pool Norm')
+          target_purpose: Purpose.find_by(name: 'ILC Lib Pool Norm')
         },
         {
           name: 'Illumina-C Library Creation PCR No Pooling',
@@ -80,24 +80,22 @@ module IlluminaC::Requests
           key:                'illumina_c_chromium_library',
           request_class_name: 'IlluminaC::Requests::LibraryRequest', # See class deprecation notice above
           for_multiplexing:   true,
-          target_purpose:     Purpose.find_by_name('ILC Lib Pool Norm')
+          target_purpose:     Purpose.find_by(name: 'ILC Lib Pool Norm')
         },
         {
           name:               'Illumina-C Multiplexing',
           key:                'illumina_c_multiplexing',
           request_class_name: 'Request::Multiplexing',
           for_multiplexing:   true,
-          target_purpose:     Purpose.find_by_name('ILC Lib Pool Norm')
+          target_purpose:     Purpose.find_by(name: 'ILC Lib Pool Norm')
         }
       ].each do |params|
-         params.merge!({
-          workflow: Submission::Workflow.find_by_name("Next-gen sequencing"),
-          asset_type: 'Well',
-          order: 1,
-          initial_state: 'pending',
-          billable: true,
-          product_line: ProductLine.find_by_name('Illumina-C')
-        })
+         params.merge!(workflow: Submission::Workflow.find_by(name: 'Next-gen sequencing'),
+                       asset_type: 'Well',
+                       order: 1,
+                       initial_state: 'pending',
+                       billable: true,
+                       product_line: ProductLine.find_by(name: 'Illumina-C'))
         yield(params)
       end
     end

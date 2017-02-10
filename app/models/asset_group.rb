@@ -19,15 +19,15 @@ class AssetGroup < ActiveRecord::Base
   validates :name, presence: true, uniqueness: true
   validates :study, presence: true
 
- scope :for_search_query, ->(query, with_includes) { where(['name LIKE ?', "%#{query}%"]) }
+ scope :for_search_query, ->(query, _with_includes) { where(['name LIKE ?', "%#{query}%"]) }
 
   def all_samples_have_accession_numbers?
     unaccessioned_samples.count == 0
   end
 
   def unaccessioned_samples
-    Sample.joins(:aliquots, :sample_metadata).
-      where(aliquots: { receptacle_id: assets.map(&:id) }, sample_metadata: { sample_ebi_accession_number: nil })
+    Sample.joins(:aliquots, :sample_metadata)
+      .where(aliquots: { receptacle_id: assets.map(&:id) }, sample_metadata: { sample_ebi_accession_number: nil })
   end
 
   def self.find_or_create_asset_group(new_assets_name, study)
@@ -36,7 +36,7 @@ class AssetGroup < ActiveRecord::Base
     if new_assets_name.present?
       asset_group = AssetGroup.create_with(study: study).find_or_create_by(name: new_assets_name)
     end
-    return asset_group
+    asset_group
   end
 
   def automatic_move?

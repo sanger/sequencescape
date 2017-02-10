@@ -4,17 +4,17 @@
 # authorship of this file.
 # Copyright (C) 2012,2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 require 'users_controller'
 
 class OwnerTest < ActionController::TestCase
-  context "Plates" do
+  context 'Plates' do
     setup do
-      @barcode_printer = mock("printer abc")
+      @barcode_printer = mock('printer abc')
       @barcode_printer.stubs(:id).returns(1)
-      @barcode_printer.stubs(:name).returns("abc")
+      @barcode_printer.stubs(:name).returns('abc')
       @barcode_printer.stubs(:print_labels).returns(nil)
-      @barcode_printer.stubs(:map).returns(["abc", 1])
+      @barcode_printer.stubs(:map).returns(['abc', 1])
       @barcode_printer.stubs(:first).returns(@barcode_printer)
       BarcodePrinter.stubs(:find).returns(@barcode_printer)
       PlateBarcode.stubs(:create).returns(OpenStruct.new(barcode: '1234567'))

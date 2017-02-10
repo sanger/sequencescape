@@ -30,7 +30,7 @@ class Api::LibraryTubeIO < Api::Base
     end
 
     def url_name
-      "library_tube"
+      'library_tube'
     end
   end
 
@@ -83,10 +83,10 @@ class Api::LibraryTubeIO < Api::Base
     map_attribute_to_json_attribute(:uuid, 'source_request_uuid')
 
     extra_json_attributes do |object, json_attributes|
-      json_attributes["read_length"]                 = object.request_metadata.read_length  if object.is_a?(SequencingRequest)
-      json_attributes["library_type"]                = object.request_metadata.library_type if object.is_a?(LibraryCreationRequest)
-      json_attributes["fragment_size_required_from"] = object.request_metadata.fragment_size_required_from   if object.respond_to?(:fragment_size_required_from)
-      json_attributes["fragment_size_required_to"]   = object.request_metadata.fragment_size_required_to     if object.respond_to?(:fragment_size_required_to)
+      json_attributes['read_length']                 = object.request_metadata.read_length  if object.is_a?(SequencingRequest)
+      json_attributes['library_type']                = object.request_metadata.library_type if object.is_a?(LibraryCreationRequest)
+      json_attributes['fragment_size_required_from'] = object.request_metadata.fragment_size_required_from   if object.respond_to?(:fragment_size_required_from)
+      json_attributes['fragment_size_required_to']   = object.request_metadata.fragment_size_required_to     if object.respond_to?(:fragment_size_required_to)
     end
   end
 

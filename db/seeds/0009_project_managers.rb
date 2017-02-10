@@ -4,4 +4,4 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
-ProjectManager.create! name: "Unallocated"
+ProjectManager.create! name: 'Unallocated'

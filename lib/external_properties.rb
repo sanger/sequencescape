@@ -11,7 +11,7 @@ module ExternalProperties
     external_properties.each do |property|
       return property.value if property.key == key
     end
-    return nil
+    nil
   end
 
   def self.included(base)

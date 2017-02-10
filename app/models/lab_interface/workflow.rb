@@ -14,24 +14,24 @@ class LabInterface::Workflow < ActiveRecord::Base
   validates_uniqueness_of :name
 
   def has_batch_limit?
-    !self.item_limit.blank?
+    !item_limit.blank?
   end
 
   def controls
-    self.families
+    families
   end
 
   def source_is_external?
-    self.locale == 'External' ? true : false
+    locale == 'External' ? true : false
   end
 
   def source_is_internal?
-    self.locale == 'Internal' ? true : false
+    locale == 'Internal' ? true : false
   end
 
   def assets
     collection = []
-    self.tasks.each do |task|
+    tasks.each do |task|
       task.families.each do |family|
         collection.push family
       end
@@ -39,8 +39,8 @@ class LabInterface::Workflow < ActiveRecord::Base
     collection
   end
 
-  def deep_copy(suffix = "_dup", skip_pipeline = false)
-    self.dup.tap do |new_workflow|
+  def deep_copy(suffix = '_dup', skip_pipeline = false)
+    dup.tap do |new_workflow|
       ActiveRecord::Base.transaction do
         new_workflow.name = new_workflow.name + suffix
         new_workflow.tasks = tasks.map do |task|
@@ -56,7 +56,7 @@ class LabInterface::Workflow < ActiveRecord::Base
         # copy of the pipeline
         unless skip_pipeline
           new_workflow.pipeline = pipeline.dup
-          new_workflow.pipeline.request_types = self.pipeline.request_types
+          new_workflow.pipeline.request_types = pipeline.request_types
           new_workflow.pipeline.name += suffix
           new_workflow.pipeline.save!
         end
@@ -65,8 +65,8 @@ class LabInterface::Workflow < ActiveRecord::Base
   end
 
   def change_sorter_of_all_tasks(value)
-    return nil if self.tasks.nil?
-    self.tasks.each do |task|
+    return nil if tasks.nil?
+    tasks.each do |task|
       next if task.sorted + value < 0
       task.sorted = task.sorted + value
       task.save

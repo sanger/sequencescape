@@ -17,7 +17,7 @@ class Batches::CommentsController < ApplicationController
   def create
     @batch.comments.create(description: params[:comment], user_id: current_user.id)
     @comments = @batch.comments
-    render partial: "list", locals: { commentable: @batch, visible: true }
+    render partial: 'list', locals: { commentable: @batch, visible: true }
   end
 
   def destroy
@@ -26,7 +26,7 @@ class Batches::CommentsController < ApplicationController
       comment.destroy
     end
     @comments = @batch.comments
-    render partial: "list", locals: { commentable: @batch, visible: true }
+    render partial: 'list', locals: { commentable: @batch, visible: true }
   end
 
   private

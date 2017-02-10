@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 class LocationAssociation < ActiveRecord::Base
-  belongs_to :locatable, class_name: "Asset"
+  belongs_to :locatable, class_name: 'Asset'
   belongs_to :location
 
   validates_uniqueness_of :locatable_id
@@ -27,7 +27,7 @@ class LocationAssociation < ActiveRecord::Base
 
        scope :located_in, ->(location) {
           joins(:location_association).where(location_associations: { location_id: location })
-        }
+                          }
 
         # TODO:  not optimal
         def location_id=(l_id)

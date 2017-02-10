@@ -63,7 +63,7 @@ module AuthenticatedSystem
           self.current_user = user
         end
       elsif params[:api_key]
-        user = User.find_by_api_key(params[:api_key])
+        user = User.find_by(api_key: params[:api_key])
         if user.nil?
           self.current_user = :false
         else
@@ -193,12 +193,12 @@ module AuthenticatedSystem
     # cookie and log the user back in if apropriate
     def login_from_cookie
       return unless cookies[:auth_token] && !logged_in?
-      user = User.find_by_remember_token(cookies[:auth_token])
+      user = User.find_by(remember_token: cookies[:auth_token])
       if user && user.remember_token?
         user.remember_me
         self.current_user = user
         cookies[:auth_token] = { value: self.current_user.remember_token, expires: self.current_user.remember_token_expires_at }
-        flash[:notice] = "Logged in successfully"
+        flash[:notice] = 'Logged in successfully'
       end
     end
 
@@ -209,6 +209,6 @@ module AuthenticatedSystem
     def get_auth_data
       auth_key  = @@http_auth_headers.detect { |h| request.env.has_key?(h) }
       auth_data = request.env[auth_key].to_s.split unless auth_key.blank?
-      return auth_data && auth_data[0] == 'Basic' ? Base64.decode64(auth_data[1]).split(':')[0..1] : [nil, nil]
+      auth_data && auth_data[0] == 'Basic' ? Base64.decode64(auth_data[1]).split(':')[0..1] : [nil, nil]
     end
 end

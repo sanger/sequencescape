@@ -4,7 +4,7 @@ module Informatics
       attr_accessor :options
 
       def self.collect(*options)
-        o = self.new
+        o = new
         o.options = options
         o
       end
