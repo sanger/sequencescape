@@ -24,7 +24,7 @@ class Sdb::SuppliersController < Sdb::BaseController
         flash[:notice] = 'Supplier was successfully created.'
         format.html { redirect_to('/sdb/') }
       else
-        format.html { render action: "new" }
+        format.html { render action: 'new' }
       end
     end
   end
@@ -42,7 +42,7 @@ class Sdb::SuppliersController < Sdb::BaseController
         flash[:notice] = 'Supplier was successfully updated'
         format.html { redirect_to(@supplier) }
       else
-        format.html { render action: "new" }
+        format.html { render action: 'new' }
       end
     end
   end

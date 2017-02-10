@@ -33,10 +33,10 @@ module SampleManifestExcel
     # create a new validation object
     def validation=(validation)
       @validation = if validation.kind_of?(Hash)
-        Validation.new(validation)
-      else
-        validation.dup
-      end
+                      Validation.new(validation)
+                    else
+                      validation.dup
+                    end
     end
 
     ##
@@ -44,20 +44,20 @@ module SampleManifestExcel
     # otherwise create a new conditional formatting list
     def conditional_formattings=(conditional_formattings)
       @conditional_formattings = if conditional_formattings.kind_of?(Hash)
-        ConditionalFormattingList.new(conditional_formattings)
-      else
-        conditional_formattings.dup
-      end
+                                   ConditionalFormattingList.new(conditional_formattings)
+                                 else
+                                   conditional_formattings.dup
+                                 end
     end
 
     ##
     # Creates a new Range object.
     def range=(attributes)
-      @range = unless attributes.empty?
-        Range.new(attributes)
-      else
-        NullRange.new
-      end
+      @range = if attributes.empty?
+                 NullRange.new
+               else
+                 Range.new(attributes)
+               end
     end
 
     ##

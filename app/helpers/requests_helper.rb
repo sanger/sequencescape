@@ -11,7 +11,7 @@ module RequestsHelper #:nodoc: all
   end
 
   def read_length(request)
-    if request.descriptor_value_for_key("read_length")
+    if request.descriptor_value_for_key('read_length')
       "(#{request.descriptor_value_for_key("read_length").value} cycles)"
     end
   end

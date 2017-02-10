@@ -3,26 +3,26 @@
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2015 Genome Research Ltd.
-require "benchmark"
+require 'benchmark'
 
 class UpdateDilutionFactorForWdAndPd < ActiveRecord::Migration
   def self.types
     [
       {
-        purpose_name: "Working Dilution",
+        purpose_name: 'Working Dilution',
         value: 12.5
       },
       {
-        purpose_name: "Pico Dilution",
+        purpose_name: 'Pico Dilution',
         value: 50.0
       }
     ]
   end
 
   def self.up
-    ActiveRecord::Base.transaction do |t|
-      self.types.each do |c|
-        Purpose.find_by_name!(c[:purpose_name]).plates.find_each do |plate|
+    ActiveRecord::Base.transaction do |_t|
+      types.each do |c|
+        Purpose.find_by!(name: c[:purpose_name]).plates.find_each do |plate|
           plate.dilution_factor = c[:value]
           plate.save!
         end
@@ -31,9 +31,9 @@ class UpdateDilutionFactorForWdAndPd < ActiveRecord::Migration
   end
 
   def self.down
-    ActiveRecord::Base.transaction do |t|
-      self.types.each do |c|
-        Purpose.find_by_name!(c[:purpose_name]).plates.find_each do |plate|
+    ActiveRecord::Base.transaction do |_t|
+      types.each do |c|
+        Purpose.find_by!(name: c[:purpose_name]).plates.find_each do |plate|
           plate.dilution_factor = 1.0
           plate.save!
         end

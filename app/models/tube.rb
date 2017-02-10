@@ -39,7 +39,7 @@ class Tube < Aliquot::Receptacle
 
  scope :with_purpose, ->(*purposes) {
     where(plate_purpose_id: purposes.flatten.map(&:id))
-  }
+                      }
 
   def submission
     submissions.first
@@ -51,8 +51,8 @@ class Tube < Aliquot::Receptacle
   end
 
   def ancestor_of_purpose(ancestor_purpose_id)
-    return self if self.plate_purpose_id == ancestor_purpose_id
-    ancestors.order(created_at: :desc).where(plate_purpose_id: ancestor_purpose_id).first
+    return self if plate_purpose_id == ancestor_purpose_id
+    ancestors.order(created_at: :desc).find_by(plate_purpose_id: ancestor_purpose_id)
   end
 
   def original_stock_plates
@@ -73,7 +73,7 @@ class Tube < Aliquot::Receptacle
   delegate :barcode_type, to: :purpose
 
   def name_for_label
-    (primary_aliquot.nil? or primary_aliquot.sample.sanger_sample_id.blank?) ? self.name : primary_aliquot.sample.shorten_sanger_sample_id
+    (primary_aliquot.nil? or primary_aliquot.sample.sanger_sample_id.blank?) ? name : primary_aliquot.sample.shorten_sanger_sample_id
   end
 
   def details
@@ -87,7 +87,7 @@ class Tube < Aliquot::Receptacle
   def self.create_with_barcode!(*args, &block)
     attributes = args.extract_options!
     barcode    = args.first || attributes[:barcode]
-    raise "Barcode: #{barcode} already used!" if barcode.present? and find_by_barcode(barcode).present?
+    raise "Barcode: #{barcode} already used!" if barcode.present? and find_by(barcode: barcode).present?
     barcode ||= AssetBarcode.new_barcode
     create!(attributes.merge(barcode: barcode), &block)
   end

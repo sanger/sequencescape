@@ -21,19 +21,20 @@ class EnaAccessionService < AccessionService
   end
 
   # Most uses of this feature have been human error, so its better to hold off on releasing data than accidentally releasing data
-  def sample_visibility(sample)
+
+  def sample_visibility(_sample)
     Hold
   end
 
-  def study_visibility(study)
+  def study_visibility(_study)
     Hold
   end
 
-  def policy_visibility(study)
+  def policy_visibility(_study)
     Hold
   end
 
-  def dac_visibility(study)
+  def dac_visibility(_study)
     Hold
   end
 
@@ -41,11 +42,11 @@ class EnaAccessionService < AccessionService
     nil
   end
 
-  def submit_policy_for_user(user, study)
-    raise NumberNotGenerated, "no need to submit Policy to ENA"
+  def submit_policy_for_user(_user, _study)
+    raise NumberNotGenerated, 'no need to submit Policy to ERA'
   end
 
-  def submit_dac_for_user(user, study)
-    raise NumberNotGenerated, "no need to submit DAC  to ENA"
+  def submit_dac_for_user(_user, _study)
+    raise NumberNotGenerated, 'no need to submit DAC  to ERA'
   end
 end

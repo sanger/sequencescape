@@ -12,11 +12,11 @@ class Pipeline::GrouperForPipeline
   def call(conditions, variables, group)
     condition, keys = [], group.split(', ')
     if group_by_parent?
-      condition << "tca.container_id=?"
+      condition << 'tca.container_id=?'
       variables << keys.first.to_i
     end
     if group_by_submission?
-      condition << "requests.submission_id=?"
+      condition << 'requests.submission_id=?'
       variables << keys.last.to_i
     end
     conditions << "(#{condition.join(" AND ")})"

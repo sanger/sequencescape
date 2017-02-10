@@ -16,7 +16,7 @@ TAG_LAYOUT_TEMPLATE_REGEXP = 'tag layout template "[^\"]+"'
 TAG_LAYOUT_REGEXP          = 'tag layout with ID \d+'
 
 Transform /^tag layout template "([^\"]+)"$/ do |name|
-  TagLayoutTemplate.find_by_name(name) or raise StandardError, "Cannot find tag layout template #{name}"
+  TagLayoutTemplate.find_by(name: name) or raise StandardError, "Cannot find tag layout template #{name}"
 end
 
 Transform /^tag layout with ID (\d+)$/ do |id|
@@ -66,11 +66,11 @@ def plate_view_of_oligos(label, mapping)
 end
 
 def check_tag_layout(name, well_range, expected_wells_to_oligos)
-  plate           = Plate.find_by_name(name) or raise StandardError, "Cannot find plate #{name.inspect}"
+  plate           = Plate.find_by(name: name) or raise StandardError, "Cannot find plate #{name.inspect}"
   wells_to_oligos = Hash[
     plate.wells.map do |w|
       next unless well_range.include?(w)
-      [w.map.description, w.primary_aliquot.try(:tag).try(:oligo) || ""]
+      [w.map.description, w.primary_aliquot.try(:tag).try(:oligo) || '']
     end.compact
   ]
   if expected_wells_to_oligos != wells_to_oligos
@@ -81,11 +81,11 @@ def check_tag_layout(name, well_range, expected_wells_to_oligos)
 end
 
 def check_tag2_layout(name, well_range, expected_wells_to_oligos)
-  plate           = Plate.find_by_name(name) or raise StandardError, "Cannot find plate #{name.inspect}"
+  plate           = Plate.find_by(name: name) or raise StandardError, "Cannot find plate #{name.inspect}"
   wells_to_oligos = Hash[
     plate.wells.map do |w|
       next unless well_range.include?(w)
-      [w.map.description, w.primary_aliquot.try(:tag2).try(:oligo) || ""]
+      [w.map.description, w.primary_aliquot.try(:tag2).try(:oligo) || '']
     end.compact
   ]
   if expected_wells_to_oligos != wells_to_oligos
@@ -167,16 +167,16 @@ Given /^the tag group "(.*?)" exists$/ do |name|
 end
 
 Given /^the tag group "(.*?)" has (\d+) tags$/ do |group, count|
-  (1..count.to_i).each { |index| TagGroup.find_by_name!(group).tags.create!(map_id: index, oligo: "TAG#{index}") }
+  (1..count.to_i).each { |index| TagGroup.find_by!(name: group).tags.create!(map_id: index, oligo: "TAG#{index}") }
 end
 
 Given /^well "(.*?)" on the plate "(.*?)" is empty$/ do |well, plate|
-  Plate.find_by_name!(plate).wells.located_at(well).first.aliquots.each(&:destroy)
+  Plate.find_by!(name: plate).wells.located_at(well).first.aliquots.each(&:destroy)
 end
 
 Given /^the tag2 layout template "(.*?)" is associated with the last submission$/ do |template|
   Tag2Layout::TemplateSubmission.create!(
-    tag2_layout_template: Tag2LayoutTemplate.find_by_name!(template),
+    tag2_layout_template: Tag2LayoutTemplate.find_by!(name: template),
     submission: Submission.last
     )
 end

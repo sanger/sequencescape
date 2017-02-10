@@ -7,7 +7,7 @@
 require 'test_helper'
 
 class PooledCherrypickRequestTest < ActiveSupport::TestCase
-  context "Requests with the same sample and a shared target" do
+  context 'Requests with the same sample and a shared target' do
     setup do
       @study = create :study
 

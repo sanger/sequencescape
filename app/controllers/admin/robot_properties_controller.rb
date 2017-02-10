@@ -23,7 +23,7 @@ class Admin::RobotPropertiesController < ApplicationController
     if LabelPrinter::PrintJob.new(params[:printer], LabelPrinter::Label::RobotBeds, [
         @robot_property
       ]).execute
-      flash[:now] = "The barcode for the bed was correctly printed"
+      flash[:now] = 'The barcode for the bed was correctly printed'
     end
     redirect_to [:admin, @robot, @robot_property]
   end
@@ -37,7 +37,7 @@ class Admin::RobotPropertiesController < ApplicationController
     if @robot_property.save
       redirect_to [:admin, @robot, @robot_property]
     else
-      render action: "new"
+      render action: 'new'
     end
   end
 
@@ -50,7 +50,7 @@ class Admin::RobotPropertiesController < ApplicationController
     if @robot_property.update_attributes(params[:robot_property])
       redirect_to [:admin, @robot, @robot_property]
     else
-      render action: "edit"
+      render action: 'edit'
     end
   end
 

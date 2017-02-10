@@ -1,11 +1,11 @@
 # This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 # Copyright (C) 2016 Genome Research Ltd.
-require "test_helper"
+require 'test_helper'
 require 'projects_controller'
 
 class PlateSummariesControllerTest < ActionController::TestCase
-  context "PlateSummariesController" do
+  context 'PlateSummariesController' do
     setup do
       @controller = PlateSummariesController.new
       @request    = ActionController::TestRequest.new
@@ -14,7 +14,7 @@ class PlateSummariesControllerTest < ActionController::TestCase
       session[:user] = @user.id
     end
 
-    context "with some plates" do
+    context 'with some plates' do
       setup do
         @source_plate_a = create :source_plate
         @source_plate_b = create :source_plate
@@ -22,16 +22,16 @@ class PlateSummariesControllerTest < ActionController::TestCase
         @child_plate_b  = create :child_plate, parent: @source_plate_b
       end
 
-      should "test factory is created" do
+      should 'test factory is created' do
         assert @source_plate_a
       end
 
-      context "#index" do
+      context '#index' do
         setup do
           create :plate_owner, user: @user, plate: @child_plate_a
         end
 
-        should "include owned plates" do
+        should 'include owned plates' do
           get :index
           assert_response :success
           assert_includes assigns(:plates), @source_plate_a
@@ -39,7 +39,7 @@ class PlateSummariesControllerTest < ActionController::TestCase
       end
 
       context '#search' do
-        should "find expected plates" do
+        should 'find expected plates' do
           plates = {
             @source_plate_a => [@source_plate_a.sanger_human_barcode,
                                 @source_plate_a.ean13_barcode,
@@ -58,14 +58,14 @@ class PlateSummariesControllerTest < ActionController::TestCase
           end
         end
 
-        context "return users to search page if barcode not found" do
+        context 'return users to search page if barcode not found' do
           setup do
-            @request.env['HTTP_REFERER'] = "back"
-            get :search, plate_barcode: "abcd"
+            @request.env['HTTP_REFERER'] = 'back'
+            get :search, plate_barcode: 'abcd'
           end
 
-          should redirect_to "back"
-          should set_flash.to "No suitable plates found for barcode abcd"
+          should redirect_to 'back'
+          should set_flash.to 'No suitable plates found for barcode abcd'
         end
       end
 

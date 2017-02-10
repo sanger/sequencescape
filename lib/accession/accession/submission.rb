@@ -35,7 +35,7 @@ module Accession
         ) {
           xml.CONTACTS {
             xml.CONTACT(contact.to_h)
-        }
+          }
 
         xml.ACTIONS {
           xml.ACTION {

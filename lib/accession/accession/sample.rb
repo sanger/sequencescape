@@ -46,19 +46,19 @@ module Accession
         xml.SAMPLE(alias: ebi_alias) {
           xml.TITLE title if title.present?
           xml.SAMPLE_NAME {
-            tag_groups[:sample_name].each do |k, tag|
+            tag_groups[:sample_name].each do |_k, tag|
               xml.tag!(tag.label, tag.value)
             end
           }
           xml.SAMPLE_ATTRIBUTES {
-            tag_groups[:sample_attributes].each do |k, tag|
+            tag_groups[:sample_attributes].each do |_k, tag|
               xml.SAMPLE_ATTRIBUTE {
                 xml.TAG tag.label
                 xml.VALUE tag.value
               }
             end
             if service.ena?
-              tag_groups[:array_express].each do |k, tag|
+              tag_groups[:array_express].each do |_k, tag|
                 xml.SAMPLE_ATTRIBUTE {
                   xml.TAG tag.array_express_label
                   xml.VALUE tag.value
@@ -94,7 +94,7 @@ module Accession
 
     def check_sample
       if sample.sample_metadata.sample_ebi_accession_number.present?
-        errors.add(:sample, "has already been accessioned.")
+        errors.add(:sample, 'has already been accessioned.')
       end
     end
 
@@ -106,7 +106,7 @@ module Accession
 
     def check_studies
       unless studies_valid?
-        errors.add(:sample, "has no appropriate studies.")
+        errors.add(:sample, 'has no appropriate studies.')
       end
     end
 

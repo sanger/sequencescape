@@ -13,7 +13,7 @@ class Parsers::QuantParser
   end
 
   def self.is_quant_file?(content)
-    (content[0][0] == 'Assay Plate Barcode') && self.headers_index(content)
+    (content[0][0] == 'Assay Plate Barcode') && headers_index(content)
   end
 
   def each_well_and_parameters
@@ -44,14 +44,12 @@ class Parsers::QuantParser
 
     def column_maps
      @column_maps ||= {
-        "concentration" => :set_concentration,
-        "volume"        => :set_current_volume,
-        "rin"           => :set_rin
-      }.merge({
-        localization_text("concentration").strip.downcase => :set_concentration,
-        localization_text("volume").strip.downcase        => :set_current_volume,
-        localization_text("rin").strip.downcase           => :set_rin
-      })
+        'concentration' => :set_concentration,
+        'volume'        => :set_current_volume,
+        'rin'           => :set_rin
+      }.merge(localization_text('concentration').strip.downcase => :set_concentration,
+              localization_text('volume').strip.downcase        => :set_current_volume,
+              localization_text('rin').strip.downcase           => :set_rin)
     end
 
     def method_set_list
@@ -62,6 +60,6 @@ class Parsers::QuantParser
     end
 
     def qc_values_for_row(row)
-      Hash[method_set_list.zip(row).reject { |header, value| header.nil? }]
+      Hash[method_set_list.zip(row).reject { |header, _value| header.nil? }]
     end
 end

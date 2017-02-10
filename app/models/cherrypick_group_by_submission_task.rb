@@ -22,7 +22,7 @@ class CherrypickGroupBySubmissionTask < Task
   end
 
   def partial
-    "cherrypick_group_by_submission_batches"
+    'cherrypick_group_by_submission_batches'
   end
 
   def render_task(workflow, params)

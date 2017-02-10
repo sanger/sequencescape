@@ -5,11 +5,11 @@
 # Copyright (C) 2014,2015 Genome Research Ltd.
 
 module Tasks::StripTubeCreationHandler
-  def render_strip_tube_creation_task(task, params)
+  def render_strip_tube_creation_task(task, _params)
     @tubes_requested = @batch.requests.first.asset.requests.for_pipeline(task.workflow.pipeline).count
     @tubes_available = @batch.requests.first.asset.requests.for_pipeline(task.workflow.pipeline).pending.count
 
-    strip_count = task.descriptors.find_by_key!('strips_to_create')
+    strip_count = task.descriptors.find_by!(key: 'strips_to_create')
 
     @options = strip_count.selection.select { |v| v <= (@tubes_available) }
     @default = strip_count.value || @options.last
@@ -20,14 +20,14 @@ module Tasks::StripTubeCreationHandler
 
     locations_requests = @batch.requests.with_asset_location.pending.group_by { |r| r.asset.map.column_order }
 
-    if locations_requests.any? { |k, v| v.count < tubes_to_create }
-      flash[:error] = "There are insufficient requests remaining for the requested number of tubes."
-      flash[:error].concat(" Some wells of the plate have different numbers of requests.") if locations_requests.values.map(&:count).uniq.count > 1
+    if locations_requests.any? { |_k, v| v.count < tubes_to_create }
+      flash[:error] = 'There are insufficient requests remaining for the requested number of tubes.'
+      flash[:error].concat(' Some wells of the plate have different numbers of requests.') if locations_requests.values.map(&:count).uniq.count > 1
       return false
     end
 
     if locations_requests.keys.sort != [0, 1, 2, 3, 4, 5, 6, 7]
-      flash[:error] = "This pipeline only supports wells in the first column."
+      flash[:error] = 'This pipeline only supports wells in the first column.'
       return false
     end
 
@@ -41,7 +41,7 @@ module Tasks::StripTubeCreationHandler
 
     base_name = source_plate.sanger_human_barcode
 
-    strip_purpose = Purpose.find_by_name(task.descriptors.find_by_key!('strip_tube_purpose').value)
+    strip_purpose = Purpose.find_by(name: task.descriptors.find_by!(key: 'strip_tube_purpose').value)
 
     (0...tubes_to_create).each do |tube_number|
       tube = strip_purpose.create!(name: "#{base_name}:#{tube_number + 1}", location: @batch.pipeline.location)

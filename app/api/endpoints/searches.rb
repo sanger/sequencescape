@@ -6,7 +6,7 @@
 
 class ::Endpoints::Searches < ::Core::Endpoint::Base
   module SearchActions
-    def search_action(name, &block)
+    def search_action(name)
       bind_action(:create, to: name.to_s, as: name.to_sym) do |action, request, response|
         # To a is called here to avoid the need for pagination. In practice we probably
         # want to paginate search results, but this is sadly a breaking change.
@@ -18,12 +18,12 @@ class ::Endpoints::Searches < ::Core::Endpoint::Base
     end
 
     def singular_search_action(name)
-      bind_action(:create, to: name.to_s, as: name.to_sym) do |action, request, response|
+      bind_action(:create, to: name.to_s, as: name.to_sym) do |_action, request, response|
         record = request.target.scope(request.json['search']).send(name.to_sym)
         raise ActiveRecord::RecordNotFound, 'no resources found with that search criteria' if record.nil?
 
         request.io = ::Core::Io::Registry.instance.lookup_for_object(record)
-        request.io.eager_loading_for(record.class).include_uuid.find(record.id).tap do |result|
+        request.io.eager_loading_for(record.class).include_uuid.find(record.id).tap do |_result|
           response.redirect_to(record.uuid)
         end
       end
@@ -39,7 +39,7 @@ class ::Endpoints::Searches < ::Core::Endpoint::Base
     singular_search_action(:first)
     singular_search_action(:last)
 
-    search_action(:all) do |response, records|
+    search_action(:all) do |response, _records|
       response.multiple_choices
     end
   end

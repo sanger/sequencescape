@@ -16,10 +16,10 @@ class CreateBaseRequestPurposes < ActiveRecord::Migration
 
   def self.down
     ActiveRecord::Base.transaction do
-      RequestPurpose.find_by_key!('standard').destroy
-      RequestPurpose.find_by_key!('qc').destroy
-      RequestPurpose.find_by_key!('internal').destroy
-      RequestPurpose.find_by_key!('control').destroy
+      RequestPurpose.find_by!(key: 'standard').destroy
+      RequestPurpose.find_by!(key: 'qc').destroy
+      RequestPurpose.find_by!(key: 'internal').destroy
+      RequestPurpose.find_by!(key: 'control').destroy
     end
   end
 end

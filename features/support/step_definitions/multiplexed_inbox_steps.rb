@@ -5,7 +5,7 @@
 # Copyright (C) 2012,2015 Genome Research Ltd.
 
 Given /^that there is a "([^"]*)" pipeline$/ do |pipeline_name|
-  @pipeline = Pipeline.find_by_name(pipeline_name)
+  @pipeline = Pipeline.find_by(name: pipeline_name)
 end
 
 Given /^that there are (\d+) requests in that pipeline$/ do |number_requests|

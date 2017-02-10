@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 class CherrypickTask < Task
-  EMPTY_WELL          = [0, "Empty", ""]
+  EMPTY_WELL          = [0, 'Empty', '']
   TEMPLATE_EMPTY_WELL = [0, '---', '']
 
   def create_render_element(request)
@@ -20,7 +20,7 @@ class CherrypickTask < Task
       @control_added
     end
 
-    def create_control_request_view_details(&block)
+    def create_control_request_view_details
       # NOTE: 'sample' here is not a Sequencescape sample but a random selection from the wells.
       @owner.send(:generate_control_request, ControlPlate.first.illumina_wells.sample).tap do |request|
         @batch.requests << request
@@ -165,7 +165,7 @@ class CherrypickTask < Task
     end
   end
 
-  def perform_pick(requests, robot, batch, &block)
+  def perform_pick(requests, robot, batch)
     max_plates = robot.max_beds
     raise StandardError, 'The chosen robot has no beds!' if max_plates.zero?
 
@@ -203,7 +203,7 @@ class CherrypickTask < Task
   private :perform_pick
 
   def partial
-    "cherrypick_batches"
+    'cherrypick_batches'
   end
 
   def render_task(workflow, params)
@@ -219,16 +219,16 @@ class CherrypickTask < Task
   end
 
   def build_plate_wells_from_requests(requests)
-    Request.select(['requests.id AS id', 'plates.barcode AS barcode', 'maps.description AS description']).
-      joins([
+    Request.select(['requests.id AS id', 'plates.barcode AS barcode', 'maps.description AS description'])
+      .joins([
         'INNER JOIN assets wells ON requests.asset_id=wells.id',
         'INNER JOIN container_associations ON container_associations.content_id=wells.id',
         'INNER JOIN assets plates ON plates.id=container_associations.container_id',
         'INNER JOIN maps ON wells.map_id=maps.id'
-      ]).
-      order('plates.barcode ASC, maps.column_order ASC').
-      where(requests: { id: requests }).
-      all.map do |request|
+      ])
+      .order('plates.barcode ASC, maps.column_order ASC')
+      .where(requests: { id: requests })
+      .all.map do |request|
       [request.id, request.barcode, request.description]
     end
   end
@@ -247,7 +247,7 @@ class CherrypickTask < Task
   def get_well_from_control_param(control_param)
     control_param.scan(/([\d]+)/)
     well_id = $1.to_i
-    Well.find_by_id(well_id)
+    Well.find_by(id: well_id)
   end
   private :get_well_from_control_param
 

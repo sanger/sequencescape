@@ -27,17 +27,17 @@ module Authorization
 
       module InstanceMethods
         # If roles aren't explicitly defined in user class then return false
-        def has_role?(role, authorizable_object = nil)
+        def has_role?(_role, _authorizable_object = nil)
           false
         end
 
-        def has_role(role, authorizable_object = nil)
+        def has_role(role, _authorizable_object = nil)
           raise(CannotSetRoleWhenHardwired,
             "Hardwired mixin: Cannot set user to role #{role}. Don't use #has_role, use code in models."
           )
         end
 
-        def has_no_role(role, authorizable_object = nil)
+        def has_no_role(role, _authorizable_object = nil)
           raise(CannotSetRoleWhenHardwired,
             "Hardwired mixin: Cannot remove user role #{role}. Don't use #has_no_role, use code in models."
           )
@@ -57,17 +57,17 @@ module Authorization
       end
 
       module InstanceMethods
-        def accepts_role?(role, user)
-          return false
+        def accepts_role?(_role, _user)
+          false
         end
 
-        def accepts_role(role, user)
+        def accepts_role(role, _user)
           raise(CannotSetRoleWhenHardwired,
             "Hardwired mixin: Cannot set user to role #{role}. Don't use #accepts_role, use code in models."
           )
         end
 
-        def accepts_no_role(role, user)
+        def accepts_no_role(role, _user)
           raise(CannotSetRoleWhenHardwired,
             "Hardwired mixin: Cannot set user to role #{role}. Don't use #accepts_no_role, use code in models."
           )

@@ -37,14 +37,14 @@ module Submission::DelayedJobBehaviour
   end
 
   def finalize_build!
-    self.process!
-    self.ready!
+    process!
+    ready!
   end
 
   def fail_set_message_and_save(message)
-    self.fail!
+    fail!
     self.message = message[0..254]
-    self.save(validate: false) # Just in case the cause is it being invalid!
+    save(validate: false) # Just in case the cause is it being invalid!
   end
   private :fail_set_message_and_save
 end

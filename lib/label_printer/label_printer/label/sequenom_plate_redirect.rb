@@ -10,9 +10,9 @@ module LabelPrinter
 
       def to_h
         if plate_with_384_wells
-          return Sequenom384Plate.new(options).to_h
+          Sequenom384Plate.new(options).to_h
         else
-          return Sequenom96Plate.new(options).to_h
+          Sequenom96Plate.new(options).to_h
         end
       end
     end

@@ -24,7 +24,7 @@ class AmqpObserverTest < ActiveSupport::TestCase
   context AmqpObserver do
     setup do
       @target = AmqpObserver.new.tap do |target|
-        def target.activate_exchange(&block)
+        def target.activate_exchange
           yield(mock_exchange)
         end
       end

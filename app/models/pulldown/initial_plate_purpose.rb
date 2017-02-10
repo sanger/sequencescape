@@ -21,8 +21,8 @@ class Pulldown::InitialPlatePurpose < PlatePurpose
   def outer_requests(plate, contents)
     well_ids = contents.present? ? plate.wells.located_at(contents).pluck(:id) : plate.wells.pluck(:id)
     transfer_request_sti = [TransferRequest, *TransferRequest.descendants].map(&:name)
-    Request.select("requests.*").
-      joins("INNER JOIN requests AS asctf ON asctf.asset_id = requests.asset_id").
-      where(asctf: { target_asset_id: well_ids, sti_type: transfer_request_sti }).where.not(sti_type: transfer_request_sti)
+    Request.select('requests.*')
+      .joins('INNER JOIN requests AS asctf ON asctf.asset_id = requests.asset_id')
+      .where(asctf: { target_asset_id: well_ids, sti_type: transfer_request_sti }).where.not(sti_type: transfer_request_sti)
   end
 end

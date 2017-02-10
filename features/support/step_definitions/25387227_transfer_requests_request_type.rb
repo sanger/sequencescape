@@ -21,7 +21,7 @@ end
 def assert_request_type(type, targets, direction, request_class)
   association = (direction == 'to') ? :requests_as_target : :requests_as_source
   assert_equal(
-    [RequestType.find_by_name(type).id],
+    [RequestType.find_by(name: type).id],
     Array(targets).map(&association).flatten.select { |r| r.is_a?(request_class) }.map(&:request_type_id).uniq,
     "Some #{request_class.name} requests have the wrong request type"
   )

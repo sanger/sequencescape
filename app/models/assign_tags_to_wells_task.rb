@@ -19,7 +19,7 @@ class AssignTagsToWellsTask < Task
   end
 
   def partial
-    "assign_tags_to_wells_batches"
+    'assign_tags_to_wells_batches'
   end
 
   def render_task(workflow, params)
@@ -78,7 +78,7 @@ class AssignTagsToWellsTask < Task
 
       RequestType.transfer.create!(asset: tagged_well, target_asset: pooled_well, state: 'passed')
 
-      raise StandardError, "Pooled well into different tube!" unless tube == (pooled_well_to_tube[pooled_well] || tube)
+      raise StandardError, 'Pooled well into different tube!' unless tube == (pooled_well_to_tube[pooled_well] || tube)
       pooled_well_to_tube[pooled_well] = tube
     end
 
@@ -89,7 +89,7 @@ class AssignTagsToWellsTask < Task
   def tag_tubes(requests, well_id_tag_id_map)
     # to  be compliant with the new pulldown application we have to create intermediate plate and wells
     source_plates = requests.map(&:asset).map(&:plate).uniq
-    raise StandardError, "Can only tag based on one source plate" unless source_plates.size == 1
+    raise StandardError, 'Can only tag based on one source plate' unless source_plates.size == 1
     source_plate = source_plates.first
 
     well_to_tagged = {}
@@ -119,7 +119,7 @@ class AssignTagsToWellsTask < Task
 
     requests.each do |r|
       tagged_well = well_to_tagged[r.asset]
-      raise "Well not tagged" if tagged_well.nil?
+      raise 'Well not tagged' if tagged_well.nil?
       tube = r.target_asset
 
       pooled_well = tube_to_pool[tube]
@@ -145,15 +145,15 @@ class AssignTagsToWellsTask < Task
   def validate_returned_tags_are_not_repeated_in_submission!(requests, params)
     submission_to_tag = params[:tag].map do |well_id, tag_id|
       well_requests = requests.select { |request| request.asset_id == well_id.to_i }
-      raise "couldnt find matching well request" if well_requests.empty? || well_requests.first.nil?
+      raise 'couldnt find matching well request' if well_requests.empty? || well_requests.first.nil?
       [well_requests.first.submission_id, tag_id]
     end
-    raise "Duplicate tags in single multiplex" if submission_to_tag != submission_to_tag.uniq
+    raise 'Duplicate tags in single multiplex' if submission_to_tag != submission_to_tag.uniq
 
     nil
   end
 
-  def create_tag_instances_and_link_to_wells(requests, params)
+  def create_tag_instances_and_link_to_wells(_requests, params)
     params[:tag].map do |well_id, tag_id|
       ActiveRecord::Base.transaction do
         Tag.find(tag_id).tag!(Well.find(well_id))
@@ -178,7 +178,7 @@ class AssignTagsToWellsTask < Task
 
   def validate_tags_not_repeated_for_submission!(requests, tags_to_wells)
     submission_to_tag = requests.select { |request| request.asset }.map { |request| [request.submission_id, tags_to_wells[request.asset.map.description].map_id] }
-    raise "Duplicate tags will be assigned to a pooled tube" if submission_to_tag != submission_to_tag.uniq
+    raise 'Duplicate tags will be assigned to a pooled tube' if submission_to_tag != submission_to_tag.uniq
 
     nil
   end

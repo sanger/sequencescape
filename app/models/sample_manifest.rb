@@ -29,8 +29,8 @@ class SampleManifest < ActiveRecord::Base
     end
   end
 
-  has_uploaded_document :uploaded, { differentiator: "uploaded" }
-  has_uploaded_document :generated, { differentiator: "generated" }
+  has_uploaded_document :uploaded, differentiator: 'uploaded'
+  has_uploaded_document :generated, differentiator: 'generated'
 
   attr_accessor :override
   attr_reader :manifest_errors
@@ -65,9 +65,9 @@ class SampleManifest < ActiveRecord::Base
   delegate :printables, to: :core_behaviour
 
   def truncate_errors
-    if self.last_errors && self.last_errors.join.length > LIMIT_ERROR_LENGTH
+    if last_errors && last_errors.join.length > LIMIT_ERROR_LENGTH
 
-      full_last_errors = self.last_errors
+      full_last_errors = last_errors
 
       removed_errors = 0
 
@@ -88,24 +88,24 @@ class SampleManifest < ActiveRecord::Base
   end
 
   def default_asset_type
-    self.asset_type = "plate" if self.asset_type.blank?
+    self.asset_type = 'plate' if asset_type.blank?
   end
 
   def name
-    "Manifest_#{self.id}"
+    "Manifest_#{id}"
   end
 
   # TODO[xxx] Consider index to make it faster
   scope :pending_manifests, ->() {
-    order('sample_manifests.id DESC').
-    joins('LEFT OUTER JOIN documents ON documentable_type="SampleManifest" AND documentable_id=sample_manifests.id AND documentable_extended="uploaded"').
-    where('documents.id IS NULL')
+    order('sample_manifests.id DESC')
+    .joins('LEFT OUTER JOIN documents ON documentable_type="SampleManifest" AND documentable_id=sample_manifests.id AND documentable_extended="uploaded"')
+    .where('documents.id IS NULL')
   }
 
   scope :completed_manifests, ->() {
-    order('sample_manifests.updated_at DESC').
-    joins('LEFT OUTER JOIN documents ON documentable_type="SampleManifest" AND documentable_id=sample_manifests.id AND documentable_extended="uploaded"').
-    where('documents.id IS NOT NULL')
+    order('sample_manifests.updated_at DESC')
+    .joins('LEFT OUTER JOIN documents ON documentable_type="SampleManifest" AND documentable_id=sample_manifests.id AND documentable_extended="uploaded"')
+    .where('documents.id IS NOT NULL')
   }
 
   def generate
@@ -115,12 +115,12 @@ class SampleManifest < ActiveRecord::Base
       self.barcodes = []
       core_behaviour.generate
     end
-    return nil
+    nil
   end
 
   def create_sample(sanger_sample_id)
     Sample.create!(name: sanger_sample_id, sanger_sample_id: sanger_sample_id, sample_manifest: self).tap do |sample|
-      sample.events.created_using_sample_manifest!(self.user)
+      sample.events.created_using_sample_manifest!(user)
     end
   end
 

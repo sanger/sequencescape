@@ -3,6 +3,6 @@
 # authorship of this file.
 # Copyright (C) 2007-2011 Genome Research Ltd.
 module SingleSignOn
-  class ServerError < Exception
+  class ServerError < RuntimeError
   end
 end

@@ -4,11 +4,11 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 require 'admin/studies_controller'
 
 class Admin::StudiesControllerTest < ActionController::TestCase
-  context "Studies controller" do
+  context 'Studies controller' do
     setup do
       @controller = Admin::StudiesController.new
       @request    = ActionController::TestRequest.new
@@ -17,7 +17,7 @@ class Admin::StudiesControllerTest < ActionController::TestCase
 
     should_require_login
 
-    context "management UI" do
+    context 'management UI' do
       setup do
         @user = FactoryGirl.create :admin
         @study = FactoryGirl.create :study
@@ -27,25 +27,25 @@ class Admin::StudiesControllerTest < ActionController::TestCase
         @emails.clear
       end
 
-      context "#managed_update (without changes)" do
+      context '#managed_update (without changes)' do
         setup do
           get :managed_update, id: @study.id, study: { name: @study.name, reference_genome_id: @study.reference_genome_id }
         end
 
-        should "not send an email" do
+        should 'not send an email' do
           assert_equal [], @emails
         end
 
-        should redirect_to("admin studies path") { "/admin/studies/#{@study.id}" }
+        should redirect_to('admin studies path') { "/admin/studies/#{@study.id}" }
       end
 
       should "change 'ethically_approved' only if user has data_access_coordinator role" do
-        put :managed_update, id: @study.id, study: { name: @study.name, ethically_approved: "1" }
+        put :managed_update, id: @study.id, study: { name: @study.name, ethically_approved: '1' }
         @study.reload
         refute @study.ethically_approved
 
         @user.roles << (create :data_access_coordinator_role)
-        put :managed_update, id: @study.id, study: { name: @study.name, ethically_approved: "1" }
+        put :managed_update, id: @study.id, study: { name: @study.name, ethically_approved: '1' }
         @study.reload
         assert @study.ethically_approved
       end

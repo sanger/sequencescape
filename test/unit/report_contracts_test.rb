@@ -29,7 +29,7 @@ view_wells
 
   ViewsSchema.all_views.concat(contracted_views).uniq.each do |view|
     context "View #{view}" do
-      should "respond to Select * from" do
+      should 'respond to Select * from' do
         assert ActiveRecord::Base.connection.execute("SELECT * FROM #{view};")
       end
     end

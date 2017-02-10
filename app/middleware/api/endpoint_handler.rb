@@ -28,8 +28,8 @@ module Api
       def file_addition(action, http_method)
         send(http_method, %r{^/([\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12})(?:/([^/]+(?:/[^/]+)*))?$}, file_attatched: true) do
           raise Core::Service::ContentFiltering::InvalidRequestedContentTypeOnFile if request.acceptable_media_types.prioritize(registered_mimetypes).present?
-          report("file") do
-            filename = /filename="([^"]*)"/.match(request.env["HTTP_CONTENT_DISPOSITION"]).try(:[], 1) || "unnamed_file"
+          report('file') do
+            filename = /filename="([^"]*)"/.match(request.env['HTTP_CONTENT_DISPOSITION']).try(:[], 1) || 'unnamed_file'
             begin
 
               file = Tempfile.new(filename)
@@ -40,7 +40,7 @@ module Api
               file.rewind
               request.body.rewind
               uuid_in_url, parts = params[:captures][0], params[:captures][1].try(:split, '/') || []
-              uuid = Uuid.find_by(external_id: uuid_in_url) or raise ActiveRecord::RecordNotFound, "UUID does not exist"
+              uuid = Uuid.find_by(external_id: uuid_in_url) or raise ActiveRecord::RecordNotFound, 'UUID does not exist'
               handle_request(:instance, request, action, parts) do |request|
                 request.io     = lookup_for_class(uuid.resource.class) { |e| raise e }
                 request.target = request.io.eager_loading_for(uuid.resource.class).include_uuid.find(uuid.resource_id)
@@ -57,8 +57,8 @@ module Api
       def file_model_addition(action, http_method)
         send(http_method, %r{^/([^\d/][^/]+(?:/[^/]+){0,2})$}, file_attatched: true) do
           raise Core::Service::ContentFiltering::InvalidRequestedContentType if request.acceptable_media_types.prioritize(registered_mimetypes).present?
-          report("model") do
-            filename = /filename="([^"]*)"/.match(request.env["HTTP_CONTENT_DISPOSITION"]).try(:[], 1) || "unnamed_file"
+          report('model') do
+            filename = /filename="([^"]*)"/.match(request.env['HTTP_CONTENT_DISPOSITION']).try(:[], 1) || 'unnamed_file'
             begin
               file = Tempfile.new(filename)
               file.write(request.body.read)
@@ -80,9 +80,9 @@ module Api
         end
       end
 
-      def file_model_action(action, http_method)
+      def file_model_action(_action, http_method)
         send(http_method, %r{^/([^\d/][^/]+(?:/[^/]+){0,2})$}, file_requested: true) do
-          report("model") do
+          report('model') do
             raise Core::Service::ContentFiltering::InvalidRequestedContentType
           end
         end
@@ -90,9 +90,9 @@ module Api
 
       def file_action(action, http_method)
         send(http_method, %r{^/([\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12})(?:/([^/]+(?:/[^/]+)*))?$}, file_requested: true) do
-          report("file") do
+          report('file') do
             uuid_in_url, parts = params[:captures][0], params[:captures][1].try(:split, '/') || []
-            uuid = Uuid.find_by(external_id: uuid_in_url) or raise ActiveRecord::RecordNotFound, "UUID does not exist"
+            uuid = Uuid.find_by(external_id: uuid_in_url) or raise ActiveRecord::RecordNotFound, 'UUID does not exist'
 
             file_through = return_file(request, action, parts) do |request|
               request.io     = lookup_for_class(uuid.resource.class) { |e| raise e }
@@ -105,9 +105,9 @@ module Api
 
       def instance_action(action, http_method)
         send(http_method, %r{^/([\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12})(?:/([^/]+(?:/[^/]+)*))?$}, file_attatched: false, file_requested: false) do
-          report("instance") do
+          report('instance') do
             uuid_in_url, parts = params[:captures][0], params[:captures][1].try(:split, '/') || []
-            uuid = Uuid.find_by(external_id: uuid_in_url) or raise ActiveRecord::RecordNotFound, "UUID does not exist"
+            uuid = Uuid.find_by(external_id: uuid_in_url) or raise ActiveRecord::RecordNotFound, 'UUID does not exist'
             handle_request(:instance, request, action, parts) do |request|
               request.io     = lookup_for_class(uuid.resource.class) { |e| raise e }
               request.target = request.io.eager_loading_for(uuid.resource.class).include_uuid.find(uuid.resource_id)
@@ -118,7 +118,7 @@ module Api
 
       def model_action(action, http_method)
         send(http_method, %r{^/([^\d/][^/]+(?:/[^/]+){0,2})$}, file_attatched: false, file_requested: false) do
-          report("model") do
+          report('model') do
             determine_model_from_parts(*params[:captures].join.split('/')) do |model, parts|
               handle_request(:model, request, action, parts) do |request|
                 request.io     = lookup_for_class(model) { |_| nil }
@@ -139,7 +139,7 @@ module Api
       self.class.registered_mimetypes
     end
 
-    def lookup_for_class(model, &block)
+    def lookup_for_class(model)
       ::Core::Io::Registry.instance.lookup_for_class(model)
     rescue ::Core::Registry::UnregisteredError => exception
       yield(exception)
@@ -147,7 +147,7 @@ module Api
     private :lookup_for_class
 
     # Report the performance and status of any request
-    def report(handler, &block)
+    def report(handler)
       start = Time.now
       Rails.logger.info("API[start]: #{handler}: #{request.fullpath}")
       yield

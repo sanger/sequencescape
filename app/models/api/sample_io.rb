@@ -22,7 +22,7 @@ class Api::SampleIO < Api::Base
     end
 
     def url_name
-      "sample"
+      'sample'
     end
   end
 
@@ -71,7 +71,7 @@ class Api::SampleIO < Api::Base
 
   self.related_resources = [:sample_tubes]
 
-  extra_json_attributes do |object, json_attributes|
+  extra_json_attributes do |_object, json_attributes|
     if json_attributes['reference_genome'].blank?
       json_attributes['reference_genome'] = nil
     end

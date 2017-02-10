@@ -25,7 +25,7 @@ class LibraryCreationPipeline < Pipeline
     ActiveRecord::Base.transaction do
       assets.each do |asset|
         parent_asset_with_request = asset.parents.select { |parent| !parent.requests.empty? }.first
-        request = parent_asset_with_request.requests.find_by_state_and_request_type_id("pending", self.request_type_id)
+        request = parent_asset_with_request.requests.find_by(state: 'pending', request_type_id: request_type_id)
         request.create_batch_request!(batch: batch, position: asset.map.location_id)
         request.update_attributes!(target_asset: asset)
         request.start!

@@ -24,8 +24,8 @@ Given /^I am an? "([^\"]*)" user logged in as "([^\"]*)"$/ do |role_name, login|
 
   @current_user = FactoryGirl.create(:user,
     login: login,
-    first_name: "John",
-    last_name: "Doe",
+    first_name: 'John',
+    last_name: 'Doe',
     password: 'generic',
     password_confirmation: 'generic',
     email: "#{login}@example.com",
@@ -34,10 +34,10 @@ Given /^I am an? "([^\"]*)" user logged in as "([^\"]*)"$/ do |role_name, login|
 
   @current_user.roles << FactoryGirl.create(:role, name: role_name)
 
-  visit "/login"
-  fill_in("login", with: login)
-  fill_in("password", with: 'generic')
-  click_button("Login")
+  visit '/login'
+  fill_in('login', with: login)
+  fill_in('password', with: 'generic')
+  click_button('Login')
 end
 
 Given /^there is at least one administrator$/ do

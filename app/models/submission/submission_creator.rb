@@ -34,7 +34,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
     begin
       submission.built!
     rescue AASM::InvalidTransition
-      submission.errors.add(:base, "Submissions can not be edited once they are submitted for building.")
+      submission.errors.add(:base, 'Submissions can not be edited once they are submitted for building.')
     rescue ActiveRecord::RecordInvalid => exception
       exception.record.errors.full_messages.each do |message|
         submission.errors.add(:base, message)
@@ -61,12 +61,10 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
     @order = create_order
   end
 
-  def cross_compatible?
-    order.cross_compatible?
-  end
+  delegate :cross_compatible?, to: :order
 
   def create_order
-    order_role = Order::OrderRole.find_by_role(order_params.delete('order_role')) if order_params.present?
+    order_role = Order::OrderRole.find_by(role: order_params.delete('order_role')) if order_params.present?
     new_order = template.new_order(
       study: study,
       project: project,
@@ -104,7 +102,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
   end
 
   def project
-    @project ||= Project.find_by_name(@project_name)
+    @project ||= Project.find_by(name: @project_name)
   end
 
   # Creates a new submission and adds an initial order on the submission using
@@ -147,24 +145,24 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
   def order_assets
     input_methods = [:asset_group_id, :sample_names_text, :barcodes_wells_text].select { |input_method| send(input_method).present? }
 
-    raise InvalidInputException, "No Samples found" if input_methods.empty?
-    raise InvalidInputException, "Samples cannot be added from multiple sources at the same time." unless input_methods.size == 1
+    raise InvalidInputException, 'No Samples found' if input_methods.empty?
+    raise InvalidInputException, 'Samples cannot be added from multiple sources at the same time.' unless input_methods.size == 1
 
-    return case input_methods.first
-      when :asset_group_id    then { asset_group: find_asset_group }
-      when :sample_names_text then
-        {
-          assets: wells_on_specified_plate_purpose_for(
-            plate_purpose,
-            find_samples_from_text(sample_names_text)
-          )
-        }
-      when :barcodes_wells_text then
-        {
-          assets: find_assets_from_text(barcodes_wells_text)
-        }
+    case input_methods.first
+    when :asset_group_id    then { asset_group: find_asset_group }
+    when :sample_names_text then
+      {
+        assets: wells_on_specified_plate_purpose_for(
+          plate_purpose,
+          find_samples_from_text(sample_names_text)
+        )
+      }
+    when :barcodes_wells_text then
+      {
+        assets: find_assets_from_text(barcodes_wells_text)
+      }
 
-      else raise StandardError, "No way to determine assets for input choice #{input_methods.first}"
+    else raise StandardError, "No way to determine assets for input choice #{input_methods.first}"
     end
   end
 
@@ -200,7 +198,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
     found_set = Set.new(samples.map { |s| [s.name, s.sanger_sample_id] }.flatten)
     not_found = name_set - found_set
     raise InvalidInputException, "#{Sample.table_name} #{not_found.to_a.join(", ")} not found" unless not_found.empty?
-    return samples
+    samples
   end
   private :find_samples_from_text
 
@@ -261,7 +259,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
   # Returns the SubmissionTemplate (OrderTemplate) to be used for this Submission.
   def template
     # We can't get the template from a saved order, have to find by name.... :(
-    @template = SubmissionTemplate.find_by_name(order.template_name) if try(:submission).try(:orders).present?
+    @template = SubmissionTemplate.find_by(name: order.template_name) if try(:submission).try(:orders).present?
     @template ||= SubmissionTemplate.find(@template_id)
   end
 

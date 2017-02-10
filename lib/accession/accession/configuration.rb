@@ -15,13 +15,13 @@ module Accession
 
     def add_file(file)
       @files << file.to_sym
-      self.class_eval { attr_accessor file.to_sym }
+      class_eval { attr_accessor file.to_sym }
     end
 
     def load!
       if folder.present?
         FILES.each do |file|
-          self.send("#{file}=", load_file(folder, file.to_s))
+          send("#{file}=", load_file(folder, file.to_s))
         end
         @loaded = true
       end

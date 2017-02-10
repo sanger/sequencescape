@@ -43,7 +43,7 @@ class BaitLibrary < ActiveRecord::Base
   before_validation :blank_as_nil
 
   def blank_as_nil
-    self.supplier_identifier = nil if self.supplier_identifier.blank?
+    self.supplier_identifier = nil if supplier_identifier.blank?
   end
   private :blank_as_nil
 

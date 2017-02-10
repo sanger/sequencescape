@@ -14,8 +14,8 @@ class AccessionService
   NumberNotGenerated    = Class.new(AccessionServiceError)
 
   CenterName = 'SC'.freeze # TODO [xxx] use confing file
-  Protect = "protect".freeze
-  Hold = "hold".freeze
+  Protect = 'protect'.freeze
+  Hold = 'hold'.freeze
 
   def provider; end
 
@@ -56,7 +56,7 @@ class AccessionService
             Rails::logger.debug { file.each_line.to_a.join("\n") }
 
             { name: acc.schema_type.upcase, local_name: file.path, remote_name: acc.file_name }
-          end
+                                end
          )
         Rails::logger.debug { xml_result }
         raise AccessionServiceError, "EBI Server Error. Couldnt get accession number: #{xml_result}" if xml_result =~ /(Server error|Auth required|Login failed)/
@@ -86,7 +86,7 @@ class AccessionService
           raise NumberNotGenerated, 'Service gave no numbers back' unless number_generated
 
         elsif success == 'false'
-          errors = xmldoc.root.elements.to_a("//ERROR").map(&:text)
+          errors = xmldoc.root.elements.to_a('//ERROR').map(&:text)
           raise AccessionServiceError, "Could not get accession number. Error in submitted data: #{$!} #{errors.map { |e| "\n  - #{e}" }}"
         else
           raise AccessionServiceError, "Could not get accession number. Error in submitted data: #{$!}"
@@ -117,11 +117,11 @@ class AccessionService
     ebi_accession_number = study.study_metadata.study_ebi_accession_number
     # raise NumberNotGenerated, 'No need to' if not ebi_accession_number.blank? and not /ER/.match(ebi_accession_number)
 
-    return submit(user, Accessionable::Study.new(study))
+    submit(user, Accessionable::Study.new(study))
   end
 
-  def submit_dac_for_user(study, user)
-    raise NumberNotRequired, "No need to"
+  def submit_dac_for_user(_study, _user)
+    raise NumberNotRequired, 'No need to'
   end
 
   def accession_study_xml(study)
@@ -141,19 +141,19 @@ class AccessionService
     Accessionable::Dac.new(study).xml
   end
 
-  def sample_visibility(sample)
+  def sample_visibility(_sample)
     Protect
   end
 
-  def study_visibility(study)
+  def study_visibility(_study)
     Protect
   end
 
-  def policy_visibility(study)
+  def policy_visibility(_study)
     Protect
   end
 
-  def dac_visibility(study)
+  def dac_visibility(_study)
     Protect
   end
 
@@ -163,12 +163,98 @@ class AccessionService
 
 private
 
+  def accession_study_set_xml_quarantine(study, studydata)
+    xml = Builder::XmlMarkup.new
+    xml.instruct!
+    xml.STUDY_SET('xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance') {
+      xml.STUDY(alias: studydata[:alias], accession: study.study_metadata.study_ebi_accession_number) {
+        xml.DESCRIPTOR {
+          xml.STUDY_TITLE         studydata[:study_title]
+          xml.STUDY_DESCRIPTION   studydata[:description]
+          xml.CENTER_PROJECT_NAME studydata[:center_study_name]
+          xml.CENTER_NAME         studydata[:center_name]
+          xml.STUDY_ABSTRACT      studydata[:study_abstract]
+
+          xml.PROJECT_ID(studydata[:study_id] || '0')
+          study_type = studydata[:existing_study_type]
+          if StudyType.include?(study_type)
+            xml.STUDY_TYPE(existing_study_type: study_type)
+          else
+            xml.STUDY_TYPE(existing_study_type: Study::Other_type, new_study_type: study_type)
+          end
+        }
+      }
+    }
+    xml.target!
+  end
+
+  def accession_sample_set_xml_quarantine(sample, sampledata)
+    xml = Builder::XmlMarkup.new
+    xml.instruct!
+    xml.SAMPLE_SET('xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance') {
+      xml.SAMPLE(alias: sampledata[:alias], accession: sample.sample_metadata.sample_ebi_accession_number) {
+        xml.SAMPLE_NAME {
+          xml.COMMON_NAME  sampledata[:sample_common_name]
+          xml.TAXON_ID     sampledata[:taxon_id]
+        }
+        xml.SAMPLE_ATTRIBUTES {
+          sampledata[:tags].each do |tagpair|
+            xml.SAMPLE_ATTRIBUTE {
+              xml.TAG   tagpair[:tag]
+              xml.VALUE tagpair[:value]
+            }
+          end
+        } unless sampledata[:tags].blank?
+
+        xml.SAMPLE_LINKS {} unless sampledata[:links].blank?
+      }
+    }
+    xml.target!
+  end
+
+  def accession_submission_xml(submission, accession_number)
+    xml = Builder::XmlMarkup.new
+    xml.instruct!
+    xml.SUBMISSION(
+      'xmlns:xsi'      => 'http://www.w3.org/2001/XMLSchema-instance',
+      :center_name     => submission[:center_name],
+      :broker_name     => submission[:broker],
+      :alias           => submission[:submission_id],
+      :submission_date => submission[:submission_date]
+    ) {
+      xml.CONTACTS {
+        xml.CONTACT(
+          inform_on_error: submission[:contact_inform_on_error],
+          inform_on_status: submission[:contact_inform_on_status],
+          name: submission[:name]
+        )
+      }
+      xml.ACTIONS {
+        xml.ACTION {
+          if accession_number.blank?
+            xml.ADD(source: submission[:source], schema: submission[:schema])
+          else
+            xml.MODIFY(source: submission[:source], target: '')
+          end
+        }
+        xml.ACTION {
+          if submission[:hold] == AccessionService::Protect
+            xml.PROTECT
+          else
+            xml.HOLD
+          end
+        }
+      }
+    }
+    xml.target!
+  end
+
   require 'rexml/document'
   # require 'curb'
   include REXML
 
   def accession_options
-    raise NotImplemented, "abstract method"
+    raise NotImplemented, 'abstract method'
   end
 
   def rest_client_resource
@@ -201,7 +287,7 @@ private
       $! = nil
       raise AccessionServiceError
     else
-    return ""
+    return ''
     end
   rescue StandardError => exception
     raise AccessionServiceError, "Could not get accession number. EBI may be down or invalid data submitted: #{$!}"

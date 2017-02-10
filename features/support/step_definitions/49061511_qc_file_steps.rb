@@ -17,7 +17,7 @@ Then /^the content should be the Qc Data$/ do
   File.open(filename) do |file|
      assert_equal(file.read, page.source)
   end
-  assert_equal("attachment; filename=\"example_file.txt\"", page.driver.response_headers["Content-Disposition"])
+  assert_equal('attachment; filename="example_file.txt"', page.driver.response_headers['Content-Disposition'])
 end
 
 When /^I make an authorised POST with the QC file to the API path "(.*?)"$/ do |path|
@@ -38,14 +38,14 @@ Then /^the plate with ID (\d+) should have attatched QC data$/ do |id|
 end
 
 def file_send(path, file)
-  raise StandardError, "You must explicitly set the API version you are using" if @api_path.nil?
+  raise StandardError, 'You must explicitly set the API version you are using' if @api_path.nil?
   @cookies ||= {}
 
   headers = {}
-  headers.merge!('HTTP_ACCEPT' => 'application/json')
-  headers.merge!('CONTENT_TYPE' => 'sequencescape/qc_file')
-  headers.merge!('HTTP_CONTENT_DISPOSITION' => 'form-data; filename="example_file.txt"')
-  headers.merge!('HTTP_COOKIE' => @cookies.map { |k, v| "#{k}=#{v}" }.join(';')) unless @cookies.blank?
+  headers['HTTP_ACCEPT'] = 'application/json'
+  headers['CONTENT_TYPE'] = 'sequencescape/qc_file'
+  headers['HTTP_CONTENT_DISPOSITION'] = 'form-data; filename="example_file.txt"'
+  headers['HTTP_COOKIE'] = @cookies.map { |k, v| "#{k}=#{v}" }.join(';') unless @cookies.blank?
   yield(headers) if block_given?
   page.driver.post("#{@api_path}#{path}", file.read, headers)
 end

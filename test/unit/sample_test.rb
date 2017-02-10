@@ -2,7 +2,7 @@
 # Please refer to the LICENSE and README files for information on licensing and authorship of this file.
 # Copyright (C) 2007-2011,2012,2014,2015,2016 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class SampleTest < ActiveSupport::TestCase
     def assert_accession_service(type)
@@ -15,11 +15,11 @@ class SampleTest < ActiveSupport::TestCase
       assert @sample.accession_service.is_a?(service), "Sent to #{@sample.accession_service.provider} not #{type}"
     end
 
-  context "A Sample" do
+  context 'A Sample' do
     should have_many :study_samples
     should have_many :studies
 
-    context "when used in older assets" do
+    context 'when used in older assets' do
       setup do
         @sample = create :sample
         @tube_a = create :empty_library_tube
@@ -29,42 +29,42 @@ class SampleTest < ActiveSupport::TestCase
        create(:aliquot, sample: @sample, receptacle: @tube_a)
       end
 
-      should "have the first tube it was added to as a primary asset" do
+      should 'have the first tube it was added to as a primary asset' do
         assert_equal @sample.reload.primary_receptacle, @tube_b
       end
     end
 
-    context "#accession_number?" do
+    context '#accession_number?' do
       setup do
         @sample = create :sample
       end
-      context "with nil accession number" do
+      context 'with nil accession number' do
         setup do
           @sample.sample_metadata.sample_ebi_accession_number = nil
         end
-        should "return false" do
+        should 'return false' do
           assert !@sample.accession_number?
         end
       end
-      context "with a blank accession number" do
+      context 'with a blank accession number' do
         setup do
           @sample.sample_metadata.sample_ebi_accession_number = ''
         end
-        should "return false" do
+        should 'return false' do
           assert !@sample.accession_number?
         end
       end
-      context "with a valid accession number" do
+      context 'with a valid accession number' do
         setup do
           @sample.sample_metadata.sample_ebi_accession_number = 'ERS00001'
         end
-        should "return true" do
+        should 'return true' do
           assert @sample.accession_number?
         end
       end
     end
 
-    context "#accession service" do
+    context '#accession service' do
       context 'with one study' do
         setup do
           @sample = create :sample

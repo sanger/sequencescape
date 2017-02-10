@@ -4,10 +4,10 @@
 # authorship of this file.
 # Copyright (C) 2015,2016 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class ProductTest < ActiveSupport::TestCase
-  context "A product" do
+  context 'A product' do
     should have_many :submission_templates
     should have_many :orders
     should have_many :product_criteria

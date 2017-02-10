@@ -9,7 +9,7 @@ class Accessionable::Dac < Accessionable::Base
   def initialize(study)
     @study = study
     @name = study.dac_refname
-    @contacts = study.send("Data Access Contacts").map do |contact|
+    @contacts = study.send('Data Access Contacts').map do |contact|
       {
         email: contact.email,
         name: contact.name,
@@ -23,7 +23,7 @@ class Accessionable::Dac < Accessionable::Base
   def errors
     [].tap do |errors|
       if @contacts.empty?
-        errors << "Data Access Contacts Empty. Please add a contact"
+        errors << 'Data Access Contacts Empty. Please add a contact'
       end
     end
   end
@@ -32,9 +32,9 @@ class Accessionable::Dac < Accessionable::Base
     xml = Builder::XmlMarkup.new
     xml.instruct!
     xml.DAC_SET('xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance') {
-      xml.DAC(alias: self.alias, accession: self.accession_number, center_name: self.center_name) {
+      xml.DAC(alias: self.alias, accession: accession_number, center_name: center_name) {
       xml.CONTACTS {
-      self.contacts.each do |contact|
+      contacts.each do |contact|
       xml.CONTACT({
         name: contact[:name],
         email: contact[:email],
@@ -43,10 +43,10 @@ class Accessionable::Dac < Accessionable::Base
          att[:telephone] = tel if (tel = contact[:telephone])
         end)
       end
-    }
+      }
       }
     }
-    return xml.target!
+    xml.target!
   end
 
   def update_accession_number!(user, accession_number)

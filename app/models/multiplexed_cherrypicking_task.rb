@@ -16,7 +16,7 @@ class MultiplexedCherrypickingTask < Task
   end
 
   def partial
-    "assign_wells_to_wells"
+    'assign_wells_to_wells'
   end
 
   def included_for_do_task

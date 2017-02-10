@@ -6,7 +6,7 @@ class PlateSummariesController < ApplicationController
   before_action :login_required
 
   def index
-    @plates = Plate.source_plates.with_descendants_owned_by(current_user).order("assets.id desc").page(params[:page])
+    @plates = Plate.source_plates.with_descendants_owned_by(current_user).order('assets.id desc').page(params[:page])
   end
 
   def show

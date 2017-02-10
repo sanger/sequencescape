@@ -22,7 +22,7 @@ options = {
 options[:app_name] = if ENV.has_key?('Rails.env')
   "#{ENV['Rails.env']}-qc_evaluations-mini_poller"
                      else
-  "development-qc_evaluations-mini_poller"
+  'development-qc_evaluations-mini_poller'
                      end
 
 ARGV.each do |arg|

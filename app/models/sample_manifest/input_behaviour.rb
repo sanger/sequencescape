@@ -29,7 +29,7 @@ module SampleManifest::InputBehaviour
       spreadsheet_offset.upto(csv.size - 1) do |n|
         sanger_sample_id = SampleManifest.read_column_by_name(csv, n, 'SANGER SAMPLE ID', column_map)
         next if sanger_sample_id.blank?
-        sample = Sample.find_by_sanger_sample_id(sanger_sample_id) or next
+        sample = Sample.find_by(sanger_sample_id: sanger_sample_id) or next
         return sample.sample_manifest
       end
       nil
@@ -38,11 +38,11 @@ module SampleManifest::InputBehaviour
     def read_column_by_name(csv, row, name, column_map, default_value = nil)
       col = column_map[name]
       return default_value unless col
-      return csv[row][col]
+      csv[row][col]
     end
 
     def compute_column_map(names)
-      Hash[names.each_with_index.map { |name, index| [name && name.strip.gsub(/\s+/, " "), index] }].tap do |columns|
+      Hash[names.each_with_index.map { |name, index| [name && name.strip.gsub(/\s+/, ' '), index] }].tap do |columns|
         raise StandardError, "No 'SANGER SAMPLE ID' column in #{columns.keys.inspect}" unless columns.key?('SANGER SAMPLE ID')
       end
     end
@@ -57,7 +57,7 @@ module SampleManifest::InputBehaviour
 
           # These need to be checked when updating from a sample manifest.  We need to be able to display
           # the sample ID so this can't be done with validates_presence_of
-          validates_each(:volume, :concentration, if: :updating_from_manifest?) do |record, attr, value|
+          validates_each(:volume, :concentration, if: :updating_from_manifest?) do |record, attr, _value|
             record.errors.add_on_blank(attr, message: "can't be blank for #{record.sample.sanger_sample_id}")
           end
         end
@@ -65,7 +65,7 @@ module SampleManifest::InputBehaviour
         def accession_number_from_manifest=(new_value)
           self.sample_ebi_accession_number ||= new_value
           if new_value.present? && new_value != sample_ebi_accession_number
-            self.errors.add(:sample_ebi_accession_number, "can not be changed")
+            errors.add(:sample_ebi_accession_number, 'can not be changed')
             raise ActiveRecord::RecordInvalid, self
           end
         end
@@ -77,7 +77,7 @@ module SampleManifest::InputBehaviour
         extend ValidationStateGuard
 
         # You cannot create a sample through updating the sample manifest
-        validates_each(:id, on: :create, if: :updating_from_manifest?) do |record, attr, value|
+        validates_each(:id, on: :create, if: :updating_from_manifest?) do |record, _attr, value|
           record.errors.add(:base, "Could not find sample #{record.sanger_sample_id}") if value.blank?
         end
 
@@ -128,7 +128,7 @@ module SampleManifest::InputBehaviour
     def can_override_previous_manifest?
       # Have to use the previous value of 'updated_by_manifest' here as it may have been changed by
       # the current update.
-      not self.updated_by_manifest_was or override_previous_manifest?
+      not updated_by_manifest_was or override_previous_manifest?
     end
 
     # Resets all of the attributes to their previous values
@@ -163,7 +163,7 @@ module SampleManifest::InputBehaviour
   private :convert_yes_no_to_boolean
 
   def clean_up_value(value)
-    return "" if value.nil?
+    return '' if value.nil?
     value.strip
   end
   private :clean_up_value
@@ -180,7 +180,7 @@ module SampleManifest::InputBehaviour
   private :clean_up_sheet
 
   def strip_non_word_characters(value)
-    return "" if value.nil?
+    return '' if value.nil?
     value.gsub(/[^:alnum:]+/, '')
   end
   private :strip_non_word_characters
@@ -194,13 +194,13 @@ module SampleManifest::InputBehaviour
     end
   end
 
-  def each_csv_row(&block)
+  def each_csv_row
     csv = CSV.parse(LinefeedFix.scrub!(uploaded.current_data))
     clean_up_sheet(csv)
 
     headers = get_headers(csv)
 
-    headers.each_with_index.map do |name, index|
+    headers.each_with_index.map do |name, _index|
       "Header '#{name}' not recognised!" unless name.blank? || SampleManifest::Headers.valid?(name)
     end.compact.tap do |headers_with_errors|
       raise InvalidManifest, headers_with_errors unless headers_with_errors.empty?
@@ -216,12 +216,12 @@ module SampleManifest::InputBehaviour
   private :each_csv_row
 
   def process(user_updating_manifest, override_sample_information = false)
-    Delayed::Job.enqueue SampleManifest::InputBehaviour::Process.new(self.id, user_updating_manifest.id, override_sample_information)
+    Delayed::Job.enqueue SampleManifest::InputBehaviour::Process.new(id, user_updating_manifest.id, override_sample_information)
   end
 
   # Always allow 'empty' samples to be updated, but non-empty samples need to have the override checkbox set for an update to occur
   def process_job(user_updating_manifest, override_sample_information = false)
-    self.start!
+    start!
 
     samples_to_updated_attributes, sample_errors = [], []
     each_csv_row do |row|
@@ -231,7 +231,7 @@ module SampleManifest::InputBehaviour
       # Sanity check that the sample being updated is in the same container that it was defined against.
       #
       # NOTE: Do not include the primary_receptacle here as it will cause the wrong one to be loaded!
-      sample = samples.find_by_sanger_sample_id(sanger_sample_id)
+      sample = samples.find_by(sanger_sample_id: sanger_sample_id)
 
       errors = false
 
@@ -283,7 +283,7 @@ module SampleManifest::InputBehaviour
     end
 
     self.last_errors = nil
-    self.finished!
+    finished!
   rescue ActiveRecord::RecordInvalid => exception
     errors.add(:base, exception.message)
     fail_with_errors!(errors.full_messages)

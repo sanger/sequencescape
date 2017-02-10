@@ -38,7 +38,7 @@ class SampleRegistrar < ActiveRecord::Base
 
     def existing_asset_group?(name)
       return @asset_groups[name] if @asset_groups.key?(name)
-      @asset_groups[name] = !AssetGroup.find_by_name(name).nil?
+      @asset_groups[name] = !AssetGroup.find_by(name: name).nil?
     end
   end
 
@@ -105,7 +105,7 @@ class SampleRegistrar < ActiveRecord::Base
   attr_accessor :asset_group_helper
   attr_accessor :asset_group_name
   belongs_to :asset_group, validate: true, autosave: true
-  validates_each(:asset_group_name, if: :new_record?) do |record, attr, value|
+  validates_each(:asset_group_name, if: :new_record?) do |record, _attr, value|
     record.errors.add(:asset_group, "#{value} already exists, please enter another name") if record.asset_group_helper.existing_asset_group?(value)
   end
 
@@ -119,7 +119,7 @@ class SampleRegistrar < ActiveRecord::Base
 
   def self.create_asset_group_by_name(name, study)
     return nil if name.blank?
-    AssetGroup.find_by_name(name) || AssetGroup.create!(name: name, study: study)
+    AssetGroup.find_by(name: name) || AssetGroup.create!(name: name, study: study)
   end
 
   # This model does not really need to exist but, without Rails 3, we can't easily use the ActiveRecord stuff.
@@ -176,7 +176,7 @@ class SampleRegistrar < ActiveRecord::Base
       'Asset group' => ->(attributes, value) { attributes[:asset_group_name] = value },
       'Sample name' => ->(attributes, value) { attributes[:sample_attributes][:name] = value },
       '2D barcode'  => ->(attributes, value) { attributes[:sample_tube_attributes][:two_dimensional_barcode] = value },
-      'Reference Genome' => ->(attributes, value) { attributes[:sample_attributes][:sample_metadata_attributes][:reference_genome_id] = ReferenceGenome.find_by_name(value).try(:id) || 0 }
+      'Reference Genome' => ->(attributes, value) { attributes[:sample_attributes][:sample_metadata_attributes][:reference_genome_id] = ReferenceGenome.find_by(name: value).try(:id) || 0 }
     )
 
     # Map the headers to their attribute handlers.  Ensure that the required headers are present.

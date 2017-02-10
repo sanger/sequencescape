@@ -2,7 +2,7 @@ module Accession
   class Service
     include ActiveModel::Validations
 
-    PROVIDERS = { "managed" => :EGA, "open" => :ENA }
+    PROVIDERS = { 'managed' => :EGA, 'open' => :ENA }
 
     attr_reader :provider
 
@@ -21,11 +21,11 @@ module Accession
     end
 
     def visibility
-      ena? ? "HOLD" : "PROTECT"
+      ena? ? 'HOLD' : 'PROTECT'
     end
 
     def broker
-      ega? ? provider.to_s : ""
+      ega? ? provider.to_s : ''
     end
 
     def url

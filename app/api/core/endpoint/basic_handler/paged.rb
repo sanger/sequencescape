@@ -64,7 +64,7 @@ module Core::Endpoint::BasicHandler::Paged
     delegate :count, to: :@model
 
     class PageOfResults
-      def initialize(page, total, per_page)
+      def initialize(page, _total, per_page)
         @page, @total_pages = page, page / per_page
       end
 
