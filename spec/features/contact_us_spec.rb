@@ -12,14 +12,14 @@ feature 'Contact us' do
     expect(page).to have_content('Please, fill in this form')
     expect(find_field('Your email').value).to eq 'login@example.com'
     expect(find('#user_query_url', visible: false).value).to eq 'http://www.example.com/'
-    fill_in("Your email", with: " ")
+    fill_in('Your email', with: ' ')
     click_button('Send')
     expect(page).to have_content("User email can't be blank")
     expect(find('#user_query_url', visible: false).value).to eq 'http://www.example.com/'
-    fill_in("Your email", with: "new_email@example.com")
-    fill_in("What were you trying to do?", with: "Do some stuff")
-    fill_in("What has happened?", with: "Something went wrong")
-    fill_in("What did you expect to happen?", with: "Sqsc to work")
+    fill_in('Your email', with: 'new_email@example.com')
+    fill_in('What were you trying to do?', with: 'Do some stuff')
+    fill_in('What has happened?', with: 'Something went wrong')
+    fill_in('What did you expect to happen?', with: 'Sqsc to work')
     click_button('Send')
     expect(ActionMailer::Base.deliveries.count).to eq number_of_mails + 1
     expect(page).to have_content('Thank you for your request. We will contact you shortly (via new_email@example.com)')

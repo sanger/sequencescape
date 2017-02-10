@@ -5,11 +5,11 @@ describe UserQuery do
   let!(:user) { create :user, login: 'login', email: 'login@example.com' }
   let!(:user_query_attributes) {
     { user_email: 'another_email@example.com',
-                                  user: user,
-                                  url: 'url',
-                                  what_was_trying_to_do: 'create',
-                                  what_happened: 'it did not work',
-                                  what_expected: 'it to work' }
+      user: user,
+      url: 'url',
+      what_was_trying_to_do: 'create',
+      what_happened: 'it did not work',
+      what_expected: 'it to work' }
   }
   let(:user_query) { UserQuery.new(user_query_attributes) }
   let(:user_query_with_no_email_provided) { UserQuery.new(user_query_attributes.except(:user_email)) }
