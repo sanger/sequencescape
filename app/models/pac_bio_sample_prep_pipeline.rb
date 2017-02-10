@@ -20,7 +20,7 @@ class PacBioSamplePrepPipeline < Pipeline
     :loaded_for_grouped_inbox_display
   end
 
-  def post_release_batch(batch, user)
+  def post_release_batch(batch, _user)
     cancel_sequencing_requests_on_library_failure(batch)
     cancel_excess_sequencing_requests(batch)
   end

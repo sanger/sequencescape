@@ -8,6 +8,6 @@ class ::Endpoints::VolumeUpdates < ::Core::Endpoint::Base
   end
 
   instance do
-    belongs_to(:target, json: "target")
+    belongs_to(:target, json: 'target')
   end
 end

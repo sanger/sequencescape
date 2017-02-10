@@ -1,6 +1,6 @@
 require File.expand_path(File.join(File.dirname(__FILE__), '../../../../config/environment.rb'))
 
-ActiveRecord::Base.establish_connection(adapter: "sqlite3", dbfile: ":memory:")
+ActiveRecord::Base.establish_connection(adapter: 'sqlite3', dbfile: ':memory:')
 
 ActiveRecord::Schema.define(version: 1) do
   create_table :posts do |t|

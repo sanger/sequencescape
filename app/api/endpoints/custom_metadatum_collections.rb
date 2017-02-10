@@ -8,8 +8,8 @@ class ::Endpoints::CustomMetadatumCollections < ::Core::Endpoint::Base
   end
 
   instance do
-    belongs_to(:asset, json: "asset", to: "asset")
-    belongs_to(:user, json: "user", to: "user")
+    belongs_to(:asset, json: 'asset', to: 'asset')
+    belongs_to(:user, json: 'user', to: 'user')
     action(:update, to: :standard_update!)
   end
 end

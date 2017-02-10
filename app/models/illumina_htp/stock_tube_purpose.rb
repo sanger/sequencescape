@@ -5,12 +5,12 @@
 # Copyright (C) 2013,2015 Genome Research Ltd.
 
 class IlluminaHtp::StockTubePurpose < Tube::Purpose
-  def create_with_request_options(tube)
+  def create_with_request_options(_tube)
     raise 'Unimplemented behaviour'
   end
 
-  def transition_to(tube, state, user, _ = nil, customer_accepts_responsibility = false)
-    tube.requests_as_target.where.not(state: terminated_states).each do |request|
+  def transition_to(tube, state, _user, _ = nil, customer_accepts_responsibility = false)
+    tube.requests_as_target.where.not(state: terminated_states).find_each do |request|
       request.transition_to(state)
     end
     outer_requests_for(tube).each do |request|

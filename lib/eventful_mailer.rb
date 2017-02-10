@@ -3,7 +3,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 class EventfulMailer < ActionMailer::Base
-  def confirm_event(receiver, eventful, message, content, milestone, sent_at = Time.now)
+  def confirm_event(receiver, eventful, message, content, _milestone, sent_at = Time.now)
     @eventful = eventful
     @message = message
     @content = content
@@ -27,7 +27,7 @@ class EventfulMailer < ActionMailer::Base
     )
   end
 
-  def confirm_sample_event(receiver, eventful, message, content, milestone, sent_at = Time.now)
+  def confirm_sample_event(receiver, eventful, message, content, _milestone, sent_at = Time.now)
     @eventful = eventful
     @message = message
     @content = content
@@ -61,7 +61,7 @@ class EventfulMailer < ActionMailer::Base
     )
   end
 
-  def confirm_external_release_event(receiver, eventful, message, content, milestone, sent_at = Time.now)
+  def confirm_external_release_event(receiver, eventful, message, content, _milestone, sent_at = Time.now)
     @eventful = eventful
     @message = message
     @content = content

@@ -5,5 +5,5 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 class PulldownPcrPlate < PulldownPlate
-  self.prefix = "FQ"
+  self.prefix = 'FQ'
 end

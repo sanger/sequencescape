@@ -4,18 +4,18 @@
 # authorship of this file.
 # Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class LinearSubmissionTest < ActiveSupport::TestCase
   MX_ASSET_COUNT = 5
   SX_ASSET_COUNT = 4
 
-  context "LinearSubmission" do
+  context 'LinearSubmission' do
     should belong_to :study
     should belong_to :user
   end
 
-  context "A LinearSubmission" do
+  context 'A LinearSubmission' do
     setup do
       @workflow = create :submission_workflow
 
@@ -24,17 +24,17 @@ class LinearSubmissionTest < ActiveSupport::TestCase
       @user = build :user
     end
 
-    context "build (Submission factory)" do
+    context 'build (Submission factory)' do
       setup do
         @sequencing_request_type = create :sequencing_request_type
-        @purpose = create :plate_purpose, name: "mock purpose", type: 'Tube::StandardMx', target_type: 'MultiplexedLibraryTube'
-        @request_options = { "read_length" => "108", "fragment_size_required_from" => "150", "fragment_size_required_to" => "200" }
+        @purpose = create :plate_purpose, name: 'mock purpose', type: 'Tube::StandardMx', target_type: 'MultiplexedLibraryTube'
+        @request_options = { 'read_length' => '108', 'fragment_size_required_from' => '150', 'fragment_size_required_to' => '200' }
       end
 
       context 'multiplexed submission' do
         context 'Customer decision propagation' do
           setup do
-            @mpx_request_type = create :well_request_type, { target_purpose: @purpose, for_multiplexing: true }
+            @mpx_request_type = create :well_request_type, target_purpose: @purpose, for_multiplexing: true
             @mpx_request_type_ids = [@mpx_request_type.id, @sequencing_request_type.id]
             @our_product_criteria = create :product_criteria
 
@@ -71,9 +71,9 @@ class LinearSubmissionTest < ActiveSupport::TestCase
         context 'basic behaviour' do
           setup do
             @mpx_assets = (1..MX_ASSET_COUNT).map { |i| create(:sample_tube, name: "MX-asset#{i}") }
-            @mpx_asset_group = create :asset_group, name: "MPX", assets: @mpx_assets
+            @mpx_asset_group = create :asset_group, name: 'MPX', assets: @mpx_assets
 
-            @mpx_request_type = create :multiplexed_library_creation_request_type, { target_purpose: @purpose }
+            @mpx_request_type = create :multiplexed_library_creation_request_type, target_purpose: @purpose
             @mpx_request_type_ids = [@mpx_request_type.id, @sequencing_request_type.id]
 
             @basic_options = {
@@ -98,7 +98,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
             assert @mpx_submission.comments.blank?
           end
 
-          context "#process!" do
+          context '#process!' do
             context 'single request' do
               setup do
                 @comment_count = Comment.count
@@ -155,9 +155,9 @@ class LinearSubmissionTest < ActiveSupport::TestCase
       context 'single-plex submission' do
         setup do
           @assets = (1..SX_ASSET_COUNT).map { |i| create(:sample_tube, name: "Asset#{i}") }
-          @asset_group = create :asset_group, name: "non MPX", assets: @assets
+          @asset_group = create :asset_group, name: 'non MPX', assets: @assets
 
-          @request_type_1 = create :request_type, name: "request type 1"
+          @request_type_1 = create :request_type, name: 'request type 1'
           @library_creation_request_type = create :library_creation_request_type
           @request_type_ids = [@request_type_1.id, @library_creation_request_type.id, @sequencing_request_type.id]
 
@@ -178,13 +178,13 @@ class LinearSubmissionTest < ActiveSupport::TestCase
           assert !@submission.multiplexed?
         end
 
-        should "save request_types as array of Fixnums" do
+        should 'save request_types as array of Fixnums' do
           assert_kind_of Array, @submission.orders.first.request_types
-          assert @submission.orders.first.request_types.all? { |sample| sample.kind_of?(Fixnum) }
+          assert @submission.orders.first.request_types.all? { |sample| sample.kind_of?(Integer) }
         end
 
         should "save a comment if there's one passed in" do
-          assert_equal ["This is a comment"], @submission.comments
+          assert_equal ['This is a comment'], @submission.comments
         end
 
         context '#process!' do
@@ -195,9 +195,9 @@ class LinearSubmissionTest < ActiveSupport::TestCase
 
          should "change Request.count by #{SX_ASSET_COUNT * 3}" do
            assert_equal SX_ASSET_COUNT * 3, Request.count - @request_count, "Expected Request.count to change by #{SX_ASSET_COUNT * 3}"
-        end
+         end
 
-          context "#create_requests_for_items" do
+          context '#create_requests_for_items' do
             setup do
               @request_count =  Request.count
               @comment_count =  Comment.count
@@ -206,19 +206,19 @@ class LinearSubmissionTest < ActiveSupport::TestCase
 
            should "change Request.count by #{SX_ASSET_COUNT * 3}" do
              assert_equal SX_ASSET_COUNT * 3,  Request.count  - @request_count, "Expected Request.count to change by #{SX_ASSET_COUNT * 3}"
-          end
+           end
 
            should "change Comment.count by #{SX_ASSET_COUNT * 3}" do
              assert_equal SX_ASSET_COUNT * 3,  Comment.count  - @comment_count, "Expected Comment.count to change by #{SX_ASSET_COUNT * 3}"
-          end
+           end
 
-            should "assign submission ids to the requests" do
+            should 'assign submission ids to the requests' do
               assert_equal @submission, @submission.items.first.requests.first.submission
             end
 
             context 'request type 1' do
               setup do
-                @request_to_check = @submission.items.first.requests.find_by!({ request_type_id: @request_type_1.id })
+                @request_to_check = @submission.items.first.requests.find_by!(request_type_id: @request_type_1.id)
               end
 
               subject { @request_to_check.request_metadata }
@@ -227,7 +227,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
 
             context 'library creation request type' do
               setup do
-                @request_to_check = @submission.items.first.requests.find_by!({ request_type_id: @library_creation_request_type.id })
+                @request_to_check = @submission.items.first.requests.find_by!(request_type_id: @library_creation_request_type.id)
               end
 
               subject { @request_to_check.request_metadata }
@@ -241,7 +241,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
 
             context 'sequencing request type' do
               setup do
-                @request_to_check = @submission.items.first.requests.find_by!({ request_type_id: @sequencing_request_type.id })
+                @request_to_check = @submission.items.first.requests.find_by!(request_type_id: @sequencing_request_type.id)
               end
 
               subject { @request_to_check.request_metadata }
@@ -256,7 +256,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
       end
     end
 
-    context "process with a multiplier for request type" do
+    context 'process with a multiplier for request type' do
       setup do
         @study = create :study
         @project = create :project
@@ -270,10 +270,10 @@ class LinearSubmissionTest < ActiveSupport::TestCase
         @asset_1 = create(:sample_tube)
         @asset_2 = create(:sample_tube)
 
-        @mx_request_type = create :multiplexed_library_creation_request_type, asset_type: "SampleTube", target_asset_type: "LibraryTube", initial_state: "pending", name: "Multiplexed Library Creation", order: 1, key: "multiplexed_library_creation"
-        @lib_request_type = create :library_creation_request_type, asset_type: "SampleTube", target_asset_type: "LibraryTube", initial_state: "pending", name: "Library Creation", order: 1, key: "library_creation"
-        @pe_request_type = create :request_type, asset_type: "LibraryTube", initial_state: "pending", name: "PE sequencing", order: 2, key: "pe_sequencing"
-        @se_request_type = create :request_type, asset_type: "LibraryTube", initial_state: "pending", name: "SE sequencing", order: 2, key: "se_sequencing"
+        @mx_request_type = create :multiplexed_library_creation_request_type, asset_type: 'SampleTube', target_asset_type: 'LibraryTube', initial_state: 'pending', name: 'Multiplexed Library Creation', order: 1, key: 'multiplexed_library_creation'
+        @lib_request_type = create :library_creation_request_type, asset_type: 'SampleTube', target_asset_type: 'LibraryTube', initial_state: 'pending', name: 'Library Creation', order: 1, key: 'library_creation'
+        @pe_request_type = create :request_type, asset_type: 'LibraryTube', initial_state: 'pending', name: 'PE sequencing', order: 2, key: 'pe_sequencing'
+        @se_request_type = create :request_type, asset_type: 'LibraryTube', initial_state: 'pending', name: 'SE sequencing', order: 2, key: 'se_sequencing'
 
         @submission_with_multiplication_factor = LinearSubmission.build!(
           study: @study,
@@ -282,7 +282,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
           user: @user,
           assets: [@asset_1, @asset_2],
           request_types: [@lib_request_type.id, @pe_request_type.id],
-          request_options: { :multiplier => { @pe_request_type.id.to_s.to_sym => '5', @lib_request_type.id.to_s.to_sym => '1' }, "read_length" => "108", "fragment_size_required_from" => "150", "fragment_size_required_to" => "200" },
+          request_options: { :multiplier => { @pe_request_type.id.to_s.to_sym => '5', @lib_request_type.id.to_s.to_sym => '1' }, 'read_length' => '108', 'fragment_size_required_from' => '150', 'fragment_size_required_to' => '200' },
           comments: ''
         )
         @mx_submission_with_multiplication_factor = LinearSubmission.build!(
@@ -292,34 +292,34 @@ class LinearSubmissionTest < ActiveSupport::TestCase
           user: @user,
           assets: [@asset_1, @asset_2],
           request_types: [@mx_request_type.id, @pe_request_type.id],
-          request_options: { :multiplier => { @pe_request_type.id.to_s.to_sym => '5', @mx_request_type.id.to_s.to_sym => '1' }, "read_length" => "108", "fragment_size_required_from" => "150", "fragment_size_required_to" => "200" },
+          request_options: { :multiplier => { @pe_request_type.id.to_s.to_sym => '5', @mx_request_type.id.to_s.to_sym => '1' }, 'read_length' => '108', 'fragment_size_required_from' => '150', 'fragment_size_required_to' => '200' },
           comments: ''
         )
       end
 
-      context "when a multiplication factor of 5 is provided" do
-        context "for non multiplexed libraries and sequencing" do
+      context 'when a multiplication factor of 5 is provided' do
+        context 'for non multiplexed libraries and sequencing' do
           setup do
             @request_count = Request.count
             @submission_with_multiplication_factor.process!
           end
 
-           should "change Request.count by 12" do
-             assert_equal 12, Request.count - @request_count, "Expected Request.count to change by 12"
-          end
+           should 'change Request.count by 12' do
+             assert_equal 12, Request.count - @request_count, 'Expected Request.count to change by 12'
+           end
 
-          should "create 2 library requests" do
+          should 'create 2 library requests' do
             lib_requests = Request.where(submission_id: @submission_with_multiplication_factor, request_type_id: @lib_request_type.id)
             assert_equal 2, lib_requests.size
           end
 
-          should "create 10 sequencing requests" do
+          should 'create 10 sequencing requests' do
             seq_requests = Request.where(submission_id: @submission_with_multiplication_factor, request_type_id: @pe_request_type.id)
             assert_equal 10, seq_requests.size
           end
         end
 
-        context "for non multiplexed libraries and sequencing" do
+        context 'for non multiplexed libraries and sequencing' do
           setup do
             @mx_submission_with_multiplication_factor.process!
           end

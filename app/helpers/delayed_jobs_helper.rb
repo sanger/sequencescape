@@ -7,9 +7,9 @@
 module DelayedJobsHelper
   def job_type(job)
     if job.name =~ /StudyReport/
-      "generate study report"
+      'generate study report'
     elsif job.name =~ /Submission/
-        "process submission "
+        'process submission '
     else
       job.name
     end
@@ -17,13 +17,13 @@ module DelayedJobsHelper
 
   def job_status(job)
       if job.locked_by
-        "In progress"
+        'In progress'
       elsif job.failed?
-        "Failed"
+        'Failed'
       elsif job.last_error?
-        "error"
+        'error'
       else
-        "pending"
+        'pending'
       end
   end
 end

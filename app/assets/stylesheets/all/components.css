@@ -27,6 +27,9 @@ table.table-dense-information tbody {
 .loading-bar-placeholder {  margin: 11px 0;}
 
 .formtastic label.ft-label { width: 25%; }
+.formtastic input[type="file"] {
+  display: inline-block;
+}
 
 .formtastic .boolean label.ft-label { width: auto; }
 .formtastic input.btn { padding: 6px 12px; }

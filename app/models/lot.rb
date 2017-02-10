@@ -47,7 +47,7 @@ class Lot < ActiveRecord::Base
     asset_ids = [qc_asset.id, sibling.id, tag2_siblings].flatten
 
     includes(:qcables).where(qcables: { asset_id: asset_ids }).where.not(qcables: { state: 'exhausted' })
-  }
+                       }
 
   private
 

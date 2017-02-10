@@ -5,21 +5,21 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 module Tasks::AssignTagsHandler
-  def render_assign_tags_task(task, params)
+  def render_assign_tags_task(_task, params)
     @tag_group = TagGroup.find(params[:tag_group])
     @requests = @batch.requests
     @tags = @tag_group.tags.sorted
     @rits = @batch.pipeline.request_information_types
   end
 
-  def do_assign_tags_task(task, params)
+  def do_assign_tags_task(_task, params)
     if params[:mx_library_name].blank?
-      flash[:warning] = "Multiplexed library needs a name"
+      flash[:warning] = 'Multiplexed library needs a name'
       redirect_to action: 'stage', batch_id: @batch.id, workflow_id: @workflow.id, id: (@stage - 1).to_s
       return false
     end
     if MultiplexedLibraryTube.where(name: params[:mx_library_name]).size > 0
-      flash[:warning] = "Name already in use."
+      flash[:warning] = 'Name already in use.'
       redirect_to action: 'stage', batch_id: @batch.id, workflow_id: @workflow.id, id: (@stage - 1).to_s
       return false
     end

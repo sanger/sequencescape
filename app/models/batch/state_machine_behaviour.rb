@@ -33,7 +33,7 @@ module Batch::StateMachineBehaviour
         end
       end
 
-      scope :failed, -> { where(production_state: "fail") }
+      scope :failed, -> { where(production_state: 'fail') }
 
       # We override the behaviour of a couple of events because they require user details.
       alias_method_chain(:start!, :user)

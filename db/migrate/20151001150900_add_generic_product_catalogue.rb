@@ -20,15 +20,15 @@ class AddGenericProductCatalogue < ActiveRecord::Migration
   def self.up
     ActiveRecord::Base.transaction do
       pc = ProductCatalogue.create!(name: 'Generic')
-      ProductProductCatalogue.create!(product_id: Product.find_by_name!('Generic').id, product_catalogue_id: pc.id)
+      ProductProductCatalogue.create!(product_id: Product.find_by!(name: 'Generic').id, product_catalogue_id: pc.id)
     end
   end
 
   def self.down
     ActiveRecord::Base.transaction do
-      pc = ProductCatalogue.find_by_name('Generic')
-      ProductProductCatalogue.find_by_product_catalogue_id(pc.id).destroy
-      ProductCatalogue.find_by_name('Generic').destroy
+      pc = ProductCatalogue.find_by(name: 'Generic')
+      ProductProductCatalogue.find_by(product_catalogue_id: pc.id).destroy
+      ProductCatalogue.find_by(name: 'Generic').destroy
     end
   end
 end

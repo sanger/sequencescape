@@ -9,7 +9,7 @@ class ::Endpoints::QcDecisions < ::Core::Endpoint::Base
     action(:create) do |request, _|
       request.target.create!(request.attributes.tap do |attributes|
         attributes[:decisions] = (attributes[:decisions] || []).map do |d|
-          d.merge({ 'qcable' => Uuid.find_by_external_id(d['qcable']).resource })
+          d.merge('qcable' => Uuid.find_by(external_id: d['qcable']).resource)
         end
       end)
     end

@@ -5,7 +5,7 @@
 # Copyright (C) 2012,2015 Genome Research Ltd.
 
 module PlatePurpose::WorksOnLibraryRequests
-  def each_well_and_its_library_request(plate, &block)
+  def each_well_and_its_library_request(plate)
     well_to_stock_id = Hash[plate.stock_wells.map { |well, stock_wells| [well.id, stock_wells.first.id] }]
     requests         = Request::LibraryCreation.for_asset_id(well_to_stock_id.values).include_request_metadata.group_by(&:asset_id)
 

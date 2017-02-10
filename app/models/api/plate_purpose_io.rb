@@ -21,7 +21,7 @@ class Api::PlatePurposeIO < Api::Base
     end
 
     def url_name
-      "plate_purpose"
+      'plate_purpose'
     end
   end
 

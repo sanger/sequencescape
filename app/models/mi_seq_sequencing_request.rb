@@ -8,6 +8,6 @@ class MiSeqSequencingRequest < SequencingRequest
   include Request::CustomerResponsibility
 
   def flowcell_identifier
-    "Cartridge barcode"
+    'Cartridge barcode'
   end
 end

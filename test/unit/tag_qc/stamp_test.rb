@@ -4,10 +4,10 @@
 # authorship of this file.
 # Copyright (C) 2014,2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class StampTest < ActiveSupport::TestCase
-  context "A Stamp" do
+  context 'A Stamp' do
     should belong_to :user
     should belong_to :robot
     should belong_to :lot
@@ -20,7 +20,7 @@ class StampTest < ActiveSupport::TestCase
     should validate_presence_of :robot
     should validate_presence_of :lot
 
-    context "#stamp" do
+    context '#stamp' do
       should 'transition qcables to pending' do
         @qcable = create :qcable_with_asset
         # Unfortunately we can't do this, as stamp looks for qcables directly.

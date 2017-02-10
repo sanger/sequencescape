@@ -60,7 +60,7 @@ ILB_STD_PCRRXP
   }
 
   def self.request_type_prefix
-    "Illumina-B"
+    'Illumina-B'
   end
 
   extend IlluminaHtp::PlatePurposes::PurposeHelpers
@@ -68,4 +68,4 @@ end
 
 # We require all the plate and tube purpose files here as Rails eager loading does not play nicely with single table
 # inheritance
-require_dependency "app/models/illumina_b/mx_tube_purpose"
+require_dependency 'app/models/illumina_b/mx_tube_purpose'

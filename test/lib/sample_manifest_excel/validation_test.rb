@@ -8,49 +8,49 @@ class ValidationTest < ActiveSupport::TestCase
     @range = build(:range)
   end
 
-  test "should not be valid without options" do
+  test 'should not be valid without options' do
     refute SampleManifestExcel::Validation.new.valid?
   end
 
-  test "should be comparable" do
+  test 'should be comparable' do
     assert_equal SampleManifestExcel::Validation.new(options: options), SampleManifestExcel::Validation.new(options: options)
     refute_equal SampleManifestExcel::Validation.new(options: options), SampleManifestExcel::Validation.new(options: options.except(:formula1))
   end
 
-  context "without range name" do
+  context 'without range name' do
     setup do
       @validation = SampleManifestExcel::Validation.new(options: options)
     end
 
-    should "should have options" do
+    should 'should have options' do
       assert_equal options.with_indifferent_access, validation.options
     end
 
-    should "not have a range name" do
+    should 'not have a range name' do
       refute validation.range_name
     end
 
-    should "should not add a range" do
+    should 'should not add a range' do
       validation.update(range: range)
       refute_equal range.absolute_reference, validation.formula1
     end
   end
 
-  context "with range name" do
+  context 'with range name' do
     setup do
       @validation = SampleManifestExcel::Validation.new(options: options, range_name: :a_range)
     end
 
-    should "should have a range name" do
+    should 'should have a range name' do
       assert_equal :a_range, validation.range_name
     end
 
-    should "#update should set formula1" do
+    should '#update should set formula1' do
       validation.update(range: range)
       assert_equal range.absolute_reference, validation.formula1
     end
 
-    should "be duplicated correctly" do
+    should 'be duplicated correctly' do
       dupped = validation.dup
       validation.update(range: range)
       refute_equal validation.options, dupped.options
@@ -58,7 +58,7 @@ class ValidationTest < ActiveSupport::TestCase
     end
   end
 
-  context "with worksheet" do
+  context 'with worksheet' do
     attr_reader :worksheet
 
     setup do
@@ -67,11 +67,11 @@ class ValidationTest < ActiveSupport::TestCase
       @validation = SampleManifestExcel::Validation.new(options: options)
     end
 
-    should "have options" do
+    should 'have options' do
       assert_equal options.with_indifferent_access, validation.options
     end
 
-    should "add validation to the worksheet" do
+    should 'add validation to the worksheet' do
       validation.update(reference: range.reference, worksheet: worksheet)
       validations = worksheet.data_validation_rules
       assert validation.saved?
@@ -79,7 +79,7 @@ class ValidationTest < ActiveSupport::TestCase
       assert_equal range.reference, validations.first.sqref
     end
 
-    should "be comparable" do
+    should 'be comparable' do
       validation.update(reference: range.reference, worksheet: worksheet)
       other_validation = SampleManifestExcel::Validation.new(options: options)
       other_validation.update(reference: range.reference, worksheet: worksheet)

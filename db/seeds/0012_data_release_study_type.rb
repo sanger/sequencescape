@@ -5,10 +5,10 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 dr_study_types = [
-    ["genomic sequencing",           false,       false],
-    ["transcriptomics",              false,       true],
-    ["other sequencing-based assay", false,       true],
-    ["genotyping or cytogenetics",   true,        false]
+    ['genomic sequencing',           false,       false],
+    ['transcriptomics',              false,       true],
+    ['other sequencing-based assay', false,       true],
+    ['genotyping or cytogenetics',   true,        false]
   ]
 
 dr_study_types.each do |type|

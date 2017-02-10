@@ -7,9 +7,9 @@
 class Core::Endpoint::BasicHandler
   module Json
     def actions(object, options)
-      Hash[@actions.select do |name, behaviour|
+      Hash[@actions.select do |_name, behaviour|
         accessible_action?(self, behaviour, options[:response].request, object)
-      end.map do |name, behaviour|
+      end.map do |name, _behaviour|
         [name, core_path(options)]
       end]
     end
@@ -23,7 +23,7 @@ class Core::Endpoint::BasicHandler
       []
     end
 
-    def tree_for(object, options)
+    def tree_for(_object, _options)
       associations, actions = {}, {}
       related.each { |r| r.separate(associations, actions) }
       Core::Io::Json::Grammar::Root.new(

@@ -4,10 +4,10 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class LabEventTest < ActiveSupport::TestCase
-  context "An event" do
+  context 'An event' do
     should belong_to :user
     should belong_to :eventful
   end

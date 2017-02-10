@@ -1,5 +1,5 @@
 class SampleManifestGenerator
-  REQUIRED_ATTRIBUTES = ["template", "count"]
+  REQUIRED_ATTRIBUTES = ['template', 'count']
 
   include ActiveModel::Validations
 

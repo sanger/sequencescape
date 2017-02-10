@@ -13,7 +13,7 @@ module LabWhereClient
     end
 
     def path_to(instance, target)
-      raise LabwhereException, "LabWhere service URL not set" if base_url.nil?
+      raise LabwhereException, 'LabWhere service URL not set' if base_url.nil?
       [base_url, instance.endpoint, target].compact.join('/')
     end
 
@@ -21,19 +21,19 @@ module LabWhereClient
       return nil if str == 'null'
       JSON.parse(str)
     rescue JSON::ParserError => e
-      raise LabwhereException.new(e), "LabWhere is returning unexpected content", e.backtrace
+      raise LabwhereException.new(e), 'LabWhere is returning unexpected content', e.backtrace
     end
 
     def get(instance, target)
       parse_json(RestClient.get(path_to(instance, target)))
     rescue Errno::ECONNREFUSED => e
-      raise LabwhereException.new(e), "LabWhere service is down", e.backtrace
+      raise LabwhereException.new(e), 'LabWhere service is down', e.backtrace
     end
 
     def post(instance, target, payload)
       parse_json(RestClient.post(path_to(instance, target), payload))
     rescue Errno::ECONNREFUSED => e
-      raise LabwhereException.new(e), "LabWhere service is down", e.backtrace
+      raise LabwhereException.new(e), 'LabWhere service is down', e.backtrace
     rescue RestClient::UnprocessableEntity => e
       return parse_json(e.response)
     end
@@ -41,7 +41,7 @@ module LabWhereClient
     def put(instance, target, payload)
       parse_json(RestClient.put(path_to(instance, target), payload))
     rescue Errno::ECONNREFUSED => e
-      raise LabwhereException.new(e), "LabWhere service is down", e.backtrace
+      raise LabwhereException.new(e), 'LabWhere service is down', e.backtrace
     end
   end
 
@@ -131,7 +131,7 @@ module LabWhereClient
     end
 
     def error
-      @errors.join(";")
+      @errors.join(';')
     end
   end
 

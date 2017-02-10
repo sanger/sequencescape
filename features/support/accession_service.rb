@@ -20,7 +20,7 @@ class FakeAccessionService
 
   def self.install_hooks(target, tags)
     target.instance_eval do
-      Before(tags) do |scenario|
+      Before(tags) do |_scenario|
         # Set up our evesdropper
         AccessionService.rest_client_class = EvesdropResource
 
@@ -35,7 +35,7 @@ class FakeAccessionService
         [ena_login, ega_login].each do |service_login|
           stub_request(:post, accession_url)
            .with(basic_auth: service_login)
-           .to_return do |request|
+           .to_return do |_request|
               response = FakeAccessionService.instance.next!
               status = response.nil? ? 500 : 200
               {
@@ -47,7 +47,7 @@ class FakeAccessionService
         end
       end
 
-      After(tags) do |scenario|
+      After(tags) do |_scenario|
         FakeAccessionService.instance.clear
         # Remove the evesdropper
         AccessionService.rest_client_class = RestClient::Resource
@@ -72,9 +72,9 @@ class FakeAccessionService
     @sent = []
   end
 
-  def success(type, accession, body = "")
+  def success(type, accession, body = '')
     model = type.upcase
-    self.bodies << <<-XML
+    bodies << <<-XML
       <RECEIPT success="true">
         <#{model} accession="#{accession}">#{body}</#{model}>
         <SUBMISSION accession="EGA00001000240" />
@@ -83,11 +83,11 @@ class FakeAccessionService
   end
 
   def failure(message)
-    self.bodies << %Q{<RECEIPT success="false"><ERROR>#{message}</ERROR></RECEIPT>}
+    bodies << %Q{<RECEIPT success="false"><ERROR>#{message}</ERROR></RECEIPT>}
   end
 
   def next!
-    @last_received = self.bodies.pop
+    @last_received = bodies.pop
   end
 
   def service

@@ -8,7 +8,7 @@ require 'test_helper'
 
 class MultiplexedLibraryCreationPipelineTest < ActiveSupport::TestCase
   def setup
-    @pipeline = Pipeline.find_by_name('Illumina-B MX Library Preparation') or raise StandardError, "Cannot find the Illumina-B MX Library Preparation pipeline"
+    @pipeline = Pipeline.find_by(name: 'Illumina-B MX Library Preparation') or raise StandardError, 'Cannot find the Illumina-B MX Library Preparation pipeline'
     @user     = create(:user)
   end
 
@@ -30,14 +30,14 @@ class MultiplexedLibraryCreationPipelineTest < ActiveSupport::TestCase
           @batch.complete!(@user)
         end
 
-        assert(!@batch.errors.empty?, "There are no errors on the batch")
+        assert(!@batch.errors.empty?, 'There are no errors on the batch')
       end
 
       should 'not error if all of the target asset aliquots are tagged' do
         @batch.requests.each_with_index { |r, i| create(:tag, map_id: i).tag!(r.target_asset) }
         @batch.complete!(@user)
 
-        assert(@batch.errors.empty?, "There are errors on the batch")
+        assert(@batch.errors.empty?, 'There are errors on the batch')
       end
     end
   end

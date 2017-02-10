@@ -20,24 +20,24 @@ end
 
 Then /^the aliquot (\d+) should belong to the study named "([^\"]*)"$/ do |aliquot_id, study_name|
   aliquot = Aliquot.find(aliquot_id) or raise StandardError, "Cannot find aliquot #{aliquot_id}"
-  study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
+  study = Study.find_by(name: study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
   assert_equal study, aliquot.study
 end
 
 Then /^all aliquots in asset (\d+) should belong to the study named "([^\"]*)"$/ do |asset_id, study_name|
   asset = Asset.find(asset_id) or raise StandardError, "Cannot find Asset #{asset_id}"
-  study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
+  study = Study.find_by(name: study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
   asset.aliquots.each { |a| assert_equal study, a.study }
 end
 
 Given /^the sample tube "([^\"]+)" has (\d+) aliquots$/ do |tube_name, number|
-  tube = SampleTube.find_by_name(tube_name) or raise "Can't find SampleTube named #{tube_name}"
-  1.upto(number.to_i - tube.aliquots.size).each do |i|
+  tube = SampleTube.find_by(name: tube_name) or raise "Can't find SampleTube named #{tube_name}"
+  1.upto(number.to_i - tube.aliquots.size).each do |_i|
     tube.aliquots << FactoryGirl.create(:aliquot, tag: FactoryGirl.create(:tag), receptacle: tube)
   end
 end
 
 Given /^the aliquots in the library tube called "([^\"]+)" have been modified$/ do |name|
-  tube = LibraryTube.find_by_name(name) or raise "Can't find library tube named #{name.inspect}"
+  tube = LibraryTube.find_by(name: name) or raise "Can't find library tube named #{name.inspect}"
   tube.aliquots.each { |a| a.updated_at = Time.now; a.save(validate: false) }
 end

@@ -30,7 +30,7 @@ private
     end
   end
 
-  def each_non_empty_search_result(&block)
+  def each_non_empty_search_result
     searchable_classes.each do |clazz|
       results = instance_variable_get("@#{clazz.name.underscore.pluralize}")
       yield(clazz.name.underscore, results) unless results.blank?

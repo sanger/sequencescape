@@ -60,7 +60,7 @@ module WTSI
       files_to_license.each do |filename|
         TargetFile.new(filename, self).apply_license
       end
-      return 0
+      0
     end
 
     ##
@@ -125,7 +125,7 @@ module WTSI
     def apply_license
       begin
         return if existing_license?
-        STDOUT.print "."
+        STDOUT.print '.'
         first_line = old_file.gets
         new_file.write(first_line) if !first_line.nil? && first_line.match(/^#!/)
         new_file.write(license_text)

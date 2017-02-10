@@ -30,7 +30,7 @@ class AssetsController < ApplicationController
           format.xml { render xml: Sample.find(params[:sample_id]).assets.to_xml }
       elsif params[:asset_id]
         @asset = Asset.find(params[:asset_id])
-        format.xml { render xml: ["relations" => { "parents" => @asset.parents, "children" => @asset.children }].to_xml }
+        format.xml { render xml: ['relations' => { 'parents' => @asset.parents, 'children' => @asset.children }].to_xml }
       end
     end
   end
@@ -46,8 +46,8 @@ class AssetsController < ApplicationController
 
   def new
     @asset = Asset.new
-    @asset_types = { "Library Tube" => 'LibraryTube', "Hybridization Buffer Spiked" => "SpikedBuffer" }
-    @phix_tag = TagGroup.find_by_name(configatron.phix_tag.tag_group_name).tags.select do |t|
+    @asset_types = { 'Library Tube' => 'LibraryTube', 'Hybridization Buffer Spiked' => 'SpikedBuffer' }
+    @phix_tag = TagGroup.find_by(name: configatron.phix_tag.tag_group_name).tags.select do |t|
       t.map_id == configatron.phix_tag.tag_map_id
     end.first
 
@@ -72,7 +72,7 @@ class AssetsController < ApplicationController
       found_set = Set.new(objects.map(&:name))
       not_found = name_set - found_set
       raise InvalidInputException, "#{Asset.table_name} #{not_found.to_a.join(", ")} not founds" unless not_found.empty?
-      return objects
+      objects
   end
 
   def create
@@ -84,7 +84,7 @@ class AssetsController < ApplicationController
       # Find the parent asset up front
       parent, parent_param = nil, first_param(:parent_asset)
       if parent_param.present?
-        parent = Asset.find_from_machine_barcode(parent_param) || Asset.find_by_name(parent_param) || Asset.find_by_id(parent_param)
+        parent = Asset.find_from_machine_barcode(parent_param) || Asset.find_by(name: parent_param) || Asset.find_by(id: parent_param)
         raise StandardError, "Cannot find the parent asset #{parent_param.inspect}" if parent.nil?
       end
 
@@ -97,7 +97,7 @@ class AssetsController < ApplicationController
         tag = Tag.where(conditions).first or raise StandardError, "Cannot find tag #{tag_param.inspect}"
       end
 
-      sti_type    = params[:asset].delete(:sti_type) or raise StandardError, "No asset type specified"
+      sti_type    = params[:asset].delete(:sti_type) or raise StandardError, 'No asset type specified'
       asset_class = sti_type.constantize
 
       ActiveRecord::Base.transaction do
@@ -116,7 +116,7 @@ class AssetsController < ApplicationController
                 parent_used = extract
                 asset.save!
               elsif asset.is_a?(SpikedBuffer) and !parent_used.is_a?(SpikedBuffer)
-                raise StandardError, "Enter a volume"
+                raise StandardError, 'Enter a volume'
               else
                 # Discard the 'asset' that was build initially as it is being replaced by the asset
                 # created from the extraction process.
@@ -156,7 +156,7 @@ class AssetsController < ApplicationController
         format.xml  { render xml: @assets, status: :created, location: assets_url(@assets) }
         format.json { render json: @assets, status: :created, location: assets_url(@assets) }
       else
-        format.html { redirect_to action: "new" }
+        format.html { redirect_to action: 'new' }
         format.xml  { render xml: @assets.errors, status: :unprocessable_entity }
         format.json { render json: @assets.errors, status: :unprocessable_entity }
       end
@@ -176,30 +176,21 @@ class AssetsController < ApplicationController
       joint_params = params.fetch(:asset, {}).merge(params.fetch(:lane, {}))
       if @asset.update_attributes(joint_params)
         flash[:notice] = 'Asset was successfully updated.'
-        unless params[:lab_view]
+        if params[:lab_view]
+          format.html { redirect_to(action: :lab_view, barcode: @asset.barcode) }
+        else
           format.html { redirect_to(action: :show, id: @asset.id) }
           format.xml  { head :ok }
-        else
-          format.html { redirect_to(action: :lab_view, barcode: @asset.barcode) }
         end
       else
-        format.html { render action: "edit" }
+        format.html { render action: 'edit' }
         format.xml  { render xml: @asset.errors, status: :unprocessable_entity }
       end
     end
   end
 
-  def destroy
-    @asset.destroy
-
-    respond_to do |format|
-      format.html { redirect_to(assets_url) }
-      format.xml  { head :ok }
-    end
-  end
-
   def summary
-    @summary = UiHelper::Summary.new({ per_page: 25, page: params[:page] })
+    @summary = UiHelper::Summary.new(per_page: 25, page: params[:page])
     @summary.load_asset(@asset)
   end
 
@@ -263,7 +254,7 @@ class AssetsController < ApplicationController
   private :prepare_asset
 
   def new_request_for_current_asset
-    new_request_asset_path(@asset, { study_id: @study.try(:id), project_id: @project.try(:id), request_type_id: @request_type.try(:id) })
+    new_request_asset_path(@asset, study_id: @study.try(:id), project_id: @project.try(:id), request_type_id: @request_type.try(:id))
   end
   private :new_request_for_current_asset
 
@@ -352,12 +343,12 @@ class AssetsController < ApplicationController
       elsif @assets.size == 0
         flash.now[:error] = "No asset found with barcode #{params[:asset][:barcode]}"
         respond_to do |format|
-          format.html { render action: "lookup" }
+          format.html { render action: 'lookup' }
           format.xml  { render xml: @assets.to_xml }
         end
       else
         respond_to do |format|
-          format.html { render action: "index" }
+          format.html { render action: 'index' }
           format.xml  { render xml: @assets.to_xml }
         end
       end
@@ -375,24 +366,24 @@ class AssetsController < ApplicationController
     barcode = params.fetch(:barcode, '').strip
 
     if barcode.blank?
-      redirect_to action: "find_by_barcode"
+      redirect_to action: 'find_by_barcode'
       return
     elsif barcode.size == 13 && Barcode.check_EAN(barcode)
       @asset = Asset.with_machine_barcode(barcode).first
     elsif match = /\A([A-z]{2})([0-9]{1,7})[A-z]{0,1}\z/.match(barcode) # Human Readable
-      prefix = BarcodePrefix.find_by_prefix(match[1])
-      @asset = Asset.find_by_barcode_and_barcode_prefix_id(match[2], prefix.id) if prefix
+      prefix = BarcodePrefix.find_by(prefix: match[1])
+      @asset = Asset.find_by(barcode: match[2], barcode_prefix_id: prefix.id) if prefix
     elsif /\A[0-9]{1,7}\z/ =~ barcode # Just a number
-      @asset = Asset.find_by_barcode(barcode)
+      @asset = Asset.find_by(barcode: barcode)
     else
       flash[:error] = "'#{barcode}' is not a recognized barcode format"
-      redirect_to action: "find_by_barcode"
+      redirect_to action: 'find_by_barcode'
       return
     end
 
     if @asset.nil?
       flash[:error] = "Unable to find anything with this barcode: #{barcode}"
-      redirect_to action: "find_by_barcode"
+      redirect_to action: 'find_by_barcode'
     end
   end
 
@@ -418,7 +409,7 @@ class AssetsController < ApplicationController
   end
 
   def check_valid_values(params = nil)
-    if (params[:study_id_to] == "0") || (params[:study_id_from] == "0")
+    if (params[:study_id_to] == '0') || (params[:study_id_from] == '0')
       flash[:error] = "You have to select 'Study From' and 'Study To'"
       return false
     else
@@ -427,17 +418,17 @@ class AssetsController < ApplicationController
       if study_to.name.eql?(study_from.name)
         flash[:error] = "You can't select the same Study."
         return false
-      elsif params[:asset_group_id] == "0" && params[:new_assets_name].empty?
+      elsif params[:asset_group_id] == '0' && params[:new_assets_name].empty?
         flash[:error] = "You must indicate an 'Asset Group'."
         return false
-      elsif !(params[:asset_group_id] == "0") && !(params[:new_assets_name].empty?)
-        flash[:error] = "You can select only an Asset Group!"
+      elsif !(params[:asset_group_id] == '0') && !(params[:new_assets_name].empty?)
+        flash[:error] = 'You can select only an Asset Group!'
         return false
-      elsif AssetGroup.find_by_name(params[:new_assets_name])
-        flash[:error] = "The name of Asset Group exists!"
+      elsif AssetGroup.find_by(name: params[:new_assets_name])
+        flash[:error] = 'The name of Asset Group exists!'
         return false
       end
     end
-    return true
+    true
   end
 end

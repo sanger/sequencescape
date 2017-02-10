@@ -11,13 +11,9 @@ class Submission::SubmissionPresenter < Submission::PresenterSkeleton
     @submission ||= Submission.find(id)
   end
 
-  def priority
-    submission.priority
-  end
+  delegate :priority, to: :submission
 
-  def template_name
-    order.template_name
-  end
+  delegate :template_name, to: :order
 
   def order
     submission.orders.first

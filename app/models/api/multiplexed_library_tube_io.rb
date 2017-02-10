@@ -25,7 +25,7 @@ class Api::MultiplexedLibraryTubeIO < Api::Base
     end
 
     def url_name
-      "multiplexed_library_tube"
+      'multiplexed_library_tube'
     end
   end
 

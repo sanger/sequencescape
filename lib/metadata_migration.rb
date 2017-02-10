@@ -13,9 +13,9 @@ class MetadataMigration < ActiveRecord::Migration
 
       # It's more efficient to delete all of the properties and then delete the definition.
       def self.delete_for(relates_to, keys)
-        definition_ids = self.for_class(relates_to).for_keys(keys).all.map(&:id)
+        definition_ids = for_class(relates_to).for_keys(keys).all.map(&:id)
         Property.delete_all(['property_definition_id IN (?)', definition_ids])
-        self.delete_all(['id IN (?)', definition_ids])
+        delete_all(['id IN (?)', definition_ids])
       end
     end
 
@@ -24,22 +24,22 @@ class MetadataMigration < ActiveRecord::Migration
   end
 
   def self.reference_class_name
-    self.reference_class.name.sub(/^[^:]+::/, '')
+    reference_class.name.sub(/^[^:]+::/, '')
   end
 
   def self.properties_from_metadata
     metadata_class.column_names.reject do |name|
-      [:id, self.reference_id].include?(name.to_sym)
+      [:id, reference_id].include?(name.to_sym)
     end.inject({}) do |hash, p|
       returning(hash) do
-        hash[p] = Property::Definition.find_by(relates_to: self.reference_class_name, key: p.to_s) or raise StandardError, "Cannot find property definition for '#{p}'"
+        hash[p] = Property::Definition.find_by(relates_to: reference_class_name, key: p.to_s) or raise StandardError, "Cannot find property definition for '#{p}'"
       end
     end
   end
 
   # Migrates all of the property instances to their related metadata instances
   def self.migrate_properties
-    properties = self.properties_from_metadata
+    properties = properties_from_metadata
 
     say("There are #{reference_class.count} records to process")
 
@@ -49,7 +49,7 @@ class MetadataMigration < ActiveRecord::Migration
         # Create new objects that can be validated.
         objects = records.map do |record|
           metadata_class.new(
-            properties.inject({ self.reference_id.to_s => record.id }) do |attributes, (property, definition)|
+            properties.inject(reference_id.to_s => record.id) do |attributes, (property, definition)|
               returning(attributes) do
                 attributes[property.to_s] = record.properties.detect { |p|
                   p.property_definition_id == definition.id
@@ -71,19 +71,19 @@ class MetadataMigration < ActiveRecord::Migration
 
   def self.up
     ActiveRecord::Base.transaction do
-      self.create_metadata_table
+      create_metadata_table
       begin
         say('Migrating all of the properties (this might take a very long time!)')
-        self.metadata_class.reset_column_information
-        self.migrate_properties
+        metadata_class.reset_column_information
+        migrate_properties
 
         # Delete all of the properties that we have migrated, leaving any that may exist outside that.
         say('Destroying all of the migrated property definitions')
-        Property::Definition.delete_for(self.reference_class_name, self.metadata_class.column_names.reject do |name|
-          [:id, self.reference_id].include?(name.to_sym)
+        Property::Definition.delete_for(reference_class_name, metadata_class.column_names.reject do |name|
+          [:id, reference_id].include?(name.to_sym)
         end)
       rescue
-        self.drop_table(self.metadata_class.table_name)
+        drop_table(metadata_class.table_name)
         raise
       end
     end

@@ -4,10 +4,10 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class PermissionTest < ActiveSupport::TestCase
-  context "A property definition" do
+  context 'A property definition' do
     should belong_to :permissable
   end
 end

@@ -4,10 +4,10 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class Requests::CommentsControllerTest < ActionController::TestCase
-  context "Requests controller" do
+  context 'Requests controller' do
     setup do
       @controller = Requests::CommentsController.new
       @request    = ActionController::TestRequest.new
@@ -18,9 +18,9 @@ class Requests::CommentsControllerTest < ActionController::TestCase
 
     should_require_login
 
-    resource_test('comment', { actions: ['index'], ignore_actions: %w(new edit update show destroy create), formats: ['html'], parent: "request" })
+    resource_test('comment', actions: ['index'], ignore_actions: %w(new edit update show destroy create), formats: ['html'], parent: 'request')
 
-    context "with an ajax request" do
+    context 'with an ajax request' do
       setup do
         @rq = create :request
 

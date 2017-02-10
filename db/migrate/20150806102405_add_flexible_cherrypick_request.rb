@@ -11,27 +11,25 @@ class AddFlexibleCherrypickRequest < ActiveRecord::Migration
 
   def self.up
     ActiveRecord::Base.transaction do
-      RequestType.create!({
-        asset_type: "Well",
-        billable: false,
-        deprecated: false,
-        for_multiplexing: false,
-        initial_state: "pending",
-        key: "flexible_cherrypick",
-        morphology: 0,
-        multiples_allowed: false,
-        name: "Flexible Cherrypick",
-        no_target_asset: false,
-        order: 1,
-        request_class_name: "PooledCherrypickRequest",
-        workflow_id: Submission::Workflow.find_by_name("Microarray genotyping").id
-      })
+      RequestType.create!(asset_type: 'Well',
+                          billable: false,
+                          deprecated: false,
+                          for_multiplexing: false,
+                          initial_state: 'pending',
+                          key: 'flexible_cherrypick',
+                          morphology: 0,
+                          multiples_allowed: false,
+                          name: 'Flexible Cherrypick',
+                          no_target_asset: false,
+                          order: 1,
+                          request_class_name: 'PooledCherrypickRequest',
+                          workflow_id: Submission::Workflow.find_by(name: 'Microarray genotyping').id)
     end
   end
 
   def self.down
     ActiveRecord::Base.transaction do
-      RequestType.find_by_name("Flexible Cherrypick").destroy
+      RequestType.find_by(name: 'Flexible Cherrypick').destroy
     end
   end
 end

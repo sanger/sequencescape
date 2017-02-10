@@ -5,5 +5,5 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 class WorkingDilutionPlate < DilutionPlate
-  self.prefix = "WD"
+  self.prefix = 'WD'
 end

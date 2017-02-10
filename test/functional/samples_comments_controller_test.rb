@@ -4,10 +4,10 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class Samples::CommentsControllerTest < ActionController::TestCase
-  context "Samples#Comments controller" do
+  context 'Samples#Comments controller' do
     setup do
       @controller = Samples::CommentsController.new
       @request    = ActionController::TestRequest.new
@@ -16,6 +16,6 @@ class Samples::CommentsControllerTest < ActionController::TestCase
 
     should_require_login
 
-    resource_test('comment', { actions: ['index'], ignore_actions: %w(destroy create edit new show update), formats: ['html'], parent: "sample" })
+    resource_test('comment', actions: ['index'], ignore_actions: %w(destroy create edit new show update), formats: ['html'], parent: 'sample')
   end
 end

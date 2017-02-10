@@ -7,7 +7,7 @@
 class StudyReport < ActiveRecord::Base
   extend DbFile::Uploader
 
-  class ProcessingError < Exception
+  class ProcessingError < RuntimeError
   end
 
   self.per_page = 50
@@ -16,7 +16,7 @@ class StudyReport < ActiveRecord::Base
   scope :for_user, ->(user) { where(user_id: user.id) }
   # named_scope :without_files, -> { select_without_file_columns_for(:report) }
 
-  has_uploaded :report, { serialization_column: "report_filename" }
+  has_uploaded :report, serialization_column: 'report_filename'
 
   belongs_to :study
   belongs_to :user
@@ -24,22 +24,22 @@ class StudyReport < ActiveRecord::Base
 
   def headers
     [
-      "Study", "Sample Name", "Plate", "Supplier Volume", "Supplier Concentration",
-      "Supplier Sample Name", "Supplier Gender", "Concentration",
-      "Sequenome Count", "Sequenome Gender", "Pico", "Gel", "Qc Status",
-      "Genotyping Status", "Genotyping Chip", "Is in Fluidigm"
+      'Study', 'Sample Name', 'Plate', 'Supplier Volume', 'Supplier Concentration',
+      'Supplier Sample Name', 'Supplier Gender', 'Concentration',
+      'Sequenome Count', 'Sequenome Gender', 'Pico', 'Gel', 'Qc Status',
+      'Genotyping Status', 'Genotyping Chip', 'Is in Fluidigm'
     ]
   end
 
   def perform
     ActiveRecord::Base.transaction do
       csv_options = { row_sep: "\r\n", force_quotes: true }
-      Tempfile.open("#{self.study.dehumanise_abbreviated_name}_progress_report.csv") do |tempfile|
-        Study.find(self.study_id).progress_report_on_all_assets do |fields|
+      Tempfile.open("#{study.dehumanise_abbreviated_name}_progress_report.csv") do |tempfile|
+        Study.find(study_id).progress_report_on_all_assets do |fields|
           tempfile.puts(CSV.generate_line(fields, csv_options))
         end
         tempfile.open # Reopen the temporary file
-        self.update_attributes!(report: tempfile)
+        update_attributes!(report: tempfile)
       end
     end
   end

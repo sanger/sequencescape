@@ -33,7 +33,7 @@ private
   # NOTE: Ripped directly from InstanceTag in form_helper.rb
   #++
   def sanitized_object_name
-    @object_name.gsub(/\]\[|[^-a-zA-Z0-9:.]/, "_").sub(/_$/, "")
+    @object_name.gsub(/\]\[|[^-a-zA-Z0-9:.]/, '_').sub(/_$/, '')
   end
 
   def localised_sections(field)
@@ -42,7 +42,7 @@ private
     sections
   end
 
-  def render_view(type, field, options = {}, &block)
+  def render_view(type, field, options = {})
     return nil unless @filter.call(@object.class.metadata_attribute_path(field))
     view   = @views[type.to_sym] or raise StandardError, "View not registered for '#{type}'"
 

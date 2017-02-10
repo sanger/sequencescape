@@ -11,7 +11,7 @@ module Tasks::AddSpikedInControlHandler
     control = SpikedBuffer.find_from_machine_barcode(barcode)
     request_id_set = Set.new
     params[:request].each do |k, v|
-      request_id_set << k.to_i if v == "on"
+      request_id_set << k.to_i if v == 'on'
     end
 
     unless control
