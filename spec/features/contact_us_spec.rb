@@ -21,7 +21,7 @@ feature 'Contact us' do
     fill_in("What has happened?", with: "Something went wrong")
     fill_in("What did you expect to happen?", with: "Sqsc to work")
     click_button('Send')
-    expect(ActionMailer::Base.deliveries.count).to eq number_of_mails+1
+    expect(ActionMailer::Base.deliveries.count).to eq number_of_mails + 1
     expect(page).to have_content('Thank you for your request. We will contact you shortly (via new_email@example.com)')
   end
 
