@@ -11,7 +11,7 @@ module LabInterface::WorkflowsHelper
   def descriptor_value(descriptor)
     # Refactored to remove reliance on @values
     params[:values].try(:[], descriptor.name) or
-      @study.try(:descriptor_value, descriptor.name) or ""
+      @study.try(:descriptor_value, descriptor.name) or ''
   end
 
   # Returns a link to any available request comments with "None" as a
@@ -21,15 +21,15 @@ module LabInterface::WorkflowsHelper
        request.comments.present?,
        pluralize(request.comments.size, 'comment'),
        request_comments_url(request)
-     ) { "None" }
+     ) { 'None' }
   end
 
   def shorten(string)
-    truncate string, 10, "..."
+    truncate string, 10, '...'
   end
 
   def not_so_shorten(string)
-    truncate string, 15, "..."
+    truncate string, 15, '...'
   end
 
   def tag_index_for(request)
@@ -38,9 +38,9 @@ module LabInterface::WorkflowsHelper
 
   def batch_tag_index
     @tag_hash ||= Hash[
-      Tag.joins(:aliquots).
-        where(aliquots: { receptacle_id: @batch.requests.map(&:asset_id).uniq }).
-        pluck(:receptacle_id, :map_id)].tap { |th| th.default = '-' }
+      Tag.joins(:aliquots)
+        .where(aliquots: { receptacle_id: @batch.requests.map(&:asset_id).uniq })
+        .pluck(:receptacle_id, :map_id)].tap { |th| th.default = '-' }
   end
 
   def qc_select_box(request, status, html_options = {})
@@ -50,10 +50,10 @@ module LabInterface::WorkflowsHelper
   end
 
   def gel_qc_select_box(request, status, html_options = {})
-    blank = html_options.delete(:generate_blank) ? "<option></option>" : ""
-    if status.blank? || status == "Pass"
-      status = "OK"
+    blank = html_options.delete(:generate_blank) ? '<option></option>' : ''
+    if status.blank? || status == 'Pass'
+      status = 'OK'
     end
-    select_tag("wells[#{request.id}][qc_state]", options_for_select({ "Pass" => "OK", "Fail" => "Fail", "Weak" => "Weak", "No Band" => "Band Not Visible", "Degraded" => "Degraded" }, status), html_options)
+    select_tag("wells[#{request.id}][qc_state]", options_for_select({ 'Pass' => 'OK', 'Fail' => 'Fail', 'Weak' => 'Weak', 'No Band' => 'Band Not Visible', 'Degraded' => 'Degraded' }, status), html_options)
   end
 end

@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 Given /^I have five requests for "([^\"]*)"$/ do |pipeline_name|
-  pipeline = Pipeline.find_by_name(pipeline_name)
+  pipeline = Pipeline.find_by(name: pipeline_name)
   5.times do |index_i|
     request = step(%Q{I have a request for "#{pipeline_name}"})
     request.asset.name = "Test Asset #{index_i}"

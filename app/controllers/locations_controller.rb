@@ -47,7 +47,7 @@ class LocationsController < ApplicationController
         format.html { redirect_to(@location) }
         format.xml  { render xml: @location, status: :created, location: @location }
       else
-        format.html { render action: "new" }
+        format.html { render action: 'new' }
         format.xml  { render xml: @location.errors, status: :unprocessable_entity }
       end
     end
@@ -60,7 +60,7 @@ class LocationsController < ApplicationController
         format.html { redirect_to(@location) }
         format.xml  { head :ok }
       else
-        format.html { render action: "edit" }
+        format.html { render action: 'edit' }
         format.xml  { render xml: @location.errors, status: :unprocessable_entity }
       end
     end

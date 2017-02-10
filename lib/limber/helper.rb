@@ -59,7 +59,7 @@ module Limber::Helper
     end
 
     def name_for(cherrypick, sequencing_request_type)
-      "#{PIPELINE} - #{cherrypick ? "Cherrypicked - " : ''}#{name} - #{sequencing_request_type.name.gsub(PIPELINE_REGEX, '')}"
+      "#{PIPELINE} - #{cherrypick ? 'Cherrypicked - ' : ''}#{name} - #{sequencing_request_type.name.gsub(PIPELINE_REGEX, '')}"
     end
 
     def build!

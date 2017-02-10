@@ -17,7 +17,7 @@ class SpecificTubeCreation < TubeCreation
   validates_presence_of :child_purposes
 
   def set_child_purposes=(uuids)
-    self.child_purposes = uuids.map { |uuid| Uuid.find_by_external_id(uuid).resource }
+    self.child_purposes = uuids.map { |uuid| Uuid.find_by(external_id: uuid).resource }
   end
 
   def no_pooling_expected?

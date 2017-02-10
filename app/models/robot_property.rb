@@ -8,7 +8,7 @@ class RobotProperty < ActiveRecord::Base
   belongs_to :robot
 
   scope :beds, ->() {
-    where({ name: nil })
+    where(name: nil)
   }
 
   def ean13_barcode

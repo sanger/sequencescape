@@ -8,7 +8,7 @@ class Endpoints::Submissions < Core::Endpoint::Base
   model do
     action(:create) do |request, _|
       attributes = ::Io::Submission.map_parameters_to_attributes(request.json)
-      attributes.merge!(user: request.user) if request.user.present?
+      attributes[:user] = request.user if request.user.present?
       request.target.create!(attributes)
     end
   end
@@ -17,7 +17,7 @@ class Endpoints::Submissions < Core::Endpoint::Base
     belongs_to(:user, json: 'user')
     has_many(
       :requests, json: 'requests', to: 'requests',
-      include: [:source_asset, :target_asset]
+                 include: [:source_asset, :target_asset]
     )
 
     action(:update, to: :standard_update!, if: :building?)

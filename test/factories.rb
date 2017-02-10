@@ -47,16 +47,16 @@ FactoryGirl.define do
   end
 
   factory :event do
-    family          ""
-    content         ""
-    message         ""
-    eventful_type   ""
-    eventful_id     ""
-    type            "Event"
+    family          ''
+    content         ''
+    message         ''
+    eventful_type   ''
+    eventful_id     ''
+    type            'Event'
   end
 
   factory :item do
-    name               { |a| generate :item_name }
+    name               { |_a| generate :item_name }
     sequence(:version) { |a| a }
     workflow           { |workflow| workflow.association(:submission_workflow) }
     count              nil
@@ -74,7 +74,7 @@ FactoryGirl.define do
   factory :study_metadata, class: Study::Metadata do
     faculty_sponsor
     study_description           'Some study on something'
-    program                     { Program.find_or_create_by(name: "General") }
+    program                     { Program.find_or_create_by(name: 'General') }
     contaminated_human_dna      'No'
     contains_human_dna          'No'
     commercially_available      'No'
@@ -83,20 +83,20 @@ FactoryGirl.define do
     study_type                  { StudyType.find_or_create_by(name: 'Not specified') }
     # This is probably a bit grim as well
     data_release_study_type     { DataReleaseStudyType.find_or_create_by(name: 'genomic sequencing') }
-    reference_genome            { ReferenceGenome.find_by_name!("") }
+    reference_genome            { ReferenceGenome.find_by!(name: '') }
     data_release_strategy       'open'
     study_name_abbreviation     'WTCCC'
     data_access_group           'something'
   end
 
   factory :study do
-    name { |a| generate :study_name }
+    name { |_a| generate :study_name }
     user
     blocked              false
-    state                "active"
+    state                'active'
     enforce_data_release false
     enforce_accessioning false
-    reference_genome     { ReferenceGenome.find_by_name("") }
+    reference_genome     { ReferenceGenome.find_by(name: '') }
 
     # study_metadata
 
@@ -104,7 +104,7 @@ FactoryGirl.define do
   end
 
   factory  :budget_division do
-    name { |a| generate :budget_division_name }
+    name { |_a| generate :budget_division_name }
   end
 
   factory :project_metadata, class: Project::Metadata do
@@ -114,10 +114,10 @@ FactoryGirl.define do
   end
 
   factory :project do
-    name                { |p| generate :project_name }
+    name                { |_p| generate :project_name }
     enforce_quotas      false
     approved            true
-    state               "active"
+    state               'active'
 
     after(:build) { |project| project.project_metadata = create(:project_metadata, project: project) }
   end
@@ -136,8 +136,8 @@ FactoryGirl.define do
   end
 
   factory :submission_workflow, class: Submission::Workflow do
-    name { |a| generate :item_name }
-    item_label "library"
+    name { |_a| generate :item_name }
+    item_label 'library'
   end
 
   factory :submission do
@@ -146,8 +146,8 @@ FactoryGirl.define do
 
   factory :submission_template do
     submission_class_name LinearSubmission.name
-    name                  "my_template"
-    submission_parameters({ workflow_id: 1, request_type_ids_list: [] })
+    name                  'my_template'
+    submission_parameters(workflow_id: 1, request_type_ids_list: [])
     product_catalogue { |pc| pc.association(:single_product_catalogue) }
   end
 
@@ -215,7 +215,7 @@ FactoryGirl.define do
   factory :request_metadata_for_library_manufacture, parent: :request_metadata do
     fragment_size_required_from   1
     fragment_size_required_to     20
-    library_type                  "Standard"
+    library_type                  'Standard'
 
     # TODO: [JG] These are all redundnant,and are a symptom of both our tests dependency
     # on sangerisms within the code,
@@ -231,7 +231,7 @@ FactoryGirl.define do
 
   # Bait libraries
   factory(:request_metadata_for_bait_pulldown, parent: :request_metadata) do
-    bait_library_id { |bl| create(:bait_library).id }
+    bait_library_id { |_bl| create(:bait_library).id }
   end
   # set default  metadata factories to every request types which have been defined yet
   RequestType.all.each do |rt|
@@ -254,15 +254,15 @@ FactoryGirl.define do
 
   factory :extended_validator do
     behaviour 'SpeciesValidator'
-    options({ taxon_id: 9606 })
+    options(taxon_id: 9606)
   end
 
   factory :library_type do
-    name "Standard"
+    name 'Standard'
   end
 
   factory :sample do
-    name { |a| generate :sample_name }
+    name { |_a| generate :sample_name }
 
     factory :sample_with_well do
       sequence(:sanger_sample_id) { |n| n.to_s }
@@ -281,46 +281,46 @@ FactoryGirl.define do
     end
 
     factory :sample_metadata_for_api do
-      organism "organism"
-      cohort "cohort"
-      country_of_origin "country_of_origin"
-      geographical_region "geographical_region"
-      ethnicity "ethnicity"
-      volume "volume"
-      mother "mother"
-      father "father"
-      replicate "replicate"
-      sample_public_name "sample_public_name"
-      sample_common_name "sample_common_name"
-      sample_description "sample_description"
-      sample_strain_att "sample_strain_att"
-      sample_ebi_accession_number "sample_ebi_accession_number"
-      sample_reference_genome_old "sample_reference_genome_old"
-      sibling "sibling"
-      date_of_sample_collection "date_of_sample_collection"
-      date_of_sample_extraction "date_of_sample_extraction"
-      sample_extraction_method "sample_extraction_method"
-      sample_purified "sample_purified"
-      purification_method "purification_method"
-      concentration "concentration"
-      concentration_determined_by "concentration_determined_by"
-      sample_type "sample_type"
-      sample_storage_conditions "sample_storage_conditions"
-      supplier_name "supplier_name"
-      genotype "genotype"
-      phenotype "phenotype"
-      developmental_stage "developmental_stage"
-      cell_type "cell_type"
-      disease_state "disease_state"
-      compound "compound"
-      immunoprecipitate "immunoprecipitate"
-      growth_condition "growth_condition"
-      rnai "rnai"
-      organism_part "organism_part"
-      time_point "time_point"
-      disease "disease"
-      subject "subject"
-      treatment "treatment"
+      organism 'organism'
+      cohort 'cohort'
+      country_of_origin 'country_of_origin'
+      geographical_region 'geographical_region'
+      ethnicity 'ethnicity'
+      volume 'volume'
+      mother 'mother'
+      father 'father'
+      replicate 'replicate'
+      sample_public_name 'sample_public_name'
+      sample_common_name 'sample_common_name'
+      sample_description 'sample_description'
+      sample_strain_att 'sample_strain_att'
+      sample_ebi_accession_number 'sample_ebi_accession_number'
+      sample_reference_genome_old 'sample_reference_genome_old'
+      sibling 'sibling'
+      date_of_sample_collection 'date_of_sample_collection'
+      date_of_sample_extraction 'date_of_sample_extraction'
+      sample_extraction_method 'sample_extraction_method'
+      sample_purified 'sample_purified'
+      purification_method 'purification_method'
+      concentration 'concentration'
+      concentration_determined_by 'concentration_determined_by'
+      sample_type 'sample_type'
+      sample_storage_conditions 'sample_storage_conditions'
+      supplier_name 'supplier_name'
+      genotype 'genotype'
+      phenotype 'phenotype'
+      developmental_stage 'developmental_stage'
+      cell_type 'cell_type'
+      disease_state 'disease_state'
+      compound 'compound'
+      immunoprecipitate 'immunoprecipitate'
+      growth_condition 'growth_condition'
+      rnai 'rnai'
+      organism_part 'organism_part'
+      time_point 'time_point'
+      disease 'disease'
+      subject 'subject'
+      treatment 'treatment'
     end
   end
 
@@ -351,14 +351,14 @@ FactoryGirl.define do
   end
 
   factory :user do
-    first_name        "fn"
-    last_name         "ln"
+    first_name        'fn'
+    last_name         'ln'
     login
     email             { |a| "#{a.login}@example.com".downcase }
     workflow          { |workflow| workflow.association(:submission_workflow) }
-    api_key           "123456789"
-    password              "password"
-    password_confirmation "password"
+    api_key           '123456789'
+    password              'password'
+    password_confirmation 'password'
 
     factory :admin do
       roles { |role| [role.association(:admin_role)] }
@@ -382,7 +382,7 @@ FactoryGirl.define do
     authorizable nil
 
     factory :admin_role do
-      name "administrator"
+      name 'administrator'
     end
 
     factory :public_role do
@@ -390,15 +390,15 @@ FactoryGirl.define do
     end
 
     factory :manager_role do
-      name            "manager"
+      name            'manager'
     end
 
     factory :data_access_coordinator_role do
-      name            "data_access_coordinator"
+      name            'data_access_coordinator'
     end
 
     factory :owner_role do
-      name            "owner"
+      name            'owner'
       authorizable    { |i| i.association(:project) }
     end
   end
@@ -411,9 +411,17 @@ FactoryGirl.define do
   end
 
   factory :asset_group do
-    name { |a| generate :asset_group_name }
+    name { |_a| generate :asset_group_name }
     study
-    assets []
+
+    transient do
+      asset_type :untagged_well
+      asset_count 0
+    end
+
+    assets do
+      Array.new(asset_count) { create asset_type }
+    end
   end
 
   factory :asset_group_asset do
@@ -425,25 +433,25 @@ FactoryGirl.define do
   end
 
   factory :multiplexed_library_tube do
-    name    { |a| generate :asset_name }
+    name    { |_a| generate :asset_name }
     purpose { Tube::Purpose.standard_mx_tube }
   end
 
   factory :pulldown_multiplexed_library_tube do
-    name { |a| generate :asset_name }
-    public_name   "ABC"
+    name { |_a| generate :asset_name }
+    public_name 'ABC'
   end
 
   factory :stock_multiplexed_library_tube do
-    name    { |a| generate :asset_name }
+    name    { |_a| generate :asset_name }
     purpose { Tube::Purpose.stock_mx_tube }
 
-    factory :new_stock_multiplexed_library_tube do |t|
+    factory :new_stock_multiplexed_library_tube do |_t|
       purpose { |a| a.association(:new_stock_tube_purpose) }
     end
   end
 
-  factory(:new_stock_tube_purpose, class: IlluminaHtp::StockTubePurpose) do |p|
+  factory(:new_stock_tube_purpose, class: IlluminaHtp::StockTubePurpose) do |_p|
     name { generate :purpose_name }
     target_type 'StockMultiplexedLibraryTube'
   end
@@ -470,7 +478,7 @@ FactoryGirl.define do
     end
   end
 
-  factory :transfer_request do |tr|
+  factory :transfer_request do |_tr|
     request_purpose { |rp| rp.association(:request_purpose) }
   end
 
@@ -480,7 +488,7 @@ FactoryGirl.define do
   end
 
   factory(:library_creation_request_for_testing_sequencing_requests, class: Request::LibraryCreation) do
-    request_type { |target| RequestType.find_by_name!('Library creation') }
+    request_type { |_target| RequestType.find_by!(name: 'Library creation') }
     request_purpose { |rp| rp.association(:request_purpose) }
     asset        { |target| target.association(:well_with_sample_and_plate) }
     target_asset { |target| target.association(:empty_well) }
@@ -490,7 +498,7 @@ FactoryGirl.define do
     end
   end
 
-  factory :pac_bio_sample_prep_request do |r|
+  factory :pac_bio_sample_prep_request do |_r|
     target_asset    { |ta| ta.association(:pac_bio_library_tube) }
     asset           { |a|   a.association(:well) }
     submission      { |s|   s.association(:submission) }
@@ -509,17 +517,17 @@ FactoryGirl.define do
   factory :broken_multiplexed_library_tube, parent: :multiplexed_library_tube
 
   factory :stock_library_tube do
-    name     { |a| generate :asset_name }
+    name     { |_a| generate :asset_name }
     purpose  { Tube::Purpose.stock_library_tube }
   end
 
   factory :stock_sample_tube do
-    name     { |a| generate :asset_name }
+    name     { |_a| generate :asset_name }
     purpose  { Tube::Purpose.stock_sample_tube }
   end
 
   factory(:empty_lane, class: Lane) do
-    name                { |l| generate :asset_name }
+    name                { |_l| generate :asset_name }
     external_release    nil
   end
 
@@ -527,22 +535,22 @@ FactoryGirl.define do
   end
 
   factory  :spiked_buffer do
-    name { |a| generate :asset_name }
+    name { |_a| generate :asset_name }
     volume 50
   end
 
   factory  :reference_genome do
-    name " "
+    name ' '
   end
 
   factory :supplier do
-    name "Test supplier"
+    name 'Test supplier'
   end
 
   factory :sample_manifest do
     study
     supplier
-    asset_type "plate"
+    asset_type 'plate'
     count 1
 
     factory :sample_manifest_with_samples do
@@ -550,7 +558,7 @@ FactoryGirl.define do
     end
 
     factory :tube_sample_manifest do
-      asset_type "1dtube"
+      asset_type '1dtube'
 
       factory :tube_sample_manifest_with_samples do
         samples { FactoryGirl.create_list(:sample_tube, 5).map(&:sample) }
@@ -559,7 +567,7 @@ FactoryGirl.define do
   end
 
   factory :db_file do
-    data "blahblahblah"
+    data 'blahblahblah'
   end
 
   factory :study_report do
@@ -568,9 +576,9 @@ FactoryGirl.define do
     factory  :pending_study_report
 
     factory  :completed_study_report do
-      report_filename "progress_report.csv"
+      report_filename 'progress_report.csv'
       after(:build) { |study_report_file|
-        create :db_file, owner: study_report_file, data: Tempfile.open("progress_report.csv").read
+        create :db_file, owner: study_report_file, data: Tempfile.open('progress_report.csv').read
       }
     end
   end
@@ -587,23 +595,23 @@ FactoryGirl.define do
   factory :pre_capture_pool
 
   factory(:asset_audit) do
-    message "Some message"
-    key "some_key"
+    message 'Some message'
+    key 'some_key'
     created_by 'abc123'
-    witnessed_by "jane"
+    witnessed_by 'jane'
     asset
   end
 
   factory(:faculty_sponsor) do
-    name { |a| generate :faculty_sponsor_name }
+    name { |_a| generate :faculty_sponsor_name }
   end
 
   factory(:pooling_method, class: 'RequestType::PoolingMethod') do
     pooling_behaviour 'PlateRow'
-    pooling_options({ pool_count: 8 })
+    pooling_options(pool_count: 8)
   end
 
-  factory :tag2_layout_template do |itlt|
+  factory :tag2_layout_template do |_itlt|
     transient do
       oligo { generate :oligo }
     end
@@ -637,7 +645,7 @@ FactoryGirl.define do
       resource.uuid_object = build :uuid, external_id: context.uuid, resource: resource
     end
 
-    after(:create) do |resource, context|
+    after(:create) do |resource, _context|
       resource.uuid_object.save!
     end
   end

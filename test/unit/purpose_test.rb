@@ -1,12 +1,12 @@
-require "test_helper"
+require 'test_helper'
 
 class PurposeTest < ActiveSupport::TestCase
-  context "A purpose" do
+  context 'A purpose' do
     setup do
       @purpose = create :purpose
     end
 
-    context "with an unrelated parent" do
+    context 'with an unrelated parent' do
       setup do
         @other_purpose = create :purpose
       end
@@ -28,7 +28,7 @@ class PurposeTest < ActiveSupport::TestCase
       end
     end
 
-    context "with a stock parent" do
+    context 'with a stock parent' do
       setup do
         @other_purpose = create :stock_purpose
       end

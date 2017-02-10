@@ -12,11 +12,11 @@ module AssetsHelper
   def well_information(plate_layout, row, column)
     well = plate_layout.well_at(row, column)
     if plate_layout.empty_well_at?(row, column)
-      ["Empty", "", ""]
+      ['Empty', '', '']
     elsif plate_layout.good_well_at?(row, column)
       ["Request ID: #{well[:request].id}", "Asset: #{well[:asset].name}", "Barcode: #{well[:asset].barcode}"]
     elsif plate_layout.bad_well_at?(row, column)
-      ["Error", (well[:error]).to_s, ""]
+      ['Error', (well[:error]).to_s, '']
     else
       raise StandardError, "Unknown well status ((#{plate_layout.location_for_well_at(row, column)}) = #{plate_layout.well_at(row, column).inspect})"
     end
@@ -24,11 +24,11 @@ module AssetsHelper
 
   def well_color(plate_layout, row, column)
     if plate_layout.empty_well_at?(row, column)
-      "empty_cell"
+      'empty_cell'
     elsif plate_layout.good_well_at?(row, column)
-      "good_cell"
+      'good_cell'
     else
-      "bad_cell"
+      'bad_cell'
     end
   end
 
@@ -74,13 +74,13 @@ module AssetsHelper
     asset.is_a?(SampleTube) and current_user.is_administrator?
   end
 
-  def current_user_can_make_additional_requests_on?(asset, study)
+  def current_user_can_make_additional_requests_on?(_asset, study)
     return false unless study.present?              # Study must be specified ...
     return true if current_user.is_administrator?   # ... user could be an administrator ...
     current_user.is_manager?(study)                 # ... or the manager of the specified study
   end
 
-  def current_user_studies_from(asset)
+  def current_user_studies_from(_asset)
     return Study if current_user.is_administrator?
 
     # Bit of a hack in that we want to provide the same interface as would be seen if this were an

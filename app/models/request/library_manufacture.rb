@@ -38,7 +38,5 @@ module Request::LibraryManufacture
     )
   end
 
-  def library_type
-    request_metadata.library_type
-  end
+  delegate :library_type, to: :request_metadata
 end

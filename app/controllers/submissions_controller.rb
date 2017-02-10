@@ -11,10 +11,10 @@ class SubmissionsController < ApplicationController
 
   before_action :lab_manager_login_required, only: [:change_priority]
 
-  after_filter :set_cache_disabled!, only: [:new, :index]
+  after_action :set_cache_disabled!, only: [:new, :index]
 
   def new
-    self.expires_now
+    expires_now
     @presenter = Submission::SubmissionCreator.new(current_user, study_id: params[:study_id])
   end
 
@@ -23,12 +23,12 @@ class SubmissionsController < ApplicationController
 
     if @presenter.save
       render partial: 'saved_order',
-        locals: {
+             locals: {
           presenter: @presenter,
           order: @presenter.order,
           form: :dummy_form_symbol
         },
-        layout: false
+             layout: false
     else
       render partial: 'order_errors', layout: false, status: 422
     end
@@ -56,7 +56,7 @@ class SubmissionsController < ApplicationController
 
   def index
     # Disable cache of this page
-    self.expires_now
+    expires_now
 
     @building = Submission.building.order(created_at: :desc).where(user_id: current_user.id)
     @pending = Submission.pending.order(created_at: :desc).where(user_id: current_user.id)
@@ -73,7 +73,7 @@ class SubmissionsController < ApplicationController
     ActiveRecord::Base.transaction do
       submission = Submission::SubmissionPresenter.new(current_user, id: params[:id])
       if submission.destroy
-        flash[:notice] = "Submission successfully deleted!"
+        flash[:notice] = 'Submission successfully deleted!'
       else
         flash[:error] = "This submission can't be deleted"
       end

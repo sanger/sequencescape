@@ -28,7 +28,7 @@ module PlatesHelper
   def padded_well_name_with_index(plate)
     ('A'...(?A.getbyte(0) + (plate.size / 12)).chr).each_with_index do |row, ri|
       (1..12).each_with_index do |col, ci|
-        padded_name = "%s%02d" % [row, col]
+        padded_name = '%s%02d' % [row, col]
         index = ci + (ri * 12)
         yield(padded_name, index)
       end

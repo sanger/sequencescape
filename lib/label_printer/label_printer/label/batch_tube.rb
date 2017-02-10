@@ -39,7 +39,7 @@ module LabelPrinter
       private
 
       def requests
-        request_ids = printable.select { |barcode, check| check == 'on' }.keys
+        request_ids = printable.select { |_barcode, check| check == 'on' }.keys
         requests = Request.find request_ids
       end
     end

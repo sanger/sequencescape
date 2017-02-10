@@ -11,9 +11,9 @@ class Requests::CommentsController < ApplicationController
   before_action :discover_request
 
   def index
-    @comments = @request.comments.order("created_at ASC")
+    @comments = @request.comments.order('created_at ASC')
     if request.xhr?
-      render partial: "simple_list", locals: { descriptions: @comments.pluck(:description) }
+      render partial: 'simple_list', locals: { descriptions: @comments.pluck(:description) }
     else
       # Perform default
     end
@@ -22,7 +22,7 @@ class Requests::CommentsController < ApplicationController
   def create
     @request.comments.create(description: params[:comment], user_id: current_user.id)
     @comments = @request.comments
-    render partial: "list", locals: { commentable: @request, visible: true }
+    render partial: 'list', locals: { commentable: @request, visible: true }
   end
 
   def destroy
@@ -31,7 +31,7 @@ class Requests::CommentsController < ApplicationController
       comment.destroy
     end
     @comments = @request.comments
-    render partial: "list", locals: { commentable: @request, visible: true }
+    render partial: 'list', locals: { commentable: @request, visible: true }
   end
 
   private

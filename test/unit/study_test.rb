@@ -4,20 +4,20 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class StudyTest < ActiveSupport::TestCase
-  context "Study" do
+  context 'Study' do
     should belong_to :user
 
     should have_many :samples # , :through => :study_samples
 
-    context "Request" do
+    context 'Request' do
       setup do
         @study = create :study
         @request_type    = create :request_type
-        @request_type_2  = create :request_type, name: "request_type_2", key: "request_type_2"
-        @request_type_3  = create :request_type, name: "request_type_3", key: "request_type_3"
+        @request_type_2  = create :request_type, name: 'request_type_2', key: 'request_type_2'
+        @request_type_3  = create :request_type, name: 'request_type_3', key: 'request_type_3'
         requests = []
         # Cancelled
         3.times do
@@ -46,7 +46,7 @@ class StudyTest < ActiveSupport::TestCase
         @study.save!
       end
 
-      should "Calculate correctly and be valid" do
+      should 'Calculate correctly and be valid' do
         assert @study.valid?
         assert_equal 3, @study.cancelled_requests(@request_type)
         assert_equal 4, @study.completed_requests(@request_type)
@@ -61,35 +61,35 @@ class StudyTest < ActiveSupport::TestCase
       end
     end
 
-    context "Role system" do
+    context 'Role system' do
       setup do
-        @study = create :study, name: "role test1"
-        @another_study = create :study, name: "role test2"
+        @study = create :study, name: 'role test1'
+        @another_study = create :study, name: 'role test2'
 
         @user1 = create :user
         @user2 = create :user
 
-        @user1.has_role("owner", @study)
-        @user1.has_role("follower", @study)
-        @user2.has_role("follower", @study)
-        @user2.has_role("manager", @study)
+        @user1.has_role('owner', @study)
+        @user1.has_role('follower', @study)
+        @user2.has_role('follower', @study)
+        @user2.has_role('manager', @study)
       end
 
-      should "deal with followers" do
+      should 'deal with followers' do
         refute @study.followers.empty?
         assert @study.followers.include?(@user1)
         assert @study.followers.include?(@user2)
         assert @another_study.followers.empty?
       end
 
-      should "deal with managers" do
+      should 'deal with managers' do
         refute @study.managers.empty?
         refute @study.managers.include?(@user1)
         assert @study.managers.include?(@user2)
         assert @another_study.managers.empty?
       end
 
-      should "deal with owners" do
+      should 'deal with owners' do
         refute @study.owners.empty?
         assert @study.owners.include?(@user1)
         refute @study.owners.include?(@user2)
@@ -97,12 +97,12 @@ class StudyTest < ActiveSupport::TestCase
       end
     end
 
-    context "#ethical approval?: " do
+    context '#ethical approval?: ' do
       setup do
         @study = create :study
       end
 
-      context "when contains human DNA" do
+      context 'when contains human DNA' do
         setup do
           @study.study_metadata.contains_human_dna = Study::YES
           @study.ethically_approved = false
@@ -116,65 +116,65 @@ class StudyTest < ActiveSupport::TestCase
             @study.ethically_approved = false
             @study.save!
           end
-          should "be in the awaiting ethical approval list" do
+          should 'be in the awaiting ethical approval list' do
             assert_contains(Study.awaiting_ethical_approval, @study)
           end
         end
 
-        context "and is contaminated with human DNA" do
+        context 'and is contaminated with human DNA' do
           setup do
             @study.study_metadata.contaminated_human_dna = Study::YES
             @study.ethically_approved = nil
             @study.save!
           end
-          should "not appear in the awaiting ethical approval list" do
+          should 'not appear in the awaiting ethical approval list' do
             assert_does_not_contain(Study.awaiting_ethical_approval, @study)
           end
         end
       end
 
-      context "when needing ethical approval" do
+      context 'when needing ethical approval' do
         setup do
           @study.study_metadata.contains_human_dna = Study::YES
           @study.study_metadata.contaminated_human_dna = Study::NO
           @study.study_metadata.commercially_available = Study::NO
         end
 
-        should "not be set to not applicable" do
+        should 'not be set to not applicable' do
           @study.ethically_approved = nil
           @study.valid?
           assert @study.ethically_approved == false
         end
 
-        should "be valid with true" do
+        should 'be valid with true' do
           @study.ethically_approved = true
           assert @study.valid?
         end
 
-        should "be valid with false" do
+        should 'be valid with false' do
           @study.ethically_approved = false
           assert @study.valid?
         end
       end
 
-      context "when not needing ethical approval" do
+      context 'when not needing ethical approval' do
         setup do
           @study.study_metadata.contains_human_dna = Study::YES
           @study.study_metadata.contaminated_human_dna = Study::YES
           @study.study_metadata.commercially_available = Study::NO
         end
 
-        should "be valid with not applicable" do
+        should 'be valid with not applicable' do
           @study.ethically_approved = nil
           assert @study.valid?
         end
 
-        should "be valid with true" do
+        should 'be valid with true' do
           @study.ethically_approved = true
           assert @study.valid?
         end
 
-        should "not be set to false" do
+        should 'not be set to false' do
           @study.ethically_approved = false
           @study.valid?
           assert @study.ethically_approved == nil
@@ -182,7 +182,7 @@ class StudyTest < ActiveSupport::TestCase
       end
     end
 
-    context "which needs x and autosomal DNA removed" do
+    context 'which needs x and autosomal DNA removed' do
       setup do
         @study_remove = create :study
         @study_remove.study_metadata.remove_x_and_autosomes = Study::YES
@@ -192,24 +192,24 @@ class StudyTest < ActiveSupport::TestCase
         @study_keep.save!
       end
 
-      should "show in the filters" do
+      should 'show in the filters' do
         assert Study.with_remove_x_and_autosomes.include?(@study_remove)
         refute Study.with_remove_x_and_autosomes.include?(@study_keep)
       end
     end
 
-    context "with check y separation" do
+    context 'with check y separation' do
       setup do
         @study = create :study
         @study.study_metadata.separate_y_chromosome_data = true
       end
 
-      should "be valid when we are sane" do
+      should 'be valid when we are sane' do
         @study.study_metadata.remove_x_and_autosomes = Study::NO
         assert @study.save!
       end
 
-      should "be invalid when we do something silly" do
+      should 'be invalid when we do something silly' do
         @study.study_metadata.remove_x_and_autosomes = Study::YES
         assert_raise ActiveRecord::RecordInvalid do
           @study.save!
@@ -217,32 +217,32 @@ class StudyTest < ActiveSupport::TestCase
       end
     end
 
-    context "#unprocessed_submissions?" do
+    context '#unprocessed_submissions?' do
       setup do
         @study = create :study
         @asset = create :sample_tube
       end
-      context "with submissions still unprocessed" do
+      context 'with submissions still unprocessed' do
         setup do
           FactoryHelp::submission study: @study, state: 'building', assets: [@asset]
-          FactoryHelp::submission study: @study, state: "pending", assets: [@asset]
-          FactoryHelp::submission study: @study, state: "processing", assets: [@asset]
+          FactoryHelp::submission study: @study, state: 'pending', assets: [@asset]
+          FactoryHelp::submission study: @study, state: 'processing', assets: [@asset]
         end
-        should "return true" do
+        should 'return true' do
           assert @study.unprocessed_submissions?
         end
       end
-      context "with no submissions unprocessed" do
+      context 'with no submissions unprocessed' do
         setup do
-          FactoryHelp::submission study: @study, state: "ready", assets: [@asset]
-          FactoryHelp::submission study: @study, state: "failed", assets: [@asset]
+          FactoryHelp::submission study: @study, state: 'ready', assets: [@asset]
+          FactoryHelp::submission study: @study, state: 'failed', assets: [@asset]
         end
-        should "return false" do
+        should 'return false' do
           refute @study.unprocessed_submissions?
         end
       end
-      context "with no submissions at all" do
-        should "return false" do
+      context 'with no submissions at all' do
+        should 'return false' do
           refute @study.unprocessed_submissions?
         end
       end

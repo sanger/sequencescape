@@ -34,20 +34,20 @@ class SubmissionTemplate < ActiveRecord::Base
   scope :include_product_line, -> { includes(:product_line) }
 
   def visible
-    self.superceded_by_id == LATEST_VERSION
+    superceded_by_id == LATEST_VERSION
   end
 
   def superceded_by_unknown!
     self.superceded_by_id = SUPERCEDED_BY_UNKNOWN_TEMPLATE
   end
 
-  def supercede(&block)
+  def supercede
     ActiveRecord::Base.transaction do
-      self.dup.tap do |cloned|
+      dup.tap do |cloned|
         yield(cloned) if block_given?
         name, cloned.name = cloned.name, "Superceding #{cloned.name}"
         cloned.save!
-        self.update_attributes!(superceded_by_id: cloned.id, superceded_at: Time.now)
+        update_attributes!(superceded_by_id: cloned.id, superceded_at: Time.now)
         cloned.update_attributes!(name: name)
       end
     end
@@ -58,14 +58,14 @@ class SubmissionTemplate < ActiveRecord::Base
   end
 
   def create_order!(attributes)
-    self.new_order(attributes).tap do |order|
+    new_order(attributes).tap do |order|
       yield(order) if block_given?
       order.save!
     end
   end
 
   def create_with_submission!(attributes)
-    self.create_order!(attributes) do |order|
+    create_order!(attributes) do |order|
       order.create_submission(user_id: order.user_id)
     end
   end
@@ -78,7 +78,7 @@ class SubmissionTemplate < ActiveRecord::Base
     infos      = SubmissionTemplate.unserialize(attributes.delete(:input_field_infos))
 
     submission_class.new(attributes).tap do |order|
-      order.template_name = self.name
+      order.template_name = name
       order.product = product_for(attributes)
       order.set_input_field_infos(infos) unless infos.nil?
     end
@@ -86,9 +86,9 @@ class SubmissionTemplate < ActiveRecord::Base
 
   # TODO[xxx]: This is a hack just so I can move forward but the request_types stuff should come directly
   def submission_attributes
-    return {} if self.submission_parameters.nil?
+    return {} if submission_parameters.nil?
 
-    submission_attributes = Marshal.load(Marshal.dump(self.submission_parameters)) # Deep clone
+    submission_attributes = Marshal.load(Marshal.dump(submission_parameters)) # Deep clone
     submission_attributes[:request_types] = submission_attributes[:request_type_ids_list].flatten
     submission_attributes
   end
@@ -101,17 +101,16 @@ class SubmissionTemplate < ActiveRecord::Base
   # the ActiveRecord::Base derived classes when params contains their instances.  It'll appear as insecure
   # method errors somewhere else in the code.
   def safely_duplicate(params)
-    params.inject({}) do |cloned, (k, v)|
+    params.each_with_object({}) do |(k, v), cloned|
       cloned[k] = if v.is_a?(ActiveRecord::Base)
-        v
+                    v
                   elsif v.is_a?(Array) and v.first.is_a?(ActiveRecord::Base)
-        v.dup                           # Duplicate the array, but not the contents
+                    v.dup                           # Duplicate the array, but not the contents
                   elsif v.is_a?(Array) or v.is_a?(Hash)
-        Marshal.load(Marshal.dump(v))   # Make safe copies of arrays and hashes
+                    Marshal.load(Marshal.dump(v))   # Make safe copies of arrays and hashes
                   else
-        v
+                    v
                   end
-      cloned
     end
   end
   private :safely_duplicate
@@ -120,7 +119,7 @@ class SubmissionTemplate < ActiveRecord::Base
   def self.new_from_submission(name, submission)
     submission_template = new(name: name)
     submission_template.update_from_submission(submission)
-    return submission_template
+    submission_template
   end
 
   def update_from_submission(submission)
@@ -139,9 +138,9 @@ class SubmissionTemplate < ActiveRecord::Base
 
   def self.unserialize(object)
     if object.respond_to? :map
-      return object.map { |o| unserialize(o) }
+      object.map { |o| unserialize(o) }
     else
-      return object
+      object
     end
   end
 end

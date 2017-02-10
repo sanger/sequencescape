@@ -17,8 +17,8 @@ class Product < ActiveRecord::Base
   has_many :product_criteria, inverse_of: :product, class_name: 'ProductCriteria'
 
   scope :with_stock_report, ->() {
-    joins(:product_criteria).
-    where(product_criteria: { deprecated_at: nil, stage: ProductCriteria::STAGE_STOCK })
+    joins(:product_criteria)
+    .where(product_criteria: { deprecated_at: nil, stage: ProductCriteria::STAGE_STOCK })
   }
 
   scope :alphabetical, ->() { order(:name) }

@@ -45,7 +45,7 @@ class Admin::RolesController < ApplicationController
         format.html { redirect_to(@role) }
         format.xml  { render xml: @role, status: :created, location: @role }
       else
-        format.html { render action: "new" }
+        format.html { render action: 'new' }
         format.xml  { render xml: @role.errors, status: :unprocessable_entity }
       end
     end

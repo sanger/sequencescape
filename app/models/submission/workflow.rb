@@ -10,7 +10,7 @@ class Submission::Workflow < ActiveRecord::Base
   has_many :items
 
   def self.default_workflow
-    self.find_by_name('Next-gen sequencing') or raise StandardError, "Cannot find submission workflow 'Next-gen sequencing'"
+    find_by(name: 'Next-gen sequencing') or raise StandardError, "Cannot find submission workflow 'Next-gen sequencing'"
   end
 
   FIELDS_TO_WORKFLOWS = {
@@ -35,6 +35,6 @@ class Submission::Workflow < ActiveRecord::Base
 
   def visible_attribute?(field_path)
     workflows_accepting_field = FIELDS_TO_WORKFLOWS[field_path.join('.')]
-    return (workflows_accepting_field.blank? || workflows_accepting_field.include?(self.name))
+    (workflows_accepting_field.blank? || workflows_accepting_field.include?(name))
   end
 end

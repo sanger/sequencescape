@@ -45,3 +45,11 @@ Metrics/BlockLength:
 # Enforces the new rails 5 style. Re-enable on Rails 5 upgrade.
 Rails/HttpPositionalArguments:
   Enabled: false
+
+# We have a few custom find_by methods which we maintain.
+# At least for now. find_by_id_or_name is a bit clunky.
+Rails/DynamicFindBy:
+  Whitelist:
+    - find_by_sql
+    - find_by_id_or_name
+    - find_by_id_or_name!

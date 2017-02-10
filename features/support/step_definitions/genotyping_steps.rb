@@ -6,7 +6,7 @@
 
 Then /^I should see dna qc table:$/ do |expected_results_table|
   actual_table = table(fetch_table('table#sortable_batches'))
-  actual_table.map_column!('Qc') { |text| "" }
+  actual_table.map_column!('Qc') { |_text| '' }
   expected_results_table.diff!(actual_table)
 end
 
@@ -30,12 +30,12 @@ end
 
 Given /^a robot exists$/ do
   robot = FactoryGirl.create :robot
-  robot.robot_properties.create(key: 'max_plates', value: "21")
+  robot.robot_properties.create(key: 'max_plates', value: '21')
 end
 
 Then /^the manifest for study "([^"]*)" with plate "([^"]*)" should be:$/ do |study_name, plate_barcode, expected_results_table|
-  study = Study.find_by_name(study_name)
-  plate = Plate.find_by_barcode(plate_barcode)
+  study = Study.find_by(name: study_name)
+  plate = Plate.find_by(barcode: plate_barcode)
   manifest = CSV.parse(ManifestGenerator.generate_manifest_for_plate_ids([plate.id], study))
   manifest.shift(3)
   expected_results_table.diff!(manifest)
@@ -48,22 +48,22 @@ Given(/^I have a plate "([^"]*)" in study "([^"]*)" with (\d+) samples in asset 
 end
 
 Given(/^I have a "([^"]*)" plate "([^"]*)" in study "([^"]*)" with (\d+) samples in asset group "([^"]*)"$/) do |purpose_name, plate_barcode, study_name, number_of_samples, asset_group_name|
-  study = Study.find_by_name(study_name)
+  study = Study.find_by(name: study_name)
   purpose = Purpose.find_by(name: purpose_name)
-  plate = FactoryGirl.create(:plate, purpose: purpose, barcode: plate_barcode, location: Location.find_by_name("Sample logistics freezer"))
+  plate = FactoryGirl.create(:plate, purpose: purpose, barcode: plate_barcode, location: Location.find_by(name: 'Sample logistics freezer'))
 
-  asset_group = study.asset_groups.find_by_name(asset_group_name) || study.asset_groups.create!(name: asset_group_name)
+  asset_group = study.asset_groups.find_by(name: asset_group_name) || study.asset_groups.create!(name: asset_group_name)
   asset_group.assets << (1..number_of_samples.to_i).map do |index|
     FactoryGirl.create(:well, plate: plate, map_id: index).tap do |well|
       well.aliquots.create!(sample: FactoryGirl.create(:sample, name: "Sample_#{plate_barcode}_#{index}"),
-                                              study: study)
+                            study: study)
     end
   end
 end
 
 Given(/^plate "([^"]*)" in study "([^"]*)" is in asset group "([^"]*)"$/) do |plate_barcode, study_name, asset_group_name|
-  study = Study.find_by_name(study_name)
-  plate = Plate.find_by_barcode(plate_barcode)
+  study = Study.find_by(name: study_name)
+  plate = Plate.find_by(barcode: plate_barcode)
   asset_group = AssetGroup.find_or_create_by(name: asset_group_name, study_id: study.id)
   plate.wells.each do |well|
     asset_group.assets << well
@@ -72,7 +72,7 @@ Given(/^plate "([^"]*)" in study "([^"]*)" is in asset group "([^"]*)"$/) do |pl
 end
 
 Given /^I have a cherrypicking batch$/ do
-  step("I have a cherrypicking batch with 96 samples")
+  step('I have a cherrypicking batch with 96 samples')
 end
 
 Given(/^I have a cherrypicking batch with (\d+) samples$/) do |number_of_samples|
@@ -91,11 +91,11 @@ end
 
 Given(/^a robot exists with barcode "([^"]*)"$/) do |robot_barcode|
   robot = FactoryGirl.create :robot, barcode: robot_barcode
-  robot.robot_properties.create(key: 'max_plates', value: "21")
-  robot.robot_properties.create(key: 'SCRC1', value: "1")
-  robot.robot_properties.create(key: 'SCRC2', value: "2")
-  robot.robot_properties.create(key: 'SCRC3', value: "3")
-  robot.robot_properties.create(key: 'DEST1', value: "20")
+  robot.robot_properties.create(key: 'max_plates', value: '21')
+  robot.robot_properties.create(key: 'SCRC1', value: '1')
+  robot.robot_properties.create(key: 'SCRC2', value: '2')
+  robot.robot_properties.create(key: 'SCRC3', value: '3')
+  robot.robot_properties.create(key: 'DEST1', value: '20')
 end
 
 When(/^I complete the cherrypicking batch with "([^"]*)" plate purpose but dont release it$/) do |plate_purpose_name|
@@ -125,15 +125,15 @@ Given /^I have a cherrypicked plate with barcode "([^"]*)" and plate purpose "([
 end
 
 Given(/^well "([^"]*)" on plate "([^"]*)" has a genotyping_done status of "([^"]*)"$/) do |well_description, plate_barcode, genotyping_status|
-  plate = Plate.find_by_barcode(plate_barcode)
+  plate = Plate.find_by(barcode: plate_barcode)
   well = plate.find_well_by_name(well_description)
   well.primary_aliquot.sample.external_properties.create!(key: 'genotyping_done', value: genotyping_status)
 end
 
 Given /^well "([^"]*)" has a genotyping status of "([^"]*)"$/ do |uuid, genotyping_status|
-  well = Uuid.find_by_external_id(uuid).resource
+  well = Uuid.find_by(external_id: uuid).resource
 
-  sample = FactoryGirl.create(:sample, name: "Testing_the_JSON_API")
+  sample = FactoryGirl.create(:sample, name: 'Testing_the_JSON_API')
   sample.external_properties.create!(key: 'genotyping_done', value: genotyping_status)
   sample.external_properties.create!(key: 'genotyping_snp_plate_id')
 
@@ -146,9 +146,9 @@ Given(/^I have a DNA QC submission for plate "([^"]*)"$/) do |plate_barcode|
 end
 
 Given /^I have a "([^"]*)" submission for plate "([^"]*)" with project "([^"]*)" and study "([^"]*)"$/ do |submission_template_name, plate_barcode, project_name, study_name|
-  plate = Plate.find_by_barcode(plate_barcode)
-  project = Project.find_by_name(project_name)
-  study = Study.find_by_name(study_name)
+  plate = Plate.find_by(barcode: plate_barcode)
+  project = Project.find_by(name: project_name)
+  study = Study.find_by(name: study_name)
 
   # Maintain the order of the wells as though they have been submitted by the user, rather than
   # relying on the ordering within sequencescape.  Some of the plates are created with less than
@@ -157,31 +157,31 @@ Given /^I have a "([^"]*)" submission for plate "([^"]*)" with project "([^"]*)"
   plate.wells.walk_in_column_major_order { |well, _| wells << well }
   wells.compact!
 
-  submission_template = SubmissionTemplate.find_by_name(submission_template_name)
+  submission_template = SubmissionTemplate.find_by(name: submission_template_name)
   submission = submission_template.create_and_build_submission!(
     study: study,
     project: project,
-    workflow: Submission::Workflow.find_by_key('microarray_genotyping'),
+    workflow: Submission::Workflow.find_by(key: 'microarray_genotyping'),
     user: User.last,
     assets: wells
     )
-  step("1 pending delayed jobs are processed")
+  step('1 pending delayed jobs are processed')
 end
 
-Given(/^I have a Cherrypicking submission for asset group "([^"]*)"$/) do |asset_group_name|
-  project = Project.find_by_name("Test project")
-  study = Study.find_by_name("Test study")
-  asset_group = AssetGroup.find_by_name(asset_group_name)
+Given /^I have a Cherrypicking submission for asset group "([^"]*)"$/ do |asset_group_name|
+  project = Project.find_by(name: 'Test project')
+  study = Study.find_by(name: 'Test study')
+  asset_group = AssetGroup.find_by(name: asset_group_name)
 
-  submission_template = SubmissionTemplate.find_by_name('Cherrypick')
+  submission_template = SubmissionTemplate.find_by(name: 'Cherrypick')
   submission = submission_template.create_and_build_submission!(
     study: study,
     project: project,
-    workflow: Submission::Workflow.find_by_key('microarray_genotyping'),
+    workflow: Submission::Workflow.find_by(key: 'microarray_genotyping'),
     user: User.last,
     assets: asset_group.assets
     )
-  step("1 pending delayed jobs are processed")
+  step('1 pending delayed jobs are processed')
 end
 
 Given /^the internal QC plates are created$/ do
@@ -214,14 +214,14 @@ Given /^the internal QC plates are created$/ do
   step 'plate with barcode "4331234567653" is part of study "Test study"'
   step('plate with barcode "4341234567737" is part of study "Test study"')
   step('plate with barcode "1931234567771" is part of study "Test study"')
-  step("5 pending delayed jobs are processed")
+  step('5 pending delayed jobs are processed')
 
   # print sequenome barcode
-  step("I am on the new Sequenom QC Plate page")
+  step('I am on the new Sequenom QC Plate page')
   step('I fill in "User barcode" with "2470000100730"')
   step('I fill in "Plate 1" with "6251234567836"')
   step('I fill in "Number of Plates" with "1"')
   step('I select "xyz" from "Barcode Printer"')
   step('I press "Create new Plate"')
-  step("all pending delayed jobs are processed")
+  step('all pending delayed jobs are processed')
 end

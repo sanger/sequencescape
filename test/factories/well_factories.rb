@@ -5,9 +5,9 @@
 # Copyright (C) 2011,2012,2015,2016 Genome Research Ltd.
 
 FactoryGirl.define do
-  factory :well do |well|
-    value               ""
-    qc_state            ""
+  factory :well do |_well|
+    value               ''
+    qc_state            ''
     resource            nil
     barcode             nil
     well_attribute
@@ -16,35 +16,35 @@ FactoryGirl.define do
     factory :empty_well
   end
 
-  factory :well_attribute do |w|
+  factory :well_attribute do |_w|
     concentration       23.2
     current_volume      15
   end
 
-  factory :well_with_sample_and_without_plate, parent: :empty_well do |well|
+  factory :well_with_sample_and_without_plate, parent: :empty_well do |_well|
     after(:build) do |well|
       well.aliquots << build(:tagged_aliquot, receptacle: well)
     end
   end
 
-  factory :untagged_well, parent: :empty_well do |well|
+  factory :untagged_well, parent: :empty_well do |_well|
     after(:build) do |well|
       well.aliquots << build(:untagged_aliquot, receptacle: well)
     end
   end
 
-  factory :tagged_well, parent: :empty_well do |well|
+  factory :tagged_well, parent: :empty_well do |_well|
     after(:create) do |well|
       well.aliquots.create!(sample: create(:sample), tag: create(:tag))
     end
   end
 
-  factory :well_with_sample_and_plate, parent: :well_with_sample_and_without_plate do |well|
+  factory :well_with_sample_and_plate, parent: :well_with_sample_and_without_plate do |_well|
     map
     plate
   end
 
-  factory :cross_pooled_well, parent: :empty_well do |well|
+  factory :cross_pooled_well, parent: :empty_well do |_well|
     map
     plate
     after(:build) do |well|

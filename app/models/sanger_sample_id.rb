@@ -7,7 +7,7 @@
 class SangerSampleId < ActiveRecord::Base
   class Factory
     def self.instance
-      @instance ||= self.new
+      @instance ||= new
     end
 
     def next!

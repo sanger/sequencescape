@@ -5,7 +5,7 @@
 module Validateable
   [:save, :save!, :update_attribute].each { |attr| define_method(attr) {} }
 
-  def method_missing(symbol, *params)
+  def method_missing(symbol, *_params)
     if symbol.to_s =~ /(.*)_before_type_cast$/
       send($1)
     end
@@ -41,7 +41,7 @@ module Validateable
       defaults = self_and_descendants_from_active_record.map do |klass|
         "#{klass.name.underscore}""#{klass.name.underscore}"
       end
-      defaults << self.name.humanize
+      defaults << name.humanize
       I18n.translate(defaults.shift, { scope: [:activerecord, :models], count: 1, default: defaults }.merge(options))
     end
   end

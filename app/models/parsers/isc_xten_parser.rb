@@ -41,11 +41,11 @@ class Parsers::IscXtenParser
 
   def get_name_for_header(sym_name)
     {
-      row: "Well Row",
-      col: "Well Col",
-      content: "Content",
-      raw_data: "Raw Data (485/520)",
-      concentration: "Linear regression fit based on Raw Data (485/520)"
+      row: 'Well Row',
+      col: 'Well Col',
+      content: 'Content',
+      raw_data: 'Raw Data (485/520)',
+      concentration: 'Linear regression fit based on Raw Data (485/520)'
     }[sym_name]
   end
 

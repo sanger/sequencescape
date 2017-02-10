@@ -5,7 +5,7 @@ module SampleManifestExcel
     ##
     # Always returns A1:A10.
     def reference
-      "A1:A10"
+      'A1:A10'
     end
 
     ##

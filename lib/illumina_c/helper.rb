@@ -59,7 +59,7 @@ illumina_c_hiseq_4000_single_end_sequencing
     end
 
     def name_for(cherrypick, sequencing_request_type)
-      "#{PIPELINE} - #{cherrypick ? "Cherrypicked - " : ''}#{name} - #{sequencing_request_type.name.gsub("#{PIPELINE} ", '')}"
+      "#{PIPELINE} - #{cherrypick ? 'Cherrypicked - ' : ''}#{name} - #{sequencing_request_type.name.gsub("#{PIPELINE} ", '')}"
     end
 
     def build!

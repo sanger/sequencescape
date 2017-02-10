@@ -15,7 +15,7 @@ class Robot < ActiveRecord::Base
  scope :with_machine_barcode, ->(barcode) {
     return none unless Barcode.prefix_from_barcode(barcode) == prefix
     where(barcode: Barcode.number_to_human(barcode))
-  }
+                              }
 
   scope :include_properties, -> { includes(:robot_properties) }
 
@@ -24,17 +24,17 @@ class Robot < ActiveRecord::Base
   end
 
   def self.prefix
-    "RB"
+    'RB'
   end
 
   def self.find_from_barcode(code)
     human_robot_barcode = Barcode.number_to_human(code)
-    Robot.find_by_barcode(human_robot_barcode) || Robot.find_by_id(human_robot_barcode)
+    Robot.find_by(barcode: human_robot_barcode) || Robot.find_by(id: human_robot_barcode)
   end
 
   def self.valid_barcode?(code)
-    Barcode.barcode_to_human!(code, self.prefix)
-    self.find_from_barcode(code) # an exception is raise if not found
+    Barcode.barcode_to_human!(code, prefix)
+    find_from_barcode(code) # an exception is raise if not found
     true
   rescue
     false

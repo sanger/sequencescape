@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2013,2015,2016 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 require 'csv'
 
 class FluidigmFileTest < ActiveSupport::TestCase
@@ -13,7 +13,7 @@ class FluidigmFileTest < ActiveSupport::TestCase
   YY = 'F'
   NC = 'Unknown'
 
-  context "A fluidigm file" do
+  context 'A fluidigm file' do
     setup do
       File.open("#{Rails.root}/test/data/fluidigm.csv") do |file|
         @fluidigm = FluidigmFile.new(file.read)
@@ -35,20 +35,20 @@ class FluidigmFileTest < ActiveSupport::TestCase
       }
     end
 
-    should "validate plate" do
+    should 'validate plate' do
       assert  @fluidigm.for_plate?('1381832088')
       assert !@fluidigm.for_plate?('1381832089')
     end
 
-    should "find 95 wells" do
+    should 'find 95 wells' do
       count = 0
-      @fluidigm.each_well do |well|
+      @fluidigm.each_well do |_well|
         count += 1
       end
       assert_equal 95, count
     end
 
-    should "provide an interface for wells" do
+    should 'provide an interface for wells' do
       checked = 0
       @fluidigm.each_well do |well|
         assert well.description != 'S96'
@@ -60,13 +60,13 @@ class FluidigmFileTest < ActiveSupport::TestCase
       assert_equal @well_maps.size, checked
     end
 
-    should "let us grab all well locations" do
+    should 'let us grab all well locations' do
       assert_equal 95, @fluidigm.well_locations.count
       @fluidigm.well_locations.each { |l| assert l.is_a?(String) }
     end
 
-    should "let us fetch individual wells" do
-      @well_maps.each do |loc, properties|
+    should 'let us fetch individual wells' do
+      @well_maps.each do |loc, _properties|
         well = @fluidigm.well_at(loc)
         assert well.is_a?(FluidigmFile::FluidigmWell)
         assert_equal loc, well.description

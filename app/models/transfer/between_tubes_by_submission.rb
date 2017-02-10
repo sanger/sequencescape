@@ -9,7 +9,7 @@ class Transfer::BetweenTubesBySubmission < Transfer
 
   after_create :build_asset_links
 
-  belongs_to :source, class_name: "Tube"
+  belongs_to :source, class_name: 'Tube'
 
   before_validation :ensure_destination_setup
 
@@ -25,11 +25,11 @@ class Transfer::BetweenTubesBySubmission < Transfer
     destination.update_attributes!(name: source.name_for_child_tube)
   end
 
-  def each_transfer(&block)
+  def each_transfer
     yield(source, destination)
   end
 
-  def request_type_between(ignored_a, ignored_b)
+  def request_type_between(_ignored_a, _ignored_b)
     destination.transfer_request_type_from(source)
   end
 

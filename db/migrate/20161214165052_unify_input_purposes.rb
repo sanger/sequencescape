@@ -6,17 +6,17 @@ class UnifyInputPurposes < ActiveRecord::Migration
 
   UNIFIED_PURPOSE = 'PlatePurpose::Input'
   NAME_OLD_PURPOSE = [
-    ["ILB_STD_INPUT", "IlluminaHtp::StockPlatePurpose"],
-    ["Cherrypicked", "IlluminaHtp::StockPlatePurpose"],
-    ["PF Cherrypicked", "IlluminaHtp::StockPlatePurpose"],
-    ["WGS stock DNA", "Pulldown::StockPlatePurpose"],
-    ["SC stock DNA", "Pulldown::StockPlatePurpose"],
-    ["ISC stock DNA", "Pulldown::StockPlatePurpose"]
+    ['ILB_STD_INPUT', 'IlluminaHtp::StockPlatePurpose'],
+    ['Cherrypicked', 'IlluminaHtp::StockPlatePurpose'],
+    ['PF Cherrypicked', 'IlluminaHtp::StockPlatePurpose'],
+    ['WGS stock DNA', 'Pulldown::StockPlatePurpose'],
+    ['SC stock DNA', 'Pulldown::StockPlatePurpose'],
+    ['ISC stock DNA', 'Pulldown::StockPlatePurpose']
   ]
 
   def up
     ActiveRecord::Base.transaction do
-      NAME_OLD_PURPOSE.each do |name, old_purpose|
+      NAME_OLD_PURPOSE.each do |name, _old_purpose|
         purp = Purpose.find_by(name: name)
         purp.type = UNIFIED_PURPOSE
         purp.save!

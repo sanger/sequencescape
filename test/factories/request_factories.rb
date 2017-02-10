@@ -91,7 +91,7 @@ FactoryGirl.define do
     association(:request_type, factory: :library_request_type)
     request_purpose
 
-    after(:build) do |request, evaluator|
+    after(:build) do |request, _evaluator|
       request.request_metadata = build(:illumina_htp_requests_std_library_request_metadata, owner: request)
     end
   end
@@ -127,7 +127,7 @@ FactoryGirl.define do
     request_purpose
     state 'pending'
     study
-    user              { |user| User.find_by(login: user_login) || create(:user, login: user_login) }
+    user              { |_user| User.find_by(login: user_login) || create(:user, login: user_login) }
     workflow          { |workflow| workflow.association(:submission_workflow) }
   end
 
@@ -157,7 +157,7 @@ FactoryGirl.define do
     target_asset { |asset| asset.association(:empty_library_tube) }
   end
 
-  factory :request_without_item, class: "Request" do
+  factory :request_without_item, class: 'Request' do
     study
     project
     user

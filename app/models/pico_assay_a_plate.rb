@@ -5,5 +5,5 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 class PicoAssayAPlate < PicoAssayPlate
-  self.prefix = "PA"
+  self.prefix = 'PA'
 end

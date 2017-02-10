@@ -4,10 +4,10 @@
 # authorship of this file.
 # Copyright (C) 2015,2016 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class FlexibleSubmissionTest < ActiveSupport::TestCase
-  context "FlexibleSubmission" do
+  context 'FlexibleSubmission' do
     setup do
       @assets       = create(:two_column_plate).wells
       @workflow     = create :submission_workflow
@@ -17,18 +17,18 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
     should belong_to :study
     should belong_to :user
 
-    context "build (Submission factory)" do
+    context 'build (Submission factory)' do
       setup do
         @study    = create :study
         @project  = create :project
         @user     = create :user
 
-        @library_creation_request_type = create :well_request_type, { target_purpose: nil, for_multiplexing: true, pooling_method: @pooling }
+        @library_creation_request_type = create :well_request_type, target_purpose: nil, for_multiplexing: true, pooling_method: @pooling
         @sequencing_request_type = create :sequencing_request_type
 
         @request_type_ids = [@library_creation_request_type.id, @sequencing_request_type.id]
 
-        @request_options = { "read_length" => "108", "fragment_size_required_from" => "150", "fragment_size_required_to" => "200" }
+        @request_options = { 'read_length' => '108', 'fragment_size_required_from' => '150', 'fragment_size_required_to' => '200' }
       end
 
       context 'multiplexed submission' do
@@ -49,7 +49,7 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
           assert @mpx_submission.multiplexed?
         end
 
-        context "#process!" do
+        context '#process!' do
           context 'multiple requests' do
             setup do
               @request_count = Request.count
@@ -105,7 +105,7 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
           @request_count = Request.count
         end
 
-        context "specified at submission" do
+        context 'specified at submission' do
           setup do
             @xs_mpx_submission = FlexibleSubmission.build!(
               study: @study,
@@ -134,7 +134,7 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
             assert @xs_mpx_submission.multiplexed?
           end
 
-          context "#process!" do
+          context '#process!' do
             context 'multiple requests' do
               setup do
                 @xs_mpx_submission.process!
@@ -152,7 +152,7 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
           end
         end
 
-        context "not specified at submission" do
+        context 'not specified at submission' do
           should 'not be valid for unpooled assets' do
             assert_raise(ActiveRecord::RecordInvalid) do
               FlexibleSubmission.build!(
@@ -167,7 +167,7 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
             end
           end
 
-          context "On pooled assets" do
+          context 'On pooled assets' do
             setup do
               @request_count = Request.count
               @pooled = create :cross_pooled_well
@@ -195,18 +195,18 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
       end
     end
 
-    context "with target asset creation" do
+    context 'with target asset creation' do
       setup do
         @study    = create :study
         @project  = create :project
         @user     = create :user
 
-        @library_creation_request_type = create :well_request_type, { for_multiplexing: true, target_asset_type: 'MultiplexedLibraryTube', pooling_method: @pooling }
+        @library_creation_request_type = create :well_request_type, for_multiplexing: true, target_asset_type: 'MultiplexedLibraryTube', pooling_method: @pooling
         @sequencing_request_type = create :sequencing_request_type
 
         @request_type_ids = [@library_creation_request_type.id, @sequencing_request_type.id]
 
-        @request_options = { "read_length" => "108", "fragment_size_required_from" => "150", "fragment_size_required_to" => "200" }
+        @request_options = { 'read_length' => '108', 'fragment_size_required_from' => '150', 'fragment_size_required_to' => '200' }
       end
 
       context 'multiplexed submission' do
@@ -226,7 +226,7 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
           assert @mpx_submission.multiplexed?
         end
 
-        context "#process!" do
+        context '#process!' do
           context 'multiple requests' do
             setup do
               @request_count = Request.count
@@ -237,7 +237,7 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
               assert_equal (16 + 8), Request.count - @request_count
             end
 
-            should "set target assets according to the request_type.pool_by" do
+            should 'set target assets according to the request_type.pool_by' do
               rows = (0...8).to_a
               used_assets = []
 
@@ -245,7 +245,7 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
                 assert rows.delete(row).present?, "Row #{row} was unexpected"
                 unique_target_assets = wells.map { |w| w.requests.first.target_asset }.uniq
                 assert_equal unique_target_assets.count, 1
-                assert (used_assets & unique_target_assets).empty?, "Target assets are reused"
+                assert (used_assets & unique_target_assets).empty?, 'Target assets are reused'
                 used_assets.concat(unique_target_assets)
               end
 
@@ -256,15 +256,15 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
       end
     end
 
-    context "process with a multiplier for request type" do
+    context 'process with a multiplier for request type' do
       setup do
         @study = create :study
         @project = create :project
         @user = create :user
 
-        @ux_request_type = create :well_request_type, { target_purpose: nil, for_multiplexing: false }
-        @mx_request_type = create :well_request_type, { target_purpose: nil, for_multiplexing: true, pooling_method: @pooling }
-        @pe_request_type = create :request_type, asset_type: "LibraryTube", initial_state: "pending", name: "PE sequencing", order: 2, key: "pe_sequencing"
+        @ux_request_type = create :well_request_type, target_purpose: nil, for_multiplexing: false
+        @mx_request_type = create :well_request_type, target_purpose: nil, for_multiplexing: true, pooling_method: @pooling
+        @pe_request_type = create :request_type, asset_type: 'LibraryTube', initial_state: 'pending', name: 'PE sequencing', order: 2, key: 'pe_sequencing'
 
         @request_type_ids = [@mx_request_type.id, @pe_request_type.id]
 
@@ -275,18 +275,18 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
           user: @user,
           assets: @assets,
           request_types: @request_type_ids,
-          request_options: { :multiplier => { @pe_request_type.id.to_s.to_sym => '2', @mx_request_type.id.to_s.to_sym => '1' }, "read_length" => "108", "fragment_size_required_from" => "150", "fragment_size_required_to" => "200" },
+          request_options: { :multiplier => { @pe_request_type.id.to_s.to_sym => '2', @mx_request_type.id.to_s.to_sym => '1' }, 'read_length' => '108', 'fragment_size_required_from' => '150', 'fragment_size_required_to' => '200' },
           comments: ''
         )
       end
 
-      context "when a multiplication factor of 2 is provided" do
-        context "for multiplexed libraries and sequencing" do
+      context 'when a multiplication factor of 2 is provided' do
+        context 'for multiplexed libraries and sequencing' do
           setup do
             @mx_submission_with_multiplication_factor.process!
           end
 
-          should "create 16 library requests and 40 sequencing requests" do
+          should 'create 16 library requests and 40 sequencing requests' do
             lib_requests = Request.where(submission_id: @mx_submission_with_multiplication_factor, request_type_id: @mx_request_type.id)
             assert_equal 16, lib_requests.count
             seq_requests = Request.where(submission_id: @mx_submission_with_multiplication_factor, request_type_id: @pe_request_type.id)
@@ -296,22 +296,22 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
       end
     end
 
-    context "correctly calculate multipliers" do
+    context 'correctly calculate multipliers' do
       setup do
         @study = create :study
         @project = create :project
         @user = create :user
 
-        @ux_request_type = create :well_request_type, { target_purpose: nil, for_multiplexing: false }
-        @mx_request_type = create :well_request_type, { target_purpose: nil, for_multiplexing: true, pooling_method: @pooling }
-        @pe_request_type = create :request_type, asset_type: "LibraryTube", initial_state: "pending", name: "PE sequencing", order: 2, key: "pe_sequencing"
+        @ux_request_type = create :well_request_type, target_purpose: nil, for_multiplexing: false
+        @mx_request_type = create :well_request_type, target_purpose: nil, for_multiplexing: true, pooling_method: @pooling
+        @pe_request_type = create :request_type, asset_type: 'LibraryTube', initial_state: 'pending', name: 'PE sequencing', order: 2, key: 'pe_sequencing'
 
         @mx_request_type_ids = [@mx_request_type.id, @pe_request_type.id]
         @ux_request_type_ids = [@ux_request_type.id, @pe_request_type.id]
       end
 
-      context "with multiplexed requests" do
-        context "for multiplexed libraries and sequencing" do
+      context 'with multiplexed requests' do
+        context 'for multiplexed libraries and sequencing' do
           setup do
             @mx_submission_with_multiplication_factor = FlexibleSubmission.build!(
                 study: @study,
@@ -324,7 +324,7 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
               )
           end
 
-          should "multiply the sequencing" do
+          should 'multiply the sequencing' do
             ids = []
             @mx_submission_with_multiplication_factor.orders.first.request_type_multiplier do |id|
               ids << id
@@ -334,8 +334,8 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
         end
       end
 
-      context "with unplexed requests" do
-        context "for unplexed libraries and sequencing" do
+      context 'with unplexed requests' do
+        context 'for unplexed libraries and sequencing' do
           setup do
             @ux_submission_with_multiplication_factor = FlexibleSubmission.build!(
                 study: @study,
@@ -348,7 +348,7 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
               )
           end
 
-          should "multiply the library creation" do
+          should 'multiply the library creation' do
             ids = []
             @ux_submission_with_multiplication_factor.orders.first.request_type_multiplier do |id|
               ids << id

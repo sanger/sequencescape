@@ -7,7 +7,7 @@
 class IlluminaC::StockPurpose < PlatePurpose
   include PlatePurpose::Stock
 
-  def transition_to(plate, state, user, contents = nil, customer_accepts_responsibility = false)
+  def transition_to(plate, state, _user, contents = nil, _customer_accepts_responsibility = false)
     return unless ['failed', 'cancelled'].include?(state)
     plate.wells.located_at(contents).include_requests_as_target.include_requests_as_source.each do |well|
       well.requests.each { |r| r.send(transition_from(r.state)) if r.is_a?(IlluminaC::Requests::LibraryRequest) && transition_from(r.state) }

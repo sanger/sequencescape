@@ -6,7 +6,7 @@
 
 Then /^I should see the following autocomplete options:$/ do |table|
   # table is a Cucumber::Ast::Table
-  table.raw.each do |row|
+  table.raw.each do |_row|
     # page.locate(:xpath, "//a[text()='#{row[0]}']")
     page.has_xpath?('.//a', text: '#{row[0]}')
   end

@@ -24,7 +24,7 @@ class TagsController < ApplicationController
         flash[:notice] = 'Tag was successfully updated.'
         format.html { redirect_to(@tag_group) }
       else
-        format.html { render action: "edit" }
+        format.html { render action: 'edit' }
       end
     end
   end

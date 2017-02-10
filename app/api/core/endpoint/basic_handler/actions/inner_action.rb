@@ -37,7 +37,7 @@ module Core::Endpoint::BasicHandler::Actions::InnerAction
     end
   end
 
-  def declare_action(name, options)
+  def declare_action(name, _options)
     line = __LINE__ + 1
     singleton_class.class_eval("
       def _#{name}(request, response)

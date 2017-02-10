@@ -6,7 +6,7 @@
 
 class StudyRelation < ActiveRecord::Base
   belongs_to :study
-  belongs_to :related_study, class_name: "Study"
+  belongs_to :related_study, class_name: 'Study'
   belongs_to :study_relation_type
 
   validates_presence_of :study
@@ -21,10 +21,10 @@ class StudyRelation < ActiveRecord::Base
     def self.included(base)
       # Related studies
       base.has_many :study_relations
-      base.has_many :related_studies, through: :study_relations, class_name: "Study"
+      base.has_many :related_studies, through: :study_relations, class_name: 'Study'
       # Inverse
-      base.has_many :reversed_study_relations, class_name: "StudyRelation", foreign_key: :related_study_id
-      base.has_many :reversed_related_studies, through: :reversed_study_relations, class_name: "Study", source: :study
+      base.has_many :reversed_study_relations, class_name: 'StudyRelation', foreign_key: :related_study_id
+      base.has_many :reversed_related_studies, through: :reversed_study_relations, class_name: 'Study', source: :study
     end
 
     # related studies

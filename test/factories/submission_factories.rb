@@ -3,13 +3,13 @@
 # authorship of this file.
 # Copyright (C) 2011,2012 Genome Research Ltd.
 FactoryGirl.define do
-  factory :submission__ do |submission|
+  factory :submission__ do
     factory :submission_without_order do
       user
     end
   end
 
-  factory :order do |order|
+  factory :order do |_order|
     study
     workflow { |workflow| workflow.association(:submission_workflow) }
     project

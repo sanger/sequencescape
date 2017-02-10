@@ -41,7 +41,7 @@ class Api::RequestIO < Api::Base
     end
 
     def url_name
-      "request" # frozen for subclass of the API
+      'request' # frozen for subclass of the API
     end
   end
 
@@ -55,10 +55,10 @@ class Api::RequestIO < Api::Base
   map_attribute_to_json_attribute(:priority)
 
   extra_json_attributes do |object, json_attributes|
-    json_attributes["read_length"]                 = object.request_metadata.read_length  if object.is_a?(SequencingRequest)
-    json_attributes["library_type"]                = object.request_metadata.library_type if object.is_a?(LibraryCreationRequest)
-    json_attributes["fragment_size_required_from"] = object.request_metadata.fragment_size_required_from   if object.request_metadata.respond_to?(:fragment_size_required_from)
-    json_attributes["fragment_size_required_to"]   = object.request_metadata.fragment_size_required_to     if object.request_metadata.respond_to?(:fragment_size_required_to)
+    json_attributes['read_length']                 = object.request_metadata.read_length  if object.is_a?(SequencingRequest)
+    json_attributes['library_type']                = object.request_metadata.library_type if object.is_a?(LibraryCreationRequest)
+    json_attributes['fragment_size_required_from'] = object.request_metadata.fragment_size_required_from   if object.request_metadata.respond_to?(:fragment_size_required_from)
+    json_attributes['fragment_size_required_to']   = object.request_metadata.fragment_size_required_to     if object.request_metadata.respond_to?(:fragment_size_required_to)
   end
 
   with_association(:user) do
@@ -95,7 +95,7 @@ class Api::RequestIO < Api::Base
     map_attribute_to_json_attribute(:two_dimensional_barcode, 'source_asset_two_dimensional_barcode')
 
     extra_json_attributes do |object, json_attributes|
-      json_attributes["source_asset_type"] = object.sti_type.tableize unless object.nil?
+      json_attributes['source_asset_type'] = object.sti_type.tableize unless object.nil?
     end
 
     with_association(:primary_aliquot_if_unique) do
@@ -120,7 +120,7 @@ class Api::RequestIO < Api::Base
     map_attribute_to_json_attribute(:two_dimensional_barcode, 'target_asset_two_dimensional_barcode')
 
     extra_json_attributes do |object, json_attributes|
-      json_attributes["target_asset_type"] = object.sti_type.tableize unless object.nil?
+      json_attributes['target_asset_type'] = object.sti_type.tableize unless object.nil?
     end
 
     with_association(:primary_aliquot_if_unique) do

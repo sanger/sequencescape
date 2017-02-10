@@ -42,8 +42,8 @@ class PlatePurpose < Purpose
   scope :cherrypickable_as_source, -> { where(cherrypickable_source: true) }
   scope :cherrypickable_default_type, -> { where(cherrypickable_target: true, cherrypickable_source: true) }
   scope :for_submissions, ->() do
-    where('stock_plate = true OR name = "Working Dilution"').
-    order(stock_plate: :desc)
+    where('stock_plate = true OR name = "Working Dilution"')
+    .order(stock_plate: :desc)
   end
   scope :considered_stock_plate, -> { where(stock_plate: true) }
 
@@ -99,7 +99,7 @@ class PlatePurpose < Purpose
   # Updates the state of the specified plate to the specified state.  The basic implementation does this by updating
   # all of the TransferRequest instances to the state specified.  If contents is blank then the change is assumed to
   # relate to all wells of the plate, otherwise only the selected ones are updated.
-  def transition_to(plate, state, user, contents = nil, customer_accepts_responsibility = false)
+  def transition_to(plate, state, _user, contents = nil, customer_accepts_responsibility = false)
     wells = plate.wells
     wells = wells.located_at(contents) unless contents.blank?
 
@@ -152,7 +152,7 @@ class PlatePurpose < Purpose
       conditions << "(#{condition[0]} AND #{condition[1]})"
       parameters.concat(args)
     end
-    raise "Apparently there are not requests on these wells?" if conditions.empty?
+    raise 'Apparently there are not requests on these wells?' if conditions.empty?
     Request.where_is_not_a?(TransferRequest).where(["(#{conditions.join(' OR ')})", *parameters]).map do |request|
       # This can probably be switched for an each, as I don't think the array is actually used for anything.
       request.request_metadata.update_attributes!(customer_accepts_responsibility: true) if customer_accepts_responsibility
@@ -162,12 +162,12 @@ class PlatePurpose < Purpose
   private :fail_stock_well_requests
 
   def pool_wells(wells)
-    _pool_wells(wells).
-      joins('LEFT OUTER JOIN uuids AS pool_uuids ON pool_uuids.resource_type="Submission" AND pool_uuids.resource_id=submission_id').
-      select('pool_uuids.external_id AS pool_uuid').
-      readonly(false).
-      tap do |wells_with_pool|
-        raise StandardError, "Cannot deal with a well in multiple pools" if wells_with_pool.group_by(&:id).any? { |_, multiple_pools| multiple_pools.uniq.size > 1 }
+    _pool_wells(wells)
+      .joins('LEFT OUTER JOIN uuids AS pool_uuids ON pool_uuids.resource_type="Submission" AND pool_uuids.resource_id=submission_id')
+      .select('pool_uuids.external_id AS pool_uuid')
+      .readonly(false)
+      .tap do |wells_with_pool|
+        raise StandardError, 'Cannot deal with a well in multiple pools' if wells_with_pool.group_by(&:id).any? { |_, multiple_pools| multiple_pools.uniq.size > 1 }
       end
   end
 
@@ -215,7 +215,7 @@ class PlatePurpose < Purpose
     cherrypick_direction == 'row'
   end
 
-  def attatched?(plate)
+  def attatched?(_plate)
     true
   end
 

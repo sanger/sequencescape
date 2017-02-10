@@ -16,7 +16,7 @@ class Admin::UsersController < ApplicationController
   end
 
   def edit
-    @user_roles = @user.roles.where(name: ["administrator", "manager", "internal"])
+    @user_roles = @user.roles.where(name: ['administrator', 'manager', 'internal'])
     @all_roles = Role.select(:name).uniq.pluck(:name)
     @users_roles = @user.study_and_project_roles.order(name: :asc)
     @studies = Study.order(:id)
@@ -50,9 +50,9 @@ class Admin::UsersController < ApplicationController
       @user.update_attributes(params[:user])
     end
     if @user.save
-      flash[:notice] = "Profile updated"
+      flash[:notice] = 'Profile updated'
     else
-      flash[:error] = "Problem updating profile"
+      flash[:error] = 'Problem updating profile'
     end
     redirect_to profile_path(@user)
   end
@@ -60,7 +60,7 @@ class Admin::UsersController < ApplicationController
   def grant_user_role
     if request.xhr?
       if params[:role]
-        authorizable_object = if params[:role][:authorizable_type] == "Project"
+        authorizable_object = if params[:role][:authorizable_type] == 'Project'
           Project.find(params[:role][:authorizable_id])
                               else
           Study.find(params[:role][:authorizable_id])
@@ -68,24 +68,24 @@ class Admin::UsersController < ApplicationController
         @user.has_role(params[:role][:authorizable_name].to_s, authorizable_object)
         @users_roles = @user.study_and_project_roles.order(name: :asc)
 
-        flash[:notice] = "Role added"
-        render partial: "roles", status: 200
+        flash[:notice] = 'Role added'
+        render partial: 'roles', status: 200
       else
         @users_roles = @user.study_and_project_roles.order(name: :asc)
-        flash[:error] = "A problem occurred while adding the role"
-        render partial: "roles", status: 500
+        flash[:error] = 'A problem occurred while adding the role'
+        render partial: 'roles', status: 500
       end
     else
-      @users_roles = @user.study_and_project_roles.order(name: :asc)
-      flash[:error] = "A problem occurred while adding the role"
-      render partial: "roles", status: 401
+      @users_roles = @user.study_and_project_roles.sort_by(&:name)
+      flash[:error] = 'A problem occurred while adding the role'
+      render partial: 'roles', status: 401
     end
   end
 
   def remove_user_role
     if request.xhr?
       if params[:role]
-        authorizable_object = if params[:role][:authorizable_type] == "project"
+        authorizable_object = if params[:role][:authorizable_type] == 'project'
           Project.find(params[:role][:authorizable_id])
                               else
           Study.find(params[:role][:authorizable_id])
@@ -93,26 +93,26 @@ class Admin::UsersController < ApplicationController
         @user.has_no_role(params[:role][:authorizable_name].to_s, authorizable_object)
         @users_roles = @user.study_and_project_roles.order(name: :asc)
 
-        flash[:error] = "Role was removed"
-        render partial: "roles", status: 200
+        flash[:error] = 'Role was removed'
+        render partial: 'roles', status: 200
       else
         @users_roles = @user.study_and_project_roles.order(name: :asc)
-        flash[:error] = "A problem occurred while removing the role"
-        render partial: "roles", status: 500
+        flash[:error] = 'A problem occurred while removing the role'
+        render partial: 'roles', status: 500
       end
     else
       @users_roles = @user.study_and_project_roles.order(name: :asc)
-      flash[:error] = "A problem occurred while removing the role"
-      render partial: "roles", status: 401
+      flash[:error] = 'A problem occurred while removing the role'
+      render partial: 'roles', status: 401
     end
   end
 
   def filter
     if params[:q]
-      @users = User.order(:login).where('first_name LIKE :query OR last_name LIKE :query OR login LIKE :query', { query: "%#{params[:q].downcase}%" })
+      @users = User.order(:login).where('first_name LIKE :query OR last_name LIKE :query OR login LIKE :query', query: "%#{params[:q].downcase}%")
     end
 
-    render partial: "users", locals: { users: @users }
+    render partial: 'users', locals: { users: @users }
   end
 
   private

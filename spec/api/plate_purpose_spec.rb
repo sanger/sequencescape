@@ -54,7 +54,7 @@ describe '/api/1/plate-purpose-uuid' do
   let(:authorised_app) { create :api_application }
   let(:uuid) { '00000000-1111-2222-3333-444444444444' }
   before(:each) do
-    create :plate_purpose, :uuidable, uuid: uuid, name: "Example purpose"
+    create :plate_purpose, :uuidable, uuid: uuid, name: 'Example purpose'
   end
 
   context '#get' do

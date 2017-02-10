@@ -4,19 +4,19 @@ FLOG_COMPLEXITY_THRESHOLD = 60
 FLAY_DUPLICATION_THRESHOLD = 200
 
 namespace :test do
-  desc "Run all static code analysis tasks"
-  task analytics: ["test:analytics:flay", "test:analytics:roodi", "test:analytics:roodi_strict"]
+  desc 'Run all static code analysis tasks'
+  task analytics: ['test:analytics:flay', 'test:analytics:roodi', 'test:analytics:roodi_strict']
   namespace :analytics do
     task :load_rails_env do
       require 'config/environment'
     end
-    desc "Analyze for code complexity"
+    desc 'Analyze for code complexity'
     task flog: :load_rails_env do
       require 'flog'
       WHITELIST = YAML.load(File.read("#{Rails.root}/config/analytics/flog_whitelist.yml"))
       # puts WHITELIST.inspect
 
-      print "Complexity..."
+      print 'Complexity...'
       STDOUT.flush
       flog = Flog.new
 
@@ -30,18 +30,18 @@ namespace :test do
         end
       end
       bad_methods.sort { |a, b| a[1] <=> b[1] }.each do |name, score|
-        puts "%s: %d" % [name, score + 1]
+        puts '%s: %d' % [name, score + 1]
       end
       raise "#{bad_methods.size} methods have a flog complexity > #{FLOG_COMPLEXITY_THRESHOLD}" unless bad_methods.empty?
-      puts "OK"
+      puts 'OK'
     end
 
-    desc "Analyze for code duplication"
+    desc 'Analyze for code duplication'
     task flay: :load_rails_env do
       require 'flay'
-      print "Duplication..."
+      print 'Duplication...'
       STDOUT.flush
-      flay = Flay.new({ fuzzy: false, verbose: false, mass: (FLAY_DUPLICATION_THRESHOLD + 1) })
+      flay = Flay.new(fuzzy: false, verbose: false, mass: (FLAY_DUPLICATION_THRESHOLD + 1))
 
       files = Flay.expand_dirs_to_files(['app'])
       exclude_files = YAML.load(File.read("#{Rails.root}/config/analytics/flay_whitelist.yml"))
@@ -49,41 +49,41 @@ namespace :test do
       # puts files.join("\n")
       flay.process(*check_files.uniq)
 
-      unless flay.masses.empty?
+      if flay.masses.empty?
+        puts 'OK'
+      else
         flay.report
         raise "#{flay.masses.size} chunks of code have a duplicate mass > #{FLAY_DUPLICATION_THRESHOLD}"
-      else
-        puts "OK"
       end
     end
 
-    desc "Analyze for code design issues"
-    task roodi: :load_rails_env do |t|
+    desc 'Analyze for code design issues'
+    task roodi: :load_rails_env do |_t|
       require 'roodi'
       require 'roodi_task'
-      print "Design..."
+      print 'Design...'
       old_files = YAML.load(File.read("#{Rails.root}/config/analytics/roodi_whitelist.yml"))
       STDOUT.flush
       RoodiTask.new '#{t}:run', old_files, 'config/analytics/roodi.yml'
       Rake::Task['#{t}:run'].invoke
-      puts "OK"
+      puts 'OK'
     end
 
-    desc "Analyze for code design issues"
-    task roodi_strict: :load_rails_env do |t|
+    desc 'Analyze for code design issues'
+    task roodi_strict: :load_rails_env do |_t|
       require 'roodi'
       require 'roodi_task'
-      print "Design (new things)..."
+      print 'Design (new things)...'
       old_files = YAML.load(File.read("#{Rails.root}/config/analytics/roodi_whitelist.yml"))
       files = Dir.glob('app/**/*.rb') - old_files
       #    puts files.inspect
       STDOUT.flush
       RoodiTask.new '#{t2}:run', files, 'config/analytics/roodi_new.yml'
       Rake::Task['#{t2}:run'].invoke
-      puts "OK"
+      puts 'OK'
     end
-    desc "Show warnings from the Ruby interpreter"
-    task :warnings do |t|
+    desc 'Show warnings from the Ruby interpreter'
+    task :warnings do |_t|
       warnings = []
       # RUBYOPT added by Bundler causes significant startup cost, so we empty it
       super_find_cmd = '(RUBYOPT="" find . \( -not -path "*generators*" -not -path "*templates*" \)' +
@@ -91,11 +91,11 @@ namespace :test do
         ' -exec ruby -c {} \; ) 2>&1'
       pipe = IO.popen(super_find_cmd.to_s)
       pipe.each do |line| # From the perspective of the new pseudo terminal
-        unless line !~ /Syntax OK/
-          putc '.'
-        else
-          putc "W"
+        if line !~ /Syntax OK/
+          putc 'W'
           warnings << line
+        else
+          putc '.'
         end
         STDOUT.flush
       end

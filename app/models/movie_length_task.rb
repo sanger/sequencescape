@@ -16,7 +16,7 @@ class MovieLengthTask < Task
   end
 
   def partial
-    "movie_length_batches"
+    'movie_length_batches'
   end
 
   def render_task(workflow, params)

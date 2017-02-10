@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2014,2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 require 'unit/tag_qc/qcable_statemachine_checks'
 
 class QcableStatemachineTest < ActiveSupport::TestCase

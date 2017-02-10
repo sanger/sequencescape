@@ -36,9 +36,9 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
   end
 
   def library_source_plates(tube)
-    Plate.
-      joins(wells: :requests).
-      where(requests: {
+    Plate
+      .joins(wells: :requests)
+      .where(requests: {
         target_asset_id: tube.id,
         sti_type: [Request::LibraryCreation, *Request::LibraryCreation.descendants].map(&:name)
       }

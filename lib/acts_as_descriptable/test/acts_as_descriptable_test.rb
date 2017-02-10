@@ -24,16 +24,16 @@ class ActsAsDescriptableTest < Test::Unit::TestCase
     descriptors = retrieve_post.descriptors
     assert_kind_of Descriptor, descriptors[0]
     assert_equal :field_1, descriptors[0].name
-    assert_equal "test_controller", descriptors[0].value
+    assert_equal 'test_controller', descriptors[0].value
     assert_equal :field_2, descriptors[1].name
-    assert_equal "test_action", descriptors[1].value
+    assert_equal 'test_action', descriptors[1].value
     assert_equal array, retrieve_post.descriptor_fields
   end
 
   def test_add_descriptor
     post = Post.new
     assert_equal 0, post.descriptors.size
-    descriptor = Descriptor.new({ name: 'test_name', value: 'test_value' })
+    descriptor = Descriptor.new(name: 'test_name', value: 'test_value')
     post.add_descriptor descriptor
     assert_equal 1, post.descriptors.size
     assert_equal 'test_name', post.descriptors[0].name
@@ -43,16 +43,16 @@ class ActsAsDescriptableTest < Test::Unit::TestCase
   def test_add_multiple_descriptors
     post = Post.new
     assert_equal 0, post.descriptors.size
-    descriptor = Descriptor.new({ name: 'test_name', value: 'test_value' })
+    descriptor = Descriptor.new(name: 'test_name', value: 'test_value')
     post.add_descriptor descriptor
     assert_equal 1, post.descriptors.size
-    descriptor = Descriptor.new({ name: 'test_name_2', value: 'test_value_2' })
+    descriptor = Descriptor.new(name: 'test_name_2', value: 'test_value_2')
     post.add_descriptor descriptor
     assert_equal 2, post.descriptors.size
-    descriptor = Descriptor.new({ name: 'test_name_3', value: 'test_value_3' })
+    descriptor = Descriptor.new(name: 'test_name_3', value: 'test_value_3')
     post.add_descriptor descriptor
     assert_equal 3, post.descriptors.size
-    descriptor = Descriptor.new({ name: 'test_name_4', value: 'test_value_4' })
+    descriptor = Descriptor.new(name: 'test_name_4', value: 'test_value_4')
     post.add_descriptor descriptor
     assert_equal 4, post.descriptors.size
     assert_equal 'test_name', post.descriptors[0].name
@@ -71,9 +71,9 @@ class ActsAsDescriptableTest < Test::Unit::TestCase
   def test_active_descriptors
     post = ActivePost.new
     assert_equal 0, post.descriptors.size
-    post.descriptors << Descriptor.new({ name: 'test_value', value: 'test_value' })
+    post.descriptors << Descriptor.new(name: 'test_value', value: 'test_value')
     assert_equal 1, post.descriptors.size
-    post.descriptors << Descriptor.new({ name: 'test_value2', value: 'test_value2' })
+    post.descriptors << Descriptor.new(name: 'test_value2', value: 'test_value2')
     assert_equal 2, post.descriptors.size
   end
 
@@ -148,6 +148,6 @@ class ActsAsDescriptableTest < Test::Unit::TestCase
     post.descriptors = hash
     post.descriptor_fields = array
     xml = post.descriptor_xml
-    assert_equal "<?xml version=\"1.0\" encoding=\"UTF-8\"?><descriptors><descriptor><name>controller</name><value>test_controller</value></descriptor><descriptor><name>action</name><value>test_action</value></descriptor></descriptors>", xml
+    assert_equal '<?xml version="1.0" encoding="UTF-8"?><descriptors><descriptor><name>controller</name><value>test_controller</value></descriptor><descriptor><name>action</name><value>test_action</value></descriptor></descriptors>', xml
   end
 end

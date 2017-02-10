@@ -11,9 +11,7 @@ class StockMultiplexedLibraryTube < Tube
     purpose.stock_wells(self)
   end
 
-  def created_with_request_options
-    parent.created_with_request_options
-  end
+  delegate :created_with_request_options, to: :parent
 
   def sibling_tubes
     purpose.sibling_tubes(self)

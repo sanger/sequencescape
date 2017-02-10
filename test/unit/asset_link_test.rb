@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2016 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class AssetLinkTest < ActiveSupport::TestCase
   context 'AssetLink::Job' do

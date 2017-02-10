@@ -69,11 +69,11 @@ Genotyping
   def self.down
     ActiveRecord::Base.transaction do
       SINGLE_PRODUCTS.each do |name|
-        Product.find_by_name(name).delete
-        ProductCatalogue.find_by_name(name).destroy
+        Product.find_by(name: name).delete
+        ProductCatalogue.find_by(name: name).destroy
       end
       COMPLEX_PRODUCTS.each do |params|
-        pc = ProductCatalogue.find_by_name(params[:name])
+        pc = ProductCatalogue.find_by(name: params[:name])
         pc.products.each(&:delete)
         pc.destroy
       end

@@ -12,7 +12,7 @@ class FluidigmFile
       end
 
       def empty?
-        !File.exists?("#{configatron.fluidigm_data.directory}/#{@barcode}/#{@barcode}.csv")
+        !File.exist?("#{configatron.fluidigm_data.directory}/#{@barcode}/#{@barcode}.csv")
       end
 
       def content
@@ -34,7 +34,7 @@ class FluidigmFile
       end
 
       def content(index = nil)
-        raise StandardError, "Multiple files found" if data.size > 1 && index.nil?
+        raise StandardError, 'Multiple files found' if data.size > 1 && index.nil?
         @data[index || 0].retrive
       end
     end

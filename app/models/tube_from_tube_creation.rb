@@ -14,7 +14,7 @@ class TubeFromTubeCreation < AssetCreation
   private :target_for_ownership
 
   def children
-    [self.child]
+    [child]
   end
   private :children
 

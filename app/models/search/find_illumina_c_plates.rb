@@ -20,7 +20,7 @@ class Search::FindIlluminaCPlates < Search
   private :illumina_c_plate_purposes
 
   def freezer
-    Location.find_by_name!('Library creation freezer')
+    Location.find_by!(name: 'Library creation freezer')
   end
   private :freezer
 end

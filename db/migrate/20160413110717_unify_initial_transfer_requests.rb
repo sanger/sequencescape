@@ -15,7 +15,7 @@ class UnifyInitialTransferRequests < ActiveRecord::Migration
         asset_type: 'Asset', multiples_allowed: false,
         request_class_name: 'TransferRequest::InitialTransfer', morphology: RequestType::CONVERGENT,
         for_multiplexing: 0, billable: 0,
-        request_purpose: RequestPurpose.find_by_key('internal')
+        request_purpose: RequestPurpose.find_by(key: 'internal')
       )
 
       deprecate_class('IlluminaB::Requests::InputToCovaris', new_type: initial_transfer)

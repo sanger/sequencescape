@@ -14,7 +14,7 @@ FactoryGirl.define do
     request_class  Request
     order          1
     workflow { |workflow| workflow.association(:submission_workflow) }
-    initial_state "pending"
+    initial_state 'pending'
     request_purpose
 
     factory :well_request_type do
@@ -36,7 +36,7 @@ FactoryGirl.define do
     end
 
     factory :library_creation_request_type do
-      target_asset_type "LibraryTube"
+      target_asset_type 'LibraryTube'
       request_class LibraryCreationRequest
 
       after(:build) { |request_type|
@@ -46,7 +46,7 @@ FactoryGirl.define do
     end
 
     factory :sequencing_request_type do
-      asset_type     "LibraryTube"
+      asset_type     'LibraryTube'
       request_class  SequencingRequest
 
       after(:build) { |request_type|
@@ -56,7 +56,7 @@ FactoryGirl.define do
 
     factory :multiplexed_library_creation_request_type do
       request_class      MultiplexedLibraryCreationRequest
-      asset_type         "SampleTube"
+      asset_type         'SampleTube'
       for_multiplexing   true
 
       after(:build) do |request_type|

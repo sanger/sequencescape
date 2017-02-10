@@ -14,8 +14,8 @@ class AccessionService
   NumberNotGenerated    = Class.new(AccessionServiceError)
 
   CenterName = 'SC'.freeze # TODO [xxx] use confing file
-  Protect = "protect".freeze
-  Hold = "hold".freeze
+  Protect = 'protect'.freeze
+  Hold = 'hold'.freeze
 
   def provider; end
 
@@ -44,7 +44,7 @@ class AccessionService
             Rails::logger.debug { file.each_line.to_a.join("\n") }
 
             { name: acc.schema_type.upcase, local_name: file.path, remote_name: acc.file_name }
-          end
+                                end
          )
 
         Rails::logger.debug { xml_result }
@@ -75,7 +75,7 @@ class AccessionService
           raise NumberNotGenerated, 'Service gave no numbers back' unless number_generated
 
         elsif success == 'false'
-          errors = xmldoc.root.elements.to_a("//ERROR").map(&:text)
+          errors = xmldoc.root.elements.to_a('//ERROR').map(&:text)
           raise AccessionServiceError, "Could not get accession number. Error in submitted data: #{$!} #{errors.map { |e| "\n  - #{e}" }}"
         else
           raise AccessionServiceError, "Could not get accession number. Error in submitted data: #{$!}"
@@ -106,11 +106,11 @@ class AccessionService
     ebi_accession_number = study.study_metadata.study_ebi_accession_number
     # raise NumberNotGenerated, 'No need to' if not ebi_accession_number.blank? and not /ER/.match(ebi_accession_number)
 
-    return submit(user, Accessionable::Study.new(study))
+    submit(user, Accessionable::Study.new(study))
   end
 
-  def submit_dac_for_user(study, user)
-    raise NumberNotRequired, "No need to"
+  def submit_dac_for_user(_study, _user)
+    raise NumberNotRequired, 'No need to'
   end
 
   def accession_study_xml(study)
@@ -130,19 +130,19 @@ class AccessionService
     Accessionable::Dac.new(study).xml
   end
 
-  def sample_visibility(sample)
+  def sample_visibility(_sample)
     Protect
   end
 
-  def study_visibility(study)
+  def study_visibility(_study)
     Protect
   end
 
-  def policy_visibility(study)
+  def policy_visibility(_study)
     Protect
   end
 
-  def dac_visibility(study)
+  def dac_visibility(_study)
     Protect
   end
 
@@ -164,7 +164,7 @@ private
           xml.CENTER_NAME         studydata[:center_name]
           xml.STUDY_ABSTRACT      studydata[:study_abstract]
 
-          xml.PROJECT_ID(studydata[:study_id] || "0")
+          xml.PROJECT_ID(studydata[:study_id] || '0')
           study_type = studydata[:existing_study_type]
           if StudyType.include?(study_type)
             xml.STUDY_TYPE(existing_study_type: study_type)
@@ -172,9 +172,9 @@ private
             xml.STUDY_TYPE(existing_study_type: Study::Other_type, new_study_type: study_type)
           end
         }
-            }
       }
-    return xml.target!
+    }
+    xml.target!
   end
 
   def accession_sample_set_xml_quarantine(sample, sampledata)
@@ -198,7 +198,7 @@ private
         xml.SAMPLE_LINKS {} unless sampledata[:links].blank?
       }
     }
-    return xml.target!
+    xml.target!
   end
 
   def accession_submission_xml(submission, accession_number)
@@ -223,7 +223,7 @@ private
           if accession_number.blank?
             xml.ADD(source: submission[:source], schema: submission[:schema])
           else
-            xml.MODIFY(source: submission[:source], target: "")
+            xml.MODIFY(source: submission[:source], target: '')
           end
         }
         xml.ACTION {
@@ -235,7 +235,7 @@ private
         }
       }
     }
-    return xml.target!
+    xml.target!
   end
 
   require 'rexml/document'
@@ -243,7 +243,7 @@ private
   include REXML
 
   def accession_options
-    raise NotImplemented, "abstract method"
+    raise NotImplemented, 'abstract method'
   end
 
   def rest_client_resource
@@ -276,7 +276,7 @@ private
       $! = nil
       raise AccessionServiceError
     else
-    return ""
+    return ''
     end
   rescue StandardError => exception
     raise AccessionServiceError, "Could not get accession number. EBI may be down or invalid data submitted: #{$!}"

@@ -33,7 +33,7 @@ class Admin::FacultySponsorsController < ApplicationController
         flash[:notice] = 'Faculty Sponsor was successfully created.'
         format.html { redirect_to(admin_faculty_sponsors_path) }
       else
-        format.html { render action: "new" }
+        format.html { render action: 'new' }
       end
     end
   end
@@ -44,7 +44,7 @@ class Admin::FacultySponsorsController < ApplicationController
         flash[:notice] = 'Faculty Sponsor was successfully updated.'
         format.html { redirect_to(admin_faculty_sponsors_path) }
       else
-        format.html { render action: "edit" }
+        format.html { render action: 'edit' }
       end
     end
   end
