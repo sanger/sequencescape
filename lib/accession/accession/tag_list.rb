@@ -4,12 +4,14 @@ module Accession
     include Comparable
 
     attr_reader :tags, :missing
+    attr_accessor :groups
 
     delegate :keys, :values, to: :tags
 
     def initialize(tags = {})
       @tags = {}
       add_tags(tags.with_indifferent_access)
+      @groups = by_group.keys
       yield self if block_given?
     end
 
@@ -26,11 +28,14 @@ module Accession
     end
 
     def by_group
-      tags.values.each_with_object({}) do |tag, result|
-        tag.groups.each do |group|
-          result[group] ||= TagList.new
-          result[group] << tag
+      {}.tap do |result|
+        tags.values.each do |tag|
+          tag.groups.each do |group|
+            result[group] ||= TagList.new
+            result[group] << tag
+          end
         end
+        groups.each {|group| result[group] ||= {}} if groups.present?
       end
     end
 
@@ -59,6 +64,7 @@ module Accession
             tag_list.add(tags[key].dup.add_value(value))
           end
         end
+        tag_list.groups = groups
       end
     end
 
