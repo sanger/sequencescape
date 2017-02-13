@@ -33,26 +33,27 @@ class AddProductCataloguesToExistingTemplates < ActiveRecord::Migration
   end
 
   def self.product_by_name(template)
-    product_name = case template.name
-    when /Illumina-B.*WGS/ then 'PWGS'
-    when /Illumina-B.*Multiplexed library creation/ then 'PWGS'
-    when /Illumina-A - Pooled/                      then 'MWGS'
-    when /Illumina-B - Pooled PATH/                 then 'PWGS'
-    when /Pulldown Multiplex Library Preparation/   then 'ISC'
-    when /ISC/                             then 'ISC'
-    when / SC /                            then 'SC'
-    when /Pulldown.*WGS/                   then 'MWGS'
-    when /Illumina-A.*WGS/                 then 'MWGS'
-    when /PacBio/                          then 'PacBio'
-    when /Fluidigm/                        then 'Fluidigm'
-    when /Illumina-C.*General PCR/         then 'GenericPCR'
-    when /Illumina-C.*General no PCR/      then 'GenericNoPCR'
-    when /Illumina-C.*Multiplexed Library/ then 'ClassicMultiplexed'
-    when /TagQC/                           then 'InternalQC'
-    when /Genotyping/                      then 'Genotyping'
-    when 'Cherrypick'                      then 'Manual'
-    else 'Generic'
-    end
+    product_name =
+      case template.name
+      when /Illumina-B.*WGS/ then 'PWGS'
+      when /Illumina-B.*Multiplexed library creation/ then 'PWGS'
+      when /Illumina-A - Pooled/                      then 'MWGS'
+      when /Illumina-B - Pooled PATH/                 then 'PWGS'
+      when /Pulldown Multiplex Library Preparation/   then 'ISC'
+      when /ISC/                             then 'ISC'
+      when / SC /                            then 'SC'
+      when /Pulldown.*WGS/                   then 'MWGS'
+      when /Illumina-A.*WGS/                 then 'MWGS'
+      when /PacBio/                          then 'PacBio'
+      when /Fluidigm/                        then 'Fluidigm'
+      when /Illumina-C.*General PCR/         then 'GenericPCR'
+      when /Illumina-C.*General no PCR/      then 'GenericNoPCR'
+      when /Illumina-C.*Multiplexed Library/ then 'ClassicMultiplexed'
+      when /TagQC/                           then 'InternalQC'
+      when /Genotyping/                      then 'Genotyping'
+      when 'Cherrypick'                      then 'Manual'
+      else 'Generic'
+      end
   end
 
   def self.up
@@ -62,7 +63,7 @@ class AddProductCataloguesToExistingTemplates < ActiveRecord::Migration
         product = product_by_role(template)
         product ||= product_by_name(template)
         say "Setting to #{product}"
-        template.product_catalogue = ProductCatalogue.find_by_name!(product)
+        template.product_catalogue = ProductCatalogue.find_by!(name: product)
         template.save
       end
     end

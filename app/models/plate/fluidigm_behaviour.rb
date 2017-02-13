@@ -10,18 +10,18 @@ module Plate::FluidigmBehaviour
   def self.included(base)
     base.class_eval do
       scope :requiring_fluidigm_data, -> {
-        fluidigm_request_id = RequestType.find_by_key!('pick_to_fluidigm').id
+        fluidigm_request_id = RequestType.find_by!(key: 'pick_to_fluidigm').id
 
-        select('DISTINCT assets.*, plate_metadata.fluidigm_barcode AS fluidigm_barcode').
-        joins([
+        select('DISTINCT assets.*, plate_metadata.fluidigm_barcode AS fluidigm_barcode')
+        .joins([
           'INNER JOIN plate_metadata ON plate_metadata.plate_id = assets.id AND plate_metadata.fluidigm_barcode IS NOT NULL', # The fluidigm metadata
           'INNER JOIN container_associations AS fluidigm_plate_association ON fluidigm_plate_association.container_id = assets.id', # The fluidigm wells
           "INNER JOIN requests ON requests.target_asset_id = fluidigm_plate_association.content_id AND state = \'passed\' AND requests.request_type_id = #{fluidigm_request_id}", # Link to their requests
 
           'INNER JOIN well_links AS stock_well_link ON stock_well_link.target_well_id = fluidigm_plate_association.content_id AND type= \'stock\'',
           'LEFT OUTER JOIN events ON eventful_id = assets.id AND eventful_type = "Asset" AND family = "update_fluidigm_plate" AND content = "FLUIDIGM_DATA" '
-        ]).
-        where('events.id IS NULL')
+        ])
+        .where('events.id IS NULL')
       }
     end
   end
@@ -36,7 +36,7 @@ module Plate::FluidigmBehaviour
   end
 
   def apply_fluidigm_data(fluidigm_file)
-    raise FluidigmError, "File does not match plate" unless fluidigm_file.for_plate?(fluidigm_barcode)
+    raise FluidigmError, 'File does not match plate' unless fluidigm_file.for_plate?(fluidigm_barcode)
 
     wells.located_at(fluidigm_file.well_locations).include_stock_wells.each do |well|
       well.stock_wells.each do |sw|
@@ -44,6 +44,6 @@ module Plate::FluidigmBehaviour
         sw.update_sequenom_count!(fluidigm_file.well_at(well.map_description).count, 'FLUIDIGM')
       end
     end
-    self.events.updated_fluidigm_plate!('FLUIDIGM_DATA')
+    events.updated_fluidigm_plate!('FLUIDIGM_DATA')
   end
 end

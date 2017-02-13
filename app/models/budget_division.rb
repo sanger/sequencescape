@@ -11,7 +11,7 @@ class BudgetDivision < ActiveRecord::Base
   has_many :project
 
   validates_presence_of :name
-  validates_uniqueness_of :name, message: "of budget division already present in database"
+  validates_uniqueness_of :name, message: 'of budget division already present in database'
 
   module Associations
     def self.included(base)

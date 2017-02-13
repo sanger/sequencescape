@@ -27,7 +27,7 @@ module Accession
     end
 
     def required_for(service)
-      tags.select { |k, tag| tag.required_for?(service) }
+      tags.select { |_k, tag| tag.required_for?(service) }
     end
 
     def find(key)
@@ -76,7 +76,7 @@ module Accession
     end
 
     def meets_service_requirements?(service, standard_tags)
-      @missing = standard_tags.required_for(service).keys - self.required_for(service).keys
+      @missing = standard_tags.required_for(service).keys - required_for(service).keys
       missing.empty?
     end
 

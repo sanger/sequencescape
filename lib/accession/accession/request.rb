@@ -27,7 +27,6 @@ module Accession
         begin
           Accession::Response.new(resource.post(submission.payload.open))
         rescue StandardError => exception
-          puts exception.message
           Accession::NullResponse.new
         ensure
           submission.payload.close!

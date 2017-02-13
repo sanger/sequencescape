@@ -124,9 +124,9 @@ class QcReport < ActiveRecord::Base
   after_create :generate!
 
   scope :for_report_page, ->(conditions) {
-      order("id desc").
-      where(conditions).
-      joins(:product_criteria)
+      order('id desc')
+      .where(conditions)
+      .joins(:product_criteria)
   }
 
   validates_presence_of :product_criteria, :study, :state
@@ -152,7 +152,7 @@ class QcReport < ActiveRecord::Base
   private
 
   def identifier_required?
-    self.report_identifier.nil?
+    report_identifier.nil?
   end
 
   # Note: You won't be able to generate two reports for the

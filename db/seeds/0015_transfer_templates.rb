@@ -37,27 +37,27 @@ ActiveRecord::Base.transaction do
     )
   end
   TransferTemplate.create!(
-    name: "Pool wells based on submission",
+    name: 'Pool wells based on submission',
     transfer_class_name: Transfer::BetweenPlatesBySubmission.name
   )
   TransferTemplate.create!(
-    name: "Custom pooling",
+    name: 'Custom pooling',
     transfer_class_name: Transfer::BetweenPlates.name
   )
 
   # Plate-to-tube transfers
   TransferTemplate.create!(
-    name: "Transfer wells to MX library tubes by submission",
+    name: 'Transfer wells to MX library tubes by submission',
     transfer_class_name: Transfer::FromPlateToTubeBySubmission.name
   )
   TransferTemplate.create!(
-    name: "Transfer wells to specific tubes by submission",
+    name: 'Transfer wells to specific tubes by submission',
     transfer_class_name: Transfer::FromPlateToSpecificTubes.name
   )
 
   # Tube-to-tube transfers
   TransferTemplate.create!(
-    name: "Transfer from tube to tube by submission",
+    name: 'Transfer from tube to tube by submission',
     transfer_class_name: Transfer::BetweenTubesBySubmission.name
   )
 
@@ -91,8 +91,8 @@ ActiveRecord::Base.transaction do
   )
 
   TransferTemplate.create!(
-    name: "Pooling rows to first column",
-    transfer_class_name: "Transfer::BetweenPlates",
+    name: 'Pooling rows to first column',
+    transfer_class_name: 'Transfer::BetweenPlates',
     transfers: pooling_row_to_first_column_transfer_layout_96
   )
 end

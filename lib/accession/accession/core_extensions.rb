@@ -5,7 +5,7 @@ module Accession
   module CoreExtensions
     module String
       def sanitize
-        self.downcase.gsub(/[^\w\d]/i, '_')
+        downcase.gsub(/[^\w\d]/i, '_')
       end
     end
   end

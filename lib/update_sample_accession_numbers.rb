@@ -4,7 +4,7 @@
 # Copyright (C) 2007-2011 Genome Research Ltd.
 accession_needed = []
 Study.all.each do |study|
-  next unless study.data_release_strategy == "open"
+  next unless study.data_release_strategy == 'open'
   next unless study.ena_accession_required?
   next if study.samples.nil?
 

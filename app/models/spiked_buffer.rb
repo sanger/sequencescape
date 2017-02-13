@@ -21,7 +21,7 @@ class SpikedBuffer < LibraryTube
   end
 
   def self.phiX_sample
-    Sample.find_by(name: 'phiX_for_spiked_buffers') or raise StandardError, "Cannot find phiX_for_spiked_buffers sample"
+    Sample.find_by(name: 'phiX_for_spiked_buffers') or raise StandardError, 'Cannot find phiX_for_spiked_buffers sample'
   end
 
   def percentage_of_index
@@ -30,7 +30,7 @@ class SpikedBuffer < LibraryTube
   end
 
   def transfer(transfer_volume)
-    index_volume_to_transfer = index.volume * transfer_volume.to_f / self.volume # to do before super which modifies self.volume
+    index_volume_to_transfer = index.volume * transfer_volume.to_f / volume # to do before super which modifies self.volume
     super(transfer_volume).tap do |new_asset|
       new_asset.index = index.transfer(index_volume_to_transfer)
     end

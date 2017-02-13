@@ -13,19 +13,19 @@ FactoryGirl.define do
   end
 
   factory :asset do
-    name                { |a| FactoryGirl.generate :asset_name }
-    value               ""
-    qc_state            ""
+    name                { |_a| FactoryGirl.generate :asset_name }
+    value               ''
+    qc_state            ''
     resource            nil
     barcode
     barcode_prefix { |b| b.association(:barcode_prefix) }
   end
 
   factory :plate do
-    plate_purpose { PlatePurpose.find_by_name('Stock plate') }
-    name                "Plate name"
-    value               ""
-    qc_state            ""
+    plate_purpose { PlatePurpose.find_by(name: 'Stock plate') }
+    name                'Plate name'
+    value               ''
+    qc_state            ''
     resource            nil
     barcode
     size 96
@@ -54,7 +54,7 @@ FactoryGirl.define do
 
       after(:create) do |plate, evaluator|
         (0...evaluator.sample_count).map do |vertical_index|
-          map = Map.where_plate_size(plate.size).where_plate_shape(AssetShape.find_by_name('Standard')).where(column_order: vertical_index).first or raise StandardError
+          map = Map.where_plate_size(plate.size).where_plate_shape(AssetShape.find_by(name: 'Standard')).where(column_order: vertical_index).first or raise StandardError
           create(:untagged_well, map: map, plate: plate)
         end
       end
@@ -65,61 +65,61 @@ FactoryGirl.define do
   end
 
   factory :plate_creator, class: Plate::Creator do
-    name                { |t| FactoryGirl.generate :plate_creator_name }
+    name                { |_t| FactoryGirl.generate :plate_creator_name }
   end
 
   factory :control_plate do
-    plate_purpose { |_| PlatePurpose.find_by_name('Stock plate') }
-    name                "Control Plate name"
-    value               ""
+    plate_purpose { |_| PlatePurpose.find_by(name: 'Stock plate') }
+    name                'Control Plate name'
+    value               ''
     descriptors         []
     descriptor_fields   []
-    qc_state            ""
+    qc_state            ''
     resource            nil
-    sti_type            "ControlPlate"
+    sti_type            'ControlPlate'
     barcode
   end
 
   factory :dilution_plate do
-    plate_purpose { |_| PlatePurpose.find_by_name!('Stock plate') }
+    plate_purpose { |_| PlatePurpose.find_by!(name: 'Stock plate') }
     barcode
   end
   factory :gel_dilution_plate do
-    plate_purpose { |_| PlatePurpose.find_by_name!('Gel Dilution') }
+    plate_purpose { |_| PlatePurpose.find_by!(name: 'Gel Dilution') }
     barcode
   end
   factory :pico_assay_a_plate do
-    plate_purpose { |_| PlatePurpose.find_by_name!('Pico Assay A') }
+    plate_purpose { |_| PlatePurpose.find_by!(name: 'Pico Assay A') }
     barcode
   end
   factory :pico_assay_b_plate do
-    plate_purpose { |_| PlatePurpose.find_by_name!('Pico Assay B') }
+    plate_purpose { |_| PlatePurpose.find_by!(name: 'Pico Assay B') }
     barcode
   end
   factory :pico_assay_plate do
-    plate_purpose { |_| PlatePurpose.find_by_name!('Stock plate') }
+    plate_purpose { |_| PlatePurpose.find_by!(name: 'Stock plate') }
     barcode
   end
   factory :pico_dilution_plate do
-    plate_purpose { |_| PlatePurpose.find_by_name!('Pico Dilution') }
+    plate_purpose { |_| PlatePurpose.find_by!(name: 'Pico Dilution') }
     barcode
   end
   factory :sequenom_qc_plate do
-    plate_purpose { |_| PlatePurpose.find_by_name!('Sequenom') }
+    plate_purpose { |_| PlatePurpose.find_by!(name: 'Sequenom') }
     barcode
   end
   factory :working_dilution_plate do
-    plate_purpose { |_| PlatePurpose.find_by_name!('Working Dilution') }
+    plate_purpose { |_| PlatePurpose.find_by!(name: 'Working Dilution') }
     barcode
   end
 
-  factory :batch do |b|
+  factory :batch do |_b|
     item_limit 4
     user
     pipeline
-    state                 "pending"
-    qc_pipeline_id        ""
-    qc_state              "qc_pending"
+    state                 'pending'
+    qc_pipeline_id        ''
+    qc_state              'qc_pending'
     assignee_id           { |user| user.association(:user) }
     production_state      nil
 
@@ -132,37 +132,37 @@ FactoryGirl.define do
     end
   end
 
-  factory :control do |c|
-    name "New control"
+  factory :control do |_c|
+    name 'New control'
     pipeline
   end
 
-  factory :descriptor do |d|
-    name                "Desc name"
-    value               ""
-    selection           ""
+  factory :descriptor do |_d|
+    name                'Desc name'
+    value               ''
+    selection           ''
     task
-    kind                ""
+    kind                ''
     required            0
     sorter              nil
-    key                 ""
+    key                 ''
   end
 
   factory :lab_event do |e|
   end
 
-  factory :family do |f|
-    name                  "New Family name"
-    description           "Something goes here"
-    relates_to            ""
+  factory :family do |_f|
+    name                  'New Family name'
+    description           'Something goes here'
+    relates_to            ''
     task                  { |task|     task.association(:task) }
     workflow              { |workflow| workflow.association(:lab_workflow) }
   end
 
-  factory :lab_workflow_for_pipeline, class: LabInterface::Workflow do |w|
-    name                  { |a| FactoryGirl.generate :lab_workflow_name }
+  factory :lab_workflow_for_pipeline, class: LabInterface::Workflow do |_w|
+    name                  { |_a| FactoryGirl.generate :lab_workflow_name }
     item_limit            2
-    locale                "Internal"
+    locale                'Internal'
   end
 
   factory :pipeline do
@@ -199,7 +199,7 @@ FactoryGirl.define do
   end
 
   factory :sequencing_pipeline do
-    name                  { |a| FactoryGirl.generate :pipeline_name }
+    name                  { |_a| FactoryGirl.generate :pipeline_name }
     automated             false
     active                true
     next_pipeline_id      nil
@@ -212,8 +212,8 @@ FactoryGirl.define do
     end
   end
 
-  factory :qc_pipeline do |p|
-    name                  { |a| FactoryGirl.generate :pipeline_name }
+  factory :qc_pipeline do |_p|
+    name                  { |_a| FactoryGirl.generate :pipeline_name }
     automated             false
     active                true
     next_pipeline_id      nil
@@ -227,8 +227,8 @@ FactoryGirl.define do
     end
   end
 
-  factory :library_creation_pipeline do |p|
-    name                  { |a| FactoryGirl.generate :pipeline_name }
+  factory :library_creation_pipeline do |_p|
+    name                  { |_a| FactoryGirl.generate :pipeline_name }
     automated             false
     active                true
     next_pipeline_id      nil
@@ -242,8 +242,8 @@ FactoryGirl.define do
     end
   end
 
-  factory :library_completion, class: IlluminaHtp::Requests::LibraryCompletion do |request|
-    request_type { |target| RequestType.find_by_name('Illumina-B Pooled') or raise StandardError, "Could not find 'Illumina-B Pooled' request type" }
+  factory :library_completion, class: IlluminaHtp::Requests::LibraryCompletion do |_request|
+    request_type { |_target| RequestType.find_by(name: 'Illumina-B Pooled') or raise StandardError, "Could not find 'Illumina-B Pooled' request type" }
     asset        { |target| target.association(:well_with_sample_and_plate) }
     target_asset { |target| target.association(:empty_well) }
     request_purpose
@@ -253,8 +253,8 @@ FactoryGirl.define do
     end
   end
 
-  factory :pulldown_library_creation_pipeline do |p|
-    name                  { |a| FactoryGirl.generate :pipeline_name }
+  factory :pulldown_library_creation_pipeline do |_p|
+    name                  { |_a| FactoryGirl.generate :pipeline_name }
     automated             false
     active                true
     next_pipeline_id      nil
@@ -268,84 +268,84 @@ FactoryGirl.define do
     end
   end
 
-  factory :task do |t|
-    name                  "New task"
+  factory :task do |_t|
+    name                  'New task'
     workflow              { |workflow| workflow.association(:lab_workflow) }
     sorted                nil
     batched               nil
-    location              ""
+    location              ''
     interactive           nil
   end
 
-  factory :pipeline_admin, class: User do |u|
-    login         "ad1"
+  factory :pipeline_admin, class: User do |_u|
+    login         'ad1'
     email         { |a| "#{a.login}@example.com".downcase }
     workflow      { |workflow| workflow.association(:submission_workflow) }
     pipeline_administrator true
   end
 
-  factory :lab_workflow, class: LabInterface::Workflow do |w|
-    name                  { |a| FactoryGirl.generate :lab_workflow_name }
+  factory :lab_workflow, class: LabInterface::Workflow do |_w|
+    name                  { |_a| FactoryGirl.generate :lab_workflow_name }
     item_limit            2
-    locale                "Internal"
+    locale                'Internal'
 
     after(:create) do |workflow|
       workflow.pipeline = create(:pipeline, workflow: workflow)
     end
   end
 
-  factory :batch_request do |br|
+  factory :batch_request do |_br|
     batch
     request
     sequence(:position) { |i| i }
   end
 
-  factory :delayed_message do |dm|
-    message            "1"
+  factory :delayed_message do |_dm|
+    message            '1'
     queue_attempt_at   Time.current.to_s
-    queue_name         "3"
+    queue_name         '3'
   end
 
-  factory :request_information_type do |w|
-    name                   ""
-    key                    ""
-    label                  ""
-    hide_in_inbox          ""
+  factory :request_information_type do |_w|
+    name                   ''
+    key                    ''
+    label                  ''
+    hide_in_inbox          ''
   end
 
-  factory :pipeline_request_information_type do |prit|
+  factory :pipeline_request_information_type do |_prit|
     pipeline                  { |pipeline| pipeline.association(:pipeline) }
     request_information_type  { |request_information_type| request_information_type.association(:request_information_type) }
   end
 
-  factory :location do |l|
-    name                   "Some fridge"
+  factory :location do |_l|
+    name 'Some fridge'
   end
 
-  factory :request_information do |ri|
-    request_id { |request| activity.association(:request) }
-    request_information_type_id { |request_information_type| activity.association(:request_information_type) }
+  factory :request_information do |_ri|
+    request_id { |_request| activity.association(:request) }
+    request_information_type_id { |_request_information_type| activity.association(:request_information_type) }
     value nil
   end
 
-  factory :implement do |i|
-    name                "CS03"
-    barcode             "LE6G"
-    equipment_type      "Cluster Station"
+  factory :implement do |_i|
+    name                'CS03'
+    barcode             'LE6G'
+    equipment_type      'Cluster Station'
   end
 
-  factory :robot do |robot|
-    name      "myrobot"
-    location  "lab"
+  factory :robot do |_robot|
+    name      'myrobot'
+    location  'lab'
   end
 
-  factory :robot_property do |p|
-    name      "myrobot"
-    value     "lab"
-    key       "key_robot"
+  factory :robot_property do |_p|
+    name      'myrobot'
+    value     'lab'
+    key       'key_robot'
   end
 
-  factory :pico_set do |ps|
+  factory :pico_set do |_ps|
     standard        { |asset| asset.association(:plate) }
     pico_plate1     { |asset| asset.association(:plate) }
     pico_plate2     { |asset| asset.association(:plate) }
@@ -353,15 +353,15 @@ FactoryGirl.define do
   end
 
   factory :map do
-    description      "A2"
-    asset_size       "96"
+    description      'A2'
+    asset_size       '96'
     location_id      2
     row_order        1
     column_order     8
   end
 
-  factory :plate_template do |p|
-    name      "testtemplate"
+  factory :plate_template do |_p|
+    name      'testtemplate'
     value     96
     size      96
   end
@@ -377,12 +377,12 @@ FactoryGirl.define do
     i.to_s(4).tr('0', 'A').tr('1', 'T').tr('2', 'C').tr('3', 'G')
   end
 
-  factory :tag do |t|
+  factory :tag do |_t|
     tag_group
     oligo
   end
 
-  factory :tag_group do |t|
+  factory :tag_group do |_t|
     name  { generate :tag_group_name }
 
     transient do
@@ -417,33 +417,33 @@ FactoryGirl.define do
   factory :strip_tube_creation_task do
   end
 
-  factory :plate_transfer_task do |t|
-    purpose_id { Purpose.find_by_name('PacBio Sheared').id }
+  factory :plate_transfer_task do |_t|
+    purpose_id { Purpose.find_by(name: 'PacBio Sheared').id }
   end
 
-  factory :sample_tube_without_barcode, class: Tube do |tube|
-    name                { |a| FactoryGirl.generate :asset_name }
-    value               ""
+  factory :sample_tube_without_barcode, class: Tube do |_tube|
+    name                { |_a| FactoryGirl.generate :asset_name }
+    value               ''
     descriptors         []
     descriptor_fields   []
-    qc_state            ""
+    qc_state            ''
     resource            nil
     barcode             nil
     purpose             { Tube::Purpose.standard_sample_tube }
   end
 
-  factory :empty_sample_tube, class: SampleTube do |sample_tube|
-    name                { |a| FactoryGirl.generate :asset_name }
-    value               ""
+  factory :empty_sample_tube, class: SampleTube do |_sample_tube|
+    name                { |_a| FactoryGirl.generate :asset_name }
+    value               ''
     descriptors         []
     descriptor_fields   []
-    qc_state            ""
+    qc_state            ''
     resource            nil
     barcode
     purpose { Tube::Purpose.standard_sample_tube }
   end
 
-  factory :sample_tube, parent: :empty_sample_tube do |sample_tube|
+  factory :sample_tube, parent: :empty_sample_tube do |_sample_tube|
     transient do
       sample { create(:sample) }
       study { create(:study) }
@@ -455,55 +455,55 @@ FactoryGirl.define do
     end
   end
 
-  factory :cherrypick_task do |t|
-    name "New task"
+  factory :cherrypick_task do |_t|
+    name 'New task'
     pipeline_workflow_id { |workflow| workflow.association(:lab_workflow) }
     sorted                nil
     batched               nil
-    location              ""
+    location              ''
     interactive           nil
   end
 
-  factory :assign_plate_purpose_task do |assign_plate_purpose_task|
-    name "Assign a Purpose for Output Plates"
+  factory :assign_plate_purpose_task do |_assign_plate_purpose_task|
+    name 'Assign a Purpose for Output Plates'
     sorted 3
   end
 
-  factory :plate_purpose do |plate_purpose|
-    name    { |a| FactoryGirl.generate :purpose_name }
+  factory :plate_purpose do |_plate_purpose|
+    name    { |_a| FactoryGirl.generate :purpose_name }
 
-    factory :source_plate_purpose do |source_plate_purpose|
-      after(:build) do |source_plate_purpose, evaluator|
+    factory :source_plate_purpose do |_source_plate_purpose|
+      after(:build) do |source_plate_purpose, _evaluator|
         source_plate_purpose.source_purpose = source_plate_purpose
       end
     end
   end
 
-  factory :purpose do |purpose|
-    name { |a| FactoryGirl.generate :purpose_name }
+  factory :purpose do |_purpose|
+    name { |_a| FactoryGirl.generate :purpose_name }
   end
 
-  factory(:tube_purpose, class: Tube::Purpose) do |purpose|
+  factory(:tube_purpose, class: Tube::Purpose) do |_purpose|
     name        'Tube purpose'
     target_type 'MultiplexedLibraryTube'
   end
 
-  factory :dilution_plate_purpose do |plate_purpose|
+  factory :dilution_plate_purpose do |_plate_purpose|
     name    'Dilution'
   end
 
-  factory :barcode_prefix do |b|
-    prefix  "DN"
+  factory :barcode_prefix do |_b|
+    prefix  'DN'
   end
 
   # A plate that has exactly the right number of wells!
-  factory(:plate_for_strip_tubes, class: Plate) do |plate|
+  factory(:plate_for_strip_tubes, class: Plate) do |_plate|
     size 96
-    plate_purpose { PlatePurpose.find_by_name('Stock plate') }
+    plate_purpose { PlatePurpose.find_by(name: 'Stock plate') }
     after(:create) do |plate|
       plate.wells.import(
         %w(A1 B1 C1 D1 E1 F1 G1 H1).map do |location|
-          map = Map.where_description(location).where_plate_size(plate.size).where_plate_shape(AssetShape.find_by_name('Standard')).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
+          map = Map.where_description(location).where_plate_size(plate.size).where_plate_shape(AssetShape.find_by(name: 'Standard')).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
           create(:tagged_well, map: map)
         end
       )

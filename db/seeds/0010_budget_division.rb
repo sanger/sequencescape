@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
-budget_divisions = ["Unallocated", "Pathogen (including malaria)", "Human variation"]
+budget_divisions = ['Unallocated', 'Pathogen (including malaria)', 'Human variation']
 
 budget_divisions.each do |name|
   BudgetDivision.create!(name: name)

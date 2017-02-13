@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 # This file is here to ensure that the mock objects get cleared down properly after each scenario.
-require "mocha/api"
+require 'mocha/api'
 
 World(Mocha::API)
 

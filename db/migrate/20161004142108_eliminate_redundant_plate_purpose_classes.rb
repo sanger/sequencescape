@@ -6,8 +6,8 @@ class EliminateRedundantPlatePurposeClasses < ActiveRecord::Migration
 
   def up
     ActiveRecord::Base.transaction do
-      each_name_and_old_class do |name, old_class|
-        purpose = Purpose.find_by_name(name)
+      each_name_and_old_class do |name, _old_class|
+        purpose = Purpose.find_by(name: name)
         next if purpose.nil?
         say "Migrating #{purpose.name}"
         purpose.update_attributes!(type: 'PlatePurpose')
@@ -18,7 +18,7 @@ class EliminateRedundantPlatePurposeClasses < ActiveRecord::Migration
   def down
     ActiveRecord::Base.transaction do
       each_name_and_old_class do |name, old_class|
-        purpose = Purpose.find_by_name(name)
+        purpose = Purpose.find_by(name: name)
         next if purpose.nil?
         say "Migrating #{purpose.name}"
         purpose.update_attributes!(type: old_class)

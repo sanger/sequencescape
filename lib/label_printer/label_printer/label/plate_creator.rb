@@ -10,7 +10,7 @@ module LabelPrinter
         @user_login = options[:user_login]
       end
 
-      def top_right(plate)
+      def top_right(_plate)
         plate_purpose.name.to_s
       end
 

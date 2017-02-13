@@ -26,17 +26,17 @@ module Accession
     def accessioned?
       return false unless success?
       ActiveRecord::ConnectionAdapters::Column::TRUE_VALUES.include?(
-        xml.at("RECEIPT").attribute("success").value)
+        xml.at('RECEIPT').attribute('success').value)
     end
 
     def accession_number
       return unless success?
-      xml.at("SAMPLE").try(:attribute, "accession").try(:value)
+      xml.at('SAMPLE').try(:attribute, 'accession').try(:value)
     end
 
     def errors
       return unless success?
-      xml.search("ERROR").collect(&:text)
+      xml.search('ERROR').collect(&:text)
     end
   end
 end

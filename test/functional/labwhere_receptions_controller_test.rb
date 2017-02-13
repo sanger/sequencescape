@@ -4,11 +4,11 @@
 # authorship of this file.
 # Copyright (C) 2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 class LabwhereReceptionsControllerTest < ActionController::TestCase
   MockResponse = Struct.new(:valid?, :error)
 
-  context "Sample Reception" do
+  context 'Sample Reception' do
     setup do
       @controller = LabwhereReceptionsController.new
       @request    = ActionController::TestRequest.new
@@ -21,19 +21,19 @@ class LabwhereReceptionsControllerTest < ActionController::TestCase
       @location = create :location
     end
 
-    context "#create" do
+    context '#create' do
       context 'with multiple assets' do
         setup do
           LabWhereClient::Scan.expects(:create).with(
-            location_barcode: 'labwhere_location', user_code: 'ID123', labware_barcodes: ["1220000001831", "1220000002845", "3980000001795"]
+            location_barcode: 'labwhere_location', user_code: 'ID123', labware_barcodes: ['1220000001831', '1220000002845', '3980000001795']
           ).returns(MockResponse.new(true, ''))
 
-          post :create, { labwhere_reception: {
-            barcodes: { "1" => "1220000001831", "2" => " 1220000002845 ", "3" => "3980000001795" },
+          post :create, labwhere_reception: {
+            barcodes: { '1' => '1220000001831', '2' => ' 1220000002845 ', '3' => '3980000001795' },
             location_id: @location.id,
             user_code: 'ID123',
             location_barcode: 'labwhere_location'
-          } }
+          }
         end
 
         should 'Move items in sequencescape' do
@@ -50,22 +50,22 @@ class LabwhereReceptionsControllerTest < ActionController::TestCase
           end
         end
 
-        should set_flash.to "Locations updated!"
+        should set_flash.to 'Locations updated!'
         should redirect_to('labwhere_receptions') { '/labwhere_receptions' }
       end
 
       context 'with no location' do
         setup do
           LabWhereClient::Scan.expects(:create).with(
-            location_barcode: '', user_code: 'ID123', labware_barcodes: ["1220000001831", "1220000002845", "3980000001795"]
+            location_barcode: '', user_code: 'ID123', labware_barcodes: ['1220000001831', '1220000002845', '3980000001795']
           ).returns(MockResponse.new(true, ''))
 
-          post :create, { labwhere_reception: {
-            barcodes: { "1" => "1220000001831", "2" => " 1220000002845 ", "3" => "3980000001795" },
+          post :create, labwhere_reception: {
+            barcodes: { '1' => '1220000001831', '2' => ' 1220000002845 ', '3' => '3980000001795' },
             location_id: @location.id,
             user_code: 'ID123',
             location_barcode: ''
-          } }
+          }
         end
 
         should 'Move items in sequencescape' do
@@ -82,7 +82,7 @@ class LabwhereReceptionsControllerTest < ActionController::TestCase
           end
         end
 
-        should set_flash.to "Locations updated!"
+        should set_flash.to 'Locations updated!'
         should redirect_to('labwhere_receptions') { '/labwhere_receptions' }
       end
     end

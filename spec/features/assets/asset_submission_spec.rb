@@ -30,25 +30,17 @@ feature 'Asset submission', js: true do
       login_user user
       visit asset_path(asset)
       click_link 'Request additional sequencing'
-      select(request_type.name, from: "Request type")
-      select(study.name, from: "Study")
-      select(project.name, from: "Project")
-      fill_in "Fragment size required (from)", with: "100"
-      fill_in "Fragment size required (to)", with: "200"
-      select(read_length, from: "Read length")
-      click_button "Create"
-      expect(page).to have_content "Created request"
+      select(request_type.name, from: 'Request type')
+      select(study.name, from: 'Study')
+      select(project.name, from: 'Project')
+      fill_in 'Fragment size required (from)', with: '100'
+      fill_in 'Fragment size required (to)', with: '200'
+      select(read_length, from: 'Read length')
+      click_button 'Create'
+      expect(page).to have_content 'Created request'
       expect(page).to have_current_path(asset_path(asset))
       Delayed::Worker.new.work_off
       expect(asset.requests.where(request_type_id: request_type.id).count).to equal 2
     end
-  end
-
-  def login_user(user)
-    visit login_path
-    fill_in 'Username', with: user.login
-    fill_in 'Password', with: 'password'
-    click_button 'Login'
-    true
   end
 end

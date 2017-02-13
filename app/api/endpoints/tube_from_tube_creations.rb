@@ -10,9 +10,9 @@ class ::Endpoints::TubeFromTubeCreations < ::Core::Endpoint::Base
   end
 
   instance do
-    belongs_to(:child, json: "child", to: "child")
-    belongs_to(:child_purpose, json: "child_purpose")
-    belongs_to(:parent, json: "parent")
-    belongs_to(:user, json: "user")
+    belongs_to(:child, json: 'child', to: 'child')
+    belongs_to(:child_purpose, json: 'child_purpose')
+    belongs_to(:parent, json: 'parent')
+    belongs_to(:user, json: 'user')
   end
 end

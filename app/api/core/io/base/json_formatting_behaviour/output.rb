@@ -24,7 +24,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Output
     end
 
     # Now we can generate a method that will use that tree to encode an object to JSON.
-    self.singleton_class.send(:define_method, :json_code_tree) { tree }
-    self.singleton_class.send(:define_method, :object_json, &tree.method(:encode))
+    singleton_class.send(:define_method, :json_code_tree) { tree }
+    singleton_class.send(:define_method, :object_json, &tree.method(:encode))
   end
 end

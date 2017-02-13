@@ -64,7 +64,7 @@ class ProductCriteria::Basic
   end
 
   def metrics
-    values.merge({ comment: @comment.join(';') })
+    values.merge(comment: @comment.join(';'))
   end
 
   def well_location
@@ -72,7 +72,7 @@ class ProductCriteria::Basic
   end
 
   def plate_barcode
-    @well_or_metric.plate.try(:sanger_human_barcode) || "Unknown"
+    @well_or_metric.plate.try(:sanger_human_barcode) || 'Unknown'
   end
 
   # We sort in Ruby here as we've loaded the wells in bulk. Performing this selection in
@@ -166,7 +166,7 @@ class ProductCriteria::Basic
     if @well_or_metric.is_a?(Hash)
       @well_or_metric[attribute]
     else
-      self.send(attribute)
+      send(attribute)
     end
   end
 

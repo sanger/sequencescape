@@ -6,8 +6,8 @@
 
 require 'simplecov'
 
-ENV["RAILS_ENV"] = "test"
-require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
+ENV['RAILS_ENV'] = 'test'
+require File.expand_path(File.dirname(__FILE__) + '/../config/environment')
 
 require 'minitest/autorun'
 require 'shoulda'

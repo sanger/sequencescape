@@ -5,7 +5,7 @@ class LibPoolNormTubeGenerator
   attr_accessor :plate
   attr_reader :user, :asset_group, :study
 
-  validates_presence_of :plate, message: "Barcode does not relate to any existing plate"
+  validates_presence_of :plate, message: 'Barcode does not relate to any existing plate'
   validates_presence_of :user, :study
 
   validate :check_state, :check_plate_purpose, if: Proc.new { |g| g.plate.present? }
@@ -17,7 +17,7 @@ class LibPoolNormTubeGenerator
   end
 
   def transfer_template
-    @transfer_template ||= TransferTemplate.find_by_name("Transfer from tube to tube by submission")
+    @transfer_template ||= TransferTemplate.find_by(name: 'Transfer from tube to tube by submission')
   end
 
   def plate=(barcode)
@@ -34,7 +34,7 @@ class LibPoolNormTubeGenerator
     end
     .map(&:target_asset)
     .uniq
-    .reject { |tube| tube.state == "failed" || tube.state == "qc_complete" || tube.state == "cancelled" }
+    .reject { |tube| tube.state == 'failed' || tube.state == 'qc_complete' || tube.state == 'cancelled' }
   end
 
   def destination_tubes
@@ -44,14 +44,14 @@ class LibPoolNormTubeGenerator
   def create!
     if valid?
       begin
-        ActiveRecord::Base.transaction do |t|
+        ActiveRecord::Base.transaction do |_t|
           lib_pool_tubes.each do |tube|
             pass_and_complete(tube)
             pass_and_complete(create_lib_pool_norm_tube(tube))
           end
 
           @asset_group = AssetGroup.create(assets: destination_tubes, study: study, name: "#{plate.sanger_human_barcode}_qc_completed_tubes")
-          Location.find_by_name("Cluster formation freezer").set_locations(destination_tubes)
+          Location.find_by(name: 'Cluster formation freezer').set_locations(destination_tubes)
         end
         true
       rescue => e
@@ -71,15 +71,15 @@ private
   end
 
   def pass_and_complete(tube)
-    StateChange.create(user: user, target: tube, target_state: "passed")
-    StateChange.create(user: user, target: tube, target_state: "qc_complete")
+    StateChange.create(user: user, target: tube, target_state: 'passed')
+    StateChange.create(user: user, target: tube, target_state: 'qc_complete')
   end
 
   def check_state
-    errors.add(:plate, "should be qc completed") unless plate.state == "qc_complete"
+    errors.add(:plate, 'should be qc completed') unless plate.state == 'qc_complete'
   end
 
   def check_plate_purpose
-    errors.add(:plate, "should be of type Lib PCR-XP") unless plate.plate_purpose.name == "Lib PCR-XP"
+    errors.add(:plate, 'should be of type Lib PCR-XP') unless plate.plate_purpose.name == 'Lib PCR-XP'
   end
 end

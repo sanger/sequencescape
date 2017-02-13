@@ -4,7 +4,7 @@ module Informatics
     attr_accessor :service_uri, :service_port, :balanced_ports, :html_root, :nginx_binaries
 
     def self.configure(options)
-      a = self.new
+      a = new
       c = options[:with]
       a.cap = c
       yield a
@@ -42,19 +42,19 @@ module Informatics
     end
 
     def nginx_config
-      parsed("vendor/plugins/informatics/assets/deployment/nginx.conf.erb")
+      parsed('vendor/plugins/informatics/assets/deployment/nginx.conf.erb')
     end
 
     def mime_types
-      parsed("vendor/plugins/informatics/assets/deployment/mime.types.erb")
+      parsed('vendor/plugins/informatics/assets/deployment/mime.types.erb')
     end
 
     def mongrel_config
-      parsed("vendor/plugins/informatics/assets/deployment/server.yml.erb")
+      parsed('vendor/plugins/informatics/assets/deployment/server.yml.erb')
     end
 
     def logrotate_config
-      parsed("vendor/plugins/informatics/assets/deployment/logrotate.conf.erb")
+      parsed('vendor/plugins/informatics/assets/deployment/logrotate.conf.erb')
     end
 
     def nginx_files(f)
@@ -87,7 +87,7 @@ module Informatics
     private
 
       def parsed(filename)
-        ERB.new(File.new(filename, "r").read).result(binding)
+        ERB.new(File.new(filename, 'r').read).result(binding)
       end
   end
 end

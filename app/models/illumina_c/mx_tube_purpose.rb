@@ -17,8 +17,8 @@ class IlluminaC::MxTubePurpose < IlluminaHtp::MxTubePurpose
 
   def library_request(tube)
     tube.requests_as_target.where_is_a?(IlluminaC::Requests::LibraryRequest).first ||
-    tube.requests_as_target.where_is_a?(Request::Multiplexing).first.asset.
-      requests_as_target.where_is_a?(IlluminaC::Requests::LibraryRequest).first
+    tube.requests_as_target.where_is_a?(Request::Multiplexing).first.asset
+      .requests_as_target.where_is_a?(IlluminaC::Requests::LibraryRequest).first
   end
 
   def request_state(request, state)

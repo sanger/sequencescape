@@ -18,7 +18,7 @@ class ::Endpoints::BaitLibraryLayouts < ::Core::Endpoint::Base
   end
 
   instance do
-    belongs_to(:plate, json: "plate")
-    belongs_to(:user, json: "user")
+    belongs_to(:plate, json: 'plate')
+    belongs_to(:user, json: 'user')
   end
 end

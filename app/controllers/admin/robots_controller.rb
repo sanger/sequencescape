@@ -47,7 +47,7 @@ class Admin::RobotsController < ApplicationController
         format.html { redirect_to admin_robot_path(@robot) }
         format.xml  { render xml: @robot, status: :created, location: @robot }
       else
-        format.html { render action: "new" }
+        format.html { render action: 'new' }
         format.xml  { render xml: @robot.errors, status: :unprocessable_entity }
       end
     end
@@ -60,7 +60,7 @@ class Admin::RobotsController < ApplicationController
         format.html { redirect_to admin_robot_path(@robot) }
         format.xml  { head :ok }
       else
-        format.html { render action: "edit" }
+        format.html { render action: 'edit' }
         format.xml  { render xml: @robot.errors, status: :unprocessable_entity }
       end
     end
@@ -68,7 +68,7 @@ class Admin::RobotsController < ApplicationController
 
   def destroy
     @robot.destroy
-    flash[:notice] = "Robot removed successfully"
+    flash[:notice] = 'Robot removed successfully'
 
     respond_to do |format|
       format.html { redirect_to(admin_robots_url) }

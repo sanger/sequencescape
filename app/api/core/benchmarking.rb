@@ -9,7 +9,7 @@ module Core::Benchmarking
     app.helpers self
   end
 
-  def benchmark(message = nil, &block)
+  def benchmark(_message = nil)
     yield
     # ActiveRecord::Base.benchmark("===== API benchmark (#{message || 'general'}):", Logger::ERROR, &block)
   end

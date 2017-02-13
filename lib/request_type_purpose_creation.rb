@@ -4,8 +4,8 @@
 # Copyright (C) 2015 Genome Research Ltd.
 module RequestTypePurposeCreation
   def add_request_purpose
-    purpose_key = self.request_class <= TransferRequest ? 'internal' : 'standard'
-    self.request_purpose ||= RequestPurpose.find_by_key!(purpose_key)
+    purpose_key = request_class <= TransferRequest ? 'internal' : 'standard'
+    self.request_purpose ||= RequestPurpose.find_by!(key: purpose_key)
     self
   end
 end

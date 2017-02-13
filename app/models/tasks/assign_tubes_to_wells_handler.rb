@@ -27,10 +27,10 @@ module Tasks::AssignTubesToWellsHandler
         library_well_positions = all_well_positions_for_library_tube(tubes_to_well_positions, library_tube)
         requests.select { |request| request.asset == library_tube }.each_slice(MAX_SMRT_CELLS_PER_WELL) do |requests_for_library|
           well_position = library_well_positions.shift
-          raise "Not enough well positions to satisfy requests" if well_position.nil?
+          raise 'Not enough well positions to satisfy requests' if well_position.nil?
 
           well = find_target_asset_from_requests(requests_for_library)
-          well.update_attributes!(map: Map.find_by_description_and_asset_size(well_position, 96), plate: plate)
+          well.update_attributes!(map: Map.find_by(description: well_position, asset_size: 96), plate: plate)
           assign_requests_to_well(requests_for_library, well)
         end
       end
@@ -68,7 +68,7 @@ module Tasks::AssignTubesToWellsHandler
     true
   end
 
-  def do_assign_pick_volume_task(task, params)
+  def do_assign_pick_volume_task(_task, params)
     @batch.requests.each do |r|
       next if r.target_asset.nil?
       r.target_asset.set_picked_volume(params[:micro_litre_volume_required].to_i)
@@ -83,9 +83,8 @@ module Tasks::AssignTubesToWellsHandler
     @batch.requests.group_by { |request| params[:request_locations][request.id.to_s] }.each do |well, requests|
       all_aliquots = requests.map { |r| r.asset.aliquots }.flatten
       # Push each aliquot onto an array as long as it doesn't match an aliquot already on the array
-      unique_aliquots = all_aliquots.reduce([]) do |selected_aliquots, candidate|
+      unique_aliquots = all_aliquots.each_with_object([]) do |candidate, selected_aliquots|
         selected_aliquots << candidate unless selected_aliquots.any? { |existing_aliquot| existing_aliquot.equivalent?(candidate) }
-        selected_aliquots
       end
       # uniq! returns any duplicates, or nil if there are none
       next if unique_aliquots.map(&:tag_id).uniq!.nil?
@@ -146,7 +145,7 @@ module Tasks::AssignTubesToWellsHandler
     @asbi ||= assets_from_requests.sort_by(&:id)
   end
 
-  def calculate_number_of_wells_library_needs_to_use(task, params)
+  def calculate_number_of_wells_library_needs_to_use(_task, _params)
     tubes_for_wells = []
     assets = assets_from_requests_sorted_by_id
     physical_library_tubes = uniq_assets_from_requests

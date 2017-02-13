@@ -2,11 +2,11 @@
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2007-2011,2011,2012 Genome Research Ltd.
-def open_barcode_stream(&block)
-  user = "read_only"
-  password = "read_only"
-  connection = "cas"
-  open "|sqlplus -S #{user}/#{password}@#{connection}", "r+" do |f|
+def open_barcode_stream
+  user = 'read_only'
+  password = 'read_only'
+  connection = 'cas'
+  open "|sqlplus -S #{user}/#{password}@#{connection}", 'r+' do |f|
     f.print <<-EOS
     SET PAGES 0
     SELECT id_person, email
@@ -47,7 +47,7 @@ def update_user
   User.all.each do |user|
     barcode_id = user_to_id[user.login]
     if barcode_id
-      barcode = Barcode.barcode_to_human(Barcode.calculate_barcode("ID", barcode_id))
+      barcode = Barcode.barcode_to_human(Barcode.calculate_barcode('ID', barcode_id))
       if barcode != user.barcode
         puts "assigning new barcode '#{barcode_id}' to user '#{user.login}'"
         user.barcode = barcode

@@ -14,7 +14,7 @@ class TagLayout < ActiveRecord::Base
   include Uuid::Uuidable
   include ModelExtensions::TagLayout
 
-  self.inheritance_column = "sti_type"
+  self.inheritance_column = 'sti_type'
 
   # The user performing the layout
   belongs_to :user
@@ -54,8 +54,8 @@ class TagLayout < ActiveRecord::Base
       'inverse column' => 'TagLayout::InInverseColumns',
       'inverse row'    => 'TagLayout::InInverseRows'
     }[new_direction]
-    errors.add(:base, "#{new_direction} is not a valid direction") if self.direction_algorithm.nil?
-    raise(ActiveRecord::RecordInvalid, self) if self.direction_algorithm.nil?
+    errors.add(:base, "#{new_direction} is not a valid direction") if direction_algorithm.nil?
+    raise(ActiveRecord::RecordInvalid, self) if direction_algorithm.nil?
     extend(direction_algorithm.constantize)
   end
 
@@ -67,8 +67,8 @@ class TagLayout < ActiveRecord::Base
       'as group by plate'  => 'TagLayout::AsGroupByPlate',
       'manual by plate'    => 'TagLayout::WalkManualWellsOfPlate'
     }[walk]
-    errors.add(:base, "#{walk} is not a recognised walking method") if self.walking_algorithm.nil?
-    raise(ActiveRecord::RecordInvalid, self) if self.walking_algorithm.nil?
+    errors.add(:base, "#{walk} is not a recognised walking method") if walking_algorithm.nil?
+    raise(ActiveRecord::RecordInvalid, self) if walking_algorithm.nil?
     extend(walking_algorithm.constantize)
   end
 

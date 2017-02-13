@@ -42,15 +42,15 @@ module Asset::Ownership
         has_one :owner, source: :user, through: :plate_owner
 
          scope :for_user, ->(user) {
-            joins(:plate_owner).
-            where(plate_owners: { user_id: user })
-          }
+            joins(:plate_owner)
+            .where(plate_owners: { user_id: user })
+                          }
       end
     end
 
     def change_owner_to(owner, source_event)
       if plate_owner.nil?
-        self.update_attributes!(plate_owner: PlateOwner.create!(user: owner, eventable: source_event, plate: self))
+        update_attributes!(plate_owner: PlateOwner.create!(user: owner, eventable: source_event, plate: self))
       else
         plate_owner.update_attributes!(user: owner, eventable: source_event)
       end

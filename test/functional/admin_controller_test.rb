@@ -4,10 +4,10 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class AdminControllerTest < ActionController::TestCase
-  context "Admin controller" do
+  context 'Admin controller' do
     setup do
       @controller = AdminController.new
       @request    = ActionController::TestRequest.new
@@ -16,12 +16,12 @@ class AdminControllerTest < ActionController::TestCase
 
     should_require_login
 
-    context "admin frontpage" do
+    context 'admin frontpage' do
       setup do
         session[:user] = @user = create :admin
       end
 
-      context "#index" do
+      context '#index' do
         setup do
           get :index
         end
@@ -29,20 +29,20 @@ class AdminControllerTest < ActionController::TestCase
         should render_template :index
       end
 
-      context "#filter" do
+      context '#filter' do
         setup do
           get :filter
         end
         should respond_with :success
-        should render_template "admin/users/_users"
+        should render_template 'admin/users/_users'
       end
 
-      context "#filter with query" do
+      context '#filter with query' do
         setup do
-          get :filter, q: "abc123"
+          get :filter, q: 'abc123'
         end
         should respond_with :success
-        should render_template "admin/users/_users"
+        should render_template 'admin/users/_users'
       end
     end
   end

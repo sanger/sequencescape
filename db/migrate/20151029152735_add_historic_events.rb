@@ -6,15 +6,15 @@
 
 class AddHistoricEvents < ActiveRecord::Migration
   def self.up
-    say "Adding Library Start Events"
+    say 'Adding Library Start Events'
 
-    start_purpose_id = Purpose.find_by_name('Shear').id
+    start_purpose_id = Purpose.find_by(name: 'Shear').id
     ActiveRecord::Base.transaction do
       StateChange.find_each(joins: :target, conditions: { previous_state: 'pending', target_state: ['started', 'passed'], assets: { plate_purpose_id: start_purpose_id } }) do |sc|
         print ','
         print sc.id
         plate = sc.target
-        next if BroadcastEvent::LibraryStart.find_by_seed_id_and_seed_type(plate.id, 'Asset').present?
+        next if BroadcastEvent::LibraryStart.find_by(seed_id: plate.id, seed_type: 'Asset').present?
         user = sc.user
         orders = Set.new
         sc.target.wells.each do |well|
@@ -38,7 +38,7 @@ class AddHistoricEvents < ActiveRecord::Migration
         print ','
         print sc.id
         tube = sc.target
-        next if BroadcastEvent::LibraryComplete.find_by_seed_id_and_seed_type(tube.id, 'Asset').present?
+        next if BroadcastEvent::LibraryComplete.find_by(seed_id: tube.id, seed_type: 'Asset').present?
         user = sc.user
         orders = sc.target.requests_as_target.map(&:order_id).compact.uniq
         orders.each do |order_id|
@@ -55,7 +55,7 @@ class AddHistoricEvents < ActiveRecord::Migration
         print ','
         print sc.id
         plate = sc.target
-        next if BroadcastEvent::PlateLibraryComplete.find_by_seed_id_and_seed_type(plate.id, 'Asset').present?
+        next if BroadcastEvent::PlateLibraryComplete.find_by(seed_id: plate.id, seed_type: 'Asset').present?
         user = sc.user
         orders = Set.new
         sc.target.wells.each do |well|
@@ -75,7 +75,7 @@ class AddHistoricEvents < ActiveRecord::Migration
     ActiveRecord::Base.transaction do
       SequencingPipeline.find_each do |pipeline|
         pipeline.batches.find_each(conditions: 'state != "pending" OR state != "discarded"') do |batch|
-          next if BroadcastEvent::SequencingStart.find_by_seed_id_and_seed_type(batch.id, 'Batch').present?
+          next if BroadcastEvent::SequencingStart.find_by(seed_id: batch.id, seed_type: 'Batch').present?
           r = batch.requests.first
           next if r.nil?
           re = r.request_events.where(to_state: 'started').order(:id).first

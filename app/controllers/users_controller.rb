@@ -29,9 +29,9 @@ class UsersController < ApplicationController
       @user.update_attributes(params[:user])
     end
     if @user.save
-      flash[:notice] = "Profile updated"
+      flash[:notice] = 'Profile updated'
     else
-      flash[:error] = "Problem updating profile."
+      flash[:error] = 'Problem updating profile.'
     end
     redirect_to action: :show, id: @user.id
   end
@@ -48,7 +48,7 @@ class UsersController < ApplicationController
 
   def validate_user
     if current_user.administrator? || current_user.id == params[:id].to_i
-      return true
+      true
     else
       flash[:error] = "You don't have permission to view or edit that profile: here is yours instead."
       redirect_to action: :show, id: current_user.id

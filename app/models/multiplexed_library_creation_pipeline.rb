@@ -7,7 +7,7 @@
 class MultiplexedLibraryCreationPipeline < LibraryCreationPipeline
   include Pipeline::InboxGroupedBySubmission
 
-  self.batch_worksheet = "multiplexed_library_worksheet"
+  self.batch_worksheet = 'multiplexed_library_worksheet'
   INBOX_PARTIAL = 'request_group_by_submission_inbox'
 
   def inbox_partial

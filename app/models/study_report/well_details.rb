@@ -23,32 +23,30 @@ module StudyReport::WellDetails
 
   def qc_report
     # well must be from a stock plate
-    return {} unless self.plate.try(:stock_plate?)
+    return {} unless plate.try(:stock_plate?)
 
     qc_data = super
 
-    qc_data.merge!({
-      well: self.map.description,
-      concentration: self.well_attribute.concentration,
-      sequenom_count: "#{self.get_sequenom_count.to_i}/30",
-      sequenom_gender: self.get_gender_markers,
-      pico: self.well_attribute.pico_pass,
-      is_in_fluidigm: self.fluidigm_stamp_date,
-      gel: self.well_attribute.gel_pass,
-      plate_barcode: self.plate.barcode,
-      measured_volume: self.well_attribute.measured_volume,
-      current_volume: self.well_attribute.current_volume,
-      gel_qc_date: self.gel_qc_date,
-      pico_date: self.pico_date,
-      qc_started_date: self.plate.qc_started_date,
-      sequenom_stamp_date: self.plate.sequenom_stamp_date,
-      quantity: self.well_attribute.quantity_in_micro_grams.try(:round, 3),
-      initial_volume: self.well_attribute.initial_volume
-    })
-    qc_data[:genotyping_status] = self.genotyping_status
-    qc_data[:genotyping_barcode] = self.primary_aliquot.sample.genotyping_snp_plate_id if primary_aliquot.present?
+    qc_data.merge!(well: map.description,
+                   concentration: well_attribute.concentration,
+                   sequenom_count: "#{get_sequenom_count.to_i}/30",
+                   sequenom_gender: get_gender_markers,
+                   pico: well_attribute.pico_pass,
+                   is_in_fluidigm: fluidigm_stamp_date,
+                   gel: well_attribute.gel_pass,
+                   plate_barcode: plate.barcode,
+                   measured_volume: well_attribute.measured_volume,
+                   current_volume: well_attribute.current_volume,
+                   gel_qc_date: gel_qc_date,
+                   pico_date: pico_date,
+                   qc_started_date: plate.qc_started_date,
+                   sequenom_stamp_date: plate.sequenom_stamp_date,
+                   quantity: well_attribute.quantity_in_micro_grams.try(:round, 3),
+                   initial_volume: well_attribute.initial_volume)
+    qc_data[:genotyping_status] = genotyping_status
+    qc_data[:genotyping_barcode] = primary_aliquot.sample.genotyping_snp_plate_id if primary_aliquot.present?
 
-    latest_child_well = self.find_latest_child_well
+    latest_child_well = find_latest_child_well
     if latest_child_well && latest_child_well.respond_to?(:plate)
       latest_plate = latest_child_well.plate
       if latest_plate && latest_plate.plate_purpose

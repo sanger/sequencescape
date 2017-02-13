@@ -5,16 +5,16 @@ module Authorization
   module Base
     # Modify these constants in your environment.rb to tailor the plugin to
     # your authentication system
-    if not Object.constants.include? "LOGIN_REQUIRED_REDIRECTION"
+    if not Object.constants.include? 'LOGIN_REQUIRED_REDIRECTION'
       LOGIN_REQUIRED_REDIRECTION = {
         controller: 'session',
         action: 'new'
       }
     end
-    if not Object.constants.include? "PERMISSION_DENIED_REDIRECTION"
+    if not Object.constants.include? 'PERMISSION_DENIED_REDIRECTION'
       PERMISSION_DENIED_REDIRECTION = ''
     end
-    if not Object.constants.include? "STORE_LOCATION_METHOD"
+    if not Object.constants.include? 'STORE_LOCATION_METHOD'
       STORE_LOCATION_METHOD = :store_location
     end
 
@@ -32,8 +32,8 @@ module Authorization
         filter_keys = [:only, :except]
         filter_args, eval_args = {}, {}
         if args.last.is_a? Hash
-          filter_args.merge!(args.last.reject { |k, v| not filter_keys.include? k })
-          eval_args.merge!(args.last.reject { |k, v| filter_keys.include? k })
+          filter_args.merge!(args.last.reject { |k, _v| not filter_keys.include? k })
+          eval_args.merge!(args.last.reject { |k, _v| filter_keys.include? k })
         end
         before_action(filter_args) do |controller|
           controller.permit(authorization_expression, eval_args)
@@ -88,16 +88,16 @@ module Authorization
 
       # Handle redirection within permit if authorization is denied.
       def handle_redirection
-        return if not self.respond_to?(:redirect_to)
+        return if not respond_to?(:redirect_to)
 
         # Store url in session for return if this is available from
         # authentication
         send(STORE_LOCATION_METHOD) if respond_to? STORE_LOCATION_METHOD
         if @current_user && @current_user != :false
-          flash[:notice] = @options[:permission_denied_message] || "Permission denied. You cannot access the requested page."
+          flash[:notice] = @options[:permission_denied_message] || 'Permission denied. You cannot access the requested page.'
           redirect_to @options[:permission_denied_redirection] || PERMISSION_DENIED_REDIRECTION
         else
-          flash[:notice] = @options[:login_required_message] || "Login is required to access the requested page."
+          flash[:notice] = @options[:login_required_message] || 'Login is required to access the requested page.'
           redirect_to @options[:login_required_redirection] || LOGIN_REQUIRED_REDIRECTION
         end
         false # Want to short-circuit the filters
@@ -109,7 +109,7 @@ module Authorization
           @options[:user]
         elsif @options[:get_user_method]
           send(@options[:get_user_method])
-        elsif self.respond_to? :current_user
+        elsif respond_to? :current_user
           current_user
         elsif not @options[:allow_guests]
           raise(CannotObtainUserObject, "Couldn't find #current_user or @user, and nothing appropriate found in hash")

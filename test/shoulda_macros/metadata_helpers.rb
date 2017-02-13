@@ -9,7 +9,7 @@ module Sanger
     module Model
       module Macros
         def should_default_everything_but(properties_type, *keys)
-          properties_type.defaults.reject { |k, v| keys.include?(k) }.each do |name, value|
+          properties_type.defaults.reject { |k, _v| keys.include?(k) }.each do |name, value|
             should "leave the value of #{name} as default" do
               assert_equal(value, subject.send(name))
             end
@@ -17,7 +17,7 @@ module Sanger
         end
 
         def should_default_everything(properties_type)
-          self.should_default_everything_but(properties_type)
+          should_default_everything_but(properties_type)
         end
       end
     end

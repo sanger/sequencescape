@@ -5,5 +5,5 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 class PulldownRunOfRobotPlate < PulldownPlate
-  self.prefix = "FE"
+  self.prefix = 'FE'
 end
