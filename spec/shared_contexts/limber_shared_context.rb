@@ -1,4 +1,4 @@
-# frozen_string_literal: true# frozen_string_literal: true
+# frozen_string_literal: true
 shared_context 'a limber target plate with submissions' do
   # A note on improving speed: before(:context) could be used instead of before(:each) to ensure these elements only get
   # built once. This will speed things up, but is discouraged. You can't use let in a before(:context) so instance variables
