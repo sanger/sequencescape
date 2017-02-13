@@ -231,7 +231,7 @@ class Plate < Asset
       ActiveRecord::Base.transaction do
         records.map(&:save!)
         attach(records)
-        post_import(records.map { |r| [proxy_association.owner.id, r['id']] })
+        post_import(records.map { |r| [proxy_association.owner.id, r.id] })
       end
     end
     deprecate :import # Legacy pre-jruby method to handle bulk import
@@ -242,11 +242,6 @@ class Plate < Asset
       end
     end
     deprecate :attach # Legacy pre-jruby method to handle bulk import
-
-    def connect(content)
-      ContainerAssociation.create!(container: proxy_association.owner, content: content)
-    end
-    private :connect
 
     # After importing wells we need to also create the AssetLink and WellAttribute information for them.
     def post_import(links_data)
