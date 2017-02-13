@@ -9,10 +9,11 @@
   <% end %>
 <% end %>
 
+<%= panel(:info) do %>
+  <a type="button" class="btn btn-info btn-lg btn-block" href=<%=new_user_query_path%> > HELP </a>
+<% end %>
+
 <%= panel(:default,title:"Links") do %>
   <%= render :partial => "shared/menu" %>
 <% end %>
 
-<%= panel(:info) do %>
-  <%= image_tag "information.png", :size => "16x16" %><span style="vertical-align: middle;">If you need help using Sequencescape please email:</span> <span style="text-align: center"><%= help_email_link %></span>
-<% end %>
