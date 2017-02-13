@@ -612,6 +612,8 @@ Sequencescape::Application.routes.draw do
 
   resources :qc_files, only: [:show]
 
+  resources :user_queries, only: [:new, :create]
+
   post 'get_your_qc_completed_tubes_here' => 'get_your_qc_completed_tubes_here#create', as: :get_your_qc_completed_tubes_here
 
   # These endpoints should be defined explicitly
