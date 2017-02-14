@@ -13,7 +13,7 @@ FactoryGirl.define do
   end
 
   factory :asset do
-    name                { |_a| FactoryGirl.generate :asset_name }
+    name                { |_a| generate :asset_name }
     value               ''
     qc_state            ''
     resource            nil
@@ -25,7 +25,7 @@ FactoryGirl.define do
   end
 
   factory :plate_creator, class: Plate::Creator do
-    name                { generate :plate_creator_name }
+    name { generate :plate_creator_name }
     plate_purpose
   end
 
