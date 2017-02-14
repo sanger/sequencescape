@@ -1,13 +1,12 @@
-require_relative '../../test_helper'
+require 'test_helper'
 
 class RangeListTest < ActiveSupport::TestCase
-
   include SampleManifestExcel::Helpers
 
   attr_reader :ranges, :range_list
 
   def setup
-    folder = File.join("test","data", "sample_manifest_excel")
+    folder = File.join("test", "data", "sample_manifest_excel")
     @ranges = load_file(folder, "ranges")
     @range_list = SampleManifestExcel::RangeList.new(ranges)
   end
@@ -30,5 +29,4 @@ class RangeListTest < ActiveSupport::TestCase
   test "should be comparable" do
     assert_equal range_list, SampleManifestExcel::RangeList.new(ranges)
   end
-
 end

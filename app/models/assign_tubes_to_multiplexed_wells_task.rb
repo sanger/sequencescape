@@ -1,9 +1,10 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2015 Genome Research Ltd.
 
 class AssignTubesToMultiplexedWellsTask < Task
-
   belongs_to :purpose
 
   class AssignTubesToWellsData < Task::RenderElement
@@ -17,11 +18,11 @@ class AssignTubesToMultiplexedWellsTask < Task
   end
 
   def included_for_do_task
-    [{:requests=>:asset}, :pipeline ]
+    [{ requests: :asset }, :pipeline]
   end
 
   def included_for_render_task
-    [{:requests=>:asset}, :pipeline ]
+    [{ requests: :asset }, :pipeline]
   end
 
   def create_render_element(request)
@@ -35,6 +36,4 @@ class AssignTubesToMultiplexedWellsTask < Task
   def do_task(workflow, params)
     workflow.do_assign_requests_to_multiplexed_wells_task(self, params)
   end
-
-
 end

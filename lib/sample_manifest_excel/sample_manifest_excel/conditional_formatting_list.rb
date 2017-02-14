@@ -1,9 +1,7 @@
 module SampleManifestExcel
-
   ##
   # A list of conditional formattings for a single entity e.g. Column.
   class ConditionalFormattingList
-
     include Enumerable
     include Comparable
 
@@ -48,8 +46,6 @@ module SampleManifestExcel
       self
     end
 
-
-
     ##
     # Collect all of the options for each item in the list.
     def options
@@ -78,7 +74,7 @@ module SampleManifestExcel
     end
 
     def <=>(other)
-      return unless other.is_a?(self.class) 
+      return unless other.is_a?(self.class)
       conditional_formattings <=> other.conditional_formattings
     end
 

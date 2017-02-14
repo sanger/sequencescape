@@ -1,18 +1,19 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 class Accessionable::Dac < Accessionable::Base
-
   attr_reader :contacts
   def initialize(study)
     @study = study
     @name = study.dac_refname
     @contacts = study.send("Data Access Contacts").map do |contact|
       {
-        :email => contact.email,
-        :name => contact.name,
-        :organisation => AccessionService::CenterName
+        email: contact.email,
+        name: contact.name,
+        organisation: AccessionService::CenterName
       }
     end
 
@@ -31,15 +32,15 @@ class Accessionable::Dac < Accessionable::Base
     xml = Builder::XmlMarkup.new
     xml.instruct!
     xml.DAC_SET('xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance') {
-      xml.DAC(:alias => self.alias, :accession => self.accession_number, :center_name => self.center_name) {
+      xml.DAC(alias: self.alias, accession: self.accession_number, center_name: self.center_name) {
       xml.CONTACTS {
       self.contacts.each do |contact|
-      xml.CONTACT( {
-        :name => contact[:name],
-        :email => contact[:email],
-        :organisation => contact[:organisation]
+      xml.CONTACT({
+        name: contact[:name],
+        email: contact[:email],
+        organisation: contact[:organisation]
         }.tap do |att|
-         att[:telephone]=tel if (tel=contact[:telephone])
+         att[:telephone] = tel if (tel = contact[:telephone])
         end)
       end
     }

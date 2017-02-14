@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2012,2015 Genome Research Ltd.
 module ControlRequestTypeCreation
   def control_type_name
     key_name.titleize
@@ -11,7 +12,7 @@ module ControlRequestTypeCreation
   end
 
   def key_name
-    (last_request_type.key || last_request_type.name.gsub(/\s/,'_').downcase) + '_control'
+    (last_request_type.key || last_request_type.name.gsub(/\s/, '_').downcase) + '_control'
   end
 
   def last_request_type
@@ -19,7 +20,7 @@ module ControlRequestTypeCreation
   end
 
   def add_control_request_type
-      RequestType.find_or_create_by_key(key_name) do |crt|
+      RequestType.find_or_create_by(key: key_name) do |crt|
         crt.name               = control_type_name
         crt.request_class_name = 'ControlRequest'
         crt.multiples_allowed  = last_request_type.multiples_allowed

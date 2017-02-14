@@ -250,11 +250,6 @@ And I have a "full" authorised user with the key "cucumber"
       | "11111111-2222-3333-4444-000000000001", "11111111-2222-3333-4444-000000000002", "11111111-2222-3333-4444-000000000003" | "too many requests specified" |
       | "99999999-1111-2222-3333-444444444444"                                                                                 | "has incorrect type"          |
 
-    # This may or may not come back in later, but can't require it for creation because of the way tests work!
-    @wip
-    Scenarios:
-      | uuids                                                                                                                  | errors                        |
-      |                                                                                                                        | "can't be blank"              |
 
   @create @batch @authorised
   Scenario: Create a batch of requests for our pipeline

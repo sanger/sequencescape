@@ -73,6 +73,7 @@ class BaseLoginProxy
   end
 
   private
+
     def authenticated
       raise NotImplementedError
     end
@@ -91,17 +92,19 @@ end
 
 class HttpLoginProxy < BaseLoginProxy
   protected
+
     def authenticate
       @controller.login_as @login if @login
     end
 
     def check
-      @controller.assert_redirected_to :controller => 'sessions', :action => 'login'
+      @controller.assert_redirected_to controller: 'sessions', action: 'login'
     end
 end
 
 class XmlLoginProxy < BaseLoginProxy
   protected
+
     def authenticate
       @controller.accept 'application/xml'
       @controller.authorize_as @login if @login

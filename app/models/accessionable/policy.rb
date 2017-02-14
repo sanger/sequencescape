@@ -1,9 +1,10 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 class Accessionable::Policy < Accessionable::Base
-
   attr_reader :policy_url, :dac_accession_number, :title
 
   def initialize(study)
@@ -12,10 +13,9 @@ class Accessionable::Policy < Accessionable::Base
     @name = "Policy for study - #{study.name} - ##{study.id}"
     @policy_url = study.study_metadata.dac_policy
     @title = study.study_metadata.dac_policy_title
-    #@dac_refname = study.dac_refname
+    # @dac_refname = study.dac_refname
     @dac_accession_number = study.dac_accession_number
     super(study.policy_accession_number)
-
   end
 
   def errors
@@ -28,11 +28,11 @@ class Accessionable::Policy < Accessionable::Base
     xml = Builder::XmlMarkup.new
     xml.instruct!
     xml.POLICY_SET('xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance') {
-      xml.POLICY(:alias => self.alias,
-                 :accession => self.accession_number,
-                 :center_name => self.center_name) {
+      xml.POLICY(alias: self.alias,
+                 accession: self.accession_number,
+                 center_name: self.center_name) {
       xml.TITLE self.title
-      xml.DAC_REF(:accession => self.dac_accession_number)
+      xml.DAC_REF(accession: self.dac_accession_number)
       xml.POLICY_FILE self.policy_url
     }
     }

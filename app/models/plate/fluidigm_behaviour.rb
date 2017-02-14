@@ -1,14 +1,14 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2015 Genome Research Ltd.
 
 module Plate::FluidigmBehaviour
-
   class FluidigmError < StandardError; end
 
   def self.included(base)
     base.class_eval do
-
       scope :requiring_fluidigm_data, -> {
         fluidigm_request_id = RequestType.find_by_key!('pick_to_fluidigm').id
 
@@ -23,7 +23,6 @@ module Plate::FluidigmBehaviour
         ]).
         where('events.id IS NULL')
       }
-
     end
   end
 
@@ -41,11 +40,10 @@ module Plate::FluidigmBehaviour
 
     wells.located_at(fluidigm_file.well_locations).include_stock_wells.each do |well|
       well.stock_wells.each do |sw|
-        sw.update_gender_markers!( fluidigm_file.well_at(well.map_description).gender_markers,'FLUIDIGM' )
-        sw.update_sequenom_count!( fluidigm_file.well_at(well.map_description).count,'FLUIDIGM' )
+        sw.update_gender_markers!(fluidigm_file.well_at(well.map_description).gender_markers, 'FLUIDIGM')
+        sw.update_sequenom_count!(fluidigm_file.well_at(well.map_description).count, 'FLUIDIGM')
       end
     end
     self.events.updated_fluidigm_plate!('FLUIDIGM_DATA')
   end
-
 end

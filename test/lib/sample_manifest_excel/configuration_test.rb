@@ -1,7 +1,6 @@
-require_relative '../../test_helper'
+require 'test_helper'
 
 class ConfigurationTest < ActiveSupport::TestCase
-
   attr_reader :configuration
 
   def setup
@@ -14,13 +13,12 @@ class ConfigurationTest < ActiveSupport::TestCase
 
   test "should be able to add a new file" do
     configuration.add_file "a_new_file"
-    assert_equal SampleManifestExcel::Configuration::FILES.length+1, configuration.files.length
+    assert_equal SampleManifestExcel::Configuration::FILES.length + 1, configuration.files.length
     assert configuration.files.include?(:a_new_file)
     assert configuration.respond_to?("a_new_file=")
   end
 
   context "without a folder" do
-
     setup do
       configuration.load!
     end
@@ -31,7 +29,6 @@ class ConfigurationTest < ActiveSupport::TestCase
   end
 
   context "with a valid folder" do
-
     attr_reader :folder
 
     setup do
@@ -47,8 +44,10 @@ class ConfigurationTest < ActiveSupport::TestCase
     should "load the columns" do
       columns = SampleManifestExcel::ColumnList.new(configuration.load_file(folder, "columns"), configuration.conditional_formattings)
       assert_equal columns, configuration.columns.all
-      configuration.manifest_types.each do |k,v|
-        assert_equal columns.extract(v), configuration.columns.send(k)
+      configuration.manifest_types.each do |k, v|
+        assert_equal columns.extract(v.columns), configuration.columns.send(k)
+        assert_equal columns.extract(v.columns), configuration.columns.find(k)
+        assert_equal columns.extract(v.columns), configuration.columns.find(k.to_sym)
       end
     end
 
@@ -57,7 +56,7 @@ class ConfigurationTest < ActiveSupport::TestCase
     end
 
     should "load the manifest types" do
-      assert_equal configuration.load_file(folder, "manifest_types"), configuration.manifest_types
+      assert_equal SampleManifestExcel::ManifestTypeList.new(configuration.load_file(folder, "manifest_types")), configuration.manifest_types
     end
 
     should "load the ranges" do
@@ -70,11 +69,9 @@ class ConfigurationTest < ActiveSupport::TestCase
       assert configuration.ranges.frozen?
       assert configuration.columns.frozen?
       assert configuration.columns.all.frozen?
-      configuration.manifest_types.each do |k,v|
+      configuration.manifest_types.each do |k, v|
         assert configuration.columns.send(k).frozen?
       end
     end
-
   end
-  
 end

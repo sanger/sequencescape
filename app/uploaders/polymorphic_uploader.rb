@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2014,2015 Genome Research Ltd.
 
 require 'carrierwave'
 
@@ -43,7 +45,6 @@ module CarrierWave
 
         # Remove the file
         def delete
-          puts "Deleting file from database"
           destroy_file
         end
 
@@ -55,7 +56,7 @@ module CarrierWave
         # Stores the file in the DbFiles model - split across many rows if size > 200KB
         def store(file)
           each_slice(file) do |start, finish|
-            @uploader.model.db_files.create!(:data => file.slice(start, finish))
+            @uploader.model.db_files.create!(data: file.slice(start, finish))
           end
 
           # Old code from attachment_fu: doesn't seem to be needed
@@ -69,11 +70,12 @@ module CarrierWave
 
         def content_type=(type)
           if @uploader.model.respond_to? :content_type
-            @uploader.model.content_type=type unless type.nil?
+            @uploader.model.content_type = type unless type.nil?
           end
         end
 
         private
+
           # Gets the current data from the database
           def current_data
             @uploader.model.db_files.map(&:data).join
@@ -89,9 +91,9 @@ module CarrierWave
           # Yields the partitions for the file with the max_part_size boundary
           def each_slice(data)
             max_part_size = 200.kilobytes
-            beginning =0;
+            beginning = 0;
             left = data.size
-            while left>0
+            while left > 0
               part_size = [left, max_part_size].min
               yield beginning, part_size
               beginning += part_size
@@ -103,7 +105,6 @@ module CarrierWave
   end # Storage
 end # CarrierWave
 class PolymorphicUploader < CarrierWave::Uploader::Base
-
   def initialize(*args, &block)
     super
   end
@@ -123,7 +124,6 @@ class PolymorphicUploader < CarrierWave::Uploader::Base
     self.class.cache_dir
   end
 
-
   before :store, :remember_cache_id
   after :store, :delete_tmp_dir
 
@@ -138,8 +138,4 @@ class PolymorphicUploader < CarrierWave::Uploader::Base
       FileUtils.rm_rf(File.join(cache_dir, @cache_id_was))
     end
   end
-
-
 end
-
-

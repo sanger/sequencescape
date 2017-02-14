@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2013,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2013,2014,2015,2016 Genome Research Ltd.
 
 module IlluminaHtp::PlatePurposes
   PLATE_PURPOSE_FLOWS = [
@@ -56,28 +58,28 @@ module IlluminaHtp::PlatePurposes
   ]
 
   BRANCHES = [
-    [ 'PF Cherrypicked', 'PF Shear', 'PF Post Shear', 'PF Post Shear XP', 'PF Lib', 'PF Lib XP', 'PF Lib XP2', 'PF EM Pool', 'PF Lib Norm'],
-    [ 'PF Lib XP2', 'PF MiSeq Stock', 'PF MiSeq QC'],
-    [ 'PF MiSeq Stock','PF MiSeq QCR'],
-    [ 'Cherrypicked', 'Shear', 'Post Shear', 'AL Libs', 'Lib PCR', 'Lib PCR-XP','Lib Pool','Lib Pool Norm'],
-    [ 'Lib PCR-XP','Lib Pool Pippin', 'Lib Pool Conc', 'Lib Pool SS', 'Lib Pool SS-XP', 'Lib Pool SS-XP-Norm' ],
-    [ 'Lib PCRR', 'Lib PCRR-XP','Lib Pool Pippin' ],
-    [ 'Lib PCR-XP','ISC lib pool' ],
-    [ 'Lib PCR-XP','Lib Norm','Lib Norm 2','Lib Norm 2 Pool'],
-    [ 'Lib PCRR-XP','ISC lib pool' ],
-    [ 'Post Shear', 'Post Shear XP', 'AL Libs']
+    ['PF Cherrypicked', 'PF Shear', 'PF Post Shear', 'PF Post Shear XP', 'PF Lib', 'PF Lib XP', 'PF Lib XP2', 'PF EM Pool', 'PF Lib Norm'],
+    ['PF Lib XP2', 'PF MiSeq Stock', 'PF MiSeq QC'],
+    ['PF MiSeq Stock', 'PF MiSeq QCR'],
+    ['Cherrypicked', 'Shear', 'Post Shear', 'AL Libs', 'Lib PCR', 'Lib PCR-XP', 'Lib Pool', 'Lib Pool Norm'],
+    ['Lib PCR-XP', 'Lib Pool Pippin', 'Lib Pool Conc', 'Lib Pool SS', 'Lib Pool SS-XP', 'Lib Pool SS-XP-Norm'],
+    ['Lib PCRR', 'Lib PCRR-XP', 'Lib Pool Pippin'],
+    ['Lib PCR-XP', 'ISC lib pool'],
+    ['Lib PCR-XP', 'Lib Norm', 'Lib Norm 2', 'Lib Norm 2 Pool'],
+    ['Lib PCRR-XP', 'ISC lib pool'],
+    ['Post Shear', 'Post Shear XP', 'AL Libs']
   ]
 
   STOCK_PLATE_PURPOSE = 'Cherrypicked'
 
-  OUTPUT_PLATE_PURPOSES = ['Lib PCR-XP','Lib PCRR-XP']
+  OUTPUT_PLATE_PURPOSES = ['Lib PCR-XP', 'Lib PCRR-XP']
 
   PLATE_PURPOSE_LEADING_TO_QC_PLATES = [
     'Post Shear', 'Lib PCR-XP', 'Lib PCRR-XP', 'Lib Norm', 'PF EM Pool'
   ]
 
   STOCK_PLATE_PURPOSE_TO_OUTER_REQUEST = {
-    'Cherrypicked'  => 'illumina_b_shared'
+    'Cherrypicked' => 'illumina_b_shared'
   }
 
   PF_PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES = [
@@ -89,12 +91,12 @@ module IlluminaHtp::PlatePurposes
   ]
 
   PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES = [
-    [ 'PF Cherrypicked', 'PF Shear',            :initial   ],
-    [ 'Cherrypicked',    'Shear',               :initial   ],
-    [ 'Lib PCR-XP',      'Lib Pool',            'TransferRequest::InitialDownstream'           ],
-    [ 'Lib PCRR-XP',     'Lib Pool',            'TransferRequest::InitialDownstream'           ],
-    [ 'Lib PCR-XP',      'Lib Pool Pippin',     'TransferRequest::InitialDownstream'     ],
-    [ 'Lib PCRR-XP',     'Lib Pool Pippin',     'TransferRequest::InitialDownstream'     ]
+    ['PF Cherrypicked', 'PF Shear',            :initial],
+    ['Cherrypicked',    'Shear',               :initial],
+    ['Lib PCR-XP',      'Lib Pool',            'TransferRequest::InitialDownstream'],
+    ['Lib PCRR-XP',     'Lib Pool',            'TransferRequest::InitialDownstream'],
+    ['Lib PCR-XP',      'Lib Pool Pippin',     'TransferRequest::InitialDownstream'],
+    ['Lib PCRR-XP',     'Lib Pool Pippin',     'TransferRequest::InitialDownstream']
   ]
 
   PLATE_PURPOSE_TYPE = {
@@ -110,7 +112,6 @@ module IlluminaHtp::PlatePurposes
     'PF MiSeq Stock'         => IlluminaHtp::StockTubePurpose,
     'PF MiSeq QC'            => IlluminaC::QcPoolPurpose,
     'PF MiSeq QCR'           => IlluminaC::QcPoolPurpose,
-
 
     'Cherrypicked'        => IlluminaHtp::StockPlatePurpose,
     'Shear'               => PlatePurpose::InitialPurpose,
@@ -148,8 +149,6 @@ module IlluminaHtp::PlatePurposes
   end
 
   module PurposeHelpers
-
-
     def create_tube_purposes
       self::TUBE_PURPOSE_FLOWS.each do |flow|
         create_tube_flow(flow)
@@ -159,13 +158,13 @@ module IlluminaHtp::PlatePurposes
     def create_tube_flow(flow_o)
       flow = flow_o.clone
       raise "Flow already exists" if Purpose.find_by_name(flow.first).present?
-      create_tube_purpose(flow.pop, :target_type => 'MultiplexedLibraryTube')
+      create_tube_purpose(flow.pop, target_type: 'MultiplexedLibraryTube')
       flow.each(&method(:create_tube_purpose))
     end
 
     def destroy_tube_purposes
       self::TUBE_PURPOSE_FLOWS.each do |flow|
-        Tube::Purpose.find_all_by_name(flow.flatten).map(&:destroy)
+        Tube::Purpose.where(name: flow.flatten).map(&:destroy)
       end
     end
 
@@ -174,10 +173,10 @@ module IlluminaHtp::PlatePurposes
       raise "Flow already exists" if Purpose.find_by_name(flow.first).present?
       stock_plate = create_plate_purpose(
         flow.shift,
-        :can_be_considered_a_stock_plate => true,
-        :default_state                   => 'passed',
-        :cherrypickable_target           => true,
-        :cherrypick_filters              => [
+        can_be_considered_a_stock_plate: true,
+        default_state: 'passed',
+        cherrypickable_target: true,
+        cherrypick_filters: [
           'Cherrypick::Strategy::Filter::ByOverflow',
           'Cherrypick::Strategy::Filter::ByEmptySpaceUsage',
           'Cherrypick::Strategy::Filter::BestFit',
@@ -187,7 +186,7 @@ module IlluminaHtp::PlatePurposes
       )
 
       flow.each do |name|
-        create_plate_purpose(name, :default_location => library_creation_freezer, :source_purpose_id => stock_plate.id)
+        create_plate_purpose(name, default_location: library_creation_freezer, source_purpose_id: stock_plate.id)
       end
     end
 
@@ -200,7 +199,7 @@ module IlluminaHtp::PlatePurposes
 
     def destroy_plate_purposes
       self::PLATE_PURPOSE_FLOWS.each do |flow|
-        PlatePurpose.find_all_by_name(flow.flatten).map(&:destroy)
+        PlatePurpose.where(name: flow.flatten).map(&:destroy)
       end
     end
 
@@ -208,7 +207,7 @@ module IlluminaHtp::PlatePurposes
       branch = branch_o.clone
       branch.inject(Purpose.find_by_name!(branch.shift)) do |parent, child|
         Purpose.find_by_name!(child).tap do |child_purpose|
-          parent.child_relationships.create!(:child => child_purpose, :transfer_request_type => request_type_between(parent, child_purpose))
+          parent.child_relationships.create!(child: child_purpose, transfer_request_type: request_type_between(parent, child_purpose))
         end
       end
     end
@@ -220,7 +219,6 @@ module IlluminaHtp::PlatePurposes
     end
 
     def destroy_branches
-
     end
 
     def purpose_for(name)
@@ -230,12 +228,12 @@ module IlluminaHtp::PlatePurposes
 
     def request_type_between(parent, child)
       std = RequestPurpose.find_by_key('standard')
-      _, _, request_class = self::PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES.detect { |a,b,_| (parent.name == a) && (child.name == b) }
+      _, _, request_class = self::PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES.detect { |a, b, _| (parent.name == a) && (child.name == b) }
       return RequestType.transfer if request_class.nil?
       return RequestType.initial_transfer if request_class == :initial
       request_type_name = "#{request_type_prefix} #{parent.name}-#{child.name}"
-      RequestType.create!(:name => request_type_name, :key => request_type_name.gsub(/\W+/, '_'), :request_class_name => request_class, :asset_type => 'Well', :order => 1,
-        :request_purpose => std
+      RequestType.create!(name: request_type_name, key: request_type_name.gsub(/\W+/, '_'), request_class_name: request_class, asset_type: 'Well', order: 1,
+        request_purpose: std
         )
     end
     private :request_type_between
@@ -247,24 +245,23 @@ module IlluminaHtp::PlatePurposes
 
     def create_plate_purpose(plate_purpose_name, options = {})
       purpose_for(plate_purpose_name).create!(options.reverse_merge(
-        :name                  => plate_purpose_name,
-        :cherrypickable_target => false,
-        :cherrypick_direction  => 'column',
-        :can_be_considered_a_stock_plate => self::OUTPUT_PLATE_PURPOSES.include?(plate_purpose_name),
-        :asset_shape_id => AssetShape.default.id
+        name: plate_purpose_name,
+        cherrypickable_target: false,
+        cherrypick_direction: 'column',
+        can_be_considered_a_stock_plate: self::OUTPUT_PLATE_PURPOSES.include?(plate_purpose_name),
+        asset_shape_id: AssetShape.default.id
       )).tap do |plate_purpose|
-        plate_purpose.barcode_printer_type = BarcodePrinterType.find_by_type('BarcodePrinterType96Plate')||plate_purpose.barcode_printer_type
+        plate_purpose.barcode_printer_type = BarcodePrinterType.find_by_type('BarcodePrinterType96Plate') || plate_purpose.barcode_printer_type
       end
     end
-    private :create_plate_purpose
 
     def create_tube_purpose(tube_purpose_name, options = {})
       purpose = purpose_for(tube_purpose_name)
       target_type = 'StockMultiplexedLibraryTube'
       purpose.create!(options.reverse_merge(
-        :name                 => tube_purpose_name,
-        :target_type          => target_type,
-        :barcode_printer_type => BarcodePrinterType.find_by_type('BarcodePrinterType1DTube')
+        name: tube_purpose_name,
+        target_type: target_type,
+        barcode_printer_type: BarcodePrinterType.find_by_type('BarcodePrinterType1DTube')
       ))
     end
     private :create_tube_purpose
@@ -278,9 +275,9 @@ module IlluminaHtp::PlatePurposes
     end
 
     def create_qc_plate_for(name)
-      qc_plate_purpose = purpose_for("#{name} QC").create!(:name => "#{name} QC", :cherrypickable_target => false)
-      plate_purpose = PlatePurpose.find_by_name(name) or raise StandardError, "Cannot find plate purpose #{name.inspect}"
-      plate_purpose.child_relationships.create!(:child => qc_plate_purpose, :transfer_request_type => RequestType.find_by_name('Transfer'))
+      qc_plate_purpose = purpose_for("#{name} QC").create!(name: "#{name} QC", cherrypickable_target: false)
+      plate_purpose = Purpose.find_by_name!(name)
+      plate_purpose.child_relationships.create!(child: qc_plate_purpose, transfer_request_type: RequestType.find_by_name('Transfer'))
     end
   end
 

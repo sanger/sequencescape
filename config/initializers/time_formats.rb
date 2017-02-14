@@ -15,3 +15,8 @@ Time::DATE_FORMATS[:sortable] = "%Y-%m-%d"
 # "Thu Oct 25 12:39:00 +0100 2012"
 # Format used by default in 1.8 version
 Time::DATE_FORMATS[:compatible] = '%a %b %d %T %z %Y'
+
+# Maintain the API behaviour by keeping the legacy behaviour
+# I think the legacy API is pretty much just used for Warehouse stuff
+# So we MAY be able to increase the precision here and actually benefit
+ActiveSupport::JSON::Encoding.time_precision = 0

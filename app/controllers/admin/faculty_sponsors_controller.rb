@@ -1,10 +1,15 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 class Admin::FacultySponsorsController < ApplicationController
-  before_filter :admin_login_required
-  before_filter :discover_faculty_sponsor, :only => [:show, :edit, :update, :destroy]
+# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  before_action :evil_parameter_hack!
+  before_action :admin_login_required
+  before_action :discover_faculty_sponsor, only: [:show, :edit, :update, :destroy]
 
   def index
     @faculty_sponsors = FacultySponsor.all
@@ -28,7 +33,7 @@ class Admin::FacultySponsorsController < ApplicationController
         flash[:notice] = 'Faculty Sponsor was successfully created.'
         format.html { redirect_to(admin_faculty_sponsors_path) }
       else
-        format.html { render :action => "new" }
+        format.html { render action: "new" }
       end
     end
   end
@@ -39,7 +44,7 @@ class Admin::FacultySponsorsController < ApplicationController
         flash[:notice] = 'Faculty Sponsor was successfully updated.'
         format.html { redirect_to(admin_faculty_sponsors_path) }
       else
-        format.html { render :action => "edit" }
+        format.html { render action: "edit" }
       end
     end
   end
@@ -54,6 +59,7 @@ class Admin::FacultySponsorsController < ApplicationController
   end
 
   private
+
   def discover_faculty_sponsor
     @faculty_sponsor = FacultySponsor.find(params[:id])
   end

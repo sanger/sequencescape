@@ -1,12 +1,13 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 require 'rexml/text'
 class Sample < ActiveRecord::Base
   include ModelExtensions::Sample
   include Api::SampleIO::Extensions
-
 
   self.per_page = 500
   include ExternalProperties
@@ -29,32 +30,32 @@ class Sample < ActiveRecord::Base
 
   acts_as_authorizable
 
-  has_many :study_samples, :dependent => :destroy
-  has_many :studies, :through => :study_samples
+  has_many :study_samples, dependent: :destroy
+  has_many :studies, through: :study_samples
 
-  has_many :roles, :as => :authorizable
-  has_many :comments, :as => :commentable
+  has_many :roles, as: :authorizable
+  has_many :comments, as: :commentable
 
   receptacle_alias(:assets) do
     def first_of_type(asset_class)
       self.detect { |asset| asset.is_a?(asset_class) }
     end
   end
-  receptacle_alias(:wells,        :class_name => 'Well')
-  receptacle_alias(:sample_tubes, :class_name => 'SampleTube')
+  receptacle_alias(:wells,        class_name: 'Well')
+  receptacle_alias(:sample_tubes, class_name: 'SampleTube')
 
-  has_many :asset_groups, :through => :assets
-  has_many :requests, :through => :assets
-  has_many :submissions, :through => :requests
+  has_many :asset_groups, through: :assets
+  has_many :requests, through: :assets
+  has_many :submissions, through: :requests
 
   belongs_to :sample_manifest
 
   validates_presence_of :name
-  validates_format_of :name, :with => /^[\w_-]+$/i, :message => I18n.t('samples.name_format'), :if => :new_name_format, :on => :create
-  validates_format_of :name, :with => /^[\(\)\+\s\w._-]+$/i, :message => I18n.t('samples.name_format'), :if => :new_name_format, :on => :update
-  validates_uniqueness_of :name, :on => :create, :message => "already in use", :unless => :sample_manifest_id?
+  validates_format_of :name, with: /\A[\w_-]+\z/i, message: I18n.t('samples.name_format'), if: :new_name_format, on: :create
+  validates_format_of :name, with: /\A[\(\)\+\s\w._-]+\z/i, message: I18n.t('samples.name_format'), if: :new_name_format, on: :update
+  validates_uniqueness_of :name, on: :create, message: "already in use", unless: :sample_manifest_id?
 
-  validate :name_unchanged, :if => :name_changed?, :on => :update
+  validate :name_unchanged, if: :name_changed?, on: :update
 
   def name_unchanged
     errors.add(:name, 'cannot be changed') unless can_rename_sample
@@ -65,7 +66,7 @@ class Sample < ActiveRecord::Base
   validation_guard(:can_rename_sample)
 
   def rename_to!(new_name)
-    update_attributes!(:name => new_name)
+    update_attributes!(name: new_name)
   end
   validation_guarded_by(:rename_to!, :can_rename_sample)
 
@@ -73,17 +74,15 @@ class Sample < ActiveRecord::Base
 
   def safe_to_destroy
     return true unless receptacles.present? || has_submission?
-    errors.add(:base,"Remove '#{name}' from assets before destroying") if receptacles.present?
-    errors.add(:base,"You can't delete '#{name}' because is linked to a submission.") if has_submission?
+    errors.add(:base, "Remove '#{name}' from assets before destroying") if receptacles.present?
+    errors.add(:base, "You can't delete '#{name}' because is linked to a submission.") if has_submission?
     return false
   end
   private :safe_to_destroy
 
-  scope :with_name, ->(*names) { where(:name => names.flatten) }
+  scope :with_name, ->(*names) { where(name: names.flatten) }
 
-
-  scope :for_search_query, ->(query,with_includes) {
-
+  scope :for_search_query, ->(query, with_includes) {
     # Note: This search is performed in two stages so that we can make best use of our indicies
     # A naive search forces a full table lookup for all queries, ignoring the index in the sample metadata table
     # instead favouring the sample_id index. Rather than trying to bend MySQL to our will, we'll solve the
@@ -91,37 +90,33 @@ class Sample < ActiveRecord::Base
 
     # Even passing a scope into the query, thus allowing rails to build subquery, results in a sub-optimal execution plan.
 
-    md=Sample::Metadata.where('supplier_name LIKE :left OR sample_ebi_accession_number = :exact',left:"#{query}%",exact:query).pluck(:sample_id)
+    md = Sample::Metadata.where('supplier_name LIKE :left OR sample_ebi_accession_number = :exact', left: "#{query}%", exact: query).pluck(:sample_id)
 
     # The query id is kept distinct from the metadata retrieved ids, as including a string in what is otherwise an array
     # of numbers seems to massively increase the query length.
-    where('name LIKE :wild OR id IN (:sm_ids) OR id = :query',wild:"%#{query}%",sm_ids:md,query:query)
+    where('name LIKE :wild OR id IN (:sm_ids) OR id = :query', wild: "%#{query}%", sm_ids: md, query: query)
   }
 
   scope :non_genotyped, -> { where("samples.id not in (select propertied_id from external_properties where propertied_type = 'Sample' and `key` = 'genotyping_done'  )") }
 
-  scope :for_plate_and_order, ->(plate_id,order_id) {
+  scope :for_plate_and_order, ->(plate_id, order_id) {
     joins([
       'INNER JOIN aliquots ON aliquots.sample_id = samples.id',
       'INNER JOIN container_associations AS ca ON ca.content_id = aliquots.receptacle_id',
       'INNER JOIN well_links ON target_well_id = aliquots.receptacle_id AND well_links.type = "stock"',
       'INNER JOIN requests ON requests.asset_id = well_links.source_well_id'
     ]).
-    where(['ca.container_id = ? AND requests.order_id = ?',plate_id,order_id])
+    where(['ca.container_id = ? AND requests.order_id = ?', plate_id, order_id])
   }
 
-  scope :for_plate_and_order_as_target, ->(plate_id,order_id) {
+  scope :for_plate_and_order_as_target, ->(plate_id, order_id) {
     joins([
       'INNER JOIN aliquots ON aliquots.sample_id = samples.id',
       'INNER JOIN container_associations AS ca ON ca.content_id = aliquots.receptacle_id',
       'INNER JOIN requests ON requests.target_asset_id = aliquots.receptacle_id'
     ]).
-    where(['ca.container_id = ? AND requests.order_id = ?',plate_id,order_id])
+    where(['ca.container_id = ? AND requests.order_id = ?', plate_id, order_id])
   }
-
-  def self.by_name(sample_id)
-    self.find_by_name(sample_id)
-  end
 
   def select_study(sample_id)
     sample = self.find(sample_id)
@@ -131,7 +126,7 @@ class Sample < ActiveRecord::Base
   def shorten_sanger_sample_id
     short_sanger_id = case sanger_sample_id
       when blank? then name
-      when sanger_sample_id.size <10 then sanger_sample_id
+      when sanger_sample_id.size < 10 then sanger_sample_id
       when /([\d]{7})$/ then $1
       else
         sanger_sample_id
@@ -174,7 +169,7 @@ class Sample < ActiveRecord::Base
     has_ebi_accession_number = false
 
     self.studies.each do |study|
-      if ! study.ebi_accession_number.blank?
+      if !study.ebi_accession_number.blank?
         has_ebi_accession_number = true
       end
     end
@@ -221,7 +216,7 @@ class Sample < ActiveRecord::Base
     return [] if asset_group_id == '0'
 
     study = Study.find(study_id)
-    asset_group_assets = AssetGroupAsset.find(:all, :conditions => [" asset_group_id = ? ", asset_group_id])
+    asset_group_assets = AssetGroupAsset.where(asset_group_id: asset_group_id)
     return study.submissions.that_submitted_asset_id(asset_group_assets.first.asset_id).all
   end
 
@@ -239,7 +234,7 @@ class Sample < ActiveRecord::Base
   end
 
   def sample_supplier_name_empty?(supplier_sample_name)
-    supplier_sample_name.blank? || [ 'empty', 'blank', 'water', 'no supplier name available', 'none' ].include?(supplier_sample_name.downcase)
+    supplier_sample_name.blank? || ['empty', 'blank', 'water', 'no supplier name available', 'none'].include?(supplier_sample_name.downcase)
   end
 
   def accession_service
@@ -261,18 +256,18 @@ class Sample < ActiveRecord::Base
     end
   end
 
-  GC_CONTENTS     = [ 'Neutral', 'High AT', 'High GC' ]
-  GENDERS         = [ 'Male', 'Female', 'Mixed', 'Hermaphrodite', 'Unknown', 'Not Applicable' ]
-  DNA_SOURCES     = [ 'Genomic', 'Whole Genome Amplified', 'Blood', 'Cell Line','Saliva','Brain','FFPE',
-                      'Amniocentesis Uncultured', 'Amniocentesis Cultured', 'CVS Uncultured', 'CVS Cultured', 'Fetal Blood', 'Tissue' ]
-  SRA_HOLD_VALUES = [ 'Hold', 'Public', 'Protect' ]
+  GC_CONTENTS     = ['Neutral', 'High AT', 'High GC']
+  GENDERS         = ['Male', 'Female', 'Mixed', 'Hermaphrodite', 'Unknown', 'Not Applicable']
+  DNA_SOURCES     = ['Genomic', 'Whole Genome Amplified', 'Blood', 'Cell Line', 'Saliva', 'Brain', 'FFPE',
+                     'Amniocentesis Uncultured', 'Amniocentesis Cultured', 'CVS Uncultured', 'CVS Cultured', 'Fetal Blood', 'Tissue']
+  SRA_HOLD_VALUES = ['Hold', 'Public', 'Protect']
   AGE_REGEXP      = '\d+(?:\.\d+|\-\d+|\.\d+\-\d+\.\d+|\.\d+\-\d+\.\d+)?\s+(?:second|minute|day|week|month|year)s?|Not Applicable|N/A|To be provided'
   DOSE_REGEXP     = '\d+(?:\.\d+)?\s+\w+(?:\/\w+)?|Not Applicable|N/A|To be provided'
 
   extend Metadata
   has_metadata do
     include ReferenceGenome::Associations
-    association(:reference_genome, :name, :required => true)
+    association(:reference_genome, :name, required: true)
 
     attribute(:organism)
     attribute(:cohort)
@@ -284,17 +279,17 @@ class Sample < ActiveRecord::Base
     attribute(:mother)
     attribute(:father)
     attribute(:replicate)
-    attribute(:gc_content, :in => Sample::GC_CONTENTS)
-    attribute(:gender, :in => Sample::GENDERS)
+    attribute(:gc_content, in: Sample::GC_CONTENTS)
+    attribute(:gender, in: Sample::GENDERS)
     attribute(:donor_id)
-    attribute(:dna_source, :in => Sample::DNA_SOURCES)
+    attribute(:dna_source, in: Sample::DNA_SOURCES)
     attribute(:sample_public_name)
     attribute(:sample_common_name)
     attribute(:sample_strain_att)
     attribute(:sample_taxon_id)
     attribute(:sample_ebi_accession_number)
     attribute(:sample_description)
-    attribute(:sample_sra_hold, :in => Sample::SRA_HOLD_VALUES)
+    attribute(:sample_sra_hold, in: Sample::SRA_HOLD_VALUES)
 
     attribute(:sibling)
     attribute(:is_resubmitted)              # TODO[xxx]: selection of yes/no?
@@ -311,29 +306,28 @@ class Sample < ActiveRecord::Base
     # Array Express
     attribute(:genotype)
     attribute(:phenotype)
-    #attribute(:strain_or_line) strain
-    #TODO: split age in two fields and use a composed_of
-    attribute(:age, :with => Regexp.new("^#{Sample::AGE_REGEXP}$"))
+    # attribute(:strain_or_line) strain
+    # TODO: split age in two fields and use a composed_of
+    attribute(:age, with: Regexp.new("\\A#{Sample::AGE_REGEXP}\\z"))
     attribute(:developmental_stage)
-    #attribute(:sex) gender
+    # attribute(:sex) gender
     attribute(:cell_type)
     attribute(:disease_state)
-    attribute(:compound) #TODO : yes/no?
-    attribute(:dose, :with => Regexp.new("^#{Sample::DOSE_REGEXP}$"))
+    attribute(:compound) # TODO : yes/no?
+    attribute(:dose, with: Regexp.new("\\A#{Sample::DOSE_REGEXP}\\z"))
     attribute(:immunoprecipitate)
     attribute(:growth_condition)
     attribute(:rnai)
     attribute(:organism_part)
-    #attribute(:species) common name
+    # attribute(:species) common name
     attribute(:time_point)
 
-    #EGA
+    # EGA
     attribute(:treatment)
     attribute(:subject)
     attribute(:disease)
 
-
-    with_options(:if => :validating_ena_required_fields?) do |ena_required_fields|
+    with_options(if: :validating_ena_required_fields?) do |ena_required_fields|
       # ena_required_fields.validates_presence_of :sample_common_name
       # ena_required_fields.validates_presence_of :sample_taxon_id
       ena_required_fields.validates_presence_of :service_specific_fields
@@ -342,13 +336,13 @@ class Sample < ActiveRecord::Base
     # The spreadsheets that people upload contain various fields that could be mistyped.  Here we ensure that the
     # capitalisation of these is correct.
     REMAPPED_ATTRIBUTES = {
-      :gc_content              => GC_CONTENTS,
-      :gender                  => GENDERS,
-      :dna_source              => DNA_SOURCES,
-      :sample_sra_hold         => SRA_HOLD_VALUES
+      gc_content: GC_CONTENTS,
+      gender: GENDERS,
+      dna_source: DNA_SOURCES,
+      sample_sra_hold: SRA_HOLD_VALUES
 #      :reference_genome        => ??
-    }.inject({}) do |h,(k,v)|
-      h[k] = v.inject({}) { |a,b| a[b.downcase] = b ; a }
+    }.inject({}) do |h, (k, v)|
+      h[k] = v.inject({}) { |a, b| a[b.downcase] = b; a }
       h
     end
 
@@ -357,7 +351,7 @@ class Sample < ActiveRecord::Base
 
       # Unfortunately it appears that some of the functionality of this implementation relies on non-capitalisation!
       # So we remap the lowercased versions to their proper values here
-      REMAPPED_ATTRIBUTES.each do |attribute,mapping|
+      REMAPPED_ATTRIBUTES.each do |attribute, mapping|
         record[attribute] = mapping.fetch(record[attribute].try(:downcase), record[attribute])
         record[attribute] = nil if record[attribute].blank? # Empty strings should be nil
       end
@@ -367,9 +361,9 @@ class Sample < ActiveRecord::Base
     include_tag(:sample_strain_att)
     include_tag(:sample_description)
 
-    include_tag(:gender, :services=>:EGA, :downcase => true)
-    include_tag(:phenotype, :services=>:EGA)
-    include_tag(:donor_id, :services=>:EGA, :as => 'subject_id')
+    include_tag(:gender, services: :EGA, downcase: true)
+    include_tag(:phenotype, services: :EGA)
+    include_tag(:donor_id, services: :EGA, as: 'subject_id')
 
     require_tag(:sample_taxon_id)
     require_tag(:sample_common_name)
@@ -382,7 +376,6 @@ class Sample < ActiveRecord::Base
   include SampleManifest::InputBehaviour::SampleUpdating
 
   class Metadata
-
     attr_reader :reference_genome_set_by_name
     # here we are aliasing ArrayExpress attribute from normal one
     # This is easier that way so the name is exactly the name of the array-express field
@@ -391,9 +384,11 @@ class Sample < ActiveRecord::Base
     def strain_or_line
       sample_strain_att
     end
+
     def sex
       gender && gender.downcase
     end
+
     def species
       sample_common_name
     end
@@ -401,30 +396,28 @@ class Sample < ActiveRecord::Base
     def reference_genome_name=(reference_genome_name)
       return unless reference_genome_name.present?
       @reference_genome_set_by_name = reference_genome_name
-      self.reference_genome = ReferenceGenome.find_by_name(reference_genome_name)
+      self.reference_genome = ReferenceGenome.find_by(name: reference_genome_name)
     end
 
     # If we set a reference genome via its name, we want to validate that we found it.
     # We can't just raise and exception when we don't find it, as this cases the sample manifest
     # delayed job to fail completely.
-    validate :reference_genome_found, :if => :reference_genome_set_by_name
+    validate :reference_genome_found, if: :reference_genome_set_by_name
 
     def reference_genome_found
       # A reference genome of nil automatically get converted to the reference genome named "", so
       # we need to explicitly check the name has been set as expected.
       return true if reference_genome.name == reference_genome_set_by_name
-      errors.add(:base,"Couldn't find a Reference Genome with named '#{reference_genome_set_by_name}'.")
+      errors.add(:base, "Couldn't find a Reference Genome with named '#{reference_genome_set_by_name}'.")
       false
     end
-
   end
-
 
   # Together these two validations ensure that the first study exists and is valid for the ENA submission.
-  validates_each(:ena_study, :if => :validating_ena_required_fields?) do |record, attr, value|
-    record.errors.add(:base,'Sample has no study') if value.blank?
+  validates_each(:ena_study, if: :validating_ena_required_fields?) do |record, attr, value|
+    record.errors.add(:base, 'Sample has no study') if value.blank?
   end
-  validates_associated(:ena_study, :allow_blank => true, :if => :validating_ena_required_fields?)
+  validates_associated(:ena_study, allow_blank: true, if: :validating_ena_required_fields?)
 
   def ena_study
     @ena_study
@@ -442,7 +435,7 @@ class Sample < ActiveRecord::Base
     self.valid? or raise ActiveRecord::RecordInvalid, self
   rescue ActiveRecord::RecordInvalid => exception
     @ena_study.errors.full_messages.each do |message|
-      self.errors.add(:base,"#{ message } on study")
+      self.errors.add(:base, "#{message} on study")
     end unless @ena_study.nil?
     raise exception
   ensure
@@ -456,17 +449,6 @@ class Sample < ActiveRecord::Base
     nil
   end
 
-  def affiliated_with?(object)
-    case
-    when object.respond_to?(:sample_id)
-      self.id == object.sample_id
-    when object.respond_to?(:sample_ids)
-      object.sample_ids.include?(self.id)
-    else
-      nil
-    end
-  end
-
   def withdraw_consent
     self.update_attribute(:consent_withdrawn, true)
   end
@@ -476,12 +458,11 @@ class Sample < ActiveRecord::Base
   end
 
   def friendly_name
-    sanger_sample_id||name
+    sanger_sample_id || name
   end
 
   # These don't really belong here, but exist due to the close coupling between sample
   # and its initial aliquot in the sample manifest.
-  delegate :specialized_from_manifest=, :to => :primary_receptacle
-  delegate :library_information=, :to => :primary_receptacle
-
+  delegate :specialized_from_manifest=, to: :primary_receptacle
+  delegate :library_information=, to: :primary_receptacle
 end

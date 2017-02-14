@@ -1,11 +1,10 @@
-require_relative '../../test_helper'
+require 'test_helper'
 
 class ValidationTest < ActiveSupport::TestCase
-
   attr_reader :validation, :options, :range
 
   def setup
-    @options = {option1: 'value1', option2: 'value2', type: :whole, formula1: 'smth'}
+    @options = { option1: 'value1', option2: 'value2', type: :whole, formula1: 'smth' }
     @range = build(:range)
   end
 
@@ -19,7 +18,6 @@ class ValidationTest < ActiveSupport::TestCase
   end
 
   context "without range name" do
-
     setup do
       @validation = SampleManifestExcel::Validation.new(options: options)
     end
@@ -34,13 +32,11 @@ class ValidationTest < ActiveSupport::TestCase
 
     should "should not add a range" do
       validation.update(range: range)
-      refute_equal range.absolute_reference, validation.formula1 
+      refute_equal range.absolute_reference, validation.formula1
     end
-
   end
 
   context "with range name" do
-
     setup do
       @validation = SampleManifestExcel::Validation.new(options: options, range_name: :a_range)
     end
@@ -60,11 +56,9 @@ class ValidationTest < ActiveSupport::TestCase
       refute_equal validation.options, dupped.options
       refute dupped.saved?
     end
-
   end
 
   context "with worksheet" do
-
     attr_reader :worksheet
 
     setup do
@@ -95,7 +89,5 @@ class ValidationTest < ActiveSupport::TestCase
       other_validation.update(reference: range.reference, worksheet: worksheet)
       refute_equal other_validation, validation
     end
-
   end
-
 end

@@ -1,16 +1,18 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
 
 class Sdb::SampleManifestsController < Sdb::BaseController
-  before_filter :set_sample_manifest_id, :only => [:show, :generated]
-  before_filter :validate_type,    :only => [:new, :create]
+  before_action :set_sample_manifest_id, only: [:show, :generated]
+  before_action :validate_type, only: [:new, :create]
 
   LIMIT_ERROR_LENGTH = 10000
 
   # Upload the manifest and store it for later processing
   def upload
-    if (params[:sample_manifest].blank?) || (params[:sample_manifest] && params[:sample_manifest][:uploaded].blank? )
+    if (params[:sample_manifest].blank?) || (params[:sample_manifest] && params[:sample_manifest][:uploaded].blank?)
       flash[:error] = "No CSV file uploaded"
       return
     end
@@ -33,76 +35,58 @@ class Sdb::SampleManifestsController < Sdb::BaseController
   def export
     @manifest = SampleManifest.find(params[:id])
     send_data(@manifest.generated_document.current_data,
-              :filename => "manifest_#{@manifest.id}.xls",
-              :type => 'application/excel')
+              filename: "manifest_#{@manifest.id}.xlsx",
+              type: 'application/excel')
   end
 
   def uploaded_spreadsheet
     @manifest = SampleManifest.find(params[:id])
     send_data(@manifest.uploaded_document.current_data,
-              :filename => "manifest_#{@manifest.id}.csv",
-              :type => 'application/excel')
+              filename: "manifest_#{@manifest.id}.csv",
+              type: 'application/excel')
   end
 
   def new
-    @sample_manifest  = SampleManifest.new(:asset_type => params[:type])
+    @asset_type = params[:type]
+    @sample_manifest  = SampleManifest.new(asset_type: @asset_type)
     @study_id         = params[:study_id] || ""
     @studies          = Study.alphabetical
     @suppliers        = Supplier.alphabetical
-    @barcode_printers = @sample_manifest.applicable_barcode_printers
-    @templates        = @sample_manifest.applicable_templates
-  end
-
-  def printer_options(params)
-    barcode_printer_id = params[:sample_manifest][:barcode_printer]
-    barcode_printer  = BarcodePrinter.find(barcode_printer_id) unless barcode_printer_id.blank?
-    return { :barcode_printer => barcode_printer,
-             :only_first_label => (params[:sample_manifest][:only_first_label].to_i == 1) }
-  end
-
-  def template_manifest_options(params)
-    params[:sample_manifest].merge(:user => current_user, :rapid_generation => true).except!(:only_first_label, :barcode_printer)
+    @barcode_printers = @sample_manifest.applicable_barcode_printers.collect(&:name)
+    @templates        = SampleManifestExcel.configuration.manifest_types.by_asset_type(@asset_type).to_a
   end
 
   def create
-    template         = SampleManifestTemplate.find(params[:sample_manifest].delete(:template))
+    @sample_manifest_generator = SampleManifestGenerator.new(params[:sample_manifest],
+                                  current_user, SampleManifestExcel.configuration)
 
-    ActiveRecord::Base.transaction do
-      @sample_manifest = template.create!(template_manifest_options(params))
+    if @sample_manifest_generator.execute
 
-      @sample_manifest.generate
-      template.generate(@sample_manifest)
-    end
-    printer_options = printer_options(params)
-    barcode_printer=printer_options[:barcode_printer]
-
-    unless barcode_printer.nil?
-      @sample_manifest.print_labels(barcode_printer, printer_options)
-    end
-
-    if !@sample_manifest.manifest_errors.empty?
-      flash[:error] = @sample_manifest.manifest_errors.join(", ")
-      @sample_manifest.destroy
-      redirect_to new_sample_manifest_path
+      flash.update(@sample_manifest_generator.print_job_message)
+      redirect_to sample_manifest_path(@sample_manifest_generator.sample_manifest)
     else
-      redirect_to sample_manifest_path(@sample_manifest)
+
+      flash[:error] = @sample_manifest_generator.errors.full_messages.join(", ")
+      redirect_to new_sample_manifest_path
+
     end
   end
 
   # Show the manifest
   def show
     @study_id = @sample_manifest.study_id
-    @samples = @sample_manifest.samples.paginate(:page => params[:page])
+    @samples = @sample_manifest.samples.paginate(page: params[:page])
   end
 
   def index
-    pending_sample_manifests = SampleManifest.pending_manifests.paginate(:page => params[:page])
-    completed_sample_manifests = SampleManifest.completed_manifests.paginate(:page => params[:page])
+    pending_sample_manifests = SampleManifest.pending_manifests.paginate(page: params[:page])
+    completed_sample_manifests = SampleManifest.completed_manifests.paginate(page: params[:page])
     @display_manifests = pending_sample_manifests | completed_sample_manifests
-    @sample_manifests = SampleManifest.paginate(:page => params[:page])
+    @sample_manifests = SampleManifest.paginate(page: params[:page])
   end
 
   private
+
   def set_sample_manifest_id
     @sample_manifest = SampleManifest.find(params[:id])
   end
@@ -116,5 +100,4 @@ class Sdb::SampleManifestsController < Sdb::BaseController
       redirect_to sample_manifests_path
     end
   end
-
 end

@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 module ::Core::Io::Base::JsonFormattingBehaviour::Output
   def json_code_tree
@@ -13,11 +15,11 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Output
     # we will only open and close blocks as we go.  Then build a tree that can be executed against
     # an object to generate the JSON appropriately.
     tree = attribute_to_json.sort_by(&:last).map do |attribute, json|
-      [ json.split('.'), attribute.split('.').map(&:to_sym) ]
+      [json.split('.'), attribute.split('.').map(&:to_sym)]
     end.inject(json_code_tree.for(self)) do |tree, (json_path, attribute_path)|
       tree.tap do
         json_leaf = json_path.pop
-        json_path.inject(tree) { |node,step| node[step] }.leaf(json_leaf, attribute_path)
+        json_path.inject(tree) { |node, step| node[step] }.leaf(json_leaf, attribute_path)
       end
     end
 

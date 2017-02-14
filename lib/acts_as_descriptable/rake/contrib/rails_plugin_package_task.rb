@@ -52,7 +52,7 @@
 #      p.verbose = true
 #    end
 #    task :rails_plugin=>:clobber
-#    
+#
 #    desc "Publish Ruby on Rails plug-in on RubyForge"
 #    task :release_plugin=>:rails_plugin do |task|
 #      pub = Rake::SshDirPublisher.new("#{RubyForgeConfig[:user_name]}@rubyforge.org",
@@ -60,7 +60,6 @@
 #    	"pkg/rails_plugin")
 #      pub.upload()
 #    end
-
 
 require 'rake'
 require 'rake/tasklib'
@@ -70,21 +69,21 @@ module Rake
   # that recurses through your _package_files_, generates compliant index.html for
   # each folder (that contains a file), and creates a directory structure that you
   # can publish as a set for your plugin.
-  # 
+  #
   # Noteworthy attributes:
-  # 
+  #
   # [package_dir]  Directory to store the package. Default 'pkg/rails_plugin'
-  #   
+  #
   # [package_dir]  Files to include in the plugin.
-  #   
+  #
   # [extra_links]  Links to put on every generated index page. Can be a hash, e.g.
   #                {"Home"=>"http://roxml.rubyforge.org"}, an array of strings or
   #                a single string.
-  #                  
+  #
   # [plugin_files]  Files to be placed in the root folder of the plug-in, e.g.
   #                 init.rb. All files that are in the root of _package_dir_
   #                 will also be placed in the root of the plug-in.
-  #                   
+  #
   class RailsPluginPackageTask < TaskLib
     # Name of plug-in or application
     attr_accessor :name
@@ -102,7 +101,7 @@ module Rake
     attr_accessor :verbose
 
     # Create the "rails_plugin" task
-    def initialize(name=nil, version=nil)
+    def initialize(name = nil, version = nil)
       init(name, version)
       yield self if block_given?
       define unless name.nil?
@@ -119,41 +118,41 @@ module Rake
       @folders = {}
       @verbose = false
     end
-    
+
     # Define the rails_plugin task
     def define
       desc "Create Ruby on Rails plug-in package"
       task :rails_plugin do
         @dest = "#@package_dir/#{@name}"
-        makedirs(@dest,:verbose=>false)
+        makedirs(@dest, verbose: false)
         @plugin_files.each do |fn|
-          cp(fn, @dest,:verbose=>false)
+          cp(fn, @dest, verbose: false)
           add_file(File.basename(fn))
         end
-        
+
         @package_files.each do |fn|
           puts ". #{fn}" if verbose
           f = File.join(@dest, fn)
           fdir = File.dirname(f)
           unless File.exist?(fdir)
-            mkdir_p(fdir,:verbose=>false)
+            mkdir_p(fdir, verbose: false)
             add_folder("#{fdir}/")
           end
           if File.directory?(fn)
-            mkdir_p(f,:verbose=>false)
+            mkdir_p(f, verbose: false)
             add_folder("#{fn}/")
           else
-            cp(fn, f, :verbose=>false)
+            cp(fn, f, verbose: false)
             add_file(fn)
           end
         end
-        
+
         generate_index_files()
       end
-      
+
       desc 'Remove package files'
       task :clobber_package do
-        @dest = "#@package_dir"
+        @dest = @package_dir.to_s
         if File.exist?(@dest)
           FileUtils.remove_dir @dest
         end
@@ -170,7 +169,7 @@ module Rake
           index.write("<body>\n")
           index.write("<h2>#{title}</h2>\n")
           extra_links = create_extra_links()
-          index.write("<p>#{extra_links}</p>\n") if extra_links          
+          index.write("<p>#{extra_links}</p>\n") if extra_links
           files.each { |fn|
             puts("  - Adding #{fn}") if @verbose
             index.write("&nbsp;&nbsp;<a href=\"#{fn}\">#{fn}</a><br/>\n")
@@ -181,38 +180,39 @@ module Rake
         end
       end
     end
-            
+
   private
+
     # Add a file to the folders hash
     def add_file(filename)
-      dir = File.dirname(filename).gsub("#{@dest}",".")
+      dir = File.dirname(filename).gsub(@dest.to_s, ".")
       fn = File.basename(filename)
-      folder = @folders[dir] || @folders[dir]=[]
+      folder = @folders[dir] || @folders[dir] = []
       folder << fn
     end
 
     # Add a folder to the folders hash
     def add_folder(folder_name)
-      dir = File.dirname(folder_name).gsub("#{@dest}",".").gsub("./","")
+      dir = File.dirname(folder_name).gsub(@dest.to_s, ".").gsub("./", "")
       fn = File.basename(folder_name) + "/"
-      folder = @folders[dir] || @folders[dir]=[]
+      folder = @folders[dir] || @folders[dir] = []
       folder << fn
     end
-    
+
     # Create the anchor tag for extra links
     def create_extra_links
       return nil unless @extra_links
       x_links = ""
-      if (@extra_links.class==Hash)
-        @extra_links.each do |k,v|
+      if (@extra_links.class == Hash)
+        @extra_links.each do |k, v|
           x_links << "<a href=\"#{v}\">#{k}</a>&nbsp;"
         end
-      elsif (@extra_links.class==Array)
+      elsif (@extra_links.class == Array)
         @extra_links.each do |link|
           x_links << "<a href=\"#{link}\">#{link}</a>&nbsp;"
-        end      
+        end
       else
-        x_links = "<a href=\"#{@extra_links.to_s}\">#{@extra_links.to_s}</a>"
+        x_links = "<a href=\"#{@extra_links}\">#{@extra_links}</a>"
       end
       return x_links
     end

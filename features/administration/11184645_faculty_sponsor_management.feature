@@ -65,6 +65,7 @@ Feature: Manage a list of faculty sponsors
       And I fill in "Study name" with "Study name"
       And I select "Not suitable for alignment" from "Reference genome"
       And I fill in "Study description" with "some description"
+      And I fill in "Data access group" with "dag"
       And I select "John Doe" from "Faculty Sponsor"
       And I press "Create"
     Then I should see "Your study has been created"

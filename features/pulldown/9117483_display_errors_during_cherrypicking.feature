@@ -21,8 +21,8 @@ Feature: Display the errors that occur during cherrypicking for pulldown
     Given a plate barcode webservice is available and returns "99999"
 
     When I follow "Cherrypick Group By Submission"
-    When I fill in "Volume Required" with "13"
-    And I fill in "Concentration Required" with "50"
+    When I fill in "nano_grams_per_micro_litre_volume_required" with "13"
+    And I fill in "nano_grams_per_micro_litre_concentration_required" with "50"
     And I select "Pulldown" from "Plate Purpose"
     And I press "Next step"
 

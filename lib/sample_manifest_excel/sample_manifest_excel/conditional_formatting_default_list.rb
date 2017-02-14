@@ -1,6 +1,5 @@
 module SampleManifestExcel
   class ConditionalFormattingDefaultList
-
     include Enumerable
     include Comparable
 
@@ -23,7 +22,7 @@ module SampleManifestExcel
     end
 
     def <=>(other)
-      return unless other.is_a?(self.class) 
+      return unless other.is_a?(self.class)
       defaults <=> other.defaults
     end
 
@@ -36,6 +35,5 @@ module SampleManifestExcel
         end
       end
     end
-
   end
 end

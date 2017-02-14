@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2013,2015 Genome Research Ltd.
 
 class IlluminaHtp::StockTubePurpose < Tube::Purpose
   def create_with_request_options(tube)
@@ -8,13 +10,13 @@ class IlluminaHtp::StockTubePurpose < Tube::Purpose
   end
 
   def transition_to(tube, state, user, _ = nil, customer_accepts_responsibility = false)
-    tube.requests_as_target.all(not_terminated).each do |request|
+    tube.requests_as_target.where.not(state: terminated_states).each do |request|
       request.transition_to(state)
     end
     outer_requests_for(tube).each do |request|
       request.customer_accepts_responsibility! if customer_accepts_responsibility
       request.transition_to(state)
-    end if ['cancelled','failed','aborted'].include?(state)
+    end if terminated_states.include?(state)
   end
 
   def outer_requests_for(tube)
@@ -23,10 +25,10 @@ class IlluminaHtp::StockTubePurpose < Tube::Purpose
     end.uniq
   end
 
-  def not_terminated
-    {:conditions=>[ 'state NOT IN (?)',['cancelled','failed','aborted']]}
+  def terminated_states
+    ['cancelled', 'failed']
   end
-  private :not_terminated
+  private :terminated_states
 
   def pool_id(tube)
     tube.requests_as_target.first.submission_id
@@ -39,7 +41,7 @@ class IlluminaHtp::StockTubePurpose < Tube::Purpose
   def stock_plate(tube)
     return nil if tube.requests_as_target.empty?
 
-    assets = [ tube.requests_as_target.first.asset ]
+    assets = [tube.requests_as_target.first.asset]
     until assets.empty?
       asset = assets.shift
       return asset.plate if asset.is_a?(Well) and asset.plate.stock_plate?
@@ -54,5 +56,4 @@ class IlluminaHtp::StockTubePurpose < Tube::Purpose
       request.asset.stock_wells
     end.flatten
   end
-
 end

@@ -1,6 +1,5 @@
 module Informatics
   class Deployment
-
     attr_accessor :cap, :app_name, :deploy_name, :repository_location, :log_location, :config_location, :nginx_location
     attr_accessor :service_uri, :service_port, :balanced_ports, :html_root, :nginx_binaries
 
@@ -25,12 +24,12 @@ module Informatics
     end
 
     def balanced_against(a)
-      puts "SETTING BALANCED PORTS: #{a.to_s}"
+      puts "SETTING BALANCED PORTS: #{a}"
       @balanced_ports = a
     end
 
     def balanced_ports
-      puts "GETTING BALANCED PORTS: #{@balanced_ports.to_s}"
+      puts "GETTING BALANCED PORTS: #{@balanced_ports}"
       @balanced_ports
     end
 
@@ -82,7 +81,7 @@ module Informatics
 
     def repository(r)
       @repository_location = r
-      cap.set :repository,  r
+      cap.set :repository, r
     end
 
     private
@@ -90,6 +89,5 @@ module Informatics
       def parsed(filename)
         ERB.new(File.new(filename, "r").read).result(binding)
       end
-
   end
 end

@@ -1,12 +1,13 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 class SampleManifest < ActiveRecord::Base
   include Uuid::Uuidable
   include ModelExtensions::SampleManifest
   include SampleManifest::BarcodePrinterBehaviour
-  include SampleManifest::TemplateBehaviour
   include SampleManifest::SampleTubeBehaviour
   include SampleManifest::MultiplexedLibraryBehaviour
   include SampleManifest::CoreBehaviour
@@ -28,20 +29,21 @@ class SampleManifest < ActiveRecord::Base
     end
   end
 
-  has_uploaded_document :uploaded, {:differentiator => "uploaded"}
-  has_uploaded_document :generated, {:differentiator => "generated"}
+  has_uploaded_document :uploaded, { differentiator: "uploaded" }
+  has_uploaded_document :generated, { differentiator: "generated" }
+
+  attr_accessor :override
+  attr_reader :manifest_errors
 
   class_attribute :spreadsheet_offset
   class_attribute :spreadsheet_header_row
   self.spreadsheet_offset = 9
   self.spreadsheet_header_row = 8
 
-  attr_accessor :override
-  attr_reader :manifest_errors
-
   # Needed for the UI to work!
-  def barcode_printer ; end
-  def template ; end
+  def barcode_printer; end
+
+  def template; end
 
   belongs_to :supplier
   belongs_to :study
@@ -52,13 +54,15 @@ class SampleManifest < ActiveRecord::Base
 
   validates_presence_of :supplier
   validates_presence_of :study
-  validates_numericality_of :count, :only_integer => true, :greater_than => 0, :allow_blank => false
+  validates_numericality_of :count, only_integer: true, greater_than: 0, allow_blank: false
 
   before_save :default_asset_type
 
   # Too many errors overflow the text column when serialized. This can affect de-serialization
   # and can even prevent manifest resubmission.
   before_save :truncate_errors
+
+  delegate :printables, to: :core_behaviour
 
   def truncate_errors
     if self.last_errors && self.last_errors.join.length > LIMIT_ERROR_LENGTH
@@ -91,17 +95,18 @@ class SampleManifest < ActiveRecord::Base
     "Manifest_#{self.id}"
   end
 
-  #TODO[xxx] Consider index to make it faster
-  scope :pending_manifests,
-   order( 'sample_manifests.id DESC').
-   joins( 'LEFT OUTER JOIN documents ON documentable_type="SampleManifest" AND documentable_id=sample_manifests.id AND documentable_extended="uploaded"').
-   where( 'documents.id IS NULL')
+  # TODO[xxx] Consider index to make it faster
+  scope :pending_manifests, ->() {
+    order('sample_manifests.id DESC').
+    joins('LEFT OUTER JOIN documents ON documentable_type="SampleManifest" AND documentable_id=sample_manifests.id AND documentable_extended="uploaded"').
+    where('documents.id IS NULL')
+  }
 
-  scope :completed_manifests,
-   order( 'sample_manifests.updated_at DESC').
-   joins( 'LEFT OUTER JOIN documents ON documentable_type="SampleManifest" AND documentable_id=sample_manifests.id AND documentable_extended="uploaded"').
-   where( 'documents.id IS NOT NULL')
-
+  scope :completed_manifests, ->() {
+    order('sample_manifests.updated_at DESC').
+    joins('LEFT OUTER JOIN documents ON documentable_type="SampleManifest" AND documentable_id=sample_manifests.id AND documentable_extended="uploaded"').
+    where('documents.id IS NOT NULL')
+  }
 
   def generate
     @manifest_errors = []
@@ -113,22 +118,8 @@ class SampleManifest < ActiveRecord::Base
     return nil
   end
 
-  def print_labels(barcode_printer, options={})
-    return false if barcode_printer.nil?
-    core_behaviour.print_labels do |printables, prefix, *args|
-      unless printables.empty?
-        printables.each { |printable| printable.study = self.study.abbreviation }
-        printables = [printables.first] if options[:only_first_label]==true
-        barcode_printer.print_labels(printables, prefix, *args)
-      end
-    end
-    true
-  rescue SOAP::FaultError => exception
-    false
-  end
-
   def create_sample(sanger_sample_id)
-    Sample.create!(:name => sanger_sample_id, :sanger_sample_id => sanger_sample_id, :sample_manifest => self).tap do |sample|
+    Sample.create!(name: sanger_sample_id, sanger_sample_id: sanger_sample_id, sample_manifest: self).tap do |sample|
       sample.events.created_using_sample_manifest!(self.user)
     end
   end
@@ -141,8 +132,7 @@ class SampleManifest < ActiveRecord::Base
   def generate_study_samples(study_samples_data)
     study_sample_fields = [:study_id, :sample_id]
     study_samples_data.each do |study_sample|
-      StudySample.create!(:study_id => study_sample.first, :sample_id=> study_sample.last)
+      StudySample.create!(study_id: study_sample.first, sample_id: study_sample.last)
     end
-
   end
 end

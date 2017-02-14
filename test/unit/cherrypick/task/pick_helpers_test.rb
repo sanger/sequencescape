@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012,2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2012,2013,2015 Genome Research Ltd.
 
 require 'test_helper'
 
@@ -21,16 +23,16 @@ class Cherrypick::Task::PickHelpersTest < ActiveSupport::TestCase
         @requests = Map.where_plate_size(96).in_column_major_order.slice(0, 3).map do |position|
           create(
             :well_request,
-            :asset         => create(:empty_well, :map => position),
-            :target_asset  => create(:empty_well),
-            :state         => 'started',
-            :submission_id => 1
+            asset: create(:empty_well, map: position),
+            target_asset: create(:empty_well),
+            state: 'started',
+            submission_id: 1
           ).tap do |request|
-            request.asset.stubs(:plate).returns(OpenStruct.new(:sanger_human_barcode => 1))
+            request.asset.stubs(:plate).returns(OpenStruct.new(sanger_human_barcode: 1))
           end
         end
 
-        @robot = OpenStruct.new(:max_beds => 10)
+        @robot = OpenStruct.new(max_beds: 10)
 
         @callback = mock('Callback')
         @requests.each { |r| @callback.expects(:call).with(r.target_asset, r) }
@@ -39,8 +41,8 @@ class Cherrypick::Task::PickHelpersTest < ActiveSupport::TestCase
       context 'when the plate is to be picked in columns' do
         setup do
           plate_purpose = PlatePurpose.stock_plate_purpose
-          plate_purpose.update_attributes!(:cherrypick_direction => 'column')
-          @plate = plate_purpose.create!(:do_not_create_wells, :barcode => (@barcode += 1))
+          plate_purpose.update_attributes!(cherrypick_direction: 'column')
+          @plate = plate_purpose.create!(:do_not_create_wells, barcode: (@barcode += 1))
 
           @helper.cherrypick_wells_grouped_by_submission(@requests, @robot, @plate) { |*args| @callback.call(*args) }
           @requests.map(&:reload)
@@ -63,8 +65,8 @@ class Cherrypick::Task::PickHelpersTest < ActiveSupport::TestCase
       context 'when the plate is to be picked in rows' do
         setup do
           plate_purpose = PlatePurpose.stock_plate_purpose
-          plate_purpose.update_attributes!(:cherrypick_direction => 'row')
-          @plate = plate_purpose.create!(:do_not_create_wells, :barcode => (@barcode += 1))
+          plate_purpose.update_attributes!(cherrypick_direction: 'row')
+          @plate = plate_purpose.create!(:do_not_create_wells, barcode: (@barcode += 1))
 
           @helper.cherrypick_wells_grouped_by_submission(@requests, @robot, @plate) { |*args| @callback.call(*args) }
           @requests.map(&:reload)

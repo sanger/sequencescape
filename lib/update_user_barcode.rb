@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2011,2012 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2011,2012 Genome Research Ltd.
 def open_barcode_stream(&block)
   user = "read_only"
   password = "read_only"
@@ -14,7 +15,7 @@ def open_barcode_stream(&block)
     ;
     EOS
 
-    block.call(f)
+    yield(f)
   end
 end
 
@@ -29,17 +30,17 @@ def read_user_id
       id = l.to_i
       user = f.gets.strip
 
-      user_barcode[user]=id
+      user_barcode[user] = id
       puts "#{user} => #{id}"
 
-      f.gets #read a blamk lien as record separator
+      f.gets # read a blamk lien as record separator
     end
 
     f.close
     user_barcode
-
   end
 end
+
 def update_user
   user_to_id = read_user_id
   puts "User number #{User.all.size}"

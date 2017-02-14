@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012,2015,2016 Genome Research Ltd.
 
 # Picks the specified wells of a plate into an individual tube.  In this case transfers is an
 # array of well locations to transfer into the tube, and the destination is a tube.
@@ -42,10 +44,7 @@ class Transfer::FromPlateToTube < Transfer
   def update_tube_name
     source_barcode = source.source_plate.try(:sanger_human_barcode)
     range = "#{transfers.first}:#{transfers.last}"
-    destination.update_attributes!(:name=>"#{source_barcode} #{range}")
+    destination.update_attributes!(name: "#{source_barcode} #{range}")
   end
   private :update_tube_name
-
-
 end
-

@@ -1,14 +1,13 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011 Genome Research Ltd.
 require 'rest-client'
 
 module LabWhereClient
-
   LabwhereException = Class.new(StandardError)
 
   class LabWhere
-
     def base_url
       configatron.fetch(:labwhere_api)
     end
@@ -19,20 +18,20 @@ module LabWhereClient
     end
 
     def parse_json(str)
-      return nil if str=='null'
+      return nil if str == 'null'
       JSON.parse(str)
     rescue JSON::ParserError => e
       raise LabwhereException.new(e), "LabWhere is returning unexpected content", e.backtrace
     end
 
     def get(instance, target)
-      parse_json(RestClient.get(path_to(instance,target)))
+      parse_json(RestClient.get(path_to(instance, target)))
     rescue Errno::ECONNREFUSED => e
       raise LabwhereException.new(e), "LabWhere service is down", e.backtrace
     end
 
     def post(instance, target, payload)
-      parse_json(RestClient.post(path_to(instance,target), payload))
+      parse_json(RestClient.post(path_to(instance, target), payload))
     rescue Errno::ECONNREFUSED => e
       raise LabwhereException.new(e), "LabWhere service is down", e.backtrace
     rescue RestClient::UnprocessableEntity => e
@@ -40,15 +39,13 @@ module LabWhereClient
     end
 
     def put(instance, target, payload)
-      parse_json(RestClient.put(path_to(instance,target), payload))
+      parse_json(RestClient.put(path_to(instance, target), payload))
     rescue Errno::ECONNREFUSED => e
       raise LabwhereException.new(e), "LabWhere service is down", e.backtrace
     end
-
   end
 
   class Endpoint
-
     def self.endpoint_name(name)
       @endpoint = name
     end
@@ -59,7 +56,6 @@ module LabWhereClient
 
     def initialize(params)
     end
-
   end
 
   module EndpointCreateActions
@@ -127,7 +123,7 @@ module LabWhereClient
     def self.creation_params(params)
       obj = params.dup
       obj[:labware_barcodes] = obj[:labware_barcodes].join("\n")
-      { :scan => obj }
+      { scan: obj }
     end
 
     def valid?
@@ -137,7 +133,6 @@ module LabWhereClient
     def error
       @errors.join(";")
     end
-
   end
 
   class Location < Endpoint

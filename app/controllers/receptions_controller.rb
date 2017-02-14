@@ -1,9 +1,14 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2014,2015 Genome Research Ltd.
 
 class ReceptionsController < ApplicationController
-  before_filter :find_asset_by_id, :only => [:print, :snp_register]
+# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  before_action :evil_parameter_hack!
+  before_action :find_asset_by_id, only: [:print, :snp_register]
 
   def index
     @num_text_boxes = 10
@@ -24,8 +29,7 @@ class ReceptionsController < ApplicationController
 
     all_barcodes_blank = true
 
-    barcodes.each do |index,barcode_ws|
-
+    barcodes.each do |index, barcode_ws|
       # We don't perform strip! as this results in modification of the parameters themselves, which affects logging and
       # exception notification. This can hinder investigation of any issues, as it changes apparent user input.
       barcode = barcode_ws.strip
@@ -59,9 +63,9 @@ class ReceptionsController < ApplicationController
     if @errors.size > 0
       respond_to do |format|
         flash[:error] = "Error with scanned samples: #{@errors.join('. ')}"
-        format.html { render :action => :index }
-        format.xml  { render :xml  => @errors, :status => :unprocessable_entity }
-        format.json { render :json => @errors, :status => :unprocessable_entity }
+        format.html { render action: :index }
+        format.xml  { render xml: @errors, status: :unprocessable_entity }
+        format.json { render json: @errors, status: :unprocessable_entity }
       end
     else
       respond_to do |format|
@@ -74,33 +78,33 @@ class ReceptionsController < ApplicationController
 
   def confirm_reception
     ActiveRecord::Base.transaction do
-      location = Location.find(params[:asset][:location_id])
+      location = Location.find(params[:location_id])
       assets = params[:asset_id]
       @errors = []
-      asset_count  = 0
+      asset_count = 0
 
-      assets.each do |index,asset_id|
-        begin
-          @asset = Asset.find(asset_id)
-          @asset.update_attributes(params[:asset])
+      assets.each do |index, asset_id|
+        asset = Asset.find_by(id: asset_id)
+        if asset.nil?
+          @errors << "Asset not found with asset ID #{asset_id}"
+        else
+          asset.update_attributes(location: location)
           asset_count += 1
-          @asset.events.create_scanned_into_lab!(location)
-        rescue
-          @errors << "Sample not found with asset ID #{asset_id}"
+          asset.events.create_scanned_into_lab!(location)
         end
       end
 
       if @errors.size > 0
         respond_to do |format|
-          flash[:error] = "Assets not found"
-          format.html { render :action => "reception" }
-          format.xml  { render :xml  => @errors, :status => :unprocessable_entity }
-          format.json { render :json => @errors, :status => :unprocessable_entity }
+          flash[:error] = "Could not update some locations: #{@errors.join(';')}"
+          format.html { render action: "reception" }
+          format.xml  { render xml: @errors, status: :unprocessable_entity }
+          format.json { render json: @errors, status: :unprocessable_entity }
         end
       else
         respond_to do |format|
           flash[:notice] = "Successfully updated #{asset_count} samples"
-          format.html { render :action => "reception" }
+          format.html { render action: "reception" }
           format.xml  { head :ok }
           format.json { head :ok }
         end
@@ -124,9 +128,9 @@ class ReceptionsController < ApplicationController
 
     if @errors.size > 0
       respond_to do |format|
-        format.html { render :action => "snp_import" }
-        format.xml  { render :xml  => @errors, :status => :unprocessable_entity }
-        format.json { render :json => @errors, :status => :unprocessable_entity }
+        format.html { render action: "snp_import" }
+        format.xml  { render xml: @errors, status: :unprocessable_entity }
+        format.json { render json: @errors, status: :unprocessable_entity }
       end
     else
       respond_to do |format|
@@ -142,14 +146,14 @@ class ReceptionsController < ApplicationController
       respond_to do |format|
         if Plate.create_plates_with_barcodes(params)
           flash[:notice] = "Plates queued to be imported"
-          format.html { redirect_to :action => "snp_import" }
+          format.html { redirect_to action: "snp_import" }
           format.xml  { head :ok }
           format.json { head :ok }
         else
           flash[:errors] = "Plates could not be created"
-          format.html { render :action => "snp_import" }
-          format.xml  { render :xml  => @errors, :status => :unprocessable_entity }
-          format.json { render :json => @errors, :status => :unprocessable_entity }
+          format.html { render action: "snp_import" }
+          format.xml  { render xml: @errors, status: :unprocessable_entity }
+          format.json { render json: @errors, status: :unprocessable_entity }
         end
       end
     end
@@ -158,5 +162,4 @@ class ReceptionsController < ApplicationController
   def find_asset_by_id
     @asset = Asset.find(params[:id])
   end
-
 end

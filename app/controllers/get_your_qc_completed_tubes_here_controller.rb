@@ -1,5 +1,4 @@
 class GetYourQcCompletedTubesHereController < ApplicationController
-
   before_filter :login_required
 
   def new
@@ -20,5 +19,4 @@ class GetYourQcCompletedTubesHereController < ApplicationController
       render :new
     end
   end
-  
 end

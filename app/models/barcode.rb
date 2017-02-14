@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 class Barcode
   # Anything that has a barcode is considered barcodeable.
@@ -12,9 +14,8 @@ class Barcode
         self.prefix = "NT"
 
         if ActiveRecord::Base.observers.include?(:amqp_observer)
-          after_save :broadcast_barcode, :if => :barcode_changed?
+          after_save :broadcast_barcode, if: :barcode_changed?
         end
-
       end
     end
 
@@ -23,7 +24,7 @@ class Barcode
     end
 
     def broadcast_barcode
-      AmqpObserver.instance << Messenger.new(:template=>'BarcodeIO',:root=>'barcode',:target=>self)
+      AmqpObserver.instance << Messenger.new(template: 'BarcodeIO', root: 'barcode', target: self)
     end
 
     def barcode_type
@@ -72,6 +73,9 @@ class Barcode
       self
     end
 
+    def barcode!
+      barcode
+    end
   end
 
   InvalidBarcode = Class.new(StandardError)
@@ -79,31 +83,33 @@ class Barcode
   # Sanger barcoding scheme
 
   def self.prefix_to_number(prefix)
-    first  = prefix.getbyte(0)-64
-    second = prefix.getbyte(1)-64
+    first  = prefix.getbyte(0) - 64
+    second = prefix.getbyte(1) - 64
     first  = 0 if first < 0
-    second  = 0 if second < 0
+    second = 0 if second < 0
     return ((first * 27) + second) * 1000000000
   end
 
   # NT23432S => 398002343283
+
   private
+
   def self.calculate_sanger_barcode(prefix, number)
       number_s = number.to_s
       raise ArgumentError, "Number : #{number} to big to generate a barcode." if number_s.size > 7
       human = prefix + number_s + calculate_checksum(prefix, number)
       barcode = prefix_to_number(prefix) + (number * 100)
-      barcode = barcode + human.getbyte(human.length-1)
+      barcode = barcode + human.getbyte(human.length - 1)
   end
 
   def self.calculate_barcode(prefix, number)
     barcode = calculate_sanger_barcode(prefix, number)
-    barcode*10+calculate_EAN13(barcode)
+    barcode * 10 + calculate_EAN13(barcode)
   end
 
   def self.calculate_checksum(prefix, number)
     string = prefix + number.to_s
-    len  = string.length
+    len = string.length
     sum = 0
     string.each_byte do |byte|
       sum += byte * len
@@ -145,7 +151,7 @@ class Barcode
   end
 
   def self.prefix_to_human(prefix)
-    human_prefix = ((prefix.to_i/27)+64).chr + ((prefix.to_i%27)+64).chr
+    human_prefix = ((prefix.to_i / 27) + 64).chr + ((prefix.to_i % 27) + 64).chr
   end
 
   def self.human_to_machine_barcode(human_barcode)
@@ -156,7 +162,7 @@ class Barcode
     if human_prefix.nil? || Barcode.calculate_checksum(human_prefix, bcode) != human_suffix
       raise InvalidBarcode, "The human readable barcode was invalid, perhaps it was mistyped?"
     else
-      calculate_barcode(human_prefix,bcode.to_i)
+      calculate_barcode(human_prefix, bcode.to_i)
     end
   end
 
@@ -165,7 +171,7 @@ class Barcode
     prefix, number, check = self.split_barcode(code)
     human_prefix = self.prefix_to_human(prefix)
     if calculate_barcode(human_prefix, number.to_i) == code.to_i
-      bcode = "#{human_prefix}#{number.to_s}#{check.chr}"
+      bcode = "#{human_prefix}#{number}#{check.chr}"
     end
     bcode
   end
@@ -174,9 +180,9 @@ class Barcode
   # considered invalid if it does not translate to a Human barcode or, when the optional +prefix+ is specified,
   # its human equivalent does not match.
   def self.barcode_to_human!(code, prefix = nil)
-    human_barcode = barcode_to_human(code) or raise InvalidBarcode, "Barcode #{ code } appears to be invalid"
+    human_barcode = barcode_to_human(code) or raise InvalidBarcode, "Barcode #{code} appears to be invalid"
     unless prefix.nil? or split_human_barcode(human_barcode).first == prefix
-      raise InvalidBarcode, "Barcode #{ code } (#{ human_barcode }) does not match prefix #{ prefix }"
+      raise InvalidBarcode, "Barcode #{code} (#{human_barcode}) does not match prefix #{prefix}"
     end
     human_barcode
   end
@@ -200,8 +206,8 @@ class Barcode
   end
 
   def self.check_EAN(code)
-    #the EAN checksum is calculated so that the EAN of the code with checksum added is 0
-    #except the new column (the checksum) start with a different weight (so the previous column keep the same weight)
+    # the EAN checksum is calculated so that the EAN of the code with checksum added is 0
+    # except the new column (the checksum) start with a different weight (so the previous column keep the same weight)
     calculate_EAN(code, 1) == 0
   end
 
@@ -210,18 +216,18 @@ class Barcode
   end
 
   private
-  def self.calculate_EAN(code, initial_weight=3)
-    #The EAN is calculated by adding each digit modulo 10 ten weighted by 1 or 3 ( in seq)
+
+  def self.calculate_EAN(code, initial_weight = 3)
+    # The EAN is calculated by adding each digit modulo 10 ten weighted by 1 or 3 ( in seq)
     code = code.to_i
     ean = 0
     weight = initial_weight
-    while code >0
+    while code > 0
       code, c = code.divmod 10
-      ean += c*weight % 10
+      ean += c * weight % 10
       weight = weight == 1 ? 3 : 1
     end
 
-    (10 -ean) % 10
-
+    (10 - ean) % 10
   end
 end

@@ -1,9 +1,8 @@
-require File.dirname(__FILE__)+'/globals'
-require File.dirname(__FILE__)+'/support/options'
+require File.dirname(__FILE__) + '/globals'
+require File.dirname(__FILE__) + '/support/options'
 
 module Informatics
   class Application
-
     include Informatics::Globals
 
     attr_accessor :name, :description, :home_page, :title, :authentication
@@ -33,6 +32,5 @@ module Informatics
     def home_page_link(link)
       @home_page = link
     end
-
   end
 end

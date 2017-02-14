@@ -1,9 +1,7 @@
 module SampleManifestExcel
-
   ##
   # A null object for validations.
   class NullValidation
-
     ##
     # Always returns :null range
     def range_name

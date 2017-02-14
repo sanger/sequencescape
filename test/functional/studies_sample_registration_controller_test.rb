@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
 
 require "test_helper"
 require 'studies/sample_registration_controller'
@@ -18,14 +20,14 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
 
     context "when logged in" do
       setup do
-        @user =FactoryGirl.create :user
+        @user = FactoryGirl.create :user
         @controller.stubs(:logged_in?).returns(@user)
-        @controller.stubs(:current_user).returns(@user)
+        session[:user] = @user.id
       end
 
       context "#index" do
         setup do
-          get :index, :study_id => @study
+          get :index, study_id: @study
         end
 
         should respond_with :success
@@ -34,7 +36,7 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
 
       context "#new" do
         setup do
-          get :new, :study_id => @study
+          get :new, study_id: @study
         end
 
         should "respond successfully and render the new template" do
@@ -44,7 +46,7 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
 
         context "without attaching a file" do
           setup do
-            post :new, :study_id => @study
+            post :new, study_id: @study
           end
 
           should "respond successfully and render the new template" do
@@ -55,8 +57,8 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
 
         context "with attached file" do
           setup do
-            @controller.stubs(:current_user).returns(@user)
-            post :spreadsheet, :study_id => @study, :file => Rack::Test::UploadedFile.new(Rails.root.to_s + '/test/data/two_plate_sample_info_valid.xls','')
+            session[:user] = @user.id
+            post :spreadsheet, study_id: @study, file: Rack::Test::UploadedFile.new(Rails.root.to_s + '/test/data/two_plate_sample_info_valid.xls', '')
           end
 
           should "respond successfully and render the new template" do
@@ -67,17 +69,17 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
 
         context "with invalid file" do
           setup do
-            post :spreadsheet, :study_id => @study, :file => Rack::Test::UploadedFile.new(Rails.root.to_s + '/config/environment.rb','text/csv')
+            post :spreadsheet, study_id: @study, file: Rack::Test::UploadedFile.new(Rails.root.to_s + '/config/environment.rb', 'text/csv')
           end
 
-          should set_the_flash.to( "Problems processing your file. Only Excel spreadsheets accepted")
+          should set_flash.to("Problems processing your file. Only Excel spreadsheets accepted")
           should redirect_to("upload study sample registration") { upload_study_sample_registration_index_path }
         end
       end
 
       context "#upload" do
         setup do
-          get :upload, :study_id => @study
+          get :upload, study_id: @study
         end
 
         should respond_with :success
@@ -87,23 +89,22 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
       context "#create" do
         context "samples are blank with values given" do
           setup do
-            post :create, :study_id => @study, :sample_registrars => {}
+            post :create, study_id: @study, sample_registrars: {}
           end
 
-
-          should set_the_flash.now.to('You do not appear to have specified any samples')
+          should set_flash.now.to('You do not appear to have specified any samples')
 
           should render_template :new
         end
 
         context "one sample with values given" do
           setup do
-            @sscount =  @study.samples.count
-            post :create, :study_id => @study,
-              :sample_registrars => {
+            @sscount = @study.samples.count
+            post :create, study_id: @study,
+              sample_registrars: {
                 '1' => {
-                  :asset_group_name => 'asset_group_name',
-                  :sample_attributes => { :name => 'hello' }
+                  asset_group_name: 'asset_group_name',
+                  sample_attributes: { name: 'hello' }
                 }
               }
           end
@@ -111,22 +112,22 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
           should respond_with :redirect
 
           should "change @study.samples.count by 1" do
-          assert_equal 1,  @study.samples.count  - @sscount, "Expected @study.samples.count to change by 1"
+          assert_equal 1, @study.samples.count - @sscount, "Expected @study.samples.count to change by 1"
           end
         end
 
         context "two samples with values given" do
           setup do
-            @sscount =  @study.samples.count
-            post :create, :study_id => @study,
-              :sample_registrars => {
+            @sscount = @study.samples.count
+            post :create, study_id: @study,
+              sample_registrars: {
                 '1' => {
-                  :asset_group_name  => 'asset_group_0',
-                  :sample_attributes => { :name => 'Sam1' }
+                  asset_group_name: 'asset_group_0',
+                  sample_attributes: { name: 'Sam1' }
                 },
                 '2' => {
-                  :asset_group_name  => 'asset_group_0',
-                  :sample_attributes => { :name => 'Sam2' }
+                  asset_group_name: 'asset_group_0',
+                  sample_attributes: { name: 'Sam2' }
                 }
               }
           end
@@ -134,27 +135,27 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
           should respond_with :redirect
 
           should "change @study.samples.count by 2" do
-            assert_equal 2,  @study.samples.count  - @sscount, "Expected @study.samples.count to change by 2"
+            assert_equal 2, @study.samples.count - @sscount, "Expected @study.samples.count to change by 2"
           end
         end
 
         context 'three samples with one ignored' do
           setup do
-            @sscount =  @study.samples.count
-            post :create, :study_id => @study,
-              :sample_registrars => {
+            @sscount = @study.samples.count
+            post :create, study_id: @study,
+              sample_registrars: {
                 '1' => {
-                  :asset_group_name  => 'asset_group_0',
-                  :sample_attributes => { :name => 'Sam1' }
+                  asset_group_name: 'asset_group_0',
+                  sample_attributes: { name: 'Sam1' }
                 },
                 '2' => {
-                  :ignore            => '1',
-                  :asset_group_name  => 'asset_group_0',
-                  :sample_attributes => { :name => 'Sam2' }
+                  ignore: '1',
+                  asset_group_name: 'asset_group_0',
+                  sample_attributes: { name: 'Sam2' }
                 },
                 '3' => {
-                  :asset_group_name  => 'asset_group_0',
-                  :sample_attributes => { :name => 'Sam3' }
+                  asset_group_name: 'asset_group_0',
+                  sample_attributes: { name: 'Sam3' }
                 }
               }
           end
@@ -162,7 +163,7 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
           should respond_with :redirect
 
           should "change @study.samples.count by 2" do
-            assert_equal 2,  @study.samples.count  - @sscount, "Expected @study.samples.count to change by 2"
+            assert_equal 2, @study.samples.count - @sscount, "Expected @study.samples.count to change by 2"
           end
 
           should 'not have registered sample 2' do
@@ -172,19 +173,19 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
 
         context "when a 2D barcode is passed in" do
           setup do
-            @sscount =  @study.samples.count
+            @sscount = @study.samples.count
             @asset_count = Asset.count
-            post :create, :study_id => @study,
-                :sample_registrars => {
+            post :create, study_id: @study,
+                sample_registrars: {
                   '1' => {
-                    :asset_group_name => 'asset_group_0',
-                    :sample_tube_attributes => { :two_dimensional_barcode => 'SI0000012345' },
-                    :sample_attributes => { :name => 'Sam1' }
+                    asset_group_name: 'asset_group_0',
+                    sample_tube_attributes: { two_dimensional_barcode: 'SI0000012345' },
+                    sample_attributes: { name: 'Sam1' }
                   },
                   '2' => {
-                    :asset_group_name => 'asset_group_0',
-                    :sample_tube_attributes => { :two_dimensional_barcode => 'SI0000098765' },
-                    :sample_attributes => { :name => 'Sam2' }
+                    asset_group_name: 'asset_group_0',
+                    sample_tube_attributes: { two_dimensional_barcode: 'SI0000098765' },
+                    sample_attributes: { name: 'Sam2' }
                   }
                 }
           end
@@ -192,15 +193,14 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
           should respond_with :redirect
 
           should "change @study.samples.count by 2" do
-            assert_equal 2,  @study.samples.count  - @sscount, "Expected @study.samples.count to change by 2"
+            assert_equal 2,  @study.samples.count - @sscount, "Expected @study.samples.count to change by 2"
           end
 
           should "change Asset.count by 2" do
-            assert_equal 2,  Asset.count  - @asset_count, "Expected Asset.count to change by 2"
+            assert_equal 2,  Asset.count - @asset_count, "Expected Asset.count to change by 2"
           end
 
           context 'sample 1' do
-
             setup do
               @sample = Sample.find_by_name("Sam1")
             end
@@ -208,7 +208,6 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
             should 'have the 2D barcode on the asset' do
               assert_equal "SI0000012345", @sample.assets.first.two_dimensional_barcode
             end
-
           end
 
           context 'sample 2' do
@@ -224,8 +223,8 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
 
         context 'when sample information is missing' do
           setup do
-            post :create, :study_id => @study,
-              :sample_registrars => { '1' => { } }
+            post :create, study_id: @study,
+              sample_registrars: { '1' => {} }
           end
           should render_template :new
         end
@@ -235,5 +234,4 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
       end
     end
   end
-
 end

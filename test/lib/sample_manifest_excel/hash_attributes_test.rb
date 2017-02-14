@@ -1,21 +1,18 @@
-require_relative '../../test_helper'
+require 'test_helper'
 
 class HashAttributesTest < ActiveSupport::TestCase
-
   attr_reader :goose, :options
 
   class Goose
-
     include SampleManifestExcel::HashAttributes
 
-    set_attributes :gosling_a, :gosling_b, :gosling_c, :gosling_d, defaults: { gosling_d: "Consuela"} 
+    set_attributes :gosling_a, :gosling_b, :gosling_c, :gosling_d, defaults: { gosling_d: "Consuela" }
 
     attr_reader :gosling_e
 
     def initialize(attributes = {})
       create_attributes(attributes)
     end
-
   end
 
   def setup
@@ -62,7 +59,7 @@ class HashAttributesTest < ActiveSupport::TestCase
   end
 
   test "#to_a should return array of instance variables that have been set" do
-    assert_equal ["Bert", "Ernie", "Liz", "Lisa"].sort, goose.to_a.sort
+    assert_equal %w(Bert Ernie Liz Lisa).sort, goose.to_a.sort
     goose.update_attributes(gosling_a: nil)
     assert_equal ["Ernie", "Liz", "Lisa"].sort, goose.to_a.sort
   end
@@ -73,5 +70,4 @@ class HashAttributesTest < ActiveSupport::TestCase
     refute_equal goose, Goose.new(options.merge(gosling_d: "Ernie"))
     refute_equal Array.new, Goose.new(options)
   end
-
 end

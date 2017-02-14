@@ -3,6 +3,7 @@ require 'rake/testtask'
 require 'rake/rdoctask'
 require 'rake/gempackagetask'
 require "rake/contrib/rails_plugin_package_task"
+require 'rdoc'
 
 # load settings
 require "rakeconfig.rb"

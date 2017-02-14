@@ -6,12 +6,12 @@
 <% suffix = "_#{File.read(File.join(Rails.root, 'database_suffix'))}".strip rescue nil %>
 
 mysql: &MYSQL
-  adapter: mysql
+  adapter: <%= defined?(JRuby) ? "mysql" : "mysql2" %>
   username: root
-  password:
-  encoding: UTF8
+  password: <%= ENV['DBPASSWORD'] %>
+  encoding: utf8
   properties:
-    characterSetResults: UTF8
+    characterSetResults: utf8
   host: localhost
   port: 3306
   pool: 5

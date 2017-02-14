@@ -1,23 +1,24 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
 
 module Tasks::SetDescriptorsHandler
-
   def do_set_descriptors_task(task, params)
-    @batch = Batch.find(params[:batch_id], :include => [:requests, :pipeline, :lab_events])
+    @batch = Batch.includes(:requests, :pipeline, :lab_events).find(params[:batch_id])
     @rits = @batch.pipeline.request_information_types
     @requests = @batch.ordered_requests
 
     # if qc_state is qc_manual then update it
     if @batch.qc_state == "qc_manual"
-      @batch.lab_events.create(:description => "Manual QC", :message => "Manual QC started for batch #{@batch.id}", :user_id => current_user.id)
-      @batch.lab_events.create(:description => "Manual QC", :message => "Manual QC started for batch #{@batch.id}", :user_id => current_user.id)
+      @batch.lab_events.create(description: "Manual QC", message: "Manual QC started for batch #{@batch.id}", user_id: current_user.id)
+      @batch.lab_events.create(description: "Manual QC", message: "Manual QC started for batch #{@batch.id}", user_id: current_user.id)
       @batch.qc_state = @batch.qc_next_state
       @batch.save
     end
 
-    @workflow = LabInterface::Workflow.find(params[:workflow_id], :include => [:tasks])
+    @workflow = LabInterface::Workflow.includes(:tasks).find(params[:workflow_id])
     @task = @workflow.tasks[params[:id].to_i]
     @stage = params[:id].to_i
     @count = 0
@@ -38,7 +39,7 @@ module Tasks::SetDescriptorsHandler
             # with a single set of descriptor fields is shared between all the requests...
             if request.id == checked.to_i
 
-              event = LabEvent.new(:batch_id => @batch.id, :description => @task.name)
+              event = LabEvent.new(batch_id: @batch.id, description: @task.name)
 
               # This is called when a single set of fields is used
               # and called over and over based on the select boxs
@@ -52,11 +53,11 @@ module Tasks::SetDescriptorsHandler
                 end
               end
 
-              if !params[:requests].nil? && !params[:requests]["#{request.id}"].nil? && !params[:requests]["#{request.id}"][:descriptors].nil?
+              if !params[:requests].nil? && !params[:requests][(request.id).to_s].nil? && !params[:requests][(request.id).to_s][:descriptors].nil?
                 # Descriptors: create description for event
 
-                event.descriptors = params[:requests]["#{request.id}"][:descriptors]
-                event.descriptor_fields = ordered_fields(params[:requests]["#{request.id}"][:fields])
+                event.descriptors = params[:requests][(request.id).to_s][:descriptors]
+                event.descriptor_fields = ordered_fields(params[:requests][(request.id).to_s][:fields])
 
               end
 
@@ -64,7 +65,7 @@ module Tasks::SetDescriptorsHandler
                 params[:upload].each_key do |key|
                   event.filename = params[:upload][key].original_filename.gsub(/[^a-zA-Z0-9.]/, '_')
                   event.data = params[:upload][key].read
-                  event.add_descriptor Descriptor.new({:name => key, :value => event.filename})
+                  event.add_descriptor Descriptor.new({ name: key, value: event.filename })
                 end
               end
 
@@ -77,7 +78,7 @@ module Tasks::SetDescriptorsHandler
                   asset = Asset.new()
                   asset.sti_type = Family.find(params[:asset][key][:family_id]).name
                   params[:asset][key].each_key do |field|
-                    asset.add_descriptor Descriptor.new({ :name => field, :value => params[:asset][key][field] })
+                    asset.add_descriptor Descriptor.new({ name: field, value: params[:asset][key][field] })
                   end
                   asset.save
                   asset.parents << request.asset
@@ -96,14 +97,13 @@ module Tasks::SetDescriptorsHandler
         end
       end
 
-
       if updated == @batch.requests.count
         eventify_batch @batch, @task
         return true
       else
         # Some requests have yet to pass this task
         # Construct a URL that contains a nested hash of values to display as defaults for the next request
-        @params = { :batch_id => @batch.id, :workflow_id => @workflow.id, :values => @values }
+        @params = { batch_id: @batch.id, workflow_id: @workflow.id, values: @values }
         redirect_to url_for(flatten_hash(@params))
       end
 
@@ -112,10 +112,10 @@ module Tasks::SetDescriptorsHandler
   end
 
   def render_set_descriptors_task(task, params)
-    @batch = Batch.find(params[:batch_id], :include => [:requests, :pipeline, :lab_events])
+    @batch = Batch.includes(:requests, :pipeline, :lab_events).find(params[:batch_id])
     @rits = @batch.pipeline.request_information_types
     @requests = @batch.ordered_requests
-    @workflow = LabInterface::Workflow.find(params[:workflow_id], :include => [:tasks])
+    @workflow = LabInterface::Workflow.includes(:tasks).find(params[:workflow_id])
     @task = @workflow.tasks[params[:id].to_i]
     @stage = params[:id].to_i
     @count = 0
@@ -124,8 +124,5 @@ module Tasks::SetDescriptorsHandler
     else
       @values = params[:values]
     end
-
-
   end
-
 end

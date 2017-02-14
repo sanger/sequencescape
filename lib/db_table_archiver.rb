@@ -1,22 +1,22 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2014 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2014 Genome Research Ltd.
 module DbTableArchiver
-
   def self.create_archive!
     puts "Creating archive database: #{archive_name}"
     ActiveRecord::Base.connection.create_database archive_name
   end
 
   def self.archive!(table)
-    table_transaction(table) do |original,archive|
+    table_transaction(table) do |original, archive|
       puts "Archiving table '#{table}' to #{archive_name}"
       ActiveRecord::Base.connection.rename_table original, archive
     end
   end
 
   def self.restore!(table)
-    table_transaction(table) do |original,archive|
+    table_transaction(table) do |original, archive|
       puts "Restoring table '#{table}' from #{archive_name}"
       ActiveRecord::Base.connection.rename_table archive, original
     end
@@ -30,9 +30,7 @@ module DbTableArchiver
     "#{ActiveRecord::Base.connection.current_database}_archive"
   end
 
-
   def self.destroy_archive!
     raise StandardError, "#{archive_name} contains tables. Can't be destroyed!" if ActiveRecord::Base.connection.execute("SHOW tables IN #{archive_name}").present?
   end
-
 end

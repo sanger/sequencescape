@@ -1,40 +1,38 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2016 Genome Research Ltd.
 
 module Presenters
   class GroupedPipelineInboxPresenter
-
     class << self
-
       def fields
         @fields ||= []
       end
 
-      def add_field(name,method,options={})
-        fields << [name,method,options[:if]]
+      def add_field(name, method, options = {})
+        fields << [name, method, options[:if]]
       end
-
     end
 
     # Register our fields and their respective conditions
     # TODO: Drive some of these directly from the database
     add_field 'Internal ID',    :internal_id
     add_field 'Barcode',        :barcode
-    add_field 'Wells',          :wells,          :if => :purpose_important?
-    add_field 'Plate Purpose',  :plate_purpose,  :if => :purpose_important?
-    add_field 'Pick To',        :pick_to,        :if => :purpose_important?
-    add_field 'Next Pipeline',  :next_pipeline,  :if => :display_next_pipeline?
-    add_field 'Submission',     :submission_id,  :if => :group_by_submission?
-    add_field 'Study',          :study,          :if => :group_by_submission?
-    add_field 'Stock Barcode',  :stock_barcode,  :if => :show_stock?
-    add_field 'Still Required', :still_required, :if => :select_partial_requests?
+    add_field 'Wells',          :wells,          if: :purpose_important?
+    add_field 'Plate Purpose',  :plate_purpose,  if: :purpose_important?
+    add_field 'Pick To',        :pick_to,        if: :purpose_important?
+    add_field 'Next Pipeline',  :next_pipeline,  if: :display_next_pipeline?
+    add_field 'Submission',     :submission_id,  if: :group_by_submission?
+    add_field 'Study',          :study,          if: :group_by_submission?
+    add_field 'Stock Barcode',  :stock_barcode,  if: :show_stock?
+    add_field 'Still Required', :still_required, if: :select_partial_requests?
     add_field 'Submitted at',   :submitted_at
-
 
     attr_reader :pipeline, :user
 
-    def initialize(pipeline,user,show_held_requests=false)
+    def initialize(pipeline, user, show_held_requests = false)
       @pipeline = pipeline
       @user = user
       @show_held_requests = show_held_requests
@@ -54,9 +52,9 @@ module Presenters
 
     # Yields a line presenter
     def each_line
-      grouped_requests.each_with_index do |request,index|
+      grouped_requests.each_with_index do |request, index|
         group = [request.container_id, request.submission_id]
-        yield GroupLinePresenter.new(group, request,index,pipeline,self)
+        yield GroupLinePresenter.new(group, request, index, pipeline, self)
       end
     end
 
@@ -71,7 +69,7 @@ module Presenters
     end
 
     def valid_fields
-      @valid_fields ||= self.class.fields.select {|n,m,c| c.nil? || self.send(c) }
+      @valid_fields ||= self.class.fields.select { |n, m, c| c.nil? || self.send(c) }
     end
 
     def purpose_important?
@@ -93,16 +91,14 @@ module Presenters
     def group_by_submission?
       pipeline.group_by_submission?
     end
-
   end
 
   class GroupLinePresenter
-
     include PipelinesHelper
 
     attr_reader :group, :request, :index, :pipeline, :inbox
-    def initialize(group,request,index,pipeline,inbox)
-      @group, @request, @index,@pipeline,@inbox = group,request,index,pipeline,inbox
+    def initialize(group, request, index, pipeline, inbox)
+      @group, @request, @index, @pipeline, @inbox = group, request, index, pipeline, inbox
     end
 
     def group_id
@@ -110,7 +106,7 @@ module Presenters
     end
 
     def request_group_id
-      "request_group_#{ group_id.gsub(/[^a-z0-9]+/, '_') }"
+      "request_group_#{group_id.gsub(/[^a-z0-9]+/, '_')}"
     end
 
     def parent
@@ -172,11 +168,11 @@ module Presenters
     end
 
     def stock_barcode
-      parent.source_plate.try(:sanger_human_barcode)||"Unknown"
+      parent.source_plate.try(:sanger_human_barcode) || "Unknown"
     end
 
     def still_required
-      wells/parent.height
+      wells / parent.height
     end
 
     # Gates
@@ -192,7 +188,5 @@ module Presenters
     def parentless?
       yield if parent.nil?
     end
-
-
   end
 end

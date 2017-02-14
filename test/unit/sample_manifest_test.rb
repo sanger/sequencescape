@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 require "test_helper"
 
@@ -11,13 +13,13 @@ class SampleManifestTest < ActiveSupport::TestCase
       barcode.stubs(:barcode).returns(23)
       PlateBarcode.stubs(:create).returns(barcode)
 
-      @study = create :study, :name => 'CARD1'
-      @study.study_metadata.study_name_abbreviation  = 'CARD1'
+      @study = create :study, name: 'CARD1'
+      @study.study_metadata.study_name_abbreviation = 'CARD1'
       @study.save!
     end
 
     context 'creates the right assets' do
-      [1,2].each do |count|
+      [1, 2].each do |count|
         context "#{count} plate(s)" do
           setup do
             @initial_samples  = Sample.count
@@ -25,23 +27,22 @@ class SampleManifestTest < ActiveSupport::TestCase
             @initial_wells    = Well.count
             @initial_in_study = @study.samples.count
 
-            @manifest = create :sample_manifest, :study => @study, :count => count
+            @manifest = create :sample_manifest, study: @study, count: count
             @manifest.generate
           end
 
           should "create #{count} plate(s) and #{count * 96} wells and samples in the right study" do
             assert_equal (count * 96), Sample.count - @initial_samples
-            assert_equal (count * 1 ), Plate.count - @initial_plates
-            assert_equal (count * 96), Well.count  - @initial_wells
+            assert_equal (count * 1), Plate.count - @initial_plates
+            assert_equal (count * 96), Well.count - @initial_wells
             assert_equal (count * 96), @study.samples.count - @initial_in_study
           end
-
         end
       end
     end
 
     context 'for a library' do
-      [3,4].each do |count|
+      [3, 4].each do |count|
         context "#{count} plate(s)" do
           setup do
             @initial_samples       = Sample.count
@@ -49,7 +50,7 @@ class SampleManifestTest < ActiveSupport::TestCase
             @initial_mx_tubes      = MultiplexedLibraryTube.count
             @initial_in_study      = @study.samples.count
 
-            @manifest = create :sample_manifest, :study => @study, :count => count, :asset_type=>'multiplexed_library'
+            @manifest = create :sample_manifest, study: @study, count: count, asset_type: 'multiplexed_library'
             @manifest.generate
           end
 
@@ -60,29 +61,7 @@ class SampleManifestTest < ActiveSupport::TestCase
             assert_equal (1),     MultiplexedLibraryTube.count - @initial_mx_tubes
             assert_equal (count), @study.samples.count         - @initial_in_study
           end
-
         end
-      end
-    end
-
-    context 'converts to a spreadsheet' do
-      setup do
-        @manifest = create :sample_manifest, :study => @study, :count => 1
-        @manifest.generate
-        SampleManifestTemplate.first.generate(@manifest)
-
-        @spreadsheet = Spreadsheet.open(StringIO.new(@manifest.generated_document.current_data))
-        @worksheet   = @spreadsheet.worksheets.first
-      end
-
-      should "have 1 worksheet,study name, supplier name, well A1 and vertical order" do
-        assert_equal 1, @spreadsheet.worksheets.size
-        assert_equal 'CARD1', @worksheet[4, 1]
-        assert_equal 'Test supplier', @worksheet[5, 1]
-
-        assert_equal 'A1',  @worksheet[  9, 1]
-        assert_equal 'B1',  @worksheet[ 10, 1]
-        assert_equal 'H12', @worksheet[104, 1]
       end
     end
   end
@@ -110,12 +89,11 @@ class SampleManifestTest < ActiveSupport::TestCase
     end
     context "where a well has a plate" do
       should "add an event to the plate" do
-        SampleManifest::PlateBehaviour::Core.new(SampleManifest.new).updated_by!(@user,[@well_with_sample_and_plate.primary_aliquot.sample])
+        SampleManifest::PlateBehaviour::Core.new(SampleManifest.new).updated_by!(@user, [@well_with_sample_and_plate.primary_aliquot.sample])
         assert_equal Event.last, @well_with_sample_and_plate.plate.events.last
         assert_not_nil @well_with_sample_and_plate.plate.events.last
       end
     end
-
   end
 
   # This is testing a specific case pulled from production where the size of the delayed job 'handler' column was
@@ -131,7 +109,7 @@ class SampleManifestTest < ActiveSupport::TestCase
         end
       end)
 
-      @manifest = create(:sample_manifest, :count => 37, :asset_type => 'plate', :rapid_generation => true)
+      @manifest = create(:sample_manifest, count: 37, asset_type: 'plate', rapid_generation: true)
       @manifest.generate
     end
 
@@ -141,13 +119,12 @@ class SampleManifestTest < ActiveSupport::TestCase
 
     context 'delayed jobs' do
       setup do
-        @well_count =  Sample.count
+        @well_count = Sample.count
         Delayed::Job.first.invoke_job
       end
 
-
       should "change Well.count by 96" do
-        assert_equal 96,  Sample.count  - @well_count, "Expected Well.count to change by 96"
+        assert_equal 96, Sample.count - @well_count, "Expected Well.count to change by 96"
       end
     end
   end

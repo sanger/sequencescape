@@ -1,9 +1,10 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 class Sdb::SuppliersController < Sdb::BaseController
-
   # Show all suppliers
   def index
     @suppliers = Supplier.all
@@ -21,9 +22,9 @@ class Sdb::SuppliersController < Sdb::BaseController
     respond_to do |format|
       if @supplier.save
         flash[:notice] = 'Supplier was successfully created.'
-        format.html { redirect_to( '/sdb/') }
+        format.html { redirect_to('/sdb/') }
       else
-        format.html { render :action => "new" }
+        format.html { render action: "new" }
       end
     end
   end
@@ -41,7 +42,7 @@ class Sdb::SuppliersController < Sdb::BaseController
         flash[:notice] = 'Supplier was successfully updated'
         format.html { redirect_to(@supplier) }
       else
-        format.html { render :action => "new" }
+        format.html { render action: "new" }
       end
     end
   end
@@ -53,12 +54,11 @@ class Sdb::SuppliersController < Sdb::BaseController
 
   def sample_manifests
     @supplier = Supplier.find(params[:id])
-    @sample_manifests = @supplier.sample_manifests.paginate(:page => params[:page])
+    @sample_manifests = @supplier.sample_manifests.paginate(page: params[:page])
   end
 
   def studies
     @supplier = Supplier.find(params[:id])
-    @studies = @supplier.studies.paginate(:page => params[:page])
+    @studies = @supplier.studies.paginate(page: params[:page])
   end
-
 end
