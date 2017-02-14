@@ -14,6 +14,11 @@ FactoryGirl.define do
     end
   end
 
+  factory :minimal_sample_metadata_for_accessioning, class: Sample::Metadata do
+    sample_taxon_id 1
+    sample_common_name "A common name"
+  end
+
   factory :sample_for_accessioning_with_open_study, parent: :sample do
     studies           { [create(:open_study, accession_number: 'ENA123')] }
     sample_metadata   { create(:sample_metadata_for_accessioning) }
