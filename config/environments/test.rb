@@ -12,7 +12,14 @@ Sequencescape::Application.configure do
   # your test database is "scratch space" for the test suite and is wiped
   # and recreated between test runs.  Don't rely on the data there!
   config.cache_classes = true
-  config.active_support.deprecation = :log
+
+  # Currently, Active Record suppresses errors raised within `after_rollback`/`after_commit`
+  # callbacks and only print them to the logs. In the next version, these errors will no
+  # longer be suppressed. Instead, the errors will propagate normally just like in other
+  # Active Record callbacks.
+  # We'll switch this to true ASAP, currently only doing it as part of deprecations check.
+  config.active_record.raise_in_transactional_callbacks = ENV.fetch('WHINY_DEPRECATIONS', false) ? true : false
+  config.active_support.deprecation = ENV.fetch('WHINY_DEPRECATIONS', false) ? :raise : :log
 
   config.serve_static_files = true
 
