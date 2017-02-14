@@ -61,7 +61,11 @@ And I have a "full" authorised user with the key "cucumber"
             "read": "http://www.example.com/api/1/dilution_plate_purposes"
           }
         },
-
+        "extraction_attributes": {
+          "actions": {
+            "read": "http://www.example.com/api/1/extraction_attributes"
+          }
+        },
         "assets": {
           "actions": {
             "read": "http://www.example.com/api/1/assets"
@@ -391,7 +395,12 @@ And I have a "full" authorised user with the key "cucumber"
             "read": "http://www.example.com/api/1/dilution_plate_purposes"
           }
         },
-
+        "extraction_attributes": {
+          "actions": {
+            "read": "http://www.example.com/api/1/extraction_attributes",
+            "create"=>"http://www.example.com/api/1/extraction_attributes"
+          }
+        },
         "assets": {
           "actions": {
             "read": "http://www.example.com/api/1/assets"
