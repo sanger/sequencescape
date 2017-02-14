@@ -1,5 +1,4 @@
 module Accession
-
   # Made up of a sample, user and service
   # Used by Request to extract relevant information to send to appropriate accessioning service
   class Submission

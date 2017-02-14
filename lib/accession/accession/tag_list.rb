@@ -1,5 +1,4 @@
 module Accession
-
   # Tags details are stored in config/accession/tags.yml
   # Standard TagList is created on initialisation from this yaml file and can be reached through Accession.configuration.tags
   # TagList that is specific to a particular sample can be created using #extract method (where 'record' is a Sequencescape Sample::Metadata object)
@@ -38,7 +37,7 @@ module Accession
     # each key will be the group and each value will be a new TagList to allow tag list methods
     # to be called.
     def by_group
-      groups.each_with_object({}) { |v,h| h[v] = TagList.new }.tap do |result|
+      groups.each_with_object({}) { |v, h| h[v] = TagList.new }.tap do |result|
         tags.values.each do |tag|
           tag.groups.each do |group|
             result[group] << tag
@@ -65,7 +64,7 @@ module Accession
     alias_method :<<, :add
 
     # Extract a new TagList based on an Accession::Sample
-    # The TagList will consist of a tag for which the sample has attributes 
+    # The TagList will consist of a tag for which the sample has attributes
     def extract(record)
       TagList.new do |tag_list|
         tags.keys.each do |key|
@@ -91,7 +90,7 @@ module Accession
     end
 
   private
-  
+
     def add_tags(tags)
       tags.each do |k, tag|
         add(if tag.instance_of?(Accession::Tag)

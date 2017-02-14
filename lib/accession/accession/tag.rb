@@ -1,5 +1,4 @@
 module Accession
-
   # A tag relates to a sample attribute.
   # It provides all of the relevant information for that attribute
   # i.e. which service it is required for and which

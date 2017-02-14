@@ -1,5 +1,4 @@
 module Accession
-
   # The contact will be the person who will be informed if accessioning errors
   # or if the status needs to be checked.
   # Is this ever used?

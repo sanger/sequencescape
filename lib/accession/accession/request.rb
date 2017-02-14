@@ -1,5 +1,4 @@
 module Accession
-
   ##
   # Does what is says on the tin.
   # Accepts an Accession::Submission and creates a resource based on the service submission.

@@ -16,7 +16,7 @@ FactoryGirl.define do
 
   factory :minimal_sample_metadata_for_accessioning, class: Sample::Metadata do
     sample_taxon_id 1
-    sample_common_name "A common name"
+    sample_common_name 'A common name'
   end
 
   factory :sample_for_accessioning_with_open_study, parent: :sample do

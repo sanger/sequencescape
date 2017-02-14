@@ -1,5 +1,4 @@
 module Accession
-
   # Handles assigning of accessioning number to a Sequenescape sample.
   # Before accessioning:
   #  check configuration settings, in particular:

@@ -4,7 +4,6 @@ module Accession
   # which can be included whenever needed.
   module CoreExtensions
     module String
-
       # replace everything that is not a valid character with an underscore
       def sanitize
         downcase.gsub(/[^\w\d]/i, '_')

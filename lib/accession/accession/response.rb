@@ -1,5 +1,4 @@
 module Accession
-
   # Sucks the neccessary attributes from a RestClient response
   class Response
     include ActiveModel::Validations
