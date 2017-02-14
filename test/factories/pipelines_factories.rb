@@ -469,18 +469,4 @@ FactoryGirl.define do
   factory :barcode_prefix do |_b|
     prefix  'DN'
   end
-
-  # A plate that has exactly the right number of wells!
-  factory(:plate_for_strip_tubes, class: Plate) do |_plate|
-    size 96
-    plate_purpose { PlatePurpose.find_by(name: 'Stock plate') }
-    after(:create) do |plate|
-      plate.wells.import(
-        %w(A1 B1 C1 D1 E1 F1 G1 H1).map do |location|
-          map = Map.where_description(location).where_plate_size(plate.size).where_plate_shape(AssetShape.find_by(name: 'Standard')).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
-          create(:tagged_well, map: map)
-        end
-      )
-    end
-  end
 end

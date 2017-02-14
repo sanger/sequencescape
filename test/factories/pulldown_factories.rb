@@ -4,94 +4,79 @@
 # Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
 # A plate that has exactly the right number of wells!
 FactoryGirl.define do
-  factory(:transfer_plate, class: Plate) do |_plate|
+  factory(:transfer_plate, class: Plate) do
     size 96
 
     after(:create) do |plate|
-      plate.wells.import(
-        ['A1', 'B1', 'C1'].map do |location|
-          map = Map.where_description(location).where_plate_size(plate.size).where_plate_shape(AssetShape.find_by(name: 'Standard')).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
-          create(:tagged_well, map: map)
+      plate.wells << Map.where_description(['A1', 'B1', 'C1'])
+        .where_plate_size(plate.size)
+        .where_plate_shape(AssetShape.find_by(name: 'Standard')).map do |location|
+          create(:tagged_well, map: location)
         end
-      )
+    end
+
+    factory(:source_transfer_plate) do
+      plate_purpose  { PlatePurpose.find_by(name: 'Parent plate purpose') || create(:parent_plate_purpose) }
+    end
+
+    factory(:destination_transfer_plate) do
+      plate_purpose { PlatePurpose.find_by(name: 'Child plate purpose') || create(:child_plate_purpose) }
+    end
+
+    factory(:initial_downstream_plate) do
+      plate_purpose { PlatePurpose.find_by(name: 'Initial downstream plate purpose') || create(:initial_downstream_plate_purpose) }
     end
   end
 
-  # A plate that has exactly the right number of wells!
-  factory(:pooling_plate, class: Plate) do |_plate|
+  factory(:full_plate, class: Plate) do
     size 96
-    purpose { create :pooling_plate_purpose }
+    plate_purpose { PlatePurpose.find_by(name: 'Parent plate purpose') || create(:parent_plate_purpose) }
 
-    after(:create) do |plate|
-      plate.wells.import(
-        %w(A1 B1 C1 D1 E1 F1).map do |location|
-          map = Map.where_description(location).where_plate_size(plate.size).where_plate_shape(AssetShape.find_by(name: 'Standard')).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
-          create(:tagged_well, map: map)
+    transient do
+      well_count 96
+      occupied_map_locations do
+        Map.where_plate_size(size).where_plate_shape(AssetShape.default).where(well_order => (0...well_count))
+      end
+      well_order :column_order
+      well_factory :well
+    end
+
+    after(:create) do |plate, evaluator|
+      plate.wells = evaluator.occupied_map_locations.map do |map|
+        build(evaluator.well_factory, map: map)
+      end
+    end
+
+    # A plate that has exactly the right number of wells!
+    factory(:pooling_plate, class: Plate) do
+      purpose { create :pooling_plate_purpose }
+      transient do
+        well_count 6
+        well_factory :tagged_well
+      end
+    end
+
+    factory(:full_stock_plate) do
+      plate_purpose { PlatePurpose.stock_plate_purpose }
+
+      factory(:partial_plate) do
+        transient { well_count 48 }
+      end
+
+      factory(:plate_for_strip_tubes) do
+        transient do
+          well_count 8
+          well_factory :tagged_well
         end
-      )
-    end
-  end
+      end
 
-  factory(:source_transfer_plate, parent: :transfer_plate) do |_plate|
-    after(:build) do |plate|
-      plate.plate_purpose = PlatePurpose.find_by(name: 'Parent plate purpose') || create(:parent_plate_purpose)
-    end
-  end
-
-  factory(:destination_transfer_plate, parent: :transfer_plate) do |_plate|
-    after(:build) do |plate|
-      plate.plate_purpose = PlatePurpose.find_by(name: 'Child plate purpose') || create(:child_plate_purpose)
-    end
-  end
-
-  factory(:initial_downstream_plate, parent: :transfer_plate) do |_plate|
-    after(:build) do |plate|
-      plate.plate_purpose = PlatePurpose.find_by(name: 'Initial downstream plate purpose') || create(:initial_downstream_plate_purpose)
-    end
-  end
-
-  factory(:full_plate, class: Plate) do |_plate|
-    size 96
-
-    after(:build) do |plate|
-      plate.plate_purpose = PlatePurpose.find_by(name: 'Parent plate purpose') || create(:parent_plate_purpose)
+      factory(:two_column_plate) do
+        transient { well_count 16 }
+      end
     end
 
-    after(:create) do |plate|
-      plate.wells.import(Map.where_plate_size(plate.size).where_plate_shape(plate.asset_shape).all.map { |map| create(:well, map: map) })
-    end
-  end
-
-  factory(:full_stock_plate, class: Plate) do |_plate|
-    size 96
-    plate_purpose { PlatePurpose.stock_plate_purpose }
-
-    after(:create) do |plate|
-      plate.wells.import(Map.where_plate_size(plate.size).where_plate_shape(plate.asset_shape).all.map { |map| create(:well, map: map) })
-    end
-  end
-
-  factory(:partial_plate, class: Plate) do |_plate|
-    size 96
-    plate_purpose { PlatePurpose.stock_plate_purpose }
-
-    after(:create) do |plate|
-      plate.wells.import(Map.where_plate_size(plate.size).where_plate_shape(plate.asset_shape).in_column_major_order.slice(0, 48).map { |map| create(:well, map: map) })
-    end
-  end
-
-  factory(:two_column_plate, class: Plate) do |_plate|
-    size 96
-    plate_purpose { PlatePurpose.stock_plate_purpose }
-
-    after(:create) do |plate|
-      plate.wells.import(Map.where_plate_size(plate.size).where_plate_shape(plate.asset_shape).in_column_major_order.slice(0, 16).map { |map| create(:well, map: map) })
-    end
-  end
-
-  factory(:full_plate_with_samples, parent: :full_plate) do |_plate|
-    after(:create) do |plate|
-      plate.wells.each { |well| create :aliquot, receptacle: well }
+    factory(:full_plate_with_samples) do
+      transient { well_factory :tagged_well }
     end
   end
 
@@ -114,23 +99,23 @@ FactoryGirl.define do
     end
   end
 
-  factory(:transfer_template) do |_transfer_template|
+  factory(:transfer_template) do
     transfer_class_name 'Transfer::BetweenPlates'
     transfers('A1' => 'A1', 'B1' => 'B1')
   end
 
-  factory(:pooling_transfer_template, class: TransferTemplate) do |_transfer_template|
+  factory(:pooling_transfer_template, class: TransferTemplate) do
     transfer_class_name 'Transfer::BetweenPlatesBySubmission'
   end
 
-  factory(:multiplex_transfer_template, class: TransferTemplate) do |_transfer_template|
+  factory(:multiplex_transfer_template, class: TransferTemplate) do
     transfer_class_name 'Transfer::FromPlateToTubeByMultiplex'
   end
   # A tag group that works for the tag layouts
   sequence(:tag_group_for_layout_name) { |n| "Tag group #{n}" }
 
-  factory(:tag_group_for_layout, class: TagGroup) do |_tag_group|
-    name { |_| FactoryGirl.generate(:tag_group_for_layout_name) }
+  factory(:tag_group_for_layout, class: TagGroup) do
+    name { generate(:tag_group_for_layout_name) }
 
     after(:create) do |tag_group|
       ['ACGT', 'TGCA'].each_with_index do |oligo, index|

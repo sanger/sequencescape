@@ -5,7 +5,7 @@
 # Copyright (C) 2011,2012,2015,2016 Genome Research Ltd.
 
 FactoryGirl.define do
-  factory :well do |_well|
+  factory :well do
     value               ''
     qc_state            ''
     resource            nil
@@ -21,30 +21,30 @@ FactoryGirl.define do
     current_volume      15
   end
 
-  factory :well_with_sample_and_without_plate, parent: :empty_well do |_well|
+  factory :well_with_sample_and_without_plate, parent: :empty_well do
     after(:build) do |well|
       well.aliquots << build(:tagged_aliquot, receptacle: well)
     end
   end
 
-  factory :untagged_well, parent: :empty_well do |_well|
+  factory :untagged_well, parent: :empty_well do
     after(:build) do |well|
       well.aliquots << build(:untagged_aliquot, receptacle: well)
     end
   end
 
-  factory :tagged_well, parent: :empty_well do |_well|
+  factory :tagged_well, parent: :empty_well do
     after(:create) do |well|
-      well.aliquots.create!(sample: create(:sample), tag: create(:tag))
+      well.aliquots << build(:tagged_aliquot, receptacle: well)
     end
   end
 
-  factory :well_with_sample_and_plate, parent: :well_with_sample_and_without_plate do |_well|
+  factory :well_with_sample_and_plate, parent: :well_with_sample_and_without_plate do
     map
     plate
   end
 
-  factory :cross_pooled_well, parent: :empty_well do |_well|
+  factory :cross_pooled_well, parent: :empty_well do
     map
     plate
     after(:build) do |well|

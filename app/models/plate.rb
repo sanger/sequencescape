@@ -227,14 +227,6 @@ class Plate < Asset
 
   has_many :container_associations, foreign_key: :container_id, inverse_of: :plate
   has_many :wells, through: :container_associations, inverse_of: :plate do
-    def import(records)
-      ActiveRecord::Base.transaction do
-        records.map(&:save!)
-        attach(records)
-        post_import(records.map { |r| [proxy_association.owner.id, r.id] })
-      end
-    end
-    deprecate :import # Legacy pre-jruby method to handle bulk import
 
     def attach(records)
       ActiveRecord::Base.transaction do
@@ -242,18 +234,6 @@ class Plate < Asset
       end
     end
     deprecate :attach # Legacy pre-jruby method to handle bulk import
-
-    # After importing wells we need to also create the AssetLink and WellAttribute information for them.
-    def post_import(links_data)
-      links_data.each do |c|
-        AssetLink.create!(
-          direct: true,
-          ancestor_id: c.first,
-          descendant_id: c.last
-          )
-      end
-    end
-    private :post_import
 
     def construct!
       Map.where_plate_size(proxy_association.owner.size).where_plate_shape(proxy_association.owner.asset_shape).in_row_major_order.map do |location|

@@ -20,6 +20,7 @@ Sequencescape::Application.configure do
   # We'll switch this to true ASAP, currently only doing it as part of deprecations check.
   config.active_record.raise_in_transactional_callbacks = ENV.fetch('WHINY_DEPRECATIONS', false) ? true : false
   config.active_support.deprecation = ENV.fetch('WHINY_DEPRECATIONS', false) ? :raise : :log
+  config.active_support.test_order = :random
 
   config.serve_static_files = true
 
