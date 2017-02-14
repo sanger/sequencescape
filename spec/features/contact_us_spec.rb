@@ -24,12 +24,4 @@ feature 'Contact us' do
     expect(ActionMailer::Base.deliveries.count).to eq number_of_mails + 1
     expect(page).to have_content('Thank you for your request. We will contact you shortly (via new_email@example.com)')
   end
-
-  def login_user(user)
-    visit login_path
-    fill_in 'Username', with: user.login
-    fill_in 'Password', with: 'password'
-    click_button 'Login'
-    true
-  end
 end

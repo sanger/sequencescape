@@ -64,8 +64,9 @@ FactoryGirl.define do
       transient do
         sample_count 8
         occupied_map_locations do
-          Map.where_plate_size(size).where_plate_shape(AssetShape.default).where(column_order: (0...sample_count))
+          Map.where_plate_size(size).where_plate_shape(AssetShape.default).where(well_order => (0...sample_count))
         end
+        well_order :column_order
       end
 
       after(:create) do |plate, evaluator|

@@ -71,12 +71,4 @@ feature 'cherrypick pipeline - nano grams', js: true do
     click_button 'Release this batch'
     expect(page).to have_content('Batch released!')
   end
-
-  def login_user(user)
-    visit login_path
-    fill_in 'Username', with: user.login
-    fill_in 'Password', with: 'password'
-    click_button 'Login'
-    true
-  end
 end

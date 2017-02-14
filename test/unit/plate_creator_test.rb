@@ -10,7 +10,7 @@ class CreatorTest < ActiveSupport::TestCase
   attr_reader :creator, :barcode_printer
 
   def setup
-    @creator = create :plate_creator, plate_purpose: PlatePurpose.find_by(name: 'Stock plate')
+    @creator = create :plate_creator
     @barcode_printer = create :barcode_printer
   end
 
@@ -28,7 +28,7 @@ class CreatorTest < ActiveSupport::TestCase
   end
 
   test 'should properly create plates' do
-    creator_purpose = PlatePurpose.find_by(name: 'Stock plate')
+    creator_purpose = create :plate_purpose
     child_creator = create :plate_creator, plate_purposes: [creator_purpose]
     barcode = mock('barcode')
     barcode.stubs(:barcode).returns(23)
