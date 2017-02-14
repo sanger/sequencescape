@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161220133436) do
+ActiveRecord::Schema.define(version: 20170214170321) do
 
   create_table "aliquot_indices", force: :cascade do |t|
     t.integer  "aliquot_id",    limit: 4, null: false
@@ -522,6 +522,14 @@ ActiveRecord::Schema.define(version: 20161220133436) do
   add_index "external_properties", ["propertied_id", "propertied_type"], name: "ep_pi_pt", using: :btree
   add_index "external_properties", ["propertied_type", "key"], name: "index_external_properties_on_propertied_type_and_key", using: :btree
   add_index "external_properties", ["value"], name: "index_external_properties_on_value", using: :btree
+
+  create_table "extraction_attributes", force: :cascade do |t|
+    t.integer  "target_id",         limit: 4
+    t.string   "created_by",        limit: 255
+    t.string   "attributes_update", limit: 255
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+  end
 
   create_table "faculty_sponsors", force: :cascade do |t|
     t.string   "name",       limit: 255
