@@ -1,4 +1,7 @@
 module Accession
+
+  # Provide all of the configuration relating to the type of accessioning.
+  # Used by Accession::Request to send to the correct service.
   class Service
     include ActiveModel::Validations
 

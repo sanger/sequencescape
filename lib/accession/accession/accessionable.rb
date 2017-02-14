@@ -1,5 +1,9 @@
 module Accession
+
+  # Standard methods used by things that can be accesioned e.g sample
   module Accessionable
+
+    # An accessionable file needs an original filename which relates to the remote filename.
     class AccessionableFile < Tempfile
       attr_accessor :original_filename
     end

@@ -1,4 +1,10 @@
 module Accession
+
+  ##
+  # Does what is says on the tin.
+  # Accepts an Accession::Submission and creates a resource based on the service submission.
+  # The resource will be a RestClient::Resource which will relate to the specified
+  # accessioning service.
   class Request
     include ActiveModel::Validations
 
@@ -22,6 +28,10 @@ module Accession
       end
     end
 
+    # Post the submission to the appropriate accessioning service
+    # It will open the payload of the submission.
+    # If the service errors it will return a NullResponse
+    # Makes sure that the payload is closed.
     def post
       if valid?
         begin
@@ -36,6 +46,8 @@ module Accession
 
   private
 
+    # This is horribe but necessary.
+    # Set the proxy to ensure you don't get a bad request error.
     def set_proxy
       if configatron.disable_web_proxy == true
         RestClient.proxy = ''

@@ -1,4 +1,7 @@
 module Accession
+
+  # Made up of a sample, user and service
+  # Used by Request to extract relevant information to send to appropriate accessioning service
   class Submission
     include ActiveModel::Model
     include Accession::Accessionable
@@ -63,6 +66,9 @@ module Accession
       @payload ||= Payload.new([self, sample])
     end
 
+    # Accessioning requires a submission and sample file
+    # Payload consists of a hash of relevant files
+    # These files can be opened when the request is sent
     class Payload
       include Enumerable
 

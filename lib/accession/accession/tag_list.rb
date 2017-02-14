@@ -1,10 +1,10 @@
 module Accession
 
-  #Tags details are stored in config/accession/tags.yml
-  #Standard TagList is created on initialisation from this yaml file and can be reached through Accession.configuration.tags
-  #TagList that is specific to a particular sample can be created using #extract method (where 'record' is a Sequencescape Sample::Metadata object)
-  #Tags contain information about a sample, that should be provided to an external service to accession the sample
-  #Tags are used to validate a sample and to create a correct xml file for accessioning request.
+  # Tags details are stored in config/accession/tags.yml
+  # Standard TagList is created on initialisation from this yaml file and can be reached through Accession.configuration.tags
+  # TagList that is specific to a particular sample can be created using #extract method (where 'record' is a Sequencescape Sample::Metadata object)
+  # Tags contain information about a sample, that should be provided to an external service to accession the sample
+  # Tags are used to validate a sample and to create a correct xml file for accessioning request.
 
   class TagList
     include Enumerable
@@ -18,7 +18,7 @@ module Accession
     def initialize(tags = {})
       @tags = {}
       add_tags(tags.with_indifferent_access)
-      @groups = by_group.keys
+      @groups = self.tags.values.collect(&:groups).flatten.uniq
       yield self if block_given?
     end
 
@@ -34,15 +34,16 @@ module Accession
       tags[key.to_s]
     end
 
+    # create a hash of tags based on the groups which will define how the xml is constructed
+    # each key will be the group and each value will be a new TagList to allow tag list methods
+    # to be called.
     def by_group
-      {}.tap do |result|
+      groups.each_with_object({}) { |v,h| h[v] = TagList.new }.tap do |result|
         tags.values.each do |tag|
           tag.groups.each do |group|
-            result[group] ||= TagList.new
             result[group] << tag
           end
         end
-        groups.each {|group| result[group] ||= {}} if groups.present?
       end
     end
 
@@ -63,6 +64,8 @@ module Accession
     end
     alias_method :<<, :add
 
+    # Extract a new TagList based on an Accession::Sample
+    # The TagList will consist of a tag for which the sample has attributes 
     def extract(record)
       TagList.new do |tag_list|
         tags.keys.each do |key|
@@ -75,6 +78,8 @@ module Accession
       end
     end
 
+    # Check that the tag list meets the requirements for accessioning for a particular service
+    # i.e. check that it has the required tags.
     def meets_service_requirements?(service, standard_tags)
       @missing = standard_tags.required_for(service).keys - required_for(service).keys
       missing.empty?
@@ -86,7 +91,7 @@ module Accession
     end
 
   private
-
+  
     def add_tags(tags)
       tags.each do |k, tag|
         add(if tag.instance_of?(Accession::Tag)
