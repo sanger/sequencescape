@@ -398,7 +398,7 @@ And I have a "full" authorised user with the key "cucumber"
         "extraction_attributes": {
           "actions": {
             "read": "http://www.example.com/api/1/extraction_attributes",
-            "create"=>"http://www.example.com/api/1/extraction_attributes"
+            "create": "http://www.example.com/api/1/extraction_attributes"
           }
         },
         "assets": {
