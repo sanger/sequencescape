@@ -5,7 +5,7 @@ class AddExtractionAttributes < ActiveRecord::Migration
         t.integer :target_id
         t.string :created_by
         t.string :attributes_update
-        t.timestamps null:false
+        t.timestamps null: false
       end
     end
   end
