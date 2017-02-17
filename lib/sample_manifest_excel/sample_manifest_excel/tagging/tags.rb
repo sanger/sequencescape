@@ -1,13 +1,12 @@
 module SampleManifestExcel
   module Tagging
-    class TagsUpdate
-
+    class Tags
       include ActiveModel::Model
 
       attr_reader :aliquot, :tag_oligo, :tag2_oligo, :tag_group
       validates_presence_of :aliquot, :tag_oligo, :tag2_oligo
 
-      #I expect row to be valid and respond to sample_id, tag_oligo, tag2_oligo
+      # I expect row to be valid and respond to sample_id, tag_oligo, tag2_oligo
       def initialize(row)
         @aliquot = find_aliquot_by(sanger_sample_id: row.sample_id)
         @tag_oligo = row.tag_oligo
@@ -26,13 +25,12 @@ module SampleManifestExcel
         end
       end
 
-      #I need to discuss how to handle oligo = -1
-      def execute
+      # I need to discuss how to handle oligo = -1
+      def update
         aliquot.tag = find_tag_by(oligo: tag_oligo)
-        aliquot.tag2 = find_tag_by(oligo: tag2_oligo) unless (tag2_oligo == '-1')
+        aliquot.tag2 = find_tag_by(oligo: tag2_oligo) unless tag2_oligo == '-1'
         aliquot.save
       end
-
     end
   end
 end
