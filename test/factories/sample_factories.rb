@@ -1,5 +1,4 @@
 FactoryGirl.define do
-
   factory :sample do
     name { |_a| generate :sample_name }
 

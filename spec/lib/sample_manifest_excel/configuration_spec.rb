@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe SampleManifestExcel::Configuration do
-
   let(:configuration) { SampleManifestExcel::Configuration.new }
 
   it 'should be comparable' do
@@ -23,7 +22,6 @@ describe SampleManifestExcel::Configuration do
   end
 
   describe 'without a folder' do
-
     before(:each) do
       configuration.load!
     end
@@ -31,11 +29,9 @@ describe SampleManifestExcel::Configuration do
     it 'should not be loaded' do
       expect(configuration.loaded?).to be_falsey
     end
-
   end
 
   describe 'with a valid folder' do
-
     let(:folder) { File.join('test', 'data', 'sample_manifest_excel') }
 
     before(:each) do
@@ -79,7 +75,5 @@ describe SampleManifestExcel::Configuration do
         expect(configuration.columns.send(k).frozen?).to be true
       end
     end
-
   end
-
 end

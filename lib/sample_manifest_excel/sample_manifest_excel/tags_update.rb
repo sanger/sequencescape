@@ -30,7 +30,7 @@ module SampleManifestExcel
 
     def find_tag_by(oligo:)
       tag_group.tags.find_or_create_by(oligo: oligo) do |tag|
-        tag.map_id = tag_group.tags.count+1
+        tag.map_id = tag_group.tags.count + 1
       end
     end
 
@@ -42,14 +42,13 @@ module SampleManifestExcel
 
     def tag_combination_is_unique
       tags_oligos = tag1_oligos.zip(tag2_oligos)
-      errors.add(:tags_combinations, "are not unique") unless tags_oligos.length == tags_oligos.uniq.length
+      errors.add(:tags_combinations, 'are not unique') unless tags_oligos.length == tags_oligos.uniq.length
     end
 
     def number_of_samples_and_tags_is_equal
-      unless (sanger_sample_ids.length == tag1_oligos.length && sanger_sample_ids.length == tag2_oligos.length)
-        errors.add(:number_of_samples, "does not correspond to a number of tags")
+      unless sanger_sample_ids.length == tag1_oligos.length && sanger_sample_ids.length == tag2_oligos.length
+        errors.add(:number_of_samples, 'does not correspond to a number of tags')
       end
     end
-
   end
 end
