@@ -1,22 +1,11 @@
 require 'rails_helper'
 
 describe SampleManifestExcel::Tagging::Tags do
-  # when we have a row it should work something like this:
-  # if valid?
-  #   update_tags
-  # end
-  #
-  # def update_tags
-  #   Tagging::Tags.new(self).update
-  # end
-
   before(:all) do
     SampleManifestExcel.configuration.tag_group = 'Test group'
-    Row = Struct.new(:sample_id, :tag_oligo, :tag2_oligo)
   end
 
-  let!(:row) { Row.new('1', 'AA', 'TT') }
-  let(:tags) { SampleManifestExcel::Tagging::Tags.new(row) }
+  let(:tags) { SampleManifestExcel::Tagging::Tags.new(sample_id: '1', tag_oligo: 'AA', tag2_oligo: 'TT') }
 
   it 'should not be valid without an aliquot' do
     expect(tags.valid?).to be false
