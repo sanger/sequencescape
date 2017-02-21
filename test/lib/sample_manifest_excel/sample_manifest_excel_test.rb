@@ -24,6 +24,12 @@ class SampleManifestExcelTest < ActiveSupport::TestCase
     refute SampleManifestExcel.configuration.loaded?
   end
 
+  test 'should have a first row' do
+    assert SampleManifestExcel.first_row
+    SampleManifestExcel.first_row = 1
+    assert_equal 1, SampleManifestExcel.first_row
+  end
+
   def teardown
     SampleManifestExcel.reset!
   end

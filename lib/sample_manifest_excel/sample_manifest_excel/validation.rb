@@ -1,4 +1,33 @@
 module SampleManifestExcel
+   class NullValidation
+    ##
+    # Always returns :null range
+    def range_name
+      :null_range
+    end
+
+    ##
+    # Does nothing
+    def update(attributes = {})
+    end
+
+    ##
+    # A null validation is always empty.
+    def empty?
+      true
+    end
+
+    ##
+    # Always returns an empty hash.
+    def options
+      {}
+    end
+
+    def ==(other)
+      other.is_a?(self.class)
+    end
+  end
+
   ##
   # An Excel validation
   # Holds the validation for each column which is added to each column when the spreadsheet is created.
@@ -6,12 +35,12 @@ module SampleManifestExcel
   # - A list of options which relate to options recognised by Excel e.g. errorMessage.
   # - A range name (optional) which will be linked to a range when the spreadsheet is created.
   class Validation
-    include HashAttributes
+    include AttributeHelpers
 
     set_attributes :options, :range_name
 
     def initialize(attributes = {})
-      create_attributes(attributes)
+      super
     end
 
     ##

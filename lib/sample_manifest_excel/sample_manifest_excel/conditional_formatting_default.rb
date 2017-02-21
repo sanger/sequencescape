@@ -1,11 +1,11 @@
 module SampleManifestExcel
   class ConditionalFormattingDefault
-    include HashAttributes
+    include AttributeHelpers
 
     set_attributes :type, :style, :options
 
     def initialize(attributes = {})
-      create_attributes(attributes)
+      super
     end
 
     def type=(type)

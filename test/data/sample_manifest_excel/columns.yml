@@ -659,7 +659,7 @@ rnai:
   unlocked: true
   conditional_formattings:
     empty_cell:
-rnai_2:
+rnai2:
   heading: RNAi
   unlocked: true
   conditional_formattings:
@@ -689,7 +689,7 @@ disease:
   unlocked: true
   conditional_formattings:
     empty_cell:
-donor_id_2:
+donor_id2:
   heading: DONOR ID (required for cancer samples)
   unlocked: true
   conditional_formattings:

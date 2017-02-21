@@ -6,12 +6,12 @@ module SampleManifestExcel
   # - style: The style which will be added when conditional formatting applies.
   # - formula: See Formula class.
   class ConditionalFormatting
-    include HashAttributes
+    include AttributeHelpers
 
     set_attributes :options, :style, :formula
 
     def initialize(attributes = {})
-      create_attributes(attributes)
+      super
     end
 
     ##

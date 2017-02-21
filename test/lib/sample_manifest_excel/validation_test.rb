@@ -23,7 +23,7 @@ class ValidationTest < ActiveSupport::TestCase
     end
 
     should 'should have options' do
-      assert_equal options.with_indifferent_access, validation.options
+      assert_equal options, validation.options
     end
 
     should 'not have a range name' do
@@ -68,7 +68,7 @@ class ValidationTest < ActiveSupport::TestCase
     end
 
     should 'have options' do
-      assert_equal options.with_indifferent_access, validation.options
+      assert_equal options, validation.options
     end
 
     should 'add validation to the worksheet' do

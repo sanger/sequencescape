@@ -96,7 +96,7 @@ class WorksheetTest < ActiveSupport::TestCase
 
     should 'should add the attributes for each details' do
       [sample_manifest.details_array.first, sample_manifest.details_array.last].each do |detail|
-        worksheet.columns.each do |_k, column|
+        worksheet.columns.each do |column|
           assert_equal column.attribute_value(detail), spreadsheet.sheet(0).cell(sample_manifest.details_array.index(detail) + 10, column.number)
         end
       end

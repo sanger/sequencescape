@@ -84,14 +84,14 @@ plate_full:
     - :immunoprecipitate
     - :growth_condition
     - :rnai
-    - :rnai_2
+    - :rnai2
     - :organism_part
     - :time_point
     - :treatment
     - :subject
     - :disease
     - :sample_accession_number
-    - :donor_id_2
+    - :donor_id2
 plate_rnachip:
   heading: "RNA/ChIP Plate"
   asset_type: "plate"
@@ -119,7 +119,7 @@ plate_rnachip:
     - :immunoprecipitate
     - :organism_part
     - :sample_accession_number
-    - :donor_id_2
+    - :donor_id2
 tube_default:
   heading: "Default Tube"
   asset_type: "1dtube"
@@ -204,14 +204,14 @@ tube_full:
     - :immunoprecipitate
     - :growth_condition
     - :rnai
-    - :rnai_2
+    - :rnai2
     - :organism_part
     - :time_point
     - :treatment
     - :subject
     - :disease
     - :sample_accession_number
-    - :donor_id_2
+    - :donor_id2
 tube_rnachip:
   heading: "RNA/ChIP Tube"
   asset_type: "1dtube"
@@ -238,7 +238,7 @@ tube_rnachip:
     - :immunoprecipitate
     - :organism_part
     - :sample_accession_number
-    - :donor_id_2
+    - :donor_id2
 tube_multiplexed_library:
   heading: "Multiplexed Library Tube"
   asset_type: "multiplexed_library"
