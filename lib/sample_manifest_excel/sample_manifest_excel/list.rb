@@ -68,7 +68,7 @@ module SampleManifestExcel
         end
 
         options[:keys].each do |key|
-          define_method (key.to_s.pluralize).to_s do
+          define_method key.to_s.pluralize do
             items.fetch(key).keys
           end
         end

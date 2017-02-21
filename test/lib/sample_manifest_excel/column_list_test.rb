@@ -103,6 +103,6 @@ class ColumnListTest < ActiveSupport::TestCase
   end
 
   test '#find_by_or_null should return a null object if none exists for key and value' do
-    assert_equal -1, column_list.find_by_or_null(:name, :bad_value).number
+    assert_equal (-1), column_list.find_by_or_null(:name, :bad_value).number
   end
 end

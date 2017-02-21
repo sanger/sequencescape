@@ -1,5 +1,5 @@
 module SampleManifestExcel
-   class NullValidation
+  class NullValidation
     ##
     # Always returns :null range
     def range_name

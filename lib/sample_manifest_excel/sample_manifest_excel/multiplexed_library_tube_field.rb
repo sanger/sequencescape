@@ -38,8 +38,8 @@ module SampleManifestExcel
 
       def tag_group
         @tag_group ||= if cache_and_value_present?
-          tag_group_cache.find(value)
-        end
+                          tag_group_cache.find(value)
+                       end
       end
 
       def check_tag_group
