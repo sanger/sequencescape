@@ -177,4 +177,11 @@ FactoryGirl.define do
     asset        { |asset| asset.association(:well) }
     target_asset { |asset| asset.association(:empty_library_tube) }
   end
+
+  factory :request_event do
+    request
+    event_name 'state_changed'
+    to_state 'passed'
+    current_from DateTime.new(2012, 8, 29, 22, 35, 0)
+  end
 end
