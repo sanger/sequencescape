@@ -4,6 +4,8 @@ module Billing
 
     attr_accessor :request, :total_aliquots
 
+# data fields
+
     def batch_number
       'STD'
     end
@@ -37,7 +39,7 @@ module Billing
     end
 
     def dim_3
-      #'Illumina-*' or 'Bespoke' removed from request type name
+      # 'Illumina-*' or 'Bespoke' removed from request type name
       request.request_type.name.sub(/Illumina-[ABC]|Bespoke/, '') + request.request_metadata.read_length.to_s
     end
 
@@ -70,23 +72,37 @@ module Billing
     end
 
     def transaction_date
-      request.request_events.where(to_state: 'passed').last.current_from.strftime("%Y%m%d")
+      request.request_events.where(to_state: 'passed').last.current_from.strftime('%Y%m%d')
     end
 
     def voucher_date
-      request.request_events.where(to_state: 'passed').last.current_from.strftime("%Y%m%d")
+      request.request_events.where(to_state: 'passed').last.current_from.strftime('%Y%m%d')
     end
+
+# end of data fields
 
     def total_aliquots
       @total_aliquots ||= request.asset.aliquots.count
     end
 
-    def project_cost_code_and_units_hash
-      request.asset.aliquots.group_by{|a| a.project}.inject({}) do |result, (project, aliquots)|
-        cost_code = project.present? ? project.project_metadata.project_cost_code : 'no_project'
-        result[cost_code] = (aliquots.size.to_f/total_aliquots*100).round
+    def units_by_project_cost_code
+      aliquots_by_project.each_with_object({}) do |(project, aliquots), result|
+        cost_code = cost_code(project)
+        result[cost_code] = result[cost_code].to_i + units(aliquots)
         result
       end
+    end
+
+    def aliquots_by_project
+      request.asset.aliquots.group_by { |a| a.project }
+    end
+
+    def cost_code(project)
+      project.present? ? project.project_metadata.project_cost_code : 'no_project'
+    end
+
+    def units(aliquots)
+      (aliquots.size.to_f / total_aliquots * 100).round
     end
 
     def line(project_cost_code, units)
@@ -113,11 +129,10 @@ module Billing
 
     def lines
       [].tap do |text|
-        project_cost_code_and_units_hash.each do |project_cost_code, units|
+        units_by_project_cost_code.each do |project_cost_code, units|
           text << line(project_cost_code, units)
         end
       end.join('')
     end
-
   end
 end
