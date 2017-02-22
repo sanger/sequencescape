@@ -23,8 +23,10 @@ module SampleManifestExcel
       end
 
       def find_tag_by(oligo:)
-        tag_group.tags.find_or_create_by(oligo: oligo) do |tag|
-          tag.map_id = tag_group.tags.count + 1
+        if oligo.present?
+          tag_group.tags.find_or_create_by(oligo: oligo) do |tag|
+            tag.map_id = tag_group.tags.count + 1
+          end
         end
       end
 

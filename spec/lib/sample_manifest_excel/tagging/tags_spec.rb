@@ -24,6 +24,15 @@ describe SampleManifestExcel::Tagging::Tags do
     expect(sample.primary_aliquot.tag2.oligo).to eq 'TT'
   end
 
+  it '#update should assign tag to nil if oligo was not provided' do
+    sample = create :sample_with_primary_aliquot, sanger_sample_id: '1'
+    tags = SampleManifestExcel::Tagging::Tags.new(sample_id: '1', tag_oligo: 'AA', tag2_oligo: nil)
+    tags.update
+    sample.reload
+    expect(sample.primary_aliquot.tag.oligo).to eq 'AA'
+    expect(sample.primary_aliquot.tag2).to eq nil
+  end
+
   it '#find_tag_by should find or create the right tag within the tag group' do
     number_of_tags = tags.tag_group.tags.count
     tag = tags.find_tag_by(oligo: 'ATT')
@@ -31,6 +40,8 @@ describe SampleManifestExcel::Tagging::Tags do
     expect(tag.oligo).to eq 'ATT'
     expect(tag.map_id).to eq number_of_tags + 1
     tags.find_tag_by(oligo: 'ATT')
+    expect(tags.tag_group.tags.count).to eq number_of_tags + 1
+    tags.find_tag_by(oligo: nil)
     expect(tags.tag_group.tags.count).to eq number_of_tags + 1
   end
 end
