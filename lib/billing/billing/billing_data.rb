@@ -59,7 +59,7 @@ module Billing
       '0'
     end
 
-    def amount_in_GBP
+    def amount_in_gbp
       '0'
     end
 
@@ -106,24 +106,24 @@ module Billing
     end
 
     def line(project_cost_code, units)
-      ('%-25.25s' % batch_number) +
-      ('%-25.25s' % interface_code) +
-      ('%-2.2s' % voucher_type) +
-      ('%-2.2s' % trans_type) +
-      ('%-25.25s' % client) +
-      ('%-25.25s' % account) +
-      ('%-25.25s' % dim_1) +
-      ('%-25.25s' % dim_2(project_cost_code)) +
-      ('%-25.25s' % dim_3) +
-      ('%-25.25s' % dim_6) +
-      ('%-25.25s' % tax_code) +
-      ('%-25.25s' % currency) +
-      ('%20.20s' % amount_input_currency) +
-      ('%20.20s' % amount_in_GBP) +
-      ('%-20.20s' % value_1(units)) +
-      ('%-255.255s' % descriptions) +
-      ('%-8.8s' % transaction_date) +
-      ('%-8.8s' % voucher_date) +
+      format('%-25.25s', batch_number) +
+      format('%-25.25s', interface_code) +
+      format('%-2.2s', voucher_type) +
+      format('%-2.2s', trans_type) +
+      format('%-25.25s', client) +
+      format('%-25.25s', account) +
+      format('%-25.25s', dim_1) +
+      format('%-25.25s', dim_2(project_cost_code)) +
+      format('%-25.25s', dim_3) +
+      format('%-25.25s', dim_6) +
+      format('%-25.25s', tax_code) +
+      format('%-25.25s', currency) +
+      format('%20.20s', amount_input_currency) +
+      format('%20.20s', amount_in_gbp) +
+      format('%-20.20s', value_1(units)) +
+      format('%-255.255s', descriptions) +
+      format('%-8.8s', transaction_date) +
+      format('%-8.8s', voucher_date) +
       "\n"
     end
 
