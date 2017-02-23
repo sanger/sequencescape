@@ -183,5 +183,8 @@ FactoryGirl.define do
     event_name 'state_changed'
     to_state 'passed'
     current_from DateTime.new(2012, 8, 29, 22, 35, 0)
+
+    factory :passed_request_event do
+    end
   end
 end

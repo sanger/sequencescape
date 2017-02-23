@@ -12,17 +12,20 @@ module Billing
     end
 
     def data
-      [].tap do |text|
-        seq_requests.each do |request|
+      String.new.tap do |text|
+        seq_requests.find_each do |request|
           lines = BillingData.new(request: request).lines
           text << lines
         end
-      end.join('')
+      end
     end
 
     def seq_requests
-      all_requests = Request.joins(:request_events).where('request_events.current_from' => period, 'request_events.event_name' => 'state_changed', 'request_events.to_state' => 'passed').group_by { |request| request.sti_type }
-      seq_requests = all_requests['HiSeqSequencingRequest'] + all_requests['MiSeqSequencingRequest']
+      SequencingRequest.joins(:request_events)
+        .where(request_events: { current_from: period, event_name: 'state_changed', to_state: 'passed' })
+        .joins(:request_type)
+        .where(request_types: { billable: true })
+        .includes(asset: :aliquots)
     end
 
     def period

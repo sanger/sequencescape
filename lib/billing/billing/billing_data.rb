@@ -40,7 +40,7 @@ module Billing
 
     def dim_3
       # 'Illumina-*' or 'Bespoke' removed from request type name
-      request.request_type.name.sub(/Illumina-[ABC]|Bespoke/, '') + request.request_metadata.read_length.to_s
+      (request.request_type.name.gsub(/Illumina-[ABC]|Bespoke|\s+/, '').gsub('sequencing', 'seq') + request.request_metadata.read_length.to_s).upcase
     end
 
     def dim_6
@@ -82,14 +82,13 @@ module Billing
 # end of data fields
 
     def total_aliquots
-      @total_aliquots ||= request.asset.aliquots.count
+      @total_aliquots ||= request.asset.aliquots.size
     end
 
     def units_by_project_cost_code
       aliquots_by_project.each_with_object({}) do |(project, aliquots), result|
         cost_code = cost_code(project)
         result[cost_code] = result[cost_code].to_i + units(aliquots)
-        result
       end
     end
 
@@ -106,33 +105,38 @@ module Billing
     end
 
     def line(project_cost_code, units)
-      format('%-25.25s', batch_number) +
-      format('%-25.25s', interface_code) +
-      format('%-2.2s', voucher_type) +
-      format('%-2.2s', trans_type) +
-      format('%-25.25s', client) +
-      format('%-25.25s', account) +
-      format('%-25.25s', dim_1) +
-      format('%-25.25s', dim_2(project_cost_code)) +
-      format('%-25.25s', dim_3) +
-      format('%-25.25s', dim_6) +
-      format('%-25.25s', tax_code) +
-      format('%-25.25s', currency) +
-      format('%20.20s', amount_input_currency) +
-      format('%20.20s', amount_in_gbp) +
-      format('%-20.20s', value_1(units)) +
-      format('%-255.255s', descriptions) +
-      format('%-8.8s', transaction_date) +
-      format('%-8.8s', voucher_date) +
+      format('%-25.25s', batch_number) <<
+      format('%-25.25s', interface_code) <<
+      format('%-2.2s', voucher_type) <<
+      format('%-23.23s', '') <<
+      format('%-2.2s', trans_type) <<
+      format('%-25.25s', client) <<
+      format('%-25.25s', account) <<
+      format('%-25.25s', dim_1) <<
+      format('%-25.25s', dim_2(project_cost_code)) <<
+      format('%-25.25s', dim_3) <<
+      format('%-50.50s', '') <<
+      format('%-25.25s', dim_6) <<
+      format('%-25.25s', '') <<
+      format('%-25.25s', tax_code) <<
+      format('%-25.25s', '') <<
+      format('%-25.25s', currency) <<
+      format('%-2.2s', '') <<
+      format('%20.20s', amount_input_currency) <<
+      format('%20.20s', amount_in_gbp) <<
+      format('%-11.11s', '') <<
+      format('%-20.20s', value_1(units)) <<
+      format('%-40.40s', '') <<
+      format('%-255.255s', descriptions) <<
+      format('%-8.8s', transaction_date) <<
+      format('%-8.8s', voucher_date) <<
       "\n"
     end
 
     def lines
-      [].tap do |text|
-        units_by_project_cost_code.each do |project_cost_code, units|
-          text << line(project_cost_code, units)
-        end
-      end.join('')
+      units_by_project_cost_code.each_with_object(String.new) do |(project_cost_code, units), result|
+        result << line(project_cost_code, units)
+      end
     end
   end
 end
