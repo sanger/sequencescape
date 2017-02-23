@@ -17,9 +17,8 @@ Sequencescape::Application.configure do
   # callbacks and only print them to the logs. In the next version, these errors will no
   # longer be suppressed. Instead, the errors will propagate normally just like in other
   # Active Record callbacks.
-  # We'll switch this to true ASAP, currently only doing it as part of deprecations check.
-  config.active_record.raise_in_transactional_callbacks = ENV.fetch('WHINY_DEPRECATIONS', false) ? true : false
-  config.active_support.deprecation = ENV.fetch('WHINY_DEPRECATIONS', false) ? :raise : :log
+  config.active_record.raise_in_transactional_callbacks = true
+  config.active_support.deprecation = :raise
   config.active_support.test_order = :random
 
   config.serve_static_files = true
