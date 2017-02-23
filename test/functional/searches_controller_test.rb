@@ -45,11 +45,11 @@ class SearchesControllerTest < ActionController::TestCase
 
           context 'results' do
             define_method(:assert_link_to) do |url|
-              assert_tag tag: 'a', attributes: { href: url }
+              assert_select "a[href=?]", url
             end
 
             define_method(:deny_link_to) do |url|
-              assert_no_tag tag: 'a', attributes: { href: url }
+              assert_select "a[href=?]", url, count: 0
             end
 
             should 'contain a link to the study that was found' do
