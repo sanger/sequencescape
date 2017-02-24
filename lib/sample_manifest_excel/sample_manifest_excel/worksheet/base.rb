@@ -1,12 +1,12 @@
 module SampleManifestExcel
   module Worksheet
     class Base
-      include HashAttributes
+      include AttributeHelpers
 
       set_attributes :workbook, :axlsx_worksheet, :columns, :ranges, :sample_manifest, :name, :password, :type
 
       def initialize(attributes = {})
-        create_attributes(attributes)
+        super
         create_worksheet
         protect if password.present?
       end

@@ -61,7 +61,7 @@ module SampleManifestExcel
 
       def create_row(detail)
         axlsx_worksheet.add_row do |row|
-          columns.each do |_k, column|
+          columns.each do |column|
             if column.unlocked?
               row.add_cell column.attribute_value(detail), type: column.type, style: styles[:unlocked].reference
             else
@@ -87,7 +87,7 @@ module SampleManifestExcel
       # freezes the panes after column 0 (basically not frozen vertically)
 
       def freeze_after_column(name)
-        columns.find_by(name) ? columns.find_by(name).number : 0
+        columns.find_by(:name, name) ? columns.find_by(:name, name).number : 0
       end
 
       # The row where the table with data starts (after headings)

@@ -380,21 +380,36 @@ FactoryGirl.define do
   factory :tag do |_t|
     tag_group
     oligo
+    sequence(:map_id) { |n| n }
   end
 
   factory :tag_group do |_t|
-    name  { generate :tag_group_name }
+    sequence(:name) { |n| "Tag Group #{n}" }
 
-    transient do
-      tag_count 0
-    end
+    factory :tag_group_with_tags do
+      transient do
+        tags_count 5
+      end
 
-    after(:build) do |tag_group, evaluator|
-      evaluator.tag_count.times do |i|
-        tag_group.tags << create(:tag, map_id: i + 1, tag_group: tag_group)
+      after(:create) do |tag_group, evaluator|
+        create_list(:tag, evaluator.tags_count, tag_group: tag_group)
       end
     end
   end
+
+  # factory :tag_group do |_t|
+  #   name  { generate :tag_group_name }
+
+  #   transient do
+  #     tag_count 0
+  #   end
+
+  #   after(:build) do |tag_group, evaluator|
+  #     evaluator.tag_count.times do |i|
+  #       tag_group.tags << create(:tag, map_id: i + 1, tag_group: tag_group)
+  #     end
+  #   end
+  # end
 
   factory :assign_tags_task do
   end

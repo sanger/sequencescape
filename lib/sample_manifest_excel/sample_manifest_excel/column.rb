@@ -1,37 +1,34 @@
 module SampleManifestExcel
+  class NullColumn
+    def number
+      -1
+    end
+  end
+
   ##
   # Column creates a particular column with all the information about this column (name, heading,
   # value, type, attribute, should it be locked or unlocked, position of the column,
   # validation, conditional formatting rules)
   # A column is only valid if it has a name and heading.
   class Column
-    include HashAttributes
-    include ActiveModel::Validations
+    include AttributeHelpers
 
-    set_attributes :name, :heading, :number, :type, :validation, :value, :unlocked, :conditional_formattings, :attribute,
-                    defaults: { number: 0, type: :string, conditional_formattings: {} }
-
-    attr_reader :range
-
-    ##
-    # Defaults to a NullValidation object
-    attr_reader :validation
+    set_attributes :name, :heading, :number, :type, :validation, :value, :unlocked, :conditional_formattings, :attribute, :range,
+                    defaults: { number: 0, type: :string, conditional_formattings: {}, validation: NullValidation.new }
 
     validates_presence_of :name, :heading
 
     delegate :range_name, to: :validation
 
     def initialize(attributes = {})
-      @validation = NullValidation.new
-      create_attributes(attributes)
-
-      # @attribute = Attributes.find(name) if valid?
+      super(default_attributes.merge(attributes))
     end
 
     ##
     # If argument is a validation object copy it otherwise
     # create a new validation object
     def validation=(validation)
+      return if validation.nil?
       @validation = if validation.kind_of?(Hash)
                       Validation.new(validation)
                     else
@@ -43,6 +40,7 @@ module SampleManifestExcel
     # If argument is a conditional formatting list copy it
     # otherwise create a new conditional formatting list
     def conditional_formattings=(conditional_formattings)
+      return if conditional_formattings.nil?
       @conditional_formattings = if conditional_formattings.kind_of?(Hash)
                                    ConditionalFormattingList.new(conditional_formattings)
                                  else
@@ -53,6 +51,7 @@ module SampleManifestExcel
     ##
     # Creates a new Range object.
     def range=(attributes)
+      return if attributes.nil?
       @range = if attributes.empty?
                  NullRange.new
                else
@@ -65,12 +64,6 @@ module SampleManifestExcel
     def unlocked?
       unlocked
     end
-
-    ##
-    # Some columns relate to a specific value. If that is null we return the column value.
-    # def attribute_value(sample)
-    #   attribute.value(sample) || value
-    # end
 
     def attribute_value(detail)
       detail[attribute] || value

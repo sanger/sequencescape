@@ -1,0 +1,45 @@
+test:
+  heading: "A test"
+  asset_type: "plate"
+  columns:
+    - :sanger_plate_id
+    - :well
+    - :sanger_sample_id
+    - :supplier_sample_name
+    - :cohort
+    - :volume
+    - :gender
+    - :public_name
+    - :taxon_id
+    - :sibling
+    - :donor_id
+test_2:
+  heading: "Another test"
+  asset_type: "tube"
+  columns:
+    - :sanger_plate_id
+    - :well
+    - :sanger_sample_id
+    - :supplier_sample_name
+    - :cohort
+    - :volume
+    - :gender
+    - :public_name
+    - :taxon_id
+    - :sibling
+    - :donor_id
+test_3:
+  heading: "Yet Another test"
+  asset_type: "plate"
+  columns:
+    - :sanger_plate_id
+    - :well
+    - :sanger_sample_id
+    - :supplier_sample_name
+    - :cohort
+    - :volume
+    - :gender
+    - :public_name
+    - :taxon_id
+    - :sibling
+    - :donor_id

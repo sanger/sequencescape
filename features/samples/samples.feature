@@ -52,4 +52,4 @@ Feature: Show/update samples
      And I am on the edit page for sample "sample_3958121"
     Then I should be on the show page for sample "sample_3958121"
      And I should see "Sample details can only be altered by the owner or an administrator or manager"
-
+     

@@ -267,7 +267,7 @@ end
 Given /^study "([^\"]*)" has an accession number$/ do |name|
   study = Study.find_by(name: name) or raise StandardError, "Cannot find study with name '#{name}'"
   study.study_metadata.study_ebi_accession_number = 9999
-  study.study_metadata.data_release_strategy      = 'managed'
+  study.study_metadata.data_release_strategy ||= 'managed'
   study.save!
 end
 
@@ -313,13 +313,18 @@ end
 
 def assign_asset_to_study(asset, study_name)
   study = Study.find_by!(name: study_name)
-  asset_ids = [asset.id]
-  asset_ids = asset.wells.map(&:id) if asset.respond_to?(:wells)
+
+  asset_ids = if asset.respond_to?(:wells)
+                asset.wells.pluck(:id)
+              else
+                [asset.id]
+              end
+
   if asset.can_be_created? || (asset.respond_to?(:wells) && (asset.stock_plate?))
     RequestFactory.create_assets_requests(Asset.find(asset_ids), study)
   end
-  Asset.find(asset_ids).each do |asset|
-    asset.try(:aliquots).try(:each) do |aliquot|
+  Asset.where(id: asset_ids).includes(:aliquots).each do |asset|
+    asset.aliquots.each do |aliquot|
       aliquot.update_attributes!(study_id: study.id)
     end
   end

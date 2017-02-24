@@ -3,10 +3,14 @@ module SampleManifestExcel
   class ColumnList
     include Enumerable
     include Comparable
+    include List
 
-    attr_reader :columns
+    list_for :columns, keys: [:name, :heading, :number]
 
-    delegate :values, :keys, to: :columns
+    include ActiveModel::Validations
+
+    validates_presence_of :columns
+    validate :check_nil_keys
 
     ##
     # To create a column_list a hash with details of all columns is required. Each key is
@@ -16,50 +20,40 @@ module SampleManifestExcel
     # Each conditional formatting for the column is combined with its conditional formatting in the list.
     # If the column is not valid an error is returned.
     def initialize(columns = {}, conditional_formattings = {})
-      create_columns(columns, conditional_formattings)
+      create_columns(columns || {}, conditional_formattings)
       yield self if block_given?
     end
 
-    ##
-    # Columns is a hash with a column name as a key and a column object as a value.
-    def each(&block)
-      columns.each(&block)
-    end
-
-    ##
-    # Extracts headings from all columns
-    def headings
-      columns.values.collect(&:heading)
-    end
-
-    ##
-    # Finds a column by by it's key either by string or symbol.
-    def find_by(key)
-      columns[key] || columns[key.to_s]
+    def column_values(replacements = {})
+      replacements.each do |k, v|
+        find(k).value = v
+      end
+      columns.collect(&:value)
     end
 
     ##
     # Extracts columns from a column list based on names (a list of columns names).
     # Returns a new column list that consists only of the columns named in names.
-    def extract(names)
+    def extract(keys)
       ColumnList.new do |column_list|
-        names.each do |name|
-          column_list.add_with_dup find_by(name)
+        keys.each do |key|
+          column = find(key)
+          if column.present?
+            column_list.add_with_number(column.dup, column_list)
+          else
+            column_list.bad_keys << key
+          end
         end
       end
     end
 
-    ##
-    # Adds column to a column list, assigns a number to a column
-    def add(column)
-      return unless column.valid?
-      columns[column.name] = column.set_number(next_number)
+    def bad_keys
+      @bad_keys ||= []
     end
 
-    ##
-    # Adds dupped column to a column list.
-    def add_with_dup(column)
-      add(column.dup)
+    def add_with_number(column, column_list = nil)
+      add column.set_number((column_list || self).next_number)
+      self
     end
 
     ##
@@ -69,24 +63,10 @@ module SampleManifestExcel
       columns.count + 1
     end
 
-    # Defaults to an empty hash
-    def columns
-      @columns ||= {}
-    end
-
-    def copy(key, column)
-      columns[key] = column.dup
-    end
-
     ##
     # A forwarding method - Update each column in the list of columns.
     def update(first_row, last_row, ranges, worksheet)
-       each { |_k, column| column.update(first_row, last_row, ranges, worksheet) }
-    end
-
-    def <=>(other)
-      return unless other.is_a?(self.class)
-      columns <=> other.columns
+       each { |column| column.update(first_row, last_row, ranges, worksheet) }
     end
 
     def initialize_dup(source)
@@ -95,23 +75,31 @@ module SampleManifestExcel
       super
     end
 
-  private
-
-    def reset!
-      @columns = {}
+    def find_by_or_null(key, value)
+      find_by(key, value) || SampleManifestExcel::NullColumn.new
     end
 
+  private
+
+    # You can add a hash of columns, a hash of attributes or an array of columns.
+    # If it is a hash of columns there is an assumption that a copy is being created.
     def create_columns(columns, conditional_formattings)
       columns.each do |k, v|
         begin
-          if v.kind_of?(Hash)
-            add SampleManifestExcel::Column.new(SampleManifestExcel::Column.build_arguments(v, k, conditional_formattings))
-          else
-            copy k, v
-          end
+          add_with_number(if v.kind_of?(Hash)
+                            SampleManifestExcel::Column.new(SampleManifestExcel::Column.build_arguments(v, k, conditional_formattings))
+                          else
+                            k.dup
+                          end, self)
         rescue TypeError => e
           puts "column can't be created for #{k}: #{e.message}"
         end
+      end
+    end
+
+    def check_nil_keys
+      if bad_keys.any?
+        errors.add(:columns, "#{bad_keys.join(',')} are not valid.")
       end
     end
   end
