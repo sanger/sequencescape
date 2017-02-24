@@ -56,7 +56,7 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
         )
 
         Submission.last.built!
-        Delayed::Worker.new.work_off(1)
+        Delayed::Worker.new.work_off
       end
 
       context 'and I batch up the library creation requests seperately' do
@@ -119,7 +119,7 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
              })
 
            Submission.last.built!
-           Delayed::Worker.new.work_off(1)
+           Delayed::Worker.new.work_off
          end
 
          should 'report correct groupings from the start' do
