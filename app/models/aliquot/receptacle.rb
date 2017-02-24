@@ -31,6 +31,8 @@ class Aliquot::Receptacle < Asset
   has_many :aliquots, ->() { order(tag_id: :asc, tag2_id: :asc) }, foreign_key: :receptacle_id, autosave: true, dependent: :destroy, inverse_of: :receptacle
   has_one :primary_aliquot, ->() { order(:created_at).readonly }, class_name: 'Aliquot', foreign_key: :receptacle_id
 
+  has_many :tags, through: :aliquots
+
   # Our receptacle needs to report its tagging status based on the most highly tagged aliquot. This retrieves it
   has_one :most_tagged_aliquot, ->() { order(tag2_id: :desc, tag_id: :desc).readonly }, class_name: 'Aliquot', foreign_key: :receptacle_id
 
@@ -76,12 +78,23 @@ class Aliquot::Receptacle < Asset
   end
   deprecate :tag
 
-  def tags
-    aliquots
-  end
-  deprecate :tags
-
   delegate :tag_count_name, to: :most_tagged_aliquot, allow_nil: true
+
+  # Returns the map_id of the first and last tag in an asset
+  # eg 1-96.
+  # Caution: Used on barcode labels. Avoid using elsewhere as makes assumptions
+  #          about tag behaviour which may change shortly.
+  # @return [String,nil] Returns nil is no tags, the map_id is a single tag, or the first and
+  #                      last map id separated by a hyphen if multiple tags.
+  #
+  def tag_range
+    map_ids = tags.order(:map_id).pluck(:map_id)
+    case map_ids.length
+    when 0; then nil
+    when 1; then map_ids.first
+    else "#{map_ids.first}-#{map_ids.last}"
+    end
+  end
 
   def primary_aliquot_if_unique
     primary_aliquot if aliquots.count == 1

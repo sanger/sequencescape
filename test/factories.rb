@@ -467,8 +467,12 @@ FactoryGirl.define do
   end
 
   factory(:library_tube, parent: :empty_library_tube) do
-    after(:create) do |library_tube|
-      library_tube.aliquots.create!(sample: create(:sample), library_type: 'Standard')
+    transient do
+      tag_map_id 1
+    end
+
+    after(:create) do |library_tube, evaluator|
+      library_tube.aliquots << build(:tagged_aliquot, tag: create(:tag, map_id: evaluator.tag_map_id ))
     end
   end
 

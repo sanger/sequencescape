@@ -55,7 +55,9 @@ class BatchTubeTest < ActiveSupport::TestCase
         multiplexed: true
 
       batch = @pipeline.batches.create!
-      request = create :multiplexed_library_creation_request, target_asset: (create :library_tube, barcode: '111')
+      tag_map_id = 3
+      library_tube = create :library_tube, barcode: '111', tag_map_id: tag_map_id
+      request = create :multiplexed_library_creation_request, target_asset: library_tube
       batch.requests << request
 
       printable = { request.id => 'on' }
@@ -64,7 +66,7 @@ class BatchTubeTest < ActiveSupport::TestCase
 
       assert_equal 1, tube_label.tubes.count
       tube = tube_label.tubes.first
-      assert_equal "(#{request.target_asset.tag}) #{request.target_asset.id}", tube_label.top_line(tube)
+      assert_equal "(#{tag_map_id}) #{request.target_asset.id}", tube_label.top_line(tube)
     end
 
     should 'when not multiplexed should return the right tubes and top line' do
