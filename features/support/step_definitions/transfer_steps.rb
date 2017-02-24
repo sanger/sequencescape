@@ -52,9 +52,9 @@ end
 Given /^the plate "(.*?)" has additional wells$/ do |name|
   Plate.find_by(name: name).tap do |plate|
     plate.wells << ['C1', 'D1'].map do |location|
-        map = Map.where_description(location).where_plate_size(plate.size).where_plate_shape(AssetShape.find_by(name: 'Standard')).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
-        FactoryGirl.create(:tagged_well, map: map)
-      end
+      map = Map.where_description(location).where_plate_size(plate.size).where_plate_shape(AssetShape.find_by(name: 'Standard')).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
+      FactoryGirl.create(:tagged_well, map: map)
+    end
   end
 end
 

@@ -1,7 +1,7 @@
 namespace :test do
-    # lib/tasks/factory_girl.rake
+  # lib/tasks/factory_girl.rake
   namespace :factory_girl do
-    desc "Verify that all FactoryGirl factories are valid"
+    desc 'Verify that all FactoryGirl factories are valid'
     task lint: :environment do
       require 'factory_girl'
       require File.expand_path(File.join(Rails.root, %w{test factories.rb}))
@@ -87,7 +87,7 @@ namespace :test do
           :tag2_lot
         ]
 
-        factories_to_lint = if ENV.fetch('LINT_ALL',false)
+        factories_to_lint = if ENV.fetch('LINT_ALL', false)
                               FactoryGirl.factories
                             else
                               FactoryGirl.factories.reject do |factory|
@@ -98,7 +98,7 @@ namespace :test do
           DatabaseCleaner.start
           puts "Linting #{factories_to_lint.length} factories. (Ignored #{invalid_factories.length})"
           FactoryGirl.lint factories_to_lint
-          puts "Linted"
+          puts 'Linted'
         ensure
           DatabaseCleaner.clean
         end
