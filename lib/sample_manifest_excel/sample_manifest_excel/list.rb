@@ -94,6 +94,10 @@ module SampleManifestExcel
       end
     end
 
+    def initialize
+      yield self if block_given?
+    end
+
     ##
     # relates to each value i.e. each object that is added.
     def each(&block)

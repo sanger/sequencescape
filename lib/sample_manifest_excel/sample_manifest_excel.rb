@@ -36,7 +36,6 @@ module SampleManifestExcel
     end
   end
 
-  require_relative 'sample_manifest_excel/hash_attributes'
   require_relative 'sample_manifest_excel/core_extensions'
   require_relative 'sample_manifest_excel/attributes'
   require_relative 'sample_manifest_excel/cell'
