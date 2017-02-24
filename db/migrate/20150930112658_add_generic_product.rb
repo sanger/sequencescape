@@ -13,7 +13,7 @@ class AddGenericProduct < ActiveRecord::Migration
 
   def self.down
     ActiveRecord::Base.transaction do
-      Product.find_by_name('Generic').delete
+      Product.find_by(name: 'Generic').delete
     end
   end
 end

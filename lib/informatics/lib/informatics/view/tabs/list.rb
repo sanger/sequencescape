@@ -4,12 +4,12 @@ module Informatics
       class List
         attr_accessor :items
 
-        def initialize(options = {})
+        def initialize(_options = {})
           @items = []
         end
 
         def add_item(options)
-          @items.push Informatics::View::Tabs::Item.new({ text: options[:text], link: options[:link] })
+          @items.push Informatics::View::Tabs::Item.new(text: options[:text], link: options[:link])
         end
       end
     end

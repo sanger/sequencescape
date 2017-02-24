@@ -38,13 +38,13 @@ class QcMetric < ActiveRecord::Base
   scope :with_asset_ids, ->(ids) { where(asset_id: ids) }
 
   scope :for_product, ->(product) {
-      joins(qc_report: :product_criteria).
-      where(product_criteria: { product_id: product })
+      joins(qc_report: :product_criteria)
+      .where(product_criteria: { product_id: product })
   }
 
   scope :stock_metric, ->() {
-    joins(qc_report: :product_criteria).
-    where(product_criteria: { stage: ProductCriteria::STAGE_STOCK })
+    joins(qc_report: :product_criteria)
+    .where(product_criteria: { stage: ProductCriteria::STAGE_STOCK })
   }
 
   scope :most_recent_first, ->() { order('created_at DESC, id DESC') }

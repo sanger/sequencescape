@@ -13,11 +13,12 @@ class PipelinesController < ApplicationController
 
   before_action :lab_manager_login_required, only: [:update_priority, :deactivate, :activate]
 
-  after_filter :set_cache_disabled!, only: [:show]
+  after_action :set_cache_disabled!, only: [:show]
 
   def index
     @pipelines = Pipeline.active.internally_managed.alphabetical.all
-    @grouping  = @pipelines.inject(Hash.new { |h, k| h[k] = [] }) { |h, p| h[p.group_name] << p; h }
+    store = Hash.new { |h, k| h[k] = [] }
+    @grouping = @pipelines.each_with_object(store) { |p, h| h[p.group_name] << p }
 
     respond_to do |format|
       format.html
@@ -26,7 +27,7 @@ class PipelinesController < ApplicationController
   end
 
   def show
-    self.expires_now
+    expires_now
     @show_held_requests = (params[:view] == 'all')
     @current_page       = params[:page]
 
@@ -71,11 +72,11 @@ class PipelinesController < ApplicationController
     end
 
     if @pipeline.save
-      flash[:notice] = "Updated pipeline controls"
+      flash[:notice] = 'Updated pipeline controls'
       redirect_to pipeline_url(@pipeline)
     else
-      flash[:notice] = "Failed to set pipeline controls"
-      render action: "setup_inbox", id: @pipeline.id
+      flash[:notice] = 'Failed to set pipeline controls'
+      render action: 'setup_inbox', id: @pipeline.id
     end
   end
 
@@ -107,16 +108,16 @@ class PipelinesController < ApplicationController
     end
 
     flash[:notice] = 'Batch released!'
-    redirect_to controller: "batches", action: "show", id: @batch.id
+    redirect_to controller: 'batches', action: 'show', id: @batch.id
   end
 
   def activate
     @pipeline.active = true
     if @pipeline.save
-      flash[:notice] = "Pipeline activated"
+      flash[:notice] = 'Pipeline activated'
       redirect_to pipelines_path
     else
-      flash[:notice] = "Failed to activate pipeline"
+      flash[:notice] = 'Failed to activate pipeline'
       redirect_to pipeline_path(@pipeline)
     end
   end
@@ -124,10 +125,10 @@ class PipelinesController < ApplicationController
   def deactivate
     @pipeline.active = false
     if @pipeline.save
-      flash[:notice] = "Pipeline deactivated"
+      flash[:notice] = 'Pipeline deactivated'
       redirect_to pipelines_path
     else
-      flash[:notice] = "Failed to deactivate pipeline"
+      flash[:notice] = 'Failed to deactivate pipeline'
       redirect_to pipeline_path(@pipeline)
     end
   end
@@ -150,12 +151,12 @@ class PipelinesController < ApplicationController
   private
 
   def find_pipeline_by_id
-    @pipeline = Pipeline.find(params["id"])
+    @pipeline = Pipeline.find(params['id'])
   end
 
   def add_controls(pipeline, controls)
     controls.each do |control|
-      values = control.split(",")
+      values = control.split(',')
       unless Control.exists?(item_id: values.last, pipeline_id: pipeline.id)
         pipeline.controls.create(name: values.first, item_id: values.last, pipeline_id: pipeline.id)
       end

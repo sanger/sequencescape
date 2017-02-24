@@ -5,5 +5,5 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 class PulldownEnrichmentFourPlate < PulldownPlate
-  self.prefix = "FM"
+  self.prefix = 'FM'
 end

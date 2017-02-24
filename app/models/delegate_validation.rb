@@ -13,11 +13,11 @@
 module DelegateValidation
   def delegate_validation(*args)
     options           = args.extract_options!
-    delegation_target = options.delete(:to) or raise StandardError, "Cannot delegate validation without :to!"
+    delegation_target = options.delete(:to) or raise StandardError, 'Cannot delegate validation without :to!'
     attribute_tag     = options[:as]
     args.push(options)
 
-    validates_each(*args) do |record, attr, value|
+    validates_each(*args) do |record, _attr, value|
       validator = record.send(:"#{delegation_target}_delegate_validator").new(value)
       validator.valid?.tap do
         validator.errors.messages.each do |attrib, message|

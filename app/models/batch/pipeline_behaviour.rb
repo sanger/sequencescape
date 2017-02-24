@@ -31,11 +31,11 @@ module Batch::PipelineBehaviour
   end
 
   def externally_released?
-    workflow.source_is_internal? && self.released?
+    workflow.source_is_internal? && released?
   end
 
   def internally_released?
-    workflow.source_is_external? && self.released?
+    workflow.source_is_external? && released?
   end
 
   def show_actions?
@@ -44,16 +44,16 @@ module Batch::PipelineBehaviour
   end
 
   def has_item_limit?
-    self.item_limit.present?
+    item_limit.present?
   end
   alias_method(:has_limit?, :has_item_limit?)
 
   def complete_events
     @efct ||= if lab_events.loaded
-      lab_events.select { |le| le.description == "Complete" }
-    else
-      lab_events.where(description: "Complete")
-    end
+                lab_events.select { |le| le.description == 'Complete' }
+              else
+                lab_events.where(description: 'Complete')
+              end
   end
 
   def completed_task_ids

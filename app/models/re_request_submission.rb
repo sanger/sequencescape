@@ -8,7 +8,7 @@ class ReRequestSubmission < Order
   include Submission::LinearRequestGraph
   include Submission::Crossable
 
-  def is_asset_applicable_to_type?(request_type, asset)
+  def is_asset_applicable_to_type?(_request_type, _asset)
     true
   end
   private :is_asset_applicable_to_type?

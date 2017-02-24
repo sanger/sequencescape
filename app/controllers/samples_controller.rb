@@ -5,12 +5,10 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 class SamplesController < ApplicationController
-# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+  # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   include XmlCacheHelper::ControllerHelper
-
-  # require 'curb'
 
   before_action :admin_login_required, only: [:administer, :destroy]
 
@@ -40,13 +38,13 @@ class SamplesController < ApplicationController
 
     respond_to do |format|
       if @sample.save
-        flash[:notice] = "Sample successfully created"
+        flash[:notice] = 'Sample successfully created'
         format.html { redirect_to sample_path(@sample) }
         format.xml  { render xml: @sample, status: :created, location: @sample }
         format.json  { render json: @sample, status: :created, location: @sample }
       else
         @workflows = Submission::Workflow.all
-        flash[:error] = "Problems creating your new sample"
+        flash[:error] = 'Problems creating your new sample'
         format.html { render action: :new }
         format.xml  { render xml: @sample.errors, status: :unprocessable_entity }
         format.json { render json: @sample.errors, status: :unprocessable_entity }
@@ -55,8 +53,8 @@ class SamplesController < ApplicationController
   end
 
   def show
-    @sample  = Sample.find(params[:id])
-    @studies = Study.where(state: ["pending", "active"]).alphabetical
+    @sample  = Sample.includes(:assets, :studies).find(params[:id])
+    @studies = Study.where(state: ['pending', 'active']).alphabetical
 
     respond_to do |format|
       format.html
@@ -68,11 +66,11 @@ class SamplesController < ApplicationController
   def release
     @sample = Sample.find(params[:id])
     redirect_if_not_owner_or_admin_otherwise do
-      unless @sample.released?
+      if @sample.released?
+        flash[:notice] = "Sample '#{@sample.name}' already publically released"
+      else
         @sample.release
         flash[:notice] = "Sample '#{@sample.name}' publically released"
-      else
-        flash[:notice] = "Sample '#{@sample.name}' already publically released"
       end
       redirect_to sample_path(@sample)
     end
@@ -82,7 +80,7 @@ class SamplesController < ApplicationController
     @sample = Sample.find(params[:id])
     redirect_if_not_owner_or_admin_otherwise do
       if @sample.released? && !current_user.is_administrator?
-        flash[:error] = "Cannot edit publically released sample"
+        flash[:error] = 'Cannot edit publically released sample'
         redirect_to sample_path(@sample)
         return
       end
@@ -100,12 +98,12 @@ class SamplesController < ApplicationController
     redirect_if_not_owner_or_admin_otherwise do
       cleaned_params = clean_params_from_check(params[:sample]).permit(default_permitted_metadata_fields)
       if @sample.update_attributes(cleaned_params)
-        flash[:notice] = "Sample details have been updated"
+        flash[:notice] = 'Sample details have been updated'
         redirect_to sample_path(@sample)
       else
         @workflows = Submission::Workflow.all
-        flash[:error] = "Failed to update attributes for sample"
-        render action: "edit", id: @sample.id
+        flash[:error] = 'Failed to update attributes for sample'
+        render action: 'edit', id: @sample.id
       end
     end
   end
@@ -157,7 +155,7 @@ class SamplesController < ApplicationController
     flash[:warning] = exception.message || 'An accession number is not required for this study'
     redirect_to(sample_path(@sample))
   rescue AccessionService::NumberNotGenerated => exception
-    flash[:warning] = 'No accession number was generated'
+    flash[:warning] = "No accession number was generated: #{exception.message}"
     redirect_to(sample_path(@sample))
   rescue AccessionService::AccessionServiceError => exception
     flash[:error] = exception.message
@@ -177,7 +175,7 @@ class SamplesController < ApplicationController
        RestClient.proxy = ''
      elsif not configatron.proxy.blank?
        RestClient.proxy = configatron.proxy
-       rc.headers["User-Agent"] = "Internet Explorer 5.0"
+       rc.headers['User-Agent'] = 'Internet Explorer 5.0'
      end
      # rc.verbose = true
      body = rc.get.body
@@ -204,9 +202,9 @@ private
     ] }
   end
 
-  def redirect_if_not_owner_or_admin_otherwise(&block)
+  def redirect_if_not_owner_or_admin_otherwise
     return yield if current_user.owner?(@sample) or current_user.is_administrator? or current_user.is_manager?
-    flash[:error] = "Sample details can only be altered by the owner or an administrator or manager"
+    flash[:error] = 'Sample details can only be altered by the owner or an administrator or manager'
     redirect_to sample_path(@sample)
   end
 end

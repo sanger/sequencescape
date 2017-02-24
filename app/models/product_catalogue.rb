@@ -42,7 +42,7 @@ class ProductCatalogue < ActiveRecord::Base
             product: Product.find_or_create_by(name: product_name)
           }
         end
-        self.create!(arguments) do |catalogue|
+        create!(arguments) do |catalogue|
           catalogue.product_product_catalogues.build(product_assocations)
         end
       end

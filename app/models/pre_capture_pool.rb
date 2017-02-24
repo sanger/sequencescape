@@ -69,11 +69,11 @@ class PreCapturePool < ActiveRecord::Base
     end
 
     def grouped_requests
-      submission.requests.
-        joins(:order, { asset: :map }).
-        where(request_type_id: library_creation_type).
-        order('maps.column_order ASC, id ASC').
-        group_by { |r| r.order.pre_cap_group || "o#{r.order_id}" }
+      submission.requests
+        .joins(:order, asset: :map)
+        .where(request_type_id: library_creation_type)
+        .order('maps.column_order ASC, id ASC')
+        .group_by { |r| r.order.pre_cap_group || "o#{r.order_id}" }
     end
   end
 end

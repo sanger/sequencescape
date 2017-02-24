@@ -4,16 +4,16 @@
 # authorship of this file.
 # Copyright (C) 2015,2016 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 require 'qc_reports_controller'
 
 class QcReportsControllerTest < ActionController::TestCase
-  context "QcReports controller" do
+  context 'QcReports controller' do
     setup do
       @controller = QcReportsController.new
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
-      @request.env["HTTP_REFERER"] = '/'
+      @request.env['HTTP_REFERER'] = '/'
 
       @user = create :user
       session[:user] = @user.id
@@ -24,7 +24,7 @@ class QcReportsControllerTest < ActionController::TestCase
 
     should_require_login(:index)
 
-    context "#index" do
+    context '#index' do
       setup do
         get :index, study_id: @study.id
       end
@@ -32,7 +32,7 @@ class QcReportsControllerTest < ActionController::TestCase
       should render_template :index
     end
 
-    context "#create" do
+    context '#create' do
       setup do
         @qc_report_count = QcReport.count
         post :create, qc_report: { study_id: @study.id, product_id: @product.id }
@@ -48,12 +48,12 @@ class QcReportsControllerTest < ActionController::TestCase
       end
     end
 
-    context "#create without product" do
+    context '#create without product' do
       setup do
         post :create, qc_report: { study_id: @study.id }
       end
       should respond_with :redirect
-      should redirect_to('index') { "/" }
+      should redirect_to('index') { '/' }
       should set_flash.to('You must select a product')
     end
   end

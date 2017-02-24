@@ -55,6 +55,6 @@ class Core::Endpoint::Base
   extend ModelBehaviour
 
   def self.root
-    self.name.sub(/^(::)?Endpoints::/, '').underscore.pluralize
+    name.sub(/^(::)?Endpoints::/, '').underscore.pluralize
   end
 end

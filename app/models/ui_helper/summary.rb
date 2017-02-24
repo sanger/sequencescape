@@ -53,7 +53,7 @@ module UiHelper
           object: study,
           timestamp: event.created_at,
           external_message: "Study #{study.id}",
-          external_link: ""
+          external_link: ''
         ))
       end
     end

@@ -11,7 +11,7 @@ class FakeBarcodeService
   # when it comes to the features.
   def self.install_hooks(target, tags)
     target.instance_eval do
-      Before(tags) do |scenario|
+      Before(tags) do |_scenario|
         plate_barcode_url = configatron.plate_barcode_service
         stub_request(:post, "#{plate_barcode_url}plate_barcodes.xml").to_return do
           barcode = FakeBarcodeService.instance.next_barcode!
@@ -22,7 +22,7 @@ class FakeBarcodeService
         end
       end
 
-      After(tags) do |scenario|
+      After(tags) do |_scenario|
         FakeBarcodeService.instance.clear
       end
     end
@@ -41,7 +41,7 @@ class FakeBarcodeService
   end
 
   def next_barcode!
-    barcodes.shift or raise StandardError, "No more values set!"
+    barcodes.shift or raise StandardError, 'No more values set!'
   end
 end
 

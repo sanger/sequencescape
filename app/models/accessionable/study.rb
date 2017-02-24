@@ -30,7 +30,7 @@ module Accessionable
       @description = study_desc unless study_desc.blank?
 
       @tags = []
-      @tags << Tag.new(self.label_scope, "ArrayExpress", nil) if study.for_array_express?
+      @tags << Tag.new(label_scope, 'ArrayExpress', nil) if study.for_array_express?
       super(study.study_metadata.study_ebi_accession_number)
 
       @related_studies = []
@@ -52,16 +52,16 @@ module Accessionable
       xml = Builder::XmlMarkup.new
       xml.instruct!
       xml.STUDY_SET('xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance') {
-        xml.STUDY(alias: self.alias, accession: self.accession_number) {
+        xml.STUDY(alias: self.alias, accession: accession_number) {
         xml.DESCRIPTOR {
-        xml.STUDY_TITLE         self.study_title
-        xml.STUDY_DESCRIPTION   self.description
-        xml.CENTER_PROJECT_NAME self.center_study_name
-        xml.CENTER_NAME         self.center_name
-        xml.STUDY_ABSTRACT      self.study_abstract
+        xml.STUDY_TITLE         study_title
+        xml.STUDY_DESCRIPTION   description
+        xml.CENTER_PROJECT_NAME center_study_name
+        xml.CENTER_NAME         center_name
+        xml.STUDY_ABSTRACT      study_abstract
 
-        xml.PROJECT_ID(self.accessionable_id || "0")
-        study_type = self.existing_study_type
+        xml.PROJECT_ID(accessionable_id || '0')
+        study_type = existing_study_type
         if StudyType.include?(study_type)
           xml.STUDY_TYPE(existing_study_type: study_type)
         else
@@ -69,21 +69,21 @@ module Accessionable
         end
 
         xml.RELATED_STUDIES {
-          self.related_studies.each do |study|
+          related_studies.each do |study|
             study.build(xml)
           end
-        } unless self.related_studies.blank?
-      }
+        } unless related_studies.blank?
+        }
       xml.STUDY_ATTRIBUTES {
-        self.tags.each do |tag|
+        tags.each do |tag|
         xml.STUDY_ATTRIBUTE {
           tag.build(xml)
         }
         end
-      } unless self.tags.blank?
+      } unless tags.blank?
+        }
       }
-      }
-      return xml.target!
+      xml.target!
     end
 
     def accessionable_id
@@ -133,13 +133,13 @@ module Accessionable
         xml.RELATED_LINK {
           xml.DB db_label
           xml.ID @study.ebi_accession_number
-      }
+        }
         xml.IS_PRIMARY @primary
       }
     end
 
     def db_label
-      I18n.t("metadata.study.metadata.#{@role}.ebi_db", default: "")
+      I18n.t("metadata.study.metadata.#{@role}.ebi_db", default: '')
     end
   end
 end

@@ -17,12 +17,10 @@ class BarcodePrinter < ActiveRecord::Base
   # for labels printing, if printer is not registered in ss
   BarcodePrinterException = Class.new(ActiveRecord::RecordNotFound)
 
-  def printer_type_id
-    self.barcode_printer_type.printer_type_id
-  end
+  delegate :printer_type_id, to: :barcode_printer_type
 
   def plate384_printer?
-    self.barcode_printer_type.name == "384 Well Plate"
+    barcode_printer_type.name == '384 Well Plate'
   end
 
   def register_printer_in_pmb

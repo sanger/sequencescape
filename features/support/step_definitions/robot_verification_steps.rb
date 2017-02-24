@@ -11,7 +11,7 @@ end
 Given(/^I have a released cherrypicking batch with (\d+) samples and the minimum robot pick is "([^"]*)"$/) do |number_of_samples, minimum_robot_pick|
   step("I have a cherrypicking batch with #{number_of_samples} samples")
   step('a plate barcode webservice is available and returns "99999"')
-  step("a plate template exists")
+  step('a plate template exists')
   step('a robot exists with barcode "444"')
   step('plate "1221234567841" has concentration and volume results')
   step('I follow "Select Plate Template"')
@@ -19,7 +19,7 @@ Given(/^I have a released cherrypicking batch with (\d+) samples and the minimum
   step('I select "Infinium 670k" from "Output plate purpose"')
   step('I fill in "nano_grams_per_micro_litre_volume_required" with "13"')
   step('I fill in "nano_grams_per_micro_litre_concentration_required" with "50"')
-  fill_in("nano_grams_per_micro_litre_robot_minimum_picking_volume", with: minimum_robot_pick)
+  fill_in('nano_grams_per_micro_litre_robot_minimum_picking_volume', with: minimum_robot_pick)
   step('I press "Next step"')
   step('I press "Next step"')
   step('I select "Genotyping freezer" from "Location"')
@@ -31,7 +31,7 @@ end
 Given(/^I have a released low concentration cherrypicking batch with (\d+) samples and the minimum robot pick is "([^"]*)"$/) do |number_of_samples, minimum_robot_pick|
   step("I have a cherrypicking batch with #{number_of_samples} samples")
   step('a plate barcode webservice is available and returns "99999"')
-  step("a plate template exists")
+  step('a plate template exists')
   step('a robot exists with barcode "444"')
   step('plate "1221234567841" has low concentration and volume results')
   step('I follow "Select Plate Template"')
@@ -39,7 +39,7 @@ Given(/^I have a released low concentration cherrypicking batch with (\d+) sampl
   step('I select "Infinium 670k" from "Output plate purpose"')
   step('I fill in "nano_grams_per_micro_litre_volume_required" with "13"')
   step('I fill in "nano_grams_per_micro_litre_concentration_required" with "50"')
-  fill_in("nano_grams_per_micro_litre_robot_minimum_picking_volume", with: minimum_robot_pick)
+  fill_in('nano_grams_per_micro_litre_robot_minimum_picking_volume', with: minimum_robot_pick)
   step('I press "Next step"')
   step('I press "Next step"')
   step('I select "Genotyping freezer" from "Location"')
@@ -67,7 +67,7 @@ Given(/^I have a released cherrypicking batch with 3 plates and the minimum robo
 
   # must use @javascript
   step('a plate barcode webservice is available and returns "99999"')
-  step("a plate template exists")
+  step('a plate template exists')
   step('a robot exists with barcode "444"')
   step('plate "1220000010734" has concentration and volume results')
   step('plate "1220000001831" has concentration and volume results')
@@ -78,7 +78,7 @@ Given(/^I have a released cherrypicking batch with 3 plates and the minimum robo
   step('I select "Infinium 670k" from "Output plate purpose"')
   step('I fill in "nano_grams_per_micro_litre_volume_required" with "13"')
   step('I fill in "nano_grams_per_micro_litre_concentration_required" with "50"')
-  fill_in("nano_grams_per_micro_litre_robot_minimum_picking_volume", with: minimum_robot_pick)
+  fill_in('nano_grams_per_micro_litre_robot_minimum_picking_volume', with: minimum_robot_pick)
   step('I press "Next step"')
   step('I press "Next step"')
   step('I select "Genotyping freezer" from "Location"')
@@ -94,7 +94,7 @@ Given /^I have a released cherrypicking batch with 1 plate which doesnt need buf
 end
 
 Given /^user "([^"]*)" has a user barcode of "([^"]*)"$/ do |login, user_barcode|
-  user = User.find_by_login(login)
+  user = User.find_by(login: login)
   user.update_attributes!(barcode: user_barcode)
 end
 
@@ -103,9 +103,9 @@ Transform /^the last batch$/ do |_|
 end
 
 Then /^the downloaded tecan file for batch "([^"]*)" and plate "([^"]*)" is$/ do |batch_barcode, plate_barcode, tecan_file|
-  batch = Batch.find_by_barcode(Barcode.number_to_human(batch_barcode)) or raise StandardError, "Cannot find batch with barcode #{batch_barcode.inspect}"
-  plate = Plate.find_from_machine_barcode(plate_barcode)                or raise StandardError, "Cannot find plate with machine barcode #{plate_barcode.inspect}"
-  generated_file = batch.tecan_gwl_file_as_text(plate.barcode, batch.total_volume_to_cherrypick, "ABgene 0765")
+  batch = Batch.find_by(barcode: Barcode.number_to_human(batch_barcode)) or raise StandardError, "Cannot find batch with barcode #{batch_barcode.inspect}"
+  plate = Plate.find_from_machine_barcode(plate_barcode) or raise StandardError, "Cannot find plate with machine barcode #{plate_barcode.inspect}"
+  generated_file = batch.tecan_gwl_file_as_text(plate.barcode, batch.total_volume_to_cherrypick, 'ABgene 0765')
   generated_lines = generated_file.split(/\n/)
   generated_lines.shift(2)
   assert_not_nil generated_lines

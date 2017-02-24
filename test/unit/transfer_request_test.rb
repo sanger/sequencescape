@@ -22,7 +22,7 @@ class TransferRequestTest < ActiveSupport::TestCase
     end
 
     should 'have the correct attributes' do
-      assert @transfer_request.request_type == RequestType.find_by_key('transfer')
+      assert @transfer_request.request_type == RequestType.find_by(key: 'transfer')
       assert @transfer_request.sti_type == 'TransferRequest'
       assert @transfer_request.state == 'pending'
       assert @transfer_request.asset_id == @source.id
@@ -45,7 +45,7 @@ class TransferRequestTest < ActiveSupport::TestCase
       assert_raises(ActiveRecord::RecordInvalid) { RequestType.transfer.create!(asset: asset, target_asset: asset) }
     end
 
-    context "with a tag clash" do
+    context 'with a tag clash' do
       setup do
         tag = create :tag
         tag2 = create :tag

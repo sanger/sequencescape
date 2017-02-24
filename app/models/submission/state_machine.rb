@@ -16,7 +16,7 @@ module Submission::StateMachine
       configure_named_scopes
 
       def editable?
-        state == "building"
+        state == 'building'
       end
     end
   end
@@ -24,7 +24,7 @@ module Submission::StateMachine
   module InstanceMethods
     # TODO[xxx]: This should be a guard but what the heck ...
     def left_building_state?
-      not self.building? or !!@leaving_building_state
+      not building? or !!@leaving_building_state
     end
 
     def valid_for_leaving_building_state
@@ -108,10 +108,10 @@ module Submission::StateMachine
   end
   private :configure_state_machine
 
-  UnprocessedStates = ["building", "pending", "processing"]
+  UnprocessedStates = ['building', 'pending', 'processing']
   def configure_named_scopes
    scope :unprocessed, -> { where(state: UnprocessedStates) }
-   scope :processed, -> { where(state: ["ready", "failed"]) }
+   scope :processed, -> { where(state: ['ready', 'failed']) }
   end
 
   private :configure_named_scopes

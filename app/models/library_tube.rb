@@ -42,7 +42,7 @@ class LibraryTube < Tube
 
   def specialized_from_manifest=(attributes)
     if first_update?
-      aliquots.first.update_attributes!(attributes.merge(library_id: self.id))
+      aliquots.first.update_attributes!(attributes.merge(library_id: id))
       requests.each(&:manifest_processed!)
     end
   end
@@ -60,7 +60,7 @@ class LibraryTube < Tube
       insert_size_from: aliquots.first.insert_size_from,
       insert_size_to: aliquots.first.insert_size_to
     }.tap do |tag_hash|
-      tag_hash.merge!(tag: tag.summary) if tag
+      tag_hash[:tag] = tag.summary if tag
       tag_hash.merge!(tag2: tag2.summary) if tag2
     end
   end
@@ -77,8 +77,8 @@ class LibraryTube < Tube
   end
 
   def find_tag(tag_info)
-    tag_group = Uuid.with_resource_type('TagGroup').include_resource.find_by_external_id!(tag_info['tag_group']).resource
-    tag_group.tags.find_by_map_id!(tag_info['tag_index'])
+    tag_group = Uuid.with_resource_type('TagGroup').include_resource.find_by!(external_id: tag_info['tag_group']).resource
+    tag_group.tags.find_by!(map_id: tag_info['tag_index'])
   end
   private :find_tag
 

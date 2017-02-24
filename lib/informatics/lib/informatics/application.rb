@@ -8,7 +8,7 @@ module Informatics
     attr_accessor :name, :description, :home_page, :title, :authentication
 
     def self.configure
-      a = self.new
+      a = new
       yield a
       @@application = a
     end

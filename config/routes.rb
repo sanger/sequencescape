@@ -11,7 +11,7 @@ Sequencescape::Application.routes.draw do
   mount Api::RootService.new => '/api/1'
 
   resources :samples do
-    resources :assets
+    resources :assets, except: :destroy
     resources :comments
     resources :studies
 
@@ -67,8 +67,8 @@ Sequencescape::Application.routes.draw do
   resources :items
 
   resources :batches do
-    resources :requests, controller: "batches/requests"
-    resources :comments, controller: "batches/comments"
+    resources :requests, controller: 'batches/requests'
+    resources :comments, controller: 'batches/comments'
     resources :stock_assets, only: [:new, :create]
 
     member do
@@ -141,9 +141,9 @@ Sequencescape::Application.routes.draw do
       post :unrelate_study
     end
 
-    resources :assets
+    resources :assets, except: :destroy
 
-    resources :sample_registration, only: [:index, :new, :create], controller: "studies/sample_registration" do
+    resources :sample_registration, only: [:index, :new, :create], controller: 'studies/sample_registration' do
       collection do
         post :spreadsheet
         # get :new
@@ -151,8 +151,8 @@ Sequencescape::Application.routes.draw do
       end
     end
 
-    resources :samples, controller: "studies/samples"
-    resources :events, controller: "studies/events"
+    resources :samples, controller: 'studies/samples'
+    resources :events, controller: 'studies/events'
 
     resources :requests do
       member do
@@ -161,9 +161,9 @@ Sequencescape::Application.routes.draw do
       end
     end
 
-    resources :comments, controller: "studies/comments"
+    resources :comments, controller: 'studies/comments'
 
-    resources :asset_groups, controller: "studies/asset_groups" do
+    resources :asset_groups, controller: 'studies/asset_groups' do
       member do
         post :search
         post :add
@@ -175,7 +175,7 @@ Sequencescape::Application.routes.draw do
       end
     end
 
-    resources :plates, controller: "studies/plates", except: :destroy do
+    resources :plates, controller: 'studies/plates', except: :destroy do
       collection do
         post :view_wells
         post :asset_group
@@ -189,7 +189,7 @@ Sequencescape::Application.routes.draw do
       resources :wells, expect: [:destroy, :edit]
     end
 
-    resources :workflows, controller: "studies/workflows" do
+    resources :workflows, controller: 'studies/workflows' do
       member do
         get :summary
         get :show_summary
@@ -202,7 +202,7 @@ Sequencescape::Application.routes.draw do
       end
     end
 
-    resources :documents, controller: "studies/documents", only: [:show, :destroy]
+    resources :documents, controller: 'studies/documents', only: [:show, :destroy]
   end
 
   resources :bulk_submissions, only: [:index, :new, :create]
@@ -225,7 +225,7 @@ Sequencescape::Application.routes.draw do
   match 'requests/:id/change_decision' => 'requests#change_decision', :as => :change_decision_request, :via => 'put'
 
   resources :requests do
-    resources :comments, controller: "requests/comments"
+    resources :comments, controller: 'requests/comments'
 
     member do
       get :history
@@ -458,7 +458,7 @@ Sequencescape::Application.routes.draw do
       post :move
     end
 
-    resources :comments, controller: "assets/comments"
+    resources :comments, controller: 'assets/comments'
   end
 
   resources :plates do
@@ -612,6 +612,8 @@ Sequencescape::Application.routes.draw do
   resources :labwhere_receptions, only: [:index, :create]
 
   resources :qc_files, only: [:show]
+
+  resources :user_queries, only: [:new, :create]
 
   post 'get_your_qc_completed_tubes_here' => 'get_your_qc_completed_tubes_here#create', as: :get_your_qc_completed_tubes_here
 

@@ -4,6 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
-["", "Not suitable for alignment"].each do |name|
+['', 'Not suitable for alignment'].each do |name|
   ReferenceGenome.create!(name: name)
 end

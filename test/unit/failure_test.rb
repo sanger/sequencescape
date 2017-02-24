@@ -4,10 +4,10 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class FailureTest < ActiveSupport::TestCase
-  context "A failure" do
+  context 'A failure' do
     should belong_to :failable
   end
 end

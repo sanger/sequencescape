@@ -32,60 +32,60 @@ class DnaQcTask < Task
     def qc_status
       status = [gel_status, pico_status, sequenom_status, concentration_status, gender_status, sample_name_empty]
 
-      return "fail" if genotyping_done_status == "fail"
-      return case
-      when status.map { |s| s == "pass" or s == "*" }.all? then "pass"
-      when status.map { |s| s == "fail" or s == "*" or s.nil? }.all? then "fail"
-      when status.map { |s| s == "fail" }.select { |b| b == true }.size >= 3 then "fail"
-      else ""
+      return 'fail' if genotyping_done_status == 'fail'
+      case
+      when status.map { |s| s == 'pass' or s == '*' }.all? then 'pass'
+      when status.map { |s| s == 'fail' or s == '*' or s.nil? }.all? then 'fail'
+      when status.map { |s| s == 'fail' }.select { |b| b == true }.size >= 3 then 'fail'
+      else ''
       end
     end
 
     def sample_name_empty
       case
-      when sample_empty then "fail"
-      else "pass"
+      when sample_empty then 'fail'
+      else 'pass'
       end
     end
 
     def pico_status
       case
-      when pico_value == "Pass" || pico_value == "passed" then "pass"
-      when pico_value == "ungraded" || pico_value == "repeat" then "*"
-      when pico_value == "failed" then "fail"
-      when ["Too Low To Normalise"].include?(pico_value) then "fail"
-      else ""
+      when pico_value == 'Pass' || pico_value == 'passed' then 'pass'
+      when pico_value == 'ungraded' || pico_value == 'repeat' then '*'
+      when pico_value == 'failed' then 'fail'
+      when ['Too Low To Normalise'].include?(pico_value) then 'fail'
+      else ''
       end
     end
 
     def gel_status
       case
-      when ["Fail", "Weak", "Band Not Visible", "Degraded"].include?(gel_value) then "fail"
-      when gel_value == "OK" then "*"
-      when gel_value.blank? then "fail"
-      else ""
+      when ['Fail', 'Weak', 'Band Not Visible', 'Degraded'].include?(gel_value) then 'fail'
+      when gel_value == 'OK' then '*'
+      when gel_value.blank? then 'fail'
+      else ''
       end
     end
 
     def sequenom_status
-      return "*" unless @sequenom_count
+      return '*' unless @sequenom_count
       count = @sequenom_count.to_i
       case
-      when count < 19 then "fail"
-      when count > 19 then "pass"
+      when count < 19 then 'fail'
+      when count > 19 then 'pass'
       end
     end
 
     def concentration_status
       case
-      when initial_concentration.nil? then "fail"
-      when initial_concentration.to_i < 35 then "fail"
-      when initial_concentration.to_i > 50 then "pass"
+      when initial_concentration.nil? then 'fail'
+      when initial_concentration.to_i < 35 then 'fail'
+      when initial_concentration.to_i > 50 then 'pass'
       end
     end
 
     def gender_status
-      return "*" if @gender_value == "Unknown" || @gender_value.nil?
+      return '*' if @gender_value == 'Unknown' || @gender_value.nil?
       if @gender_value =~ /^f/i
         @gender_value = 'F'
       elsif @gender_value =~ /^m/i
@@ -93,14 +93,14 @@ class DnaQcTask < Task
       end
 
       case
-      when @gender_markers_value.blank? then "*"
-      when @gender_markers_value.last != @gender_value then "fail"
-      when @gender_value.map { |g| g == @gender_value }.all? then "pass"
+      when @gender_markers_value.blank? then '*'
+      when @gender_markers_value.last != @gender_value then 'fail'
+      when @gender_value.map { |g| g == @gender_value }.all? then 'pass'
       end
     end
 
     def genotyping_done_status
-      @genotyping_done && @genotyping_done != "0" ? "fail" : "pass"
+      @genotyping_done && @genotyping_done != '0' ? 'fail' : 'pass'
     end
   end # class QcData
 
@@ -109,7 +109,7 @@ class DnaQcTask < Task
   end
 
   def partial
-    "dna_qc_batches"
+    'dna_qc_batches'
   end
 
   def render_task(workflow, params)
@@ -125,10 +125,10 @@ class DnaQcTask < Task
     return if state.blank?
 
     case state
-    when "pass"
+    when 'pass'
       if request.pass
         logger.debug "SENDING PASS FOR REQUEST #{request.id}, BATCH #{batch.id}"
-        EventSender.send_pass_event(request.id, "", "Passed DNQ QC", batch.id)
+        EventSender.send_pass_event(request.id, '', 'Passed DNQ QC', batch.id)
 
         # activate the next requets
         request.next_requests(batch.pipeline).each do |next_request|
@@ -137,10 +137,10 @@ class DnaQcTask < Task
           end
         end
       end
-    when "fail"
+    when 'fail'
       if request.fail
         logger.debug "SENDING FAIL FOR REQUEST #{request.id}, BATCH #{batch.id}"
-        EventSender.send_fail_event(request.id, "", "failed DNQ QC", batch.id)
+        EventSender.send_fail_event(request.id, '', 'failed DNQ QC', batch.id)
 
         # cancel next request
         request.next_requests(batch.pipeline).each do |next_request|
@@ -152,7 +152,7 @@ class DnaQcTask < Task
     event = LabEvent.new
     event.description = name
     event.eventful = request
-    event.add_new_descriptor("Passed", request.state == "passed")
+    event.add_new_descriptor('Passed', request.state == 'passed')
 
     request.save!
     event.save!

@@ -15,7 +15,7 @@ class ::Io::AssetAudit < ::Core::Io::Base
     end
 
     def asset_uuid
-      self.asset.try(:uuid)
+      asset.try(:uuid)
     end
 
     def asset_uuid=(uuid)

@@ -9,7 +9,7 @@ module Tasks::ReferenceSequenceHandler
     @assets = task.find_batch_requests(params[:batch_id]).map { |request| request.asset }.uniq
   end
 
-  def do_reference_sequence_task(task, params)
+  def do_reference_sequence_task(_task, params)
     ActiveRecord::Base.transaction do
       params[:asset].each do |asset_id, protocol_id|
         protocol = ReferenceGenome.find(protocol_id).name

@@ -33,7 +33,7 @@ class ::Endpoints::Uuids < ::Core::Endpoint::Base
     class CriteriaInvalid < ::Core::Service::Error
       def initialize(*args)
         super
-        @errors = { lookup: [self.message] }
+        @errors = { lookup: [message] }
       end
 
       def api_error(response)
@@ -72,16 +72,16 @@ class ::Endpoints::Uuids < ::Core::Endpoint::Base
     end
 
     def self.create!(attributes)
-      search = self.new(attributes)
+      search = new(attributes)
       search.validate! {}
       search
     end
 
     def self.create_bulk!(list_of_attributes)
-      raise CriteriaInvalid, "should be an array of tuples" if     list_of_attributes.nil?
-      raise CriteriaInvalid, "should be an array of tuples" unless list_of_attributes.is_a?(Array)
+      raise CriteriaInvalid, 'should be an array of tuples' if     list_of_attributes.nil?
+      raise CriteriaInvalid, 'should be an array of tuples' unless list_of_attributes.is_a?(Array)
       raise CriteriaInvalid, "can't be blank"               if     list_of_attributes.blank?
-      raise CriteriaInvalid, "should be a tuple"            unless list_of_attributes.all? { |a| a.is_a?(Hash) }
+      raise CriteriaInvalid, 'should be a tuple'            unless list_of_attributes.all? { |a| a.is_a?(Hash) }
 
       list_of_attributes.map(&method(:create!))
     end

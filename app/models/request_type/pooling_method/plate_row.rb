@@ -25,6 +25,6 @@ module RequestType::PoolingMethod::PlateRow
     return pool_index_for_asset(request.asset) if request.asset.present?
     # If we don't have an asset yet, look upstream. This assumes no
     # re-arraying has taken place.
-    raise StandardError, "Finding the pool index before requests are attached is unsupported"
+    raise StandardError, 'Finding the pool index before requests are attached is unsupported'
   end
 end

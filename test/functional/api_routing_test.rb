@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2013,2015,2016 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class ApiRoutingTest < ActionController::TestCase
   class << self
@@ -20,7 +20,7 @@ class ApiRoutingTest < ActionController::TestCase
       end
     end
 
-    def resource_routes(*resources, &block)
+    def resource_routes(*resources)
       resources_with_nesting = resources.extract_options!
 
       resources.each do |resource|

@@ -10,7 +10,7 @@ class ::Endpoints::StateChanges < ::Core::Endpoint::Base
   end
 
   instance do
-    belongs_to(:target, json: "target")
-    belongs_to(:user, json: "user")
+    belongs_to(:target, json: 'target')
+    belongs_to(:user, json: 'user')
   end
 end
