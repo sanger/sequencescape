@@ -25,6 +25,18 @@ class AccessionService
     attr_accessor :original_filename
   end
 
+  # When samples belong to multiple studies, the submission service with the highest priority will be selected
+  class_attribute :priority, instance_writer: false
+  # When true, allows the accessioning of samples prior to accessioning of the study
+  class_attribute :no_study_accession_needed, instance_writer: false
+  # Indicates that the class reflects a real accessioning service. Set to false for dummy services. This allow
+  # scripts like the accessioning cron to break out prematurely for dummy services
+  class_attribute :operational, instance_writer: false
+
+  self.priority = 0
+  self.no_study_accession_needed = false
+  self.operational = false
+
   def submit(user, *accessionables)
     ActiveRecord::Base.transaction do
       submission = Accessionable::Submission.new(self, user, *accessionables)
@@ -46,7 +58,6 @@ class AccessionService
             { name: acc.schema_type.upcase, local_name: file.path, remote_name: acc.file_name }
                                 end
          )
-
         Rails::logger.debug { xml_result }
         raise AccessionServiceError, "EBI Server Error. Couldnt get accession number: #{xml_result}" if xml_result =~ /(Server error|Auth required|Login failed)/
 
@@ -89,7 +100,7 @@ class AccessionService
   end
 
   def submit_sample_for_user(sample, user)
-    raise NumberNotRequired, 'Does not require an accession number' unless sample.studies.first.ena_accession_required?
+    # raise NumberNotRequired, 'Does not require an accession number' unless sample.studies.first.ena_accession_required?
 
     ebi_accession_number = sample.sample_metadata.sample_ebi_accession_number
     # raise NumberNotGenerated, 'No need to' if not ebi_accession_number.blank? and not /ERS/.match(ebi_accession_number)

@@ -1,7 +1,6 @@
 # This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2013 Genome Research Ltd.
+# Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2016 Genome Research Ltd.
 ####################################################################################################################
 # Used in features/listing_by_type
 ####################################################################################################################
@@ -27,13 +26,39 @@ FactoryGirl.define do
   end
 
   factory(:managed_study, parent: :study) do
-    name 'Study: Managed'
+    transient do
+      accession_number nil
+    end
+
+    sequence(:name) { |n| "Study#{n}: Manages" }
     state 'active'
-    after(:build) do |study|
-      study.study_metadata.data_access_group = 'dag'
-      study.study_metadata.data_release_strategy = 'managed'
+
+    after(:create) do |study, evaluator|
+      study.study_metadata.update_attributes!(data_release_strategy: 'managed', study_ebi_accession_number: evaluator.accession_number)
     end
   end
+
+  factory(:open_study, parent: :study) do
+    transient do
+      accession_number nil
+    end
+
+    sequence(:name) { |n| "Study#{n}: Open" }
+    state 'active'
+
+    after(:create) do |study, evaluator|
+      study.study_metadata.update_attributes!(data_release_strategy: 'open', study_ebi_accession_number: evaluator.accession_number)
+    end
+  end
+
+  factory(:not_app_study, parent: :study) do
+    name 'Study: Never'
+    state 'active'
+    after(:create) do |study|
+      study.study_metadata.update_attributes!(data_release_strategy: 'not applicable')
+    end
+  end
+
   # These require property definitions to be properly setup
   factory(:study_metadata_for_study_list_pending_ethical_approval, parent: :study_metadata) do |_metadata|
     contains_human_dna     'Yes'
