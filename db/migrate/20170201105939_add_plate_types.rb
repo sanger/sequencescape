@@ -6,7 +6,7 @@ class AddPlateTypes < ActiveRecord::Migration
   end
 
   def down
-    plate_types_with_maximum_volume.each do |name, maximum_volume|
+    plate_types_with_maximum_volume.each do |name, _maximum_volume|
       plate_type = PlateType.find_by(name: name)
       plate_type.destroy if plate_type.present?
     end

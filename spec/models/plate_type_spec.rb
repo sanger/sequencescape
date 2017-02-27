@@ -15,6 +15,6 @@ describe PlateType do
   end
 
   it 'knows plate types names and maximum volumes' do
-    expect(PlateType.names_and_maximum_volumes).to eq "ABgene_0765: 800, ABgene_0800: 180, FluidX075: 500, FluidX03: 280"
+    expect(PlateType.names_and_maximum_volumes).to eq 'ABgene_0765: 800, ABgene_0800: 180, FluidX075: 500, FluidX03: 280'
   end
 end

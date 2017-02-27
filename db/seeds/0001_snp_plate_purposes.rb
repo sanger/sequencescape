@@ -323,10 +323,6 @@ end
   PlatePurpose.create!(name: "Aliquot #{index}", qc_display: true, can_be_considered_a_stock_plate: true, cherrypickable_target: true)
 end
 
-PlatePurpose.create!(name: 'ABgene_0765', can_be_considered_a_stock_plate: false, cherrypickable_source: true, cherrypickable_target: false)
-PlatePurpose.create!(name: 'ABgene_0800', can_be_considered_a_stock_plate: false, cherrypickable_source: true, cherrypickable_target: true)
-PlatePurpose.create!(name: 'FluidX075', can_be_considered_a_stock_plate: false, cherrypickable_source: true, cherrypickable_target: false)
-
 # Build the links between the parent and child plate purposes
 relationships = {
   'Working Dilution'    => ['Working Dilution', 'Pico Dilution'],

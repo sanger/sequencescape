@@ -89,9 +89,9 @@ feature 'cherrypick pipeline - nano grams per micro litre', js: true do
     expect(page).to have_content('Scan robot beds and plates')
 
     table = [['Bed', 'Scanned robot beds', 'Plate ID', 'Scanned plates', 'Plate type'],
-             ['SCRC 1', '', '1220000001831', '', 'ABgene_0765 ABgene_0800 FluidX075'],
-             ['SCRC 2', '', '1220000010734', '', 'ABgene_0765 ABgene_0800 FluidX075'],
-             ['SCRC 3', '', '1220000005877', '', 'ABgene_0765 ABgene_0800 FluidX075'],
+             ['SCRC 1', '', '1220000001831', '', 'ABgene_0765 ABgene_0800 FluidX075 FluidX03'],
+             ['SCRC 2', '', '1220000010734', '', 'ABgene_0765 ABgene_0800 FluidX075 FluidX03'],
+             ['SCRC 3', '', '1220000005877', '', 'ABgene_0765 ABgene_0800 FluidX075 FluidX03'],
              ['DEST 1', '', '1220099999705', '', 'ABgene_0800']]
 
     expect(fetch_table('table#source_beds')).to eq(table)

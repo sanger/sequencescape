@@ -16,9 +16,9 @@ class StockStampersController < ApplicationController
   end
 
   def generate_tecan_file
-    send_data params[:file_content], type: "text/plain",
-      filename: "stock_stamper_#{params[:plate_barcode]}.gwl",
-      disposition: 'attachment'
+    send_data params[:file_content], type: 'text/plain',
+                                     filename: "stock_stamper_#{params[:plate_barcode]}.gwl",
+                                     disposition: 'attachment'
   end
 
   def stock_stamper_params

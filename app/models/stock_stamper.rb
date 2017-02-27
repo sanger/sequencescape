@@ -5,9 +5,9 @@ class StockStamper
 
   validates_presence_of :user_barcode, :source_plate_barcode, :source_plate_type_name, :destination_plate_barcode, :destination_plate_type_name, :overage
 
-  validates :plate, presence: { message: 'is not registered in sequencescape' }, if: "destination_plate_barcode.present?"
-  validates :plate_type, presence: { message: 'is not registered in sequencescape' }, if: "destination_plate_type_name.present?"
-  validates :user, presence: { message: 'is not registered in sequencescape' }, if: "user_barcode.present?"
+  validates :plate, presence: { message: 'is not registered in sequencescape' }, if: 'destination_plate_barcode.present?'
+  validates :plate_type, presence: { message: 'is not registered in sequencescape' }, if: 'destination_plate_type_name.present?'
+  validates :user, presence: { message: 'is not registered in sequencescape' }, if: 'user_barcode.present?'
   validate :plates_barcodes_should_be_identical
 
   def initialize(attributes = { overage: 1.2 })
@@ -25,26 +25,26 @@ class StockStamper
     source_barcode = "#{plate.barcode_for_tecan}_s"
     destination_barcode = "#{plate.barcode_for_tecan}_d"
     data_object = {
-      "user" => user.login,
-      "time" => Time.now,
-      "source" => {
-        source_barcode => { "name" => source_plate_type_name.tr('_', "\s"), "plate_size" => plate.size }
+      'user' => user.login,
+      'time' => Time.now,
+      'source' => {
+        source_barcode => { 'name' => source_plate_type_name.tr('_', "\s"), 'plate_size' => plate.size }
       },
-      "destination" => {
+      'destination' => {
         destination_barcode => {
-          "name" => destination_plate_type_name.tr('_', "\s"),
-          "plate_size" => plate.size,
-          "mapping" => []
+          'name' => destination_plate_type_name.tr('_', "\s"),
+          'plate_size' => plate.size,
+          'mapping' => []
         }
       }
     }
     plate.wells.each do |well|
       next unless well.get_current_volume
-      data_object["destination"][destination_barcode]["mapping"] << {
-        "src_well"  => [source_barcode, well.map.description],
-        "dst_well"  => well.map.description,
-        "volume"    => volume(well),
-        "buffer_volume" => well.get_buffer_volume
+      data_object['destination'][destination_barcode]['mapping'] << {
+        'src_well'  => [source_barcode, well.map.description],
+        'dst_well'  => well.map.description,
+        'volume'    => volume(well),
+        'buffer_volume' => well.get_buffer_volume
       }
     end
     data_object
@@ -74,6 +74,6 @@ class StockStamper
 
   def plates_barcodes_should_be_identical
     return unless source_plate_barcode.present? && destination_plate_barcode.present?
-    errors.add(:plates_barcodes, "are not identical") unless source_plate_barcode == destination_plate_barcode
+    errors.add(:plates_barcodes, 'are not identical') unless source_plate_barcode == destination_plate_barcode
   end
 end

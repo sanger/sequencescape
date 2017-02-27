@@ -440,7 +440,7 @@ class Plate < Asset
   end
 
   def stock_plate_name
-    (self.get_plate_type == "Stock Plate" || self.get_plate_type.blank?) ? PlateType.first.name : self.get_plate_type
+    (get_plate_type == 'Stock Plate' || get_plate_type.blank?) ? PlateType.first.name : get_plate_type
   end
 
   def details

@@ -43,10 +43,10 @@ module Batch::TecanBehaviour
       if data_object['source'][full_source_barcode].nil?
         data_object['source'][full_source_barcode] = { 'name' => source_plate_name, 'plate_size' => request.asset.plate.size }
       end
-      if data_object["destination"][full_destination_barcode].nil?
-        data_object["destination"][full_destination_barcode] = {
-          "name" => PlateType.cherrypickable_default_type.tr('_', "\s"),
-          "plate_size" => request.target_asset.plate.size
+      if data_object['destination'][full_destination_barcode].nil?
+        data_object['destination'][full_destination_barcode] = {
+          'name' => PlateType.cherrypickable_default_type.tr('_', "\s"),
+          'plate_size' => request.target_asset.plate.size
         }
       end
       if data_object['destination'][full_destination_barcode]['mapping'].nil?
