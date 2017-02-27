@@ -36,7 +36,7 @@ module IlluminaHtp::Requests
     end
 
     def failed_downstream!
-      change_decision! unless failed?
+      retrospective_fail! if passed?
     end
   end
 

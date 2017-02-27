@@ -56,7 +56,7 @@ class BatchTubeTest < ActiveSupport::TestCase
 
       batch = @pipeline.batches.create!
       tag_map_id = 3
-      library_tube = create :library_tube, barcode: '111', tag_map_id: tag_map_id
+      library_tube = create :tagged_library_tube, barcode: '111', tag_map_id: tag_map_id
       request = create :multiplexed_library_creation_request, target_asset: library_tube
       batch.requests << request
 

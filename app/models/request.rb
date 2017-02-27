@@ -131,6 +131,8 @@ class Request < ActiveRecord::Base
 
   has_many :failures, as: :failable
 
+  has_many :samples, through: :asset, source: :samples
+
   belongs_to :request_type, inverse_of: :requests
   delegate :billable?, to: :request_type, allow_nil: true
   belongs_to :workflow, class_name: 'Submission::Workflow'
