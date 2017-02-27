@@ -57,7 +57,7 @@ class Aliquot::Receptacle < Asset
 
   # TODO: Remove these at some point in the future as they're kind of wrong!
   has_one :sample, through: :primary_aliquot
-  deprecate :sample
+  deprecate sample: 'receptacles may contain multiple samples. This method just returns the first.'
 
   def sample=(sample)
     aliquots.clear
