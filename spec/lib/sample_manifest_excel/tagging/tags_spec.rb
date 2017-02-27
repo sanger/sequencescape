@@ -8,7 +8,7 @@ describe SampleManifestExcel::Tagging::Tags do
   let(:tags) { SampleManifestExcel::Tagging::Tags.new(sample_id: '1', tag_oligo: 'AA', tag2_oligo: 'TT') }
 
   it 'should not be valid without an aliquot' do
-    expect(tags.valid?).to be false
+    expect(tags).to be_valid
     expect(tags.errors.full_messages).to include "Aliquot can't be blank"
   end
 

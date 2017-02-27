@@ -9,8 +9,8 @@ RSpec.describe SampleManifestExcel::Configuration, type: :model, sample_manifest
 
   it 'should be able to add a new file' do
     configuration.add_file 'a_new_file'
-    expect(configuration.files.length).to eq(SampleManifestExcel::Configuration::FILES.length + 1)
-    expect(configuration.files).to include(:a_new_file)
+    expect(configuration.files.length).to eq SampleManifestExcel::Configuration::FILES.length + 1
+    expect(configuration.files).to include :a_new_file
     expect(configuration).to respond_to('a_new_file=')
   end
 
@@ -21,14 +21,14 @@ RSpec.describe SampleManifestExcel::Configuration, type: :model, sample_manifest
     expect(configuration.tag_group.name).to eq 'Main test group'
   end
 
-  context 'without a folder' do
-    it 'will not be loaded' do
+  describe 'without a folder' do
+     it 'will not be loaded' do
       configuration.load!
       expect(configuration).to_not be_loaded
-    end
+     end
   end
 
-  context 'with a valid folder' do
+  describe 'with a valid folder' do
     let(:folder) { File.join('test', 'data', 'sample_manifest_excel') }
 
     before(:each) do
