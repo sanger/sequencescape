@@ -223,7 +223,7 @@ class Plate < Asset
   def study
     wells.first.try(:study)
   end
-  deprecate :study
+  deprecate study: 'Caution plates may belong to multiple studies.'
 
   has_many :container_associations, foreign_key: :container_id, inverse_of: :plate
   has_many :wells, through: :container_associations, inverse_of: :plate do
@@ -232,7 +232,7 @@ class Plate < Asset
         proxy_association.owner.wells << records
       end
     end
-    deprecate :attach # Legacy pre-jruby method to handle bulk import
+    deprecate attach: 'Legacy method pre-jruby just use standard rails plate.wells << other_wells' # Legacy pre-jruby method to handle bulk import
 
     def construct!
       Map.where_plate_size(proxy_association.owner.size).where_plate_shape(proxy_association.owner.asset_shape).in_row_major_order.map do |location|

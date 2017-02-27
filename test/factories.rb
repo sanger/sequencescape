@@ -425,7 +425,7 @@ FactoryGirl.define do
   end
 
   factory :asset_group_asset do
-    asset
+    association(:asset, factory: :aliquot_receptacle)
     asset_group
   end
 

@@ -16,5 +16,7 @@ FactoryGirl.define do
          build(:rnai_accession_tag),].index_by(&:name)
       }
     end
+
+    skip_create
   end
 end

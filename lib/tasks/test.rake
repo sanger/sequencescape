@@ -109,3 +109,5 @@ namespace :test do
     end
   end
 end
+
+task test: 'test:factory_girl:lint'

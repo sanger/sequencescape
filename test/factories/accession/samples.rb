@@ -41,5 +41,7 @@ FactoryGirl.define do
         sample_metadata: create(:sample_metadata_with_accession_number))
       }
     end
+
+    skip_create
   end
 end
