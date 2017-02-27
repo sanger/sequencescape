@@ -4,7 +4,7 @@ module SampleManifestExcel
 
     FILES = [:conditional_formattings, :manifest_types, :ranges, :columns]
 
-    attr_accessor :folder, *FILES
+    attr_accessor :folder, :tag_group, *FILES
     attr_reader :loaded, :files
 
     def initialize
@@ -40,6 +40,10 @@ module SampleManifestExcel
 
     def manifest_types=(manifest_types)
       @manifest_types = ManifestTypeList.new(manifest_types).freeze
+    end
+
+    def tag_group=(tag_group)
+      @tag_group = TagGroup.find_or_create_by(name: tag_group)
     end
 
     def loaded?
