@@ -22,18 +22,18 @@ class Item < ActiveRecord::Base
 
   validates_presence_of :version
   validates_presence_of :name
-  validates_uniqueness_of :name, scope: [:workflow_id, :version], on: :create, message: "already in use (item)"
+  validates_uniqueness_of :name, scope: [:workflow_id, :version], on: :create, message: 'already in use (item)'
 
- scope :for_search_query, ->(query, with_includes) {
+ scope :for_search_query, ->(query, _with_includes) {
     where(['name LIKE ? OR id=?', "%#{query}%", query])
-  }
+                          }
 
   before_validation :set_version, on: :create
 
   def set_version
-    things_with_same_name = self.class.where(name: self.name, workflow_id: self.workflow_id)
+    things_with_same_name = self.class.where(name: name, workflow_id: workflow_id)
     if things_with_same_name.empty?
-      self.increment(:version)
+      increment(:version)
     else
       self.version = things_with_same_name.size + 1
     end

@@ -21,7 +21,7 @@ require 'factory_girl'
 require 'capybara/rspec'
 require 'capybara/poltergeist'
 require 'webmock/rspec'
-Dir[File.dirname(__FILE__) + '/features/helpers/*.rb'].each { |file| require file }
+require 'support/user_login'
 
 Capybara.javascript_driver = :poltergeist
 
@@ -77,7 +77,7 @@ RSpec.configure do |config|
   # Allows RSpec to persist some state between runs in order to support
   # the `--only-failures` and `--next-failure` CLI options. We recommend
   # you configure your source control system to ignore this file.
-  config.example_status_persistence_file_path = "spec/examples.txt"
+  config.example_status_persistence_file_path = 'spec/examples.txt'
 
   # Limits the available syntax to the non-monkey patched syntax that is
   # recommended. For more details, see:
@@ -106,6 +106,8 @@ RSpec.configure do |config|
   # the seed, which is printed after each run.
   #     --seed 1234
   config.order = :random
+
+  config.include UserLogin
 
   # Seed global randomization in this process using the `--seed` CLI option.
   # Setting this allows you to use `--seed` to deterministically reproduce

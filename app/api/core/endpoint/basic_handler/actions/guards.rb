@@ -56,7 +56,7 @@ module ::Core::Endpoint::BasicHandler::Actions::Guards
   end
   private :check_authorisation!
 
-  def accessible_action?(handler, action, request, object)
+  def accessible_action?(_handler, action, request, object)
     guard_for(action).execute(GuardProxy.new(request, object))
   end
   private :accessible_action?

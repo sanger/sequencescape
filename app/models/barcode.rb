@@ -11,7 +11,7 @@ class Barcode
       base.class_eval do
         before_create :set_default_prefix
         class_attribute :prefix
-        self.prefix = "NT"
+        self.prefix = 'NT'
 
         if ActiveRecord::Base.observers.include?(:amqp_observer)
           after_save :broadcast_barcode, if: :barcode_changed?
@@ -32,18 +32,18 @@ class Barcode
     end
 
     def set_default_prefix
-      self.barcode_prefix ||= BarcodePrefix.find_by_prefix(self.prefix)
+      self.barcode_prefix ||= BarcodePrefix.find_by(prefix: prefix)
     end
     private :set_default_prefix
 
     def sanger_human_barcode
-      return nil if self.barcode.nil?
-      self.prefix + self.barcode.to_s + Barcode.calculate_checksum(self.prefix, self.barcode)
+      return nil if barcode.nil?
+      prefix + barcode.to_s + Barcode.calculate_checksum(prefix, barcode)
     end
 
     def ean13_barcode
       return nil unless barcode.present? and prefix.present?
-      Barcode.calculate_barcode(self.prefix, self.barcode.to_i).to_s
+      Barcode.calculate_barcode(prefix, barcode.to_i).to_s
     end
     alias_method :machine_barcode, :ean13_barcode
 
@@ -55,11 +55,11 @@ class Barcode
     def no_role?
       case
       when stock_plate.nil?
-        return true
+        true
       when stock_plate.wells.first.nil?
-        return true
+        true
       when stock_plate.wells.first.requests.first.nil?
-        return true
+        true
       else
         false
       end
@@ -87,7 +87,7 @@ class Barcode
     second = prefix.getbyte(1) - 64
     first  = 0 if first < 0
     second = 0 if second < 0
-    return ((first * 27) + second) * 1000000000
+    ((first * 27) + second) * 1000000000
   end
 
   # NT23432S => 398002343283
@@ -115,7 +115,7 @@ class Barcode
       sum += byte * len
       len = len - 1
     end
-    return (sum % 23 + 'A'.getbyte(0)).chr
+    (sum % 23 + 'A'.getbyte(0)).chr
   end
 
   def self.split_barcode(code)
@@ -123,7 +123,7 @@ class Barcode
     if code.size > 11 && code.size < 14
       # Pad with zeros
       while code.size < 13
-        code = "0" + code
+        code = '0' + code
       end
     end
     if /^(...)(.*)(..)(.)$/ =~ code
@@ -141,13 +141,13 @@ class Barcode
   def self.number_to_human(code)
     barcode = barcode_to_human(code)
     prefix, number, check = split_human_barcode(barcode)
-    return number
+    number
   end
 
   def self.prefix_from_barcode(code)
     barcode = barcode_to_human(code)
     prefix, number, check = split_human_barcode(barcode)
-    return prefix
+    prefix
   end
 
   def self.prefix_to_human(prefix)
@@ -160,7 +160,7 @@ class Barcode
     #  undefined method `+' for nil:NilClass app/models/barcode.rb:101:in `calculate_checksum'
     # Incorrect barcode format
     if human_prefix.nil? || Barcode.calculate_checksum(human_prefix, bcode) != human_suffix
-      raise InvalidBarcode, "The human readable barcode was invalid, perhaps it was mistyped?"
+      raise InvalidBarcode, 'The human readable barcode was invalid, perhaps it was mistyped?'
     else
       calculate_barcode(human_prefix, bcode.to_i)
     end
@@ -168,8 +168,8 @@ class Barcode
 
   def self.barcode_to_human(code)
     bcode = nil
-    prefix, number, check = self.split_barcode(code)
-    human_prefix = self.prefix_to_human(prefix)
+    prefix, number, check = split_barcode(code)
+    human_prefix = prefix_to_human(prefix)
     if calculate_barcode(human_prefix, number.to_i) == code.to_i
       bcode = "#{human_prefix}#{number}#{check.chr}"
     end
@@ -188,21 +188,21 @@ class Barcode
   end
 
   def self.barcode_lookup(code)
-    prefix, number, check = self.split_barcode(code)
+    prefix, number, check = split_barcode(code)
     prefix = prefix_to_human(prefix)
-    human_code = self.barcode_to_human(code)
+    human_code = barcode_to_human(code)
     return nil unless human_code
 
     case prefix
-      when "ID"
-        user = User.find_by_barcode human_code
+      when 'ID'
+        user = User.find_by barcode: human_code
         return user.login if user
-      when "LE"
-        implement = Implement.find_by_barcode human_code
+      when 'LE'
+        implement = Implement.find_by barcode: human_code
         return implement.name if implement
     end
 
-    return human_code
+    human_code
   end
 
   def self.check_EAN(code)

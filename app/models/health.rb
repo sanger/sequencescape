@@ -9,7 +9,7 @@ class Health
 
   def initialize
     @status, @message = :ok, []
-    self.check
+    check
   end
 
   def check

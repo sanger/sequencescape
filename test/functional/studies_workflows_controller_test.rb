@@ -4,11 +4,11 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 require 'studies/workflows_controller'
 
 class Studies::WorkflowsControllerTest < ActionController::TestCase
-  context "Studies::Workflows controller" do
+  context 'Studies::Workflows controller' do
     setup do
       @controller = Studies::WorkflowsController.new
       @request    = ActionController::TestRequest.new
@@ -22,13 +22,13 @@ class Studies::WorkflowsControllerTest < ActionController::TestCase
 
     should_require_login(:show)
 
-     context "#show" do
+     context '#show' do
         setup do
           get :show, id: @workflow.id, study_id: @study.id
         end
 
         should respond_with :success
         should render_template :show
-      end
+     end
   end
 end

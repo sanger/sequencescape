@@ -1,25 +1,23 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+# Copyright (C) 2007-2011,2015,2016 Genome Research Ltd.
 
 require 'test_helper'
 
 class DataReleaseTest < ActiveSupport::TestCase
-  context "A study" do
+  context 'A study' do
     setup do
       @study = create :study
     end
-    context "#valid_data_release_properties?" do
-      context "and data_release enforced" do
+    context '#valid_data_release_properties?' do
+      context 'and data_release enforced' do
         setup do
           @study.enforce_data_release = true
           @study.save!
         end
 
-        context "with valid data release properties" do
-          context "which allow release" do
+        context 'with valid data release properties' do
+          context 'which allow release' do
             setup do
               @study.study_metadata.data_release_study_type.name = 'genotyping or cytogenetics'
               @study.study_metadata.data_release_strategy        = 'open'
@@ -28,11 +26,11 @@ class DataReleaseTest < ActiveSupport::TestCase
               @study.save!
             end
 
-            should "return true" do
+            should 'return true' do
               assert_equal true, @study.valid_data_release_properties?
             end
           end
-          context "which do allow release (for EGA)" do
+          context 'which do allow release (for EGA)' do
             setup do
               @study.study_metadata.data_release_study_type.name           = 'genotyping or cytogenetics'
               @study.study_metadata.data_release_strategy                  = 'managed'
@@ -44,7 +42,7 @@ class DataReleaseTest < ActiveSupport::TestCase
 
               @study.save!
             end
-            should "return true" do
+            should 'return true' do
               assert Study.find(@study.id).valid_data_release_properties?
             end
           end
@@ -52,20 +50,20 @@ class DataReleaseTest < ActiveSupport::TestCase
       end
     end
 
-    context "#ena_accession_required?" do
+    context '#ena_accession_required?' do
       setup do
       end
-      context "with accessioning turned off" do
+      context 'with accessioning turned off' do
         setup do
           @study.enforce_accessioning = false
           @study.save!
         end
-        should "return false" do
+        should 'return false' do
           assert !@study.ena_accession_required?
         end
       end
 
-      context "with properties which allow for data release" do
+      context 'with properties which allow for data release' do
         setup do
           @study.enforce_accessioning                        = true
           @study.study_metadata.data_release_study_type.name = 'genomic sequencing'
@@ -86,12 +84,12 @@ class DataReleaseTest < ActiveSupport::TestCase
         end
       end
 
-      context "with properties which do not allow for ENA data release" do
+      context 'with properties which do not allow for ENA data release' do
         setup do
           @study.enforce_accessioning = true
         end
 
-        ["transcriptomics", "other sequencing-based assay", "genotyping or cytogenetics"].each do |data_release_sort_of_study_value|
+        ['transcriptomics', 'other sequencing-based assay', 'genotyping or cytogenetics'].each do |data_release_sort_of_study_value|
           context "where sort of study is #{data_release_sort_of_study_value}" do
             setup do
               @study.study_metadata.data_release_study_type.name = data_release_sort_of_study_value
@@ -129,13 +127,13 @@ class DataReleaseTest < ActiveSupport::TestCase
                 context "and strategy is #{strategy}" do
                   setup do
                     @study.study_metadata.data_release_strategy       = strategy
-                    @study.study_metadata.data_release_delay_period   = "3 months"
-                    @study.study_metadata.data_release_delay_approval = "No"
+                    @study.study_metadata.data_release_delay_period   = '3 months'
+                    @study.study_metadata.data_release_delay_approval = 'No'
                     @study.save!
                   end
 
-                  should 'not required ena accession number' do
-                    assert !@study.ena_accession_required?
+                  should 'should require ena accession number' do
+                    assert @study.ena_accession_required?
                   end
                 end
               end

@@ -22,7 +22,7 @@ class Api::EventIO < Api::Base
     end
 
     def url_name
-      "event"
+      'event'
     end
 
     def render_class

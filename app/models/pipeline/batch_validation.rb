@@ -15,7 +15,7 @@ module Pipeline::BatchValidation
     end
   end
 
-  def validation_of_requests(requests, &block)
+  def validation_of_requests(requests)
     throw :no_requests_in_batch if requests.blank?
     yield('too many requests specified') if not max_size.nil? and requests.size > max_size
     yield('has incorrect type') unless (requests.map(&:request_type_id) - request_types_including_controls.map(&:id)).empty?

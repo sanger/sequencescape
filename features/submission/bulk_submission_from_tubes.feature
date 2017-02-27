@@ -16,7 +16,7 @@ Feature: Bulk Submission
     And the study "abc123_study" has an asset group of 5 samples in "sample tube" called "assetgroup123"
     And sample tubes are barcoded sequentially from 1
     When I go to the create bulk submissions page
-    Then I should see "Create a bulk submission"
+    Then I should see "Bulk Submission New"
 
   Scenario: Uploading a valid file with 1 submission
     When I upload a file with valid data for 1 tube submissions

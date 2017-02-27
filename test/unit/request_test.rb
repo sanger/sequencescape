@@ -4,11 +4,11 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class RequestTest < ActiveSupport::TestCase
   include AASM
-  context "A Request" do
+  context 'A Request' do
     should belong_to :user
     should belong_to :request_type
     should belong_to :item
@@ -16,7 +16,7 @@ class RequestTest < ActiveSupport::TestCase
     should validate_presence_of :request_purpose
     should_have_instance_methods :pending?, :start, :started?, :fail, :failed?, :pass, :passed?, :reset, :workflow_id
 
-    context "while scoping with #for_order_including_submission_based_requests" do
+    context 'while scoping with #for_order_including_submission_based_requests' do
       setup do
         @study = create :study
         @project = create :project
@@ -43,7 +43,7 @@ class RequestTest < ActiveSupport::TestCase
         @request3 = create :request, order: @order4, submission: @order4.submission
         @sequencing_request2 = create :request_with_sequencing_request_type, submission: @order4.submission
       end
-      should "the sequencing requests are included" do
+      should 'the sequencing requests are included' do
         assert_equal 1, @order1.requests.length
         assert_equal 1, @order2.requests.length
         assert_equal 0, @order3.requests.length
@@ -51,24 +51,24 @@ class RequestTest < ActiveSupport::TestCase
         assert_equal 2, @submission.requests.for_order_including_submission_based_requests(@order1).length
         assert_equal 2, @submission.requests.for_order_including_submission_based_requests(@order2).length
       end
-      should "an order without requests should at least find the sequencing requests" do
+      should 'an order without requests should at least find the sequencing requests' do
         assert_equal 1, @submission.requests.for_order_including_submission_based_requests(@order3).length
       end
 
-      should "when filtering from submission and scoping with an order of another submission, none of the requests are included" do
+      should 'when filtering from submission and scoping with an order of another submission, none of the requests are included' do
         assert_equal 0, @order4.submission.requests.for_order_including_submission_based_requests(@order1).length
         assert_equal 0, @order4.submission.requests.for_order_including_submission_based_requests(@order2).length
         assert_equal 0, @order4.submission.requests.for_order_including_submission_based_requests(@order3).length
         assert_equal 0, @submission.requests.for_order_including_submission_based_requests(@order4).length
       end
 
-      should "requests from other submission behave independently" do
+      should 'requests from other submission behave independently' do
         assert_equal 1, @order4.requests.length
         assert_equal 2, @order4.submission.requests.length
         assert_equal 2, @order4.submission.requests.for_order_including_submission_based_requests(@order4).length
       end
 
-      should "can be used as any other request scope" do
+      should 'can be used as any other request scope' do
         assert_equal 2, Request.for_order_including_submission_based_requests(@order1).length
         assert_equal 2, Request.for_order_including_submission_based_requests(@order2).length
         assert_equal 1, Request.for_order_including_submission_based_requests(@order3).length
@@ -76,17 +76,17 @@ class RequestTest < ActiveSupport::TestCase
       end
     end
 
-    context "#next_request" do
+    context '#next_request' do
       setup do
         @sample = create :sample
 
-        @genotyping_request_type = create :request_type, name: "genotyping"
-        @cherrypick_request_type = create :request_type, name: "cherrypick", target_asset_type: nil
+        @genotyping_request_type = create :request_type, name: 'genotyping'
+        @cherrypick_request_type = create :request_type, name: 'cherrypick', target_asset_type: nil
         @submission = FactoryHelp::submission(request_types: [@cherrypick_request_type, @genotyping_request_type].map(&:id), asset_group_name: 'to avoid asset errors')
         @item = create :item, submission: @submission
 
-        @genotype_pipeline = create :pipeline, name: "genotyping pipeline", request_types: [@genotyping_request_type]
-        @cherrypick_pipeline = create :pipeline, name: "cherrypick pipeline", request_types: [@cherrypick_request_type], next_pipeline_id: @genotype_pipeline.id, asset_type: 'LibraryTube'
+        @genotype_pipeline = create :pipeline, name: 'genotyping pipeline', request_types: [@genotyping_request_type]
+        @cherrypick_pipeline = create :pipeline, name: 'cherrypick pipeline', request_types: [@cherrypick_request_type], next_pipeline_id: @genotype_pipeline.id, asset_type: 'LibraryTube'
 
         @request1 = create(
           :request_without_assets,
@@ -98,25 +98,25 @@ class RequestTest < ActiveSupport::TestCase
           pipeline: @cherrypick_pipeline
         )
       end
-      context "with valid input" do
+      context 'with valid input' do
         setup do
           @request2 = create :request, item: @item, submission: @submission, request_type: @genotyping_request_type, pipeline: @genotype_pipeline
         end
-        should "return the correct next request" do
+        should 'return the correct next request' do
           assert_equal [@request2], @request1.next_requests(@cherrypick_pipeline)
         end
       end
 
-      context "where asset hasnt been created for second request" do
+      context 'where asset hasnt been created for second request' do
         setup do
           @request2 = create :request, asset: nil, item: @item, submission: @submission, request_type: @genotyping_request_type, pipeline: @genotype_pipeline
         end
-        should "return the correct next request" do
+        should 'return the correct next request' do
           assert_equal [@request2], @request1.next_requests(@cherrypick_pipeline)
         end
       end
 
-      context "#associate_pending_requests_for_downstream_pipeline" do
+      context '#associate_pending_requests_for_downstream_pipeline' do
         setup do
           @request2 = create :request_without_assets, asset: nil, item: @item, submission: @submission, request_type: @genotyping_request_type, pipeline: @genotype_pipeline
           @request3 = create :request_without_assets, asset: nil, item: @item, submission: @submission, request_type: @genotyping_request_type, pipeline: @genotype_pipeline
@@ -126,13 +126,13 @@ class RequestTest < ActiveSupport::TestCase
           @request1.reload
           @request2.reload
         end
-        should "set the target asset of request 1 to be the asset of request 2" do
+        should 'set the target asset of request 1 to be the asset of request 2' do
           assert_equal @request1.target_asset, @request2.asset
         end
       end
     end
 
-    context "#copy" do
+    context '#copy' do
        setup do
          @study = create :study
          @workflow = create :submission_workflow
@@ -142,7 +142,7 @@ class RequestTest < ActiveSupport::TestCase
          @new_request = @request.copy
        end
 
-       should "return same properties" do
+       should 'return same properties' do
          @request.reload
          @new_request.reload
          original_attributes = @request.request_metadata.attributes.merge('id' => nil, 'request_id' => nil, 'updated_at' => nil)
@@ -150,20 +150,20 @@ class RequestTest < ActiveSupport::TestCase
          assert_equal original_attributes, copied_attributes
        end
 
-       should "return same item_id" do
+       should 'return same item_id' do
          assert_equal @request.item_id, @new_request.item_id
        end
 
-       should "remove target_asset" do
+       should 'remove target_asset' do
          assert_equal @new_request.target_asset_id, nil
        end
 
-       should "be pending" do
+       should 'be pending' do
          assert @new_request.pending?
        end
-     end
+    end
 
-    context "#workflow" do
+    context '#workflow' do
       setup do
         @study = create :study
         @workflow = create :submission_workflow
@@ -172,17 +172,17 @@ class RequestTest < ActiveSupport::TestCase
         @request = create :request, request_type: @request_type, study: @study, workflow: @workflow, item: @item
       end
 
-      should "return a workflow id on request" do
+      should 'return a workflow id on request' do
         assert_kind_of Integer, @request.workflow_id
       end
 
-      should "return a valid value if workflow exists" do
+      should 'return a valid value if workflow exists' do
         assert_equal @workflow.id, @request.workflow_id
       end
     end
 
-    context "#after_create" do
-      context "successful" do
+    context '#after_create' do
+      context 'successful' do
         setup do
           @workflow = create :submission_workflow
           @study = create :study
@@ -192,29 +192,29 @@ class RequestTest < ActiveSupport::TestCase
           end
         end
 
-        should "not have ActiveRecord errors" do
+        should 'not have ActiveRecord errors' do
           assert_equal 0, @request.errors.size
         end
 
-        should "have request as valid" do
+        should 'have request as valid' do
           assert @request.valid?
         end
       end
 
-      context "failure" do
+      context 'failure' do
         setup do
           @workflow = create :submission_workflow
           @user = create :user
           @study = create :study
         end
 
-        should "not return an AR error" do
+        should 'not return an AR error' do
           assert_nothing_raised do
             @request = create :request, study: @study
           end
         end
 
-        should "fail to create a new request" do
+        should 'fail to create a new request' do
           begin
             @requests = Request.all
             @request = create :request, study: @study
@@ -225,7 +225,7 @@ class RequestTest < ActiveSupport::TestCase
       end
     end
 
-    context "#state" do
+    context '#state' do
       setup do
         @study = create :study
         @item  = create :item
@@ -234,19 +234,19 @@ class RequestTest < ActiveSupport::TestCase
         @user.has_role 'owner', @study
       end
 
-      context "when a new request is created" do
+      context 'when a new request is created' do
         should "return the default state 'pending'" do
-          assert_equal "pending", @request.state
+          assert_equal 'pending', @request.state
         end
       end
 
-      context "when started" do
+      context 'when started' do
         setup do
           @request.start!
         end
 
         should "return 'Started'" do
-          assert_equal "started", @request.state
+          assert_equal 'started', @request.state
         end
 
         should 'not be pending' do
@@ -278,71 +278,71 @@ class RequestTest < ActiveSupport::TestCase
         end
       end
 
-      context "when passed" do
+      context 'when passed' do
         setup do
-          @request.state = "started"
+          @request.state = 'started'
           @request.pass!
         end
 
         should "return status of 'passed'" do
-          assert_equal "passed", @request.state
+          assert_equal 'passed', @request.state
         end
 
-        should "not be pending" do
+        should 'not be pending' do
           assert_equal false, @request.pending?
         end
 
-        should "not be failed" do
+        should 'not be failed' do
           assert_equal false, @request.failed?
         end
 
-        should "not be started" do
+        should 'not be started' do
           assert_equal false, @request.started?
         end
 
-        should "be passed" do
+        should 'be passed' do
           assert @request.passed?
         end
 
-        context "do not allow the transition" do
+        context 'do not allow the transition' do
           setup do
-            @request.state = "passed"
+            @request.state = 'passed'
           end
 
-          should "to started" do
+          should 'to started' do
             # At least we'll know when and where it's blowing up.
             assert_raise(AASM::InvalidTransition) { @request.start! }
           end
         end
       end
 
-      context "when failed" do
+      context 'when failed' do
         setup do
-          @request.state = "started"
+          @request.state = 'started'
           @request.fail!
         end
 
         should "return status of 'failed'" do
-          assert_equal "failed", @request.state
+          assert_equal 'failed', @request.state
         end
 
-        should "not be pending" do
+        should 'not be pending' do
           assert_equal false, @request.pending?
         end
 
-        should "not be passed" do
+        should 'not be passed' do
           assert_equal false, @request.passed?
         end
 
-        should "not be started" do
+        should 'not be started' do
           assert_equal false, @request.started?
         end
 
-        should "be failed" do
+        should 'be failed' do
           assert @request.failed?
         end
 
-        should "not allow transition to passed" do
+        should 'not allow transition to passed' do
           assert_raise(AASM::InvalidTransition) do
             @request.pass!
           end
@@ -353,10 +353,10 @@ class RequestTest < ActiveSupport::TestCase
       end
     end
 
-    context "#open and #closed" do
+    context '#open and #closed' do
       setup do
-        @open_states = ["pending", "started"]
-        @closed_states = ["passed", "failed", "cancelled"]
+        @open_states = ['pending', 'started']
+        @closed_states = ['passed', 'failed', 'cancelled']
 
         @all_states = @open_states + @closed_states
 
@@ -366,19 +366,19 @@ class RequestTest < ActiveSupport::TestCase
 
         assert_equal @all_states.size, Request.count
       end
-      context "open requests" do
-        should "total right number" do
+      context 'open requests' do
+        should 'total right number' do
           assert_equal @open_states.size, Request.opened.count
         end
       end
-      context "closed requests" do
-        should "total right number" do
+      context 'closed requests' do
+        should 'total right number' do
           assert_equal @closed_states.size, Request.closed.count
         end
       end
     end
 
-    context "#ready?" do
+    context '#ready?' do
       setup do
         @library_creation_request = create(:library_creation_request_for_testing_sequencing_requests)
         @library_creation_request.asset.aliquots.each { |a| a.update_attributes!(project: create(:project)) }
@@ -389,20 +389,20 @@ class RequestTest < ActiveSupport::TestCase
 
         # The sequencing request will be created with a 76 read length (Standard sequencing), so the request
         # type needs to include this value in its read_length validation list (for example, single_ended_sequencing)
-        @request_type = RequestType.find_by_key("single_ended_sequencing")
+        @request_type = RequestType.find_by(key: 'single_ended_sequencing')
 
-        @sequencing_request = create(:sequencing_request, { asset: @library_tube, request_type: @request_type })
+        @sequencing_request = create(:sequencing_request, asset: @library_tube, request_type: @request_type)
       end
 
-      should "check any non-sequencing request is always ready" do
+      should 'check any non-sequencing request is always ready' do
         assert_equal true, @library_creation_request.ready?
       end
 
-      should "check a sequencing request is not ready if any of the library creation requests is not in a closed status type (passed, failed, cancelled)" do
+      should 'check a sequencing request is not ready if any of the library creation requests is not in a closed status type (passed, failed, cancelled)' do
         assert_equal false, @sequencing_request.ready?
       end
 
-      should "check a sequencing request is ready if at least one library creation request is in passed status while the others are closed" do
+      should 'check a sequencing request is ready if at least one library creation request is in passed status while the others are closed' do
         @library_creation_request.start
         @library_creation_request.pass
         @library_creation_request.save!
@@ -414,7 +414,7 @@ class RequestTest < ActiveSupport::TestCase
         assert_equal true, @sequencing_request.ready?
       end
 
-      should "check a sequencing request is not ready if any of the library creation requests is not closed, although one of them is in passed status" do
+      should 'check a sequencing request is not ready if any of the library creation requests is not closed, although one of them is in passed status' do
         @library_creation_request.start
         @library_creation_request.pass
         @library_creation_request.save!
@@ -422,7 +422,7 @@ class RequestTest < ActiveSupport::TestCase
         assert_equal false, @sequencing_request.ready?
       end
 
-      should "check a sequencing request is not ready if none of the library creation requests are in passed status" do
+      should 'check a sequencing request is not ready if none of the library creation requests are in passed status' do
         @library_creation_request.start
         @library_creation_request.fail
         @library_creation_request.save!
@@ -435,18 +435,18 @@ class RequestTest < ActiveSupport::TestCase
       end
     end
 
-    context "#customer_responsible" do
+    context '#customer_responsible' do
       setup do
         @request = create :library_creation_request
         @request.state = 'started'
       end
 
-      should "update when request is started" do
+      should 'update when request is started' do
         @request.request_metadata.update_attributes!(customer_accepts_responsibility: true)
         assert @request.request_metadata.customer_accepts_responsibility?
       end
 
-      should "not update once a request is failed" do
+      should 'not update once a request is failed' do
         @request.fail!
         assert_raise ActiveRecord::RecordInvalid do
           @request.request_metadata.update_attributes!(customer_accepts_responsibility: true)

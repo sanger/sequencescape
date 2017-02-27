@@ -35,7 +35,7 @@ module SampleManifestExcel
     # If the attributes contain a worksheet will add all of the
     # options for the list to a reference in the worksheet.
     def update(attributes = {})
-      each do |k, conditional_formatting|
+      each do |_k, conditional_formatting|
         conditional_formatting.update(attributes)
       end
 
@@ -59,10 +59,10 @@ module SampleManifestExcel
       self.conditional_formattings.tap do |cf|
         conditional_formattings.each do |key, conditional_formatting|
           cf[key] = if conditional_formatting.kind_of?(Hash)
-            ConditionalFormatting.new(conditional_formatting)
-          else
-            conditional_formatting.dup
-          end
+                      ConditionalFormatting.new(conditional_formatting)
+                    else
+                      conditional_formatting.dup
+                    end
         end
       end
     end

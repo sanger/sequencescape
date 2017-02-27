@@ -4,11 +4,11 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 require 'samples_controller'
 
 class Admin::Roles::UsersControllerTest < ActionController::TestCase
-  context "Admin::Roles::UsersControllercontroller" do
+  context 'Admin::Roles::UsersControllercontroller' do
     setup do
       @controller = Admin::Roles::UsersController.new
       @request    = ActionController::TestRequest.new
@@ -18,13 +18,11 @@ class Admin::Roles::UsersControllerTest < ActionController::TestCase
     should_require_login
 
     resource_test(
-      'user', {
-        parent: 'role',
-        actions: ['index'],
-        ignore_actions: ['show', 'create'],
-        user: -> { user = FactoryGirl.create(:user); user.is_administrator; user },
-        formats: ['html']
-      }
+      'user', parent: 'role',
+              actions: ['index'],
+              ignore_actions: ['show', 'create'],
+              user: -> { user = FactoryGirl.create(:user); user.is_administrator; user },
+              formats: ['html']
     )
   end
 end

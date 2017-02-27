@@ -57,7 +57,7 @@ module Accessionable
         alias: self.alias,
         accession: accession_number
       }.tap do |obj|
-        obj.delete(:alias) unless self.accession_number.blank?
+        obj.delete(:alias) unless accession_number.blank?
       end
     end
 
@@ -66,23 +66,23 @@ module Accessionable
       xml.instruct!
       xml.SAMPLE_SET('xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance') {
         xml.SAMPLE(sample_element_attributes) {
-          xml.TITLE self.title unless title.nil?
+          xml.TITLE title unless title.nil?
           xml.SAMPLE_NAME {
-            xml.COMMON_NAME  self.common_name
-            xml.TAXON_ID     self.taxon_id
+            xml.COMMON_NAME  common_name
+            xml.TAXON_ID     taxon_id
           }
           xml.SAMPLE_ATTRIBUTES {
-            self.tags.each do |tag|
+            tags.each do |tag|
               xml.SAMPLE_ATTRIBUTE {
                 tag.build(xml)
               }
             end
-          } unless self.tags.blank?
+          } unless tags.blank?
 
-          xml.SAMPLE_LINKS {} unless self.links.blank?
+          xml.SAMPLE_LINKS {} unless links.blank?
         }
       }
-      return xml.target!
+      xml.target!
     end
 
     def update_accession_number!(user, accession_number)
@@ -106,14 +106,14 @@ module Accessionable
   class ArrayExpressTag < Base::Tag
     def label
       default_tag = "ArrayExpress-#{I18n.t("#{@scope}.#{@name}.label").tr(" ", "_").camelize}"
-      I18n.t("#{@scope}.#{@name}.era_label", default: default_tag)
+      I18n.t("#{@scope}.#{@name}.ena_label", default: default_tag)
     end
   end
 
   class EgaTag < Base::Tag
     def label
       default_tag = "EGA-#{I18n.t("#{@scope}.#{@name}.label").tr(" ", "_").camelize}"
-      I18n.t("#{@scope}.#{@name}.era_label", default: default_tag)
+      I18n.t("#{@scope}.#{@name}.ena_label", default: default_tag)
     end
   end
 end

@@ -19,7 +19,7 @@ class BroadcastEvent < ActiveRecord::Base
   validates_presence_of :seed
 
   serialize :properties
-  self.inheritance_column = "sti_type"
+  self.inheritance_column = 'sti_type'
 
   def initialize(*args)
     raise StandardError, 'BroadcastEvents can not be created directly' unless self.class < BroadcastEvent

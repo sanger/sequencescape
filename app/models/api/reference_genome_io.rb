@@ -21,7 +21,7 @@ class Api::ReferenceGenomeIO < Api::Base
     end
 
     def url_name
-      "reference_genome"
+      'reference_genome'
     end
   end
 

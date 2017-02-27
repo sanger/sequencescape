@@ -5,5 +5,5 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 class PulldownEnrichmentThreePlate < PulldownPlate
-  self.prefix = "FK"
+  self.prefix = 'FK'
 end

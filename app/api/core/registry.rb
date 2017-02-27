@@ -21,7 +21,7 @@ class ::Core::Registry
   end
 
   def lookup_target_class_through_model_hierarchy!(model_class, root_lookup_model_class = model_class)
-    raise UnregisteredError, "Unable to locate for #{root_lookup_model_class.name.inspect} (#{self.inspect})" if model_class.nil? or ActiveRecord::Base == model_class
+    raise UnregisteredError, "Unable to locate for #{root_lookup_model_class.name.inspect} (#{inspect})" if model_class.nil? or ActiveRecord::Base == model_class
 
     target_class = lookup_target_class_in_registry(model_class)
     return target_class unless target_class.nil?

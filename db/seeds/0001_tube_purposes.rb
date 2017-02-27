@@ -5,7 +5,7 @@
 # Copyright (C) 2012,2015 Genome Research Ltd.
 
 ActiveRecord::Base.transaction do
-  barcode_printer_type = BarcodePrinterType.find_by_name('1D Tube') or raise 'Cannot find 1D printer'
+  barcode_printer_type = BarcodePrinterType.find_by(name: '1D Tube') or raise 'Cannot find 1D printer'
 
   {
     'Standard MX'       => ['Tube::StandardMx',            'MultiplexedLibraryTube'],

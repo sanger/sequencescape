@@ -1,11 +1,11 @@
-require "test_helper"
+require 'test_helper'
 
 class TagSubstitutionTest < ActiveSupport::TestCase
   # We have a large number of scenarios here, because unfortunately
   # things can get quite complicated.
 
-  context "TagSubstitution" do
-    context "with a simple tag swap" do
+  context 'TagSubstitution' do
+    context 'with a simple tag swap' do
       # Works for: Library manifests, old tube pipelines
       # We have two samples, each with unique tags, which only exist
       # in aliquots identified by the library id. We don't need to consider:
@@ -69,7 +69,7 @@ class TagSubstitutionTest < ActiveSupport::TestCase
           { sample_id: @sample_b.id, library_id: @library_tube_b.id, original_tag_id: @sample_a_orig_tag.id, substitute_tag_id: @sample_b_orig_tag.id, original_tag2_id: @sample_b_orig_tag2.id, substitute_tag2_id: @sample_a_orig_tag2.id }
         ]
         ts = TagSubstitution.new(instructions)
-        refute ts.save, "Substitution saved when it should have errord"
+        refute ts.save, 'Substitution saved when it should have errord'
         assert_includes ts.errors.full_messages, 'Substitution Matching aliquots could not be found'
       end
 
@@ -91,7 +91,7 @@ class TagSubstitutionTest < ActiveSupport::TestCase
       end
     end
 
-    context "with a multi-tag sample tag swap" do
+    context 'with a multi-tag sample tag swap' do
       setup do
         @sample_a = create :sample
         @sample_b = create :sample

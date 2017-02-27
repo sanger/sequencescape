@@ -41,7 +41,7 @@ class Api::StudyIO < Api::Base
   map_attribute_to_json_attribute(:updated_at)
 
   extra_json_attributes do |object, json_attributes|
-    json_attributes["abbreviation"] = object.abbreviation
+    json_attributes['abbreviation'] = object.abbreviation
 
     object.roles.each do |role|
       json_attributes[role.name.downcase.gsub(/\s+/, '_')] = role.user_role_bindings.map do |user_role|

@@ -5,11 +5,11 @@
 module ActiveResource::Formats::PacBioJsonFormat
   class << self
     def decode(json)
-      ActiveSupport::JSON.decode(json)["Rows"]
+      ActiveSupport::JSON.decode(json)['Rows']
     end
 
     def extension
-      "json"
+      'json'
     end
 
     def encode(hash, options = nil)
@@ -17,7 +17,7 @@ module ActiveResource::Formats::PacBioJsonFormat
     end
 
     def mime_type
-      "application/json"
+      'application/json'
     end
   end
 end

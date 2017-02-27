@@ -4,7 +4,7 @@ ActionController::Base.send(:include, Authorization::Base)
 ActionView::Base.send(:include, Authorization::Base::ControllerInstanceMethods)
 
 # Can be 'object roles' or 'hardwired'
-AUTHORIZATION_MIXIN = "object roles"
+AUTHORIZATION_MIXIN = 'object roles'
 
 # NOTE : If you use modular controllers like '/admin/products' be sure
 # to redirect to something like '/sessions' controller (with a leading slash)

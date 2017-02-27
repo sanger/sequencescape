@@ -29,19 +29,19 @@ module LabelPrinter
     end
 
     def self.headers
-      { content_type: "application/vnd.api+json", accept: "application/vnd.api+json" }
+      { content_type: 'application/vnd.api+json', accept: 'application/vnd.api+json' }
     end
 
     def self.print(attributes)
-      RestClient.post print_job_url, { "data" => { "attributes" => attributes } }.to_json, headers
+      RestClient.post print_job_url, { 'data' => { 'attributes' => attributes } }.to_json, headers
     rescue RestClient::UnprocessableEntity => e
       raise PmbException.new(e), pretty_errors(e.response)
     rescue RestClient::InternalServerError => e
-      raise PmbException.new(e), "Something went wrong in PrintMyBarcode"
+      raise PmbException.new(e), 'Something went wrong in PrintMyBarcode'
     rescue RestClient::ServiceUnavailable => e
-      raise PmbException.new(e), "PrintMyBarcode is too busy. Please try again later"
+      raise PmbException.new(e), 'PrintMyBarcode is too busy. Please try again later'
     rescue Errno::ECONNREFUSED => e
-      raise PmbException.new(e), "PrintMyBarcode service is down"
+      raise PmbException.new(e), 'PrintMyBarcode service is down'
     end
 
     def self.get_label_template_by_name(name)
@@ -49,22 +49,22 @@ module LabelPrinter
     rescue RestClient::UnprocessableEntity => e
       raise PmbException.new(e), pretty_errors(e.response)
     rescue RestClient::InternalServerError => e
-      raise PmbException.new(e), "Something went wrong in PrintMyBarcode"
+      raise PmbException.new(e), 'Something went wrong in PrintMyBarcode'
     rescue RestClient::ServiceUnavailable => e
-      raise PmbException.new(e), "PrintMyBarcode is too busy. Please try again later"
+      raise PmbException.new(e), 'PrintMyBarcode is too busy. Please try again later'
     rescue Errno::ECONNREFUSED => e
-      raise PmbException.new(e), "PrintMyBarcode service is down"
+      raise PmbException.new(e), 'PrintMyBarcode service is down'
     end
 
     def self.register_printer(name)
       unless printer_exists?(name)
-        RestClient.post printers_url, { "data" => { "attributes" => { "name" => name } } }.to_json, headers
+        RestClient.post printers_url, { 'data' => { 'attributes' => { 'name' => name } } }.to_json, headers
       end
     end
 
     def self.printer_exists?(name)
       response = JSON.parse(RestClient.get "#{printers_filter_url}#{name}", headers)
-      response["data"].present?
+      response['data'].present?
     end
 
     def self.pretty_errors(errors)
@@ -81,20 +81,20 @@ module LabelPrinter
     def self.prettify_new_errors(errors)
       [].tap do |error_list|
         errors.each do |error|
-          attribute = error["source"]["pointer"].split('/').last.humanize
-          error_list << "%{attribute} %{message}" % { attribute: attribute, message: error["detail"] }
+          attribute = error['source']['pointer'].split('/').last.humanize
+          error_list << '%{attribute} %{message}' % { attribute: attribute, message: error['detail'] }
         end
       end
-      .join("; ")
+      .join('; ')
     end
 
     def self.prettify_old_errors(errors)
       [].tap do |error_list|
         errors.each do |k, v|
-          error_list << "%{attribute} %{message}" % { attribute: k.capitalize + ":", message: v.join(", ") }
+          error_list << '%{attribute} %{message}' % { attribute: k.capitalize + ':', message: v.join(', ') }
         end
       end
-      .join("; ")
+      .join('; ')
     end
   end
 end

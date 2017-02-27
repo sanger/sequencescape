@@ -8,6 +8,7 @@ Feature: object with an accession should be modifiable
       And the study "Study accession test" data release timing is standard
       And the study "Study accession test" has samples contaminated with human DNA
       And the study "Study accession test" contains human DNA
+      And study "Study accession test" has an accession number
 
   Scenario: Accessioning errors should be informative
     Given study "Study accession test" has a registered sample "sampletest"

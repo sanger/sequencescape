@@ -8,7 +8,7 @@ module LabelPrinter
         @only_first_label = options[:only_first_label]
       end
 
-      def top_right(plate = nil)
+      def top_right(_plate = nil)
         PlatePurpose.stock_plate_purpose.name.to_s
       end
 

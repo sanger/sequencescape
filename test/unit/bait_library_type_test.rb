@@ -12,11 +12,11 @@ class BaitLibraryTypeTest < ActiveSupport::TestCase
       @bait_library = create :bait_library
     end
 
-    should "Bait Library Types exist" do
+    should 'Bait Library Types exist' do
       assert BaitLibraryType.count > 0
     end
 
-    should "bait libraries have library types" do
+    should 'bait libraries have library types' do
       assert @bait_library.bait_library_type
     end
   end
@@ -25,13 +25,13 @@ class BaitLibraryTypeTest < ActiveSupport::TestCase
     setup do
       @sample = create :sample
 
-      @pulldown_request_type = create :request_type, name: "Bait Pulldown", target_asset_type: nil
-      @sequencing_request_type = create :request_type, name: "Single ended sequencing2"
+      @pulldown_request_type = create :request_type, name: 'Bait Pulldown', target_asset_type: nil
+      @sequencing_request_type = create :request_type, name: 'Single ended sequencing2'
       @submission = FactoryHelp::submission(request_types: [@pulldown_request_type, @sequencing_request_type].map(&:id), asset_group_name: 'to avoid asset errors')
       @item = create :item, submission: @submission
 
-      @genotype_pipeline = create :pipeline, name: "Cluster formation SE2", request_types: [@sequencing_request_type]
-      @pulldown_pipeline = create :pipeline, name: "Bait Pulldown", request_types: [@pulldown_request_type], next_pipeline_id: @genotype_pipeline.id, asset_type: 'LibraryTube'
+      @genotype_pipeline = create :pipeline, name: 'Cluster formation SE2', request_types: [@sequencing_request_type]
+      @pulldown_pipeline = create :pipeline, name: 'Bait Pulldown', request_types: [@pulldown_request_type], next_pipeline_id: @genotype_pipeline.id, asset_type: 'LibraryTube'
 
       @request1 = create(
         :request_without_assets,

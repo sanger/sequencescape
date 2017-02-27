@@ -1,4 +1,4 @@
-module FeatureHelpers
+module UserLogin
   def login_user(user)
     visit login_path
     fill_in 'Username', with: user.login

@@ -312,7 +312,7 @@ AssetShape.create!(
 )
 
 YAML::load(plate_purposes).each do |plate_purpose|
-  attributes = plate_purpose.reverse_merge('type' => 'PlatePurpose', 'cherrypickable_target' => false, 'asset_shape_id' => AssetShape.find_by_name('Standard').id)
+  attributes = plate_purpose.reverse_merge('type' => 'PlatePurpose', 'cherrypickable_target' => false, 'asset_shape_id' => AssetShape.find_by(name: 'Standard').id)
   attributes.delete('type').constantize.new(attributes) do |purpose|
     purpose.id = attributes['id']
   end.save!
@@ -323,25 +323,29 @@ end
   PlatePurpose.create!(name: "Aliquot #{index}", qc_display: true, can_be_considered_a_stock_plate: true, cherrypickable_target: true)
 end
 
+PlatePurpose.create!(name: 'ABgene_0765', can_be_considered_a_stock_plate: false, cherrypickable_source: true, cherrypickable_target: false)
+PlatePurpose.create!(name: 'ABgene_0800', can_be_considered_a_stock_plate: false, cherrypickable_source: true, cherrypickable_target: true)
+PlatePurpose.create!(name: 'FluidX075', can_be_considered_a_stock_plate: false, cherrypickable_source: true, cherrypickable_target: false)
+
 # Build the links between the parent and child plate purposes
 relationships = {
-  "Working Dilution"    => ["Working Dilution", "Pico Dilution"],
-  "Pico Dilution"       => ["Working Dilution", "Pico Dilution"],
-  "Pico Assay A"        => ["Pico Assay A", "Pico Assay B"],
-  "Pulldown"            => ["Pulldown Aliquot"],
-  "Dilution Plates"     => ["Working Dilution", "Pico Dilution"],
-  "Pico Assay Plates"   => ["Pico Assay A", "Pico Assay B"],
-  "Pico Assay B"        => ["Pico Assay A", "Pico Assay B"],
-  "Gel Dilution Plates" => ["Gel Dilution"],
-  "Pulldown Aliquot"    => ["Sonication"],
-  "Sonication"          => ["Run of Robot"],
-  "Run of Robot"        => ["EnRichment 1"],
-  "EnRichment 1"        => ["EnRichment 2"],
-  "EnRichment 2"        => ["EnRichment 3"],
-  "EnRichment 3"        => ["EnRichment 4"],
-  "EnRichment 4"        => ["Sequence Capture"],
-  "Sequence Capture"    => ["Pulldown PCR"],
-  "Pulldown PCR"        => ["Pulldown qPCR"]
+  'Working Dilution'    => ['Working Dilution', 'Pico Dilution'],
+  'Pico Dilution'       => ['Working Dilution', 'Pico Dilution'],
+  'Pico Assay A'        => ['Pico Assay A', 'Pico Assay B'],
+  'Pulldown'            => ['Pulldown Aliquot'],
+  'Dilution Plates'     => ['Working Dilution', 'Pico Dilution'],
+  'Pico Assay Plates'   => ['Pico Assay A', 'Pico Assay B'],
+  'Pico Assay B'        => ['Pico Assay A', 'Pico Assay B'],
+  'Gel Dilution Plates' => ['Gel Dilution'],
+  'Pulldown Aliquot'    => ['Sonication'],
+  'Sonication'          => ['Run of Robot'],
+  'Run of Robot'        => ['EnRichment 1'],
+  'EnRichment 1'        => ['EnRichment 2'],
+  'EnRichment 2'        => ['EnRichment 3'],
+  'EnRichment 3'        => ['EnRichment 4'],
+  'EnRichment 4'        => ['Sequence Capture'],
+  'Sequence Capture'    => ['Pulldown PCR'],
+  'Pulldown PCR'        => ['Pulldown qPCR']
 }
 
 ActiveRecord::Base.transaction do
@@ -365,26 +369,26 @@ ActiveRecord::Base.transaction do
   PlatePurpose.create!(
   name: 'STA',
   default_state: 'pending',
-  barcode_printer_type: BarcodePrinterType.find_by_name('96 Well Plate'),
+  barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
   cherrypickable_target: true,
   cherrypick_direction: 'column',
-  asset_shape: AssetShape.find_by_name('Standard')
+  asset_shape: AssetShape.find_by(name: 'Standard')
 )
 PlatePurpose.create!(
   name: 'STA2',
   default_state: 'pending',
-  barcode_printer_type: BarcodePrinterType.find_by_name('96 Well Plate'),
+  barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
   cherrypickable_target: true,
   cherrypick_direction: 'column',
-  asset_shape: AssetShape.find_by_name('Standard')
+  asset_shape: AssetShape.find_by(name: 'Standard')
 )
 PlatePurpose.create!(
   name: 'SNP Type',
   default_state: 'pending',
-  barcode_printer_type: BarcodePrinterType.find_by_name('96 Well Plate'),
+  barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
   cherrypickable_target: true,
   cherrypick_direction: 'column',
-  asset_shape: AssetShape.find_by_name('Standard')
+  asset_shape: AssetShape.find_by(name: 'Standard')
 )
 PlatePurpose.create!(
   name: 'Fluidigm 96-96',
@@ -392,7 +396,7 @@ PlatePurpose.create!(
   cherrypickable_target: true,
   cherrypick_direction: 'interlaced_column',
   size: 96,
-  asset_shape: AssetShape.find_by_name('Fluidigm96')
+  asset_shape: AssetShape.find_by(name: 'Fluidigm96')
 )
 PlatePurpose.create!(
   name: 'Fluidigm 192-24',
@@ -400,16 +404,16 @@ PlatePurpose.create!(
   cherrypickable_target: true,
   cherrypick_direction: 'interlaced_column',
   size: 192,
-  asset_shape: AssetShape.find_by_name('Fluidigm192')
+  asset_shape: AssetShape.find_by(name: 'Fluidigm192')
 )
 end
 PlatePurpose.create!(
   name: 'PacBio Sheared',
   target_type: 'Plate',
   default_state: 'pending',
-  barcode_printer_type: BarcodePrinterType.find_by_name('96 Well Plate'),
+  barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
   cherrypickable_target: false,
   size: 96,
-  asset_shape: AssetShape.find_by_name('Standard'),
+  asset_shape: AssetShape.find_by(name: 'Standard'),
   barcode_for_tecan: 'ean13_barcode'
 )

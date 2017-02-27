@@ -17,7 +17,7 @@ module BroadcastEvent::SubjectHelpers
       [:friendly_name, :uuid, :subject_type, :role_type]
     end
 
-    def as_json(*args)
+    def as_json(*_args)
       Hash[json_fields.map { |f| [f, send(f)] }]
     end
 
@@ -30,7 +30,7 @@ module BroadcastEvent::SubjectHelpers
       @method = method
     end
 
-    def target_for(seed, event)
+    def target_for(seed, _event)
       seed.send(method)
     end
 
@@ -73,7 +73,7 @@ module BroadcastEvent::SubjectHelpers
       @name = name
     end
 
-    def for(seed, event)
+    def for(seed, _event)
       Subject.new(name, seed)
     end
   end

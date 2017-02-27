@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
-Given /^plate "([^"]*)" with (\d+) samples in study "([^"]*)" has a "([^"]*)" submission$/ do |plate_barcode, number_of_samples, study_name, submission_name|
+Given(/^plate "([^"]*)" with (\d+) samples in study "([^"]*)" has a "([^"]*)" submission$/) do |plate_barcode, number_of_samples, study_name, submission_name|
   step(%Q{I have a plate "#{plate_barcode}" in study "#{study_name}" with #{number_of_samples} samples in asset group "Plate asset group #{plate_barcode}"})
   step(%Q{plate "#{plate_barcode}" has concentration results})
   step(%Q{plate "#{plate_barcode}" has measured volume results})
@@ -13,11 +13,11 @@ Given /^plate "([^"]*)" with (\d+) samples in study "([^"]*)" has a "([^"]*)" su
   # relying on the ordering within sequencescape.  Some of the plates are created with less than
   # the total wells needed (which is bad).
   wells = []
-  Plate.find_by_barcode(plate_barcode).wells.walk_in_column_major_order { |well, _| wells << well }
+  Plate.find_by(barcode: plate_barcode).wells.walk_in_column_major_order { |well, _| wells << well }
   wells.compact!
 
-  study = Study.find_by_name(study_name)
-  project = Project.find_by_name("Test project")
+  study = Study.find_by(name: study_name)
+  project = Project.find_by(name: 'Test project')
   # we need to set the study on aliquots
   wells.each do |well|
     well.aliquots.each do |a|
@@ -25,19 +25,19 @@ Given /^plate "([^"]*)" with (\d+) samples in study "([^"]*)" has a "([^"]*)" su
     end
   end
 
-  submission_template = SubmissionTemplate.find_by_name(submission_name)
+  submission_template = SubmissionTemplate.find_by(name: submission_name)
   submission = submission_template.create_and_build_submission!(
     study: study,
     project: project,
-    workflow: Submission::Workflow.find_by_key('short_read_sequencing'),
+    workflow: Submission::Workflow.find_by(key: 'short_read_sequencing'),
     user: User.last,
     assets: wells,
-    request_options: { :multiplier => { "1" => "1", "3" => "1" }, "read_length" => "100", "fragment_size_required_to" => "400", "fragment_size_required_from" => "300", "library_type" => "Standard" }
+    request_options: { :multiplier => { '1' => '1', '3' => '1' }, 'read_length' => '100', 'fragment_size_required_to' => '400', 'fragment_size_required_from' => '300', 'library_type' => 'Standard' }
     )
-  step("1 pending delayed jobs are processed")
+  step('1 pending delayed jobs are processed')
 end
 
-Given /^plate "([^"]*)" with (\d+) samples in study "([^"]*)" has a "([^"]*)" submission for cherrypicking$/ do |plate_barcode, number_of_samples, study_name, submission_name|
+Given(/^plate "([^"]*)" with (\d+) samples in study "([^"]*)" has a "([^"]*)" submission for cherrypicking$/) do |plate_barcode, number_of_samples, study_name, submission_name|
   step(%Q{I have a plate "#{plate_barcode}" in study "#{study_name}" with #{number_of_samples} samples in asset group "Plate asset group #{plate_barcode}"})
   step(%Q{plate "#{plate_barcode}" has concentration results})
 
@@ -45,53 +45,53 @@ Given /^plate "([^"]*)" with (\d+) samples in study "([^"]*)" has a "([^"]*)" su
   # relying on the ordering within sequencescape.  Some of the plates are created with less than
   # the total wells needed (which is bad).
   wells = []
-  Plate.find_by_barcode(plate_barcode).wells.walk_in_column_major_order { |well, _| wells << well }
+  Plate.find_by(barcode: plate_barcode).wells.walk_in_column_major_order { |well, _| wells << well }
   wells.compact!
 
-  submission_template = SubmissionTemplate.find_by_name(submission_name)
+  submission_template = SubmissionTemplate.find_by(name: submission_name)
   submission = submission_template.create_and_build_submission!(
-    study: Study.find_by_name(study_name),
-    project: Project.find_by_name("Test project"),
-    workflow: Submission::Workflow.find_by_key('short_read_sequencing'),
+    study: Study.find_by(name: study_name),
+    project: Project.find_by(name: 'Test project'),
+    workflow: Submission::Workflow.find_by(key: 'short_read_sequencing'),
     user: User.last,
     assets: wells
     )
-  step("1 pending delayed jobs are processed")
+  step('1 pending delayed jobs are processed')
 end
 
-Given /^plate "([^"]*)" with (\d+) samples in study "([^"]*)" exists$/ do |plate_barcode, number_of_samples, study_name|
+Given(/^plate "([^"]*)" with (\d+) samples in study "([^"]*)" exists$/) do |plate_barcode, number_of_samples, study_name|
   step(%Q{I have a plate "#{plate_barcode}" in study "#{study_name}" with #{number_of_samples} samples in asset group "Plate asset group #{plate_barcode}"})
   step(%Q{plate "#{plate_barcode}" has concentration results})
   step(%Q{plate "#{plate_barcode}" has measured volume results})
 end
 
-Given /^plate "([^"]*)" has concentration results$/ do |plate_barcode|
-  plate = Plate.find_by_barcode(plate_barcode)
+Given(/^plate "([^"]*)" has concentration results$/) do |plate_barcode|
+  plate = Plate.find_by(barcode: plate_barcode)
   plate.wells.each_with_index do |well, index|
     well.well_attribute.update_attributes!(concentration: index * 40)
   end
 end
 
-Given /^plate "([^"]*)" has nonzero concentration results$/ do |plate_barcode|
+Given(/^plate "([^"]*)" has nonzero concentration results$/) do |plate_barcode|
  step(%Q{plate "#{plate_barcode}" has concentration results})
 
-  plate = Plate.find_by_barcode(plate_barcode)
-  plate.wells.each_with_index do |well, index|
+  plate = Plate.find_by(barcode: plate_barcode)
+  plate.wells.each_with_index do |well, _index|
     if well.well_attribute.concentration == 0.0
       well.well_attribute.update_attributes!(concentration: 1)
     end
   end
 end
 
-Given /^plate "([^\"]+)" has no concentration results$/ do |plate_barcode|
-  plate = Plate.find_by_barcode(plate_barcode) or raise StandardError, "Cannot find plate #{plate_barcode.inspect}"
+Given(/^plate "([^\"]+)" has no concentration results$/) do |plate_barcode|
+  plate = Plate.find_by(barcode: plate_barcode) or raise StandardError, "Cannot find plate #{plate_barcode.inspect}"
   plate.wells.each do |well|
     well.well_attribute.update_attributes!(concentration: nil)
   end
 end
 
-Given /^plate "([^"]*)" has measured volume results$/ do |plate_barcode|
-  plate = Plate.find_by_barcode(plate_barcode)
+Given(/^plate "([^"]*)" has measured volume results$/) do |plate_barcode|
+  plate = Plate.find_by(barcode: plate_barcode)
   plate.wells.each_with_index do |well, index|
     well.well_attribute.update_attributes!(measured_volume: index * 11)
   end
@@ -109,14 +109,14 @@ Then /^I should see the (MRI |JRuby |)cherrypick worksheet table:$/ do |interpre
       expected_results_table.map_column!(column_name.to_s) { |text| text.squish }
     end
     expected_results_table.diff!(actual_table)
-   end
- end
-
-When /^I look at the pulldown report for the batch it should be:$/ do |expected_results_table|
-  expected_results_table.diff!(CSV.parse(page.source).collect { |r| r.collect { |c| c ? c : "" } })
+  end
 end
 
-Given /^I have a tag group called "([^"]*)" with (\d+) tags$/ do |tag_group_name, number_of_tags|
+When /^I look at the pulldown report for the batch it should be:$/ do |expected_results_table|
+  expected_results_table.diff!(CSV.parse(page.source).collect { |r| r.collect { |c| c ? c : '' } })
+end
+
+Given(/^I have a tag group called "([^"]*)" with (\d+) tags$/) do |tag_group_name, number_of_tags|
   oligos = %w(ATCACG CGATGT TTAGGC TGACCA)
   tag_group = TagGroup.create!(name: tag_group_name)
   tags = []
@@ -131,13 +131,13 @@ Then /^the default plates to wells table should look like:$/ do |expected_result
   expected_results_table.diff!(actual_table)
 end
 
-When /^I set (PacBioLibraryTube|Plate|Sample|Multiplexed Library|Library|Pulldown Multiplexed Library) "([^"]*)" to be in freezer "([^"]*)"$/ do |asset_type, plate_barcode, freezer_name|
+When /^I set (PacBioLibraryTube|Plate|Sample|Multiplexed Library|Library|Pulldown Multiplexed Library) "([^"]*)" to be in freezer "([^"]*)"$/ do |_asset_type, plate_barcode, freezer_name|
   asset = Asset.find_from_machine_barcode(plate_barcode)
-  location = Location.find_by_name(freezer_name)
+  location = Location.find_by(name: freezer_name)
   asset.update_attributes!(location: location)
 end
 
-Given /^I have a pulldown batch$/ do
+Given(/^I have a pulldown batch$/) do
   step('plate "1234567" with 8 samples in study "Test study" has a "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing" submission')
   step('plate "222" with 8 samples in study "Study A" has a "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing" submission')
   step('plate "1234567" has nonzero concentration results')
@@ -161,7 +161,7 @@ Given /^I have a pulldown batch$/ do
   step('I press "Submit"')
 end
 
-Given /^I have 2 pulldown plates$/ do
+Given(/^I have 2 pulldown plates$/) do
   step('plate "1234567" with 1 samples in study "Test study" has a "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing" submission')
   step('plate "1234567" has nonzero concentration results')
   step('plate "1234567" has measured volume results')
@@ -191,7 +191,7 @@ Given /^I have 2 pulldown plates$/ do
   step('I set Plate "1220088888782" to be in freezer "Pulldown freezer"')
 end
 
-Given /^all library tube barcodes are set to know values$/ do
+Given(/^all library tube barcodes are set to know values$/) do
   PulldownMultiplexedLibraryTube.all.each_with_index do |tube, index|
     tube.update_attributes!(barcode: (index + 1).to_s)
   end
@@ -206,39 +206,39 @@ Then /^library "([^"]*)" should have (\d+) sequencing requests$/ do |library_bar
   assert_equal number_of_sequencing_requests.to_i, SequencingRequest.count(conditions: ["asset_id = #{library.id}"])
 end
 
-Given /^the CherrypickForPulldownPipeline pipeline has a max batch size of (\d+)$/ do |max_size|
-  pipeline = Pipeline.find_by_name('Cherrypicking for Pulldown')
+Given(/^the CherrypickForPulldownPipeline pipeline has a max batch size of (\d+)$/) do |max_size|
+  pipeline = Pipeline.find_by(name: 'Cherrypicking for Pulldown')
   pipeline.update_attributes!(max_size: max_size)
 end
 
-Given /^I have a plate "([^"]*)" with the following wells:$/ do |plate_barcode, well_details|
+Given(/^I have a plate "([^"]*)" with the following wells:$/) do |plate_barcode, well_details|
   plate = FactoryGirl.create :plate, barcode: plate_barcode
   well_details.hashes.each do |well_detail|
-    well = Well.create!(map: Map.find_by_description_and_asset_size(well_detail[:well_location], 96), plate: plate)
+    well = Well.create!(map: Map.find_by(description: well_detail[:well_location], asset_size: 96), plate: plate)
     well.well_attribute.update_attributes!(concentration: well_detail[:measured_concentration], measured_volume: well_detail[:measured_volume])
   end
 end
 
-Given /^I have a "([^"]*)" submission with 2 plates$/ do |submission_template_name|
+Given(/^I have a "([^"]*)" submission with 2 plates$/) do |submission_template_name|
     project = FactoryGirl.create :project
     study = FactoryGirl.create :study
-    plate_1 = FactoryGirl.create :plate, barcode: "333"
-    plate_2 = FactoryGirl.create :plate, barcode: "222"
+    plate_1 = FactoryGirl.create :plate, barcode: '333'
+    plate_2 = FactoryGirl.create :plate, barcode: '222'
     [plate_1, plate_2].each do |plate|
       Well.create!(map_id: 1, plate: plate)
     end
 
-    submission_template = SubmissionTemplate.find_by_name(submission_template_name)
+    submission_template = SubmissionTemplate.find_by(name: submission_template_name)
 
     submission = submission_template.create_and_build_submission!(
       study: study,
       project: project,
-      workflow: Submission::Workflow.find_by_key('short_read_sequencing'),
+      workflow: Submission::Workflow.find_by(key: 'short_read_sequencing'),
       user: User.last,
       assets: Well.all,
-      request_options: { :multiplier => { "1" => "1", "3" => "1" }, "read_length" => "100", "fragment_size_required_to" => "300", "fragment_size_required_from" => "250", "library_type" => 'Standard' }
+      request_options: { :multiplier => { '1' => '1', '3' => '1' }, 'read_length' => '100', 'fragment_size_required_to' => '300', 'fragment_size_required_from' => '250', 'library_type' => 'Standard' }
       )
-    step("1 pending delayed jobs are processed")
+    step('1 pending delayed jobs are processed')
 end
 
 When /^the last batch is sorted in row order$/ do
@@ -248,6 +248,6 @@ end
 
 When /^the last batch is sorted in row and plate order$/ do
   source = Batch.last.batch_requests.group_by { |br| br.request.asset.plate.id }
-  order = source.sort_by(&:first).map { |plate, br| br.sort_by { |br| br.request.asset.map.row_order }.map(&:id) }.flatten
+  order = source.sort_by(&:first).map { |_plate, br| br.sort_by { |br| br.request.asset.map.row_order }.map(&:id) }.flatten
   Batch.last.batch_requests.map { |br| br.update_attributes!(position: order.index(br.id)) }
 end

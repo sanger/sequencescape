@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 Given /^Pipeline "([^"]*)" and a setup for 641709$/ do |name|
- pipeline = Pipeline.find_by_name(name) or raise StandardError, "Cannot find pipeline '#{name}'"
+ pipeline = Pipeline.find_by(name: name) or raise StandardError, "Cannot find pipeline '#{name}'"
  pipeline.workflow.item_limit.times do
    step(%Q{I have a request for "#{name}"})
  end

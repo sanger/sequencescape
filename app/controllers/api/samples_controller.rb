@@ -12,7 +12,7 @@ class Api::SamplesController < Api::BaseController
 
   def next_sanger_sample_id
     respond_to do |format|
-      format.json { render json: SangerSampleId.create().id }
+      format.json { render json: SangerSampleId.create.id }
     end
   end
 
