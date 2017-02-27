@@ -13,19 +13,16 @@ FactoryGirl.define do
 
   factory :comment  do
     description 'It is okay I guess'
+    association(:commentable, factory: :asset)
   end
 
-  factory :aliquot do
+  factory :aliquot, aliases: [:tagged_aliquot, :dual_tagged_aliquot] do
     sample
     study
     project
     tag
-    association :tag2, factory: :tag
-
-    factory :tagged_aliquot do
-      tag
-      tag2 { |t| t.association(:tag) }
-    end
+    tag2
+    receptacle
 
     factory :untagged_aliquot do
       tag  nil
@@ -36,14 +33,9 @@ FactoryGirl.define do
       tag
       tag2 nil
     end
-
-    factory :dual_tagged_aliquot do
-      tag
-      tag2 { |t| t.association(:tag) }
-    end
   end
 
-  factory :aliquot_receptacle, class: Aliquot::Receptacle do
+  factory :aliquot_receptacle, class: Aliquot::Receptacle, aliases: [:receptacle] do
   end
 
   factory :event do
@@ -149,9 +141,6 @@ FactoryGirl.define do
     name                  'my_template'
     submission_parameters(workflow_id: 1, request_type_ids_list: [])
     product_catalogue { |pc| pc.association(:single_product_catalogue) }
-  end
-
-  factory :report do
   end
 
   factory :request_metadata, class: Request::Metadata do

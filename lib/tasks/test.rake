@@ -17,13 +17,6 @@ namespace :test do
         # All these factories should be updated to make them valid
         # Any tests which break as a result should be fixed.
         invalid_factories = [
-          :comment,
-          :aliquot,
-          :tagged_aliquot,
-          :untagged_aliquot,
-          :single_tagged_aliquot,
-          :dual_tagged_aliquot,
-          :report,
           :request_metadata_for_standard_sequencing_with_read_length,
           :sample_submission,
           :search,
@@ -86,17 +79,18 @@ namespace :test do
           :user_query,
           :tag2_lot
         ]
-
+        ignored = 0
         factories_to_lint = if ENV.fetch('LINT_ALL', false)
-                              FactoryGirl.factories
+                              FactoryGirl.factories.to_a
                             else
+                              ignored = invalid_factories.length
                               FactoryGirl.factories.reject do |factory|
                                 invalid_factories.include?(factory.name)
                               end
                             end
         begin
           DatabaseCleaner.start
-          puts "Linting #{factories_to_lint.length} factories. (Ignored #{invalid_factories.length})"
+          puts "Linting #{factories_to_lint.length} factories. (Ignored #{ignored})"
           FactoryGirl.lint factories_to_lint
           puts 'Linted'
         ensure

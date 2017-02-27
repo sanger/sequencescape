@@ -338,7 +338,7 @@ FactoryGirl.define do
     i.to_s(4).tr('0', 'A').tr('1', 'T').tr('2', 'C').tr('3', 'G')
   end
 
-  factory :tag do |_t|
+  factory :tag, aliases: [:tag2] do |_t|
     tag_group
     oligo
   end

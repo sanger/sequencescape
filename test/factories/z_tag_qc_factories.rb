@@ -34,13 +34,13 @@ FactoryGirl.define do
   factory :lot do |_lot|
     sequence(:lot_number) { |n| "lot#{n}" }
     lot_type
-    template { create :plate_template_with_well }
+    association(:template, factory: :plate_template_with_well)
     user
     received_at '2014-02-01'
 
     factory :tag2_lot do
-      lot_type    { |_a| create(:tag2_lot_type) }
-      template    { |_a| create(:tag2_layout_template) }
+      association(:lot_type, factory: :tag2_lot_type)
+      association(:template, factory: :tag2_layout_template)
     end
   end
 
