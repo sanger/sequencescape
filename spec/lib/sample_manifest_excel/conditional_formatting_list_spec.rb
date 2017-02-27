@@ -10,12 +10,12 @@ RSpec.describe SampleManifestExcel::ConditionalFormattingList, type: :model, sam
   let(:options) { build(:range).references.merge(worksheet: worksheet) }
 
   it 'must have the correct number of options' do
-    expect(conditional_formatting_list.count).to eq(rules.length) 
+    expect(conditional_formatting_list.count).to eq(rules.length)
   end
 
   it '#options provides a list of conditional formatting options' do
-    expect(conditional_formatting_list.options.count).to eq(rules.length) 
-    expect( rules.values.all? { |rule| conditional_formatting_list.options.include? rule['options'] } ).to be_truthy
+    expect(conditional_formatting_list.options.count).to eq(rules.length)
+    expect(rules.values.all? { |rule| conditional_formatting_list.options.include? rule['options'] }).to be_truthy
   end
 
   it '#update updates all of the conditional formatting rules' do
@@ -25,8 +25,8 @@ RSpec.describe SampleManifestExcel::ConditionalFormattingList, type: :model, sam
 
   it '#update should update the worksheet with conditional formatting rules' do
     conditional_formatting_list.update(options)
-    expect(worksheet.conditional_formatting_rules.to_a.first.rules.length).to eq(rules.length) 
-    expect(worksheet.conditional_formatting_rules.to_a.first.sqref).to eq(options[:reference]) 
+    expect(worksheet.conditional_formatting_rules.to_a.first.rules.length).to eq(rules.length)
+    expect(worksheet.conditional_formatting_rules.to_a.first.sqref).to eq(options[:reference])
     expect(conditional_formatting_list).to be_saved
   end
 
@@ -41,14 +41,14 @@ RSpec.describe SampleManifestExcel::ConditionalFormattingList, type: :model, sam
     conditional_formatting_list = SampleManifestExcel::ConditionalFormattingList.new(rule_1: FactoryGirl.attributes_for(:conditional_formatting_with_formula))
     conditional_formatting_list.update(options)
     expect(conditional_formatting_list).to be_saved
-    expect(worksheet.conditional_formatting_rules.to_a.first.rules.first.formula.first).to eq(ERB::Util.html_escape(SampleManifestExcel::Formula.new(options.merge(FactoryGirl.attributes_for(:conditional_formatting_with_formula)[:formula])).to_s)) 
+    expect(worksheet.conditional_formatting_rules.to_a.first.rules.first.formula.first).to eq(ERB::Util.html_escape(SampleManifestExcel::Formula.new(options.merge(FactoryGirl.attributes_for(:conditional_formatting_with_formula)[:formula])).to_s))
   end
 
   it 'should be comparable' do
-    expect(SampleManifestExcel::ConditionalFormattingList.new(rules)).to eq(conditional_formatting_list) 
+    expect(SampleManifestExcel::ConditionalFormattingList.new(rules)).to eq(conditional_formatting_list)
     rules.shift
-    expect(SampleManifestExcel::ConditionalFormattingList.new(rules)).to_not eq(conditional_formatting_list) 
-    expect(SampleManifestExcel::ConditionalFormattingList.new(rules)).to_not eq(Array.new) 
+    expect(SampleManifestExcel::ConditionalFormattingList.new(rules)).to_not eq(conditional_formatting_list)
+    expect(SampleManifestExcel::ConditionalFormattingList.new(rules)).to_not eq(Array.new)
   end
 
   it 'should be duplicated correctly' do

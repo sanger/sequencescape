@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe SampleManifestExcel::Configuration, type: :model, sample_manifest_excel: true do
-
   let(:configuration) { SampleManifestExcel::Configuration.new }
 
   it 'should be comparable' do
@@ -23,16 +22,13 @@ RSpec.describe SampleManifestExcel::Configuration, type: :model, sample_manifest
   end
 
   context 'without a folder' do
-
     it 'will not be loaded' do
       configuration.load!
       expect(configuration).to_not be_loaded
     end
-
   end
 
   context 'with a valid folder' do
-
     let(:folder) { File.join('test', 'data', 'sample_manifest_excel') }
 
     before(:each) do

@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe SampleManifestExcel::ColumnList, type: :model, sample_manifest_excel: true do
-  
   include SampleManifestExcel::Helpers
 
   let(:folder)                  { File.join('spec', 'data', 'sample_manifest_excel', 'extract') }
@@ -11,7 +10,7 @@ RSpec.describe SampleManifestExcel::ColumnList, type: :model, sample_manifest_ex
   let(:ranges)                  { build(:range_list, options: load_file(folder, 'ranges')) }
 
   it 'creates a list of columns' do
-    expect(column_list.count).to eq(yaml.length) 
+    expect(column_list.count).to eq(yaml.length)
   end
 
   it 'creates a list of columns when passed a bunch of columns' do
@@ -27,22 +26,22 @@ RSpec.describe SampleManifestExcel::ColumnList, type: :model, sample_manifest_ex
   end
 
   it '#headings returns list of headings' do
-    expect(column_list.headings).to eq(yaml.values.collect { |column| column[:heading] }) 
+    expect(column_list.headings).to eq(yaml.values.collect { |column| column[:heading] })
   end
 
   it '#column_values returns all of the values for the column list' do
     sanger_sample_id_column = build(:sanger_sample_id_column)
     column_list.add(sanger_sample_id_column)
-    expect(column_list.column_values.length).to eq(column_list.count) 
-    expect(column_list.column_values.last).to eq(sanger_sample_id_column.value) 
+    expect(column_list.column_values.length).to eq(column_list.count)
+    expect(column_list.column_values.last).to eq(sanger_sample_id_column.value)
   end
 
   it '#column_values with inserts returns all of the values for the column list along with the inserts' do
     names = column_list.names
     replacements = { names.first => 'first', names.last => 'last' }
     values = column_list.column_values(replacements)
-    expect(values.first).to eq('first') 
-    expect(values.last).to eq('last') 
+    expect(values.first).to eq('first')
+    expect(values.last).to eq('last')
   end
 
   it 'each column has a number' do
@@ -54,10 +53,10 @@ RSpec.describe SampleManifestExcel::ColumnList, type: :model, sample_manifest_ex
   it '#extract returns correct list of columns' do
     names = column_list.names[0..5]
     list = column_list.extract(names)
-    expect(column_list.count).to eq(yaml.length) 
-    expect(list.count).to eq(names.length) 
+    expect(column_list.count).to eq(yaml.length)
+    expect(list.count).to eq(names.length)
     names.each_with_index do |name, i|
-      expect(list.find_by(:name, name).number).to eq(i + 1) 
+      expect(list.find_by(:name, name).number).to eq(i + 1)
     end
   end
 
@@ -65,12 +64,12 @@ RSpec.describe SampleManifestExcel::ColumnList, type: :model, sample_manifest_ex
     column_number = column_list.values[4].number
     names = column_list.names[0..2] + column_list.names[4..5]
     list = column_list.extract(names)
-    expect(column_list.values[4].number).to eq(column_number) 
+    expect(column_list.values[4].number).to eq(column_number)
   end
 
   it '#extract can extract columns by any key' do
     new_list = column_list.extract(column_list.headings)
-    expect(new_list.count).to eq(column_list.count) 
+    expect(new_list.count).to eq(column_list.count)
   end
 
   it '#extract with invalid key provides a descriptive error message' do
@@ -100,6 +99,6 @@ RSpec.describe SampleManifestExcel::ColumnList, type: :model, sample_manifest_ex
   end
 
   it '#find_by_or_null returns a null object if none exists for key and value' do
-    expect(column_list.find_by_or_null(:name, :bad_value).number).to eq(-1)
+    expect(column_list.find_by_or_null(:name, :bad_value).number).to eq(-1) # rubocop:disable all
   end
 end

@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe SampleManifestExcel::MultiplexedLibraryTubeField, type: :model, sample_manifest_excel: true do
-
   let(:column_list) { build(:column_list_for_multiplexed_library_tube) }
   let!(:library_type) { create(:library_type, name: column_list.find_by(:name, :library_type).value) }
 
@@ -10,8 +9,8 @@ RSpec.describe SampleManifestExcel::MultiplexedLibraryTubeField, type: :model, s
   end
 
   it 'will have a list of subclasses' do
-    expect(SampleManifestExcel::MultiplexedLibraryTubeField::Base.fields.count).to eq(SampleManifestExcel::MultiplexedLibraryTubeField::Base.subclasses.count) 
-    expect(SampleManifestExcel::MultiplexedLibraryTubeField::Base.fields[:library_type]).to eq(SampleManifestExcel::MultiplexedLibraryTubeField::LibraryType) 
+    expect(SampleManifestExcel::MultiplexedLibraryTubeField::Base.fields.count).to eq(SampleManifestExcel::MultiplexedLibraryTubeField::Base.subclasses.count)
+    expect(SampleManifestExcel::MultiplexedLibraryTubeField::Base.fields[:library_type]).to eq(SampleManifestExcel::MultiplexedLibraryTubeField::LibraryType)
   end
 
   it 'will not be valid if library type is not in the row' do
@@ -42,5 +41,4 @@ RSpec.describe SampleManifestExcel::MultiplexedLibraryTubeField, type: :model, s
     expect(SampleManifestExcel::MultiplexedLibraryTubeField::InsertSizeTo.new.update(row: build(:row_for_plate, data: column_list.column_values(insert_size_to: 0), columns: column_list))).to_not be_valid
     expect(SampleManifestExcel::MultiplexedLibraryTubeField::InsertSizeTo.new.update(row: build(:row_for_plate, data: column_list.column_values(insert_size_to: 'zero'), columns: column_list))).to_not be_valid
   end
-
 end

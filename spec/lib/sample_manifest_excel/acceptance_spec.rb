@@ -1,7 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "Acceptance", type: :model, sample_manifest_excel: true do
-
+RSpec.describe 'Acceptance', type: :model, sample_manifest_excel: true do
   let(:test_file) { 'test.xlsx' }
 
   attr_reader :download, :sample_manifest

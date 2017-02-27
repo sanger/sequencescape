@@ -1,12 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe SampleManifestExcel::Column, type: :model, sample_manifest_excel: true do
-  
   let(:range_list)  { build(:range_list, options: { FactoryGirl.attributes_for(:validation)[:range_name] => FactoryGirl.attributes_for(:range) }) }
   let(:worksheet)   { Axlsx::Workbook.new.add_worksheet }
-  let(:options)     { { heading: 'PUBLIC NAME', name: :public_name, type: :string, value: 10, number: 125, attribute: :barcode,
-                        validation: FactoryGirl.attributes_for(:validation),
-                        conditional_formattings: { simple: FactoryGirl.attributes_for(:conditional_formatting), complex: FactoryGirl.attributes_for(:conditional_formatting_with_formula) }
+  let(:options)     {
+    { heading: 'PUBLIC NAME', name: :public_name, type: :string, value: 10, number: 125, attribute: :barcode,
+      validation: FactoryGirl.attributes_for(:validation),
+      conditional_formattings: { simple: FactoryGirl.attributes_for(:conditional_formatting), complex: FactoryGirl.attributes_for(:conditional_formatting_with_formula) }
                     } }
 
   it 'must have a heading' do
@@ -18,7 +18,7 @@ RSpec.describe SampleManifestExcel::Column, type: :model, sample_manifest_excel:
   end
 
   it 'must have a name' do
-    expect(SampleManifestExcel::Column.new(options).name).to eq(options[:name]) 
+    expect(SampleManifestExcel::Column.new(options).name).to eq(options[:name])
   end
 
   it 'should not be valid without a name' do
@@ -47,7 +47,7 @@ RSpec.describe SampleManifestExcel::Column, type: :model, sample_manifest_excel:
   end
 
   it 'should have a number' do
-    expect(SampleManifestExcel::Column.new(options).number).to eq(options[:number]) 
+    expect(SampleManifestExcel::Column.new(options).number).to eq(options[:number])
   end
 
   context 'with no validation' do
@@ -67,7 +67,6 @@ RSpec.describe SampleManifestExcel::Column, type: :model, sample_manifest_excel:
   end
 
   context 'with no conditional formattings' do
-
     let(:column) { SampleManifestExcel::Column.new(options.except(:conditional_formattings)) }
 
     it 'will have empty conditional formattings' do
@@ -80,11 +79,10 @@ RSpec.describe SampleManifestExcel::Column, type: :model, sample_manifest_excel:
   end
 
   context '#update with validation and formattings' do
-
     let(:worksheet) { Axlsx::Workbook.new.add_worksheet }
     let(:column) { SampleManifestExcel::Column.new(options) }
     let(:range) { SampleManifestExcel::Range.new(first_column: column.number, first_row: 27, last_row: 150) }
-    
+
     before(:each) do
       column.update(27, 150, range_list, worksheet)
     end
@@ -94,20 +92,19 @@ RSpec.describe SampleManifestExcel::Column, type: :model, sample_manifest_excel:
     end
 
     it 'sets the reference' do
-      expect(column.range).to eq(range) 
+      expect(column.range).to eq(range)
     end
 
     it 'modifies the validation' do
-      expect(column.validation.formula1).to eq(range_list.find_by(column.range_name).absolute_reference) 
+      expect(column.validation.formula1).to eq(range_list.find_by(column.range_name).absolute_reference)
       expect(worksheet.data_validation_rules.all? { |rule| rule.sqref == column.range.reference }).to be_truthy
       expect(column.validation).to be_saved
     end
 
     it 'modifies the conditional formatting' do
-      expect(column.conditional_formattings.count).to eq(options[:conditional_formattings].length) 
+      expect(column.conditional_formattings.count).to eq(options[:conditional_formattings].length)
       expect(column.conditional_formattings).to be_saved
     end
-
 
     it 'duplicates correctly' do
       column = SampleManifestExcel::Column.new(options)
@@ -130,7 +127,7 @@ RSpec.describe SampleManifestExcel::Column, type: :model, sample_manifest_excel:
 
     it 'inserts the name of the column' do
       arguments = SampleManifestExcel::Column.build_arguments(columns.values.first, columns.keys.first, defaults)
-      expect(arguments[:name]).to eq(columns.keys.first) 
+      expect(arguments[:name]).to eq(columns.keys.first)
     end
 
     it 'still has the validations' do
@@ -140,15 +137,15 @@ RSpec.describe SampleManifestExcel::Column, type: :model, sample_manifest_excel:
 
     it 'combines the conditional formattings correctly' do
       arguments = SampleManifestExcel::Column.build_arguments(columns[:gender], 'gender', defaults)
-      expect(arguments[:conditional_formattings].length).to eq(columns[:gender][:conditional_formattings].length) 
+      expect(arguments[:conditional_formattings].length).to eq(columns[:gender][:conditional_formattings].length)
       arguments[:conditional_formattings].each do |k, _conditional_formatting|
-        expect(arguments[:conditional_formattings][k]).to eq(defaults.find_by(k).combine(columns[:gender][:conditional_formattings][k])) 
+        expect(arguments[:conditional_formattings][k]).to eq(defaults.find_by(k).combine(columns[:gender][:conditional_formattings][k]))
       end
     end
 
     it 'combines the conditional formattings correctly if there is a formula' do
       arguments = SampleManifestExcel::Column.build_arguments(columns[:supplier_sample_name], 'supplier_sample_name', defaults)
-      expect(arguments[:conditional_formattings][:len][:formula]).to eq(defaults.find_by(:len).combine(columns[:supplier_sample_name][:conditional_formattings][:len])[:formula]) 
+      expect(arguments[:conditional_formattings][:len][:formula]).to eq(defaults.find_by(:len).combine(columns[:supplier_sample_name][:conditional_formattings][:len])[:formula])
     end
   end
 end

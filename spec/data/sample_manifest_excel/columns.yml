@@ -10,6 +10,49 @@ sanger_tube_id:
 sanger_sample_id:
   heading: SANGER SAMPLE ID
   attribute: :sample_id
+prepooled:
+  heading: PREPOOLED
+  unlocked: true
+  value: 'No'
+  validation:
+    options:
+      type: :list
+      formula1: "A1:A2"
+      allowBlank: false
+      showDropDown: false
+      showInputMessage: true
+      promptTitle: "Prepooled"
+      prompt: "Please indicate if prepooled or not"
+    range_name: :yes_no
+  conditional_formattings:
+    empty_cell:
+    is_error:
+tag_sequence:
+  heading: TAG SEQUENCE
+  unlocked: true
+  validation:
+    options:
+      type: :textLength
+      operator: :lessThanOrEqual
+      formula1: "255"
+      allowBlank: false
+      showInputMessage: true
+      promptTitle: "Tag sequence"
+      prompt: "Input tag sequence."
+  conditional_formattings:
+    empty_cell:
+tag2_sequence:
+  heading: TAG2 SEQUENCE
+  unlocked: true
+  validation:
+    options:
+      type: :textLength
+      operator: :lessThanOrEqual
+      formula1: "255"
+      allowBlank: false
+      showInputMessage: true
+      promptTitle: "Tag2 sequence"
+      prompt: "Input tag2 sequence."
 tag_group:
   heading: TAG GROUP
   unlocked: true

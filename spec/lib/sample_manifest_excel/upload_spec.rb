@@ -1,14 +1,13 @@
 require 'rails_helper'
 
 RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel: true do
-
   let(:column_list) { build(:column_list_for_plate) }
 
   it 'should be valid if all of the headings relate to a column' do
     heading_names = column_list.headings.reverse
     heading_names.pop
     upload = SampleManifestExcel::Upload.new(heading_names, column_list)
-    expect(upload.columns.count).to eq(heading_names.length) 
+    expect(upload.columns.count).to eq(heading_names.length)
     expect(upload).to be_valid
   end
 
@@ -17,7 +16,7 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
     heading_names = column_list.headings << dodgy_column.heading
     upload = SampleManifestExcel::Upload.new(heading_names, column_list)
     expect(upload).to_not be_valid
-    expect(upload.errors.full_messages.to_s).to include(dodgy_column.heading) 
+    expect(upload.errors.full_messages.to_s).to include(dodgy_column.heading)
   end
 
   it 'should be invalid if there is no sanger sample id column' do
@@ -27,13 +26,14 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
   end
 
   context 'Row' do
-
     let(:sample) { create(:sample_with_well) }
-    let(:valid_values) { column_list.column_values(
+    let(:valid_values) {
+      column_list.column_values(
                         sanger_sample_id: sample.id,
                         sanger_plate_id: sample.wells.first.plate.sanger_human_barcode,
                         well: sample.wells.first.map.description
-                        ) }
+                        )
+    }
 
     it '#value returns value for specified key' do
       expect(SampleManifestExcel::Upload::SampleRow.new(1, valid_values, column_list).value(:sanger_sample_id)).to eq(sample.id)
