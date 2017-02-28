@@ -60,19 +60,19 @@ class AssetTest < ActiveSupport::TestCase
       end
 
       should 'add 2 parents to the asset' do
-        assert_equal 2, @asset.parents.size
+        assert_equal 2, @asset.reload.parents.size
       end
 
       should 'add 1 child to the asset' do
-        assert_equal 1, @asset.children.size
+        assert_equal 1, @asset.reload.children.size
       end
 
       should 'set the correct child' do
-        assert_equal @child_asset, @asset.children.first
+        assert_equal @child_asset, @asset.reload.children.first
       end
 
       should 'set the correct parents' do
-        assert_equal @parents, @asset.parents
+        assert_equal @parents, @asset.reload.parents
       end
     end
 
@@ -81,18 +81,28 @@ class AssetTest < ActiveSupport::TestCase
         @asset = create :asset
         @parent_asset_1 = create :asset
         @parent_asset_2 = create :asset
+        @asset.parents = [@parent_asset_1, @parent_asset_2]
         @parents = [@parent_asset_1, @parent_asset_2]
+        @asset.reload
         @child_asset = create :asset
 
-        @asset.assign_relationships(@parent_asset_2, [])
+        @asset.assign_relationships(@asset.parents, @child_asset)
       end
 
-      should 'not create any parents' do
-        assert @asset.parents.empty?
+      should 'add 2 parents to the asset' do
+        assert_equal 2, @asset.reload.parents.size
       end
 
-      should 'not create any children' do
-        assert @asset.child.nil?
+      should 'add 1 child to the asset' do
+        assert_equal 1, @asset.reload.children.size
+      end
+
+      should 'set the correct child' do
+        assert_equal @child_asset, @asset.reload.children.first
+      end
+
+      should 'set the correct parents' do
+        assert_equal @parents, @asset.reload.parents
       end
     end
   end

@@ -23,6 +23,8 @@ require 'capybara/poltergeist'
 require 'webmock/rspec'
 require 'support/user_login'
 
+require 'pry'
+
 Capybara.javascript_driver = :poltergeist
 
 WebMock.disable_net_connect!(allow_localhost: true)
