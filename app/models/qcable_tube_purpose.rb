@@ -5,5 +5,5 @@
 # Copyright (C) 2015 Genome Research Ltd.
 
 class QcableTubePurpose < Tube::Purpose
-  include QcablePlatePurpose::ClassBehaviour
+  include SharedBehaviour::Qcable
 end
