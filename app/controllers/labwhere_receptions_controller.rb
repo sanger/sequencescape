@@ -18,7 +18,7 @@ class LabwhereReceptionsController < ApplicationController
 
     lwr = LabwhereReception.new(input[:user_code], input[:location_barcode], input[:location_id], barcodes)
     if lwr.save
-      flash[:notice] = "Locations updated!"
+      flash[:notice] = 'Locations updated!'
     else
       flash[:error] = lwr.errors.full_messages.join('; ')
     end

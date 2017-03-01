@@ -14,7 +14,7 @@ class Core::Io::Json::StreamTest < ActiveSupport::TestCase
     end
 
     should 'generate empty object on open empty' do
-      @stream.open { |stream| true }
+      @stream.open { |_stream| true }
       assert_equal('{}', @buffer.string)
     end
 

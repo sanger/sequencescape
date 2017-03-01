@@ -4,11 +4,11 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 require 'studies/workflows_controller'
 
 class Studies::SamplesControllerTest < ActionController::TestCase
-  context "Studies controller" do
+  context 'Studies controller' do
     setup do
       @controller = Studies::SamplesController.new
       @request    = ActionController::TestRequest.new
@@ -21,6 +21,6 @@ class Studies::SamplesControllerTest < ActionController::TestCase
 
     should_require_login(:index)
 
-    resource_test('sample', { parent: 'study', actions: ['index'], ignore_actions: ['show'], formats: ['html'] })
+    resource_test('sample', parent: 'study', actions: ['index'], ignore_actions: ['show'], formats: ['html'])
   end
 end

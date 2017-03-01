@@ -8,7 +8,7 @@ class PooledCherrypickRequest < CustomerRequest
   # Returns a list of attributes that must match for any given pool.
   # We don't want to place any restrictions on Cherrypicking (Yet).
   def shared_attributes
-    ""
+    ''
   end
 
   def transfer_aliquots

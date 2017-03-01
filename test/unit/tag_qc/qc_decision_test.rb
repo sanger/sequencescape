@@ -4,10 +4,10 @@
 # authorship of this file.
 # Copyright (C) 2014,2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class QcDecisionTest < ActiveSupport::TestCase
-  context "QcDecision" do
+  context 'QcDecision' do
     should belong_to :user
     should belong_to :lot
 
@@ -15,7 +15,7 @@ class QcDecisionTest < ActiveSupport::TestCase
 
     should validate_presence_of :user
 
-    context "#qc_decision" do
+    context '#qc_decision' do
       setup do
         @lot = create :lot
         @user = create :user
@@ -25,7 +25,7 @@ class QcDecisionTest < ActiveSupport::TestCase
         @qcable_b = create :qcable, lot: @lot, state: 'pending'
       end
 
-      context "with valid data" do
+      context 'with valid data' do
         setup do
           @qcd = QcDecision.create(
             user: @user,
@@ -37,18 +37,18 @@ class QcDecisionTest < ActiveSupport::TestCase
           )
         end
 
-        should "Update the QC state" do
+        should 'Update the QC state' do
           assert_equal 'available', @qcable_a.state
           assert_equal 'failed', @qcable_b.state
         end
 
-        should "record the decision" do
+        should 'record the decision' do
           assert_equal 2, @qcd.qc_decision_qcables.count
           assert_equal ['fail', 'release'], @qcd.qc_decision_qcables.map { |d| d.decision }.sort
         end
       end
 
-      should "reject invalid state transitions" do
+      should 'reject invalid state transitions' do
         assert_raise ActiveRecord::RecordInvalid do
           QcDecision.create!(
             user: @user,
@@ -61,7 +61,7 @@ class QcDecisionTest < ActiveSupport::TestCase
         end
       end
 
-      should "reject invalid users" do
+      should 'reject invalid users' do
         assert_raise ActiveRecord::RecordInvalid do
           QcDecision.create!(
             user: @user_b,

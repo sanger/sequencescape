@@ -56,11 +56,11 @@ class Api::ProjectIO < Api::Base
   end
 
   extra_json_attributes do |object, json_attributes|
-    json_attributes["uuid"] = object.uuid if object.respond_to?(:uuid)
+    json_attributes['uuid'] = object.uuid if object.respond_to?(:uuid)
 
     # Users and roles
     if object.respond_to?(:user)
-      json_attributes["user"] = object.user.nil? ? "unknown" : object.user.login
+      json_attributes['user'] = object.user.nil? ? 'unknown' : object.user.login
     end
     if object.respond_to?(:roles)
       object.roles.each do |role|

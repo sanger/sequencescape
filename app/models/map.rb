@@ -12,7 +12,7 @@ class Map < ActiveRecord::Base
     # TODO: These methods are only valid for standard plates. Moved them here to make that more explicit
     # (even if its not strictly appropriate) They could do with refactoring/removing.
 
-    PLATE_DIMENSIONS = Hash.new { |h, k| [] }.merge(
+    PLATE_DIMENSIONS = Hash.new { |_h, _k| [] }.merge(
       96  => [12, 8],
       384 => [24, 16]
     )
@@ -24,7 +24,7 @@ class Map < ActiveRecord::Base
     def self.description_to_horizontal_plate_position(well_description, plate_size)
       return nil unless Map.valid_well_description_and_plate_size?(well_description, plate_size)
       split_well = Map.split_well_description(well_description)
-      width = self.plate_width(plate_size)
+      width = plate_width(plate_size)
       return nil if width.nil?
       (width * split_well[:row]) + split_well[:col]
     end
@@ -32,7 +32,7 @@ class Map < ActiveRecord::Base
     def self.description_to_vertical_plate_position(well_description, plate_size)
       return nil unless Map.valid_well_description_and_plate_size?(well_description, plate_size)
       split_well = Map.split_well_description(well_description)
-      length = self.plate_length(plate_size)
+      length = plate_length(plate_size)
       return nil if length.nil?
       (length * (split_well[:col] - 1)) + split_well[:row] + 1
     end
@@ -130,7 +130,7 @@ class Map < ActiveRecord::Base
         asset_size: plate_size,
         asset_shape_id: asset_shape.id
     )
-  }
+                               }
 
   scope :where_description, ->(*descriptions) { where(description: descriptions.flatten) }
   scope :where_plate_size,  ->(size) { where(asset_size: size) }
@@ -162,7 +162,7 @@ class Map < ActiveRecord::Base
   end
 
   def vertical_plate_position
-    self.column_order + 1
+    column_order + 1
   end
 
   def height
@@ -176,22 +176,22 @@ class Map < ActiveRecord::Base
   ##
   # Column of particular map location. Zero indexed integer
   def column
-    self.row_order % width
+    row_order % width
   end
 
   ##
   # Row of particular map location. Zero indexed integer
   def row
-    self.column_order % height
+    column_order % height
   end
 
   def horizontal_plate_position
-    self.row_order + 1
+    row_order + 1
   end
 
   def snp_id
-    raise StandardError, "Only standard maps can be converted to SNP" unless map.standard?
-    self.horizontal_plate_position
+    raise StandardError, 'Only standard maps can be converted to SNP' unless map.standard?
+    horizontal_plate_position
   end
 
   def self.location_from_row_and_column(row, column)
@@ -210,11 +210,11 @@ class Map < ActiveRecord::Base
     )
   end
 
-  def self.horizontal_to_vertical(well_position, plate_size, plate_shape = nil)
+  def self.horizontal_to_vertical(well_position, plate_size, _plate_shape = nil)
     Map::Coordinate.horizontal_to_vertical(well_position, plate_size)
   end
 
-  def self.vertical_to_horizontal(well_position, plate_size, plate_shape = nil)
+  def self.vertical_to_horizontal(well_position, plate_size, _plate_shape = nil)
     Map::Coordinate.vertical_to_horizontal(well_position, plate_size)
   end
 
@@ -257,7 +257,7 @@ class Map < ActiveRecord::Base
   end
 
   def self.find_for_cell_location(cell_location, asset_size)
-    self.find_by_description_and_asset_size(cell_location.sub(/0(\d)$/, '\1'), asset_size)
+    find_by(description: cell_location.sub(/0(\d)$/, '\1'), asset_size: asset_size)
   end
 
   def self.pad_description(map)
@@ -283,7 +283,7 @@ class Map < ActiveRecord::Base
     end
 
     # Walking in column major order goes by the columns: A1, B1, C1, ... A2, B2, ...
-    def walk_plate_in_column_major_order(size, asset_shape = nil, &block)
+    def walk_plate_in_column_major_order(size, asset_shape = nil)
       asset_shape ||= AssetShape.default_id
       where(asset_size: size, asset_shape_id: asset_shape).order(:column_order).each do |position|
         yield(position, position.column_order)
@@ -292,7 +292,7 @@ class Map < ActiveRecord::Base
     alias_method(:walk_plate_vertically, :walk_plate_in_column_major_order)
 
     # Walking in row major order goes by the rows: A1, A2, A3, ... B1, B2, B3 ....
-    def walk_plate_in_row_major_order(size, asset_shape = nil, &block)
+    def walk_plate_in_row_major_order(size, asset_shape = nil)
       asset_shape ||= AssetShape.default_id
       where(asset_size: size, asset_shape_id: asset_shape).order(:row_order).each do |position|
         yield(position, position.row_order)

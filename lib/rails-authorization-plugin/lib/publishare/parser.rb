@@ -47,7 +47,7 @@ module Authorization
         role_regex = '\s*(\'\s*(.+?)\s*\'|(\w+))\s+'
         model_regex = '\s+(:*\w+)'
         parse_regex = Regexp.new(role_regex + '(' + VALID_PREPOSITIONS.join('|') + ')' + model_regex)
-        str.gsub(parse_regex) do |match|
+        str.gsub(parse_regex) do |_match|
           @replacements.push " process_role_of_model('#{$2 || $3}', '#{$5}') "
           " <#{@replacements.length - 1}> "
         end
@@ -66,7 +66,7 @@ module Authorization
       end
 
       def replace_role_of_model(str)
-        str.gsub(/<(\d+)>/) do |match|
+        str.gsub(/<(\d+)>/) do |_match|
           @replacements[$1.to_i]
         end
       end
@@ -123,7 +123,7 @@ module Authorization
       def parse_authorization_expression(str)
         @stack = []
         raise AuthorizationExpressionInvalid, "Cannot parse authorization (#{str})" if not parse_expr(str)
-        return @stack.pop
+        @stack.pop
       end
 
       def parse_expr(str)

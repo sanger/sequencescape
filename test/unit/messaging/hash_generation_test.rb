@@ -43,7 +43,7 @@ class HashGenerationTest < ActiveSupport::TestCase
     map_attribute_to_json_attribute(:updated_at)
   end
 
-  context "#Api::Base" do
+  context '#Api::Base' do
     setup do
       @test_assn = mock('assn')
       @test_has_many_more = mock('hasm_more_assn')

@@ -16,7 +16,7 @@ class BindingKitBarcodeTask < Task
   end
 
   def partial
-    "binding_kit_barcode_batches"
+    'binding_kit_barcode_batches'
   end
 
   def render_task(workflow, params)

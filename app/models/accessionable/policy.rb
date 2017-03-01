@@ -20,7 +20,7 @@ class Accessionable::Policy < Accessionable::Base
 
   def errors
     [].tap do |errors|
-      errors << "DAC Accession number not found. Please get an accession number for the DAC." unless @dac_accession_number
+      errors << 'DAC Accession number not found. Please get an accession number for the DAC.' unless @dac_accession_number
     end
   end
 
@@ -29,14 +29,14 @@ class Accessionable::Policy < Accessionable::Base
     xml.instruct!
     xml.POLICY_SET('xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance') {
       xml.POLICY(alias: self.alias,
-                 accession: self.accession_number,
-                 center_name: self.center_name) {
-      xml.TITLE self.title
-      xml.DAC_REF(accession: self.dac_accession_number)
-      xml.POLICY_FILE self.policy_url
+                 accession: accession_number,
+                 center_name: center_name) {
+      xml.TITLE title
+      xml.DAC_REF(accession: dac_accession_number)
+      xml.POLICY_FILE policy_url
+      }
     }
-    }
-    return xml.target!
+    xml.target!
   end
 
   def update_accession_number!(user, accession_number)

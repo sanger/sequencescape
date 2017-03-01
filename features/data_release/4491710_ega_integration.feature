@@ -97,6 +97,7 @@ Feature: Generate accession nubmers for a sample
     And the study "Study 4491710" has samples contaminated with human DNA
     And the study "Study 4491710" contains human DNA
     And the study "Study 4491710" contains samples commercially available
+    And study "Study 4491710" has an accession number
 
     Given study "Study 4491710" has a registered sample "Sample4491710"
     And an accession number is required for study "Study 4491710"

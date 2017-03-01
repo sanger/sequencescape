@@ -104,19 +104,20 @@ module Submission::LinearRequestGraph
       # they don't get disrupted by the shift operation at the start of this method.
       next if request_type_and_multiplier_pairs.empty?
 
-      target_assets_items = if request_type.for_multiplexing? # May have many nil assets for non-multiplexing
-        if multiplexing_assets.nil?
-          criteria = source_asset_qc_metric_and_item.map { |sci| sci[1] }.flatten.uniq
-          target_assets.uniq.map { |asset| [asset, criteria, nil] }
+      target_assets_items =
+        if request_type.for_multiplexing? # May have many nil assets for non-multiplexing
+          if multiplexing_assets.nil?
+            criteria = source_asset_qc_metric_and_item.map { |sci| sci[1] }.flatten.uniq
+            target_assets.uniq.map { |asset| [asset, criteria, nil] }
+          else
+            associate_built_requests(target_assets.uniq.compact); []
+          end
         else
-          associate_built_requests(target_assets.uniq.compact); []
+          target_assets.each_with_index.map do |asset, index|
+            source_asset = request_type.no_target_asset? ? source_asset_qc_metric_and_item[index].first : asset
+            [source_asset, source_asset_qc_metric_and_item[index][1], source_asset_qc_metric_and_item[index].last]
+          end
         end
-      else
-        target_assets.each_with_index.map do |asset, index|
-          source_asset = request_type.no_target_asset? ? source_asset_qc_metric_and_item[index].first : asset
-          [source_asset, source_asset_qc_metric_and_item[index][1], source_asset_qc_metric_and_item[index].last]
-        end
-      end
 
       create_request_chain!(request_type_and_multiplier_pairs.dup, target_assets_items, multiplexing_assets, &block)
     end
@@ -140,7 +141,7 @@ module Submission::LinearRequestGraph
     item = asset.requests.first.item unless asset.requests.empty?
     return item if item.present?
 
-    Item.create!(workflow: workflow, name: "#{asset.display_name} #{id}", submission: self.submission)
+    Item.create!(workflow: workflow, name: "#{asset.display_name} #{id}", submission: submission)
   end
   private :create_item_for!
 end

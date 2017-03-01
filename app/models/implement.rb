@@ -7,7 +7,7 @@
 class Implement < ActiveRecord::Base
   validates_presence_of :name
   validates :barcode, presence: true, on: :update
-  @@barcode_prefix = "LE"
+  @@barcode_prefix = 'LE'
 
   def generate_barcode
     raise Exception.new, "Can't generate barcode with a null ID" if id == 0
@@ -20,7 +20,7 @@ class Implement < ActiveRecord::Base
   end
 
   def human_barcode
-    Barcode.barcode_to_human self.barcode
+    Barcode.barcode_to_human barcode
   end
 
   def save_and_generate_barcode

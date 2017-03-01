@@ -11,7 +11,7 @@ class ::Core::Io::Base
   extend ::Core::Io::Base::JsonFormattingBehaviour
 
   class << self
-    def map_parameters_to_attributes(*args)
+    def map_parameters_to_attributes(*_args)
       {}
     end
     private :map_parameters_to_attributes

@@ -33,5 +33,5 @@ class BroadcastEvent::PlateLibraryComplete < BroadcastEvent
   has_metadata(:order_type) { |_, e| e.order.order_role.try(:role) || 'UNKNOWN' }
   has_metadata(:submission_template) { |_, e| e.order.template_name }
 
-  has_metadata(:team) { |plate, e| plate.team }
+  has_metadata(:team) { |plate, _e| plate.team }
 end

@@ -8,11 +8,11 @@ class ActsAsDescriptableTest < Test::Unit::TestCase
 
   def test_descriptor
     descriptor = Descriptor.new
-    descriptor.name = "name"
-    descriptor.value = "value"
+    descriptor.name = 'name'
+    descriptor.value = 'value'
     descriptor.save
     retrieved_descriptor = Descriptor.first
-    assert_equal "name", retrieved_descriptor.name
-    assert_equal "value", retrieved_descriptor.value
+    assert_equal 'name', retrieved_descriptor.name
+    assert_equal 'value', retrieved_descriptor.value
   end
 end

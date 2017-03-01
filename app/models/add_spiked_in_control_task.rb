@@ -6,7 +6,7 @@
 
 class AddSpikedInControlTask < Task
   def partial
-    "add_spiked_in_control"
+    'add_spiked_in_control'
   end
 
   def do_task(controller, params)
@@ -24,6 +24,6 @@ class AddSpikedInControlTask < Task
     end
 
     control_asset.save!
-    return true
+    true
   end
 end

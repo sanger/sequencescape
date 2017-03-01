@@ -31,7 +31,7 @@ module SubmissionTemplateMaker
 
     new_key = "#{product_line.name.underscore}_#{old_request_type.key}"
 
-    RequestType.find_by_key(new_key) or
+    RequestType.find_by(key: new_key) or
       raise "New RequestType '#{new_key}' not found"
   end
 

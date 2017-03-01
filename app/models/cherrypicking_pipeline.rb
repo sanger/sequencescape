@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
 
 class CherrypickingPipeline < GenotypingPipeline
-  self.batch_worksheet = "cherrypick_worksheet"
+  self.batch_worksheet = 'cherrypick_worksheet'
 
   def custom_inbox_actions
     [:holder_not_control]

@@ -55,7 +55,7 @@ class ReferenceGenomesController < ApplicationController
         format.html { redirect_to(@reference_genome, notice: 'Reference genome was successfully created.') }
         format.xml  { render xml: @reference_genome, status: :created, location: @reference_genome }
       else
-        format.html { render action: "new" }
+        format.html { render action: 'new' }
         format.xml  { render xml: @reference_genome.errors, status: :unprocessable_entity }
       end
     end
@@ -71,7 +71,7 @@ class ReferenceGenomesController < ApplicationController
         format.html { redirect_to(@reference_genome, notice: 'Reference genome was successfully updated.') }
         format.xml  { head :ok }
       else
-        format.html { render action: "edit" }
+        format.html { render action: 'edit' }
         format.xml  { render xml: @reference_genome.errors, status: :unprocessable_entity }
       end
     end

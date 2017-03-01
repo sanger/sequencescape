@@ -45,7 +45,7 @@ Sequencescape::Application.configure do
   config.active_support.deprecation = :log
 
   # Use the response timer middleware
-  config.middleware.insert_after(ActionController::Failsafe, "ResponseTimer", File.new(ENV['LOG_TO'], 'w+')) unless ENV['LOG_TO'].nil?
+  config.middleware.insert_after(ActionController::Failsafe, 'ResponseTimer', File.new(ENV['LOG_TO'], 'w+')) unless ENV['LOG_TO'].nil?
 
   if ENV['WITH_BULLET'] == 'true'
     config.after_initialize do

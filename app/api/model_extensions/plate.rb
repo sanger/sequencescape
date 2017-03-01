@@ -30,23 +30,23 @@ module ModelExtensions::Plate
   end
 
   def plate_purpose_or_stock_plate
-    self.plate_purpose || PlatePurpose.find_by_name('Stock Plate')
+    plate_purpose || PlatePurpose.find_by(name: 'Stock Plate')
   end
 
   def source_plate
-    self.plate_purpose.source_plate(self)
+    plate_purpose.source_plate(self)
   end
 
   def source_plates
-    self.plate_purpose.source_plates(self)
+    plate_purpose.source_plates(self)
   end
 
   def library_source_plate
-    self.plate_purpose.library_source_plate(self)
+    plate_purpose.library_source_plate(self)
   end
 
   def library_source_plates
-    self.plate_purpose.library_source_plate(self)
+    plate_purpose.library_source_plate(self)
   end
 
   # Returns a hash from the submission for the pools to the wells that form that pool on this plate.  This is

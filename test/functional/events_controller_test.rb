@@ -4,11 +4,11 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 require 'events_controller'
 
 class EventsControllerTest < ActionController::TestCase
-  context "EventsController" do
+  context 'EventsController' do
     setup do
       @controller = EventsController.new
       @request    = ActionController::TestRequest.new
@@ -18,8 +18,8 @@ class EventsControllerTest < ActionController::TestCase
 
     should_require_login :new, :create
 
-    context "#create" do
-      context "HTML" do
+    context '#create' do
+      context 'HTML' do
         # This test has been imported from the rails 2 days.
         # Oddly we still seemed to return XML content so
         # I have no idea what was going  on here. Give the
@@ -36,7 +36,7 @@ class EventsControllerTest < ActionController::TestCase
       # as the rails2 tests don't handle formats provided as symbols
       # correctly. This tests we preserve the actual behaviour, which
       # also feels like the RIGHT behaviour.
-      context "XML" do
+      context 'XML' do
         setup do
           get :create, format: :xml, event: { key: 'blah' }
         end

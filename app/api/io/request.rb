@@ -8,10 +8,10 @@ class Io::Request < ::Core::Io::Base
   set_model_for_input(::Request)
   set_json_root(:request)
   set_eager_loading do |model|
-    model.
-      include_request_type.include_request_metadata.
-      include_submission.
-      include_source_asset.include_target_asset
+    model
+      .include_request_type.include_request_metadata
+      .include_submission
+      .include_source_asset.include_target_asset
   end
 
   define_attribute_and_json_mapping("

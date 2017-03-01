@@ -2,5 +2,5 @@
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2007-2011 Genome Research Ltd.
-class PipelineException < Exception
+class PipelineException < RuntimeError
 end

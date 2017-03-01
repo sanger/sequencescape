@@ -4,10 +4,10 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class StudySampleTest < ActiveSupport::TestCase
-  context "A StudySample" do
+  context 'A StudySample' do
     should belong_to :study
     should belong_to :sample
   end

@@ -3,22 +3,24 @@
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2011,2012,2015 Genome Research Ltd.%>
+<%= page_title "Bulk Submission", "New" %>
 
-<h2>Create a bulk submission:</h2>
-
-<p class="info">Please note that <strong>all</strong> submissions in your file will be processed, or if there are any errors, <strong>none</strong> of them will be processed. You will get feedback about any problems.</p>
-
-<%= semantic_form_for @bulk_submission, :url => {:action => "create"}, :html => {:multipart => true } do |form|  %>
+<%= alert(:info) do %>
+  Please note that <strong>all</strong> submissions in your file will be processed, or if there are any errors,
+  <strong>none</strong> of them will be processed. You will get feedback about any problems.</p>
+<% end %>
+<%= semantic_form_for @bulk_submission, html: {multipart: true } do |form|  %>
   <%= form.semantic_errors :base %>
-
   <%= form.inputs do %>
-    <%= form.input :spreadsheet, :as => :file, :label => 'Spreadsheet' %>
+    <%= form.input :spreadsheet, as: :file %>
+    <%= form.input :encoding, as: :select, collection: Encoding.list.map(&:to_s) %>
+    <span id="helpBlock" class="help-block">
+      Encoding describes the way special characters are stored in the CSV. By default Excel uses 'Windows-1252' format
+      on English language Windows systems. In most cases you can leave this option unchanged.</span>
   <% end %>
-
-  <%= form.button do %>
-    <%= form.action(:submit, class:'btn btn-success btn-lg') %>
+  <%= form.actions do %>
+    <%= form.action(:submit, button_html: { class:'btn btn-success btn-lg', disable_with: 'Processing' }) %>
   <% end %>
-
   <div id="being_created" style="display: none;">
     <p>Your spreadsheet is being processed...</p>
     <%= loading_bar %>
@@ -32,34 +34,58 @@
 <p>
   The template contains the following columns:
 </p>
-<ul>
-  <li><strong>'User login'</strong> which should be filled in with your login, or the person requesting the submission.</li>
-  <li><strong>'template name'</strong> which is the submission template name that you would normally select from the submission drop down.</li>
-  <li><strong>'project name'</strong> and <strong>'study name'</strong> are the project and study names to use</li>
-  <li><strong>'submission name'</strong> is mandatory. Several orders belong to one submission</li>
-  <li><strong>'fragment size from'</strong> and <strong>'fragment size to'</strong> are the insert size</li>
-  <li><strong>'library type'</strong> is the library type to create (do not specify for pulldown templates)</li>
-  <li><strong>'fragment size from'</strong> and <strong>'fragment size to'</strong> are the insert size (do not specify for pulldown templates)</li>
-  <li><strong>'read length'</strong> is the read length being requested</li>
-  <li><strong>'number of lanes'</strong> is the number of lanes in the request</li>
-  <li><strong>'bait library name'</strong> is the name of the bait library to apply (pulldown SC &amp; ISC templates only)</li>
-  <li><strong>'comments'</strong> is any comment to add to the submission</li>
-</ul>
-<p>The remaining columns are mutually exclusive, although they are all present in the template and the unused ones can be left blank (or removed completely):
-</p>
-<ul>
-  <li><strong>'plate barcode'</strong> and <strong>'plate well'</strong> are used in tandem when submitting plates: the first is the human barcode (so 'DN1234567K' for example) of the plate, and the latter is the well location (as in 'A1' or 'G5').</li>
-  <li><strong>'asset ids'</strong> is one (or more, if comma separated) asset IDs to use.  Note that asset IDs are the unique identifiers either found on the asset page or in the URL for the asset and <em>not</em> the name or the barcode, as some people have referred to.</li>
-  <li><strong>'asset names'</strong> is one (or more, if comma separated) asset names to use.  Be wary of this as there are some assets that have identical names but are physically different (although the interface should error if it finds these cases).</li>
-</ul>
+<dl>
+  <dt>User login</dt>
+  <dd>Your login, or the person requesting the submission.</dd>
+  <dt>Template name</dt>
+  <dd>The submission template name that you would normally select from the submission drop down. A list is provided on
+    the right.</dd>
+  <dt>Project name</dt>
+  <dd>The project to use. Must be the same for all samples in an order.</dd>
+  <dt>Study name</dt>
+  <dd>The study to use. Must be the same for all samples in an order.</dd>
+  <dt>Submission name</dt>
+  <dd>The name of the submission, is mandatory. A submission can contain several orders.</dd>
+  <dt>Fragment size from - fragment size to</dt>
+  <dd>The maximum and minimum insert size. (do not specify for pulldown templates)</dd>
+  <dt>Library type</dt>
+  <dd>The library type to create (do not specify for pulldown templates)</dd>
+  <dt>Read length</dt>
+  <dd>the read length being requested</dd>
+  <dt>Number of lanes</dt>
+  <dd>The number of lanes of sequencing requested per pool.</dd>
+  <dt>Bait library name</dt>
+  <dd>The name of the bait library to apply (ISC templates only)</dd>
+  <dt>Comments</dt><dd>Any comment to add to the submission</dd>
+</dl>
+<p>The remaining columns are mutually exclusive, although they are all present in the template and the unused ones can
+  be left blank or removed completely</p>
+<dl>
+  <dt>Plate barcode - plate well</dt>
+  <dd>Used in tandem when submitting plates: the first is the human barcode (so 'DN1234567K' for example) of the plate,
+    and the latter is the well location (as in 'A1' or 'G5').</dd>
+  <dt>Asset ids</dt>
+  <dd>One (or more, if comma separated) asset IDs to use.  Note that asset IDs are the unique identifiers either found
+    on the asset page or in the URL for the asset and <em>not</em> the name or the barcode, as some people have referred
+    to.</dd>
+  <dt>Asset names</dt>
+  <dd>One (or more, if comma separated) asset names to use.  Be wary of this as there are some assets that have
+    identical names but are physically different (although the interface should error if it finds these cases).</dd>
+</dl>
 <p>
   The complexity comes between these 3 columns: you can specify asset IDs, or asset names, or plate/well combinations.
 </p>
 <p>Finally there is:</p>
-<ul>
-  <li><strong>'asset group name'</strong> which is the name of a pre-existing asset group to use, in which case you cannot use the asset columns described above, or the name of the asset group to create if one does not exist, in which case the asset group is populated with the submitted assets.</li>
-</ul>
-<p>The important thing is that a single submission can be described on one row, where you list the asset IDs or asset names, or across multiple rows, which you must currently do for the plate/well combinations.  If your submission spans multiple rows then the 'asset group name' is used to group them together, so must be identical for each row that forms a submission.  In this latter case the submission details must be duplicated on each line.</p>
+<dl>
+  <dt>Asset group name</dt>
+  <dd>The name of a pre-existing asset group to use, in which case you cannot use the asset columns described above,
+    or the name of the asset group to create if one does not exist, in which case the asset group is populated with
+    the submitted assets.</dd>
+</dl>
+<p>The important thing is that a single submission can be described on one row, where you list the asset IDs or asset
+  names, or across multiple rows, which you must currently do for the plate/well combinations.  If your submission spans
+  multiple rows then the 'asset group name' is used to group them together, so must be identical for each row that forms
+  a submission.  In this latter case the submission details must be duplicated on each line.</p>
 </div>
 <div class='col-md-6'>
   <h4>All submission templates</h4>
@@ -69,6 +95,7 @@
     <div class="panel panel-default">
       <div class="panel-heading" role="tab" id="heading<%= group.gsub(' ','_').camelize %>" data-toggle="collapse" data-parent="#accordion" href="#collapse<%= group.gsub(' ','_').camelize %>">
         <h5 class="panel-title"><%= group %></h5>
+        <span class="caret pull-right"></span>
       </div>
       <div id='collapse<%= group.gsub(' ','_').camelize %>' class="panel-collapse collapse <%= open %>" role="tabpanel" aria-labelledby="heading<%= group.gsub(' ','_').camelize %>">
         <ul class='list-group'><% templates.each do |template| %>

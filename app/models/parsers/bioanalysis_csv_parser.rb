@@ -16,17 +16,17 @@ class Parsers::BioanalysisCsvParser
 
   def field_name_for(sym_name)
     {
-      concentration: "Conc. [ng/µl]",
-      molarity: "Molarity [nmol/l]"
+      concentration: 'Conc. [ng/µl]',
+      molarity: 'Molarity [nmol/l]'
     }[sym_name]
   end
 
   def concentration(plate_position)
-    return get_parsed_attribute(plate_position, field_name_for(:concentration))
+    get_parsed_attribute(plate_position, field_name_for(:concentration))
   end
 
   def molarity(plate_position)
-    return get_parsed_attribute(plate_position, field_name_for(:molarity))
+    get_parsed_attribute(plate_position, field_name_for(:molarity))
   end
 
   def table_content_hash(group)
@@ -127,7 +127,7 @@ class Parsers::BioanalysisCsvParser
       end
       [group[0], next_index]
     end.reduce({}) do |memo, group|
-      memo.merge(self.parse_sample group)
+      memo.merge(parse_sample group)
     end
   end
 

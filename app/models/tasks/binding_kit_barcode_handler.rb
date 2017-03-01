@@ -11,7 +11,7 @@ module Tasks::BindingKitBarcodeHandler
   def do_binding_kit_barcode_task(task, params)
     barcode = params[:binding_kit_barcode]
     if barcode.blank?
-      flash[:error] = "Please enter a Kit Barcode"
+      flash[:error] = 'Please enter a Kit Barcode'
       return false
     end
 

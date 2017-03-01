@@ -7,9 +7,9 @@ module ViewsSchema
     all_views.each do |name|
       query = ActiveRecord::Base.connection.execute("SHOW CREATE TABLE #{name}")
       if query.respond_to?(:fetch_hash)
-        query.fetch_hash["Create View"].gsub(/DEFINER=`[^`]*`@`[^`]*` /, '')
+        query.fetch_hash['Create View'].gsub(/DEFINER=`[^`]*`@`[^`]*` /, '')
       else
-        definition = query.first["Create View"].gsub(/DEFINER=`[^`]*`@`[^`]*` /, '')
+        definition = query.first['Create View'].gsub(/DEFINER=`[^`]*`@`[^`]*` /, '')
       end
       yield(name, definition)
     end
@@ -45,12 +45,12 @@ module ViewsSchema
     end.flatten
   end
 
-  def self.create_view(name, definition)
+  def self.create_view(_name, definition)
     ActiveRecord::Base.connection.execute(definition)
   end
 
   def self.update_view(name, definition)
-    raise "Invalid name" unless /^[a-z0-9_]*$/ === name
+    raise 'Invalid name' unless /^[a-z0-9_]*$/ === name
     ActiveRecord::Base.connection.execute("DROP VIEW IF EXISTS `#{name}`;")
     create_view(name, definition)
   end

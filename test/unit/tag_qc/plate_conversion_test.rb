@@ -4,15 +4,15 @@
 # authorship of this file.
 # Copyright (C) 2014,2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class PlateConversionTest < ActiveSupport::TestCase
-  context "A Plate Conversion" do
+  context 'A Plate Conversion' do
     should belong_to :user
     should belong_to :target
     should belong_to :purpose
 
-    context "#stamp" do
+    context '#stamp' do
       should 'convert plates to a new purpose' do
         @plate = create :plate
         @user  = create :user

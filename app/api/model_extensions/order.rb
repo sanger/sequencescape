@@ -17,12 +17,12 @@ module ModelExtensions::Order
     # request options have been specified.  Once they are specified they are always checked, unless they are
     # completely blanked.
     def validate_request_options?
-      not building? or not self.request_options.blank?
+      not building? or not request_options.blank?
     end
     private :validate_request_options?
 
     def request_types_delegate_validator
-      DelegateValidation::CompositeValidator::CompositeValidator(*::RequestType.find(self.request_types.flatten).map(&:delegate_validator))
+      DelegateValidation::CompositeValidator::CompositeValidator(*::RequestType.find(request_types.flatten).map(&:delegate_validator))
     end
 
     # If this returns true then we check values that have not been set, otherwise we can ignore them.  This would
@@ -32,7 +32,7 @@ module ModelExtensions::Order
     end
 
     def request_options_for_validation
-      OpenStruct.new({ owner: self }.reverse_merge(self.request_options || {})).tap do |v|
+      OpenStruct.new({ owner: self }.reverse_merge(request_options || {})).tap do |v|
         v.class.delegate(:errors, :include_unset_values?, to: :owner)
       end
     end
@@ -67,7 +67,7 @@ module ModelExtensions::Order
 
       # The API can create submissions but we have to prevent someone from changing the study
       # and the project once they have been set.
-      validates_each(:study, :project) do |record, attr, value|
+      validates_each(:study, :project) do |record, attr, _value|
         # NOTE: This can get called after the record has been saved but before it has been completely saved, i.e. after_create
         # In this case the original value of the attribute will be nil, so we account for that here.
         attr_value_was, attr_value_is = record.send(:"#{attr}_id_was"), record.send(:"#{attr}_id")
@@ -112,7 +112,7 @@ module ModelExtensions::Order
       Hash.new.deep_merge(@store)
     end
 
-    def node_and_leaf(*keys, &block)
+    def node_and_leaf(*keys)
       leaf = keys.pop
       node = keys.inject(@store) { |h, k| h[k] ||= ActiveSupport::HashWithIndifferentAccess.new }
       yield(node, leaf)
@@ -120,13 +120,13 @@ module ModelExtensions::Order
     private :node_and_leaf
   end
 
-  def request_type_multiplier(&block)
+  def request_type_multiplier
     yield(request_types.last.to_s.to_sym) unless request_types.blank?
   end
 
   def request_options_structured
     NonNilHash.new(:stringify_keys).tap do |json|
-      NonNilHash.new.deep_merge(self.request_options).tap do |attributes|
+      NonNilHash.new.deep_merge(request_options).tap do |attributes|
         json['read_length']                    = attributes[:read_length].try(:to_i)
         json['library_type']                   = attributes[:library_type]
         json['fragment_size_required', 'from'] = attributes[:fragment_size_required_from].try(:to_i)
@@ -164,7 +164,7 @@ module ModelExtensions::Order
   private :merge_in_structured_request_options
 
   def request_type_objects
-    return [] if self.request_types.blank?
-    ::RequestType.find(self.request_types)
+    return [] if request_types.blank?
+    ::RequestType.find(request_types)
   end
 end

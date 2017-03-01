@@ -41,7 +41,7 @@ class WellAttribute < ActiveRecord::Base
   # to use a different transition name.
   def pico_pass
     case self[:pico_pass]
-    when 'Too Low To Normalise' then "Fail"
+    when 'Too Low To Normalise' then 'Fail'
     when nil, '' then 'ungraded'
     else self[:pico_pass]
     end
@@ -72,5 +72,10 @@ class WellAttribute < ActiveRecord::Base
     return nil if estimated_volume.nil? || concentration.nil?
     return 0   if estimated_volume < 0 || concentration < 0
     (estimated_volume * concentration) / 1000
+  end
+
+  def current_volume=(current_volume)
+    current_volume = 0.0 if current_volume.to_f < 0
+    super
   end
 end

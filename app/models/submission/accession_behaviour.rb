@@ -1,8 +1,6 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2013,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+# Copyright (C) 2007-2011,2013,2014,2015,2016 Genome Research Ltd.
 
 module Submission::AccessionBehaviour
   def self.included(base)
@@ -12,11 +10,11 @@ module Submission::AccessionBehaviour
   end
 
   def can_check_data_release_and_accession?
-    self.study.present? && self.request_types_require_accessioning?
+    study.present? && request_types_require_accessioning?
   end
 
   def request_types_require_accessioning?
-    RequestType.find(self.request_types).detect(&:accessioning_required?)
+    RequestType.find(request_types).detect(&:accessioning_required?)
   end
 
   def check_data_release_and_accession_for_submission
@@ -36,7 +34,7 @@ module Submission::AccessionBehaviour
   private
 
   def test_asset_group
-    AssetGroup.new(assets: self.assets)
+    AssetGroup.new(assets: assets)
   end
 
   def unaccessioned_samples

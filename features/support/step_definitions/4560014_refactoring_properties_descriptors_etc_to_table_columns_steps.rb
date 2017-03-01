@@ -40,19 +40,19 @@ def create_request(request_type, study, project, asset, target_asset, additional
 end
 
 Given /^the (sample|library) tube "([^\"]+)" has been involved in a "([^\"]+)" request within the study "([^\"]+)" for the project "([^\"]+)"$/ do |tube_type, tube_name, request_type_name, study_name, project_name|
-  study        = Study.find_by_name(study_name) or raise StandardError, "Cannot find study named #{study_name.inspect}"
-  project      = Project.find_by_name(project_name) or raise StandardError, "Cannot find the project named #{project_name.inspect}"
-  request_type = RequestType.find_by_name(request_type_name) or raise StandardError, "Cannot find request type #{request_type_name.inspect}"
-  asset = "#{tube_type}_tube".camelize.constantize.find_by_name(tube_name) or raise StandardError, "Cannot find #{tube_type} tube named #{tube_name.inspect}"
+  study        = Study.find_by(name: study_name) or raise StandardError, "Cannot find study named #{study_name.inspect}"
+  project      = Project.find_by(name: project_name) or raise StandardError, "Cannot find the project named #{project_name.inspect}"
+  request_type = RequestType.find_by(name: request_type_name) or raise StandardError, "Cannot find request type #{request_type_name.inspect}"
+  asset = "#{tube_type}_tube".camelize.constantize.find_by(name: tube_name) or raise StandardError, "Cannot find #{tube_type} tube named #{tube_name.inspect}"
   target_asset = FactoryGirl.create(request_type.asset_type.underscore, name: "#{study_name} - Target asset")
 
   create_request(request_type, study, project, asset, target_asset)
 end
 
 Given /^I have already made a "([^\"]+)" request within the study "([^\"]+)" for the project "([^\"]+)"$/ do |type, study_name, project_name|
-  study        = Study.find_by_name(study_name) or raise StandardError, "Cannot find study named #{study_name.inspect}"
-  project      = Project.find_by_name(project_name) or raise StandardError, "Cannot find the project named #{project_name.inspect}"
-  request_type = RequestType.find_by_name(type) or raise StandardError, "Cannot find request type #{type.inspect}"
+  study        = Study.find_by(name: study_name) or raise StandardError, "Cannot find study named #{study_name.inspect}"
+  project      = Project.find_by(name: project_name) or raise StandardError, "Cannot find the project named #{project_name.inspect}"
+  request_type = RequestType.find_by(name: type) or raise StandardError, "Cannot find request type #{type.inspect}"
   asset = FactoryGirl.create(request_type.asset_type.underscore, name: "#{study_name} - Source asset")
   target_asset = FactoryGirl.create(request_type.asset_type.underscore, name: "#{study_name} - Target asset")
 
@@ -60,9 +60,9 @@ Given /^I have already made a "([^\"]+)" request within the study "([^\"]+)" for
 end
 
 Given /^I have already made (\d+) "([^\"]+)" requests? with IDs starting at (\d+) within the study "([^\"]+)" for the project "([^\"]+)"$/ do |count, type, id, study_name, project_name|
-  study        = Study.find_by_name(study_name) or raise StandardError, "Cannot find study named #{study_name.inspect}"
-  project      = Project.find_by_name(project_name) or raise StandardError, "Cannot find the project named #{project_name.inspect}"
-  request_type = RequestType.find_by_name(type) or raise StandardError, "Cannot find request type #{type.inspect}"
+  study        = Study.find_by(name: study_name) or raise StandardError, "Cannot find study named #{study_name.inspect}"
+  project      = Project.find_by(name: project_name) or raise StandardError, "Cannot find the project named #{project_name.inspect}"
+  request_type = RequestType.find_by(name: type) or raise StandardError, "Cannot find request type #{type.inspect}"
 
   (0...count.to_i).each do |index|
     asset = FactoryGirl.create(request_type.asset_type.underscore, name: "#{study_name} - Source asset #{index + 1}")
@@ -76,14 +76,14 @@ Given /^I have already made a "([^\"]+)" request with ID (\d+) within the study 
 end
 
 Given /^the sample in (well|sample tube) "([^\"]+)" is registered under the study "([^\"]+)"$/ do |_, asset_name, study_name|
-  asset = Asset.find_by_name(asset_name) or raise StandardError, "Cannot find asset #{tube_name.inspect}"
-  study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
+  asset = Asset.find_by(name: asset_name) or raise StandardError, "Cannot find asset #{tube_name.inspect}"
+  study = Study.find_by(name: study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
   study.samples << asset.aliquots.map(&:sample)
 end
 
 Given /^the sample in the last (well|sample tube) is registered under the study "([^\"]+)"$/ do |_, study_name|
   asset = Asset.last or raise StandardError, "Cannot find asset #{tube_name.inspect}"
-  study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
+  study = Study.find_by(name: study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
   study.samples << asset.aliquots.map(&:sample)
 end
 
@@ -92,7 +92,7 @@ Given /^the study "([^\"]+)" has an asset group of (\d+) samples called "([^\"]+
 end
 
 Given /^the study "([^\"]+)" has an asset group of (\d+) samples in "([^\"]+)" called "([^\"]+)"$/ do |study_name, count, asset_type, group_name|
-  study = Study.find_by_name(study_name) or raise StandardError, "Cannot find study named #{study_name.inspect}"
+  study = Study.find_by(name: study_name) or raise StandardError, "Cannot find study named #{study_name.inspect}"
 
   assets = (1..count.to_i).map do |i|
     sample_name = "#{group_name} sample #{i}".gsub(/\s+/, '_').downcase
@@ -127,6 +127,6 @@ Then /^I should see the following request information:$/ do |expected|
 end
 
 Given /^all of the wells are on a "([^\"]+)" plate$/ do |plate_purpose_name|
-  plate_purpose = PlatePurpose.find_by_name(plate_purpose_name) or raise StandardError, "Cannot find plate purpose #{plate_purpose_name.inspect}"
+  plate_purpose = PlatePurpose.find_by(name: plate_purpose_name) or raise StandardError, "Cannot find plate purpose #{plate_purpose_name.inspect}"
   plate_purpose.create!(true, barcode: 'random_plate').wells << Well.all
 end

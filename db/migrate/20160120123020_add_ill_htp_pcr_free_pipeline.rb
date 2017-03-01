@@ -8,7 +8,7 @@ class AddIllHtpPcrFreePipeline < ActiveRecord::Migration
   # IlluminaHtp::PlatePurposes.create_plate_purposes
   # IlluminaHtp::PlatePurposes.create_branches
 
-    ActiveRecord::Base.transaction do |t|
+    ActiveRecord::Base.transaction do |_t|
       stock_name = 'PF Cherrypicked'
 
       branches = [[stock_name, 'PF Shear', 'PF Post Shear', 'PF Post Shear XP', 'PF Lib', 'PF Lib XP', 'PF Lib XP2', 'PF EM Pool', 'PF Lib Norm'],

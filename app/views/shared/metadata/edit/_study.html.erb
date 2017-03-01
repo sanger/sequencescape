@@ -43,11 +43,12 @@
         <% metadata_fields.related_fields(:to => :data_release_standard_agreement, :when => Study::NO) do %>
           <%= group.document_field(:data_release_non_standard_agreement) %>
         <% end %>
-      <%= metadata_fields.text_field(:dac_policy_title) %>
-      <%= metadata_fields.text_field(:dac_policy) %>
-      <%= metadata_fields.text_field(:ega_dac_accession_number) %>
-      <%= metadata_fields.text_field(:ega_policy_accession_number) %>
-      <%= metadata_fields.text_field(:array_express_accession_number) if study.for_array_express? %>
+        <%= metadata_fields.text_field(:dac_policy_title) %>
+        <%= metadata_fields.text_field(:dac_policy) %>
+        <%= metadata_fields.text_field(:ega_dac_accession_number) %>
+        <%= metadata_fields.text_field(:ega_policy_accession_number) %>
+        <%= metadata_fields.text_field(:array_express_accession_number) if study.for_array_express? %>
+        <%= metadata_fields.text_field :hmdmc_approval_number %>
       <% end %>
 
       <%= metadata_fields.select(:data_release_timing, Study::DATA_RELEASE_TIMINGS + [ Study::DATA_RELEASE_TIMING_NEVER ]) %>

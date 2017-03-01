@@ -11,7 +11,7 @@ class ::Endpoints::MultiplexedLibraryTubes < ::Endpoints::LibraryTubes
     has_many(:qc_files, json: 'qc_files', to: 'qc_files', include: []) do
       action(:create, as: 'create') do |request, _|
         ActiveRecord::Base.transaction do
-          QcFile.create!(request.attributes.merge({ asset: request.target }))
+          QcFile.create!(request.attributes.merge(asset: request.target))
         end
       end
       action(:create_from_file, as: 'create') do |request, _|

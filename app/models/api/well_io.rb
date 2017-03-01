@@ -32,8 +32,8 @@ class Api::WellIO < Api::Base
   extra_json_attributes do |object, json_attributes|
     sample = object.primary_aliquot_if_unique.try(:sample)
     if sample.present?
-      json_attributes["genotyping_status"]       = object.genotyping_status
-      json_attributes["genotyping_snp_plate_id"] = sample.genotyping_snp_plate_id
+      json_attributes['genotyping_status']       = object.genotyping_status
+      json_attributes['genotyping_snp_plate_id'] = sample.genotyping_snp_plate_id
     end
   end
 
@@ -59,7 +59,7 @@ class Api::WellIO < Api::Base
     map_attribute_to_json_attribute(:uuid, 'plate_uuid')
 
     extra_json_attributes do |object, json_attributes|
-      json_attributes["plate_barcode_prefix"] = object.prefix unless object.nil?
+      json_attributes['plate_barcode_prefix'] = object.prefix unless object.nil?
     end
   end
 

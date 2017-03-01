@@ -37,7 +37,7 @@ class PacBio::SampleSheet
   def requests_by_wells(batch)
     requests = batch.requests.for_pacbio_sample_sheet
     sorted_well_requests = requests.group_by { |r| r.target_asset.map.column_order }.sort
-    sorted_well_requests.map { |well_index, requests| requests }
+    sorted_well_requests.map { |_well_index, requests| requests }
   end
 
   def replace_non_alphanumeric(protocol)

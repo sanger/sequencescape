@@ -20,7 +20,7 @@ class Tube::Purpose < ::Purpose
     target_class.create_with_barcode!(*args, &block).tap { |t| tubes << t }
   end
 
-  def sibling_tubes(tube)
+  def sibling_tubes(_tube)
     nil
   end
 

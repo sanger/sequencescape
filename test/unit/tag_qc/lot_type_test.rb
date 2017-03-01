@@ -4,10 +4,10 @@
 # authorship of this file.
 # Copyright (C) 2014,2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class LotTypeTest < ActiveSupport::TestCase
-  context "A Lot Type" do
+  context 'A Lot Type' do
     context 'validating' do
       setup do
         create :lot
@@ -21,21 +21,21 @@ class LotTypeTest < ActiveSupport::TestCase
     should have_many :lots
     should belong_to :target_purpose
 
-    context "#lot" do
+    context '#lot' do
       setup do
         @lot_type = create :lot_type
         @user = create :user
         @template = PlateTemplate.new
       end
 
-      context "create" do
+      context 'create' do
         setup do
           @lot_count = Lot.count
           @lot = @lot_type.create!(template: @template, user: @user, lot_number: '123456789', received_at: '2014-02-01')
         end
 
-        should "change Lot.count by 1" do
-          assert_equal 1, Lot.count - @lot_count, "Expected Lot.count to change by 1"
+        should 'change Lot.count by 1' do
+          assert_equal 1, Lot.count - @lot_count, 'Expected Lot.count to change by 1'
         end
 
         should 'set the lot properties' do

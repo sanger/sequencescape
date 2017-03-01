@@ -4,6 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
-Before('@plate_volume') do |scenario|
+Before('@plate_volume') do |_scenario|
   PlateVolume.process_all_volume_check_files
 end

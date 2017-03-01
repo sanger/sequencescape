@@ -16,9 +16,9 @@ class Request::Multiplexing < CustomerRequest
     # We go via order as we need to get a particular instance of submission
     order.submission.register_callback(:once) do
       Transfer::FromPlateToTubeByMultiplex.create!(
-        source: self.asset.plate,
-        user: self.order.user
-      ) if self.asset.present?
+        source: asset.plate,
+        user: order.user
+      ) if asset.present?
     end
   end
 
@@ -33,5 +33,5 @@ class Request::Multiplexing < CustomerRequest
       event :pass   do transitions to: :passed,      from: [:pending, :started] end
       event :fail   do transitions to: :failed,      from: [:pending, :started] end
       event :cancel do transitions to: :cancelled,   from: [:started, :passed] end
-    end
+  end
 end

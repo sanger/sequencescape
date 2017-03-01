@@ -56,7 +56,7 @@ class Studies::AssetGroupsController < ApplicationController
         format.xml  { render xml: @asset_group, status: :created, location: @asset_group }
         format.json { render json: @asset_group, status: :created, location: @asset_group }
       else
-        format.html { render action: "new" }
+        format.html { render action: 'new' }
         format.xml  { render xml: @asset_group.errors, status: :unprocessable_entity }
         format.json { render json: @asset_group.errors, status: :unprocessable_entity }
       end
@@ -73,7 +73,7 @@ class Studies::AssetGroupsController < ApplicationController
         format.html { redirect_to study_asset_group_path(@study, @asset_group) }
         format.xml  { head :ok }
       else
-        format.html { render action: "edit" }
+        format.html { render action: 'edit' }
         format.xml  { render xml: @asset_group.errors, status: :unprocessable_entity }
       end
     end
@@ -96,7 +96,7 @@ class Studies::AssetGroupsController < ApplicationController
     if query.blank? or query.length < 2
       # We should not blame the user, we should instead help.
       # - By returning the X most recent ones together with an explanation.
-      flash[:error] = "Search too wide. Please make your query more specific."
+      flash[:error] = 'Search too wide. Please make your query more specific.'
       redirect_to study_asset_groups_path(@study)
       return
     else
@@ -106,14 +106,14 @@ class Studies::AssetGroupsController < ApplicationController
     respond_to do |format|
        format.html # index.html.erb
        format.xml  { render xml: @assets }
-     end
+    end
   end
 
   def add
     @asset_group = AssetGroup.find(params[:id])
     @study = Study.find(params[:study_id])
     if params[:asset]
-      ids = params[:asset].map { |a| a[1] == "1" ? a[0] : nil }.select { |a| !a.nil? }
+      ids = params[:asset].map { |a| a[1] == '1' ? a[0] : nil }.select { |a| !a.nil? }
       @assets = Asset.find(ids)
       @asset_group.assets << @assets
     end
@@ -122,7 +122,7 @@ class Studies::AssetGroupsController < ApplicationController
        format.html { redirect_to(study_asset_group_url(@study, @asset_group)) }
        format.xml  { render xml: @assets }
        format.json { render json: @assets }
-     end
+    end
   end
 
   def printing
