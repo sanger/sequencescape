@@ -1,6 +1,6 @@
 module SampleManifestExcel
   module Tagging
-    module TagsDataValidation
+    module Validation
       extend ActiveSupport::Concern
 
       included do

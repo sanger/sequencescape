@@ -129,7 +129,7 @@ module SampleManifestExcel
       def combine_conditional_formattings(defaults)
         if arguments[:conditional_formattings].present?
           arguments[:conditional_formattings].each do |k, cf|
-            arguments[:conditional_formattings][k] = defaults.find_by(k).combine(cf)
+            arguments[:conditional_formattings][k] = defaults.find_by(:type, k).combine(cf)
           end
         end
       end

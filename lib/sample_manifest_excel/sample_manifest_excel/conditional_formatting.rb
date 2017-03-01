@@ -8,7 +8,9 @@ module SampleManifestExcel
   class ConditionalFormatting
     include AttributeHelpers
 
-    set_attributes :options, :style, :formula
+    set_attributes :name, :options, :style, :formula
+
+    validates_presence_of :name, :options
 
     def initialize(attributes = {})
       super
@@ -45,9 +47,9 @@ module SampleManifestExcel
 
     ##
     # A conditional formatting is only valid if there are some options.
-    def valid?
-      options.present?
-    end
+    # def valid?
+    #   options.present?
+    # end
 
     ##
     # Return the options as a hash

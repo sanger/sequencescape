@@ -20,7 +20,7 @@ RSpec.describe SampleManifestExcel::ConditionalFormattingList, type: :model, sam
 
   it '#update updates all of the conditional formatting rules' do
     conditional_formatting_list.update(options)
-    expect(conditional_formatting_list.each_item.all? { |conditional_formatting| conditional_formatting.styled? }).to be_truthy
+    expect(conditional_formatting_list.all? { |conditional_formatting| conditional_formatting.styled? }).to be_truthy
   end
 
   it '#update should update the worksheet with conditional formatting rules' do
@@ -54,6 +54,6 @@ RSpec.describe SampleManifestExcel::ConditionalFormattingList, type: :model, sam
   it 'should be duplicated correctly' do
     dup = conditional_formatting_list.dup
     conditional_formatting_list.update(options)
-    expect(dup.each_item.any? { |conditional_formatting| conditional_formatting.styled? }).to be_falsey
+    expect(dup.any? { |conditional_formatting| conditional_formatting.styled? }).to be_falsey
   end
 end

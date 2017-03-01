@@ -108,9 +108,9 @@ module SampleManifestExcel
       @values ||= []
     end
 
-    ##
-    # If the items don't exist then create a new struct with each key being
-    # an empty hash.
+    # ##
+    # # If the items don't exist then create a new struct with each key being
+    # # an empty hash.
     def items
       @items ||= create_list
     end

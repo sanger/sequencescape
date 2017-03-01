@@ -1,43 +1,65 @@
 module SampleManifestExcel
   module SpecialisedField
-    extend ActiveSupport::Concern
+    module Base
 
-    mattr_accessor :subclasses, instance_writer: false
-    self.subclasses = [:sample_field, :multiplexed_library_tube_field]
+      extend ActiveSupport::Concern
 
-    subclasses.each do |subclass|
-      define_method "#{subclass}?" do
-        self.class.to_s.include?(subclass.to_s.classify)
+      included do
+        include ActiveModel::Validations
+      end
+
+      attr_accessor :value
+      
+      def initialize(value)
+        self.value = value
       end
     end
 
-    included do
-      include ActiveModel::Validations
-      attr_reader :value
-    end
-
-    def type
-      @type ||= self.class.name.demodulize.underscore.to_sym
-    end
-
-    def update(attributes = {})
-      if attributes[:row].present?
-        @value = attributes[:row].value(type)
+    module SangerSampleIdValue
+      def value=(sample)
+        @value =  sample.sanger_sample_id
       end
-      self
     end
 
-    delegate :present?, to: :value, prefix: true
+    module ValueToInteger
+      def value=(value)
+        @value = value.to_i if value.present?
+      end
+    end
 
-    def self.create_field_list(mod)
-      mod::Base.class_exec do
-        cattr_accessor :fields, instance_writer: false
-        self.fields = {}.tap do |f|
-          subclasses.each do |subclass|
-            f[subclass.name.demodulize.underscore.to_sym] = subclass
+    module ValueRequired
+      extend ActiveSupport::Concern
+
+      included do
+        validates_presence_of :value
+      end
+    end
+
+    module Tagging
+
+      extend ActiveSupport::Concern
+
+      module ClassMethods
+        def set_tag_name(name)
+          define_method :tag_name do
+            name
           end
         end
       end
+
+      def update(aliquot:, tag_group:)
+        if value.present?
+          tag = tag_group.tags.find_or_create_by(oligo: value) do |t|
+            t.map_id = tag_group.tags.count + 1
+          end
+          aliquot.send("#{tag_name}=", tag)
+          aliquot.save
+        end
+      end
+
     end
+
+    Dir[File.join(File.dirname(__FILE__), 'specialised_field', '*.rb')].each { |file| require file }
+
   end
 end

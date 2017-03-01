@@ -44,8 +44,6 @@ module SampleManifestExcel
   require_relative 'sample_manifest_excel/conditional_formatting_default_list'
   require_relative 'sample_manifest_excel/manifest_type_list'
   require_relative 'sample_manifest_excel/specialised_field'
-  require_relative 'sample_manifest_excel/multiplexed_library_tube_field'
-  require_relative 'sample_manifest_excel/sample_field'
   require_relative 'sample_manifest_excel/specialised_field_list'
   require_relative 'sample_manifest_excel/validation'
   require_relative 'sample_manifest_excel/column'
@@ -58,6 +56,7 @@ module SampleManifestExcel
   require_relative 'sample_manifest_excel/worksheet'
   require_relative 'sample_manifest_excel/download'
   require_relative 'sample_manifest_excel/upload'
+  require_relative 'sample_manifest_excel/tagging'
 
   Axlsx::Worksheet.send(:include, CoreExtensions::AxlsxWorksheet)
 

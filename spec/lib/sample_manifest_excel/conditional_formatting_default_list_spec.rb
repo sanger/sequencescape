@@ -12,13 +12,13 @@ RSpec.describe SampleManifestExcel::ConditionalFormattingDefaultList, type: :mod
   end
 
   it '#find_by should return the correct default' do
-    expect(defaults.find_by(rules.keys.first)).to be_present
-    expect(defaults.find_by(rules.keys.first.to_sym)).to be_present
+    expect(defaults.find_by(:type, rules.keys.first)).to be_present
+    expect(defaults.find_by(:type, rules.keys.first.to_sym)).to be_present
   end
 
   it 'each default should have the correct type' do
     rules.each do |k, _v|
-      expect(defaults.find_by(k).type).to eq(k.to_sym)
+      expect(defaults.find_by(:type, k).type).to eq(k.to_sym)
     end
   end
 

@@ -142,13 +142,13 @@ RSpec.describe SampleManifestExcel::Column, type: :model, sample_manifest_excel:
       arguments = SampleManifestExcel::Column.build_arguments(columns[:gender], 'gender', defaults)
       expect(arguments[:conditional_formattings].length).to eq(columns[:gender][:conditional_formattings].length) 
       arguments[:conditional_formattings].each do |k, _conditional_formatting|
-        expect(arguments[:conditional_formattings][k]).to eq(defaults.find_by(k).combine(columns[:gender][:conditional_formattings][k])) 
+        expect(arguments[:conditional_formattings][k]).to eq(defaults.find_by(:type, k).combine(columns[:gender][:conditional_formattings][k])) 
       end
     end
 
     it 'combines the conditional formattings correctly if there is a formula' do
       arguments = SampleManifestExcel::Column.build_arguments(columns[:supplier_sample_name], 'supplier_sample_name', defaults)
-      expect(arguments[:conditional_formattings][:len][:formula]).to eq(defaults.find_by(:len).combine(columns[:supplier_sample_name][:conditional_formattings][:len])[:formula]) 
+      expect(arguments[:conditional_formattings][:len][:formula]).to eq(defaults.find(:len).combine(columns[:supplier_sample_name][:conditional_formattings][:len])[:formula]) 
     end
   end
 end
