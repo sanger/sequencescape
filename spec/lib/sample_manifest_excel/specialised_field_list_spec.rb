@@ -12,4 +12,5 @@ RSpec.describe SampleManifestExcel::SpecialisedFieldList, type: :model, sample_m
     expect(specialised_field_list.find(:donor_id)).to eq(SampleManifestExcel::SpecialisedField::DonorId)
     expect(specialised_field_list.find(:well)).to eq(SampleManifestExcel::SpecialisedField::Well)
   end
+
 end

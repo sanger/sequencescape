@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe SampleManifestExcel::Download, type: :model, sample_manifest_excel: true do
-
   attr_reader :download, :spreadsheet
 
   let(:test_file) { 'test.xlsx' }
@@ -10,7 +9,6 @@ RSpec.describe SampleManifestExcel::Download, type: :model, sample_manifest_exce
     download.save(test_file)
     @spreadsheet = Roo::Spreadsheet.open(test_file)
   end
-
 
   before(:each) do
     SampleManifestExcel.configure do |config|
@@ -56,12 +54,12 @@ RSpec.describe SampleManifestExcel::Download, type: :model, sample_manifest_exce
     end
 
     it 'creates the two different types of worksheet' do
-      expect(spreadsheet.sheets.first).to eq('DNA Collections Form') 
-      expect(spreadsheet.sheets.last).to eq('Ranges') 
+      expect(spreadsheet.sheets.first).to eq('DNA Collections Form')
+      expect(spreadsheet.sheets.last).to eq('Ranges')
     end
 
     it 'have the correct number of columns' do
-      expect(download.column_list.count).to eq(SampleManifestExcel.configuration.columns.plate_full.count) 
+      expect(download.column_list.count).to eq(SampleManifestExcel.configuration.columns.plate_full.count)
     end
   end
 
@@ -79,12 +77,12 @@ RSpec.describe SampleManifestExcel::Download, type: :model, sample_manifest_exce
     end
 
     it 'creates the two different types of worksheet' do
-      expect(spreadsheet.sheets.first).to eq('DNA Collections Form') 
-      expect(spreadsheet.sheets.last).to eq('Ranges') 
+      expect(spreadsheet.sheets.first).to eq('DNA Collections Form')
+      expect(spreadsheet.sheets.last).to eq('Ranges')
     end
 
     it 'have the correct number of columns' do
-      expect(download.column_list.count).to eq(SampleManifestExcel.configuration.columns.tube_full.count) 
+      expect(download.column_list.count).to eq(SampleManifestExcel.configuration.columns.tube_full.count)
     end
   end
 
@@ -102,12 +100,36 @@ RSpec.describe SampleManifestExcel::Download, type: :model, sample_manifest_exce
     end
 
     it 'create the two different types of worksheet' do
-      expect(spreadsheet.sheets.first).to eq('DNA Collections Form') 
+      expect(spreadsheet.sheets.first).to eq('DNA Collections Form')
       expect(spreadsheet.sheets.last).to eq('Ranges')
     end
 
     it 'have the correct number of columns' do
-      expect(download.column_list.count).to eq(SampleManifestExcel.configuration.columns.tube_multiplexed_library.count) 
+      expect(download.column_list.count).to eq(SampleManifestExcel.configuration.columns.tube_multiplexed_library.count)
+    end
+  end
+
+  context 'Library tube download' do
+    setup do
+      # asset_type might be changed, based on how upload would work
+      sample_manifest = create(:tube_sample_manifest, asset_type: 'multiplexed_library')
+      sample_manifest.generate
+      @download = SampleManifestExcel::Download.new(sample_manifest,
+        SampleManifestExcel.configuration.columns.tube_library.dup, SampleManifestExcel.configuration.ranges.dup)
+      save_file
+    end
+
+    it 'create an excel file' do
+      expect(File.file?('test.xlsx')).to be_truthy
+    end
+
+    it 'create the two different types of worksheet' do
+      expect(spreadsheet.sheets.first).to eq('DNA Collections Form')
+      expect(spreadsheet.sheets.last).to eq('Ranges')
+    end
+
+    it 'have the correct number of columns' do
+      expect(download.column_list.count).to eq(SampleManifestExcel.configuration.columns.tube_library.count)
     end
   end
 

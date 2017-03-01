@@ -103,7 +103,7 @@ RSpec.describe SampleManifestExcel::SpecialisedField, type: :model, sample_manif
         aliquot.reload
         expect(aliquot.tag).to eq(tag)
       end
-      
+
     end
 
     describe 'tag2 oligo' do
@@ -122,5 +122,5 @@ RSpec.describe SampleManifestExcel::SpecialisedField, type: :model, sample_manif
 
     end
   end
-  
+
 end

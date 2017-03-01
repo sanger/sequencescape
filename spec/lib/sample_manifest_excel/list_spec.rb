@@ -21,14 +21,14 @@ RSpec.describe SampleManifestExcel::List, type: :model, sample_manifest_excel: t
   let(:item_2) { ListItem.new('e', 'f', 'g', 'h') }
   let(:item_3) { ListItem.new('i', 'j', 'k', 'l') }
   let(:item_4) { ListItem.new('m', 'n', 'o', 'p', false) }
-  let(:my_list) { MyList.new do |list|
+  let(:my_list) {
+    MyList.new do |list|
                     list.add item_1
                     list.add item_2
                     list.add item_3
                     list.add item_4
-                  end
-                }
-
+    end
+  }
 
   it 'has the correct number of items' do
     expect(my_list.count).to eq(3)
@@ -36,24 +36,24 @@ RSpec.describe SampleManifestExcel::List, type: :model, sample_manifest_excel: t
   end
 
   it 'each key has the correct number of items' do
-    expect(my_list.items.attr_a.count).to eq(3) 
-    expect(my_list.items.attr_b.count).to eq(3) 
-    expect(my_list.items.attr_c.count).to eq(3) 
+    expect(my_list.items.attr_a.count).to eq(3)
+    expect(my_list.items.attr_b.count).to eq(3)
+    expect(my_list.items.attr_c.count).to eq(3)
   end
 
   it 'it is possible to find an item by a defined key' do
-    expect(my_list.find_by(:attr_a, 'a')).to eq(item_1) 
+    expect(my_list.find_by(:attr_a, 'a')).to eq(item_1)
     expect(my_list.find_by(:attr_b, 'f')).to eq(item_2)
-    expect(my_list.find_by(:attr_b, :f)).to eq(item_2) 
+    expect(my_list.find_by(:attr_b, :f)).to eq(item_2)
     expect(my_list.find_by(:attr_c, 'k')).to eq(item_3)
   end
 
   it 'it should be possible to find an attribute using any key' do
     expect(my_list.find('a')).to eq(item_1)
-    expect(my_list.find('f')).to eq(item_2) 
+    expect(my_list.find('f')).to eq(item_2)
     expect(my_list.find(:f)).to eq(item_2)
     expect(my_list.find('k')).to eq(item_3)
-    expect(my_list.find('z')).to be_nil 
+    expect(my_list.find('z')).to be_nil
   end
 
   it '#reset should create a new list of items' do
@@ -67,15 +67,15 @@ RSpec.describe SampleManifestExcel::List, type: :model, sample_manifest_excel: t
   end
 
   it 'each key should pull back the attributes for that key' do
-    expect(my_list.attr_as).to eq(['a', 'e', 'i']) 
+    expect(my_list.attr_as).to eq(['a', 'e', 'i'])
     expect(my_list.attr_bs).to eq(['b', 'f', 'j'])
-    expect(my_list.attr_cs).to eq(['c', 'g', 'k']) 
+    expect(my_list.attr_cs).to eq(['c', 'g', 'k'])
   end
 
   it 'copy adds a copy of the object to the list' do
     item = ListItem.new('q', 'r', 's', 't')
     my_list.add_copy item
-    expect(my_list.find_by(:attr_a, 'q')).to_not eq(item) 
+    expect(my_list.find_by(:attr_a, 'q')).to_not eq(item)
   end
 
   it 'is comparable' do

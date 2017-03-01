@@ -8,7 +8,7 @@ RSpec.describe SampleManifestExcel::ConditionalFormattingDefaultList, type: :mod
   let(:defaults) { SampleManifestExcel::ConditionalFormattingDefaultList.new(rules) }
 
   it 'should have the correct number of defaults' do
-    expect(defaults.count).to eq(rules.length) 
+    expect(defaults.count).to eq(rules.length)
   end
 
   it '#find_by should return the correct default' do

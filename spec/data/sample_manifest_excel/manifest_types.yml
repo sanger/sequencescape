@@ -284,6 +284,50 @@ tube_multiplexed_library:
     - :sample_accession_number
     - :donor_id
     - :phenotype
+tube_library:
+  heading: "Library Tube"
+  asset_type: "multiplexed_library"
+  columns:
+    - :sanger_tube_id
+    - :sanger_sample_id
+    - :prepooled
+    - :tag_oligo
+    - :tag2_oligo
+    - :library_type
+    - :insert_size_from
+    - :insert_size_to
+    - :supplier_sample_name
+    - :cohort
+    - :volume
+    - :conc
+    - :gender
+    - :country_of_origin
+    - :geographical_region
+    - :ethnicity
+    - :dna_source
+    - :date_of_sample_collection
+    - :date_of_dna_extraction
+    - :is_sample_a_control?
+    - :is_re_submitted_sample?
+    - :dna_extraction_method
+    - :sample_purified?
+    - :purification_method
+    - :concentration_determined_by
+    - :dna_storage_conditions
+    - :mother
+    - :father
+    - :sibling
+    - :gc_content
+    - :public_name
+    - :taxon_id
+    - :common_name
+    - :sample_description
+    - :strain
+    - :sample_visibility
+    - :sample_type
+    - :sample_accession_number
+    - :donor_id
+    - :phenotype
 test:
   heading: "Test"
   asset_type: "plate"

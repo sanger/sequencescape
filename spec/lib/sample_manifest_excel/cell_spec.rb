@@ -1,14 +1,13 @@
 require 'rails_helper'
 
 RSpec.describe SampleManifestExcel::Cell, type: :model, sample_manifest_excel: true do
-
   it 'creates a row' do
     expect(SampleManifestExcel::Cell.new(1, 4).row).to eq(1)
   end
 
   it 'creates a column' do
     expect(SampleManifestExcel::Cell.new(1, 1).column).to eq('A')
-    expect(SampleManifestExcel::Cell.new(1, 4).column).to eq('D') 
+    expect(SampleManifestExcel::Cell.new(1, 4).column).to eq('D')
     expect(SampleManifestExcel::Cell.new(1, 53).column).to eq('BA')
   end
 

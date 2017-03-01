@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe SampleManifestExcel::ConditionalFormatting, type: :model, sample_manifest_excel: true do
-
   let(:worksheet) { Axlsx::Workbook.new.add_worksheet }
   let(:rule) { { name: :rule1, style: { bg_color: '82CAFA', type: :dxf }, options: { option1: 'some_value', option2: 'another_value' } }.with_indifferent_access }
 
@@ -20,7 +19,6 @@ RSpec.describe SampleManifestExcel::ConditionalFormatting, type: :model, sample_
   end
 
   context 'without formula' do
-
     let(:conditional_formatting) { SampleManifestExcel::ConditionalFormatting.new(rule) }
 
     it 'has some options' do
@@ -28,7 +26,7 @@ RSpec.describe SampleManifestExcel::ConditionalFormatting, type: :model, sample_
     end
 
     it 'has a style' do
-      expect(conditional_formatting.style).to eq((rule[:style])) 
+      expect(conditional_formatting.style).to eq((rule[:style]))
     end
 
     it 'will not have a formula' do
@@ -40,7 +38,7 @@ RSpec.describe SampleManifestExcel::ConditionalFormatting, type: :model, sample_
     end
 
     it '#to_h produces a hash of options' do
-      expect(conditional_formatting.to_h).to eq(conditional_formatting.options) 
+      expect(conditional_formatting.to_h).to eq(conditional_formatting.options)
     end
 
     it 'duplicates correctly' do
@@ -52,21 +50,20 @@ RSpec.describe SampleManifestExcel::ConditionalFormatting, type: :model, sample_
   end
 
   context 'with formula' do
-
     let(:references) { build(:range).references }
     let(:formula) { { type: :len, operator: '<', operand: 333 } }
     let(:conditional_formatting) { SampleManifestExcel::ConditionalFormatting.new(rule.merge(formula: formula)) }
 
     it 'has a formula' do
-      expect(conditional_formatting.formula).to eq(SampleManifestExcel::Formula.new(formula)) 
+      expect(conditional_formatting.formula).to eq(SampleManifestExcel::Formula.new(formula))
     end
 
     it 'updates the formula if cell references are added' do
-      expect(conditional_formatting.update(references).options['formula']).to eq(SampleManifestExcel::Formula.new(formula.merge(references)).to_s) 
+      expect(conditional_formatting.update(references).options['formula']).to eq(SampleManifestExcel::Formula.new(formula.merge(references)).to_s)
     end
 
     it '#to_h should produce a hash of options' do
-      expect(conditional_formatting.to_h).to eq(conditional_formatting.options) 
+      expect(conditional_formatting.to_h).to eq(conditional_formatting.options)
     end
 
     it 'update the style from a worksheet' do
@@ -76,8 +73,8 @@ RSpec.describe SampleManifestExcel::ConditionalFormatting, type: :model, sample_
     it 'duplicate correctly' do
       dup = conditional_formatting.dup
       conditional_formatting.update(references.merge(worksheet: worksheet))
-      expect(dup.options).to_not eq(conditional_formatting.options) 
-      expect(dup.formula).to_not eq(conditional_formatting.formula) 
+      expect(dup.options).to_not eq(conditional_formatting.options)
+      expect(dup.formula).to_not eq(conditional_formatting.formula)
     end
   end
 end

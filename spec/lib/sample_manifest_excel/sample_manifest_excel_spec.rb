@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe SampleManifestExcel, type: :model, sample_manifest_excel: true do
-
   before(:each) do
     SampleManifestExcel.configure do |config|
       config.folder = File.join('spec', 'data', 'sample_manifest_excel')
@@ -26,7 +25,7 @@ RSpec.describe SampleManifestExcel, type: :model, sample_manifest_excel: true do
   end
 
   it 'should have a first row' do
-    expect(SampleManifestExcel.first_row).to be_present 
+    expect(SampleManifestExcel.first_row).to be_present
     SampleManifestExcel.first_row = 1
     expect(SampleManifestExcel.first_row).to eq(1)
   end
