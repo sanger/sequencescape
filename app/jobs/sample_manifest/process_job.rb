@@ -1,5 +1,5 @@
 # Processes the uploaded manifest
-ProcessJob = Struct.new(:sample_manifest_id, :user_id, :override_sample_information) do
+SampleManifest::ProcessJob = Struct.new(:sample_manifest_id, :user_id, :override_sample_information) do
   def perform
     sample_manifest.process_job(user, override_sample_information)
   end
