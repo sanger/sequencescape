@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe SampleManifestExcel::Tagging::Tags do
+describe SampleManifestExcel::Tagging::Tags, type: :model, sample_manifest_excel: true do
   before(:all) do
     SampleManifestExcel.configuration.tag_group = 'Test group'
   end
@@ -8,7 +8,7 @@ describe SampleManifestExcel::Tagging::Tags do
   let(:tags) { SampleManifestExcel::Tagging::Tags.new(sample_id: '1', tag_oligo: 'AA', tag2_oligo: 'TT') }
 
   it 'should not be valid without an aliquot' do
-    expect(tags).not_to be_valid
+    expect(tags).to_not be_valid
     expect(tags.errors.full_messages).to include "Aliquot can't be blank"
   end
 

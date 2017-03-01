@@ -2,11 +2,20 @@ require 'rails_helper'
 
 RSpec.describe SampleManifestExcel::ConditionalFormatting, type: :model, sample_manifest_excel: true do
   let(:worksheet) { Axlsx::Workbook.new.add_worksheet }
-  let(:rule) { { style: { bg_color: '82CAFA', type: :dxf }, options: { option1: 'some_value', option2: 'another_value' } }.with_indifferent_access }
+  let(:rule) { { name: :rule1, style: { bg_color: '82CAFA', type: :dxf }, options: { option1: 'some_value', option2: 'another_value' } }.with_indifferent_access }
 
   it 'is comparable' do
     expect(SampleManifestExcel::ConditionalFormatting.new(rule)).to eq(SampleManifestExcel::ConditionalFormatting.new(rule))
     expect(SampleManifestExcel::ConditionalFormatting.new(rule)).to_not eq(SampleManifestExcel::ConditionalFormatting.new(rule.merge(options: { option1: 'another_value' })))
+  end
+
+  it 'is not valid without a name' do
+    expect(SampleManifestExcel::ConditionalFormatting.new(rule)).to be_valid
+    expect(SampleManifestExcel::ConditionalFormatting.new(rule.except(:name))).to_not be_valid
+  end
+
+  it 'is not valid without a name' do
+    expect(SampleManifestExcel::ConditionalFormatting.new(rule.except(:options))).to_not be_valid
   end
 
   context 'without formula' do

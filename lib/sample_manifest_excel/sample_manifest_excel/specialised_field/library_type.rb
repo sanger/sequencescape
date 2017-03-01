@@ -1,7 +1,9 @@
 module SampleManifestExcel
-  module MultiplexedLibraryTubeField
-    class LibraryType < Base
-      validates_presence_of :value
+  module SpecialisedField
+    class LibraryType
+      include Base
+      include ValueRequired
+      
       validate :check_library_type_exists
 
     private

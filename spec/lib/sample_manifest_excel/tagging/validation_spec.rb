@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-describe SampleManifestExcel::Tagging::TagsDataValidation do
+describe SampleManifestExcel::Tagging::Validation, type: :model, sample_manifest_excel: true do
   class SomeData
-    include SampleManifestExcel::Tagging::TagsDataValidation
+    include SampleManifestExcel::Tagging::Validation
   end
 
   let(:data) { SomeData.new }
