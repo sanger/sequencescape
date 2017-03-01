@@ -39,7 +39,7 @@ class SampleManifestTest < ActiveSupport::TestCase
           end
         end
 
-        context "tubes" do
+        context 'tubes' do
           setup do
             @initial_samples  = Sample.count
             @initial_tubes    = SampleTube.count
@@ -49,7 +49,7 @@ class SampleManifestTest < ActiveSupport::TestCase
             @manifest.generate
           end
 
-          should "create 1 tubes and samples in the right study" do
+          should 'create 1 tubes and samples in the right study' do
             assert_equal 1, Sample.count - @initial_samples
             assert_equal 1, SampleTube.count - @initial_tubes
             assert_equal 1, @study.samples.count - @initial_in_study

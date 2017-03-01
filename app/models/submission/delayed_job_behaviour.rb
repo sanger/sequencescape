@@ -7,8 +7,7 @@
 module Submission::DelayedJobBehaviour
   def self.included(base)
     base.class_eval do
-      conf_priority = configatron.delayed_job.fetch(:submission_process_priority)
-      priority = conf_priority.present? ? conf_priority : 0
+      priority = configatron.delayed_job.fetch(:submission_process_priority, 0)
       handle_asynchronously :build_batch, priority: priority
     end
   end
