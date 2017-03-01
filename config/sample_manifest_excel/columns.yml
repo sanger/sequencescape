@@ -27,8 +27,8 @@ prepooled:
   conditional_formattings:
     empty_cell:
     is_error:
-tag_sequence:
-  heading: TAG SEQUENCE
+tag_oligo:
+  heading: TAG OLIGO
   unlocked: true
   validation:
     options:
@@ -37,12 +37,12 @@ tag_sequence:
       formula1: "255"
       allowBlank: false
       showInputMessage: true
-      promptTitle: "Tag sequence"
-      prompt: "Input tag sequence."
+      promptTitle: "Tag oligo"
+      prompt: "Input tag oligo."
   conditional_formattings:
     empty_cell:
-tag2_sequence:
-  heading: TAG2 SEQUENCE
+tag2_oligo:
+  heading: TAG2 OLIGO
   unlocked: true
   validation:
     options:
@@ -51,8 +51,8 @@ tag2_sequence:
       formula1: "255"
       allowBlank: false
       showInputMessage: true
-      promptTitle: "Tag2 sequence"
-      prompt: "Input tag2 sequence."
+      promptTitle: "Tag2 oligo"
+      prompt: "Input tag2 oligo."
 tag_group:
   heading: TAG GROUP
   unlocked: true

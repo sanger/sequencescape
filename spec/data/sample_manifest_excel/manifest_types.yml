@@ -291,8 +291,8 @@ tube_library:
     - :sanger_tube_id
     - :sanger_sample_id
     - :prepooled
-    - :tag_sequence
-    - :tag2_sequence
+    - :tag_oligo
+    - :tag2_oligo
     - :library_type
     - :insert_size_from
     - :insert_size_to
