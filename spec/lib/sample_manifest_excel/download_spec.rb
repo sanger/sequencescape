@@ -112,7 +112,7 @@ RSpec.describe SampleManifestExcel::Download, type: :model, sample_manifest_exce
   context 'Library tube download' do
     setup do
       # asset_type might be changed, based on how upload would work
-      sample_manifest = create(:tube_sample_manifest, asset_type: 'multiplexed_library')
+      sample_manifest = create(:tube_sample_manifest_with_samples, asset_type: 'multiplexed_library')
       sample_manifest.generate
       @download = SampleManifestExcel::Download.new(sample_manifest,
         SampleManifestExcel.configuration.columns.tube_library.dup, SampleManifestExcel.configuration.ranges.dup)

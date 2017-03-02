@@ -1,9 +1,9 @@
 FactoryGirl.define do
   factory :sample do
     name { |_a| generate :sample_name }
+    sequence(:sanger_sample_id) { |n| n.to_s }
 
     factory :sample_with_well do
-      sequence(:sanger_sample_id) { |n| n.to_s }
       wells { [FactoryGirl.create(:well_with_sample_and_plate)] }
       assets { [wells.first.plate] }
     end
