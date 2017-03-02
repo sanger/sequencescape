@@ -217,7 +217,10 @@ class Sample < ActiveRecord::Base
 
   def accession
     if configatron.accession_samples
-      Delayed::Job.enqueue SampleAccessioningJob.new(self)
+      accessionable = Accession::Sample.new(Accession.configuration.tags, self)
+      if accessionable.valid?
+        Delayed::Job.enqueue SampleAccessioningJob.new(accessionable)
+      end
     end
   end
 
