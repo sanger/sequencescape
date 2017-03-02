@@ -1,5 +1,6 @@
 # Enables the bulk creation of the asset links defined by the pairs passed as edges.
-AssetLink::BuilderJob < Struct.new(:links) do
+require_dependency 'asset_link'
+AssetLink::BuilderJob = Struct.new(:links) do
   # For memory resons we need to limit transaction size to 10 links at a time
   TRANSACTION_COUNT = 10
   def perform
