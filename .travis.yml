@@ -4,6 +4,7 @@ rvm:
   - 2.3.3
 sudo: false
 cache: bundler
+jdk: oraclejdk8
 bundler_args: --without warehouse deployment
 env:
   - "DB_REQUIRED='true' RAILS_ENV=test TZ=Europe/London SUITE='rake test' RUBYOPT='-W0'" # RUBYOPT disables warnings turned on by default in rake 11. See note in README
