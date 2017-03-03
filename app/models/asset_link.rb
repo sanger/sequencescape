@@ -64,7 +64,6 @@ class AssetLink < ActiveRecord::Base
         has_many(plural_name, scope, through: :links_as_child, source: :ancestor)
         line = __LINE__ + 1
         class_eval("
-
           def #{name}
             #{plural_name}.first
           end
