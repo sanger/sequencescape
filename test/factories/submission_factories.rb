@@ -9,7 +9,7 @@ FactoryGirl.define do
     end
   end
 
-  factory :order do |_order|
+  factory :order do
     study
     workflow { |workflow| workflow.association(:submission_workflow) }
     project

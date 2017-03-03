@@ -51,7 +51,7 @@ FactoryGirl.define do
     after(:create) { |tube| create(:transfer_request, asset: create(:lib_pcr_xp_well_with_sample_and_plate), target_asset: tube) }
   end
 
-  factory :lib_pcr_xp_well_with_sample_and_plate, parent: :well_with_sample_and_without_plate do |_well|
+  factory :lib_pcr_xp_well_with_sample_and_plate, parent: :well_with_sample_and_without_plate do
     map
     plate { |plate| plate.association(:lib_pcr_xp_child_plate) }
   end

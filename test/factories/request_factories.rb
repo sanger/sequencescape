@@ -57,8 +57,8 @@ FactoryGirl.define do
   end
 
   factory :sequencing_request, class: SequencingRequest do
-    request_type { |rt| rt.association(:request_type) }
-    request_purpose { |rt| rt.association(:request_purpose) }
+    association(:request_type, factory: :sequencing_request_type)
+    request_purpose
 
     # Ensure that the request metadata is correctly setup based on the request type
     after(:build) do |request|
