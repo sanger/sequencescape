@@ -12,7 +12,8 @@ Sequencescape::Application.configure do
   # break Cucumber's use_transactional_fixtures method.
   # For more information see https://rspec.lighthouseapp.com/projects/16211/tickets/165
   config.cache_classes = true
-  config.active_support.deprecation = :log
+  config.active_record.raise_in_transactional_callbacks = true
+  config.active_support.deprecation = :raise
 
   config.serve_static_files = true
 

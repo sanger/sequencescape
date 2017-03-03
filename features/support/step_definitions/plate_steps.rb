@@ -40,9 +40,8 @@ end
 
 Given /^plate "([^"]*)" has "([^"]*)" wells with samples$/ do |plate_barcode, number_of_wells|
   plate = Plate.find_by(barcode: plate_barcode)
-  well_data = []
-  1.upto(number_of_wells.to_i) do |i|
-    Well.create!(plate: plate, map_id: i, sample: FactoryGirl.create(:sample))
+  plate.wells = Array.new(number_of_wells.to_i) do |i|
+    FactoryGirl.create(:untagged_well, map_id: i + 1)
   end
 end
 

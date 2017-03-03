@@ -59,8 +59,8 @@ class PreCapGroupsTest < ActiveSupport::TestCase
         setup do
           @target_plate = FactoryGirl.create :initial_downstream_plate
           @transfer = Transfer::BetweenPlates.create!(
-            source: @plate,
-            destination: @target_plate,
+            source: @plate.reload,
+            destination: @target_plate.reload,
             user: FactoryGirl.create(:user),
             transfers: { 'A1' => ['A1', 'B1'], 'B1' => ['A1'], 'C1' => ['A1'], 'D1' => ['B1', 'C1'], 'E1' => ['C1'], 'F1' => ['C1'] }
           )
@@ -71,7 +71,6 @@ class PreCapGroupsTest < ActiveSupport::TestCase
             'A1' => { 'A1' => 1, 'B1' => 3 }, 'B1' => { 'A1' => 1 }, 'C1' => { 'A1' => 1 },
             'D1' => { 'C1' => 2, 'B1' => 3 }, 'E1' => { 'C1' => 2 }, 'F1' => { 'C1' => 2 },
           }
-
           assert_equal 8, @target_plate.transfer_requests.count
           @target_plate.transfer_requests.each do |request|
             assert_equal transfer_sub[request.asset.map_description][request.target_asset.map_description], request.submission_id

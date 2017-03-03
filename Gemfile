@@ -136,13 +136,13 @@ group :test,:cucumber do
   gem 'shoulda', require: false
   gem 'timecop', require: false
   gem 'simplecov', require: false
+  gem 'database_cleaner'
 end
 
 group :cucumber do
   gem 'rubyzip', '~>0.9'
   gem 'capybara'
   gem 'mime-types'
-  gem 'database_cleaner'
   gem 'cucumber-rails', require: false
   gem 'poltergeist'
   gem 'webmock'

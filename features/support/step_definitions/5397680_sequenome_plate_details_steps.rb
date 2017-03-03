@@ -55,9 +55,9 @@ Then /^the table of sequenom plates should be:$/ do |expected_results_table|
   expected_results_table.diff!(table(fetch_table('table#study_list')))
 end
 
-Given /^plate "([^"]*)" has (\d+) blank samples$/ do |plate_barcode, number_of_blanks|
+Given(/^plate "([^"]*)" has (\d+) blank samples$/) do |plate_barcode, number_of_blanks|
   plate = Plate.find_by(barcode: plate_barcode)
-  study = plate.study # we need to propagate the study to the new aliquots
+  study = plate.studies.first # we need to propagate the study to the new aliquots
   plate.wells.each_with_index do |well, index|
     break if index >= number_of_blanks.to_i
     well.aliquots.clear

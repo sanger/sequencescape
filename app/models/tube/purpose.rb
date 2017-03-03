@@ -37,7 +37,7 @@ class Tube::Purpose < ::Purpose
         line = __LINE__ + 1
         class_eval(%Q{
           def #{name.downcase.gsub(/\W+/, '_')}_tube
-            find_by_name('#{name.humanize}') or raise "Cannot find #{name} tube"
+            find_by(name: '#{name.humanize}') or raise "Cannot find #{name} tube"
           end
         }, __FILE__, line)
       end

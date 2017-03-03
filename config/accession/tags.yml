@@ -1,0 +1,79 @@
+sample_taxon_id:
+  services:
+    - :ENA 
+    - :EGA
+  groups:
+    - :sample_name
+  ebi_name: :taxon_id
+sample_common_name:
+  services: 
+    - :ENA
+    - :EGA
+  groups:
+    - :sample_name
+  ebi_name: :common_name
+donor_id:
+  services:
+    - :EGA
+  groups:
+    - :sample_attributes
+  ebi_name: :subject_id
+gender:
+  services:
+    - :EGA
+  groups:
+    - :sample_attributes
+genotype:
+  groups:
+    - :array_express
+phenotype:
+  services:
+    - :EGA
+  groups:
+    - :sample_attributes
+    - :array_express
+strain_or_line:
+  groups:
+    - :array_express
+developmental_stage:
+  groups:
+    - :array_express
+sex:
+  groups:
+    - :array_express
+cell_type:
+  groups:
+    - :array_express
+disease_state:
+  groups:
+    - :array_express
+compound:
+  groups:
+    - :array_express
+dose:
+  groups:
+    - :array_express
+immunoprecipitate:
+  groups:
+    - :array_express
+growth_condition:
+  groups:
+    - :array_express
+rnai:
+  groups:
+    - :array_express
+organism_part:
+  groups:
+    - :array_express
+species:
+  groups:
+    - :array_express
+time_point:
+  groups:
+    - :array_express
+age:
+  groups:
+    - :array_express
+treatment:
+  groups:
+    - :array_express

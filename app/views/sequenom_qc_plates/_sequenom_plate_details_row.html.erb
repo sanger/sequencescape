@@ -14,9 +14,9 @@
   <td><%= link_to source_plate.barcode, show_plate_asset_path(source_plate) %></td>
   <td><%= source_plate.number_of_blank_samples %></td>
   <td>
-      <% if source_plate.study %>
-        <%= link_to source_plate.study.name, study_path(source_plate.study) %>
-      <% end %>
+    <% source_plate.studies.each do |study| %>
+      <%= link_to study.name, study_path(study) %>
+    <% end %>
   </td>
   <td>
       <%= source_plate.plate_purpose.try(:name) || "&nbsp;" %>

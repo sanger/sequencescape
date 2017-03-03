@@ -93,7 +93,7 @@ class PlatePurpose < Purpose
 
   # The state of a plate is based on the transfer requests.
   def state_of(plate)
-    plate.send(:state_from, plate.transfer_requests)
+    plate.state_from(plate.transfer_requests)
   end
 
   # Updates the state of the specified plate to the specified state.  The basic implementation does this by updating

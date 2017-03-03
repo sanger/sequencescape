@@ -31,11 +31,11 @@ Then /^ignoring "([^\"]+)" the XML response should be:$/ do |key_regexp, seriali
   )
 end
 
-Then /^the XML response should be:/ do |serialized_xml|
+Then(/^the XML response should be:/) do |serialized_xml|
   assert_xml_strings_equal(serialized_xml, page.source)
 end
 
-Then /^the value of the "([^"]+)" attribute of the XML element "([^"]+)" should be "([^"]+)"/ do |attribute, xpath, value|
+Then(/^the value of the "([^"]+)" attribute of the XML element "([^"]+)" should be "([^"]+)"/) do |attribute, xpath, value|
   node = page.find(:xpath, xpath.downcase)
   assert node
   assert_equal value, node[attribute.downcase]

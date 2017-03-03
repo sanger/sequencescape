@@ -1,7 +1,7 @@
 # This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
+# Please refer to the LICENSE and README files for information on licensing and authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+
 require 'factory_girl'
 
 FactoryGirl.define do
@@ -467,8 +467,23 @@ FactoryGirl.define do
   end
 
   factory(:library_tube, parent: :empty_library_tube) do
-    after(:create) do |library_tube|
-      library_tube.aliquots.create!(sample: create(:sample), library_type: 'Standard')
+    transient do
+      sample { create :sample }
+      library_type 'Standard'
+    end
+
+    after(:create) do |library_tube, evaluator|
+      library_tube.aliquots << build(:untagged_aliquot, sample: evaluator.sample, library_type: evaluator.library_type)
+    end
+  end
+
+  factory(:tagged_library_tube, class: LibraryTube) do
+    transient do
+      tag_map_id 1
+    end
+
+    after(:create) do |library_tube, evaluator|
+      library_tube.aliquots << build(:tagged_aliquot, tag: create(:tag, map_id: evaluator.tag_map_id))
     end
   end
 
