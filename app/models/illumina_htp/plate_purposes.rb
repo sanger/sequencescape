@@ -49,7 +49,10 @@ module IlluminaHtp::PlatePurposes
     ],
     [
       'Cap Lib Pool Norm'
-    ],
+    ]
+  ]
+
+  QC_TUBE_PURPOSE_FLOWS = [
     [
       'PF MiSeq Stock',
       'PF MiSeq QC'
@@ -153,6 +156,9 @@ module IlluminaHtp::PlatePurposes
       self::TUBE_PURPOSE_FLOWS.each do |flow|
         create_tube_flow(flow)
       end
+      self::QC_TUBE_PURPOSE_FLOWS.each do |flow|
+        create_qc_tube_flow(flow)
+      end
     end
 
     def create_tube_flow(flow_o)
@@ -160,6 +166,14 @@ module IlluminaHtp::PlatePurposes
       raise 'Flow already exists' if Purpose.find_by(name: flow.first).present?
       create_tube_purpose(flow.pop, target_type: 'MultiplexedLibraryTube')
       flow.each(&method(:create_tube_purpose))
+    end
+
+    def create_qc_tube_flow(flow_o)
+      flow = flow_o.clone
+      raise 'Flow already exists' if Purpose.find_by(name: flow.first).present?
+      flow.each do |purpose|
+        create_tube_purpose(purpose, target_type: 'QcTube')
+      end
     end
 
     def destroy_tube_purposes
