@@ -69,6 +69,7 @@ Sequencescape::Application.routes.draw do
   resources :batches do
     resources :requests, controller: 'batches/requests'
     resources :comments, controller: 'batches/comments'
+    resources :stock_assets, only: [:new, :create]
 
     member do
       get :print_labels

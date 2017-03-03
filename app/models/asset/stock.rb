@@ -26,15 +26,15 @@ module Asset::Stock
       false
     end
 
-    def stock_asset_factory(name, ctor)
+    def stock_asset_factory(name, creator)
       line = __LINE__
       class_eval(%Q{
         def #{name}(attributes = {}, &block)
-          self.class.stock_asset_type.#{ctor}(attributes.reverse_merge(
-            :name     => "(s) \#{self.name}",
-            :barcode  => AssetBarcode.new_barcode,
-            :aliquots => self.aliquots.map(&:dup),
-            :purpose  => self.class.stock_asset_purpose
+          self.class.stock_asset_type.#{creator}(attributes.reverse_merge(
+            name:     "(s) \#{self.name}",
+            barcode:  AssetBarcode.new_barcode,
+            aliquots: self.aliquots.map(&:dup),
+            purpose:  self.class.stock_asset_purpose
           ), &block)
         end
       }, __FILE__, line)
