@@ -5,14 +5,15 @@ module SampleManifestExcel
       extend ActiveSupport::Concern
 
       included do
-        include ActiveModel::Validations
+        include ActiveModel::Model
+
+        define_method :initialize do |attributes = {}|
+          super
+        end
       end
 
-      attr_accessor :value
-      
-      def initialize(value)
-        self.value = value
-      end
+      attr_accessor :value, :sample
+     
     end
 
     module SangerSampleIdValue

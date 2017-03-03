@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe SampleManifestExcel::RangeList, type: :model, sample_manifest_excel: true do
   include SampleManifestExcel::Helpers
 
-  let(:folder) { File.join('test', 'data', 'sample_manifest_excel') }
+  let(:folder) { File.join('spec', 'data', 'sample_manifest_excel') }
   let(:ranges) { load_file(folder, 'ranges') }
   let(:range_list) { SampleManifestExcel::RangeList.new(ranges) }
 

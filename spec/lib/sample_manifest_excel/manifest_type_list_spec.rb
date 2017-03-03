@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe SampleManifestExcel::ManifestTypeList, type: :model, sample_manifest_excel: true do
   include SampleManifestExcel::Helpers
 
-  let(:folder) { File.join('test', 'data', 'sample_manifest_excel', 'extract') }
+  let(:folder) { File.join('spec', 'data', 'sample_manifest_excel', 'extract') }
   let(:yaml) { load_file(folder, 'manifest_types') }
   let(:manifest_type_list) { SampleManifestExcel::ManifestTypeList.new(yaml) }
 

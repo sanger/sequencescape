@@ -4,9 +4,16 @@ module SampleManifestExcel
       include Base
       include ValueRequired
 
-      def value=(sample)
-        @value = sample.wells.first.map.description
+      validate :check_container
+
+    private
+
+      def check_container
+        unless value == sample.wells.first.map.description
+          errors.add(:sample, 'You can not move samples between plates or modify barcodes')
+        end
       end
+      
     end
   end
 end

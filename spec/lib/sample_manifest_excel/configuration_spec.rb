@@ -29,7 +29,7 @@ RSpec.describe SampleManifestExcel::Configuration, type: :model, sample_manifest
   end
 
   describe 'with a valid folder' do
-    let(:folder) { File.join('test', 'data', 'sample_manifest_excel') }
+    let(:folder) { File.join('spec', 'data', 'sample_manifest_excel') }
 
     before(:each) do
       configuration.folder = folder

@@ -4,7 +4,7 @@ module SampleManifestExcel
       include Base
       include ValueRequired
       
-      include SangerSampleIdValue
+      
     end
   end
 end
