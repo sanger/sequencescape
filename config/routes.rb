@@ -69,6 +69,7 @@ Sequencescape::Application.routes.draw do
   resources :batches do
     resources :requests, controller: 'batches/requests'
     resources :comments, controller: 'batches/comments'
+    resources :stock_assets, only: [:new, :create]
 
     member do
       get :print_labels
@@ -611,6 +612,8 @@ Sequencescape::Application.routes.draw do
   resources :labwhere_receptions, only: [:index, :create]
 
   resources :qc_files, only: [:show]
+
+  resources :user_queries, only: [:new, :create]
 
   post 'get_your_qc_completed_tubes_here' => 'get_your_qc_completed_tubes_here#create', as: :get_your_qc_completed_tubes_here
 
