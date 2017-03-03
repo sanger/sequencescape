@@ -1,5 +1,5 @@
-class UpdateQcTubePurposes < ActiveRecord::Migration
- PURPOSE_OLD_TARGET = {
+class UpdateQcTubesToCorrectClass < ActiveRecord::Migration
+   PURPOSE_OLD_TARGET = {
     'PF MiSeq Stock' => 'StockMultiplexedLibraryTube',
     'PF MiSeq QC' => 'MultiplexedLibraryTube',
     'PF MiSeq QCR' => 'MultiplexedLibraryTube'
@@ -7,7 +7,8 @@ class UpdateQcTubePurposes < ActiveRecord::Migration
 
   def up
     ActiveRecord::Base.transaction do
-      Purpose.where(name: PURPOSE_OLD_TARGET.keys).update_all(target_type: 'QcTube')
+      purposes = Purpose.where(name: PURPOSE_OLD_TARGET.keys)
+      Asset.where(plate_purpose_id: purposes).update_all(sti_type: 'QcTube')
     end
   end
 
@@ -15,8 +16,7 @@ class UpdateQcTubePurposes < ActiveRecord::Migration
     ActiveRecord::Base.transaction do
       PURPOSE_OLD_TARGET.each do |name, target|
         purpose = Purpose.find_by(name: name)
-        purpose.target_type = target
-        purpose.save!
+        Asset.where(plate_purpose_id: purpose).update_all(sti_type: target)
       end
     end
   end
