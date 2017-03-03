@@ -558,7 +558,8 @@ FactoryGirl.define do
     end
   end
 
-  factory :transfer_request do |_tr|
+  factory :transfer_request do
+    association(:asset, factory: :well)
     request_purpose { |rp| rp.association(:request_purpose) }
   end
 
