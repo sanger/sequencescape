@@ -113,15 +113,15 @@ class Batch < ActiveRecord::Base
   end
 
   # Fail specific items on this batch
-  def fail_batch_items(requests, reason, comment, fail_but_charge = false)
+  def fail_batch_items(requests_to_fail, reason, comment, fail_but_charge = false)
     checkpoint = true
 
-    requests.each do |key, value|
+    requests_to_fail.each do |key, value|
       if value == 'on'
         logger.debug "SENDING FAIL FOR REQUEST #{key}, BATCH #{id}, WITH REASON #{reason}"
         unless key == 'control'
           ActiveRecord::Base.transaction do
-            request = self.requests.find(key)
+            request = requests.find(key)
             request.customer_accepts_responsibility! if fail_but_charge
             request.failures.create(reason: reason, comment: comment, notify_remote: true)
             EventSender.send_fail_event(request.id, reason, comment, id)
