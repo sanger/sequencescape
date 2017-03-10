@@ -1,7 +1,7 @@
 module SharedBehaviour
   # Include in classes which have an associated
   # qcable which handles their QC state.
-  module Qcable
+  module QcableAsset
     def state_of(plate)
       qcable_for(plate).state
     end

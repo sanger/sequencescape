@@ -5,5 +5,5 @@
 # Copyright (C) 2014,2015 Genome Research Ltd.
 
 class QcablePlatePurpose < PlatePurpose
-  include SharedBehaviour::Qcable
+  include SharedBehaviour::QcableAsset
 end
