@@ -33,7 +33,7 @@ class WorkCompletion < ActiveRecord::Base
       target_well.stock_wells.each do |source_well|
         # We may have multiple requests out of each well, however we're only concerned
         # about those associated with the active submission.
-
+        # We've already eager loaded requests out of the stock wells, so filter in Ruby.
         upstream = source_well.requests.detect do |r|
           r.library_creation? && submission_ids.include?(r.submission_id)
         end || raise("Could not find matching upstream requests for #{target_well.map_description}")
@@ -46,10 +46,15 @@ class WorkCompletion < ActiveRecord::Base
 
         # In some cases, such as the Illumina-C pipelines, requests might be
         # connected upfront. We don't want to touch these.
-        next unless upstream.target_asset.nil?
-
-        upstream.update_attributes!(target_asset: target_well)
-        upstream.pass!
+        upstream.target_asset ||= target_well
+        # We don't try and pass failed requests.
+        # I'm not 100% convinced this decision belongs here, and instead
+        # we may want to let the client specify wells to pass, and perform
+        # validation to ensure this is correct. However this increases
+        # the complexity of both the code and the interface, with only
+        # marginal system simplification.
+        upstream.pass if upstream.may_pass?
+        upstream.save!
       end
     end
   end
