@@ -100,6 +100,7 @@ RSpec.describe StockAssetsController do
       expect(response).to redirect_to(batch)
       expect(flash[:notice]).to eq('2 stock tubes created')
       expect(library_tube_1.reload.parents.first).to be_a(StockLibraryTube)
+      expect(library_tube_1.reload.parents.first.barcode).to_not be_nil
     end
   end
 end

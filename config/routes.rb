@@ -12,7 +12,7 @@ Sequencescape::Application.routes.draw do
 
   resources :samples do
     resources :assets, except: :destroy
-    resources :comments
+    resources :comments, controller: 'samples/comments'
     resources :studies
 
     member do
