@@ -449,7 +449,7 @@ FactoryGirl.define do
     end
 
     after(:create) do |library_tube, evaluator|
-      library_tube.aliquots << build(:untagged_aliquot, sample: evaluator.sample, library_type: evaluator.library_type)
+      library_tube.aliquots << build(:untagged_aliquot, sample: evaluator.sample, library_type: evaluator.library_type, receptacle: library_tube)
     end
   end
 
@@ -459,7 +459,7 @@ FactoryGirl.define do
     end
 
     after(:create) do |library_tube, evaluator|
-      library_tube.aliquots << build(:tagged_aliquot, tag: create(:tag, map_id: evaluator.tag_map_id))
+      library_tube.aliquots << build(:tagged_aliquot, tag: create(:tag, map_id: evaluator.tag_map_id), receptacle: library_tube)
     end
   end
 
