@@ -53,7 +53,6 @@ class Transfer < ActiveRecord::Base
       return unique_states.first if unique_states.size == 1
       ALL_STATES.detect { |s| unique_states.include?(s) } || default_state || 'unknown'
     end
-    private :state_from
 
     module PlateState
       def self.included(base)

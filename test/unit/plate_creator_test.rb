@@ -34,7 +34,7 @@ class CreatorTest < ActiveSupport::TestCase
     barcode.stubs(:barcode).returns(23)
     PlateBarcode.stubs(:create).returns(barcode)
 
-    LabelPrinter::PmbClient.any_instance.stubs(:execute).returns(true)
+    LabelPrinter::PrintJob.any_instance.stubs(:execute).returns(true)
 
     parent = create :plate_with_untagged_wells
     user = create :user

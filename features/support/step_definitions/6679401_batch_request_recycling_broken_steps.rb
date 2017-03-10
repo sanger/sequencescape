@@ -95,7 +95,7 @@ def build_batch_for(name, count)
 
   user = FactoryGirl.create(:user)
 
-  assets = (1..count.to_i).map do |_|
+  assets = Array.new(count.to_i) do
     asset_attributes = {}
     if submission_details.key?(:holder_type)
       asset_attributes[:plate] = FactoryGirl.create(submission_details[:holder_type], location_id: pipeline.location_id)

@@ -196,8 +196,9 @@ module Sanger
                       end
                       should respond_with :success
                       should 'have api version attribute on root object' do
-                        assert_tag tag: (resource_name.to_s.pluralize).to_s, attributes: { api_version: '0.6' }
-                        assert_tag tag: (resource_name.to_s.pluralize).to_s
+                        assert_select resource_name.to_s.pluralize do
+                          assert_select "[api_version='0.6']"
+                        end
                       end
                     end
                   end
@@ -210,10 +211,9 @@ module Sanger
                         get :show, @input_params
                       end
                       should respond_with :success
-                      should 'show xml' do
-                        assert_tag tag: resource_name.to_s, attributes: { api_version: RELEASE.api_version }
-                        assert_tag tag: resource_name.to_s
-                      end
+                        assert_select resource_name.to_s.pluralize do
+                          assert_select "[api_version='0.6']"
+                        end
                     end
                   end
                 end

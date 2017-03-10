@@ -43,13 +43,13 @@ FactoryGirl.define do
 
     after(:create) do |plate, evaluator|
       plate.wells = evaluator.occupied_map_locations.map do |map|
-        build(evaluator.well_factory, map: map)
+        create(evaluator.well_factory, map: map)
       end
     end
 
     # A plate that has exactly the right number of wells!
-    factory(:pooling_plate, class: Plate) do
-      purpose { create :pooling_plate_purpose }
+    factory(:pooling_plate) do
+      plate_purpose { create :pooling_plate_purpose }
       transient do
         well_count 6
         well_factory :tagged_well
@@ -154,7 +154,6 @@ FactoryGirl.define do
     after(:build) { |tag_layout| tag_layout.import_behaviour }
   end
 
-  # Plate creations
   factory(:parent_plate_purpose, class: PlatePurpose) do |_plate_purpose|
     name 'Parent plate purpose'
 
@@ -173,12 +172,14 @@ FactoryGirl.define do
     name 'Pooling plate purpose'
     stock_plate true
     after(:create) do |plate_purpose|
-      plate_purpose.child_relationships.create!(child: create(:child_plate_purpose), transfer_request_type: create(:pooling_transfer))
-      plate_purpose.child_relationships.create!(child: create(:initial_downstream_plate_purpose), transfer_request_type: create(:pooling_transfer))
+      cpp = create(:child_plate_purpose)
+      idpp = create(:initial_downstream_plate_purpose)
+      plate_purpose.child_relationships.create!(child: cpp, transfer_request_type: create(:pooling_transfer))
+      plate_purpose.child_relationships.create!(child: idpp, transfer_request_type: create(:pooling_transfer))
     end
   end
   factory(:child_plate_purpose, class: PlatePurpose) do |_plate_purpose|
-    name 'Child plate purpose'
+    name { 'Child plate purpose' }
   end
   factory(:initial_downstream_plate_purpose, class: Pulldown::InitialDownstreamPlatePurpose) do |plate_purpose|
      plate_purpose.name 'Initial Downstream plate purpose'

@@ -29,7 +29,14 @@ class DilutionPlate < Plate
     }
   end
 
+  private
+
   def study_name
-    study.try(:name) || ''
+    names = studies.pluck(:name)
+    if names.length <= 1
+      names.first
+    else
+      "#{names.first} (#{names.length - 1} others)"
+    end
   end
 end
