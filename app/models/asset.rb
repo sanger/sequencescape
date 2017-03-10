@@ -47,7 +47,7 @@ class Asset < ActiveRecord::Base
   self.per_page = 500
   self.inheritance_column = 'sti_type'
 
-  has_many :asset_group_assets, dependent: :destroy
+  has_many :asset_group_assets, dependent: :destroy, inverse_of: :asset
   has_many :asset_groups, through: :asset_group_assets
   has_many :asset_audits
   has_many :volume_updates, foreign_key: :target_id
@@ -362,17 +362,11 @@ class Asset < ActiveRecord::Base
   end
 
   def assign_relationships(parents, child)
-    if parents.kind_of?(Array) && child.kind_of?(Asset)
-      parents.each do |parent|
-        parent.children.delete(child)
-      end
-
-      AssetLink.create_edge(self, child)
-
-      parents.each do |parent|
-        AssetLink.create_edge(parent, self)
-      end
+    parents.each do |parent|
+      parent.children.delete(child)
+      AssetLink.create_edge(parent, self)
     end
+    AssetLink.create_edge(self, child)
   end
 
  # We accept not only an individual barcode but also an array of them.  This builds an appropriate

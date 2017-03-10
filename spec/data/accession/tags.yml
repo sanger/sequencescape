@@ -1,0 +1,44 @@
+sample_taxon_id:
+  services:
+    - :ENA 
+    - :EGA
+  groups:
+    - :sample_name
+  ebi_name: :taxon_id
+sample_common_name:
+  services: 
+    - :ENA
+    - :EGA
+  groups:
+    - :sample_name
+  ebi_name: :common_name
+gender:
+  services: 
+    - :EGA
+  groups:
+    - :sample_attributes
+    - :array_express
+phenotype:
+  services:
+    - :EGA
+  groups:
+    - :sample_attributes
+    - :array_express
+donor_id:
+  services:
+    - :EGA
+  groups:
+    - :sample_attributes
+  ebi_name: :subject_id
+sample_public_name:
+   groups:
+    - :array_express
+disease_state:
+  groups:
+    - :array_express
+rnai:
+  groups:
+    - :array_express
+species:
+  groups:
+    - :array_express

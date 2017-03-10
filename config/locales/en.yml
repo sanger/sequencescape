@@ -169,6 +169,8 @@ en:
       not_applicable_study: "This study has its data release policy set to not applicable, which prevents accessioning. If you wish to accession the study, first select an appropriate release policy."
       not_applicable_study_for_sample: "The primary study of this sample (%{study_id}) has its data release policy set to not applicable, which prevents accessioning. Either remove the sample from this study, or enable accessioning on the primary study."
       not_applicable_study_for_dac: "This study has its data release policy set to not applicable, it does not require a DAC accession."
+    unsuitable:
+      no_suitable_study: "Studies %{study_ids} are not accessioned. Please accession at least one study before continuing. You may need to check that you don't have a mixture of open and manage studies."
 
   activerecord:
     attributes:

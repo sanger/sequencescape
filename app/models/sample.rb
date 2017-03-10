@@ -30,8 +30,8 @@ class Sample < ActiveRecord::Base
 
   acts_as_authorizable
 
-  has_many :study_samples, dependent: :destroy
-  has_many :studies, through: :study_samples
+  has_many :study_samples, dependent: :destroy, inverse_of: :sample
+  has_many :studies, through: :study_samples, inverse_of: :samples
 
   has_many :roles, as: :authorizable
   has_many :comments, as: :commentable
@@ -78,6 +78,8 @@ class Sample < ActiveRecord::Base
   end
   private :safe_to_destroy
 
+  after_save :accession
+
   scope :with_name, ->(*names) { where(name: names.flatten) }
   scope :with_gender, ->(*_names) { joins(:sample_metadata).where.not(sample_metadata: { gender: nil }) }
 
@@ -116,6 +118,21 @@ class Sample < ActiveRecord::Base
     ])
     .where(['ca.container_id = ? AND requests.order_id = ?', plate_id, order_id])
   }
+
+  scope :without_accession, ->() {
+    # Pick up samples where the accession number is either NULL or blank.
+    # MySQL automatically trims '  ' so '  '=''
+    joins(:sample_metadata).where(sample_metadata: { sample_ebi_accession_number: [nil, ''] })
+  }
+
+  def self.by_name(sample_id)
+    find_by(name: sample_id)
+  end
+
+  def select_study(sample_id)
+    sample = find(sample_id)
+    sample.studies
+  end
 
   def shorten_sanger_sample_id
     case sanger_sample_id
@@ -175,9 +192,14 @@ class Sample < ActiveRecord::Base
     supplier_sample_name.blank? || ['empty', 'blank', 'water', 'no supplier name available', 'none'].include?(supplier_sample_name.downcase)
   end
 
+  # Return the highest priority accession service
   def accession_service
-    return nil if studies.empty?
-    studies.first.accession_service
+    services = studies.group_by { |s| s.accession_service.priority }
+    return UnsuitableAccessionService.new([]) if services.empty?
+    highest_priority = services.keys.max
+    suitable_study = services[highest_priority].detect { |study| study.send_samples_to_service? }
+    return suitable_study.accession_service if suitable_study
+    UnsuitableAccessionService.new(services[highest_priority])
   end
 
   # at the moment return a string which is a comma separated list of snp plate id
@@ -191,6 +213,15 @@ class Sample < ActiveRecord::Base
       s.split(':').second.to_i # take the firt integer
     else # old value
       ''
+    end
+  end
+
+  def accession
+    if configatron.accession_samples
+      accessionable = Accession::Sample.new(Accession.configuration.tags, self)
+      if accessionable.valid?
+        Delayed::Job.enqueue SampleAccessioningJob.new(accessionable)
+      end
     end
   end
 
@@ -266,8 +297,6 @@ class Sample < ActiveRecord::Base
     attribute(:disease)
 
     with_options(if: :validating_ena_required_fields?) do |ena_required_fields|
-      # ena_required_fields.validates_presence_of :sample_common_name
-      # ena_required_fields.validates_presence_of :sample_taxon_id
       ena_required_fields.validates_presence_of :service_specific_fields
     end
 
