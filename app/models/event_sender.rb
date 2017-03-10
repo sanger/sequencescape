@@ -50,6 +50,6 @@ class EventSender
 
   def self.publishing_to_queue(hash = {})
     hash.delete(:key)
-    Event.create(hash)
+    Event.create!(hash)
   end
 end
