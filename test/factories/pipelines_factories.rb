@@ -21,7 +21,7 @@ FactoryGirl.define do
     barcode_prefix { |b| b.association(:barcode_prefix) }
   end
 
-  factory :plate_creator_purpose, class: Plate::Creator::PurposeRelationship do |t|
+  factory :plate_creator_purpose, class: Plate::Creator::PurposeRelationship do |_t|
     plate_creator
     plate_purpose
   end
@@ -134,7 +134,6 @@ FactoryGirl.define do
     next_pipeline_id      nil
     previous_pipeline_id  nil
     location              { |location| location.association(:location) }
-
 
     after(:build) do |pipeline|
       pipeline.request_types << create(:request_type)
@@ -261,7 +260,7 @@ FactoryGirl.define do
     item_limit            2
     locale                'Internal'
     # Bit grim. Otherwise pipeline behaves a little weird and tries to build a second workflow.
-    pipeline { |workflow| workflow.association(:pipeline, workflow: workflow.instance_variable_get('@instance') ) }
+    pipeline { |workflow| workflow.association(:pipeline, workflow: workflow.instance_variable_get('@instance')) }
   end
 
   factory :lab_workflow_for_pipeline, class: LabInterface::Workflow do
@@ -387,7 +386,7 @@ FactoryGirl.define do
   end
 
   factory :empty_sample_tube, class: SampleTube do
-    name                { |_a| FactoryGirl.generate :asset_name }
+    name                { generate :asset_name }
     value               ''
     descriptors         []
     descriptor_fields   []
