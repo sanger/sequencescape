@@ -764,18 +764,6 @@ Style/MultilineTernaryOperator:
 Style/MutableConstant:
   Enabled: false
 
-# Offense count: 17
-# Cop supports --auto-correct.
-Style/NegatedIf:
-  Exclude:
-    - 'app/controllers/gels_controller.rb'
-    - 'app/models/accessionable/sample.rb'
-    - 'app/models/robot_verification.rb'
-    - 'app/models/tasks/cherrypick_group_by_submission_handler.rb'
-    - 'lib/informatics/lib/informatics/view/menu/list.rb'
-    - 'lib/rails-authorization-plugin/lib/authorization.rb'
-    - 'lib/rails-authorization-plugin/lib/publishare/parser.rb'
-
 # Offense count: 5
 # Cop supports --auto-correct.
 Style/NestedParenthesizedCalls:
