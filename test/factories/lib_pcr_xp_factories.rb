@@ -2,14 +2,11 @@ FactoryGirl.define do
   factory :plate_with_wells, parent: :plate do
     size 96
     after(:create) do |plate|
-      plate.wells.import(
-        %w(A1 B1 C1 D1 E1 F1 G1 H1).map do |location|
-          map = Map.where_description(location)
+      plate.wells = Map.where_description(%w(A1 B1 C1 D1 E1 F1 G1 H1))
             .where_plate_size(plate.size)
-            .where_plate_shape(AssetShape.default).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
-          create(:tagged_well, map: map, requests: [create(:lib_pcr_xp_request)])
-        end
-      )
+            .where_plate_shape(AssetShape.default).map do |map|
+              build(:tagged_well, map: map, requests: [create(:lib_pcr_xp_request)])
+            end
     end
   end
 
@@ -18,14 +15,11 @@ FactoryGirl.define do
     plate_purpose { |_| PlatePurpose.find_by(name: 'Lib PCR-XP') }
 
     after(:create) do |plate|
-      plate.wells.import(
-        %w(A1 B1 C1 D1 E1 F1 G1 H1).map do |location|
-          map = Map.where_description(location)
+      plate.wells = Map.where_description(%w(A1 B1 C1 D1 E1 F1 G1 H1))
             .where_plate_size(plate.size)
-            .where_plate_shape(AssetShape.default).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
-          create(:tagged_well, map: map, requests: [create(:lib_pcr_xp_request)])
-        end
-      )
+            .where_plate_shape(AssetShape.default).map do |map|
+              build(:tagged_well, map: map, requests: [create(:lib_pcr_xp_request)])
+            end
     end
   end
 
@@ -48,15 +42,16 @@ FactoryGirl.define do
 
   factory :illumina_htp_mx_tube_purpose, class: IlluminaHtp::MxTubePurpose do
     sequence(:name) { |n| "Illumina HTP Mx Tube Purpose #{n}" }
+    target_type 'MultiplexedLibraryTube'
   end
 
-  factory :lib_pcr_xp_tube, class: LibraryTube do
-    name    { |_a| FactoryGirl.generate :asset_name }
-    purpose { create(:illumina_htp_mx_tube_purpose) }
+  factory :lib_pcr_xp_tube, class: MultiplexedLibraryTube do
+    name { |_a| FactoryGirl.generate :asset_name }
+    association(:purpose, factory: :illumina_htp_mx_tube_purpose)
     after(:create) { |tube| create(:transfer_request, asset: create(:lib_pcr_xp_well_with_sample_and_plate), target_asset: tube) }
   end
 
-  factory :lib_pcr_xp_well_with_sample_and_plate, parent: :well_with_sample_and_without_plate do |_well|
+  factory :lib_pcr_xp_well_with_sample_and_plate, parent: :well_with_sample_and_without_plate do
     map
     plate { |plate| plate.association(:lib_pcr_xp_child_plate) }
   end

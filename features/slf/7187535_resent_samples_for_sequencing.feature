@@ -6,7 +6,7 @@ Feature: Cherrypicking a plate twice should display latest plate in report
     Given I have a project called "Test project"
 
     Given I have an active study called "Test study"
-    Given I have a plate "1234567" in study "Test study" with 1 samples in asset group "Plate asset group"
+    Given I have a "Stock Plate" plate "1234567" in study "Test study" with 1 samples in asset group "Plate asset group"
     Given a plate template exists
     Given a robot exists with barcode "444"
 

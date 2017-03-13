@@ -5,8 +5,8 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 class Admin::PlatePurposesController < ApplicationController
-# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+  # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   before_action :admin_login_required
   before_action :discover_plate_purpose, only: [:show, :edit, :update, :destroy]

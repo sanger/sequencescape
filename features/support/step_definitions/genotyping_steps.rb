@@ -41,9 +41,16 @@ Then /^the manifest for study "([^"]*)" with plate "([^"]*)" should be:$/ do |st
   expected_results_table.diff!(manifest)
 end
 
-Given /^I have a plate "([^"]*)" in study "([^"]*)" with (\d+) samples in asset group "([^"]*)"$/ do |plate_barcode, study_name, number_of_samples, asset_group_name|
+Given(/^I have a plate "([^"]*)" in study "([^"]*)" with (\d+) samples in asset group "([^"]*)"$/) do |plate_barcode, study_name, number_of_samples, asset_group_name|
+  purpose = FactoryGirl.create :plate_purpose
+  purpose_name = purpose.name
+  step(%Q{I have a "#{purpose_name}" plate "#{plate_barcode}" in study "#{study_name}" with #{number_of_samples} samples in asset group "#{asset_group_name}"})
+end
+
+Given(/^I have a "([^"]*)" plate "([^"]*)" in study "([^"]*)" with (\d+) samples in asset group "([^"]*)"$/) do |purpose_name, plate_barcode, study_name, number_of_samples, asset_group_name|
   study = Study.find_by(name: study_name)
-  plate = FactoryGirl.create(:plate, barcode: plate_barcode, location: Location.find_by(name: 'Sample logistics freezer'))
+  purpose = Purpose.find_by(name: purpose_name)
+  plate = FactoryGirl.create(:plate, purpose: purpose, barcode: plate_barcode, location: Location.find_by(name: 'Sample logistics freezer'))
 
   asset_group = study.asset_groups.find_by(name: asset_group_name) || study.asset_groups.create!(name: asset_group_name)
   asset_group.assets << (1..number_of_samples.to_i).map do |index|
@@ -54,7 +61,7 @@ Given /^I have a plate "([^"]*)" in study "([^"]*)" with (\d+) samples in asset 
   end
 end
 
-Given /^plate "([^"]*)" in study "([^"]*)" is in asset group "([^"]*)"$/ do |plate_barcode, study_name, asset_group_name|
+Given(/^plate "([^"]*)" in study "([^"]*)" is in asset group "([^"]*)"$/) do |plate_barcode, study_name, asset_group_name|
   study = Study.find_by(name: study_name)
   plate = Plate.find_by(barcode: plate_barcode)
   asset_group = AssetGroup.find_or_create_by(name: asset_group_name, study_id: study.id)
@@ -68,7 +75,7 @@ Given /^I have a cherrypicking batch$/ do
   step('I have a cherrypicking batch with 96 samples')
 end
 
-Given /^I have a cherrypicking batch with (\d+) samples$/ do |number_of_samples|
+Given(/^I have a cherrypicking batch with (\d+) samples$/) do |number_of_samples|
   step('I am a "administrator" user logged in as "user"')
   step('I have a project called "Test project"')
   step('I have an active study called "Test study"')
@@ -82,7 +89,7 @@ Given /^I have a cherrypicking batch with (\d+) samples$/ do |number_of_samples|
   step('I press the first "Submit"')
 end
 
-Given /^a robot exists with barcode "([^"]*)"$/ do |robot_barcode|
+Given(/^a robot exists with barcode "([^"]*)"$/) do |robot_barcode|
   robot = FactoryGirl.create :robot, barcode: robot_barcode
   robot.robot_properties.create(key: 'max_plates', value: '21')
   robot.robot_properties.create(key: 'SCRC1', value: '1')
@@ -91,7 +98,7 @@ Given /^a robot exists with barcode "([^"]*)"$/ do |robot_barcode|
   robot.robot_properties.create(key: 'DEST1', value: '20')
 end
 
-When /^I complete the cherrypicking batch with "([^"]*)" plate purpose but dont release it$/ do |plate_purpose_name|
+When(/^I complete the cherrypicking batch with "([^"]*)" plate purpose but dont release it$/) do |plate_purpose_name|
   step('I follow "Select Plate Template"')
   step('I select "testtemplate" from "Plate Template"')
   step(%Q{I select "#{plate_purpose_name}" from "Output plate purpose"})
@@ -117,7 +124,7 @@ Given /^I have a cherrypicked plate with barcode "([^"]*)" and plate purpose "([
   step(%Q{I complete the cherrypicking batch with "#{plate_purpose_name}" plate purpose but dont release it})
 end
 
-Given /^well "([^"]*)" on plate "([^"]*)" has a genotyping_done status of "([^"]*)"$/ do |well_description, plate_barcode, genotyping_status|
+Given(/^well "([^"]*)" on plate "([^"]*)" has a genotyping_done status of "([^"]*)"$/) do |well_description, plate_barcode, genotyping_status|
   plate = Plate.find_by(barcode: plate_barcode)
   well = plate.find_well_by_name(well_description)
   well.primary_aliquot.sample.external_properties.create!(key: 'genotyping_done', value: genotyping_status)
@@ -134,7 +141,7 @@ Given /^well "([^"]*)" has a genotyping status of "([^"]*)"$/ do |uuid, genotypi
   well.aliquots.create!(sample: sample)
 end
 
-Given /^I have a DNA QC submission for plate "([^"]*)"$/ do |plate_barcode|
+Given(/^I have a DNA QC submission for plate "([^"]*)"$/) do |plate_barcode|
   step %Q{I have a "DNA QC" submission for plate "#{plate_barcode}" with project "Test project" and study "Study B"}
 end
 

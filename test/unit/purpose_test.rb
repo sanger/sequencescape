@@ -27,5 +27,15 @@ class PurposeTest < ActiveSupport::TestCase
         assert_equal @custom_request, @purpose.transfer_request_type_from(@other_purpose)
       end
     end
+
+    context 'with a stock parent' do
+      setup do
+        @other_purpose = create :stock_purpose
+      end
+
+      should 'return a initial transfer request' do
+        assert_equal RequestType.initial_transfer, @purpose.transfer_request_type_from(@other_purpose)
+      end
+    end
   end
 end

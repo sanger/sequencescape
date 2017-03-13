@@ -5,8 +5,8 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 require 'event_factory'
 class RequestsController < ApplicationController
-# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+  # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
 
   before_action :admin_login_required, only: [:describe, :undescribe, :destroy]
@@ -16,7 +16,7 @@ class RequestsController < ApplicationController
     @parameters = params[:request].reject { |k, _v| !['request_metadata_attributes'].include?(k.to_s) }
   end
   attr_reader :parameters
- # before_action :find_request_from_id, :only => [ :filter_change_decision, :change_decision ]
+  # before_action :find_request_from_id, :only => [ :filter_change_decision, :change_decision ]
 
   def index
     @study, @item = nil, nil
