@@ -27,7 +27,7 @@ namespace :deploy do
     end
   end
 
-  # TODO - staging hardcoded in path for LogRotate, intended?
+  # TODO: - staging hardcoded in path for LogRotate, intended?
   namespace :logrotate_tasks do
     task :force, roles: :app do
       run "/usr/sbin/logrotate -f -s /software/webapp/staging/logrotate.status #{shared_path}/config/logrotate.conf"

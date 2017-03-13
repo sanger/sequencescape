@@ -6,7 +6,7 @@
 
 require 'test_helper'
 
-# TODO:
+# TODO: See below
 # Batch will need to avoid creating wells upfron (Don't test in here, its just a pre-requisite for this taks behaviour)
 # Ensure request start still works without target asset
 # PacBio plate should be created, go for one with all 96 wells

@@ -50,7 +50,7 @@ module User::Authentication
 
   module Ldap
     def authenticate_with_ldap(login, password)
-      # TODO - Extract LDAP specifics to configuration
+      # TODO: - Extract LDAP specifics to configuration
       username = 'uid=' << login << ',ou=people,dc=sanger,dc=ac,dc=uk'
       ldap = Net::LDAP.new(
           host: configatron.ldap_server,

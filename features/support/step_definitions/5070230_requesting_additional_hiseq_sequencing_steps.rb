@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 Given /^I have a library tube of stuff called "([^\"]+)"$/ do |name|
-  # todo : check if it should be :library_tube instead
+  # TODO: check if it should be :library_tube instead
   FactoryGirl.create(:empty_library_tube, name: name)
 end
 

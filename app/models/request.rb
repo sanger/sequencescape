@@ -387,7 +387,7 @@ class Request < ActiveRecord::Base
   PERMISSABLE_NEXT_REQUESTS = ->(request) { request.pending? or request.blocked? }
 
   def next_requests(pipeline, &block)
-    # TODO remove pipeline parameters
+    # TODO: remove pipeline parameters
     # we filter according to the next pipeline
     next_pipeline = pipeline.next_pipeline
     # return [] if next_pipeline.nil?

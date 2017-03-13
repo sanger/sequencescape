@@ -70,7 +70,7 @@ end
 Given /^I have data loaded from SNP$/ do
 end
 When /^I check request "(\d+)" for pipeline "([^"]+)"/ do |request_number, pipeline_name|
-  # TODO find the request checkboxes in the current page (by name "request_... ") so we don't need
+  # TODO: find the request checkboxes in the current page (by name "request_... ") so we don't need
   # do give the pipelin name
   request_number = request_number.to_i
   pipeline = Pipeline.find_by(name: pipeline_name)
