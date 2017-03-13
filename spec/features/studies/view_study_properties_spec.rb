@@ -22,12 +22,4 @@ feature 'View study properties' do
     click_link 'Study details'
     expect(page).to have_content('HMDMC approval number: 12345')
   end
-
-  def login_user(user)
-    visit login_path
-    fill_in 'Username', with: user.login
-    fill_in 'Password', with: 'password'
-    click_button 'Login'
-    true
-  end
 end

@@ -43,7 +43,7 @@ class RequestType < ActiveRecord::Base
   has_many :control_pipelines, class_name: 'Pipeline', foreign_key: :control_request_type_id
   belongs_to :product_line
 
-  # Couple of named scopes for finding billable types
+ # Couple of named scopes for finding billable types
  scope :billable, -> { where(billable: true) }
  scope :non_billable, -> { where(billable: false) }
 

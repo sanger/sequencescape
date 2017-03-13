@@ -5,8 +5,8 @@
 # Copyright (C) 2016 Genome Research Ltd.
 class AddIllHtpPcrFreePipeline < ActiveRecord::Migration
   def up
-  # IlluminaHtp::PlatePurposes.create_plate_purposes
-  # IlluminaHtp::PlatePurposes.create_branches
+    # IlluminaHtp::PlatePurposes.create_plate_purposes
+    # IlluminaHtp::PlatePurposes.create_branches
 
     ActiveRecord::Base.transaction do |_t|
       stock_name = 'PF Cherrypicked'

@@ -173,8 +173,7 @@ class AssetsController < ApplicationController
 
   def update
     respond_to do |format|
-      joint_params = params.fetch(:asset, {}).merge(params.fetch(:lane, {}))
-      if @asset.update_attributes(joint_params)
+      if @asset.update_attributes(asset_params.merge(params.fetch(:lane, {})))
         flash[:notice] = 'Asset was successfully updated.'
         if params[:lab_view]
           format.html { redirect_to(action: :lab_view, barcode: @asset.barcode) }
@@ -186,6 +185,22 @@ class AssetsController < ApplicationController
         format.html { render action: 'edit' }
         format.xml  { render xml: @asset.errors, status: :unprocessable_entity }
       end
+    end
+  end
+
+  private def asset_params
+    permitted = [:location_id]
+    permitted << :name if current_user.administrator? #
+    permitted << :plate_purpose_id if current_user.administrator? || current_user.lab_manager?
+    params.require(:asset).permit(permitted)
+  end
+
+  def destroy
+    @asset.destroy
+
+    respond_to do |format|
+      format.html { redirect_to(assets_url) }
+      format.xml  { head :ok }
     end
   end
 
@@ -401,7 +416,7 @@ class AssetsController < ApplicationController
   end
 
   def discover_asset
-    @asset = Asset.includes(requests: :request_metadata).find(params[:id])
+    @asset = Asset.include_for_show.find(params[:id])
   end
 
   def check_valid_values(params = nil)

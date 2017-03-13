@@ -16,7 +16,7 @@ purpose_order = [
     ]
 
 shared = {
-  can_be_considered_a_stock_plate: false,
+  stock_plate: false,
   default_state: 'pending',
   cherrypickable_target: false,
   cherrypick_direction: 'column',

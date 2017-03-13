@@ -83,7 +83,15 @@ private
   def perform_decision_change_request_state!
     previous_state = request.state
     ActiveRecord::Base.transaction do
-      request.change_decision!
+      # Really this toggle of states isn't ideal, as effectively it means
+      # multiple requests in quick succession could toggle the state, which probably
+      # wasn't the intended behaviour.
+      case
+      when request.failed? then request.retrospective_pass!
+      when request.passed? then request.retrospective_fail!
+      else
+        raise InvalidDecision, self
+      end
       request.events.create!(message: "Change state from #{previous_state} to  #{state}", created_by: user.login, family: 'update')
       request.comments.create!(description: comment, user_id: user.id)
     end

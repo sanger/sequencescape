@@ -4,7 +4,6 @@ Feature: display an overview of all plates going through QC in SLF
    Background:
      Given I am an "slf_manager" user logged in as "john"
      And I have an active study called "Test Study"
-     # And a "Stock Plate" plate purpose and of type "Plate" with barcode "1221234567841" exists
      And there is a 1 well "Stock Plate" plate with a barcode of "1221234567841"
      And asset with barcode "1221234567841" belongs to study "Test study"
      And the "96 Well Plate" barcode printer "xyz" exists

@@ -9,6 +9,12 @@ class Io::PlatePurpose < Core::Io::Base
   set_json_root(:plate_purpose)
 
   define_attribute_and_json_mapping("
-                     name  => name
+    name <=> name
+    lifespan <=> lifespan
+    cherrypickable_target <=> cherrypickable_target
+    stock_plate <=> stock_plate
+    input_plate <= input_plate
+    parent_purposes <= parents
+    child_purposes <= children
   ")
 end

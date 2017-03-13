@@ -4,5 +4,6 @@ FactoryGirl.define do
     sample  { build(:accession_sample) }
 
     initialize_with { new(user, sample) }
+    skip_create
   end
 end

@@ -70,18 +70,17 @@ Then /^the order should (not |)be built$/ do |n|
 end
 
 Given /^batch "([^"]*)" in "Pulldown library preparation" has been setup with "([^"]*)" for feature 27224545$/ do |id, asset_group|
-  pipeline    = Pipeline.find_by(name: 'Pulldown library preparation') or raise StandardError, "Cannot find pipeline 'Pulldown library preparation'"
+  pipeline    = Pipeline.find_by!(name: 'Pulldown library preparation')
   batch       = Batch.find(id)
   asset_group = AssetGroup.find_by(name: asset_group)
   requests = []
   asset_group.assets.each do |asset|
-    target_asset = FactoryGirl.build :library_tube, sample: asset.sample, name: "#{asset.name}_target"
+    target_asset = FactoryGirl.create :library_tube, sample: asset.samples.first, name: "#{asset.name}_target"
     request = pipeline.request_types.last.create!(
       asset: asset,
       target_asset: target_asset,
       request_metadata_attributes: { fragment_size_required_from: 100, fragment_size_required_to: 200, read_length: 76 }
     )
-    # request = FactoryGilr.build :request, :asset => asset, :target_asset => target_asset, :request_type => pipeline.request_type, :pipeline => pipeline
     request.save
     requests << request
   end

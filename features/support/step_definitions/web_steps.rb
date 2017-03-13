@@ -53,19 +53,19 @@ When /^I follow first "(.*?)"$/ do |link|
   first('a', text: link).click
 end
 
-When /^(?:|I )fill in "([^"]*)" with "([^"]*)"(?: within "([^"]*)")?$/ do |field, value, selector|
+When(/^(?:|I )fill in "([^"]*)" with "([^"]*)"(?: within "([^"]*)")?$/) do |field, value, selector|
   with_scope(selector) do
     fill_in(field, with: value)
   end
 end
 
-When /^(?:|I )fill in "([^"]*)" with the file "([^"]*)"(?: within "([^"]*)")?$/ do |field, value, selector|
+When(/^(?:|I )fill in "([^"]*)" with the file "([^"]*)"(?: within "([^"]*)")?$/) do |field, value, selector|
   with_scope(selector) do
     attach_file(field, value)
   end
 end
 
-When /^(?:|I )fill in "([^"]*)" for "([^"]*)"(?: within "([^"]*)")?$/ do |value, field, selector|
+When(/^(?:|I )fill in "([^"]*)" for "([^"]*)"(?: within "([^"]*)")?$/) do |value, field, selector|
   with_scope(selector) do
     fill_in(field, with: value)
   end
@@ -82,7 +82,7 @@ end
 # TODO: Add support for checkbox, select og option
 # based on naming conventions.
 #
-When /^(?:|I )fill in the following(?: within "([^"]*)")?:$/ do |selector, fields|
+When(/^(?:|I )fill in the following(?: within "([^"]*)")?:$/) do |selector, fields|
   selector ||= 'body'
   with_scope(selector) do
     fields.rows_hash.each do |name, value|
@@ -147,11 +147,7 @@ end
 
 Then /^(?:|I )should see "([^\"]*)"(?: within "([^\"]*)")?$/ do |text, selector|
   with_scope(selector) do
-    if page.respond_to? :should
-      page.should have_content(text)
-    else
-      assert page.has_content?(text), "Could not see #{text} on page."
-    end
+    assert page.has_content?(text), "Could not see #{text} on page."
   end
 end
 
@@ -251,11 +247,7 @@ end
 
 Then /^(?:|I )should be on (.+)$/ do |page_name|
   current_path = URI.parse(current_url).path
-  if current_path.respond_to? :should
-    current_path.should == path_to(page_name)
-  else
-    assert_equal path_to(page_name), current_path
-  end
+  assert_equal path_to(page_name), current_path
 end
 
 Then /^(?:|I )should have the following query string:$/ do |expected_pairs|
@@ -263,12 +255,7 @@ Then /^(?:|I )should have the following query string:$/ do |expected_pairs|
   actual_params = query ? CGI.parse(query) : {}
   expected_params = {}
   expected_pairs.rows_hash.each_pair { |k, v| expected_params[k] = v.split(',') }
-
-  if actual_params.respond_to? :should
-    actual_params.should == expected_params
-  else
-    assert_equal expected_params, actual_params
-  end
+  assert_equal expected_params, actual_params
 end
 
 Then /^show me the page$/ do

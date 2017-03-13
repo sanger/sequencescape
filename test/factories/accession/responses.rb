@@ -15,5 +15,7 @@ FactoryGirl.define do
     factory :failed_accession_response do
       response { failed_accession_response }
     end
+
+    skip_create
   end
 end

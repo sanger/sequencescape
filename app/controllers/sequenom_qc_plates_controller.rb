@@ -5,8 +5,8 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 class SequenomQcPlatesController < ApplicationController
-# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+  # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   def new
     @barcode_printers  = BarcodePrinterType.find_by(name: '384 Well Plate').barcode_printers
@@ -35,10 +35,9 @@ class SequenomQcPlatesController < ApplicationController
         sequenom_qc_plate = SequenomQcPlate.new(
           plate_prefix: params[:plate_prefix],
           gender_check_bypass: gender_check_bypass,
-          user_barcode: user_barcode
+          user_barcode: user_barcode,
+          purpose: PlatePurpose.find_by(name: 'Sequenom')
         )
-        # TODO: create a factory object
-
         # Need to be done before saving the plate
         valid = input_plate_names && sequenom_qc_plate.compute_and_set_name(input_plate_names)
         errors = sequenom_qc_plate.errors.inject({}) { |h, (k, v)| h.update(k => v) }

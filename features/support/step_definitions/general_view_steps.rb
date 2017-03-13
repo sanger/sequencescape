@@ -5,15 +5,15 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 # Then /^I should see an ordered list with:$/ do |ordered_list_table|
-  # assert_select 'ol' do
-    # ordered_list_table.raw.each do |text|
-      # assert_select 'li', :text => /#{ text }/
-    # end
-  # end
+# assert_select 'ol' do
+# ordered_list_table.raw.each do |text|
+# assert_select 'li', :text => /#{ text }/
+# end
+# end
 # end
 
 # Then /^I should see an ordered list with the last entry "([^\"]+)"$/ do |entry_text|
-  # assert_select 'ol li:last-child', :text => /#{ entry_text }/
+# assert_select 'ol li:last-child', :text => /#{ entry_text }/
 # end
 
 Then /^I should see a dropdown labeled "([^\"]+)" with:$/ do |label_text, select_options|

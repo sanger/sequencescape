@@ -5,39 +5,52 @@
 # Copyright (C) 2007-2011,2012,2014,2015,2016 Genome Research Ltd.%>
 
 <%= page_title('Asset',"Edit #{@asset.display_name}") %>
-<table>
+
 <%= form_for(@asset,url: asset_path(@asset),as:'asset') do |f| %>
-  <tr><td><%= f.error_messages %></td></tr>
+  <%= alert do %>
+    <%= f.error_messages %>
+  <% end %>
+
   <% if @current_user.administrator? %>
-      <tr><td>Name: <%= f.text_field :name %></td></tr>
+    <div class="form-group">
+      <%= f.label :name %>
+      <%= f.text_field :name, class: 'form-control' %>
+    </div>
   <% else %>
-      <tr><td>Name: <%= h(@asset.display_name) %></td></tr>
+    <div class="form-group">
+      <%= f.label :name %>
+      <%= h(@asset.display_name) %>
+    </div>
   <% end %>
 
   <% if (@current_user.is_lab_manager?) && (@asset.respond_to? :plate_purpose) %>
-    <tr><td>Purpose: <%= select_tag("asset[plate_purpose_id]", options_for_select(@valid_purposes_options, @asset.purpose.try(:id))) %></td></tr>
+    <div class="form-group">
+      <%= f.label :plate_purpose_id %>
+      <%= f.select(:plate_purpose_id, options_for_select(@valid_purposes_options, @asset.purpose.try(:id)), {}, class: 'select2' ) %>
+    </div>
   <% end %>
 
   <% if @asset.location %>
-      <tr><td>Location: <%= f.select :location_id, Location.all.map { |location| [location.name, location.id]} %></td></tr>
+      <div class="form-group">
+        <%= f.label :location_id %>
+        <%= f.select :location_id, Location.pluck(:name, :id), {}, { class: 'select2' }  %>
+     </div>
   <% end %>
 
-  <tr><td>Public name (for ENA release): <%= f.text_field :public_name %></td><tr>
-
-
   <% if @asset.is_a?(Lane) %>
-    <tr><td>Should the data be released?: <%= f.check_box :external_release, { 'data-field' => 'lane_lane_metadata_attributes_release_reason'} %>
+    <div class="form-group">
+      <%= f.label :external_release, "Should the data be released?" %>
+      <%= f.check_box :external_release, { 'data-field' => 'lane_lane_metadata_attributes_release_reason'} %>
     <%= hidden_field_tag :qc_state_value, @asset.qc_state %>
     <%= hidden_field_tag :external_release_value, @asset.external_release %>
     <%= hidden_field_tag 'lane[lane_metadata_attributes][release_reason]', '', :id => 'hidden_lane' %>
-    </td></tr>
-    <tr><td><%= render :partial => 'shared/metadata/edit/lane', :locals => { :lane => @asset, :form => f } %></td></tr>
+  </div>
+    <div class="form-group"><%= render :partial => 'shared/metadata/edit/lane', :locals => { :lane => @asset, :form => f } %></div>
   <% end %>
-  <tr><td><%= f.submit "Update" %></td></tr>
+  <div class="form-group"><%= f.submit "Update", class:'btn btn-success' %></div>
 <% end %>
 
- <tr><td><%= link_to 'Show', :action => :show, :id => @asset.id %></td></tr>
-</table>
+ <div class="form-group"><%= link_to 'Show', :action => :show, :id => @asset.id %></div>
 
 <script type="text/javascript">
 (function($, undefined) {

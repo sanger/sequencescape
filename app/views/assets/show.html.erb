@@ -30,8 +30,10 @@
   <% add :menu, "Edit" => edit_asset_path(@asset) -%>
 <% end %>
 
-<% if @asset.respond_to?(:sample) && @asset.sample %>
-  <% add :menu, "Back to sample" => sample_path(@asset.sample) -%>
+<% if @asset.respond_to?(:samples) %>
+  <% @asset.samples.each do |sample| %>
+    <% add :menu, "Back to sample #{sample.name}" => sample_path(sample) -%>
+  <% end %>
   <% @asset.related_studies.each do |study| %>
     <% add :menu, "Back to study #{study.name}" => study_path(study) -%>
   <% end %>
@@ -41,7 +43,6 @@
 <%= page_title('Asset',@asset.display_name) %>
 
 <%= render :partial => "asset", :locals => { :asset => @asset } %>
-<br />
 
 <h3>Relations</h3>
 <div class='help'>

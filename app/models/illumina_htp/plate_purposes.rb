@@ -100,7 +100,7 @@ module IlluminaHtp::PlatePurposes
   ]
 
   PLATE_PURPOSE_TYPE = {
-    'PF Cherrypicked'        => IlluminaHtp::StockPlatePurpose,
+    'PF Cherrypicked'        => PlatePurpose::Input,
     'PF Shear'               => PlatePurpose::InitialPurpose,
     'PF Post Shear'          => PlatePurpose,
     'PF Post Shear XP'       => PlatePurpose,
@@ -113,7 +113,7 @@ module IlluminaHtp::PlatePurposes
     'PF MiSeq QC'            => IlluminaC::QcPoolPurpose,
     'PF MiSeq QCR'           => IlluminaC::QcPoolPurpose,
 
-    'Cherrypicked'        => IlluminaHtp::StockPlatePurpose,
+    'Cherrypicked'        => PlatePurpose::Input,
     'Shear'               => PlatePurpose::InitialPurpose,
     'Post Shear'          => PlatePurpose,
     'AL Libs'             => PlatePurpose,
@@ -173,7 +173,7 @@ module IlluminaHtp::PlatePurposes
       raise 'Flow already exists' if Purpose.find_by(name: flow.first).present?
       stock_plate = create_plate_purpose(
         flow.shift,
-        can_be_considered_a_stock_plate: true,
+        stock_plate: true,
         default_state: 'passed',
         cherrypickable_target: true,
         cherrypick_filters: [
@@ -218,9 +218,6 @@ module IlluminaHtp::PlatePurposes
       end
     end
 
-    def destroy_branches
-    end
-
     def purpose_for(name)
       self::PLATE_PURPOSE_TYPE[name] || raise("NO class configured for #{name}")
     end
@@ -248,7 +245,7 @@ module IlluminaHtp::PlatePurposes
         name: plate_purpose_name,
         cherrypickable_target: false,
         cherrypick_direction: 'column',
-        can_be_considered_a_stock_plate: self::OUTPUT_PLATE_PURPOSES.include?(plate_purpose_name),
+        stock_plate: self::OUTPUT_PLATE_PURPOSES.include?(plate_purpose_name),
         asset_shape_id: AssetShape.default.id
       )).tap do |plate_purpose|
         plate_purpose.barcode_printer_type = BarcodePrinterType.find_by(type: 'BarcodePrinterType96Plate') || plate_purpose.barcode_printer_type

@@ -54,11 +54,11 @@ class ImportFluidigmDataTest < ActiveSupport::TestCase
       well_target = Well.new
       plate_target.add_and_save_well(well_target)
 
-      RequestType.find_by(key: 'pick_to_fluidigm').create!(state: 'passed',
-                                                           asset: stock_plate.wells.first,
-                                                           target_asset: well_target,
-                                                           request_metadata_attributes: {
-            target_purpose_id: PlatePurpose.find_by(name: 'Fluidigm 192-24').id
+      RequestType.find_by!(key: 'pick_to_fluidigm').create!(state: 'passed',
+                                                            asset: stock_plate.wells.first,
+                                                            target_asset: well_target,
+                                                            request_metadata_attributes: {
+            target_purpose_id: PlatePurpose.find_by!(name: 'Fluidigm 192-24').id
           })
       plate_target
     end
@@ -70,6 +70,7 @@ class ImportFluidigmDataTest < ActiveSupport::TestCase
       @plate1 = create_plate_with_fluidigm('12345671', '1381832088', @stock_plate)
       @plate2 = create_plate_with_fluidigm('12345672', '1234567891', @stock_plate)
     end
+
     context 'before uploading the fluidigm file to a corresponding plate' do
       should 'we get this plate inside the requiring_fluidigm_data scope' do
         @plates_requiring_fluidigm = Plate.requiring_fluidigm_data
