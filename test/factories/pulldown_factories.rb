@@ -48,7 +48,7 @@ FactoryGirl.define do
     end
 
     # A plate that has exactly the right number of wells!
-    factory(:pooling_plate) do
+    factory :pooling_plate do
       plate_purpose { create :pooling_plate_purpose }
       transient do
         well_count 6
@@ -81,14 +81,14 @@ FactoryGirl.define do
   end
 
   # Transfers and their templates
-  factory(:transfer_between_plates, class: Transfer::BetweenPlates) do |_transfer|
+  factory(:transfer_between_plates, class: Transfer::BetweenPlates) do
     user        { |target| target.association(:user) }
     source      { |target| target.association(:source_transfer_plate) }
     destination { |target| target.association(:destination_transfer_plate) }
     transfers('A1' => 'A1', 'B1' => 'B1')
   end
 
-  factory(:transfer_from_plate_to_tube, class: Transfer::FromPlateToTube) do |_transfer|
+  factory(:transfer_from_plate_to_tube, class: Transfer::FromPlateToTube) do
     user        { |target| target.association(:user) }
     source      { |target| target.association(:source_transfer_plate) }
     destination { |target| target.association(:library_tube) }
@@ -125,23 +125,23 @@ FactoryGirl.define do
   end
 
   # Tag layouts and their templates
-  factory(:tag_layout_template) do |_tag_layout_template|
+  factory(:tag_layout_template) do
     direction_algorithm 'TagLayout::InColumns'
     walking_algorithm   'TagLayout::WalkWellsByPools'
     tag_group { |target| target.association(:tag_group_for_layout) }
   end
-  factory(:inverted_tag_layout_template, class: TagLayoutTemplate) do |_tag_layout_template|
+  factory(:inverted_tag_layout_template, class: TagLayoutTemplate) do
     direction_algorithm 'TagLayout::InInverseColumns'
     walking_algorithm   'TagLayout::WalkWellsOfPlate'
     tag_group { |target| target.association(:tag_group_for_layout) }
   end
-  factory(:entire_plate_tag_layout_template, class: TagLayoutTemplate) do |_tag_layout_template|
+  factory(:entire_plate_tag_layout_template, class: TagLayoutTemplate) do
     direction_algorithm 'TagLayout::InColumns'
     walking_algorithm   'TagLayout::WalkWellsOfPlate'
     tag_group { |target| target.association(:tag_group_for_layout) }
   end
 
-  factory(:tag_layout) do |_tag_layout|
+  factory(:tag_layout) do
     user      { |target| target.association(:user) }
     plate     { |target| target.association(:full_plate_with_samples) }
     tag_group { |target| target.association(:tag_group_for_layout)    }
@@ -154,22 +154,23 @@ FactoryGirl.define do
     after(:build) { |tag_layout| tag_layout.import_behaviour }
   end
 
-  factory(:parent_plate_purpose, class: PlatePurpose) do |_plate_purpose|
+  factory(:parent_plate_purpose, class: PlatePurpose) do
     name 'Parent plate purpose'
 
     after(:create) do |plate_purpose|
       plate_purpose.child_relationships.create!(child: create(:child_plate_purpose), transfer_request_type: RequestType.transfer)
     end
   end
-  factory(:pooling_transfer, class: RequestType) do |_pooling_transfer|
+  factory(:pooling_transfer, class: RequestType) do
     asset_type 'Well'
     order 1
     request_class_name 'TransferRequest::InitialDownstream'
     request_purpose { |rp| rp.association(:request_purpose) }
   end
+
   # Plate creations
-  factory(:pooling_plate_purpose, class: PlatePurpose) do |_plate_purpose|
-    name 'Pooling plate purpose'
+  factory(:pooling_plate_purpose, class: PlatePurpose) do
+    sequence(:name) { |i| "Pooling purpose #{i}" }
     stock_plate true
     after(:create) do |plate_purpose|
       cpp = create(:child_plate_purpose)
@@ -178,13 +179,16 @@ FactoryGirl.define do
       plate_purpose.child_relationships.create!(child: idpp, transfer_request_type: create(:pooling_transfer))
     end
   end
-  factory(:child_plate_purpose, class: PlatePurpose) do |_plate_purpose|
+
+  factory(:child_plate_purpose, class: PlatePurpose) do
     name { 'Child plate purpose' }
   end
+
   factory(:initial_downstream_plate_purpose, class: Pulldown::InitialDownstreamPlatePurpose) do |plate_purpose|
      plate_purpose.name 'Initial Downstream plate purpose'
   end
-  factory(:plate_creation) do |_plate_creation|
+
+  factory(:plate_creation) do
     user   { |target| target.association(:user) }
     parent { |target| target.association(:full_plate) }
 
@@ -195,10 +199,10 @@ FactoryGirl.define do
   end
 
   # Tube creations
-  factory(:child_tube_purpose, class: Tube::Purpose) do |_plate_purpose|
+  factory(:child_tube_purpose, class: Tube::Purpose) do
     name 'Child tube purpose'
   end
-  factory(:tube_creation) do |_tube_creation|
+  factory(:tube_creation) do
     user   { |target| target.association(:user) }
     parent { |target| target.association(:full_plate) }
 
@@ -226,20 +230,20 @@ FactoryGirl.define do
     end
   end
 
-  factory(:bait_library_supplier, class: BaitLibrary::Supplier) do |_supplier|
+  factory(:bait_library_supplier, class: BaitLibrary::Supplier) do
     name 'bait library supplier'
   end
-  factory(:bait_library_type) do |_bait_library_type|
+  factory(:bait_library_type) do
     name 'bait library type'
   end
-  factory(:bait_library) do |_bait_library|
+  factory(:bait_library) do
     bait_library_supplier { |target| target.association(:bait_library_supplier) }
     bait_library_type { |target| target.association(:bait_library_type) }
     name 'bait library!'
     target_species 'Human'
   end
 
-  factory(:pulldown_wgs_request, class: Pulldown::Requests::WgsLibraryRequest) do |_request|
+  factory(:pulldown_wgs_request, class: Pulldown::Requests::WgsLibraryRequest) do
     request_type { |_target| RequestType.find_by(name: 'Pulldown WGS') or raise StandardError, "Could not find 'Pulldown WGS' request type" }
     asset        { |target| target.association(:well_with_sample_and_plate) }
     target_asset { |target| target.association(:empty_well) }
@@ -249,7 +253,7 @@ FactoryGirl.define do
     end
     request_purpose { |rp| rp.association(:request_purpose) }
   end
-  factory(:pulldown_sc_request, class: Pulldown::Requests::ScLibraryRequest) do |_request|
+  factory(:pulldown_sc_request, class: Pulldown::Requests::ScLibraryRequest) do
     request_type { |_target| RequestType.find_by(name: 'Pulldown SC') or raise StandardError, "Could not find 'Pulldown SC' request type" }
     asset        { |target| target.association(:well_with_sample_and_plate) }
     target_asset { |target| target.association(:empty_well) }
@@ -260,7 +264,7 @@ FactoryGirl.define do
     end
     request_purpose { |rp| rp.association(:request_purpose) }
   end
-  factory(:pulldown_isc_request, class: Pulldown::Requests::IscLibraryRequest) do |_request|
+  factory(:pulldown_isc_request, class: Pulldown::Requests::IscLibraryRequest) do
     request_type { |_target| RequestType.find_by(name: 'Pulldown ISC') or raise StandardError, "Could not find 'Pulldown ISC' request type" }
     asset        { |target| target.association(:well_with_sample_and_plate) }
     target_asset { |target| target.association(:empty_well) }

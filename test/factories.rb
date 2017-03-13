@@ -13,19 +13,16 @@ FactoryGirl.define do
 
   factory :comment  do
     description 'It is okay I guess'
+    association(:commentable, factory: :asset)
   end
 
-  factory :aliquot do
+  factory :aliquot, aliases: [:tagged_aliquot, :dual_tagged_aliquot] do
     sample
     study
     project
     tag
-    association :tag2, factory: :tag
-
-    factory :tagged_aliquot do
-      tag
-      tag2 { |t| t.association(:tag) }
-    end
+    tag2
+    receptacle
 
     factory :untagged_aliquot do
       tag  nil
@@ -36,14 +33,9 @@ FactoryGirl.define do
       tag
       tag2 nil
     end
-
-    factory :dual_tagged_aliquot do
-      tag
-      tag2 { |t| t.association(:tag) }
-    end
   end
 
-  factory :aliquot_receptacle, class: Aliquot::Receptacle do
+  factory :aliquot_receptacle, class: Aliquot::Receptacle, aliases: [:receptacle] do
   end
 
   factory :event do
@@ -151,9 +143,6 @@ FactoryGirl.define do
     product_catalogue { |pc| pc.association(:single_product_catalogue) }
   end
 
-  factory :report do
-  end
-
   factory :request_metadata, class: Request::Metadata do
     read_length 76
     customer_accepts_responsibility false
@@ -176,6 +165,7 @@ FactoryGirl.define do
     fragment_size_required_from   1
     fragment_size_required_to     21
     read_length                   76
+    association(:owner, factory: :sequencing_request)
   end
 
   # HiSeq sequencing
@@ -324,22 +314,8 @@ FactoryGirl.define do
     end
   end
 
-  factory :sample_submission do
-  end
-
   factory :search do
-  end
-
-  factory :section do
-  end
-
-  factory :sequence do
-  end
-
-  factory :setting do
-    name    ''
-    value   ''
-    user    { |user| user.association(:user) }
+    sequence(:name) { |n| "Search #{n}" }
   end
 
   sequence :login do |i|
@@ -365,11 +341,11 @@ FactoryGirl.define do
     end
 
     factory :manager do
-      roles             { |role| [role.association(:manager_role)] }
+      roles { |role| [role.association(:manager_role)] }
     end
 
     factory :owner do
-      roles             { |role| [role.association(:owner_role)] }
+      roles { |role| [role.association(:owner_role)] }
     end
 
     factory :data_access_coordinator do
@@ -390,16 +366,16 @@ FactoryGirl.define do
     end
 
     factory :manager_role do
-      name            'manager'
+      name 'manager'
     end
 
     factory :data_access_coordinator_role do
-      name            'data_access_coordinator'
+      name 'data_access_coordinator'
     end
 
     factory :owner_role do
-      name            'owner'
-      authorizable    { |i| i.association(:project) }
+      name 'owner'
+      authorizable { |i| i.association(:project) }
     end
   end
 
@@ -425,7 +401,7 @@ FactoryGirl.define do
   end
 
   factory :asset_group_asset do
-    asset
+    association(:asset, factory: :aliquot_receptacle)
     asset_group
   end
 
@@ -473,7 +449,7 @@ FactoryGirl.define do
     end
 
     after(:create) do |library_tube, evaluator|
-      library_tube.aliquots << build(:untagged_aliquot, sample: evaluator.sample, library_type: evaluator.library_type)
+      library_tube.aliquots << build(:untagged_aliquot, sample: evaluator.sample, library_type: evaluator.library_type, receptacle: library_tube)
     end
   end
 
@@ -483,7 +459,7 @@ FactoryGirl.define do
     end
 
     after(:create) do |library_tube, evaluator|
-      library_tube.aliquots << build(:tagged_aliquot, tag: create(:tag, map_id: evaluator.tag_map_id))
+      library_tube.aliquots << build(:tagged_aliquot, tag: create(:tag, map_id: evaluator.tag_map_id), receptacle: library_tube)
     end
   end
 
@@ -493,8 +469,11 @@ FactoryGirl.define do
     end
   end
 
-  factory :transfer_request do |_tr|
-    request_purpose { |rp| rp.association(:request_purpose) }
+  factory :transfer_request do
+    association(:asset, factory: :well)
+    association(:target_asset, factory: :well)
+    association(:request_type, factory: :transfer_request_type)
+    request_purpose
   end
 
   # A library tube is created from a sample tube through a library creation request!
@@ -576,7 +555,7 @@ FactoryGirl.define do
       asset_type '1dtube'
 
       factory :tube_sample_manifest_with_samples do
-        samples { FactoryGirl.create_list(:sample_tube, 5).map(&:sample) }
+        samples { FactoryGirl.create_list(:sample_tube, 5).map(&:samples).flatten }
       end
     end
   end
@@ -642,11 +621,11 @@ FactoryGirl.define do
 
   factory(:barcode_printer) do
     sequence(:name) { |i| "a#{i}bc" }
-    # plate: barcode_printer_type_id 2, tube: barcode_printer_type_id 1
-    barcode_printer_type_id 2
+    association(:barcode_printer_type, factory: :plate_barcode_printer_type)
   end
 
   factory :uuid do
+    association(:resource, factory: :asset)
     external_id { SecureRandom.uuid }
   end
 
@@ -666,6 +645,7 @@ FactoryGirl.define do
   end
 
   factory :barcode_printer_type do
+    sequence(:name) { |i| "Printer Type #{i}" }
   end
 
   factory :plate_barcode_printer_type, class: BarcodePrinterType96Plate do

@@ -42,7 +42,8 @@ Sequencescape::Application.configure do
   config.active_record.observers << :amqp_observer if ENV['TEST_RABBIT_MQ']
   config.log_level = :debug
 
-  config.active_support.deprecation = :log
+  config.active_record.raise_in_transactional_callbacks = true
+  config.active_support.deprecation = :raise
 
   # Use the response timer middleware
   config.middleware.insert_after(ActionController::Failsafe, 'ResponseTimer', File.new(ENV['LOG_TO'], 'w+')) unless ENV['LOG_TO'].nil?

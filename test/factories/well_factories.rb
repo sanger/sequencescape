@@ -16,7 +16,7 @@ FactoryGirl.define do
     factory :empty_well
   end
 
-  factory :well_attribute do |_w|
+  factory :well_attribute do
     concentration       23.2
     current_volume      15
   end

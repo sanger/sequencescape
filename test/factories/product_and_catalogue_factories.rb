@@ -27,6 +27,8 @@ FactoryGirl.define do
     configuration { { total_micrograms: { greater_than: 50 }, sanger_sample_id: {} } }
   end
 
-  factory :product_product_catalogue do |pc|
+  factory :product_product_catalogue do
+    product
+    product_catalogue
   end
 end

@@ -148,7 +148,7 @@ class BatchTest < ActiveSupport::TestCase
     context 'create requests' do
       setup do
         @asset_count = Asset.count
-        @requests    = (1..4).map { |_| create(:request, request_type: @pipeline.request_types.last) }
+        @requests    = Array.new(4) { create(:request, request_type: @pipeline.request_types.last) }
         @batch       = @pipeline.batches.create!(requests: @requests)
       end
 
@@ -300,20 +300,25 @@ class BatchTest < ActiveSupport::TestCase
 
     context 'create requests' do
       setup do
+        @requests = create_list(:request, 4, request_type: @pipeline.request_types.last, target_asset: nil)
         @asset_count = Asset.count
-        @requests = (1..4).map { |_| create(:request, request_type: @pipeline.request_types.last) }
         @batch = @pipeline.batches.create!(requests: @requests)
       end
 
-      should 'change Asset.count by 12' do
-        assert_equal 12, Asset.count - @asset_count, 'Expected Asset.count to change by 12'
+      should 'create target assets for each request' do
+        # This is dependent of some aspects of pipelines and request types.
+        # Its all a bit convoluted and inconsistent.
+        assert_equal 4, Asset.count - @asset_count, 'Expected Asset.count to change by 4'
+        @requests.each do |r|
+          assert r.reload.target_asset.present?, 'Request has no target asset'
+        end
       end
 
       should 'not have same asset name' do
         assert_not_equal Asset.first.name, Asset.last.name
       end
 
-      should 'have the good number of request associated' do
+      should 'create a batch_request for every associated request' do
         assert_equal @requests.size, @batch.batch_requests.count
       end
 
@@ -381,46 +386,27 @@ class BatchTest < ActiveSupport::TestCase
     context 'when specific requests in a batch are failing' do
       setup do
         @batch = @pipeline.batches.create!
-        @request1, @request2 = @batch.requests = [
-          @pipeline.request_types.last.create!,
-          @pipeline.request_types.last.create!
-        ]
-
+        @request_type = @pipeline.request_types.last
+        @request1, @request2 = @batch.requests = create_list(:request, 2, request_type: @request_type)
         @reason = 'PCR not enough'
         @comment = 'Hey! Are we human?'
       end
 
       context 'fail requests' do
         setup do
-          EventSender.expects(:send_fail_event)
-          @requests = { (@request1.id).to_s => 'on' }
-          @batch.fail_batch_items(@requests, @reason, @comment)
+          # The event sender actually does the failures.
+          EventSender.expects(:send_fail_event).with(@request1.id, @reason, @comment, @batch.id).returns(true).times(1)
+          params = { @request1.id.to_s => 'on' }
+          @batch.fail_batch_items(params, @reason, @comment)
         end
 
-        should 'fail requested requests'
-
-        should 'not fail not requested requests'
-
         should 'not fail the batch' do
-          assert !@batch.failed?
+          refute @batch.failed?
         end
 
         should 'create failures on failed requests' do
           assert_equal 1, @request1.failures.count
         end
-      end
-
-      context 'control request' do
-        setup do
-          EventSender.expects(:send_fail_event).returns(true).times(1)
-          @asset = create :sample_tube, resource: 1
-          @request3 = create :request, batches: [@batch], id: 789, asset: @asset
-          @requests = { (@request1.id).to_s => 'on', 'control' => 'on' }
-          @batch.fail_batch_items(@requests, @reason, @comment)
-          assert_equal @request3, @batch.control
-        end
-
-        should 'fail control request'
       end
 
       should 'not fail requests if value passed is not set to ON' do
@@ -435,6 +421,7 @@ class BatchTest < ActiveSupport::TestCase
           @requests = { (@request1.id).to_s => 'on', (@request2.id).to_s => 'on' }
           @request1.expects(:terminated?).returns(true).times(1)
           @request2.expects(:terminated?).returns(true).times(1)
+          assert @batch.failures.empty?
           @batch.fail_batch_items(@requests, @reason, @comment)
         end
 
@@ -442,7 +429,9 @@ class BatchTest < ActiveSupport::TestCase
           assert @batch.failed?
         end
 
-        should 'change @batch.failures.count, :from => 0, :to => 1'
+        should 'create a batch failure' do
+          assert @batch.failures.one?
+        end
       end
     end
 

@@ -57,8 +57,8 @@ FactoryGirl.define do
   end
 
   factory :sequencing_request, class: SequencingRequest do
-    request_type { |rt| rt.association(:request_type) }
-    request_purpose { |rt| rt.association(:request_purpose) }
+    association(:request_type, factory: :sequencing_request_type)
+    request_purpose
 
     # Ensure that the request metadata is correctly setup based on the request type
     after(:build) do |request|
@@ -127,15 +127,14 @@ FactoryGirl.define do
     request_purpose
     state 'pending'
     study
-    user              { |_user| User.find_by(login: user_login) || create(:user, login: user_login) }
+    user              { User.find_by(login: user_login) || create(:user, login: user_login) }
     workflow          { |workflow| workflow.association(:submission_workflow) }
   end
 
   factory :request, parent: :request_without_assets do
     # the sample should be setup correctly and the assets should be valid
-    asset           { |asset| asset.association(:sample_tube)  }
-    target_asset    { |asset| asset.association(:library_tube) }
-    request_purpose { |rp|    rp.association(:request_purpose) }
+    association(:asset, factory: :sample_tube)
+    association(:target_asset, factory: :library_tube)
   end
 
   factory :request_with_sequencing_request_type, parent: :request_without_assets do
