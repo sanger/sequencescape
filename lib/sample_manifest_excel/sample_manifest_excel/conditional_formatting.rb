@@ -64,5 +64,9 @@ module SampleManifestExcel
       end
       super
     end
+
+    def inspect
+      "<#{self.class}: @name=#{name}, @options=#{options}, @style=#{style}, @formula=#{formula}>"
+    end
   end
 end

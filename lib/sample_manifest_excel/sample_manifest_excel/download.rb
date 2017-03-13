@@ -1,6 +1,7 @@
 module SampleManifestExcel
   class Download
     include ActiveModel::Model
+    include DownloadHelpers
 
     validates_presence_of :sample_manifest, :column_list, :range_list
 
@@ -17,20 +18,9 @@ module SampleManifestExcel
       end
     end
 
-    def save(filename)
-      xls.serialize(filename)
-    end
-
     def password
       @password ||= SecureRandom.base64
     end
 
-    def xls
-      @xls ||= Axlsx::Package.new
-    end
-
-    def workbook
-      @workbook ||= xls.workbook
-    end
   end
 end

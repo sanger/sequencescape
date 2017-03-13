@@ -24,5 +24,9 @@ module SampleManifestExcel
         end
       end
     end
+
+    def inspect
+      "<#{self.class}: @type=#{type}, @style=#{style}, @options=#{options}>"
+    end
   end
 end

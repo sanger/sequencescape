@@ -8,6 +8,7 @@ RSpec.describe SampleManifestExcel::SpecialisedField, type: :model, sample_manif
 
   let!(:sample) { create(:sample_with_well) }
   let!(:library_type) { create(:library_type) }
+  let(:aliquot) { sample.aliquots.first }
 
   describe 'Thing' do
     it 'can be initialized with a value and a sample' do
@@ -23,13 +24,25 @@ RSpec.describe SampleManifestExcel::SpecialisedField, type: :model, sample_manif
       expect(SampleManifestExcel::SpecialisedField::LibraryType.new(value: library_type.name, sample:sample)).to be_valid
       expect(SampleManifestExcel::SpecialisedField::LibraryType.new(value: 'A new library type', sample: sample)).to_not be_valid
     end
+
+    it 'will add the the value to the aliquot' do
+      specialised_field = SampleManifestExcel::SpecialisedField::LibraryType.new(value: library_type.name)
+      specialised_field.update(aliquot: aliquot)
+      expect(aliquot.library_type).to eq(library_type.name)
+    end
   end
 
   describe 'Insert Size From' do
 
     it 'value must be a valid number greater than 0' do
-      expect(SampleManifestExcel::SpecialisedField::InsertSizeFrom.new(value: "zero", sample: sample)).to_not be_valid
-      expect(SampleManifestExcel::SpecialisedField::InsertSizeFrom.new(value: -1, sample: sample)).to_not be_valid
+      expect(SampleManifestExcel::SpecialisedField::InsertSizeFrom.new(value: "zero")).to_not be_valid
+      expect(SampleManifestExcel::SpecialisedField::InsertSizeFrom.new(value: -1)).to_not be_valid
+    end
+
+    it 'will add the value to the aliquot' do
+      specialised_field = SampleManifestExcel::SpecialisedField::InsertSizeFrom.new(value: 100)
+      specialised_field.update(aliquot: aliquot)
+      expect(aliquot.insert_size_from).to eq(100)
     end
   end
 
@@ -38,6 +51,12 @@ RSpec.describe SampleManifestExcel::SpecialisedField, type: :model, sample_manif
     it 'value must be a valid number greater than 0' do
       expect(SampleManifestExcel::SpecialisedField::InsertSizeTo.new(value: "zero", sample: sample)).to_not be_valid
       expect(SampleManifestExcel::SpecialisedField::InsertSizeTo.new(value: -1, sample: sample)).to_not be_valid
+    end
+
+    it 'will add the value to the aliquot' do
+      specialised_field = SampleManifestExcel::SpecialisedField::InsertSizeTo.new(value: 100)
+      specialised_field.update(aliquot: aliquot)
+      expect(aliquot.insert_size_to).to eq(100)
     end
   end
 
@@ -76,7 +95,7 @@ RSpec.describe SampleManifestExcel::SpecialisedField, type: :model, sample_manif
 
     let!(:tag_group) { create(:tag_group) }
     let(:oligo) { 'AA'}
-    let(:aliquot) { sample.aliquots.first }
+    
 
     describe 'tag oligo' do
 

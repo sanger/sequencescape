@@ -116,5 +116,9 @@ module SampleManifestExcel
         absolute_reference: absolute_reference
       }
     end
+
+    def inspect
+      "<#{self.class}: @options=#{options}, @first_row=#{first_row}, @last_row=#{last_row}, @first_column=#{first_column}, @last_column=#{last_column}, @worksheet_name=#{worksheet_name}>"
+    end
   end
 end

@@ -6,6 +6,15 @@ module SampleManifestExcel
       
       validate :check_library_type_exists
 
+
+      def update(aliquot:)
+        if valid? && aliquot.present?
+          aliquot.library_type = value
+          aliquot.save
+        end
+      end
+
+
     private
 
       def check_library_type_exists

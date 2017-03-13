@@ -94,5 +94,9 @@ module SampleManifestExcel
       self.options = source.options.dup
       super
     end
+
+    def inspect
+      "<#{self.class}: @options=#{options}, @range_name=#{range_name}>"
+    end
   end
 end

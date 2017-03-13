@@ -161,6 +161,10 @@ module SampleManifestExcel
       values <=> other.values
     end
 
+    def inspect
+      "<#{self.class}: @keys=#{keys}, @values=#{values.inspect}>"
+    end
+
   private
 
     def create_list

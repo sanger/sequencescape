@@ -101,4 +101,16 @@ RSpec.describe SampleManifestExcel::ColumnList, type: :model, sample_manifest_ex
   it '#find_by_or_null returns a null object if none exists for key and value' do
     expect(column_list.find_by_or_null(:name, :bad_value).number).to eq(-1) # rubocop:disable all
   end
+
+  it '#except will remove the offending column' do
+    expect(column_list.except(yaml.keys.first).find_by(:name, yaml.keys.first)).to be_nil
+    expect(column_list.first.number).to eq(1)
+  end
+
+  it '#with should add an extra column' do
+    column_list.with(:my_new_column)
+    expect(column_list.find_by(:name, :my_new_column)).to be_present
+    expect(column_list.find_by(:heading, 'my_new_column')).to be_present
+  end
+
 end

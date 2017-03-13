@@ -35,6 +35,10 @@ module SampleManifestExcel
       column == other.column
     end
 
+    def inspect
+      "<#{self.class}: @row=#{row}, @column=#{column}>"
+    end
+
   private
 
     def to_alpha(n)

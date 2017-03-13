@@ -49,5 +49,9 @@ module SampleManifestExcel
         operand: operand
       }
     end
+
+    def inspect
+      "<#{self.class}: @type=#{type}, @first_cell_reference=#{first_cell_reference}, @absolute_reference=#{absolute_reference}, @operator=#{operator}, @operand#{operand}>"      
+    end
   end
 end

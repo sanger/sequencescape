@@ -3,6 +3,9 @@ module SampleManifestExcel
     def number
       -1
     end
+
+    def value
+    end
   end
 
   ##
@@ -19,6 +22,10 @@ module SampleManifestExcel
     validates_presence_of :name, :heading
 
     delegate :range_name, to: :validation
+
+    # TODO: Because of the way Sample::Metadata is autoloaded we can't check instance_methods.
+    # creating a new instance of Sample::Metadata even at startup is incredibly slow.
+    SAMPLE_METADATA_MODEL = Sample::Metadata.new.freeze
 
     def initialize(attributes = {})
       super(default_attributes.merge(attributes))
@@ -65,8 +72,22 @@ module SampleManifestExcel
       unlocked
     end
 
+    def metadata_field?
+      @metadata ||= SAMPLE_METADATA_MODEL.respond_to?(name)
+    end
+
     def attribute_value(detail)
       detail[attribute] || value
+    end
+
+    def specialised_field?
+      specialised_field.present?
+    end
+
+    def specialised_field
+      @specialised_field ||= if SampleManifestExcel.const_defined? classify_name
+                                SampleManifestExcel.const_get(classify_name)
+                              end
     end
 
     ##
@@ -124,6 +145,10 @@ module SampleManifestExcel
         arguments
       end
 
+      def inspect
+        "<#{self.class}: @name=#{name}, @heading=#{heading}, @number=#{number}, @type=#{type}, @validation#{validation}, @value=#{value}, @unlocked=#{unlocked}, @conditional_formattings=#{conditional_formattings}, @attribute=#{attribute}, @range=#{range}>"
+      end      
+
     private
 
       def combine_conditional_formattings(defaults)
@@ -138,5 +163,9 @@ module SampleManifestExcel
   private
 
     attr_reader :attribute
+
+    def classify_name
+      "SpecialisedField::#{name.to_s.gsub('?','').classify}"
+    end
   end
 end

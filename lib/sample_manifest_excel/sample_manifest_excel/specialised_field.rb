@@ -13,6 +13,9 @@ module SampleManifestExcel
       end
 
       attr_accessor :value, :sample
+
+      def update(_attributes = {})
+      end
      
     end
 

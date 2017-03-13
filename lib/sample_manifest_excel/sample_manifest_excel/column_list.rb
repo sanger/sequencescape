@@ -47,6 +47,16 @@ module SampleManifestExcel
       end
     end
 
+    def except(key)
+      keys = names.dup
+      keys.delete(key.to_s)
+      extract(keys)
+    end
+
+    def with(key)
+      add_with_number(Column.new(name: key, heading: key.to_s))
+    end
+
     def bad_keys
       @bad_keys ||= []
     end
@@ -77,6 +87,14 @@ module SampleManifestExcel
 
     def find_by_or_null(key, value)
       find_by(key, value) || SampleManifestExcel::NullColumn.new
+    end
+
+    def specialised_fields
+      select(&:specialised_field?)
+    end
+
+    def metadata_fields
+      select(&:metadata_field?)
     end
 
   private

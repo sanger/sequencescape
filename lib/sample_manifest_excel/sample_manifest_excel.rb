@@ -36,6 +36,20 @@ module SampleManifestExcel
     end
   end
 
+  module DownloadHelpers
+    def save(filename)
+      xls.serialize(filename)
+    end
+
+    def xls
+      @xls ||= Axlsx::Package.new
+    end
+
+    def workbook
+      @workbook ||= xls.workbook
+    end
+  end
+
   require_relative 'sample_manifest_excel/core_extensions'
   require_relative 'sample_manifest_excel/attributes'
   require_relative 'sample_manifest_excel/cell'
@@ -44,7 +58,6 @@ module SampleManifestExcel
   require_relative 'sample_manifest_excel/conditional_formatting_default_list'
   require_relative 'sample_manifest_excel/manifest_type_list'
   require_relative 'sample_manifest_excel/specialised_field'
-  require_relative 'sample_manifest_excel/specialised_field_list'
   require_relative 'sample_manifest_excel/validation'
   require_relative 'sample_manifest_excel/column'
   require_relative 'sample_manifest_excel/column_list'

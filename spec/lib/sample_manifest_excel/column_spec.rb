@@ -50,6 +50,20 @@ RSpec.describe SampleManifestExcel::Column, type: :model, sample_manifest_excel:
     expect(SampleManifestExcel::Column.new(options).number).to eq(options[:number])
   end
 
+  it 'can indicate whether the column is related to sample metadata' do
+    expect(SampleManifestExcel::Column.new(options)).to_not be_metadata_field
+    expect(SampleManifestExcel::Column.new(options.merge(heading: 'DONOR ID', name: :donor_id))).to be_metadata_field
+  end
+
+  it "can indicate whether the column is a specialised field and returns the constant" do
+    column = SampleManifestExcel::Column.new(options)
+    expect(column).to_not be_specialised_field
+
+    column = SampleManifestExcel::Column.new(options.merge(heading: 'INSERT SIZE FROM', name: :insert_size_from))
+    expect(column).to be_specialised_field
+    expect(column.specialised_field).to eq(SampleManifestExcel::SpecialisedField::InsertSizeFrom)
+  end
+
   context 'with no validation' do
     let(:column) { SampleManifestExcel::Column.new(options.except(:validation)) }
 

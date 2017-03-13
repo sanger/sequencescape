@@ -1,9 +1,11 @@
 module SampleManifestExcel
   module Worksheet
-    class Base
-      include AttributeHelpers
 
-      set_attributes :workbook, :axlsx_worksheet, :columns, :ranges, :sample_manifest, :name, :password, :type
+    class Base
+
+      include ActiveModel::Model
+
+      attr_accessor :workbook, :axlsx_worksheet, :columns, :name, :ranges, :password
 
       def initialize(attributes = {})
         super
@@ -18,7 +20,6 @@ module SampleManifestExcel
       end
 
       # Adds n empty rows
-
       def add_rows(n)
         n.times { |_i| add_row }
       end
