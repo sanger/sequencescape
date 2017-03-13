@@ -68,8 +68,7 @@ C1 C2 C3
             sample_names_text: samples[1..4].join("\n"),
             plate_purpose_id: @plate.plate_purpose.id.to_s,
             project_name: 'A project'
-          }
-        )
+          })
       end
 
       should 'create the appropriate orders' do

@@ -32,7 +32,7 @@ module SampleManifestExcel
     def ==(other)
       return false unless other.is_a?(self.class)
       row == other.row &&
-      column == other.column
+        column == other.column
     end
 
   private

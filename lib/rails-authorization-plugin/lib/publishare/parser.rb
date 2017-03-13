@@ -128,10 +128,10 @@ module Authorization
 
       def parse_expr(str)
         parse_parenthesis(str) or
-        parse_not(str) or
-        parse_or(str) or
-        parse_and(str) or
-        parse_term(str)
+          parse_not(str) or
+          parse_or(str) or
+          parse_and(str) or
+          parse_term(str)
       end
 
       def parse_not(str)
@@ -167,7 +167,7 @@ module Authorization
 
       def parse_term(str)
         parse_role_of_model(str) or
-        parse_role(str)
+          parse_role(str)
       end
 
       # Parse <role> of <model>

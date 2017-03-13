@@ -292,7 +292,8 @@ cluster_formation_se_request_type = ['a', 'b', 'c'].map do |pl|
     workflow: next_gen_sequencing,
     key: "illumina_#{pl}_single_ended_sequencing",
     name: "Illumina-#{pl.upcase} Single ended sequencing",
-    product_line: ProductLine.find_by(name: "Illumina-#{pl.upcase}")) do |request_type|
+    product_line: ProductLine.find_by(name: "Illumina-#{pl.upcase}")
+) do |request_type|
     request_type.billable          = true
     request_type.initial_state     = 'pending'
     request_type.asset_type        = 'LibraryTube'
@@ -1153,22 +1154,19 @@ shared_options = {
 RequestType.create!(shared_options.merge(key: 'pick_to_sta',
                                          name: 'Pick to STA',
                                          order: 1,
-                                         request_class_name: 'CherrypickForPulldownRequest')
-).tap do |rt|
+                                         request_class_name: 'CherrypickForPulldownRequest')).tap do |rt|
   rt.acceptable_plate_purposes << Purpose.find_by!(name: 'Working Dilution')
 end
 RequestType.create!(shared_options.merge(key: 'pick_to_sta2',
                                          name: 'Pick to STA2',
                                          order: 2,
-                                         request_class_name: 'CherrypickForPulldownRequest')
-).tap do |rt|
+                                         request_class_name: 'CherrypickForPulldownRequest')).tap do |rt|
   rt.acceptable_plate_purposes << Purpose.find_by!(name: 'STA')
 end
 RequestType.create!(shared_options.merge(key: 'pick_to_fluidigm',
                                          name: 'Pick to Fluidigm',
                                          order: 3,
-                                         request_class_name: 'CherrypickForFluidigmRequest')
-).tap do |rt|
+                                         request_class_name: 'CherrypickForFluidigmRequest')).tap do |rt|
   rt.acceptable_plate_purposes << Purpose.find_by!(name: 'STA2')
 end
 RequestType.create!(workflow: Submission::Workflow.find_by(name: 'Microarray genotyping'),
