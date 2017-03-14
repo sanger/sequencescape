@@ -6,7 +6,7 @@
 
 class SpecificTubeCreation < TubeCreation
   class ChildPurpose < ActiveRecord::Base
-    self.table_name = ('specific_tube_creation_purposes')
+    self.table_name = 'specific_tube_creation_purposes'
     belongs_to :specific_tube_creation
     belongs_to :tube_purpose, class_name: 'Purpose'
   end
@@ -26,7 +26,7 @@ class SpecificTubeCreation < TubeCreation
   private :no_pooling_expected?
 
   def create_children!
-    self.children = (child_purposes).map { |child_purpose| child_purpose.create! }
+    self.children = child_purposes.map { |child_purpose| child_purpose.create! }
   end
   private :create_children!
 

@@ -8,29 +8,29 @@ class StockAssetsController < ApplicationController
     if @batch.requests.empty?
       redirect_to @batch, alert: 'No requests to create stock tubes'
     else
-      batch_assets = []
+      batch_assets = if @batch.multiplexed?
+                       candidate_multiplexed_library = @batch.target_assets.first.children.first
 
-      if @batch.multiplexed?
-        candidate_multiplexed_library = @batch.target_assets.first.children.first
+                       if candidate_multiplexed_library.nil?
+                         redirect_to batch_path(@batch), alert: "There's no multiplexed library tube available to have a stock tube."
+                         []
+                       elsif candidate_multiplexed_library.has_stock_asset? || candidate_multiplexed_library.is_a_stock_asset?
+                         redirect_to batch_path(@batch), alert: 'Stock tubes have already been created'
+                         []
+                       else
+                         [candidate_multiplexed_library]
+                       end
 
-        if candidate_multiplexed_library.nil?
-          redirect_to batch_path(@batch), alert: "There's no multiplexed library tube available to have a stock tube."
-        elsif candidate_multiplexed_library.has_stock_asset? || candidate_multiplexed_library.is_a_stock_asset?
-          redirect_to batch_path(@batch), alert: 'Stock tubes have already been created'
-        else
-          batch_assets = [candidate_multiplexed_library]
-        end
+                     else
+                       @batch.target_assets.reject { |a| a.has_stock_asset? }.tap do |batch_assets|
+                         if batch_assets.empty?
+                           redirect_to batch_path(@batch), alert: 'Stock tubes have already been created'
+                         end
+                       end
+                     end
 
-      else
-        batch_assets = @batch.target_assets.reject { |a| a.has_stock_asset? }
-        if batch_assets.empty?
-          redirect_to batch_path(@batch), alert: 'Stock tubes have already been created'
-        end
-      end
-
-      @assets = {}
-      batch_assets.each do |batch_asset|
-        @assets[batch_asset.id] = batch_asset.new_stock_asset
+      @assets = batch_assets.each_with_object({}) do |asset, assets|
+        assets[asset.id] = asset.new_stock_asset
       end
     end
   end

@@ -5,21 +5,24 @@
 require 'factory_girl'
 
 FactoryGirl.define do
-  factory :comment  do
-    description 'It is okay I guess'
+  factory :api_application do
+    sequence(:name) { |i| "App #{i}" }
+    contact 'test@example.com'
+    privilege 'full'
   end
 
-  factory :aliquot do
+  factory :comment  do
+    description 'It is okay I guess'
+    association(:commentable, factory: :asset)
+  end
+
+  factory :aliquot, aliases: [:tagged_aliquot, :dual_tagged_aliquot] do
     sample
     study
     project
     tag
-    association :tag2, factory: :tag
-
-    factory :tagged_aliquot do
-      tag
-      tag2 { |t| t.association(:tag) }
-    end
+    tag2
+    receptacle
 
     factory :untagged_aliquot do
       tag  nil
@@ -30,14 +33,9 @@ FactoryGirl.define do
       tag
       tag2 nil
     end
-
-    factory :dual_tagged_aliquot do
-      tag
-      tag2 { |t| t.association(:tag) }
-    end
   end
 
-  factory :aliquot_receptacle, class: Aliquot::Receptacle do
+  factory :aliquot_receptacle, class: Aliquot::Receptacle, aliases: [:receptacle] do
   end
 
   factory :event do
@@ -145,9 +143,6 @@ FactoryGirl.define do
     product_catalogue { |pc| pc.association(:single_product_catalogue) }
   end
 
-  factory :report do
-  end
-
   factory :request_metadata, class: Request::Metadata do
     read_length 76
     customer_accepts_responsibility false
@@ -161,36 +156,37 @@ FactoryGirl.define do
     fragment_size_required_from   1
     fragment_size_required_to     21
     read_length                   76
+
+    factory :request_metadata_for_single_ended_sequencing
+    factory :request_metadata_for_paired_end_sequencing
   end
 
   factory :request_metadata_for_standard_sequencing_with_read_length, parent: :request_metadata, class: SequencingRequest::Metadata do
     fragment_size_required_from   1
     fragment_size_required_to     21
     read_length                   76
+    association(:owner, factory: :sequencing_request)
   end
-
-  factory(:request_metadata_for_single_ended_sequencing, parent: :request_metadata_for_standard_sequencing) {}
-  factory(:request_metadata_for_paired_end_sequencing, parent: :request_metadata_for_standard_sequencing) {}
 
   # HiSeq sequencing
   factory :request_metadata_for_hiseq_sequencing, parent: :request_metadata do
     fragment_size_required_from   1
     fragment_size_required_to     21
     read_length                   100
+
+    factory :request_metadata_for_hiseq_paired_end_sequencing
+    factory :request_metadata_for_single_ended_hi_seq_sequencing
   end
 
   factory :hiseq_x_request_metadata, parent: :request_metadata do
     fragment_size_required_from   1
     fragment_size_required_to     21
     read_length                   100
+
+    factory :request_metadata_for_illumina_a_hiseq_x_paired_end_sequencing
+    factory :request_metadata_for_illumina_b_hiseq_x_paired_end_sequencing
+    factory :request_metadata_for_hiseq_x_paired_end_sequencing
   end
-
-  factory(:request_metadata_for_hiseq_paired_end_sequencing, parent: :request_metadata_for_hiseq_sequencing) {}
-  factory(:request_metadata_for_single_ended_hi_seq_sequencing, parent: :request_metadata_for_hiseq_sequencing) {}
-
-  factory(:request_metadata_for_illumina_a_hiseq_x_paired_end_sequencing, parent: :hiseq_x_request_metadata) {}
-  factory(:request_metadata_for_illumina_b_hiseq_x_paired_end_sequencing, parent: :hiseq_x_request_metadata) {}
-  factory(:request_metadata_for_hiseq_x_paired_end_sequencing, parent: :hiseq_x_request_metadata) {}
 
   ('a'..'c').each do |p|
     factory(:"request_metadata_for_illumina_#{p}_single_ended_sequencing", parent: :request_metadata_for_standard_sequencing) {}
@@ -246,109 +242,13 @@ FactoryGirl.define do
     end
   end
 
-  factory :request_type do
-    name           { generate :request_type_name }
-    key            { generate :request_type_key }
-    deprecated     false
-    asset_type     'SampleTube'
-    request_class  Request
-    order          1
-    workflow { |workflow| workflow.association(:submission_workflow) }
-    initial_state   'pending'
-    request_purpose { |rt| rt.association(:request_purpose) }
-  end
-
   factory :extended_validator do
     behaviour 'SpeciesValidator'
     options(taxon_id: 9606)
   end
 
-  factory :validated_request_type, parent: :request_type do
-    after(:create) do |request_type|
-      request_type.extended_validators << create(:extended_validator)
-    end
-  end
-
   factory :library_type do
     name 'Standard'
-  end
-
-  factory :library_types_request_type do
-    library_type
-    is_default true
-  end
-
-  factory :well_request_type, parent: :request_type do
-    asset_type 'Well'
-    request_class CustomerRequest
-  end
-
-  factory :library_creation_request_type, class: RequestType do
-    request_purpose { |rt| rt.association(:request_purpose) }
-    name           { generate :request_type_name }
-    key            { generate :request_type_key }
-    asset_type     'SampleTube'
-    target_asset_type 'LibraryTube'
-    request_class  LibraryCreationRequest
-    order          1
-    workflow { |workflow| workflow.association(:submission_workflow) }
-    after(:build) { |request_type|
-      request_type.library_types_request_types << create(:library_types_request_type, request_type: request_type)
-      request_type.request_type_validators << create(:library_request_type_validator, request_type: request_type)
-    }
-  end
-
-  factory :sequencing_request_type, class: RequestType do
-    name           { generate :request_type_name }
-    key            { generate :request_type_key }
-    request_purpose { |rt| rt.association(:request_purpose) }
-    asset_type     'LibraryTube'
-    request_class  SequencingRequest
-    order          1
-    workflow { |workflow| workflow.association(:submission_workflow) }
-    after(:build) { |request_type|
-      request_type.request_type_validators << create(:sequencing_request_type_validator, request_type: request_type)
-    }
-  end
-
-  factory :sequencing_request_type_validator, class: RequestType::Validator do
-    request_option 'read_length'
-    valid_options { RequestType::Validator::ArrayWithDefault.new([37, 54, 76, 108], 54) }
-  end
-
-  factory :library_request_type_validator, class: RequestType::Validator do
-    request_option 'library_type'
-    valid_options { |rtva| RequestType::Validator::LibraryTypeValidator.new(rtva.request_type.id) }
-  end
-
-  factory :multiplexed_library_creation_request_type, class: RequestType do
-    name           { generate :request_type_name }
-    key            { generate :request_type_key }
-    request_purpose { |rt| rt.association(:request_purpose) }
-    request_class      MultiplexedLibraryCreationRequest
-    asset_type         'SampleTube'
-    order              1
-    for_multiplexing   true
-    workflow           { |workflow| workflow.association(:submission_workflow) }
-      after(:build) { |request_type|
-      request_type.library_types_request_types << create(:library_types_request_type, request_type: request_type)
-      request_type.request_type_validators << create(:library_request_type_validator, request_type: request_type)
-      }
-  end
-
-  factory :plate_based_multiplexed_library_creation_request_type, class: RequestType do
-    name           { generate :request_type_name }
-    key            { generate :request_type_key }
-    request_purpose
-    request_class      MultiplexedLibraryCreationRequest
-    asset_type         'Well'
-    order              1
-    for_multiplexing   true
-    workflow           { |workflow| workflow.association(:submission_workflow) }
-      after(:build) { |request_type|
-      request_type.library_types_request_types << create(:library_types_request_type, request_type: request_type)
-      request_type.request_type_validators << create(:library_request_type_validator, request_type: request_type)
-      }
   end
 
   factory :sample do
@@ -359,9 +259,17 @@ FactoryGirl.define do
       wells { [FactoryGirl.create(:well_with_sample_and_plate)] }
       assets { [wells.first.plate] }
     end
+
+    factory :sample_with_gender do
+      association :sample_metadata, factory: :sample_metadata_with_gender
+    end
   end
 
   factory :sample_metadata, class: Sample::Metadata do
+    factory :sample_metadata_with_gender do
+      gender :male
+    end
+
     factory :sample_metadata_for_api do
       organism 'organism'
       cohort 'cohort'
@@ -406,22 +314,8 @@ FactoryGirl.define do
     end
   end
 
-  factory :sample_submission do
-  end
-
   factory :search do
-  end
-
-  factory :section do
-  end
-
-  factory :sequence do
-  end
-
-  factory :setting do
-    name    ''
-    value   ''
-    user    { |user| user.association(:user) }
+    sequence(:name) { |n| "Search #{n}" }
   end
 
   sequence :login do |i|
@@ -447,11 +341,11 @@ FactoryGirl.define do
     end
 
     factory :manager do
-      roles             { |role| [role.association(:manager_role)] }
+      roles { |role| [role.association(:manager_role)] }
     end
 
     factory :owner do
-      roles             { |role| [role.association(:owner_role)] }
+      roles { |role| [role.association(:owner_role)] }
     end
 
     factory :data_access_coordinator do
@@ -472,16 +366,16 @@ FactoryGirl.define do
     end
 
     factory :manager_role do
-      name            'manager'
+      name 'manager'
     end
 
     factory :data_access_coordinator_role do
-      name            'data_access_coordinator'
+      name 'data_access_coordinator'
     end
 
     factory :owner_role do
-      name            'owner'
-      authorizable    { |i| i.association(:project) }
+      name 'owner'
+      authorizable { |i| i.association(:project) }
     end
   end
 
@@ -507,7 +401,7 @@ FactoryGirl.define do
   end
 
   factory :asset_group_asset do
-    asset
+    association(:asset, factory: :aliquot_receptacle)
     asset_group
   end
 
@@ -535,6 +429,7 @@ FactoryGirl.define do
 
   factory(:new_stock_tube_purpose, class: IlluminaHtp::StockTubePurpose) do |_p|
     name { generate :purpose_name }
+    target_type 'StockMultiplexedLibraryTube'
   end
 
   factory(:request_purpose) do
@@ -546,9 +441,25 @@ FactoryGirl.define do
     name     { |_| generate :asset_name }
     purpose  { Tube::Purpose.standard_library_tube }
   end
+
   factory(:library_tube, parent: :empty_library_tube) do
-    after(:create) do |library_tube|
-      library_tube.aliquots.create!(sample: create(:sample), library_type: 'Standard')
+    transient do
+      sample { create :sample }
+      library_type 'Standard'
+    end
+
+    after(:create) do |library_tube, evaluator|
+      library_tube.aliquots << build(:untagged_aliquot, sample: evaluator.sample, library_type: evaluator.library_type, receptacle: library_tube)
+    end
+  end
+
+  factory(:tagged_library_tube, class: LibraryTube) do
+    transient do
+      tag_map_id 1
+    end
+
+    after(:create) do |library_tube, evaluator|
+      library_tube.aliquots << build(:tagged_aliquot, tag: create(:tag, map_id: evaluator.tag_map_id), receptacle: library_tube)
     end
   end
 
@@ -560,7 +471,9 @@ FactoryGirl.define do
 
   factory :transfer_request do
     association(:asset, factory: :well)
-    request_purpose { |rp| rp.association(:request_purpose) }
+    association(:target_asset, factory: :well)
+    association(:request_type, factory: :transfer_request_type)
+    request_purpose
   end
 
   # A library tube is created from a sample tube through a library creation request!
@@ -642,7 +555,7 @@ FactoryGirl.define do
       asset_type '1dtube'
 
       factory :tube_sample_manifest_with_samples do
-        samples { FactoryGirl.create_list(:sample_tube, 5).map(&:sample) }
+        samples { FactoryGirl.create_list(:sample_tube, 5).map(&:samples).flatten }
       end
     end
   end
@@ -708,7 +621,36 @@ FactoryGirl.define do
 
   factory(:barcode_printer) do
     sequence(:name) { |i| "a#{i}bc" }
-    # plate: barcode_printer_type_id 2, tube: barcode_printer_type_id 1
-    barcode_printer_type_id 2
+    association(:barcode_printer_type, factory: :plate_barcode_printer_type)
+  end
+
+  factory :uuid do
+    association(:resource, factory: :asset)
+    external_id { SecureRandom.uuid }
+  end
+
+  trait :uuidable do
+    transient do
+      uuid { SecureRandom.uuid }
+    end
+
+    # Using an after build as I need access to both the transient and the resource.
+    after(:build) do |resource, context|
+      resource.uuid_object = build :uuid, external_id: context.uuid, resource: resource
+    end
+
+    after(:create) do |resource, _context|
+      resource.uuid_object.save!
+    end
+  end
+
+  factory :barcode_printer_type do
+    sequence(:name) { |i| "Printer Type #{i}" }
+  end
+
+  factory :plate_barcode_printer_type, class: BarcodePrinterType96Plate do
+    sequence(:name) { |i| "96 Well Plate #{i}" }
+    printer_type_id 1
+    label_template_name 'sqsc_96plate_label_template'
   end
 end

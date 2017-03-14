@@ -44,7 +44,7 @@ class TubeCreation < AssetCreation
   before_save :create_ancestor_plate!
 
   def record_creation_of_children
-#    children.each { |child| parent.events.create_tube!(child_purpose, child, user) }
+    #    children.each { |child| parent.events.create_tube!(child_purpose, child, user) }
   end
   private :record_creation_of_children
 end

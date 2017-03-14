@@ -6,7 +6,7 @@ class UserQueriesController < ApplicationController
   def create
     @user_query = UserQuery.new(user_query_params.merge(user: current_user))
     if @user_query.valid?
-      UserQueryMailer.request_for_help(@user_query).deliver
+      UserQueryMailer.request_for_help(@user_query).deliver_now
       flash[:notice] = "Thank you for your request. We will contact you shortly (via #{@user_query.user_email})"
       redirect_to new_user_query_path
     else

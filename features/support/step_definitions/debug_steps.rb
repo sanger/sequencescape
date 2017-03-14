@@ -10,7 +10,6 @@ end
 
 Then /^launch the debugger$/ do
   binding.pry
-  debugger
   puts
 end
 

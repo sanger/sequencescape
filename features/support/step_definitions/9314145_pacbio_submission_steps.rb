@@ -39,12 +39,17 @@ Then /^I should have (\d+) PacBioSequencingRequests$/ do |number_of_requests|
 end
 
 Given /^I have a plate for PacBio$/ do
-  PlatePurpose.stock_plate_purpose.create!(:without_wells, barcode: 1234567) do |plate|
+  plate = PlatePurpose.stock_plate_purpose.create!(:without_wells, barcode: 1234567) do |plate|
     plate.wells.build(map: Map.find_by(asset_size: 96, description: 'A1'), aliquots: SampleTube.find_by(barcode: 111).aliquots.map(&:dup))
     plate.wells.build(map: Map.find_by(asset_size: 96, description: 'B1'), aliquots: SampleTube.find_by(barcode: 222).aliquots.map(&:dup)) if SampleTube.find_by(barcode: 222).present?
     plate.location = Location.find_by(name: 'PacBio library prep freezer')
-    AssetGroup.create!(name: 'PacBio group', study: Study.find_by(name: 'Test study')).assets << plate.wells
   end
+  AssetGroup.create!(name: 'PacBio group', study: Study.find_by(name: 'Test study')).assets << plate.wells
+end
+
+Given(/^I have a plate for PacBio in study "([^"]*)"$/) do |study_name|
+  plate = FactoryGirl.create :plate_with_untagged_wells, sample_count: 1, barcode: '1234567', location: Location.find_by(name: 'PacBio library prep freezer')
+  AssetGroup.create!(name: 'PacBio group', study: Study.find_by(name: study_name)).assets << plate.wells
 end
 
 Given /^I have a PacBio Library Prep batch$/ do

@@ -10,5 +10,4 @@ class IlluminaHtp::NormalizedPlatePurpose < PlatePurpose
 
   self.connect_on = 'passed'
   self.connect_downstream = false
-  self.connected_class = IlluminaHtp::Requests::LibraryCompletion
 end

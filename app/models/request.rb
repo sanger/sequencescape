@@ -28,6 +28,9 @@ class Request < ActiveRecord::Base
 
   self.inheritance_column = 'sti_type'
 
+  class_attribute :customer_request
+  self.customer_request = false
+
   def self.delegate_validator
     DelegateValidation::AlwaysValidValidator
   end
@@ -43,6 +46,10 @@ class Request < ActiveRecord::Base
   end
 
   scope :customer_requests, ->() { where(sti_type: [CustomerRequest, *CustomerRequest.descendants].map(&:name)) }
+
+  def customer_request?
+    customer_request
+  end
 
    scope :for_pipeline, ->(pipeline) {
       joins('LEFT JOIN pipelines_request_types prt ON prt.request_type_id=requests.request_type_id')
@@ -124,6 +131,8 @@ class Request < ActiveRecord::Base
 
   has_many :failures, as: :failable
 
+  has_many :samples, through: :asset, source: :samples
+
   belongs_to :request_type, inverse_of: :requests
   delegate :billable?, to: :request_type, allow_nil: true
   belongs_to :workflow, class_name: 'Submission::Workflow'
@@ -140,7 +149,7 @@ class Request < ActiveRecord::Base
   # has_many :submission_siblings, ->(request) { where(:request_type_id => request.request_type_id) }, :through => :submission, :source => :requests, :class_name => 'Request'
   has_many :qc_metric_requests
   has_many :qc_metrics, through: :qc_metric_requests
-  has_many :request_events, ->() { order(:current_from) }
+  has_many :request_events, ->() { order(:current_from) }, inverse_of: :request
 
   scope :with_request_type_id, ->(id) { where(request_type_id: id) }
   scope :for_pacbio_sample_sheet, -> { includes([{ target_asset: :map }, :request_metadata]) }
@@ -514,22 +523,4 @@ class Request < ActiveRecord::Base
   def manifest_processed!; end
 end
 
-require_dependency 'customer_request'
 require_dependency 'system_request'
-require_dependency 'pooled_cherrypick_request'
-require_dependency 'illumina_b/requests'
-require_dependency 'illumina_c/requests'
-require_dependency 'illumina_htp/requests'
-require_dependency 'pulldown/requests'
-require_dependency 'control_request'
-require_dependency 'genotyping_request'
-require_dependency 'library_creation_request'
-require_dependency 'pac_bio_sample_prep_request'
-require_dependency 'pac_bio_sequencing_request'
-require_dependency 'pooled_cherrypick_request'
-require_dependency 'pulldown_multiplexed_library_creation_request'
-require_dependency 'qc_request'
-require_dependency 'sequencing_request'
-require_dependency 'strip_creation_request'
-require_dependency 'request/library_creation'
-require_dependency 'request/multiplexing'

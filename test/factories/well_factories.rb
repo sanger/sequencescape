@@ -5,7 +5,7 @@
 # Copyright (C) 2011,2012,2015,2016 Genome Research Ltd.
 
 FactoryGirl.define do
-  factory :well do |_well|
+  factory :well do
     value               ''
     qc_state            ''
     resource            nil
@@ -16,35 +16,35 @@ FactoryGirl.define do
     factory :empty_well
   end
 
-  factory :well_attribute do |_w|
+  factory :well_attribute do
     concentration       23.2
     current_volume      15
   end
 
-  factory :well_with_sample_and_without_plate, parent: :empty_well do |_well|
+  factory :well_with_sample_and_without_plate, parent: :empty_well do
     after(:build) do |well|
       well.aliquots << build(:tagged_aliquot, receptacle: well)
     end
   end
 
-  factory :untagged_well, parent: :empty_well do |_well|
+  factory :untagged_well, parent: :empty_well do
     after(:build) do |well|
       well.aliquots << build(:untagged_aliquot, receptacle: well)
     end
   end
 
-  factory :tagged_well, parent: :empty_well do |_well|
+  factory :tagged_well, parent: :empty_well do
     after(:create) do |well|
-      well.aliquots.create!(sample: create(:sample), tag: create(:tag))
+      well.aliquots << build(:tagged_aliquot, receptacle: well)
     end
   end
 
-  factory :well_with_sample_and_plate, parent: :well_with_sample_and_without_plate do |_well|
+  factory :well_with_sample_and_plate, parent: :well_with_sample_and_without_plate do
     map
     plate
   end
 
-  factory :cross_pooled_well, parent: :empty_well do |_well|
+  factory :cross_pooled_well, parent: :empty_well do
     map
     plate
     after(:build) do |well|
@@ -58,5 +58,13 @@ FactoryGirl.define do
       }
       well.aliquots.build(als)
     end
+  end
+
+  factory :well_link, class: Well::Link do
+    association(:source_well, factory: :well)
+    association(:target_well, factory: :well)
+    type 'stock'
+
+    factory :stock_well_link
   end
 end

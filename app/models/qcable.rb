@@ -34,10 +34,10 @@ class Qcable < ActiveRecord::Base
 
   scope :stamped, -> { includes([:stamp_qcable, :stamp]).where('stamp_qcables.id IS NOT NULL').order('stamps.created_at ASC, stamp_qcables.order ASC') }
 
-  # We accept not only an individual barcode but also an array of them.  This builds an appropriate
-  # set of conditions that can find any one of these barcodes.  We map each of the individual barcodes
-  # to their appropriate query conditions (as though they operated on their own) and then we join
-  # them together with 'OR' to get the overall conditions.
+ # We accept not only an individual barcode but also an array of them.  This builds an appropriate
+ # set of conditions that can find any one of these barcodes.  We map each of the individual barcodes
+ # to their appropriate query conditions (as though they operated on their own) and then we join
+ # them together with 'OR' to get the overall conditions.
  scope :with_machine_barcode, ->(*barcodes) {
     query_details = barcodes.flatten.map do |source_barcode|
       barcode_number = Barcode.number_to_human(source_barcode)

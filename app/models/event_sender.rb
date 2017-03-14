@@ -22,17 +22,17 @@ class EventSender
   end
 
   def self.send_fail_event(request_id, reason, comment, batch_id, user = nil, options = nil)
-    hash = { eventful_id: request_id, eventful_type: 'Request', family: 'fail', content: reason, message: comment, identifier: batch_id, key: 'failure', created_by: user }
+    hash = { eventful_id: request_id, eventful_type: 'Request', family: 'fail', content: reason, message: comment, identifier: batch_id, created_by: user }
     publishing_to_queue(hash.merge(options || {}))
   end
 
   def self.send_cancel_event(request_id, reason, comment, options = nil)
-    hash = { eventful_id: request_id, eventful_type: 'Request', family: 'cancel', content: reason, message: comment, identifier: request_id, key: 'cancel' }
+    hash = { eventful_id: request_id, eventful_type: 'Request', family: 'cancel', content: reason, message: comment, identifier: request_id }
     publishing_to_queue(hash.merge(options || {}))
   end
 
   def self.send_pass_event(request_id, reason, comment, batch_id, user = nil, options = nil)
-    hash = { eventful_id: request_id, eventful_type: 'Request', family: 'pass', content: reason, message: comment, identifier: batch_id, key: 'pass', created_by: user }
+    hash = { eventful_id: request_id, eventful_type: 'Request', family: 'pass', content: reason, message: comment, identifier: batch_id, created_by: user }
     publishing_to_queue(hash.merge(options || {}))
   end
 
@@ -50,6 +50,6 @@ class EventSender
 
   def self.publishing_to_queue(hash = {})
     hash.delete(:key)
-    Event.create(hash)
+    Event.create!(hash)
   end
 end

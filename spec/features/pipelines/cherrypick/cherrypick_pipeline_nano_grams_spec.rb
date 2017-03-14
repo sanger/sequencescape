@@ -8,11 +8,10 @@ feature 'cherrypick pipeline - nano grams', js: true do
   let(:study) { create :study }
   let(:location) { Location.find_by(name: 'Sample logistics freezer') }
   let(:pipeline_name) { 'Cherrypick' }
-  let(:pipeline) { Pipeline.find_by(name: pipeline_name) }
-  let(:plate1) { create :plate, barcode: '1', location: location }
-  let(:plate2) { create :plate, barcode: '10', location: location }
-  let(:plate3) { create :plate, barcode: '5', location: location }
-  let(:asset_group) { create :asset_group, study: study }
+  let(:pipeline) { Pipeline.find_by!(name: pipeline_name) }
+  let(:plate1) { create :plate_with_untagged_wells, sample_count: 2, barcode: '1', location: location }
+  let(:plate2) { create :plate_with_untagged_wells, sample_count: 2, barcode: '10', location: location }
+  let(:plate3) { create :plate_with_untagged_wells, sample_count: 2, barcode: '5', location: location }
   let(:plates) { [plate1, plate2, plate3] }
   let(:submission_template) { SubmissionTemplate.find_by(name: pipeline_name) }
   let(:workflow) { Submission::Workflow.find_by(key: 'microarray_genotyping') }
@@ -21,12 +20,8 @@ feature 'cherrypick pipeline - nano grams', js: true do
   let!(:plate_template) { create :plate_template }
 
   before(:each) do
-    plates.each do |plate|
-      asset_group.assets << (1..2).map do |index|
-        create(:well, plate: plate, map_id: index).tap do |well|
-          well.aliquots.create!(sample: create(:sample, name: "Sample_#{plate.barcode}_#{index}"), study: study)
-        end
-      end
+    assets = plates.each_with_object([]) do |plate, assets|
+      assets.concat(plate.wells)
       plate.wells.each_with_index do |well, index|
         well.well_attribute.update_attributes!(
           current_volume: 30 + (index % 30),
@@ -40,7 +35,7 @@ feature 'cherrypick pipeline - nano grams', js: true do
       project: project,
       workflow: workflow,
       user: user,
-      assets: asset_group.assets
+      assets: assets
     )
     Delayed::Worker.new.work_off
 
@@ -75,13 +70,5 @@ feature 'cherrypick pipeline - nano grams', js: true do
     click_button 'Next step'
     click_button 'Release this batch'
     expect(page).to have_content('Batch released!')
-  end
-
-  def login_user(user)
-    visit login_path
-    fill_in 'Username', with: user.login
-    fill_in 'Password', with: 'password'
-    click_button 'Login'
-    true
   end
 end

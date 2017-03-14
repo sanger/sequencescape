@@ -11,7 +11,7 @@ Feature: Interacting with plates through the API
     Then the JSON should be an empty array
 
   Scenario: Listing all of the plates that exist
-    Given a plate called "Testing the JSON API" exists
+    Given a plate called "Testing the JSON API" exists with purpose "Stock Plate"
     And the UUID for the plate "Testing the JSON API" is "00000000-1111-2222-3333-444444444444"
     And the infinium barcode for plate "Testing the JSON API" is "WG123456"
 
@@ -44,7 +44,7 @@ Feature: Interacting with plates through the API
     Then the HTTP response should be "404 Not Found"
 
   Scenario: Retrieving the JSON for a particular plate
-    Given a plate called "Testing the JSON API" exists
+    Given a plate called "Testing the JSON API" exists with purpose "Stock Plate"
     And the UUID for the plate "Testing the JSON API" is "00000000-1111-2222-3333-444444444444"
     And the infinium barcode for plate "Testing the JSON API" is "WG123456"
 

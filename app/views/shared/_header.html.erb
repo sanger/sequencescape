@@ -56,8 +56,8 @@
     </ul>
     <%= form_tag searches_path, :method => :get, :class => "navbar-form navbar-right", :role => "search" do %>
       <div class="form-group">
-      <%= search_field_tag :q, "", :size => 20, :type => "search", :placeholder => "name, id, barcode", :id => 'layout_search', :class=>"form-control" %>
-      <%= select_tag :type, options_for_select(search_options,""), :id => 'layout_search_options', :class=>"form-control" %>
+      <%= select_tag :type, options_for_select(search_options,""), id: 'layout_search_options', class: "form-control" %>
+      <%= search_field_tag :q, "", size: 20, type: "search", placeholder: "name, id, barcode", id: 'layout_search', class: 'form-control' %>
       </div>
     <% end %>
   </div><!-- /.navbar-collapse -->

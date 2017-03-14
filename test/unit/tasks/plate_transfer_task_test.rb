@@ -123,7 +123,7 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
         PlateBarcode.stubs(:create).returns(plate_barcode)
 
         params = { plate_transfer_task: {}, batch_id: @batch.id }
-        # @workflows_controller.batch = mock("Batch")
+                  # @workflows_controller.batch = mock("Batch")
 
                   params = { batch_id: @batch.id }
           @task.render_task(@workflows_controller, params)

@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'sample_manifest/sample_manifest_generator'
 
 class SampleManifestGeneratorTest < ActiveSupport::TestCase
   attr_reader :generator, :attributes, :study, :supplier, :user, :configuration, :barcode_printer

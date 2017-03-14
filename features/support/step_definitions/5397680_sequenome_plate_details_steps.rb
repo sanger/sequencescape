@@ -24,7 +24,8 @@ Given /^I have created a sequenom plate$/ do
 
   seq_plate = SequenomQcPlate.new(
     plate_prefix: 'QC',
-    user_barcode: '2470000100730'
+    user_barcode: '2470000100730',
+    purpose: PlatePurpose.find_by(name: 'Sequenom')
   )
   seq_plate.compute_and_set_name(input_plate_names)
 
@@ -39,7 +40,7 @@ Given /^there is a (\d+) well "([^"]*)" plate with a barcode of "([^"]*)"$/ do |
     barcode: Barcode.number_to_human(plate_barcode.to_s),
     plate_purpose: PlatePurpose.find_by(name: plate_purpose_name)
   )
-  sample = FactoryGirl.create :sample, name: "#{plate_barcode}_x"
+  sample = FactoryGirl.create :sample_with_gender, name: "#{plate_barcode}_x"
 
   1.upto(number_of_wells.to_i) do |i|
     new_plate.wells.create!(map_id: i).aliquots.create!(sample: sample)
@@ -54,9 +55,9 @@ Then /^the table of sequenom plates should be:$/ do |expected_results_table|
   expected_results_table.diff!(table(fetch_table('table#study_list')))
 end
 
-Given /^plate "([^"]*)" has (\d+) blank samples$/ do |plate_barcode, number_of_blanks|
+Given(/^plate "([^"]*)" has (\d+) blank samples$/) do |plate_barcode, number_of_blanks|
   plate = Plate.find_by(barcode: plate_barcode)
-  study = plate.study # we need to propagate the study to the new aliquots
+  study = plate.studies.first # we need to propagate the study to the new aliquots
   plate.wells.each_with_index do |well, index|
     break if index >= number_of_blanks.to_i
     well.aliquots.clear

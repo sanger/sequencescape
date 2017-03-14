@@ -51,7 +51,6 @@ private
         @validating_ena_required_fields
       end
 
-
       def tags
         self.class.tags.select{|tag| tag.for?(accession_service.provider)}
       end

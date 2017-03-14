@@ -29,7 +29,7 @@ class EventFactory
       event.message,
       event.content,
       'No Milestone'
-    ).deliver unless admin_emails.empty?
+    ).deliver_now unless admin_emails.empty?
   end
 
   # Creates an event and sends an email or emails when a project is approved
@@ -59,7 +59,7 @@ class EventFactory
       end
     end
 
-    EventfulMailer.confirm_event(recipients_email, event.eventful, event.message, event.content, 'No Milestone').deliver
+    EventfulMailer.confirm_event(recipients_email, event.eventful, event.message, event.content, 'No Milestone').deliver_now
   end
 
   def self.project_refund_request(project, user, reference)
@@ -78,9 +78,9 @@ class EventFactory
     # EventfulMailer.deliver_confirm_event(User.all_administrators_emails, event.eventful, event.message, event.content, "No Milestone")
   end
 
- ###############################
- # Study related notifications #
- ###############################
+  ###############################
+  # Study related notifications #
+  ###############################
 
   # creates an event and sends an email when samples are register to a study
   def self.study_has_samples_registered(study, samples, user)
@@ -101,7 +101,7 @@ class EventFactory
       recipients << project.manager.email if project.manager
     end
 
-    EventfulMailer.confirm_event(recipients.reject(&:blank?), study_event.eventful, study_event.message, study_event.content, 'No Milestone').deliver
+    EventfulMailer.confirm_event(recipients.reject(&:blank?), study_event.eventful, study_event.message, study_event.content, 'No Milestone').deliver_now
   end
 
   #################################
@@ -126,6 +126,6 @@ class EventFactory
       recipients << project.manager.email if project && project.manager
     end
 
-    EventfulMailer.confirm_event(recipients.reject(&:blank?), request_event.eventful, request_event.message, request_event.content, 'No Milestone').deliver
+    EventfulMailer.confirm_event(recipients.reject(&:blank?), request_event.eventful, request_event.message, request_event.content, 'No Milestone').deliver_now
   end
 end
