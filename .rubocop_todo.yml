@@ -28,11 +28,6 @@ Lint/DuplicateCaseCondition:
     - 'features/support/paths.rb'
 
 # Offense count: 1
-Lint/DuplicateMethods:
-  Exclude:
-    - 'app/models/order.rb'
-
-# Offense count: 1
 Lint/EmptyEnsure:
   Exclude:
     - 'app/models/qc_file.rb'

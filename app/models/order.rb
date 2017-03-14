@@ -166,14 +166,6 @@ class Order < ActiveRecord::Base
     Submission.build!({ template: self }.merge(options))
   end
 
-  def self.extended(_base)
-    class_eval do
-      def self.build!(*args)
-        Order::build!(*args)
-      end
-    end
-  end
-
   def multiplexed?
     RequestType.find(request_types).any?(&:for_multiplexing?)
   end
