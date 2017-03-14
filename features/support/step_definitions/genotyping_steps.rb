@@ -42,8 +42,15 @@ Then(/^the manifest for study "([^"]*)" with plate "([^"]*)" should be:$/) do |s
 end
 
 Given(/^I have a plate "([^"]*)" in study "([^"]*)" with (\d+) samples in asset group "([^"]*)"$/) do |plate_barcode, study_name, number_of_samples, asset_group_name|
+  purpose = FactoryGirl.create :plate_purpose
+  purpose_name = purpose.name
+  step(%Q{I have a "#{purpose_name}" plate "#{plate_barcode}" in study "#{study_name}" with #{number_of_samples} samples in asset group "#{asset_group_name}"})
+end
+
+Given(/^I have a "([^"]*)" plate "([^"]*)" in study "([^"]*)" with (\d+) samples in asset group "([^"]*)"$/) do |purpose_name, plate_barcode, study_name, number_of_samples, asset_group_name|
   study = Study.find_by(name: study_name)
-  plate = FactoryGirl.create(:plate, barcode: plate_barcode, location: Location.find_by(name: 'Sample logistics freezer'))
+  purpose = Purpose.find_by(name: purpose_name)
+  plate = FactoryGirl.create(:plate, purpose: purpose, barcode: plate_barcode, location: Location.find_by(name: 'Sample logistics freezer'))
 
   asset_group = study.asset_groups.find_by(name: asset_group_name) || study.asset_groups.create!(name: asset_group_name)
   asset_group.assets << (1..number_of_samples.to_i).map do |index|

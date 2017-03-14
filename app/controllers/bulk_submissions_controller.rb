@@ -8,8 +8,8 @@
 require 'formtastic'
 
 class BulkSubmissionsController < ApplicationController
-# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+  # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
 
   before_action :find_submission_template_groups, only: [:new, :create]

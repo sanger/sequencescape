@@ -34,19 +34,21 @@
               <td><%= request.asset.primary_aliquot.sample.name %></td>
               <td><%= link_to request.id, request_url(request) %></td>
               <% if request.asset  %>
-                <td class="request-asset-name"><%= link_to request.asset.display_name, asset_url(request.asset), :target => "_blank" %>
+                <td class="request-asset-name">
+                  <%= link_to request.asset.display_name, asset_url(request.asset), target: "_blank" %>
                 </td>
-                <td class="request-asset-name"><%= link_to(request.target_asset.sanger_human_barcode, asset_url(request.target_asset), :target => "_blank") if request.target_asset %>
+                <td class="request-asset-name">
+                  <%= link_to(request.target_asset.sanger_human_barcode, asset_url(request.target_asset), target: "_blank") if request.target_asset %>
                 </td>
               <% else %>
                 <td class="request-asset-name">&nbsp;</td>
                 <td class="request-asset-name">&nbsp;</td>
               <% end %>
               <td>
-                <% if request.tag_number.blank? %>
-                  <%= select "tag", request.id, tag_options, {:selected =>tag_options[index%tag_options.size]}, {:class => "tagchoice"} %>
+                <% if request.target_asset.tags.empty? %>
+                  <%= select "tag", request.id, tag_options, { selected: tag_options[index%tag_options.size] }, { class: "tagchoice" } %>
                 <% else %>
-                  <%= request.tag_number %>
+                  <%= request.target_asset.tags.map(&:map_id).join(',') %>
                 <% end %>
               </td>
 

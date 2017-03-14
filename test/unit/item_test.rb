@@ -11,7 +11,7 @@ class ItemTest < ActiveSupport::TestCase
     should have_many :requests
     should validate_presence_of :name
 
- #   should_require_unique_attributes :name, :message => "already in use"
+    #   should_require_unique_attributes :name, :message => "already in use"
 
     context '#workflow' do
       setup do

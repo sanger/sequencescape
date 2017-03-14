@@ -3,8 +3,7 @@
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2015 Genome Research Ltd.
-require_dependency 'tube/purpose'
 
 class QcableTubePurpose < Tube::Purpose
-  include QcablePlatePurpose::ClassBehaviour
+  include SharedBehaviour::QcableAsset
 end

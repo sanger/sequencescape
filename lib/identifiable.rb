@@ -30,7 +30,7 @@ module Identifiable
       ident.external = object_or_id
     end
     ident.save
-#    ident.save!
+    #    ident.save!
   end
 
   def external_id(resource_name)

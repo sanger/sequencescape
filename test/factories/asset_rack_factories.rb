@@ -16,7 +16,7 @@ FactoryGirl.define do
     size               '8'
     plate_purpose      { create :strip_tube_purpose }
     after(:create) do |st|
-      st.wells.import(st.maps.map { |map| create(:well, map: map) })
+      st.wells = st.maps.map { |map| create(:well, map: map) }
     end
   end
 end

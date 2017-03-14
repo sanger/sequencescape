@@ -12,10 +12,10 @@ ActiveRecord::Base.transaction do
     flow = flow_o.clone
     # We're using a different plate purpose for each pipeline, which means we need to attach that plate purpose to the request
     # type for it.  Then in the cherrypicking they'll only be able to pick the correct type from the list.
-    stock_plate_purpose = Pulldown::StockPlatePurpose.create!(
+    stock_plate_purpose = PlatePurpose::Input.create!(
       name: flow.shift,
       default_state: 'passed',
-      can_be_considered_a_stock_plate: true,
+      stock_plate: true,
       cherrypick_filters: [
         'Cherrypick::Strategy::Filter::ByOverflow',
         'Cherrypick::Strategy::Filter::ByEmptySpaceUsage',

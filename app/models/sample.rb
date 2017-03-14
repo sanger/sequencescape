@@ -81,6 +81,7 @@ class Sample < ActiveRecord::Base
   after_save :accession
 
   scope :with_name, ->(*names) { where(name: names.flatten) }
+  scope :with_gender, ->(*_names) { joins(:sample_metadata).where.not(sample_metadata: { gender: nil }) }
 
   scope :for_search_query, ->(query, _with_includes) {
     # Note: This search is performed in two stages so that we can make best use of our indicies
@@ -217,7 +218,10 @@ class Sample < ActiveRecord::Base
 
   def accession
     if configatron.accession_samples
-      Delayed::Job.enqueue SampleAccessioningJob.new(self)
+      accessionable = Accession::Sample.new(Accession.configuration.tags, self)
+      if accessionable.valid?
+        Delayed::Job.enqueue SampleAccessioningJob.new(accessionable)
+      end
     end
   end
 

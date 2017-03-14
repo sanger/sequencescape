@@ -18,16 +18,13 @@ class SequenomQcPlate < Plate
 
   def source_plates
     return [] if parents.empty?
-    ordered_source_plates = []
-    source_barcodes.each do |plate_barcode|
-      ordered_source_plates << if plate_barcode.blank?
+    source_barcodes.map do |plate_barcode|
+      if plate_barcode.blank?
         nil
-                               else
-        parents.select { |plate| plate.barcode == plate_barcode }.first
-                               end
+      else
+        parents.detect { |plate| plate.barcode == plate_barcode }
+      end
     end
-
-    ordered_source_plates
   end
 
   def default_plate_size
@@ -71,7 +68,6 @@ class SequenomQcPlate < Plate
 
       # Plate name e.g. QC1234_1235_1236_1237_20100801
       self.name = "#{plate_prefix}#{plate_number(input_plate_names)}#{plate_date}"
-      self.plate_purpose = PlatePurpose.find_by(name: 'Sequenom')
       self.barcode = PlateBarcode.create.barcode
     end
     true
