@@ -1,13 +1,7 @@
 FactoryGirl.define do
-  factory :sample_tube_without_barcode, class: SampleTube do
+  factory :tube do
     name                { generate :asset_name }
-    value               ''
-    descriptors         []
-    descriptor_fields   []
-    qc_state            ''
-    resource            nil
-    barcode             nil
-    purpose             { Tube::Purpose.standard_sample_tube }
+    association(:purpose, factory: :tube_purpose)
   end
 
   factory :empty_sample_tube, class: SampleTube do
