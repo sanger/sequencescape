@@ -73,7 +73,13 @@ module SampleManifestExcel
     end
 
     def metadata_field?
-      @metadata ||= SAMPLE_METADATA_MODEL.respond_to?(name)
+      @metadata_field ||= SAMPLE_METADATA_MODEL.respond_to?(name)
+    end
+
+    def update_metadata(metadata, value)
+      if metadata_field?
+        metadata.send("#{name}=", value)
+      end
     end
 
     def attribute_value(detail)

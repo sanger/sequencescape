@@ -405,20 +405,6 @@ FactoryGirl.define do
     end
   end
 
-  # factory :tag_group do |_t|
-  #   name  { generate :tag_group_name }
-
-  #   transient do
-  #     tag_count 0
-  #   end
-
-  #   after(:build) do |tag_group, evaluator|
-  #     evaluator.tag_count.times do |i|
-  #       tag_group.tags << create(:tag, map_id: i + 1, tag_group: tag_group)
-  #     end
-  #   end
-  # end
-
   factory :assign_tags_task do
   end
 

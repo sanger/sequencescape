@@ -64,6 +64,13 @@ RSpec.describe SampleManifestExcel::Column, type: :model, sample_manifest_excel:
     expect(column.specialised_field).to eq(SampleManifestExcel::SpecialisedField::InsertSizeFrom)
   end
 
+  it 'can update the sample metadata if it is a sample metadata field' do
+    column = SampleManifestExcel::Column.new(options.merge(heading: 'DONOR ID', name: :donor_id))
+    metadata = Sample::Metadata.new
+    column.update_metadata(metadata, '1234')
+    expect(metadata.donor_id).to eq('1234')
+  end
+
   context 'with no validation' do
     let(:column) { SampleManifestExcel::Column.new(options.except(:validation)) }
 

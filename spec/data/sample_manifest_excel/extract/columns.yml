@@ -92,12 +92,12 @@ gender:
   conditional_formattings:
     empty_cell:
     is_error:
-public_name:
+sample_public_name:
   heading: PUBLIC NAME
   unlocked: true
   conditional_formattings:
     empty_cell:
-taxon_id:
+sample_taxon_id:
   heading: TAXON ID
   unlocked: true
   conditional_formattings:

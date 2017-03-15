@@ -89,11 +89,11 @@ module SampleManifestExcel
       find_by(key, value) || SampleManifestExcel::NullColumn.new
     end
 
-    def specialised_fields
+    def with_specialised_fields
       select(&:specialised_field?)
     end
 
-    def metadata_fields
+    def with_metadata_fields
       select(&:metadata_field?)
     end
 

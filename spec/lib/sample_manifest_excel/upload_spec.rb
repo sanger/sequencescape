@@ -10,6 +10,7 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
   let(:conditional_formattings) { SampleManifestExcel::ConditionalFormattingDefaultList.new(load_file(folder, 'conditional_formattings')) }
   let(:column_list)             { SampleManifestExcel::ColumnList.new(yaml, conditional_formattings) }
   let(:manifest_types)          { SampleManifestExcel::ManifestTypeList.new(load_file(folder, 'manifest_types')) }
+  let!(:tag_group)              { create(:tag_group) }
 
   it 'should be valid if all of the headings relate to a column' do
     columns = column_list.extract(manifest_types.find_by(:tube_library).columns)
@@ -54,19 +55,27 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
     expect(upload).to_not be_valid
   end
 
+  it "should update all of the data" do
+    columns = column_list.extract(manifest_types.find_by(:tube_library).columns)
+    download = build(:test_download, columns: columns)
+    download.save(test_file)
+    upload = SampleManifestExcel::Upload.new(filename: test_file, column_list: column_list, start_row: 9)
+    upload.update_samples
+    
+  end
+
   context 'Row' do
     let!(:library_type) { create(:library_type, name: 'My New Library Type') }
     let!(:sample_tube) { create(:sample_tube) }
     let(:headings) { ['SANGER TUBE ID',  'SANGER SAMPLE ID',  'PREPOOLED', 'TAG OLIGO', 'TAG2 OLIGO', 'LIBRARY TYPE',  'INSERT SIZE FROM',  'INSERT SIZE TO',  'SUPPLIER SAMPLE NAME',  'COHORT',  'VOLUME (ul)', 'CONC. (ng/ul)', 'GENDER',  'COUNTRY OF ORIGIN', 'GEOGRAPHICAL REGION', 'ETHNICITY', 'DNA SOURCE',  'DATE OF SAMPLE COLLECTION (MM/YY or YYYY only)',  'DATE OF DNA EXTRACTION (MM/YY or YYYY only)', 'IS SAMPLE A CONTROL?',  'IS RE-SUBMITTED SAMPLE?', 'DNA EXTRACTION METHOD', 'SAMPLE PURIFIED?',  'PURIFICATION METHOD', 'CONCENTRATION DETERMINED BY', 'DNA STORAGE CONDITIONS',  'MOTHER (optional)', 'FATHER (optional)', 'SIBLING (optional)',  'GC CONTENT',  'PUBLIC NAME', 'TAXON ID',  'COMMON NAME', 'SAMPLE DESCRIPTION',  'STRAIN',  'SAMPLE VISIBILITY', 'SAMPLE TYPE', 'SAMPLE ACCESSION NUMBER (optional)',  'DONOR ID (required for EGA)', 'PHENOTYPE (required for EGA)'] }
-    let(:data) { [sample_tube.sample.assets.first.sanger_human_barcode, sample_tube.sample.id, 'No', 'AA','', 'Nextera Dual Index qPCR only', 200, 1500, 'SCG--1222_A01', 1, 1, 'Unknown','','','','Cell Line', 'Nov-16', 'Nov-16', '', '', '', 'No', 'OTHER', '', '', '', '', '', 'SCG--1222_A01', 9606,  'Homo sapiens', '', '', '', '', '', 11, 'Unknown' ] }
+    let(:data) { [sample_tube.sample.assets.first.sanger_human_barcode, sample_tube.sample.id, 'No', 'AA','', 'My New Library Type', 200, 1500, 'SCG--1222_A01', '', 1, 1, 'Unknown','','','','Cell Line', 'Nov-16', 'Nov-16', '', '', '', 'No', '', 'OTHER', '', '', '', '', '', 'SCG--1222_A01', 9606,  'Homo sapiens', '', '', '', '', '', 11, 'Unknown' ] }
     let(:columns) { column_list.extract(headings) }
+    
 
     it 'is not valid without row number' do
       expect(SampleManifestExcel::Upload::Row.new(number: "one", data: data, columns: columns)).to_not be_valid
       expect(SampleManifestExcel::Upload::Row.new(data: data, columns: columns)).to_not be_valid
     end
-
-
 
     it 'is not valid without some data' do
       expect(SampleManifestExcel::Upload::Row.new(number: 1, columns: columns)).to_not be_valid
@@ -105,6 +114,34 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
       data[5] = 'My New Library Type'
       data[6] = 'one'
       expect(SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns)).to_not be_valid
+    end
+
+    it 'updates the aliquot with the specialised fields' do
+      row = SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns)
+      row.update_specialised_fields(tag_group)
+      aliquot = row.aliquot
+      expect(aliquot.tag.oligo).to eq('AA')
+      expect(aliquot.tag2.oligo).to_not be_present
+      expect(aliquot.insert_size_from).to eq(200)
+      expect(aliquot.insert_size_to).to eq(1500)
+    end
+
+    it 'updates the sample metadata' do
+      row = SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns)
+      row.update_metadata_fields
+      metadata = row.metadata
+      expect(metadata.concentration).to eq('1')
+      expect(metadata.gender).to eq('Unknown')
+      expect(metadata.dna_source).to eq('Cell Line')
+      expect(metadata.date_of_sample_collection).to eq('Nov-16')
+      expect(metadata.date_of_sample_extraction).to eq('Nov-16')
+      expect(metadata.sample_purified).to eq('No')
+      expect(metadata.concentration_determined_by).to eq('OTHER')
+      expect(metadata.sample_public_name).to eq('SCG--1222_A01')
+      expect(metadata.sample_taxon_id).to eq(9606)
+      expect(metadata.sample_common_name).to eq('Homo sapiens')
+      expect(metadata.donor_id).to eq('11')
+      expect(metadata.phenotype).to eq('Unknown')
     end
 
     after(:each) do

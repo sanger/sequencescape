@@ -7,10 +7,9 @@ module SampleManifestExcel
       
       validates_numericality_of :value, greater_than: 0
 
-      def update(aliquot: )
-        if valid? && aliquot.present?
-          aliquot.insert_size_from = value
-          aliquot.save
+      def update(attributes = {})
+        if valid? && attributes[:aliquot].present?
+          attributes[:aliquot].insert_size_from = value
         end
       end
     end

@@ -91,6 +91,17 @@ RSpec.describe SampleManifestExcel::SpecialisedField, type: :model, sample_manif
     end
   end
 
+  describe 'Sample Ebi Accession Number' do
+
+    it 'will not be valid if the value is different to the sample accession number' do
+      expect(SampleManifestExcel::SpecialisedField::SampleEbiAccessionNumber.new(value: '', sample: sample)).to be_valid
+      expect(SampleManifestExcel::SpecialisedField::SampleEbiAccessionNumber.new(value: 'EB123', sample: sample)).to be_valid
+      sample.sample_metadata.sample_ebi_accession_number = 'EB123'
+      expect(SampleManifestExcel::SpecialisedField::SampleEbiAccessionNumber.new(value: '', sample: sample)).to be_valid
+      expect(SampleManifestExcel::SpecialisedField::SampleEbiAccessionNumber.new(value: 'EB1234', sample: sample)).to_not be_valid
+    end
+  end
+
   describe 'tags' do
 
     let!(:tag_group) { create(:tag_group) }
@@ -111,14 +122,14 @@ RSpec.describe SampleManifestExcel::SpecialisedField, type: :model, sample_manif
         expect(tag).to be_present
         expect(tag.oligo).to eq(oligo)
         expect(tag.map_id).to eq(1)
-        aliquot.reload
+        aliquot.save
         expect(aliquot.tag).to eq(tag)
       end
 
       it 'will find the tag if it already exists' do
         tag = tag_group.tags.create(oligo: oligo, map_id: 10)
         tag_oligo.update(aliquot: aliquot, tag_group: tag_group)
-        aliquot.reload
+        aliquot.save
         expect(aliquot.tag).to eq(tag)
       end
 
@@ -134,7 +145,7 @@ RSpec.describe SampleManifestExcel::SpecialisedField, type: :model, sample_manif
 
       it 'will update the aliquot' do
         tag2_oligo.update(aliquot: aliquot, tag_group: tag_group)
-        aliquot.reload
+        aliquot.save
         expect(aliquot.tag2).to eq(tag_group.tags.find_by(oligo: oligo))
       end
 

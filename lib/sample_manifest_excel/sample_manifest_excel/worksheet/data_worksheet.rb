@@ -30,8 +30,6 @@ module SampleManifestExcel
       # Using axlsx worksheet creates data worksheet with title, description, all required columns, values,
       # data validations, conditional formattings, freezes panes at required place.
 
-      
-
       # Adds columns with all required data to a worksheet
 
       def add_columns
@@ -41,8 +39,6 @@ module SampleManifestExcel
           create_row(detail)
         end
       end
-
-    
 
       # Creates row filled in with required column values, also unlocks (adds unlock style)
       # the cells that should be filled in by clients

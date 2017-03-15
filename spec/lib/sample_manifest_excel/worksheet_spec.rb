@@ -152,12 +152,12 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
 
   context 'test worksheet' do
 
-  
+
 
     let(:data) { { prepooled: 'No', library_type: 'My personal library type', insert_size_from: 200, insert_size_to: 1500,
-                supplier_sample_name: 'SCG--1222_A0', volume: 1, conc: 1, gender: 'Unknown', dna_source: 'Cell Line', 
-                date_of_sample_collection: 'Nov-16', date_of_dna_extraction: 'Nov-16', sample_purified?: 'No',
-                public_name: 'SCG--1222_A0', taxon_id: 9606, common_name: 'Homo sapiens', phenotype: 'Unknown' }.with_indifferent_access }
+                supplier_sample_name: 'SCG--1222_A0', volume: 1, concentration: 1, gender: 'Unknown', dna_source: 'Cell Line', 
+                date_of_sample_collection: 'Nov-16', date_of_sample_extraction: 'Nov-16', sample_purified: 'No',
+                sample_public_name: 'SCG--1222_A0', sample_taxon_id: 9606, sample_common_name: 'Homo sapiens', phenotype: 'Unknown' }.with_indifferent_access }
 
     context 'in a valid state' do
       let!(:worksheet) { SampleManifestExcel::Worksheet::TestWorksheet.new(workbook: workbook,

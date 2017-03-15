@@ -51,13 +51,14 @@ module SampleManifestExcel
         end
       end
 
-      def update(aliquot:, tag_group:)
-        if value.present?
-          tag = tag_group.tags.find_or_create_by(oligo: value) do |t|
-            t.map_id = tag_group.tags.count + 1
+      def update(attributes = {})
+
+        if valid?
+          tag = attributes[:tag_group].tags.find_or_create_by(oligo: value) do |t|
+            t.map_id = attributes[:tag_group].tags.count + 1
           end
-          aliquot.send("#{tag_name}=", tag)
-          aliquot.save
+
+          attributes[:aliquot].send("#{tag_name}=", tag)
         end
       end
 

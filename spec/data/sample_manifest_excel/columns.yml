@@ -230,7 +230,7 @@ volume:
     empty_cell:
     number_greater_than_zero:
     is_text:
-conc:
+concentration:
   heading: CONC. (ng/ul)
   unlocked: true
   validation:
@@ -380,7 +380,7 @@ date_of_sample_collection:
       formula:
         operator: ">"
         operand: 5
-date_of_dna_extraction:
+date_of_sample_extraction:
   heading: DATE OF DNA EXTRACTION (MM/YY or YYYY only)
   unlocked: true
   validation:
@@ -402,7 +402,7 @@ date_of_dna_extraction:
       formula:
         operator: ">"
         operand: 5
-is_sample_a_control?:
+is_sample_a_control:
   heading: IS SAMPLE A CONTROL?
   unlocked: true
   validation:
@@ -422,7 +422,7 @@ is_sample_a_control?:
   conditional_formattings:
     empty_cell:
     is_error:
-is_re_submitted_sample?:
+is_re_submitted_sample:
   heading: IS RE-SUBMITTED SAMPLE?
   unlocked: true
   validation:
@@ -442,12 +442,12 @@ is_re_submitted_sample?:
   conditional_formattings:
     empty_cell:
     is_error:
-dna_extraction_method:
+sample_extraction_method:
   heading: DNA EXTRACTION METHOD
   unlocked: true
   conditional_formattings:
     empty_cell:
-sample_purified?:
+sample_purified:
   heading: SAMPLE PURIFIED?
   unlocked: true
   validation:
@@ -507,7 +507,7 @@ concentration_determined_by:
   conditional_formattings:
     empty_cell:
     is_error:
-dna_storage_conditions:
+sample_storage_conditions:
   heading: DNA STORAGE CONDITIONS
   unlocked: true
   validation:
@@ -601,17 +601,17 @@ gc_content:
   unlocked: true
   conditional_formattings:
     empty_cell:
-public_name:
+sample_public_name:
   heading: PUBLIC NAME
   unlocked: true
   conditional_formattings:
     empty_cell:
-taxon_id:
+sample_taxon_id:
   heading: TAXON ID
   unlocked: true
   conditional_formattings:
     empty_cell:
-common_name:
+sample_common_name:
   heading: COMMON NAME
   unlocked: true
   conditional_formattings:
@@ -621,7 +621,7 @@ sample_description:
   unlocked: true
   conditional_formattings:
     empty_cell:
-strain:
+sample_strain_att:
   heading: STRAIN
   unlocked: true
   conditional_formattings:
@@ -636,7 +636,7 @@ sample_type:
   unlocked: true
   conditional_formattings:
     empty_cell:
-sample_accession_number:
+sample_ebi_accession_number:
   heading: SAMPLE ACCESSION NUMBER (optional)
   unlocked: true
   conditional_formattings:

@@ -9,8 +9,8 @@ test:
     - :cohort
     - :volume
     - :gender
-    - :public_name
-    - :taxon_id
+    - :sample_public_name
+    - :sample_taxon_id
     - :sibling
     - :donor_id
 test_2:
@@ -24,8 +24,8 @@ test_2:
     - :cohort
     - :volume
     - :gender
-    - :public_name
-    - :taxon_id
+    - :sample_public_name
+    - :sample_taxon_id
     - :sibling
     - :donor_id
 test_3:
@@ -39,7 +39,7 @@ test_3:
     - :cohort
     - :volume
     - :gender
-    - :public_name
-    - :taxon_id
+    - :sample_public_name
+    - :sample_taxon_id
     - :sibling
     - :donor_id
