@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :tube do
-    name                { generate :asset_name }
+    name { generate :asset_name }
     association(:purpose, factory: :tube_purpose)
   end
 

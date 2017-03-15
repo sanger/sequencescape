@@ -411,7 +411,7 @@ FactoryGirl.define do
   end
 
   factory(:tube_purpose, class: Tube::Purpose) do
-    name        'Tube purpose'
+    name        { generate :purpose_name }
     target_type 'MultiplexedLibraryTube'
   end
 

@@ -14,15 +14,9 @@ namespace :test do
 
       if Rails.env.test?
 
-        # All these factories should be updated to make them valid
+        # TODO: All these factories should be updated to make them valid
         # Any tests which break as a result should be fixed.
         invalid_factories = [
-          :asset_link,
-          :gel_qc_task,
-          :cherrypick_task,
-          :assign_plate_purpose_task,
-          :plate_barcode,
-          :product_product_catalogue,
           :pooling_plate,
           :transfer_template,
           :pooling_transfer_template,
@@ -43,8 +37,6 @@ namespace :test do
           :bait_library,
           :pulldown_sc_request,
           :request_with_submission,
-          :sequencing_request,
-          :multiplex_request,
           :illumina_htp_requests_std_library_request_metadata,
           :request_without_assets,
           :request_without_item,
