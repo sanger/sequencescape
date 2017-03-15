@@ -13,7 +13,7 @@ class AccessionService
   NumberNotRequired     = Class.new(AccessionServiceError)
   NumberNotGenerated    = Class.new(AccessionServiceError)
 
-  CenterName = 'SC'.freeze # TODO [xxx] use confing file
+  CenterName = 'SC'.freeze # TODO: [xxx] use confing file
   Protect = 'protect'.freeze
   Hold = 'hold'.freeze
 
@@ -111,7 +111,7 @@ class AccessionService
   def submit_study_for_user(study, user)
     raise NumberNotRequired, 'An accession number is not required for this study' unless study.ena_accession_required?
 
-    # TODO check error
+    # TODO: check error
     # raise AccessionServiceError, "Cannot generate accession number: #{ sampledata[:error] }" if sampledata[:error]
 
     ebi_accession_number = study.study_metadata.study_ebi_accession_number

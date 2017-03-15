@@ -546,7 +546,7 @@ class Study < ActiveRecord::Base
   end
 
   def approved?
-    # TODO remove
+    # TODO: remove
     true
   end
 

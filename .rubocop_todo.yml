@@ -443,8 +443,8 @@ Style/ColonMethodCall:
 # Cop supports --auto-correct.
 # Configuration parameters: Keywords.
 # Keywords: TODO, FIXME, OPTIMIZE, HACK, REVIEW
-Style/CommentAnnotation:
-  Enabled: false
+# Style/CommentAnnotation:
+#   Enabled: false
 
 # Offense count: 18
 # Cop supports --auto-correct.

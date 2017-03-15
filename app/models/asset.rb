@@ -269,7 +269,7 @@ class Asset < ActiveRecord::Base
     @name_needs_to_be_generated = library_prep?
   end
 
-  # todo unify with parent/children
+  # TODO: unify with parent/children
   def parent
     parents.first
   end
