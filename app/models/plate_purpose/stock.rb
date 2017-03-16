@@ -21,12 +21,12 @@ module PlatePurpose::Stock
     # All of the wells with aliquots must have requests for us to be considered passed
     well_requests = Request::LibraryCreation.where(asset_id: ids_of_wells_with_aliquots)
 
-    wells_states = well_requests.group_by(&:asset_id).map do |well_id, requests|
+    wells_states = well_requests.group_by(&:asset_id).map do |_well_id, requests|
       calculate_state_of_well(requests.map(&:state))
     end
 
     return UNREADY_STATE unless wells_states.count == ids_of_wells_with_aliquots.count
-    return calculate_state_of_plate(wells_states)
+    calculate_state_of_plate(wells_states)
   end
 
   def calculate_state_of_plate(wells_states)

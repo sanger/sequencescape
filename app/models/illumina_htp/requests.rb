@@ -15,8 +15,14 @@ module IlluminaHtp::Requests
       pool_information[:request_type] = request_type.key
     end
 
-    def role
-      order.role
+    delegate :role, to: :order
+
+    validate :valid_purpose?
+    def valid_purpose?
+      return true if request_type.acceptable_plate_purposes.empty? ||
+        request_type.acceptable_plate_purposes.include?(asset.plate.purpose)
+      errors.add(:asset, "#{asset.plate.purpose.name} is not a suitable plate purpose.")
+      false
     end
   end
 
@@ -29,15 +35,8 @@ module IlluminaHtp::Requests
       submission.next_requests(self).each(&:failed_upstream!)
     end
 
-    validate :valid_purpose?
-    def valid_purpose?
-      return true if request_type.acceptable_plate_purposes.include?(asset.plate.purpose)
-      errors.add(:asset, "#{asset.plate.purpose.name} is not a suitable plate purpose.")
-      false
-    end
-
     def failed_downstream!
-      change_decision! unless failed?
+      retrospective_fail! if passed?
     end
   end
 

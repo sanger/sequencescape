@@ -14,7 +14,7 @@ module XmlCacheHelper
         response.body,
         url_for(
           controller: self.class.controller_name,
-          action: self.action_name,
+          action: action_name,
           id: record.id,
           format: :xml,
           only_path: true
@@ -77,7 +77,7 @@ module XmlCacheHelper
     rescue Errno::EACCES => exception
       i += 1
       retry unless i > 2
-      Rails.logger.warn { "Cannot clear cached XML file as it is inaccessible" }
+      Rails.logger.warn { 'Cannot clear cached XML file as it is inaccessible' }
     end
   end
   private :clear_cache
@@ -100,7 +100,7 @@ module XmlCacheHelper
   end
   private :query_conditions_for
 
-  def metadata(record, &block)
+  def metadata(record)
     metadata = "#{caching_for_model.to_s.singularize}_metadata"
     yield(
       "INNER JOIN #{metadata} ON #{metadata}.#{caching_for_model.to_s.singularize}_id=#{caching_for_model.to_s.pluralize}.id",
@@ -108,7 +108,7 @@ module XmlCacheHelper
   end
   private :metadata
 
-  def metadata_association(type, record, &block)
+  def metadata_association(type, record)
     metadata = "#{caching_for_model.to_s.singularize}_metadata"
     yield(
       "INNER JOIN #{metadata} ON #{metadata}.#{caching_for_model.to_s.singularize}_id=#{caching_for_model.to_s.pluralize}.id",

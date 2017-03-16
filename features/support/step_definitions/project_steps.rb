@@ -5,13 +5,13 @@
 # Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 Given /^I have a project called "([^\"]*)"$/ do |project|
-#  proj = FactoryGirl.create :project_with_order, :name => project
+  #  proj = FactoryGirl.create :project_with_order, :name => project
   FactoryGirl.create(:project, name: project)
 end
 
 Given /^project "([^\"]*)" approval is "([^\"]*)"$/ do |project, approval|
-  proj = Project.find_by_name(project)
-  proj.approved = (approval == "approved" ? true : false)
+  proj = Project.find_by(name: project)
+  proj.approved = (approval == 'approved' ? true : false)
   proj.save
 end
 
@@ -21,19 +21,19 @@ Given /^I have an "([^\"]*)" project called "([^\"]*)"$/ do |approval, project|
 end
 
 Given /^project "([^\"]*)" has enforced quotas$/ do |name|
-  project = Project.find_by_name(name) or raise StandardError, "Cannot find project with name #{name.inspect}"
+  project = Project.find_by(name: name) or raise StandardError, "Cannot find project with name #{name.inspect}"
   project.update_attributes!(enforce_quotas: true)
 end
 
 Given /^last submission is processed$/ do
-  step("1 pending delayed jobs are processed")
+  step('1 pending delayed jobs are processed')
 end
 
 Given /^the project "([^\"]+)" has an active study called "([^\"]+)"$/ do |project_name, study_name|
   step(%Q{I have an "active" study called "#{study_name}"})
 
-  project = Project.find_by_name(project_name) or raise StandardError, "Cannot find project #{project_name.inspect}"
-  study   = Study.find_by_name(study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
+  project = Project.find_by(name: project_name) or raise StandardError, "Cannot find project #{project_name.inspect}"
+  study   = Study.find_by(name: study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
   project.studies << study
 end
 
@@ -42,8 +42,8 @@ Then /^I should see the project information:$/ do |expected_table|
 end
 
 Given /^the project "([^\"]*)" a budget division "([^\"]*)"$/ do |project_name, budget_division_name|
-  project = Project.find_by_name(project_name) or raise StandardError, "Cannot find project #{project_name.inspect}"
-  budget_division = BudgetDivision.find_by_name(budget_division_name) or raise StandardError, "Cannot find budget division #{budget_division_name.inspect}"
+  project = Project.find_by(name: project_name) or raise StandardError, "Cannot find project #{project_name.inspect}"
+  budget_division = BudgetDivision.find_by(name: budget_division_name) or raise StandardError, "Cannot find budget division #{budget_division_name.inspect}"
 
   project.update_attributes!(project_metadata_attributes: {
     budget_division: budget_division

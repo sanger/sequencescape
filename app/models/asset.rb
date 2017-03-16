@@ -45,9 +45,9 @@ class Asset < ActiveRecord::Base
   end
 
   self.per_page = 500
-  self.inheritance_column = "sti_type"
+  self.inheritance_column = 'sti_type'
 
-  has_many :asset_group_assets, dependent: :destroy
+  has_many :asset_group_assets, dependent: :destroy, inverse_of: :asset
   has_many :asset_groups, through: :asset_group_assets
   has_many :asset_audits
   has_many :volume_updates, foreign_key: :target_id
@@ -55,7 +55,7 @@ class Asset < ActiveRecord::Base
 
   # TODO: Remove 'requests' and 'source_request' as they are abiguous
   has_many :requests
-  has_one  :source_request,     ->() { includes(:request_metadata) }, class_name: "Request", foreign_key: :target_asset_id
+  has_one  :source_request,     ->() { includes(:request_metadata) }, class_name: 'Request', foreign_key: :target_asset_id
   has_many :requests_as_source, ->() { includes(:request_metadata) },  class_name: 'Request', foreign_key: :asset_id
   has_many :requests_as_target, ->() { includes(:request_metadata) },  class_name: 'Request', foreign_key: :target_asset_id
   has_many :state_changes, foreign_key: :target_id
@@ -75,8 +75,6 @@ class Asset < ActiveRecord::Base
 
   scope :requests_as_source_is_a?, ->(t) { joins(:requests_as_source).where(requests: { sti_type: [t, *t.descendants].map(&:name) }) }
 
-  extend ContainerAssociation::Extension
-
   # to override in subclass
   def location
     nil
@@ -84,16 +82,18 @@ class Asset < ActiveRecord::Base
 
   belongs_to :map
   belongs_to :barcode_prefix
-  scope :sorted, ->() { order("map_id ASC") }
+  scope :sorted, ->() { order('map_id ASC') }
 
   scope :position_name, ->(*args) {
-    joins(:map).where(["description = ? AND asset_size = ?", args[0], args[1]])
+    joins(:map).where(['description = ? AND asset_size = ?', args[0], args[1]])
   }
   scope :for_summary, -> { includes([:map, :barcode_prefix]) }
 
   scope :of_type, ->(*args) { where(sti_type: args.map { |t| [t, *t.descendants] }.flatten.map(&:name)) }
 
   scope :recent_first, -> { order('id DESC') }
+
+  scope :include_for_show, ->() { includes(requests: :request_metadata) }
 
   def studies
     []
@@ -115,7 +115,7 @@ class Asset < ActiveRecord::Base
   def related_studies
     (orders.map(&:study) + studies).compact.uniq
   end
-  # Named scope for search by query string behaviour
+ # Named scope for search by query string behaviour
  scope :for_search_query, ->(query, with_includes) {
     search = '(assets.sti_type != "Well") AND ((assets.name IS NOT NULL AND assets.name LIKE :name)'
     arguments = { name: "%#{query}%" }
@@ -123,15 +123,17 @@ class Asset < ActiveRecord::Base
     # The entire string consists of one of more numeric characters, treat it as an id or barcode
     if /\A\d+\z/ === query
       search << ' OR (assets.id = :id) OR (assets.barcode = :barcode)'
-      arguments.merge!({ id: query.to_i, barcode: query.to_s })
+      arguments[:id] = query.to_i
+      arguments[:barcode] = query.to_s
     end
 
     # If We're a Sanger Human barcode
     if match = /\A([A-z]{2})(\d{1,7})[A-z]{0,1}\z/.match(query)
-      prefix_id = BarcodePrefix.find_by_prefix(match[1]).try(:id)
+      prefix_id = BarcodePrefix.find_by(prefix: match[1]).try(:id)
       number = match[2]
       search << ' OR (assets.barcode = :barcode AND assets.barcode_prefix_id = :prefix_id)' unless prefix_id.nil?
-      arguments.merge!({ barcode: number, prefix_id: prefix_id })
+      arguments[:barcode] = number
+      arguments[:prefix_id] = prefix_id
     end
 
     search << ')'
@@ -141,7 +143,7 @@ class Asset < ActiveRecord::Base
     else
       where(search, arguments).includes(:requests).order('requests.pipeline_id ASC')
     end
-  }
+                          }
 
  scope :with_name, ->(*names) { where(name: names.flatten) }
 
@@ -195,7 +197,7 @@ class Asset < ActiveRecord::Base
   end
 
   def tube_name
-    (primary_aliquot.nil? or primary_aliquot.sample.sanger_sample_id.blank?) ? self.name : primary_aliquot.sample.shorten_sanger_sample_id
+    (primary_aliquot.nil? or primary_aliquot.sample.sanger_sample_id.blank?) ? name : primary_aliquot.sample.shorten_sanger_sample_id
   end
 
   def study
@@ -206,9 +208,9 @@ class Asset < ActiveRecord::Base
     study.try(:id)
   end
 
-  def ancestor_of_purpose(ancestor_purpose_id)
+  def ancestor_of_purpose(_ancestor_purpose_id)
     # If it's not a tube or a plate, defaults to stock_plate
-    return self.stock_plate
+    stock_plate
   end
 
   has_one :creation_request, class_name: 'Request', foreign_key: :target_asset_id
@@ -259,21 +261,21 @@ class Asset < ActiveRecord::Base
   private :name_needs_to_be_generated?
 
   def generate_name_with_id
-    self.update_attributes!(name: "#{self.name} #{self.id}")
+    update_attributes!(name: "#{name} #{id}")
   end
 
   def generate_name(new_name)
     self.name = new_name
-    @name_needs_to_be_generated = self.library_prep?
+    @name_needs_to_be_generated = library_prep?
   end
 
   # todo unify with parent/children
   def parent
-    self.parents.first
+    parents.first
   end
 
   def child
-    self.children.last
+    children.last
   end
 
   # Labware reflects the physical piece of plastic corresponding to an asset
@@ -286,11 +288,11 @@ class Asset < ActiveRecord::Base
   end
 
   def display_name
-    self.name.blank? ? "#{self.sti_type} #{self.id}" : self.name
+    name.blank? ? "#{sti_type} #{id}" : name
   end
 
   def external_identifier
-    "#{self.sti_type}#{self.id}"
+    "#{sti_type}#{id}"
   end
 
   def details
@@ -304,7 +306,7 @@ class Asset < ActiveRecord::Base
     [nil, '']
   ]
 
-  QC_STATES.reject { |k, v| k.nil? }.each do |state, qc_state|
+  QC_STATES.reject { |k, _v| k.nil? }.each do |state, qc_state|
     line = __LINE__ + 1
     class_eval("
       def qc_#{qc_state}
@@ -320,12 +322,12 @@ class Asset < ActiveRecord::Base
 
   def set_qc_state(state)
     self.qc_state = QC_STATES.rassoc(state).try(:first) || state
-    self.save
-    self.set_external_release(self.qc_state)
+    save
+    set_external_release(qc_state)
   end
 
   def has_been_through_qc?
-    not self.qc_state.blank?
+    not qc_state.blank?
   end
 
   def set_external_release(state)
@@ -341,18 +343,18 @@ class Asset < ActiveRecord::Base
     end
   end
 
-  def update_external_release(&block)
+  def update_external_release
     external_release_nil_before = external_release.nil?
     yield
     save!
-    events.create_external_release!(!external_release_nil_before) unless self.external_release.nil?
+    events.create_external_release!(!external_release_nil_before) unless external_release.nil?
   end
   private :update_external_release
 
   def self.find_by_human_barcode(barcode, location)
     data = Barcode.split_human_barcode(barcode)
     if data[0] == 'DN'
-      plate = Plate.find_by_barcode(data[1])
+      plate = Plate.find_by(barcode: data[1])
       well = plate.find_well_by_name(location)
       return well if well
     end
@@ -360,30 +362,24 @@ class Asset < ActiveRecord::Base
   end
 
   def assign_relationships(parents, child)
-    if parents.kind_of?(Array) && child.kind_of?(Asset)
-      parents.each do |parent|
-        parent.children.delete(child)
-      end
-
-      AssetLink.create_edge(self, child)
-
-      parents.each do |parent|
-        AssetLink.create_edge(parent, self)
-      end
+    parents.each do |parent|
+      parent.children.delete(child)
+      AssetLink.create_edge(parent, self)
     end
+    AssetLink.create_edge(self, child)
   end
 
-  # We accept not only an individual barcode but also an array of them.  This builds an appropriate
-  # set of conditions that can find any one of these barcodes.  We map each of the individual barcodes
-  # to their appropriate query conditions (as though they operated on their own) and then we join
-  # them together with 'OR' to get the overall conditions.
+ # We accept not only an individual barcode but also an array of them.  This builds an appropriate
+ # set of conditions that can find any one of these barcodes.  We map each of the individual barcodes
+ # to their appropriate query conditions (as though they operated on their own) and then we join
+ # them together with 'OR' to get the overall conditions.
  scope :with_machine_barcode, ->(*barcodes) {
     query_details = barcodes.flatten.map do |source_barcode|
       case source_barcode.to_s
       when /^\d{13}$/ # An EAN13 barcode
         barcode_number = Barcode.number_to_human(source_barcode)
         prefix_string  = Barcode.prefix_from_barcode(source_barcode)
-        barcode_prefix = BarcodePrefix.find_by_prefix(prefix_string)
+        barcode_prefix = BarcodePrefix.find_by(prefix: prefix_string)
 
         if barcode_number.nil? or prefix_string.nil? or barcode_prefix.nil?
           { query: 'FALSE' }
@@ -395,7 +391,7 @@ class Asset < ActiveRecord::Base
       else
         { query: 'FALSE' }
       end
-    end.inject({ query: ['FALSE'], parameters: [nil], joins: [] }) do |building, current|
+    end.inject(query: ['FALSE'], parameters: [nil], joins: []) do |building, current|
       building.tap do
         building[:joins]      << current[:joins]
         building[:query]      << current[:query]
@@ -403,34 +399,34 @@ class Asset < ActiveRecord::Base
       end
     end
 
-      where([query_details[:query].join(' OR '), *query_details[:parameters].flatten.compact]).
-      joins(query_details[:joins].compact.uniq)
-  }
+      where([query_details[:query].join(' OR '), *query_details[:parameters].flatten.compact])
+      .joins(query_details[:joins].compact.uniq)
+                              }
 
  scope :source_assets_from_machine_barcode, ->(destination_barcode) {
     destination_asset = find_from_machine_barcode(destination_barcode)
     if destination_asset
       source_asset_ids = destination_asset.parents.map(&:id)
-      unless source_asset_ids.empty?
-         where(id: source_asset_ids)
-      else
+      if source_asset_ids.empty?
         none
+      else
+         where(id: source_asset_ids)
       end
     else
       none
     end
-  }
+                                            }
 
   def self.find_from_any_barcode(source_barcode)
     if source_barcode.blank?
-      return
+      nil
     elsif source_barcode.size == 13 && Barcode.check_EAN(source_barcode)
       with_machine_barcode(source_barcode).first
     elsif match = /\A([A-z]{2})([0-9]{1,7})\w{0,1}\z/.match(source_barcode) # Human Readable
-      prefix = BarcodePrefix.find_by_prefix(match[1])
-      find_by_barcode_and_barcode_prefix_id(match[2], prefix.id)
+      prefix = BarcodePrefix.find_by(prefix: match[1])
+      find_by(barcode: match[2], barcode_prefix_id: prefix.id)
     elsif /\A[0-9]{1,7}\z/ =~ source_barcode # Just a number
-      find_by_barcode(source_barcode)
+      find_by(barcode: source_barcode)
     end
   end
 
@@ -443,15 +439,15 @@ class Asset < ActiveRecord::Base
   end
 
   def external_release_text
-    return "Unknown" if self.external_release.nil?
-    return self.external_release? ? "Yes" : "No"
+    return 'Unknown' if external_release.nil?
+    external_release? ? 'Yes' : 'No'
   end
 
   def add_parent(parent)
     return unless parent
     # should be self.parents << parent but that doesn't work
 
-    self.save!
+    save!
     parent.save!
     AssetLink.create_edge!(parent, self)
   end
@@ -465,32 +461,32 @@ class Asset < ActiveRecord::Base
   end
 
   def transfer(max_transfer_volume)
-    transfer_volume = [max_transfer_volume.to_f, self.volume || 0.0].min
-    raise VolumeError, "not enough volume left" if transfer_volume <= 0
+    transfer_volume = [max_transfer_volume.to_f, volume || 0.0].min
+    raise VolumeError, 'not enough volume left' if transfer_volume <= 0
 
-    self.class.create!(name: self.name) do |new_asset|
-      new_asset.aliquots = self.aliquots.map(&:dup)
+    self.class.create!(name: name) do |new_asset|
+      new_asset.aliquots = aliquots.map(&:dup)
       new_asset.volume   = transfer_volume
-      update_attributes!(volume: self.volume - transfer_volume) #  Update ourselves
+      update_attributes!(volume: volume - transfer_volume) #  Update ourselves
     end.tap do |new_asset|
       new_asset.add_parent(self)
     end
   end
 
   def spiked_in_buffer
-    return nil
+    nil
   end
 
   def has_stock_asset?
-    return false
+    false
   end
 
   def has_many_requests?
-    Request.find_all_target_asset(self.id).size > 1
+    Request.find_all_target_asset(id).size > 1
   end
 
   def is_a_resource
-   self.resource == true
+   resource == true
   end
 
   def can_be_created?
@@ -511,7 +507,7 @@ class Asset < ActiveRecord::Base
   end
 
   # We only support wells for the time being
-  def latest_stock_metrics(product, *args)
+  def latest_stock_metrics(_product, *_args)
     []
   end
 

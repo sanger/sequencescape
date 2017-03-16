@@ -5,8 +5,8 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 class Batches::CommentsController < ApplicationController
-# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+  # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   before_action :discover_batch
 
@@ -17,7 +17,7 @@ class Batches::CommentsController < ApplicationController
   def create
     @batch.comments.create(description: params[:comment], user_id: current_user.id)
     @comments = @batch.comments
-    render partial: "list", locals: { commentable: @batch, visible: true }
+    render partial: 'list', locals: { commentable: @batch, visible: true }
   end
 
   def destroy
@@ -26,7 +26,7 @@ class Batches::CommentsController < ApplicationController
       comment.destroy
     end
     @comments = @batch.comments
-    render partial: "list", locals: { commentable: @batch, visible: true }
+    render partial: 'list', locals: { commentable: @batch, visible: true }
   end
 
   private

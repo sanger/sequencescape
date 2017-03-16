@@ -17,17 +17,14 @@ class SequenomQcPlate < Plate
   after_create :populate_wells_from_source_plates
 
   def source_plates
-    return [] if self.parents.empty?
-    ordered_source_plates = []
-    source_barcodes.each do |plate_barcode|
-      ordered_source_plates << if plate_barcode.blank?
+    return [] if parents.empty?
+    source_barcodes.map do |plate_barcode|
+      if plate_barcode.blank?
         nil
-                               else
-        self.parents.select { |plate| plate.barcode == plate_barcode }.first
-                               end
+      else
+        parents.detect { |plate| plate.barcode == plate_barcode }
+      end
     end
-
-    ordered_source_plates
   end
 
   def default_plate_size
@@ -44,13 +41,13 @@ class SequenomQcPlate < Plate
 
   def add_event_to_stock_plates(user_barcode)
     return false unless user_barcode_exist?(user_barcode)
-    source_plates.each_with_index do |plate, index|
+    source_plates.each_with_index do |plate, _index|
       next if plate.nil?
       stock_plate = plate.stock_plate
       next if stock_plate.nil?
       stock_plate.events.create_sequenom_stamp!(User.lookup_by_barcode(user_barcode))
     end
-    self.events.create_sequenom_plate!(User.lookup_by_barcode(user_barcode))
+    events.create_sequenom_plate!(User.lookup_by_barcode(user_barcode))
   end
 
   def compute_and_set_name(input_plate_names)
@@ -68,7 +65,6 @@ class SequenomQcPlate < Plate
 
       # Plate name e.g. QC1234_1235_1236_1237_20100801
       self.name = "#{plate_prefix}#{plate_number(input_plate_names)}#{plate_date}"
-      self.plate_purpose = PlatePurpose.find_by_name("Sequenom")
       self.barcode = PlateBarcode.create.barcode
     end
     true
@@ -94,7 +90,7 @@ class SequenomQcPlate < Plate
 
   def destination_map_based_on_source_row_col_and_quadrant(quadrant, row, col)
     row_offset, col_offset = quadrant_row_col_offset(quadrant)
-    self.find_map_by_rowcol((row * 2) + row_offset, (col * 2) + col_offset)
+    find_map_by_rowcol((row * 2) + row_offset, (col * 2) + col_offset)
   end
 
   # ---------------------------
@@ -108,15 +104,15 @@ class SequenomQcPlate < Plate
   # ---------------------------
   def quadrant_row_col_offset(quadrant)
     col_offset = case quadrant
-       when 1 then 1
-       when 3 then 1
-       else 0
-       end
+                 when 1 then 1
+                 when 3 then 1
+                 else 0
+                 end
     row_offset = case quadrant
-       when 2 then 1
-       when 3 then 1
-       else 0
-       end
+                 when 2 then 1
+                 when 3 then 1
+                 else 0
+                 end
 
     [row_offset, col_offset]
   end
@@ -150,7 +146,7 @@ class SequenomQcPlate < Plate
   end
 
   def input_plates_exist?(input_plate_names)
-    input_plate_names.each do |source_plate_number, source_plate_barcode|
+    input_plate_names.each do |_source_plate_number, source_plate_barcode|
       next if source_plate_barcode.blank?
 
       source_plate = Plate.find_from_machine_barcode(source_plate_barcode)
@@ -165,7 +161,7 @@ class SequenomQcPlate < Plate
 
   def at_least_one_source_plate?(input_plate_barcodes)
     if input_plate_barcodes.empty?
-      errors.add(:base, "At least one source input plate barcode must be entered.")
+      errors.add(:base, 'At least one source input plate barcode must be entered.')
     else
       true
     end
@@ -173,7 +169,7 @@ class SequenomQcPlate < Plate
 
 def user_barcode_exist?(user_barcode)
   if User.lookup_by_barcode(user_barcode).nil?
-    errors.add(:base, "Please scan your user barcode") if User.lookup_by_barcode(user_barcode).nil?
+    errors.add(:base, 'Please scan your user barcode') if User.lookup_by_barcode(user_barcode).nil?
     false
   else
     true
@@ -186,7 +182,7 @@ end
 
   # Source plates should exist, obviously, and have contain at least one sample with a gender
   def source_plates_genders_valid?(input_plate_names)
-    input_plate_names.each do |source_plate_number, source_plate_barcode|
+    input_plate_names.each do |_source_plate_number, source_plate_barcode|
       next if source_plate_barcode.blank?
 
       source_plate = Plate.find_from_machine_barcode(source_plate_barcode)
@@ -214,13 +210,13 @@ end
   # This is the date format used by show when the plate was created
   # E.g. 1st August 2010 => 20100801.
   def plate_date
-    Time.now.strftime("%Y%m%d")
+    Time.now.strftime('%Y%m%d')
   end
 
   # Return the matching plates human barcode padded out to 8 charactors
   # or just 8 space charactors if there's no input plate that position.
   def plate_label(plate_number)
-    (label_match[plate_number] || "").ljust(7, "\s")
+    (label_match[plate_number] || '').ljust(7, "\s")
   end
 
   # Should join the values of the input_plate_names hash using underscores,
@@ -240,9 +236,9 @@ end
 
   #  ...to give "plate1_plate2_plate3_plate4"
   def plate_number(input_plate_names)
-    input_plate_names.inject("") do |return_value, (index, barcode)|
-      human_plate_name = Barcode.number_to_human(barcode) || ""
-      return_value << human_plate_name << "_"
+    input_plate_names.inject('') do |return_value, (_index, barcode)|
+      human_plate_name = Barcode.number_to_human(barcode) || ''
+      return_value << human_plate_name << '_'
     end
   end
 end

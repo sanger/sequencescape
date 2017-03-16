@@ -35,7 +35,7 @@ class RequestType < ActiveRecord::Base
   has_many :extended_validators, through: :request_type_extended_validators, dependent: :destroy
 
   def default_library_type
-    library_types.where(library_types_request_types: { is_default: true }).first
+    library_types.find_by(library_types_request_types: { is_default: true })
   end
 
   # Returns a collect of pipelines for which this RequestType is valid control.
@@ -43,7 +43,7 @@ class RequestType < ActiveRecord::Base
   has_many :control_pipelines, class_name: 'Pipeline', foreign_key: :control_request_type_id
   belongs_to :product_line
 
-  # Couple of named scopes for finding billable types
+ # Couple of named scopes for finding billable types
  scope :billable, -> { where(billable: true) }
  scope :non_billable, -> { where(billable: false) }
 
@@ -81,7 +81,7 @@ class RequestType < ActiveRecord::Base
          AND deprecated IS FALSE',
          asset.asset_type_for_request_types.name
       ])
-  }
+                              }
 
   # Helper method for generating a request constructor, like 'create!'
   def self.request_constructor(name, options = {})
@@ -119,19 +119,19 @@ class RequestType < ActiveRecord::Base
   end
 
   def self.dna_qc
-    find_by_key("dna_qc") or raise "Cannot find dna_qc request type"
+    find_by(key: 'dna_qc') or raise 'Cannot find dna_qc request type'
   end
 
   def self.genotyping
-    find_by_key("genotyping") or raise "Cannot find genotyping request type"
+    find_by(key: 'genotyping') or raise 'Cannot find genotyping request type'
   end
 
   def self.transfer
-    find_by_key("transfer") or raise "Cannot find transfer request type"
+    find_by(key: 'transfer') or raise 'Cannot find transfer request type'
   end
 
   def self.initial_transfer
-    find_by_key("initial_transfer") or raise "Cannot find initial request type"
+    find_by(key: 'initial_transfer') or raise 'Cannot find initial request type'
   end
 
   def extract_metadata_from_hash(request_options)

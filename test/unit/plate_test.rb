@@ -4,44 +4,44 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class PlateTest < ActiveSupport::TestCase
   def create_plate_with_fluidigm(fluidigm_barcode)
-    barcode = "12345678"
+    barcode = '12345678'
     purpose = create :plate_purpose
-    purpose.create!(:do_not_create_wells, { name: "Cherrypicked #{barcode}", size: 192, barcode: barcode, plate_metadata_attributes: { fluidigm_barcode: fluidigm_barcode } })
+    purpose.create!(:do_not_create_wells, name: "Cherrypicked #{barcode}", size: 192, barcode: barcode, plate_metadata_attributes: { fluidigm_barcode: fluidigm_barcode })
   end
 
-  context "" do
-    context "#infinium_barcode=" do
+  context '' do
+    context '#infinium_barcode=' do
       setup do
         @plate = Plate.new
-        @plate.infinium_barcode = "AAA"
+        @plate.infinium_barcode = 'AAA'
       end
 
-      should "set the infinium barcode" do
-        assert_equal "AAA", @plate.infinium_barcode
+      should 'set the infinium barcode' do
+        assert_equal 'AAA', @plate.infinium_barcode
       end
     end
 
-    context "#fluidigm_barcode" do
-      should "check that I cannot create a plate with a fluidigm barcode different from 10 characters" do
-        assert_raises(ActiveRecord::RecordInvalid) { create_plate_with_fluidigm("12345678") }
+    context '#fluidigm_barcode' do
+      should 'check that I cannot create a plate with a fluidigm barcode different from 10 characters' do
+        assert_raises(ActiveRecord::RecordInvalid) { create_plate_with_fluidigm('12345678') }
       end
-      should "check that I can create a plate with a fluidigm barcode equal to 10 characters" do
-        assert_nothing_raised { create_plate_with_fluidigm("1234567890") }
+      should 'check that I can create a plate with a fluidigm barcode equal to 10 characters' do
+        assert_nothing_raised { create_plate_with_fluidigm('1234567890') }
       end
     end
 
-    context "#add_well" do
+    context '#add_well' do
       [[96, 7, 11], [384, 15, 23]].each do |plate_size, row_size, col_size|
         context "for #{plate_size} plate" do
           setup do
             @well = Well.new
-            @plate = Plate.new(name: "Test Plate", size: plate_size, purpose: Purpose.find_by_name('Stock Plate'))
+            @plate = Plate.new(name: 'Test Plate', size: plate_size, purpose: Purpose.find_by(name: 'Stock Plate'))
           end
-          context "with valid row and col combinations" do
+          context 'with valid row and col combinations' do
             (0..row_size).step(1) do |row|
               (0..col_size).step(1) do |col|
                 should "not return nil: row=> #{row}, col=>#{col}" do
@@ -54,55 +54,55 @@ class PlateTest < ActiveSupport::TestCase
       end
     end
 
-    context "#sample?" do
+    context '#sample?' do
       setup do
         @plate = create :plate
-        @sample = create :sample, name: "abc"
+        @sample = create :sample, name: 'abc'
         @well_asset = Well.create!.tap { |well| well.aliquots.create!(sample: @sample) }
         @plate.add_and_save_well @well_asset
       end
-      should "find the sample name if its valid" do
-        assert Plate.find(@plate.id).sample?("abc")
+      should 'find the sample name if its valid' do
+        assert Plate.find(@plate.id).sample?('abc')
       end
-      should "not find the sample name if its invalid" do
-        assert_equal false, Plate.find(@plate.id).sample?("abcdef")
+      should 'not find the sample name if its invalid' do
+        assert_equal false, Plate.find(@plate.id).sample?('abcdef')
       end
     end
 
-    context "#control_well_exists?" do
+    context '#control_well_exists?' do
       setup do
         @control_plate = create :control_plate, barcode: 134443
-        map = Map.find_by_description_and_asset_size("A1", 96)
+        map = Map.find_by(description: 'A1', asset_size: 96)
         @control_well_asset = Well.new(map: map)
         @control_plate.add_and_save_well @control_well_asset
         @control_plate.reload
       end
-      context "where control well is present" do
+      context 'where control well is present' do
         setup do
           @plate_cw = Plate.create!
           @plate_cw.add_and_save_well Well.new
           @plate_cw.reload
           create :well_request, asset: @control_well_asset, target_asset: @plate_cw.child
         end
-        should "return true" do
+        should 'return true' do
           assert @plate_cw.control_well_exists?
         end
       end
 
-      context "where control well is not present" do
+      context 'where control well is not present' do
         setup do
           @plate_no_cw = create :plate
           @plate_no_cw.add_and_save_well Well.new
           @plate_no_cw.reload
         end
-        should "return false" do
+        should 'return false' do
           assert_equal false, @plate_no_cw.control_well_exists?
         end
       end
     end
   end
 
-  context "#plate_ids_from_requests" do
+  context '#plate_ids_from_requests' do
     setup do
       @well1 = Well.new
       @plate1 = create :plate
@@ -110,29 +110,29 @@ class PlateTest < ActiveSupport::TestCase
       @request1 = create :well_request, asset: @well1
     end
 
-    context "with 1 request" do
-      context "with a valid well asset" do
-        should "return correct plate ids" do
+    context 'with 1 request' do
+      context 'with a valid well asset' do
+        should 'return correct plate ids' do
           assert Plate.plate_ids_from_requests([@request1]).include?(@plate1.id)
         end
       end
     end
 
-    context "with 2 requests on the same plate" do
+    context 'with 2 requests on the same plate' do
       setup do
         @well2 = Well.new
         @plate1.add_and_save_well(@well2)
         @request2 = create :well_request, asset: @well2
       end
-      context "with a valid well assets" do
-        should "return a single plate ID" do
+      context 'with a valid well assets' do
+        should 'return a single plate ID' do
           assert Plate.plate_ids_from_requests([@request1, @request2]).include?(@plate1.id)
           assert Plate.plate_ids_from_requests([@request2, @request1]).include?(@plate1.id)
         end
       end
     end
 
-    context "with multiple requests on different plates" do
+    context 'with multiple requests on different plates' do
       setup do
         @well2 = Well.new
         @plate2 = create :plate
@@ -142,8 +142,8 @@ class PlateTest < ActiveSupport::TestCase
         @plate1.add_and_save_well(@well3)
         @request3 = create :well_request, asset: @well3
       end
-      context "with a valid well assets" do
-        should "return 2 plate IDs" do
+      context 'with a valid well assets' do
+        should 'return 2 plate IDs' do
           assert Plate.plate_ids_from_requests([@request1, @request2, @request3]).include?(@plate1.id)
           assert Plate.plate_ids_from_requests([@request1, @request2, @request3]).include?(@plate2.id)
           assert Plate.plate_ids_from_requests([@request3, @request1, @request2]).include?(@plate1.id)
@@ -153,7 +153,7 @@ class PlateTest < ActiveSupport::TestCase
     end
   end
 
-  context "Plate priority" do
+  context 'Plate priority' do
     setup do
       @plate = create :transfer_plate
       user = create(:user)
@@ -162,254 +162,91 @@ class PlateTest < ActiveSupport::TestCase
       end
     end
 
-    should "inherit the highest submission priority" do
+    should 'inherit the highest submission priority' do
       assert_equal 3, @plate.priority
     end
   end
 
-  context "Plate submission" do
+  context 'A Plate' do
     setup do
-      @plate1 = create :plate
-      @plate2 = create :plate
-      @plate3 = create :plate
-      @workflow = create :submission_workflow, key: 'microarray_genotyping'
-      @request_type_1 = create :well_request_type, workflow: @workflow
-      @request_type_2 = create :well_request_type, workflow: @workflow
-      @workflow.request_types << @request_type_1
-      @workflow.request_types << @request_type_2
-      @study = create :study
-      @project = create :project
-      @user = create :user
-      @current_time = Time.now
-
-      [@plate1, @plate2, @plate3].each do |plate|
-        2.times do
-          plate.add_and_save_well(Well.new)
-        end
-      end
+      @plate = Plate.create!
     end
-    context "#generate_plate_submission(project, study, user, current_time)" do
-      context "with valid inputs" do
-        setup do
-          @event_count = Event.count
-          @submission_count = Submission.count
-          @request_count =  Request.count
-          @plate1.generate_plate_submission(@project, @study, @user, @current_time)
-        end
 
- should "change Event.count by 1" do
-   assert_equal 1,  Event.count - @event_count, "Expected Event.count to change by 1"
-end
-
- should "change Submission.count by 1" do
-   assert_equal 1,  Submission.count - @submission_count, "Expected Submission.count to change by 1"
-end
-
- should "change Request.count by 0" do
-   assert_equal 0,  Request.count - @request_count, "Expected Request.count to change by 0"
-end
-        should "not set study.errors" do
-          assert_equal 0, @study.errors.count
-        end
+    context 'without attachments' do
+      should 'not report any qc_data' do
+        assert @plate.qc_files.empty?
       end
     end
 
-    context "#create_plates_submission(project, study, plates, user)" do
-      context "with valid inputs" do
-        context "and 1 plate" do
-          setup do
-            @event_count =  Event.count
-          @submission_count = Submission.count
-          @request_count =  Request.count
-            Plate.create_plates_submission(@project, @study, [@plate1], @user)
-          end
-
- should "change Event.count by 1" do
-   assert_equal 1,  Event.count - @event_count, "Expected Event.count to change by 1"
-end
-
- should "change Submission.count by 1" do
-   assert_equal 1,  Submission.count - @submission_count, "Expected Submission.count to change by 1"
-end
-
- should "change Request.count by 0" do
-   assert_equal 0,  Request.count - @request_count, "Expected Request.count to change by 0"
-end
-          should "not set study.errors" do
-            assert_equal 0, @study.errors.count
-          end
-        end
-        context "and 3 plates" do
-          setup do
-            @event_count =  Event.count
-          @submission_count = Submission.count
-          @request_count =  Request.count
-            Plate.create_plates_submission(@project, @study, [@plate1, @plate3, @plate2], @user)
-          end
-
- should "change Event.count by 3" do
-   assert_equal 3,  Event.count - @event_count, "Expected Event.count to change by 3"
-end
-
- should "change Submission.count by 3" do
-   assert_equal 3,  Submission.count - @submission_count, "Expected Submission.count to change by 3"
-end
-
- should "change Request.count by 0" do
-   assert_equal 0,  Request.count - @request_count, "Expected Request.count to change by 0"
-end
-          should "not set study.errors" do
-            assert_equal 0, @study.errors.count
-          end
-        end
-        context "and no plates" do
-          setup do
-            @event_count =  Event.count
-          @submission_count = Submission.count
-            Plate.create_plates_submission(@project, @study, [], @user)
-          end
-
- should "change Event.count by 0" do
-   assert_equal 0,  Event.count - @event_count, "Expected Event.count to change by 0"
-end
-
- should "change Submission.count by 0" do
-   assert_equal 0,  Submission.count - @submission_count, "Expected Submission.count to change by 0"
-end
-          should "not set study.errors" do
-            assert_equal 0, @study.errors.count
-          end
-        end
-      end
-
-      context "with invalid inputs" do
-        context "where user is nil" do
-          setup do
-            @event_count =  Event.count
-          @submission_count = Submission.count
-            Plate.create_plates_submission(@project, @study, [@plate1], nil)
-          end
-
- should "change Event.count by 0" do
-   assert_equal 0,  Event.count - @event_count, "Expected Event.count to change by 0"
-end
-
- should "change Submission.count by 0" do
-   assert_equal 0,  Submission.count - @submission_count, "Expected Submission.count to change by 0"
-end
-        end
-        context "where project is nil" do
-          setup do
-            @event_count =  Event.count
-          @submission_count = Submission.count
-          @request_count =  Request.count
-            Plate.create_plates_submission(nil, @study, [@plate1], @user)
-          end
-
- should "change Event.count by 0" do
-   assert_equal 0,  Event.count - @event_count, "Expected Event.count to change by 0"
-end
-
- should "change Submission.count by 0" do
-   assert_equal 0,  Submission.count - @submission_count, "Expected Submission.count to change by 0"
-end
-        end
-        context "where study is nil" do
-          setup do
-            @event_count =  Event.count
-          @submission_count = Submission.count
-          @request_count =  Request.count
-            Plate.create_plates_submission(@project, nil, [@plate1], @user)
-          end
-
- should "change Event.count by 0" do
-   assert_equal 0,  Event.count - @event_count, "Expected Event.count to change by 0"
-end
-
- should "change Submission.count by 0" do
-   assert_equal 0,  Submission.count - @submission_count, "Expected Submission.count to change by 0"
-end
-        end
-      end
-    end
-
-    context "A Plate" do
+    context 'with attached qc data' do
       setup do
-        @plate = Plate.create!
-      end
-
-      context "without attachments" do
-        should "not report any qc_data" do
-          assert @plate.qc_files.empty?
+        File.open('test/data/manifests/mismatched_plate.csv') do |file|
+          @plate.add_qc_file file
         end
       end
 
-      context "with attached qc data" do
-        setup do
-          File.open("test/data/manifests/mismatched_plate.csv") do |file|
-            @plate.add_qc_file file
-          end
-        end
-
-        should "return any qc data" do
-          assert @plate.qc_files.count == 1
-          File.open("test/data/manifests/mismatched_plate.csv") do |file|
-            assert_equal file.read, @plate.qc_files.first.uploaded_data.file.read
-          end
-        end
-      end
-
-     context "with multiple attached qc data" do
-        setup do
-          File.open("test/data/manifests/mismatched_plate.csv") do |file|
-            @plate.add_qc_file file
-            @plate.add_qc_file file
-          end
-        end
-
-        should "return multiple qc data" do
-          assert @plate.qc_files.count == 2
+      should 'return any qc data' do
+        assert @plate.qc_files.count == 1
+        File.open('test/data/manifests/mismatched_plate.csv') do |file|
+          assert_equal file.read, @plate.qc_files.first.uploaded_data.file.read
         end
       end
     end
 
-    context "with existing well data" do
-      class MockParser
-        def each_well_and_parameters
-          yield('B1', { set_concentration: '2', set_molarity: '3' })
-          yield('C1', { set_concentration: '4', set_molarity: '5' })
+    context 'with multiple attached qc data' do
+      setup do
+        File.open('test/data/manifests/mismatched_plate.csv') do |file|
+          @plate.add_qc_file file
+          @plate.add_qc_file file
         end
       end
 
-      setup do
-        @plate = Plate.new
-        @plate.wells.build([
-          { map: Map.find_by_description('A1') },
-          { map: Map.find_by_description('B1') },
-          { map: Map.find_by_description('C1') }
-        ])
-        @plate.wells.first.set_concentration('12')
-        @plate.wells.first.set_molarity('34')
-        @plate.save! # Because we use a well scope, and mocking it is asking for trouble
-
-        @plate.update_qc_values_with_parser(MockParser.new)
-      end
-
-      should 'update new wells' do
-        assert_equal 2.0, @plate.wells.detect { |w| w.map_description == 'B1' }.reload.get_concentration
-        assert_equal 3.0, @plate.wells.detect { |w| w.map_description == 'B1' }.reload.get_molarity
-        assert_equal 4.0, @plate.wells.detect { |w| w.map_description == 'C1' }.reload.get_concentration
-        assert_equal 5.0, @plate.wells.detect { |w| w.map_description == 'C1' }.reload.get_molarity
-      end
-
-      should 'no clear existing data' do
-        assert_equal 12.0, @plate.wells.detect { |w| w.map_description == 'A1' }.reload.get_concentration
-        assert_equal 34.0, @plate.wells.detect { |w| w.map_description == 'A1' }.reload.get_molarity
+      should 'return multiple qc data' do
+        assert @plate.qc_files.count == 2
       end
     end
   end
 
-  context "::with_descendants_owned_by" do
+  context 'with existing well data' do
+    class MockParser
+      def each_well_and_parameters
+        yield('B1', { set_concentration: '2', set_molarity: '3' })
+        yield('C1', { set_concentration: '4', set_molarity: '5' })
+      end
+    end
+
+    setup do
+      @plate = create :plate_with_empty_wells, well_count: 3
+      # @plate.wells.build([
+      #   { map: Map.find_by(description: 'A1') },
+      #   { map: Map.find_by(description: 'B1') },
+      #   { map: Map.find_by(description: 'C1') }
+      #   ])
+      @plate.wells.first.set_concentration('12')
+      @plate.wells.first.set_molarity('34')
+      # @plate.save! # Because we use a well scope, and mocking it is asking for trouble
+
+      @plate.update_qc_values_with_parser(MockParser.new)
+    end
+
+    should 'update new wells' do
+      well_b1 = @plate.wells.detect { |w| w.map_description == 'B1' }.reload
+      well_c1 = @plate.wells.detect { |w| w.map_description == 'C1' }.reload
+
+      assert_equal 2.0, well_b1.get_concentration
+      assert_equal 3.0, well_b1.get_molarity
+      assert_equal 4.0, well_c1.get_concentration
+      assert_equal 5.0, well_c1.get_molarity
+    end
+
+    should 'not clear existing data' do
+      well_a1 = @plate.wells.detect { |w| w.map_description == 'A1' }.reload
+      assert_equal 12.0, well_a1.get_concentration
+      assert_equal 34.0, well_a1.get_molarity
+    end
+  end
+
+  context '::with_descendants_owned_by' do
     setup do
       @user = create :user
       @source_plate = create :source_plate
@@ -432,12 +269,12 @@ end
     end
   end
 
-  context "tubes are created from plate" do
-    should "send print request" do
+  context 'tubes are created from plate' do
+    should 'send print request' do
       plate = create :plate
       10.times { plate.add_and_save_well(create :well_with_sample_and_without_plate) }
       barcode_printer = create :barcode_printer
-      LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns({ 'data' => [{ 'id' => 15 }] })
+      LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns('data' => [{ 'id' => 15 }])
 
       RestClient.expects(:post)
 

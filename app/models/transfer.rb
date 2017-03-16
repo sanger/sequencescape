@@ -16,9 +16,9 @@ class Transfer < ActiveRecord::Base
 
         # This looks odd but it's a LEFT OUTER JOIN, meaning that the rows we would be interested in have no source_id.
         scope :with_no_outgoing_transfers, -> {
-          select("DISTINCT #{base.quoted_table_name}.*").
-          joins("LEFT OUTER JOIN `transfers` outgoing_transfers ON outgoing_transfers.`source_id`=#{base.quoted_table_name}.`id`").
-          where('outgoing_transfers.source_id IS NULL')
+          select("DISTINCT #{base.quoted_table_name}.*")
+          .joins("LEFT OUTER JOIN `transfers` outgoing_transfers ON outgoing_transfers.`source_id`=#{base.quoted_table_name}.`id`")
+          .where('outgoing_transfers.source_id IS NULL')
         }
 
         scope :including_used_plates?, ->(filter) {
@@ -45,15 +45,14 @@ class Transfer < ActiveRecord::Base
     # The state of an asset is based on the transfer requests for the asset.  If they are all in the same
     # state then it takes that state.  Otherwise we take the "most optimum"!
     def state
-      state_from(self.transfer_requests)
+      state_from(transfer_requests)
     end
 
     def state_from(state_requests)
       unique_states = state_requests.map(&:state).uniq
       return unique_states.first if unique_states.size == 1
-      ALL_STATES.detect { |s| unique_states.include?(s) } || self.default_state || 'unknown'
+      ALL_STATES.detect { |s| unique_states.include?(s) } || default_state || 'unknown'
     end
-    private :state_from
 
     module PlateState
       def self.included(base)
@@ -68,7 +67,7 @@ class Transfer < ActiveRecord::Base
               # assets to the plates, then look for the wells, rather than vice-versa.  The former query takes fractions
               # of a second, the latter over 60.
               query_conditions, join_options = 'transfer_requests_as_target.state IN (?)', [
-                "STRAIGHT_JOIN `container_associations` ON (`assets`.`id` = `container_associations`.`container_id`)",
+                'STRAIGHT_JOIN `container_associations` ON (`assets`.`id` = `container_associations`.`container_id`)',
                 "INNER JOIN `assets` wells_assets ON (`wells_assets`.`id` = `container_associations`.`content_id`) AND (`wells_assets`.`sti_type` = 'Well')",
                 "LEFT OUTER JOIN `requests` transfer_requests_as_target ON transfer_requests_as_target.target_asset_id = wells_assets.id AND (transfer_requests_as_target.`sti_type` IN (#{[TransferRequest, *TransferRequest.descendants].map(&:name).map(&:inspect).join(',')}))"
               ]
@@ -78,15 +77,15 @@ class Transfer < ActiveRecord::Base
               # pulldown at least).
               query_conditions = 'transfer_requests_as_target.state IN (?)'
               if states.include?('pending')
-                join_options << "INNER JOIN `plate_purposes` ON (`plate_purposes`.`id` = `assets`.`plate_purpose_id`)"
-                query_conditions << ' OR (transfer_requests_as_target.state IS NULL AND plate_purposes.can_be_considered_a_stock_plate=TRUE)'
+                join_options << 'INNER JOIN `plate_purposes` ON (`plate_purposes`.`id` = `assets`.`plate_purpose_id`)'
+                query_conditions << ' OR (transfer_requests_as_target.state IS NULL AND plate_purposes.stock_plate=TRUE)'
               end
 
               joins(join_options).where([query_conditions, states])
             else
               {}
             end
-          }
+                          }
         end
       end
     end
@@ -109,10 +108,10 @@ class Transfer < ActiveRecord::Base
             else
               all
             end
-          }
+                          }
          scope :without_finished_tubes, ->(purpose) {
             where.not(["assets.plate_purpose_id IN (?) AND transfer_requests_as_target.state = 'passed'", purpose.map(&:id)])
-          }
+                                        }
         end
       end
     end
@@ -151,7 +150,7 @@ class Transfer < ActiveRecord::Base
       end
     end
 
-    def each_transfer(&block)
+    def each_transfer
       well_to_destination.each do |source, destination_and_additional_information|
         destination, *extra_information = Array(destination_and_additional_information)
         yield(source, destination)
@@ -163,7 +162,7 @@ class Transfer < ActiveRecord::Base
 
   include Uuid::Uuidable
 
-  self.inheritance_column = "sti_type"
+  self.inheritance_column = 'sti_type'
 
   # So we can track who is requesting the transfer
   belongs_to :user

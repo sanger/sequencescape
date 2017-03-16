@@ -4,6 +4,13 @@
 # instead of editing this one. Cucumber will automatically load all features/**/*.rb
 # files.
 
+ENV['RAILS_ENV'] ||= 'cucumber'
+
+if ENV['RAILS_ENV'] != 'cucumber'
+  puts "You are running the cucumber specs with the #{ENV['RAILS_ENV']} environment."
+  puts "This can cause problems with gem loading. Please use 'cucumber' instead."
+end
+
 require 'cucumber/rails'
 
 # Capybara defaults to CSS3 selectors rather than XPath.
@@ -33,7 +40,7 @@ ActionController::Base.allow_rescue = false
 begin
   DatabaseCleaner.strategy = :transaction
 rescue NameError
-  raise "You need to add database_cleaner to your Gemfile (in the :test group) if you wish to use it."
+  raise 'You need to add database_cleaner to your Gemfile (in the :test group) if you wish to use it.'
 end
 
 # You may also want to configure DatabaseCleaner to use different strategies for certain features and scenarios.

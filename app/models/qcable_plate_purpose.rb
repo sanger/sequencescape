@@ -5,21 +5,5 @@
 # Copyright (C) 2014,2015 Genome Research Ltd.
 
 class QcablePlatePurpose < PlatePurpose
-  module ClassBehaviour
-    def state_of(plate)
-      qcable_for(plate).state
-    end
-
-    def transition_to(plate, state, *ignored)
-      qcable_for(plate).transition_to(state)
-    end
-
-    private
-
-    def qcable_for(plate)
-      Qcable.find_by_asset_id(plate.id)
-    end
-  end
-
-  include ClassBehaviour
+  include SharedBehaviour::QcableAsset
 end

@@ -24,7 +24,7 @@ class Order < ActiveRecord::Base
 
   include Workflowed
 
-  self.inheritance_column = "sti_type"
+  self.inheritance_column = 'sti_type'
 
   # Required at initial construction time ...
   belongs_to :study
@@ -57,18 +57,18 @@ class Order < ActiveRecord::Base
   scope :containing_samples, ->(samples) { joins(assets: :samples).where(samples: { id: samples }) }
 
   def is_building_submission?
-    self.submission.building?
+    submission.building?
   end
 
   def on_delete_destroy_submission
     if is_building_submission?
       # After destroying an order, if it is the last order on it's submission
       # destroy the submission too.
-      orders = self.submission.orders
+      orders = submission.orders
       submission.destroy unless orders.size > 1
       return true
     end
-    return false
+    false
   end
 
   serialize :request_types
@@ -142,7 +142,7 @@ class Order < ActiveRecord::Base
   end
 
   def url_name
-    "order"
+    'order'
   end
   alias_method(:json_root, :url_name)
 
@@ -166,7 +166,7 @@ class Order < ActiveRecord::Base
     Submission.build!({ template: self }.merge(options))
   end
 
-  def self.extended(base)
+  def self.extended(_base)
     class_eval do
       def self.build!(*args)
         Order::build!(*args)
@@ -175,7 +175,7 @@ class Order < ActiveRecord::Base
   end
 
   def multiplexed?
-    RequestType.find(self.request_types).any?(&:for_multiplexing?)
+    RequestType.find(request_types).any?(&:for_multiplexing?)
   end
 
   def is_asset_applicable_to_type?(request_type, asset)
@@ -185,7 +185,7 @@ class Order < ActiveRecord::Base
 
   delegate :left_building_state?, to: :submission, allow_nil: true
 
-  def create_request_of_type!(request_type, attributes = {}, &block)
+  def create_request_of_type!(request_type, attributes = {})
     em = request_type.extract_metadata_from_hash(request_options)
     request_type.create!(attributes) do |request|
       request.submission_id               = submission_id
@@ -198,25 +198,25 @@ class Order < ActiveRecord::Base
       request.order                       = self
 
       if request.asset.present?
-        raise AssetTypeError, "Asset type does not match that expected by request type." unless is_asset_applicable_to_type?(request_type, request.asset)
+        raise AssetTypeError, 'Asset type does not match that expected by request type.' unless is_asset_applicable_to_type?(request_type, request.asset)
       end
     end
   end
 
   def duplicate(&block)
     create_parameters = template_parameters
-    new_order = Order.create(create_parameters.merge(study: self.study, workflow: self.workflow,
-          user: self.user, assets: self.assets, state: self.state,
-          request_types: self.request_types,
-          request_options: self.request_options,
-          comments: self.comments,
-          project_id: self.project_id), &block)
+    new_order = Order.create(create_parameters.merge(study: study, workflow: workflow,
+                                                     user: user, assets: assets, state: state,
+                                                     request_types: request_types,
+                                                     request_options: request_options,
+                                                     comments: comments,
+                                                     project_id: project_id), &block)
     new_order.save
-    return new_order
+    new_order
   end
 
   def duplicates_within(timespan)
-    matching_orders = Order.containing_samples(all_samples).where(template_name: template_name).includes(:submission, { assets: :samples }).where('orders.id != ?', self.id).where('orders.created_at > ?', DateTime.current - timespan)
+    matching_orders = Order.containing_samples(all_samples).where(template_name: template_name).includes(:submission, assets: :samples).where('orders.id != ?', id).where('orders.created_at > ?', DateTime.current - timespan)
     return false if matching_orders.empty?
     matching_samples = matching_orders.map(&:samples).flatten & all_samples
     matching_submissions = matching_orders.map(&:submission).uniq
@@ -232,7 +232,7 @@ class Order < ActiveRecord::Base
 
   attr_accessor :info_differential # aggrement text to display when creating a new submission
   attr_accessor :customize_partial # the name of a partial to render.
-  DefaultAssetInputMethods = ["select an asset group"]
+  DefaultAssetInputMethods = ['select an asset group']
   # DefaultAssetInputMethods = ["select an asset group", "enter a list of asset ids", "enter a list of asset names", "enter a list of sample names"]
   attr_writer :asset_input_methods
   def asset_input_methods; @asset_input_methods ||= DefaultAssetInputMethods; end
@@ -251,7 +251,7 @@ class Order < ActiveRecord::Base
       info_differential: info_differential,
       customize_partial: customize_partial,
       asset_input_methods: asset_input_methods != DefaultAssetInputMethods ? asset_input_methods : nil
-    }.reject { |k, v| v.nil? }
+    }.reject { |_k, v| v.nil? }
   end
 
   def request_types_list
@@ -263,7 +263,7 @@ class Order < ActiveRecord::Base
   end
 
   def filter_asset_groups(asset_groups)
-    return asset_groups
+    asset_groups
   end
 
   class CompositeAttribute
@@ -299,7 +299,7 @@ class Order < ActiveRecord::Base
         default_value: default,
         kind: kind
       }
-      values.update(selection: options) if self.selection?
+      values.update(selection: options) if selection?
       FieldInfo.new(values)
     end
   end
@@ -333,7 +333,7 @@ class Order < ActiveRecord::Base
   # Unless you are doing something fancy, fall back on the defaults
   def input_field_infos
     return @input_field_infos if @input_field_infos
-    return @cache_calc ||= compute_input_field_infos
+    @cache_calc ||= compute_input_field_infos
   end
 
   # we don't call it input_field_infos= because it has a slightly different meanings
@@ -362,7 +362,7 @@ class Order < ActiveRecord::Base
 
   # Are we still able to modify this instance?
   def building?
-    self.submission.nil?
+    submission.nil?
   end
 
   # Returns true if this is an order for sequencing
@@ -401,7 +401,7 @@ class Order < ActiveRecord::Base
 
   def study_is_active
     if study.present? && !study.active?
-      errors.add(:study, "is not active")
+      errors.add(:study, 'is not active')
     end
   end
 end

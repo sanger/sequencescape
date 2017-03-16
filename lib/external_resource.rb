@@ -3,7 +3,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011 Genome Research Ltd.
 module ExternalResource
-  ResourceName = "SNP"
+  ResourceName = 'SNP'
 
   def self.included(base)
     base.send(:has_one, :identifier, as: :external)

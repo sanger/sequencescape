@@ -5,7 +5,7 @@
 # Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
 
 Transform /^submitted to "([^\"]+)"$/ do |name|
-  SubmissionTemplate.find_by_name(name) or raise StandardError, "Cannot find submission template #{name.inspect}"
+  SubmissionTemplate.find_by(name: name) or raise StandardError, "Cannot find submission template #{name.inspect}"
 end
 
 Transform /^all submissions$/ do |_|
@@ -31,7 +31,7 @@ class WellRange
   end
   private :include_well_location?
 
-  def to_a(&block)
+  def to_a
     [].tap do |wells|
       (1..12).each do |column|
         ('A'..'H').each do |row|
@@ -42,9 +42,7 @@ class WellRange
     end
   end
 
-  def size
-    to_a.size
-  end
+  delegate :size, to: :to_a
 end
 
 Transform /^([A-H]\d+)-([A-H]\d+)$/ do |start, finish|
@@ -119,7 +117,7 @@ end
 
 def work_pipeline_for(submissions, name, template = nil)
   final_plate_type = PlatePurpose.find_by(name: name) or raise StandardError, "Cannot find #{name.inspect} plate type"
-  template       ||= TransferTemplate.find_by_name('Pool wells based on submission') or raise StandardError, 'Cannot find pooling transfer template'
+  template       ||= TransferTemplate.find_by(name: 'Pool wells based on submission') or raise StandardError, 'Cannot find pooling transfer template'
 
   source_plates = submissions.map { |submission| submission.requests.first.asset.plate }.uniq
   raise StandardError, "Submissions appear to come from non-unique plates: #{source_plates.inspect}" unless source_plates.size == 1
@@ -165,12 +163,12 @@ Given /^(all submissions) have been worked until the last plate of the "Illumina
   work_pipeline_for(submissions, 'ILB_STD_PCRXP')
 end
 Given /^(all submissions) have been worked until the last plate of the "Illumina-B HTP" pipeline$/ do |submissions|
-  plate = work_pipeline_for(submissions, 'Lib PCR-XP', TransferTemplate.find_by_name!('Transfer columns 1-1'))
+  plate = work_pipeline_for(submissions, 'Lib PCR-XP', TransferTemplate.find_by!(name: 'Transfer columns 1-1'))
   finalise_pipeline_for(plate)
 end
 
 Transform /^the (sample|library) tube "([^\"]+)"$/ do |type, name|
-  "#{type}_tube".classify.constantize.find_by_name(name) or raise StandardError, "Could not find the #{type} tube #{name.inspect}"
+  "#{type}_tube".classify.constantize.find_by(name: name) or raise StandardError, "Could not find the #{type} tube #{name.inspect}"
 end
 
 Transform /^the (?:.+\s)?plate "([^\"]+)"$/ do |name|
@@ -186,7 +184,7 @@ Transform /^the study "([^\"]+)"$/ do |name|
 end
 
 Then /^the state of (the .+) should be "([^\"]+)"$/ do |target, state|
-  assert_equal(state, target.state, "State is invalid")
+  assert_equal(state, target.state, 'State is invalid')
 end
 
 Given /^all of the wells on (the plate .+) are in an asset group called "([^"]+)" owned by (the study .+)$/ do |plate, name, study|
@@ -194,7 +192,7 @@ Given /^all of the wells on (the plate .+) are in an asset group called "([^"]+)
 end
 
 Then /^all "([^\"]+)" requests should have the following details:$/ do |name, table|
-  request_type = RequestType.find_by_name(name) or raise StandardError, "Could not find request type #{name.inspect}"
+  request_type = RequestType.find_by(name: name) or raise StandardError, "Could not find request type #{name.inspect}"
   raise StandardError, "No requests of type #{name.inspect}" if request_type.requests.empty?
 
   results = request_type.requests.all.map do |request|
@@ -206,7 +204,7 @@ Then /^all "([^\"]+)" requests should have the following details:$/ do |name, ta
     value = value.to_i if ['fragment_size_required_from', 'fragment_size_required_to'].include?(attribute)
     [attribute, value]
   end]
-  assert_equal([expected], results, "Request details are not identical")
+  assert_equal([expected], results, 'Request details are not identical')
 end
 
 Given /^"([^\"]+-[^\"]+)" of the plate with ID (\d+) are empty$/ do |range, id|
@@ -214,7 +212,7 @@ Given /^"([^\"]+-[^\"]+)" of the plate with ID (\d+) are empty$/ do |range, id|
 end
 
 Given /^all requests are in the last submission$/ do
-  submission = Submission.last or raise StandardError, "There are no submissions!"
+  submission = Submission.last or raise StandardError, 'There are no submissions!'
   Request.update_all("submission_id=#{submission.id}")
 end
 
@@ -234,7 +232,7 @@ Given /^(the plate .+) will pool into 1 tube$/ do |plate|
 end
 
 Then /^the user (should|should not) accept responsibility for pulldown library creation requests from the plate "(.*?)"$/ do |accept, plate_name|
-  Plate.find_by_name(plate_name).wells.each do |well|
+  Plate.find_by(name: plate_name).wells.each do |well|
     well.requests.where_is_a?(Pulldown::Requests::LibraryCreation).each { |r| assert_equal accept == 'should', r.request_metadata.customer_accepts_responsibility }
   end
 end

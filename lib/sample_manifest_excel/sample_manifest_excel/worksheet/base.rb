@@ -20,7 +20,7 @@ module SampleManifestExcel
       # Adds n empty rows
 
       def add_rows(n)
-        n.times { |i| add_row }
+        n.times { |_i| add_row }
       end
 
       # Assigns name to a worksheet depending on axlsx worksheet name. Used to assign
@@ -49,7 +49,7 @@ module SampleManifestExcel
       # Creates a worksheet, empty one in this case
 
       def create_worksheet
-        insert_axlsx_worksheet("Base")
+        insert_axlsx_worksheet('Base')
       end
     end
   end

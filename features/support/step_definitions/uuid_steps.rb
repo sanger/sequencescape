@@ -58,7 +58,7 @@ PLURAL_MODELS_BASED_ON_NAME_REGEXP   = ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_N
 # This may create invalid UUID external_id values but it means that we don't have to conform to the
 # standard in our features.
 Given /^the UUID for the (#{SINGULAR_MODELS_BASED_ON_NAME_REGEXP}) "([^\"]+)" is "([^\"]+)"$/ do |model, name, uuid_value|
-  object = model.gsub(/\s+/, '_').classify.constantize.find_by_name(name) or raise "Cannot find #{model} #{name.inspect}"
+  object = model.gsub(/\s+/, '_').classify.constantize.find_by(name: name) or raise "Cannot find #{model} #{name.inspect}"
   set_uuid_for(object, uuid_value)
 end
 
@@ -209,7 +209,7 @@ Given /^the (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) exists with ID (\d+)$/ do |m
 end
 
 Given /^the (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) exists with ID (\d+) and the following attributes:$/ do |model, id, table|
-  attributes = table.hashes.inject({}) { |h, att| h.update(att["name"] => att["value"]) }
+  attributes = table.hashes.inject({}) { |h, att| h.update(att['name'] => att['value']) }
   attributes[:id] ||= id
   FactoryGirl.create(model.gsub(/\s+/, '_').to_sym, attributes)
 end
@@ -227,7 +227,7 @@ Given /^there are (\d+) "([^\"]+)" requests with IDs starting at (\d+)$/ do |cou
 end
 
 Given /^a "([^\"]+)" request with ID (\d+)$/ do |type, id|
-  request_type = RequestType.find_by_name(type) or raise StandardError, "Cannot find request type #{type.inspect}"
+  request_type = RequestType.find_by(name: type) or raise StandardError, "Cannot find request type #{type.inspect}"
   # TODO: This is wrong.
   request_type.requests.create! { |r| r.id = id.to_i; r.request_purpose = request_type.request_purpose }
 end
@@ -245,6 +245,6 @@ Given /^plate "([^"]*)" is a source plate of "([^"]*)"$/ do |source_plate_uuid, 
 end
 
 Given /^the UUID for well (\d+) on plate "(.*?)" is "(.*?)"$/ do |well_id, plate_name, uuid|
-  plate = Plate.find_by_name(plate_name) || Plate.find_by_barcode(plate_name)
+  plate = Plate.find_by(name: plate_name) || Plate.find_by(barcode: plate_name)
   set_uuid_for(plate.wells[well_id.to_i - 1], uuid)
 end

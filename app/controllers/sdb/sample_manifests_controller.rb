@@ -13,21 +13,21 @@ class Sdb::SampleManifestsController < Sdb::BaseController
   # Upload the manifest and store it for later processing
   def upload
     if (params[:sample_manifest].blank?) || (params[:sample_manifest] && params[:sample_manifest][:uploaded].blank?)
-      flash[:error] = "No CSV file uploaded"
+      flash[:error] = 'No CSV file uploaded'
       return
     end
 
     @sample_manifest = SampleManifest.find_sample_manifest_from_uploaded_spreadsheet(params[:sample_manifest][:uploaded])
     if @sample_manifest.nil?
-      flash[:error] = "Cannot find details about the sample manifest"
+      flash[:error] = 'Cannot find details about the sample manifest'
       return
     end
 
     @sample_manifest.update_attributes(params[:sample_manifest])
-    @sample_manifest.process(current_user, params[:sample_manifest][:override] == "1")
-    flash[:notice] = "Manifest being processed"
+    @sample_manifest.process(current_user, params[:sample_manifest][:override] == '1')
+    flash[:notice] = 'Manifest being processed'
   rescue CSV::MalformedCSVError
-    flash[:error] = "Invalid CSV file"
+    flash[:error] = 'Invalid CSV file'
   ensure
     redirect_to (@sample_manifest.present? ? sample_manifests_study_path(@sample_manifest.study) : sample_manifests_path)
   end
@@ -49,7 +49,7 @@ class Sdb::SampleManifestsController < Sdb::BaseController
   def new
     @asset_type = params[:type]
     @sample_manifest  = SampleManifest.new(asset_type: @asset_type)
-    @study_id         = params[:study_id] || ""
+    @study_id         = params[:study_id] || ''
     @studies          = Study.alphabetical
     @suppliers        = Supplier.alphabetical
     @barcode_printers = @sample_manifest.applicable_barcode_printers.collect(&:name)
@@ -66,7 +66,7 @@ class Sdb::SampleManifestsController < Sdb::BaseController
       redirect_to sample_manifest_path(@sample_manifest_generator.sample_manifest)
     else
 
-      flash[:error] = @sample_manifest_generator.errors.full_messages.join(", ")
+      flash[:error] = @sample_manifest_generator.errors.full_messages.join(', ')
       redirect_to new_sample_manifest_path
 
     end

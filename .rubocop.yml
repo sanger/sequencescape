@@ -29,7 +29,7 @@ Lint/Debugger:
     - 'features/support/step_definitions/debug_steps.rb'
     - 'features/support/developing.rb'
 # Enforces 1234565789 as 123_456_789: While nice when dealing with actual big
-# numbers, we're more likely to see it shout at use about barcodes.
+# numbers, we're more likely to see it shout at us about barcodes.
 Style/NumericLiterals:
   Enabled: false
 
@@ -39,8 +39,17 @@ Style/NumericLiterals:
 Metrics/BlockLength:
   Exclude:
     - 'test/**/*'
+    - 'spec/**/*'
     - 'config/routes.rb'
 
 # Enforces the new rails 5 style. Re-enable on Rails 5 upgrade.
 Rails/HttpPositionalArguments:
   Enabled: false
+
+# We have a few custom find_by methods which we maintain.
+# At least for now. find_by_id_or_name is a bit clunky.
+Rails/DynamicFindBy:
+  Whitelist:
+    - find_by_sql
+    - find_by_id_or_name
+    - find_by_id_or_name!

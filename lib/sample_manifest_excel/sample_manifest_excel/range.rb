@@ -33,10 +33,10 @@ module SampleManifestExcel
     # the number of options minus one.
     def last_column
       @last_column ||= if options.empty?
-        first_column
-      else
-        options.length + (first_column - 1)
-      end
+                         first_column
+                       else
+                         options.length + (first_column - 1)
+                       end
     end
 
     ##
@@ -63,11 +63,15 @@ module SampleManifestExcel
       "#{first_cell.fixed}:#{last_cell.fixed}"
     end
 
+    # rubocop:disable Rails/Delegate
+    # Would change this to:
+    # delegate :reference, to: :first_cell, prefix: true
     ##
     # The reference of the first cell.
     def first_cell_reference
       first_cell.reference
     end
+    # rubocop:enable Rails/Delegate
 
     ##
     # An absolute reference is defined as a reference preceded by the name of the

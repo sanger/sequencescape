@@ -3,30 +3,25 @@ require 'rails_helper'
 require 'pry'
 
 feature 'cherrypick pipeline - nano grams per micro litre', js: true do
-  let(:user) { create :admin, barcode: "ID41440E" }
+  let(:user) { create :admin, barcode: 'ID41440E' }
   let(:project) { create :project, name: 'Test project' }
   let(:study) { create :study }
-  let(:location) { Location.find_by_name("Sample logistics freezer") }
+  let(:location) { Location.find_by(name: 'Sample logistics freezer') }
   let(:pipeline_name) { 'Cherrypick' }
-  let(:pipeline) { Pipeline.find_by_name(pipeline_name) }
-  let(:plate1) { create :plate, barcode: "1", location: location }
-  let(:plate2) { create :plate, barcode: "10", location: location }
-  let(:plate3) { create :plate, barcode: "5", location: location }
-  let(:asset_group) { create :asset_group, study: study }
+  let(:pipeline) { Pipeline.find_by(name: pipeline_name) }
+  let(:plate1) { create :plate_with_untagged_wells, well_order: :row_order, sample_count: 2, barcode: '1', location: location }
+  let(:plate2) { create :plate_with_untagged_wells, well_order: :row_order, sample_count: 2, barcode: '10', location: location }
+  let(:plate3) { create :plate_with_untagged_wells, well_order: :row_order, sample_count: 2, barcode: '5', location: location }
   let(:plates) { [plate1, plate2, plate3] }
-  let(:submission_template) { SubmissionTemplate.find_by_name(pipeline_name) }
-  let(:workflow) { Submission::Workflow.find_by_key('microarray_genotyping') }
+  let(:submission_template) { SubmissionTemplate.find_by(name: pipeline_name) }
+  let(:workflow) { Submission::Workflow.find_by(key: 'microarray_genotyping') }
   let(:barcode) { 99999 }
-  let(:robot) { create :robot, barcode: "444" }
+  let(:robot) { create :robot, barcode: '444' }
   let!(:plate_template) { create :plate_template }
 
   before(:each) do
-    plates.each do |plate|
-      asset_group.assets << (1..2).map do |index|
-        create(:well, plate: plate, map_id: index).tap do |well|
-          well.aliquots.create!(sample: create(:sample, name: "Sample_#{plate.barcode}_#{index}"), study: study)
-        end
-      end
+    assets = plates.each_with_object([]) do |plate, assets|
+      assets.concat(plate.wells)
       plate.wells.each_with_index do |well, index|
         well.well_attribute.update_attributes!(
           current_volume: 30 + (index % 30),
@@ -39,7 +34,7 @@ feature 'cherrypick pipeline - nano grams per micro litre', js: true do
       project: project,
       workflow: workflow,
       user: user,
-      assets: asset_group.assets
+      assets: assets
     )
     Delayed::Worker.new.work_off
 
@@ -48,11 +43,11 @@ feature 'cherrypick pipeline - nano grams per micro litre', js: true do
       body: "<plate_barcode><id>42</id><name>Barcode #{barcode}</name><barcode>#{barcode}</barcode></plate_barcode>"
     )
 
-    robot.robot_properties.create(key: 'max_plates', value: "21")
-    robot.robot_properties.create(key: 'SCRC1', value: "1")
-    robot.robot_properties.create(key: 'SCRC2', value: "2")
-    robot.robot_properties.create(key: 'SCRC3', value: "3")
-    robot.robot_properties.create(key: 'DEST1', value: "20")
+    robot.robot_properties.create(key: 'max_plates', value: '21')
+    robot.robot_properties.create(key: 'SCRC1', value: '1')
+    robot.robot_properties.create(key: 'SCRC2', value: '2')
+    robot.robot_properties.create(key: 'SCRC3', value: '3')
+    robot.robot_properties.create(key: 'DEST1', value: '20')
   end
 
   # from 6628187_tests_for_fix_tecan_volumes.feature
@@ -60,55 +55,55 @@ feature 'cherrypick pipeline - nano grams per micro litre', js: true do
   scenario 'required volume is 65' do
     login_user(user)
     visit pipeline_path(pipeline)
-    check("Select DN1S for batch")
-    check("Select DN10I for batch")
-    check("Select DN5W for batch")
-    first(:select, "action_on_requests").select("Create Batch")
-    first(:button, "Submit").click
-    click_link "Select Plate Template"
-    select("testtemplate", from: "Plate Template")
-    select("Infinium 670k", from: "Output plate purpose")
-    fill_in("nano_grams_per_micro_litre_volume_required", with: "65")
-    fill_in("nano_grams_per_micro_litre_robot_minimum_picking_volume", with: "1.0")
-    click_button "Next step"
-    click_button "Next step"
-    select("Genotyping freezer", from: "Location")
-    click_button "Next step"
-    click_button "Release this batch"
-    expect(page).to have_content("Batch released!")
+    check('Select DN1S for batch')
+    check('Select DN10I for batch')
+    check('Select DN5W for batch')
+    first(:select, 'action_on_requests').select('Create Batch')
+    first(:button, 'Submit').click
+    click_link 'Select Plate Template'
+    select('testtemplate', from: 'Plate Template')
+    select('Infinium 670k', from: 'Output plate purpose')
+    fill_in('nano_grams_per_micro_litre_volume_required', with: '65')
+    fill_in('nano_grams_per_micro_litre_robot_minimum_picking_volume', with: '1.0')
+    click_button 'Next step'
+    click_button 'Next step'
+    select('Genotyping freezer', from: 'Location')
+    click_button 'Next step'
+    click_button 'Release this batch'
+    expect(page).to have_content('Batch released!')
 
     batch = Batch.last
     batch.update_attributes!(barcode: Barcode.number_to_human(550000555760))
 
     visit robot_verifications_path
-    fill_in("Scan user ID", with: "2470041440697")
-    fill_in("Scan Tecan robot", with: "4880000444853")
-    fill_in("Scan worksheet", with: "550000555760")
-    fill_in("Scan destination plate", with: "1220099999705")
-    click_button "Check"
-    expect(page).to have_content("Scan robot beds and plates")
+    fill_in('Scan user ID', with: '2470041440697')
+    fill_in('Scan Tecan robot', with: '4880000444853')
+    fill_in('Scan worksheet', with: '550000555760')
+    fill_in('Scan destination plate', with: '1220099999705')
+    click_button 'Check'
+    expect(page).to have_content('Scan robot beds and plates')
 
-    table = [["Bed", "Scanned robot beds", "Plate ID", "Scanned plates", "Plate type"],
-             ["SCRC 1", "", "1220000001831", "", "ABgene_0765 ABgene_0800 FluidX075"],
-             ["SCRC 2", "", "1220000010734", "", "ABgene_0765 ABgene_0800 FluidX075"],
-             ["SCRC 3", "", "1220000005877", "", "ABgene_0765 ABgene_0800 FluidX075"],
-             ["DEST 1", "", "1220099999705", "", "ABgene_0800"]]
+    table = [['Bed', 'Scanned robot beds', 'Plate ID', 'Scanned plates', 'Plate type'],
+             ['SCRC 1', '', '1220000001831', '', 'ABgene_0765 ABgene_0800 FluidX075'],
+             ['SCRC 2', '', '1220000010734', '', 'ABgene_0765 ABgene_0800 FluidX075'],
+             ['SCRC 3', '', '1220000005877', '', 'ABgene_0765 ABgene_0800 FluidX075'],
+             ['DEST 1', '', '1220099999705', '', 'ABgene_0800']]
     expect(fetch_table('table#source_beds')).to eq(table)
 
-    fill_in("SCRC 1", with: "4880000001780")
-    fill_in("1220000001831", with: "1220000001831")
-    fill_in("SCRC 2", with: "4880000002794")
-    fill_in("1220000005877", with: "1220000005877")
-    fill_in("SCRC 3", with: "4880000003807")
-    fill_in("1220000010734", with: "1220000010734")
-    fill_in("DEST 1", with: "4880000020729")
-    fill_in("1220099999705", with: "1220099999705")
+    fill_in('SCRC 1', with: '4880000001780')
+    fill_in('1220000001831', with: '1220000001831')
+    fill_in('SCRC 2', with: '4880000002794')
+    fill_in('1220000005877', with: '1220000005877')
+    fill_in('SCRC 3', with: '4880000003807')
+    fill_in('1220000010734', with: '1220000010734')
+    fill_in('DEST 1', with: '4880000020729')
+    fill_in('1220099999705', with: '1220099999705')
 
-    click_button "Verify"
-    expect(page).to have_content("Download TECAN file")
+    click_button 'Verify'
+    expect(page).to have_content('Download TECAN file')
 
-    plate = Plate.find_from_machine_barcode("1220099999705")
-    generated_file = batch.tecan_gwl_file_as_text(plate.barcode, batch.total_volume_to_cherrypick, "ABgene 0765")
+    plate = Plate.find_from_machine_barcode('1220099999705')
+    generated_file = batch.tecan_gwl_file_as_text(plate.barcode, batch.total_volume_to_cherrypick, 'ABgene 0765')
     generated_lines = generated_file.split(/\n/)
     generated_lines.shift(2)
     expect(generated_lines).to be_truthy
@@ -158,11 +153,11 @@ feature 'cherrypick pipeline - nano grams per micro litre', js: true do
       C;
       C; DEST1 = 1220099999705"
 
-    tecan_file_lines = tecan_file.split(/\n/).map { |l| l.strip }
+    tecan_file_lines = tecan_file.lines.map(&:strip)
 
     generated_lines.each_with_index do |generated_line, index|
       if defined?(JRuby)
-        expect(tecan_file_lines[index]).to eq(generated_line)
+        expect(generated_line).to eq(tecan_file_lines[index])
       else
         # MRI and Jruby have different float rounding behaviour
         # Both are valid, here we relax constraints for MRI.
@@ -184,13 +179,5 @@ feature 'cherrypick pipeline - nano grams per micro litre', js: true do
     valid_end = (expect_round == actual_round) || # The rounded digets match
       (expect_round.to_i - actual_round.to_i == 1) && (actual_round.to_i.even?) # The digit has been rounded down to even
     expect(valid_end).to be true
-  end
-
-  def login_user(user)
-    visit login_path
-    fill_in 'Username', with: user.login
-    fill_in 'Password', with: 'password'
-    click_button 'Login'
-    true
   end
 end

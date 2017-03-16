@@ -93,7 +93,7 @@ module Pulldown::PlatePurposes
   class << self
     def create_purposes(branch_o)
       branch = branch_o.clone
-      initial = Purpose.find_by_name!(branch.shift)
+      initial = Purpose.find_by!(name: branch.shift)
       branch.inject(initial) do |parent, new_purpose_name|
         Pulldown::PlatePurposes::PLATE_PURPOSE_TYPE[new_purpose_name].create!(name: new_purpose_name).tap do |child_purpose|
           parent.child_relationships.create!(child: child_purpose, transfer_request_type: request_type_between(parent, child_purpose))
@@ -112,6 +112,6 @@ module Pulldown::PlatePurposes
   end
 end
 
-%w(initial_downstream_plate initial_plate library_plate stock_plate).each do |type|
+%w(initial_downstream_plate initial_plate library_plate).each do |type|
   require_dependency "app/models/pulldown/#{type}_purpose"
 end

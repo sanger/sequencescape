@@ -58,7 +58,7 @@ class TagGroupsController < ApplicationController
         flash[:notice] = 'Tag Group was successfully updated.'
         format.html { redirect_to(@tag_group) }
       else
-        format.html { render action: "edit" }
+        format.html { render action: 'edit' }
       end
     end
   end
@@ -69,9 +69,9 @@ class TagGroupsController < ApplicationController
 
   # Permits oligo and mapi_id, filters out any unfilled fields
   def tag_params
-    params.fetch(:tags, []).reject do |index, attributes|
+    params.fetch(:tags, []).reject do |_index, attributes|
       attributes[:oligo].blank?
-    end.map do |index, attributes|
+    end.map do |_index, attributes|
       attributes.permit(:map_id, :oligo)
     end
   end

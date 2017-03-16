@@ -21,7 +21,7 @@ class AssignTagsTask < Task
   end
 
   def partial
-    "assign_tags_batches"
+    'assign_tags_batches'
   end
 
   def render_task(workflow, params)

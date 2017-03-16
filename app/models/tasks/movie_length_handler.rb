@@ -6,8 +6,8 @@
 
 module Tasks::MovieLengthHandler
   def render_movie_length_task(task, params)
-    @valid_movie_lengths = task.descriptors.find_by_name('Movie length').selection
-    @default_movie_length = task.descriptors.find_by_name('Movie length').value.to_i
+    @valid_movie_lengths = task.descriptors.find_by(name: 'Movie length').selection
+    @default_movie_length = task.descriptors.find_by(name: 'Movie length').value.to_i
     @assets = task.find_batch_requests(params[:batch_id]).map { |request| request.asset }.uniq
   end
 
@@ -17,7 +17,7 @@ module Tasks::MovieLengthHandler
         asset = Asset.find(asset_id)
 
         unless task.valid_movie_length?(movie_length)
-          flash[:error] = "Invalid movie length"
+          flash[:error] = 'Invalid movie length'
           return false
         end
 

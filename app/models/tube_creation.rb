@@ -17,7 +17,7 @@ class TubeCreation < AssetCreation
   has_many :child_tubes, class_name: 'TubeCreation::ChildTube'
   has_many :children, through: :child_tubes, source: :tube
 
-  validates_each(:parent, unless: :no_pooling_expected?, allow_blank: true) do |record, attr, value|
+  validates_each(:parent, unless: :no_pooling_expected?, allow_blank: true) do |record, _attr, _value|
     record.errors.add(:parent, 'has no pooling information') if record.parent.pools.empty?
   end
 
@@ -44,7 +44,7 @@ class TubeCreation < AssetCreation
   before_save :create_ancestor_plate!
 
   def record_creation_of_children
-#    children.each { |child| parent.events.create_tube!(child_purpose, child, user) }
+    #    children.each { |child| parent.events.create_tube!(child_purpose, child, user) }
   end
   private :record_creation_of_children
 end

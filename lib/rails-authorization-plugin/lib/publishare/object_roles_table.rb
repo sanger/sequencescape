@@ -12,7 +12,7 @@ module Authorization
         def acts_as_authorized_user(roles_relationship_opts = {})
           has_many :user_role_bindings, class_name: 'Role::UserRole'
           has_many :roles, roles_relationship_opts.merge(through: :user_role_bindings, source: :role)
-#          has_and_belongs_to_many :roles, roles_relationship_opts
+          #          has_and_belongs_to_many :roles, roles_relationship_opts
           include Authorization::ObjectRolesTable::UserExtensions::InstanceMethods
           include Authorization::Identity::UserExtensions::InstanceMethods # Provides all kinds of dynamic sugar via method_missing
         end
@@ -22,10 +22,10 @@ module Authorization
         # If roles aren't explicitly defined in user class then check roles table
         def has_role?(role_name, authorizable_obj = nil)
           if authorizable_obj.nil?
-            self.roles.find_by_name(role_name) || self.roles.member?(get_role(role_name, authorizable_obj)) ? true : false # If we ask a general role question, return true if any role is defined.
+            roles.find_by(name: role_name) || roles.member?(get_role(role_name, authorizable_obj)) ? true : false # If we ask a general role question, return true if any role is defined.
           else
             role = get_role(role_name, authorizable_obj)
-            role ? self.roles.exists?(role.id) : false
+            role ? roles.exists?(role.id) : false
           end
         end
 
@@ -40,7 +40,7 @@ module Authorization
               Role.create(name: role_name)
                    end
           end
-          self.roles << role if role and not self.roles.exists?(role.id)
+          roles << role if role and not roles.exists?(role.id)
         end
 
         def has_no_role(role_name, authorizable_obj = nil)
@@ -50,22 +50,22 @@ module Authorization
 
         def has_roles_for?(authorizable_obj)
           if authorizable_obj.is_a? Class
-            !self.roles.detect { |role| role.authorizable_type == authorizable_obj.to_s }.nil?
+            !roles.detect { |role| role.authorizable_type == authorizable_obj.to_s }.nil?
           elsif authorizable_obj
-            !self.roles.detect { |role| role.authorizable_type == authorizable_obj.class.base_class.to_s && role.authorizable == authorizable_obj }.nil?
+            !roles.detect { |role| role.authorizable_type == authorizable_obj.class.base_class.to_s && role.authorizable == authorizable_obj }.nil?
           else
-            !self.roles.detect { |role| role.authorizable.nil? }.nil?
+            !roles.detect { |role| role.authorizable.nil? }.nil?
           end
         end
         alias :has_role_for? :has_roles_for?
 
         def roles_for(authorizable_obj)
           if authorizable_obj.is_a? Class
-            self.roles.select { |role| role.authorizable_type == authorizable_obj.to_s }
+            roles.select { |role| role.authorizable_type == authorizable_obj.to_s }
           elsif authorizable_obj
-            self.roles.select { |role| role.authorizable_type == authorizable_obj.class.base_class.to_s && role.authorizable.id == authorizable_obj.id }
+            roles.select { |role| role.authorizable_type == authorizable_obj.class.base_class.to_s && role.authorizable.id == authorizable_obj.id }
           else
-            self.roles.select { |role| role.authorizable.nil? }
+            roles.select { |role| role.authorizable.nil? }
           end
         end
 
@@ -74,7 +74,7 @@ module Authorization
         end
 
         def has_no_roles
-          self.roles.each { |role| delete_role(role) }
+          roles.each { |role| delete_role(role) }
         end
 
         def authorizables_for(authorizable_class)
@@ -83,7 +83,7 @@ module Authorization
           end
           begin
             authorizable_class.find(
-              self.roles.where(authorizable_type: authorizable_class.base_class.to_s).map(&:authorizable_id).uniq
+              roles.where(authorizable_type: authorizable_class.base_class.to_s).map(&:authorizable_id).uniq
             )
           rescue ActiveRecord::RecordNotFound
             []
@@ -116,7 +116,7 @@ module Authorization
 
         def delete_role(role)
           if role
-            self.roles.delete(role)
+            roles.delete(role)
             role.destroy if role.users.empty?
           end
         end

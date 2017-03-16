@@ -3,6 +3,12 @@
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2013,2015,2016 Genome Research Ltd.
+
+# In addition to performing standard transfer, also
+# ensures that the correct study and project are set on
+# subsequent aliquots, according to the library creation request.
+# Ensures that plates picked under a different study get assigned to
+# the correct study/project when work starts.
 class TransferRequest::InitialTransfer < TransferRequest
   module Behaviour
     def perform_transfer_of_contents
@@ -15,9 +21,16 @@ class TransferRequest::InitialTransfer < TransferRequest
     end
     private :perform_transfer_of_contents
 
+    # Requests are already loaded when this is used, hence filtering in Ruby rather than using scopes.
     def outer_request
-      asset.requests.detect { |r| r.library_creation? && r.submission_id == self.submission_id }
+      asset.requests.detect { |r| r.customer_request? && r.submission_id == submission_id }
     end
+  end
+
+  # This is not included in the behaviour module to avoid affecting
+  # pacbio unnecessarily. THis is triggered by the state machine.
+  def on_started
+    outer_request.start! if outer_request.pending?
   end
 
   include Behaviour

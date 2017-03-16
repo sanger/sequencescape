@@ -32,17 +32,17 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
   private :target_requests
 
   def stock_plate(tube)
-    tube.requests_as_target.where_is_a?(Request::LibraryCreation).detect { |r| r.asset.present? }.asset.plate
+    tube.requests_as_target.where_is_a?(CustomerRequest).where.not(requests: { asset_id: nil }).first.asset.plate
   end
 
   def library_source_plates(tube)
-    Plate.select('DISTINCT assets.*').
-      joins(wells: :requests).
-      where(requests: {
+    Plate
+      .joins(wells: :requests)
+      .where(requests: {
         target_asset_id: tube.id,
         sti_type: [Request::LibraryCreation, *Request::LibraryCreation.descendants].map(&:name)
       }
-    ).map(&:source_plate)
+    ).distinct.map(&:source_plate)
   end
 
   def request_state(request, state)

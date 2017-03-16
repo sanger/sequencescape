@@ -21,12 +21,12 @@ class Pipeline < ActiveRecord::Base
   include SharedBehaviour::Named
 
   class_attribute :batch_worksheet
-  self.batch_worksheet = "detailed_worksheet"
+  self.batch_worksheet = 'detailed_worksheet'
 
   INBOX_PARTIAL               = 'default_inbox'
   ALWAYS_SHOW_RELEASE_ACTIONS = false # Override this in subclasses if you want to display action links for released batches
 
-  self.inheritance_column = "sti_type"
+  self.inheritance_column = 'sti_type'
 
   delegate :item_limit, :has_batch_limit?, to: :workflow
   validates_presence_of :workflow
@@ -36,7 +36,7 @@ class Pipeline < ActiveRecord::Base
   belongs_to :next_pipeline,     class_name: 'Pipeline'
   belongs_to :previous_pipeline, class_name: 'Pipeline'
 
-  has_one :workflow, class_name: "LabInterface::Workflow", inverse_of: :pipeline
+  has_one :workflow, class_name: 'LabInterface::Workflow', inverse_of: :pipeline
 
   has_many :controls
   has_many :pipeline_request_information_types
@@ -55,7 +55,7 @@ class Pipeline < ActiveRecord::Base
 
   validates_presence_of :request_types
   validates_presence_of :name
-  validates_uniqueness_of :name, on: :create, message: "name already in use"
+  validates_uniqueness_of :name, on: :create, message: 'name already in use'
 
   scope :externally_managed, -> { where(externally_managed: true) }
   scope :internally_managed, -> { where(externally_managed: false) }
@@ -63,8 +63,8 @@ class Pipeline < ActiveRecord::Base
   scope :inactive,           -> { where(active: false) }
 
   scope :for_request_type, ->(rt) {
-    joins(:pipelines_request_types).
-    where(pipelines_request_types: { request_type_id: rt })
+    joins(:pipelines_request_types)
+    .where(pipelines_request_types: { request_type_id: rt })
   }
 
   def request_types_including_controls
@@ -108,18 +108,18 @@ class Pipeline < ActiveRecord::Base
     false
   end
 
-  def is_read_length_consistent_for_batch?(batch)
+  def is_read_length_consistent_for_batch?(_batch)
     true
   end
 
   # This is the old behaviour for every other pipeline.
   def detach_request_from_batch(batch, request)
     request.return_for_inbox!
-    self.update_detached_request(batch, request)
+    update_detached_request(batch, request)
     request.save!
   end
 
-  def update_detached_request(batch, request)
+  def update_detached_request(_batch, request)
     request.remove_unused_assets
   end
 
@@ -160,26 +160,26 @@ class Pipeline < ActiveRecord::Base
   def finish_batch(batch, user)
     batch.complete!(user)
   end
-  deprecate :finish_batch
+  deprecate finish_batch: 'use batch#complete! instead'
 
   def post_finish_batch(batch, user)
   end
 
   def completed_request_as_part_of_release_batch(request)
-    if self.library_creation?
+    if library_creation?
       unless request.failed?
-        EventSender.send_pass_event(request.id, "", "Passed #{self.name}.", self.id)
-        EventSender.send_request_update(request.id, "complete", "Completed pipeline: #{self.name}")
+        EventSender.send_pass_event(request.id, '', "Passed #{name}.", id)
+        EventSender.send_request_update(request.id, 'complete', "Completed pipeline: #{name}")
       end
     else
-      EventSender.send_request_update(request.id, "complete", "Completed pipeline: #{self.name}")
+      EventSender.send_request_update(request.id, 'complete', "Completed pipeline: #{name}")
     end
   end
 
   def release_batch(batch, user)
     batch.release!(user)
   end
-  deprecate :release_batch
+  deprecate release_batch: 'use batch#release! instead'
 
   def on_start_batch(batch, user)
     # Do nothing
@@ -190,7 +190,7 @@ class Pipeline < ActiveRecord::Base
   end
 
   def has_controls?
-    self.controls.empty? ? false : true
+    controls.empty? ? false : true
   end
 
   def pulldown?
@@ -216,12 +216,12 @@ class Pipeline < ActiveRecord::Base
   private :selected_values_from
 
   def extract_requests_from_input_params(params)
-    if (request_ids = params["request"]).present?
+    if (request_ids = params['request']).present?
       requests.inputs(true).order(:id).find(selected_values_from(request_ids).map(&:first))
-    elsif (selected_groups = params["request_group"]).present?
+    elsif (selected_groups = params['request_group']).present?
       grouping_parser.all(selected_values_from(selected_groups))
     else
-      raise StandardError, "Unknown manner in which to extract requests!"
+      raise StandardError, 'Unknown manner in which to extract requests!'
     end
   end
 
@@ -235,7 +235,7 @@ class Pipeline < ActiveRecord::Base
     grouping_parser.count(selected_values_from(selected_groups)) <= max_number_of_groups
   end
 
-  def all_requests_from_submissions_selected?(request_ids)
+  def all_requests_from_submissions_selected?(_request_ids)
     true
   end
 

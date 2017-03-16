@@ -5,5 +5,5 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 class PulldownEnrichmentTwoPlate < PulldownPlate
-  self.prefix = "FI"
+  self.prefix = 'FI'
 end

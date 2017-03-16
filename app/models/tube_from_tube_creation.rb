@@ -14,7 +14,7 @@ class TubeFromTubeCreation < AssetCreation
   private :target_for_ownership
 
   def children
-    [self.child]
+    [child]
   end
   private :children
 
@@ -24,7 +24,7 @@ class TubeFromTubeCreation < AssetCreation
   private :create_children!
 
   def record_creation_of_children
-#    children.each { |child| parent.events.create_tube!(child_purpose, child, user) }
+    #    children.each { |child| parent.events.create_tube!(child_purpose, child, user) }
   end
   private :record_creation_of_children
 end

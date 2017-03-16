@@ -100,7 +100,7 @@ module IlluminaHtp::PlatePurposes
   ]
 
   PLATE_PURPOSE_TYPE = {
-    'PF Cherrypicked'        => IlluminaHtp::StockPlatePurpose,
+    'PF Cherrypicked'        => PlatePurpose::Input,
     'PF Shear'               => PlatePurpose::InitialPurpose,
     'PF Post Shear'          => PlatePurpose,
     'PF Post Shear XP'       => PlatePurpose,
@@ -113,7 +113,7 @@ module IlluminaHtp::PlatePurposes
     'PF MiSeq QC'            => IlluminaC::QcPoolPurpose,
     'PF MiSeq QCR'           => IlluminaC::QcPoolPurpose,
 
-    'Cherrypicked'        => IlluminaHtp::StockPlatePurpose,
+    'Cherrypicked'        => PlatePurpose::Input,
     'Shear'               => PlatePurpose::InitialPurpose,
     'Post Shear'          => PlatePurpose,
     'AL Libs'             => PlatePurpose,
@@ -145,7 +145,7 @@ module IlluminaHtp::PlatePurposes
   }
 
   def self.request_type_prefix
-    "Illumina"
+    'Illumina'
   end
 
   module PurposeHelpers
@@ -157,7 +157,7 @@ module IlluminaHtp::PlatePurposes
 
     def create_tube_flow(flow_o)
       flow = flow_o.clone
-      raise "Flow already exists" if Purpose.find_by_name(flow.first).present?
+      raise 'Flow already exists' if Purpose.find_by(name: flow.first).present?
       create_tube_purpose(flow.pop, target_type: 'MultiplexedLibraryTube')
       flow.each(&method(:create_tube_purpose))
     end
@@ -170,10 +170,10 @@ module IlluminaHtp::PlatePurposes
 
     def create_plate_flow(flow_o)
       flow = flow_o.clone
-      raise "Flow already exists" if Purpose.find_by_name(flow.first).present?
+      raise 'Flow already exists' if Purpose.find_by(name: flow.first).present?
       stock_plate = create_plate_purpose(
         flow.shift,
-        can_be_considered_a_stock_plate: true,
+        stock_plate: true,
         default_state: 'passed',
         cherrypickable_target: true,
         cherrypick_filters: [
@@ -205,8 +205,8 @@ module IlluminaHtp::PlatePurposes
 
     def create_branch(branch_o)
       branch = branch_o.clone
-      branch.inject(Purpose.find_by_name!(branch.shift)) do |parent, child|
-        Purpose.find_by_name!(child).tap do |child_purpose|
+      branch.inject(Purpose.find_by!(name: branch.shift)) do |parent, child|
+        Purpose.find_by!(name: child).tap do |child_purpose|
           parent.child_relationships.create!(child: child_purpose, transfer_request_type: request_type_between(parent, child_purpose))
         end
       end
@@ -218,28 +218,25 @@ module IlluminaHtp::PlatePurposes
       end
     end
 
-    def destroy_branches
-    end
-
     def purpose_for(name)
       self::PLATE_PURPOSE_TYPE[name] || raise("NO class configured for #{name}")
     end
     private :purpose_for
 
     def request_type_between(parent, child)
-      std = RequestPurpose.find_by_key('standard')
+      std = RequestPurpose.find_by(key: 'standard')
       _, _, request_class = self::PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES.detect { |a, b, _| (parent.name == a) && (child.name == b) }
       return RequestType.transfer if request_class.nil?
       return RequestType.initial_transfer if request_class == :initial
       request_type_name = "#{request_type_prefix} #{parent.name}-#{child.name}"
       RequestType.create!(name: request_type_name, key: request_type_name.gsub(/\W+/, '_'), request_class_name: request_class, asset_type: 'Well', order: 1,
-        request_purpose: std
+                          request_purpose: std
         )
     end
     private :request_type_between
 
     def library_creation_freezer
-      Location.find_by_name("Illumina high throughput freezer") or raise "Cannot find Illumina high throughput freezer"
+      Location.find_by(name: 'Illumina high throughput freezer') or raise 'Cannot find Illumina high throughput freezer'
     end
     private :library_creation_freezer
 
@@ -248,10 +245,10 @@ module IlluminaHtp::PlatePurposes
         name: plate_purpose_name,
         cherrypickable_target: false,
         cherrypick_direction: 'column',
-        can_be_considered_a_stock_plate: self::OUTPUT_PLATE_PURPOSES.include?(plate_purpose_name),
+        stock_plate: self::OUTPUT_PLATE_PURPOSES.include?(plate_purpose_name),
         asset_shape_id: AssetShape.default.id
       )).tap do |plate_purpose|
-        plate_purpose.barcode_printer_type = BarcodePrinterType.find_by_type('BarcodePrinterType96Plate') || plate_purpose.barcode_printer_type
+        plate_purpose.barcode_printer_type = BarcodePrinterType.find_by(type: 'BarcodePrinterType96Plate') || plate_purpose.barcode_printer_type
       end
     end
 
@@ -261,7 +258,7 @@ module IlluminaHtp::PlatePurposes
       purpose.create!(options.reverse_merge(
         name: tube_purpose_name,
         target_type: target_type,
-        barcode_printer_type: BarcodePrinterType.find_by_type('BarcodePrinterType1DTube')
+        barcode_printer_type: BarcodePrinterType.find_by(type: 'BarcodePrinterType1DTube')
       ))
     end
     private :create_tube_purpose
@@ -276,8 +273,8 @@ module IlluminaHtp::PlatePurposes
 
     def create_qc_plate_for(name)
       qc_plate_purpose = purpose_for("#{name} QC").create!(name: "#{name} QC", cherrypickable_target: false)
-      plate_purpose = Purpose.find_by_name!(name)
-      plate_purpose.child_relationships.create!(child: qc_plate_purpose, transfer_request_type: RequestType.find_by_name('Transfer'))
+      plate_purpose = Purpose.find_by!(name: name)
+      plate_purpose.child_relationships.create!(child: qc_plate_purpose, transfer_request_type: RequestType.find_by(name: 'Transfer'))
     end
   end
 

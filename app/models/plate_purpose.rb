@@ -30,20 +30,22 @@ class PlatePurpose < Purpose
 
   include Relationship::Associations
 
- # We declare the scopes as lambdas as Rails 3.2 seems to fail to include the various subclasses otherwise
   scope :compatible_with_purpose, ->(purpose) {
-    purpose.nil? ?
-      where('FALSE') :
-      where(["(target_type is null and 'Plate'=?)  or target_type=?", purpose.target_plate_type, purpose.target_plate_type]).
-        order("name ASC")
+    if purpose.nil?
+      none
+    else
+      where(target_type: purpose.target_type).order(name: :asc)
+    end
   }
 
   scope :cherrypickable_as_target, -> { where(cherrypickable_target: true) }
   scope :cherrypickable_as_source, -> { where(cherrypickable_source: true) }
   scope :cherrypickable_default_type, -> { where(cherrypickable_target: true, cherrypickable_source: true) }
-  scope :for_submissions, -> { where('can_be_considered_a_stock_plate = true OR name = "Working Dilution"').
-    order('can_be_considered_a_stock_plate DESC') }
-  scope :considered_stock_plate, -> { where(can_be_considered_a_stock_plate: true) }
+  scope :for_submissions, ->() do
+    where('stock_plate = true OR name = "Working Dilution"')
+    .order(stock_plate: :desc)
+  end
+  scope :considered_stock_plate, -> { where(stock_plate: true) }
 
   serialize :cherrypick_filters
   validates_presence_of(:cherrypick_filters, if: :cherrypickable_target?)
@@ -51,7 +53,9 @@ class PlatePurpose < Purpose
     r[:cherrypick_filters] ||= ['Cherrypick::Strategy::Filter::ShortenPlexesToFit']
   end
 
-  belongs_to :asset_shape, class_name: 'AssetShape'
+  before_validation :set_default_target_type
+
+  belongs_to :asset_shape
 
   def source_plate(plate)
     source_purpose_id.present? ? plate.ancestor_of_purpose(source_purpose_id) : plate.stock_plate
@@ -89,18 +93,27 @@ class PlatePurpose < Purpose
 
   # The state of a plate is based on the transfer requests.
   def state_of(plate)
-    plate.send(:state_from, plate.transfer_requests)
+    plate.state_from(plate.transfer_requests)
   end
 
   # Updates the state of the specified plate to the specified state.  The basic implementation does this by updating
   # all of the TransferRequest instances to the state specified.  If contents is blank then the change is assumed to
   # relate to all wells of the plate, otherwise only the selected ones are updated.
-  def transition_to(plate, state, user, contents = nil, customer_accepts_responsibility = false)
+  def transition_to(plate, state, _user, contents = nil, customer_accepts_responsibility = false)
     wells = plate.wells
     wells = wells.located_at(contents) unless contents.blank?
 
     transition_state_requests(wells, state)
     fail_stock_well_requests(wells, customer_accepts_responsibility) if state == 'failed'
+  end
+
+  # Set the class to PlatePurpose::Input is set to true.
+  # Allows creation of the input plate purposes through the API
+  # without directly exposing our class names.
+  #
+  # @param [Bool] Set to true to assign the sti type to PlatePurpose::Input
+  def input_plate=(is_input)
+    self.type = 'PlatePurpose::Input' if is_input
   end
 
   module Overrideable
@@ -139,7 +152,7 @@ class PlatePurpose < Purpose
       conditions << "(#{condition[0]} AND #{condition[1]})"
       parameters.concat(args)
     end
-    raise "Apparently there are not requests on these wells?" if conditions.empty?
+    raise 'Apparently there are not requests on these wells?' if conditions.empty?
     Request.where_is_not_a?(TransferRequest).where(["(#{conditions.join(' OR ')})", *parameters]).map do |request|
       # This can probably be switched for an each, as I don't think the array is actually used for anything.
       request.request_metadata.update_attributes!(customer_accepts_responsibility: true) if customer_accepts_responsibility
@@ -149,12 +162,12 @@ class PlatePurpose < Purpose
   private :fail_stock_well_requests
 
   def pool_wells(wells)
-    _pool_wells(wells).
-      joins('LEFT OUTER JOIN uuids AS pool_uuids ON pool_uuids.resource_type="Submission" AND pool_uuids.resource_id=submission_id').
-      select('pool_uuids.external_id AS pool_uuid').
-      readonly(false).
-      tap do |wells_with_pool|
-        raise StandardError, "Cannot deal with a well in multiple pools" if wells_with_pool.group_by(&:id).any? { |_, multiple_pools| multiple_pools.uniq.size > 1 }
+    _pool_wells(wells)
+      .joins('LEFT OUTER JOIN uuids AS pool_uuids ON pool_uuids.resource_type="Submission" AND pool_uuids.resource_id=submission_id')
+      .select('pool_uuids.external_id AS pool_uuid')
+      .readonly(false)
+      .tap do |wells_with_pool|
+        raise StandardError, 'Cannot deal with a well in multiple pools' if wells_with_pool.group_by(&:id).any? { |_, multiple_pools| multiple_pools.uniq.size > 1 }
       end
   end
 
@@ -169,10 +182,6 @@ class PlatePurpose < Purpose
 
   # TODO: change to purpose_id
   has_many :plates, foreign_key: :plate_purpose_id
-
-  def target_plate_type
-    self.target_type || 'Plate'
-  end
 
   def self.stock_plate_purpose
     # IDs copied from SNP
@@ -193,13 +202,11 @@ class PlatePurpose < Purpose
 
   def create!(*args, &block)
     attributes          = args.extract_options!
-    do_not_create_wells = !!args.first
-
+    do_not_create_wells = args.first.present?
     attributes[:size]     ||= size
     attributes[:location] ||= default_location
     attributes[:purpose] = self
-
-    target_plate_type.constantize.create_with_barcode!(attributes, &block).tap do |plate|
+    pla = target_class.create_with_barcode!(attributes, &block).tap do |plate|
       plate.wells.construct! unless do_not_create_wells
     end
   end
@@ -208,7 +215,7 @@ class PlatePurpose < Purpose
     cherrypick_direction == 'row'
   end
 
-  def attatched?(plate)
+  def attatched?(_plate)
     true
   end
 
@@ -220,12 +227,21 @@ class PlatePurpose < Purpose
     stock_wells
   end
 
-  def supports_multiple_submissions?; false; end
+  def supports_multiple_submissions?
+    false
+  end
+
+  private
+
+  def set_default_target_type
+    self.target_type ||= 'Plate'
+  end
 end
 
 # Ensure rails eager loading behaves as intended
 # We should consider renaming our classes to make this easier to maintain
 require_dependency 'dilution_plate_purpose'
+require_dependency 'plate_purpose/input'
 require_dependency 'qcable_library_plate_purpose'
 require_dependency 'qcable_plate_purpose'
 require_dependency 'illumina_c/al_libs_tagged_purpose'
@@ -238,8 +254,6 @@ require_dependency 'illumina_htp/library_complete_on_qc_purpose'
 require_dependency 'illumina_htp/normalized_plate_purpose'
 require_dependency 'illumina_htp/pooled_plate_purpose'
 require_dependency 'illumina_htp/post_shear_qc_plate_purpose'
-require_dependency 'illumina_htp/stock_plate_purpose'
 require_dependency 'plate_purpose/initial_purpose'
 require_dependency 'pulldown/initial_plate_purpose'
 require_dependency 'pulldown/library_plate_purpose'
-require_dependency 'pulldown/stock_plate_purpose'

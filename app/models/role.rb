@@ -21,7 +21,7 @@ class Role < ActiveRecord::Base
   belongs_to :authorizable, polymorphic: true
 
   validates_presence_of :name
-  scope :general_roles, -> { where("authorizable_type IS NULL") }
+  scope :general_roles, -> { where('authorizable_type IS NULL') }
 
   def self.keys
     Role.all.map { |r| r.name }.uniq
@@ -49,14 +49,14 @@ class Role < ActiveRecord::Base
     module ClassMethods
       def role_relation(name, role_name)
         scope name.to_sym, ->(user) {
-          joins(:roles, :users).
-          where(roles: { name: role_name.to_s }, users: { id: user.id })
+          joins(:roles, :users)
+          .where(roles: { name: role_name.to_s }, users: { id: user.id })
         }
       end
 
       def has_many_users_through_roles(name)
         define_method(name.to_s.pluralize.to_sym) do
-          role = self.roles.find_by_name(name.to_s.singularize)
+          role = roles.find_by(name: name.to_s.singularize)
           role.nil? ? [] : role.users
         end
       end

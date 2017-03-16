@@ -14,7 +14,7 @@ module TubePurposeHelper
     def to(target_purpose)
       purposes.each do |name|
         say "Updating #{name}..."
-        Purpose.find_by_name(name).child_relationships.first.update_attributes!(child: target_purpose)
+        Purpose.find_by(name: name).child_relationships.first.update_attributes!(child: target_purpose)
       end
     end
   end
@@ -30,14 +30,14 @@ module TubePurposeHelper
     def to(target_purpose)
       request_types.each do |key|
         say "Updating #{key}..."
-        RequestType.find_by_key!(key).update_attributes!(target_purpose_id: target_purpose.id)
+        RequestType.find_by!(key: key).update_attributes!(target_purpose_id: target_purpose.id)
       end
     end
 
     def repair_data(old_purpose, new_purpose)
       request_types.each do |key|
         say "Repairing #{key}..."
-        rt = RequestType.find_by_key!(key)
+        rt = RequestType.find_by!(key: key)
         updated = 0
         MultiplexedLibraryTube.find_each(
           select: 'DISTINCT assets.*',
@@ -66,9 +66,9 @@ module TubePurposeHelper
         name: name,
         target_type: 'MultiplexedLibraryTube',
         qc_display: false,
-        can_be_considered_a_stock_plate: false,
+        stock_plate: false,
         default_state: 'pending',
-        barcode_printer_type: BarcodePrinterType.find_by_name('1D Tube'),
+        barcode_printer_type: BarcodePrinterType.find_by(name: '1D Tube'),
         cherrypickable_target: false,
         cherrypickable_source: false,
         cherrypick_direction: 'column',

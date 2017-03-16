@@ -6,7 +6,7 @@
 
 Given /^the Stock Plate's Pico pass state is set to "([^"]*)"$/ do |current_state| # '
   current_state = nil if current_state.blank?
-  @stock_plate.wells.first.well_attribute.update_attributes(pico_pass: current_state)
+  @stock_plate.reload.wells.first.well_attribute.update_attributes(pico_pass: current_state)
 end
 
 When /^I post the JSON below to update the plate:$/ do |update_json|
@@ -24,7 +24,7 @@ Then /^the Stock Plate's Pico pass state is "([^"]*)"$/ do |pico_status| # '
 end
 
 Given /^the "([^\"]+)" plate is created from the plate with barcode "([^\"]+)"$/ do |plate_purpose_name, barcode|
-  creator = Plate::Creator.find_by_name(plate_purpose_name) or raise StandardError, "Cannot find plate purpose #{plate_purpose_name.inspect}"
+  creator = Plate::Creator.find_by(name: plate_purpose_name) or raise StandardError, "Cannot find plate purpose #{plate_purpose_name.inspect}"
   plates = creator.send(:create_plates, barcode, User.last)
-  raise StandardError, "Appears that plates could not be created" if plates.blank?
+  raise StandardError, 'Appears that plates could not be created' if plates.blank?
 end

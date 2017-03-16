@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class BroadcastEventTest < ActiveSupport::TestCase
   # This level of mocking is painful. It probably calls for splitting the test up, and testing templates
@@ -57,7 +57,7 @@ class BroadcastEventTest < ActiveSupport::TestCase
   DynamicSubject = Struct.new(:target, :data_method_b)
 
   def assert_subject(subject, role_type)
-    assert @event.subjects, "No subjects found"
+    assert @event.subjects, 'No subjects found'
     test_subject = @event.subjects.detect { |s| s.uuid == subject.uuid }
 
     assert test_subject, "Could not find #{subject.uuid} in: #{@event.subjects.map { |s| s.try(:uuid) }.join(', ')}"
@@ -85,12 +85,12 @@ class BroadcastEventTest < ActiveSupport::TestCase
     # Methods that yield an array
     has_subjects :many, :many_relation
     # Blocks that define more complicated relationships
-    has_subject(:block) { |ts, e| ts.dynamic_relation.target }
+    has_subject(:block) { |ts, _e| ts.dynamic_relation.target }
 
     has_metadata :data_a, :data_method_a
-    has_metadata(:data_b) { |ts, e| ts.dynamic_relation.data_method_b }
+    has_metadata(:data_b) { |ts, _e| ts.dynamic_relation.data_method_b }
 
-    has_metadata(:data_c) { |ts, e| e.accessible }
+    has_metadata(:data_c) { |_ts, e| e.accessible }
 
     def accessible
       'value_c'
@@ -118,7 +118,7 @@ class BroadcastEventTest < ActiveSupport::TestCase
         @dynamic = DynamicSubject.new(@dynamic_target, @value_b)
         @value_a = 'value_a'
         @user = create :user, email: 'example@example.com'
-        @time = DateTime.parse("2012-03-11 10:22:42")
+        @time = DateTime.parse('2012-03-11 10:22:42')
         # :uuid, :friendly_name, :subject_type, :single_relation, :many_relation, :dynamic_relation, :id, :data_method_a
         @seed = TestSeed.new(
           uuid: '004',
@@ -175,50 +175,50 @@ class BroadcastEventTest < ActiveSupport::TestCase
         @event.save!
 
         expected_json = {
-          "event" => {
-          "uuid" => @event.uuid,
-          "event_type" => "example_event",
-          "occured_at" => "2012-03-11T10:22:42+00:00",
-          "user_identifier" => "example@example.com",
-          "subjects" => [
+          'event' => {
+          'uuid' => @event.uuid,
+          'event_type' => 'example_event',
+          'occured_at' => '2012-03-11T10:22:42+00:00',
+          'user_identifier' => 'example@example.com',
+          'subjects' => [
             {
-              "role_type" => "seed",
-              "subject_type" => "seed_type",
-              "friendly_name" => "seed_subject",
-              "uuid" => "004"
+              'role_type' => 'seed',
+              'subject_type' => 'seed_type',
+              'friendly_name' => 'seed_subject',
+              'uuid' => '004'
             },
             {
-              "role_type" => "single",
-              "subject_type" => "single_type",
-              "friendly_name" => "single_subject",
-              "uuid" => "000"
+              'role_type' => 'single',
+              'subject_type' => 'single_type',
+              'friendly_name' => 'single_subject',
+              'uuid' => '000'
             },
             {
-              "role_type" => "many",
-              "subject_type" => "many_type",
-              "friendly_name" => "many_subject_1",
-              "uuid" => "001"
+              'role_type' => 'many',
+              'subject_type' => 'many_type',
+              'friendly_name' => 'many_subject_1',
+              'uuid' => '001'
             },
             {
-              "role_type" => "many",
-              "subject_type" => "many_type",
-              "friendly_name" => "many_subject_2",
-              "uuid" => "002"
+              'role_type' => 'many',
+              'subject_type' => 'many_type',
+              'friendly_name' => 'many_subject_2',
+              'uuid' => '002'
             },
             {
-              "role_type" => "block",
-              "subject_type" => "dynamic_type",
-              "friendly_name" => "dynamic_subject",
-              "uuid" => "003"
+              'role_type' => 'block',
+              'subject_type' => 'dynamic_type',
+              'friendly_name' => 'dynamic_subject',
+              'uuid' => '003'
             }
           ],
-          "metadata" => {
-            "data_a" => "value_a",
-            "data_b" => "value_b",
-            "data_c" => "value_c"
+          'metadata' => {
+            'data_a' => 'value_a',
+            'data_b' => 'value_b',
+            'data_c' => 'value_c'
           }
           },
-          "lims" => "SQSCP"
+          'lims' => 'SQSCP'
         }
 
         assert_equal expected_json, JSON.parse(@event.to_json)

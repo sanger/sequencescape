@@ -8,7 +8,7 @@ require 'test_helper'
 
 class Core::Io::JsonOutputTest < ActiveSupport::TestCase
   module BasicMethods
-    def object_json(object, options)
+    def object_json(_object, options)
       options[:stream]
     end
   end
@@ -182,7 +182,7 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
           encoder_for(
             'level1.attribute' => 'json'
           ).object_json(
-            object_to_encode({ level1: nil }),
+            object_to_encode(level1: nil),
             @options
           )
 
@@ -196,12 +196,12 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
           encoder_for(
             'level1.attribute' => 'nested.json'
           ).object_json(
-            object_to_encode({ level1: nil }),
+            object_to_encode(level1: nil),
             @options
           )
 
           assert_equal(
-            json_results({ 'nested' => {} }),
+            json_results('nested' => {}),
             decode(@stream)
           )
         end

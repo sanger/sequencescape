@@ -5,8 +5,8 @@
 # Copyright (C) 2007-2011,2015,2016 Genome Research Ltd.
 
 class Admin::StudiesController < ApplicationController
-# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+  # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   before_action :admin_login_required
 
@@ -22,16 +22,16 @@ class Admin::StudiesController < ApplicationController
   def update
    @study = Study.find(params[:id])
    flash.now[:warning] = @study.warnings if @study.warnings.present?
-   flash[:notice] = "Your study has been updated"
-   render partial: "manage_single_study"
+   flash[:notice] = 'Your study has been updated'
+   render partial: 'manage_single_study'
   end
 
   def edit
     @request_types = RequestType.order(name: :asc)
-    if params[:id] != "0"
+    if params[:id] != '0'
       @study = Study.find(params[:id])
     flash.now[:warning] = @study.warnings if @study.warnings.present?
-      render partial: "edit", locals: { study: @study }
+      render partial: 'edit', locals: { study: @study }
     else
       render nothing: true
     end
@@ -40,29 +40,29 @@ class Admin::StudiesController < ApplicationController
   # TODO: remove unneeded code
   def filter
     unless params[:filter].nil?
-      if params[:filter][:by] == "not approved"
+      if params[:filter][:by] == 'not approved'
         filter_conditions = { approved: false }
       end
     end
 
-    if params[:filter][:by] == "not approved" || params[:filter][:by] == "all"
+    if params[:filter][:by] == 'not approved' || params[:filter][:by] == 'all'
       @studies = Study.where(filter_conditions).alphabetical.select { |p| p.name.include? params[:q] }
     end
 
     unless params[:filter].nil?
-      if params[:filter][:by] == "unallocated manager"
+      if params[:filter][:by] == 'unallocated manager'
         @studies = Study.all.select { |p| p.name.include?(params[:q]) && !(p.roles.map { |r| r.name }.include?('manager')) }
       end
     end
 
     case params[:filter][:status]
-    when "open"
+    when 'open'
       @studies = @studies.select { |p| p.active? }
-    when "closed"
+    when 'closed'
       @studies = @studies.reject { |p| p.active? }
     end
     @request_types = RequestType.order(:name)
-    render partial: "filtered_studies"
+    render partial: 'filtered_studies'
   end
 
   def managed_update
@@ -75,23 +75,23 @@ class Admin::StudiesController < ApplicationController
     ActiveRecord::Base.transaction do
       params[:study].delete(:ethically_approved) unless current_user.data_access_coordinator?
       @study.update_attributes!(params[:study])
-      flash[:notice] = "Your study has been updated"
-      redirect_to controller: "admin/studies", action: "update", id: @study.id
+      flash[:notice] = 'Your study has been updated'
+      redirect_to controller: 'admin/studies', action: 'update', id: @study.id
     end
   rescue ActiveRecord::RecordInvalid => exception
     logger.warn "Failed to update attributes: #{@study.errors.map { |e| e.to_s }}"
-    flash[:error] = "Failed to update attributes for study!"
+    flash[:error] = 'Failed to update attributes for study!'
     render action: :show, id: @study.id and return
   end
 
   def sort
     @studies = Study.all.sort_by { |study| study.name }
-    if params[:sort] == "date"
+    if params[:sort] == 'date'
       @studies = @studies.sort_by { |study| study.created_at }
-    elsif params[:sort] == "owner"
+    elsif params[:sort] == 'owner'
       @studies = @studies.sort_by { |study| study.user_id }
     end
-    render partial: "studies"
+    render partial: 'studies'
   end
 
   private

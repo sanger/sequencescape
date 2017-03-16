@@ -5,8 +5,8 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 class BatchesController < ApplicationController
-# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+  # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
 
   before_action :evil_parameter_hack!
   include XmlCacheHelper::ControllerHelper
@@ -26,7 +26,7 @@ class BatchesController < ApplicationController
     respond_to do |format|
       format.html
       format.xml { render xml: @batches.to_xml }
-      format.json { render json: @batches.to_json.gsub(/null/, "\"\"") }
+      format.json { render json: @batches.to_json.gsub(/null/, '""') }
     end
   end
 
@@ -61,7 +61,7 @@ class BatchesController < ApplicationController
       user = User.find(batch_parameters[:assignee_id])
       assigned_message = "Assigned to #{user.name} (#{user.login})."
     else
-      assigned_message = ""
+      assigned_message = ''
     end
 
     respond_to do |format|
@@ -70,7 +70,7 @@ class BatchesController < ApplicationController
         format.html { redirect_to batch_url(@batch) }
         format.xml  { head :ok }
       else
-        format.html { render action: "edit" }
+        format.html { render action: 'edit' }
         format.xml  { render xml: @batch.errors.to_xml }
       end
     end
@@ -87,9 +87,9 @@ class BatchesController < ApplicationController
       requests = @pipeline.extract_requests_from_input_params(params)
 
       case params[:action_on_requests]
-      when "cancel_requests"
+      when 'cancel_requests'
         return cancel_requests(requests)
-      when "hide_from_inbox"
+      when 'hide_from_inbox'
         return hide_from_inbox(requests)
       else
         # This is the standard create action
@@ -118,12 +118,12 @@ class BatchesController < ApplicationController
       submitted = @batch.submit_to_qc_queue
 
       if submitted
-        @batch.lab_events.create(description: "Submitted to QC", message: "Batch #{@batch.id} was submitted to QC queue", user_id: @current_user.id)
+        @batch.lab_events.create(description: 'Submitted to QC', message: "Batch #{@batch.id} was submitted to QC queue", user_id: @current_user.id)
         respond_to do |format|
           message = "Batch #{@batch.id} was submitted to QC queue"
           format.html do
             flash[:info] = message
-            redirect_to request.env["HTTP_REFERER"] || 'javascript:history.back()'
+            redirect_to request.env['HTTP_REFERER'] || 'javascript:history.back()'
           end
           format.xml { render text: nil, status: :success }
         end
@@ -132,7 +132,7 @@ class BatchesController < ApplicationController
           message = "Batch #{@batch.id} was not submitted to QC queue!"
           format.html do
             flash[:warning] = message
-            redirect_to request.env["HTTP_REFERER"] || 'javascript:history.back()'
+            redirect_to request.env['HTTP_REFERER'] || 'javascript:history.back()'
           end
           format.xml do
             render xml: { error: message }.to_xml(root: :errors), status: :bad_request
@@ -141,10 +141,10 @@ class BatchesController < ApplicationController
       end
     else
       respond_to do |format|
-        message = "There was a problem with the request. HTTP POST method was not used."
+        message = 'There was a problem with the request. HTTP POST method was not used.'
         format.html do
           flash[:error] = message
-          redirect_to request.env["HTTP_REFERER"] || 'javascript:history.back()'
+          redirect_to request.env['HTTP_REFERER'] || 'javascript:history.back()'
         end
         format.xml do
           errors = { error: message }
@@ -159,7 +159,7 @@ class BatchesController < ApplicationController
       format.html
       format.json do
         b = @batch.formatted_batch_qc_details
-        render json: b.to_json.gsub(/null/, "\"\"")
+        render json: b.to_json.gsub(/null/, '""')
       end
     end
   end
@@ -170,14 +170,14 @@ class BatchesController < ApplicationController
 
     @batch.batch_requests.each do |br|
       if br && params[(br.request_id).to_s]
-        qc_state = params[(br.request_id).to_s]["qc_state"]
+        qc_state = params[(br.request_id).to_s]['qc_state']
         target = br.request.target_asset
-        if qc_state == "fail"
-          target.set_qc_state("failed")
-          EventSender.send_fail_event(br.request_id, "", "Failed manual QC", @batch.id)
-        elsif qc_state == "pass"
-          target.set_qc_state("passed")
-          EventSender.send_pass_event(br.request_id, "", "Passed manual QC", @batch.id)
+        if qc_state == 'fail'
+          target.set_qc_state('failed')
+          EventSender.send_fail_event(br.request_id, '', 'Failed manual QC', @batch.id)
+        elsif qc_state == 'pass'
+          target.set_qc_state('passed')
+          EventSender.send_pass_event(br.request_id, '', 'Passed manual QC', @batch.id)
         end
         target.save
       end
@@ -230,27 +230,30 @@ class BatchesController < ApplicationController
 
   def fail
     if @batch.workflow.source_is_internal?
-      @fail_reasons = FAILURE_REASONS["internal"]
+      @fail_reasons = FAILURE_REASONS['internal']
     else
-      @fail_reasons = FAILURE_REASONS["external"]
+      @fail_reasons = FAILURE_REASONS['external']
     end
   end
 
   def quality_control
     @qc_pipeline = Pipeline.find(params[:id])
     conditions_query = []
-    if params["state"]
-      conditions_query = ["state = ? AND qc_state = ? AND qc_pipeline_id = ? AND pipeline_id in (?)", params["state"], params["qc_state"], @qc_pipeline.id, @qc_pipeline.cluster_formation_pipeline_id]
+    if params['state']
+      conditions_query = ['state = ? AND qc_state = ? AND qc_pipeline_id = ? AND pipeline_id in (?)', params['state'], params['qc_state'], @qc_pipeline.id, @qc_pipeline.cluster_formation_pipeline_id]
     else
-      conditions_query = ["qc_state = ? AND qc_pipeline_id = ? AND pipeline_id in (?)", params["qc_state"], @qc_pipeline.id, @qc_pipeline.cluster_formation_pipeline_id]
+      conditions_query = ['qc_state = ? AND qc_pipeline_id = ? AND pipeline_id in (?)', params['qc_state'], @qc_pipeline.id, @qc_pipeline.cluster_formation_pipeline_id]
     end
 
-    @batches = Batch.where(conditions_query).includes(:user).order("created_at ASC")
+    @batches = Batch.where(conditions_query).includes(:user).order('created_at ASC')
   end
 
   def fail_items
     ActiveRecord::Base.transaction do
-      unless params[:failure][:reason].empty?
+      if params[:failure][:reason].empty?
+        flash[:error] = 'Please specify a failure reason for this batch'
+        redirect_to action: :fail, id: @batch.id
+      else
         reason = params[:failure][:reason]
         comment = params[:failure][:comment]
         requests = params[:requested_fail] || {}
@@ -259,11 +262,9 @@ class BatchesController < ApplicationController
         # Check to see if the user is trying to remove AND fail the same request.
         diff = requests_for_removal.keys & requests.keys
 
-        unless diff.empty?
-          flash[:error] = "Fail and remove were both selected for the following - #{diff.to_sentence} this is not supported."
-        else
+        if diff.empty?
           if requests.empty? && requests_for_removal.empty?
-            flash[:error] = "Please select an item to fail or remove"
+            flash[:error] = 'Please select an item to fail or remove'
           else
             unless requests.empty?
               @batch.fail_batch_items(requests, reason, comment, fail_but_charge)
@@ -275,11 +276,10 @@ class BatchesController < ApplicationController
               flash[:notice] = "#{requests_for_removal.keys.to_sentence} removed."
             end
           end
+        else
+          flash[:error] = "Fail and remove were both selected for the following - #{diff.to_sentence} this is not supported."
         end
-        redirect_to action: "fail", id: @batch.id
-      else
-        flash[:error] = "Please specify a failure reason for this batch"
-        redirect_to action: :fail, id: @batch.id
+        redirect_to action: 'fail', id: @batch.id
       end
     end
   end
@@ -304,11 +304,11 @@ class BatchesController < ApplicationController
 
     if control_count > @batch.space_left
       flash[:error] = "Can't assign more than #{@batch.space_left} control to this batch"
-      redirect_to action: "control", id: @batch.id
+      redirect_to action: 'control', id: @batch.id
       return
     elsif control_count < 0
-      flash[:error] = "This batch needs at least one control"
-      redirect_to action: "control", id: @batch.id
+      flash[:error] = 'This batch needs at least one control'
+      redirect_to action: 'control', id: @batch.id
       return
     end
     control_count = @batch.add_control(@control.name, control_count)
@@ -325,7 +325,7 @@ class BatchesController < ApplicationController
     batch.add_control(control.name, pipeline.item_limit)
 
     flash[:notice] = 'Training batch created'
-    redirect_to action: "show", id: batch.id
+    redirect_to action: 'show', id: batch.id
   end
 
   def evaluations_counter
@@ -346,7 +346,7 @@ class BatchesController < ApplicationController
 
     @output_assets = @batch.plate_group_barcodes || []
 
-    @output_assets.each do |parent, children|
+    @output_assets.each do |parent, _children|
       unless parent.nil?
         plate_barcode = parent.barcode
         unless plate_barcode.blank?
@@ -356,7 +356,7 @@ class BatchesController < ApplicationController
     end
 
     if @output_barcodes.blank?
-      flash[:error] = "Output plates do not have barcodes to print"
+      flash[:error] = 'Output plates do not have barcodes to print'
       redirect_to controller: 'batches', action: 'show', id: @batch.id
     else
     end
@@ -364,23 +364,20 @@ class BatchesController < ApplicationController
 
   def print_multiplex_labels
     request = @batch.requests.first
-    unless request.tag_number.nil?
-      if !request.target_asset.nil? && !request.target_asset.children.empty?
-        # We are trying to find the MX library tube or the stock MX library
-        # tube. I've added a filter so it doesn't pick up Lanes.
-        children = request.target_asset.children.last.children.select { |a| a.is_a?(Tube) }
-        if children.empty?
-          @asset = request.target_asset.children.last
-        else
-          @asset = request.target_asset.children.last.children.last
-        end
+    if request.tag_number.nil?
+      flash[:error] = 'No tags have been assigned.'
+    elsif request.target_asset.present? && request.target_asset.children.present?
+      # We are trying to find the MX library tube or the stock MX library
+      # tube. I've added a filter so it doesn't pick up Lanes.
+      children = request.target_asset.children.last.children.select { |a| a.is_a?(Tube) }
+      if children.empty?
+        @asset = request.target_asset.children.last
       else
-        flash[:notice] = "There is no multiplexed library available."
+        @asset = request.target_asset.children.last.children.last
       end
     else
-      flash[:error] = "No tags have been assigned."
+      flash[:notice] = 'There is no multiplexed library available.'
     end
-    # @assets = @batch.multiplexed_items_with_unique_library_ids
   end
 
   def print_stock_multiplex_labels
@@ -396,7 +393,7 @@ class BatchesController < ApplicationController
     end
 
     if stock_multiplexed_tube.nil?
-      flash[:notice] = "There is no stock multiplexed library available."
+      flash[:notice] = 'There is no stock multiplexed library available.'
       redirect_to controller: 'batches', action: 'show', id: @batch.id
     else
       @asset = stock_multiplexed_tube
@@ -430,7 +427,9 @@ class BatchesController < ApplicationController
   end
 
   def print_barcodes
-    unless @batch.requests.empty?
+    if @batch.requests.empty?
+      flash[:notice] = 'Your batch contains no requests.'
+    else
       print_job = LabelPrinter::PrintJob.new(params[:printer],
                                           LabelPrinter::Label::BatchTube,
                                           stock: params[:stock], count: params[:count], printable: params[:printable], batch: @batch)
@@ -440,8 +439,6 @@ class BatchesController < ApplicationController
         flash[:error] = print_job.errors.full_messages.join('; ')
       end
 
-    else
-      flash[:notice] = "Your batch contains no requests."
     end
     redirect_to controller: 'batches', action: 'show', id: @batch.id
   end
@@ -485,7 +482,7 @@ class BatchesController < ApplicationController
     results = @batch.verify_tube_layout(tube_barcodes, current_user)
 
     if results
-      flash[:notice] = "All of the tubes are in their correct positions."
+      flash[:notice] = 'All of the tubes are in their correct positions.'
       redirect_to batch_path(@batch)
     elsif !results
       flash[:error] = @batch.errors.full_messages.sort
@@ -497,7 +494,7 @@ class BatchesController < ApplicationController
     pipeline = @batch.pipeline
     @batch.reset!(current_user)
     flash[:notice] = "Batch #{@batch.id} has been reset"
-    redirect_to controller: "pipelines", action: :show, id: pipeline.id
+    redirect_to controller: 'pipelines', action: :show, id: pipeline.id
   end
 
   def previous_qc_state
@@ -511,22 +508,21 @@ class BatchesController < ApplicationController
   end
 
   def swap
-    if @batch.swap(current_user, { "batch_1" => { "id" => params["batch"]["1"], "lane" => params["batch"]["position"]["1"] },
-                    "batch_2" => { "id" => params["batch"]["2"], "lane" => params["batch"]["position"]["2"] }
-                  })
-      flash[:notice] = "Successfully swapped lane positions"
+    if @batch.swap(current_user, 'batch_1' => { 'id' => params['batch']['1'], 'lane' => params['batch']['position']['1'] },
+                                 'batch_2' => { 'id' => params['batch']['2'], 'lane' => params['batch']['position']['2'] })
+      flash[:notice] = 'Successfully swapped lane positions'
       redirect_to batch_path(@batch)
     else
-      flash[:error] = @batch.errors.full_messages.join("<br />")
+      flash[:error] = @batch.errors.full_messages.join('<br />')
       redirect_to action: :filtered, id: @batch.id
     end
   end
 
   def download_spreadsheet
     csv_string = Tasks::PlateTemplateHandler.generate_spreadsheet(@batch)
-    send_data csv_string, type: "text/plain",
-     filename: "#{@batch.id}_cherrypick_layout.csv",
-     disposition: 'attachment'
+    send_data csv_string, type: 'text/plain',
+                          filename: "#{@batch.id}_cherrypick_layout.csv",
+                          disposition: 'attachment'
   end
 
   def gwl_file
@@ -534,9 +530,9 @@ class BatchesController < ApplicationController
     tecan_gwl_file_as_string = @batch.tecan_gwl_file_as_text(@plate_barcode,
                                                              @batch.total_volume_to_cherrypick,
                                                              params[:plate_type])
-    send_data tecan_gwl_file_as_string, type: "text/plain",
-     filename: "#{@batch.id}_batch_#{@plate_barcode}.gwl",
-     disposition: 'attachment'
+    send_data tecan_gwl_file_as_string, type: 'text/plain',
+                                        filename: "#{@batch.id}_batch_#{@plate_barcode}.gwl",
+                                        disposition: 'attachment'
   end
 
   def find_batch_by_id
@@ -545,39 +541,6 @@ class BatchesController < ApplicationController
 
   def find_batch_by_batch_id
     @batch = Batch.find(params[:batch_id])
-  end
-
-  def new_stock_assets
-    @batch = Batch.find(params[:id])
-    unless @batch.requests.empty?
-      @batch_assets = []
-      unless @batch.multiplexed?
-        @batch_assets = @batch.requests.map(&:target_asset)
-        @batch_assets.delete_if { |a| a.has_stock_asset? }
-        if @batch_assets.empty?
-          flash[:error] = "Stock tubes already exist for everything."
-          redirect_to batch_path(@batch)
-        end
-      else
-        unless @batch.requests.first.target_asset.children.empty?
-          multiplexed_library = @batch.requests.first.target_asset.children.first
-
-          if !multiplexed_library.has_stock_asset? && !multiplexed_library.is_a_stock_asset?
-            @batch_assets = [multiplexed_library]
-          else
-            flash[:error] = "Already has a Stock tube."
-            redirect_to batch_path(@batch)
-          end
-        else
-          flash[:error] = "There's no multiplexed library tube available to have a stock tube."
-          redirect_to batch_path(@batch)
-        end
-      end
-      @assets = {}
-      @batch_assets.each do |batch_asset|
-        @assets[batch_asset.id] = batch_asset.new_stock_asset
-      end
-    end
   end
 
   def edit_volume_and_concentration
@@ -599,35 +562,34 @@ class BatchesController < ApplicationController
 
   def pulldown_batch_report
     csv_string = @batch.pulldown_batch_report
-    send_data csv_string, type: "text/plain",
-     filename: "batch_#{@batch.id}_report.csv",
-     disposition: 'attachment'
+    send_data csv_string, type: 'text/plain',
+                          filename: "batch_#{@batch.id}_report.csv",
+                          disposition: 'attachment'
   end
 
   def pacbio_sample_sheet
     csv_string = PacBio::SampleSheet.new.create_csv_from_batch(@batch)
-    send_data csv_string, type: "text/plain",
-     filename: "batch_#{@batch.id}_sample_sheet.csv",
-     disposition: 'attachment'
+    send_data csv_string, type: 'text/plain',
+                          filename: "batch_#{@batch.id}_sample_sheet.csv",
+                          disposition: 'attachment'
   end
 
   def sample_prep_worksheet
     csv_string = PacBio::Worksheet.new.create_csv_from_batch(@batch)
-    send_data csv_string, type: "text/plain",
-     filename: "batch_#{@batch.id}_worksheet.csv",
-     disposition: 'attachment'
+    send_data csv_string, type: 'text/plain',
+                          filename: "batch_#{@batch.id}_worksheet.csv",
+                          disposition: 'attachment'
   end
 
   def find_batch_by_barcode
-    # Caution! This isn't actually a rails finder.
-    batch_id = LabEvent.find_by_barcode(params[:id])
-    if batch_id.zero?
-      @batch_error = "Batch id not found."
-      render action: "batch_error", format: :xml
+    batch_id = LabEvent.find_batch_id_by_barcode(params[:id])
+    if batch_id.nil?
+      @batch_error = 'Batch id not found.'
+      render action: 'batch_error', format: :xml
       return
     else
       @batch = Batch.find(batch_id)
-      render action: "show", format: :xml
+      render action: 'show', format: :xml
     end
   end
 
@@ -638,7 +600,7 @@ class BatchesController < ApplicationController
       flash[:error] = message
       format.html { redirect_to pipeline_url(@pipeline) }
     end
-    return
+    nil
   end
 
   def hide_from_inbox(requests)
@@ -672,7 +634,7 @@ class BatchesController < ApplicationController
       unless @pipeline.valid_number_of_checked_request_groups?(params)
         return pipeline_error_on_batch_creation("Too many request groups selected, maximum is #{@pipeline.max_number_of_groups}")
       end
-      return pipeline_error_on_batch_creation("All plates in a submission must be selected") unless @pipeline.all_requests_from_submissions_selected?(requests)
+      return pipeline_error_on_batch_creation('All plates in a submission must be selected') unless @pipeline.all_requests_from_submissions_selected?(requests)
       return pipeline_error_on_batch_creation("Maximum batch size is #{@pipeline.max_size}") if @pipeline.max_size && requests.length > @pipeline.max_size
       @batch = @pipeline.batches.create!(requests: requests, user: current_user)
     end

@@ -57,8 +57,8 @@ FactoryGirl.define do
   end
 
   factory :sequencing_request, class: SequencingRequest do
-    request_type { |rt| rt.association(:request_type) }
-    request_purpose { |rt| rt.association(:request_purpose) }
+    association(:request_type, factory: :sequencing_request_type)
+    request_purpose
 
     # Ensure that the request metadata is correctly setup based on the request type
     after(:build) do |request|
@@ -85,6 +85,25 @@ FactoryGirl.define do
     end
   end
 
+  # Well based library request as used in eg. Limber pipeline
+  factory :library_request, class: IlluminaHtp::Requests::StdLibraryRequest do
+    association(:asset, factory: :well)
+    association(:request_type, factory: :library_request_type)
+    request_purpose
+
+    after(:build) do |request, _evaluator|
+      request.request_metadata = build(:illumina_htp_requests_std_library_request_metadata, owner: request)
+    end
+  end
+
+  factory(:multiplex_request, class: Request::Multiplexing) do
+    asset nil
+    association(:target_asset, factory: :multiplexed_library_tube)
+    request_purpose
+  end
+
+  factory :illumina_htp_requests_std_library_request_metadata, class: IlluminaHtp::Requests::StdLibraryRequest::Metadata, parent: :request_metadata_for_library_manufacture
+
   factory :cherrypick_request do
     association :asset, factory: :well
     association :target_asset, factory: :well
@@ -108,15 +127,14 @@ FactoryGirl.define do
     request_purpose
     state 'pending'
     study
-    user              { |user| User.find_by(login: user_login) || create(:user, login: user_login) }
+    user              { User.find_by(login: user_login) || create(:user, login: user_login) }
     workflow          { |workflow| workflow.association(:submission_workflow) }
   end
 
   factory :request, parent: :request_without_assets do
     # the sample should be setup correctly and the assets should be valid
-    asset           { |asset| asset.association(:sample_tube)  }
-    target_asset    { |asset| asset.association(:library_tube) }
-    request_purpose { |rp|    rp.association(:request_purpose) }
+    association(:asset, factory: :sample_tube)
+    association(:target_asset, factory: :library_tube)
   end
 
   factory :request_with_sequencing_request_type, parent: :request_without_assets do
@@ -138,7 +156,7 @@ FactoryGirl.define do
     target_asset { |asset| asset.association(:empty_library_tube) }
   end
 
-  factory :request_without_item, class: "Request" do
+  factory :request_without_item, class: 'Request' do
     study
     project
     user
@@ -176,5 +194,11 @@ FactoryGirl.define do
     request_type { |rt|    rt.association(:lib_pcr_xp_request_type) }
     asset        { |asset| asset.association(:well) }
     target_asset { |asset| asset.association(:empty_library_tube) }
+  end
+
+  factory :initial_transfer_request, class: TransferRequest::InitialTransfer do
+    asset { |asset| asset.association(:well) }
+    target_asset { |asset| asset.association(:well) }
+    request_purpose
   end
 end

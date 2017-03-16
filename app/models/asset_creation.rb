@@ -14,16 +14,11 @@ class AssetCreation < ActiveRecord::Base
 
   validates_presence_of :parent
 
-  def parent_nil?
-    parent.nil?
-  end
+  delegate :nil?, to: :parent, prefix: true
   private :parent_nil?
 
   belongs_to :child_purpose, class_name: 'Purpose'
   validates :child_purpose, presence: true, unless: :multiple_purposes
-  validates_each(:child_purpose, unless: :parent_nil?, allow_blank: true) do |record, attr, child_purpose|
-    record.errors.add(:child_purpose, 'is not a valid child type') unless record.parent.purpose.child_purposes.include?(child_purpose)
-  end
 
   before_create :process_children
   def process_children

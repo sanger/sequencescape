@@ -9,7 +9,7 @@ module SampleManifest::CoreBehaviour
   module NoSpecializedValidation
     def validate_specialized_fields(*args); end
 
-    def specialized_fields(*args); {}; end
+    def specialized_fields(*_args); {}; end
   end
 
   def self.included(base)
@@ -25,18 +25,22 @@ module SampleManifest::CoreBehaviour
     end
   end
 
-  def core_behaviour
-    return @core_behaviour if @core_behaviour.present?
+  private
 
-    behaviour = case self.asset_type
+  def core_behaviour
+    @core_behaviour ||= "::SampleManifest::#{behaviour_module}::#{core_module}".constantize.new(self)
+  end
+
+  def behaviour_module
+    case asset_type
     when '1dtube'              then 'SampleTubeBehaviour'
     when 'plate'               then 'PlateBehaviour'
     when 'multiplexed_library' then 'MultiplexedLibraryBehaviour'
-    else raise StandardError, "Unknown core behaviour (#{self.asset_type.inspect}) for sample manifest"
+    else raise StandardError, "Unknown core behaviour (#{asset_type.inspect}) for sample manifest"
     end
-
-    core = rapid_generation? ? 'RapidCore' : 'Core'
-    @core_behaviour = "::SampleManifest::#{behaviour}::#{core}".constantize.new(self)
   end
-  private :core_behaviour
+
+  def core_module
+    rapid_generation? ? 'RapidCore' : 'Core'
+  end
 end

@@ -11,18 +11,19 @@ class SampleCacheSweeper < ActiveRecord::Observer
   set_caching_for_model 'samples'
 
   THROUGH_JOINS = {
-    'study'      => "INNER JOIN study_samples ON study_samples.sample_id=samples.id",
-    'receptacle' => "INNER JOIN aliquots ON aliquots.sample_id=samples.id"
+    'study'      => 'INNER JOIN study_samples ON study_samples.sample_id=samples.id',
+    'receptacle' => 'INNER JOIN aliquots ON aliquots.sample_id=samples.id'
   }
 
   # We shorten the query conditions for studies and receptacles because we do not need to perform
   # a JOIN against their table, considering we go through a JOIN table anyway.
-  def through(record, &block)
-    model, conditions = case
+  def through(record)
+    model, conditions =
+      case
       when record.is_a?(StudySample)         then ['study',      query_conditions_for(record)]
       when record.is_a?(Aliquot)             then ['receptacle', query_conditions_for(record)]
       when record.is_a?(Aliquot::Receptacle) then ['receptacle', "aliquots.receptacle_id=#{record.id}"]
-    end
+      end
     yield(Array(THROUGH_JOINS[model]), conditions)
   end
   private :through

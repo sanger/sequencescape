@@ -5,8 +5,8 @@
 # Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
 
 class SessionsController < ApplicationController
-# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+  # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   include Informatics::Globals
 
@@ -23,7 +23,7 @@ class SessionsController < ApplicationController
     return unless request.post?
     self.current_user = User.authenticate(params[:login], params[:password])
     if logged_in?
-      flash[:notice] = "Logged in successfully"
+      flash[:notice] = 'Logged in successfully'
       redirect_back_or_default(controller: :studies)
     else
       if params
@@ -33,10 +33,10 @@ class SessionsController < ApplicationController
   end
 
   def logout
-    self.current_user.forget_me if logged_in?
+    current_user.forget_me if logged_in?
     cookies.delete :auth_token
     reset_session
-    flash[:notice] = "You have been logged out."
+    flash[:notice] = 'You have been logged out.'
     redirect_back_or_default(controller: :studies)
   end
 end

@@ -5,8 +5,8 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 Given /^I have a plate in study "([^"]*)" with samples with known sanger_sample_ids$/ do |study_name|
-  study = Study.find_by_name(study_name)
-  plate = PlatePurpose.stock_plate_purpose.create!(true, barcode: "1234567", location: Location.find_by_name("Sample logistics freezer"))
+  study = Study.find_by(name: study_name)
+  plate = PlatePurpose.stock_plate_purpose.create!(true, barcode: '1234567', location: Location.find_by(name: 'Sample logistics freezer'))
   1.upto(4) do |i|
     Well.create!(plate: plate, map_id: i).aliquots.create!(sample: Sample.create!(name: "Sample_#{i}", sanger_sample_id: "ABC_#{i}"))
   end
@@ -18,7 +18,7 @@ end
 
 Given /^all submissions have been built$/ do
   Submission.all.map(&:built!)
-  step "all pending delayed jobs are processed"
+  step 'all pending delayed jobs are processed'
 end
 
 When /^the state of the submission with UUID "([^"]+)" is "([^"]+)"$/ do |uuid, state|
@@ -27,7 +27,7 @@ When /^the state of the submission with UUID "([^"]+)" is "([^"]+)"$/ do |uuid, 
 end
 
 Then /^there should be no submissions to be processed$/ do
-  step "there should be no delayed jobs to be processed"
+  step 'there should be no delayed jobs to be processed'
 end
 
 Then /^the submission with UUID "([^\"]+)" is ready$/ do |uuid|
@@ -50,14 +50,14 @@ Given /^the request type "([^\"]+)" exists$/ do |name|
 end
 
 Then /^the (library tube) "([^\"]+)" should have (\d+) "([^\"]+)" requests$/ do |asset_model, asset_name, count, request_type_name|
-  asset        = asset_model.gsub(/\s+/, '_').classify.constantize.find_by_name(asset_name) or raise StandardError, "Could not find #{asset_model} #{asset_name.inspect}"
-  request_type = RequestType.find_by_name(request_type_name) or raise StandardError, "Could not find request type #{request_type_name.inspect}"
+  asset        = asset_model.gsub(/\s+/, '_').classify.constantize.find_by(name: asset_name) or raise StandardError, "Could not find #{asset_model} #{asset_name.inspect}"
+  request_type = RequestType.find_by(name: request_type_name) or raise StandardError, "Could not find request type #{request_type_name.inspect}"
   assert_equal(count.to_i, asset.requests.where(request_type_id: request_type.id).count, "Number of #{request_type_name.inspect} requests incorrect")
 end
 
 def submission_in_state(state, attributes = {})
-  study    = Study.first or raise StandardError, "There are no studies!"
-  workflow = Submission::Workflow.first or raise StandardError, "There are no workflows!"
+  study    = Study.first or raise StandardError, 'There are no studies!'
+  workflow = Submission::Workflow.first or raise StandardError, 'There are no workflows!'
   submission = FactoryHelp::submission({ asset_group_name: 'Faked to prevent empty asset errors' }.merge(attributes).merge(study: study, workflow: workflow))
   submission.state = state
   submission.save(validate: false)
@@ -88,30 +88,30 @@ SENSIBLE_DEFAULTS_HISEQ = SENSIBLE_DEFAULTS_FOR_SEQUENCING.merge(
 )
 SENSIBLE_DEFAULTS_FOR_REQUEST_TYPE = {
   # Non-HiSeq defaults
-  "Library creation" => SENSIBLE_DEFAULTS_STANDARD,
-  "Illumina-C Library creation" => SENSIBLE_DEFAULTS_STANDARD,
-  "Multiplexed library creation" => SENSIBLE_DEFAULTS_STANDARD,
-  "Pulldown library creation"    => SENSIBLE_DEFAULTS_STANDARD,
-  "Single ended sequencing"      => SENSIBLE_DEFAULTS_FOR_SEQUENCING,
-  "Paired end sequencing"        => SENSIBLE_DEFAULTS_FOR_SEQUENCING,
+  'Library creation' => SENSIBLE_DEFAULTS_STANDARD,
+  'Illumina-C Library creation' => SENSIBLE_DEFAULTS_STANDARD,
+  'Multiplexed library creation' => SENSIBLE_DEFAULTS_STANDARD,
+  'Pulldown library creation'    => SENSIBLE_DEFAULTS_STANDARD,
+  'Single ended sequencing'      => SENSIBLE_DEFAULTS_FOR_SEQUENCING,
+  'Paired end sequencing'        => SENSIBLE_DEFAULTS_FOR_SEQUENCING,
 
   # HiSeq defaults
-  "Single ended hi seq sequencing" => SENSIBLE_DEFAULTS_HISEQ,
-  "HiSeq Paired end sequencing"    => SENSIBLE_DEFAULTS_HISEQ,
+  'Single ended hi seq sequencing' => SENSIBLE_DEFAULTS_HISEQ,
+  'HiSeq Paired end sequencing'    => SENSIBLE_DEFAULTS_HISEQ,
 
-  "Illumina-B Single ended sequencing"      => SENSIBLE_DEFAULTS_FOR_SEQUENCING,
-  "Illumina-B Paired end sequencing"        => SENSIBLE_DEFAULTS_FOR_SEQUENCING,
+  'Illumina-B Single ended sequencing'      => SENSIBLE_DEFAULTS_FOR_SEQUENCING,
+  'Illumina-B Paired end sequencing'        => SENSIBLE_DEFAULTS_FOR_SEQUENCING,
 
   # HiSeq defaults
-  "Illumina-B Single ended hi seq sequencing" => SENSIBLE_DEFAULTS_HISEQ,
-  "Illumina-B HiSeq Paired end sequencing"    => SENSIBLE_DEFAULTS_HISEQ,
+  'Illumina-B Single ended hi seq sequencing' => SENSIBLE_DEFAULTS_HISEQ,
+  'Illumina-B HiSeq Paired end sequencing'    => SENSIBLE_DEFAULTS_HISEQ,
 
   # PacBio defaults
-  "PacBio Library Prep" => {}
+  'PacBio Library Prep' => {}
 }
 
 def with_request_type_scope(name, &block)
-  request_type = RequestType.find_by_name(name) or raise StandardError, "Cannot find request type #{name.inspect}"
+  request_type = RequestType.find_by(name: name) or raise StandardError, "Cannot find request type #{name.inspect}"
   with_scope("#request_type_options_for_#{request_type.id}", &block)
 end
 
@@ -136,14 +136,14 @@ When /^I select "([^\"]+)" from "([^\"]+)" for the "([^\"]+)" request type$/ do 
 end
 
 Then /^the source asset of the last "([^\"]+)" request should be a "([^\"]+)"$/ do |request_type_name, asset_type|
-  request_type = RequestType.find_by_name(request_type_name) or raise StandardError, "Cannot find request type #{request_type_name.inspect}"
+  request_type = RequestType.find_by(name: request_type_name) or raise StandardError, "Cannot find request type #{request_type_name.inspect}"
   request      = request_type.requests.last or raise StandardError, "There are no #{request_type_name.inspect} requests!"
-  assert_equal(asset_type.gsub(/\s+/, '_').classify.constantize, request.asset.class, "Source asset is of invalid type")
+  assert_equal(asset_type.gsub(/\s+/, '_').classify.constantize, request.asset.class, 'Source asset is of invalid type')
 end
 
 Given /^the last submission wants (\d+) runs of the "([^\"]+)" requests$/ do |count, type|
-  submission   = Submission.last or raise StandardError, "There appear to be no submissions"
-  request_type = RequestType.find_by_name(type) or raise StandardError, "Cannot find request type #{type.inspect}"
+  submission   = Submission.last or raise StandardError, 'There appear to be no submissions'
+  request_type = RequestType.find_by(name: type) or raise StandardError, "Cannot find request type #{type.inspect}"
   submission.request_options              ||= {}
   submission.request_options[:multiplier] ||= Hash[submission.request_types.map { |t| [t, 1] }]
   submission.request_options[:multiplier][request_type.id.to_i] = count.to_i
@@ -151,7 +151,7 @@ Given /^the last submission wants (\d+) runs of the "([^\"]+)" requests$/ do |co
 end
 
 Given /^the sample tubes are part of submission "([^\"]*)"$/ do |submission_uuid|
-  submission = Uuid.find_by_external_id(submission_uuid).resource or raise StandardError, "Couldnt find object for UUID"
+  submission = Uuid.find_by(external_id: submission_uuid).resource or raise StandardError, 'Couldnt find object for UUID'
   Asset.all.map { |asset| submission.orders.first.assets << asset }
 end
 
@@ -162,7 +162,7 @@ Then /^I create the order and submit the submission/ do
 end
 
 Given /^I have a "([^\"]*)" submission with the following setup:$/ do |template_name, table|
-  submission_template = SubmissionTemplate.find_by_name(template_name)
+  submission_template = SubmissionTemplate.find_by(name: template_name)
   params = table.rows_hash
   request_options = {}
   request_type_ids = submission_template.new_order.request_types
@@ -175,16 +175,16 @@ Given /^I have a "([^\"]*)" submission with the following setup:$/ do |template_
       index = $1.to_i - 1
       multiplier_hash[request_type_ids[index].to_s] = v.to_i
     else
-      key = k.underscore.gsub(/\W+/, "_")
+      key = k.underscore.gsub(/\W+/, '_')
       request_options[key] = v
     end
   end
 
   Submission.build!(
     template: submission_template,
-    project: Project.find_by_name(params['Project']),
-    study: Study.find_by_name(params['Study']),
-    asset_group: AssetGroup.find_by_name(params['Asset Group']),
+    project: Project.find_by(name: params['Project']),
+    study: Study.find_by(name: params['Study']),
+    asset_group: AssetGroup.find_by(name: params['Asset Group']),
     workflow: Submission::Workflow.first,
     user: @current_user,
     request_options: request_options

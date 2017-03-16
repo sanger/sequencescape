@@ -34,7 +34,7 @@ class Plate::Creator < ActiveRecord::Base
 
   serialize :valid_options
 
-  def can_create_plates?(source_plate, plate_purposes)
+  def can_create_plates?(source_plate, _plate_purposes)
     parent_plate_purposes.empty? || parent_plate_purposes.include?(source_plate.purpose)
   end
 
@@ -54,11 +54,11 @@ class Plate::Creator < ActiveRecord::Base
   end
 
   def create_plate_without_parent(creator_parameters)
-    plate = self.plate_purpose.plates.create_with_barcode!
+    plate = plate_purpose.plates.create_with_barcode!
 
     creator_parameters.set_plate_parameters(plate) unless creator_parameters.nil?
 
-    return [plate]
+    [plate]
   end
 
   def create_plates(source_plate_barcodes, current_user, creator_parameters = nil)
@@ -72,31 +72,35 @@ class Plate::Creator < ActiveRecord::Base
     # Because then you get multiple matches.  So we take the first match, which is just not right.
     scanned_barcodes.map do |scanned|
       plate =
-        Plate.with_machine_barcode(scanned).includes(:location, { wells: :aliquots }).first or
+        Plate.with_machine_barcode(scanned).includes(:location, wells: :aliquots).first or
           raise ActiveRecord::RecordNotFound, "Could not find plate with machine barcode #{scanned.inspect}"
+
       unless can_create_plates?(plate, plate_purposes)
-        raise PlateCreationError, "Scanned plate #{scanned} has a purpose #{plate.purpose.name} not valid for creating [#{self.plate_purposes.map(&:name).join(',')}]"
+        raise PlateCreationError, "Scanned plate #{scanned} has a purpose #{plate.purpose.name} not valid for creating [#{plate_purposes.map(&:name).join(',')}]"
       end
+
       create_child_plates_from(plate, current_user, creator_parameters)
     end.flatten
   end
   private :create_plates
 
   def create_child_plates_from(plate, current_user, creator_parameters)
-    stock_well_picker = plate.plate_purpose.can_be_considered_a_stock_plate? ? ->(w) { [w] } : ->(w) { w.stock_wells }
+    stock_well_picker = plate.plate_purpose.stock_plate? ? ->(w) { [w] } : ->(w) { w.stock_wells }
+    parent_wells = plate.wells.includes(:aliquots)
+
     plate_purposes.map do |target_plate_purpose|
-      target_plate_purpose.target_plate_type.constantize.create_with_barcode!(plate.barcode) do |child_plate|
+      target_plate_purpose.target_class.create_with_barcode!(plate.barcode) do |child_plate|
         child_plate.plate_purpose = target_plate_purpose
         child_plate.size          = plate.size
         child_plate.location      = plate.location
         child_plate.name          = "#{target_plate_purpose.name} #{child_plate.barcode}"
       end.tap do |child_plate|
-          child_plate.wells << plate.wells.map do |well|
-            well.dup.tap do |child_well|
-              child_well.aliquots = well.aliquots.map(&:dup)
-              child_well.stock_wells.attach(stock_well_picker.call(well))
-            end
+        child_plate.wells << parent_wells.map do |well|
+          well.dup.tap do |child_well|
+            child_well.aliquots = well.aliquots.map(&:dup)
+            child_well.stock_wells.attach(stock_well_picker.call(well))
           end
+        end
 
         creator_parameters.set_plate_parameters(child_plate, plate) unless creator_parameters.nil?
 

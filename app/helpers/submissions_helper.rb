@@ -22,9 +22,9 @@ module SubmissionsHelper
   def order_input_tag(order, field_info)
     content_tag(:div, class: 'col-sm-6') do
       case field_info.kind
-      when "Selection" then order_selection_tag(order, field_info)
-      when "Text"      then order_text_tag(order, field_info)
-      when "Numeric"   then order_number_tag(order, field_info)
+      when 'Selection' then order_selection_tag(order, field_info)
+      when 'Text'      then order_text_tag(order, field_info)
+      when 'Numeric'   then order_number_tag(order, field_info)
       # Fall back to a text field
       else order_text_tag(order, field_info)
       end
@@ -38,7 +38,7 @@ module SubmissionsHelper
         field_info.selection.map(&:to_s),
         order.request_options.try(:[], field_info.key)
       ),
-      class: "required form-control",
+      class: 'required form-control',
       required: true,
       disabled: (field_info.selection.size == 1)
     )
@@ -49,7 +49,7 @@ module SubmissionsHelper
     text_field_tag(
       "submission[order_params][#{field_info.key}]",
       order.request_options.try(:[], field_info.key) || field_info.default_value,
-      class: "required form-control",
+      class: 'required form-control',
       required: true
     )
   end
@@ -59,7 +59,7 @@ module SubmissionsHelper
     number_field_tag(
       "submission[order_params][#{field_info.key}]",
       order.request_options.try(:[], field_info.key) || field_info.default_value,
-      class: "required form-control",
+      class: 'required form-control',
       required: true
     )
   end
@@ -67,39 +67,39 @@ module SubmissionsHelper
 
   def studies_select(form, studies)
     prompt = case studies.count
-             when 0 then "You are not managing any Studies at this time"
-             else "Please select a Study for this Submission..."
+             when 0 then 'You are not managing any Studies at this time'
+             else 'Please select a Study for this Submission...'
              end
 
     form.collection_select(
       :study_id,
       studies, :id, :name,
       { prompt: prompt },
-      { disabled: true, class: 'study_id form-control' }
+      disabled: true, class: 'study_id form-control'
     )
   end
 
   def projects_select(form, projects)
     prompt = case projects.count
-             when 0 then "There are no valid projects available"
-             else "Please select a Project for this Submission..."
+             when 0 then 'There are no valid projects available'
+             else 'Please select a Project for this Submission...'
              end
-# form.text_field :project_name,
-#       :class       => 'submission_project_name form-control form-control',
-#       :placeholder => "enter the first few characters of the financial project name",
-#       :disabled    => true
+    # form.text_field :project_name,
+    #       :class       => 'submission_project_name form-control form-control',
+    #       :placeholder => "enter the first few characters of the financial project name",
+    #       :disabled    => true
 
     form.collection_select(
       :project_name,
       projects, :name, :name,
       { prompt: prompt },
-      { disabled: true, class: 'submission_project_name form-control' }
+      disabled: true, class: 'submission_project_name form-control'
     )
   end
 
   def asset_group_select(asset_groups)
     prompt = case asset_groups.size
-             when 0 then "There are no Asset Groups associcated with this Study"
+             when 0 then 'There are no Asset Groups associcated with this Study'
              else 'Please select an asset group for this order.'
              end
 
@@ -108,10 +108,8 @@ module SubmissionsHelper
       :asset_group_id,
       asset_groups, :id, :name,
       { prompt: prompt },
-      {
-        class: 'submission_asset_group_id required form-control',
-        disabled: (asset_groups.size == 0)
-      }
+              class: 'submission_asset_group_id required form-control',
+              disabled: (asset_groups.size == 0)
     )
   end
 
@@ -121,12 +119,12 @@ module SubmissionsHelper
       display_user_guide(
         'This submission is still open for editing, further orders can still be added...',
         edit_submission_path(submission)
-      ) + button_to("Edit Submission", edit_submission_path(submission), method: :get, class: 'button')
+      ) + button_to('Edit Submission', edit_submission_path(submission), method: :get, class: 'button')
     when 'pending' then
-      display_user_guide("Your submission is currently pending.") +
+      display_user_guide('Your submission is currently pending.') +
       content_tag(:p, 'It should be processed approximately 10 minutes after you have submitted it, however sometimes this may take longer.')
     when 'processing' then
-      display_user_guide("Your submission is currently being processed.  This should take no longer than five minutes.")
+      display_user_guide('Your submission is currently being processed.  This should take no longer than five minutes.')
     when 'failed' then
       display_user_error(raw("<h3>Your submission has failed:</h3><p> #{h((submission.message || 'No failure reason recorded').lines.first)} </p>"))
     when 'ready'

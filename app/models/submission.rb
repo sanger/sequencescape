@@ -28,9 +28,7 @@ class Submission < ActiveRecord::Base
   has_many :comments_from_requests, through: :requests, source: :comments
 
   def comments
-    # has_many throug doesn't work. Comments is a column (string) of order
-    # not an ActiveRecord
-    orders.map(&:comments).flatten(1).compact
+    orders.pluck(:comments).compact
   end
 
   def add_comment(description, user)
@@ -49,18 +47,18 @@ class Submission < ActiveRecord::Base
          :user] }
   ])}
 
-  scope :building, -> { where(state: "building") }
-  scope :pending,  -> { where(state: "pending") }
-  scope :ready,    -> { where(state: "ready") }
+  scope :building, -> { where(state: 'building') }
+  scope :pending,  -> { where(state: 'pending') }
+  scope :ready,    -> { where(state: 'ready') }
 
   scope :latest_first, -> { order('id DESC') }
 
-  scope :for_search_query, ->(query, with_includes) { where(name: query) }
+  scope :for_search_query, ->(query, _with_includes) { where(name: query) }
 
   before_destroy :building?, :empty_of_orders?
 
   def empty_of_orders?
-    self.orders.empty?
+    orders.empty?
   end
 
   # Before destroying this instance we should cancel all of the requests it has made
@@ -70,9 +68,9 @@ class Submission < ActiveRecord::Base
 
   def cancel_all_requests_on_destruction
     ActiveRecord::Base.transaction do
-      requests.all.each do |request|
+      requests.find_each do |request|
         request.submission_cancelled! # Cancel first to prevent event doing something stupid
-        request.events.create!(message: "Submission #{self.id} as destroyed")
+        request.events.create!(message: "Submission #{id} as destroyed")
       end
     end
   end
@@ -94,7 +92,7 @@ class Submission < ActiveRecord::Base
   end
 
   def url_name
-    "submission"
+    'submission'
   end
   alias_method(:json_root, :url_name)
 
@@ -122,12 +120,12 @@ class Submission < ActiveRecord::Base
   end
 
   def safe_to_delete?
-    ActiveSupport::Deprecation.warn "Submission#safe_to_delete? may not recognise all states"
-    unless self.ready?
-      requests_in_progress = self.requests.select { |r| r.state != 'pending' || r.state != 'waiting' }
-      requests_in_progress.empty? ? true : false
-    else
+    ActiveSupport::Deprecation.warn 'Submission#safe_to_delete? may not recognise all states'
+    if ready?
       return true
+    else
+      requests_in_progress = requests.select { |r| r.state != 'pending' || r.state != 'waiting' }
+      requests_in_progress.empty? ? true : false
     end
   end
 
@@ -141,7 +139,7 @@ class Submission < ActiveRecord::Base
 
       PreCapturePool::Builder.new(self).build!
 
-      errors.add(:requests, "No requests have been created for this submission") if requests.empty?
+      errors.add(:requests, 'No requests have been created for this submission') if requests.empty?
       raise ActiveRecord::RecordInvalid, self if errors.present?
     end
   end
@@ -151,22 +149,30 @@ class Submission < ActiveRecord::Base
     orders.any? { |o| RequestType.find(o.request_types).any?(&:for_multiplexing?) }
   end
 
+  # Attempts to find the multiplexed asset (usually a multiplexed library tube) associated
+  # with the submission. Useful when trying to pool requests into a pre-existing tube at the
+  # end of the process.
+  def multiplexed_asset
+    # All our multiplexed requests end up in a single asset, so we don't care which one we find.
+    requests.joins(:request_type).find_by(request_types: { for_multiplexing: true }).target_asset
+  end
+
   def multiplex_started_passed
     multiplex_started_passed_result = false
-    if self.multiplexed?
-      requests = Request.where(submission_id: self.id)
+    if multiplexed?
+      requests = Request.where(submission_id: id)
       states = requests.map(&:state).uniq
-      if (states.include?("started") || states.include?("passed"))
+      if (states.include?('started') || states.include?('passed'))
         multiplex_started_passed_result = true
       end
     end
-    return multiplex_started_passed_result
+    multiplex_started_passed_result
   end
 
   def each_submission_warning
     store = { samples: [], submissions: [] }
     orders.each do |order|
-      order.duplicates_within(1.month) do |samples, orders, submissions|
+      order.duplicates_within(1.month) do |samples, _orders, submissions|
         store[:samples].concat(samples)
         store[:submissions].concat(submissions)
       end
@@ -180,7 +186,7 @@ class Submission < ActiveRecord::Base
   # Order needs to have the 'structure'
   def validate_orders_are_compatible
     return true if orders.size < 2
-    # check every order agains the first one
+    # check every order against the first one
     first_order = orders.first
     orders[1..-1].each { |o| check_orders_compatible?(o, first_order) }
     return false if errors.count > 0
@@ -191,9 +197,8 @@ class Submission < ActiveRecord::Base
   # not order, because it is submission
   # which decide if orders are compatible or not
   def check_orders_compatible?(a, b)
-    errors.add(:request_types, "are incompatible") if a.request_types != b.request_types
-    errors.add(:request_options, "are incompatible") if !request_options_compatible?(a, b)
-    errors.add(:item_options, "are incompatible") if a.item_options != b.item_options
+    errors.add(:request_types, 'are incompatible') if a.request_types != b.request_types
+    errors.add(:request_options, 'are incompatible') unless request_options_compatible?(a, b)
     check_studies_compatible?(a.study, b.study)
   end
 
@@ -209,11 +214,11 @@ class Submission < ActiveRecord::Base
   # for the moment we consider that request types should be the same for all order
   # so we can take the first one
   def request_type_ids
-    return [] unless orders.size >= 1
+    return [] unless orders.present?
     orders.first.request_types.map(&:to_i)
   end
 
-  def next_request_type_id(request_type_id)
+  def find_next_request_type_id(request_type_id)
     request_type_ids[request_type_ids.index(request_type_id) + 1]  if request_type_ids.present?
   end
 
@@ -221,9 +226,9 @@ class Submission < ActiveRecord::Base
     request_type_ids[request_type_ids.index(request_type_id) - 1]  if request_type_ids.present?
   end
 
-  def obtain_next_requests_to_connect(request, next_request_type_id = nil)
+  def next_requests_to_connect(request, next_request_type_id = nil)
     if next_request_type_id.nil?
-      next_request_type_id = self.next_request_type_id(request.request_type_id) or return []
+      next_request_type_id = find_next_request_type_id(request.request_type_id) or return []
     end
     all_requests = requests.with_request_type_id([request.request_type_id, next_request_type_id]).order(id: :asc)
     sibling_requests, next_possible_requests = all_requests.partition { |r| r.request_type_id == request.request_type_id }
@@ -254,38 +259,32 @@ class Submission < ActiveRecord::Base
 
   def next_requests(request)
     # We should never be receiving requests that are not part of our request graph.
-    raise RuntimeError, "Request #{request.id} is not part of submission #{id}" unless request.submission_id == self.id
+    raise RuntimeError, "Request #{request.id} is not part of submission #{id}" unless request.submission_id == id
 
       # Pick out the siblings of the request, so we can work out where it is in the list, and all of
       # the requests in the subsequent request type, so that we can tie them up.  We order by ID
       # here so that the earliest requests, those created by the submission build, are always first;
       # any additional requests will have come from a sequencing batch being reset.
-      next_request_type_id = self.next_request_type_id(request.request_type_id) or return []
+      next_request_type_id = find_next_request_type_id(request.request_type_id) or return []
       return request.target_asset.requests.where(submission_id: id, request_type_id: next_request_type_id) if request.target_asset.present?
-      obtain_next_requests_to_connect(request, next_request_type_id)
+      next_requests_to_connect(request, next_request_type_id)
   end
 
   def name
-    name = attributes['name'] || study_names
-    name.present? ? name : "##{id}"
+    given_name = super || study_names
+    given_name.present? ? given_name : "##{id}"
   end
 
   def study_names
     # TODO: Should probably be re-factored, although we'll only fall back to the intensive code in the case of cross study re-requests
-    orders.map { |o| o.study.try(:name) || o.assets.map { |a| a.aliquots.map { |al| al.study.try(:name) } } }.flatten.compact.sort.uniq.join("|")
+    orders.map { |o| o.study.try(:name) || o.assets.map { |a| a.aliquots.map { |al| al.study.try(:name) } } }.flatten.compact.sort.uniq.join('|')
   end
 
- def cross_project?
-  multiplexed? && orders.map(&:project_id).uniq.size > 1
- end
+  def cross_project?
+    multiplexed? && orders.map(&:project_id).uniq.size > 1
+  end
 
- def cross_study?
-  multiplexed? && orders.map(&:study_id).uniq.size > 1
- end
-end
-
-class Array
-  def intersperse(separator)
-    (inject([]) { |a, v| a + [v, separator] })[0...-1]
+  def cross_study?
+    multiplexed? && orders.map(&:study_id).uniq.size > 1
   end
 end

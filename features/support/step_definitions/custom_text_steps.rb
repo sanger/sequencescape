@@ -53,7 +53,7 @@ Then /^I should be at (.+)$/ do |path|
 end
 
 Given /^I am editing the custom text field "([^\"]+)"$/ do |name|
- field = CustomText.find_by_identifier(name) or raise StandardError, "Cannot find custom text field #{name.inspect}"
+ field = CustomText.find_by(identifier: name) or raise StandardError, "Cannot find custom text field #{name.inspect}"
  visit edit_admin_custom_text_path(field)
 end
 
@@ -72,17 +72,17 @@ When /^I fill in the following fields$/ do |table|
 end
 
 Then /^I should be able to (enter|edit) the following fields$/ do |action, table|
-   # table is a Cucumber::Ast::Table
+  # table is a Cucumber::Ast::Table
   table.hashes.each do |hash|
     step(%Q{I fill in "#{hash[:label]}" with "#{hash[:value]}"})
   end
 
-  step "I press \"Save Custom text\""
+  step 'I press "Save Custom text"'
   case action
-  when "enter"
-    step "I should see \"Custom text successfully created\""
-  when "edit"
-    step "I should see \"Details have been updated\""
+  when 'enter'
+    step 'I should see "Custom text successfully created"'
+  when 'edit'
+    step 'I should see "Details have been updated"'
   end
   table.hashes.each do |hash|
     step "I should see \"#{hash[:value]}\""

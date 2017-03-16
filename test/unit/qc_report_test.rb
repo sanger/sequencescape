@@ -4,10 +4,10 @@
 # authorship of this file.
 # Copyright (C) 2015,2016 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class QcReportTest < ActiveSupport::TestCase
-  context "QcReport" do
+  context 'QcReport' do
     should belong_to :study
     should belong_to :product_criteria
     should have_many :qc_metrics
@@ -16,19 +16,19 @@ class QcReportTest < ActiveSupport::TestCase
     # Also validates state, but we leave that off here as the state machine auto-populates it
   end
 
-  context "A QcReport" do
-    context "including existing" do
+  context 'A QcReport' do
+    context 'including existing' do
       setup do
         @study = create :study
         @other_study = create :study
-        @stock_plate = create :plate
+        @stock_plate = create :plate, purpose: PlatePurpose.find_or_create_by(name: 'Stock plate')
 
         [@study, @other_study].each do |study|
           2.times do |i|
-            @attribute = create :well_attribute, current_volume: 500, concentration: 200
+            attribute = create :well_attribute, current_volume: 500, concentration: 200
             sample = create(:study_sample, study: study).sample
             sample.update_attributes!(sanger_sample_id: 'TEST1')
-            well = create :well, samples: [sample], plate: @stock_plate, map: create(:map, location_id: i), well_attribute: @attribute
+            well = create :well, samples: [sample], plate: @stock_plate, map: create(:map, location_id: i), well_attribute: attribute
             well.aliquots.each { |a| a.update_attributes!(study: study) }
           end
         end
@@ -44,7 +44,7 @@ class QcReportTest < ActiveSupport::TestCase
       end
 
       should 'assign a report identifier' do
-        assert @qc_report.report_identifier.present?, "No identifier assigned"
+        assert @qc_report.report_identifier.present?, 'No identifier assigned'
         assert_match(/wtccc_product[0-9]+_[0-9]{12}/, @qc_report.report_identifier, "Unexpected identifier: #{@qc_report.report_identifier}")
       end
 
@@ -61,10 +61,10 @@ class QcReportTest < ActiveSupport::TestCase
       end
     end
 
-    context "excluding existing" do
+    context 'excluding existing' do
       setup do
         @study = create :study
-        @stock_plate = create :plate
+        @stock_plate = create :plate, purpose: PlatePurpose.find_or_create_by(name: 'Stock plate')
 
         @current_criteria = create :product_criteria
         @other_criteria = create :product_criteria
@@ -108,7 +108,7 @@ class QcReportTest < ActiveSupport::TestCase
     end
   end
 
-  context "QcReport state machine" do
+  context 'QcReport state machine' do
     setup do
       @qc_report = create :qc_report
       # Stub out report generation as it advances the state machine

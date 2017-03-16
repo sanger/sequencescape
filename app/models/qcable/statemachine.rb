@@ -8,7 +8,7 @@ module Qcable::Statemachine
   module ClassMethods
     # A little more sensitive than the request state machine
     def suggested_transition_between(current, target)
-      aasm.state_machine.events.select do |name, event|
+      aasm.state_machine.events.select do |_name, event|
         event.transitions_from_state(current.to_sym).any? do |transition|
           transition.options[:allow_automated?] && transition.to == target.to_sym
         end
@@ -66,7 +66,7 @@ module Qcable::Statemachine
         end
       end
 
-      # new version of combinable named_scope
+     # new version of combinable named_scope
      scope :for_state, ->(state) { where(state: state) }
 
      scope :available,   -> { where(state: :available) }
@@ -102,6 +102,6 @@ module Qcable::Statemachine
   def on_used; end
 
   def transition_to(target_state)
-    send("#{self.class.suggested_transition_between(self.state, target_state)}!")
+    send("#{self.class.suggested_transition_between(state, target_state)}!")
   end
 end

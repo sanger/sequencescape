@@ -361,8 +361,8 @@ ActiveRecord::Schema.define(version: 20170214170321) do
     t.string   "key",                            limit: 255
     t.string   "value",                          limit: 255
     t.integer  "custom_metadatum_collection_id", limit: 4
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                                 null: false
+    t.datetime "updated_at",                                 null: false
   end
 
   add_index "custom_metadata", ["custom_metadatum_collection_id"], name: "index_custom_metadata_on_custom_metadatum_collection_id", using: :btree
@@ -370,8 +370,8 @@ ActiveRecord::Schema.define(version: 20170214170321) do
   create_table "custom_metadatum_collections", force: :cascade do |t|
     t.integer  "user_id",    limit: 4
     t.integer  "asset_id",   limit: 4
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
   end
 
   add_index "custom_metadatum_collections", ["asset_id"], name: "index_custom_metadatum_collections_on_asset_id", using: :btree
@@ -882,26 +882,26 @@ ActiveRecord::Schema.define(version: 20170214170321) do
   end
 
   create_table "plate_purposes", force: :cascade do |t|
-    t.string   "name",                            limit: 255,                           null: false
+    t.string   "name",                    limit: 255,                           null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "type",                            limit: 255
-    t.string   "target_type",                     limit: 30
-    t.boolean  "qc_display",                                  default: false
+    t.string   "type",                    limit: 255
+    t.string   "target_type",             limit: 30
+    t.boolean  "qc_display",                          default: false
     t.boolean  "pulldown_display"
-    t.boolean  "can_be_considered_a_stock_plate",             default: false,           null: false
-    t.string   "default_state",                   limit: 255, default: "pending"
-    t.integer  "barcode_printer_type_id",         limit: 4,   default: 2
-    t.boolean  "cherrypickable_target",                       default: true,            null: false
-    t.boolean  "cherrypickable_source",                       default: false,           null: false
-    t.string   "cherrypick_direction",            limit: 255, default: "column",        null: false
-    t.integer  "default_location_id",             limit: 4
-    t.string   "cherrypick_filters",              limit: 255
-    t.integer  "size",                            limit: 4,   default: 96
-    t.integer  "asset_shape_id",                  limit: 4,   default: 1,               null: false
-    t.string   "barcode_for_tecan",               limit: 255, default: "ean13_barcode", null: false
-    t.integer  "source_purpose_id",               limit: 4
-    t.integer  "lifespan",                        limit: 4
+    t.boolean  "stock_plate",                         default: false,           null: false
+    t.string   "default_state",           limit: 255, default: "pending"
+    t.integer  "barcode_printer_type_id", limit: 4,   default: 2
+    t.boolean  "cherrypickable_target",               default: true,            null: false
+    t.boolean  "cherrypickable_source",               default: false,           null: false
+    t.string   "cherrypick_direction",    limit: 255, default: "column",        null: false
+    t.integer  "default_location_id",     limit: 4
+    t.string   "cherrypick_filters",      limit: 255
+    t.integer  "size",                    limit: 4,   default: 96
+    t.integer  "asset_shape_id",          limit: 4,   default: 1,               null: false
+    t.string   "barcode_for_tecan",       limit: 255, default: "ean13_barcode", null: false
+    t.integer  "source_purpose_id",       limit: 4
+    t.integer  "lifespan",                limit: 4
   end
 
   add_index "plate_purposes", ["qc_display"], name: "index_plate_purposes_on_qc_display", using: :btree
@@ -1886,6 +1886,24 @@ ActiveRecord::Schema.define(version: 20170214170321) do
     t.string  "source",         limit: 255
   end
 
+  create_table "work_completions", force: :cascade do |t|
+    t.integer  "user_id",    limit: 4, null: false
+    t.integer  "target_id",  limit: 4, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "work_completions", ["target_id"], name: "fk_rails_f8fb9e95de", using: :btree
+  add_index "work_completions", ["user_id"], name: "fk_rails_204fc81a92", using: :btree
+
+  create_table "work_completions_submissions", force: :cascade do |t|
+    t.integer "work_completion_id", limit: 4, null: false
+    t.integer "submission_id",      limit: 4, null: false
+  end
+
+  add_index "work_completions_submissions", ["submission_id"], name: "fk_rails_1ac4e93988", using: :btree
+  add_index "work_completions_submissions", ["work_completion_id"], name: "fk_rails_5ea64f1af2", using: :btree
+
   create_table "workflow_samples", force: :cascade do |t|
     t.text     "name",          limit: 65535
     t.integer  "user_id",       limit: 4
@@ -1899,4 +1917,8 @@ ActiveRecord::Schema.define(version: 20170214170321) do
     t.integer  "version",       limit: 4
   end
 
+  add_foreign_key "work_completions", "assets", column: "target_id"
+  add_foreign_key "work_completions", "users"
+  add_foreign_key "work_completions_submissions", "submissions"
+  add_foreign_key "work_completions_submissions", "work_completions"
 end

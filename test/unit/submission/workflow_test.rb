@@ -4,9 +4,9 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class Submission::WorkflowTest < ActiveSupport::TestCase
-  context "A Workflow" do
+  context 'A Workflow' do
   end
 end

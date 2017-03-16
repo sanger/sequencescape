@@ -16,42 +16,42 @@ class AccessionServiceTest < ActiveSupport::TestCase
   end
 
   # temporary test for hotfix
-  context "A sample with a strain" do
+  context 'A sample with a strain' do
     setup do
-      @study = create :study
+      @study = create :open_study, accession_number: 'accss'
       @sample = create :sample, studies: [@study]
-      @sample.sample_metadata.sample_strain_att = "my strain"
+      @sample.sample_metadata.sample_strain_att = 'my strain'
     end
 
-    should "expose strain in ERA xml" do
+    should 'expose strain in ERA xml' do
       assert_tag('strain', 'my strain')
     end
   end
 
-  context "A sample with a gender" do
+  context 'A sample with a gender' do
     setup do
-      @study = create :managed_study
+      @study = create :managed_study, accession_number: 'accss'
       @sample = create :sample, studies: [@study]
-      @sample.sample_metadata.gender = "male"
+      @sample.sample_metadata.gender = 'male'
     end
 
-    should "expose gender in EGA xml" do
+    should 'expose gender in EGA xml' do
       assert_tag('gender', 'male')
     end
   end
 
-  context "A sample with a donor_id" do
+  context 'A sample with a donor_id' do
     setup do
-      @study = create :managed_study
+      @study = create :managed_study, accession_number: 'accss'
       @sample = create :sample, studies: [@study]
-      @sample.sample_metadata.donor_id = "123456789"
+      @sample.sample_metadata.donor_id = '123456789'
     end
 
-    should "expose donor_id as subject_id in EGA xml" do
+    should 'expose donor_id as subject_id in EGA xml' do
       assert_tag('subject_id', '123456789')
     end
 
-    should "dupe test" do
+    should 'dupe test' do
       assert_tag('subject_id', '123456789')
     end
   end

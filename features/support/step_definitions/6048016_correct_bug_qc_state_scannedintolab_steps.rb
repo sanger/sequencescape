@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 Given /^for asset "([^\"]+)" a qc state "([^\"]+)"$/ do |asset_name, qc_state|
-  asset = Asset.find_by_name(asset_name) or raise StandardError, "Cannot find asset #{asset_name. inspect}"
+  asset = Asset.find_by(name: asset_name) or raise StandardError, "Cannot find asset #{asset_name. inspect}"
   asset.qc_state = qc_state
   asset.save
 end

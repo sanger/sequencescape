@@ -5,18 +5,18 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 require 'event_factory'
 class RequestsController < ApplicationController
-# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+  # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
 
   before_action :admin_login_required, only: [:describe, :undescribe, :destroy]
   before_action :set_permitted_params, only: [:update]
 
   def set_permitted_params
-    @parameters = params[:request].reject { |k, v| !['request_metadata_attributes'].include?(k.to_s) }
+    @parameters = params[:request].reject { |k, _v| !['request_metadata_attributes'].include?(k.to_s) }
   end
   attr_reader :parameters
- # before_action :find_request_from_id, :only => [ :filter_change_decision, :change_decision ]
+  # before_action :find_request_from_id, :only => [ :filter_change_decision, :change_decision ]
 
   def index
     @study, @item = nil, nil
@@ -65,7 +65,7 @@ class RequestsController < ApplicationController
 
     unless params[:request][:request_type_id].nil?
       unless @request.request_type_updatable?(params[:request][:request_type_id])
-        flash[:error] = "You can not change the request type."
+        flash[:error] = 'You can not change the request type.'
         redirect_to request_path(@request)
         return
       end
@@ -73,17 +73,17 @@ class RequestsController < ApplicationController
 
     begin
       if @request.update_attributes(parameters)
-        flash[:notice] = "Request details have been updated"
+        flash[:notice] = 'Request details have been updated'
         redirect_to request_path(@request)
       else
-        flash[:error] = "Request was not updated. No change specified ?"
-        render action: "edit", id: @request.id
+        flash[:error] = 'Request was not updated. No change specified ?'
+        render action: 'edit', id: @request.id
       end
     rescue => exception
       error_message = "An error has occurred, category:'#{exception.class}'\ndescription:'#{exception.message}'"
       EventFactory.request_update_note_to_manager(@request, current_user, error_message)
-      flash[:error] = "Failed to update request. " << error_message
-      render action: "edit", id: @request.id
+      flash[:error] = 'Failed to update request. ' << error_message
+      render action: 'edit', id: @request.id
     end
   end
 
@@ -146,21 +146,21 @@ class RequestsController < ApplicationController
     @tasks = Task.all
   end
 
-  def expanded(options = {})
-    render text: "", status: :gone
+  def expanded(_options = {})
+    render text: '', status: :gone
   end
 
   def pending
-    render text: "", status: :gone
+    render text: '', status: :gone
   end
 
-  def incomplete_requests_for_family(options = {})
-    render text: "", status: :gone
+  def incomplete_requests_for_family(_options = {})
+    render text: '', status: :gone
   end
 
   def redirect_if_not_owner_or_admin
     unless current_user == @request.user or current_user.is_administrator? or current_user.is_manager?
-      flash[:error] = "Request details can only be altered by the owner or a manager"
+      flash[:error] = 'Request details can only be altered by the owner or a manager'
       redirect_to request_path(@request)
       return true
     end
@@ -206,10 +206,10 @@ class RequestsController < ApplicationController
 
   def change_decision
     @change_decision = Request::ChangeDecision.new({ request: @request, user: @current_user }.merge(params[:change_decision] || {})).execute!
-    flash[:notice] = "Update. Below you find the new situation."
+    flash[:notice] = 'Update. Below you find the new situation.'
     redirect_to filter_change_decision_request_path(params[:id])
    rescue Request::ChangeDecision::InvalidDecision => exception
-      flash[:error] = "Failed! Please, read the list of problem below."
+      flash[:error] = 'Failed! Please, read the list of problem below.'
       @change_decision = exception.object
       render(action: :filter_change_decision)
   end

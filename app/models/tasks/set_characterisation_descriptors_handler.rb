@@ -5,7 +5,7 @@
 # Copyright (C) 2011,2013,2015 Genome Research Ltd.
 
 module Tasks::SetCharacterisationDescriptorsHandler
-  def do_set_characterisation_descriptors_task(task, params)
+  def do_set_characterisation_descriptors_task(_task, params)
     @count = 0
     if params[:values].nil?
       @values = {}
@@ -32,7 +32,7 @@ module Tasks::SetCharacterisationDescriptorsHandler
       request.lab_events << event
 
       unless request.asset.try(:resource)
-        EventSender.send_request_update(request.id, "update", "Passed: #{@task.name}")
+        EventSender.send_request_update(request.id, 'update', "Passed: #{@task.name}")
       end
 
       if request.has_passed(@batch, @task) || request.failed?
@@ -54,7 +54,7 @@ module Tasks::SetCharacterisationDescriptorsHandler
     false
   end
 
-  def render_set_characterisation_descriptors_task(task, params)
+  def render_set_characterisation_descriptors_task(_task, params)
     @batch = Batch.includes(:requests, :pipeline, :lab_events).find(params[:batch_id])
     @rits = @batch.pipeline.request_information_types
     @requests = @batch.ordered_requests

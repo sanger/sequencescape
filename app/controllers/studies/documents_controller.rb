@@ -5,8 +5,8 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 class Studies::DocumentsController < ApplicationController
-# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+  # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   before_action :get_study_id
 
@@ -25,13 +25,13 @@ class Studies::DocumentsController < ApplicationController
     @document = Document.new(document_settings)
     begin
       if @document.save
-        flash[:notice] = "Document was saved okay"
+        flash[:notice] = 'Document was saved okay'
         redirect_to [:admin, @study], status: 303
       else
-        render action: "new"
+        render action: 'new'
       end
     rescue ActiveRecord::StatementInvalid
-      flash[:error] = "Something bad happened. Perhaps karma has caught up with you?"
+      flash[:error] = 'Something bad happened. Perhaps karma has caught up with you?'
       redirect_to [:admin, @study], status: 303
     end
   end
@@ -44,10 +44,10 @@ class Studies::DocumentsController < ApplicationController
   def destroy
     @document = Document.find(params[:id])
     if @document.destroy
-      flash[:notice] = "Document was successfully deleted"
+      flash[:notice] = 'Document was successfully deleted'
       redirect_to [:admin, @study], status: 303
     else
-      flash[:error] = "Document cannot be destroyed"
+      flash[:error] = 'Document cannot be destroyed'
       redirect_to [:admin, @study], status: 303
     end
   end

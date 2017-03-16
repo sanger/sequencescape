@@ -8,7 +8,7 @@ module ControlRequestTypeCreation
   end
 
   def find_control_type
-    RequestType.find_by_key(key_name)
+    RequestType.find_by(key: key_name)
   end
 
   def key_name
@@ -16,7 +16,7 @@ module ControlRequestTypeCreation
   end
 
   def last_request_type
-    @last_request_type ||= self.request_types.last
+    @last_request_type ||= request_types.last
   end
 
   def add_control_request_type
@@ -27,7 +27,7 @@ module ControlRequestTypeCreation
         crt.initial_state      = last_request_type.initial_state
         crt.asset_type         = last_request_type.asset_type
         crt.order              = last_request_type.order
-        crt.request_purpose    = RequestPurpose.find_by_key!('control')
+        crt.request_purpose    = RequestPurpose.find_by!(key: 'control')
       end.tap do |control_request_type|
         self.control_request_type = control_request_type
       end

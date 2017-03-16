@@ -11,68 +11,59 @@ module StudyReport::StudyDetails
   def each_stock_well_id_in_study_in_batches(&block)
     # Stock wells are determined by the requests leading from the stock plate
     handle_wells(
-      "INNER JOIN requests ON requests.asset_id=assets.id",
-      "requests.initial_study_id",
+      :requests,
+      { requests: { initial_study_id: id } },
       PlatePurpose.where(name: Study::STOCK_PLATE_PURPOSES).pluck(:id),
       &block
     )
 
     # Aliquot 1,2,3,4 & 5 plates are determined by the aliquots in their wells
     handle_wells(
-      "INNER JOIN aliquots ON aliquots.receptacle_id=assets.id",
-      "aliquots.study_id",
+      :aliquots,
+      { aliquots: { study_id: id } },
       PlatePurpose.where(name: ['Aliquot 1', 'Aliquot 2', 'Aliquot 3', 'Aliquot 4', 'Aliquot 1', 'Pre-Extracted Plate']).pluck(:id),
       &block
     )
   end
 
-  # Similar to find in batches, we pluck out the relevant asset ids in batches of 1000
+  # Similar to find in batches, we pluck out the relevant asset ids, then slice them into batches of the
+  # batch size. This allows us to perform one query to grab all our ids.
   def handle_wells(join, study_condition, plate_purpose_id, &block)
-    asset_ids = well_batch_from(0, join, study_condition, plate_purpose_id)
-    while asset_ids.any?
-      yield asset_ids
-      break if asset_ids.length < BATCH_SIZE
-      asset_ids = well_batch_from(asset_ids.last, join, study_condition, plate_purpose_id)
-    end
+    asset_ids = well_report_ids(join, study_condition, plate_purpose_id)
+    asset_ids.each_slice(BATCH_SIZE, &block)
   end
   private :handle_wells
 
-  def well_batch_from(initial_id, join, study_condition, plate_purpose_id)
-    Well.select('DISTINCT assets.id').joins([
-        "INNER JOIN container_associations ON assets.id=container_associations.content_id",
-        "INNER JOIN assets AS plates ON container_associations.container_id=plates.id AND plates.sti_type='Plate'",
-        join
-      ]).
-      where([
-        "plates.plate_purpose_id IN (?) AND #{study_condition}=? AND assets.id > ?",
-        plate_purpose_id,
-        self.id,
-        initial_id
-      ]).order('id ASC').limit(BATCH_SIZE).pluck(:id)
+  def well_report_ids(join, study_condition, plate_purpose_id)
+    Well.joins(:plate, join)
+      .where(plates_assets: { plate_purpose_id: plate_purpose_id })
+      .where(study_condition)
+      .order(id: :asc).uniq.pluck(:id)
   end
-  private :well_batch_from
+  private :well_report_ids
 
   def progress_report_header
     [
-      "Status", "Study", "Supplier", "Sanger Sample Name", "Supplier Sample Name", "Plate", "Well", "Supplier Volume",
-      "Supplier Gender", "Concentration", "Initial Volume", "Current Volume", "Total Micrograms", "Sequenome Count",
-      "Sequenome Gender", "Pico", "Gel", "Qc Status", "QC started date", "Pico date", "Gel QC date", "Seq stamp date",
-      "Genotyping Status", "Genotyping Chip", "Genotyping Infinium Barcode", "Genotyping Barcode", "Genotyping Well",
-      "Cohort", "Country of Origin", "Geographical Region", "Ethnicity", "DNA Source", "Is Resubmitted", "Control", "Is in Fluidigm"
-      ]
+      'Status', 'Study', 'Supplier', 'Sanger Sample Name', 'Supplier Sample Name', 'Plate', 'Well', 'Supplier Volume',
+      'Supplier Gender', 'Concentration', 'Initial Volume', 'Current Volume', 'Total Micrograms', 'Sequenome Count',
+      'Sequenome Gender', 'Pico', 'Gel', 'Qc Status', 'QC started date', 'Pico date', 'Gel QC date', 'Seq stamp date',
+      'Genotyping Status', 'Genotyping Chip', 'Genotyping Infinium Barcode', 'Genotyping Barcode', 'Genotyping Well',
+      'Cohort', 'Country of Origin', 'Geographical Region', 'Ethnicity', 'DNA Source', 'Is Resubmitted', 'Control', 'Is in Fluidigm'
+    ]
   end
 
-  def progress_report_on_all_assets(&block)
+  def progress_report_on_all_assets
     yield(progress_report_header)
     each_stock_well_id_in_study_in_batches do |asset_ids|
       # eager loading of well_attribute , can only be done on  wells ...
-      Well.for_study_report.where(id: asset_ids).each do |asset|
+      # We've already split into batches, so find_each here only slows things down.
+      Well.for_study_report.where(id: asset_ids).each do |asset| # rubocop:disable Rails/FindEach
         asset_progress_data = asset.qc_report
         next if asset_progress_data.nil?
 
         yield([
           asset_progress_data[:status],
-          self.name,
+          name,
           asset_progress_data[:supplier],
           asset_progress_data[:sanger_sample_id],
           asset_progress_data[:sample_name],

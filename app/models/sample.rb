@@ -30,15 +30,15 @@ class Sample < ActiveRecord::Base
 
   acts_as_authorizable
 
-  has_many :study_samples, dependent: :destroy
-  has_many :studies, through: :study_samples
+  has_many :study_samples, dependent: :destroy, inverse_of: :sample
+  has_many :studies, through: :study_samples, inverse_of: :samples
 
   has_many :roles, as: :authorizable
   has_many :comments, as: :commentable
 
   receptacle_alias(:assets) do
     def first_of_type(asset_class)
-      self.detect { |asset| asset.is_a?(asset_class) }
+      detect { |asset| asset.is_a?(asset_class) }
     end
   end
   receptacle_alias(:wells,        class_name: 'Well')
@@ -53,7 +53,7 @@ class Sample < ActiveRecord::Base
   validates_presence_of :name
   validates_format_of :name, with: /\A[\w_-]+\z/i, message: I18n.t('samples.name_format'), if: :new_name_format, on: :create
   validates_format_of :name, with: /\A[\(\)\+\s\w._-]+\z/i, message: I18n.t('samples.name_format'), if: :new_name_format, on: :update
-  validates_uniqueness_of :name, on: :create, message: "already in use", unless: :sample_manifest_id?
+  validates_uniqueness_of :name, on: :create, message: 'already in use', unless: :sample_manifest_id?
 
   validate :name_unchanged, if: :name_changed?, on: :update
 
@@ -73,16 +73,17 @@ class Sample < ActiveRecord::Base
   before_destroy :safe_to_destroy
 
   def safe_to_destroy
-    return true unless receptacles.present? || has_submission?
-    errors.add(:base, "Remove '#{name}' from assets before destroying") if receptacles.present?
-    errors.add(:base, "You can't delete '#{name}' because is linked to a submission.") if has_submission?
-    return false
+    errors.add(:base, 'samples cannot be destroyed.')
+    false
   end
   private :safe_to_destroy
 
-  scope :with_name, ->(*names) { where(name: names.flatten) }
+  after_save :accession
 
-  scope :for_search_query, ->(query, with_includes) {
+  scope :with_name, ->(*names) { where(name: names.flatten) }
+  scope :with_gender, ->(*_names) { joins(:sample_metadata).where.not(sample_metadata: { gender: nil }) }
+
+  scope :for_search_query, ->(query, _with_includes) {
     # Note: This search is performed in two stages so that we can make best use of our indicies
     # A naive search forces a full table lookup for all queries, ignoring the index in the sample metadata table
     # instead favouring the sample_id index. Rather than trying to bend MySQL to our will, we'll solve the
@@ -105,8 +106,8 @@ class Sample < ActiveRecord::Base
       'INNER JOIN container_associations AS ca ON ca.content_id = aliquots.receptacle_id',
       'INNER JOIN well_links ON target_well_id = aliquots.receptacle_id AND well_links.type = "stock"',
       'INNER JOIN requests ON requests.asset_id = well_links.source_well_id'
-    ]).
-    where(['ca.container_id = ? AND requests.order_id = ?', plate_id, order_id])
+    ])
+    .where(['ca.container_id = ? AND requests.order_id = ?', plate_id, order_id])
   }
 
   scope :for_plate_and_order_as_target, ->(plate_id, order_id) {
@@ -114,99 +115,53 @@ class Sample < ActiveRecord::Base
       'INNER JOIN aliquots ON aliquots.sample_id = samples.id',
       'INNER JOIN container_associations AS ca ON ca.content_id = aliquots.receptacle_id',
       'INNER JOIN requests ON requests.target_asset_id = aliquots.receptacle_id'
-    ]).
-    where(['ca.container_id = ? AND requests.order_id = ?', plate_id, order_id])
+    ])
+    .where(['ca.container_id = ? AND requests.order_id = ?', plate_id, order_id])
   }
 
+  scope :without_accession, ->() {
+    # Pick up samples where the accession number is either NULL or blank.
+    # MySQL automatically trims '  ' so '  '=''
+    joins(:sample_metadata).where(sample_metadata: { sample_ebi_accession_number: [nil, ''] })
+  }
+
+  def self.by_name(sample_id)
+    find_by(name: sample_id)
+  end
+
   def select_study(sample_id)
-    sample = self.find(sample_id)
+    sample = find(sample_id)
     sample.studies
   end
 
   def shorten_sanger_sample_id
-    short_sanger_id = case sanger_sample_id
-      when blank? then name
-      when sanger_sample_id.size < 10 then sanger_sample_id
-      when /([\d]{7})$/ then $1
-      else
-        sanger_sample_id
+    case sanger_sample_id
+    when blank? then name
+    when sanger_sample_id.size < 10 then sanger_sample_id
+    when /([\d]{7})$/ then $1
+    else
+      sanger_sample_id
     end
-
-    short_sanger_id
   end
 
-  def has_request
-    requests.present?
-  end
-
-  def has_request_all_cancelled?
-    self.requests.all?(&:cancelled?)
-  end
-
-  def has_submission?
-    has_submission = false
-    if self.has_request
-      if has_request_all_cancelled?
-        sra_hold_value = self.sample_metadata.sample_sra_hold
-        if sra_hold_value.nil?
-          has_submission = false
-        elsif 'hold' != sra_hold_value
-          has_submission = true
-        else
-          has_submission = false
-        end
-      else
-        has_submission = true
-      end
-    else # We have no requests, we're probably S2 (Or very old Sequencescape)
-         # This is a hack, but I'll get this tidied up.
-      has_submission = true
-    end
-    return has_submission
-  end
-
-  def has_ebi_accession_number
-    has_ebi_accession_number = false
-
-    self.studies.each do |study|
-      if !study.ebi_accession_number.blank?
-        has_ebi_accession_number = true
-      end
-    end
-
-    return has_ebi_accession_number
-  end
-
-  # TODO: remove as this is no longer needed (validation of name change will fail)
-  # On update, checks if updating the name is possible
-  def name_change?(new_name)
-    self.name == new_name ? false : true
-  end
-
-  # TODO: move to sample_metadata and delegate
-  def released?
-    self.sample_metadata.sample_sra_hold == 'Public'
-  end
-
-  def release
-    self.sample_metadata.sample_sra_hold = 'Public'
-    self.sample_metadata.save!
-  end
+  # Note: Samples don't tend to get released through Sequencescape
+  # so in reality these methods are usually misleading.
+  delegate :released?, :release, to: :sample_metadata
 
   def ebi_accession_number
-    self.sample_metadata.sample_ebi_accession_number
+    sample_metadata.sample_ebi_accession_number
   end
 
   def accession_number?
-    not self.ebi_accession_number.blank?
+    not ebi_accession_number.blank?
   end
 
   # If there is no existing ebi_accession_number and we have a taxon id
   # and we have a common name for the sample return true else false
   def accession_could_be_generated?
-    return false unless self.sample_metadata.sample_ebi_accession_number.blank?
+    return false unless sample_metadata.sample_ebi_accession_number.blank?
     required_tags.each do |tag|
-      return false if self.sample_metadata.send(tag).blank?
+      return false if sample_metadata.send(tag).blank?
     end
     # We have everything needed to generate an accession so...
     true
@@ -217,19 +172,19 @@ class Sample < ActiveRecord::Base
 
     study = Study.find(study_id)
     asset_group_assets = AssetGroupAsset.where(asset_group_id: asset_group_id)
-    return study.submissions.that_submitted_asset_id(asset_group_assets.first.asset_id).all
+    study.submissions.that_submitted_asset_id(asset_group_assets.first.asset_id).all
   end
 
   def error
-    "Default error message"
+    'Default error message'
   end
 
   def sample_external_name
-    self.name
+    name
   end
 
-  def sample_empty?(supplier_sample_name = self.name)
-    return true if self.empty_supplier_sample_name
+  def sample_empty?(supplier_sample_name = name)
+    return true if empty_supplier_sample_name
     sample_supplier_name_empty?(supplier_sample_name)
   end
 
@@ -237,22 +192,36 @@ class Sample < ActiveRecord::Base
     supplier_sample_name.blank? || ['empty', 'blank', 'water', 'no supplier name available', 'none'].include?(supplier_sample_name.downcase)
   end
 
+  # Return the highest priority accession service
   def accession_service
-    return nil if self.studies.empty?
-    self.studies.first.accession_service
+    services = studies.group_by { |s| s.accession_service.priority }
+    return UnsuitableAccessionService.new([]) if services.empty?
+    highest_priority = services.keys.max
+    suitable_study = services[highest_priority].detect { |study| study.send_samples_to_service? }
+    return suitable_study.accession_service if suitable_study
+    UnsuitableAccessionService.new(services[highest_priority])
   end
 
   # at the moment return a string which is a comma separated list of snp plate id
   def genotyping_done
-    self.get_external_value('genotyping_done')
+    get_external_value('genotyping_done')
   end
 
   def genotyping_snp_plate_id
     s = genotyping_done
     if s && s =~ /:/
-      s.split(":").second.to_i # take the firt integer
+      s.split(':').second.to_i # take the firt integer
     else # old value
-      ""
+      ''
+    end
+  end
+
+  def accession
+    if configatron.accession_samples
+      accessionable = Accession::Sample.new(Accession.configuration.tags, self)
+      if accessionable.valid?
+        Delayed::Job.enqueue SampleAccessioningJob.new(accessionable)
+      end
     end
   end
 
@@ -328,8 +297,6 @@ class Sample < ActiveRecord::Base
     attribute(:disease)
 
     with_options(if: :validating_ena_required_fields?) do |ena_required_fields|
-      # ena_required_fields.validates_presence_of :sample_common_name
-      # ena_required_fields.validates_presence_of :sample_taxon_id
       ena_required_fields.validates_presence_of :service_specific_fields
     end
 
@@ -340,10 +307,8 @@ class Sample < ActiveRecord::Base
       gender: GENDERS,
       dna_source: DNA_SOURCES,
       sample_sra_hold: SRA_HOLD_VALUES
-#      :reference_genome        => ??
-    }.inject({}) do |h, (k, v)|
-      h[k] = v.inject({}) { |a, b| a[b.downcase] = b; a }
-      h
+    }.each_with_object({}) do |(k, v), h|
+      h[k] = v.each_with_object({}) { |b, a| a[b.downcase] = b }
     end
 
     before_validation do |record|
@@ -411,10 +376,22 @@ class Sample < ActiveRecord::Base
       errors.add(:base, "Couldn't find a Reference Genome with named '#{reference_genome_set_by_name}'.")
       false
     end
+
+    # This is misleading, as samples are rarely released through
+    # Sequencescape, so our flag gets out of sync with the ENA/EGA
+    def released?
+      sample_sra_hold == 'Public'
+    end
+
+    # Rarely actually used
+    def release
+      self.sample_sra_hold = 'Public'
+      save!
+    end
   end
 
   # Together these two validations ensure that the first study exists and is valid for the ENA submission.
-  validates_each(:ena_study, if: :validating_ena_required_fields?) do |record, attr, value|
+  validates_each(:ena_study, if: :validating_ena_required_fields?) do |record, _attr, value|
     record.errors.add(:base, 'Sample has no study') if value.blank?
   end
   validates_associated(:ena_study, allow_blank: true, if: :validating_ena_required_fields?)
@@ -431,11 +408,11 @@ class Sample < ActiveRecord::Base
 
   def validate_ena_required_fields!
     # Do not alter the order of this line, otherwise @ena_study won't be set correctly!
-    @ena_study, self.validating_ena_required_fields = self.studies.first, true
-    self.valid? or raise ActiveRecord::RecordInvalid, self
+    @ena_study, self.validating_ena_required_fields = studies.first, true
+    valid? or raise ActiveRecord::RecordInvalid, self
   rescue ActiveRecord::RecordInvalid => exception
     @ena_study.errors.full_messages.each do |message|
-      self.errors.add(:base, "#{message} on study")
+      errors.add(:base, "#{message} on study")
     end unless @ena_study.nil?
     raise exception
   ensure
@@ -450,7 +427,7 @@ class Sample < ActiveRecord::Base
   end
 
   def withdraw_consent
-    self.update_attribute(:consent_withdrawn, true)
+    update_attribute(:consent_withdrawn, true)
   end
 
   def subject_type

@@ -25,7 +25,7 @@ class PlateTemplateTask < Task
   end
 
   def partial
-    "plate_template_batches"
+    'plate_template_batches'
   end
 
   def render_task(workflow, params)

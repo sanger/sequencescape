@@ -8,6 +8,7 @@ module LabelPrinter
         @count = options[:count].to_i
         @printable = options[:printable]
         @batch = options[:batch]
+        @batch = options[:batch]
         @stock = options[:stock]
       end
 
@@ -15,7 +16,8 @@ module LabelPrinter
         if stock.present?
           tube.name
         elsif batch.multiplexed?
-          tube.tag.nil? ? tube.name : "(#{tube.tag}) #{tube.id}"
+          tag_range = tube.tag_range
+          tag_range.nil? ? tube.name : "(#{tag_range}) #{tube.id}"
         else
           tube.tube_name
         end
@@ -39,7 +41,7 @@ module LabelPrinter
       private
 
       def requests
-        request_ids = printable.select { |barcode, check| check == 'on' }.keys
+        request_ids = printable.select { |_barcode, check| check == 'on' }.keys
         requests = Request.find request_ids
       end
     end

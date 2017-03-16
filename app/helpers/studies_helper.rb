@@ -7,9 +7,9 @@
 module StudiesHelper
   def status_link_title
     if @study.inactive? || @study.pending?
-     "Open"
+     'Open'
     else
-     "Close"
+     'Close'
     end
   end
 
@@ -31,21 +31,21 @@ private
 public
 
   def display_file_icon(document)
-    return image_tag("error.png") unless document
+    return image_tag('error.png') unless document
     case document.content_type
     when /pdf/
-      image_tag("pdf_icon.png", size: "18x18")
+      image_tag('pdf_icon.png', size: '18x18')
     when /word/
-      image_tag("word_icon.png")
+      image_tag('word_icon.png')
     when /excel/
-      image_tag("excel_icon.png")
+      image_tag('excel_icon.png')
     else
-      image_tag("plaintext_icon.png")
+      image_tag('plaintext_icon.png')
     end
   end
 
   def label_asset_state(asset)
-    asset.closed? ? "closed" : "open"
+    asset.closed? ? 'closed' : 'open'
   end
 
   def study_link(study, options)

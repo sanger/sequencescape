@@ -4,10 +4,10 @@
 # authorship of this file.
 # Copyright (C) 2015,2016 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class ProductCriteriaTest < ActiveSupport::TestCase
-  context "A product criteria" do
+  context 'A product criteria' do
     should belong_to :product
     should validate_presence_of :product
     should validate_presence_of :stage

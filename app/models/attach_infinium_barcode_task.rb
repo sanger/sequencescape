@@ -16,7 +16,7 @@ class AttachInfiniumBarcodeTask < Task
   end
 
   def partial
-    "attach_infinium_barcode_batches"
+    'attach_infinium_barcode_batches'
   end
 
   def render_task(workflow, params)

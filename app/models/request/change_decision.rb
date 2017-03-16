@@ -20,14 +20,14 @@ class Request::ChangeDecision
   attr_accessor :asset_qc_state_check_box
 
   def checkboxes
-    [self.change_decision_check_box, self.asset_qc_state_check_box]
+    [change_decision_check_box, asset_qc_state_check_box]
   end
   validates_each(:checkboxes) do |record, attribute, list_of_checkbox_values|
     record.errors.add(attribute, 'at least one must be selected') if list_of_checkbox_values.all? { |v| v.blank? or v == '0' }
   end
 
   attr_accessor :asset_qc_state
-  validates_each(:asset_qc_state, unless: :asset_qc_state_absent?) do |record, attr, value|
+  validates_each(:asset_qc_state, unless: :asset_qc_state_absent?) do |record, _attr, value|
     if not record.request.target_asset.has_been_through_qc?
       record.errors.add(:asset, 'has not been through QC')
     elsif value == record.request.target_asset.qc_state
@@ -45,19 +45,19 @@ class Request::ChangeDecision
   validates_presence_of(:request)
 
   def initialize(attributes)
-    attributes.each { |k, v| self.send(:"#{k}=", v) }
+    attributes.each { |k, v| send(:"#{k}=", v) }
   end
 
   def state_change?
-    self.change_decision_check_box == "1"
+    change_decision_check_box == '1'
   end
 
   def asset_qc_state_absent?
-    self.asset_qc_state_check_box == "0" || self.asset_qc_state_check_box.nil?
+    asset_qc_state_check_box == '0' || asset_qc_state_check_box.nil?
   end
 
   def execute!
-    raise InvalidDecision, self unless self.valid?
+    raise InvalidDecision, self unless valid?
     perform_decision_change!
   end
 
@@ -76,23 +76,31 @@ private
   end
 
   def reload_objects
-    self.request.reload
-    self.request.target_asset.reload
+    request.reload
+    request.target_asset.reload
   end
 
   def perform_decision_change_request_state!
-    previous_state = self.request.state
+    previous_state = request.state
     ActiveRecord::Base.transaction do
-      self.request.change_decision!
-      self.request.events.create!({ message: "Change state from #{previous_state} to  #{state}", created_by: self.user.login, family: "update" })
-      self.request.comments.create!(description: self.comment, user_id: self.user.id)
+      # Really this toggle of states isn't ideal, as effectively it means
+      # multiple requests in quick succession could toggle the state, which probably
+      # wasn't the intended behaviour.
+      case
+      when request.failed? then request.retrospective_pass!
+      when request.passed? then request.retrospective_fail!
+      else
+        raise InvalidDecision, self
+      end
+      request.events.create!(message: "Change state from #{previous_state} to  #{state}", created_by: user.login, family: 'update')
+      request.comments.create!(description: comment, user_id: user.id)
     end
   end
 
   def perform_decision_change_asset_qc_state!
-    previous_state = self.request.target_asset.qc_state
-    self.request.target_asset.set_qc_state(self.asset_qc_state)
+    previous_state = request.target_asset.qc_state
+    request.target_asset.set_qc_state(asset_qc_state)
     # self.request.asset.events << Event.new({:message => "Change qc_state from #{previous_state} to  #{asset_qc_state}", :created_by => self.user.login, :family => self.asset_qc_state})
-    self.request.target_asset.comments.create!(description: self.comment, user_id: self.user.id)
+    request.target_asset.comments.create!(description: comment, user_id: user.id)
   end
 end

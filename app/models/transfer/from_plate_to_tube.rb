@@ -11,7 +11,7 @@ class Transfer::FromPlateToTube < Transfer
   include TransfersToKnownDestination
 
   # The values in the transfers must be an array and must be valid well positions on the plate.
-  validates_each(:transfers) do |record, attribute, value|
+  validates_each(:transfers) do |record, _attribute, value|
     if not value.is_a?(Array)
       record.errors.add(:transfers, 'must be an array of well positions')
     elsif record.source.present? and not record.source.valid_positions?(value)
@@ -19,7 +19,7 @@ class Transfer::FromPlateToTube < Transfer
     end
   end
 
-  def each_transfer(&block)
+  def each_transfer
     # Partition the source plate wells into ones that are good and others that are bad.  The
     # bad wells will be eliminated after we've done the transfers for the good ones.
     bad_wells, good_wells = source.wells.located_at_position(transfers).with_pool_id.partition do |well|
@@ -29,7 +29,7 @@ class Transfer::FromPlateToTube < Transfer
     good_wells.each { |well| yield(well, destination) }
 
     # Eliminate any of the transfers that were not made because of the bad source wells
-    self.transfers = self.transfers - bad_wells.map { |well| well.map.description }
+    self.transfers = transfers - bad_wells.map { |well| well.map.description }
   end
   private :each_transfer
 

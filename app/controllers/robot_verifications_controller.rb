@@ -5,8 +5,8 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 class RobotVerificationsController < ApplicationController
-# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+  # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   before_action :new_robot_verification
 
@@ -40,7 +40,7 @@ class RobotVerificationsController < ApplicationController
 
   def get_fields_and_check(barcode_hash)
     @batch = Batch.find_from_barcode(barcode_hash[:batch_barcode])
-    @user = User.find_by_barcode(Barcode.barcode_to_human!(barcode_hash[:user_barcode], User.prefix))
+    @user = User.find_by(barcode: Barcode.barcode_to_human!(barcode_hash[:user_barcode], User.prefix))
     @all_labels = @robot_verification.expected_layout(@batch, barcode_hash[:destination_plate_barcode])
     @robot = Robot.find_from_barcode(barcode_hash[:robot_barcode])
   end

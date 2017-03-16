@@ -5,8 +5,8 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 class SequenomController < ApplicationController
-# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+  # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   EmptyBarcode = Class.new(StandardError)
 
@@ -19,7 +19,7 @@ class SequenomController < ApplicationController
     end
 
     def update_plate(plate, user)
-      plate.events.create!(message: I18n.t('sequenom.events.message', step: self.name), created_by: user.login)
+      plate.events.create!(message: I18n.t('sequenom.events.message', step: name), created_by: user.login)
       yield(self)
     end
   end
@@ -28,7 +28,7 @@ class SequenomController < ApplicationController
   STEPS = ['PCR Mix', 'SAP Mix', 'IPLEX Mix', 'HPLC Water'].map { |name| SequenomStep.new(name) }
   class << STEPS
     def for(step_name)
-      self.find { |step| step.name == step_name } or raise "Cannot find the Sequenom step '#{step_name}'"
+      find { |step| step.name == step_name } or raise "Cannot find the Sequenom step '#{step_name}'"
     end
   end
 
@@ -78,7 +78,7 @@ private
   # should take two parameters (the barcode and the human version of that barcode) and return the
   # value that can be used by +model_class.find_by_barcode+.  +filter_options+ are exactly as
   # would be specified for a +before_action+.
-  def self.find_by_barcode_filter(model_class, filter_options, &block)
+  def self.define_find_from_barcode_filter(model_class, filter_options, &block)
     name                        = model_class.name.underscore
     filter_name                 = :"find_#{ name }_from_barcode"
     rescue_exception_for_filter = :"rescue_#{ filter_name }"
@@ -88,7 +88,7 @@ private
         barcode = params[:"#{ name }_barcode"]
         raise EmptyBarcode, "The #{name} barcode appears to be empty" if barcode.blank?
         human_barcode = Barcode.barcode_to_human!(barcode, model_class.prefix)
-        object = model_class.find_by_barcode(block.call(barcode, human_barcode))
+        object = model_class.find_by(barcode: block.call(barcode, human_barcode))
         raise ActiveRecord::RecordNotFound, "Could not find a #{name} with barcode #{barcode}" if object.nil?
         instance_variable_set("@#{name}", object)
       rescue StandardError => exception
@@ -118,8 +118,8 @@ private
     before_action(filter_name, filter_options)
   end
 
-  find_by_barcode_filter(User,  only: [:update, :quick_update]) { |barcode, human_barcode| human_barcode }
-  find_by_barcode_filter(Plate, only: [:search, :quick_update]) { |barcode, human_barcode| Barcode.number_to_human(barcode) }
+  define_find_from_barcode_filter(User,  only: [:update, :quick_update]) { |_barcode, human_barcode| human_barcode }
+  define_find_from_barcode_filter(Plate, only: [:search, :quick_update]) { |barcode, _human_barcode| Barcode.number_to_human(barcode) }
 
   # Handle the case where ActiveRecord::RecordNotFound is raised when looking for a Plate by
   # physically creating the Plate in the database!

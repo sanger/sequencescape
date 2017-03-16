@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class TestWorkflowsController < WorkflowsController
   attr_accessor :batch, :tags, :workflow, :stage
@@ -33,25 +33,25 @@ class AssignTagsTaskTest < TaskTestBase
 
     expected_partial('assign_tags_batches')
 
-    context "check tags group" do
-      should "valid" do
+    context 'check tags group' do
+      should 'valid' do
         assert_not_equal [], @tag_group.tags
         assert_equal @tag, @tag_group.tags.find(@tag.id)
       end
     end
 
-    context "#render_task" do
+    context '#render_task' do
       setup do
-        params = { workflow_id: @workflow, tag_group: @tag_group.id, batch_id: @batch.id }
+        params = { workflow_id: @workflow.id, tag_group: @tag_group.id, batch_id: @batch.id }
         @task.render_task(@controller, params)
       end
 
-      should "render a specific template" do
+      should 'render a specific template' do
         assert_equal @tag_group.tags, @controller.tags
       end
     end
 
-    context "#do_task" do
+    context '#do_task' do
       setup do
         @multiplexedlibrarytube_count = MultiplexedLibraryTube.count
         @pipeline       = create :pipeline
@@ -70,21 +70,21 @@ class AssignTagsTaskTest < TaskTestBase
 
         params = { workflow_id: @workflow, batch_id: @batch.id,
                    tag_group: @tag_group.id.to_s,
-                   mx_library_name: "MX library",
+                   mx_library_name: 'MX library',
                    tag: { @mx_request.id.to_s => @tag.id.to_s },
                     }
         @task.do_task(@controller, params)
       end
 
-      should "have requests in batch" do
+      should 'have requests in batch' do
         assert_equal 2, @controller.batch.request_count
       end
 
-      should "change MultiplexedLibraryTube.count by 1" do
-        assert_equal 1, MultiplexedLibraryTube.count - @multiplexedlibrarytube_count, "Expected MultiplexedLibraryTube.count to change by 1"
+      should 'change MultiplexedLibraryTube.count by 1' do
+        assert_equal 1, MultiplexedLibraryTube.count - @multiplexedlibrarytube_count, 'Expected MultiplexedLibraryTube.count to change by 1'
       end
 
-      should "should update library" do
+      should 'should update library' do
         assert_equal 1, @sample_tube.children.size
 
         # Related to sample tube and tag instance

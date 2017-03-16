@@ -11,7 +11,7 @@ module Tasks::CherrypickHandler
     end
   end
 
-  def render_cherrypick_task(task, params)
+  def render_cherrypick_task(_task, params)
     unless flash[:error].blank?
       redirect_to action: 'stage', batch_id: @batch.id, workflow_id: @workflow.id, id: (@stage - 1).to_s
       return
@@ -19,10 +19,10 @@ module Tasks::CherrypickHandler
 
     plate_template = nil
     unless params[:plate_template].blank?
-      plate_template = PlateTemplate.find(params[:plate_template]["0"].to_i)
+      plate_template = PlateTemplate.find(params[:plate_template]['0'].to_i)
     end
     if plate_template.nil?
-      flash[:error] = "Please select a template"
+      flash[:error] = 'Please select a template'
       redirect_to action: 'stage', batch_id: @batch.id, workflow_id: @workflow.id, id: (@stage - 1).to_s
       return
     end
@@ -38,15 +38,15 @@ module Tasks::CherrypickHandler
 
     if @plate_barcode.present?
       plate_barcode_id = @plate_barcode.to_i > 11 ? Barcode.number_to_human(@plate_barcode) : @plate_barcode
-      @plate = Plate.find_by_barcode(plate_barcode_id)
+      @plate = Plate.find_by(barcode: plate_barcode_id)
       if @plate.nil?
-        flash[:error] = "Invalid plate barcode"
+        flash[:error] = 'Invalid plate barcode'
         redirect_to action: 'stage', batch_id: @batch.id, workflow_id: @workflow.id, id: (@stage - 1).to_s
         return
       end
     elsif @fluidigm_plate.present?
       if @fluidigm_plate.size > 10
-        flash[:error] = "Invalid fluidigm barcode"
+        flash[:error] = 'Invalid fluidigm barcode'
         redirect_to action: 'stage', batch_id: @batch.id, workflow_id: @workflow.id, id: (@stage - 1).to_s
         return
       end
@@ -54,7 +54,7 @@ module Tasks::CherrypickHandler
     end
 
     @plate_purpose = PlatePurpose.find(params[:plate_purpose_id])
-    flash.now[:warning] = I18n.t("cherrypick.picking_by_row") if @plate_purpose.cherrypick_in_rows?
+    flash.now[:warning] = I18n.t('cherrypick.picking_by_row') if @plate_purpose.cherrypick_in_rows?
 
     @workflow = LabInterface::Workflow.includes(:tasks).find(params[:workflow_id])
     @map_info = if @spreadsheet_layout
@@ -103,10 +103,10 @@ module Tasks::CherrypickHandler
       # Determine if there is a standard plate to use.
       partial_plate, plate_barcode, fluidigm_plate = nil, params[:plate_barcode], params[:fluidigm_plate]
       unless plate_barcode.nil?
-        partial_plate = Plate.find_by_barcode(plate_barcode) or raise ActiveRecord::RecordNotFound, "No plate with barcode #{plate_barcode.inspect}"
+        partial_plate = Plate.find_by(barcode: plate_barcode) or raise ActiveRecord::RecordNotFound, "No plate with barcode #{plate_barcode.inspect}"
       end
       if fluidigm_plate.present?
-        partial_plate = Plate::Metadata.find_by_fluidigm_barcode(fluidigm_plate).try(:plate)
+        partial_plate = Plate::Metadata.find_by(fluidigm_barcode: fluidigm_plate).try(:plate)
       end
 
       # Ensure that we have a plate purpose for any plates we are creating
@@ -114,12 +114,13 @@ module Tasks::CherrypickHandler
       asset_shape_id = plate_purpose.asset_shape_id
 
       # Configure the cherrypicking action based on the parameters
-      cherrypicker = case params[:cherrypick_action]
+      cherrypicker =
+        case params[:cherrypick_action]
         when 'nano_grams_per_micro_litre' then create_nano_grams_per_micro_litre_picker(params[:nano_grams_per_micro_litre])
         when 'nano_grams'                 then create_nano_grams_picker(params[:nano_grams])
         when 'micro_litre'                then create_micro_litre_picker(params[:micro_litre])
         else raise StandardError, "Invalid cherrypicking type #{params[:cherrypick_action]}"
-      end
+        end
 
       # We can preload the well locations so that we can do efficient lookup later.
       well_locations = Hash[Map.where_plate_size(partial_plate.try(:size) || size).where_plate_shape(partial_plate.try(:asset_shape) || asset_shape_id).in_row_major_order.map do |location|
@@ -134,13 +135,13 @@ module Tasks::CherrypickHandler
       used_requests, plates_and_wells, plate_and_requests = [], Hash.new { |h, k| h[k] = [] }, Hash.new { |h, k| h[k] = [] }
 
       # If we overflow the plate we create a new one, even if we subsequently clear the fields.
-      plates_with_samples = plates.reject { |pid, rows| rows.values.map(&:values).flatten.all?(&:empty?) }
+      plates_with_samples = plates.reject { |_pid, rows| rows.values.map(&:values).flatten.all?(&:empty?) }
 
       if fluidigm_plate.present? && plates_with_samples.count > 1
         raise Cherrypick::Error, 'Sorry, You cannot pick to multiple fluidigm plates in one batch.'
       end
 
-      plates_with_samples.each do |id, plate_params|
+      plates_with_samples.each do |_id, plate_params|
         # The first time round this loop we'll either have a plate, from the partial_plate, or we'll
         # be needing to create a new one.
         plate = partial_plate
@@ -155,11 +156,12 @@ module Tasks::CherrypickHandler
         plate_params.each do |row, row_params|
           row = row.to_i
           row_params.each do |col, request_id|
-            request, well = case
+            request, well =
+              case
               when request_id.blank?           then next
               when request_id.match(/control/) then create_control_request_and_add_to_batch(task, request_id)
               else request_and_well[request_id.gsub('well_', '').to_i] or raise ActiveRecord::RecordNotFound, "Cannot find request #{request_id.inspect}"
-            end
+              end
 
             # NOTE: Performance enhancement here
             # This collects the wells together for the plate they should be on, and modifies
@@ -179,8 +181,8 @@ module Tasks::CherrypickHandler
 
       # Attach the wells into their plate for maximum efficiency.
       plates_and_wells.each do |plate, wells|
-        wells.map { |w| w.well_attribute.save!; w.save! }
-        plate.wells.attach(wells)
+        wells.each { |w| w.well_attribute.save!; w.save! }
+        plate.wells << wells
       end
 
       plate_and_requests.each do |target_plate, requests|
@@ -198,7 +200,7 @@ module Tasks::CherrypickHandler
   end
 
   def create_control_request_and_add_to_batch(task, control_param)
-    control_request = task.create_control_request_from_well(control_param) or raise StandardError, "Control request not created!"
+    control_request = task.create_control_request_from_well(control_param) or raise StandardError, 'Control request not created!'
     @batch.requests << control_request
     [control_request, control_request.target_asset]
   end

@@ -7,10 +7,10 @@ require 'rails/performance_test_help'
 class HomepageTest < ActionDispatch::PerformanceTest
   def setup
     user = create :user
-    post '/login', "login" => user.login, "password" => user.password
+    post '/login', 'login' => user.login, 'password' => user.password
   end
 
-  test "homepage" do
+  test 'homepage' do
     get '/'
   end
 end

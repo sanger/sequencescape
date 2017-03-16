@@ -5,8 +5,8 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 class AssetsController < ApplicationController
-# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+  # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
 
   class PlateLayout
@@ -29,7 +29,7 @@ class AssetsController < ApplicationController
     end
 
     def cell_name_for_well_at(row, column)
-      Map.find_by_location_id_and_asset_size(((row * self.width) + column + 1), self.size).description
+      Map.find_by(location_id: ((row * width) + column + 1), asset_size: size).description
     end
 
     def location_for_well_at(row, column)
@@ -57,7 +57,7 @@ class AssetsController < ApplicationController
     end
 
     def assert_valid_location(location_id)
-      raise StandardError, "Location out of bounds" unless (1..self.size).cover?(location_id)
+      raise StandardError, 'Location out of bounds' unless (1..size).cover?(location_id)
     end
   end
 end

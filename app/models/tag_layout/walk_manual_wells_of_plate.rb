@@ -13,7 +13,7 @@ module TagLayout::WalkManualWellsOfPlate
     TagLayout::WalkManualWellsOfPlate.walking_by
   end
 
-  def walk_wells(&block)
+  def walk_wells
     wells_in_walking_order.with_aliquots.each_with_index do |well, index|
       yield(well, index) unless well.nil?
     end

@@ -56,11 +56,11 @@ class AmqpObserver < ActiveRecord::Observer
                               BunnyExchange
                             end
 
-  # Ensure we capture records being saved as well as deleted.
-  #
-  # NOTE: Oddly you can't alias_method the after_destroy, it has to be physically defined!
-    class_eval("def after_save(record) ; self << record ; true ; end")
-    class_eval("def after_destroy(record) ; record.class.render_class.associations.each {|a,_| record.send(a) } ; self << record ; true ; end")
+    # Ensure we capture records being saved as well as deleted.
+    #
+    # NOTE: Oddly you can't alias_method the after_destroy, it has to be physically defined!
+    class_eval('def after_save(record) ; self << record ; true ; end')
+    class_eval('def after_destroy(record) ; record.class.render_class.associations.each {|a,_| record.send(a) } ; self << record ; true ; end')
 
   # To prevent ActiveRecord::Observer doing something unwanted when we test this, we pull
   # out the implementation in a module (which can be tested) and leave the rest behind.
@@ -78,7 +78,7 @@ class AmqpObserver < ActiveRecord::Observer
     # raised (when it is marked as bad), and broadcast our buffer iff the transaction is good and
     # there's stuff to broadcast.
     #++
-    def transaction(&block)
+    def transaction
       # JG: This code took me a while to get my head around.
       # If thread buffer is unset (Ie. we are in the outermost transaction) then
       # create a new MostRecentBuffer and also set current buffer equal to this
@@ -148,7 +148,7 @@ class AmqpObserver < ActiveRecord::Observer
       end
 
       def <<(record)
-        self.tap do
+        tap do
           determine_record_to_broadcast(record) do |record_to_broadcast, record_for_deletion|
             pair = [record_to_broadcast.class, record_to_broadcast.id]
             if record.destroyed?

@@ -54,11 +54,11 @@ module LabelPrinter
     def label_template_id
       printer = find_printer
       name = printer.barcode_printer_type.label_template_name
-      LabelPrinter::PmbClient.get_label_template_by_name(name).fetch("data").first["id"]
+      LabelPrinter::PmbClient.get_label_template_by_name(name).fetch('data').first['id']
     end
 
     def find_printer
-      BarcodePrinter.find_by_name(printer_name) or raise BarcodePrinter::BarcodePrinterException.new, "Could not find barcode printer #{printer_name.inspect}"
+      BarcodePrinter.find_by(name: printer_name) or raise BarcodePrinter::BarcodePrinterException.new, "Could not find barcode printer #{printer_name.inspect}"
     end
 
     def success

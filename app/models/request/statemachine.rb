@@ -36,7 +36,7 @@ module Request::Statemachine
     # Determines the most likely event that should be fired when transitioning between the two states.  If there is
     # only one option then that is what is returned, otherwise an exception is raised.
     def suggested_transition_between(current, target)
-      aasm.state_machine.events.select do |name, event|
+      aasm.state_machine.events.select do |_name, event|
         event.transitions_from_state(current.to_sym).any? do |transition|
           transition.to == target.to_sym
         end
@@ -136,14 +136,14 @@ module Request::Statemachine
 
      scope :completed,        -> { where(state: COMPLETED_STATE) }
 
-     scope :pipeline_pending, -> { where(state: "pending") } #  we don't want the blocked one here }
-     scope :pending,          -> { where(state: ["pending", "blocked"]) } # block is a kind of substate of pending }
+     scope :pipeline_pending, -> { where(state: 'pending') } #  we don't want the blocked one here }
+     scope :pending,          -> { where(state: ['pending', 'blocked']) } # block is a kind of substate of pending }
 
-     scope :started,          -> { where(state: "started") }
-     scope :cancelled,        -> { where(state: "cancelled") }
+     scope :started,          -> { where(state: 'started') }
+     scope :cancelled,        -> { where(state: 'cancelled') }
 
      scope :opened,           -> { where(state: OPENED_STATE) }
-     scope :closed,           -> { where(state: ["passed", "failed", "cancelled"]) }
+     scope :closed,           -> { where(state: ['passed', 'failed', 'cancelled']) }
     end
   end
 
@@ -168,13 +168,19 @@ module Request::Statemachine
     end
   end
 
+  #
+  # Toggles passed request to failed, and failed requests to pass.
+  # @deprecated Favour retrospective_pass and retrospective_fail! instead.
+  #   It is incredibly unlikely that you wish to arbitrarily toggle the state of a request
+  #   And instead you probably have an explicit target state in mind. Use that instead.
+  # @return [void]
+  #
   def change_decision!
-    Rails.logger.warn('Change decision is being deprecated in favour of retrospective_pass and retrospective_fail!')
     return retrospective_fail! if passed?
     return retrospective_pass! if failed?
-    raise StandardError, "Can only use change decision on passed or failed requests"
+    raise StandardError, 'Can only use change decision on passed or failed requests'
   end
-  deprecate :change_decision!
+  deprecate change_decision!: 'Change decision is being deprecated in favour of retrospective_pass and retrospective_fail!'
 
   def on_failed
   end
@@ -200,26 +206,26 @@ module Request::Statemachine
   end
 
   def finished?
-    self.passed? || self.failed?
+    passed? || failed?
   end
 
   def terminated?
-    self.failed? || self.cancelled?
+    failed? || cancelled?
   end
 
   def closed?
-    %w(passed failed cancelled aborted).include?(self.state)
+    %w(passed failed cancelled aborted).include?(state)
   end
 
   def open?
-    ["pending", "started"].include?(self.state)
+    %w(pending started).include?(state)
   end
 
   def cancellable?
-    ["pending", "cancelled"].include?(self.state)
+    %w(pending cancelled).include?(state)
   end
 
   def transition_to(target_state)
-    send("#{self.class.suggested_transition_between(self.state, target_state)}!")
+    send("#{self.class.suggested_transition_between(state, target_state)}!")
   end
 end

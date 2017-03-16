@@ -4,9 +4,9 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
-require "net/ldap"
-require "openssl"
-require "digest/sha1"
+require 'net/ldap'
+require 'openssl'
+require 'digest/sha1'
 # require 'curb'
 
 class User < ActiveRecord::Base
@@ -54,15 +54,15 @@ class User < ActiveRecord::Base
   end
 
   def study_roles
-    self.user_roles("Study")
+    user_roles('Study')
   end
 
   def project_roles
-    self.user_roles("Project")
+    user_roles('Project')
   end
 
   def study_and_project_roles
-    study_roles | project_roles
+    roles.where(authorizable_type: ['Study', 'Project'])
   end
 
   def user_roles(authorizable_class_name)
@@ -70,14 +70,14 @@ class User < ActiveRecord::Base
   end
 
   def following?(item)
-    self.has_role? 'follower', item
+    has_role? 'follower', item
   end
 
   def logout_path
-    if configatron.authentication == "sanger-sso"
-      return (configatron.sso_logout_url).to_s
+    if configatron.authentication == 'sanger-sso'
+      (configatron.sso_logout_url).to_s
     else
-      return "/logout"
+      '/logout'
     end
   end
 
@@ -98,11 +98,11 @@ class User < ActiveRecord::Base
   end
 
   def name
-    name_incomplete? ? self.login : "#{self.first_name} #{self.last_name}"
+    name_incomplete? ? login : "#{first_name} #{last_name}"
   end
 
   def projects
-    return Project.all if self.is_administrator?
+    return Project.all if is_administrator?
     atuhorized = authorized_projects
     return Project.all if ((atuhorized.blank?) && (privileged?))
     atuhorized
@@ -196,7 +196,7 @@ class User < ActiveRecord::Base
   end
 
   def new_api_key(length = 32)
-    u = Digest::SHA1.hexdigest(self.login)[0..12]
+    u = Digest::SHA1.hexdigest(login)[0..12]
     k = Digest::SHA1.hexdigest(Time.now.to_s + rand(12341234).to_s)[1..length]
     self.api_key = "#{u}-#{k}"
   end
@@ -230,7 +230,7 @@ class User < ActiveRecord::Base
 
   def self.valid_barcode?(code)
     begin
-      human_code = Barcode.barcode_to_human!(code, self.prefix)
+      human_code = Barcode.barcode_to_human!(code, prefix)
     rescue
       return false
     end
@@ -242,7 +242,7 @@ class User < ActiveRecord::Base
   def self.lookup_by_barcode(user_barcode)
     barcode = Barcode.barcode_to_human(user_barcode)
     if barcode
-      return User.find_by_barcode(barcode)
+      return User.find_by(barcode: barcode)
     end
 
     nil

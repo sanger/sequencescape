@@ -4,15 +4,15 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class LibraryTubeTest < ActiveSupport::TestCase
-  context "A Library tube" do
+  context 'A Library tube' do
     setup do
       @library_tube = create :library_tube
     end
 
-    context "#has_stock_asset?" do
+    context '#has_stock_asset?' do
       setup do
         @library_tube_with_stock_tube = create :library_tube
         @stock_library_tube = create :stock_library_tube
@@ -23,12 +23,12 @@ class LibraryTubeTest < ActiveSupport::TestCase
         assert !@library_tube.has_stock_asset?
       end
 
-      should "return true if it does have a stock asset" do
+      should 'return true if it does have a stock asset' do
         assert @library_tube_with_stock_tube.has_stock_asset?
       end
     end
 
-    context "#create_stock_asset!" do
+    context '#create_stock_asset!' do
       context 'straight creation' do
         setup do
           @stock = @library_tube.create_stock_asset!

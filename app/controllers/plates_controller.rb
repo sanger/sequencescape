@@ -5,15 +5,15 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 class PlatesController < ApplicationController
-# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+  # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   before_action :login_required, except: [:upload_pico_results, :fluidigm_file]
 
   def new
     @plate_creators   = Plate::Creator.order(:name)
-    @barcode_printers = BarcodePrinterType.find_by(name: "96 Well Plate").barcode_printers
-    @barcode_printers = BarcodePrinter.order("name asc") if @barcode_printers.blank?
+    @barcode_printers = BarcodePrinterType.find_by(name: '96 Well Plate').barcode_printers
+    @barcode_printers = BarcodePrinter.order('name asc') if @barcode_printers.blank?
 
     respond_to do |format|
       format.html
@@ -33,7 +33,7 @@ class PlatesController < ApplicationController
       source_plate_barcodes = params[:plates][:source_plates]
 
       user_barcode = Barcode.barcode_to_human(params[:plates][:user_barcode])
-      scanned_user = User.find_by_barcode(user_barcode) if user_barcode
+      scanned_user = User.find_by(barcode: user_barcode) if user_barcode
 
       respond_to do |format|
         if scanned_user.nil?
@@ -71,7 +71,7 @@ class PlatesController < ApplicationController
       if asset_group = Plate.create_sample_tubes_asset_group_and_print_barcodes(plates, barcode_printer, location, study)
         flash[:notice] = 'Created tubes and printed barcodes'
         # makes request properties partial show
-        @current_user.workflow = Submission::Workflow.find_by_key("short_read_sequencing")
+        @current_user.workflow = Submission::Workflow.find_by(key: 'short_read_sequencing')
         @current_user.save!
         format.html { redirect_to(new_submission_path(study_id: asset_group.study.id)) }
         format.xml  { render xml: asset_group, status: :created }
@@ -90,7 +90,7 @@ class PlatesController < ApplicationController
       @plate = Plate.find(params[:id])
       @parents = @plate.parents
       respond_to do |format|
-        format.csv { render csv: @plate, content_type: "text/csv" }
+        format.csv { render csv: @plate, content_type: 'text/csv' }
       end
     end
   end
