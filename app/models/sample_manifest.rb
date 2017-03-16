@@ -49,6 +49,7 @@ class SampleManifest < ActiveRecord::Base
   belongs_to :study
   belongs_to :project
   belongs_to :user
+  belongs_to :purpose
   serialize :last_errors
   serialize :barcodes
 
@@ -125,7 +126,7 @@ class SampleManifest < ActiveRecord::Base
   end
 
   def generate_sanger_ids(count = 1)
-    (1..count).map { |_| SangerSampleId::Factory.instance.next! }
+    Array.new(count) { SangerSampleId::Factory.instance.next! }
   end
   private :generate_sanger_ids
 

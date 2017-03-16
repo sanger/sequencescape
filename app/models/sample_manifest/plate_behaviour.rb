@@ -150,12 +150,16 @@ module SampleManifest::PlateBehaviour
   end
   handle_asynchronously :generate_wells_asynchronously
 
+  def created_plate_purpose
+    purpose || stock_plate_purpose
+  end
+
   def generate_plates
     study_abbreviation = study.abbreviation
 
     well_data = []
-    plates    = Array.new(count) do
-      Plate.create_with_barcode!(plate_purpose: stock_plate_purpose)
+    plates = Array.new(count) do
+      Plate.create_with_barcode!(plate_purpose: created_plate_purpose)
     end.sort_by(&:barcode).map do |plate|
       plate.tap do |plate|
         sanger_sample_ids = generate_sanger_ids(plate.size)
