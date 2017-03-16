@@ -15,7 +15,6 @@ class Plate < Asset
   include PlatePurpose::Associations
   include Barcode::Barcodeable
   include Asset::Ownership::Owned
-  include Plate::Iterations
   include Plate::FluidigmBehaviour
   include SubmissionPool::Association::Plate
   include PlateCreation::CreationChild
@@ -38,6 +37,8 @@ class Plate < Asset
   has_many :stock_requests, ->() { uniq }, through: :stock_well_associations, source: :requests
   has_many :stock_well_associations, ->() { uniq }, through: :wells, source: :stock_wells
   has_many :stock_orders,  ->() { uniq }, through: :stock_requests, source: :order
+
+  has_many :siblings, through: :parents, source: :children
 
   # The default state for a plate comes from the plate purpose
   delegate :default_state, to: :plate_purpose, allow_nil: true
@@ -150,6 +151,15 @@ class Plate < Asset
       dilution_factor: dilution_factor.to_s,
       created_at: created_at
     }
+  end
+
+  def iteration
+    iter = siblings # assets sharing the same parent
+      .where(plate_purpose_id: plate_purpose_id, sti_type: sti_type) # of the same purpose and type
+      .where('assets.created_at <= ?', created_at) # created before or at the same time
+      .count('assets.id') # count the siblings.
+
+    iter.zero? ? nil : iter # Maintains compatibility with legacy version
   end
 
   class CommentsProxy
