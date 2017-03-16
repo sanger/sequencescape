@@ -58,7 +58,8 @@ describe '/api/1/' do
         },
         "extraction_attributes": {
           "actions": {
-            "read": "http://www.example.com/api/1/extraction_attributes"
+            "read": "http://www.example.com/api/1/extraction_attributes",
+            "create": "http://www.example.com/api/1/extraction_attributes"            
           }
         },
         "assets": {
@@ -437,8 +438,7 @@ describe '/api/1/' do
         },
         "extraction_attributes": {
           "actions": {
-            "read": "http://www.example.com/api/1/extraction_attributes",
-            "create": "http://www.example.com/api/1/extraction_attributes"
+            "read": "http://www.example.com/api/1/extraction_attributes"
           }
         },
         "assets": {
