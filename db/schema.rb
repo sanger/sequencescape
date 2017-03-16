@@ -526,9 +526,9 @@ ActiveRecord::Schema.define(version: 20170214170321) do
   create_table "extraction_attributes", force: :cascade do |t|
     t.integer  "target_id",         limit: 4
     t.string   "created_by",        limit: 255
-    t.string   "attributes_update", limit: 255
-    t.datetime "created_at",                    null: false
-    t.datetime "updated_at",                    null: false
+    t.text     "attributes_update", limit: 65535
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
   end
 
   create_table "faculty_sponsors", force: :cascade do |t|
