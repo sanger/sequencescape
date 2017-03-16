@@ -14,7 +14,7 @@ class ExtractionAttribute < ActiveRecord::Base
 
   before_save :update_performed
 
-  VALID_WELL_ATTRIBUTES = ['measured_volume']
+  VALID_WELL_ATTRIBUTES = ['current_volume']
 
   def update_performed
     attributes_update['wells'].each do |w|
