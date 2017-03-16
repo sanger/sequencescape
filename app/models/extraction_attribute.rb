@@ -29,7 +29,6 @@ class ExtractionAttribute < ActiveRecord::Base
         well.well_attribute.update_attributes!(w_attrs)
       end
     end
-    self.attributes_update = nil
   end
   private :update_performed
 end
