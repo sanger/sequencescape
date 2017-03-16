@@ -121,7 +121,6 @@ class PlateTest < ActiveSupport::TestCase
     end
   end
 
-
   context '#plate_ids_from_requests' do
     setup do
       @well1 = Well.new
