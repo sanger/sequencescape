@@ -17,16 +17,14 @@ class ExtractionAttribute < ActiveRecord::Base
   VALID_WELL_ATTRIBUTES = ['measured_volume']
 
   def update_performed
-    attributes_update["wells"].each do |w|
-      next unless w["sanger_sample_name"] || w["sanger_sample_id"]
-      sample = Sample.find_by_name(w["sanger_sample_name"]) || Sample.find_by_sanger_sample_id(w["sanger_sample_id"])
-      well = target.wells.located_at(w["location"]).first
+    attributes_update['wells'].each do |w|
+      next unless w['sanger_sample_name'] || w['sanger_sample_id']
+      sample = Sample.find_by(name: w['sanger_sample_name']) || Sample.find_by(sanger_sample_id: w['sanger_sample_id'])
+      well = target.wells.located_at(w['location']).first
       if well.aliquots.select { |a| a.sample == sample }.empty?
-        well.aliquots.create!({
-          sample: sample
-          })
+        well.aliquots.create!(sample: sample)
       end
-      w_attrs = w.keep_if { |k, v| VALID_WELL_ATTRIBUTES.include?(k) }
+      w_attrs = w.keep_if { |k, _v| VALID_WELL_ATTRIBUTES.include?(k) }
       unless w_attrs.blank?
         well.well_attribute.update_attributes!(w_attrs)
       end
