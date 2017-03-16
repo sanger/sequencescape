@@ -25,10 +25,6 @@ class SampleTube < Tube
     {}
   end
 
-  def stock_plate
-    nil
-  end
-
   def can_be_created?
     true
   end

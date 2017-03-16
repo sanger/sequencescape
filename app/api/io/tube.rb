@@ -34,5 +34,6 @@ class Io::Tube < Io::Asset
                   barcode_prefix.prefix  => barcode.prefix
                 two_dimensional_barcode  => barcode.two_dimensional
                           ean13_barcode  => barcode.ean13
+                           barcode_type  => barcode.type
   ")
 end
