@@ -36,6 +36,10 @@ module SampleManifestExcel
       def create_samples
         first_to_last.each do |i|
           sample_tube = FactoryGirl.create(:sample_tube)
+          unless validation_errors.include?(:sample_manifest)
+            sample_tube.sample.sample_manifest = sample_manifest
+            sample_tube.sample.save
+          end
           dynamic_attributes[i][:sanger_sample_id] = sample_tube.sample.id
           dynamic_attributes[i][:sanger_tube_id] = sample_tube.sample.assets.first.sanger_human_barcode
         end
@@ -79,6 +83,10 @@ module SampleManifestExcel
       end
 
     private
+
+      def sample_manifest
+        @sample_manifest ||= FactoryGirl.create(:sample_manifest)
+      end
 
       def initialize_dynamic_attributes
         {}.tap do |hsh|

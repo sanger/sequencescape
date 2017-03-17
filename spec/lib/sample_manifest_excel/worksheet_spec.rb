@@ -205,6 +205,7 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
         ((worksheet.first_row + 1)..worksheet.last_row).each do |i|
           sample = Sample.find(spreadsheet.sheet(0).cell(i, worksheet.columns.find_by(:name, :sanger_sample_id).number).to_i)
           expect(sample).to be_present
+          expect(sample.sample_manifest).to be_present
           expect(spreadsheet.sheet(0).cell(i, worksheet.columns.find_by(:name, :sanger_tube_id).number)).to eq(sample.assets.first.sanger_human_barcode)
         end
       end
@@ -252,6 +253,17 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
                                                         )
         save_file
         expect(spreadsheet.sheet(0).cell(worksheet.first_row, worksheet.columns.find_by(:name, :insert_size_from).number)).to be_nil
+      end
+
+      it 'without a sample manifest' do
+        worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(workbook: workbook,
+                                                        columns: SampleManifestExcel.configuration.columns.tube_library.dup,
+                                                        data: data, no_of_rows: 5, study: 'WTCCC', supplier: 'Test supplier', 
+                                                        count: 1, type: 'Tubes', validation_errors: [:sample_manifest]
+                                                        )
+        save_file
+        sample = Sample.find(spreadsheet.sheet(0).cell(worksheet.first_row + 1, worksheet.columns.find_by(:name, :sanger_sample_id).number).to_i)
+        expect(sample.sample_manifest).to be_nil
       end
 
     end

@@ -11,57 +11,88 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
   let(:column_list)             { SampleManifestExcel::ColumnList.new(yaml, conditional_formattings) }
   let(:manifest_types)          { SampleManifestExcel::ManifestTypeList.new(load_file(folder, 'manifest_types')) }
   let!(:tag_group)              { create(:tag_group) }
+  let!(:user)                   { create(:user) }
 
-  it 'should be valid if all of the headings relate to a column' do
+  it 'is valid if all of the headings relate to a column' do
     columns = column_list.extract(manifest_types.find_by(:tube_library).columns)
     download = build(:test_download, columns: columns)
     download.save(test_file)
-    upload = SampleManifestExcel::Upload.new(filename: test_file, column_list: column_list, start_row: 9)
+    upload = SampleManifestExcel::Upload.new(filename: test_file, column_list: column_list, start_row: 9, user: user)
     expect(upload.columns.count).to eq(columns.count)
     expect(upload).to be_valid
   end
 
-  it 'should be invalid if any of the headings do not relate to a column' do
+  it 'is invalid if any of the headings do not relate to a column' do
     download = build(:test_download, columns: column_list.extract(manifest_types.find_by(:tube_library).columns).with(:my_dodgy_column))
     download.save(test_file)
-    upload = SampleManifestExcel::Upload.new(filename: test_file, column_list: column_list, start_row: 9)
+    upload = SampleManifestExcel::Upload.new(filename: test_file, column_list: column_list, start_row: 9, user: user)
     expect(upload).to_not be_valid
     expect(upload.errors.full_messages.to_s).to include(upload.columns.bad_keys.first)
   end
 
-  it 'should be invalid if there is no sanger sample id column' do
+  it 'is invalid if there is no sanger sample id column' do
     download = build(:test_download, columns: column_list.extract(manifest_types.find_by(:tube_library).columns).except(:sanger_sample_id))
     download.save(test_file)
-    upload = SampleManifestExcel::Upload.new(filename: test_file, column_list: column_list, start_row: 9)
+    upload = SampleManifestExcel::Upload.new(filename: test_file, column_list: column_list, start_row: 9, user: user)
     expect(upload).to_not be_valid
   end
 
-  it "should be invalid if tags are not valid" do
+  it "is invalid if tags are not valid" do
     download = build(:test_download, columns: column_list.extract(manifest_types.find_by(:tube_library).columns), validation_errors: [:tags])
     download.save(test_file)
-    upload = SampleManifestExcel::Upload.new(filename: test_file, column_list: column_list, start_row: 9)
+    upload = SampleManifestExcel::Upload.new(filename: test_file, column_list: column_list, start_row: 9, user: user)
     expect(upload).to_not be_valid
   end
 
-  it "should not be valid unless all of the rows are valid" do
+  it "is not valid unless all of the rows are valid" do
     download = build(:test_download, columns: column_list.extract(manifest_types.find_by(:tube_library).columns), validation_errors: [:library_type])
     download.save(test_file)
-    upload = SampleManifestExcel::Upload.new(filename: test_file, column_list: column_list, start_row: 9)
+    upload = SampleManifestExcel::Upload.new(filename: test_file, column_list: column_list, start_row: 9, user: user)
     expect(upload).to_not be_valid
 
     download = build(:test_download, columns: column_list.extract(manifest_types.find_by(:tube_library).columns), validation_errors: [:insert_size_from])
     download.save(test_file)
+    upload = SampleManifestExcel::Upload.new(filename: test_file, column_list: column_list, start_row: 9, user: user)
+    expect(upload).to_not be_valid
+  end
+
+  it 'is not valid unless there is an associated sample manifest' do
+    download = build(:test_download, columns: column_list.extract(manifest_types.find_by(:tube_library).columns), validation_errors: [:sample_manifest])
+    download.save(test_file)
+
+    upload = SampleManifestExcel::Upload.new(filename: test_file, column_list: column_list, start_row: 9, user: user)
+    expect(upload).to_not be_valid
+  end
+
+  it 'is not valid unless there is a user' do
+    download = build(:test_download, columns: column_list.extract(manifest_types.find_by(:tube_library).columns))
+    download.save(test_file)
+
     upload = SampleManifestExcel::Upload.new(filename: test_file, column_list: column_list, start_row: 9)
     expect(upload).to_not be_valid
   end
 
-  it "should update all of the data" do
+  it "updates all of the data" do
     columns = column_list.extract(manifest_types.find_by(:tube_library).columns)
     download = build(:test_download, columns: columns)
     download.save(test_file)
-    upload = SampleManifestExcel::Upload.new(filename: test_file, column_list: column_list, start_row: 9)
-    upload.update_samples
-    
+    upload = SampleManifestExcel::Upload.new(filename: test_file, column_list: column_list, start_row: 9, user: user)
+    upload.update_samples(tag_group)
+    expect(upload.rows).to_not be_empty
+    expect(upload.rows.all? { |row| row.sample_updated? }).to be_truthy
+    expect(upload.rows.first.sample.aliquots.first.insert_size_from).to_not be_nil
+    expect(upload.rows.last.sample.aliquots.first.insert_size_from).to_not be_nil
+    expect(upload.rows.first.sample.sample_metadata.concentration).to_not be_nil
+    expect(upload.rows.last.sample.sample_metadata.concentration).to_not be_nil
+  end
+
+  it 'updates the sample manifest' do
+    columns = column_list.extract(manifest_types.find_by(:tube_library).columns)
+    download = build(:test_download, columns: columns)
+    download.save(test_file)
+    upload = SampleManifestExcel::Upload.new(filename: test_file, column_list: column_list, start_row: 9, user: user)
+    upload.update_sample_manifest
+    expect(upload.sample_manifest.uploaded.filename).to eq(test_file)
   end
 
   context 'Row' do
@@ -71,7 +102,6 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
     let(:data) { [sample_tube.sample.assets.first.sanger_human_barcode, sample_tube.sample.id, 'No', 'AA','', 'My New Library Type', 200, 1500, 'SCG--1222_A01', '', 1, 1, 'Unknown','','','','Cell Line', 'Nov-16', 'Nov-16', '', '', '', 'No', '', 'OTHER', '', '', '', '', '', 'SCG--1222_A01', 9606,  'Homo sapiens', '', '', '', '', '', 11, 'Unknown' ] }
     let(:columns) { column_list.extract(headings) }
     
-
     it 'is not valid without row number' do
       expect(SampleManifestExcel::Upload::Row.new(number: "one", data: data, columns: columns)).to_not be_valid
       expect(SampleManifestExcel::Upload::Row.new(data: data, columns: columns)).to_not be_valid
@@ -142,6 +172,13 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
       expect(metadata.sample_common_name).to eq('Homo sapiens')
       expect(metadata.donor_id).to eq('11')
       expect(metadata.phenotype).to eq('Unknown')
+    end
+
+    it 'updates the sample' do
+      row = SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns)
+      row.update_sample(tag_group)
+      metadata = row.metadata
+      expect(row).to be_sample_updated
     end
 
     after(:each) do

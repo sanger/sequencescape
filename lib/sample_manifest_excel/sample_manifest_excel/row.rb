@@ -52,10 +52,13 @@ module SampleManifestExcel
         @specialised_fields ||= []
       end
 
-      def update(tag_group)
+      def update_sample(tag_group)
         if valid?
           update_specialised_fields(tag_group)
           update_metadata_fields
+          aliquot.save
+          metadata.save
+          @sample_updated = sample.save
         end
       end
 
@@ -70,6 +73,10 @@ module SampleManifestExcel
           value = at(column.number)
           column.update_metadata(metadata, value) if value.present?
         end
+      end
+
+      def sample_updated?
+        @sample_updated
       end
 
     private
