@@ -36,7 +36,7 @@ Feature: Sample manifest
     When I press "Create manifest and print labels"
     And I should see "Your 1 label(s) have been sent to printer xyz"
 
-  Scenario: Create a plate manifest and print all the barcodes
+  Scenario: Create a tube manifest and print all the barcodes
     When I follow "Create manifest for 1D tubes"
     Then I should see "Barcode printer"
     When I select "Test study" from "Study"

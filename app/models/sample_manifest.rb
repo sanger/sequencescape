@@ -32,8 +32,7 @@ class SampleManifest < ActiveRecord::Base
   has_uploaded_document :uploaded, differentiator: 'uploaded'
   has_uploaded_document :generated, differentiator: 'generated'
 
-  attr_accessor :override
-  attr_reader :manifest_errors
+  attr_accessor :override, :only_first_label
 
   class_attribute :spreadsheet_offset
   class_attribute :spreadsheet_header_row
@@ -63,7 +62,7 @@ class SampleManifest < ActiveRecord::Base
   # and can even prevent manifest resubmission.
   before_save :truncate_errors
 
-  delegate :printables, to: :core_behaviour
+  delegate :printables, :acceptable_purposes, to: :core_behaviour
 
   def truncate_errors
     if last_errors && last_errors.join.length > LIMIT_ERROR_LENGTH
@@ -82,10 +81,6 @@ class SampleManifest < ActiveRecord::Base
       self.last_errors = full_last_errors
 
     end
-  end
-
-  def only_first_label
-    false
   end
 
   def default_asset_type
@@ -110,8 +105,6 @@ class SampleManifest < ActiveRecord::Base
   }
 
   def generate
-    @manifest_errors = []
-
     ActiveRecord::Base.transaction do
       self.barcodes = []
       core_behaviour.generate
@@ -125,15 +118,9 @@ class SampleManifest < ActiveRecord::Base
     end
   end
 
+  private
+
   def generate_sanger_ids(count = 1)
     Array.new(count) { SangerSampleId::Factory.instance.next! }
-  end
-  private :generate_sanger_ids
-
-  def generate_study_samples(study_samples_data)
-    study_sample_fields = [:study_id, :sample_id]
-    study_samples_data.each do |study_sample|
-      StudySample.create!(study_id: study_sample.first, sample_id: study_sample.last)
-    end
   end
 end
