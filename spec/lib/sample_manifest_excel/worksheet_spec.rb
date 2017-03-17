@@ -154,14 +154,14 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
 
 
 
-    let(:data) { { prepooled: 'No', library_type: 'My personal library type', insert_size_from: 200, insert_size_to: 1500,
+    let(:data) { { library_type: 'My personal library type', insert_size_from: 200, insert_size_to: 1500,
                 supplier_sample_name: 'SCG--1222_A0', volume: 1, concentration: 1, gender: 'Unknown', dna_source: 'Cell Line', 
                 date_of_sample_collection: 'Nov-16', date_of_sample_extraction: 'Nov-16', sample_purified: 'No',
                 sample_public_name: 'SCG--1222_A0', sample_taxon_id: 9606, sample_common_name: 'Homo sapiens', phenotype: 'Unknown' }.with_indifferent_access }
 
     context 'in a valid state' do
       let!(:worksheet) { SampleManifestExcel::Worksheet::TestWorksheet.new(workbook: workbook,
-                                                        columns: SampleManifestExcel.configuration.columns.tube_library.dup,
+                                                        columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup,
                                                         data: data, no_of_rows: 5, study: 'WTCCC', supplier: 'Test supplier', 
                                                         count: 1, type: 'Tubes'
                                                         )}
@@ -224,43 +224,32 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
 
     context 'in an invalid state' do
 
+      let(:attributes) { {  workbook: workbook,
+                            columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup,
+                            data: data, no_of_rows: 5, study: 'WTCCC', supplier: 'Test supplier', 
+                            count: 1, type: 'Tubes' } }
+
       it 'without a library type' do
-        worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(workbook: workbook,
-                                                        columns: SampleManifestExcel.configuration.columns.tube_library.dup,
-                                                        data: data, no_of_rows: 5, study: 'WTCCC', supplier: 'Test supplier', 
-                                                        count: 1, type: 'Tubes', validation_errors: [:library_type]
-                                                        )
+        worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes.merge(validation_errors: [:library_type]))
         save_file
         expect(LibraryType.find_by_name(data[:library_type])).to be_nil
       end
 
       it 'with a duplicate tag group' do
-        worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(workbook: workbook,
-                                                        columns: SampleManifestExcel.configuration.columns.tube_library.dup,
-                                                        data: data, no_of_rows: 5, study: 'WTCCC', supplier: 'Test supplier', 
-                                                        count: 1, type: 'Tubes', validation_errors: [:tags]
-                                                        )
+        worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes.merge(validation_errors: [:tags]))
         save_file
         expect(spreadsheet.sheet(0).cell(worksheet.first_row, worksheet.columns.find_by(:name, :tag_oligo).number)).to eq(spreadsheet.sheet(0).cell(worksheet.last_row, worksheet.columns.find_by(:name, :tag_oligo).number))
         expect(spreadsheet.sheet(0).cell(worksheet.first_row, worksheet.columns.find_by(:name, :tag2_oligo).number)).to eq(spreadsheet.sheet(0).cell(worksheet.last_row, worksheet.columns.find_by(:name, :tag2_oligo).number))
       end
 
       it 'without insert size from' do
-        worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(workbook: workbook,
-                                                        columns: SampleManifestExcel.configuration.columns.tube_library.dup,
-                                                        data: data, no_of_rows: 5, study: 'WTCCC', supplier: 'Test supplier', 
-                                                        count: 1, type: 'Tubes', validation_errors: [:insert_size_from]
-                                                        )
+        worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes.merge(validation_errors: [:insert_size_from]))
         save_file
         expect(spreadsheet.sheet(0).cell(worksheet.first_row, worksheet.columns.find_by(:name, :insert_size_from).number)).to be_nil
       end
 
       it 'without a sample manifest' do
-        worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(workbook: workbook,
-                                                        columns: SampleManifestExcel.configuration.columns.tube_library.dup,
-                                                        data: data, no_of_rows: 5, study: 'WTCCC', supplier: 'Test supplier', 
-                                                        count: 1, type: 'Tubes', validation_errors: [:sample_manifest]
-                                                        )
+        worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes.merge(validation_errors: [:sample_manifest]))
         save_file
         sample = Sample.find(spreadsheet.sheet(0).cell(worksheet.first_row + 1, worksheet.columns.find_by(:name, :sanger_sample_id).number).to_i)
         expect(sample.sample_manifest).to be_nil

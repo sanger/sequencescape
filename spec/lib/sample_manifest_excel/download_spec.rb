@@ -109,13 +109,13 @@ RSpec.describe SampleManifestExcel::Download, type: :model, sample_manifest_exce
     end
   end
 
-  context 'Library tube download' do
+  context 'Library tube with tag sequences download' do
     setup do
       # asset_type might be changed, based on how upload would work
-      sample_manifest = create(:tube_sample_manifest_with_samples, asset_type: 'multiplexed_library')
+      sample_manifest = create(:tube_sample_manifest_with_samples)
       sample_manifest.generate
       @download = SampleManifestExcel::Download.new(sample_manifest,
-        SampleManifestExcel.configuration.columns.tube_library.dup, SampleManifestExcel.configuration.ranges.dup)
+        SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup, SampleManifestExcel.configuration.ranges.dup)
       save_file
     end
 
@@ -129,7 +129,7 @@ RSpec.describe SampleManifestExcel::Download, type: :model, sample_manifest_exce
     end
 
     it 'have the correct number of columns' do
-      expect(download.column_list.count).to eq(SampleManifestExcel.configuration.columns.tube_library.count)
+      expect(download.column_list.count).to eq(SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.count)
     end
   end
 

@@ -284,13 +284,55 @@ tube_multiplexed_library:
     - :sample_ebi_accession_number
     - :donor_id
     - :phenotype
-tube_library:
-  heading: "Library Tube"
+tube_library_with_tag_sequences:
+  heading: "Library Tube with Tag Sequences"
+  asset_type: "1dtube"
+  columns:
+    - :sanger_tube_id
+    - :sanger_sample_id
+    - :tag_oligo
+    - :tag2_oligo
+    - :library_type
+    - :insert_size_from
+    - :insert_size_to
+    - :supplier_sample_name
+    - :cohort
+    - :volume
+    - :concentration
+    - :gender
+    - :country_of_origin
+    - :geographical_region
+    - :ethnicity
+    - :dna_source
+    - :date_of_sample_collection
+    - :date_of_sample_extraction
+    - :is_sample_a_control
+    - :is_re_submitted_sample
+    - :sample_extraction_method
+    - :sample_purified
+    - :purification_method
+    - :concentration_determined_by
+    - :sample_storage_conditions
+    - :mother
+    - :father
+    - :sibling
+    - :gc_content
+    - :sample_public_name
+    - :sample_taxon_id
+    - :sample_common_name
+    - :sample_description
+    - :sample_strain_att
+    - :sample_visibility
+    - :sample_type
+    - :sample_ebi_accession_number
+    - :donor_id
+    - :phenotype
+tube_multiplexed_library_with_tag_sequences:
+  heading: "Multiplexed Library Tube"
   asset_type: "multiplexed_library"
   columns:
     - :sanger_tube_id
     - :sanger_sample_id
-    - :prepooled
     - :tag_oligo
     - :tag2_oligo
     - :library_type
