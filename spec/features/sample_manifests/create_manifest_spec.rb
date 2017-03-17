@@ -15,11 +15,11 @@ feature 'SampleManifest controller' do
   let!(:study) { create :study }
   let(:barcode) { 1000 }
   let(:created_plate) { Plate.find_by(barcode: barcode) }
-  let(:created_purpose) { PlatePurpose.stock_plate_purpose }
 
   shared_examples 'a plate manifest' do
     scenario 'creating manifests' do
       click_link('Create manifest for plates')
+      expect(PlateBarcode).to receive(:create).and_return(build(:plate_barcode, barcode: barcode))
       select(study.name, from: 'Study')
       select(supplier.name, from: 'Supplier')
       select('Default Plate', from: 'Template')
@@ -36,7 +36,6 @@ feature 'SampleManifest controller' do
     load_manifest_spec
     visit(study_path(study))
     click_link('Sample Manifests')
-    expect(PlateBarcode).to receive(:create).and_return(build(:plate_barcode, barcode: barcode))
   end
 
   context 'with no default' do
@@ -49,5 +48,15 @@ feature 'SampleManifest controller' do
     let(:selected_purpose) { created_purpose }
     let!(:created_purpose) { create :plate_purpose, stock_plate: true }
     it_behaves_like 'a plate manifest'
+  end
+
+  context 'without a type specified' do
+    let!(:created_purpose) { create :plate_purpose, stock_plate: true }
+
+    scenario 'indicate the purpose field is used for plates only' do
+      visit(new_sample_manifest_path)
+      select(created_purpose.name, from: 'Plate purpose')
+      expect(page).to have_text('Used for plate manifests only')
+    end
   end
 end
