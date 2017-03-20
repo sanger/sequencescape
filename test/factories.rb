@@ -408,25 +408,6 @@ FactoryGirl.define do
   factory :fragment do
   end
 
-  factory :multiplexed_library_tube do
-    name    { |_a| generate :asset_name }
-    purpose { Tube::Purpose.standard_mx_tube }
-  end
-
-  factory :pulldown_multiplexed_library_tube do
-    name { |_a| generate :asset_name }
-    public_name 'ABC'
-  end
-
-  factory :stock_multiplexed_library_tube do
-    name    { |_a| generate :asset_name }
-    purpose { Tube::Purpose.stock_mx_tube }
-
-    factory :new_stock_multiplexed_library_tube do |_t|
-      purpose { |a| a.association(:new_stock_tube_purpose) }
-    end
-  end
-
   factory(:new_stock_tube_purpose, class: IlluminaHtp::StockTubePurpose) do |_p|
     name { generate :purpose_name }
     target_type 'StockMultiplexedLibraryTube'
@@ -436,49 +417,11 @@ FactoryGirl.define do
     key { generate :purpose_name }
   end
 
-  factory(:empty_library_tube, class: LibraryTube) do
-    qc_state ''
-    name     { |_| generate :asset_name }
-    purpose  { Tube::Purpose.standard_library_tube }
-  end
-
-  factory(:library_tube, parent: :empty_library_tube) do
-    transient do
-      sample { create :sample }
-      library_type 'Standard'
-    end
-
-    after(:create) do |library_tube, evaluator|
-      library_tube.aliquots << build(:untagged_aliquot, sample: evaluator.sample, library_type: evaluator.library_type, receptacle: library_tube)
-    end
-  end
-
-  factory(:tagged_library_tube, class: LibraryTube) do
-    transient do
-      tag_map_id 1
-    end
-
-    after(:create) do |library_tube, evaluator|
-      library_tube.aliquots << build(:tagged_aliquot, tag: create(:tag, map_id: evaluator.tag_map_id), receptacle: library_tube)
-    end
-  end
-
-  factory :pac_bio_library_tube do
-    after(:build) do |t|
-      t.aliquots.build(sample: (create :sample))
-    end
-  end
-
   factory :transfer_request do
     association(:asset, factory: :well)
     association(:target_asset, factory: :well)
     association(:request_type, factory: :transfer_request_type)
     request_purpose
-  end
-
-  # A library tube is created from a sample tube through a library creation request!
-  factory(:full_library_tube, parent: :library_tube) do
-    after(:create) { |tube| create(:library_creation_request, target_asset: tube) }
   end
 
   factory(:library_creation_request_for_testing_sequencing_requests, class: Request::LibraryCreation) do
@@ -497,27 +440,6 @@ FactoryGirl.define do
     asset           { |a|   a.association(:well) }
     submission      { |s|   s.association(:submission) }
     request_purpose { |rp| rp.association(:request_purpose) }
-  end
-
-  # A Multiplexed library tube comes from several library tubes, which are themselves created through a
-  # number of multiplexed library creation requests.  But the binding to these tubes comes from the parent-child
-  # relationships.
-  factory :full_multiplexed_library_tube, parent: :multiplexed_library_tube do
-    after(:create) do |tube|
-      tube.parents << (1..5).map { |_| create(:multiplexed_library_creation_request).target_asset }
-    end
-  end
-
-  factory :broken_multiplexed_library_tube, parent: :multiplexed_library_tube
-
-  factory :stock_library_tube do
-    name     { |_a| generate :asset_name }
-    purpose  { Tube::Purpose.stock_library_tube }
-  end
-
-  factory :stock_sample_tube do
-    name     { |_a| generate :asset_name }
-    purpose  { Tube::Purpose.stock_sample_tube }
   end
 
   factory(:empty_lane, class: Lane) do
