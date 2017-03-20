@@ -44,7 +44,7 @@ class StudyReport < ActiveRecord::Base
     end
   end
 
-  def schedual_report
+  def schedule_report
     Delayed::Job.enqueue StudyReportJob.new(id), priority: priority
   end
 

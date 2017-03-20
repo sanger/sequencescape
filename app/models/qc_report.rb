@@ -41,7 +41,7 @@ class QcReport < ActiveRecord::Base
         state :complete
 
         # Triggered automatically on after_create. This event is handled via
-        # schedual_report, which creates a delayed job. It can be called manually.
+        # schedule_report, which creates a delayed job. It can be called manually.
         event :generate do
           transitions from: [:queued, :requeued], to: :generating
         end
@@ -119,7 +119,7 @@ class QcReport < ActiveRecord::Base
 
   before_validation :generate_report_identifier, if: :identifier_required?
 
-  after_create :schedual_report
+  after_create :schedule_report
 
   scope :for_report_page, ->(conditions) {
       order('id desc')
@@ -132,7 +132,7 @@ class QcReport < ActiveRecord::Base
   validates_inclusion_of :exclude_existing, in: [true, false], message: 'should be true or false.'
 
   # Reports are handled asynchronously
-  def schedual_report
+  def schedule_report
     Delayed::Job.enqueue QcReportJob.new(id)
   end
 
