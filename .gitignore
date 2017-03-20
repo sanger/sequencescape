@@ -26,3 +26,5 @@ coverage
 .yardoc
 rerun
 spec/examples.txt
+doc/*
+.yardoc/*
