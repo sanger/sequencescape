@@ -42,8 +42,8 @@ class RobotVerification
   end
 
   def valid_plate_locations?(params, batch, robot, expected_plate_layout)
-    return false if !valid_source_plates_on_robot?(params[:bed_barcodes], params[:plate_barcodes], robot, batch, expected_plate_layout)
-    return false if !valid_destination_plates_on_robot?(params[:destination_bed_barcodes], params[:destination_plate_barcodes], robot, batch, expected_plate_layout)
+    return false unless valid_source_plates_on_robot?(params[:bed_barcodes], params[:plate_barcodes], robot, batch, expected_plate_layout)
+    return false unless valid_destination_plates_on_robot?(params[:destination_bed_barcodes], params[:destination_plate_barcodes], robot, batch, expected_plate_layout)
 
     true
   end
@@ -66,11 +66,13 @@ class RobotVerification
     if valid_plate_locations?(params, batch, robot, expected_plate_layout)
       batch.events.create(
         message: I18n.t('bed_verification.layout.valid', plate_barcode: destination_plate_barcode),
-        created_by: user.login)
+        created_by: user.login
+)
     else
       batch.events.create(
         message: I18n.t('bed_verification.layout.invalid', plate_barcode: destination_plate_barcode),
-        created_by: user.login)
+        created_by: user.login
+)
       @errors << 'Bed layout invalid'
       return false
     end

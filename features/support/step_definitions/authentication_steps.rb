@@ -29,8 +29,7 @@ Given /^I am an? "([^\"]*)" user logged in as "([^\"]*)"$/ do |role_name, login|
     password: 'generic',
     password_confirmation: 'generic',
     email: "#{login}@example.com",
-    workflow_id: wk.id
-  )
+    workflow_id: wk.id)
 
   @current_user.roles << FactoryGirl.create(:role, name: role_name)
 

@@ -24,11 +24,11 @@ ActiveRecord::Base.transaction do
   creator.parent_plate_purposes << Purpose.find_by!(name: 'Stock plate')
 
   purposes_config = [
-      [Plate::Creator.find_by!(name: 'Working dilution'),  Purpose.find_by!(name: 'Stock plate')],
-      [Plate::Creator.find_by!(name: 'Pico dilution'),     Purpose.find_by!(name: 'Working dilution')],
-      [Plate::Creator.find_by!(name: 'Pico Assay Plates'), Purpose.find_by!(name: 'Pico dilution')],
-      [Plate::Creator.find_by!(name: 'Pico Assay Plates'), Purpose.find_by!(name: 'Working dilution')],
-    ]
+    [Plate::Creator.find_by!(name: 'Working dilution'), Purpose.find_by!(name: 'Stock plate')],
+    [Plate::Creator.find_by!(name: 'Pico dilution'),     Purpose.find_by!(name: 'Working dilution')],
+    [Plate::Creator.find_by!(name: 'Pico Assay Plates'), Purpose.find_by!(name: 'Pico dilution')],
+    [Plate::Creator.find_by!(name: 'Pico Assay Plates'), Purpose.find_by!(name: 'Working dilution')],
+  ]
 
   purposes_config.each do |creator, purpose|
     creator.parent_plate_purposes << purpose

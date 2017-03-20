@@ -14,7 +14,7 @@ class PlateBarcode < ActiveResource::Base
     def self.create
       if @barcode.nil?
         @barcode = Asset.where('barcode is not null and barcode!="9999999" and length(barcode)=7')
-          .order('barcode desc').first.try(:barcode).to_i
+                        .order('barcode desc').first.try(:barcode).to_i
 
         @barcode = 9000000 if @barcode.zero?
       end

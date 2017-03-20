@@ -27,7 +27,8 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
         "state IN (?) OR (state='passed' AND sti_type IN (?))",
         Request::Statemachine::OPENED_STATE,
         [TransferRequest, *TransferRequest.descendants].map(&:name)
-      ])
+      ]
+)
   end
   private :target_requests
 
@@ -41,8 +42,7 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
       .where(requests: {
         target_asset_id: tube.id,
         sti_type: [Request::LibraryCreation, *Request::LibraryCreation.descendants].map(&:name)
-      }
-    ).distinct.map(&:source_plate)
+      }).distinct.map(&:source_plate)
   end
 
   def request_state(request, state)
