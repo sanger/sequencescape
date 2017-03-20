@@ -962,7 +962,7 @@ PacBioSamplePrepPipeline.create!(name: 'PacBio Library Prep') do |pipeline|
       { class: PrepKitBarcodeTask, name: 'DNA Template Prep Kit Box Barcode',    sorted: 1, batched: true, lab_activity: true },
       { class: PlateTransferTask,  name: 'Transfer to plate',                    sorted: 2, batched: nil,  lab_activity: true, purpose: Purpose.find_by(name: 'PacBio Sheared') },
       { class: SamplePrepQcTask,   name: 'Sample Prep QC',                       sorted: 3, batched: true, lab_activity: true }
-     ].each do |details|
+    ].each do |details|
       details.delete(:class).create!(details.merge(workflow: workflow))
     end
   end
@@ -1373,11 +1373,11 @@ x10_pipelines = ['(spiked in controls)', '(no controls)'].each do |type|
         workflow.item_limit = 8
       end.tap do |workflow|
         [
-        { class: SetDescriptorsTask,     name: 'Specify Dilution Volume',           sorted: 1, batched: true },
-        { class: SetDescriptorsTask,     name: 'Cluster generation',                sorted: 3, batched: true, lab_activity: true },
-        { class: AddSpikedInControlTask, name: 'Add Spiked in Control',             sorted: 4, batched: true, lab_activity: true },
-        { class: SetDescriptorsTask,     name: 'Read 1 Lin/block/hyb/load',         sorted: 6, batched: true, interactive: true, per_item: true, lab_activity: true },
-        { class: SetDescriptorsTask,     name: 'Read 2 Cluster/Lin/block/hyb/load', sorted: 7, batched: true, interactive: true, per_item: true, lab_activity: true }
+          { class: SetDescriptorsTask, name: 'Specify Dilution Volume', sorted: 1, batched: true },
+          { class: SetDescriptorsTask,     name: 'Cluster generation',                sorted: 3, batched: true, lab_activity: true },
+          { class: AddSpikedInControlTask, name: 'Add Spiked in Control',             sorted: 4, batched: true, lab_activity: true },
+          { class: SetDescriptorsTask,     name: 'Read 1 Lin/block/hyb/load',         sorted: 6, batched: true, interactive: true, per_item: true, lab_activity: true },
+          { class: SetDescriptorsTask,     name: 'Read 2 Cluster/Lin/block/hyb/load', sorted: 7, batched: true, interactive: true, per_item: true, lab_activity: true }
         ].select do |task|
           type == '(spiked in controls)' || task[:name] != 'Add Spiked in Control'
         end.each do |details|
@@ -1408,11 +1408,11 @@ st_x10_pipelines = ['(spiked in controls) from strip-tubes'].each do |type|
         workflow.item_limit = 8
       end.tap do |workflow|
         [
-        { class: SetDescriptorsTask,     name: 'Specify Dilution Volume',           sorted: 1, batched: true },
-        { class: SetDescriptorsTask,     name: 'Cluster generation',                sorted: 3, batched: true, lab_activity: true },
-        { class: AddSpikedInControlTask, name: 'Add Spiked in Control',             sorted: 4, batched: true, lab_activity: true },
-        { class: SetDescriptorsTask,     name: 'Read 1 Lin/block/hyb/load',         sorted: 6, batched: true, interactive: true, per_item: true, lab_activity: true },
-        { class: SetDescriptorsTask,     name: 'Read 2 Cluster/Lin/block/hyb/load', sorted: 7, batched: true, interactive: true, per_item: true, lab_activity: true }
+          { class: SetDescriptorsTask, name: 'Specify Dilution Volume', sorted: 1, batched: true },
+          { class: SetDescriptorsTask,     name: 'Cluster generation',                sorted: 3, batched: true, lab_activity: true },
+          { class: AddSpikedInControlTask, name: 'Add Spiked in Control',             sorted: 4, batched: true, lab_activity: true },
+          { class: SetDescriptorsTask,     name: 'Read 1 Lin/block/hyb/load',         sorted: 6, batched: true, interactive: true, per_item: true, lab_activity: true },
+          { class: SetDescriptorsTask,     name: 'Read 2 Cluster/Lin/block/hyb/load', sorted: 7, batched: true, interactive: true, per_item: true, lab_activity: true }
         ].each do |details|
           details.delete(:class).create!(details.merge(workflow: workflow))
         end

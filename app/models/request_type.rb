@@ -76,11 +76,11 @@ class RequestType < ActiveRecord::Base
 
  scope :applicable_for_asset, ->(asset) {
     where([
-        'asset_type = ?
-         AND request_class_name != "ControlRequest"
-         AND deprecated IS FALSE',
+      'asset_type = ?
+       AND request_class_name != "ControlRequest"
+       AND deprecated IS FALSE',
          asset.asset_type_for_request_types.name
-      ])
+    ])
                               }
 
   # Helper method for generating a request constructor, like 'create!'

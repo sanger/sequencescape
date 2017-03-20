@@ -8,12 +8,12 @@ module SequencingQcBatch
   # batches.qc_state field in the DB to accommodate.  FYI, 25 characters is:
   #  <----------------------->
   VALID_QC_STATES = %w(
-qc_pending
-qc_submitted
-qc_manual
-qc_manual_in_progress
-qc_completed
-)
+    qc_pending
+    qc_submitted
+    qc_manual
+    qc_manual_in_progress
+    qc_completed
+  )
 
   def self.included(base)
     base.instance_eval do

@@ -360,9 +360,9 @@ class Order < ActiveRecord::Base
   # Returns true if this is an order for sequencing
   def is_a_sequencing_order?
     [
-     PacBioSequencingRequest,
-     SequencingRequest,
-     *SequencingRequest.descendants
+      PacBioSequencingRequest,
+      SequencingRequest,
+      *SequencingRequest.descendants
     ].include?(RequestType.find(request_types.last).request_class)
   end
 

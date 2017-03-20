@@ -130,16 +130,16 @@ class Plate < Asset
   def submissions
     s = Submission.select('submissions.*',).uniq
                   .joins([
-        'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
-        'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.asset_id'
-      ])
+                    'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
+                    'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.asset_id'
+                  ])
                   .where(['caplp.container_id = ?', id])
     return s unless s.blank?
     Submission.select('submissions.*',).uniq
               .joins([
-        'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
-        'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.target_asset_id'
-      ])
+                'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
+                'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.target_asset_id'
+              ])
               .where(['caplp.container_id = ?', id])
   end
 
@@ -207,14 +207,14 @@ class Plate < Asset
 
   def priority
     Submission.joins([
-        'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
-        'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.asset_id'
-      ])
+      'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
+      'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.asset_id'
+    ])
               .where(['caplp.container_id = ?', id]).maximum('submissions.priority') ||
       Submission.joins([
-          'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
-          'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.target_asset_id'
-        ])
+        'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
+        'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.target_asset_id'
+      ])
                 .where(['caplp.container_id = ?', id]).maximum('submissions.priority') ||
       0
   end
@@ -299,22 +299,22 @@ class Plate < Asset
   scope :with_sample, ->(sample) {
       select('assets.*').uniq
                         .joins([
-        'LEFT OUTER JOIN container_associations AS wscas ON wscas.container_id = assets.id',
-        'LEFT JOIN assets AS wswells ON wswells.id = content_id',
-        'LEFT JOIN aliquots AS wsaliquots ON wsaliquots.receptacle_id = wswells.id'
-      ])
+                          'LEFT OUTER JOIN container_associations AS wscas ON wscas.container_id = assets.id',
+                          'LEFT JOIN assets AS wswells ON wswells.id = content_id',
+                          'LEFT JOIN aliquots AS wsaliquots ON wsaliquots.receptacle_id = wswells.id'
+                        ])
                         .where(['wsaliquots.sample_id IN(?)', Array(sample)])
   }
 
  scope :with_requests, ->(requests) {
    select('assets.*').uniq
                      .joins([
-        'INNER JOIN container_associations AS wrca ON wrca.container_id = assets.id',
-        'INNER JOIN requests AS wrr ON wrr.asset_id = wrca.content_id'
-    ]).where([
-      'wrr.id IN (?)',
-      requests.map(&:id)
-    ])
+                       'INNER JOIN container_associations AS wrca ON wrca.container_id = assets.id',
+                       'INNER JOIN requests AS wrr ON wrr.asset_id = wrca.content_id'
+                     ]).where([
+                       'wrr.id IN (?)',
+                       requests.map(&:id)
+                     ])
                        }
 
   scope :output_by_batch, ->(batch) {
@@ -359,15 +359,15 @@ class Plate < Asset
 
   scope :with_wells_and_requests, ->() {
     includes(wells: [
-        :uuid_object, :map,
-        {
-          requests_as_target: [
-            { initial_study: :uuid_object },
-            { initial_project: :uuid_object },
-            { asset: { aliquots: :sample } }
-          ]
-        }
-      ])
+      :uuid_object, :map,
+      {
+        requests_as_target: [
+          { initial_study: :uuid_object },
+          { initial_project: :uuid_object },
+          { asset: { aliquots: :sample } }
+        ]
+      }
+    ])
   }
 
   def wells_sorted_by_map_id
@@ -833,11 +833,11 @@ class Plate < Asset
 
   def team
     ProductLine.joins([
-        'INNER JOIN request_types ON request_types.product_line_id = product_lines.id',
-        'INNER JOIN requests ON requests.request_type_id = request_types.id',
-        'INNER JOIN well_links ON well_links.source_well_id = requests.asset_id AND well_links.type = "stock"',
-        'INNER JOIN container_associations AS ca ON ca.content_id = well_links.target_well_id'
-      ]).find_by(['ca.container_id = ?', id]).try(:name) || 'UNKNOWN'
+      'INNER JOIN request_types ON request_types.product_line_id = product_lines.id',
+      'INNER JOIN requests ON requests.request_type_id = request_types.id',
+      'INNER JOIN well_links ON well_links.source_well_id = requests.asset_id AND well_links.type = "stock"',
+      'INNER JOIN container_associations AS ca ON ca.content_id = well_links.target_well_id'
+    ]).find_by(['ca.container_id = ?', id]).try(:name) || 'UNKNOWN'
   end
 
   # Barcode is stored as a string, jet in a number of places is treated as

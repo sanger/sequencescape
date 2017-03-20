@@ -610,8 +610,8 @@ Style/IfUnlessModifier:
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles, IndentationWidth.
 # SupportedStyles: special_inside_parentheses, consistent, align_brackets
-Style/IndentArray:
-  Enabled: false
+# Style/IndentArray:
+#   Enabled: false
 
 # Offense count: 96
 # Cop supports --auto-correct.

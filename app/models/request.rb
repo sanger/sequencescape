@@ -80,7 +80,7 @@ class Request < ActiveRecord::Base
       .where([
         'container_associations.container_id=? AND requests.submission_id IN (?)',
         plate.id, submission_ids
-    ])
+      ])
   }
 
   scope :for_pre_cap_grouping_of, ->(plate) {
@@ -96,18 +96,18 @@ class Request < ActiveRecord::Base
 
       select('min(uuids.external_id) AS group_id, GROUP_CONCAT(DISTINCT pw_location.description SEPARATOR ",") AS group_into, MIN(requests.id) AS id, MIN(requests.submission_id) AS submission_id, MIN(requests.request_type_id) AS request_type_id')
         .joins(add_joins + [
-        'INNER JOIN maps AS pw_location ON pw.map_id = pw_location.id',
-        'INNER JOIN container_associations ON container_associations.content_id=pw.id',
-        'INNER JOIN pre_capture_pool_pooled_requests ON requests.id=pre_capture_pool_pooled_requests.request_id',
-        'INNER JOIN uuids ON uuids.resource_id = pre_capture_pool_pooled_requests.pre_capture_pool_id AND uuids.resource_type="PreCapturePool"'
+          'INNER JOIN maps AS pw_location ON pw.map_id = pw_location.id',
+          'INNER JOIN container_associations ON container_associations.content_id=pw.id',
+          'INNER JOIN pre_capture_pool_pooled_requests ON requests.id=pre_capture_pool_pooled_requests.request_id',
+          'INNER JOIN uuids ON uuids.resource_id = pre_capture_pool_pooled_requests.pre_capture_pool_id AND uuids.resource_type="PreCapturePool"'
         ])
         .group('pre_capture_pool_pooled_requests.pre_capture_pool_id')
         .customer_requests
         .where(state: 'pending')
         .where([
-        'container_associations.container_id=?',
-        plate.id
-      ])
+          'container_associations.container_id=?',
+          plate.id
+        ])
   }
 
   scope :in_order, ->(order) { where(order_id: order) }
@@ -297,14 +297,14 @@ class Request < ActiveRecord::Base
 
     group(scrubbed_atts)
       .select([
-      'MIN(requests.id) AS id',
-      'MIN(requests.submission_id) AS submission_id',
-      'MAX(requests.priority) AS max_priority',
-      'hl.container_id AS container_id',
-      'count(DISTINCT requests.id) AS request_count',
-      'MIN(requests.asset_id) AS asset_id',
-      'MIN(requests.target_asset_id) AS target_asset_id'
-    ])
+        'MIN(requests.id) AS id',
+        'MIN(requests.submission_id) AS submission_id',
+        'MAX(requests.priority) AS max_priority',
+        'hl.container_id AS container_id',
+        'count(DISTINCT requests.id) AS request_count',
+        'MIN(requests.asset_id) AS asset_id',
+        'MIN(requests.target_asset_id) AS target_asset_id'
+      ])
       .select(scrubbed_atts)
   }
 
