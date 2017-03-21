@@ -109,7 +109,6 @@ module Presenters
         end
 
         add_submenu_option 'Verify tube layout', :verify if tube_layout_not_verified?
-        add_submenu_option 'Batch Report', :pulldown_batch_report if is_pulldown_pipeline?
       end
     end
 

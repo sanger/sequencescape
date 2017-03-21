@@ -16,7 +16,7 @@ class BatchesController < ApplicationController
     :show, :edit, :update, :qc_information, :qc_batch, :save, :fail, :fail_items,
     :fail_batch, :control, :add_control, :print_labels, :print_plate_labels, :print_multiplex_labels,
     :print, :verify, :verify_tube_layout, :reset_batch, :previous_qc_state, :filtered, :swap,
-    :download_spreadsheet, :gwl_file, :pulldown_batch_report, :pacbio_sample_sheet, :sample_prep_worksheet
+    :download_spreadsheet, :gwl_file, :pacbio_sample_sheet, :sample_prep_worksheet
   ]
   before_action :find_batch_by_batch_id, only: [:sort, :print_multiplex_barcodes, :print_pulldown_multiplex_tube_labels, :print_plate_barcodes, :print_barcodes]
 
@@ -563,13 +563,6 @@ class BatchesController < ApplicationController
     end
 
     redirect_to batch_path(@batch)
-  end
-
-  def pulldown_batch_report
-    csv_string = @batch.pulldown_batch_report
-    send_data csv_string, type: 'text/plain',
-                          filename: "batch_#{@batch.id}_report.csv",
-                          disposition: 'attachment'
   end
 
   def pacbio_sample_sheet
