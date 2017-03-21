@@ -11,7 +11,7 @@ class BatchesController < ApplicationController
   before_action :evil_parameter_hack!
   include XmlCacheHelper::ControllerHelper
 
-  before_action :login_required, except: [:released, :evaluations_counter, :qc_criteria]
+  before_action :login_required, except: [:released, :qc_criteria]
   before_action :find_batch_by_id, only: [
     :show, :edit, :update, :qc_information, :qc_batch, :save, :fail, :fail_items,
     :fail_batch, :control, :add_control, :print_labels, :print_plate_labels, :print_multiplex_labels,
@@ -331,11 +331,6 @@ class BatchesController < ApplicationController
 
     flash[:notice] = 'Training batch created'
     redirect_to action: 'show', id: batch.id
-  end
-
-  def evaluations_counter
-    @ev = BatchStatus.find(params[:id])
-    render partial: 'evaluations_counter'
   end
 
   def print_labels
