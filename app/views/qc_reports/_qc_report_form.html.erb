@@ -3,20 +3,20 @@
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2015,2016 Genome Research Ltd.%>
-<%= form_for(qc_report, :html=>{:class=>'submit_once'}) do |f| %>
+<%= form_for(qc_report, html: {class: 'submit_once'}) do |f| %>
   <div class="form-group">
     <%= f.label "study_id", 'Study' %>
-    <%= f.select :study_id, studies, {:prompt => 'Select study...', :disabled =>['']}, { :autocomplete => 'off', :required => 'required', :class=>'form-control select2' } %>
+    <%= f.select :study_id, studies, {prompt: 'Select study...', disabled: ['']}, { autocomplete: 'off', required: 'required', class: 'form-control select2' } %>
   </div>
   <div class="form-group">
     <%= f.label "product_id", 'Product' %>
-    <%= f.select :product_id, products, { :prompt => 'Select product...', :disabled => [''], :selected => default_product }, { :autocomplete => 'off', :required => 'required', :class=>'form-control select2'  } %>
+    <%= f.select :product_id, products, { prompt: 'Select product...', disabled: [''], selected: default_product }, { autocomplete: 'off', required: 'required', class: 'form-control select2'  } %>
   </div>
   <div class="form-group">
     <%= f.label "exclude_existing", 'Exclude samples with existing reports' %>
     <%= f.check_box :exclude_existing %>
   </div>
   <div class="form-group actions-group">
-    <%= f.submit('Create report', :autocomplete => 'off',:class=>'disable_on_submit btn btn-success') %>
+    <%= f.submit('Create report', autocomplete: 'off',class: 'disable_on_submit btn btn-success') %>
   </div>
 <% end %>

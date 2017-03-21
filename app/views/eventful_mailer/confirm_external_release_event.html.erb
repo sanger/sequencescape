@@ -13,7 +13,7 @@ Hello,
 <p>
 You can manage this asset here:<br />
 
-<% link = url_for(:host => configatron.site_url, :controller => 'assets', :action => 'edit', :id => @eventful) %>
+<% link = url_for(host: configatron.site_url, controller: 'assets', action: 'edit', id: @eventful) %>
 </p>
 <a href="<%= link %>"><%= link %></a></p>
 <% source_request = Asset.find(@eventful.id).source_request

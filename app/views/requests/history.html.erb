@@ -23,7 +23,7 @@
         <th>Created at</th>
         <th>Created by</th>
       </tr>
-      <%= render :partial => "event", :collection => @request.events %>
+      <%= render partial: "event", collection: @request.events %>
     </table>
   <%- else %>
     <%= display_user_guide("No events registered") %>

@@ -7,9 +7,9 @@
 <% add :menu, "All reports" => study_reports_path() %>
 <h1>QC Reports for <%= @study.name %></h1>
 
-<h2><%= link_to "New report", new_study_report_path(:study => @study) %></h2>
+<h2><%= link_to "New report", new_study_report_path(study: @study) %></h2>
 
 
 <%= pagination @study_reports %>
-<%= render :partial => 'shared/study_reports', :locals => { :study_reports => @study_reports} %>
+<%= render partial: 'shared/study_reports', locals: { study_reports: @study_reports} %>
 <%= pagination @study_reports %>

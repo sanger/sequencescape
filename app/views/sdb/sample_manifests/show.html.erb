@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.%>
 
-<%= render :partial => "side_links" %>
+<%= render partial: "side_links" %>
 <% add :menu, "Download Blank Manifest" => export_sample_manifest_path(@sample_manifest) %>
 
 <h2>Manifest "<%= @sample_manifest.name %>" for study <%= @sample_manifest.study.name %></h2>
@@ -18,7 +18,7 @@
   <p>Created by <%= link_to @sample_manifest.user.login, profile_path(@sample_manifest.user) %></p>
 <% end %>
 
-<%= render :partial => "upload" %>
+<%= render partial: "upload" %>
 
 <% if @sample_manifest.last_errors %>
   <h2>Errors</h2>

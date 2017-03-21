@@ -18,7 +18,7 @@
   <tbody>
   <% @assets_to_detail.each do |asset| %>
     <tr class="<%= label_asset_state(asset) %>">
-      <td><%= link_to(h(asset.display_name), asset_path(asset), :title => asset.label.capitalize) %></td>
+      <td><%= link_to(h(asset.display_name), asset_path(asset), title: asset.label.capitalize) %></td>
       <td><%= request_count_link(@study, asset, 'pending', @request_type) %></td>
       <td><%= request_count_link(@study, asset, 'started', @request_type) %></td>
       <td><%= request_count_link(@study, asset, 'passed', @request_type) %></td>

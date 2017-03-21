@@ -6,5 +6,5 @@
 
 <li><strong><%= event_request.asset ? h(event_request.asset.display_name) : "<nil>" %></strong></li>
 <ul>
-<%= render :partial => 'event', :collection => event_request.lab_events_for_batch(@batch) %>
+<%= render partial: 'event', collection: event_request.lab_events_for_batch(@batch) %>
 </ul>

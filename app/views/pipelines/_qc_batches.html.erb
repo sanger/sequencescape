@@ -40,16 +40,16 @@
             <%= batch.qc_state.humanize %>
           </td>
           <td>
-            <%= link_to "<strong>Auto QC</strong>", :controller => :workflows, :action => :auto_batch, :id => batch.qc_pipeline_workflow_id, :batch_id => batch.id %>
+            <%= link_to "<strong>Auto QC</strong>", controller: :workflows, action: :auto_batch, id: batch.qc_pipeline_workflow_id, batch_id: batch.id %>
           </td>
       </tr>
       <% end %>
       <tr>
         <td colspan="6">
           <% if batches.first.qc_state == "qc_pending" %>
-            <%= link_to "View all batches in this state", :controller => :batches, :action => "quality_control", :id => batches.first.qc_pipeline.id, :qc_state => batches.first.qc_state, :state => batches.first.state %>
+            <%= link_to "View all batches in this state", controller: :batches, action: "quality_control", id: batches.first.qc_pipeline.id, qc_state: batches.first.qc_state, state: batches.first.state %>
           <% else %>
-            <%= link_to "View all batches in this state", :controller => :batches, :action => "quality_control", :id => batches.first.qc_pipeline.id, :qc_state => batches.first.qc_state %>
+            <%= link_to "View all batches in this state", controller: :batches, action: "quality_control", id: batches.first.qc_pipeline.id, qc_state: batches.first.qc_state %>
           <% end %>
         </td>
       </tr>

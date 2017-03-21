@@ -43,16 +43,16 @@
           <td><%= display_ready_for_manual_qc(batch.show_in_manual_qc?) %></td>
           <td>
             <% if batch.processing_in_manual_qc? %>
-              <%= link_to "<strong>Manual QC</strong>", :controller => "workflows", :action => "stage", :id => 0, :batch_id => batch.id, :workflow_id => batch.qc_pipeline.workflow.id %>
+              <%= link_to "<strong>Manual QC</strong>", controller: "workflows", action: "stage", id: 0, batch_id: batch.id, workflow_id: batch.qc_pipeline.workflow.id %>
             <% else %>
-              <%= link_to "<strong>View QC Data</strong>", :controller => :batches, :action => :qc_information, :id => batch.id %>
+              <%= link_to "<strong>View QC Data</strong>", controller: :batches, action: :qc_information, id: batch.id %>
             <% end %>
           </td>
       </tr>
       <% end %>
       <tr>
         <td colspan="9">
-          <%= link_to "View all batches in this state", :controller => :batches, :action => "quality_control", :id => batches.first.qc_pipeline.id, :qc_state => batches.first.qc_state %>
+          <%= link_to "View all batches in this state", controller: :batches, action: "quality_control", id: batches.first.qc_pipeline.id, qc_state: batches.first.qc_state %>
         </td>
       </tr>
     <% else %>

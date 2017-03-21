@@ -7,14 +7,14 @@
 <%# NOTE[xxx]: Kind of a hack because we're not actually building a form %>
 <div class="project_information">
 <%= fields_for(project) do |form| %>
-  <%= form.fields_for(:project_metadata, :builder => Metadata::ViewBuilder) do |metadata_fields| %>
+  <%= form.fields_for(:project_metadata, builder: Metadata::ViewBuilder) do |metadata_fields| %>
     <% metadata_fields.filter { |field| current_user.workflow.visible_attribute?(field) } %>
-    <% metadata_fields.with_options(:grouping => 'Specification') do |group| %>
+    <% metadata_fields.with_options(grouping: 'Specification') do |group| %>
       <%= group.plain_value(:project_cost_code) %>
       <%= group.plain_value(:funding_comments) %>
       <%= group.plain_value(:collaborators) %>
     <% end %>
-    <% metadata_fields.with_options(:grouping => 'Billing') do |group| %>
+    <% metadata_fields.with_options(grouping: 'Billing') do |group| %>
       <%= group.association_attribute(:project_manager, :name) %>
       <%= group.plain_value(:external_funding_source) %>
       <%= group.association_attribute(:budget_division, :name) %>

@@ -18,8 +18,8 @@
     <td><%=h barcode_printer.active %></td>
     <td><%=h barcode_printer.barcode_printer_type.name %></td>
     <td><%= link_to 'Show', barcode_printer %></td>
-    <td><%= link_to 'Edit', edit_barcode_printer_path(barcode_printer), :title => "Edit printer #{barcode_printer.name}" %></td>
-    <td><%= link_to 'Destroy', barcode_printer, :confirm => 'Are you sure?', :method => :delete %></td>
+    <td><%= link_to 'Edit', edit_barcode_printer_path(barcode_printer), title: "Edit printer #{barcode_printer.name}" %></td>
+    <td><%= link_to 'Destroy', barcode_printer, confirm: 'Are you sure?', method: :delete %></td>
   </tr>
 <% end %>
 </table>

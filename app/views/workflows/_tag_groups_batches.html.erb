@@ -4,12 +4,12 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015,2016 Genome Research Ltd.%>
 
-<%= form_for @workflow, :url => { :action => "stage", :id => @stage, :workflow_id => @workflow.id, :batch_id => @batch.id, :next_stage => true }, :html => { :id => "stage_form"} do |form| %>
+<%= form_for @workflow, url: { action: "stage", id: @stage, workflow_id: @workflow.id, batch_id: @batch.id, next_stage: true }, html: { id: "stage_form"} do |form| %>
 
 <p>
-  <label for="tag_group">Tag Group</label>: <%= select_tag("tag_group", options_for_select(@tag_groups.collect {|p| [ p.name, p.id ] }),:class=>'form-control select2')  %>
+  <label for="tag_group">Tag Group</label>: <%= select_tag("tag_group", options_for_select(@tag_groups.collect {|p| [ p.name, p.id ] }),class: 'form-control select2')  %>
 </p>
 
-<%= render :partial => "next_stage_submit" %>
+<%= render partial: "next_stage_submit" %>
 
 <% end %>

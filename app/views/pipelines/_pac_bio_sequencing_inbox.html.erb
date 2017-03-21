@@ -5,15 +5,15 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.%>
 
 <h2>Input requests</h2>
-<%= render :partial => "batch_statuses" %>
-<%= render :partial => 'pipeline_limit' %>
+<%= render partial: "batch_statuses" %>
+<%= render partial: 'pipeline_limit' %>
 
 <% if @requests_waiting == 0 -%>
   There are no outstanding requests for this pipeline.
 <% else -%>
-  <%= render :partial => 'pipeline_paginate' %>
+  <%= render partial: 'pipeline_paginate' %>
   <!-- _pacbio_sequencing_inbox.html.erb -->
-  <%= form_tag({:controller => :batches, :action => :create, :id => @pipeline.id}, :id => "requests_to_batch_form") do -%>
+  <%= form_tag({controller: :batches, action: :create, id: @pipeline.id}, id: "requests_to_batch_form") do -%>
     <% if @pipeline.item_limit -%>
       <input type="hidden" id="batch_item_limit" value="<%= @pipeline.item_limit %>" />
     <% end -%>
@@ -46,12 +46,12 @@
               <% if request.ready? %>
                 <input type="checkbox" name="selectAll" onclick="select_requests_by_group(<%=  request_item.item_id %>,<%= requests.size %>, this.checked);" id="select_all_group_<%= index %>"></a>
               <% else %>
-                <%= image_tag "error.png", 'title' => I18n.t("requests.status.not_ready"), :size => '16x16' %>
+                <%= image_tag "error.png", 'title' => I18n.t("requests.status.not_ready"), size: '16x16' %>
               <% end %>
             </td>
 
             <td class="request" width='2%'><!-- Notify -->
-              <a href="javascript:void(0)" onclick="showElement(<%=  request_item.item_id %>,<%= requests.size %>); return false;"><%= image_tag "information.png", :size =>"13x13" %></a>
+              <a href="javascript:void(0)" onclick="showElement(<%=  request_item.item_id %>,<%= requests.size %>); return false;"><%= image_tag "information.png", size: "13x13" %></a>
             </td>
             <td class="request">&nbsp; <!-- Request ID--></td>
             <td class='request'><!-- Name --><%= h(request.asset.display_name) %></td>
@@ -78,11 +78,11 @@
             <tr class="nested request<%= indice %>" id="<%= request_item.item_id %>_<%= progr.to_s %>" style="display:none">
               <td class="request">&nbsp;<!-- Checkboxes (grp) --></td>
               <td> <!-- Notify/ Checkboxes (ind) -->
-                <%= label(:request, request.id, "Select Request #{indice}", :style => 'display:none') %>
+                <%= label(:request, request.id, "Select Request #{indice}", style: 'display:none') %>
                 <% if request.ready? %>
-                  <%= check_box :request, request.id, :value => request.id %>
+                  <%= check_box :request, request.id, value: request.id %>
                 <% else %>
-                  <%= image_tag "error.png", 'title' => I18n.t("requests.status.not_ready"), :size => '16x16' %>
+                  <%= image_tag "error.png", 'title' => I18n.t("requests.status.not_ready"), size: '16x16' %>
                 <% end %>
               </td>
               <td class='request'> <!-- Request id -->
@@ -109,12 +109,12 @@
 
 
 
-    <%= render :partial => 'inbox_submission_button' %>
+    <%= render partial: 'inbox_submission_button' %>
   <% end -%>
 
- <%= render :partial => 'pipeline_paginate' %>
+ <%= render partial: 'pipeline_paginate' %>
 <% end -%>
 
-<%= render :partial => 'show_held_requests' %>
+<%= render partial: 'show_held_requests' %>
 
 <%= javascript_include_tag 'pipeline.js' %>

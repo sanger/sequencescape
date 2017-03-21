@@ -11,21 +11,21 @@
   <h4>
     Study:
     <% presenter.order_studies do |name,study| %>
-      <%= link_to(name, study, :target => "_blank") %>
+      <%= link_to(name, study, target: "_blank") %>
     <% end %>
   </h4>
 
   <h4>
     Project:
     <% presenter.order_projects do |name,project| %>
-      <%= link_to(name, project, :target => "_blank") %>
+      <%= link_to(name, project, target: "_blank") %>
     <% end %>
   </h4>
 
   <% if order.asset_group.present? -%>
     <h4>
       Asset Group:
-      <%= link_to(h(order.asset_group.name), study_asset_group_path(order.study, order.asset_group), :target => "_blank") %>
+      <%= link_to(h(order.asset_group.name), study_asset_group_path(order.study, order.asset_group), target: "_blank") %>
     </h4>
   <% elsif order.assets.present? -%>
     <h4>Samples:</h4>
@@ -71,11 +71,11 @@
 
   </div>
 
-    <%= form_tag(order_path(order.id), :method => :put, :class => "comments-box") do -%>
-      <%= text_area_tag :comments, nil, :placeholder => "Write a new comment here", :class=>"form-control", :id=>'comments-input' %>
+    <%= form_tag(order_path(order.id), method: :put, class: "comments-box") do -%>
+      <%= text_area_tag :comments, nil, placeholder: "Write a new comment here", class: "form-control", id: 'comments-input' %>
       <%= submit_tag raw("&#10010; Add new comment"),
-      :id       => "add-comment",
-      :class    => "btn btn-default add-comment" %>
+      id: "add-comment",
+      class: "btn btn-default add-comment" %>
     <% end %>
 
 
@@ -83,11 +83,11 @@
     <div class="save-buttons">
       <%= hidden_field_tag :order_id,
         order.id,
-        :class => 'order-id'
+        class: 'order-id'
       %>
 
       <%= submit_tag '♻  Delete Order',
-        :class => 'delete-order btn btn-danger'
+        class: 'delete-order btn btn-danger'
       %>
 
     </div>

@@ -15,16 +15,16 @@
     </div>
     <div id="tab_content">
       <div id="0_definition" class="tab_content0" style="">
-        <%= render :partial => "qc_batches", :locals => { :batches => @pipeline.qc_pending_auto_batches } %>
+        <%= render partial: "qc_batches", locals: { batches: @pipeline.qc_pending_auto_batches } %>
       </div>
       <div id="1_definition" class="tab_content0" style="display:none;">
-        <%= render :partial => "qc_batches", :locals => { :batches => @pipeline.qc_submitted_to_qc_batches } %>
+        <%= render partial: "qc_batches", locals: { batches: @pipeline.qc_submitted_to_qc_batches } %>
       </div>
       <div id="2_definition" class="tab_content0" style="display:none;">
-        <%= render :partial => "qc_batches", :locals => { :batches => @pipeline.qc_in_progress_auto_batches } %>
+        <%= render partial: "qc_batches", locals: { batches: @pipeline.qc_in_progress_auto_batches } %>
       </div>
       <div id="3_definition" class="tab_content0" style="display:none;">
-        <%= render :partial => "qc_batches", :locals => { :batches => @pipeline.qc_completed_auto_batches } %>
+        <%= render partial: "qc_batches", locals: { batches: @pipeline.qc_completed_auto_batches } %>
       </div>
     </div>
   <% else -%>
@@ -37,13 +37,13 @@
     </div>
     <div id="tab_content">
       <div id="0_definition" class="tab_content0" style="">
-        <%= render :partial => "manual_qc_batches", :locals => { :batches => @pipeline.qc_pending_manual_batches } %>
+        <%= render partial: "manual_qc_batches", locals: { batches: @pipeline.qc_pending_manual_batches } %>
       </div>
       <div id="1_definition" class="tab_content0" style="display:none;">
-        <%= render :partial => "manual_qc_batches", :locals => { :batches => @pipeline.qc_in_progress_manual_batches } %>
+        <%= render partial: "manual_qc_batches", locals: { batches: @pipeline.qc_in_progress_manual_batches } %>
       </div>
       <div id="2_definition" class="tab_content0" style="display:none;">
-        <%= render :partial => "manual_qc_batches", :locals => { :batches => @pipeline.qc_completed_manual_batches } %>
+        <%= render partial: "manual_qc_batches", locals: { batches: @pipeline.qc_completed_manual_batches } %>
       </div>
     </div>
   <% end -%>

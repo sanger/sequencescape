@@ -6,33 +6,33 @@
 <% if @manager_menu -%>
   <% if logged_in? && current_user.manager_or_administrator? -%>
   <ul id="manager_menu" class="nav nav-pills nav-stacked">
-    <%= render :partial => "/item", :collection => @manager_menu.items %>
+    <%= render partial: "/item", collection: @manager_menu.items %>
   </ul>
   <% end -%>
 <% end -%>
 
 <% if @menu -%>
 <ul id="base-Menu" class="nav nav-pills nav-stacked">
-  <%= render :partial => "/item", :collection => @menu.items %>
+  <%= render partial: "/item", collection: @menu.items %>
 </ul>
 <% end -%>
 
 <% if @admin_menu -%>
   <% if logged_in? && current_user.administrator? -%>
   <ul id="admin_menu" class="nav nav-pills nav-stacked">
-    <%= render :partial => "/item", :collection => @admin_menu.items %>
+    <%= render partial: "/item", collection: @admin_menu.items %>
   </ul>
   <% end -%>
 <% end -%>
 
 <% if @back_menu -%>
 <ul id="back_menu" class="nav nav-pills nav-stacked">
-  <%= render :partial => "/item", :collection => @back_menu.items %>
+  <%= render partial: "/item", collection: @back_menu.items %>
 </ul>
 <% end -%>
 
 <% if @legend -%>
 <ul id="legend" class="nav nav-pills nav-stacked">
-  <%= render :partial => "/item", :collection => @legend.items %>
+  <%= render partial: "/item", collection: @legend.items %>
 </ul>
 <% end -%>

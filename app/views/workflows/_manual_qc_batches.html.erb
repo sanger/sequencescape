@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2014,2015,2016 Genome Research Ltd.%>
 
-<%= form_for @batch, :url => {:controller => :batches, :action => :qc_batch, :id => @batch.id }, :html => { :id => 'stage_form'} do |form| %>
+<%= form_for @batch, url: {controller: :batches, action: :qc_batch, id: @batch.id }, html: { id: 'stage_form'} do |form| %>
   <% requests.each do |request| %>
     <div style="padding:5px;font-size:18px;background:grey;font-weight:bold;color:white;">
       Library: <%= request.asset.barcode %>
@@ -59,10 +59,10 @@
             <%= request.value_for("Concentration") %>
           </td>
         </tr>
-        <%= render :partial => "qc_results", :locals => {:batch => @batch, :request => request} %>
+        <%= render partial: "qc_results", locals: {batch: @batch, request: request} %>
       </table>
     </div>
     <br />
   <% end %>
-  <%= render :partial => "next_stage_submit" %>
+  <%= render partial: "next_stage_submit" %>
 <% end %>

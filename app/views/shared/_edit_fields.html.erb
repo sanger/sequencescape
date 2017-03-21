@@ -13,7 +13,7 @@
       <label for="<%=field_info_label(path, field)%>"><%= field.display_name %></label> :
     </td>
     <td>
-      <%= render :partial => "shared/fields/#{field.kind.downcase}_edit.html.erb", :locals => { :field => field, :path => path} %>
+      <%= render partial: "shared/fields/#{field.kind.downcase}_edit.html.erb", locals: { field: field, path: path} %>
     </td>
   </tr>
 <% end %>

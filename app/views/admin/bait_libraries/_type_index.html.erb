@@ -17,8 +17,8 @@
   <% for bait_library_type in @bait_library_types %>
     <tr>
       <td><%= bait_library_type.name %></td>
-      <td><%= link_to 'Edit', edit_admin_bait_library_type_path(bait_library_type), :title => "Edit #{bait_library_type.name}" %></td>
-      <td><%= link_to 'Delete', admin_bait_library_type_path(bait_library_type), :title => "Delete #{bait_library_type.name}", :confirm => 'Are you sure?', :method => :delete %></td>
+      <td><%= link_to 'Edit', edit_admin_bait_library_type_path(bait_library_type), title: "Edit #{bait_library_type.name}" %></td>
+      <td><%= link_to 'Delete', admin_bait_library_type_path(bait_library_type), title: "Delete #{bait_library_type.name}", confirm: 'Are you sure?', method: :delete %></td>
     </tr>
   <% end %>
   </tbody>

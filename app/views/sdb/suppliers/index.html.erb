@@ -8,5 +8,5 @@
 <% add :menu, "New Supplier" => new_supplier_path() %>
 <h2>Suppliers</h2>
 
-<%= render :partial => 'shared/suppliers_list', :locals => { :suppliers => @suppliers }%>
+<%= render partial: 'shared/suppliers_list', locals: { suppliers: @suppliers }%>
 
