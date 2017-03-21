@@ -1,5 +1,4 @@
 
-require 'pry'
 class ExtractionAttribute < ActiveRecord::Base
   include Uuid::Uuidable
 
