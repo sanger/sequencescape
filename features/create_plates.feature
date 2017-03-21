@@ -44,6 +44,7 @@ Feature: Printing new plate barcodes
 
   Scenario Outline: Creating plates
     Given I am on the new plate page
+    And the plate barcode webservice returns "1234570"
     When I select "<plate_purpose>" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
     And I select "xyz" from "Barcode printer"
@@ -64,6 +65,7 @@ Feature: Printing new plate barcodes
 
   Scenario Outline: Create plates only from the proper parent plate or from scratch
     Given a plate with purpose "<parent_plate_purpose>" and barcode "1221234567841" exists
+    And the plate barcode webservice returns "1234570"
     And a plate with purpose "Cherrypicked" and barcode "1220001454858" exists
     And I am on the new plate page
     Then I should see "Create Plates"
