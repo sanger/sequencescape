@@ -19,13 +19,13 @@ class ExtractionAttribute < ActiveRecord::Base
     attributes_update['wells'].each do |w|
       location = w['location']
       next unless w['sample_tube_uuid']
-      sample_tube = Uuid.find_by(external_id: w['sample_tube_uuid']).object
-      sample = sample_tube.samples.first
-      study = sample_tube.aliquots.first.study
+      sample_tube = Uuid.find_by(external_id: w['sample_tube_uuid']).resource
+      aliquots = sample_tube.aliquots.map(&:dup)
+      samples = sample_tube.samples
       destination_well = location_wells[location]
 
-      if destination_well.aliquots.select { |a| a.sample == sample }.empty?
-        destination_well.aliquots.create!(sample: sample, study: study)
+      unless destination_well.samples.include?(samples)
+        destination_well.aliquots << aliquots
         AssetLink.create_edge(sample_tube, destination_well)
       end
     end
