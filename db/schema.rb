@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170321132639) do
+ActiveRecord::Schema.define(version: 20170321151830) do
 
   create_table "aliquot_indices", force: :cascade do |t|
     t.integer  "aliquot_id",    limit: 4, null: false
@@ -878,8 +878,6 @@ ActiveRecord::Schema.define(version: 20170321132639) do
     t.datetime "updated_at"
     t.string   "type",                    limit: 255
     t.string   "target_type",             limit: 30
-    t.boolean  "qc_display",                          default: false
-    t.boolean  "pulldown_display"
     t.boolean  "stock_plate",                         default: false,           null: false
     t.string   "default_state",           limit: 255, default: "pending"
     t.integer  "barcode_printer_type_id", limit: 4,   default: 2
@@ -895,7 +893,6 @@ ActiveRecord::Schema.define(version: 20170321132639) do
     t.integer  "lifespan",                limit: 4
   end
 
-  add_index "plate_purposes", ["qc_display"], name: "index_plate_purposes_on_qc_display", using: :btree
   add_index "plate_purposes", ["target_type"], name: "index_plate_purposes_on_target_type", using: :btree
   add_index "plate_purposes", ["type"], name: "index_plate_purposes_on_type", using: :btree
   add_index "plate_purposes", ["updated_at"], name: "index_plate_purposes_on_updated_at", using: :btree
