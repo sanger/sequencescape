@@ -14,20 +14,18 @@ class ExtractionAttribute < ActiveRecord::Base
 
   before_save :update_performed
 
-  VALID_WELL_ATTRIBUTES = ['current_volume']
-
   def update_performed
+    location_wells = target.wells.includes(:map, :sample).index_by(&:map_description)
     attributes_update['wells'].each do |w|
-      next unless w['sanger_sample_name'] || w['sanger_sample_id']
-      sample = Sample.find_by(name: w['sanger_sample_name']) || Sample.find_by(sanger_sample_id: w['sanger_sample_id'])
-      well = target.wells.located_at(w['location']).first
-      if well.aliquots.select { |a| a.sample == sample }.empty?
-        well.aliquots.create!(sample: sample)
-      end
-      w_attrs = w.keep_if { |k, _v| VALID_WELL_ATTRIBUTES.include?(k) }
-      unless w_attrs.blank?
-        well.well_attribute.update_attributes!(w_attrs)
-      end
+      location = w['location']
+      sample_tube = Uuid.find_uuid_instance(SampleTube, w['sample_tube_uuid'])
+      destination_well = location_wells[location]
+
+      destination_well.aliquots.create!(
+        sample: sample_tube.samples.first, 
+        study: sample_tube.aliquots.first.study)
+
+      AssetLink.create_edge(sample_tube, destination_well)
     end
   end
   private :update_performed
