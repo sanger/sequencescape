@@ -1,17 +1,20 @@
 module RecordLoader
   class PlatePurposeLoader
+    # The directory from which to load yml files.
     DEFAULT_DIRECTORY = Rails.root.join('config', 'default_records', 'plate_purposes')
-    EXTENTION = '.yml'
+    # The file type to load
+    EXTENSION = '.yml'
+    # The name of the default printer type
     DEFAULT_PRINTER_TYPE = '96 Well Plate'
     #
     # Create a new purpose loader from yaml files
     #
     # @param [Array,NilClass] files: pass in an array of files to load, or nil to load all files.
-    # @param [Pathname, String] directory: DEFAULT_DIRECTORY The directory from which to load the files.
+    # @param [Pathname, String] directory: The directory from which to load the files.
     #   defaults to config/default_records/plate_purposes
     #
     def initialize(files: nil, directory: DEFAULT_DIRECTORY)
-      path = directory.is_a?(Pathname) ? directory : Pathname.new(directory)
+      self.path = directory.is_a?(Pathname) ? directory : Pathname.new(directory)
       @files = path.children.select do |child|
         is_yaml?(child) && in_list?(files, child)
       end
@@ -29,16 +32,29 @@ module RecordLoader
 
     private
 
+    #
+    # Returns the purposes from the list that have already been created
+    #
+    #
+    # @return [Array<String>] An array of names of purposes in the config which already exist
+    #
     def existing_purposes
       @existing_purposes ||= Purpose.where(name: @config.keys).pluck(:name)
     end
 
+    #
+    # Returns true if filename is a yaml file
+    #
+    # @param [Pathname] filename The file to be checked
+    #
+    # @return [Bool] returns true if the file is a yaml file, false otherwise
+    #
     def is_yaml?(filename)
-      filename.extname == EXTENTION
+      filename.extname == EXTENSION
     end
 
     def in_list?(list, file)
-      (list.nil? || list.include?(file.basename.to_s.gsub(EXTENTION, '')))
+      (list.nil? || list.include?(file.basename.to_s.gsub(EXTENSION, '')))
     end
 
     def create_purpose(name, config)
