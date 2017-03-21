@@ -154,17 +154,18 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
 
 
 
-    let(:data) { { library_type: 'My personal library type', insert_size_from: 200, insert_size_to: 1500,
-                supplier_sample_name: 'SCG--1222_A0', volume: 1, concentration: 1, gender: 'Unknown', dna_source: 'Cell Line', 
-                date_of_sample_collection: 'Nov-16', date_of_sample_extraction: 'Nov-16', sample_purified: 'No',
-                sample_public_name: 'SCG--1222_A0', sample_taxon_id: 9606, sample_common_name: 'Homo sapiens', phenotype: 'Unknown' }.with_indifferent_access }
+    let(:data)        { { library_type: 'My personal library type', insert_size_from: 200, insert_size_to: 1500,
+                          supplier_sample_name: 'SCG--1222_A0', volume: 1, concentration: 1, gender: 'Unknown', dna_source: 'Cell Line', 
+                          date_of_sample_collection: 'Nov-16', date_of_sample_extraction: 'Nov-16', sample_purified: 'No',
+                          sample_public_name: 'SCG--1222_A0', sample_taxon_id: 9606, sample_common_name: 'Homo sapiens', phenotype: 'Unknown' }.with_indifferent_access }
+
+    let(:attributes)  { { workbook: workbook, columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup,
+                            data: data, no_of_rows: 5, study: 'WTCCC', supplier: 'Test supplier', count: 1, type: 'Tubes'}}
 
     context 'in a valid state' do
-      let!(:worksheet) { SampleManifestExcel::Worksheet::TestWorksheet.new(workbook: workbook,
-                                                        columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup,
-                                                        data: data, no_of_rows: 5, study: 'WTCCC', supplier: 'Test supplier', 
-                                                        count: 1, type: 'Tubes'
-                                                        )}
+
+      let!(:worksheet) { SampleManifestExcel::Worksheet::TestWorksheet.new(attributes)}
+
       before(:each) do
         save_file
       end
@@ -220,14 +221,25 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
           expect(spreadsheet.sheet(0).cell(i, worksheet.columns.find_by(:name, :tag2_oligo).number)).to be_present
         end
       end
+
     end
 
-    context 'in an invalid state' do
+    context 'manifest type' do
 
-      let(:attributes) { {  workbook: workbook,
-                            columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup,
-                            data: data, no_of_rows: 5, study: 'WTCCC', supplier: 'Test supplier', 
-                            count: 1, type: 'Tubes' } }
+      it 'defaults to 1dtube' do
+        worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes)
+        save_file
+      end
+
+      it 'relates to the passed in manifest type' do
+        worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes.merge(manifest_type: 'multiplexed_library'))
+        save_file
+        expect(worksheet.sample_manifest.asset_type).to eq('multiplexed_library')
+      end
+    end
+
+
+    context 'in an invalid state' do
 
       it 'without a library type' do
         worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes.merge(validation_errors: [:library_type]))

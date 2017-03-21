@@ -4,7 +4,7 @@ module SampleManifestExcel
 
       include Helpers
 
-      attr_accessor :data, :no_of_rows, :study, :supplier, :count, :type, :validation_errors, :missing_columns
+      attr_accessor :data, :no_of_rows, :study, :supplier, :count, :type, :validation_errors, :missing_columns, :manifest_type
 
       attr_reader :dynamic_attributes, :tags
 
@@ -55,6 +55,14 @@ module SampleManifestExcel
         first_row..last_row
       end
 
+      def manifest_type
+        @manifest_type ||= '1dtube'
+      end
+
+      def sample_manifest
+        @sample_manifest ||= FactoryGirl.create(:sample_manifest, asset_type: manifest_type)
+      end
+
       class Tags
 
         BASES = ['A', 'C', 'G', 'T'].freeze
@@ -84,9 +92,7 @@ module SampleManifestExcel
 
     private
 
-      def sample_manifest
-        @sample_manifest ||= FactoryGirl.create(:sample_manifest)
-      end
+     
 
       def initialize_dynamic_attributes
         {}.tap do |hsh|

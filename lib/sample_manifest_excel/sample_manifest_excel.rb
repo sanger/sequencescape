@@ -51,7 +51,6 @@ module SampleManifestExcel
   end
 
   require_relative 'sample_manifest_excel/core_extensions'
-  require_relative 'sample_manifest_excel/attributes'
   require_relative 'sample_manifest_excel/cell'
   require_relative 'sample_manifest_excel/list'
   require_relative 'sample_manifest_excel/conditional_formatting_default'
@@ -68,7 +67,6 @@ module SampleManifestExcel
   require_relative 'sample_manifest_excel/range_list'
   require_relative 'sample_manifest_excel/worksheet'
   require_relative 'sample_manifest_excel/download'
-  require_relative 'sample_manifest_excel/row'
   require_relative 'sample_manifest_excel/upload'
 
   Axlsx::Worksheet.send(:include, CoreExtensions::AxlsxWorksheet)

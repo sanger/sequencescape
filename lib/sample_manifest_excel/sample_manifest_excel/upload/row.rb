@@ -1,5 +1,5 @@
 module SampleManifestExcel
-  class Upload
+  module Upload
     class Row
       include ActiveModel::Model
 
@@ -36,7 +36,7 @@ module SampleManifestExcel
         number == 1
       end
 
-      def row_to_s
+      def row_title
         "Row #{number} -"
       end
 
@@ -82,14 +82,14 @@ module SampleManifestExcel
     private
 
       def check_primary_receptacle
-        errors.add(:base, "#{row_to_s} Does not have a primary receptacle.") unless sample.primary_receptacle.present?
+        errors.add(:base, "#{row_title} Does not have a primary receptacle.") unless sample.primary_receptacle.present?
       end
 
       def check_specialised_fields
         if errors.empty?
           specialised_fields.each do |specialised_field|
             unless specialised_field.valid?
-              errors.add(:base, "#{row_to_s} #{specialised_field.errors.full_messages.to_s}")
+              errors.add(:base, "#{row_title} #{specialised_field.errors.full_messages.to_s}")
             end
           end
         end
@@ -97,7 +97,7 @@ module SampleManifestExcel
 
       def check_sample_present
         unless sample_present?
-          errors.add(:base, "#{row_to_s} Sample can't be blank.")
+          errors.add(:base, "#{row_title} Sample can't be blank.")
         end
       end
 
