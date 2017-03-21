@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170118164446) do
+ActiveRecord::Schema.define(version: 20170321132639) do
 
   create_table "aliquot_indices", force: :cascade do |t|
     t.integer  "aliquot_id",    limit: 4, null: false
@@ -837,11 +837,10 @@ ActiveRecord::Schema.define(version: 20170118164446) do
   end
 
   create_table "plate_creators", force: :cascade do |t|
-    t.string   "name",             limit: 255,   null: false
-    t.integer  "plate_purpose_id", limit: 4,     null: false
+    t.string   "name",          limit: 255,   null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "valid_options",    limit: 65535
+    t.text     "valid_options", limit: 65535
   end
 
   add_index "plate_creators", ["name"], name: "index_plate_creators_on_name", unique: true, using: :btree

@@ -29,9 +29,6 @@ class Plate::Creator < ActiveRecord::Base
   has_many :parent_purpose_relationships, class_name: 'Plate::Creator::ParentPurposeRelationship', dependent: :destroy, foreign_key: :plate_creator_id
   has_many :parent_plate_purposes, through: :parent_purpose_relationships, source: :plate_purpose
 
-  # If there are no barcodes supplied then we use the plate purpose we represent
-  belongs_to :plate_purpose
-
   serialize :valid_options
 
   def can_create_plates?(source_plate, _plate_purposes)
@@ -54,11 +51,11 @@ class Plate::Creator < ActiveRecord::Base
   end
 
   def create_plate_without_parent(creator_parameters)
-    plate = plate_purpose.plates.create_with_barcode!
-
-    creator_parameters.set_plate_parameters(plate) unless creator_parameters.nil?
-
-    [plate]
+    plate_purposes.map do |purpose|
+      plate = purpose.create!
+      creator_parameters.set_plate_parameters(plate) unless creator_parameters.nil?
+      plate
+    end
   end
 
   def create_plates(source_plate_barcodes, current_user, creator_parameters = nil)

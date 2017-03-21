@@ -10,7 +10,8 @@ class CreatorTest < ActiveSupport::TestCase
   attr_reader :creator, :barcode_printer
 
   def setup
-    @creator = create :plate_creator
+    @creator_purpose = create :plate_purpose
+    @creator = create :plate_creator, plate_purposes: [@creator_purpose]
     @barcode_printer = create :barcode_printer
   end
 
@@ -28,8 +29,6 @@ class CreatorTest < ActiveSupport::TestCase
   end
 
   test 'should properly create plates' do
-    creator_purpose = create :plate_purpose
-    child_creator = create :plate_creator, plate_purposes: [creator_purpose]
     barcode = mock('barcode')
     barcode.stubs(:barcode).returns(23)
     PlateBarcode.stubs(:create).returns(barcode)
@@ -40,11 +39,11 @@ class CreatorTest < ActiveSupport::TestCase
     user = create :user
     plate_count = Plate.count
 
-    child_creator.execute(parent.ean13_barcode, barcode_printer, user)
+    @creator.execute(parent.ean13_barcode, barcode_printer, user)
     assert_equal 1, Plate.count - plate_count
     child = parent.reload.children.first
 
-    assert_equal creator_purpose, child.purpose
+    assert_equal @creator_purpose, child.purpose
 
     parent.wells.each_with_index do |well, i|
       matching_aliquots = (well.aliquots.first =~ child.wells[i].aliquots.first)
