@@ -1,4 +1,5 @@
 
+require 'pry'
 class ExtractionAttribute < ActiveRecord::Base
   include Uuid::Uuidable
 
@@ -18,14 +19,16 @@ class ExtractionAttribute < ActiveRecord::Base
     location_wells = target.wells.includes(:map, :sample).index_by(&:map_description)
     attributes_update['wells'].each do |w|
       location = w['location']
-      sample_tube = Uuid.find_uuid_instance(SampleTube, w['sample_tube_uuid'])
-      sample = sample_tube.samples.first
-      study = sample_tube.aliquots.first.study
-      destination_well = location_wells[location]
+      if w['sample_tube_uuid']
+        sample_tube = Uuid.find_by(:external_id => w['sample_tube_uuid']).object
+        sample = sample_tube.samples.first
+        study = sample_tube.aliquots.first.study
+        destination_well = location_wells[location]
 
-      if (destination_well.aliquots.select { |a| a.sample == sample }.empty?)
-        destination_well.aliquots.create!(sample: sample, study: study)
-        AssetLink.create_edge(sample_tube, destination_well)
+        if (destination_well.aliquots.select { |a| a.sample == sample }.empty?)
+          destination_well.aliquots.create!(sample: sample, study: study)
+          AssetLink.create_edge(sample_tube, destination_well)
+        end
       end
     end
   end
