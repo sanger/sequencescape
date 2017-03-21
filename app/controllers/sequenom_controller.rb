@@ -25,7 +25,6 @@ class SequenomController < ApplicationController
     end
 
     class << self
-
       def steps
         @steps ||= {}
       end
