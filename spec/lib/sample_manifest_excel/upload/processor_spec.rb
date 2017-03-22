@@ -23,27 +23,71 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
     let(:manifest_types)          { SampleManifestExcel::ManifestTypeList.new(load_file(folder, 'manifest_types')) }
     let!(:tag_group)              { create(:tag_group) }
     let(:columns)                 { column_list.extract(manifest_types.find_by(:tube_library_with_tag_sequences).columns) }
-    let!(:download)               { build(:test_download, columns: columns) }
 
     before(:each) do
+      barcode = double('barcode')
+      allow(barcode).to receive(:barcode).and_return(23)
+      allow(PlateBarcode).to receive(:create).and_return(barcode)
+
+      download.worksheet.sample_manifest.generate
       download.save(test_file)
       @upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: column_list, start_row: 9)
     end
 
-    it 'will update the samples' do
-      processor = SampleManifestExcel::Upload::Processor::Base.new(upload)
-      processor.run(tag_group)
-      expect(upload.rows.all? { |row| row.sample_updated? }).to be_truthy
-      expect(upload.rows.first.sample.aliquots.first.insert_size_from).to_not be_nil
-      expect(upload.rows.last.sample.aliquots.first.insert_size_from).to_not be_nil
-      expect(upload.rows.first.sample.sample_metadata.concentration).to_not be_nil
-      expect(upload.rows.last.sample.sample_metadata.concentration).to_not be_nil
+    context '1dtube' do
+
+      let!(:download)               { build(:test_download, columns: columns) }
+      
+      it 'will update the samples' do
+        processor = SampleManifestExcel::Upload::Processor::OneDTube.new(upload)
+        processor.run(tag_group)
+        expect(upload.rows.all? { |row| row.sample_updated? }).to be_truthy
+        expect(upload.rows.first.sample.aliquots.first.insert_size_from).to_not be_nil
+        expect(upload.rows.last.sample.aliquots.first.insert_size_from).to_not be_nil
+        expect(upload.rows.first.sample.sample_metadata.concentration).to_not be_nil
+        expect(upload.rows.last.sample.sample_metadata.concentration).to_not be_nil
+      end
+
+      it 'will update the sample manifest' do
+        processor = SampleManifestExcel::Upload::Processor::OneDTube.new(upload)
+        processor.run(tag_group)
+        expect(upload.sample_manifest.uploaded.filename).to eq(test_file)
+      end
     end
 
-    it 'will update the sample manifest' do
-      processor = SampleManifestExcel::Upload::Processor::Base.new(upload)
-      processor.run(tag_group)
-      expect(upload.sample_manifest.uploaded.filename).to eq(test_file)
+    context 'Multiplexed Library Tube' do
+
+      context 'valid' do
+        let!(:download)               { build(:test_download, columns: columns, manifest_type: 'multiplexed_library') }
+
+        it 'will update the samples' do
+          processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(upload)
+          processor.run(tag_group)
+          expect(upload.rows.all? { |row| row.sample_updated? }).to be_truthy
+          expect(upload.rows.first.sample.aliquots.first.insert_size_from).to_not be_nil
+          expect(upload.rows.last.sample.aliquots.first.insert_size_from).to_not be_nil
+          expect(upload.rows.first.sample.sample_metadata.concentration).to_not be_nil
+          expect(upload.rows.last.sample.sample_metadata.concentration).to_not be_nil
+        end
+
+        it 'will update the sample manifest' do
+          processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(upload)
+          processor.run(tag_group)
+          expect(upload.sample_manifest.uploaded.filename).to eq(test_file)
+        end
+      end
+
+      context 'mismatched tags' do
+        let!(:download)               { build(:test_download, columns: columns, manifest_type: 'multiplexed_library', validation_errors: [:tags]) }
+
+        it 'will not be valid' do
+           processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(upload)
+           processor.run(tag_group)
+           expect(processor).to_not be_valid
+        end
+      end
+
+      
     end
   end
 end

@@ -60,7 +60,7 @@ module SampleManifestExcel
       end
 
       def sample_manifest
-        @sample_manifest ||= FactoryGirl.create(:sample_manifest, asset_type: manifest_type)
+        @sample_manifest ||= FactoryGirl.create(:sample_manifest, asset_type: manifest_type, rapid_generation: true)
       end
 
       class Tags

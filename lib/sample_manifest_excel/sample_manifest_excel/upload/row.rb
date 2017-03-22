@@ -75,6 +75,14 @@ module SampleManifestExcel
         end
       end
 
+      def transfer_aliquot
+        if valid?
+          sample.primary_receptacle.requests.each do |request|
+            request.manifest_processed!
+          end
+        end
+      end
+
       def sample_updated?
         @sample_updated
       end

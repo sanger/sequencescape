@@ -492,6 +492,7 @@ FactoryGirl.define do
     purpose  { Tube::Purpose.standard_library_tube }
   end
   factory(:library_tube, parent: :empty_library_tube) do
+    sequence(:barcode) { |i| i }
     after(:create) do |library_tube|
       library_tube.aliquots.create!(sample: create(:sample), library_type: 'Standard')
     end
@@ -521,6 +522,13 @@ FactoryGirl.define do
       request.request_metadata.fragment_size_required_from = 300
       request.request_metadata.fragment_size_required_to   = 500
     end
+  end
+
+  factory(:external_multiplexed_library_tube_creation_request, class: ExternalLibraryCreationRequest) do
+    request_type { |_target| RequestType.find_by!(name: 'External Multiplexed Library Creation') }
+    request_purpose { |rp| rp.association(:request_purpose) }
+    asset { create(:library_tube) }
+    target_asset { create(:multiplexed_library_tube) }
   end
 
   factory :pac_bio_sample_prep_request do |_r|

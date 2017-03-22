@@ -95,4 +95,36 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
     expect(row).to be_sample_updated
   end
 
+  context 'aliquot transfer on multiplex library tubes' do
+    attr_reader :rows
+
+    let!(:library_tubes) { create_list(:library_tube, 5)}
+    let!(:mx_library_tube) { create(:multiplexed_library_tube) }
+    let(:tags) { SampleManifestExcel::Worksheet::TestWorksheet::Tags.new.take(0,4) }
+
+    before(:each) do
+      @rows = []
+      library_tubes.each_with_index do |tube, i|
+        create(:external_multiplexed_library_tube_creation_request, asset: tube, target_asset: mx_library_tube)
+        row_data = data.dup
+        row_data[0] = tube.sample.assets.first.sanger_human_barcode
+        row_data[1] = tube.sample.id
+        row_data[2] = tags[i][:tag_oligo]
+        row_data[3] = tags[i][:tag2_oligo]
+        rows << SampleManifestExcel::Upload::Row.new(number: i + 1, data: row_data, columns: columns)
+      end
+    end
+
+    it 'transfers stuff' do
+      rows.each do |row|
+        row.update_sample(tag_group)
+        row.transfer_aliquot
+      end
+      mx_library_tube.samples.each_with_index do |sample, i|
+        expect(sample.aliquots.first.tag.oligo).to eq(tags[i][:tag_oligo])
+        expect(sample.aliquots.first.tag2.oligo).to eq(tags[i][:tag2_oligo])
+      end
+    end
+  end
+
 end
