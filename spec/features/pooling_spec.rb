@@ -14,27 +14,25 @@ feature 'Pooling', js: true do
     expect(page).to have_content 'Scan tube'
     click_on 'Transfer'
     expect(page).to have_content 'Source assets were not scanned or were not found in sequencescape'
-    fill_in("asset_scan", with: '1234567890123')
-    within(".barcode_list") do
+    fill_in('asset_scan', with: '1234567890123')
+    within('.barcode_list') do
       expect(page).to have_content '1234567890123'
     end
-    fill_in("asset_scan", with: "#{empty_lb_tube.ean13_barcode}")
-    fill_in("asset_scan", with: "#{untagged_lb_tube1.ean13_barcode}")
-    fill_in("asset_scan", with: "#{untagged_lb_tube2.ean13_barcode}")
+    fill_in('asset_scan', with: (empty_lb_tube.ean13_barcode).to_s)
+    fill_in('asset_scan', with: (untagged_lb_tube1.ean13_barcode).to_s)
+    fill_in('asset_scan', with: (untagged_lb_tube2.ean13_barcode).to_s)
     click_on 'Transfer'
-    expect(page).to have_content "Source assets with barcode(s) 1234567890123 were not found in sequencescape"
+    expect(page).to have_content 'Source assets with barcode(s) 1234567890123 were not found in sequencescape'
     expect(page).to have_content "Source assets with barcode(s) #{empty_lb_tube.ean13_barcode} do not have any aliquots"
-    expect(page).to have_content "Tags combinations are not unique"
-    first("a", text: "Remove from list").click
-    first("a", text: "Remove from list").click
-    first("a", text: "Remove from list").click
+    expect(page).to have_content 'Tags combinations are not unique'
+    first('a', text: 'Remove from list').click
+    first('a', text: 'Remove from list').click
+    first('a', text: 'Remove from list').click
     expect(page).to have_content 'Scanned: 1'
-    fill_in("asset_scan", with: "#{tagged_lb_tube1.ean13_barcode}")
-    fill_in("asset_scan", with: "#{tagged_lb_tube2.ean13_barcode}")
+    fill_in('asset_scan', with: (tagged_lb_tube1.ean13_barcode).to_s)
+    fill_in('asset_scan', with: (tagged_lb_tube2.ean13_barcode).to_s)
     check 'Create stock multiplexed tube'
     click_on 'Transfer'
     expect(page).to have_content 'Samples were transferred successfully'
   end
-
-
 end

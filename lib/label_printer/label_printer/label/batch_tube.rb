@@ -8,7 +8,6 @@ module LabelPrinter
         @count = options[:count].to_i
         @printable = options[:printable]
         @batch = options[:batch]
-        @batch = options[:batch]
         @stock = options[:stock]
       end
 

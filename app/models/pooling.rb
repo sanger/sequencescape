@@ -3,7 +3,7 @@ class Pooling
 
   attr_accessor :barcodes, :source_assets, :stock_mx_tube_required, :stock_mx_tube, :standard_mx_tube
 
-  validates_presence_of :source_assets, message: "were not scanned or were not found in sequencescape"
+  validates_presence_of :source_assets, message: 'were not scanned or were not found in sequencescape'
   validate :all_source_assets_are_in_sqsc, if: 'source_assets.present?'
   validate :source_assets_can_be_pooled, if: 'source_assets.present?'
 
@@ -54,5 +54,4 @@ class Pooling
     errors.add(:source_assets, "with barcode(s) #{assets_with_no_aliquot.join(', ')} do not have any aliquots") unless assets_with_no_aliquot.empty?
     errors.add(:tags_combinations, 'are not unique') unless tags_combinations.length == tags_combinations.uniq.length
   end
-
 end

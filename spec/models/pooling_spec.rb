@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe Pooling do
-
   let(:empty_lb_tube) { create :empty_library_tube, barcode: 1 }
   let(:untagged_lb_tube1) { create :library_tube, barcode: 2 }
   let(:untagged_lb_tube2) { create :library_tube, barcode: 3 }
@@ -12,7 +11,7 @@ describe Pooling do
   it 'should not be valid without source_assets' do
     pooling = Pooling.new(barcodes: [])
     expect(pooling.valid?).to be false
-    expect(pooling.errors.full_messages).to include "Source assets were not scanned or were not found in sequencescape"
+    expect(pooling.errors.full_messages).to include 'Source assets were not scanned or were not found in sequencescape'
   end
 
   it 'should not be valid if tubes are not in sqsc, if tubes do not have at least one aliquot or if there is a tag clash' do
@@ -20,18 +19,15 @@ describe Pooling do
     pooling = Pooling.new(barcodes: barcodes)
     expect(pooling.valid?).to be false
     expect(pooling.errors.messages.count).to eq 2
-    expect(pooling.errors.full_messages).to include "Source assets with barcode(s) -1, -2 were not found in sequencescape"
+    expect(pooling.errors.full_messages).to include 'Source assets with barcode(s) -1, -2 were not found in sequencescape'
     expect(pooling.errors.full_messages).to include "Source assets with barcode(s) #{empty_lb_tube.ean13_barcode} do not have any aliquots"
-    expect(pooling.errors.full_messages).to include "Tags combinations are not unique"
+    expect(pooling.errors.full_messages).to include 'Tags combinations are not unique'
   end
 
-
-
   context 'execute' do
-
-    before (:each) do
+    before(:each) do
       @barcodes = [tagged_lb_tube1.ean13_barcode, tagged_lb_tube2.ean13_barcode, untagged_lb_tube1.ean13_barcode, mx_tube.ean13_barcode]
-      2.times { |n| create(:single_tagged_aliquot, receptacle: mx_tube) }
+      2.times { |_n| create(:single_tagged_aliquot, receptacle: mx_tube) }
     end
 
     it 'should be valid if tubes are in sqsc, have at least 1 aliquot and there is no tag clash' do
@@ -52,7 +48,5 @@ describe Pooling do
       expect(pooling.stock_mx_tube.aliquots.count).to eq 5
       expect(pooling.standard_mx_tube.aliquots.count).to eq 5
     end
-
   end
-
 end

@@ -58,7 +58,6 @@ FactoryGirl.define do
     after(:create) { |tube| create(:library_creation_request, target_asset: tube) }
   end
 
-
   # A Multiplexed library tube comes from several library tubes, which are themselves created through a
   # number of multiplexed library creation requests.  But the binding to these tubes comes from the parent-child
   # relationships.
@@ -79,5 +78,4 @@ FactoryGirl.define do
     name     { |_a| generate :asset_name }
     purpose  { Tube::Purpose.stock_sample_tube }
   end
-
 end
