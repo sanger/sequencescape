@@ -58,7 +58,6 @@ class PipelinesController < ApplicationController
       @requests_comment_count = Comment.counts_for(@requests.to_a)
       @assets_comment_count = Comment.counts_for(@requests.map(&:asset))
     end
-
   end
 
   def setup_inbox
