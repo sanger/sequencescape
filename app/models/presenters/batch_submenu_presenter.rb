@@ -51,7 +51,7 @@ module Presenters
     end
 
     def genotyping?
-      @pipeline.is_a?(GenotypingPipeline)
+      @pipeline.genotyping?
     end
 
     def pacbio?
