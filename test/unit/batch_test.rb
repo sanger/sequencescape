@@ -632,13 +632,13 @@ class BatchTest < ActiveSupport::TestCase
           @batch.reset!(@user)
         end
 
- should 'change BatchRequest.count by -2' do
- assert_equal(-2, BatchRequest.count - @batchrequest_count, 'Expected BatchRequest.count to change by -2')
- end
+        should 'change BatchRequest.count by -2' do
+          assert_equal(-2, BatchRequest.count - @batchrequest_count, 'Expected BatchRequest.count to change by -2')
+        end
 
- should 'change Asset.count by -2' do
- assert_equal(-2, Asset.count - @asset_count, 'Expected Asset.count to change by -2')
- end
+        should 'change Asset.count by -2' do
+          assert_equal(-2, Asset.count - @asset_count, 'Expected Asset.count to change by -2')
+        end
 
         should 'change Request.count by 0' do
           assert_equal 0,  Request.count - @request_count, 'Expected Request.count to change by 0'
