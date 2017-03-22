@@ -269,7 +269,7 @@ class Asset < ActiveRecord::Base
     @name_needs_to_be_generated = library_prep?
   end
 
-  # todo unify with parent/children
+  # TODO: unify with parent/children
   def parent
     parents.first
   end
@@ -400,7 +400,7 @@ class Asset < ActiveRecord::Base
     end
 
       where([query_details[:query].join(' OR '), *query_details[:parameters].flatten.compact])
-      .joins(query_details[:joins].compact.uniq)
+        .joins(query_details[:joins].compact.uniq)
                               }
 
  scope :source_assets_from_machine_barcode, ->(destination_barcode) {

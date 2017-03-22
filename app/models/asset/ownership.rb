@@ -43,7 +43,7 @@ module Asset::Ownership
 
          scope :for_user, ->(user) {
             joins(:plate_owner)
-            .where(plate_owners: { user_id: user })
+              .where(plate_owners: { user_id: user })
                           }
       end
     end

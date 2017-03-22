@@ -137,7 +137,7 @@ class BatchesControllerTest < ActionController::TestCase
           @target_one = create(:sample_tube)
           @target_two = create(:sample_tube)
 
-          # todo add a control_request_type to pipeline...
+          # TODO: add a control_request_type to pipeline...
           @request_one = @pipeline.request_types.first.create!(asset: @library1, target_asset: @target_one, project: create(:project))
           @batch_one.batch_requests.create!(request: @request_one, position: 1)
           @request_two = @pipeline.request_types.first.create!(asset: @library2, target_asset: @target_two, project: create(:project))

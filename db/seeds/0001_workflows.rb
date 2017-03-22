@@ -292,7 +292,8 @@ cluster_formation_se_request_type = ['a', 'b', 'c'].map do |pl|
     workflow: next_gen_sequencing,
     key: "illumina_#{pl}_single_ended_sequencing",
     name: "Illumina-#{pl.upcase} Single ended sequencing",
-    product_line: ProductLine.find_by(name: "Illumina-#{pl.upcase}")) do |request_type|
+    product_line: ProductLine.find_by(name: "Illumina-#{pl.upcase}")
+) do |request_type|
     request_type.billable          = true
     request_type.initial_state     = 'pending'
     request_type.asset_type        = 'LibraryTube'
@@ -961,7 +962,7 @@ PacBioSamplePrepPipeline.create!(name: 'PacBio Library Prep') do |pipeline|
       { class: PrepKitBarcodeTask, name: 'DNA Template Prep Kit Box Barcode',    sorted: 1, batched: true, lab_activity: true },
       { class: PlateTransferTask,  name: 'Transfer to plate',                    sorted: 2, batched: nil,  lab_activity: true, purpose: Purpose.find_by(name: 'PacBio Sheared') },
       { class: SamplePrepQcTask,   name: 'Sample Prep QC',                       sorted: 3, batched: true, lab_activity: true }
-     ].each do |details|
+    ].each do |details|
       details.delete(:class).create!(details.merge(workflow: workflow))
     end
   end
@@ -1153,22 +1154,19 @@ shared_options = {
 RequestType.create!(shared_options.merge(key: 'pick_to_sta',
                                          name: 'Pick to STA',
                                          order: 1,
-                                         request_class_name: 'CherrypickForPulldownRequest')
-).tap do |rt|
+                                         request_class_name: 'CherrypickForPulldownRequest')).tap do |rt|
   rt.acceptable_plate_purposes << Purpose.find_by!(name: 'Working Dilution')
 end
 RequestType.create!(shared_options.merge(key: 'pick_to_sta2',
                                          name: 'Pick to STA2',
                                          order: 2,
-                                         request_class_name: 'CherrypickForPulldownRequest')
-).tap do |rt|
+                                         request_class_name: 'CherrypickForPulldownRequest')).tap do |rt|
   rt.acceptable_plate_purposes << Purpose.find_by!(name: 'STA')
 end
 RequestType.create!(shared_options.merge(key: 'pick_to_fluidigm',
                                          name: 'Pick to Fluidigm',
                                          order: 3,
-                                         request_class_name: 'CherrypickForFluidigmRequest')
-).tap do |rt|
+                                         request_class_name: 'CherrypickForFluidigmRequest')).tap do |rt|
   rt.acceptable_plate_purposes << Purpose.find_by!(name: 'STA2')
 end
 RequestType.create!(workflow: Submission::Workflow.find_by(name: 'Microarray genotyping'),
@@ -1375,11 +1373,11 @@ x10_pipelines = ['(spiked in controls)', '(no controls)'].each do |type|
         workflow.item_limit = 8
       end.tap do |workflow|
         [
-        { class: SetDescriptorsTask,     name: 'Specify Dilution Volume',           sorted: 1, batched: true },
-        { class: SetDescriptorsTask,     name: 'Cluster generation',                sorted: 3, batched: true, lab_activity: true },
-        { class: AddSpikedInControlTask, name: 'Add Spiked in Control',             sorted: 4, batched: true, lab_activity: true },
-        { class: SetDescriptorsTask,     name: 'Read 1 Lin/block/hyb/load',         sorted: 6, batched: true, interactive: true, per_item: true, lab_activity: true },
-        { class: SetDescriptorsTask,     name: 'Read 2 Cluster/Lin/block/hyb/load', sorted: 7, batched: true, interactive: true, per_item: true, lab_activity: true }
+          { class: SetDescriptorsTask, name: 'Specify Dilution Volume', sorted: 1, batched: true },
+          { class: SetDescriptorsTask,     name: 'Cluster generation',                sorted: 3, batched: true, lab_activity: true },
+          { class: AddSpikedInControlTask, name: 'Add Spiked in Control',             sorted: 4, batched: true, lab_activity: true },
+          { class: SetDescriptorsTask,     name: 'Read 1 Lin/block/hyb/load',         sorted: 6, batched: true, interactive: true, per_item: true, lab_activity: true },
+          { class: SetDescriptorsTask,     name: 'Read 2 Cluster/Lin/block/hyb/load', sorted: 7, batched: true, interactive: true, per_item: true, lab_activity: true }
         ].select do |task|
           type == '(spiked in controls)' || task[:name] != 'Add Spiked in Control'
         end.each do |details|
@@ -1410,11 +1408,11 @@ st_x10_pipelines = ['(spiked in controls) from strip-tubes'].each do |type|
         workflow.item_limit = 8
       end.tap do |workflow|
         [
-        { class: SetDescriptorsTask,     name: 'Specify Dilution Volume',           sorted: 1, batched: true },
-        { class: SetDescriptorsTask,     name: 'Cluster generation',                sorted: 3, batched: true, lab_activity: true },
-        { class: AddSpikedInControlTask, name: 'Add Spiked in Control',             sorted: 4, batched: true, lab_activity: true },
-        { class: SetDescriptorsTask,     name: 'Read 1 Lin/block/hyb/load',         sorted: 6, batched: true, interactive: true, per_item: true, lab_activity: true },
-        { class: SetDescriptorsTask,     name: 'Read 2 Cluster/Lin/block/hyb/load', sorted: 7, batched: true, interactive: true, per_item: true, lab_activity: true }
+          { class: SetDescriptorsTask, name: 'Specify Dilution Volume', sorted: 1, batched: true },
+          { class: SetDescriptorsTask,     name: 'Cluster generation',                sorted: 3, batched: true, lab_activity: true },
+          { class: AddSpikedInControlTask, name: 'Add Spiked in Control',             sorted: 4, batched: true, lab_activity: true },
+          { class: SetDescriptorsTask,     name: 'Read 1 Lin/block/hyb/load',         sorted: 6, batched: true, interactive: true, per_item: true, lab_activity: true },
+          { class: SetDescriptorsTask,     name: 'Read 2 Cluster/Lin/block/hyb/load', sorted: 7, batched: true, interactive: true, per_item: true, lab_activity: true }
         ].each do |details|
           details.delete(:class).create!(details.merge(workflow: workflow))
         end

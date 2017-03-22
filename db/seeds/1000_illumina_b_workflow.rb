@@ -112,13 +112,13 @@ ActiveRecord::Base.transaction do
 
   def sequencing_request_type_names_for(pipeline)
     [
-    'Single ended sequencing',
+      'Single ended sequencing',
     'Single ended hi seq sequencing',
     'Paired end sequencing',
     'HiSeq Paired end sequencing',
     'HiSeq 2500 Single end sequencing',
     'HiSeq 2500 Paired end sequencing'
-  ].map { |s| "#{pipeline} #{s}" }
+    ].map { |s| "#{pipeline} #{s}" }
   end
 
   [

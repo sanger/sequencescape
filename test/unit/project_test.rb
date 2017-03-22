@@ -41,7 +41,7 @@ class ProjectTest < ActiveSupport::TestCase
 
     context '#billable_events_between' do
       setup do
-        # FIXME Does the implementation deal in Times
+        # FIXME: Does the implementation deal in Times
         from = Time.parse('2008-04-01')
         to = Time.parse('2008-04-15')
 

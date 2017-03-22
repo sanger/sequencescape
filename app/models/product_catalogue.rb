@@ -70,6 +70,6 @@ class ProductCatalogue < ActiveRecord::Base
 
   def selection_class
     self.class.with_behaviour(selection_behaviour) ||
-     raise(UndefinedBehaviour, "No selection behaviour names #{selection_behaviour}")
+      raise(UndefinedBehaviour, "No selection behaviour names #{selection_behaviour}")
   end
 end

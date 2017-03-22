@@ -57,17 +57,17 @@ class SubmissionPool < ActiveRecord::Base
     return where('false') if stock_plate.nil?
 
     select('submissions.*, MIN(our.id) AS outer_request_id')
-    .joins([
-      'LEFT JOIN requests AS our ON our.submission_id = submissions.id',
-      'LEFT JOIN container_associations as spw ON spw.content_id = our.asset_id'
-    ])
-    .where([
-      'spw.container_id =? AND our.sti_type NOT IN (?) AND our.state IN (?)',
-      stock_plate.id,
-      [TransferRequest, *TransferRequest.descendants].map(&:name),
-      Request::Statemachine::ACTIVE
-    ])
-    .group('submissions.id')
+      .joins([
+        'LEFT JOIN requests AS our ON our.submission_id = submissions.id',
+        'LEFT JOIN container_associations as spw ON spw.content_id = our.asset_id'
+      ])
+      .where([
+        'spw.container_id =? AND our.sti_type NOT IN (?) AND our.state IN (?)',
+        stock_plate.id,
+        [TransferRequest, *TransferRequest.descendants].map(&:name),
+        Request::Statemachine::ACTIVE
+      ])
+      .group('submissions.id')
   } do
 
       def count(*_args)

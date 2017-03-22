@@ -64,7 +64,7 @@ class Pipeline < ActiveRecord::Base
 
   scope :for_request_type, ->(rt) {
     joins(:pipelines_request_types)
-    .where(pipelines_request_types: { request_type_id: rt })
+      .where(pipelines_request_types: { request_type_id: rt })
   }
 
   def request_types_including_controls

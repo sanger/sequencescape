@@ -38,6 +38,30 @@ class SampleManifestTest < ActiveSupport::TestCase
             assert_equal (count * 96), @study.samples.count - @initial_in_study
           end
         end
+
+        context 'tubes' do
+          setup do
+            @initial_samples  = Sample.count
+            @initial_tubes    = SampleTube.count
+            @initial_in_study = @study.samples.count
+
+            @manifest = create :sample_manifest, study: @study, count: 1, asset_type: '1dtube'
+            @manifest.generate
+          end
+
+          should 'create 1 tubes and samples in the right study' do
+            assert_equal 1, Sample.count - @initial_samples
+            assert_equal 1, SampleTube.count - @initial_tubes
+            assert_equal 1, @study.samples.count - @initial_in_study
+          end
+
+          should 'create create asset requests when jobs are processed' do
+            # Not entirely certain this behaviour is all that useful to us.
+            Delayed::Worker.new.work_off
+            assert_equal SampleTube.last.requests.count, 1
+            assert SampleTube.last.requests.first.is_a?(CreateAssetRequest)
+          end
+        end
       end
     end
 
