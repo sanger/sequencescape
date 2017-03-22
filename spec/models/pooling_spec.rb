@@ -48,5 +48,14 @@ describe Pooling do
       expect(pooling.stock_mx_tube.aliquots.count).to eq 5
       expect(pooling.standard_mx_tube.aliquots.count).to eq 5
     end
+
+    it 'should execute print_job if barcode printer is provided' do
+      barcode_printer = create :barcode_printer
+      LabelPrinter::PmbClient.stub(:get_label_template_by_name) { { 'data' => [{ 'id' => 15 }] } }
+      pooling = Pooling.new(barcodes: @barcodes, barcode_printer: barcode_printer.name)
+      expect(RestClient).to receive(:post)
+      pooling.execute
+      expect(pooling.print_job_required?).to be true
+    end
   end
 end

@@ -21,13 +21,25 @@
     <%= form.label :stock_mx_tube_required, 'Create stock multiplexed tube' %>
     <%= form.check_box :stock_mx_tube_required, {}, true, '' %>
   </div>
-
   <div class="form-group">
     <%= form.label :standard_mx_tube_required, 'Create standard multiplexed tube' %>
     <%= form.check_box :standard_mx_tube_required, {disabled: true, checked: true} %>
   </div>
 
-  <%= form.submit 'Transfer', class: 'btn btn-success' %>
+  <div class="form-group">
+    <%= form.label :labels, 'Print labels:' %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :count, 'Count' %>
+    <%= form.number_field :count, value: 1 %>
+  </div>
+  <div class="form-group">
+    <%= form.label :barcode_printer, 'Barcode printer' %>
+    <%= render partial: "shared/printer_list" %>
+  </div>
+
+  <%= form.submit 'Transfer and print labels', class: 'btn btn-success' %>
 
 <% end %>
 

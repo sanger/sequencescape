@@ -1,7 +1,7 @@
 class Pooling
   include ActiveModel::Model
 
-  attr_accessor :barcodes, :source_assets, :stock_mx_tube_required, :stock_mx_tube, :standard_mx_tube
+  attr_accessor :barcodes, :source_assets, :stock_mx_tube_required, :stock_mx_tube, :standard_mx_tube, :barcode_printer, :count
 
   validates_presence_of :source_assets, message: 'were not scanned or were not found in sequencescape'
   validate :all_source_assets_are_in_sqsc, if: 'source_assets.present?'
@@ -14,6 +14,7 @@ class Pooling
     end
     @standard_mx_tube = Tube::Purpose.standard_mx_tube.create!
     transfer_to(standard_mx_tube)
+    execute_print_job
   end
 
   def transfer_to(target_asset)
@@ -32,6 +33,29 @@ class Pooling
 
   def stock_mx_tube_required?
     stock_mx_tube_required.present?
+  end
+
+  def success
+    "Samples were transferred successfully to standard_mx_tube #{standard_mx_tube.id} " +
+    ("and stock_mx_tube #{stock_mx_tube.id} " if stock_mx_tube.present?).to_s
+  end
+
+  def print_job_required?
+    barcode_printer.present?
+  end
+
+  def print_job
+    @print_job ||= LabelPrinter::PrintJob.new(barcode_printer,
+                      LabelPrinter::Label::MultiplexedTube,
+                      assets: target_assets, count: count)
+  end
+
+  def target_assets
+    [stock_mx_tube, standard_mx_tube].compact
+  end
+
+  def print_job_message
+    @print_job_message ||= {}
   end
 
   private
@@ -53,5 +77,15 @@ class Pooling
     end
     errors.add(:source_assets, "with barcode(s) #{assets_with_no_aliquot.join(', ')} do not have any aliquots") unless assets_with_no_aliquot.empty?
     errors.add(:tags_combinations, 'are not unique') unless tags_combinations.length == tags_combinations.uniq.length
+  end
+
+  def execute_print_job
+    if print_job_required?
+      if print_job.execute
+        print_job_message[:notice] = print_job.success
+      else
+        print_job_message[:error] = print_job.errors.full_messages.join('; ')
+      end
+    end
   end
 end

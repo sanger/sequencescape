@@ -10,6 +10,7 @@ feature 'Pooling', js: true do
 
   scenario 'user can pool from different tubes to stock and standard mx tubes' do
     login_user user
+    visit root_path
     visit new_pooling_path
     expect(page).to have_content 'Scan tube'
     click_on 'Transfer'
