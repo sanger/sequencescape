@@ -10,7 +10,6 @@ class PacBioSamplePrepPipeline < Pipeline
 
   self.requires_position = false
 
-
   def allow_tag_collision_on_tagging_task?
     false
   end

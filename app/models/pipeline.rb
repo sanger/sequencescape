@@ -197,7 +197,7 @@ class Pipeline < ActiveRecord::Base
   end
 
   def max_number_of_groups
-    self[:max_number_of_groups] || 0
+    super || 0
   end
 
   def valid_number_of_checked_request_groups?(params = {})
