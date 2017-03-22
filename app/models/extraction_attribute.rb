@@ -14,21 +14,80 @@ class ExtractionAttribute < ActiveRecord::Base
 
   before_save :update_performed
 
-  def update_performed
-    location_wells = target.wells.includes(:map, :sample).index_by(&:map_description)
-    attributes_update['wells'].each do |w|
-      location = w['location']
-      next unless w['sample_tube_uuid']
-      sample_tube = Uuid.find_by(external_id: w['sample_tube_uuid']).resource
-      aliquots = sample_tube.aliquots.map(&:dup)
-      samples = sample_tube.samples
-      destination_well = location_wells[location]
+  class SampleTubeNotExists < StandardError
+  end
 
-      unless destination_well.samples.include?(samples)
-        destination_well.aliquots << aliquots
-        AssetLink.create_edge(sample_tube, destination_well)
-      end
+  class WellNotExists < StandardError
+  end
+
+  def is_reracking?(well_info)
+    well = well_info['resource']
+    return false unless well
+    (well.plate != target) || (well.map_description != well_info['location'])
+  end
+
+  def inject_resources(attr_well, attr_well_uuid_key, attr_well_resource_key)
+    return unless attr_well
+    if attr_well[attr_well_uuid_key]
+      attr_well[attr_well_resource_key] = Uuid.find_by(external_id: attr_well[attr_well_uuid_key]).resource
     end
   end
+
+  def attributes_update_with_resources
+    attributes_update.each do |attr_well|
+      inject_resources(attr_well, 'uuid', 'resource')
+      inject_resources(attr_well, 'sample_tube_uuid', 'sample_tube_resource')
+    end
+    attributes_update
+  end
+
+  def update_performed
+    ActiveRecord::Base.transaction do |t|
+      attributes_update_with_resources.each do |well_info|
+        is_reracking?(well_info) ? rerack_well(well_info) : rack_well(well_info)
+      end
+      true
+    end
+  end
+
+  def location_wells
+    target.wells.includes(:map, :sample).index_by(&:map_description)
+  end
+
+  def rack_well(well_data)
+    return unless well_data && well_data['sample_tube_uuid']
+    unless well_data['sample_tube_resource']
+      raise SampleTubeNotExists
+    end
+    sample_tube = well_data['sample_tube_resource']
+    aliquots = sample_tube.aliquots.map(&:dup)
+    samples = sample_tube.samples
+    location = well_data['location']
+    destination_well = location_wells[location]
+    unless destination_well
+      raise WellNotExists
+    end
+    unless destination_well.samples.include?(samples)
+      destination_well.aliquots << aliquots
+      AssetLink.create_edge(sample_tube, destination_well)
+    end    
+  end
+
+  def rerack_well(well_data)
+    return unless well_data
+    well = well_data['resource']
+    previous_parent = well.parent
+    actual_parent = target
+    location = well_data['location']
+    actual_well_in_same_position_at_rack = target.wells.located_at(location).first
+    actual_map = target.maps.select{|m| m.description == location}.first
+    raise WellNotExists if actual_map.nil?
+
+    unless actual_well_in_same_position_at_rack.nil?
+      actual_well_in_same_position_at_rack.update_attributes(plate: nil)
+    end
+    well.update_attributes(plate: actual_parent, map: actual_map)
+  end
+
   private :update_performed
 end
