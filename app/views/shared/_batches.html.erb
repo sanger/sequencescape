@@ -60,15 +60,11 @@
       <% end %>
         <td>
           <% if batch.pipeline %>
-            <% if batch.pipeline.automated? %>
-              <%= link_to "View batch", controller: :workflows, action: :auto_batch, id: batch.pipeline.workflow.id, batch_id: batch.id %>
-            <% else %>
-              <% if batch.state == "completed" -%>
-                <%= link_to "Release batch", release_batch_url(batch) %>
-              <% else -%>
-                <%= link_to("View batch", batch_path(batch), title: "View #{batch_state} batch #{index+1}") %>
-              <% end -%>
-            <% end %>
+            <% if batch.state == "completed" -%>
+              <%= link_to "Release batch", release_batch_url(batch) %>
+            <% else -%>
+              <%= link_to("View batch", batch_path(batch), title: "View #{batch_state} batch #{index+1}") %>
+            <% end -%>
           <% end %>
         </td>
       </tr>

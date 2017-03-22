@@ -14,7 +14,6 @@ end
 
 class Pipeline < ActiveRecord::Base
   include ::ModelExtensions::Pipeline
-  include SequencingQcPipeline
   include Uuid::Uuidable
   include Pipeline::InboxUngrouped
   include Pipeline::BatchValidation

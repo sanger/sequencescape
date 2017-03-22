@@ -115,50 +115,6 @@ class BatchesController < ApplicationController
     @batches = Batch.where(pipeline_id: params[:pipeline_id] || params[:id]).order(id: :desc).includes(:user, :pipeline).page(params[:page])
   end
 
-  # Used by Quality Control Pipeline view or remote sources to add a Batch ID to QC queue
-  def start_automatic_qc
-    if request.post?
-      @batch = Batch.find(params[:id])
-
-      submitted = @batch.submit_to_qc_queue
-
-      if submitted
-        @batch.lab_events.create(description: 'Submitted to QC', message: "Batch #{@batch.id} was submitted to QC queue", user_id: @current_user.id)
-        respond_to do |format|
-          message = "Batch #{@batch.id} was submitted to QC queue"
-          format.html do
-            flash[:info] = message
-            redirect_to request.env['HTTP_REFERER'] || 'javascript:history.back()'
-          end
-          format.xml { render text: nil, status: :success }
-        end
-      else
-        respond_to do |format|
-          message = "Batch #{@batch.id} was not submitted to QC queue!"
-          format.html do
-            flash[:warning] = message
-            redirect_to request.env['HTTP_REFERER'] || 'javascript:history.back()'
-          end
-          format.xml do
-            render xml: { error: message }.to_xml(root: :errors), status: :bad_request
-          end
-        end
-      end
-    else
-      respond_to do |format|
-        message = 'There was a problem with the request. HTTP POST method was not used.'
-        format.html do
-          flash[:error] = message
-          redirect_to request.env['HTTP_REFERER'] || 'javascript:history.back()'
-        end
-        format.xml do
-          errors = { error: message }
-          render xml: errors.to_xml(root: :errors), status: :method_not_allowed
-        end
-      end
-    end
-  end
-
   def qc_information
     respond_to do |format|
       format.html
