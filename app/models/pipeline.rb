@@ -91,11 +91,6 @@ class Pipeline < ActiveRecord::Base
     true
   end
 
-  # This needs to be re-done a better way
-  def qc?
-    false
-  end
-
   def library_creation?
     false
   end

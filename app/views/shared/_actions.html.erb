@@ -18,16 +18,6 @@
       <li><%= link_to "Fail batch or items", action: "fail", id: @batch.id %></li>
     <% end %>
   </ul>
-  <p>
-    <% if @pipeline.next_pipeline and not @pipeline.genotyping?-%>
-      Continue processing this batch:
-      <ul>
-        <li><%= link_to "#{@pipeline.next_pipeline.name} &rarr;", controller: "workflows", action: "auto_batch", batch_id: @batch.id, id: @pipeline.next_pipeline.workflow.id %></li>
-      </ul>
-    <% else -%>
-      No additional processing steps for this batch have been specified.
-    <% end -%>
-  </p>
 </div>
 
 <script type="text/javascript">

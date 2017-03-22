@@ -241,18 +241,6 @@ class BatchesController < ApplicationController
     end
   end
 
-  def quality_control
-    @qc_pipeline = Pipeline.find(params[:id])
-    conditions_query = []
-    if params['state']
-      conditions_query = ['state = ? AND qc_state = ? AND qc_pipeline_id = ? AND pipeline_id in (?)', params['state'], params['qc_state'], @qc_pipeline.id, @qc_pipeline.cluster_formation_pipeline_id]
-    else
-      conditions_query = ['qc_state = ? AND qc_pipeline_id = ? AND pipeline_id in (?)', params['qc_state'], @qc_pipeline.id, @qc_pipeline.cluster_formation_pipeline_id]
-    end
-
-    @batches = Batch.where(conditions_query).includes(:user).order('created_at ASC')
-  end
-
   def fail_items
     ActiveRecord::Base.transaction do
       if params[:failure][:reason].empty?

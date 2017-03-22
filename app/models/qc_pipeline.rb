@@ -5,13 +5,9 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 class QcPipeline < Pipeline
-  INBOX_PARTIAL = 'show_qc'
+  INBOX_PARTIAL = 'deprecated_inbox'
 
   def inbox_partial
     INBOX_PARTIAL
-  end
-
-  def qc?
-    true
   end
 end

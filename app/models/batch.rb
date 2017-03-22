@@ -147,13 +147,6 @@ class Batch < ActiveRecord::Base
     production_state == 'fail'
   end
 
-  # Used in auto_batch view to disable the submit button if the batch was already passed to Auto QC
-  def in_process?
-    statuses = qc_states
-    statuses.delete_at(0)
-    statuses.include?(qc_state)
-  end
-
   # Tests whether this Batch has any associated LabEvents
   def has_event(event_name)
     lab_events.any? { |event| event_name.downcase == event.description.try(:downcase) }
