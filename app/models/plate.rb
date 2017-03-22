@@ -37,7 +37,8 @@ class Plate < Asset
   # We use stock well associations here as stock_wells is already used to generate some kind of hash.
   has_many :stock_requests, ->() { uniq }, through: :stock_well_associations, source: :requests
   has_many :stock_well_associations, ->() { uniq }, through: :wells, source: :stock_wells
-  has_many :stock_orders,  ->() { uniq }, through: :stock_requests, source: :order
+  has_many :stock_orders, ->() { uniq }, through: :stock_requests, source: :order
+  has_many :extraction_attributes, foreign_key: 'target_id'
 
   # The default state for a plate comes from the plate purpose
   delegate :default_state, to: :plate_purpose, allow_nil: true
