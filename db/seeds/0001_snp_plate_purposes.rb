@@ -158,53 +158,43 @@ plate_purposes = <<-EOS
   id: 60
   type: PlatePurpose
 - name: Pulldown Aliquot
-  pulldown_display: true
   id: 74
   type: PlatePurpose
   target_type: PulldownAliquotPlate
 - name: Sonication
-  pulldown_display: true
   id: 75
   type: PlatePurpose
   target_type: PulldownSonicationPlate
 - name: Run of Robot
-  pulldown_display: true
   id: 76
   type: PlatePurpose
   target_type: PulldownRunOfRobotPlate
 - name: EnRichment 1
-  pulldown_display: true
   id: 77
   type: PlatePurpose
   target_type: PulldownEnrichmentOnePlate
 - name: EnRichment 2
-  pulldown_display: true
   id: 78
   type: PlatePurpose
   target_type: PulldownEnrichmentTwoPlate
 - name: EnRichment 3
-  pulldown_display: true
   id: 79
   type: PlatePurpose
   target_type: PulldownEnrichmentThreePlate
 - name: EnRichment 4
-  pulldown_display: true
   id: 80
   type: PlatePurpose
   target_type: PulldownEnrichmentFourPlate
 - name: Sequence Capture
-  pulldown_display: true
   id: 81
   type: PlatePurpose
   target_type: PulldownSequenceCapturePlate
   cherrypickable_target: true
 - name: Pulldown PCR
-  pulldown_display: true
   id: 82
   type: PlatePurpose
   target_type: PulldownPcrPlate
 - name: Pulldown qPCR
-  pulldown_display: true
   id: 83
   type: PlatePurpose
   target_type: PulldownQpcrPlate
