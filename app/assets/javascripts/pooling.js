@@ -1,7 +1,3 @@
-//This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-//Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-//Copyright (C) 2015,2016 Genome Research Ltd.
-
 (function(window,$,undefined) {
   'use strict';
 
@@ -16,22 +12,24 @@
   // Remove polyfill
   if (!Element.prototype.remove) {
     Element.prototype.remove = function() { this.parentNode.removeChild(this); };
-
   }
 
   $( document ).ready(function() {
 
     var barcode_list = $('#barcode_list')[0]
+    updateCounter(counter, barcode_list);
 
-    // Update the query string automatically on changing the location field
-    // Allows the user to bookmark a particular location
-    $( '#labwhere_reception_location_id' ).bind('change', function() {
-      history.replaceState({}, document.title, '?location_id=' + this.value)
+    $('#barcode_list').find('li').each(function(){
+      var removeLink = this.children[1];
+      $(removeLink).bind('click',function() {
+        this.parentNode.remove();
+        updateCounter(counter, barcode_list);
+      })
     });
 
     // On scanning in barcodes, add them to the list.
     $('#asset_scan').bind('blur',function() {
-      new scannedBarcode(this,barcode_list, 'labwhere_reception');
+      new scannedBarcode(this,barcode_list, 'pooling');
     });
 
     $('#asset_scan').bind("keydown", function(e) {
@@ -40,7 +38,7 @@
       code=e.charCode || e.keyCode;
       if (code==ENTER || code==TAB) {
         e.preventDefault();
-        new scannedBarcode(this,barcode_list, 'labwhere_reception');
+        new scannedBarcode(this,barcode_list, 'pooling');
         this.focus();
         return false;
       }
