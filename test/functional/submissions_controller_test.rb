@@ -19,10 +19,10 @@ class SubmissionsControllerTest < ActionController::TestCase
 
       @plate = build :plate, barcode: 123456
       %w(
-A1 A2 A3
-B1 B2 B3
-C1 C2 C3
-).each do |location|
+        A1 A2 A3
+        B1 B2 B3
+        C1 C2 C3
+      ).each do |location|
         well = build :well_with_sample_and_without_plate, map: Map.find_by(description: location)
         @plate.wells << well
       end
@@ -68,8 +68,7 @@ C1 C2 C3
             sample_names_text: samples[1..4].join("\n"),
             plate_purpose_id: @plate.plate_purpose.id.to_s,
             project_name: 'A project'
-          }
-        )
+          })
       end
 
       should 'create the appropriate orders' do
@@ -110,10 +109,10 @@ C1 C2 C3
         @order_count = Order.count
         @wd_plate = create :working_dilution_plate, barcode: 123457
         %w(
-A1 A2 A3
-B1 B2 B3
-C1 C2 C3
-).each do |location|
+          A1 A2 A3
+          B1 B2 B3
+          C1 C2 C3
+        ).each do |location|
         well = create :empty_well, map: Map.find_by(description: location)
           well.aliquots.create(sample: @plate.wells.located_at(location).first.aliquots.first.sample)
           @wd_plate.wells << well

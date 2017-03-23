@@ -8,10 +8,10 @@ require 'test_helper'
 
 class RequestEventTest < ActiveSupport::TestCase
   RequestType.where(key: %w(
-illumina_b_std
-illumina_b_hiseq_2500_paired_end_sequencing
-illumina_c_multiplexed_library_creation
-)).all.each do |request_type|
+    illumina_b_std
+    illumina_b_hiseq_2500_paired_end_sequencing
+    illumina_c_multiplexed_library_creation
+  )).all.each do |request_type|
 
     context "#{request_type.name} Requests" do
       setup do

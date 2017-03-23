@@ -25,8 +25,7 @@ feature 'Asset submission', js: true do
                             fragment_size_required_from: 999,
                             library_type: 'Standard',
                             read_length: read_length
-                          }
-                      )
+                          })
       login_user user
       visit asset_path(asset)
       click_link 'Request additional sequencing'

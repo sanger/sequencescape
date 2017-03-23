@@ -56,7 +56,12 @@ describe '/api/1/' do
             "create": "http://www.example.com/api/1/dilution_plate_purposes"
           }
         },
-
+        "extraction_attributes": {
+          "actions": {
+            "read": "http://www.example.com/api/1/extraction_attributes",
+            "create": "http://www.example.com/api/1/extraction_attributes"
+          }
+        },
         "assets": {
           "actions": {
             "read": "http://www.example.com/api/1/assets"
@@ -431,7 +436,11 @@ describe '/api/1/' do
             "read": "http://www.example.com/api/1/dilution_plate_purposes"
           }
         },
-
+        "extraction_attributes": {
+          "actions": {
+            "read": "http://www.example.com/api/1/extraction_attributes"
+          }
+        },
         "assets": {
           "actions": {
             "read": "http://www.example.com/api/1/assets"

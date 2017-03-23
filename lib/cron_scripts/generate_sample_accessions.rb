@@ -15,13 +15,13 @@ class ::Sample
       'INNER JOIN study_samples AS iss_ss ON iss_ss.sample_id = samples.id',
       'INNER JOIN study_metadata AS iss_sm ON iss_sm.study_id = iss_ss.study_id',
     ]).where('iss_sm.study_ebi_accession_number <> ""')
-    .where(iss_sm: { data_release_strategy: [Study::DATA_RELEASE_STRATEGY_OPEN, Study::DATA_RELEASE_STRATEGY_MANAGED], data_release_timing: Study::DATA_RELEASE_TIMINGS }).uniq
+      .where(iss_sm: { data_release_strategy: [Study::DATA_RELEASE_STRATEGY_OPEN, Study::DATA_RELEASE_STRATEGY_MANAGED], data_release_timing: Study::DATA_RELEASE_TIMINGS }).uniq
   }
 
   scope :with_taxon_and_common_name, ->() {
     includes(:sample_metadata)
-    .where('sample_metadata.sample_taxon_id IS NOT NULL')
-    .where('sample_metadata.sample_common_name <> ""')
+      .where('sample_metadata.sample_taxon_id IS NOT NULL')
+      .where('sample_metadata.sample_common_name <> ""')
   }
 
   scope :requiring_accession_number, ->() {

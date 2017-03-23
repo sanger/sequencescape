@@ -12,9 +12,9 @@ class DilutionPlate < Plate
   # rails doesn't cope with conditions on has_many_through relationships where the relationship itself also have conditions
   scope :with_pico_children,  -> {
     joins(:pico_descendants)
-    .select('`assets`.*')
-    .where(asset_links: { direct: true })
-    .uniq
+      .select('`assets`.*')
+      .where(asset_links: { direct: true })
+      .uniq
   }
 
   def pico_children

@@ -92,12 +92,12 @@ class GeneratorTest < ActiveSupport::TestCase
             'name' => 'ABgene 0800',
             'plate_size' => 96,
             'mapping' => [
-                { 'src_well' =>  ['122289', 'G7'], 'dst_well' => 'D4', 'volume' => 3.33, 'buffer_volume' => 9.67 },
-                { 'src_well' =>  ['80785', 'A1'],  'dst_well' => 'E4', 'volume' => 13, 'buffer_volume' => 0.0 },
-                { 'src_well' =>  ['122289', 'H7'], 'dst_well' => 'F4', 'volume' => 3.27, 'buffer_volume' => 9.73 },
-                { 'src_well' =>  ['122290', 'A1'], 'dst_well' => 'E9', 'volume' => 2.8, 'buffer_volume' => 10.2 },
-                { 'src_well' =>  ['122290', 'B1'], 'dst_well' => 'F9', 'volume' => 4.08, 'buffer_volume' => 8.92 }
-                ]
+              { 'src_well' => ['122289', 'G7'], 'dst_well' => 'D4', 'volume' => 3.33, 'buffer_volume' => 9.67 },
+              { 'src_well' =>  ['80785', 'A1'],  'dst_well' => 'E4', 'volume' => 13, 'buffer_volume' => 0.0 },
+              { 'src_well' =>  ['122289', 'H7'], 'dst_well' => 'F4', 'volume' => 3.27, 'buffer_volume' => 9.73 },
+              { 'src_well' =>  ['122290', 'A1'], 'dst_well' => 'E9', 'volume' => 2.8, 'buffer_volume' => 10.2 },
+              { 'src_well' =>  ['122290', 'B1'], 'dst_well' => 'F9', 'volume' => 4.08, 'buffer_volume' => 8.92 }
+            ]
           }
         }
     }
@@ -204,7 +204,7 @@ class GeneratorTest < ActiveSupport::TestCase
             { 'src_well' =>  ['66666', 'H7'], 'dst_well' => 'B2', 'volume' => 13, 'buffer_volume' => 0.0  },
             { 'src_well' =>  ['99999', 'C7'], 'dst_well' => 'B3', 'volume' => 13, 'buffer_volume' => 0.0  },
             { 'src_well' =>  ['88888', 'A1'], 'dst_well' => 'H9', 'volume' => 13, 'buffer_volume' => 0.0  }
-            ]
+          ]
           }
         }
         @expected_order = { '88888' => 1, '66666' => 2, '99999' => 3 }

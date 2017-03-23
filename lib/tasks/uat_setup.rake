@@ -118,18 +118,18 @@ You can specify an expected environment like so: rake uat:setup[file_path,enviro
 
       # Kept tables
       kept = %w(
-asset_shapes bait_libraries bait_library_layouts bait_library_suppliers bait_library_types
-barcode_prefixes barcode_printer_types barcode_printers budget_divisions controls
-custom_texts data_release_study_types descriptors families lab_interface_workflows
-library_types library_types_request_types locations lot_types maps order_roles
-pipeline_request_information_types pipelines pipelines_request_types plate_creator_purposes
-plate_creators plate_purpose_relationships plate_purposes product_lines project_managers
-reference_genomes request_information_types request_type_plate_purposes request_type_validators
-request_types robot_properties robots roles roles_users sample_manifest_templates schema_migrations
-searches study_relation_types study_relations study_types subclass_attributes submission_templates
-submission_workflows suppliers tag_groups tag_layout_templates tags task_request_types
-tasks transfer_templates users
-)
+        asset_shapes bait_libraries bait_library_layouts bait_library_suppliers bait_library_types
+        barcode_prefixes barcode_printer_types barcode_printers budget_divisions controls
+        custom_texts data_release_study_types descriptors families lab_interface_workflows
+        library_types library_types_request_types locations lot_types maps order_roles
+        pipeline_request_information_types pipelines pipelines_request_types plate_creator_purposes
+        plate_creators plate_purpose_relationships plate_purposes product_lines project_managers
+        reference_genomes request_information_types request_type_plate_purposes request_type_validators
+        request_types robot_properties robots roles roles_users sample_manifest_templates schema_migrations
+        searches study_relation_types study_relations study_types subclass_attributes submission_templates
+        submission_workflows suppliers tag_groups tag_layout_templates tags task_request_types
+        tasks transfer_templates users
+      )
 
       db_file = args[:db_file]
       raise StandardError, 'Must specify a production dump path e.g rake uat:setup[file_path,environment]' if db_file.nil?

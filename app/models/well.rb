@@ -47,7 +47,7 @@ class Well < Aliquot::Receptacle
 
   scope :with_concentration, ->() {
     joins(:well_attribute)
-    .where('well_attributes.concentration IS NOT NULL')
+      .where('well_attributes.concentration IS NOT NULL')
   }
 
   has_many :qc_metrics, inverse_of: :asset, foreign_key: :asset_id
@@ -64,17 +64,17 @@ class Well < Aliquot::Receptacle
 
   scope :on_plate_purpose, ->(purposes) {
       joins(:plate)
-      .where(plates_assets: { plate_purpose_id: purposes })
+        .where(plates_assets: { plate_purpose_id: purposes })
   }
 
   scope :for_study_through_sample, ->(study) {
       joins(aliquots: { sample: :study_samples })
-      .where(study_samples: { study_id: study })
+        .where(study_samples: { study_id: study })
   }
 
   scope :for_study_through_aliquot, ->(study) {
       joins(:aliquots)
-      .where(aliquots: { study_id: study })
+        .where(aliquots: { study_id: study })
   }
 
   #
@@ -84,8 +84,8 @@ class Well < Aliquot::Receptacle
       'LEFT OUTER JOIN qc_reports AS wr_qcr ON wr_qcr.id = wr_qcm.qc_report_id',
       'LEFT OUTER JOIN product_criteria AS wr_pc ON wr_pc.id = wr_qcr.product_criteria_id'
     ])
-    .group('assets.id')
-    .having('NOT BIT_OR(wr_pc.product_id = ? AND wr_pc.stage = ?)', product_criteria.product_id, product_criteria.stage)
+      .group('assets.id')
+      .having('NOT BIT_OR(wr_pc.product_id = ? AND wr_pc.stage = ?)', product_criteria.product_id, product_criteria.stage)
   }
 
   has_many :target_well_links, ->() { where(type: 'stock') }, class_name: 'Well::Link', foreign_key: :source_well_id
@@ -93,12 +93,12 @@ class Well < Aliquot::Receptacle
 
   scope :stock_wells_for, ->(wells) {
     joins(:target_well_links)
-    .where(well_links: { target_well_id: [wells].flatten.map(&:id) })
+      .where(well_links: { target_well_id: [wells].flatten.map(&:id) })
   }
 
   scope :target_wells_for, ->(wells) {
     select('assets.*, well_links.source_well_id AS stock_well_id')
-    .joins(:stock_well_links).where(well_links: {
+      .joins(:stock_well_links).where(well_links: {
         source_well_id: wells
         })
   }
@@ -122,13 +122,13 @@ class Well < Aliquot::Receptacle
 
   scope :pooled_as_target_by, ->(type) {
     joins('LEFT JOIN requests patb ON assets.id=patb.target_asset_id')
-    .where(['(patb.sti_type IS NULL OR patb.sti_type IN (?))', [type, *type.descendants].map(&:name)])
-    .select('assets.*, patb.submission_id AS pool_id').uniq
+      .where(['(patb.sti_type IS NULL OR patb.sti_type IN (?))', [type, *type.descendants].map(&:name)])
+      .select('assets.*, patb.submission_id AS pool_id').uniq
   }
   scope :pooled_as_source_by, ->(type) {
     joins('LEFT JOIN requests pasb ON assets.id=pasb.asset_id')
-    .where(['(pasb.sti_type IS NULL OR pasb.sti_type IN (?)) AND pasb.state IN (?)', [type, *type.descendants].map(&:name), Request::Statemachine::OPENED_STATE])
-    .select('assets.*, pasb.submission_id AS pool_id').uniq
+      .where(['(pasb.sti_type IS NULL OR pasb.sti_type IN (?)) AND pasb.state IN (?)', [type, *type.descendants].map(&:name), Request::Statemachine::OPENED_STATE])
+      .select('assets.*, pasb.submission_id AS pool_id').uniq
   }
 
   # It feels like we should be able to do this with just includes and order, but oddly this causes more disruption downstream
@@ -145,12 +145,12 @@ class Well < Aliquot::Receptacle
       'INNER JOIN aliquots ON aliquots.receptacle_id=assets.id',
       'INNER JOIN samples ON aliquots.sample_id=samples.id'
     ])
-    .where(['samples.empty_supplier_sample_name=?', true])
+      .where(['samples.empty_supplier_sample_name=?', true])
   }
 
   scope :without_blank_samples, ->() {
     joins(aliquots: :sample)
-    .where(samples: { empty_supplier_sample_name: false })
+      .where(samples: { empty_supplier_sample_name: false })
   }
 
   scope :with_contents, -> { joins(:aliquots) }

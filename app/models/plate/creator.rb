@@ -73,7 +73,7 @@ class Plate::Creator < ActiveRecord::Base
     scanned_barcodes.map do |scanned|
       plate =
         Plate.with_machine_barcode(scanned).includes(:location, wells: :aliquots).first or
-          raise ActiveRecord::RecordNotFound, "Could not find plate with machine barcode #{scanned.inspect}"
+        raise ActiveRecord::RecordNotFound, "Could not find plate with machine barcode #{scanned.inspect}"
 
       unless can_create_plates?(plate, plate_purposes)
         raise PlateCreationError, "Scanned plate #{scanned} has a purpose #{plate.purpose.name} not valid for creating [#{plate_purposes.map(&:name).join(',')}]"

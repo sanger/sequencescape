@@ -55,7 +55,7 @@ module Net
         iv_list = instance_variables
         SSL_IVNAMES.each_with_index do |ivname, i|
           if iv_list.include?(ivname) and
-            value = instance_variable_get(ivname)
+             value = instance_variable_get(ivname)
             ssl_parameters[SSL_ATTRIBUTES[i]] = value if value
           end
         end

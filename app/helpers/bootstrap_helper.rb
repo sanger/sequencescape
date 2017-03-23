@@ -65,15 +65,15 @@ module BootstrapHelper
         content_tag(:div, class: 'panel-heading') do
           content_tag(:h3, title, class: 'panel-title')
         end <<
-        content_tag(:table, class: 'table table-summary') do
-          String.new.html_safe.tap do |rows|
-            yield.each do |key, value|
-              rows << content_tag(:tr) do
-                content_tag(:th, key) << content_tag(:td, value)
+          content_tag(:table, class: 'table table-summary') do
+            String.new.html_safe.tap do |rows|
+              yield.each do |key, value|
+                rows << content_tag(:tr) do
+                  content_tag(:th, key) << content_tag(:td, value)
+                end
               end
             end
           end
-        end
       end
     end
   end

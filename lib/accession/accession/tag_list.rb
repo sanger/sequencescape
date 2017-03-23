@@ -97,8 +97,7 @@ module Accession
               add(tag)
             else
               Accession::Tag.new(tag.merge(name: k))
-            end
-        )
+            end)
       end
     end
   end
