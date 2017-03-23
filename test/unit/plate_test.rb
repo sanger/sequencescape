@@ -102,6 +102,25 @@ class PlateTest < ActiveSupport::TestCase
     end
   end
 
+  context '#iteration' do
+    setup do
+      @parent = create :plate, created_at: 6.hours.ago
+      tested_purpose = create :plate_purpose
+      @parent.children << @child_a = create(:plate, plate_purpose: tested_purpose, created_at: 5.hours.ago)
+      @parent.children << @child_b = create(:plate, plate_purpose: tested_purpose, created_at: 4.hours.ago)
+      @child_b.children << @dummy = create(:plate, plate_purpose: tested_purpose, created_at: 3.hours.ago)
+      @parent.children << @child_c = create(:plate, plate_purpose: tested_purpose, created_at: 1.hour.ago)
+      @parent.children << @child_d = create(:plate)
+    end
+
+    should 'correctly calculate iterations' do
+      assert_equal 1, @child_a.reload.iteration, 'First child is not iteration 1'
+      assert_equal 2, @child_b.reload.iteration, 'Second child is not iteration 2'
+      assert_equal 3, @child_c.reload.iteration, 'Third child created after grandchild is not iteration 3'
+      assert_equal 1, @child_d.reload.iteration, 'First child of another purpose is not iteration 1'
+    end
+  end
+
   context '#plate_ids_from_requests' do
     setup do
       @well1 = Well.new
