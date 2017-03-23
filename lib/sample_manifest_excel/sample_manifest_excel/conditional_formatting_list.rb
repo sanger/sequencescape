@@ -2,7 +2,6 @@ module SampleManifestExcel
   ##
   # A list of conditional formattings for a single entity e.g. Column.
   class ConditionalFormattingList
-
     include List
 
     list_for :conditional_formattings, keys: [:name]
@@ -46,11 +45,11 @@ module SampleManifestExcel
     # for each key.
     def create_conditional_formattings(conditional_formattings)
       conditional_formattings.each do |key, conditional_formatting|
-        add(if  conditional_formatting.kind_of?(Hash)
+        add(if conditional_formatting.kind_of?(Hash)
                   ConditionalFormatting.new(conditional_formatting.merge(name: key))
-                else
+            else
                   key.dup
-                end)
+            end)
       end
     end
 
@@ -68,6 +67,5 @@ module SampleManifestExcel
       create_conditional_formattings(source.conditional_formattings)
       super
     end
-
   end
 end

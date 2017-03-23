@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe SampleManifestExcel::Upload::Rows, type: :model, sample_manifest_excel: true do
-
   include SampleManifestExcel::Helpers
 
   let(:test_file)               { 'test_file.xlsx' }
@@ -31,5 +30,4 @@ RSpec.describe SampleManifestExcel::Upload::Rows, type: :model, sample_manifest_
   after(:each) do
     File.delete(test_file) if File.exist?(test_file)
   end
-
 end

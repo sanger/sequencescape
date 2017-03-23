@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_manifest_excel: true do
-
   include SampleManifestExcel::Helpers
 
   attr_reader :upload
@@ -14,8 +13,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
   end
 
   describe '#run' do
-
-    let(:test_file)               { 'test_file.xlsx'}
+    let(:test_file)               { 'test_file.xlsx' }
     let(:folder)                  { File.join('spec', 'data', 'sample_manifest_excel') }
     let(:yaml)                    { load_file(folder, 'columns') }
     let(:conditional_formattings) { SampleManifestExcel::ConditionalFormattingDefaultList.new(load_file(folder, 'conditional_formattings')) }
@@ -35,9 +33,8 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
     end
 
     context '1dtube' do
+      let!(:download) { build(:test_download, columns: columns) }
 
-      let!(:download)               { build(:test_download, columns: columns) }
-      
       it 'will update the samples' do
         processor = SampleManifestExcel::Upload::Processor::OneDTube.new(upload)
         processor.run(tag_group)
@@ -54,9 +51,8 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
     end
 
     context 'Multiplexed Library Tube' do
-
       context 'valid' do
-        let!(:download)               { build(:test_download, columns: columns, manifest_type: 'multiplexed_library') }
+        let!(:download) { build(:test_download, columns: columns, manifest_type: 'multiplexed_library') }
 
         it 'will update the samples' do
           processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(upload)
@@ -81,7 +77,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
       end
 
       context 'mismatched tags' do
-        let!(:download)               { build(:test_download, columns: columns, manifest_type: 'multiplexed_library', validation_errors: [:tags]) }
+        let!(:download) { build(:test_download, columns: columns, manifest_type: 'multiplexed_library', validation_errors: [:tags]) }
 
         it 'will not be valid' do
            processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(upload)
@@ -89,13 +85,10 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
            expect(processor).to_not be_valid
         end
       end
-
-      
     end
 
     after(:each) do
       File.delete(test_file) if File.exist?(test_file)
     end
-
   end
 end

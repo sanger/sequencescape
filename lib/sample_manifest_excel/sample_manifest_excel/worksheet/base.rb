@@ -1,8 +1,6 @@
 module SampleManifestExcel
   module Worksheet
-
     class Base
-
       include ActiveModel::Model
 
       attr_accessor :workbook, :axlsx_worksheet, :columns, :name, :ranges, :password

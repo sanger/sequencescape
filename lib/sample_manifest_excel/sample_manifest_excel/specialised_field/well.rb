@@ -13,7 +13,6 @@ module SampleManifestExcel
           errors.add(:sample, 'You can not move samples between plates or modify barcodes')
         end
       end
-      
     end
   end
 end

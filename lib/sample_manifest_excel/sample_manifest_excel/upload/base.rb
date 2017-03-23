@@ -31,7 +31,6 @@ module SampleManifestExcel
         sample.sample_manifest if sample.present?
       end
 
-
       def process(tag_group)
         processor.run(tag_group)
       end
@@ -68,7 +67,6 @@ module SampleManifestExcel
           end
         end
       end
-
     end
   end
 end

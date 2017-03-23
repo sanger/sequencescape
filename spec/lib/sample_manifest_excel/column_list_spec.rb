@@ -112,5 +112,4 @@ RSpec.describe SampleManifestExcel::ColumnList, type: :model, sample_manifest_ex
     expect(column_list.find_by(:name, :my_new_column)).to be_present
     expect(column_list.find_by(:heading, 'my_new_column')).to be_present
   end
-
 end

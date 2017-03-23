@@ -8,6 +8,5 @@ module SampleManifestExcel
     def initialize(attributes = {})
       @worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes.merge(workbook: workbook))
     end
-
   end
 end

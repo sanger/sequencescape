@@ -6,12 +6,10 @@ module SampleManifestExcel
   #   used for conditional formatting)
 
   module Worksheet
-
     module Helpers
-
       STYLES = { unlocked: { locked: false, border: { style: :thin, color: '00' } },
-                  wrap_text: { alignment: { horizontal: :center, vertical: :center, wrap_text: true },
-                               border: { style: :thin, color: '00', edges: [:left, :right, :top, :bottom] } }
+                 wrap_text: { alignment: { horizontal: :center, vertical: :center, wrap_text: true },
+                              border: { style: :thin, color: '00', edges: [:left, :right, :top, :bottom] } }
                 }
 
       def create_worksheet
@@ -59,7 +57,6 @@ module SampleManifestExcel
           @reference = workbook.styles.add_style options
         end
       end
-      
     end
 
     require_relative 'worksheet/base'

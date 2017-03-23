@@ -1,7 +1,6 @@
 module SampleManifestExcel
   module Upload
     class Data
-
       include ActiveModel::Model
       include Enumerable
 

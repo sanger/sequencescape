@@ -21,6 +21,5 @@ module SampleManifestExcel
     def password
       @password ||= SecureRandom.base64
     end
-
   end
 end

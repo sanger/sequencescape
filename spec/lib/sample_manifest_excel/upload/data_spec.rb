@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe SampleManifestExcel::Upload::Data, type: :model, sample_manifest_excel: true do
-
   include SampleManifestExcel::Helpers
 
   let(:test_file)               { 'test_file.xlsx' }
@@ -12,7 +11,7 @@ RSpec.describe SampleManifestExcel::Upload::Data, type: :model, sample_manifest_
   let(:manifest_types)          { SampleManifestExcel::ManifestTypeList.new(load_file(folder, 'manifest_types')) }
   let(:columns)                 { column_list.extract(manifest_types.find_by(:tube_library_with_tag_sequences).columns) }
   let!(:download)               { build(:test_download, columns: columns) }
-    
+
   before(:each) do
     download.save(test_file)
   end

@@ -3,7 +3,7 @@ module SampleManifestExcel
     class LibraryType
       include Base
       include ValueRequired
-      
+
       validate :check_library_type_exists
 
       def update(attributes = {})
@@ -11,7 +11,6 @@ module SampleManifestExcel
           attributes[:aliquot].library_type = value
         end
       end
-
 
     private
 

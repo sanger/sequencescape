@@ -2,7 +2,6 @@ module SampleManifestExcel
   module Upload
     module Processor
       class MultiplexedLibraryTube < Base
-
         validate :check_tags
 
           def run(tag_group)

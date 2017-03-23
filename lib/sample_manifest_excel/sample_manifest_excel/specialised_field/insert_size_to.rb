@@ -4,7 +4,7 @@ module SampleManifestExcel
       include Base
       include ValueRequired
       include ValueToInteger
-      
+
       validates_numericality_of :value, greater_than: 0
 
       def update(attributes = {})

@@ -1,7 +1,7 @@
 module SampleManifestExcel
   module Upload
     class Rows
-      include ActiveModel::Model 
+      include ActiveModel::Model
       include Enumerable
 
       attr_reader :items, :data, :columns
@@ -39,7 +39,6 @@ module SampleManifestExcel
           end
         end
       end
-
     end
   end
 end

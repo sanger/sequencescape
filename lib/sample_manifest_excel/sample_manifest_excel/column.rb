@@ -93,7 +93,7 @@ module SampleManifestExcel
     def specialised_field
       @specialised_field ||= if SampleManifestExcel.const_defined? classify_name
                                 SampleManifestExcel.const_get(classify_name)
-                              end
+                             end
     end
 
     ##
@@ -153,7 +153,7 @@ module SampleManifestExcel
 
       def inspect
         "<#{self.class}: @name=#{name}, @heading=#{heading}, @number=#{number}, @type=#{type}, @validation#{validation}, @value=#{value}, @unlocked=#{unlocked}, @conditional_formattings=#{conditional_formattings}, @attribute=#{attribute}, @range=#{range}>"
-      end      
+      end
 
     private
 
@@ -171,7 +171,7 @@ module SampleManifestExcel
     attr_reader :attribute
 
     def classify_name
-      "SpecialisedField::#{name.to_s.gsub('?','').classify}"
+      "SpecialisedField::#{name.to_s.delete('?').classify}"
     end
   end
 end

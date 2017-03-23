@@ -1,13 +1,12 @@
 module SampleManifestExcel
   module SpecialisedField
     module Base
-
       extend ActiveSupport::Concern
 
       included do
         include ActiveModel::Model
 
-        define_method :initialize do |attributes = {}|
+        define_method :initialize do |_attributes = {}|
           super
         end
       end
@@ -16,12 +15,11 @@ module SampleManifestExcel
 
       def update(_attributes = {})
       end
-     
     end
 
     module SangerSampleIdValue
       def value=(sample)
-        @value =  sample.sanger_sample_id
+        @value = sample.sanger_sample_id
       end
     end
 
@@ -40,7 +38,6 @@ module SampleManifestExcel
     end
 
     module Tagging
-
       extend ActiveSupport::Concern
 
       module ClassMethods
@@ -52,7 +49,6 @@ module SampleManifestExcel
       end
 
       def update(attributes = {})
-
         if valid?
           tag = attributes[:tag_group].tags.find_or_create_by(oligo: value) do |t|
             t.map_id = attributes[:tag_group].tags.count + 1
@@ -61,10 +57,8 @@ module SampleManifestExcel
           attributes[:aliquot].send("#{tag_name}=", tag)
         end
       end
-
     end
 
     Dir[File.join(File.dirname(__FILE__), 'specialised_field', '*.rb')].each { |file| require file }
-
   end
 end

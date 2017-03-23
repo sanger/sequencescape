@@ -3,7 +3,7 @@ module SampleManifestExcel
     class SangerPlateId
       include Base
       include ValueRequired
-      
+
       validate :check_container
 
     private

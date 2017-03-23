@@ -3,7 +3,6 @@ module SampleManifestExcel
     # DataWorksheet creates a data worksheet to be filled in by a client.
 
     class DataWorksheet < Base
-
       attr_accessor :sample_manifest, :type
 
       include Helpers
@@ -78,8 +77,6 @@ module SampleManifestExcel
       def last_row
         @last_row ||= sample_manifest.details_array.count + first_row - 1
       end
-
-     
     end
   end
 end

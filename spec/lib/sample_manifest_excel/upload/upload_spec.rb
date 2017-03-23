@@ -1,10 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel: true do
-
   include SampleManifestExcel::Helpers
 
-  let(:test_file)               { 'test_file.xlsx'}
+  let(:test_file)               { 'test_file.xlsx' }
   let(:folder)                  { File.join('spec', 'data', 'sample_manifest_excel') }
   let(:yaml)                    { load_file(folder, 'columns') }
   let(:conditional_formattings) { SampleManifestExcel::ConditionalFormattingDefaultList.new(load_file(folder, 'conditional_formattings')) }
@@ -36,7 +35,7 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
     expect(upload).to_not be_valid
   end
 
-  it "is not valid unless all of the rows are valid" do
+  it 'is not valid unless all of the rows are valid' do
     download = build(:test_download, columns: column_list.extract(manifest_types.find_by(:tube_library_with_tag_sequences).columns), validation_errors: [:library_type])
     download.save(test_file)
     upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: column_list, start_row: 9)
@@ -57,10 +56,9 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
   end
 
   describe '#processor' do
-
     context '1dtube' do
       let!(:columns) { column_list.extract(manifest_types.find_by(:tube_library_with_tag_sequences).columns) }
-      let!(:download) { build(:test_download, columns: columns)}
+      let!(:download) { build(:test_download, columns: columns) }
 
       before(:each) do
         download.save(test_file)
@@ -82,7 +80,7 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
 
     context 'multiplexed library tube' do
       let!(:columns) { column_list.extract(manifest_types.find_by(:tube_multiplexed_library_with_tag_sequences).columns) }
-      let!(:download) { build(:test_download, columns: columns, manifest_type: 'multiplexed_library')}
+      let!(:download) { build(:test_download, columns: columns, manifest_type: 'multiplexed_library') }
 
       before(:each) do
         download.save(test_file)
@@ -121,5 +119,4 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
   after(:each) do
     File.delete(test_file) if File.exist?(test_file)
   end
-
 end

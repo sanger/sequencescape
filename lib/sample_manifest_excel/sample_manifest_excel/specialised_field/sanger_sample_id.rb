@@ -3,8 +3,6 @@ module SampleManifestExcel
     class SangerSampleId
       include Base
       include ValueRequired
-      
-      
     end
   end
 end

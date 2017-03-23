@@ -1,7 +1,6 @@
 module SampleManifestExcel
   module Worksheet
     class TestWorksheet < Base
-
       include Helpers
 
       attr_accessor :data, :no_of_rows, :study, :supplier, :count, :type, :validation_errors, :missing_columns, :manifest_type
@@ -51,7 +50,7 @@ module SampleManifestExcel
       end
 
       def add_cell_data(column, n)
-        unless validation_errors.include?(:insert_size_from) && column.name == "insert_size_from" && n == first_row
+        unless validation_errors.include?(:insert_size_from) && column.name == 'insert_size_from' && n == first_row
           data[column.name] || dynamic_attributes[n][column.name]
         end
       end
@@ -73,8 +72,7 @@ module SampleManifestExcel
       end
 
       class Tags
-
-        BASES = ['A', 'C', 'G', 'T'].freeze
+        BASES = %w(A C G T).freeze
 
         attr_reader :tag_oligos, :tag2_oligos
 
@@ -109,11 +107,8 @@ module SampleManifestExcel
           asset = FactoryGirl.create(:sample_tube)
         end
         assets << asset
-        asset
         yield(asset) if block_given?
       end
-
-     
 
       def initialize_dynamic_attributes
         {}.tap do |hsh|
@@ -130,7 +125,7 @@ module SampleManifestExcel
       end
 
       def create_library_type
-        unless(validation_errors.include?(:library_type))
+        unless validation_errors.include?(:library_type)
           LibraryType.where(name: data[:library_type]).first_or_create
         end
       end
@@ -142,7 +137,6 @@ module SampleManifestExcel
           dynamic_attributes[k].merge!(oligos[k])
         end
       end
-
     end
   end
 end

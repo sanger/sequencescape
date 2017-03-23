@@ -1,6 +1,5 @@
 module SampleManifestExcel
   class ConditionalFormattingDefaultList
-
     include List
 
     list_for :defaults, keys: [:type]
