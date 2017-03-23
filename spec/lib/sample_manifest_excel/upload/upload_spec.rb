@@ -36,13 +36,6 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
     expect(upload).to_not be_valid
   end
 
-  it "is invalid if tags are not valid" do
-    download = build(:test_download, columns: column_list.extract(manifest_types.find_by(:tube_library_with_tag_sequences).columns), validation_errors: [:tags])
-    download.save(test_file)
-    upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: column_list, start_row: 9)
-    expect(upload).to_not be_valid
-  end
-
   it "is not valid unless all of the rows are valid" do
     download = build(:test_download, columns: column_list.extract(manifest_types.find_by(:tube_library_with_tag_sequences).columns), validation_errors: [:library_type])
     download.save(test_file)
@@ -61,29 +54,6 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
 
     upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: column_list, start_row: 9)
     expect(upload).to_not be_valid
-  end
-
-  it "updates all of the data" do
-    columns = column_list.extract(manifest_types.find_by(:tube_library_with_tag_sequences).columns)
-    download = build(:test_download, columns: columns)
-    download.save(test_file)
-    upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: column_list, start_row: 9)
-    upload.update_samples(tag_group)
-    expect(upload.rows).to_not be_empty
-    expect(upload.rows.all? { |row| row.sample_updated? }).to be_truthy
-    expect(upload.rows.first.sample.aliquots.first.insert_size_from).to_not be_nil
-    expect(upload.rows.last.sample.aliquots.first.insert_size_from).to_not be_nil
-    expect(upload.rows.first.sample.sample_metadata.concentration).to_not be_nil
-    expect(upload.rows.last.sample.sample_metadata.concentration).to_not be_nil
-  end
-
-  it 'updates the sample manifest' do
-    columns = column_list.extract(manifest_types.find_by(:tube_library_with_tag_sequences).columns)
-    download = build(:test_download, columns: columns)
-    download.save(test_file)
-    upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: column_list, start_row: 9)
-    upload.update_sample_manifest
-    expect(upload.sample_manifest.uploaded.filename).to eq(test_file)
   end
 
   describe '#processor' do
@@ -119,17 +89,31 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
       end
 
       it 'should have the correct processor' do
+        download = build(:test_download, columns: columns, manifest_type: 'multiplexed_library')
+        download.save(test_file)
         upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: column_list, start_row: 9)
         expect(upload.processor).to_not be_nil
         expect(upload.processor).to be_multiplexed_library_tube
       end
 
       it 'updates all of the data' do
+        download = build(:test_download, columns: columns, manifest_type: 'multiplexed_library')
+        download.save(test_file)
         upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: column_list, start_row: 9)
         upload.process(tag_group)
         expect(upload.processor).to be_samples_updated
         expect(upload.processor).to be_sample_manifest_updated
         expect(upload.processor).to be_aliquots_transferred
+      end
+
+      it 'fails if the tags are invalid' do
+        download = build(:test_download, columns: columns, manifest_type: 'multiplexed_library', validation_errors: [:tags])
+        download.save(test_file)
+        upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: column_list, start_row: 9)
+        upload.process(tag_group)
+        expect(upload.processor).to_not be_samples_updated
+        expect(upload.processor).to_not be_sample_manifest_updated
+        expect(upload.processor).to_not be_aliquots_transferred
       end
     end
   end

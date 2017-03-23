@@ -8,7 +8,8 @@ module SampleManifestExcel
       attr_reader :spreadsheet, :columns, :sanger_sample_id_column, :rows, :sample_manifest, :data, :processor
 
       validates_presence_of :start_row, :sanger_sample_id_column, :sample_manifest
-      validate :check_columns, :check_tags, :check_rows
+      validate :check_columns, :check_processor, :check_rows
+      validate :check_processor, if: 'processor.present?'
 
       def initialize(attributes = {})
         super
@@ -24,23 +25,12 @@ module SampleManifestExcel
         "<#{self.class}: @filename=#{filename}, @columns=#{columns.inspect}, @start_row=#{start_row}, @sanger_sample_id_column=#{sanger_sample_id_column}, @data=#{data.inspect}>"
       end
 
-      def update_samples(tag_group)
-        if valid?
-          rows.each do |row|
-            row.update_sample(tag_group)
-          end
-        end
-      end
-
       def get_sample_manifest
         return unless start_row.present? && sanger_sample_id_column.present?
         sample = Sample.find_by(id: data.cell(1, sanger_sample_id_column.number).to_i)
         sample.sample_manifest if sample.present?
       end
 
-      def update_sample_manifest
-        sample_manifest.update_attributes(uploaded: File.open(filename))
-      end
 
       def process(tag_group)
         processor.run(tag_group)
@@ -49,7 +39,7 @@ module SampleManifestExcel
     private
 
       def create_processor
-        if valid?
+        if sample_manifest.present?
           case sample_manifest.asset_type
           when '1dtube'
             Processor::OneDTube.new(self)
@@ -60,29 +50,25 @@ module SampleManifestExcel
       end
 
       def check_rows
-        unless rows.valid?
-          rows.errors.each do |key, value|
-            errors.add key, value
-          end
-        end
+        check_object(rows)
       end
 
       def check_columns
-        unless columns.valid?
-          columns.errors.each do |key, value|
+        check_object(columns)
+      end
+
+      def check_processor
+        check_object(processor)
+      end
+
+      def check_object(object)
+        unless object.valid?
+          object.errors.each do |key, value|
             errors.add key, value
           end
         end
       end
 
-      def check_tags
-        tag_oligo_column = columns.find_by(:name, :tag_oligo)
-        tag2_oligo_column = columns.find_by(:name, :tag2_oligo)
-        if tag_oligo_column.present? & tag2_oligo_column.present?
-          combinations = data.column(tag_oligo_column.number).zip(data.column(tag2_oligo_column.number))
-          errors.add(:tags_combinations, 'are not unique') unless combinations.length == combinations.uniq.length
-        end
-      end
     end
   end
 end
