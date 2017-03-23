@@ -8,23 +8,27 @@ class Pooling
   validate :source_assets_can_be_pooled, if: 'source_assets.present?'
 
   def execute
-    if stock_mx_tube_required?
-      @stock_mx_tube = Tube::Purpose.stock_mx_tube.create!
-      transfer_to(stock_mx_tube)
-    end
+    @stock_mx_tube = Tube::Purpose.stock_mx_tube.create! if stock_mx_tube_required?
     @standard_mx_tube = Tube::Purpose.standard_mx_tube.create!
-    transfer_to(standard_mx_tube)
+    transfer
     execute_print_job
   end
 
-  def transfer_to(target_asset)
-    source_assets.each do |source_asset|
-      RequestType.transfer.create!(asset: source_asset, target_asset: target_asset)
+  def transfer
+    target_assets.each do |target_asset|
+      source_assets.each do |source_asset|
+        RequestType.transfer.create!(asset: source_asset, target_asset: target_asset)
+      end
     end
+    message[:notice] = (message[:notice] || '') + success
   end
 
   def source_assets
     @source_assets ||= Asset.with_machine_barcode(barcodes)
+  end
+
+  def target_assets
+    @target_assets ||= [stock_mx_tube, standard_mx_tube].compact
   end
 
   def barcodes
@@ -33,11 +37,6 @@ class Pooling
 
   def stock_mx_tube_required?
     stock_mx_tube_required.present?
-  end
-
-  def success
-    "Samples were transferred successfully to standard_mx_tube #{standard_mx_tube.id} " +
-    ("and stock_mx_tube #{stock_mx_tube.id} " if stock_mx_tube.present?).to_s
   end
 
   def print_job_required?
@@ -50,12 +49,8 @@ class Pooling
                       assets: target_assets, count: count)
   end
 
-  def target_assets
-    [stock_mx_tube, standard_mx_tube].compact
-  end
-
-  def print_job_message
-    @print_job_message ||= {}
+  def message
+    @message ||= {}
   end
 
   private
@@ -82,10 +77,15 @@ class Pooling
   def execute_print_job
     if print_job_required?
       if print_job.execute
-        print_job_message[:notice] = print_job.success
+        message[:notice] = (message[:notice] || '') + print_job.success
       else
-        print_job_message[:error] = print_job.errors.full_messages.join('; ')
+        message[:error] = (message[:error] || '') + print_job.errors.full_messages.join('; ')
       end
     end
+  end
+
+  def success
+    "Samples were transferred successfully to standard_mx_tube #{standard_mx_tube.id} " +
+      ("and stock_mx_tube #{stock_mx_tube.id} " if stock_mx_tube.present?).to_s
   end
 end

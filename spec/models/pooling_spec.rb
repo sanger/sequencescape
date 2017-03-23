@@ -40,6 +40,7 @@ describe Pooling do
       pooling.execute
       expect(pooling.stock_mx_tube.present?).to be false
       expect(pooling.standard_mx_tube.aliquots.count).to eq 5
+      expect(pooling.message).to eq(notice: "Samples were transferred successfully to standard_mx_tube #{Tube.last.id} ")
     end
 
     it 'should create stock and standard mx tube if required' do
@@ -47,15 +48,25 @@ describe Pooling do
       pooling.execute
       expect(pooling.stock_mx_tube.aliquots.count).to eq 5
       expect(pooling.standard_mx_tube.aliquots.count).to eq 5
+      expect(pooling.message).to eq(notice: "Samples were transferred successfully to standard_mx_tube #{Tube.last.id} and stock_mx_tube #{Tube.last(2).first.id} ")
     end
 
     it 'should execute print_job if barcode printer is provided' do
       barcode_printer = create :barcode_printer
-      LabelPrinter::PmbClient.stub(:get_label_template_by_name) { { 'data' => [{ 'id' => 15 }] } }
+      allow(LabelPrinter::PmbClient).to receive(:get_label_template_by_name).and_return('data' => [{ 'id' => 15 }])
       pooling = Pooling.new(barcodes: @barcodes, barcode_printer: barcode_printer.name)
       expect(RestClient).to receive(:post)
       pooling.execute
       expect(pooling.print_job_required?).to be true
+      expect(pooling.message).to eq(notice: "Samples were transferred successfully to standard_mx_tube #{Tube.last.id} Your 1 label(s) have been sent to printer #{barcode_printer.name}")
+    end
+
+    it 'should return correct message if print_job is required but something is wrong with pmb' do
+      barcode_printer = create :barcode_printer
+      expect(RestClient).to receive(:get).and_raise(Errno::ECONNREFUSED)
+      pooling = Pooling.new(barcodes: @barcodes, barcode_printer: barcode_printer.name)
+      pooling.execute
+      expect(pooling.message).to eq(error: 'Printmybarcode service is down', notice: "Samples were transferred successfully to standard_mx_tube #{Tube.last.id} ")
     end
   end
 end

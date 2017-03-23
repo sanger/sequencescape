@@ -1,11 +1,11 @@
 module LabelPrinter
   module Label
     class MultiplexedTube < BaseTube
-      attr_reader :tubes, :count
+      attr_reader :tubes
 
       def initialize(options)
         @tubes = options[:assets]
-        @count = options[:count].to_i
+        @count = options[:count]
       end
 
       def top_line(tube)
