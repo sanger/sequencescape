@@ -25,6 +25,10 @@ require 'support/user_login'
 
 require 'pry'
 
+Capybara.register_driver :poltergeist do |app|
+  Capybara::Poltergeist::Driver.new(app, timeout: 1.minute)
+end
+
 Capybara.javascript_driver = :poltergeist
 
 WebMock.disable_net_connect!(allow_localhost: true)
