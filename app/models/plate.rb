@@ -156,9 +156,9 @@ class Plate < Asset
 
   def iteration
     iter = siblings # assets sharing the same parent
-      .where(plate_purpose_id: plate_purpose_id, sti_type: sti_type) # of the same purpose and type
-      .where('assets.created_at <= ?', created_at) # created before or at the same time
-      .count('assets.id') # count the siblings.
+           .where(plate_purpose_id: plate_purpose_id, sti_type: sti_type) # of the same purpose and type
+           .where('assets.created_at <= ?', created_at) # created before or at the same time
+           .count('assets.id') # count the siblings.
 
     iter.zero? ? nil : iter # Maintains compatibility with legacy version
   end
