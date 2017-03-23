@@ -51,6 +51,7 @@ module SampleManifestExcel
   end
 
   require_relative 'sample_manifest_excel/core_extensions'
+  require_relative 'sample_manifest_excel/subclass_checker'
   require_relative 'sample_manifest_excel/cell'
   require_relative 'sample_manifest_excel/list'
   require_relative 'sample_manifest_excel/conditional_formatting_default'

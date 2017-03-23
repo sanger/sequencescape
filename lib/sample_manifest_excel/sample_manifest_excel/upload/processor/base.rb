@@ -3,7 +3,10 @@ module SampleManifestExcel
     module Processor
       class Base
 
-        include ActiveModel::Model 
+        include ActiveModel::Model
+        include SubclassChecker
+
+        has_subclasses :one_d_tube, :multiplexed_library_tube, modual: self.to_s.deconstantize
 
         attr_reader :upload
         validates_presence_of :upload
@@ -26,8 +29,20 @@ module SampleManifestExcel
           end
         end
 
+        def samples_updated?
+          upload.rows.all? { |row| row.sample_updated? }
+        end
+
         def update_sample_manifest
-          upload.sample_manifest.update_attributes(uploaded: File.open(upload.filename))
+          @sample_manifest_updated = upload.sample_manifest.update_attributes(uploaded: File.open(upload.filename))
+        end
+
+        def sample_manifest_updated?
+          @sample_manifest_updated
+        end
+
+        def type
+          self.class.to_s
         end
 
       private

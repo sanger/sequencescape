@@ -79,12 +79,17 @@ module SampleManifestExcel
         if valid?
           sample.primary_receptacle.requests.each do |request|
             request.manifest_processed!
+            @aliquot_transferred = true
           end
         end
       end
 
       def sample_updated?
         @sample_updated
+      end
+
+      def aliquot_transferred?
+        @aliquot_transferred
       end
 
     private

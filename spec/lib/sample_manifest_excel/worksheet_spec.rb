@@ -235,9 +235,7 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
         worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes.merge(manifest_type: 'multiplexed_library'))
         save_file
         expect(worksheet.sample_manifest.asset_type).to eq('multiplexed_library')
-        # worksheet.samples.each do |sample|
-        #   sample.
-        # end
+        expect(worksheet.assets.all? { |asset| asset.requests.first.target_asset == worksheet.multiplexed_library_tube })
       end
     end
 

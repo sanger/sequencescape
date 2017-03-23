@@ -86,6 +86,54 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
     expect(upload.sample_manifest.uploaded.filename).to eq(test_file)
   end
 
+  describe '#processor' do
+
+    context '1dtube' do
+      let!(:columns) { column_list.extract(manifest_types.find_by(:tube_library_with_tag_sequences).columns) }
+      let!(:download) { build(:test_download, columns: columns)}
+
+      before(:each) do
+        download.save(test_file)
+      end
+
+      it 'should have the correct processor' do
+        upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: column_list, start_row: 9)
+        expect(upload.processor).to_not be_nil
+        expect(upload.processor).to be_one_d_tube
+      end
+
+      it 'updates all of the data' do
+        upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: column_list, start_row: 9)
+        upload.process(tag_group)
+        expect(upload.processor).to be_samples_updated
+        expect(upload.processor).to be_sample_manifest_updated
+      end
+    end
+
+    context 'multiplexed library tube' do
+      let!(:columns) { column_list.extract(manifest_types.find_by(:tube_multiplexed_library_with_tag_sequences).columns) }
+      let!(:download) { build(:test_download, columns: columns, manifest_type: 'multiplexed_library')}
+
+      before(:each) do
+        download.save(test_file)
+      end
+
+      it 'should have the correct processor' do
+        upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: column_list, start_row: 9)
+        expect(upload.processor).to_not be_nil
+        expect(upload.processor).to be_multiplexed_library_tube
+      end
+
+      it 'updates all of the data' do
+        upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: column_list, start_row: 9)
+        upload.process(tag_group)
+        expect(upload.processor).to be_samples_updated
+        expect(upload.processor).to be_sample_manifest_updated
+        expect(upload.processor).to be_aliquots_transferred
+      end
+    end
+  end
+
   after(:each) do
     File.delete(test_file) if File.exist?(test_file)
   end

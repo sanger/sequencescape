@@ -35,14 +35,19 @@ module SampleManifestExcel
 
       def create_samples
         first_to_last.each do |i|
-          sample_tube = FactoryGirl.create(:sample_tube)
-          unless validation_errors.include?(:sample_manifest)
-            sample_tube.sample.sample_manifest = sample_manifest
-            sample_tube.sample.save
+          create_asset do |asset|
+            unless validation_errors.include?(:sample_manifest)
+              asset.sample.sample_manifest = sample_manifest
+              asset.sample.save
+            end
+            dynamic_attributes[i][:sanger_sample_id] = asset.sample.id
+            dynamic_attributes[i][:sanger_tube_id] = asset.sanger_human_barcode
           end
-          dynamic_attributes[i][:sanger_sample_id] = sample_tube.sample.id
-          dynamic_attributes[i][:sanger_tube_id] = sample_tube.sample.assets.first.sanger_human_barcode
         end
+      end
+
+      def assets
+        @assets ||= []
       end
 
       def add_cell_data(column, n)
@@ -61,6 +66,10 @@ module SampleManifestExcel
 
       def sample_manifest
         @sample_manifest ||= FactoryGirl.create(:sample_manifest, asset_type: manifest_type, rapid_generation: true)
+      end
+
+      def multiplexed_library_tube
+        @multiplexed_library_tube ||= FactoryGirl.create(:multiplexed_library_tube)
       end
 
       class Tags
@@ -91,6 +100,18 @@ module SampleManifestExcel
       end
 
     private
+
+      def create_asset
+        if manifest_type == 'multiplexed_library'
+          asset = FactoryGirl.create(:library_tube)
+          FactoryGirl.create(:external_multiplexed_library_tube_creation_request, asset: asset, target_asset: multiplexed_library_tube)
+        else
+          asset = FactoryGirl.create(:sample_tube)
+        end
+        assets << asset
+        asset
+        yield(asset) if block_given?
+      end
 
      
 

@@ -5,7 +5,7 @@ module SampleManifestExcel
 
       attr_accessor :filename, :column_list, :start_row
 
-      attr_reader :spreadsheet, :columns, :sanger_sample_id_column, :rows, :sample_manifest, :data
+      attr_reader :spreadsheet, :columns, :sanger_sample_id_column, :rows, :sample_manifest, :data, :processor
 
       validates_presence_of :start_row, :sanger_sample_id_column, :sample_manifest
       validate :check_columns, :check_tags, :check_rows
@@ -17,6 +17,7 @@ module SampleManifestExcel
         @sanger_sample_id_column = columns.find_by(:name, :sanger_sample_id)
         @rows = Rows.new(data, columns)
         @sample_manifest = get_sample_manifest
+        @processor = create_processor
       end
 
       def inspect
@@ -41,7 +42,22 @@ module SampleManifestExcel
         sample_manifest.update_attributes(uploaded: File.open(filename))
       end
 
+      def process(tag_group)
+        processor.run(tag_group)
+      end
+
     private
+
+      def create_processor
+        if valid?
+          case sample_manifest.asset_type
+          when '1dtube'
+            Processor::OneDTube.new(self)
+          when 'multiplexed_library'
+            Processor::MultiplexedLibraryTube.new(self)
+          end
+        end
+      end
 
       def check_rows
         unless rows.valid?

@@ -41,16 +41,14 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
       it 'will update the samples' do
         processor = SampleManifestExcel::Upload::Processor::OneDTube.new(upload)
         processor.run(tag_group)
+        expect(processor).to be_samples_updated
         expect(upload.rows.all? { |row| row.sample_updated? }).to be_truthy
-        expect(upload.rows.first.sample.aliquots.first.insert_size_from).to_not be_nil
-        expect(upload.rows.last.sample.aliquots.first.insert_size_from).to_not be_nil
-        expect(upload.rows.first.sample.sample_metadata.concentration).to_not be_nil
-        expect(upload.rows.last.sample.sample_metadata.concentration).to_not be_nil
       end
 
       it 'will update the sample manifest' do
         processor = SampleManifestExcel::Upload::Processor::OneDTube.new(upload)
         processor.run(tag_group)
+        expect(processor).to be_sample_manifest_updated
         expect(upload.sample_manifest.uploaded.filename).to eq(test_file)
       end
     end
@@ -63,17 +61,22 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
         it 'will update the samples' do
           processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(upload)
           processor.run(tag_group)
+          expect(processor).to be_samples_updated
           expect(upload.rows.all? { |row| row.sample_updated? }).to be_truthy
-          expect(upload.rows.first.sample.aliquots.first.insert_size_from).to_not be_nil
-          expect(upload.rows.last.sample.aliquots.first.insert_size_from).to_not be_nil
-          expect(upload.rows.first.sample.sample_metadata.concentration).to_not be_nil
-          expect(upload.rows.last.sample.sample_metadata.concentration).to_not be_nil
         end
 
         it 'will update the sample manifest' do
           processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(upload)
           processor.run(tag_group)
+          expect(processor).to be_sample_manifest_updated
           expect(upload.sample_manifest.uploaded.filename).to eq(test_file)
+        end
+
+        it 'will transfer the aliquots to the multiplexed library tube' do
+          processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(upload)
+          processor.run(tag_group)
+          expect(processor).to be_aliquots_transferred
+          expect(upload.rows.all? { |row| row.aliquot_transferred? }).to be_truthy
         end
       end
 
@@ -89,5 +92,10 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
 
       
     end
+
+    after(:each) do
+      File.delete(test_file) if File.exist?(test_file)
+    end
+
   end
 end
