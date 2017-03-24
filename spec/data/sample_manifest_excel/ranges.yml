@@ -32,7 +32,7 @@ concentration_determined_by:
   - Nanodrop
   - Spectrophotometer
   - Other
-dna_storage_conditions:
+sample_storage_conditions:
   - +4C
   - '-20C'
   - '-80C'

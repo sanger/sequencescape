@@ -506,7 +506,7 @@ sample_storage_conditions:
       errorStyle: :stop
       errorTitle: "DNA Storage Conditions"
       error: "You must enter a Temperature from the list provided, in the correct format e.g.+4C."
-    range_name: :dna_storage_conditions
+    range_name: :sample_storage_conditions
   conditional_formattings:
     empty_cell:
     is_error:
@@ -525,7 +525,7 @@ mother:
       showErrorMessage: true
       errorStyle: :stop
       errorTitle: "Mother - Supplier Sample Name"
-      error: "Name must be a miaximum of 15 characters in length."
+      error: "Name must be a maximum of 15 characters in length."
   conditional_formattings:
     empty_cell:
     len:
