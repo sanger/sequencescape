@@ -31,6 +31,7 @@ RSpec.describe SampleManifestUploader, type: :model do
     uploader = SampleManifestUploader.new(test_file, SampleManifestExcel.configuration)
     uploader.run!
     expect(uploader.upload).to be_processed
+    File.delete(test_file) if File.exist?(test_file)
   end
 
    it 'will not upload an invalid sample manifest' do
@@ -40,6 +41,7 @@ RSpec.describe SampleManifestUploader, type: :model do
     expect(uploader).to_not be_valid
     expect(uploader.errors).to_not be_empty
     expect(uploader.upload).to_not be_processed
+    File.delete(test_file) if File.exist?(test_file)
   end
 
   after(:all) do
