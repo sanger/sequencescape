@@ -36,22 +36,12 @@ module SequencingQcBatch
 
   # View based check to display batches with results
   def show_in_manual_qc?
-    if assets_qc_tasks_results.uniq.size > 1
-      answer = false
-    else
-      answer = true
-    end
-    answer
+    assets_qc_tasks_results.uniq.size <= 1
   end
 
   # Cron job specific checker
   def migrate_to_manual_qc?
-    if assets_qc_tasks_results.include?(true)
-      answer = true
-    else
-      answer = false
-    end
-    answer
+    assets_qc_tasks_results.include?(true)
   end
 
   # Returns qc_states used

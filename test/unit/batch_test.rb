@@ -867,6 +867,55 @@ class BatchTest < ActiveSupport::TestCase
     end
   end
 
+  context '#npg_set_state' do
+    setup do
+      # JG: The QC state machine on batch is near non-existent, and all events
+      # just push the batch into the next state. Here we advance the qc_state
+      # to try and model what appears to be the intended behaviour.
+      @pipeline = create :sequencing_pipeline
+      @batch = create :batch, pipeline: @pipeline
+      @batch.update_attributes!(qc_state: 'qc_manual_in_progress')
+      @requests = create_list :request, 2, state: 'started', request_type: @pipeline.request_types.first
+      @batch.requests = @requests
+    end
+
+    context 'when all requests are passed' do
+      setup do
+        @requests.each do |r|
+          r.events.create!(family: 'pass')
+        end
+        @batch.npg_set_state
+      end
+      should 'should complete the batch' do
+        assert_equal 'qc_completed', @batch.qc_state
+      end
+    end
+
+    context 'when not all requests are passed' do
+      setup do
+        @requests.first.events.create!(family: 'pass')
+        @batch.npg_set_state
+      end
+      should 'should not complete the batch' do
+        assert_equal 'qc_manual_in_progress', @batch.qc_state
+      end
+    end
+
+    # JG: Resources are a little clunky, they essentially indicate controls.
+    # They don't tend to get used much any more, and I'm not entirely
+    # clear if they have any meaningful distinction from control requests.
+    context 'when some assets are a resource' do
+      setup do
+        @batch.requests.first.events.create!(family: 'pass')
+        @batch.requests.last.asset.update_attributes!(resource: true)
+        @batch.npg_set_state
+      end
+      should 'should complete the batch' do
+        assert_equal 'qc_completed', @batch.qc_state
+      end
+    end
+  end
+
   context 'ready? all requests before creating batch' do
     setup do
       @library_creation_request = create(:library_creation_request_for_testing_sequencing_requests)
