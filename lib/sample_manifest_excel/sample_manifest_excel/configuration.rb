@@ -43,7 +43,7 @@ module SampleManifestExcel
     end
 
     def tag_group=(tag_group)
-      @tag_group = TagGroup.find_or_create_by(name: tag_group)
+      @tag_group = tag_group
     end
 
     def loaded?

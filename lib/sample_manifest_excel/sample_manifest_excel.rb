@@ -24,6 +24,8 @@ module SampleManifestExcel
   require_relative 'sample_manifest_excel/tags'
   require_relative 'sample_manifest_excel/test_download'
   require_relative 'sample_manifest_excel/upload'
+  require_relative 'sample_manifest_excel/configuration'
+  require_relative 'sample_manifest_excel/null_configuration'
 
   Axlsx::Worksheet.send(:include, CoreExtensions::AxlsxWorksheet)
 

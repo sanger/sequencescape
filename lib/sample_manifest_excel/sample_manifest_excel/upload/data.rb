@@ -24,6 +24,9 @@ module SampleManifestExcel
           @sheet = Roo::Spreadsheet.open(filename).sheet(0)
           @header_row = sheet.row(start_row)
           @data = sheet.drop(start_row)
+        else
+          @header_row = []
+          @data = []
         end
       end
 

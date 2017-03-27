@@ -27,6 +27,10 @@ module SampleManifestExcel
             upload.rows.all? { |row| row.aliquot_transferred? }
           end
 
+          def processed?
+            @processed ||= samples_updated? && sample_manifest_updated? && aliquots_transferred?
+          end
+
       private
 
         def check_tags

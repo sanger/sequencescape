@@ -21,10 +21,12 @@ module SampleManifestExcel
       validate :check_columns, :check_processor, :check_rows
       validate :check_processor, if: 'processor.present?'
 
+      delegate :processed?, to: :processor
+
       def initialize(attributes = {})
         super
         @data = Data.new(filename, start_row)
-        @columns = column_list.extract(data.header_row)
+        @columns = column_list.extract(data.header_row || [])
         @sanger_sample_id_column = columns.find_by(:name, :sanger_sample_id)
         @rows = Rows.new(data, columns)
         @sample_manifest = get_sample_manifest

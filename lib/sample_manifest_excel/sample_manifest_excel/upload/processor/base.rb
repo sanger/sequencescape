@@ -38,6 +38,10 @@ module SampleManifestExcel
           upload.rows.all? { |row| row.sample_updated? }
         end
 
+        def processed?
+          @processed ||= samples_updated? && sample_manifest_updated?
+        end
+
         ##
         # Override the sample manifest with the raw uploaded data.
         def update_sample_manifest

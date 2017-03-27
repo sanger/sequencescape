@@ -20,7 +20,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
         config.load!
       end
     end
-    
+
     let(:test_file)               { 'test_file.xlsx' }
     let(:columns)                 { SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup }
     let!(:tag_group)              { create(:tag_group) }
@@ -51,6 +51,12 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
         expect(processor).to be_sample_manifest_updated
         expect(upload.sample_manifest.uploaded.filename).to eq(test_file)
       end
+
+      it 'will be processed' do
+        processor = SampleManifestExcel::Upload::Processor::OneDTube.new(upload)
+        processor.run(tag_group)
+        expect(processor).to be_processed
+      end
     end
 
     context 'Multiplexed Library Tube' do
@@ -76,6 +82,12 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
           processor.run(tag_group)
           expect(processor).to be_aliquots_transferred
           expect(upload.rows.all? { |row| row.aliquot_transferred? }).to be_truthy
+        end
+
+        it 'will be processed' do
+          processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(upload)
+          processor.run(tag_group)
+          expect(processor).to be_processed
         end
       end
 

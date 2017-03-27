@@ -73,8 +73,7 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
       it 'updates all of the data' do
         upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: columns, start_row: 9)
         upload.process(tag_group)
-        expect(upload.processor).to be_samples_updated
-        expect(upload.processor).to be_sample_manifest_updated
+        expect(upload).to be_processed
       end
     end
 
@@ -99,9 +98,7 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
         download.save(test_file)
         upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: columns, start_row: 9)
         upload.process(tag_group)
-        expect(upload.processor).to be_samples_updated
-        expect(upload.processor).to be_sample_manifest_updated
-        expect(upload.processor).to be_aliquots_transferred
+        expect(upload).to be_processed
       end
 
       it 'fails if the tags are invalid' do
@@ -109,9 +106,7 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
         download.save(test_file)
         upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: columns, start_row: 9)
         upload.process(tag_group)
-        expect(upload.processor).to_not be_samples_updated
-        expect(upload.processor).to_not be_sample_manifest_updated
-        expect(upload.processor).to_not be_aliquots_transferred
+        expect(upload).to_not be_processed
       end
     end
   end

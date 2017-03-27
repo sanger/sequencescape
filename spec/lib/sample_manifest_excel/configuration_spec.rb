@@ -17,8 +17,7 @@ RSpec.describe SampleManifestExcel::Configuration, type: :model, sample_manifest
   it 'should be able to set and get a tag group' do
     expect(configuration.tag_group).to be nil
     configuration.tag_group = 'Main test group'
-    expect(configuration.tag_group).to be_an_instance_of(TagGroup)
-    expect(configuration.tag_group.name).to eq 'Main test group'
+    expect(configuration.tag_group).to eq('Main test group')
   end
 
   describe 'without a folder' do
