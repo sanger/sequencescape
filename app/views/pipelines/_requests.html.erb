@@ -12,7 +12,7 @@
     <thead>
       <tr>
         <th class='{sorter: false}'>&nbsp;</th>
-        <th id="priority_flag"  style='text-align: center'><%= link_to image_tag("icon_0_flag.png", :size=>"16x16"), "javascript:void(0);" %></th>
+        <th id="priority_flag"  style='text-align: center'><%= link_to image_tag("icon_0_flag.png", size: "16x16"), "javascript:void(0);" %></th>
         <% if current_user.is_lab_manager? %>
           <th><%= link_to "Previous requests", "javascript:void(0);" %></th>
         <% end %>
@@ -42,17 +42,17 @@
           <td class="request center">
             <%= hidden_label_tag_for_testing("request_#{request.id}", "Select #{request.asset.sti_type} #{request.asset.barcode} for batch") %>
             <% if request.ready? %>
-              <%= check_box :request, request.id, :value => request.id, :class => 'grouped_checkbox request_checkbox', :'data-count' => 1 %>
+              <%= check_box :request, request.id, value: request.id, class: 'grouped_checkbox request_checkbox', :'data-count' => 1 %>
             <% else %>
-              <%= image_tag "error.png", 'title' => I18n.t("requests.status.not_ready"), :size => '16x16' %>
+              <%= image_tag "error.png", 'title' => I18n.t("requests.status.not_ready"), size: '16x16' %>
             <% end %>
           </td>
           <td  style='text-align: center'>
-            <%= image_tag "icon_#{request.priority}_flag.png", 'alt' => request.priority, :size => '16x16', :class =>  "flag_image #{current_user.is_lab_manager? ? 'as_manager' : ''}", "data-priority" => request.priority, 'data-request-id' => request.id %>
+            <%= image_tag "icon_#{request.priority}_flag.png", 'alt' => request.priority, size: '16x16', class: "flag_image #{current_user.is_lab_manager? ? 'as_manager' : ''}", "data-priority" => request.priority, 'data-request-id' => request.id %>
           </td>
           <% if current_user.is_lab_manager? %>
             <td>
-              <%= render :partial => "previous_failed_requests", :locals => { :request => request } %>
+              <%= render partial: "previous_failed_requests", locals: { request: request } %>
             </td>
           <% end %>
           <td>
@@ -67,14 +67,14 @@
           <td><%= link_to request.asset.try(:name), asset_path(request.asset) %></td>
 
           <% unless request_comments_count.zero? -%>
-            <%= render :partial => "request_comments", :locals => { :request => request, :comments_count => request_comments_count } %>
+            <%= render partial: "request_comments", locals: { request: request, comments_count: request_comments_count } %>
           <% else -%>
             <td>&nbsp;</td>
           <% end -%>
           <% if request.asset %>
             <td><%=  link_to "#{request.asset.sanger_human_barcode}", asset_path(request.asset) %></td>
             <% unless asset_comments_count.zero? -%>
-              <%= render :partial => "asset_comments", :locals => { :request => request, :comments_count => asset_comments_count } %>
+              <%= render partial: "asset_comments", locals: { request: request, comments_count: asset_comments_count } %>
             <% else -%>
               <td>&nbsp;</td>
             <% end -%>
@@ -93,7 +93,7 @@
               <%= h(request.request_metadata[information_type.key]) %>
             </td>
           <% end %>
-          <td width=100px><%= truncate(request.try(:submission).try(:study_names), :separator => ' ') %></td>
+          <td width=100px><%= truncate(request.try(:submission).try(:study_names), separator: ' ') %></td>
         </tr>
       <%- end -%>
     </tbody>

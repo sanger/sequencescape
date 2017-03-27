@@ -9,35 +9,35 @@
   <% if @studies.present? %>
     <h4><%= pluralize @studies.size, "study" %></h4>
     <ul>
-      <%= render :partial => "searches/show/study", :collection => @studies %>
+      <%= render partial: "searches/show/study", collection: @studies %>
     </ul>
   <% end %>
 
   <% if @samples.present? %>
     <h4><%= pluralize @samples.size, "sample" %></h4>
     <ul>
-      <%= render :partial => "searches/show/sample", :collection => @samples %>
+      <%= render partial: "searches/show/sample", collection: @samples %>
     </ul>
   <% end %>
 
   <% if @assets.present? %>
     <h4><%= pluralize @assets.size, "assets" %></h4>
     <ul>
-      <%= render :partial => "searches/show/asset", :collection => @assets %>
+      <%= render partial: "searches/show/asset", collection: @assets %>
     </ul>
   <% end %>
 
   <% if @asset_groups.present? %>
     <h4><%= pluralize @asset_groups.size, "asset groups" %></h4>
     <ul>
-      <%= render :partial => "searches/show/asset_group", :collection => @asset_groups %>
+      <%= render partial: "searches/show/asset_group", collection: @asset_groups %>
     </ul>
   <% end %>
 
   <% if @requests.present? %>
     <h4><%= pluralize @requests.size, "items" %></h4>
     <ul>
-      <%= render :partial => "searches/show/request", :collection => @requests %>
+      <%= render partial: "searches/show/request", collection: @requests %>
     </ul>
   <% end %>
 

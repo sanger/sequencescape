@@ -24,13 +24,13 @@
     <% @page_elements.each do |asset| %>
       <% asset_statistics = statistics[asset.id] %>
       <tr class="<%= asset.closed? ? 'closed' : 'open' %>">
-        <td><%= link_to(h(asset.display_name), asset_path(asset), :title => asset.label.capitalize) %></td>
+        <td><%= link_to(h(asset.display_name), asset_path(asset), title: asset.label.capitalize) %></td>
         <td><%= asset.closed? ? 'No' : 'Yes' %></td>
-        <td><%= request_link(asset, asset_statistics.pending,   nil, 'pending',   {}, {:title => "#{h(asset.display_name)} pending"})   %></td>
-        <td><%= request_link(asset, asset_statistics.started,   nil, 'started',   {}, {:title => "#{h(asset.display_name)} started"})   %></td>
-        <td><%= request_link(asset, asset_statistics.passed,    nil, 'passed',    {}, {:title => "#{h(asset.display_name)} passed"})    %></td>
-        <td><%= request_link(asset, asset_statistics.failed,    nil, 'failed',    {}, {:title => "#{h(asset.display_name)} failed"})    %></td>
-        <td><%= request_link(asset, asset_statistics.cancelled, nil, 'cancelled', {}, {:title => "#{h(asset.display_name)} cancelled"}) %></td>
+        <td><%= request_link(asset, asset_statistics.pending,   nil, 'pending',   {}, {title: "#{h(asset.display_name)} pending"})   %></td>
+        <td><%= request_link(asset, asset_statistics.started,   nil, 'started',   {}, {title: "#{h(asset.display_name)} started"})   %></td>
+        <td><%= request_link(asset, asset_statistics.passed,    nil, 'passed',    {}, {title: "#{h(asset.display_name)} passed"})    %></td>
+        <td><%= request_link(asset, asset_statistics.failed,    nil, 'failed',    {}, {title: "#{h(asset.display_name)} failed"})    %></td>
+        <td><%= request_link(asset, asset_statistics.cancelled, nil, 'cancelled', {}, {title: "#{h(asset.display_name)} cancelled"}) %></td>
       </tr>
     <% end %>
   <% end %>

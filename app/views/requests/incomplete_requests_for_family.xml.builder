@@ -3,13 +3,13 @@ def output_items(request, r)
     r.items.each do |i|
       items.item do |item|
         output_item(item, i, r)
-      end  
+      end
     end
   end
 end
 
 def output_sample_pool(request, r)
-  if r.item.workflow_sample && r.item.workflow_sample.samples.size > 1 
+  if r.item.workflow_sample && r.item.workflow_sample.samples.size > 1
     request.sample_pool do |sample_pool|
       sample_pool.id r.item.workflow_sample.id
       sample_pool.descriptors do |descriptors|
@@ -91,7 +91,7 @@ end
 
 xml.instruct!
 xml.comment!("/requests/incomplete_requests_for_family has been deprecated and will be removed in Sequencescape 3.1 - use /requests/pending?request_type='key_for_request_type' instead")
-xml.requests({:api_version => '0.1'}) do |requests|
+xml.requests({api_version: '0.1'}) do |requests|
   @requests.each do |r|
     cache(r.cache_key) do
     requests.request do |request|

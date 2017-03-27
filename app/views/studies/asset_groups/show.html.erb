@@ -38,13 +38,13 @@
 </div>
 <hr />
 <% if current_user.is_administrator? || current_user.is_manager?(@study) %>
-  <%= form_for @asset_group, :url => search_study_asset_group_path(@study, @asset_group), :html => {:method => :post} do |f| %>
+  <%= form_for @asset_group, url: search_study_asset_group_path(@study, @asset_group), html: {method: :post} do |f| %>
     <p><%= label_tag(:q, 'Search for assets to add to group') %>: <%= text_field_tag :q %> <%= f.submit "Search" %></p>
   <% end %>
 <hr />
 <% end %>
 <% if @asset_group.automatic_move? %>
-  <%= render :partial => "reception_form", :locals =>{ :barcodes => @asset_group.assets.map(&:ean13_barcode), :receive_barcode => "receive_barcode", :type=>@asset_group.asset_types.first} %>
+  <%= render partial: "reception_form", locals: { barcodes: @asset_group.assets.map(&:ean13_barcode), receive_barcode: "receive_barcode", type: @asset_group.asset_types.first} %>
 <hr />
 <% end %>
 <div class='section'>

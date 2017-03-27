@@ -16,15 +16,15 @@
 
 <% if @requests.empty? -%>
   <div id="empty_filter">
-    No items found. <%= link_to "Create the first one", :action => "new" %>
+    No items found. <%= link_to "Create the first one", action: "new" %>
   </div>
 <% else -%>
-  <%= render :partial => "shared/batch", :locals => { :requests => @requests, :edit => true, :stage => false  } %>
+  <%= render partial: "shared/batch", locals: { requests: @requests, edit: true, stage: false  } %>
 <%- end -%>
 
 <% if !@batch.has_control? && @batch.pipeline.has_controls? -%>
 <h1>CONTROLS</h1>
-<%= render :partial => "controls" %>
+<%= render partial: "controls" %>
 <% end -%>
 
 <h2>ASSIGN BATCH TO USER</h2>
@@ -36,8 +36,8 @@
     <%= form_for @batch do |form| -%>
       <table width="100%" cellspacing="0" cellpadding="0">
         <tr>
-          <td width="45%" class="item"><%= select :assignee_id, @users.pluck(:login,:id), :selected => @batch.assignee_id||current_user.id %></td>
-          <td width="55%"><%= submit_tag :pipeline, :value => "Assign" %></td>
+          <td width="45%" class="item"><%= select :assignee_id, @users.pluck(:login,:id), selected: @batch.assignee_id||current_user.id %></td>
+          <td width="55%"><%= submit_tag :pipeline, value: "Assign" %></td>
         </tr>
       </table>
     <% end -%>
@@ -50,10 +50,10 @@
       This will release all requests in the batch back into the inbox. The batch itself will be destroyed, target assets, such as lanes, will be removed.
     </div>
     <div>
-      <%= form_tag(:controller => :batches, :action => :reset_batch, :id => @batch.id) do -%>
+      <%= form_tag(controller: :batches, action: :reset_batch, id: @batch.id) do -%>
         <table width="100%" cellspacing="0" cellpadding="0">
           <tr>
-            <td width="45%" class="item"><%= submit_tag "Reset", :confirm => 'Do you really want to do this?' %></td><td width="55%"></td>
+            <td width="45%" class="item"><%= submit_tag "Reset", confirm: 'Do you really want to do this?' %></td><td width="55%"></td>
           </tr>
         </table>
       <% end %>
@@ -67,10 +67,10 @@
       This will move the batch to it's previous QC state.
     </div>
     <div>
-      <%= form_tag(:controller => :batches, :action => :previous_qc_state, :id => @batch.id) do -%>
+      <%= form_tag(controller: :batches, action: :previous_qc_state, id: @batch.id) do -%>
         <table width="100%" cellspacing="0" cellpadding="0">
           <tr>
-            <td width="45%" class="item"><%= submit_tag "Move to previous state", :confirm => 'Do you really want to do this?' %></td><td width="55%"></td>
+            <td width="45%" class="item"><%= submit_tag "Move to previous state", confirm: 'Do you really want to do this?' %></td><td width="55%"></td>
           </tr>
         </table>
       <% end %>

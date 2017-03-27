@@ -15,7 +15,7 @@
     <ul>
       <li><%= link_to "Create", new_study_path  %></li>
       <li><%= link_to "View All", studies_path  %></li>
-      <li><%= link_to "Manage", url_for(:controller => "admin/studies", :action => "index") %></li>
+      <li><%= link_to "Manage", url_for(controller: "admin/studies", action: "index") %></li>
     </ul>
   <% end %>
 </div>
@@ -25,7 +25,7 @@
     <ul>
       <li><%= link_to "Create", new_project_path  %></li>
       <li><%= link_to "View All", projects_path  %></li>
-      <li><%= link_to "Manage", url_for(:controller => "admin/projects", :action => "index") %></li>
+      <li><%= link_to "Manage", url_for(controller: "admin/projects", action: "index") %></li>
     </ul>
   <% end %>
 </div>

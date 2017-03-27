@@ -14,7 +14,7 @@ Hello,
 <p>
 You can view this sample here:<br />
 
-<% link = url_for(:host => configatron.site_url, :controller => 'samples', :action => 'show', :id => @eventful.id) %>
+<% link = url_for(host: configatron.site_url, controller: 'samples', action: 'show', id: @eventful.id) %>
 <a href="<%= link %>"><%= link %></a>
 </p>
 

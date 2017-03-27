@@ -18,7 +18,7 @@
   <% studies.each do |study| -%>
     <tr>
       <td class="strong"><%= study.id %></td>
-      <td class="strong"><%= link_to truncate(study.name, :length => 40), study_path(study) %> <small><%= link_to 'Details', properties_study_path(study) %></small></td>
+      <td class="strong"><%= link_to truncate(study.name, length: 40), study_path(study) %> <small><%= link_to 'Details', properties_study_path(study) %></small></td>
       <td class="strong faint"><span style="display:none"><%= study.created_at %></span><%= study.created_at.to_formatted_s(:sortable) %></td>
       <td class="strong"><%= display_owners(study) %></td>
     </tr>

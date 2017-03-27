@@ -8,8 +8,8 @@
   <ul class="nav nav-tabs">
     <% @summaries.each_with_index do |description, index| %>
     <% selected = summary.to_i == index ? 'selected' : '' %>
-    <%= content_tag(:li, :class=>selected) do %>
-      <%= link_to content_tag(:em) { description }, show_summary_study_workflow_path(@study,@workflow, {:summary => index}.merge(@extra_params)), :class => (summary.to_i == index ? 'selected' : ''), :remote => true, :'data-throbber' => '.loading-bar-container', :'data-failure' => '#remote_error', :'data-update' => '#everything', :'data-tab-group' => 'studies-summaries-tab' %>
+    <%= content_tag(:li, class: selected) do %>
+      <%= link_to content_tag(:em) { description }, show_summary_study_workflow_path(@study,@workflow, {summary: index}.merge(@extra_params)), class: (summary.to_i == index ? 'selected' : ''), remote: true, :'data-throbber' => '.loading-bar-container', :'data-failure' => '#remote_error', :'data-update' => '#everything', :'data-tab-group' => 'studies-summaries-tab' %>
       <% end %>
     <% end %>
   </ul>

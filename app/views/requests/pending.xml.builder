@@ -9,7 +9,7 @@ def output_items(request, r)
 end
 
 def output_sample_pool(request, r)
-  if r.item.workflow_sample && r.item.workflow_sample.samples.size > 1 
+  if r.item.workflow_sample && r.item.workflow_sample.samples.size > 1
     request.sample_pool do |sample_pool|
       sample_pool.id r.item.workflow_sample.id
       sample_pool.descriptors do |descriptors|
@@ -99,7 +99,7 @@ rescue
 end
 
 xml.instruct!
-xml.requests({:api_version => '0.1'}) do |requests|
+xml.requests({api_version: '0.1'}) do |requests|
   @requests.each do |r|
     requests.request do |request|
       request.id r.id

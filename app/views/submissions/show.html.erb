@@ -21,9 +21,9 @@ end %>
 
 <div class='priority_changer alert alert-info'>
   <h3>Priority</h3>
-  <%= image_tag("icon_#{@presenter.submission.priority}_flag.png", :size=>"64x64", :class=>'sub_flag') if @presenter.submission.priority > 0 %>
+  <%= image_tag("icon_#{@presenter.submission.priority}_flag.png", size: "64x64", class: 'sub_flag') if @presenter.submission.priority > 0 %>
   <% if current_user.is_lab_manager? %>
-  <%= form_for( @presenter, :as => :submission, :url => {:id=> @presenter.submission.id, :action => :change_priority }) do |f| %>
+  <%= form_for( @presenter, as: :submission, url: {id: @presenter.submission.id, action: :change_priority }) do |f| %>
 
       <p>The priority of a submission applies to all requests in the submission. If it is changed, request priority will be updated automatically.</p>
       <%= label(:priority,'Select new priority') %>
@@ -52,20 +52,20 @@ end %>
 <ul id="orders">
 <% @presenter.submission.orders.each do |order| %>
   <li class="pane order active completed">
-  <%= render :partial => 'saved_order', :locals => { :presenter => @presenter, :order => order } %>
+  <%= render partial: 'saved_order', locals: { presenter: @presenter, order: order } %>
   </li>
 <% end %>
 </ul>
 
 <% if @presenter.submission.cancellable? %>
 <%= form_for(@presenter,
-     :url => { :id=> @presenter.submission.id, :action => :cancel }, :as => :submission) do |f| %>
+     url: { id: @presenter.submission.id, action: :cancel }, as: :submission) do |f| %>
   <%= submit_tag "✖ Cancel Submission",
-  :style=>'
+  style: '
   ',
-  :id       => "cancel-submission",
-  :confirm=>'Are you sure?',
-  :class    => "button btn btn-danger" %>
+  id: "cancel-submission",
+  confirm: 'Are you sure?',
+  class: "button btn btn-danger" %>
 <% end %>
 <% end %>
 

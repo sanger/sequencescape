@@ -27,7 +27,7 @@
       <td><%= link_to 'Print labels', print_study_asset_group_path(@study, asset_group) %></td>
       <% if @current_user.administrator? %>
         <td><%= link_to 'Edit', edit_study_asset_group_path(@study, asset_group) %></td>
-        <td><%= link_to 'Destroy', study_asset_group_path(@study, asset_group), :confirm => 'Are you sure?', :method => :delete %></td>
+        <td><%= link_to 'Destroy', study_asset_group_path(@study, asset_group), confirm: 'Are you sure?', method: :delete %></td>
       <% end %>
     </tr>
   <% end -%>

@@ -12,7 +12,7 @@
   </tr>
 </table>
 <%= fields_for(@study) do |f| %>
-  <%= f.fields_for(:study_metadata, :builder => Metadata::FormBuilder) do |metadata_fields| %>
+  <%= f.fields_for(:study_metadata, builder: Metadata::FormBuilder) do |metadata_fields| %>
     <%= metadata_fields.text_field :hmdmc_approval_number %>
   <% end %>
 <% end %>
@@ -26,7 +26,7 @@
             <%= display_file_icon(document) %>
             <%= link_to document.filename, study_document_path(study, document) %>
             <% if current_user.administrator? %>
-              <%= link_to(image_tag("delete.png", :id => "delete_file_#{document.id}"), [study, document], :method => :delete, :title => "Delete #{ document.filename }", :alt => "Delete") %>
+              <%= link_to(image_tag("delete.png", id: "delete_file_#{document.id}"), [study, document], method: :delete, title: "Delete #{ document.filename }", alt: "Delete") %>
             <% end %>
           </div>
         <% end %>

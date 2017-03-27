@@ -5,24 +5,24 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.%>
 
 <h2>Input requests</h2>
-<%= render :partial => "batch_statuses" %>
-<%= render :partial => 'pipeline_limit' %>
+<%= render partial: "batch_statuses" %>
+<%= render partial: 'pipeline_limit' %>
 
 <% if @requests_waiting == 0 -%>
   There are no outstanding requests for this pipeline.
 <% else -%>
-  <%= render :partial => 'pipeline_paginate' %>
+  <%= render partial: 'pipeline_paginate' %>
   <!-- _request_group_by_submission_inbox.html.erb -->
-  <%= form_tag({:controller => :batches, :action => :create, :id => @pipeline.id}, :id => "requests_to_batch_form") do -%>
+  <%= form_tag({controller: :batches, action: :create, id: @pipeline.id}, id: "requests_to_batch_form") do -%>
     <% if @pipeline.item_limit -%>
       <input type="hidden" id="batch_item_limit" value="<%= @pipeline.item_limit %>" />
     <% end -%>
-    <%= render :partial => 'inbox_submission_button' %>
-    <%= render :partial => "grouped_requests", :locals => {:grouped_requests => @grouped_requests } %>
-    <%= render :partial => 'inbox_submission_button' %>
+    <%= render partial: 'inbox_submission_button' %>
+    <%= render partial: "grouped_requests", locals: {grouped_requests: @grouped_requests } %>
+    <%= render partial: 'inbox_submission_button' %>
   <% end -%>
 
- <%= render :partial => 'pipeline_paginate' %>
+ <%= render partial: 'pipeline_paginate' %>
 <% end -%>
 
-<%= render :partial => 'show_held_requests' %>
+<%= render partial: 'show_held_requests' %>

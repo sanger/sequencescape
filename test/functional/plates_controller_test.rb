@@ -13,18 +13,9 @@ class PlatesControllerTest < ActionController::TestCase
       @request    = ActionController::TestRequest.new
       @response   = ActionController::TestResponse.new
 
-      @pico_assay_plate_creator = FactoryGirl.create :plate_creator, plate_purpose: PlatePurpose.find_by!(name: 'Pico Assay Plates')
-      ['Pico Assay A', 'Pico Assay B'].map do |s|
-        PlatePurpose.find_by!(name: s)
-      end.map do |p|
-        create :plate_creator_purpose, plate_purpose: p, plate_creator: @pico_assay_plate_creator
-      end
-      @dilution_plates_creator = FactoryGirl.create :plate_creator, plate_purpose: PlatePurpose.find_by!(name: 'Working dilution')
-
-      create :plate_creator_purpose, plate_purpose: PlatePurpose.find_by!(name: 'Working dilution'),
-                                     plate_creator: @dilution_plates_creator
-
-      @gel_dilution_plates_creator = FactoryGirl.create :plate_creator, plate_purpose: PlatePurpose.find_by!(name: 'Gel Dilution Plates')
+      @pico_assay_plate_creator = FactoryGirl.create :plate_creator, plate_purposes: PlatePurpose.where(name: ['Pico Assay A', 'Pico Assay B'])
+      @dilution_plates_creator = FactoryGirl.create :plate_creator, plate_purposes: PlatePurpose.where(name: 'Working dilution')
+      @gel_dilution_plates_creator = FactoryGirl.create :plate_creator, plate_purposes: PlatePurpose.where(name: 'Gel Dilution Plates')
 
       @barcode_printer = create :barcode_printer
       @plate_barcode = mock('plate barcode')

@@ -5,9 +5,9 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
 
 <div style="text-align:center">
-  <%= form_for :related_study, :url => relate_study_study_path(:id => @study) do -%>
-    <label for="related_study_study_id">Select a study</label> <%= select "related_study", "study_id", @studies.map {|r| [r.name, r.id]}, { :prompt => true } %>&nbsp;
-    <label for="related_study_relation_type">then assign a study relation </label> <%= select "related_study", "relation_type", @relation_names, { :prompt => true,  } %>
+  <%= form_for :related_study, url: relate_study_study_path(id: @study) do -%>
+    <label for="related_study_study_id">Select a study</label> <%= select "related_study", "study_id", @studies.map {|r| [r.name, r.id]}, { prompt: true } %>&nbsp;
+    <label for="related_study_relation_type">then assign a study relation </label> <%= select "related_study", "relation_type", @relation_names, { prompt: true,  } %>
     <%= submit_tag "Add related study" %>
   <% end -%>
 </div>

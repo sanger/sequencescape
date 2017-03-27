@@ -7,9 +7,7 @@
 class CherrypickForPulldownPipeline < CherrypickingPipeline
   include Pipeline::InboxGroupedBySubmission
 
-  def display_next_pipeline?
-    true
-  end
+  self.display_next_pipeline = true
 
   ALWAYS_SHOW_RELEASE_ACTIONS = true
 
