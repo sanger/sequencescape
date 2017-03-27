@@ -468,7 +468,7 @@ FactoryGirl.define do
       aliquot { build(:tagged_aliquot) }
     end
     barcode
-    after(:build) do |t,evaluator|
+    after(:build) do |t, evaluator|
       t.aliquots << evaluator.aliquot
     end
   end
