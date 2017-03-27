@@ -20,8 +20,8 @@
   <tbody>
   <% for study in @faculty_sponsor.studies %>
     <tr>
-      <td><%= link_to study.name, study_path(study), :title => "View #{study.name}" %></td>
-      <td><%= link_to 'Edit', edit_study_path(study), :title => "Edit #{study.name}" %></td>
+      <td><%= link_to study.name, study_path(study), title: "View #{study.name}" %></td>
+      <td><%= link_to 'Edit', edit_study_path(study), title: "Edit #{study.name}" %></td>
     </tr>
   <% end %>
   </tbody>

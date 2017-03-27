@@ -183,14 +183,6 @@ class RequestsController < ApplicationController
     redirect_to request_path(@request)
   end
 
-  # Method used to migrate MX data from studies to pipelines
-  def mpx_requests_details
-    @requests = Request.migrate_mpx_requests
-    respond_to do |format|
-      format.json { render json: @requests.to_json }
-    end
-  end
-
   before_action :find_request, only: [:filter_change_decision, :change_decision]
 
   def find_request

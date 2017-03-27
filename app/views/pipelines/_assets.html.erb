@@ -8,7 +8,7 @@
   <thead>
     <tr>
       <th>&nbsp;</th>
-      <th id="priority_flag"><a><%= image_tag("icon_0_flag.png", :size=>"16x16") %></a></th>
+      <th id="priority_flag"><a><%= image_tag("icon_0_flag.png", size: "16x16") %></a></th>
 
       <% @inbox_presenter.each_field_header do |field_name| %>
         <th><a><%= field_name %></a></th>
@@ -28,14 +28,14 @@
         <tr>
           <!-- Shared fields. -->
           <td class="request center" width='5%'>
-            <%= label_tag(line.request_group_id, "Select #{ line.parent.sanger_human_barcode } for batch", :style => 'display:none') %>
-            <%= label_tag(line.request_group_id, "Include request #{line.index+1}", :style => 'display:none') %>
-            <%= check_box(:request_group, line.group_id, :id => line.request_group_id, :class => 'grouped_checkbox', :'data-count' => line.wells) %>
-            <%= hidden_field_tag("#{line.request_group_id}_size", "",  :value => line.wells)  %>
+            <%= label_tag(line.request_group_id, "Select #{ line.parent.sanger_human_barcode } for batch", style: 'display:none') %>
+            <%= label_tag(line.request_group_id, "Include request #{line.index+1}", style: 'display:none') %>
+            <%= check_box(:request_group, line.group_id, id: line.request_group_id, class: 'grouped_checkbox', :'data-count' => line.wells) %>
+            <%= hidden_field_tag("#{line.request_group_id}_size", "",  value: line.wells)  %>
           </td>
           <td  style='text-align: center'>
             <!-- TODO: Restore priority toggle for grouped submissions -->
-            <%= image_tag "icon_#{line.priority}_flag.png", 'alt' => line.priority, :size => '16x16', :class =>  "flag_image #{current_user.is_lab_manager? ? 'as_manager' : ''}", "data-priority" => line.priority %>
+            <%= image_tag "icon_#{line.priority}_flag.png", 'alt' => line.priority, size: '16x16', class: "flag_image #{current_user.is_lab_manager? ? 'as_manager' : ''}", "data-priority" => line.priority %>
           </td>
 
           <!-- Custom fields -->

@@ -4,20 +4,20 @@
 # authorship of this file.
 # Copyright (C) 2015,2016 Genome Research Ltd.%>
 <div class="col-md-6">
-<%= panel(:info,:title=>"New report",:class=>"creation",:id=>"new_report") do %>
-  <%= render :partial => 'qc_report_form', :locals => { :qc_report => @qc_report, :studies => @studies, :products => @active_products, :default_product => params[:product_id] } %>
+<%= panel(:info,title: "New report",class: "creation",id: "new_report") do %>
+  <%= render partial: 'qc_report_form', locals: { qc_report: @qc_report, studies: @studies, products: @active_products, default_product: params[:product_id] } %>
 <% end %>
 </div>
 <div class="col-md-6">
-<%= panel(:info,:title=>"Upload existing report",:class=>"report_upload", :id=>"report_upload") do %>
-  <%= render :partial => 'qc_report_upload' %>
+<%= panel(:info,title: "Upload existing report",class: "report_upload", id: "report_upload") do %>
+  <%= render partial: 'qc_report_upload' %>
 <% end %>
 </div>
 
 <h2>Qc Reports</h2>
 <div class="filter_criteria callout">
-<%= render :partial => 'filter_criteria', :locals => { :filter_params => params, :studies => @studies, :products => @all_products, :states => @states } %>
+<%= render partial: 'filter_criteria', locals: { filter_params: params, studies: @studies, products: @all_products, states: @states } %>
 </div>
 <%= will_paginate @qc_reports %>
-<%= render :partial => 'qc_reports', :locals => { :qc_reports => @qc_reports } %>
+<%= render partial: 'qc_reports', locals: { qc_reports: @qc_reports } %>
 <%= will_paginate @qc_reports %>

@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2014,2015,2016 Genome Research Ltd.%>
 
 <% add :title, "Processing batch" -%>
-<% add :menu, "Back to batch" => url_for(:controller => :batches, :action => :show, :id => @batch.id) -%>
+<% add :menu, "Back to batch" => url_for(controller: :batches, action: :show, id: @batch.id) -%>
 
 <h1>MANUAL QC FOR BATCH <%= @batch.id %></h1>
 <table width="100%" cellpadding="4" cellspacing="0">
@@ -69,6 +69,6 @@
 </table>
 <div class="info">
   <ul>
-    <li><%= link_to "Back to batch", :controller => "batches", :action => "show", :id => @batch.id %></li>
+    <li><%= link_to "Back to batch", controller: "batches", action: "show", id: @batch.id %></li>
   </ul>
 </div>

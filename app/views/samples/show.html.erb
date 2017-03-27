@@ -12,8 +12,8 @@
 
 <% if current_user.manager_or_administrator? || current_user.owner?(@sample) -%>
   <% add :menu, "Edit" => edit_sample_path(@sample) -%>
-  <% add :menu, { "Flag for public release" => url_for({:controller => "samples", :action => "release", :id =>@sample.id }) }, { :confirm => "Do you want to flag this sample for public release?" }   -%>
-  <% add :menu, { @sample.accession_number? ? "Update EBI Sample data" : "Generate Accession Number" => url_for({:controller => 'samples', :action => 'accession', :id => @sample.id}) }, { :confirm => "Do you want to request an accession for this sample?" }  -%>
+  <% add :menu, { "Flag for public release" => url_for({controller: "samples", action: "release", id: @sample.id }) }, { confirm: "Do you want to flag this sample for public release?" }   -%>
+  <% add :menu, { @sample.accession_number? ? "Update EBI Sample data" : "Generate Accession Number" => url_for({controller: 'samples', action: 'accession', id: @sample.id}) }, { confirm: "Do you want to request an accession for this sample?" }  -%>
 <% end %>
 
 <% if @sample.accession_number? %>
@@ -67,11 +67,11 @@
       <td class="item">Created at:</td>
       <td><strong><%=h @sample.created_at.to_formatted_s(:day_full_with_time) %></strong></td>
     </tr>
-     <%= render :partial => "shared/external_properties", :locals => {:item => @sample } %>
+     <%= render partial: "shared/external_properties", locals: {item: @sample } %>
   </table>
   <div id="template_form_body">
     <% unless @sample.nil? -%>
-      <%= render(:partial => 'shared/metadata/show/sample', :locals => { :sample => @sample }) %>
+      <%= render(partial: 'shared/metadata/show/sample', locals: { sample: @sample }) %>
     <% end -%>
   </div>
   <br />
@@ -83,7 +83,7 @@
     This sample is associated with <%= pluralize @sample.studies.length, "study" %>.
   </div>
 
-  <%= form_for :sample, :url => url_for({:controller => "samples", :id => @sample.id, :action => :add_to_study}), :html => {:method => :put} do |form| -%>
+  <%= form_for :sample, url: url_for({controller: "samples", id: @sample.id, action: :add_to_study}), html: {method: :put} do |form| -%>
   <table width='100%'>
     <thead>
       <tr>
@@ -96,15 +96,15 @@
         <tr>
           <td><%= link_to study.name, study_path(study) %></td>
           <% if current_user.is_administrator? || current_user.is_manager?(@study) %>
-            <td><%= link_to("Unlink", url_for({:controller => "samples", :id => @sample.id, :action => :remove_from_study, :study_id => study.id}), :confirm => "Are you sure you want to unlink this sample from the '#{study.name}' study?\n\nThere is no undo.") -%></td>
+            <td><%= link_to("Unlink", url_for({controller: "samples", id: @sample.id, action: :remove_from_study, study_id: study.id}), confirm: "Are you sure you want to unlink this sample from the '#{study.name}' study?\n\nThere is no undo.") -%></td>
           <% end %>
         </tr>
       <% end %>
       <% if current_user.is_administrator? || current_user.is_manager?(@study) %>
       <tr>
         <td>
-          <%= label("study", "id", 'Add to study', :style => 'display:none') %>
-          <%= collection_select("study", :id, @studies, :id, :name, :prompt => "Add to study") %>
+          <%= label("study", "id", 'Add to study', style: 'display:none') %>
+          <%= collection_select("study", :id, @studies, :id, :name, prompt: "Add to study") %>
         </td>
         <td><%= form.submit "Add" %></td>
       </tr>

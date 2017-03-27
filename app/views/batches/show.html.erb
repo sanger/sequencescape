@@ -21,26 +21,26 @@
   <div id="input_assets">
     <h3>Input</h3>
 
-    <%= render :partial => "assets", :locals => {:output_plate => false, :request_groups => @input_assets } %>
+    <%= render partial: "assets", locals: {output_plate: false, request_groups: @input_assets } %>
   </div>
   <% unless @output_assets.blank? %>
     <div id="output_assets">
       <h3>Output</h3>
-      <%= render :partial => "assets", :locals => {:output_plate => true, :request_groups => @output_assets }%>
+      <%= render partial: "assets", locals: {output_plate: true, request_groups: @output_assets }%>
     </div>
   <%end %>
   <br/>
 <% else %>
-  <%= render :partial => "shared/batch", :locals => { :requests => @batch.ordered_requests.include_for_batch_view, :edit => false, :stage => false } %>
+  <%= render partial: "shared/batch", locals: { requests: @batch.ordered_requests.include_for_batch_view, edit: false, stage: false } %>
 <% end %>
 
 <h3>Events</h3>
-<%= render :partial => "events", :locals => { :events => @batch.lab_events } %>
+<%= render partial: "events", locals: { events: @batch.lab_events } %>
 
 <% if @batch.show_actions?  %>
-  <%= render :partial => "shared/actions" %>
+  <%= render partial: "shared/actions" %>
 <% elsif @batch.show_fail_link? %>
   <ul>
-    <li><%= link_to "Fail batch or items", :action => "fail", :id => @batch.id %></li>
+    <li><%= link_to "Fail batch or items", action: "fail", id: @batch.id %></li>
   </ul>
 <% end %>

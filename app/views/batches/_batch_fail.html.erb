@@ -35,7 +35,7 @@
         <% requests.each_with_index do |request, index| -%>
           <tr>
             <% if request.asset && request.asset.parent %>
-              <td width="7%"><%= link_to request.asset.parent.barcode, asset_url(request.asset.parent), :target => "_blank" %></td>
+              <td width="7%"><%= link_to request.asset.parent.barcode, asset_url(request.asset.parent), target: "_blank" %></td>
             <% else %>
               <td width="7%"></td>
             <% end %>
@@ -48,7 +48,7 @@
               <td width="15%"></td>
             <% end %>
 
-            <td width="7%"><%= link_to request.id, request_url(request), :target => "_blank" %></td>
+            <td width="7%"><%= link_to request.id, request_url(request), target: "_blank" %></td>
             <td width="7%"><%= request.value_for("Read length", @batch) %></td>
             <td width="7%"><%= request.position %></td>
             <td width="7%"><%= request.value_for("Fragment size required (from)", @batch) %></td>

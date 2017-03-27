@@ -15,6 +15,6 @@
       <%= event["message"] %></span>
     </td>
     <td><%= event["created_at"].to_formatted_s(:day_full_with_time) %></td>
-    <td><%= link_to "Remove", :action => :reset_qc_information, :id => @request.id, :event_id => event["event_id"] if current_user.administrator? %></td>
+    <td><%= link_to "Remove", action: :reset_qc_information, id: @request.id, event_id: event["event_id"] if current_user.administrator? %></td>
   </tr>
 <% end %>

@@ -6,7 +6,7 @@
 
 <%- add :title, "User profile." %>
 <%- add :admin_option, "Manage accounts" => admin_users_url %>
-<%- add :admin_option, "Back to roles management" => url_for(:controller => "admin/roles", :action => :index) %>
+<%- add :admin_option, "Back to roles management" => url_for(controller: "admin/roles", action: :index) %>
 <%- add :admin_option, "Back to Admin Panel" => admin_path %>
 
 <h1><% unless @user.name.empty? %><%= @user.name %><% end %> : <%=h @user.login %></h1>

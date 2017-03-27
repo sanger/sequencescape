@@ -5,11 +5,6 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 class PulldownLibraryCreationPipeline < LibraryCreationPipeline
-  def pulldown?
-    true
-  end
-
-  def prints_a_worksheet_per_task?
-    true
-  end
+  self.pulldown = true
+  self.prints_a_worksheet_per_task = true
 end

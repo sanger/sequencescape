@@ -1,14 +1,14 @@
 xml.instruct!
-xml.SUBMISSION({:center_name => @submission[:center_name], :broker_name=>@submission[:broker], :alias => @submission[:submission_id], :submission_date => @submission[:submission_date], 'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance'}) do |submission|
+xml.SUBMISSION({center_name: @submission[:center_name], broker_name: @submission[:broker], alias: @submission[:submission_id], submission_date: @submission[:submission_date], 'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance'}) do |submission|
   submission.CONTACTS do |contacts|
-    contacts.CONTACT({:inform_on_error => @submission[:contact_inform_on_error], :inform_on_status => @submission[:contact_inform_on_status],:name => @submission[:name]})
+    contacts.CONTACT({inform_on_error: @submission[:contact_inform_on_error], inform_on_status: @submission[:contact_inform_on_status],name: @submission[:name]})
   end
   submission.ACTIONS do |actions|
     actions.ACTION do |action|
       if @accession_number.blank?
-        action.ADD({:source =>@submission[:source], :schema => @submission[:schema]})
+        action.ADD({source: @submission[:source], schema: @submission[:schema]})
       else
-        action.MODIFY({:source =>@submission[:source], :target=>""})
+        action.MODIFY({source: @submission[:source], target: ""})
       end
     end
     actions.ACTION do |action2|

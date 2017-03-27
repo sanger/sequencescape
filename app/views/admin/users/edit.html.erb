@@ -9,20 +9,20 @@
 
 <%= page_title "Edit profile", @user.name %>
 <%= panel :default do %>
-<%= form_for :user, :url => admin_user_path(@user), :html => {:method => :put, :class=>'horizontal-form'} do |f| %>
+<%= form_for :user, url: admin_user_path(@user), html: {method: :put, class: 'horizontal-form'} do |f| %>
   <%= bs_column do %>
     <%= panel :info, title:"User Details" do %>
       <%= form_group do %>
         <label for="user_first_name">First name</label>
-        <%= f.text_field :first_name, :class=>'form-control' %>
+        <%= f.text_field :first_name, class: 'form-control' %>
       <% end %>
       <%= form_group do %>
         <label for="user_last_name">Last name</label>
-        <%= f.text_field :last_name, :class=>'form-control' %>
+        <%= f.text_field :last_name, class: 'form-control' %>
       <% end %>
       <%= form_group do %>
         <label for="user_email">Email</label>
-        <%= f.text_field :email, :class=>'form-control' %>
+        <%= f.text_field :email, class: 'form-control' %>
       <% end %>
     <% end %>
   <% end %>
@@ -64,17 +64,17 @@
     <% end %>
   <% end %>
 
-  <%= submit_tag "Update", :class =>'btn btn-success' %> or <%= link_to 'cancel', "javascript:history.back();" %>
+  <%= submit_tag "Update", class: 'btn btn-success' %> or <%= link_to 'cancel', "javascript:history.back();" %>
 <% end %>
 <% end %>
 <hr>
-<h3><% unless @user.name.empty? %><%=h @user.name %><% else %><%=h @user.login %><% end %>'s roles (<%= link_to "Add new role", edit_admin_user_path(@user, :anchor => "add_new_role")-%>)</h3>
+<h3><% unless @user.name.empty? %><%=h @user.name %><% else %><%=h @user.login %><% end %>'s roles (<%= link_to "Add new role", edit_admin_user_path(@user, anchor: "add_new_role")-%>)</h3>
 <div class="help">You edit these roles independently of any changes above.</div>
 <div id="role_list">
   <% if @users_roles.empty? %>
     <h3 style="text-align:center"><%= display_empty_table "This user has no roles. Use the form below to add the first one" -%></h3>
   <% else %>
-    <%= render :partial => "roles" -%>
+    <%= render partial: "roles" -%>
   <% end %>
 </div>
 <br/>
@@ -82,9 +82,9 @@
 <div style="text-align:center">
   <h3 id="add_new_role">Add new roles</h3>
   <%= bs_column(6,'lg') do %>
-    <%= render :partial => "add_role", :locals => {:authorizable_type => @studies} %>
+    <%= render partial: "add_role", locals: {authorizable_type: @studies} %>
   <% end %>
   <%= bs_column(6,'lg') do %>
-    <%= render :partial => "add_role", :locals => {:authorizable_type => @projects} %>
+    <%= render partial: "add_role", locals: {authorizable_type: @projects} %>
   <% end %>
 </div>

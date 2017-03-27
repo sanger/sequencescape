@@ -17,7 +17,7 @@
 </div>
 
 <div class='info'>
-  <%= render :partial => "list", :locals => {:study => @request } %>
+  <%= render partial: "list", locals: {study: @request } %>
   <% if current_user.privileged? @request %>
     <div>
       <%= form_tag(request_comments_path(@request), data: { update: "#request_annotations_#{@request.id}", remote: true }, class:'remote-form') do %>

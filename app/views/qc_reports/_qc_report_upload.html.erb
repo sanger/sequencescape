@@ -3,17 +3,17 @@
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2015,2016 Genome Research Ltd.%>
-<%= form_tag({:action => :qc_file},{:multipart =>true}) do %>
+<%= form_tag({action: :qc_file},{multipart: true}) do %>
   <p>Upload a customer filled in qc report to set the proceed flags. Only check the override qc decision check-box if you wish to modify the automated pass-fail call.</p>
   <div class="form-group file_upload">
     <%= label_tag :qc_report_file, "Select a report to upload or drag and drop onto the box" %>
-    <%= file_field_tag :qc_report_file, :class=>'file_drop', :accept=>".csv,text/csv", :autocomplete=>'off', :required=>'required' %>
+    <%= file_field_tag :qc_report_file, class: 'file_drop', accept: ".csv,text/csv", autocomplete: 'off', required: 'required' %>
   </div>
   <div class="form-group">
     <%= label_tag :overide_qc_decision, "Overide automatic QC decision" %>
     <%= check_box_tag :overide_qc_decision %>
   </div>
   <div class="form-group actions-group">
-    <%= submit_tag 'Upload report', :class=>'btn btn-success' %>
+    <%= submit_tag 'Upload report', class: 'btn btn-success' %>
   </div>
 <% end %>

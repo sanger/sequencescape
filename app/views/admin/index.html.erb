@@ -10,9 +10,9 @@
 <%= page_title 'Sequencescape', 'Administration' %>
 
 <dl>
-<dt><%= link_to "Study management", url_for(:controller => "admin/studies", :action => "index") %></dt>
+<dt><%= link_to "Study management", url_for(controller: "admin/studies", action: "index") %></dt>
 <dd>Make changes to studies.</dd>
-<dt><%= link_to "Project management", url_for(:controller => "admin/projects", :action => "index") %></dt>
+<dt><%= link_to "Project management", url_for(controller: "admin/projects", action: "index") %></dt>
 <dd>Make changes to projects.</dd>
 <dt><%= link_to "User management", admin_users_path %></dt>
 <dd>View current users in the system.</dd>
@@ -28,7 +28,7 @@
 <dd>Add and remove plate purposes.</dd>
 <dt><%= link_to "Robot management", admin_robots_url %></dt>
 <dd>Add and remove robots.</dd>
-<dt><%= link_to "Delayed jobs queue", url_for(:controller => "admin/delayed_jobs", :action => "index") %></dt>
+<dt><%= link_to "Delayed jobs queue", url_for(controller: "admin/delayed_jobs", action: "index") %></dt>
 <dd>See the delayed jobs queue</dd>
 <dt><%= link_to "Reference genome management", reference_genomes_path %></dt>
 <dd>Add and remove reference genomes.</dd>

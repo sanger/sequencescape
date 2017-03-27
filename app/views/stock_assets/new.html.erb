@@ -7,7 +7,7 @@
 <%= page_title "Create Stock Library Tubes", "Batch #{@batch.id}" %>
 
 
-<%= form_tag(batch_stock_assets_path(@batch), :multipart => true) do %>
+<%= form_tag(batch_stock_assets_path(@batch), multipart: true) do %>
   <%= hidden_field_tag "batch_id", "#{@batch.id}" %>
   <table>
     <thead>

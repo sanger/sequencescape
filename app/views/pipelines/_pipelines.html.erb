@@ -7,15 +7,7 @@
 
 <%= link_panel(style,title:"#{title} pipelines".titleize) do %>
   <% pipelines.each do |pipeline| -%>
-
-    <% if pipeline.active? -%>
-      <%= link_to(pipeline.name, pipeline_path(pipeline), :class=>"list-group-item") %>
-    <% else -%>
-      <% if current_user.is_administrator? -%>
-        <%= link_to("#{pipeline.name} [Inactive]", pipeline_path(pipeline), :class=>"list-group-item disabled") %>
-      <% end %>
-    <% end -%>
-
+    <%= link_to(pipeline.name, pipeline_path(pipeline), class: "list-group-item") %>
   <% end -%>
 <% end %>
 

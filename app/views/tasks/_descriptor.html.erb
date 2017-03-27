@@ -29,11 +29,11 @@
         <% option_count = 1 %>
         <% unless field.selection.nil? -%>
           <% field.selection.each_value do |option| %>
-            <%= render :partial => 'option', :locals => { :field => field, :name => option, :field_number => field_number, :option_number => option_count } %>
+            <%= render partial: 'option', locals: { field: field, name: option, field_number: field_number, option_number: option_count } %>
             <% option_count = option_count + 1 %>
           <% end %>
         <% else %>
-          <%= render :partial => 'option', :locals => { :field => field, :name => '', :field_number => field_number, :option_number => option_count } %>
+          <%= render partial: 'option', locals: { field: field, name: '', field_number: field_number, option_number: option_count } %>
         <% end %>
       </div>
       <input type='hidden' name='option_count_<%= field_number %>' id='option_count_<%= field_number %>' value = '<%= option_count %>' />

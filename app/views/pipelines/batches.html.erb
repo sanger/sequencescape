@@ -10,6 +10,6 @@
 <h1>All batches for <%= @pipeline.name %> pipeline</h1>
 <div class="content">
   <%= pagination @batches %>
-  <%= render :partial => "shared/batches", :locals => {:batches => @batches, :in_progress => false, :showing_all => true, :batch_state => 'normal' } %>
+  <%= render partial: "shared/batches", locals: {batches: @batches, in_progress: false, showing_all: true, batch_state: 'normal' } %>
   <%= pagination @batches %>
 </div>

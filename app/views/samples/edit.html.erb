@@ -18,7 +18,7 @@
 Edit your sample. Required fields are marked with <%= required_marker %>.
 </div>
 <div id="study">
-  <%= form_for :sample, :url => sample_path(@sample), :html => {:method => :put} do |form| -%>
-    <%= render :partial => "sample", :locals => { :read_only => false, :creation => false, :form => form } %>
+  <%= form_for :sample, url: sample_path(@sample), html: {method: :put} do |form| -%>
+    <%= render partial: "sample", locals: { read_only: false, creation: false, form: form } %>
   <% end -%>
 </div>

@@ -43,14 +43,14 @@
       <%= f.check_box :external_release, { 'data-field' => 'lane_lane_metadata_attributes_release_reason'} %>
     <%= hidden_field_tag :qc_state_value, @asset.qc_state %>
     <%= hidden_field_tag :external_release_value, @asset.external_release %>
-    <%= hidden_field_tag 'lane[lane_metadata_attributes][release_reason]', '', :id => 'hidden_lane' %>
+    <%= hidden_field_tag 'lane[lane_metadata_attributes][release_reason]', '', id: 'hidden_lane' %>
   </div>
-    <div class="form-group"><%= render :partial => 'shared/metadata/edit/lane', :locals => { :lane => @asset, :form => f } %></div>
+    <div class="form-group"><%= render partial: 'shared/metadata/edit/lane', locals: { lane: @asset, form: f } %></div>
   <% end %>
   <div class="form-group"><%= f.submit "Update", class:'btn btn-success' %></div>
 <% end %>
 
- <div class="form-group"><%= link_to 'Show', :action => :show, :id => @asset.id %></div>
+ <div class="form-group"><%= link_to 'Show', action: :show, id: @asset.id %></div>
 
 <script type="text/javascript">
 (function($, undefined) {
