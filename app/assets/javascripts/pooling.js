@@ -29,7 +29,7 @@
 
     // On scanning in barcodes, add them to the list.
     $('#asset_scan').bind('blur',function() {
-      new scannedBarcode(this,barcode_list, 'pooling');
+      new scannedBarcode(this, barcode_list, 'pooling');
     });
 
     $('#asset_scan').bind("keydown", function(e) {

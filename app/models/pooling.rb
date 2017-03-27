@@ -8,9 +8,11 @@ class Pooling
   validate :source_assets_can_be_pooled, if: 'source_assets.present?'
 
   def execute
-    @stock_mx_tube = Tube::Purpose.stock_mx_tube.create! if stock_mx_tube_required?
+    @stock_mx_tube = Tube::Purpose.stock_mx_tube.create!(name: '(s)') if stock_mx_tube_required?
     @standard_mx_tube = Tube::Purpose.standard_mx_tube.create!
     transfer
+    # another way of creating @stock_mx_tube
+    # @stock_mx_tube = standard_mx_tube.create_stock_asset! if stock_mx_tube_required?
     execute_print_job
   end
 
@@ -85,7 +87,7 @@ class Pooling
   end
 
   def success
-    "Samples were transferred successfully to standard_mx_tube #{standard_mx_tube.id} " +
-      ("and stock_mx_tube #{stock_mx_tube.id} " if stock_mx_tube.present?).to_s
+    "Samples were transferred successfully to standard_mx_tube #{standard_mx_tube.sanger_human_barcode} " +
+      ("and stock_mx_tube #{stock_mx_tube.sanger_human_barcode} " if stock_mx_tube.present?).to_s
   end
 end

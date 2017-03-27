@@ -11,6 +11,10 @@ module LabelPrinter
       def top_line(tube)
         tube.name_for_label.to_s
       end
+
+      def middle_line(tube)
+        tube.sanger_human_barcode
+      end
     end
   end
 end

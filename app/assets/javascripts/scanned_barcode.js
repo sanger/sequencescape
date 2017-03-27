@@ -29,7 +29,7 @@ scannedBarcode.prototype = {
   notInList: function(){
     var li_items = this.list.getElementsByTagName('li')
     for (var i=0; i<li_items.length; ++i){
-      if (this.barcode == li_items[i].firstChild.textContent) {
+      if (this.barcode == li_items[i].firstChild.textContent.trim()) {
         return false
       }
     }
