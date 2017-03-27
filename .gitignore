@@ -23,7 +23,8 @@ tags
 *.sublime-workspace
 lib/sample_manifest_excel/doc/
 coverage
-/.yardoc/
+.yardoc
 rerun
 spec/examples.txt
-/doc/
+doc/*
+.yardoc/*

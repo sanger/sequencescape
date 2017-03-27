@@ -24,7 +24,7 @@ class StudyReportsController < ApplicationController
     study = Study.find_by(id: params[:study_report][:study])
     study_report = StudyReport.create!(study: study, user: @current_user)
 
-    study_report.perform
+    study_report.schedule_report
 
     respond_to do |format|
       if study_report
