@@ -60,7 +60,7 @@ namespace :test do
         begin
           DatabaseCleaner.start
           puts "Linting #{factories_to_lint.length} factories. (Ignored #{ignored})"
-          puts "Use LINT_ALL=true to lint all factories" if ENV.fetch('LINT_ALL', false)
+          puts 'Use LINT_ALL=true to lint all factories' if ENV.fetch('LINT_ALL', false)
           FactoryGirl.lint factories_to_lint
           puts 'Linted'
         ensure
