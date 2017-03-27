@@ -17,6 +17,13 @@ class StockStamper
     super
   end
 
+  def execute
+    generate_tecan_gwl_file_as_text
+    create_asset_audit_event
+    message[:error] = "Required volume exceeds the maximum well volume for well(s) #{wells_with_excess.join(', ')}. Maximum well volume #{plate_type.maximum_volume.to_f} will be used in tecan file" if wells_with_excess.present?
+    message[:notice] = 'You can generate the TECAN file now.'
+  end
+
   def generate_tecan_gwl_file_as_text
     @file_content = Sanger::Robots::Tecan::Generator.mapping(generate_tecan_data, 0)
   end
@@ -54,10 +61,23 @@ class StockStamper
     AssetAudit.create(asset_id: plate.id, key: 'stamping_of_stock', message: "Process 'Stamping of stock' performed", created_by: user.login)
   end
 
+  def message
+    @message ||= {}
+  end
+
+  def wells_with_excess
+    @wells_with_excess ||= []
+  end
+
   private
 
   def volume(well)
-    [well.get_current_volume * overage.to_f, plate_type.maximum_volume.to_f].min
+    if well.get_current_volume * overage.to_f < plate_type.maximum_volume.to_f
+      well.get_current_volume * overage.to_f
+    else
+      wells_with_excess << well.map_description
+      plate_type.maximum_volume.to_f
+    end
   end
 
   def plate=(plate)

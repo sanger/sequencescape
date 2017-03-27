@@ -107,6 +107,11 @@ describe StockStamper do
       expect(@stock_stamper.plate.asset_audits.length).to eq 1
       expect(@stock_stamper.plate.asset_audits.first.message).to eq "Process 'Stamping of stock' performed"
     end
+
+    it 'should create correct message after execution' do
+      @stock_stamper.execute
+      expect(@stock_stamper.message).to eq(notice: 'You can generate the TECAN file now.', error: 'Required volume exceeds the maximum well volume for well(s) A1, B2, E6. Maximum well volume 180.0 will be used in tecan file')
+    end
   end
 
   after do
