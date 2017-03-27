@@ -7,16 +7,9 @@
 require 'test_helper'
 
 class BatchTest < ActiveSupport::TestCase
-  def setup
-    @pipeline = create :pipeline,
-      name: 'Test pipeline',
-      workflow: LabInterface::Workflow.create!(item_limit: 8),
-      request_types: [create(:request_type, request_class: Request, order: 1)]
-  end
-
   context 'A batch' do
     setup do
-      @batch = @pipeline.batches.build
+      @batch = build :batch
     end
 
     should 'have begin in pending then change to started' do
@@ -27,12 +20,10 @@ class BatchTest < ActiveSupport::TestCase
     end
 
     context 'with a pipeline' do
-      setup do
-        @batch = @pipeline.batches.create!
-      end
       context 'workflow is internal and released?' do
         setup do
-          @pipeline.workflow.update_attributes!(locale: 'Internal')
+          @pipeline = create :pipeline, item_limit: 8, locale: 'Internal'
+          @batch = create :batch, pipeline: @pipeline
         end
 
         should 'initially not be #externally_released? then be #externally_released?' do
@@ -44,7 +35,8 @@ class BatchTest < ActiveSupport::TestCase
 
       context 'workflow is external and released?' do
         setup do
-          @pipeline.workflow.update_attributes!(locale: 'External')
+          @pipeline = create :pipeline, item_limit: 8, locale: 'External'
+          @batch = create :batch, pipeline: @pipeline
         end
 
         should 'initially not be #internally_released? then be #internally_released? and return the pipelines first workflow' do
@@ -60,19 +52,20 @@ class BatchTest < ActiveSupport::TestCase
     setup do
       @batchrequest_count = BatchRequest.count
       @control = create :control
-      @batch = @pipeline.batches.create!
+      @batch = create :batch
       @batch.add_control(@control.name, 2)
     end
 
     should 'change BatchRequest.count by 2' do
-   assert_equal 2, BatchRequest.count - @batchrequest_count, 'Expected BatchRequest.count to change by 2'
+      assert_equal 2, BatchRequest.count - @batchrequest_count, 'Expected BatchRequest.count to change by 2'
     end
   end
 
   context 'modifying request positions within a batch' do
     setup do
-      @requests = (1..10).map { |_| @pipeline.request_types.last.create! }
-      @batch    = @pipeline.batches.create!(requests: @requests)
+      @pipeline = create :pipeline
+      @requests = Array.new(10) { @pipeline.request_types.last.create! }
+      @batch    = create :batch, requests: @requests, pipeline: @pipeline
     end
 
     context '#assign_positions_to_requests!' do
@@ -111,10 +104,11 @@ class BatchTest < ActiveSupport::TestCase
 
   context 'when batch is created' do
     setup do
+      @pipeline = create :pipeline
       @request1 = @pipeline.request_types.last.create!(asset: create(:sample_tube), target_asset: create(:empty_library_tube))
       @request2 = @pipeline.request_types.last.create!(asset: create(:sample_tube), target_asset: create(:empty_library_tube))
 
-      @batch = @pipeline.batches.create!(requests: [@request1, @request2])
+      @batch = create :batch, requests: [@request1, @request2], pipeline: @pipeline
     end
     should 'be able to call start_requests' do
       assert_nothing_raised do
@@ -164,7 +158,7 @@ class BatchTest < ActiveSupport::TestCase
 
   context 'batch #has_event(event_name)' do
     setup do
-      @batch = @pipeline.batches.create!
+      @batch = create :batch
       @batch.start!(create(:user))
 
       @lab_event = LabEvent.new
@@ -191,8 +185,8 @@ class BatchTest < ActiveSupport::TestCase
 
   context '#requests_by_study' do
     setup do
-      @pipeline.workflow.update_attributes!(locale: 'Internal')
-      @batch = @pipeline.batches.create!
+      @pipeline = create :pipeline, locale: 'Internal'
+      @batch = create :batch, pipeline: @pipeline
 
       @study1 = create :study
     end
@@ -239,7 +233,8 @@ class BatchTest < ActiveSupport::TestCase
 
   context '#plate_ids_in_study' do
     setup do
-      @batch = @pipeline.batches.create!
+      @pipeline = create :pipeline
+      @batch = create :batch, pipeline: @pipeline
       @study1 = create :study
     end
 

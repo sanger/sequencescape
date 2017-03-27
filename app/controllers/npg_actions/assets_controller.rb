@@ -69,7 +69,7 @@ class NpgActions::AssetsController < ApplicationController
     @asset ||= Asset.find(params[:asset_id])
     request = @asset.source_request
     npg_events = Event.npg_events(request.id)
-    raise NPGActionInvalid, 'NPG user run this action. Please, contact USG' if npg_events.size > 0
+    raise NPGActionInvalid, 'NPG user run this action. Please, contact USG' if npg_events.exists?
   end
 
   def rescue_error(exception)
