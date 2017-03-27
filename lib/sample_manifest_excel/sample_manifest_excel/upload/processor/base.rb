@@ -1,6 +1,10 @@
 module SampleManifestExcel
   module Upload
     module Processor
+
+      ##
+      # Uploads will be processed slightly differently based on the manifest type.
+      # Currently only supports tubes.
       class Base
         include ActiveModel::Model
         include SubclassChecker
@@ -15,6 +19,8 @@ module SampleManifestExcel
           @upload = upload
         end
 
+        ##
+        # If the processor is valid the samples and manifest are updated.
         def run(tag_group)
           if valid?
             update_samples(tag_group)
@@ -32,6 +38,8 @@ module SampleManifestExcel
           upload.rows.all? { |row| row.sample_updated? }
         end
 
+        ##
+        # Override the sample manifest with the raw uploaded data.
         def update_sample_manifest
           @sample_manifest_updated = upload.sample_manifest.update_attributes(uploaded: File.open(upload.filename))
         end

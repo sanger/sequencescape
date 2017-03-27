@@ -28,7 +28,7 @@ module SampleManifestExcel
   Axlsx::Worksheet.send(:include, CoreExtensions::AxlsxWorksheet)
 
   mattr_accessor :first_row
-  self.first_row = 10
+  self.first_row = 9
 
   class << self
     attr_writer :configuration

@@ -1,6 +1,11 @@
 module SampleManifestExcel
   module Upload
     module Processor
+
+      ##
+      # Processed slightly differently from Base
+      # *Checks that the tag sequences are unique
+      # *If valid transfers aliquots from library tubes to multiplexed library tubes.
       class MultiplexedLibraryTube < Base
         validate :check_tags
 

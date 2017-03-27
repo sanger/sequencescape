@@ -1,5 +1,12 @@
 module SampleManifestExcel
   module Upload
+    ##
+    # A Row relates to a row in a sample manifest spreadsheet.
+    # Each Row relates to a sample
+    # Required fields:
+    # *number: Number of the row which is used for error tracking
+    # *data: An array of sample data
+    # *columns: The columns which relate to the data.
     class Row
       include ActiveModel::Model
 
@@ -13,6 +20,9 @@ module SampleManifestExcel
       validate :check_specialised_fields
       delegate :present?, to: :sample, prefix: true
 
+      ##
+      # Finds a sample based on the sanger_sample_id column. Must exist for row to be valid.
+      # Creates the specialised fields for updating the sample based on the passed columns
       def initialize(attributes = {})
         super
 
@@ -24,10 +34,15 @@ module SampleManifestExcel
         @specialised_fields = create_specialised_fields
       end
 
+      ##
+      # Finds the data value for a particular column.
+      # Offset by 1. Columns have numbers data is an array
       def at(n)
         data[n - 1]
       end
 
+      ##
+      # Find a value based on a column name
       def value(key)
         at(columns.find_by_or_null(:name, key).number)
       end
@@ -36,6 +51,8 @@ module SampleManifestExcel
         number == 1
       end
 
+      ##
+      # Used for errors
       def row_title
         "Row #{number} -"
       end
@@ -52,6 +69,11 @@ module SampleManifestExcel
         @specialised_fields ||= []
       end
 
+      ##
+      # Updating the sample involves:
+      # *Updating all of the specialised fields in the aliquot
+      # *Updating the sample metadata
+      # *Saving the aliquot, metadata and sample
       def update_sample(tag_group)
         if valid?
           update_specialised_fields(tag_group)
@@ -75,6 +97,9 @@ module SampleManifestExcel
         end
       end
 
+      ##
+      # If it is a multiplexed library tube the aliquot is transferred
+      # from the library tube to a multiplexed library tube and stated set to passed.
       def transfer_aliquot
         if valid?
           sample.primary_receptacle.requests.each do |request|

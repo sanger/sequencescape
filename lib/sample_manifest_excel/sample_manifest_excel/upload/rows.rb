@@ -1,5 +1,9 @@
 module SampleManifestExcel
   module Upload
+    ##
+    # A collection of Rows which relates to the data section of an uploaded spreadsheet
+    # Rows are valid if all of the rows are valid
+    # Expects an Upload::Data object.
     class Rows
       include ActiveModel::Model
       include Enumerable

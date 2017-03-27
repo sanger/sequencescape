@@ -328,7 +328,7 @@ tube_library_with_tag_sequences:
     - :donor_id
     - :phenotype
 tube_multiplexed_library_with_tag_sequences:
-  heading: "Multiplexed Library Tube"
+  heading: "Multiplexed Library Tube with Tag Sequences"
   asset_type: "multiplexed_library"
   columns:
     - :sanger_tube_id
