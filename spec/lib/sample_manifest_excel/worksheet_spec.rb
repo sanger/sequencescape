@@ -12,12 +12,14 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
     @spreadsheet = Roo::Spreadsheet.open(test_file)
   end
 
-  before(:each) do
+  before(:all) do
     SampleManifestExcel.configure do |config|
       config.folder = File.join('spec', 'data', 'sample_manifest_excel')
       config.load!
     end
+  end
 
+  before(:each) do
     barcode = double('barcode')
     allow(barcode).to receive(:barcode).and_return(23)
     allow(PlateBarcode).to receive(:create).and_return(barcode)
@@ -226,6 +228,7 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
       it 'defaults to 1dtube' do
         worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes)
         save_file
+        expect(worksheet.sample_manifest.asset_type).to eq('1dtube')
       end
 
       it 'relates to the passed in manifest type' do
@@ -267,6 +270,9 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
 
   after(:each) do
     File.delete(test_file) if File.exist?(test_file)
+  end
+
+  after(:all) do
     SampleManifestExcel.reset!
   end
 end

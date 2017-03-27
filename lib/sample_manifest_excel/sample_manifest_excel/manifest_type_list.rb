@@ -41,7 +41,7 @@ module SampleManifestExcel
     end
 
     class ManifestType
-      include AttributeHelpers
+      include Helpers::Attributes
 
       set_attributes :name, :columns, :heading, :asset_type
 

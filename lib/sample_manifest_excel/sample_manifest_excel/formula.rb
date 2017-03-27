@@ -8,7 +8,7 @@ module SampleManifestExcel
   # - LEN - checks how long each value in the cell for a column is depending on the operator and operand.
   # - ISERROR - check whether each value in the cell for a column is within a range defined by the absolute reference of that range.
   class Formula
-    include AttributeHelpers
+    include Helpers::Attributes
 
     set_attributes :type, :first_cell_reference, :absolute_reference, :operator, :operand, defaults: { type: :len, operator: '>', operand: 999 }
 

@@ -13,14 +13,17 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
   end
 
   describe '#run' do
+
+    before(:all) do
+      SampleManifestExcel.configure do |config|
+        config.folder = File.join('spec', 'data', 'sample_manifest_excel')
+        config.load!
+      end
+    end
+    
     let(:test_file)               { 'test_file.xlsx' }
-    let(:folder)                  { File.join('spec', 'data', 'sample_manifest_excel') }
-    let(:yaml)                    { load_file(folder, 'columns') }
-    let(:conditional_formattings) { SampleManifestExcel::ConditionalFormattingDefaultList.new(load_file(folder, 'conditional_formattings')) }
-    let(:column_list)             { SampleManifestExcel::ColumnList.new(yaml, conditional_formattings) }
-    let(:manifest_types)          { SampleManifestExcel::ManifestTypeList.new(load_file(folder, 'manifest_types')) }
+    let(:columns)                 { SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup }
     let!(:tag_group)              { create(:tag_group) }
-    let(:columns)                 { column_list.extract(manifest_types.find_by(:tube_library_with_tag_sequences).columns) }
 
     before(:each) do
       barcode = double('barcode')
@@ -29,7 +32,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
 
       download.worksheet.sample_manifest.generate
       download.save(test_file)
-      @upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: column_list, start_row: 9)
+      @upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: columns, start_row: 9)
     end
 
     context '1dtube' do

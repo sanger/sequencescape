@@ -35,7 +35,7 @@ module SampleManifestExcel
   # - A list of options which relate to options recognised by Excel e.g. errorMessage.
   # - A range name (optional) which will be linked to a range when the spreadsheet is created.
   class Validation
-    include AttributeHelpers
+    include Helpers::Attributes
 
     set_attributes :options, :range_name
 

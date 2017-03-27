@@ -14,7 +14,7 @@ module SampleManifestExcel
   # validation, conditional formatting rules)
   # A column is only valid if it has a name and heading.
   class Column
-    include AttributeHelpers
+    include Helpers::Attributes
 
     set_attributes :name, :heading, :number, :type, :validation, :value, :unlocked, :conditional_formattings, :attribute, :range,
                     defaults: { number: 0, type: :string, conditional_formattings: {}, validation: NullValidation.new }

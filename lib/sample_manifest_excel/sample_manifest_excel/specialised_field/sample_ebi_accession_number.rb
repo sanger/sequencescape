@@ -1,5 +1,9 @@
 module SampleManifestExcel
   module SpecialisedField
+
+    ##
+    # The accession number should only be updated if it is currently null or it is the same
+    # If the accession number differs from the current one the world will come crashing down.
     class SampleEbiAccessionNumber
       include Base
 

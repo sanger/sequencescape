@@ -1,7 +1,10 @@
 module SampleManifestExcel
   module Worksheet
+
+    ##
+    # A test worksheet is necessary for testing uploads.
     class TestWorksheet < Base
-      include Helpers
+      include Helpers::Worksheet
 
       attr_accessor :data, :no_of_rows, :study, :supplier, :count, :type, :validation_errors, :missing_columns, :manifest_type
 
@@ -71,32 +74,6 @@ module SampleManifestExcel
         @multiplexed_library_tube ||= FactoryGirl.create(:multiplexed_library_tube)
       end
 
-      class Tags
-        BASES = %w(A C G T).freeze
-
-        attr_reader :tag_oligos, :tag2_oligos
-
-        def initialize
-          create_products
-        end
-
-        def take(first, last, duplicate = false)
-          {}.tap do |hsh|
-            (first..last).each_with_index do |n, i|
-              hsh[n] = { tag_oligo: tag_oligos[i].join, tag2_oligo: tag2_oligos[i].join }
-            end
-            hsh[last] = hsh[first] if duplicate
-          end
-        end
-
-      private
-
-        def create_products
-          @tag_oligos = BASES.product(BASES)
-          @tag2_oligos = tag_oligos.reverse
-        end
-      end
-
     private
 
       def create_asset
@@ -131,8 +108,7 @@ module SampleManifestExcel
       end
 
       def create_tags
-        @tags = Tags.new
-        oligos = tags.take(first_row, last_row, validation_errors.include?(:tags))
+        oligos = Tags::ExampleData.new.take(first_row, last_row, validation_errors.include?(:tags))
         dynamic_attributes.each do |k, _v|
           dynamic_attributes[k].merge!(oligos[k])
         end

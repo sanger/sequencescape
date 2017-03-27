@@ -1,6 +1,6 @@
 module SampleManifestExcel
   class ConditionalFormattingDefault
-    include AttributeHelpers
+    include Helpers::Attributes
 
     set_attributes :type, :style, :options
 

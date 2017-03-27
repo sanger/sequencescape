@@ -1,5 +1,9 @@
 module SampleManifestExcel
   module SpecialisedField
+
+    ##
+    # The library type is a value which must already exist.
+    # Weirdly the library type is stored as a value rather than an association.
     class LibraryType
       include Base
       include ValueRequired

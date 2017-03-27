@@ -6,7 +6,7 @@ module SampleManifestExcel
   # - style: The style which will be added when conditional formatting applies.
   # - formula: See Formula class.
   class ConditionalFormatting
-    include AttributeHelpers
+    include Helpers::Attributes
 
     set_attributes :name, :options, :style, :formula
 

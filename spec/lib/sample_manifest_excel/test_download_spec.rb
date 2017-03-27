@@ -12,7 +12,7 @@ RSpec.describe SampleManifestExcel::TestDownload, type: :model, sample_manifest_
                                                         )
   }
 
-  before(:each) do
+  before(:all) do
     SampleManifestExcel.configure do |config|
       config.folder = File.join('spec', 'data', 'sample_manifest_excel')
       config.load!
@@ -29,6 +29,9 @@ RSpec.describe SampleManifestExcel::TestDownload, type: :model, sample_manifest_
 
   after(:each) do
     File.delete(test_file) if File.exist?(test_file)
+  end
+
+  after(:all) do
     SampleManifestExcel.reset!
   end
 end

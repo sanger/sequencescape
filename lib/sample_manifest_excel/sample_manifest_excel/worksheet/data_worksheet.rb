@@ -5,7 +5,7 @@ module SampleManifestExcel
     class DataWorksheet < Base
       attr_accessor :sample_manifest, :type
 
-      include Helpers
+      include Helpers::Worksheet
 
       def initialize(attributes = {})
         super

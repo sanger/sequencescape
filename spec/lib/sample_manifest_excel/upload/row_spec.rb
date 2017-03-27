@@ -1,23 +1,19 @@
 require 'rails_helper'
 
 RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_excel: true do
-  include SampleManifestExcel::Helpers
 
-  let(:folder)                  { File.join('spec', 'data', 'sample_manifest_excel') }
-  let(:yaml)                    { load_file(folder, 'columns') }
-  let(:conditional_formattings) { SampleManifestExcel::ConditionalFormattingDefaultList.new(load_file(folder, 'conditional_formattings')) }
-  let(:column_list)             { SampleManifestExcel::ColumnList.new(yaml, conditional_formattings) }
-  let(:manifest_types)          { SampleManifestExcel::ManifestTypeList.new(load_file(folder, 'manifest_types')) }
-  let!(:library_type)           { create(:library_type, name: 'My New Library Type') }
-  let!(:sample_tube)            { create(:sample_tube) }
-  let(:headings)                {
-    ['SANGER TUBE ID', 'SANGER SAMPLE ID', 'TAG OLIGO', 'TAG2 OLIGO', 'LIBRARY TYPE', 'INSERT SIZE FROM', 'INSERT SIZE TO', 'SUPPLIER SAMPLE NAME', 'COHORT', 'VOLUME (ul)', 'CONC. (ng/ul)', 'GENDER', 'COUNTRY OF ORIGIN', 'GEOGRAPHICAL REGION', 'ETHNICITY', 'DNA SOURCE', 'DATE OF SAMPLE COLLECTION (MM/YY or YYYY only)',
-     'DATE OF DNA EXTRACTION (MM/YY or YYYY only)', 'IS SAMPLE A CONTROL?', 'IS RE-SUBMITTED SAMPLE?', 'DNA EXTRACTION METHOD', 'SAMPLE PURIFIED?', 'PURIFICATION METHOD', 'CONCENTRATION DETERMINED BY', 'DNA STORAGE CONDITIONS', 'MOTHER (optional)', 'FATHER (optional)', 'SIBLING (optional)', 'GC CONTENT', 'PUBLIC NAME',
-     'TAXON ID', 'COMMON NAME', 'SAMPLE DESCRIPTION', 'STRAIN', 'SAMPLE VISIBILITY', 'SAMPLE TYPE', 'SAMPLE ACCESSION NUMBER (optional)', 'DONOR ID (required for EGA)', 'PHENOTYPE (required for EGA)']
-  }
-  let(:data)                    { [sample_tube.sample.assets.first.sanger_human_barcode, sample_tube.sample.id, 'AA', '', 'My New Library Type', 200, 1500, 'SCG--1222_A01', '', 1, 1, 'Unknown', '', '', '', 'Cell Line', 'Nov-16', 'Nov-16', '', '', '', 'No', '', 'OTHER', '', '', '', '', '', 'SCG--1222_A01', 9606, 'Homo sapiens', '', '', '', '', '', 11, 'Unknown'] }
-  let(:columns)                 { column_list.extract(headings) }
-  let!(:tag_group)              { create(:tag_group) }
+  before(:all) do
+    SampleManifestExcel.configure do |config|
+      config.folder = File.join('spec', 'data', 'sample_manifest_excel')
+      config.load!
+    end
+  end
+
+  let(:columns)       { SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup }
+  let(:data)          { [sample_tube.sample.assets.first.sanger_human_barcode, sample_tube.sample.id, 'AA', '', 'My New Library Type', 200, 1500, 'SCG--1222_A01', '', 1, 1, 'Unknown', '', '', '', 'Cell Line', 'Nov-16', 'Nov-16', '', '', '', 'No', '', 'OTHER', '', '', '', '', '', 'SCG--1222_A01', 9606, 'Homo sapiens', '', '', '', '', '', 11, 'Unknown'] }
+  let!(:library_type) { create(:library_type, name: 'My New Library Type') }
+  let!(:sample_tube)  { create(:sample_tube) }
+  let!(:tag_group)    { create(:tag_group) }
 
   it 'is not valid without row number' do
     expect(SampleManifestExcel::Upload::Row.new(number: 'one', data: data, columns: columns)).to_not be_valid
@@ -103,7 +99,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
 
     let!(:library_tubes) { create_list(:library_tube, 5) }
     let!(:mx_library_tube) { create(:multiplexed_library_tube) }
-    let(:tags) { SampleManifestExcel::Worksheet::TestWorksheet::Tags.new.take(0, 4) }
+    let(:tags) { SampleManifestExcel::Tags::ExampleData.new.take(0, 4) }
 
     before(:each) do
       @rows = []
@@ -132,5 +128,9 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
         end
       end
     end
+  end
+
+  after(:all) do
+    SampleManifestExcel.reset!
   end
 end

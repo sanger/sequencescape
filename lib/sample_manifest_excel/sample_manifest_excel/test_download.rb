@@ -1,7 +1,7 @@
 module SampleManifestExcel
   class TestDownload
     include ActiveModel::Model
-    include DownloadHelpers
+    include Helpers::Download
 
     attr_reader :worksheet
 

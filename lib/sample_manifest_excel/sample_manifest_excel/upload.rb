@@ -1,4 +1,7 @@
 module SampleManifestExcel
+
+  ##
+  # Upload a previously created manifest.
   module Upload
     require_relative 'upload/base'
     require_relative 'upload/data'

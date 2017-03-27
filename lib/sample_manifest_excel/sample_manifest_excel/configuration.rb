@@ -1,6 +1,6 @@
 module SampleManifestExcel
   class Configuration
-    include SampleManifestExcel::Helpers
+    include Helpers
 
     FILES = [:conditional_formattings, :manifest_types, :ranges, :columns]
 

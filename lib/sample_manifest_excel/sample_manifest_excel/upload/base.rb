@@ -32,7 +32,9 @@ module SampleManifestExcel
       end
 
       def process(tag_group)
-        processor.run(tag_group)
+        ActiveRecord::Base.transaction do
+          processor.run(tag_group)
+        end
       end
 
     private

@@ -1,7 +1,7 @@
 module SampleManifestExcel
   class Download
     include ActiveModel::Model
-    include DownloadHelpers
+    include Helpers::Download
 
     validates_presence_of :sample_manifest, :column_list, :range_list
 

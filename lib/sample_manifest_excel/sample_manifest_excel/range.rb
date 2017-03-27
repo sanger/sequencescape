@@ -23,7 +23,7 @@ module SampleManifestExcel
   # The first row is the only mandatory field everything else can be inferred.
   # Each field that is not passed in the initializer is lazy loaded.
   class Range
-    include AttributeHelpers
+    include Helpers::Attributes
 
     set_attributes :options, :first_row, :last_row, :first_column, :last_column, :worksheet_name, defaults: { first_column: 1, options: {} }
 
