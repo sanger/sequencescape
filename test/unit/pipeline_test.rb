@@ -130,15 +130,15 @@ class PipelineTest < ActiveSupport::TestCase
         end
       end
 
-    #   context "#qc_batches_completed" do
-    #     should "return both passed and failed batches" do
-    #       assert_equal 2, @pipeline_qc.qc_batches_completed.size
-    #     end
-    #
-    #     should "return two batches" do
-    #       assert_equal [@batch_completed_pass, @batch_completed_fail].sort{|a,b| a.id <=> b.id }, @pipeline_qc.qc_batches_completed.sort{|a,b| a.id <=> b.id }
-    #     end
-    #   end
+      #   context "#qc_batches_completed" do
+      #     should "return both passed and failed batches" do
+      #       assert_equal 2, @pipeline_qc.qc_batches_completed.size
+      #     end
+      #
+      #     should "return two batches" do
+      #       assert_equal [@batch_completed_pass, @batch_completed_fail].sort{|a,b| a.id <=> b.id }, @pipeline_qc.qc_batches_completed.sort{|a,b| a.id <=> b.id }
+      #     end
+      #   end
     end
   end
 end

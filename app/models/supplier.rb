@@ -13,7 +13,7 @@ class Supplier < ActiveRecord::Base
   has_many :studies, ->() { distinct }, through: :sample_manifests
   validates_presence_of :name
 
-  # Named scope for search by query string behaviour
+ # Named scope for search by query string behaviour
  scope :for_search_query, ->(query, _with_includes) {
     where(['suppliers.name IS NOT NULL AND (suppliers.name LIKE :like)', { like: "%#{query}%", query: query }])
                           }

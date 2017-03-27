@@ -27,10 +27,8 @@ module SampleManifest::SharedTubeBehaviour
   end
 
   def delayed_generate_asset_requests(asset_ids, study_id)
-    # TODO: Refactor?
-    RequestFactory.create_assets_requests(Asset.find(asset_ids), Study.find(study_id))
+    Delayed::Job.enqueue GenerateCreateAssetRequestsJob.new(asset_ids, study_id)
   end
-  handle_asynchronously :delayed_generate_asset_requests
 
   def tube_sample_creation(samples_data, _study_id)
     study.samples << samples_data.map do |barcode, sanger_sample_id, _prefix|

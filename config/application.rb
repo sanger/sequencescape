@@ -49,7 +49,7 @@ module Sequencescape
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
-      # Settings in config/environments/* take precedence over those specified here.
+    # Settings in config/environments/* take precedence over those specified here.
 
     # Add additional load paths for your own custom dirs
     # config.load_paths += %W( #{Rails.root}/extras )

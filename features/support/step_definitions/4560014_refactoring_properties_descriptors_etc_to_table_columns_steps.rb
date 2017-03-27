@@ -18,8 +18,7 @@ def create_request(request_type, study, project, asset, target_asset, additional
         library_type: 'Standard',
         read_length: (request_type.request_class == HiSeqSequencingRequest ? 50 : 76)
       }
-    )
-  )
+    ))
   request.id = additional_options[:id] if additional_options.key?(:id) # Force ID hack!
 
   # should be on target asset when we'll use target_asset

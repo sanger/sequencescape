@@ -19,6 +19,7 @@ class Batch < ActiveRecord::Base
   has_many :batch_requests, ->() { includes(:request).order(:position, :request_id) }, inverse_of: :batch
   has_many :requests, ->() { distinct }, through: :batch_requests, inverse_of: :batch
   has_many :assets, through: :requests, source: :target_asset
+  has_many :target_assets, through: :requests
   has_many :source_assets, ->() { distinct }, through: :requests, source: :asset
   has_many :submissions, ->() { distinct }, through: :requests
   has_many :orders, ->() { distinct }, through: :submissions
@@ -71,7 +72,7 @@ class Batch < ActiveRecord::Base
   include ::Batch::StateMachineBehaviour
   include ::Batch::TecanBehaviour
 
-  # Named scope for search by query string behavior
+ # Named scope for search by query string behavior
  scope :for_search_query, ->(query, _with_includes) {
     conditions = ['id=?', query]
     if user = User.find_by(login: query)
@@ -112,15 +113,15 @@ class Batch < ActiveRecord::Base
   end
 
   # Fail specific items on this batch
-  def fail_batch_items(requests, reason, comment, fail_but_charge = false)
+  def fail_batch_items(requests_to_fail, reason, comment, fail_but_charge = false)
     checkpoint = true
 
-    requests.each do |key, value|
+    requests_to_fail.each do |key, value|
       if value == 'on'
         logger.debug "SENDING FAIL FOR REQUEST #{key}, BATCH #{id}, WITH REASON #{reason}"
         unless key == 'control'
           ActiveRecord::Base.transaction do
-            request = self.requests.find(key)
+            request = requests.find(key)
             request.customer_accepts_responsibility! if fail_but_charge
             request.failures.create(reason: reason, comment: comment, notify_remote: true)
             EventSender.send_fail_event(request.id, reason, comment, id)
@@ -271,8 +272,8 @@ class Batch < ActiveRecord::Base
   def mpx_library_name
     mpx_name = ''
     if multiplexed? && requests.size > 0
-      mpx_library_tube = requests[0].target_asset.child
-      if !mpx_library_tube.nil?
+      mpx_library_tube = requests.first.target_asset.child
+      if mpx_library_tube.present?
         mpx_name = mpx_library_tube.name
       end
     end
@@ -378,10 +379,10 @@ class Batch < ActiveRecord::Base
 
       if requests.last.submission_id.present?
         Request.where(submission_id: requests.last.submission_id, state: 'pending')
-          .where.not(request_type_id: pipeline.request_type_ids).find_each do |request|
+               .where.not(request_type_id: pipeline.request_type_ids).find_each do |request|
             request.asset_id = nil
             request.save!
-          end
+        end
       end
     end
   end
@@ -389,8 +390,9 @@ class Batch < ActiveRecord::Base
   def parent_of_purpose(name)
     return nil if requests.empty?
     requests.first.asset.ancestors.joins(
-      'INNER JOIN plate_purposes ON assets.plate_purpose_id = plate_purposes.id')
-      .find_by(plate_purposes: { name: name })
+      'INNER JOIN plate_purposes ON assets.plate_purpose_id = plate_purposes.id'
+)
+            .find_by(plate_purposes: { name: name })
   end
 
   def swap(current_user, batch_info = {})

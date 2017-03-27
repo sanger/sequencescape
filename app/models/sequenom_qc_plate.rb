@@ -14,20 +14,17 @@ class SequenomQcPlate < Plate
 
   validates_presence_of :name
 
-  after_create :populate_wells_from_source_plates
+  after_create :schedule_populate_wells_from_source_plates
 
   def source_plates
     return [] if parents.empty?
-    ordered_source_plates = []
-    source_barcodes.each do |plate_barcode|
-      ordered_source_plates << if plate_barcode.blank?
+    source_barcodes.map do |plate_barcode|
+      if plate_barcode.blank?
         nil
-                               else
-        parents.select { |plate| plate.barcode == plate_barcode }.first
-                               end
+      else
+        parents.detect { |plate| plate.barcode == plate_barcode }
+      end
     end
-
-    ordered_source_plates
   end
 
   def default_plate_size
@@ -40,7 +37,10 @@ class SequenomQcPlate < Plate
       copy_source_wells!(plate, index)
     end
   end
-  handle_asynchronously :populate_wells_from_source_plates
+
+  def schedule_populate_wells_from_source_plates
+    Delayed::Job.enqueue SequenomWellPopulationJob.new(id)
+  end
 
   def add_event_to_stock_plates(user_barcode)
     return false unless user_barcode_exist?(user_barcode)
@@ -68,7 +68,6 @@ class SequenomQcPlate < Plate
 
       # Plate name e.g. QC1234_1235_1236_1237_20100801
       self.name = "#{plate_prefix}#{plate_number(input_plate_names)}#{plate_date}"
-      self.plate_purpose = PlatePurpose.find_by(name: 'Sequenom')
       self.barcode = PlateBarcode.create.barcode
     end
     true

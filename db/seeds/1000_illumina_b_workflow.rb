@@ -112,13 +112,13 @@ ActiveRecord::Base.transaction do
 
   def sequencing_request_type_names_for(pipeline)
     [
-    'Single ended sequencing',
+      'Single ended sequencing',
     'Single ended hi seq sequencing',
     'Paired end sequencing',
     'HiSeq Paired end sequencing',
     'HiSeq 2500 Single end sequencing',
     'HiSeq 2500 Paired end sequencing'
-  ].map { |s| "#{pipeline} #{s}" }
+    ].map { |s| "#{pipeline} #{s}" }
   end
 
   [
@@ -245,7 +245,7 @@ re_request = RequestType.create!(
       RequestType.find_by!(key: 'illumina_b_hiseq_x_paired_end_sequencing').acceptable_plate_purposes << PlatePurpose.create!(
         name: 'Strip Tube Purpose',
         target_type: 'StripTube',
-        can_be_considered_a_stock_plate: false,
+        stock_plate: false,
         cherrypickable_target: false,
         barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
         cherrypick_direction: 'column',

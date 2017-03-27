@@ -32,7 +32,7 @@ class WellAttribute < ActiveRecord::Base
       transitions to: :Repeat, from: [:ungraded]
     end
   end
-  # TODO Remvoe 'Too Low To Normalise' from the pico_pass column
+  # TODO: Remvoe 'Too Low To Normalise' from the pico_pass column
   # The state of 'Too Low To Normalise' exists in the database (from SNP?)
   # but it doesn't look like AASM can handle spaces in state names.
   # assm_state :'Too Low To Normalise'

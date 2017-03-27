@@ -12,7 +12,8 @@ Sequencescape::Application.configure do
   # break Cucumber's use_transactional_fixtures method.
   # For more information see https://rspec.lighthouseapp.com/projects/16211/tickets/165
   config.cache_classes = true
-  config.active_support.deprecation = :log
+  config.active_record.raise_in_transactional_callbacks = true
+  config.active_support.deprecation = :raise
 
   config.serve_static_files = true
 
@@ -42,7 +43,7 @@ Sequencescape::Application.configure do
   # https://github.com/rails/rails/issues/15089
   config.allow_concurrency = false
 
-  config.active_record.observers = [:batch_cache_sweeper, :request_observer]
+  config.active_record.observers = [:batch_cache_sweeper, :customer_request_observer]
 
   if defined?(ENV_JAVA)
     ENV_JAVA['http.proxyHost'] = nil

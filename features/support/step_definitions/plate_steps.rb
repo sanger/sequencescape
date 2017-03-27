@@ -40,9 +40,8 @@ end
 
 Given /^plate "([^"]*)" has "([^"]*)" wells with samples$/ do |plate_barcode, number_of_wells|
   plate = Plate.find_by(barcode: plate_barcode)
-  well_data = []
-  1.upto(number_of_wells.to_i) do |i|
-    Well.create!(plate: plate, map_id: i, sample: FactoryGirl.create(:sample))
+  plate.wells = Array.new(number_of_wells.to_i) do |i|
+    FactoryGirl.create(:untagged_well, map_id: i + 1)
   end
 end
 
@@ -122,14 +121,16 @@ end
 Given /^a plate of type "([^"]*)" with barcode "([^"]*)" exists$/ do |plate_type, machine_barcode|
   plate_type.constantize.create!(
     barcode: Barcode.number_to_human(machine_barcode.to_s),
-    plate_purpose: "#{plate_type}Purpose".constantize.first)
+    plate_purpose: "#{plate_type}Purpose".constantize.first
+)
 end
 
 Given /^a "([^"]*)" plate purpose and of type "([^"]*)" with barcode "([^"]*)" exists$/ do |plate_purpose_name, plate_type, machine_barcode|
   plate_type.constantize.create!(
     barcode: Barcode.number_to_human(machine_barcode.to_s),
     plate_purpose: PlatePurpose.find_by(name: plate_purpose_name),
-    name: machine_barcode)
+    name: machine_barcode
+)
 end
 
 Given /^plate (\d+) has is a stock plate$/ do |plate_id|
@@ -145,16 +146,14 @@ Given /^a plate with purpose "([^"]*)" and barcode "([^"]*)" exists$/ do |plate_
   # Plate.create!(:barcode =>Barcode.number_to_human("#{machine_barcode}"), :plate_purpose => PlatePurpose.find_by_name(plate_purpose_name))
   FactoryGirl.create(:plate,
     barcode: Barcode.number_to_human(machine_barcode.to_s),
-    plate_purpose: Purpose.find_by(name: plate_purpose_name)
-    )
+    plate_purpose: Purpose.find_by(name: plate_purpose_name))
 end
 
 Given /^a stock plate with barcode "([^"]*)" exists$/ do |machine_barcode|
   @stock_plate = FactoryGirl.create(:plate,
     name: 'A_TEST_STOCK_PLATE',
     barcode: Barcode.number_to_human(machine_barcode.to_s),
-    plate_purpose: PlatePurpose.find_by(name: 'Stock Plate')
-  )
+    plate_purpose: PlatePurpose.find_by(name: 'Stock Plate'))
 end
 
 Then /^plate "([^"]*)" is the parent of plate "([^"]*)"$/ do |parent_plate_barcode, child_plate_barcode|
@@ -205,6 +204,11 @@ Given /^a "([^\"]+)" plate called "([^\"]+)" exists$/ do |name, plate_name|
   plate_purpose.create!(name: plate_name)
 end
 
+Given(/^a plate called "([^"]*)" exists with purpose "([^"]*)"$/) do |name, purpose_name|
+  purpose = Purpose.find_by(name: purpose_name) || FactoryGirl.create(:plate_purpose, name: purpose_name)
+  FactoryGirl.create(:plate, name: name, purpose: purpose)
+end
+
 Given /^a "([^\"]+)" plate called "([^\"]+)" exists with barcode "([^\"]+)"$/ do |name, plate_name, barcode|
   plate_purpose = PlatePurpose.find_by!(name: name)
   plate_purpose.create!(name: plate_name, barcode: barcode)
@@ -241,8 +245,8 @@ end
 
 Given /^plate "([^"]*)" has "([^"]*)" wells with aliquots$/ do |plate_barcode, number_of_wells|
   plate = Plate.find_by(barcode: plate_barcode)
-  1.upto(number_of_wells.to_i) do |i|
-    Well.create!(plate: plate, map_id: i).aliquots.create!(sample: FactoryGirl.create(:sample))
+  plate.wells = Array.new(number_of_wells.to_i) do |i|
+    FactoryGirl.build :untagged_well, map_id: i + 1
   end
 end
 

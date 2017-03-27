@@ -6,6 +6,7 @@ FactoryGirl.define do
     ebi_name   :ebi_tag_1
 
     initialize_with { new(name: name, groups: groups, services: services, ebi_name: ebi_name) }
+    skip_create
 
     factory :sample_taxon_id_accession_tag do
       name      :sample_taxon_id

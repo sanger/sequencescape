@@ -206,8 +206,8 @@ class EventTest < ActiveSupport::TestCase
           @request_for_control.state = 'started'
           @request_with_no_attempts = @requests.first
 
-#          @failure_property_def = PropertyDefinition(:name => "Failure", :key => "failure", :relates_to => Request.to_s)
-#          @pass_property_def = PropertyDefinition(:name => "Pass", :key => "pass", :relates_to => Request.to_s)
+          #          @failure_property_def = PropertyDefinition(:name => "Failure", :key => "failure", :relates_to => Request.to_s)
+          #          @pass_property_def = PropertyDefinition(:name => "Pass", :key => "pass", :relates_to => Request.to_s)
 
           @lib_prep_event = Event.create(eventful_id: @library_creation_request.id, eventful_type: 'Request', family: 'fail', content: 'Test reason', message: 'test comment', identifier: 1234, descriptor_key: 'failure')
           @mx_lib_prep_event = Event.create(eventful_id: @multiplexed_library_creation_request.id, eventful_type: 'Request', family: 'fail', content: 'Test reason', message: 'test comment', identifier: 1234, descriptor_key: 'failure')

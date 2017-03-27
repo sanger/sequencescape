@@ -12,7 +12,7 @@ When /^I print the following labels$/ do |table|
   end
 
   stub_request(:post, LabelPrinter::PmbClient.print_job_url)
-              .with(headers: LabelPrinter::PmbClient.headers)
+    .with(headers: LabelPrinter::PmbClient.headers)
 
   step('I press "Print labels"')
 

@@ -64,7 +64,7 @@ class Pipeline < ActiveRecord::Base
 
   scope :for_request_type, ->(rt) {
     joins(:pipelines_request_types)
-    .where(pipelines_request_types: { request_type_id: rt })
+      .where(pipelines_request_types: { request_type_id: rt })
   }
 
   def request_types_including_controls
@@ -160,7 +160,7 @@ class Pipeline < ActiveRecord::Base
   def finish_batch(batch, user)
     batch.complete!(user)
   end
-  deprecate :finish_batch
+  deprecate finish_batch: 'use batch#complete! instead'
 
   def post_finish_batch(batch, user)
   end
@@ -179,7 +179,7 @@ class Pipeline < ActiveRecord::Base
   def release_batch(batch, user)
     batch.release!(user)
   end
-  deprecate :release_batch
+  deprecate release_batch: 'use batch#release! instead'
 
   def on_start_batch(batch, user)
     # Do nothing

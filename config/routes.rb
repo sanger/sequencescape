@@ -12,7 +12,7 @@ Sequencescape::Application.routes.draw do
 
   resources :samples do
     resources :assets, except: :destroy
-    resources :comments
+    resources :comments, controller: 'samples/comments'
     resources :studies
 
     member do
@@ -75,6 +75,7 @@ Sequencescape::Application.routes.draw do
   resources :batches do
     resources :requests, controller: 'batches/requests'
     resources :comments, controller: 'batches/comments'
+    resources :stock_assets, only: [:new, :create]
 
     member do
       get :print_labels
@@ -129,8 +130,6 @@ Sequencescape::Application.routes.draw do
       get :suppliers
       get :assembly
       put :assembly
-      get :new_plate_submission
-      post :create_plate_submission
       post :close
       post :open
       get :follow

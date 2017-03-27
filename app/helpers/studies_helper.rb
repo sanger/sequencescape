@@ -50,7 +50,7 @@ public
 
   def study_link(study, options)
     link_text = content_tag(:strong, study.name) << ' ' <<
-    content_tag(:span, study.state, class: "study-state label label-#{bootstrapify_study_state(study.state)}")
+                content_tag(:span, study.state, class: "study-state label label-#{bootstrapify_study_state(study.state)}")
     link_to(link_text, study_path(study), options)
   end
 end

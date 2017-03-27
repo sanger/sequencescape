@@ -23,6 +23,8 @@ require 'capybara/poltergeist'
 require 'webmock/rspec'
 require 'support/user_login'
 
+require 'pry'
+
 Capybara.javascript_driver = :poltergeist
 
 WebMock.disable_net_connect!(allow_localhost: true)
@@ -84,7 +86,7 @@ RSpec.configure do |config|
   #   - http://rspec.info/blog/2012/06/rspecs-new-expectation-syntax/
   #   - http://www.teaisaweso.me/blog/2013/05/27/rspecs-new-message-expectation-syntax/
   #   - http://rspec.info/blog/2014/05/notable-changes-in-rspec-3/#zero-monkey-patching-mode
-#  config.disable_monkey_patching!
+  #  config.disable_monkey_patching!
 
   # Many RSpec users commonly either run the entire suite or an individual
   # file, and it's useful to allow more verbose output when running an

@@ -9,8 +9,8 @@ module DescriptorJavascriptHelper
   # properly and so this is what this method generates in the HTML.
   def descriptor_javascript_support(controller_name, model_name)
     javascript_include_tag('descriptors') <<
-    javascript_tag("set_controller('#{controller_name}'); set_model('#{model_name}');") <<
-    hidden_field_tag(:count, @count)
+      javascript_tag("set_controller('#{controller_name}'); set_model('#{model_name}');") <<
+      hidden_field_tag(:count, @count)
   end
 
   def link_to_add_descriptor(&block)

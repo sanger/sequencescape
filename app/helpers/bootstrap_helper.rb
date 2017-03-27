@@ -65,15 +65,15 @@ module BootstrapHelper
         content_tag(:div, class: 'panel-heading') do
           content_tag(:h3, title, class: 'panel-title')
         end <<
-        content_tag(:table, class: 'table table-summary') do
-          String.new.html_safe.tap do |rows|
-            yield.each do |key, value|
-              rows << content_tag(:tr) do
-                content_tag(:th, key) << content_tag(:td, value)
+          content_tag(:table, class: 'table table-summary') do
+            String.new.html_safe.tap do |rows|
+              yield.each do |key, value|
+                rows << content_tag(:tr) do
+                  content_tag(:th, key) << content_tag(:td, value)
+                end
               end
             end
           end
-        end
       end
     end
   end
@@ -84,9 +84,9 @@ module BootstrapHelper
   def page_title(title, subtitle = nil)
     content_tag(:div, class: 'page-header') do
       content_tag(:h1) do
-        core = escape_once(title.titleize).html_safe
-        core << ' ' << content_tag(:small, subtitle) if subtitle.present?
-        core
+        concat title.titleize
+        concat ' '
+        concat content_tag(:small, subtitle) if subtitle.present?
       end
     end
   end
@@ -166,6 +166,7 @@ module BootstrapHelper
   def bootstrapify(level)
     {
       'notice' => 'success', 'error' => 'danger',
+      'alert' => 'danger',
       'pending' => 'muted', 'started' => 'primary',
       'passed' => 'success', 'failed' => 'danger',
       'cancelled' => 'warning'

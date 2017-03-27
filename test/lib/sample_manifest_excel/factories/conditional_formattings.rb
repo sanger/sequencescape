@@ -9,5 +9,7 @@ FactoryGirl.define do
       formula ({ type: :len, operator: '>', operand: 10 })
       initialize_with { new(options: options, style: style, formula: formula) }
     end
+
+    skip_create
   end
 end

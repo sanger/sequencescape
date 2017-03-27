@@ -173,8 +173,7 @@ class AssetsController < ApplicationController
 
   def update
     respond_to do |format|
-      joint_params = params.fetch(:asset, {}).merge(params.fetch(:lane, {}))
-      if @asset.update_attributes(joint_params)
+      if @asset.update_attributes(asset_params.merge(params.fetch(:lane, {})))
         flash[:notice] = 'Asset was successfully updated.'
         if params[:lab_view]
           format.html { redirect_to(action: :lab_view, barcode: @asset.barcode) }
@@ -186,6 +185,22 @@ class AssetsController < ApplicationController
         format.html { render action: 'edit' }
         format.xml  { render xml: @asset.errors, status: :unprocessable_entity }
       end
+    end
+  end
+
+  private def asset_params
+    permitted = [:location_id, :volume, :concentration]
+    permitted << :name if current_user.administrator? #
+    permitted << :plate_purpose_id if current_user.administrator? || current_user.lab_manager?
+    params.require(:asset).permit(permitted)
+  end
+
+  def destroy
+    @asset.destroy
+
+    respond_to do |format|
+      format.html { redirect_to(assets_url) }
+      format.xml  { head :ok }
     end
   end
 
@@ -247,16 +262,6 @@ class AssetsController < ApplicationController
   end
 
   before_action :prepare_asset, only: [:new_request, :create_request]
-
-  def prepare_asset
-    @asset = Asset.find(params[:id])
-  end
-  private :prepare_asset
-
-  def new_request_for_current_asset
-    new_request_asset_path(@asset, study_id: @study.try(:id), project_id: @project.try(:id), request_type_id: @request_type.try(:id))
-  end
-  private :new_request_for_current_asset
 
   def new_request
     @request_types = RequestType.applicable_for_asset(@asset)
@@ -400,25 +405,18 @@ class AssetsController < ApplicationController
     end
   end
 
-  def create_stocks
-    params[:assets].each do |id, params|
-      asset = Asset.find(id)
-      stock_asset = asset.create_stock_asset!(
-        name: params[:name],
-        volume: params[:volume],
-        concentration: params[:concentration]
-      )
-      stock_asset.assign_relationships(asset.parents, asset)
-    end
-
-    batch = Batch.find(params[:batch_id])
-    redirect_to batch_path(batch)
-  end
-
   private
 
+  def prepare_asset
+    @asset = Asset.find(params[:id])
+  end
+
+  def new_request_for_current_asset
+    new_request_asset_path(@asset, study_id: @study.try(:id), project_id: @project.try(:id), request_type_id: @request_type.try(:id))
+  end
+
   def discover_asset
-    @asset = Asset.includes(requests: :request_metadata).find(params[:id])
+    @asset = Asset.include_for_show.find(params[:id])
   end
 
   def check_valid_values(params = nil)

@@ -11,7 +11,6 @@ class IlluminaHtp::TransferablePlatePurpose < IlluminaHtp::FinalPlatePurpose
 
   self.connect_on = 'qc_complete'
   self.connect_downstream = true
-  self.connected_class = IlluminaHtp::Requests::SharedLibraryPrep
 
   def source_wells_for(wells)
     Well.in_column_major_order.stock_wells_for(wells)

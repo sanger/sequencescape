@@ -29,8 +29,8 @@
     <tr>
       <td><%= link_to plate.barcode, asset_path(plate) %></td>
       <td>
-      <% if plate.study %>
-        <%= link_to plate.study.try(:name), study_path(plate.study) %>
+      <% plate.studies.each do |study| %>
+        <%= link_to study.name, study_path(study) %>
       <% end %>
       </td>
       <td class="strong faint"><span style="display:none"><%= plate.created_at %></span><%= plate.created_at.to_formatted_s(:sortable) %></td>

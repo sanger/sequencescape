@@ -40,9 +40,8 @@ class QcReport < ActiveRecord::Base
         # at a later date if necessary.
         state :complete
 
-        # Triggered automatically on after_create. This event is handled by delayed_job
-        # Call generate_without_delay! to bypass delayed job, although make sure there aren't
-        # any existing jobs first.
+        # Triggered automatically on after_create. This event is handled via
+        # schedule_report, which creates a delayed job. It can be called manually.
         event :generate do
           transitions from: [:queued, :requeued], to: :generating
         end
@@ -79,8 +78,7 @@ class QcReport < ActiveRecord::Base
     # Briefly, an after_create event creates a delayed job to call generate! on the report.
     # This transitions the report into 'generating' and triggers this event.
     # On completion the report automatically passes into 'awaiting_proceed' through generation_complete!
-    # If you ever need to trigger the manual building of a report, use: generate_without_delay!
-    # This bypasses the delayed job, but ensures that the state machine is obeyed.
+    # You can trigger a synchronous report manually by calling #generate!
     def generate_report
       begin
         study.each_well_for_qc_report_in_batches(exclude_existing, product_criteria) do |assets|
@@ -121,12 +119,12 @@ class QcReport < ActiveRecord::Base
 
   before_validation :generate_report_identifier, if: :identifier_required?
 
-  after_create :generate!
+  after_create :schedule_report
 
   scope :for_report_page, ->(conditions) {
       order('id desc')
-      .where(conditions)
-      .joins(:product_criteria)
+        .where(conditions)
+        .joins(:product_criteria)
   }
 
   validates_presence_of :product_criteria, :study, :state
@@ -134,8 +132,9 @@ class QcReport < ActiveRecord::Base
   validates_inclusion_of :exclude_existing, in: [true, false], message: 'should be true or false.'
 
   # Reports are handled asynchronously
-  handle_asynchronously :generate
-  handle_asynchronously :generate!
+  def schedule_report
+    Delayed::Job.enqueue QcReportJob.new(id)
+  end
 
   def to_param
     report_identifier

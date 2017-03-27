@@ -181,8 +181,8 @@ module Tasks::CherrypickHandler
 
       # Attach the wells into their plate for maximum efficiency.
       plates_and_wells.each do |plate, wells|
-        wells.map { |w| w.well_attribute.save!; w.save! }
-        plate.wells.attach(wells)
+        wells.each { |w| w.well_attribute.save!; w.save! }
+        plate.wells << wells
       end
 
       plate_and_requests.each do |target_plate, requests|

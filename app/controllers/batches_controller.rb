@@ -5,8 +5,8 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 class BatchesController < ApplicationController
-# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+  # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
 
   before_action :evil_parameter_hack!
   include XmlCacheHelper::ControllerHelper
@@ -541,39 +541,6 @@ class BatchesController < ApplicationController
 
   def find_batch_by_batch_id
     @batch = Batch.find(params[:batch_id])
-  end
-
-  def new_stock_assets
-    @batch = Batch.find(params[:id])
-    unless @batch.requests.empty?
-      @batch_assets = []
-      if @batch.multiplexed?
-        if @batch.requests.first.target_asset.children.empty?
-          flash[:error] = "There's no multiplexed library tube available to have a stock tube."
-          redirect_to batch_path(@batch)
-        else
-          multiplexed_library = @batch.requests.first.target_asset.children.first
-
-          if !multiplexed_library.has_stock_asset? && !multiplexed_library.is_a_stock_asset?
-            @batch_assets = [multiplexed_library]
-          else
-            flash[:error] = 'Already has a Stock tube.'
-            redirect_to batch_path(@batch)
-          end
-        end
-      else
-        @batch_assets = @batch.requests.map(&:target_asset)
-        @batch_assets.delete_if { |a| a.has_stock_asset? }
-        if @batch_assets.empty?
-          flash[:error] = 'Stock tubes already exist for everything.'
-          redirect_to batch_path(@batch)
-        end
-      end
-      @assets = {}
-      @batch_assets.each do |batch_asset|
-        @assets[batch_asset.id] = batch_asset.new_stock_asset
-      end
-    end
   end
 
   def edit_volume_and_concentration

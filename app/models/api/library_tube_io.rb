@@ -17,13 +17,13 @@ class Api::LibraryTubeIO < Api::Base
         extend ClassMethods
 
         scope :including_associations_for_json, -> { includes([
-            :uuid_object,
-            :barcode_prefix, {
+          :uuid_object,
+          :barcode_prefix, {
               source_request: [:uuid_object, :request_metadata],
               primary_aliquot: { sample: :uuid_object, tag: [:uuid_object, { tag_group: :uuid_object }] }
             },
-            :scanned_into_lab_event
-          ])}
+          :scanned_into_lab_event
+        ])}
 
         alias_method(:json_root, :url_name)
       end

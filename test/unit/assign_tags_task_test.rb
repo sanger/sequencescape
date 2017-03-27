@@ -42,7 +42,7 @@ class AssignTagsTaskTest < TaskTestBase
 
     context '#render_task' do
       setup do
-        params = { workflow_id: @workflow, tag_group: @tag_group.id, batch_id: @batch.id }
+        params = { workflow_id: @workflow.id, tag_group: @tag_group.id, batch_id: @batch.id }
         @task.render_task(@controller, params)
       end
 

@@ -17,11 +17,11 @@ class Api::ProjectIO < Api::Base
         extend ClassMethods
 
         scope :including_associations_for_json, -> { includes([
-            :uuid_object, {
+          :uuid_object, {
               project_metadata: [:project_manager, :budget_division],
               roles: :users
             }
-          ])}
+        ])}
       end
     end
 

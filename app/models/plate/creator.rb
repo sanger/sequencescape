@@ -73,30 +73,34 @@ class Plate::Creator < ActiveRecord::Base
     scanned_barcodes.map do |scanned|
       plate =
         Plate.with_machine_barcode(scanned).includes(:location, wells: :aliquots).first or
-          raise ActiveRecord::RecordNotFound, "Could not find plate with machine barcode #{scanned.inspect}"
+        raise ActiveRecord::RecordNotFound, "Could not find plate with machine barcode #{scanned.inspect}"
+
       unless can_create_plates?(plate, plate_purposes)
         raise PlateCreationError, "Scanned plate #{scanned} has a purpose #{plate.purpose.name} not valid for creating [#{plate_purposes.map(&:name).join(',')}]"
       end
+
       create_child_plates_from(plate, current_user, creator_parameters)
     end.flatten
   end
   private :create_plates
 
   def create_child_plates_from(plate, current_user, creator_parameters)
-    stock_well_picker = plate.plate_purpose.can_be_considered_a_stock_plate? ? ->(w) { [w] } : ->(w) { w.stock_wells }
+    stock_well_picker = plate.plate_purpose.stock_plate? ? ->(w) { [w] } : ->(w) { w.stock_wells }
+    parent_wells = plate.wells.includes(:aliquots)
+
     plate_purposes.map do |target_plate_purpose|
-      target_plate_purpose.target_plate_type.constantize.create_with_barcode!(plate.barcode) do |child_plate|
+      target_plate_purpose.target_class.create_with_barcode!(plate.barcode) do |child_plate|
         child_plate.plate_purpose = target_plate_purpose
         child_plate.size          = plate.size
         child_plate.location      = plate.location
         child_plate.name          = "#{target_plate_purpose.name} #{child_plate.barcode}"
       end.tap do |child_plate|
-          child_plate.wells << plate.wells.map do |well|
-            well.dup.tap do |child_well|
-              child_well.aliquots = well.aliquots.map(&:dup)
-              child_well.stock_wells.attach(stock_well_picker.call(well))
-            end
+        child_plate.wells << parent_wells.map do |well|
+          well.dup.tap do |child_well|
+            child_well.aliquots = well.aliquots.map(&:dup)
+            child_well.stock_wells.attach(stock_well_picker.call(well))
           end
+        end
 
         creator_parameters.set_plate_parameters(child_plate, plate) unless creator_parameters.nil?
 

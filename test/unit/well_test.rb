@@ -79,27 +79,24 @@ class WellTest < ActiveSupport::TestCase
 
   should 'return a correct hash of target wells' do
     purposes = create_list :plate_purpose, 4
-    stock_plate = create :plate, wells: create_list(:well, 96)
-    norm_plates = create_list :plate, 4
-    norm_plates.each_with_index do |plate, index|
-      plate.update_attributes(plate_purpose: purposes[index], wells: create_list(:well, 96))
-      plate.wells.each do |w|
-        w.well_attribute.update_attributes(concentration: nil)
+    stock_plate = create :plate_with_untagged_wells, sample_count: 3
+
+    norm_plates = purposes.map { |purpose| create :plate_with_untagged_wells, purpose: purpose, sample_count: 3 }
+
+    well_plate_concentrations = [
+      # Plate 1, Plate 2, Plate 3
+      [50,       40,      60],  # Well 1
+      [30,       nil,     nil], # Well 2
+      [10,       nil,     nil]  # Well 3
+    ]
+
+    norm_plates.each_with_index do |plate, plate_index|
+      plate.wells.each_with_index do |w, well_index|
+        conc = well_plate_concentrations[well_index][plate_index]
+        w.well_attribute.update_attributes(concentration: conc)
+        stock_plate.wells[well_index].target_wells << w
       end
     end
-
-    stock_plate.wells.each_with_index do |stock_well, index|
-      4.times do |norm_plate_index|
-        stock_well.target_wells << norm_plates[norm_plate_index].wells[index]
-      end
-    end
-
-    norm_plates[0].wells[0].set_concentration(50)
-    norm_plates[0].wells[1].set_concentration(30)
-    norm_plates[1].wells[0].set_concentration(40)
-    norm_plates[1].wells[2].set_concentration(10)
-
-    norm_plates[2].wells[0].set_concentration(60)
 
     result = Well.hash_stock_with_targets(stock_plate.wells, purposes.map(&:name))
 
@@ -201,17 +198,17 @@ class WellTest < ActiveSupport::TestCase
   end
 
   [
-   [1000, 10, 50, 50, 0, nil],
-   [1000, 10, 10, 10, 0, nil],
-   [1000, 10, 20, 10, 0, 10],
-   [100, 100, 50, 1, 9, nil],
-   [1000, 1000, 50, 1, 9, nil],
-   [5000, 1000, 50, 5, 5, nil],
-   [10, 100, 50, 1, 9, nil],
-   [1000, 250, 50, 4, 6, nil],
-   [10000, 250, 50, 40, 0, nil],
-   [10000, 250, 30, 30, 0, nil]
-   ].each do |target_ng, measured_concentration, measured_volume, stock_to_pick, buffer_added, current_volume|
+    [1000, 10, 50, 50, 0, nil],
+    [1000, 10, 10, 10, 0, nil],
+    [1000, 10, 20, 10, 0, 10],
+    [100, 100, 50, 1, 9, nil],
+    [1000, 1000, 50, 1, 9, nil],
+    [5000, 1000, 50, 5, 5, nil],
+    [10, 100, 50, 1, 9, nil],
+    [1000, 250, 50, 4, 6, nil],
+    [10000, 250, 50, 40, 0, nil],
+    [10000, 250, 30, 30, 0, nil]
+  ].each do |target_ng, measured_concentration, measured_volume, stock_to_pick, buffer_added, current_volume|
     context 'cherrypick by nano grams' do
       setup do
         @source_well = create :well

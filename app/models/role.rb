@@ -50,7 +50,7 @@ class Role < ActiveRecord::Base
       def role_relation(name, role_name)
         scope name.to_sym, ->(user) {
           joins(:roles, :users)
-          .where(roles: { name: role_name.to_s }, users: { id: user.id })
+            .where(roles: { name: role_name.to_s }, users: { id: user.id })
         }
       end
 

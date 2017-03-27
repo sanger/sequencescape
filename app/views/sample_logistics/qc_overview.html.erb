@@ -32,8 +32,8 @@
       <% pico_plate_analysed_date = stock_plate.events.select{ |event| event.family == 'pico_analysed'  }.first.try(:content) %>
       <% gel_plate_analysed_date = stock_plate.events.select{ |event| event.family == 'gel_analysed'  }.first.try(:content) %>
       <td>
-         <% if stock_plate.study %>
-           <%= link_to stock_plate.study.name, study_path(stock_plate.study) %>
+         <% stock_plate.studies.each do |study| %>
+           <%= link_to study.name, study_path(study) %>
          <% end %>
       </td>
       <td><%= link_to stock_plate.barcode, asset_path(stock_plate) %></td>

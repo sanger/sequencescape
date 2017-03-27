@@ -9,18 +9,18 @@ module IlluminaC::Helper
 
   ACCEPTABLE_REQUEST_TYPES = %w(illumina_c_pcr illumina_c_nopcr illumina_c_multiplexing illumina_c_chromium_library)
   ACCEPTABLE_SEQUENCING_REQUESTS = %w(
-illumina_c_single_ended_sequencing
-illumina_c_paired_end_sequencing
-illumina_c_hiseq_paired_end_sequencing
-illumina_c_single_ended_hi_seq_sequencing
-illumina_c_miseq_sequencing
-illumina_c_hiseq_v4_paired_end_sequencing
-illumina_c_hiseq_v4_single_end_sequencing
-illumina_c_hiseq_2500_paired_end_sequencing
-illumina_c_hiseq_2500_single_end_sequencing
-illumina_c_hiseq_4000_paired_end_sequencing
-illumina_c_hiseq_4000_single_end_sequencing
-)
+    illumina_c_single_ended_sequencing
+    illumina_c_paired_end_sequencing
+    illumina_c_hiseq_paired_end_sequencing
+    illumina_c_single_ended_hi_seq_sequencing
+    illumina_c_miseq_sequencing
+    illumina_c_hiseq_v4_paired_end_sequencing
+    illumina_c_hiseq_v4_single_end_sequencing
+    illumina_c_hiseq_2500_paired_end_sequencing
+    illumina_c_hiseq_2500_single_end_sequencing
+    illumina_c_hiseq_4000_paired_end_sequencing
+    illumina_c_hiseq_4000_single_end_sequencing
+  )
 
   PIPELINE = 'Illumina-C'
   class TemplateConstructor
@@ -59,7 +59,7 @@ illumina_c_hiseq_4000_single_end_sequencing
     end
 
     def name_for(cherrypick, sequencing_request_type)
-      "#{PIPELINE} - #{cherrypick ? "Cherrypicked - " : ''}#{name} - #{sequencing_request_type.name.gsub("#{PIPELINE} ", '')}"
+      "#{PIPELINE} - #{cherrypick ? 'Cherrypicked - ' : ''}#{name} - #{sequencing_request_type.name.gsub("#{PIPELINE} ", '')}"
     end
 
     def build!

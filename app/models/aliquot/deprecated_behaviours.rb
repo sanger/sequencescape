@@ -7,15 +7,6 @@
 # The following module is included where we have deprecated behaviours that rely on sample or request.
 module Aliquot::DeprecatedBehaviours
   module Request
-    def self.included(base)
-      base.class_eval do
-        # Shouldn't be used . Here for compatibility with the previous code
-        # having request having one sample
-        has_many :samples, through: :asset
-        deprecate :samples, :sample_ids
-      end
-    end
-
     def tag_number
       tag.try(:map_id) || ''
     end

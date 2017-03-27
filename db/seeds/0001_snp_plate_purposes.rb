@@ -12,11 +12,11 @@ plate_purposes = <<-EOS
   type: DilutionPlatePurpose
   target_type: WorkingDilutionPlate
   cherrypickable_target: true
-  can_be_considered_a_stock_plate: false
+  stock_plate: false
 - name: Stock Plate
   qc_display: true
   id: 2
-  can_be_considered_a_stock_plate: true
+  stock_plate: true
   cherrypickable_target: true
 - name: optimisation
   qc_display: false
@@ -283,7 +283,7 @@ plate_purposes = <<-EOS
   id: 84
   type: PlatePurpose
   target_type: Plate
-  can_be_considered_a_stock_plate: true
+  stock_plate: true
 EOS
 
 AssetShape.create!(
@@ -312,7 +312,11 @@ AssetShape.create!(
 )
 
 YAML::load(plate_purposes).each do |plate_purpose|
-  attributes = plate_purpose.reverse_merge('type' => 'PlatePurpose', 'cherrypickable_target' => false, 'asset_shape_id' => AssetShape.find_by(name: 'Standard').id)
+  attributes = plate_purpose.reverse_merge(
+    'type' => 'PlatePurpose',
+    'cherrypickable_target' => false,
+    'asset_shape_id' => AssetShape.find_by(name: 'Standard').id
+  )
   attributes.delete('type').constantize.new(attributes) do |purpose|
     purpose.id = attributes['id']
   end.save!
@@ -320,7 +324,7 @@ end
 
 # Some plate purposes that appear to be used by SLF but are not in the seeds from SNP.
 (1..5).each do |index|
-  PlatePurpose.create!(name: "Aliquot #{index}", qc_display: true, can_be_considered_a_stock_plate: true, cherrypickable_target: true)
+  PlatePurpose.create!(name: "Aliquot #{index}", qc_display: true, stock_plate: true, cherrypickable_target: true)
 end
 
 # Build the links between the parent and child plate purposes

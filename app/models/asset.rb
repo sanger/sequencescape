@@ -75,8 +75,6 @@ class Asset < ActiveRecord::Base
 
   scope :requests_as_source_is_a?, ->(t) { joins(:requests_as_source).where(requests: { sti_type: [t, *t.descendants].map(&:name) }) }
 
-  extend ContainerAssociation::Extension
-
   # to override in subclass
   def location
     nil
@@ -94,6 +92,8 @@ class Asset < ActiveRecord::Base
   scope :of_type, ->(*args) { where(sti_type: args.map { |t| [t, *t.descendants] }.flatten.map(&:name)) }
 
   scope :recent_first, -> { order('id DESC') }
+
+  scope :include_for_show, ->() { includes(requests: :request_metadata) }
 
   def studies
     []
@@ -115,7 +115,7 @@ class Asset < ActiveRecord::Base
   def related_studies
     (orders.map(&:study) + studies).compact.uniq
   end
-  # Named scope for search by query string behaviour
+ # Named scope for search by query string behaviour
  scope :for_search_query, ->(query, with_includes) {
     search = '(assets.sti_type != "Well") AND ((assets.name IS NOT NULL AND assets.name LIKE :name)'
     arguments = { name: "%#{query}%" }
@@ -269,7 +269,7 @@ class Asset < ActiveRecord::Base
     @name_needs_to_be_generated = library_prep?
   end
 
-  # todo unify with parent/children
+  # TODO: unify with parent/children
   def parent
     parents.first
   end
@@ -362,23 +362,17 @@ class Asset < ActiveRecord::Base
   end
 
   def assign_relationships(parents, child)
-    if parents.kind_of?(Array) && child.kind_of?(Asset)
-      parents.each do |parent|
-        parent.children.delete(child)
-      end
-
-      AssetLink.create_edge(self, child)
-
-      parents.each do |parent|
-        AssetLink.create_edge(parent, self)
-      end
+    parents.each do |parent|
+      parent.children.delete(child)
+      AssetLink.create_edge(parent, self)
     end
+    AssetLink.create_edge(self, child)
   end
 
-  # We accept not only an individual barcode but also an array of them.  This builds an appropriate
-  # set of conditions that can find any one of these barcodes.  We map each of the individual barcodes
-  # to their appropriate query conditions (as though they operated on their own) and then we join
-  # them together with 'OR' to get the overall conditions.
+ # We accept not only an individual barcode but also an array of them.  This builds an appropriate
+ # set of conditions that can find any one of these barcodes.  We map each of the individual barcodes
+ # to their appropriate query conditions (as though they operated on their own) and then we join
+ # them together with 'OR' to get the overall conditions.
  scope :with_machine_barcode, ->(*barcodes) {
     query_details = barcodes.flatten.map do |source_barcode|
       case source_barcode.to_s
@@ -406,7 +400,7 @@ class Asset < ActiveRecord::Base
     end
 
       where([query_details[:query].join(' OR '), *query_details[:parameters].flatten.compact])
-      .joins(query_details[:joins].compact.uniq)
+        .joins(query_details[:joins].compact.uniq)
                               }
 
  scope :source_assets_from_machine_barcode, ->(destination_barcode) {

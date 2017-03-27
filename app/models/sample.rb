@@ -81,6 +81,7 @@ class Sample < ActiveRecord::Base
   after_save :accession
 
   scope :with_name, ->(*names) { where(name: names.flatten) }
+  scope :with_gender, ->(*_names) { joins(:sample_metadata).where.not(sample_metadata: { gender: nil }) }
 
   scope :for_search_query, ->(query, _with_includes) {
     # Note: This search is performed in two stages so that we can make best use of our indicies
@@ -106,7 +107,7 @@ class Sample < ActiveRecord::Base
       'INNER JOIN well_links ON target_well_id = aliquots.receptacle_id AND well_links.type = "stock"',
       'INNER JOIN requests ON requests.asset_id = well_links.source_well_id'
     ])
-    .where(['ca.container_id = ? AND requests.order_id = ?', plate_id, order_id])
+      .where(['ca.container_id = ? AND requests.order_id = ?', plate_id, order_id])
   }
 
   scope :for_plate_and_order_as_target, ->(plate_id, order_id) {
@@ -115,7 +116,7 @@ class Sample < ActiveRecord::Base
       'INNER JOIN container_associations AS ca ON ca.content_id = aliquots.receptacle_id',
       'INNER JOIN requests ON requests.target_asset_id = aliquots.receptacle_id'
     ])
-    .where(['ca.container_id = ? AND requests.order_id = ?', plate_id, order_id])
+      .where(['ca.container_id = ? AND requests.order_id = ?', plate_id, order_id])
   }
 
   scope :without_accession, ->() {
@@ -217,7 +218,10 @@ class Sample < ActiveRecord::Base
 
   def accession
     if configatron.accession_samples
-      Delayed::Job.enqueue SampleAccessioningJob.new(self)
+      accessionable = Accession::Sample.new(Accession.configuration.tags, self)
+      if accessionable.valid?
+        Delayed::Job.enqueue SampleAccessioningJob.new(accessionable)
+      end
     end
   end
 
