@@ -14,7 +14,7 @@
   Please scan the barcodes from the sample tubes into the table below.
 </div>
 
-<%= form_tag :action => :verify_tube_layout, :id => @batch.id  do %>
+<%= form_tag action: :verify_tube_layout, id: @batch.id  do %>
 
 <table width="100%" cellspacing="0" cellpadding="0">
   <tr>
@@ -27,7 +27,7 @@
   <tr>
     <% @count.times do |i| %>
       <% if ! (i == 3 && @pipeline.has_controls?) %>
-        <td><%= text_field_tag "barcode_#{i}", "",  { :size => 13 } %></td>
+        <td><%= text_field_tag "barcode_#{i}", "",  { size: 13 } %></td>
       <% end %>
     <% end %>
   </tr>

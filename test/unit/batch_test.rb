@@ -554,57 +554,6 @@ class BatchTest < ActiveSupport::TestCase
           assert_equal 'qc_completed', @batch.qc_state
         end
       end
-
-      context '#qc_evaluation_update' do
-        setup do
-          @batch = @pipeline.batches.create!(qc_state: 'qc_pending')
-
-          @library1 = create :sample_tube
-          @library2 = create :sample_tube
-          @batch.batch_requests.create!(
-            request: @pipeline.request_types.last.create!(asset: @library1, target_asset: create(:library_tube)),
-            position: 1
-          )
-          @batch.batch_requests.create!(
-            request: @pipeline.request_types.last.create!(asset: @library2, target_asset: create(:library_tube)),
-            position: 2
-          )
-
-          @task = create :task, workflow: @pipeline.workflow
-        end
-
-        context 'when evaluations tag contains 1 evaluation' do
-          setup do
-            @evaluation = {
-              'result' => 'pass',
-              'checks' => {
-                'check' => {
-                  'results' => 'Some free form data (no html please)',
-                  'criteria' => {
-                    'criterion' => [
-                      { 'value' => 'Greater than 80mb', 'key' => 'yield' },
-                      { 'value' => 'Greater than Q20', 'key' => 'count' }
-                    ]
-                  },
-                  'data_source' => '/somewhere.fastq',
-                  'links' => {
-                    'link' => {
-                      'href' => 'http://example.com/some_interesting_image_or_table',
-                      'label' => 'display text for hyperlink'
-                    }
-                  },
-                  'comment' => 'All good',
-                  'pass' => 'true'
-                }
-              },
-              'check'      => 'Auto QC',
-              'identifier' => @batch.id,
-              'location'   => 1
-            }
-            @evaluations = [@evaluation]
-          end
-        end
-      end
     end
 
     context '#reset!' do
@@ -683,13 +632,13 @@ class BatchTest < ActiveSupport::TestCase
           @batch.reset!(@user)
         end
 
- should 'change BatchRequest.count by -2' do
- assert_equal(-2, BatchRequest.count - @batchrequest_count, 'Expected BatchRequest.count to change by -2')
- end
+        should 'change BatchRequest.count by -2' do
+          assert_equal(-2, BatchRequest.count - @batchrequest_count, 'Expected BatchRequest.count to change by -2')
+        end
 
- should 'change Asset.count by -2' do
- assert_equal(-2, Asset.count - @asset_count, 'Expected Asset.count to change by -2')
- end
+        should 'change Asset.count by -2' do
+          assert_equal(-2, Asset.count - @asset_count, 'Expected Asset.count to change by -2')
+        end
 
         should 'change Request.count by 0' do
           assert_equal 0,  Request.count - @request_count, 'Expected Request.count to change by 0'

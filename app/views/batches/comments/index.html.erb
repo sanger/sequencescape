@@ -13,7 +13,7 @@
 </div>
 
 <div class='info'>
-  <%= render :partial => "list", :locals => {:batch => @batch } %>
+  <%= render partial: "list", locals: {batch: @batch } %>
   <div>
     <%= form_tag(batch_comments_path(@batch), data: { update: "#batch_annotations_#{@batch.id}", remote: true }, class:'remote-form') do %>
       <label for='comment'>Type your comment</label>

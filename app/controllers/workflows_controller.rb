@@ -8,7 +8,7 @@ class WorkflowsController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
-  before_action :find_workflow_by_id, only: [:auto_batch, :show, :edit, :duplicate, :batches, :update, :destroy, :reorder_tasks]
+  before_action :find_workflow_by_id, only: [:show, :edit, :duplicate, :batches, :update, :destroy, :reorder_tasks]
 
   include Tasks::AddSpikedInControlHandler
   include Tasks::AssignTagsHandler
@@ -42,10 +42,6 @@ class WorkflowsController < ApplicationController
       format.html
       format.xml { render xml: @workflows.to_xml }
     end
-  end
-
-  def auto_batch
-    @batch = Batch.find(params[:batch_id])
   end
 
   public

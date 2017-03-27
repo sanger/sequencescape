@@ -6,7 +6,7 @@
 
 <%# NOTE[xxx]: Kind of a hack because we're not actually building a form %>
 <%= fields_for(request) do |form| %>
-  <%= form.fields_for(:request_metadata, :builder => Metadata::ViewBuilder) do |metadata_fields| %>
+  <%= form.fields_for(:request_metadata, builder: Metadata::ViewBuilder) do |metadata_fields| %>
     <%- request.request_metadata.field_infos.each do |field_info| %>
       <%= metadata_fields.plain_value(field_info.key) %>
     <% end %>

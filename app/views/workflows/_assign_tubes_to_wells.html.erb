@@ -6,11 +6,11 @@
 
 <%= javascript_include_tag "assign-tubes-to-wells-task" %>
 <div id='error_messages'></div>
-<%= form_for @workflow, :url => { :action => "stage", :id => @stage, :workflow_id => @workflow.id, :batch_id => @batch.id, :next_stage => true }, :html => { :id => "stage_form", :multipart => true} do |form| %>
+<%= form_for @workflow, url: { action: "stage", id: @stage, workflow_id: @workflow.id, batch_id: @batch.id, next_stage: true }, html: { id: "stage_form", multipart: true} do |form| %>
   <h2>Tubes</h2>
-  <%= render :partial => 'source_asset_requests', :locals => { :requests => @requests, :type => 'tubes'  } %>
+  <%= render partial: 'source_asset_requests', locals: { requests: @requests, type: 'tubes'  } %>
   <h2>Target Plate</h2>
-  <%= render :partial => 'target_plate' %>
-  <%= render :partial => 'pacbio_sorting_assistance', :locals => { :with => [:one_cell_per_well] } %>
-  <%= render :partial => 'next_stage_submit' %>
+  <%= render partial: 'target_plate' %>
+  <%= render partial: 'pacbio_sorting_assistance', locals: { with: [:one_cell_per_well] } %>
+  <%= render partial: 'next_stage_submit' %>
 <% end %>

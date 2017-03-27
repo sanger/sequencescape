@@ -13,19 +13,19 @@
     SCAPE.preventMatchingSamplePooling = false;
   })(window, jQuery);
 </script>
-<%= form_for @workflow, :url => { :action => "stage", :id => @stage, :workflow_id => @workflow.id, :batch_id => @batch.id, :next_stage => true }, :html => { :id => "stage_form", :multipart => true} do |form| %>
+<%= form_for @workflow, url: { action: "stage", id: @stage, workflow_id: @workflow.id, batch_id: @batch.id, next_stage: true }, html: { id: "stage_form", multipart: true} do |form| %>
   <%# This isn't ideal. We pass in certain aspects of the pipeline configuration %>
   <h2>Wells</h2>
-  <%= render :partial => 'source_asset_requests', :locals => { :requests => @requests, :type => 'wells' } %>
+  <%= render partial: 'source_asset_requests', locals: { requests: @requests, type: 'wells' } %>
   <h2>Target Plate</h2>
   <div id="target_plate_selector" class="interface_group">
-  <%= render :partial => 'target_plate_selector', :locals => { :plate_purpose_options => @plate_purpose_options}  %>
+  <%= render partial: 'target_plate_selector', locals: { plate_purpose_options: @plate_purpose_options}  %>
   </div>
   <div id="target_plate_selected">
-  <%= render :partial => 'target_plate' %>
-  <%= render :partial => 'cherrypick_sorting_assistance', :locals => { :with => [:pool_matching] } %>
+  <%= render partial: 'target_plate' %>
+  <%= render partial: 'cherrypick_sorting_assistance', locals: { with: [:pool_matching] } %>
   </div>
   <h2>Pick Options</h2>
-  <%= render :partial => 'pick_options' %>
-  <%= render :partial => 'next_stage_submit' %>
+  <%= render partial: 'pick_options' %>
+  <%= render partial: 'next_stage_submit' %>
 <% end %>

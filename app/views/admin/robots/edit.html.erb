@@ -6,7 +6,7 @@
 
 <h1>Editing robot</h1>
 
-<%= form_for(@robot, :url=>admin_robot_path(@robot)) do |f| %>
+<%= form_for(@robot, url: admin_robot_path(@robot)) do |f| %>
   <%= f.error_messages %>
 
   <p>

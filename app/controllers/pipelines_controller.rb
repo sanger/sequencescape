@@ -39,26 +39,24 @@ class PipelinesController < ApplicationController
 
     @batches = @last5_batches = @pipeline.batches.latest_first.includes_for_ui
 
-    unless @pipeline.qc?
-      @information_types = @pipeline.request_information_types.shown_in_inbox
-      @requests_waiting  = @pipeline.requests.inbox(@show_held_requests, @current_page, :count)
+    @information_types = @pipeline.request_information_types.shown_in_inbox
+    @requests_waiting  = @pipeline.requests.inbox(@show_held_requests, @current_page, :count)
 
-      if @pipeline.group_by_parent?
-        # We use the inbox presenter
-        @inbox_presenter = Presenters::GroupedPipelineInboxPresenter.new(@pipeline, current_user, @show_held_requests)
-      elsif @pipeline.group_by_submission?
-        requests = @pipeline.requests.inbox(@show_held_requests, @current_page)
-        @grouped_requests = requests.group_by(&:submission_id)
-        @requests_comment_count = Comment.counts_for(requests)
-        @assets_comment_count = Comment.counts_for(requests.map(&:asset))
-      else
-        @requests = @pipeline.requests.inbox(@show_held_requests, @current_page)
-        # We convert to an array here as otherwise tails tries to be smart
-        # and use the scope. Not only does it fail, but we may as well cache
-        # the result now anyway.
-        @requests_comment_count = Comment.counts_for(@requests.to_a)
-        @assets_comment_count = Comment.counts_for(@requests.map(&:asset))
-      end
+    if @pipeline.group_by_parent?
+      # We use the inbox presenter
+      @inbox_presenter = Presenters::GroupedPipelineInboxPresenter.new(@pipeline, current_user, @show_held_requests)
+    elsif @pipeline.group_by_submission?
+      requests = @pipeline.requests.inbox(@show_held_requests, @current_page)
+      @grouped_requests = requests.group_by(&:submission_id)
+      @requests_comment_count = Comment.counts_for(requests)
+      @assets_comment_count = Comment.counts_for(requests.map(&:asset))
+    else
+      @requests = @pipeline.requests.inbox(@show_held_requests, @current_page)
+      # We convert to an array here as otherwise tails tries to be smart
+      # and use the scope. Not only does it fail, but we may as well cache
+      # the result now anyway.
+      @requests_comment_count = Comment.counts_for(@requests.to_a)
+      @assets_comment_count = Comment.counts_for(@requests.map(&:asset))
     end
   end
 

@@ -17,13 +17,13 @@
     <div id='filter'>
       <div id='filter_menu'>
         <div class='filter_title'>
-          <span id='item_list_title'>Samples</span> <span id='list_loading' style='display: none;'><%= image_tag 'ajax-loader.gif', :size => "10x10", :alt => 'Loading' %></span>
+          <span id='item_list_title'>Samples</span> <span id='list_loading' style='display: none;'><%= image_tag 'ajax-loader.gif', size: "10x10", alt: 'Loading' %></span>
         </div>
         <div id='filter_view'>
           <% if @workflow.source_is_external? -%>
             View: <a href='javascript:void(0);' onclick='show_samples_by_request();'>Requests</a> &middot; <a href='javascript:void(0);' onclick='show_samples();'>Samples</a>
           <% else -%>
-            <%= link_to 'New samples', 'javascript:void(0);', { :onclick => 'show_new_samples_int();'}%> &middot; <%= link_to 'Partial', 'javascript:void(0);', { :onclick => 'show_partial_samples_int(); '} %> &middot; <%= link_to 'Completed', 'javascript:void(0);', { :onclick => 'show_processed_samples_int(); '} %>
+            <%= link_to 'New samples', 'javascript:void(0);', { onclick: 'show_new_samples_int();'}%> &middot; <%= link_to 'Partial', 'javascript:void(0);', { onclick: 'show_partial_samples_int(); '} %> &middot; <%= link_to 'Completed', 'javascript:void(0);', { onclick: 'show_processed_samples_int(); '} %>
           <% end -%>
         </div>
         <br clear='all' />
@@ -32,14 +32,14 @@
     <div id='remote_items'>
       <table width='100%'>
         <tr>
-          <td class='item'><%= image_tag 'ajax-loader.gif', :size => "10x10", :alt => 'Loading' %> Loading</td>
+          <td class='item'><%= image_tag 'ajax-loader.gif', size: "10x10", alt: 'Loading' %> Loading</td>
         </tr>
       </table>
     </div>
   </div>
   <div id='main-links'>
     <div id='callouts'>
-      <span class='bullet'>&raquo;</span> <%= link_to 'Refresh sample list', {:controller => 'workflows', :action => 'refresh_samples', :id => @workflow.id } %><br /><br />
+      <span class='bullet'>&raquo;</span> <%= link_to 'Refresh sample list', {controller: 'workflows', action: 'refresh_samples', id: @workflow.id } %><br /><br />
       <span class='bullet'>&raquo;</span> <%= link_to 'Back to pipeline', workflow_path(@workflow) %>
 
       <br /><br />

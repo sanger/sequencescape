@@ -13,7 +13,7 @@ Study <%= @study.id %>: <%= @message %></p>
 
 You can view this study's status here:
 
-<% link = url_for(:host => configatron.site_url, :controller => 'studies', :action => 'show', :id => @study.id) %>
+<% link = url_for(host: configatron.site_url, controller: 'studies', action: 'show', id: @study.id) %>
 <%= link %>
 
 Many thanks,

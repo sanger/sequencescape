@@ -7,14 +7,14 @@
 <%= form_for(@project) do |f| %>
   <%= f.error_messages %>
 
-  <%= form_collection(f.label(:name, nil, :class => 'required'), f.text_field(:name, :class=>'form-control' ) ) %>
+  <%= form_collection(f.label(:name, nil, class: 'required'), f.text_field(:name, class: 'form-control' ) ) %>
 
-  <%= render(:partial => 'shared/metadata/edit/project', :locals => { :project => @project }) %>
+  <%= render(partial: 'shared/metadata/edit/project', locals: { project: @project }) %>
 
   <% unless @project.new_record? %>
-    <%= submit_tag :project, :value => "Update" %> or <%= link_to "cancel", project_path(@project) %>
+    <%= submit_tag :project, value: "Update" %> or <%= link_to "cancel", project_path(@project) %>
   <% else %>
-    <%= submit_tag :project, :value => "Create" %> or <%= link_to "cancel", projects_path %>
+    <%= submit_tag :project, value: "Create" %> or <%= link_to "cancel", projects_path %>
   <% end %>
 
 <% end %>

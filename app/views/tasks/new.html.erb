@@ -7,20 +7,20 @@
 <%= render_title 'New task' %>
 <%= render_help 'Create your new definition here.'%>
 
-<%= form_for(:task, :url => tasks_path, :html => {:id => 'task_form'}) do |f| %>
+<%= form_for(:task, url: tasks_path, html: {id: 'task_form'}) do |f| %>
 <div id='yield'>
   <div id='main-items'>
     <div id='template'>
       <%= error_messages_for :task %>
-      <%= f.hidden_field :workflow_id, :value => @workflow.id %>
-      <%= f.hidden_field :sorted, :value => @workflow.tasks.size %>
+      <%= f.hidden_field :workflow_id, value: @workflow.id %>
+      <%= f.hidden_field :sorted, value: @workflow.tasks.size %>
       <p>
         <strong>Name</strong><br />
-        <%= f.text_field :name, :size => '42' %>
+        <%= f.text_field :name, size: '42' %>
       </p>
       <p>
         <strong>Location</strong><br />
-        <%= f.text_field :location, :size => '42' %>
+        <%= f.text_field :location, size: '42' %>
       </p>
       <p>
       <%= f.check_box :interactive %> <strong>Interactive laboratory task</strong>
@@ -28,7 +28,7 @@
       <p>
       <%= f.check_box :batched %> <strong>Process entire batch of samples</strong>
       </p>
-      <%= render :partial => 'descriptors' %>
+      <%= render partial: 'descriptors' %>
       <p>
         <%= submit_tag "Create" %> or <%= link_to 'cancel', workflows_url %>
       </p>

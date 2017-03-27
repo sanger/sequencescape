@@ -23,7 +23,7 @@
         <th>Created at</th>
         <th>Created by</th>
       </tr>
-      <%= render :partial => "requests/event", :collection => @sample.events.sort{ |a,b| a.id <=> b.id  } %>
+      <%= render partial: "requests/event", collection: @sample.events.sort{ |a,b| a.id <=> b.id  } %>
     </table>
   <%- else %>
     <%= display_user_guide("No events registered") %>

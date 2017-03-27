@@ -6,7 +6,7 @@
 
 <div id='field_<%= field_number %>_option_<%= option_number %>'>
   Option:
-  <%= text_field_tag("descriptor[#{ field_number }][selection][#{ option_number }]", name, :size => 20) %>
+  <%= text_field_tag("descriptor[#{ field_number }][selection][#{ option_number }]", name, size: 20) %>
   <% link_to_add_option(field_number, 'tasks', 'task') do  %><img src="/images/add.png" width="12" height="12" alt="Add"><% end %>
   <% link_to_remove_option(field_number, option_number) do %><img src="/images/delete.png" width="12" height="12" alt="Delete"><% end %>
 </div>

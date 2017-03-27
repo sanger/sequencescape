@@ -7,15 +7,15 @@
 <%# NOTE[xxx]: Kind of a hack because we need 'project[project_metadata_attributes][X]' -%>
 
 <%= fields_for(project) do |form| %>
-  <%= form.fields_for(:project_metadata, :builder => Metadata::FormBuilder) do |metadata_fields| %>
+  <%= form.fields_for(:project_metadata, builder: Metadata::FormBuilder) do |metadata_fields| %>
     <% metadata_fields.filter { |field| current_user.workflow.visible_attribute?(field) } %>
-    <% metadata_fields.with_options(:grouping => 'Specification') do |group| %>
+    <% metadata_fields.with_options(grouping: 'Specification') do |group| %>
       <%= group.text_field(:project_cost_code) %>
       <%= group.text_field(:funding_comments) %>
       <%= group.text_field(:collaborators) %>
     <% end %>
     <% if current_user.is_administrator? %>
-      <% metadata_fields.with_options(:grouping => 'Billing') do |group| %>
+      <% metadata_fields.with_options(grouping: 'Billing') do |group| %>
         <%= group.select_by_association(:project_manager)%>
         <%= group.text_field(:external_funding_source) %>
         <%= group.select_by_association(:budget_division)%>

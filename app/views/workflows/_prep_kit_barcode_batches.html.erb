@@ -4,12 +4,12 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
 
-<%= form_for @workflow, :url => { :action => "stage", :id => @stage, :workflow_id => @workflow.id, :batch_id => @batch.id, :next_stage => true }, :html => { :id => "stage_form"} do |form| %>
+<%= form_for @workflow, url: { action: "stage", id: @stage, workflow_id: @workflow.id, batch_id: @batch.id, next_stage: true }, html: { id: "stage_form"} do |form| %>
 
 <p>
   <label for="prep_kit_barcode">DNA Template Prep Kit Box Barcode</label>: <%=  text_field_tag "prep_kit_barcode" %>
 </p>
 
-<%= render :partial => "next_stage_submit" %>
+<%= render partial: "next_stage_submit" %>
 
 <% end %>

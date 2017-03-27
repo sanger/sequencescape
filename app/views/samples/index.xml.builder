@@ -1,6 +1,6 @@
 xml.instruct!
 if @exclude_nested_resource
-  xml.samples({:type =>'array'}) do |samples|
+  xml.samples({type: 'array'}) do |samples|
     Sample.all.each do |p|
       samples.study do |sample|
         sample.id p.id

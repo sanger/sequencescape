@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
 
-<%= form_for @workflow, :url => { :action => "stage", :id => @stage, :workflow_id => @workflow.id, :batch_id => @batch.id, :next_stage => true }, :html => { :id => "stage_form"} do |form| %>
+<%= form_for @workflow, url: { action: "stage", id: @stage, workflow_id: @workflow.id, batch_id: @batch.id, next_stage: true }, html: { id: "stage_form"} do |form| %>
 
 <table id="smrt_cells_available" width="50%" class="sortable" cellpadding="2" cellspacing="0">
 <thead>
@@ -13,13 +13,13 @@
 <tbody>
 <% @requests.each do |request| %>
   <tr>
-    <td><%= label_tag( "request[#{request.id}]", "Number of SMRTcells for PacBioLibraryTube #{request.target_asset.barcode}", :style => 'display:none;') %><%= request.target_asset.barcode %></td>
+    <td><%= label_tag( "request[#{request.id}]", "Number of SMRTcells for PacBioLibraryTube #{request.target_asset.barcode}", style: 'display:none;') %><%= request.target_asset.barcode %></td>
     <td><%= text_field_tag "request[#{request.id}]" %></td>
   </tr>
 <% end%>
 </tbody>
 </table>
 
-<%= render :partial => "next_stage_submit" %>
+<%= render partial: "next_stage_submit" %>
 
 <% end %>
