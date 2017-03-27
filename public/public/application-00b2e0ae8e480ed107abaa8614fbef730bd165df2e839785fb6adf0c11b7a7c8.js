@@ -43201,14 +43201,14 @@ window.reload_batch = function(){
 window.select_all = function(){
   var checkboxes = $('input[type="checkbox"]');
   checkboxes.each(function(pos, r){
-    $(r).val(true);
+    $(r).prop('checked', true);
   });
 }
 
 window.deselect_all = function(){
   var checkboxes = $('input[type="checkbox"]');
   checkboxes.each(function(pos, r){
-    $(r).val(false);
+    $(r).prop('checked', false);
   });
 }
 
@@ -43226,7 +43226,7 @@ var Behaviours = {
   }
 };
 
-  $(function(){
+  $( document ).ready(function() {
     Behaviours.assign_handlers();
   });
 })(jQuery);
