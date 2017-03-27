@@ -71,6 +71,11 @@ FactoryGirl.define do
     after(:create) do |request|
       request.request_metadata.owner = request
     end
+
+    factory(:sequencing_request_with_assets) do
+      association(:asset, factory: :library_tube)
+      association(:target_asset, factory: :lane)
+    end
   end
 
   factory(:library_creation_request, parent: :request, class: LibraryCreationRequest) do
