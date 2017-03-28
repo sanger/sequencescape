@@ -24,7 +24,7 @@
   </thead>
   <tbody>
   <% @sequenom_qc_plates.each_with_index do |plate,plate_index| %>
-    <%= render :partial => 'sequenom_plate_details_row', :locals => {:plate => plate, :plate_index => plate_index} %>
+    <%= render partial: 'sequenom_plate_details_row', locals: {plate: plate, plate_index: plate_index} %>
   <% end %>
   </tbody>
 </table>

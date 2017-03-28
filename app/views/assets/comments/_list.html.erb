@@ -7,7 +7,7 @@
 <ul id="asset_annotations_<%= @asset.id %>" class="list-group">
   <% if @asset.comments.length > 0 %>
     <% @comments.each do |comment| %>
-      <li class="list-group-item"><%= render :partial => "comment" , :locals => {:comment => comment, :commentable => @asset}%></li>
+      <li class="list-group-item"><%= render partial: "comment" , locals: {comment: comment, commentable: @asset}%></li>
     <% end %>
   <% else %>
     <%= display_user_guide(I18n.t('assets.comments.no_comments')) %>

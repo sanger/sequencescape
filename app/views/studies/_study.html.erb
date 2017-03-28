@@ -12,8 +12,8 @@
 
 <% if creation %>
   <%= form_collection(
-    form.label(:name, 'Study name', :class => 'required'),
-    form.text_field(:name, :class=>'form-control')
+    form.label(:name, 'Study name', class: 'required'),
+    form.text_field(:name, class: 'form-control')
   ) %>
 <% end %>
 
@@ -21,7 +21,7 @@
   form.label(:study_owner_id, 'Study owner name' ),
   select_tag("study_owner_id",
     options_from_collection_for_select(User.owners, :id, :name, study.owner.try(:id)||params[:study_owner_id].to_i ),
-    :prompt => 'Select an owner...', :class=>'form-control'
+    prompt: 'Select an owner...', class: 'form-control'
   )
 ) %>
 
@@ -34,13 +34,13 @@
 <% end %>
 
 <%= fields_for(study) do |form| %>
-  <%= form.fields_for(:study_metadata, :builder => Metadata::FormBuilder) do |metadata_fields| %>
+  <%= form.fields_for(:study_metadata, builder: Metadata::FormBuilder) do |metadata_fields| %>
     <%= metadata_fields.select_by_association(:reference_genome) %>
   <% end %>
 <% end %>
 
 <h3>Properties</h3>
-<%= render :partial => 'shared/metadata/edit/study', :locals => { :study => study } %>
+<%= render partial: 'shared/metadata/edit/study', locals: { study: study } %>
 
 <table width="100%" cellspacing="0" cellpadding="0">
   <tr>
@@ -48,9 +48,9 @@
     <td width="60%">
       <br />
       <% unless study.id.nil? %>
-        <%= submit_tag :study, :value => "Update" %> or <%= link_to "cancel", study_path(study) %>
+        <%= submit_tag :study, value: "Update" %> or <%= link_to "cancel", study_path(study) %>
       <% else %>
-        <%= submit_tag :study, :value => "Create" %> or <%= link_to "cancel", studies_path %>
+        <%= submit_tag :study, value: "Create" %> or <%= link_to "cancel", studies_path %>
       <% end %>
     </td>
   </tr>

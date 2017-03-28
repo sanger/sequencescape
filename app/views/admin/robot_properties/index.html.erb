@@ -23,7 +23,7 @@
     <td><%= property.value %></td>
     <td><%= link_to 'Show', admin_robot_robot_property_path(@robot, property) %></td>
     <td><%= link_to 'Edit', edit_admin_robot_robot_property_path(@robot, property) %></td>
-    <td><%= link_to 'Delete', admin_robot_robot_property_path(@robot, property), :confirm => 'Are you sure?', :method => :delete %></td>
+    <td><%= link_to 'Delete', admin_robot_robot_property_path(@robot, property), confirm: 'Are you sure?', method: :delete %></td>
 
   </tr>
   <% end %>

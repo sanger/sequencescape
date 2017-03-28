@@ -7,7 +7,7 @@
 <div class="info">
 <% if workflows.empty? -%>
 <div id="empty_filter">
-  No workflows found. <%= link_to "Create the first one", :action => "new" %>
+  No workflows found. <%= link_to "Create the first one", action: "new" %>
 </div>
 <% else -%>
 <table width="100%" cellpadding="4" cellspacing="0">
@@ -15,8 +15,8 @@
   <tr class="<%= cycle("rowodd", "roweven") %>">
     <td width="70%"><%= link_to workflow.name, workflow_path(workflow) %></td>
     <td class="10%"><%= link_to "Edit", edit_workflow_path(workflow) %></td>
-    <td class="10%"><%= link_to "Duplicate", :action => "duplicate", :id => workflow.id %></td>
-    <td class="10%"><%= link_to "Delete", workflow_path(workflow), :confirm => "Are you sure you want to delete this workflow?", :method => :delete %></td>
+    <td class="10%"><%= link_to "Duplicate", action: "duplicate", id: workflow.id %></td>
+    <td class="10%"><%= link_to "Delete", workflow_path(workflow), confirm: "Are you sure you want to delete this workflow?", method: :delete %></td>
   </tr>
 <% end -%>
 </table>

@@ -16,7 +16,7 @@
     <%= studies_select(form, @presenter.studies) %>
     <div class='cross-compatible'>
       <%= form.label    :cross_study, 'This is a cross-study pool' %>
-      <%= form.check_box :cross_study, :class=>'cross_study form-control' %>
+      <%= form.check_box :cross_study, class: 'cross_study form-control' %>
     </div>
   </div>
   <div class="project col-md-6">
@@ -24,7 +24,7 @@
     <%= projects_select(form, @presenter.user_valid_projects) %>
     <div class='cross-compatible'>
       <%= form.label    :cross_project, 'This is a cross-project pool' %>
-      <%= form.check_box :cross_project, :class=>'cross_project form-control' %>
+      <%= form.check_box :cross_project, class: 'cross_project form-control' %>
     </div>
   </div>
 </div>
@@ -54,8 +54,8 @@
                 <div>
                   <%= form.collection_select :plate_purpose_id,
                     PlatePurpose.for_submissions.all, :id, :name,
-                    { :selected => PlatePurpose.stock_plate_purpose.id },
-                    :class => 'submission_plate_purpose_id form-control'
+                    { selected: PlatePurpose.stock_plate_purpose.id },
+                    class: 'submission_plate_purpose_id form-control'
                   %>
                 </div>
               </div>
@@ -65,9 +65,9 @@
                 </div>
                 <div>
                   <%= form.text_area :sample_names_text,
-                    :cols  => 40,
-                    :rows  => 4,
-                    :class => "submission_sample_names_text form-control"
+                    cols: 40,
+                    rows: 4,
+                    class: "submission_sample_names_text form-control"
                   %>
                 </div>
               </div>
@@ -80,9 +80,9 @@
               <div class="col-md-6">
                 <div><%= form.label :barcodes_wells_text, 'Plates and wells:' %></div>
                 <div><%= form.text_area :barcodes_wells_text,
-                    :cols  => 40,
-                    :rows  => 4,
-                    :class => "submission_barcodes_wells_text form-control"
+                    cols: 40,
+                    rows: 4,
+                    class: "submission_barcodes_wells_text form-control"
                   %></div>
               </div>
               <div class="col-md-6">
@@ -107,54 +107,54 @@
 <div class="sub-panel row comments-panel">
   <h3>Comments</h3>
   <%= form.text_area :comments,
-    :rows        => 5,
-    :placeholder => "Optionally, please add comments for this order here...",
-    :class       => 'submission_comments comments form-control',
-    :disabled    => true
+    rows: 5,
+    placeholder: "Optionally, please add comments for this order here...",
+    class: 'submission_comments comments form-control',
+    disabled: true
   %>
 </div>
 
 
 <div class="lanes-of-sequencing">
   <%= form.label :lanes_of_sequencing, 'Lanes of sequencing required' %>
-  <%= form.text_field :lanes_of_sequencing, :class => 'lanes_of_sequencing form-control', :value => 1 %>
+  <%= form.text_field :lanes_of_sequencing, class: 'lanes_of_sequencing form-control', value: 1 %>
 </div>
 
 <div class="pre-capture-plex-level">
   <%= form.label :pre_capture_plex_level, 'Pre-capture plex level' %>
-  <%= form.text_field :pre_capture_plex_level, :class => 'pre_capture_plex_level form-control', :value => 8 %>
+  <%= form.text_field :pre_capture_plex_level, class: 'pre_capture_plex_level form-control', value: 8 %>
 </div>
 
 <div class="pre-capture-plex-group">
   <%= form.label :pre_capture_plex_group, 'Pre-capture plex group' %>
-  <%= form.text_field :pre_capture_plex_group, :class => 'pre_capture_plex_group form-control', :value => nil %>
+  <%= form.text_field :pre_capture_plex_group, class: 'pre_capture_plex_group form-control', value: nil %>
 </div>
 
 <div class="gigabases-expected">
   <%= form.label :gigabases_expected, 'Gigabases expected' %>
-  <%= form.text_field :gigabases_expected, :class => 'gigabases_expected form-control', :value => nil %>
+  <%= form.text_field :gigabases_expected, class: 'gigabases_expected form-control', value: nil %>
 </div>
 
 <div class="save-buttons">
   <% if order.present? -%>
     <%= hidden_field_tag :order_id,
       order.id,
-      :class => 'order-id' %>
+      class: 'order-id' %>
 
     <%= submit_tag "♻  Delete Order",
-      :class    => "delete-order btn btn-danger form-control"
+      class: "delete-order btn btn-danger form-control"
     %>
 
   <% else -%>
     <%= submit_tag raw("&#10004; Save Order"),
-      :class    => "save-order btn btn-success ",
-      :disabled => true,
-      :disable_with => 'Creating...'
+      class: "save-order btn btn-success ",
+      disabled: true,
+      disable_with: 'Creating...'
     %>
 
     <%= submit_tag "Cancel",
-      :class    => "cancel-order btn btn-warning ",
-      :disabled => true
+      class: "cancel-order btn btn-warning ",
+      disabled: true
     %>
 
   <% end -%>

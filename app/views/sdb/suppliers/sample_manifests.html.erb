@@ -8,5 +8,5 @@
 <% add :menu, "Create manifest" => new_sample_manifest_path() %>
 <h2>Sample Manifests for <%= @supplier.name %></h2>
 <%= pagination @sample_manifests %>
-<%= render :partial => 'shared/manifests', :locals => { :manifests => @sample_manifests, :show_uploaded => true} %>
+<%= render partial: 'shared/manifests', locals: { manifests: @sample_manifests, show_uploaded: true} %>
 <%= pagination @sample_manifests %>

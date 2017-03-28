@@ -23,7 +23,7 @@
       Sequencescape : <%= controller.controller_name.capitalize %> - <%= @page_name || controller.action_name %>
     </title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <%= stylesheet_link_tag "tabview", "application", :media => "all" %>
+    <%= stylesheet_link_tag "tabview", "application", media: "all" %>
 
 
     <%#= stylesheet_link_tag("formtastic") + stylesheet_link_tag("formtastic_changes") %>
@@ -38,7 +38,7 @@
   <body class="<%= Rails.env %> <%= DeploymentEnvironment.role %> yui-skin-sam">
   <div id="doc3" class="container-fluid yui-t4">
 
-    <header><%= render :partial => 'shared/header' %></header>
+    <header><%= render partial: 'shared/header' %></header>
 
     <section class="clearfix main-row">
       <section class="col-md-10">
@@ -47,7 +47,7 @@
           <%= yield %>
         </div>
       </section>
-      <div id="menu" class="col-md-2"><%= render :partial => 'shared/sidebar' %></div>
+      <div id="menu" class="col-md-2"><%= render partial: 'shared/sidebar' %></div>
     </section>
 
     <footer>

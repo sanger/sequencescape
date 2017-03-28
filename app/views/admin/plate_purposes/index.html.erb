@@ -14,7 +14,7 @@
 <% for plate_purpose in @plate_purposes %>
   <tr>
     <td><%=h plate_purpose.name %></td>
-    <td><%= link_to 'Edit', [:edit,:admin,plate_purpose], :title => "Edit #{plate_purpose.name}" %></td>
+    <td><%= link_to 'Edit', [:edit,:admin,plate_purpose], title: "Edit #{plate_purpose.name}" %></td>
   </tr>
 <% end %>
 </table>

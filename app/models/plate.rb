@@ -329,12 +329,8 @@ class Plate < Asset
                        }
 
   scope :output_by_batch, ->(batch) {
-      joins(container_associations: {
-          content: {
-            requests_as_target: :batch
-          }
-        })
-        .where(['batches.id = ?', batch.id])
+      joins(wells: { requests_as_target: :batch })
+        .where(batches: { id: batch })
   }
 
   scope :include_wells, -> { includes(:wells) } do
@@ -369,7 +365,7 @@ class Plate < Asset
   }
 
   scope :with_wells_and_requests, ->() {
-    includes(wells: [
+    eager_load(wells: [
       :uuid_object, :map,
       {
         requests_as_target: [

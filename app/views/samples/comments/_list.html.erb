@@ -7,7 +7,7 @@
 <ul id="sample_annotations_<%= @sample.id %>" class="list-group">
   <% if @sample.comments.size > 0 %>
     <% @comments.each do |comment| %>
-      <li class="list-group-item"><%= render :partial => "comment" , :locals => {:comment => comment, :commentable => @sample}%></li>
+      <li class="list-group-item"><%= render partial: "comment" , locals: {comment: comment, commentable: @sample}%></li>
     <% end %>
   <% else %>
     <%= display_user_guide(I18n.t('samples.comments.no_comments')) %>

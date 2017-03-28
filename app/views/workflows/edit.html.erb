@@ -14,8 +14,8 @@
   </div>
 
   <div id="sample">
-    <%= form_for :workflow, :url => workflow_path(@workflow), :html => {:method => :put} do |form| -%>
-      <%= render :partial => "workflow", :locals => {:read_only => false, :form => form} %>
+    <%= form_for :workflow, url: workflow_path(@workflow), html: {method: :put} do |form| -%>
+      <%= render partial: "workflow", locals: {read_only: false, form: form} %>
     <% end -%>
   </div>
 </div>

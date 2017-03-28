@@ -65,7 +65,6 @@ module TubePurposeHelper
     IlluminaHtp::MxTubeNoQcPurpose.create!(
         name: name,
         target_type: 'MultiplexedLibraryTube',
-        qc_display: false,
         stock_plate: false,
         default_state: 'pending',
         barcode_printer_type: BarcodePrinterType.find_by(name: '1D Tube'),

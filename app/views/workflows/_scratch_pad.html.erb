@@ -17,8 +17,8 @@
 
 <% if (control_plate = ControlPlate.first).present? %>
   <h3>Controls</h3>
-  <%= render :partial => 'control_table', :locals => {:table_name => "Illumina", :wells => control_plate.illumina_wells, :control_plate => control_plate,  :plate_class => plate_class, :row_number => 0} %>
-  <%= render :partial => 'control_table', :locals => {:table_name => "Affy", :wells => control_plate.affy_wells, :control_plate => control_plate,  :plate_class => plate_class, :row_number => 1} %>
+  <%= render partial: 'control_table', locals: {table_name: "Illumina", wells: control_plate.illumina_wells, control_plate: control_plate,  plate_class: plate_class, row_number: 0} %>
+  <%= render partial: 'control_table', locals: {table_name: "Affy", wells: control_plate.affy_wells, control_plate: control_plate,  plate_class: plate_class, row_number: 1} %>
   <% plate_ids << 'control_[0]' << 'control_[1]' %>
 <% end %>
 

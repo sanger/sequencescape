@@ -30,7 +30,7 @@
   <tbody>
     <% batches.each_with_index do |batch, index| %>
     <tr class="batch">
-      <td><%= link_to batch.id, batch_path(batch), {:title => "#{batch.state} batch #{batch.id}"} %></td>
+      <td><%= link_to batch.id, batch_path(batch), {title: "#{batch.state} batch #{batch.id}"} %></td>
       <td><%= request_count_cache[batch.id]||0 %></td>
       <td><%= batch.user.blank? ? "Unknown" : batch.user.login %></td>
       <td><%= batch.assigned_user %></td>
@@ -60,15 +60,11 @@
       <% end %>
         <td>
           <% if batch.pipeline %>
-            <% if batch.pipeline.automated? %>
-              <%= link_to "View batch", :controller => :workflows, :action => :auto_batch, :id => batch.pipeline.workflow.id, :batch_id => batch.id %>
-            <% else %>
-              <% if batch.state == "completed" -%>
-                <%= link_to "Release batch", release_batch_url(batch) %>
-              <% else -%>
-                <%= link_to("View batch", batch_path(batch), :title => "View #{batch_state} batch #{index+1}") %>
-              <% end -%>
-            <% end %>
+            <% if batch.state == "completed" -%>
+              <%= link_to "Release batch", release_batch_url(batch) %>
+            <% else -%>
+              <%= link_to("View batch", batch_path(batch), title: "View #{batch_state} batch #{index+1}") %>
+            <% end -%>
           <% end %>
         </td>
       </tr>
@@ -78,11 +74,7 @@
     <tfoot>
       <tr>
         <td colspan="7">
-          <% if @pipeline.qc? %>
-            <%= link_to "View all batches in this state", controller: :batches, action: "quality_control", id: batches.first.qc_pipeline.id, qc_state: batches.first.qc_state, state: batches.first.state %>
-          <% else %>
-            <%= link_to "View all #{batches.first.state} batches", controller: :batches, action: batches.first.state, pipeline_id: @pipeline.id %>
-          <% end %>
+          <%= link_to "View all #{batches.first.state} batches", controller: :batches, action: batches.first.state, pipeline_id: @pipeline.id %>
         </td>
       </tr>
     </tfoot>

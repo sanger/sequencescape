@@ -18,10 +18,10 @@
       <br />
       <%= form_for(:asset) do |f| %>
         <div class='entry'>
-          <%= text_field :asset, :barcode, { :class => 'big' } %>
+          <%= text_field :asset, :barcode, { class: 'big' } %>
         </div>
       <% end %>
-      <div id='loading' style='display: none;'>Loading <%= image_tag 'ajax-loader.gif', :size => "10x10", :alt => "Ajax Loader" %></div>
+      <div id='loading' style='display: none;'>Loading <%= image_tag 'ajax-loader.gif', size: "10x10", alt: "Ajax Loader" %></div>
       <div id='response'>
       </div>
       <br />

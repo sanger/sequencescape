@@ -6,9 +6,9 @@
 
 <% unless @projects.empty? %>
   <div id='project_list'>
-    <%= form_tag(edit_admin_projects_path, :remote => true, :id => "project_form", :class=>'remote-form observed', :data => { :update => "#project_editor", :throbber => '#update_loader'} ) do %>
+    <%= form_tag(edit_admin_projects_path, remote: true, id: "project_form", class: 'remote-form observed', data: { update: "#project_editor", throbber: '#update_loader'} ) do %>
       <p>Found <%= pluralize @projects.size, "project" %></p>
-      <%= select_tag :id, options_from_collection_for_select(@projects, :id, :name), :prompt => 'Select a project...'  %>
+      <%= select_tag :id, options_from_collection_for_select(@projects, :id, :name), prompt: 'Select a project...'  %>
     <% end %>
 
     <div id='project_editor'>

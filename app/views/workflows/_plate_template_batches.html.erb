@@ -6,7 +6,7 @@
 
 <% add :menu, "New/Edit Plate Templates" => plate_templates_path -%>
 
-<%= form_for @workflow, :url => { :action => "stage", :id => @stage, :workflow_id => @workflow.id, :batch_id => @batch.id, :next_stage => true }, :html => { :id => "stage_form", :multipart => true} do |form| %>
+<%= form_for @workflow, url: { action: "stage", id: @stage, workflow_id: @workflow.id, batch_id: @batch.id, next_stage: true }, html: { id: "stage_form", multipart: true} do |form| %>
   <%= panel(:info,title:"Step 1: Layout wells on plates") do %>
   <fieldset class="col-md-5">
     <legend>Automatic</legend>
@@ -36,14 +36,14 @@
     <table cellspacing='0' cellpadding='0'>
       <tr>
         <td></td>
-        <td><%= link_to "Download spreadsheet", url_for(:controller => :batches, :action => :download_spreadsheet, :id => @batch.id) %></td>
+        <td><%= link_to "Download spreadsheet", url_for(controller: :batches, action: :download_spreadsheet, id: @batch.id) %></td>
       </tr>
       <tr>
         <td></td>
-        <td><%= file_field_tag "file", :size => 50 %></td>
+        <td><%= file_field_tag "file", size: 50 %></td>
       </tr>
     </table>
-    <p class='help-block'><%= link_to "Download the file", url_for(:controller => :batches, :action => :download_spreadsheet, :id => @batch.id) %>, enter the destination wells (A1,B2...), save as CSV, then upload.  If there are any errors with the uploaded wells, the wells wont be cherrypicked and will be put back in the inbox.  Wells can be rearranged in the next step.</p>
+    <p class='help-block'><%= link_to "Download the file", url_for(controller: :batches, action: :download_spreadsheet, id: @batch.id) %>, enter the destination wells (A1,B2...), save as CSV, then upload.  If there are any errors with the uploaded wells, the wells wont be cherrypicked and will be put back in the inbox.  Wells can be rearranged in the next step.</p>
   </fieldset>
 <% end %>
   <%= panel(:info,title:"Step 2: Pick robot and plate types") do %>
@@ -65,8 +65,8 @@
 
   <%= panel(:info,title:"Step 3: Set volumes and concentrations") do %>
 
-  <%= render :partial => 'cherrypicking_volume_parameters' %>
+  <%= render partial: 'cherrypicking_volume_parameters' %>
   <% end %>
 
-  <%= render :partial => "next_stage_submit" %>
+  <%= render partial: "next_stage_submit" %>
 <% end %>

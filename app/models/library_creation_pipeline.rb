@@ -5,13 +5,8 @@
 # Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
 
 class LibraryCreationPipeline < Pipeline
-  def library_creation?
-    true
-  end
-
-  def pulldown?
-    false
-  end
+  self.library_creation = true
+  self.can_create_stock_assets = true
 
   def update_detached_request(batch, request)
     super
@@ -32,9 +27,5 @@ class LibraryCreationPipeline < Pipeline
       end
     end
     batch
-  end
-
-  def can_create_stock_assets?
-    true
   end
 end

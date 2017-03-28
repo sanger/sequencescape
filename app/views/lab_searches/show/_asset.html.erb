@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.%>
 
 <tr class="<%= cycle("rowodd", "roweven") %>">
-  <td><%= link_to(h(asset.display_name), asset_url(asset), :target => "_blank") %></td>
+  <td><%= link_to(h(asset.display_name), asset_url(asset), target: "_blank") %></td>
   <td><%= asset.respond_to?(:sanger_human_barcode) ? asset.sanger_human_barcode : '' %></td>
   <td colspan="3">
     <% unless asset.requests.empty? %>
@@ -13,7 +13,7 @@
         <% asset.requests.each do |request| %>
           <tr>
             <td width="42%"><%= request.pipeline.name unless request.pipeline_id.nil? %></td>
-            <td width="29%"><%= link_to request.id, request_path(:id => request.id) %></td>
+            <td width="29%"><%= link_to request.id, request_path(id: request.id) %></td>
             <td width="29%"><%= request.batch.try(:id) %></td>
           </tr>
         <% end %>

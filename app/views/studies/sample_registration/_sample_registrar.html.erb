@@ -4,8 +4,8 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.%>
 
-<%= form_for(:sample_registrars, :url => study_sample_registration_index_path, :method => :post, html:{autocomplete:"off"}) do |registrars_fields| %>
-  <%= error_messages_for(:sample_registrars, :object => @sample_registrars, :object_name => "set of sample(s)") %>
+<%= form_for(:sample_registrars, url: study_sample_registration_index_path, method: :post, html:{autocomplete:"off"}) do |registrars_fields| %>
+  <%= error_messages_for(:sample_registrars, object: @sample_registrars, object_name: "set of sample(s)") %>
 
   <h2>1. Enter sample information</h2>
   <%= display_user_guide(I18n.t('samples.name_format')) %>
@@ -45,7 +45,7 @@
         </th>
         <%# NOTE[xxx]: Kind of a hack because we're not actually building a form %>
         <%= fields_for(Sample.new) do |form| %>
-          <%= form.fields_for(:sample_metadata, :builder => Metadata::FormBuilder) do |metadata_fields| %>
+          <%= form.fields_for(:sample_metadata, builder: Metadata::FormBuilder) do |metadata_fields| %>
             <% metadata_fields.filter { |field| current_user.workflow.visible_attribute?(field) } %>
 
             <%# Fields for 'Microarray genotyping' %>
@@ -66,32 +66,32 @@
             <%= metadata_fields.header(:gc_content) %>
 
             <!-- SRA -->
-            <% metadata_fields.with_options(:grouping => 'SRA') do |group| %>
+            <% metadata_fields.with_options(grouping: 'SRA') do |group| %>
               <%= group.header(:sample_public_name) %>
             <% end %>
 
             <!-- ENA requirement -->
-            <% metadata_fields.with_options(:grouping => 'ENA requirement') do |group| %>
+            <% metadata_fields.with_options(grouping: 'ENA requirement') do |group| %>
               <%= group.header(:sample_sra_hold) %>
               <%= group.header(:sample_common_name) %>
               <%= group.header(:sample_taxon_id) %>
             <% end %>
 
             <!-- SRA attributes -->
-            <% metadata_fields.with_options(:grouping => 'SRA attributes') do |group| %>
+            <% metadata_fields.with_options(grouping: 'SRA attributes') do |group| %>
               <%= group.header(:sample_strain_att) %>
               <%= group.header(:sample_description) %>
             <% end %>
 
             <!-- SRA Sample AN -->
-            <% metadata_fields.with_options(:grouping => 'SRA Sample AN') do |group| %>
+            <% metadata_fields.with_options(grouping: 'SRA Sample AN') do |group| %>
               <%= group.header(:sample_ebi_accession_number) %>
             <% end %>
 
             <%= metadata_fields.header(:reference_genome) %>
 
             <!-- array express field -->
-            <%metadata_fields.with_options(:grouping => 'Array Express') do |group| %>
+            <%metadata_fields.with_options(grouping: 'Array Express') do |group| %>
               <%= group.header(:genotype) %>
               <%= group.header(:phenotype) %>
               <%= group.header(:age) %>
@@ -108,7 +108,7 @@
             <% end %>
 
             <!-- EGA field -->
-            <%metadata_fields.with_options(:grouping => 'EGA') do |group| %>
+            <%metadata_fields.with_options(grouping: 'EGA') do |group| %>
               <%= group.header(:subject) %>
               <%= group.header(:disease) %>
               <%= group.header(:treatment)%>
@@ -124,38 +124,38 @@
       <%= registrars_fields.fields_for(index.to_s, registrar) do |registrar_fields| %>
         <tr class="sample_row">
           <td>
-            <%= registrar_fields.label(:ignore, "Ignore sample #{ index }", :style => 'display:none;') %>
-            <%= registrar_fields.check_box(:ignore, { :class => 'ignore' }) %>
+            <%= registrar_fields.label(:ignore, "Ignore sample #{ index }", style: 'display:none;') %>
+            <%= registrar_fields.check_box(:ignore, { class: 'ignore' }) %>
           </td>
           <td>
-            <%= registrar_fields.label(:asset_group_name, "Asset group name for sample #{ index }", :style => 'display:none;') %>
-            <%= registrar_fields.text_field(:asset_group_name, :size => 15) %>
+            <%= registrar_fields.label(:asset_group_name, "Asset group name for sample #{ index }", style: 'display:none;') %>
+            <%= registrar_fields.text_field(:asset_group_name, size: 15) %>
           </td>
 
           <%= registrar_fields.fields_for(:sample) do |sample_fields| %>
             <td>
-              <%= sample_fields.label(:name, "Sample name for sample #{ index }", :style => 'display:none;') %>
-              <%= sample_fields.text_field(:name, :size => 15) %>
+              <%= sample_fields.label(:name, "Sample name for sample #{ index }", style: 'display:none;') %>
+              <%= sample_fields.text_field(:name, size: 15) %>
             </td>
           <% end %>
 
           <%= registrar_fields.fields_for(:sample_tube) do |sample_tube_fields| %>
             <td>
-              <%= sample_tube_fields.label(:two_dimensional_barcode, "2D barcode for sample #{ index }", :style => 'display:none;') %>
-              <%= sample_tube_fields.text_field(:two_dimensional_barcode, :size => 15) %>
+              <%= sample_tube_fields.label(:two_dimensional_barcode, "2D barcode for sample #{ index }", style: 'display:none;') %>
+              <%= sample_tube_fields.text_field(:two_dimensional_barcode, size: 15) %>
             </td>
           <% end %>
 
           <%# TODO[xxx]: This is really inefficient, taking 25s to render for the large spreadsheet %>
           <%= registrar_fields.fields_for(:sample) do |sample_fields| %>
-            <%= sample_fields.fields_for(:sample_metadata, :builder => Metadata::FormBuilder) do |metadata_fields| %>
+            <%= sample_fields.fields_for(:sample_metadata, builder: Metadata::FormBuilder) do |metadata_fields| %>
               <% metadata_fields.view_for(:field, 'shared/metadata/edit_value') %>
-              <% metadata_fields.locals = { :index => index } %>
+              <% metadata_fields.locals = { index: index } %>
               <% metadata_fields.filter { |field| current_user.workflow.visible_attribute?(field) } %>
 
               <%# Fields for 'Microarray genotyping' %>
               <%= metadata_fields.text_field(:cohort) %>
-              <%= metadata_fields.select(:gender, Sample::GENDERS, :include_blank => true) %>
+              <%= metadata_fields.select(:gender, Sample::GENDERS, include_blank: true) %>
               <%= metadata_fields.text_field(:country_of_origin) %>
               <%= metadata_fields.text_field(:geographical_region) %>
               <%= metadata_fields.text_field(:ethnicity) %>
@@ -171,31 +171,31 @@
               <%= metadata_fields.select(:gc_content, Sample::GC_CONTENTS) %>
 
               <!-- SRA -->
-              <% metadata_fields.with_options(:grouping => 'SRA') do |group| %>
+              <% metadata_fields.with_options(grouping: 'SRA') do |group| %>
                 <%= group.text_field(:sample_public_name) %>
               <% end %>
 
               <!-- ENA requirement -->
-              <% metadata_fields.with_options(:grouping => 'ENA requirement') do |group| %>
+              <% metadata_fields.with_options(grouping: 'ENA requirement') do |group| %>
                 <%= group.select(:sample_sra_hold, Sample::SRA_HOLD_VALUES) %>
                 <%= group.text_field(:sample_common_name, 'data-organism' => 'common_name') %>
                 <%= group.text_field(:sample_taxon_id,    'data-organism' => 'taxon_id') %>
               <% end %>
 
               <!-- SRA attributes -->
-              <% metadata_fields.with_options(:grouping => 'SRA attributes') do |group| %>
+              <% metadata_fields.with_options(grouping: 'SRA attributes') do |group| %>
                 <%= group.text_field(:sample_strain_att) %>
                 <%= group.text_field(:sample_description) %>
               <% end %>
 
               <!-- SRA Sample AN -->
-              <% metadata_fields.with_options(:grouping => 'SRA Sample AN') do |group| %>
+              <% metadata_fields.with_options(grouping: 'SRA Sample AN') do |group| %>
                 <%= group.text_field(:sample_ebi_accession_number) %>
               <% end %>
 
               <%= metadata_fields.select_by_association(:reference_genome)%>
               <!-- array express field -->
-              <%metadata_fields.with_options(:grouping => 'Array Express') do |group| %>
+              <%metadata_fields.with_options(grouping: 'Array Express') do |group| %>
                 <%= group.text_field(:genotype) %>
                 <%= group.text_field(:phenotype) %>
                 <%= group.text_field(:age) %>
@@ -212,7 +212,7 @@
               <% end %>
 
               <!-- EGA field -->
-                <%metadata_fields.with_options(:grouping => 'EGA') do |group| %>
+                <%metadata_fields.with_options(grouping: 'EGA') do |group| %>
                 <%= group.text_field(:subject) %>
                 <%= group.text_field(:disease) %>
                 <%= group.text_field(:treatment)%>
@@ -234,7 +234,7 @@
   </div>
 
    <p>Data in this form can be amended later.</p>
-  <p><%= submit_tag "Register samples", :class => "enhanced" %></p>
+  <p><%= submit_tag "Register samples", class: "enhanced" %></p>
 <% end %>
 
 <script type="text/javascript">

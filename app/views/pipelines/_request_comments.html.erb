@@ -5,12 +5,12 @@
 # Copyright (C) 2007-2011,2014,2015,2016 Genome Research Ltd.%>
 
 <td class='request' style='text-align: left' width='15%'><%= link_to (pluralize comments_count, 'comment'), request_comments_path(request.id) %>
-  <%= link_to '+', request_comments_path(request.id), :remote => true, :class=>'show-comment', :data => {
+  <%= link_to '+', request_comments_path(request.id), remote: true, class: 'show-comment', data: {
     :'comment-field' => "#comment_for_#{request.id}",
-    :update => "#comment_for_#{request.id}",
-    :throbber => "#loader_for_request_#{request.id}"
+    update: "#comment_for_#{request.id}",
+    throbber: "#loader_for_request_#{request.id}"
   } %>/
-  <%= content_tag :a, '-', :class=>'hide-comment', :data => { :'comment-field' => "#comment_for_#{request.id}" } %>
+  <%= content_tag :a, '-', class: 'hide-comment', data: { :'comment-field' => "#comment_for_#{request.id}" } %>
   <%= loading_bar("loader_for_request_#{request.id}") %>
   <div id="<%= "comment_for_#{request.id}" %>" style="display:none;"></div>
 </td>

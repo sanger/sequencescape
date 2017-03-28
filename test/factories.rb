@@ -464,8 +464,12 @@ FactoryGirl.define do
   end
 
   factory :pac_bio_library_tube do
-    after(:build) do |t|
-      t.aliquots.build(sample: (create :sample))
+    transient do
+      aliquot { build(:tagged_aliquot) }
+    end
+    barcode
+    after(:build) do |t, evaluator|
+      t.aliquots << evaluator.aliquot
     end
   end
 
@@ -497,6 +501,14 @@ FactoryGirl.define do
     asset           { |a|   a.association(:well) }
     submission      { |s|   s.association(:submission) }
     request_purpose { |rp| rp.association(:request_purpose) }
+  end
+
+  factory :pac_bio_sequencing_request do
+    target_asset    { |ta| ta.association(:well) }
+    asset           { |a|   a.association(:pac_bio_library_tube) }
+    submission      { |s|   s.association(:submission) }
+    request_type    { |s| s.association(:pac_bio_sequencing_request_type) }
+    request_purpose
   end
 
   # A Multiplexed library tube comes from several library tubes, which are themselves created through a

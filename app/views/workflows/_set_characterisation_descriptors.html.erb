@@ -11,20 +11,20 @@
     <div class="row">
       <% @task.descriptors.each do |descriptor| -%>
         <div class="form-group col-md-6">
-          <%= label :"default-value-for-#{u(descriptor.name)}", descriptor.name, :class =>'col-sm-4' %>
+          <%= label :"default-value-for-#{u(descriptor.name)}", descriptor.name, class: 'col-sm-4' %>
           <div class='col-sm-8'>
-          <%= text_field :"default-value-for-#{u(descriptor.name)}", u(descriptor.name), :class => "default-value form-control", :'data-default-for' => descriptor.name.gsub(/\s/,'_'), :'data-descriptor-for' => descriptor.name.gsub(/\s/,'_') %>
+          <%= text_field :"default-value-for-#{u(descriptor.name)}", u(descriptor.name), class: "default-value form-control", :'data-default-for' => descriptor.name.gsub(/\s/,'_'), :'data-descriptor-for' => descriptor.name.gsub(/\s/,'_') %>
           </div>
         </div>
     <% end %>
     </div>
-    <%= submit_tag "Copy to all samples", :id => "copy-defaults", :class=>'btn btn-success' %>
-    <%= submit_tag "Clear all data", :id => "clear-desrciptors", :class=>'btn btn-danger'  %>
+    <%= submit_tag "Copy to all samples", id: "copy-defaults", class: 'btn btn-success' %>
+    <%= submit_tag "Clear all data", id: "clear-desrciptors", class: 'btn btn-danger'  %>
   </fieldset>
   <a href="#stage_button">Jump to bottom</a>
 </form>
 
-<%= form_for :workflow, :url => { :action => "stage", :id => @stage }, :html => { :id => "stage_form"} do |form| %>
+<%= form_for :workflow, url: { action: "stage", id: @stage }, html: { id: "stage_form"} do |form| %>
 
 <h2><%= pluralize(@batch.requests.count, @batch.requests.first.asset.sti_type.underscore.humanize) %> in total</h2>
 
@@ -44,10 +44,10 @@
           <div class="row">
           <% @task.descriptors.each_with_index do |descriptor, index| -%>
             <div class="form-group col-md-6">
-              <%= label "requests[#{request.id}][descriptors]".to_sym, descriptor.name, :class =>'col-sm-4' %>
+              <%= label "requests[#{request.id}][descriptors]".to_sym, descriptor.name, class: 'col-sm-4' %>
               <div class='col-sm-8'>
-                <%= text_field "requests[#{request.id}][descriptors]", u(descriptor.name), :class => "descriptor-value form-control", :'data-descriptor-for' => descriptor.name.gsub(/\s/,'_') %>
-                <%= hidden_field "requests[#{request.id}][fields]", index + 1, :value => descriptor.name %>
+                <%= text_field "requests[#{request.id}][descriptors]", u(descriptor.name), class: "descriptor-value form-control", :'data-descriptor-for' => descriptor.name.gsub(/\s/,'_') %>
+                <%= hidden_field "requests[#{request.id}][fields]", index + 1, value: descriptor.name %>
               </div>
             </div>
           <% end %>
@@ -61,5 +61,5 @@
   <%= hidden_field_tag "workflow_id", @workflow.id %>
   <%= hidden_field_tag "batch_id", @batch.id %>
 
-  <%= render(:partial => 'next_stage_submit', :locals => { :check_selection => true }) %>
+  <%= render(partial: 'next_stage_submit', locals: { check_selection: true }) %>
 <% end # End of form_for %>

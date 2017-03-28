@@ -5,19 +5,19 @@
 # Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.%>
 
 <% add :menu, "Sample Management homepage" => lab_sample_logistics_path %>
-<%= semantic_form_for(:plates, :url => plates_path) do |form| %>
+<%= semantic_form_for(:plates, url: plates_path) do |form| %>
   <%= bs_column do %>
-    <%= form.inputs :name => "Create Plates" do %>
-      <%= form.input :user_barcode,    :input_html => {:onkeypress => "return disable_cr_and_change_focus(event,'user_barcode','plates_source_plates')",:class=> 'form-control' } %>
-      <%= form.input :source_plates,   :as => :text,   :required => false, :input_html => { :class=> 'form-control'} %>
+    <%= form.inputs name: "Create Plates" do %>
+      <%= form.input :user_barcode,    input_html: {onkeypress: "return disable_cr_and_change_focus(event,'user_barcode','plates_source_plates')",class: 'form-control' } %>
+      <%= form.input :source_plates,   as: :text,   required: false, input_html: { class: 'form-control'} %>
     <% end %>
   <% end %>
   <%= bs_column do %>
-    <%= form.inputs :name => "With Options" do %>
-      <%= form.input :creator_id,      :as => :select, :collection => @plate_creators, :label => 'Plate purpose', :input_html => { :class=> 'form-control select2'} %>
-      <%= form.input :dilution_factor, :as => :select, :label => 'Dilution factor', :input_html => { :class=>'form-control'} %>
-      <%= form.input :barcode_printer, :as => :select, :collection => @barcode_printers, :input_html => { :class=> 'form-control select2'} %>
-      <%= form.action(:submit, :disable_with=>'Please wait...') %>
+    <%= form.inputs name: "With Options" do %>
+      <%= form.input :creator_id,      as: :select, collection: @plate_creators, label: 'Plate purpose', input_html: { class: 'form-control select2'} %>
+      <%= form.input :dilution_factor, as: :select, label: 'Dilution factor', input_html: { class: 'form-control'} %>
+      <%= form.input :barcode_printer, as: :select, collection: @barcode_printers, input_html: { class: 'form-control select2'} %>
+      <%= form.action(:submit, disable_with: 'Please wait...') %>
     <% end %>
   <% end %>
 <% end %>

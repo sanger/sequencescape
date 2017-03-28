@@ -48,7 +48,7 @@
     <div style="padding-left:50px;padding-right:50px;">
       <div style="padding:5px;text-align:center;font-size:13px;background:#CBDCEF;font-weight:bold;">
         <%= @batch.pipeline.name %> data
-        <%= link_to "(show more)", "", :onclick => "$('requests_#{request.id}').toggle();" %>
+        <%= link_to "(show more)", "", onclick: "$('requests_#{request.id}').toggle();" %>
       </div>
       <div id='<%= "requests_#{request.id}" %>' style='display:none;'>
         <% @batch.pipeline.workflow.tasks.each do |task| %>
