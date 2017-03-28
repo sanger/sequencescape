@@ -247,7 +247,6 @@ class BatchTest < ActiveSupport::TestCase
     should have_many :requests
 
     should_have_instance_methods :shift_item_positions, :assigned_user, :start, :fail, :workflow, :started?, :released?, :qc_state
-    should_have_instance_methods :submit_to_qc_queue
 
     setup do
       @pipeline_next = create :pipeline, name: 'Next pipeline'
