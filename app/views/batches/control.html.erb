@@ -13,7 +13,7 @@
   This batch belongs to pipeline: <%= @batch.pipeline.name %>
 </div>
 
-<%= render :partial => "shared/batch", :locals => { :requests => @batch.ordered_requests, :edit => false, :stage => false } %>
+<%= render partial: "shared/batch", locals: { requests: @batch.ordered_requests, edit: false, stage: false } %>
 
 <h1>CONTROLS</h1>
-<%= render :partial => "controls" %>
+<%= render partial: "controls" %>

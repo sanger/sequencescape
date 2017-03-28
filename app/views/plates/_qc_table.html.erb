@@ -25,7 +25,7 @@
         <% well_name = "#{rowchar}#{column+1}" %>
         <% well = plate.find_well_by_name(well_name) %>
          <% if well %>
-            <%= render :partial => qc_type, :locals => { :value => well.well_attribute.send(:"#{ qc_type }") } %>
+            <%= render partial: qc_type, locals: { value: well.well_attribute.send(:"#{ qc_type }") } %>
          <% else %>
            <td></td>
         <% end %>

@@ -5,12 +5,10 @@
 # Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 class PacBioSamplePrepPipeline < Pipeline
-  INBOX_PARTIAL               = 'group_by_parent'
+  self.inbox_partial = 'group_by_parent'
   ALWAYS_SHOW_RELEASE_ACTIONS = true
 
-  def inbox_partial
-    INBOX_PARTIAL
-  end
+  self.requires_position = false
 
   def allow_tag_collision_on_tagging_task?
     false
@@ -56,10 +54,5 @@ class PacBioSamplePrepPipeline < Pipeline
 
   def number_of_smrt_cells_requested(request)
     request.next_requests(self).count
-  end
-
-  # PacBio pipelines do not require their batches to record the position of their requests.
-  def requires_position?
-    false
   end
 end

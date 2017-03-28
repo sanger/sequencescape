@@ -13,14 +13,14 @@
   This batch belongs to pipeline: <%= @batch.pipeline.name %>
 </div>
 
-<%= render :partial => "batch", :locals => { :items => @batch.items } %>
+<%= render partial: "batch", locals: { items: @batch.items } %>
 <h1>CONTROLS</h1>
 <div class="info">
   Available controls for this batch
 </div>
 
-<%= render :partial => "controls", :locals => { :assets => @workflow.assets } %>
-<%= link_to 'Start', :url => { :action => :confirm, :id => @workflow.id, :batch_id => @batch.id }, :remote => true  %>
+<%= render partial: "controls", locals: { assets: @workflow.assets } %>
+<%= link_to 'Start', url: { action: :confirm, id: @workflow.id, batch_id: @batch.id }, remote: true  %>
 
 <div id='confirm' class='overlay_panel' style='display: none;'>
 </div>

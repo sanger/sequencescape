@@ -12,14 +12,14 @@
   <%= alert(:info) do %>
     Below are the assets that are available for this group.  Please select the assets you want to print labels and the printer you want them to be printed from.
   <% end %>
-  <%= render :partial => 'shared/assets_to_print', :locals => { :path => print_labels_study_asset_group_path(@study, @asset_group), :assets=>@assets}%>
+  <%= render partial: 'shared/assets_to_print', locals: { path: print_labels_study_asset_group_path(@study, @asset_group), assets: @assets}%>
 <% end %>
 
 <% if @containers.present? %>
   <%= alert(:warning) do %>
    <%=  @unbarcoded_count %> assets in the asset group are not barcoded directly (eg. <%= @unbarcoded_types %>). Below are the barcodes of their containers. These containers may also contain assets that are not in the asset group.
  <% end %>
- <%= render :partial => 'shared/assets_to_print', :locals => { :path => print_labels_study_asset_group_path(@study, @asset_group), :assets=>@containers}%>
+ <%= render partial: 'shared/assets_to_print', locals: { path: print_labels_study_asset_group_path(@study, @asset_group), assets: @containers}%>
 <% end %>
 
 <% unless @assets.present? || @containers.present? %>

@@ -7,7 +7,7 @@
 <div class="info">
 <% if requests.empty? -%>
 <div id="empty_filter">
-  No items found. <%= link_to "Create the first one", :action => "new" %>
+  No items found. <%= link_to "Create the first one", action: "new" %>
 </div>
 <% else -%>
 <table width="100%" cellpadding="5" cellspacing="0" class="sortable">
@@ -40,16 +40,16 @@
     <% requests.each_with_index do |request,index| -%>
       <tr id="request_<%= request.id %>" class="<%= cycle("rowodd", "roweven") %> row<%= index %>">
         <% if edit -%>
-          <td width="3%" class="center" style="cursor:move;"><%= image_tag "arrow_out.png", :size =>"13x13" %></td>
+          <td width="3%" class="center" style="cursor:move;"><%= image_tag "arrow_out.png", size: "13x13" %></td>
         <% end -%>
           <td width="5%"><%= request.position %></td>
           <td width="7%"><%= request.sample_name %></td>
           <td><%= link_to request.id, request_path(request) %></td>
           <% if request.asset  %>
-            <td width="15%"><%= link_to request.asset.display_name, asset_path(request.asset), :target => "_blank" %></td>
+            <td width="15%"><%= link_to request.asset.display_name, asset_path(request.asset), target: "_blank" %></td>
             <td width="7%"><%= request.asset.barcode %></td>
             <% if request.target_asset %>
-              <td width="15%"><%= link_to request.target_asset.display_name, asset_path(request.target_asset), :target => "_blank" %></td>
+              <td width="15%"><%= link_to request.target_asset.display_name, asset_path(request.target_asset), target: "_blank" %></td>
               <td width="7%"><%= request.target_asset.barcode %></td>
             <% else %>
               <td width="15%"></td>
@@ -73,7 +73,7 @@
         <% end %>
         <td width='5%'><%= request.state.humanize %></td>
         <% if edit -%>
-          <td width="5%" class="center"><%= link_to image_tag("delete.png", :size => "13x13"), :action => "remove_request", :id => @batch.id, :request_id => request.id %></td>
+          <td width="5%" class="center"><%= link_to image_tag("delete.png", size: "13x13"), action: "remove_request", id: @batch.id, request_id: request.id %></td>
         <% end -%>
 
       </tr>

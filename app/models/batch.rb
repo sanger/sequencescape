@@ -147,13 +147,6 @@ class Batch < ActiveRecord::Base
     production_state == 'fail'
   end
 
-  # Used in auto_batch view to disable the submit button if the batch was already passed to Auto QC
-  def in_process?
-    statuses = qc_states
-    statuses.delete_at(0)
-    statuses.include?(qc_state)
-  end
-
   # Tests whether this Batch has any associated LabEvents
   def has_event(event_name)
     lab_events.any? { |event| event_name.downcase == event.description.try(:downcase) }
@@ -379,10 +372,10 @@ class Batch < ActiveRecord::Base
 
       if requests.last.submission_id.present?
         Request.where(submission_id: requests.last.submission_id, state: 'pending')
-          .where.not(request_type_id: pipeline.request_type_ids).find_each do |request|
+               .where.not(request_type_id: pipeline.request_type_ids).find_each do |request|
             request.asset_id = nil
             request.save!
-          end
+        end
       end
     end
   end
@@ -390,8 +383,9 @@ class Batch < ActiveRecord::Base
   def parent_of_purpose(name)
     return nil if requests.empty?
     requests.first.asset.ancestors.joins(
-      'INNER JOIN plate_purposes ON assets.plate_purpose_id = plate_purposes.id')
-      .find_by(plate_purposes: { name: name })
+      'INNER JOIN plate_purposes ON assets.plate_purpose_id = plate_purposes.id'
+)
+            .find_by(plate_purposes: { name: name })
   end
 
   def swap(current_user, batch_info = {})
@@ -492,47 +486,6 @@ class Batch < ActiveRecord::Base
     requests.count
   end
 
-  def pulldown_batch_report
-    report_data = CSV.generate(row_sep: "\r\n") do |csv|
-      csv << pulldown_report_headers
-
-      requests.each do |request|
-        raise 'Invalid request data' unless request.valid_request_for_pulldown_report?
-        well = request.asset
-        # TODO[mb14] DRY it
-        tagged_well = well
-        while transfer_requests = tagged_well.requests.select { |r| r.is_a?(TransferRequest) } and transfer_requests.size == 1
-          target_well = transfer_requests.first.target_asset
-          break unless target_well.is_a?(Well)
-          tagged_well = target_well
-          tag_on_well = tagged_well.primary_aliquot.try(:tag)
-          if tag_on_well.present?
-            tag_name              = tag_on_well.name
-            tag_expected_sequence = tag_on_well.oligo
-            tag_group_name        = tag_on_well.tag_group.name if tag_on_well.tag_group.present?
-            break
-          end
-        end
-
-        sample = well.primary_aliquot.try(:sample)
-        csv << [
-          well.plate.sanger_human_barcode,
-          well.map.description,
-          well.study.try(:name),
-          request.target_asset.try(:barcode),
-          tag_group_name,
-          tag_name,
-          tag_expected_sequence,
-          sample.sanger_sample_id || sample.name,
-          well.parent.well_attribute.measured_volume,
-          well.parent.well_attribute.concentration
-        ]
-      end
-    end
-
-    report_data
-  end
-
   def pulldown_report_headers
     ['Plate', 'Well', 'Study', 'Pooled Tube', 'Tag Group', 'Tag', 'Expected Sequence', 'Sample Name', 'Measured Volume', 'Measured Concentration']
   end
@@ -543,20 +496,17 @@ class Batch < ActiveRecord::Base
   end
 
   def npg_set_state
-    complete = true
-    requests.each do |request|
-      unless request.asset.is_a_resource
-        event = request.events.family_pass_and_fail.first
-        if (event.nil?)
-          complete = false
-        end
-      end
+    if all_requests_qced?
+      self.state = 'released'
+      qc_complete
+      save!
     end
+  end
 
-    if complete
-     self.state = 'released'
-     qc_complete
-     save!
+  def all_requests_qced?
+    requests.all? do |request|
+      request.asset.resource? ||
+        request.events.family_pass_and_fail.exists?
     end
   end
 

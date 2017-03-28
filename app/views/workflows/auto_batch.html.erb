@@ -23,7 +23,7 @@
       <td class='boxed_left'><%= task.name %></td>
       <td class='boxed_right right'>
         <% if @batch.qc_state == "qc_pending" %>
-          <%= button_to "Submit", {:controller => :batches, :action => :start_automatic_qc, :id => @batch.id, :task_id => task.id}, :method => :post %>
+          <%= button_to "Submit", {controller: :batches, action: :start_automatic_qc, id: @batch.id, task_id: task.id}, method: :post %>
         <% else %>
           QC state: <%= @batch.qc_state.humanize %>
         <% end %>
@@ -68,4 +68,4 @@
 <% end %>
 </div>
 <h1>EVENTS</h1>
-<%= render :partial => "events", :locals => { :events => @batch.lab_events } %>
+<%= render partial: "events", locals: { events: @batch.lab_events } %>

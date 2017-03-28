@@ -13,7 +13,7 @@
   <fieldset>
     <legend>User</legend>
     <%= label_tag :user_barcode, "User barcode" %>
-    <%= text_field_tag "user_barcode", '', :onkeypress => "return disable_cr_and_change_focus(event,'user_barcode','input_plate_names_1')" %>
+    <%= text_field_tag "user_barcode", '', onkeypress: "return disable_cr_and_change_focus(event,'user_barcode','input_plate_names_1')" %>
     <br />
   </fieldset>
 
@@ -25,7 +25,7 @@
         <%= "<tr>".html_safe if plate_number % 2 ==  1 %>
           <td>
             <%= label_tag "input_plate_names[#{plate_number}]", "Plate #{plate_number}" %>
-            <%= text_field_tag "input_plate_names[#{plate_number}]", plate_name, :onkeypress => "return disable_cr_and_change_focus(event,'input_plate_names_#{plate_number}','input_plate_names_#{((plate_number)%4 + 1)}')" %>
+            <%= text_field_tag "input_plate_names[#{plate_number}]", plate_name, onkeypress: "return disable_cr_and_change_focus(event,'input_plate_names_#{plate_number}','input_plate_names_#{((plate_number)%4 + 1)}')" %>
           </td>
         <%= "</tr>".html_safe if plate_number % 2 ==  0 %>
       <%- end -%>

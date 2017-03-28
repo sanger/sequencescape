@@ -11,7 +11,7 @@
 <p>To add a new custom text, complete the form below. Required fields are marked with <%= required_marker %>.</p>
 
 <div id="property_definition">
-  <%= form_for :custom_text, :url => admin_custom_texts_path do |form| -%>
-    <%= render :partial => "edit_custom_text", :locals => { :read_only => false, :form => form, :custom_text => @custom_text } -%>
+  <%= form_for :custom_text, url: admin_custom_texts_path do |form| -%>
+    <%= render partial: "edit_custom_text", locals: { read_only: false, form: form, custom_text: @custom_text } -%>
   <% end -%>
 </div>

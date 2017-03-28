@@ -122,7 +122,7 @@ module SubmissionsHelper
       ) + button_to('Edit Submission', edit_submission_path(submission), method: :get, class: 'button')
     when 'pending' then
       display_user_guide('Your submission is currently pending.') +
-      content_tag(:p, 'It should be processed approximately 10 minutes after you have submitted it, however sometimes this may take longer.')
+        content_tag(:p, 'It should be processed approximately 10 minutes after you have submitted it, however sometimes this may take longer.')
     when 'processing' then
       display_user_guide('Your submission is currently being processed.  This should take no longer than five minutes.')
     when 'failed' then
@@ -150,7 +150,7 @@ module SubmissionsHelper
 
   def submission_link(submission, options)
     link_text = content_tag(:strong, submission.name) << ' ' <<
-    content_tag(:span, submission.state, class: "batch-state label label-#{bootstrapify_submission_state(submission.state)}")
+                content_tag(:span, submission.state, class: "batch-state label label-#{bootstrapify_submission_state(submission.state)}")
     link_to(link_text, submission_path(submission), options)
   end
 end

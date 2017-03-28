@@ -4,9 +4,9 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015,2016 Genome Research Ltd.%>
 
-<%= form_tag show_summary_study_workflow_path(@study,@workflow), :method => :get, :remote=>true, :class=>'remote-form observed', :data => {:update => "#everything", :throbber => '#loading' } do %>
+<%= form_tag show_summary_study_workflow_path(@study,@workflow), method: :get, remote: true, class: 'remote-form observed', data: {update: "#everything", throbber: '#loading' } do %>
   <%= label_tag(:asset_type,'Filter by') %>
-  <%= select_tag(:asset_type,options_for_select(asset_types_for_select,@asset_type), :class=>'form-control') %>
+  <%= select_tag(:asset_type,options_for_select(asset_types_for_select,@asset_type), class: 'form-control') %>
 <% end %>
 
 <span class="filter_options">Currently showing <strong><%= @asset_type_name %></strong></span>
@@ -33,7 +33,7 @@
       <% @page_elements.each do |asset| %>
         <% asset_statistics = statistics[asset.id] %>
         <tr class="<%= label_asset_state(asset) %>">
-          <td><%= link_to(h(asset.display_name), asset_path(asset), :title => asset.label.capitalize) %></td>
+          <td><%= link_to(h(asset.display_name), asset_path(asset), title: asset.label.capitalize) %></td>
           <td><%= asset.label %></td>
           <td><% if asset.is_a?(Aliquot::Receptacle) %>
             <% asset.aliquots.each do |a| %>

@@ -39,7 +39,7 @@
 </div>
 
 <h3>Workflow sample ID <%= @item.workflow_sample_id %></h3>
-<h3>Study ID <%= link_to_unless @item.study_id.nil?, @item.study_id, { :controller => "studies", :action => "show", :id => @item.study_id } %></h3>
+<h3>Study ID <%= link_to_unless @item.study_id.nil?, @item.study_id, { controller: "studies", action: "show", id: @item.study_id } %></h3>
 <h3>Submission ID
   <% if @item.submission %>
     <%= link_to_if @item.submission, @item.submission_id, study_workflow_submission_url(@item.submission.study, @item.submission.workflow, @item.submission) %></h3>

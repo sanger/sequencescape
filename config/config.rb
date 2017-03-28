@@ -114,14 +114,9 @@ if Rails.env == 'development'
 end
 if (Rails.env == 'test') || (Rails.env == 'cucumber')
 
-  # configatron.asset_audits_url = NOT DEFINED
-
   configatron.barcode_images_url = 'http://example.com/deliberately_broken_url'
   configatron.barcode_prefix = 'NT'
   configatron.invalid_policy_url_domains = ['internal.example.com', 'invalid.example.com']
-
-  # configatron.delayed_job.study_report_priority = 100
-  # configatron.delayed_job.submission_process_priority = 0
 
   configatron.disable_accession_check = false
   configatron.disable_api_authentication = true
@@ -131,12 +126,8 @@ if (Rails.env == 'test') || (Rails.env == 'cucumber')
   configatron.ldap_secure_port = 636
   configatron.ldap_server = 'ldap.internal.sanger.ac.uk'
 
-  # configatron.pipelines_url = "http://localhost:3000"
-
   configatron.plate_barcode_service = 'http://localhost:9998/plate_barcode_service/'
   configatron.plate_volume_files = "#{Rails.root}/test/data/plate_volume/"
-
-  # configatron.proxy = "http://example.com"
 
   configatron.taxon_lookup_url = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/'
   configatron.tecan_files_location = "#{Rails.root}/data"

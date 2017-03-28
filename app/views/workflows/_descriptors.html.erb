@@ -13,7 +13,7 @@
         <strong>Asset:</strong>   <%= request.asset.name -%></br>
       </td>
     </tr>
-      <%= render :partial => 'descriptor', :collection => @task.descriptors, :locals => {:request => request } %>
+      <%= render partial: 'descriptor', collection: @task.descriptors, locals: {request: request } %>
     <% end %>
   <% else %>
     <% if @task.descriptors.empty? or  @task.descriptors.first.name == "" %>
@@ -21,7 +21,7 @@
       <td colspan="2">No additional information required: this space left intentionally blank.</td>
       </tr>
     <% else %>
-      <%= render :partial => 'descriptor', :collection => @task.descriptors, :locals => {:request => nil } %>
+      <%= render partial: 'descriptor', collection: @task.descriptors, locals: {request: nil } %>
     <% end %>
   <% end %>
 </table>

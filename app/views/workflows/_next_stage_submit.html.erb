@@ -5,8 +5,8 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
 
 <div class="next_step_task">
-  <%= submit_tag('Next step', :id => 'stage_button') %>
-  <span id="stage_loading" style="display: none;"><%= image_tag "ajax-loader.gif", :size => "10x10", :alt => "Saving" %> Saving</span>
+  <%= submit_tag('Next step', id: 'stage_button') %>
+  <span id="stage_loading" style="display: none;"><%= image_tag "ajax-loader.gif", size: "10x10", alt: "Saving" %> Saving</span>
   <span id="stage_links"> or <%= link_to "cancel", batch_path(@batch) %></span>
 </div>
 

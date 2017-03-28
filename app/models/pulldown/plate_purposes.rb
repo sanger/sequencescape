@@ -9,13 +9,13 @@
 
 module Pulldown::PlatePurposes
   ISCH_PURPOSE_FLOWS = [[
-      'Lib PCR-XP',
-      'ISCH lib pool',
-      'ISCH hyb',
-      'ISCH cap lib',
-      'ISCH cap lib PCR',
-      'ISCH cap lib PCR-XP',
-      'ISCH cap lib pool'
+    'Lib PCR-XP',
+    'ISCH lib pool',
+    'ISCH hyb',
+    'ISCH cap lib',
+    'ISCH cap lib PCR',
+    'ISCH cap lib PCR-XP',
+    'ISCH cap lib pool'
   ]]
 
   PLATE_PURPOSE_FLOWS = [

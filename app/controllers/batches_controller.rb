@@ -11,8 +11,13 @@ class BatchesController < ApplicationController
   before_action :evil_parameter_hack!
   include XmlCacheHelper::ControllerHelper
 
-  before_action :login_required, except: [:released, :evaluations_counter, :qc_criteria]
-  before_action :find_batch_by_id, only: [:show, :edit, :update, :destroy, :qc_information, :qc_batch, :save, :fail, :fail_items, :fail_batch, :control, :add_control, :print_labels, :print_plate_labels, :print_multiplex_labels, :print, :verify, :verify_tube_layout, :reset_batch, :previous_qc_state, :filtered, :swap, :download_spreadsheet, :gwl_file, :pulldown_batch_report, :pacbio_sample_sheet, :sample_prep_worksheet]
+  before_action :login_required, except: [:released, :qc_criteria]
+  before_action :find_batch_by_id, only: [
+    :show, :edit, :update, :qc_information, :qc_batch, :save, :fail, :fail_items,
+    :fail_batch, :control, :add_control, :print_labels, :print_plate_labels, :print_multiplex_labels,
+    :print, :verify, :verify_tube_layout, :reset_batch, :previous_qc_state, :filtered, :swap,
+    :download_spreadsheet, :gwl_file, :pacbio_sample_sheet, :sample_prep_worksheet
+  ]
   before_action :find_batch_by_batch_id, only: [:sort, :print_multiplex_barcodes, :print_pulldown_multiplex_tube_labels, :print_plate_barcodes, :print_barcodes]
 
   def index
@@ -110,50 +115,6 @@ class BatchesController < ApplicationController
     @batches = Batch.where(pipeline_id: params[:pipeline_id] || params[:id]).order(id: :desc).includes(:user, :pipeline).page(params[:page])
   end
 
-  # Used by Quality Control Pipeline view or remote sources to add a Batch ID to QC queue
-  def start_automatic_qc
-    if request.post?
-      @batch = Batch.find(params[:id])
-
-      submitted = @batch.submit_to_qc_queue
-
-      if submitted
-        @batch.lab_events.create(description: 'Submitted to QC', message: "Batch #{@batch.id} was submitted to QC queue", user_id: @current_user.id)
-        respond_to do |format|
-          message = "Batch #{@batch.id} was submitted to QC queue"
-          format.html do
-            flash[:info] = message
-            redirect_to request.env['HTTP_REFERER'] || 'javascript:history.back()'
-          end
-          format.xml { render text: nil, status: :success }
-        end
-      else
-        respond_to do |format|
-          message = "Batch #{@batch.id} was not submitted to QC queue!"
-          format.html do
-            flash[:warning] = message
-            redirect_to request.env['HTTP_REFERER'] || 'javascript:history.back()'
-          end
-          format.xml do
-            render xml: { error: message }.to_xml(root: :errors), status: :bad_request
-          end
-        end
-      end
-    else
-      respond_to do |format|
-        message = 'There was a problem with the request. HTTP POST method was not used.'
-        format.html do
-          flash[:error] = message
-          redirect_to request.env['HTTP_REFERER'] || 'javascript:history.back()'
-        end
-        format.xml do
-          errors = { error: message }
-          render xml: errors.to_xml(root: :errors), status: :method_not_allowed
-        end
-      end
-    end
-  end
-
   def qc_information
     respond_to do |format|
       format.html
@@ -236,18 +197,6 @@ class BatchesController < ApplicationController
     end
   end
 
-  def quality_control
-    @qc_pipeline = Pipeline.find(params[:id])
-    conditions_query = []
-    if params['state']
-      conditions_query = ['state = ? AND qc_state = ? AND qc_pipeline_id = ? AND pipeline_id in (?)', params['state'], params['qc_state'], @qc_pipeline.id, @qc_pipeline.cluster_formation_pipeline_id]
-    else
-      conditions_query = ['qc_state = ? AND qc_pipeline_id = ? AND pipeline_id in (?)', params['qc_state'], @qc_pipeline.id, @qc_pipeline.cluster_formation_pipeline_id]
-    end
-
-    @batches = Batch.where(conditions_query).includes(:user).order('created_at ASC')
-  end
-
   def fail_items
     ActiveRecord::Base.transaction do
       if params[:failure][:reason].empty?
@@ -326,11 +275,6 @@ class BatchesController < ApplicationController
 
     flash[:notice] = 'Training batch created'
     redirect_to action: 'show', id: batch.id
-  end
-
-  def evaluations_counter
-    @ev = BatchStatus.find(params[:id])
-    render partial: 'evaluations_counter'
   end
 
   def print_labels
@@ -558,13 +502,6 @@ class BatchesController < ApplicationController
     end
 
     redirect_to batch_path(@batch)
-  end
-
-  def pulldown_batch_report
-    csv_string = @batch.pulldown_batch_report
-    send_data csv_string, type: 'text/plain',
-                          filename: "batch_#{@batch.id}_report.csv",
-                          disposition: 'attachment'
   end
 
   def pacbio_sample_sheet

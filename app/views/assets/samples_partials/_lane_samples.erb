@@ -31,8 +31,8 @@
    <td><%= aliquot.aliquot_index.try(:aliquot_index)||'Not Set' %></td>
    <td><strong><%= link_to(aliquot.sample.name, sample_url(aliquot.sample)) -%></strong></td>
    <td><%= aliquot.sample.sanger_sample_id %></td>
-   <td><%= render :partial =>'shared/tag_info', :locals=> {:tag=> aliquot.tag } if aliquot.tag.present? %></td>
-   <td><%= render :partial =>'shared/tag_info', :locals=> {:tag=> aliquot.tag2 } if aliquot.tag2.present? %></td>
+   <td><%= render partial: 'shared/tag_info', locals: {tag: aliquot.tag } if aliquot.tag.present? %></td>
+   <td><%= render partial: 'shared/tag_info', locals: {tag: aliquot.tag2 } if aliquot.tag2.present? %></td>
  </tr>
  <% end %>
  </tbody>

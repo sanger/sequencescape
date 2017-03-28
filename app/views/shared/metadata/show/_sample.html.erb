@@ -6,7 +6,7 @@
 
 <%# NOTE[xxx]: Kind of a hack because we're not actually building a form %>
 <%= fields_for(sample) do |form| %>
-  <%= form.fields_for(:sample_metadata, :builder => Metadata::ViewBuilder) do |metadata_fields| %>
+  <%= form.fields_for(:sample_metadata, builder: Metadata::ViewBuilder) do |metadata_fields| %>
     <% metadata_fields.filter { |field| current_user.workflow.visible_attribute?(field) } %>
 
     <%# Fields for 'Microarray genotyping' %>
@@ -27,25 +27,25 @@
     <%= metadata_fields.plain_value(:gc_content) %>
 
     <!-- SRA -->
-    <% metadata_fields.with_options(:grouping => 'SRA') do |group| %>
+    <% metadata_fields.with_options(grouping: 'SRA') do |group| %>
       <%= group.plain_value(:sample_public_name) %>
     <% end %>
 
     <!-- ENA requirement -->
-    <% metadata_fields.with_options(:grouping => 'ENA requirement') do |group| %>
+    <% metadata_fields.with_options(grouping: 'ENA requirement') do |group| %>
       <%= group.plain_value(:sample_sra_hold) %>
       <%= group.plain_value(:sample_common_name) %>
       <%= group.plain_value(:sample_taxon_id) %>
     <% end %>
 
     <!-- SRA attributes -->
-    <% metadata_fields.with_options(:grouping => 'SRA attributes') do |group| %>
+    <% metadata_fields.with_options(grouping: 'SRA attributes') do |group| %>
       <%= group.plain_value(:sample_strain_att) %>
       <%= group.plain_value(:sample_description) %>
     <% end %>
 
     <!-- SRA Sample AN -->
-    <% metadata_fields.with_options(:grouping => 'SRA Sample AN') do |group| %>
+    <% metadata_fields.with_options(grouping: 'SRA Sample AN') do |group| %>
       <%= group.plain_value(:sample_ebi_accession_number) %>
     <% end %>
 

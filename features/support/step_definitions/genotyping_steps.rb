@@ -4,19 +4,19 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
-Then /^I should see dna qc table:$/ do |expected_results_table|
+Then(/^I should see dna qc table:$/) do |expected_results_table|
   actual_table = table(fetch_table('table#sortable_batches'))
   actual_table.map_column!('Qc') { |_text| '' }
   expected_results_table.diff!(actual_table)
 end
 
-When /^I select "([^"]*)" for the first row of the plate$/ do |qc_result|
+When(/^I select "([^"]*)" for the first row of the plate$/) do |qc_result|
   1.upto(12) do |i|
     step(%Q{I select "#{qc_result}" from "Plate 1234567 QC status A#{i}"})
   end
 end
 
-When /^I select "([^"]*)" for the remaining rows of the plate$/ do |qc_result|
+When(/^I select "([^"]*)" for the remaining rows of the plate$/) do |qc_result|
   1.upto(12) do |i|
     ('B'..'H').each do |r|
       step(%Q{I select "#{qc_result}" from "Plate 1234567 QC status #{r}#{i}"})
@@ -24,16 +24,16 @@ When /^I select "([^"]*)" for the remaining rows of the plate$/ do |qc_result|
   end
 end
 
-Given /^a plate template exists$/ do
+Given(/^a plate template exists$/) do
   FactoryGirl.create :plate_template
 end
 
-Given /^a robot exists$/ do
+Given(/^a robot exists$/) do
   robot = FactoryGirl.create :robot
   robot.robot_properties.create(key: 'max_plates', value: '21')
 end
 
-Then /^the manifest for study "([^"]*)" with plate "([^"]*)" should be:$/ do |study_name, plate_barcode, expected_results_table|
+Then(/^the manifest for study "([^"]*)" with plate "([^"]*)" should be:$/) do |study_name, plate_barcode, expected_results_table|
   study = Study.find_by(name: study_name)
   plate = Plate.find_by(barcode: plate_barcode)
   manifest = CSV.parse(ManifestGenerator.generate_manifest_for_plate_ids([plate.id], study))
@@ -71,7 +71,7 @@ Given(/^plate "([^"]*)" in study "([^"]*)" is in asset group "([^"]*)"$/) do |pl
   asset_group.save!
 end
 
-Given /^I have a cherrypicking batch$/ do
+Given(/^I have a cherrypicking batch$/) do
   step('I have a cherrypicking batch with 96 samples')
 end
 
@@ -108,13 +108,13 @@ When(/^I complete the cherrypicking batch with "([^"]*)" plate purpose but dont 
   step('I press "Next step"')
 end
 
-When /^I complete the cherrypicking batch with "([^"]*)" plate purpose$/ do |plate_purpose_name|
+When(/^I complete the cherrypicking batch with "([^"]*)" plate purpose$/) do |plate_purpose_name|
   step(%Q{I complete the cherrypicking batch with "#{plate_purpose_name}" plate purpose but dont release it})
   step('I press "Release this batch"')
   step 'I should see "Batch released"'
 end
 
-Given /^I have a cherrypicked plate with barcode "([^"]*)" and plate purpose "([^"]*)"$/ do |plate_barcode, plate_purpose_name|
+Given(/^I have a cherrypicked plate with barcode "([^"]*)" and plate purpose "([^"]*)"$/) do |plate_barcode, plate_purpose_name|
   step('I have a Cherrypicking submission for asset group "Plate asset group"')
   step('I am on the show page for pipeline "Cherrypick"')
   step('I check "Select DN1234567T for batch"')
@@ -122,6 +122,7 @@ Given /^I have a cherrypicked plate with barcode "([^"]*)" and plate purpose "([
   step('I press the first "Submit"')
   step(%Q{a plate barcode webservice is available and returns "#{plate_barcode}"})
   step(%Q{I complete the cherrypicking batch with "#{plate_purpose_name}" plate purpose but dont release it})
+  Delayed::Worker.new.work_off # Build the asset links to clear the delayed job queue
 end
 
 Given(/^well "([^"]*)" on plate "([^"]*)" has a genotyping_done status of "([^"]*)"$/) do |well_description, plate_barcode, genotyping_status|
@@ -130,7 +131,7 @@ Given(/^well "([^"]*)" on plate "([^"]*)" has a genotyping_done status of "([^"]
   well.primary_aliquot.sample.external_properties.create!(key: 'genotyping_done', value: genotyping_status)
 end
 
-Given /^well "([^"]*)" has a genotyping status of "([^"]*)"$/ do |uuid, genotyping_status|
+Given(/^well "([^"]*)" has a genotyping status of "([^"]*)"$/) do |uuid, genotyping_status|
   well = Uuid.find_by(external_id: uuid).resource
 
   sample = FactoryGirl.create(:sample, name: 'Testing_the_JSON_API')
@@ -145,7 +146,7 @@ Given(/^I have a DNA QC submission for plate "([^"]*)"$/) do |plate_barcode|
   step %Q{I have a "DNA QC" submission for plate "#{plate_barcode}" with project "Test project" and study "Study B"}
 end
 
-Given /^I have a "([^"]*)" submission for plate "([^"]*)" with project "([^"]*)" and study "([^"]*)"$/ do |submission_template_name, plate_barcode, project_name, study_name|
+Given(/^I have a "([^"]*)" submission for plate "([^"]*)" with project "([^"]*)" and study "([^"]*)"$/) do |submission_template_name, plate_barcode, project_name, study_name|
   plate = Plate.find_by(barcode: plate_barcode)
   project = Project.find_by(name: project_name)
   study = Study.find_by(name: study_name)
@@ -168,7 +169,7 @@ Given /^I have a "([^"]*)" submission for plate "([^"]*)" with project "([^"]*)"
   step('1 pending delayed jobs are processed')
 end
 
-Given /^I have a Cherrypicking submission for asset group "([^"]*)"$/ do |asset_group_name|
+Given(/^I have a Cherrypicking submission for asset group "([^"]*)"$/) do |asset_group_name|
   project = Project.find_by(name: 'Test project')
   study = Study.find_by(name: 'Test study')
   asset_group = AssetGroup.find_by(name: asset_group_name)
@@ -184,7 +185,7 @@ Given /^I have a Cherrypicking submission for asset group "([^"]*)"$/ do |asset_
   step('1 pending delayed jobs are processed')
 end
 
-Given /^the internal QC plates are created$/ do
+Given(/^the internal QC plates are created$/) do
   step('I follow "Pipelines"')
   step('I follow "Create Plate Barcodes"')
   step('I select "Pico Standard" from "Plate purpose"')

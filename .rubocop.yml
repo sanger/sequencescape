@@ -53,3 +53,6 @@ Rails/DynamicFindBy:
     - find_by_sql
     - find_by_id_or_name
     - find_by_id_or_name!
+
+Style/IndentArray:
+  EnforcedStyle: consistent

@@ -21,8 +21,8 @@ class Admin::RobotPropertiesController < ApplicationController
   def print_labels
     @robot_property = @robot.robot_properties.beds.find(params[:id])
     if LabelPrinter::PrintJob.new(params[:printer], LabelPrinter::Label::RobotBeds, [
-        @robot_property
-      ]).execute
+      @robot_property
+    ]).execute
       flash[:now] = 'The barcode for the bed was correctly printed'
     end
     redirect_to [:admin, @robot, @robot_property]

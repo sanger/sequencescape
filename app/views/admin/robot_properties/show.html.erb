@@ -18,8 +18,8 @@
 </p>
 
 
-<%= form_tag(print_labels_admin_robot_robot_property_path(@robot, @robot_property), :method => :get) do %>
-  <%= render :partial => "shared/printer_list" %>
+<%= form_tag(print_labels_admin_robot_robot_property_path(@robot, @robot_property), method: :get) do %>
+  <%= render partial: "shared/printer_list" %>
   <button type="submit" class="btn btn-default">Print</button>
 <% end %>
 

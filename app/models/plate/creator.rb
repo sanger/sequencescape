@@ -29,9 +29,6 @@ class Plate::Creator < ActiveRecord::Base
   has_many :parent_purpose_relationships, class_name: 'Plate::Creator::ParentPurposeRelationship', dependent: :destroy, foreign_key: :plate_creator_id
   has_many :parent_plate_purposes, through: :parent_purpose_relationships, source: :plate_purpose
 
-  # If there are no barcodes supplied then we use the plate purpose we represent
-  belongs_to :plate_purpose
-
   serialize :valid_options
 
   def can_create_plates?(source_plate, _plate_purposes)
@@ -54,33 +51,41 @@ class Plate::Creator < ActiveRecord::Base
   end
 
   def create_plate_without_parent(creator_parameters)
-    plate = plate_purpose.plates.create_with_barcode!
-
-    creator_parameters.set_plate_parameters(plate) unless creator_parameters.nil?
-
-    [plate]
+    plate_purposes.map do |purpose|
+      plate = purpose.create!
+      creator_parameters.set_plate_parameters(plate) unless creator_parameters.nil?
+      plate
+    end
   end
 
   def create_plates(source_plate_barcodes, current_user, creator_parameters = nil)
-    return create_plate_without_parent(creator_parameters) if source_plate_barcodes.blank?
+    if source_plate_barcodes.blank?
+      # No barcodes have been scanned. This results in empty plates. This behaviour
+      # is used in a few circumstances. User comment:
+      # bs6: we use it to create 'pico standard' barcodes, as well as 'aliquot' barcodes.
+      # The latter is used on the rare occasion that we receive unlabelled samples that
+      # we need to record a location for. Not sure there's anything else.
+      create_plate_without_parent(creator_parameters)
+    else
+      # In the majority of cases the users are creating stamps of the provided plates.
+      scanned_barcodes = source_plate_barcodes.scan(/\d+/)
+      raise PlateCreationError, "Scanned plate barcodes in incorrect format: #{source_plate_barcodes.inspect}" if scanned_barcodes.blank?
 
-    scanned_barcodes = source_plate_barcodes.scan(/\d+/)
-    raise PlateCreationError, "Scanned plate barcodes in incorrect format: #{source_plate_barcodes.inspect}" if scanned_barcodes.blank?
-
-    # NOTE: Plate barcodes are not unique within certain laboratories.  That means that we cannot do:
-    #  plates = Plate.with_machine_barcode(*scanned_barcodes).all(:include => [ :location, { :wells => :aliquots } ])
-    # Because then you get multiple matches.  So we take the first match, which is just not right.
-    scanned_barcodes.map do |scanned|
-      plate =
-        Plate.with_machine_barcode(scanned).includes(:location, wells: :aliquots).first or
+      # NOTE: Plate barcodes are not unique within certain laboratories.  That means that we cannot do:
+      #  plates = Plate.with_machine_barcode(*scanned_barcodes).all(:include => [ :location, { :wells => :aliquots } ])
+      # Because then you get multiple matches.  So we take the first match, which is just not right.
+      scanned_barcodes.each_with_object([]) do |scanned, plates|
+        plate =
+          Plate.with_machine_barcode(scanned).includes(:location, wells: :aliquots).first or
           raise ActiveRecord::RecordNotFound, "Could not find plate with machine barcode #{scanned.inspect}"
 
-      unless can_create_plates?(plate, plate_purposes)
-        raise PlateCreationError, "Scanned plate #{scanned} has a purpose #{plate.purpose.name} not valid for creating [#{plate_purposes.map(&:name).join(',')}]"
-      end
+        unless can_create_plates?(plate, plate_purposes)
+          raise PlateCreationError, "Scanned plate #{scanned} has a purpose #{plate.purpose.name} not valid for creating [#{plate_purposes.map(&:name).join(',')}]"
+        end
 
-      create_child_plates_from(plate, current_user, creator_parameters)
-    end.flatten
+        plates.concat(create_child_plates_from(plate, current_user, creator_parameters))
+      end
+    end
   end
   private :create_plates
 

@@ -4,8 +4,8 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.%>
 
-<!--% form_for @batch, :url => {:controller => :batches, :action => :qc_batch, :id => @batch.id, :task_id => @task.id }, :html => { :id => 'stage_form'} do |form| %-->
-<%= form_for @workflow, :url => { :action => "stage", :id => @stage, :workflow_id => @workflow.id, :batch_id => @batch.id, :next_stage => true }, :html => { :id => "stage_form"} do |form| %>
+<!--% form_for @batch, url: {controller: :batches, action: :qc_batch, id: @batch.id, task_id: @task.id }, html: { id: 'stage_form'} do |form| %-->
+<%= form_for @workflow, url: { action: "stage", id: @stage, workflow_id: @workflow.id, batch_id: @batch.id, next_stage: true }, html: { id: "stage_form"} do |form| %>
 <div class="info">
   <table width="100%" cellpadding="5" cellspacing="0" class='sortable' id='sortable_batches'>
   <thead>
@@ -21,8 +21,8 @@
   <% for qc in @qc_results %>
     <tr class="<%= "qc_#{qc.qc_status}"%>" id="<%="qc_row_#{qc.request.id}"%>">
       <td>
-        <%= label_tag("#{ qc.request.id }_qc_state", h("#{ qc.well.plate.name } QC status #{qc.well.map.description}"), :style => 'display:none') %>
-        <%= qc_select_box(qc.request, qc.qc_status,:generate_blank => true, :onChange => "update_qc_row('#{qc.request.id}_qc_state', 'qc_row_#{qc.request.id}');") %>
+        <%= label_tag("#{ qc.request.id }_qc_state", h("#{ qc.well.plate.name } QC status #{qc.well.map.description}"), style: 'display:none') %>
+        <%= qc_select_box(qc.request, qc.qc_status,generate_blank: true, :onChange => "update_qc_row('#{qc.request.id}_qc_state', 'qc_row_#{qc.request.id}');") %>
       </td>
       <td><%= link_to qc.well.plate.name, asset_url(qc.well.plate) %></td>
       <td><%= qc.well.map.description %> </td>
@@ -48,7 +48,7 @@
   <a href= "#" onclick="$('tr.qc_pass').invoke('hide');">Hide passed samples</a>
 </div>
 
-  <%= render :partial => "next_stage_submit" %>
+  <%= render partial: "next_stage_submit" %>
 <% end %>
 
 <script type="text/javascript">

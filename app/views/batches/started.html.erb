@@ -9,4 +9,4 @@
 
 <%= page_title @pipeline.name, "Started Batches" %>
 
-<%= render :partial => "shared/batches", :locals => { :batches => @batches, :edit => false, :in_progress => true, :showing_all => true, :batch_state => 'started' } %>
+<%= render partial: "shared/batches", locals: { batches: @batches, edit: false, in_progress: true, showing_all: true, batch_state: 'started' } %>

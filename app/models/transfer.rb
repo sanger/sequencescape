@@ -17,8 +17,8 @@ class Transfer < ActiveRecord::Base
         # This looks odd but it's a LEFT OUTER JOIN, meaning that the rows we would be interested in have no source_id.
         scope :with_no_outgoing_transfers, -> {
           select("DISTINCT #{base.quoted_table_name}.*")
-          .joins("LEFT OUTER JOIN `transfers` outgoing_transfers ON outgoing_transfers.`source_id`=#{base.quoted_table_name}.`id`")
-          .where('outgoing_transfers.source_id IS NULL')
+            .joins("LEFT OUTER JOIN `transfers` outgoing_transfers ON outgoing_transfers.`source_id`=#{base.quoted_table_name}.`id`")
+            .where('outgoing_transfers.source_id IS NULL')
         }
 
         scope :including_used_plates?, ->(filter) {

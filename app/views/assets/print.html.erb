@@ -16,5 +16,5 @@
 <strong>Caution!</strong>
 <p>The <%= @asset.label %> <%= @asset.display_name %> is not barcoded directly. This page is for printing barcodes for <%= @printable.label %> <%= @printable.sanger_human_barcode %> instead.</p>
 <% end %>
-<%= render :partial => 'print_form', :locals => { :asset => @printable } %>
+<%= render partial: 'print_form', locals: { asset: @printable } %>
 

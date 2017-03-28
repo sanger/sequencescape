@@ -16,7 +16,7 @@
   <td><%= task.workflow.name %></td>
     <td><%= link_to 'Show', task_path(task) %></td>
     <td><%= link_to 'Edit', edit_task_path(task) %></td>
-    <td><%= link_to 'Destroy', task_path(task), :confirm => 'Are you sure?', :method => :delete %></td>
+    <td><%= link_to 'Destroy', task_path(task), confirm: 'Are you sure?', method: :delete %></td>
   </tr>
 <% end -%>
 </table>

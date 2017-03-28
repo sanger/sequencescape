@@ -39,7 +39,7 @@
           <td><%= asset.descriptor_value('Start') %></td>
           <td><%= asset.descriptor_value('End') %></td>
           <td><%= asset.descriptor_value('Location') %></td>
-          <td><%= link_to'Add', :update => 'selected_samples', :url => { :action => 'add_resource', :id => asset.id, :resource => false, :batch_id => @batch.id }, :remote => true  %></td>
+          <td><%= link_to'Add', update: 'selected_samples', url: { action: 'add_resource', id: asset.id, resource: false, batch_id: @batch.id }, remote: true  %></td>
         </tr>
         <% end -%>
       <% end -%>

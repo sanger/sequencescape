@@ -12,7 +12,7 @@
   Study <%= @asset.id %>
 </div>
 
-<%= render :partial => "list", :locals => {:asset => @asset } %>
+<%= render partial: "list", locals: {asset: @asset } %>
 
 <div>
   <%= form_tag(asset_comments_path(@asset), data: { update: "#asset_annotations_#{@asset.id}", remote: true }, class:'remote-form') do %>
