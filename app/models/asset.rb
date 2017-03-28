@@ -84,19 +84,21 @@ class Asset < ActiveRecord::Base
   belongs_to :barcode_prefix
   scope :sorted, ->() { order('map_id ASC') }
 
-  scope :position_name, ->(*args) {
-    joins(:map).where(['description = ? AND asset_size = ?', args[0], args[1]])
+  scope :position_name, ->(description, size) {
+    joins(:map).where(description: description, asset_size: size)
   }
   scope :for_summary, -> { includes([:map, :barcode_prefix]) }
 
   scope :of_type, ->(*args) { where(sti_type: args.map { |t| [t, *t.descendants] }.flatten.map(&:name)) }
 
-  scope :recent_first, -> { order('id DESC') }
+  scope :recent_first, -> { order(id: :desc) }
 
   scope :include_for_show, ->() { includes(requests: :request_metadata) }
 
+  # Assets usually have studies through aliquots, which is only relevant to
+  # Aliquot::Receptacles. This method just ensures all assets respond to studies
   def studies
-    []
+    Study.none
   end
 
   def barcode_and_created_at_hash
@@ -328,7 +330,7 @@ class Asset < ActiveRecord::Base
   end
 
   def has_been_through_qc?
-    not qc_state.blank?
+    qc_state.present?
   end
 
   def set_external_release(state)
@@ -370,11 +372,11 @@ class Asset < ActiveRecord::Base
     AssetLink.create_edge(self, child)
   end
 
- # We accept not only an individual barcode but also an array of them.  This builds an appropriate
- # set of conditions that can find any one of these barcodes.  We map each of the individual barcodes
- # to their appropriate query conditions (as though they operated on their own) and then we join
- # them together with 'OR' to get the overall conditions.
- scope :with_machine_barcode, ->(*barcodes) {
+  # We accept not only an individual barcode but also an array of them.  This builds an appropriate
+  # set of conditions that can find any one of these barcodes.  We map each of the individual barcodes
+  # to their appropriate query conditions (as though they operated on their own) and then we join
+  # them together with 'OR' to get the overall conditions.
+  scope :with_machine_barcode, ->(*barcodes) {
     query_details = barcodes.flatten.map do |source_barcode|
       case source_barcode.to_s
       when /^\d{13}$/ # An EAN13 barcode
@@ -402,7 +404,7 @@ class Asset < ActiveRecord::Base
 
       where([query_details[:query].join(' OR '), *query_details[:parameters].flatten.compact])
         .joins(query_details[:joins].compact.uniq)
-                              }
+  }
 
  scope :source_assets_from_machine_barcode, ->(destination_barcode) {
     destination_asset = find_from_machine_barcode(destination_barcode)
@@ -491,7 +493,7 @@ class Asset < ActiveRecord::Base
   end
 
   def compatible_purposes
-    []
+    Purpose.none
   end
 
   def automatic_move?
