@@ -96,7 +96,7 @@ private
     define_method(filter_name) do
       begin
         barcode = params[:"#{ name }_barcode"]
-        raise EmptyBarcode, "The #{name} barcode appears to be empty" if barcode.blank?
+        raise(EmptyBarcode, "The #{name} barcode appears to be empty") if barcode.blank?
         human_barcode = Barcode.barcode_to_human!(barcode, model_class.prefix)
         object = model_class.find_by(barcode: block.call(barcode, human_barcode))
         raise ActiveRecord::RecordNotFound, "Could not find a #{name} with barcode #{barcode}" if object.nil?
@@ -111,7 +111,7 @@ private
         flash[:error] = I18n.t("sequenom.errors.#{name}.not_found_by_barcode", barcode: barcode, human_barcode: human_barcode)
         redirect_to sequenom_root_path
 
-      when Barcode::InvalidBarcode === exception
+      when SBCF::BarcodeError === exception
         flash[:error] = I18n.t("sequenom.errors.#{name}.invalid_barcode", barcode: barcode, human_barcode: human_barcode)
         redirect_to sequenom_root_path
 
@@ -134,8 +134,11 @@ private
   # Handle the case where ActiveRecord::RecordNotFound is raised when looking for a Plate by
   # physically creating the Plate in the database!
   def rescue_find_plate_from_barcode_with_create(exception, barcode, human_barcode)
-    rescue_find_plate_from_barcode_without_create(exception, barcode, human_barcode) unless ActiveRecord::RecordNotFound === exception
-    @plate = Plate.create!(barcode: Barcode.number_to_human(barcode))
+    if ActiveRecord::RecordNotFound === exception
+      @plate = Plate.create!(barcode: Barcode.number_to_human(barcode)) if barcode
+    else
+      rescue_find_plate_from_barcode_without_create(exception, barcode, human_barcode)
+    end
   end
   alias_method_chain(:rescue_find_plate_from_barcode, :create)
 end
