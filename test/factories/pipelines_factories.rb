@@ -91,7 +91,9 @@ FactoryGirl.define do
     end
 
     after(:create) do |batch, evaluator|
-      batch.batch_requests = create_list(:batch_request, evaluator.request_count, batch: batch)
+      if evaluator.request_count.positive?
+        batch.batch_requests = create_list(:batch_request, evaluator.request_count, batch: batch)
+      end
     end
 
     factory :multiplexed_batch do
@@ -152,12 +154,17 @@ FactoryGirl.define do
     active                true
     next_pipeline_id      nil
     previous_pipeline_id  nil
-    location              { |location| location.association(:location) }
+    location
 
-    after(:build) do |pipeline|
+    transient do
+      item_limit 2
+      locale 'Internal'
+    end
+
+    after(:build) do |pipeline, evaluator|
       pipeline.request_types << create(:request_type)
       pipeline.add_control_request_type
-      pipeline.build_workflow(name: pipeline.name, item_limit: 2, locale: 'Internal', pipeline: pipeline) if pipeline.workflow.nil?
+      pipeline.build_workflow(name: pipeline.name, item_limit: evaluator.item_limit, locale: evaluator.locale, pipeline: pipeline) if pipeline.workflow.nil?
     end
 
     factory :multiplexed_pipeline do
@@ -196,7 +203,7 @@ FactoryGirl.define do
 
     association(:workflow, factory: :lab_workflow_for_pipeline)
     after(:build) do |pipeline|
-      pipeline.request_types << create(:request_type)
+      pipeline.request_types << create(:sequencing_request_type)
       pipeline.add_control_request_type
       pipeline.build_workflow(name: pipeline.name, item_limit: 2, locale: 'Internal', pipeline: pipeline) if pipeline.workflow.nil?
     end
