@@ -34,16 +34,6 @@ module SequencingQcBatch
   # QC State ["qc_pending", "qc_manual", "qc_manual_in_progress","qc_completed"]
   #++
 
-  # View based check to display batches with results
-  def show_in_manual_qc?
-    assets_qc_tasks_results.uniq.size <= 1
-  end
-
-  # Cron job specific checker
-  def migrate_to_manual_qc?
-    assets_qc_tasks_results.include?(true)
-  end
-
   # Returns qc_states used
   def qc_states
     VALID_QC_STATES
@@ -105,13 +95,13 @@ module SequencingQcBatch
     save
   end
 
-  def qc_pipeline_update
-    self.qc_pipeline = Pipeline.find_by(name: 'quality control', automated: true)
-    self.qc_state    = 'qc_pending'
-  end
-  private :qc_pipeline_update
-
   private
+
+    def qc_pipeline_update
+      self.qc_pipeline = Pipeline.find_by(name: 'quality control', automated: true)
+      self.qc_state    = 'qc_pending'
+    end
+
 
     def assets_qc_tasks_results
       auto_qc_pipeline = Pipeline.find_by!(name: 'quality control', automated: true)
