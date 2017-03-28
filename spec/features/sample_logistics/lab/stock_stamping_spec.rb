@@ -5,6 +5,7 @@ require 'pry'
 feature 'stamping of stock', js: true do
   let(:user) { create :admin, barcode: 'ID41440E' }
   let(:plate) { create :plate_with_3_wells, barcode: '1' }
+  let!(:barcode_printer) { create :barcode_printer }
 
   scenario 'stamping of stock' do
     plate.wells.first.set_current_volume(1000)
@@ -24,10 +25,15 @@ feature 'stamping of stock', js: true do
     select('ABgene_0765', from: 'stock_stamper_destination_plate_type_name')
     click_button 'Check the form'
     expect(page).to have_content 'Required volume exceeds the maximum well volume for well(s) A1. Maximum well volume 800.0 will be used in tecan file'
-    expect(page).to have_content 'You can generate the TECAN file now.'
+    expect(page).to have_content 'You can generate the TECAN file and print label now.'
     expect(page).not_to have_content('Plates barcodes are not identical')
     click_button 'Generate TECAN file'
     expect(page).to have_content('Stamping of stock')
+
+    select((barcode_printer.name).to_s, from: 'barcode_printer_list')
+    expect(RestClient).to receive(:get).and_raise(Errno::ECONNREFUSED)
+    click_button 'Print label'
+    expect(page).to have_content('Pmb PrintMyBarcode service is down')
 
     visit history_asset_path(plate)
     expect(page).to have_content('Activity Logging')

@@ -21,7 +21,7 @@ class StockStamper
     generate_tecan_gwl_file_as_text
     create_asset_audit_event
     message[:error] = "Required volume exceeds the maximum well volume for well(s) #{wells_with_excess.join(', ')}. Maximum well volume #{plate_type.maximum_volume.to_f} will be used in tecan file" if wells_with_excess.present?
-    message[:notice] = 'You can generate the TECAN file now.'
+    message[:notice] = 'You can generate the TECAN file and print label now.'
   end
 
   def generate_tecan_gwl_file_as_text

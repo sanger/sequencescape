@@ -21,6 +21,18 @@ class StockStampersController < ApplicationController
                                      disposition: 'attachment'
   end
 
+  def print_label
+    print_job = LabelPrinter::PrintJob.new(params[:printer],
+                                          LabelPrinter::Label::AssetRedirect,
+                                          printables: params[:printable])
+    if print_job.execute
+      flash[:notice] = print_job.success
+    else
+      flash[:error] = print_job.errors.full_messages.join('; ')
+    end
+    redirect_to new_stock_stamper_path
+  end
+
   def stock_stamper_params
     params.require(:stock_stamper).permit(:user_barcode, :source_plate_barcode, :source_plate_type_name, :destination_plate_barcode, :destination_plate_type_name, :overage)
   end

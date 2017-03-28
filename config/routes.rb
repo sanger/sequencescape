@@ -60,6 +60,7 @@ Sequencescape::Application.routes.draw do
   resources :stock_stampers, only: [:new, :create] do
     collection do
       post :generate_tecan_file
+      post :print_label
     end
   end
 
