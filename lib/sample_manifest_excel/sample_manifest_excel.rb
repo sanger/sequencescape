@@ -1,10 +1,15 @@
 ##
 # Creates a Sample Manifest Excel spreadsheet from a Sample Manifest object
 module SampleManifestExcel
+
+  require_relative 'sample_manifest_excel/null_objects/null_column'
+  require_relative 'sample_manifest_excel/null_objects/null_configuration'
+  require_relative 'sample_manifest_excel/null_objects/null_column_list'
   
   require_relative 'sample_manifest_excel/helpers'
   require_relative 'sample_manifest_excel/core_extensions'
   require_relative 'sample_manifest_excel/subclass_checker'
+  require_relative 'sample_manifest_excel/tags'
   require_relative 'sample_manifest_excel/cell'
   require_relative 'sample_manifest_excel/list'
   require_relative 'sample_manifest_excel/conditional_formatting_default'
@@ -21,11 +26,9 @@ module SampleManifestExcel
   require_relative 'sample_manifest_excel/range_list'
   require_relative 'sample_manifest_excel/worksheet'
   require_relative 'sample_manifest_excel/download'
-  require_relative 'sample_manifest_excel/tags'
   require_relative 'sample_manifest_excel/test_download'
   require_relative 'sample_manifest_excel/upload'
   require_relative 'sample_manifest_excel/configuration'
-  require_relative 'sample_manifest_excel/null_configuration'
 
   Axlsx::Worksheet.send(:include, CoreExtensions::AxlsxWorksheet)
 

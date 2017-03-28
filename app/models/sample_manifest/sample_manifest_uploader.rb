@@ -8,6 +8,8 @@ class SampleManifestUploader
 
   validate :check_upload
 
+  delegate :processed?, to: :upload
+
   def initialize(filename, configuration)
     @filename = filename
     @configuration = configuration || SampleManifestExcel::NullConfiguration.new
@@ -18,6 +20,9 @@ class SampleManifestUploader
   def run!
     if valid?
       upload.process(tag_group)
+      upload.processed?
+    else
+      false
     end
   end
 

@@ -127,7 +127,7 @@ module SampleManifestExcel
         if errors.empty?
           specialised_fields.each do |specialised_field|
             unless specialised_field.valid?
-              errors.add(:base, "#{row_title} #{specialised_field.errors.full_messages}")
+              errors.add(:base, "#{row_title} #{specialised_field.errors.full_messages.join(', ')}")
             end
           end
         end

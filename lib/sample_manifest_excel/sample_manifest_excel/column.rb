@@ -1,13 +1,5 @@
 module SampleManifestExcel
-  class NullColumn
-    def number
-      -1
-    end
-
-    def value
-    end
-  end
-
+  
   ##
   # Column creates a particular column with all the information about this column (name, heading,
   # value, type, attribute, should it be locked or unlocked, position of the column,
