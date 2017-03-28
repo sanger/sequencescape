@@ -406,7 +406,7 @@ class Asset < ActiveRecord::Base
         .joins(query_details[:joins].compact.uniq)
   }
 
- scope :source_assets_from_machine_barcode, ->(destination_barcode) {
+  scope :source_assets_from_machine_barcode, ->(destination_barcode) {
     destination_asset = find_from_machine_barcode(destination_barcode)
     if destination_asset
       source_asset_ids = destination_asset.parents.map(&:id)
@@ -418,7 +418,7 @@ class Asset < ActiveRecord::Base
     else
       none
     end
-                                            }
+  }
 
   def self.find_from_any_barcode(source_barcode)
     if source_barcode.blank?
