@@ -1,6 +1,5 @@
 module SampleManifestExcel
   module SpecialisedField
-
    ##
     # A required field if it is a tube manifest.
     # No update required.

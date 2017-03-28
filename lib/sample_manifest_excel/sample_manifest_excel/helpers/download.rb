@@ -1,6 +1,5 @@
 module SampleManifestExcel
   module Helpers
-
     ##
     # Just a little help to create a workbook, package and save that package.
     module Download

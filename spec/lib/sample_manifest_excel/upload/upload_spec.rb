@@ -6,7 +6,7 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
       config.folder = File.join('spec', 'data', 'sample_manifest_excel')
       config.load!
     end
-  end
+   end
 
   let(:test_file)               { 'test_file.xlsx' }
   let!(:tag_group)              { create(:tag_group) }
@@ -117,5 +117,5 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
 
    after(:all) do
     SampleManifestExcel.reset!
-  end
+   end
 end

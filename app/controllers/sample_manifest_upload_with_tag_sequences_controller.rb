@@ -14,7 +14,7 @@ class SampleManifestUploadWithTagSequencesController < ApplicationController
     @uploader = SampleManifestUploader.new(params[:upload].open, SampleManifestExcel.configuration)
     if @uploader.valid?
       if @uploader.run!
-        flash[:notice] = "Sample manifest successfully uploaded."
+        flash[:notice] = 'Sample manifest successfully uploaded.'
         redirect_to '/sample_manifest_upload_with_tag_sequences/new'
       else
         flash.now[:error] = 'Oh dear. Your sample manifest couldn\'t be uploaded.'

@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe SampleManifestGenerator, type: :model do
-
   before(:all) do
     SampleManifestExcel.configure do |config|
       config.folder = File.join('spec', 'data', 'sample_manifest_excel')
@@ -21,8 +20,10 @@ RSpec.describe SampleManifestGenerator, type: :model do
   let!(:barcode_printer)  { create(:barcode_printer) }
   let(:configuration)     { SampleManifestExcel.configuration }
 
-  let(:attributes)  { { "template": 'plate_full', "study_id": study.id, "supplier_id": supplier.id,
-                        "count": '4', "asset_type": 'plate' }.with_indifferent_access }
+  let(:attributes) {
+    { "template": 'plate_full', "study_id": study.id, "supplier_id": supplier.id,
+      "count": '4', "asset_type": 'plate' }.with_indifferent_access
+  }
 
   it 'model name is sample manifest' do
     expect(SampleManifestGenerator.model_name).to eq('SampleManifest')
@@ -54,7 +55,7 @@ RSpec.describe SampleManifestGenerator, type: :model do
   end
 
   it 'raises an error if sample manifest is not valid' do
-    expect{ SampleManifestGenerator.new(attributes.except(:study_id), user, configuration).execute}.to raise_error(ActiveRecord::RecordInvalid)
+    expect { SampleManifestGenerator.new(attributes.except(:study_id), user, configuration).execute }.to raise_error(ActiveRecord::RecordInvalid)
   end
 
   it 'generates sample manifest to create details_array' do
@@ -78,35 +79,35 @@ RSpec.describe SampleManifestGenerator, type: :model do
   it 'if asset type is not passed sample manifest will still have an asset_type' do
     generator = SampleManifestGenerator.new(attributes.except(:asset_type).merge(template: 'tube_full'), user, configuration)
     generator.execute
-    expect(generator.sample_manifest.asset_type).to eq(configuration.manifest_types.find_by('tube_full').asset_type) 
+    expect(generator.sample_manifest.asset_type).to eq(configuration.manifest_types.find_by('tube_full').asset_type)
   end
 
   it 'if asset type is empty sample manifest will still have an asset_type' do
     generator = SampleManifestGenerator.new(attributes.merge(template: 'tube_full', asset_type: ''), user, configuration)
     generator.execute
-    expect(generator.sample_manifest.asset_type).to eq(configuration.manifest_types.find_by('tube_full').asset_type) 
+    expect(generator.sample_manifest.asset_type).to eq(configuration.manifest_types.find_by('tube_full').asset_type)
   end
 
   it 'prints labels if barcode printer is present' do
     allow(LabelPrinter::PmbClient).to receive(:get_label_template_by_name).and_return('data' => [{ 'id' => 15 }])
 
     generator = SampleManifestGenerator.new(attributes.merge(barcode_printer: barcode_printer.name,
-                                                              only_first_label: '0'), user, configuration)
+                                                             only_first_label: '0'), user, configuration)
 
     allow(RestClient).to receive(:post)
     expect(generator).to be_print_job_required
     generator.execute
-    expect(generator.print_job_message.has_key?(:notice)).to be_truthy
+    expect(generator.print_job_message.key?(:notice)).to be_truthy
   end
 
   it 'print job is not valid with invalid printer name' do
     allow(LabelPrinter::PmbClient).to receive(:get_label_template_by_name).and_return('data' => [{ 'id' => 15 }])
-    
+
     generator = SampleManifestGenerator.new(attributes.merge(barcode_printer: 'dodgy_printer',
-                                                              only_first_label: '0'), user, configuration)
+                                                             only_first_label: '0'), user, configuration)
     expect(generator).to be_print_job_required
     generator.execute
-    expect(generator.print_job_message.has_key?(:error)).to be_truthy 
+    expect(generator.print_job_message.key?(:error)).to be_truthy
   end
 
   it 'does not have a print job if printer name has not been provided' do
@@ -116,5 +117,4 @@ RSpec.describe SampleManifestGenerator, type: :model do
   after(:all) do
     SampleManifestExcel.reset!
   end
-
 end

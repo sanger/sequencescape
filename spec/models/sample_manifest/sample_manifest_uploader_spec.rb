@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe SampleManifestUploader, type: :model do
-
   before(:all) do
     SampleManifestExcel.configure do |config|
       config.folder = File.join('spec', 'data', 'sample_manifest_excel')
@@ -10,7 +9,7 @@ RSpec.describe SampleManifestUploader, type: :model do
     end
   end
 
-  let(:test_file) { 'test_file.xlsx'}
+  let(:test_file) { 'test_file.xlsx' }
 
   it 'will not be valid without a filename' do
     expect(SampleManifestUploader.new(nil, SampleManifestExcel.configuration)).to_not be_valid
@@ -42,7 +41,7 @@ RSpec.describe SampleManifestUploader, type: :model do
     expect(uploader.errors).to_not be_empty
     expect(uploader.upload).to_not be_processed
     File.delete(test_file) if File.exist?(test_file)
-  end
+   end
 
   after(:all) do
     SampleManifestExcel.reset!

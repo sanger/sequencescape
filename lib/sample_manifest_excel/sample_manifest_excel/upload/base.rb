@@ -1,6 +1,5 @@
 module SampleManifestExcel
   module Upload
-
     ##
     # An upload will:
     # *Create a Data object based on the filename.

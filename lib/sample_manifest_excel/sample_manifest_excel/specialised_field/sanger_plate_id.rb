@@ -1,6 +1,5 @@
 module SampleManifestExcel
   module SpecialisedField
-
     ##
     # A required field if it is a plate manifest.
     # No update required.

@@ -1,6 +1,5 @@
 module SampleManifestExcel
   module Upload
-
     ##
     # An object to store the data for a particular manifest upload.
     # The data is split into a header row (clumn names) and the actual data.

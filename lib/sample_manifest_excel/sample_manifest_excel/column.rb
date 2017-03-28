@@ -1,5 +1,4 @@
 module SampleManifestExcel
-  
   ##
   # Column creates a particular column with all the information about this column (name, heading,
   # value, type, attribute, should it be locked or unlocked, position of the column,

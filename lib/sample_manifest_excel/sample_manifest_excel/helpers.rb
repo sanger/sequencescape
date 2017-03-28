@@ -8,5 +8,4 @@ module SampleManifestExcel
   require_relative 'helpers/attributes'
   require_relative 'helpers/download'
   require_relative 'helpers/worksheet'
-
 end

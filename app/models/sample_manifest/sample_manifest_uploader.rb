@@ -1,5 +1,4 @@
 class SampleManifestUploader
-
   include ActiveModel::Validations
 
   attr_reader :filename, :configuration, :tag_group, :upload
@@ -41,6 +40,4 @@ private
       end
     end
   end
-
-
 end

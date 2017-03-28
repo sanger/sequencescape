@@ -3,21 +3,20 @@ require 'rails_helper'
 require 'pry'
 
 feature 'Sample manifest with tag sequences' do
-
   before(:all) do
     SampleManifestExcel.configure do |config|
       config.folder = File.join('spec', 'data', 'sample_manifest_excel')
-      config.tag_group = "My Magic Tag Group"
+      config.tag_group = 'My Magic Tag Group'
       config.load!
     end
   end
 
   let!(:user)     { create :admin }
   let(:columns)   { SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup }
-  let(:test_file) { 'test_file.xlsx'}
+  let(:test_file) { 'test_file.xlsx' }
 
   context 'valid' do
-    let(:download) { build(:test_download, columns: columns)}
+    let(:download) { build(:test_download, columns: columns) }
 
     before(:each) do
       download.save(test_file)
@@ -33,7 +32,7 @@ feature 'Sample manifest with tag sequences' do
   end
 
   context 'invalid' do
-    let(:download) { build(:test_download, columns: columns, validation_errors: [:library_type])}
+    let(:download) { build(:test_download, columns: columns, validation_errors: [:library_type]) }
 
     before(:each) do
       download.save(test_file)
@@ -63,5 +62,4 @@ feature 'Sample manifest with tag sequences' do
     click_button 'Login'
     true
   end
-
 end

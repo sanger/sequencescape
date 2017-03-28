@@ -1,6 +1,5 @@
 module SampleManifestExcel
   module Worksheet
-
     ##
     # A test worksheet is necessary for testing uploads.
     class TestWorksheet < Base

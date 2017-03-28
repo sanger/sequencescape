@@ -1,9 +1,7 @@
 module SampleManifestExcel
-
   ##
   # A field which either requires specific validation or needs to be updated.
   module SpecialisedField
-
     require_relative 'specialised_field/base'
     require_relative 'specialised_field/sanger_sample_id_value'
     require_relative 'specialised_field/value_required'
@@ -18,6 +16,5 @@ module SampleManifestExcel
     require_relative 'specialised_field/tag2_oligo'
     require_relative 'specialised_field/tag_oligo'
     require_relative 'specialised_field/well'
-    
   end
 end

@@ -1,9 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe SampleManifestExcel::Tags, type: :model, sample_manifest_excel: true do
-
   describe 'example_data' do
-
     let(:data) { SampleManifestExcel::Tags::ExampleData.new }
 
     it 'can produce a list of tags of an appropriate length' do
@@ -21,9 +19,7 @@ RSpec.describe SampleManifestExcel::Tags, type: :model, sample_manifest_excel: t
   end
 
   describe 'validator' do
-
     class TestTagChecker
-
       include ActiveModel::Model
       include SampleManifestExcel::Tags::Validator
 
@@ -33,7 +29,6 @@ RSpec.describe SampleManifestExcel::Tags, type: :model, sample_manifest_excel: t
         @upload = upload
       end
     end
-
 
     before(:all) do
       SampleManifestExcel.configure do |config|
@@ -48,7 +43,7 @@ RSpec.describe SampleManifestExcel::Tags, type: :model, sample_manifest_excel: t
     it 'fails if the tags are invalid' do
       download = build(:test_download, columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup, manifest_type: 'multiplexed_library', validation_errors: [:tags])
       download.save(test_file)
-      upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup , start_row: 9)
+      upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup, start_row: 9)
       expect(TestTagChecker.new(upload)).to_not be_valid
     end
 

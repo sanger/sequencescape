@@ -1,6 +1,5 @@
 module SampleManifestExcel
   module Helpers
-
     ##
     # Just a little bit of extra help to add ActiveModel::Model.
     # Attribute accessors and default attributes can be created.

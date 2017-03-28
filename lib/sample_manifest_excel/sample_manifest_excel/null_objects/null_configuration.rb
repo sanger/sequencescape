@@ -1,6 +1,5 @@
 module SampleManifestExcel
   class NullConfiguration
-
     def conditional_formattings
     end
 
@@ -34,6 +33,5 @@ module SampleManifestExcel
         NullColumnList.new
       end
     end
-
   end
 end

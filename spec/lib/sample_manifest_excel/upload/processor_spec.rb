@@ -13,7 +13,6 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
   end
 
   describe '#run' do
-
     before(:all) do
       SampleManifestExcel.configure do |config|
         config.folder = File.join('spec', 'data', 'sample_manifest_excel')

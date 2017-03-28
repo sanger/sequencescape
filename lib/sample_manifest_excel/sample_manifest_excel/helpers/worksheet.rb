@@ -1,6 +1,5 @@
 module SampleManifestExcel
   module Helpers
-
     ##
     # Add the basic styles which are the same across all worksheets.
     module Worksheet

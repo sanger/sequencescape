@@ -1,7 +1,6 @@
 module SampleManifestExcel
   module Upload
     module Processor
-
       ##
       # Uploads will be processed slightly differently based on the manifest type.
       # Currently only supports tubes.

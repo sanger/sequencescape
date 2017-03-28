@@ -42,9 +42,7 @@ module SampleManifestExcel
       @manifest_types = ManifestTypeList.new(manifest_types).freeze
     end
 
-    def tag_group=(tag_group)
-      @tag_group = tag_group
-    end
+    attr_writer :tag_group
 
     def loaded?
       loaded

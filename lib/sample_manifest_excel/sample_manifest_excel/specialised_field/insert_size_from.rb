@@ -1,6 +1,5 @@
 module SampleManifestExcel
   module SpecialisedField
-
     ##
     # A required value which needs to be converted to an integer.
     # Updated in the aliquot.

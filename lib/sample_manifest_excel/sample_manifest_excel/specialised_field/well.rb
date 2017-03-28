@@ -1,6 +1,5 @@
 module SampleManifestExcel
   module SpecialisedField
-
     ##
     # A well is required if it is a plate manifest.
     # If the value does not match the description of the sample well

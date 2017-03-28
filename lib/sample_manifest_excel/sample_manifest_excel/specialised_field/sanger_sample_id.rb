@@ -1,6 +1,5 @@
 module SampleManifestExcel
   module SpecialisedField
-
     ##
     # ???
     class SangerSampleId

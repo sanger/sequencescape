@@ -85,7 +85,6 @@ module SampleManifestExcel
       super
     end
 
-    
     def find_by_or_null(key, value)
       find_by(key, value) || SampleManifestExcel::NullColumn.new
     end

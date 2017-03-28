@@ -621,5 +621,4 @@ Sequencescape::Application.routes.draw do
   # These endpoints should be defined explicitly
   get '/:controller(/:action(/:id))'
   post '/:controller(/:action(/:id))'
-
 end
