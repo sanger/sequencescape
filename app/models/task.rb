@@ -15,7 +15,7 @@ class Task < ActiveRecord::Base
 
   # BEGIN descriptor_to_attribute, could be move into a mixin
 
-  # TODO move into SetDescriptorsTask
+  # TODO: move into SetDescriptorsTask
   def get_descriptor_value(name, default = nil)
     name_s = name.to_s
     descriptors.each do |desc|
@@ -35,7 +35,6 @@ class Task < ActiveRecord::Base
       end
     end
     descriptors << Descriptor.new(name: name_s, value: value)
-#    self.descriptors.save
   end
   # END descriptors
 
@@ -60,7 +59,6 @@ class Task < ActiveRecord::Base
       end
     end
     subclass_attributes << SubclassAttribute.new(name: name_s, value: value)
-#    self.subclass.save
   end
 
   def self.init_class

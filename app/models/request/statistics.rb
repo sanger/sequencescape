@@ -6,7 +6,7 @@
 
 module Request::Statistics
   module DeprecatedMethods
-    # TODO - Move these to named scope on Request
+    # TODO: - Move these to named scope on Request
     def total_requests(request_type)
       requests.request_type(request_type).distinct.count(:id)
     end

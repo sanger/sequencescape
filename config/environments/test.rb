@@ -12,7 +12,14 @@ Sequencescape::Application.configure do
   # your test database is "scratch space" for the test suite and is wiped
   # and recreated between test runs.  Don't rely on the data there!
   config.cache_classes = true
-  config.active_support.deprecation = :log
+
+  # Currently, Active Record suppresses errors raised within `after_rollback`/`after_commit`
+  # callbacks and only print them to the logs. In the next version, these errors will no
+  # longer be suppressed. Instead, the errors will propagate normally just like in other
+  # Active Record callbacks.
+  config.active_record.raise_in_transactional_callbacks = true
+  config.active_support.deprecation = :raise
+  config.active_support.test_order = :random
 
   config.serve_static_files = true
 
@@ -21,7 +28,8 @@ Sequencescape::Application.configure do
   config.eager_load = true
 
   # we don't need :debug unless we're debugging tests
-  config.log_level = :error
+  config.logger = Logger.new(STDOUT) if ENV.fetch('LOG_TO_CONSOLE', false)
+  config.log_level = ENV.fetch('LOG_LEVEL', :error)
 
   # Show full error reports and disable caching
   # config.action_controller.consider_all_requests_local = true
@@ -45,5 +53,5 @@ Sequencescape::Application.configure do
   config.allow_concurrency = false
 
   # config.active_record.observers = [ :batch_cache_sweeper, :request_observer ]
-  config.active_record.observers = [:request_observer]
+  config.active_record.observers = [:customer_request_observer]
 end

@@ -5,8 +5,8 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 require 'event_factory'
 class RequestsController < ApplicationController
-# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+  # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
 
   before_action :admin_login_required, only: [:describe, :undescribe, :destroy]
@@ -16,7 +16,7 @@ class RequestsController < ApplicationController
     @parameters = params[:request].reject { |k, _v| !['request_metadata_attributes'].include?(k.to_s) }
   end
   attr_reader :parameters
- # before_action :find_request_from_id, :only => [ :filter_change_decision, :change_decision ]
+  # before_action :find_request_from_id, :only => [ :filter_change_decision, :change_decision ]
 
   def index
     @study, @item = nil, nil
@@ -181,14 +181,6 @@ class RequestsController < ApplicationController
     flash[:notice] = "QC event #{@event.id} has been deleted"
     @event.destroy
     redirect_to request_path(@request)
-  end
-
-  # Method used to migrate MX data from studies to pipelines
-  def mpx_requests_details
-    @requests = Request.migrate_mpx_requests
-    respond_to do |format|
-      format.json { render json: @requests.to_json }
-    end
   end
 
   before_action :find_request, only: [:filter_change_decision, :change_decision]

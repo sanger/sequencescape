@@ -28,7 +28,7 @@ class PicoAssayPlate < Plate
       @concentration > 0 ? @concentration : 0.0
     end
 
-    # TODO this method needs to go, to be replace by direct calls
+    # TODO: this method needs to go, to be replace by direct calls
     # to #grade_as_passed and #grade_as_failed
     def grade_as!(state)
       case state

@@ -15,7 +15,6 @@ class Plate < Asset
   include PlatePurpose::Associations
   include Barcode::Barcodeable
   include Asset::Ownership::Owned
-  include Plate::Iterations
   include Plate::FluidigmBehaviour
   include SubmissionPool::Association::Plate
   include PlateCreation::CreationChild
@@ -37,7 +36,10 @@ class Plate < Asset
   # We use stock well associations here as stock_wells is already used to generate some kind of hash.
   has_many :stock_requests, ->() { uniq }, through: :stock_well_associations, source: :requests
   has_many :stock_well_associations, ->() { uniq }, through: :wells, source: :stock_wells
-  has_many :stock_orders,  ->() { uniq }, through: :stock_requests, source: :order
+  has_many :stock_orders, ->() { uniq }, through: :stock_requests, source: :order
+  has_many :extraction_attributes, foreign_key: 'target_id'
+
+  has_many :siblings, through: :parents, source: :children
 
   # The default state for a plate comes from the plate purpose
   delegate :default_state, to: :plate_purpose, allow_nil: true
@@ -86,20 +88,31 @@ class Plate < Asset
 
   # Transfer requests into a plate are the requests leading into the wells of said plate.
   has_many :transfer_requests, through: :wells, source: :transfer_requests_as_target
+  has_many :transfer_requests_as_source, through: :wells
+
+  scope :include_for_show, ->() {
+    includes(
+      requests: :request_metadata,
+      wells: [
+        :map_id,
+        { aliquots: [:samples, :tag, :tag2] }
+      ]
+    )
+  }
 
   # About 10x faster than going through the wells
   def submission_ids
-    @siat ||=  container_associations
-      .joins('LEFT JOIN requests ON requests.target_asset_id = container_associations.content_id')
-      .where.not(requests: { submission_id: nil }).where.not(requests: { state: Request::Statemachine::INACTIVE })
-      .uniq.pluck(:submission_id)
+    @siat ||= container_associations
+              .joins('LEFT JOIN requests ON requests.target_asset_id = container_associations.content_id')
+              .where.not(requests: { submission_id: nil }).where.not(requests: { state: Request::Statemachine::INACTIVE })
+              .uniq.pluck(:submission_id)
   end
 
   def submission_ids_as_source
     @sias ||= container_associations
-      .joins('LEFT JOIN requests ON requests.asset_id = container_associations.content_id')
-      .where(['requests.submission_id IS NOT NULL AND requests.state NOT IN (?)', Request::Statemachine::INACTIVE])
-      .uniq.pluck(:submission_id)
+              .joins('LEFT JOIN requests ON requests.asset_id = container_associations.content_id')
+              .where(['requests.submission_id IS NOT NULL AND requests.state NOT IN (?)', Request::Statemachine::INACTIVE])
+              .uniq.pluck(:submission_id)
   end
 
   def all_submission_ids
@@ -118,18 +131,18 @@ class Plate < Asset
 
   def submissions
     s = Submission.select('submissions.*',).uniq
-      .joins([
-        'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
-        'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.asset_id'
-      ])
-      .where(['caplp.container_id = ?', id])
+                  .joins([
+                    'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
+                    'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.asset_id'
+                  ])
+                  .where(['caplp.container_id = ?', id])
     return s unless s.blank?
     Submission.select('submissions.*',).uniq
-      .joins([
-        'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
-        'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.target_asset_id'
-      ])
-      .where(['caplp.container_id = ?', id])
+              .joins([
+                'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
+                'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.target_asset_id'
+              ])
+              .where(['caplp.container_id = ?', id])
   end
 
   def barcode_dilution_factor_created_at_hash
@@ -139,6 +152,15 @@ class Plate < Asset
       dilution_factor: dilution_factor.to_s,
       created_at: created_at
     }
+  end
+
+  def iteration
+    iter = siblings # assets sharing the same parent
+           .where(plate_purpose_id: plate_purpose_id, sti_type: sti_type) # of the same purpose and type
+           .where('assets.created_at <= ?', created_at) # created before or at the same time
+           .count('assets.id') # count the siblings.
+
+    iter.zero? ? nil : iter # Maintains compatibility with legacy version
   end
 
   class CommentsProxy
@@ -196,46 +218,32 @@ class Plate < Asset
 
   def priority
     Submission.joins([
-        'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
-        'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.asset_id'
-      ])
-      .where(['caplp.container_id = ?', id]).maximum('submissions.priority') ||
-    Submission.joins([
+      'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
+      'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.asset_id'
+    ])
+              .where(['caplp.container_id = ?', id]).maximum('submissions.priority') ||
+      Submission.joins([
         'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
         'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.target_asset_id'
       ])
-      .where(['caplp.container_id = ?', id]).maximum('submissions.priority') ||
-    0
+                .where(['caplp.container_id = ?', id]).maximum('submissions.priority') ||
+      0
   end
 
+  # Plates can easily belong to multiple studies, so this method is just misleading.
   def study
     wells.first.try(:study)
   end
+  deprecate study: 'Caution plates may belong to multiple studies.'
 
-  contains :wells do
-    # After importing wells we need to also create the AssetLink and WellAttribute information for them.
-    def post_import(links_data)
-      time_now = Time.now
-      links_data.each do |c|
-        AssetLink.create!(
-          direct: true,
-          #:count => 1, Huh?
-          ancestor_id: c.first,
-          descendant_id: c.last
-          )
-        WellAttribute.create!(
-          well_id: c.last,
-          created_at: time_now,
-          updated_at: time_now
-        )
+  has_many :container_associations, foreign_key: :container_id, inverse_of: :plate
+  has_many :wells, through: :container_associations, inverse_of: :plate do
+    def attach(records)
+      ActiveRecord::Base.transaction do
+        proxy_association.owner.wells << records
       end
     end
-    private :post_import
-
-    def post_connect(well)
-#      AssetLink.create!(:ancestor => proxy_association.owner, :descendant => well)
-    end
-    private :post_connect
+    deprecate attach: 'Legacy method pre-jruby just use standard rails plate.wells << other_wells' # Legacy pre-jruby method to handle bulk import
 
     def construct!
       Map.where_plate_size(proxy_association.owner.size).where_plate_shape(proxy_association.owner.asset_shape).in_row_major_order.map do |location|
@@ -292,47 +300,53 @@ class Plate < Asset
 
   scope :qc_started_plates, -> {
     select('DISTINCT assets.*')
-    .joins('LEFT OUTER JOIN `events` ON events.eventful_id = assets.id LEFT OUTER JOIN `asset_audits` ON asset_audits.asset_id = assets.id')
-    .where(["(events.family = 'create_dilution_plate_purpose' OR asset_audits.key = 'slf_receive_plates') AND plate_purpose_id = ?", PlatePurpose.stock_plate_purpose.id])
-    .order('assets.id DESC')
-    .includes(:events, :asset_audits)
+      .joins('LEFT OUTER JOIN `events` ON events.eventful_id = assets.id LEFT OUTER JOIN `asset_audits` ON asset_audits.asset_id = assets.id')
+      .where(["(events.family = 'create_dilution_plate_purpose' OR asset_audits.key = 'slf_receive_plates') AND plate_purpose_id = ?", PlatePurpose.stock_plate_purpose.id])
+      .order('assets.id DESC')
+      .includes(:events, :asset_audits)
   }
 
   # TODO: Make these more railsy
   scope :with_sample, ->(sample) {
       select('assets.*').uniq
-      .joins([
-        'LEFT OUTER JOIN container_associations AS wscas ON wscas.container_id = assets.id',
-        'LEFT JOIN assets AS wswells ON wswells.id = content_id',
-        'LEFT JOIN aliquots AS wsaliquots ON wsaliquots.receptacle_id = wswells.id'
-      ])
-      .where(['wsaliquots.sample_id IN(?)', Array(sample)])
+                        .joins([
+                          'LEFT OUTER JOIN container_associations AS wscas ON wscas.container_id = assets.id',
+                          'LEFT JOIN assets AS wswells ON wswells.id = content_id',
+                          'LEFT JOIN aliquots AS wsaliquots ON wsaliquots.receptacle_id = wswells.id'
+                        ])
+                        .where(['wsaliquots.sample_id IN(?)', Array(sample)])
   }
 
  scope :with_requests, ->(requests) {
    select('assets.*').uniq
-   .joins([
-        'INNER JOIN container_associations AS wrca ON wrca.container_id = assets.id',
-        'INNER JOIN requests AS wrr ON wrr.asset_id = wrca.content_id'
-    ]).where([
-      'wrr.id IN (?)',
-      requests.map(&:id)
-    ])
+                     .joins([
+                       'INNER JOIN container_associations AS wrca ON wrca.container_id = assets.id',
+                       'INNER JOIN requests AS wrr ON wrr.asset_id = wrca.content_id'
+                     ]).where([
+                       'wrr.id IN (?)',
+                       requests.map(&:id)
+                     ])
                        }
 
   scope :output_by_batch, ->(batch) {
-      joins(container_associations: {
-          content: {
-            requests_as_target: :batch
-          }
-        })
-      .where(['batches.id = ?', batch.id])
+      joins(wells: { requests_as_target: :batch })
+        .where(batches: { id: batch })
   }
+
+  scope :include_wells, -> { includes(:wells) } do
+    def to_include
+      [:wells]
+    end
+
+    def with(subinclude)
+      scoped(include: { wells: subinclude })
+    end
+  end
 
   scope :with_wells, ->(wells) {
       select('DISTINCT assets.*')
-      .joins(:container_associations)
-      .where(container_associations: { content_id: wells.map(&:id) })
+        .joins(:container_associations)
+        .where(container_associations: { content_id: wells.map(&:id) })
   }
   #->() {where(:assets=>{:sti_type=>[Plate,*Plate.descendants].map(&:name)})},
   has_many :descendant_plates, class_name: 'Plate', through: :links_as_ancestor, foreign_key: :ancestor_id, source: :descendant
@@ -341,26 +355,26 @@ class Plate < Asset
 
   scope :with_descendants_owned_by, ->(user) {
     joins(descendant_plates: :plate_owner)
-    .where(plate_owners: { user_id: user })
-    .uniq
+      .where(plate_owners: { user_id: user })
+      .uniq
   }
 
   scope :source_plates, -> {
     joins(:plate_purpose)
-    .where('plate_purposes.id = plate_purposes.source_purpose_id')
+      .where('plate_purposes.id = plate_purposes.source_purpose_id')
   }
 
   scope :with_wells_and_requests, ->() {
-    includes(wells: [
-        :uuid_object, :map,
-        {
-          requests_as_target: [
-            { initial_study: :uuid_object },
-            { initial_project: :uuid_object },
-            { asset: { aliquots: :sample } }
-          ]
-        }
-      ])
+    eager_load(wells: [
+      :uuid_object, :map,
+      {
+        requests_as_target: [
+          { initial_study: :uuid_object },
+          { initial_project: :uuid_object },
+          { asset: { aliquots: :sample } }
+        ]
+      }
+    ])
   }
 
   def wells_sorted_by_map_id
@@ -371,13 +385,18 @@ class Plate < Asset
     (children | wells)
   end
 
+  def maps
+    Map.where_plate_size(size).where_plate_shape(asset_shape)
+  end
+
   def find_map_by_rowcol(row, col)
     # Count from 0
     description = asset_shape.location_from_row_and_column(row, col + 1, size)
     Map.find_by(
       description: description,
       asset_size: size,
-      asset_shape_id: asset_shape)
+      asset_shape_id: asset_shape
+)
   end
 
   def find_well_by_rowcol(row, col)
@@ -388,7 +407,7 @@ class Plate < Asset
 
   def add_well_holder(well)
     children << well
-    well.plate = self
+    wells << well
   end
 
   def add_well(well, row = nil, col = nil)
@@ -600,9 +619,7 @@ class Plate < Asset
 
   # Should return true if any samples on the plate contains gender information
   def contains_gendered_samples?
-    wells.any? do |well|
-      well.aliquots.any? { |aliquot| aliquot.sample.present? and not aliquot.sample.sample_metadata.gender.blank? }
-    end
+    contained_samples.with_gender.any?
   end
 
   def generate_plate_submission(project, study, user, current_time)
@@ -649,7 +666,7 @@ class Plate < Asset
 
   def stock_plate?
     return true if plate_purpose.nil?
-    plate_purpose.can_be_considered_a_stock_plate? && plate_purpose.attatched?(self)
+    plate_purpose.stock_plate? && plate_purpose.attatched?(self)
   end
 
   def stock_plate
@@ -823,11 +840,11 @@ class Plate < Asset
 
   def team
     ProductLine.joins([
-        'INNER JOIN request_types ON request_types.product_line_id = product_lines.id',
-        'INNER JOIN requests ON requests.request_type_id = request_types.id',
-        'INNER JOIN well_links ON well_links.source_well_id = requests.asset_id AND well_links.type = "stock"',
-        'INNER JOIN container_associations AS ca ON ca.content_id = well_links.target_well_id'
-      ]).find_by(['ca.container_id = ?', id]).try(:name) || 'UNKNOWN'
+      'INNER JOIN request_types ON request_types.product_line_id = product_lines.id',
+      'INNER JOIN requests ON requests.request_type_id = request_types.id',
+      'INNER JOIN well_links ON well_links.source_well_id = requests.asset_id AND well_links.type = "stock"',
+      'INNER JOIN container_associations AS ca ON ca.content_id = well_links.target_well_id'
+    ]).find_by(['ca.container_id = ?', id]).try(:name) || 'UNKNOWN'
   end
 
   # Barcode is stored as a string, jet in a number of places is treated as

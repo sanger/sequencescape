@@ -5,12 +5,12 @@
 # Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
 require 'event_factory'
 class ProjectsController < ApplicationController
-# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+  # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   before_action :login_required
   before_action :set_variables_for_project, only: [:show, :edit, :update, :destroy, :studies]
- # TODO: before_action :redirect_if_not_owner_or_admin, :only => [:create, :update, :destroy, :edit, :new]
+  # TODO: before_action :redirect_if_not_owner_or_admin, :only => [:create, :update, :destroy, :edit, :new]
 
   def index
     @projects = Project.alphabetical.page(params[:page])
@@ -113,7 +113,7 @@ class ProjectsController < ApplicationController
 
   def collaborators
     @project    = Project.find(params[:id])
-    @all_roles  = Role.where(name: ['owner', 'follower', 'manager']).select(:name).distinct
+    @all_roles  = ['owner', 'follower', 'manager']
     @roles      = Role.where(authorizable_id: @project.id, authorizable_type: 'Project')
     @users      = User.order(:first_name)
   end

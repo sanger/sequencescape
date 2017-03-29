@@ -12,7 +12,7 @@ When /^I print the following labels in the asset group$/ do |table|
   end
 
   stub_request(:post, LabelPrinter::PmbClient.print_job_url)
-              .with(headers: LabelPrinter::PmbClient.headers)
+    .with(headers: LabelPrinter::PmbClient.headers)
 
   step('I follow "Print labels"')
   step('I select "xyz" from "Barcode Printer"')

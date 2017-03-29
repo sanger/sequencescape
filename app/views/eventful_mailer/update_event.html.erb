@@ -14,7 +14,7 @@ Hello,
 <p>
 You can view this study's status here:<br />
 
-<% link = url_for(:host => configatron.site_url, :controller => 'studies', :action => 'show', :id => @study.id) %>
+<% link = url_for(host: configatron.site_url, controller: 'studies', action: 'show', id: @study.id) %>
 <a href="<%= link %>"><%= link %></a>
 </p>
 

@@ -12,7 +12,6 @@ class BatchPlateTest < ActiveSupport::TestCase
     asset = create :empty_sample_tube
     @role = 'test role'
     @study_abbreviation = 'WTCCC'
-    @purpose = 'Stock Plate'
     order_role = Order::OrderRole.new role: role
 
     order = create :order, order_role: order_role, study: study, assets: [asset], project: project
@@ -21,6 +20,7 @@ class BatchPlateTest < ActiveSupport::TestCase
     @batch = create :batch
     batch.requests << request
     @plate1 = batch.plate_group_barcodes.keys[0]
+    @purpose = @plate1.purpose.name
     @barcode1 = plate1.barcode
     @printable = { @plate1.barcode => 'on' }
     options = { count: '3', printable: printable, batch: batch }

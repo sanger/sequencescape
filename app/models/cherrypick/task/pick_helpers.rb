@@ -37,7 +37,7 @@ module Cherrypick::Task::PickHelpers
         plate.name = "Cherrypicked #{plate.barcode}"
       end
       plate.tap do |working_on|
-        working_on.wells.attach(wells_and_requests.map(&:first))
+        working_on.wells << wells_and_requests.map(&:first)
         plate = nil
       end
     end

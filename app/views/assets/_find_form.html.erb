@@ -10,13 +10,13 @@
 <div class="info">
   <p>
     <table>
-      <%= form_tag '/assets/lab_view', :class => 'form-inline' %>
+      <%= form_tag '/assets/lab_view', class: 'form-inline' %>
       <tr>
         <td>
-          <%= text_field_tag 'barcode', nil, :class => 'form-control' %>
+          <%= text_field_tag 'barcode', nil, class: 'form-control' %>
         </td>
         <td>
-          <%= submit_tag "Find", :class => 'form-control' %>
+          <%= submit_tag "Find", class: 'form-control' %>
         </td>
       </tr>
     </table><br />

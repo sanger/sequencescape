@@ -220,15 +220,15 @@ class CherrypickTask < Task
 
   def build_plate_wells_from_requests(requests)
     Request.select(['requests.id AS id', 'plates.barcode AS barcode', 'maps.description AS description'])
-      .joins([
-        'INNER JOIN assets wells ON requests.asset_id=wells.id',
-        'INNER JOIN container_associations ON container_associations.content_id=wells.id',
-        'INNER JOIN assets plates ON plates.id=container_associations.container_id',
-        'INNER JOIN maps ON wells.map_id=maps.id'
-      ])
-      .order('plates.barcode ASC, maps.column_order ASC')
-      .where(requests: { id: requests })
-      .all.map do |request|
+           .joins([
+             'INNER JOIN assets wells ON requests.asset_id=wells.id',
+             'INNER JOIN container_associations ON container_associations.content_id=wells.id',
+             'INNER JOIN assets plates ON plates.id=container_associations.container_id',
+             'INNER JOIN maps ON wells.map_id=maps.id'
+           ])
+           .order('plates.barcode ASC, maps.column_order ASC')
+           .where(requests: { id: requests })
+           .all.map do |request|
       [request.id, request.barcode, request.description]
     end
   end

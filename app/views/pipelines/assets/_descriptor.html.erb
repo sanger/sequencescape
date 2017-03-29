@@ -8,7 +8,7 @@
   <td>Selected</td>
   <% @family.descriptors.each do |descriptor| -%>
     <% field_id =  "asset_#{ field_number }_#{descriptor.name}"%>
-    <td><label for="<%= field_id %>" style="display:none;"><%= descriptor.name   %> for asset #<%= field_number%></label><%= text_field_tag("asset[#{ field_number }][#{ descriptor.name }]", nil, :id =>field_id, :size => 9) %></td>
+    <td><label for="<%= field_id %>" style="display:none;"><%= descriptor.name   %> for asset #<%= field_number%></label><%= text_field_tag("asset[#{ field_number }][#{ descriptor.name }]", nil, id: field_id, size: 9) %></td>
   <% end -%>
   <td><%= hidden_field_tag("asset[#{ field_number }][family_id]", @family.id) %><% link_to_remove_asset(field_number) do %>X<% end %></td>
 </tr>

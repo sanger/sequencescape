@@ -14,8 +14,8 @@
   </div>
 
   <div class="info">
-    <%= form_tag(:controller => :batches, :action => :print_barcodes, :stock => true, :method => :post) %>
-    <%= render :partial => "shared/print" %>
+    <%= form_tag(controller: :batches, action: :print_barcodes, stock: true, method: :post) %>
+    <%= render partial: "shared/print" %>
     <table width="100%" cellspacing="0" cellpadding="0">
       <tr>
         <td width="35%" class="item">Number of copies:</td>
@@ -31,7 +31,7 @@
       <% end %>
       <tr>
         <td width="35%" class="item">&nbsp;</td>
-        <td width="65%"><%= submit_tag 'Print labels' %> or <%= link_to 'cancel', :controller => 'batches', :action => 'show', :id => @batch.id %></td>
+        <td width="65%"><%= submit_tag 'Print labels' %> or <%= link_to 'cancel', controller: 'batches', action: 'show', id: @batch.id %></td>
       </tr>
     </table>
     <input type='hidden' name='batch_id' value='<%= @batch.id %>' />

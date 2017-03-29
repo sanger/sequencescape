@@ -4,5 +4,7 @@ FactoryGirl.define do
     range_name :some_range
 
     initialize_with { new(options: options) }
+
+    skip_create
   end
 end

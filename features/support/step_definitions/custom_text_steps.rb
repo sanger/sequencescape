@@ -72,7 +72,7 @@ When /^I fill in the following fields$/ do |table|
 end
 
 Then /^I should be able to (enter|edit) the following fields$/ do |action, table|
-   # table is a Cucumber::Ast::Table
+  # table is a Cucumber::Ast::Table
   table.hashes.each do |hash|
     step(%Q{I fill in "#{hash[:label]}" with "#{hash[:value]}"})
   end

@@ -70,7 +70,7 @@ end
 Given /^I have data loaded from SNP$/ do
 end
 When /^I check request "(\d+)" for pipeline "([^"]+)"/ do |request_number, pipeline_name|
-  # TODO find the request checkboxes in the current page (by name "request_... ") so we don't need
+  # TODO: find the request checkboxes in the current page (by name "request_... ") so we don't need
   # do give the pipelin name
   request_number = request_number.to_i
   pipeline = Pipeline.find_by(name: pipeline_name)
@@ -95,7 +95,7 @@ end
 
 When /^I fill in the plate barcode$/ do
   step(%Q{I fill in "barcode_0" with "#{Plate.last.ean13_barcode}"})
-#  puts "Plate #{Plate.last.id} -- #{Plate.last.location_id}"
+  #  puts "Plate #{Plate.last.id} -- #{Plate.last.location_id}"
 end
 
 Then /^I have added some output plates$/ do
@@ -107,39 +107,6 @@ Then /^I have added some output plates$/ do
   plate.add_well_by_map_description(well, 'A1')
   batch.requests << well_request
   batch.save
-end
-
-Given /^Microarray genotyping is set up$/ do
-  # Submission and request types
-  submission_workflow = FactoryGirl.create :submission_workflow, key: 'microarray_genotyping', name: 'Microarray genotyping'
-  dna_qc = FactoryGirl.create :request_type, key: 'dna_qc', name: 'DNA QC', workflow: submission_workflow, order: 1, asset_type: 'Well', initial_state: 'pending'
-  cherrypick = FactoryGirl.create :request_type, key: 'cherrypick', name: 'Cherrypick', workflow: submission_workflow, order: 2, initial_state: 'blocked', asset_type: 'Well'
-  genotyping = FactoryGirl.create :request_type, key: 'genotyping', name: 'Genotyping', workflow: submission_workflow, order: 3, asset_type: 'Well'
-
-  # Workflows and tasks
-  cherrypick_pipeline = FactoryGirl.create :pipeline, name: 'Cherrypick', request_type_id: cherrypick.id, group_by_parent: true, location_id: Location.find_by(name: 'Sample logistics freezer').id
-  dna_qc_pipeline = FactoryGirl.create :pipeline, name: 'DNA QC', request_type_id: dna_qc.id, group_by_parent: true, location_id: Location.find_by(name: 'Sample logistics freezer').id, next_pipeline_id: cherrypick_pipeline.id
-
-  dna_qc_workflow = FactoryGirl.create :lab_workflow, name: 'DNA QC', pipeline: dna_qc_pipeline
-  FactoryGirl.create :task, name: 'Duplicate Samples Check', sti_type: 'DuplicateSamplesCheckTask', sorted: 0, workflow: dna_qc_workflow, batched: 0
-  FactoryGirl.create :task, name: 'QC result', sti_type: 'DnaQcTask', sorted: 1, workflow: dna_qc_workflow, batched: 1
-
-  cherrypick_workflow = FactoryGirl.create :lab_workflow, name: 'Cherrypick', pipeline: cherrypick_pipeline
-  FactoryGirl.create :task, name: 'Filter Samples', sti_type: 'FilterSamplesTask', sorted: 0, workflow: cherrypick_workflow
-  FactoryGirl.create :task, name: 'Select Plate Template', sti_type: 'PlateTemplateTask', sorted: 1, workflow: cherrypick_workflow
-  FactoryGirl.create :task, name: 'Approve Plate Layout', sti_type: 'CherrypickTask', sorted: 2, workflow: cherrypick_workflow
-  FactoryGirl.create :task, name: 'Assign a Purpose for Output Plates', sti_type: 'AssignPlatePurposeTask', sorted: 3, workflow: cherrypick_workflow
-  FactoryGirl.create :plate_purpose, name: 'Frag'
-  FactoryGirl.create :task, name: 'Set Location', sti_type: 'SetLocationTask', sorted: 4, workflow: cherrypick_workflow
-#  FactoryGirl.create :task, :name => "Export Plate to SNP", :sti_type => "ExportPlateTask", :sorted => 4, :workflow => cherrypick_workflow
-
-  # Registering submissin template
-  submission = LinearSubmission.new
-  submission.request_type_ids = [dna_qc, cherrypick, genotyping].map { |rt| rt.id }
-  submission.info_differential = submission_workflow.id
-  # TODO[xxx]: need to setup the field_infos on the submission based on the properties.
-  # submission.set_field_infos([ FieldInfo.new(....) .... ])
-  SubmissionTemplate.new_from_submission(submission_workflow.name, submission).save!
 end
 
 Then /^the pipeline inbox should be:$/ do |expected_results_table|

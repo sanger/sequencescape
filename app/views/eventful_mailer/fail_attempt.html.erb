@@ -10,7 +10,7 @@
 </p>
 <p>You can view the request details here:<br />
 
-<% link = url_for(:host => configatron.site_url, :controller => 'requests', :action => 'show', :id => @request.id) %>
+<% link = url_for(host: configatron.site_url, controller: 'requests', action: 'show', id: @request.id) %>
 <a href="<%= link %>"><%= link %></a></p>
 
 <p>Many thanks,<br />

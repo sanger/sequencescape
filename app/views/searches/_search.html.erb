@@ -9,7 +9,7 @@
   <% each_non_empty_search_result do |kind,results| %>
     <h4><%= pluralize(results.size, kind) %></h4>
     <ul>
-      <%= render :partial => "searches/show/#{ kind }", :collection => results %>
+      <%= render partial: "searches/show/#{ kind }", collection: results %>
     </ul>
   <% end %>
 </div>

@@ -5,8 +5,8 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 class SequenomController < ApplicationController
-# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+  # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   EmptyBarcode = Class.new(StandardError)
 
@@ -16,21 +16,31 @@ class SequenomController < ApplicationController
 
     def initialize(name)
       @name = name
+      SequenomStep.register(self)
     end
 
     def update_plate(plate, user)
       plate.events.create!(message: I18n.t('sequenom.events.message', step: name), created_by: user.login)
       yield(self)
     end
+
+    class << self
+      def steps
+        @steps ||= {}
+      end
+
+      def register(step)
+        steps[step.name] = step
+      end
+
+      def for(step_name)
+        steps[step_name] || raise("Cannot find the Sequenom step '#{step_name}'")
+      end
+    end
   end
 
   # Here are all of the steps that can be performed
   STEPS = ['PCR Mix', 'SAP Mix', 'IPLEX Mix', 'HPLC Water'].map { |name| SequenomStep.new(name) }
-  class << STEPS
-    def for(step_name)
-      find { |step| step.name == step_name } or raise "Cannot find the Sequenom step '#{step_name}'"
-    end
-  end
 
   before_action :login_required
   before_action :find_plate_from_id, only: [:show, :update]
@@ -49,7 +59,7 @@ class SequenomController < ApplicationController
 
   def update
     ActiveRecord::Base.transaction do
-      STEPS.for(params[:sequenom_step]).update_plate(@plate, @user) do |step|
+      SequenomStep.for(params[:sequenom_step]).update_plate(@plate, @user) do |step|
         flash[:notice] = I18n.t(
           'sequenom.notices.step_completed',
           step: step.name, barcode: @plate.ean13_barcode, human_barcode: @plate.sanger_human_barcode

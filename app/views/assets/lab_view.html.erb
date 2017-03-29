@@ -9,7 +9,7 @@
   <%= Date.today %>
 </div>
 <div class="info">
-  <%= form_for(@asset, :as=>:asset, :url => { :controller => "assets", :action => "update", :id => @asset.id, :lab_view => true }, :html => { :method => :put }) do |f| %>
+  <%= form_for(@asset, as: :asset, url: { controller: "assets", action: "update", id: @asset.id, lab_view: true }, html: { method: :put }) do |f| %>
     <table>
       <tr><td>Name: </td><td><%= h(@asset.display_name) %></td></tr>
       <tr><td>Type: </td><td><%= @asset.sti_type %></td></tr>
@@ -20,12 +20,12 @@
       <% requests << Request.where(target_asset_id: @asset.id) %>
       <% requests.flatten.each do |request| %>
         <% request.batches.each do |batch| %>
-          <tr><td></td><td><%= link_to "#{batch.id} - #{batch.pipeline.name}", :controller => :batches, :action => :show, :id => batch.id %></td><tr/>
+          <tr><td></td><td><%= link_to "#{batch.id} - #{batch.pipeline.name}", controller: :batches, action: :show, id: batch.id %></td><tr/>
         <% end %>
       <% end %>
       <tr><td>Studies: </td></tr>
       <% @asset.studies.uniq.each do |study| %>
-        <tr><td></td><td><%= link_to "#{study.id} - #{study.name}", :controller => :studies, :action => :show, :id => study.id %></td></tr>
+        <tr><td></td><td><%= link_to "#{study.id} - #{study.name}", controller: :studies, action: :show, id: study.id %></td></tr>
       <% end %>
       <tr><td>&nbsp;</td></tr>
       <tr></tr>
@@ -47,7 +47,7 @@
           <tbody>
             <% @asset.parents.each do |parent| %>
               <tr>
-                <td><%= link_to "#{(parent.label or "").humanize} #{parent.id}", :action => :lab_view, :barcode => parent.barcode %></td>
+                <td><%= link_to "#{(parent.label or "").humanize} #{parent.id}", action: :lab_view, barcode: parent.barcode %></td>
               </tr>
             <% end %>
           </tbody>
@@ -67,7 +67,7 @@
           <tbody>
             <% @asset.children.each do |child| %>
               <tr>
-                <td><%= link_to "#{(child.label or "").humanize} #{child.id}", :action => :lab_view, :barcode => child.barcode %></td>
+                <td><%= link_to "#{(child.label or "").humanize} #{child.id}", action: :lab_view, barcode: child.barcode %></td>
               </tr>
             <% end %>
           </tbody>
@@ -76,4 +76,4 @@
     <% end %>
   <% end %>
 </div>
-<%= render :partial => "find_form" %>
+<%= render partial: "find_form" %>

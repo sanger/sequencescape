@@ -5,17 +5,14 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 module Submission::DelayedJobBehaviour
-  def self.included(base)
-    base.class_eval do
-      conf_priority = configatron.delayed_job.fetch(:submission_process_priority)
-      priority = conf_priority.present? ? conf_priority : 0
-      handle_asynchronously :build_batch, priority: priority
-    end
+  def default_priority
+    configatron.delayed_job.fetch(:submission_process_priority, 0)
   end
 
   def complete_building
     super
-    build_batch
+    # Lower priorities get processed faster. This ensures high priority submissions get processed first.
+    Delayed::Job.enqueue SubmissionBuilderJob.new(id), priority: default_priority - priority
   end
 
   def build_batch

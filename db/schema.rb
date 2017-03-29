@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161220133436) do
+ActiveRecord::Schema.define(version: 20170321151830) do
 
   create_table "aliquot_indices", force: :cascade do |t|
     t.integer  "aliquot_id",    limit: 4, null: false
@@ -523,6 +523,14 @@ ActiveRecord::Schema.define(version: 20161220133436) do
   add_index "external_properties", ["propertied_type", "key"], name: "index_external_properties_on_propertied_type_and_key", using: :btree
   add_index "external_properties", ["value"], name: "index_external_properties_on_value", using: :btree
 
+  create_table "extraction_attributes", force: :cascade do |t|
+    t.integer  "target_id",         limit: 4
+    t.string   "created_by",        limit: 255
+    t.text     "attributes_update", limit: 65535
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
+  end
+
   create_table "faculty_sponsors", force: :cascade do |t|
     t.string   "name",       limit: 255
     t.datetime "created_at"
@@ -837,11 +845,10 @@ ActiveRecord::Schema.define(version: 20161220133436) do
   end
 
   create_table "plate_creators", force: :cascade do |t|
-    t.string   "name",             limit: 255,   null: false
-    t.integer  "plate_purpose_id", limit: 4,     null: false
+    t.string   "name",          limit: 255,   null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "valid_options",    limit: 65535
+    t.text     "valid_options", limit: 65535
   end
 
   add_index "plate_creators", ["name"], name: "index_plate_creators_on_name", unique: true, using: :btree
@@ -874,29 +881,26 @@ ActiveRecord::Schema.define(version: 20161220133436) do
   end
 
   create_table "plate_purposes", force: :cascade do |t|
-    t.string   "name",                            limit: 255,                           null: false
+    t.string   "name",                    limit: 255,                           null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "type",                            limit: 255
-    t.string   "target_type",                     limit: 30
-    t.boolean  "qc_display",                                  default: false
-    t.boolean  "pulldown_display"
-    t.boolean  "can_be_considered_a_stock_plate",             default: false,           null: false
-    t.string   "default_state",                   limit: 255, default: "pending"
-    t.integer  "barcode_printer_type_id",         limit: 4,   default: 2
-    t.boolean  "cherrypickable_target",                       default: true,            null: false
-    t.boolean  "cherrypickable_source",                       default: false,           null: false
-    t.string   "cherrypick_direction",            limit: 255, default: "column",        null: false
-    t.integer  "default_location_id",             limit: 4
-    t.string   "cherrypick_filters",              limit: 255
-    t.integer  "size",                            limit: 4,   default: 96
-    t.integer  "asset_shape_id",                  limit: 4,   default: 1,               null: false
-    t.string   "barcode_for_tecan",               limit: 255, default: "ean13_barcode", null: false
-    t.integer  "source_purpose_id",               limit: 4
-    t.integer  "lifespan",                        limit: 4
+    t.string   "type",                    limit: 255
+    t.string   "target_type",             limit: 30
+    t.boolean  "stock_plate",                         default: false,           null: false
+    t.string   "default_state",           limit: 255, default: "pending"
+    t.integer  "barcode_printer_type_id", limit: 4,   default: 2
+    t.boolean  "cherrypickable_target",               default: true,            null: false
+    t.boolean  "cherrypickable_source",               default: false,           null: false
+    t.string   "cherrypick_direction",    limit: 255, default: "column",        null: false
+    t.integer  "default_location_id",     limit: 4
+    t.string   "cherrypick_filters",      limit: 255
+    t.integer  "size",                    limit: 4,   default: 96
+    t.integer  "asset_shape_id",          limit: 4,   default: 1,               null: false
+    t.string   "barcode_for_tecan",       limit: 255, default: "ean13_barcode", null: false
+    t.integer  "source_purpose_id",       limit: 4
+    t.integer  "lifespan",                limit: 4
   end
 
-  add_index "plate_purposes", ["qc_display"], name: "index_plate_purposes_on_qc_display", using: :btree
   add_index "plate_purposes", ["target_type"], name: "index_plate_purposes_on_target_type", using: :btree
   add_index "plate_purposes", ["type"], name: "index_plate_purposes_on_type", using: :btree
   add_index "plate_purposes", ["updated_at"], name: "index_plate_purposes_on_updated_at", using: :btree
@@ -1881,8 +1885,8 @@ ActiveRecord::Schema.define(version: 20161220133436) do
   create_table "work_completions", force: :cascade do |t|
     t.integer  "user_id",    limit: 4, null: false
     t.integer  "target_id",  limit: 4, null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
   end
 
   add_index "work_completions", ["target_id"], name: "fk_rails_f8fb9e95de", using: :btree

@@ -97,7 +97,6 @@ And I have a "full" authorised user with the key "cucumber"
       | "parent": "00000000-1111-2222-3333-000000000001", "child_purpose": "11111111-2222-3333-4444-000000000002"                                                 | "user": [ "can't be blank" ]                     |
       | "user": "99999999-8888-7777-6666-555555555555", "parent": "00000000-1111-2222-3333-000000000001"                                                          | "child_purpose": [ "can't be blank" ]            |
       | "user": "99999999-8888-7777-6666-555555555555", "child_purpose": "11111111-2222-3333-4444-000000000002"                                                   | "parent": [ "can't be blank" ]                   |
-      | "user": "99999999-8888-7777-6666-555555555555", "parent": "00000000-1111-2222-3333-000000000001", "child_purpose": "11111111-2222-3333-4444-000000000001" | "child_purpose": [ "is not a valid child type" ] |
 
   @read
   Scenario: Reading the JSON for a UUID

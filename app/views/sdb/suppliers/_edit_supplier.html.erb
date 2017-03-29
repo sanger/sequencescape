@@ -5,15 +5,15 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
 
 <%= semantic_form_for(@supplier) do |form| %>
-  <%= form.inputs :name => "Supplier" do %>
+  <%= form.inputs name: "Supplier" do %>
     <%= form.input :name %>
-    <%= form.input :address,  :as => :text, :required => false %>
-    <%= form.input :contact_name, :required => false  %>
-    <%= form.input :email, :required => false   %>
-    <%= form.input :phone_number, :required => false  %>
-    <%= form.input :fax, :required => false  %>
-    <%= form.input :supplier_url, :required => false  %>
-    <%= form.input :abbreviation, :required => false  %>
+    <%= form.input :address,  as: :text, required: false %>
+    <%= form.input :contact_name, required: false  %>
+    <%= form.input :email, required: false   %>
+    <%= form.input :phone_number, required: false  %>
+    <%= form.input :fax, required: false  %>
+    <%= form.input :supplier_url, required: false  %>
+    <%= form.input :abbreviation, required: false  %>
   <% end %>
   <%= form.button do %>
     <%= form.action(:submit) %>

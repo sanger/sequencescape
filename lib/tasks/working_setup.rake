@@ -6,7 +6,7 @@ namespace :working do
    def self.create
      if @barcode.nil?
        @barcode = Plate.where.not(barcode: nil).where.not(barcode: '9999999').where('length(barcode)=7')
-       .order(barcode: :desc).first.try(:barcode).to_i
+                       .order(barcode: :desc).first.try(:barcode).to_i
        @barcode = 9000000 if @barcode.zero? and not Plate.count.zero?
      end
      OpenStruct.new(barcode: (@barcode += 1))

@@ -1,15 +1,15 @@
 class AddChromiumSubmissionTemplates < ActiveRecord::Migration
   SEQUENCING_KEYS = %w(
-illumina_c_hiseq_paired_end_sequencing
-illumina_c_single_ended_hi_seq_sequencing
-illumina_c_miseq_sequencing
-illumina_c_hiseq_v4_paired_end_sequencing
-illumina_c_hiseq_v4_single_end_sequencing
-illumina_c_hiseq_2500_paired_end_sequencing
-illumina_c_hiseq_2500_single_end_sequencing
-illumina_c_hiseq_4000_paired_end_sequencing
-illumina_c_hiseq_4000_single_end_sequencing
-)
+    illumina_c_hiseq_paired_end_sequencing
+    illumina_c_single_ended_hi_seq_sequencing
+    illumina_c_miseq_sequencing
+    illumina_c_hiseq_v4_paired_end_sequencing
+    illumina_c_hiseq_v4_single_end_sequencing
+    illumina_c_hiseq_2500_paired_end_sequencing
+    illumina_c_hiseq_2500_single_end_sequencing
+    illumina_c_hiseq_4000_paired_end_sequencing
+    illumina_c_hiseq_4000_single_end_sequencing
+  )
 
   def up
     ActiveRecord::Base.transaction do

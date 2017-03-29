@@ -43,7 +43,7 @@ class RequestType < ActiveRecord::Base
   has_many :control_pipelines, class_name: 'Pipeline', foreign_key: :control_request_type_id
   belongs_to :product_line
 
-  # Couple of named scopes for finding billable types
+ # Couple of named scopes for finding billable types
  scope :billable, -> { where(billable: true) }
  scope :non_billable, -> { where(billable: false) }
 
@@ -76,11 +76,11 @@ class RequestType < ActiveRecord::Base
 
  scope :applicable_for_asset, ->(asset) {
     where([
-        'asset_type = ?
-         AND request_class_name != "ControlRequest"
-         AND deprecated IS FALSE',
+      'asset_type = ?
+       AND request_class_name != "ControlRequest"
+       AND deprecated IS FALSE',
          asset.asset_type_for_request_types.name
-      ])
+    ])
                               }
 
   # Helper method for generating a request constructor, like 'create!'

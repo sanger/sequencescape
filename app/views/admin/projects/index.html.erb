@@ -5,22 +5,22 @@
 # Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.%>
 
 <%- add :title, "Sequencing projects can be edited, approved and managed from here." %>
-<%- add :menu, "View all projects" => url_for(:controller => "admin/projects", :action => "index")  %>
+<%- add :menu, "View all projects" => url_for(controller: "admin/projects", action: "index")  %>
 
 <% if @projects %>
   <%= page_title 'Projects', 'Manage' %>
 
-  <%= form_tag(filter_admin_projects_path, :remote => true, :id => "filter_form", :class=>'remote-form observed', :data => { :update => "#projects",  :throbber => '#update_loader'} ) %>
+  <%= form_tag(filter_admin_projects_path, remote: true, id: "filter_form", class: 'remote-form observed', data: { update: "#projects",  throbber: '#update_loader'} ) %>
 
     <div class='callout_filter'>
       <table width='100%'>
         <tr>
           <td>
             <% state_selection = Project.states.map {|state| [state.to_s.humanize, state.to_s]} + [['All',nil]] %>
-            Show <%= select :filter, :status, state_selection -%> projects that are <%= select :filter, :by, [ "not approved", "unallocated division", "unallocated manager", "all" ], {}, :onchange => "swap_filter();" -%>
+            Show <%= select :filter, :status, state_selection -%> projects that are <%= select :filter, :by, [ "not approved", "unallocated division", "unallocated manager", "all" ], {}, onchange: "swap_filter();" -%>
           </td>
           <td style='text-align: right;'>
-            <%= image_tag "ajax-loader.gif", :size => "10x10", :id => "update_loader", :style => "display: none;"%>
+            <%= image_tag "ajax-loader.gif", size: "10x10", id: "update_loader", style: "display: none;"%>
             <input type="search" placeholder="Search" name="q" id="q" />
           </td>
         </tr>
@@ -29,11 +29,11 @@
   </form>
 
   <div id='projects'>
-    <%= render :partial => "filtered_projects" %>
+    <%= render partial: "filtered_projects" %>
   </div>
 
 <% else %>
   <h1>Manage project: <%= @project.name %></h1>
   <p>You can update the billing information and approval status for a project here.</p>
-  <%= render :partial => "manage_single_project" %>
+  <%= render partial: "manage_single_project" %>
 <% end %>

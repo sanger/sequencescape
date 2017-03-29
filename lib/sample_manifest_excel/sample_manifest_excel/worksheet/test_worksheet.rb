@@ -37,11 +37,12 @@ module SampleManifestExcel
       def create_samples
         first_to_last.each do |i|
           create_asset do |asset|
+            sample = asset.samples.first
             unless validation_errors.include?(:sample_manifest)
-              asset.sample.sample_manifest = sample_manifest
-              asset.sample.save
+              sample.sample_manifest = sample_manifest
+              sample.save
             end
-            dynamic_attributes[i][:sanger_sample_id] = asset.sample.id
+            dynamic_attributes[i][:sanger_sample_id] = sample.id
             dynamic_attributes[i][:sanger_tube_id] = asset.sanger_human_barcode
           end
         end

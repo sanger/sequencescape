@@ -13,7 +13,7 @@
   Study <%= @study.id %> &middot; Created on <%= @study.created_at.to_formatted_s(:long) %> &middot; <%= @study.state.capitalize %>
 </div>
 
-<%= render :partial => "list", :locals => {:study => @study } %>
+<%= render partial: "list", locals: {study: @study } %>
 <% if current_user.privileged? @study %>
   <div>
     <%= form_tag(study_comments_path(@study), data: { update: "#study_annotations_#{@study.id}", remote: true }, class:'remote-form') do %>

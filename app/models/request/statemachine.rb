@@ -168,13 +168,19 @@ module Request::Statemachine
     end
   end
 
+  #
+  # Toggles passed request to failed, and failed requests to pass.
+  # @deprecated Favour retrospective_pass and retrospective_fail! instead.
+  #   It is incredibly unlikely that you wish to arbitrarily toggle the state of a request
+  #   And instead you probably have an explicit target state in mind. Use that instead.
+  # @return [void]
+  #
   def change_decision!
-    Rails.logger.warn('Change decision is being deprecated in favour of retrospective_pass and retrospective_fail!')
     return retrospective_fail! if passed?
     return retrospective_pass! if failed?
     raise StandardError, 'Can only use change decision on passed or failed requests'
   end
-  deprecate :change_decision!
+  deprecate change_decision!: 'Change decision is being deprecated in favour of retrospective_pass and retrospective_fail!'
 
   def on_failed
   end
@@ -212,11 +218,11 @@ module Request::Statemachine
   end
 
   def open?
-    ['pending', 'started'].include?(state)
+    %w(pending started).include?(state)
   end
 
   def cancellable?
-    ['pending', 'cancelled'].include?(state)
+    %w(pending cancelled).include?(state)
   end
 
   def transition_to(target_state)

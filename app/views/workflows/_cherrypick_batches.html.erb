@@ -4,8 +4,8 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2015,2016 Genome Research Ltd.%>
 
-<!--% form_for @batch, :url => {:controller => :batches, :action => :qc_batch, :id => @batch.id, :task_id => @task.id }, :html => { :id => 'stage_form'} do |form| %-->
-<%= form_for @workflow, :url => { :action => "stage", :id => @stage, :workflow_id => @workflow.id, :batch_id => @batch.id, :next_stage => true }, :html => { :id => "stage_form"} do |form| %>
+<!--% form_for @batch, url: {controller: :batches, action: :qc_batch, id: @batch.id, task_id: @task.id }, html: { id: 'stage_form'} do |form| %-->
+<%= form_for @workflow, url: { action: "stage", id: @stage, workflow_id: @workflow.id, batch_id: @batch.id, next_stage: true }, html: { id: "stage_form"} do |form| %>
 
   <% plate_class = {}%>
   <h4>Source Plates</h4>
@@ -22,12 +22,12 @@
 
   <% plate_ids = [] %>
   <% @plates.each_with_index do |plate,index| -%>
-    <%= render :partial => "plate", :locals => {:plate_cols =>@plate_cols, :plate_rows => @plate_rows, :plate => plate, :index => index, :plate_class => plate_class} %>
+    <%= render partial: "plate", locals: {plate_cols: @plate_cols, plate_rows: @plate_rows, plate: plate, index: index, plate_class: plate_class} %>
 
     <% @plate_rows.times { |row_index| plate_ids << "plate[#{index}][#{row_index}]" } %>
   <% end -%>
 
-  <%= render :partial => "scratch_pad", :locals => {:plate_cols =>@plate_cols, :plate_rows => @plate_rows,:plate_class => plate_class, :plate_ids => plate_ids } %>
+  <%= render partial: "scratch_pad", locals: {plate_cols: @plate_cols, plate_rows: @plate_rows,plate_class: plate_class, plate_ids: plate_ids } %>
 
 <% if @plate.nil? -%>
   <script type="text/javascript">
@@ -51,7 +51,7 @@
   <%= hidden_field_tag 'cherrypick_action', @cherrypick_action %>
   <%= hidden_field_tag 'plate_type', @plate_type %>
 
-  <%= render(:partial => 'next_stage_submit', :locals => { :check_selection => true }) %>
+  <%= render(partial: 'next_stage_submit', locals: { check_selection: true }) %>
 <% end %>
 
 <script type="text/javascript">

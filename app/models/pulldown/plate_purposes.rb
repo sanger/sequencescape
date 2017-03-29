@@ -9,13 +9,13 @@
 
 module Pulldown::PlatePurposes
   ISCH_PURPOSE_FLOWS = [[
-      'Lib PCR-XP',
-      'ISCH lib pool',
-      'ISCH hyb',
-      'ISCH cap lib',
-      'ISCH cap lib PCR',
-      'ISCH cap lib PCR-XP',
-      'ISCH cap lib pool'
+    'Lib PCR-XP',
+    'ISCH lib pool',
+    'ISCH hyb',
+    'ISCH cap lib',
+    'ISCH cap lib PCR',
+    'ISCH cap lib PCR-XP',
+    'ISCH cap lib pool'
   ]]
 
   PLATE_PURPOSE_FLOWS = [
@@ -112,6 +112,6 @@ module Pulldown::PlatePurposes
   end
 end
 
-%w(initial_downstream_plate initial_plate library_plate stock_plate).each do |type|
+%w(initial_downstream_plate initial_plate library_plate).each do |type|
   require_dependency "app/models/pulldown/#{type}_purpose"
 end

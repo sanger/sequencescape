@@ -20,7 +20,7 @@ Study <%= @study.id %> &middot; Created on <%= @study.created_at.to_formatted_s(
 </div>
 <div id="role_list">
   <!-- renders all roles on this study -->
-  <%= render :partial => "roles" -%>
+  <%= render partial: "roles" -%>
 </div>
 
 <% if current_user.administrator? -%>
@@ -28,6 +28,6 @@ Study <%= @study.id %> &middot; Created on <%= @study.created_at.to_formatted_s(
   <!-- renders all available roles with all users form -->
   <div style="text-align:center">
     <h3 id="add_new_role">Assign roles to users</h3>
-    <%= render :partial => "role" -%>
+    <%= render partial: "role" -%>
   </div>
 <% end -%>

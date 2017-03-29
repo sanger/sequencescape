@@ -8,5 +8,5 @@
 <h1>Qc Reports for <%= @user.login %></h1>
 
 <%= pagination @study_reports %>
-<%= render :partial => 'shared/study_reports', :locals => { :study_reports => @study_reports} %>
+<%= render partial: 'shared/study_reports', locals: { study_reports: @study_reports} %>
 <%= pagination @study_reports %>

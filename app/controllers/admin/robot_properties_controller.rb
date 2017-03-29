@@ -5,8 +5,8 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 class Admin::RobotPropertiesController < ApplicationController
-# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+  # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   before_action :find_robot_by_id
 
@@ -21,8 +21,8 @@ class Admin::RobotPropertiesController < ApplicationController
   def print_labels
     @robot_property = @robot.robot_properties.beds.find(params[:id])
     if LabelPrinter::PrintJob.new(params[:printer], LabelPrinter::Label::RobotBeds, [
-        @robot_property
-      ]).execute
+      @robot_property
+    ]).execute
       flash[:now] = 'The barcode for the bed was correctly printed'
     end
     redirect_to [:admin, @robot, @robot_property]

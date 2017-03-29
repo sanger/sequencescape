@@ -7,15 +7,15 @@
 require 'rexml/document'
 
 class StudiesController < ApplicationController
-# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+  # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   include REXML
   include Informatics::Globals
   include XmlCacheHelper::ControllerHelper
 
   before_action :login_required
-  before_action :admin_login_required, only: [:new_plate_submission, :create_plate_submission, :settings, :administer, :manage, :managed_update, :grant_role, :remove_role]
+  before_action :admin_login_required, only: [:settings, :administer, :manage, :managed_update, :grant_role, :remove_role]
   before_action :manager_login_required, only: [:close, :open, :related_studies, :relate_study, :unrelate_study]
 
   around_action :rescue_validation, only: [:close, :open]
@@ -156,7 +156,7 @@ class StudiesController < ApplicationController
 
   def collaborators
     @study = Study.find(params[:id])
-    @all_roles  = Role.select(:name).uniq
+    @all_roles  = Role.select(:name).uniq.pluck(:name)
     @roles      = Role.where(authorizable_id: @study.id, authorizable_type: 'Study')
     @users      = User.order(:first_name)
   end
@@ -167,9 +167,9 @@ class StudiesController < ApplicationController
     @studies = current_user.interesting_studies
     @studies.reject { |s| s == @study }
 
-    # TODO create a proper ReversedStudyRelation
+    # TODO: create a proper ReversedStudyRelation
     @relations = @study.study_relations.map { |r| [r.related_study, r.name] } +
-      @study.reversed_study_relations.map { |r| [r.study, r.reversed_name] }
+                 @study.reversed_study_relations.map { |r| [r.study, r.reversed_name] }
   end
 
   def update_study_relation
@@ -319,53 +319,6 @@ class StudiesController < ApplicationController
 
    def state
      @study = Study.find(params[:id])
-   end
-
-   def new_plate_submission
-     @study = Study.find(params[:id])
-   end
-
-   def create_plate_submission
-     @study = Study.find(params[:id])
-     @project = Project.find(params[:studies][:project])
-
-     plates = []
-     params[:studies][:barcodes].scan(/\d+/).each do |plate_barcode|
-       plate = Plate.find_by(barcode: plate_barcode)
-       if plate.nil?
-         @study.errors.add('Plate', "Couldnt find plate #{plate_barcode}")
-       else
-         plates << plate
-       end
-     end
-
-     if @study.errors.count > 0
-       flash[:error] = 'Error submitting your plates'
-       respond_to do |format|
-         format.html { render action: 'new_plate_submission' }
-         format.xml  { render xml: flash, status: :unprocessable_entity }
-         format.json { render json: flash, status: :unprocessable_entity }
-       end
-       return
-     else
-       Plate.create_plates_submission(@project, @study, plates, current_user)
-     end
-
-     if @study.errors.count > 0
-       flash[:error] = 'Error submitting your plates'
-       respond_to do |format|
-         format.html { render action: 'new_plate_submission' }
-         format.xml  { render xml: flash, status: :unprocessable_entity }
-         format.json { render json: flash, status: :unprocessable_entity }
-       end
-     else
-       flash[:notice] = 'Your plates have been submitted'
-       respond_to do |format|
-         format.html { render action: 'new_plate_submission' }
-         format.xml  { render xml: @study, status: :created, location: @study }
-         format.json { render json: @study, status: :created, location: @study }
-       end
-     end
    end
 
    def self.role_helper(name, success_action, error_action, &block)

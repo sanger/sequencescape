@@ -9,7 +9,7 @@
 <%= form_for(@activity) do |f| %>
   <%= f.error_messages %>
 
-  <%= render :partial => "activity_form", :locals => {:activity => @activity, :f => f } %>
+  <%= render partial: "activity_form", locals: {activity: @activity, f: f } %>
 
   <p>
     <%= f.submit "Update" %>
