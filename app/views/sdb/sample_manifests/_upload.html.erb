@@ -6,7 +6,7 @@
 
 <h2>Upload a sample manifest</h2>
 
-<%= form_for :sample_manifest, :url => upload_sample_manifests_url, :html =>{ :multipart => true } do |form| -%>
+<%= form_for :sample_manifest, url: upload_sample_manifests_url, html: { multipart: true } do |form| -%>
   <label style='display: none;' for="sample_manifest_uploaded">File to upload</label>
   <%= form.file_field :uploaded %><br/><br />
   <%= form.check_box :override %><label  for="sample_manifest_override">Override previously uploaded samples</label>

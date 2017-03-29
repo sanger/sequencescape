@@ -28,6 +28,6 @@
 <script type="text/javascript">$('table tbody > tr:nth-child(even)').addClass('roweven');</script>
 
 <% if current_user.administrator? %>
-<%= link_to 'New Tag Group with 12 tags', new_tag_group_path(:number_of_tags => 12) %>
-<%= link_to 'New Tag Group with 96 tags', new_tag_group_path(:number_of_tags => 96) %>
+<%= link_to 'New Tag Group with 12 tags', new_tag_group_path(number_of_tags: 12) %>
+<%= link_to 'New Tag Group with 96 tags', new_tag_group_path(number_of_tags: 96) %>
 <% end %>

@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.%>
 
 <% add :menu, "Sample Management homepage" => lab_sample_logistics_path %>
-<%= form_for :robot_verifications, :url => {:action => "download"} do |f| %>
+<%= form_for :robot_verifications, url: {action: "download"} do |f| %>
 <h2>Step 2 of 3: Scan robot beds and plates</h2>
 
 <table class="bed_verification" id="source_beds">
@@ -26,14 +26,14 @@
     <% @all_labels.last.sort{ |a,b| a[1].to_i <=> b[1].to_i }.each do |plate_label, bed_label| %>
       <tr>
         <td><label for="bed_barcodes_<%= bed_label %>" >SCRC <%= bed_label %></label></td>
-        <td><%= text_field_tag "bed_barcodes[#{bed_label}]", display_hash_value(params, :bed_barcodes, "#{bed_label}"), :onkeypress => "return disable_cr_and_change_focus(event,'bed_barcodes_#{bed_label}','plate_barcodes_#{plate_label}')" %></td>
+        <td><%= text_field_tag "bed_barcodes[#{bed_label}]", display_hash_value(params, :bed_barcodes, "#{bed_label}"), onkeypress: "return disable_cr_and_change_focus(event,'bed_barcodes_#{bed_label}','plate_barcodes_#{plate_label}')" %></td>
         <td><label for="plate_barcodes_<%= plate_label %>"><%= plate_label %></label></td>
         <% if count + 1 >= @all_labels.last.size %>
           <%   next_field = "destination_bed_barcodes_1" %>
         <% else %>
          <%   next_field = "bed_barcodes_#{bed_label.to_i + 1}" %>
         <% end %>
-        <td><%= text_field_tag "plate_barcodes[#{plate_label}]", display_hash_value(params, :plate_barcodes, "#{plate_label}"), :onkeypress => "return disable_cr_and_change_focus(event,'plate_barcodes_#{plate_label}','#{next_field}')" %></td>
+        <td><%= text_field_tag "plate_barcodes[#{plate_label}]", display_hash_value(params, :plate_barcodes, "#{plate_label}"), onkeypress: "return disable_cr_and_change_focus(event,'plate_barcodes_#{plate_label}','#{next_field}')" %></td>
         <td><%= select_tag("source_plate_types[#{plate_label}]", options_for_select(PlatePurpose.cherrypickable_as_source.map(&:name))) %></td>
       </tr>
     <% count = count + 1 %>
@@ -45,14 +45,14 @@
     <% @all_labels.first.sort.each do |destination_label, bed_label| %>
     <tr class="destination">
       <td><label for="destination_bed_barcodes_<%= bed_label %>" >DEST <%=bed_label%></label></td>
-      <td><%= text_field_tag "destination_bed_barcodes[#{bed_label}]", display_hash_value(params, :destination_bed_barcodes, "#{bed_label}"), :onkeypress => "return disable_cr_and_change_focus(event,'destination_bed_barcodes_#{bed_label}','destination_plate_barcodes_#{destination_label}')" %></td>
+      <td><%= text_field_tag "destination_bed_barcodes[#{bed_label}]", display_hash_value(params, :destination_bed_barcodes, "#{bed_label}"), onkeypress: "return disable_cr_and_change_focus(event,'destination_bed_barcodes_#{bed_label}','destination_plate_barcodes_#{destination_label}')" %></td>
       <td><label for="destination_plate_barcodes_<%= destination_label %>" ><%=destination_label%></label></td>
       <% if count + 1 >= @all_labels.first.size %>
         <%   next_field = "verify_button" %>
       <% else %>
        <%   next_field = "destination_bed_barcodes_#{bed_label.to_i +1 }" %>
       <% end %>
-      <td><%= text_field_tag "destination_plate_barcodes[#{destination_label}]", display_hash_value(params,  :destination_plate_barcodes, "#{destination_label}"), :onkeypress => "return disable_cr_and_change_focus(event,'destination_plate_barcodes_#{destination_label}','#{next_field}')" %></td>
+      <td><%= text_field_tag "destination_plate_barcodes[#{destination_label}]", display_hash_value(params,  :destination_plate_barcodes, "#{destination_label}"), onkeypress: "return disable_cr_and_change_focus(event,'destination_plate_barcodes_#{destination_label}','#{next_field}')" %></td>
       <td><%= PlatePurpose.cherrypickable_default_type.first.name %></td>
     </tr>
     <% end %>
@@ -67,7 +67,7 @@
   <br>
   <br>
   <br>
-  <%= submit_tag "Verify", :id => 'verify_button' %>
+  <%= submit_tag "Verify", id: 'verify_button' %>
 </div>
 
 <%= hidden_field_tag 'barcodes[destination_plate_barcode]', params[:barcodes][:destination_plate_barcode] %>

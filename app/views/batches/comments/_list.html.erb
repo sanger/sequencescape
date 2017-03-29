@@ -7,7 +7,7 @@
 <ul id="batch_annotations_<%= @batch.id %>" class="list-group">
   <% if @batch.comments.size > 0 %>
     <% @comments.each do |comment| %>
-      <li class='list-group-item'><%= render :partial => "comment" , :locals => {:comment => comment, :commentable => @batch}%></li>
+      <li class='list-group-item'><%= render partial: "comment" , locals: {comment: comment, commentable: @batch}%></li>
     <% end %>
   <% else %>
     <%= display_user_guide(I18n.t('batches.comments.no_comments')) %>

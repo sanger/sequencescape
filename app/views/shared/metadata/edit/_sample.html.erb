@@ -6,12 +6,12 @@
 
 <%# NOTE[xxx]: Kind of a hack because we need 'sample[sample_metadata_attributes][X]' -%>
 <%= fields_for(sample) do |form| %>
-  <%= form.fields_for(:sample_metadata, :builder => Metadata::FormBuilder) do |metadata_fields| %>
+  <%= form.fields_for(:sample_metadata, builder: Metadata::FormBuilder) do |metadata_fields| %>
     <% metadata_fields.filter { |field| current_user.workflow.visible_attribute?(field) } %>
 
     <%# Fields for 'Microarray genotyping' %>
     <%= metadata_fields.text_field(:cohort) %>
-    <%= metadata_fields.select(:gender, Sample::GENDERS,:include_blank => true) %>
+    <%= metadata_fields.select(:gender, Sample::GENDERS,include_blank: true) %>
     <%= metadata_fields.text_field(:country_of_origin) %>
     <%= metadata_fields.text_field(:geographical_region) %>
     <%= metadata_fields.text_field(:ethnicity) %>
@@ -39,12 +39,12 @@
     <%= metadata_fields.text_field(:sample_type) %>
 
     <!-- SRA -->
-    <% metadata_fields.with_options(:grouping => 'SRA') do |group| %>
+    <% metadata_fields.with_options(grouping: 'SRA') do |group| %>
       <%= group.text_field(:sample_public_name) %>
     <% end %>
 
     <!-- ENA requirement -->
-    <% metadata_fields.with_options(:grouping => 'ENA requirement') do |group| %>
+    <% metadata_fields.with_options(grouping: 'ENA requirement') do |group| %>
       <%= group.select(:sample_sra_hold, Sample::SRA_HOLD_VALUES) %>
       <%= group.text_field(:sample_common_name, 'data-organism' => 'common_name') %>
       <input class='btn btn-default validate_organism' type='button' value='Lookup'/>
@@ -52,13 +52,13 @@
     <% end %>
 
     <!-- SRA attributes -->
-    <% metadata_fields.with_options(:grouping => 'SRA attributes') do |group| %>
+    <% metadata_fields.with_options(grouping: 'SRA attributes') do |group| %>
       <%= group.text_field(:sample_strain_att) %>
       <%= group.text_field(:sample_description) %>
     <% end %>
 
     <!-- SRA Sample AN -->
-    <% metadata_fields.with_options(:grouping => 'SRA Sample AN') do |group| %>
+    <% metadata_fields.with_options(grouping: 'SRA Sample AN') do |group| %>
       <%= group.text_field(:sample_ebi_accession_number) %>
     <% end %>
 

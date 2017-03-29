@@ -5,18 +5,18 @@
 # Copyright (C) 2015,2016 Genome Research Ltd.%>
 <h3>Filter reports</h3>
 <p>Select criteria to filter the report list.</p>
-<%= form_tag({:controller => :qc_reports, :action => :index},{:method=>:get}) do |f| %>
+<%= form_tag({controller: :qc_reports, action: :index},{method: :get}) do |f| %>
   <div class="form-group">
     <%= label_tag "study_id", 'Study' %>
-    <%= select_tag :study_id, options_for_select([['All studies',nil]]+studies, filter_params[:study_id].to_i), :autocomplete => 'off', :class=>'form-control select2' %>
+    <%= select_tag :study_id, options_for_select([['All studies',nil]]+studies, filter_params[:study_id].to_i), autocomplete: 'off', class: 'form-control select2' %>
   </div>
   <div class="form-group">
     <%= label_tag "product_id", 'Product' %>
-    <%= select_tag :product_id, options_for_select([['All products',nil]]+products, filter_params[:product_id].to_i), :autocomplete => 'off', :class=>'form-control select2' %>
+    <%= select_tag :product_id, options_for_select([['All products',nil]]+products, filter_params[:product_id].to_i), autocomplete: 'off', class: 'form-control select2' %>
   </div>
     <div class="form-group">
     <%= label_tag "state", 'State' %>
-    <%= select_tag :state, options_for_select([['All states',nil]]+states, filter_params[:state]), :autocomplete => 'off', :class=>'form-control select2' %>
+    <%= select_tag :state, options_for_select([['All states',nil]]+states, filter_params[:state]), autocomplete: 'off', class: 'form-control select2' %>
     </select>
   </div>
 

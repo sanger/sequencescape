@@ -5,14 +5,14 @@
 # Copyright (C) 2007-2011,2012,2014,2015,2016 Genome Research Ltd.%>
 
 <% add :title, "Use the tabs to view batches for this pipeline with different statuses" %>
-<% add :menu, "Make training batch" => url_for(:action => "training_batch", :id => @pipeline.id) %>
-<% add :menu, "View all pipeline batches" => url_for(:action => "batches", :id => @pipeline.id) %>
+<% add :menu, "Make training batch" => url_for(action: "training_batch", id: @pipeline.id) %>
+<% add :menu, "View all pipeline batches" => url_for(action: "batches", id: @pipeline.id) %>
 
 <% add :back_menu, "Back to all pipelines" => pipelines_url %>
 
 <%= page_title "Pipeline", @pipeline.name %>
 
-<%= render :partial => @pipeline.inbox_partial, :locals => { :pipeline => @pipeline } %>
+<%= render partial: @pipeline.inbox_partial, locals: { pipeline: @pipeline } %>
 
 <script type="text/javascript">
   /*

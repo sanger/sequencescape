@@ -6,13 +6,13 @@
 
 <h1>Study Reports</h1>
 
-<%= semantic_form_for(:study_report, :url => study_reports_path ) do |form| %>
-  <%= form.inputs :name => "New report for" do %>
-    <%= form.input :study, :as => :select, :collection => @studies, :input_html => {:class=>'form-control select2'} %>
-    <%= form.action(:submit, :button_html=>{:class=>'btn btn-success'}) %>
+<%= semantic_form_for(:study_report, url: study_reports_path ) do |form| %>
+  <%= form.inputs name: "New report for" do %>
+    <%= form.input :study, as: :select, collection: @studies, input_html: {class: 'form-control select2'} %>
+    <%= form.action(:submit, button_html: {class: 'btn btn-success'}) %>
   <% end %>
 <% end %>
 
 <%= pagination @study_reports %>
-<%= render :partial => 'shared/study_reports', :locals => { :study_reports => @study_reports} %>
+<%= render partial: 'shared/study_reports', locals: { study_reports: @study_reports} %>
 <%= pagination @study_reports %>

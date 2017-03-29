@@ -30,14 +30,14 @@
           <td><%= link_to 'Show plate', show_plate_asset_url(parent)%></td>
           <td>
             <% if output_plate -%>
-              <%= link_to 'Print worksheet', url_for(:controller => :batches, :action => :print, :id => @batch.id, :barcode => parent.barcode), :title => "Print worksheet for Plate #{parent.barcode}" %>
+              <%= link_to 'Print worksheet', url_for(controller: :batches, action: :print, id: @batch.id, barcode: parent.barcode), title: "Print worksheet for Plate #{parent.barcode}" %>
             <% end -%>
           </td>
           <td>
             <% if fluidigm_plate(parent) %>
-              <%= link_to 'Fluidigm file', url_for(:controller => :plates, :action => :fluidigm_file, :id => parent.id,  :format => :csv), :type => 'text/csv', :title => "Fluidigm file for Plate #{parent.fluidigm_barcode}" %>
+              <%= link_to 'Fluidigm file', url_for(controller: :plates, action: :fluidigm_file, id: parent.id,  format: :csv), type: 'text/csv', title: "Fluidigm file for Plate #{parent.fluidigm_barcode}" %>
           	<% elsif output_plate -%>
-              <%= link_to 'Tecan file', url_for(:controller => :batches, :action => :gwl_file, :id => @batch.id, :barcode => parent.barcode), :title => "Tecan file for Plate #{parent.barcode}" %>
+              <%= link_to 'Tecan file', url_for(controller: :batches, action: :gwl_file, id: @batch.id, barcode: parent.barcode), title: "Tecan file for Plate #{parent.barcode}" %>
             <% end -%>
           </td>
         </tr>

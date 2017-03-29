@@ -5,6 +5,6 @@
 # Copyright (C) 2007-2011,2014,2015 Genome Research Ltd.%>
 
 <br />
-<%= label_tag('action_on_requests', 'Action to perform', :style => 'display:none;') %>
-<%= select_tag("action_on_requests", options_for_select([["Create Batch","create_batch"], ["Cancel Requests","cancel_requests"], ["Hide from Inbox","hide_from_inbox"]]), {:class=>'action_on_request'}) %>
-<%= submit_tag "Submit", :disable_with => "Please wait..." %>
+<%= label_tag('action_on_requests', 'Action to perform', style: 'display:none;') %>
+<%= select_tag("action_on_requests", options_for_select([["Create Batch","create_batch"], ["Cancel Requests","cancel_requests"], ["Hide from Inbox","hide_from_inbox"]]), {class: 'action_on_request'}) %>
+<%= submit_tag "Submit", disable_with: "Please wait..." %>

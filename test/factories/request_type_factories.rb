@@ -45,13 +45,26 @@ FactoryGirl.define do
       }
     end
 
+    factory :pac_bio_sequencing_request_type do
+      asset_type     'PacBioLibraryTube'
+      request_class  PacBioSequencingRequest
+
+      after(:build) { |request_type|
+        request_type.request_type_validators = [
+          build(:request_type_validator, request_type: request_type, request_option: 'insert_size', options: [500, 1000, 2000, 5000, 10000, 20000]),
+          build(:request_type_validator, request_type: request_type, request_option: 'sequencing_type', options: ['Standard', 'MagBead', 'MagBead OneCellPerWell v1'])
+        ]
+      }
+    end
+
     factory :sequencing_request_type do
       asset_type     'LibraryTube'
       request_class  SequencingRequest
 
-      after(:build) { |request_type|
-        request_type.request_type_validators << create(:sequencing_request_type_validator, request_type: request_type)
-      }
+      after(:build) do |request_type|
+        srv = create(:sequencing_request_type_validator, request_type: request_type)
+        request_type.request_type_validators << srv
+      end
     end
 
     factory :multiplexed_library_creation_request_type do
@@ -95,13 +108,25 @@ FactoryGirl.define do
     is_default true
   end
 
-  factory :sequencing_request_type_validator, class: RequestType::Validator do
-    request_option 'read_length'
-    valid_options { RequestType::Validator::ArrayWithDefault.new([37, 54, 76, 108], 54) }
-  end
+  factory :request_type_validator, class: RequestType::Validator do
+    transient do
+      options [37, 54, 76, 108]
+      default { options.first }
+    end
 
-  factory :library_request_type_validator, class: RequestType::Validator do
-    request_option 'library_type'
-    valid_options { |rtva| RequestType::Validator::LibraryTypeValidator.new(rtva.request_type.id) }
+    request_option 'read_length'
+    request_type
+    valid_options { RequestType::Validator::ArrayWithDefault.new(options, default) }
+
+    factory :sequencing_request_type_validator do
+      default 54
+      association(:request_type, factory: :sequencing_request_type)
+    end
+
+    factory :library_request_type_validator, class: RequestType::Validator do
+      request_option 'library_type'
+      association(:request_type, factory: :library_creation_request_type)
+      valid_options { |rtva| RequestType::Validator::LibraryTypeValidator.new(rtva.request_type.id) }
+    end
   end
 end

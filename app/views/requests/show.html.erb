@@ -9,7 +9,7 @@
 <% add :menu, (pluralize @request.comments.size, "comment") => request_comments_path(@request) -%>
 
 <% if current_user.manager_or_administrator? || current_user.owner?(@request) %>
-  <% add :menu, { "Cancel" => cancel_request_url(@request) }, { :confirm => "Are you sure you want to cancel this request?" }  -%>
+  <% add :menu, { "Cancel" => cancel_request_url(@request) }, { confirm: "Are you sure you want to cancel this request?" }  -%>
   <% add :menu, "Edit" => edit_request_path(@request) -%>
 <% end %>
 <% if current_user.manager_or_administrator? && @request.finished? %>
@@ -37,7 +37,7 @@
 <% end %>
 
 <div class="info">
-  <%= render :partial => 'shared/metadata/show/request', :locals => { :request => @request } %>
+  <%= render partial: 'shared/metadata/show/request', locals: { request: @request } %>
 </div>
 
 <div class="info">
@@ -92,7 +92,7 @@
         </tr>
       </thead>
       <tbody>
-      <%= render :partial => 'qc_information' %>
+      <%= render partial: 'qc_information' %>
     </tbody>
   </table>
   <% else %>

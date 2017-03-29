@@ -11,7 +11,7 @@
 </div>
 
 <div class="info">
-  <%= form_tag('/batches/update_volume_and_concentration', :id => @batch.id, :multipart => true) %>
+  <%= form_tag('/batches/update_volume_and_concentration', id: @batch.id, multipart: true) %>
     <%= hidden_field_tag "batch_id", "#{@batch.id}" %>
       <table cellpadding="4" cellspacing="0" width="80%">
         <thead>

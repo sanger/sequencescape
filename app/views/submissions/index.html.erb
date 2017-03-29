@@ -6,28 +6,28 @@
 
 <% add :title, "Submission Inbox" -%>
 <% add :manager_option, "Start a new Submission" => new_submission_path -%>
-<% add :manager_option, "Start a Bulk Submission" => {:controller => "/bulk_submissions", :action => "new"} -%>
+<% add :manager_option, "Start a Bulk Submission" => {controller: "/bulk_submissions", action: "new"} -%>
 <h1>Submissions Inbox for <%= current_user.name %></h1>
 
 <div class="sub-panel">
   <h2><%= pluralize(@building.count, 'Submission' )%> Currently Open for Building</h2>
-  <%= render :partial => "list",
-    :locals => { :submissions => @building }
+  <%= render partial: "list",
+    locals: { submissions: @building }
   %>
 </div>
 
 <div class="sub-panel">
   <h2><%= pluralize(@pending .count, 'Submission' )%> Closed Pending Processing</h2>
-  <%= render :partial => "list",
-    :locals => { :submissions => @pending }
+  <%= render partial: "list",
+    locals: { submissions: @pending }
   %>
 </div>
 
 
 <div class="sub-panel">
   <h2>Last 10 Completed Submissions</h2>
-  <%= render :partial => "list",
-    :locals => { :submissions => @ready }
+  <%= render partial: "list",
+    locals: { submissions: @ready }
   %>
 </div>
 

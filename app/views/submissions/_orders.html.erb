@@ -13,14 +13,14 @@
   a horrible hack, and should be removed ASAP. We can probably use fields-form,
   but I need to fix the broken-broken stuff first.
   -->
-  <%= form_for(:submission, :class=>'form-horizontal') do |f| -%>
+  <%= form_for(:submission, class: 'form-horizontal') do |f| -%>
 
-    <%= panel(:info,:title=>'Order Template',:id=>'order-template',:class=>'pane') do %>
+    <%= panel(:info,title: 'Order Template',id: 'order-template',class: 'pane') do %>
       <div class='form-group col-md-8'>
          <%= f.grouped_collection_select :template_id,
           @presenter.product_lines, :last, :first, :id, :name,
-          {:prompt => "Please select a template..."},
-          {:class=>'form-control select2'}
+          {prompt: "Please select a template..."},
+          {class: 'form-control select2'}
         %>
       </div>
 
@@ -31,12 +31,12 @@
             options_for_select(
               Submission::Priorities.options
             ),
-            {:class=>'form-control'}
+            {class: 'form-control'}
           )%>
       </div>
 
       <div id="order-parameters" >
-        <%= render :partial => 'order_fields' if @presenter.submission.present? %>
+        <%= render partial: 'order_fields' if @presenter.submission.present? %>
       </div>
 
     <% end %>
@@ -49,7 +49,7 @@
       <%= f.fields_for :orders, order do |orders_fields| -%>
         <% orders_fields.fields_for index.to_s, order  do |order_form| -%>
           <li class="pane order completed">
-          <%= render :partial => 'saved_order', :locals => { :presenter => @presenter, :form => order_form, :order => order } %>
+          <%= render partial: 'saved_order', locals: { presenter: @presenter, form: order_form, order: order } %>
           </li>
         <% end -%>
       <% end -%>
@@ -59,27 +59,27 @@
 
   <li id="order-controls" class="buttons">
     <%= submit_tag raw("&#10010; Add Order"),
-      :id       => "add-order",
-      :class    => "btn btn-primary",
-      :disabled => @presenter.orders.empty?
+      id: "add-order",
+      class: "btn btn-primary",
+      disabled: @presenter.orders.empty?
     %>
   </li>
 
   <%# Render a single blank Order %>
   <li id="blank-order" class="pane order">
     <%= form_for :blank_order do |f| -%>
-        <%= render :partial => 'order', :locals => { :form => f, :presenter => @presenter, :order => nil } %>
+        <%= render partial: 'order', locals: { form: f, presenter: @presenter, order: nil } %>
     <% end -%>
   </li>
 
 
   <li class="buttons">
-  <%= form_for :submission, :url => @presenter.url(self) , :html => { :id => 'build-form', :method => :put }   do |f| -%>
+  <%= form_for :submission, url: @presenter.url(self) , html: { id: 'build-form', method: :put }   do |f| -%>
 
     <%= submit_tag raw("&#10034; Build Submission"),
-      :id       => "start-submission",
-      :class    => "btn btn-success",
-      :disabled => true
+      id: "start-submission",
+      class: "btn btn-success",
+      disabled: true
     %>
  <% end -%>
   </li>

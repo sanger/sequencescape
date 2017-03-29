@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
 
-<%= form_for :study, :url => managed_update_admin_study_path(study), :html => { :id => "update_form", :method => "put", :multipart => true, :class=>'form-horizontal' }, :update => "editor_update", :loading => "show_update_loader();", :complete => "hide_update_loader();" do |form| %>
+<%= form_for :study, url: managed_update_admin_study_path(study), html: { id: "update_form", method: "put", multipart: true, class: 'form-horizontal' }, update: "editor_update", loading: "show_update_loader();", complete: "hide_update_loader();" do |form| %>
   <% if study %>
     <h2>Study : <%= link_to study.name, study_path(study) %></h2>
     <div class="subtitle">
@@ -15,9 +15,9 @@
       <div class='col-md-6'>
         <%= panel(:info,title:'Study state') do %>
           <%= form_group do %>
-            <%= form.label :state, "State", :class=>'col-md-4' %>
+            <%= form.label :state, "State", class: 'col-md-4' %>
             <div class='col-md-8'>
-              <%= form.select :state, Study.aasm.states_for_select, {}, {:class=>'form-control'} %>
+              <%= form.select :state, Study.aasm.states_for_select, {}, {class: 'form-control'} %>
             </div>
           <% end %>
         <% end %>
@@ -32,13 +32,13 @@
 
     <%= panel(:info,title:'Study information') do %>
         <%= fields_for(study) do |form| %>
-          <%= form.fields_for(:study_metadata, :builder => Metadata::FormBuilder) do |metadata_fields| %>
-            <%= metadata_fields.select_by_association(:reference_genome,{}, {:class=>'form-control'}) %>
+          <%= form.fields_for(:study_metadata, builder: Metadata::FormBuilder) do |metadata_fields| %>
+            <%= metadata_fields.select_by_association(:reference_genome,{}, {class: 'form-control'}) %>
           <% end %>
         <% end %>
     <% end %>
 
-    <%= render :partial => "studies/managed_study", :locals => {:read_only => false, :form => form, :study => study} %>
+    <%= render partial: "studies/managed_study", locals: {read_only: false, form: form, study: study} %>
 
   <% end %>
 <% end %>
