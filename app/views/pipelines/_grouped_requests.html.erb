@@ -9,7 +9,7 @@
     <tr>
       <th>&nbsp;</th>
       <th>&nbsp;</th>
-      <th id="priority_flag"><%= link_to image_tag("icon_0_flag.png", :size=>"16x16"), "javascript:void(0);" %></th>
+      <th id="priority_flag"><%= link_to image_tag("icon_0_flag.png", size: "16x16"), "javascript:void(0);" %></th>
       <th><a>Submission</a></th>
       <th>Request ID</th>
       <th><%= link_to "Name", "javascript:void(0);" %></th>
@@ -35,12 +35,12 @@
             <% if request.ready? %>
               <input type="checkbox" name="selectAll" onclick="select_requests_by_group(<%=  request.submission_id %>,<%= requests.size %>, this.checked);" id="select_all_group_<%= index %>"></a>
             <% else %>
-              <%= image_tag "error.png", 'title' => I18n.t("requests.status.not_ready"), :size => '16x16' %>
+              <%= image_tag "error.png", 'title' => I18n.t("requests.status.not_ready"), size: '16x16' %>
             <% end %>
           </td>
-          <td><a href="javascript:void(0)" onclick="showElement(<%=  request.submission_id %>,<%= requests.size %>); return false;"><%= image_tag "information.png", :size =>"13x13" %></a></td>
+          <td><a href="javascript:void(0)" onclick="showElement(<%=  request.submission_id %>,<%= requests.size %>); return false;"><%= image_tag "information.png", size: "13x13" %></a></td>
           <td>
-            <%= image_tag "icon_#{request.priority}_flag.png", 'alt' => request.priority, :size => '16x16', :class => "flag_image #{current_user.is_lab_manager? ? 'as_manager' : ''}", "data-priority" => request.priority, 'data-request-id' => request.id, 'data-submission-id' => request.submission_id %>
+            <%= image_tag "icon_#{request.priority}_flag.png", 'alt' => request.priority, size: '16x16', class: "flag_image #{current_user.is_lab_manager? ? 'as_manager' : ''}", "data-priority" => request.priority, 'data-request-id' => request.id, 'data-submission-id' => request.submission_id %>
           </td>
           <td><%= link_to request.submission_id,submission_path(request.submission) %></td>
           <td>&nbsp;</td>
@@ -72,23 +72,23 @@
         <tr class="nested" id="<%= request.submission_id %>_<%= progr.to_s %>" style="display:none">
           <td width='2%'>&nbsp;</td>
           <td>
-          <%= label(:request, request.id, 'Select Request', :style => 'display:none') %>
+          <%= label(:request, request.id, 'Select Request', style: 'display:none') %>
             <% if request.ready? %>
-              <%= check_box :request, request.id, :value => request.id %>
+              <%= check_box :request, request.id, value: request.id %>
             <% else %>
-              <%= image_tag "error.png", 'title' => "The library creation request hasn't been completed still, so this request is not ready.", :size => '16x16' %>
+              <%= image_tag "error.png", 'title' => "The library creation request hasn't been completed still, so this request is not ready.", size: '16x16' %>
             <% end %>
           </td>
           <td style='text-align: center' width='5%'>
-            <%= image_tag "icon_#{request.priority}_flag.png", 'alt' => request.priority, :size => '16x16', :class => 'related_flag_image', 'data-submission-id' => request.submission_id %>
+            <%= image_tag "icon_#{request.priority}_flag.png", 'alt' => request.priority, size: '16x16', class: 'related_flag_image', 'data-submission-id' => request.submission_id %>
           </td>
           <td><%= link_to request.submission_id,submission_path(request.submission_id) %></td>
           <td><%= link_to request.id, request_path(request) %></td>
           <td><%= link_to(h(request_asset.display_name), asset_path(request.asset)) %></td>
-          <%= render :partial => "request_comments", :locals => { :request => request, :comments_count => request_comments_count } %>
+          <%= render partial: "request_comments", locals: { request: request, comments_count: request_comments_count } %>
           <td><%=  link_to "#{request_asset.sti_type} #{request_asset.barcode}", asset_path(request.asset) %></td>
           <% unless asset_comments_count.zero? -%>
-            <%= render :partial => "asset_comments", :locals => { :request => request, :comments_count => asset_comments_count } %>
+            <%= render partial: "asset_comments", locals: { request: request, comments_count: asset_comments_count } %>
           <% else -%>
             <td>&nbsp;</td>
           <% end -%>

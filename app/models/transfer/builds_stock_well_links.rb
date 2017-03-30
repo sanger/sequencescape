@@ -20,11 +20,11 @@ module Transfer::BuildsStockWellLinks
 
     Hash.new { |h, v| h[v] = Array.new }.tap do |t|
       source.transfer_requests_as_source
-        .where(target_asset_id: eligable)
-        .includes(:target_asset, asset: :stock_wells).each do |request|
+            .where(target_asset_id: eligable)
+            .includes(:target_asset, asset: :stock_wells).each do |request|
            stock = stock_well_picker.call(request.asset)
            t[request.target_asset].concat(stock)
-        end
+      end
     end.each do |well, stock_wells|
       well.stock_wells.attach!(stock_wells)
     end

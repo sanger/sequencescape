@@ -13,29 +13,29 @@
 </div>
 <div id="account_box">
   <div id="account_form">
-    <%= form_tag({}, {:class=>'form-horizontal'}) do %>
+    <%= form_tag({}, {class: 'form-horizontal'}) do %>
 
         <div class="account_item account_labe col-sm-10 col-sm-offset-2">
           <div style="padding:0px 10px 10px 0px;font-weight:bold;color:green;">Please use your Sanger username and password to login</div>
         </div>
 
         <div class='form-group'>
-          <%= label_tag 'login', 'Username', :class=>'control-label col-sm-2' %>
+          <%= label_tag 'login', 'Username', class: 'control-label col-sm-2' %>
           <div class="col-sm-8">
-          <%= text_field_tag "login", "", { :class=>'form-control' } %>
+          <%= text_field_tag "login", "", { class: 'form-control' } %>
           </div>
         </div>
 
         <div class='form-group'>
-          <%= label_tag 'password', 'Password', :class=>'control-label col-sm-2' %>
+          <%= label_tag 'password', 'Password', class: 'control-label col-sm-2' %>
           <div class="col-sm-8">
-            <%= password_field_tag "password", "", { :class=>'form-control' } %>
+            <%= password_field_tag "password", "", { class: 'form-control' } %>
           </div>
         </div>
 
         <div class="form-group">
           <div class="col-sm-offset-2 col-sm-8">
-            <%= submit_tag I18n.t('global_links.login'), :class=>'btn btn-default' %>
+            <%= submit_tag I18n.t('global_links.login'), class: 'btn btn-default' %>
           </div>
         </div>
 

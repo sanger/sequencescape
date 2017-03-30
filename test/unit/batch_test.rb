@@ -7,32 +7,25 @@
 require 'test_helper'
 
 class BatchTest < ActiveSupport::TestCase
-  def setup
-    @pipeline = create :pipeline,
-      name: 'Test pipeline',
-      workflow: LabInterface::Workflow.create!(item_limit: 8),
-      request_types: [create(:request_type, request_class: Request, order: 1)]
-  end
-
   context 'A batch' do
-    setup do
-      @batch = @pipeline.batches.build
-    end
+    context 'on its own' do
+      setup do
+        @batch = build :batch
+      end
 
-    should 'have begin in pending then change to started' do
-      assert_equal @batch.state, 'pending'
-      @batch.start!(create(:user))
-      assert_equal @batch.state, 'started'
-      assert_equal @batch.started?, true
+      should 'have begin in pending then change to started' do
+        assert_equal @batch.state, 'pending'
+        @batch.start!(create(:user))
+        assert_equal @batch.state, 'started'
+        assert_equal @batch.started?, true
+      end
     end
 
     context 'with a pipeline' do
-      setup do
-        @batch = @pipeline.batches.create!
-      end
       context 'workflow is internal and released?' do
         setup do
-          @pipeline.workflow.update_attributes!(locale: 'Internal')
+          @pipeline = build :pipeline, locale: 'Internal'
+          @batch = build :batch, pipeline: @pipeline
         end
 
         should 'initially not be #externally_released? then be #externally_released?' do
@@ -44,7 +37,8 @@ class BatchTest < ActiveSupport::TestCase
 
       context 'workflow is external and released?' do
         setup do
-          @pipeline.workflow.update_attributes!(locale: 'External')
+          @pipeline = build :pipeline, locale: 'External'
+          @batch = build :batch, pipeline: @pipeline
         end
 
         should 'initially not be #internally_released? then be #internally_released? and return the pipelines first workflow' do
@@ -60,19 +54,21 @@ class BatchTest < ActiveSupport::TestCase
     setup do
       @batchrequest_count = BatchRequest.count
       @control = create :control
-      @batch = @pipeline.batches.create!
+      @batch = create :batch
       @batch.add_control(@control.name, 2)
     end
 
     should 'change BatchRequest.count by 2' do
-   assert_equal 2, BatchRequest.count - @batchrequest_count, 'Expected BatchRequest.count to change by 2'
+      assert_equal 2, BatchRequest.count - @batchrequest_count, 'Expected BatchRequest.count to change by 2'
     end
   end
 
   context 'modifying request positions within a batch' do
     setup do
-      @requests = (1..10).map { |_| @pipeline.request_types.last.create! }
-      @batch    = @pipeline.batches.create!(requests: @requests)
+      @pipeline = create :pipeline
+      # Weirdly, this is actually FASTER than factories by a substantial amount
+      @requests = Array.new(10) { @pipeline.request_types.last.create! }
+      @batch    = create :batch, requests: @requests, pipeline: @pipeline
     end
 
     context '#assign_positions_to_requests!' do
@@ -88,7 +84,7 @@ class BatchTest < ActiveSupport::TestCase
         @batch.assign_positions_to_requests!(@requests.reverse.map(&:id))
 
         expected = Hash[@requests.reverse.each_with_index.map { |request, index| [request.id, index + 1] }]
-        actual   = Hash[@batch.batch_requests.map { |batch_request| [batch_request.request_id, batch_request.position] }]
+        actual   = @batch.batch_requests.each_with_object({}) { |batch_request, memo| memo[batch_request.request_id] = batch_request.position }
         assert_equal(expected, actual, 'Positions of requests do not match')
       end
     end
@@ -103,7 +99,7 @@ class BatchTest < ActiveSupport::TestCase
 
         positions = [1, 2, 3, 4, 7, 8, 9, 10, 11, 12]
         expected  = Hash[@requests.each_with_index.map { |request, index| [request.id, positions[index]] }]
-        actual    = Hash[@batch.batch_requests.map { |batch_request| [batch_request.request_id, batch_request.position] }]
+        actual    = @batch.batch_requests.each_with_object({}) { |batch_request, memo| memo[batch_request.request_id] = batch_request.position }
         assert_equal(expected, actual, 'Positions of requests do not match')
       end
     end
@@ -111,10 +107,11 @@ class BatchTest < ActiveSupport::TestCase
 
   context 'when batch is created' do
     setup do
+      @pipeline = create :pipeline
       @request1 = @pipeline.request_types.last.create!(asset: create(:sample_tube), target_asset: create(:empty_library_tube))
       @request2 = @pipeline.request_types.last.create!(asset: create(:sample_tube), target_asset: create(:empty_library_tube))
 
-      @batch = @pipeline.batches.create!(requests: [@request1, @request2])
+      @batch = create :batch, requests: [@request1, @request2], pipeline: @pipeline
     end
     should 'be able to call start_requests' do
       assert_nothing_raised do
@@ -164,7 +161,7 @@ class BatchTest < ActiveSupport::TestCase
 
   context 'batch #has_event(event_name)' do
     setup do
-      @batch = @pipeline.batches.create!
+      @batch = create :batch
       @batch.start!(create(:user))
 
       @lab_event = LabEvent.new
@@ -191,9 +188,8 @@ class BatchTest < ActiveSupport::TestCase
 
   context '#requests_by_study' do
     setup do
-      @pipeline.workflow.update_attributes!(locale: 'Internal')
-      @batch = @pipeline.batches.create!
-
+      @pipeline = create :pipeline, locale: 'Internal'
+      @batch = create :batch, pipeline: @pipeline
       @study1 = create :study
     end
 
@@ -239,7 +235,8 @@ class BatchTest < ActiveSupport::TestCase
 
   context '#plate_ids_in_study' do
     setup do
-      @batch = @pipeline.batches.create!
+      @pipeline = create :pipeline
+      @batch = create :batch, pipeline: @pipeline
       @study1 = create :study
     end
 
@@ -294,7 +291,6 @@ class BatchTest < ActiveSupport::TestCase
     setup do
       @pipeline_next = create :pipeline, name: 'Next pipeline'
       @pipeline      = create :pipeline, name: 'Pipeline for BatchTest', automated: false, next_pipeline_id: @pipeline_next.id, asset_type: 'LibraryTube'
-      @sequencing_pipeline = create :sequencing_pipeline, name: 'SequencingPipeline for BatchTest', automated: false, asset_type: 'Lane'
       @pipeline_qc = create :pipeline, name: 'quality control', automated: true, next_pipeline_id: @pipeline_next.id
     end
 
@@ -530,15 +526,6 @@ class BatchTest < ActiveSupport::TestCase
         @pipeline.workflow.update_attributes!(item_limit: nil)
         assert_equal 0, @batch.underrun
       end
-
-      # should "return true if batch belongs to multiplexing" do
-      #   create :cross_ref, :request => @request1, :kind => "sample_pool"
-      #   assert @batch.multiplexed?
-      # end
-      #
-      # should "return false if batch DOES NOT belong to multiplexing" do
-      #   assert ! @batch.multiplexed?
-      # end
     end
 
     context '#QC related' do
@@ -554,103 +541,12 @@ class BatchTest < ActiveSupport::TestCase
           assert_equal 'qc_completed', @batch.qc_state
         end
       end
-
-      context '#qc_evaluation_update' do
-        setup do
-          @batch = @pipeline.batches.create!(qc_state: 'qc_pending')
-
-          @library1 = create :sample_tube
-          @library2 = create :sample_tube
-          @batch.batch_requests.create!(
-            request: @pipeline.request_types.last.create!(asset: @library1, target_asset: create(:library_tube)),
-            position: 1
-          )
-          @batch.batch_requests.create!(
-            request: @pipeline.request_types.last.create!(asset: @library2, target_asset: create(:library_tube)),
-            position: 2
-          )
-
-          @task = create :task, workflow: @pipeline.workflow
-        end
-
-        context 'when evaluations tag contains 1 evaluation' do
-          setup do
-            @evaluation = {
-              'result' => 'pass',
-              'checks' => {
-                'check' => {
-                  'results' => 'Some free form data (no html please)',
-                  'criteria' => {
-                    'criterion' => [
-                      { 'value' => 'Greater than 80mb', 'key' => 'yield' },
-                      { 'value' => 'Greater than Q20', 'key' => 'count' }
-                    ]
-                  },
-                  'data_source' => '/somewhere.fastq',
-                  'links' => {
-                    'link' => {
-                      'href' => 'http://example.com/some_interesting_image_or_table',
-                      'label' => 'display text for hyperlink'
-                    }
-                  },
-                  'comment' => 'All good',
-                  'pass' => 'true'
-                }
-              },
-              'check'      => 'Auto QC',
-              'identifier' => @batch.id,
-              'location'   => 1
-            }
-            @evaluations = [@evaluation]
-          end
-        end
-      end
     end
 
     context '#reset!' do
-      setup do
-        @batch = @pipeline.batches.create!
-        @pending_request   = @pipeline.request_types.last.create!(state: 'pending', asset: create(:sample_tube), target_asset: create(:sample_tube))
-        @pending_request_2 = @pipeline.request_types.last.create!(state: 'pending', asset: create(:sample_tube), target_asset: create(:sample_tube))
-        @pending_request.asset.children << @pending_request.target_asset
-        @pending_request_2.asset.children << @pending_request_2.target_asset
-        @batch.requests << @pending_request << @pending_request_2
-      end
-
-      # Separate context because we need to setup the DB first and we cannot check the changes made.
-      context 'checking DB changes' do
-        setup do
-          @asset_count = Asset.count
-          @batchrequest_count = BatchRequest.count
-          @batch.reset!(@user)
-          @request_count = Request.count
-          @batch_count = Batch.count
-        end
-
-         should 'change BatchRequest.count by -2' do
-           assert_equal(-2,  BatchRequest.count - @batchrequest_count, 'Expected BatchRequest.count to change by -2')
-         end
-
-         should 'change Asset.count by -2' do
-           assert_equal(-2,  Asset.count - @asset_count, 'Expected Asset.count to change by -2')
-         end
-
-        should 'change Request.count by 0' do
-          assert_equal 0,  Request.count - @request_count, 'Expected Request.count to change by 0'
-        end
-
-        should 'change Batch.count by 0' do
-          assert_equal 0,  Batch.count - @batch_count, 'Expected Batch.count to change by 0'
-        end
-
-        should 'transition to discarded' do
-          assert_equal('discarded', @batch.state)
-        end
-      end
-
       context 'once started' do
         setup do
-         @batch.update_attributes!(state: 'started')
+          @batch = create :batch, pipeline: @pipeline, state: 'started'
         end
 
        should 'raise an exception' do
@@ -659,48 +555,41 @@ class BatchTest < ActiveSupport::TestCase
           end
        end
       end
-    end
 
-    context '#reset! of sequencing_pipeline' do
-      setup do
-        @batch = @sequencing_pipeline.batches.create!
-        @ancestor = create :sample_tube
-        @pending_request   = @sequencing_pipeline.request_types.last.create!(state: 'pending', asset: create(:library_tube), target_asset: create(:lane))
-        @pending_request_2 = @sequencing_pipeline.request_types.last.create!(state: 'pending', asset: create(:library_tube), target_asset: create(:lane))
-        @ancestor.children = [@pending_request.asset, @pending_request_2.asset]
-        @pending_request.asset.children << @pending_request.target_asset
-        @pending_request_2.asset.children << @pending_request_2.target_asset
-        @batch.requests << @pending_request << @pending_request_2
-      end
+      {
+         sequencing_pipeline: :sequencing_request_with_assets,
+         pipeline: :request
+      }.each do |pipeline_type, request_factory|
+        context "of a #{pipeline_type}" do
+          setup do
+            @pipeline = create pipeline_type
+            @batch = create :batch, pipeline: @pipeline
+            @pending_request   = create request_factory, request_type: @pipeline.request_types.last
+            @pending_request_2 = create request_factory, request_type: @pipeline.request_types.last
+            @batch.requests << @pending_request << @pending_request_2
+          end
 
-      # Separate context because we need to setup the DB first and we cannot check the changes made.
-      context 'checking DB changes' do
-        setup do
-          @batchrequest_count = BatchRequest.count
-          @asset_count = Asset.count
-          @request_count = Request.count
-          @batch_count = Batch.count
-          @batch.reset!(@user)
-        end
+          # Separate context because we need to setup the DB first and we cannot check the changes made.
+          context 'checking DB changes' do
+            setup do
+              @asset_count = Asset.count
+              @batchrequest_count = BatchRequest.count
+              @request_count = Request.count
+              @batch_count = Batch.count
+              @batch.reset!(@user)
+            end
 
- should 'change BatchRequest.count by -2' do
- assert_equal(-2, BatchRequest.count - @batchrequest_count, 'Expected BatchRequest.count to change by -2')
- end
+            should 'remove the requests from the batch but not destroy them' do
+              assert_equal(-2,  BatchRequest.count - @batchrequest_count, 'Expected BatchRequest.count to change by -2')
+              assert_equal(-2,  Asset.count - @asset_count, 'Expected Asset.count to change by -2')
+              assert_equal 0,  Request.count - @request_count, 'Expected Request.count to change by 0'
+              assert_equal 0,  Batch.count - @batch_count, 'Expected Batch.count to change by 0'
+            end
 
- should 'change Asset.count by -2' do
- assert_equal(-2, Asset.count - @asset_count, 'Expected Asset.count to change by -2')
- end
-
-        should 'change Request.count by 0' do
-          assert_equal 0,  Request.count - @request_count, 'Expected Request.count to change by 0'
-        end
-
-        should 'change Batch.count by 0' do
-          assert_equal 0,  Batch.count - @batch_count, 'Expected Batch.count to change by 0'
-        end
-
-        should 'transition to discarded' do
-          assert_equal('discarded', @batch.state)
+            should 'transition to discarded' do
+              assert_equal('discarded', @batch.state)
+            end
+          end
         end
       end
     end
@@ -708,7 +597,7 @@ class BatchTest < ActiveSupport::TestCase
     context '#qc_previous_state!' do
       setup do
         @user = create :user
-        @batch = @pipeline.batches.create!
+        @batch = create :batch, pipeline: @pipeline
         @batch.update_attributes!(qc_state: 'qc_completed')
       end
       should 'move batch to previous qc state' do
@@ -723,9 +612,7 @@ class BatchTest < ActiveSupport::TestCase
     context '#swap' do
       # We must test swapping requests at different and same positions, as well as ones which would clash if not adjusted
       [
-        [3, 4],
-        [4, 4],
-        [2, 1]
+        [3, 4], [4, 4], [2, 1]
       ].each do |left_position, right_position|
         context "when swapping #{left_position} and #{right_position}" do
           setup do
@@ -745,8 +632,9 @@ class BatchTest < ActiveSupport::TestCase
           should 'swap lanes given 2 batches and swap requests.' do
             assert(
               @left_batch.swap(
-                @user,                   'batch_1' => { 'id' => @left_batch.id.to_s, 'lane' => left_position.to_s },
-                                         'batch_2' => { 'id' => @right_batch.id.to_s, 'lane' => right_position.to_s }
+                @user,
+                'batch_1' => { 'id' => @left_batch.id.to_s, 'lane' => left_position.to_s },
+                'batch_2' => { 'id' => @right_batch.id.to_s, 'lane' => right_position.to_s }
              )
             )
 
@@ -761,19 +649,12 @@ class BatchTest < ActiveSupport::TestCase
     context '#detach_request' do
       setup do
         @library_prep_pipeline = create :pipeline, name: 'Library Prep Pipeline'
-        @pe_pipleine = create :pipeline, name: 'PE pipeline'
         @lib_prep_batch = create :batch, pipeline: @library_prep_pipeline
-        @lib_prep_request = create :request, state: 'started'
-        @pe_seq_request = create :request, state: 'pending'
-        @lib_prep_batch.requests << @lib_prep_request
         @sample_tube = create :sample_tube, name: 'sample tube 1'
         @library_tube = create :library_tube, name: 'lib tube 1'
-        @number_of_assets = Asset.count
-        @lib_prep_request.asset = @sample_tube
-        @lib_prep_request.target_asset = @library_tube
-        @lib_prep_request.save
-        @pe_seq_request.asset = @library_tube
-        @pe_seq_request.save
+        @lib_prep_request = create :library_request, state: 'started', asset: @sample_tube, target_asset: @library_tube
+        @pe_seq_request = create :sequencing_request, state: 'pending', asset: @library_tube
+        @lib_prep_batch.requests << @lib_prep_request
       end
 
       context 'detaching' do
@@ -867,14 +748,60 @@ class BatchTest < ActiveSupport::TestCase
     end
   end
 
+  context '#npg_set_state' do
+    setup do
+      # JG: The QC state machine on batch is near non-existent, and all events
+      # just push the batch into the next state. Here we advance the qc_state
+      # to try and model what appears to be the intended behaviour.
+      @pipeline = create :sequencing_pipeline
+      @batch = create :batch, pipeline: @pipeline
+      @batch.update_attributes!(qc_state: 'qc_manual_in_progress')
+      @requests = create_list :sequencing_request_with_assets, 2, state: 'started', request_type: @pipeline.request_types.first
+      @batch.requests = @requests
+    end
+
+    context 'when all requests are passed' do
+      setup do
+        @requests.each do |r|
+          r.events.create!(family: 'pass')
+        end
+        @batch.npg_set_state
+      end
+      should 'should complete the batch' do
+        assert_equal 'qc_completed', @batch.qc_state
+      end
+    end
+
+    context 'when not all requests are passed' do
+      setup do
+        @requests.first.events.create!(family: 'pass')
+        @batch.npg_set_state
+      end
+      should 'should not complete the batch' do
+        assert_equal 'qc_manual_in_progress', @batch.qc_state
+      end
+    end
+
+    # JG: Resources are a little clunky, they essentially indicate controls.
+    # They don't tend to get used much any more, and I'm not entirely
+    # clear if they have any meaningful distinction from control requests.
+    context 'when some assets are a resource' do
+      setup do
+        @batch.requests.first.events.create!(family: 'pass')
+        @batch.requests.last.asset.update_attributes!(resource: true)
+        @batch.npg_set_state
+      end
+      should 'should complete the batch' do
+        assert_equal 'qc_completed', @batch.qc_state
+      end
+    end
+  end
+
   context 'ready? all requests before creating batch' do
     setup do
       @library_creation_request = create(:library_creation_request_for_testing_sequencing_requests)
-      @library_creation_request.asset.aliquots.each { |a| a.update_attributes!(project: create(:project)) }
       @library_tube = @library_creation_request.target_asset
-
       @library_creation_request_2 = create(:library_creation_request_for_testing_sequencing_requests, target_asset: @library_tube)
-      @library_creation_request_2.asset.aliquots.each { |a| a.update_attributes!(project: create(:project)) }
 
       # The sequencing request will be created with a 76 read length (Standard sequencing), so the request
       # type needs to include this value in its read_length validation list (for example, single_ended_sequencing)
@@ -882,10 +809,8 @@ class BatchTest < ActiveSupport::TestCase
 
       @pipeline = create :sequencing_pipeline
 
-      @batch = @pipeline.batches.build
+      @batch = build :batch, pipeline: @pipeline
       @request_type = @batch.pipeline.request_types.first
-      @request_type_validator = RequestType::Validator.create!(request_type: @request_type, request_option: 'read_length', valid_options: [76])
-      @request_type.request_type_validators << @request_type_validator
       @sequencing_request = create(:sequencing_request, asset: @library_tube, request_type: @request_type)
       @batch.requests << @sequencing_request
     end

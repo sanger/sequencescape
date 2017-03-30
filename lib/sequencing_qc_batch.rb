@@ -8,12 +8,12 @@ module SequencingQcBatch
   # batches.qc_state field in the DB to accommodate.  FYI, 25 characters is:
   #  <----------------------->
   VALID_QC_STATES = %w(
-qc_pending
-qc_submitted
-qc_manual
-qc_manual_in_progress
-qc_completed
-)
+    qc_pending
+    qc_submitted
+    qc_manual
+    qc_manual_in_progress
+    qc_completed
+  )
 
   def self.included(base)
     base.instance_eval do
@@ -36,22 +36,12 @@ qc_completed
 
   # View based check to display batches with results
   def show_in_manual_qc?
-    if assets_qc_tasks_results.uniq.size > 1
-      answer = false
-    else
-      answer = true
-    end
-    answer
+    assets_qc_tasks_results.uniq.size <= 1
   end
 
   # Cron job specific checker
   def migrate_to_manual_qc?
-    if assets_qc_tasks_results.include?(true)
-      answer = true
-    else
-      answer = false
-    end
-    answer
+    assets_qc_tasks_results.include?(true)
   end
 
   # Returns qc_states used
@@ -189,7 +179,7 @@ qc_completed
   private
 
     def assets_qc_tasks_results
-      auto_qc_pipeline = Pipeline.firind_by!(name: 'quality control', automated: true)
+      auto_qc_pipeline = Pipeline.find_by!(name: 'quality control', automated: true)
       qc_workflow = LabInterface::Workflow.find_by pipeline_id: auto_qc_pipeline.id
       qc_tasks = qc_workflow.tasks
       results = []

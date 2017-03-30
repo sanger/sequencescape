@@ -25,5 +25,4 @@ STORE_LOCATION_METHOD = :store_location
 require 'rails-authorization-plugin/lib/publishare/object_roles_table'
 ActiveRecord::Base.send(:include,
   Authorization::ObjectRolesTable::UserExtensions,
-  Authorization::ObjectRolesTable::ModelExtensions
-)
+  Authorization::ObjectRolesTable::ModelExtensions)

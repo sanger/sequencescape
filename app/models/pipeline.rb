@@ -13,20 +13,32 @@ class PipelinesRequestType < ActiveRecord::Base
 end
 
 class Pipeline < ActiveRecord::Base
+  self.inheritance_column = 'sti_type'
+
   include ::ModelExtensions::Pipeline
-  include SequencingQcPipeline
   include Uuid::Uuidable
   include Pipeline::InboxUngrouped
   include Pipeline::BatchValidation
   include SharedBehaviour::Named
 
-  class_attribute :batch_worksheet
+  class_attribute :batch_worksheet, :display_next_pipeline, :requires_position,
+                  :inbox_partial, :library_creation, :pulldown, :prints_a_worksheet_per_task,
+                  :genotyping, :sequencing, :purpose_information, :can_create_stock_assets
+
+  # Pipeline defaults
   self.batch_worksheet = 'detailed_worksheet'
+  self.display_next_pipeline = false
+  self.requires_position = true
+  self.inbox_partial = 'default_inbox'
+  self.library_creation = false
+  self.pulldown = false
+  self.prints_a_worksheet_per_task = false
+  self.genotyping = false
+  self.sequencing = false
+  self.purpose_information = true
+  self.can_create_stock_assets = false
 
-  INBOX_PARTIAL               = 'default_inbox'
   ALWAYS_SHOW_RELEASE_ACTIONS = false # Override this in subclasses if you want to display action links for released batches
-
-  self.inheritance_column = 'sti_type'
 
   delegate :item_limit, :has_batch_limit?, to: :workflow
   validates_presence_of :workflow
@@ -64,7 +76,7 @@ class Pipeline < ActiveRecord::Base
 
   scope :for_request_type, ->(rt) {
     joins(:pipelines_request_types)
-    .where(pipelines_request_types: { request_type_id: rt })
+      .where(pipelines_request_types: { request_type_id: rt })
   }
 
   def request_types_including_controls
@@ -75,37 +87,8 @@ class Pipeline < ActiveRecord::Base
     []
   end
 
-  def inbox_partial
-    INBOX_PARTIAL
-  end
-
   def inbox_eager_loading
     :loaded_for_inbox_display
-  end
-
-  def display_next_pipeline?
-    false
-  end
-
-  def requires_position?
-    true
-  end
-
-  # This needs to be re-done a better way
-  def qc?
-    false
-  end
-
-  def library_creation?
-    false
-  end
-
-  def genotyping?
-    false
-  end
-
-  def sequencing?
-    false
   end
 
   def is_read_length_consistent_for_batch?(_batch)
@@ -193,18 +176,6 @@ class Pipeline < ActiveRecord::Base
     controls.empty? ? false : true
   end
 
-  def pulldown?
-    false
-  end
-
-  def purpose_information?
-    true
-  end
-
-  def prints_a_worksheet_per_task?
-    false
-  end
-
   def grouping_parser
     GrouperForPipeline.new(self)
   end
@@ -226,7 +197,7 @@ class Pipeline < ActiveRecord::Base
   end
 
   def max_number_of_groups
-    self[:max_number_of_groups] || 0
+    super || 0
   end
 
   def valid_number_of_checked_request_groups?(params = {})
@@ -237,10 +208,6 @@ class Pipeline < ActiveRecord::Base
 
   def all_requests_from_submissions_selected?(_request_ids)
     true
-  end
-
-  def can_create_stock_assets?
-    false
   end
 
   def request_actions

@@ -10,7 +10,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <%= stylesheet_link_tag "print" %>
-    <%= stylesheet_link_tag "print",:media => "print" %>
+    <%= stylesheet_link_tag "print",media: "print" %>
     <title>Batch <%= @batch.id %></title>
   </head>
   <body>
@@ -48,9 +48,9 @@
     <br />
     <br />
     <% if @pipeline.prints_a_worksheet_per_task? %>
-      <%= render :partial => "request", :collection => @batch.ordered_requests, :locals => { :tasks => [@task] } -%>
+      <%= render partial: "request", collection: @batch.ordered_requests, locals: { tasks: [@task] } -%>
     <% else %>
-      <%= render :partial => "request", :collection => @batch.ordered_requests, :locals => { :tasks => @workflow.tasks } -%>
+      <%= render partial: "request", collection: @batch.ordered_requests, locals: { tasks: @workflow.tasks } -%>
     <% end %>
 
     <div class="footer">Printed at <%= Time.now.strftime("%I:%M %p on %A %d %B, %Y") %> for <%= current_user.login %></div>

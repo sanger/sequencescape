@@ -5,8 +5,8 @@
 # Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.%>
 
 <div>
-<div class="info"><%= render :partial => 'asset_summary', :locals => {:asset => @asset} %></div>
-<div class="info"><%= render :partial => @asset.sample_partial, :locals => {:asset => @asset} %></div>
+<div class="info"><%= render partial: 'asset_summary', locals: {asset: @asset} %></div>
+<div class="info"><%= render partial: @asset.sample_partial, locals: {asset: @asset} %></div>
 </div>
 
 <script type="text/javascript">

@@ -19,7 +19,6 @@ class ResponseTimer
       @response.close if @response.respond_to?(:close) # Pass us on
       stop = Time.now
       @output.syswrite "Request: #{@env['REQUEST_METHOD']}%#{@env['REQUEST_URI']}%#{@env["rack.input"].string}%#{stop - @start}\n"
-      # @output.syswrite %Q{curl -X #{@env['REQUEST_METHOD']} -H "X_SEQUENCESCAPE_CLIENT_ID:development" -H "USER_AGENT:Ruby" -H "COOKIE:WTSISignOn=" -H "ACCEPT:application/json" -H "Content-Type: application/json" -d '#{@env["rack.input"].string}' http://localhost:3000#{@env['REQUEST_PATH']} --noproxy localhost\n}
     end
 
     def each(&block)

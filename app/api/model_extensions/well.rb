@@ -14,7 +14,7 @@ module ModelExtensions::Well
                               # actually disrupts the eager loading.
                               plate: :uuid_object,
                               aliquots: [
-                  :bait_library, {
+                                :bait_library, {
                     tag: :tag_group,
                     sample: [
                       :study_reference_genome,
@@ -23,7 +23,7 @@ module ModelExtensions::Well
                       }
                     ]
                   }
-                ]
+                              ]
             )
                                  }
     end

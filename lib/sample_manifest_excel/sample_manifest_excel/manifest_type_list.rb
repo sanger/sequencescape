@@ -56,9 +56,9 @@ module SampleManifestExcel
       def ==(other)
         return false unless other.is_a?(self.class)
         name == other.name &&
-        columns == other.columns &&
-        heading == other.heading &&
-        asset_type == other.asset_type
+          columns == other.columns &&
+          heading == other.heading &&
+          asset_type == other.asset_type
       end
     end
 

@@ -16,8 +16,8 @@ class PopulateAncestorsFromPlateToTube < ActiveRecord::Migration
                             }
                           },
                           joins: [
-              'INNER JOIN assets as destinations on destinations.id=destination_id'
-              ]) do |t|
+                            'INNER JOIN assets as destinations on destinations.id=destination_id'
+                          ]) do |t|
 
             say "Processing #{t.source_id} and #{t.destination_id}"
             source = Asset.find(t.source_id)

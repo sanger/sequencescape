@@ -7,5 +7,6 @@ FactoryGirl.define do
     what_expected 'it to work'
 
     initialize_with { new(attributes) }
+    skip_create
   end
 end

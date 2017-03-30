@@ -6,51 +6,51 @@
 
 <%= page_title "New request", "#{@asset.label} - #{@asset.display_name}" %>
 
-<%= form_for(@asset, :url => create_request_asset_url(@asset), :html => {:method => :post}) do |f| %>
+<%= form_for(@asset, url: create_request_asset_url(@asset), html: {method: :post}) do |f| %>
   <%= f.error_messages %>
 
   <fieldset id="details">
     <h3>Submission Options</h3>
     <% instance_variable_or_id_param(:request_type) do |field_name, value| %>
       <div class="form-group  col-xs-12">
-        <%= label_tag(field_name, 'Request type', :class=>'col-md-4') %>
+        <%= label_tag(field_name, 'Request type', class: 'col-md-4') %>
         <%= select_field_sorted_by_name(field_name, @request_types, value) %>
       </div>
     <% end %>
     <% if @asset.studies.uniq.count > 1 -%>
       <div class="form-group col-xs-12">
-        <%= label_tag('cross_study_request', 'Cross Study Request', :class=>'col-md-4') %>
+        <%= label_tag('cross_study_request', 'Cross Study Request', class: 'col-md-4') %>
         <%= check_box_tag('cross_study_request', 'cross_study_request', true) %>
       </div>
     <% end %>
     <% instance_variable_or_id_param(:study) do |field_name, value| %>
       <div class="form-group col-xs-12">
-        <%= label_tag(field_name, 'Study', :class=>'col-md-4') %>
+        <%= label_tag(field_name, 'Study', class: 'col-md-4') %>
         <%= select_field_sorted_by_name(field_name, current_user_studies_from(@asset), value, prompt: 'Select a study') %>
       </div>
     <% end %>
     <% if @asset.projects.uniq.count > 1 -%>
       <div class="form-group col-xs-12">
-        <%= label_tag('cross_project_request', 'Cross Project Request', :class=>'col-md-4') %>:
+        <%= label_tag('cross_project_request', 'Cross Project Request', class: 'col-md-4') %>:
         <%= check_box_tag('cross_project_request', 'cross_project_request', true) %>
       </div>
     <% end %>
     <% instance_variable_or_id_param(:project) do |field_name, value| %>
       <div class="form-group col-xs-12">
-        <%= label_tag(field_name, 'Project', :class=>'col-md-4') %>
+        <%= label_tag(field_name, 'Project', class: 'col-md-4') %>
         <%= select_field_sorted_by_name(field_name, Project, value, prompt: 'Select a project') %>
       </div>
     <% end %>
     <div class="form-group col-xs-12">
-      <%= label_tag(:priority, 'Priority', :class=>'col-md-4') %>
+      <%= label_tag(:priority, 'Priority', class: 'col-md-4') %>
       <%= content_tag(:div, select_tag(:priority, options_for_select(
         Submission::Priorities.options,
         @asset.requests.last.try(:priority)
-      ),:class => 'form-control'),:class=>'col-md-5') %>
+      ),class: 'form-control'),class: 'col-md-5') %>
     </div>
     <div class="form-group col-xs-12">
-      <%= label_tag(:count, 'Number of requests to generate', :class=>'col-md-4') %>
-      <%= content_tag(:div, number_field_tag(:count, 1, {:min=>0, :step=>1, :class => 'form-control' }),:class=>'col-md-5') %>
+      <%= label_tag(:count, 'Number of requests to generate', class: 'col-md-4') %>
+      <%= content_tag(:div, number_field_tag(:count, 1, {min: 0, step: 1, class: 'form-control' }),class: 'col-md-5') %>
     </div>
   </fieldset>
 
@@ -64,21 +64,21 @@
       </tr>
     </table>
 
-    <%= render :partial => 'shared/metadata/edit/request', :locals => { :request => @request } %>
+    <%= render partial: 'shared/metadata/edit/request', locals: { request: @request } %>
   </fieldset>
   <% else %>
     <% @request_types.each do |request_type| %>
       <fieldset id="request_type_options_for_<%= request_type.id %>" class="request_options">
         <h3><%= request_type.name %> Options</h3>
-          <%= render :partial => 'shared/metadata/edit/request', :locals => { :request => request_type.new_request(:request_metadata_attributes => @asset.created_with_request_options) } %>
+          <%= render partial: 'shared/metadata/edit/request', locals: { request: request_type.new_request(request_metadata_attributes: @asset.created_with_request_options) } %>
       </fieldset>
     <% end %>
   <% end %>
 
   <fieldset class="comments">
     <div class="form-group col-xs-12">
-      <%= label_tag(:comments, 'Comments', :class=>'col-md-4') %>
-      <%= content_tag(:div,text_area_tag(:comments,nil, :rows => 10, :cols => 40,:class=>'form-control'),:class=>'col-md-8') %>
+      <%= label_tag(:comments, 'Comments', class: 'col-md-4') %>
+      <%= content_tag(:div,text_area_tag(:comments,nil, rows: 10, cols: 40,class: 'form-control'),class: 'col-md-8') %>
     </div>
   </fieldset>
 

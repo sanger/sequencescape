@@ -5,13 +5,13 @@
 # Copyright (C) 2007-2011,2014,2015 Genome Research Ltd.%>
 
 <h2>Input requests</h2>
-<%= render :partial => "batch_statuses" %>
-<%= render :partial => 'pipeline_limit' %>
+<%= render partial: "batch_statuses" %>
+<%= render partial: 'pipeline_limit' %>
 
-<%= form_tag({:controller => :batches, :action => :create, :id => @pipeline.id}, :id => "assets_to_batch_form") do -%>
-  <%= render :partial => 'inbox_submission_button' %>
-  <%= render :partial => "assets" %>
-  <%= render :partial => 'inbox_submission_button' %>
+<%= form_tag({controller: :batches, action: :create, id: @pipeline.id}, id: "assets_to_batch_form") do -%>
+  <%= render partial: 'inbox_submission_button' %>
+  <%= render partial: "assets" %>
+  <%= render partial: 'inbox_submission_button' %>
 <%- end -%>
-<%= render :partial => 'show_held_requests' %>
+<%= render partial: 'show_held_requests' %>
 

@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.%>
 
-<%= form_for @task, :url => { :action => "stage", :id => @stage, :workflow_id => @workflow.id, :batch_id => @batch.id, :next_stage => true }, :html => { :id => "stage_form"} do |form| %>
+<%= form_for @task, url: { action: "stage", id: @stage, workflow_id: @workflow.id, batch_id: @batch.id, next_stage: true }, html: { id: "stage_form"} do |form| %>
 
   <p class="info">Please select a plate type.</p>
 <p>
@@ -13,6 +13,6 @@
 Plate Type: <%= form.select :plate_type_id , plate_type_options[:choices].call, plate_type_options[:options] %>
 </p>
 
-<%= render :partial => "next_stage_submit" %>
+<%= render partial: "next_stage_submit" %>
 <% end %>
 

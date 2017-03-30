@@ -6,8 +6,8 @@
 
 <% add :title, "This page details the current status of a workflow." -%>
 <% if @study.approved? && @study.active? -%>
-  <% add :manager_option, "Create Submission" => new_submission_path(:study_id => @study.id) -%>
-    <% add :manager_option, "Start a Bulk Submission" => {:controller => "/bulk_submissions", :action => "new"} -%>
+  <% add :manager_option, "Create Submission" => new_submission_path(study_id: @study.id) -%>
+    <% add :manager_option, "Start a Bulk Submission" => {controller: "/bulk_submissions", action: "new"} -%>
 <% end -%>
 <% if current_user.is_administrator? || current_user.is_manager?(@study) %>
   <% add :manager_option, "Register samples" => study_sample_registration_index_path(@study) -%>
@@ -37,16 +37,16 @@
 <% add :menu, pluralize(@study.comments.size, "comment") => study_comments_path(@study) -%>
 
 <% if current_user.is_administrator? || current_user.is_manager?(@study) %>
-  <% add :manager_option, @study.accession_number? ? "Update EBI Study data" : "Generate Accession Number" => url_for(:controller => '/studies', :action => 'accession', :id => @study.id) -%>
-  <% add :manager_option, "Generate DAC Accession Number" => url_for(:controller => '/studies', :action => 'dac_accession', :id => @study.id) -%>
-  <% add :manager_option, "Generate Policy Accession Number" => url_for(:controller => '/studies', :action => 'policy_accession', :id => @study.id) -%>
+  <% add :manager_option, @study.accession_number? ? "Update EBI Study data" : "Generate Accession Number" => url_for(controller: '/studies', action: 'accession', id: @study.id) -%>
+  <% add :manager_option, "Generate DAC Accession Number" => url_for(controller: '/studies', action: 'dac_accession', id: @study.id) -%>
+  <% add :manager_option, "Generate Policy Accession Number" => url_for(controller: '/studies', action: 'policy_accession', id: @study.id) -%>
 <% end -%>
 
 <% if current_user.is_administrator? || current_user.is_manager?(@study) %>
   <% add :menu, "Edit" => edit_study_url(@study) -%>
 <% end %>
-<% add :admin_option, "Manage" => url_for(:controller => "admin/studies", :action => "show", :id => @study.id) -%>
-<% add :menu, "Submissions" => url_for(:controller => "/submissions", :action => "study", :id => @study.id) -%>
+<% add :admin_option, "Manage" => url_for(controller: "admin/studies", action: "show", id: @study.id) -%>
+<% add :menu, "Submissions" => url_for(controller: "/submissions", action: "study", id: @study.id) -%>
 
 <% add :menu, "Qc Reports" => study_reports_study_path(@study) -%>
 
@@ -86,13 +86,13 @@
         <%= display_user_guide(I18n.t('studies.samples.no_samples_registered'), study_sample_registration_index_path(@study)) %>
       <% else -%>
         <% if (! @submissions.empty?) || (@study.requests.count > 0) -%>
-          <%= render :partial => "submission_warning" %>
-          <%= render :partial => "study_summary" %>
+          <%= render partial: "submission_warning" %>
+          <%= render partial: "study_summary" %>
           <br />
-          <%= render :partial => "items", :locals => {:summary => @summary} %>
+          <%= render partial: "items", locals: {summary: @summary} %>
         <% else -%>
           <% if @study.active? %>
-            <%= display_user_guide(I18n.t('studies.guidance.now_create_submission'), new_submission_path(:study_id => @study.id)) %>
+            <%= display_user_guide(I18n.t('studies.guidance.now_create_submission'), new_submission_path(study_id: @study.id)) %>
           <% else %>
             <%= display_user_guide(I18n.t('studies.status.not_active')) %>
           <% end %>
@@ -105,9 +105,9 @@
       <% end -%>
     <% end %>
   <% else %>
-    <%= render :partial => "submission_warning" %>
-    <%= render :partial => "study_summary" %>
+    <%= render partial: "submission_warning" %>
+    <%= render partial: "study_summary" %>
     <br />
-    <%= render :partial => "items", :locals => {:summary => @summary} %>
+    <%= render partial: "items", locals: {summary: @summary} %>
   <% end -%>
 </div>

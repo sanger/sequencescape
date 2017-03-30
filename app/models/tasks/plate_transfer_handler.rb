@@ -47,8 +47,8 @@ module Tasks::PlateTransferHandler
 
   def target_plate
     transfer = TransferRequest.siblings_of(@batch.requests.first)
-      .for_submission_id(@batch.requests.first.submission_id)
-      .includes(target_asset: :plate).first
+                              .for_submission_id(@batch.requests.first.submission_id)
+                              .includes(target_asset: :plate).first
     return nil unless transfer.present?
     transfer.target_asset.plate
   end

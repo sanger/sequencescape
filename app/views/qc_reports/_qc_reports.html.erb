@@ -22,7 +22,7 @@
     <td><%= report.state.humanize %></td>
     <td><%= report.created_at.to_formatted_s(:sortable) %></td>
     <td><%= link_to('Show',report) %></td>
-    <td><%= link_to('Download',qc_report_path(report,:format=>:csv)) if report.available? %></td>
+    <td><%= link_to('Download',qc_report_path(report,format: :csv)) if report.available? %></td>
   </tr>
 <% end %>
 </tbody>

@@ -8,7 +8,7 @@
   <div class="grouped_items col-sm-2">
     <% @alternatives.each_with_index do |description, index| -%>
       <div class="grouped_item" id="<%= index %>_link">
-        <%= link_to description.humanize, study_list_studies_path(:scope => index), :remote => true, :'data-throbber' => '#update_loader', :'data-failure' => '#remote_error', :'data-update' => '#everything' %>
+        <%= link_to description.humanize, study_list_studies_path(scope: index), remote: true, :'data-throbber' => '#update_loader', :'data-failure' => '#remote_error', :'data-update' => '#everything' %>
       </div>
     <% end -%>
   </div>
@@ -20,7 +20,7 @@
     <div class="group_content" id="everything">
       <script type="text/javascript">
       (function($, undefined){
-        $("#everything").load('<%= study_list_studies_path(:scope => scope)%>', function() {
+        $("#everything").load('<%= study_list_studies_path(scope: scope)%>', function() {
           $(document.body).trigger("ajaxDomUpdate");
         });
       })(jQuery);

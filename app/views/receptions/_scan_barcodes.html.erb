@@ -14,16 +14,16 @@
   <% end %>
   <div id='form'>
     <div id='message'>
-      <%= render :partial => message %>
+      <%= render partial: message %>
     </div>
     <br />
-    <%= form_for :asset, :url => { :action => receive_barcode }, :html => {:class => 'form-inline'} do |f| %>
+    <%= form_for :asset, url: { action: receive_barcode }, html: {class: 'form-inline'} do |f| %>
     <ul class="plate_import">
       <% num_text_boxes ||= 10 %>
       <% num_text_boxes.times do |i| %>
-      <li><%= text_field :barcode, i, { :class => 'big form-control' } %></li>
+      <li><%= text_field :barcode, i, { class: 'big form-control' } %></li>
       <% end %>
-      <li><%= submit_tag "Submit", :class => 'form-control' %></li>
+      <li><%= submit_tag "Submit", class: 'form-control' %></li>
     </ul>
     <% end %>
   </div>

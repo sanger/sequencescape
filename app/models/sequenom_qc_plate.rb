@@ -14,7 +14,7 @@ class SequenomQcPlate < Plate
 
   validates_presence_of :name
 
-  after_create :populate_wells_from_source_plates
+  after_create :schedule_populate_wells_from_source_plates
 
   def source_plates
     return [] if parents.empty?
@@ -37,7 +37,10 @@ class SequenomQcPlate < Plate
       copy_source_wells!(plate, index)
     end
   end
-  handle_asynchronously :populate_wells_from_source_plates
+
+  def schedule_populate_wells_from_source_plates
+    Delayed::Job.enqueue SequenomWellPopulationJob.new(id)
+  end
 
   def add_event_to_stock_plates(user_barcode)
     return false unless user_barcode_exist?(user_barcode)

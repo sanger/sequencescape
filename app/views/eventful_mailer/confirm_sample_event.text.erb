@@ -13,7 +13,7 @@ The following activity has been recorded for <%= @eventful.name %>.
 <%= @content %>
 
 You can view this sample here:
-<%= url_for(:host => configatron.site_url, :controller => 'samples', :action => 'show', :id => @eventful.id) %>
+<%= url_for(host: configatron.site_url, controller: 'samples', action: 'show', id: @eventful.id) %>
 
 Many thanks,
 Sequencescape

@@ -134,8 +134,8 @@ class Uuid < ActiveRecord::Base
   end
 
   # Find the uuid corresponding id and system.
-  # @param resource_name [String] the name of the external project
-  # @param id [String,  Integer ]
+  # @param resource_type [String] the name of the external project
+  # @param resource_id [String,  Integer ]
   # @return [String, nil] the uuid if found.
 
   def self.find_uuid(resource_type, resource_id)
@@ -147,19 +147,18 @@ class Uuid < ActiveRecord::Base
   end
 
   # Find an Uuid or create it if needed.
-  # @param resource_name [String] the name of the external project
-  # @param id [String,  Integer ]
+  # @param resource_type [String] the name of the external project
+  # @param resource_id [String,  Integer ]
   # @return [String] the uuid .
   def self.find_uuid!(resource_type, resource_id)
-    return unless id # return nil for nil
+    return unless resource_id # return nil for nil
     find_uuid(resource_type, resource_id) ||
       create!(resource_type: resource_type, resource_id: resource_id).external_id
   end
 
   # Given a list of internal ids, create uuids in bulk
-  # @param resource_name [String] the name of the external project
-  # @param base_class_name [String] the basic type in the external project.
-  # @param id [String,  Integer ]
+  # @param resource_type [String] the name of the external project
+  # @param resource_ids [String,  Integer ]
   # @return [String] the uuid .
   def self.generate_uuids!(resource_type, resource_ids)
     return if resource_ids.empty?
@@ -184,7 +183,7 @@ class Uuid < ActiveRecord::Base
 
   # Find the id corresponding to the uuid. Check the resource and base_class names are as expected if they are given.
   # @param uuid [String]
-  # @param resource_name [String] the name of the external project
+  # @param resource_type [String] the name of the external project
   # @return [String, nil]
   # @raise Response::Exception if system doesn't macth.
   def self.find_id(uuid, resource_type = nil)
