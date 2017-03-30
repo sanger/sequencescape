@@ -417,6 +417,7 @@ FactoryGirl.define do
     key { generate :purpose_name }
   end
 
+
   factory :transfer_request do
     association(:asset, factory: :well)
     association(:target_asset, factory: :well)
