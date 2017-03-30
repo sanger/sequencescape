@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'pry'
 
 RSpec.describe SampleManifestUploader, type: :model do
   before(:all) do
@@ -26,6 +27,7 @@ RSpec.describe SampleManifestUploader, type: :model do
     download = build(:test_download, columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup)
     download.save(test_file)
     expect(SampleManifestUploader.new(test_file, SampleManifestExcel.configuration)).to_not be_valid
+    SampleManifestExcel.configuration.tag_group = 'My Magic Tag Group'
   end
 
   it 'will upload a valid sample manifest' do
@@ -34,12 +36,12 @@ RSpec.describe SampleManifestUploader, type: :model do
     Delayed::Worker.delay_jobs = false
     uploader = SampleManifestUploader.new(test_file, SampleManifestExcel.configuration)
     uploader.run!
-    expect(uploader.upload).to be_processed
-    File.delete(test_file) if File.exist?(test_file)
+    expect(uploader).to be_processed
     Delayed::Worker.delay_jobs = true
+    File.delete(test_file) if File.exist?(test_file)
   end
 
-   it 'will not upload an invalid sample manifest' do
+  it 'will not upload an invalid sample manifest' do
     download = build(:test_download, columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup, manifest_type: 'multiplexed_library', validation_errors: [:tags])
     download.save(test_file)
     uploader = SampleManifestUploader.new(test_file, SampleManifestExcel.configuration)
@@ -47,7 +49,7 @@ RSpec.describe SampleManifestUploader, type: :model do
     expect(uploader.errors).to_not be_empty
     expect(uploader.upload).to_not be_processed
     File.delete(test_file) if File.exist?(test_file)
-   end
+  end
 
   after(:all) do
     SampleManifestExcel.reset!

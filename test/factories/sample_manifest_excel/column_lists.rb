@@ -4,7 +4,6 @@ FactoryGirl.define do
 
     factory :column_list_with_sanger_sample_id do
       initialize_with { new(build_list(:column, 5).push(build(:sanger_sample_id_column))) }
-
     end
 
     factory :column_list_for_plate do
@@ -13,10 +12,8 @@ FactoryGirl.define do
                           .push(build(:sanger_sample_id_column))
                           .push(build(:sanger_plate_id_column))
                           .push(build(:well_column))
-                          .push(build(:donor_id_column))
-                            )
+                          .push(build(:donor_id_column)))
       }
-
     end
 
     factory :column_list_for_tube do
@@ -24,10 +21,8 @@ FactoryGirl.define do
         new(build_list(:column, 5)
                           .push(build(:sanger_sample_id_column))
                           .push(build(:sanger_tube_id_column))
-                          .push(build(:donor_id2_column))
-                            )
+                          .push(build(:donor_id2_column)))
       }
-
     end
 
     factory :column_list_for_multiplexed_library_tube do
@@ -41,10 +36,8 @@ FactoryGirl.define do
                           .push(build(:tag2_index_column))
                           .push(build(:library_type_column))
                           .push(build(:insert_size_from_column))
-                          .push(build(:insert_size_to_column))
-                            )
+                          .push(build(:insert_size_to_column)))
        }
-
     end
 
     skip_create

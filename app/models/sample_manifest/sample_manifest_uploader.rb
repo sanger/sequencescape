@@ -13,11 +13,13 @@ class SampleManifestUploader
     @filename = filename
     @configuration = configuration || SampleManifestExcel::NullConfiguration.new
     @tag_group = create_tag_group
-    @upload = SampleManifestExcel::Upload::Base.new(filename: filename, column_list: self.configuration.columns.all, start_row: SampleManifestExcel.first_row)
+    @upload = SampleManifestExcel::Upload::Base.new(filename: filename, column_list: self.configuration.columns.all, start_row: SampleManifestExcel::FIRST_ROW)
   end
 
   def run!
     if valid?
+      upload.process(tag_group)
+      upload.processed?
       Delayed::Job.enqueue SampleManifestUploadProcessingJob.new(upload, tag_group)
     else
       false

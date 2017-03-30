@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 require 'rails_helper'
-require 'pry'
 
 feature 'Sample manifest with tag sequences' do
   before(:all) do
@@ -15,12 +14,13 @@ feature 'Sample manifest with tag sequences' do
   let(:columns)   { SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup }
   let(:test_file) { 'test_file.xlsx' }
 
+  before(:each) do
+    download.save(test_file)
+    Delayed::Worker.delay_jobs = false
+  end
+
   context 'valid' do
     let(:download) { build(:test_download, columns: columns) }
-
-    before(:each) do
-      download.save(test_file)
-    end
 
     scenario 'upload' do
       login_user(user)
@@ -33,10 +33,6 @@ feature 'Sample manifest with tag sequences' do
 
   context 'invalid' do
     let(:download) { build(:test_download, columns: columns, validation_errors: [:library_type]) }
-
-    before(:each) do
-      download.save(test_file)
-    end
 
     scenario 'upload' do
       login_user(user)
@@ -53,6 +49,7 @@ feature 'Sample manifest with tag sequences' do
 
   after(:each) do
     File.delete(test_file) if File.exist?(test_file)
+    Delayed::Worker.delay_jobs = true
   end
 
   def login_user(user)

@@ -21,6 +21,5 @@ FactoryGirl.define do
     }
 
     skip_create
-
   end
 end

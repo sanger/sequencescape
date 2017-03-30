@@ -25,9 +25,8 @@ RSpec.describe SampleManifestExcel, type: :model, sample_manifest_excel: true do
   end
 
   it 'should have a first row' do
-    expect(SampleManifestExcel.first_row).to be_present
-    SampleManifestExcel.first_row = 1
-    expect(SampleManifestExcel.first_row).to eq(1)
+    expect(SampleManifestExcel::FIRST_ROW).to be_present
+    expect(SampleManifestExcel::FIRST_ROW).to eq(9)
   end
 
   after(:each) do

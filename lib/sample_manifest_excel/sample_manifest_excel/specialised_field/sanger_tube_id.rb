@@ -1,6 +1,6 @@
 module SampleManifestExcel
   module SpecialisedField
-   ##
+    ##
     # A required field if it is a tube manifest.
     # No update required.
     # Checked to ensure that it is the same as the sanger human barcode for sample.

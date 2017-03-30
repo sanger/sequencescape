@@ -32,6 +32,7 @@ RSpec.describe SampleManifestExcel::Configuration, type: :model, sample_manifest
 
     before(:each) do
       configuration.folder = folder
+      configuration.tag_group = 'My Magic Tag Group'
       configuration.load!
     end
 
@@ -70,6 +71,10 @@ RSpec.describe SampleManifestExcel::Configuration, type: :model, sample_manifest
       configuration.manifest_types.each do |k, _v|
         expect(configuration.columns.send(k)).to be_frozen
       end
+    end
+
+    it 'has a tag group' do
+      expect(configuration.tag_group).to eq('My Magic Tag Group')
     end
   end
 end
