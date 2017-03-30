@@ -212,5 +212,188 @@ RSpec.describe Study, type: :model do
         expect { study.save! }.to raise_error(ActiveRecord::RecordInvalid)
       end
     end
+
+    context '#unprocessed_submissions?' do
+
+      let!(:study)  { create(:study) }
+      let!(:asset)  { create(:sample_tube) }
+     
+      context 'with submissions still unprocessed' do
+
+        before(:each) do
+          FactoryHelp::submission study: study, state: 'building', assets: [asset]
+          FactoryHelp::submission study: study, state: 'pending', assets: [asset]
+          FactoryHelp::submission study: study, state: 'processing', assets: [asset]
+        end
+
+        it 'returns true' do
+          expect(study).to be_unprocessed_submissions
+        end
+
+      end
+
+      context 'with no submissions unprocessed' do
+        before(:each) do
+          FactoryHelp::submission study: study, state: 'ready', assets: [asset]
+          FactoryHelp::submission study: study, state: 'failed', assets: [asset]
+        end
+
+        it 'returns false' do
+          expect(study).to_not be_unprocessed_submissions
+        end
+      end
+
+      context 'with no submissions at all' do
+        it 'returns false' do
+          expect(study).to_not be_unprocessed_submissions
+        end
+      end
+    end
+
+    context '#deactivate!' do
+
+      let!(:study)          { create(:study) }
+      let!(:request_type)   { create(:request_type) }
+
+      before(:each) do
+        2.times do
+          r = create(:passed_request, request_type: request_type, initial_study_id: study.id)
+          r.asset.aliquots.each { |al| al.study = study; al.save! }
+        end
+
+        2.times { create(:order, study: study) }
+        study.projects.each do |project|
+          project.enforce_quotas = true
+        end
+        study.save!
+
+        # All that has happened to this point is just prelude
+        study.deactivate!
+      end
+
+      it 'be inactive' do
+        expect(study).to be_inactive
+      end
+
+      it 'not cancel any associated requests' do
+        expect(study.requests.all? { |request| request.passed? }).to be_truthy
+      end
+    end
+
+    context 'policy text' do
+
+      let!(:study)  { create(:managed_study) }
+
+
+      it 'accept valid urls' do
+        expect(study.study_metadata.update_attributes!(dac_policy: 'http://www.example.com')).to be_truthy 
+        expect(study.study_metadata.dac_policy).to eq('http://www.example.com') 
+      end
+
+      it 'reject free text' do
+        expect{ study.study_metadata.update_attributes!(dac_policy: 'Not a URL') }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+
+      it 'reject invalid domains' do
+        expect{ study.study_metadata.update_attributes!(dac_policy: 'http://internal.example.com') }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+
+      it 'add http:// before testing a url' do
+        expect(study.study_metadata.update_attributes!(dac_policy: 'www.example.com')).to be_truthy
+        expect(study.study_metadata.dac_policy).to eq('http://www.example.com')
+      end
+
+      it 'not add http for eg. https' do
+        expect(study.study_metadata.update_attributes!(dac_policy: 'https://www.example.com')).to be_truthy
+        expect(study.study_metadata.dac_policy).to eq('https://www.example.com') 
+      end
+
+      it 'require a data access group' do
+        study.study_metadata.data_access_group = ''
+        expect(study).to_not be_valid
+        expect(study.errors['study_metadata.data_access_group']).to include("can't be blank")
+      end
+    end
+
+    context 'managed study' do
+
+      let!(:study) { create(:managed_study) }
+   
+      it 'accept valid data access group names' do
+        # Valid names contain alphanumerics and underscores. They are limited to 32 characters, and cannot begin with a number
+        ['goodname', 'g00dname', 'good_name', '_goodname', 'good-name', 'goodname1  goodname2'].each do |name|
+          expect(study.study_metadata.update_attributes!(data_access_group: name)).to be_truthy
+          expect(study.study_metadata.data_access_group).to eq(name)
+        end
+      end
+
+      it 'reject non-alphanumeric data access groups' do
+        ['b@dname', '1badname', 'averylongbadnamewouldbebadsowesouldblockit', 'baDname'].each do |name|
+          expect { study.study_metadata.update_attributes!(data_access_group: name) }.to raise_error(ActiveRecord::RecordInvalid)
+        end
+      end
+    end
+
+    context 'non-managed study' do
+
+      let(:study) { build(:study) }
+
+      it 'does not require a data access group' do
+        study.study_metadata.data_access_group = ''
+        expect(study).to be_valid
+      end
+    end
+
+    context 'study name' do
+
+      let!(:study) { create(:study) }
+
+      it 'accepts names shorter than 200 characters' do
+        expect(study.update_attributes!(name: 'Short name')).to be_truthy
+      end
+
+      it 'rejects names longer than 200 characters' do
+        expect { study.update_attributes!(name: 'a' * 201) }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+
+      it 'squish whitespace' do
+        expect(study.update_attributes!(name: '   Squish   double spaces and flanking whitespace but not double letters ')).to be_truthy 
+        expect(study.name).to eq('Squish double spaces and flanking whitespace but not double letters') 
+      end
+    end
+
+    context '#for_sample_accessioning' do
+
+      let!(:study_1) { create(:open_study) }
+      let!(:study_2) { create(:open_study, name: 'Study 2', accession_number: 'ENA123') }
+      let!(:study_3) { create(:open_study, name: 'Study 3', accession_number: 'ENA456') }
+      let!(:study_4) { create(:managed_study) }
+      let!(:study_5) { create(:managed_study, name: 'Study 4', accession_number: 'ENA666') }
+      let!(:study_6) { create(:managed_study, name: 'Study 5', accession_number: 'ENA777') }
+      let!(:study_7) { create(:managed_study, name: 'Study 6', accession_number: 'ENA888') }
+      let!(:study_8) { create(:not_app_study) }
+
+      it 'include studies that adhere to accessioning guidelines' do
+        expect(Study.for_sample_accessioning.count).to eq(5)
+      end
+
+      it 'not include studies that do not have accession numbers' do
+        studies = Study.for_sample_accessioning
+        expect(studies).to include(study_1)
+        expect(studies).to_not include(study_4)
+      end
+
+      it 'not include studies that do not have the correct data release timings' do
+        expect(study_7.study_metadata.update_attributes!(data_release_timing: Study::DATA_RELEASE_TIMING_NEVER, data_release_prevention_reason: 'data validity', data_release_prevention_approval: 'Yes', data_release_prevention_reason_comment: 'blah, blah, blah')).to be_truthy
+        expect(Study.for_sample_accessioning.count).to eq(4)
+      end
+
+      it 'not include studies that do not have the correct data release strategies' do
+        studies = Study.for_sample_accessioning
+        expect(studies).to_not include(study_8)
+      end
+    end
+
+
   end
 end
