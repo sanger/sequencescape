@@ -10,6 +10,6 @@ Plate <%= h(@asset.display_name) %> Barcode <%= @asset.sanger_human_barcode  %>
 
 <% plate    = @asset %>
 
-<%= render :partial => "shared/show_plate", :locals => {:plate => plate} %>
+<%= render partial: "shared/show_plate", locals: {plate: plate} %>
 <br />
 

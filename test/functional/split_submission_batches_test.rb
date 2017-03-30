@@ -52,8 +52,7 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
             project_name: @project.name,
             lanes_of_sequencing_required: '5',
             priority: 1
-          }
-        )
+          })
 
         Submission.last.built!
         Delayed::Worker.new.work_off

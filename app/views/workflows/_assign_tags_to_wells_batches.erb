@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.%>
 
-<%= form_for @workflow, :url => { :action => "stage", :id => @stage, :workflow_id => @workflow.id, :batch_id => @batch.id, :next_stage => true }, :html => { :id => "stage_form", :multipart => true} do |form| %>
+<%= form_for @workflow, url: { action: "stage", id: @stage, workflow_id: @workflow.id, batch_id: @batch.id, next_stage: true }, html: { id: "stage_form", multipart: true} do |form| %>
 <p>Assign tags to libraries on a plate</p>
   <table class="plate">
   	<thead>
@@ -29,7 +29,7 @@
 
           <% colour = well ? "colour#{@asset_ids_to_colour_index[well.id]%12}" : '' %>
           <td class="<%= colour %>" >
-              <%= render :partial => "select_tag_for_well", :locals => { :well => well, :well_description => well_name, :tag => @tags_to_wells[well_name] } %>
+              <%= render partial: "select_tag_for_well", locals: { well: well, well_description: well_name, tag: @tags_to_wells[well_name] } %>
             </td>
         <% end -%>
         <td class='border' width='2%'><strong><%= rowchar %></strong></td>
@@ -51,5 +51,5 @@
 
   <%= hidden_field_tag 'tag_group', @tag_group.id %>
 
-  <%= render :partial => "next_stage_submit" %>
+  <%= render partial: "next_stage_submit" %>
 <% end %>

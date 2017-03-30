@@ -38,7 +38,7 @@ class PmbClientTest < ActiveSupport::TestCase
     RestClient.expects(:post).with('http://localhost:9292/v1/print_jobs',
                         { 'data' => { 'attributes' => attributes } }.to_json,
                         content_type: 'application/vnd.api+json', accept: 'application/vnd.api+json')
-    .returns(201)
+              .returns(201)
 
     assert_equal 201, LabelPrinter::PmbClient.print(attributes)
   end
@@ -86,9 +86,9 @@ class PmbClientTest < ActiveSupport::TestCase
     assert_equal 201, LabelPrinter::PmbClient.register_printer('test_printer')
 
     RestClient.expects(:get)
-          .with('http://localhost:9292/v1/printers?filter[name]=test_printer',
+              .with('http://localhost:9292/v1/printers?filter[name]=test_printer',
             content_type: 'application/vnd.api+json', accept: 'application/vnd.api+json')
-          .returns('{"data":[{"id":"49","type":"printers","attributes":{"name":"test_printer","protocol":"LPD"}}]}')
+              .returns('{"data":[{"id":"49","type":"printers","attributes":{"name":"test_printer","protocol":"LPD"}}]}')
     refute LabelPrinter::PmbClient.register_printer('test_printer')
   end
 

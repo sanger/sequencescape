@@ -39,12 +39,12 @@ class Submission < ActiveRecord::Base
 
   self.per_page = 500
   scope :including_associations_for_json, -> { includes([
-      :uuid_object,
-      { orders: [
-         { project: :uuid_object },
-         { assets: :uuid_object },
-         { study: :uuid_object },
-         :user] }
+    :uuid_object,
+    { orders: [
+      { project: :uuid_object },
+      { assets: :uuid_object },
+      { study: :uuid_object },
+      :user] }
   ])}
 
   scope :building, -> { where(state: 'building') }

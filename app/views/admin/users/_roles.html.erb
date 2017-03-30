@@ -20,7 +20,7 @@
       <% unless role.authorizable.nil? -%>
         <td><%= link_to "#{role.authorizable_type}", role.authorizable -%></td>
         <td><%= link_to "#{role.authorizable.name}", role.authorizable -%></td>
-        <td><%= remote_button "Remove",  remove_user_role_admin_user_path(:id => @user, :role => {:authorizable_id => role.authorizable_id, :authorizable_type => role.authorizable_type.downcase, :authorizable_name => role.name }), { :update => "#role_list" }, {:class=>'btn btn-danger'} %></td>
+        <td><%= remote_button "Remove",  remove_user_role_admin_user_path(id: @user, role: {authorizable_id: role.authorizable_id, authorizable_type: role.authorizable_type.downcase, authorizable_name: role.name }), { update: "#role_list" }, {class: 'btn btn-danger'} %></td>
       <% else -%>
         <td colspan="3"><%= role.authorizable_type %></td>
       <% end -%>

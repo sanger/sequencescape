@@ -58,7 +58,7 @@ class Qcable < ActiveRecord::Base
     end
 
     where([query_details[:query].join(' OR '), *query_details[:parameters].flatten.compact])
-    .joins(query_details[:joins].compact.uniq)
+      .joins(query_details[:joins].compact.uniq)
                               }
 
   def stamp_index

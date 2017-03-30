@@ -7,7 +7,7 @@
 <ul id="request_annotations_<%= @request.id %>" class="list-group">
   <% if @request.comments.size > 0 %>
     <% @comments.each do |comment| %>
-      <li class="list-group-item"><%= render :partial => "comment" , :locals => {:comment => comment, :commentable => @request}%></li>
+      <li class="list-group-item"><%= render partial: "comment" , locals: {comment: comment, commentable: @request}%></li>
     <% end %>
   <% else %>
     <%= display_user_guide(I18n.t('requests.comments.no_comments')) %>

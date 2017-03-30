@@ -5,7 +5,7 @@
 # Copyright (C) 2011,2015 Genome Research Ltd.%>
 
 <% if request.previous_failed_requests.empty? %>
-  <%=  image_tag "true.gif", :size => "16x16", :id => "passed" %>
+  <%=  image_tag "true.gif", size: "16x16", id: "passed" %>
 <% else %>
-  <%=  image_tag "error.png", :size => "16x16", :id => "failed" %>
+  <%=  image_tag "error.png", size: "16x16", id: "failed" %>
 <% end %>

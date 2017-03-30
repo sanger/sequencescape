@@ -48,8 +48,12 @@ FactoryGirl.define do
   end
 
   factory :pac_bio_library_tube do
-    after(:build) do |t|
-      t.aliquots.build(sample: (create :sample))
+    transient do
+      aliquot { build(:tagged_aliquot) }
+    end
+    barcode
+    after(:build) do |t, evaluator|
+      t.aliquots << evaluator.aliquot
     end
   end
 

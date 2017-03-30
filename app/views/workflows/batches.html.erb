@@ -16,22 +16,22 @@
     <div id='filter'>
       <div id='filter_menu'>
         <div class='filter_links'>
-          <strong><%= link_to "Your batches", :controller => "batches", :action => "index" %></strong> &bull; <%= link_to "Show All",  :controller => "batches", :action => 'all' %>
+          <strong><%= link_to "Your batches", controller: "batches", action: "index" %></strong> &bull; <%= link_to "Show All",  controller: "batches", action: 'all' %>
         </div>
       </div>
     </div>
     <div id='details'>
       <table width='100%' cellpadding='4' cellspacing='0'>
         <tr class='header'>
-          <th width='10%'><%= link_to 'ID', { :update => 'batches', :remote => true , :url => { :action => 'list', :search => 'id' } }, { :class => 'header'} %></th>
-          <th width='10%'><%= link_to 'Samples', { :update => 'batches', :remote => true , :url => { :action => 'list', :search => 'samples' } }, { :class => 'header'} %></th>
-          <th width='35%'><%= link_to 'Pipeline', { :update => 'batches', :remote => true , :url => { :action => 'list', :search => 'pipeline' } }, { :class => 'header'} %></th>
-          <th width='10%'><%= link_to 'User', { :update => 'batches', :remote => true , :url => { :action => 'list', :search => 'user' } }, { :class => 'header'} %></th>
-          <th width='20%'><%= link_to 'Created', { :update => 'batches', :remote => true , :url => { :action => 'list', :search => 'created' } }, { :class => 'header'} %></th>
+          <th width='10%'><%= link_to 'ID', { update: 'batches', remote: true , url: { action: 'list', search: 'id' } }, { class: 'header'} %></th>
+          <th width='10%'><%= link_to 'Samples', { update: 'batches', remote: true , url: { action: 'list', search: 'samples' } }, { class: 'header'} %></th>
+          <th width='35%'><%= link_to 'Pipeline', { update: 'batches', remote: true , url: { action: 'list', search: 'pipeline' } }, { class: 'header'} %></th>
+          <th width='10%'><%= link_to 'User', { update: 'batches', remote: true , url: { action: 'list', search: 'user' } }, { class: 'header'} %></th>
+          <th width='20%'><%= link_to 'Created', { update: 'batches', remote: true , url: { action: 'list', search: 'created' } }, { class: 'header'} %></th>
           <th width='15%'>&nbsp;</th>
         </tr>
       <table width='100%' cellpadding='4' cellspacing='0' id='batches'>
-        <%= render :partial => 'batch', :collection => @batches %>
+        <%= render partial: 'batch', collection: @batches %>
       </table>
     </div>
     <br />
@@ -41,10 +41,10 @@
   <div id='main-links'>
     <div>
       Find batch by user:
-      <%= form_tag({:controller => :batches, :action => :index, :id => 'user'}) do -%>
+      <%= form_tag({controller: :batches, action: :index, id: 'user'}) do -%>
         <div class='entry'>
           <%= hidden_field_tag :id, 'user' %>
-          <%= text_field :user_id, {} , :size => "25" %>
+          <%= text_field :user_id, {} , size: "25" %>
           <%= submit_tag 'Go' %>
         </div>
         <% end -%>
@@ -54,7 +54,7 @@
       Scan sample ID:
       <form action="/items/show_scanned_sample" method="post">
         <div class='entry'>
-          <%= text_field_tag :scanned_sample, '', :size => "25" %>
+          <%= text_field_tag :scanned_sample, '', size: "25" %>
           <%= submit_tag 'Go' %>
         </div>
       </form>
@@ -64,7 +64,7 @@
       Find sample by sample ID:
       <form action="/items/show_sample" method="post">
         <div class='entry'>
-          <%= text_field_tag :id, '', :size => "25" %>
+          <%= text_field_tag :id, '', size: "25" %>
           <%= submit_tag 'Go' %>
         </div>
       </form>
@@ -74,7 +74,7 @@
       Find sample by Library ID:
       <form action="/items/show_library" method="post">
         <div class='entry'>
-          <%= text_field_tag :id, '', :size => "25" %>
+          <%= text_field_tag :id, '', size: "25" %>
           <%= submit_tag 'Go' %>
         </div>
       </form>
@@ -84,7 +84,7 @@
       Find batch by batch ID:
       <form action="/batches/show" method="post">
         <div class='entry'>
-          <%= text_field_tag :id, {}, {:size => "25"} %>
+          <%= text_field_tag :id, {}, {size: "25"} %>
           <%= submit_tag 'Go'  %>
         </div>
       </form>
@@ -94,7 +94,7 @@
       Find sample by name:
       <form action="/items/show_named_sample" method="post">
         <div class='entry'>
-          <%= text_field_with_auto_complete :item, :name, {:size => '25'} %>
+          <%= text_field_with_auto_complete :item, :name, {size: '25'} %>
           <%= submit_tag 'Go'  %>
         </div>
       </form>

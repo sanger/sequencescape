@@ -34,8 +34,8 @@ class FakeAccessionService
 
         [ena_login, ega_login].each do |service_login|
           stub_request(:post, accession_url)
-           .with(basic_auth: service_login)
-           .to_return do |_request|
+            .with(basic_auth: service_login)
+            .to_return do |_request|
               response = FakeAccessionService.instance.next!
               status = response.nil? ? 500 : 200
               {

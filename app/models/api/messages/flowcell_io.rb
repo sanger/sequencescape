@@ -32,7 +32,7 @@ class Api::Messages::FlowcellIO < Api::Base
           some_untagged = target_asset.aliquots.any?(&:untagged?)
           target_asset.aliquots.reject do |a|
             (spiked_in_buffer.present? && spiked_in_buffer.primary_aliquot =~ a) or
-            some_untagged && a.tagged? # Reproduces behaviour of batch.xml. Needed due to odd legacy data
+              some_untagged && a.tagged? # Reproduces behaviour of batch.xml. Needed due to odd legacy data
           end
         end
 

@@ -33,15 +33,15 @@ class IlluminaHtp::InitialStockTubePurpose < IlluminaHtp::StockTubePurpose
       outr_request_type = tube.requests_as_target.first.outer_request.request_type_id
 
       siblings = Asset.select('assets.*, tfr.state AS quick_state').uniq
-        .joins([
-          'LEFT JOIN requests AS tfr ON tfr.target_asset_id = assets.id',
-          'RIGHT OUTER JOIN requests AS outr ON outr.asset_id = tfr.asset_id AND outr.asset_id IS NOT NULL'
-        ])
-        .where(
+                      .joins([
+                        'LEFT JOIN requests AS tfr ON tfr.target_asset_id = assets.id',
+                        'RIGHT OUTER JOIN requests AS outr ON outr.asset_id = tfr.asset_id AND outr.asset_id IS NOT NULL'
+                      ])
+                      .where(
           outr: { submission_id: submission_id, request_type_id: outr_request_type, state: Request::Statemachine::OPENED_STATE },
           tfr:  { request_type_id: tfr_request_type, submission_id: submission_id }
         )
-        .includes([:uuid_object, :barcode_prefix])
+                      .includes([:uuid_object, :barcode_prefix])
 
       siblings.map { |s| s.id.nil? ? :no_tube : { name: s.name, uuid: s.uuid, ean13_barcode: s.ean13_barcode, state: s.quick_state } }
     end

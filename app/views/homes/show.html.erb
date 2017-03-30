@@ -9,7 +9,7 @@
 <% unless current_user.swipecard_code? %>
   <%= alert(:warning) do %>
     You don't currently have a swipe-card configured. This is required to use some of the pipeline applications.
-    <%= link_to 'Click here to set one up now!', edit_profile_path(current_user), :class=>"alert-link" %>
+    <%= link_to 'Click here to set one up now!', edit_profile_path(current_user), class: "alert-link" %>
   <% end %>
 <% end %>
 
@@ -26,24 +26,24 @@
 
 <% if @latest_batches.present? || @assigned_batches.present? %>
   <div class="col-md-6">
-  <%= render :partial => 'batches', :locals => { :latest_batches => @latest_batches, :assigned_batches => @assigned_batches, :style=>'success' } %>
+  <%= render partial: 'batches', locals: { latest_batches: @latest_batches, assigned_batches: @assigned_batches, style: 'success' } %>
   </div>
 <% end %>
 
 <% if @submissions.present? %>
   <div class="col-md-6">
-  <%= render :partial => 'submissions', :locals => { :submissions => @submissions, :style=>'success' } %>
+  <%= render partial: 'submissions', locals: { submissions: @submissions, style: 'success' } %>
   </div>
 <% end %>
 
 <% if @pipelines.present? %>
   <div class="col-md-6">
-    <%= render :partial => 'pipelines/pipelines', :locals => { :title => 'Your Most Recent', :pipelines => @pipelines, :style=>'success' } %>
+    <%= render partial: 'pipelines/pipelines', locals: { title: 'Your Most Recent', pipelines: @pipelines, style: 'success' } %>
   </div>
 <% end %>
 
 <% if @studies.present? %>
   <div class="col-md-6">
-  <%= render :partial => 'studies', :locals => { :studies => @studies, :style=>'success' } %>
+  <%= render partial: 'studies', locals: { studies: @studies, style: 'success' } %>
   </div>
 <% end %>

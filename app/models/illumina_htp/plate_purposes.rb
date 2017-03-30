@@ -230,8 +230,7 @@ module IlluminaHtp::PlatePurposes
       return RequestType.initial_transfer if request_class == :initial
       request_type_name = "#{request_type_prefix} #{parent.name}-#{child.name}"
       RequestType.create!(name: request_type_name, key: request_type_name.gsub(/\W+/, '_'), request_class_name: request_class, asset_type: 'Well', order: 1,
-                          request_purpose: std
-        )
+                          request_purpose: std)
     end
     private :request_type_between
 

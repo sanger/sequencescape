@@ -94,7 +94,8 @@ module SampleManifestExcel
       validation.update(range: range, reference: self.range.reference, worksheet: worksheet)
 
       conditional_formattings.update(
-        self.range.references.merge(absolute_reference: range.absolute_reference, worksheet: worksheet))
+        self.range.references.merge(absolute_reference: range.absolute_reference, worksheet: worksheet)
+)
 
       @updated = true
 

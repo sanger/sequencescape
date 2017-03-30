@@ -12,19 +12,19 @@
     </tr>
     <tr>
       <td class='item'><em>Start</em></td>
-      <td class='item'><%= link_to 'Prepare samples', :controller => 'workflows', :action => 'start', :id => @batch.workflow.id, :batch_id => @batch.id %></td>
+      <td class='item'><%= link_to 'Prepare samples', controller: 'workflows', action: 'start', id: @batch.workflow.id, batch_id: @batch.id %></td>
     </tr>
     <% count = 0 %>
     <% @batch.workflow.tasks.each do |task| %>
     <tr>
       <td class='item'><%= task.name %></td>
-      <td class='item'><%= link_to 'Process samples', :controller => 'workflows', :action => 'stage', :id => count, :batch_id => @batch.id, :workflow_id => @batch.workflow.id %></td>
+      <td class='item'><%= link_to 'Process samples', controller: 'workflows', action: 'stage', id: count, batch_id: @batch.id, workflow_id: @batch.workflow.id %></td>
     </tr>
     <% count += 1%>
     <% end %>
     <tr>
       <td class='item'><em>Finish</em></td>
-      <td class='item'><%= link_to 'Release samples', :controller => 'workflows', :action => 'released', :id => @batch.workflow.id, :batch_id => @batch.id %></td>
+      <td class='item'><%= link_to 'Release samples', controller: 'workflows', action: 'released', id: @batch.workflow.id, batch_id: @batch.id %></td>
     </tr>
 
   </table>

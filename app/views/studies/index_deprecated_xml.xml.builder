@@ -1,6 +1,6 @@
 xml.instruct!
 xml.studies(api_data) {
-  @studies.with_user_included.with_related_users_included.includes(:properties => :definition).find_each do |study|
+  @studies.with_user_included.with_related_users_included.includes(properties: :definition).find_each do |study|
     xml.study {
       xml.id study.id
       xml.name study.name

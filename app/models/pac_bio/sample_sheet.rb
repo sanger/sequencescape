@@ -83,7 +83,7 @@ class PacBio::SampleSheet
       concat(requests, :uuid),
       nil,
       nil
-      ]
+    ]
   end
 
   def lookup_collection_protocol(request)

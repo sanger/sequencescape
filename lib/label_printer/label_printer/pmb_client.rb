@@ -85,7 +85,7 @@ module LabelPrinter
           error_list << '%{attribute} %{message}' % { attribute: attribute, message: error['detail'] }
         end
       end
-      .join('; ')
+        .join('; ')
     end
 
     def self.prettify_old_errors(errors)
@@ -94,7 +94,7 @@ module LabelPrinter
           error_list << '%{attribute} %{message}' % { attribute: k.capitalize + ':', message: v.join(', ') }
         end
       end
-      .join('; ')
+        .join('; ')
     end
   end
 end

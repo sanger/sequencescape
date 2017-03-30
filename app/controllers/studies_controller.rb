@@ -169,7 +169,7 @@ class StudiesController < ApplicationController
 
     # TODO: create a proper ReversedStudyRelation
     @relations = @study.study_relations.map { |r| [r.related_study, r.name] } +
-      @study.reversed_study_relations.map { |r| [r.study, r.reversed_name] }
+                 @study.reversed_study_relations.map { |r| [r.study, r.reversed_name] }
   end
 
   def update_study_relation

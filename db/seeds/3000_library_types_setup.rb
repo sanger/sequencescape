@@ -7,16 +7,39 @@
 module SetupLibraryTypes
   def self.existing_associations_for(request_type)
     {
-      'LibraryCreationRequest' => ['No PCR', 'High complexity and double size selected', 'Illumina cDNA protocol', 'Agilent Pulldown', 'Custom', 'High complexity', 'ChiP-seq', 'NlaIII gene expression', 'Standard', 'Long range', 'Small RNA', 'Double size selected', 'DpnII gene expression', 'TraDIS', 'qPCR only', 'Pre-quality controlled', 'DSN_RNAseq', 'RNA-seq dUTP'],
-      'MultiplexedLibraryCreationRequest' => ['No PCR', 'High complexity and double size selected', 'Illumina cDNA protocol', 'Agilent Pulldown', 'Custom', 'High complexity', 'ChiP-seq', 'NlaIII gene expression', 'Standard', 'Long range', 'Small RNA', 'Double size selected', 'DpnII gene expression', 'TraDIS', 'qPCR only', 'Pre-quality controlled', 'DSN_RNAseq', 'RNA-seq dUTP'],
+      'LibraryCreationRequest' => [
+        'No PCR', 'High complexity and double size selected', 'Illumina cDNA protocol', 'Agilent Pulldown', 'Custom',
+        'High complexity', 'ChiP-seq', 'NlaIII gene expression', 'Standard', 'Long range', 'Small RNA', 'Double size selected',
+        'DpnII gene expression', 'TraDIS', 'qPCR only', 'Pre-quality controlled', 'DSN_RNAseq', 'RNA-seq dUTP'
+      ],
+      'MultiplexedLibraryCreationRequest' => [
+        'No PCR', 'High complexity and double size selected', 'Illumina cDNA protocol', 'Agilent Pulldown', 'Custom',
+        'High complexity', 'ChiP-seq', 'NlaIII gene expression', 'Standard', 'Long range', 'Small RNA', 'Double size selected',
+        'DpnII gene expression', 'TraDIS', 'qPCR only', 'Pre-quality controlled', 'DSN_RNAseq', 'RNA-seq dUTP'
+      ],
       'Pulldown::Requests::WgsLibraryRequest' => ['Standard'],
       'Pulldown::Requests::ScLibraryRequest' => ['Agilent Pulldown'],
       'Pulldown::Requests::IscLibraryRequest' => ['Agilent Pulldown'],
-      'IlluminaB::Requests::StdLibraryRequest' => ['No PCR', 'High complexity and double size selected', 'Illumina cDNA protocol', 'Agilent Pulldown', 'Custom', 'High complexity', 'ChiP-seq', 'NlaIII gene expression', 'Standard', 'Long range', 'Small RNA', 'Double size selected', 'DpnII gene expression', 'TraDIS', 'qPCR only', 'Pre-quality controlled', 'DSN_RNAseq'],
-      'IlluminaHtp::Requests::SharedLibraryPrep' => ['No PCR', 'High complexity and double size selected', 'Illumina cDNA protocol', 'Agilent Pulldown', 'Custom', 'High complexity', 'ChiP-seq', 'NlaIII gene expression', 'Standard', 'Long range', 'Small RNA', 'Double size selected', 'DpnII gene expression', 'TraDIS', 'qPCR only', 'Pre-quality controlled', 'DSN_RNAseq'],
-      'IlluminaHtp::Requests::LibraryCompletion' => ['No PCR', 'High complexity and double size selected', 'Illumina cDNA protocol', 'Agilent Pulldown', 'Custom', 'High complexity', 'ChiP-seq', 'NlaIII gene expression', 'Standard', 'Long range', 'Small RNA', 'Double size selected', 'DpnII gene expression', 'TraDIS', 'qPCR only', 'Pre-quality controlled', 'DSN_RNAseq'],
+      'IlluminaB::Requests::StdLibraryRequest' => [
+        'No PCR', 'High complexity and double size selected', 'Illumina cDNA protocol', 'Agilent Pulldown', 'Custom',
+        'High complexity', 'ChiP-seq', 'NlaIII gene expression', 'Standard', 'Long range', 'Small RNA', 'Double size selected',
+        'DpnII gene expression', 'TraDIS', 'qPCR only', 'Pre-quality controlled', 'DSN_RNAseq'
+      ],
+      'IlluminaHtp::Requests::SharedLibraryPrep' => [
+        'No PCR', 'High complexity and double size selected', 'Illumina cDNA protocol', 'Agilent Pulldown', 'Custom',
+        'High complexity', 'ChiP-seq', 'NlaIII gene expression', 'Standard', 'Long range', 'Small RNA', 'Double size selected',
+        'DpnII gene expression', 'TraDIS', 'qPCR only', 'Pre-quality controlled', 'DSN_RNAseq'
+      ],
+      'IlluminaHtp::Requests::LibraryCompletion' => [
+        'No PCR', 'High complexity and double size selected', 'Illumina cDNA protocol', 'Agilent Pulldown', 'Custom',
+        'High complexity', 'ChiP-seq', 'NlaIII gene expression', 'Standard', 'Long range', 'Small RNA', 'Double size selected',
+        'DpnII gene expression', 'TraDIS', 'qPCR only', 'Pre-quality controlled', 'DSN_RNAseq'
+      ],
       'Pulldown::Requests::IscLibraryRequestPart' => ['Agilent Pulldown'],
-      'IlluminaC::Requests::PcrLibraryRequest' => ['Manual Standard WGS (Plate)', 'ChIP-Seq Auto', 'TruSeq mRNA (RNA Seq)', 'Small RNA (miRNA)', 'RNA-seq dUTP eukaryotic', 'RNA-seq dUTP prokaryotic'],
+      'IlluminaC::Requests::PcrLibraryRequest' => [
+        'Manual Standard WGS (Plate)', 'ChIP-Seq Auto', 'TruSeq mRNA (RNA Seq)', 'Small RNA (miRNA)', 'RNA-seq dUTP eukaryotic',
+        'RNA-seq dUTP prokaryotic'
+      ],
       'IlluminaC::Requests::NoPcrLibraryRequest' => ['No PCR (Plate)']
     }.tap { |h| h.default = [] }[request_type.request_class_name]
   end
@@ -51,9 +74,17 @@ RequestType.find_each do |request_type|
 
   if library_types.present?
     library_types.each do |library_type|
-      LibraryTypesRequestType.create!(request_type: request_type, library_type: library_type, is_default: library_type.name == SetupLibraryTypes.existing_defaults_for(request_type))
+      LibraryTypesRequestType.create!(
+        request_type: request_type,
+        library_type: library_type,
+        is_default: library_type.name == SetupLibraryTypes.existing_defaults_for(request_type)
+      )
     end
-    RequestType::Validator.create!(request_type: request_type, request_option: 'library_type', valid_options: RequestType::Validator::LibraryTypeValidator.new(request_type.id))
+    RequestType::Validator.create!(
+      request_type: request_type,
+      request_option: 'library_type',
+      valid_options: RequestType::Validator::LibraryTypeValidator.new(request_type.id)
+    )
   end
 
     # By Key
@@ -116,7 +147,9 @@ libs_ribozero.each do |lib|
   end
 end
 
-RequestType.find_by(key: 'illumina_c_chromium_library').library_types = LibraryType.create!(['Chromium genome', 'Chromium exome', 'Chromium single cell'].map { |name| { name: name } })
+RequestType.find_by(key: 'illumina_c_chromium_library').library_types = LibraryType.create!(
+  ['Chromium genome', 'Chromium exome', 'Chromium single cell'].map { |name| { name: name } }
+)
 RequestType::Validator.create!(
   request_type: RequestType.find_by(key: 'illumina_c_chromium_library'),
   request_option: 'library_type',

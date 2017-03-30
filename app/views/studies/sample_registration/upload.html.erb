@@ -13,7 +13,7 @@
     For any help about Reference Genome list, please email <%= help_email_link %><br />
     The Reference Genome list is <%= link_to "here", reference_genomes_path %>
 </div>
-<%= form_tag spreadsheet_study_sample_registration_index_path, :multipart =>true do -%>
+<%= form_tag spreadsheet_study_sample_registration_index_path, multipart: true do -%>
 <h2>1. Please select a spreadsheet to upload:</h2>
 
 <% unless @workflow.nil? %>
@@ -25,13 +25,13 @@
 
 <p>
   <%= label_tag(:file, 'File to upload') %>:
-  <%= file_field_tag(:file, :size => 50, :class => "enhanced") %>
+  <%= file_field_tag(:file, size: 50, class: "enhanced") %>
 </p>
 
 <h2>2. Upload the spreadsheet</h2>
 
 <p>You can review and amend the data before samples are registered at the next stage.</p>
 
-<p><%= submit_tag "Upload spreadsheet", :class => "enhanced" %>  <%= image_tag "ajax-loader.gif", :size => "10x10", :id => "update_loader", :style => "display: none;"%></p>
+<p><%= submit_tag "Upload spreadsheet", class: "enhanced" %>  <%= image_tag "ajax-loader.gif", size: "10x10", id: "update_loader", style: "display: none;"%></p>
 
 <% end -%>

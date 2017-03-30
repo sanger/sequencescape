@@ -5,11 +5,11 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
 
 <% add :title, "Workflows group tasks together to define laboratory processes or automated pipelines." -%>
-<% add :back_menu, "Back to workflows" => url_for(:controller => :workflows, :action => :index) -%>
-<% add :menu, "Start workflow" => url_for(:controller => :workflows, :action => :auto, :id => @workflow) -%>
+<% add :back_menu, "Back to workflows" => url_for(controller: :workflows, action: :index) -%>
+<% add :menu, "Start workflow" => url_for(controller: :workflows, action: :auto, id: @workflow) -%>
 <% if current_user.is_administrator? -%>
-  <% add :menu, "Add task" => new_task_url(:workflow_id => @workflow.id) -%>
-  <% add :menu, "Reorder tasks" => url_for(:action => "reorder_tasks", :id => @workflow.id) -%>
+  <% add :menu, "Add task" => new_task_url(workflow_id: @workflow.id) -%>
+  <% add :menu, "Reorder tasks" => url_for(action: "reorder_tasks", id: @workflow.id) -%>
   <% add :menu, "Edit workflow" => edit_workflow_path(@workflow) -%>
 <% end -%>
 

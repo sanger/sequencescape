@@ -442,6 +442,18 @@ FactoryGirl.define do
     request_purpose { |rp| rp.association(:request_purpose) }
   end
 
+  factory :pac_bio_sequencing_request do
+    target_asset    { |ta| ta.association(:well) }
+    asset           { |a|   a.association(:pac_bio_library_tube) }
+    submission      { |s|   s.association(:submission) }
+    request_type    { |s| s.association(:pac_bio_sequencing_request_type) }
+    request_purpose
+  end
+
+  # A Multiplexed library tube comes from several library tubes, which are themselves created through a
+  # number of multiplexed library creation requests.  But the binding to these tubes comes from the parent-child
+  # relationships.
+
   factory(:empty_lane, class: Lane) do
     name                { |_l| generate :asset_name }
     external_release    nil

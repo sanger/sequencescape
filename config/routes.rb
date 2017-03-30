@@ -236,7 +236,6 @@ Sequencescape::Application.routes.draw do
       get :incomplete_requests_for_family
       get :pending
       get :get_children_requests
-      get :mpx_requests_details
     end
   end
 

@@ -3,11 +3,11 @@
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2007-2011,2015,2016 Genome Research Ltd.%>
-<% add :menu, "Create manifest for plates" => new_sample_manifest_path({:type => "plate",:study_id=>@study.id}) %>
-<% add :menu, "Create manifest for 1D tubes" => new_sample_manifest_path({:type => "1dtube",:study_id=>@study.id}) %>
-<% add :menu, "Create manifest for multiplexed libraries" => new_sample_manifest_path({:type => "multiplexed_library",:study_id=>@study.id}) %>
+<% add :menu, "Create manifest for plates" => new_sample_manifest_path({type: "plate",study_id: @study.id}) %>
+<% add :menu, "Create manifest for 1D tubes" => new_sample_manifest_path({type: "1dtube",study_id: @study.id}) %>
+<% add :menu, "Create manifest for multiplexed libraries" => new_sample_manifest_path({type: "multiplexed_library",study_id: @study.id}) %>
 
 <h2>Sample Manifests for <%= @study.name %></h2>
 <%= pagination @sample_manifests %>
-<%= render :partial => 'shared/manifests', :locals => { :manifests => @sample_manifests, :show_uploaded => true} %>
+<%= render partial: 'shared/manifests', locals: { manifests: @sample_manifests, show_uploaded: true} %>
 <%= pagination @sample_manifests %>

@@ -5,11 +5,11 @@
 # Copyright (C) 2015 Genome Research Ltd.%>
 
 
-<%= form_for :receptions, :url => { :controller => receptions_path, :action => receive_barcode } do |f| %>
-<%= hidden_field :type, :id, :value=>type %><br />
+<%= form_for :receptions, url: { controller: receptions_path, action: receive_barcode } do |f| %>
+<%= hidden_field :type, :id, value: type %><br />
 <ul class="plate_import">
   <% barcodes.each_with_index do |barcode,i| %>
-  <li><%= hidden_field :barcode, i, :value=> barcode %></li>
+  <li><%= hidden_field :barcode, i, value: barcode %></li>
   <% end %>
   <li><%= submit_tag "Move #{type}s to new location" %></li>
 </ul>

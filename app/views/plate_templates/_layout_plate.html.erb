@@ -5,11 +5,11 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.%>
 
 <% if target_action =="update" %>
-  <% html_options = {:method => :put} %>
+  <% html_options = {method: :put} %>
 <% else %>
-  <% html_options = {:method => :post} %>
+  <% html_options = {method: :post} %>
 <% end %>
-<%= form_for :plate_templates, :url => {:action => "#{target_action}"}, :html => html_options  do |f| -%>
+<%= form_for :plate_templates, url: {action: "#{target_action}"}, html: html_options  do |f| -%>
   <label>Template name:</label>
   <% if pattern.nil? -%>
     <%= text_field_tag "name" %>

@@ -35,9 +35,9 @@ class AddRequestTypeForPcrFreeXten < ActiveRecord::Migration
 
       RequestType.find_by!(key: 'htp_pcr_free_lib').library_types << lt
       %w(
-htp_pcr_free_lib
-illumina_htp_strip_tube_creation
-illumina_b_hiseq_x_paired_end_sequencing illumina_a_hiseq_x_paired_end_sequencing illumina_b_hiseq_x_paired_end_sequencing).each do |xtlb_name|
+        htp_pcr_free_lib
+        illumina_htp_strip_tube_creation
+        illumina_b_hiseq_x_paired_end_sequencing illumina_a_hiseq_x_paired_end_sequencing illumina_b_hiseq_x_paired_end_sequencing).each do |xtlb_name|
         RequestType.find_by(key: xtlb_name).library_types << lt
       end
 

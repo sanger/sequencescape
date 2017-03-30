@@ -9,7 +9,7 @@
 <%= form_for([:admin,@bait_library_type]) do |f| %>
   <%= f.error_messages %>
 
-  <%= render :partial => "edit_form", :locals => {:f => f } %>
+  <%= render partial: "edit_form", locals: {f: f } %>
   <p>
     <%= f.submit "Update" %>
   </p>

@@ -36,7 +36,7 @@ class PreCapGroupsTest < ActiveSupport::TestCase
         assert_equal([
           ['00000000-0000-0000-0000-000000000000', ['A1', 'B1', 'C1']],
           ['00000000-0000-0000-0000-000000000001', ['D1', 'E1', 'F1']]
-          ], @plate.pre_cap_groups.map { |pool, options| [pool, options[:wells].sort] })
+        ], @plate.pre_cap_groups.map { |pool, options| [pool, options[:wells].sort] })
       end
     end
 
@@ -51,7 +51,7 @@ class PreCapGroupsTest < ActiveSupport::TestCase
             ['00000000-0000-0000-0000-000000000000', ['A1', 'B1', 'C1']],
             ['00000000-0000-0000-0000-000000000001', ['D1', 'E1', 'F1']],
             ['00000000-0000-0000-0000-000000000002', ['A1', 'D1']]
-            ], @plate.pre_cap_groups.map { |pool, options| [pool, options[:wells].sort] })
+          ], @plate.pre_cap_groups.map { |pool, options| [pool, options[:wells].sort] })
         end
       end
 
@@ -87,7 +87,7 @@ class PreCapGroupsTest < ActiveSupport::TestCase
           assert_equal 6, @plate.wells.count
           assert_equal([
             ['00000000-0000-0000-0000-000000000002', ['A1', 'D1']]
-            ], @plate.pre_cap_groups.map { |pool, options| [pool, options[:wells].sort] })
+          ], @plate.pre_cap_groups.map { |pool, options| [pool, options[:wells].sort] })
         end
       end
     end

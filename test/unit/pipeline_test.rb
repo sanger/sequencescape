@@ -115,30 +115,6 @@ class PipelineTest < ActiveSupport::TestCase
         @batch_completed_pass = create :batch, pipeline: @pipeline, qc_pipeline_id: @pipeline_qc.id, state: 'released', qc_state: 'qc_completed', production_state: 'pass'
         @batch_completed_fail = create :batch, pipeline: @pipeline, qc_pipeline_id: @pipeline_qc.id, state: 'released', qc_state: 'qc_completed', production_state: 'fail'
       end
-
-      context '#qc?' do
-        should 'return true for automated qc pipeline' do
-          assert @pipeline_qc.qc?
-        end
-
-        should 'return true for manual_qc_pipeline' do
-          assert @pipeline_qc_manual.qc?
-        end
-
-        should 'not return true for non qc_pipeline' do
-          assert !@pipeline.qc?
-        end
-      end
-
-      #   context "#qc_batches_completed" do
-      #     should "return both passed and failed batches" do
-      #       assert_equal 2, @pipeline_qc.qc_batches_completed.size
-      #     end
-      #
-      #     should "return two batches" do
-      #       assert_equal [@batch_completed_pass, @batch_completed_fail].sort{|a,b| a.id <=> b.id }, @pipeline_qc.qc_batches_completed.sort{|a,b| a.id <=> b.id }
-      #     end
-      #   end
     end
   end
 end

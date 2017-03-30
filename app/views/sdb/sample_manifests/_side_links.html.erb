@@ -7,9 +7,9 @@
 <% add :menu, "SampleDB Home" => '/sdb/' %>
 <% add :menu, "&nbsp;" => '' -%>
 
-<% add :menu, "Create manifest for plates" => new_sample_manifest_path({:type => "plate", study_id: @study_id}) %>
-<% add :menu, "Create manifest for 1D tubes" => new_sample_manifest_path({:type => "1dtube", study_id: @study_id}) %>
-<% add :menu, "Create manifest for multiplexed libraries" => new_sample_manifest_path({:type => "multiplexed_library", study_id: @study_id}) %>
+<% add :menu, "Create manifest for plates" => new_sample_manifest_path({type: "plate", study_id: @study_id}) %>
+<% add :menu, "Create manifest for 1D tubes" => new_sample_manifest_path({type: "1dtube", study_id: @study_id}) %>
+<% add :menu, "Create manifest for multiplexed libraries" => new_sample_manifest_path({type: "multiplexed_library", study_id: @study_id}) %>
 <% add :menu, "View all manifests" => sample_manifests_path %>
 <% add :menu, "&nbsp;" => '' -%>
 <% add :menu, "Create supplier" => new_supplier_path %>

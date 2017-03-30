@@ -17,8 +17,8 @@
   <% for bait_library_supplier in @bait_library_suppliers %>
     <tr>
       <td><%= bait_library_supplier.name %></td>
-      <td><%= link_to 'Edit', edit_admin_bait_library_supplier_path(bait_library_supplier), :title => "Edit #{bait_library_supplier.name}" %></td>
-      <td><%= link_to 'Delete', admin_bait_library_supplier_path(bait_library_supplier), :title => "Delete #{bait_library_supplier.name}", :confirm => 'Are you sure?', :method => :delete %></td>
+      <td><%= link_to 'Edit', edit_admin_bait_library_supplier_path(bait_library_supplier), title: "Edit #{bait_library_supplier.name}" %></td>
+      <td><%= link_to 'Delete', admin_bait_library_supplier_path(bait_library_supplier), title: "Delete #{bait_library_supplier.name}", confirm: 'Are you sure?', method: :delete %></td>
     </tr>
   <% end %>
   </tbody>

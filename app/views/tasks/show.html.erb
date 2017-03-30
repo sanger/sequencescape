@@ -7,6 +7,6 @@
 <h2>Task: <%= @task.name %></h2>
 <ul>
   <li><%= link_to 'Edit this task', edit_task_path(@task) %></li>
-  <li><%= link_to 'Add another task', new_task_url(:workflow_id => @task.workflow.id) %></li>
+  <li><%= link_to 'Add another task', new_task_url(workflow_id: @task.workflow.id) %></li>
   <li><%= link_to 'Back to workflow', workflow_path(@task.workflow) %></li>
 </ul>

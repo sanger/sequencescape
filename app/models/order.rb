@@ -166,14 +166,6 @@ class Order < ActiveRecord::Base
     Submission.build!({ template: self }.merge(options))
   end
 
-  def self.extended(_base)
-    class_eval do
-      def self.build!(*args)
-        Order::build!(*args)
-      end
-    end
-  end
-
   def multiplexed?
     RequestType.find(request_types).any?(&:for_multiplexing?)
   end
@@ -368,9 +360,9 @@ class Order < ActiveRecord::Base
   # Returns true if this is an order for sequencing
   def is_a_sequencing_order?
     [
-     PacBioSequencingRequest,
-     SequencingRequest,
-     *SequencingRequest.descendants
+      PacBioSequencingRequest,
+      SequencingRequest,
+      *SequencingRequest.descendants
     ].include?(RequestType.find(request_types.last).request_class)
   end
 

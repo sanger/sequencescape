@@ -17,10 +17,10 @@ class Api::RequestIO < Api::Base
         extend ClassMethods
 
         scope :including_associations_for_json, -> { includes([
-            :uuid_object,
-            :request_type,
-            :request_metadata,
-            :user, {
+          :uuid_object,
+          :request_type,
+          :request_metadata,
+          :user, {
               asset: [
                 :uuid_object,
                 :barcode_prefix,
@@ -34,7 +34,7 @@ class Api::RequestIO < Api::Base
               initial_study: :uuid_object,
               initial_project: :uuid_object
             }
-          ])}
+        ])}
 
         alias_method(:json_root, :url_name)
       end
