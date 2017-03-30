@@ -14,7 +14,7 @@ module RecordLoader
     #   defaults to config/default_records/plate_purposes
     #
     def initialize(files: nil, directory: DEFAULT_DIRECTORY)
-      self.path = directory.is_a?(Pathname) ? directory : Pathname.new(directory)
+      path = directory.is_a?(Pathname) ? directory : Pathname.new(directory)
       @files = path.children.select do |child|
         is_yaml?(child) && in_list?(files, child)
       end
@@ -70,7 +70,6 @@ module RecordLoader
       parents = Purpose.where(name: config.fetch('from', []))
       Plate::Creator.create!(
         name: purpose.name,
-        plate_purpose: purpose,
         plate_purposes: [purpose],
         parent_plate_purposes: parents
       )
