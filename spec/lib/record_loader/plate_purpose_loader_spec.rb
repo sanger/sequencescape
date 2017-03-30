@@ -2,7 +2,6 @@ require 'rails_helper'
 require 'record_loader/plate_purpose_loader'
 
 RSpec.describe RecordLoader::PlatePurposeLoader, type: :model, loader: true do
-
   let(:test_directory) { Rails.root.join('spec', 'data', 'record_loader', 'plate_purposes') }
   let(:created_purposes) { ['Basic Plate', 'Other Plate', 'Type with creator'] }
 
