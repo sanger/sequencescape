@@ -7,7 +7,7 @@
 <%- add :title, I18n.t("studies.about") %>
 <%- add :manager_option, "Create Study" => new_study_path %>
 <%- add :manager_option, "Create Project" => new_project_path %>
-<%- add :manager_option, "Start a Bulk Submission" => {:controller => "/bulk_submissions", :action => "new"} %>
+<%- add :manager_option, "Start a Bulk Submission" => {controller: "/bulk_submissions", action: "new"} %>
 <%- add :manager_option, "Start a New Submission" => new_submission_path %>
 <%- add :manager_option, "Submissions Inbox" => submissions_path %>
 
@@ -22,5 +22,5 @@
   <%= display_user_guide(I18n.t('studies.guidance.nothing_interesting'), new_study_path) %>
 <% end -%>
 <div class='grouper' id='studies'>
-  <%= render :partial => "study_groups", :locals => {:scope => params[:scope]}  %>
+  <%= render partial: "study_groups", locals: {scope: params[:scope]}  %>
 </div>

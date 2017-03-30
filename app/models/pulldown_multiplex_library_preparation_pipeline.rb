@@ -5,12 +5,8 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 class PulldownMultiplexLibraryPreparationPipeline < Pipeline
-  INBOX_PARTIAL               = 'group_by_parent'
+  self.inbox_partial = 'group_by_parent'
   ALWAYS_SHOW_RELEASE_ACTIONS = true
 
   self.batch_worksheet = 'pulldown_worksheet'
-
-  def inbox_partial
-    INBOX_PARTIAL
-  end
 end

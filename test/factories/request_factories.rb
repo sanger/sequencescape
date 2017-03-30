@@ -64,12 +64,16 @@ FactoryGirl.define do
     after(:build) do |request|
       next if request.request_type.nil?
       request.request_metadata = build(:request_metadata_for_standard_sequencing_with_read_length, request: request, owner: request) if request.request_metadata.new_record?
-      # request.request_metadata.owner = request
       request.sti_type = request.request_type.request_class_name
     end
 
     after(:create) do |request|
       request.request_metadata.owner = request
+    end
+
+    factory(:sequencing_request_with_assets) do
+      association(:asset, factory: :library_tube)
+      association(:target_asset, factory: :lane)
     end
   end
 

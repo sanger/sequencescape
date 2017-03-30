@@ -140,9 +140,9 @@ module ApplicationHelper
 
     # TODO: Refactor this to use the bootstrap styles
     content_tag(:span, count, style: 'display:none') <<
-    content_tag(:div, style: 'width: 100px; background-color: #CCCCCC; color: inherit;') do
-      content_tag(:div, "#{count}%", style: "width: #{count}px; background-color: ##{color}; color: inherit; text-align:center")
-    end
+      content_tag(:div, style: 'width: 100px; background-color: #CCCCCC; color: inherit;') do
+        content_tag(:div, "#{count}%", style: "width: #{count}px; background-color: ##{color}; color: inherit; text-align:center")
+      end
   end
 
   def completed(object, request_type = nil, cache = {})

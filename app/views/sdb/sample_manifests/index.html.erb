@@ -4,12 +4,12 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
 
-<%= render :partial => "side_links" %>
+<%= render partial: "side_links" %>
 
 <h1>Sample Manifests</h1>
-<%= render :partial => "upload" %>
+<%= render partial: "upload" %>
 
 <%= pagination @sample_manifests %>
-<%= render :partial => 'shared/manifests', :locals => { :manifests => @display_manifests, :show_uploaded => true} %>
+<%= render partial: 'shared/manifests', locals: { manifests: @display_manifests, show_uploaded: true} %>
 
 <%= pagination @sample_manifests %>

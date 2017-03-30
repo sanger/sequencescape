@@ -7,17 +7,17 @@
 <h2>QC Results</h2>
 
 <h3>Concentration</h3>
-<%= render :partial => "qc_table", :locals => { :plate => @plate, :qc_type => "concentration" } %>
+<%= render partial: "qc_table", locals: { plate: @plate, qc_type: "concentration" } %>
 
 <h3>Measured Volume</h3>
-<%= render :partial => "qc_table", :locals => { :plate => @plate, :qc_type => "measured_volume" } %>
+<%= render partial: "qc_table", locals: { plate: @plate, qc_type: "measured_volume" } %>
 
 <h3>Quantity in ng</h3>
-<%= render :partial => "qc_table", :locals => { :plate => @plate, :qc_type => "quantity_in_nano_grams" } %>
+<%= render partial: "qc_table", locals: { plate: @plate, qc_type: "quantity_in_nano_grams" } %>
 
 <h3>Sequenom Count</h3>
-<%= render :partial => "qc_table", :locals => { :plate => @plate, :qc_type => "sequenom_count" } %>
+<%= render partial: "qc_table", locals: { plate: @plate, qc_type: "sequenom_count" } %>
 
 <h3>Gel</h3>
-<%= render :partial => "qc_table", :locals => { :plate => @plate, :qc_type => "gel_pass" } %>
+<%= render partial: "qc_table", locals: { plate: @plate, qc_type: "gel_pass" } %>
 

@@ -11,7 +11,7 @@
   <div  class="col-md-3">
     Added by <%= comment.user.try(:login)||"Unknown user" %> <%= comment.created_at.to_formatted_s(:short)%> &nbsp;
     <% if (current_user == comment.user) || current_user.administrator? %>
-      <%= button_to 'Remove', study_comment_path(comment.commentable,comment), form:{ data: { :update => "#study_annotations_#{commentable.id}" }, class:'remote-form'}, :method => :delete, :remote => true, :class=>'btn btn-danger' %>
+      <%= button_to 'Remove', study_comment_path(comment.commentable,comment), form:{ data: { update: "#study_annotations_#{commentable.id}" }, class:'remote-form'}, method: :delete, remote: true, class: 'btn btn-danger' %>
     <% end %>
   </div>
 </div>

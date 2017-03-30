@@ -5,11 +5,11 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.%>
 
 <%= panel(:info,title:'Properties') do %>
-<%= render(:partial => 'shared/metadata/edit/study', :locals => { :study => study, :form => form }) %>
+<%= render(partial: 'shared/metadata/edit/study', locals: { study: study, form: form }) %>
 
 <% if logged_in? && current_user.privileged? %>
-   <%= render :partial => "shared/ethical_approval_upload", :locals => { :study => study, :form => form } -%>
-   <%= render :partial => "shared/data_release_enforce",     :locals => { :study => study, :form => form } -%>
+   <%= render partial: "shared/ethical_approval_upload", locals: { study: study, form: form } -%>
+   <%= render partial: "shared/data_release_enforce",     locals: { study: study, form: form } -%>
 <% end %>
 
 <table width="100%" cellspacing="0" cellpadding="0">
@@ -18,9 +18,9 @@
     <td width="60%">
       <br />
       <% unless study.id.nil? %>
-        <%= submit_tag :study, :value => "Update" %> or <%= link_to "cancel", study_path(study) %>
+        <%= submit_tag :study, value: "Update" %> or <%= link_to "cancel", study_path(study) %>
       <% else %>
-        <%= submit_tag :study, :value => "Create" %> or <%= link_to "cancel", studies_path %>
+        <%= submit_tag :study, value: "Create" %> or <%= link_to "cancel", studies_path %>
       <% end %>
     </td>
   </tr>

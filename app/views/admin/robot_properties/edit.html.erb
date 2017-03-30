@@ -6,7 +6,7 @@
 
 <h1>Edit robot property for <%= @robot.name %></h1>
 
-<%= form_for([@robot, @robot_property], :url => admin_robot_robot_property_path(@robot, @robot_property)) do |f| %>
+<%= form_for([@robot, @robot_property], url: admin_robot_robot_property_path(@robot, @robot_property)) do |f| %>
 <%= f.error_messages %>
 <p>
 <%= f.label :name %>

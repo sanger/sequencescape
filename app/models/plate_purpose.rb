@@ -43,7 +43,7 @@ class PlatePurpose < Purpose
   scope :cherrypickable_default_type, -> { where(cherrypickable_target: true, cherrypickable_source: true) }
   scope :for_submissions, ->() do
     where('stock_plate = true OR name = "Working Dilution"')
-    .order(stock_plate: :desc)
+      .order(stock_plate: :desc)
   end
   scope :considered_stock_plate, -> { where(stock_plate: true) }
 
@@ -111,7 +111,7 @@ class PlatePurpose < Purpose
   # Allows creation of the input plate purposes through the API
   # without directly exposing our class names.
   #
-  # @param [Bool] Set to true to assign the sti type to PlatePurpose::Input
+  # @param [Bool] is_input Set to true to assign the sti type to PlatePurpose::Input
   def input_plate=(is_input)
     self.type = 'PlatePurpose::Input' if is_input
   end

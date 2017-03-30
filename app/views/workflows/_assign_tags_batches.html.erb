@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2014,2015,2016 Genome Research Ltd.%>
 
-<%= form_for @workflow, :url => { :action => "stage", :id => @stage, :workflow_id => @workflow.id, :batch_id => @batch.id, :next_stage => true }, :html => { :id => "stage_form"} do |form| %>
+<%= form_for @workflow, url: { action: "stage", id: @stage, workflow_id: @workflow.id, batch_id: @batch.id, next_stage: true }, html: { id: "stage_form"} do |form| %>
 
   <div class="info">
     <% if @requests.empty? -%>
@@ -66,11 +66,11 @@
     </tr>
     <tr>
       <th><%= label_tag(:mx_library_name, 'Multiplexed Library name') %>:</th>
-      <td><%= text_field_tag :mx_library_name, @batch.mpx_library_name, :value => requests.first.asset.asset_groups.first.name %></td>
+      <td><%= text_field_tag :mx_library_name, @batch.mpx_library_name, value: requests.first.asset.asset_groups.first.name %></td>
     </tr>
   </table>
 
   <%= hidden_field_tag 'tag_group', @tag_group.id %>
-  <%= render :partial => "next_stage_submit" %>
+  <%= render partial: "next_stage_submit" %>
 <% end %>
 <%= javascript_include_tag "assigntags" %>

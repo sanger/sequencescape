@@ -5,10 +5,10 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.%>
 
 <h3>Properties</h3>
-<%= render :partial => 'shared/metadata/edit/project', :locals => { :project => project, :form => form } %>
+<%= render partial: 'shared/metadata/edit/project', locals: { project: project, form: form } %>
 
 <% if logged_in? && current_user.privileged? %>
-   <%= render :partial => "shared/financial_approval",       :locals => { :project => project, :form => form } -%>
+   <%= render partial: "shared/financial_approval",       locals: { project: project, form: form } -%>
 <% end %>
 
 <table width="100%" cellspacing="0" cellpadding="0">
@@ -17,9 +17,9 @@
     <td width="60%">
       <br />
       <% unless project.id.nil? %>
-        <%= submit_tag :project, :value => "Update" %> or <%= link_to "cancel", project_path(project) %>
+        <%= submit_tag :project, value: "Update" %> or <%= link_to "cancel", project_path(project) %>
       <% else %>
-        <%= submit_tag :project, :value => "Create" %> or <%= link_to "cancel", projects_path %>
+        <%= submit_tag :project, value: "Create" %> or <%= link_to "cancel", projects_path %>
       <% end %>
     </td>
   </tr>

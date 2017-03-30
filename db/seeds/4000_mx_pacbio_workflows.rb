@@ -29,7 +29,7 @@ PacBioSamplePrepPipeline.create!(name: 'PacBio Tagged Library Prep') do |pipelin
       { class: TagGroupsTask,         name: 'Tag Groups',                           sorted: 3, lab_activity: true },
       { class: AssignTagsToTubesTask, name: 'Assign Tags',                          sorted: 4, lab_activity: true },
       { class: SamplePrepQcTask,      name: 'Sample Prep QC',                       sorted: 5, batched: true, lab_activity: true }
-     ].each do |details|
+    ].each do |details|
       details.delete(:class).create!(details.merge(workflow: workflow))
     end
   end

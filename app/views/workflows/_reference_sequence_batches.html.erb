@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
 
-<%= form_for @workflow, :url => { :action => "stage", :id => @stage, :workflow_id => @workflow.id, :batch_id => @batch.id, :next_stage => true }, :html => { :id => "stage_form"} do |form| %>
+<%= form_for @workflow, url: { action: "stage", id: @stage, workflow_id: @workflow.id, batch_id: @batch.id, next_stage: true }, html: { id: "stage_form"} do |form| %>
 
 <p>Confirm the protocol to be used for each library.</p>
 
@@ -37,9 +37,9 @@
 </table>
 
 <% @assets.each do |asset| %>
-  <%= label_tag( "asset[#{asset.id}]", "Protocol for Tube #{asset.barcode}", :style => 'display:none;') %>
+  <%= label_tag( "asset[#{asset.id}]", "Protocol for Tube #{asset.barcode}", style: 'display:none;') %>
 <% end %>
 
-<%= render :partial => "next_stage_submit" %>
+<%= render partial: "next_stage_submit" %>
 
 <% end %>

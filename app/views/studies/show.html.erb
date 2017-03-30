@@ -47,7 +47,7 @@
       </td>
       <td class='setup_item'>
       <% if current_user.manager_or_administrator? %>
-        <%= link_to status_link_title, study_status_study_path(@study), :method => :get %>
+        <%= link_to status_link_title, study_status_study_path(@study), method: :get %>
       <% end %>
       </td>
     </tr>
@@ -55,7 +55,7 @@
 
   <div id="template_form_body">
     <% unless @study.nil? -%>
-      <%= render :partial => "shared/properties", :locals => { :item => @study } %>
+      <%= render partial: "shared/properties", locals: { item: @study } %>
     <% end -%>
   </div>
 </div>
@@ -70,7 +70,7 @@
       </td>
       <td class='setup_item'>
       <% if current_user.manager_or_administrator? %>
-        <%= link_to status_link_title, study_status_study_path(@study), :method => :get %>
+        <%= link_to status_link_title, study_status_study_path(@study), method: :get %>
       <% end %>
       </td>
     </tr>

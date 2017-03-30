@@ -6,7 +6,7 @@
 
 <%# NOTE[xxx]: Kind of a hack because we need 'request[request_metadata_attributes][X]' -%>
 <%= fields_for(:request, request) do |form| %>
-  <%= form.fields_for(:request_metadata, request.request_metadata, :builder => Metadata::FormBuilder) do |metadata_fields| %>
+  <%= form.fields_for(:request_metadata, request.request_metadata, builder: Metadata::FormBuilder) do |metadata_fields| %>
     <%- request.request_metadata.field_infos.each do |field_info| %>
       <!-- todo unify with how submission use field info-->
       <%- if field_info.selection %>

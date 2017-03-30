@@ -5,9 +5,9 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
 
 <div style="text-align:center">
-  <%= form_tag grant_role_project_path(@project), :remote => true, :data => { :update => "#role_list"}, :class => 'form-inline remote-form' do -%>
-    <label for="role_user">Select a user</label> <%= select "role", "user", @users.map {|r| [r.name, r.id]}, { :prompt => true } %>&nbsp;
-    <label for="role_authorizable_type">then assign a role</label> <%= select "role", "authorizable_type", @all_roles, { :prompt => true,  } %>
+  <%= form_tag grant_role_project_path(@project), remote: true, data: { update: "#role_list"}, class: 'form-inline remote-form' do -%>
+    <label for="role_user">Select a user</label> <%= select "role", "user", @users.map {|r| [r.name, r.id]}, { prompt: true } %>&nbsp;
+    <label for="role_authorizable_type">then assign a role</label> <%= select "role", "authorizable_type", @all_roles, { prompt: true,  } %>
     <%= submit_tag "Add role" %>
   <% end -%>
 </div>

@@ -9,22 +9,22 @@
 
   <div class="form-group">
   <%= form.label :location_id, 'Sequencescape location' %>
-  <%= form.select :location_id, Location.all.map {|l| [ l.name, l.id] },{},{:required => true, :class=>'form-control'} %>
+  <%= form.select :location_id, Location.all.map {|l| [ l.name, l.id] },{},{required: true, class: 'form-control'} %>
   </div>
 
   <div class="form-group">
   <%= form.label :user_code, 'User barcode or swipecard' %>
-  <%= form.text_field :user_code, :required => true, :class=>'form-control' %>
+  <%= form.text_field :user_code, required: true, class: 'form-control' %>
   </div>
 
   <div class="form-group">
   <%= form.label :location_barcode, 'Scan location barcode' %>
-  <%= form.text_field :location_barcode, :class=>'form-control' %>
+  <%= form.text_field :location_barcode, class: 'form-control' %>
   </div>
 
   <div class="form-group">
   <%= form.label :asset_scan, 'Scan plate or tube' %>
-  <%= text_field_tag :asset_scan, '', :class=>'rescannable form-control' %>
+  <%= text_field_tag :asset_scan, '', class: 'rescannable form-control' %>
   </div>
 
   <div id="scanned"></div>
@@ -32,7 +32,7 @@
   <ul id="barcode_list" class="barcode_list">
   </ul>
 
-  <%= form.submit 'Update locations', :class=>'btn btn-success' %>
+  <%= form.submit 'Update locations', class: 'btn btn-success' %>
 <% end %>
 
 <%= javascript_include_tag 'labwhere_reception' %>

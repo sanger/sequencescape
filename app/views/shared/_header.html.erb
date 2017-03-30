@@ -52,9 +52,9 @@
     <!-- The main body of the navbar. Collapses at low resolutions -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
     <ul class="nav navbar-nav">
-      <%= render :partial => 'shared/tab', :collection => @tabs.items %>
+      <%= render partial: 'shared/tab', collection: @tabs.items %>
     </ul>
-    <%= form_tag searches_path, :method => :get, :class => "navbar-form navbar-right", :role => "search" do %>
+    <%= form_tag searches_path, method: :get, class: "navbar-form navbar-right", role: "search" do %>
       <div class="form-group">
       <%= select_tag :type, options_for_select(search_options,""), id: 'layout_search_options', class: "form-control" %>
       <%= search_field_tag :q, "", size: 20, type: "search", placeholder: "name, id, barcode", id: 'layout_search', class: 'form-control' %>

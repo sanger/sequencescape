@@ -19,7 +19,7 @@
         <td><%= link_to "#{(r_study.name or "").titleize}", study_url(r_study) %></td>
         <td>
           <% if current_user.is_manager?(@study) | current_user.is_manager?(@r_study) %>
-          <%= button_to "Remove", unrelate_study_study_path(:id => @study, :related_study => {:relation_type => r_name, :study_id => r_study.id }) %>
+          <%= button_to "Remove", unrelate_study_study_path(id: @study, related_study: {relation_type: r_name, study_id: r_study.id }) %>
         <% end %>
         </td>
       </tr>
