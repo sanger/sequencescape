@@ -16,7 +16,10 @@ module SampleManifestExcel
 
     # TODO: Because of the way Sample::Metadata is autoloaded we can't check instance_methods.
     # creating a new instance of Sample::Metadata even at startup is incredibly slow.
-    SAMPLE_METADATA_MODEL = Sample.new.sample_metadata.freeze
+    # Can't do it as a constant due to Travis failure.
+    def self.sample_metadata_model
+      @@sample_metadata_model ||= Sample::Metadata.new
+    end
 
     def initialize(attributes = {})
       super(default_attributes.merge(attributes))
@@ -64,7 +67,7 @@ module SampleManifestExcel
     end
 
     def metadata_field?
-      @metadata_field ||= SAMPLE_METADATA_MODEL.respond_to?(name)
+      @metadata_field ||= Column.sample_metadata_model.respond_to?(name)
     end
 
     def update_metadata(metadata, value)
