@@ -16,7 +16,7 @@ module SampleManifestExcel
 
     # TODO: Because of the way Sample::Metadata is autoloaded we can't check instance_methods.
     # creating a new instance of Sample::Metadata even at startup is incredibly slow.
-    SAMPLE_METADATA_MODEL = Sample::Metadata.new.freeze
+    SAMPLE_METADATA_MODEL = Sample.new.sample_metadata.freeze
 
     def initialize(attributes = {})
       super(default_attributes.merge(attributes))
