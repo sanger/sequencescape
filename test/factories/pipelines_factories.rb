@@ -379,13 +379,19 @@ FactoryGirl.define do
   factory :tag_group do |_t|
     sequence(:name) { |n| "Tag Group #{n}" }
 
+    transient do
+      tag_count 0
+    end
+
+    after(:build) do |tag_group, evaluator|
+      evaluator.tag_count.times do |i|
+        tag_group.tags << create(:tag, map_id: i + 1, tag_group: tag_group)
+      end
+    end
+
     factory :tag_group_with_tags do
       transient do
-        tags_count 5
-      end
-
-      after(:create) do |tag_group, evaluator|
-        create_list(:tag, evaluator.tags_count, tag_group: tag_group)
+        tag_count 5
       end
     end
   end
