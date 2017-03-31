@@ -4,7 +4,7 @@ require 'rails_helper'
 feature 'SampleManifest controller' do
   def load_manifest_spec
     SampleManifestExcel.configure do |config|
-      config.folder = File.join('test', 'data', 'sample_manifest_excel')
+      config.folder = File.join('spec', 'data', 'sample_manifest_excel')
       config.load!
     end
   end
