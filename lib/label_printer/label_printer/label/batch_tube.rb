@@ -24,12 +24,16 @@ module LabelPrinter
         end
       end
 
-      def bottom_line(tube)
-        (tube.is_a? PacBioLibraryTube) ? '' : super
-      end
-
       def middle_line(tube)
         (tube.is_a? PacBioLibraryTube) ? source_well_position(tube) : super
+      end
+
+      def round_label_top_line(tube)
+        (tube.is_a? PacBioLibraryTube) ? source_well_position(tube) : super
+      end
+
+      def round_label_bottom_line(tube)
+        (tube.is_a? PacBioLibraryTube) ? source_plate_barcode(tube).split(//).last(4).join : super
       end
 
       def tubes

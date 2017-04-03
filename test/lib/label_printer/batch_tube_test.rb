@@ -97,7 +97,8 @@ class BatchTubeTest < ActiveSupport::TestCase
       tube = tube_label.tubes.first
       assert_equal '123', tube_label.top_line(tube)
       assert_equal 'A1', tube_label.middle_line(tube)
-      assert_equal '', tube_label.bottom_line(tube)
+      assert_equal 'A1', tube_label.round_label_top_line(tube)
+      assert_equal '123', tube_label.round_label_bottom_line(tube)
     end
   end
 end
