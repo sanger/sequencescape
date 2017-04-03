@@ -534,6 +534,14 @@ class Study < ActiveRecord::Base
     ebi_accession_number.present?
   end
 
+  def accession_all_samples
+    if accession_number?
+      samples.each do |sample|
+        sample.accession
+      end
+    end
+  end
+
   delegate :data_release_strategy, to: :study_metadata
 
   def abbreviation

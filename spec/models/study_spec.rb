@@ -394,44 +394,6 @@ RSpec.describe Study, type: :model do
       end
     end
 
-    context 'accession all samples in study' do
-      let!(:accessionable_samples_1)        { create_list(:sample_for_accessioning, 5) }
-      let!(:unaccessionable_samples_1)      { create_list(:sample, 3) }
-      let!(:accessionable_samples_2)        { create_list(:sample_for_accessioning, 5) }
-      let!(:unaccessionable_samples_2)      { create_list(:sample, 3) }
-      let!(:open_study)                     { create(:open_study, accession_number: 'ENA123', samples: accessionable_samples_1 + unaccessionable_samples_1) }
-      let!(:managed_study)                  { create(:open_study, accession_number: 'ENA123', samples: accessionable_samples_2 + unaccessionable_samples_2) }
-      let!(:unaccessionable_study)          { create(:open_study, samples: accessionable_samples + unaccessionable_samples) }
-
-      it 'accessions all of the samples that are accessionable' do
-        open_study.accession_all_samples
-        expect(accessionable_samples_1.all? { |sample| sample.sample_metadata.sample_ebi_accession_number.present?} ).to be_truthy
-
-        managed_study.accession_all_samples
-        expect(accessionable_samples_2.all? { |sample| sample.sample_metadata.sample_ebi_accession_number.present?} ).to be_truthy
-      end
-
-      it 'does not accession any samples that are unaccessionable' do
-        open_study.accession_all_samples
-        expect(unaccessionable_samples_1.all? { |sample| sample.sample_metadata.sample_ebi_accession_number.nil?} ).to be_truthy
-
-        managed_study.accession_all_samples
-        expect(unaccessionable_samples_2.all? { |sample| sample.sample_metadata.sample_ebi_accession_number.nil?} ).to be_truthy
-      end
-
-      it 'will not attempt to accession any samples belonging to a study that does not have an accession number' do
-        expect(accessionable_samples_1.first).to_not receive(:accession)
-        open_study.accession_all_samples
-        expect(accessionable_samples_1.all? { |sample| sample.sample_metadata.sample_ebi_accession_number.nil?} ).to be_truthy
-
-        expect(accessionable_samples_2.first).to_not receive(:accession)
-        managed_study.accession_all_samples
-        expect(accessionable_samples_2.all? { |sample| sample.sample_metadata.sample_ebi_accession_number.nil?} ).to be_truthy
-
-      end
-
-    end
-
-
   end
+
 end
