@@ -6,8 +6,8 @@ module SampleManifestExcel
       included do
         include ActiveModel::Model
 
-        define_method :initialize do |_attributes = {}|
-          super
+        define_method :initialize do |attributes = {}|
+          super(attributes)
         end
       end
 

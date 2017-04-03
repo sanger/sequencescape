@@ -18,7 +18,7 @@ module SampleManifestExcel
     # creating a new instance of Sample::Metadata even at startup is incredibly slow.
     # Can't do it as a constant due to Travis failure.
     def self.sample_metadata_model
-      @@sample_metadata_model ||= Sample::Metadata.new
+      @sample_metadata_model ||= Sample::Metadata.new
     end
 
     def initialize(attributes = {})
