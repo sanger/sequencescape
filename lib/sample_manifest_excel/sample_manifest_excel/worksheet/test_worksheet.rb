@@ -78,7 +78,7 @@ module SampleManifestExcel
 
       def create_asset
         if manifest_type == 'multiplexed_library'
-          asset = FactoryGirl.create(:library_tube)
+          asset = FactoryGirl.create(:library_tube_with_barcode)
           FactoryGirl.create(:external_multiplexed_library_tube_creation_request, asset: asset, target_asset: multiplexed_library_tube)
         else
           asset = FactoryGirl.create(:sample_tube)

@@ -373,7 +373,6 @@ FactoryGirl.define do
   factory :tag, aliases: [:tag2] do
     tag_group
     oligo
-    sequence(:map_id) { |n| n }
   end
 
   factory :tag_group do |_t|

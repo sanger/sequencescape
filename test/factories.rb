@@ -443,9 +443,13 @@ FactoryGirl.define do
   end
 
   factory(:library_tube, parent: :empty_library_tube) do
-    sequence(:barcode) { |i| i }
+    # sequence(:barcode) { |i| i }
     after(:create) do |library_tube|
       library_tube.aliquots.create!(sample: create(:sample), library_type: 'Standard')
+    end
+
+    factory(:library_tube_with_barcode) do
+      sequence(:barcode) { |i| i }
     end
   end
 

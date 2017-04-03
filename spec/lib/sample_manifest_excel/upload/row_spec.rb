@@ -101,7 +101,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
   context 'aliquot transfer on multiplex library tubes' do
     attr_reader :rows
 
-    let!(:library_tubes) { create_list(:library_tube, 5) }
+    let!(:library_tubes) { create_list(:library_tube_with_barcode, 5) }
     let!(:mx_library_tube) { create(:multiplexed_library_tube) }
     let(:tags) { SampleManifestExcel::Tags::ExampleData.new.take(0, 4) }
 
