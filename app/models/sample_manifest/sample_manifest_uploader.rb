@@ -20,7 +20,8 @@ class SampleManifestUploader
     if valid?
       upload.process(tag_group)
       upload.processed?
-      Delayed::Job.enqueue SampleManifestUploadProcessingJob.new(upload, tag_group)
+      #why do we need this delayed job?
+      # Delayed::Job.enqueue SampleManifestUploadProcessingJob.new(upload, tag_group)
     else
       false
     end
