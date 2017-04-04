@@ -19,5 +19,6 @@ class Event::AssetSetQcStateEvent < Event
 
     constructor_for_event_type('passed')
     constructor_for_event_type('failed')
+    constructor_for_event_type('updated')
   end
 end

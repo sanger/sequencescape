@@ -496,20 +496,17 @@ class Batch < ActiveRecord::Base
   end
 
   def npg_set_state
-    complete = true
-    requests.each do |request|
-      unless request.asset.is_a_resource
-        event = request.events.family_pass_and_fail.first
-        if (event.nil?)
-          complete = false
-        end
-      end
+    if all_requests_qced?
+      self.state = 'released'
+      qc_complete
+      save!
     end
+  end
 
-    if complete
-     self.state = 'released'
-     qc_complete
-     save!
+  def all_requests_qced?
+    requests.all? do |request|
+      request.asset.resource? ||
+        request.events.family_pass_and_fail.exists?
     end
   end
 
