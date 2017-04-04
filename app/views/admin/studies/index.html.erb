@@ -5,12 +5,12 @@
 # Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.%>
 
 <%- add :title, "Sequencing studies can be edited, approved and managed from here." %>
-<%- add :menu, "View all studies" => url_for(:controller => "admin/studies", :action => "index")  %>
+<%- add :menu, "View all studies" => url_for(controller: "admin/studies", action: "index")  %>
 
 <% if @studies %>
   <%= page_title 'Studies', 'Manage' %>
 
-  <%= form_tag(filter_admin_studies_path, :remote => true, :id => "filter_form", :class=>'remote-form observed form-inline', :data => { :update => "#studies",  :throbber => '#update_loader'} ) %>
+  <%= form_tag(filter_admin_studies_path, remote: true, id: "filter_form", class: 'remote-form observed form-inline', data: { update: "#studies",  throbber: '#update_loader'} ) %>
 
     <%= panel(:default,title:'Filter Studies') do %>
         Show <%= bs_select :filter, :status, [ "open", "closed", "all" ] -%> studies that are <%= bs_select :filter, :by, ["unallocated manager", "all" ], {} -%> named <input type="search" placeholder="Search" name="q" id="q" class="form-control" />
@@ -18,11 +18,11 @@
     <% end %>
   </form>
   <div id='studies'>
-    <%= render :partial => "filtered_studies" %>
+    <%= render partial: "filtered_studies" %>
   </div>
 
 <% else %>
   <%= page_title 'Manage Study', @study.name %>
   <p>You can update billing information and approval status for a study here.</p>
-  <%= render :partial => "manage_single_study" %>
+  <%= render partial: "manage_single_study" %>
 <% end %>

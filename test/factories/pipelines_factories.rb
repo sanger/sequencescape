@@ -28,7 +28,6 @@ FactoryGirl.define do
 
   factory :plate_creator, class: Plate::Creator do
     name { generate :plate_creator_name }
-    plate_purpose
   end
 
   factory :control_plate do
@@ -92,11 +91,33 @@ FactoryGirl.define do
     end
 
     after(:create) do |batch, evaluator|
-      batch.batch_requests = create_list(:batch_request, evaluator.request_count, batch: batch)
+      if evaluator.request_count.positive?
+        batch.batch_requests = create_list(:batch_request, evaluator.request_count, batch: batch)
+      end
     end
 
     factory :multiplexed_batch do
       association(:pipeline, factory: :multiplexed_pipeline)
+    end
+  end
+
+  factory :pac_bio_sequencing_batch, class: Batch do
+    transient do
+      target_plate { create(:plate_with_tagged_wells, sample_count: request_count) }
+      request_count 0
+      assets { create_list(:pac_bio_library_tube, request_count) }
+    end
+
+    association(:pipeline, factory: :pac_bio_sequencing_pipeline)
+
+    after(:build) do |batch, evaluator|
+      evaluator.assets.each_with_index.map do |asset, index|
+        create :pac_bio_sequencing_request,
+               asset: asset,
+               target_asset: evaluator.target_plate.wells[index],
+               request_type: batch.pipeline.request_types.first,
+               batch: batch
+      end
     end
   end
 
@@ -133,12 +154,17 @@ FactoryGirl.define do
     active                true
     next_pipeline_id      nil
     previous_pipeline_id  nil
-    location              { |location| location.association(:location) }
+    location
 
-    after(:build) do |pipeline|
+    transient do
+      item_limit 2
+      locale 'Internal'
+    end
+
+    after(:build) do |pipeline, evaluator|
       pipeline.request_types << create(:request_type)
       pipeline.add_control_request_type
-      pipeline.build_workflow(name: pipeline.name, item_limit: 2, locale: 'Internal', pipeline: pipeline) if pipeline.workflow.nil?
+      pipeline.build_workflow(name: pipeline.name, item_limit: evaluator.item_limit, locale: evaluator.locale, pipeline: pipeline) if pipeline.workflow.nil?
     end
 
     factory :multiplexed_pipeline do
@@ -168,7 +194,7 @@ FactoryGirl.define do
   end
 
   factory :sequencing_pipeline do
-    name                  { |_a| FactoryGirl.generate :pipeline_name }
+    name                  { FactoryGirl.generate :pipeline_name }
     automated             false
     active                true
     next_pipeline_id      nil
@@ -177,9 +203,20 @@ FactoryGirl.define do
 
     association(:workflow, factory: :lab_workflow_for_pipeline)
     after(:build) do |pipeline|
-      pipeline.request_types << create(:request_type)
+      pipeline.request_types << create(:sequencing_request_type)
       pipeline.add_control_request_type
       pipeline.build_workflow(name: pipeline.name, item_limit: 2, locale: 'Internal', pipeline: pipeline) if pipeline.workflow.nil?
+    end
+  end
+
+  factory :pac_bio_sequencing_pipeline do
+    name { FactoryGirl.generate :pipeline_name }
+    active true
+    association(:workflow, factory: :lab_workflow_for_pipeline)
+    control_request_type_id(-1)
+
+    after(:build) do |pipeline|
+      pipeline.request_types << create(:pac_bio_sequencing_request_type)
     end
   end
 

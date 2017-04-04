@@ -27,14 +27,14 @@
       </td>
       <td>
       <% if study_report.report.present? %>
-         <%= link_to 'Download', study_report_path(study_report), :title => "Download report for #{study_report.study.name}" %>
+         <%= link_to 'Download', study_report_path(study_report), title: "Download report for #{study_report.study.name}" %>
       <% else %>
         Processing
       <% end %>
       </td>
       <td>
         <% if study_report.report.present? %>
-          <%= link_to "Rerun", new_study_report_path(:study => study_report.study) %>
+          <%= link_to "Rerun", new_study_report_path(study: study_report.study) %>
         <% end %>
       </td>
     </tr>

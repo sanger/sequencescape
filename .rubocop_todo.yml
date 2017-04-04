@@ -28,11 +28,6 @@ Lint/DuplicateCaseCondition:
     - 'features/support/paths.rb'
 
 # Offense count: 1
-Lint/DuplicateMethods:
-  Exclude:
-    - 'app/models/order.rb'
-
-# Offense count: 1
 Lint/EmptyEnsure:
   Exclude:
     - 'app/models/qc_file.rb'
@@ -155,7 +150,7 @@ Metrics/CyclomaticComplexity:
 # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
 # URISchemes: http, https
 Metrics/LineLength:
-  Max: 421
+  Max: 300
 
 # Offense count: 481
 # Configuration parameters: CountComments.
@@ -443,8 +438,8 @@ Style/ColonMethodCall:
 # Cop supports --auto-correct.
 # Configuration parameters: Keywords.
 # Keywords: TODO, FIXME, OPTIMIZE, HACK, REVIEW
-Style/CommentAnnotation:
-  Enabled: false
+# Style/CommentAnnotation:
+#   Enabled: false
 
 # Offense count: 18
 # Cop supports --auto-correct.
@@ -615,8 +610,8 @@ Style/IfUnlessModifier:
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles, IndentationWidth.
 # SupportedStyles: special_inside_parentheses, consistent, align_brackets
-Style/IndentArray:
-  Enabled: false
+# Style/IndentArray:
+#   Enabled: false
 
 # Offense count: 96
 # Cop supports --auto-correct.
@@ -753,27 +748,6 @@ Style/MultilineIfThen:
   Exclude:
     - 'config/initializers/ruby_net_http_proxy_hack.rb'
 
-# Offense count: 38
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: symmetrical, new_line, same_line
-Style/MultilineMethodCallBraceLayout:
-  Enabled: false
-
-# Offense count: 165
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles, IndentationWidth.
-# SupportedStyles: aligned, indented, indented_relative_to_receiver
-Style/MultilineMethodCallIndentation:
-  Enabled: false
-
-# Offense count: 38
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles, IndentationWidth.
-# SupportedStyles: aligned, indented
-Style/MultilineOperationIndentation:
-  Enabled: false
-
 # Offense count: 2
 Style/MultilineTernaryOperator:
   Exclude:
@@ -784,18 +758,6 @@ Style/MultilineTernaryOperator:
 # Cop supports --auto-correct.
 Style/MutableConstant:
   Enabled: false
-
-# Offense count: 17
-# Cop supports --auto-correct.
-Style/NegatedIf:
-  Exclude:
-    - 'app/controllers/gels_controller.rb'
-    - 'app/models/accessionable/sample.rb'
-    - 'app/models/robot_verification.rb'
-    - 'app/models/tasks/cherrypick_group_by_submission_handler.rb'
-    - 'lib/informatics/lib/informatics/view/menu/list.rb'
-    - 'lib/rails-authorization-plugin/lib/authorization.rb'
-    - 'lib/rails-authorization-plugin/lib/publishare/parser.rb'
 
 # Offense count: 5
 # Cop supports --auto-correct.

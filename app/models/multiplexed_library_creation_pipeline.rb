@@ -8,11 +8,7 @@ class MultiplexedLibraryCreationPipeline < LibraryCreationPipeline
   include Pipeline::InboxGroupedBySubmission
 
   self.batch_worksheet = 'multiplexed_library_worksheet'
-  INBOX_PARTIAL = 'request_group_by_submission_inbox'
-
-  def inbox_partial
-    INBOX_PARTIAL
-  end
+  self.inbox_partial = 'request_group_by_submission_inbox'
 
   # For a batch to be valid for completion in this pipeline it must have had the tags assigned to the
   # target assets of the requests.

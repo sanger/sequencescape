@@ -198,17 +198,17 @@ class WellTest < ActiveSupport::TestCase
   end
 
   [
-   [1000, 10, 50, 50, 0, nil],
-   [1000, 10, 10, 10, 0, nil],
-   [1000, 10, 20, 10, 0, 10],
-   [100, 100, 50, 1, 9, nil],
-   [1000, 1000, 50, 1, 9, nil],
-   [5000, 1000, 50, 5, 5, nil],
-   [10, 100, 50, 1, 9, nil],
-   [1000, 250, 50, 4, 6, nil],
-   [10000, 250, 50, 40, 0, nil],
-   [10000, 250, 30, 30, 0, nil]
-   ].each do |target_ng, measured_concentration, measured_volume, stock_to_pick, buffer_added, current_volume|
+    [1000, 10, 50, 50, 0, nil],
+    [1000, 10, 10, 10, 0, nil],
+    [1000, 10, 20, 10, 0, 10],
+    [100, 100, 50, 1, 9, nil],
+    [1000, 1000, 50, 1, 9, nil],
+    [5000, 1000, 50, 5, 5, nil],
+    [10, 100, 50, 1, 9, nil],
+    [1000, 250, 50, 4, 6, nil],
+    [10000, 250, 50, 40, 0, nil],
+    [10000, 250, 30, 30, 0, nil]
+  ].each do |target_ng, measured_concentration, measured_volume, stock_to_pick, buffer_added, current_volume|
     context 'cherrypick by nano grams' do
       setup do
         @source_well = create :well

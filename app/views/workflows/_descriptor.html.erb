@@ -21,9 +21,9 @@
     <% elsif descriptor.kind == 'File upload' %>
       <%= file_field_tag "requests[#{request.id}][upload][#{descriptor.name}" %>
     <% else %>
-      <%= text_field "requests[#{request.id}][descriptors]", u(descriptor.name), :value => value %>
+      <%= text_field "requests[#{request.id}][descriptors]", u(descriptor.name), value: value %>
     <% end %>
-    <%= hidden_field "requests[#{request.id}][fields]", @count, :value => descriptor.name %>
+    <%= hidden_field "requests[#{request.id}][fields]", @count, value: descriptor.name %>
   </td>
   </tr>
 <% else %>
@@ -40,9 +40,9 @@
   <% elsif descriptor.kind == 'File upload' %>
     <%= file_field_tag "upload[#{descriptor.name}]" %>
   <% else %>
-    <%= text_field 'descriptors', u(descriptor.name), :value => value %>
+    <%= text_field 'descriptors', u(descriptor.name), value: value %>
   <% end %>
-  <%= hidden_field 'fields', @count, :value => descriptor.name %>
+  <%= hidden_field 'fields', @count, value: descriptor.name %>
 </td>
 </tr>
 <% end %>

@@ -5,12 +5,12 @@
 # Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.%>
 
 <% add :menu, "Sample Management homepage" => lab_sample_logistics_path %>
-<%= form_for :robot_verifications, :url => {:action => "finish"} do |f| %>
+<%= form_for :robot_verifications, url: {action: "finish"} do |f| %>
 <h2>Step 3 of 3: Download TECAN file</h2>
 
 <center>
   <%# TODO Get rid this fugly url_for link and replace with a custom tecan control and tecan_file_path type thing %>
-<%= link_to 'Download TECAN file', url_for(:controller => :batches, :action => :gwl_file, :id => @batch.id, :barcode => @destination_plate_id) %>
+<%= link_to 'Download TECAN file', url_for(controller: :batches, action: :gwl_file, id: @batch.id, barcode: @destination_plate_id) %>
 </center>
 
 

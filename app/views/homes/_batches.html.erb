@@ -10,7 +10,7 @@
       <p>Your most recent owned batches</p>
     </div>
     <% latest_batches.each do |batch| -%>
-      <%= batch_link(batch, :class=>"list-group-item") %>
+      <%= batch_link(batch, class: "list-group-item") %>
     <% end -%>
   <% end %>
   <% if assigned_batches.present? %>
@@ -19,7 +19,7 @@
       <p>The most recent batches assigned to you. This excludes any you may have taken ownership of.</p>
     </div>
     <% assigned_batches.each do |batch| -%>
-      <%= batch_link(batch, :class=>"list-group-item") %>
+      <%= batch_link(batch, class: "list-group-item") %>
     <% end -%>
   <% end %>
 <% end %>

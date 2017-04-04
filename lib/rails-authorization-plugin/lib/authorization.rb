@@ -5,16 +5,16 @@ module Authorization
   module Base
     # Modify these constants in your environment.rb to tailor the plugin to
     # your authentication system
-    if not Object.constants.include? 'LOGIN_REQUIRED_REDIRECTION'
+    unless Object.constants.include? 'LOGIN_REQUIRED_REDIRECTION'
       LOGIN_REQUIRED_REDIRECTION = {
         controller: 'session',
         action: 'new'
       }
     end
-    if not Object.constants.include? 'PERMISSION_DENIED_REDIRECTION'
+    unless Object.constants.include? 'PERMISSION_DENIED_REDIRECTION'
       PERMISSION_DENIED_REDIRECTION = ''
     end
-    if not Object.constants.include? 'STORE_LOCATION_METHOD'
+    unless Object.constants.include? 'STORE_LOCATION_METHOD'
       STORE_LOCATION_METHOD = :store_location
     end
 
@@ -70,7 +70,7 @@ module Authorization
 
       def has_permission?(authorization_expression)
         @current_user = get_user
-        if not @options[:allow_guests]
+        unless @options[:allow_guests]
           # We aren't logged in, or an exception has already been raised.
           # Test for both nil and :false symbol as restful_authentication plugin
           # will set current user to ':false' on a failed login (patch by Ho-Sheng Hsiao).
@@ -88,7 +88,7 @@ module Authorization
 
       # Handle redirection within permit if authorization is denied.
       def handle_redirection
-        return if not respond_to?(:redirect_to)
+        return unless respond_to?(:redirect_to)
 
         # Store url in session for return if this is available from
         # authentication

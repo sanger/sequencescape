@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
 
 <%- add :title, "Study specification and management." %>
-<% add :admin_option, "Study manage" => url_for(:controller => "admin/studies", :action => "show", :id => @study.id) -%>
+<% add :admin_option, "Study manage" => url_for(controller: "admin/studies", action: "show", id: @study.id) -%>
 <% add :back_menu, I18n.t("navigation.menu.back_to_study") => study_workflow_path(@study, @workflow) -%>
 
 <div id='content-links'>

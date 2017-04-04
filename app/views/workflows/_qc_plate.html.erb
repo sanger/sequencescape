@@ -23,7 +23,7 @@
         <th class='border' width='2%'><%= rowchar %></th>
         <% (num_columns).times do |column| -%>
           <td>
-            <%= render :partial => well_partial, :locals => {:well_request => @request_wells[plate.id]["#{rowchar}#{column+1}"], :plate => plate, :well_description => "#{rowchar}#{column+1}" } %>
+            <%= render partial: well_partial, locals: {well_request: @request_wells[plate.id]["#{rowchar}#{column+1}"], plate: plate, well_description: "#{rowchar}#{column+1}" } %>
           </td>
         <% end -%>
         <th class='border' width='2%'><%= rowchar %></th>

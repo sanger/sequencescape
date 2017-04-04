@@ -42,8 +42,6 @@ namespace :test do
           :request_without_item,
           :multiplex_request_type,
           :library_types_request_type,
-          :sequencing_request_type_validator,
-          :library_request_type_validator,
           :submission__,
           :order_with_submission,
           :library_submission,
@@ -62,6 +60,7 @@ namespace :test do
         begin
           DatabaseCleaner.start
           puts "Linting #{factories_to_lint.length} factories. (Ignored #{ignored})"
+          puts 'Use LINT_ALL=true to lint all factories' if ENV.fetch('LINT_ALL', false)
           FactoryGirl.lint factories_to_lint
           puts 'Linted'
         ensure

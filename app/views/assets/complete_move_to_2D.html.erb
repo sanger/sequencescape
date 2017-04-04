@@ -8,9 +8,9 @@
 <% add :menu, (pluralize @asset.comments.size, "comment") => asset_comments_path(@asset) -%>
 <% add :manager_option, "Print label" => print_asset_path(@asset) -%>
 <% if @asset.closed? %>
-  <% add :manager_option, { "Open" => close_asset_path(@asset) },  { :confirm => "Do you really want to open this #{@asset.label}?" }  -%>
+  <% add :manager_option, { "Open" => close_asset_path(@asset) },  { confirm: "Do you really want to open this #{@asset.label}?" }  -%>
 <% else %>
-  <% add :manager_option, {  "Close" => close_asset_path(@asset) }, { :confirm => "Do you really want to close this #{@asset.label}?" } -%>
+  <% add :manager_option, {  "Close" => close_asset_path(@asset) }, { confirm: "Do you really want to close this #{@asset.label}?" } -%>
 <% end %>
 
 <% add :menu, "Event history" => history_asset_path(@asset) -%>
@@ -26,7 +26,7 @@
 
 <h1>Asset Specification</h1>
 
-<%= render :partial => "asset", :locals => { :asset => @asset } %>
+<%= render partial: "asset", locals: { asset: @asset } %>
 <br />
 
 <h3>RELATIONS</h3>
@@ -81,7 +81,7 @@
   <tbody>
     <% @asset.requests.each do |request| %>
     <tr>
-      <td><%= link_to(request.id, request, :title => "#{ request.request_type.try(:name) || 'Unknown' } request") %></td>
+      <td><%= link_to(request.id, request, title: "#{ request.request_type.try(:name) || 'Unknown' } request") %></td>
       <td><%= request.request_type and request.request_type.name %></td>
       <td><%= request.submission ? request.submission.study_names : "NA" %></td>
       <td><%= request_status(request) %></td>
@@ -97,7 +97,7 @@
       <% end %>
       <% if current_user.manager_or_administrator? || current_user.owner?(@asset) %>
         <td><%= link_to 'Copy', copy_request_url(request)   %></td>
-        <td><%= link_to 'Cancel', cancel_request_url(request),:confirm => "Are you sure you want to cancel request #{request.id}?" %></td>
+        <td><%= link_to 'Cancel', cancel_request_url(request),confirm: "Are you sure you want to cancel request #{request.id}?" %></td>
       <% end %>
       <td><%=h request.created_at.to_formatted_s(:long) %></td>
     </tr>

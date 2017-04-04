@@ -29,7 +29,7 @@
                 <% sample = well.try(:primary_aliquot).try(:sample) %>
                 <% if sample.present? and not sample.sample_empty? %>
                   <%= hidden_label_tag_for_testing(well_name.downcase, "Well #{well_name}") %>
-                  <%= gel_qc_select_box(well, well.well_attribute.gel_pass, :generate_blank => true, :id => well_name.downcase) %>
+                  <%= gel_qc_select_box(well, well.well_attribute.gel_pass, generate_blank: true, id: well_name.downcase) %>
                 <% end %>
               <% end %>
             </div>

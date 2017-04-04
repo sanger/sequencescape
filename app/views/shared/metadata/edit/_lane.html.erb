@@ -6,7 +6,7 @@
 
 <%# NOTE[xxx]: Kind of a hack because we need 'lane_metadata_attributes[lane_metadata_attributes][X]' -%>
 <%= fields_for(lane) do |form| %>
-  <%= form.fields_for(:lane_metadata, :builder => Metadata::FormBuilder) do |metadata_fields| %>
+  <%= form.fields_for(:lane_metadata, builder: Metadata::FormBuilder) do |metadata_fields| %>
     <% if @asset.external_release %>
       <%= metadata_fields.select(:release_reason , [""]+Lane::LIST_REASONS_POSITIVE) %>
     <% else %>

@@ -7,7 +7,7 @@
 class PicoSetResultsController < ApplicationController
   before_action :login_required, except: :create
 
-  # TODO This should be an update method not create
+  # TODO: This should be an update method not create
   # TODO Refactor. Create an object for pico_set_result
   def create
     pico_set_result = params[:pico_set_result]

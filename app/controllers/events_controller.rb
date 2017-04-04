@@ -27,6 +27,9 @@ class EventsController < ApplicationController
     respond_to do |format|
       # I know this looks crazy, but it appears to be explicitly tested for
       # Unfortunately there is no comment as to why.
+      # However a similar issue elsewhere in the codebase indicates that
+      # its probably because NPG are missing accept headers in some cases
+      # resulting in defaulting to HTML
       format.html { render xml: @event.to_xml }
       format.xml  { render xml: @event.to_xml }
       format.json { render json: @event.to_json }

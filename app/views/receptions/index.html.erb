@@ -10,4 +10,4 @@
 <% add :back_menu, "Back to pipelines" => pipelines_path -%>
 
 <h1>Reception</h1>
-<%= render :partial => "scan_barcodes", :locals =>{ :message =>  'scan_message', :num_text_boxes => @num_text_boxes, :receive_barcode => "receive_barcode"} %>
+<%= render partial: "scan_barcodes", locals: { message: 'scan_message', num_text_boxes: @num_text_boxes, receive_barcode: "receive_barcode"} %>

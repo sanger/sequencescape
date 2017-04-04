@@ -7,28 +7,32 @@
 ActiveRecord::Base.transaction do
   excluded = ['Dilution Plates']
 
-  PlatePurpose.where(qc_display: true).each do |plate_purpose|
-    Plate::Creator.create!(plate_purpose: plate_purpose, name: plate_purpose.name).tap do |creator|
+  PlatePurpose.where(name: [
+    'Stock Plate', 'Normalisation', 'Pico Standard', 'Pulldown',
+    'Dilution Plates', 'Pico Assay Plates', 'Gel Dilution Plates',
+    'Aliquot 1', 'Aliquot 2', 'Aliquot 3', 'Aliquot 4', 'Aliquot 5'
+  ]).find_each do |plate_purpose|
+    Plate::Creator.create!(name: plate_purpose.name).tap do |creator|
       creator.plate_purposes = plate_purpose.child_plate_purposes
     end unless excluded.include?(plate_purpose.name)
   end
 
   # Additional plate purposes required
   ['Pico dilution', 'Working dilution'].each do |name|
-    plate_purpose = PlatePurpose.find_by(name: name) or raise StandardError, "Cannot find #{name.inspect} plate purpose"
-    Plate::Creator.create!(name: name, plate_purpose: plate_purpose, plate_purposes: [plate_purpose])
+    plate_purpose = PlatePurpose.find_by!(name: name)
+    Plate::Creator.create!(name: name, plate_purposes: [plate_purpose])
   end
 
   plate_purpose = PlatePurpose.find_by!(name: 'Pre-Extracted Plate')
-  creator = Plate::Creator.create!(name: 'Pre-Extracted Plate', plate_purpose: plate_purpose, plate_purposes: [plate_purpose])
+  creator = Plate::Creator.create!(name: 'Pre-Extracted Plate', plate_purposes: [plate_purpose])
   creator.parent_plate_purposes << Purpose.find_by!(name: 'Stock plate')
 
   purposes_config = [
-      [Plate::Creator.find_by!(name: 'Working dilution'),  Purpose.find_by!(name: 'Stock plate')],
-      [Plate::Creator.find_by!(name: 'Pico dilution'),     Purpose.find_by!(name: 'Working dilution')],
-      [Plate::Creator.find_by!(name: 'Pico Assay Plates'), Purpose.find_by!(name: 'Pico dilution')],
-      [Plate::Creator.find_by!(name: 'Pico Assay Plates'), Purpose.find_by!(name: 'Working dilution')],
-    ]
+    [Plate::Creator.find_by!(name: 'Working dilution'), Purpose.find_by!(name: 'Stock plate')],
+    [Plate::Creator.find_by!(name: 'Pico dilution'),     Purpose.find_by!(name: 'Working dilution')],
+    [Plate::Creator.find_by!(name: 'Pico Assay Plates'), Purpose.find_by!(name: 'Pico dilution')],
+    [Plate::Creator.find_by!(name: 'Pico Assay Plates'), Purpose.find_by!(name: 'Working dilution')],
+  ]
 
   purposes_config.each do |creator, purpose|
     creator.parent_plate_purposes << purpose

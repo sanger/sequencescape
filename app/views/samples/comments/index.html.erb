@@ -14,7 +14,7 @@
 </div>
 
 <div class='info'>
-  <%= render :partial => "list", :locals => {:item => @sample } %>
+  <%= render partial: "list", locals: {item: @sample } %>
   <% if current_user.privileged? @sample %>
     <div>
       <%= form_tag(sample_comments_path(@sample), data: { update: "#sample_annotations_#{@sample.id}", remote: true }, class:'remote-form') do %>

@@ -10,9 +10,9 @@
   <% add :menu, "Print label" => print_asset_path(@asset) -%>
 <% end %>
 <% if @asset.closed? %>
-  <% add :manager_option, { "Open" => close_asset_path(@asset) },  { :confirm => "Do you really want to open this #{@asset.label}?" }  -%>
+  <% add :manager_option, { "Open" => close_asset_path(@asset) },  { confirm: "Do you really want to open this #{@asset.label}?" }  -%>
 <% else %>
-  <% add :manager_option, {  "Close" => close_asset_path(@asset) }, { :confirm => "Do you really want to close this #{@asset.label}?" } -%>
+  <% add :manager_option, {  "Close" => close_asset_path(@asset) }, { confirm: "Do you really want to close this #{@asset.label}?" } -%>
 <% end %>
 <% if @asset.is_a?(Plate) %>
   <% add :menu, "QC results" => plate_path(@asset) %>
@@ -42,7 +42,7 @@
 
 <%= page_title('Asset',@asset.display_name) %>
 
-<%= render :partial => "asset", :locals => { :asset => @asset } %>
+<%= render partial: "asset", locals: { asset: @asset } %>
 
 <h3>Relations</h3>
 <div class='help'>
@@ -111,7 +111,7 @@
   <tbody>
     <% @asset.requests.each do |request| %>
     <tr>
-      <td><%= link_to(request.id, request_url(request), :title => "#{ request.request_type.try(:name) || 'Unknown' } request") %></td>
+      <td><%= link_to(request.id, request_url(request), title: "#{ request.request_type.try(:name) || 'Unknown' } request") %></td>
       <td><%= request.request_type and request.request_type.name %></td>
       <td>
         <% if request.submission %>
@@ -136,7 +136,7 @@
       <% end %>
       <% if current_user.manager_or_administrator? || current_user.owner?(@asset) %>
         <td><%= link_to 'Copy', copy_request_url(request)   %></td>
-        <td><%= link_to 'Cancel', cancel_request_url(request),:confirm => "Are you sure you want to cancel request #{request.id}?" %></td>
+        <td><%= link_to 'Cancel', cancel_request_url(request),confirm: "Are you sure you want to cancel request #{request.id}?" %></td>
       <% end %>
       <td><%=h request.created_at.to_formatted_s(:long) %></td>
     </tr>

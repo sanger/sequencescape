@@ -43,9 +43,12 @@ class StudyReport < ActiveRecord::Base
       end
     end
   end
-  handle_asynchronously :perform, priority: Proc.new { |i| i.priority }
+
+  def schedule_report
+    Delayed::Job.enqueue StudyReportJob.new(id), priority: priority
+  end
 
   def priority
-    configatron.delayed_job.fetch(:study_report_priority) || 100
+    configatron.delayed_job.fetch(:study_report_priority, 100)
   end
 end

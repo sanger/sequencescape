@@ -10,11 +10,11 @@
 
 <div class="info">
 Enter the number of <%= ActiveSupport::Inflector.pluralize @request.request_type.name.downcase %> to request. Required fields are marked with <%= required_marker %>.
-<%= render :partial => 'shared/long_read_warning' %>
+<%= render partial: 'shared/long_read_warning' %>
 </div>
 
 <div id="study">
-<%= form_for(:request, :url => requests_path) do |form| %>
+<%= form_for(:request, url: requests_path) do |form| %>
 
 <table width="100%" cellspacing="0" cellpadding="0">
   <tr>
@@ -27,7 +27,7 @@ Enter the number of <%= ActiveSupport::Inflector.pluralize @request.request_type
   </tr>
   <tr>
     <td width="35%" class="item">Number to create: <%= required_marker %></td>
-    <td width="35%"><%= text_field :options, :count, :value => 1 %></td>
+    <td width="35%"><%= text_field :options, :count, value: 1 %></td>
   </tr>
 </table>
 
@@ -35,8 +35,8 @@ Enter the number of <%= ActiveSupport::Inflector.pluralize @request.request_type
   <tr>
     <td width="35%" >&nbsp;</td>
     <td width="65%">
-      <%= hidden_field :item, :id, :value => @item.id %>
-      <%= hidden_field :request, :request_type_id, :value => @request.request_type.id %>
+      <%= hidden_field :item, :id, value: @item.id %>
+      <%= hidden_field :request, :request_type_id, value: @request.request_type.id %>
 
       <br />
       <%= submit_tag "Create" %> or <%= link_to "cancel", samples_path %>

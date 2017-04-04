@@ -13,7 +13,7 @@ Hello,
 <p>The reason for failure is: <%= @message %></p>
 
 <p>You can view the request details here:<br />
-<a href="<%= url_for(:host => configatron.site_url, :controller => 'requests', :action => 'show', :id => @request.id) %>"><%= url_for(:host => configatron.site_url, :controller => 'requests', :action => 'show', :id => @request.id) %></a>
+<a href="<%= url_for(host: configatron.site_url, controller: 'requests', action: 'show', id: @request.id) %>"><%= url_for(host: configatron.site_url, controller: 'requests', action: 'show', id: @request.id) %></a>
 </p>
 
 <p>Many thanks,<br />

@@ -14,11 +14,11 @@
   </div>
   <div class="info">
     <table width="100%" cellspacing="0" cellpadding="0">
-      <%= form_tag(:controller => :pipelines, :action => :set_inbox, :id => @pipeline.id ) do -%>
+      <%= form_tag(controller: :pipelines, action: :set_inbox, id: @pipeline.id ) do -%>
         <tr>
           <td width="35%" class="item">Control samples: </td>
           <td width="65%">
-            <%= select_tag("controls[]", options_for_select(@controls.map {|c| [c.name, ["#{c.name}, #{c.id}"]]}), {:multiple => true, :size => "3", :style => "width:175px;margin-left:2px;"}) %>
+            <%= select_tag("controls[]", options_for_select(@controls.map {|c| [c.name, ["#{c.name}, #{c.id}"]]}), {multiple: true, size: "3", style: "width:175px;margin-left:2px;"}) %>
           </td>
         </tr>
         <tr>

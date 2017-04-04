@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2014,2015 Genome Research Ltd.%>
 
-<%= form_for @workflow, :url => { :action => "stage", :id => @stage, :workflow_id => @workflow.id, :batch_id => @batch.id, :next_stage => true }, :html => { :id => "stage_form"} do |form| %>
+<%= form_for @workflow, url: { action: "stage", id: @stage, workflow_id: @workflow.id, batch_id: @batch.id, next_stage: true }, html: { id: "stage_form"} do |form| %>
 <p>Select a movie lengths.</p>
 <table id="smrt_cells_available" width="50%" class="sortable" cellpadding="2" cellspacing="0">
 <thead>
@@ -13,13 +13,13 @@
 <tbody>
 <% @assets.each do |asset| %>
   <tr>
-    <td><%= label_tag( "asset[#{asset.id}]", "Movie length for #{asset.barcode}", :style => 'display:none;') %><%= asset.name %>: <%= asset.barcode %></td>
-    <td><%= select_tag "asset[#{asset.id}]", options_for_select(@valid_movie_lengths,:selected=>@default_movie_length) %></td>
+    <td><%= label_tag( "asset[#{asset.id}]", "Movie length for #{asset.barcode}", style: 'display:none;') %><%= asset.name %>: <%= asset.barcode %></td>
+    <td><%= select_tag "asset[#{asset.id}]", options_for_select(@valid_movie_lengths,selected: @default_movie_length) %></td>
   </tr>
 <% end%>
 </tbody>
 </table>
 
-<%= render :partial => "next_stage_submit" %>
+<%= render partial: "next_stage_submit" %>
 
 <% end %>

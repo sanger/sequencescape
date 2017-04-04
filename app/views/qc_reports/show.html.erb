@@ -17,7 +17,7 @@
 </div>
 
 <% if @report_presenter.available? %>
-  <%= render :partial => 'qc_report', :locals => {:qc_report=>@report_presenter} %>
+  <%= render partial: 'qc_report', locals: {qc_report: @report_presenter} %>
 <% else %>
   <%= I18n.t('qc_reports.pending_report') %>
 <% end %>

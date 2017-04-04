@@ -11,7 +11,7 @@
   <%=h @tag_group.name %>
 </p>
 
-<%= render :partial => "shared/tags_list", :locals => { :tag_group => @tag_group, :tags => @tag_group.tags } %>
+<%= render partial: "shared/tags_list", locals: { tag_group: @tag_group, tags: @tag_group.tags } %>
 
 
 <script type="text/javascript">$('table tbody > tr:nth-child(even)').addClass('roweven');</script>

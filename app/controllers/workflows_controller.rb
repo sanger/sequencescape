@@ -8,7 +8,7 @@ class WorkflowsController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
-  before_action :find_workflow_by_id, only: [:auto_batch, :show, :edit, :duplicate, :batches, :update, :destroy, :reorder_tasks]
+  before_action :find_workflow_by_id, only: [:show, :edit, :duplicate, :batches, :update, :destroy, :reorder_tasks]
 
   include Tasks::AddSpikedInControlHandler
   include Tasks::AssignTagsHandler
@@ -44,10 +44,6 @@ class WorkflowsController < ApplicationController
     end
   end
 
-  def auto_batch
-    @batch = Batch.find(params[:batch_id])
-  end
-
   public
 
   def show
@@ -78,7 +74,7 @@ class WorkflowsController < ApplicationController
 
   def batches
     @workflow = LabInterface::Workflow.find(params[:id])
-    # TODO association broken here - something to do with the attachables polymorph?
+    # TODO: association broken here - something to do with the attachables polymorph?
     @batches = Batch.where(workflow_id: @workflow.id).sort_by { |batch| batch.id }.reverse
   end
 

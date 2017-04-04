@@ -6,10 +6,8 @@
 
 class SequencingPipeline < Pipeline
   self.batch_worksheet = 'simplified_worksheet'
-
-  def sequencing?
-    true
-  end
+  self.sequencing = true
+  self.purpose_information = false
 
   def request_actions
     [:remove]
@@ -17,10 +15,6 @@ class SequencingPipeline < Pipeline
 
   def inbox_partial
     group_by_parent? ? 'group_by_parent' : super
-  end
-
-  def purpose_information?
-    false
   end
 
   def is_read_length_consistent_for_batch?(batch)

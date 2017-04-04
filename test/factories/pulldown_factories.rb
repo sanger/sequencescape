@@ -9,14 +9,14 @@ FactoryGirl.define do
 
     after(:create) do |plate|
       plate.wells << Map.where_description(['A1', 'B1', 'C1'])
-        .where_plate_size(plate.size)
-        .where_plate_shape(AssetShape.find_by(name: 'Standard')).map do |location|
+                        .where_plate_size(plate.size)
+                        .where_plate_shape(AssetShape.find_by(name: 'Standard')).map do |location|
           create(:tagged_well, map: location)
-        end
+      end
     end
 
     factory(:source_transfer_plate) do
-      plate_purpose  { PlatePurpose.find_by(name: 'Parent plate purpose') || create(:parent_plate_purpose) }
+      plate_purpose { PlatePurpose.find_by(name: 'Parent plate purpose') || create(:parent_plate_purpose) }
     end
 
     factory(:destination_transfer_plate) do

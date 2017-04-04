@@ -11,7 +11,7 @@
         <li>
           <%= link_to user.name, profile_path(user) %> (<%= user.login %>)
           <% if current_user.administrator? %>
-            <%= remote_button "Remove", remove_role_project_path(:id => @project, :role => {:user => user.id, :authorizable_type => role.name}), { :update => "#role_list" }, {:class=>'btn btn-danger'} %>
+            <%= remote_button "Remove", remove_role_project_path(id: @project, role: {user: user.id, authorizable_type: role.name}), { update: "#role_list" }, {class: 'btn btn-danger'} %>
           <% end %>
         </li>
       <% end %>

@@ -15,7 +15,7 @@ class Task < ActiveRecord::Base
 
   # BEGIN descriptor_to_attribute, could be move into a mixin
 
-  # TODO move into SetDescriptorsTask
+  # TODO: move into SetDescriptorsTask
   def get_descriptor_value(name, default = nil)
     name_s = name.to_s
     descriptors.each do |desc|

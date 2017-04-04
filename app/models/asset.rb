@@ -150,8 +150,9 @@ class Asset < ActiveRecord::Base
   extend EventfulRecord
   has_many_events do
     event_constructor(:create_external_release!,       ExternalReleaseEvent,          :create_for_asset!)
-    event_constructor(:create_pass!,                   Event::AssetSetQcStateEvent,   :create_passed!)
-    event_constructor(:create_fail!,                   Event::AssetSetQcStateEvent,   :create_failed!)
+    event_constructor(:create_pass!,                   Event::AssetSetQcStateEvent,   :create_updated!)
+    event_constructor(:create_fail!,                   Event::AssetSetQcStateEvent,   :create_updated!)
+    event_constructor(:create_state_update!,           Event::AssetSetQcStateEvent,   :create_updated!)
     event_constructor(:create_scanned_into_lab!,       Event::ScannedIntoLabEvent,    :create_for_asset!)
     event_constructor(:create_plate!,                  Event::PlateCreationEvent,     :create_for_asset!)
     event_constructor(:create_plate_with_date!,        Event::PlateCreationEvent,     :create_for_asset_with_date!)
@@ -269,7 +270,7 @@ class Asset < ActiveRecord::Base
     @name_needs_to_be_generated = library_prep?
   end
 
-  # todo unify with parent/children
+  # TODO: unify with parent/children
   def parent
     parents.first
   end
@@ -400,7 +401,7 @@ class Asset < ActiveRecord::Base
     end
 
       where([query_details[:query].join(' OR '), *query_details[:parameters].flatten.compact])
-      .joins(query_details[:joins].compact.uniq)
+        .joins(query_details[:joins].compact.uniq)
                               }
 
  scope :source_assets_from_machine_barcode, ->(destination_barcode) {
@@ -483,10 +484,6 @@ class Asset < ActiveRecord::Base
 
   def has_many_requests?
     Request.find_all_target_asset(id).size > 1
-  end
-
-  def is_a_resource
-   resource == true
   end
 
   def can_be_created?
