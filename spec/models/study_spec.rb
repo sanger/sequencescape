@@ -1,9 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Study, type: :model do
-
   it 'request calculates correctly and is valid' do
-
     study = create(:study)
     request_type = create(:request_type)
     request_type_2 = create(:request_type, name: 'request_type_2', key: 'request_type_2')
@@ -26,7 +24,7 @@ RSpec.describe Study, type: :model do
       r << (create :passed_request, study: study, request_type: request_type_2)
       r << (create :passed_request, study: study, request_type: request_type_3)
       r << (create :passed_request, study: study, request_type: request_type_3)
-      
+
       # Pending
       r << (create :pending_request, study: study, request_type: request_type)
       r << (create :pending_request, study: study, request_type: request_type_3)
@@ -51,11 +49,9 @@ RSpec.describe Study, type: :model do
     expect(study.pending_requests(request_type_2)).to eq(0)
     expect(study.pending_requests(request_type_3)).to eq(1)
     expect(study.total_requests(request_type)).to eq(8)
-
   end
 
   context 'Role system' do
-
     let!(:study)          { create(:study, name: 'role test1') }
     let!(:another_study)  { create(:study, name: 'role test2') }
 
@@ -92,7 +88,6 @@ RSpec.describe Study, type: :model do
   end
 
   context '#ethical approval?: ' do
-
     let!(:study)  { create(:study) }
 
     context 'when contains human DNA' do
@@ -177,7 +172,6 @@ RSpec.describe Study, type: :model do
     end
 
     context 'which needs x and autosomal DNA removed' do
-
       let!(:study_remove) { create(:study) }
       let!(:study_keep)   { create(:study) }
 
@@ -195,7 +189,6 @@ RSpec.describe Study, type: :model do
     end
 
     context 'with check y separation' do
-
       let!(:study) { create(:study) }
 
       before(:each) do
@@ -214,12 +207,10 @@ RSpec.describe Study, type: :model do
     end
 
     context '#unprocessed_submissions?' do
-
       let!(:study)  { create(:study) }
       let!(:asset)  { create(:sample_tube) }
-     
-      context 'with submissions still unprocessed' do
 
+      context 'with submissions still unprocessed' do
         before(:each) do
           FactoryHelp::submission study: study, state: 'building', assets: [asset]
           FactoryHelp::submission study: study, state: 'pending', assets: [asset]
@@ -229,7 +220,6 @@ RSpec.describe Study, type: :model do
         it 'returns true' do
           expect(study).to be_unprocessed_submissions
         end
-
       end
 
       context 'with no submissions unprocessed' do
@@ -251,7 +241,6 @@ RSpec.describe Study, type: :model do
     end
 
     context '#deactivate!' do
-
       let!(:study)          { create(:study) }
       let!(:request_type)   { create(:request_type) }
 
@@ -281,21 +270,19 @@ RSpec.describe Study, type: :model do
     end
 
     context 'policy text' do
-
       let!(:study)  { create(:managed_study) }
 
-
       it 'accept valid urls' do
-        expect(study.study_metadata.update_attributes!(dac_policy: 'http://www.example.com')).to be_truthy 
-        expect(study.study_metadata.dac_policy).to eq('http://www.example.com') 
+        expect(study.study_metadata.update_attributes!(dac_policy: 'http://www.example.com')).to be_truthy
+        expect(study.study_metadata.dac_policy).to eq('http://www.example.com')
       end
 
       it 'reject free text' do
-        expect{ study.study_metadata.update_attributes!(dac_policy: 'Not a URL') }.to raise_error(ActiveRecord::RecordInvalid)
+        expect { study.study_metadata.update_attributes!(dac_policy: 'Not a URL') }.to raise_error(ActiveRecord::RecordInvalid)
       end
 
       it 'reject invalid domains' do
-        expect{ study.study_metadata.update_attributes!(dac_policy: 'http://internal.example.com') }.to raise_error(ActiveRecord::RecordInvalid)
+        expect { study.study_metadata.update_attributes!(dac_policy: 'http://internal.example.com') }.to raise_error(ActiveRecord::RecordInvalid)
       end
 
       it 'add http:// before testing a url' do
@@ -305,7 +292,7 @@ RSpec.describe Study, type: :model do
 
       it 'not add http for eg. https' do
         expect(study.study_metadata.update_attributes!(dac_policy: 'https://www.example.com')).to be_truthy
-        expect(study.study_metadata.dac_policy).to eq('https://www.example.com') 
+        expect(study.study_metadata.dac_policy).to eq('https://www.example.com')
       end
 
       it 'require a data access group' do
@@ -316,9 +303,8 @@ RSpec.describe Study, type: :model do
     end
 
     context 'managed study' do
-
       let!(:study) { create(:managed_study) }
-   
+
       it 'accept valid data access group names' do
         # Valid names contain alphanumerics and underscores. They are limited to 32 characters, and cannot begin with a number
         ['goodname', 'g00dname', 'good_name', '_goodname', 'good-name', 'goodname1  goodname2'].each do |name|
@@ -335,7 +321,6 @@ RSpec.describe Study, type: :model do
     end
 
     context 'non-managed study' do
-
       let(:study) { build(:study) }
 
       it 'does not require a data access group' do
@@ -345,7 +330,6 @@ RSpec.describe Study, type: :model do
     end
 
     context 'study name' do
-
       let!(:study) { create(:study) }
 
       it 'accepts names shorter than 200 characters' do
@@ -357,13 +341,12 @@ RSpec.describe Study, type: :model do
       end
 
       it 'squish whitespace' do
-        expect(study.update_attributes!(name: '   Squish   double spaces and flanking whitespace but not double letters ')).to be_truthy 
-        expect(study.name).to eq('Squish double spaces and flanking whitespace but not double letters') 
+        expect(study.update_attributes!(name: '   Squish   double spaces and flanking whitespace but not double letters ')).to be_truthy
+        expect(study.name).to eq('Squish double spaces and flanking whitespace but not double letters')
       end
     end
 
     context '#for_sample_accessioning' do
-
       let!(:study_1) { create(:open_study) }
       let!(:study_2) { create(:open_study, name: 'Study 2', accession_number: 'ENA123') }
       let!(:study_3) { create(:open_study, name: 'Study 3', accession_number: 'ENA456') }
@@ -393,7 +376,5 @@ RSpec.describe Study, type: :model do
         expect(studies).to_not include(study_8)
       end
     end
-
   end
-
 end

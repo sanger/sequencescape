@@ -20,7 +20,7 @@ FactoryGirl.define do
   end
 
   factory :sample_for_accessioning, parent: :sample do
-    sample_metadata   { create(:sample_metadata_for_accessioning) }
+    sample_metadata { create(:sample_metadata_for_accessioning) }
 
     factory :sample_for_accessioning_with_open_study do
       studies           { [create(:open_study, accession_number: 'ENA123')] }
@@ -31,7 +31,6 @@ FactoryGirl.define do
       studies           { [create(:managed_study, accession_number: 'ENA123')] }
       sample_metadata   { create(:sample_metadata_for_accessioning) }
     end
-
   end
 
   factory :accession_sample, class: Accession::Sample do

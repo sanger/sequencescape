@@ -296,6 +296,7 @@ class StudiesController < ApplicationController
    def accession_all_samples
       @study = Study.find(params[:id])
       @study.accession_all_samples
+      flash[:notice] = 'All of the samples in this study have been sent for accessioning.'
       redirect_to(study_path(@study))
    end
 
