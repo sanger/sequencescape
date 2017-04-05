@@ -32,7 +32,8 @@ FactoryGirl.define do
   end
 
   factory :request_with_submission, class: Request do
-    request_type { |rt| rt.association(:request_type) }
+    request_type
+    request_purpose
 
     # Ensure that the request metadata is correctly setup based on the request type
     after(:build) do |request|
@@ -52,7 +53,7 @@ FactoryGirl.define do
         user: request.user,
         assets: [request.asset].compact,
         request_options: request.request_metadata.attributes
-      ) unless request.submission
+      ) unless request.submission || request.asset.nil?
     end
   end
 
@@ -127,8 +128,6 @@ FactoryGirl.define do
 
     item
     project
-    request_type
-    request_purpose
     state 'pending'
     study
     user              { User.find_by(login: user_login) || create(:user, login: user_login) }
@@ -158,35 +157,6 @@ FactoryGirl.define do
   factory :request_suitable_for_starting, parent: :request_without_assets do
     asset        { |asset| asset.association(:sample_tube)        }
     target_asset { |asset| asset.association(:empty_library_tube) }
-  end
-
-  factory :request_without_item, class: 'Request' do
-    study
-    project
-    user
-    request_type
-    request_purpose
-    workflow        { |workflow| workflow.association(:submission_workflow) }
-    state           'pending'
-    after(:build) do |request|
-      request.submission = FactoryHelp::submission(
-                                                   study: request.initial_study,
-                                                   project: request.initial_project,
-                                                   user: request.user,
-                                                   request_types: [request.request_type.id.to_s],
-                                                   workflow: request.workflow
-                                                  )
-    end
-  end
-
-  factory :request_without_project, class: Request do
-    study
-    item
-    user
-    request_type
-    request_purpose
-    workflow        { |workflow| workflow.association(:submission_workflow) }
-    state           'pending'
   end
 
   factory :pooled_cherrypick_request do

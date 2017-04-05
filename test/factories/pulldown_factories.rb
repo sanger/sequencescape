@@ -249,39 +249,18 @@ FactoryGirl.define do
   end
 
   factory(:bait_library_supplier, class: BaitLibrary::Supplier) do
-    name 'bait library supplier'
+    sequence(:name) { |i| "Bait Library Type #{i}" }
   end
   factory(:bait_library_type) do
-    name 'bait library type'
+    sequence(:name) { |i| "Bait Library Supplier #{i}" }
   end
   factory(:bait_library) do
     bait_library_supplier
     bait_library_type
-    name 'bait library!'
+    sequence(:name) { |i| "Bait Library #{i}" }
     target_species 'Human'
   end
 
-  factory(:pulldown_wgs_request, class: Pulldown::Requests::WgsLibraryRequest) do
-    request_type { |_target| RequestType.find_by(name: 'Pulldown WGS') or raise StandardError, "Could not find 'Pulldown WGS' request type" }
-    asset        { |target| target.association(:well_with_sample_and_plate) }
-    target_asset { |target| target.association(:empty_well) }
-    after(:build) do |request|
-      request.request_metadata.fragment_size_required_from = 300
-      request.request_metadata.fragment_size_required_to   = 500
-    end
-    request_purpose { |rp| rp.association(:request_purpose) }
-  end
-  factory(:pulldown_sc_request, class: Pulldown::Requests::ScLibraryRequest) do
-    request_type { |_target| RequestType.find_by(name: 'Pulldown SC') or raise StandardError, "Could not find 'Pulldown SC' request type" }
-    asset        { |target| target.association(:well_with_sample_and_plate) }
-    target_asset { |target| target.association(:empty_well) }
-    after(:build) do |request|
-      request.request_metadata.fragment_size_required_from = 100
-      request.request_metadata.fragment_size_required_to   = 400
-      request.request_metadata.bait_library                = create(:bait_library)
-    end
-    request_purpose { |rp| rp.association(:request_purpose) }
-  end
   factory(:isc_request, class: Pulldown::Requests::IscLibraryRequest, aliases: [:pulldown_isc_request]) do
     request_type { |_target| RequestType.find_by(name: 'Pulldown ISC') or raise StandardError, "Could not find 'Pulldown ISC' request type" }
     asset        { |target| target.association(:well_with_sample_and_plate) }
@@ -293,6 +272,7 @@ FactoryGirl.define do
       request.request_metadata.bait_library                = BaitLibrary.first || create(:bait_library)
     end
   end
+
   factory(:re_isc_request, class: Pulldown::Requests::ReIscLibraryRequest) do
     association(:request_type, factory: :library_request_type)
     asset        { |target| target.association(:well_with_sample_and_plate) }
