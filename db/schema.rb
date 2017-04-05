@@ -905,6 +905,13 @@ ActiveRecord::Schema.define(version: 20170321151830) do
   add_index "plate_purposes", ["type"], name: "index_plate_purposes_on_type", using: :btree
   add_index "plate_purposes", ["updated_at"], name: "index_plate_purposes_on_updated_at", using: :btree
 
+  create_table "plate_types", force: :cascade do |t|
+    t.string   "name",           limit: 255
+    t.integer  "maximum_volume", limit: 4
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
+
   create_table "plate_volumes", force: :cascade do |t|
     t.string   "barcode",            limit: 255
     t.string   "uploaded_file_name", limit: 255
