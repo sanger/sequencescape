@@ -459,7 +459,7 @@ class Plate < Asset
   end
 
   def stock_plate_name
-    (get_plate_type == 'Stock Plate' || get_plate_type.blank?) ? PlatePurpose.cherrypickable_as_source.first.name : get_plate_type
+    (get_plate_type == 'Stock Plate' || get_plate_type.blank?) ? PlateType.first.name : get_plate_type
   end
 
   def details

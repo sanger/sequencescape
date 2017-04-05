@@ -39,8 +39,6 @@ class PlatePurpose < Purpose
   }
 
   scope :cherrypickable_as_target, -> { where(cherrypickable_target: true) }
-  scope :cherrypickable_as_source, -> { where(cherrypickable_source: true) }
-  scope :cherrypickable_default_type, -> { where(cherrypickable_target: true, cherrypickable_source: true) }
   scope :for_submissions, ->() do
     where('stock_plate = true OR name = "Working Dilution"')
       .order(stock_plate: :desc)

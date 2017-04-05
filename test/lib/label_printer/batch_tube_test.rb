@@ -82,5 +82,23 @@ class BatchTubeTest < ActiveSupport::TestCase
       tube = tube_label.tubes.first
       assert_equal request.target_asset.tube_name, tube_label.top_line(tube)
     end
+
+    should 'when pacbio should return the right top, middle and bottom lines' do
+      pac_bio_tube = PacBioLibraryTube.create!(name: '123-A1')
+      request = create :library_creation_request, target_asset: pac_bio_tube
+      @batch = create :batch
+      @batch.requests << request
+
+      printable = { request.id => 'on' }
+      options = { count: '1', printable: printable, batch: batch, stock: false }
+      @tube_label = LabelPrinter::Label::BatchTube.new(options)
+
+      assert_equal 1, tube_label.tubes.count
+      tube = tube_label.tubes.first
+      assert_equal '123', tube_label.top_line(tube)
+      assert_equal 'A1', tube_label.middle_line(tube)
+      assert_equal 'A1', tube_label.round_label_top_line(tube)
+      assert_equal '123', tube_label.round_label_bottom_line(tube)
+    end
   end
 end

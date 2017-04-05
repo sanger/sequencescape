@@ -14,7 +14,7 @@ namespace :test do
 
       if Rails.env.test?
 
-        # All these factories should be updated to make them valid
+        # TODO: All these factories should be updated to make them valid
         # Any tests which break as a result should be fixed.
         invalid_factories = [
           :pooling_plate,

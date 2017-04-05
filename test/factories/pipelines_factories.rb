@@ -411,41 +411,7 @@ FactoryGirl.define do
     purpose_id { Purpose.find_by(name: 'PacBio Sheared').id }
   end
 
-  factory :sample_tube_without_barcode, class: Tube do
-    name                { |_a| FactoryGirl.generate :asset_name }
-    value               ''
-    descriptors         []
-    descriptor_fields   []
-    qc_state            ''
-    resource            nil
-    barcode             nil
-    purpose             { Tube::Purpose.standard_sample_tube }
-  end
-
-  factory :empty_sample_tube, class: SampleTube do
-    name                { generate :asset_name }
-    value               ''
-    descriptors         []
-    descriptor_fields   []
-    qc_state            ''
-    resource            nil
-    barcode
-    purpose { Tube::Purpose.standard_sample_tube }
-  end
-
-  factory :sample_tube, parent: :empty_sample_tube do
-    transient do
-      sample { create(:sample) }
-      study { create(:study) }
-      project { create(:project) }
-    end
-
-    after(:create) do |sample_tube, evaluator|
-      create_list(:untagged_aliquot, 1, sample: evaluator.sample, receptacle: sample_tube, study: evaluator.study, project: evaluator.project)
-    end
-  end
-
-  factory :cherrypick_task do
+  factory :cherrypick_task do |_t|
     name 'New task'
     pipeline_workflow_id { |workflow| workflow.association(:lab_workflow) }
     sorted                nil
@@ -482,7 +448,7 @@ FactoryGirl.define do
   end
 
   factory(:tube_purpose, class: Tube::Purpose) do
-    name        'Tube purpose'
+    name        { generate :purpose_name }
     target_type 'MultiplexedLibraryTube'
   end
 

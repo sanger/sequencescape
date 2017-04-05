@@ -69,7 +69,6 @@ module TubePurposeHelper
         default_state: 'pending',
         barcode_printer_type: BarcodePrinterType.find_by(name: '1D Tube'),
         cherrypickable_target: false,
-        cherrypickable_source: false,
         cherrypick_direction: 'column',
         barcode_for_tecan: 'ean13_barcode'
       )

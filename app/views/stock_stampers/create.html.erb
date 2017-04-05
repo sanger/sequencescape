@@ -1,0 +1,33 @@
+<% add :menu, "Sample Management homepage" => lab_sample_logistics_path %>
+
+<h2>Stamping of stock</h2>
+
+<%= form_for(@stock_stamper, url: {action: "generate_tecan_file"}) do |f| %>
+
+  <%= hidden_field_tag 'file_content', @stock_stamper.file_content %>
+  <%= hidden_field_tag 'plate_barcode', @stock_stamper.destination_plate_barcode %>
+
+  <div class="form-group">
+    <%= f.submit "Generate TECAN file" %>
+  </div>
+
+<% end %>
+
+
+<%= form_for(@stock_stamper, url: {action: "print_label"}) do |f| %>
+  <div class="form-group">
+    <%= label_tag :labels, 'Print labels:' %>
+  </div>
+
+  <div class="form-group">
+    <%= label_tag :barcode_printer, 'Barcode printer' %>
+    <%= render partial: "shared/printer_list" %>
+  </div>
+
+  <td><%= hidden_field_tag "printable[#{@stock_stamper.plate.id}]", true %></td>
+
+  <div class="form-group">
+    <%= f.submit "Print label" %>
+  </div>
+
+<% end %>

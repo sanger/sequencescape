@@ -22,6 +22,8 @@ module IlluminaC::PlatePurposes
     ]
   ]
 
+  QC_TUBE_PURPOSE_FLOWS = []
+
   QC_TUBE = 'ILC QC Pool'
 
   BRANCHES = [
