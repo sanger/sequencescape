@@ -17,7 +17,6 @@ namespace :test do
         # TODO: All these factories should be updated to make them valid
         # Any tests which break as a result should be fixed.
         invalid_factories = [
-          :pooling_plate,
           :transfer_template,
           :pooling_transfer_template,
           :multiplex_transfer_template,
@@ -26,7 +25,6 @@ namespace :test do
           :entire_plate_tag_layout_template,
           :tag_layout,
           :parent_plate_purpose,
-          :pooling_plate_purpose,
           :child_plate_purpose,
           :initial_downstream_plate_purpose,
           :plate_creation,

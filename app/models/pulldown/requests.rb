@@ -63,6 +63,18 @@ module Pulldown::Requests
     end
   end
 
+  class ReIscLibraryRequest < IscLibraryRequest
+    # Pre-capture pools depend on the ability to identify the library requests
+    # when pooling occurs.
+    # The requires us to identify the stock wells of the well we are looking at.
+    # In the case of repool requests however these well are not stock wells by default.
+    # Instead we add them manually.
+    after_create :flag_asset_as_stock_well
+    def flag_asset_as_stock_well
+      asset.stock_wells << asset
+    end
+  end
+
   class IscLibraryRequestPart < IscLibraryRequest
     include IlluminaHtp::Requests::LibraryCompletion::FailUpstream
   end

@@ -24,7 +24,7 @@ FactoryGirl.define do
     end
 
     factory(:initial_downstream_plate) do
-      plate_purpose { PlatePurpose.find_by(name: 'Initial downstream plate purpose') || create(:initial_downstream_plate_purpose) }
+      association(:plate_purpose, factory: :initial_downstream_plate_purpose)
     end
   end
 
@@ -50,6 +50,23 @@ FactoryGirl.define do
     # A plate that has exactly the right number of wells!
     factory :pooling_plate do
       plate_purpose { create :pooling_plate_purpose }
+      transient do
+        well_count 6
+        well_factory :tagged_well
+      end
+    end
+
+    factory :non_stock_pooling_plate do
+      plate_purpose
+
+      transient do
+        well_count 6
+        well_factory :empty_well
+      end
+    end
+
+    factory :input_plate_for_pooling do
+      association(:plate_purpose, factory: :input_plate_purpose)
       transient do
         well_count 6
         well_factory :tagged_well
@@ -82,14 +99,14 @@ FactoryGirl.define do
 
   # Transfers and their templates
   factory(:transfer_between_plates, class: Transfer::BetweenPlates) do
-    user        { |target| target.association(:user) }
-    source      { |target| target.association(:source_transfer_plate) }
-    destination { |target| target.association(:destination_transfer_plate) }
+    user
+    association(:source,      factory: :source_transfer_plate)
+    association(:destination, factory: :destination_transfer_plate)
     transfers('A1' => 'A1', 'B1' => 'B1')
   end
 
   factory(:transfer_from_plate_to_tube, class: Transfer::FromPlateToTube) do
-    user        { |target| target.association(:user) }
+    user
     source      { |target| target.association(:source_transfer_plate) }
     destination { |target| target.association(:library_tube) }
     transfers(['A1', 'B1'])
@@ -161,6 +178,7 @@ FactoryGirl.define do
       plate_purpose.child_relationships.create!(child: create(:child_plate_purpose), transfer_request_type: RequestType.transfer)
     end
   end
+
   factory(:pooling_transfer, class: RequestType) do
     asset_type 'Well'
     order 1
@@ -173,7 +191,7 @@ FactoryGirl.define do
     sequence(:name) { |i| "Pooling purpose #{i}" }
     stock_plate true
     after(:create) do |plate_purpose|
-      cpp = create(:child_plate_purpose)
+      cpp = create(:plate_purpose)
       idpp = create(:initial_downstream_plate_purpose)
       plate_purpose.child_relationships.create!(child: cpp, transfer_request_type: create(:pooling_transfer))
       plate_purpose.child_relationships.create!(child: idpp, transfer_request_type: create(:pooling_transfer))
@@ -184,12 +202,12 @@ FactoryGirl.define do
     name { 'Child plate purpose' }
   end
 
-  factory(:initial_downstream_plate_purpose, class: Pulldown::InitialDownstreamPlatePurpose) do |plate_purpose|
-     plate_purpose.name 'Initial Downstream plate purpose'
+  factory(:initial_downstream_plate_purpose, class: Pulldown::InitialDownstreamPlatePurpose) do
+    name { generate :pipeline_name }
   end
 
   factory(:plate_creation) do
-    user   { |target| target.association(:user) }
+    user
     parent { |target| target.association(:full_plate) }
 
     after(:build) do |plate_creation|
@@ -237,8 +255,8 @@ FactoryGirl.define do
     name 'bait library type'
   end
   factory(:bait_library) do
-    bait_library_supplier { |target| target.association(:bait_library_supplier) }
-    bait_library_type { |target| target.association(:bait_library_type) }
+    bait_library_supplier
+    bait_library_type
     name 'bait library!'
     target_species 'Human'
   end
@@ -264,8 +282,19 @@ FactoryGirl.define do
     end
     request_purpose { |rp| rp.association(:request_purpose) }
   end
-  factory(:pulldown_isc_request, class: Pulldown::Requests::IscLibraryRequest) do
+  factory(:isc_request, class: Pulldown::Requests::IscLibraryRequest, aliases: [:pulldown_isc_request]) do
     request_type { |_target| RequestType.find_by(name: 'Pulldown ISC') or raise StandardError, "Could not find 'Pulldown ISC' request type" }
+    asset        { |target| target.association(:well_with_sample_and_plate) }
+    target_asset { |target| target.association(:empty_well) }
+    request_purpose { |rp| rp.association(:request_purpose) }
+    after(:build) do |request|
+      request.request_metadata.fragment_size_required_from = 100
+      request.request_metadata.fragment_size_required_to   = 400
+      request.request_metadata.bait_library                = BaitLibrary.first || create(:bait_library)
+    end
+  end
+  factory(:re_isc_request, class: Pulldown::Requests::ReIscLibraryRequest) do
+    association(:request_type, factory: :library_request_type)
     asset        { |target| target.association(:well_with_sample_and_plate) }
     target_asset { |target| target.association(:empty_well) }
     request_purpose { |rp| rp.association(:request_purpose) }

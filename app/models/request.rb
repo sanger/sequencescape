@@ -103,7 +103,7 @@ class Request < ActiveRecord::Base
         ])
         .group('pre_capture_pool_pooled_requests.pre_capture_pool_id')
         .customer_requests
-        .where(state: ['pending','started'])
+        .where(state: ['started', 'pending'])
         .where([
           'container_associations.container_id=?',
           plate.id
