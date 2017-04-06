@@ -31,7 +31,7 @@ FactoryGirl.define do
     end
   end
 
-  factory :request_with_submission, class: Request do
+  factory :request_base, class: Request do
     request_type
     request_purpose
 
@@ -40,20 +40,6 @@ FactoryGirl.define do
       next if request.request_type.nil?
       request.request_metadata_attributes = attributes_for(:"request_metadata_for_#{request.request_type.name.downcase.gsub(/[^a-z]+/, '_')}") if request.request_metadata.new_record?
       request.sti_type = request.request_type.request_class_name
-    end
-
-    # We use after(:create) so this is called after the after(:build) of derived class
-    # That leave a chance to children factory to build asset beforehand
-    after(:build) do |request|
-      request.submission = FactoryHelp::submission(
-        workflow: request.workflow,
-        study: request.initial_study,
-        project: request.initial_project,
-        request_types: [request.request_type.try(:id)].compact.map(&:to_s),
-        user: request.user,
-        assets: [request.asset].compact,
-        request_options: request.request_metadata.attributes
-      ) unless request.submission || request.asset.nil?
     end
   end
 
@@ -121,7 +107,7 @@ FactoryGirl.define do
     end
   end
 
-  factory :request_without_assets, parent: :request_with_submission do
+  factory :request_without_assets, parent: :request_base do
     transient do
       user_login { 'abc123' }
     end
@@ -138,6 +124,20 @@ FactoryGirl.define do
     # the sample should be setup correctly and the assets should be valid
     association(:asset, factory: :sample_tube)
     association(:target_asset, factory: :library_tube)
+
+    factory :request_with_submission do
+      after(:build) do |request|
+        request.submission = FactoryHelp::submission(
+          workflow: request.workflow,
+          study: request.initial_study,
+          project: request.initial_project,
+          request_types: [request.request_type.try(:id)].compact.map(&:to_s),
+          user: request.user,
+          assets: [request.asset].compact,
+          request_options: request.request_metadata.attributes
+        ) unless request.submission
+      end
+    end
   end
 
   factory :request_with_sequencing_request_type, parent: :request_without_assets do

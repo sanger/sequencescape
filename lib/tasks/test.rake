@@ -33,7 +33,6 @@ namespace :test do
           :library_types_request_type,
           :submission__,
           :order_with_submission,
-          :library_submission,
           :tag2_lot
         ]
         ignored = 0
