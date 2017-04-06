@@ -22,11 +22,11 @@ class LabInterface::Workflow < ActiveRecord::Base
   end
 
   def source_is_external?
-    locale == 'External' ? true : false
+    locale == 'External'
   end
 
   def source_is_internal?
-    locale == 'Internal' ? true : false
+    locale == 'Internal'
   end
 
   def assets
