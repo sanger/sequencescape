@@ -457,7 +457,7 @@ FactoryGirl.define do
     after(:create) do |library_tube|
       library_tube.aliquots.create!(sample: create(:sample_with_sanger_sample_id), library_type: 'Standard')
     end
-  end
+ end
 
   factory(:tagged_library_tube, class: LibraryTube) do
     transient do

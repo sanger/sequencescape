@@ -20,5 +20,9 @@ module SampleManifestExcel
         columns: 'Not valid'
       }
     end
+
+    def with_specialised_fields
+      []
+    end
   end
 end

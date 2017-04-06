@@ -27,6 +27,5 @@ module SampleManifestExcel
         sample_manifest: 'Does not exist'
       }
     end
-
   end
 end

@@ -29,7 +29,6 @@ module SampleManifestExcel
           def processed?
             @processed ||= samples_updated? && sample_manifest_updated? && aliquots_transferred?
           end
-
       end
     end
   end
