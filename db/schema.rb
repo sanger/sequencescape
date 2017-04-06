@@ -890,7 +890,6 @@ ActiveRecord::Schema.define(version: 20170321151830) do
     t.string   "default_state",           limit: 255, default: "pending"
     t.integer  "barcode_printer_type_id", limit: 4,   default: 2
     t.boolean  "cherrypickable_target",               default: true,            null: false
-    t.boolean  "cherrypickable_source",               default: false,           null: false
     t.string   "cherrypick_direction",    limit: 255, default: "column",        null: false
     t.integer  "default_location_id",     limit: 4
     t.string   "cherrypick_filters",      limit: 255
@@ -904,6 +903,13 @@ ActiveRecord::Schema.define(version: 20170321151830) do
   add_index "plate_purposes", ["target_type"], name: "index_plate_purposes_on_target_type", using: :btree
   add_index "plate_purposes", ["type"], name: "index_plate_purposes_on_type", using: :btree
   add_index "plate_purposes", ["updated_at"], name: "index_plate_purposes_on_updated_at", using: :btree
+
+  create_table "plate_types", force: :cascade do |t|
+    t.string   "name",           limit: 255
+    t.integer  "maximum_volume", limit: 4
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
 
   create_table "plate_volumes", force: :cascade do |t|
     t.string   "barcode",            limit: 255
@@ -1885,8 +1891,8 @@ ActiveRecord::Schema.define(version: 20170321151830) do
   create_table "work_completions", force: :cascade do |t|
     t.integer  "user_id",    limit: 4, null: false
     t.integer  "target_id",  limit: 4, null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
   end
 
   add_index "work_completions", ["target_id"], name: "fk_rails_f8fb9e95de", using: :btree

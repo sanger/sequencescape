@@ -7,7 +7,6 @@
 module Limber::Helper
   require 'hiseq_2500_helper'
 
-  ACCEPTABLE_REQUEST_TYPES = %w(limber_pwgs)
   ACCEPTABLE_SEQUENCING_REQUESTS = %w(
     illumina_b_hiseq_paired_end_sequencing
     illumina_b_single_ended_hi_seq_sequencing
@@ -23,6 +22,46 @@ module Limber::Helper
   PIPELINE = 'Limber-Htp'
   PIPELINE_REGEX = /Illumina-[A-z]{1,3} /
   PRODUCTLINE = 'Illumina-Htp'
+
+  class RequestTypeConstructor
+    def initialize(suffix)
+      @suffix = suffix
+    end
+
+    def key
+      "limber_#{@suffix.downcase}"
+    end
+
+    # Builds the corresponding request type, unless it
+    # already exists.
+    def build!
+      return true if RequestType.where(key: key).exists?
+
+      rt = RequestType.create!(
+        name: "Limber #{@suffix}",
+        key: key,
+        request_class_name: 'IlluminaHtp::Requests::StdLibraryRequest',
+        for_multiplexing: false,
+        workflow: Submission::Workflow.find_by(name: 'Next-gen sequencing'),
+        asset_type: 'Well',
+        order: 1,
+        initial_state: 'pending',
+        billable: true,
+        product_line: ProductLine.find_by(name: 'Illumina-Htp'),
+        request_purpose: RequestPurpose.standard
+      ) do |rt|
+        rt.acceptable_plate_purposes << Purpose.find_by!(name: 'LB Cherrypick')
+        rt.library_types = LibraryType.where(name: ['Standard'])
+      end
+
+      RequestType::Validator.create!(
+        request_type: rt,
+        request_option: 'library_type',
+        valid_options: RequestType::Validator::LibraryTypeValidator.new(rt.id)
+      )
+    end
+  end
+
   class TemplateConstructor
     # Construct submission templates for the generic pipeline
     # opts is a hash
@@ -34,6 +73,15 @@ module Limber::Helper
     # }
     attr_accessor :name, :type, :role, :catalogue
     attr_reader :sequencing, :cherrypick_options
+
+    def self.find_for(name, sequencing = nil)
+      tc = TemplateConstructor.new(name: name, sequencing: sequencing)
+      [true, false].map do |cherrypick|
+        tc.sequencing.map do |sequencing_request_type|
+          SubmissionTemplate.find_by!(name: tc.name_for(cherrypick, sequencing_request_type))
+        end
+      end.flatten
+    end
 
     def initialize(params)
       self.name = params[:name]
@@ -54,7 +102,6 @@ module Limber::Helper
       [:name, :type, :role, :catalogue].each do |value|
         raise "Must provide a #{value}" if send(value).nil?
       end
-      raise "Request Type should be #{ACCEPTABLE_REQUEST_TYPES.join(', ')}" unless ACCEPTABLE_REQUEST_TYPES.include?(type)
       true
     end
 
@@ -68,6 +115,15 @@ module Limber::Helper
         SubmissionTemplate.create!(config)
       end
     end
+
+    def update!
+      each_submission_template do |options|
+        next if options[:submission_parameters][:input_field_infos].nil?
+        SubmissionTemplate.find_by!(name: options[:name]).update_attributes!(submission_parameters: options[:submission_parameters])
+      end
+    end
+
+    private
 
     def library_request_type
       @library_request_type ||= RequestType.find_by!(key: type)
@@ -96,6 +152,7 @@ module Limber::Helper
     def each_submission_template
       cherrypick_options.each do |cherrypick|
         sequencing.each do |sequencing_request_type|
+          next if SubmissionTemplate.where(name: name_for(cherrypick, sequencing_request_type)).exists?
           yield({
             name: name_for(cherrypick, sequencing_request_type),
             submission_class_name: 'LinearSubmission',
@@ -114,22 +171,6 @@ module Limber::Helper
         order_role_id: Order::OrderRole.find_or_create_by(role: role).id,
         info_differential: Submission::Workflow.find_by(key: 'short_read_sequencing').id
       }
-    end
-
-    def update!
-      each_submission_template do |options|
-        next if options[:submission_parameters][:input_field_infos].nil?
-        SubmissionTemplate.find_by!(name: options[:name]).update_attributes!(submission_parameters: options[:submission_parameters])
-      end
-    end
-
-    def self.find_for(name, sequencing = nil)
-      tc = TemplateConstructor.new(name: name, sequencing: sequencing)
-      [true, false].map do |cherrypick|
-        tc.sequencing.map do |sequencing_request_type|
-          SubmissionTemplate.find_by!(name: tc.name_for(cherrypick, sequencing_request_type))
-        end
-      end.flatten
     end
   end
 end

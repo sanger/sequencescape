@@ -8,7 +8,6 @@ module LabelPrinter
         @count = options[:count].to_i
         @printable = options[:printable]
         @batch = options[:batch]
-        @batch = options[:batch]
         @stock = options[:stock]
       end
 
@@ -18,9 +17,23 @@ module LabelPrinter
         elsif batch.multiplexed?
           tag_range = tube.tag_range
           tag_range.nil? ? tube.name : "(#{tag_range}) #{tube.id}"
+        elsif tube.is_a? PacBioLibraryTube
+          source_plate_barcode(tube)
         else
           tube.tube_name
         end
+      end
+
+      def middle_line(tube)
+        (tube.is_a? PacBioLibraryTube) ? source_well_position(tube) : super
+      end
+
+      def round_label_top_line(tube)
+        (tube.is_a? PacBioLibraryTube) ? source_well_position(tube) : super
+      end
+
+      def round_label_bottom_line(tube)
+        (tube.is_a? PacBioLibraryTube) ? source_plate_barcode(tube).split(//).last(4).join : super
       end
 
       def tubes
@@ -43,6 +56,14 @@ module LabelPrinter
       def requests
         request_ids = printable.select { |_barcode, check| check == 'on' }.keys
         requests = Request.find request_ids
+      end
+
+      def source_plate_barcode(tube)
+        tube.name.split('-').first
+      end
+
+      def source_well_position(tube)
+        tube.name.split('-').last
       end
     end
   end
