@@ -11,18 +11,22 @@ class SampleManifestUploadWithTagSequencesController < ApplicationController
   end
 
   def create
-    @uploader = SampleManifestUploader.new(params[:upload].open, SampleManifestExcel.configuration)
-    if @uploader.valid?
-      if @uploader.run!
-        flash[:notice] = 'Sample manifest successfully uploaded.'
-        redirect_to '/sample_manifest_upload_with_tag_sequences/new'
+    if params[:upload].present?
+      @uploader = SampleManifestUploader.new(params[:upload].open, SampleManifestExcel.configuration)
+      if @uploader.valid?
+        if @uploader.run!
+          flash[:notice] = 'Sample manifest successfully uploaded.'
+          redirect_to '/sample_manifest_upload_with_tag_sequences/new'
+        else
+          flash.now[:error] = 'Oh dear. Your sample manifest couldn\'t be uploaded.'
+          render :new
+        end
       else
-        flash.now[:error] = 'Oh dear. Your sample manifest couldn\'t be uploaded.'
+        flash.now[:error] = "The following error messages prevented the sample manifest from being uploaded:\n #{@uploader.errors.full_messages.join(', ')}"
         render :new
       end
     else
-      flash.now[:error] = "The following error messages prevented the sample manifest from being uploaded:\n #{@uploader.errors.full_messages.join(', ')}"
-      render :new
+        flash.now[:error] = 'No file attached'
     end
   end
 end

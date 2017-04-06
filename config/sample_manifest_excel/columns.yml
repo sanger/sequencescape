@@ -583,7 +583,7 @@ sample_taxon_id:
   unlocked: true
   conditional_formattings:
     empty_cell:
-common_name:
+sample_common_name:
   heading: COMMON NAME
   unlocked: true
   conditional_formattings:

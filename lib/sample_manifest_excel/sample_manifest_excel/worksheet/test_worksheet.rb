@@ -42,7 +42,7 @@ module SampleManifestExcel
               sample.sample_manifest = sample_manifest
               sample.save
             end
-            dynamic_attributes[i][:sanger_sample_id] = sample.id
+            dynamic_attributes[i][:sanger_sample_id] = sample.sanger_sample_id
             dynamic_attributes[i][:sanger_tube_id] = asset.sanger_human_barcode
           end
         end
@@ -81,7 +81,7 @@ module SampleManifestExcel
           asset = FactoryGirl.create(:library_tube_with_barcode)
           FactoryGirl.create(:external_multiplexed_library_tube_creation_request, asset: asset, target_asset: multiplexed_library_tube)
         else
-          asset = FactoryGirl.create(:sample_tube)
+          asset = FactoryGirl.create(:sample_tube_with_sanger_sample_id)
         end
         assets << asset
         yield(asset) if block_given?

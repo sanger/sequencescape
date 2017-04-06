@@ -263,6 +263,10 @@ FactoryGirl.define do
     factory :sample_with_gender do
       association :sample_metadata, factory: :sample_metadata_with_gender
     end
+
+    factory :sample_with_sanger_sample_id do
+      sequence(:sanger_sample_id) { |n| n.to_s }
+    end
   end
 
   factory :sample_metadata, class: Sample::Metadata do
@@ -443,13 +447,15 @@ FactoryGirl.define do
   end
 
   factory(:library_tube, parent: :empty_library_tube) do
-    # sequence(:barcode) { |i| i }
     after(:create) do |library_tube|
       library_tube.aliquots.create!(sample: create(:sample), library_type: 'Standard')
     end
+  end
 
-    factory(:library_tube_with_barcode) do
-      sequence(:barcode) { |i| i }
+ factory(:library_tube_with_barcode, parent: :empty_library_tube) do
+    sequence(:barcode) { |i| i }
+    after(:create) do |library_tube|
+      library_tube.aliquots.create!(sample: create(:sample_with_sanger_sample_id), library_type: 'Standard')
     end
   end
 

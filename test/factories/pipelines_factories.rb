@@ -449,6 +449,12 @@ FactoryGirl.define do
     after(:create) do |sample_tube, evaluator|
       create_list(:untagged_aliquot, 1, sample: evaluator.sample, receptacle: sample_tube, study: evaluator.study, project: evaluator.project)
     end
+
+    factory :sample_tube_with_sanger_sample_id do
+      transient do
+        sample { create(:sample_with_sanger_sample_id) }
+      end
+    end
   end
 
   factory :cherrypick_task do

@@ -4,6 +4,7 @@ module SampleManifestExcel
   require_relative 'sample_manifest_excel/null_objects/null_column'
   require_relative 'sample_manifest_excel/null_objects/null_configuration'
   require_relative 'sample_manifest_excel/null_objects/null_column_list'
+  require_relative 'sample_manifest_excel/null_objects/null_processor'
 
   require_relative 'sample_manifest_excel/helpers'
   require_relative 'sample_manifest_excel/core_extensions'

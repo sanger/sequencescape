@@ -10,13 +10,13 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
 
   let(:columns)       { SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup }
   let(:data)          {
-    [sample_tube.samples.first.assets.first.sanger_human_barcode, sample_tube.samples.first.id,
+    [sample_tube.samples.first.assets.first.sanger_human_barcode, sample_tube.samples.first.sanger_sample_id,
      'AA', '', 'My New Library Type', 200, 1500, 'SCG--1222_A01', '', 1, 1, 'Unknown', '', '', '',
      'Cell Line', 'Nov-16', 'Nov-16', '', '', '', 'No', '', 'OTHER', '', '', '', '', '', 'SCG--1222_A01',
      9606, 'Homo sapiens', '', '', '', '', '', 11, 'Unknown']
   }
   let!(:library_type) { create(:library_type, name: 'My New Library Type') }
-  let!(:sample_tube)  { create(:sample_tube) }
+  let!(:sample_tube)  { create(:sample_tube_with_sanger_sample_id) }
   let!(:tag_group)    { create(:tag_group) }
 
   it 'is not valid without row number' do
@@ -33,7 +33,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
   end
 
   it '#value returns value for specified key' do
-    expect(SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns).value(:sanger_sample_id)).to eq(sample_tube.samples.first.id)
+    expect(SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns).value(:sanger_sample_id)).to eq(sample_tube.samples.first.sanger_sample_id)
   end
 
   it '#at returns value at specified index (offset by 1)' do
@@ -111,7 +111,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
         create(:external_multiplexed_library_tube_creation_request, asset: tube, target_asset: mx_library_tube)
         row_data = data.dup
         row_data[0] = tube.samples.first.assets.first.sanger_human_barcode
-        row_data[1] = tube.samples.first.id
+        row_data[1] = tube.samples.first.sanger_sample_id
         row_data[2] = tags[i][:tag_oligo]
         row_data[3] = tags[i][:tag2_oligo]
         rows << SampleManifestExcel::Upload::Row.new(number: i + 1, data: row_data, columns: columns)

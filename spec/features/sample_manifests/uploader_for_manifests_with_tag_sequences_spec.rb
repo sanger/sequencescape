@@ -34,12 +34,19 @@ feature 'Sample manifest with tag sequences' do
   context 'invalid' do
     let(:download) { build(:test_download, columns: columns, validation_errors: [:library_type]) }
 
-    scenario 'upload' do
+    scenario 'validation errors' do
       login_user(user)
       visit('sample_manifest_upload_with_tag_sequences/new')
       attach_file('File to upload', test_file)
       click_button('Upload manifest')
       expect(page).to have_content('The following error messages prevented the sample manifest from being uploaded')
+    end
+
+    scenario 'no file' do
+      login_user(user)
+      visit('sample_manifest_upload_with_tag_sequences/new')
+      click_button('Upload manifest')
+      expect(page).to have_content('No file attached')
     end
   end
 
