@@ -11,8 +11,6 @@ class Pooling
     @stock_mx_tube = Tube::Purpose.stock_mx_tube.create!(name: '(s)') if stock_mx_tube_required?
     @standard_mx_tube = Tube::Purpose.standard_mx_tube.create!
     transfer
-    # another way of creating @stock_mx_tube
-    # @stock_mx_tube = standard_mx_tube.create_stock_asset! if stock_mx_tube_required?
     execute_print_job
   end
 
@@ -26,7 +24,7 @@ class Pooling
   end
 
   def source_assets
-    @source_assets ||= Asset.with_machine_barcode(barcodes)
+    @source_assets ||= find_source_assets
   end
 
   def target_assets
@@ -57,8 +55,20 @@ class Pooling
 
   private
 
+  def find_source_assets
+    @assets_not_in_sqsc = []
+    barcodes.map do |barcode|
+      asset = Asset.find_from_any_barcode(barcode)
+      @assets_not_in_sqsc << barcode unless asset.present?
+      asset
+    end.compact
+  end
+
+  def assets_not_in_sqsc
+    @assets_not_in_sqsc || []
+  end
+
   def all_source_assets_are_in_sqsc
-    assets_not_in_sqsc = barcodes - source_assets.map(&:ean13_barcode)
     errors.add(:source_assets, "with barcode(s) #{assets_not_in_sqsc.join(', ')} were not found in sequencescape") unless assets_not_in_sqsc.empty?
   end
 

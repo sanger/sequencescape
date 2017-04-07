@@ -1,6 +1,6 @@
 class PoolingsController < ApplicationController
   def new
-    @pooling = Pooling.new
+    @pooling = Pooling.new(pooling_params)
   end
 
   def create
@@ -16,6 +16,6 @@ class PoolingsController < ApplicationController
   end
 
   def pooling_params
-    params.require(:pooling).permit(:stock_mx_tube_required, :count, :barcode_printer, barcodes: [])
+    params.require(:pooling).permit(:stock_mx_tube_required, :count, :barcode_printer, barcodes: []) if params[:pooling].present?
   end
 end

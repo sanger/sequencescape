@@ -88,6 +88,8 @@ group :default do
 
   # Used in XML generation.
   gem 'builder'
+
+  gem 'sanger_barcode_format', github: 'sanger/sanger_barcode_format', branch: 'development'
 end
 
 group :warehouse do

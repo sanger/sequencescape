@@ -491,6 +491,9 @@ FactoryGirl.define do
       factory :tube_sample_manifest_with_samples do
         samples { FactoryGirl.create_list(:sample_tube, 5).map(&:samples).flatten }
       end
+      factory :tube_sample_manifest_with_several_tubes do
+        count 5
+      end
     end
   end
 

@@ -15,7 +15,7 @@ describe Pooling do
   end
 
   it 'should not be valid if tubes are not in sqsc, if tubes do not have at least one aliquot or if there is a tag clash' do
-    barcodes = [-1, -2, empty_lb_tube.ean13_barcode, untagged_lb_tube1.ean13_barcode, untagged_lb_tube2.ean13_barcode]
+    barcodes = ['-1', '-2', empty_lb_tube.ean13_barcode, untagged_lb_tube1.sanger_human_barcode, untagged_lb_tube2.ean13_barcode]
     pooling = Pooling.new(barcodes: barcodes)
     expect(pooling.valid?).to be false
     expect(pooling.errors.messages.count).to eq 2
