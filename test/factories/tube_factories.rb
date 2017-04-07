@@ -27,6 +27,12 @@ FactoryGirl.define do
     after(:create) do |sample_tube, evaluator|
       create_list(:untagged_aliquot, 1, sample: evaluator.sample, receptacle: sample_tube, study: evaluator.study, project: evaluator.project)
     end
+
+    factory :sample_tube_with_sanger_sample_id do
+      transient do
+        sample { create(:sample_with_sanger_sample_id) }
+      end
+    end
   end
 
   factory :qc_tube do
@@ -59,15 +65,17 @@ FactoryGirl.define do
   end
 
   factory(:library_tube, parent: :empty_library_tube) do
-    transient do
-      sample { create :sample }
-      library_type 'Standard'
-    end
-
-    after(:create) do |library_tube, evaluator|
-      library_tube.aliquots << build(:untagged_aliquot, sample: evaluator.sample, library_type: evaluator.library_type, receptacle: library_tube)
+    after(:create) do |library_tube|
+      library_tube.aliquots.create!(sample: create(:sample), library_type: 'Standard')
     end
   end
+
+ factory(:library_tube_with_barcode, parent: :empty_library_tube) do
+    sequence(:barcode) { |i| i }
+    after(:create) do |library_tube|
+      library_tube.aliquots.create!(sample: create(:sample_with_sanger_sample_id), library_type: 'Standard')
+    end
+ end
 
   factory(:tagged_library_tube, class: LibraryTube) do
     transient do

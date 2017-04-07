@@ -10,8 +10,8 @@ class AssetTubeTest < ActiveSupport::TestCase
     @barcode1 = '11111'
     @prefix = 'NT'
     @asset_name = 'tube name'
-    @tube1 = create :sample_tube, barcode: barcode1, name: asset_name
-    @tube2 = create :sample_tube
+    @tube1 = create :empty_sample_tube, barcode: barcode1, name: asset_name
+    @tube2 = create :empty_sample_tube
     @tubes = [tube1, tube2]
     @tube_label = LabelPrinter::Label::AssetTube.new(tubes)
     @label = { top_line: (asset_name).to_s,
