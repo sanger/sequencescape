@@ -1,0 +1,51 @@
+<% add :menu, "Sample Management homepage" => lab_sample_logistics_path %>
+
+<h2>Stamping of stock</h2>
+
+<%= form_for(:stock_stamper, url: {action: "create"}) do |f| %>
+
+  <table >
+    <thead>
+     <tr>
+       <th></th>
+       <th>Scanned barcodes</th>
+     </tr>
+    </thead>
+    <tbody>
+      <tr>
+         <td><%=f.label :user_barcode, 'Scan user ID' %></td>
+         <td><%= f.text_field :user_barcode, :onkeypress => "return disable_cr_and_change_focus(event,'stock_stamper_user_barcode','stock_stamper_source_plate_barcode')" %></td>
+      </tr>
+      <tr>
+         <td><%= f.label :source_plate_barcode, 'Scan source plate' %></td>
+         <td><%= f.text_field :source_plate_barcode, :onkeypress => "return disable_cr_and_change_focus(event,'stock_stamper_source_plate_barcode','stock_stamper_destination_plate_barcode')" %></td>
+      </tr>
+      <tr>
+         <td><%= f.label :destination_plate_barcode, 'Scan destination plate' %></td>
+         <td><%= f.text_field :destination_plate_barcode %></td>
+      </tr>
+    </tbody>
+  </table>
+  <br>
+
+  <div class="form-group">
+    <%= f.label :source_plate_type_name, 'Source plate type: ' %>
+    <%= f.select :source_plate_type_name, options_for_select(PlateType.pluck(:name), @stock_stamper.source_plate_type_name) %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :destination_plate_type_name, 'Destination plate type: ' %>
+    <%= f.select :destination_plate_type_name, options_for_select(PlateType.pluck(:name), @stock_stamper.destination_plate_type_name) %><br>
+    Maximum volumes for plate types are: <%= PlateType.names_and_maximum_volumes%>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :overage, "'Overage' (multiply current volume by):" %>
+    <%= f.number_field :overage, step: 0.1, value: @stock_stamper.overage %>
+  </div>
+
+  <div class="form-group">
+    <%= f.submit "Check the form" %>
+  </div>
+
+<% end %>

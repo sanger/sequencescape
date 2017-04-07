@@ -26,7 +26,7 @@ class Aliquot < ActiveRecord::Base
   # An aliquot is an amount of a sample
   belongs_to :sample
 
-  has_one :aliquot_index
+  has_one :aliquot_index, dependent: :destroy
 
   scope :include_summary, -> { includes([:sample, :tag, :tag2]) }
   scope :in_tag_order, -> {

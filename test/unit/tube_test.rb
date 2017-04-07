@@ -2,7 +2,7 @@ require 'test_helper'
 
 class TubeTest < ActiveSupport::TestCase
   test '#barcode! should add barcode to a tube' do
-    tube = create :sample_tube_without_barcode
+    tube = create :tube
     refute tube.barcode
     tube.barcode!
     assert tube.barcode

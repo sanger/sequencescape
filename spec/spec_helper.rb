@@ -31,6 +31,10 @@ end
 
 Capybara.javascript_driver = :poltergeist
 
+Capybara.register_driver :poltergeist do |app|
+  Capybara::Poltergeist::Driver.new(app, timeout: 2.minutes)
+end
+
 WebMock.disable_net_connect!(allow_localhost: true)
 
 RSpec.configure do |config|
