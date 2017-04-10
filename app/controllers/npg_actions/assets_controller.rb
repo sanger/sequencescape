@@ -20,6 +20,10 @@ class NpgActions::AssetsController < ApplicationController
   rescue_from(NPGActionInvalid, with: :rescue_error_internal_server_error)
 
   # this procedure build a procedure called "state". In this case: pass and fail.
+  # The rendering of xml in response to an html request looks a little odd.
+  # This is as requests without an Accept header falls back to html, not xml.
+  # Some requests from NPG were missing the accept header.
+  # It is likely that this behaviour can be removed in the near future.
   def self.construct_action_for_qc_state(state)
     line = __LINE__ + 1
     class_eval(%Q{
@@ -38,7 +42,8 @@ class NpgActions::AssetsController < ApplicationController
           batch.npg_set_state   if ('#{state}' == 'pass')
 
           respond_to do |format|
-            format.xml { render :file => 'assets/show'}
+            format.xml  { render file: 'assets/show'}
+            format.html { render template: 'assets/show.xml.builder'}
           end
         end
       end
@@ -74,12 +79,14 @@ class NpgActions::AssetsController < ApplicationController
 
   def rescue_error(exception)
     respond_to do |format|
+      format.html { render xml: "<error><message>#{exception.message}</message></error>", status: '404' }
       format.xml { render xml: "<error><message>#{exception.message}</message></error>", status: '404' }
     end
   end
 
   def rescue_error_internal_server_error(exception)
     respond_to do |format|
+      format.html { render xml: "<error><message>#{exception.message}</message></error>", status: '500' }
       format.xml { render xml: "<error><message>#{exception.message}</message></error>", status: '500' }
     end
   end

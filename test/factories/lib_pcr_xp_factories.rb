@@ -10,6 +10,21 @@ FactoryGirl.define do
     end
   end
 
+  factory :plate_with_3_wells, parent: :plate do
+    size 96
+    after(:create) do |plate|
+      plate.wells = Map.where_description(%w(A1 B2 E6))
+                       .where_plate_size(plate.size)
+                       .where_plate_shape(AssetShape.default).map do |map|
+              build(:tagged_well, map: map, requests: [create(:lib_pcr_xp_request)])
+      end
+      plate.wells.each do |well|
+        well.well_attribute.current_volume = 160
+        well.save
+      end
+    end
+  end
+
   factory :lib_pcr_xp_plate, parent: :plate do
     size 96
     plate_purpose { |_| PlatePurpose.find_by(name: 'Lib PCR-XP') }
