@@ -250,7 +250,6 @@ class Plate < Asset
         build(map: location)
       end.tap do |wells|
         proxy_association.owner.save!
-        AssetLink::Job.create(proxy_association.owner, wells)
       end
     end
 
