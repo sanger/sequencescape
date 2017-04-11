@@ -1,6 +1,8 @@
-<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
 
 <%- add :title, "Items for Workflow" %>
 <% add :back_menu, I18n.t("navigation.menu.back_to_study") => study_workflow_path(@study, @workflow) -%>
@@ -15,7 +17,7 @@
 </div>
 
 <% if @items.blank? -%>
-  <%= display_user_guide(I18n.t('studies.workflows.items.no_items_available', :label => @workflow.item_label.downcase.pluralize)) %>
+  <%= display_user_guide(I18n.t('studies.workflows.items.no_items_available', label: @workflow.item_label.downcase.pluralize)) %>
 <% else -%>
 <p>These are the <%= @workflow.item_label.pluralize %> associated to <%= @study.name %>. Select the <%= @workflow.item_label.pluralize %> you want to print and press 'Print labels'.</p>
   <form action="<%= print_study_workflow_items_path(@study, @workflow) %>" method="POST">
@@ -43,7 +45,7 @@
   <tr>
     <td width="35%" class="item">Print to: </td>
     <td width="65%">
-      <%= render :partial => "shared/printer_list" %>
+      <%= render partial: "shared/printer_list" %>
     </td>
   </tr>
   <tr>

@@ -14,25 +14,34 @@ Feature: Print truncated sanger sample id on sample tube barcode
 
   Scenario: Print a barcode for an asset with a sample without a sanger_sample_id
     Given the child asset of "Sample Tube 1" has a sanger_sample_id of ""
-    When I press "Print labels"
-    Then the last printed label should contains:
-      | Field | Value |
-      | name  | NT \d+|
-      | desc  | Sample Tube 1 \d+_\d+ |
+    When Pmb has the required label templates
+    And I print the following labels
+      | Field                 | Value             |
+      |top_line               | Sample Tube 1 \d+ |
+      |middle_line            | \d+               |
+      |round_label_top_line   | NT                |
+      |round_label_bottom_line| \d+               |
+    Then I should see "Your 1 label(s) have been sent to printer xyz"
 
   Scenario: Print a barcode for an asset with a sample with a short sanger_sample_id
     Given the child asset of "Sample Tube 1" has a sanger_sample_id of "TW123456"
-    When I press "Print labels"
-    Then the last printed label should contains:
-      | Field | Value |
-      | name  | NT \d+       |
-      | desc  | TW123456_\d+ |
+    When Pmb has the required label templates
+    And I print the following labels
+      | Field                 | Value             |
+      |top_line               | TW123456          |
+      |middle_line            | \d+               |
+      |round_label_top_line   | NT                |
+      |round_label_bottom_line| \d+               |
+    Then I should see "Your 1 label(s) have been sent to printer xyz"
 
   Scenario: Print a barcode for an asset with a long sanger_sample_id
     Given the child asset of "Sample Tube 1" has a sanger_sample_id of "UK10K_Twins1234567"
-    When I press "Print labels"
-    Then the last printed label should contains:
-      | Field | Value |
-      | name  | NT \d+       |
-      | desc  | 1234567_\d+ |
+    When Pmb has the required label templates
+    And I print the following labels
+      | Field                 | Value             |
+      |top_line               | 1234567           |
+      |middle_line            | \d+               |
+      |round_label_top_line   | NT                |
+      |round_label_bottom_line| \d+               |
+    Then I should see "Your 1 label(s) have been sent to printer xyz"
 

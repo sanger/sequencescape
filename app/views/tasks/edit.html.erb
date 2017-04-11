@@ -1,11 +1,13 @@
-<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.%>
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.%>
 
 <%= render_title "Edit '#{@task.name}'" %>
 <%= render_help 'Update your task definition here.'%>
 
-<%= form_for(:task, :url => task_path(@task), :html => { :id => 'task_form', :method => :put }) do |f| %>
+<%= form_for(:task, url: task_path(@task), html: { id: 'task_form', method: :put }) do |f| %>
 
 <div id='yield'>
   <div id='main-items'>
@@ -13,11 +15,11 @@
       <%= error_messages_for :family %>
       <p>
         <strong>Name</strong><br />
-        <%= f.text_field :name, :size => '42' %>
+        <%= f.text_field :name, size: '42' %>
       </p>
       <p>
         <strong>Location</strong><br />
-        <%= f.text_field :location, :size => '42' %>
+        <%= f.text_field :location, size: '42' %>
       </p>
 
       <p>
@@ -57,7 +59,7 @@
       <% end %>
 
 
-      <%= render :partial => 'descriptors' %>
+      <%= render partial: 'descriptors' %>
 
       <p>
         <%= submit_tag "Update" %> or <%= link_to 'cancel', workflows_path %>
@@ -75,19 +77,19 @@
           </div>
           <ul>
           <% @task.families.each do |family| -%>
-            <li><%= family.name %> <%= link_to 'x', family_path(family), :method => :delete %></li>
+            <li><%= family.name %> <%= link_to 'x', family_path(family), method: :delete %></li>
           <% end -%>
           </ul>
         <% end %>
       </div>
     </div>
     <div>
-      <span class='bullet'>&raquo;</span> <%= link_to 'Specify assets', :controller => 'families', :action => 'new', :id => @task.id %>
+      <span class='bullet'>&raquo;</span> <%= link_to 'Specify assets', controller: 'families', action: 'new', id: @task.id %>
       <div class='helper'>Detail items to be created during this pipeline</div>
     </div>
     <div>
       <br />
-      <span class='bullet'>&raquo;</span> <%= link_to 'Delete task', task_path(@task), :method => :delete %>
+      <span class='bullet'>&raquo;</span> <%= link_to 'Delete task', task_path(@task), method: :delete %>
       <div class='helper'>Remove this task from the pipeline</div>
     </div>
 

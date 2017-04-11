@@ -1,6 +1,8 @@
-<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.%>
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.%>
 
 <% add :title, "Pipelines" -%>
 <% add :menu, "Create Plate Barcodes" => new_plate_path -%>
@@ -15,11 +17,11 @@
 
 <div class="col-md-6">
   <% @grouping.each do |group_name, pipelines| %>
-    <%= render :partial => 'pipelines', :locals => { :title => group_name, :pipelines => pipelines, :style=>'info' } %>
+    <%= render partial: 'pipelines', locals: { title: group_name, pipelines: pipelines, style: 'info' } %>
   <% end %>
 </div>
 <% if current_user.pipelines.active.present? %>
   <div class="col-md-6">
-    <%= render :partial => 'pipelines', :locals => { :title => 'Your Most Recent', :pipelines => current_user.pipelines.active, :style=>'success' } %>
+    <%= render partial: 'pipelines', locals: { title: 'Your Most Recent', pipelines: current_user.pipelines.active, style: 'success' } %>
   </div>
 <% end %>

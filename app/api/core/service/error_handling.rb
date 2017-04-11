@@ -1,30 +1,29 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 module Core::Service::ErrorHandling
   def self.registered(app)
     app.instance_eval do
       helpers Helpers
 
-      # We need hierarchical exception handling, so we rewrite the @errors Hash with our own implementation
-      @errors = HierarchicalExceptionMap.new(@errors)
-
       error([
         ::IllegalOperation,
         ::Core::Service::Error,
         ActiveRecord::ActiveRecordError
       ]) do
-        buffer = [ exception_thrown.message, exception_thrown.backtrace ].join("\n")
+        buffer = [exception_thrown.message, exception_thrown.backtrace].join("\n")
         Rails.logger.error("API[error]: #{buffer}")
 
         exception_thrown.api_error(self)
       end
-      error([ ::Exception ]) do
-        buffer = [ exception_thrown.message, exception_thrown.backtrace ].join("\n")
+      error([::Exception]) do
+        buffer = [exception_thrown.message, exception_thrown.backtrace].join("\n")
         Rails.logger.error("API[error]: #{buffer}")
 
-        self.general_error(501)
+        general_error(501)
       end
     end
   end
@@ -35,9 +34,8 @@ module Core::Service::ErrorHandling
         @error = error
       end
 
-      def each(&block)
+      def each
         yield JSON.generate(@error)
-        #Yajl::Encoder.new.encode(@error, &block)
       end
     end
 
@@ -46,25 +44,13 @@ module Core::Service::ErrorHandling
     end
 
     def general_error(code, errors = nil)
-      errors ||= [ exception_thrown.message ]
-      error(code, JsonError.new(:general => errors))
+      Rails.logger.error(exception_thrown.backtrace.join("\n"))
+      errors ||= [exception_thrown.message]
+      error(code, JsonError.new(general: errors))
     end
 
     def content_error(code, errors = nil)
-      error(code, JsonError.new(:content => errors))
-    end
-  end
-
-  class HierarchicalExceptionMap < Hash
-    def initialize(hash)
-      super
-      merge!(hash || {})
-    end
-
-    def [](key)
-      return super[key] unless key.is_a?(Class)
-      key = key.superclass until key.nil? or key?(key)
-      super(key)
+      error(code, JsonError.new(content: errors))
     end
   end
 end
@@ -96,12 +82,12 @@ end
 
 class ActiveRecord::RecordInvalid
   def api_error(response)
-    io_handler = ::Core::Io::Registry.instance.lookup_for_object(self.record)
+    io_handler = ::Core::Io::Registry.instance.lookup_for_object(record)
     response.content_error(422, errors_grouped_by_attribute { |attribute| io_handler.json_field_for(attribute) })
   end
 
   def errors_grouped_by_attribute
-    Hash[record.errors.map { |k,v| [ yield(k), [v].flatten.uniq ] }]
+    Hash[record.errors.map { |k, v| [yield(k), [v].flatten.uniq] }]
   end
   private :errors_grouped_by_attribute
 end

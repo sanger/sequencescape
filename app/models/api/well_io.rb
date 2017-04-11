@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 class Api::WellIO < Api::Base
   module Extensions
@@ -14,7 +16,7 @@ class Api::WellIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        scope :including_associations_for_json, -> { includes([:uuid_object, :map, :well_attribute, :plate, { :primary_aliquot => { :sample => :uuid_object } } ])}
+        scope :including_associations_for_json, -> { includes([:uuid_object, :map, :well_attribute, :plate, { primary_aliquot: { sample: :uuid_object } }]) }
       end
     end
   end
@@ -30,8 +32,8 @@ class Api::WellIO < Api::Base
   extra_json_attributes do |object, json_attributes|
     sample = object.primary_aliquot_if_unique.try(:sample)
     if sample.present?
-      json_attributes["genotyping_status"]       = object.genotyping_status
-      json_attributes["genotyping_snp_plate_id"] = sample.genotyping_snp_plate_id
+      json_attributes['genotyping_status']       = object.genotyping_status
+      json_attributes['genotyping_snp_plate_id'] = sample.genotyping_snp_plate_id
     end
   end
 
@@ -57,17 +59,17 @@ class Api::WellIO < Api::Base
     map_attribute_to_json_attribute(:uuid, 'plate_uuid')
 
     extra_json_attributes do |object, json_attributes|
-      json_attributes["plate_barcode_prefix"] = object.prefix unless object.nil?
+      json_attributes['plate_barcode_prefix'] = object.prefix unless object.nil?
     end
   end
 
   with_association(:primary_aliquot_if_unique) do
     with_association(:sample) do
       map_attribute_to_json_attribute(:uuid, 'sample_uuid')
-      map_attribute_to_json_attribute(:id  , 'sample_internal_id')
+      map_attribute_to_json_attribute(:id, 'sample_internal_id')
       map_attribute_to_json_attribute(:name, 'sample_name')
     end
   end
 
-  self.related_resources = [ :lanes, :requests ]
+  self.related_resources = [:lanes, :requests]
 end

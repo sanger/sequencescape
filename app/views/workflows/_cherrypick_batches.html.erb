@@ -1,9 +1,11 @@
-<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2015,2016 Genome Research Ltd.%>
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2015,2016 Genome Research Ltd.%>
 
-<!--% form_for @batch, :url => {:controller => :batches, :action => :qc_batch, :id => @batch.id, :task_id => @task.id }, :html => { :id => 'stage_form'} do |form| %-->
-<%= form_for @workflow, :url => { :action => "stage", :id => @stage, :workflow_id => @workflow.id, :batch_id => @batch.id, :next_stage => true }, :html => { :id => "stage_form"} do |form| %>
+<!--% form_for @batch, url: {controller: :batches, action: :qc_batch, id: @batch.id, task_id: @task.id }, html: { id: 'stage_form'} do |form| %-->
+<%= form_for @workflow, url: { action: "stage", id: @stage, workflow_id: @workflow.id, batch_id: @batch.id, next_stage: true }, html: { id: "stage_form"} do |form| %>
 
   <% plate_class = {}%>
   <h4>Source Plates</h4>
@@ -20,12 +22,12 @@
 
   <% plate_ids = [] %>
   <% @plates.each_with_index do |plate,index| -%>
-    <%= render :partial => "plate", :locals => {:plate_cols =>@plate_cols, :plate_rows => @plate_rows, :plate => plate, :index => index, :plate_class => plate_class} %>
+    <%= render partial: "plate", locals: {plate_cols: @plate_cols, plate_rows: @plate_rows, plate: plate, index: index, plate_class: plate_class} %>
 
     <% @plate_rows.times { |row_index| plate_ids << "plate[#{index}][#{row_index}]" } %>
   <% end -%>
 
-  <%= render :partial => "scratch_pad", :locals => {:plate_cols =>@plate_cols, :plate_rows => @plate_rows,:plate_class => plate_class, :plate_ids => plate_ids } %>
+  <%= render partial: "scratch_pad", locals: {plate_cols: @plate_cols, plate_rows: @plate_rows,plate_class: plate_class, plate_ids: plate_ids } %>
 
 <% if @plate.nil? -%>
   <script type="text/javascript">
@@ -35,19 +37,21 @@
   </script>
 <% end -%>
 
-  <%= hidden_field_tag 'minimum_volume', @minimum_volume    %>
-  <%= hidden_field_tag 'maximum_volume', @maximum_volume    %>
-  <%= hidden_field_tag 'robot_id', @robot_id    %>
-  <%= hidden_field_tag 'total_nano_grams', @total_nano_grams  %>
-  <%= hidden_field_tag 'cherrypick_action', @cherrypick_action %>
-  <%= hidden_field_tag 'plate_type', @plate_type %>
-  <%= hidden_field_tag 'volume_required', @volume_required %>
-  <%= hidden_field_tag 'concentration_required', @concentration_required %>
-  <%= hidden_field_tag 'micro_litre_volume_required', @micro_litre_volume_required %>
+  <%= hidden_field_tag 'nano_grams[total_nano_grams]', @nano_grams_total_nano_grams  %>
+  <%= hidden_field_tag 'nano_grams[minimum_volume]', @nano_grams_minimum_volume    %>
+  <%= hidden_field_tag 'nano_grams[maximum_volume]', @nano_grams_maximum_volume    %>
+  <%= hidden_field_tag 'nano_grams[robot_minimum_picking_volume]', @nano_grams_robot_minimum_picking_volume %>
+  <%= hidden_field_tag 'nano_grams_per_micro_litre[volume_required]', @nano_grams_per_micro_litre_volume_required %>
+  <%= hidden_field_tag 'nano_grams_per_micro_litre[concentration_required]', @nano_grams_per_micro_litre_concentration_required %>
+  <%= hidden_field_tag 'nano_grams_per_micro_litre[robot_minimum_picking_volume]', @nano_grams_per_micro_litre_robot_minimum_picking_volume %>
+  <%= hidden_field_tag 'micro_litre[volume_required]', @micro_litre_volume_required %>
   <%= hidden_field_tag 'plate_purpose_id', @plate_purpose_id %>
   <%= hidden_field_tag 'fluidigm_plate', @fluidigm_plate %>
+  <%= hidden_field_tag 'robot_id', @robot_id    %>
+  <%= hidden_field_tag 'cherrypick_action', @cherrypick_action %>
+  <%= hidden_field_tag 'plate_type', @plate_type %>
 
-  <%= render(:partial => 'next_stage_submit', :locals => { :check_selection => true }) %>
+  <%= render(partial: 'next_stage_submit', locals: { check_selection: true }) %>
 <% end %>
 
 <script type="text/javascript">

@@ -1,26 +1,29 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 module DelayedJobsHelper
   def job_type(job)
     if job.name =~ /StudyReport/
-      "generate study report"
+      'generate study report'
     elsif job.name =~ /Submission/
-        "process submission "
+        'process submission '
     else
       job.name
     end
   end
+
   def job_status(job)
       if job.locked_by
-        "In progress"
+        'In progress'
       elsif job.failed?
-        "Failed"
+        'Failed'
       elsif job.last_error?
-        "error"
+        'error'
       else
-        "pending"
+        'pending'
       end
   end
 end

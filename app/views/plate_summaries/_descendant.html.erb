@@ -50,4 +50,18 @@
       </td>
     </tr>
   <% end %>
+  <% if descendant.custom_metadatum_collection.present?%>
+    <tr>
+      <th>
+        Metadata
+      </th>
+      <td>
+        <ul class="list-unstyled">
+          <% descendant.metadata.each do |k, v| %>
+            <li><%= "#{k} : #{v}" %></li>
+          <%end%>
+        </ul>
+      </td>
+    </tr>
+  <% end %>
 <% end %>

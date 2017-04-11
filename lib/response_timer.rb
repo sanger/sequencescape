@@ -1,13 +1,14 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2012 Genome Research Ltd.
 # This module may be used to benchmark the API processes
 
 class ResponseTimer
   require 'java'
 
   class InstanceTimer
-    def initialize(start,output,response,env)
+    def initialize(start, output, response, env)
       @start = start
       @output = output
       @response = response
@@ -17,8 +18,7 @@ class ResponseTimer
     def close
       @response.close if @response.respond_to?(:close) # Pass us on
       stop = Time.now
-      @output.syswrite "Request: #{@env['REQUEST_METHOD']}%#{@env['REQUEST_URI']}%#{@env["rack.input"].string}%#{stop-@start}\n"
-      #@output.syswrite %Q{curl -X #{@env['REQUEST_METHOD']} -H "X_SEQUENCESCAPE_CLIENT_ID:development" -H "USER_AGENT:Ruby" -H "COOKIE:WTSISignOn=" -H "ACCEPT:application/json" -H "Content-Type: application/json" -d '#{@env["rack.input"].string}' http://localhost:3000#{@env['REQUEST_PATH']} --noproxy localhost\n}
+      @output.syswrite "Request: #{@env['REQUEST_METHOD']}%#{@env['REQUEST_URI']}%#{@env["rack.input"].string}%#{stop - @start}\n"
     end
 
     def each(&block)
@@ -26,7 +26,7 @@ class ResponseTimer
     end
   end
 
-  def initialize(app,output)
+  def initialize(app, output)
     @app = app
     @output = output
     header
@@ -35,7 +35,7 @@ class ResponseTimer
   def call(env)
     start = Time.now
     status, headers, response = @app.call(env)
-    [status, headers, InstanceTimer.new(start,@output,response,env)]
+    [status, headers, InstanceTimer.new(start, @output, response, env)]
   end
 
   def header
@@ -47,5 +47,4 @@ Environment: #{Rails.env}:R#{RUBY_VERSION}:#{File.split(Rails.root).last.capital
 ------------
     HEADER
   end
-
 end

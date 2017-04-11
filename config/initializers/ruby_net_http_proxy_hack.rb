@@ -1,6 +1,7 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2012,2016 Genome Research Ltd.
 
 # Connect based on standard library implimentation (via ruruby)
 #
@@ -8,7 +9,7 @@
 # Copyright (c) 1999-2007 Minero Aoki
 # Copyright (c) 2001 GOTOU Yuuzou
 #
-# Originally adapted by MAtt Denner.
+# Originally adapted by Matt Denner.
 
 # The sanger Squid proxy requires a user agent to be specified.
 # Unfortunately the standard library does not pass our headers on
@@ -21,7 +22,6 @@ require 'net/http'
 
 module Net
   class HTTP
-
     def self.set_proxy_header(name, value)
       additional_proxy_headers[name] = value
     end
@@ -33,6 +33,7 @@ module Net
     def additional_proxy_headers
       Net::HTTP.additional_proxy_headers
     end
+
     # Adapted from https://raw.githubusercontent.com/jruby/jruby/9.0.5.0/lib/ruby/stdlib/net/http.rb
     def connect
       if proxy? then
@@ -48,13 +49,13 @@ module Net
         TCPSocket.open(conn_address, conn_port, @local_host, @local_port)
       }
       s.setsockopt(Socket::IPPROTO_TCP, Socket::TCP_NODELAY, 1)
-      D "opened"
+      D 'opened'
       if use_ssl?
         ssl_parameters = Hash.new
         iv_list = instance_variables
         SSL_IVNAMES.each_with_index do |ivname, i|
           if iv_list.include?(ivname) and
-            value = instance_variable_get(ivname)
+             value = instance_variable_get(ivname)
             ssl_parameters[SSL_ATTRIBUTES[i]] = value if value
           end
         end
@@ -63,7 +64,7 @@ module Net
         D "starting SSL for #{conn_address}:#{conn_port}..."
         s = OpenSSL::SSL::SSLSocket.new(s, @ssl_context)
         s.sync_close = true
-        D "SSL established"
+        D 'SSL established'
       end
       @socket = BufferedIO.new(s)
       @socket.read_timeout = @read_timeout
@@ -75,7 +76,7 @@ module Net
             buf = "CONNECT #{@address}:#{@port} HTTP/#{HTTPVersion}\r\n"
             buf << "Host: #{@address}:#{@port}\r\n"
             # MODIFICATION BEGINS
-            additional_proxy_headers.each { |k,v| buf << "#{k}: #{v}\r\n" }
+            additional_proxy_headers.each { |k, v| buf << "#{k}: #{v}\r\n" }
             # MODIFICATION ENDS
             if proxy_user
               credential = ["#{proxy_user}:#{proxy_pass}"].pack('m')

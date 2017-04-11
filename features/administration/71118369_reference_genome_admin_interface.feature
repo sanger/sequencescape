@@ -47,6 +47,7 @@ Feature: Add interface to update reference genomes
 
     And I select "Jack Sponsor" from "Faculty Sponsor"
     And I fill in "Study description" with "parp parp"
+    And I fill in "Data access group" with "dag"
     And I press "Create"
     Then I should see "Your study has been created"
 

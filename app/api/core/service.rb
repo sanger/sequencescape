@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 require 'sinatra/base'
 module Core
@@ -19,7 +21,7 @@ module Core
         end
 
         def api_error(response)
-          response.general_error(self.class.api_error_code, [ self.class.api_error_message || self.api_error_message ])
+          response.general_error(self.class.api_error_code, [self.class.api_error_message || api_error_message])
         end
       end
 
@@ -47,7 +49,7 @@ module Core
     end
 
     # Report the performance and status of any request
-    def report(handler, &block)
+    def report(handler)
       Rails.logger.info("API[start]: #{handler}: #{request.fullpath}")
       yield
     ensure
@@ -62,7 +64,7 @@ module Core
     # This ensures that our Sinatra applications behave properly within the Rails environment.
     # Without this you'll find that only one of the services actually behaves properly, the others
     # will all fail with 404 errors.
-    def handle_not_found!(boom)
+    def handle_not_found!(_boom)
       @response.status               = 404
       @response.headers['X-Cascade'] = 'pass'
       @response.body                 = nil
@@ -97,13 +99,13 @@ module Core
       "#{request.scheme}://#{request.host_with_port}/#{self.class.api_version_path}/#{sub_path.compact.join('/')}"
     end
 
-    [ :before, :after ].each do |filter|
+    [:before, :after].each do |filter|
       line = __LINE__ + 1
-      class_eval(%Q{
+      class_eval("
         def self.#{filter}_all_actions(&block)
           self.#{filter}(%r{^(/.*)?$}, &block)
         end
-      }, __FILE__, line)
+      ", __FILE__, line)
     end
 
     def command
@@ -125,7 +127,7 @@ module Core
       attr_writer :io, :file, :filename
       attr_reader :ability
 
-      delegate :user, :to => :service
+      delegate :user, to: :service
       attr_reader :identifier, :started_at
 
       def initialize(identifier, *args, &block)
@@ -142,7 +144,7 @@ module Core
         # The WTSISignOn service has been retired. However previously the code
         # supported supplying the API key in this cookie, so this has been left
         # for compatibility purposes
-        @service.request.cookies['api_key']||@service.request.cookies['WTSISignOn']
+        @service.request.cookies['api_key'] || @service.request.cookies['WTSISignOn']
       end
 
       def response(&block)
@@ -151,25 +153,25 @@ module Core
 
       # Safe way to push a particular value on to the request target stack.  Ensures that the
       # original value is reset when the block is exitted.
-      def push(value, &block)
+      def push(value)
         target_before, @target = @target, value
         yield
       ensure
         @target = target_before
       end
 
-      def attributes(object = nil)
+      def attributes(_object = nil)
         io.map_parameters_to_attributes(json, nil)
       end
 
-      def create!(instance_attributes = self.attributes)
+      def create!(instance_attributes = attributes)
         ActiveRecord::Base.transaction do
           record = target.create!(instance_attributes)
           ::Core::Io::Registry.instance.lookup_for_object(record).eager_loading_for(record.class).include_uuid.find(record.id)
         end
       end
 
-      def update!(instance_attributes = self.attributes(target))
+      def update!(instance_attributes = attributes(target))
         ActiveRecord::Base.transaction do
           target.tap { |o| o.update_attributes!(instance_attributes) }
         end
@@ -188,7 +190,7 @@ module Core
       include Core::Benchmarking
 
       class Initializer
-        delegate :status, :headers, :api_path, :to => '@owner.request.service'
+        delegate :status, :headers, :api_path, to: '@owner.request.service'
 
         # Causes a response that will redirect the client to the specified UUID path.
         def redirect_to(uuid)
@@ -206,12 +208,12 @@ module Core
       attr_reader             :request
       initialized_attr_reader :handled_by, :object
 
-      delegate :io, :identifier, :started_at, :to => :request
+      delegate :io, :identifier, :started_at, to: :request
 
-      delegate :status, :to => 'request.service'
+      delegate :status, to: 'request.service'
       initialized_delegate :status
 
-      delegate :endpoint_for_object, :to => 'request.service'
+      delegate :endpoint_for_object, to: 'request.service'
       private :endpoint_for_object
 
       def initialize(request, &block)
@@ -231,23 +233,23 @@ module Core
         ::Core::Io::Buffer.new(block) do |buffer|
           ::Core::Io::Json::Stream.new(buffer).open do |stream|
             ::Core::Io::Registry.instance.lookup_for_object(object).as_json(
-              :response   => self,
-              :target     => object,
-              :stream     => stream,
-              :object     => object,
-              :handled_by => handled_by
+              response: self,
+              target: object,
+              stream: stream,
+              object: object,
+              handled_by: handled_by
             )
           end
         end
 
-        Rails.logger.info("API[streaming]: finished JSON streaming in #{Time.now-start}s")
+        Rails.logger.info("API[streaming]: finished JSON streaming in #{Time.now - start}s")
       end
 
       def close
-        identifier, started_at = self.identifier, self.started_at  # Save for later as next line discards our request!
+        identifier, started_at = self.identifier, self.started_at # Save for later as next line discards our request!
         discard_all_references
       ensure
-        Rails.logger.info("API[finished]: #{identifier} in #{Time.now-started_at}s")
+        Rails.logger.info("API[finished]: #{identifier} in #{Time.now - started_at}s")
       end
 
       def discard_all_references

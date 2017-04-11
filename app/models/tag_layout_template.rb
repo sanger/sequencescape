@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012,2014,2015 Genome Research Ltd.
 
 # This is a layout template for tags.  Think of it as a partially created TagLayout, defining only the tag
 # group that will be used and the actual TagLayout implementation that will do the work.
@@ -17,10 +19,10 @@ class TagLayoutTemplate < ActiveRecord::Base
   validates_presence_of :direction_algorithm
   validates_presence_of :walking_algorithm
 
-  delegate :direction, :to => :direction_algorithm_class
-  delegate :walking_by, :to => :walking_algorithm_class
+  delegate :direction, to: :direction_algorithm_class
+  delegate :walking_by, to: :walking_algorithm_class
 
-  scope :include_tags, -> { includes({ :tag_group => :tags }) }
+  scope :include_tags, -> { includes(tag_group: :tags) }
 
   def stamp_to(_)
     # Do Nothing
@@ -38,9 +40,9 @@ class TagLayoutTemplate < ActiveRecord::Base
 
   def tag_layout_attributes
     {
-      :tag_group => tag_group,
-      :direction_algorithm => direction_algorithm,
-      :walking_algorithm => walking_algorithm
+      tag_group: tag_group,
+      direction_algorithm: direction_algorithm,
+      walking_algorithm: walking_algorithm
     }
   end
   private :tag_layout_attributes

@@ -1,13 +1,13 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2015 Genome Research Ltd.
 
 require 'test_helper'
 
 class MessengerCreatorTest < ActiveSupport::TestCase
-
   context '#messenger_creator' do
-
     setup do
       @purpose = FactoryGirl.build :plate_purpose
       @plate =   FactoryGirl.build :plate, :plate_purpose => @purpose
@@ -62,7 +62,5 @@ class MessengerCreatorTest < ActiveSupport::TestCase
         assert_equal 3, Messenger.count - @start_count
       end
     end
-
   end
-
 end

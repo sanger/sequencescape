@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012,2015 Genome Research Ltd.
 
 class BaitLibraryLayout < ActiveRecord::Base
   include Uuid::Uuidable
@@ -17,7 +19,7 @@ class BaitLibraryLayout < ActiveRecord::Base
 
   # The layout of the bait libraries is recorded so that we can see what happened.  It is serialized in a compact
   # form that maps the bait library to the wells it was put into, but can be accessed in the reverse.
-  serialize :layout
+  serialize :layout, Hash
   validates_unassigned :layout
 
   def well_layout
@@ -30,8 +32,9 @@ class BaitLibraryLayout < ActiveRecord::Base
 
   # Records the assignment of the bait library to a particular well
   def record_bait_library_assignment(well, bait_library)
-    self.layout ||= Hash.new { |h,k| h[k] = [] }
-    self.layout[bait_library.name].push(well.map.description)
+    # Note: The serialization of the hash prevents the use of a block
+    # to set default values etc.
+    (layout[bait_library.name] ||= []).push(well.map.description)
   end
   private :record_bait_library_assignment
 
@@ -41,7 +44,7 @@ class BaitLibraryLayout < ActiveRecord::Base
   def layout_bait_libraries_on_plate
     # To improve the performance we store the aliquot IDs that need each of the individual bait libraries
     # attached to them in a hash.  Then we'll be able to bulk update them later.
-    bait_libraries_to_aliquot_ids = Hash.new { |h,k| h[k] = [] }
+    bait_libraries_to_aliquot_ids = Hash.new { |h, k| h[k] = [] }
     each_bait_library_assignment do |well, bait_library|
       bait_libraries_to_aliquot_ids[bait_library.id].concat(well.aliquot_ids)
       record_bait_library_assignment(well, bait_library)
@@ -49,12 +52,12 @@ class BaitLibraryLayout < ActiveRecord::Base
 
     # Bulk update the aliquots with the appropriate bait libraries
     bait_libraries_to_aliquot_ids.each do |bait_library_id, aliquot_ids|
-      Aliquot.update_all("bait_library_id=#{bait_library_id}", [ 'id IN (?)', aliquot_ids ])
+      Aliquot.where(id: aliquot_ids).update_all(bait_library_id: bait_library_id)
     end
   end
   private :layout_bait_libraries_on_plate
 
-  def each_bait_library_assignment(&block)
+  def each_bait_library_assignment
     plate.stock_wells.each do |well, stock_wells|
       bait_library = stock_wells.map { |w| w.requests_as_source.where_is_not_a?(TransferRequest).for_submission_id(well.pool_id).first }.compact.map(&:request_metadata).map(&:bait_library).uniq
       raise StandardError, "Multiple bait libraries found for #{well.map.description} on plate #{well.plate.sanger_human_barcode}" if bait_library.size > 1

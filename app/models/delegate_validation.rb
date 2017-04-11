@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2014,2015 Genome Research Ltd.
 
 # Delegate validation is all about enabling one class to validate the information within an instance of
 # another class.  The case driving this is the ability for a Submission to validate that the request options
@@ -11,15 +13,15 @@
 module DelegateValidation
   def delegate_validation(*args)
     options           = args.extract_options!
-    delegation_target = options.delete(:to) or raise StandardError, "Cannot delegate validation without :to!"
+    delegation_target = options.delete(:to) or raise StandardError, 'Cannot delegate validation without :to!'
     attribute_tag     = options[:as]
     args.push(options)
 
-    validates_each(*args) do |record, attr, value|
+    validates_each(*args) do |record, _attr, value|
       validator = record.send(:"#{delegation_target}_delegate_validator").new(value)
       validator.valid?.tap do
-        validator.errors.messages.each do |attrib,message|
-          record.errors.add("#{attribute_tag}.#{attrib}",message.join('; '))
+        validator.errors.messages.each do |attrib, message|
+          record.errors.add("#{attribute_tag}.#{attrib}", message.join('; '))
         end
       end
     end
@@ -29,7 +31,7 @@ module DelegateValidation
     include Validateable
 
     class DelegateError < ActiveModel::Errors
-      def initialize(base,target)
+      def initialize(base, target)
         @base     = base
         @messages = target.errors.messages
       end
@@ -37,8 +39,7 @@ module DelegateValidation
 
     attr_reader :target
     protected :target
-    delegate :include_unset_values?, :to => :target
-
+    delegate :include_unset_values?, to: :target
 
     def self.name
       'Nothing'
@@ -50,12 +51,12 @@ module DelegateValidation
 
     def self.delegate_attribute(*args)
       options   = args.extract_options!
-      type_cast = ".#{ options[:type_cast] }"        if options.key?(:type_cast) && options[:type_cast].present?
+      type_cast = ".#{options[:type_cast]}" if options.key?(:type_cast) && options[:type_cast].present?
       default   = " || #{options[:default].inspect}" if options.key?(:default)
 
       args.each do |attribute|
         line = __LINE__ + 1
-        class_eval(%Q{
+        class_eval("
           def #{attribute}_before_type_cast
             #{options[:to]}.#{attribute} #{default}
           end
@@ -67,7 +68,7 @@ module DelegateValidation
           def #{attribute}_needs_checking?
             #{attribute}_before_type_cast.present? or include_unset_values?
           end
-        }, __FILE__, line)
+        ", __FILE__, line)
       end
     end
   end
@@ -82,11 +83,11 @@ module DelegateValidation
   # A composite validator that will perform multiple validations across several validator classes.
   class CompositeValidator
     include ActiveModel::Validations
-    class_attribute :validator_classes, :instance_writer => false
+    class_attribute :validator_classes, instance_writer: false
 
     def self.CompositeValidator(*validator_classes)
       Class.new(CompositeValidator).tap do |sub_class|
-        sub_class.validator_classes =  validator_classes
+        sub_class.validator_classes = validator_classes
       end
     end
 
@@ -103,7 +104,5 @@ module DelegateValidation
       end
       false
     end
-
   end
 end
-

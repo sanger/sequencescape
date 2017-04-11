@@ -1,13 +1,15 @@
-<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.%>
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.%>
 
 <% if target_action =="update" %>
-  <% html_options = {:method => :put} %>
+  <% html_options = {method: :put} %>
 <% else %>
-  <% html_options = {:method => :post} %>
+  <% html_options = {method: :post} %>
 <% end %>
-<%= form_for :plate_templates, :url => {:action => "#{target_action}"}, :html => html_options  do |f| -%>
+<%= form_for :plate_templates, url: {action: "#{target_action}"}, html: html_options  do |f| -%>
   <label>Template name:</label>
   <% if pattern.nil? -%>
     <%= text_field_tag "name" %>

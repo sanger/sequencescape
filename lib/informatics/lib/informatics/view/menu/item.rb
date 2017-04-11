@@ -2,7 +2,6 @@ module Informatics
   module View
     module Menu
       class Item
-
         attr_accessor :text, :link, :confirm, :method
 
         def initialize(options = {})
@@ -11,7 +10,6 @@ module Informatics
           @confirm = options[:confirm]
           @method = options[:method]
         end
-
       end
     end
   end

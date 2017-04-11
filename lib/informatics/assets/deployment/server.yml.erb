@@ -1,9 +1,0 @@
---- 
-cwd: /software/webapp/<%= cap.environment %>/<%= deploy_name %>/current/
-environment: <%= cap.environment %>
-host: 0.0.0.0
-port: <%= balanced_ports.first %>
-daemon: true
-log_file: log/mongrel.log
-pid_file: log/mongrel.pid
-servers: 5

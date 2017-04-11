@@ -1,6 +1,8 @@
-<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015,2016 Genome Research Ltd.%>
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015,2016 Genome Research Ltd.%>
 
 <%- add :menu, "Back to Study" => study_path(@study)  %>
 
@@ -10,14 +12,14 @@
   <%= alert(:info) do %>
     Below are the assets that are available for this group.  Please select the assets you want to print labels and the printer you want them to be printed from.
   <% end %>
-  <%= render :partial => 'shared/assets_to_print', :locals => { :path => print_labels_study_asset_group_path(@study, @asset_group), :assets=>@assets}%>
+  <%= render partial: 'shared/assets_to_print', locals: { path: print_labels_study_asset_group_path(@study, @asset_group), assets: @assets}%>
 <% end %>
 
 <% if @containers.present? %>
   <%= alert(:warning) do %>
    <%=  @unbarcoded_count %> assets in the asset group are not barcoded directly (eg. <%= @unbarcoded_types %>). Below are the barcodes of their containers. These containers may also contain assets that are not in the asset group.
  <% end %>
- <%= render :partial => 'shared/assets_to_print', :locals => { :path => print_labels_study_asset_group_path(@study, @asset_group), :assets=>@containers}%>
+ <%= render partial: 'shared/assets_to_print', locals: { path: print_labels_study_asset_group_path(@study, @asset_group), assets: @containers}%>
 <% end %>
 
 <% unless @assets.present? || @containers.present? %>

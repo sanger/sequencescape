@@ -1,6 +1,8 @@
-<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.%>
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.%>
 
 <%- add :title, "This page displays details of a asset" %>
 <% add :menu, (pluralize @asset.comments.size, "comment") => asset_comments_path(@asset) -%>
@@ -8,9 +10,9 @@
   <% add :menu, "Print label" => print_asset_path(@asset) -%>
 <% end %>
 <% if @asset.closed? %>
-  <% add :manager_option, { "Open" => close_asset_path(@asset) },  { :confirm => "Do you really want to open this #{@asset.label}?" }  -%>
+  <% add :manager_option, { "Open" => close_asset_path(@asset) },  { confirm: "Do you really want to open this #{@asset.label}?" }  -%>
 <% else %>
-  <% add :manager_option, {  "Close" => close_asset_path(@asset) }, { :confirm => "Do you really want to close this #{@asset.label}?" } -%>
+  <% add :manager_option, {  "Close" => close_asset_path(@asset) }, { confirm: "Do you really want to close this #{@asset.label}?" } -%>
 <% end %>
 <% if @asset.is_a?(Plate) %>
   <% add :menu, "QC results" => plate_path(@asset) %>
@@ -28,8 +30,10 @@
   <% add :menu, "Edit" => edit_asset_path(@asset) -%>
 <% end %>
 
-<% if @asset.respond_to?(:sample) && @asset.sample %>
-  <% add :menu, "Back to sample" => sample_path(@asset.sample) -%>
+<% if @asset.respond_to?(:samples) %>
+  <% @asset.samples.each do |sample| %>
+    <% add :menu, "Back to sample #{sample.name}" => sample_path(sample) -%>
+  <% end %>
   <% @asset.related_studies.each do |study| %>
     <% add :menu, "Back to study #{study.name}" => study_path(study) -%>
   <% end %>
@@ -38,8 +42,7 @@
 
 <%= page_title('Asset',@asset.display_name) %>
 
-<%= render :partial => "asset", :locals => { :asset => @asset } %>
-<br />
+<%= render partial: "asset", locals: { asset: @asset } %>
 
 <h3>Relations</h3>
 <div class='help'>
@@ -108,7 +111,7 @@
   <tbody>
     <% @asset.requests.each do |request| %>
     <tr>
-      <td><%= link_to(request.id, request_url(request), :title => "#{ request.request_type.try(:name) || 'Unknown' } request") %></td>
+      <td><%= link_to(request.id, request_url(request), title: "#{ request.request_type.try(:name) || 'Unknown' } request") %></td>
       <td><%= request.request_type and request.request_type.name %></td>
       <td>
         <% if request.submission %>
@@ -133,11 +136,37 @@
       <% end %>
       <% if current_user.manager_or_administrator? || current_user.owner?(@asset) %>
         <td><%= link_to 'Copy', copy_request_url(request)   %></td>
-        <td><%= link_to 'Cancel', cancel_request_url(request),:confirm => "Are you sure you want to cancel request #{request.id}?" %></td>
+        <td><%= link_to 'Cancel', cancel_request_url(request),confirm: "Are you sure you want to cancel request #{request.id}?" %></td>
       <% end %>
       <td><%=h request.created_at.to_formatted_s(:long) %></td>
     </tr>
     <% end %>
   </tbody>
- </table>
+</table>
+
+<% if @asset.custom_metadatum_collection.present?%>
+  <h3>Metadata</h3>
+  <div class='help'>
+    Metadata table
+    <a data-collapse-element-id="metadata-table" data-hidden="false" class="shown-button">Collapse</a>
+  </div>
+
+  <table id="metadata-table" width='100%' class='sortable asset_relations' >
+    <thead>
+      <tr>
+        <th><%= link_to "Key", "javascript:void(0);" %></th>
+        <th><%= link_to "Value", "javascript:void(0);" %></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @asset.metadata.each do |k, v| %>
+        <tr>
+          <td><%= k %></td>
+          <td><%= v %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+<%end%>
 

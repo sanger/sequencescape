@@ -1,31 +1,46 @@
-#This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012 Genome Research Ltd.
 FactoryGirl.define do
-  factory :submission__ do |submission|
-    #raise "call FactoryHelp::submission instead "
+  factory :submission__ do
+    factory :submission_without_order do
+      user
+    end
   end
 
-  factory :submission_without_order , :class => Submission do |submission|
-      submission.user                  {|user| user.association(:user)}
-  end
-
-  #TODO move in a separate file
-  #easier to keep it here at the moment because we are moving stuff between both
-  factory :order do |order|
-    study                 {|study| study.association(:study)}
-    workflow              {|workflow| workflow.association(:submission_workflow)}
-    project               {|project| project.association(:project)}
-    user                  {|user| user.association(:user)}
+  factory :order do
+    study
+    workflow { |workflow| workflow.association(:submission_workflow) }
+    project
+    user
     item_options          {}
     request_options       {}
     assets                []
-    request_types         { [ create(:request_type).id ] }
+    request_types         { [create(:request_type).id] }
+
+    factory :order_with_submission do
+      after(:build) { |o| o.create_submission(user_id: o.user_id) }
+    end
+
+    factory :library_order do
+      request_options { { fragment_size_required_from: 100, fragment_size_required_to: 200, library_type: 'Standard' } }
+    end
   end
 
+  # Builds a submission on the provided assets suitable for processing through
+  # an external library pipeline such as Limber
+  # Note: Not yet complete. (Just in case something crops up before I finish this!)
+  factory :library_submission, class: Submission do
+    transient do
+      assets { [create(:well)] }
+      request_types { [create(:library_request_type), create(:multiplex_request_type)] }
+    end
 
-  factory :order_with_submission, :parent => :order do |order|
-    after(:build) { |o| o.create_submission(:user_id => o.user_id) }
+    user
+    after(:build) do |submission, evaluator|
+      submission.orders << build(:library_order, assets: evaluator.assets, request_types: evaluator.request_types.map(&:id))
+    end
   end
 end
 
@@ -36,10 +51,8 @@ class FactoryHelp
       value = options.delete(option)
       submission_options[option] = value if value
     end
-    state = options.delete(:state)
-    message = options.delete(:message)
     submission = FactoryGirl.create(:order_with_submission, options).submission
-    #trying to skip StateMachine
+    # trying to skip StateMachine
     if submission_options.present?
       submission.update_attributes!(submission_options)
     end

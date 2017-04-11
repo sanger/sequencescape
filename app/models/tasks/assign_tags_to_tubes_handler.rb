@@ -1,10 +1,11 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 module Tasks::AssignTagsToTubesHandler
-
-  def do_assign_tags_to_destination_task(task, params)
+  def do_assign_tags_to_destination_task(_task, params)
     @tag_group = TagGroup.find(params[:tag_group])
 
     ActiveRecord::Base.transaction do

@@ -6,19 +6,15 @@ Feature: Push samples through the PacBio pipeline with javascript
     Given I have a project called "Test project"
     Given I have an active study called "Test study"
     Given I am on the show page for study "Test study"
-
-    Given I have a sample tube "111" in study "Test study" in asset group "Test study group"
     Given the "1D Tube" barcode printer "xyz" exists
     Given the "96 Well Plate" barcode printer "abc" exists
     And the plate barcode webservice returns "99998"
     And the plate barcode webservice returns "99999"
-    Given the sample validation webservice returns "true"
-      And the reference genome "Mouse" exists
+    And the reference genome "Mouse" exists
     Given the study "Test study" has a reference genome of "Mouse"
 
   Scenario: Enough SMRTcells requested to cover multiple wells
-    Given sample tube "111" is part of study "Test study"
-    And I have a plate for PacBio
+    And I have a plate for PacBio in study "Test study"
     Given I have a "PacBio" submission with the following setup:
        | Project         | Test project     |
        | Study           | Test study       |
@@ -59,12 +55,18 @@ Feature: Push samples through the PacBio pipeline with javascript
     Then I should see "Batch released!"
     When I follow "Print plate labels"
     Then I should see "99999"
-    When I press "Print labels"
-    Then I should see "Your labels have been printed"
+    When Pmb has the required label templates
+    And Pmb is up and running
+    And I press "Print labels"
+    Then I should see "Your 1 label(s) have been sent to printer xyz"
 
   Scenario: Print out the library tube barcodes
+    Given I have a sample tube "111" in study "Test study" in asset group "Test study group"
+    Given sample tube "111" is part of study "Test study"
     Given I have a PacBio Library Prep batch
     When I follow "Print labels"
     When I select "xyz" from "Print to"
-    When I press "Print labels"
-    Then I should see "Your labels have been printed to xyz."
+    When Pmb has the required label templates
+    And Pmb is up and running
+    And I press "Print labels"
+    Then I should see "Your 2 label(s) have been sent to printer xyz"

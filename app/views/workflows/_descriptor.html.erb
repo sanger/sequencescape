@@ -1,6 +1,8 @@
-<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
 
 <% @count = 0 if @count.nil? %>
 <% @count += 1 %>
@@ -19,9 +21,9 @@
     <% elsif descriptor.kind == 'File upload' %>
       <%= file_field_tag "requests[#{request.id}][upload][#{descriptor.name}" %>
     <% else %>
-      <%= text_field "requests[#{request.id}][descriptors]", u(descriptor.name), :value => value %>
+      <%= text_field "requests[#{request.id}][descriptors]", u(descriptor.name), value: value %>
     <% end %>
-    <%= hidden_field "requests[#{request.id}][fields]", @count, :value => descriptor.name %>
+    <%= hidden_field "requests[#{request.id}][fields]", @count, value: descriptor.name %>
   </td>
   </tr>
 <% else %>
@@ -38,9 +40,9 @@
   <% elsif descriptor.kind == 'File upload' %>
     <%= file_field_tag "upload[#{descriptor.name}]" %>
   <% else %>
-    <%= text_field 'descriptors', u(descriptor.name), :value => value %>
+    <%= text_field 'descriptors', u(descriptor.name), value: value %>
   <% end %>
-  <%= hidden_field 'fields', @count, :value => descriptor.name %>
+  <%= hidden_field 'fields', @count, value: descriptor.name %>
 </td>
 </tr>
 <% end %>

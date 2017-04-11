@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 module Core::Io::Base::JsonFormattingBehaviour
   def self.extended(base)
@@ -8,14 +10,14 @@ module Core::Io::Base::JsonFormattingBehaviour
       extend ::Core::Io::Base::JsonFormattingBehaviour::Input
       extend ::Core::Io::Base::JsonFormattingBehaviour::Output
 
-      class_attribute :attribute_to_json_field, :instance_writer => false
-      self.attribute_to_json_field =  {}
-      delegate :json_field_for, :to => 'self.class'
+      class_attribute :attribute_to_json_field, instance_writer: false
+      self.attribute_to_json_field = {}
+      delegate :json_field_for, to: 'self.class'
     end
   end
 
   # NOTE: This one is OK!
-  def as_json(options = nil, &block)
+  def as_json(options = nil)
     options ||= {}
     object    = options.delete(:object)
     object_json(object, options)
@@ -25,7 +27,6 @@ module Core::Io::Base::JsonFormattingBehaviour
   # Very root level does absolutely nothing useful!
   #++
   def object_json(*args)
-
   end
 
   def json_field_for(attribute)
@@ -35,7 +36,7 @@ module Core::Io::Base::JsonFormattingBehaviour
     # need to determine the I/O class that deals with it and hand off the error handling to it.
     association, *association_parts = attribute.to_s.split('.')
     return attribute.to_s if association_parts.empty?
-    reflection = model_for_input.reflections[association.to_sym]
+    reflection = model_for_input.reflections[association]
     return attribute.to_s if reflection.nil?
 
     # TODO: 'association' here should really be garnered from the appropriate endpoint
@@ -48,16 +49,16 @@ module Core::Io::Base::JsonFormattingBehaviour
   end
 
   def json_root
-    @json_root or raise StandardError, "JSON root is not set for #{self.name}"
+    @json_root or raise StandardError, "JSON root is not set for #{name}"
   end
 
   def api_root
-    self.json_root.to_s.pluralize
+    json_root.to_s.pluralize
   end
 
   def define_attribute_and_json_mapping(mapping)
     parse_mapping_rules(mapping) do |attribute_to_json, json_to_attribute|
-      self.attribute_to_json_field.merge!(Hash[attribute_to_json])
+      attribute_to_json_field.merge!(Hash[attribute_to_json])
       generate_object_to_json_mapping(attribute_to_json)
       generate_json_to_object_mapping(json_to_attribute)
     end
@@ -65,13 +66,13 @@ module Core::Io::Base::JsonFormattingBehaviour
 
   VALID_LINE_REGEXP = /^\s*((?:[a-z_][\w_]*\.)*[a-z_][\w_]*[?!]?)\s*(<=|<=>|=>)\s*((?:[a-z_][\w_]*\.)*[a-z_][\w_]*)\s*$/
 
-  def parse_mapping_rules(mapping, &block)
+  def parse_mapping_rules(mapping)
     attribute_to_json, json_to_attribute = [], []
     StringIO.new(mapping).each_line do |line|
       next if line.blank? or line =~ /^\s*#/
       match = VALID_LINE_REGEXP.match(line) or raise StandardError, "Invalid line: #{line.inspect}"
-      attribute_to_json.push([ match[1], match[3] ]) if (match[2] =~ /<?=>/)
-      json_to_attribute.push([ match[3], (match[2] =~ /<=>?/) ? match[1] : nil ])
+      attribute_to_json.push([match[1], match[3]]) if (match[2] =~ /<?=>/)
+      json_to_attribute.push([match[3], (match[2] =~ /<=>?/) ? match[1] : nil])
     end
     yield(attribute_to_json, json_to_attribute)
   end

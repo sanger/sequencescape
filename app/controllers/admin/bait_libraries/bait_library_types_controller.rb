@@ -1,10 +1,15 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2012,2015 Genome Research Ltd.
 
 class Admin::BaitLibraries::BaitLibraryTypesController < ApplicationController
-  before_filter :admin_login_required
-  before_filter :discover_bait_library_type, :only => [:edit, :update, :destroy]
+  # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+  # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  before_action :evil_parameter_hack!
+  before_action :admin_login_required
+  before_action :discover_bait_library_type, only: [:edit, :update, :destroy]
   def new
     @bait_library_type = BaitLibraryType.new
   end
@@ -20,7 +25,7 @@ class Admin::BaitLibraries::BaitLibraryTypesController < ApplicationController
         flash[:notice] = 'Bait Library Type was successfully created.'
         format.html { redirect_to(admin_bait_libraries_path) }
       else
-        format.html { render :action => "new" }
+        format.html { render action: 'new' }
       end
     end
   end
@@ -31,7 +36,7 @@ class Admin::BaitLibraries::BaitLibraryTypesController < ApplicationController
         flash[:notice] = 'Bait Library Type was successfully updated.'
         format.html { redirect_to(admin_bait_libraries_path) }
       else
-        format.html { render :action => "edit" }
+        format.html { render action: 'edit' }
       end
     end
   end
@@ -51,7 +56,9 @@ class Admin::BaitLibraries::BaitLibraryTypesController < ApplicationController
       end
     end
   end
+
   private
+
   def discover_bait_library_type
     @bait_library_type = BaitLibraryType.find(params[:id])
   end

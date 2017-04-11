@@ -1,6 +1,8 @@
-<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2014,2015,2016 Genome Research Ltd.%>
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2014,2015,2016 Genome Research Ltd.%>
 
 
 <h3>Samples</h3>
@@ -27,8 +29,8 @@
  <tr class="<%= i.odd? ? 'rowodd' : 'roweven' %>">
    <td><strong><%= link_to(aliquot.sample.name, sample_url(aliquot.sample)) -%></strong></td>
    <td><%= aliquot.sample.sanger_sample_id %></td>
-   <td><%= render :partial =>'shared/tag_info', :locals=> {:tag=> aliquot.tag } if aliquot.tag.present? %></td>
-   <td><%= render :partial =>'shared/tag_info', :locals=> {:tag=> aliquot.tag2 } if aliquot.tag2.present? %></td>
+   <td><%= render partial: 'shared/tag_info', locals: {tag: aliquot.tag } if aliquot.tag.present? %></td>
+   <td><%= render partial: 'shared/tag_info', locals: {tag: aliquot.tag2 } if aliquot.tag2.present? %></td>
  </tr>
  <% end %>
  </tbody>

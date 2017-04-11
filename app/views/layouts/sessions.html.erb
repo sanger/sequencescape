@@ -1,6 +1,8 @@
-<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
 
 <!DOCTYPE html>
 
@@ -8,7 +10,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <%= stylesheet_link_tag "sessions", :media => "all" %>
+  <%= stylesheet_link_tag "sessions", media: "all" %>
 
   <title>Sequencescape : <%= I18n.t('global_links.login') %></title>
 
@@ -19,7 +21,7 @@
 
   <div class="jumbotron">
     <div>
-      <%= image_tag "scape-large-dark.jpg", :size => "600x229" %>
+      <%= image_tag "scape-large-dark.jpg", size: "600x229" %>
     </div>
     <div>
       <%= yield %>

@@ -15,18 +15,16 @@ require File.dirname(__FILE__) + '/exceptions'
 #
 module Authorization
   module Identity
-
     module UserExtensions
       module InstanceMethods
-
-        def method_missing( method_sym, *args )
+        def method_missing(method_sym, *args)
           method_name = method_sym.to_s
           authorizable_object = args.empty? ? nil : args[0]
 
-          base_regex = "is_(\\w+)"
+          base_regex = 'is_(\\w+)'
           fancy_regex = base_regex + "_(#{Authorization::Base::VALID_PREPOSITIONS_PATTERN})"
           is_either_regex = '^((' + fancy_regex + ')|(' + base_regex + '))'
-          base_not_regex = "is_no[t]?_(\\w+)"
+          base_not_regex = 'is_no[t]?_(\\w+)'
           fancy_not_regex = base_not_regex + "_(#{Authorization::Base::VALID_PREPOSITIONS_PATTERN})"
           is_not_either_regex = '^((' + fancy_not_regex + ')|(' + base_not_regex + '))'
 
@@ -35,16 +33,16 @@ module Authorization
             has_role_for_objects(role_name, authorizable_object)
           elsif method_name =~ Regexp.new(is_not_either_regex + '\?$')
             role_name = $3 || $6
-            not is_role?( role_name, authorizable_object )
+            not is_role?(role_name, authorizable_object)
           elsif method_name =~ Regexp.new(is_either_regex + '\?$')
             role_name = $3 || $6
-            is_role?( role_name, authorizable_object )
+            is_role?(role_name, authorizable_object)
           elsif method_name =~ Regexp.new(is_not_either_regex + '$')
             role_name = $3 || $6
-            is_no_role( role_name, authorizable_object )
+            is_no_role(role_name, authorizable_object)
           elsif method_name =~ Regexp.new(is_either_regex + '$')
             role_name = $3 || $6
-            is_role( role_name, authorizable_object )
+            is_role(role_name, authorizable_object)
           else
             super
           end
@@ -52,41 +50,41 @@ module Authorization
 
         private
 
-        def is_role?( role_name, authorizable_object )
+        def is_role?(role_name, authorizable_object)
           if authorizable_object.nil?
-            return self.has_role?(role_name)
+            return has_role?(role_name)
           elsif authorizable_object.respond_to?(:accepts_role?)
-            return self.has_role?(role_name, authorizable_object)
+            return has_role?(role_name, authorizable_object)
           end
           false
         end
 
-        def is_no_role( role_name, authorizable_object = nil )
+        def is_no_role(role_name, authorizable_object = nil)
           if authorizable_object.nil?
-            self.has_no_role role_name
+            has_no_role role_name
           else
-            self.has_no_role role_name, authorizable_object
+            has_no_role role_name, authorizable_object
           end
         end
 
-        def is_role( role_name, authorizable_object = nil )
+        def is_role(role_name, authorizable_object = nil)
           if authorizable_object.nil?
-            self.has_role role_name
+            has_role role_name
           else
-            self.has_role role_name, authorizable_object
+            has_role role_name, authorizable_object
           end
         end
 
         def has_role_for_objects(role_name, type)
-          if type.nil?
-            roles = self.roles.find_all_by_name( role_name )
-          else
-            roles = self.roles.find_all_by_authorizable_type_and_name( type.name, role_name )
-          end
+          roles = if type.nil?
+            self.roles.where(name: role_name)
+                  else
+            self.roles.where(authorizable_type: type.name, name: role_name)
+                  end
           roles.collect do |role|
             if role.authorizable_id.nil?
               role.authorizable_type.nil? ?
-                nil : Module.const_get( role.authorizable_type )   # Returns class
+                nil : Module.const_get(role.authorizable_type) # Returns class
             else
               role.authorizable
             end
@@ -97,25 +95,22 @@ module Authorization
 
     module ModelExtensions
       module InstanceMethods
-
-        def method_missing( method_sym, *args )
+        def method_missing(method_sym, *args)
           method_name = method_sym.to_s
           if method_name =~ /^has_(\w+)\?$/
             roles = $1.split('_or_').collect { |role| role.singularize }
             roles = roles.flatten.compact
-            self.accepted_roles.find_all_by_name(roles, :include => :users).any? { |role| role.users.compact.any? }
+            accepted_roles.where(name: roles, include: :users).any? { |role| role.users.compact.any? }
           elsif method_name =~ /^has_(\w+)$/
             roles = $1.split('_or_').collect { |role| role.singularize }
             roles = roles.flatten.compact
-            users = self.accepted_roles.find_all_by_name(roles, :include => :users).collect { |role| role.users }
+            users = accepted_roles.where(name: roles, include: :users).collect { |role| role.users }
             users.flatten.compact.uniq if users
           else
             super
           end
         end
-
       end
     end
-
   end
 end

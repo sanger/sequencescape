@@ -1,14 +1,16 @@
-<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.%>
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.%>
 
 <%# NOTE[xxx]: Kind of a hack because we're not actually building a form %>
 <%= fields_for(study) do |form| %>
-  <%= form.fields_for(:study_metadata, :builder => Metadata::ViewBuilder) do |metadata_fields| %>
-    <%= metadata_fields.association_attribute(:faculty_sponsor, :name, :grouping => 'Specification') %>
-    <%= metadata_fields.association_attribute(:program, :name, :grouping => 'Specification') %>
+  <%= form.fields_for(:study_metadata, builder: Metadata::ViewBuilder) do |metadata_fields| %>
+    <%= metadata_fields.association_attribute(:faculty_sponsor, :name, grouping: 'Specification') %>
+    <%= metadata_fields.association_attribute(:program, :name, grouping: 'Specification') %>
 
-    <% metadata_fields.with_options(:grouping => 'ENA requirement') do |group| %>
+    <% metadata_fields.with_options(grouping: 'ENA requirement') do |group| %>
       <%= group.plain_value(:study_study_title) %>
       <%= group.association_attribute(:study_type, :name) %>
       <%= group.plain_value(:study_description) %>
@@ -25,14 +27,15 @@
     <%= metadata_fields.plain_value(:remove_x_and_autosomes) %>
     <%= metadata_fields.plain_value(:separate_y_chromosome_data) %>
 
-    <%= metadata_fields.plain_value(:study_project_id, :grouping => 'SRA') %>
-    <%= metadata_fields.plain_value(:study_ebi_accession_number, :grouping => 'SRA AN') %>
+    <%= metadata_fields.plain_value(:study_project_id, grouping: 'SRA') %>
+    <%= metadata_fields.plain_value(:study_ebi_accession_number, grouping: 'SRA AN') %>
     <%= metadata_fields.plain_value(:ega_dac_accession_number) %>
     <%= metadata_fields.plain_value(:ega_policy_accession_number) %>
     <%= metadata_fields.plain_value(:array_express_accession_number) %>
     <%= metadata_fields.plain_value(:study_name_abbreviation) %>
+    <%= metadata_fields.plain_value(:bam) %>
 
-    <% metadata_fields.with_options(:grouping => 'Data Release') do |group| %>
+    <% metadata_fields.with_options(grouping: 'Data Release') do |group| %>
       <%= metadata_fields.plain_value(:data_access_group) %>
       <%= group.association_attribute(:data_release_study_type, :name) %>
       <%= group.plain_value(:data_release_strategy) %>

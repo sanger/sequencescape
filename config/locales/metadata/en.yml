@@ -95,6 +95,14 @@ en:
         no_pcr_library_request:
           <<: *REQUEST
 
+    well:
+      metadata:
+        concentration:
+          label: Concentration
+
+        rin:
+          label: RIN
+
     sample:
       metadata:
         organism:
@@ -216,7 +224,7 @@ en:
 
         donor_id:
           label:  Donor Id
-          era_label: subject_id
+          ena_label: subject_id
           edit_info: "[ EGA (As subject id) ]"
 
         subject_id:

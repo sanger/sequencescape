@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2012,2015 Genome Research Ltd.
 
 module Cherrypick::Task::PickHelpers
   def self.included(base)
@@ -11,7 +13,7 @@ module Cherrypick::Task::PickHelpers
     end
   end
 
-  def cherrypick_wells_grouped_by_submission(requests, robot, purpose, &picker)
+  def cherrypick_wells_grouped_by_submission(requests, robot, purpose)
     plate, purpose = nil, purpose
     plate, purpose = purpose, purpose.plate_purpose if purpose.is_a?(Plate)
 
@@ -20,14 +22,14 @@ module Cherrypick::Task::PickHelpers
         if request.present?
           well     = request.target_asset
           well.map = position
-          picker.call(well, request)
-          [ well, request ]
+          yield(well, request)
+          [well, request]
         else
           nil
         end
       end.compact
 
-      wells_and_requests.each { |well, request| well.well_attribute.save! ; well.save! ; request.pass! }
+      wells_and_requests.each { |well, request| well.well_attribute.save!; well.save!; request.pass! }
 
       # Attach the wells to the existing partial plate, or to a new plate if we need to create
       # one.  After the partial plate has been attached to we automatically need a new plate.
@@ -35,7 +37,7 @@ module Cherrypick::Task::PickHelpers
         plate.name = "Cherrypicked #{plate.barcode}"
       end
       plate.tap do |working_on|
-        working_on.wells.attach(wells_and_requests.map(&:first))
+        working_on.wells << wells_and_requests.map(&:first)
         plate = nil
       end
     end

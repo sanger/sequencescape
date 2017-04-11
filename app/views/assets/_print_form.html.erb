@@ -1,6 +1,8 @@
-<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2013,2015,2016 Genome Research Ltd.%>
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2013,2015,2016 Genome Research Ltd.%>
 
 <div>
   <h2>Print labels for <%= asset.label %> "<%= asset.name %>"</h2>
@@ -19,7 +21,7 @@
   <div class="form-group">
     <label for="barcode_printer_list" class="col-sm-2">Print to</label>
     <div class="col-sm-10">
-      <%= render :partial => "shared/printer_list" %>
+      <%= render partial: "shared/printer_list" %>
     </div>
   </div>
   <div class="form-group">

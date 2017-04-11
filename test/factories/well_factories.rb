@@ -1,20 +1,22 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012,2015,2016 Genome Research Ltd.
 
 FactoryGirl.define do
-
-  factory :well do |a|
-    value               ""
-    qc_state            ""
+  factory :well do
+    value               ''
+    qc_state            ''
+    resource            nil
+    barcode             nil
     well_attribute
 
-    # Empty well inherits from well and behaves identically
+    # For compatibility.
     factory :empty_well
-
   end
 
-  factory :well_attribute do |w|
+  factory :well_attribute do
     concentration       23.2
     current_volume      15
 
@@ -25,28 +27,34 @@ FactoryGirl.define do
     end
   end
 
-  factory :well_with_sample_and_without_plate, :parent => :empty_well do |well|
+  factory :well_with_sample_and_without_plate, parent: :empty_well do
     after(:build) do |well|
-      well.aliquots << create(:aliquot, :receptacle => well)
+      well.aliquots << build(:tagged_aliquot, receptacle: well)
     end
   end
 
-  factory :tagged_well, :parent => :empty_well do |well|
+  factory :untagged_well, parent: :empty_well do
+    after(:build) do |well|
+      well.aliquots << build(:untagged_aliquot, receptacle: well)
+    end
+  end
+
+  factory :tagged_well, parent: :empty_well do
     after(:create) do |well|
-      well.aliquots.create!(:sample => create(:sample), :tag => create(:tag))
+      well.aliquots << build(:tagged_aliquot, receptacle: well)
     end
   end
 
-  factory :well_with_sample_and_plate, :parent => :well_with_sample_and_without_plate do |well|
-    map { |map| map.association(:map) }
-    plate { |plate| plate.association(:plate) }
+  factory :well_with_sample_and_plate, parent: :well_with_sample_and_without_plate do
+    map
+    plate
   end
 
-  factory :cross_pooled_well, :parent => :empty_well do |well|
-    map { |map| map.association(:map) }
-    plate { |plate| plate.association(:plate) }
+  factory :cross_pooled_well, parent: :empty_well do
+    map
+    plate
     after(:build) do |well|
-      als = 2.times.map {
+      als = Array.new(2) {
         {
           sample:  create(:sample),
           study:   create(:study),
@@ -57,5 +65,12 @@ FactoryGirl.define do
       well.aliquots.build(als)
     end
   end
-end
 
+  factory :well_link, class: Well::Link do
+    association(:source_well, factory: :well)
+    association(:target_well, factory: :well)
+    type 'stock'
+
+    factory :stock_well_link
+  end
+end

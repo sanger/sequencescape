@@ -1,6 +1,8 @@
-<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
 
 <%# This partial renders a gel QC form for a 96 well plate. %>
 <h2>Plate <%= plate.sanger_human_barcode %></h2>
@@ -27,7 +29,7 @@
                 <% sample = well.try(:primary_aliquot).try(:sample) %>
                 <% if sample.present? and not sample.sample_empty? %>
                   <%= hidden_label_tag_for_testing(well_name.downcase, "Well #{well_name}") %>
-                  <%= gel_qc_select_box(well, well.well_attribute.gel_pass, :generate_blank => true, :id => well_name.downcase) %>
+                  <%= gel_qc_select_box(well, well.well_attribute.gel_pass, generate_blank: true, id: well_name.downcase) %>
                 <% end %>
               <% end %>
             </div>

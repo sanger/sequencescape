@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2012,2014,2015 Genome Research Ltd.
 
 require 'test_helper'
 
@@ -22,7 +24,7 @@ class AmqpObserverTest < ActiveSupport::TestCase
   context AmqpObserver do
     setup do
       @target = AmqpObserver.new.tap do |target|
-        def target.activate_exchange(&block)
+        def target.activate_exchange
           yield(mock_exchange)
         end
       end
@@ -38,7 +40,7 @@ class AmqpObserverTest < ActiveSupport::TestCase
         object_class.stubs(:name).returns('ClassName')
 
         @exchange = mock('Exchange for sending')
-        @exchange.expects(:publish).with('JSON', :key => 'test.saved.class_name.123456789', :persistent => false)
+        @exchange.expects(:publish).with('JSON', routing_key: 'test.saved.class_name.123456789', persistent: false)
         @target.instance_variable_set(:@mock_exchange, @exchange)
 
         @target.send(:publish_to, @exchange, object)
@@ -50,7 +52,7 @@ class AmqpObserverTest < ActiveSupport::TestCase
         should 'send multiple messages for updates to an object' do
           object = mock('Object to broadcast')
           object.stubs(:destroyed?).returns(false)
-          @target.expects(:publish_to).with(@exchange,object).twice
+          @target.expects(:publish_to).with(@exchange, object).twice
 
           @target << object << object
         end
@@ -58,7 +60,7 @@ class AmqpObserverTest < ActiveSupport::TestCase
         should 'send both the creation and the deletion message' do
           object = mock('Object to broadcast')
           object.expects(:destroyed?).twice.returns(false, true)
-          @target.expects(:publish_to).with(@exchange,object).twice
+          @target.expects(:publish_to).with(@exchange, object).twice
 
           @target << object << object
         end
@@ -68,7 +70,7 @@ class AmqpObserverTest < ActiveSupport::TestCase
             object, metadata = mock('Object to broadcast'), mock("#{base_class.name} being destroyed")
             metadata.stubs(:destroyed?).returns(true)
             metadata.stubs(owner).returns(object)
-            OWNED_CLASSES.each { |c,_| metadata.stubs(:is_a?).with(c).returns(base_class == c) }
+            OWNED_CLASSES.each { |c, _| metadata.stubs(:is_a?).with(c).returns(base_class == c) }
             metadata.stubs(:is_a?).with(Role).returns(false)
 
             @target << metadata
@@ -80,15 +82,15 @@ class AmqpObserverTest < ActiveSupport::TestCase
             @object, @role = mock('Object to broadcast'), mock('Role being updated')
 
             @role.stubs(:destroyed?).returns(false)
-            OWNED_CLASSES.each { |c,_| @role.stubs(:is_a?).with(c).returns(false) }
+            OWNED_CLASSES.each { |c, _| @role.stubs(:is_a?).with(c).returns(false) }
             @role.stubs(:is_a?).with(Role).returns(true)
             @role.stubs(:authorizable).returns(@object)
 
-            OWNED_CLASSES.each { |c,_| @object.stubs(:is_a?).with(c).returns(false) }
+            OWNED_CLASSES.each { |c, _| @object.stubs(:is_a?).with(c).returns(false) }
             @object.stubs(:is_a?).with(Role).returns(false)
             @object.stubs(:is_a?).with(Role::UserRole).returns(false)
 
-            @target.expects(:publish_to).with(@exchange,@object).once
+            @target.expects(:publish_to).with(@exchange, @object).once
           end
 
           should 'send the authorized record for roles' do
@@ -99,7 +101,7 @@ class AmqpObserverTest < ActiveSupport::TestCase
             user_role = mock('User role being added')
 
             user_role.stubs(:destroyed?).returns(false)
-            OWNED_CLASSES.each { |c,_| user_role.stubs(:is_a?).with(c).returns(false) }
+            OWNED_CLASSES.each { |c, _| user_role.stubs(:is_a?).with(c).returns(false) }
             user_role.stubs(:is_a?).with(Role).returns(false)
             user_role.stubs(:is_a?).with(Role::UserRole).returns(true)
             user_role.stubs(:role).returns(@role)
@@ -115,9 +117,9 @@ class AmqpObserverTest < ActiveSupport::TestCase
           object.stubs(:id).returns(123456789)
           object.stubs(:class).returns(object_class)
           object.stubs(:destroyed?).returns(false)
-          object_class.expects(:with_exclusive_scope).yields
+          object_class.expects(:unscoped).yields
           object_class.expects(:find).with([object.id]).returns([object])
-          @target.expects(:publish_to).with(@exchange,object).once
+          @target.expects(:publish_to).with(@exchange, object).once
           return_from_inside_transaction(@target, object)
         end
 
@@ -130,10 +132,10 @@ class AmqpObserverTest < ActiveSupport::TestCase
           begin
             @target.transaction do
               @target << object
-              raise 'Do not send thanks!'
+              raise StandardError, 'Do not send thanks!'
             end
-          rescue => exception
-            # Good!
+          rescue StandardError => exception
+            nil
           end
         end
 
@@ -142,9 +144,9 @@ class AmqpObserverTest < ActiveSupport::TestCase
           object.stubs(:id).returns(123456789)
           object.stubs(:class).returns(object_class)
           object.stubs(:destroyed?).returns(false)
-          object_class.expects(:with_exclusive_scope).yields
+          object_class.expects(:unscoped).yields
           object_class.expects(:find).with([object.id]).returns([object])
-          @target.expects(:publish_to).with(@exchange,object).once
+          @target.expects(:publish_to).with(@exchange, object).once
 
           @target.transaction do
             @target << object << object
@@ -156,7 +158,7 @@ class AmqpObserverTest < ActiveSupport::TestCase
           object.stubs(:id).returns(123456789)
           object.stubs(:class).returns(object_class)
           object.expects(:destroyed?).twice.returns(false, true)
-          @target.expects(:publish_to).with(@exchange,object).once
+          @target.expects(:publish_to).with(@exchange, object).once
 
           @target.transaction do
             @target << object << object
@@ -168,14 +170,14 @@ class AmqpObserverTest < ActiveSupport::TestCase
           object.stubs(:id).returns(123456789)
           object.stubs(:class).returns(object_class)
           object.stubs(:destroyed?).returns(false)
-          object_class.expects(:with_exclusive_scope).yields
+          object_class.expects(:unscoped).yields
           object_class.expects(:find).with([object.id]).returns([object])
 
           # NOTE: Expectation set after the inner transaction so that it will error if the method
           # is called by that inner transaction
           @target.transaction do
             @target.transaction { @target << object }
-            @target.expects(:publish_to).with(@exchange,object).once
+            @target.expects(:publish_to).with(@exchange, object).once
           end
         end
 
@@ -186,7 +188,7 @@ class AmqpObserverTest < ActiveSupport::TestCase
             object.stubs(:class).returns(object_class)
             metadata.stubs(:destroyed?).returns(true)
             metadata.stubs(owner).returns(object)
-            OWNED_CLASSES.each { |c,_| metadata.stubs(:is_a?).with(c).returns(base_class == c) }
+            OWNED_CLASSES.each { |c, _| metadata.stubs(:is_a?).with(c).returns(base_class == c) }
 
             @target.transaction do
               @target << metadata
