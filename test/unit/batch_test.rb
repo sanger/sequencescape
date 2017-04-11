@@ -20,34 +20,6 @@ class BatchTest < ActiveSupport::TestCase
         assert_equal @batch.started?, true
       end
     end
-
-    context 'with a pipeline' do
-      context 'workflow is internal and released?' do
-        setup do
-          @pipeline = build :pipeline, locale: 'Internal'
-          @batch = build :batch, pipeline: @pipeline
-        end
-
-        should 'initially not be #externally_released? then be #externally_released?' do
-          assert_equal @batch.externally_released?, false
-          @batch.release!(create(:user))
-          assert_equal @batch.externally_released?, true
-        end
-      end
-
-      context 'workflow is external and released?' do
-        setup do
-          @pipeline = build :pipeline, locale: 'External'
-          @batch = build :batch, pipeline: @pipeline
-        end
-
-        should 'initially not be #internally_released? then be #internally_released? and return the pipelines first workflow' do
-          assert_equal @batch.internally_released?, false
-          @batch.release!(create(:user))
-          assert_equal @batch.internally_released?, true
-        end
-      end
-    end
   end
 
   context 'Batch#add_control' do
@@ -209,11 +181,6 @@ class BatchTest < ActiveSupport::TestCase
         assert @batch.requests.for_studies(@study1).include?(@request1)
         assert @batch.requests.for_studies(@study2).all.empty?
       end
-
-      should 'be #externally_released?' do
-        @batch.update_attributes!(state: 'released')
-        assert_equal @batch.externally_released?, true
-      end
     end
 
     context 'with 2 requests from different studies' do
@@ -243,12 +210,6 @@ class BatchTest < ActiveSupport::TestCase
     context 'with no requests' do
       should 'not return plate ids' do
         assert @batch.plate_ids_in_study(@study1).empty?
-      end
-
-      should 'be #internally_released?' do
-        @pipeline.workflow.update_attributes!(locale: 'External')
-        @batch.update_attributes!(state: 'released')
-        assert_equal @batch.internally_released?, true
       end
     end
 
@@ -285,7 +246,7 @@ class BatchTest < ActiveSupport::TestCase
     should have_many :lab_events
     should have_many :requests
 
-    should_have_instance_methods :shift_item_positions, :assigned_user, :start, :fail, :workflow, :started?, :released?, :externally_released?, :internally_released?, :qc_state
+    should_have_instance_methods :shift_item_positions, :assigned_user, :start, :fail, :workflow, :started?, :released?, :qc_state
     should_have_instance_methods :submit_to_qc_queue
 
     setup do
@@ -710,8 +671,7 @@ class BatchTest < ActiveSupport::TestCase
         @task2 = create :task, workflow: @library_prep_pipeline.workflow, name: 'Task 2', sorted: 1
         @task3 = create :task, workflow: @library_prep_pipeline.workflow, name: 'Task 3', sorted: 2
 
-        @batch = @library_prep_pipeline.batches.create!(state: 'started')
-        @batch.requests << @library_prep_pipeline.request_types.last.create!(state: 'started')
+        @batch = create :batch, pipeline: @library_prep_pipeline, state: 'started'
         @batch.requests << @library_prep_pipeline.request_types.last.create!(state: 'started')
 
         # NO idea why descriptors are added twice here, or why the descriptors
@@ -719,12 +679,12 @@ class BatchTest < ActiveSupport::TestCase
         # mocks to use factories instead, I'm keeping the duplicate tasks
         # until I can work out why they were added.
         @event1 = create :lab_event, description: 'Complete', batch: @batch
-        @event1.add_new_descriptor 'task_id', (@task1.id).to_s
-        @event1.add_new_descriptor 'task_id', (@task1.id).to_s
+        @event1.add_new_descriptor 'task_id', @task1.id.to_s
+        @event1.add_new_descriptor 'task_id', @task1.id.to_s
 
         @event2 = create :lab_event, description: 'Complete', batch: @batch
-        @event2.add_new_descriptor 'task_id', (@task2.id).to_s
-        @event2.add_new_descriptor 'task_id', (@task2.id).to_s
+        @event2.add_new_descriptor 'task_id', @task2.id.to_s
+        @event2.add_new_descriptor 'task_id', @task2.id.to_s
 
         @batch.lab_events = [@event1, @event2]
       end
@@ -802,11 +762,6 @@ class BatchTest < ActiveSupport::TestCase
       @library_creation_request = create(:library_creation_request_for_testing_sequencing_requests)
       @library_tube = @library_creation_request.target_asset
       @library_creation_request_2 = create(:library_creation_request_for_testing_sequencing_requests, target_asset: @library_tube)
-
-      # The sequencing request will be created with a 76 read length (Standard sequencing), so the request
-      # type needs to include this value in its read_length validation list (for example, single_ended_sequencing)
-      # @request_type = RequestType.find_by_key("single_ended_sequencing")
-
       @pipeline = create :sequencing_pipeline
 
       @batch = build :batch, pipeline: @pipeline
@@ -816,7 +771,7 @@ class BatchTest < ActiveSupport::TestCase
     end
 
     should 'check that I cannot create a batch with invalid requests (ready?)' do
-      assert_equal false, @batch.save
+      assert_equal false, @batch.valid?
     end
 
     should 'check that I can create a batch with valid requests ready?' do
@@ -826,7 +781,7 @@ class BatchTest < ActiveSupport::TestCase
       @library_creation_request_2.start!
       @library_creation_request_2.cancel
       @library_creation_request_2.save!
-      assert_equal true, @batch.save!
+      assert_equal true, @batch.valid?
     end
   end
 end
