@@ -10,11 +10,11 @@
 # 1. Cherrypick batch release
 # They specify both a template (under Api::Messages) and a root
 class MessengerCreator < ActiveRecord::Base
-
   class SelfFinder
     def initialize(base)
       @base = base
     end
+
     def each_target
       yield @base
     end
@@ -24,8 +24,9 @@ class MessengerCreator < ActiveRecord::Base
     def initialize(base)
       @base = base
     end
+
     def each_target
-      @base.wells.map {|w| yield w }
+      @base.wells.map { |w| yield w }
     end
   end
 
@@ -52,5 +53,4 @@ class MessengerCreator < ActiveRecord::Base
   rescue NameError
     raise(StandardError, "Unknown finder: #{finder_class_name}")
   end
-
 end

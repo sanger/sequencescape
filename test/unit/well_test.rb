@@ -4,8 +4,8 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2014,2015,2016 Genome Research Ltd.
 
-require "test_helper"
-require "timecop"
+require 'test_helper'
+require 'timecop'
 
 class WellTest < ActiveSupport::TestCase
   context 'A well' do
@@ -359,44 +359,43 @@ class WellTest < ActiveSupport::TestCase
     end
   end
 
-  context "can be rendered as a stock resource" do
+  context 'can be rendered as a stock resource' do
     setup do
-      Timecop.freeze(DateTime.parse("2012-03-11 10:22:42")) do
-        @well = create :well, map: Map.find_by_description!('A1'), plate: create(:plate,barcode:'12345'), well_attribute: create(:complete_well_attribute)
+      Timecop.freeze(DateTime.parse('2012-03-11 10:22:42')) do
+        @well = create :well, map: Map.find_by!(description: 'A1'), plate: create(:plate, barcode: '12345'), well_attribute: create(:complete_well_attribute)
         @study = create :study
         @sample = create :sample
         @aliquot = create :aliquot, study: @study, sample: @sample, receptacle: @well
-        @messenger = Messenger.new(:target=>@well,:template=>'WellStockResourceIO',:root=>'stock_resource')
+        @messenger = Messenger.new(target: @well, template: 'WellStockResourceIO', root: 'stock_resource')
       end
     end
 
     should 'render what we expect' do
       assert_equal({
-        "lims"=>"SQSCP",
-        "stock_resource"=> {
-          "created_at" => "2012-03-11T10:22:42+00:00",
-          "updated_at" => "2012-03-11T10:22:42+00:00",
-          "samples" => [
-            "sample_uuid" => @sample.uuid,
-            "study_uuid" => @study.uuid
+        'lims' => 'SQSCP',
+        'stock_resource' => {
+          'created_at' => '2012-03-11T10:22:42+00:00',
+          'updated_at' => '2012-03-11T10:22:42+00:00',
+          'samples' => [
+            'sample_uuid' => @sample.uuid,
+            'study_uuid' => @study.uuid
           ],
-          "stock_resource_id" => @well.id,
-          "stock_resource_uuid" => @well.uuid,
-          "machine_barcode" => "1220012345855",
-          "human_barcode" => "DN12345U",
-          "labware_coordinate" => "A1",
+          'stock_resource_id' => @well.id,
+          'stock_resource_uuid' => @well.uuid,
+          'machine_barcode' => '1220012345855',
+          'human_barcode' => 'DN12345U',
+          'labware_coordinate' => 'A1',
 
-          "current_volume" => 15.0,
-          "initial_volume" => nil,
-          "concentration"  => 23.2,
+          'current_volume' => 15.0,
+          'initial_volume' => nil,
+          'concentration'  => 23.2,
 
-          "gel_pass" => "Pass",
-          "pico_pass" => "Pass",
-          "snp_count" => 2,
+          'gel_pass' => 'Pass',
+          'pico_pass' => 'Pass',
+          'snp_count' => 2,
 
-          "labware_type" => "well"}
-        }, JSON.parse(@messenger.to_json)
-      )
+          'labware_type' => 'well' }
+        }, JSON.parse(@messenger.to_json))
     end
 
     should 'allow registration of messengers' do

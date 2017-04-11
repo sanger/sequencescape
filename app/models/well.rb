@@ -42,7 +42,7 @@ class Well < Aliquot::Receptacle
 
   self.stock_message_template = 'WellStockResourceIO'
 
-  has_many :qc_metrics, :inverse_of => :asset, :foreign_key => :asset_id
+  has_many :qc_metrics, inverse_of: :asset, foreign_key: :asset_id
 
   def self.hash_stock_with_targets(wells, purpose_names)
     return {} unless purpose_names

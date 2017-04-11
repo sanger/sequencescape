@@ -10,13 +10,12 @@ class MessengerCreatorTest < ActiveSupport::TestCase
   context '#messenger_creator' do
     setup do
       @purpose = FactoryGirl.build :plate_purpose
-      @plate =   FactoryGirl.build :plate, :plate_purpose => @purpose
+      @plate =   FactoryGirl.build :plate, plate_purpose: @purpose
     end
 
     context 'with SelfFinder' do
-
       setup do
-        @messenger_creator = FactoryGirl.build :messenger_creator, :purpose => @purpose
+        @messenger_creator = FactoryGirl.build :messenger_creator, purpose: @purpose
         @start_count = Messenger.count
       end
 
@@ -40,7 +39,7 @@ class MessengerCreatorTest < ActiveSupport::TestCase
         @messenger_creator = build :messenger_creator, purpose: @purpose, target_finder_class: 'WellFinder', root: 'well'
         @start_count = Messenger.count
         @plate.save
-        3.times { @plate.wells << build(:well)}
+        3.times { @plate.wells << build(:well) }
       end
 
       should 'create a messenger' do

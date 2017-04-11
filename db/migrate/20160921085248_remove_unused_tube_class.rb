@@ -1,18 +1,16 @@
 class RemoveUnusedTubeClass < ActiveRecord::Migration
-
   class Purpose < ActiveRecord::Base
     self.table_name = 'plate_purposes'
     self.inheritance_column = nil
-    has_many :assets, :foreign_key => 'plate_purpose_id'
+    has_many :assets, foreign_key: 'plate_purpose_id'
   end
 
-
   def up
-    candidates_for_removal = Purpose.where(target_type:'StockSampleTube')
+    candidates_for_removal = Purpose.where(target_type: 'StockSampleTube')
     candidates_for_removal.each do |purpose|
       raise StandardError, "#{purpose.id}: #{purpose.name} is used!" if purpose.assets.present?
     end
-    ActiveRecord::Base.transaction { candidates_for_removal.each {|c| c.destroy } }
+    ActiveRecord::Base.transaction { candidates_for_removal.each { |c| c.destroy } }
   end
 
   def down
@@ -23,7 +21,7 @@ class RemoveUnusedTubeClass < ActiveRecord::Migration
         qc_display: false,
         can_be_considered_a_stock_plate: false,
         default_state: 'pending',
-        barcode_printer_type_id: BarcodePrinterType.find_by_name('1D Tube'),
+        barcode_printer_type_id: BarcodePrinterType.find_by(name: '1D Tube'),
         barcode_for_tecan: 'ean13_barcode'
       )
     end

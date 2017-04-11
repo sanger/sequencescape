@@ -36,11 +36,11 @@ class SampleRegistrarTest < ActiveSupport::TestCase
       end
 
       should 'register newly created sample tube' do
-        assert_equal 1, Messenger.count- @messenger_count
+        assert_equal 1, Messenger.count - @messenger_count
         assert_equal SampleTube.last, Messenger.last.target
       end
 
-      should "not change AssetGroup.count" do
+      should 'not change AssetGroup.count' do
         assert_equal @initial_agc,  AssetGroup.count
       end
 

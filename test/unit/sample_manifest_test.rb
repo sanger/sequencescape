@@ -68,7 +68,7 @@ class SampleManifestTest < ActiveSupport::TestCase
     end
 
     context 'for a library' do
-      [2,3].each do |count|
+      [2, 3].each do |count|
         context "#{count} plate(s)" do
           setup do
             @initial_samples       = Sample.count
@@ -92,33 +92,32 @@ class SampleManifestTest < ActiveSupport::TestCase
     end
 
     context 'for a sample tube' do
-      [1,2].each do |count|
+      [1, 2].each do |count|
         context "#{count} tubes(s)" do
           setup do
-            @initial_samples       = Sample.count
+            @initial_samples = Sample.count
             @initial_sample_tubes = SampleTube.count
-            @initial_in_study      = @study.samples.count
+            @initial_in_study = @study.samples.count
             @initial_messenger_count = Messenger.count
 
-            @manifest = create :sample_manifest, :study => @study, :count => count, :asset_type=>'1dtube'
+            @manifest = create :sample_manifest, study: @study, count: count, asset_type: '1dtube'
             @manifest.generate
           end
 
           should "create #{count} tubes(s) and #{count} samples in the right study" do
-            assert_equal (count), Sample.count                 - @initial_samples
+            assert_equal (count), Sample.count - @initial_samples
             # We need to create library tubes as we have downstream dependencies that assume a unique library tube
-            assert_equal (count), SampleTube.count            - @initial_sample_tubes
-            assert_equal (count), @study.samples.count         - @initial_in_study
+            assert_equal (count), SampleTube.count - @initial_sample_tubes
+            assert_equal (count), @study.samples.count - @initial_in_study
             assert_equal count, Messenger.count - @initial_messenger_count
           end
-
         end
       end
     end
 
     context 'converts to a spreadsheet' do
       setup do
-        @manifest = create :sample_manifest, :study => @study, :count => 1
+        @manifest = create :sample_manifest, study: @study, count: 1
         @manifest.generate
         SampleManifestTemplate.first.generate(@manifest)
 
@@ -126,13 +125,13 @@ class SampleManifestTest < ActiveSupport::TestCase
         @worksheet   = @spreadsheet.worksheets.first
       end
 
-      should "have 1 worksheet,study name, supplier name, well A1 and vertical order" do
+      should 'have 1 worksheet,study name, supplier name, well A1 and vertical order' do
         assert_equal 1, @spreadsheet.worksheets.size
         assert_equal 'CARD1', @worksheet[4, 1]
         assert_equal 'Test supplier', @worksheet[5, 1]
 
-        assert_equal 'A1',  @worksheet[  9, 1]
-        assert_equal 'B1',  @worksheet[ 10, 1]
+        assert_equal 'A1',  @worksheet[9, 1]
+        assert_equal 'B1',  @worksheet[10, 1]
         assert_equal 'H12', @worksheet[104, 1]
       end
     end

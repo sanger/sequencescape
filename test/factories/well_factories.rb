@@ -21,8 +21,8 @@ FactoryGirl.define do
     current_volume      15
 
     factory :complete_well_attribute do
-      gel_pass            "Pass"
-      pico_pass           "Pass"
+      gel_pass            'Pass'
+      pico_pass           'Pass'
       sequenom_count      2
     end
   end
