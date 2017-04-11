@@ -536,7 +536,7 @@ class Study < ActiveRecord::Base
 
   def accession_all_samples
     if accession_number?
-      samples.each do |sample|
+      samples.find_each do |sample|
         sample.accession
       end
     end
