@@ -336,3 +336,4 @@ PlatePurpose.create!(
   asset_shape: AssetShape.find_by(name: 'Standard'),
   barcode_for_tecan: 'ean13_barcode'
 )
+MessengerCreator.create!(purpose: Purpose.find_by(name: 'Stock Plate'), root: 'stock_resource', template: 'WellStockResourceIO', target_finder_class: 'WellFinder')
