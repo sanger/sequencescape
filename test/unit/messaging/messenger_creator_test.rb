@@ -48,7 +48,7 @@ class MessengerCreatorTest < ActiveSupport::TestCase
         assert_equal 3, @messengers.length
 
         @plate.wells.each do |well|
-          assert_include @messengers.map(&:target), well
+          assert_includes @messengers.map(&:target), well
         end
 
         assert_equal @messengers.first.root, 'well'

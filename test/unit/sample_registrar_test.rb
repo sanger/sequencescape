@@ -18,6 +18,7 @@ class SampleRegistrarTest < ActiveSupport::TestCase
         @initial_src =  SampleRegistrar.count
         @sample_count = Sample.count
         @sampletube_count = SampleTube.count
+        @messenger_count = Messenger.count
         SampleRegistrar.create!(
           asset_group_helper: SampleRegistrar::AssetGroupHelper.new,
           study: @study,
