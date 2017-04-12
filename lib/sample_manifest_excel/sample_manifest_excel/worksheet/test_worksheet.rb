@@ -78,10 +78,10 @@ module SampleManifestExcel
 
       def create_asset
         asset = if ['multiplexed_library', 'library'].include? manifest_type
-          FactoryGirl.create(:library_tube_with_barcode)
-        else
-          FactoryGirl.create(:sample_tube_with_sanger_sample_id)
-        end
+                  FactoryGirl.create(:library_tube_with_barcode)
+                else
+                  FactoryGirl.create(:sample_tube_with_sanger_sample_id)
+                end
         FactoryGirl.create(:external_multiplexed_library_tube_creation_request, asset: asset, target_asset: multiplexed_library_tube) if manifest_type == 'multiplexed_library'
         assets << asset
         yield(asset) if block_given?

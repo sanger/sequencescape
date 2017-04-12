@@ -20,7 +20,7 @@ module SampleManifest::CoreBehaviour
       alias_method(:rapid_generation?, :rapid_generation)
 
       def self.supported_asset_type?(asset_type)
-        asset_type.nil? || ['1dtube', 'plate', 'multiplexed_library', 'library'].include?(asset_type)
+        asset_type.nil? || %w(1dtube plate multiplexed_library library).include?(asset_type)
       end
     end
   end

@@ -14,7 +14,6 @@ module SampleManifest::LibraryBehaviour
   end
 
   class Core
-
     def initialize(manifest)
       @manifest = manifest
     end
@@ -62,7 +61,6 @@ module SampleManifest::LibraryBehaviour
       end
     end
   end
-  
 
   RapidCore = Core
 

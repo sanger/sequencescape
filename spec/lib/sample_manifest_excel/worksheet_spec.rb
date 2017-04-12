@@ -251,7 +251,7 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
         save_file
         # binding.pry
         expect(worksheet.sample_manifest.asset_type).to eq('library')
-        expect(worksheet.assets.all? { |asset| asset.type == "library_tube" }).to be_truthy
+        expect(worksheet.assets.all? { |asset| asset.type == 'library_tube' }).to be_truthy
       end
     end
 
