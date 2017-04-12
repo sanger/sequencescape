@@ -46,7 +46,7 @@ class Transfer::BetweenPlateAndTubes < Transfer
   scope :include_transfers, -> { includes(well_to_tubes: DESTINATION_INCLUDES) }
 
   def transfers
-    Hash[well_to_tubes.include_destination.map { |t| [t.source, tube_to_hash(t.destination)] }]
+    well_to_tubes.include_destination.each_with_object({}) { |t, hash| hash[t.source] = tube_to_hash(t.destination) }
   end
 
   # NOTE: Performance enhancement to convert a tube to it's minimal representation for presentation.

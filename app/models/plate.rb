@@ -248,9 +248,8 @@ class Plate < Asset
     def construct!
       Map.where_plate_size(proxy_association.owner.size).where_plate_shape(proxy_association.owner.asset_shape).in_row_major_order.map do |location|
         build(map: location)
-      end.tap do |wells|
+      end.tap do
         proxy_association.owner.save!
-        AssetLink::Job.create(proxy_association.owner, wells)
       end
     end
 
