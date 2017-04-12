@@ -144,6 +144,7 @@ Sequencescape::Application.routes.draw do
       get :related_studies
       post :relate_study
       post :unrelate_study
+      get :accession_all_samples
     end
 
     resources :assets, except: :destroy
