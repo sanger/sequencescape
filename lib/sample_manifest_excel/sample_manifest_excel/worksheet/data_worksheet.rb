@@ -17,7 +17,7 @@ module SampleManifestExcel
 
       def type
         @type ||= case sample_manifest.asset_type
-                  when '1dtube', 'multiplexed_library'
+                  when '1dtube', 'multiplexed_library', 'library'
                     'Tubes'
                   when 'plate'
                     'Plates'

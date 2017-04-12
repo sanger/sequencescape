@@ -65,7 +65,7 @@ class SampleManifestTest < ActiveSupport::TestCase
       end
     end
 
-    context 'for a library' do
+    context 'for a multiplexed library' do
       [3, 4].each do |count|
         context "#{count} plate(s)" do
           setup do
@@ -85,6 +85,30 @@ class SampleManifestTest < ActiveSupport::TestCase
             assert_equal (1),     MultiplexedLibraryTube.count - @initial_mx_tubes
             assert_equal (count), @study.samples.count         - @initial_in_study
           end
+        end
+      end
+    end
+
+    context 'for a library' do
+      context "library tubes" do
+        setup do
+          @initial_samples       = Sample.count
+          @initial_library_tubes = LibraryTube.count
+          @initial_mx_tubes      = MultiplexedLibraryTube.count
+          @initial_in_study      = @study.samples.count
+          @initial_tubes    = SampleTube.count
+
+          @manifest = create :sample_manifest, study: @study, count: 1, asset_type: 'library'
+          @manifest.generate
+        end
+
+        should "create 1 tubes and sample in the right study" do
+          assert_equal 1, Sample.count - @initial_samples
+          # We need to create library tubes as we have downstream dependencies that assume a unique library tube
+          assert_equal 1, LibraryTube.count - @initial_library_tubes
+          assert_equal @initial_mx_tubes, MultiplexedLibraryTube.count
+          assert_equal 1, @study.samples.count - @initial_in_study
+          assert_equal @initial_tubes, SampleTube.count
         end
       end
     end

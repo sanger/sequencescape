@@ -66,7 +66,7 @@ RSpec.describe SampleManifestExcel::Download, type: :model, sample_manifest_exce
   end
 
   context 'Tube download' do
-    setup do
+    before(:each) do
       sample_manifest = create(:tube_sample_manifest, rapid_generation: true)
       sample_manifest.generate
       @download = SampleManifestExcel::Download.new(sample_manifest,
@@ -89,7 +89,7 @@ RSpec.describe SampleManifestExcel::Download, type: :model, sample_manifest_exce
   end
 
   context 'Multiplexed library tube download' do
-    setup do
+    before(:each) do
       sample_manifest = create(:tube_sample_manifest, asset_type: 'multiplexed_library', rapid_generation: true)
       sample_manifest.generate
       @download = SampleManifestExcel::Download.new(sample_manifest,
@@ -112,9 +112,9 @@ RSpec.describe SampleManifestExcel::Download, type: :model, sample_manifest_exce
   end
 
   context 'Library tube with tag sequences download' do
-    setup do
+    before(:each) do
       # asset_type might be changed, based on how upload would work
-      sample_manifest = create(:tube_sample_manifest_with_samples, rapid_generation: true)
+      sample_manifest = create(:tube_sample_manifest_with_samples, asset_type: 'library', rapid_generation: true)
       sample_manifest.generate
       @download = SampleManifestExcel::Download.new(sample_manifest,
         SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup, SampleManifestExcel.configuration.ranges.dup)

@@ -8,7 +8,7 @@ module SampleManifestExcel
         include ActiveModel::Model
         include SubclassChecker
 
-        has_subclasses :one_d_tube, :multiplexed_library_tube, modual: to_s.deconstantize
+        has_subclasses :one_d_tube, :multiplexed_library_tube, :library_tube, modual: to_s.deconstantize
 
         attr_reader :upload
         validates_presence_of :upload

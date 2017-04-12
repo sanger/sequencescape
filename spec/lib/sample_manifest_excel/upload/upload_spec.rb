@@ -57,7 +57,7 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
 
   describe '#processor' do
     context '1dtube' do
-      let!(:columns) { SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup }
+      let!(:columns) { SampleManifestExcel.configuration.columns.tube_full.dup }
       let!(:download) { build(:test_download, columns: columns) }
 
       before(:each) do
@@ -68,6 +68,27 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
         upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: columns, start_row: 9)
         expect(upload.processor).to_not be_nil
         expect(upload.processor).to be_one_d_tube
+      end
+
+      it 'updates all of the data' do
+        upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: columns, start_row: 9)
+        upload.process(tag_group)
+        expect(upload).to be_processed
+      end
+    end
+
+    context 'library' do
+      let!(:columns) { SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup }
+      let!(:download) { build(:test_download, columns: columns, manifest_type: 'library') }
+
+      before(:each) do
+        download.save(test_file)
+      end
+
+      it 'should have the correct processor' do
+        upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: columns, start_row: 9)
+        expect(upload.processor).to_not be_nil
+        expect(upload.processor).to be_library_tube
       end
 
       it 'updates all of the data' do
