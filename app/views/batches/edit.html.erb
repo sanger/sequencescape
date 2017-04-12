@@ -9,7 +9,8 @@
 <% add :menu, "Swap lanes editing" => filtered_batch_path(@batch) -%>
 <% add :back_menu, "View all batches" => batch_path(@batch) -%>
 
-<h1>BATCH <%= @batch.id %></h1>
+<%= page_title('Batch', @batch.id) %>
+
 <div class="info">
   This batch belongs to pipeline: <%= @batch.pipeline.name %>
 </div>
@@ -23,11 +24,11 @@
 <%- end -%>
 
 <% if !@batch.has_control? && @batch.pipeline.has_controls? -%>
-<h1>CONTROLS</h1>
-<%= render partial: "controls" %>
+  <h2>Controls</h1>
+  <%= render partial: "controls" %>
 <% end -%>
 
-<h2>ASSIGN BATCH TO USER</h2>
+<h2>Assign Batch to User</h2>
 <div class="content">
   <div class="info">
   Assign this batch to another user
@@ -44,7 +45,7 @@
   </div>
 </div>
   <% if @batch.pending? %>
-  <h2>RESET BATCH</h2>
+  <h2>Reset Batch</h2>
   <div class="content">
     <div class="info">
       This will release all requests in the batch back into the inbox. The batch itself will be destroyed, target assets, such as lanes, will be removed.

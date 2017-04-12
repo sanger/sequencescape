@@ -25,6 +25,13 @@ GIT
   specs:
     ruby_walk (0.0.3)
 
+GIT
+  remote: git://github.com/sanger/sanger_barcode_format.git
+  revision: f409a218a74a1d1571383ceaf693fe296eb6beb7
+  branch: development
+  specs:
+    sanger_barcode_format (0.0.2)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -458,6 +465,7 @@ DEPENDENCIES
   ruby-oci8
   ruby_walk (>= 0.0.3)!
   rubyzip (~> 0.9)
+  sanger_barcode_format!
   sass-rails
   select2-rails
   shoulda
@@ -476,4 +484,4 @@ DEPENDENCIES
   yard
 
 BUNDLED WITH
-   1.13.6
+   1.14.6

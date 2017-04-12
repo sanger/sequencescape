@@ -71,8 +71,6 @@ Sequencescape::Application.routes.draw do
     end
   end
 
-  resources :items
-
   resources :batches do
     resources :requests, controller: 'batches/requests'
     resources :comments, controller: 'batches/comments'
@@ -247,10 +245,6 @@ Sequencescape::Application.routes.draw do
     end
   end
 
-  resources :items do
-    resource :request
-  end
-
   get 'studies/:study_id/workflows/:id' => 'study_workflows#show', :as => :study_workflow_status
 
   resources :searches
@@ -401,12 +395,6 @@ Sequencescape::Application.routes.draw do
   resources :lab_searches
   resources :errors
   resources :events
-
-  resources :items do
-    collection do
-      get :samples_for_autocomplete
-    end
-  end
 
   resources :workflows, except: :delete do
     member do
