@@ -11,7 +11,7 @@ module LabelPrinter
       end
 
       def top_right(_plate = nil)
-        batch.study.abbreviation
+        batch.studies.first.abbreviation
       end
 
       def bottom_right(plate)

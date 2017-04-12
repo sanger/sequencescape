@@ -107,7 +107,7 @@ class BarcodeTest < ActiveSupport::TestCase
     end
 
     should 'raise an exception with an invalid barcode' do
-      assert_raise(Barcode::InvalidBarcode) do
+      assert_raise(SBCF::BarcodeError) do
         Barcode.human_to_machine_barcode(@invalid_human_barcode)
       end
     end
