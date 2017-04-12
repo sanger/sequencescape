@@ -31,6 +31,7 @@ class Batch < ActiveRecord::Base
   def study
     studies.first
   end
+  deprecate study: 'Batches can belong to multiple studies'
 
   include Api::BatchIO::Extensions
   include Api::Messages::FlowcellIO::Extensions
