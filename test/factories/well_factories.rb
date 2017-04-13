@@ -19,6 +19,12 @@ FactoryGirl.define do
   factory :well_attribute do
     concentration       23.2
     current_volume      15
+
+    factory :complete_well_attribute do
+      gel_pass            'Pass'
+      pico_pass           'Pass'
+      sequenom_count      2
+    end
   end
 
   factory :well_with_sample_and_without_plate, parent: :empty_well do

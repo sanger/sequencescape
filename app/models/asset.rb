@@ -18,6 +18,8 @@ class Asset < ActiveRecord::Base
 
   SAMPLE_PARTIAL = 'assets/samples_partials/blank'
 
+  class_attribute :stock_message_template, instance_writer: false
+
   module InstanceMethods
     # Assets are, by default, non-barcoded
     def generate_barcode
@@ -69,7 +71,7 @@ class Asset < ActiveRecord::Base
   # Orders
   has_many :submitted_assets
   has_many :orders, through: :submitted_assets
-
+  has_many :messengers, as: :target, inverse_of: :target
   has_one :custom_metadatum_collection
   delegate :metadata, to: :custom_metadatum_collection
 
@@ -522,5 +524,13 @@ class Asset < ActiveRecord::Base
 
   def printable_target
     nil
+  end
+
+  # Generates a message to broadcast the tube to the stock warehouse
+  # tables. Raises an exception if no template is configured for a give
+  # asset. In most cases this is because the asset is not a stock
+  def register_stock!
+    raise StandardError, "No stock template configured for #{self.class.name}. If #{self.class.name} is a stock, set stock_template on the class." if stock_message_template.nil?
+    Messenger.create!(target: self, template: stock_message_template, root: 'stock_resource')
   end
 end

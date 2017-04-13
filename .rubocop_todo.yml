@@ -22,11 +22,6 @@ Lint/AssignmentInCondition:
     - 'lib/tasks/sql_filter.rb'
     - 'lib/update_user_barcode.rb'
 
-# Offense count: 2
-Lint/DuplicateCaseCondition:
-  Exclude:
-    - 'features/support/paths.rb'
-
 # Offense count: 1
 Lint/EmptyEnsure:
   Exclude:
