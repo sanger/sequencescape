@@ -143,7 +143,8 @@ module NavigationHelpers
     # Sample registration has a bit of an awkward flow.  'Sample registration' page is the one where people enter
     # the details of their samples, 'Sample creation' page is the same page, under a different path, and is
     # displayed if there is something wrong!  So it goes "choose how" -> "sample registration" -> "sample error".
-    when /the page for choosing how to register samples for study "([^\"]+)"$/, /the sample error page for study "([^\"]+)"/
+    when /the page for choosing how to register samples for study "([^\"]+)"$/,
+         /the sample error page for study "([^\"]+)"/
       study_name = $1
       study      = Study.find_by(name: study_name) or raise StandardError, "No study defined with name '#{study_name}'"
       study_sample_registration_index_path(study)
@@ -157,11 +158,6 @@ module NavigationHelpers
       study_name = $1
       study      = Study.find_by(name: study_name) or raise StandardError, "No study defined with name '#{study_name}'"
       spreadsheet_study_sample_registration_index_path(study)
-
-    when /the sample error page for study "([^\"]+)"/
-      study_name = $1
-      study      = Study.find_by(name: study_name) or raise StandardError, "No study defined with name '#{study_name}'"
-      study_sample_registration_index_path(study)
 
     when /the Submissions Inbox page/
       submissions_path
@@ -274,9 +270,6 @@ module NavigationHelpers
 
     when /the tag changing page/
       change_tags_path
-
-    when /the new plate page/
-      new_plate_path
 
     when /the events page for asset (\d+)/
       asset = Asset.find($1)

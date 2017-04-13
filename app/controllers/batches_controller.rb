@@ -115,16 +115,6 @@ class BatchesController < ApplicationController
     @batches = Batch.where(pipeline_id: params[:pipeline_id] || params[:id]).order(id: :desc).includes(:user, :pipeline).page(params[:page])
   end
 
-  def qc_information
-    respond_to do |format|
-      format.html
-      format.json do
-        b = @batch.formatted_batch_qc_details
-        render json: b.to_json.gsub(/null/, '""')
-      end
-    end
-  end
-
   # Deals with QC failures leaving batches and items statuses intact
   def qc_batch
     @batch.qc_complete

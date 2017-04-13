@@ -5,73 +5,85 @@
 # Copyright (C) 2007-2011,2012,2014,2015,2016 Genome Research Ltd.%>
 
 
-<table width="100%" cellspacing="0" cellpadding="0">
+<table class="table table-summary table-condensed">
   <tr>
-    <td class="item" width="40%">Asset name:</td>
-    <td width="60%"><strong><%=h(@asset.display_name) %></strong></td>
+    <th>Asset name</th>
+    <td><%= @asset.display_name %></td>
   </tr>
   <tr>
-    <td class="item">Asset ID:</td>
-    <td><strong><%=h @asset.id.to_s %></strong></td>
+    <th>Asset ID</th>
+    <td><%= @asset.id.to_s %></td>
   </tr>
   <tr>
-    <td class="item">Created at:</td>
-    <td><strong><%=h @asset.created_at.to_formatted_s(:day_full_with_time) %></strong></td>
+    <th>Created at</th>
+    <td><%= @asset.created_at.to_formatted_s(:day_full_with_time) %></td>
   </tr>
   <tr>
-    <td class="item">Type:</td>
-    <td><strong><%=h @asset.label %></strong></td>
+    <th>Type</th>
+    <td><%= @asset.label %></td>
   </tr>
   <% if @asset.respond_to? :purpose %>
   <tr>
-    <td class="item">Purpose:</td>
-    <td><strong><%=h @asset.purpose.try(:name)||'Unknown' %></strong></td>
+    <th>Purpose</th>
+    <td><%= @asset.purpose.try(:name)||'Unknown' %></td>
   </tr>
   <% end %>
   <% if @asset.is_a?(Lane) %>
     <tr>
-    <td class="item">Data to be released externally?:</td>
-    <td><strong><%=h @asset.external_release_text %></strong></td>
+    <th>Data to be released externally?</th>
+    <td><%= @asset.external_release_text %></td>
     </tr>
     <tr>
-      <td class="item"><%= h(@asset.lane_metadata.attribute_details_for(:release_reason).to_field_info.display_name) %>:</td>
-      <td><strong><%= h(@asset.lane_metadata.release_reason) %></strong></td>
+      <th><%= @asset.lane_metadata.attribute_details_for(:release_reason).to_field_info.display_name %></th>
+      <td><%= @asset.lane_metadata.release_reason %></td>
     </tr>
   <% end %>
   <tr>
-    <td class="item">Volume:</td>
-    <td><strong><%=h @asset.volume %></strong> &#181l</td>
+    <th>Volume</th>
+    <td><%= @asset.volume %> &#181l</td>
   </tr>
   <tr>
-    <td class="item">Concentration:</td>
-    <td><strong><%=h @asset.concentration %></strong> nM</td>
+    <th>Concentration</th>
+    <td><%= @asset.concentration %> nM</td>
   </tr>
-<% if @asset.respond_to?(:sanger_human_barcode) %>
+  <% if @asset.respond_to?(:sanger_human_barcode) %>
+    <tr>
+      <th>Human barcode</th>
+      <td><%= @asset.sanger_human_barcode %></td>
+    </tr>
+  <% end %>
+  <% if  @source_plate %>
+    <tr>
+      <th>Summary page</th>
+      <td><%= link_to "Summary for #{@source_plate.sanger_human_barcode}", plate_summary_path(@source_plate.sanger_human_barcode) %></td>
+    </tr>
+  <% end %>
+  <% if @asset.respond_to?(:plate) %>
+    <tr>
+      <th>Plate</th>
+      <td>
+        <% if @asset.plate.present? %>
+          <%= link_to @asset.plate.sanger_human_barcode, asset_path(@asset.plate) %>
+        <% else %>
+          No plate
+        <% end %>
+      </td>
+    </tr>
+  <% end %>
   <tr>
-    <td class="item">Human barcode:</td>
-    <td><strong><%=h @asset.sanger_human_barcode %></strong></td>
-  </tr>
-<% end %>
-<% if  @source_plate %>
-  <tr>
-    <td class="item">Summary page:</td>
-    <td><strong><%= link_to "Summary for #{@source_plate.sanger_human_barcode}", plate_summary_path(@source_plate.sanger_human_barcode) %></strong></td>
-  </tr>
-<% end %>
-  <tr>
-    <td class="item">Scanned into lab?:</td>
-    <td><strong><%= @asset.location.nil? ? 'No' : @asset.location.name %></strong></td>
+    <th>Scanned into lab?</th>
+    <td><%= @asset.location.nil? ? 'No' : @asset.location.name %></td>
   </tr>
   <% if @asset.qc_state %>
     <tr>
-      <td class="item">QC state:</td>
-      <td><strong><%= @asset.qc_state %></strong></td>
+      <th>QC state</th>
+      <td><%= @asset.qc_state %></td>
     </tr>
   <% end %>
   <% if @asset.respond_to?(:storage_location) && !@asset.storage_location.empty? %>
     <tr class="location-service-<%= @asset.storage_location_service %>">
-      <td class="item">Storage location</td>
-      <td><strong><%= @asset.storage_location %></strong></td>
+      <th>Storage location</th>
+      <td><%= @asset.storage_location %></td>
     </tr>
   <% end %>
 </table>

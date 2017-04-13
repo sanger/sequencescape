@@ -293,6 +293,13 @@ class StudiesController < ApplicationController
      end
    end
 
+   def accession_all_samples
+      @study = Study.find(params[:id])
+      @study.accession_all_samples
+      flash[:notice] = 'All of the samples in this study have been sent for accessioning.'
+      redirect_to(study_path(@study))
+   end
+
    def dac_accession
      rescue_accession_errors do
        @study = Study.find(params[:id])

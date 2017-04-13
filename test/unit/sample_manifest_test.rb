@@ -26,6 +26,7 @@ class SampleManifestTest < ActiveSupport::TestCase
             @initial_plates   = Plate.count
             @initial_wells    = Well.count
             @initial_in_study = @study.samples.count
+            @initial_messenger_count = Messenger.count
 
             @manifest = create :sample_manifest, study: @study, count: count
             @manifest.generate
@@ -36,6 +37,7 @@ class SampleManifestTest < ActiveSupport::TestCase
             assert_equal (count * 1), Plate.count - @initial_plates
             assert_equal (count * 96), Well.count - @initial_wells
             assert_equal (count * 96), @study.samples.count - @initial_in_study
+            assert_equal (count * 96), Messenger.count - @initial_messenger_count
           end
         end
 
@@ -66,7 +68,7 @@ class SampleManifestTest < ActiveSupport::TestCase
     end
 
     context 'for a library' do
-      [3, 4].each do |count|
+      [2, 3].each do |count|
         context "#{count} plate(s)" do
           setup do
             @initial_samples       = Sample.count
@@ -84,6 +86,30 @@ class SampleManifestTest < ActiveSupport::TestCase
             assert_equal (count), LibraryTube.count            - @initial_library_tubes
             assert_equal (1),     MultiplexedLibraryTube.count - @initial_mx_tubes
             assert_equal (count), @study.samples.count         - @initial_in_study
+          end
+        end
+      end
+    end
+
+    context 'for a sample tube' do
+      [1, 2].each do |count|
+        context "#{count} tubes(s)" do
+          setup do
+            @initial_samples = Sample.count
+            @initial_sample_tubes = SampleTube.count
+            @initial_in_study = @study.samples.count
+            @initial_messenger_count = Messenger.count
+
+            @manifest = create :sample_manifest, study: @study, count: count, asset_type: '1dtube'
+            @manifest.generate
+          end
+
+          should "create #{count} tubes(s) and #{count} samples in the right study" do
+            assert_equal (count), Sample.count - @initial_samples
+            # We need to create library tubes as we have downstream dependencies that assume a unique library tube
+            assert_equal (count), SampleTube.count - @initial_sample_tubes
+            assert_equal (count), @study.samples.count - @initial_in_study
+            assert_equal count, Messenger.count - @initial_messenger_count
           end
         end
       end
