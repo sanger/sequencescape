@@ -6,7 +6,7 @@
 
 module SampleManifest::MultiplexedLibraryBehaviour
   module ClassMethods
-    def create_for_mutliplexed_library!(attributes, *args, &block)
+    def create_for_multiplexed_library!(attributes, *args, &block)
       create!(attributes.merge(asset_type: 'multiplexed_library'), *args, &block).tap do |manifest|
         manifest.generate
       end
