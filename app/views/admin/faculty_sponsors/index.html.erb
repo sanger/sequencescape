@@ -17,10 +17,10 @@
   <tbody>
   <% for faculty_sponsor in @faculty_sponsors %>
     <tr>
-      <td><%= link_to faculty_sponsor.name, admin_faculty_sponsor_path(faculty_sponsor), :title => "View #{faculty_sponsor.name}" %></td>
+      <td><%= link_to faculty_sponsor.name, admin_faculty_sponsor_path(faculty_sponsor), title: "View #{faculty_sponsor.name}" %></td>
       <td><%= faculty_sponsor.count_studies %></td>
-      <td><%= link_to 'Edit', edit_admin_faculty_sponsor_path(faculty_sponsor), :title => "Edit #{faculty_sponsor.name}" %></td>
-      <td><%= link_to 'Delete', [:admin,faculty_sponsor], :title => "Delete #{faculty_sponsor.name}", :confirm => 'Are you sure?', :method => :delete %></td>
+      <td><%= link_to 'Edit', edit_admin_faculty_sponsor_path(faculty_sponsor), title: "Edit #{faculty_sponsor.name}" %></td>
+      <td><%= link_to 'Delete', [:admin,faculty_sponsor], title: "Delete #{faculty_sponsor.name}", confirm: 'Are you sure?', method: :delete %></td>
     </tr>
   <% end %>
   </tbody>

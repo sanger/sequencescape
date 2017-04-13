@@ -4,7 +4,8 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
-require "exceptions"
+require 'exceptions'
+require 'authenticated_system'
 
 # Filters added to this controller apply to all controllers in the application.
 # Likewise, all the methods added will be available for all controllers.
@@ -32,9 +33,9 @@ class ApplicationController < ActionController::Base
     new_hash = object.class.new
     to_nil = []
     object.each do |k, v|
-      if k == "check" and v.is_a?(Hash)
+      if k == 'check' and v.is_a?(Hash)
         v.each do |k, v|
-          to_nil << k unless v == "true"
+          to_nil << k unless v == 'true'
         end
       else # normal
         new_hash[k] = clean_params_from_check(v)
@@ -51,20 +52,20 @@ class ApplicationController < ActionController::Base
   public
 
   def block_api_access(message = nil, format = :xml)
-    content = { error: "Unsupported API access" }
+    content = { error: 'Unsupported API access' }
     content[:message] = message unless message.nil?
     { format => content.send("to_#{format}".to_sym, root: :errors), :status => 406 }
   end
 
   def extract_header_info
-    exclude_nested_resource = request.headers["HTTP_EXCLUDE_NESTED_RESOURCE"] || params[:exclude_nested_resource]
-    @exclude_nested_resource = exclude_nested_resource && exclude_nested_resource.to_s.casecmp("true").zero?
+    exclude_nested_resource = request.headers['HTTP_EXCLUDE_NESTED_RESOURCE'] || params[:exclude_nested_resource]
+    @exclude_nested_resource = exclude_nested_resource && exclude_nested_resource.to_s.casecmp('true').zero?
   end
 
   def set_cache_disabled!
-    response.headers["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
-    response.headers["Pragma"] = "no-cache"
-    response.headers["Expires"] = "Fri, 01 Jan 1990 00:00:00 GMT"
+    response.headers['Cache-Control'] = 'no-cache, no-store, max-age=0, must-revalidate'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = 'Fri, 01 Jan 1990 00:00:00 GMT'
   end
 
   def first_param(key)

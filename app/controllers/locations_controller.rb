@@ -5,8 +5,8 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 class LocationsController < ApplicationController
-# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+  # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   before_action :find_location_by_id, only: [:show, :edit, :update, :destroy]
 
@@ -47,7 +47,7 @@ class LocationsController < ApplicationController
         format.html { redirect_to(@location) }
         format.xml  { render xml: @location, status: :created, location: @location }
       else
-        format.html { render action: "new" }
+        format.html { render action: 'new' }
         format.xml  { render xml: @location.errors, status: :unprocessable_entity }
       end
     end
@@ -60,7 +60,7 @@ class LocationsController < ApplicationController
         format.html { redirect_to(@location) }
         format.xml  { head :ok }
       else
-        format.html { render action: "edit" }
+        format.html { render action: 'edit' }
         format.xml  { render xml: @location.errors, status: :unprocessable_entity }
       end
     end

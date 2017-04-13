@@ -4,28 +4,28 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2015,2016 Genome Research Ltd.
 
-require "rexml/document"
+require 'rexml/document'
 
 class StudiesController < ApplicationController
-# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+  # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   include REXML
   include Informatics::Globals
   include XmlCacheHelper::ControllerHelper
 
   before_action :login_required
-  before_action :admin_login_required, only: [:new_plate_submission, :create_plate_submission, :settings, :administer, :manage, :managed_update, :grant_role, :remove_role]
+  before_action :admin_login_required, only: [:settings, :administer, :manage, :managed_update, :grant_role, :remove_role]
   before_action :manager_login_required, only: [:close, :open, :related_studies, :relate_study, :unrelate_study]
 
-  around_filter :rescue_validation, only: [:close, :open]
+  around_action :rescue_validation, only: [:close, :open]
 
   def setup_studies_from_scope(exclude_nested_resource = false)
     if logged_in? and not exclude_nested_resource
       @alternatives = [
-        "interesting", "followed", "managed & active", "managed & inactive",
-        "pending", "pending ethical approval", "contaminated with human dna",
-        "remove x and autosomes", "active", "inactive", "collaborations", "all"
+        'interesting', 'followed', 'managed & active', 'managed & inactive',
+        'pending', 'pending ethical approval', 'contaminated with human dna',
+        'remove x and autosomes', 'active', 'inactive', 'collaborations', 'all'
       ]
       @studies = studies_from_scope(@alternatives[params[:scope].to_i])
     elsif params[:project_id] && !(project = Project.find(params[:project_id])).nil?
@@ -48,7 +48,7 @@ class StudiesController < ApplicationController
   def study_list
     return redirect_to(studies_path) unless request.xhr?
     setup_studies_from_scope
-    render partial: "study_list", locals: { studies: @studies.with_related_users_included.all }
+    render partial: 'study_list', locals: { studies: @studies.with_related_users_included.all }
   end
 
   def new
@@ -68,16 +68,16 @@ class StudiesController < ApplicationController
       User.find(params[:study_owner_id]).has_role('owner', @study) unless params[:study_owner_id].blank?
     end
 
-    flash[:notice] = "Your study has been created"
+    flash[:notice] = 'Your study has been created'
     respond_to do |format|
       format.html { redirect_to study_path(@study) }
       format.xml  { render xml: @study, status: :created, location: @study }
       format.json { render json: @study, status: :created, location: @study }
     end
   rescue ActiveRecord::RecordInvalid => exception
-    flash.now[:error] = "Problems creating your new study"
+    flash.now[:error] = 'Problems creating your new study'
     respond_to do |format|
-      format.html { render action: "new" }
+      format.html { render action: 'new' }
       format.xml  { render xml: @study.errors, status: :unprocessable_entity }
       format.json { render json: @study.errors, status: :unprocessable_entity }
     end
@@ -89,7 +89,7 @@ class StudiesController < ApplicationController
     respond_to do |format|
       format.html do
         if current_user.workflow.nil?
-          flash[:notice] = "Your profile is incomplete. Please select a workflow."
+          flash[:notice] = 'Your profile is incomplete. Please select a workflow.'
           redirect_to edit_profile_path(current_user)
         else
           redirect_to study_workflow_path(@study, current_user.workflow)
@@ -121,14 +121,14 @@ class StudiesController < ApplicationController
         end
       end
 
-      flash[:notice] = "Your study has been updated"
+      flash[:notice] = 'Your study has been updated'
 
       redirect_to study_path(@study)
     end
   rescue ActiveRecord::RecordInvalid => exception
     Rails.logger.warn "Failed to update attributes: #{@study.errors.map { |e| e.to_s }}"
-    flash.now[:error] = "Failed to update attributes for study!"
-    render action: "edit", id: @study.id
+    flash.now[:error] = 'Failed to update attributes for study!'
+    render action: 'edit', id: @study.id
   end
 
   def study_status
@@ -140,7 +140,7 @@ class StudiesController < ApplicationController
     elsif @study.active?
       @study.deactivate!
     end
-    flash[:notice] = "Study status was updated successfully"
+    flash[:notice] = 'Study status was updated successfully'
     redirect_to study_path(@study)
   end
 
@@ -156,8 +156,8 @@ class StudiesController < ApplicationController
 
   def collaborators
     @study = Study.find(params[:id])
-    @all_roles  = Role.select(:name).uniq
-    @roles      = Role.where(authorizable_id: @study.id, authorizable_type: "Study")
+    @all_roles  = Role.select(:name).uniq.pluck(:name)
+    @roles      = Role.where(authorizable_id: @study.id, authorizable_type: 'Study')
     @users      = User.order(:first_name)
   end
 
@@ -167,9 +167,9 @@ class StudiesController < ApplicationController
     @studies = current_user.interesting_studies
     @studies.reject { |s| s == @study }
 
-    # TODO create a proper ReversedStudyRelation
+    # TODO: create a proper ReversedStudyRelation
     @relations = @study.study_relations.map { |r| [r.related_study, r.name] } +
-      @study.reversed_study_relations.map { |r| [r.study, r.reversed_name] }
+                 @study.reversed_study_relations.map { |r| [r.study, r.reversed_name] }
   end
 
   def update_study_relation
@@ -178,11 +178,11 @@ class StudiesController < ApplicationController
 
     if pr = params[:related_study]
       relation_type_name = pr[:relation_type]
-      related_study = Study.find_by_id pr[:study_id]
+      related_study = Study.find_by id: pr[:study_id]
 
       begin
         yield(relation_type_name, related_study)
-        redirect_to action: "related_studies"
+        redirect_to action: 'related_studies'
         return
       rescue ActiveRecord::RecordInvalid, RuntimeError => ex
         status = 403
@@ -190,7 +190,7 @@ class StudiesController < ApplicationController
       end
 
     else
-      flash.now[:error] = "A problem occurred while relating the study"
+      flash.now[:error] = 'A problem occurred while relating the study'
       status = 500
     end
     @study.reload
@@ -201,14 +201,14 @@ class StudiesController < ApplicationController
   def relate_study
     update_study_relation do |relation_type_name, related_study|
         StudyRelationType::relate_studies_by_name!(relation_type_name, @study, related_study)
-        flash[:notice] = "Relation added"
+        flash[:notice] = 'Relation added'
     end
   end
 
   def unrelate_study
     update_study_relation do |relation_type_name, related_study|
         StudyRelationType::unrelate_studies_by_name!(relation_type_name, @study, related_study)
-        flash[:notice] = "Relation removed"
+        flash[:notice] = 'Relation removed'
     end
   end
 
@@ -238,7 +238,7 @@ class StudiesController < ApplicationController
     @study = Study.find(params[:id])
     @study.activate!
     @study.save
-    flash[:notice] = "This study has been activated"
+    flash[:notice] = 'This study has been activated'
     redirect_to study_path(@study)
   end
 
@@ -293,6 +293,13 @@ class StudiesController < ApplicationController
      end
    end
 
+   def accession_all_samples
+      @study = Study.find(params[:id])
+      @study.accession_all_samples
+      flash[:notice] = 'All of the samples in this study have been sent for accessioning.'
+      redirect_to(study_path(@study))
+   end
+
    def dac_accession
      rescue_accession_errors do
        @study = Study.find(params[:id])
@@ -310,7 +317,7 @@ class StudiesController < ApplicationController
 
        flash[:notice] = "Accession number generated: #{@study.policy_accession_number}"
        redirect_to(study_path(@study))
-       end
+     end
    end
 
    def sra
@@ -319,53 +326,6 @@ class StudiesController < ApplicationController
 
    def state
      @study = Study.find(params[:id])
-   end
-
-   def new_plate_submission
-     @study = Study.find(params[:id])
-   end
-
-   def create_plate_submission
-     @study = Study.find(params[:id])
-     @project = Project.find(params[:studies][:project])
-
-     plates = []
-     params[:studies][:barcodes].scan(/\d+/).each do |plate_barcode|
-       plate = Plate.find_by_barcode(plate_barcode)
-       unless plate.nil?
-         plates << plate
-       else
-         @study.errors.add("Plate", "Couldnt find plate #{plate_barcode}")
-       end
-     end
-
-     if @study.errors.count > 0
-       flash[:error] = "Error submitting your plates"
-       respond_to do |format|
-         format.html { render action: "new_plate_submission" }
-         format.xml  { render xml: flash, status: :unprocessable_entity }
-         format.json { render json: flash, status: :unprocessable_entity }
-       end
-       return
-     else
-       Plate.create_plates_submission(@project, @study, plates, current_user)
-     end
-
-     if @study.errors.count > 0
-       flash[:error] = "Error submitting your plates"
-       respond_to do |format|
-         format.html { render action: "new_plate_submission" }
-         format.xml  { render xml: flash, status: :unprocessable_entity }
-         format.json { render json: flash, status: :unprocessable_entity }
-       end
-     else
-       flash[:notice] = "Your plates have been submitted"
-       respond_to do |format|
-         format.html { render action: "new_plate_submission" }
-         format.xml  { render xml: @study, status: :created, location: @study }
-         format.json { render json: @study, status: :created, location: @study }
-       end
-     end
    end
 
    def self.role_helper(name, success_action, error_action, &block)
@@ -385,13 +345,13 @@ class StudiesController < ApplicationController
          end
 
          @roles = @study.roles(true).all
-         render partial: "roles", status: status
+         render partial: 'roles', status: status
        end
      end
    end
 
-   role_helper(:grant, "added", "adding")     { |user, study, name| user.has_role(name, study) }
-   role_helper(:remove, "remove", "removing") { |user, study, name| user.has_no_role(name, study) }
+   role_helper(:grant, 'added', 'adding')     { |user, study, name| user.has_role(name, study) }
+   role_helper(:remove, 'remove', 'removing') { |user, study, name| user.has_no_role(name, study) }
 
    def projects
      @study = Study.find(params[:id])
@@ -424,22 +384,21 @@ class StudiesController < ApplicationController
 
   def studies_from_scope(scope)
     studies = case scope
-    when "interesting"                 then Study.of_interest_to(current_user)
-    when "followed"                    then Study.followed_by(current_user)
-    when "managed & active"            then Study.managed_by(current_user).is_active
-    when "managed & inactive"          then Study.managed_by(current_user).is_inactive
-    when "pending"                     then Study.is_pending
-    when "pending ethical approval"    then Study.awaiting_ethical_approval
-    when "contaminated with human dna" then Study.contaminated_with_human_dna
-    when "remove x and autosomes"      then Study.with_remove_x_and_autosomes
-    when "active"                      then Study.is_active
-    when "inactive"                    then Study.is_inactive
-    when "collaborations"              then Study.collaborated_with(current_user)
-    when "all"                         then Study
-    else                               raise StandardError, "Unknown scope '#{scope}'" # Study.of_interest_to(current_user)
-    end
-
-    return studies.newest_first
+              when 'interesting'                 then Study.of_interest_to(current_user)
+              when 'followed'                    then Study.followed_by(current_user)
+              when 'managed & active'            then Study.managed_by(current_user).is_active
+              when 'managed & inactive'          then Study.managed_by(current_user).is_inactive
+              when 'pending'                     then Study.is_pending
+              when 'pending ethical approval'    then Study.awaiting_ethical_approval
+              when 'contaminated with human dna' then Study.contaminated_with_human_dna
+              when 'remove x and autosomes'      then Study.with_remove_x_and_autosomes
+              when 'active'                      then Study.is_active
+              when 'inactive'                    then Study.is_inactive
+              when 'collaborations'              then Study.collaborated_with(current_user)
+              when 'all'                         then Study
+              else                               raise StandardError, "Unknown scope '#{scope}'"
+              end
+    studies.newest_first
   end
 
   def rescue_validation
@@ -447,8 +406,8 @@ class StudiesController < ApplicationController
       yield
     rescue ActiveRecord::RecordInvalid
       Rails.logger.warn "Failed to update attributes: #{@study.errors.map { |e| e.to_s }}"
-      flash[:error] = "Failed to update attributes for study!"
-      render action: "edit", id: @study.id
+      flash[:error] = 'Failed to update attributes for study!'
+      render action: 'edit', id: @study.id
     end
   end
 end

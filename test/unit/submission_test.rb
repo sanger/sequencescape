@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class SubmissionTest < ActiveSupport::TestCase
   def orders_compatible?(a, b, key = nil)
@@ -21,28 +21,28 @@ class SubmissionTest < ActiveSupport::TestCase
     end
   end
 
-  context "#priority" do
+  context '#priority' do
     setup do
       @submission = Submission.new(user: create(:user))
     end
 
-    should "be 0 by default" do
+    should 'be 0 by default' do
       assert_equal 0, @submission.priority
     end
 
-    should "be changable" do
+    should 'be changable' do
       @submission.priority = 3
       assert @submission.valid?
       assert_equal 3, @submission.priority
     end
 
-    should "have a maximum of 3" do
+    should 'have a maximum of 3' do
       @submission.priority = 4
       assert_equal false, @submission.valid?
     end
   end
 
-  context "#orders compatible" do
+  context '#orders compatible' do
     setup do
       @study1 = create :study
       @study2 = create :study
@@ -55,55 +55,55 @@ class SubmissionTest < ActiveSupport::TestCase
       @asset2 = create :empty_sample_tube
       @asset2.aliquots.create!(sample: create(:sample, studies: [@study2]))
 
-      @reference_genome1 = create :reference_genome, name: "genome 1"
-      @reference_genome2 = create :reference_genome, name: "genome 2"
+      @reference_genome1 = create :reference_genome, name: 'genome 1'
+      @reference_genome2 = create :reference_genome, name: 'genome 2'
 
       @order1 = create :order, study: @study1, assets: [@asset1], project: @project
       @order2 = create :order, study: @study2, assets: [@asset2], project: @project
     end
 
-    context "with compatible requests" do
+    context 'with compatible requests' do
       setup do
         @order2.request_types = @order1.request_types
       end
 
-      context "and study with same reference genome" do
+      context 'and study with same reference genome' do
         setup do
           @study1.reference_genome = @reference_genome1
           @study2.reference_genome = @reference_genome1
         end
 
-        should "be compatible" do
+        should 'be compatible' do
           assert orders_compatible?(@order1, @order2)
         end
       end
-      context "and study with different contaminated human DNA policy" do
+      context 'and study with different contaminated human DNA policy' do
         setup do
           @study1.study_metadata.contaminated_human_dna = true
           @study2.study_metadata.contaminated_human_dna = false
         end
 
-        should "be incompatible" do
+        should 'be incompatible' do
           assert_equal false, orders_compatible?(@order1, @order2)
         end
       end
 
-      context "and incompatible request options" do
+      context 'and incompatible request options' do
         setup do
-          @order1.request_options = { option: "value" }
+          @order1.request_options = { option: 'value' }
         end
 
-        should "be incompatible" do
+        should 'be incompatible' do
           assert_equal false, orders_compatible?(@order1, @order2, :request_options)
         end
       end
 
-      context "and different projects" do
+      context 'and different projects' do
         setup do
           @order2.project = @project2
         end
 
-        should "be incompatible" do
+        should 'be incompatible' do
           assert_equal false, orders_compatible?(@order1, @order2)
         end
       end

@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
 
 class PicoAssayPlate < Plate
-  self.prefix = "PA"
+  self.prefix = 'PA'
 
   class WellDetail
     attr_accessor :map, :parent_plate
@@ -17,23 +17,23 @@ class PicoAssayPlate < Plate
     end
 
     def target_map
-      Map.find_by_description_and_asset_size(map, parent_plate.stock_plate.size)
+      Map.find_by(description: map, asset_size: parent_plate.stock_plate.size)
     end
 
     def target_well
-      @target_well ||= parent_plate.stock_plate.wells.find_by_map_id(target_map.id)
+      @target_well ||= parent_plate.stock_plate.wells.find_by(map_id: target_map.id)
     end
 
     def concentration
       @concentration > 0 ? @concentration : 0.0
     end
 
-    # TODO this method needs to go, to be replace by direct calls
+    # TODO: this method needs to go, to be replace by direct calls
     # to #grade_as_passed and #grade_as_failed
     def grade_as!(state)
       case state
-      when "passed" then grade_as_passed
-      when "failed" then grade_as_failed
+      when 'passed' then grade_as_passed
+      when 'failed' then grade_as_failed
       end
 
       update_well_concentraion!
@@ -55,7 +55,7 @@ class PicoAssayPlate < Plate
   end
 
   def upload_pico_results(state, failure_reason, well_details)
-    return false if state.nil? || well_details.blank? || stock_plate().nil?
+    return false if state.nil? || well_details.blank? || stock_plate.nil?
 
     ActiveRecord::Base.transaction do
       event = stock_plate.events.create_pico!(state)

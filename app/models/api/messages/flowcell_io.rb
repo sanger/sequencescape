@@ -10,9 +10,7 @@ class Api::Messages::FlowcellIO < Api::Base
   module LaneExtensions # Included in SequencingRequest
     def self.included(base)
       base.class_eval do
-        def position
-          batch_request.position
-        end
+        delegate :position, to: :batch_request
 
         def mx_library
           asset.external_identifier
@@ -23,7 +21,7 @@ class Api::Messages::FlowcellIO < Api::Base
         end
 
         def flowcell_identifier
-          "Chip Barcode"
+          'Chip Barcode'
         end
 
         def flowcell_barcode
@@ -34,7 +32,7 @@ class Api::Messages::FlowcellIO < Api::Base
           some_untagged = target_asset.aliquots.any?(&:untagged?)
           target_asset.aliquots.reject do |a|
             (spiked_in_buffer.present? && spiked_in_buffer.primary_aliquot =~ a) or
-            some_untagged && a.tagged? # Reproduces behaviour of batch.xml. Needed due to odd legacy data
+              some_untagged && a.tagged? # Reproduces behaviour of batch.xml. Needed due to odd legacy data
           end
         end
 
@@ -63,12 +61,10 @@ class Api::Messages::FlowcellIO < Api::Base
   module ControlLaneExtensions
     def self.included(base)
       base.class_eval do
-        def position
-          batch_request.position
-        end
+        delegate :position, to: :batch_request
 
         def mx_library
-          asset.external_identifier || "UNKNOWN"
+          asset.external_identifier || 'UNKNOWN'
         end
 
         def manual_qc
@@ -76,7 +72,7 @@ class Api::Messages::FlowcellIO < Api::Base
         end
 
         def samples
-          return []
+          []
         end
 
         def product_line

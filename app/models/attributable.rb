@@ -31,7 +31,7 @@ module Attributable
   class CustomValidator < ActiveModel::EachValidator
     def validate_each(record, attribute, value)
       valid = record.validator_for(attribute).valid_options.include?(value)
-      record.errors.add(attribute, "is not a valid option") unless valid
+      record.errors.add(attribute, 'is not a valid option') unless valid
       valid
     end
   end
@@ -41,32 +41,32 @@ module Attributable
   end
 
   def instance_defaults
-    self.class.attribute_details.inject({}) do |hash, attribute|
-      hash.tap { hash[attribute.name] = attribute.default_from(self) if attribute.validator? }
+    attribute_details.each_with_object({}) do |attribute, hash|
+      hash[attribute.name] = attribute.default_from(self) if attribute.validator?
     end
   end
 
   def attribute_value_pairs
-    self.class.attribute_details.inject({}) do |hash, attribute|
-      hash.tap { hash[attribute] = attribute.from(self) }
+    attribute_details.each_with_object({}) do |attribute, hash|
+      hash[attribute] = attribute.from(self)
     end
   end
 
   def association_value_pairs
-    self.class.association_details.inject({}) do |hash, attribute|
-      hash.tap { hash[attribute] = attribute.from(self) }
+    association_details.each_with_object({}) do |attribute, hash|
+      hash[attribute] = attribute.from(self)
     end
   end
 
   def field_infos
-    self.class.attribute_details.map do |detail|
+    attribute_details.map do |detail|
       detail.to_field_info(nil, self)
     end
   end
 
   def required?(field)
-    attribute   = self.class.attribute_details.detect { |attribute| attribute.name == field }
-    attribute ||= self.class.association_details.detect { |association| :"#{association.name}_id" == field }
+    attribute   = attribute_details.detect { |attribute| attribute.name == field }
+    attribute ||= association_details.detect { |association| :"#{association.name}_id" == field }
     attribute.try(:required?)
   end
 
@@ -76,7 +76,7 @@ module Attributable
       attribute.configure(self)
 
       if override_previous
-        self.attribute_details = self.attribute_details.reject { |a| a.name == name }
+        self.attribute_details = attribute_details.reject { |a| a.name == name }
         self.attribute_details += [attribute]
       elsif self.attribute_details.detect { |a| a.name == name }.nil?
         self.attribute_details += [attribute]
@@ -90,8 +90,8 @@ module Attributable
     end
 
     def defaults
-      attribute_details.inject({}) do |hash, attribute|
-        hash.tap { hash[attribute.name] = attribute.default }
+      @defaults ||= attribute_details.each_with_object({}) do |attribute, hash|
+        hash[attribute.name] = attribute.default
       end
     end
 
@@ -123,7 +123,7 @@ module Attributable
 
       module InstanceMethods
         def for_select_dropdown
-          [self.name, self.id]
+          [name, id]
         end
       end
     end
@@ -141,7 +141,7 @@ module Attributable
     end
 
     def optional?
-      not self.required?
+      not required?
     end
 
     def assignable_attribute_name
@@ -160,7 +160,7 @@ module Attributable
       FieldInfo::SELECTION
     end
 
-    def find_default(*args)
+    def find_default(*_args)
       nil
     end
 
@@ -172,7 +172,7 @@ module Attributable
       get_scoped_selection.all.map(&@method.to_sym).sort
     end
 
-    def to_field_info(*args)
+    def to_field_info(*_args)
       FieldInfo.new(
         display_name: display_name,
         key: assignable_attribute_name,
@@ -210,11 +210,12 @@ module Attributable
     def initialize(owner, name, options = {})
       @owner, @name, @options = owner, name.to_sym, options
       @default  = options.delete(:default)
-      @required = !!options.delete(:required) || false
+      @required = options.delete(:required).present?
+      @validator = options.delete(:validator).present?
     end
 
     def from(record)
-      record[self.name]
+      record[name]
     end
 
     def default_from(origin = nil)
@@ -223,7 +224,7 @@ module Attributable
     end
 
     def validator?
-      @options.key?(:validator)
+      @validator
     end
 
     def required?
@@ -231,7 +232,7 @@ module Attributable
     end
 
     def optional?
-      not self.required?
+      not required?
     end
 
     def numeric?
@@ -252,14 +253,6 @@ module Attributable
 
     def selection?
       fixed_selection? || @options.key?(:selection)
-    end
-
-    def method?
-      @options.key?(:with_method)
-    end
-
-    def validate_method
-      @options[:with_method]
     end
 
     def minimum
@@ -285,15 +278,14 @@ module Attributable
 
       model.with_options(conditions) do |object|
         # false.blank? == true, so we exclude booleans here, they handle themselves further down.
-        object.validates_presence_of(name) if self.required? && !self.boolean?
-        object.with_options(allow_nil: self.optional?, allow_blank: allow_blank) do |required|
-          required.validates_inclusion_of(name, in: [true, false]) if self.boolean?
-          required.validates_numericality_of(name, only_integer: true) if self.numeric?
-          required.validates_numericality_of(name, greater_than: 0) if self.float?
-          required.validates_inclusion_of(name, in: self.selection_values, allow_false: true) if self.fixed_selection?
-          required.validates_format_of(name, with: self.valid_format) if self.valid_format?
-          required.validates name, custom: true if self.validator?
-          required.validate(self.validate_method) if self.method?
+        object.validates_presence_of(name) if required? && !boolean?
+        object.with_options(allow_nil: optional?, allow_blank: allow_blank) do |required|
+          required.validates_inclusion_of(name, in: [true, false]) if boolean?
+          required.validates_numericality_of(name, only_integer: true) if numeric?
+          required.validates_numericality_of(name, greater_than: 0) if float?
+          required.validates_inclusion_of(name, in: selection_values, allow_false: true) if fixed_selection?
+          required.validates_format_of(name, with: valid_format) if valid_format?
+          required.validates name, custom: true if validator?
         end
       end
 
@@ -334,13 +326,13 @@ module Attributable
     end
 
     def find_default(object = nil, metadata = nil)
-      default_from(metadata) || object.try(self.name) || self.default
+      default_from(metadata) || object.try(name) || default
     end
 
     def kind
-      return FieldInfo::SELECTION if self.selection?
-      return FieldInfo::BOOLEAN if self.boolean?
-      return FieldInfo::NUMERIC if self.numeric? || self.float?
+      return FieldInfo::SELECTION if selection?
+      return FieldInfo::BOOLEAN if boolean?
+      return FieldInfo::NUMERIC if numeric? || float?
       FieldInfo::TEXT
     end
 
@@ -350,7 +342,7 @@ module Attributable
     end
 
     def selection_options(metadata)
-      self.selection_values || selection_from_metadata(metadata) || []
+      selection_values || selection_from_metadata(metadata) || []
     end
 
     def to_field_info(object = nil, metadata = nil)
@@ -362,9 +354,9 @@ module Attributable
         kind: kind,
         required: required?
       }
-      options.update(selection: selection_options(metadata)) if self.selection?
-      options.update(step: 1, min: self.minimum) if self.numeric?
-      options.update(step: 0.1, min: 0) if self.float?
+      options.update(selection: selection_options(metadata)) if selection?
+      options.update(step: 1, min: minimum) if numeric?
+      options.update(step: 0.1, min: 0) if float?
       FieldInfo.new(options)
     end
   end

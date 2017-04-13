@@ -7,9 +7,7 @@
 class CherrypickForPulldownPipeline < CherrypickingPipeline
   include Pipeline::InboxGroupedBySubmission
 
-  def display_next_pipeline?
-    true
-  end
+  self.display_next_pipeline = true
 
   ALWAYS_SHOW_RELEASE_ACTIONS = true
 
@@ -17,8 +15,8 @@ class CherrypickForPulldownPipeline < CherrypickingPipeline
     # Nothing, we don't want all the requests to be completed
   end
 
-  def post_release_batch(batch, user)
-    batch.release_pending_requests()
+  def post_release_batch(batch, _user)
+    batch.release_pending_requests
   end
 
   def update_detached_request(batch, request)
@@ -34,7 +32,7 @@ class CherrypickForPulldownPipeline < CherrypickingPipeline
   end
 
   def request_types_and_submissions_for(requests)
-    return requests.map(&:request_type_id).uniq, requests.map(&:submission_id).uniq
+    [requests.map(&:request_type_id).uniq, requests.map(&:submission_id).uniq]
   end
   private :request_types_and_submissions_for
 

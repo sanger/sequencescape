@@ -13,7 +13,7 @@ end
 
 Given /^all pending delayed jobs (?:are|have been) processed$/ do
   count = Delayed::Job.count
-  raise StandardError, "There are no delayed jobs to process!" if count.zero?
+  raise StandardError, 'There are no delayed jobs to process!' if count.zero?
   step("#{count} pending delayed jobs are processed")
 end
 

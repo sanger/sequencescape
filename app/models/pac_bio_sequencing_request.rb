@@ -15,9 +15,6 @@ class PacBioSequencingRequest < CustomerRequest
   class RequestOptionsValidator < DelegateValidation::Validator
     delegate_attribute :insert_size, to: :target, type_cast: :to_i
     validates_numericality_of :insert_size, integer_only: true, greater_than: 0
-
-    # validates_inclusion_of :insert_size, :in => PacBioSequencingRequest::INSERT_SIZE
-
     delegate_attribute :sequencing_type, to: :target
   end
 

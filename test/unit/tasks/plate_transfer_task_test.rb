@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2013,2014,2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class DummyWorkflowController < WorkflowsController
   attr_accessor :batch
@@ -20,17 +20,17 @@ class DummyWorkflowController < WorkflowsController
 end
 
 class PlateTransferTaskTest < ActiveSupport::TestCase
-  context "PlateTransferHandler" do
+  context 'PlateTransferHandler' do
     setup do
       @workflows_controller = DummyWorkflowController.new
       @task                 = create :plate_transfer_task
-      @params               = "UNUSED_PARAMS"
+      @params               = 'UNUSED_PARAMS'
       @batch                = create :batch
       @workflows_controller.batch = @batch
       @source_plate         = create :plate
       @source_plate.wells   = ['A1', 'B1', 'C1'].map do |loc|
         create(:well_with_sample_and_without_plate).tap do |w|
-          w.map = Map.find_by_description_and_asset_size(loc, 96)
+          w.map = Map.find_by(description: loc, asset_size: 96)
           request = create :pac_bio_sample_prep_request, asset: w
           @batch.requests << request
         end
@@ -39,8 +39,8 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
 
     context '#render_plate_transfer_task' do
       setup do
-        plate_barcode = mock("plate barcode")
-        plate_barcode.stubs(:barcode).returns("1234567")
+        plate_barcode = mock('plate barcode')
+        plate_barcode.stubs(:barcode).returns('1234567')
         PlateBarcode.stubs(:create).returns(plate_barcode)
       end
 
@@ -52,13 +52,13 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
           @task.render_task(@workflows_controller, params)
         end
 
-         should "change Plate.count by 1" do
-           assert_equal 1,  Plate.count - @plate_count, "Expected Plate.count to change by 1"
-        end
+         should 'change Plate.count by 1' do
+           assert_equal 1,  Plate.count - @plate_count, 'Expected Plate.count to change by 1'
+         end
 
-         should "change TransferRequest.count by 6" do
-           assert_equal 6,  TransferRequest.count - @transferrequest_count, "Expected TransferRequest.count to change by 6"
-        end
+         should 'change TransferRequest.count by 6' do
+           assert_equal 6,  TransferRequest.count - @transferrequest_count, 'Expected TransferRequest.count to change by 6'
+         end
 
         should 'mimic the original layout' do
           @source_plate.wells.each do |w|
@@ -88,9 +88,9 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
           @task.render_task(@workflows_controller, params)
         end
 
-         should "change Plate.count by 1" do
-           assert_equal 1,  Plate.count - @plate_count, "Expected Plate.count to change by 1"
-        end
+         should 'change Plate.count by 1' do
+           assert_equal 1,  Plate.count - @plate_count, 'Expected Plate.count to change by 1'
+         end
 
         should 'find the existing plate' do
         end
@@ -100,7 +100,7 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
         setup do
           plate_b = create :plate
           plate_b.wells << create(:well_with_sample_and_without_plate).tap do |w|
-            w.map = Map.find_by_description_and_asset_size('A1', 96)
+            w.map = Map.find_by(description: 'A1', asset_size: 96)
             request = create :well_request, asset: w, target_asset: create(:pac_bio_library_tube)
             w.requests << request
             @batch.requests << request
@@ -116,14 +116,14 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
       end
     end
 
-    context "#do_plate_transfer_task" do
+    context '#do_plate_transfer_task' do
       setup do
-        plate_barcode = mock("plate barcode")
-        plate_barcode.stubs(:barcode).returns("1234567")
+        plate_barcode = mock('plate barcode')
+        plate_barcode.stubs(:barcode).returns('1234567')
         PlateBarcode.stubs(:create).returns(plate_barcode)
 
         params = { plate_transfer_task: {}, batch_id: @batch.id }
-        # @workflows_controller.batch = mock("Batch")
+                  # @workflows_controller.batch = mock("Batch")
 
                   params = { batch_id: @batch.id }
           @task.render_task(@workflows_controller, params)

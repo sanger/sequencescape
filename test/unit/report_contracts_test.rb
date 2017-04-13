@@ -11,25 +11,25 @@ class ReportContractTest < ActiveSupport::TestCase
   # We'll track all views in these tests, but this'll
   # pick up any that get 'dropped' by accident
   contracted_views = %w(
-view_aliquots
-view_asset_links
-view_lanes
-view_library_tubes
-view_plates
-view_requests
-view_requests_new
-view_sample_study_reference_genome
-view_sample_tubes
-view_samples
-view_started_requests
-view_studies
-view_tags
-view_wells
-)
+    view_aliquots
+    view_asset_links
+    view_lanes
+    view_library_tubes
+    view_plates
+    view_requests
+    view_requests_new
+    view_sample_study_reference_genome
+    view_sample_tubes
+    view_samples
+    view_started_requests
+    view_studies
+    view_tags
+    view_wells
+  )
 
   ViewsSchema.all_views.concat(contracted_views).uniq.each do |view|
     context "View #{view}" do
-      should "respond to Select * from" do
+      should 'respond to Select * from' do
         assert ActiveRecord::Base.connection.execute("SELECT * FROM #{view};")
       end
     end

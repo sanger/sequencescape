@@ -25,7 +25,7 @@ class LabwhereReception
   end
 
   def location
-     @location ||= Location.find_by_id(location_id)
+     @location ||= Location.find_by(id: location_id)
   end
 
   def id; nil; end
@@ -53,7 +53,7 @@ class LabwhereReception
       end
 
     rescue LabWhereClient::LabwhereException => exception
-      errors.add(:base, "Could not connect to Labwhere. Sequencescape location has still been updated")
+      errors.add(:base, 'Could not connect to Labwhere. Sequencescape location has still been updated')
       return false
     end
 

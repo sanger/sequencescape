@@ -9,7 +9,7 @@ class ChangeCriteriaIhtp < ActiveRecord::Migration
 
   def up
     PRODUCTS_LIST.each do |product_name|
-      product = Product.find_by_name!(product_name)
+      product = Product.find_by!(name: product_name)
       product_criteria = product.stock_criteria || next
 
       cloned_product_criteria = product_criteria.dup

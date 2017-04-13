@@ -7,15 +7,15 @@
 module IlluminaB::PlatePurposes
   PLATE_PURPOSE_FLOWS = [
     %w(
-ILB_STD_INPUT
-ILB_STD_COVARIS
-ILB_STD_SH
-ILB_STD_PREPCR
-ILB_STD_PCR
-ILB_STD_PCRR
-ILB_STD_PCRXP
-ILB_STD_PCRRXP
-)
+      ILB_STD_INPUT
+      ILB_STD_COVARIS
+      ILB_STD_SH
+      ILB_STD_PREPCR
+      ILB_STD_PCR
+      ILB_STD_PCRR
+      ILB_STD_PCRXP
+      ILB_STD_PCRRXP
+    )
   ]
 
   TUBE_PURPOSE_FLOWS = [
@@ -24,6 +24,8 @@ ILB_STD_PCRRXP
       'ILB_STD_MX'
     ]
   ]
+
+  QC_TUBE_PURPOSE_FLOWS = []
 
   BRANCHES = [
     %w(ILB_STD_INPUT ILB_STD_COVARIS ILB_STD_SH ILB_STD_PREPCR ILB_STD_PCR ILB_STD_PCRXP ILB_STD_STOCK ILB_STD_MX),
@@ -43,11 +45,11 @@ ILB_STD_PCRRXP
   OUTPUT_PLATE_PURPOSES = []
 
   PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES = [
-    ['ILB_STD_INPUT',  :initial]
+    ['ILB_STD_INPUT',  'ILB_STD_COVARIS', :initial]
   ]
 
   PLATE_PURPOSE_TYPE = {
-    'ILB_STD_INPUT'   => IlluminaHtp::StockPlatePurpose,
+    'ILB_STD_INPUT'   => PlatePurpose::Input,
     'ILB_STD_COVARIS' => PlatePurpose::InitialPurpose,
     'ILB_STD_SH'      => PlatePurpose,
     'ILB_STD_PREPCR'  => PlatePurpose,
@@ -60,7 +62,7 @@ ILB_STD_PCRRXP
   }
 
   def self.request_type_prefix
-    "Illumina-B"
+    'Illumina-B'
   end
 
   extend IlluminaHtp::PlatePurposes::PurposeHelpers
@@ -68,4 +70,4 @@ end
 
 # We require all the plate and tube purpose files here as Rails eager loading does not play nicely with single table
 # inheritance
-require_dependency "app/models/illumina_b/mx_tube_purpose"
+require_dependency 'app/models/illumina_b/mx_tube_purpose'

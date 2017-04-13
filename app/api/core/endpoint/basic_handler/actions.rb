@@ -6,7 +6,7 @@
 
 module Core::Endpoint::BasicHandler::Actions
   class UnsupportedAction < StandardError
-    def initialize(action, request)
+    def initialize(action, _request)
       super(action.to_s)
     end
   end
@@ -57,11 +57,11 @@ module Core::Endpoint::BasicHandler::Actions
   end
 
   def check_request_io_class!(request)
-    raise StandardError, "Need an I/O class for this request" if request.io.nil?
+    raise StandardError, 'Need an I/O class for this request' if request.io.nil?
   end
 
   def does_not_require_an_io_class
-    self.singleton_class.class_eval("def check_request_io_class!(_) ; end", __FILE__, __LINE__)
+    singleton_class.class_eval('def check_request_io_class!(_) ; end', __FILE__, __LINE__)
   end
 
   def disable(*actions)
@@ -90,7 +90,7 @@ module Core::Endpoint::BasicHandler::Actions
         :"_#{name}_internal"
 
       when options[:to] then options[:to]
-      else raise StandardError, "Block or :to option needed to declare action"
+      else raise StandardError, 'Block or :to option needed to declare action'
       end
 
     line = __LINE__ + 1

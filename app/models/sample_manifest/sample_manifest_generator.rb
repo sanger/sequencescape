@@ -1,5 +1,5 @@
 class SampleManifestGenerator
-  REQUIRED_ATTRIBUTES = ["template", "count"]
+  REQUIRED_ATTRIBUTES = ['template', 'count']
 
   include ActiveModel::Validations
 
@@ -85,7 +85,7 @@ private
 
   def attributes
     params.except(:template, :barcode_printer, :only_first_label)
-    .merge(user: user, rapid_generation: true, asset_type: asset_type)
+          .merge(user: user, rapid_generation: true, asset_type: asset_type)
   end
 
   def asset_type

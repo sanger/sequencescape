@@ -4,11 +4,11 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 require 'locations_controller'
 
 class LocationsControllerTest < ActionController::TestCase
-  context "LocationsController" do
+  context 'LocationsController' do
     setup do
       @controller = LocationsController.new
       @request    = ActionController::TestRequest.new
@@ -19,7 +19,7 @@ class LocationsControllerTest < ActionController::TestCase
     end
     should_require_login
 
-    context "#index" do
+    context '#index' do
       setup do
         get :index
       end
@@ -27,7 +27,7 @@ class LocationsControllerTest < ActionController::TestCase
       should render_template :index
     end
 
-    context "#show" do
+    context '#show' do
       setup do
         get :show, id: @location.id
       end
@@ -35,57 +35,57 @@ class LocationsControllerTest < ActionController::TestCase
       should render_template :show
     end
 
-    context "#new" do
+    context '#new' do
       setup do
         get :new
       end
 
-      should "render new" do
+      should 'render new' do
         assert_response :success
       end
     end
 
-    context "#create_Location" do
+    context '#create_Location' do
       setup do
         @old_count = Location.count
         post :create, {}
       end
 
-      should "render create_Location" do
+      should 'render create_Location' do
         assert_equal @old_count + 1, Location.count
         assert_redirected_to location_path(assigns(:location))
       end
     end
 
-    context "#edit" do
+    context '#edit' do
       setup do
         get :edit, id: @location.id
       end
 
-      should "render edit" do
+      should 'render edit' do
         assert_response :success
       end
     end
 
-    context "#update_Location" do
+    context '#update_Location' do
       setup do
         put :update,
             id: @location.id,
             location: {}
       end
 
-      should "render update Location" do
+      should 'render update Location' do
         assert_redirected_to location_path(assigns(:location))
       end
     end
 
-    context "#destroy_Location" do
+    context '#destroy_Location' do
       setup do
         @old_count = Location.count
         delete :destroy, id: @location.id
       end
 
-      should "destroy given Locations" do
+      should 'destroy given Locations' do
         assert_equal @old_count - 1, Location.count
         assert_redirected_to locations_path
       end

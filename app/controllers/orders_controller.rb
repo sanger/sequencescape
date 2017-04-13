@@ -5,8 +5,8 @@
 # Copyright (C) 2011,2012,2014,2015,2016 Genome Research Ltd.
 
 class OrdersController < ApplicationController
-# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+  # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   def destroy
     # Check for ajax request...

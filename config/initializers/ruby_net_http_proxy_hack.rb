@@ -49,13 +49,13 @@ module Net
         TCPSocket.open(conn_address, conn_port, @local_host, @local_port)
       }
       s.setsockopt(Socket::IPPROTO_TCP, Socket::TCP_NODELAY, 1)
-      D "opened"
+      D 'opened'
       if use_ssl?
         ssl_parameters = Hash.new
         iv_list = instance_variables
         SSL_IVNAMES.each_with_index do |ivname, i|
           if iv_list.include?(ivname) and
-            value = instance_variable_get(ivname)
+             value = instance_variable_get(ivname)
             ssl_parameters[SSL_ATTRIBUTES[i]] = value if value
           end
         end
@@ -64,7 +64,7 @@ module Net
         D "starting SSL for #{conn_address}:#{conn_port}..."
         s = OpenSSL::SSL::SSLSocket.new(s, @ssl_context)
         s.sync_close = true
-        D "SSL established"
+        D 'SSL established'
       end
       @socket = BufferedIO.new(s)
       @socket.read_timeout = @read_timeout

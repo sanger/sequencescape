@@ -5,10 +5,10 @@
 # Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
 
 class ManifestGenerator
-  QUOTE_CHAR = "!"
+  QUOTE_CHAR = '!'
   DEFAULT_VOLUME = 13
   DEFAULT_CONCENTRATION = 50
-  DEFAULT_SPECIES = "Homo sapiens"
+  DEFAULT_SPECIES = 'Homo sapiens'
   DEFAULT_IS_CONTROL = 0
 
   def self.generate_manifests(batch, study)
@@ -23,7 +23,7 @@ class ManifestGenerator
         plate = Plate.find(plate_id)
         plate_label = institute_plate_label(plate)
         plate.wells.order(:id).each do |well|
-          csv << self.generate_manifest_row(well, plate.barcode, plate_label).unshift(row)
+          csv << generate_manifest_row(well, plate.barcode, plate_label).unshift(row)
           row = row + 1
         end
       end
@@ -34,12 +34,12 @@ class ManifestGenerator
   end
 
   def self.generate_manifest_row(well, plate_barcode, plate_label)
-    comments          = ""
-    extraction_method = "-"
-    wga_method        = ""
+    comments          = ''
+    extraction_method = '-'
+    wga_method        = ''
     dna_mass          = 0
-    replicates        = ""
-    tissue_source     = "-"
+    replicates        = ''
+    tissue_source     = '-'
 
     [plate_label.to_s,
      well_map_description(well),
@@ -76,7 +76,7 @@ class ManifestGenerator
       return "#{description[0].chr}0#{description[1].chr}"
     end
 
-    description || ""
+    description || ''
   end
 
   def self.well_sample_parent(well, parent)
@@ -131,18 +131,18 @@ class ManifestGenerator
 
   def self.construct_sample_label(plate_barcode, well)
     check_well_sample_exists(well)
-    plate_barcode + "_" + well_map_description(well) + "_" + well.primary_aliquot.sample.sanger_sample_id
+    plate_barcode + '_' + well_map_description(well) + '_' + well.primary_aliquot.sample.sanger_sample_id
   end
 
   def self.create_header(csv_obj, study)
     now = Time.new
-    csv_obj << ["Institute Name:", "WTSI", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
-    csv_obj << ["Date:", "#{now.year}-#{now.month}-#{now.day}"]
-    csv_obj << ["Comments:", (study.abbreviation).to_s]
-    csv_obj << ["Row", "Institute Plate Label", "Well", "Is Control", "Institute Sample Label", "Species", "Sex", "Comments", "Volume (ul)", "Conc (ng/ul)", "Extraction Method", "WGA Method (if Applicable)", "Mass of DNA used in WGA", "Parent 1", "Parent 2", "Replicate(s)", "Tissue Source"]
+    csv_obj << ['Institute Name:', 'WTSI', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
+    csv_obj << ['Date:', "#{now.year}-#{now.month}-#{now.day}"]
+    csv_obj << ['Comments:', (study.abbreviation).to_s]
+    csv_obj << ['Row', 'Institute Plate Label', 'Well', 'Is Control', 'Institute Sample Label', 'Species', 'Sex', 'Comments', 'Volume (ul)', 'Conc (ng/ul)', 'Extraction Method', 'WGA Method (if Applicable)', 'Mass of DNA used in WGA', 'Parent 1', 'Parent 2', 'Replicate(s)', 'Tissue Source']
   end
 
   def self.remove_empty_quotes(csv_string)
-    csv_string.gsub!("#{QUOTE_CHAR}#{QUOTE_CHAR}", "")
+    csv_string.gsub!("#{QUOTE_CHAR}#{QUOTE_CHAR}", '')
   end
 end

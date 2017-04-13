@@ -19,11 +19,13 @@ class TransferRequest < SystemRequest
 
     # State Machine events
     event :start do
-      transitions to: :started, from: [:pending]
+      transitions to: :started, from: [:pending], after: :on_started
     end
 
     event :pass do
-      transitions to: :passed, from: [:pending, :started, :failed]
+      # Jumping straight to passed moves through an implied started state.
+      transitions to: :passed, from: :pending, after: :on_started
+      transitions to: :passed, from: [:started, :failed]
     end
 
     event :fail do
@@ -76,6 +78,12 @@ class TransferRequest < SystemRequest
     end
   end
   private :perform_transfer_of_contents
+
+  # Run on start, or if start is bypassed
+  def on_started
+    nil # Do nothing
+  end
+  private :on_started
 
   def on_failed
     target_asset.remove_downstream_aliquots if target_asset

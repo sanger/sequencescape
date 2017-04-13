@@ -1,11 +1,11 @@
 class GetYourQcCompletedTubesHereController < ApplicationController
-  before_filter :login_required
+  before_action :login_required
 
   def new
   end
 
   def create
-    @generator = LibPoolNormTubeGenerator.new(params[:barcode], current_user, Study.find_by_name("Lib PCR-XP QC Completed Tubes"))
+    @generator = LibPoolNormTubeGenerator.new(params[:barcode], current_user, Study.find_by(name: 'Lib PCR-XP QC Completed Tubes'))
     if @generator.valid?
       if @generator.create!
         flash[:notice] = "QC Completed tubes successfully created for #{@generator.plate.sanger_human_barcode}. Go celebrate!"
@@ -15,7 +15,7 @@ class GetYourQcCompletedTubesHereController < ApplicationController
         render :new
       end
     else
-      flash.now[:error] = @generator.errors.full_messages.join(", ")
+      flash.now[:error] = @generator.errors.full_messages.join(', ')
       render :new
     end
   end

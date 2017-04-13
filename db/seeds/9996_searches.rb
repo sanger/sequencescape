@@ -17,7 +17,6 @@ Search::FindIlluminaBPlates.create!(name: 'Find Illumina-B plates')
 Search::FindIlluminaBPlatesForUser.create!(name: 'Find Illumina-B plates for user')
 Search::FindIlluminaBStockPlates.create!(name: 'Find Illumina-B stock plates')
 Search::FindOutstandingIlluminaBPrePcrPlates.create!(name: 'Find outstanding Illumina-B pre-PCR plates')
-Search::FindIlluminaBTubes.create!(name: 'Find Illumina-B tubes')
 Search::FindPulldownPlatesForUser.create!(name: 'Find pulldown plates for user')
 Search::FindPulldownStockPlates.create!(name: 'Find pulldown stock plates')
 Search::FindIlluminaAPlates.create!(name: 'Find Illumina-A plates')
@@ -33,4 +32,4 @@ plate_purposes = Purpose.where(name: ['ILC Stock',
       'ILC Lib PCR',
       'ILC Lib PCR-XP',
       'ILC AL Libs Tagged']).pluck(:id)
-Search::FindPlatesForUser.create!(name: "Find Illumina-C plates for user", default_parameters: { plate_purpose_ids: plate_purposes, limit: 30, include_used: true })
+Search::FindPlatesForUser.create!(name: 'Find Illumina-C plates for user', default_parameters: { plate_purpose_ids: plate_purposes, limit: 30, include_used: true })

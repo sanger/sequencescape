@@ -37,7 +37,7 @@ class QcFile < ActiveRecord::Base
   after_save :store_file_extracted_data, if: :parser
 
   # CarrierWave uploader - gets the uploaded_data file, but saves the identifier to the "filename" column
-  has_uploaded :uploaded_data, { serialization_column: "filename" }
+  has_uploaded :uploaded_data, serialization_column: 'filename'
 
   # Method provided for backwards compatibility
   def current_data
@@ -60,7 +60,7 @@ class QcFile < ActiveRecord::Base
   private
 
   def parser
-    @parser ||= Parsers.parser_for(uploaded_data.filename, content_type, current_data)
+    @parser ||= Parsers.parser_for(filename, content_type, current_data)
   end
 
   def store_file_extracted_data

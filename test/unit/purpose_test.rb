@@ -1,12 +1,12 @@
-require "test_helper"
+require 'test_helper'
 
 class PurposeTest < ActiveSupport::TestCase
-  context "A purpose" do
+  context 'A purpose' do
     setup do
       @purpose = create :purpose
     end
 
-    context "with an unrelated parent" do
+    context 'with an unrelated parent' do
       setup do
         @other_purpose = create :purpose
       end
@@ -25,6 +25,16 @@ class PurposeTest < ActiveSupport::TestCase
 
       should 'return the specific transfer request type' do
         assert_equal @custom_request, @purpose.transfer_request_type_from(@other_purpose)
+      end
+    end
+
+    context 'with a stock parent' do
+      setup do
+        @other_purpose = create :stock_purpose
+      end
+
+      should 'return a initial transfer request' do
+        assert_equal RequestType.initial_transfer, @purpose.transfer_request_type_from(@other_purpose)
       end
     end
   end

@@ -17,6 +17,10 @@ class ::Endpoints::Plates < ::Core::Endpoint::Base
       action(:create, to: :standard_create!)
     end
 
+    has_many(:extraction_attributes, json: 'extraction_attributes', to: 'extraction_attributes') do
+      action(:create, to: :standard_create!)
+    end
+
     has_many(:wells,                     json: 'wells', to: 'wells', scoped: 'for_api_plate_json.in_row_major_order')
     has_many(:submission_pools,          json: 'submission_pools', to: 'submission_pools')
     has_many(:requests,                  json: 'requests', to: 'requests')
@@ -25,7 +29,7 @@ class ::Endpoints::Plates < ::Core::Endpoint::Base
     has_many(:qc_files, json: 'qc_files', to: 'qc_files', include: []) do
       action(:create, as: 'create') do |request, _|
         ActiveRecord::Base.transaction do
-          QcFile.create!(request.attributes.merge({ asset: request.target }))
+          QcFile.create!(request.attributes.merge(asset: request.target))
         end
       end
       action(:create_from_file, as: 'create') do |request, _|

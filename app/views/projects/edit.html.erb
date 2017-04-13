@@ -5,10 +5,10 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
 
 <% if current_user.is_administrator? %>
-  <% add :admin_option, "Manage" => url_for(:controller => "admin/projects", :action => "show", :id => @project.id) -%>
+  <% add :admin_option, "Manage" => url_for(controller: "admin/projects", action: "show", id: @project.id) -%>
 <% end %>
 <% add :menu, "Back to projects" => projects_path -%>
 <h1>Editing project</h1>
 <p>Edit your project. Required fields are marked with <%= required_marker %>.</p>
 
-<%= render :partial => "project_form" %>
+<%= render partial: "project_form" %>

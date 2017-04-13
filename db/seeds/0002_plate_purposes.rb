@@ -12,10 +12,10 @@ ActiveRecord::Base.transaction do
     flow = flow_o.clone
     # We're using a different plate purpose for each pipeline, which means we need to attach that plate purpose to the request
     # type for it.  Then in the cherrypicking they'll only be able to pick the correct type from the list.
-    stock_plate_purpose = Pulldown::StockPlatePurpose.create!(
+    stock_plate_purpose = PlatePurpose::Input.create!(
       name: flow.shift,
       default_state: 'passed',
-      can_be_considered_a_stock_plate: true,
+      stock_plate: true,
       cherrypick_filters: [
         'Cherrypick::Strategy::Filter::ByOverflow',
         'Cherrypick::Strategy::Filter::ByEmptySpaceUsage',
@@ -24,7 +24,7 @@ ActiveRecord::Base.transaction do
       ]
     )
     pipeline_name       = /^([^\s]+)/.match(stock_plate_purpose.name)[1] # Hack but works!
-    request_type        = RequestType.find_by_name("Illumina-A Pulldown #{pipeline_name}") or raise StandardError, "Cannot find pulldown pipeline for #{pipeline_name}"
+    request_type        = RequestType.find_by(name: "Illumina-A Pulldown #{pipeline_name}") or raise StandardError, "Cannot find pulldown pipeline for #{pipeline_name}"
     request_type.acceptable_plate_purposes << stock_plate_purpose
 
     # Now we can build from the stock plate through to the end
@@ -44,14 +44,14 @@ ActiveRecord::Base.transaction do
     end
 
     # Ensure that the transfer to the tube at the end is possible
-    tube_purpose = Purpose.find_by_name!('Legacy MX tube')
+    tube_purpose = Purpose.find_by!(name: 'Legacy MX tube')
     final_purpose.child_relationships.create!(child: tube_purpose, transfer_request_type: RequestType.transfer)
   end
 
   qc_plate_purpose = PlatePurpose.create!(name: 'Pulldown QC plate', cherrypickable_target: false)
 
   Pulldown::PlatePurposes::PLATE_PURPOSE_LEADING_TO_QC_PLATES.each do |name|
-    plate_purpose = Purpose.find_by_name!(name)
+    plate_purpose = Purpose.find_by!(name: name)
     plate_purpose.child_relationships.create!(child: qc_plate_purpose, transfer_request_type: RequestType.transfer)
   end
 end

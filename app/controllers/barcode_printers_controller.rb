@@ -5,8 +5,8 @@
 # Copyright (C) 2007-2011,2014,2015,2016 Genome Research Ltd.
 
 class BarcodePrintersController < ApplicationController
-# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+  # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
 
   before_action :admin_login_required
@@ -48,7 +48,7 @@ class BarcodePrintersController < ApplicationController
         flash[:notice] = 'Barcode Printer was successfully created.'
         format.html { redirect_to(barcode_printers_url) }
       else
-        format.html { render action: "new" }
+        format.html { render action: 'new' }
       end
     end
   end
@@ -62,7 +62,7 @@ class BarcodePrintersController < ApplicationController
         flash[:notice] = 'Barcode Printer was successfully updated.'
         format.html { redirect_to(barcode_printers_url) }
       else
-        format.html { render action: "edit" }
+        format.html { render action: 'edit' }
       end
     end
   end

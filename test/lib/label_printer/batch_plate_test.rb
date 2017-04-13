@@ -12,7 +12,6 @@ class BatchPlateTest < ActiveSupport::TestCase
     asset = create :empty_sample_tube
     @role = 'test role'
     @study_abbreviation = 'WTCCC'
-    @purpose = 'Stock Plate'
     order_role = Order::OrderRole.new role: role
 
     order = create :order, order_role: order_role, study: study, assets: [asset], project: project
@@ -21,16 +20,17 @@ class BatchPlateTest < ActiveSupport::TestCase
     @batch = create :batch
     batch.requests << request
     @plate1 = batch.plate_group_barcodes.keys[0]
+    @purpose = @plate1.purpose.name
     @barcode1 = plate1.barcode
-    @printable = { @plate1.barcode => "on" }
+    @printable = { @plate1.barcode => 'on' }
     options = { count: '3', printable: printable, batch: batch }
     @plate_label = LabelPrinter::Label::BatchPlate.new(options)
-    @label = { top_left: (Date.today.strftime("%e-%^b-%Y")).to_s,
-            bottom_left: (plate1.sanger_human_barcode).to_s,
-            top_right: (study_abbreviation).to_s,
-            bottom_right: "#{role} #{purpose} #{barcode1}",
-            top_far_right: nil,
-            barcode: (plate1.ean13_barcode).to_s }
+    @label = { top_left: (Date.today.strftime('%e-%^b-%Y')).to_s,
+               bottom_left: (plate1.sanger_human_barcode).to_s,
+               top_right: (study_abbreviation).to_s,
+               bottom_right: "#{role} #{purpose} #{barcode1}",
+               top_far_right: nil,
+               barcode: (plate1.ean13_barcode).to_s }
   end
 
   test 'should have count' do

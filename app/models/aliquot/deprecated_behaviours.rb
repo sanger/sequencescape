@@ -7,15 +7,6 @@
 # The following module is included where we have deprecated behaviours that rely on sample or request.
 module Aliquot::DeprecatedBehaviours
   module Request
-    def self.included(base)
-      base.class_eval do
-        # Shouldn't be used . Here for compatibility with the previous code
-        # having request having one sample
-        has_many :samples, through: :asset
-        deprecate :samples, :sample_ids
-      end
-    end
-
     def tag_number
       tag.try(:map_id) || ''
     end
@@ -27,13 +18,11 @@ module Aliquot::DeprecatedBehaviours
     # ---
     # Nope, they are used all over the place.
     def tag
-      self.target_asset.primary_aliquot.try(:tag)
+      target_asset.primary_aliquot.try(:tag)
     end
     deprecate :tag
 
-    def tags
-      self.asset.tags
-    end
+    delegate :tags, to: :asset
     deprecate :tags
     # ---
 
@@ -42,7 +31,7 @@ module Aliquot::DeprecatedBehaviours
     end
     deprecate :sample_name?
 
-    def sample_name(default = nil, &block)
+    def sample_name(default = nil)
       # return the name of the underlying samples
       # used mainly for compatibility with the old codebase
       # # default is used if no smaple
@@ -51,7 +40,7 @@ module Aliquot::DeprecatedBehaviours
       when samples.size == 0 then default
       when samples.size == 1 then samples.first.name
       when block_given?      then yield(samples)
-      else                        samples.map(&:name).join(" | ")
+      else                        samples.map(&:name).join(' | ')
       end
     end
     deprecate :sample_name

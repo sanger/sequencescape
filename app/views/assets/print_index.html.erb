@@ -17,7 +17,7 @@ Study <%= @study.id %> &middot; Created on <%= @study.created_at.to_formatted_s(
 </div>
 
 <% if @assets.blank? -%>
-  <%= display_user_guide(I18n.t('studies.workflows.assets.no_assets_available', :label => @workflow.asset_label.downcase.pluralize)) %>
+  <%= display_user_guide(I18n.t('studies.workflows.assets.no_assets_available', label: @workflow.asset_label.downcase.pluralize)) %>
 <% else -%>
   <p>Select the labware you want to print and press 'Print labels'.</p>
   <form action="<%= print_assets_path %>" method="POST">
@@ -45,7 +45,7 @@ Study <%= @study.id %> &middot; Created on <%= @study.created_at.to_formatted_s(
   <tr>
     <td width="35%" class="asset">Print to: </td>
     <td width="65%">
-      <%= render :partial => "shared/printer_list" %>
+      <%= render partial: "shared/printer_list" %>
     </td>
   </tr>
   <tr>

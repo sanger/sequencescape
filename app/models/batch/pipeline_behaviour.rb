@@ -30,30 +30,22 @@ module Batch::PipelineBehaviour
     end
   end
 
-  def externally_released?
-    workflow.source_is_internal? && self.released?
-  end
-
-  def internally_released?
-    workflow.source_is_external? && self.released?
-  end
-
   def show_actions?
     return true if pipeline.is_a?(PulldownMultiplexLibraryPreparationPipeline) || pipeline.is_a?(CherrypickForPulldownPipeline)
     !released?
   end
 
   def has_item_limit?
-    self.item_limit.present?
+    item_limit.present?
   end
   alias_method(:has_limit?, :has_item_limit?)
 
   def complete_events
     @efct ||= if lab_events.loaded
-      lab_events.select { |le| le.description == "Complete" }
-    else
-      lab_events.where(description: "Complete")
-    end
+                lab_events.select { |le| le.description == 'Complete' }
+              else
+                lab_events.where(description: 'Complete')
+              end
   end
 
   def completed_task_ids

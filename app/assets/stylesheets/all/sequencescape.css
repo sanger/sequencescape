@@ -25,6 +25,8 @@ a:visited {
 
 #target_plate_selected { display: none; }
 
+.show-hide { float: right; }
+
 #app_name {
   padding: 0;
   font-size: 8px;

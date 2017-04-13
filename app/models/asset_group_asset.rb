@@ -5,6 +5,7 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 class AssetGroupAsset < ActiveRecord::Base
-  belongs_to :asset
-  belongs_to :asset_group
+  default_scope ->() { includes(:asset, :asset_group) }
+  belongs_to :asset, class_name: 'Aliquot::Receptacle', inverse_of: :asset_group_assets
+  belongs_to :asset_group, inverse_of: :asset_group_assets
 end

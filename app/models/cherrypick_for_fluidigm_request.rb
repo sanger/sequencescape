@@ -11,7 +11,5 @@ class CherrypickForFluidigmRequest < CherrypickRequest
     validates_presence_of :target_purpose
   end
 
-  def target_purpose
-    request_metadata.target_purpose
-  end
+  delegate :target_purpose, to: :request_metadata
 end

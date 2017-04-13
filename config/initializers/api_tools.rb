@@ -5,4 +5,4 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 require 'api_tools'
-API_VERSION = "0_5"
+API_VERSION = '0_5'

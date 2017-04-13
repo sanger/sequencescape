@@ -50,25 +50,23 @@ Given /^a (source|destination) transfer plate called "([^\"]+)" exists$/ do |typ
 end
 
 Given /^the plate "(.*?)" has additional wells$/ do |name|
-  Plate.find_by_name(name).tap do |plate|
-    plate.wells.import(
-      ['C1', 'D1'].map do |location|
-        map = Map.where_description(location).where_plate_size(plate.size).where_plate_shape(AssetShape.find_by_name('Standard')).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
-        FactoryGirl.create(:tagged_well, map: map)
-      end
-    )
+  Plate.find_by(name: name).tap do |plate|
+    plate.wells << ['C1', 'D1'].map do |location|
+      map = Map.where_description(location).where_plate_size(plate.size).where_plate_shape(AssetShape.find_by(name: 'Standard')).first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
+      FactoryGirl.create(:tagged_well, map: map)
+    end
   end
 end
 
 Given /^a destination transfer plate called "([^\"]+)" exists as a child of "([^\"]+)"$/ do |name, parent|
-  parent_plate = Plate.find_by_name(parent) or raise "Cannot find parent plate #{parent.inspect}"
+  parent_plate = Plate.find_by(name: parent) or raise "Cannot find parent plate #{parent.inspect}"
   AssetLink.create!(ancestor: parent_plate, descendant: FactoryGirl.create(:destination_transfer_plate, name: name))
 end
 
 Given /^the "([^\"]+)" transfer template has been used between "([^\"]+)" and "([^\"]+)"$/ do |template_name, source_name, destination_name|
-  template    = TransferTemplate.find_by_name(template_name) or raise StandardError, "Could not find transfer template #{template_name.inspect}"
-  source      = Plate.find_by_name(source_name)              or raise StandardError, "Could not find source plate #{source_name.inspect}"
-  destination = Plate.find_by_name(destination_name)         or raise StandardError, "Could not find destination plate #{destination_plate.inspect}"
+  template    = TransferTemplate.find_by(name: template_name) or raise StandardError, "Could not find transfer template #{template_name.inspect}"
+  source      = Plate.find_by(name: source_name)              or raise StandardError, "Could not find source plate #{source_name.inspect}"
+  destination = Plate.find_by(name: destination_name)         or raise StandardError, "Could not find destination plate #{destination_plate.inspect}"
   template.create!(source: source, destination: destination, user: FactoryGirl.create(:user))
 end
 
@@ -135,13 +133,13 @@ Then /^the study for the aliquots in the wells of (the plate .+) should match th
   plate.wells.each { |w| w.aliquots.each { |a| assert_equal study, a.study } }
 end
 Given /^(the plate .+) is a "([^\"]+)"$/ do |plate, name|
-  plate_purpose = PlatePurpose.find_by_name(name) or raise StandardError, "Cannot find the plate purpose #{name.inspect}"
+  plate_purpose = PlatePurpose.find_by(name: name) or raise StandardError, "Cannot find the plate purpose #{name.inspect}"
   plate.update_attributes!(plate_purpose: plate_purpose)
 end
 
 Given /^transfers between "([^\"]+)" and "([^\"]+)" plates are done by "([^\"]+)" requests$/ do |source, destination, typename|
-  source_plate_purpose      = PlatePurpose.find_by_name(source)      or raise StandardError, "Cannot find the plate purpose #{source.inspect}"
-  destination_plate_purpose = PlatePurpose.find_by_name(destination) or raise StandardError, "Cannot find the plate purpose #{destination.inspect}"
-  request_type              = RequestType.find_by_name(typename)     or raise StandardError, "Cannot find request type #{typename.inspect}"
+  source_plate_purpose      = PlatePurpose.find_by(name: source)      or raise StandardError, "Cannot find the plate purpose #{source.inspect}"
+  destination_plate_purpose = PlatePurpose.find_by(name: destination) or raise StandardError, "Cannot find the plate purpose #{destination.inspect}"
+  request_type              = RequestType.find_by(name: typename)     or raise StandardError, "Cannot find request type #{typename.inspect}"
   source_plate_purpose.child_relationships.create!(child: destination_plate_purpose, transfer_request_type: request_type)
 end

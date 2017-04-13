@@ -13,7 +13,7 @@ class Endpoints::OrderTemplates < Core::Endpoint::Base
       action(:create) do |request, _|
         ActiveRecord::Base.transaction do
           attributes = ::Io::Order.map_parameters_to_attributes(request.json)
-          attributes.merge!(user: request.user) if request.user.present?
+          attributes[:user] = request.user if request.user.present?
           request.target.create_order!(attributes)
         end
       end

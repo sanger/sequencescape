@@ -5,12 +5,12 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 class Api::BaseController < ApplicationController
-# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+  # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   class_attribute :model_class
   before_action { |controller| Uuid.translate_uuids_to_ids_in_params(controller.params) }
-  around_filter :wrap_in_transaction, only: [:create, :update, :destroy]
+  around_action :wrap_in_transaction, only: [:create, :update, :destroy]
 
   delegate :render_class, to: :model_class
 
@@ -22,11 +22,11 @@ class Api::BaseController < ApplicationController
       hash.tap { hash[field_and_error_pair.first].push(field_and_error_pair.last) }
     end
     respond_to do |format|
-      format.json { render json: self.render_class.map_attribute_to_json_attribute_in_errors(errors), status: :unprocessable_entity }
+      format.json { render json: render_class.map_attribute_to_json_attribute_in_errors(errors), status: :unprocessable_entity }
     end
   end
 
-  rescue_from ActiveRecord::RecordNotFound do |exception|
+  rescue_from ActiveRecord::RecordNotFound do |_exception|
     head(:not_found)
   end
 
@@ -50,14 +50,14 @@ class Api::BaseController < ApplicationController
   end
 
   def create
-    object = self.render_class.create!(params)
+    object = render_class.create!(params)
     respond_to do |format|
       format.json { render json: object.to_json, status: :created, location: object }
     end
   end
 
   def update
-    self.render_class.update_attributes!(@object, params)
+    render_class.update_attributes!(@object, params)
     respond_to do |format|
       format.json { head :ok }
     end
@@ -77,11 +77,11 @@ private
   # Preparation filters for CRUD methods.
   #++
   def prepare_object
-    @object = self.model_class.find(params[:id])
+    @object = model_class.find(params[:id])
   end
 
   def prepare_list_context
-    @context = self.model_class
+    @context = model_class
   end
 
   def wrap_in_transaction(&block)
@@ -89,7 +89,7 @@ private
   end
 
   def attributes_for_model_from_parameters
-    params[self.model_class.name.underscore]
+    params[model_class.name.underscore]
   end
 
   def uuid_to_id

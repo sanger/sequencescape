@@ -23,8 +23,8 @@ Given /^study "([^"]+)" has made the following "([^"]+)" requests:$/ do |study_n
 
   table.hashes.each do |row|
     state, asset_name, sample_name = row['state'], row['asset'], row['sample']
-    asset  = Asset.find_by!({ name: asset_name })
-    sample = Sample.find_by!({ name: sample_name })
+    asset  = Asset.find_by!(name: asset_name)
+    sample = Sample.find_by!(name: sample_name)
 
     if asset.respond_to?(:aliquots)
       asset.aliquots.each do |aliquot|
@@ -37,7 +37,7 @@ Given /^study "([^"]+)" has made the following "([^"]+)" requests:$/ do |study_n
       requests = study.requests.for_asset_id(asset.id).for_state(state)
       requests.select { |r| r.samples.include?(sample) }.map(&:destroy) if requests.present?
     else
-      count.to_i.times do |index|
+      count.to_i.times do |_index|
         FactoryGirl.create(
           :request,
           request_type: request_type,

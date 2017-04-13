@@ -10,6 +10,6 @@ class ::Endpoints::TagLayouts < ::Core::Endpoint::Base
   end
 
   instance do
-    belongs_to(:plate, json: "plate")
+    belongs_to(:plate, json: 'plate')
   end
 end

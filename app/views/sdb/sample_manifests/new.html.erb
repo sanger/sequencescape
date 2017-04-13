@@ -4,29 +4,29 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.%>
 
-<%= render :partial => "side_links" %>
+<%= render partial: "side_links" %>
 
 <%= page_title 'Sample Manifest', 'Create' %>
 
 <%= semantic_form_for(@sample_manifest, html: {novalidate: false}) do |form| %>
-  <%= form.inputs :name => "Manifest Type" do %>
-    <%= form.input :template, required: true, :as => :select, :prompt => 'Select a template', :collection => @templates, input_html: { class: 'form-control'} %>
+  <%= form.inputs name: "Manifest Type" do %>
+    <%= form.input :template, required: true, as: :select, prompt: 'Select a template', collection: @templates, input_html: { class: 'form-control'} %>
   <% end %>
-  <%= form.inputs :name => "Manifest For" do %>
+  <%= form.inputs name: "Manifest For" do %>
     <%= form.input :study,  as: :select, prompt: 'Select a study', collection: options_from_collection_for_select(@studies, :id, :name, @study_id), required: true, input_html: { class: 'form-control select2'} %>
     <%= form.input :supplier,  as: :select, prompt: 'Select a supplier', collection: @suppliers, required: true, input_html: { class: 'form-control select2'} %>
   <% end %>
 
-  <%= form.inputs :name => "Barcodes" do %>
-    <%= form.input :count, :input_html => { :size => 3, :value => "1" }, :label => count_label_for(params[:type]) %>
-    <%= form.input :barcode_printer,  :as => :select, :collection => @barcode_printers %>
-    <%= form.input :only_first_label, :as => :boolean, :label => 'Print only the first label' %>
+  <%= form.inputs name: "Barcodes" do %>
+    <%= form.input :count, input_html: { size: 3, value: "1" }, label: count_label_for(params[:type]) %>
+    <%= form.input :barcode_printer,  as: :select, collection: @barcode_printers %>
+    <%= form.input :only_first_label, as: :boolean, label: 'Print only the first label' %>
   <% end %>
 
-  <%= form.input :asset_type, :value => params[:type], :as => :hidden %>
+  <%= form.input :asset_type, value: params[:type], as: :hidden %>
 
   <%= form.actions do %>
-    <%= form.action(:submit, :as=>:button, :label => 'Create manifest and print labels') %>
+    <%= form.action(:submit, as: :button, label: 'Create manifest and print labels') %>
   <% end %>
 
 

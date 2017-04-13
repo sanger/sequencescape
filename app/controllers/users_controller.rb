@@ -5,8 +5,8 @@
 # Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
 
 class UsersController < ApplicationController
-# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+  # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
 
   before_action :validate_user, except: [:index, :projects, :study_reports]
@@ -29,9 +29,9 @@ class UsersController < ApplicationController
       @user.update_attributes(params[:user])
     end
     if @user.save
-      flash[:notice] = "Profile updated"
+      flash[:notice] = 'Profile updated'
     else
-      flash[:error] = "Problem updating profile."
+      flash[:error] = 'Problem updating profile.'
     end
     redirect_to action: :show, id: @user.id
   end
@@ -48,7 +48,7 @@ class UsersController < ApplicationController
 
   def validate_user
     if current_user.administrator? || current_user.id == params[:id].to_i
-      return true
+      true
     else
       flash[:error] = "You don't have permission to view or edit that profile: here is yours instead."
       redirect_to action: :show, id: current_user.id

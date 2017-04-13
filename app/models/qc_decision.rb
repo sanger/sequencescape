@@ -17,7 +17,7 @@ class QcDecision < ActiveRecord::Base
     validates :qc_decision, presence: true
     validates :decision, presence: true
 
-    validates_inclusion_of :decision, in: Qcable.aasm.state_machine.events.map { |i, j| i.to_s }
+    validates_inclusion_of :decision, in: Qcable.aasm.state_machine.events.map { |i, _j| i.to_s }
 
     after_create :make_decision
 
@@ -38,7 +38,7 @@ class QcDecision < ActiveRecord::Base
   validate :user_has_permission, if: :user
 
   def decisions=(decisions)
-    self.qc_decision_qcables.build(decisions)
+    qc_decision_qcables.build(decisions)
   end
 
   private

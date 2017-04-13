@@ -4,7 +4,7 @@ ActionController::Base.send(:include, Authorization::Base)
 ActionView::Base.send(:include, Authorization::Base::ControllerInstanceMethods)
 
 # Can be 'object roles' or 'hardwired'
-AUTHORIZATION_MIXIN = "object roles"
+AUTHORIZATION_MIXIN = 'object roles'
 
 # NOTE : If you use modular controllers like '/admin/products' be sure
 # to redirect to something like '/sessions' controller (with a leading slash)
@@ -25,5 +25,4 @@ STORE_LOCATION_METHOD = :store_location
 require 'rails-authorization-plugin/lib/publishare/object_roles_table'
 ActiveRecord::Base.send(:include,
   Authorization::ObjectRolesTable::UserExtensions,
-  Authorization::ObjectRolesTable::ModelExtensions
-)
+  Authorization::ObjectRolesTable::ModelExtensions)

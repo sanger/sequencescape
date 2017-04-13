@@ -4,24 +4,24 @@
 # authorship of this file.
 # Copyright (C) 2014,2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class StripTubeCreationTest < TaskTestBase
   class DummyWorkflowController < WorkflowsController
-  attr_accessor :batch, :pipeline
-  attr_accessor :flash, :tubes_requested, :tubes_available, :options
+    attr_accessor :batch, :pipeline
+    attr_accessor :flash, :tubes_requested, :tubes_available, :options
 
-  def initialize(pipeline)
-    @pipeline = pipeline
-    @flash = {}
+    def initialize(pipeline)
+      @pipeline = pipeline
+      @flash = {}
+    end
+
+    def current_user
+      @current_user ||= create :user
+    end
   end
 
-  def current_user
-    @current_user ||= create :user
-  end
-end
-
-  context "StripTubeCreation task" do
+  context 'StripTubeCreation task' do
     setup do
       @workflow_c = DummyWorkflowController.new(@pipeline)
       @pipeline       = create :pipeline
@@ -34,26 +34,26 @@ end
 
       @request_type = create :well_request_type
       @plate.wells.in_plate_column(1, 96).each do |well|
-        2.times { @batch.requests << FactoryGirl.build(:request_without_assets, asset: well, target_asset: nil, request_type: @request_type) }
+        2.times { @batch.requests << build(:request_without_assets, asset: well, target_asset: nil, request_type: @request_type) }
       end
       @pipeline.request_types << @request_type
     end
 
-    context "#render_task" do
+    context '#render_task' do
       setup do
         @workflow_c.batch = @batch
         params = {}
         @task.render_task(@workflow_c, params)
       end
 
-      should "set expected variables" do
+      should 'set expected variables' do
         assert_equal 2,     @workflow_c.tubes_requested
         assert_equal 2,     @workflow_c.tubes_available
         assert_equal [1, 2], @workflow_c.options
       end
     end
 
-    context "#do_task with all tubes" do
+    context '#do_task with all tubes' do
       setup do
         @workflow_c.batch = @batch
         params = { 'tubes_to_create' => 2, 'source_plate_barcode' => @plate.ean13_barcode }
@@ -64,7 +64,7 @@ end
       should 'create 2 strip tubes' do
         assert_equal 2, StripTube.count - @before
         assert_equal 2, @plate.wells.located_at('B1').first.requests.count
-        assert_equal "S2", @plate.wells.located_at('B1').first.requests.first.target_asset.map_description
+        assert_equal 'S2', @plate.wells.located_at('B1').first.requests.first.target_asset.map_description
       end
 
       should 'start all requests' do
@@ -73,7 +73,7 @@ end
       end
     end
 
-    context "#do_task with incorrect barcode" do
+    context '#do_task with incorrect barcode' do
       setup do
         @workflow_c.batch = @batch
         params = { 'tubes_to_create' => 2, 'source_plate_barcode' => 'not a barcode' }
@@ -91,7 +91,7 @@ end
       end
     end
 
-    context "#do_task with remaining tubes" do
+    context '#do_task with remaining tubes' do
       setup do
         @workflow_c.batch = @batch
         params = { 'tubes_to_create' => 1, 'source_plate_barcode' => @plate.ean13_barcode }

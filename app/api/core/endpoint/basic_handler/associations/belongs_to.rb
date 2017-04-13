@@ -8,12 +8,12 @@ module Core::Endpoint::BasicHandler::Associations::BelongsTo
   class Handler
     include Core::Endpoint::BasicHandler::EndpointLookup
 
-    def initialize(name, options, &block)
+    def initialize(name, options)
       @name, @options = name, options
       @throughs = Array(options[:through])
     end
 
-    def endpoint_details(object, &block)
+    def endpoint_details(object)
       object = @throughs.inject(object) { |t, s| t.send(s) }.send(@name) || return
       yield(@options[:json].to_s, endpoint_for_object(object), object)
     end

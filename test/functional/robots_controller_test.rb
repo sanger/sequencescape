@@ -4,12 +4,12 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class RobotsControllerTest < ActionController::TestCase
   tests Admin::RobotsController
 
-  context "Robots" do
+  context 'Robots' do
     setup do
       @user = FactoryGirl.create :user
       session[:user] = @user
@@ -17,7 +17,7 @@ class RobotsControllerTest < ActionController::TestCase
     end
     should_require_login
 
-    context "#index" do
+    context '#index' do
       setup do
         get :index
       end
@@ -25,7 +25,7 @@ class RobotsControllerTest < ActionController::TestCase
       should_not set_flash
     end
 
-    context "#new" do
+    context '#new' do
       setup do
         get :new
       end
@@ -33,19 +33,19 @@ class RobotsControllerTest < ActionController::TestCase
       should_not set_flash
     end
 
-    context "#create" do
+    context '#create' do
       setup do
         @count = Robot.count
-        post :create, robot: { name: "newrobot", location: "biglab" }
+        post :create, robot: { name: 'newrobot', location: 'biglab' }
       end
-      should "increase number of robots" do
+      should 'increase number of robots' do
         assert_equal @count + 1, Robot.count
         assert_redirected_to admin_robot_path(assigns(:robot))
       end
-      should set_flash.to("Robot was successfully created.")
+      should set_flash.to('Robot was successfully created.')
     end
 
-    context "#show" do
+    context '#show' do
       setup do
         get :show, id: @robot.id
       end
@@ -53,7 +53,7 @@ class RobotsControllerTest < ActionController::TestCase
       should_not set_flash
     end
 
-    context "#edit" do
+    context '#edit' do
       setup do
         get :edit, id: @robot.id
       end
@@ -61,28 +61,28 @@ class RobotsControllerTest < ActionController::TestCase
       should_not set_flash
     end
 
-    context "#update" do
+    context '#update' do
       setup do
-        put :update, id: @robot.id, robot: { name: "tecan" }
+        put :update, id: @robot.id, robot: { name: 'tecan' }
       end
 
-      should "update name" do
-        assert_equal "tecan", Robot.find(@robot.id).name
+      should 'update name' do
+        assert_equal 'tecan', Robot.find(@robot.id).name
         assert_redirected_to admin_robot_path(assigns(:robot))
       end
-      should set_flash.to("Robot was successfully updated.")
+      should set_flash.to('Robot was successfully updated.')
     end
 
-    context "#destroy" do
+    context '#destroy' do
       setup do
         @count = Robot.count
         delete :destroy, id: @robot.id
       end
-      should "delete robot" do
+      should 'delete robot' do
         assert_equal @count - 1, Robot.count
         assert_redirected_to admin_robots_path
       end
-      should set_flash.to("Robot removed successfully")
+      should set_flash.to('Robot removed successfully')
     end
   end
 end

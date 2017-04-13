@@ -2,31 +2,30 @@
 # GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
-# Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
+# Copyright (C) 2007-2011,2012,2013,2015,2016 Genome Research Ltd.
 
 class EgaAccessionService < AccessionService
-  def accession_from_ebi(submission_filename, submission_file_handle, type_filename, type_file_handle, type)
-    generate_accession_from_ebi(submission_filename, submission_file_handle, type_filename, type_file_handle, type, configatron.ega_accession_login)
-  end
+   self.priority = 2
+   self.operational = true
 
   def provider
     :EGA
   end
 
-  def accession_login
-    configatron.ega_accession_login or raise RuntimeError, "Can't find EGA accession login in configuration file"
+  def accession_options
+    configatron.accession.ega!.to_hash
   end
 
-  def sample_visibility(sample)
+  def sample_visibility(_sample)
     Protect
   end
 
-  def study_visibility(study)
+  def study_visibility(_study)
     Protect
   end
 
   def broker
-    "EGA"
+    'EGA'
   end
 
   def submit_dac_for_user(study, user)
@@ -41,10 +40,4 @@ class EgaAccessionService < AccessionService
   def private?
     true
   end
-
-  # def submit(user, *accessionables)
-    # accessionables.each(&:protect)
-
-    # super(user, *accessionables)
-  # end
 end

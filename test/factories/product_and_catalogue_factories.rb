@@ -4,7 +4,7 @@
 # Copyright (C) 2015 Genome Research Ltd.
 FactoryGirl.define do
   factory :product_catalogue do
-    name { |x| FactoryGirl.generate :product_catalogue_name }
+    name { |_x| FactoryGirl.generate :product_catalogue_name }
 
     factory :single_product_catalogue do
       selection_behaviour 'SingleProduct'
@@ -27,6 +27,8 @@ FactoryGirl.define do
     configuration { { total_micrograms: { greater_than: 50 }, sanger_sample_id: {} } }
   end
 
-  factory :product_product_catalogue do |pc|
+  factory :product_product_catalogue do
+    product
+    product_catalogue
   end
 end

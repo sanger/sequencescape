@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class Pipelines::AssetsControllerTest < ActionController::TestCase
   context 'Pipelines::AssetsController' do
@@ -27,8 +27,12 @@ class Pipelines::AssetsControllerTest < ActionController::TestCase
 
       should_not render_with_layout
 
-      should 'render a hidden field with the family id' do
-        assert_select 'input[type=hidden][value=?]', @family.id
+      should 'find the family' do
+        assert_equal assigns(:family), @family
+      end
+
+      should 'create a new asset' do
+        assert assigns(:asset).is_a?(Asset)
       end
 
       should 'render a removal link' do

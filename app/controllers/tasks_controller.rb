@@ -5,8 +5,8 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 class TasksController < ApplicationController
-# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+  # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   before_action :find_tasks_by_id, only: [:show, :edit, :update, :destroy]
 
@@ -29,7 +29,7 @@ class TasksController < ApplicationController
   def new
     @task = SetDescriptorsTask.new
     @workflow = LabInterface::Workflow.find(params[:workflow_id])
-    @task.descriptors << Descriptor.new({ name: '', value: '' })
+    @task.descriptors << Descriptor.new(name: '', value: '')
     @count = @task.descriptors.size
   end
 
@@ -57,7 +57,7 @@ class TasksController < ApplicationController
         format.html { redirect_to task_url(@task) }
         format.xml  { head :created, location: task_url(@task) }
       else
-        format.html { render action: "new" }
+        format.html { render action: 'new' }
         format.xml  { render xml: @task.errors.to_xml }
       end
     end
@@ -72,7 +72,7 @@ class TasksController < ApplicationController
         format.html { redirect_to task_url(@task) }
         format.xml  { head :ok }
       else
-        format.html { render action: "edit" }
+        format.html { render action: 'edit' }
         format.xml  { render xml: @task.errors.to_xml }
       end
     end

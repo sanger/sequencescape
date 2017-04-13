@@ -5,17 +5,17 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 class SequenomQcPlatesController < ApplicationController
-# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+  # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   def new
-    @barcode_printers  = BarcodePrinterType.find_by_name("384 Well Plate").barcode_printers
+    @barcode_printers  = BarcodePrinterType.find_by(name: '384 Well Plate').barcode_printers
     @barcode_printers  = BarcodePrinter.order(:name) if @barcode_printers.blank?
-    @input_plate_names = input_plate_names()
+    @input_plate_names = input_plate_names
   end
 
   def create
-    @input_plate_names = input_plate_names()
+    @input_plate_names = input_plate_names
     @barcode_printers  = BarcodePrinter.all
     barcode_printer    = BarcodePrinter.find(params[:barcode_printer][:id])
     number_of_barcodes = params[:number_of_barcodes].to_i
@@ -35,10 +35,9 @@ class SequenomQcPlatesController < ApplicationController
         sequenom_qc_plate = SequenomQcPlate.new(
           plate_prefix: params[:plate_prefix],
           gender_check_bypass: gender_check_bypass,
-          user_barcode: user_barcode
+          user_barcode: user_barcode,
+          purpose: PlatePurpose.find_by(name: 'Sequenom')
         )
-        # TODO: create a factory object
-
         # Need to be done before saving the plate
         valid = input_plate_names && sequenom_qc_plate.compute_and_set_name(input_plate_names)
         errors = sequenom_qc_plate.errors.inject({}) { |h, (k, v)| h.update(k => v) }
@@ -63,7 +62,7 @@ class SequenomQcPlatesController < ApplicationController
     respond_to do |format|
       if bad_plate
         # Something's gone wrong, render the errors on the first plate that failed
-        flash[:error] = bad_plate.errors.full_messages || "Failed to create Sequenom QC Plate"
+        flash[:error] = bad_plate.errors.full_messages || 'Failed to create Sequenom QC Plate'
         format.html { render :new }
       else
         print_job = LabelPrinter::PrintJob.new(barcode_printer.name,
@@ -103,7 +102,7 @@ class SequenomQcPlatesController < ApplicationController
 
   def input_plate_names
     input_plate_names = {}
-    (1..4).each { |i| input_plate_names[i] = params[:input_plate_names].try(:[], i.to_s) || "" }
+    (1..4).each { |i| input_plate_names[i] = params[:input_plate_names].try(:[], i.to_s) || '' }
     input_plate_names
   end
 end

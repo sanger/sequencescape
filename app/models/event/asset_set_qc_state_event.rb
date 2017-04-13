@@ -8,9 +8,9 @@ class Event::AssetSetQcStateEvent < Event
   class << self
     def self.constructor_for_event_type(type)
       define_method(:"create_#{ type }!") do |asset, reason|
-        self.create!(
+        create!(
           eventful: asset,
-          family: "update",
+          family: 'update',
           content: reason,
           message: reason
         )
@@ -19,5 +19,6 @@ class Event::AssetSetQcStateEvent < Event
 
     constructor_for_event_type('passed')
     constructor_for_event_type('failed')
+    constructor_for_event_type('updated')
   end
 end

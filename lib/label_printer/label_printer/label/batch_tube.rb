@@ -15,10 +15,25 @@ module LabelPrinter
         if stock.present?
           tube.name
         elsif batch.multiplexed?
-          tube.tag.nil? ? tube.name : "(#{tube.tag}) #{tube.id}"
+          tag_range = tube.tag_range
+          tag_range.nil? ? tube.name : "(#{tag_range}) #{tube.id}"
+        elsif tube.is_a? PacBioLibraryTube
+          source_plate_barcode(tube)
         else
           tube.tube_name
         end
+      end
+
+      def middle_line(tube)
+        (tube.is_a? PacBioLibraryTube) ? source_well_position(tube) : super
+      end
+
+      def round_label_top_line(tube)
+        (tube.is_a? PacBioLibraryTube) ? source_well_position(tube) : super
+      end
+
+      def round_label_bottom_line(tube)
+        (tube.is_a? PacBioLibraryTube) ? source_plate_barcode(tube).split(//).last(4).join : super
       end
 
       def tubes
@@ -39,8 +54,16 @@ module LabelPrinter
       private
 
       def requests
-        request_ids = printable.select { |barcode, check| check == 'on' }.keys
+        request_ids = printable.select { |_barcode, check| check == 'on' }.keys
         requests = Request.find request_ids
+      end
+
+      def source_plate_barcode(tube)
+        tube.name.split('-').first
+      end
+
+      def source_well_position(tube)
+        tube.name.split('-').last
       end
     end
   end

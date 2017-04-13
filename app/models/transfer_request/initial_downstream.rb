@@ -4,6 +4,6 @@
 # Copyright (C) 2016 Genome Research Ltd.
 class TransferRequest::InitialDownstream < TransferRequest
   def outer_request
-    asset.requests.detect { |request| request.library_creation? && request.submission_id == self.submission_id }
+    asset.requests.detect { |request| request.customer_request? && request.submission_id == submission_id }
   end
 end

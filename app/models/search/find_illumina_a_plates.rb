@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2013,2014,2015 Genome Research Ltd.
 
-require "#{Rails.root}/app/models/illumina_htp/plate_purposes"
+require_dependency 'illumina_htp/plate_purposes'
 
 class Search::FindIlluminaAPlates < Search
   def scope(criteria)
@@ -19,7 +19,7 @@ class Search::FindIlluminaAPlates < Search
   private :illumina_a_plate_purposes
 
   def freezer
-    Location.find_by_name('Illumina high throughput freezer') or raise ActiveRecord::RecordNotFound, 'Illumina high throughput freezer'
+    Location.find_by(name: 'Illumina high throughput freezer') or raise ActiveRecord::RecordNotFound, 'Illumina high throughput freezer'
   end
   private :freezer
 end

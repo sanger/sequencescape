@@ -6,12 +6,12 @@
 
 <h2>Convert plates to tubes</h2>
 <p>Convert plates into tubes so that they can progress to another lab. This will also print out the barcodes and register the tubes in the destination lab reception freezer. Scan plate barcodes or enter plate IDs.</p>
-<%= semantic_form_for(:plates, :url => create_sample_tubes_plates_path) do |form| %>
-  <%= form.inputs :name => "" do %>
-    <%= form.input :source_plates,   :as => :text %>
-    <%= form.input :study,   :as => :select, :collection => @studies %>
-    <%= form.input :destination_freezer,   :as => :select, :collection => @locations %>
-    <%= form.input :barcode_printer, :as => :select, :collection => @barcode_printers %>
+<%= semantic_form_for(:plates, url: create_sample_tubes_plates_path) do |form| %>
+  <%= form.inputs name: "" do %>
+    <%= form.input :source_plates,   as: :text %>
+    <%= form.input :study,   as: :select, collection: @studies %>
+    <%= form.input :destination_freezer,   as: :select, collection: @locations %>
+    <%= form.input :barcode_printer, as: :select, collection: @barcode_printers %>
     <%= form.action(:submit) %>
   <% end %>
 <% end %>

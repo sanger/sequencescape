@@ -9,9 +9,9 @@
 # from scratch. The latter is a flawed and unsustainable approach (the more migrations
 # you'll amass, the slower it'll run and the greater likelihood for issues).
 #
-# It's strongly recommended to check this file into your version control system.
+# It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20161013121344) do
+ActiveRecord::Schema.define(version: 20170321151830) do
 
   create_table "aliquot_indices", force: :cascade do |t|
     t.integer  "aliquot_id",    limit: 4, null: false
@@ -357,6 +357,26 @@ ActiveRecord::Schema.define(:version => 20161013121344) do
     t.datetime "updated_at"
   end
 
+  create_table "custom_metadata", force: :cascade do |t|
+    t.string   "key",                            limit: 255
+    t.string   "value",                          limit: 255
+    t.integer  "custom_metadatum_collection_id", limit: 4
+    t.datetime "created_at",                                 null: false
+    t.datetime "updated_at",                                 null: false
+  end
+
+  add_index "custom_metadata", ["custom_metadatum_collection_id"], name: "index_custom_metadata_on_custom_metadatum_collection_id", using: :btree
+
+  create_table "custom_metadatum_collections", force: :cascade do |t|
+    t.integer  "user_id",    limit: 4
+    t.integer  "asset_id",   limit: 4
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+  end
+
+  add_index "custom_metadatum_collections", ["asset_id"], name: "index_custom_metadatum_collections_on_asset_id", using: :btree
+  add_index "custom_metadatum_collections", ["user_id"], name: "index_custom_metadatum_collections_on_user_id", using: :btree
+
   create_table "custom_texts", force: :cascade do |t|
     t.string   "identifier",   limit: 255
     t.integer  "differential", limit: 4
@@ -502,6 +522,14 @@ ActiveRecord::Schema.define(:version => 20161013121344) do
   add_index "external_properties", ["propertied_id", "propertied_type"], name: "ep_pi_pt", using: :btree
   add_index "external_properties", ["propertied_type", "key"], name: "index_external_properties_on_propertied_type_and_key", using: :btree
   add_index "external_properties", ["value"], name: "index_external_properties_on_value", using: :btree
+
+  create_table "extraction_attributes", force: :cascade do |t|
+    t.integer  "target_id",         limit: 4
+    t.string   "created_by",        limit: 255
+    t.text     "attributes_update", limit: 65535
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
+  end
 
   create_table "faculty_sponsors", force: :cascade do |t|
     t.string   "name",       limit: 255
@@ -681,6 +709,7 @@ ActiveRecord::Schema.define(:version => 20161013121344) do
     t.integer  "purpose_id", limit: 4,   null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "target_finder_class", :default => "SelfFinder", :null => false
   end
 
   add_index "messenger_creators", ["purpose_id"], name: "fk_messenger_creators_to_plate_purposes", using: :btree
@@ -817,11 +846,10 @@ ActiveRecord::Schema.define(:version => 20161013121344) do
   end
 
   create_table "plate_creators", force: :cascade do |t|
-    t.string   "name",             limit: 255,   null: false
-    t.integer  "plate_purpose_id", limit: 4,     null: false
+    t.string   "name",          limit: 255,   null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "valid_options",    limit: 65535
+    t.text     "valid_options", limit: 65535
   end
 
   add_index "plate_creators", ["name"], name: "index_plate_creators_on_name", unique: true, using: :btree
@@ -854,32 +882,36 @@ ActiveRecord::Schema.define(:version => 20161013121344) do
   end
 
   create_table "plate_purposes", force: :cascade do |t|
-    t.string   "name",                            limit: 255,                           null: false
+    t.string   "name",                    limit: 255,                           null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "type",                            limit: 255
-    t.string   "target_type",                     limit: 30
-    t.boolean  "qc_display",                                  default: false
-    t.boolean  "pulldown_display"
-    t.boolean  "can_be_considered_a_stock_plate",             default: false,           null: false
-    t.string   "default_state",                   limit: 255, default: "pending"
-    t.integer  "barcode_printer_type_id",         limit: 4,   default: 2
-    t.boolean  "cherrypickable_target",                       default: true,            null: false
-    t.boolean  "cherrypickable_source",                       default: false,           null: false
-    t.string   "cherrypick_direction",            limit: 255, default: "column",        null: false
-    t.integer  "default_location_id",             limit: 4
-    t.string   "cherrypick_filters",              limit: 255
-    t.integer  "size",                            limit: 4,   default: 96
-    t.integer  "asset_shape_id",                  limit: 4,   default: 1,               null: false
-    t.string   "barcode_for_tecan",               limit: 255, default: "ean13_barcode", null: false
-    t.integer  "source_purpose_id",               limit: 4
-    t.integer  "lifespan",                        limit: 4
+    t.string   "type",                    limit: 255
+    t.string   "target_type",             limit: 30
+    t.boolean  "stock_plate",                         default: false,           null: false
+    t.string   "default_state",           limit: 255, default: "pending"
+    t.integer  "barcode_printer_type_id", limit: 4,   default: 2
+    t.boolean  "cherrypickable_target",               default: true,            null: false
+    t.boolean  "cherrypickable_source",               default: false,           null: false
+    t.string   "cherrypick_direction",    limit: 255, default: "column",        null: false
+    t.integer  "default_location_id",     limit: 4
+    t.string   "cherrypick_filters",      limit: 255
+    t.integer  "size",                    limit: 4,   default: 96
+    t.integer  "asset_shape_id",          limit: 4,   default: 1,               null: false
+    t.string   "barcode_for_tecan",       limit: 255, default: "ean13_barcode", null: false
+    t.integer  "source_purpose_id",       limit: 4
+    t.integer  "lifespan",                limit: 4
   end
 
-  add_index "plate_purposes", ["qc_display"], name: "index_plate_purposes_on_qc_display", using: :btree
   add_index "plate_purposes", ["target_type"], name: "index_plate_purposes_on_target_type", using: :btree
   add_index "plate_purposes", ["type"], name: "index_plate_purposes_on_type", using: :btree
   add_index "plate_purposes", ["updated_at"], name: "index_plate_purposes_on_updated_at", using: :btree
+
+  create_table "plate_types", force: :cascade do |t|
+    t.string   "name",           limit: 255
+    t.integer  "maximum_volume", limit: 4
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
 
   create_table "plate_volumes", force: :cascade do |t|
     t.string   "barcode",            limit: 255
@@ -907,26 +939,6 @@ ActiveRecord::Schema.define(:version => 20161013121344) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
-
-  create_table "custom_metadata", force: :cascade do |t|
-    t.string   "key"
-    t.string   "value"
-    t.integer  "custom_metadatum_collection_id"
-    t.datetime "created_at",                      :null => false
-    t.datetime "updated_at",                      :null => false
-  end
-
-  add_index "custom_metadata", ["custom_metadatum_collection_id"], :name => "index_custom_metadata_on_custom_metadatum_collection_id"
-
-  create_table "custom_metadatum_collections", force: :cascade do |t|
-    t.integer  "user_id"
-    t.integer  "asset_id"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-  end
-
-  add_index "custom_metadatum_collections", ["asset_id"], :name => "index_custom_metadatum_collections_on_asset_id"
-  add_index "custom_metadatum_collections", ["user_id"], :name => "index_custom_metadatum_collections_on_user_id"
 
   create_table "product_catalogues", force: :cascade do |t|
     t.string   "name",                limit: 255,                           null: false
@@ -1841,24 +1853,25 @@ ActiveRecord::Schema.define(:version => 20161013121344) do
   end
 
   create_table "well_attributes", force: :cascade do |t|
-    t.integer  "well_id",          limit: 4
-    t.string   "gel_pass",         limit: 20
-    t.float    "concentration",    limit: 24
-    t.float    "current_volume",   limit: 24
-    t.float    "buffer_volume",    limit: 24
-    t.float    "requested_volume", limit: 24
-    t.float    "picked_volume",    limit: 24
+    t.integer  "well_id",                      limit: 4
+    t.string   "gel_pass",                     limit: 20
+    t.float    "concentration",                limit: 24
+    t.float    "current_volume",               limit: 24
+    t.float    "buffer_volume",                limit: 24
+    t.float    "requested_volume",             limit: 24
+    t.float    "picked_volume",                limit: 24
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "pico_pass",        limit: 255, default: "ungraded", null: false
-    t.integer  "sequenom_count",   limit: 4
-    t.string   "study_id",         limit: 255
-    t.string   "gender_markers",   limit: 255
-    t.string   "gender",           limit: 255
-    t.float    "measured_volume",  limit: 24
-    t.float    "initial_volume",   limit: 24
-    t.float    "molarity",         limit: 24
-    t.float    "rin",              limit: 24
+    t.string   "pico_pass",                    limit: 255, default: "ungraded", null: false
+    t.integer  "sequenom_count",               limit: 4
+    t.string   "study_id",                     limit: 255
+    t.string   "gender_markers",               limit: 255
+    t.string   "gender",                       limit: 255
+    t.float    "measured_volume",              limit: 24
+    t.float    "initial_volume",               limit: 24
+    t.float    "molarity",                     limit: 24
+    t.float    "rin",                          limit: 24
+    t.float    "robot_minimum_picking_volume", limit: 24
   end
 
   add_index "well_attributes", ["well_id"], name: "index_well_attributes_on_well_id", using: :btree
@@ -1877,6 +1890,24 @@ ActiveRecord::Schema.define(:version => 20161013121344) do
     t.string  "source",         limit: 255
   end
 
+  create_table "work_completions", force: :cascade do |t|
+    t.integer  "user_id",    limit: 4, null: false
+    t.integer  "target_id",  limit: 4, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "work_completions", ["target_id"], name: "fk_rails_f8fb9e95de", using: :btree
+  add_index "work_completions", ["user_id"], name: "fk_rails_204fc81a92", using: :btree
+
+  create_table "work_completions_submissions", force: :cascade do |t|
+    t.integer "work_completion_id", limit: 4, null: false
+    t.integer "submission_id",      limit: 4, null: false
+  end
+
+  add_index "work_completions_submissions", ["submission_id"], name: "fk_rails_1ac4e93988", using: :btree
+  add_index "work_completions_submissions", ["work_completion_id"], name: "fk_rails_5ea64f1af2", using: :btree
+
   create_table "workflow_samples", force: :cascade do |t|
     t.text     "name",          limit: 65535
     t.integer  "user_id",       limit: 4
@@ -1890,4 +1921,8 @@ ActiveRecord::Schema.define(:version => 20161013121344) do
     t.integer  "version",       limit: 4
   end
 
+  add_foreign_key "work_completions", "assets", column: "target_id"
+  add_foreign_key "work_completions", "users"
+  add_foreign_key "work_completions_submissions", "submissions"
+  add_foreign_key "work_completions_submissions", "work_completions"
 end

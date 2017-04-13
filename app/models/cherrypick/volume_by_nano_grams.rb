@@ -6,7 +6,7 @@
 
 module Cherrypick::VolumeByNanoGrams
   def check_inputs_to_volume_to_cherrypick_by_nano_grams!(minimum_volume, maximum_volume, target_ng, source_well)
-    raise "Source well not found" if source_well.nil?
+    raise 'Source well not found' if source_well.nil?
 
     raise Cherrypick::VolumeError, "Minimum volume (#{minimum_volume.inspect}) is invalid for cherrypick by nano grams"          if minimum_volume.blank? || minimum_volume <= 0.0
     raise Cherrypick::VolumeError, "Maximum volume (#{maximum_volume.inspect}) is invalid for cherrypick by nano grams"          if maximum_volume.blank? || maximum_volume <= 0.0
@@ -39,6 +39,7 @@ module Cherrypick::VolumeByNanoGrams
     well_attribute.requested_volume = minimum_volume
     well_attribute.picked_volume    = requested_volume
     well_attribute.buffer_volume    = buffer_volume
+    well_attribute.robot_minimum_picking_volume = robot_minimum_picking_volume
 
     requested_volume
   end

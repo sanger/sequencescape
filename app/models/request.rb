@@ -26,29 +26,36 @@ class Request < ActiveRecord::Base
   has_many_events
   has_many_lab_events
 
-  self.inheritance_column = "sti_type"
+  self.inheritance_column = 'sti_type'
+
+  class_attribute :customer_request
+  self.customer_request = false
 
   def self.delegate_validator
     DelegateValidation::AlwaysValidValidator
   end
 
   scope :for_pipeline, ->(pipeline) {
-      joins('LEFT JOIN pipelines_request_types prt ON prt.request_type_id=requests.request_type_id').
-      where(['prt.pipeline_id=?', pipeline.id]).
-      readonly(false)
+      joins('LEFT JOIN pipelines_request_types prt ON prt.request_type_id=requests.request_type_id')
+        .where(['prt.pipeline_id=?', pipeline.id])
+        .readonly(false)
   }
 
   def validator_for(request_option)
-    request_type.request_type_validators.find_by_request_option!(request_option.to_s)
+    request_type.request_type_validators.find_by(request_option: request_option.to_s) || raise("#{request_type.name} has no #{request_option} validator!")
   end
 
   scope :customer_requests, ->() { where(sti_type: [CustomerRequest, *CustomerRequest.descendants].map(&:name)) }
 
+  def customer_request?
+    customer_request
+  end
+
    scope :for_pipeline, ->(pipeline) {
-      joins('LEFT JOIN pipelines_request_types prt ON prt.request_type_id=requests.request_type_id').
-      where(['prt.pipeline_id=?', pipeline.id]).
-      readonly(false)
-  }
+      joins('LEFT JOIN pipelines_request_types prt ON prt.request_type_id=requests.request_type_id')
+        .where(['prt.pipeline_id=?', pipeline.id])
+        .readonly(false)
+                        }
 
   scope :for_pooling_of, ->(plate) {
     submission_ids = plate.all_submission_ids
@@ -62,18 +69,18 @@ class Request < ActiveRecord::Base
         ]
       end
 
-    select('uuids.external_id AS pool_id, GROUP_CONCAT(DISTINCT pw_location.description ORDER BY pw.map_id ASC SEPARATOR ",") AS pool_into, MIN(requests.id) AS id, MIN(requests.sti_type) AS sti_type, MIN(requests.submission_id) AS submission_id, MIN(requests.request_type_id) AS request_type_id').
-    joins(add_joins + [
+    select('uuids.external_id AS pool_id, GROUP_CONCAT(DISTINCT pw_location.description ORDER BY pw.map_id ASC SEPARATOR ",") AS pool_into, MIN(requests.id) AS id, MIN(requests.sti_type) AS sti_type, MIN(requests.submission_id) AS submission_id, MIN(requests.request_type_id) AS request_type_id')
+      .joins(add_joins + [
         'INNER JOIN maps AS pw_location ON pw.map_id=pw_location.id',
         'INNER JOIN container_associations ON container_associations.content_id=pw.id',
         'INNER JOIN uuids ON uuids.resource_id=requests.submission_id AND uuids.resource_type="Submission"'
-      ]).
-    group('uuids.external_id').
-    customer_requests.
-    where([
+      ])
+      .group('uuids.external_id')
+      .customer_requests
+      .where([
         'container_associations.container_id=? AND requests.submission_id IN (?)',
         plate.id, submission_ids
-    ])
+      ])
   }
 
   scope :for_pre_cap_grouping_of, ->(plate) {
@@ -87,21 +94,20 @@ class Request < ActiveRecord::Base
         ]
       end
 
-      select('min(uuids.external_id) AS group_id, GROUP_CONCAT(DISTINCT pw_location.description SEPARATOR ",") AS group_into, MIN(requests.id) AS id, MIN(requests.submission_id) AS submission_id, MIN(requests.request_type_id) AS request_type_id').
-      joins(add_joins + [
-        'INNER JOIN maps AS pw_location ON pw.map_id = pw_location.id',
-        'INNER JOIN container_associations ON container_associations.content_id=pw.id',
-        'INNER JOIN pre_capture_pool_pooled_requests ON requests.id=pre_capture_pool_pooled_requests.request_id',
-        'INNER JOIN uuids ON uuids.resource_id = pre_capture_pool_pooled_requests.pre_capture_pool_id AND uuids.resource_type="PreCapturePool"'
-        ]
-      ).
-      group('pre_capture_pool_pooled_requests.pre_capture_pool_id').
-      customer_requests.
-      where(state: 'pending').
-      where([
-        'container_associations.container_id=?',
-        plate.id
-      ])
+      select('min(uuids.external_id) AS group_id, GROUP_CONCAT(DISTINCT pw_location.description SEPARATOR ",") AS group_into, MIN(requests.id) AS id, MIN(requests.submission_id) AS submission_id, MIN(requests.request_type_id) AS request_type_id')
+        .joins(add_joins + [
+          'INNER JOIN maps AS pw_location ON pw.map_id = pw_location.id',
+          'INNER JOIN container_associations ON container_associations.content_id=pw.id',
+          'INNER JOIN pre_capture_pool_pooled_requests ON requests.id=pre_capture_pool_pooled_requests.request_id',
+          'INNER JOIN uuids ON uuids.resource_id = pre_capture_pool_pooled_requests.pre_capture_pool_id AND uuids.resource_type="PreCapturePool"'
+        ])
+        .group('pre_capture_pool_pooled_requests.pre_capture_pool_id')
+        .customer_requests
+        .where(state: 'pending')
+        .where([
+          'container_associations.container_id=?',
+          plate.id
+        ])
   }
 
   scope :in_order, ->(order) { where(order_id: order) }
@@ -110,8 +116,8 @@ class Request < ActiveRecord::Base
     customer_requests.in_order(order).where(state: 'passed')
   }
 
-  scope :including_samples_from_target, ->() { includes({ target_asset: { aliquots: :sample } }) }
-  scope :including_samples_from_source, ->() { includes({ asset: { aliquots: :sample } }) }
+  scope :including_samples_from_target, ->() { includes(target_asset: { aliquots: :sample }) }
+  scope :including_samples_from_source, ->() { includes(asset: { aliquots: :sample }) }
 
   scope :for_order_including_submission_based_requests, ->(order) {
     # To obtain the requests for an order and the sequencing requests of its submission (as they are defined
@@ -124,9 +130,11 @@ class Request < ActiveRecord::Base
 
   has_many :failures, as: :failable
 
+  has_many :samples, through: :asset, source: :samples
+
   belongs_to :request_type, inverse_of: :requests
   delegate :billable?, to: :request_type, allow_nil: true
-  belongs_to :workflow, class_name: "Submission::Workflow"
+  belongs_to :workflow, class_name: 'Submission::Workflow'
 
   belongs_to :user
   belongs_to :request_purpose
@@ -140,7 +148,7 @@ class Request < ActiveRecord::Base
   # has_many :submission_siblings, ->(request) { where(:request_type_id => request.request_type_id) }, :through => :submission, :source => :requests, :class_name => 'Request'
   has_many :qc_metric_requests
   has_many :qc_metrics, through: :qc_metric_requests
-  has_many :request_events, ->() { order(:current_from) }
+  has_many :request_events, ->() { order(:current_from) }, inverse_of: :request
 
   scope :with_request_type_id, ->(id) { where(request_type_id: id) }
   scope :for_pacbio_sample_sheet, -> { includes([{ target_asset: :map }, :request_metadata]) }
@@ -148,22 +156,22 @@ class Request < ActiveRecord::Base
 
   # project is read only so we can set it everywhere
   # but it will be only used in specific and controlled place
-  belongs_to :initial_project, class_name: "Project"
+  belongs_to :initial_project, class_name: 'Project'
 
   def current_request_event
     request_events.current.last
   end
 
   def project_id=(project_id)
-    raise RuntimeError, "Initial project already set" if initial_project_id
+    raise RuntimeError, 'Initial project already set' if initial_project_id
     self.initial_project_id = project_id
   end
 
   def submission_plate_count
-    submission.requests.
-      where(request_type_id: request_type_id).
-      joins('LEFT JOIN container_associations AS spca ON spca.content_id = requests.asset_id').
-      count('DISTINCT(spca.container_id)')
+    submission.requests
+              .where(request_type_id: request_type_id)
+              .joins('LEFT JOIN container_associations AS spca ON spca.content_id = requests.asset_id')
+              .count('DISTINCT(spca.container_id)')
   end
 
   def update_responsibilities!
@@ -176,10 +184,10 @@ class Request < ActiveRecord::Base
   end
 
   # same as project with study
-  belongs_to :initial_study, class_name: "Study"
+  belongs_to :initial_study, class_name: 'Study'
 
   def study_id=(study_id)
-    raise RuntimeError, "Initial study already set" if initial_study_id
+    raise RuntimeError, 'Initial study already set' if initial_study_id
     self.initial_study_id = study_id
   end
 
@@ -200,13 +208,13 @@ class Request < ActiveRecord::Base
 
  scope :request_type, ->(request_type) {
     where(request_type_id: request_type)
-  }
+                      }
 
   scope :where_is_a?,     ->(clazz) { where(sti_type: [clazz, *clazz.descendants].map(&:name)) }
   scope :where_is_not_a?, ->(clazz) { where(['sti_type NOT IN (?)', [clazz, *clazz.descendants].map(&:name)]) }
   scope :where_has_a_submission, -> { where('submission_id IS NOT NULL') }
 
-  scope :full_inbox, -> { where(state: ["pending", "hold"]) }
+  scope :full_inbox, -> { where(state: ['pending', 'hold']) }
 
   scope :with_asset,  -> { where('asset_id is not null') }
   scope :with_target, -> { where('target_asset_id is not null and (target_asset_id <> asset_id)') }
@@ -221,24 +229,24 @@ class Request < ActiveRecord::Base
 
   # Use container location
   scope :holder_located, ->(location_id) {
-    joins(["INNER JOIN container_associations hl ON hl.content_id = asset_id", "INNER JOIN location_associations ON location_associations.locatable_id = hl.container_id"]).
-    where(['location_associations.location_id = ?', location_id]).
-    readonly(false)
+    joins(['INNER JOIN container_associations hl ON hl.content_id = asset_id', 'INNER JOIN location_associations ON location_associations.locatable_id = hl.container_id'])
+      .where(['location_associations.location_id = ?', location_id])
+      .readonly(false)
   }
 
   scope :holder_not_control, -> {
-    joins(["INNER JOIN container_associations hncca ON hncca.content_id = asset_id", "INNER JOIN assets AS hncc ON hncc.id = hncca.container_id"]).
-    where(['hncc.sti_type != ?', 'ControlPlate']).
-    readonly(false)
+    joins(['INNER JOIN container_associations hncca ON hncca.content_id = asset_id', 'INNER JOIN assets AS hncc ON hncc.id = hncca.container_id'])
+      .where(['hncc.sti_type != ?', 'ControlPlate'])
+      .readonly(false)
   }
   scope :without_asset, -> { where('asset_id is null') }
   scope :without_target, -> { where('target_asset_id is null') }
   scope :excluding_states, ->(states) {
     where.not(state: states)
   }
-  scope :ordered, -> { order("id ASC") }
-  scope :full_inbox, -> { where(state: ["pending", "hold"]) }
-  scope :hold, -> { where(state: "hold") }
+  scope :ordered, -> { order('id ASC') }
+  scope :full_inbox, -> { where(state: ['pending', 'hold']) }
+  scope :hold, -> { where(state: 'hold') }
 
   # Note: These scopes use preload due to a limitation in the way rails handles custom selects with eager loading
   # https://github.com/rails/rails/issues/15185
@@ -256,19 +264,19 @@ class Request < ActiveRecord::Base
     target = options[:by_target] ? 'target_asset_id' : 'asset_id'
     groupings = options.delete(:group) || {}
 
-    select("requests.*, tca.container_id AS container_id, tca.content_id AS content_id").
-    joins("INNER JOIN container_associations tca ON tca.content_id=#{target}").
-    readonly(false).
-    preload(:request_metadata).
-    group(groupings)
+    select('requests.*, tca.container_id AS container_id, tca.content_id AS content_id')
+      .joins("INNER JOIN container_associations tca ON tca.content_id=#{target}")
+      .readonly(false)
+      .preload(:request_metadata)
+      .group(groupings)
   end
 
   scope :for_submission_id, ->(id) { where(submission_id: id) }
   scope :for_asset_id, ->(id) { where(asset_id: id) }
   scope :for_study_ids, ->(ids) {
-       joins('INNER JOIN aliquots AS al ON requests.asset_id = al.receptacle_id').
-       where(['al.study_id IN (?)', ids]).uniq
-   }
+       joins('INNER JOIN aliquots AS al ON requests.asset_id = al.receptacle_id')
+         .where(['al.study_id IN (?)', ids]).uniq
+                        }
 
   scope :for_study_id, ->(id) { for_study_ids(id) }
 
@@ -287,17 +295,17 @@ class Request < ActiveRecord::Base
     scrubbed_atts = attributes.map { |k, v| "#{k.to_s.gsub(/[^\w\.]/, '')}.#{v.to_s.gsub(/[^\w\.]/, '')}" }
     scrubbed_atts << 'requests.request_type_id'
 
-    group(scrubbed_atts).
-    select([
-      'MIN(requests.id) AS id',
-      'MIN(requests.submission_id) AS submission_id',
-      'MAX(requests.priority) AS max_priority',
-      'hl.container_id AS container_id',
-      'count(DISTINCT requests.id) AS request_count',
-      'MIN(requests.asset_id) AS asset_id',
-      'MIN(requests.target_asset_id) AS target_asset_id'
-    ]).
-    select(scrubbed_atts)
+    group(scrubbed_atts)
+      .select([
+        'MIN(requests.id) AS id',
+        'MIN(requests.submission_id) AS submission_id',
+        'MAX(requests.priority) AS max_priority',
+        'hl.container_id AS container_id',
+        'count(DISTINCT requests.id) AS request_count',
+        'MIN(requests.asset_id) AS asset_id',
+        'MIN(requests.target_asset_id) AS target_asset_id'
+      ])
+      .select(scrubbed_atts)
   }
 
   def self.for_study(study)
@@ -311,9 +319,9 @@ class Request < ActiveRecord::Base
   scope :for_workflow, ->(workflow) { joins(:workflow).where(workflow: { key: workflow }) }
   scope :for_request_types, ->(types) { joins(:request_type).where(request_types: { key: types }) }
 
-  scope :for_search_query, ->(query, with_includes) {
+  scope :for_search_query, ->(query, _with_includes) {
      where(['id=?', query])
-   }
+                           }
 
    scope :find_all_target_asset, ->(target_asset_id) {
      where(['target_asset_id = ?', target_asset_id.to_s])
@@ -327,8 +335,8 @@ class Request < ActiveRecord::Base
 
   # TODO: There is probably a MUCH better way of getting this information. This is just a rewrite of the old approach
   def self.get_target_plate_ids(request_ids)
-    ContainerAssociation.joins("INNER JOIN requests ON content_id = target_asset_id").
-      where(["requests.id IN  (?)", request_ids]).uniq.pluck(:container_id)
+    ContainerAssociation.joins('INNER JOIN requests ON content_id = target_asset_id')
+                        .where(['requests.id IN  (?)', request_ids]).uniq.pluck(:container_id)
   end
 
   # The options that are required for creation.  In other words, the truly required options that must
@@ -345,32 +353,32 @@ class Request < ActiveRecord::Base
   end
 
   def get_value(request_information_type)
-    return '' unless self.request_metadata.respond_to?(request_information_type.key.to_sym)
-    value = self.request_metadata.send(request_information_type.key.to_sym)
+    return '' unless request_metadata.respond_to?(request_information_type.key.to_sym)
+    value = request_metadata.send(request_information_type.key.to_sym)
     return value.to_s if value.blank? or request_information_type.data_type != 'Date'
-    return value.to_date.strftime('%d %B %Y')
+    value.to_date.strftime('%d %B %Y')
   end
 
   def value_for(name, batch = nil)
-    rit = RequestInformationType.find_by_name(name)
-    rit_value = self.get_value(rit) if rit.present?
+    rit = RequestInformationType.find_by(name: name)
+    rit_value = get_value(rit) if rit.present?
     return rit_value if rit_value.present?
 
-    list = (batch.present? ? self.lab_events_for_batch(batch) : self.lab_events)
+    list = (batch.present? ? lab_events_for_batch(batch) : lab_events)
     list.each { |event| desc = event.descriptor_value_for(name) and return desc }
-    ""
+    ''
   end
 
   def has_passed(batch, task)
-    self.lab_events_for_batch(batch).any? { |event| event.description == task.name }
+    lab_events_for_batch(batch).any? { |event| event.description == task.name }
   end
 
   def lab_events_for_batch(batch)
-    self.lab_events.where(batch_id: batch.id)
+    lab_events.where(batch_id: batch.id)
   end
 
   def event_with_key_value(k, v = nil)
-    v.nil? ? false : self.lab_events.with_descriptor(k, v).first
+    v.nil? ? false : lab_events.with_descriptor(k, v).first
   end
 
   # This is used for the default next or previous request check.  It means that if the caller does not specify a
@@ -378,7 +386,7 @@ class Request < ActiveRecord::Base
   PERMISSABLE_NEXT_REQUESTS = ->(request) { request.pending? or request.blocked? }
 
   def next_requests(pipeline, &block)
-    # TODO remove pipeline parameters
+    # TODO: remove pipeline parameters
     # we filter according to the next pipeline
     next_pipeline = pipeline.next_pipeline
     # return [] if next_pipeline.nil?
@@ -404,11 +412,11 @@ class Request < ActiveRecord::Base
   end
 
   def previous_failed_requests
-    self.asset.requests.select { |previous_failed_request| (previous_failed_request.failed? or previous_failed_request.blocked?) }
+    asset.requests.select { |previous_failed_request| (previous_failed_request.failed? or previous_failed_request.blocked?) }
   end
 
   def add_comment(comment, user)
-    self.comments.create({ description: comment, user: user })
+    comments.create(description: comment, user: user)
   end
 
   def self.number_expected_for_submission_id_and_request_type_id(submission_id, request_type_id)
@@ -423,20 +431,20 @@ class Request < ActiveRecord::Base
   def remove_unused_assets
     ActiveRecord::Base.transaction do
       return if target_asset.nil?
-      self.target_asset.ancestors.clear
-      self.target_asset.destroy
-      self.save!
+      target_asset.ancestors.clear
+      target_asset.destroy
+      save!
     end
   end
 
   def format_qc_information
-    return [] if self.lab_events.empty?
+    return [] if lab_events.empty?
 
-    self.events.map do |event|
+    events.map do |event|
       next if event.family.nil? or not ['pass', 'fail'].include?(event.family.downcase)
 
-      message = event.message || "(No message was specified)"
-      { "event_id" => event.id, "status" => event.family.downcase, "message" => message, "created_at" => event.created_at }
+      message = event.message || '(No message was specified)'
+      { 'event_id' => event.id, 'status' => event.family.downcase, 'message' => message, 'created_at' => event.created_at }
     end.compact
   end
 
@@ -445,7 +453,7 @@ class Request < ActiveRecord::Base
   end
 
   def cancelable?
-    self.batch_request.nil? && (pending? || blocked?)
+    batch_request.nil? && (pending? || blocked?)
   end
 
   def update_priority
@@ -457,8 +465,8 @@ class Request < ActiveRecord::Base
     submission.try(:priority) || 0
   end
 
-  def request_type_updatable?(new_request_type)
-    self.pending?
+  def request_type_updatable?(_new_request_type)
+    pending?
   end
 
   def customer_accepts_responsibility!
@@ -514,22 +522,4 @@ class Request < ActiveRecord::Base
   def manifest_processed!; end
 end
 
-require_dependency 'customer_request'
 require_dependency 'system_request'
-require_dependency 'pooled_cherrypick_request'
-require_dependency 'illumina_b/requests'
-require_dependency 'illumina_c/requests'
-require_dependency 'illumina_htp/requests'
-require_dependency 'pulldown/requests'
-require_dependency 'control_request'
-require_dependency 'genotyping_request'
-require_dependency 'library_creation_request'
-require_dependency 'pac_bio_sample_prep_request'
-require_dependency 'pac_bio_sequencing_request'
-require_dependency 'pooled_cherrypick_request'
-require_dependency 'pulldown_multiplexed_library_creation_request'
-require_dependency 'qc_request'
-require_dependency 'sequencing_request'
-require_dependency 'strip_creation_request'
-require_dependency 'request/library_creation'
-require_dependency 'request/multiplexing'

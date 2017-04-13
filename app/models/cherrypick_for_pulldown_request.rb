@@ -7,7 +7,7 @@
 # This class is due to be removed shortly.
 # All references to it in the code have been removed.
 # At a later date a migration will be written to update the
-# StiType of all exititing CherrypickForPulldownRequests to CherrypickRequest
+# StiType of all existing CherrypickForPulldownRequests to CherrypickRequest
 # As well as updating request_class on request_types.
 class CherrypickForPulldownRequest < CherrypickRequest
 end

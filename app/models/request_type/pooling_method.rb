@@ -16,7 +16,7 @@ class RequestType::PoolingMethod < ActiveRecord::Base
   def import_behaviour
     return if pooling_behaviour.nil?
     behavior_module = "RequestType::PoolingMethod::#{pooling_behaviour}".constantize
-    self.class_eval do
+    class_eval do
       include(behavior_module)
     end
   end

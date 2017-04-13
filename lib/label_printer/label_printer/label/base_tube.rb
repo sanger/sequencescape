@@ -6,7 +6,7 @@ module LabelPrinter
       def create_label(tube)
         { top_line: top_line(tube),
           middle_line: middle_line(tube),
-          bottom_line: bottom_line,
+          bottom_line: bottom_line(tube),
           round_label_top_line: round_label_top_line(tube),
           round_label_bottom_line: round_label_bottom_line(tube),
           barcode: barcode(tube) }
@@ -19,7 +19,7 @@ module LabelPrinter
         tube.barcode
       end
 
-      def bottom_line
+      def bottom_line(_tube)
         date_today
       end
 
@@ -44,7 +44,7 @@ module LabelPrinter
       end
 
       def date_today
-        Date.today.strftime("%e-%^b-%Y")
+        Date.today.strftime('%e-%^b-%Y')
       end
     end
   end

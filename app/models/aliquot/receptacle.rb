@@ -13,12 +13,12 @@ class Aliquot::Receptacle < Asset
   has_many :transfer_requests_as_target, class_name: 'TransferRequest', foreign_key: :target_asset_id
 
   has_many :requests, inverse_of: :asset, foreign_key: :asset_id
-  has_one  :source_request, ->() { includes(:request_metadata) }, class_name: "Request", foreign_key: :target_asset_id
+  has_one  :source_request, ->() { includes(:request_metadata) }, class_name: 'Request', foreign_key: :target_asset_id
   has_many :requests_as_source, ->() { includes(:request_metadata) }, class_name: 'Request', foreign_key: :asset_id
   has_many :requests_as_target, ->() { includes(:request_metadata) }, class_name: 'Request', foreign_key: :target_asset_id
 
-  has_many :creation_batches, class_name: "Batch", through: :requests_as_target, source: :batch
-  has_many :source_batches, class_name: "Batch", through: :requests_as_source, source: :batch
+  has_many :creation_batches, class_name: 'Batch', through: :requests_as_target, source: :batch
+  has_many :source_batches, class_name: 'Batch', through: :requests_as_source, source: :batch
 
   def default_state
     nil
@@ -30,6 +30,8 @@ class Aliquot::Receptacle < Asset
   # one aliquot.
   has_many :aliquots, ->() { order(tag_id: :asc, tag2_id: :asc) }, foreign_key: :receptacle_id, autosave: true, dependent: :destroy, inverse_of: :receptacle
   has_one :primary_aliquot, ->() { order(:created_at).readonly }, class_name: 'Aliquot', foreign_key: :receptacle_id
+
+  has_many :tags, through: :aliquots
 
   # Our receptacle needs to report its tagging status based on the most highly tagged aliquot. This retrieves it
   has_one :most_tagged_aliquot, ->() { order(tag2_id: :desc, tag_id: :desc).readonly }, class_name: 'Aliquot', foreign_key: :receptacle_id
@@ -55,7 +57,7 @@ class Aliquot::Receptacle < Asset
 
   # TODO: Remove these at some point in the future as they're kind of wrong!
   has_one :sample, through: :primary_aliquot
-  deprecate :sample
+  deprecate sample: 'receptacles may contain multiple samples. This method just returns the first.'
 
   def sample=(sample)
     aliquots.clear
@@ -76,12 +78,23 @@ class Aliquot::Receptacle < Asset
   end
   deprecate :tag
 
-  def tags
-    aliquots
-  end
-  deprecate :tags
-
   delegate :tag_count_name, to: :most_tagged_aliquot, allow_nil: true
+
+  # Returns the map_id of the first and last tag in an asset
+  # eg 1-96.
+  # Caution: Used on barcode labels. Avoid using elsewhere as makes assumptions
+  #          about tag behaviour which may change shortly.
+  # @return [String,nil] Returns nil is no tags, the map_id is a single tag, or the first and
+  #                      last map id separated by a hyphen if multiple tags.
+  #
+  def tag_range
+    map_ids = tags.order(:map_id).pluck(:map_id)
+    case map_ids.length
+    when 0; then nil
+    when 1; then map_ids.first
+    else "#{map_ids.first}-#{map_ids.last}"
+    end
+  end
 
   def primary_aliquot_if_unique
     primary_aliquot if aliquots.count == 1

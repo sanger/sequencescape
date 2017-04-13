@@ -16,7 +16,7 @@ class Metadata::ViewBuilder < Metadata::BuilderBase
   end
 
   def yes_or_no(field, options = {})
-    render_view(:plain_value, field, options) { |locals| locals.merge(value: @object.send(field).present? ? "Yes" : "No") }
+    render_view(:plain_value, field, options) { |locals| locals.merge(value: @object.send(field).present? ? 'Yes' : 'No') }
   end
 
   def file(field, options = {})

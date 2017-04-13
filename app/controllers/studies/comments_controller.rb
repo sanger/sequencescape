@@ -5,8 +5,8 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 class Studies::CommentsController < ApplicationController
-# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+  # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   before_action :discover_study
 
@@ -17,7 +17,7 @@ class Studies::CommentsController < ApplicationController
   def create
     @study.comments.create(description: params[:comment], user_id: current_user.id)
     @comments = @study.comments
-    render partial: "list", locals: { commentable: @study, visible: true }
+    render partial: 'list', locals: { commentable: @study, visible: true }
   end
 
   def destroy
@@ -26,7 +26,7 @@ class Studies::CommentsController < ApplicationController
       comment.destroy
     end
     @comments = @study.comments
-    render partial: "list", locals: { commentable: @study, visible: true }
+    render partial: 'list', locals: { commentable: @study, visible: true }
   end
 
   private

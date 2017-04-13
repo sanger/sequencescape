@@ -35,17 +35,18 @@ Sequencescape::Application.configure do
 
   config.time_zone = 'London'
 
-  config.active_record.observers = [:request_observer]
+  config.active_record.observers = [:customer_request_observer]
 
   # Set TEST_RABBIT_MQ to enable the amqp_observer for debugging.
   # You'll need a local rabbit MQ server running
   config.active_record.observers << :amqp_observer if ENV['TEST_RABBIT_MQ']
   config.log_level = :debug
 
-  config.active_support.deprecation = :log
+  config.active_record.raise_in_transactional_callbacks = true
+  config.active_support.deprecation = :raise
 
   # Use the response timer middleware
-  config.middleware.insert_after(ActionController::Failsafe, "ResponseTimer", File.new(ENV['LOG_TO'], 'w+')) unless ENV['LOG_TO'].nil?
+  config.middleware.insert_after(ActionController::Failsafe, 'ResponseTimer', File.new(ENV['LOG_TO'], 'w+')) unless ENV['LOG_TO'].nil?
 
   if ENV['WITH_BULLET'] == 'true'
     config.after_initialize do

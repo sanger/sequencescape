@@ -5,8 +5,8 @@
 # Copyright (C) 2007-2011,2014,2015 Genome Research Ltd.
 
 class ReceptionsController < ApplicationController
-# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+  # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   before_action :find_asset_by_id, only: [:print, :snp_register]
 
@@ -29,7 +29,7 @@ class ReceptionsController < ApplicationController
 
     all_barcodes_blank = true
 
-    barcodes.each do |index, barcode_ws|
+    barcodes.each do |_index, barcode_ws|
       # We don't perform strip! as this results in modification of the parameters themselves, which affects logging and
       # exception notification. This can hinder investigation of any issues, as it changes apparent user input.
       barcode = barcode_ws.strip
@@ -57,7 +57,7 @@ class ReceptionsController < ApplicationController
     end
 
     if all_barcodes_blank
-      @errors << "No barcodes have been entered or scanned"
+      @errors << 'No barcodes have been entered or scanned'
     end
 
     if @errors.size > 0
@@ -83,7 +83,7 @@ class ReceptionsController < ApplicationController
       @errors = []
       asset_count = 0
 
-      assets.each do |index, asset_id|
+      assets.each do |_index, asset_id|
         asset = Asset.find_by(id: asset_id)
         if asset.nil?
           @errors << "Asset not found with asset ID #{asset_id}"
@@ -97,14 +97,14 @@ class ReceptionsController < ApplicationController
       if @errors.size > 0
         respond_to do |format|
           flash[:error] = "Could not update some locations: #{@errors.join(';')}"
-          format.html { render action: "reception" }
+          format.html { render action: 'reception' }
           format.xml  { render xml: @errors, status: :unprocessable_entity }
           format.json { render json: @errors, status: :unprocessable_entity }
         end
       else
         respond_to do |format|
           flash[:notice] = "Successfully updated #{asset_count} samples"
-          format.html { render action: "reception" }
+          format.html { render action: 'reception' }
           format.xml  { head :ok }
           format.json { head :ok }
         end
@@ -118,7 +118,7 @@ class ReceptionsController < ApplicationController
     @errors = []
 
     barcodes.scan(/\d+/).each do |plate_barcode|
-      plate = Plate.find_by_barcode(plate_barcode)
+      plate = Plate.find_by(barcode: plate_barcode)
       if plate.nil?
         @snp_plates << plate_barcode
       else
@@ -128,7 +128,7 @@ class ReceptionsController < ApplicationController
 
     if @errors.size > 0
       respond_to do |format|
-        format.html { render action: "snp_import" }
+        format.html { render action: 'snp_import' }
         format.xml  { render xml: @errors, status: :unprocessable_entity }
         format.json { render json: @errors, status: :unprocessable_entity }
       end
@@ -145,13 +145,13 @@ class ReceptionsController < ApplicationController
     ActiveRecord::Base.transaction do
       respond_to do |format|
         if Plate.create_plates_with_barcodes(params)
-          flash[:notice] = "Plates queued to be imported"
-          format.html { redirect_to action: "snp_import" }
+          flash[:notice] = 'Plates queued to be imported'
+          format.html { redirect_to action: 'snp_import' }
           format.xml  { head :ok }
           format.json { head :ok }
         else
-          flash[:errors] = "Plates could not be created"
-          format.html { render action: "snp_import" }
+          flash[:errors] = 'Plates could not be created'
+          format.html { render action: 'snp_import' }
           format.xml  { render xml: @errors, status: :unprocessable_entity }
           format.json { render json: @errors, status: :unprocessable_entity }
         end

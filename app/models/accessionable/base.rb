@@ -11,8 +11,8 @@ class Accessionable::Base
     @accession_number = accession_number
 
     time_now = Time.now
-    @date       = time_now.strftime("%Y-%m-%dT%H:%M:%SZ")
-    @date_short = time_now.strftime("%Y-%m-%d")
+    @date       = time_now.strftime('%Y-%m-%dT%H:%M:%SZ')
+    @date_short = time_now.strftime('%Y-%m-%d')
   end
 
   def errors
@@ -20,7 +20,7 @@ class Accessionable::Base
   end
 
   def xml
-    raise NotImplementedError, "abstract method"
+    raise NotImplementedError, 'abstract method'
   end
 
   def center_name
@@ -29,7 +29,7 @@ class Accessionable::Base
 
   def schema_type
     # raise NotImplementedError, "abstract method"
-    self.class.name.split("::").last.downcase
+    self.class.name.split('::').last.downcase
   end
 
   def alias
@@ -50,15 +50,15 @@ class Accessionable::Base
           accession_number = element && element.attributes['accession']
   end
 
-  def update_accession_number!(user, accession_number)
-    raise NotImplementedError, "abstract method"
+  def update_accession_number!(_user, _accession_number)
+    raise NotImplementedError, 'abstract method'
   end
 
   def update_array_express_accession_number!(accession_number)
   end
 
   def accessionable_id
-    raise NotImplementError, "abstract method"
+    raise NotImplementError, 'abstract method'
   end
 
   def released?
@@ -70,8 +70,8 @@ class Accessionable::Base
         eventable.events.create(
           created_by: user.login,
           message: "#{classname} #{eventable.id} accession data has been updated by user #{user.login}",
-          content: "accession number regenerated",
-          of_interest_to: "administrators"
+          content: 'accession number regenerated',
+          of_interest_to: 'administrators'
         )
   end
 

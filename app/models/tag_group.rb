@@ -17,7 +17,7 @@ class TagGroup < ActiveRecord::Base
   validates_uniqueness_of :name
 
   def tags_sorted_by_map_id
-    self.tags.sort_by(&:map_id)
+    tags.sort_by(&:map_id)
   end
 
   # Returns a Hash that maps from the tag index in the group to the oligo sequence for the tag

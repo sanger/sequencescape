@@ -20,16 +20,16 @@ module User::Authentication
   def update_profile_via_ldap
     ldap = Net::LDAP.new(host: configatron.ldap_server, port: configatron.ldap_port)
 
-    filter = Net::LDAP::Filter.eq("uid", self.login)
-    treebase = "ou=people,dc=sanger,dc=ac,dc=uk"
+    filter = Net::LDAP::Filter.eq('uid', login)
+    treebase = 'ou=people,dc=sanger,dc=ac,dc=uk'
 
     ldap_profile = ldap.search(base: treebase, filter: filter)[0]
     # If we have two or more records, something is off with LDAP
 
-    { email: "mail", first_name: "givenname", last_name: "sn" }.each do |attr, ldap_attr|
+    { email: 'mail', first_name: 'givenname', last_name: 'sn' }.each do |attr, ldap_attr|
       self[attr] = ldap_profile[ldap_attr][0] if self[attr].blank?
     end
-    self.save if self.changed?
+    save if changed?
 
   rescue StandardError => e
     logger.error "Profile failed for user #{login}: result code #{ldap.get_operation_result.code} message #{ldap.get_operation_result.message} - #{e}"
@@ -39,7 +39,7 @@ module User::Authentication
   module ClassMethods
     # Authenticates a user by their login name and unencrypted password.  Returns the user or nil.
     def authenticate(login, password)
-      if configatron.authentication == "ldap"
+      if configatron.authentication == 'ldap'
         authenticated = authenticate_with_ldap(login, password)
         authenticated ? register_or_update_via_ldap(login) : nil
       else
@@ -50,8 +50,8 @@ module User::Authentication
 
   module Ldap
     def authenticate_with_ldap(login, password)
-      # TODO - Extract LDAP specifics to configuration
-      username = "uid=" << login << ",ou=people,dc=sanger,dc=ac,dc=uk"
+      # TODO: - Extract LDAP specifics to configuration
+      username = 'uid=' << login << ',ou=people,dc=sanger,dc=ac,dc=uk'
       ldap = Net::LDAP.new(
           host: configatron.ldap_server,
           port: configatron.ldap_secure_port,
@@ -67,9 +67,9 @@ module User::Authentication
       rescue StandardError => e
         raise e, "LDAP connection problem: #{e}", caller
       end
-      password = "" # clear out in case of crashes
+      password = '' # clear out in case of crashes
       if ldap.bind
-        logger.info "Authentication succeeded"
+        logger.info 'Authentication succeeded'
         true
       else
         logger.warn "Authentication failed for user #{login}: result code #{ldap.get_operation_result.code} message #{ldap.get_operation_result.message}"

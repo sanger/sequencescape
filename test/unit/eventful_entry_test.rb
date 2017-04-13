@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class EventfulEntry < ActiveRecord::Base
   extend EventfulRecord
@@ -15,13 +15,13 @@ class EventfulEntry < ActiveRecord::Base
 end
 
 class EventfulEntryTest < ActiveSupport::TestCase
-  context "A model using events" do
+  context 'A model using events' do
     setup do
       @request_type = create :request_type
       @study = create :study
 
       @test_subject = EventfulEntry.create(request_type_id: @request_type.id, study_id: @study.id)
-      @event        = Event.new({ eventful_id: @test_subject.id, eventful_type: @test_subject.class.to_s, family: "Billing" })
+      @event        = Event.new(eventful_id: @test_subject.id, eventful_type: @test_subject.class.to_s, family: 'Billing')
       @event.save
       assert @test_subject.valid?
     end

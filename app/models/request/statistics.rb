@@ -6,38 +6,38 @@
 
 module Request::Statistics
   module DeprecatedMethods
-    # TODO - Move these to named scope on Request
+    # TODO: - Move these to named scope on Request
     def total_requests(request_type)
-      self.requests.request_type(request_type).distinct.count(:id)
+      requests.request_type(request_type).distinct.count(:id)
     end
 
     def completed_requests(request_type)
-      self.requests.request_type(request_type).completed.distinct.count(:id)
+      requests.request_type(request_type).completed.distinct.count(:id)
     end
 
     def passed_requests(request_type)
-      self.requests.request_type(request_type).passed.distinct.count(:id)
+      requests.request_type(request_type).passed.distinct.count(:id)
     end
 
     def failed_requests(request_type)
-      self.requests.request_type(request_type).failed.distinct.count(:id)
+      requests.request_type(request_type).failed.distinct.count(:id)
     end
 
     def pending_requests(request_type)
-      self.requests.request_type(request_type).pending.distinct.count(:id)
+      requests.request_type(request_type).pending.distinct.count(:id)
     end
 
     def started_requests(request_type)
-      self.requests.request_type(request_type).started.distinct.count(:id)
+      requests.request_type(request_type).started.distinct.count(:id)
     end
 
     def cancelled_requests(request_type)
       # distinct.count(:id) in rails_4
-      self.requests.request_type(request_type).cancelled.distinct.count(:id)
+      requests.request_type(request_type).cancelled.distinct.count(:id)
     end
 
     def total_requests_report
-      self.requests.group(:request_type_id).count
+      requests.group(:request_type_id).count
     end
   end
 
@@ -65,8 +65,8 @@ module Request::Statistics
     end
 
     def progress
-      return 0 if self.passed.zero? # If there are no passed then the progress is 0% by definition
-      (self.passed * 100) / (self.total - self.failed)
+      return 0 if passed.zero? # If there are no passed then the progress is 0% by definition
+      (passed * 100) / (total - failed)
     end
   end
 

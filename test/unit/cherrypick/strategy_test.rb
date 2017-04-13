@@ -29,7 +29,7 @@ class Cherrypick::StrategyTest < ActiveSupport::TestCase
   end
 
   context Cherrypick::Strategy do
-    context "with a stock plate" do
+    context 'with a stock plate' do
       setup do
         @purpose  = PlatePurpose.stock_plate_purpose
         @strategy = Cherrypick::Strategy.new(@purpose)

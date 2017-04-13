@@ -8,11 +8,9 @@ module Core::Endpoint::BasicHandler::Handlers
   # Handler that behaves like it never deals with any URLs
   NullHandler = Object.new.tap do |handler|
     [:create, :read, :update, :delete].each do |action|
-      eval("
-        def handler.#{action}(*args, &block)
-          raise ::Core::Service::UnsupportedAction
-        end
-      ")
+      handler.define_singleton_method(action) do |*_args|
+        raise ::Core::Service::UnsupportedAction
+      end
     end
   end
 
@@ -26,10 +24,9 @@ module Core::Endpoint::BasicHandler::Handlers
   end
 
   def actions(object, options)
-    @handlers.select do |name, handler|
+    @handlers.select do |_name, handler|
       handler.is_a?(Core::Endpoint::BasicHandler::Actions::InnerAction)
-#      accessible_action?(self, handler, options[:response].request, object)
-    end.map do |name, handler|
+    end.map do |_name, handler|
       handler.send(:actions, object, options)
     end.inject(super) do |actions, subactions|
       actions.merge(subactions)

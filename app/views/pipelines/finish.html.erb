@@ -24,7 +24,7 @@
       </p>
       <p>
       <% @batch.workflow.tasks.each_with_index do |task, index| -%>
-        <%= link_to task.name, :controller => :workflows, :action => :stage, :id => index, :batch_id => @batch.id, :workflow_id => @batch.workflow.id %><br />
+        <%= link_to task.name, controller: :workflows, action: :stage, id: index, batch_id: @batch.id, workflow_id: @batch.workflow.id %><br />
       <% end -%>
       </p>
 
@@ -33,7 +33,7 @@
   <% if @pipeline.summary %>
     <div id="sample">
       <h4>Batch Summary</h4>
-      <%= render :partial => 'event_requests'%>
+      <%= render partial: 'event_requests'%>
     </div>
   <% end %>
 </div>

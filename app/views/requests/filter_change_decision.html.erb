@@ -11,7 +11,7 @@
 
 <% if @request.finished? %>
 <div id="study">
-  <%= form_for(:change_decision, :url => change_decision_request_path(@change_decision.request), :html => {:method => :put}) do |form| -%>
+  <%= form_for(:change_decision, url: change_decision_request_path(@change_decision.request), html: {method: :put}) do |form| -%>
   <%= error_messages_for :change_decision %>
     <ul class="options">
       <li class="options_group"><h2><%= label_tag(:request_state_name, 'Request State') %></h2>
@@ -30,7 +30,7 @@
           <li><%= label('change_decision_asset_qc_state','check_box', 'Update Asset QC State:') %>
                <%= form.check_box('asset_qc_state_check_box', { 'data-field' => 'change_decision_asset_qc_state'}, '1') %></li>
           <li><%= @request.try(:target_asset).try(:qc_state) %></li>
-          <li><%= label('change_decision','asset_qc_state', 'Asset QC State Available', :style => 'display:none;') %>
+          <li><%= label('change_decision','asset_qc_state', 'Asset QC State Available', style: 'display:none;') %>
                <%= form.select("asset_qc_state", ["","pending", "failed", "passed"] )   %></li>
         </ul>
       </li>
@@ -38,7 +38,7 @@
       <li class="options_group">
         <ul class="options">
           <li><%= label_tag("change_decision_comment", 'Reason for this action:') %><br/>
-              <%= form.text_area "comment", {:size => "50x5"} %></li>
+              <%= form.text_area "comment", {size: "50x5"} %></li>
           <li class="help">A description for changing Request State or Asset QC State or Billing is mandatory.</li>
           <li><%= submit_tag %> or <%= link_to "cancel", request_path(@request) %></li>
         </ul>

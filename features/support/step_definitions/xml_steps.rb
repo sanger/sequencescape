@@ -31,11 +31,11 @@ Then /^ignoring "([^\"]+)" the XML response should be:$/ do |key_regexp, seriali
   )
 end
 
-Then /^the XML response should be:/ do |serialized_xml|
+Then(/^the XML response should be:/) do |serialized_xml|
   assert_xml_strings_equal(serialized_xml, page.source)
 end
 
-Then /^the value of the "([^"]+)" attribute of the XML element "([^"]+)" should be "([^"]+)"/ do |attribute, xpath, value|
+Then(/^the value of the "([^"]+)" attribute of the XML element "([^"]+)" should be "([^"]+)"/) do |attribute, xpath, value|
   node = page.find(:xpath, xpath.downcase)
   assert node
   assert_equal value, node[attribute.downcase]
@@ -57,7 +57,7 @@ When /^I request XML for (.+)$/ do |page_name|
 end
 
 When /^I make a request for XML for a custom text identified by "([^"]*)"$/ do |identifier|
-  custom_text = CustomText.find_by_identifier(identifier) or raise StandardError, "Cannot find custom text #{identifier.inspect}"
+  custom_text = CustomText.find_by(identifier: identifier) or raise StandardError, "Cannot find custom text #{identifier.inspect}"
   page.driver.get("#{path_to('the custom texts admin page')}/#{custom_text.id}", nil, 'HTTP_ACCEPT' => 'application/xml')
 end
 
@@ -66,6 +66,6 @@ When /^I (POST|PUT) the following XML to "(\/[^\"]+)":$/ do |action, path, xml|
     action.downcase,
     path.to_s,
     xml,
-    { 'CONTENT_TYPE' => 'application/xml', 'HTTP_ACCEPT' => 'application/xml' }
+    'CONTENT_TYPE' => 'application/xml', 'HTTP_ACCEPT' => 'application/xml'
   )
 end

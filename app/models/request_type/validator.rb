@@ -44,7 +44,7 @@ class RequestType::Validator < ActiveRecord::Base
     attr_accessor :default
 
     def initialize(array, default)
-      raise StandardError, "Default is not in array" unless array.include?(default)
+      raise StandardError, 'Default is not in array' unless array.include?(default)
       @default = default
       @array = array
     end
@@ -67,9 +67,7 @@ class RequestType::Validator < ActiveRecord::Base
   validates :request_type, :request_option, :valid_options, presence: true
   serialize :valid_options
 
-  def include?(option)
-    valid_options.include?(option)
-  end
+  delegate :include?, to: :valid_options
 
   def options
     valid_options.to_a

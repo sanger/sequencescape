@@ -14,13 +14,13 @@ module SampleManifestExcel
 
     def add_file(file)
       @files << file.to_sym
-      self.class_eval { attr_accessor file.to_sym }
+      class_eval { attr_accessor file.to_sym }
     end
 
     def load!
       if folder.present?
         FILES.each do |file|
-          self.send("#{file}=", load_file(folder, file.to_s))
+          send("#{file}=", load_file(folder, file.to_s))
         end
         @loaded = true
       end
@@ -49,10 +49,10 @@ module SampleManifestExcel
     def ==(other)
       return false unless other.is_a?(self.class)
       folder == other.folder &&
-      conditional_formattings == other.conditional_formattings &&
-      manifest_types == other.manifest_types &&
-      ranges == other.ranges &&
-      columns == other.columns
+        conditional_formattings == other.conditional_formattings &&
+        manifest_types == other.manifest_types &&
+        ranges == other.ranges &&
+        columns == other.columns
     end
 
     class Columns
@@ -64,7 +64,7 @@ module SampleManifestExcel
         manifest_types.each do |key, manifest_type|
           extract = all.extract(manifest_type.columns).freeze
           instance_variable_set "@#{key}", extract
-          self.class_eval { attr_reader key }
+          class_eval { attr_reader key }
           self.manifest_types[key] = extract
         end
       end

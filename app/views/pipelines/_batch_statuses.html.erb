@@ -13,22 +13,22 @@
     </ul>
     <div id="" class="yui-content">
       <div id="0_definition" class="tab_content0 pending" style="">
-        <%= render :partial => "shared/batches", :locals => { :batches => @pending_batches, :in_progress => false, :showing_all => false, :batch_state => 'pending' } %>
+        <%= render partial: "shared/batches", locals: { batches: @pending_batches, in_progress: false, showing_all: false, batch_state: 'pending' } %>
       </div>
       <div id="1_definition" class="tab_content0 in_progress" style="display:none;">
-        <%= render :partial => "shared/batches", :locals => { :batches => @batches_in_progress, :in_progress => true, :showing_all => false, :batch_state => 'in progress' } %>
+        <%= render partial: "shared/batches", locals: { batches: @batches_in_progress, in_progress: true, showing_all: false, batch_state: 'in progress' } %>
       </div>
       <div id="2_definition" class="tab_content0 completed" style="display:none;">
-        <%= render :partial => "shared/batches", :locals => { :batches => @completed_batches, :in_progress => false, :showing_all => false, :batch_state => 'completed' } %>
+        <%= render partial: "shared/batches", locals: { batches: @completed_batches, in_progress: false, showing_all: false, batch_state: 'completed' } %>
       </div>
       <div id="3_definition" class="tab_content0 released" style="display:none;">
-        <%= render :partial => "shared/batches", :locals => { :batches => @released_batches, :in_progress => false, :showing_all => false, :batch_state => 'released' } %>
+        <%= render partial: "shared/batches", locals: { batches: @released_batches, in_progress: false, showing_all: false, batch_state: 'released' } %>
       </div>
       <div id="4_definition" class="tab_content0 failed" style="display:none;">
-        <%= render :partial => "shared/batches", :locals => { :batches => @failed_batches, :in_progress => false, :showing_all => false, :batch_state => 'failed' } %>
+        <%= render partial: "shared/batches", locals: { batches: @failed_batches, in_progress: false, showing_all: false, batch_state: 'failed' } %>
       </div>
       <div id="5_definition" class="tab_content0 last_5" style="display:none;">
-        <%= render :partial => "shared/batches", :locals => { :batches => @last5_batches, :in_progress => false, :showing_all => false, :batch_state => 'last 5' } %>
+        <%= render partial: "shared/batches", locals: { batches: @last5_batches, in_progress: false, showing_all: false, batch_state: 'last 5' } %>
       </div>
     </div>
   </div>

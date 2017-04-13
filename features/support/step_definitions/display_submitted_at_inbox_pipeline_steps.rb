@@ -5,7 +5,7 @@
 # Copyright (C) 2015 Genome Research Ltd.
 
 Given /^Pipeline "([^\"]*)" and a setup for submitted at$/ do |name|
-  pipeline = Pipeline.find_by_name(name) or raise StandardError, "Cannot find pipeline '#{name}'"
+  pipeline = Pipeline.find_by(name: name) or raise StandardError, "Cannot find pipeline '#{name}'"
   asset_type = pipeline_name_to_asset_type(name)
   request_type = pipeline.request_types.detect { |rt| !rt.deprecated }
   metadata = FactoryGirl.create :"request_metadata_for_#{request_type.key}"

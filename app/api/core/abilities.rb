@@ -141,7 +141,7 @@ module Core::Abilities
     recorder_helper(:tag_plates)
 
     def initialize(request)
-      @api_application = ApiApplication.find_by_key(request.authorisation_code)
+      @api_application = ApiApplication.find_by(key: request.authorisation_code)
       super
     end
 
@@ -183,7 +183,7 @@ module Core::Abilities
       if single_sign_on_cookie.blank? and cannot?(:authenticate, :nil)
         Core::Service::Authentication::UnauthenticatedError.no_cookie!
       elsif not single_sign_on_cookie.blank?
-        user = ::User.find_by_api_key(single_sign_on_cookie) or Core::Service::Authentication::UnauthenticatedError.unauthenticated!
+        user = ::User.find_by(api_key: single_sign_on_cookie) or Core::Service::Authentication::UnauthenticatedError.unauthenticated!
         @request.service.instance_variable_set(:@user, user)
       end
 

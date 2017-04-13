@@ -5,11 +5,11 @@
 # Copyright (C) 2016 Genome Research Ltd.
 class RemoveLibPcrrChildOfAlLibs < ActiveRecord::Migration
   def child_to_remove
-    Purpose.find_by_name('Lib PCRR').id
+    Purpose.find_by(name: 'Lib PCRR').id
   end
 
   def parent_to_detach
-    Purpose.find_by_name('AL Libs').id
+    Purpose.find_by(name: 'AL Libs').id
   end
 
   def up
@@ -26,7 +26,7 @@ class RemoveLibPcrrChildOfAlLibs < ActiveRecord::Migration
       PlatePurpose::Relationship.create!(
         parent_id: parent_to_detach,
         child_id: child_to_remove,
-        transfer_request_type: RequestType.find_by_key('Illumina_AL_Libs_Lib_PCRR')
+        transfer_request_type: RequestType.find_by(key: 'Illumina_AL_Libs_Lib_PCRR')
       )
     end
   end

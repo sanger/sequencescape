@@ -5,8 +5,8 @@
 # Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
 
 class PlateTemplatesController < ApplicationController
-# WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-# It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
+  # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
+  # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   before_action :slf_manager_login_required
 
@@ -31,14 +31,14 @@ class PlateTemplatesController < ApplicationController
 
   def create
     if params[:name].blank?
-      flash[:error] = "Please enter a name"
+      flash[:error] = 'Please enter a name'
       redirect_to new_plate_template_path
       return
     end
 
     pattern = PlateTemplate.new
     pattern.update_params!(name: params[:name], user_id: current_user.id, wells: params[:empty_well], control_well: params[:control_well], rows: params[:rows], cols: params[:cols])
-    flash[:notice] = "Template saved"
+    flash[:notice] = 'Template saved'
     redirect_to plate_templates_path
   end
 
@@ -51,7 +51,7 @@ class PlateTemplatesController < ApplicationController
   def update
     pattern = PlateTemplate.find(params[:id])
     pattern.update_params!(name: params[:name], user_id: current_user.id, control_well: params[:control_well], wells: params[:empty_well], rows: params[:rows], cols: params[:cols])
-    flash[:notice] = "Template updated"
+    flash[:notice] = 'Template updated'
     redirect_to plate_templates_path
   end
 

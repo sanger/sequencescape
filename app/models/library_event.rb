@@ -29,5 +29,5 @@ class LibraryEvent < BroadcastEvent
   # Not perfect, but our order type is almost always the same
   has_metadata(:order_type, :role)
 
-  has_metadata(:team) { |plate, e| plate.team }
+  has_metadata(:team) { |plate, _e| plate.team }
 end

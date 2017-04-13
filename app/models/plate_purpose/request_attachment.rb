@@ -24,7 +24,7 @@ module PlatePurpose::RequestAttachment
         # We may have multiple requests out of each well, however we're only concerned
         # about those associated with the active submission.
         upstream = source_well.requests.detect do |r|
-          r.is_a?(connected_class) && submission_ids.include?(r.submission_id)
+          r.is_a?(CustomerRequest) && submission_ids.include?(r.submission_id)
         end
 
         # We need to find the downstream requests BEFORE connecting the upstream
@@ -49,7 +49,6 @@ module PlatePurpose::RequestAttachment
     base.class_eval do
       class_attribute :connect_on
       class_attribute :connect_downstream
-      class_attribute :connected_class
     end
   end
 end
