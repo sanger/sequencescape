@@ -22,7 +22,7 @@ class Batch < ActiveRecord::Base
   has_many :target_assets, through: :requests
   has_many :source_assets, ->() { distinct }, through: :requests, source: :asset
   has_many :submissions, ->() { distinct }, through: :requests
-  has_many :orders, ->() { distinct }, through: :submissions
+  has_many :orders, ->() { distinct }, through: :requests
   has_many :studies, ->() { distinct }, through: :orders
   has_many :projects,  ->() { distinct }, through: :orders
   has_many :aliquots,  ->() { distinct }, through: :source_assets
