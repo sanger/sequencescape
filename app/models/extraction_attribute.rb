@@ -42,7 +42,7 @@ class ExtractionAttribute < ActiveRecord::Base
   end
 
   def update_performed
-    ActiveRecord::Base.transaction do |t|
+    ActiveRecord::Base.transaction do |_t|
       attributes_update_with_resources.each do |well_info|
         is_reracking?(well_info) ? rerack_well(well_info) : rack_well(well_info)
       end
@@ -70,7 +70,7 @@ class ExtractionAttribute < ActiveRecord::Base
     unless destination_well.samples.include?(samples)
       destination_well.aliquots << aliquots
       AssetLink.create_edge(sample_tube, destination_well)
-    end    
+    end
   end
 
   def rerack_well(well_data)
@@ -80,12 +80,10 @@ class ExtractionAttribute < ActiveRecord::Base
     actual_parent = target
     location = well_data['location']
     actual_well_in_same_position_at_rack = target.wells.located_at(location).first
-    actual_map = target.maps.select{|m| m.description == location}.first
+    actual_map = target.maps.select { |m| m.description == location }.first
     raise WellNotExists if actual_map.nil?
 
-    unless actual_well_in_same_position_at_rack.nil?
-      actual_well_in_same_position_at_rack.update_attributes(plate: nil)
-    end
+    actual_well_in_same_position_at_rack&.update_attributes(plate: nil)
     well.update_attributes(plate: actual_parent, map: actual_map)
   end
 

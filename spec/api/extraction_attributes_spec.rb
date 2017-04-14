@@ -2,10 +2,8 @@ require 'pry'
 require 'rails_helper'
 require 'support/barcode_helper'
 
-
 describe '/api/1/extraction_attributes' do
   context '#post' do
-    
     let(:user) { create :user }
     let(:authorised_app) { create :api_application }
     let(:target_plate) { create :plate_with_empty_wells }
@@ -31,7 +29,7 @@ describe '/api/1/extraction_attributes' do
       let(:sample_tube) { create :sample_tube }
       let(:sample_tube2) { create :sample_tube }
 
-      let(:payload) do 
+      let(:payload) do
         %{{
           "extraction_attribute":{
             "created_by": "#{user.name}",
@@ -52,7 +50,6 @@ describe '/api/1/extraction_attributes' do
         it 'does not rack a tube into a well if the tube does not exist' do
           sample_tube2.destroy
           authorized_api_request :post, subject, payload
-          #expect(status).to eq(response_code)
           expect(target_plate.wells.located_at('B1').first.samples.count).to_not eq(1)
         end
       end
@@ -70,9 +67,8 @@ describe '/api/1/extraction_attributes' do
           authorized_api_request :post, subject, payload
           expect(status).to eq(response_code)
           expect(target_plate.wells.located_at('A1').first.samples.count).to eq(2)
-          expect(target_plate.wells.located_at('A1').first.samples.include?(sample_tube.samples.first)).to eq(true)                  
+          expect(target_plate.wells.located_at('A1').first.samples.include?(sample_tube.samples.first)).to eq(true)
           authorized_api_request :post, subject, payload
-          #expect(status).to eq(response_code)
           expect(target_plate.wells.located_at('A1').first.samples.count).to eq(2)
           expect(target_plate.wells.located_at('A1').first.samples.include?(sample_tube.samples.first)).to eq(true)
         end
@@ -83,20 +79,20 @@ describe '/api/1/extraction_attributes' do
       let(:previous_plate) { create :plate_with_tagged_wells }
       let(:previous_plate2) { create :plate_with_tagged_wells }
       let(:target_plate) { create :plate_with_empty_wells }
-      let(:well1) { previous_plate.wells.first}
-      let(:well2) { previous_plate2.wells.first}
+      let(:well1) { previous_plate.wells.first }
+      let(:well2) { previous_plate2.wells.first }
       subject { "/api/1/#{target_plate.uuid}/extraction_attributes" }
-      let(:payload) do 
+      let(:payload) do
         %{{
           "extraction_attribute":{
             "created_by": "#{user.name}",
             "attributes_update": [
               {
-                "uuid": "#{well1.uuid}", 
+                "uuid": "#{well1.uuid}",
                 "location": "B1"
               },
               {
-                "uuid": "#{well2.uuid}", 
+                "uuid": "#{well2.uuid}",
                 "location": "A1"
               }
             ]
@@ -120,17 +116,17 @@ describe '/api/1/extraction_attributes' do
         let(:well2) { target_plate.wells[1] }
         let(:well3) { target_plate.wells[2] }
         subject { "/api/1/#{target_plate.uuid}/extraction_attributes" }
-        let(:payload) do 
+        let(:payload) do
           %{{
             "extraction_attribute":{
               "created_by": "#{user.name}",
               "attributes_update": [
                 {
-                  "uuid": "#{well1.uuid}", 
+                  "uuid": "#{well1.uuid}",
                   "location": "B1"
                 },
                 {
-                  "uuid": "#{well2.uuid}", 
+                  "uuid": "#{well2.uuid}",
                   "location": "C1"
                 }
               ]
@@ -155,7 +151,7 @@ describe '/api/1/extraction_attributes' do
         it 'extracts from the rack the well that is not in any parent rack anymore' do
           expect(status).to eq(response_code)
           expect(@well3.parent).to eq(nil)
-        end        
+        end
 
         it 'performs reracks of wells' do
           expect(status).to eq(response_code)
@@ -166,17 +162,17 @@ describe '/api/1/extraction_attributes' do
         context 'swapping of tubes' do
           let(:well1) { target_plate.wells.located_at('A1').first }
           let(:well2) { target_plate.wells.located_at('B1').first }
-          let(:payload) do 
+          let(:payload) do
             %{{
               "extraction_attribute":{
                 "created_by": "#{user.name}",
                 "attributes_update": [
                   {
-                    "uuid": "#{well1.uuid}", 
+                    "uuid": "#{well1.uuid}",
                     "location": "B1"
                   },
                   {
-                    "uuid": "#{well2.uuid}", 
+                    "uuid": "#{well2.uuid}",
                     "location": "A1"
                   }
                 ]
