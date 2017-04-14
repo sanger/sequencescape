@@ -20,6 +20,9 @@ class ExtractionAttribute < ActiveRecord::Base
   class WellNotExists < StandardError
   end
 
+  class WellAlreadyHasSample < StandardError
+  end
+
   def is_reracking?(well_info)
     well = well_info['resource']
     return false unless well
@@ -54,6 +57,23 @@ class ExtractionAttribute < ActiveRecord::Base
     target.wells.includes(:map, :sample).index_by(&:map_description)
   end
 
+  def disallow_wells_with_multiple_samples!(destination_well, samples)
+    if (destination_well.samples.count > 0) && (destination_well.samples != samples)
+      raise WellAlreadyHasSample
+    end
+  end
+
+  def validate_well_for_racking_samples!(destination_well, samples)
+    unless destination_well
+      # TO RESEARCH:
+      # If the well does not exist (because, for instance, it was reracked), we dont have
+      # a well to rack. We should create a new well. For the moment, we'll fail in this situation
+      raise WellNotExists
+    end
+    disallow_wells_with_multiple_samples!(destination_well, samples)
+    samples.all? { |sample| !destination_well.samples.include?(sample) }
+  end
+
   def rack_well(well_data)
     return unless well_data && well_data['sample_tube_uuid']
     unless well_data['sample_tube_resource']
@@ -64,10 +84,8 @@ class ExtractionAttribute < ActiveRecord::Base
     samples = sample_tube.samples
     location = well_data['location']
     destination_well = location_wells[location]
-    unless destination_well
-      raise WellNotExists
-    end
-    unless destination_well.samples.include?(samples)
+
+    if validate_well_for_racking_samples!(destination_well, samples)
       destination_well.aliquots << aliquots
       AssetLink.create_edge(sample_tube, destination_well)
     end
