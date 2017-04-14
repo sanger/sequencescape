@@ -1,6 +1,4 @@
-require 'pry'
 require 'rails_helper'
-require 'support/barcode_helper'
 
 describe '/api/1/extraction_attributes' do
   context '#post' do
