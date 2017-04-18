@@ -234,7 +234,7 @@ class Plate < Asset
   def study
     wells.first.try(:study)
   end
-  deprecate study: 'Caution plates may belong to multiple studies.'
+  deprecate study: 'Plates can belong to multiple studies, use #studies instead.'
 
   has_many :container_associations, foreign_key: :container_id, inverse_of: :plate
   has_many :wells, through: :container_associations, inverse_of: :plate do
@@ -248,9 +248,8 @@ class Plate < Asset
     def construct!
       Map.where_plate_size(proxy_association.owner.size).where_plate_shape(proxy_association.owner.asset_shape).in_row_major_order.map do |location|
         build(map: location)
-      end.tap do |wells|
+      end.tap do
         proxy_association.owner.save!
-        AssetLink::Job.create(proxy_association.owner, wells)
       end
     end
 
