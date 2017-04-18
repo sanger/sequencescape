@@ -234,7 +234,7 @@ class Plate < Asset
   def study
     wells.first.try(:study)
   end
-  deprecate study: 'Caution plates may belong to multiple studies.'
+  deprecate study: 'Plates can belong to multiple studies, use #studies instead.'
 
   has_many :container_associations, foreign_key: :container_id, inverse_of: :plate
   has_many :wells, through: :container_associations, inverse_of: :plate do
