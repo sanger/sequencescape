@@ -17,6 +17,7 @@ module IlluminaHtp::Requests
       super
       pool_information[:target_tube_purpose] = target_tube.purpose.uuid if target_tube
       pool_information[:request_type] = request_type.key
+      pool_information[:pcr_cycles] = request_metadata.pcr_cycles
     end
 
     delegate :role, to: :order

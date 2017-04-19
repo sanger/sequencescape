@@ -87,5 +87,20 @@ RSpec.describe IlluminaHtp::Requests::StdLibraryRequest, type: :model do
         expect(subject).not_to be_valid
       end
     end
+
+    let(:expected_pool_info) do
+      {
+        insert_size: { from: fragment_size_required_from, to: fragment_size_required_to },
+        library_type: { name: library_type },
+        request_type: subject.request_type.key,
+        pcr_cycles: pcr_cycles
+      }
+    end
+
+    it '#update_pool_information' do
+      hash = {}
+      subject.update_pool_information(hash)
+      expect(hash).to eq(expected_pool_info)
+    end
   end
 end
