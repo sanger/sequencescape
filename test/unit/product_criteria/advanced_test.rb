@@ -35,12 +35,12 @@ class ProductCriteriaAdvancedTest < ActiveSupport::TestCase
       should 'get the most recent target well from the supplied list' do
         assert_equal @criteria.most_recent_concentration_from_target_well_by_updating_date, @target_wells.last.get_concentration
         @criteria2 = ProductCriteria::Advanced.new(@params, @well, nil)
-        assert_equal nil, @criteria2.most_recent_concentration_from_target_well_by_updating_date
+        assert_nil @criteria2.most_recent_concentration_from_target_well_by_updating_date
       end
       should 'get the most recent concentration from normalization' do
         assert_equal @criteria.concentration_from_normalization, 30
         @criteria2 = ProductCriteria::Advanced.new(@params, @well, nil)
-        assert_equal nil, @criteria2.concentration_from_normalization
+        assert_nil @criteria2.concentration_from_normalization
       end
     end
 

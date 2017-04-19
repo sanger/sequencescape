@@ -333,7 +333,7 @@ class BatchTest < ActiveSupport::TestCase
         end
 
         should 'change @batch.production_state from 0 to 1' do
-          assert_equal nil, @bps_initial
+          assert_nil @bps_initial
           assert_equal 'fail', @batch.production_state
         end
       end

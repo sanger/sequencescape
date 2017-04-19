@@ -36,7 +36,7 @@ class BioanalysisCsvParserTest < ActiveSupport::TestCase
       end
 
       should 'not return a BioanalysisCsvParser' do
-        assert_equal nil, Parsers.parser_for(@filename, nil, @content)
+        assert_nil Parsers.parser_for(@filename, nil, @content)
       end
     end
 
@@ -47,7 +47,7 @@ class BioanalysisCsvParserTest < ActiveSupport::TestCase
       end
 
       should 'return a BioanalysisCsvParser' do
-        assert_equal nil, Parsers.parser_for(@filename, nil, @content)
+        assert_nil Parsers.parser_for(@filename, nil, @content)
       end
     end
   end
