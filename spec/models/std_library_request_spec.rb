@@ -38,30 +38,30 @@ RSpec.describe IlluminaHtp::Requests::StdLibraryRequest, type: :model do
 
     subject { (build :library_request, request_metadata_attributes: request_metadata_attributes) }
 
-    it "has a fragment_size_required_from" do
+    it 'has a fragment_size_required_from' do
       expect(subject.request_metadata.fragment_size_required_from).to eq(fragment_size_required_from)
     end
-    context "without fragment_size_required_from" do
+    context 'without fragment_size_required_from' do
       let(:fragment_size_required_from) { nil }
       it 'is invalid' do
         expect(subject).not_to be_valid
       end
     end
 
-    it "has a fragment_size_required_to" do
+    it 'has a fragment_size_required_to' do
       expect(subject.request_metadata.fragment_size_required_to).to eq(fragment_size_required_to)
     end
-    context "without fragment_size_required_to" do
+    context 'without fragment_size_required_to' do
       let(:fragment_size_required_to) { nil }
       it 'is invalid' do
         expect(subject).not_to be_valid
       end
     end
 
-    it "has a library_type" do
+    it 'has a library_type' do
       expect(subject.request_metadata.library_type).to eq(library_type)
     end
-    context "without library_type" do
+    context 'without library_type' do
       let(:library_type) { nil }
       it 'is invalid' do
         # I thought library type WAS required. Oddly it doesn't appear to be.
@@ -70,18 +70,18 @@ RSpec.describe IlluminaHtp::Requests::StdLibraryRequest, type: :model do
       end
     end
 
-    it "has pcr_cycles" do
+    it 'has pcr_cycles' do
       expect(subject.request_metadata.pcr_cycles).to eq(pcr_cycles)
     end
 
-    context "with a negative pcr_cycles" do
+    context 'with a negative pcr_cycles' do
       let(:pcr_cycles) { -2 }
       it 'is invalid' do
         expect(subject).not_to be_valid
       end
     end
 
-    context "with a non-number pcr_cycles" do
+    context 'with a non-number pcr_cycles' do
       let(:pcr_cycles) { 'two' }
       it 'is invalid' do
         expect(subject).not_to be_valid
