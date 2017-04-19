@@ -94,10 +94,7 @@ FactoryGirl.define do
     association(:asset, factory: :well)
     association(:request_type, factory: :library_request_type)
     request_purpose
-
-    after(:build) do |request, _evaluator|
-      request.request_metadata = build(:illumina_htp_requests_std_library_request_metadata, owner: request)
-    end
+    request_metadata_attributes { attributes_for :request_metadata_for_library_manufacture }
   end
 
   factory(:multiplex_request, class: Request::Multiplexing) do
@@ -105,8 +102,6 @@ FactoryGirl.define do
     association(:target_asset, factory: :multiplexed_library_tube)
     request_purpose
   end
-
-  factory :illumina_htp_requests_std_library_request_metadata, class: IlluminaHtp::Requests::StdLibraryRequest::Metadata, parent: :request_metadata_for_library_manufacture
 
   factory :cherrypick_request do
     association :asset, factory: :well

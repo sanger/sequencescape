@@ -8,6 +8,10 @@ module IlluminaHtp::Requests
   class StdLibraryRequest < Request::LibraryCreation
     fragment_size_details(:no_default, :no_default)
 
+    const_get(:Metadata).class_eval do
+      attribute(:pcr_cycles, integer: true, minimum: 0)
+    end
+
     # Ensure that the bait library information is also included in the pool information.
     def update_pool_information(pool_information)
       super

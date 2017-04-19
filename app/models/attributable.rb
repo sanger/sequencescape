@@ -235,12 +235,12 @@ module Attributable
       not required?
     end
 
-    def numeric?
-      @options.key?(:integer)
+    def integer?
+      @options.fetch(:integer, false)
     end
 
     def float?
-      @options.key?(:positive_float)
+      @options.fetch(:positive_float, false)
     end
 
     def boolean?
@@ -256,7 +256,7 @@ module Attributable
     end
 
     def minimum
-      @options[:minimum] || 0
+      @options.fetch(:minimum, 0)
     end
 
     def selection_values
@@ -281,7 +281,7 @@ module Attributable
         object.validates_presence_of(name) if required? && !boolean?
         object.with_options(allow_nil: optional?, allow_blank: allow_blank) do |required|
           required.validates_inclusion_of(name, in: [true, false]) if boolean?
-          required.validates_numericality_of(name, only_integer: true) if numeric?
+          required.validates_numericality_of(name, only_integer: true, greater_than: minimum) if integer?
           required.validates_numericality_of(name, greater_than: 0) if float?
           required.validates_inclusion_of(name, in: selection_values, allow_false: true) if fixed_selection?
           required.validates_format_of(name, with: valid_format) if valid_format?
@@ -332,7 +332,7 @@ module Attributable
     def kind
       return FieldInfo::SELECTION if selection?
       return FieldInfo::BOOLEAN if boolean?
-      return FieldInfo::NUMERIC if numeric? || float?
+      return FieldInfo::NUMERIC if integer? || float?
       FieldInfo::TEXT
     end
 
@@ -355,7 +355,7 @@ module Attributable
         required: required?
       }
       options.update(selection: selection_options(metadata)) if selection?
-      options.update(step: 1, min: minimum) if numeric?
+      options.update(step: 1, min: minimum) if integer?
       options.update(step: 0.1, min: 0) if float?
       FieldInfo.new(options)
     end
