@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170321151830) do
+ActiveRecord::Schema.define(version: 20170419095123) do
 
   create_table "aliquot_indices", force: :cascade do |t|
     t.integer  "aliquot_id",    limit: 4, null: false
@@ -704,12 +704,12 @@ ActiveRecord::Schema.define(version: 20170321151830) do
   add_index "maps", ["description"], name: "index_maps_on_description", using: :btree
 
   create_table "messenger_creators", force: :cascade do |t|
-    t.string   "template",   limit: 255, null: false
-    t.string   "root",       limit: 255, null: false
-    t.integer  "purpose_id", limit: 4,   null: false
+    t.string   "template",            limit: 255,                        null: false
+    t.string   "root",                limit: 255,                        null: false
+    t.integer  "purpose_id",          limit: 4,                          null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "target_finder_class", :default => "SelfFinder", :null => false
+    t.string   "target_finder_class", limit: 255, default: "SelfFinder", null: false
   end
 
   add_index "messenger_creators", ["purpose_id"], name: "fk_messenger_creators_to_plate_purposes", using: :btree
@@ -1178,6 +1178,7 @@ ActiveRecord::Schema.define(version: 20170321151830) do
     t.float    "gigabases_expected",              limit: 24
     t.integer  "target_purpose_id",               limit: 4
     t.boolean  "customer_accepts_responsibility"
+    t.integer  "pcr_cycles",                      limit: 4
   end
 
   add_index "request_metadata", ["request_id"], name: "index_request_metadata_on_request_id", using: :btree
