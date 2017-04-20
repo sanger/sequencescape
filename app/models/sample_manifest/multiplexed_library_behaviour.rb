@@ -141,6 +141,10 @@ module SampleManifest::MultiplexedLibraryBehaviour
         end
       end
     end
+
+    def assign_library?
+      true
+    end
   end
 
   RapidCore = Core
@@ -158,13 +162,4 @@ module SampleManifest::MultiplexedLibraryBehaviour
     end
   end
 
-  def sample_tube_sample_creation(samples_data, _study_id)
-    study.samples << samples_data.map do |barcode, sanger_sample_id, _prefix|
-      create_sample(sanger_sample_id).tap do |sample|
-        sample_tube = LibraryTube.find_by(barcode: barcode) or raise ActiveRecord::RecordNotFound, "Cannot find library tube with barcode #{barcode.inspect}"
-        sample_tube.aliquots.create!(sample: sample)
-      end
-    end
-  end
-  private :sample_tube_sample_creation
 end

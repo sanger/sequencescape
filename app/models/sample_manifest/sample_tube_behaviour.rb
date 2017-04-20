@@ -69,6 +69,10 @@ module SampleManifest::SampleTubeBehaviour
     def printables
       samples.map { |sample| sample.assets.first }
     end
+
+    def assign_library?
+      false
+    end
   end
 
   # There is no reason for this to need a rapid version as it should be reasonably
@@ -84,4 +88,5 @@ module SampleManifest::SampleTubeBehaviour
   def generate_1dtubes
     generate_tubes(Tube::Purpose.standard_sample_tube).each(&:register_stock!)
   end
+
 end
