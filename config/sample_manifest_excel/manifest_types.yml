@@ -286,7 +286,7 @@ tube_multiplexed_library:
     - :phenotype
 tube_library_with_tag_sequences:
   heading: "Library Tube with Tag Sequences"
-  asset_type: "1dtube"
+  asset_type: "library"
   columns:
     - :sanger_tube_id
     - :sanger_sample_id

@@ -2,28 +2,30 @@
 # GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
-# Copyright (C) 2011,2012,2013,2015 Genome Research Ltd.
+# Copyright (C) 2015 Genome Research Ltd.
 
-module SampleManifest::SampleTubeBehaviour
+
+# This module is very similar to SampleManifest::MultiplexedLibraryBehaviour
+# Differences are:
+#   (1)this module does not have methods needed for 'old' upload
+#   (2)this module does not creat multiplexed library tube and respective requests
+# Probably it should be cleaned at some point (20/04/2017)
+module SampleManifest::LibraryBehaviour
   module ClassMethods
-    def create_for_sample_tube!(attributes, *args, &block)
-      create!(attributes.merge(asset_type: '1dtube'), *args, &block).tap do |manifest|
+    def create_for_library!(attributes, *args, &block)
+      create!(attributes.merge(asset_type: 'library'), *args, &block).tap do |manifest|
         manifest.generate
       end
     end
   end
 
   class Core
-    include SampleManifest::CoreBehaviour::NoSpecializedValidation
-
     def initialize(manifest)
       @manifest = manifest
     end
 
-    delegate :generate_1dtubes, to: :@manifest
-    alias_method(:generate, :generate_1dtubes)
-
     delegate :samples, to: :@manifest
+    delegate :generate_library, to: :@manifest
 
     def io_samples
       samples.map do |sample|
@@ -31,9 +33,14 @@ module SampleManifest::SampleTubeBehaviour
           sample: sample,
           container: {
             barcode: sample.primary_receptacle.sanger_human_barcode
-          }
+          },
+          library_information: sample.primary_receptacle.library_information
         }
       end
+    end
+
+    def generate
+      generate_library
     end
 
     def updated_by!(user, samples)
@@ -60,23 +67,11 @@ module SampleManifest::SampleTubeBehaviour
       end
     end
 
-    def validate_sample_container(sample, row)
-      manifest_barcode, primary_barcode = row['SANGER TUBE ID'], sample.primary_receptacle.sanger_human_barcode
-      return if primary_barcode == manifest_barcode
-      yield("You cannot move samples between tubes or modify their barcodes: #{sample.sanger_sample_id} should be in '#{primary_barcode}' but the manifest is trying to put it in '#{manifest_barcode}'")
-    end
-
-    def printables
-      samples.map { |sample| sample.assets.first }
-    end
-
     def assign_library?
-      false
+      true
     end
   end
 
-  # There is no reason for this to need a rapid version as it should be reasonably
-  # efficient in the first place.
   RapidCore = Core
 
   def self.included(base)
@@ -85,8 +80,8 @@ module SampleManifest::SampleTubeBehaviour
     end
   end
 
-  def generate_1dtubes
-    generate_tubes(Tube::Purpose.standard_sample_tube).each(&:register_stock!)
+  def generate_library
+    tubes = generate_tubes(Tube::Purpose.standard_library_tube)
   end
 
 end

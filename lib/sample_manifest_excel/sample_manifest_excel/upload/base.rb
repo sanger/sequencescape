@@ -62,6 +62,8 @@ module SampleManifestExcel
           case sample_manifest.asset_type
           when '1dtube'
             Processor::OneDTube.new(self)
+          when 'library'
+            Processor::LibraryTube.new(self)
           when 'multiplexed_library'
             Processor::MultiplexedLibraryTube.new(self)
           end
