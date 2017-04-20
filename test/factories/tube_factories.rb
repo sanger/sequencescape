@@ -118,8 +118,4 @@ FactoryGirl.define do
     purpose  { Tube::Purpose.stock_library_tube }
   end
 
-  factory :stock_sample_tube do
-    name     { |_a| generate :asset_name }
-    purpose  { Tube::Purpose.stock_sample_tube }
-  end
 end

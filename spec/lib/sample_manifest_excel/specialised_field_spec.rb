@@ -114,6 +114,13 @@ RSpec.describe SampleManifestExcel::SpecialisedField, type: :model, sample_manif
         expect(aliquot.tag).to eq(tag)
       end
 
+      it 'if oligo is not present aliquot tag should be -1' do
+        tag_oligo = SampleManifestExcel::SpecialisedField::TagOligo.new(value: nil, sample: sample)
+        tag_oligo.update(aliquot: aliquot, tag_group: tag_group)
+        aliquot.save
+        expect(aliquot.tag_id).to eq -1
+      end
+
       it 'will find the tag if it already exists' do
         tag = tag_group.tags.create(oligo: oligo, map_id: 10)
         tag_oligo.update(aliquot: aliquot, tag_group: tag_group)
