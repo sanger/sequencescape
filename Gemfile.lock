@@ -27,17 +27,10 @@ GIT
 
 GIT
   remote: git://github.com/sanger/sanger_barcode_format.git
-<<<<<<< HEAD
-  revision: ebe7a89697ffe97f69a84a31a6451300caf83a16
-  branch: development
-  specs:
-    sanger_barcode_format (0.0.1)
-=======
   revision: f409a218a74a1d1571383ceaf693fe296eb6beb7
   branch: development
   specs:
     sanger_barcode_format (0.0.2)
->>>>>>> 6b4984bed2ffcdb790df8322f6888f8999f18027
 
 GEM
   remote: https://rubygems.org/

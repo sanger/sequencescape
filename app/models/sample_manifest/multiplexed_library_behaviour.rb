@@ -161,5 +161,4 @@ module SampleManifest::MultiplexedLibraryBehaviour
       RequestFactory.create_external_multiplexed_library_creation_requests(tubes, mx_tube, study)
     end
   end
-
 end

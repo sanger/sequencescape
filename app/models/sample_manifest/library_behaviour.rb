@@ -4,7 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2015 Genome Research Ltd.
 
-
 # This module is very similar to SampleManifest::MultiplexedLibraryBehaviour
 # Differences are:
 #   (1)this module does not have methods needed for 'old' upload
@@ -83,5 +82,4 @@ module SampleManifest::LibraryBehaviour
   def generate_library
     tubes = generate_tubes(Tube::Purpose.standard_library_tube)
   end
-
 end
