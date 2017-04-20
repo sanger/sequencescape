@@ -9,6 +9,8 @@ class SampleTube < Tube
   include ModelExtensions::SampleTube
   include StandardNamedScopes
 
+  self.stock_message_template = 'TubeStockResourceIO'
+
   after_create do |record|
     record.barcode = AssetBarcode.new_barcode           if record.barcode.blank?
     record.name    = record.primary_aliquot.sample.name if record.name.blank? and not record.primary_aliquot.try(:sample).nil?

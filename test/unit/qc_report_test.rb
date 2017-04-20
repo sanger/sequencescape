@@ -51,7 +51,7 @@ class QcReportTest < ActiveSupport::TestCase
       should 'record the result of each qc' do
         @qc_report.qc_metrics.each do |metric|
           assert_equal 'passed', metric.qc_decision
-          assert_equal nil, metric.proceed
+          assert_nil metric.proceed
           assert_equal({
             total_micrograms: 100,
             comment: '',

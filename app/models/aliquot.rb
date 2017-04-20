@@ -28,7 +28,7 @@ class Aliquot < ActiveRecord::Base
 
   has_one :aliquot_index, dependent: :destroy
 
-  scope :include_summary, -> { includes([:sample, :tag, :tag2]) }
+  scope :include_summary, -> { includes([:sample, { tag: :tag_group }, { tag2: :tag_group }]) }
   scope :in_tag_order, -> {
     joins(
       'LEFT OUTER JOIN tags AS tag1s ON tag1s.id = aliquots.tag_id,

@@ -50,6 +50,8 @@
 
 <% add :menu, "Qc Reports" => study_reports_study_path(@study) -%>
 
+<% add :menu, "Accession all Samples" => accession_all_samples_study_path(@study) -%>
+
 <% add :legend_option, "#{image_tag('hourglass.png')} Pending" => "" -%>
 <% add :legend_option, "#{image_tag('cog.png')} Started" => "" -%>
 <% add :legend_option, "#{image_tag('accept.png')} Passed" => "" -%>

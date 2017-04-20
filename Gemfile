@@ -15,10 +15,10 @@ group :default do
   # Legacy support for parsing XML into params
   gem 'actionpack-xml_parser'
 
-  gem 'activerecord-jdbc-adapter', :platforms => :jruby
+  gem 'activerecord-jdbc-adapter', platforms: :jruby
   gem 'activeresource', require: 'active_resource'
-  gem 'jdbc-mysql', :platforms => :jruby
-  gem 'mysql2', :platforms => :mri
+  gem 'jdbc-mysql', platforms: :jruby
+  gem 'mysql2', platforms: :mri
   gem 'spreadsheet'
   gem 'will_paginate'
   # Will paginate clashes awkwardly with bootstrap
@@ -87,6 +87,7 @@ group :default do
   gem 'roo'
 
   # Used in XML generation.
+
   gem 'builder'
 
   gem 'sanger_barcode_format', github: 'sanger/sanger_barcode_format', branch: 'development'

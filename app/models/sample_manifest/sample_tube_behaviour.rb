@@ -82,6 +82,6 @@ module SampleManifest::SampleTubeBehaviour
   end
 
   def generate_1dtubes
-    generate_tubes(Tube::Purpose.standard_sample_tube)
+    generate_tubes(Tube::Purpose.standard_sample_tube).each(&:register_stock!)
   end
 end

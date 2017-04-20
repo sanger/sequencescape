@@ -58,9 +58,7 @@ class AssetsController < ApplicationController
   end
 
   def edit
-    @valid_purposes_options = @asset.compatible_purposes.map do |purpose|
-      [purpose.name, purpose.id]
-    end
+    @valid_purposes_options = @asset.compatible_purposes.pluck(:name, :id)
   end
 
   def find_parents(text)

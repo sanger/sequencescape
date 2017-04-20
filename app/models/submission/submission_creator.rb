@@ -209,7 +209,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
       plate_barcode, well_locations = plate_wells.split(':')
       begin
         plate = Plate.find_from_machine_barcode(Barcode.human_to_machine_barcode(plate_barcode))
-      rescue Barcode::InvalidBarcode => exception
+      rescue SBCF::BarcodeError => exception
         raise InvalidInputException, "Invalid Barcode #{plate_barcode}: #{exception}"
       end
       raise InvalidInputException, "No plate found for barcode #{plate_barcode}." if plate.nil?

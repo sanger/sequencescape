@@ -18,6 +18,7 @@ class SampleRegistrarTest < ActiveSupport::TestCase
         @initial_src =  SampleRegistrar.count
         @sample_count = Sample.count
         @sampletube_count = SampleTube.count
+        @messenger_count = Messenger.count
         SampleRegistrar.create!(
           asset_group_helper: SampleRegistrar::AssetGroupHelper.new,
           study: @study,
@@ -34,6 +35,12 @@ class SampleRegistrarTest < ActiveSupport::TestCase
       should 'change SampleTube.count by 1' do
         assert_equal 1,  SampleTube.count       - @sampletube_count, 'Expected SampleTube.count to change by 1'
       end
+
+      should 'register newly created sample tube' do
+        assert_equal 1, Messenger.count - @messenger_count
+        assert_equal SampleTube.last, Messenger.last.target
+      end
+
       should 'not change AssetGroup.count' do
         assert_equal @initial_agc,  AssetGroup.count
       end

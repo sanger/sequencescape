@@ -31,6 +31,7 @@ class Batch < ActiveRecord::Base
   def study
     studies.first
   end
+  deprecate study: 'Batches can belong to multiple studies'
 
   include Api::BatchIO::Extensions
   include Api::Messages::FlowcellIO::Extensions
@@ -302,13 +303,22 @@ class Batch < ActiveRecord::Base
     requests.map(&:asset).map(&:labware).uniq
   end
 
+  #
+  # Verifies that provided barcodes are in the correct locations according to the
+  # request organization within the batch.
+  # Either returns true, and logs the event or returns false.
+  #
+  # @param [Array<Integer>] barcodes An array of 1-7 digit long barcodes
+  # @param [User] user The user validating the barcode layout
+  #
+  # @return [Bool] true if the layout is correct, false otherwise
+  #
   def verify_tube_layout(barcodes, user = nil)
     requests.each do |request|
-      barcode = barcodes[(request.position).to_s]
-      unless barcode.blank? || barcode == '0'
-        unless barcode.to_i == request.asset.barcode.to_i
-          errors.add(:base, "The tube at position #{request.position} is incorrect.")
-        end
+      barcode = barcodes[request.position - 1]
+      unless barcode == request.asset.barcode.to_i
+        expected_barcode = request.asset.sanger_human_barcode
+        errors.add(:base, "The tube at position #{request.position} is incorrect: expected #{expected_barcode}.")
       end
     end
     if errors.empty?

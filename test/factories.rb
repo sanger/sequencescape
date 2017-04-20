@@ -461,12 +461,8 @@ FactoryGirl.define do
     request_purpose
   end
 
-  # A Multiplexed library tube comes from several library tubes, which are themselves created through a
-  # number of multiplexed library creation requests.  But the binding to these tubes comes from the parent-child
-  # relationships.
-
   factory(:empty_lane, class: Lane) do
-    name                { |_l| generate :asset_name }
+    name                { generate :asset_name }
     external_release    nil
   end
 
