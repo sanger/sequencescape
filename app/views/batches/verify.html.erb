@@ -9,7 +9,7 @@
 <% add :menu, "Back to batch" => batch_path(@batch) %>
 <% add :back_menu, "Back to pipeline" => pipeline_path(@batch.pipeline) %>
 
-<h1>BATCH <%= @batch.id %></h1>
+<%= page_title 'Verify Tube Layout', "Batch #{@batch.id}" %>
 <div class="info">
   Please scan the barcodes from the sample tubes into the table below.
 </div>
@@ -19,14 +19,14 @@
 <table width="100%" cellspacing="0" cellpadding="0">
   <tr>
     <% @count.times do |i| %>
-      <% if ! (i == 3 && @pipeline.has_controls?) %>
+      <% unless (i == 3 && @pipeline.has_controls?) %>
         <td width="12.5%">Position <%= i + 1 %></td>
       <% end %>
     <% end %>
   </tr>
   <tr>
     <% @count.times do |i| %>
-      <% if ! (i == 3 && @pipeline.has_controls?) %>
+      <% unless (i == 3 && @pipeline.has_controls?) %>
         <td><%= text_field_tag "barcode_#{i}", "",  { size: 13 } %></td>
       <% end %>
     <% end %>
