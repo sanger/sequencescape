@@ -891,7 +891,6 @@ ActiveRecord::Schema.define(version: 20170321151830) do
     t.string   "default_state",           limit: 255, default: "pending"
     t.integer  "barcode_printer_type_id", limit: 4,   default: 2
     t.boolean  "cherrypickable_target",               default: true,            null: false
-    t.boolean  "cherrypickable_source",               default: false,           null: false
     t.string   "cherrypick_direction",    limit: 255, default: "column",        null: false
     t.integer  "default_location_id",     limit: 4
     t.string   "cherrypick_filters",      limit: 255
@@ -1893,8 +1892,8 @@ ActiveRecord::Schema.define(version: 20170321151830) do
   create_table "work_completions", force: :cascade do |t|
     t.integer  "user_id",    limit: 4, null: false
     t.integer  "target_id",  limit: 4, null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
   end
 
   add_index "work_completions", ["target_id"], name: "fk_rails_f8fb9e95de", using: :btree

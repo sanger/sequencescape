@@ -1,12 +1,12 @@
 module SampleManifestExcel
   module Worksheet
     class Base
-      include HashAttributes
+      include ActiveModel::Model
 
-      set_attributes :workbook, :axlsx_worksheet, :columns, :ranges, :sample_manifest, :name, :password, :type
+      attr_accessor :workbook, :axlsx_worksheet, :columns, :name, :ranges, :password
 
       def initialize(attributes = {})
-        create_attributes(attributes)
+        super
         create_worksheet
         protect if password.present?
       end
@@ -18,7 +18,6 @@ module SampleManifestExcel
       end
 
       # Adds n empty rows
-
       def add_rows(n)
         n.times { |_i| add_row }
       end

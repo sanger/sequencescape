@@ -47,6 +47,7 @@ namespace :test do
           :library_submission,
           :user_query,
           :tag2_lot
+          # :tag_group_for_layout
         ]
         ignored = 0
         factories_to_lint = if ENV.fetch('LINT_ALL', false)

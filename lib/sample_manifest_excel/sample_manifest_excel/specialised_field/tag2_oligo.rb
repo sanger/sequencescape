@@ -1,0 +1,10 @@
+module SampleManifestExcel
+  module SpecialisedField
+    class Tag2Oligo
+      include Base
+      include Tags::AliquotUpdater
+
+      set_tag_name :tag2
+    end
+  end
+end

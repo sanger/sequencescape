@@ -20,6 +20,7 @@ capybara*.html
 .Rakelist
 database_suffix
 tags
+!lib/sample_manifest_excel/sample_manifest_excel/tags/
 *.sublime-workspace
 lib/sample_manifest_excel/doc/
 coverage

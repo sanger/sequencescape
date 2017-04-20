@@ -33,7 +33,7 @@ feature 'stamping of stock', js: true do
     select((barcode_printer.name).to_s, from: 'barcode_printer_list')
     expect(RestClient).to receive(:get).and_raise(Errno::ECONNREFUSED)
     click_button 'Print label'
-    expect(page).to have_content('Pmb PrintMyBarcode service is down')
+    expect(page).to have_content('Printmybarcode service is down')
 
     visit history_asset_path(plate)
     expect(page).to have_content('Activity Logging')
