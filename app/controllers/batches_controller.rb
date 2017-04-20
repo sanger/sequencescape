@@ -401,18 +401,15 @@ class BatchesController < ApplicationController
   def verify
     @requests = @batch.ordered_requests
     @pipeline = @batch.pipeline
-    @count = 8
+    @count = @requests.length
   end
 
   def verify_tube_layout
-    tube_barcodes = {}
-    unless params.empty?
-      8.times do |i|
-        if params["barcode_#{i}"]
-          tube_barcodes[(i + 1).to_s] = Barcode.split_barcode((params["barcode_#{i}"]).to_s)[1]
-        end
-      end
+    tube_barcodes = Array.new(@batch.requests.count) do |i|
+      scanned_barcode = params["barcode_#{i}"]
+      SBCF::SangerBarcode.from_machine(scanned_barcode).number
     end
+
     results = @batch.verify_tube_layout(tube_barcodes, current_user)
 
     if results
