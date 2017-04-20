@@ -15,10 +15,10 @@ module SampleManifestExcel
       def update(attributes = {})
         if valid?
           tag = if value.present?
-            attributes[:tag_group].tags.find_or_create_by(oligo: value) do |t|
-              t.map_id = attributes[:tag_group].tags.count + 1
-            end
-          end
+                  attributes[:tag_group].tags.find_or_create_by(oligo: value) do |t|
+                    t.map_id = attributes[:tag_group].tags.count + 1
+                  end
+                end
           attributes[:aliquot].send("#{tag_name}=", tag)
         end
       end

@@ -117,5 +117,4 @@ FactoryGirl.define do
     name     { |_a| generate :asset_name }
     purpose  { Tube::Purpose.stock_library_tube }
   end
-
 end
