@@ -4,6 +4,11 @@
 # authorship of this file.
 # Copyright (C) 2015 Genome Research Ltd.
 
+# This module is very similar to SampleManifest::MultiplexedLibraryBehaviour
+# Differences are:
+#   (1)this module does not have methods needed for 'old' upload
+#   (2)this module does not creat multiplexed library tube and respective requests
+# Probably it should be cleaned at some point (20/04/2017)
 module SampleManifest::LibraryBehaviour
   module ClassMethods
     def create_for_library!(attributes, *args, &block)
@@ -60,6 +65,10 @@ module SampleManifest::LibraryBehaviour
         end
       end
     end
+
+    def assign_library?
+      true
+    end
   end
 
   RapidCore = Core
@@ -73,14 +82,4 @@ module SampleManifest::LibraryBehaviour
   def generate_library
     tubes = generate_tubes(Tube::Purpose.standard_library_tube)
   end
-
-  def sample_tube_sample_creation(samples_data, _study_id)
-    study.samples << samples_data.map do |barcode, sanger_sample_id, _prefix|
-      create_sample(sanger_sample_id).tap do |sample|
-        sample_tube = LibraryTube.find_by(barcode: barcode) or raise ActiveRecord::RecordNotFound, "Cannot find library tube with barcode #{barcode.inspect}"
-        sample_tube.aliquots.create!(sample: sample)
-      end
-    end
-  end
-  private :sample_tube_sample_creation
 end

@@ -333,7 +333,7 @@ class BatchTest < ActiveSupport::TestCase
         end
 
         should 'change @batch.production_state from 0 to 1' do
-          assert_equal nil, @bps_initial
+          assert_nil @bps_initial
           assert_equal 'fail', @batch.production_state
         end
       end
@@ -413,14 +413,14 @@ class BatchTest < ActiveSupport::TestCase
 
       should 'return true if the tubes are scanned in in the correct order' do
         number_of_batch_events = @batch.lab_events.size
-        assert @batch.verify_tube_layout('1' => '654321', '2' => '123456')
+        assert @batch.verify_tube_layout([654321, 123456])
         assert_equal number_of_batch_events + 1, @batch.lab_events.size
       end
 
       should 'return false and add errors to the batch if the tubes are not in the correct order' do
         number_of_batch_events = @batch.lab_events.size
-        assert !@batch.verify_tube_layout('1' => '123456', '2' => '654321')
-        assert !@batch.errors.empty?
+        refute @batch.verify_tube_layout([123456, 654321])
+        refute @batch.errors.empty?
         assert_equal number_of_batch_events, @batch.lab_events.size
       end
 

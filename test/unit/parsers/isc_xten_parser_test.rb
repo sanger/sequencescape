@@ -36,7 +36,7 @@ class IscXtenParserTest < ActiveSupport::TestCase
       end
 
       should 'not return a Parsers::IscXtenParser' do
-        assert_equal nil, Parsers.parser_for(@filename, nil, @content)
+        assert_nil Parsers.parser_for(@filename, nil, @content)
       end
     end
 
@@ -47,7 +47,7 @@ class IscXtenParserTest < ActiveSupport::TestCase
       end
 
       should 'not return a Parsers::IscXtenParser' do
-        assert_equal nil, Parsers.parser_for(@filename, nil, @content)
+        assert_nil Parsers.parser_for(@filename, nil, @content)
       end
     end
   end

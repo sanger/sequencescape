@@ -133,7 +133,7 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
           @workflows_controller.batch = @batch
         end
         should 'set target assets appropriately' do
-          assert_equal nil, @workflows_controller.flash[:error]
+          assert_nil @workflows_controller.flash[:error]
           assert @task.do_task(@workflows_controller, params), 'Task returned false'
           @requests.each_with_index do |r, _i|
             assert_equal request_location_hash[r.id.to_s], r.target_asset.map_description
@@ -165,7 +165,7 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
           @workflows_controller.batch = @batch
         end
         should 'set target assets appropriately' do
-          assert_equal nil, @workflows_controller.flash[:error]
+          assert_nil @workflows_controller.flash[:error]
           assert @task.do_task(@workflows_controller, params), 'Task returned false'
           @requests.each_with_index do |r, _i|
             assert_equal request_location_hash[r.id.to_s], r.target_asset.map_description

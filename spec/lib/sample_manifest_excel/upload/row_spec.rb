@@ -68,7 +68,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
     row.update_specialised_fields(tag_group)
     aliquot = row.aliquot
     expect(aliquot.tag.oligo).to eq('AA')
-    expect(aliquot.tag2.oligo).to_not be_present
+    expect(aliquot.tag2).to be nil
     expect(aliquot.insert_size_from).to eq(200)
     expect(aliquot.insert_size_to).to eq(1500)
   end
