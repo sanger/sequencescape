@@ -27,7 +27,7 @@ namespace :limber do
   desc 'Create the limber request types'
   task create_request_types: [:environment, :create_plates] do
     ActiveRecord::Base.transaction do
-      ['PWGS', 'MWGS', 'MalWGS'].each do |prefix|
+      ['WGS'].each do |prefix|
         Limber::Helper::RequestTypeConstructor.new(prefix).build!
       end
 
@@ -53,7 +53,7 @@ namespace :limber do
   desc 'Create the limber submission templates'
   task create_submission_templates: [:environment, :create_request_types] do
     ActiveRecord::Base.transaction do
-      ['PWGS', 'MWGS', 'MalWGS'].each do |prefix|
+      ['WGS'].each do |prefix|
         catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: prefix)
         Limber::Helper::TemplateConstructor.new(
           name: prefix,
