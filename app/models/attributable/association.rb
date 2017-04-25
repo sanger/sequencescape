@@ -1,5 +1,5 @@
 module Attributable
-    class Association
+  class Association
     module Target
       def self.extended(base)
         base.class_eval do

@@ -9,7 +9,7 @@ module IlluminaHtp::Requests
     fragment_size_details(:no_default, :no_default)
 
     const_get(:Metadata).class_eval do
-      attribute(:pcr_cycles, integer: true, minimum: 0)
+      attribute(:pcr_cycles, integer: true, minimum: 0, validator: true)
     end
 
     # Ensure that the bait library information is also included in the pool information.

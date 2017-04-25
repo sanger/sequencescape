@@ -1,10 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe IlluminaHtp::Requests::StdLibraryRequest, type: :model do
-  subject { create :library_request, target_asset: tagged_well, state: state }
   let(:tagged_well) { create :tagged_well }
 
   context '#pass' do
+    subject { create :library_request, target_asset: tagged_well, state: state }
+
     let(:state) { 'started' }
 
     before(:each) do
@@ -36,7 +37,8 @@ RSpec.describe IlluminaHtp::Requests::StdLibraryRequest, type: :model do
       }
     end
 
-    subject { (build :library_request, request_metadata_attributes: request_metadata_attributes) }
+    subject { build :library_request, request_metadata_attributes: request_metadata_attributes, request_type: request_type }
+    let(:request_type) { create :library_creation_request_type }
 
     it 'has a fragment_size_required_from' do
       expect(subject.request_metadata.fragment_size_required_from).to eq(fragment_size_required_from)
@@ -61,14 +63,6 @@ RSpec.describe IlluminaHtp::Requests::StdLibraryRequest, type: :model do
     it 'has a library_type' do
       expect(subject.request_metadata.library_type).to eq(library_type)
     end
-    context 'without library_type' do
-      let(:library_type) { nil }
-      it 'is invalid' do
-        # I thought library type WAS required. Oddly it doesn't appear to be.
-        pending 'investigation into why this is failing'
-        expect(subject).not_to be_valid
-      end
-    end
 
     it 'has pcr_cycles' do
       expect(subject.request_metadata.pcr_cycles).to eq(pcr_cycles)
@@ -85,6 +79,50 @@ RSpec.describe IlluminaHtp::Requests::StdLibraryRequest, type: :model do
       let(:pcr_cycles) { 'two' }
       it 'is invalid' do
         expect(subject).not_to be_valid
+      end
+    end
+
+    context 'with a configured pcr_cycle range of 0 only' do
+      before(:each) do
+        request_type.request_type_validators << create(:pcr_cycles_validator)
+      end
+
+      context 'with a valid cycle' do
+        let(:pcr_cycles) { 0 }
+        it('is valid') { expect(subject).to be_valid }
+      end
+
+      context 'with an invalid cycle' do
+        let(:pcr_cycles) { 4 }
+        it('is invalid') { expect(subject).not_to be_valid }
+      end
+
+      context 'with an nil cycle' do
+        let(:pcr_cycles) { nil }
+        it('is valid') { expect(subject).to be_valid }
+        # Defaults are set on a before validate call.
+        it('sets defaults') { subject.valid?; expect(subject.request_metadata.pcr_cycles).to eq(0) }
+      end
+    end
+
+    context 'with a configured pcr_cycle range' do
+      before(:each) do
+        request_type.request_type_validators << create(:pcr_cycles_validator, valid_options: (1..25))
+      end
+
+      context 'with a valid cycle' do
+        let(:pcr_cycles) { 5 }
+        it('is valid') { expect(subject).to be_valid }
+      end
+
+      context 'with an invalid cycle' do
+        let(:pcr_cycles) { 90 }
+        it('is invalid') { expect(subject).not_to be_valid }
+      end
+
+      context 'with an nil cycle' do
+        let(:pcr_cycles) { nil }
+        it('is invalid') { expect(subject).not_to be_valid }
       end
     end
 

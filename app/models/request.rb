@@ -42,7 +42,7 @@ class Request < ActiveRecord::Base
   }
 
   def validator_for(request_option)
-    request_type.request_type_validators.find_by(request_option: request_option.to_s) || raise("#{request_type.name} has no #{request_option} validator!")
+    request_type.request_type_validators.find_by(request_option: request_option.to_s) || RequestType::Validator::NullValidator.new
   end
 
   scope :customer_requests, ->() { where(sti_type: [CustomerRequest, *CustomerRequest.descendants].map(&:name)) }

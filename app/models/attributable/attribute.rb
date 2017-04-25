@@ -1,5 +1,5 @@
 module Attributable
-    class Attribute
+  class Attribute
     attr_reader :name
     attr_reader :default
 
@@ -73,17 +73,16 @@ module Attributable
       conditions = @options.slice(:if)
       save_blank_value = @options.delete(:save_blank)
       allow_blank = save_blank_value
-
       model.with_options(conditions) do |object|
         # false.blank? == true, so we exclude booleans here, they handle themselves further down.
         object.validates_presence_of(name) if required? && !boolean?
         object.with_options(allow_nil: optional?, allow_blank: allow_blank) do |required|
           required.validates_inclusion_of(name, in: [true, false]) if boolean?
-          required.validates_numericality_of(name, only_integer: true, greater_than: minimum) if integer?
-          required.validates_numericality_of(name, greater_than: 0) if float?
+          required.validates name, numericality: { only_integer: integer?, greater_than_or_equal_to: minimum } if integer? || float?
           required.validates_inclusion_of(name, in: selection_values, allow_false: true) if fixed_selection?
           required.validates_format_of(name, with: valid_format) if valid_format?
-          required.validates name, custom: true if validator?
+          # Custom validators should handle nil explicitly.
+          required.validates name, custom: true, allow_nil: false if validator?
         end
       end
 

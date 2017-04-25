@@ -16,6 +16,11 @@
 #
 # Attribute information can be retrieved from the class through 'attributes', and each one of the attributes
 # you define can be converted to a FieldInfo instance using 'to_field_info'.
+
+require_dependency 'attributable/custom_validator'
+require_dependency 'attributable/attribute'
+require_dependency 'attributable/association'
+
 module Attributable
   def self.included(base)
     base.extend(ClassMethods)
