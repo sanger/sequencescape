@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170321151830) do
+ActiveRecord::Schema.define(version: 20170426131240) do
 
   create_table "aliquot_indices", force: :cascade do |t|
     t.integer  "aliquot_id",    limit: 4, null: false
@@ -25,11 +25,11 @@ ActiveRecord::Schema.define(version: 20170321151830) do
   add_index "aliquot_indices", ["lane_id", "aliquot_index"], name: "index_aliquot_indices_on_lane_id_and_aliquot_index", unique: true, using: :btree
 
   create_table "aliquots", force: :cascade do |t|
-    t.integer  "receptacle_id",    limit: 4,                null: false
+    t.integer  "receptacle_id",    limit: 4,                   null: false
     t.integer  "study_id",         limit: 4
     t.integer  "project_id",       limit: 4
     t.integer  "library_id",       limit: 4
-    t.integer  "sample_id",        limit: 4,                null: false
+    t.integer  "sample_id",        limit: 4,                   null: false
     t.integer  "tag_id",           limit: 4
     t.string   "library_type",     limit: 255
     t.integer  "insert_size_from", limit: 4
@@ -38,6 +38,7 @@ ActiveRecord::Schema.define(version: 20170321151830) do
     t.datetime "updated_at"
     t.integer  "bait_library_id",  limit: 4
     t.integer  "tag2_id",          limit: 4,   default: -1
+    t.boolean  "suboptimal",                   default: false, null: false
   end
 
   add_index "aliquots", ["library_id"], name: "index_aliquots_on_library_id", using: :btree
@@ -704,12 +705,12 @@ ActiveRecord::Schema.define(version: 20170321151830) do
   add_index "maps", ["description"], name: "index_maps_on_description", using: :btree
 
   create_table "messenger_creators", force: :cascade do |t|
-    t.string   "template",   limit: 255, null: false
-    t.string   "root",       limit: 255, null: false
-    t.integer  "purpose_id", limit: 4,   null: false
+    t.string   "template",            limit: 255,                        null: false
+    t.string   "root",                limit: 255,                        null: false
+    t.integer  "purpose_id",          limit: 4,                          null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "target_finder_class", :default => "SelfFinder", :null => false
+    t.string   "target_finder_class", limit: 255, default: "SelfFinder", null: false
   end
 
   add_index "messenger_creators", ["purpose_id"], name: "fk_messenger_creators_to_plate_purposes", using: :btree
