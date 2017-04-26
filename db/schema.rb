@@ -1331,10 +1331,12 @@ ActiveRecord::Schema.define(version: 20170321151830) do
     t.text     "barcodes",    limit: 65535
     t.integer  "user_id",     limit: 4
     t.string   "password",    limit: 255
+    t.integer  "purpose_id",  limit: 4
   end
 
   add_index "sample_manifests", ["asset_type"], name: "index_sample_manifests_on_asset_type", using: :btree
   add_index "sample_manifests", ["created_at"], name: "index_sample_manifests_on_created_at", using: :btree
+  add_index "sample_manifests", ["purpose_id"], name: "fk_rails_5627ab4aaa", using: :btree
   add_index "sample_manifests", ["study_id"], name: "index_sample_manifests_on_study_id", using: :btree
   add_index "sample_manifests", ["supplier_id"], name: "index_sample_manifests_on_supplier_id", using: :btree
   add_index "sample_manifests", ["updated_at"], name: "index_sample_manifests_on_updated_at", using: :btree
@@ -1921,6 +1923,7 @@ ActiveRecord::Schema.define(version: 20170321151830) do
     t.integer  "version",       limit: 4
   end
 
+  add_foreign_key "sample_manifests", "plate_purposes", column: "purpose_id"
   add_foreign_key "work_completions", "assets", column: "target_id"
   add_foreign_key "work_completions", "users"
   add_foreign_key "work_completions_submissions", "submissions"
