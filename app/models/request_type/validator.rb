@@ -66,8 +66,13 @@ class RequestType::Validator < ActiveRecord::Base
   # A NullValidator is used if no specific validator is provided.
   # It accepts everything
   class NullValidator
-    def validate?(_value); true; end
-    def default; nil; end
+    def validate?(_value)
+      true
+    end
+
+    def default
+      nil
+    end
   end
 
   belongs_to :request_type

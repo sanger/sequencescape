@@ -27,7 +27,7 @@ module Attributable
 
     def initialize(owner, name, method, options = {})
       @owner, @name, @method = owner, name, method
-      @required = !!options.delete(:required) || false
+      @required = options.delete(:required) || false
       @scope = Array(options.delete(:scope))
     end
 
