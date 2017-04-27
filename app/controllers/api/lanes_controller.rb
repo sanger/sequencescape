@@ -10,7 +10,7 @@ class Api::LanesController < Api::AssetsController
   before_action :prepare_object, only: [:show, :children, :parents]
   before_action :prepare_list_context, only: [:index]
 
-private
+  private
 
   def prepare_list_context
     @context = ::Lane.including_associations_for_json

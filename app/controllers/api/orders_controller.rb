@@ -10,7 +10,7 @@ class Api::OrdersController < Api::BaseController
   before_action :prepare_object, only: [:show]
   before_action :prepare_list_context, only: [:index]
 
-private
+  private
 
   def prepare_list_context
     case

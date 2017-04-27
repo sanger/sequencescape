@@ -259,13 +259,6 @@ Security/YAMLLoad:
     - 'lib/import_pulled_data.rb'
     - 'lib/tasks/code_quality_tests.rake'
 
-# Offense count: 48
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles, IndentationWidth.
-# SupportedStyles: outdent, indent
-Style/AccessModifierIndentation:
-  Enabled: false
-
 # Offense count: 36
 Style/AccessorMethodName:
   Enabled: false

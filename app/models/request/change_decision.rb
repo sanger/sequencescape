@@ -61,7 +61,7 @@ class Request::ChangeDecision
     perform_decision_change!
   end
 
-private
+  private
 
   def perform_decision_change!
     begin
