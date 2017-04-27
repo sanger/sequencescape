@@ -208,14 +208,6 @@ Rails/OutputSafety:
     - 'app/helpers/bootstrap_helper.rb'
     - 'app/helpers/submissions_helper.rb'
 
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: Include.
-# Include: app/models/**/*.rb
-Rails/ReadWriteAttribute:
-  Exclude:
-    - 'app/models/well.rb'
-
 # Offense count: 1
 # Configuration parameters: Include.
 # Include: db/migrate/*.rb
