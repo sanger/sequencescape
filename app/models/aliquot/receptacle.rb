@@ -74,7 +74,7 @@ class Aliquot::Receptacle < Asset
   deprecate :get_tag
 
   def update_aliquot_quality(suboptimal_quality)
-    aliquots.each {|a| a.update_quality(suboptimal_quality) }
+    aliquots.each { |a| a.update_quality(suboptimal_quality) }
     true
   end
 

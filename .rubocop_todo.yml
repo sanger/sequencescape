@@ -996,7 +996,6 @@ Style/SignalException:
 # Configuration parameters: AllowIfMethodIsEmpty.
 Style/SingleLineMethods:
   Exclude:
-    - 'app/models/api/messages/flowcell_io.rb'
     - 'app/models/asset.rb'
     - 'app/models/batch/request_behaviour.rb'
     - 'app/models/bulk_submission.rb'

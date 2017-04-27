@@ -40,10 +40,10 @@ class QcMetricTest < ActiveSupport::TestCase
   context 'A QcMetric' do
     [
       ['passed',          true,  false],
-      ['failed',          true,  true ],
+      ['failed',          true,  true],
       ['manually_passed', true,  false],
-      ['manually_failed', true,  true ],
-      ['unprocessable',   false, true ],
+      ['manually_failed', true,  true],
+      ['unprocessable',   false, true],
     ].each do |qc_state, proceedable, set_suboptimal|
 
       should "#{proceedable ? '' : 'not '}allow the proceed flag to be set to Y when #{qc_state}" do
