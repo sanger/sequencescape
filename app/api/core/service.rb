@@ -99,13 +99,12 @@ module Core
       "#{request.scheme}://#{request.host_with_port}/#{self.class.api_version_path}/#{sub_path.compact.join('/')}"
     end
 
-    [:before, :after].each do |filter|
-      line = __LINE__ + 1
-      class_eval("
-        def self.#{filter}_all_actions(&block)
-          self.#{filter}(%r{^(/.*)?$}, &block)
-        end
-      ", __FILE__, line)
+    def self.before_all_actions(&block)
+      self.before('/*', &block)
+    end
+
+    def self.after_all_actions(&block)
+      self.after('/*', &block)
     end
 
     def command
