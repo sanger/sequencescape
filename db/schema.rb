@@ -709,6 +709,7 @@ ActiveRecord::Schema.define(version: 20170503141318) do
     t.integer  "purpose_id", limit: 4,   null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "target_finder_class", :default => "SelfFinder", :null => false
   end
 
   add_index "messenger_creators", ["purpose_id"], name: "fk_messenger_creators_to_plate_purposes", using: :btree

@@ -50,8 +50,8 @@ class LibraryDrivenTest < ActiveSupport::TestCase
             order = @submission_template.new_order
             order2 = @submission_template2.new_order
 
-            assert_equal nil, order.product
-            assert_equal nil, order2.product
+            assert_nil order.product
+            assert_nil order2.product
           end
         end
       end

@@ -34,10 +34,10 @@ class RequestEventTest < ActiveSupport::TestCase
 
         should 'record a RequestEvent for each new Request' do
           assert_equal 1, @request.request_events.count
-          assert_equal nil, @request.current_request_event.from_state
+          assert_nil @request.current_request_event.from_state
           assert_equal 'pending', @request.current_request_event.to_state
           assert_equal 'created', @request.current_request_event.event_name
-          assert_equal nil, @request.current_request_event.current_to
+          assert_nil @request.current_request_event.current_to
         end
       end
 

@@ -115,16 +115,6 @@ class BatchesController < ApplicationController
     @batches = Batch.where(pipeline_id: params[:pipeline_id] || params[:id]).order(id: :desc).includes(:user, :pipeline).page(params[:page])
   end
 
-  def qc_information
-    respond_to do |format|
-      format.html
-      format.json do
-        b = @batch.formatted_batch_qc_details
-        render json: b.to_json.gsub(/null/, '""')
-      end
-    end
-  end
-
   # Deals with QC failures leaving batches and items statuses intact
   def qc_batch
     @batch.qc_complete
@@ -411,18 +401,15 @@ class BatchesController < ApplicationController
   def verify
     @requests = @batch.ordered_requests
     @pipeline = @batch.pipeline
-    @count = 8
+    @count = @requests.length
   end
 
   def verify_tube_layout
-    tube_barcodes = {}
-    unless params.empty?
-      8.times do |i|
-        if params["barcode_#{i}"]
-          tube_barcodes[(i + 1).to_s] = Barcode.split_barcode((params["barcode_#{i}"]).to_s)[1]
-        end
-      end
+    tube_barcodes = Array.new(@batch.requests.count) do |i|
+      scanned_barcode = params["barcode_#{i}"]
+      SBCF::SangerBarcode.from_machine(scanned_barcode).number
     end
+
     results = @batch.verify_tube_layout(tube_barcodes, current_user)
 
     if results

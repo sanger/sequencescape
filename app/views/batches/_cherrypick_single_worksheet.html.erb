@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.%>
 
 <div id="header">
-    <h1>Batch <%= batch.id %> - <%= batch.study.name %></h1>
+    <h1>Batch <%= batch.id %> - <%= batch.studies.pluck(:name).join('; ') %></h1>
     <div id="batchbarcode_<%= plate_barcode %>">
       <img src='<%= "#{configatron.barcode_images_url}/barcode_images/ean13/0#{Barcode.calculate_barcode('BA',batch.id)}" %>' alt="batchbarcode_<%= plate_barcode %>"/>
     </div>

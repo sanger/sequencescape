@@ -145,8 +145,8 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
               end
 
               should 'not set study or project post multiplexing' do
-                assert_equal nil, @sequencing_request_type.requests.last.initial_study_id
-                assert_equal nil, @sequencing_request_type.requests.last.initial_project_id
+                assert_nil @sequencing_request_type.requests.last.initial_study_id
+                assert_nil @sequencing_request_type.requests.last.initial_project_id
               end
             end
           end
