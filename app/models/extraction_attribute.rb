@@ -1,4 +1,3 @@
-
 class ExtractionAttribute < ActiveRecord::Base
   include Uuid::Uuidable
 

@@ -106,6 +106,20 @@ describe '/api/1/extraction_attributes' do
         expect(target_plate.wells.located_at('A1').first.samples).to eq(samples_from_second_plate)
       end
 
+      it 'does not matter if we repeat the operation' do
+        samples_from_first_plate = previous_plate.wells.located_at('A1').first.samples
+        samples_from_second_plate = previous_plate2.wells.located_at('A1').first.samples
+        authorized_api_request :post, subject, payload
+
+        expect(status).to eq(response_code)
+        authorized_api_request :post, subject, payload
+        expect(status).to eq(response_code)
+
+        expect(target_plate.wells.located_at('B1').first.samples).to eq(samples_from_first_plate)
+        expect(target_plate.wells.located_at('A1').first.samples).to eq(samples_from_second_plate)
+
+      end
+
       context 'with a tube that reracks to a location that depends on the rerack of another tube that should be moved in the same request' do
         let(:target_plate) { create :plate_with_tagged_wells }
         let(:well1) { target_plate.wells[0] }
@@ -228,6 +242,20 @@ describe '/api/1/extraction_attributes' do
           expect(target_plate.wells.located_at('C1').first.samples).to eq(sample_tube2.samples)
           expect(target_plate.wells.located_at('D1').first.samples).to eq(samples_from_second_plate)
         end
+
+        it 'does not matter if we repeat the operation' do
+          samples_from_first_plate = previous_plate.wells.located_at('A1').first.samples
+          samples_from_second_plate = previous_plate2.wells.located_at('A1').first.samples
+          authorized_api_request :post, subject, payload
+          expect(status).to eq(response_code)
+          authorized_api_request :post, subject, payload
+          expect(status).to eq(response_code)          
+          expect(target_plate.wells.located_at('A1').first.samples).to eq(sample_tube.samples)
+          expect(target_plate.wells.located_at('B1').first.samples).to eq(samples_from_first_plate)
+          expect(target_plate.wells.located_at('C1').first.samples).to eq(sample_tube2.samples)
+          expect(target_plate.wells.located_at('D1').first.samples).to eq(samples_from_second_plate)
+        end
+
       end
 
       context 'in different requests' do
