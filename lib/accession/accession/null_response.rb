@@ -1,5 +1,5 @@
 module Accession
-  # A null respons will be returned if accessioning errors.
+  # A null response will be returned if accessioning errors.
   class NullResponse
     def faliure?
       true
