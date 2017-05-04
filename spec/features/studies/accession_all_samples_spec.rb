@@ -26,6 +26,6 @@ feature 'Accession all samples' do
   after(:each) do
     configatron.accession_samples = false
     Delayed::Worker.delay_jobs = true
-    SampleManifestExcel.reset!
+    Accession.reset!
   end
 end

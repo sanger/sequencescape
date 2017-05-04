@@ -1,8 +1,5 @@
 SampleAccessioningJob = Struct.new(:operation) do
   def perform
-    # submission = Accession::Submission.new(User.find_by(api_key: configatron.accession_local_key), accessionable)
-    # submission.post
-    # submission.update_accession_number
     operation.post
   end
 
