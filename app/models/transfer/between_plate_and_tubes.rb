@@ -85,7 +85,7 @@ class Transfer::BetweenPlateAndTubes < Transfer
   # well as a source and the target is an MX library tube.
   #++
   def well_to_destination
-    ActiveSupport::OrderedHash[
+    Hash[
       source.stock_wells.map do |well, stock_wells|
         tube = locate_mx_library_tube_for(well, stock_wells)
         (tube.nil? or should_well_not_be_transferred?(well)) ? nil : [well, [tube, stock_wells]]
