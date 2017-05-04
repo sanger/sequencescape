@@ -27,7 +27,7 @@ feature 'Accession a sample' do
     login_user admin
     visit sample_path(sample.id)
     click_link 'Generate Accession Number'
-    expect(page).to have_content("The sample could not be accessioned")
+    expect(page).to have_content('The sample could not be accessioned')
   end
 
   scenario 'when the sample is invalid' do
@@ -35,7 +35,7 @@ feature 'Accession a sample' do
     login_user admin
     visit sample_path(sample.id)
     click_link 'Generate Accession Number'
-    expect(page).to have_content("Sample has no appropriate studies")
+    expect(page).to have_content('Sample has no appropriate studies')
   end
 
   after(:each) do

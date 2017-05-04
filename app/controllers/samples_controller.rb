@@ -132,7 +132,7 @@ class SamplesController < ApplicationController
     flash[:notice] = "Sample was removed from study #{study.name.humanize}"
     redirect_to sample_path(sample)
   end
-                
+
   def show_accession
     @sample = Sample.find(params[:id])
     respond_to do |format|
@@ -149,10 +149,10 @@ class SamplesController < ApplicationController
       if operation.success?
         flash[:notice] = "Accession number generated: #{@sample.reload.sample_metadata.sample_ebi_accession_number}"
       else
-        flash[:error] = "The sample could not be accessioned."
+        flash[:error] = 'The sample could not be accessioned.'
       end
     else
-      flash[:error] = "#{operation.errors.full_messages.join(', ')}"
+      flash[:error] = (operation.errors.full_messages.join(', ')).to_s
     end
     redirect_to(sample_path(@sample))
   end

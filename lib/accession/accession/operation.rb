@@ -1,7 +1,5 @@
 module Accession
-
   class Operation
-
     include ActiveModel::Model
 
     attr_reader :sample, :user, :submission, :accessionable, :delayed
