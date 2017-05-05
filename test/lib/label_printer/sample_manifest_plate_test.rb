@@ -57,4 +57,11 @@ class SampleManifestPlateTest < ActiveSupport::TestCase
       assert_equal ({ main_label: label }), plate_label.label(plate1)
     end
   end
+
+  # Testing of core manifests removed in:
+  # e765a07bb3034d615573371ff3b5001003828e63
+  # - At time of writing core is only used by the API which does not use this
+  #   label template.
+  # - Manifest generation is slow, and the test takes 30s to run.
+  # - This resulted in an expensive test for an unused code path.
 end
