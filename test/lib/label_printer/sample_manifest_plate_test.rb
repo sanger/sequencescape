@@ -9,21 +9,22 @@ class SampleManifestPlateTest < ActiveSupport::TestCase
       barcode.stubs(:barcode).returns(23)
       PlateBarcode.stubs(:create).returns(barcode)
 
-      @manifest = create :sample_manifest, count: 2, rapid_generation: true
+      @purpose = create :plate_purpose
+
+      @manifest = create :sample_manifest, count: 2, rapid_generation: true, purpose: @purpose
       @manifest.generate
 
       @plates = @manifest.send(:core_behaviour).plates
       @plate1 = plates.first
       @plate2 = plates.last
-      @purpose = 'Stock Plate'
       @study_abbreviation = 'WTCCC'
       @barcode1 = plate1.barcode.to_s
 
-      options = { sample_manifest: manifest, only_first_label: false }
+      options = { sample_manifest: manifest, only_first_label: false, purpose: @purpose }
       @plate_label = LabelPrinter::Label::SampleManifestPlate.new(options)
       @label = { top_left: (Date.today.strftime('%e-%^b-%Y')).to_s,
                  bottom_left: (plate1.sanger_human_barcode).to_s,
-                 top_right: (purpose).to_s,
+                 top_right: purpose.name,
                  bottom_right: "#{study_abbreviation} #{barcode1}",
                  top_far_right: nil,
                  barcode: (plate1.ean13_barcode).to_s }
@@ -42,7 +43,7 @@ class SampleManifestPlateTest < ActiveSupport::TestCase
     end
 
     should 'have the correct specific values' do
-      assert_equal purpose, plate_label.top_right(plate1)
+      assert_equal purpose.name, plate_label.top_right(plate1)
       assert_equal "#{study_abbreviation} #{barcode1}", plate_label.bottom_right(plate1)
     end
 
