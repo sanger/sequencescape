@@ -21,7 +21,7 @@ RSpec.describe SampleManifestExcel::Tags, type: :model, sample_manifest_excel: t
   describe 'validator' do
     class TestTagChecker
       include ActiveModel::Model
-      include SampleManifestExcel::Tags::Validator
+      include SampleManifestExcel::Tags::Validator::Uniqueness
 
       attr_reader :upload
 

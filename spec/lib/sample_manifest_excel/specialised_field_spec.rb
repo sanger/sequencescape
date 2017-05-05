@@ -100,6 +100,19 @@ RSpec.describe SampleManifestExcel::SpecialisedField, type: :model, sample_manif
     describe 'tag oligo' do
       let(:tag_oligo) { SampleManifestExcel::SpecialisedField::TagOligo.new(value: oligo, sample: sample) }
 
+      it 'will not be valid if the tag does not contain A, C, G or T' do
+        expect(SampleManifestExcel::SpecialisedField::TagOligo.new(value: 'ACGT', sample: sample)).to be_valid
+        expect(SampleManifestExcel::SpecialisedField::TagOligo.new(value: 'acgt', sample: sample)).to be_valid
+        expect(SampleManifestExcel::SpecialisedField::TagOligo.new(value: 'acgt', sample: sample)).to be_valid
+        expect(SampleManifestExcel::SpecialisedField::TagOligo.new(value: 'aatc', sample: sample)).to be_valid
+
+        expect(SampleManifestExcel::SpecialisedField::TagOligo.new(value: 'ACGT ACGT', sample: sample)).to_not be_valid
+        expect(SampleManifestExcel::SpecialisedField::TagOligo.new(value: 'BCGT', sample: sample)).to_not be_valid
+        expect(SampleManifestExcel::SpecialisedField::TagOligo.new(value: '-CGT', sample: sample)).to_not be_valid
+        expect(SampleManifestExcel::SpecialisedField::TagOligo.new(value: 'xCGT', sample: sample)).to_not be_valid
+
+      end
+
       it 'will add the value' do
         expect(tag_oligo.value).to eq(oligo)
       end
@@ -131,6 +144,11 @@ RSpec.describe SampleManifestExcel::SpecialisedField, type: :model, sample_manif
 
     describe 'tag2 oligo' do
       let(:tag2_oligo) { SampleManifestExcel::SpecialisedField::Tag2Oligo.new(value: oligo, sample: sample) }
+
+      it 'will not be valid if the tag does not contain A, C, G or T' do
+        expect(SampleManifestExcel::SpecialisedField::TagOligo.new(value: 'ACGT', sample: sample)).to be_valid
+        expect(SampleManifestExcel::SpecialisedField::TagOligo.new(value: 'BCGT', sample: sample)).to_not be_valid
+      end
 
       it 'will add the value' do
         expect(tag2_oligo.value).to eq(oligo)
