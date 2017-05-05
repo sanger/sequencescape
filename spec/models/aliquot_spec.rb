@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Aliquot, type: :model do
-
   let(:tag1) { create :tag }
   let(:tag2) { create :tag }
   let(:sample1) { create :sample }
@@ -34,7 +33,7 @@ RSpec.describe Aliquot, type: :model do
 
     context 'with missing tag 2' do
       let(:aliquot1) { build :aliquot, tag: nil, tag2: tag1, sample: sample1 }
-      let(:aliquot2) { build :aliquot, tag: nil,  tag2_id: -1, sample: sample1 }
+      let(:aliquot2) { build :aliquot, tag: nil, tag2_id: -1, sample: sample1 }
       it { is_expected.to be true }
     end
 
@@ -46,13 +45,13 @@ RSpec.describe Aliquot, type: :model do
 
     context 'with missing tag 2s but present tags' do
       let(:aliquot1) { build :aliquot, tag: tag1, tag2: tag1, sample: sample1 }
-      let(:aliquot2) { build :aliquot, tag: tag1,  tag2_id: -1, sample: sample1 }
+      let(:aliquot2) { build :aliquot, tag: tag1, tag2_id: -1, sample: sample1 }
       it { is_expected.to be true }
     end
 
     context 'with different samples' do
       let(:aliquot1) { build :aliquot, tag: tag1, tag2: tag1, sample: sample1 }
-      let(:aliquot2) { build :aliquot, tag: tag1,  tag2: tag1, sample: sample2 }
+      let(:aliquot2) { build :aliquot, tag: tag1, tag2: tag1, sample: sample2 }
       it { is_expected.to be false }
     end
   end
@@ -69,7 +68,7 @@ RSpec.describe Aliquot, type: :model do
   end
 
   context 'mixing tests' do
-    let(:asset) { create :empty_well}
+    let(:asset) { create :empty_well }
 
     it 'allows mixing different tags with no tag2' do
       asset.aliquots << build(:aliquot, tag: tag1, sample: sample1) << build(:aliquot, tag: tag2, sample: sample2)

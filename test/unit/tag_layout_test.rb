@@ -2,7 +2,7 @@ require 'test_helper'
 # Looking for other layout tests: features/api/tag_layouts.feature
 class TagLayoutTest < ActiveSupport::TestCase
   def generate_tag_layout(plate)
-    plate.wells.with_aliquots.each_with_object({}) { |w,h| h[w.map_description] = w.aliquots.map { |a| a.tag.map_id } }
+    plate.wells.with_aliquots.each_with_object({}) { |w, h| h[w.map_description] = w.aliquots.map { |a| a.tag.map_id } }
   end
   context 'TagLayout' do
     setup do
@@ -70,5 +70,4 @@ class TagLayoutTest < ActiveSupport::TestCase
       end
     end
   end
-
 end

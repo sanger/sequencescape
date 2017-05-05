@@ -143,8 +143,8 @@ class Aliquot < ActiveRecord::Base
   # This method is primarily provided for legacy reasons. #matches? is much more robust
   def =~(object)
     (sample_id == object.sample_id) &&
-    (untagged? || object.untagged? || (tag_id == object.tag_id)) &&
-    (no_tag2?  || object.no_tag2?  || (tag2_id == object.tag2_id))
+      (untagged? || object.untagged? || (tag_id == object.tag_id)) &&
+      (no_tag2?  || object.no_tag2?  || (tag2_id == object.tag2_id))
   end
 
   def matches?(object)
