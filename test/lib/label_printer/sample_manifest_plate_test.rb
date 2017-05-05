@@ -57,24 +57,4 @@ class SampleManifestPlateTest < ActiveSupport::TestCase
       assert_equal ({ main_label: label }), plate_label.label(plate1)
     end
   end
-
-  context 'labels for plate sample manifest core' do
-    setup do
-      barcode = mock('barcode')
-      barcode.stubs(:barcode).returns(23)
-      PlateBarcode.stubs(:create).returns(barcode)
-
-      @manifest = create :sample_manifest, count: 2
-      @manifest.generate
-
-      @plates = @manifest.send(:core_behaviour).samples.map { |s| s.primary_receptacle.plate }.uniq
-      options = { sample_manifest: manifest, only_first_label: false }
-      @plate_label = LabelPrinter::Label::SampleManifestPlate.new(options)
-    end
-
-    should 'have the right plates' do
-      assert_equal 2, plates.count
-      assert_equal plates, plate_label.plates
-    end
-  end
 end
