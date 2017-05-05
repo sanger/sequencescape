@@ -110,7 +110,6 @@ RSpec.describe SampleManifestExcel::SpecialisedField, type: :model, sample_manif
         expect(SampleManifestExcel::SpecialisedField::TagOligo.new(value: 'BCGT', sample: sample)).to_not be_valid
         expect(SampleManifestExcel::SpecialisedField::TagOligo.new(value: '-CGT', sample: sample)).to_not be_valid
         expect(SampleManifestExcel::SpecialisedField::TagOligo.new(value: 'xCGT', sample: sample)).to_not be_valid
-
       end
 
       it 'will add the value' do

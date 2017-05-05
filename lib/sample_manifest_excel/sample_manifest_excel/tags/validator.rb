@@ -20,7 +20,6 @@ module SampleManifestExcel
       end
 
       module Formatting
-
         extend ActiveSupport::Concern
 
         included do
