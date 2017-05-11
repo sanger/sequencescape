@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Api::WellIO, type: :model do
-
   let(:plate) { create :plate, barcode: 1 }
   let(:sample) { subject.samples.first }
 
@@ -22,13 +21,13 @@ RSpec.describe Api::WellIO, type: :model do
         'buffer_volume' => nil,
         'requested_volume' => nil,
         'picked_volume' => nil,
-        'pico_pass' => "ungraded",
+        'pico_pass' => 'ungraded',
         'measured_volume' => nil,
         'sequenom_count' => nil,
         'gender_markers' => nil,
         'map' => 'A1',
         'plate_barcode' => '1',
-        'plate_uuid'  => plate.uuid,
+        'plate_uuid' => plate.uuid,
         'plate_barcode_prefix' => 'DN',
         'sample_uuid' => sample.uuid,
         'sample_internal_id' => sample.id,
@@ -36,7 +35,7 @@ RSpec.describe Api::WellIO, type: :model do
         'lanes' => "http://localhost:3000/0_5/wells/#{subject.uuid}/lanes",
         'requests' => "http://localhost:3000/0_5/wells/#{subject.uuid}/requests",
         'genotyping_status' => nil,
-        'genotyping_snp_plate_id' => ""
+        'genotyping_snp_plate_id' => ''
       },
       'lims' => 'SQSCP'
     }
@@ -47,7 +46,7 @@ RSpec.describe Api::WellIO, type: :model do
     # This reproduces the behaviour of the broadcaster.
     # Oddly the unscoped behaviour (Itself added to fix odd sample accessioning behaviour)
     # was breaking eager loading of plates.
-    actual = Well.unscoped.including_associations_for_json.where(id:subject.id).first.as_json
+    actual = Well.unscoped.including_associations_for_json.where(id: subject.id).first.as_json
     actual.delete('updated_at')
     expect(actual).to include_json(expected_json)
   end
