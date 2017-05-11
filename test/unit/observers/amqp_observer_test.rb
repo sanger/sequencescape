@@ -117,7 +117,7 @@ class AmqpObserverTest < ActiveSupport::TestCase
           object.stubs(:id).returns(123456789)
           object.stubs(:class).returns(object_class)
           object.stubs(:destroyed?).returns(false)
-          object_class.expects(:unscoped).yields
+          object_class.expects(:unscoped).returns(object_class)
           object_class.expects(:find).with([object.id]).returns([object])
           @target.expects(:publish_to).with(@exchange, object).once
           return_from_inside_transaction(@target, object)
@@ -144,7 +144,7 @@ class AmqpObserverTest < ActiveSupport::TestCase
           object.stubs(:id).returns(123456789)
           object.stubs(:class).returns(object_class)
           object.stubs(:destroyed?).returns(false)
-          object_class.expects(:unscoped).yields
+          object_class.expects(:unscoped).returns(object_class)
           object_class.expects(:find).with([object.id]).returns([object])
           @target.expects(:publish_to).with(@exchange, object).once
 
@@ -170,7 +170,7 @@ class AmqpObserverTest < ActiveSupport::TestCase
           object.stubs(:id).returns(123456789)
           object.stubs(:class).returns(object_class)
           object.stubs(:destroyed?).returns(false)
-          object_class.expects(:unscoped).yields
+          object_class.expects(:unscoped).returns(object_class)
           object_class.expects(:find).with([object.id]).returns([object])
 
           # NOTE: Expectation set after the inner transaction so that it will error if the method
