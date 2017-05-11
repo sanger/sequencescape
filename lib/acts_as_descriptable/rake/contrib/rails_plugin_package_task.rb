@@ -181,7 +181,7 @@ module Rake
       end
     end
 
-  private
+    private
 
     # Add a file to the folders hash
     def add_file(filename)

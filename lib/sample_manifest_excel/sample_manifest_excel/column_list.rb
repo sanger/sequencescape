@@ -95,7 +95,7 @@ module SampleManifestExcel
       super
     end
 
-  private
+    private
 
     def reset!
       @columns = {}

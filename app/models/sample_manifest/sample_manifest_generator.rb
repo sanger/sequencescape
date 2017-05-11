@@ -52,7 +52,7 @@ class SampleManifestGenerator
     @print_job_message ||= {}
   end
 
-private
+  private
 
   def check_required_attributes
     REQUIRED_ATTRIBUTES.each do |attribute|

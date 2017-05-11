@@ -17,7 +17,7 @@ module Metadata
   SECTION_FIELDS = [:edit_info, :help, :label, :unspecified]
   Section = Struct.new(*SECTION_FIELDS, :label_options)
 
-private
+  private
 
   def build_association(as_class, options)
     # First we build the association into the current ActiveRecord::Base class

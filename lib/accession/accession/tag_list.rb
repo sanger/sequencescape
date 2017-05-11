@@ -89,7 +89,7 @@ module Accession
       tags <=> other.tags
     end
 
-  private
+    private
 
     def add_tags(tags)
       tags.each do |k, tag|

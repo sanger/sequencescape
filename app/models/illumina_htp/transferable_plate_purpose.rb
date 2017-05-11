@@ -5,7 +5,6 @@
 # Copyright (C) 2013,2014,2015 Genome Research Ltd.
 
 class IlluminaHtp::TransferablePlatePurpose < IlluminaHtp::FinalPlatePurpose
-  include PlatePurpose::Library
   include PlatePurpose::RequestAttachment
   include PlatePurpose::WorksOnLibraryRequests
 

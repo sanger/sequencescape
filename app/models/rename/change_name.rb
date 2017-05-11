@@ -50,7 +50,7 @@ class Rename::ChangeName
     perform_rename_action!
   end
 
-private
+  private
 
   def perform_rename_action!
     begin

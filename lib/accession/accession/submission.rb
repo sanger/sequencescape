@@ -96,7 +96,7 @@ module Accession
       end
     end
 
-  private
+    private
 
     def check_sample
       unless sample.valid?
