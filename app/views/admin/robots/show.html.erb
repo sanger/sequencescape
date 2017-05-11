@@ -14,6 +14,12 @@
   <%=h @robot.location %>
 </p>
 
+<p>
+  <b>Barcode:</b>
+  <%=h @robot.barcode %>
+</p>
+
+
 
 <h2>Properties</h2>
 <table>
@@ -30,6 +36,11 @@
 </tr>
 <% end %>
 </table>
+
+<%= form_tag(print_labels_admin_robot_path(@robot), :method => :get) do %>
+  <%= render :partial => "shared/printer_list" %>
+  <button type="submit" class="btn btn-default">Print</button>
+<% end %>
 
 
 <%= link_to 'Edit', edit_admin_robot_path(@robot) %> |

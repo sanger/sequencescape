@@ -39,4 +39,18 @@ class Robot < ActiveRecord::Base
   rescue
     false
   end
+
+  def ean13_barcode
+    str = Barcode.calculate_barcode(Robot.prefix, barcode.to_i).to_s
+    if str.length == 12
+      '0' + str
+    else
+      str
+    end
+  end
+
+  def sanger_human_barcode
+    Robot.prefix + barcode.to_s + Barcode.calculate_checksum(Robot.prefix, barcode.to_i)
+  end
+
 end
