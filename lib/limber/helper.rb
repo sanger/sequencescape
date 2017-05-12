@@ -24,12 +24,13 @@ module Limber::Helper
   PRODUCTLINE = 'Illumina-Htp'
 
   class RequestTypeConstructor
-    def initialize(suffix)
+    def initialize(suffix, source_purpose: 'LB Cherrypick')
       @suffix = suffix
+      @source_purpose = Purpose.find_by!(name: source_purpose)
     end
 
     def key
-      "limber_#{@suffix.downcase}"
+      "limber_#{@suffix.downcase.tr(' ','_')}"
     end
 
     # Builds the corresponding request type, unless it
@@ -50,7 +51,7 @@ module Limber::Helper
         product_line: ProductLine.find_by(name: 'Illumina-Htp'),
         request_purpose: RequestPurpose.standard
       ) do |rt|
-        rt.acceptable_plate_purposes << Purpose.find_by!(name: 'LB Cherrypick')
+        rt.acceptable_plate_purposes << @source_purpose
         rt.library_types = LibraryType.where(name: ['Standard'])
       end
 
