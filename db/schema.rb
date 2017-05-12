@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170321151830) do
+ActiveRecord::Schema.define(version: 20170511153731) do
 
   create_table "aliquot_indices", force: :cascade do |t|
     t.integer  "aliquot_id",    limit: 4, null: false
@@ -704,12 +704,12 @@ ActiveRecord::Schema.define(version: 20170321151830) do
   add_index "maps", ["description"], name: "index_maps_on_description", using: :btree
 
   create_table "messenger_creators", force: :cascade do |t|
-    t.string   "template",   limit: 255, null: false
-    t.string   "root",       limit: 255, null: false
-    t.integer  "purpose_id", limit: 4,   null: false
+    t.string   "template",            limit: 255,                        null: false
+    t.string   "root",                limit: 255,                        null: false
+    t.integer  "purpose_id",          limit: 4,                          null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "target_finder_class", :default => "SelfFinder", :null => false
+    t.string   "target_finder_class", limit: 255, default: "SelfFinder", null: false
   end
 
   add_index "messenger_creators", ["purpose_id"], name: "fk_messenger_creators_to_plate_purposes", using: :btree
@@ -889,7 +889,7 @@ ActiveRecord::Schema.define(version: 20170321151830) do
     t.string   "target_type",             limit: 30
     t.boolean  "stock_plate",                         default: false,           null: false
     t.string   "default_state",           limit: 255, default: "pending"
-    t.integer  "barcode_printer_type_id", limit: 4,   default: 2
+    t.integer  "barcode_printer_type_id", limit: 4
     t.boolean  "cherrypickable_target",               default: true,            null: false
     t.boolean  "cherrypickable_source",               default: false,           null: false
     t.string   "cherrypick_direction",    limit: 255, default: "column",        null: false
