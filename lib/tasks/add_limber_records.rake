@@ -67,7 +67,7 @@ namespace :limber do
         Limber::Helper::TemplateConstructor.new(
           name: prefix,
           role: prefix,
-          type: "limber_#{prefix.downcase.tr(' ','_')}",
+          type: "limber_#{prefix.downcase.tr(' ', '_')}",
           catalogue: catalogue,
           sequencing: ['illumina_b_hiseq_x_paired_end_sequencing']
         ).build!
