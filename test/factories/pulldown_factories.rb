@@ -22,10 +22,6 @@ FactoryGirl.define do
     factory(:destination_transfer_plate) do
       plate_purpose { PlatePurpose.find_by(name: 'Child plate purpose') || create(:child_plate_purpose) }
     end
-
-    factory(:initial_downstream_plate) do
-      association(:plate_purpose, factory: :initial_downstream_plate_purpose)
-    end
   end
 
   factory(:full_plate, class: Plate) do
@@ -192,9 +188,7 @@ FactoryGirl.define do
     stock_plate true
     after(:create) do |plate_purpose|
       cpp = create(:plate_purpose)
-      idpp = create(:initial_downstream_plate_purpose)
       plate_purpose.child_relationships.create!(child: cpp, transfer_request_type: create(:pooling_transfer))
-      plate_purpose.child_relationships.create!(child: idpp, transfer_request_type: create(:pooling_transfer))
     end
   end
 

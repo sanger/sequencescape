@@ -54,7 +54,7 @@ class PreCapGroupsTest < ActiveSupport::TestCase
 
       context 'when transfers are created' do
         setup do
-          @target_plate = create :initial_downstream_plate
+          @target_plate = create :plate_with_empty_wells
           @transfer = Transfer::BetweenPlates.create!(
             source: @plate.reload,
             destination: @target_plate.reload,
