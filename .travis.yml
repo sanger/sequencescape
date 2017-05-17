@@ -2,6 +2,7 @@ language: ruby
 rvm:
   - jruby-9.1.9.0
   - 2.3.3
+  - 2.4.1
 sudo: false
 cache: bundler
 jdk: oraclejdk8
@@ -20,3 +21,4 @@ script:
 matrix:
   allow_failures:
   - rvm: 2.3.3
+  - rvm: 2.4.1
