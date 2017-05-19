@@ -10,6 +10,8 @@ class MultiplexedLibraryTube < Tube
   include Api::MultiplexedLibraryTubeIO::Extensions
   include Transfer::Associations
 
+  has_many :order_roles, through: :requests_as_target
+
   # Transfer requests into a tube are direct requests where the tube is the target.
   def transfer_requests
     requests_as_target.where_is_a?(TransferRequest)
@@ -41,6 +43,10 @@ class MultiplexedLibraryTube < Tube
 
   def library_source_plates
     purpose.library_source_plates(self)
+  end
+
+  def role
+    order_roles.first.role
   end
 
   def self.stock_asset_type

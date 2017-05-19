@@ -144,6 +144,7 @@ class Request < ActiveRecord::Base
   belongs_to :submission_pool, foreign_key: :submission_id
 
   belongs_to :order, inverse_of: :requests
+  has_one :order_role, through: :order
 
   # has_many :submission_siblings, ->(request) { where(:request_type_id => request.request_type_id) }, :through => :submission, :source => :requests, :class_name => 'Request'
   has_many :qc_metric_requests

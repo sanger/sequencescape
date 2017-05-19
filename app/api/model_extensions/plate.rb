@@ -29,10 +29,6 @@ module ModelExtensions::Plate
     end
   end
 
-  def plate_purpose_or_stock_plate
-    plate_purpose || PlatePurpose.find_by(name: 'Stock Plate')
-  end
-
   def source_plate
     plate_purpose.source_plate(self)
   end
