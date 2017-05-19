@@ -53,7 +53,7 @@ class SequencingRequest < CustomerRequest
     library_creation_requests = upstream_requests.customer_requests
     library_creation_requests.empty? ||
       library_creation_requests.all?(&:closed?) &&
-      library_creation_requests.any?(&:passed?)
+        library_creation_requests.any?(&:passed?)
   end
 
   def self.delegate_validator
