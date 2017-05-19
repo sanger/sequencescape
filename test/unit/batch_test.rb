@@ -758,9 +758,8 @@ class BatchTest < ActiveSupport::TestCase
 
   context 'ready? all requests before creating batch' do
     setup do
-      @library_creation_request = create(:library_creation_request_for_testing_sequencing_requests)
-      @library_tube = @library_creation_request.target_asset
-      @library_creation_request_2 = create(:library_creation_request_for_testing_sequencing_requests, target_asset: @library_tube)
+      @library_tube = create :library_tube
+      @library_creation_request = create(:library_creation_request_for_testing_sequencing_requests, target_asset: @library_tube)
       @pipeline = create :sequencing_pipeline
 
       @batch = build :batch, pipeline: @pipeline
@@ -774,12 +773,8 @@ class BatchTest < ActiveSupport::TestCase
     end
 
     should 'check that I can create a batch with valid requests ready?' do
-      @library_creation_request.start!
-      @library_creation_request.pass
-      @library_creation_request.save!
-      @library_creation_request_2.start!
-      @library_creation_request_2.cancel
-      @library_creation_request_2.save!
+      @library_creation_request.start
+      @library_creation_request.pass!
       assert_equal true, @batch.valid?
     end
   end
