@@ -12,13 +12,13 @@ RSpec.describe SequencingRequest, type: :model do
     end
 
     context 'with missing assets' do
-      let(:libary_tube) { nil }
-      pending('added support') { is_expected.to be false }
+      let(:library_tube) { nil }
+      it { is_expected.to be false }
     end
 
     context 'with empty assets' do
-      let(:libary_tube) { create :empty_library_tube }
-      pending('added support') { is_expected.to be false }
+      let(:library_tube) { create :empty_library_tube }
+      it { is_expected.to be false }
     end
 
     context 'with upstream requests' do
