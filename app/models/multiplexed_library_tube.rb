@@ -46,7 +46,7 @@ class MultiplexedLibraryTube < Tube
   end
 
   def role
-    order_roles.first.role
+    order_roles.first.try(:role)
   end
 
   def self.stock_asset_type
