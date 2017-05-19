@@ -150,6 +150,8 @@ class Request < ActiveRecord::Base
   has_many :qc_metrics, through: :qc_metric_requests
   has_many :request_events, ->() { order(:current_from) }, inverse_of: :request
 
+  has_many :upstream_requests, through: :asset, source: :requests_as_target
+
   scope :with_request_type_id, ->(id) { where(request_type_id: id) }
   scope :for_pacbio_sample_sheet, -> { includes([{ target_asset: :map }, :request_metadata]) }
   scope :for_billing, -> { includes([:initial_project, :request_type, { target_asset: :aliquots }]) }
