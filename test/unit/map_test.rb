@@ -27,9 +27,9 @@ class MapTest < ActiveSupport::TestCase
     end
 
     context 'Invalid well position' do
-      { 0 => nil, -1 => nil, 97 => nil, 384 => nil, '1' => nil }.each do |position, result|
+      [0, -1, 97, 384, '1'].each do |position|
         should "return nil for #{position.inspect}" do
-          assert_equal result, Map.horizontal_to_vertical(position, 96)
+          assert_nil Map.horizontal_to_vertical(position, 96)
         end
       end
     end
@@ -54,18 +54,18 @@ class MapTest < ActiveSupport::TestCase
       end
     end
     context 'Invalid well position' do
-      { 0 => nil, -1 => nil, 385 => nil }.each do |position, result|
+      [0, -1, 385].each do |position|
         should "return nil for #{position}" do
-          assert_equal result, Map.horizontal_to_vertical(position, 384)
+          assert_nil Map.horizontal_to_vertical(position, 384)
         end
       end
     end
   end
 
   context 'Invalid plate_size' do
-    { 0 => nil, 1 => nil, -1 => nil, 95 => nil, 97 => nil, 383 => nil, 385 => nil }.each do |plate_size, result|
+    [0, 1, -1, 95, 97, 383, 385].each do |plate_size|
       should "return nil for #{plate_size}" do
-        assert_equal result, Map.horizontal_to_vertical(1, plate_size)
+        assert_nil Map.horizontal_to_vertical(1, plate_size)
       end
     end
   end
