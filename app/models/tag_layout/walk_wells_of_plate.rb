@@ -14,7 +14,7 @@ module TagLayout::WalkWellsOfPlate
   end
 
   def walk_wells
-    wells_in_walking_order.each_with_index do |well, index|
+    wells_in_walking_order.includes(aliquots: :tag).each_with_index do |well, index|
       yield(well, index) unless well.nil?
     end
   end

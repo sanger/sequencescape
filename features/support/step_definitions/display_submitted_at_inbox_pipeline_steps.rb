@@ -4,16 +4,15 @@
 # authorship of this file.
 # Copyright (C) 2015 Genome Research Ltd.
 
-Given /^Pipeline "([^\"]*)" and a setup for submitted at$/ do |name|
+Given(/^Pipeline "([^\"]*)" and a setup for submitted at$/) do |name|
   pipeline = Pipeline.find_by(name: name) or raise StandardError, "Cannot find pipeline '#{name}'"
   asset_type = pipeline_name_to_asset_type(name)
   request_type = pipeline.request_types.detect { |rt| !rt.deprecated }
   metadata = FactoryGirl.create :"request_metadata_for_#{request_type.key}"
   asset = FactoryGirl.create(asset_type)
-  request = FactoryGirl.create :request, request_type: request_type, asset: asset, request_metadata: metadata
+  request = FactoryGirl.create :request_with_submission, request_type: request_type, asset: asset, request_metadata: metadata
   if request.asset.is_a?(Well)
-    request.asset.plate = FactoryGirl.create(:plate) if request.asset.plate.nil?
-    request.asset.plate.location = pipeline.location
+    request.asset.plate = FactoryGirl.create(:plate, location: pipeline.location) if request.asset.plate.nil?
   else
     request.asset.location = pipeline.location
   end
