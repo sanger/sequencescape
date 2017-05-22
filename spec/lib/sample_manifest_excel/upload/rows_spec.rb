@@ -27,6 +27,13 @@ RSpec.describe SampleManifestExcel::Upload::Rows, type: :model, sample_manifest_
     expect(SampleManifestExcel::Upload::Rows.new(SampleManifestExcel::Upload::Data.new(test_file, 9), columns)).to_not be_valid
   end
 
+  it 'creates the row number relative to the start row' do
+    download = build(:test_download, columns: columns, validation_errors: [:insert_size_from])
+    download.save(test_file)
+    rows = SampleManifestExcel::Upload::Rows.new(SampleManifestExcel::Upload::Data.new(test_file, 9), columns)
+    expect(rows.first.number).to eq(10)
+  end
+
   after(:each) do
     File.delete(test_file) if File.exist?(test_file)
   end

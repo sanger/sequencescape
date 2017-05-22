@@ -5,6 +5,11 @@ RSpec.describe SampleManifestExcel::SpecialisedField, type: :model, sample_manif
     include SampleManifestExcel::SpecialisedField::Base
   end
 
+  class MyPerfectClass
+    include SampleManifestExcel::SpecialisedField::Base
+    include SampleManifestExcel::SpecialisedField::ValueRequired
+  end
+
   let!(:sample) { create(:sample_with_well) }
   let!(:library_type) { create(:library_type) }
   let(:aliquot) { sample.aliquots.first }
@@ -17,7 +22,17 @@ RSpec.describe SampleManifestExcel::SpecialisedField, type: :model, sample_manif
     end
   end
 
+  describe 'value required' do
+
+    it 'will produce the correct error message' do
+      my_perfect_class = MyPerfectClass.new(value: nil)
+      my_perfect_class.valid?
+      expect(my_perfect_class.errors.full_messages).to include('My perfect class can\'t be blank')
+    end
+  end
+
   describe 'Library Type' do
+
     it 'will not be valid without a persisted library type' do
       expect(SampleManifestExcel::SpecialisedField::LibraryType.new(value: library_type.name, sample: sample)).to be_valid
       expect(SampleManifestExcel::SpecialisedField::LibraryType.new(value: 'A new library type', sample: sample)).to_not be_valid

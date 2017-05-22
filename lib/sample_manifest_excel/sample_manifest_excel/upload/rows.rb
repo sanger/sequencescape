@@ -31,7 +31,7 @@ module SampleManifestExcel
       def create_rows
         [].tap do |rows|
           data.each_with_index do |r, i|
-            rows << Row.new(number: i + 1, data: r, columns: columns)
+            rows << Row.new(number: i + data.start_row + 1, data: r, columns: columns)
           end
         end
       end

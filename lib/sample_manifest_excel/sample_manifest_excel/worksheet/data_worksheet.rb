@@ -13,6 +13,7 @@ module SampleManifestExcel
         add_title_and_description(sample_manifest.study.abbreviation, sample_manifest.supplier.name, sample_manifest.count)
         add_columns
         freeze_panes
+        add_multiplexed_library_tube_barcode if sample_manifest.asset_type == 'multiplexed_library'
       end
 
       def type
@@ -66,7 +67,7 @@ module SampleManifestExcel
         end
       end
 
-      # Finds the column after whech the panes should be frozen. If the column was not found
+      # Finds the column after which the panes should be frozen. If the column was not found
       # freezes the panes after column 0 (basically not frozen vertically)
 
       def freeze_after_column(name)
@@ -76,6 +77,19 @@ module SampleManifestExcel
       # The row where the table with data end
       def last_row
         @last_row ||= sample_manifest.details_array.count + first_row - 1
+      end
+
+      def add_multiplexed_library_tube_barcode
+        add_row
+        add_row ['Multiplexed library tube barcode:', get_multiplexed_library_tube_barcode]
+      end
+
+      def get_multiplexed_library_tube_barcode
+        begin
+          Tube.find_by_barcode(sample_manifest.barcodes.first.gsub(/\D/, "")).requests.first.target_asset.sanger_human_barcode
+        rescue
+          ''
+        end
       end
     end
   end
