@@ -27,7 +27,7 @@ module SampleManifestExcel
         end
       end
 
-    private
+      private
 
       def create_products
         @tag_oligos = BASES.product(BASES)

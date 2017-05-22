@@ -109,7 +109,7 @@ module SampleManifestExcel
 
       conditional_formattings.update(
         self.range.references.merge(absolute_reference: range.absolute_reference, worksheet: worksheet)
-)
+      )
 
       @updated = true
 
@@ -148,6 +148,7 @@ module SampleManifestExcel
 
       def inspect
         "<#{self.class}: @name=#{name}, @heading=#{heading}, @number=#{number}, @type=#{type}, @validation#{validation}, @value=#{value}, @unlocked=#{unlocked}, @conditional_formattings=#{conditional_formattings}, @attribute=#{attribute}, @range=#{range}>"
+      end
 
       private
 

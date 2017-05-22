@@ -117,7 +117,7 @@ module SampleManifestExcel
         @aliquot_transferred
       end
 
-    private
+      private
 
       def check_primary_receptacle
         errors.add(:base, "#{row_title} Does not have a primary receptacle.") unless sample.primary_receptacle.present?

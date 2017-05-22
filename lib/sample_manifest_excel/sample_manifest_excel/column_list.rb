@@ -97,7 +97,7 @@ module SampleManifestExcel
       select(&:metadata_field?)
     end
 
-  private
+    private
 
     # You can add a hash of columns, a hash of attributes or an array of columns.
     # If it is a hash of columns there is an assumption that a copy is being created.

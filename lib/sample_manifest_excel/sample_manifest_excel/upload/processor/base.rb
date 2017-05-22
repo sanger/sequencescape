@@ -55,7 +55,7 @@ module SampleManifestExcel
           self.class.to_s
         end
 
-      private
+        private
 
         def check_upload_type
           unless upload.instance_of?(SampleManifestExcel::Upload::Base)

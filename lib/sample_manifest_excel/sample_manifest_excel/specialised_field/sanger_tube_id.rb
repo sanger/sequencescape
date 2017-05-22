@@ -11,7 +11,7 @@ module SampleManifestExcel
 
       validate :check_container
 
-    private
+      private
 
       def check_container
         unless value == sample.assets.first.sanger_human_barcode

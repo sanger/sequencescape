@@ -85,11 +85,9 @@ module SampleManifestExcel
       end
 
       def get_multiplexed_library_tube_barcode
-        begin
-          Tube.find_by_barcode(sample_manifest.barcodes.first.gsub(/\D/, "")).requests.first.target_asset.sanger_human_barcode
-        rescue
+          Tube.find_by_barcode(sample_manifest.barcodes.first.gsub(/\D/, '')).requests.first.target_asset.sanger_human_barcode
+      rescue
           ''
-        end
       end
     end
   end

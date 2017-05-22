@@ -26,7 +26,7 @@ class SampleManifestUploader
     end
   end
 
-private
+  private
 
   def create_tag_group
     if configuration.tag_group.present?
