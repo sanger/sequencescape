@@ -68,7 +68,6 @@ namespace :limber do
   task create_submission_templates: [:environment, :create_request_types] do
     puts 'Creating submission templates....'
     ActiveRecord::Base.transaction do
-
       %w(WGS ISC ReISC).each do |prefix|
         catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: prefix)
         Limber::Helper::TemplateConstructor.new(
