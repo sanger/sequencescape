@@ -8,8 +8,6 @@ module Limber::Helper
   require 'hiseq_2500_helper'
 
   ACCEPTABLE_SEQUENCING_REQUESTS = %w(
-    illumina_b_hiseq_paired_end_sequencing
-    illumina_b_single_ended_hi_seq_sequencing
     illumina_b_hiseq_2500_paired_end_sequencing
     illumina_b_hiseq_2500_single_end_sequencing
     illumina_b_miseq_sequencing
@@ -22,10 +20,19 @@ module Limber::Helper
   PIPELINE = 'Limber-Htp'
   PIPELINE_REGEX = /Illumina-[A-z]{1,3} /
   PRODUCTLINE = 'Illumina-Htp'
+  DEFAULT_REQUEST_CLASS = 'IlluminaHtp::Requests::StdLibraryRequest'
+  DEFAULT_LIBRARY_TYPES = ['Standard']
+  DEFAULT_PURPOSE = 'LB Cherrypick'
 
   class RequestTypeConstructor
-    def initialize(suffix)
+    def initialize(suffix,
+      request_class: DEFAULT_REQUEST_CLASS,
+      library_types: DEFAULT_LIBRARY_TYPES,
+      default_purpose: DEFAULT_PURPOSE)
       @suffix = suffix
+      @request_class = request_class
+      @library_types = library_types
+      @default_purpose = default_purpose
     end
 
     def key
@@ -40,18 +47,18 @@ module Limber::Helper
       rt = RequestType.create!(
         name: "Limber #{@suffix}",
         key: key,
-        request_class_name: 'IlluminaHtp::Requests::StdLibraryRequest',
+        request_class_name: @request_class,
         for_multiplexing: false,
         workflow: Submission::Workflow.find_by(name: 'Next-gen sequencing'),
         asset_type: 'Well',
         order: 1,
         initial_state: 'pending',
         billable: true,
-        product_line: ProductLine.find_by(name: 'Illumina-Htp'),
+        product_line: ProductLine.find_by(name: PRODUCTLINE),
         request_purpose: RequestPurpose.standard
       ) do |rt|
-        rt.acceptable_plate_purposes << Purpose.find_by!(name: 'LB Cherrypick')
-        rt.library_types = LibraryType.where(name: ['Standard'])
+        rt.acceptable_plate_purposes << Purpose.find_by!(name: @default_purpose)
+        rt.library_types = LibraryType.where(name: @library_types)
       end
 
       RequestType::Validator.create!(

@@ -12,7 +12,7 @@ class SearchesController < ApplicationController
   include SearchBehaviour
   alias_method(:index, :search)
 
-private
+  private
 
   # SEARCHABLE_CLASSES = [ Project, Study, Sample, Asset, AssetGroup, Request, Supplier ]
   def searchable_classes

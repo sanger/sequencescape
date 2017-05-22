@@ -62,7 +62,7 @@ module SampleManifestExcel
       end
     end
 
-  private
+    private
 
     def create_manifest_types(manifest_types)
       self.manifest_types.tap do |mf|

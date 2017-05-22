@@ -160,7 +160,7 @@ class AccessionService
     false
   end
 
-private
+  private
 
   def accession_study_set_xml_quarantine(study, studydata)
     xml = Builder::XmlMarkup.new

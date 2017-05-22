@@ -273,13 +273,8 @@ class Well < Aliquot::Receptacle
     markers.is_a?(Array) ? markers.join : markers
   end
 
-  def map_description
-    return read_attribute('map_description') if read_attribute('map_description').present?
-    return nil if map.nil?
-    return nil unless map.description.is_a?(String)
-
-    map.description
-  end
+  # def map_description
+  delegate :description, to: :map, prefix: true, allow_nil: true
 
   def valid_well_on_plate
     return false unless is_a?(Well)

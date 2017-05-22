@@ -10,7 +10,7 @@ class Api::SampleTubesController < Api::AssetsController
   before_action :prepare_object, only: [:show, :children, :parents]
   before_action :prepare_list_context, only: [:index]
 
-private
+  private
 
   def prepare_list_context
     @context = ::SampleTube.including_associations_for_json

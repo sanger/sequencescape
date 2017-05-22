@@ -9,7 +9,7 @@ module SampleManifestExcel
       yield self if block_given?
     end
 
-  private
+    private
 
     def create_defaults(defaults)
       defaults.each do |k, default|

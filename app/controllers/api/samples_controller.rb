@@ -16,7 +16,7 @@ class Api::SamplesController < Api::BaseController
     end
   end
 
-private
+  private
 
   def prepare_list_context
     @context = ::Sample.including_associations_for_json

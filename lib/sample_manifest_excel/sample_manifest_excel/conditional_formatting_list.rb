@@ -67,5 +67,11 @@ module SampleManifestExcel
       create_conditional_formattings(source.conditional_formattings)
       super
     end
+
+    private
+
+    def reset!
+      @conditional_formattings = {}
+    end
   end
 end

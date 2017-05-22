@@ -47,12 +47,14 @@ class Sdb::SampleManifestsController < Sdb::BaseController
   end
 
   def new
-    @asset_type = params[:type]
-    @sample_manifest  = SampleManifest.new(asset_type: @asset_type)
+    params[:asset_type] ||= params[:type]
+    params[:only_first_label] ||= false
+    @sample_manifest  = SampleManifest.new(new_manifest_params)
     @study_id         = params[:study_id] || ''
-    @studies          = Study.alphabetical
-    @suppliers        = Supplier.alphabetical
-    @barcode_printers = @sample_manifest.applicable_barcode_printers.collect(&:name)
+    @studies          = Study.alphabetical.pluck(:name, :id)
+    @suppliers        = Supplier.alphabetical.pluck(:name, :id)
+    @purposes         = @sample_manifest.acceptable_purposes.pluck(:name, :id)
+    @barcode_printers = @sample_manifest.applicable_barcode_printers.pluck(:name)
     @templates        = SampleManifestExcel.configuration.manifest_types.by_asset_type(@asset_type).to_a
   end
 
@@ -86,6 +88,10 @@ class Sdb::SampleManifestsController < Sdb::BaseController
   end
 
   private
+
+  def new_manifest_params
+    params.permit(:study_id, :asset_type, :supplier_id, :project_id)
+  end
 
   def set_sample_manifest_id
     @sample_manifest = SampleManifest.find(params[:id])

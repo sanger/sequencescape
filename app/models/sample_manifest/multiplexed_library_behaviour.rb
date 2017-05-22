@@ -41,6 +41,10 @@ module SampleManifest::MultiplexedLibraryBehaviour
       end
     end
 
+    def acceptable_purposes
+      Purpose.none
+    end
+
     def multiplexed_library_tube
       @mx_tube || raise(MxLibraryTubeException.new, 'Mx tube not found')
     end
