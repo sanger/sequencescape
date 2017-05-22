@@ -216,6 +216,9 @@ GEM
     mime-types (2.99.3)
     mini_portile2 (2.1.0)
     minitest (5.10.1)
+    minitest-profiler (0.0.2)
+      activesupport (>= 4.1.0)
+      minitest (>= 5.3.3)
     mocha (1.1.0)
       metaclass (~> 0.0.1)
     multi_json (1.12.1)
@@ -442,6 +445,7 @@ DEPENDENCIES
   launchy
   march_hare (~> 2.18.0)
   mime-types
+  minitest-profiler
   mocha
   multi_json
   mysql2

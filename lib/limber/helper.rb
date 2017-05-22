@@ -8,8 +8,6 @@ module Limber::Helper
   require 'hiseq_2500_helper'
 
   ACCEPTABLE_SEQUENCING_REQUESTS = %w(
-    illumina_b_hiseq_paired_end_sequencing
-    illumina_b_single_ended_hi_seq_sequencing
     illumina_b_hiseq_2500_paired_end_sequencing
     illumina_b_hiseq_2500_single_end_sequencing
     illumina_b_miseq_sequencing

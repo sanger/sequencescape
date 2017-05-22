@@ -117,6 +117,7 @@ end
 
 group :test do
   gem 'rspec-rails', require: false
+  gem 'minitest-profiler'
   # Simplifies shared transactions between server and test threads
   # See: http://technotes.iangreenleaf.com/posts/the-one-true-guide-to-database-transactions-with-capybara.html
   # Essentially does two things:
