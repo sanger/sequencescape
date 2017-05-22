@@ -122,6 +122,13 @@ class Aliquot::Receptacle < Asset
     aliquots.pluck(:library_type).uniq
   end
 
+  def set_as_library
+    aliquots.each do |aliquot|
+      aliquot.set_library
+      aliquot.save!
+    end
+  end
+
   has_many :studies, through: :aliquots
   has_many :projects, through: :aliquots
   has_many :samples, through: :aliquots

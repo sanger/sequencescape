@@ -125,7 +125,7 @@ class Metadata::FormBuilder < Metadata::BuilderBase
     )) unless related.empty?
   end
 
-private
+  private
 
   def property_field(type, field, options = {})
     content = capture do

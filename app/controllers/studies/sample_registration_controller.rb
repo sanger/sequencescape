@@ -56,7 +56,7 @@ class Studies::SampleRegistrationController < ApplicationController
     @workflow = @current_user.workflow if !@current_user.nil? && !@current_user.workflow.nil?
   end
 
-private
+  private
 
   def load_study
     @study = Study.find(params[:study_id])
