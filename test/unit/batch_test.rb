@@ -80,11 +80,12 @@ class BatchTest < ActiveSupport::TestCase
   context 'when batch is created' do
     setup do
       @pipeline = create :pipeline
-      @request1 = @pipeline.request_types.last.create!(asset: create(:sample_tube), target_asset: create(:empty_library_tube))
-      @request2 = @pipeline.request_types.last.create!(asset: create(:sample_tube), target_asset: create(:empty_library_tube))
+      @request1 = create :request, request_type: @pipeline.request_types.first
+      @request2 = create :request, request_type: @pipeline.request_types.first
 
       @batch = create :batch, requests: [@request1, @request2], pipeline: @pipeline
     end
+
     should 'be able to call start_requests' do
       assert_nothing_raised do
         @batch.start_requests

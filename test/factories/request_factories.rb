@@ -138,7 +138,7 @@ FactoryGirl.define do
   factory :request, parent: :request_without_assets do
     # the sample should be setup correctly and the assets should be valid
     association(:asset, factory: :sample_tube)
-    association(:target_asset, factory: :library_tube)
+    association(:target_asset, factory: :empty_library_tube)
   end
 
   factory :request_with_sequencing_request_type, parent: :request_without_assets do
