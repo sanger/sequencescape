@@ -36,6 +36,7 @@ module SampleManifest::CoreBehaviour
     when '1dtube'              then 'SampleTubeBehaviour'
     when 'plate'               then 'PlateBehaviour'
     when 'multiplexed_library' then 'MultiplexedLibraryBehaviour'
+    when nil                   then 'UnspecifiedBehaviour'
     else raise StandardError, "Unknown core behaviour (#{asset_type.inspect}) for sample manifest"
     end
   end

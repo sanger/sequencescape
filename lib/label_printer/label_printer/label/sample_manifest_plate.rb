@@ -9,7 +9,7 @@ module LabelPrinter
       end
 
       def top_right(_plate = nil)
-        PlatePurpose.stock_plate_purpose.name.to_s
+        @sample_manifest.purpose.name
       end
 
       def bottom_right(plate)

@@ -46,7 +46,7 @@ module SampleManifestExcel
       ranges <=> other.ranges
     end
 
-  private
+    private
 
     def create(ranges_data)
       {}.tap do |ranges|

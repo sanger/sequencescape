@@ -22,13 +22,13 @@ module StudiesHelper
     owners_for_display(owners.flatten)
   end
 
-private
+  private
 
   def owners_for_display(owners)
     owners.empty? ? 'Not available' : owners.map(&:name).join(', ')
   end
 
-public
+  public
 
   def display_file_icon(document)
     return image_tag('error.png') unless document
