@@ -15,7 +15,7 @@ class Transfer::FromPlateToTubeByMultiplex < Transfer::BetweenPlateAndTubes
   private :locate_mx_library_tube_for
 
   def well_to_destination
-    @w2d ||= ActiveSupport::OrderedHash[
+    @w2d ||= Hash[
       source.wells.map do |well|
         tube = locate_mx_library_tube_for(well)
         (tube.nil? or should_well_not_be_transferred?(well)) ? nil : [well, [tube, tube.requests_as_target.map(&:asset)]]

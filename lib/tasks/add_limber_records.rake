@@ -26,10 +26,24 @@ namespace :limber do
 
   desc 'Create the limber request types'
   task create_request_types: [:environment, :create_plates] do
+    puts 'Creating request types...'
     ActiveRecord::Base.transaction do
       ['WGS'].each do |prefix|
         Limber::Helper::RequestTypeConstructor.new(prefix).build!
       end
+
+      Limber::Helper::RequestTypeConstructor.new(
+        'ISC',
+        request_class: 'Pulldown::Requests::IscLibraryRequest',
+        library_types: 'Agilent Pulldown'
+      ).build!
+
+      Limber::Helper::RequestTypeConstructor.new(
+        'ReISC',
+        request_class: 'Pulldown::Requests::ReIscLibraryRequest',
+        library_types: 'Agilent Pulldown',
+        default_purpose: 'LB Lib PCR-XP'
+      ).build!
 
       unless RequestType.where(key: 'limber_multiplexing').exists?
         RequestType.create!(
@@ -52,8 +66,9 @@ namespace :limber do
 
   desc 'Create the limber submission templates'
   task create_submission_templates: [:environment, :create_request_types] do
+    puts 'Creating submission templates....'
     ActiveRecord::Base.transaction do
-      ['WGS'].each do |prefix|
+      %w(WGS ISC ReISC).each do |prefix|
         catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: prefix)
         Limber::Helper::TemplateConstructor.new(
           name: prefix,

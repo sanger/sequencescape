@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170321151830) do
+ActiveRecord::Schema.define(version: 20170511153731) do
 
   create_table "aliquot_indices", force: :cascade do |t|
     t.integer  "aliquot_id",    limit: 4, null: false
@@ -889,7 +889,7 @@ ActiveRecord::Schema.define(version: 20170321151830) do
     t.string   "target_type",             limit: 30
     t.boolean  "stock_plate",                         default: false,           null: false
     t.string   "default_state",           limit: 255, default: "pending"
-    t.integer  "barcode_printer_type_id", limit: 4,   default: 2
+    t.integer  "barcode_printer_type_id", limit: 4
     t.boolean  "cherrypickable_target",               default: true,            null: false
     t.string   "cherrypick_direction",    limit: 255, default: "column",        null: false
     t.integer  "default_location_id",     limit: 4

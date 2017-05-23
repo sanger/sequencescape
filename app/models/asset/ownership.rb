@@ -16,7 +16,7 @@ module Asset::Ownership
     end
 
     def assign_owner
-      [target_for_ownership].flatten.map { |target| target.change_owner_to(user, self) }
+      [target_for_ownership].flatten.each { |target| target.change_owner_to(user, self) }
     end
     private :assign_owner
 

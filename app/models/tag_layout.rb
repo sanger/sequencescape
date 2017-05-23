@@ -85,10 +85,11 @@ class TagLayout < ActiveRecord::Base
     # Make sure that the substitutions requested by the user are handled before applying the tags
     # to the wells.
 
-    tag_map_id_to_tag = ActiveSupport::OrderedHash[tag_group.tags.sort_by(&:map_id).map { |tag| [tag.map_id.to_s, tag] }]
+    tag_map_id_to_tag = tag_group.tags.sort_by(&:map_id).index_by { |tag| tag.map_id.to_s }
     tags              = tag_map_id_to_tag.map { |k, tag| substitutions.key?(k) ? tag_map_id_to_tag[substitutions[k]] : tag }
     walk_wells do |well, index|
       apply_tag(tags[(index + initial_tag) % tags.length], well)
+      well.set_as_library
     end
 
     # We can now check that the pools do not contain duplicate tags.
