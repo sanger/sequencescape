@@ -26,7 +26,7 @@ module SampleManifestExcel
       defaults <=> other.defaults
     end
 
-  private
+    private
 
     def create_defaults(defaults)
       self.defaults.tap do |_defaults|

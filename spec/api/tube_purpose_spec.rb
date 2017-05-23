@@ -44,6 +44,11 @@ describe '/api/1/tube/purposes' do
     expect(Tube::Purpose.last).to be_a(IlluminaHtp::InitialStockTubePurpose)
   end
 
+  it 'picks a sensible default printer type' do
+    api_request :post, subject, payload
+    expect(Tube::Purpose.last.barcode_printer_type).to be_a(BarcodePrinterType1DTube)
+  end
+
   # Move into a helper as this expands
   def api_request(action, path, body)
     headers = {

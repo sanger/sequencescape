@@ -22,7 +22,7 @@ module SearchBehaviour
     end
   end
 
-private
+  private
 
   def perform_search(query)
     searchable_classes.each do |clazz|

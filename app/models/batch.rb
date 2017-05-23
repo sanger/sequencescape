@@ -22,7 +22,7 @@ class Batch < ActiveRecord::Base
   has_many :target_assets, through: :requests
   has_many :source_assets, ->() { distinct }, through: :requests, source: :asset
   has_many :submissions, ->() { distinct }, through: :requests
-  has_many :orders, ->() { distinct }, through: :submissions
+  has_many :orders, ->() { distinct }, through: :requests
   has_many :studies, ->() { distinct }, through: :orders
   has_many :projects,  ->() { distinct }, through: :orders
   has_many :aliquots,  ->() { distinct }, through: :source_assets
@@ -303,13 +303,22 @@ class Batch < ActiveRecord::Base
     requests.map(&:asset).map(&:labware).uniq
   end
 
+  #
+  # Verifies that provided barcodes are in the correct locations according to the
+  # request organization within the batch.
+  # Either returns true, and logs the event or returns false.
+  #
+  # @param [Array<Integer>] barcodes An array of 1-7 digit long barcodes
+  # @param [User] user The user validating the barcode layout
+  #
+  # @return [Bool] true if the layout is correct, false otherwise
+  #
   def verify_tube_layout(barcodes, user = nil)
     requests.each do |request|
-      barcode = barcodes[(request.position).to_s]
-      unless barcode.blank? || barcode == '0'
-        unless barcode.to_i == request.asset.barcode.to_i
-          errors.add(:base, "The tube at position #{request.position} is incorrect.")
-        end
+      barcode = barcodes[request.position - 1]
+      unless barcode == request.asset.barcode.to_i
+        expected_barcode = request.asset.sanger_human_barcode
+        errors.add(:base, "The tube at position #{request.position} is incorrect: expected #{expected_barcode}.")
       end
     end
     if errors.empty?

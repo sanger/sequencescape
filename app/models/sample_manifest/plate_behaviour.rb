@@ -22,6 +22,10 @@ module SampleManifest::PlateBehaviour
       @manifest = manifest
     end
 
+    def acceptable_purposes
+      PlatePurpose.for_submissions
+    end
+
     delegate :generate_plates, to: :@manifest
     alias_method(:generate, :generate_plates)
 
@@ -143,24 +147,32 @@ module SampleManifest::PlateBehaviour
     Delayed::Job.enqueue SampleManifest::GenerateWellsJob.new(id, map_ids_to_sample_ids, plate_id)
   end
 
+  # Fall back to stock plate by default
+  def purpose
+    super || stock_plate_purpose
+  end
+
+  def purpose_id
+    super || purpose.id
+  end
+
   def generate_plates
     study_abbreviation = study.abbreviation
 
     well_data = []
-    plates    = Array.new(count) do
-      Plate.create_with_barcode!(plate_purpose: stock_plate_purpose)
-    end.sort_by(&:barcode).map do |plate|
-      plate.tap do |plate|
-        sanger_sample_ids = generate_sanger_ids(plate.size)
+    plates = Array.new(count) { purpose.create!(:without_wells) }.sort_by(&:barcode)
 
-        Map.walk_plate_in_column_major_order(plate.size) do |map, _|
-          sanger_sample_id           = sanger_sample_ids.shift
-          generated_sanger_sample_id = SangerSampleId.generate_sanger_sample_id!(study_abbreviation, sanger_sample_id)
+    plates.each do |plate|
+      sanger_sample_ids = generate_sanger_ids(plate.size)
 
-          well_data << [map, generated_sanger_sample_id]
-        end
+      Map.walk_plate_in_column_major_order(plate.size) do |map, _|
+        sanger_sample_id           = sanger_sample_ids.shift
+        generated_sanger_sample_id = SangerSampleId.generate_sanger_sample_id!(study_abbreviation, sanger_sample_id)
+
+        well_data << [map, generated_sanger_sample_id]
       end
     end
+
     core_behaviour.generate_wells(well_data, plates)
     self.barcodes = plates.map(&:sanger_human_barcode)
 

@@ -208,14 +208,6 @@ Rails/OutputSafety:
     - 'app/helpers/bootstrap_helper.rb'
     - 'app/helpers/submissions_helper.rb'
 
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: Include.
-# Include: app/models/**/*.rb
-Rails/ReadWriteAttribute:
-  Exclude:
-    - 'app/models/well.rb'
-
 # Offense count: 1
 # Configuration parameters: Include.
 # Include: db/migrate/*.rb
@@ -266,13 +258,6 @@ Security/YAMLLoad:
     - 'db/seeds/0001_snp_plate_purposes.rb'
     - 'lib/import_pulled_data.rb'
     - 'lib/tasks/code_quality_tests.rake'
-
-# Offense count: 48
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles, IndentationWidth.
-# SupportedStyles: outdent, indent
-Style/AccessModifierIndentation:
-  Enabled: false
 
 # Offense count: 36
 Style/AccessorMethodName:
@@ -996,7 +981,6 @@ Style/SignalException:
 # Configuration parameters: AllowIfMethodIsEmpty.
 Style/SingleLineMethods:
   Exclude:
-    - 'app/models/api/messages/flowcell_io.rb'
     - 'app/models/asset.rb'
     - 'app/models/batch/request_behaviour.rb'
     - 'app/models/bulk_submission.rb'

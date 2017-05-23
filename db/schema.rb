@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170419095123) do
+ActiveRecord::Schema.define(version: 20170511153731) do
 
   create_table "aliquot_indices", force: :cascade do |t|
     t.integer  "aliquot_id",    limit: 4, null: false
@@ -25,11 +25,11 @@ ActiveRecord::Schema.define(version: 20170419095123) do
   add_index "aliquot_indices", ["lane_id", "aliquot_index"], name: "index_aliquot_indices_on_lane_id_and_aliquot_index", unique: true, using: :btree
 
   create_table "aliquots", force: :cascade do |t|
-    t.integer  "receptacle_id",    limit: 4,                null: false
+    t.integer  "receptacle_id",    limit: 4,                   null: false
     t.integer  "study_id",         limit: 4
     t.integer  "project_id",       limit: 4
     t.integer  "library_id",       limit: 4
-    t.integer  "sample_id",        limit: 4,                null: false
+    t.integer  "sample_id",        limit: 4,                   null: false
     t.integer  "tag_id",           limit: 4
     t.string   "library_type",     limit: 255
     t.integer  "insert_size_from", limit: 4
@@ -38,6 +38,7 @@ ActiveRecord::Schema.define(version: 20170419095123) do
     t.datetime "updated_at"
     t.integer  "bait_library_id",  limit: 4
     t.integer  "tag2_id",          limit: 4,   default: -1
+    t.boolean  "suboptimal",                   default: false, null: false
   end
 
   add_index "aliquots", ["library_id"], name: "index_aliquots_on_library_id", using: :btree
@@ -889,9 +890,8 @@ ActiveRecord::Schema.define(version: 20170419095123) do
     t.string   "target_type",             limit: 30
     t.boolean  "stock_plate",                         default: false,           null: false
     t.string   "default_state",           limit: 255, default: "pending"
-    t.integer  "barcode_printer_type_id", limit: 4,   default: 2
+    t.integer  "barcode_printer_type_id", limit: 4
     t.boolean  "cherrypickable_target",               default: true,            null: false
-    t.boolean  "cherrypickable_source",               default: false,           null: false
     t.string   "cherrypick_direction",    limit: 255, default: "column",        null: false
     t.integer  "default_location_id",     limit: 4
     t.string   "cherrypick_filters",      limit: 255
@@ -1332,10 +1332,12 @@ ActiveRecord::Schema.define(version: 20170419095123) do
     t.text     "barcodes",    limit: 65535
     t.integer  "user_id",     limit: 4
     t.string   "password",    limit: 255
+    t.integer  "purpose_id",  limit: 4
   end
 
   add_index "sample_manifests", ["asset_type"], name: "index_sample_manifests_on_asset_type", using: :btree
   add_index "sample_manifests", ["created_at"], name: "index_sample_manifests_on_created_at", using: :btree
+  add_index "sample_manifests", ["purpose_id"], name: "fk_rails_5627ab4aaa", using: :btree
   add_index "sample_manifests", ["study_id"], name: "index_sample_manifests_on_study_id", using: :btree
   add_index "sample_manifests", ["supplier_id"], name: "index_sample_manifests_on_supplier_id", using: :btree
   add_index "sample_manifests", ["updated_at"], name: "index_sample_manifests_on_updated_at", using: :btree
@@ -1922,6 +1924,7 @@ ActiveRecord::Schema.define(version: 20170419095123) do
     t.integer  "version",       limit: 4
   end
 
+  add_foreign_key "sample_manifests", "plate_purposes", column: "purpose_id"
   add_foreign_key "work_completions", "assets", column: "target_id"
   add_foreign_key "work_completions", "users"
   add_foreign_key "work_completions_submissions", "submissions"

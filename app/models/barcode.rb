@@ -18,7 +18,7 @@ class Barcode
         self.prefix = 'NT'
 
         if ActiveRecord::Base.observers.include?(:amqp_observer)
-          after_save :broadcast_barcode, if: :barcode_changed?
+          after_save :broadcast_barcode, if: :broadcast_barcode?
         end
       end
     end
@@ -79,6 +79,10 @@ class Barcode
 
     def barcode!
       barcode
+    end
+
+    def broadcast_barcode?
+      previous_changes.include?(:barcode)
     end
   end
 

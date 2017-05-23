@@ -52,6 +52,7 @@ class PlatePurpose < Purpose
   end
 
   before_validation :set_default_target_type
+  before_validation :set_default_printer_type
 
   belongs_to :asset_shape
 
@@ -233,6 +234,10 @@ class PlatePurpose < Purpose
 
   def set_default_target_type
     self.target_type ||= 'Plate'
+  end
+
+  def set_default_printer_type
+    self.barcode_printer_type ||= BarcodePrinterType96Plate.first
   end
 end
 

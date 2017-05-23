@@ -25,14 +25,14 @@ class BatchesControllerTest < ActionController::TestCase
         setup do
           pipeline = Pipeline.find_by!(name: 'Cluster formation PE (no controls)')
 
-          @study, @project = FactoryGirl.create(:study), FactoryGirl.create(:project)
-          @sample = FactoryGirl.create :sample
-          @submission = FactoryGirl.create :submission_without_order, priority: 3
+          @study, @project = create(:study), create(:project)
+          @sample = create :sample
+          @submission = create :submission_without_order, priority: 3
 
-          @library = FactoryGirl.create(:empty_library_tube).tap do |library_tube|
+          @library = create(:empty_library_tube).tap do |library_tube|
             library_tube.aliquots.create!(sample: @sample, project: @project, study: @study, library: library_tube, library_type: 'Standard')
           end
-          @lane = FactoryGirl.create(:empty_lane, qc_state: 'failed')
+          @lane = create(:empty_lane, qc_state: 'failed')
           @request_one = pipeline.request_types.first.create!(
             asset: @library, target_asset: @lane,
             project: @project, study: @study,
@@ -40,7 +40,7 @@ class BatchesControllerTest < ActionController::TestCase
             request_metadata_attributes: { fragment_size_required_from: 100, fragment_size_required_to: 200, read_length: 76 }
           )
 
-          batch = FactoryGirl.create :batch, pipeline: pipeline
+          batch = create :batch, pipeline: pipeline
           batch.batch_requests.create!(request: @request_one, position: 1)
           batch.reload
           batch.start!(create(:user))
@@ -92,6 +92,42 @@ class BatchesControllerTest < ActionController::TestCase
           get :edit, id: @batch_one
           assert_response :success
           assert_equal @batch_one, assigns(:batch)
+        end
+      end
+
+      context '#verify_tube_layout' do
+        setup do
+          @pipeline = create :pipeline
+          @asset1 = create :sample_tube, barcode: '123456'
+          @asset2 = create :sample_tube, barcode: '654321'
+
+          @request1 = @pipeline.request_types.last.create!(asset: @asset1)
+          @request2 = @pipeline.request_types.last.create!(asset: @asset2)
+
+          @batch = @pipeline.batches.create!
+          @batch.batch_requests.create!(request: @request1, position: 2)
+          @batch.batch_requests.create!(request: @request2, position: 1)
+        end
+
+        should 'accepts valid layouts' do
+          post :verify_tube_layout,             id: @batch.id,
+                                                'barcode_0' => '3980654321768',
+                                                'barcode_1' => '3980123456878'
+          assert_equal 'All of the tubes are in their correct positions.', flash[:notice]
+        end
+
+        should 'rejects invalid layouts' do
+          post :verify_tube_layout,             id: @batch.id,
+                                                'barcode_0' => '3980123456878',
+                                                'barcode_1' => '3980654321768'
+          assert_equal ['The tube at position 1 is incorrect: expected NT654321L.', 'The tube at position 2 is incorrect: expected NT123456W.'], flash[:error]
+        end
+
+        should 'rejects missing tubes' do
+          post :verify_tube_layout,             id: @batch.id,
+                                                'barcode_0' => '3980654321768',
+                                                'barcode_1' => ''
+          assert_equal ['The tube at position 2 is incorrect: expected NT123456W.'], flash[:error]
         end
       end
 
@@ -336,7 +372,6 @@ class BatchesControllerTest < ActionController::TestCase
 
         order = create :order, order_role: order_role, study: study, assets: [asset], project: project
         request = create :well_request, asset: (create :well_with_sample_and_plate), target_asset: (create :well_with_sample_and_plate), order: order
-
         @batch = create :batch
         @batch.requests << request
 

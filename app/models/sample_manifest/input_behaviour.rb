@@ -5,7 +5,7 @@
 # Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 require 'linefeed_fix'
-
+require 'csv'
 module SampleManifest::InputBehaviour
   module ClassMethods
     def find_sample_manifest_from_uploaded_spreadsheet(spreadsheet_file)

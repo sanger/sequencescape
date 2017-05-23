@@ -187,7 +187,7 @@ class SamplesController < ApplicationController
      end
    end
 
-private
+  private
 
   def default_permitted_metadata_fields
     { sample_metadata_attributes: [

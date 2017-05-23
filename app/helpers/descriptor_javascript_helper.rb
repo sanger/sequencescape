@@ -37,7 +37,7 @@ module DescriptorJavascriptHelper
     link_to_with_onclick_only("removeOption(#{index},#{option});return false;", &block);
   end
 
-private
+  private
 
   def link_to_with_onclick_only(on_click_code, &block)
     concat(

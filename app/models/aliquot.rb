@@ -90,6 +90,10 @@ class Aliquot < ActiveRecord::Base
   # It may have a bait library but not necessarily.
   belongs_to :bait_library
 
+  def set_library
+    self.library = receptacle
+  end
+
   # An aliquot can represent a library, which is a processed sample that has been fragmented.  In which case it
   # has a receptacle that held the library aliquot and has an insert size describing the fragment positions.
   class InsertSize < Range
@@ -109,6 +113,11 @@ class Aliquot < ActiveRecord::Base
       cloned_aliquot.created_at = nil
       cloned_aliquot.updated_at = nil
     end
+  end
+
+  def update_quality(suboptimal_quality)
+    self.suboptimal = suboptimal_quality
+    save!
   end
 
   def clone
@@ -131,10 +140,16 @@ class Aliquot < ActiveRecord::Base
     end
   end
 
-  # Aliquot are similar if they share the same sample AND the same tag (if they have one: nil acts as a wildcard))
+  # An aliquot approximates another aliquot if:
+  # - They have matching samples
+  # - They have matching tags
+  # - They have matching tag2s
+  # If either aliquot is missing a tag, that tag is ignored
+  # This method is primarily provided for legacy reasons. #matches? is much more robust
   def =~(object)
-    a, b = [self, object].map { |o| [o.tag_id, o.sample_id, o.tag2_id < 0 ? nil : o.tag2_id] }
-    a.zip(b).all? { |x, y| (x || y) == (y || x) }
+    (sample_id == object.sample_id) &&
+      (untagged? || object.untagged? || (tag_id == object.tag_id)) &&
+      (no_tag2?  || object.no_tag2?  || (tag2_id == object.tag2_id))
   end
 
   def matches?(object)
