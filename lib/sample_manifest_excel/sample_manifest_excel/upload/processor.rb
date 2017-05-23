@@ -7,6 +7,7 @@ module SampleManifestExcel
       require_relative 'processor/base'
       require_relative 'processor/one_d_tube'
       require_relative 'processor/multiplexed_library_tube'
+      require_relative 'processor/library_tube'
     end
   end
 end
