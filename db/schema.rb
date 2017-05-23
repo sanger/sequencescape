@@ -1178,6 +1178,7 @@ ActiveRecord::Schema.define(version: 20170511153731) do
     t.float    "gigabases_expected",              limit: 24
     t.integer  "target_purpose_id",               limit: 4
     t.boolean  "customer_accepts_responsibility"
+    t.integer  "pcr_cycles",                      limit: 4
   end
 
   add_index "request_metadata", ["request_id"], name: "index_request_metadata_on_request_id", using: :btree

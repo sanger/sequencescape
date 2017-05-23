@@ -185,6 +185,7 @@ class BulkSubmission
     # Needed to identify the assets and what happens to them ...
     'asset group id', 'asset group name',
     'fragment size from', 'fragment size to',
+    'pcr cycles',
     'read length',
     'library type',
     'bait library', 'bait library name',
@@ -254,6 +255,22 @@ class BulkSubmission
     end
   end
 
+  def extract_request_options(details)
+    {
+      read_length: details['read length'],
+      multiplier: {}
+    }.tap do |request_options|
+      request_options['library_type']                  = details['library type']           unless details['library type'].blank?
+      request_options['fragment_size_required_from']   = details['fragment size from']     unless details['fragment size from'].blank?
+      request_options['fragment_size_required_to']     = details['fragment size to']       unless details['fragment size to'].blank?
+      request_options['pcr_cycles']                    = details['pcr cycles']             unless details['pcr cycles'].blank?
+      request_options[:bait_library_name]              = details['bait library name']      unless details['bait library name'].blank?
+      request_options[:bait_library_name]            ||= details['bait library']           unless details['bait library'].blank?
+      request_options['pre_capture_plex_level']        = details['pre-capture plex level'] unless details['pre-capture plex level'].blank?
+      request_options['gigabases_expected']            = details['gigabases expected']     unless details['gigabases expected'].blank?
+    end
+  end
+
   # Returns an order for the given details
   def prepare_order(details)
     begin
@@ -268,20 +285,9 @@ class BulkSubmission
         project: project,
         user: user,
         comments: details['comments'],
-        request_options: {
-          read_length: details['read length']
-        },
+        request_options: extract_request_options(details),
         pre_cap_group: details['pre-capture group']
       }
-
-      attributes[:request_options]['library_type']                  = details['library type']           unless details['library type'].blank?
-      attributes[:request_options]['fragment_size_required_from']   = details['fragment size from']     unless details['fragment size from'].blank?
-      attributes[:request_options]['fragment_size_required_to']     = details['fragment size to']       unless details['fragment size to'].blank?
-      attributes[:request_options][:bait_library_name]              = details['bait library name']      unless details['bait library name'].blank?
-      attributes[:request_options][:bait_library_name]            ||= details['bait library']           unless details['bait library'].blank?
-      attributes[:request_options]['pre_capture_plex_level']        = details['pre-capture plex level'] unless details['pre-capture plex level'].blank?
-      attributes[:request_options]['gigabases_expected']            = details['gigabases expected']     unless details['gigabases expected'].blank?
-      attributes[:request_options][:multiplier]                     = {}
 
       # Deal with the asset group: either it's one we should be loading, or one we should be creating.
 

@@ -62,4 +62,5 @@ RSpec.configure do |config|
 
   config.include TransactionalCapybara::AjaxHelpers
   config.include ApiHelper
+  config.include ActionDispatch::TestProcess
 end

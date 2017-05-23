@@ -129,7 +129,10 @@ module Metadata
 
     def merge_instance_defaults
       # Replace attributes with the default if the value is nil
-      self.attributes = instance_defaults.merge(attributes.symbolize_keys) { |_key, default, attribute| attribute.nil? ? default : attribute }
+      instance_defaults.each do |attribute, value|
+        next unless send(attribute).nil?
+        send(:"#{attribute}=", value)
+      end
     end
 
     include Attributable
