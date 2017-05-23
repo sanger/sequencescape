@@ -43,6 +43,9 @@ en:
         customer_accepts_responsibility:
           label: Still charge on fail
 
+        pcr_cycles:
+          label: PCR Cycles
+
     library_creation_request:
       <<: *REQUEST
     sequencing_request:
