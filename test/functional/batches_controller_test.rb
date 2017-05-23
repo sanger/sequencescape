@@ -372,7 +372,6 @@ class BatchesControllerTest < ActionController::TestCase
 
         order = create :order, order_role: order_role, study: study, assets: [asset], project: project
         request = create :well_request, asset: (create :well_with_sample_and_plate), target_asset: (create :well_with_sample_and_plate), order: order
-
         @batch = create :batch
         @batch.requests << request
 
