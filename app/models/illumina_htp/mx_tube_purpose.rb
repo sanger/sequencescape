@@ -33,16 +33,24 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
   private :target_requests
 
   def stock_plate(tube)
-    tube.requests_as_target.where_is_a?(CustomerRequest).where.not(requests: { asset_id: nil }).first.asset.plate
+    tube.requests_as_target.where_is_a?(CustomerRequest).where.not(requests: { asset_id: nil }).first&.asset&.plate
+  end
+
+  def source_plate(tube)
+    source_plate_scope(tube).first
   end
 
   def library_source_plates(tube)
+    source_plate_scope(tube).map(&:source_plate)
+  end
+
+  def source_plate_scope(tube)
     Plate
       .joins(wells: :requests)
       .where(requests: {
         target_asset_id: tube.id,
-        sti_type: [Request::LibraryCreation, *Request::LibraryCreation.descendants].map(&:name)
-      }).distinct.map(&:source_plate)
+        sti_type: [Request::Multiplexing, Request::LibraryCreation, *Request::LibraryCreation.descendants].map(&:name)
+      }).distinct
   end
 
   def request_state(request, state)

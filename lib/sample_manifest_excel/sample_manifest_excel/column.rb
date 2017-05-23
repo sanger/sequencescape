@@ -132,7 +132,7 @@ module SampleManifestExcel
         arguments
       end
 
-    private
+      private
 
       def combine_conditional_formattings(defaults)
         if arguments[:conditional_formattings].present?
@@ -143,7 +143,7 @@ module SampleManifestExcel
       end
     end
 
-  private
+    private
 
     attr_reader :attribute
   end

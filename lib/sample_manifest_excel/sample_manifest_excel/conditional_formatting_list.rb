@@ -88,7 +88,7 @@ module SampleManifestExcel
       super
     end
 
-  private
+    private
 
     def reset!
       @conditional_formattings = {}

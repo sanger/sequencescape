@@ -85,7 +85,7 @@ module Accession
       ebi_accession_number.present?
     end
 
-  private
+    private
 
     def set_studies
       sample.studies

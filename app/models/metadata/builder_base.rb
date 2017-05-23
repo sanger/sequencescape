@@ -25,7 +25,7 @@ class Metadata::BuilderBase < ActionView::Helpers::FormBuilder
     @filter = block
   end
 
-private
+  private
 
   delegate :concat, :capture, :render, :content_tag, to: :@template
 

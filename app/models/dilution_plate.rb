@@ -19,7 +19,7 @@ class DilutionPlate < Plate
   }
 
   scope :for_pico_view, -> {
-    includes(:barcode_prefix, :plate_metadata, :studies)
+    preload(:barcode_prefix, :plate_metadata)
   }
 
   def to_pico_hash

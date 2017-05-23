@@ -62,7 +62,7 @@ class LibPoolNormTubeGenerator
     end
   end
 
-private
+  private
 
   def create_lib_pool_norm_tube(tube)
     destination_tube = transfer_template.create!(user: user, source: tube).destination

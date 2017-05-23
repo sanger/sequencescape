@@ -15,7 +15,7 @@ class LabSearchesController < ApplicationController
     redirect_to action: :new
   end
 
-private
+  private
 
   SEARCHABLE_CLASSES = [Batch, Asset]
   def searchable_classes
