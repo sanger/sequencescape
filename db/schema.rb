@@ -891,7 +891,6 @@ ActiveRecord::Schema.define(version: 20170511153731) do
     t.string   "default_state",           limit: 255, default: "pending"
     t.integer  "barcode_printer_type_id", limit: 4
     t.boolean  "cherrypickable_target",               default: true,            null: false
-    t.boolean  "cherrypickable_source",               default: false,           null: false
     t.string   "cherrypick_direction",    limit: 255, default: "column",        null: false
     t.integer  "default_location_id",     limit: 4
     t.string   "cherrypick_filters",      limit: 255
