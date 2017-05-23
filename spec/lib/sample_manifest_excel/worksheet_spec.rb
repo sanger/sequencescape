@@ -58,7 +58,6 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
       worksheet = SampleManifestExcel::Worksheet::DataWorksheet.new(options.merge(columns: column_list, sample_manifest: sample_manifest))
       expect(worksheet.type).to eq('Tubes')
     end
-
   end
 
   context 'data worksheet' do
@@ -131,7 +130,6 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
       expect(worksheet.axlsx_worksheet.sheet_protection.format_columns).to be_falsey
       expect(worksheet.axlsx_worksheet.sheet_protection.format_rows).to be_falsey
     end
-
   end
 
   context 'validations ranges worksheet' do
@@ -162,19 +160,17 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
   end
 
   context 'multiplexed library tube worksheet' do
-
     it 'must have the multiplexed library tube barcode' do
       sample_manifest = create(:tube_sample_manifest, asset_type: 'multiplexed_library', rapid_generation: true)
       sample_manifest.generate
       worksheet = SampleManifestExcel::Worksheet::DataWorksheet.new(workbook: workbook,
-                                                        columns: SampleManifestExcel.configuration.columns.tube_full.dup,
-                                                        sample_manifest: sample_manifest, ranges: SampleManifestExcel.configuration.ranges.dup,
-                                                        password: '1111')
+                                                                    columns: SampleManifestExcel.configuration.columns.tube_full.dup,
+                                                                    sample_manifest: sample_manifest, ranges: SampleManifestExcel.configuration.ranges.dup,
+                                                                    password: '1111')
       save_file
-      expect(spreadsheet.sheet(0).cell(worksheet.last_row+2, 1)).to eq('Multiplexed library tube barcode:')
-      expect(spreadsheet.sheet(0).cell(worksheet.last_row+2, 2)).to eq(Tube.find_by_barcode(worksheet.sample_manifest.barcodes.first.gsub(/\D/, "")).requests.first.target_asset.sanger_human_barcode)
+      expect(spreadsheet.sheet(0).cell(worksheet.last_row + 2, 1)).to eq('Multiplexed library tube barcode:')
+      expect(spreadsheet.sheet(0).cell(worksheet.last_row + 2, 2)).to eq(Tube.find_by(barcode: worksheet.sample_manifest.barcodes.first.gsub(/\D/, '')).requests.first.target_asset.sanger_human_barcode)
     end
-  
   end
 
   context 'test worksheet' do

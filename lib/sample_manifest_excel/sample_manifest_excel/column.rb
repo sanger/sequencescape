@@ -109,7 +109,7 @@ module SampleManifestExcel
 
       conditional_formattings.update(
         self.range.references.merge(absolute_reference: range.absolute_reference, worksheet: worksheet)
-)
+      )
 
       @updated = true
 

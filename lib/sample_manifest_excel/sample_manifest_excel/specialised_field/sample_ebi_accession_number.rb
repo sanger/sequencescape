@@ -8,7 +8,7 @@ module SampleManifestExcel
 
       validate :check_equality
 
-    private
+      private
 
       def check_equality
         accession_number = sample.sample_metadata.sample_ebi_accession_number

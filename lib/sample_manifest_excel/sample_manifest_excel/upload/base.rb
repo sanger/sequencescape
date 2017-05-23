@@ -55,7 +55,7 @@ module SampleManifestExcel
         end
       end
 
-    private
+      private
 
       def create_processor
         if sample_manifest.present?

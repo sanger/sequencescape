@@ -165,7 +165,7 @@ module SampleManifestExcel
       "<#{self.class}: @keys=#{keys}, @values=#{values.inspect}>"
     end
 
-  private
+    private
 
     def create_list
       list_model.new(*(keys.collect { |_k| {} }))

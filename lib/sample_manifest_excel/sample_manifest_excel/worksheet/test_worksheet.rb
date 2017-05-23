@@ -74,7 +74,7 @@ module SampleManifestExcel
         @multiplexed_library_tube ||= FactoryGirl.create(:multiplexed_library_tube)
       end
 
-    private
+      private
 
       def create_asset
         asset = if ['multiplexed_library', 'library'].include? manifest_type

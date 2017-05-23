@@ -23,7 +23,6 @@ RSpec.describe SampleManifestExcel::SpecialisedField, type: :model, sample_manif
   end
 
   describe 'value required' do
-
     it 'will produce the correct error message' do
       my_perfect_class = MyPerfectClass.new(value: nil)
       my_perfect_class.valid?
@@ -32,7 +31,6 @@ RSpec.describe SampleManifestExcel::SpecialisedField, type: :model, sample_manif
   end
 
   describe 'Library Type' do
-
     it 'will not be valid without a persisted library type' do
       expect(SampleManifestExcel::SpecialisedField::LibraryType.new(value: library_type.name, sample: sample)).to be_valid
       expect(SampleManifestExcel::SpecialisedField::LibraryType.new(value: 'A new library type', sample: sample)).to_not be_valid

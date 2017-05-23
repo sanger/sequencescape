@@ -26,7 +26,7 @@ module SampleManifestExcel
         items.each(&block)
       end
 
-    private
+      private
 
       def create_rows
         [].tap do |rows|

@@ -10,7 +10,7 @@ module SampleManifestExcel
 
       validate :check_container
 
-    private
+      private
 
       def check_container
         unless value == sample.wells.first.map.description

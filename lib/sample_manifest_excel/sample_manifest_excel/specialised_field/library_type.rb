@@ -15,7 +15,7 @@ module SampleManifestExcel
         end
       end
 
-    private
+      private
 
       def check_library_type_exists
         unless ::LibraryType.find_by(name: value).present?
