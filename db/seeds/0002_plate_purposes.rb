@@ -54,4 +54,11 @@ ActiveRecord::Base.transaction do
     plate_purpose = Purpose.find_by!(name: name)
     plate_purpose.child_relationships.create!(child: qc_plate_purpose, transfer_request_type: RequestType.transfer)
   end
+
+  PlatePurpose.create!(
+    name: 'Pre-capture stock',
+    target_type: 'Plate',
+    stock_plate: true,
+    barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate')
+  )
 end

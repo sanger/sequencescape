@@ -150,7 +150,7 @@ module SampleManifestExcel
         "<#{self.class}: @name=#{name}, @heading=#{heading}, @number=#{number}, @type=#{type}, @validation#{validation}, @value=#{value}, @unlocked=#{unlocked}, @conditional_formattings=#{conditional_formattings}, @attribute=#{attribute}, @range=#{range}>"
       end
 
-    private
+      private
 
       def combine_conditional_formattings(defaults)
         if arguments[:conditional_formattings].present?
@@ -161,7 +161,7 @@ module SampleManifestExcel
       end
     end
 
-  private
+    private
 
     attr_reader :attribute
 

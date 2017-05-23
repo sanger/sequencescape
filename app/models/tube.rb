@@ -47,7 +47,7 @@ class Tube < Aliquot::Receptacle
 
   def source_plate
     return nil if purpose.nil?
-    purpose.source_plate(self)
+    @source_plate ||= purpose.source_plate(self)
   end
 
   def ancestor_of_purpose(ancestor_purpose_id)

@@ -71,7 +71,7 @@ class Api::BaseController < ApplicationController
     end
   end
 
-private
+  private
 
   #--
   # Preparation filters for CRUD methods.

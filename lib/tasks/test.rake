@@ -17,7 +17,6 @@ namespace :test do
         # TODO: All these factories should be updated to make them valid
         # Any tests which break as a result should be fixed.
         invalid_factories = [
-          :pooling_plate,
           :transfer_template,
           :pooling_transfer_template,
           :multiplex_transfer_template,
@@ -26,26 +25,14 @@ namespace :test do
           :entire_plate_tag_layout_template,
           :tag_layout,
           :parent_plate_purpose,
-          :pooling_plate_purpose,
           :child_plate_purpose,
-          :initial_downstream_plate_purpose,
           :plate_creation,
           :child_tube_purpose,
           :tube_creation,
-          :bait_library_supplier,
-          :bait_library_type,
-          :bait_library,
-          :pulldown_sc_request,
-          :request_with_submission,
           :illumina_htp_requests_std_library_request_metadata,
-          :request_without_assets,
-          :request_without_item,
-          :multiplex_request_type,
           :library_types_request_type,
           :submission__,
           :order_with_submission,
-          :library_submission,
-          :user_query,
           :tag2_lot
           # :tag_group_for_layout
         ]
@@ -61,7 +48,7 @@ namespace :test do
         begin
           DatabaseCleaner.start
           puts "Linting #{factories_to_lint.length} factories. (Ignored #{ignored})"
-          puts 'Use LINT_ALL=true to lint all factories' if ENV.fetch('LINT_ALL', false)
+          puts 'Use LINT_ALL=true to lint all factories' unless ENV.fetch('LINT_ALL', false)
           FactoryGirl.lint factories_to_lint
           puts 'Linted'
         ensure

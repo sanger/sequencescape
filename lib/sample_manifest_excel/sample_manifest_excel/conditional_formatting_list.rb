@@ -6,11 +6,6 @@ module SampleManifestExcel
 
     list_for :conditional_formattings, keys: [:name]
 
-    # include Enumerable
-    # include Comparable
-
-    # attr_reader :conditional_formattings
-
     delegate :empty?, to: :conditional_formattings
 
     def initialize(conditional_formattings = {})
@@ -66,6 +61,12 @@ module SampleManifestExcel
       reset!
       create_conditional_formattings(source.conditional_formattings)
       super
+    end
+
+    private
+
+    def reset!
+      @conditional_formattings = {}
     end
   end
 end

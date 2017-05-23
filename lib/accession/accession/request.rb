@@ -43,7 +43,7 @@ module Accession
       end
     end
 
-  private
+    private
 
     # This is horribe but necessary.
     # Set the proxy to ensure you don't get a bad request error.

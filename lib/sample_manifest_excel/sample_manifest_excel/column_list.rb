@@ -89,6 +89,8 @@ module SampleManifestExcel
       find_by(key, value) || SampleManifestExcel::NullColumn.new
     end
 
+    private
+
     def with_specialised_fields
       select(&:specialised_field?)
     end
@@ -96,8 +98,6 @@ module SampleManifestExcel
     def with_metadata_fields
       select(&:metadata_field?)
     end
-
-  private
 
     # You can add a hash of columns, a hash of attributes or an array of columns.
     # If it is a hash of columns there is an assumption that a copy is being created.

@@ -74,7 +74,7 @@ class SequenomController < ApplicationController
   # and @plate are setup before we get to the action code.
   alias_method(:quick_update, :update)
 
-private
+  private
 
   def find_plate_from_id
     @plate = Plate.find(params[:id])
