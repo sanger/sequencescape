@@ -100,7 +100,7 @@ class Study < ActiveRecord::Base
   squishify :name
 
   validates_presence_of :name
-  validates_uniqueness_of :name, on: :create, message: "already in use (#{name})"
+  validates :name, on: :create, uniqueness: { case_sensitive: false }
   validates_length_of :name, maximum: 200
   validates_format_of :abbreviation, with: /\A[\w_-]+\z/i, allow_blank: false, message: 'cannot contain spaces or be blank'
 
