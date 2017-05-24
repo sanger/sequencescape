@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe BulkSubmission do
+describe BulkSubmission, with: :uploader do
   let(:encoding) { 'Windows-1252' }
   let(:spreadsheet_path) { Rails.root.join('features', 'submission', 'csv', spreadsheet_filename) }
   let(:submission_file) { fixture_file_upload(spreadsheet_path) }
