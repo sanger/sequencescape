@@ -41,7 +41,7 @@ module SampleManifestExcel
 
       # Adds axlsx worksheet to a workbook, to a particular place.
 
-      def insert_axlsx_worksheet(index = 0, name)
+      def insert_axlsx_worksheet(name, index = 0)
         @axlsx_worksheet ||= workbook.insert_worksheet(index, name: name)
       end
 

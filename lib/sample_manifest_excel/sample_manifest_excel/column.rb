@@ -30,7 +30,7 @@ module SampleManifestExcel
     # create a new validation object
     def validation=(validation)
       return if validation.nil?
-      @validation = if validation.kind_of?(Hash)
+      @validation = if validation.is_a?(Hash)
                       Validation.new(validation)
                     else
                       validation.dup
@@ -42,7 +42,7 @@ module SampleManifestExcel
     # otherwise create a new conditional formatting list
     def conditional_formattings=(conditional_formattings)
       return if conditional_formattings.nil?
-      @conditional_formattings = if conditional_formattings.kind_of?(Hash)
+      @conditional_formattings = if conditional_formattings.is_a?(Hash)
                                    ConditionalFormattingList.new(conditional_formattings)
                                  else
                                    conditional_formattings.dup

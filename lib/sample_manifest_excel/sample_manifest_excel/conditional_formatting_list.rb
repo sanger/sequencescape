@@ -40,7 +40,7 @@ module SampleManifestExcel
     # for each key.
     def create_conditional_formattings(conditional_formattings)
       conditional_formattings.each do |key, conditional_formatting|
-        add(if conditional_formatting.kind_of?(Hash)
+        add(if conditional_formatting.is_a?(Hash)
                   ConditionalFormatting.new(conditional_formatting.merge(name: key))
             else
                   key.dup
@@ -61,12 +61,6 @@ module SampleManifestExcel
       reset!
       create_conditional_formattings(source.conditional_formattings)
       super
-    end
-
-    private
-
-    def reset!
-      @conditional_formattings = {}
     end
   end
 end

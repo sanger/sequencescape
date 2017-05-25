@@ -1,8 +1,6 @@
 module SampleManifestExcel
   # A collection of columns
   class ColumnList
-    include Enumerable
-    include Comparable
     include List
 
     list_for :columns, keys: [:name, :heading, :number]
@@ -104,13 +102,13 @@ module SampleManifestExcel
     def create_columns(columns, conditional_formattings)
       columns.each do |k, v|
         begin
-          add_with_number(if v.kind_of?(Hash)
+          add_with_number(if v.is_a?(Hash)
                             SampleManifestExcel::Column.new(SampleManifestExcel::Column.build_arguments(v, k, conditional_formattings))
                           else
                             k.dup
                           end, self)
         rescue TypeError => e
-          puts "column can't be created for #{k}: #{e.message}"
+          Rails.logger.error("column can't be created for #{k}: #{e.message}")
         end
       end
     end
