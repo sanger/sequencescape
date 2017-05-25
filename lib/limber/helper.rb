@@ -70,14 +70,6 @@ module Limber::Helper
   end
 
   class TemplateConstructor
-    # Construct submission templates for the generic pipeline
-    # opts is a hash
-    # {
-    #   :name => The Name for the Library Step
-    #   :sequencing => Optional array of sequencing request type keys. Default is all.
-    #   :role => The role that will be printed on barcodes
-    #   :type => 'illumina_c_pcr'||'illumina_c_nopcr'
-    # }
     attr_accessor :name, :type, :role, :catalogue
     attr_reader :sequencing, :cherrypick_options
 
@@ -90,13 +82,34 @@ module Limber::Helper
       end.flatten
     end
 
-    def initialize(params)
-      self.name = params[:name]
-      self.type = params[:type]
-      self.role = params[:role]
-      self.skip_cherrypick = params.fetch(:skip_cherrypick, true)
-      self.sequencing = params[:sequencing] || ACCEPTABLE_SEQUENCING_REQUESTS
-      self.catalogue = params[:catalogue]
+    # Construct submission templates for the Limber pipeline
+    #
+    # @param [String] suffix: nil The suffix for the given limber pipeline (eg. WGS)
+    # @param [ProductCatalogue] catalogue: The product catalogue that matches the submission.
+    #                           Note: Most limber stuff will use a simple SingleProduct catalogue with a product names after the suffix.
+    # The following parameters are optional, and usually get calculated from the suffix.
+    # @param [String] name: nil Optional: The library creation portion of the submission template name
+    #                           defaults to the suffix.
+    # @param [String] type: nil Optional: The library creation request key (eg. limber_wgs) for the templates.
+    #                           Calculated from the suffix by default.
+    # @param [String] role: nil Optional: A string matching the desired order role. Defaults to the suffix.
+    # The following are optional and change the range of submission templates constructed.
+    # @param [String] skip_cherrypick: true Boolean. Set to false to generate submission templates with in built cherrypicking.
+    # @param [Array] sequencing: Array of sequencing request type keys to build templates for. Defaults to all appropriate request types.
+    def initialize(name: nil, type: nil, role: nil, suffix: nil, skip_cherrypick: true, sequencing: ACCEPTABLE_SEQUENCING_REQUESTS, catalogue:)
+      @name = name
+      @type = type
+      @role = role
+      self.suffix = suffix
+      self.skip_cherrypick = skip_cherrypick
+      self.sequencing = sequencing
+      @catalogue = catalogue
+    end
+
+    def suffix=(suffix)
+      @name ||= suffix
+      @role ||= suffix
+      @type ||= "limber_#{suffix.downcase}"
     end
 
     def sequencing=(sequencing_array)
@@ -106,9 +119,10 @@ module Limber::Helper
     end
 
     def validate!
-      [:name, :type, :role, :catalogue].each do |value|
-        raise "Must provide a #{value}" if send(value).nil?
+      [:name, :type, :role].each do |value|
+        raise "Must provide a #{value} or suffix" if send(value).nil?
       end
+      raise "Must provide a catalogue" if catalogue.nil?
       true
     end
 
@@ -178,6 +192,27 @@ module Limber::Helper
         order_role_id: Order::OrderRole.find_or_create_by(role: role).id,
         info_differential: Submission::Workflow.find_by(key: 'short_read_sequencing').id
       }
+    end
+  end
+
+  #
+  # Class LibraryOnlyTemplateConstructor provides a template constructor
+  # which JUST build the library portion of the submission template.
+  # No multiplexing or sequencing requests are added.
+  #
+  class LibraryOnlyTemplateConstructor < TemplateConstructor
+    def name_for(cherrypick, _sequencing_request_type)
+      "#{PIPELINE} - #{cherrypick ? 'Cherrypicked - ' : ''}#{name}"
+    end
+
+    def sequencing
+      [nil]
+    end
+
+    def request_type_ids(cherrypick, _sequencing)
+      ids = []
+      ids << [cherrypick_request_type.id] if cherrypick
+      ids << [library_request_type.id]
     end
   end
 end
