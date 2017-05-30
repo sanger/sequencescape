@@ -122,7 +122,7 @@ module Limber::Helper
       [:name, :type, :role].each do |value|
         raise "Must provide a #{value} or suffix" if send(value).nil?
       end
-      raise "Must provide a catalogue" if catalogue.nil?
+      raise 'Must provide a catalogue' if catalogue.nil?
       true
     end
 

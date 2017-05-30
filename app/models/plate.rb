@@ -395,7 +395,7 @@ class Plate < Asset
       description: description,
       asset_size: size,
       asset_shape_id: asset_shape
-)
+    )
   end
 
   def find_well_by_rowcol(row, col)
@@ -802,10 +802,16 @@ class Plate < Asset
 
   # This method returns a map from the wells on the plate to their stock well.
   def stock_wells
-    # Optimisation: if the plate is a stock plate then it's wells are it's stock wells!
-    return Hash[wells.with_pool_id.map { |w| [w, [w]] }] if stock_plate?
-    Hash[wells.include_stock_wells.with_pool_id.map { |w| [w, w.stock_wells.sort_by { |sw| sw.map.column_order }] }.reject { |_, v| v.empty? }].tap do |stock_wells_hash|
-      raise "No stock plate associated with #{id}" if stock_wells_hash.empty?
+    # Optimisation: if the plate is a stock plate then it's wells are it's stock wells!]
+    if stock_plate?
+      wells.with_pool_id.each_with_object({}) { |w, store| store[w] = [w] }
+    else
+      wells.include_stock_wells.with_pool_id.each_with_object do |w, store|
+        storted_stock_wells = w.stock_wells.sort_by { |sw| sw.map.column_order }
+        store[w] = storted_stock_wells unless storted_stock_wells.empty?
+      end.tap do |stock_wells_hash|
+        raise "No stock plate associated with #{id}" if stock_wells_hash.empty?
+      end
     end
   end
 
