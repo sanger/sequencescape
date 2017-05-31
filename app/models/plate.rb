@@ -806,7 +806,7 @@ class Plate < Asset
     if stock_plate?
       wells.with_pool_id.each_with_object({}) { |w, store| store[w] = [w] }
     else
-      wells.include_stock_wells.with_pool_id.each_with_object do |w, store|
+      wells.include_stock_wells.with_pool_id.each_with_object({}) do |w, store|
         storted_stock_wells = w.stock_wells.sort_by { |sw| sw.map.column_order }
         store[w] = storted_stock_wells unless storted_stock_wells.empty?
       end.tap do |stock_wells_hash|

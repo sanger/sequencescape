@@ -59,11 +59,16 @@ class TransferRequest < SystemRequest
     end
   end
 
-  before_create(:add_request_type)
+  before_validation :add_request_type, :set_request_purpose
+
   def add_request_type
     self.request_type ||= RequestType.transfer
   end
   private :add_request_type
+
+  def set_request_purpose
+    self.request_purpose ||= request_type.request_purpose
+  end
 
   after_create(:perform_transfer_of_contents)
 
