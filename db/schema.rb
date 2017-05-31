@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170511153731) do
+ActiveRecord::Schema.define(version: 20170531082054) do
 
   create_table "aliquot_indices", force: :cascade do |t|
     t.integer  "aliquot_id",    limit: 4, null: false
@@ -1548,6 +1548,8 @@ ActiveRecord::Schema.define(version: 20170511153731) do
     t.string   "data_access_group",                      limit: 255
     t.string   "prelim_id",                              limit: 255
     t.integer  "program_id",                             limit: 4
+    t.string   "s3_email_list",                          limit: 255
+    t.integer  "data_deletion_period",                   limit: 4
   end
 
   add_index "study_metadata", ["faculty_sponsor_id"], name: "index_study_metadata_on_faculty_sponsor_id", using: :btree

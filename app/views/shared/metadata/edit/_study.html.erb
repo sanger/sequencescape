@@ -86,6 +86,9 @@
       <% end %>
     <% end %>
 
+    <%= metadata_fields.text_field(:s3_email_list) %>
+    <%= metadata_fields.text_field(:data_deletion_period) %>
+
     <% metadata_fields.finalize_related_fields %>
   <% end %>
 <% end %>
