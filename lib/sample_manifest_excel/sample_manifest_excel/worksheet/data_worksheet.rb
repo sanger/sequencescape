@@ -33,7 +33,7 @@ module SampleManifestExcel
         add_row ['DNA Collections Form']
         add_rows(2)
         add_multiplexed_library_tube_barcode
-       
+
         add_row ['Study:', study]
         add_row ['Supplier:', supplier]
         add_row ["No. #{type} Sent:", count]
@@ -93,7 +93,7 @@ module SampleManifestExcel
       end
 
       def add_multiplexed_library_tube_barcode
-         if sample_manifest.asset_type == 'multiplexed_library'
+        if sample_manifest.asset_type == 'multiplexed_library'
           add_row ['Multiplexed library tube barcode:', get_multiplexed_library_tube_barcode]
         else
           add_row
