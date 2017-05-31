@@ -1549,7 +1549,7 @@ ActiveRecord::Schema.define(version: 20170531082054) do
     t.string   "prelim_id",                              limit: 255
     t.integer  "program_id",                             limit: 4
     t.string   "s3_email_list",                          limit: 255
-    t.integer  "data_deletion_period",                   limit: 4
+    t.string   "data_deletion_period",                   limit: 255
   end
 
   add_index "study_metadata", ["faculty_sponsor_id"], name: "index_study_metadata_on_faculty_sponsor_id", using: :btree

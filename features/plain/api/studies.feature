@@ -48,6 +48,8 @@ Feature: Interacting with studies through the API
             "ega_policy_accession_number": "EGA222",
             "ega_dac_accession_number": "DAC333",
             "data_access_group":"something",
+            "s3_email_list": "aa1@sanger.ac.uk;aa2@sanger.ac.uk",
+            "data_deletion_period": "3 months",
             "projects": "http://localhost:3000/0_5/studies/00000000-1111-2222-3333-444444444444/projects",
             "samples": "http://localhost:3000/0_5/studies/00000000-1111-2222-3333-444444444444/samples",
 
@@ -94,6 +96,8 @@ Feature: Interacting with studies through the API
           "data_release_strategy": "open",
           "data_release_timing": "standard",
           "data_access_group": "something",
+          "s3_email_list": "aa1@sanger.ac.uk;aa2@sanger.ac.uk",
+          "data_deletion_period": "3 months",
           "projects": "http://localhost:3000/0_5/studies/00000000-1111-2222-3333-444444444444/projects",
           "samples": "http://localhost:3000/0_5/studies/00000000-1111-2222-3333-444444444444/samples",
 

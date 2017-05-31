@@ -79,6 +79,8 @@ FactoryGirl.define do
     data_release_strategy       'open'
     study_name_abbreviation     'WTCCC'
     data_access_group           'something'
+    s3_email_list               'aa1@sanger.ac.uk;aa2@sanger.ac.uk'
+    data_deletion_period        '3 months'
   end
 
   factory :study do

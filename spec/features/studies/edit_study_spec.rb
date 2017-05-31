@@ -26,11 +26,11 @@ feature 'Edit a study' do
     visit study_path(study)
     click_link 'Edit'
     fill_in 'S3 email list', with: 'aa1@sanger.ac.uk;aa2@sanger.ac.uk;aa3@sanger.ac.uk'
-    fill_in 'Data deletion period', with: 3
+    select('3 months', from: 'Data deletion period')
     click_button 'Update'
     expect(page).to have_content('Your study has been updated')
     study.reload
     expect(study.study_metadata.s3_email_list).to eq('aa1@sanger.ac.uk;aa2@sanger.ac.uk;aa3@sanger.ac.uk')
-    expect(study.study_metadata.data_deletion_period).to eq(3)
+    expect(study.study_metadata.data_deletion_period).to eq('3 months')
   end
 end
