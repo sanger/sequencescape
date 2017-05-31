@@ -168,8 +168,8 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
                                                                     sample_manifest: sample_manifest, ranges: SampleManifestExcel.configuration.ranges.dup,
                                                                     password: '1111')
       save_file
-      expect(spreadsheet.sheet(0).cell(worksheet.last_row + 2, 1)).to eq('Multiplexed library tube barcode:')
-      expect(spreadsheet.sheet(0).cell(worksheet.last_row + 2, 2)).to eq(Tube.find_by(barcode: worksheet.sample_manifest.barcodes.first.gsub(/\D/, '')).requests.first.target_asset.sanger_human_barcode)
+      expect(spreadsheet.sheet(0).cell(4, 1)).to eq('Multiplexed library tube barcode:')
+      expect(spreadsheet.sheet(0).cell(4, 2)).to eq(Tube.find_by(barcode: worksheet.sample_manifest.barcodes.first.gsub(/\D/, '')).requests.first.target_asset.sanger_human_barcode)
     end
   end
 

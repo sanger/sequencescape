@@ -24,6 +24,18 @@ module SampleManifestExcel
         @last_row ||= first_row + no_of_rows
       end
 
+       # Adds title and description (study abbreviation, supplier name, number of assets sent)
+      # to a worksheet.
+
+      def add_title_and_description(study, supplier, count)
+        add_row ['DNA Collections Form']
+        add_rows(3)
+        add_row ['Study:', study]
+        add_row ['Supplier:', supplier]
+        add_row ["No. #{type} Sent:", count]
+        add_rows(1)
+      end
+
       def add_data
         first_to_last.each do |n|
           axlsx_worksheet.add_row do |row|

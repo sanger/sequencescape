@@ -12,18 +12,6 @@ module SampleManifestExcel
         insert_axlsx_worksheet('DNA Collections Form')
       end
 
-      # Adds title and description (study abbreviation, supplier name, number of assets sent)
-      # to a worksheet.
-
-      def add_title_and_description(study, supplier, count)
-        add_row ['DNA Collections Form']
-        add_rows(3)
-        add_row ['Study:', study]
-        add_row ['Supplier:', supplier]
-        add_row ["No. #{type} Sent:", count]
-        add_rows(1)
-      end
-
       def add_headers
         add_row columns.headings, styles[:wrap_text].reference
       end

@@ -13,7 +13,6 @@ module SampleManifestExcel
         add_title_and_description(sample_manifest.study.abbreviation, sample_manifest.supplier.name, sample_manifest.count)
         add_columns
         freeze_panes
-        add_multiplexed_library_tube_barcode if sample_manifest.asset_type == 'multiplexed_library'
       end
 
       def type
@@ -25,6 +24,20 @@ module SampleManifestExcel
                   else
                     ''
                   end
+      end
+
+      # Adds title and description (study abbreviation, supplier name, number of assets sent)
+      # to a worksheet.
+
+      def add_title_and_description(study, supplier, count)
+        add_row ['DNA Collections Form']
+        add_rows(2)
+        add_multiplexed_library_tube_barcode
+       
+        add_row ['Study:', study]
+        add_row ['Supplier:', supplier]
+        add_row ["No. #{type} Sent:", count]
+        add_rows(1)
       end
 
       # Using axlsx worksheet creates data worksheet with title, description, all required columns, values,
@@ -80,8 +93,11 @@ module SampleManifestExcel
       end
 
       def add_multiplexed_library_tube_barcode
-        add_row
-        add_row ['Multiplexed library tube barcode:', get_multiplexed_library_tube_barcode]
+         if sample_manifest.asset_type == 'multiplexed_library'
+          add_row ['Multiplexed library tube barcode:', get_multiplexed_library_tube_barcode]
+        else
+          add_row
+        end
       end
 
       def get_multiplexed_library_tube_barcode
