@@ -41,6 +41,8 @@ class Plate < Asset
 
   has_many :siblings, through: :parents, source: :children
 
+  has_many :transfer_request_collections, through: :transfer_requests_as_source
+
   # The default state for a plate comes from the plate purpose
   delegate :default_state, to: :plate_purpose, allow_nil: true
   def state

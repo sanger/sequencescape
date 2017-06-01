@@ -61,6 +61,9 @@ class TransferRequest < SystemRequest
 
   before_validation :add_request_type, :set_request_purpose
 
+  has_many :transfer_request_collection_transfer_requests
+  has_many :transfer_request_collections, through: :transfer_request_collection_transfer_requests
+
   def add_request_type
     self.request_type ||= RequestType.transfer
   end
