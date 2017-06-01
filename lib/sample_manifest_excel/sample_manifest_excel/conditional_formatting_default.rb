@@ -1,11 +1,11 @@
 module SampleManifestExcel
   class ConditionalFormattingDefault
-    include HashAttributes
+    include Helpers::Attributes
 
     set_attributes :type, :style, :options
 
     def initialize(attributes = {})
-      create_attributes(attributes)
+      super
     end
 
     def type=(type)
@@ -23,6 +23,10 @@ module SampleManifestExcel
           cf[:formula].merge!(type: type)
         end
       end
+    end
+
+    def inspect
+      "<#{self.class}: @type=#{type}, @style=#{style}, @options=#{options}>"
     end
   end
 end

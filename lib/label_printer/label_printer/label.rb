@@ -26,7 +26,7 @@ module LabelPrinter
       end
 
       def count
-        @count || 1
+        (@count || 1).to_i
       end
     end
   end

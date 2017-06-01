@@ -74,17 +74,10 @@ Lint/NonLocalExitFromIterator:
 Lint/ParenthesesAsGroupedExpression:
   Exclude:
     - 'app/controllers/sdb/sample_manifests_controller.rb'
-    - 'test/lib/sample_manifest_excel/factories/conditional_formattings.rb'
-    - 'test/lib/sample_manifest_excel/factories/validations.rb'
 
 # Offense count: 61
 Lint/ShadowingOuterLocalVariable:
   Enabled: false
-
-# Offense count: 1
-Lint/UnderscorePrefixedVariableName:
-  Exclude:
-    - 'lib/sample_manifest_excel/sample_manifest_excel/conditional_formatting_default_list.rb'
 
 # Offense count: 1
 Lint/UnreachableCode:
@@ -196,7 +189,6 @@ Rails/Output:
     - 'lib/db_table_archiver.rb'
     - 'lib/informatics/lib/informatics/deployment.rb'
     - 'lib/rails-authorization-plugin/install.rb'
-    - 'lib/sample_manifest_excel/sample_manifest_excel/column_list.rb'
     - 'lib/tasks/sql_filter.rb'
     - 'lib/update_user_barcode.rb'
     - 'lib/views_schema.rb'
@@ -386,9 +378,6 @@ Style/ClassAndModuleChildren:
 Style/ClassCheck:
   Exclude:
     - 'app/models/asset_creation.rb'
-    - 'lib/sample_manifest_excel/sample_manifest_excel/column.rb'
-    - 'lib/sample_manifest_excel/sample_manifest_excel/column_list.rb'
-    - 'lib/sample_manifest_excel/sample_manifest_excel/conditional_formatting_list.rb'
     - 'test/unit/linear_submission_test.rb'
 
 # Offense count: 16
@@ -801,7 +790,7 @@ Style/OpMethod:
 # Offense count: 1
 Style/OptionalArguments:
   Exclude:
-    - 'lib/sample_manifest_excel/sample_manifest_excel/worksheet/base.rb'
+    # - 'lib/sample_manifest_excel/sample_manifest_excel/worksheet/base.rb'
 
 # Offense count: 159
 # Cop supports --auto-correct.
@@ -875,7 +864,6 @@ Style/Proc:
   Exclude:
     - 'app/models/lib_pool_norm_tube_generator.rb'
     - 'app/models/qcable/statemachine.rb'
-    - 'app/models/sample_manifest/sample_manifest_generator.rb'
     - 'app/models/study_report.rb'
 
 # Offense count: 14
