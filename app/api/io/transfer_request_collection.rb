@@ -8,9 +8,13 @@ class Io::TransferRequestCollection < ::Core::Io::Base
   set_model_for_input(::TransferRequestCollection)
   set_json_root(:transfer_request_collection)
 
+  set_eager_loading do |model|
+    model
+      .eager_load(transfer_requests: { asset: :uuid_object, target_asset: :uuid_object })
+  end
+
   define_attribute_and_json_mapping("
     user <= user
-    transfer_requests_attributes <= transfer_requests_attributes
-    transfer_requests <= transfer_requests
+    transfer_requests <=> transfer_requests
   ")
 end

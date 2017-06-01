@@ -28,10 +28,10 @@ describe '/api/1/transfer_request_collection' do
       %{{
         "transfer_request_collection": {
           "actions": {},
-          "transfer_requests": {
-            "size": 1,
-            "actions": {}
-          },
+          "transfer_requests": [{
+              "source_asset": { "uuid": "#{asset.uuid}"},
+              "target_asset": { "uuid": "#{target_asset.uuid}"}
+          }],
           "user": {
             "uuid": "#{user.uuid}",
             "actions": {}

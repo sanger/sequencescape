@@ -11,6 +11,5 @@ class ::Endpoints::TransferRequestCollections < ::Core::Endpoint::Base
 
   instance do
     belongs_to(:user,        json: 'user')
-    has_many(:transfer_requests, json: 'transfer_requests', to: 'transfer_requests')
   end
 end
