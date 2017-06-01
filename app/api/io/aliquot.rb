@@ -20,5 +20,7 @@ class Io::Aliquot < Core::Io::Base
 
       insert_size.from  => insert_size.from
         insert_size.to  => insert_size.to
+
+             suboptimal => suboptimal
   ")
 end

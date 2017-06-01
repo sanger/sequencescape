@@ -160,7 +160,9 @@ class Api::Messages::FlowcellIO < Api::Base
         # We alias is as the json generator assumes each method is called only once.
         alias :reverse_read_length :read_length
 
-        def lanes; requests; end
+        def lanes
+          requests
+        end
       end
     end
   end
@@ -186,6 +188,7 @@ class Api::Messages::FlowcellIO < Api::Base
 
     with_nested_has_many_association(:samples) do # actually aliquots
       map_attribute_to_json_attribute(:aliquot_index_value, 'tag_index')
+      map_attribute_to_json_attribute(:suboptimal, 'suboptimal')
 
       with_association(:tag) do
         map_attribute_to_json_attribute(:oligo, 'tag_sequence')
