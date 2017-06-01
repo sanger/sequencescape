@@ -134,6 +134,10 @@ class Aliquot::Receptacle < Asset
     end
   end
 
+  def outer_request(submission_id)
+    transfer_requests_as_target.find_by(submission_id: submission_id).try(:outer_request)
+  end
+
   has_many :studies, through: :aliquots
   has_many :projects, through: :aliquots
   has_many :samples, through: :aliquots
