@@ -78,6 +78,10 @@ class Aliquot < ActiveRecord::Base
     0
   end
 
+  def tags_combination
+    [tag.try(:oligo), tag2.try(:oligo)]
+  end
+
   def tag_count_name
     TAG_COUNT_NAMES[tag_count]
   end

@@ -2,6 +2,7 @@ Rails.application.config.assets.precompile += [
   'sessions.css',
   'tabview.css',
   'print.css',
+  'scanned_barcode.js',
   'pipeline.js',
   'assign-tubes-to-wells-task.js',
   'assigntags.js',
@@ -11,6 +12,7 @@ Rails.application.config.assets.precompile += [
   'labwhere_reception.js',
   'organism_validation.js',
   'pipeline.js',
+  'pooling.js',
   'sample_move.js',
   'submissions.js'
 ]

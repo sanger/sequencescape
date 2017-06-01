@@ -1896,8 +1896,8 @@ ActiveRecord::Schema.define(version: 20170531082054) do
   create_table "work_completions", force: :cascade do |t|
     t.integer  "user_id",    limit: 4, null: false
     t.integer  "target_id",  limit: 4, null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
   end
 
   add_index "work_completions", ["target_id"], name: "fk_rails_f8fb9e95de", using: :btree
