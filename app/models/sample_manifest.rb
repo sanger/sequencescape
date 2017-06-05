@@ -10,6 +10,7 @@ class SampleManifest < ActiveRecord::Base
   include SampleManifest::BarcodePrinterBehaviour
   include SampleManifest::SampleTubeBehaviour
   include SampleManifest::MultiplexedLibraryBehaviour
+  include SampleManifest::LibraryBehaviour
   include SampleManifest::CoreBehaviour
   include SampleManifest::PlateBehaviour
   include SampleManifest::InputBehaviour

@@ -1,15 +1,22 @@
 ##
 # Creates a Sample Manifest Excel spreadsheet from a Sample Manifest object
 module SampleManifestExcel
-  require_relative 'sample_manifest_excel/hash_attributes'
+  require_relative 'sample_manifest_excel/null_objects/null_column'
+  require_relative 'sample_manifest_excel/null_objects/null_configuration'
+  require_relative 'sample_manifest_excel/null_objects/null_column_list'
+  require_relative 'sample_manifest_excel/null_objects/null_processor'
+
+  require_relative 'sample_manifest_excel/helpers'
   require_relative 'sample_manifest_excel/core_extensions'
-  require_relative 'sample_manifest_excel/null_range'
-  require_relative 'sample_manifest_excel/null_validation'
-  require_relative 'sample_manifest_excel/attributes'
+  require_relative 'sample_manifest_excel/subclass_checker'
+  require_relative 'sample_manifest_excel/tags'
   require_relative 'sample_manifest_excel/cell'
+  require_relative 'sample_manifest_excel/list'
   require_relative 'sample_manifest_excel/conditional_formatting_default'
   require_relative 'sample_manifest_excel/conditional_formatting_default_list'
   require_relative 'sample_manifest_excel/manifest_type_list'
+  require_relative 'sample_manifest_excel/specialised_field'
+  require_relative 'sample_manifest_excel/validation'
   require_relative 'sample_manifest_excel/column'
   require_relative 'sample_manifest_excel/column_list'
   require_relative 'sample_manifest_excel/conditional_formatting'
@@ -19,14 +26,13 @@ module SampleManifestExcel
   require_relative 'sample_manifest_excel/range_list'
   require_relative 'sample_manifest_excel/worksheet'
   require_relative 'sample_manifest_excel/download'
-
-  module Helpers
-    def load_file(folder, filename)
-      YAML::load_file(File.join(Rails.root, folder, "#{filename}.yml")).with_indifferent_access
-    end
-  end
+  require_relative 'sample_manifest_excel/test_download'
+  require_relative 'sample_manifest_excel/upload'
+  require_relative 'sample_manifest_excel/configuration'
 
   Axlsx::Worksheet.send(:include, CoreExtensions::AxlsxWorksheet)
+
+  FIRST_ROW = 9
 
   class << self
     attr_writer :configuration

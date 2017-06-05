@@ -20,7 +20,7 @@ module SampleManifest::CoreBehaviour
       alias_method(:rapid_generation?, :rapid_generation)
 
       def self.supported_asset_type?(asset_type)
-        asset_type.nil? || ['1dtube', 'plate', 'multiplexed_library'].include?(asset_type)
+        asset_type.nil? || %w(1dtube plate multiplexed_library library).include?(asset_type)
       end
     end
   end
@@ -36,6 +36,7 @@ module SampleManifest::CoreBehaviour
     when '1dtube'              then 'SampleTubeBehaviour'
     when 'plate'               then 'PlateBehaviour'
     when 'multiplexed_library' then 'MultiplexedLibraryBehaviour'
+    when 'library'             then 'LibraryBehaviour'
     when nil                   then 'UnspecifiedBehaviour'
     else raise StandardError, "Unknown core behaviour (#{asset_type.inspect}) for sample manifest"
     end

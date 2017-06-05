@@ -75,7 +75,7 @@ Given /^batch "([^"]*)" in "Pulldown library preparation" has been setup with "(
   asset_group = AssetGroup.find_by(name: asset_group)
   requests = []
   asset_group.assets.each do |asset|
-    target_asset = FactoryGirl.create :library_tube, sample: asset.samples.first, name: "#{asset.name}_target"
+    target_asset = FactoryGirl.create :empty_library_tube, samples: [asset.samples.first], name: "#{asset.name}_target"
     request = pipeline.request_types.last.create!(
       asset: asset,
       target_asset: target_asset,
