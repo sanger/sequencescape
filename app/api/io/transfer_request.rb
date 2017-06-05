@@ -20,7 +20,5 @@ class Io::TransferRequest < ::Core::Io::Base
 
     asset <=  source_asset
     target_asset <=  target_asset
-    asset.uuid => source_asset.uuid
-    target_asset.uuid => target_asset.uuid
   ")
 end

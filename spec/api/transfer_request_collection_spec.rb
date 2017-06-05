@@ -9,7 +9,7 @@ describe '/api/1/transfer_request_collection' do
   let(:authorised_app) { create :api_application }
 
   let(:asset) { create :tagged_well }
-  let(:target_asset) { create :empty_library_tube }
+  let(:target_asset) { create :empty_library_tube, barcode: 898 }
   let(:user) { create :user }
 
   context '#post' do
@@ -31,6 +31,15 @@ describe '/api/1/transfer_request_collection' do
           "transfer_requests": [{
               "source_asset": { "uuid": "#{asset.uuid}"},
               "target_asset": { "uuid": "#{target_asset.uuid}"}
+          }],
+          "target_tubes": [{
+            "name": "#{target_asset.name}",
+            "state": "pending",
+            "barcode": {
+              "prefix": "NT",
+              "number": "898",
+              "ean13": "#{target_asset.ean13_barcode}"
+            }
           }],
           "user": {
             "uuid": "#{user.uuid}",

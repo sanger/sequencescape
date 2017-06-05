@@ -10,11 +10,16 @@ class Io::TransferRequestCollection < ::Core::Io::Base
 
   set_eager_loading do |model|
     model
-      .eager_load(transfer_requests: { asset: :uuid_object, target_asset: :uuid_object })
+      .eager_load(:transfer_requests)
+      .preload(target_tubes: [
+        :uuid_object, :purpose, { aliquots: Io::Aliquot::PRELOADS }
+      ]
+    )
   end
 
   define_attribute_and_json_mapping("
     user <= user
     transfer_requests <=> transfer_requests
+    target_tubes => target_tubes
   ")
 end
