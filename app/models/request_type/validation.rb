@@ -6,7 +6,7 @@
 
 module RequestType::Validation
   def delegate_validator
-    DelegateValidation::CompositeValidator::CompositeValidator(request_class.delegate_validator, request_type_validator)
+    DelegateValidation::CompositeValidator.construct(request_class.delegate_validator, request_type_validator)
   end
 
   def request_type_validator
