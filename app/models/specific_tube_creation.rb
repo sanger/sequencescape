@@ -16,7 +16,7 @@ class SpecificTubeCreation < TubeCreation
 
   validates_presence_of :child_purposes
 
-  attr_writer :names
+  attr_writer :tube_attributes
 
   def set_child_purposes=(uuids)
     self.child_purposes = uuids.map { |uuid| Uuid.find_by(external_id: uuid).resource }
@@ -29,7 +29,7 @@ class SpecificTubeCreation < TubeCreation
 
   def create_children!
     self.children = child_purposes.each_with_index.map do |child_purpose, index|
-      child_purpose.create!(name: names[index])
+      child_purpose.create!(tube_attributes[index])
     end
   end
   private :create_children!
@@ -38,7 +38,7 @@ class SpecificTubeCreation < TubeCreation
     true
   end
 
-  def names
-    @names || []
+  def tube_attributes
+    @tube_attributes || Array.new(child_purposes.length,{})
   end
 end

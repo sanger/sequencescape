@@ -13,6 +13,6 @@ class ::Io::SpecificTubeCreation < ::Core::Io::Base
      user <=> user
      parent <=> parent
      set_child_purposes <=  child_purposes
-     names <= names
+     tube_attributes <= tube_attributes
   ')
 end

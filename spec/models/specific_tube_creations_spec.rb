@@ -59,7 +59,8 @@ RSpec.describe SpecificTubeCreation, type: :model do
   context 'with custom names' do
     let(:names) { ['example_1', 'example_2'] }
     let(:purpose_count) { 2 }
-    let(:creation_parameters) { { user: user, child_purposes: [child_purpose]*purpose_count, parent: parent, names: names } }
+    let(:tube_attributes) { names.map { |name| { name: name } } }
+    let(:creation_parameters) { { user: user, child_purposes: [child_purpose]*purpose_count, parent: parent, tube_attributes: tube_attributes } }
     it_behaves_like 'a specific tube creator'
   end
 end
