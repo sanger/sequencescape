@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe TransferRequestCollection, type: :model do
-
   let(:user) { create :user }
   let(:asset) { create :tagged_well }
   let(:target_asset) { create :empty_library_tube }
@@ -19,7 +18,7 @@ RSpec.describe TransferRequestCollection, type: :model do
     end
 
     describe '#save' do
-      let(:transfer_request) {  subject.transfer_requests.first }
+      let(:transfer_request) { subject.transfer_requests.first }
 
       before do
         expect(subject.save).to be true

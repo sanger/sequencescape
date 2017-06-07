@@ -163,7 +163,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
             io       = ::Core::Io::Registry.instance.lookup_for_object(resource)
           else
             resource = nil
-            io       = ::Core::Io::Registry.instance.lookup_for_class(association_class(attribute,object))
+            io       = ::Core::Io::Registry.instance.lookup_for_class(association_class(attribute, object))
           end
           io.map_parameters_to_attributes(j, resource, true).tap do |mapped|
             mapped[:id]     = resource.id if uuid         # UUID becomes ID

@@ -13,8 +13,7 @@ class Io::TransferRequestCollection < ::Core::Io::Base
       .eager_load(:transfer_requests)
       .preload(target_tubes: [
         :uuid_object, :purpose, { aliquots: Io::Aliquot::PRELOADS }
-      ]
-    )
+      ])
   end
 
   define_attribute_and_json_mapping("

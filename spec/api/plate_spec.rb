@@ -21,7 +21,6 @@ describe '/api/1/plate-uuid' do
 
   let(:purpose) { plate.purpose }
 
-
   let(:response_body) do
     %{{
       "plate": {
@@ -66,7 +65,7 @@ describe '/api/1/plate-uuid' do
         "uuid": "#{uuid}"
       }
     }}
-    end
+  end
 
     let(:response_code) { 200 }
 
@@ -75,5 +74,4 @@ describe '/api/1/plate-uuid' do
       expect(JSON.parse(response.body)).to include_json(JSON.parse(response_body))
       expect(status).to eq(response_code)
     end
-
 end

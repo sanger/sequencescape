@@ -7,7 +7,6 @@
 # allowing the step to be repeated at any time. This class can be removed if either
 # the generic LIMS behaviour is updated, or moved into Limber.
 class Request::AutoMultiplexing < Request::Multiplexing
-
   after_create :register_transfer_callback
 
   # Triggers immediate transfer into the tubes if the source asset already
@@ -24,5 +23,4 @@ class Request::AutoMultiplexing < Request::Multiplexing
       )
     end if asset.present?
   end
-
 end

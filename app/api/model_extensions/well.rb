@@ -11,8 +11,8 @@ module ModelExtensions::Well
         preload(
           :map,
           :transfer_requests, # Should be :transfer_requests_as_target
-                              # :uuid_object is included elsewhere, and trying to also include it here
-                              # actually disrupts the eager loading.
+          # :uuid_object is included elsewhere, and trying to also include it here
+          # actually disrupts the eager loading.
           plate: :uuid_object,
           aliquots: Io::Aliquot::PRELOADS
         )

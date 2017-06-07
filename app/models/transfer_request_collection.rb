@@ -6,7 +6,7 @@ class TransferRequestCollection < ActiveRecord::Base
   include Uuid::Uuidable
 
   has_many :transfer_request_collection_transfer_requests
-  has_many :transfer_requests, ->() { preload(:uuid_object, { asset: :uuid_object, target_asset: :uuid_object, submission: :uuid_object }) }, through: :transfer_request_collection_transfer_requests
+  has_many :transfer_requests, ->() { preload(:uuid_object, asset: :uuid_object, target_asset: :uuid_object, submission: :uuid_object) }, through: :transfer_request_collection_transfer_requests
 
   # Transfer requests themselves can go to any receptacle,
   # mostly wells and tubes. Unfortunately the current API
