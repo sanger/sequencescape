@@ -128,7 +128,8 @@ FactoryGirl.define do
   sequence(:tag_group_for_layout_name) { |n| "Tag group #{n}" }
 
   factory(:tag_group_for_layout, class: TagGroup) do
-    name { generate(:tag_group_for_layout_name) }
+    # name { generate(:tag_group_for_layout_name) }
+    sequence(:name) { |n| "Tag group layout #{n}" }
 
     after(:create) do |tag_group|
       ['ACGT', 'TGCA'].each_with_index do |oligo, index|

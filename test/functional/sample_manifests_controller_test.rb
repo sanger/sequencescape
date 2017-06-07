@@ -6,6 +6,7 @@
 
 require 'test_helper'
 require 'sdb/sample_manifests_controller'
+require 'sample_manifest/sample_manifest_generator'
 
 class SampleManifestsControllerTest < ActionController::TestCase
   context 'SampleManifestsController' do
@@ -17,7 +18,7 @@ class SampleManifestsControllerTest < ActionController::TestCase
       session[:user] = @user.id
 
       SampleManifestExcel.configure do |config|
-        config.folder = File.join('test', 'data', 'sample_manifest_excel')
+        config.folder = File.join('spec', 'data', 'sample_manifest_excel')
         config.load!
       end
     end
