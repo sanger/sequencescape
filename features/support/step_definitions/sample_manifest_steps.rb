@@ -252,7 +252,7 @@ end
 
 Given(/^the configuration exists for creating sample manifest Excel spreadsheets$/) do
   SampleManifestExcel.configure do |config|
-    config.folder = File.join('test', 'data', 'sample_manifest_excel')
+    config.folder = File.join('spec', 'data', 'sample_manifest_excel')
     config.load!
   end
 end

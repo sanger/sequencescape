@@ -33,6 +33,8 @@
   </ul>
 <% end %>
 
+<%= render partial: "pool", locals: { sample_manifest: @sample_manifest} %>
+
 <% if @sample_manifest.barcodes %>
 
   <%= bs_column do %>

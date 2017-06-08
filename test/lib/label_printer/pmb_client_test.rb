@@ -61,7 +61,7 @@ class PmbClientTest < ActiveSupport::TestCase
   test 'should inform if pmb is down' do
     RestClient.expects(:post).raises(Errno::ECONNREFUSED)
     err = assert_raises(LabelPrinter::PmbException) { LabelPrinter::PmbClient.print({}) }
-    assert_equal 'PrintMyBarcode service is down', err.message
+    assert_equal 'service is down', err.message
   end
 
   test 'should get label template by name from pmb' do
