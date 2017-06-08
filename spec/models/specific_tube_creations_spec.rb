@@ -10,7 +10,7 @@ RSpec.describe SpecificTubeCreation, type: :model do
 
     describe '#save' do
       before do
-        expect(subject.save).to (be true), ->() { "Failed to save: #{subject.errors.full_messages}"}
+        expect(subject.save).to (be true), ->() { "Failed to save: #{subject.errors.full_messages}" }
       end
 
       let(:first_child) { subject.children.first }
@@ -42,8 +42,8 @@ RSpec.describe SpecificTubeCreation, type: :model do
   end
 
   context 'with no custom names' do
-    let(:names) { [nil]*purpose_count }
-    let(:creation_parameters) { { user: user, child_purposes: [child_purpose]*purpose_count, parent: parent } }
+    let(:names) { [nil] * purpose_count }
+    let(:creation_parameters) { { user: user, child_purposes: [child_purpose] * purpose_count, parent: parent } }
 
     context 'with one child purpose' do
       it_behaves_like 'a specific tube creator'
@@ -60,7 +60,7 @@ RSpec.describe SpecificTubeCreation, type: :model do
     let(:names) { ['example_1', 'example_2'] }
     let(:purpose_count) { 2 }
     let(:tube_attributes) { names.map { |name| { name: name } } }
-    let(:creation_parameters) { { user: user, child_purposes: [child_purpose]*purpose_count, parent: parent, tube_attributes: tube_attributes } }
+    let(:creation_parameters) { { user: user, child_purposes: [child_purpose] * purpose_count, parent: parent, tube_attributes: tube_attributes } }
     it_behaves_like 'a specific tube creator'
   end
 end

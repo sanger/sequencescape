@@ -39,6 +39,6 @@ class SpecificTubeCreation < TubeCreation
   end
 
   def tube_attributes
-    @tube_attributes || Array.new(child_purposes.length,{})
+    @tube_attributes || Array.new(child_purposes.length, {})
   end
 end
