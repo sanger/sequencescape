@@ -22,7 +22,7 @@ module ModelExtensions::Order
     private :validate_request_options?
 
     def request_types_delegate_validator
-      DelegateValidation::CompositeValidator::CompositeValidator(*::RequestType.find(request_types.flatten).map(&:delegate_validator))
+      DelegateValidation::CompositeValidator.construct(*::RequestType.find(request_types.flatten).map(&:delegate_validator))
     end
 
     # If this returns true then we check values that have not been set, otherwise we can ignore them.  This would
