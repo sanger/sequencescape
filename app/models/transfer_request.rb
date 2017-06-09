@@ -7,6 +7,19 @@
 # Every request "moving" an asset from somewhere to somewhere else without really transforming it
 # (chemically) as, cherrypicking, pooling, spreading on the floor etc
 class TransferRequest < SystemRequest
+  include DefaultAttributes
+
+  has_many :transfer_request_collection_transfer_requests
+  has_many :transfer_request_collections, through: :transfer_request_collection_transfer_requests
+
+  # Ensure that the source and the target assets are not the same, otherwise bad things will happen!
+  validate :source_and_target_assets_are_different
+
+  set_defaults request_type: RequestType.transfer, request_purpose: ->(transfer_request) { transfer_request.request_type.request_purpose }
+
+  after_create(:perform_transfer_of_contents)
+
+  # state machine
   redefine_aasm column: :state, whiny_persistence: true do
     # The statemachine for transfer requests is more promiscuous than normal requests, as well
     # as being more concise as it has fewer states.
@@ -51,30 +64,29 @@ class TransferRequest < SystemRequest
     end
   end
 
-  # Ensure that the source and the target assets are not the same, otherwise bad things will happen!
-  validate do |record|
-    if record.asset.present? and record.asset == record.target_asset
-      record.errors.add(:asset, 'cannot be the same as the target')
-      record.errors.add(:target_asset, 'cannot be the same as the source')
+  # validation method
+  def source_and_target_assets_are_different
+    if asset.present? and asset == target_asset
+      errors.add(:asset, 'cannot be the same as the target')
+      errors.add(:target_asset, 'cannot be the same as the source')
     end
   end
 
-  before_validation :add_request_type, :set_request_purpose
-
-  has_many :transfer_request_collection_transfer_requests
-  has_many :transfer_request_collections, through: :transfer_request_collection_transfer_requests
-
-  def add_request_type
-    self.request_type ||= RequestType.transfer
-  end
-  private :add_request_type
-
-  def set_request_purpose
-    self.request_purpose ||= request_type.request_purpose
+  def remove_unused_assets
+    # Don't remove assets for transfer requests as they are made on creation
   end
 
-  after_create(:perform_transfer_of_contents)
+  private
 
+  # def add_request_type
+  #   self.request_type ||= RequestType.transfer
+  # end
+
+  # def set_request_purpose
+  #   self.request_purpose ||= request_type.request_purpose
+  # end
+
+  # after_create callback method
   def perform_transfer_of_contents
     begin
       target_asset.aliquots << asset.aliquots.map(&:dup) unless asset.failed? or asset.cancelled?
@@ -85,22 +97,14 @@ class TransferRequest < SystemRequest
       raise Aliquot::TagClash, self
     end
   end
-  private :perform_transfer_of_contents
 
   # Run on start, or if start is bypassed
   def on_started
     nil # Do nothing
   end
-  private :on_started
 
   def on_failed
     target_asset.remove_downstream_aliquots if target_asset
   end
-  private :on_failed
-
   alias_method :on_cancelled, :on_failed
-
-  def remove_unused_assets
-    # Don't remove assets for transfer requests as they are made on creation
-  end
 end
