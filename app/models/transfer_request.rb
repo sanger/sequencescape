@@ -78,14 +78,6 @@ class TransferRequest < SystemRequest
 
   private
 
-  # def add_request_type
-  #   self.request_type ||= RequestType.transfer
-  # end
-
-  # def set_request_purpose
-  #   self.request_purpose ||= request_type.request_purpose
-  # end
-
   # after_create callback method
   def perform_transfer_of_contents
     begin
