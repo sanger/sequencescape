@@ -1,3 +1,11 @@
+# This module allows to set default attributes (static or dynamic)
+# The main method is 'set_defaults', it takes a hash as an argument
+# Keys in this hash are attributes names
+# Value is either a default static value
+# or a proc that takes the instance as an argument and evaluates to default value when called
+# Example of usage:
+# set_defaults attr_1: static_value, attr_2: ->(instance) { instance.any_required_method }
+
 module DefaultAttributes
   extend ActiveSupport::Concern
 
