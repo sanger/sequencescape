@@ -3,10 +3,12 @@ module Attributable
     attr_reader :name
     attr_reader :default
 
-    alias_method :assignable_attribute_name, :name
+    alias assignable_attribute_name name
 
     def initialize(owner, name, options = {})
-      @owner, @name, @options = owner, name.to_sym, options
+      @owner = owner
+      @name = name.to_sym
+      @options = options
       @default  = options.delete(:default)
       @required = options.delete(:required).present?
       @validator = options.delete(:validator).present?
@@ -30,7 +32,7 @@ module Attributable
     end
 
     def optional?
-      not required?
+      !required?
     end
 
     def integer?
@@ -95,31 +97,30 @@ module Attributable
         ")
       end
 
-      unless (condition = conditions[:if]).nil?
-        model.class_eval("
-          before_validation do |record|
-            record.#{name}= nil unless record.#{condition}
-          end
-        ")
-      end
+      return if conditions[:if].nil?
+
+      model.class_eval("
+        before_validation do |record|
+          record.#{name}= nil unless record.#{conditions[:if]}
+        end
+      ")
     end
 
     def self.find_display_name(klass, name)
       translation = I18n.t("metadata.#{klass.name.underscore.tr('/', '.')}.#{name}")
-      if translation.is_a?(Hash) # translation found, we return the label
-        return translation[:label]
-      else
-        superclass = klass.superclass
-        if superclass != ActiveRecord::Base # a subclass , try the superclass name scope
-          return find_display_name(superclass, name)
-        else # translation not found
-          return translation # shoulb be an error message, so that's ok
-        end
+
+      return translation[:label] if translation.is_a?(Hash) # translation found, we return the label
+
+      superclass = klass.superclass
+      if superclass == ActiveRecord::Base # We've reached the top and have no translation
+        translation # shoulb be an error message, so that's ok
+      else # We still have a parent class
+        find_display_name(superclass, name) # Walk up the class hierarchy and try again
       end
     end
 
     def display_name
-      Attribute::find_display_name(@owner, name)
+      Attribute.find_display_name(@owner, name)
     end
 
     def find_default(object = nil, metadata = nil)

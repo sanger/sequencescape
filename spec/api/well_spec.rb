@@ -19,7 +19,7 @@ describe '/api/1/well-uuid' do
     subject { '/api/1/' + uuid }
 
     let(:response_body) do
-      %{{
+      %({
         "well": {
           "actions": {
             "read": "http://www.example.com/api/1/#{uuid}"
@@ -37,7 +37,7 @@ describe '/api/1/well-uuid' do
           "location": "#{well.map_description}",
           "state": "unknown"
         }
-      }}
+      })
     end
     let(:response_code) { 200 }
 

@@ -62,7 +62,7 @@ class QcMetricTest < ActiveSupport::TestCase
         aliquot = create :aliquot
         well = create :well
         well.aliquots << aliquot
-        qc = create :qc_metric, qc_decision: qc_state, asset: well
+        create :qc_metric, qc_decision: qc_state, asset: well
         # The data NEEDS to be persisted, so we reload to check this is the case.
         aliquot.reload
         assert_equal set_suboptimal, aliquot.suboptimal?

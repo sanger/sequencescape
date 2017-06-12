@@ -26,7 +26,9 @@ module Attributable
     attr_reader :name
 
     def initialize(owner, name, method, options = {})
-      @owner, @name, @method = owner, name, method
+      @owner = owner
+      @name = name
+      @method = method
       @required = options.delete(:required) || false
       @scope = Array(options.delete(:scope))
     end
@@ -36,7 +38,7 @@ module Attributable
     end
 
     def optional?
-      not required?
+      !required?
     end
 
     def assignable_attribute_name
@@ -48,7 +50,7 @@ module Attributable
     end
 
     def display_name
-      Attribute::find_display_name(@owner, name)
+      Attribute.find_display_name(@owner, name)
     end
 
     def kind
@@ -64,7 +66,7 @@ module Attributable
     end
 
     def selection_options(_)
-      get_scoped_selection.all.map(&@method.to_sym).sort
+      scoped_selection.all.map(&@method.to_sym).sort
     end
 
     def to_field_info(*_args)
@@ -76,13 +78,8 @@ module Attributable
       )
     end
 
-    def get_scoped_selection
-      @scope.inject(@owner.reflections[@name.to_s].klass) { |k, v| k.send(v.to_sym) }
-    end
-    private :get_scoped_selection
-
     def configure(target)
-      target.class_eval(%Q{
+      target.class_eval(%{
         def #{assignable_attribute_name}=(value)
           record = self.class.reflections['#{@name}'].klass.find_by_#{@method}(value) or
             raise ActiveRecord::RecordNotFound, "Could not find #{@name} with #{@method} \#{value.inspect}"
@@ -93,6 +90,12 @@ module Attributable
           send(:#{@name}).send(:#{@method})
         end
       })
+    end
+
+    private
+
+    def scoped_selection
+      @scope.inject(@owner.reflections[@name.to_s].klass) { |k, v| k.send(v.to_sym) }
     end
   end
 end

@@ -8,7 +8,7 @@ describe TransferRequest do
 
   let(:library_request) do
     create :library_request,
-      asset: stock_asset
+           asset: stock_asset
   end
 
   before do

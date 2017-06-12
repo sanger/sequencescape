@@ -101,7 +101,10 @@ RSpec.describe IlluminaHtp::Requests::StdLibraryRequest, type: :model do
         let(:pcr_cycles) { nil }
         it('is valid') { expect(subject).to be_valid }
         # Defaults are set on a before validate call.
-        it('sets defaults') { subject.valid?; expect(subject.request_metadata.pcr_cycles).to eq(0) }
+        it('sets defaults') do
+          subject.valid?
+          expect(subject.request_metadata.pcr_cycles).to eq(0)
+        end
       end
     end
 
