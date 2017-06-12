@@ -51,6 +51,18 @@ RSpec.describe Study, type: :model do
     expect(study.total_requests(request_type)).to eq(8)
   end
 
+  it 'validates uniqueness of name (case sensitive)' do
+    study_1 = create :study, name: 'Study_name'
+    study_2 = build :study, name: 'Study_name'
+    study_3 = build :study, name: 'Study_NAME'
+    expect(study_2.valid?).to be false
+    expect(study_2.errors.messages.length).to eq 1
+    expect(study_2.errors.full_messages).to include 'Name has already been taken'
+    expect(study_3.valid?).to be false
+    expect(study_2.errors.messages.length).to eq 1
+    expect(study_3.errors.full_messages).to include 'Name has already been taken'
+  end
+
   context 'Role system' do
     let!(:study)          { create(:study, name: 'role test1') }
     let!(:another_study)  { create(:study, name: 'role test2') }

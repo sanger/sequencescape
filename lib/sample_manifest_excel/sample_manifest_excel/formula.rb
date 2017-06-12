@@ -8,16 +8,16 @@ module SampleManifestExcel
   # - LEN - checks how long each value in the cell for a column is depending on the operator and operand.
   # - ISERROR - check whether each value in the cell for a column is within a range defined by the absolute reference of that range.
   class Formula
-    include HashAttributes
+    include Helpers::Attributes
 
     set_attributes :type, :first_cell_reference, :absolute_reference, :operator, :operand, defaults: { type: :len, operator: '>', operand: 999 }
 
     def initialize(attributes = {})
-      create_attributes(attributes)
+      super(default_attributes.merge(attributes.slice(*self.attributes)))
     end
 
     def update(attributes = {})
-      update_attributes(attributes)
+      assign_attributes(attributes.with_indifferent_access.slice(*self.attributes))
       self
     end
 
@@ -48,6 +48,10 @@ module SampleManifestExcel
         operator: operator,
         operand: operand
       }
+    end
+
+    def inspect
+      "<#{self.class}: @type=#{type}, @first_cell_reference=#{first_cell_reference}, @absolute_reference=#{absolute_reference}, @operator=#{operator}, @operand#{operand}>"
     end
   end
 end
