@@ -87,7 +87,7 @@ class TransferRequest < SystemRequest
     end
   end
 
-    # Run on start, or if start is bypassed
+  # Run on start, or if start is bypassed
   def on_started
     nil # Do nothing
   end
@@ -97,5 +97,4 @@ class TransferRequest < SystemRequest
   end
 
   alias_method :on_cancelled, :on_failed
-
 end
