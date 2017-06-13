@@ -7,13 +7,11 @@
 
 mysql: &MYSQL
   adapter: <%= defined?(JRuby) ? "mysql" : "mysql2" %>
-  username: root
+  username: <%= ENV.fetch('DBUSERNAME','root') %>
   password: <%= ENV['DBPASSWORD'] %>
   encoding: utf8
   properties:
     characterSetResults: utf8
-  host: localhost
-  port: 3306
   pool: 5
   timeout: 5000
   reaping_frequency: 600
