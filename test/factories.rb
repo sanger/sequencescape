@@ -141,6 +141,14 @@ FactoryGirl.define do
     name                  'my_template'
     submission_parameters(workflow_id: 1, request_type_ids_list: [])
     product_catalogue { |pc| pc.association(:single_product_catalogue) }
+
+    factory :limber_wgs_submission_template do
+      transient do
+        request_types { [create(:library_request_type)] }
+      end
+      sequence(:name) { |i| "Template #{i}" }
+      submission_parameters { { workflow_id: 1, request_type_ids_list: request_types.map { |rt| [rt.id] } } }
+    end
   end
 
   factory :request_metadata, class: Request::Metadata do

@@ -60,12 +60,21 @@ class TransferRequest < SystemRequest
   end
 
   before_create(:add_request_type)
+  after_create(:perform_transfer_of_contents)
+
+  def remove_unused_assets
+    # Don't remove assets for transfer requests as they are made on creation
+  end
+
+  def outer_request
+    asset.outer_request(submission_id)
+  end
+
+  private
+
   def add_request_type
     self.request_type ||= RequestType.transfer
   end
-  private :add_request_type
-
-  after_create(:perform_transfer_of_contents)
 
   def perform_transfer_of_contents
     begin
@@ -77,22 +86,15 @@ class TransferRequest < SystemRequest
       raise Aliquot::TagClash, self
     end
   end
-  private :perform_transfer_of_contents
 
   # Run on start, or if start is bypassed
   def on_started
     nil # Do nothing
   end
-  private :on_started
 
   def on_failed
     target_asset.remove_downstream_aliquots if target_asset
   end
-  private :on_failed
 
   alias_method :on_cancelled, :on_failed
-
-  def remove_unused_assets
-    # Don't remove assets for transfer requests as they are made on creation
-  end
 end

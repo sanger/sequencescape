@@ -28,9 +28,8 @@ namespace :limber do
   task create_request_types: [:environment, :create_plates] do
     puts 'Creating request types...'
     ActiveRecord::Base.transaction do
-      ['WGS'].each do |prefix|
-        Limber::Helper::RequestTypeConstructor.new(prefix).build!
-      end
+      Limber::Helper::RequestTypeConstructor.new('WGS').build!
+      Limber::Helper::RequestTypeConstructor.new('PCR Free', default_purpose: 'PF Cherrypicked').build!
 
       Limber::Helper::RequestTypeConstructor.new(
         'ISC',
@@ -75,6 +74,17 @@ namespace :limber do
           role: prefix,
           type: "limber_#{prefix.downcase}",
           catalogue: catalogue
+        ).build!
+      end
+      # PCR Free is HiSeqX only
+      'PCR Free'.tap do |prefix|
+        catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'PFHSqX')
+        Limber::Helper::TemplateConstructor.new(
+          name: prefix,
+          role: prefix,
+          type: "limber_#{prefix.downcase.tr(' ', '_')}",
+          catalogue: catalogue,
+          sequencing: ['illumina_b_hiseq_x_paired_end_sequencing']
         ).build!
       end
     end

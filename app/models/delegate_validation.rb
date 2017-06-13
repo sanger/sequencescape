@@ -85,7 +85,7 @@ module DelegateValidation
     include ActiveModel::Validations
     class_attribute :validator_classes, instance_writer: false
 
-    def self.CompositeValidator(*validator_classes)
+    def self.construct(*validator_classes)
       Class.new(CompositeValidator).tap do |sub_class|
         sub_class.validator_classes = validator_classes
       end

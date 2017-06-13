@@ -46,6 +46,12 @@ describe WorkCompletion do
       it 'joins up the multiplex requests' do
         expect(multiplex_requests.map(&:asset).uniq.size).to eq(tested_wells)
       end
+
+      it 'sets up any wells as their own stock wells' do
+        target_plate.wells.each do |well|
+          expect(well.stock_wells).to include(well)
+        end
+      end
     end
 
     context 'when wells are failed' do
