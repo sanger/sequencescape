@@ -40,11 +40,11 @@ class Request::LibraryCreation < CustomerRequest
     end
     const_get(:Metadata).class_eval do
       def fragment_size_required_from
-        self[:fragment_size_required_from].try(:to_i)
+        super.try(:to_i)
       end
 
       def fragment_size_required_to
-        self[:fragment_size_required_to].try(:to_i)
+        super.try(:to_i)
       end
     end
   end

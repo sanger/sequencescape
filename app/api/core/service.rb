@@ -257,7 +257,7 @@ module Core
         super
 
         # We can also view the current connection as a reference and release that too
-        ActiveRecord::Base.connection_pool.release_connection
+        # ActiveRecord::Base.connection_pool.release_connection
       end
       private :discard_all_references
     end

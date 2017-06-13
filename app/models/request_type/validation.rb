@@ -4,6 +4,8 @@
 # authorship of this file.
 # Copyright (C) 2014,2015 Genome Research Ltd.
 
+# This is used when validating request options when the submission is made, and before it is actually built.
+# Unfortunately things have gotten a little tangled around this area, and a heavy refactor is required.
 module RequestType::Validation
   def delegate_validator
     DelegateValidation::CompositeValidator.construct(request_class.delegate_validator, request_type_validator)
