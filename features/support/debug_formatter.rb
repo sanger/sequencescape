@@ -9,12 +9,12 @@ class DebugFormatter < Cucumber::Formatter::Progress
   end
 
   def before_feature(feature)
-    @io.puts "#{feature.short_name} (Start@#{time-@start_time})"
+    @io.puts "#{feature.short_name} (Start@#{time - @start_time})"
     @feature_start = time
   end
 
   def before_feature_element(scenario)
-    @io.print "┣━ #{scenario.name} (Start@#{time-@start_time})"
+    @io.print "┣━ #{scenario.name} (Start@#{time - @start_time})"
     @element_start = time
   end
 
@@ -27,20 +27,19 @@ class DebugFormatter < Cucumber::Formatter::Progress
     @io.puts " Took #{time - @element_start} #{char}"
   end
 
-  def after_feature(feature)
+  def after_feature(_feature)
     @io.puts "┗━ Took #{time - @feature_start}"
   end
 
-  def progress(_)
-  end
+  def progress(_); end
+
   # Timecop can overide Time.now. If
   # now_without_mock_time is defined, use that instead.
   def time
     if Time.respond_to?(:now_without_mock_time)
       Time.now_without_mock_time
     else
-      Time.now
+      Time.current
     end
   end
-
 end
