@@ -22,11 +22,6 @@ Lint/AssignmentInCondition:
     - 'lib/tasks/sql_filter.rb'
     - 'lib/update_user_barcode.rb'
 
-# Offense count: 1
-Lint/EmptyEnsure:
-  Exclude:
-    - 'app/models/qc_file.rb'
-
 # Offense count: 7
 Lint/HandleExceptions:
   Exclude:
