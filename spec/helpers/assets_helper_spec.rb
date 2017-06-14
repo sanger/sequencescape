@@ -1,8 +1,8 @@
-require "spec_helper"
-require "rails_helper"
+require 'spec_helper'
+require 'rails_helper'
 require './app/helpers/assets_helper'
 describe AssetsHelper do
-  describe "#current_user_can_request_additional_sequencing_on?" do
+  describe '#current_user_can_request_additional_sequencing_on?' do
     subject { helper.current_user_can_request_additional_sequencing_on?(asset) }
     before do
       helper.extend(AuthenticatedSystem)
@@ -39,10 +39,9 @@ describe AssetsHelper do
       let(:asset) { create :library_tube }
       it { is_expected.to be false }
     end
-
   end
 
-  describe "#current_user_can_request_additional_library_on?" do
+  describe '#current_user_can_request_additional_library_on?' do
     subject { helper.current_user_can_request_additional_library_on?(asset) }
     before do
       helper.extend(AuthenticatedSystem)
@@ -84,6 +83,5 @@ describe AssetsHelper do
       let(:asset) { create :sample_tube }
       it { is_expected.to be false }
     end
-
   end
 end

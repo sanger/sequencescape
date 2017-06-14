@@ -20,7 +20,7 @@ feature 'Asset submission', js: true do
                             project: project,
                             asset: asset,
                             target_asset: target_asset,
-                            request_type: request_type,)
+                            request_type: request_type)
         login_user user
         visit asset_path(asset)
         click_link 'Request additional sequencing'
@@ -56,5 +56,4 @@ feature 'Asset submission', js: true do
     let(:user) { create :user }
     it_behaves_like 'it forbids additional sequencing'
   end
-
 end

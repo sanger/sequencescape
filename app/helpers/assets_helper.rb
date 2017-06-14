@@ -64,8 +64,8 @@ module AssetsHelper
   # Returns true if the current user can request additional sequencing on the given asset, otherwise false
   def current_user_can_request_additional_sequencing_on?(asset)
     asset.is_sequenceable? && # Asset must be sequenceable ...
-      ( current_user.is_administrator? ||  # ... user could be an administrator ...
-        current_user.is_manager? ) # ... or a manager
+      (current_user.is_administrator? || # ... user could be an administrator ...
+        current_user.is_manager?) # ... or a manager
   end
 
   # Returns true if the current user can request an additional library on the asset, otherwise false
