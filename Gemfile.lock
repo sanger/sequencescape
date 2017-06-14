@@ -317,7 +317,7 @@ GEM
       rainbow (>= 1.99.1, < 3.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (~> 1.0, >= 1.0.1)
-    ruby-oci8 (1.0.7)
+    ruby-oci8 (2.2.4)
     ruby-ole (1.2.11.8)
     ruby-progressbar (1.8.1)
     ruby_parser (3.8.2)
@@ -483,4 +483,4 @@ DEPENDENCIES
   yard
 
 BUNDLED WITH
-   1.14.6
+   1.15.1
