@@ -476,6 +476,12 @@ en:
         hmdmc_approval_number:
           label: HMDMC approval number
 
+        s3_email_list:
+          label: S3 email list
+
+        data_deletion_period:
+          label: Data deletion period
+
     project:
       metadata:
         project_manager_id:
