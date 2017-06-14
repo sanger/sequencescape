@@ -21,10 +21,7 @@
 <% add :menu, "Event history" => history_asset_path(@asset) -%>
 
 <% add(:menu, 'Request additional sequencing' => new_request_asset_path_in_context(@asset)) if current_user_can_request_additional_sequencing_on?(@asset) -%>
-
-<% if current_user.administrator? %>
-  <% add(:menu, 'Request a new library' => new_request_asset_path_in_context(@asset)) if current_user_can_request_additional_library_on?(@asset) -%>
-<% end %>
+<% add(:menu, 'Request a new library' => new_request_asset_path_in_context(@asset)) if current_user_can_request_additional_library_on?(@asset) -%>
 
 <% if current_user.manager_or_administrator? || current_user.owner?(@asset) %>
   <% add :menu, "Edit" => edit_asset_path(@asset) -%>
