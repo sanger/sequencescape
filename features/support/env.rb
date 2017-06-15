@@ -61,7 +61,11 @@ end
 # Possible values are :truncation and :transaction
 # The :transaction strategy is faster, but might give you threading problems.
 # See https://github.com/cucumber/cucumber-rails/blob/master/features/choose_javascript_database_strategy.feature
+# We're using a gem to try and improve the robustness of this
+# https://github.com/iangreenleaf/transactional_capybara
 Cucumber::Rails::Database.javascript_strategy = :transaction
+require 'transactional_capybara'
+TransactionalCapybara.share_connection
 
 require 'minitest/spec'
 World(MultiTest::MinitestWorld)

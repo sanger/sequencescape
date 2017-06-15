@@ -25,6 +25,8 @@ Before('@javascript') do
 end
 # ...and back on again.
 After('@javascript') do
+  # See https://github.com/iangreenleaf/transactional_capybara
+  TransactionalCapybara::AjaxHelpers.wait_for_ajax(page)
   class Timecop
     class << self
       alias_method :freeze, :freeze_without_warning
