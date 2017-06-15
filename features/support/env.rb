@@ -69,3 +69,9 @@ TransactionalCapybara.share_connection
 
 require 'minitest/spec'
 World(MultiTest::MinitestWorld)
+
+After('@javascript') do |scenario|
+  # See https://github.com/iangreenleaf/transactional_capybara
+  TransactionalCapybara::AjaxHelpers.wait_for_ajax(page)
+
+end
