@@ -129,7 +129,7 @@ class AssetsController < ApplicationController
             # All new assets are assumed to have a phiX sample in them as that's the only asset that
             # is created this way.
             asset.save!
-            aliquot_attributes = { sample: SpikedBuffer.phiX_sample, study_id: 198 }
+            aliquot_attributes = { sample: SpikedBuffer.phix_sample, study_id: 198 }
             aliquot_attributes[:library] = asset if asset.is_a?(LibraryTube) or asset.is_a?(SpikedBuffer)
             asset.aliquots.create!(aliquot_attributes)
           end

@@ -9,7 +9,8 @@ class ::Io::Order < ::Core::Io::Base
     read_length: 'read_length',
     library_type: 'library_type',
     fragment_size_required_from: 'fragment_size_required.from',
-    fragment_size_required_to: 'fragment_size_required.to'
+    fragment_size_required_to: 'fragment_size_required.to',
+    pcr_cycles: 'pcr_cycles'
   }.map { |k, v| ["request_options.#{k}".to_sym, "request_options.#{v}"] }]
 
   def self.json_field_for(attribute)

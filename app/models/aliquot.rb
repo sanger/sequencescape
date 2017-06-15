@@ -119,6 +119,11 @@ class Aliquot < ActiveRecord::Base
     end
   end
 
+  def update_quality(suboptimal_quality)
+    self.suboptimal = suboptimal_quality
+    save!
+  end
+
   def clone
     raise StandardError, 'The Behaviour of clone has changed in Rails 3. Please use dup instead!'
   end

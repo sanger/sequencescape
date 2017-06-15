@@ -273,6 +273,10 @@ class Study < ActiveRecord::Base
 
     attribute(:hmdmc_approval_number)
 
+    # External Customers
+    attribute(:s3_email_list)
+    attribute(:data_deletion_period)
+
     REMAPPED_ATTRIBUTES = {
       contaminated_human_dna: YES_OR_NO,
       remove_x_and_autosomes: YES_OR_NO,

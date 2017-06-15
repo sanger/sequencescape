@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170511153731) do
+ActiveRecord::Schema.define(version: 20170531082054) do
 
   create_table "aliquot_indices", force: :cascade do |t|
     t.integer  "aliquot_id",    limit: 4, null: false
@@ -25,11 +25,11 @@ ActiveRecord::Schema.define(version: 20170511153731) do
   add_index "aliquot_indices", ["lane_id", "aliquot_index"], name: "index_aliquot_indices_on_lane_id_and_aliquot_index", unique: true, using: :btree
 
   create_table "aliquots", force: :cascade do |t|
-    t.integer  "receptacle_id",    limit: 4,                null: false
+    t.integer  "receptacle_id",    limit: 4,                   null: false
     t.integer  "study_id",         limit: 4
     t.integer  "project_id",       limit: 4
     t.integer  "library_id",       limit: 4
-    t.integer  "sample_id",        limit: 4,                null: false
+    t.integer  "sample_id",        limit: 4,                   null: false
     t.integer  "tag_id",           limit: 4
     t.string   "library_type",     limit: 255
     t.integer  "insert_size_from", limit: 4
@@ -38,6 +38,7 @@ ActiveRecord::Schema.define(version: 20170511153731) do
     t.datetime "updated_at"
     t.integer  "bait_library_id",  limit: 4
     t.integer  "tag2_id",          limit: 4,   default: -1
+    t.boolean  "suboptimal",                   default: false, null: false
   end
 
   add_index "aliquots", ["library_id"], name: "index_aliquots_on_library_id", using: :btree
@@ -1177,6 +1178,7 @@ ActiveRecord::Schema.define(version: 20170511153731) do
     t.float    "gigabases_expected",              limit: 24
     t.integer  "target_purpose_id",               limit: 4
     t.boolean  "customer_accepts_responsibility"
+    t.integer  "pcr_cycles",                      limit: 4
   end
 
   add_index "request_metadata", ["request_id"], name: "index_request_metadata_on_request_id", using: :btree
@@ -1548,6 +1550,8 @@ ActiveRecord::Schema.define(version: 20170511153731) do
     t.string   "data_access_group",                      limit: 255
     t.string   "prelim_id",                              limit: 255
     t.integer  "program_id",                             limit: 4
+    t.string   "s3_email_list",                          limit: 255
+    t.string   "data_deletion_period",                   limit: 255
   end
 
   add_index "study_metadata", ["faculty_sponsor_id"], name: "index_study_metadata_on_faculty_sponsor_id", using: :btree

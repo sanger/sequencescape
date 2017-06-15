@@ -9,7 +9,7 @@ class FixSpikedInBufferAgain < ActiveRecord::Migration
     # aliquot that has and use that.  If that fails we can resort to the first library that we find
     # and use that as the library.
     ActiveRecord::Base.transaction do
-      SpikedBuffer.phiX_sample.aliquots.select do |aliquot|
+      SpikedBuffer.phix_sample.aliquots.select do |aliquot|
         aliquot.library.nil?  # Finds the aliquots missing the library
       end.each do |aliquot_missing_library|
         catch(:library_set_ok) {

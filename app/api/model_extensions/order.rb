@@ -22,7 +22,7 @@ module ModelExtensions::Order
     private :validate_request_options?
 
     def request_types_delegate_validator
-      DelegateValidation::CompositeValidator::CompositeValidator(*::RequestType.find(request_types.flatten).map(&:delegate_validator))
+      DelegateValidation::CompositeValidator.construct(*::RequestType.find(request_types.flatten).map(&:delegate_validator))
     end
 
     # If this returns true then we check values that have not been set, otherwise we can ignore them.  This would
@@ -131,6 +131,7 @@ module ModelExtensions::Order
         json['library_type']                   = attributes[:library_type]
         json['fragment_size_required', 'from'] = attributes[:fragment_size_required_from].try(:to_i)
         json['fragment_size_required', 'to']   = attributes[:fragment_size_required_to].try(:to_i)
+        json['pcr_cycles']                     = attributes[:pcr_cycles].try(:to_i)
         json['bait_library']                   = attributes[:bait_library_name]
         json['sequencing_type']                = attributes[:sequencing_type]
         json['insert_size']                    = attributes[:insert_size].try(:to_i)
@@ -148,6 +149,7 @@ module ModelExtensions::Order
         attributes['library_type']                = json['library_type']
         attributes['fragment_size_required_from'] = json['fragment_size_required', 'from']
         attributes['fragment_size_required_to']   = json['fragment_size_required', 'to']
+        attributes['pcr_cycles']                  = json['pcr_cycles']
         attributes[:bait_library_name]            = json['bait_library']
         attributes[:sequencing_type]              = json['sequencing_type']
         attributes[:insert_size]                  = json['insert_size']

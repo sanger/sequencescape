@@ -86,6 +86,9 @@
       <% end %>
     <% end %>
 
+    <%= metadata_fields.text_field(:s3_email_list) %>
+    <%= metadata_fields.select(:data_deletion_period, ['','3 months']) %>
+
     <% metadata_fields.finalize_related_fields %>
   <% end %>
 <% end %>
