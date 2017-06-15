@@ -97,6 +97,7 @@ class Transfer::BetweenPlateAndTubes < Transfer
     end).map(&:save!)
 
     tube_to_stock_wells.each do |tube, stock_wells|
+      next if tube.name.present?
       tube.update_attributes!(name: tube_name_for(stock_wells))
     end
   end
