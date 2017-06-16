@@ -80,9 +80,9 @@ class AssetGroupRedirectTest < ActiveSupport::TestCase
       @barcode2 = '22222'
       @barcode3 = '33333'
       @asset_name = 'tube name'
-      asset1 = create :sample_tube, barcode: barcode1, name: asset_name
-      asset2 = create :sample_tube, barcode: barcode2, name: asset_name
-      asset3 = create :sample_tube, barcode: barcode3
+      asset1 = create :empty_sample_tube, barcode: barcode1, name: asset_name
+      asset2 = create :empty_sample_tube, barcode: barcode2, name: asset_name
+      asset3 = create :empty_sample_tube, barcode: barcode3
       options = { printables: { (asset1.id).to_s => 'true', (asset2.id).to_s => 'true', (asset3.id).to_s => 'false' } }
       @asset_redirect = LabelPrinter::Label::AssetRedirect.new(options)
       @assets = [asset1, asset2]
@@ -119,7 +119,7 @@ class AssetGroupRedirectTest < ActiveSupport::TestCase
       @prefix = 'NT'
       @barcode1 = '11111'
       @asset_name = 'tube name'
-      @asset = create :sample_tube, barcode: barcode1, name: asset_name
+      @asset = create :empty_sample_tube, barcode: barcode1, name: asset_name
       options = { printables: asset }
       @asset_redirect = LabelPrinter::Label::AssetRedirect.new(options)
 

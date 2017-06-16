@@ -1,10 +1,10 @@
 module SampleManifestExcel
   class Configuration
-    include SampleManifestExcel::Helpers
+    include Helpers
 
     FILES = [:conditional_formattings, :manifest_types, :ranges, :columns]
 
-    attr_accessor :folder, *FILES
+    attr_accessor :folder, :tag_group, *FILES
     attr_reader :loaded, :files
 
     def initialize
@@ -41,6 +41,8 @@ module SampleManifestExcel
     def manifest_types=(manifest_types)
       @manifest_types = ManifestTypeList.new(manifest_types).freeze
     end
+
+    attr_writer :tag_group
 
     def loaded?
       loaded

@@ -5,7 +5,6 @@ Feature: Push samples through the PacBio pipeline with javascript
     Given I am a "manager" user logged in as "user"
     Given I have a project called "Test project"
     Given I have an active study called "Test study"
-    Given I am on the show page for study "Test study"
     Given the "1D Tube" barcode printer "xyz" exists
     Given the "96 Well Plate" barcode printer "abc" exists
     And the plate barcode webservice returns "99998"

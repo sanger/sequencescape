@@ -62,4 +62,9 @@ RSpec.configure do |config|
 
   config.include TransactionalCapybara::AjaxHelpers
   config.include ApiHelper
+  # In a few places we have models that receive a file from an uploader
+  # fixture_file_upload() ensures that the tests mimic the live behaviour.
+  # This include make sit available to us. Including it globally causes
+  # issues eleswhere
+  config.include ActionDispatch::TestProcess, with: :uploader
 end

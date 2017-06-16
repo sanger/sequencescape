@@ -759,7 +759,10 @@ class Plate < Asset
   end
 
   def valid_positions?(positions)
-    unique_positions_on_plate, unique_positions_from_caller = Map.where_description(positions).where_plate_size(size).where_plate_shape(asset_shape).all.map(&:description).sort.uniq, positions.sort.uniq
+    unique_positions_from_caller = positions.sort.uniq
+    unique_positions_on_plate = maps.where_description(unique_positions_from_caller)
+                                    .distinct
+                                    .pluck(:description).sort
     unique_positions_on_plate == unique_positions_from_caller
   end
 

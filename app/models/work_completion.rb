@@ -26,6 +26,7 @@ class WorkCompletion < ActiveRecord::Base
 
   def pass_and_attach_requests
     connect_requests
+    update_stock_wells
   end
 
   def connect_requests
@@ -59,7 +60,13 @@ class WorkCompletion < ActiveRecord::Base
     end
   end
 
+  def update_stock_wells
+    target_wells.each do |target_well|
+      target_well.stock_wells = [target_well]
+    end
+  end
+
   def target_wells
-    target.wells.include_stock_wells.include_requests_as_target
+    @target_wells ||= target.wells.include_stock_wells.include_requests_as_target
   end
 end

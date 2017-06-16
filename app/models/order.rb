@@ -297,7 +297,7 @@ class Order < ActiveRecord::Base
   end
 
   def request_attributes
-    attributes = ActiveSupport::OrderedHash.new { |hash, value| hash[value] = CompositeAttribute.new(value) }
+    attributes = Hash.new { |hash, value| hash[value] = CompositeAttribute.new(value) }
     request_types_list.flatten.each do |request_type|
       mocked = mock_metadata_for(request_type)
       request_type.request_class::Metadata.attribute_details.each do |att|

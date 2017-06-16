@@ -9,5 +9,6 @@ module SampleManifestExcel
     require_relative 'worksheet/base'
     require_relative 'worksheet/data_worksheet'
     require_relative 'worksheet/ranges_worksheet'
+    require_relative 'worksheet/test_worksheet'
   end
 end

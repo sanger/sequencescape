@@ -21,12 +21,12 @@ class Io::Tube < Io::Asset
                                     role => label.prefix
                             purpose.name => label.text
 
-                       stock_plate.uuid  => stock_plate.uuid
-                    stock_plate.barcode  => stock_plate.barcode.number
-      stock_plate.barcode_prefix.prefix  => stock_plate.barcode.prefix
-    stock_plate.two_dimensional_barcode  => stock_plate.barcode.two_dimensional
-              stock_plate.ean13_barcode  => stock_plate.barcode.ean13
-               stock_plate.barcode_type  => stock_plate.barcode.type
+                       source_plate.uuid  => stock_plate.uuid
+                    source_plate.barcode  => stock_plate.barcode.number
+      source_plate.barcode_prefix.prefix  => stock_plate.barcode.prefix
+    source_plate.two_dimensional_barcode  => stock_plate.barcode.two_dimensional
+              source_plate.ean13_barcode  => stock_plate.barcode.ean13
+               source_plate.barcode_type  => stock_plate.barcode.type
 
                                aliquots  => aliquots
 

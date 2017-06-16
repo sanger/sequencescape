@@ -375,8 +375,8 @@ FactoryGirl.define do
     oligo
   end
 
-  factory :tag_group do
-    name  { generate :tag_group_name }
+  factory :tag_group do |_t|
+    sequence(:name) { |n| "Tag Group #{n}" }
 
     transient do
       tag_count 0
@@ -385,6 +385,12 @@ FactoryGirl.define do
     after(:build) do |tag_group, evaluator|
       evaluator.tag_count.times do |i|
         tag_group.tags << create(:tag, map_id: i + 1, tag_group: tag_group)
+      end
+    end
+
+    factory :tag_group_with_tags do
+      transient do
+        tag_count 5
       end
     end
   end

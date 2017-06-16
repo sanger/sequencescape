@@ -49,6 +49,8 @@ class QcMetric < ActiveRecord::Base
 
   scope :most_recent_first, ->() { order('created_at DESC, id DESC') }
 
+  before_save :update_aliquot_quality
+
   # Update the new state as appropriate:
   # - Don't change the state if we already match
   # - If we have an automatic state, update to a manual state
@@ -119,5 +121,9 @@ class QcMetric < ActiveRecord::Base
   def value_error_message(decision, accepted_list)
     accepted = accepted_list.keys.to_sentence(last_word_connector: ', or ', two_words_connector: ' or ')
     "#{decision} is not an acceptable decision. Should be #{accepted}."
+  end
+
+  def update_aliquot_quality
+    asset.update_aliquot_quality(qc_failed?)
   end
 end

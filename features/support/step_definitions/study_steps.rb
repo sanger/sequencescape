@@ -113,7 +113,7 @@ And /^the study have a workflow$/ do
   FactoryGirl.create :submission_workflow
 end
 
-def GivenFixedStudyMetadata(attribute, value, regexp)
+def given_fixed_study_metadata(attribute, value, regexp)
   Given(regexp) do |name|
     study = Study.find_by(name: name) or raise StandardError, "There appears to be no study named '#{name}'"
     study.study_metadata.send(:"#{ attribute }=", value)
@@ -121,16 +121,16 @@ def GivenFixedStudyMetadata(attribute, value, regexp)
   end
 end
 
-GivenFixedStudyMetadata(:contaminated_human_dna,  Study::YES, /^the study "([^\"]+)" has samples contaminated with human DNA$/)
-GivenFixedStudyMetadata(:contaminated_human_dna,  Study::NO,  /^the study "([^\"]+)" does not have any samples contaminated with human DNA$/)
-GivenFixedStudyMetadata(:remove_x_and_autosomes,  Study::YES, /^the study "([^\"]+)" has samples which need x and autosome data removed$/)
-GivenFixedStudyMetadata(:remove_x_and_autosomes,  Study::NO,  /^the study "([^\"]+)" does not have any samples which need x and autosome data removed$/)
-GivenFixedStudyMetadata(:contains_human_dna,      Study::YES, /^the study "([^\"]+)" contains human DNA$/)
-GivenFixedStudyMetadata(:contains_human_dna,      Study::NO,  /^the study "([^\"]+)" does not contain human DNA$/)
-GivenFixedStudyMetadata(:commercially_available,  Study::YES, /^the study "([^\"]+)" contains samples commercially available$/)
-GivenFixedStudyMetadata(:commercially_available,  Study::NO,  /^the study "([^\"]+)" does not contain samples commercially available$/)
+given_fixed_study_metadata(:contaminated_human_dna,  Study::YES, /^the study "([^\"]+)" has samples contaminated with human DNA$/)
+given_fixed_study_metadata(:contaminated_human_dna,  Study::NO,  /^the study "([^\"]+)" does not have any samples contaminated with human DNA$/)
+given_fixed_study_metadata(:remove_x_and_autosomes,  Study::YES, /^the study "([^\"]+)" has samples which need x and autosome data removed$/)
+given_fixed_study_metadata(:remove_x_and_autosomes,  Study::NO,  /^the study "([^\"]+)" does not have any samples which need x and autosome data removed$/)
+given_fixed_study_metadata(:contains_human_dna,      Study::YES, /^the study "([^\"]+)" contains human DNA$/)
+given_fixed_study_metadata(:contains_human_dna,      Study::NO,  /^the study "([^\"]+)" does not contain human DNA$/)
+given_fixed_study_metadata(:commercially_available,  Study::YES, /^the study "([^\"]+)" contains samples commercially available$/)
+given_fixed_study_metadata(:commercially_available,  Study::NO,  /^the study "([^\"]+)" does not contain samples commercially available$/)
 
-def GivenStudyMetadata(attribute, regexp)
+def given_study_metadata(attribute, regexp)
   Given(regexp) do |name, value|
     study = Study.find_by(name: name) or raise StandardError, "There appears to be no study named '#{name}'"
     study.study_metadata.send(:"#{ attribute }=", value.blank? ? nil : value)
@@ -138,18 +138,9 @@ def GivenStudyMetadata(attribute, regexp)
   end
 end
 
-GivenStudyMetadata(:data_release_strategy,      /^the study "([^\"]+)" has an? (open|managed) data release strategy$/)
-GivenStudyMetadata(:data_release_timing,        /^the study "([^\"]+)" data release timing is (standard)$/)
-GivenStudyMetadata(:study_ebi_accession_number, /^the study "([^\"]+)" has the accession number "([^\"]+)"$/)
-
-def GivenStudyTypeStudyMetadata(attribute, regexp)
-  Given(regexp) do |name, value|
-    study = Study.find_by(name: name) or raise StandardError, "There appears to be no study named '#{name}'"
-    study_type = StudyType.find_by(name: value) or raise StandardError, "Study type not valid: '#{value}'"
-    study.study_metadata.send(:"#{ attribute }=", study_type)
-    study.save!
-  end
-end
+given_study_metadata(:data_release_strategy,      /^the study "([^\"]+)" has an? (open|managed) data release strategy$/)
+given_study_metadata(:data_release_timing,        /^the study "([^\"]+)" data release timing is (standard)$/)
+given_study_metadata(:study_ebi_accession_number, /^the study "([^\"]+)" has the accession number "([^\"]+)"$/)
 
 Given /^the study "([^\"]+)" belongs to the program "([^\"]*)"$/ do |study_name, program_name|
   study = Study.find_by(name: study_name) or raise StandardError, "There appears to be no study named '#{study_name}'"
@@ -158,45 +149,38 @@ Given /^the study "([^\"]+)" belongs to the program "([^\"]*)"$/ do |study_name,
   study.save!
 end
 
-GivenStudyTypeStudyMetadata(:study_type,              /^the study "([^\"]+)" is a "([^\"]*)" study$/)
-
-def GivenStudyDataReleaseTypeStudyMetadata(attribute, regexp)
-  Given(regexp) do |name, value|
-    study = Study.find_by(name: name) or raise StandardError, "There appears to be no study named '#{name}'"
-    study_type_dr = DataReleaseStudyType.find_by(name: value) or raise StandardError, "Data Release Study type not valid: '#{value}'"
-    study.study_metadata.send(:"#{ attribute }=", study_type_dr)
-    study.save!
-  end
+Given(/^the study "([^\"]+)" is a "([^\"]*)" study$/) do |name, value|
+  study = Study.find_by!(name: name)
+  study_type = StudyType.find_by!(name: value)
+  study.study_metadata.study_type = study_type
+  study.save!
 end
 
-GivenStudyDataReleaseTypeStudyMetadata(:data_release_study_type, /^the study "([^\"]+)" is a "([^\"]+)" study for data release$/)
-
-def GivenReferenceGenomeStudyMetadata(attribute, regexp)
-  Given(regexp) do |name, value|
-    study = Study.find_by(name: name) or raise StandardError, "There appears to be no study named '#{name}'"
-    ref_genome = ReferenceGenome.find_by(name: value) or raise StandardError, "Study type not valid: '#{value}'"
-    study.study_metadata.send(:"#{ attribute }=", ref_genome)
-    study.save!
-  end
+Given(/^the study "([^\"]+)" is a "([^\"]+)" study for data release$/) do |name, value|
+  study = Study.find_by!(name: name)
+  study_type_dr = DataReleaseStudyType.find_by!(name: value)
+  study.study_metadata.data_release_study_type = study_type_dr
+  study.save!
 end
 
-def GivenFacultySponsor(attribute, regexp)
-  Given(regexp) do |name, value|
-    study = Study.find_by(name: name) or raise StandardError, "There appears to be no study named '#{name}'"
-    faculty_sponsor = FacultySponsor.create!(name: value)
-    study.study_metadata.send(:"#{ attribute }=", faculty_sponsor)
-    study.save!
-  end
+Given(/^the faculty sponsor for study "([^\"]+)" is "([^\"]+)"$/) do |name, value|
+  study = Study.find_by!(name: name)
+  faculty_sponsor = FacultySponsor.create!(name: value)
+  study.study_metadata.faculty_sponsor = faculty_sponsor
+  study.save!
 end
 
-GivenFacultySponsor(:faculty_sponsor,                /^the faculty sponsor for study "([^\"]+)" is "([^\"]+)"$/)
+Given(/^the reference genome for study "([^\"]+)" is "([^\"]+)"$/) do |name, value|
+  study = Study.find_by!(name: name)
+  ref_genome = ReferenceGenome.find_by!(name: value)
+  study.study_metadata.reference_genome = ref_genome
+  study.save!
+end
 
-GivenReferenceGenomeStudyMetadata(:reference_genome, /^the reference genome for study "([^\"]+)" is "([^\"]+)"$/)
-
-GivenStudyMetadata(:dac_policy, /^the policy for study "([^\"]+)" is "([^\"]+)"$/)
-GivenStudyMetadata(:ega_dac_accession_number, /^the dac accession number for study "([^\"]+)" is "([^\"]+)"$/)
-GivenStudyMetadata(:array_express_accession_number, /^the Array Express accession number for study "([^\"]+)" is "([^\"]+)"$/)
-GivenStudyMetadata(:ega_policy_accession_number, /^the EGA policy accession number for study "([^\"]+)" is "([^\"]+)"$/)
+given_study_metadata(:dac_policy, /^the policy for study "([^\"]+)" is "([^\"]+)"$/)
+given_study_metadata(:ega_dac_accession_number, /^the dac accession number for study "([^\"]+)" is "([^\"]+)"$/)
+given_study_metadata(:array_express_accession_number, /^the Array Express accession number for study "([^\"]+)" is "([^\"]+)"$/)
+given_study_metadata(:ega_policy_accession_number, /^the EGA policy accession number for study "([^\"]+)" is "([^\"]+)"$/)
 
 Given /^the (abstract|description|title) of study "([^\"]+)" is "([^\"]*)"$/ do |attribute, name, description|
   study = Study.find_by(name: name) or raise StandardError, "There appears to be no study named '#{name}'"
@@ -235,7 +219,6 @@ Given /^study "([^\"]*)" has asset and assetgroup$/ do |study|
   user = User.find_by login: 'user'
 
   id_asset_group = FactoryGirl.create :asset_group, name: 'new_asset_group', user: user, study: proj
-  #  id_asset = FactoryGirl.create :asset, :name => 'Cucumberirbattle', :sti_type => 'SampleTube', :barcode => 'barcode', :sample_id => '1', :closed => '0'
   id_asset = FactoryGirl.create :sample_tube, name: 'Cucumberirbattle', barcode: 'barcode', closed: '0'
   id_aga = FactoryGirl.create :asset_group_asset, asset_id: id_asset.id, asset_group_id: id_asset_group.id
 end

@@ -8,7 +8,7 @@ class SampleManifestGenerator
   validates_presence_of :user, :configuration
 
   validate :check_required_attributes
-  validate :check_template, if: Proc.new { |s| s.configuration.present? }
+  validate :check_template, if: proc { |s| s.configuration.present? }
 
   def self.model_name
     ActiveModel::Name.new(SampleManifest)
