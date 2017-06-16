@@ -79,6 +79,8 @@ FactoryGirl.define do
     data_release_strategy       'open'
     study_name_abbreviation     'WTCCC'
     data_access_group           'something'
+    s3_email_list               'aa1@sanger.ac.uk;aa2@sanger.ac.uk'
+    data_deletion_period        '3 months'
   end
 
   factory :study do
@@ -353,7 +355,11 @@ FactoryGirl.define do
     end
 
     factory :manager do
-      roles { |role| [role.association(:manager_role)] }
+      roles { |role| [role.association(:manager_role, authorizable: authorizable)] }
+
+      transient do
+        authorizable { create :study }
+      end
     end
 
     factory :owner do
