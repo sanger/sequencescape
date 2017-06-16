@@ -33,9 +33,15 @@ class Transfer::BetweenPlateAndTubes < Transfer
   has_many :destinations, ->() { uniq }, through: :well_to_tubes
   scope :include_transfers, -> { includes(well_to_tubes: DESTINATION_INCLUDES) }
 
+  after_create :build_well_to_tube_transfers
+
   def transfers
-    well_to_tubes.include_destination.each_with_object({}) { |t, hash| hash[t.source] = tube_to_hash(t.destination) }
+    well_to_tubes.include_destination.each_with_object({}) do |t, hash|
+      hash[t.source] = tube_to_hash(t.destination)
+    end
   end
+
+  private
 
   # NOTE: Performance enhancement to convert a tube to it's minimal representation for presentation.
   def tube_to_hash(tube)
@@ -52,7 +58,6 @@ class Transfer::BetweenPlateAndTubes < Transfer
       details[:label][:prefix] = tube.role unless tube.role.nil?
     end
   end
-  private :tube_to_hash
 
   def barcode_to_hash(barcoded)
     yield({
@@ -63,7 +68,6 @@ class Transfer::BetweenPlateAndTubes < Transfer
       type: barcoded.barcode_type
     }) if barcoded.present?
   end
-  private :barcode_to_hash
 
   #--
   # The source plate wells need to be translated back to the stock plate wells, which simply
@@ -80,15 +84,12 @@ class Transfer::BetweenPlateAndTubes < Transfer
       end.compact
     ]
   end
-  private :well_to_destination
 
   def record_transfer(source, destination, stock_well)
     @transfers ||= {}
     @transfers[source.map.description] = [destination, stock_well]
   end
-  private :record_transfer
 
-  after_create :build_well_to_tube_transfers
   def build_well_to_tube_transfers
     tube_to_stock_wells = Hash.new { |h, k| h[k] = [] }
     well_to_tubes.build(@transfers.map do |source, (destination, stock_wells)|
@@ -97,10 +98,14 @@ class Transfer::BetweenPlateAndTubes < Transfer
     end).map(&:save!)
 
     tube_to_stock_wells.each do |tube, stock_wells|
+      next unless apply_name?(tube)
       tube.update_attributes!(name: tube_name_for(stock_wells))
     end
   end
-  private :build_well_to_tube_transfers
+
+  def apply_name?(_)
+    true
+  end
 
   # Builds the name for the tube based on the wells that are being transferred from by finding their stock plate wells and
   # creating an appropriate range.
@@ -116,16 +121,13 @@ class Transfer::BetweenPlateAndTubes < Transfer
     first, last = source_wells.first.map_description, source_wells.last.map_description
     "#{plate_name} #{first}:#{last}"
   end
-  private :tube_name_for
 
   # Request type is based on the destination tube from the source plate
   def request_type_between(_, destination)
     destination.transfer_request_type_from(source)
   end
-  private :request_type_between
 
   def build_asset_links
     AssetLink::Job.create(source, destinations)
   end
-  private :build_asset_links
 end

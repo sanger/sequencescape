@@ -7,13 +7,11 @@
 
 mysql: &MYSQL
   adapter: <%= defined?(JRuby) ? "mysql" : "mysql2" %>
-  username: root
+  username: <%= ENV.fetch('DBUSERNAME','root') %>
   password: <%= ENV['DBPASSWORD'] %>
   encoding: utf8
   properties:
     characterSetResults: utf8
-  host: localhost
-  port: 3306
   pool: 5
   timeout: 5000
   reaping_frequency: 600
@@ -62,7 +60,7 @@ development_snp:
 test: &test
   <<: *MYSQL
   database: sequencescape_test<%= ENV['TEST_ENV_NUMBER'] %><%= suffix %>
-  pool: 5
+  pool: 10
   timeout: 5000
 
 cucumber:

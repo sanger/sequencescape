@@ -128,5 +128,11 @@ FactoryGirl.define do
       association(:request_type, factory: :library_creation_request_type)
       valid_options { |rtva| RequestType::Validator::LibraryTypeValidator.new(rtva.request_type.id) }
     end
+
+    factory :pcr_cycles_validator do
+      request_option 'pcr_cycles'
+      default 0
+      options [0]
+    end
   end
 end

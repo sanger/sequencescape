@@ -73,6 +73,11 @@ class Aliquot::Receptacle < Asset
   has_one :get_tag, through: :primary_aliquot, source: :tag
   deprecate :get_tag
 
+  def update_aliquot_quality(suboptimal_quality)
+    aliquots.each { |a| a.update_quality(suboptimal_quality) }
+    true
+  end
+
   def tag
     get_tag.try(:map_id) || ''
   end
@@ -127,6 +132,10 @@ class Aliquot::Receptacle < Asset
       aliquot.set_library
       aliquot.save!
     end
+  end
+
+  def outer_request(submission_id)
+    transfer_requests_as_target.find_by(submission_id: submission_id).try(:outer_request)
   end
 
   has_many :studies, through: :aliquots
