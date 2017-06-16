@@ -5,6 +5,7 @@
 # or a proc that takes the instance as an argument and evaluates to default value when called
 # Example of usage:
 # set_defaults attr_1: static_value, attr_2: ->(instance) { instance.any_required_method }
+# !!! It probably will not work to set default booleans, update the code if you need this
 
 module DefaultAttributes
   extend ActiveSupport::Concern
@@ -22,7 +23,7 @@ module DefaultAttributes
 
     def set_default(attribute, default_value = nil, &default_value_block)
       define_method(attribute) do
-        super || default_value || yield(self)
+        super || send("#{attribute}=", default_value || yield(self))
       end
     end
   end
