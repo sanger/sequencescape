@@ -43,6 +43,9 @@ en:
         customer_accepts_responsibility:
           label: Still charge on fail
 
+        pcr_cycles:
+          label: PCR Cycles
+
     library_creation_request:
       <<: *REQUEST
     sequencing_request:
@@ -472,6 +475,12 @@ en:
 
         hmdmc_approval_number:
           label: HMDMC approval number
+
+        s3_email_list:
+          label: S3 email list
+
+        data_deletion_period:
+          label: Data deletion period
 
     project:
       metadata:

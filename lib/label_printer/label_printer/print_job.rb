@@ -22,7 +22,7 @@ module LabelPrinter
         attributes = build_attributes
         LabelPrinter::PmbClient.print(attributes)
       rescue LabelPrinter::PmbException => exception
-        errors.add(:pmb, exception)
+        errors.add(:printmybarcode, exception)
         return false
       rescue BarcodePrinter::BarcodePrinterException => exception
         errors.add(:printer, exception)

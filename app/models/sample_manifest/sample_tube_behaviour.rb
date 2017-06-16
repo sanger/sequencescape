@@ -36,6 +36,10 @@ module SampleManifest::SampleTubeBehaviour
       end
     end
 
+    def acceptable_purposes
+      Purpose.none
+    end
+
     def updated_by!(user, samples)
       # Does nothing at the moment
     end
@@ -68,6 +72,10 @@ module SampleManifest::SampleTubeBehaviour
 
     def printables
       samples.map { |sample| sample.assets.first }
+    end
+
+    def assign_library?
+      false
     end
   end
 

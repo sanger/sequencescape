@@ -608,7 +608,10 @@ Sequencescape::Application.routes.draw do
 
   resources :user_queries, only: [:new, :create]
 
+  resources :poolings, only: [:new, :create]
+
   post 'get_your_qc_completed_tubes_here' => 'get_your_qc_completed_tubes_here#create', as: :get_your_qc_completed_tubes_here
+  post 'sample_manifest_upload_with_tag_sequences' => 'sample_manifest_upload_with_tag_sequences#create', as: :sample_manifest_upload_with_tag_sequences
 
   # These endpoints should be defined explicitly
   get '/:controller(/:action(/:id))'

@@ -8,7 +8,7 @@ class SampleManifestGenerator
   validates_presence_of :user, :configuration
 
   validate :check_required_attributes
-  validate :check_template, if: Proc.new { |s| s.configuration.present? }
+  validate :check_template, if: proc { |s| s.configuration.present? }
 
   def self.model_name
     ActiveModel::Name.new(SampleManifest)
@@ -56,12 +56,12 @@ class SampleManifestGenerator
 
   def check_required_attributes
     REQUIRED_ATTRIBUTES.each do |attribute|
-      errors.add(:base, "#{attribute} attribute should be present") unless params[attribute].present?
+      errors.add(:base, "#{attribute} attribute should be present") if params[attribute].blank?
     end
   end
 
   def check_template
-    errors.add(:base, "#{params[:template]} is not a valid template") unless columns.present?
+    errors.add(:base, "#{params[:template]} is not a valid template") if columns.blank?
   end
 
   def create_download

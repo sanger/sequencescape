@@ -7,20 +7,8 @@
 class Transfer::BetweenPlateAndTubes < Transfer
   DESTINATION_INCLUDES = {
     destination: [
-      :uuid_object, {
-        aliquots: [
-          :uuid_object,
-          :bait_library, {
-            tag: :tag_group,
-            sample: [
-              :uuid_object, {
-                primary_study: { study_metadata: :reference_genome },
-                sample_metadata: :reference_genome
-              }
-            ]
-          }
-        ]
-      }
+      :uuid_object,
+      :barcode_prefix
     ]
   }
 
@@ -60,7 +48,7 @@ class Transfer::BetweenPlateAndTubes < Transfer
       label: { text: tube.purpose.name }
     }.tap do |details|
       barcode_to_hash(tube) { |s| details[:barcode] = s }
-      barcode_to_hash(tube.stock_plate) { |s| details[:stock_plate] = { barcode: s } }
+      barcode_to_hash(tube.source_plate) { |s| details[:stock_plate] = { barcode: s } }
       details[:label][:prefix] = tube.role unless tube.role.nil?
     end
   end
@@ -85,7 +73,7 @@ class Transfer::BetweenPlateAndTubes < Transfer
   # well as a source and the target is an MX library tube.
   #++
   def well_to_destination
-    ActiveSupport::OrderedHash[
+    Hash[
       source.stock_wells.map do |well, stock_wells|
         tube = locate_mx_library_tube_for(well, stock_wells)
         (tube.nil? or should_well_not_be_transferred?(well)) ? nil : [well, [tube, stock_wells]]
@@ -120,9 +108,13 @@ class Transfer::BetweenPlateAndTubes < Transfer
     source_wells = source.plate_purpose.source_wells_for(stock_wells).sort { |w1, w2| w1.map.column_order <=> w2.map.column_order }
     stock_plates = source_wells.map(&:plate).uniq
     raise StandardError, 'There appears to be no stock plate!' if stock_plates.empty?
-    raise StandardError, 'Cannot handle cross plate pooling!' if stock_plates.size > 1
+    plate_name = if stock_plates.size > 1
+                   "#{stock_plates.first.sanger_human_barcode}+"
+                 else
+                   stock_plates.first.sanger_human_barcode
+                 end
     first, last = source_wells.first.map_description, source_wells.last.map_description
-    "#{stock_plates.first.sanger_human_barcode} #{first}:#{last}"
+    "#{plate_name} #{first}:#{last}"
   end
   private :tube_name_for
 

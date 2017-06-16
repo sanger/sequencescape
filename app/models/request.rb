@@ -42,7 +42,7 @@ class Request < ActiveRecord::Base
   }
 
   def validator_for(request_option)
-    request_type.request_type_validators.find_by(request_option: request_option.to_s) || raise("#{request_type.name} has no #{request_option} validator!")
+    request_type.request_type_validators.find_by(request_option: request_option.to_s) || RequestType::Validator::NullValidator.new
   end
 
   scope :customer_requests, ->() { where(sti_type: [CustomerRequest, *CustomerRequest.descendants].map(&:name)) }
@@ -103,7 +103,7 @@ class Request < ActiveRecord::Base
         ])
         .group('pre_capture_pool_pooled_requests.pre_capture_pool_id')
         .customer_requests
-        .where(state: 'pending')
+        .where(state: ['started', 'pending'])
         .where([
           'container_associations.container_id=?',
           plate.id
@@ -144,6 +144,7 @@ class Request < ActiveRecord::Base
   belongs_to :submission_pool, foreign_key: :submission_id
 
   belongs_to :order, inverse_of: :requests
+  has_one :order_role, through: :order
 
   # has_many :submission_siblings, ->(request) { where(:request_type_id => request.request_type_id) }, :through => :submission, :source => :requests, :class_name => 'Request'
   has_many :qc_metric_requests

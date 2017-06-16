@@ -189,6 +189,14 @@ Feature: The XML for the sequencescape API
             <name>HMDMC approval number</name>
             <value></value>
           </descriptor>
+          <descriptor>
+            <name>S3 email list</name>
+            <value>aa1@sanger.ac.uk;aa2@sanger.ac.uk</value>
+          </descriptor>
+          <descriptor>
+            <name>Data deletion period</name>
+            <value>3 months</value>
+          </descriptor>
           <descriptor><name>Data access group</name><value>group1</value></descriptor>
           <descriptor><name>EGA DAC Accession Number</name></descriptor>
           <descriptor><name>EGA Policy Accession Number</name></descriptor>
