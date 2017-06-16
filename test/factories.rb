@@ -355,7 +355,11 @@ FactoryGirl.define do
     end
 
     factory :manager do
-      roles { |role| [role.association(:manager_role)] }
+      roles { |role| [role.association(:manager_role, authorizable: authorizable)] }
+
+      transient do
+        authorizable { create :study }
+      end
     end
 
     factory :owner do
