@@ -53,7 +53,7 @@ module Sanger
         end
 
         def self.tecan_precision_value(value)
-          "%.#{configatron.tecan_precision}f" % value
+          value.round(configatron.tecan_precision)
         end
 
         def self.each_mapping(data_object)
