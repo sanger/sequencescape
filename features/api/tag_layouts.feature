@@ -58,7 +58,6 @@ Feature: Access tag layouts through the API
   @tag_layout @create @barcode-service
   Scenario: Creating a tag layout of an entire plate using 96 tags by pools
     Given the plate barcode webservice returns "1000001..1000002"
-
     Given the tag group "Example Tag Group" exists
       And the UUID for the tag group "Example Tag Group" is "00000000-1111-2222-3333-444444444444"
       And the tag group "Example Tag Group" has 20 tags
@@ -103,7 +102,6 @@ Feature: Access tag layouts through the API
     Given the tag group "Example Tag Group" exists
       And the UUID for the tag group "Example Tag Group" is "00000000-1111-2222-3333-444444444444"
       And the tag group "Example Tag Group" has 96 tags
-
     Given a "Stock plate" plate called "Testing the API" exists
       And the UUID for the plate "Testing the API" is "11111111-2222-3333-4444-000000000002"
       And all wells on the plate "Testing the API" have unique samples
@@ -140,11 +138,9 @@ Feature: Access tag layouts through the API
   @tag_layout @create @barcode-service
   Scenario: Creating a tag layout of an entire plate using 96 tags by pools with empty wells
     Given the plate barcode webservice returns "1000001..1000002"
-
     Given the tag group "Example Tag Group" exists
       And the UUID for the tag group "Example Tag Group" is "00000000-1111-2222-3333-444444444444"
       And the tag group "Example Tag Group" has 96 tags
-
     Given a "Stock plate" plate called "Testing the API" exists
       And the UUID for the plate "Testing the API" is "11111111-2222-3333-4444-000000000002"
       And all wells on the plate "Testing the API" have unique samples
@@ -183,7 +179,6 @@ Feature: Access tag layouts through the API
   @tag_layout @create @barcode-service
   Scenario: Creating a tag layout of an entire plate using 96 tags by pools with an offset
     Given the plate barcode webservice returns "1000001..1000002"
-
     Given the tag group "Example Tag Group" exists
       And the UUID for the tag group "Example Tag Group" is "00000000-1111-2222-3333-444444444444"
       And the tag group "Example Tag Group" has 30 tags
@@ -224,7 +219,6 @@ Feature: Access tag layouts through the API
   @tag_layout @create @barcode-service
   Scenario: Creating a tag layout of an entire plate using 96 tags by pools with an offset
     Given the plate barcode webservice returns "1000001..1000002"
-
     Given the tag group "Example Tag Group" exists
       And the UUID for the tag group "Example Tag Group" is "00000000-1111-2222-3333-444444444444"
       And the tag group "Example Tag Group" has 106 tags

@@ -11,12 +11,11 @@ Feature: The top of the Illumina-B pipeline
       And the WTSI single sign-on service recognises "I-am-authenticated" as "John Smith"
 
     Given I am using the latest version of the API
-And I have a "full" authorised user with the key "cucumber"
+    And I have a "full" authorised user with the key "cucumber"
 
     Given a user with UUID "99999999-8888-7777-6666-555555555555" exists
 
-    Given the plate barcode webservice returns "1000001"
-      And the plate barcode webservice returns "1000002"
+    Given the plate barcode webservice returns "1000002"
 
       And the UUID for the transfer template "Transfer columns 1-12" is "22222222-3333-4444-5555-000000000001"
       And the UUID for the search "Find assets by barcode" is "33333333-4444-5555-6666-000000000001"
@@ -26,9 +25,10 @@ And I have a "full" authorised user with the key "cucumber"
   @authorised
   Scenario: Dealing with the initial plate in the pipeline
     Given the UUID for the plate purpose "ILB_STD_INPUT" is "11111111-2222-3333-4444-000000000001"
-      And a "ILB_STD_INPUT" plate called "Testing the API" exists
+      And a full plate called "Testing the API" exists with purpose "ILB_STD_INPUT" and barcode "1000001"
+      # And a "ILB_STD_INPUT" plate called "Testing the API" exists
       And the UUID for the plate "Testing the API" is "00000000-1111-2222-3333-000000000001"
-      And all wells on the plate "Testing the API" have unique samples
+      # And all wells on the plate "Testing the API" have unique samples
 
     Given the plate with UUID "00000000-1111-2222-3333-000000000001" has been submitted to "Illumina-B - Multiplexed WGS - HiSeq Paired end sequencing"
 

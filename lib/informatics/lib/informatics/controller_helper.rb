@@ -1,8 +1,9 @@
 
-require File.dirname(__FILE__) + '/view/menu/item'
-require File.dirname(__FILE__) + '/view/menu/list'
-require File.dirname(__FILE__) + '/view/tabs/item'
-require File.dirname(__FILE__) + '/view/tabs/list'
+require_relative 'view/menu/item'
+require_relative 'view/menu/list'
+require_relative 'view/tabs/item'
+require_relative 'view/tabs/list'
+require_relative 'globals'
 
 module ApplicationHelper
   include Informatics::Globals
