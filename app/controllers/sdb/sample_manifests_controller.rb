@@ -50,6 +50,7 @@ class Sdb::SampleManifestsController < Sdb::BaseController
     params[:asset_type] ||= params[:type]
     params[:only_first_label] ||= false
     @sample_manifest  = SampleManifest.new(new_manifest_params)
+    @asset_type       = params[:asset_type]
     @study_id         = params[:study_id] || ''
     @studies          = Study.alphabetical.pluck(:name, :id)
     @suppliers        = Supplier.alphabetical.pluck(:name, :id)
