@@ -7,7 +7,7 @@
 <% add :menu, "SampleDB Home" => '/sdb/' %>
 <% add :menu, "&nbsp;" => '' -%>
 
-<%= render partial: "shared/create_manifests_side_links" %>
+<%= render partial: "shared/create_manifests_side_links", locals: { study_id: @study_id } %>
 
 <% add :menu, "View all manifests" => sample_manifests_path %>
 <% add :menu, "&nbsp;" => '' -%>

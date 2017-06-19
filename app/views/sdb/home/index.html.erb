@@ -6,7 +6,8 @@
 
 <h2>Sample Manifests</h2>
 
-<%= render partial: "shared/create_manifests_side_links" %>
+<%= render partial: "shared/create_manifests_side_links", locals: { study_id: nil } %>
+<li><%= link_to "View all manifests", sample_manifests_path %></li>
 
 <h2>Suppliers</h2>
 <ul>
