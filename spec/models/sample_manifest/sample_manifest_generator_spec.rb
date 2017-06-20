@@ -22,7 +22,7 @@ RSpec.describe SampleManifestGenerator, type: :model do
 
   let(:attributes) {
     { "template": 'plate_full', "study_id": study.id, "supplier_id": supplier.id,
-      "count": '4', "asset_type": 'plate' }.with_indifferent_access
+      "count": '4' }.with_indifferent_access
   }
 
   it 'model name is sample manifest' do
@@ -76,14 +76,8 @@ RSpec.describe SampleManifestGenerator, type: :model do
     expect(generator.sample_manifest.password).to be_present
   end
 
-  it 'if asset type is not passed sample manifest will still have an asset_type' do
-    generator = SampleManifestGenerator.new(attributes.except(:asset_type).merge(template: 'tube_full'), user, configuration)
-    generator.execute
-    expect(generator.sample_manifest.asset_type).to eq(configuration.manifest_types.find_by('tube_full').asset_type)
-  end
-
-  it 'if asset type is empty sample manifest will still have an asset_type' do
-    generator = SampleManifestGenerator.new(attributes.merge(template: 'tube_full', asset_type: ''), user, configuration)
+  it 'has an asset_type' do
+    generator = SampleManifestGenerator.new(attributes.merge(template: 'tube_full'), user, configuration)
     generator.execute
     expect(generator.sample_manifest.asset_type).to eq(configuration.manifest_types.find_by('tube_full').asset_type)
   end

@@ -26,8 +26,6 @@
     <%= form.input :only_first_label, as: :boolean, label: 'Print only the first label' %>
   <% end %>
 
-  <%= form.input :asset_type, value: params[:asset_type], as: :hidden %>
-
   <%= form.actions do %>
     <%= form.action(:submit, as: :button, label: 'Create manifest and print labels', button_html: {  class: 'btn btn-success' }) %>
   <% end %>
