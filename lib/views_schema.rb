@@ -49,7 +49,7 @@ module ViewsSchema
   end
 
   def self.update_view(name, definition)
-    raise 'Invalid name' unless /^[a-z0-9_]*$/ === name
+    raise 'Invalid name' unless /^[a-z0-9_]*$/.match?(name)
     ActiveRecord::Base.connection.execute("DROP VIEW IF EXISTS `#{name}`;")
     create_view(name, definition)
   end
