@@ -47,7 +47,6 @@ class Sdb::SampleManifestsController < Sdb::BaseController
   end
 
   def new
-    params[:asset_type] ||= params[:type]
     params[:only_first_label] ||= false
     @sample_manifest  = SampleManifest.new(new_manifest_params)
     @study_id         = params[:study_id] || ''
@@ -55,7 +54,7 @@ class Sdb::SampleManifestsController < Sdb::BaseController
     @suppliers        = Supplier.alphabetical.pluck(:name, :id)
     @purposes         = @sample_manifest.acceptable_purposes.pluck(:name, :id)
     @barcode_printers = @sample_manifest.applicable_barcode_printers.pluck(:name)
-    @templates        = SampleManifestExcel.configuration.manifest_types.by_asset_type(@asset_type).to_a
+    @templates        = SampleManifestExcel.configuration.manifest_types.by_asset_type(params[:asset_type]).to_a
   end
 
   def create
@@ -98,8 +97,8 @@ class Sdb::SampleManifestsController < Sdb::BaseController
   end
 
   def validate_type
-    return true if SampleManifest.supported_asset_type?(params[:type])
-    flash[:error] = "'#{params[:type]}' is not a supported manifest type."
+    return true if SampleManifest.supported_asset_type?(params[:asset_type])
+    flash[:error] = "'#{params[:asset_type]}' is not a supported manifest type."
     begin
       redirect_to :back
     rescue ActionController::RedirectBackError

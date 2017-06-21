@@ -5,12 +5,9 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
 
 <h2>Sample Manifests</h2>
-<ul>
-  <li><%= link_to "Create manifest for plates", new_sample_manifest_path({type: "plate"}) %></li>
-  <li><%= link_to "Create manifest for 1D tubes", new_sample_manifest_path({type: "1dtube"})%></li>
-  <li><%= link_to "Create manifest for multiplexed libraries", new_sample_manifest_path({type: "multiplexed_library"})%></li>
-  <li><%= link_to "View all manifests", sample_manifests_path %></li>
-</ul>
+
+<%= render partial: "shared/create_manifests_side_links", locals: { study_id: nil } %>
+<li><%= link_to "View all manifests", sample_manifests_path %></li>
 
 <h2>Suppliers</h2>
 <ul>
