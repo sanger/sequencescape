@@ -1,6 +1,5 @@
 language: ruby
 rvm:
-  - 2.3.3
   - 2.4.1
   - jruby-9.1.12.0
 dist: trusty
@@ -23,10 +22,8 @@ script:
   - "bundle exec $SUITE"
 matrix:
   allow_failures:
-  - rvm: 2.4.1
   - rvm: jruby-9.1.12.0
 addons:
   apt:
     packages:
       - haveged
-      
