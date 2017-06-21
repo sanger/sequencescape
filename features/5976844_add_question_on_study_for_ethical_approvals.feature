@@ -9,7 +9,6 @@ Feature: Added property "commercially_available". Add and edit this value. Pendi
   Scenario Outline: A study is created and it appears in Pending ethical approval true
     Given a faculty sponsor called "Jack Sponsor" exists
     When I follow "Create Study"
-    Then I should be on the new study page
     Then I should see "Study Create"
     Then I should see "Are all the samples to be used in this study commercially available, unlinked anonymised cell-lines?"
     When I fill in the following:

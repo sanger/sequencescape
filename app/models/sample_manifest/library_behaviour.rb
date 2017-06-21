@@ -69,6 +69,10 @@ module SampleManifest::LibraryBehaviour
     def assign_library?
       true
     end
+
+    def acceptable_purposes
+      Purpose.none
+    end
   end
 
   RapidCore = Core
