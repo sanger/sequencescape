@@ -2,7 +2,6 @@ language: ruby
 rvm:
   - jruby-9.1.12.0
   - 2.3.3
-  - 2.4.1
 dist: trusty
 sudo: required
 services: mysql
@@ -24,7 +23,6 @@ script:
 matrix:
   allow_failures:
   - rvm: 2.3.3
-  - rvm: 2.4.1
 addons:
   apt:
     packages:
