@@ -1,6 +1,6 @@
 inherit_from: .rubocop_todo.yml
 AllCops:
-  TargetRubyVersion: 2.3
+  TargetRubyVersion: 2.4
   Include:
     - Rakefile
     - config.ru
@@ -53,7 +53,7 @@ Rails/DynamicFindBy:
   Exclude:
     - 'lib/sample_manifest_excel/**/*'
     - 'test/lib/sample_manifest_excel/**/*'
-    
+
   Whitelist:
     - find_by_sql
     - find_by_id_or_name

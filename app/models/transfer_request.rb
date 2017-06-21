@@ -81,7 +81,7 @@ class TransferRequest < SystemRequest
       target_asset.aliquots << asset.aliquots.map(&:dup) unless asset.failed? or asset.cancelled?
     rescue ActiveRecord::RecordNotUnique => exception
       # We'll specifically handle tag clashes here so that we can produce more informative messages
-      raise exception unless /aliquot_tags_and_tag2s_are_unique_within_receptacle/ === exception.message
+      raise exception unless /aliquot_tags_and_tag2s_are_unique_within_receptacle/.match?(exception.message)
       errors.add(:asset, "contains aliquots which can't be transferred due to tag clash")
       raise Aliquot::TagClash, self
     end

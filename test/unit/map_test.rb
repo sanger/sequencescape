@@ -27,7 +27,7 @@ class MapTest < ActiveSupport::TestCase
     end
 
     context 'Invalid well position' do
-      [ 0, -1, 97, 384, '1' ].each do |position|
+      [0, -1, 97, 384, '1'].each do |position|
         should "return nil for #{position.inspect}" do
           assert_nil Map.horizontal_to_vertical(position, 96)
         end
@@ -54,7 +54,7 @@ class MapTest < ActiveSupport::TestCase
       end
     end
     context 'Invalid well position' do
-      [ 0, -1, 385 ].each do |position|
+      [0, -1, 385].each do |position|
         should "return nil for #{position}" do
           assert_nil Map.horizontal_to_vertical(position, 384)
         end

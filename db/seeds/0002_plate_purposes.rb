@@ -37,7 +37,7 @@ ActiveRecord::Base.transaction do
     end
     final_purpose = flow.inject(initial_purpose) do |parent, child_plate_name|
       options = { name: child_plate_name, cherrypickable_target: false }
-      options[:type] = 'Pulldown::LibraryPlatePurpose' if child_plate_name =~ /^(WGS|SC|ISC) library plate$/
+      options[:type] = 'Pulldown::LibraryPlatePurpose' if child_plate_name.match?(/^(WGS|SC|ISC) library plate$/)
       PlatePurpose.create!(options).tap do |plate_purpose|
         parent.child_relationships.create!(child: plate_purpose, transfer_request_type: RequestType.transfer)
       end
