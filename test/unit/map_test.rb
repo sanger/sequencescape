@@ -27,9 +27,9 @@ class MapTest < ActiveSupport::TestCase
     end
 
     context 'Invalid well position' do
-      { 0 => nil, -1 => nil, 97 => nil, 384 => nil, '1' => nil }.each do |position, result|
+      [ 0, -1, 97, 384, '1' ].each do |position|
         should "return nil for #{position.inspect}" do
-          assert_equal result, Map.horizontal_to_vertical(position, 96)
+          assert_nil Map.horizontal_to_vertical(position, 96)
         end
       end
     end
@@ -54,18 +54,18 @@ class MapTest < ActiveSupport::TestCase
       end
     end
     context 'Invalid well position' do
-      { 0 => nil, -1 => nil, 385 => nil }.each do |position, result|
+      [ 0, -1, 385 ].each do |position|
         should "return nil for #{position}" do
-          assert_equal result, Map.horizontal_to_vertical(position, 384)
+          assert_nil Map.horizontal_to_vertical(position, 384)
         end
       end
     end
   end
 
   context 'Invalid plate_size' do
-    { 0 => nil, 1 => nil, -1 => nil, 95 => nil, 97 => nil, 383 => nil, 385 => nil }.each do |plate_size, result|
+    [0, 1, -1, 95, 97, 383, 385].each do |plate_size|
       should "return nil for #{plate_size}" do
-        assert_equal result, Map.horizontal_to_vertical(1, plate_size)
+        assert_nil Map.horizontal_to_vertical(1, plate_size)
       end
     end
   end
@@ -78,10 +78,10 @@ class MapTest < ActiveSupport::TestCase
       end
     end
 
-    [['H12', nil, 96], ['P24', nil, 384]].each do |current_map, expected_output, plate_size|
+    [['H12', 96], ['P24', 384]].each do |current_map, plate_size|
       should "return nil for end of plate for #{current_map}" do
         returned_map = Map.next_map_position(Map.find_by(description: current_map, asset_size: plate_size).id)
-        assert_equal expected_output, returned_map
+        assert_nil returned_map
       end
     end
   end
