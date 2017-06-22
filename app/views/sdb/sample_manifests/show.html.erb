@@ -35,6 +35,21 @@
 
 <%= render partial: "pool", locals: { sample_manifest: @sample_manifest} %>
 
+<br>
+
+<%= form_for(@sample_manifest, url: {action: "print_labels"}, method: :post) do |f| %>
+
+  <div class="form-group">
+    <%= label_tag :barcode_printer, 'Barcode printer' %>
+    <%= render partial: "shared/printer_list" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.submit "Reprint all labels" %>
+  </div>
+
+<% end %>
+
 <% if @sample_manifest.barcodes %>
 
   <%= bs_column do %>
