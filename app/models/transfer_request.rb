@@ -76,6 +76,10 @@ class TransferRequest < SystemRequest
     # Don't remove assets for transfer requests as they are made on creation
   end
 
+  def outer_request
+    asset.outer_request(submission_id)
+  end
+
   private
 
   # after_create callback method

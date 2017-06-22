@@ -236,10 +236,6 @@ class Asset < ActiveRecord::Base
     scanned_into_lab_event.try(:content) || ''
   end
 
-  def moved_to_2D_tube_date
-    moved_to_2d_tube_event.try(:content) || ''
-  end
-
   def create_asset_group_wells(user, params)
     asset_group = AssetGroup.create(params)
     asset_group.user = user

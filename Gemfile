@@ -77,7 +77,8 @@ group :default do
   # gem 'font-awesome-sass'
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
-  gem 'therubyrhino'
+  gem 'therubyrhino', platforms: :jruby
+  gem 'therubyracer', platforms: :mri
   # Pat of the JS assets pipleine
   gem 'uglifier', '>= 1.0.3'
 
@@ -118,12 +119,6 @@ end
 
 group :test do
   gem 'rspec-rails', require: false
-  # Simplifies shared transactions between server and test threads
-  # See: http://technotes.iangreenleaf.com/posts/the-one-true-guide-to-database-transactions-with-capybara.html
-  # Essentially does two things:
-  # - Patches rails to share a database connection between threads while Testing
-  # - Pathes rspec to ensure capybara has done its stuff before killing the connection
-  gem 'transactional_capybara'
   # Rails performance tests
   gem 'rails-perftest'
   # Provides json expectations for rspec. Makes test more readable,
@@ -140,6 +135,12 @@ group :test,:cucumber do
   gem 'timecop', require: false
   gem 'simplecov', require: false
   gem 'database_cleaner'
+  # Simplifies shared transactions between server and test threads
+  # See: http://technotes.iangreenleaf.com/posts/the-one-true-guide-to-database-transactions-with-capybara.html
+  # Essentially does two things:
+  # - Patches rails to share a database connection between threads while Testing
+  # - Pathes rspec to ensure capybara has done its stuff before killing the connection
+  gem 'transactional_capybara'
 end
 
 group :cucumber do

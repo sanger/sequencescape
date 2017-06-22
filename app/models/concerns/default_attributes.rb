@@ -23,7 +23,10 @@ module DefaultAttributes
 
     def set_default(attribute, default_value = nil, &default_value_block)
       define_method(attribute) do
-        super || send("#{attribute}=", default_value || yield(self))
+        # With rails 4 association methods can take an optional boolean argument
+        # When true, this forces the association to get reloaded.
+        # This behaviour is deprecated in Rails 5, and removed in Rails 5.1
+        super() || send("#{attribute}=", default_value || yield(self))
       end
     end
   end

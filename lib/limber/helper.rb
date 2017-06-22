@@ -36,7 +36,7 @@ module Limber::Helper
     end
 
     def key
-      "limber_#{@suffix.downcase}"
+      "limber_#{@suffix.downcase.tr(' ', '_')}"
     end
 
     # Builds the corresponding request type, unless it

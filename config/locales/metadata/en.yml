@@ -43,6 +43,9 @@ en:
         customer_accepts_responsibility:
           label: Still charge on fail
 
+        pcr_cycles:
+          label: PCR Cycles
+
     library_creation_request:
       <<: *REQUEST
     sequencing_request:
@@ -397,7 +400,7 @@ en:
 
         data_release_timing:
           label: How is the data release to be timed?
-          help: "Choose from:<p><strong>Immediate:</strong> To be released as soon as possible.</p><p><strong>Standard:</strong> To be released:<ul><li>within 2 months of generation for genomic sequencing project</li><li>within 3 months of generation for transcriptomics, genotyping and cytogenetics projects</li><li>after quality control for other sequencing-based assays (e.g., ChIP-seq)</li></ul></p><p><strong>Never:</strong> This option is only availiable if the data release strategy is set to 'Not applicable.'"
+          help: "Choose from:<p><strong>Immediate:</strong> To be released as soon as possible.</p><p><strong>Standard:</strong> To be released:<ul><li>For managed (EGA) studies: 6 months</li><li>For open (ENA) studies: 12 months</li><li>Transcriptomics studies: on request only</li></ul></p><p><strong>Delayed:</strong><ul><li>For managed (EGA) studies: 6 months plus delay for period</li><li>For open (ENA) stduies: 12 months plus delay for period.</li></ul></p><p><strong>Never:</strong> This option is only availiable if the data release strategy is set to 'Not applicable.'</p>"
 
         data_release_prevention_reason:
           label: What is the reason for preventing data release?
@@ -472,6 +475,12 @@ en:
 
         hmdmc_approval_number:
           label: HMDMC approval number
+
+        s3_email_list:
+          label: S3 email list
+
+        data_deletion_period:
+          label: Data deletion period
 
     project:
       metadata:

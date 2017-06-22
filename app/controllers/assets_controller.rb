@@ -129,7 +129,7 @@ class AssetsController < ApplicationController
             # All new assets are assumed to have a phiX sample in them as that's the only asset that
             # is created this way.
             asset.save!
-            aliquot_attributes = { sample: SpikedBuffer.phiX_sample, study_id: 198 }
+            aliquot_attributes = { sample: SpikedBuffer.phix_sample, study_id: 198 }
             aliquot_attributes[:library] = asset if asset.is_a?(LibraryTube) or asset.is_a?(SpikedBuffer)
             asset.aliquots.create!(aliquot_attributes)
           end
@@ -324,30 +324,6 @@ class AssetsController < ApplicationController
       format.json { render json: exception.message, status: :precondition_failed }
     end
   end
-
-  def get_barcode
-    barcode = Asset.get_barcode_from_params(params)
-    render(text: "#{Barcode.barcode_to_human(barcode)} => #{barcode}")
-  end
-
-  def get_barcode_from_params(params)
-    prefix, asset = 'NT', nil
-    if params[:prefix]
-      prefix = params[:prefix]
-    else
-      begin
-        asset = Asset.find(params[:id])
-      rescue
-      end
-    end
-
-    if asset and asset.barcode
-      Barcode.calculate_barcode(asset.prefix, asset.barcode.to_i)
-    else
-      Barcode.calculate_barcode(prefix, params[:id].to_i)
-    end
-  end
-  private :get_barcode_from_params
 
   def lookup
     if params[:asset] && params[:asset][:barcode]

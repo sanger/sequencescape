@@ -89,7 +89,7 @@ class SampleManifestGenerator
   end
 
   def asset_type
-    params[:asset_type].present? ? params[:asset_type] : configuration.manifest_types.find_by(params[:template]).asset_type
+    configuration.manifest_types.find_by(params[:template]).asset_type
   end
 
   def only_first_label

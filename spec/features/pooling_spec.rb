@@ -40,7 +40,7 @@ feature 'Pooling', js: true do
   end
 
   feature 'from sample manifest page' do
-    let!(:sample_manifest) { create :tube_sample_manifest_with_several_tubes }
+    let!(:sample_manifest) { create :tube_sample_manifest_with_several_tubes, asset_type: 'library' }
 
     background do
       sample_manifest.generate

@@ -80,8 +80,8 @@ class ProcessAliquotsForSpikedBuffers < ActiveRecord::Migration
       # we reach the end of the graph.  The first thing we're going to do is put in a phiX sample
       # that can then be used all the way down.
       illumina_controls = Study.find_by_name('Illumina controls') or raise StandardError, "Cannot find illumina controls study"
-      phiX_sample       = Sample.create!(:name => 'phiX_for_spiked_buffers')
-      absolute_roots.shift.process(:sample_id => phiX_sample.id, :study_id => illumina_controls.id, &method(:say)) until absolute_roots.empty?
+      phix_sample       = Sample.create!(:name => 'phiX_for_spiked_buffers')
+      absolute_roots.shift.process(:sample_id => phix_sample.id, :study_id => illumina_controls.id, &method(:say)) until absolute_roots.empty?
     end
   end
 
