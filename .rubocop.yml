@@ -1,5 +1,9 @@
 inherit_from: .rubocop_todo.yml
 AllCops:
+  # Caution! Setting this to 2.4 can cause issues with
+  # rolling back to jruby 9.1.x.x which only supports 2.3
+  # Its mainly just regex matchers. But we should wait until
+  # we're happy on MRI.
   TargetRubyVersion: 2.3
   Include:
     - Rakefile
@@ -53,7 +57,7 @@ Rails/DynamicFindBy:
   Exclude:
     - 'lib/sample_manifest_excel/**/*'
     - 'test/lib/sample_manifest_excel/**/*'
-    
+
   Whitelist:
     - find_by_sql
     - find_by_id_or_name
