@@ -70,7 +70,6 @@ module SampleManifest::LibraryBehaviour
       true
     end
 
-
     def printables
       samples.map { |sample| sample.assets.first }
     end
