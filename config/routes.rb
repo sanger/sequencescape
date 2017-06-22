@@ -589,6 +589,7 @@ Sequencescape::Application.routes.draw do
       member do
         get :export
         get :uploaded_spreadsheet
+        post :print_labels
       end
     end
 
