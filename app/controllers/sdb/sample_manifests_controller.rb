@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
 
 class Sdb::SampleManifestsController < Sdb::BaseController
-  before_action :set_sample_manifest_id, only: [:show, :generated]
+  before_action :set_sample_manifest_id, only: [:show, :generated, :print_labels]
   before_action :validate_type, only: [:new, :create]
 
   LIMIT_ERROR_LENGTH = 10000
@@ -84,6 +84,18 @@ class Sdb::SampleManifestsController < Sdb::BaseController
     completed_sample_manifests = SampleManifest.completed_manifests.paginate(page: params[:page])
     @display_manifests = pending_sample_manifests | completed_sample_manifests
     @sample_manifests = SampleManifest.paginate(page: params[:page])
+  end
+
+  def print_labels
+    print_job = LabelPrinter::PrintJob.new(params[:printer],
+                      LabelPrinter::Label::SampleManifestRedirect,
+                      sample_manifest: @sample_manifest)
+    if print_job.execute
+      flash[:notice] = print_job.success
+    else
+      flash[:error] = print_job.errors.full_messages.join('; ')
+    end
+    redirect_to :back
   end
 
   private
