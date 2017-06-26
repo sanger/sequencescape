@@ -11,6 +11,7 @@ module DefaultAttributes
   extend ActiveSupport::Concern
 
   module ClassMethods
+    # rubocop:disable Style/AccessorMethodName
     def set_defaults(attributes = {})
       attributes.each do |attribute, default_value|
         if default_value.is_a? Proc
@@ -21,7 +22,7 @@ module DefaultAttributes
       end
     end
 
-    def set_default(attribute, default_value = nil, &default_value_block)
+    def set_default(attribute, default_value = nil)
       define_method(attribute) do
         # With rails 4 association methods can take an optional boolean argument
         # When true, this forces the association to get reloaded.
@@ -29,5 +30,6 @@ module DefaultAttributes
         super() || send("#{attribute}=", default_value || yield(self))
       end
     end
+    # rubocop:enable Metrics/LineLength, Style/StringLiterals
   end
 end

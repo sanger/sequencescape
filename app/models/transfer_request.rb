@@ -66,10 +66,10 @@ class TransferRequest < SystemRequest
 
   # validation method
   def source_and_target_assets_are_different
-    if asset.present? and asset == target_asset
-      errors.add(:asset, 'cannot be the same as the target')
-      errors.add(:target_asset, 'cannot be the same as the source')
-    end
+    return true unless asset.present? && asset == target_asset
+    errors.add(:asset, 'cannot be the same as the target')
+    errors.add(:target_asset, 'cannot be the same as the source')
+    false
   end
 
   def remove_unused_assets

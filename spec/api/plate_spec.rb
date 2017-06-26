@@ -22,7 +22,7 @@ describe '/api/1/plate-uuid' do
   let(:purpose) { plate.purpose }
 
   let(:response_body) do
-    %{{
+    %({
       "plate": {
         "actions": {
           "read": "http://www.example.com/api/1/#{uuid}"
@@ -64,14 +64,14 @@ describe '/api/1/plate-uuid' do
 
         "uuid": "#{uuid}"
       }
-    }}
+    })
   end
 
-    let(:response_code) { 200 }
+  let(:response_code) { 200 }
 
-    it 'supports resource reading' do
-      api_request :get, subject
-      expect(JSON.parse(response.body)).to include_json(JSON.parse(response_body))
-      expect(status).to eq(response_code)
-    end
+  it 'supports resource reading' do
+    api_request :get, subject
+    expect(JSON.parse(response.body)).to include_json(JSON.parse(response_body))
+    expect(status).to eq(response_code)
+  end
 end

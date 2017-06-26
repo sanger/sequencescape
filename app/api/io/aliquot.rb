@@ -19,7 +19,7 @@ class Io::Aliquot < Core::Io::Base
         { sample_metadata: :reference_genome }
       ]
     }
-  ]
+  ].freeze
 
   define_attribute_and_json_mapping("
                 sample  => sample

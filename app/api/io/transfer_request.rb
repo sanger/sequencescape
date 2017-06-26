@@ -4,21 +4,23 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
-class Io::TransferRequest < ::Core::Io::Base
-  set_model_for_input(::TransferRequest)
-  set_json_root(:request)
-  set_eager_loading do |model|
-    model
-      .includes(asset: :uuid_object)
-      .includes(target_asset: :uuid_object)
+module Io
+  class TransferRequest < ::Core::Io::Base
+    set_model_for_input(::TransferRequest)
+    set_json_root(:request)
+    set_eager_loading do |model|
+      model
+        .includes(asset: :uuid_object)
+        .includes(target_asset: :uuid_object)
+    end
+
+    define_attribute_and_json_mapping("
+      state <=> state
+
+      submission.uuid  => submission.uuid
+
+      asset <=  source_asset
+      target_asset <=  target_asset
+    ")
   end
-
-  define_attribute_and_json_mapping("
-    state <=> state
-
-    submission.uuid  => submission.uuid
-
-    asset <=  source_asset
-    target_asset <=  target_asset
-  ")
 end

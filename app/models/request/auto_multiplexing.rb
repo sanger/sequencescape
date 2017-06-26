@@ -1,6 +1,6 @@
 # In the Generic Lims, transfer into the Multiplexed library tube is triggered
 # automatically when the plate is passed. However, if multiplexing decisions
-# are made after library creation, this step has already passed. This
+# are made after library creation, this step has already taken place. This
 # callback ensure that the tube are generated after the submission is complete.
 # The user may then log into generic Lims to see their plates.
 # This issue is avoided in Limber by decoupling tube creation from plate passing
@@ -16,11 +16,12 @@ class Request::AutoMultiplexing < Request::Multiplexing
   # will be triggered as part of the standard workflow.
   def register_transfer_callback
     # We go via order as we need to get a particular instance of submission
+    return unless asset.present?
     order.submission.register_callback(:once) do
       Transfer::FromPlateToTubeByMultiplex.create!(
         source: asset.plate,
         user: order.user
       )
-    end if asset.present?
+    end
   end
 end

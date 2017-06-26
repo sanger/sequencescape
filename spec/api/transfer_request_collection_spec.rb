@@ -14,18 +14,18 @@ describe '/api/1/transfer_request_collection' do
 
   context '#post' do
     let(:payload) do
-      %{{
+      %({
         "transfer_request_collection":{
           "user": "#{user.uuid}",
           "transfer_requests": [
             {"source_asset":"#{asset.uuid}", "target_asset": "#{target_asset.uuid}"}
           ]
         }
-      }}
+      })
     end
 
-    let(:response_body) {
-      %{{
+    let(:response_body) do
+      %({
         "transfer_request_collection": {
           "actions": {},
           "transfer_requests": [{
@@ -46,8 +46,8 @@ describe '/api/1/transfer_request_collection' do
             "actions": {}
           }
         }
-      }}
-    }
+      })
+    end
     let(:response_code) { 201 }
 
     it 'supports resource creation' do

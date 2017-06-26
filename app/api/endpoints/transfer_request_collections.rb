@@ -3,13 +3,14 @@
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
+module Endpoints
+  class TransferRequestCollections < ::Core::Endpoint::Base
+    model do
+      action(:create, to: :standard_create!)
+    end
 
-class ::Endpoints::TransferRequestCollections < ::Core::Endpoint::Base
-  model do
-    action(:create, to: :standard_create!)
-  end
-
-  instance do
-    belongs_to(:user, json: 'user')
+    instance do
+      belongs_to(:user, json: 'user')
+    end
   end
 end

@@ -48,13 +48,14 @@ RSpec.describe TransferRequest, type: :model do
     context 'with a tag clash' do
       let!(:tag) { create :tag }
       let!(:tag2) { create :tag }
-      let!(:aliquot_1) { create :aliquot, tag: tag, tag2: tag2, receptacle: create(:well) }
+      let!(:aliquot_1) { create :aliquot, tag: tag, tag2: tag2 }
       let!(:aliquot_2) { create :aliquot, tag: tag, tag2: tag2, receptacle: create(:well) }
-      let!(:target_asset) { create :well }
+      let!(:target_asset) { create :well, aliquots: [aliquot_1] }
 
       it 'should raise an exception' do
-        transfer_request = RequestType.transfer.create!(asset: aliquot_1.receptacle.reload, target_asset: target_asset)
-        expect { RequestType.transfer.create!(asset: aliquot_2.receptacle.reload, target_asset: target_asset) }.to raise_error(Aliquot::TagClash)
+        expect do
+          RequestType.transfer.create!(asset: aliquot_2.receptacle.reload, target_asset: target_asset)
+        end.to raise_error(Aliquot::TagClash)
       end
     end
   end

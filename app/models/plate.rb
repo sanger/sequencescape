@@ -606,31 +606,9 @@ class Plate < Asset
     Submission::Workflow.find_by(key: 'microarray_genotyping')
   end
 
-  def self.create_plates_submission(project, study, plates, user)
-    return false if user.nil? || project.nil? || study.nil?
-    current_time = Time.now
-
-    project.save
-    plates.each do |plate|
-      plate.generate_plate_submission(project, study, user, current_time)
-    end
-
-    true
-  end
-
   # Should return true if any samples on the plate contains gender information
   def contains_gendered_samples?
     contained_samples.with_gender.any?
-  end
-
-  def generate_plate_submission(project, study, user, current_time)
-    submission = create_plate_submission(project, study, user, current_time)
-    if submission
-      events.create!(message: I18n.t('studies.submissions.plate.event.success', barcode: barcode, submission_id: submission.id), created_by: user.login)
-    else
-      events.create!(message: I18n.t('studies.submissions.plate.event.failed', barcode: barcode), created_by: user.login)
-      study.errors.add('plate_barcode', "Couldnt create submission for plate #{plate_barcode}")
-    end
   end
 
   def create_sample_tubes
@@ -692,26 +670,6 @@ class Plate < Asset
   def ancestors_of_purpose(ancestor_purpose_id)
     return [self] if plate_purpose_id == ancestor_purpose_id
     ancestors.order(created_at: :desc).where(plate_purpose_id: ancestor_purpose_id)
-  end
-
-  def child_dilution_plates_filtered_by_type(parent_model)
-    children.select { |p| p.is_a?(parent_model) }
-  end
-
-  def children_of_dilution_plates(parent_model, child_model)
-    child_dilution_plates_filtered_by_type(parent_model).map { |dilution_plate| dilution_plate.children.select { |p| p.is_a?(child_model) } }.flatten.select { |p| !p.nil? }
-  end
-
-  def child_pico_assay_plates
-    children_of_dilution_plates(PicoDilutionPlate, PicoAssayAPlate)
-  end
-
-  def child_gel_dilution_plates
-    children_of_dilution_plates(WorkingDilutionPlate, GelDilutionPlate)
-  end
-
-  def child_sequenom_qc_plates
-    children_of_dilution_plates(WorkingDilutionPlate, SequenomQcPlate)
   end
 
   def find_study_abbreviation_from_parent
@@ -827,7 +785,7 @@ class Plate < Asset
 
   def update_qc_values_with_parser(parser)
     ActiveRecord::Base.transaction do
-      well_hash = Hash[wells.include_map.includes(:well_attribute).map { |w| [w.map_description, w] }]
+      well_hash = wells.include_map.includes(:well_attribute).index_by(&:map_description)
 
       parser.each_well_and_parameters do |position, well_updates|
         # We might have a nil well if a plate was only partially cherrypicked
