@@ -7,12 +7,12 @@ module ViewsSchema
     all_views.each do |name|
       query = ActiveRecord::Base.connection.execute("SHOW CREATE TABLE #{name}").first
       definition = if query.is_a?(Hash)
-        query['Create View'].gsub(/DEFINER=`[^`]*`@`[^`]*` /, '')
-      elsif query.is_a?(Array)
-        query[1].gsub(/DEFINER=`[^`]*`@`[^`]*` /, '')
-      else
-        raise 'Unknown query format'
-      end
+                     query['Create View'].gsub(/DEFINER=`[^`]*`@`[^`]*` /, '')
+                   elsif query.is_a?(Array)
+                     query[1].gsub(/DEFINER=`[^`]*`@`[^`]*` /, '')
+                   else
+                     raise 'Unknown query format'
+                   end
       yield(name, definition)
     end
   rescue ActiveRecord::StatementInvalid => exception
