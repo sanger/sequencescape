@@ -122,6 +122,35 @@ RSpec.describe QcReport, type: :model do
       expect(qc_report.state).to eq('complete')
     end
   end
+
+  context 'limit by plate purposes' do
+
+    attr_reader :qc_report
+
+    before(:each) do
+      study =     create(:study)
+      plate_isc = create(:plate, plate_purpose: PlatePurpose.find_by(name: 'ISC lib PCR-XP'))
+      plate_lib = create(:plate, plate_purpose: PlatePurpose.find_by(name: 'Lib PCR-XP'))
+      plate_pf = create(:plate, plate_purpose: PlatePurpose.find_by(name: 'PF Post Shear'))
+
+      well = create :well, samples: [create(:study_sample, study: study).sample], plate: plate_isc, map: create(:map)
+      well.aliquots.each { |a| a.update_attributes!(study: study) }
+
+      well = create :well, samples: [create(:study_sample, study: study).sample], plate: plate_lib, map: create(:map)
+      well.aliquots.each { |a| a.update_attributes!(study: study) }
+
+      well = create :well, samples: [create(:study_sample, study: study).sample], plate: plate_pf, map: create(:map)
+      well.aliquots.each { |a| a.update_attributes!(study: study) }
+
+      @qc_report = create :qc_report, study: study, exclude_existing: false, product_criteria: create(:product_criteria), plate_purposes: ['ISC lib PCR-XP', 'Lib PCR-XP', 'PF Post Shear']
+      qc_report.generate!
+
+    end
+
+    it 'generates qc_metrics per sample which needs them' do
+      expect(qc_report.qc_metrics.count).to eq(3)
+    end
+  end
 end
 
  

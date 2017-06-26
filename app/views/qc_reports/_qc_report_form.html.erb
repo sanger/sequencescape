@@ -13,6 +13,10 @@
     <%= f.select :product_id, products, { prompt: 'Select product...', disabled: [''], selected: default_product }, { autocomplete: 'off', required: 'required', class: 'form-control select2'  } %>
   </div>
   <div class="form-group">
+    <%= f.label "plate_purposes", 'Plate purpose' %>
+    <%= f.select :plate_purposes, plate_purposes, { prompt: 'Select plate purpose...', disabled: ['']}, { autocomplete: 'off', class: 'form-control select2', multiple: 'multiple'  } %>
+  </div>
+  <div class="form-group">
     <%= f.label "exclude_existing", 'Exclude samples with existing reports' %>
     <%= f.check_box :exclude_existing %>
   </div>

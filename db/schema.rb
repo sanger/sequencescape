@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170531082054) do
+ActiveRecord::Schema.define(version: 20170626125913) do
 
   create_table "aliquot_indices", force: :cascade do |t|
     t.integer  "aliquot_id",    limit: 4, null: false
@@ -1074,13 +1074,14 @@ ActiveRecord::Schema.define(version: 20170531082054) do
   add_index "qc_metrics", ["qc_report_id"], name: "fk_qc_metrics_to_qc_reports", using: :btree
 
   create_table "qc_reports", force: :cascade do |t|
-    t.string   "report_identifier",   limit: 255, null: false
-    t.integer  "study_id",            limit: 4,   null: false
-    t.integer  "product_criteria_id", limit: 4,   null: false
-    t.boolean  "exclude_existing",                null: false
+    t.string   "report_identifier",   limit: 255,   null: false
+    t.integer  "study_id",            limit: 4,     null: false
+    t.integer  "product_criteria_id", limit: 4,     null: false
+    t.boolean  "exclude_existing",                  null: false
     t.string   "state",               limit: 255
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
+    t.text     "plate_purposes",      limit: 65535
   end
 
   add_index "qc_reports", ["product_criteria_id"], name: "fk_qc_reports_to_product_criteria", using: :btree
@@ -1848,6 +1849,305 @@ ActiveRecord::Schema.define(version: 20170531082054) do
 
   add_index "uuids", ["external_id"], name: "index_uuids_on_external_id", using: :btree
   add_index "uuids", ["resource_type", "resource_id"], name: "index_uuids_on_resource_type_and_resource_id", using: :btree
+
+  create_table "view_aliquots", id: false, force: :cascade do |t|
+    t.string   "uuid",                   limit: 36
+    t.integer  "internal_id",            limit: 4,   default: 0, null: false
+    t.string   "receptacle_uuid",        limit: 36
+    t.integer  "receptacle_internal_id", limit: 4,               null: false
+    t.string   "study_uuid",             limit: 36
+    t.integer  "study_internal_id",      limit: 4
+    t.string   "project_uuid",           limit: 36
+    t.integer  "project_internal_id",    limit: 4
+    t.string   "library_uuid",           limit: 36
+    t.integer  "library_internal_id",    limit: 4
+    t.string   "sample_uuid",            limit: 36
+    t.integer  "sample_internal_id",     limit: 4,               null: false
+    t.string   "tag_uuid",               limit: 36
+    t.integer  "tag_internal_id",        limit: 4
+    t.string   "receptacle_type",        limit: 50
+    t.string   "library_type",           limit: 255
+    t.integer  "insert_size_from",       limit: 4
+    t.integer  "insert_size_to",         limit: 4
+    t.datetime "created"
+  end
+
+  create_table "view_asset_links", id: false, force: :cascade do |t|
+    t.string  "ancestor_uuid",          limit: 36
+    t.integer "ancestor_internal_id",   limit: 4
+    t.string  "ancestor_type",          limit: 50
+    t.string  "descendant_uuid",        limit: 36
+    t.integer "descendant_internal_id", limit: 4
+    t.string  "descendant_type",        limit: 50
+  end
+
+  create_table "view_lanes", id: false, force: :cascade do |t|
+    t.integer  "internal_id",      limit: 4,   default: 0, null: false
+    t.string   "name",             limit: 255
+    t.boolean  "external_release"
+    t.datetime "created"
+    t.string   "uuid",             limit: 36
+    t.string   "state",            limit: 20
+  end
+
+  create_table "view_library_tubes", id: false, force: :cascade do |t|
+    t.string   "uuid",                        limit: 36
+    t.integer  "internal_id",                 limit: 4,                              default: 0,     null: false
+    t.string   "name",                        limit: 255
+    t.string   "barcode",                     limit: 255
+    t.string   "barcode_prefix",              limit: 3
+    t.boolean  "closed",                                                             default: false
+    t.integer  "sample_internal_id",          limit: 4
+    t.string   "sample_uuid",                 limit: 36
+    t.decimal  "volume",                                    precision: 10, scale: 2
+    t.decimal  "concentration",                             precision: 18, scale: 8
+    t.string   "tag_uuid",                    limit: 36
+    t.integer  "tag_internal_id",             limit: 4,                              default: 0
+    t.integer  "tag_map_id",                  limit: 4
+    t.string   "expected_sequence",           limit: 255
+    t.string   "tag_group_name",              limit: 255
+    t.integer  "tag_group_internal_id",       limit: 4,                              default: 0
+    t.integer  "source_request_internal_id",  limit: 4,                              default: 0
+    t.string   "source_request_uuid",         limit: 36
+    t.string   "library_type",                limit: 255
+    t.integer  "fragment_size_required_from", limit: 4
+    t.integer  "fragment_size_required_to",   limit: 4
+    t.string   "sample_name",                 limit: 255
+    t.text     "scanned_in_date",             limit: 65535
+    t.datetime "created"
+    t.string   "public_name",                 limit: 255
+  end
+
+  create_table "view_plates", id: false, force: :cascade do |t|
+    t.string   "uuid",                      limit: 36
+    t.integer  "internal_id",               limit: 4,   default: 0, null: false
+    t.string   "name",                      limit: 255
+    t.string   "barcode",                   limit: 255
+    t.string   "barcode_prefix",            limit: 3
+    t.integer  "plate_size",                limit: 4
+    t.datetime "created"
+    t.integer  "plate_purpose_internal_id", limit: 4
+    t.string   "plate_purpose_name",        limit: 255
+    t.string   "plate_purpose_uuid",        limit: 36
+    t.string   "location",                  limit: 255
+    t.string   "infinium_barcode",          limit: 255
+  end
+
+  create_table "view_requests", id: false, force: :cascade do |t|
+    t.string   "uuid",                            limit: 36
+    t.integer  "internal_id",                     limit: 4,   default: 0,         null: false
+    t.string   "request_type",                    limit: 255
+    t.string   "fragment_size_from",              limit: 255
+    t.string   "fragment_size_to",                limit: 255
+    t.integer  "read_length",                     limit: 4
+    t.string   "library_type",                    limit: 255
+    t.string   "bait_type",                       limit: 255
+    t.string   "bait_library_name",               limit: 255
+    t.integer  "study_internal_id",               limit: 4,   default: 0
+    t.string   "study_name",                      limit: 255
+    t.string   "study_uuid",                      limit: 36
+    t.integer  "project_internal_id",             limit: 4,   default: 0
+    t.string   "project_name",                    limit: 255
+    t.string   "project_cost_code",               limit: 255
+    t.string   "project_funding_model",           limit: 255
+    t.string   "budget_division",                 limit: 255
+    t.string   "project_uuid",                    limit: 36
+    t.string   "source_asset_uuid",               limit: 36
+    t.integer  "source_asset_internal_id",        limit: 4,   default: 0
+    t.string   "source_asset_name",               limit: 255
+    t.string   "source_asset_type",               limit: 50
+    t.string   "source_asset_barcode",            limit: 255
+    t.string   "source_asset_barcode_prefix",     limit: 3
+    t.boolean  "source_asset_closed",                         default: false
+    t.string   "source_asset_sample_uuid",        limit: 36
+    t.integer  "source_asset_sample_internal_id", limit: 4
+    t.string   "target_asset_uuid",               limit: 36
+    t.integer  "target_asset_internal_id",        limit: 4,   default: 0
+    t.string   "target_asset_name",               limit: 255
+    t.string   "target_asset_type",               limit: 50
+    t.string   "target_asset_barcode",            limit: 255
+    t.string   "target_asset_barcode_prefix",     limit: 3
+    t.boolean  "target_asset_closed",                         default: false
+    t.datetime "created"
+    t.string   "state",                           limit: 20,  default: "pending"
+    t.integer  "priority",                        limit: 4,   default: 0
+    t.string   "product_line",                    limit: 255
+    t.boolean  "billable",                                    default: false
+    t.string   "request_class_name",              limit: 255
+    t.integer  "order_id",                        limit: 4
+    t.string   "template_name",                   limit: 255
+    t.boolean  "customer_accepts_responsibility"
+  end
+
+  create_table "view_requests_new", id: false, force: :cascade do |t|
+    t.string   "uuid",                            limit: 36
+    t.integer  "internal_id",                     limit: 4,   default: 0,         null: false
+    t.string   "request_type",                    limit: 255
+    t.string   "fragment_size_from",              limit: 255
+    t.string   "fragment_size_to",                limit: 255
+    t.integer  "read_length",                     limit: 4
+    t.string   "library_type",                    limit: 255
+    t.integer  "study_internal_id",               limit: 4,   default: 0
+    t.string   "study_name",                      limit: 255
+    t.string   "study_uuid",                      limit: 36
+    t.integer  "project_internal_id",             limit: 4,   default: 0
+    t.string   "project_name",                    limit: 255
+    t.string   "project_uuid",                    limit: 36
+    t.string   "source_asset_uuid",               limit: 36
+    t.integer  "source_asset_internal_id",        limit: 4,   default: 0
+    t.string   "source_asset_name",               limit: 255
+    t.string   "source_asset_type",               limit: 50
+    t.string   "source_asset_barcode",            limit: 255
+    t.string   "source_asset_barcode_prefix",     limit: 3
+    t.boolean  "source_asset_closed",                         default: false
+    t.string   "source_asset_sample_uuid",        limit: 36
+    t.integer  "source_asset_sample_internal_id", limit: 4
+    t.string   "target_asset_uuid",               limit: 36
+    t.integer  "target_asset_internal_id",        limit: 4,   default: 0
+    t.string   "target_asset_name",               limit: 255
+    t.string   "target_asset_type",               limit: 50
+    t.string   "target_asset_barcode",            limit: 255
+    t.string   "target_asset_barcode_prefix",     limit: 3
+    t.boolean  "target_asset_closed",                         default: false
+    t.datetime "created"
+    t.string   "state",                           limit: 20,  default: "pending"
+    t.integer  "priority",                        limit: 4,   default: 0
+    t.string   "product_line",                    limit: 255
+    t.boolean  "billable",                                    default: false
+    t.string   "request_class_name",              limit: 255
+  end
+
+  create_table "view_sample_study_reference_genome", id: false, force: :cascade do |t|
+    t.integer "sample_internal_id",      limit: 4,   default: 0, null: false
+    t.string  "sample_uuid",             limit: 36
+    t.integer "study_internal_id",       limit: 4
+    t.string  "study_uuid",              limit: 36
+    t.string  "study_reference_genome",  limit: 255
+    t.string  "sample_reference_genome", limit: 255
+  end
+
+  create_table "view_sample_tubes", id: false, force: :cascade do |t|
+    t.string   "uuid",               limit: 36
+    t.integer  "internal_id",        limit: 4,                              default: 0,     null: false
+    t.string   "name",               limit: 255
+    t.string   "barcode",            limit: 255
+    t.boolean  "closed",                                                    default: false
+    t.string   "sample_uuid",        limit: 36
+    t.integer  "sample_internal_id", limit: 4
+    t.string   "sample_name",        limit: 255
+    t.text     "scanned_in_date",    limit: 65535
+    t.decimal  "volume",                           precision: 10, scale: 2
+    t.decimal  "concentration",                    precision: 18, scale: 8
+    t.datetime "created"
+    t.string   "barcode_prefix",     limit: 3
+  end
+
+  create_table "view_samples", id: false, force: :cascade do |t|
+    t.string   "uuid",                       limit: 36
+    t.integer  "internal_id",                limit: 4,     default: 0,     null: false
+    t.string   "name",                       limit: 255
+    t.string   "organism",                   limit: 255
+    t.string   "accession_number",           limit: 255
+    t.string   "common_name",                limit: 255
+    t.text     "description",                limit: 65535
+    t.integer  "taxon_id",                   limit: 4
+    t.string   "father",                     limit: 255
+    t.string   "mother",                     limit: 255
+    t.string   "replicate",                  limit: 255
+    t.string   "ethnicity",                  limit: 255
+    t.string   "gender",                     limit: 255
+    t.string   "cohort",                     limit: 255
+    t.string   "country_of_origin",          limit: 255
+    t.string   "geographical_region",        limit: 255
+    t.datetime "created"
+    t.string   "sanger_sample_id",           limit: 255
+    t.boolean  "control"
+    t.boolean  "empty_supplier_sample_name",               default: false
+    t.boolean  "updated_by_manifest",                      default: false
+    t.string   "supplier_name",              limit: 255
+    t.string   "public_name",                limit: 255
+    t.string   "sample_visibility",          limit: 255
+    t.string   "strain",                     limit: 255
+    t.string   "reference_genome",           limit: 255
+  end
+
+  create_table "view_started_requests", id: false, force: :cascade do |t|
+    t.string   "request_type",    limit: 255
+    t.string   "status",          limit: 20,  default: "pending"
+    t.string   "project_name",    limit: 255
+    t.integer  "project_id",      limit: 4
+    t.string   "study_name",      limit: 255
+    t.integer  "study_id",        limit: 4
+    t.string   "library_type",    limit: 255
+    t.integer  "readlength",      limit: 4
+    t.string   "budget_division", limit: 255
+    t.string   "cost_code",       limit: 255
+    t.datetime "requested_date"
+    t.integer  "request_id",      limit: 4,   default: 0,         null: false
+    t.datetime "state_date"
+    t.integer  "event_id",        limit: 4,   default: 0,         null: false
+    t.string   "state",           limit: 255
+  end
+
+  create_table "view_studies", id: false, force: :cascade do |t|
+    t.string   "uuid",                           limit: 36
+    t.integer  "internal_id",                    limit: 4,     default: 0, null: false
+    t.string   "name",                           limit: 255
+    t.boolean  "ethically_approved"
+    t.string   "faculty_sponsor",                limit: 255
+    t.string   "state",                          limit: 20
+    t.string   "study_type",                     limit: 255
+    t.text     "abstract",                       limit: 65535
+    t.string   "abbreviation",                   limit: 255
+    t.string   "accession_number",               limit: 255
+    t.text     "description",                    limit: 65535
+    t.datetime "created"
+    t.string   "contains_human_dna",             limit: 255
+    t.string   "data_release_strategy",          limit: 255
+    t.string   "data_release_sort_of_study",     limit: 255
+    t.string   "ena_project_id",                 limit: 255
+    t.string   "study_title",                    limit: 255
+    t.string   "study_visibility",               limit: 255
+    t.string   "ega_dac_accession_number",       limit: 255
+    t.string   "array_express_accession_number", limit: 255
+    t.string   "ega_policy_accession_number",    limit: 255
+    t.string   "reference_genome",               limit: 255
+  end
+
+  create_table "view_tags", id: false, force: :cascade do |t|
+    t.string   "uuid",                  limit: 36
+    t.integer  "internal_id",           limit: 4,   default: 0, null: false
+    t.string   "expected_sequence",     limit: 255
+    t.integer  "map_id",                limit: 4
+    t.string   "tag_group_name",        limit: 255
+    t.integer  "tag_group_internal_id", limit: 4,   default: 0
+    t.string   "tag_group_uuid",        limit: 36
+    t.datetime "created"
+  end
+
+  create_table "view_wells", id: false, force: :cascade do |t|
+    t.string   "uuid",                 limit: 36
+    t.integer  "internal_id",          limit: 4,   default: 0,          null: false
+    t.string   "name",                 limit: 255
+    t.string   "map",                  limit: 4
+    t.integer  "plate_internal_id",    limit: 4,   default: 0
+    t.string   "plate_barcode",        limit: 255
+    t.string   "plate_barcode_prefix", limit: 3
+    t.string   "sample_uuid",          limit: 36
+    t.integer  "sample_internal_id",   limit: 4
+    t.string   "sample_name",          limit: 255
+    t.string   "gel_pass",             limit: 20
+    t.float    "concentration",        limit: 24
+    t.float    "current_volume",       limit: 24
+    t.float    "buffer_volume",        limit: 24
+    t.float    "requested_volume",     limit: 24
+    t.float    "picked_volume",        limit: 24
+    t.string   "pico_pass",            limit: 255, default: "ungraded"
+    t.datetime "created"
+    t.string   "plate_uuid",           limit: 36
+    t.float    "measured_volume",      limit: 24
+    t.integer  "sequenom_count",       limit: 4
+  end
 
   create_table "volume_updates", force: :cascade do |t|
     t.integer  "target_id",     limit: 4
