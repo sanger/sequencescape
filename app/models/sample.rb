@@ -218,10 +218,8 @@ class Sample < ActiveRecord::Base
 
   def accession
     if configatron.accession_samples
-      accessionable = Accession::Sample.new(Accession.configuration.tags, self)
-      if accessionable.valid?
-        Delayed::Job.enqueue SampleAccessioningJob.new(accessionable)
-      end
+      operation = Accession::Operation.new(User.find_by(api_key: configatron.accession_local_key), self, Accession.configuration.tags, true)
+      operation.execute if operation.valid?
     end
   end
 

@@ -143,22 +143,17 @@ class SamplesController < ApplicationController
 
   def accession
     @sample = Sample.find(params[:id])
-    @sample.validate_ena_required_fields!
-    @sample.accession_service.submit_sample_for_user(@sample, current_user)
-
-    flash[:notice] = "Accession number generated: #{@sample.sample_metadata.sample_ebi_accession_number}"
-    redirect_to(sample_path(@sample))
-  rescue ActiveRecord::RecordInvalid => exception
-    flash[:error] = "Please fill in the required fields: #{@sample.errors.full_messages.join(', ')}"
-    redirect_to(edit_sample_path(@sample))
-  rescue AccessionService::NumberNotRequired => exception
-    flash[:warning] = exception.message || 'An accession number is not required for this study'
-    redirect_to(sample_path(@sample))
-  rescue AccessionService::NumberNotGenerated => exception
-    flash[:warning] = "No accession number was generated: #{exception.message}"
-    redirect_to(sample_path(@sample))
-  rescue AccessionService::AccessionServiceError => exception
-    flash[:error] = exception.message
+    operation = Accession::Operation.new(User.find_by(api_key: configatron.accession_local_key), @sample, Accession.configuration.tags)
+    if operation.valid?
+      operation.execute
+      if operation.success?
+        flash[:notice] = "Accession number generated: #{@sample.reload.sample_metadata.sample_ebi_accession_number}"
+      else
+        flash[:error] = 'The sample could not be accessioned.'
+      end
+    else
+      flash[:error] = (operation.errors.full_messages.join(', ')).to_s
+    end
     redirect_to(sample_path(@sample))
   end
 

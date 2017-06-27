@@ -4,7 +4,7 @@ module Accession
   #  check configuration settings, in particular:
   #   configatron.proxy
   #   configatron.accession url, ega.user, ega.password, ena.user, ena.password
-  #   configarton.accession_local_key (authorised user uuid)
+  #   configatron.accession_local_key (authorised user uuid)
   # check that Sequenescape sample sample_metadata meets accessioning requirements
   # configatron.accession_samples flag should be set to true to automatically accession a sample after save (app/models/sample.rb)
   #
@@ -52,6 +52,7 @@ module Accession
   require_relative 'accession/request'
   require_relative 'accession/response'
   require_relative 'accession/null_response'
+  require_relative 'accession/operation'
   require_relative 'accession/configuration'
 
   String.send(:include, CoreExtensions::String)
