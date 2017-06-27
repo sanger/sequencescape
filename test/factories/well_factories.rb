@@ -73,4 +73,18 @@ FactoryGirl.define do
 
     factory :stock_well_link
   end
+
+  factory :well_for_qc_report, parent: :well do
+    transient do
+      study { create(:study) }
+    end
+
+    samples { [create(:study_sample, study: study).sample] }
+    plate { create(:plate) }
+    map { create(:map) }
+
+    after(:create) do |well, evaluator|
+      well.aliquots.each { |a| a.update_attributes!(study: evaluator.study) }
+    end
+  end
 end

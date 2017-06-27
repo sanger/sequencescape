@@ -14,7 +14,7 @@
   </div>
   <div class="form-group">
     <%= f.label "plate_purposes", 'Plate purpose' %>
-    <%= f.select :plate_purposes, plate_purposes, { prompt: 'Select plate purpose...'}, { autocomplete: 'off', class: 'form-control select2', multiple: 'multiple'  } %>
+    <%= f.select :plate_purposes, plate_purposes, { prompt: 'Select plate purpose...', disabled: [''], selected: 'Stock Plate'}, { autocomplete: 'off', class: 'form-control select2', multiple: 'multiple'  } %>
   </div>
   <div class="form-group">
     <%= f.label "exclude_existing", 'Exclude samples with existing reports' %>

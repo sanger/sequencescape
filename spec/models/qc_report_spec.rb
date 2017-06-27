@@ -1,17 +1,15 @@
 require 'rails_helper'
 
 RSpec.describe QcReport, type: :model do
-
   it 'is not valid without a study' do
     expect(build(:qc_report, study: nil)).to_not be_valid
   end
 
-   it 'is not valid without a product criteria' do
+  it 'is not valid without a product criteria' do
     expect(build(:qc_report, product_criteria: nil)).to_not be_valid
   end
 
   context 'include existing' do
-
     attr_reader :study, :other_study, :stock_plate, :qc_report, :qc_metric_count
 
     before(:each) do
@@ -48,15 +46,12 @@ RSpec.describe QcReport, type: :model do
       qc_report.qc_metrics.each do |metric|
         expect(metric.qc_decision).to eq('passed')
         expect(metric.proceed).to be_nil
-        expect({total_micrograms: 100, comment: '', sanger_sample_id: 'TEST1'}).to eq(metric.metrics)
+        expect(total_micrograms: 100, comment: '', sanger_sample_id: 'TEST1').to eq(metric.metrics)
       end
     end
-
-
   end
 
   context 'excluding existing' do
-
     attr_reader :study, :stock_plate, :current_criteria, :other_criteria, :matching_report, :other_report, :attribute, :qc_report, :qc_metric_count, :qc_report, :unreported_sample, :other_reported_sample
 
     before(:each) do
@@ -105,7 +100,6 @@ RSpec.describe QcReport, type: :model do
   end
 
   context 'QcReport state machine' do
-
     let!(:qc_report) { create(:qc_report) }
 
     before(:each) do
@@ -124,27 +118,18 @@ RSpec.describe QcReport, type: :model do
   end
 
   context 'limit by plate purposes' do
-
     attr_reader :qc_report
 
+    let!(:study)          { create(:study) }
+    let(:plate_purposes)  { ['ISC lib PCR-XP', 'Lib PCR-XP', 'PF Post Shear'] }
+
     before(:each) do
-      study =     create(:study)
-      plate_isc = create(:plate, plate_purpose: PlatePurpose.find_by(name: 'ISC lib PCR-XP'))
-      plate_lib = create(:plate, plate_purpose: PlatePurpose.find_by(name: 'Lib PCR-XP'))
-      plate_pf = create(:plate, plate_purpose: PlatePurpose.find_by(name: 'PF Post Shear'))
+      plate_purposes.each do |plate_purpose|
+        create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: PlatePurpose.find_by(name: plate_purpose)))
+      end
 
-      well = create :well, samples: [create(:study_sample, study: study).sample], plate: plate_isc, map: create(:map)
-      well.aliquots.each { |a| a.update_attributes!(study: study) }
-
-      well = create :well, samples: [create(:study_sample, study: study).sample], plate: plate_lib, map: create(:map)
-      well.aliquots.each { |a| a.update_attributes!(study: study) }
-
-      well = create :well, samples: [create(:study_sample, study: study).sample], plate: plate_pf, map: create(:map)
-      well.aliquots.each { |a| a.update_attributes!(study: study) }
-
-      @qc_report = create :qc_report, study: study, exclude_existing: false, product_criteria: create(:product_criteria), plate_purposes: ['ISC lib PCR-XP', 'Lib PCR-XP', 'PF Post Shear']
+      @qc_report = create :qc_report, study: study, exclude_existing: false, product_criteria: create(:product_criteria), plate_purposes: plate_purposes
       qc_report.generate!
-
     end
 
     it 'generates qc_metrics per sample which needs them' do
@@ -152,5 +137,3 @@ RSpec.describe QcReport, type: :model do
     end
   end
 end
-
- 
