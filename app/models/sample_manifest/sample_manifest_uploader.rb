@@ -7,7 +7,7 @@ class SampleManifestUploader
 
   validate :check_upload
 
-  delegate :processed?, to: :upload
+  delegate :processed?, :tags_clash_message, to: :upload
 
   def initialize(filename, configuration)
     @filename = filename

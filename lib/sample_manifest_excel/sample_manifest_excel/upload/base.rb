@@ -20,7 +20,7 @@ module SampleManifestExcel
       validate :check_columns, :check_processor, :check_rows
       validate :check_processor, if: 'processor.present?'
 
-      delegate :processed?, to: :processor
+      delegate :processed?, :tags_clash_message, to: :processor
 
       def initialize(attributes = {})
         super
@@ -53,6 +53,10 @@ module SampleManifestExcel
         ActiveRecord::Base.transaction do
           processor.run(tag_group)
         end
+      end
+
+      def data_for(column_name)
+        data.column(columns.find_by(:name, column_name).number)
       end
 
       private

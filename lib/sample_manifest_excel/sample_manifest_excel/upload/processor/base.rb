@@ -41,6 +41,10 @@ module SampleManifestExcel
           @processed ||= samples_updated? && sample_manifest_updated?
         end
 
+        def tags_clash_message
+          'Tags clash check is not required'
+        end
+
         ##
         # Override the sample manifest with the raw uploaded data.
         def update_sample_manifest
