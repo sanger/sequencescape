@@ -117,6 +117,13 @@ module SampleManifestExcel
         @aliquot_transferred
       end
 
+      def empty?
+        default_column = 'supplier_sample_name'
+        if columns.present? && columns.valid? && columns.names.include?(default_column)
+          value(default_column).blank?
+        end
+      end
+
       private
 
       def check_primary_receptacle

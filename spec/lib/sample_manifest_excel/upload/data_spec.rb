@@ -39,7 +39,8 @@ RSpec.describe SampleManifestExcel::Upload::Data, type: :model, sample_manifest_
   it '#cell returns a cell of data' do
     data = SampleManifestExcel::Upload::Data.new(test_file, 9)
     spreadsheet = Roo::Spreadsheet.open(test_file).sheet(0)
-    expect(data.cell(spreadsheet.last_row - 10, spreadsheet.last_column - 1)).to eq(spreadsheet.cell(spreadsheet.last_row - 10, spreadsheet.last_column - 1))
+    expect(data.cell(spreadsheet.last_row-10, spreadsheet.last_column - 1)).to_not be nil
+    expect(data.cell(spreadsheet.last_row-10, spreadsheet.last_column - 1)).to eq(spreadsheet.cell(spreadsheet.last_row, spreadsheet.last_column - 1))
   end
 
   after(:each) do
