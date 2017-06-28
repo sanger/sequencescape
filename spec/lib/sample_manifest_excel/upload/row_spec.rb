@@ -100,9 +100,9 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
 
   it 'knows if it is empty' do
     empty_data = [sample_tube.samples.first.assets.first.sanger_human_barcode, sample_tube.samples.first.sanger_sample_id,
-     '', '', '', '', '', '', '', '', '', '', '', '', '',
-     '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
-     '', '', '', '', '', '', '', sample_tube.samples.first.sanger_sample_id, '']
+                  '', '', '', '', '', '', '', '', '', '', '', '', '',
+                  '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
+                  '', '', '', '', '', '', '', sample_tube.samples.first.sanger_sample_id, '']
     row = SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns)
     empty_row = SampleManifestExcel::Upload::Row.new(number: 1, data: empty_data, columns: columns)
     expect(row.empty?).to be false
