@@ -39,6 +39,10 @@ FactoryGirl.define do
     end
   end
 
+  factory :dilution_plate_purpose do
+     name    'Dilution'
+  end
+
   factory(:tube_purpose, class: Tube::Purpose) do
     name        { generate :purpose_name }
     target_type 'MultiplexedLibraryTube'
