@@ -19,6 +19,9 @@ class TransferRequest < SystemRequest
 
   after_create(:perform_transfer_of_contents)
 
+  # States which are still considered to be processable (ie. not failed or cancelled)
+  ACTIVE_STATES = %w(pending started passed qc_complete).freeze
+
   # state machine
   redefine_aasm column: :state, whiny_persistence: true do
     # The statemachine for transfer requests is more promiscuous than normal requests, as well

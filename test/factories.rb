@@ -426,11 +426,6 @@ FactoryGirl.define do
   factory :fragment do
   end
 
-  factory(:new_stock_tube_purpose, class: IlluminaHtp::StockTubePurpose) do |_p|
-    name { generate :purpose_name }
-    target_type 'StockMultiplexedLibraryTube'
-  end
-
   factory(:request_purpose) do
     key { generate :purpose_name }
   end
