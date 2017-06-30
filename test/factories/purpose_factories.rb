@@ -40,7 +40,7 @@ FactoryGirl.define do
   end
 
   factory :dilution_plate_purpose do
-     name    'Dilution'
+    name 'Dilution'
   end
 
   factory(:tube_purpose, class: Tube::Purpose) do
