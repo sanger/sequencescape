@@ -32,7 +32,7 @@ feature 'Sample manifest with tag sequences' do
   end
 
   context 'invalid' do
-    let(:download) { build(:test_download, columns: columns, validation_errors: [:library_type]) }
+    let(:download) { build(:test_download, columns: columns, manifest_type: 'multiplexed_library', validation_errors: [:library_type, :tags]) }
 
     scenario 'validation errors' do
       login_user(user)
@@ -40,6 +40,9 @@ feature 'Sample manifest with tag sequences' do
       attach_file('File to upload', test_file)
       click_button('Upload manifest')
       expect(page).to have_content('The following error messages prevented the sample manifest from being uploaded')
+      attach_file('File to upload', test_file)
+      click_button('Find tags clash')
+      expect(page).to have_content('Same tags AA, TT are used on rows 10, 15.')
     end
 
     scenario 'no file' do

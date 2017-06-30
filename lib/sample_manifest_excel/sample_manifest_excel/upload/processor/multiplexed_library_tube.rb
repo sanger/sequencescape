@@ -34,8 +34,8 @@ module SampleManifestExcel
         def tags_clash_message
           tag_oligos = upload.data_for(:tag_oligo)
           tag2_oligos = upload.data_for(:tag2_oligo)
-          duplicates = find_tags_clash(tag_oligos, tag2_oligos)
-          create_tags_clashes_message(duplicates)
+          duplicates = find_tags_clash(tag_oligos.zip(tag2_oligos))
+          create_tags_clashes_message(duplicates, FIRST_ROW)
         end
       end
     end
