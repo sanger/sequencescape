@@ -56,7 +56,8 @@ module SampleManifestExcel
       end
 
       def data_for(column_name)
-        data.column(columns.find_by(:name, column_name).number)
+        required_column = columns.find_by(:name, column_name)
+        data.column(required_column.number) if required_column.present?
       end
 
       private

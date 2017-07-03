@@ -34,8 +34,12 @@ module SampleManifestExcel
         def tags_clash_message
           tag_oligos = upload.data_for(:tag_oligo)
           tag2_oligos = upload.data_for(:tag2_oligo)
-          duplicates = find_tags_clash(tag_oligos.zip(tag2_oligos))
-          create_tags_clashes_message(duplicates, FIRST_ROW)
+          if tag_oligos.present? && tag2_oligos.present?
+            duplicates = find_tags_clash(tag_oligos.zip(tag2_oligos))
+            create_tags_clashes_message(duplicates, FIRST_ROW)
+          else
+            'Tags data was not found in sample manifest'
+          end
         end
       end
     end
