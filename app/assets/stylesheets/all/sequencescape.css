@@ -54,6 +54,7 @@ div.quota {
   border-radius: 3px;
   padding: 0.2em;
   margin: 0.2em;
+  list-style-type: decimal;
 }
 
 #barcode_list li a {

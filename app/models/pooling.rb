@@ -1,5 +1,6 @@
 class Pooling
   include ActiveModel::Model
+  include SampleManifestExcel::Tags::ClashesFinder
 
   attr_accessor :barcodes, :source_assets, :stock_mx_tube_required, :stock_mx_tube, :standard_mx_tube, :barcode_printer, :count
 
@@ -53,7 +54,16 @@ class Pooling
     @message ||= {}
   end
 
+  def tags_clash_message
+    duplicates = find_tags_clash(tags_combinations)
+    create_tags_clashes_message(duplicates.except([]))
+  end
+
   private
+
+  def tags_combinations
+    @tags_combinations || []
+  end
 
   def find_source_assets
     @assets_not_in_sqsc = []
@@ -74,12 +84,13 @@ class Pooling
 
   def source_assets_can_be_pooled
     assets_with_no_aliquot = []
-    tags_combinations = []
+    @tags_combinations = []
     source_assets.each do |asset|
       if asset.aliquots.empty?
         assets_with_no_aliquot << asset.ean13_barcode
+        @tags_combinations << []
       else
-        asset.aliquots.each { |aliquot| tags_combinations << aliquot.tags_combination }
+        asset.aliquots.each { |aliquot| @tags_combinations << aliquot.tags_combination }
       end
     end
     errors.add(:source_assets, "with barcode(s) #{assets_with_no_aliquot.join(', ')} do not have any aliquots") unless assets_with_no_aliquot.empty?

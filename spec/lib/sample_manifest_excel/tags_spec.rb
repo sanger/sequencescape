@@ -63,15 +63,14 @@ RSpec.describe SampleManifestExcel::Tags, type: :model, sample_manifest_excel: t
 
     it 'finds tags clashes and creates tags clashes message' do
       tag_clashes_finder = TestTagClashesFinder.new
-      tags_oligos_combinations = [['AA', 'TT'], ['AA','GC'], ['TT', 'AA'], ['AA', 'TT']]
+      tags_oligos_combinations = [['AA', 'TT'], ['AA', 'GC'], ['TT', 'AA'], ['AA', 'TT']]
       result = tag_clashes_finder.find_tags_clash(tags_oligos_combinations)
-      expect(result).to eq({['AA', 'TT'] => [0, 3]})
+      expect(result).to eq(['AA', 'TT'] => [0, 3])
       message = tag_clashes_finder.create_tags_clashes_message(result)
       expect(message).to eq('Same tags AA, TT are used on rows 1, 4.')
       first_row = 5
       message_for_manifest = tag_clashes_finder.create_tags_clashes_message(result, first_row)
       expect(message_for_manifest).to eq('Same tags AA, TT are used on rows 6, 9.')
     end
-
   end
 end
