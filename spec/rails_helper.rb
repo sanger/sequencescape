@@ -67,4 +67,6 @@ RSpec.configure do |config|
   # This include make sit available to us. Including it globally causes
   # issues eleswhere
   config.include ActionDispatch::TestProcess, with: :uploader
+
+  config.include Rails.application.routes.url_helpers
 end

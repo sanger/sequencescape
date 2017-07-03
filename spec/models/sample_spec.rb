@@ -37,4 +37,16 @@ RSpec.describe Sample, type: :model, accession: true do
       expect(sample.sample_metadata.sample_ebi_accession_number).to be_nil
     end
   end
+
+  context 'Aker' do
+    it 'can belong to a work order' do
+      work_order = create(:work_order)
+      expect(create(:sample, work_order: work_order).work_order).to eq(work_order)
+    end
+
+    it 'can belong to a container' do
+      container = create(:container)
+      expect(create(:sample, container: container).container).to eq(container)
+    end
+  end
 end

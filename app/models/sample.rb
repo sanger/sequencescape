@@ -50,6 +50,10 @@ class Sample < ActiveRecord::Base
 
   belongs_to :sample_manifest
 
+  # Aker
+  belongs_to :work_order, class_name: 'Aker::WorkOrder'
+  belongs_to :container, class_name: 'Aker::Container'
+
   validates_presence_of :name
   validates_format_of :name, with: /\A[\w_-]+\z/i, message: I18n.t('samples.name_format'), if: :new_name_format, on: :create
   validates_format_of :name, with: /\A[\(\)\+\s\w._-]+\z/i, message: I18n.t('samples.name_format'), if: :new_name_format, on: :update

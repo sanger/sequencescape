@@ -11,7 +11,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170531082054) do
+ActiveRecord::Schema.define(version: 20170628134501) do
+
+  create_table "aker_containers", force: :cascade do |t|
+    t.string   "barcode",    limit: 255
+    t.string   "address",    limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  create_table "aker_work_orders", force: :cascade do |t|
+    t.integer  "aker_id",    limit: 4
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+  end
 
   create_table "aliquot_indices", force: :cascade do |t|
     t.integer  "aliquot_id",    limit: 4, null: false
@@ -1074,13 +1087,14 @@ ActiveRecord::Schema.define(version: 20170531082054) do
   add_index "qc_metrics", ["qc_report_id"], name: "fk_qc_metrics_to_qc_reports", using: :btree
 
   create_table "qc_reports", force: :cascade do |t|
-    t.string   "report_identifier",   limit: 255, null: false
-    t.integer  "study_id",            limit: 4,   null: false
-    t.integer  "product_criteria_id", limit: 4,   null: false
-    t.boolean  "exclude_existing",                null: false
+    t.string   "report_identifier",   limit: 255,   null: false
+    t.integer  "study_id",            limit: 4,     null: false
+    t.integer  "product_criteria_id", limit: 4,     null: false
+    t.boolean  "exclude_existing",                  null: false
     t.string   "state",               limit: 255
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
+    t.text     "plate_purposes",      limit: 65535
   end
 
   add_index "qc_reports", ["product_criteria_id"], name: "fk_qc_reports_to_product_criteria", using: :btree
@@ -1423,6 +1437,8 @@ ActiveRecord::Schema.define(version: 20170531082054) do
     t.boolean  "empty_supplier_sample_name",             default: false
     t.boolean  "updated_by_manifest",                    default: false
     t.boolean  "consent_withdrawn",                      default: false, null: false
+    t.integer  "work_order_id",              limit: 4
+    t.integer  "container_id",               limit: 4
   end
 
   add_index "samples", ["created_at"], name: "index_samples_on_created_at", using: :btree
@@ -1898,8 +1914,8 @@ ActiveRecord::Schema.define(version: 20170531082054) do
   create_table "work_completions", force: :cascade do |t|
     t.integer  "user_id",    limit: 4, null: false
     t.integer  "target_id",  limit: 4, null: false
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "work_completions", ["target_id"], name: "fk_rails_f8fb9e95de", using: :btree
