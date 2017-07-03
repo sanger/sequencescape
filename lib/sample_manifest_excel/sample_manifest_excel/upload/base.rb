@@ -51,6 +51,7 @@ module SampleManifestExcel
       # Processing involves updating the sample manifest and all of its associated samples.
       def process(tag_group)
         ActiveRecord::Base.transaction do
+          sample_manifest.last_errors = nil
           sample_manifest.start!
           processor.run(tag_group)
         end
