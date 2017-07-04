@@ -1,5 +1,15 @@
 module Aker
   module Factories
+
+    ##
+    # An Aker material which in this case is a Samples.
+    # Must have a Container
+    # Must have minimal data which relates to SampleMetadata and includes:
+    #  * name (Aker uuid)
+    #  * gender
+    #  * donor_id
+    #  * phenotype
+    #  * sample_common_name (Aker: common name)
     class Material
       include ActiveModel::Model
 
@@ -22,11 +32,15 @@ module Aker
         @container = Aker::Factories::Container.new(params[:container])
       end
 
+      ##
+      # Persists the material including the associated container
       def create
         return unless valid?
         @model = Sample.create(attributes)
       end
 
+      ##
+      # Convert attributes to SampleMetadata and Container
       def attributes
         {
           name: name,

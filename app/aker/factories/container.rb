@@ -1,5 +1,10 @@
 module Aker
   module Factories
+
+    ##
+    # A Container is something that stores a sample.
+    # At this stage it is not defined.
+    # Must have a barcode
     class Container
       include ActiveModel::Model
 

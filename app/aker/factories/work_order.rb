@@ -1,5 +1,10 @@
 module Aker
   module Factories
+
+    ##
+    # A workOrder consists of an aker_id and materials (samples).
+    # All other attributes are rejected.
+    # Validates presence of aker_id and ensures that there is at least one material.
     class WorkOrder
       include ActiveModel::Model
 
@@ -18,6 +23,8 @@ module Aker
         @materials = create_materials(params[:materials])
       end
 
+      ##
+      # Persists a Work Order and all associated materials.
       def create
         return unless valid?
         @model = Aker::WorkOrder.create(aker_id: aker_id, samples: materials.collect(&:create))
