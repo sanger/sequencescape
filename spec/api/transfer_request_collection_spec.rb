@@ -11,6 +11,7 @@ describe '/api/1/transfer_request_collection' do
   let(:asset) { create :tagged_well }
   let(:target_asset) { create :empty_library_tube, barcode: 898 }
   let(:user) { create :user }
+  let(:submission) { create :submission }
 
   context '#post' do
     let(:payload) do
@@ -18,7 +19,7 @@ describe '/api/1/transfer_request_collection' do
         "transfer_request_collection":{
           "user": "#{user.uuid}",
           "transfer_requests": [
-            {"source_asset":"#{asset.uuid}", "target_asset": "#{target_asset.uuid}"}
+            {"source_asset":"#{asset.uuid}", "target_asset": "#{target_asset.uuid}", "submission": "#{submission.uuid}"}
           ]
         }
       })
@@ -30,7 +31,8 @@ describe '/api/1/transfer_request_collection' do
           "actions": {},
           "transfer_requests": [{
               "source_asset": { "uuid": "#{asset.uuid}"},
-              "target_asset": { "uuid": "#{target_asset.uuid}"}
+              "target_asset": { "uuid": "#{target_asset.uuid}" },
+              "submission": { "uuid": "#{submission.uuid}" }
           }],
           "target_tubes": [{
             "name": "#{target_asset.name}",

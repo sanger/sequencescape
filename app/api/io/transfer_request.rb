@@ -18,7 +18,7 @@ module Io
       state <=> state
 
       submission.uuid  => submission.uuid
-
+      submission <= submission
       asset <=  source_asset
       target_asset <=  target_asset
     ")
