@@ -1,6 +1,5 @@
 module Aker
   module Factories
-
     ##
     # A workOrder consists of an aker_id and materials (samples).
     # All other attributes are rejected.

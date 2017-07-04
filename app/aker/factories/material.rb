@@ -1,6 +1,5 @@
 module Aker
   module Factories
-
     ##
     # An Aker material which in this case is a Samples.
     # Must have a Container

@@ -1,6 +1,5 @@
 module Aker
   module Factories
-
     ##
     # A Container is something that stores a sample.
     # At this stage it is not defined.
