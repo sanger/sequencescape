@@ -54,7 +54,9 @@ window.reload_batch = function(){
 window.select_all = function(){
   var checkboxes = $('input[type="checkbox"]');
   checkboxes.each(function(pos, r){
-    $(r).prop('checked', true);
+    if (!r.disabled) {
+      $(r).prop('checked', true);
+    };
   });
 }
 
