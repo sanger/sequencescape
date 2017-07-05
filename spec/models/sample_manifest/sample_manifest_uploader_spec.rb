@@ -37,6 +37,7 @@ RSpec.describe SampleManifestUploader, type: :model do
     uploader = SampleManifestUploader.new(test_file, SampleManifestExcel.configuration)
     uploader.run!
     expect(uploader).to be_processed
+    expect(uploader.upload.sample_manifest).to be_completed
     Delayed::Worker.delay_jobs = true
     File.delete(test_file) if File.exist?(test_file)
   end
