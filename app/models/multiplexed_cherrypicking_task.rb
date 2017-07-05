@@ -33,7 +33,11 @@ class MultiplexedCherrypickingTask < Task
 
   def render_task(workflow, params)
     super
-    workflow.set_plate_purpose_options(self)
+    workflow.plate_purpose_options = plate_purpose_options
+  end
+
+  def plate_purpose_options(_=nil)
+    PlatePurpose.cherrypickable_as_target.order(name: :asc).pluck(:name, :size, :id)
   end
 
   def do_task(workflow, params)
