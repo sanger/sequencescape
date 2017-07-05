@@ -19,16 +19,16 @@ class MultiplexedCherrypickingTask < Task
     'assign_wells_to_wells'
   end
 
+  def create_render_element(request)
+    request.asset && AssignTubesToWellsData.new(request)
+  end
+
   def included_for_do_task
-    [{ requests: :asset }, :pipeline]
+    [{ requests: [:request_metadata, { asset: :aliquots }, :target_asset] }, :pipeline]
   end
 
   def included_for_render_task
-    [{ requests: :asset }, :pipeline]
-  end
-
-  def create_render_element(request)
-    request.asset && AssignTubesToWellsData.new(request)
+    [ requests: { asset: [ :samples, { plate: :barcode_prefix }, :map ] } ]
   end
 
   def render_task(workflow, params)

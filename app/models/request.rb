@@ -263,17 +263,18 @@ class Request < ActiveRecord::Base
      where(initial_study_id: studies)
    }
 
-  scope :with_assets_for_starting_requests, -> { includes([:request_metadata, { asset: :aliquots, target_asset: :aliquots }]) }
+  scope :with_assets_for_starting_requests, -> { includes([:request_metadata, :request_events, { asset: :aliquots, target_asset: :aliquots }]) }
   scope :not_failed, -> { where(['state != ?', 'failed']) }
+
+  # Class method calls
+  has_metadata do
+  end
 
   # Delegations
   delegate :billable?, to: :request_type, allow_nil: true
   # NOTE: With properties Request#name would have been silently sent through to the property.  With metadata
   # we now need to be explicit in how we want it delegated.
   delegate :name, to: :request_metadata
-
-  has_metadata do
-  end
 
   def self.delegate_validator
     DelegateValidation::AlwaysValidValidator
@@ -288,7 +289,11 @@ class Request < ActiveRecord::Base
   end
 
   def current_request_event
-    request_events.current.last
+    if request_events.loaded?
+      request_events.detect {|re| re.current? }
+    else
+      request_events.current.last
+    end
   end
 
   def project_id=(project_id)

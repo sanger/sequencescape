@@ -82,7 +82,7 @@ class Batch < ActiveRecord::Base
     where(conditions)
                           }
 
-  scope :includes_for_ui,    -> { limit(5).includes(:user) }
+  scope :includes_for_ui,    -> { limit(5).includes(:user, :assignee, :pipeline) }
   scope :pending_for_ui,     -> { where(state: 'pending',   production_state: nil).latest_first }
   scope :released_for_ui,    -> { where(state: 'released',  production_state: nil).latest_first }
   scope :completed_for_ui,   -> { where(state: 'completed', production_state: nil).latest_first }
