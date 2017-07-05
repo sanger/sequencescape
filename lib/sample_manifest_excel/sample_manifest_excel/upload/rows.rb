@@ -29,16 +29,12 @@ module SampleManifestExcel
       private
 
       def create_rows
-        all_rows = [].tap do |rows|
+        [].tap do |rows|
           data.each_with_index do |r, i|
-            rows << Row.new(number: i + data.start_row + 1, data: r, columns: columns)
+            row = Row.new(number: i + data.start_row + 1, data: r, columns: columns)
+            rows << row unless row.empty?
           end
         end
-        exclude_empty_rows(all_rows)
-      end
-
-      def exclude_empty_rows(rows)
-        rows.reject(&:empty?)
       end
 
       def check_rows

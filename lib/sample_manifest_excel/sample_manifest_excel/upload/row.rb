@@ -118,9 +118,9 @@ module SampleManifestExcel
       end
 
       def empty?
-        default_column = 'supplier_sample_name'
-        if columns.present? && columns.valid? && columns.names.include?(default_column)
-          value(default_column).blank?
+        primary_column = 'supplier_sample_name'
+        if columns.present? && columns.valid? && columns.names.include?(primary_column)
+          value(primary_column).blank?
         end
       end
 
