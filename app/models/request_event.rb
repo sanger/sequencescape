@@ -19,6 +19,6 @@ class RequestEvent < ActiveRecord::Base
   end
 
   def current?
-    ! current_to?
+    !current_to?
   end
 end

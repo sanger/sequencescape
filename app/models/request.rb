@@ -294,7 +294,7 @@ class Request < ActiveRecord::Base
 
   def current_request_event
     if request_events.loaded?
-      request_events.detect {|re| re.current? }
+      request_events.detect(&:current?)
     else
       request_events.current.last
     end

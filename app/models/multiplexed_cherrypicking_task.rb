@@ -28,7 +28,7 @@ class MultiplexedCherrypickingTask < Task
   end
 
   def included_for_render_task
-    [ requests: { asset: [ :samples, { plate: :barcode_prefix }, :map ] } ]
+    [requests: { asset: [:samples, { plate: :barcode_prefix }, :map] }]
   end
 
   def render_task(workflow, params)
@@ -36,7 +36,7 @@ class MultiplexedCherrypickingTask < Task
     workflow.plate_purpose_options = plate_purpose_options
   end
 
-  def plate_purpose_options(_=nil)
+  def plate_purpose_options(_ = nil)
     PlatePurpose.cherrypickable_as_target.order(name: :asc).pluck(:name, :size, :id)
   end
 
