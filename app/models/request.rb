@@ -62,7 +62,11 @@ class Request < ActiveRecord::Base
   has_many :request_events, ->() { order(:current_from) }, inverse_of: :request
 
   # Validations
-  validates_presence_of :request_purpose
+  # On create we perform a full and complete validation.
+  validates_presence_of :request_purpose, on: :create
+  # Just makes sure we don't set it to nil. Avoids the need to load request_purpose
+  # EVERY time we touch a request.
+  validates_presence_of :request_purpose_id
 
   # Scopes
   scope :for_pipeline, ->(pipeline) {
