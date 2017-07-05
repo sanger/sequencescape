@@ -4,14 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
-def GivenSampleMetadata(attribute, regexp)
-  Given(regexp) do |name, value|
-    sample = Sample.find_by(name: name) or raise StandardError, "There appears to be no sample named '#{name}'"
-    sample.sample_metadata.send(:"#{ attribute }=", value.blank? ? nil : value)
-    sample.save!
-  end
-end
-
 When /^I attach a valid excel file$/ do
   attach_file(:file, File.join(Rails.root, 'public', 'data', 'sample_information.xls'))
 end
@@ -190,7 +182,11 @@ Given /^I run the "([^\"]+)" cron script$/ do |script_name|
   eval File.read("#{Rails.root}/lib/cron_scripts/#{script_name}")
 end
 
-GivenSampleMetadata(:sample_ebi_accession_number, /^the sample "([^\"]+)" has the accession number "([^\"]+)"$/)
+Given(/^the sample "([^\"]+)" has the accession number "([^\"]+)"$/) do |name, value|
+  sample = Sample.find_by!(name: name)
+  sample.sample_metadata.sample_ebi_accession_number = value.blank? ? nil : value
+  sample.save!
+end
 
 When /^I (create|update) an? accession number for sample "([^\"]+)"$/ do |action_type, sample_name|
  step %Q{I am on the show page for sample "#{sample_name}"}

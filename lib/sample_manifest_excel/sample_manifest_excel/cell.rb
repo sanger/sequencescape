@@ -35,7 +35,11 @@ module SampleManifestExcel
         column == other.column
     end
 
-  private
+    def inspect
+      "<#{self.class}: @row=#{row}, @column=#{column}>"
+    end
+
+    private
 
     def to_alpha(n)
       (n - 1) < 26 ? ((n - 1) % 26 + 65).chr : ((n - 1) / 26 + 64).chr + ((n - 1) % 26 + 65).chr

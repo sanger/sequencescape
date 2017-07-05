@@ -41,12 +41,12 @@ module SampleManifestExcel
     end
 
     class ManifestType
-      include HashAttributes
+      include Helpers::Attributes
 
       set_attributes :name, :columns, :heading, :asset_type
 
       def initialize(attributes = {})
-        create_attributes(attributes)
+        super
       end
 
       def to_a
@@ -62,7 +62,7 @@ module SampleManifestExcel
       end
     end
 
-  private
+    private
 
     def create_manifest_types(manifest_types)
       self.manifest_types.tap do |mf|

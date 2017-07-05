@@ -37,11 +37,11 @@ module LabelPrinter
     rescue RestClient::UnprocessableEntity => e
       raise PmbException.new(e), pretty_errors(e.response)
     rescue RestClient::InternalServerError => e
-      raise PmbException.new(e), 'Something went wrong in PrintMyBarcode'
+      raise PmbException.new(e), ': something went wrong'
     rescue RestClient::ServiceUnavailable => e
-      raise PmbException.new(e), 'PrintMyBarcode is too busy. Please try again later'
+      raise PmbException.new(e), 'is too busy. Please try again later'
     rescue Errno::ECONNREFUSED => e
-      raise PmbException.new(e), 'PrintMyBarcode service is down'
+      raise PmbException.new(e), 'service is down'
     end
 
     def self.get_label_template_by_name(name)
@@ -49,11 +49,11 @@ module LabelPrinter
     rescue RestClient::UnprocessableEntity => e
       raise PmbException.new(e), pretty_errors(e.response)
     rescue RestClient::InternalServerError => e
-      raise PmbException.new(e), 'Something went wrong in PrintMyBarcode'
+      raise PmbException.new(e), 'something went wrong'
     rescue RestClient::ServiceUnavailable => e
-      raise PmbException.new(e), 'PrintMyBarcode is too busy. Please try again later'
+      raise PmbException.new(e), 'is too busy. Please try again later'
     rescue Errno::ECONNREFUSED => e
-      raise PmbException.new(e), 'PrintMyBarcode service is down'
+      raise PmbException.new(e), 'service is down'
     end
 
     def self.register_printer(name)

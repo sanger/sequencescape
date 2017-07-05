@@ -6,7 +6,7 @@ class Tube::Purpose < ::Purpose
   # We use a lambda here as most tube subclasses won't be loaded at the point of evaluation. We'll
   # be performing this check so rarely that the performance hit is negligable.
   validates :target_type, presence: true, inclusion: { in: ->(_) { Tube.descendants.map(&:name) << 'Tube' } }
-
+  before_validation :set_default_printer_type
   # Tubes of the general types have no stock plate!
   def stock_plate(_)
     nil
@@ -38,6 +38,12 @@ class Tube::Purpose < ::Purpose
         end
       end
     end
+  end
+
+  private
+
+  def set_default_printer_type
+    self.barcode_printer_type ||= BarcodePrinterType1DTube.first
   end
 end
 

@@ -209,6 +209,11 @@ Given(/^a plate called "([^"]*)" exists with purpose "([^"]*)"$/) do |name, purp
   FactoryGirl.create(:plate, name: name, purpose: purpose)
 end
 
+Given(/^a full plate called "([^"]*)" exists with purpose "([^"]*)" and barcode "([^"]*)"$/) do |name, purpose_name, barcode|
+  purpose = Purpose.find_by(name: purpose_name) || FactoryGirl.create(:plate_purpose, name: purpose_name)
+  FactoryGirl.create(:full_plate, well_factory: :untagged_well, name: name, purpose: purpose, barcode: barcode)
+end
+
 Given /^a "([^\"]+)" plate called "([^\"]+)" exists with barcode "([^\"]+)"$/ do |name, plate_name, barcode|
   plate_purpose = PlatePurpose.find_by!(name: name)
   plate_purpose.create!(name: plate_name, barcode: barcode)
@@ -233,13 +238,13 @@ end
 
 Given /^all wells on (the plate "[^\"]+") have unique samples$/ do |plate|
   plate.wells.each do |well|
-    well.aliquots.create!(sample: FactoryGirl.create(:sample))
+    FactoryGirl.create :untagged_aliquot, receptacle: well
   end
 end
 
 Given /^([0-9]+) wells on (the plate "[^\"]+"|the last plate|the plate with ID [\d]+) have unique samples$/ do |number, plate|
   plate.wells.in_column_major_order[0, number.to_i].each do |well|
-    well.aliquots.create!(sample: FactoryGirl.create(:sample))
+    FactoryGirl.create :untagged_aliquot, receptacle: well
   end
 end
 

@@ -31,7 +31,7 @@ class Plate::Creator < ActiveRecord::Base
 
   serialize :valid_options
 
-  def can_create_plates?(source_plate, _plate_purposes)
+  def can_create_plates?(source_plate)
     parent_plate_purposes.empty? || parent_plate_purposes.include?(source_plate.purpose)
   end
 
@@ -79,7 +79,7 @@ class Plate::Creator < ActiveRecord::Base
           Plate.with_machine_barcode(scanned).includes(:location, wells: :aliquots).first or
           raise ActiveRecord::RecordNotFound, "Could not find plate with machine barcode #{scanned.inspect}"
 
-        unless can_create_plates?(plate, plate_purposes)
+        unless can_create_plates?(plate)
           raise PlateCreationError, "Scanned plate #{scanned} has a purpose #{plate.purpose.name} not valid for creating [#{plate_purposes.map(&:name).join(',')}]"
         end
 

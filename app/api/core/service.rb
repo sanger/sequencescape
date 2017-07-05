@@ -254,9 +254,8 @@ module Core
       def discard_all_references
         request.send(:discard_all_references)
         super
-
-        # We can also view the current connection as a reference and release that too
-        ActiveRecord::Base.connection_pool.release_connection
+        # Note: Previously we released our connection here, which prevented rails from
+        # properly sweeping the query cache.
       end
       private :discard_all_references
     end

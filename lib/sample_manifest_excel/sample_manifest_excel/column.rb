@@ -5,34 +5,32 @@ module SampleManifestExcel
   # validation, conditional formatting rules)
   # A column is only valid if it has a name and heading.
   class Column
-    include HashAttributes
-    include ActiveModel::Validations
+    include Helpers::Attributes
 
-    set_attributes :name, :heading, :number, :type, :validation, :value, :unlocked, :conditional_formattings, :attribute,
-                    defaults: { number: 0, type: :string, conditional_formattings: {} }
-
-    attr_reader :range
-
-    ##
-    # Defaults to a NullValidation object
-    attr_reader :validation
+    set_attributes :name, :heading, :number, :type, :validation, :value, :unlocked, :conditional_formattings, :attribute, :range,
+                    defaults: { number: 0, type: :string, conditional_formattings: {}, validation: NullValidation.new }
 
     validates_presence_of :name, :heading
 
     delegate :range_name, to: :validation
 
-    def initialize(attributes = {})
-      @validation = NullValidation.new
-      create_attributes(attributes)
+    # TODO: Because of the way Sample::Metadata is autoloaded we can't check instance_methods.
+    # creating a new instance of Sample::Metadata even at startup is incredibly slow.
+    # Can't do it as a constant due to Travis failure.
+    def self.sample_metadata_model
+      @sample_metadata_model ||= Sample::Metadata.new
+    end
 
-      # @attribute = Attributes.find(name) if valid?
+    def initialize(attributes = {})
+      super(default_attributes.merge(attributes))
     end
 
     ##
     # If argument is a validation object copy it otherwise
     # create a new validation object
     def validation=(validation)
-      @validation = if validation.kind_of?(Hash)
+      return if validation.nil?
+      @validation = if validation.is_a?(Hash)
                       Validation.new(validation)
                     else
                       validation.dup
@@ -43,7 +41,8 @@ module SampleManifestExcel
     # If argument is a conditional formatting list copy it
     # otherwise create a new conditional formatting list
     def conditional_formattings=(conditional_formattings)
-      @conditional_formattings = if conditional_formattings.kind_of?(Hash)
+      return if conditional_formattings.nil?
+      @conditional_formattings = if conditional_formattings.is_a?(Hash)
                                    ConditionalFormattingList.new(conditional_formattings)
                                  else
                                    conditional_formattings.dup
@@ -53,6 +52,7 @@ module SampleManifestExcel
     ##
     # Creates a new Range object.
     def range=(attributes)
+      return if attributes.nil?
       @range = if attributes.empty?
                  NullRange.new
                else
@@ -66,14 +66,28 @@ module SampleManifestExcel
       unlocked
     end
 
-    ##
-    # Some columns relate to a specific value. If that is null we return the column value.
-    # def attribute_value(sample)
-    #   attribute.value(sample) || value
-    # end
+    def metadata_field?
+      @metadata_field ||= Column.sample_metadata_model.respond_to?(name)
+    end
+
+    def update_metadata(metadata, value)
+      if metadata_field?
+        metadata.send("#{name}=", value)
+      end
+    end
 
     def attribute_value(detail)
       detail[attribute] || value
+    end
+
+    def specialised_field?
+      specialised_field.present?
+    end
+
+    def specialised_field
+      @specialised_field ||= if SampleManifestExcel.const_defined? classify_name
+                                SampleManifestExcel.const_get(classify_name)
+                             end
     end
 
     ##
@@ -95,7 +109,7 @@ module SampleManifestExcel
 
       conditional_formattings.update(
         self.range.references.merge(absolute_reference: range.absolute_reference, worksheet: worksheet)
-)
+      )
 
       @updated = true
 
@@ -132,19 +146,27 @@ module SampleManifestExcel
         arguments
       end
 
-    private
+      def inspect
+        "<#{self.class}: @name=#{name}, @heading=#{heading}, @number=#{number}, @type=#{type}, @validation#{validation}, @value=#{value}, @unlocked=#{unlocked}, @conditional_formattings=#{conditional_formattings}, @attribute=#{attribute}, @range=#{range}>"
+      end
+
+      private
 
       def combine_conditional_formattings(defaults)
         if arguments[:conditional_formattings].present?
           arguments[:conditional_formattings].each do |k, cf|
-            arguments[:conditional_formattings][k] = defaults.find_by(k).combine(cf)
+            arguments[:conditional_formattings][k] = defaults.find_by(:type, k).combine(cf)
           end
         end
       end
     end
 
-  private
+    private
 
     attr_reader :attribute
+
+    def classify_name
+      "SpecialisedField::#{name.to_s.delete('?').classify}"
+    end
   end
 end
