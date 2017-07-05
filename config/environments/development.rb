@@ -50,6 +50,7 @@ Sequencescape::Application.configure do
 
   if ENV['WITH_BULLET'] == 'true'
     config.after_initialize do
+      puts "Bullet enabled!"
       require 'bullet'
       Bullet.enable = true
       Bullet.alert = ENV['NOISY_BULLET'] == 'true'
