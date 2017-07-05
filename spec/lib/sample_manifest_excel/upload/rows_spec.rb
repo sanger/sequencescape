@@ -27,6 +27,12 @@ RSpec.describe SampleManifestExcel::Upload::Rows, type: :model, sample_manifest_
     expect(SampleManifestExcel::Upload::Rows.new(SampleManifestExcel::Upload::Data.new(test_file, 9), columns)).to_not be_valid
   end
 
+  it 'is valid if some rows are empty' do
+    download = build(:test_partial_download, columns: columns)
+    download.save(test_file)
+    expect(SampleManifestExcel::Upload::Rows.new(SampleManifestExcel::Upload::Data.new(test_file, 9), columns)).to be_valid
+  end
+
   it 'creates the row number relative to the start row' do
     download = build(:test_download, columns: columns, validation_errors: [:insert_size_from])
     download.save(test_file)
