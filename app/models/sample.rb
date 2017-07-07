@@ -238,63 +238,64 @@ class Sample < ActiveRecord::Base
     include ReferenceGenome::Associations
     association(:reference_genome, :name, required: true)
 
-    attribute(:organism)
-    attribute(:cohort)
-    attribute(:country_of_origin)
-    attribute(:geographical_region)
-    attribute(:ethnicity)
-    attribute(:volume)
-    attribute(:supplier_plate_id)
-    attribute(:mother)
-    attribute(:father)
-    attribute(:replicate)
-    attribute(:gc_content, in: Sample::GC_CONTENTS)
-    attribute(:gender, in: Sample::GENDERS)
-    attribute(:donor_id)
-    attribute(:dna_source, in: Sample::DNA_SOURCES)
-    attribute(:sample_public_name)
-    attribute(:sample_common_name)
-    attribute(:sample_strain_att)
-    attribute(:sample_taxon_id)
-    attribute(:sample_ebi_accession_number)
-    attribute(:sample_description)
-    attribute(:sample_sra_hold, in: Sample::SRA_HOLD_VALUES)
+    custom_attribute(:organism)
+    custom_attribute(:organism)
+    custom_attribute(:cohort)
+    custom_attribute(:country_of_origin)
+    custom_attribute(:geographical_region)
+    custom_attribute(:ethnicity)
+    custom_attribute(:volume)
+    custom_attribute(:supplier_plate_id)
+    custom_attribute(:mother)
+    custom_attribute(:father)
+    custom_attribute(:replicate)
+    custom_attribute(:gc_content, in: Sample::GC_CONTENTS)
+    custom_attribute(:gender, in: Sample::GENDERS)
+    custom_attribute(:donor_id)
+    custom_attribute(:dna_source, in: Sample::DNA_SOURCES)
+    custom_attribute(:sample_public_name)
+    custom_attribute(:sample_common_name)
+    custom_attribute(:sample_strain_att)
+    custom_attribute(:sample_taxon_id)
+    custom_attribute(:sample_ebi_accession_number)
+    custom_attribute(:sample_description)
+    custom_attribute(:sample_sra_hold, in: Sample::SRA_HOLD_VALUES)
 
-    attribute(:sibling)
-    attribute(:is_resubmitted)              # TODO[xxx]: selection of yes/no?
-    attribute(:date_of_sample_collection)   # TODO[xxx]: Date field?
-    attribute(:date_of_sample_extraction)   # TODO[xxx]: Date field?
-    attribute(:sample_extraction_method)
-    attribute(:sample_purified)             # TODO[xxx]: selection of yes/no?
-    attribute(:purification_method)         # TODO[xxx]: tied to the field above?
-    attribute(:concentration)
-    attribute(:concentration_determined_by)
-    attribute(:sample_type)
-    attribute(:sample_storage_conditions)
+    custom_attribute(:sibling)
+    custom_attribute(:is_resubmitted)              # TODO[xxx]: selection of yes/no?
+    custom_attribute(:date_of_sample_collection)   # TODO[xxx]: Date field?
+    custom_attribute(:date_of_sample_extraction)   # TODO[xxx]: Date field?
+    custom_attribute(:sample_extraction_method)
+    custom_attribute(:sample_purified)             # TODO[xxx]: selection of yes/no?
+    custom_attribute(:purification_method)         # TODO[xxx]: tied to the field above?
+    custom_attribute(:concentration)
+    custom_attribute(:concentration_determined_by)
+    custom_attribute(:sample_type)
+    custom_attribute(:sample_storage_conditions)
 
     # Array Express
-    attribute(:genotype)
-    attribute(:phenotype)
-    # attribute(:strain_or_line) strain
+    custom_attribute(:genotype)
+    custom_attribute(:phenotype)
+    # custom_attribute(:strain_or_line) strain
     # TODO: split age in two fields and use a composed_of
-    attribute(:age, with: Regexp.new("\\A#{Sample::AGE_REGEXP}\\z"))
-    attribute(:developmental_stage)
-    # attribute(:sex) gender
-    attribute(:cell_type)
-    attribute(:disease_state)
-    attribute(:compound) # TODO : yes/no?
-    attribute(:dose, with: Regexp.new("\\A#{Sample::DOSE_REGEXP}\\z"))
-    attribute(:immunoprecipitate)
-    attribute(:growth_condition)
-    attribute(:rnai)
-    attribute(:organism_part)
-    # attribute(:species) common name
-    attribute(:time_point)
+    custom_attribute(:age, with: Regexp.new("\\A#{Sample::AGE_REGEXP}\\z"))
+    custom_attribute(:developmental_stage)
+    # custom_attribute(:sex) gender
+    custom_attribute(:cell_type)
+    custom_attribute(:disease_state)
+    custom_attribute(:compound) # TODO : yes/no?
+    custom_attribute(:dose, with: Regexp.new("\\A#{Sample::DOSE_REGEXP}\\z"))
+    custom_attribute(:immunoprecipitate)
+    custom_attribute(:growth_condition)
+    custom_attribute(:rnai)
+    custom_attribute(:organism_part)
+    # custom_attribute(:species) common name
+    custom_attribute(:time_point)
 
     # EGA
-    attribute(:treatment)
-    attribute(:subject)
-    attribute(:disease)
+    custom_attribute(:treatment)
+    custom_attribute(:subject)
+    custom_attribute(:disease)
 
     with_options(if: :validating_ena_required_fields?) do |ena_required_fields|
       ena_required_fields.validates_presence_of :service_specific_fields

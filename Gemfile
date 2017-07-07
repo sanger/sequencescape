@@ -1,8 +1,8 @@
 source 'https://rubygems.org'
 
 group :default do
-  gem 'rails'
-  gem 'rails-observers'
+  gem 'rails', '~> 5.0.1'
+  gem 'rails-observers', github:'rails/rails-observers', branch:'7d3c9c331242d58ed8ebdbd2eff1f7d6f68a1b2c'
 
   # State machine
   gem 'aasm'
@@ -15,9 +15,9 @@ group :default do
   # Legacy support for parsing XML into params
   gem 'actionpack-xml_parser'
 
-  gem 'activerecord-jdbc-adapter', platforms: :jruby
-  gem 'activeresource', require: 'active_resource'
-  gem 'jdbc-mysql', platforms: :jruby
+  gem 'activerecord-jdbc-adapter', platforms: :jruby, github:'jruby/activerecord-jdbc-adapter', branch: 'v5.0.pre1'
+  gem 'activeresource', github: 'rails/activeresource', branch: 'master'
+  gem 'jdbc-mysql', platforms: :jruby, github:'jruby/activerecord-jdbc-adapter', branch: 'v5.0.pre1'
   gem 'mysql2', platforms: :mri
   gem 'spreadsheet'
   gem 'will_paginate'
@@ -48,7 +48,7 @@ group :default do
 
   # For the API level
   gem 'uuidtools'
-  gem 'sinatra', require: false
+  gem 'sinatra', '~> 2.0.0.rc2', require: false
   gem 'rack-acceptable', require: 'rack/acceptable'
   gem 'json'
   gem 'jrjackson', platforms: :jruby
@@ -127,7 +127,7 @@ group :test do
 end
 
 group :test,:cucumber do
-  gem 'factory_girl', require: false
+  gem 'factory_girl_rails', require: false
   gem 'launchy', require: false
   gem 'mocha', require: false # avoids load order problems
   gem 'nokogiri', require: false
@@ -144,7 +144,7 @@ group :test,:cucumber do
 end
 
 group :cucumber do
-  gem 'rubyzip', '~>0.9'
+  gem 'rubyzip'
   gem 'capybara'
   gem 'mime-types'
   gem 'cucumber-rails', require: false

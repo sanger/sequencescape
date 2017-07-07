@@ -9,10 +9,10 @@ class PacBioLibraryTube < Tube
 
   extend Metadata
   has_metadata do
-    attribute(:prep_kit_barcode)
-    attribute(:binding_kit_barcode)
-    attribute(:smrt_cells_available)
-    attribute(:movie_length)
+    custom_attribute(:prep_kit_barcode)
+    custom_attribute(:binding_kit_barcode)
+    custom_attribute(:smrt_cells_available)
+    custom_attribute(:movie_length)
   end
 
   def protocols_for_select

@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'pry'
 
-RSpec.describe SampleManifestUploader, type: :model do
+RSpec.describe SampleManifest::Uploader, type: :model do
   before(:all) do
     SampleManifestExcel.configure do |config|
       config.folder = File.join('spec', 'data', 'sample_manifest_excel')
@@ -13,20 +13,20 @@ RSpec.describe SampleManifestUploader, type: :model do
   let(:test_file) { 'test_file.xlsx' }
 
   it 'will not be valid without a filename' do
-    expect(SampleManifestUploader.new(nil, SampleManifestExcel.configuration)).to_not be_valid
+    expect(SampleManifest::Uploader.new(nil, SampleManifestExcel.configuration)).to_not be_valid
   end
 
   it 'will not be valid without some configuration' do
     download = build(:test_download, columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup)
     download.save(test_file)
-    expect(SampleManifestUploader.new(test_file, nil)).to_not be_valid
+    expect(SampleManifest::Uploader.new(test_file, nil)).to_not be_valid
   end
 
   it 'will not be valid without a tag group' do
     SampleManifestExcel.configuration.tag_group = nil
     download = build(:test_download, columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup)
     download.save(test_file)
-    expect(SampleManifestUploader.new(test_file, SampleManifestExcel.configuration)).to_not be_valid
+    expect(SampleManifest::Uploader.new(test_file, SampleManifestExcel.configuration)).to_not be_valid
     SampleManifestExcel.configuration.tag_group = 'My Magic Tag Group'
   end
 
@@ -34,7 +34,7 @@ RSpec.describe SampleManifestUploader, type: :model do
     download = build(:test_download, columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup)
     download.save(test_file)
     Delayed::Worker.delay_jobs = false
-    uploader = SampleManifestUploader.new(test_file, SampleManifestExcel.configuration)
+    uploader = SampleManifest::Uploader.new(test_file, SampleManifestExcel.configuration)
     uploader.run!
     expect(uploader).to be_processed
     expect(uploader.upload.sample_manifest).to be_completed
@@ -45,7 +45,7 @@ RSpec.describe SampleManifestUploader, type: :model do
   it 'will not upload an invalid sample manifest' do
     download = build(:test_download, columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup, manifest_type: 'multiplexed_library', validation_errors: [:tags])
     download.save(test_file)
-    uploader = SampleManifestUploader.new(test_file, SampleManifestExcel.configuration)
+    uploader = SampleManifest::Uploader.new(test_file, SampleManifestExcel.configuration)
     expect(uploader).to_not be_valid
     expect(uploader.errors).to_not be_empty
     expect(uploader.upload).to_not be_processed

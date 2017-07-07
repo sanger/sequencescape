@@ -779,8 +779,8 @@ class Plate < Asset
 
   extend Metadata
   has_metadata do
-    attribute(:infinium_barcode)
-    attribute(:fluidigm_barcode)
+    custom_attribute(:infinium_barcode)
+    custom_attribute(:fluidigm_barcode)
   end
 
   def barcode_label_for_printing

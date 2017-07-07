@@ -1,4 +1,4 @@
-class SampleManifestUploader
+class SampleManifest::Uploader
   include ActiveModel::Validations
 
   attr_reader :filename, :configuration, :tag_group, :upload
