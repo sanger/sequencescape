@@ -39,19 +39,19 @@ module Attributable
 
   def instance_defaults
     attribute_details.each_with_object({}) do |attribute, hash|
-      hash[attribute.name] = attribute.default_from(self) if attribute.validator?
+      hash[attribute.name.to_s] = attribute.default_from(self) if attribute.validator?
     end
   end
 
   def attribute_value_pairs
     attribute_details.each_with_object({}) do |attribute, hash|
-      hash[attribute] = attribute.from(self)
+      hash[attribute.to_s] = attribute.from(self)
     end
   end
 
   def association_value_pairs
     association_details.each_with_object({}) do |attribute, hash|
-      hash[attribute] = attribute.from(self)
+      hash[attribute.to_s] = attribute.from(self)
     end
   end
 
@@ -68,7 +68,7 @@ module Attributable
   end
 
   module ClassMethods
-    def attribute(name, options = {}, override_previous = false)
+    def custom_attribute(name, options = {}, override_previous = false)
       attribute = Attribute.new(self, name, options)
       attribute.configure(self)
 
