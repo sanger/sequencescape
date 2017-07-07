@@ -20,6 +20,11 @@ class Aliquot::Receptacle < Asset
   has_many :creation_batches, class_name: 'Batch', through: :requests_as_target, source: :batch
   has_many :source_batches, class_name: 'Batch', through: :requests_as_source, source: :batch
 
+  has_many :studies, ->() { uniq }, through: :aliquots
+  has_many :projects, ->() { uniq }, through: :aliquots
+  has_many :samples, ->() { uniq }, through: :aliquots
+
+
   def default_state
     nil
   end
@@ -137,10 +142,6 @@ class Aliquot::Receptacle < Asset
   def outer_request(submission_id)
     transfer_requests_as_target.find_by(submission_id: submission_id).try(:outer_request)
   end
-
-  has_many :studies, through: :aliquots
-  has_many :projects, through: :aliquots
-  has_many :samples, through: :aliquots
 
   # Contained samples also works on eg. plate
   alias_attribute :contained_samples, :samples

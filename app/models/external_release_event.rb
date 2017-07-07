@@ -23,8 +23,8 @@ class ExternalReleaseEvent < Event
   end
 
   def physically_send_email
-    study = Asset.find(eventful_id).studies.map do |study|
-      EventfulMailer.confirm_external_release_event(study.mailing_list_of_managers.reject(&:blank?), eventful, message, content, 'No Milestone').deliver_now
-    end
+    studies = Asset.find(eventful_id).studies
+    users = studies.reduce([]) { |users, study| users.concat(study.mailing_list_of_managers.reject(&:blank?)) }
+    EventfulMailer.confirm_external_release_event(users.uniq, eventful, message, content, 'No Milestone').deliver_now
   end
 end
