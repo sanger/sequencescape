@@ -56,7 +56,7 @@ RSpec.describe SampleManifest::Uploader, type: :model do
     download = build(:test_partial_download, columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup)
     download.save(test_file)
     Delayed::Worker.delay_jobs = false
-    uploader = SampleManifestUploader.new(test_file, SampleManifestExcel.configuration)
+    uploader = SampleManifest::Uploader.new(test_file, SampleManifestExcel.configuration)
     uploader.run!
     expect(uploader).to be_processed
     Delayed::Worker.delay_jobs = true
