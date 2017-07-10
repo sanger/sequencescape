@@ -58,7 +58,7 @@ class Study < ActiveRecord::Base
   role_relation(:managed_by,        'manager')
   role_relation(:collaborated_with, 'collaborator')
 
-  has_many :data_access_contacts, ->() { where(roles: { name: 'Data Access Contacts' }) }, through: :roles, source: :users
+  has_many :data_access_contacts, ->() { where(roles: { name: 'Data Access Contact' }) }, through: :roles, source: :users
   has_many :followers, ->() { where(roles: { name: 'follower' }) }, through: :roles, source: :users
   has_many :managers, ->() { where(roles: { name: 'manager' }) }, through: :roles, source: :users
   has_many :owners, ->() { where(roles: { name: 'owner' }) }, through: :roles, source: :users
