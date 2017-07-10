@@ -45,7 +45,7 @@ class User < ActiveRecord::Base
 
   acts_as_authorized_user
 
-  scope :owners, ->() { where.not(last_name: nil).joins(:roles).where(roles: { name: 'owner' }).order(:last_name).uniq }
+  scope :owners, ->() { where.not(last_name: nil).joins(:roles).where(roles: { name: 'owner' }).order(:last_name).distinct }
 
   attr_accessor :password
 
@@ -258,6 +258,6 @@ class User < ActiveRecord::Base
     end
 
     def password_required?
-      crypted_password.blank? || !password.blank?
+      crypted_password.blank? || password.present?
     end
 end

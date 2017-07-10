@@ -37,7 +37,7 @@ class Metadata::FormBuilder < Metadata::BuilderBase
     render_view(:checktext, field, options)
   end
 
-  [:text_area, :text_field, :number_field].each do |field|
+  %i[text_area text_field number_field].each do |field|
     class_eval <<-END_OF_METHOD
       def #{field}_with_bootstrap(*args, &block)
         options    = args.extract_options!
@@ -133,7 +133,7 @@ class Metadata::FormBuilder < Metadata::BuilderBase
     end
 
     div_options = { id: field.to_s }
-    (div_options[:class] ||= []) << 'field_with_errors' unless @object.errors.get(field).blank?
+    (div_options[:class] ||= []) << 'field_with_errors' if @object.errors[field].present?
     content_tag(:div, content, div_options)
   end
 end

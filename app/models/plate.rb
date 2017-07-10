@@ -95,7 +95,7 @@ class Plate < Asset
       requests: :request_metadata,
       wells: [
         :map_id,
-        { aliquots: [:samples, :tag, :tag2] }
+        { aliquots: %i[samples tag tag2] }
       ]
     )
   }
@@ -105,14 +105,14 @@ class Plate < Asset
     @siat ||= container_associations
               .joins('LEFT JOIN requests ON requests.target_asset_id = container_associations.content_id')
               .where.not(requests: { submission_id: nil }).where.not(requests: { state: Request::Statemachine::INACTIVE })
-              .uniq.pluck(:submission_id)
+              .distinct.pluck(:submission_id)
   end
 
   def submission_ids_as_source
     @sias ||= container_associations
               .joins('LEFT JOIN requests ON requests.asset_id = container_associations.content_id')
               .where(['requests.submission_id IS NOT NULL AND requests.state NOT IN (?)', Request::Statemachine::INACTIVE])
-              .uniq.pluck(:submission_id)
+              .distinct.pluck(:submission_id)
   end
 
   def all_submission_ids
@@ -130,14 +130,14 @@ class Plate < Asset
   end
 
   def submissions
-    s = Submission.select('submissions.*',).uniq
+    s = Submission.select('submissions.*',).distinct
                   .joins([
                     'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
                     'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.asset_id'
                   ])
                   .where(['caplp.container_id = ?', id])
-    return s unless s.blank?
-    Submission.select('submissions.*',).uniq
+    return s if s.present?
+    Submission.select('submissions.*',).distinct
               .joins([
                 'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
                 'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.target_asset_id'
@@ -287,7 +287,7 @@ class Plate < Asset
     end
   end
 
-  scope :include_wells_and_attributes, -> { includes(wells: [:map, :well_attribute]) }
+  scope :include_wells_and_attributes, -> { includes(wells: %i[map well_attribute]) }
 
   # has_many :wells, :as => :holder, :class_name => "Well"
   DEFAULT_SIZE = 96
@@ -317,7 +317,7 @@ class Plate < Asset
   }
 
  scope :with_requests, ->(requests) {
-   select('assets.*').uniq
+   select('assets.*').distinct
                      .joins([
                        'INNER JOIN container_associations AS wrca ON wrca.container_id = assets.id',
                        'INNER JOIN requests AS wrr ON wrr.asset_id = wrca.content_id'
@@ -498,10 +498,9 @@ class Plate < Asset
     @storage_location_service = 'ETS'
     return 'Control' if is_a?(ControlPlate)
     return '' if barcode.blank?
-    return %w(storage_area storage_device building_area building).map do |key|
+    return %w[storage_area storage_device building_area building].map do |key|
       get_external_value(key)
     end.compact.join(' - ')
-
   rescue LabWhereClient::LabwhereException => e
     @storage_location_service = 'None'
     return "Not found (#{e.message})"
@@ -697,7 +696,7 @@ class Plate < Asset
   end
 
   def children_of_dilution_plates(parent_model, child_model)
-    child_dilution_plates_filtered_by_type(parent_model).map { |dilution_plate| dilution_plate.children.select { |p| p.is_a?(child_model) } }.flatten.select { |p| !p.nil? }
+    child_dilution_plates_filtered_by_type(parent_model).map { |dilution_plate| dilution_plate.children.select { |p| p.is_a?(child_model) } }.flatten.reject { |p| p.nil? }
   end
 
   def child_pico_assay_plates
