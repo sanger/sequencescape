@@ -41,7 +41,7 @@ class Aliquot::Receptacle < Asset
   deprecate get_tag: 'receptacles can contain multiple tags.'
 
   # Named scopes for the future
-  scope :include_aliquots, -> { includes(aliquots: %i[sample tag bait_library]) }
+  scope :include_aliquots, -> { includes(aliquots: %i(sample tag bait_library)) }
   scope :include_aliquots_for_api, -> { includes(aliquots: [{ sample: [:uuid_object, :study_reference_genome, { sample_metadata: :reference_genome }] }, { tag: :tag_group }, :bait_library]) }
   scope :for_summary, -> { includes(:map, :samples, :studies, :projects) }
   scope :include_creation_batches, -> { includes(:creation_batches) }

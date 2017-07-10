@@ -155,7 +155,7 @@ class RequestTest < ActiveSupport::TestCase
        end
 
        should 'remove target_asset' do
-         assert_equal @new_request.target_asset_id, nil
+         assert_nil @new_request.target_asset_id
        end
 
        should 'be pending' do
