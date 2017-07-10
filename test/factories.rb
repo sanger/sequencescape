@@ -352,7 +352,7 @@ FactoryGirl.define do
     end
 
     factory :manager do
-      roles { |role| Array(authorizable).map { |auth| p role.association(:manager_role, authorizable: auth) } }
+      roles { |role| Array(authorizable).map { |auth| role.association(:manager_role, authorizable: auth) } }
 
       transient do
         authorizable { create :study }
