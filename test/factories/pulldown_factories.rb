@@ -26,7 +26,7 @@ FactoryGirl.define do
 
   factory(:full_plate, class: Plate) do
     size 96
-    plate_purpose { PlatePurpose.find_by(name: 'Parent plate purpose') || create(:parent_plate_purpose) }
+    plate_purpose
 
     transient do
       well_count 96
@@ -39,7 +39,7 @@ FactoryGirl.define do
 
     after(:create) do |plate, evaluator|
       plate.wells = evaluator.occupied_map_locations.map do |map|
-        create(evaluator.well_factory, map: map)
+        build(evaluator.well_factory, map: map)
       end
     end
 
@@ -128,11 +128,14 @@ FactoryGirl.define do
   sequence(:tag_group_for_layout_name) { |n| "Tag group #{n}" }
 
   factory(:tag_group_for_layout, class: TagGroup) do
-    # name { generate(:tag_group_for_layout_name) }
     sequence(:name) { |n| "Tag group layout #{n}" }
 
-    after(:create) do |tag_group|
-      ['ACGT', 'TGCA'].each_with_index do |oligo, index|
+    transient do
+      tag_sequences ['ACGT', 'TGCA']
+    end
+
+    after(:create) do |tag_group, evaluator|
+      evaluator.tag_sequences.each_with_index do |oligo, index|
         tag_group.tags.create!(map_id: index + 1, oligo: oligo)
       end
     end
@@ -140,19 +143,24 @@ FactoryGirl.define do
 
   # Tag layouts and their templates
   factory(:tag_layout_template) do
+    sequence(:name) { |i| "Tag layout template #{i}" }
     direction_algorithm 'TagLayout::InColumns'
     walking_algorithm   'TagLayout::WalkWellsByPools'
-    tag_group { |target| target.association(:tag_group_for_layout) }
-  end
-  factory(:inverted_tag_layout_template, class: TagLayoutTemplate) do
-    direction_algorithm 'TagLayout::InInverseColumns'
-    walking_algorithm   'TagLayout::WalkWellsOfPlate'
-    tag_group { |target| target.association(:tag_group_for_layout) }
-  end
-  factory(:entire_plate_tag_layout_template, class: TagLayoutTemplate) do
-    direction_algorithm 'TagLayout::InColumns'
-    walking_algorithm   'TagLayout::WalkWellsOfPlate'
-    tag_group { |target| target.association(:tag_group_for_layout) }
+    tag_group { |target| target.association(:tag_group_for_layout, name: target.name, tag_sequences: target.tags ) }
+
+    transient do
+      tags []
+    end
+
+    factory(:inverted_tag_layout_template, class: TagLayoutTemplate) do
+      direction_algorithm 'TagLayout::InInverseColumns'
+      walking_algorithm   'TagLayout::WalkWellsOfPlate'
+    end
+
+    factory(:entire_plate_tag_layout_template, class: TagLayoutTemplate) do
+      direction_algorithm 'TagLayout::InColumns'
+      walking_algorithm   'TagLayout::WalkWellsOfPlate'
+    end
   end
 
   factory(:tag_layout) do

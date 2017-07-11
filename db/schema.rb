@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170531082054) do
+ActiveRecord::Schema.define(version: 20170710160435) do
 
   create_table "aliquot_indices", force: :cascade do |t|
     t.integer  "aliquot_id",    limit: 4, null: false
@@ -1743,7 +1743,10 @@ ActiveRecord::Schema.define(version: 20170531082054) do
     t.string   "substitutions",       limit: 1525
     t.string   "walking_algorithm",   limit: 255,  default: "TagLayout::WalkWellsByPools"
     t.integer  "initial_tag",         limit: 4,    default: 0,                             null: false
+    t.integer  "tag2_group_id",       limit: 4
   end
+
+  add_index "tag_layouts", ["tag2_group_id"], name: "fk_rails_d221e7c041", using: :btree
 
   create_table "tags", force: :cascade do |t|
     t.string   "oligo",        limit: 255
@@ -1927,6 +1930,7 @@ ActiveRecord::Schema.define(version: 20170531082054) do
   end
 
   add_foreign_key "sample_manifests", "plate_purposes", column: "purpose_id"
+  add_foreign_key "tag_layouts", "tag_groups", column: "tag2_group_id"
   add_foreign_key "work_completions", "assets", column: "target_id"
   add_foreign_key "work_completions", "users"
   add_foreign_key "work_completions_submissions", "submissions"
