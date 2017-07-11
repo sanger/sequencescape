@@ -203,7 +203,8 @@ class Request < ActiveRecord::Base
   # Note: These scopes use preload due to a limitation in the way rails handles custom selects with eager loading
   # https://github.com/rails/rails/issues/15185
   scope :loaded_for_inbox_display, -> { preload([{ submission: { orders: :study }, asset: [:scanned_into_lab_event, :studies] }]) }
-  scope :loaded_for_grouped_inbox_display, -> { preload([{ submission: :orders }, :asset, :target_asset, :request_type]) }
+  scope :loaded_for_grouped_inbox_display, -> { preload([{ submission: :orders }, :target_asset]) }
+  scope :loaded_for_pacbio_inbox_display, -> { preload([{ submission: :orders }, :request_type, :target_asset]) }
 
   scope :ordered_for_ungrouped_inbox, -> { order(id: :desc) }
   scope :ordered_for_submission_grouped_inbox, -> { order(submission_id: :desc, id: :asc) }
@@ -345,7 +346,6 @@ class Request < ActiveRecord::Base
     select('requests.*, tca.container_id AS container_id, tca.content_id AS content_id')
       .joins("INNER JOIN container_associations tca ON tca.content_id=#{target}")
       .readonly(false)
-      .preload(:request_metadata)
       .group(groupings)
   end
 

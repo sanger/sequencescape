@@ -9,14 +9,6 @@ Feature: Cherrypicking for Pulldown pipeline
     And I have an active study called "Study A"
     And the "96 Well Plate" barcode printer "xyz" exists
 
-  Scenario: I select 2 pulldown plates for a batch, but the max is 1
-    Given I have 2 pulldown plates
-    Given I am on the show page for pipeline "Pulldown Multiplex Library Preparation"
-    When I check "Select DN99999F for batch"
-    And I check "Select DN88888N for batch"
-    And I press the first "Submit"
-    Then I should see "Too many request groups selected, maximum is 1"
-
   Scenario: View pulldown report for batch without assigning tags in batch
     Given I have a tag group called "UK10K tag group" with 8 tags
     Given I have a pulldown batch

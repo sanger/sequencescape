@@ -554,12 +554,9 @@ class BatchesController < ApplicationController
   # This is the expected create behaviour, and is only in a seperate
   # method due to the overloading on the create endpoint.
   def standard_create(requests)
+    return pipeline_error_on_batch_creation('All plates in a submission must be selected') unless @pipeline.all_requests_from_submissions_selected?(requests)
+    return pipeline_error_on_batch_creation("Maximum batch size is #{@pipeline.max_size}") if @pipeline.max_size && requests.length > @pipeline.max_size
     ActiveRecord::Base.transaction do
-      unless @pipeline.valid_number_of_checked_request_groups?(params)
-        return pipeline_error_on_batch_creation("Too many request groups selected, maximum is #{@pipeline.max_number_of_groups}")
-      end
-      return pipeline_error_on_batch_creation('All plates in a submission must be selected') unless @pipeline.all_requests_from_submissions_selected?(requests)
-      return pipeline_error_on_batch_creation("Maximum batch size is #{@pipeline.max_size}") if @pipeline.max_size && requests.length > @pipeline.max_size
       @batch = @pipeline.batches.create!(requests: requests, user: current_user)
     end
 

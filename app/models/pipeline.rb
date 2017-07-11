@@ -196,16 +196,6 @@ class Pipeline < ActiveRecord::Base
     end
   end
 
-  def max_number_of_groups
-    super || 0
-  end
-
-  def valid_number_of_checked_request_groups?(params = {})
-    return true if max_number_of_groups.zero?
-    return true if (selected_groups = params['request_group']).blank?
-    grouping_parser.count(selected_values_from(selected_groups)) <= max_number_of_groups
-  end
-
   def all_requests_from_submissions_selected?(_request_ids)
     true
   end

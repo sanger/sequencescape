@@ -5,7 +5,23 @@
 # Copyright (C) 2012,2015 Genome Research Ltd.
 
 class Pipeline::GrouperForPipeline
-  include Pipeline::Grouper
+  delegate :requests, :group_by_parent?, :group_by_submission?, to: :@pipeline
+
+  def initialize(pipeline)
+    @pipeline = pipeline
+  end
+
+  def all(selected_groups)
+    conditions, variables = [], []
+    selected_groups.each { |group, _| call(conditions, variables, group) }
+    requests.order(:id).inputs(true).group_conditions(conditions, variables).group_requests.all
+  end
+
+  def count(selected_groups)
+    conditions, variables = [], []
+    selected_groups.each { |group, _| call(conditions, variables, group) }
+    requests.inputs(true).group_conditions(conditions, variables).group_requests(group: grouping).count(:all)
+  end
 
   private
 

@@ -8,10 +8,9 @@ class PipelinesController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
-  before_action :find_pipeline_by_id, only: [:show, :setup_inbox,
-                                   :set_inbox, :training_batch, :activate, :deactivate, :destroy, :batches]
-
+  before_action :find_pipeline_by_id, only: [:show, :setup_inbox, :set_inbox, :training_batch, :activate, :deactivate, :destroy, :batches]
   before_action :lab_manager_login_required, only: [:update_priority, :deactivate, :activate]
+  before_action :prepare_batch_and_pipeline, only: [:summary, :finish]
 
   after_action :set_cache_disabled!, only: [:show]
 
@@ -82,13 +81,6 @@ class PipelinesController < ApplicationController
     @controls = @pipeline.controls
   end
 
-  before_action :prepare_batch_and_pipeline, only: [:summary, :finish]
-  def prepare_batch_and_pipeline
-    @batch    = Batch.find(params[:id])
-    @pipeline = @batch.pipeline
-  end
-  private :prepare_batch_and_pipeline
-
   def summary
   end
 
@@ -147,6 +139,11 @@ class PipelinesController < ApplicationController
   end
 
   private
+
+  def prepare_batch_and_pipeline
+    @batch    = Batch.find(params[:id])
+    @pipeline = @batch.pipeline
+  end
 
   def find_pipeline_by_id
     @pipeline = Pipeline.find(params['id'])
