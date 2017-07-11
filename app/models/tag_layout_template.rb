@@ -10,8 +10,8 @@ class TagLayoutTemplate < ActiveRecord::Base
   include Uuid::Uuidable
   include Lot::Template
 
-  belongs_to :tag_group
-  validates_presence_of :tag_group
+  belongs_to :tag_group, required: true
+  belongs_to :tag2_group, class_name: 'TagGroup'
 
   validates_presence_of :name
   validates_uniqueness_of :name

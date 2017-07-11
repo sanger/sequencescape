@@ -8,13 +8,15 @@ describe TagLayoutTemplate do
   let(:template) do
     build :tag_layout_template,
           direction_algorithm: direction_algorithm,
-          walking_algorithm: walking_algorithm
+          walking_algorithm: walking_algorithm,
+          tag2_group: tag2_group
   end
 
   describe '#create!' do
     let(:user) { build :user }
     subject { template.create!(plate: plate, user: user) }
     let(:plate) { create :plate }
+    let(:tag2_group) { nil }
 
     context 'by plate in columns' do
       let(:direction_algorithm) { 'TagLayout::InColumns' }
@@ -25,8 +27,19 @@ describe TagLayoutTemplate do
         expect(subject.plate).to eq(plate)
         expect(subject.direction).to eq('column')
         expect(subject.walking_by).to eq('wells of plate')
+        expect(tag2_group).to eq(tag2_group)
+      end
+
+      context 'with a tag2 group' do
+        it { is_expected.to be_a TagLayout }
+        let(:tag2_group) { create :tag_group }
+        it 'passes in the correct properties' do
+          expect(subject.plate).to eq(plate)
+          expect(tag2_group).to eq(tag2_group)
+        end
       end
     end
+
     context 'by pool in rows' do
       let(:direction_algorithm) { 'TagLayout::InRows' }
       let(:walking_algorithm) { 'TagLayout::WalkWellsByPools' }

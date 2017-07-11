@@ -11,7 +11,7 @@ describe '/api/1/tag_layout_templates' do
 
   context '#get' do
     let(:response_body) do
-      %{
+      %(
         {
           "actions":{
             "read":"http://www.example.com/api/1/tag_layout_templates/1",
@@ -36,11 +36,12 @@ describe '/api/1/tag_layout_templates' do
                 "name":"#{example_group.name}",
                 "tags":{"1":"","2":""}
               },
+              "tag2_group": null,
               "walking_by":"wells in pools"
             }
           ]
         }
-      }
+      )
     end
     let(:response_code) { 200 }
 
@@ -70,7 +71,7 @@ describe '/api/1/tag_layout_templates' do
 
     context '#get' do
       let(:response_body) do
-        %Q{{
+        %({
           "tag_layout_template":{
             "actions":{
               "read":"http://www.example.com/api/1/#{example_template.uuid}",
@@ -85,9 +86,10 @@ describe '/api/1/tag_layout_templates' do
               "name":"Test Example",
               "tags":{"1":"AAA","2":"TTT"}
             },
+            "tag2_group": null,
             "walking_by":"wells of plate"
           }
-        }}
+        })
       end
       let(:response_code) { 200 }
 
@@ -101,11 +103,11 @@ describe '/api/1/tag_layout_templates' do
     context '#post' do
       let(:target) { create :plate }
       let(:payload) do
-        %Q({"tag_layout":{ "plate": "#{target.uuid}", "user": "#{user.uuid}"}})
+        %({"tag_layout":{ "plate": "#{target.uuid}", "user": "#{user.uuid}"}})
       end
 
       let(:response_body) do
-        %Q({
+        %({
           "tag_layout": {
             "actions": {},
             "plate": {

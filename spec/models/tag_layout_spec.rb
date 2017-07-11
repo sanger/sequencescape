@@ -4,7 +4,7 @@ require 'rails_helper'
 # templates. The actual layout of tags is carried out by the tag layouts themselves,
 # and is tested there.
 describe TagLayout do
-  def generate_tag_layout(plate,tag_type=:tag)
+  def generate_tag_layout(plate, tag_type = :tag)
     plate.wells.with_aliquots.each_with_object({}) do |w, h|
       h[w.map_description] = w.aliquots.map(&tag_type)
     end
@@ -50,8 +50,7 @@ describe TagLayout do
              tag2_group: tag2_group,
              walking_by: walking_by,
              direction: direction,
-             initial_tag: initial_tag
-      )
+             initial_tag: initial_tag)
     end
 
     context 'by_column' do

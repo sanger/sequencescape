@@ -146,7 +146,7 @@ FactoryGirl.define do
     sequence(:name) { |i| "Tag layout template #{i}" }
     direction_algorithm 'TagLayout::InColumns'
     walking_algorithm   'TagLayout::WalkWellsByPools'
-    tag_group { |target| target.association(:tag_group_for_layout, name: target.name, tag_sequences: target.tags ) }
+    tag_group { |target| target.association(:tag_group_for_layout, name: target.name, tag_sequences: target.tags) }
 
     transient do
       tags []
