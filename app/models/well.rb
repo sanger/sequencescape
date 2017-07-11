@@ -138,12 +138,12 @@ class Well < Aliquot::Receptacle
   scope :pooled_as_target_by, ->(type) {
     joins('LEFT JOIN requests patb ON assets.id=patb.target_asset_id')
       .where(['(patb.sti_type IS NULL OR patb.sti_type IN (?))', [type, *type.descendants].map(&:name)])
-      .select('assets.*, patb.submission_id AS pool_id').uniq
+      .select('assets.*, patb.submission_id AS pool_id').distinct
   }
   scope :pooled_as_source_by, ->(type) {
     joins('LEFT JOIN requests pasb ON assets.id=pasb.asset_id')
       .where(['(pasb.sti_type IS NULL OR pasb.sti_type IN (?)) AND pasb.state IN (?)', [type, *type.descendants].map(&:name), Request::Statemachine::OPENED_STATE])
-      .select('assets.*, pasb.submission_id AS pool_id').uniq
+      .select('assets.*, pasb.submission_id AS pool_id').distinct
   }
 
   # It feels like we should be able to do this with just includes and order, but oddly this causes more disruption downstream
