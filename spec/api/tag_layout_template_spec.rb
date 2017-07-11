@@ -123,7 +123,8 @@ describe '/api/1/tag_layout_templates' do
                 "1": "AAA",
                 "2": "TTT"
               }
-            }
+            },
+            "tag2_group": null
           }
         })
       end
