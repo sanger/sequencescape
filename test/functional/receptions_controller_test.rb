@@ -9,8 +9,7 @@ class ReceptionsControllerTest < ActionController::TestCase
   context 'Sample Reception' do
     setup do
       @controller = ReceptionsController.new
-      @request    = ActionController::TestRequest.new
-      @response   = ActionController::TestResponse.new
+      @request    = ActionController::TestRequest.create
       @user = FactoryGirl.create :user
       session[:user] = @user.id
       @plate = FactoryGirl.create :plate

@@ -47,7 +47,9 @@ class Metadata::FormBuilder < Metadata::BuilderBase
         #{field}_without_bootstrap(*args, &block)
       end
     END_OF_METHOD
-    alias_method_chain(field, :bootstrap)
+    alias_method("#{field}_without_bootstrap", field)
+    alias_method(field, "#{field}_with_bootstrap")
+
   end
 
   def select_with_bootstrap(method, choices, options = {}, html_options = {}, &block)
@@ -55,7 +57,8 @@ class Metadata::FormBuilder < Metadata::BuilderBase
     html_options[:class] << ' form-control'
     select_without_bootstrap(method, choices, options, html_options, &block)
   end
-  alias_method_chain(:select, :bootstrap)
+  alias_method(:select_without_bootstrap, :select)
+  alias_method(:select, :select_with_bootstrap)
 
   # We wrap each of the following field types (text_field, select, etc) within a special
   # layout for our properties
@@ -80,7 +83,8 @@ class Metadata::FormBuilder < Metadata::BuilderBase
         end
       end
     END_OF_METHOD
-    alias_method_chain(field, :property_field_wrapper)
+    alias_method("#{field}_without_property_field_wrapper", field)
+    alias_method(field, "#{field}_with_property_field_wrapper")
   end
 
   def header(field, options = {})

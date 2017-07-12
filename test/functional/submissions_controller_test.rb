@@ -12,8 +12,7 @@ class SubmissionsControllerTest < ActionController::TestCase
     setup do
       @user       = create :user
       @controller = SubmissionsController.new
-      @request    = ActionController::TestRequest.new
-      @response   = ActionController::TestResponse.new
+      @request    = ActionController::TestRequest.create
 
       session[:user] = @user
 

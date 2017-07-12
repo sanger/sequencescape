@@ -11,8 +11,7 @@ class QcReportsControllerTest < ActionController::TestCase
   context 'QcReports controller' do
     setup do
       @controller = QcReportsController.new
-      @request    = ActionController::TestRequest.new
-      @response   = ActionController::TestResponse.new
+      @request    = ActionController::TestRequest.create
       @request.env['HTTP_REFERER'] = '/'
 
       @user = create :user

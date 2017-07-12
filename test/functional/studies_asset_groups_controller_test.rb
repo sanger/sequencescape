@@ -15,8 +15,7 @@ class Studies::AssetGroupsControllerTest < ActionController::TestCase
       @assetgroup_count_a = AssetGroup.count
       @study_count_a = Study.count
       @controller = Studies::AssetGroupsController.new
-      @request    = ActionController::TestRequest.new
-      @response   = ActionController::TestResponse.new
+      @request    = ActionController::TestRequest.create
       @user = FactoryGirl.create :user
       session[:user] = @user.id
       @controller.stubs(:logged_in?).returns(@user)

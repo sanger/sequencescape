@@ -11,8 +11,7 @@ class ProjectsControllerTest < ActionController::TestCase
   context 'ProjectsController' do
     setup do
       @controller = ProjectsController.new
-      @request    = ActionController::TestRequest.new
-      @response   = ActionController::TestResponse.new
+      @request    = ActionController::TestRequest.create
     end
 
     should_require_login
@@ -21,8 +20,7 @@ class ProjectsControllerTest < ActionController::TestCase
   context 'create a project - custom' do
     setup do
       @controller = ProjectsController.new
-      @request    = ActionController::TestRequest.new
-      @response   = ActionController::TestResponse.new
+      @request    = ActionController::TestRequest.create
       @user = FactoryGirl.create :user
 
       @user.has_role('owner')

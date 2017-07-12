@@ -11,8 +11,7 @@ class RequestsControllerTest < ActionController::TestCase
   context 'Request controller' do
     setup do
       @controller = RequestsController.new
-      @request    = ActionController::TestRequest.new
-      @response   = ActionController::TestResponse.new
+      @request    = ActionController::TestRequest.create
       @user = FactoryGirl.create :admin
     end
 

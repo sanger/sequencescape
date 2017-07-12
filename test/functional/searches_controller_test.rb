@@ -10,8 +10,7 @@ class SearchesControllerTest < ActionController::TestCase
   context 'Searches controller' do
     setup do
       @controller = SearchesController.new
-      @request    = ActionController::TestRequest.new
-      @response   = ActionController::TestResponse.new
+      @request    = ActionController::TestRequest.create
     end
 
     should_require_login

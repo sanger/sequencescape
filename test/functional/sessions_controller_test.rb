@@ -14,8 +14,7 @@ class SessionsControllerTest < ActionController::TestCase
 
   def setup
     @controller = SessionsController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
+    @request    = ActionController::TestRequest.create
     @user = FactoryGirl.create(:user, login: 'john', email: 'john@beatles.com',
                                       password: 'test', password_confirmation: 'test',
                                       created_at: 5.days.ago.to_s)

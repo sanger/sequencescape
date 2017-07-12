@@ -42,8 +42,7 @@ class AuthenticationControllerTest < ActionController::TestCase
   context 'Authenticated pages' do
     setup do
       @controller = AuthenticationController.new
-      @request    = ActionController::TestRequest.new
-      @response   = ActionController::TestResponse.new
+      @request    = ActionController::TestRequest.create
       @request.host = 'www.example.com'
       # skip_routing
     end

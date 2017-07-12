@@ -10,8 +10,7 @@ class PlatesControllerTest < ActionController::TestCase
   context 'Plate' do
     setup do
       @controller = PlatesController.new
-      @request    = ActionController::TestRequest.new
-      @response   = ActionController::TestResponse.new
+      @request    = ActionController::TestRequest.create
 
       @pico_assay_plate_creator = FactoryGirl.create :plate_creator, plate_purposes: PlatePurpose.where(name: ['Pico Assay A', 'Pico Assay B'])
       @dilution_plates_creator = FactoryGirl.create :plate_creator, plate_purposes: PlatePurpose.where(name: 'Working dilution')

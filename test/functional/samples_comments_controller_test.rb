@@ -10,8 +10,7 @@ class Samples::CommentsControllerTest < ActionController::TestCase
   context 'Samples#Comments controller' do
     setup do
       @controller = Samples::CommentsController.new
-      @request    = ActionController::TestRequest.new
-      @response   = ActionController::TestResponse.new
+      @request    = ActionController::TestRequest.create
     end
 
     should_require_login

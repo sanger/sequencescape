@@ -12,8 +12,7 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
     setup do
       @user = FactoryGirl.create :user
       @controller = SubmissionsController.new
-      @request    = ActionController::TestRequest.new
-      @response   = ActionController::TestResponse.new
+      @request    = ActionController::TestRequest.create
       @plate_purpose = PlatePurpose.find_by(name: 'Stock plate')
       @controller.stubs(:logged_in?).returns(@user)
       session[:user] = @user.id

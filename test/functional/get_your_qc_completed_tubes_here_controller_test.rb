@@ -6,8 +6,7 @@ class GetYourQcCompletedTubesHereControllerTest < ActionController::TestCase
 
     setup do
       @controller = GetYourQcCompletedTubesHereController.new
-      @request    = ActionController::TestRequest.new
-      @response   = ActionController::TestResponse.new
+      @request    = ActionController::TestRequest.create
       @user       = create(:user)
       @controller.stubs(:current_user).returns(@user)
       @controller.stubs(:logged_in?).returns(@user)
