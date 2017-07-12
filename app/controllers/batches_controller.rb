@@ -56,7 +56,7 @@ class BatchesController < ApplicationController
 
   def edit
     @rits = @batch.pipeline.request_information_types
-    @requests = @batch.ordered_requests
+    @requests = @batch.ordered_requests.includes(:batch_request, :asset, :target_asset, :comments)
     @users = User.all
     @controls = @batch.pipeline.controls
   end
@@ -556,6 +556,7 @@ class BatchesController < ApplicationController
   def standard_create(requests)
     return pipeline_error_on_batch_creation('All plates in a submission must be selected') unless @pipeline.all_requests_from_submissions_selected?(requests)
     return pipeline_error_on_batch_creation("Maximum batch size is #{@pipeline.max_size}") if @pipeline.max_size && requests.length > @pipeline.max_size
+
     ActiveRecord::Base.transaction do
       @batch = @pipeline.batches.create!(requests: requests, user: current_user)
     end
