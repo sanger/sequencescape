@@ -9,6 +9,21 @@ require 'tecan_file_generation'
 require 'aasm'
 
 class Batch < ActiveRecord::Base
+  include Api::BatchIO::Extensions
+  include Api::Messages::FlowcellIO::Extensions
+  include AASM
+  include SequencingQcBatch
+  include Commentable
+  include Uuid::Uuidable
+  include ModelExtensions::Batch
+  include StandardNamedScopes
+  include ::Batch::PipelineBehaviour
+  include ::Batch::StateMachineBehaviour
+  include ::Batch::TecanBehaviour
+  extend EventfulRecord
+
+  DEFAULT_VOLUME = 13
+
   self.per_page = 500
 
   belongs_to :user, foreign_key: 'user_id'
@@ -28,21 +43,36 @@ class Batch < ActiveRecord::Base
   has_many :aliquots,  ->() { distinct }, through: :source_assets
   has_many :samples, ->() { distinct }, through: :assets
 
+  has_many_events
+  has_many_lab_events
+
+  validate :requests_have_same_read_length, :cluster_formation_requests_must_be_over_minimum, :all_requests_are_ready?, on: :create
+
+  # Named scope for search by query string behavior
+  scope :for_search_query, ->(query, _with_includes) {
+    conditions = { id: query }
+    if user = User.find_by(login: query)
+      conditions = { user_id: user }
+    end
+    where(conditions)
+  }
+
+  scope :includes_for_ui,    -> { limit(5).includes(:user, :assignee, :pipeline) }
+  scope :pending_for_ui,     -> { where(state: 'pending',   production_state: nil).latest_first }
+  scope :released_for_ui,    -> { where(state: 'released',  production_state: nil).latest_first }
+  scope :completed_for_ui,   -> { where(state: 'completed', production_state: nil).latest_first }
+  scope :failed_for_ui,      -> { where(production_state: 'fail').includes(:failures).latest_first }
+  scope :in_progress_for_ui, -> { where(state: 'started', production_state: nil).latest_first }
+
+  scope :latest_first,       -> { order('created_at DESC') }
+  scope :most_recent, ->(number) { latest_first.limit(number) }
+
+  delegate :size, to: :requests
+
   def study
     studies.first
   end
   deprecate study: 'Batches can belong to multiple studies'
-
-  include Api::BatchIO::Extensions
-  include Api::Messages::FlowcellIO::Extensions
-  include AASM
-  include SequencingQcBatch
-  include Commentable
-  include Uuid::Uuidable
-  include ModelExtensions::Batch
-  include StandardNamedScopes
-
-  validate :requests_have_same_read_length, :cluster_formation_requests_must_be_over_minimum, :all_requests_are_ready?, on: :create
 
   def all_requests_are_ready?
     # Checks that SequencingRequests have at least one LibraryCreationRequest in passed status before being processed (as refered by #75102998)
@@ -62,37 +92,6 @@ class Batch < ActiveRecord::Base
       errors.add :base, "The selected requests must have the same values in their 'Read length' field."
     end
   end
-
-  extend EventfulRecord
-  has_many_events
-  has_many_lab_events
-
-  DEFAULT_VOLUME = 13
-
-  include ::Batch::PipelineBehaviour
-  include ::Batch::StateMachineBehaviour
-  include ::Batch::TecanBehaviour
-
- # Named scope for search by query string behavior
- scope :for_search_query, ->(query, _with_includes) {
-    conditions = ['id=?', query]
-    if user = User.find_by(login: query)
-      conditions = ['user_id=?', user.id]
-    end
-    where(conditions)
-                          }
-
-  scope :includes_for_ui,    -> { limit(5).includes(:user, :assignee, :pipeline) }
-  scope :pending_for_ui,     -> { where(state: 'pending',   production_state: nil).latest_first }
-  scope :released_for_ui,    -> { where(state: 'released',  production_state: nil).latest_first }
-  scope :completed_for_ui,   -> { where(state: 'completed', production_state: nil).latest_first }
-  scope :failed_for_ui,      -> { where(production_state: 'fail').latest_first }
-  scope :in_progress_for_ui, -> { where(state: 'started', production_state: nil).latest_first }
-
-  scope :latest_first,       -> { order('created_at DESC') }
-  scope :most_recent, ->(number) { latest_first.limit(number) }
-
-  delegate :size, to: :requests
 
   # Fail was removed from State Machine (as a state) to allow the addition of qc_state column and features
   def fail(reason, comment, ignore_requests = false)
