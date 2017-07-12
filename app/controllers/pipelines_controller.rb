@@ -64,9 +64,7 @@ class PipelinesController < ApplicationController
   end
 
   def set_inbox
-    unless params[:controls].blank?
-      add_controls(@pipeline, params[:controls])
-    end
+    add_controls(@pipeline, params[:controls]) if params[:controls].present?
 
     if @pipeline.save
       flash[:notice] = 'Updated pipeline controls'
@@ -81,8 +79,7 @@ class PipelinesController < ApplicationController
     @controls = @pipeline.controls
   end
 
-  def summary
-  end
+  def summary; end
 
   def finish
     ActiveRecord::Base.transaction { @batch.complete!(current_user) }
@@ -134,7 +131,7 @@ class PipelinesController < ApplicationController
       request.update_priority
       render text: '', layout: false
     end
-  rescue ActiveRecord::RecordInvalid => exception
+  rescue ActiveRecord::RecordInvalid => _exception
     render text: '', layout: false, status: :unprocessable_entity
   end
 
