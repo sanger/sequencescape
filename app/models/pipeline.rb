@@ -13,17 +13,22 @@ class PipelinesRequestType < ActiveRecord::Base
 end
 
 class Pipeline < ActiveRecord::Base
-  self.inheritance_column = 'sti_type'
-
   include ::ModelExtensions::Pipeline
   include Uuid::Uuidable
   include Pipeline::InboxUngrouped
   include Pipeline::BatchValidation
   include SharedBehaviour::Named
 
+  ALWAYS_SHOW_RELEASE_ACTIONS = false # Override this in subclasses if you want to display action links for released batches
+
+  # Rails class attributes
+  self.inheritance_column = 'sti_type'
+
+  # Custom class attributes
   class_attribute :batch_worksheet, :display_next_pipeline, :requires_position,
                   :inbox_partial, :library_creation, :pulldown, :prints_a_worksheet_per_task,
-                  :genotyping, :sequencing, :purpose_information, :can_create_stock_assets
+                  :genotyping, :sequencing, :purpose_information, :can_create_stock_assets,
+                  :inbox_eager_loading
 
   # Pipeline defaults
   self.batch_worksheet = 'detailed_worksheet'
@@ -37,25 +42,23 @@ class Pipeline < ActiveRecord::Base
   self.sequencing = false
   self.purpose_information = true
   self.can_create_stock_assets = false
-
-  ALWAYS_SHOW_RELEASE_ACTIONS = false # Override this in subclasses if you want to display action links for released batches
+  self.inbox_eager_loading = :loaded_for_inbox_display
 
   delegate :item_limit, :has_batch_limit?, to: :workflow
-  validates_presence_of :workflow
 
   belongs_to :location
   belongs_to :control_request_type, class_name: 'RequestType'
   belongs_to :next_pipeline,     class_name: 'Pipeline'
   belongs_to :previous_pipeline, class_name: 'Pipeline'
 
-  has_one :workflow, class_name: 'LabInterface::Workflow', inverse_of: :pipeline
+  has_one :workflow, class_name: 'LabInterface::Workflow', inverse_of: :pipeline, required: true
 
   has_many :controls
   has_many :pipeline_request_information_types
   has_many :request_information_types, through: :pipeline_request_information_types
   has_many :tasks, through: :workflows
   has_many :pipelines_request_types, inverse_of: :pipeline
-  has_many :request_types, through: :pipelines_request_types, validate: false
+  has_many :request_types, through: :pipelines_request_types, validate: false, required: true
   has_many :requests, through: :request_types, extend: [Pipeline::InboxExtensions, Pipeline::RequestsInStorage]
   has_many :batches do
     def build(attributes = nil)
@@ -65,7 +68,6 @@ class Pipeline < ActiveRecord::Base
     end
   end
 
-  validates_presence_of :request_types
   validates_presence_of :name
   validates_uniqueness_of :name, on: :create, message: 'name already in use'
 
@@ -87,10 +89,6 @@ class Pipeline < ActiveRecord::Base
     []
   end
 
-  def inbox_eager_loading
-    :loaded_for_inbox_display
-  end
-
   def is_read_length_consistent_for_batch?(_batch)
     true
   end
@@ -109,31 +107,6 @@ class Pipeline < ActiveRecord::Base
   def grouped_requests(show_held_requests = true)
     inbox_scope_on(requests.inputs(show_held_requests).unbatched.send(inbox_eager_loading)).for_group_by(grouping_attributes)
   end
-
-  def inbox_scope_on(inbox_scope)
-    custom_inbox_actions.inject(inbox_scope) { |context, action| context.send(action) }
-  end
-  private :inbox_scope_on
-
-  def grouping_function(option = {})
-    return ->(r) { [r.container_id] } if option[:group_by_holder_only]
-
-    lambda do |request|
-      [].tap do |group_key|
-        group_key << request.container_id  if group_by_parent?
-        group_key << request.submission_id if group_by_submission?
-      end
-    end
-  end
-  private :grouping_function
-
-  def grouping_attributes
-    {}.tap do |group_key|
-      group_key[:hl] = :container_id if group_by_parent?
-      group_key[:requests] = :submission_id if group_by_submission?
-    end
-  end
-  private :grouping_attributes
 
   # to overwrite by subpipeline if needed
   def group_requests(requests, option = {})
@@ -176,16 +149,6 @@ class Pipeline < ActiveRecord::Base
     controls.empty? ? false : true
   end
 
-  def grouping_parser
-    GrouperForPipeline.new(self)
-  end
-  private :grouping_parser
-
-  def selected_values_from(browser_options)
-    browser_options.select { |_, v| v == '1' }
-  end
-  private :selected_values_from
-
   def extract_requests_from_input_params(params)
     if (request_ids = params['request']).present?
       requests.inputs(true).order(:id).find(selected_values_from(request_ids).map(&:first))
@@ -210,5 +173,37 @@ class Pipeline < ActiveRecord::Base
 
   def robot_verified!(batch)
     # Do nothing!
+  end
+
+  private
+
+  def inbox_scope_on(inbox_scope)
+    custom_inbox_actions.inject(inbox_scope) { |context, action| context.send(action) }
+  end
+
+  def grouping_function(option = {})
+    return ->(r) { [r.container_id] } if option[:group_by_holder_only]
+
+    lambda do |request|
+      [].tap do |group_key|
+        group_key << request.container_id  if group_by_parent?
+        group_key << request.submission_id if group_by_submission?
+      end
+    end
+  end
+
+  def grouping_attributes
+    {}.tap do |group_key|
+      group_key[:hl] = :container_id if group_by_parent?
+      group_key[:requests] = :submission_id if group_by_submission?
+    end
+  end
+
+  def grouping_parser
+    GrouperForPipeline.new(self)
+  end
+
+  def selected_values_from(browser_options)
+    browser_options.select { |_, v| v == '1' }
   end
 end
