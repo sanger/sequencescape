@@ -20,7 +20,7 @@ class QcFilesControllerTest < ActionController::TestCase
     end
 
     should 'return the file' do
-      get :show, id: @qc_file.id
+      get :show, params: {id: @qc_file.id}
       assert_response :success
       assert_equal 'application/excel', response.content_type
     end

@@ -18,6 +18,10 @@ class CustomerRequest < Request
   end
 end
 
+# how do observers work here?
+# this one fixed the tests, but does not seem in line with how it worked before
+CustomerRequest.add_observer CustomerRequestObserver.instance
+
 # Sti is a pain when it comes to rails and subclasses in development mode.
 # This was an attempt to fix that issue, but was resulting in circular dependencies in
 # rails 5.

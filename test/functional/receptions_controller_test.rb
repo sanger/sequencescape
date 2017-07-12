@@ -23,7 +23,7 @@ class ReceptionsControllerTest < ActionController::TestCase
       context 'with 1 plate' do
         setup do
           @plate_count = Plate.count
-          post :import_from_snp, snp_plates: { '1' => '1234' }, asset: { location_id: @location.id }
+          post :import_from_snp, params: {snp_plates: { '1' => '1234' }, asset: { location_id: @location.id }}
         end
 
         should 'change Plate.count by 1' do
@@ -36,7 +36,7 @@ class ReceptionsControllerTest < ActionController::TestCase
       context 'with 3 plates' do
         setup do
           @plate_count = Plate.count
-          post :import_from_snp, snp_plates: { '1' => '1234', '5' => '7654', '10' => '3456' }, asset: { location_id: @location.id }
+          post :import_from_snp, params: {snp_plates: { '1' => '1234', '5' => '7654', '10' => '3456' }, asset: { location_id: @location.id }}
         end
 
         should 'change Plate.count by 3' do
@@ -49,7 +49,7 @@ class ReceptionsControllerTest < ActionController::TestCase
       context 'with 3 plates plus blanks' do
         setup do
           @plate_count = Plate.count
-          post :import_from_snp, snp_plates: { '1' => '1234', '7' => '', '5' => '7654', '2' => '', '10' => '3456' }, asset: { location_id: @location.id }
+          post :import_from_snp, params: {snp_plates: { '1' => '1234', '7' => '', '5' => '7654', '2' => '', '10' => '3456' }, asset: { location_id: @location.id }}
         end
 
         should 'change Plate.count by 3' do
@@ -64,7 +64,7 @@ class ReceptionsControllerTest < ActionController::TestCase
       context 'where asset exists' do
         setup do
           @asset_count = Asset.count
-          post :confirm_reception, asset_id: { '0' => @plate.id }, location_id: @location.id
+          post :confirm_reception, params: {asset_id: { '0' => @plate.id }, location_id: @location.id}
         end
 
         should 'change Asset.count by 0' do
@@ -75,7 +75,7 @@ class ReceptionsControllerTest < ActionController::TestCase
       context 'where asset doesnt exist' do
         setup do
           @asset_count = Asset.count
-          post :confirm_reception, asset_id: { '0' => 999999 }, location_id: @location.id
+          post :confirm_reception, params: {asset_id: { '0' => 999999 }, location_id: @location.id}
         end
 
         should 'change Asset.count by 0' do
@@ -87,7 +87,7 @@ class ReceptionsControllerTest < ActionController::TestCase
       context 'create an event' do
         setup do
           @event_count = Event.count
-          post :confirm_reception, asset_id: { '0' => @sample_tube.id }, location_id: @location.id
+          post :confirm_reception, params: {asset_id: { '0' => @sample_tube.id }, location_id: @location.id}
         end
 
         should 'change Event.count by 1' do
@@ -101,7 +101,7 @@ class ReceptionsControllerTest < ActionController::TestCase
       context "##{controller_method}" do
         setup do
           @asset_count = Asset.count
-          get controller_method, id: @plate.id
+          get controller_method, params: {id: @plate.id}
         end
 
         should respond_with :success

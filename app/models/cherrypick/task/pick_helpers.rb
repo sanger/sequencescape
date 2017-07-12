@@ -18,7 +18,7 @@ module Cherrypick::Task::PickHelpers
     plate, purpose = purpose, purpose.plate_purpose if purpose.is_a?(Plate)
 
     purpose.cherrypick_strategy.pick(requests, robot, plate).map do |wells|
-      wells_and_requests = wells.zip(purpose.well_locations.slice(0, wells.size)).map do |request, position|
+      wells_and_requests = wells.zip(purpose.well_locations.to_a.slice(0, wells.size)).map do |request, position|
         if request.present?
           well     = request.target_asset
           well.map = position

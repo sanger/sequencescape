@@ -49,7 +49,7 @@ class SamplesControllerTest < ActionController::TestCase
           @initial_study_sample_count = StudySample.count
           @sample = FactoryGirl.create :sample
           @study = FactoryGirl.create :study
-          put :add_to_study, id: @sample.id, study: { id: @study.id }
+          put :add_to_study, params: {id: @sample.id, study: { id: @study.id }}
         end
         should 'change StudySample.count from  0 to 1' do
           assert_equal 0, @initial_study_sample_count

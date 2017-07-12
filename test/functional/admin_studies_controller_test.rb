@@ -28,7 +28,7 @@ class Admin::StudiesControllerTest < ActionController::TestCase
 
       context '#managed_update (without changes)' do
         setup do
-          get :managed_update, id: @study.id, study: { name: @study.name, reference_genome_id: @study.reference_genome_id }
+          get :managed_update, params: {id: @study.id, study: { name: @study.name, reference_genome_id: @study.reference_genome_id } }
         end
 
         should 'not send an email' do
@@ -39,12 +39,12 @@ class Admin::StudiesControllerTest < ActionController::TestCase
       end
 
       should "change 'ethically_approved' only if user has data_access_coordinator role" do
-        put :managed_update, id: @study.id, study: { name: @study.name, ethically_approved: '1' }
+        put :managed_update, params: {id: @study.id, study: { name: @study.name, ethically_approved: '1' }}
         @study.reload
         refute @study.ethically_approved
 
         @user.roles << (create :data_access_coordinator_role)
-        put :managed_update, id: @study.id, study: { name: @study.name, ethically_approved: '1' }
+        put :managed_update, params: {id: @study.id, study: { name: @study.name, ethically_approved: '1' }}
         @study.reload
         assert @study.ethically_approved
       end

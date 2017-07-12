@@ -95,7 +95,7 @@ class BatchTest < ActiveSupport::TestCase
       assert_equal 'pending', @batch.requests.first.state
       @batch.start!(create(:user))
       assert_equal 'started', @batch.state
-      assert_equal 'started', @batch.requests(true).first.state
+      assert_equal 'started', @batch.requests.reload.first.state
     end
 
     context '#remove_request_ids' do

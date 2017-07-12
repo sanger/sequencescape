@@ -41,7 +41,7 @@ class WorkflowsControllerTest < ActionController::TestCase
     context '#create_workflow' do
       setup do
         @old_count = LabInterface::Workflow.count
-        post :create, :workflow => { name: 'Workflow 42', item_limit: 1, locale: 'Internal' }, 'commit' => 'Create'
+        post :create, params: {:workflow => { name: 'Workflow 42', item_limit: 1, locale: 'Internal' }, 'commit' => 'Create'}
       end
 
       should '#create_workflow' do
@@ -56,7 +56,7 @@ class WorkflowsControllerTest < ActionController::TestCase
 
         context '#show_workflow' do
           setup do
-            get :show, id: LabInterface::Workflow.first.id
+            get :show, params: {id: LabInterface::Workflow.first.id}
           end
 
           should 'show workflow' do
@@ -66,7 +66,7 @@ class WorkflowsControllerTest < ActionController::TestCase
 
         context 'edit' do
           setup do
-            get :edit, id: LabInterface::Workflow.first.id
+            get :edit, params: {id: LabInterface::Workflow.first.id}
           end
 
           should 'render edit' do
@@ -76,7 +76,7 @@ class WorkflowsControllerTest < ActionController::TestCase
 
         context '#update_workflow' do
           setup do
-            put :update, id: LabInterface::Workflow.first.id, workflow: {}
+            put :update, params: {id: LabInterface::Workflow.first.id, workflow: {}}
           end
 
           should 'update the workflow' do
@@ -87,7 +87,7 @@ class WorkflowsControllerTest < ActionController::TestCase
         context '#destroy_workflow' do
           setup do
             @old_count = LabInterface::Workflow.count
-            delete :destroy, id: LabInterface::Workflow.first.id
+            delete :destroy, params: {id: LabInterface::Workflow.first.id}
           end
 
           should 'not destroy a workflow' do
@@ -136,9 +136,9 @@ class WorkflowsControllerTest < ActionController::TestCase
       context 'should set descriptors on batch' do
         setup do
           @batch_lab_events = Batch.find(@batch.id).lab_events.size
-          request_data = @batch.requests(true).map { |r| r.id }.each_with_object({}) { |element, result| result[element.to_s] = '1' }
+          request_data = @batch.requests.reload.map { |r| r.id }.each_with_object({}) { |element, result| result[element.to_s] = '1' }
           post :stage,
-               :controller => 'workflows',
+               params: {:controller => 'workflows',
                :id => 0,
                :action => 'stage',
                'next_stage' => 'true',
@@ -146,7 +146,7 @@ class WorkflowsControllerTest < ActionController::TestCase
                'descriptors' => { 'Comment' => 'Some Comment', 'Chip Barcode' => '3290000006714', 'Operator' => '2470000002799', 'Passed?' => 'Yes' },
                :batch_id => @batch.id,
                :workflow_id => @ws1.id,
-               :request => request_data
+               :request => request_data}
         end
 
         should 'change batch.lab_events by 1' do
@@ -162,7 +162,7 @@ class WorkflowsControllerTest < ActionController::TestCase
     context '#duplicate' do
       setup do
         @workflow = FactoryGirl.create(:pipeline).workflow
-        get :duplicate, id: @workflow.id.to_s
+        get :duplicate, params: {id: @workflow.id.to_s}
       end
 
       should respond_with :redirect
@@ -171,7 +171,7 @@ class WorkflowsControllerTest < ActionController::TestCase
     context '#reorder_tasks' do
       setup do
         @workflow = FactoryGirl.create(:pipeline).workflow
-        get :reorder_tasks, id: @workflow.id.to_s
+        get :reorder_tasks, params: {id: @workflow.id.to_s}
       end
 
       should respond_with :success
@@ -181,7 +181,7 @@ class WorkflowsControllerTest < ActionController::TestCase
       setup do
         @workflow = FactoryGirl.create(:pipeline).workflow
         # Err. WorkflowsController. Why is this not just id??
-        get :sort, workflow_id: @workflow.id.to_s
+        get :sort, params: {workflow_id: @workflow.id.to_s}
       end
 
       should respond_with :success

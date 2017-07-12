@@ -131,13 +131,13 @@ class AuthenticationControllerTest < ActionController::TestCase
         context 'with valid api_key will not require login to restricted content' do
           setup do
             @user = FactoryGirl.create :user
-            get :restricted, api_key: @user.api_key
+            get :restricted, params: {api_key: @user.api_key}
           end
           should respond_with :success
         end
         context 'with an invalid api_key will require login to restricted content' do
           setup do
-            get :restricted, api_key: 'fakeapikey'
+            get :restricted, params: {api_key: 'fakeapikey'}
           end
           should respond_with :redirect
           should redirect_to('login page') { login_path }
@@ -168,7 +168,7 @@ class AuthenticationControllerTest < ActionController::TestCase
         context 'with valid api_key will not require login to restricted content' do
           setup do
             @user = FactoryGirl.create :user
-            get :restricted, api_key: @user.api_key
+            get :restricted, params: {api_key: @user.api_key}
           end
           should respond_with :success
           should 'Respond with xml' do
@@ -177,7 +177,7 @@ class AuthenticationControllerTest < ActionController::TestCase
         end
         context 'with an invalid api_key will require login to restricted content' do
           setup do
-            get :restricted, api_key: 'fakeapikey'
+            get :restricted, params: {api_key: 'fakeapikey'}
           end
           should respond_with :unauthorized
           should 'Respond with xml' do
@@ -210,7 +210,7 @@ class AuthenticationControllerTest < ActionController::TestCase
         context 'with valid api_key will not require login to restricted content' do
           setup do
             @user = FactoryGirl.create :user
-            get :restricted, api_key: @user.api_key
+            get :restricted, params: {api_key: @user.api_key}
           end
           should respond_with :success
           should 'Respond with json' do
@@ -219,7 +219,7 @@ class AuthenticationControllerTest < ActionController::TestCase
         end
         context 'with an invalid api_key will require login to restricted content' do
           setup do
-            get :restricted, api_key: 'fakeapikey'
+            get :restricted, params: {api_key: 'fakeapikey'}
           end
           should respond_with :unauthorized
           should 'Respond with json' do

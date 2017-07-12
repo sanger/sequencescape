@@ -27,16 +27,16 @@ class Plate < Asset
   has_many :conatined_aliquots, through: :wells, source: :aliquots
 
   # We also look up studies and projects through wells
-  has_many :studies, ->() { uniq }, through: :wells
-  has_many :projects, ->() { uniq }, through: :wells
+  has_many :studies, ->() { distinct }, through: :wells
+  has_many :projects, ->() { distinct }, through: :wells
 
   has_many :well_requests_as_target, through: :wells, source: :requests_as_target
-  has_many :orders_as_target, ->() { uniq }, through: :well_requests_as_target, source: :order
+  has_many :orders_as_target, ->() { distinct }, through: :well_requests_as_target, source: :order
 
   # We use stock well associations here as stock_wells is already used to generate some kind of hash.
-  has_many :stock_requests, ->() { uniq }, through: :stock_well_associations, source: :requests
-  has_many :stock_well_associations, ->() { uniq }, through: :wells, source: :stock_wells
-  has_many :stock_orders, ->() { uniq }, through: :stock_requests, source: :order
+  has_many :stock_requests, ->() { distinct }, through: :stock_well_associations, source: :requests
+  has_many :stock_well_associations, ->() { distinct }, through: :wells, source: :stock_wells
+  has_many :stock_orders, ->() { distinct }, through: :stock_requests, source: :order
   has_many :extraction_attributes, foreign_key: 'target_id'
 
   has_many :siblings, through: :parents, source: :children
@@ -307,7 +307,7 @@ class Plate < Asset
 
   # TODO: Make these more railsy
   scope :with_sample, ->(sample) {
-      select('assets.*').uniq
+      select('assets.*').distinct
                         .joins([
                           'LEFT OUTER JOIN container_associations AS wscas ON wscas.container_id = assets.id',
                           'LEFT JOIN assets AS wswells ON wswells.id = content_id',
@@ -355,7 +355,7 @@ class Plate < Asset
   scope :with_descendants_owned_by, ->(user) {
     joins(descendant_plates: :plate_owner)
       .where(plate_owners: { user_id: user })
-      .uniq
+      .distinct
   }
 
   scope :source_plates, -> {

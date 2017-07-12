@@ -45,7 +45,7 @@ class PicoDilutionsControllerTest < ActionController::TestCase
         end
         context 'page passed in' do
           setup do
-            get :index, page: 3
+            get :index, params: {page: 3}
           end
           should respond_with :success
           should 'Respond with json' do
