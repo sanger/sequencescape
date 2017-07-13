@@ -557,8 +557,24 @@ class BatchesController < ApplicationController
     return pipeline_error_on_batch_creation('All plates in a submission must be selected') unless @pipeline.all_requests_from_submissions_selected?(requests)
     return pipeline_error_on_batch_creation("Maximum batch size is #{@pipeline.max_size}") if @pipeline.max_size && requests.length > @pipeline.max_size
 
-    ActiveRecord::Base.transaction do
-      @batch = @pipeline.batches.create!(requests: requests, user: current_user)
+    begin
+      ActiveRecord::Base.transaction do
+        @batch = @pipeline.batches.create!(requests: requests, user: current_user)
+      end
+    rescue ActiveRecord::RecordNotUnique => exception
+      # We don't explicitly check for this on creation of batch_request for performance reasons, and the front end usually
+      # ensures this situation isn't possible. However if the user opens duplicate tabs it is possible.
+      # Fortunately we can detect the corresponding exception, and generate a friendly error message.
+
+      # If this isn't the exception we're expecting, re-raise it.
+      raise exception unless /request_id/ === exception.message
+      # Find the requests which casued the clash.
+      batched_requests = BatchRequest.where(request_id: requests.map(&:id)).pluck(:request_id)
+      # Limit the length of the error message, otherwise big batches may generate errors which are too
+      # big to pass back in the flash.
+      listed_requests = batched_requests.join(', ').truncate(200, separator: ' ')
+      # And finally report the error
+      return pipeline_error_on_batch_creation("Could not create batch as requests were already in a batch: #{listed_requests}")
     end
 
     respond_to do |format|
