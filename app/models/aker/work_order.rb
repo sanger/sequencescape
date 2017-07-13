@@ -1,5 +1,6 @@
 module Aker
   class WorkOrder < ActiveRecord::Base
+    
     has_many :samples
 
     validates :aker_id, presence: true

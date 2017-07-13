@@ -620,6 +620,16 @@ Sequencescape::Application.routes.draw do
     end
   end
 
+  namespace :aker do
+    resources :work_orders, only: [:index, :show] do
+      member do
+        post 'complete'
+        post 'cancel'
+      end
+    end
+  end
+
+
   # These endpoints should be defined explicitly
   get '/:controller(/:action(/:id))'
   post '/:controller(/:action(/:id))'

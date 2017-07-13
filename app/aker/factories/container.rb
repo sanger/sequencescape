@@ -27,6 +27,10 @@ module Aker
           c.address = address
         end
       end
+
+      def as_json(_options = {})
+        model.as_json
+      end
     end
   end
 end

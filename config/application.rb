@@ -92,6 +92,8 @@ module Sequencescape
       ENV_JAVA['https.proxyPort'] = nil
     end
 
+    config.aker = config_for(:aker).with_indifferent_access
+
     config.generators do |g|
       g.test_framework :rspec,
                        fixtures: true,

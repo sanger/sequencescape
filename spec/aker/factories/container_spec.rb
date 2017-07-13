@@ -32,4 +32,10 @@ RSpec.describe Aker::Factories::Container, type: :model, aker: true do
     container = Aker::Factories::Container.create(params)
     expect(container).to eq(ar_container)
   end
+
+  it '#as_json returns the correct attributes' do
+    container = Aker::Factories::Container.new(params)
+    ar_container = container.create
+    expect(container.as_json).to eq(ar_container.as_json)
+  end
 end

@@ -1,0 +1,10 @@
+
+development: &DEV
+  urls:
+    work_orders: https://dev.psd.sanger.ac.uk:9004
+
+test:
+  <<: *DEV
+
+production:
+  <<: *DEV

@@ -27,21 +27,6 @@ RSpec.describe Aker::Factories::Material, type: :model, aker: true do
     expect(material).to_not be_valid
   end
 
-  it 'is not valid without a donor_id' do
-    material = Aker::Factories::Material.new(params.except('donor_id'))
-    expect(material).to_not be_valid
-  end
-
-  it 'is not valid without a phenotype' do
-    material = Aker::Factories::Material.new(params.except('phenotype'))
-    expect(material).to_not be_valid
-  end
-
-  it 'is not valid without a common name' do
-    material = Aker::Factories::Material.new(params.except('common_name'))
-    expect(material).to_not be_valid
-  end
-
   it 'is not valid without a container' do
     material = Aker::Factories::Material.new(params.except('container'))
     expect(material).to_not be_valid
@@ -58,7 +43,15 @@ RSpec.describe Aker::Factories::Material, type: :model, aker: true do
     sample = Sample.find_by(name: material.name)
     expect(sample).to be_present
     expect(sample.container).to be_present
-
     expect(Aker::Factories::Material.create(params.except('gender'))).to be_nil
+  end
+
+  it '#as_json returns the correct attributes' do
+    material = Aker::Factories::Material.new(params)
+    material.create
+    expect(material.as_json).to eq( { _id: material.name, gender: material.gender, donor_id: material.donor_id, 
+                                      phenotype: material.phenotype, common_name: material.sample_common_name, container: material.container.as_json
+                                    }
+                                  )
   end
 end

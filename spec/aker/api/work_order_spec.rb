@@ -12,8 +12,8 @@ RSpec.describe Api::V2::WorkOrdersController, type: :request, aker: true do
     end.to change(Aker::WorkOrder, :count).by(1)
     expect(response).to have_http_status(:created)
 
-    json = ActiveSupport::JSON.decode(response.body)['work_order']
-    expect(json['aker_id']).to eq(params['work_order']['work_order_id'])
+    json = ActiveSupport::JSON.decode(response.body)
+    expect(json).to eq(params)
   end
 
   it 'returns an error if somebody tries to create an invalid work order' do

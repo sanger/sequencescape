@@ -69,4 +69,8 @@ RSpec.configure do |config|
   config.include ActionDispatch::TestProcess, with: :uploader
 
   config.include Rails.application.routes.url_helpers
+
+  Capybara.add_selector(:data_behavior) do
+    xpath { |name| XPath.css("[data-behavior='#{name}']") }
+  end
 end

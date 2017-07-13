@@ -2,12 +2,15 @@ module Aker
   module Factories
     ##
     # A workOrder consists of an aker_id and materials (samples).
-    # All other attributes are rejected.
     # Validates presence of aker_id and ensures that there is at least one material.
     class WorkOrder
       include ActiveModel::Model
 
-      attr_reader :aker_id, :materials, :model
+      ATTRIBUTES = [ :work_order_id, :product_name, :product_version, :product_uuid, :proposal_id, :proposal_name, :cost_code, :materials, :comment, :desired_date ]
+      DEFAULT_ATTRIBUTES = { materials: {} }
+
+      attr_accessor *ATTRIBUTES
+      attr_reader :aker_id, :model
 
       validates_presence_of :aker_id, :materials
 
@@ -17,10 +20,16 @@ module Aker
         new(params).create
       end
 
-      def initialize(params)
-        @aker_id = params[:work_order_id]
-        @materials = create_materials(params[:materials])
+      def initialize(params = {})
+        super(DEFAULT_ATTRIBUTES.merge(params))
+
+        @aker_id = work_order_id
       end
+
+      def materials=(materials)
+        @materials = create_materials(materials)
+      end
+
 
       ##
       # Persists a Work Order and all associated materials.
@@ -30,10 +39,32 @@ module Aker
       end
 
       def as_json(_options = {})
-        model.as_json
+        {
+          work_order: get_json_attributes
+        }
       end
 
       private
+
+      def get_json_attributes
+         {}.tap do |json|
+          ATTRIBUTES.each do |attribute|
+            json[attribute] = get_json_attribute(attribute)
+          end
+        end
+      end
+
+      def get_json_attribute(attribute)
+        value = send(attribute)
+        case value
+        when Array
+          value.collect(&:as_json)
+        when /^(\d)+$/
+          value.to_i
+        else
+          value
+        end
+      end
 
       def create_materials(materials)
         (materials || []).collect do |material|
