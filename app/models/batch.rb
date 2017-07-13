@@ -68,16 +68,16 @@ class Batch < ActiveRecord::Base
   scope :in_progress_for_ui, -> { where(state: 'started', production_state: nil).latest_first }
   scope :include_pipeline, -> { includes(pipeline: :uuid_object) }
   scope :include_user, -> { includes(:user) }
-  scope :include_requests, -> { includes(
-    requests: [
+  scope :include_requests, -> {
+    includes(requests: [
       :uuid_object, :request_metadata, :request_type,
       { submission: :uuid_object },
       { asset: [:uuid_object, :barcode_prefix, { aliquots: [:sample, :tag] }] },
       { target_asset: [:uuid_object, :barcode_prefix, { aliquots: [:sample, :tag] }] }
-    ]
-  )}
+    ])
+  }
 
-  scope :latest_first,       -> { order('created_at DESC') }
+  scope :latest_first, -> { order(created_at: :desc) }
   scope :most_recent, ->(number) { latest_first.limit(number) }
 
   delegate :size, to: :requests

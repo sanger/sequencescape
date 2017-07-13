@@ -567,7 +567,7 @@ class BatchesController < ApplicationController
       # Fortunately we can detect the corresponding exception, and generate a friendly error message.
 
       # If this isn't the exception we're expecting, re-raise it.
-      raise exception unless /request_id/ === exception.message
+      raise exception unless /request_id/.match?(exception.message)
       # Find the requests which casued the clash.
       batched_requests = BatchRequest.where(request_id: requests.map(&:id)).pluck(:request_id)
       # Limit the length of the error message, otherwise big batches may generate errors which are too
