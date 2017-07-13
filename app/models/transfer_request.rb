@@ -53,7 +53,7 @@ class TransferRequest < SystemRequest
 
   # Ensure that the source and the target assets are not the same, otherwise bad things will happen!
   validate do |record|
-    if record.asset.present? and record.asset == record.target_asset
+    if record.asset_id.present? and record.asset_id == record.target_asset_id
       record.errors.add(:asset, 'cannot be the same as the target')
       record.errors.add(:target_asset, 'cannot be the same as the source')
     end

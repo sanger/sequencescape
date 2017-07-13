@@ -13,7 +13,6 @@ class PipelinesRequestType < ActiveRecord::Base
 end
 
 class Pipeline < ActiveRecord::Base
-  include ::ModelExtensions::Pipeline
   include Uuid::Uuidable
   include Pipeline::InboxUngrouped
   include Pipeline::BatchValidation
@@ -58,7 +57,7 @@ class Pipeline < ActiveRecord::Base
   has_many :request_information_types, through: :pipeline_request_information_types
   has_many :tasks, through: :workflows
   has_many :pipelines_request_types, inverse_of: :pipeline
-  has_many :request_types, through: :pipelines_request_types, validate: false, required: true
+  has_many :request_types, through: :pipelines_request_types, validate: false
   has_many :requests, through: :request_types, extend: [Pipeline::InboxExtensions, Pipeline::RequestsInStorage]
   has_many :batches do
     def build(attributes = nil)
@@ -68,7 +67,7 @@ class Pipeline < ActiveRecord::Base
     end
   end
 
-  validates_presence_of :name
+  validates_presence_of :name, :request_types
   validates_uniqueness_of :name, on: :create, message: 'name already in use'
 
   scope :externally_managed, -> { where(externally_managed: true) }
@@ -173,6 +172,10 @@ class Pipeline < ActiveRecord::Base
 
   def robot_verified!(batch)
     # Do nothing!
+  end
+
+  def need_target_assets_on_requests?
+    asset_type.present? && request_types.needing_target_asset.exists?
   end
 
   private
