@@ -10,20 +10,20 @@ module Core::Service::ErrorHandling
     app.instance_eval do
       helpers Helpers
 
-      error([
+      error(
         ::IllegalOperation,
         ::Core::Service::Error,
-        ActiveRecord::ActiveRecordError
-      ]) do
+        ActiveRecord::ActiveRecordError,
+        ActiveModel::ValidationError
+      ) do
         buffer = [exception_thrown.message, exception_thrown.backtrace].join("\n")
         Rails.logger.error("API[error]: #{buffer}")
 
         exception_thrown.api_error(self)
       end
-      error([::Exception]) do
+      error(StandardError) do
         buffer = [exception_thrown.message, exception_thrown.backtrace].join("\n")
         Rails.logger.error("API[error]: #{buffer}")
-
         general_error(501)
       end
     end
@@ -89,6 +89,18 @@ class ActiveRecord::RecordInvalid
 
   def errors_grouped_by_attribute
     Hash[record.errors.map { |k, v| [yield(k), [v].flatten.uniq] }]
+  end
+  private :errors_grouped_by_attribute
+end
+
+class ActiveModel::ValidationError
+  def api_error(response)
+    io_handler = ::Core::Io::Registry.instance.lookup_for_object(model)
+    response.content_error(422, errors_grouped_by_attribute { |attribute| io_handler.json_field_for(attribute) })
+  end
+
+  def errors_grouped_by_attribute
+    Hash[model.errors.map { |k, v| [yield(k), [v].flatten.uniq] }]
   end
   private :errors_grouped_by_attribute
 end
