@@ -39,7 +39,7 @@ FactoryGirl.define do
 
     after(:create) do |plate, evaluator|
       plate.wells = evaluator.occupied_map_locations.map do |map|
-        build(evaluator.well_factory, map: map)
+        create(evaluator.well_factory, map: map)
       end
     end
 
