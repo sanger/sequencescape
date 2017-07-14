@@ -47,7 +47,7 @@ class TasksController < ApplicationController
 
   def create
     params[:task][:pipeline_workflow_id] = params[:task].delete(:workflow_id)
-    @task = SetDescriptorsTask.new(params[:task].to_unsafe_h)
+    @task = SetDescriptorsTask.new(params[:task])
 
     respond_to do |format|
       if @task.save
@@ -65,7 +65,7 @@ class TasksController < ApplicationController
 
   def update
     respond_to do |format|
-      if @task.update_attributes(params[:task].to_unsafe_h)
+      if @task.update_attributes(params[:task])
         @task.update_descriptors(params[:descriptor].to_unsafe_h)
 
         flash[:notice] = 'Task was successfully updated.'
