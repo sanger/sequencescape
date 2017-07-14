@@ -14,7 +14,6 @@ class Endpoints::OrderTemplates < Core::Endpoint::Base
         ActiveRecord::Base.transaction do
           attributes = ::Io::Order.map_parameters_to_attributes(request.json)
           attributes[:user] = request.user if request.user.present?
-          binding.pry
           request.target.create_order!(attributes)
         end
       end
