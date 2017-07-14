@@ -150,7 +150,7 @@ class WorkflowsController < ApplicationController
         @batch ||= Batch.includes(eager_loading).find(params[:batch_id])
         unless @batch.editable?
           flash[:error] = 'You cannot make changes to a completed batch.'
-          redirect_to :back
+          redirect_back fallback_location: root_path
           return false
         end
 

@@ -89,7 +89,7 @@ class BatchesController < ApplicationController
       @pipeline = Pipeline.find(params[:id])
 
       # TODO: These should be different endpoints
-      requests = @pipeline.extract_requests_from_input_params(params)
+      requests = @pipeline.extract_requests_from_input_params(params.to_unsafe_h)
 
       case params[:action_on_requests]
       when 'cancel_requests'
