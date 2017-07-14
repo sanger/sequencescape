@@ -10,7 +10,7 @@ class PicoDilutionsControllerTest < ActionController::TestCase
   context 'Pico Dilution Plate' do
     setup do
       @controller = PicoDilutionsController.new
-      @request    = ActionController::TestRequest.create
+      @request    = ActionController::TestRequest.create(@controller)
     end
 
     context 'with assay plates ' do
@@ -59,7 +59,7 @@ class PicoDilutionsControllerTest < ActionController::TestCase
   context 'Working Dilution Plate' do
     setup do
       @controller = PicoDilutionsController.new
-      @request    = ActionController::TestRequest.create
+      @request    = ActionController::TestRequest.create(@controller)
     end
 
     context 'with assay plates ' do

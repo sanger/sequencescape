@@ -11,7 +11,7 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
   context 'Studies::SampleRegistrationController' do
     setup do
       @controller = Studies::SampleRegistrationController.new
-      @request    = ActionController::TestRequest.create
+      @request    = ActionController::TestRequest.create(@controller)
       @study      = FactoryGirl.create :study
     end
 

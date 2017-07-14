@@ -11,7 +11,7 @@ class LabwhereReceptionsControllerTest < ActionController::TestCase
   context 'Sample Reception' do
     setup do
       @controller = LabwhereReceptionsController.new
-      @request    = ActionController::TestRequest.create
+      @request    = ActionController::TestRequest.create(@controller)
       @user = create :user, barcode: 'ID123', swipecard_code: '02face'
       @other_user = create :user, barcode: 'ID123', swipecard_code: '02face'
       @plate   = create :plate, barcode: 1

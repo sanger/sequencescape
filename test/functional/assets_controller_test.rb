@@ -9,7 +9,7 @@ require 'test_helper'
 class AssetsControllerTest < ActionController::TestCase
   setup do
     @controller = AssetsController.new
-    @request    = ActionController::TestRequest.create
+    @request    = ActionController::TestRequest.create(@controller)
     @user = create :admin, api_key: 'abc'
     session[:user] = @user.id
   end

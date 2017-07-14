@@ -7,6 +7,7 @@
 require 'aasm'
 
 class Study < ActiveRecord::Base
+  has_many :roles
   include StudyReport::StudyDetails
   include ModelExtensions::Study
 

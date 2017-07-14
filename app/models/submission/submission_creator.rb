@@ -69,7 +69,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
       study: study,
       project: project,
       user: @user,
-      request_options: (order_params.to_unsafe_h if order_params.present?),
+      request_options: order_params,
       comments: comments,
       pre_cap_group: pre_capture_plex_group,
       order_role: order_role

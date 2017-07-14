@@ -10,7 +10,7 @@ class Admin::ProgramsControllerTest < ActionController::TestCase
   context 'Admin Programs controller' do
     setup do
       @controller = Admin::ProgramsController.new
-      @request    = ActionController::TestRequest.create
+      @request    = ActionController::TestRequest.create(@controller)
       session[:user] = @user = create :admin
     end
 

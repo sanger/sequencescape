@@ -13,18 +13,18 @@ class AuthenticationController < ApplicationController
   def restricted
     data = { parent: { child: 'open' } }
     respond_to do |format|
-      format.html { render text: '<html></html>' }
-      format.xml  { render text: data.to_xml }
-      format.json { render text: data.to_json }
+      format.html { render plain: '<html></html>' }
+      format.xml  { render plain: data.to_xml }
+      format.json { render plain: data.to_json }
     end
   end
 
   def open
     data = { parent: { child: 'restricted' } }
     respond_to do |format|
-      format.html { render text: '<html></html>' }
-      format.xml  { render text: data.to_xml }
-      format.json { render text: data.to_json }
+      format.html { render plain: '<html></html>' }
+      format.xml  { render plain: data.to_xml }
+      format.json { render plain: data.to_json }
     end
   end
 end
@@ -42,7 +42,7 @@ class AuthenticationControllerTest < ActionController::TestCase
   context 'Authenticated pages' do
     setup do
       @controller = AuthenticationController.new
-      @request    = ActionController::TestRequest.create
+      @request    = ActionController::TestRequest.create(@controller)
       @request.host = 'www.example.com'
       # skip_routing
     end

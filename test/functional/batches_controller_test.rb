@@ -11,7 +11,7 @@ class BatchesControllerTest < ActionController::TestCase
   context 'BatchesController' do
     setup do
       @controller = BatchesController.new
-      @request    = ActionController::TestRequest.create
+      @request    = ActionController::TestRequest.create(@controller)
     end
     should_require_login
 

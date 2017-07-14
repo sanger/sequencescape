@@ -11,7 +11,7 @@ class UsersControllerTest < ActionController::TestCase
   context 'Users controller' do
     setup do
       @controller = UsersController.new
-      @request    = ActionController::TestRequest.create
+      @request    = ActionController::TestRequest.create(@controller)
     end
 
     should_require_login :edit, :show, :update

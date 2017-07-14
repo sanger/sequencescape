@@ -11,7 +11,7 @@ class Studies::WorkflowsControllerTest < ActionController::TestCase
   context 'Studies::Workflows controller' do
     setup do
       @controller = Studies::WorkflowsController.new
-      @request    = ActionController::TestRequest.create
+      @request    = ActionController::TestRequest.create(@controller)
 
       @workflow = create :submission_workflow
       @user     = create :user, workflow_id: @workflow.id

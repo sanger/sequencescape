@@ -1,8 +1,8 @@
 source 'https://rubygems.org'
 
 group :default do
-  gem 'rails', '~> 5.0.1'
-  gem 'rails-observers', github:'rails/rails-observers', branch:'7d3c9c331242d58ed8ebdbd2eff1f7d6f68a1b2c'
+  gem 'rails', '~> 5.1.2'
+  gem 'rails-observers'
 
   # State machine
   gem 'aasm'

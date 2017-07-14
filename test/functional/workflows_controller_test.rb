@@ -12,7 +12,7 @@ class WorkflowsControllerTest < ActionController::TestCase
   context 'WorkflowController' do
     setup do
       @controller = WorkflowsController.new
-      @request    = ActionController::TestRequest.create
+      @request    = ActionController::TestRequest.create(@controller)
 
       @user = FactoryGirl.create :user
       session[:user] = @user.id

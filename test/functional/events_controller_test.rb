@@ -11,7 +11,7 @@ class EventsControllerTest < ActionController::TestCase
   context 'EventsController' do
     setup do
       @controller = EventsController.new
-      @request    = ActionController::TestRequest.create
+      @request    = ActionController::TestRequest.create(@controller)
       @event = Event.create
     end
 

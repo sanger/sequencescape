@@ -12,7 +12,7 @@ class SequenomQcPlatesControllerTest < ActionController::TestCase
   context '#create' do
     setup do
       @controller = SequenomQcPlatesController.new
-      @request    = ActionController::TestRequest.create
+      @request    = ActionController::TestRequest.create(@controller)
       @user       = create :manager, barcode: 'ID99A'
       @controller.stubs(:current_user).returns(@user)
     end

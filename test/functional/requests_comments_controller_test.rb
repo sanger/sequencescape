@@ -10,7 +10,7 @@ class Requests::CommentsControllerTest < ActionController::TestCase
   context 'Requests controller' do
     setup do
       @controller = Requests::CommentsController.new
-      @request    = ActionController::TestRequest.create
+      @request    = ActionController::TestRequest.create(@controller)
       @user = create :user
       session[:user] = @user.id
     end

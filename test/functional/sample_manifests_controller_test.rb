@@ -11,7 +11,7 @@ class SampleManifestsControllerTest < ActionController::TestCase
   context 'SampleManifestsController' do
     setup do
       @controller = Sdb::SampleManifestsController.new
-      @request    = ActionController::TestRequest.create
+      @request    = ActionController::TestRequest.create(@controller)
       @user       = create :user
       session[:user] = @user.id
 

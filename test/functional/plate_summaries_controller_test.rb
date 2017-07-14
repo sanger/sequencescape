@@ -8,7 +8,7 @@ class PlateSummariesControllerTest < ActionController::TestCase
   context 'PlateSummariesController' do
     setup do
       @controller = PlateSummariesController.new
-      @request    = ActionController::TestRequest.create
+      @request    = ActionController::TestRequest.create(@controller)
       @user       = create :user
       session[:user] = @user.id
     end

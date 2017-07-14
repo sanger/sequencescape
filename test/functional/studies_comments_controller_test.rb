@@ -10,7 +10,7 @@ class Studies::CommentsControllerTest < ActionController::TestCase
   context 'Studies controller' do
     setup do
       @controller = Studies::CommentsController.new
-      @request    = ActionController::TestRequest.create
+      @request    = ActionController::TestRequest.create(@controller)
     end
 
     should_require_login

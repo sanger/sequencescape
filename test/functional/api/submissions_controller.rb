@@ -10,7 +10,7 @@ class Api::SubmissionsControllerTest < ActionController::TestCase
   context 'submission' do
     setup do
       @controller = Api::SubmissionsController.new
-      @request    = ActionController::TestRequest.create
+      @request    = ActionController::TestRequest.create(@controller)
       @user = FactoryGirl.create :user
       @controller.stubs(:logged_in?).returns(@user)
       session[:user] = @user.id

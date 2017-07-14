@@ -11,7 +11,7 @@ class TagGroupsControllerTest < ActionController::TestCase
   context 'tag groups' do
     setup do
       @controller = TagGroupsController.new
-      @request    = ActionController::TestRequest.create
+      @request    = ActionController::TestRequest.create(@controller)
       @user = FactoryGirl.create :admin
       session[:user] = @user.id
       @tag_group = FactoryGirl.create :tag_group

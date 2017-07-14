@@ -10,7 +10,7 @@ class RobotVerificationsControllerTest < ActionController::TestCase
   context 'RobotVerificationsController' do
     setup do
       @controller = RobotVerificationsController.new
-      @request    = ActionController::TestRequest.create
+      @request    = ActionController::TestRequest.create(@controller)
       @user = FactoryGirl.create :user, barcode: 'ID41440E'
       @controller.stubs(:logged_in?).returns(@user)
       session[:user] = @user.id

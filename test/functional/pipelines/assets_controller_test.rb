@@ -10,7 +10,7 @@ class Pipelines::AssetsControllerTest < ActionController::TestCase
   context 'Pipelines::AssetsController' do
     setup do
       @controller = Pipelines::AssetsController.new
-      @request    = ActionController::TestRequest.create
+      @request    = ActionController::TestRequest.create(@controller)
     end
 
     should route(:get, '/pipelines/assets/new/1').to(action: 'new', id: '1')

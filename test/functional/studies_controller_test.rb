@@ -11,7 +11,7 @@ class StudiesControllerTest < ActionController::TestCase
   context 'StudiesController' do
     setup do
       @controller = StudiesController.new
-      @request    = ActionController::TestRequest.create
+      @request    = ActionController::TestRequest.create(@controller)
     end
 
     should_require_login
@@ -28,7 +28,7 @@ class StudiesControllerTest < ActionController::TestCase
   context 'create a study - custom' do
     setup do
       @controller = StudiesController.new
-      @request    = ActionController::TestRequest.create
+      @request    = ActionController::TestRequest.create(@controller)
       @user = FactoryGirl.create(:user)
       @user.has_role('owner')
       @controller.stubs(:logged_in?).returns(@user)

@@ -11,7 +11,7 @@ class PipelinesControllerTest < ActionController::TestCase
   context 'Pipelines controller' do
     setup do
       @controller = PipelinesController.new
-      @request    = ActionController::TestRequest.create
+      @request    = ActionController::TestRequest.create(@controller)
       @user = FactoryGirl.create :user
       session[:user] = @user.id
     end

@@ -11,7 +11,7 @@ class SamplesControllerTest < ActionController::TestCase
   context 'Samples controller' do
     setup do
       @controller = SamplesController.new
-      @request    = ActionController::TestRequest.create
+      @request    = ActionController::TestRequest.create(@controller)
 
       Sample.stubs(:assets).returns([])
     end

@@ -11,7 +11,7 @@ class Admin::StudiesControllerTest < ActionController::TestCase
   context 'Studies controller' do
     setup do
       @controller = Admin::StudiesController.new
-      @request    = ActionController::TestRequest.create
+      @request    = ActionController::TestRequest.create(@controller)
     end
 
     should_require_login

@@ -11,7 +11,7 @@ class LocationsControllerTest < ActionController::TestCase
   context 'LocationsController' do
     setup do
       @controller = LocationsController.new
-      @request    = ActionController::TestRequest.create
+      @request    = ActionController::TestRequest.create(@controller)
       @location = FactoryGirl.create :location
       @user = FactoryGirl.create :user
       session[:user] = @user.id

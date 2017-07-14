@@ -10,7 +10,7 @@ class Studies::EventsControllerTest < ActionController::TestCase
   context 'Studies controller' do
     setup do
       @controller = Studies::EventsController.new
-      @request    = ActionController::TestRequest.create
+      @request    = ActionController::TestRequest.create(@controller)
 
       @user = create :user
       session[:user] = @user.id

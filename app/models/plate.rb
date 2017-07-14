@@ -22,6 +22,57 @@ class Plate < Asset
   extend QcFile::Associations
   has_qc_files
 
+  has_many :container_associations, foreign_key: :container_id, inverse_of: :plate
+  has_many :wells, through: :container_associations, inverse_of: :plate do
+    def attach(records)
+      ActiveRecord::Base.transaction do
+        proxy_association.owner.wells << records
+      end
+    end
+    deprecate attach: 'Legacy method pre-jruby just use standard rails plate.wells << other_wells' # Legacy pre-jruby method to handle bulk import
+
+    def construct!
+      Map.where_plate_size(proxy_association.owner.size).where_plate_shape(proxy_association.owner.asset_shape).in_row_major_order.map do |location|
+        build(map: location)
+      end.tap do
+        proxy_association.owner.save!
+      end
+    end
+
+    def map_from_locations
+      {}.tap do |location_to_well|
+        walk_in_column_major_order do |well, _|
+          raise "Duplicated well at #{well.map.description}" if location_to_well.key?(well.map)
+          location_to_well[well.map] = well
+        end
+      end
+    end
+
+    # Returns the wells with their pool identifier included
+    def with_pool_id
+      proxy_association.owner.plate_purpose.pool_wells(self)
+    end
+
+    # Yields each pool and the wells that are in it
+    def walk_in_pools(&block)
+      with_pool_id.group_by(&:pool_id).each(&block)
+    end
+
+    # Walks the wells A1, B1, C1, ... A2, B2, C2, ... H12
+    def walk_in_column_major_order
+      in_column_major_order.each { |well| yield(well, well.map.column_order) }
+    end
+
+    # Walks the wells A1, A2, ... B1, B2, ... H12
+    def walk_in_row_major_order
+      in_row_major_order.each { |well| yield(well, well.map.row_order) }
+    end
+
+    def in_preferred_order
+      proxy_association.owner.plate_purpose.in_preferred_order(self)
+    end
+  end
+
   # Contained associations all look up through wells (Wells in turn delegate to aliquots)
   has_many :contained_samples, through: :wells, source: :samples
   has_many :conatined_aliquots, through: :wells, source: :aliquots
@@ -235,57 +286,6 @@ class Plate < Asset
     wells.first.try(:study)
   end
   deprecate study: 'Plates can belong to multiple studies, use #studies instead.'
-
-  has_many :container_associations, foreign_key: :container_id, inverse_of: :plate
-  has_many :wells, through: :container_associations, inverse_of: :plate do
-    def attach(records)
-      ActiveRecord::Base.transaction do
-        proxy_association.owner.wells << records
-      end
-    end
-    deprecate attach: 'Legacy method pre-jruby just use standard rails plate.wells << other_wells' # Legacy pre-jruby method to handle bulk import
-
-    def construct!
-      Map.where_plate_size(proxy_association.owner.size).where_plate_shape(proxy_association.owner.asset_shape).in_row_major_order.map do |location|
-        build(map: location)
-      end.tap do
-        proxy_association.owner.save!
-      end
-    end
-
-    def map_from_locations
-      {}.tap do |location_to_well|
-        walk_in_column_major_order do |well, _|
-          raise "Duplicated well at #{well.map.description}" if location_to_well.key?(well.map)
-          location_to_well[well.map] = well
-        end
-      end
-    end
-
-    # Returns the wells with their pool identifier included
-    def with_pool_id
-      proxy_association.owner.plate_purpose.pool_wells(self)
-    end
-
-    # Yields each pool and the wells that are in it
-    def walk_in_pools(&block)
-      with_pool_id.group_by(&:pool_id).each(&block)
-    end
-
-    # Walks the wells A1, B1, C1, ... A2, B2, C2, ... H12
-    def walk_in_column_major_order
-      in_column_major_order.each { |well| yield(well, well.map.column_order) }
-    end
-
-    # Walks the wells A1, A2, ... B1, B2, ... H12
-    def walk_in_row_major_order
-      in_row_major_order.each { |well| yield(well, well.map.row_order) }
-    end
-
-    def in_preferred_order
-      proxy_association.owner.plate_purpose.in_preferred_order(self)
-    end
-  end
 
   scope :include_wells_and_attributes, -> { includes(wells: %i[map well_attribute]) }
 

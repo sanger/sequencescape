@@ -11,7 +11,7 @@ class TasksControllerTest < ActionController::TestCase
   context 'TasksController' do
     setup do
       @controller = TasksController.new
-      @request    = ActionController::TestRequest.create
+      @request    = ActionController::TestRequest.create(@controller)
       @user = FactoryGirl.create :admin
       session[:user] = @user.id
       @pipeline = FactoryGirl.create :pipeline, name: 'Normal pipeline'
