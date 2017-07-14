@@ -200,7 +200,9 @@ class Well < Aliquot::Receptacle
   def well_attribute_with_creation
     well_attribute_without_creation || build_well_attribute
   end
-  alias_method_chain(:well_attribute, :creation)
+  alias_method( :well_attribute_without_creation, :well_attribute)
+  alias_method( :well_attribute, :well_attribute_with_creation)
+
 
   delegate_to_well_attribute(:pico_pass)
   delegate_to_well_attribute(:sequenom_count)
