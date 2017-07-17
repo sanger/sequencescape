@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170531082054) do
+ActiveRecord::Schema.define(version: 20170717095922) do
 
   create_table "aliquot_indices", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.integer "aliquot_id", null: false
@@ -1712,7 +1712,7 @@ ActiveRecord::Schema.define(version: 20170531082054) do
     t.integer "source_id"
     t.integer "destination_id"
     t.string "destination_type"
-    t.text "transfers"
+    t.text "transfers_hash"
     t.integer "bulk_transfer_id"
     t.integer "user_id"
     t.index ["source_id"], name: "source_id_idx"
