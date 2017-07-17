@@ -1,8 +1,8 @@
 source 'https://rubygems.org'
 
 group :default do
-  gem 'rails', '~> 5.0.1'
-  gem 'rails-observers', github:'rails/rails-observers', branch:'7d3c9c331242d58ed8ebdbd2eff1f7d6f68a1b2c'
+  gem 'rails', '~> 5.1.2'
+  gem 'rails-observers'
 
   # State machine
   gem 'aasm'
@@ -124,6 +124,8 @@ group :test do
   # Provides json expectations for rspec. Makes test more readable,
   # and test failures more descriptive.
   gem 'rspec-json_expectations', require: false
+  # It is needed to use #assigns(attribute) in controllers tests
+  gem 'rails-controller-testing'
 end
 
 group :test,:cucumber do
@@ -141,6 +143,7 @@ group :test,:cucumber do
   # - Patches rails to share a database connection between threads while Testing
   # - Pathes rspec to ensure capybara has done its stuff before killing the connection
   gem 'transactional_capybara'
+  gem 'pry'
 end
 
 group :cucumber do

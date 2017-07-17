@@ -16,5 +16,6 @@ module SharedBehaviour::Indestructable
   def prevent_destruction
     errors.add(:base, 'can not be destroyed and should be deprecated instead!')
     false
+    throw(:abort)
   end
 end

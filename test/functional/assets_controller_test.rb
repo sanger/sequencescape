@@ -9,8 +9,7 @@ require 'test_helper'
 class AssetsControllerTest < ActionController::TestCase
   setup do
     @controller = AssetsController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
+    @request    = ActionController::TestRequest.create(@controller)
     @user = create :admin, api_key: 'abc'
     session[:user] = @user.id
   end
@@ -26,7 +25,7 @@ class AssetsControllerTest < ActionController::TestCase
       @json_data = json_new_asset(@barcode)
 
       @request.accept = @request.env['CONTENT_TYPE'] = 'application/json'
-      post :create, ActiveSupport::JSON.decode(@json_data)
+      post :create, params: ActiveSupport::JSON.decode(@json_data)
     end
 
     should set_flash.to(/Asset was successfully created/)
@@ -40,7 +39,7 @@ class AssetsControllerTest < ActionController::TestCase
     setup do
       @asset = create :sample_tube
       @location = create :location
-      put :update, id: @asset.id, asset: { location_id: @location.id }
+      put :update, params: { id: @asset.id, asset: { location_id: @location.id } }
     end
     should 'be updateable' do
       assert_equal @location, @asset.location
@@ -60,7 +59,7 @@ class AssetsControllerTest < ActionController::TestCase
       @json_data = valid_json_create_request(@asset, @request_type, @study, @project)
 
       @request.accept = @request.env['CONTENT_TYPE'] = 'application/json'
-      post :create_request, ActiveSupport::JSON.decode(@json_data)
+      post :create_request, params: ActiveSupport::JSON.decode(@json_data)
     end
 
     should 'change Submission.count by 1' do
@@ -84,12 +83,12 @@ class AssetsControllerTest < ActionController::TestCase
     should '#print_assets should send print request' do
       asset = create :child_plate
       RestClient.expects(:post)
-      post :print_assets, printables: asset, printer: barcode_printer.name, id: (asset.id).to_s
+      post :print_assets, params: {printables: asset, printer: barcode_printer.name, id: (asset.id).to_s }
     end
     should '#print_labels should send print request' do
       asset = create :sample_tube
       RestClient.expects(:post)
-      post :print_labels, printables: { (asset.id).to_s => 'true' }, printer: barcode_printer.name, id: (asset.id).to_s
+      post :print_labels, params: { printables: { (asset.id).to_s => 'true' }, printer: barcode_printer.name, id: (asset.id).to_s}
     end
   end
 

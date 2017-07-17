@@ -95,7 +95,7 @@ class WorkflowsController < ApplicationController
 
   def update
     respond_to do |format|
-      if @workflow.update_attributes(params[:workflow])
+      if @workflow.update_attributes(params[:workflow] || {})
         flash[:notice] = 'Workflow was successfully updated.'
         format.html { redirect_to workflow_url(@workflow) }
         format.xml  { head :ok }
@@ -125,7 +125,7 @@ class WorkflowsController < ApplicationController
       task.sorted = params['task_list'].index(task.id.to_s) + 1
       task.save
     end
-    render nothing: true
+    head :ok
   end
 
   # TODO: This needs to be made RESTful.
@@ -150,7 +150,7 @@ class WorkflowsController < ApplicationController
         @batch ||= Batch.includes(eager_loading).find(params[:batch_id])
         unless @batch.editable?
           flash[:error] = 'You cannot make changes to a completed batch.'
-          redirect_to :back
+          redirect_back fallback_location: root_path
           return false
         end
 

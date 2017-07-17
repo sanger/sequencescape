@@ -10,8 +10,7 @@ class Api::SubmissionsControllerTest < ActionController::TestCase
   context 'submission' do
     setup do
       @controller = Api::SubmissionsController.new
-      @request    = ActionController::TestRequest.new
-      @response   = ActionController::TestResponse.new
+      @request    = ActionController::TestRequest.create(@controller)
       @user = FactoryGirl.create :user
       @controller.stubs(:logged_in?).returns(@user)
       session[:user] = @user.id
@@ -28,7 +27,7 @@ class Api::SubmissionsControllerTest < ActionController::TestCase
         rt = FactoryGirl.create :request_type, workflow: workflow
         template.request_types << rt
 
-        post :create, order: { project_id: project.id, study_id: study.id, sample_tubes: [sample_tube.id.to_s], number_of_lanes: '2', type: template.key }
+        post :create, params: {order: { project_id: project.id, study_id: study.id, sample_tubes: [sample_tube.id.to_s], number_of_lanes: '2', type: template.key } }
       end
 
       should 'change Submission.count by 1' do

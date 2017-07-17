@@ -40,7 +40,8 @@ module Metadata
         build_#{association_name}
       end
 
-      alias_method_chain(:#{association_name}, :initialization)
+      alias_method(:#{association_name}_without_initialization, :#{association_name})
+      alias_method(:#{association_name}, :#{association_name}_with_initialization)
 
       def validating_ena_required_fields=(state)
         @validating_ena_required_fields = !!state

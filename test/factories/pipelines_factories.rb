@@ -351,6 +351,7 @@ FactoryGirl.define do
     location_id      2
     row_order        1
     column_order     8
+    asset_shape AssetShape.default
   end
 
   factory :plate_template do

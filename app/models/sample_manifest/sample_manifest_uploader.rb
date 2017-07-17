@@ -1,4 +1,4 @@
-class SampleManifest::Uploader
+class SampleManifestUploader
   include ActiveModel::Validations
 
   attr_reader :filename, :configuration, :tag_group, :upload
@@ -19,7 +19,7 @@ class SampleManifest::Uploader
   def run!
     if valid?
       upload.process(tag_group)
-      upload.processed?
+      upload.complete if upload.processed?
       # Delayed::Job.enqueue SampleManifestUploadProcessingJob.new(upload, tag_group)
     else
       false

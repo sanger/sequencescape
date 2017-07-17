@@ -3,6 +3,7 @@
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2011,2012,2013,2015 Genome Research Ltd.
+require 'pry'
 
 module ModelExtensions::Order
   module Validations
@@ -78,7 +79,8 @@ module ModelExtensions::Order
         ExtendedValidator.for_submission(self)
       end
 
-      extend ClassMethods
+      # is that right? previously it was including Delayed::MessageSending::ClassMethods
+      extend Delayed::MessageSendingClassMethods
     end
   end
 

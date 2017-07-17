@@ -11,8 +11,7 @@ class LabwhereReceptionsControllerTest < ActionController::TestCase
   context 'Sample Reception' do
     setup do
       @controller = LabwhereReceptionsController.new
-      @request    = ActionController::TestRequest.new
-      @response   = ActionController::TestResponse.new
+      @request    = ActionController::TestRequest.create(@controller)
       @user = create :user, barcode: 'ID123', swipecard_code: '02face'
       @other_user = create :user, barcode: 'ID123', swipecard_code: '02face'
       @plate   = create :plate, barcode: 1
@@ -28,12 +27,12 @@ class LabwhereReceptionsControllerTest < ActionController::TestCase
             location_barcode: 'labwhere_location', user_code: 'ID123', labware_barcodes: ['1220000001831', '1220000002845', '3980000001795']
           ).returns(MockResponse.new(true, ''))
 
-          post :create, labwhere_reception: {
+          post :create, params: {labwhere_reception: {
             barcodes: ['1220000001831', ' 1220000002845', '3980000001795'],
             location_id: @location.id,
             user_code: 'ID123',
             location_barcode: 'labwhere_location'
-          }
+          }}
         end
 
         should 'Move items in sequencescape' do
@@ -60,12 +59,12 @@ class LabwhereReceptionsControllerTest < ActionController::TestCase
             location_barcode: '', user_code: 'ID123', labware_barcodes: ['1220000001831', '1220000002845', '3980000001795']
           ).returns(MockResponse.new(true, ''))
 
-          post :create, labwhere_reception: {
+          post :create, params: {labwhere_reception: {
             barcodes: ['1220000001831', ' 1220000002845', '3980000001795'],
             location_id: @location.id,
             user_code: 'ID123',
             location_barcode: ''
-          }
+          }}
         end
 
         should 'Move items in sequencescape' do

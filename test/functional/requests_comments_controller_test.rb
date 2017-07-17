@@ -10,8 +10,7 @@ class Requests::CommentsControllerTest < ActionController::TestCase
   context 'Requests controller' do
     setup do
       @controller = Requests::CommentsController.new
-      @request    = ActionController::TestRequest.new
-      @response   = ActionController::TestResponse.new
+      @request    = ActionController::TestRequest.create(@controller)
       @user = create :user
       session[:user] = @user.id
     end
@@ -30,7 +29,7 @@ class Requests::CommentsControllerTest < ActionController::TestCase
       end
 
       should 'return a ul of comments' do
-        xhr :get, :index, request_id: @rq.id
+        get :index, params: {request_id: @rq.id}, xhr: true
         assert_template partial: '_simple_list'
       end
     end

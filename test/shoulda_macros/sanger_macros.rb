@@ -58,7 +58,7 @@ module Sanger
                   session[:user] = nil
 
                   begin
-                    get action, params
+                    get action
                   rescue AbstractController::ActionNotFound
                     flunk "Testing for an unknown action: #{action}"
                   end

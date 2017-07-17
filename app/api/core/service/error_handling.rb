@@ -4,6 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
+require 'pry'
 module Core::Service::ErrorHandling
   def self.registered(app)
     app.instance_eval do

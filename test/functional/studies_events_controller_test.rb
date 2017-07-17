@@ -10,8 +10,7 @@ class Studies::EventsControllerTest < ActionController::TestCase
   context 'Studies controller' do
     setup do
       @controller = Studies::EventsController.new
-      @request    = ActionController::TestRequest.new
-      @response   = ActionController::TestResponse.new
+      @request    = ActionController::TestRequest.create(@controller)
 
       @user = create :user
       session[:user] = @user.id
@@ -22,7 +21,7 @@ class Studies::EventsControllerTest < ActionController::TestCase
 
      context '#index' do
         setup do
-          get :index, study_id: @study.id
+          get :index, params: {study_id: @study.id}
         end
         should respond_with :success
         should render_template :index

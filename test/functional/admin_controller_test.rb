@@ -10,8 +10,7 @@ class AdminControllerTest < ActionController::TestCase
   context 'Admin controller' do
     setup do
       @controller = AdminController.new
-      @request    = ActionController::TestRequest.new
-      @response   = ActionController::TestResponse.new
+      @request    = ActionController::TestRequest.create(@controller)
     end
 
     should_require_login
@@ -39,7 +38,7 @@ class AdminControllerTest < ActionController::TestCase
 
       context '#filter with query' do
         setup do
-          get :filter, q: 'abc123'
+          get :filter, params: {q: 'abc123'}
         end
         should respond_with :success
         should render_template 'admin/users/_users'

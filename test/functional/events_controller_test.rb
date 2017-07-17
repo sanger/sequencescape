@@ -11,8 +11,7 @@ class EventsControllerTest < ActionController::TestCase
   context 'EventsController' do
     setup do
       @controller = EventsController.new
-      @request    = ActionController::TestRequest.new
-      @response   = ActionController::TestResponse.new
+      @request    = ActionController::TestRequest.create(@controller)
       @event = Event.create
     end
 
@@ -26,7 +25,7 @@ class EventsControllerTest < ActionController::TestCase
         # test below, it was probably just a mistake.
         setup do
           @controller.stubs(:login_required).returns(true)
-          put :create, event: { key: 'blah' }
+          put :create, params: {event: { key: 'blah' }}
         end
         should respond_with :success
       end
@@ -38,7 +37,7 @@ class EventsControllerTest < ActionController::TestCase
       # also feels like the RIGHT behaviour.
       context 'XML' do
         setup do
-          get :create, format: :xml, event: { key: 'blah' }
+          get :create, params: {format: :xml, event: { key: 'blah' }}
         end
         should respond_with :success
       end

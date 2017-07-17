@@ -36,7 +36,7 @@ module Submission::StateMachine
     # TODO[xxx]: ... to here
 
     def complete_building
-      orders(true).each(&:complete_building)
+      orders.reload.each(&:complete_building)
     end
 
     def process_submission!
@@ -90,19 +90,19 @@ module Submission::StateMachine
       end
 
       event :cancel do
-        transitions to: :cancelled, from: [:pending, :ready, :cancelled], guard: :requests_cancellable?
+        transitions to: :cancelled, from: %i[pending ready cancelled], guard: :requests_cancellable?
       end
 
       event :process do
-        transitions to: :processing, from: [:processing, :failed, :pending]
+        transitions to: :processing, from: %i[processing failed pending]
       end
 
       event :ready do
-        transitions to: :ready, from: [:processing, :failed]
+        transitions to: :ready, from: %i[processing failed]
       end
 
       event :fail do
-        transitions to: :failed, from: [:processing, :failed, :pending]
+        transitions to: :failed, from: %i[processing failed pending]
       end
     end
   end

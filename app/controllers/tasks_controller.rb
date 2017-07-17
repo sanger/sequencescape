@@ -51,7 +51,7 @@ class TasksController < ApplicationController
 
     respond_to do |format|
       if @task.save
-        @task.create_descriptors(params[:descriptor])
+        @task.create_descriptors(params[:descriptor].to_unsafe_h)
 
         flash[:notice] = 'Task was successfully created.'
         format.html { redirect_to task_url(@task) }
@@ -66,7 +66,7 @@ class TasksController < ApplicationController
   def update
     respond_to do |format|
       if @task.update_attributes(params[:task])
-        @task.update_descriptors(params[:descriptor])
+        @task.update_descriptors(params[:descriptor].to_unsafe_h)
 
         flash[:notice] = 'Task was successfully updated.'
         format.html { redirect_to task_url(@task) }

@@ -55,6 +55,16 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
     expect(upload).to_not be_valid
   end
 
+  it 'when completed changes sample manifest status to completed' do
+    download = build(:test_download, columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup)
+    download.save(test_file)
+    upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: columns, start_row: 9)
+    expect(upload.sample_manifest.state).to eq 'pending'
+    upload.process(tag_group)
+    upload.complete
+    expect(upload.sample_manifest.state).to eq 'completed'
+  end
+
   describe '#processor' do
     context '1dtube' do
       let!(:columns) { SampleManifestExcel.configuration.columns.tube_full.dup }

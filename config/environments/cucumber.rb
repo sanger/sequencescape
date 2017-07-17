@@ -12,10 +12,9 @@ Sequencescape::Application.configure do
   # break Cucumber's use_transactional_fixtures method.
   # For more information see https://rspec.lighthouseapp.com/projects/16211/tickets/165
   config.cache_classes = true
-  config.active_record.raise_in_transactional_callbacks = true
-  config.active_support.deprecation = :raise
+  config.active_support.deprecation = :log
 
-  config.serve_static_files = true
+  config.public_file_server.enabled = true
 
   # Log error messages when you accidentally call methods on nil.
   config.whiny_nils = true

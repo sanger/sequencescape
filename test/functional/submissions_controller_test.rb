@@ -12,8 +12,7 @@ class SubmissionsControllerTest < ActionController::TestCase
     setup do
       @user       = create :user
       @controller = SubmissionsController.new
-      @request    = ActionController::TestRequest.new
-      @response   = ActionController::TestResponse.new
+      @request    = ActionController::TestRequest.create(@controller)
 
       session[:user] = @user
 
@@ -37,7 +36,7 @@ class SubmissionsControllerTest < ActionController::TestCase
       setup do
         @user.is_lab_manager
         @submission = Submission.create!(priority: 1, user: @user)
-        post :change_priority, id: @submission.id, submission: { priority: 3 }
+        post :change_priority, params: {id: @submission.id, submission: { priority: 3 }}
       end
 
       should 'allow update of priorities' do
@@ -52,7 +51,7 @@ class SubmissionsControllerTest < ActionController::TestCase
       setup do
         @samples = samples = Well.with_aliquots.each.map { |w| w.aliquots.first.sample.name }
 
-        post(:create,
+        post(:create, params: {
           submission: {
             is_a_sequencing_order: 'false',
             comments: '',
@@ -68,7 +67,7 @@ class SubmissionsControllerTest < ActionController::TestCase
             sample_names_text: samples[1..4].join("\n"),
             plate_purpose_id: @plate.plate_purpose.id.to_s,
             project_name: 'A project'
-          })
+          }})
       end
 
       should 'create the appropriate orders' do
@@ -80,7 +79,7 @@ class SubmissionsControllerTest < ActionController::TestCase
           @new_plate = FactoryGirl.create :plate, plate_purpose: @plate.purpose
           @well = create :well, map: Map.find_by(description: 'A1'), plate: @new_plate
           create(:aliquot, sample: Sample.find_by(name: @samples.first), receptacle: @well)
-          post(:create, submission: {
+          post(:create, params: {submission: {
             is_a_sequencing_order: 'false',
             comments: '',
             template_id: @submission_template.id.to_s,
@@ -91,7 +90,7 @@ class SubmissionsControllerTest < ActionController::TestCase
             asset_group_id: '',
             study_id: @study.id.to_s,
             sample_names_text: @samples[0...4].join("\n"),
-            plate_purpose_id: @plate.plate_purpose.id.to_s, project_name: 'A project' })
+            plate_purpose_id: @plate.plate_purpose.id.to_s, project_name: 'A project' }})
         end
 
         should 'find the latest version' do
@@ -119,7 +118,7 @@ class SubmissionsControllerTest < ActionController::TestCase
         end
         samples = @wd_plate.wells.with_aliquots.each.map { |w| w.aliquots.first.sample.name }
 
-        post(:create, submission: {
+        post(:create, params: {submission: {
           is_a_sequencing_order: 'false',
           comments: '',
           template_id: @submission_template.id.to_s,
@@ -134,7 +133,7 @@ class SubmissionsControllerTest < ActionController::TestCase
           study_id: @study.id.to_s,
           sample_names_text: samples[1..4].join("\n"),
           plate_purpose_id: @wd_plate.plate_purpose.id.to_s,
-          project_name: 'A project' })
+          project_name: 'A project' }})
       end
 
       should 'used the working dilution plate' do
@@ -146,7 +145,7 @@ class SubmissionsControllerTest < ActionController::TestCase
     context 'by plate barcode' do
       setup do
          @order_count = Order.count
-        post :create, plate_submission('DN123456P')
+        post :create, params: plate_submission('DN123456P')
       end
 
       should 'create the appropriate orders' do
@@ -158,7 +157,7 @@ class SubmissionsControllerTest < ActionController::TestCase
     context 'by plate barcode with pools' do
       setup do
         @plate.wells.first.aliquots.create!(sample: FactoryGirl.create(:sample), tag_id: Tag.first.id)
-        post :create, plate_submission('DN123456P')
+        post :create, params: plate_submission('DN123456P')
       end
 
       should 'create the appropriate orders' do
@@ -168,7 +167,7 @@ class SubmissionsControllerTest < ActionController::TestCase
 
     context 'should allow submission by plate barcode and wells' do
       setup do
-        post :create, plate_submission('DN123456P:A1,B3,C2')
+        post :create, params: plate_submission('DN123456P:A1,B3,C2')
       end
 
       should 'create the appropriate orders' do
@@ -178,7 +177,7 @@ class SubmissionsControllerTest < ActionController::TestCase
 
     context 'should allow submission by plate barcode and rows' do
       setup do
-        post :create, plate_submission('DN123456P:B,C')
+        post :create, params: plate_submission('DN123456P:B,C')
       end
 
       should 'create the appropriate orders' do
@@ -188,7 +187,7 @@ class SubmissionsControllerTest < ActionController::TestCase
 
     context 'should allow submission by plate barcode and columns' do
       setup do
-        post :create, plate_submission('DN123456P:1,2,3')
+        post :create, params: plate_submission('DN123456P:1,2,3')
       end
 
       should 'create the appropriate orders' do
@@ -209,7 +208,7 @@ class SubmissionsControllerTest < ActionController::TestCase
       end
 
       should 'warn the user about duplicates' do
-        get :show, id: @submission.id
+        get :show, params: {id: @submission.id}
         assert_select 'div.alert-danger' do
           assert_select 'strong', 'Warning! Similar submissions detected'
           assert_select 'li.sample', 1
@@ -228,7 +227,7 @@ class SubmissionsControllerTest < ActionController::TestCase
       end
 
       should 'not warn the user about duplicates' do
-        get :show, id: @submission.id
+        get :show, params: {id: @submission.id}
         assert_select 'div.alert-danger', 0
       end
     end

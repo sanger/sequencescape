@@ -27,8 +27,8 @@ class Stamp < ActiveRecord::Base
   belongs_to :robot
   belongs_to :user
 
-  has_many :qcables, through: :stamp_qcables
   has_many :stamp_qcables, inverse_of: :stamp, class_name: 'Stamp::StampQcable'
+  has_many :qcables, through: :stamp_qcables
 
   validates :lot, presence: true
   validates :user, presence: true

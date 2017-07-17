@@ -1,4 +1,4 @@
-class SampleManifest::Generator
+class SampleManifestGenerator
   REQUIRED_ATTRIBUTES = ['template', 'count']
 
   include ActiveModel::Validations
@@ -93,6 +93,6 @@ class SampleManifest::Generator
   end
 
   def only_first_label
-    ActiveRecord::Type::Boolean.new.type_cast_from_database(params[:only_first_label])
+    ActiveRecord::Type::Boolean.new.cast(params[:only_first_label])
   end
 end
