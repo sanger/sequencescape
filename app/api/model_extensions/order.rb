@@ -71,7 +71,7 @@ module ModelExtensions::Order
       validates_each(:study, :project) do |record, attr, _value|
         # NOTE: This can get called after the record has been saved but before it has been completely saved, i.e. after_create
         # In this case the original value of the attribute will be nil, so we account for that here.
-        attr_value_was, attr_value_is = record.send(:"#{attr}_id_was"), record.send(:"#{attr}_id")
+        attr_value_was, attr_value_is = record.send(:"#{attr}_id_before_last_save"), record.send(:"#{attr}_id")
         record.errors.add(attr, 'cannot be changed') if not record.new_record? and attr_value_was != attr_value_is and attr_value_was.present?
       end
 
