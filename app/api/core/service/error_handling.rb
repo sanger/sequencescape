@@ -18,7 +18,6 @@ module Core::Service::ErrorHandling
       ) do
         buffer = [exception_thrown.message, exception_thrown.backtrace].join("\n")
         Rails.logger.error("API[error]: #{buffer}")
-
         exception_thrown.api_error(self)
       end
       error(StandardError) do
