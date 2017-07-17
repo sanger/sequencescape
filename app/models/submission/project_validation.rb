@@ -35,7 +35,7 @@ module Submission::ProjectValidation
     project && @checking_project
   end
 
-  Error = Class.new(Exception)
+  Error = Class.new(StandardError)
 
   def check_project_details!
     raise Submission::ProjectValidation::Error, errors.full_messages.join("\n") unless submittable?

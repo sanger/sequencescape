@@ -68,11 +68,8 @@ module ModelExtensions::Order
 
       # The API can create submissions but we have to prevent someone from changing the study
       # and the project once they have been set.
-      validates_each(:study, :project) do |record, attr, _value|
-        # NOTE: This can get called after the record has been saved but before it has been completely saved, i.e. after_create
-        # In this case the original value of the attribute will be nil, so we account for that here.
-        attr_value_was, attr_value_is = record.send(:"#{attr}_id_before_last_save"), record.send(:"#{attr}_id")
-        record.errors.add(attr, 'cannot be changed') if not record.new_record? and attr_value_was != attr_value_is and attr_value_was.present?
+      validates_each(:study, :project, on: :update) do |record, attr, _value|
+        record.errors.add(attr, 'cannot be changed') if record.send(:"will_save_change_to_#{attr}_id?")
       end
 
       def extended_validators
