@@ -35,7 +35,7 @@ class SampleTube < Tube
 
   def generate_name_from_aliquots
     return if name.present? || primary_aliquot.try(:sample).nil?
-    self.name = record.primary_aliquot.sample.name
-    record.save!
+    self.name = primary_aliquot.sample.name
+    save!
   end
 end
