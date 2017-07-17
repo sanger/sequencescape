@@ -55,7 +55,7 @@ class Sample < ActiveRecord::Base
   validates_format_of :name, with: /\A[\(\)\+\s\w._-]+\z/i, message: I18n.t('samples.name_format'), if: :new_name_format, on: :update
   validates_uniqueness_of :name, on: :create, message: 'already in use', unless: :sample_manifest_id?
 
-  validate :name_unchanged, if: :name_changed?, on: :update
+  validate :name_unchanged, if: :will_save_change_to_name?, on: :update
 
   def name_unchanged
     errors.add(:name, 'cannot be changed') unless can_rename_sample
