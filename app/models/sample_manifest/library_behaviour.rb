@@ -69,6 +69,14 @@ module SampleManifest::LibraryBehaviour
     def assign_library?
       true
     end
+
+    def printables
+      samples.map { |sample| sample.assets.first }
+    end
+
+    def acceptable_purposes
+      Purpose.none
+    end
   end
 
   RapidCore = Core

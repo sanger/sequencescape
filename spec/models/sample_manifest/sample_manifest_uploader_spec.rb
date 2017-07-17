@@ -37,6 +37,7 @@ RSpec.describe SampleManifestUploader, type: :model do
     uploader = SampleManifestUploader.new(test_file, SampleManifestExcel.configuration)
     uploader.run!
     expect(uploader).to be_processed
+    expect(uploader.upload.sample_manifest).to be_completed
     Delayed::Worker.delay_jobs = true
     File.delete(test_file) if File.exist?(test_file)
   end
@@ -48,6 +49,17 @@ RSpec.describe SampleManifestUploader, type: :model do
     expect(uploader).to_not be_valid
     expect(uploader.errors).to_not be_empty
     expect(uploader.upload).to_not be_processed
+    File.delete(test_file) if File.exist?(test_file)
+  end
+
+  it 'will upload a valid partial sample manifest' do
+    download = build(:test_partial_download, columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup)
+    download.save(test_file)
+    Delayed::Worker.delay_jobs = false
+    uploader = SampleManifestUploader.new(test_file, SampleManifestExcel.configuration)
+    uploader.run!
+    expect(uploader).to be_processed
+    Delayed::Worker.delay_jobs = true
     File.delete(test_file) if File.exist?(test_file)
   end
 

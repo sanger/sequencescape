@@ -77,7 +77,8 @@ group :default do
   # gem 'font-awesome-sass'
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
-  gem 'therubyrhino'
+  gem 'therubyrhino', platforms: :jruby
+  gem 'therubyracer', platforms: :mri
   # Pat of the JS assets pipleine
   gem 'uglifier', '>= 1.0.3'
 

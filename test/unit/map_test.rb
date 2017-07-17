@@ -78,10 +78,10 @@ class MapTest < ActiveSupport::TestCase
       end
     end
 
-    [['H12', nil, 96], ['P24', nil, 384]].each do |current_map, expected_output, plate_size|
+    [['H12', 96], ['P24', 384]].each do |current_map, plate_size|
       should "return nil for end of plate for #{current_map}" do
         returned_map = Map.next_map_position(Map.find_by(description: current_map, asset_size: plate_size).id)
-        assert_equal expected_output, returned_map
+        assert_nil returned_map
       end
     end
   end

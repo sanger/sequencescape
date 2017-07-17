@@ -325,30 +325,6 @@ class AssetsController < ApplicationController
     end
   end
 
-  def get_barcode
-    barcode = Asset.get_barcode_from_params(params)
-    render(text: "#{Barcode.barcode_to_human(barcode)} => #{barcode}")
-  end
-
-  def get_barcode_from_params(params)
-    prefix, asset = 'NT', nil
-    if params[:prefix]
-      prefix = params[:prefix]
-    else
-      begin
-        asset = Asset.find(params[:id])
-      rescue
-      end
-    end
-
-    if asset and asset.barcode
-      Barcode.calculate_barcode(asset.prefix, asset.barcode.to_i)
-    else
-      Barcode.calculate_barcode(prefix, params[:id].to_i)
-    end
-  end
-  private :get_barcode_from_params
-
   def lookup
     if params[:asset] && params[:asset][:barcode]
       id = params[:asset][:barcode][3, 7]
