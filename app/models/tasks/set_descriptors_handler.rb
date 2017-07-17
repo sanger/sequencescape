@@ -61,10 +61,10 @@ module Tasks::SetDescriptorsHandler
 
               end
 
-              unless params[:upload].nil?
-                params[:upload].each_key do |key|
-                  event.filename = params[:upload][key].original_filename.gsub(/[^a-zA-Z0-9.]/, '_')
-                  event.data = params[:upload][key].read
+              if params[:upload].present?
+                params[:upload].each do |key, uploaded|
+                  event.filename = uploaded.original_filename.gsub(/[^a-zA-Z0-9.]/, '_')
+                  event.data = uploaded.read
                   event.add_descriptor Descriptor.new(name: key, value: event.filename)
                 end
               end
@@ -74,11 +74,11 @@ module Tasks::SetDescriptorsHandler
               request.lab_events << event
 
               if params[:asset]
-                params[:asset].keys.each do |key|
+                params[:asset].each do |key, descriptors|
                   asset = Asset.new
-                  asset.sti_type = Family.find(params[:asset][key][:family_id]).name
-                  params[:asset][key].each_key do |field|
-                    asset.add_descriptor Descriptor.new(name: field, value: params[:asset][key][field])
+                  asset.sti_type = Family.find(descriptors[:family_id]).name
+                  descriptors.each_pair do |field, value|
+                    asset.add_descriptor Descriptor.new(name: field, value: value)
                   end
                   asset.save
                   asset.parents << request.asset
