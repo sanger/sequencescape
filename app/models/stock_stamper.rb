@@ -5,9 +5,9 @@ class StockStamper
 
   validates_presence_of :user_barcode, :source_plate_barcode, :source_plate_type_name, :destination_plate_barcode, :destination_plate_type_name, :overage
 
-  validates :plate, presence: { message: 'is not registered in sequencescape' }, if: 'destination_plate_barcode.present?'
-  validates :plate_type, presence: { message: 'is not registered in sequencescape' }, if: 'destination_plate_type_name.present?'
-  validates :user, presence: { message: 'is not registered in sequencescape' }, if: 'user_barcode.present?'
+  validates :plate, presence: { message: 'is not registered in sequencescape' }, if: :destination_plate_barcode?
+  validates :plate_type, presence: { message: 'is not registered in sequencescape' }, if: :destination_plate_type_name?
+  validates :user, presence: { message: 'is not registered in sequencescape' }, if: :user_barcode?
   validate :plates_barcodes_should_be_identical
 
   def initialize(attributes = { overage: 1.2 })
@@ -70,6 +70,18 @@ class StockStamper
   end
 
   private
+
+  def destination_plate_barcode?
+    destination_plate_barcode.present?
+  end
+
+  def destination_plate_type_name?
+    destination_plate_type_name.present?
+  end
+
+  def user_barcode?
+    user_barcode.present?
+  end
 
   def volume(well)
     if well.get_current_volume * overage.to_f < plate_type.maximum_volume.to_f
