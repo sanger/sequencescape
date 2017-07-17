@@ -143,6 +143,7 @@ group :test,:cucumber do
   # - Patches rails to share a database connection between threads while Testing
   # - Pathes rspec to ensure capybara has done its stuff before killing the connection
   gem 'transactional_capybara'
+  gem 'pry'
 end
 
 group :cucumber do
