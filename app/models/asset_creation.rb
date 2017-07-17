@@ -32,10 +32,6 @@ class AssetCreation < ActiveRecord::Base
     AssetLink.create_edge!(asset, child)
   end
 
-  def can_create_ancestor_plate?(asset, child)
-    (asset.kind_of? Well) && (!child.nil?) && (!child.ancestors.include?(asset))
-  end
-
   def connect_parent_and_children
     children.each { |child| create_ancestor_asset!(parent, child) }
   end

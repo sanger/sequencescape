@@ -32,16 +32,9 @@ class TubeCreation < AssetCreation
   private :target_for_ownership
 
   def create_children!
-    self.children = (1..parent.pools.size).map { |_| child_purpose.create! }
+    self.children = Array.new(parent.pools.size) { child_purpose.create! }
   end
   private :create_children!
-
-  def create_ancestor_plate!
-    children.each do |child|
-      create_ancestor_asset!(parent.plate, child) if can_create_ancestor_plate?(parent.plate, child)
-    end
-  end
-  before_save :create_ancestor_plate!
 
   def record_creation_of_children
     #    children.each { |child| parent.events.create_tube!(child_purpose, child, user) }

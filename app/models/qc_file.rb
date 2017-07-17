@@ -45,16 +45,13 @@ class QcFile < ActiveRecord::Base
   end
 
   def retrieve_file
-    begin
-      uploaded_data.cache!(uploaded_data.file)
-      yield(uploaded_data)
-    ensure
-      # We can't actually delete the cache file here, as the send_file
-      # operation happens asynchronously. Instead we can use:
-      # PolymorphicUploader.clean_cached_files!
-      # This cleans the last 24h worth of files, so should be a daily
-      # cron
-    end
+    uploaded_data.cache!(uploaded_data.file)
+    yield(uploaded_data)
+    # We can't actually delete the cache file here, as the send_file
+    # operation happens asynchronously. Instead we can use:
+    # PolymorphicUploader.clean_cached_files!
+    # This cleans the last 24h worth of files, so should be a daily
+    # cron
   end
 
   private
