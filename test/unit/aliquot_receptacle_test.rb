@@ -9,7 +9,7 @@ class Aliquot::ReceptacleTest < ActiveSupport::TestCase
     [
       ['Untagged', [:untagged_aliquot]],
       ['Single',  [:untagged_aliquot, :single_tagged_aliquot]],
-      ['Dual',    [:untagged_aliquot, :dual_tagged_aliquot]],
+      ['Dual',    [:untagged_aliquot, :dual_tagged_aliquot]]
     ].each do |name, aliquots|
 
       should "label #{name} assets" do
