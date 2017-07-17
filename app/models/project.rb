@@ -7,6 +7,8 @@
 require 'aasm'
 
 class Project < ActiveRecord::Base
+  # It has to be here, as there are has_many through: :orders associations in modules
+  has_many :orders
   include Api::ProjectIO::Extensions
   include ModelExtensions::Project
   include Api::Messages::FlowcellIO::ProjectExtensions
@@ -23,7 +25,6 @@ class Project < ActiveRecord::Base
   end
 
   ACTIVE_STATE = 'active'
-
   has_many_events
   has_many_lab_events
 
@@ -52,7 +53,6 @@ class Project < ActiveRecord::Base
   }
 
   has_many :roles, as: :authorizable
-  has_many :orders
   has_many :studies, ->() { distinct }, class_name: 'Study', through: :orders, source: :study
   has_many :submissions,  ->() { distinct }, through: :orders, source: :submission
   has_many :sample_manifests

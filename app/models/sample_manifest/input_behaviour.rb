@@ -43,9 +43,7 @@ module SampleManifest::InputBehaviour
 
           # These need to be checked when updating from a sample manifest.  We need to be able to display
           # the sample ID so this can't be done with validates_presence_of
-          validates_each(:volume, :concentration, if: :updating_from_manifest?) do |record, attr, _value|
-            record.errors.add_on_blank(attr, message: "can't be blank for #{record.sample.sanger_sample_id}")
-          end
+          validates :volume, :concentration, if: :updating_from_manifest?, presence: {:message => Proc.new{ |object, data| "#{data[:attribute]} can't be blank for #{object.sample.sanger_sample_id}"}}
         end
 
         def accession_number_from_manifest=(new_value)
