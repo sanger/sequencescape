@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170531082054) do
+ActiveRecord::Schema.define(version: 20170711153937) do
 
   create_table "aliquot_indices", force: :cascade do |t|
     t.integer  "aliquot_id",    limit: 4, null: false
@@ -806,7 +806,6 @@ ActiveRecord::Schema.define(version: 20170531082054) do
     t.integer  "max_size",                      limit: 4
     t.boolean  "summary",                                   default: true
     t.boolean  "group_by_study_to_delete",                  default: true
-    t.integer  "max_number_of_groups",          limit: 4
     t.boolean  "externally_managed",                        default: false
     t.string   "group_name",                    limit: 255
     t.integer  "control_request_type_id",       limit: 4,                   null: false
