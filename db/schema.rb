@@ -749,7 +749,6 @@ ActiveRecord::Schema.define(version: 20170717095922) do
     t.boolean "active", default: true
     t.datetime "created_at"
     t.datetime "updated_at"
-<<<<<<< HEAD
     t.integer "next_pipeline_id"
     t.integer "previous_pipeline_id"
     t.integer "location_id"
@@ -763,50 +762,11 @@ ActiveRecord::Schema.define(version: 20170717095922) do
     t.integer "max_size"
     t.boolean "summary", default: true
     t.boolean "group_by_study_to_delete", default: true
-    t.integer "max_number_of_groups"
     t.boolean "externally_managed", default: false
     t.string "group_name"
     t.integer "control_request_type_id", null: false
     t.integer "min_size"
     t.index ["sorter"], name: "index_pipelines_on_sorter"
-||||||| merged common ancestors
-    t.integer  "next_pipeline_id",              limit: 4
-    t.integer  "previous_pipeline_id",          limit: 4
-    t.integer  "location_id",                   limit: 4
-    t.boolean  "group_by_parent"
-    t.string   "asset_type",                    limit: 50
-    t.boolean  "group_by_submission_to_delete"
-    t.boolean  "multiplexed"
-    t.string   "sti_type",                      limit: 50
-    t.integer  "sorter",                        limit: 4
-    t.boolean  "paginate",                                  default: false
-    t.integer  "max_size",                      limit: 4
-    t.boolean  "summary",                                   default: true
-    t.boolean  "group_by_study_to_delete",                  default: true
-    t.integer  "max_number_of_groups",          limit: 4
-    t.boolean  "externally_managed",                        default: false
-    t.string   "group_name",                    limit: 255
-    t.integer  "control_request_type_id",       limit: 4,                   null: false
-    t.integer  "min_size",                      limit: 4
-=======
-    t.integer  "next_pipeline_id",              limit: 4
-    t.integer  "previous_pipeline_id",          limit: 4
-    t.integer  "location_id",                   limit: 4
-    t.boolean  "group_by_parent"
-    t.string   "asset_type",                    limit: 50
-    t.boolean  "group_by_submission_to_delete"
-    t.boolean  "multiplexed"
-    t.string   "sti_type",                      limit: 50
-    t.integer  "sorter",                        limit: 4
-    t.boolean  "paginate",                                  default: false
-    t.integer  "max_size",                      limit: 4
-    t.boolean  "summary",                                   default: true
-    t.boolean  "group_by_study_to_delete",                  default: true
-    t.boolean  "externally_managed",                        default: false
-    t.string   "group_name",                    limit: 255
-    t.integer  "control_request_type_id",       limit: 4,                   null: false
-    t.integer  "min_size",                      limit: 4
->>>>>>> 588b1d3faaa2b3c7de4288f8ec6179672f37afc4
   end
 
   create_table "pipelines_request_types", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
