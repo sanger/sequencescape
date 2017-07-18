@@ -913,7 +913,6 @@ PulldownMultiplexLibraryPreparationPipeline.create!(name: 'Pulldown Multiplex Li
   pipeline.active               = true
   pipeline.group_by_parent      = true
   pipeline.max_size             = 96
-  pipeline.max_number_of_groups = 1
 
   pipeline.location = Location.find_by(name: 'Pulldown freezer') or raise StandardError, "Cannot find 'Pulldown freezer' location"
 

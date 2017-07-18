@@ -106,7 +106,7 @@ group :development do
   gem 'flay', require: false
   gem 'flog', require: false
   # Detect n+1 queries
-  gem 'bullet', require: false
+  gem 'bullet'
   gem 'pry'
   # Automatically generate documentation
   gem 'yard', require: false

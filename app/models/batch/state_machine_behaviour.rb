@@ -17,7 +17,7 @@ module Batch::StateMachineBehaviour
 
         # State Machine events
         event :start do
-          transitions to: :started, from: [:pending, :started]
+          transitions to: :started, from: [:pending]
         end
 
         event :complete do
