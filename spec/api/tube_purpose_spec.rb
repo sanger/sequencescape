@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require 'pry'
+
 describe '/api/1/tube/purposes' do
   before(:each) do
     create :transfer_request_type

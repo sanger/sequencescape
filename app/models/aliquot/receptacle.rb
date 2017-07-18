@@ -24,8 +24,8 @@ class Aliquot::Receptacle < Asset
   # one aliquot.
   has_many :aliquots, ->() { order(tag_id: :asc, tag2_id: :asc) }, foreign_key: :receptacle_id, autosave: true, dependent: :destroy, inverse_of: :receptacle
   has_many :samples, through: :aliquots
-  has_many :studies, ->() { uniq }, through: :aliquots
-  has_many :projects, ->() { uniq }, through: :aliquots
+  has_many :studies, ->() { distinct }, through: :aliquots
+  has_many :projects, ->() { distinct }, through: :aliquots
   has_one :primary_aliquot, ->() { order(:created_at).readonly }, class_name: 'Aliquot', foreign_key: :receptacle_id
 
   has_many :tags, through: :aliquots
@@ -41,11 +41,11 @@ class Aliquot::Receptacle < Asset
   deprecate get_tag: 'receptacles can contain multiple tags.'
 
   # Named scopes for the future
-  scope :include_aliquots, -> { includes(aliquots: %i(sample tag bait_library)) }
-  scope :include_aliquots_for_api, -> { includes(aliquots: [{ sample: [:uuid_object, :study_reference_genome, { sample_metadata: :reference_genome }] }, { tag: :tag_group }, :bait_library]) }
-  scope :for_summary, -> { includes(:map, :samples, :studies, :projects) }
-  scope :include_creation_batches, -> { includes(:creation_batches) }
-  scope :include_source_batches, -> { includes(:source_batches) }
+  scope :include_aliquots, ->() { includes(aliquots: %i(sample tag bait_library)) }
+  scope :include_aliquots_for_api, ->() { includes(aliquots: [{ sample: [:uuid_object, :study_reference_genome, { sample_metadata: :reference_genome }] }, { tag: :tag_group }, :bait_library]) }
+  scope :for_summary, ->() { includes(:map, :samples, :studies, :projects) }
+  scope :include_creation_batches, ->() { includes(:creation_batches) }
+  scope :include_source_batches, ->() { includes(:source_batches) }
 
   scope :for_study_and_request_type, ->(study, request_type) { joins(:aliquots, :requests).where(aliquots: { study_id: study }).where(requests: { request_type_id: request_type }) }
 
