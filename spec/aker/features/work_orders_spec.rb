@@ -3,7 +3,7 @@ require 'rails_helper'
 
 RSpec.describe 'WorkOrders', type: :feature, aker: true do
 
-  let!(:work_order) { create(:work_order) }
+  let!(:work_order) { create(:work_order_with_samples) }
   let(:url) { "#{Rails.configuration.aker['urls']['work_orders']}/work_orders/#{work_order.aker_id}" }
   let(:request) { RestClient::Request.new(method: :get, url: url) }
   let(:work_order_json) do

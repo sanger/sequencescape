@@ -25,5 +25,14 @@
     <li>
       Desired date: <%= @aker_work_order['desired_date'] %>
     </li>
+    <li>
+      <ul>
+        <% @work_order.samples.each do |sample| %>
+          <li class='sample'>
+            Sample: <%= sample.name %>
+          </li>
+        <% end %>
+      </ul>
+    </li>
   </ul>
 </section>
