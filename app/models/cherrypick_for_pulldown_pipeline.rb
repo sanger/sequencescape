@@ -35,13 +35,4 @@ class CherrypickForPulldownPipeline < CherrypickingPipeline
     [requests.map(&:request_type_id).uniq, requests.map(&:submission_id).uniq]
   end
   private :request_types_and_submissions_for
-
-  # Validates that the requests in the batch lead into the same pipeline.
-  def validation_of_requests(requests, &block)
-    super # Could throw, which means that the rest of this function does not get executed
-
-    yield('cannot be mixed across pulldown pipelines') if requests.map do |request|
-      request.submission.next_requests(request).map(&:request_type)
-    end.flatten.uniq.size > 1
-  end
 end
