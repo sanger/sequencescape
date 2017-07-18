@@ -60,6 +60,7 @@ class Request < ActiveRecord::Base
   has_many :qc_metric_requests
   has_many :qc_metrics, through: :qc_metric_requests
   has_many :request_events, ->() { order(:current_from) }, inverse_of: :request
+  has_many :upstream_requests, through: :asset, source: :requests_as_target
 
   # Validations
   # On create we perform a full and complete validation.
