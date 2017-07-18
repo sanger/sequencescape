@@ -46,14 +46,14 @@ class SequencingRequest < CustomerRequest
   end
 
   def ready?
+    # Reject any requests with missing or empty assets.
+    return false if asset.nil? || asset.aliquots.empty?
     # It's ready if I don't have any lib creation requests or if all my lib creation requests are closed and
     # at least one of them is in 'passed' status
-    asset = self.asset
-    return true if asset.nil?
-    requests_as_target = self.asset.requests_as_target
-    return true if requests_as_target.nil?
-    library_creation_requests = requests_as_target.where_is_a? Request::LibraryCreation
-    (library_creation_requests.size == 0) || library_creation_requests.all?(&:closed?) && library_creation_requests.any?(&:passed?)
+    library_creation_requests = upstream_requests.customer_requests
+    library_creation_requests.empty? ||
+      library_creation_requests.all?(&:closed?) &&
+        library_creation_requests.any?(&:passed?)
   end
 
   def self.delegate_validator

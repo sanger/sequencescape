@@ -244,7 +244,10 @@ class BulkSubmission
     # Builds an array of the common fields. Raises and exception if the fields are inconsistent
     COMMON_FIELDS.map do |field|
       option = rows.map { |r| r[field] }.uniq
-      errors.add(:spreadsheet, "Column, #{field}, should be identical for all requests in asset group #{rows.first['asset group name']}") if option.count > 1
+      if option.count > 1
+        provided_values = option.map { |o| "'#{o}'" }.to_sentence
+        errors.add(:spreadsheet, "#{field} should be identical for all requests in asset group '#{rows.first['asset group name']}'. Given values were: #{provided_values}.")
+      end
       [field, option.first]
     end
   end

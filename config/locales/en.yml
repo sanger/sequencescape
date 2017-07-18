@@ -184,6 +184,10 @@ en:
         faculty_sponsor_id: "Faculty sponsor"
         faculty_sponsor: "Faculty sponsor"
         study_description: "Study description"
+  activemodel:
+    errors:
+      messages:
+        record_invalid: "Validation failed: %{errors}"
   qc_reports:
     state_descriptions:
       default: "No description has been provided for this state."
