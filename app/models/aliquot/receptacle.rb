@@ -8,27 +8,24 @@ class Aliquot::Receptacle < Asset
   include Transfer::State
   include Aliquot::Remover
 
+  SAMPLE_PARTIAL = 'assets/samples_partials/asset_samples'
+
   has_many :transfer_requests, class_name: 'TransferRequest', foreign_key: :target_asset_id
   has_many :transfer_requests_as_source, class_name: 'TransferRequest', foreign_key: :asset_id
   has_many :transfer_requests_as_target, class_name: 'TransferRequest', foreign_key: :target_asset_id
-
   has_many :requests, inverse_of: :asset, foreign_key: :asset_id
   has_one  :source_request, ->() { includes(:request_metadata) }, class_name: 'Request', foreign_key: :target_asset_id
   has_many :requests_as_source, ->() { includes(:request_metadata) }, class_name: 'Request', foreign_key: :asset_id
   has_many :requests_as_target, ->() { includes(:request_metadata) }, class_name: 'Request', foreign_key: :target_asset_id
-
   has_many :creation_batches, class_name: 'Batch', through: :requests_as_target, source: :batch
   has_many :source_batches, class_name: 'Batch', through: :requests_as_source, source: :batch
-
-  def default_state
-    nil
-  end
-
-  SAMPLE_PARTIAL = 'assets/samples_partials/asset_samples'
 
   # A receptacle can hold many aliquots.  For example, a multiplexed library tube will contain more than
   # one aliquot.
   has_many :aliquots, ->() { order(tag_id: :asc, tag2_id: :asc) }, foreign_key: :receptacle_id, autosave: true, dependent: :destroy, inverse_of: :receptacle
+  has_many :samples, through: :aliquots
+  has_many :studies, ->() { uniq }, through: :aliquots
+  has_many :projects, ->() { uniq }, through: :aliquots
   has_one :primary_aliquot, ->() { order(:created_at).readonly }, class_name: 'Aliquot', foreign_key: :receptacle_id
 
   has_many :tags, through: :aliquots
@@ -36,8 +33,15 @@ class Aliquot::Receptacle < Asset
   # Our receptacle needs to report its tagging status based on the most highly tagged aliquot. This retrieves it
   has_one :most_tagged_aliquot, ->() { order(tag2_id: :desc, tag_id: :desc).readonly }, class_name: 'Aliquot', foreign_key: :receptacle_id
 
+  # DEPRECATED ASSOCIATIONS
+  # TODO: Remove these at some point in the future as they're kind of wrong!
+  has_one :sample, through: :primary_aliquot
+  deprecate sample: 'receptacles may contain multiple samples. This method just returns the first.'
+  has_one :get_tag, through: :primary_aliquot, source: :tag
+  deprecate get_tag: 'receptacles can contain multiple tags.'
+
   # Named scopes for the future
-  scope :include_aliquots, -> { includes(aliquots: [:sample, :tag, :bait_library]) }
+  scope :include_aliquots, -> { includes(aliquots: %i(sample tag bait_library)) }
   scope :include_aliquots_for_api, -> { includes(aliquots: [{ sample: [:uuid_object, :study_reference_genome, { sample_metadata: :reference_genome }] }, { tag: :tag_group }, :bait_library]) }
   scope :for_summary, -> { includes(:map, :samples, :studies, :projects) }
   scope :include_creation_batches, -> { includes(:creation_batches) }
@@ -55,23 +59,11 @@ class Aliquot::Receptacle < Asset
   # Scope for caching the samples of the receptacle
   scope :including_samples, -> { includes(samples: :studies) }
 
-  # TODO: Remove these at some point in the future as they're kind of wrong!
-  has_one :sample, through: :primary_aliquot
-  deprecate sample: 'receptacles may contain multiple samples. This method just returns the first.'
-
   def sample=(sample)
     aliquots.clear
     aliquots << Aliquot.new(sample: sample)
   end
   deprecate :sample=
-
-  def sample_id
-    primary_aliquot.try(:sample_id)
-  end
-  deprecate :sample_id
-
-  has_one :get_tag, through: :primary_aliquot, source: :tag
-  deprecate :get_tag
 
   def update_aliquot_quality(suboptimal_quality)
     aliquots.each { |a| a.update_quality(suboptimal_quality) }
@@ -99,6 +91,10 @@ class Aliquot::Receptacle < Asset
     when 1; then map_ids.first
     else "#{map_ids.first}-#{map_ids.last}"
     end
+  end
+
+  def default_state
+    nil
   end
 
   def primary_aliquot_if_unique
@@ -137,10 +133,6 @@ class Aliquot::Receptacle < Asset
   def outer_request(submission_id)
     transfer_requests_as_target.find_by(submission_id: submission_id).try(:outer_request)
   end
-
-  has_many :studies, through: :aliquots
-  has_many :projects, through: :aliquots
-  has_many :samples, through: :aliquots
 
   # Contained samples also works on eg. plate
   alias_attribute :contained_samples, :samples
