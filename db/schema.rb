@@ -494,11 +494,6 @@ ActiveRecord::Schema.define(version: 20170717095922) do
     t.index ["propertied_type", "key"], name: "index_external_properties_on_propertied_type_and_key"
     t.index ["value"], name: "index_external_properties_on_value"
   end
-  
-  add_index "external_properties", ["propertied_id", "propertied_type", "key"], name: "ep_pi_pt_key", using: :btree
-  add_index "external_properties", ["propertied_id", "propertied_type"], name: "ep_pi_pt", using: :btree
-  add_index "external_properties", ["propertied_type", "key"], name: "index_external_properties_on_propertied_type_and_key", using: :btree
-  add_index "external_properties", ["value"], name: "index_external_properties_on_value", using: :btree
 
   create_table "extraction_attributes", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.integer "target_id"
