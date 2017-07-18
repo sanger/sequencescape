@@ -486,7 +486,7 @@ DEPENDENCIES
   select2-rails
   shoulda
   simplecov
-  sinatra (~> 2.0.0.rc2)
+  sinatra
   spoon
   spreadsheet
   therubyracer

@@ -48,7 +48,7 @@ group :default do
 
   # For the API level
   gem 'uuidtools'
-  gem 'sinatra', '~> 2.0.0.rc2', require: false
+  gem 'sinatra', require: false
   gem 'rack-acceptable', require: 'rack/acceptable'
   gem 'json'
   gem 'jrjackson', platforms: :jruby
