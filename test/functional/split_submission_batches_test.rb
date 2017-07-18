@@ -51,7 +51,7 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
             project_name: @project.name,
             lanes_of_sequencing_required: '5',
             priority: 1
-          }})
+          } })
 
         Submission.last.built!
         Delayed::Worker.new.work_off
@@ -99,7 +99,7 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
            @submission_template = SubmissionTemplate.find_by!(name: 'Illumina-C - Multiplexed Library Creation - Single ended sequencing')
            @library_pipeline = Pipeline.find_by!(name: 'Illumina-B MX Library Preparation')
 
-           post(:create, params: {submission: {
+           post(:create, params: { submission: {
              is_a_sequencing_order: 'true',
              comments: '',
              template_id: @submission_template.id.to_s,
@@ -114,7 +114,7 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
              project_name: @project.name,
              lanes_of_sequencing_required: '5',
              priority: 1
-             }})
+             } })
 
            Submission.last.built!
            Delayed::Worker.new.work_off

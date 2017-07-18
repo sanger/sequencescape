@@ -44,13 +44,13 @@ class ProjectsControllerTest < ActionController::TestCase
       context 'successfullyFactoryGirl.create a new project' do
         setup do
           @project_counter = Project.count
-          post :create, params: {'project' => {
+          post :create, params: { 'project' => {
             'name' => 'hello',
             :project_metadata_attributes => {
               project_cost_code: 'Some cost code',
               project_funding_model: 'Internal'
             }
-          }}
+          } }
         end
 
         should set_flash.to('Your project has been created')
@@ -63,13 +63,13 @@ class ProjectsControllerTest < ActionController::TestCase
       context 'with invalid data' do
         setup do
           @initial_project_count = Project.count
-          post :create, params: {'project' => {
+          post :create, params: { 'project' => {
             'name' => 'hello 2',
             :project_metadata_attributes => {
               project_cost_code: '',
               project_funding_model: ''
             }
-          }}
+          } }
         end
 
         should render_template :new
@@ -83,13 +83,13 @@ class ProjectsControllerTest < ActionController::TestCase
       context 'create a new project using permission allowed (not required)' do
         setup do
           @project_counter = Project.count
-          post :create, params: {'project' => {
+          post :create, params: { 'project' => {
             'name' => 'hello 3',
             :project_metadata_attributes => {
               project_cost_code: 'Some cost code',
               project_funding_model: 'Internal'
             }
-          }}
+          } }
         end
 
         should redirect_to('last project added page') { project_path(Project.last) }

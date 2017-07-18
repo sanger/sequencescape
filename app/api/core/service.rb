@@ -100,11 +100,11 @@ module Core
     end
 
     def self.before_all_actions(&block)
-      self.before('/*', &block)
+      before('/*', &block)
     end
 
     def self.after_all_actions(&block)
-      self.after('/*', &block)
+      after('/*', &block)
     end
 
     def command

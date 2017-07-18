@@ -28,7 +28,7 @@ class LocationsControllerTest < ActionController::TestCase
 
     context '#show' do
       setup do
-        get :show, params: {id: @location.id}
+        get :show, params: { id: @location.id }
       end
 
       should render_template :show
@@ -58,7 +58,7 @@ class LocationsControllerTest < ActionController::TestCase
 
     context '#edit' do
       setup do
-        get :edit, params: {id: @location.id}
+        get :edit, params: { id: @location.id }
       end
 
       should 'render edit' do
@@ -69,8 +69,8 @@ class LocationsControllerTest < ActionController::TestCase
     context '#update_Location' do
       setup do
         put :update,
-            params: {id: @location.id,
-            location: {}}
+            params: { id: @location.id,
+                      location: {} }
       end
 
       should 'render update Location' do
@@ -81,7 +81,7 @@ class LocationsControllerTest < ActionController::TestCase
     context '#destroy_Location' do
       setup do
         @old_count = Location.count
-        delete :destroy, params: {id: @location.id}
+        delete :destroy, params: { id: @location.id }
       end
 
       should 'destroy given Locations' do

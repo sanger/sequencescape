@@ -21,13 +21,13 @@ class SessionsControllerTest < ActionController::TestCase
   end
 
   def test_should_login_and_redirect
-    post :login, params: {login: 'john', password: 'test'}
+    post :login, params: { login: 'john', password: 'test' }
     assert session[:user]
     # assert_response :redirect
   end
 
   def test_should_fail_login_and_not_redirect
-    post :login, params: {login: 'john', password: 'bad password'}
+    post :login, params: { login: 'john', password: 'bad password' }
     assert_nil session[:user]
     assert_response :success
   end

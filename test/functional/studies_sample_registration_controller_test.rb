@@ -26,7 +26,7 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
 
       context '#index' do
         setup do
-          get :index, params: {study_id: @study}
+          get :index, params: { study_id: @study }
         end
 
         should respond_with :success
@@ -45,7 +45,7 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
 
         context 'without attaching a file' do
           setup do
-            post :new, params: {study_id: @study}
+            post :new, params: { study_id: @study }
           end
 
           should 'respond successfully and render the new template' do
@@ -57,7 +57,7 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
         context 'with attached file' do
           setup do
             session[:user] = @user.id
-            post :spreadsheet, params: {study_id: @study, file: Rack::Test::UploadedFile.new(Rails.root.to_s + '/test/data/two_plate_sample_info_valid.xls', '') }
+            post :spreadsheet, params: { study_id: @study, file: Rack::Test::UploadedFile.new(Rails.root.to_s + '/test/data/two_plate_sample_info_valid.xls', '') }
           end
 
           should 'respond successfully and render the new template' do
@@ -78,7 +78,7 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
 
       context '#upload' do
         setup do
-          get :upload, params: {study_id: @study}
+          get :upload, params: { study_id: @study }
         end
 
         should respond_with :success
@@ -88,7 +88,7 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
       context '#create' do
         context 'samples are blank with values given' do
           setup do
-            post :create, params: {study_id: @study, sample_registrars: {}}
+            post :create, params: { study_id: @study, sample_registrars: {} }
           end
 
           should set_flash.now.to('You do not appear to have specified any samples')
@@ -100,7 +100,7 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
           setup do
             @sscount = @study.samples.count
             post :create, params: { study_id: @study,
-                          sample_registrars: {
+                                    sample_registrars: {
                 '1' => {
                   asset_group_name: 'asset_group_name',
                   sample_attributes: { name: 'hello' }
@@ -118,8 +118,8 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
         context 'two samples with values given' do
           setup do
             @sscount = @study.samples.count
-            post :create, params: {study_id: @study,
-                          sample_registrars: {
+            post :create, params: { study_id: @study,
+                                    sample_registrars: {
                 '1' => {
                   asset_group_name: 'asset_group_0',
                   sample_attributes: { name: 'Sam1' }
@@ -142,7 +142,7 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
           setup do
             @sscount = @study.samples.count
             post :create, params: { study_id: @study,
-                          sample_registrars: {
+                                    sample_registrars: {
                 '1' => {
                   asset_group_name: 'asset_group_0',
                   sample_attributes: { name: 'Sam1' }
@@ -175,7 +175,7 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
             @sscount = @study.samples.count
             @asset_count = Asset.count
             post :create, params: { study_id: @study,
-                          sample_registrars: {
+                                    sample_registrars: {
                   '1' => {
                     asset_group_name: 'asset_group_0',
                     sample_tube_attributes: { two_dimensional_barcode: 'SI0000012345' },
@@ -222,8 +222,8 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
 
         context 'when sample information is missing' do
           setup do
-            post :create, params: {study_id: @study,
-                          sample_registrars: { '1' => {} } }
+            post :create, params: { study_id: @study,
+                                    sample_registrars: { '1' => {} } }
           end
           should render_template :new
         end

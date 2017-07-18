@@ -36,12 +36,12 @@ module Batch::StateMachineBehaviour
       scope :failed, -> { where(production_state: 'fail') }
 
       # We override the behaviour of a couple of events because they require user details.
-      alias_method( :start_without_user!, :start!)
-      alias_method( :start!, :start_with_user!)
-      alias_method( :complete_without_user!, :complete!)
-      alias_method( :complete!, :complete_with_user!)
-      alias_method( :release_without_user!, :release!)
-      alias_method( :release!, :release_with_user!)
+      alias_method(:start_without_user!, :start!)
+      alias_method(:start!, :start_with_user!)
+      alias_method(:complete_without_user!, :complete!)
+      alias_method(:complete!, :complete_with_user!)
+      alias_method(:release_without_user!, :release!)
+      alias_method(:release!, :release_with_user!)
     end
   end
 

@@ -44,7 +44,7 @@ class BatchesControllerTest < ActionController::TestCase
           batch.reload
           batch.start!(create(:user))
 
-          get :show, params: {id: batch.id, format: :xml}
+          get :show, params: { id: batch.id, format: :xml }
         end
 
         should 'Respond with xml' do
@@ -82,13 +82,13 @@ class BatchesControllerTest < ActionController::TestCase
         end
 
         should '#show' do
-          get :show, params: {id: @batch_one.id}
+          get :show, params: { id: @batch_one.id }
           assert_response :success
           assert_equal @batch_one, assigns(:batch)
         end
 
         should '#edit' do
-          get :edit, params: {id: @batch_one}
+          get :edit, params: { id: @batch_one }
           assert_response :success
           assert_equal @batch_one, assigns(:batch)
         end
@@ -109,23 +109,23 @@ class BatchesControllerTest < ActionController::TestCase
         end
 
         should 'accepts valid layouts' do
-          post :verify_tube_layout,     params: {id: @batch.id,
-                                                'barcode_0' => '3980654321768',
-                                                'barcode_1' => '3980123456878' }
+          post :verify_tube_layout, params: { id: @batch.id,
+                                              'barcode_0' => '3980654321768',
+                                              'barcode_1' => '3980123456878' }
           assert_equal 'All of the tubes are in their correct positions.', flash[:notice]
         end
 
         should 'rejects invalid layouts' do
-          post :verify_tube_layout,     params: {id: @batch.id,
-                                                'barcode_0' => '3980123456878',
-                                                'barcode_1' => '3980654321768'}
+          post :verify_tube_layout, params: { id: @batch.id,
+                                              'barcode_0' => '3980123456878',
+                                              'barcode_1' => '3980654321768' }
           assert_equal ['The tube at position 1 is incorrect: expected NT654321L.', 'The tube at position 2 is incorrect: expected NT123456W.'], flash[:error]
         end
 
         should 'rejects missing tubes' do
-          post :verify_tube_layout,     params: {id: @batch.id,
-                                                'barcode_0' => '3980654321768',
-                                                'barcode_1' => ''}
+          post :verify_tube_layout, params: { id: @batch.id,
+                                              'barcode_0' => '3980654321768',
+                                              'barcode_1' => '' }
           assert_equal ['The tube at position 2 is incorrect: expected NT123456W.'], flash[:error]
         end
       end
@@ -140,12 +140,12 @@ class BatchesControllerTest < ActionController::TestCase
         end
 
         should '#create' do
-          post :create, params: {id: @pipeline.id,
-                        utf8: '✓',
-                        action_on_requests: 'create_batch',
-                        request_group: { "#{@plate.id}, #{@submission.id}" => '1' },
-                        "request_group_#{@plate.id}_#{@submission.id}_size": '1',
-                        commit: 'Submit'}
+          post :create, params: { id: @pipeline.id,
+                                  utf8: '✓',
+                                  action_on_requests: 'create_batch',
+                                  request_group: { "#{@plate.id}, #{@submission.id}" => '1' },
+                                  "request_group_#{@plate.id}_#{@submission.id}_size": '1',
+                                  commit: 'Submit' }
         end
       end
 
@@ -187,24 +187,24 @@ class BatchesControllerTest < ActionController::TestCase
               @pipeline.controls << @cn
             end
             should '#add control' do
-              get :add_control, params: {id: @batch_one, control: { id: @cn.id }}
+              get :add_control, params: { id: @batch_one, control: { id: @cn.id } }
             end
             should '#create_training_batchl' do
-              get :create_training_batch, params: {id: @batch_one, control: { id: @cn.id }}
+              get :create_training_batch, params: { id: @batch_one, control: { id: @cn.id } }
             end
           end
         end
 
         should '#update' do
           @pipeline_user = create :pipeline_admin, login: 'ur1', first_name: 'Ursula', last_name: 'Robinson'
-          put :update, params: {id: @batch_one.id, batch: { assignee_id: @pipeline_user.id }}
+          put :update, params: { id: @batch_one.id, batch: { assignee_id: @pipeline_user.id } }
           assert_redirected_to batch_path(assigns(:batch))
           assert_equal assigns(:batch).assignee, @pipeline_user
           assert_includes flash[:notice], 'Assigned to Ursula Robinson (ur1)'
         end
 
         should 'redirect on update without param' do
-          put :update, params: {id: @batch_one.id, batch: { id: 'bad id' }}
+          put :update, params: { id: @batch_one.id, batch: { id: 'bad id' } }
           assert_response :redirect
         end
 
@@ -218,7 +218,7 @@ class BatchesControllerTest < ActionController::TestCase
 
           context 'redirect to #show new batch' do
             setup do
-              post :create, params: {id: @pipeline.id, request: { @request_three.id => '0', @request_four.id => '1' }}
+              post :create, params: { id: @pipeline.id, request: { @request_three.id => '0', @request_four.id => '1' } }
             end
 
             should 'create_batch  with no controls' do
@@ -231,7 +231,7 @@ class BatchesControllerTest < ActionController::TestCase
             setup do
               @cn = FactoryGirl.create :control, name: 'Control 1', item_id: 2, pipeline: @pipeline
               @pipeline.controls << @cn
-              post :create, params: {id: @pipeline.id, request: { @request_three.id => '0', @request_four.id => '1' }}
+              post :create, params: { id: @pipeline.id, request: { @request_three.id => '0', @request_four.id => '1' } }
             end
 
             should 'if pipeline has controls' do
@@ -244,7 +244,7 @@ class BatchesControllerTest < ActionController::TestCase
           context 'create batch and assign requests' do
             setup do
               @old_count = Batch.count
-              post :create, params: {id: @pipeline.id, request: { @request_three.id => '1', @request_four.id => '1' }}
+              post :create, params: { id: @pipeline.id, request: { @request_three.id => '1', @request_four.id => '1' } }
               @batch = Batch.last
             end
 
@@ -259,21 +259,21 @@ class BatchesControllerTest < ActionController::TestCase
 
         context '#released' do
           should 'return all released batches if passed params' do
-            get :released, params: {id: @pipeline.id}
+            get :released, params: { id: @pipeline.id }
             assert_response :success
           end
         end
 
         context '#fail' do
           should 'render fail reasons when internal' do
-            get :fail, params: {id: @batch_one.id}
+            get :fail, params: { id: @batch_one.id }
             assert @batch_one.workflow.source_is_internal?
             assert_response :success
             assert assigns(:fail_reasons)
           end
 
           should 'render fail reasons when external' do
-            get :fail, params: {id: @batch_two.id}
+            get :fail, params: { id: @batch_two.id }
             assert !@batch_two.workflow.source_is_internal?
             assert_response :success
             assert assigns(:fail_reasons)
@@ -288,7 +288,7 @@ class BatchesControllerTest < ActionController::TestCase
 
           context 'posting without a failure reason' do
             setup do
-              post :fail_items, params: {id: @batch_one.id, failure: { reason: '', comment: '' }}
+              post :fail_items, params: { id: @batch_one.id, failure: { reason: '', comment: '' } }
             end
             should 'not allow failing a batch/items without specifying a reason and set the flash' do
               assert_includes flash[:error], 'Please specify a failure reason for this batch'
@@ -300,9 +300,9 @@ class BatchesControllerTest < ActionController::TestCase
             context 'individual items' do
               setup do
                 EventSender.expects(:send_fail_event).returns(true).times(1)
-                post :fail_items, params: {id: @batch_one.id,
-                                  failure: { reason: 'PCR not completed', comment: '' },
-                                  requested_fail: { (@request_one.id).to_s => 'on' }}
+                post :fail_items, params: { id: @batch_one.id,
+                                            failure: { reason: 'PCR not completed', comment: '' },
+                                            requested_fail: { (@request_one.id).to_s => 'on' } }
               end
               should 'create a failure on each item in this batch and have two items related' do
                 assert_equal 0, @batch_one.failures.size
@@ -331,7 +331,7 @@ class BatchesControllerTest < ActionController::TestCase
         @e.add_descriptor Descriptor.new(name: 'Chip Barcode', value: 'Chip Barcode: 62c7gaaxx')
         @e.batch_id = @batch.id
         @e.save
-        get :find_batch_by_barcode, params: {id: '62c7gaaxx', format: :xml}
+        get :find_batch_by_barcode, params: { id: '62c7gaaxx', format: :xml }
       end
       should 'show batch' do
         assert_response :success
@@ -343,7 +343,7 @@ class BatchesControllerTest < ActionController::TestCase
     context 'Find by barcode (not found)' do
       setup do
         @controller.stubs(:current_user).returns(@admin)
-        get :find_batch_by_barcode, params: {id: '62c7axx', format: :xml}
+        get :find_batch_by_barcode, params: { id: '62c7axx', format: :xml }
       end
       should 'show error' do
         # this is the wrong response!
@@ -376,7 +376,7 @@ class BatchesControllerTest < ActionController::TestCase
 
         RestClient.expects(:post)
 
-        post :print_plate_barcodes, params: {printer: barcode_printer.name, count: '3', printable: { (@batch.output_plates.first.barcode).to_s => 'on' }, batch_id: (@batch.id).to_s}
+        post :print_plate_barcodes, params: { printer: barcode_printer.name, count: '3', printable: { (@batch.output_plates.first.barcode).to_s => 'on' }, batch_id: (@batch.id).to_s }
       end
 
       should '#print_barcodes should send print request' do
@@ -387,7 +387,7 @@ class BatchesControllerTest < ActionController::TestCase
 
         RestClient.expects(:post)
 
-        post :print_barcodes, params: {printer: barcode_printer.name, count: '3', printable: printable, batch_id: (@batch.id).to_s}
+        post :print_barcodes, params: { printer: barcode_printer.name, count: '3', printable: printable, batch_id: (@batch.id).to_s }
       end
 
       should '#print_multiplex_barcodes should send print request' do
@@ -401,7 +401,7 @@ class BatchesControllerTest < ActionController::TestCase
 
         RestClient.expects(:post)
 
-        post :print_multiplex_barcodes, params: {printer: barcode_printer.name, count: '3', printable: printable, batch_id: (batch.id).to_s}
+        post :print_multiplex_barcodes, params: { printer: barcode_printer.name, count: '3', printable: printable, batch_id: (batch.id).to_s }
       end
     end
   end

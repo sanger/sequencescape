@@ -43,7 +43,7 @@ module SampleManifest::InputBehaviour
 
           # These need to be checked when updating from a sample manifest.  We need to be able to display
           # the sample ID so this can't be done with validates_presence_of
-          validates :volume, :concentration, if: :updating_from_manifest?, presence: {:message => Proc.new{ |object, data| "can't be blank for #{object.sample.sanger_sample_id}"}}
+          validates :volume, :concentration, if: :updating_from_manifest?, presence: { message: proc { |object, _data| "can't be blank for #{object.sample.sanger_sample_id}" } }
         end
 
         def accession_number_from_manifest=(new_value)
@@ -133,8 +133,8 @@ module SampleManifest::InputBehaviour
       # Ensure that we can update the samples of a manifest
       has_many :samples
       accepts_nested_attributes_for :samples
-      alias_method( :update_attributes_without_sample_manifest!, :update_attributes!)
-      alias_method( :update_attributes!, :update_attributes_with_sample_manifest!)
+      alias_method(:update_attributes_without_sample_manifest!, :update_attributes!)
+      alias_method(:update_attributes!, :update_attributes_with_sample_manifest!)
 
       # Can be removed once the initial changes have gone live.
       # Ensures code remains backwards compatible for existing jobs.

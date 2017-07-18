@@ -55,20 +55,20 @@ class SampleManifestsControllerTest < ActionController::TestCase
 
         RestClient.expects(:post)
         post :create, params: { sample_manifest: { template: 'plate_default',
-                                         study_id: study.id,
-                                         supplier_id: supplier.id,
-                                         count: '3',
-                                         barcode_printer: barcode_printer.name,
-                                         only_first_label: '0',
-                                         asset_type: '' } }
+                                                   study_id: study.id,
+                                                   supplier_id: supplier.id,
+                                                   count: '3',
+                                                   barcode_printer: barcode_printer.name,
+                                                   only_first_label: '0',
+                                                   asset_type: '' } }
         RestClient.expects(:post)
         post :create, params: { sample_manifest: { template: 'tube_default',
-                                         study_id: study.id,
-                                         supplier_id: supplier.id,
-                                         count: '3',
-                                         barcode_printer: barcode_printer.name,
-                                         only_first_label: '0',
-                                         asset_type: '' } }
+                                                   study_id: study.id,
+                                                   supplier_id: supplier.id,
+                                                   count: '3',
+                                                   barcode_printer: barcode_printer.name,
+                                                   only_first_label: '0',
+                                                   asset_type: '' } }
       end
     end
   end

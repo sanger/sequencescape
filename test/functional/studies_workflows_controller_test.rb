@@ -23,7 +23,7 @@ class Studies::WorkflowsControllerTest < ActionController::TestCase
 
      context '#show' do
         setup do
-          get :show, params: {id: @workflow.id, study_id: @study.id}
+          get :show, params: { id: @workflow.id, study_id: @study.id }
         end
 
         should respond_with :success

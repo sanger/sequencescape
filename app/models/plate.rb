@@ -146,7 +146,7 @@ class Plate < Asset
       requests: :request_metadata,
       wells: [
         :map_id,
-        { aliquots: %i[samples tag tag2] }
+        { aliquots: %i(samples tag tag2) }
       ]
     )
   }
@@ -287,7 +287,7 @@ class Plate < Asset
   end
   deprecate study: 'Plates can belong to multiple studies, use #studies instead.'
 
-  scope :include_wells_and_attributes, -> { includes(wells: %i[map well_attribute]) }
+  scope :include_wells_and_attributes, -> { includes(wells: %i(map well_attribute)) }
 
   # has_many :wells, :as => :holder, :class_name => "Well"
   DEFAULT_SIZE = 96
@@ -498,7 +498,7 @@ class Plate < Asset
     @storage_location_service = 'ETS'
     return 'Control' if is_a?(ControlPlate)
     return '' if barcode.blank?
-    return %w[storage_area storage_device building_area building].map do |key|
+    return %w(storage_area storage_device building_area building).map do |key|
       get_external_value(key)
     end.compact.join(' - ')
   rescue LabWhereClient::LabwhereException => e

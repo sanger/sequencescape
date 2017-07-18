@@ -33,7 +33,7 @@ class Admin::ProjectsControllerTest < ActionController::TestCase
 
       context '#managed_update (without changes)' do
         setup do
-          put :managed_update, params: {id: @project.id, project: { name: @project.name }}
+          put :managed_update, params: { id: @project.id, project: { name: @project.name } }
         end
 
         should 'not send an email' do
@@ -46,7 +46,7 @@ class Admin::ProjectsControllerTest < ActionController::TestCase
       context '#managed_update (with getting approved)' do
         setup do
           @event_count = Event.count
-          put :managed_update, params: {id: @project.id, project: { approved: true, name: @project.name }}
+          put :managed_update, params: { id: @project.id, project: { approved: true, name: @project.name } }
         end
 
         should redirect_to('admin project') { "/admin/projects/#{@project.id}" }

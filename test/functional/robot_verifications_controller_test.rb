@@ -56,15 +56,15 @@ class RobotVerificationsControllerTest < ActionController::TestCase
 
       context 'with valid inputs' do
         setup do
-          post :download,   params: {user_id: @user.id,
-                            batch_id: @batch.id,
-                            robot_id: @robot.id,
-                            source_plate_types: { '1220127162859' => 'ABgene_0765', '1220127167670' => 'ABgene_0765', '1220127168684' => 'ABgene_0765', '1220134443842' => 'ABgene_0765' },
-                            barcodes: { destination_plate_barcode: '1220142334774' },
-                            bed_barcodes: { '1' => '580000001806', '2' => '580000002810', '3' => '580000003824', '4' => '580000004838' },
-                            plate_barcodes: { '1220127162859' => '1220127162859', '1220127167670' => '1220127167670', '1220127168684' => '1220127168684', '1220134443842' => '1220134443842' },
-                            destination_bed_barcodes: { '1' => '580000005842' },
-                            destination_plate_barcodes: { '1220142334774' => '1220142334774' }}
+          post :download, params: { user_id: @user.id,
+                                    batch_id: @batch.id,
+                                    robot_id: @robot.id,
+                                    source_plate_types: { '1220127162859' => 'ABgene_0765', '1220127167670' => 'ABgene_0765', '1220127168684' => 'ABgene_0765', '1220134443842' => 'ABgene_0765' },
+                                    barcodes: { destination_plate_barcode: '1220142334774' },
+                                    bed_barcodes: { '1' => '580000001806', '2' => '580000002810', '3' => '580000003824', '4' => '580000004838' },
+                                    plate_barcodes: { '1220127162859' => '1220127162859', '1220127167670' => '1220127167670', '1220127168684' => '1220127168684', '1220134443842' => '1220134443842' },
+                                    destination_bed_barcodes: { '1' => '580000005842' },
+                                    destination_plate_barcodes: { '1220142334774' => '1220142334774' } }
         end
 
         should 'be successful' do
@@ -75,15 +75,15 @@ class RobotVerificationsControllerTest < ActionController::TestCase
       context 'with invalid inputs' do
         context 'where nothing is scanned' do
           setup do
-            post :download,   params: {user_id: @user.id,
-                              batch_id: @batch.id,
-                              robot_id: @robot.id,
-                              source_plate_types: { '1220127162859' => 'ABgene_0765', '1220127167670' => 'ABgene_0765', '1220127168684' => 'ABgene_0765', '1220134443842' => 'ABgene_0765' },
-                              barcodes: { destination_plate_barcode: '1220142334774' },
-                              bed_barcodes: { '1' => '', '2' => '', '3' => '', '4' => '' },
-                              plate_barcodes: { '1220127162859' => '', '1220127167670' => '', '1220127168684' => '', '1220134443842' => '' },
-                              destination_bed_barcodes: { '1' => '' },
-                              destination_plate_barcodes: { '1220142334774' => '' }}
+            post :download, params: { user_id: @user.id,
+                                      batch_id: @batch.id,
+                                      robot_id: @robot.id,
+                                      source_plate_types: { '1220127162859' => 'ABgene_0765', '1220127167670' => 'ABgene_0765', '1220127168684' => 'ABgene_0765', '1220134443842' => 'ABgene_0765' },
+                                      barcodes: { destination_plate_barcode: '1220142334774' },
+                                      bed_barcodes: { '1' => '', '2' => '', '3' => '', '4' => '' },
+                                      plate_barcodes: { '1220127162859' => '', '1220127167670' => '', '1220127168684' => '', '1220134443842' => '' },
+                                      destination_bed_barcodes: { '1' => '' },
+                                      destination_plate_barcodes: { '1220142334774' => '' } }
           end
 
           should 'redirect and set the flash to error' do
@@ -95,15 +95,15 @@ class RobotVerificationsControllerTest < ActionController::TestCase
 
         context 'where the source plates are missing' do
           setup do
-            post :download,   params: {user_id: @user.id,
-                              batch_id: @batch.id,
-                              robot_id: @robot.id,
-                              source_plate_types: { '1220127162859' => 'ABgene_0765', '1220127167670' => 'ABgene_0765', '1220127168684' => 'ABgene_0765', '1220134443842' => 'ABgene_0765' },
-                              barcodes: { destination_plate_barcode: '1220142334774' },
-                              bed_barcodes: { '1' => '580000001806', '2' => '580000002810', '3' => '580000003824', '4' => '580000004838' },
-                              plate_barcodes: { '1220127162859' => '', '1220127167670' => '', '1220127168684' => '', '1220134443842' => '' },
-                              destination_bed_barcodes: { '1' => '580000005842' },
-                              destination_plate_barcodes: { '1220142334774' => '1220142334774' }}
+            post :download, params: { user_id: @user.id,
+                                      batch_id: @batch.id,
+                                      robot_id: @robot.id,
+                                      source_plate_types: { '1220127162859' => 'ABgene_0765', '1220127167670' => 'ABgene_0765', '1220127168684' => 'ABgene_0765', '1220134443842' => 'ABgene_0765' },
+                                      barcodes: { destination_plate_barcode: '1220142334774' },
+                                      bed_barcodes: { '1' => '580000001806', '2' => '580000002810', '3' => '580000003824', '4' => '580000004838' },
+                                      plate_barcodes: { '1220127162859' => '', '1220127167670' => '', '1220127168684' => '', '1220134443842' => '' },
+                                      destination_bed_barcodes: { '1' => '580000005842' },
+                                      destination_plate_barcodes: { '1220142334774' => '1220142334774' } }
           end
           should 'redirect and set the flash to error' do
             assert_response :redirect
@@ -114,15 +114,15 @@ class RobotVerificationsControllerTest < ActionController::TestCase
 
         context 'where the source beds are missing' do
           setup do
-            post :download,   params: {user_id: @user.id,
-                              batch_id: @batch.id,
-                              robot_id: @robot.id,
-                              source_plate_types: { '1220127162859' => 'ABgene_0765', '1220127167670' => 'ABgene_0765', '1220127168684' => 'ABgene_0765', '1220134443842' => 'ABgene_0765' },
-                              barcodes: { destination_plate_barcode: '1220142334774' },
-                              bed_barcodes: { '1' => '', '2' => '', '3' => '', '4' => '' },
-                              plate_barcodes: { '1220127162859' => '1220127162859', '1220127167670' => '1220127167670', '1220127168684' => '1220127168684', '1220134443842' => '1220134443842' },
-                              destination_bed_barcodes: { '1' => '580000005842' },
-                              destination_plate_barcodes: { '1220142334774' => '1220142334774' }}
+            post :download, params: { user_id: @user.id,
+                                      batch_id: @batch.id,
+                                      robot_id: @robot.id,
+                                      source_plate_types: { '1220127162859' => 'ABgene_0765', '1220127167670' => 'ABgene_0765', '1220127168684' => 'ABgene_0765', '1220134443842' => 'ABgene_0765' },
+                                      barcodes: { destination_plate_barcode: '1220142334774' },
+                                      bed_barcodes: { '1' => '', '2' => '', '3' => '', '4' => '' },
+                                      plate_barcodes: { '1220127162859' => '1220127162859', '1220127167670' => '1220127167670', '1220127168684' => '1220127168684', '1220134443842' => '1220134443842' },
+                                      destination_bed_barcodes: { '1' => '580000005842' },
+                                      destination_plate_barcodes: { '1220142334774' => '1220142334774' } }
           end
           should 'redirect and set the flash to error' do
             assert_response :redirect
@@ -132,15 +132,15 @@ class RobotVerificationsControllerTest < ActionController::TestCase
         end
         context 'there the source plates are mixed up' do
           setup do
-            post :download,   params: {user_id: @user.id,
-                              batch_id: @batch.id,
-                              robot_id: @robot.id,
-                              source_plate_types: { '1220127162859' => 'ABgene_0765', '1220127167670' => 'ABgene_0765', '1220127168684' => 'ABgene_0765', '1220134443842' => 'ABgene_0765' },
-                              barcodes: { destination_plate_barcode: '1220142334774' },
-                              bed_barcodes: { '1' => '580000001806', '2' => '580000002810', '3' => '580000003824', '4' => '580000004838' },
-                              plate_barcodes: { '1220127167670' => '1220127162859', '1220127162859' => '1220127167670', '1220134443842' => '1220127168684', '1220127168684' => '1220134443842' },
-                              destination_bed_barcodes: { '1' => '580000005842' },
-                              destination_plate_barcodes: { '1220142334774' => '1220142334774' }}
+            post :download, params: { user_id: @user.id,
+                                      batch_id: @batch.id,
+                                      robot_id: @robot.id,
+                                      source_plate_types: { '1220127162859' => 'ABgene_0765', '1220127167670' => 'ABgene_0765', '1220127168684' => 'ABgene_0765', '1220134443842' => 'ABgene_0765' },
+                                      barcodes: { destination_plate_barcode: '1220142334774' },
+                                      bed_barcodes: { '1' => '580000001806', '2' => '580000002810', '3' => '580000003824', '4' => '580000004838' },
+                                      plate_barcodes: { '1220127167670' => '1220127162859', '1220127162859' => '1220127167670', '1220134443842' => '1220127168684', '1220127168684' => '1220134443842' },
+                                      destination_bed_barcodes: { '1' => '580000005842' },
+                                      destination_plate_barcodes: { '1220142334774' => '1220142334774' } }
           end
           should 'redirect and set the flash to error' do
             assert_response :redirect
@@ -150,15 +150,15 @@ class RobotVerificationsControllerTest < ActionController::TestCase
         end
         context 'where the source beds are mixed up' do
           setup do
-            post :download,   params: {user_id: @user.id,
-                              batch_id: @batch.id,
-                              robot_id: @robot.id,
-                              source_plate_types: { '1220127162859' => 'ABgene_0765', '1220127167670' => 'ABgene_0765', '1220127168684' => 'ABgene_0765', '1220134443842' => 'ABgene_0765' },
-                              barcodes: { destination_plate_barcode: '1220142334774' },
-                              bed_barcodes: { '4' => '580000001806', '3' => '580000002810', '1' => '580000003824', '2' => '580000004838' },
-                              plate_barcodes: { '1220127162859' => '1220127162859', '1220127167670' => '1220127167670', '1220127168684' => '1220127168684', '1220134443842' => '1220134443842' },
-                              destination_bed_barcodes: { '1' => '580000005842' },
-                              destination_plate_barcodes: { '1220142334774' => '1220142334774' }}
+            post :download, params: { user_id: @user.id,
+                                      batch_id: @batch.id,
+                                      robot_id: @robot.id,
+                                      source_plate_types: { '1220127162859' => 'ABgene_0765', '1220127167670' => 'ABgene_0765', '1220127168684' => 'ABgene_0765', '1220134443842' => 'ABgene_0765' },
+                                      barcodes: { destination_plate_barcode: '1220142334774' },
+                                      bed_barcodes: { '4' => '580000001806', '3' => '580000002810', '1' => '580000003824', '2' => '580000004838' },
+                                      plate_barcodes: { '1220127162859' => '1220127162859', '1220127167670' => '1220127167670', '1220127168684' => '1220127168684', '1220134443842' => '1220134443842' },
+                                      destination_bed_barcodes: { '1' => '580000005842' },
+                                      destination_plate_barcodes: { '1220142334774' => '1220142334774' } }
           end
           should 'redirect and set the flash to error' do
             assert_response :redirect
@@ -168,15 +168,15 @@ class RobotVerificationsControllerTest < ActionController::TestCase
         end
         context 'where 2 source beds and plates are mixed up' do
           setup do
-            post :download,   params: {user_id: @user.id,
-                              batch_id: @batch.id,
-                              robot_id: @robot.id,
-                              source_plate_types: { '1220127162859' => 'ABgene_0765', '1220127167670' => 'ABgene_0765', '1220127168684' => 'ABgene_0765', '1220134443842' => 'ABgene_0765' },
-                              barcodes: { destination_plate_barcode: '1220142334774' },
-                              bed_barcodes: { '1' => '1220127162859', '2' => '580000002810', '3' => '580000003824', '4' => '580000004838' },
-                              plate_barcodes: { '1220127162859' => '580000001806', '1220127167670' => '1220127167670', '1220127168684' => '1220127168684', '1220134443842' => '1220134443842' },
-                              destination_bed_barcodes: { '1' => '580000005842' },
-                              destination_plate_barcodes: { '1220142334774' => '1220142334774' }}
+            post :download, params: { user_id: @user.id,
+                                      batch_id: @batch.id,
+                                      robot_id: @robot.id,
+                                      source_plate_types: { '1220127162859' => 'ABgene_0765', '1220127167670' => 'ABgene_0765', '1220127168684' => 'ABgene_0765', '1220134443842' => 'ABgene_0765' },
+                                      barcodes: { destination_plate_barcode: '1220142334774' },
+                                      bed_barcodes: { '1' => '1220127162859', '2' => '580000002810', '3' => '580000003824', '4' => '580000004838' },
+                                      plate_barcodes: { '1220127162859' => '580000001806', '1220127167670' => '1220127167670', '1220127168684' => '1220127168684', '1220134443842' => '1220134443842' },
+                                      destination_bed_barcodes: { '1' => '580000005842' },
+                                      destination_plate_barcodes: { '1220142334774' => '1220142334774' } }
           end
           should 'redirect and set the flash to error' do
             assert_response :redirect
@@ -186,15 +186,15 @@ class RobotVerificationsControllerTest < ActionController::TestCase
         end
         context 'where the destination plate is missing' do
           setup do
-            post :download,   params: {user_id: @user.id,
-                              batch_id: @batch.id,
-                              robot_id: @robot.id,
-                              source_plate_types: { '1220127162859' => 'ABgene_0765', '1220127167670' => 'ABgene_0765', '1220127168684' => 'ABgene_0765', '1220134443842' => 'ABgene_0765' },
-                              barcodes: { destination_plate_barcode: '1220142334774' },
-                              bed_barcodes: { '1' => '580000001806', '2' => '580000002810', '3' => '580000003824', '4' => '580000004838' },
-                              plate_barcodes: { '1220127162859' => '1220127162859', '1220127167670' => '1220127167670', '1220127168684' => '1220127168684', '1220134443842' => '1220134443842' },
-                              destination_bed_barcodes: { '1' => '580000005842' },
-                              destination_plate_barcodes: { '1220142334774' => '' }}
+            post :download, params: { user_id: @user.id,
+                                      batch_id: @batch.id,
+                                      robot_id: @robot.id,
+                                      source_plate_types: { '1220127162859' => 'ABgene_0765', '1220127167670' => 'ABgene_0765', '1220127168684' => 'ABgene_0765', '1220134443842' => 'ABgene_0765' },
+                                      barcodes: { destination_plate_barcode: '1220142334774' },
+                                      bed_barcodes: { '1' => '580000001806', '2' => '580000002810', '3' => '580000003824', '4' => '580000004838' },
+                                      plate_barcodes: { '1220127162859' => '1220127162859', '1220127167670' => '1220127167670', '1220127168684' => '1220127168684', '1220134443842' => '1220134443842' },
+                                      destination_bed_barcodes: { '1' => '580000005842' },
+                                      destination_plate_barcodes: { '1220142334774' => '' } }
           end
           should 'redirect and set the flash to error' do
             assert_response :redirect
@@ -204,15 +204,15 @@ class RobotVerificationsControllerTest < ActionController::TestCase
         end
         context 'where the destination bed is missing' do
           setup do
-            post :download,   params: {user_id: @user.id,
-                              batch_id: @batch.id,
-                              robot_id: @robot.id,
-                              source_plate_types: { '1220127162859' => 'ABgene_0765', '1220127167670' => 'ABgene_0765', '1220127168684' => 'ABgene_0765', '1220134443842' => 'ABgene_0765' },
-                              barcodes: { destination_plate_barcode: '1220142334774' },
-                              bed_barcodes: { '1' => '580000001806', '2' => '580000002810', '3' => '580000003824', '4' => '580000004838' },
-                              plate_barcodes: { '1220127162859' => '1220127162859', '1220127167670' => '1220127167670', '1220127168684' => '1220127168684', '1220134443842' => '1220134443842' },
-                              destination_bed_barcodes: { '1' => '' },
-                              destination_plate_barcodes: { '1220142334774' => '1220142334774' }}
+            post :download, params: { user_id: @user.id,
+                                      batch_id: @batch.id,
+                                      robot_id: @robot.id,
+                                      source_plate_types: { '1220127162859' => 'ABgene_0765', '1220127167670' => 'ABgene_0765', '1220127168684' => 'ABgene_0765', '1220134443842' => 'ABgene_0765' },
+                                      barcodes: { destination_plate_barcode: '1220142334774' },
+                                      bed_barcodes: { '1' => '580000001806', '2' => '580000002810', '3' => '580000003824', '4' => '580000004838' },
+                                      plate_barcodes: { '1220127162859' => '1220127162859', '1220127167670' => '1220127167670', '1220127168684' => '1220127168684', '1220134443842' => '1220134443842' },
+                                      destination_bed_barcodes: { '1' => '' },
+                                      destination_plate_barcodes: { '1220142334774' => '1220142334774' } }
           end
           should 'redirect and set the flash to error' do
             assert_response :redirect
@@ -222,15 +222,15 @@ class RobotVerificationsControllerTest < ActionController::TestCase
         end
         context 'where the source and destination plates are mixed up' do
           setup do
-            post :download,   params: {user_id: @user.id,
-                              batch_id: @batch.id,
-                              robot_id: @robot.id,
-                              source_plate_types: 'ABgene_0765',
-                              barcodes: { destination_plate_barcode: '1220142334774' },
-                              bed_barcodes: { '1' => '580000001806', '2' => '580000002810', '3' => '580000003824', '4' => '580000004838' },
-                              plate_barcodes: { '1220127162859' => '1220127162859', '1220127167670' => '1220127167670', '1220127168684' => '1220127168684', '1220134443842' => '1220134443842' },
-                              destination_bed_barcodes: { '1' => '1220142334774' },
-                              destination_plate_barcodes: { '1220142334774' => '580000005842' }}
+            post :download, params: { user_id: @user.id,
+                                      batch_id: @batch.id,
+                                      robot_id: @robot.id,
+                                      source_plate_types: 'ABgene_0765',
+                                      barcodes: { destination_plate_barcode: '1220142334774' },
+                                      bed_barcodes: { '1' => '580000001806', '2' => '580000002810', '3' => '580000003824', '4' => '580000004838' },
+                                      plate_barcodes: { '1220127162859' => '1220127162859', '1220127167670' => '1220127167670', '1220127168684' => '1220127168684', '1220134443842' => '1220134443842' },
+                                      destination_bed_barcodes: { '1' => '1220142334774' },
+                                      destination_plate_barcodes: { '1220142334774' => '580000005842' } }
           end
           should 'redirect and set the flash to error' do
             assert_response :redirect
@@ -240,15 +240,15 @@ class RobotVerificationsControllerTest < ActionController::TestCase
         end
         context 'where there are spaces in the input barcodes' do
           setup do
-            post :download,   params: {user_id: @user.id,
-                              batch_id: @batch.id,
-                              robot_id: @robot.id,
-                              source_plate_types: { '1220127162859' => 'ABgene_0765', '1220127167670' => 'ABgene_0765', '1220127168684' => 'ABgene_0765', '1220134443842' => 'ABgene_0765' },
-                              barcodes: { destination_plate_barcode: '1220142334774' },
-                              bed_barcodes: { '1' => ' 580000001806', '2' => '580000002810    ', '3' => '  580000003824', '4' => '580000004838' },
-                              plate_barcodes: { '1220127162859' => '1220127162859     ', '1220127167670' => '1220127167670 ', '1220127168684' => '1220127168684', '1220134443842' => '1220134443842' },
-                              destination_bed_barcodes: { '1' => '580000005842' },
-                              destination_plate_barcodes: { '1220142334774' => '1220142334774' }}
+            post :download, params: { user_id: @user.id,
+                                      batch_id: @batch.id,
+                                      robot_id: @robot.id,
+                                      source_plate_types: { '1220127162859' => 'ABgene_0765', '1220127167670' => 'ABgene_0765', '1220127168684' => 'ABgene_0765', '1220134443842' => 'ABgene_0765' },
+                                      barcodes: { destination_plate_barcode: '1220142334774' },
+                                      bed_barcodes: { '1' => ' 580000001806', '2' => '580000002810    ', '3' => '  580000003824', '4' => '580000004838' },
+                                      plate_barcodes: { '1220127162859' => '1220127162859     ', '1220127167670' => '1220127167670 ', '1220127168684' => '1220127168684', '1220134443842' => '1220134443842' },
+                                      destination_bed_barcodes: { '1' => '580000005842' },
+                                      destination_plate_barcodes: { '1220142334774' => '1220142334774' } }
           end
           should 'be successful' do
             assert_response :success
@@ -274,10 +274,10 @@ class RobotVerificationsControllerTest < ActionController::TestCase
       end
       context 'with valid inputs' do
         setup do
-          post :submission, params: {barcodes: { batch_barcode: '550006262686',
-                                        robot_barcode: '4880000001780',
-                                        destination_plate_barcode: '1220142334774',
-                                        user_barcode: '2470041440697' }}
+          post :submission, params: { barcodes: { batch_barcode: '550006262686',
+                                                  robot_barcode: '4880000001780',
+                                                  destination_plate_barcode: '1220142334774',
+                                                  user_barcode: '2470041440697' } }
         end
         should 'be successful' do
           assert_response :success
@@ -285,10 +285,10 @@ class RobotVerificationsControllerTest < ActionController::TestCase
       end
       context 'with invalid batch' do
         setup do
-          post :submission, params: {barcodes: { batch_barcode: '1111111111111',
-                                        robot_barcode: '4880000001780',
-                                        destination_plate_barcode: '1220142334774',
-                                        user_barcode: '2470041440697' }}
+          post :submission, params: { barcodes: { batch_barcode: '1111111111111',
+                                                  robot_barcode: '4880000001780',
+                                                  destination_plate_barcode: '1220142334774',
+                                                  user_barcode: '2470041440697' } }
         end
         should 'redirect and set the flash to error' do
           assert_response :redirect
@@ -297,10 +297,10 @@ class RobotVerificationsControllerTest < ActionController::TestCase
       end
       context 'with invalid robot' do
         setup do
-          post :submission, params: {barcodes: { batch_barcode: '550006262686',
-                                        robot_barcode: '111111111111',
-                                        destination_plate_barcode: '1220142334774',
-                                        user_barcode: '2470041440697' }}
+          post :submission, params: { barcodes: { batch_barcode: '550006262686',
+                                                  robot_barcode: '111111111111',
+                                                  destination_plate_barcode: '1220142334774',
+                                                  user_barcode: '2470041440697' } }
         end
         should 'redirect and set the flash to error' do
           assert_response :redirect
@@ -309,10 +309,10 @@ class RobotVerificationsControllerTest < ActionController::TestCase
       end
       context 'with invalid destination plate' do
         setup do
-          post :submission, params: {barcodes: { batch_barcode: '550006262686',
-                                        robot_barcode: '4880000001780',
-                                        destination_plate_barcode: '111111111111',
-                                        user_barcode: '2470041440697' }}
+          post :submission, params: { barcodes: { batch_barcode: '550006262686',
+                                                  robot_barcode: '4880000001780',
+                                                  destination_plate_barcode: '111111111111',
+                                                  user_barcode: '2470041440697' } }
         end
         should 'redirect and set the flash to error' do
           assert_response :redirect
@@ -321,10 +321,10 @@ class RobotVerificationsControllerTest < ActionController::TestCase
       end
       context 'with invalid user' do
         setup do
-          post :submission, params: {barcodes: { batch_barcode: '550006262686',
-                                        robot_barcode: '4880000001780',
-                                        destination_plate_barcode: '1220142334774',
-                                        user_barcode: '1111111111111' }}
+          post :submission, params: { barcodes: { batch_barcode: '550006262686',
+                                                  robot_barcode: '4880000001780',
+                                                  destination_plate_barcode: '1220142334774',
+                                                  user_barcode: '1111111111111' } }
         end
         should 'redirect and set the flash to error' do
           assert_response :redirect

@@ -45,7 +45,7 @@ class SequenomControllerTest < ActionController::TestCase
     context "POST 'search'" do
       context 'when the plate barcode does not exist' do
         setup do
-          post :search, params: {plate_barcode: '1220099999705'}
+          post :search, params: { plate_barcode: '1220099999705' }
         end
 
         should 'create the non-existent plate in the database' do
@@ -60,7 +60,7 @@ class SequenomControllerTest < ActionController::TestCase
       context 'when the plate barcode does exist' do
         setup do
           @plate = FactoryGirl.create(:plate, barcode: '99999')
-          post :search, params: {plate_barcode: '1220099999705'}
+          post :search, params: { plate_barcode: '1220099999705' }
         end
 
         should 'redirect to the Sequenom plate view' do
@@ -87,7 +87,7 @@ class SequenomControllerTest < ActionController::TestCase
       context 'when the plate does not exist' do
         setup do
           user = FactoryGirl.create(:user)
-          put :update, params: {id: '12345', sequenom_step: SequenomController::STEPS.first.name, user_barcode: user.barcode}
+          put :update, params: { id: '12345', sequenom_step: SequenomController::STEPS.first.name, user_barcode: user.barcode }
         end
 
         should 'redirect to the Sequenom homepage' do
@@ -102,7 +102,7 @@ class SequenomControllerTest < ActionController::TestCase
       context 'when the user does not exist' do
         setup do
           @plate = FactoryGirl.create(:plate)
-          post :update, params: {id: @plate.id, sequenom_step: SequenomController::STEPS.first.name, user_barcode: '2470099999680'}
+          post :update, params: { id: @plate.id, sequenom_step: SequenomController::STEPS.first.name, user_barcode: '2470099999680' }
         end
 
         should 'redirect to the Sequenom homepage' do
@@ -117,7 +117,7 @@ class SequenomControllerTest < ActionController::TestCase
       context 'when the user barcode is not entered' do
         setup do
           @plate = FactoryGirl.create(:plate)
-          post :update, params: {id: @plate.id, sequenom_step: SequenomController::STEPS.first.name}
+          post :update, params: { id: @plate.id, sequenom_step: SequenomController::STEPS.first.name }
         end
 
         should 'redirect to the Sequenom homepage' do
@@ -134,7 +134,7 @@ class SequenomControllerTest < ActionController::TestCase
           context "and marking '#{step.name}' completed" do
             setup do
               @plate, @user = FactoryGirl.create(:plate), FactoryGirl.create(:user, barcode: 'ID99999D')
-              post :update, params: {id: @plate.id, sequenom_step: step.name, user_barcode: '2470099999680'}
+              post :update, params: { id: @plate.id, sequenom_step: step.name, user_barcode: '2470099999680' }
             end
 
             teardown do
@@ -158,7 +158,7 @@ class SequenomControllerTest < ActionController::TestCase
     context "GET 'show'" do
       context 'when the plate does not exist' do
         setup do
-          get :show, params: {id: '12345'}
+          get :show, params: { id: '12345' }
         end
 
         should 'redirect to the Sequenom homepage' do
@@ -173,7 +173,7 @@ class SequenomControllerTest < ActionController::TestCase
       context 'when the plate exists' do
         setup do
           @plate = FactoryGirl.create(:plate)
-          get :show, params: {id: @plate.id}
+          get :show, params: { id: @plate.id }
         end
 
         should render_template :show

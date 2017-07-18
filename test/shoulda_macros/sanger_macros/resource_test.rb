@@ -179,7 +179,7 @@ module Sanger
                   context 'should show status' do
                     setup do
                       @object = create resource_name
-                      get :status, params: {id: @object.id}
+                      get :status, params: { id: @object.id }
                     end
                     should respond_with :success
                   end

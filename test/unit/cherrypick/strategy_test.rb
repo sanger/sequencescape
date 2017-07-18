@@ -44,7 +44,6 @@ class Cherrypick::StrategyTest < ActiveSupport::TestCase
         end
 
         context 'return partially filled plate' do
-
           should 'contiguous wells' do
             @plate = @purpose.create!(:do_not_create_wells, barcode: 1).tap do |plate|
               @purpose.well_locations.to_a.slice(0, 12).each do |location|

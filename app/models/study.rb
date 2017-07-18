@@ -399,8 +399,8 @@ class Study < ActiveRecord::Base
   def validating_ena_required_fields_with_enforce_data_release=(state)
     self.validating_ena_required_fields_without_enforce_data_release = state if enforce_data_release
   end
-  alias_method( :validating_ena_required_fields_with_enforce_data_release=, :validating_ena_required_fields=)
-  alias_method( :validating_ena_required_fields=, :validating_ena_required_fields_with_enforce_data_release=)
+  alias validating_ena_required_fields_with_enforce_data_release= validating_ena_required_fields=
+  alias validating_ena_required_fields= validating_ena_required_fields_with_enforce_data_release=
 
   def warnings
     # These studies are now invalid, but the warning should remain until existing studies are fixed.

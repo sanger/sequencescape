@@ -71,7 +71,7 @@ class TagGroupsController < ApplicationController
   def tag_params
     params.permit(tags: [:map_id, :oligo])
           .fetch(:tags, {})
-          .reject {|_index, attributes| attributes[:oligo].blank?}
-          .values.map {|parameters| parameters.to_h}
+          .reject { |_index, attributes| attributes[:oligo].blank? }
+          .values.map(&:to_h)
   end
 end

@@ -111,7 +111,7 @@ group :development do
   # Automatically generate documentation
   gem 'yard', require: false
   # Enforces coding styles and detects some bad practices
-  gem 'rubocop', require: false
+  gem 'rubocop', '~> 0.47.1', require: false
   # MiniProfiler allows you to see the speed of a request conveniently on the page.
   # It also shows the SQL queries performed and allows you to profile a specific block of code.
   gem 'rack-mini-profiler'

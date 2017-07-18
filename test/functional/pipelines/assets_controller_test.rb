@@ -21,7 +21,7 @@ class Pipelines::AssetsControllerTest < ActionController::TestCase
         session[:user] = create(:user)
 
         @family = create(:family)
-        get :new, params: {id: 123, family: @family.id}
+        get :new, params: { id: 123, family: @family.id }
       end
 
       should_not render_with_layout

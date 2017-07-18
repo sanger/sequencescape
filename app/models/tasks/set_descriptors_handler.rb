@@ -74,7 +74,7 @@ module Tasks::SetDescriptorsHandler
               request.lab_events << event
 
               if params[:asset]
-                params[:asset].each do |key, descriptors|
+                params[:asset].each do |_key, descriptors|
                   asset = Asset.new
                   asset.sti_type = Family.find(descriptors[:family_id]).name
                   descriptors.each_pair do |field, value|

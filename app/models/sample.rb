@@ -405,8 +405,8 @@ class Sample < ActiveRecord::Base
     self.validating_ena_required_fields_without_first_study = state
     @ena_study.try(:validating_ena_required_fields=, state)
   end
-  alias_method( :validating_ena_required_fields_without_first_study=, :validating_ena_required_fields=)
-  alias_method( :validating_ena_required_fields=, :validating_ena_required_fields_with_first_study=)
+  alias validating_ena_required_fields_without_first_study= validating_ena_required_fields=
+  alias validating_ena_required_fields= validating_ena_required_fields_with_first_study=
 
   def validate_ena_required_fields!
     # Do not alter the order of this line, otherwise @ena_study won't be set correctly!
