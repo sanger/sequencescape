@@ -81,7 +81,7 @@ module Tasks::AssignTubesToWellsHandler
   def wells_with_duplicates(params)
     invalid_wells = []
     @batch.requests.group_by { |request| params[:request_locations][request.id.to_s] }.each do |well, requests|
-      all_aliquots = requests.map { |r| r.asset.aliquots }.flatten
+      all_aliquots = requests.reduce([]) { |array, r| array.concat(r.asset.aliquots) }
       # Push each aliquot onto an array as long as it doesn't match an aliquot already on the array
       unique_aliquots = all_aliquots.each_with_object([]) do |candidate, selected_aliquots|
         selected_aliquots << candidate unless selected_aliquots.any? { |existing_aliquot| existing_aliquot.equivalent?(candidate) }

@@ -19,7 +19,7 @@ class SampleManifestUploader
   def run!
     if valid?
       upload.process(tag_group)
-      upload.processed?
+      upload.complete if upload.processed?
       # Delayed::Job.enqueue SampleManifestUploadProcessingJob.new(upload, tag_group)
     else
       false

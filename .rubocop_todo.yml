@@ -149,7 +149,6 @@ Lint/UselessAssignment:
     - 'app/api/core/io/registry.rb'
     - 'app/controllers/admin/studies_controller.rb'
     - 'app/controllers/batches_controller.rb'
-    - 'app/controllers/pipelines_controller.rb'
     - 'app/controllers/projects_controller.rb'
     - 'app/controllers/samples_controller.rb'
     - 'app/controllers/sequenom_controller.rb'
@@ -723,7 +722,6 @@ Style/Alias:
 # Cop supports --auto-correct.
 Style/AlignArray:
   Exclude:
-    - 'app/controllers/pipelines_controller.rb'
     - 'app/helpers/application_helper.rb'
     - 'app/models/pac_bio/sample_sheet.rb'
     - 'app/models/request_type.rb'
@@ -1956,7 +1954,6 @@ Style/EmptyMethod:
     - 'app/controllers/gels_controller.rb'
     - 'app/controllers/get_your_qc_completed_tubes_here_controller.rb'
     - 'app/controllers/locations_controller.rb'
-    - 'app/controllers/pipelines_controller.rb'
     - 'app/controllers/receptions_controller.rb'
     - 'app/controllers/robot_verifications_controller.rb'
     - 'app/controllers/sample_manifest_upload_with_tag_sequences_controller.rb'
@@ -2191,7 +2188,6 @@ Style/IfUnlessModifier:
     - 'app/controllers/batches/comments_controller.rb'
     - 'app/controllers/batches_controller.rb'
     - 'app/controllers/events_controller.rb'
-    - 'app/controllers/pipelines_controller.rb'
     - 'app/controllers/plate_templates_controller.rb'
     - 'app/controllers/receptions_controller.rb'
     - 'app/controllers/requests/comments_controller.rb'
