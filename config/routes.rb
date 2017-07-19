@@ -10,6 +10,12 @@ Sequencescape::Application.routes.draw do
 
   mount Api::RootService.new => '/api/1'
 
+  namespace :api do
+    namespace :v2 do
+      jsonapi_resources :samples
+    end
+  end
+
   resources :samples do
     resources :assets, except: :destroy
     resources :comments, controller: 'samples/comments'
