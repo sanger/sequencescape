@@ -10,8 +10,7 @@ class PicoDilutionsControllerTest < ActionController::TestCase
   context 'Pico Dilution Plate' do
     setup do
       @controller = PicoDilutionsController.new
-      @request    = ActionController::TestRequest.new
-      @response   = ActionController::TestResponse.new
+      @request    = ActionController::TestRequest.create(@controller)
     end
 
     context 'with assay plates ' do
@@ -46,7 +45,7 @@ class PicoDilutionsControllerTest < ActionController::TestCase
         end
         context 'page passed in' do
           setup do
-            get :index, page: 3
+            get :index, params: { page: 3 }
           end
           should respond_with :success
           should 'Respond with json' do
@@ -60,8 +59,7 @@ class PicoDilutionsControllerTest < ActionController::TestCase
   context 'Working Dilution Plate' do
     setup do
       @controller = PicoDilutionsController.new
-      @request    = ActionController::TestRequest.new
-      @response   = ActionController::TestResponse.new
+      @request    = ActionController::TestRequest.create(@controller)
     end
 
     context 'with assay plates ' do

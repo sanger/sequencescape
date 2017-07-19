@@ -1,6 +1,7 @@
 # frozen_string_literal: true
+
 require 'rails_helper'
-require 'pry'
+
 describe '/api/1/tube/purposes' do
   before(:each) do
     create :transfer_request_type
@@ -57,6 +58,6 @@ describe '/api/1/tube/purposes' do
     headers['CONTENT_TYPE'] = 'application/json' unless body.nil?
     headers['HTTP_X_SEQUENCESCAPE_CLIENT_ID'] = authorised_app.key
     yield(headers) if block_given?
-    send(action.downcase, path, body, headers)
+    send(action.downcase, path, params: body, headers: headers)
   end
 end

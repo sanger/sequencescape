@@ -11,8 +11,7 @@ class Admin::UsersControllerTest < ActionController::TestCase
   context 'Admin Users controller' do
     setup do
       @controller = Admin::UsersController.new
-      @request    = ActionController::TestRequest.new
-      @response   = ActionController::TestResponse.new
+      @request    = ActionController::TestRequest.create(@controller)
     end
 
     should_require_login
@@ -40,21 +39,21 @@ class Admin::UsersControllerTest < ActionController::TestCase
       end
 
       should 'find a user based on name' do
-        post :filter, q: 'Some'
+        post :filter, params: { q: 'Some' }
 
         @users = assigns(:users)
         assert_equal @user_to_find, @users.first
       end
 
       should 'find a user based on login' do
-        post :filter, q: 'sb'
+        post :filter, params: { q: 'sb' }
 
         @users = assigns(:users)
         assert_equal @user_to_find, @users.first
       end
 
       should 'find multiple users with shared characters in their logins' do
-        post :filter, q: '1'
+        post :filter, params: { q: '1' }
 
         @users = assigns(:users)
         assert @users.detect { |u| u == @user_to_find }
@@ -62,7 +61,7 @@ class Admin::UsersControllerTest < ActionController::TestCase
       end
 
       should 'find multiple users with shared characters in their names' do
-        post :filter, q: 'o'
+        post :filter, params: { q: 'o' }
 
         @users = assigns(:users)
         assert @users.detect { |u| u == @user_to_find }

@@ -10,8 +10,7 @@ class Pipelines::AssetsControllerTest < ActionController::TestCase
   context 'Pipelines::AssetsController' do
     setup do
       @controller = Pipelines::AssetsController.new
-      @request    = ActionController::TestRequest.new
-      @response   = ActionController::TestResponse.new
+      @request    = ActionController::TestRequest.create(@controller)
     end
 
     should route(:get, '/pipelines/assets/new/1').to(action: 'new', id: '1')
@@ -22,7 +21,7 @@ class Pipelines::AssetsControllerTest < ActionController::TestCase
         session[:user] = create(:user)
 
         @family = create(:family)
-        get :new, id: 123, family: @family.id
+        get :new, params: { id: 123, family: @family.id }
       end
 
       should_not render_with_layout

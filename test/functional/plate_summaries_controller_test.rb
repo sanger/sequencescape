@@ -8,8 +8,7 @@ class PlateSummariesControllerTest < ActionController::TestCase
   context 'PlateSummariesController' do
     setup do
       @controller = PlateSummariesController.new
-      @request    = ActionController::TestRequest.new
-      @response   = ActionController::TestResponse.new
+      @request    = ActionController::TestRequest.create(@controller)
       @user       = create :user
       session[:user] = @user.id
     end
@@ -52,7 +51,7 @@ class PlateSummariesControllerTest < ActionController::TestCase
           }
           plates.each do |plate, barcodes|
             barcodes.each do |barcode|
-              get :search, plate_barcode: barcode
+              get :search, params: { plate_barcode: barcode }
               assert_redirected_to plate_summary_path(plate.sanger_human_barcode)
             end
           end
@@ -61,7 +60,7 @@ class PlateSummariesControllerTest < ActionController::TestCase
         context 'return users to search page if barcode not found' do
           setup do
             @request.env['HTTP_REFERER'] = 'back'
-            get :search, plate_barcode: 'abcd'
+            get :search, params: { plate_barcode: 'abcd' }
           end
 
           should redirect_to 'back'
@@ -75,13 +74,13 @@ class PlateSummariesControllerTest < ActionController::TestCase
         end
 
         should 'return expected plate' do
-          get :show, id: @source_plate_a.sanger_human_barcode
+          get :show, params: { id: @source_plate_a.sanger_human_barcode }
           assert_response :success
           assert_equal @source_plate_a, assigns(:plate)
         end
 
         should 'show the metadata for the plate' do
-          get :show, id: @child_plate_a.sanger_human_barcode
+          get :show, params: { id: @child_plate_a.sanger_human_barcode }
           assert_response :success
           assert_equal @collection.metadata.count, assigns(:plate).metadata.count
         end

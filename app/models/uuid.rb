@@ -64,7 +64,8 @@ class Uuid < ActiveRecord::Base
     # that do not have UUIDs have their UUIDs created, but we also need to do this unobtrusively.
     module ArExtensionsFix
       def self.extended(base)
-        base.singleton_class.alias_method_chain(:import, :uuid_creation)
+        base.singleton_class.alias_method(:import_without_uuid_creation, :import)
+        base.singleton_class.alias_method(:import, :import_with_uuid_creation)
       end
 
       def import_with_uuid_creation(*args, &block)

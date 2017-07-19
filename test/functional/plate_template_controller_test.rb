@@ -46,7 +46,7 @@ class PlateTemplatesControllerTest < ActionController::TestCase
         setup do
           @old_count_plate = PlateTemplate.count
           @old_count_wells = Well.count
-          post :create, name: 'test', user_id: @user.id, rows: 8, cols: 12, empty_well: { 'A1' => 1, 'H12' => 96 }
+          post :create, params: { name: 'test', user_id: @user.id, rows: 8, cols: 12, empty_well: { 'A1' => 1, 'H12' => 96 } }
         end
         should respond_with :redirect
         should set_flash.to('Template saved')
@@ -64,7 +64,7 @@ class PlateTemplatesControllerTest < ActionController::TestCase
         @plate = PlateTemplate.new(name: 'test', size: 96)
         @plate.save
         @count_plate = PlateTemplate.count
-        post :update, name: 'updated', id: @plate.id, user_id: @user.id, rows: 8, cols: 12
+        post :update, params: { name: 'updated', id: @plate.id, user_id: @user.id, rows: 8, cols: 12 }
       end
       should 'change name' do
         assert_equal 'updated', PlateTemplate.find(@plate.id).name

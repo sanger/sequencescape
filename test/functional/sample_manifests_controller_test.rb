@@ -6,14 +6,12 @@
 
 require 'test_helper'
 require 'sdb/sample_manifests_controller'
-require 'sample_manifest/sample_manifest_generator'
 
 class SampleManifestsControllerTest < ActionController::TestCase
   context 'SampleManifestsController' do
     setup do
       @controller = Sdb::SampleManifestsController.new
-      @request    = ActionController::TestRequest.new
-      @response   = ActionController::TestResponse.new
+      @request    = ActionController::TestRequest.create(@controller)
       @user       = create :user
       session[:user] = @user.id
 
@@ -29,7 +27,7 @@ class SampleManifestsControllerTest < ActionController::TestCase
       end
 
       should 'return expected sample manifest' do
-        get :show, id: @sample_manifest.id
+        get :show, params: { id: @sample_manifest.id }
         assert_response :success
         assert_equal @sample_manifest, assigns(:sample_manifest)
         assert_equal @sample_manifest.samples, assigns(:samples)
@@ -38,7 +36,7 @@ class SampleManifestsControllerTest < ActionController::TestCase
 
     context '#new' do
       should 'be a success' do
-        get :new, type: 'plate'
+        get :new, params: { type: 'plate' }
         assert_response :success
       end
     end
@@ -56,21 +54,21 @@ class SampleManifestsControllerTest < ActionController::TestCase
         LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns('data' => [{ 'id' => 15 }])
 
         RestClient.expects(:post)
-        post :create, sample_manifest: { template: 'plate_default',
-                                         study_id: study.id,
-                                         supplier_id: supplier.id,
-                                         count: '3',
-                                         barcode_printer: barcode_printer.name,
-                                         only_first_label: '0',
-                                         asset_type: '' }
+        post :create, params: { sample_manifest: { template: 'plate_default',
+                                                   study_id: study.id,
+                                                   supplier_id: supplier.id,
+                                                   count: '3',
+                                                   barcode_printer: barcode_printer.name,
+                                                   only_first_label: '0',
+                                                   asset_type: '' } }
         RestClient.expects(:post)
-        post :create, sample_manifest: { template: 'tube_default',
-                                         study_id: study.id,
-                                         supplier_id: supplier.id,
-                                         count: '3',
-                                         barcode_printer: barcode_printer.name,
-                                         only_first_label: '0',
-                                         asset_type: '' }
+        post :create, params: { sample_manifest: { template: 'tube_default',
+                                                   study_id: study.id,
+                                                   supplier_id: supplier.id,
+                                                   count: '3',
+                                                   barcode_printer: barcode_printer.name,
+                                                   only_first_label: '0',
+                                                   asset_type: '' } }
       end
     end
   end

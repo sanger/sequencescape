@@ -6,8 +6,8 @@
 
 class PacBioSequencingRequest < CustomerRequest
   has_metadata as: Request do
-    attribute(:insert_size,      validator: true, required: true, integer: true, selection: true)
-    attribute(:sequencing_type,  validator: true, required: true, selection: true)
+    custom_attribute(:insert_size,      validator: true, required: true, integer: true, selection: true)
+    custom_attribute(:sequencing_type,  validator: true, required: true, selection: true)
   end
 
   include Request::CustomerResponsibility

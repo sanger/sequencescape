@@ -11,8 +11,7 @@ class TasksControllerTest < ActionController::TestCase
   context 'TasksController' do
     setup do
       @controller = TasksController.new
-      @request    = ActionController::TestRequest.new
-      @response   = ActionController::TestResponse.new
+      @request    = ActionController::TestRequest.create(@controller)
       @user = FactoryGirl.create :admin
       session[:user] = @user.id
       @pipeline = FactoryGirl.create :pipeline, name: 'Normal pipeline'
@@ -31,7 +30,7 @@ class TasksControllerTest < ActionController::TestCase
 
     context '#show' do
       setup do
-        get :show, id: @task.id
+        get :show, params: { id: @task.id }
       end
 
       should render_template :show
@@ -39,7 +38,7 @@ class TasksControllerTest < ActionController::TestCase
 
     context '#new' do
       setup do
-        get :new, workflow_id: @workflow.id
+        get :new, params: { workflow_id: @workflow.id }
       end
 
       should 'render new' do
@@ -51,8 +50,8 @@ class TasksControllerTest < ActionController::TestCase
       setup do
         @old_count = Task.count
         post  :create,
-              descriptor: { '1' => { 'name' => 'Yeah', 'kind' => 'Text', 'selection' => { '1' => '' } } },
-              task: { 'name' => 'A Task', 'pipeline_workflow_id' => '1', 'sorted' => '1', 'batched' => '1' }
+              params: { descriptor: { '1' => { 'name' => 'Yeah', 'kind' => 'Text', 'selection' => { '1' => '' } } },
+                        task: { 'name' => 'A Task', 'pipeline_workflow_id' => '1', 'sorted' => '1', 'batched' => '1' } }
       end
 
       should 'render create_task' do
@@ -63,7 +62,7 @@ class TasksControllerTest < ActionController::TestCase
 
     context '#edit' do
       setup do
-        get :edit, id: @task.id
+        get :edit, params: { id: @task.id }
       end
 
       should 'render edit' do
@@ -73,10 +72,11 @@ class TasksControllerTest < ActionController::TestCase
 
     context '#update_task' do
       setup do
-        put :update,
-            id: @task.id,
-            descriptor: { '1' => { 'name' => 'Yeah', 'kind' => 'Text', 'selection' => { '1' => '' } } },
-            task: { 'name' => 'A Task', 'pipeline_workflow_id' => '1', 'sorted' => '1', 'batched' => '1' }
+        put :update, params: {
+          id: @task.id,
+          descriptor: { '1' => { 'name' => 'Yeah', 'kind' => 'Text', 'selection' => { '1' => '' } } },
+          task: { 'name' => 'A Task', 'pipeline_workflow_id' => '1', 'sorted' => '1', 'batched' => '1' }
+        }
       end
 
       should 'render update task' do
@@ -87,7 +87,7 @@ class TasksControllerTest < ActionController::TestCase
     context '#destroy_task' do
       setup do
         @old_count = Task.count
-        delete :destroy, id: @task.id
+        delete :destroy, params: { id: @task.id }
       end
 
       should 'destroy given tasks' do

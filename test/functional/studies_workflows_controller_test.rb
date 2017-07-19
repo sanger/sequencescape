@@ -11,8 +11,7 @@ class Studies::WorkflowsControllerTest < ActionController::TestCase
   context 'Studies::Workflows controller' do
     setup do
       @controller = Studies::WorkflowsController.new
-      @request    = ActionController::TestRequest.new
-      @response   = ActionController::TestResponse.new
+      @request    = ActionController::TestRequest.create(@controller)
 
       @workflow = create :submission_workflow
       @user     = create :user, workflow_id: @workflow.id
@@ -24,7 +23,7 @@ class Studies::WorkflowsControllerTest < ActionController::TestCase
 
      context '#show' do
         setup do
-          get :show, id: @workflow.id, study_id: @study.id
+          get :show, params: { id: @workflow.id, study_id: @study.id }
         end
 
         should respond_with :success

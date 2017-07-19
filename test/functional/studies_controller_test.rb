@@ -11,8 +11,7 @@ class StudiesControllerTest < ActionController::TestCase
   context 'StudiesController' do
     setup do
       @controller = StudiesController.new
-      @request    = ActionController::TestRequest.new
-      @response   = ActionController::TestResponse.new
+      @request    = ActionController::TestRequest.create(@controller)
     end
 
     should_require_login
@@ -29,8 +28,7 @@ class StudiesControllerTest < ActionController::TestCase
   context 'create a study - custom' do
     setup do
       @controller = StudiesController.new
-      @request    = ActionController::TestRequest.new
-      @response   = ActionController::TestResponse.new
+      @request    = ActionController::TestRequest.create(@controller)
       @user = FactoryGirl.create(:user)
       @user.has_role('owner')
       @controller.stubs(:logged_in?).returns(@user)
@@ -55,7 +53,7 @@ class StudiesControllerTest < ActionController::TestCase
       context 'successfullyFactoryGirl.create a new study' do
         setup do
           @study_count = Study.count
-          post :create, 'study' => {
+          post :create, params: { 'study' => {
             'name' => 'hello',
             'reference_genome_id' => ReferenceGenome.find_by(name: '').id,
             'study_metadata_attributes' => {
@@ -69,7 +67,7 @@ class StudiesControllerTest < ActionController::TestCase
               'data_release_strategy' => 'open',
               'study_type_id' => StudyType.find_by(name: 'Not specified').id
             }
-          }
+          } }
         end
 
         should set_flash.to('Your study has been created')
@@ -82,7 +80,7 @@ class StudiesControllerTest < ActionController::TestCase
       context 'fail to create a new study' do
         setup do
           @initial_study_count = Study.count
-          post :create, 'study' => { 'name' => 'hello 2' }
+          post :create, params: { 'study' => { 'name' => 'hello 2' } }
         end
 
         should render_template :new
@@ -97,7 +95,7 @@ class StudiesControllerTest < ActionController::TestCase
       context 'create a new study with a program specified' do
         setup do
           # Program.new(:name => 'testing program').save
-          post :create, 'study' => {
+          post :create, params: { 'study' => {
             'name' => 'hello 4',
             'reference_genome_id' => ReferenceGenome.find_by(name: '').id,
             'study_metadata_attributes' => {
@@ -111,7 +109,7 @@ class StudiesControllerTest < ActionController::TestCase
               'data_release_strategy' => 'open',
               'study_type_id' => StudyType.find_by(name: 'Not specified').id
             }
-          }
+          } }
         end
         should 'create a study with a new program' do
           assert_equal Study.find_by(name: 'hello 4').study_metadata.program.name, @program.name
@@ -120,7 +118,7 @@ class StudiesControllerTest < ActionController::TestCase
       context 'creating a new study without program' do
         setup do
           @study_count = Study.count
-          post :create, 'study' => {
+          post :create, params: { 'study' => {
             'name' => 'hello 4',
             'reference_genome_id' => ReferenceGenome.find_by(name: '').id,
             'study_metadata_attributes' => {
@@ -133,7 +131,7 @@ class StudiesControllerTest < ActionController::TestCase
               'data_release_strategy' => 'open',
               'study_type_id' => StudyType.find_by(name: 'Not specified').id
             }
-          }
+          } }
         end
         should 'fail on trying to create the study' do
           assert_equal  Study.count, @study_count
@@ -143,7 +141,7 @@ class StudiesControllerTest < ActionController::TestCase
       context 'create a new study using permission allowed (not required)' do
         setup do
           @study_count = Study.count
-          post :create, 'study' => {
+          post :create, params: { 'study' => {
             'name' => 'hello 3',
             'reference_genome_id' => ReferenceGenome.find_by(name: '').id,
             'study_metadata_attributes' => {
@@ -157,7 +155,7 @@ class StudiesControllerTest < ActionController::TestCase
               'data_release_strategy' => 'open',
               'study_type_id' => StudyType.find_by(name: 'Not specified').id
             }
-          }
+          } }
         end
 
         should 'change Study.count by 1' do

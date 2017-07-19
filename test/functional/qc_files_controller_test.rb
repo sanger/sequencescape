@@ -14,14 +14,13 @@ class QcFilesControllerTest < ActionController::TestCase
       end
 
       @controller = QcFilesController.new
-      @request    = ActionController::TestRequest.new
-      @response   = ActionController::TestResponse.new
+      @request    = ActionController::TestRequest.create(@controller)
       @user       = create :user
       session[:user] = @user.id
     end
 
     should 'return the file' do
-      get :show, id: @qc_file.id
+      get :show, params: { id: @qc_file.id }
       assert_response :success
       assert_equal 'application/excel', response.content_type
     end

@@ -10,8 +10,7 @@ class SearchesControllerTest < ActionController::TestCase
   context 'Searches controller' do
     setup do
       @controller = SearchesController.new
-      @request    = ActionController::TestRequest.new
-      @response   = ActionController::TestResponse.new
+      @request    = ActionController::TestRequest.create(@controller)
     end
 
     should_require_login
@@ -38,7 +37,7 @@ class SearchesControllerTest < ActionController::TestCase
       context '#index' do
         context 'with the valid search' do
           setup do
-            get :index, q: 'FindMe'
+            get :index, params: { q: 'FindMe' }
           end
 
           should respond_with :success
@@ -92,7 +91,7 @@ class SearchesControllerTest < ActionController::TestCase
 
         context 'with a too short query' do
           setup do
-            get :index, q: 'A'
+            get :index, params: { q: 'A' }
           end
 
           should 'set the flash' do

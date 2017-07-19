@@ -11,8 +11,7 @@ class RequestsControllerTest < ActionController::TestCase
   context 'Request controller' do
     setup do
       @controller = RequestsController.new
-      @request    = ActionController::TestRequest.new
-      @response   = ActionController::TestResponse.new
+      @request    = ActionController::TestRequest.create(@controller)
       @user = FactoryGirl.create :admin
     end
 
@@ -25,7 +24,7 @@ class RequestsControllerTest < ActionController::TestCase
 
       should 'cancel request' do
          request = FactoryGirl.create :request, user: @user, request_type: FactoryGirl.create(:request_type), study: FactoryGirl.create(:study, name: 'ReqCon2'), workflow: FactoryGirl.create(:submission_workflow)
-         get :cancel, id: request.id
+         get :cancel, params: { id: request.id }
 
          assert_equal flash[:notice], "Request #{request.id} has been cancelled"
          assert Request.find(request.id).cancelled?
@@ -34,7 +33,7 @@ class RequestsControllerTest < ActionController::TestCase
 
       should 'cancel started request' do
          request = FactoryGirl.create :request, state: 'started', user: @user, request_type: FactoryGirl.create(:request_type), study: FactoryGirl.create(:study, name: 'ReqCon2'), workflow: FactoryGirl.create(:submission_workflow)
-         get :cancel, id: request.id
+         get :cancel, params: { id: request.id }
 
          assert_equal flash[:error], "Request #{request.id} in progress. Can't be cancelled"
          assert_response :redirect
@@ -48,7 +47,7 @@ class RequestsControllerTest < ActionController::TestCase
 
       should 'when quotas is copied and redirect' do
         @request_initial = FactoryGirl.create :request, user: @user, request_type: FactoryGirl.create(:request_type), study: FactoryGirl.create(:study, name: 'ReqCon2'), workflow: FactoryGirl.create(:submission_workflow)
-         get :copy, id: @request_initial.id
+         get :copy, params: { id: @request_initial.id }
 
          @new_request = Request.last
          assert_equal flash[:notice], "Created request #{@new_request.id}"
@@ -57,7 +56,7 @@ class RequestsControllerTest < ActionController::TestCase
 
       should 'set failed requests to pending' do
         @request_initial = FactoryGirl.create :request, user: @user, request_type: FactoryGirl.create(:request_type), study: FactoryGirl.create(:study, name: 'ReqCon2'), workflow: FactoryGirl.create(:submission_workflow), state: 'failed'
-         get :copy, id: @request_initial.id
+         get :copy, params: { id: @request_initial.id }
 
          @new_request = Request.last
          assert_equal flash[:notice], "Created request #{@new_request.id}"
@@ -78,7 +77,7 @@ class RequestsControllerTest < ActionController::TestCase
 
       context 'when not logged in' do
         setup do
-          put :update, id: @our_request.id, request: @params
+          put :update, params: { id: @our_request.id, request: @params }
         end
         should redirect_to('login page') { login_path }
       end
@@ -88,7 +87,7 @@ class RequestsControllerTest < ActionController::TestCase
           @controller.stubs(:logged_in?).returns(@user)
           session[:user] = @user.id
 
-          put :update, id: @our_request.id, request: @params
+          put :update, params: { id: @our_request.id, request: @params }
         end
 
         should redirect_to('request path') { request_path(@our_request) }
@@ -112,7 +111,7 @@ class RequestsControllerTest < ActionController::TestCase
       context 'update invalid and failed' do
         setup do
           @params = { request_metadata_attributes: { read_length: '37' }, state: 'invalid' }
-          put :update, id: @reqwest.id, request: @params
+          put :update, params: { id: @reqwest.id, request: @params }
         end
         should redirect_to('request path') { request_path(@reqwest) }
       end
@@ -121,7 +120,7 @@ class RequestsControllerTest < ActionController::TestCase
         setup do
           @prop_value_after = 666
           @params = { request_metadata_attributes: { read_length: '37' }, state: 'failed' }
-          put :update, id: @reqwest.id, request: @params
+          put :update, params: { id: @reqwest.id, request: @params }
         end
         should 'not update the state' do
           # We really don't want arbitrary changing of state

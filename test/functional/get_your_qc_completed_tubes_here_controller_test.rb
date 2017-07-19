@@ -6,8 +6,7 @@ class GetYourQcCompletedTubesHereControllerTest < ActionController::TestCase
 
     setup do
       @controller = GetYourQcCompletedTubesHereController.new
-      @request    = ActionController::TestRequest.new
-      @response   = ActionController::TestResponse.new
+      @request    = ActionController::TestRequest.create(@controller)
       @user       = create(:user)
       @controller.stubs(:current_user).returns(@user)
       @controller.stubs(:logged_in?).returns(@user)
@@ -27,7 +26,7 @@ class GetYourQcCompletedTubesHereControllerTest < ActionController::TestCase
 
       should 'create some assets, redirect to the asset group' do
         LibPoolNormTubeGenerator.stubs(:new).returns(generator)
-        post :create, barcode: plate.ean13_barcode, study: study.id
+        post :create, params: { barcode: plate.ean13_barcode, study: study.id }
         assert_equal 3, assigns(:generator).asset_group.assets.length
         assert_redirected_to study_asset_groups_path(assigns(:generator).study.id)
         assert_match "QC Completed tubes successfully created for #{plate.sanger_human_barcode}. Go celebrate!", flash[:notice]
@@ -36,14 +35,14 @@ class GetYourQcCompletedTubesHereControllerTest < ActionController::TestCase
       should 'return an error message if it fails for some reason' do
         generator.stubs(:create!).returns(false)
         LibPoolNormTubeGenerator.stubs(:new).returns(generator)
-        post :create, barcode: plate.ean13_barcode, study: study.id
+        post :create, params: { barcode: plate.ean13_barcode, study: study.id }
         assert_match "Oh dear, your tubes weren't created. It's not you its me so please contact PSD.", flash[:error]
       end
     end
 
     context 'no plate' do
       should 'return an error if the plate does not exist' do
-        post :create, barcode: 'No plate here, move on!'
+        post :create, params: { barcode: 'No plate here, move on!' }
         assert_match 'Barcode does not relate to any existing plate', flash[:error]
       end
     end

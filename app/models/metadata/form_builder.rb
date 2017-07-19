@@ -37,7 +37,7 @@ class Metadata::FormBuilder < Metadata::BuilderBase
     render_view(:checktext, field, options)
   end
 
-  [:text_area, :text_field, :number_field].each do |field|
+  %i(text_area text_field number_field).each do |field|
     class_eval <<-END_OF_METHOD
       def #{field}_with_bootstrap(*args, &block)
         options    = args.extract_options!
@@ -47,7 +47,8 @@ class Metadata::FormBuilder < Metadata::BuilderBase
         #{field}_without_bootstrap(*args, &block)
       end
     END_OF_METHOD
-    alias_method_chain(field, :bootstrap)
+    alias_method("#{field}_without_bootstrap", field)
+    alias_method(field, "#{field}_with_bootstrap")
   end
 
   def select_with_bootstrap(method, choices, options = {}, html_options = {}, &block)
@@ -55,7 +56,8 @@ class Metadata::FormBuilder < Metadata::BuilderBase
     html_options[:class] << ' form-control'
     select_without_bootstrap(method, choices, options, html_options, &block)
   end
-  alias_method_chain(:select, :bootstrap)
+  alias select_without_bootstrap select
+  alias select select_with_bootstrap
 
   # We wrap each of the following field types (text_field, select, etc) within a special
   # layout for our properties
@@ -80,7 +82,8 @@ class Metadata::FormBuilder < Metadata::BuilderBase
         end
       end
     END_OF_METHOD
-    alias_method_chain(field, :property_field_wrapper)
+    alias_method("#{field}_without_property_field_wrapper", field)
+    alias_method(field, "#{field}_with_property_field_wrapper")
   end
 
   def header(field, options = {})
@@ -133,7 +136,7 @@ class Metadata::FormBuilder < Metadata::BuilderBase
     end
 
     div_options = { id: field.to_s }
-    (div_options[:class] ||= []) << 'field_with_errors' unless @object.errors.get(field).blank?
+    (div_options[:class] ||= []) << 'field_with_errors' if @object.errors[field].present?
     content_tag(:div, content, div_options)
   end
 end

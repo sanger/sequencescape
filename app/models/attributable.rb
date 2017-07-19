@@ -68,7 +68,7 @@ module Attributable
   end
 
   module ClassMethods
-    def attribute(name, options = {}, override_previous = false)
+    def custom_attribute(name, options = {}, override_previous = false)
       attribute = Attribute.new(self, name, options)
       attribute.configure(self)
 
