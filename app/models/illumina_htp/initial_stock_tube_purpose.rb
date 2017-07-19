@@ -32,7 +32,7 @@ class IlluminaHtp::InitialStockTubePurpose < IlluminaHtp::StockTubePurpose
     tfr_request_type  = tube.requests_as_target.first.request_type_id
     outr_request_type = tube.requests_as_target.first.outer_request.request_type_id
 
-    siblings = Asset.select('assets.*, tfr.state AS quick_state').uniq
+    siblings = Tube.select('assets.*, tfr.state AS quick_state').uniq
                     .joins([
                       'LEFT JOIN requests AS tfr ON tfr.target_asset_id = assets.id',
                       'RIGHT OUTER JOIN requests AS outr ON outr.asset_id = tfr.asset_id AND outr.asset_id IS NOT NULL'

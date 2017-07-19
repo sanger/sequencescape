@@ -22,21 +22,30 @@ describe IlluminaHtp::InitialStockTubePurpose do
 
     before do
       tr = create :transfer_request, asset: parent_well, target_asset: tube, submission: current_submission
-      create :transfer_request, asset: sibling_well, target_asset: sibling_tube, submission: sibling_submission, request_type: tr.request_type, state: sibling_state
+      create :transfer_request, asset: parents_sibling_well, target_asset: sibling_tube, submission: sibling_submission, request_type: tr.request_type, state: sibling_state
       lr = create :library_request, asset: parent_well, target_asset: target_tube, submission: current_submission
-      create :library_request, asset: sibling_well, target_asset: target_tube, submission: sibling_submission, request_type: lr.request_type
+      create :library_request, asset: parents_sibling_well, target_asset: target_tube, submission: sibling_submission, request_type: lr.request_type
     end
 
     context 'with siblings' do
       let(:sibling_submission) { current_submission }
-      let(:sibling_well) { create :well }
+      let(:parents_sibling_well) { create :well }
       it { is_expected.to be_a Array }
       it { is_expected.to include(sibling_tube_hash) }
     end
 
+    context 'with wells which are also siblings' do
+      let(:sibling_submission) { current_submission }
+      let(:sibling_tube) { create(:well) }
+      let(:parents_sibling_well) { create :well }
+
+      it { is_expected.to be_a Array }
+      it { is_expected.not_to include(sibling_tube) }
+    end
+
     context 'with unrelated requests out the same well' do
       let(:sibling_submission) { create :submission }
-      let(:sibling_well) { parent_well }
+      let(:parents_sibling_well) { parent_well }
       it { is_expected.to be_a Array }
       it { is_expected.not_to include(sibling_tube_hash) }
     end
@@ -44,7 +53,7 @@ describe IlluminaHtp::InitialStockTubePurpose do
     context 'with related requests out the same well' do
       context 'which are cancelled' do
         let(:sibling_submission) { current_submission }
-        let(:sibling_well) { parent_well }
+        let(:parents_sibling_well) { parent_well }
         let(:sibling_state) { 'cancelled' }
         it { is_expected.to be_a Array }
         it { is_expected.not_to include(sibling_tube_hash) }
