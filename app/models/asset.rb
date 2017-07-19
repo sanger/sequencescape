@@ -55,6 +55,7 @@ class Asset < ActiveRecord::Base
   has_many :volume_updates, foreign_key: :target_id
 
   # TODO: Remove 'requests' and 'source_request' as they are abiguous
+  # :requests should go before :events_on_requests, through: :requests
   has_many :requests
   has_many :events_on_requests, through: :requests, source: :events
   has_one  :source_request,     ->() { includes(:request_metadata) }, class_name: 'Request', foreign_key: :target_asset_id

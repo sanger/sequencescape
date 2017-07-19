@@ -74,9 +74,6 @@ module ModelExtensions::Order
       def extended_validators
         ExtendedValidator.for_submission(self)
       end
-
-      # is that right? previously it was including Delayed::MessageSending::ClassMethods
-      extend Delayed::MessageSendingClassMethods
     end
   end
 
