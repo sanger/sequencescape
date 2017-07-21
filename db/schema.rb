@@ -23,7 +23,7 @@ ActiveRecord::Schema.define(version: 20170711153937) do
 
   add_index "aliquot_indices", ["aliquot_id"], name: "index_aliquot_indices_on_aliquot_id", unique: true, using: :btree
   add_index "aliquot_indices", ["lane_id", "aliquot_index"], name: "index_aliquot_indices_on_lane_id_and_aliquot_index", unique: true, using: :btree
-
+  
   create_table "aliquots", force: :cascade do |t|
     t.integer  "receptacle_id",    limit: 4,                   null: false
     t.integer  "study_id",         limit: 4
@@ -1073,13 +1073,14 @@ ActiveRecord::Schema.define(version: 20170711153937) do
   add_index "qc_metrics", ["qc_report_id"], name: "fk_qc_metrics_to_qc_reports", using: :btree
 
   create_table "qc_reports", force: :cascade do |t|
-    t.string   "report_identifier",   limit: 255, null: false
-    t.integer  "study_id",            limit: 4,   null: false
-    t.integer  "product_criteria_id", limit: 4,   null: false
-    t.boolean  "exclude_existing",                null: false
+    t.string   "report_identifier",   limit: 255,   null: false
+    t.integer  "study_id",            limit: 4,     null: false
+    t.integer  "product_criteria_id", limit: 4,     null: false
+    t.boolean  "exclude_existing",                  null: false
     t.string   "state",               limit: 255
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
+    t.text     "plate_purposes",      limit: 65535
   end
 
   add_index "qc_reports", ["product_criteria_id"], name: "fk_qc_reports_to_product_criteria", using: :btree
@@ -1897,8 +1898,8 @@ ActiveRecord::Schema.define(version: 20170711153937) do
   create_table "work_completions", force: :cascade do |t|
     t.integer  "user_id",    limit: 4, null: false
     t.integer  "target_id",  limit: 4, null: false
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "work_completions", ["target_id"], name: "fk_rails_f8fb9e95de", using: :btree
