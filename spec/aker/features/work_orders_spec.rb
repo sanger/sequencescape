@@ -34,4 +34,10 @@ RSpec.describe 'WorkOrders', type: :feature, aker: true do
       expect(page).to have_css('.sample', count: work_order.samples.count)
     end
   end
+
+  scenario 'complete a work order'
+
+  scenario 'complete a work order with new or updated materials'
+
+  scenario 'cancel a work order'
 end
