@@ -46,6 +46,7 @@ class RequestType < ActiveRecord::Base
  # Couple of named scopes for finding billable types
  scope :billable, -> { where(billable: true) }
  scope :non_billable, -> { where(billable: false) }
+ scope :needing_target_asset, -> { where(target_purpose: nil, target_asset_type: nil) }
 
   # Defines the acceptable plate purposes or the request type.  Essentially this is used to limit the
   # cherrypick plate types when going into pulldown to the correct list.
@@ -151,7 +152,7 @@ class RequestType < ActiveRecord::Base
   belongs_to :target_purpose, class_name: 'Purpose'
 
   def needs_target_asset?
-    target_purpose.nil? and target_asset_type.blank?
+    target_purpose.nil? && target_asset_type.blank?
   end
 
   def create_target_asset!(&block)

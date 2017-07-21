@@ -19,21 +19,25 @@ class MultiplexedCherrypickingTask < Task
     'assign_wells_to_wells'
   end
 
-  def included_for_do_task
-    [{ requests: :asset }, :pipeline]
-  end
-
-  def included_for_render_task
-    [{ requests: :asset }, :pipeline]
-  end
-
   def create_render_element(request)
     request.asset && AssignTubesToWellsData.new(request)
   end
 
+  def included_for_do_task
+    [{ requests: [:request_metadata, { asset: :aliquots }, :target_asset] }, :pipeline]
+  end
+
+  def included_for_render_task
+    [requests: { asset: [:samples, { plate: :barcode_prefix }, :map] }]
+  end
+
   def render_task(workflow, params)
     super
-    workflow.set_plate_purpose_options(self)
+    workflow.plate_purpose_options = plate_purpose_options
+  end
+
+  def plate_purpose_options(_ = nil)
+    PlatePurpose.cherrypickable_as_target.order(name: :asc).pluck(:name, :size, :id)
   end
 
   def do_task(workflow, params)

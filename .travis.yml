@@ -1,7 +1,6 @@
 language: ruby
 rvm:
   - 2.4.1
-  - jruby-9.1.12.0
 dist: trusty
 sudo: required
 services: mysql
@@ -20,9 +19,6 @@ before_script:
   - 'if [[ "$PRECOMPILE_ASSETS" == "true" ]]; then bundle exec rake assets:precompile; fi'
 script:
   - "bundle exec $SUITE"
-matrix:
-  allow_failures:
-  - rvm: jruby-9.1.12.0
 addons:
   apt:
     packages:
