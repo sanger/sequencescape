@@ -24,8 +24,7 @@ class QcReportsController < ApplicationController
   def create
     study = Study.find_by(id: params[:qc_report][:study_id])
     exclude_existing = params[:qc_report][:exclude_existing] == '1'
-    # binding.pry
-    qc_report = QcReport.new(study: study, product_criteria: @product.stock_criteria, exclude_existing: exclude_existing, plate_purposes: params[:qc_report][:plate_purposes].reject(&:blank?))
+    qc_report = QcReport.new(study: study, product_criteria: @product.stock_criteria, exclude_existing: exclude_existing, plate_purposes: params[:qc_report][:plate_purposes].try(:reject, &:blank?))
 
     if qc_report.save
       flash[:notice] = 'Your report has been requested and will be presented on this page when complete.'

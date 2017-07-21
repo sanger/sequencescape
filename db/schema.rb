@@ -23,7 +23,7 @@ ActiveRecord::Schema.define(version: 20170711153937) do
 
   add_index "aliquot_indices", ["aliquot_id"], name: "index_aliquot_indices_on_aliquot_id", unique: true, using: :btree
   add_index "aliquot_indices", ["lane_id", "aliquot_index"], name: "index_aliquot_indices_on_lane_id_and_aliquot_index", unique: true, using: :btree
-
+  
   create_table "aliquots", force: :cascade do |t|
     t.integer  "receptacle_id",    limit: 4,                   null: false
     t.integer  "study_id",         limit: 4
