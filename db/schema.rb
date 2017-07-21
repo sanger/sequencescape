@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170711112702) do
+ActiveRecord::Schema.define(version: 20170711153937) do
 
   create_table "aliquot_indices", force: :cascade do |t|
     t.integer  "aliquot_id",    limit: 4, null: false
@@ -527,9 +527,9 @@ ActiveRecord::Schema.define(version: 20170711112702) do
   create_table "extraction_attributes", force: :cascade do |t|
     t.integer  "target_id",         limit: 4
     t.string   "created_by",        limit: 255
-    t.text     "attributes_update", limit: 65535
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
+    t.text     "attributes_update", limit: 4294967295
+    t.datetime "created_at",                           null: false
+    t.datetime "updated_at",                           null: false
   end
 
   create_table "faculty_sponsors", force: :cascade do |t|
@@ -806,7 +806,6 @@ ActiveRecord::Schema.define(version: 20170711112702) do
     t.integer  "max_size",                      limit: 4
     t.boolean  "summary",                                   default: true
     t.boolean  "group_by_study_to_delete",                  default: true
-    t.integer  "max_number_of_groups",          limit: 4
     t.boolean  "externally_managed",                        default: false
     t.string   "group_name",                    limit: 255
     t.integer  "control_request_type_id",       limit: 4,                   null: false
@@ -1074,13 +1073,14 @@ ActiveRecord::Schema.define(version: 20170711112702) do
   add_index "qc_metrics", ["qc_report_id"], name: "fk_qc_metrics_to_qc_reports", using: :btree
 
   create_table "qc_reports", force: :cascade do |t|
-    t.string   "report_identifier",   limit: 255, null: false
-    t.integer  "study_id",            limit: 4,   null: false
-    t.integer  "product_criteria_id", limit: 4,   null: false
-    t.boolean  "exclude_existing",                null: false
+    t.string   "report_identifier",   limit: 255,   null: false
+    t.integer  "study_id",            limit: 4,     null: false
+    t.integer  "product_criteria_id", limit: 4,     null: false
+    t.boolean  "exclude_existing",                  null: false
     t.string   "state",               limit: 255
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
+    t.text     "plate_purposes",      limit: 65535
   end
 
   add_index "qc_reports", ["product_criteria_id"], name: "fk_qc_reports_to_product_criteria", using: :btree
@@ -1904,8 +1904,8 @@ ActiveRecord::Schema.define(version: 20170711112702) do
   create_table "work_completions", force: :cascade do |t|
     t.integer  "user_id",    limit: 4, null: false
     t.integer  "target_id",  limit: 4, null: false
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "work_completions", ["target_id"], name: "fk_rails_f8fb9e95de", using: :btree

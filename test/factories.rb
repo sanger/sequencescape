@@ -84,17 +84,14 @@ FactoryGirl.define do
   end
 
   factory :study do
-    name { |_a| generate :study_name }
+    name { generate :study_name }
     user
     blocked              false
     state                'active'
     enforce_data_release false
     enforce_accessioning false
     reference_genome     { ReferenceGenome.find_by(name: '') }
-
-    # study_metadata
-
-    after(:build) { |study| study.study_metadata = create(:study_metadata, study: study) }
+    study_metadata
   end
 
   factory  :budget_division do
@@ -355,7 +352,7 @@ FactoryGirl.define do
     end
 
     factory :manager do
-      roles { |role| [role.association(:manager_role, authorizable: authorizable)] }
+      roles { |role| Array(authorizable).map { |auth| role.association(:manager_role, authorizable: auth) } }
 
       transient do
         authorizable { create :study }

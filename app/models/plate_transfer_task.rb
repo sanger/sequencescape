@@ -8,7 +8,9 @@ class PlateTransferTask < Task
   belongs_to :purpose
 
   def render_task(workflow, params)
-    workflow.render_plate_transfer_task(self, params)
+    ActiveRecord::Base.transaction do
+      workflow.render_plate_transfer_task(self, params)
+    end
   end
 
   def do_task(workflow, params)
