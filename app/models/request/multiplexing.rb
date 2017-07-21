@@ -23,18 +23,25 @@ class Request::Multiplexing < CustomerRequest
   end
 
   redefine_aasm column: :state, whiny_persistence: true do
-      state :pending, initial: true
-      state :started
-      state :passed
-      state :failed
-      state :cancelled
+    state :pending, initial: true
+    state :started
+    state :passed
+    state :failed
+    state :cancelled
 
-      event :submission_cancelled do
-        transitions to: :cancelled, from: [:pending, :cancelled]
-      end
-      event :start  do transitions to: :started,     from: [:pending] end
-      event :pass   do transitions to: :passed,      from: [:pending, :started] end
-      event :fail   do transitions to: :failed,      from: [:pending, :started] end
-      event :cancel do transitions to: :cancelled,   from: [:started, :passed] end
+    event :submission_cancelled do
+      transitions to: :cancelled, from: [:pending, :cancelled]
+    end
+    event :start  do transitions to: :started,     from: [:pending] end
+    event :pass   do transitions to: :passed,      from: [:pending, :started] end
+    event :fail   do transitions to: :failed,      from: [:pending, :started] end
+    event :cancel do transitions to: :cancelled,   from: [:started, :passed] end
+
+    # If the library creation is failed, we're not going to be pooling.
+    event :fail_from_upstream do
+      transitions to: :cancelled, from: [:pending]
+      transitions to: :failed,    from: [:started]
+      transitions to: :failed,    from: [:passed]
+    end
   end
 end
