@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170711153937) do
+ActiveRecord::Schema.define(version: 20170721104249) do
 
   create_table "aliquot_indices", force: :cascade do |t|
     t.integer  "aliquot_id",    limit: 4, null: false
@@ -23,7 +23,7 @@ ActiveRecord::Schema.define(version: 20170711153937) do
 
   add_index "aliquot_indices", ["aliquot_id"], name: "index_aliquot_indices_on_aliquot_id", unique: true, using: :btree
   add_index "aliquot_indices", ["lane_id", "aliquot_index"], name: "index_aliquot_indices_on_lane_id_and_aliquot_index", unique: true, using: :btree
-  
+
   create_table "aliquots", force: :cascade do |t|
     t.integer  "receptacle_id",    limit: 4,                   null: false
     t.integer  "study_id",         limit: 4
@@ -307,6 +307,20 @@ ActiveRecord::Schema.define(version: 20170711153937) do
 
   add_index "billing_events", ["kind"], name: "index_billing_events_on_kind", using: :btree
   add_index "billing_events", ["reference"], name: "index_billing_events_on_reference", using: :btree
+
+  create_table "billing_items", force: :cascade do |t|
+    t.integer  "request_id",              limit: 4
+    t.string   "project_cost_code",       limit: 255
+    t.string   "units",                   limit: 255
+    t.string   "fin_product_code",        limit: 255
+    t.string   "fin_product_description", limit: 255
+    t.datetime "request_passed_date"
+    t.datetime "reported_at"
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
+  end
+
+  add_index "billing_items", ["request_id"], name: "index_billing_items_on_request_id", using: :btree
 
   create_table "broadcast_events", force: :cascade do |t|
     t.string   "sti_type",   limit: 255
@@ -1801,7 +1815,7 @@ ActiveRecord::Schema.define(version: 20170711153937) do
     t.integer  "source_id",        limit: 4
     t.integer  "destination_id",   limit: 4
     t.string   "destination_type", limit: 255
-    t.text     "transfers",        limit: 65535
+    t.text     "transfers",   limit: 65535
     t.integer  "bulk_transfer_id", limit: 4
     t.integer  "user_id",          limit: 4
   end
@@ -1898,8 +1912,8 @@ ActiveRecord::Schema.define(version: 20170711153937) do
   create_table "work_completions", force: :cascade do |t|
     t.integer  "user_id",    limit: 4, null: false
     t.integer  "target_id",  limit: 4, null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
   end
 
   add_index "work_completions", ["target_id"], name: "fk_rails_f8fb9e95de", using: :btree
@@ -1926,6 +1940,7 @@ ActiveRecord::Schema.define(version: 20170711153937) do
     t.integer  "version",       limit: 4
   end
 
+  add_foreign_key "billing_items", "requests"
   add_foreign_key "sample_manifests", "plate_purposes", column: "purpose_id"
   add_foreign_key "work_completions", "assets", column: "target_id"
   add_foreign_key "work_completions", "users"
