@@ -426,43 +426,7 @@ FactoryGirl.define do
     interactive           nil
   end
 
-  factory :plate_purpose do
-    name { generate :purpose_name }
-    size 96
-    association(:barcode_printer_type, factory: :plate_barcode_printer_type)
-    target_type 'Plate'
-    asset_shape { AssetShape.default }
-
-    factory :source_plate_purpose do
-      after(:build) do |source_plate_purpose, _evaluator|
-        source_plate_purpose.source_purpose = source_plate_purpose
-      end
-
-      factory :input_plate_purpose, class: PlatePurpose::Input do
-        stock_plate true
-      end
-    end
-  end
-
-  factory :purpose do
-    name { generate :purpose_name }
-    target_type 'Asset'
-
-    factory :stock_purpose do
-      stock_plate true
-    end
-  end
-
-  factory(:tube_purpose, class: Tube::Purpose) do
-    name        { generate :purpose_name }
-    target_type 'MultiplexedLibraryTube'
-  end
-
-  factory :dilution_plate_purpose do
-    name    'Dilution'
-  end
-
   factory :barcode_prefix do
-    prefix  'DN'
+    prefix 'DN'
   end
 end

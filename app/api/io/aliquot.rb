@@ -8,6 +8,19 @@ class Io::Aliquot < Core::Io::Base
   set_model_for_input(::Aliquot)
   set_json_root(:aliquot)
 
+  PRELOADS = [
+    :bait_library,
+    {
+      tag: :tag_group,
+      tag2: :tag_group,
+      sample: [
+        :study_reference_genome,
+        :uuid_object,
+        { sample_metadata: :reference_genome }
+      ]
+    }
+  ].freeze
+
   define_attribute_and_json_mapping("
                 sample  => sample
 

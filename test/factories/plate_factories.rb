@@ -107,4 +107,14 @@ FactoryGirl.define do
       end
     end
   end
+
+  # StripTubes are effectively thin plates
+  factory :strip_tube do
+    name               'Strip_tube'
+    size               '8'
+    plate_purpose      { create :strip_tube_purpose }
+    after(:create) do |st|
+      st.wells = st.maps.map { |map| create(:well, map: map) }
+    end
+  end
 end

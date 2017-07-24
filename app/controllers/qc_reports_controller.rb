@@ -18,13 +18,13 @@ class QcReportsController < ApplicationController
 
     @all_products = Product.alphabetical.all.map { |product| [product.display_name, product.id] }
     @active_products = Product.with_stock_report.active.alphabetical.all.map { |product| [product.display_name, product.id] }
+    @plate_purposes = PlatePurpose.pluck(:name).sort
   end
 
   def create
     study = Study.find_by(id: params[:qc_report][:study_id])
     exclude_existing = params[:qc_report][:exclude_existing] == '1'
-
-    qc_report = QcReport.new(study: study, product_criteria: @product.stock_criteria, exclude_existing: exclude_existing)
+    qc_report = QcReport.new(study: study, product_criteria: @product.stock_criteria, exclude_existing: exclude_existing, plate_purposes: params[:qc_report][:plate_purposes].try(:reject, &:blank?))
 
     if qc_report.save
       flash[:notice] = 'Your report has been requested and will be presented on this page when complete.'

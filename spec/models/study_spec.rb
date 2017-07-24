@@ -388,5 +388,29 @@ RSpec.describe Study, type: :model do
         expect(studies).to_not include(study_8)
       end
     end
+
+    context '#each_well_for_qc_report_in_batches' do
+      let!(:study)          { create(:study) }
+      let!(:well_1)         { create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: PlatePurpose.find_by(name: 'Stock Plate'))) }
+      let!(:well_2)         { create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: PlatePurpose.find_by(name: 'ISC lib PCR-XP'))) }
+      let!(:well_3)         { create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: PlatePurpose.find_by(name: 'Lib PCR-XP'))) }
+      let!(:well_4)         { create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: PlatePurpose.find_by(name: 'PF Post Shear'))) }
+
+      it 'will limit by stock plate purposes if there are no plate purposes' do
+        wells_count = 0
+        study.each_well_for_qc_report_in_batches(false, 'Bespoke RNA') { |wells| wells.each { |_well| wells_count += 1 } }
+        expect(wells_count).to eq(1)
+      end
+
+      it 'will limit by passed plates purposes' do
+        wells_count = 0
+        study.each_well_for_qc_report_in_batches(false, 'Bespoke RNA', ['ISC lib PCR-XP', 'Lib PCR-XP', 'PF Post Shear']) { |wells| wells.each { |_well| wells_count += 1 } }
+        expect(wells_count).to eq(3)
+
+        wells_count = 0
+        study.each_well_for_qc_report_in_batches(false, 'Bespoke RNA', ['ISC lib PCR-XP', 'Lib PCR-XP']) { |wells| wells.each { |_well| wells_count += 1 } }
+        expect(wells_count).to eq(2)
+      end
+    end
   end
 end
