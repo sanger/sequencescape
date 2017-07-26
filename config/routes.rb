@@ -13,6 +13,9 @@ Sequencescape::Application.routes.draw do
   namespace :api do
     namespace :v2 do
       jsonapi_resources :samples
+      jsonapi_resources :work_orders
+      jsonapi_resources :studies
+      jsonapi_resources :projects
     end
   end
 
