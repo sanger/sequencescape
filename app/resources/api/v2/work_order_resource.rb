@@ -2,7 +2,6 @@
 
 module Api
   module V2
-
     #
     # Class WorkOrderResource provides an abstraction of
     # request for exposure to external applications. It
@@ -18,7 +17,6 @@ module Api
       CustomerRequest.descendants.each do |subclass|
         model_hint model: subclass, resource: :work_order
       end
-
 
       has_one :study, readonly: true, foreign_key: :initial_study_id, relation_name: :initial_study
       has_one :project, readonly: true, foreign_key: :initial_project_id, relation_name: :initial_project

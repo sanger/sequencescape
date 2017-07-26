@@ -1,0 +1,14 @@
+Description:
+    Add a new ApiV2 resource, complete with resources, specs, routes and controllers
+
+Example:
+    rails generate api_v2 Thing
+
+    This will create:
+      app/controllers/api/v2/things_controller.rb
+      app/resources/api/v2/thing_resource.rb
+      spec/requests/api/v2/things_spec.rb
+      spec/resources/api/v2/thing_resource_spec.rb
+
+    This will modify:
+      app/config/routes.rb
