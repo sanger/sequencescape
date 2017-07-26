@@ -15,7 +15,7 @@ class UsersControllerTest < ActionController::TestCase
       @response   = ActionController::TestResponse.new
     end
 
-    should_require_login :edit, :show, :update
+    should_require_login :edit, :show, :update, resource: 'user'
 
     # should only be able to see your own page
   end

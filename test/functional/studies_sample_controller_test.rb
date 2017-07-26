@@ -19,7 +19,7 @@ class Studies::SamplesControllerTest < ActionController::TestCase
       @workflow = create :submission_workflow
     end
 
-    should_require_login(:index)
+    should_require_login(:index, resource: 'sample', parent: 'study')
 
     resource_test('sample', parent: 'study', actions: ['index'], ignore_actions: ['show'], formats: ['html'])
   end
