@@ -60,7 +60,7 @@ module Sanger
                   session[:user] = nil
                   if params[:resource].present?
                     resource = params[:resource]
-                    params["id"] = (create resource).id
+                    params['id'] = (create resource).id
                   end
                   if params[:parent].present?
                     parent_resource = params[:parent]
