@@ -16,6 +16,9 @@ en:
         fragment_size_required_to:
           label: 'Fragment size required (to)'
 
+        file_type:
+          label: File type
+
         library_type:
           label: Library type
 
