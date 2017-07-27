@@ -41,6 +41,9 @@ FactoryGirl.define do
       request.request_metadata_attributes = attributes_for(:"request_metadata_for_#{request.request_type.name.downcase.gsub(/[^a-z]+/, '_')}") if request.request_metadata.new_record?
       request.sti_type = request.request_type.request_class_name
     end
+
+    factory :customer_request, class: CustomerRequest do
+    end
   end
 
   factory :sequencing_request, class: SequencingRequest do
