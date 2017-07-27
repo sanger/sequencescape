@@ -7,7 +7,7 @@ well:
 sanger_sample_id:
   heading: SANGER SAMPLE ID
   attribute: :sample_id
-supplier_sample_name:
+supplier_name:
   heading: SUPPLIER SAMPLE NAME
   unlocked: true
   validation:
