@@ -41,6 +41,7 @@ class TagLayoutTemplate < ActiveRecord::Base
   def tag_layout_attributes
     {
       tag_group: tag_group,
+      tag2_group: tag2_group,
       direction_algorithm: direction_algorithm,
       walking_algorithm: walking_algorithm
     }
