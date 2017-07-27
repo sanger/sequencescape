@@ -15,7 +15,7 @@ class TransferRequest < SystemRequest
   # Ensure that the source and the target assets are not the same, otherwise bad things will happen!
   validate :source_and_target_assets_are_different
 
-  set_defaults request_type: RequestType.transfer, request_purpose: ->(transfer_request) { transfer_request.request_type.request_purpose }
+  set_defaults request_type: ->() { RequestType.transfer }, request_purpose: ->(transfer_request) { transfer_request.request_type.request_purpose }
 
   after_create(:perform_transfer_of_contents)
 
