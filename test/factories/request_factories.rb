@@ -170,4 +170,11 @@ FactoryGirl.define do
     target_asset { |asset| asset.association(:well) }
     request_purpose
   end
+
+  factory :request_traction_grid_ion, class: Request::Traction::GridIon do
+    association(:asset, factory: :well)
+    target_asset nil
+    request_purpose
+    association(:request_type, factory: :well_request_type)
+  end
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170727100019) do
+ActiveRecord::Schema.define(version: 20170727121949) do
 
   create_table "aliquot_indices", force: :cascade do |t|
     t.integer  "aliquot_id",    limit: 4, null: false
@@ -1179,6 +1179,7 @@ ActiveRecord::Schema.define(version: 20170727100019) do
     t.integer  "target_purpose_id",               limit: 4
     t.boolean  "customer_accepts_responsibility"
     t.integer  "pcr_cycles",                      limit: 4
+    t.string   "file_type",                       limit: 255
   end
 
   add_index "request_metadata", ["request_id"], name: "index_request_metadata_on_request_id", using: :btree
