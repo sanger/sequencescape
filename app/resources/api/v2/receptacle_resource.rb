@@ -2,21 +2,27 @@
 
 module Api
   module V2
-    # Provides a JSON API representation of <%= name %>
+    # Provides a JSON API representation of receptacle
     # See: http://jsonapi-resources.com/ for JSONAPI::Resource documentation
-    class <%= camelcase %>Resource < BaseResource
+    class ReceptacleResource < BaseResource
       # Constants...
 
-      # immutable # uncomment to make the resource immutable
+      immutable # uncomment to make the resource immutable
 
-      # model_name / model_hint if required
+      model_name 'Aliquot::Receptacle'
 
-      default_includes :uuid_object
+      Tube.descendants.each do |subclass|
+        model_hint model: subclass, resource: :tube
+      end
 
       # Associations:
+      has_many :samples
+      has_many :studies
+      has_many :projects
 
       # Attributes
       attribute :uuid, readonly: true
+      attribute :name, delegate: :display_name, readonly: true
 
       # Filters
 

@@ -2,7 +2,7 @@
 
 module Api
   module V2
-    class StudyResource < JSONAPI::Resource
+    class StudyResource < BaseResource
       immutable
 
       attribute :name

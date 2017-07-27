@@ -22,6 +22,7 @@ RSpec.describe Api::V2::WorkOrderResource, type: :resource do
     it { is_expected.to filter(:state) }
 
     it { is_expected.to have_many(:samples).with_class_name('Sample') }
+    it { is_expected.to have_one(:source_receptacle) }
     it { is_expected.to have_one(:study).with_class_name('Study') }
     it { is_expected.to have_one(:project).with_class_name('Project') }
 

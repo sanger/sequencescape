@@ -9,8 +9,8 @@ module Api
     # representation, while maintaining an external
     # interface
     #
-    class WorkOrderResource < JSONAPI::Resource
-      IGNORED_METADATA_FIELDS = %w[id request_id created_at updated_at]
+    class WorkOrderResource < BaseResource
+      IGNORED_METADATA_FIELDS = %w[id request_id created_at updated_at].freeze
 
       model_name 'CustomerRequest'
 
@@ -18,12 +18,15 @@ module Api
         model_hint model: subclass, resource: :work_order
       end
 
+      default_includes :uuid_object, :request_metadata, :request_type
+
       has_one :study, readonly: true, foreign_key: :initial_study_id, relation_name: :initial_study
       has_one :project, readonly: true, foreign_key: :initial_project_id, relation_name: :initial_project
+      has_one :source_receptacle, readonly: true, foreign_key: :asset_id, relation_name: :asset, polymorphic: true
       has_many :samples, readonly: true
 
       attribute :uuid, readonly: true
-      attribute :order_type
+      attribute :order_type, readonly: true
       attribute :state
       attribute :options, delegate: :request_metadata_attributes
       attribute :at_risk, delegate: :customer_accepts_responsibility
@@ -42,16 +45,6 @@ module Api
         _model.request_metadata.attributes.reject do |key, value|
           IGNORED_METADATA_FIELDS.include?(key) || value.blank?
         end
-      end
-
-      # Note: Readonly does not work on attributes in 0.9, it is added in 0.10.
-      # This can be removed as soon as we update.
-      def self.updatable_fields(context)
-        super - [:uuid, :order_type]
-      end
-
-      def self.apply_includes(records, options = {})
-        super.includes(:uuid_object, :request_metadata, :request_type)
       end
     end
   end

@@ -2,7 +2,7 @@
 
 module Api
   module V2
-    class SampleResource < JSONAPI::Resource
+    class SampleResource < BaseResource
       immutable
 
       attribute :name
