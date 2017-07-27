@@ -5,7 +5,7 @@ plate_default:
     - :sanger_plate_id
     - :well
     - :sanger_sample_id
-    - :supplier_sample_name
+    - :supplier_name
     - :cohort
     - :volume
     - :concentration
@@ -44,7 +44,7 @@ plate_full:
     - :sanger_plate_id
     - :well
     - :sanger_sample_id
-    - :supplier_sample_name
+    - :supplier_name
     - :cohort
     - :volume
     - :concentration
@@ -99,7 +99,7 @@ plate_rnachip:
     - :sanger_plate_id
     - :well
     - :sanger_sample_id
-    - :supplier_sample_name
+    - :supplier_name
     - :cohort
     - :volume
     - :concentration
@@ -126,7 +126,7 @@ tube_default:
   columns:
     - :sanger_tube_id
     - :sanger_sample_id
-    - :supplier_sample_name
+    - :supplier_name
     - :cohort
     - :volume
     - :concentration
@@ -164,7 +164,7 @@ tube_full:
   columns:
     - :sanger_tube_id
     - :sanger_sample_id
-    - :supplier_sample_name
+    - :supplier_name
     - :cohort
     - :volume
     - :concentration
@@ -218,7 +218,7 @@ tube_rnachip:
   columns:
     - :sanger_tube_id
     - :sanger_sample_id
-    - :supplier_sample_name
+    - :supplier_name
     - :cohort
     - :volume
     - :concentration
@@ -252,7 +252,7 @@ tube_multiplexed_library:
     - :library_type
     - :insert_size_from
     - :insert_size_to
-    - :supplier_sample_name
+    - :supplier_name
     - :cohort
     - :volume
     - :concentration
@@ -295,7 +295,7 @@ tube_library_with_tag_sequences:
     - :library_type
     - :insert_size_from
     - :insert_size_to
-    - :supplier_sample_name
+    - :supplier_name
     - :cohort
     - :volume
     - :concentration
@@ -338,7 +338,7 @@ tube_multiplexed_library_with_tag_sequences:
     - :library_type
     - :insert_size_from
     - :insert_size_to
-    - :supplier_sample_name
+    - :supplier_name
     - :cohort
     - :volume
     - :concentration
