@@ -154,7 +154,7 @@ insert_size_to:
     empty_cell:
     number_greater_than_one:
     is_text:
-supplier_sample_name:
+supplier_name:
   heading: SUPPLIER SAMPLE NAME
   unlocked: true
   validation:
