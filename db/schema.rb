@@ -314,7 +314,7 @@ ActiveRecord::Schema.define(version: 20170721104249) do
     t.string   "units",                   limit: 255
     t.string   "fin_product_code",        limit: 255
     t.string   "fin_product_description", limit: 255
-    t.datetime "request_passed_date"
+    t.string   "request_passed_date",     limit: 255
     t.datetime "reported_at"
     t.datetime "created_at",                          null: false
     t.datetime "updated_at",                          null: false
@@ -1800,6 +1800,24 @@ ActiveRecord::Schema.define(version: 20170721104249) do
   add_index "tasks", ["sorted"], name: "index_tasks_on_sorted", using: :btree
   add_index "tasks", ["sti_type"], name: "index_tasks_on_sti_type", using: :btree
 
+  create_table "transfer_request_collection_transfer_requests", force: :cascade do |t|
+    t.integer  "transfer_request_collection_id", limit: 4
+    t.integer  "transfer_request_id",            limit: 4
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
+  end
+
+  add_index "transfer_request_collection_transfer_requests", ["transfer_request_collection_id"], name: "fk_rails_6b9c820b32", using: :btree
+  add_index "transfer_request_collection_transfer_requests", ["transfer_request_id"], name: "fk_rails_67a3295574", using: :btree
+
+  create_table "transfer_request_collections", force: :cascade do |t|
+    t.integer  "user_id",    limit: 4
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+  end
+
+  add_index "transfer_request_collections", ["user_id"], name: "fk_rails_e542f48171", using: :btree
+
   create_table "transfer_templates", force: :cascade do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -1815,7 +1833,7 @@ ActiveRecord::Schema.define(version: 20170721104249) do
     t.integer  "source_id",        limit: 4
     t.integer  "destination_id",   limit: 4
     t.string   "destination_type", limit: 255
-    t.text     "transfers",   limit: 65535
+    t.text     "transfers",        limit: 65535
     t.integer  "bulk_transfer_id", limit: 4
     t.integer  "user_id",          limit: 4
   end
@@ -1912,8 +1930,8 @@ ActiveRecord::Schema.define(version: 20170721104249) do
   create_table "work_completions", force: :cascade do |t|
     t.integer  "user_id",    limit: 4, null: false
     t.integer  "target_id",  limit: 4, null: false
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "work_completions", ["target_id"], name: "fk_rails_f8fb9e95de", using: :btree
@@ -1942,6 +1960,9 @@ ActiveRecord::Schema.define(version: 20170721104249) do
 
   add_foreign_key "billing_items", "requests"
   add_foreign_key "sample_manifests", "plate_purposes", column: "purpose_id"
+  add_foreign_key "transfer_request_collection_transfer_requests", "requests", column: "transfer_request_id"
+  add_foreign_key "transfer_request_collection_transfer_requests", "transfer_request_collections"
+  add_foreign_key "transfer_request_collections", "users"
   add_foreign_key "work_completions", "assets", column: "target_id"
   add_foreign_key "work_completions", "users"
   add_foreign_key "work_completions_submissions", "submissions"

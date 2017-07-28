@@ -6,7 +6,7 @@ class CreateBillingItems < ActiveRecord::Migration
       t.string :units
       t.string :fin_product_code
       t.string :fin_product_description
-      t.timestamp :request_passed_date
+      t.string :request_passed_date
       t.timestamp :reported_at
 
       t.timestamps null: false

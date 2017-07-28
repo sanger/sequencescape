@@ -1,7 +1,18 @@
-# Simple record that stores (dynamic) data required to generate billing BIF file
-# it store request_id, project_cost_code, units, fin_product_code, fin_product_description, request_passed_date
 module Billing
+  # Simple record that stores (dynamic) data required to generate billing BIF file
+  # it store request_id, project_cost_code, units, fin_product_code, fin_product_description, request_passed_date
   class Item < ActiveRecord::Base
     belongs_to :request
+
+    # this method transfers billing_item to one BIF file entry (string)
+    # fields should become constant of some sort (configuration?), so there should be no need to pass anything
+    def to_s(fields)
+      ''.tap do |result|
+        fields.each do |field|
+          result << format("%#{field.alignment}#{field.length}.#{field.length}s", field.value(self))
+          result << format("%-#{fields.spaces_to_next_field(field)}.#{fields.spaces_to_next_field(field)}s", '')
+        end
+      end
+    end
   end
 end

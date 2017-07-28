@@ -1,7 +1,7 @@
-# Takes request as an argument
-# Valid if it has request, request.target_asset has aliquots, request is passed, request has fin_product
-# Creates billing items based on amount of aliquots related to different project_cost_codes
 module Billing
+  # Takes request as an argument
+  # Valid if it has request, request.target_asset has aliquots, request is passed, request has fin_product
+  # Creates billing items based on amount of aliquots related to different project_cost_codes
   class ItemsFactory
     include ActiveModel::Model
 
