@@ -9,9 +9,7 @@ module Api
 
       immutable # uncomment to make the resource immutable
 
-      model_name 'Aliquot::Receptacle'
-
-      Tube.descendants.each do |subclass|
+      ::Tube.descendants.each do |subclass|
         model_hint model: subclass, resource: :tube
       end
 

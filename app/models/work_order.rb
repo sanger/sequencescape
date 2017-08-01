@@ -11,9 +11,10 @@ class WorkOrder < ActiveRecord::Base
 
   has_one :study, through: :example_request, source: :initial_study
   has_one :project, through: :example_request, source: :initial_project
+  has_one :source_receptacle, through: :example_request, source: :asset
   has_one :example_request, ->() { order(id: :asc).readonly }, class_name: 'CustomerRequest'
 
-  has_many :samples, through: :requests
+  has_many :samples, ->() { distinct }, through: :requests
 
   def state=(new_state)
     requests.each do |request|

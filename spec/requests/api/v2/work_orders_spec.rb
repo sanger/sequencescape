@@ -68,12 +68,13 @@ describe 'WorkOrders API', with: :api_v2 do
       # Note, we don't test the actual resource content here.
       [
         { 'type' => 'studies', 'id' => study.id.to_s },
+        { 'type' => 'wells', 'id' => well.id.to_s },
         { 'type' => 'samples', 'id' => sample.id.to_s }
       ]
     end
 
     it 'can inline all necessary information' do
-      api_get '/api/v2/work-orders?include=study,samples,project'
+      api_get '/api/v2/work-orders?include=study,samples,project,source-receptacle'
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
       # check to make sure the right amount of messages are returned

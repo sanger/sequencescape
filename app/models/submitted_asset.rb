@@ -6,7 +6,7 @@
 
 class SubmittedAsset < ActiveRecord::Base
   belongs_to :order
-  belongs_to :asset, class_name: 'Aliquot::Receptacle'
+  belongs_to :asset, class_name: 'Receptacle'
 
   validates_presence_of :order, inverse_of: :submitted_assets
   validates_presence_of :asset, inverse_of: :submitted_assets

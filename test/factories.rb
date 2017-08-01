@@ -35,7 +35,7 @@ FactoryGirl.define do
     end
   end
 
-  factory :aliquot_receptacle, class: Aliquot::Receptacle, aliases: [:receptacle] do
+  factory :receptacle, class: Receptacle do
   end
 
   factory :event do
@@ -416,7 +416,7 @@ FactoryGirl.define do
   end
 
   factory :asset_group_asset do
-    association(:asset, factory: :aliquot_receptacle)
+    association(:asset, factory: :receptacle)
     asset_group
   end
 
