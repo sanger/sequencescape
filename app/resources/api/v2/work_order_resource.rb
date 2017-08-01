@@ -12,37 +12,42 @@ module Api
     class WorkOrderResource < BaseResource
       IGNORED_METADATA_FIELDS = %w[id request_id created_at updated_at].freeze
 
-      model_name 'CustomerRequest'
+      default_includes [:example_request, :work_order_type, { requests: :request_metadata }]
 
-      CustomerRequest.descendants.each do |subclass|
-        model_hint model: subclass, resource: :work_order
-      end
-
-      default_includes :uuid_object, :request_metadata, :request_type
-
-      has_one :study, readonly: true, foreign_key: :initial_study_id, relation_name: :initial_study
-      has_one :project, readonly: true, foreign_key: :initial_project_id, relation_name: :initial_project
+      has_one :study, readonly: true #, foreign_key: :initial_study_id#, relation_name: :initial_study
+      has_one :project, readonly: true #, foreign_key: :initial_project_id#, relation_name: :initial_project
       has_one :source_receptacle, readonly: true, foreign_key: :asset_id, relation_name: :asset, polymorphic: true
       has_many :samples, readonly: true
 
-      attribute :uuid, readonly: true
       attribute :order_type, readonly: true
       attribute :state
-      attribute :options, delegate: :request_metadata_attributes
-      attribute :at_risk, delegate: :customer_accepts_responsibility
+      attribute :options
+      attribute :at_risk
 
-      filters :state
-
-      filter :order_type, apply: ->(records, value, _options) {
-        records.where(request_types: { key: value })
+      filter :state, apply: ->(records, value, _options) {
+        records.where(requests: { state: value })
       }
 
+      filter :order_type, apply: ->(records, value, _options) {
+        records.where(work_order_types: { name: value })
+      }
+
+      # JSONAPI::Resource doesn't support has_one through relationships by default
+      def study_id
+        _model.example_request.initial_study_id
+      end
+
+      # JSONAPI::Resource doesn't support has_one through relationships by default
+      def project_id
+        _model.example_request.initial_project_id
+      end
+
       def order_type
-        _model.request_type.key
+        _model.work_order_type.name
       end
 
       def options
-        _model.request_metadata.attributes.reject do |key, value|
+        _model.requests.first.request_metadata.attributes.reject do |key, value|
           IGNORED_METADATA_FIELDS.include?(key) || value.blank?
         end
       end

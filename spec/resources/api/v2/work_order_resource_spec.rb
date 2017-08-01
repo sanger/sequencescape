@@ -3,9 +3,9 @@ require './app/resources/api/v2/work_order_resource'
 
 RSpec.describe Api::V2::WorkOrderResource, type: :resource do
   shared_examples_for 'a work order resource' do
-    subject { described_class.new(request, {}) }
+    subject { described_class.new(work_order, {}) }
+    let(:work_order) { create(:work_order, requests: requests).reload }
 
-    it { is_expected.to have_attribute :uuid }
     it { is_expected.to have_attribute :order_type }
     it { is_expected.to have_attribute :state }
     it { is_expected.to have_attribute :at_risk }
@@ -31,14 +31,20 @@ RSpec.describe Api::V2::WorkOrderResource, type: :resource do
     end
   end
 
-  context 'a basic request' do
-    let(:request) { create :customer_request }
+  context 'a basic work_order' do
+    let(:requests) { [create(:customer_request)] }
     let(:expected_metadata) { { 'read_length' => 76 } }
     it_behaves_like 'a work order resource'
   end
 
-  context 'a sequencing request' do
-    let(:request) { create :sequencing_request }
+  context 'a work_order with multiple requests' do
+    let(:requests) { create_list(:customer_request, 3) }
+    let(:expected_metadata) { { 'read_length' => 76 } }
+    it_behaves_like 'a work order resource'
+  end
+
+  context 'a sequencing work_order' do
+    let(:requests) { [create(:sequencing_request)] }
     let(:expected_metadata) { { 'fragment_size_required_to' => '21', 'fragment_size_required_from' => '1', 'read_length' => 76 } }
     it_behaves_like 'a work order resource'
   end

@@ -43,12 +43,15 @@ FactoryGirl.define do
     end
 
     factory :customer_request, class: CustomerRequest do
+      sti_type 'CustomerRequest' # Oddly, this seems to be necessary!
+      association(:request_type, factory: :customer_request_type)
     end
   end
 
   factory :sequencing_request, class: SequencingRequest do
     association(:request_type, factory: :sequencing_request_type)
     request_purpose
+    sti_type 'SequencingRequest'
 
     # Ensure that the request metadata is correctly setup based on the request type
     after(:build) do |request|

@@ -8,4 +8,39 @@
 class WorkOrder < ActiveRecord::Base
   has_many :requests
   belongs_to :work_order_type, required: true
+
+  has_one :study, through: :example_request, source: :initial_study
+  has_one :project, through: :example_request, source: :initial_project
+  has_one :example_request, ->() { order(id: :asc).readonly }, class_name: 'CustomerRequest'
+
+  has_many :samples, through: :requests
+
+  def state=(new_state)
+    requests.each do |request|
+      request.state = new_state
+      request.save!
+    end
+  end
+
+  def state
+    requests.first.state
+  end
+
+  def at_risk
+    example_request.customer_accepts_responsibility
+  end
+
+  def at_risk=(risk)
+    requests.each do |request|
+      request.customer_accepts_responsibility = risk
+      request.save!
+    end
+  end
+
+  def options=(new_options)
+    requests.each do |request|
+      request.request_metadata_attributes = new_options
+      request.save!
+    end
+  end
 end

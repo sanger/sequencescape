@@ -6,15 +6,18 @@ describe 'WorkOrders API', with: :api_v2 do
   context 'with multiple requests' do
     let(:our_request_type) { create :request_type }
     let(:other_request_type) { create :request_type }
+    let(:our_work_order_type) { create :work_order_type, name: our_request_type.key }
+    let(:other_work_order_type) { create :work_order_type, name: other_request_type.key }
     before do
       [
-        { request_type: our_request_type, state: 'pending' },
-        { request_type: our_request_type, state: 'pending' },
-        { request_type: our_request_type, state: 'started' },
-        { request_type: other_request_type, state: 'pending' },
-        { request_type: other_request_type, state: 'started' }
+        { work_order_type: our_work_order_type, request_type: our_request_type, state: 'pending' },
+        { work_order_type: our_work_order_type, request_type: our_request_type, state: 'pending' },
+        { work_order_type: our_work_order_type, request_type: our_request_type, state: 'started' },
+        { work_order_type: other_work_order_type, request_type: other_request_type, state: 'pending' },
+        { work_order_type: other_work_order_type, request_type: other_request_type, state: 'started' }
       ].map do |options|
-        create(:library_request, options)
+        wot = options.delete(:work_order_type)
+        create(:work_order, requests: [create(:library_request, options)], work_order_type: wot)
       end
     end
 
@@ -57,7 +60,8 @@ describe 'WorkOrders API', with: :api_v2 do
     let(:sample) { well.samples.first }
 
     before do
-      create :library_request, initial_study: study, asset: well, project: nil
+      request = create :library_request, initial_study: study, asset: well, project: nil
+      create :work_order, requests: [request]
     end
 
     let(:expected_includes) do
@@ -78,10 +82,11 @@ describe 'WorkOrders API', with: :api_v2 do
   end
 
   context 'with a request' do
-    let(:request) { create :library_request }
+    let(:requests) { create_list :library_request, 2 }
+    let(:work_order) { create :work_order, requests: requests }
 
     it 'sends an individual work_order' do
-      api_get "/api/v2/work-orders/#{request.id}"
+      api_get "/api/v2/work-orders/#{work_order.id}"
       expect(response).to have_http_status(:success)
       expect(json.dig('data', 'type')).to eq('work-orders')
     end
@@ -89,7 +94,7 @@ describe 'WorkOrders API', with: :api_v2 do
     let(:payload) do
       {
         'data' => {
-          'id' => request.id,
+          'id' => work_order.id,
           'type' => 'work-orders',
           'attributes' => {
             'state' => 'started',
@@ -99,8 +104,8 @@ describe 'WorkOrders API', with: :api_v2 do
       }
     end
 
-    it 'allowd update of a work order' do
-      api_patch "/api/v2/work-orders/#{request.id}", payload
+    it 'allows update of a work order' do
+      api_patch "/api/v2/work-orders/#{work_order.id}", payload
       expect(response).to have_http_status(:success)
       expect(json.dig('data', 'type')).to eq('work-orders')
       expect(json.dig('data', 'attributes', 'state')).to eq('started')
