@@ -9,7 +9,6 @@ module Billing
     end
 
     # this method transfers billing_item to one BIF file entry (string)
-    # fields should become constant of some sort (configuration?), so there should be no need to pass anything
     def to_s(fields)
       ''.tap do |result|
         fields.each do |field|

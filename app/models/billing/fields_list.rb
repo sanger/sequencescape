@@ -1,5 +1,5 @@
 module Billing
-  # fields details are stored in config/billing/fields.yml file
+  # collection of fields, fields details are stored in config/billing/fields.yml file
   class FieldsList
     include Enumerable
 

@@ -20,12 +20,17 @@ describe Billing::Report do
     @report = Billing::Report.new(file_name: 'test_file', start_date: '06/04/2017', end_date: '08/04/2017', fields: fields)
   end
 
-  it 'should have file_name, the right requests, generate the right data' do
-    expect(@report.file_name).to eq 'test_file'
-    billing_items = @report.find_billing_items(@report.start_date, @report.end_date)
-    expect(billing_items.count). to eq 2
+  it 'should not be valid without fields, start and end dates' do
+    report = Billing::Report.new
+    expect(report.valid?).to be false
+    expect(report.errors.full_messages.count).to eq 3
+  end
+
+  it 'should find the right billing items, generate the right data' do
+    expect(@report.valid?).to be true
+    expect(@report.billing_items.count). to eq 2
     data = "STD                      BI                       LM                       GLGR                       3730                                              S0755                                                                                               ILL                                               XX                                                GBP                                           0                   0           100                                                         Request Type 1                                                                                                                                                                                                                                                 2017040720170407\nSTD                      BI                       LM                       GLGR                       3730                                              S0755                                                                                               ILL                                               XX                                                GBP                                           0                   0           100                                                         Request Type 2                                                                                                                                                                                                                                                 2017040720170407\n" # rubocop:disable Metrics/LineLength
-    expect(@report.data(billing_items)).to eq data
+    expect(@report.data).to eq data
   end
 
   after do

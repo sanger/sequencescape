@@ -3,16 +3,17 @@ module Billing
   class Report
     include ActiveModel::Model
 
-    attr_accessor :start_date, :end_date, :file_name, :fields
+    attr_accessor :start_date, :end_date, :file_name, :fields, :billing_items
 
-    def create(file_name = 'newfile')
+    validates :start_date, :end_date, :fields, presence: true
+
+    def create
       f = File.new("#{file_name}.bif", 'w+')
-      billing_items = find_billing_items(start_date, end_date)
-      f.write(data(billing_items))
+      f.write(data)
       f.close
     end
 
-    def data(billing_items)
+    def data
       ''.tap do |text|
         billing_items.each do |billing_item|
           text << billing_item.to_s(fields)
@@ -20,8 +21,12 @@ module Billing
       end
     end
 
-    def find_billing_items(start_date, end_date)
-      Item.created_between(start_date, end_date)
+    def billing_items
+      @billing_items ||= Item.created_between(start_date, end_date)
+    end
+
+    def file_name
+      @file_name ||= 'newfile'
     end
 
     def start_date=(start_date)
