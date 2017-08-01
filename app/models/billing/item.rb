@@ -4,6 +4,10 @@ module Billing
   class Item < ActiveRecord::Base
     belongs_to :request
 
+    def self.created_between(start_date, end_date)
+      where(created_at: start_date..end_date)
+    end
+
     # this method transfers billing_item to one BIF file entry (string)
     # fields should become constant of some sort (configuration?), so there should be no need to pass anything
     def to_s(fields)
@@ -12,6 +16,7 @@ module Billing
           result << format("%#{field.alignment}#{field.length}.#{field.length}s", field.value(self))
           result << format("%-#{fields.spaces_to_next_field(field)}.#{fields.spaces_to_next_field(field)}s", '')
         end
+        result << "\n"
       end
     end
   end
