@@ -13,7 +13,7 @@ module Billing
     end
 
     def data(billing_items)
-      String.new.tap do |text|
+      ''.tap do |text|
         billing_items.each do |billing_item|
           text << billing_item.to_s(fields)
         end

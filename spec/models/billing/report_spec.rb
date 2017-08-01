@@ -2,9 +2,8 @@ require 'rails_helper'
 require 'timecop'
 
 describe Billing::Report do
-
   before do
-    Timecop.freeze(Time.local(2017, 4, 7))
+    Timecop.freeze(Time.zone.local(2017, 4, 7))
   end
 
   before(:each) do
@@ -32,5 +31,4 @@ describe Billing::Report do
   after do
     Timecop.return
   end
-
 end
