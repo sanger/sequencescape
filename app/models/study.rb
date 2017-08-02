@@ -489,9 +489,12 @@ class Study < ActiveRecord::Base
   end
 
   def mailing_list_of_managers
-    receiver = managers.pluck(:email).compact.uniq
-    receiver = User.all_administrators_emails if receiver.empty?
-    receiver
+    configured_managers = managers.pluck(:email).compact.uniq
+    if configured_managers.empty?
+      configatron.fetch(:ssr_emails, User.all_administrators_emails)
+    else
+      configured_managers
+    end
   end
 
   def subject_type
