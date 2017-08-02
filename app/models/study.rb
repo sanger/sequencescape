@@ -122,6 +122,7 @@ class Study < ActiveRecord::Base
 
   # Callbacks
   before_validation :set_default_ethical_approval
+  after_touch :rebroadcast
 
   # Other class methods / DSL
   acts_as_authorizable
@@ -495,6 +496,10 @@ class Study < ActiveRecord::Base
 
   def subject_type
     'study'
+  end
+
+  def rebroadcast
+    ActiveRecord::Base.transaction { AmqpObserver.instance << self }
   end
 
   private
