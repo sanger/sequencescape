@@ -246,7 +246,7 @@ class Study < ActiveRecord::Base
   # Scopes
   scope :for_search_query, ->(query, _with_includes) {
     joins(:study_metadata).where(['name LIKE ? OR studies.id=? OR prelim_id=?', "%#{query}%", query, query])
-                          }
+                           }
 
   scope :with_no_ethical_approval, -> { where(ethically_approved: false) }
 
