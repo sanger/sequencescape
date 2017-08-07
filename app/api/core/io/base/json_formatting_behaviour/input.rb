@@ -151,17 +151,22 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
     end
     private :load_uuid_resource
 
-    def handle_has_many(attributes, attribute, json, _object)
+    def handle_has_many(attributes, attribute, json, object)
       if json.first.is_a?(Hash)
-        uuids             = Uuid.include_resource.lookup_many_uuids(json.map { |j| j['uuid'] })
-        uuid_to_resource  = Hash[uuids.map { |uuid| [uuid.external_id, uuid.resource] }]
+        uuids             = Uuid.include_resource.lookup_many_uuids(json.map { |j| j['uuid'] }.compact)
+        uuid_to_resource  = uuids.each_with_object({}) { |uuid, hash| hash[uuid.external_id] = uuid.resource }
         mapped_attributes = json.map do |j|
-          uuid     = j.delete('uuid') or raise StandardError, 'UUID missing from has_many update'
+          uuid     = j.delete('uuid')
           delete   = j.delete('delete')
-          resource = uuid_to_resource[uuid]
-          io       = ::Core::Io::Registry.instance.lookup_for_object(resource)
+          if uuid_to_resource[uuid]
+            resource = uuid_to_resource[uuid]
+            io       = ::Core::Io::Registry.instance.lookup_for_object(resource)
+          else
+            resource = nil
+            io       = ::Core::Io::Registry.instance.lookup_for_class(association_class(attribute, object))
+          end
           io.map_parameters_to_attributes(j, resource, true).tap do |mapped|
-            mapped[:id]     = resource.id                 # UUID becomes ID
+            mapped[:id]     = resource.id if uuid         # UUID becomes ID
             mapped[:delete] = delete unless delete.nil?   # Are we deleting this one?
           end
         end

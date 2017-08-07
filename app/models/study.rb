@@ -58,10 +58,10 @@ class Study < ActiveRecord::Base
   role_relation(:managed_by,        'manager')
   role_relation(:collaborated_with, 'collaborator')
 
-  has_many_users_through_roles(:owners)
-  has_many_users_through_roles(:managers)
-  has_many_users_through_roles(:followers)
-  has_many_users_through_roles(:"Data Access Contacts")
+  has_many :data_access_contacts, ->() { where(roles: { name: 'Data Access Contact' }) }, through: :roles, source: :users
+  has_many :followers, ->() { where(roles: { name: 'follower' }) }, through: :roles, source: :users
+  has_many :managers, ->() { where(roles: { name: 'manager' }) }, through: :roles, source: :users
+  has_many :owners, ->() { where(roles: { name: 'owner' }) }, through: :roles, source: :users
 
   belongs_to :user
 
@@ -147,8 +147,8 @@ class Study < ActiveRecord::Base
 
   STOCK_PLATE_PURPOSES = ['Stock Plate', 'Stock RNA Plate']
 
-  def each_well_for_qc_report_in_batches(exclude_existing, product_criteria)
-    base_scope = Well.on_plate_purpose(PlatePurpose.where(name: STOCK_PLATE_PURPOSES))
+  def each_well_for_qc_report_in_batches(exclude_existing, product_criteria, plate_purposes = nil)
+    base_scope = Well.on_plate_purpose(PlatePurpose.where(name: plate_purposes || STOCK_PLATE_PURPOSES))
                      .for_study_through_aliquot(self)
                      .without_blank_samples
                      .includes(:well_attribute, samples: :sample_metadata)

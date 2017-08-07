@@ -30,6 +30,10 @@ module IlluminaHtp::Requests
       false
     end
 
+    def on_failed
+      submission.next_requests(self).each(&:failed_upstream!)
+    end
+
     def on_passed
       super
       apply_library_information!
@@ -57,10 +61,6 @@ module IlluminaHtp::Requests
   class SharedLibraryPrep < StdLibraryRequest
     def target_tube
       @target_tube ||= submission.next_requests(self).detect { |r| r.target_tube }.try(:target_tube)
-    end
-
-    def on_failed
-      submission.next_requests(self).each(&:failed_upstream!)
     end
 
     def failed_downstream!

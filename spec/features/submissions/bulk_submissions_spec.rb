@@ -90,7 +90,7 @@ feature 'Bulk submission', js: false do
 
       context 'Uploading a file with conflicting orders' do
         let(:file_name) { 'with_conflicting_submissions.csv' }
-        let(:expected_content) { 'Column, read length, should be identical for all requests in asset group assetgroup123' }
+        let(:expected_content) { "read length should be identical for all requests in asset group 'assetgroup123'" }
         it_behaves_like 'bulk submission file upload'
       end
 

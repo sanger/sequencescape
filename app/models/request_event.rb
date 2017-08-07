@@ -17,4 +17,8 @@ class RequestEvent < ActiveRecord::Base
     raise StandardError, 'This event has already expired!' unless current_to.nil?
     update_attributes!(current_to: date_time)
   end
+
+  def current?
+    !current_to?
+  end
 end

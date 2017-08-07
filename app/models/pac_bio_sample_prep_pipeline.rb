@@ -5,17 +5,14 @@
 # Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 class PacBioSamplePrepPipeline < Pipeline
-  self.inbox_partial = 'group_by_parent'
   ALWAYS_SHOW_RELEASE_ACTIONS = true
 
+  self.inbox_partial = 'group_by_parent'
   self.requires_position = false
+  self.inbox_eager_loading = :loaded_for_pacbio_inbox_display
 
   def allow_tag_collision_on_tagging_task?
     false
-  end
-
-  def inbox_eager_loading
-    :loaded_for_grouped_inbox_display
   end
 
   def post_release_batch(batch, _user)

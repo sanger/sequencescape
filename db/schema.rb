@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170711112702) do
+ActiveRecord::Schema.define(version: 20170711153937) do
 
   create_table "aliquot_indices", force: :cascade do |t|
     t.integer  "aliquot_id",    limit: 4, null: false
@@ -23,7 +23,7 @@ ActiveRecord::Schema.define(version: 20170711112702) do
 
   add_index "aliquot_indices", ["aliquot_id"], name: "index_aliquot_indices_on_aliquot_id", unique: true, using: :btree
   add_index "aliquot_indices", ["lane_id", "aliquot_index"], name: "index_aliquot_indices_on_lane_id_and_aliquot_index", unique: true, using: :btree
-
+  
   create_table "aliquots", force: :cascade do |t|
     t.integer  "receptacle_id",    limit: 4,                   null: false
     t.integer  "study_id",         limit: 4
@@ -527,9 +527,9 @@ ActiveRecord::Schema.define(version: 20170711112702) do
   create_table "extraction_attributes", force: :cascade do |t|
     t.integer  "target_id",         limit: 4
     t.string   "created_by",        limit: 255
-    t.text     "attributes_update", limit: 65535
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
+    t.text     "attributes_update", limit: 4294967295
+    t.datetime "created_at",                           null: false
+    t.datetime "updated_at",                           null: false
   end
 
   create_table "faculty_sponsors", force: :cascade do |t|
@@ -806,7 +806,6 @@ ActiveRecord::Schema.define(version: 20170711112702) do
     t.integer  "max_size",                      limit: 4
     t.boolean  "summary",                                   default: true
     t.boolean  "group_by_study_to_delete",                  default: true
-    t.integer  "max_number_of_groups",          limit: 4
     t.boolean  "externally_managed",                        default: false
     t.string   "group_name",                    limit: 255
     t.integer  "control_request_type_id",       limit: 4,                   null: false
@@ -1074,13 +1073,14 @@ ActiveRecord::Schema.define(version: 20170711112702) do
   add_index "qc_metrics", ["qc_report_id"], name: "fk_qc_metrics_to_qc_reports", using: :btree
 
   create_table "qc_reports", force: :cascade do |t|
-    t.string   "report_identifier",   limit: 255, null: false
-    t.integer  "study_id",            limit: 4,   null: false
-    t.integer  "product_criteria_id", limit: 4,   null: false
-    t.boolean  "exclude_existing",                null: false
+    t.string   "report_identifier",   limit: 255,   null: false
+    t.integer  "study_id",            limit: 4,     null: false
+    t.integer  "product_criteria_id", limit: 4,     null: false
+    t.boolean  "exclude_existing",                  null: false
     t.string   "state",               limit: 255
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
+    t.text     "plate_purposes",      limit: 65535
   end
 
   add_index "qc_reports", ["product_criteria_id"], name: "fk_qc_reports_to_product_criteria", using: :btree
@@ -1792,6 +1792,24 @@ ActiveRecord::Schema.define(version: 20170711112702) do
   add_index "tasks", ["sorted"], name: "index_tasks_on_sorted", using: :btree
   add_index "tasks", ["sti_type"], name: "index_tasks_on_sti_type", using: :btree
 
+  create_table "transfer_request_collection_transfer_requests", force: :cascade do |t|
+    t.integer  "transfer_request_collection_id", limit: 4
+    t.integer  "transfer_request_id",            limit: 4
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
+  end
+
+  add_index "transfer_request_collection_transfer_requests", ["transfer_request_collection_id"], name: "fk_rails_6b9c820b32", using: :btree
+  add_index "transfer_request_collection_transfer_requests", ["transfer_request_id"], name: "fk_rails_67a3295574", using: :btree
+
+  create_table "transfer_request_collections", force: :cascade do |t|
+    t.integer  "user_id",    limit: 4
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+  end
+
+  add_index "transfer_request_collections", ["user_id"], name: "fk_rails_e542f48171", using: :btree
+
   create_table "transfer_templates", force: :cascade do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -1904,8 +1922,8 @@ ActiveRecord::Schema.define(version: 20170711112702) do
   create_table "work_completions", force: :cascade do |t|
     t.integer  "user_id",    limit: 4, null: false
     t.integer  "target_id",  limit: 4, null: false
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "work_completions", ["target_id"], name: "fk_rails_f8fb9e95de", using: :btree
@@ -1935,6 +1953,9 @@ ActiveRecord::Schema.define(version: 20170711112702) do
   add_foreign_key "sample_manifests", "plate_purposes", column: "purpose_id"
   add_foreign_key "tag_layout_templates", "tag_groups", column: "tag2_group_id"
   add_foreign_key "tag_layouts", "tag_groups", column: "tag2_group_id"
+  add_foreign_key "transfer_request_collection_transfer_requests", "requests", column: "transfer_request_id"
+  add_foreign_key "transfer_request_collection_transfer_requests", "transfer_request_collections"
+  add_foreign_key "transfer_request_collections", "users"
   add_foreign_key "work_completions", "assets", column: "target_id"
   add_foreign_key "work_completions", "users"
   add_foreign_key "work_completions_submissions", "submissions"
