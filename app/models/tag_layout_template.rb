@@ -10,8 +10,8 @@ class TagLayoutTemplate < ActiveRecord::Base
   include Uuid::Uuidable
   include Lot::Template
 
-  belongs_to :tag_group
-  validates_presence_of :tag_group
+  belongs_to :tag_group, required: true
+  belongs_to :tag2_group, class_name: 'TagGroup'
 
   validates_presence_of :name
   validates_uniqueness_of :name
@@ -22,7 +22,7 @@ class TagLayoutTemplate < ActiveRecord::Base
   delegate :direction, to: :direction_algorithm_class
   delegate :walking_by, to: :walking_algorithm_class
 
-  scope :include_tags, -> { includes(tag_group: :tags) }
+  scope :include_tags, -> { includes(tag_group: :tags, tag2_group: :tags) }
 
   def stamp_to(_)
     # Do Nothing
@@ -41,6 +41,7 @@ class TagLayoutTemplate < ActiveRecord::Base
   def tag_layout_attributes
     {
       tag_group: tag_group,
+      tag2_group: tag2_group,
       direction_algorithm: direction_algorithm,
       walking_algorithm: walking_algorithm
     }
