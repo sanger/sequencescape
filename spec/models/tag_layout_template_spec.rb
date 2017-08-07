@@ -35,7 +35,7 @@ describe TagLayoutTemplate do
         let(:tag2_group) { create :tag_group }
         it 'passes in the correct properties' do
           expect(subject.plate).to eq(plate)
-          expect(tag2_group).to eq(tag2_group)
+          expect(subject.tag2_group).to eq(tag2_group)
         end
       end
     end
