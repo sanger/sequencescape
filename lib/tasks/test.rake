@@ -20,7 +20,6 @@ namespace :test do
           :transfer_template,
           :pooling_transfer_template,
           :multiplex_transfer_template,
-          :tag_layout_template,
           :inverted_tag_layout_template,
           :entire_plate_tag_layout_template,
           :tag_layout,
@@ -34,7 +33,6 @@ namespace :test do
           :submission__,
           :order_with_submission,
           :tag2_lot
-          # :tag_group_for_layout
         ]
         ignored = 0
         factories_to_lint = if ENV.fetch('LINT_ALL', false)
