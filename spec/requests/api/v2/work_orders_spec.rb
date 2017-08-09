@@ -38,7 +38,7 @@ describe 'WorkOrders API', with: :api_v2 do
     end
 
     it 'allows filtering of work_orders by order type' do
-      api_get "/api/v2/work-orders?filter[order-type]=#{our_request_type.key}"
+      api_get "/api/v2/work-orders?filter[order_type]=#{our_request_type.key}"
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
       # check to make sure the right amount of messages are returned
@@ -46,7 +46,7 @@ describe 'WorkOrders API', with: :api_v2 do
     end
 
     it 'allows filtering of work_orders by order type and state' do
-      api_get "/api/v2/work-orders?filter[order-type]=#{our_request_type.key}&filter[state]=pending"
+      api_get "/api/v2/work-orders?filter[order_type]=#{our_request_type.key}&filter[state]=pending"
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
       # check to make sure the right amount of messages are returned
@@ -74,7 +74,7 @@ describe 'WorkOrders API', with: :api_v2 do
     end
 
     it 'can inline all necessary information' do
-      api_get '/api/v2/work-orders?include=study,samples,project,source-receptacle'
+      api_get '/api/v2/work-orders?include=study,samples,project,source_receptacle'
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
       # check to make sure the right amount of messages are returned
@@ -89,17 +89,17 @@ describe 'WorkOrders API', with: :api_v2 do
     it 'sends an individual work_order' do
       api_get "/api/v2/work-orders/#{work_order.id}"
       expect(response).to have_http_status(:success)
-      expect(json.dig('data', 'type')).to eq('work-orders')
+      expect(json.dig('data', 'type')).to eq('work_orders')
     end
 
     let(:payload) do
       {
         'data' => {
           'id' => work_order.id,
-          'type' => 'work-orders',
+          'type' => 'work_orders',
           'attributes' => {
             'state' => 'started',
-            'at-risk' => true
+            'at_risk' => true
           }
         }
       }
@@ -108,7 +108,7 @@ describe 'WorkOrders API', with: :api_v2 do
     it 'allows update of a work order' do
       api_patch "/api/v2/work-orders/#{work_order.id}", payload
       expect(response).to have_http_status(:success)
-      expect(json.dig('data', 'type')).to eq('work-orders')
+      expect(json.dig('data', 'type')).to eq('work_orders')
       expect(json.dig('data', 'attributes', 'state')).to eq('started')
     end
   end

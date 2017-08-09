@@ -31,6 +31,10 @@ class ApiV2Generator < Rails::Generators::NamedBase
     name.humanize.pluralize.parameterize
   end
 
+  def key_formatted
+    name.underscore
+  end
+
   def json_route(routing_code)
     log :route, routing_code
     sentinel = /    namespace :v2 do\s*\n/m

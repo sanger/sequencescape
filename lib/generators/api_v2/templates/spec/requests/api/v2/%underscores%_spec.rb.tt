@@ -25,14 +25,14 @@ describe '<%= camelcases %> API', with: :api_v2 do
     it 'sends an individual <%= name %>' do
       api_get "/api/v2/<%= parameterized %>/#{resource_model.id}"
       expect(response).to have_http_status(:success)
-      expect(json.dig('data', 'type')).to eq('<%= parameterized %>')
+      expect(json.dig('data', 'type')).to eq('<%= key_formatted %>')
     end
 
     let(:payload) do
       {
         'data' => {
           'id' => resource_model.id,
-          'type' => '<%= parameterized %>',
+          'type' => '<%= key_formatted %>',
           'attributes' => {
             # Set new attributes
           }
@@ -44,7 +44,7 @@ describe '<%= camelcases %> API', with: :api_v2 do
     it 'allows update of a <%= name %>' do
       api_patch "/api/v2/<%= parameterized %>/#{resource_model.id}", payload
       expect(response).to have_http_status(:success)
-      expect(json.dig('data', 'type')).to eq('<%= parameterized %>')
+      expect(json.dig('data', 'type')).to eq('<%= key_formatted %>')
       # Double check at least one of the attributes
       # eg. expect(json.dig('data', 'attributes', 'state')).to eq('started')
     end
