@@ -28,7 +28,7 @@ class ApiV2Generator < Rails::Generators::NamedBase
   end
 
   def parameterized
-    name.humanize.pluralize.parameterize
+    name.underscore
   end
 
   def key_formatted

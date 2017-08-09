@@ -22,7 +22,7 @@ describe 'WorkOrders API', with: :api_v2 do
     end
 
     it 'sends a list of work_orders' do
-      api_get '/api/v2/work-orders'
+      api_get '/api/v2/work_orders'
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
       # check to make sure the right amount of messages are returned
@@ -30,7 +30,7 @@ describe 'WorkOrders API', with: :api_v2 do
     end
 
     it 'allows filtering of work_orders by state' do
-      api_get '/api/v2/work-orders?filter[state]=pending'
+      api_get '/api/v2/work_orders?filter[state]=pending'
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
       # check to make sure the right amount of messages are returned
@@ -38,7 +38,7 @@ describe 'WorkOrders API', with: :api_v2 do
     end
 
     it 'allows filtering of work_orders by order type' do
-      api_get "/api/v2/work-orders?filter[order_type]=#{our_request_type.key}"
+      api_get "/api/v2/work_orders?filter[order_type]=#{our_request_type.key}"
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
       # check to make sure the right amount of messages are returned
@@ -46,7 +46,7 @@ describe 'WorkOrders API', with: :api_v2 do
     end
 
     it 'allows filtering of work_orders by order type and state' do
-      api_get "/api/v2/work-orders?filter[order_type]=#{our_request_type.key}&filter[state]=pending"
+      api_get "/api/v2/work_orders?filter[order_type]=#{our_request_type.key}&filter[state]=pending"
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
       # check to make sure the right amount of messages are returned
@@ -74,7 +74,7 @@ describe 'WorkOrders API', with: :api_v2 do
     end
 
     it 'can inline all necessary information' do
-      api_get '/api/v2/work-orders?include=study,samples,project,source_receptacle'
+      api_get '/api/v2/work_orders?include=study,samples,project,source_receptacle'
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
       # check to make sure the right amount of messages are returned
@@ -87,7 +87,7 @@ describe 'WorkOrders API', with: :api_v2 do
     let(:work_order) { create :work_order, requests: requests }
 
     it 'sends an individual work_order' do
-      api_get "/api/v2/work-orders/#{work_order.id}"
+      api_get "/api/v2/work_orders/#{work_order.id}"
       expect(response).to have_http_status(:success)
       expect(json.dig('data', 'type')).to eq('work_orders')
     end
@@ -106,7 +106,7 @@ describe 'WorkOrders API', with: :api_v2 do
     end
 
     it 'allows update of a work order' do
-      api_patch "/api/v2/work-orders/#{work_order.id}", payload
+      api_patch "/api/v2/work_orders/#{work_order.id}", payload
       expect(response).to have_http_status(:success)
       expect(json.dig('data', 'type')).to eq('work_orders')
       expect(json.dig('data', 'attributes', 'state')).to eq('started')
