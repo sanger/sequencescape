@@ -31,7 +31,7 @@ class WorkCompletion < ActiveRecord::Base
 
   def connect_requests
     target_wells.each do |target_well|
-      next unless target_well.stock_wells.present? && target_well.passed?
+      next if target_well.stock_wells.empty?
       # Upstream requests our on our stock wells.
       upstream = detect_upstream_requests(target_well)
 
