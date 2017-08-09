@@ -16,6 +16,15 @@ class WorkOrder < ActiveRecord::Base
 
   has_many :samples, ->() { distinct }, through: :requests
 
+  # Will hopefully be variable in the future
+  def quantity_units
+    'flowcells'
+  end
+
+  def quantity_value
+    requests.count
+  end
+
   def state=(new_state)
     requests.each do |request|
       request.state = new_state

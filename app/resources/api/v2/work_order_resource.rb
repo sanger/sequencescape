@@ -22,6 +22,7 @@ module Api
       has_many :samples, readonly: true
 
       attribute :order_type, readonly: true
+      attribute :quantity, readonly: true
       attribute :state
       attribute :options
       attribute :at_risk
@@ -33,6 +34,13 @@ module Api
       filter :order_type, apply: (lambda do |records, value, _options|
         records.where(work_order_types: { name: value })
       end)
+
+      def quantity
+        {
+          value: _model.quantity_value,
+          unit: _model.quantity_units
+        }
+      end
 
       # JSONAPI::Resource doesn't support has_one through relationships by default
       def study_id
