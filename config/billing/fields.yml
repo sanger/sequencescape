@@ -44,7 +44,7 @@ dim_1:
   number_of_spaces: 25
   position_from: 128
   position_to: 152
-  constant_value: ""
+  constant_value: "0223"
   right_justified: false
   order: 7
 dim_2:
