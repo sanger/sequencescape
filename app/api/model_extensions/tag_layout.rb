@@ -10,7 +10,7 @@ module ModelExtensions::TagLayout
       extend ModelExtensions::Plate::NamedScopeHelpers
       include_plate_named_scope :plate
 
-      scope :include_tag_group, -> { includes(tag_group: :tags) }
+      scope :include_tag_group, -> { includes(tag_group: :tags, tag2_group: :tags) }
     end
   end
 end

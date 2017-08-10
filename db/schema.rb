@@ -1745,7 +1745,10 @@ ActiveRecord::Schema.define(version: 20170721104249) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "walking_algorithm",   limit: 255, default: "TagLayout::WalkWellsByPools"
+    t.integer  "tag2_group_id",       limit: 4
   end
+
+  add_index "tag_layout_templates", ["tag2_group_id"], name: "fk_rails_1c2c01e708", using: :btree
 
   create_table "tag_layouts", force: :cascade do |t|
     t.string   "direction_algorithm", limit: 255
@@ -1757,7 +1760,10 @@ ActiveRecord::Schema.define(version: 20170721104249) do
     t.string   "substitutions",       limit: 1525
     t.string   "walking_algorithm",   limit: 255,  default: "TagLayout::WalkWellsByPools"
     t.integer  "initial_tag",         limit: 4,    default: 0,                             null: false
+    t.integer  "tag2_group_id",       limit: 4
   end
+
+  add_index "tag_layouts", ["tag2_group_id"], name: "fk_rails_d221e7c041", using: :btree
 
   create_table "tags", force: :cascade do |t|
     t.string   "oligo",        limit: 255
@@ -1799,6 +1805,24 @@ ActiveRecord::Schema.define(version: 20170721104249) do
   add_index "tasks", ["pipeline_workflow_id"], name: "index_tasks_on_pipeline_workflow_id", using: :btree
   add_index "tasks", ["sorted"], name: "index_tasks_on_sorted", using: :btree
   add_index "tasks", ["sti_type"], name: "index_tasks_on_sti_type", using: :btree
+
+  create_table "transfer_request_collection_transfer_requests", force: :cascade do |t|
+    t.integer  "transfer_request_collection_id", limit: 4
+    t.integer  "transfer_request_id",            limit: 4
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
+  end
+
+  add_index "transfer_request_collection_transfer_requests", ["transfer_request_collection_id"], name: "fk_rails_6b9c820b32", using: :btree
+  add_index "transfer_request_collection_transfer_requests", ["transfer_request_id"], name: "fk_rails_67a3295574", using: :btree
+
+  create_table "transfer_request_collections", force: :cascade do |t|
+    t.integer  "user_id",    limit: 4
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+  end
+
+  add_index "transfer_request_collections", ["user_id"], name: "fk_rails_e542f48171", using: :btree
 
   create_table "transfer_templates", force: :cascade do |t|
     t.datetime "created_at"
@@ -1942,6 +1966,11 @@ ActiveRecord::Schema.define(version: 20170721104249) do
 
   add_foreign_key "billing_items", "requests"
   add_foreign_key "sample_manifests", "plate_purposes", column: "purpose_id"
+  add_foreign_key "tag_layout_templates", "tag_groups", column: "tag2_group_id"
+  add_foreign_key "tag_layouts", "tag_groups", column: "tag2_group_id"
+  add_foreign_key "transfer_request_collection_transfer_requests", "requests", column: "transfer_request_id"
+  add_foreign_key "transfer_request_collection_transfer_requests", "transfer_request_collections"
+  add_foreign_key "transfer_request_collections", "users"
   add_foreign_key "work_completions", "assets", column: "target_id"
   add_foreign_key "work_completions", "users"
   add_foreign_key "work_completions_submissions", "submissions"

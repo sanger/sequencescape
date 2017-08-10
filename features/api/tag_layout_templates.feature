@@ -16,42 +16,6 @@ Feature: Access tag layout templates through the API
     Given I am using the latest version of the API
     And I have a "full" authorised user with the key "cucumber"
 
-  @read
-  Scenario: Reading the JSON for a UUID
-    Given the tag layout template "Test tag layout" exists
-      And the UUID for the tag layout template "Test tag layout" is "00000000-1111-2222-3333-444444444444"
-      And the tag group for tag layout template "Test tag layout" is called "Tag group 1"
-      And the tag group for tag layout template "Test tag layout" contains the following tags:
-        | index | oligo |
-        | 1     | ACTG  |
-        | 2     | GTCA  |
-
-    When I GET the API path "/00000000-1111-2222-3333-444444444444"
-    Then the HTTP response should be "200 OK"
-     And the JSON should match the following for the specified fields:
-      """
-      {
-        "tag_layout_template": {
-          "actions": {
-            "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
-          },
-
-          "uuid": "00000000-1111-2222-3333-444444444444",
-          "name": "Test tag layout",
-          "direction": "column",
-          "walking_by": "wells in pools",
-
-          "tag_group": {
-            "name": "Tag group 1",
-            "tags": {
-              "1": "ACTG",
-              "2": "GTCA"
-            }
-          }
-        }
-      }
-      """
-
   @tag_layout @create @barcode-service
   Scenario: Creating a tag layout from a tag layout template
     Given the plate barcode webservice returns "1000001..1000002"
@@ -210,58 +174,6 @@ Feature: Access tag layout templates through the API
       | CCCC | CCCC | CCCC | CCCC | CCCC | CCCC | CCCC | CCCC | CCCC | CCCC | CCCC | CCCC |
       | AAAA | AAAA | AAAA | AAAA | AAAA | AAAA | AAAA | AAAA | AAAA | AAAA | AAAA | AAAA |
 
-  @tag_layout @create @barcode-service
-  Scenario: Creating a tag layout from a tag layout template which ignores pools
-    Given the plate barcode webservice returns "1000001..1000002"
-
-    Given the entire plate tag layout template "Test tag layout" exists
-      And the UUID for the tag layout template "Test tag layout" is "00000000-1111-2222-3333-444444444444"
-      And the tag group for tag layout template "Test tag layout" is called "Tag group 1"
-      And the tag group for tag layout template "Test tag layout" has tags 1..96
-      And the UUID of the next tag layout created will be "00000000-1111-2222-3333-000000000002"
-
-    Given a "Stock plate" plate called "Testing the API" exists
-      And the UUID for the plate "Testing the API" is "11111111-2222-3333-4444-000000000002"
-      And all wells on the plate "Testing the API" have unique samples
-
-    Given a "Stock plate" plate called "Testing the tagging" exists
-      And the UUID for the plate "Testing the tagging" is "11111111-2222-3333-4444-000000000001"
-      And the wells for the plate "Testing the API" have been pooled in columns to the plate "Testing the tagging"
-
-    When I make an authorised POST with the following JSON to the API path "/00000000-1111-2222-3333-444444444444":
-      """
-      {
-        "tag_layout": {
-          "plate": "11111111-2222-3333-4444-000000000001"
-        }
-      }
-      """
-    Then the HTTP response should be "201 Created"
-     And the JSON should match the following for the specified fields:
-      """
-      {
-        "tag_layout": {
-          "actions": {
-            "read": "http://www.example.com/api/1/00000000-1111-2222-3333-000000000002"
-          },
-          "plate": {
-            "actions": {
-              "read": "http://www.example.com/api/1/11111111-2222-3333-4444-000000000001"
-            }
-          },
-
-          "uuid": "00000000-1111-2222-3333-000000000002",
-          "direction": "column",
-          "walking_by": "wells of plate",
-
-          "tag_group": {
-            "name": "Tag group 1"
-          }
-        }
-      }
-      """
-
-    Then the tags assigned to the plate "Testing the tagging" should be 1..96 for wells "A1-H12"
 
   @tag_layout @create @barcode-service
   Scenario: Creating a tag layout from a tag layout template where wells have been failed
