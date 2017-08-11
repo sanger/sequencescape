@@ -2,11 +2,12 @@ require 'rails_helper'
 require 'shared_contexts/limber_shared_context'
 
 describe Request::Traction::GridIon do
-  subject { build :request_traction_grid_ion, asset: well, request_metadata_attributes: metadata, order: order, submission: submission, request_type: request_type }
+  subject { build :request_traction_grid_ion, asset: well, request_metadata_attributes: metadata, order: order, submission: submission, request_type: request_type, state: state }
   let(:order) { build(:order, submission: submission, assets: [well], request_types: [request_type.id]) }
   let(:request_type) { create :well_request_type }
   let(:submission) { build(:submission) }
   let(:well) { create :well }
+  let(:state) { 'pending' }
 
   context 'with valid metadata' do
     let(:metadata) do
@@ -25,6 +26,15 @@ describe Request::Traction::GridIon do
       expect(submission.callbacks.count).to eq(1)
       submission.process_callbacks!
       expect(subject.reload.work_order).not_to be_nil
+    end
+
+    context 'with standard states' do
+      it { is_expected.to be_valid }
+    end
+
+    context 'with custom states' do
+      let(:state) { 'custom_external_state' }
+      it { is_expected.to be_valid }
     end
   end
 

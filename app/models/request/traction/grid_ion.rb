@@ -3,7 +3,6 @@ require_dependency 'request'
 class Request
   module Traction
     class GridIon < CustomerRequest
-
       self.sequencing = true
 
       after_create :register_work_orders
@@ -11,6 +10,16 @@ class Request
       has_metadata as: Request do
         attribute(:library_type, required: true, validator: true, selection: true)
         attribute(:file_type,    required: true, validator: true, selection: true)
+      end
+
+      validates :state, presence: true
+
+      destroy_aasm
+
+      # We've destroyed the stat_machine, but its validation remains.
+      # Here we override it to allow custom states.
+      def aasm_validate_states
+        return true
       end
 
       def register_work_orders

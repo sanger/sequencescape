@@ -29,8 +29,8 @@ class Request < ActiveRecord::Base
 
   # Class attributes
   class_attribute :customer_request, :sequencing
-  self.sequencing = false
 
+  self.sequencing = false
   self.per_page = 500
   self.inheritance_column = 'sti_type'
   self.customer_request = false
@@ -290,10 +290,6 @@ class Request < ActiveRecord::Base
 
   def validator_for(request_option)
     request_type.request_type_validators.find_by(request_option: request_option.to_s) || RequestType::Validator::NullValidator.new
-  end
-
-  def customer_request?
-    customer_request
   end
 
   def current_request_event
