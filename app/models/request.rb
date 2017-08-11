@@ -28,7 +28,8 @@ class Request < ActiveRecord::Base
   PERMISSABLE_NEXT_REQUESTS = ->(request) { request.pending? or request.blocked? }
 
   # Class attributes
-  class_attribute :customer_request
+  class_attribute :customer_request, :sequencing
+  self.sequencing = false
 
   self.per_page = 500
   self.inheritance_column = 'sti_type'

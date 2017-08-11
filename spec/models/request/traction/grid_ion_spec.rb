@@ -27,4 +27,9 @@ describe Request::Traction::GridIon do
       expect(subject.reload.work_order).not_to be_nil
     end
   end
+
+  context '::sequencing?' do
+    subject { described_class.sequencing? }
+    it { is_expected.to be true }
+  end
 end

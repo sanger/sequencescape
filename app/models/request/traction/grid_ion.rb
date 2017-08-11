@@ -3,6 +3,9 @@ require_dependency 'request'
 class Request
   module Traction
     class GridIon < CustomerRequest
+
+      self.sequencing = true
+
       after_create :register_work_orders
 
       has_metadata as: Request do
