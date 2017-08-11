@@ -32,7 +32,7 @@ RSpec.describe Api::V2::WorkOrderResource, type: :resource do
     end
 
     it 'renders the expected quantity' do
-      expect(subject.quantity).to eq(value: number_of_requests, unit: 'flowcells')
+      expect(subject.quantity).to eq(number: number_of_requests, unit_of_measurement: 'flowcells')
     end
   end
 

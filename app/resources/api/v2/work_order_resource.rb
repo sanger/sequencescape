@@ -37,8 +37,8 @@ module Api
 
       def quantity
         {
-          value: _model.quantity_value,
-          unit: _model.quantity_units
+          number: _model.quantity_value,
+          unit_of_measurement: _model.quantity_units
         }
       end
 
