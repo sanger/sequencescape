@@ -162,7 +162,7 @@ FactoryGirl.define do
     tag_group { |target| target.association(:tag_group_for_layout)    }
 
     direction_algorithm 'TagLayout::InColumns'
-    walking_algorithm   'TagLayout::WalkWellsByPools'
+    walking_algorithm   'TagLayout::WalkWellsOfPlate'
 
     # FactoryGirl girl builds things in bits, rather than all at once, so we need to trigger the after_initialize call
     # after the instance has been built so that the correct behaviours are installed.
@@ -215,7 +215,9 @@ FactoryGirl.define do
   # Tube creations
   factory(:child_tube_purpose, class: Tube::Purpose) do
     name 'Child tube purpose'
+    target_type 'Tube'
   end
+
   factory(:tube_creation) do
     user   { |target| target.association(:user) }
     parent { |target| target.association(:full_plate) }

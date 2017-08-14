@@ -4,9 +4,8 @@
 # Copyright (C) 2011,2012 Genome Research Ltd.
 FactoryGirl.define do
   factory :submission__ do
-    factory :submission_without_order do
-      user
-    end
+    user
+    factory :submission_without_order
   end
 
   factory :order do

@@ -565,7 +565,7 @@ FactoryGirl.define do
     transient do
       oligo { generate :oligo }
     end
-    name 'Tag 2 layout template'
+    sequence(:name) { |n| "Tag 2 layout template #{n}" }
     tag { |tag| tag.association :tag, oligo: oligo }
   end
 
