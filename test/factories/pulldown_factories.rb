@@ -219,12 +219,10 @@ FactoryGirl.define do
   end
 
   factory(:tube_creation) do
-    user   { |target| target.association(:user) }
+    user
     parent { |target| target.association(:full_plate) }
 
     after(:build) do |tube_creation|
-      user = create(:user)
-
       tube_creation.parent.plate_purpose = PlatePurpose.find_by(name: 'Parent plate purpose') || create(:parent_plate_purpose)
       tube_creation.child_purpose        = Tube::Purpose.find_by(name: 'Child tube purpose')  || create(:child_tube_purpose)
       mock_request_type                  = create(:library_creation_request_type)
@@ -236,7 +234,7 @@ FactoryGirl.define do
       AssetLink.create!(ancestor: stock_plate, descendant: tube_creation.parent)
 
       tube_creation.parent.wells.in_column_major_order.in_groups_of(tube_creation.parent.wells.size / 2).each_with_index do |pool, i|
-        submission = Submission.create!(user: user)
+        submission = create :submission
         pool.each do |well|
           RequestType.transfer.create!(asset: stock_wells[i], target_asset: well, submission: submission);
           mock_request_type.create!(asset: stock_wells[i], target_asset: well, submission: submission, request_metadata_attributes: create(:request_metadata_for_library_creation).attributes);
