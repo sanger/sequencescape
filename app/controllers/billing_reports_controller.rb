@@ -5,9 +5,7 @@ class BillingReportsController < ApplicationController
   end
 
   def create
-    fields_attributes = YAML.load_file(Rails.root.join('config', 'billing', 'fields.yml')).with_indifferent_access
-    fields = Billing::FieldsList.new(fields_attributes)
-    @billing_report = Billing::Report.new(billing_report_params.merge(fields: fields))
+    @billing_report = Billing::Report.new(billing_report_params.merge(fields: Billing.configuration.fields))
     if @billing_report.valid?
       send_data @billing_report.data,
                 type: 'text',

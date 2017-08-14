@@ -3,6 +3,9 @@ require 'timecop'
 
 describe Billing::Report do
   before do
+    Billing.configure do |config|
+      config.fields = config.load_file(File.join('spec', 'data', 'billing'), 'fields')
+    end
     Timecop.freeze(Time.zone.local(2017, 4, 7))
   end
 
@@ -15,8 +18,7 @@ describe Billing::Report do
     @request2.pass!
     Billing::ItemsFactory.new(request: @request1).create_billing_items
     Billing::ItemsFactory.new(request: @request2).create_billing_items
-    fields_attributes = YAML.load_file(Rails.root.join('spec', 'data', 'billing', 'fields.yml')).with_indifferent_access
-    fields = Billing::FieldsList.new(fields_attributes)
+    fields = Billing.configuration.fields
     @report = Billing::Report.new(file_name: 'test_file', start_date: '06/04/2017', end_date: '08/04/2017', fields: fields)
   end
 
