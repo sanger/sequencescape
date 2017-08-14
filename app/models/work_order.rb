@@ -14,7 +14,7 @@ class WorkOrder < ActiveRecord::Base
   has_one :source_receptacle, through: :example_request, source: :asset
   has_one :example_request, ->() { order(id: :asc).readonly }, class_name: 'CustomerRequest'
 
-  has_many :samples, ->() { distinct }, through: :requests
+  has_many :samples, ->() { distinct }, through: :example_request
 
   # Will hopefully be variable in the future
   def quantity_units
@@ -30,10 +30,11 @@ class WorkOrder < ActiveRecord::Base
       request.state = new_state
       request.save!
     end
+    example_request.reload
   end
 
   def state
-    requests.first.state
+    example_request.state
   end
 
   def at_risk

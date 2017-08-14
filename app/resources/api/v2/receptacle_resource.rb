@@ -13,6 +13,8 @@ module Api
         model_hint model: subclass, resource: :tube
       end
 
+      default_includes :uuid_object
+
       # Associations:
       has_many :samples
       has_many :studies

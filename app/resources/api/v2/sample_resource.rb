@@ -5,6 +5,8 @@ module Api
     class SampleResource < BaseResource
       immutable
 
+      default_includes :uuid_object
+
       attribute :name
       attribute :sanger_sample_id
       attribute :uuid
