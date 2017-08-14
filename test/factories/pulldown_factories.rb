@@ -113,16 +113,17 @@ FactoryGirl.define do
   end
 
   factory(:transfer_template) do
+    sequence(:name) { |n| "Transfer Template #{n}" }
     transfer_class_name 'Transfer::BetweenPlates'
     transfers('A1' => 'A1', 'B1' => 'B1')
-  end
 
-  factory(:pooling_transfer_template, class: TransferTemplate) do
+    factory(:pooling_transfer_template) do
     transfer_class_name 'Transfer::BetweenPlatesBySubmission'
-  end
+    end
 
-  factory(:multiplex_transfer_template, class: TransferTemplate) do
-    transfer_class_name 'Transfer::FromPlateToTubeByMultiplex'
+    factory(:multiplex_transfer_template) do
+      transfer_class_name 'Transfer::FromPlateToTubeByMultiplex'
+    end
   end
   # A tag group that works for the tag layouts
   sequence(:tag_group_for_layout_name) { |n| "Tag group #{n}" }
@@ -140,19 +141,19 @@ FactoryGirl.define do
 
   # Tag layouts and their templates
   factory(:tag_layout_template) do
+    sequence(:name) { |n| "Tag Layout Template #{n}" }
     direction_algorithm 'TagLayout::InColumns'
     walking_algorithm   'TagLayout::WalkWellsByPools'
     tag_group { |target| target.association(:tag_group_for_layout) }
-  end
-  factory(:inverted_tag_layout_template, class: TagLayoutTemplate) do
-    direction_algorithm 'TagLayout::InInverseColumns'
-    walking_algorithm   'TagLayout::WalkWellsOfPlate'
-    tag_group { |target| target.association(:tag_group_for_layout) }
-  end
-  factory(:entire_plate_tag_layout_template, class: TagLayoutTemplate) do
-    direction_algorithm 'TagLayout::InColumns'
-    walking_algorithm   'TagLayout::WalkWellsOfPlate'
-    tag_group { |target| target.association(:tag_group_for_layout) }
+
+    factory(:inverted_tag_layout_template) do
+      direction_algorithm 'TagLayout::InInverseColumns'
+      walking_algorithm   'TagLayout::WalkWellsOfPlate'
+    end
+
+    factory(:entire_plate_tag_layout_template) do
+      walking_algorithm   'TagLayout::WalkWellsOfPlate'
+    end
   end
 
   factory(:tag_layout) do

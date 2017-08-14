@@ -33,9 +33,7 @@ class WorkOrder < ActiveRecord::Base
     example_request.reload
   end
 
-  def state
-    example_request.state
-  end
+  delegate :state, to: :example_request
 
   def at_risk
     example_request.customer_accepts_responsibility

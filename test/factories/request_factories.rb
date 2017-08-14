@@ -182,5 +182,6 @@ FactoryGirl.define do
     target_asset nil
     request_purpose
     association(:request_type, factory: :well_request_type)
+    request_metadata_attributes { attributes_for(:request_traction_grid_ion_metadata) }
   end
 end

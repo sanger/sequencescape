@@ -155,6 +155,12 @@ FactoryGirl.define do
     customer_accepts_responsibility false
   end
 
+  factory :request_traction_grid_ion_metadata, class: Request::Traction::GridIon::Metadata do
+    library_type 'Rapid'
+    file_type 'FASTQ'
+    association(:owner, factory: :request_traction_grid_ion)
+  end
+
   #  Automatically generated request types
   factory(:request_metadata_for_request_type_, parent: :request_metadata)
 

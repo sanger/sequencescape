@@ -19,7 +19,7 @@ class Request
       # We've destroyed the stat_machine, but its validation remains.
       # Here we override it to allow custom states.
       def aasm_validate_states
-        return true
+        true
       end
 
       def register_work_orders

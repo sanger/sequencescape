@@ -14,7 +14,7 @@ module Api
     class WorkOrderResource < BaseResource
       IGNORED_METADATA_FIELDS = %w(id request_id created_at updated_at).freeze
 
-      default_includes [{ example_request: :request_metadata }, :work_order_type ]
+      default_includes [{ example_request: :request_metadata }, :work_order_type]
 
       has_one :study, readonly: true
       has_one :project, readonly: true
