@@ -1,5 +1,4 @@
 class BillingReportsController < ApplicationController
-
   def new
     @billing_report = Billing::Report.new(billing_report_params)
   end
@@ -15,11 +14,9 @@ class BillingReportsController < ApplicationController
       flash[:error] = @billing_report.errors.full_messages.join(', ')
       render :new
     end
-
   end
 
   def billing_report_params
     params.require(:billing_report).permit(:start_date, :end_date, :file_name) if params[:billing_report].present?
   end
-
 end

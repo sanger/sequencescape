@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 feature 'Billing report', js: true do
-
   before do
     Billing.configure do |config|
       config.fields = config.load_file(File.join('spec', 'data', 'billing'), 'fields')
@@ -18,9 +17,8 @@ feature 'Billing report', js: true do
       fill_in 'billing_report_start_date', with: '06/04/2017'
       fill_in 'billing_report_end_date', with: '10/04/2017'
       find("input[value='Generate BIF file']").trigger('click')
-      #if I test that element is not there, it gives me false positive when page has not been fully loaded
-      expect{page.find('div#message_error')}.to  raise_error(Capybara::ElementNotFound)
+      # if I test that element is not there, it gives me false positive when page has not been fully loaded
+      expect { page.find('div#message_error') }.to raise_error(Capybara::ElementNotFound)
     end
-
   end
 end
