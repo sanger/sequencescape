@@ -17,24 +17,16 @@ namespace :test do
         # TODO: All these factories should be updated to make them valid
         # Any tests which break as a result should be fixed.
         invalid_factories = [
-          :transfer_template,
-          :pooling_transfer_template,
-          :multiplex_transfer_template,
-          :tag_layout_template,
-          :inverted_tag_layout_template,
-          :entire_plate_tag_layout_template,
           :tag_layout,
           :parent_plate_purpose,
           :child_plate_purpose,
           :plate_creation,
           :child_tube_purpose,
           :tube_creation,
-          :illumina_htp_requests_std_library_request_metadata,
           :library_types_request_type,
           :submission__,
           :order_with_submission,
           :tag2_lot
-          # :tag_group_for_layout
         ]
         ignored = 0
         factories_to_lint = if ENV.fetch('LINT_ALL', false)

@@ -118,11 +118,13 @@ FactoryGirl.define do
     transfers('A1' => 'A1', 'B1' => 'B1')
 
     factory(:pooling_transfer_template) do
-    transfer_class_name 'Transfer::BetweenPlatesBySubmission'
+      transfer_class_name 'Transfer::BetweenPlatesBySubmission'
+      transfers nil
     end
 
     factory(:multiplex_transfer_template) do
       transfer_class_name 'Transfer::FromPlateToTubeByMultiplex'
+      transfers nil
     end
   end
   # A tag group that works for the tag layouts
