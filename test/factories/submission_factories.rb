@@ -15,7 +15,7 @@ FactoryGirl.define do
     user
     item_options          {}
     request_options       {}
-    assets                []
+    assets                { create_list(:sample_tube, 1) }
     request_types         { [create(:request_type).id] }
 
     factory :order_with_submission do

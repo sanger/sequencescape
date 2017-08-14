@@ -16,17 +16,17 @@ FactoryGirl.define do
     end
 
     factory(:source_transfer_plate) do
-      plate_purpose { PlatePurpose.find_by(name: 'Parent plate purpose') || create(:parent_plate_purpose) }
+      plate_purpose
     end
 
     factory(:destination_transfer_plate) do
-      plate_purpose { PlatePurpose.find_by(name: 'Child plate purpose') || create(:child_plate_purpose) }
+      plate_purpose
     end
   end
 
   factory(:full_plate, class: Plate) do
     size 96
-    plate_purpose { PlatePurpose.find_by(name: 'Parent plate purpose') || create(:parent_plate_purpose) }
+    plate_purpose
 
     transient do
       well_count 96
@@ -175,7 +175,7 @@ FactoryGirl.define do
     name 'Parent plate purpose'
 
     after(:create) do |plate_purpose|
-      plate_purpose.child_relationships.create!(child: create(:child_plate_purpose), transfer_request_type: RequestType.transfer)
+      plate_purpose.child_relationships.create!(child: create(:plate_purpose), transfer_request_type: RequestType.transfer)
     end
   end
 
@@ -196,38 +196,30 @@ FactoryGirl.define do
     end
   end
 
-  factory(:child_plate_purpose, class: PlatePurpose) do
-    name { 'Child plate purpose' }
-  end
-
   factory(:initial_downstream_plate_purpose, class: Pulldown::InitialDownstreamPlatePurpose) do
     name { generate :pipeline_name }
   end
 
   factory(:plate_creation) do
     user
-    parent { |target| target.association(:full_plate) }
-
-    after(:build) do |plate_creation|
-      plate_creation.parent.plate_purpose = PlatePurpose.find_by(name: 'Parent plate purpose') || create(:parent_plate_purpose)
-      plate_creation.child_purpose        = PlatePurpose.find_by(name: 'Child plate purpose')  || create(:child_plate_purpose)
-    end
+    barcode
+    association(:parent, factory: :full_plate, well_count: 2)
+    association(:child_purpose, factory: :plate_purpose)
   end
 
   # Tube creations
   factory(:child_tube_purpose, class: Tube::Purpose) do
-    name 'Child tube purpose'
+    sequence(:name) { |n| "Child tube purpose #{n}" }
     target_type 'Tube'
   end
 
   factory(:tube_creation) do
     user
-    parent { |target| target.association(:full_plate) }
+    association(:parent, factory: :full_plate, well_count: 2)
+    association(:child_purpose, factory: :child_tube_purpose)
 
     after(:build) do |tube_creation|
-      tube_creation.parent.plate_purpose = PlatePurpose.find_by(name: 'Parent plate purpose') || create(:parent_plate_purpose)
-      tube_creation.child_purpose        = Tube::Purpose.find_by(name: 'Child tube purpose')  || create(:child_tube_purpose)
-      mock_request_type                  = create(:library_creation_request_type)
+      mock_request_type  = create(:library_creation_request_type)
 
       # Ensure that the parent plate will pool into two children by setting up a dummy stock plate
       stock_plate = PlatePurpose.find(2).create!(:do_not_create_wells, barcode: '999999') { |p| p.wells = [create(:empty_well), create(:empty_well)] }
@@ -240,7 +232,7 @@ FactoryGirl.define do
         pool.each do |well|
           RequestType.transfer.create!(asset: stock_wells[i], target_asset: well, submission: submission);
           mock_request_type.create!(asset: stock_wells[i], target_asset: well, submission: submission, request_metadata_attributes: create(:request_metadata_for_library_creation).attributes);
-          Well::Link.create!(type: 'stock', target_well: well, source_well: stock_wells[i])
+          create :stock_well_link, target_well: well, source_well: stock_wells[i]
         end
       end
     end
