@@ -15,7 +15,7 @@ namespace :test do
       if Rails.env.test?
         begin
           DatabaseCleaner.start
-          puts "Linting factories."
+          puts 'Linting factories.'
           FactoryGirl.lint
           puts 'Linted'
         ensure
