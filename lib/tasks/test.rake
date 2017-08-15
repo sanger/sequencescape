@@ -15,13 +15,13 @@ namespace :test do
       if Rails.env.test?
         begin
           DatabaseCleaner.start
-          puts "Linting #{factories_to_lint.length} factories. (Ignored #{ignored})"
-          puts 'Use LINT_ALL=true to lint all factories' unless ENV.fetch('LINT_ALL', false)
+          puts "Linting factories."
           FactoryGirl.lint
           puts 'Linted'
         ensure
           DatabaseCleaner.clean
         end
+
       else
         system("bundle exec rake factory_girl:lint RAILS_ENV='test'")
       end

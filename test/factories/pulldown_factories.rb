@@ -219,7 +219,7 @@ FactoryGirl.define do
     association(:child_purpose, factory: :child_tube_purpose)
 
     after(:build) do |tube_creation|
-      mock_request_type  = create(:library_creation_request_type)
+      mock_request_type = create(:library_creation_request_type)
 
       # Ensure that the parent plate will pool into two children by setting up a dummy stock plate
       stock_plate = PlatePurpose.find(2).create!(:do_not_create_wells, barcode: '999999') { |p| p.wells = [create(:empty_well), create(:empty_well)] }
