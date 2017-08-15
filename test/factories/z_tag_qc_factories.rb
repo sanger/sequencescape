@@ -67,7 +67,7 @@ FactoryGirl.define do
   end
 
   factory :plate_template_with_well, class: PlateTemplate do
-    name      'testtemplate2'
+    sequence(:name) { |n| "testtemplate#{n}" }
     value     96
     size      96
     wells { [create(:well_with_sample_and_without_plate, map: create(:map))] }
