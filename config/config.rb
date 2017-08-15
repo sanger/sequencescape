@@ -27,6 +27,7 @@ end
 
 configatron.admin_email = 'admin@test.com'
 configatron.exception_recipients = 'exceptions@test.com'
+configatron.ssr_emails = ['ssr@example.com']
 configatron.api_documentation_url = 'http://localhost:3000/documentation'
 configatron.api_url = 'http://localhost:3000'
 

@@ -413,4 +413,19 @@ RSpec.describe Study, type: :model do
       end
     end
   end
+
+  describe '#mailing_list_of_managers' do
+    let(:study) { create :study }
+    subject { study.mailing_list_of_managers }
+
+    context 'with a manger' do
+      before { create :manager, authorizable: study, email: 'manager@example.com' }
+      it { is_expected.to eq ['manager@example.com'] }
+    end
+
+    context 'without a manger' do
+      before { create :admin }
+      it { is_expected.to eq ['ssr@example.com'] }
+    end
+  end
 end
