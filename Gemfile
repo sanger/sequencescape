@@ -130,7 +130,7 @@ group :test do
   gem 'rails-controller-testing'
 end
 
-group :test,:cucumber do
+group :test, :cucumber do
   gem 'factory_girl_rails', require: false
   gem 'launchy', require: false
   gem 'mocha', require: false # avoids load order problems
