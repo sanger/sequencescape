@@ -5,7 +5,7 @@ test:
     - :sanger_plate_id
     - :well
     - :sanger_sample_id
-    - :supplier_sample_name
+    - :supplier_name
     - :cohort
     - :volume
     - :gender
@@ -20,7 +20,7 @@ test_2:
     - :sanger_plate_id
     - :well
     - :sanger_sample_id
-    - :supplier_sample_name
+    - :supplier_name
     - :cohort
     - :volume
     - :gender
@@ -35,7 +35,7 @@ test_3:
     - :sanger_plate_id
     - :well
     - :sanger_sample_id
-    - :supplier_sample_name
+    - :supplier_name
     - :cohort
     - :volume
     - :gender

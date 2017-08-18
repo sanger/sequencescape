@@ -286,7 +286,7 @@ Feature: Access transfer templates through the API
       """
 
   @transfer @create @authenticated
-  Scenario: Creating a transfer from a transfer template by multiplex request
+  Scenario: Creating a transfer from a transfer template by multiplex request automatically
     Given the multiplex transfer template called "Test transfers" exists
       And the UUID for the transfer template "Test transfers" is "00000000-1111-2222-3333-444444444444"
 

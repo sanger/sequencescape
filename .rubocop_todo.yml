@@ -1566,6 +1566,7 @@ Style/ClassAndModuleChildren:
     - 'app/models/qc_report/file.rb'
     - 'app/models/qcable/statemachine.rb'
     - 'app/models/rename/change_name.rb'
+    - 'app/models/request/auto_multiplexing.rb'
     - 'app/models/request/accessioning_required.rb'
     - 'app/models/request/change_decision.rb'
     - 'app/models/request/customer_responsibility.rb'
