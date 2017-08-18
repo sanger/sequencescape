@@ -74,7 +74,7 @@ class AuthenticationControllerTest < ActionController::TestCase
         end
         should respond_with :success
         should 'Respond with json' do
-         assert_equal 'application/json', @response.content_type
+          assert_equal 'application/json', @response.content_type
         end
       end
       context 'require login to restricted HTML content' do

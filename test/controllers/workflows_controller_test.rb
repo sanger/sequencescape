@@ -123,10 +123,10 @@ class WorkflowsControllerTest < ActionController::TestCase
         @item2 = @pipeline.request_types.last.create!(asset: @library2, target_asset: @lane2)
         @batch.batch_requests.create!(request: @item2, position: 2)
 
-       FactoryGirl.create :descriptor, task: @task2, name: 'Chip Barcode', kind: 'ExternalBarcode', selection: {}
-       FactoryGirl.create :descriptor, task: @task2, name: 'Operator', kind: 'Barcode', selection: {}
-       FactoryGirl.create :descriptor, task: @task2, name: 'Comment', kind: 'Text', selection: {}
-       FactoryGirl.create :descriptor, task: @task2, name: 'Passed?', kind: 'Selection', selection: {}
+        FactoryGirl.create :descriptor, task: @task2, name: 'Chip Barcode', kind: 'ExternalBarcode', selection: {}
+        FactoryGirl.create :descriptor, task: @task2, name: 'Operator', kind: 'Barcode', selection: {}
+        FactoryGirl.create :descriptor, task: @task2, name: 'Comment', kind: 'Text', selection: {}
+        FactoryGirl.create :descriptor, task: @task2, name: 'Passed?', kind: 'Selection', selection: {}
 
         @user = FactoryGirl.create :admin
         session[:user] = @user.id
@@ -136,7 +136,7 @@ class WorkflowsControllerTest < ActionController::TestCase
       context 'should set descriptors on batch' do
         setup do
           @batch_lab_events = Batch.find(@batch.id).lab_events.size
-          request_data = @batch.requests.reload.map { |r| r.id }.each_with_object({}) { |element, result| result[element.to_s] = '1' }
+          request_data = @batch.requests.reload.map(&:id).each_with_object({}) { |element, result| result[element.to_s] = '1' }
           post :stage,
                params: { :controller => 'workflows',
                          :id => 0,

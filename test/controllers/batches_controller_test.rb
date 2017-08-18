@@ -24,7 +24,8 @@ class BatchesControllerTest < ActionController::TestCase
         setup do
           pipeline = Pipeline.find_by!(name: 'Cluster formation PE (no controls)')
 
-          @study, @project = create(:study), create(:project)
+          @study = create(:study)
+          @project = create(:project)
           @sample = create :sample
           @submission = create :submission_without_order, priority: 3
 
@@ -302,7 +303,7 @@ class BatchesControllerTest < ActionController::TestCase
                 EventSender.expects(:send_fail_event).returns(true).times(1)
                 post :fail_items, params: { id: @batch_one.id,
                                             failure: { reason: 'PCR not completed', comment: '' },
-                                            requested_fail: { (@request_one.id).to_s => 'on' } }
+                                            requested_fail: { @request_one.id.to_s => 'on' } }
               end
               should 'create a failure on each item in this batch and have two items related' do
                 assert_equal 0, @batch_one.failures.size
@@ -376,7 +377,7 @@ class BatchesControllerTest < ActionController::TestCase
 
         RestClient.expects(:post)
 
-        post :print_plate_barcodes, params: { printer: barcode_printer.name, count: '3', printable: { (@batch.output_plates.first.barcode).to_s => 'on' }, batch_id: (@batch.id).to_s }
+        post :print_plate_barcodes, params: { printer: barcode_printer.name, count: '3', printable: { @batch.output_plates.first.barcode.to_s => 'on' }, batch_id: @batch.id.to_s }
       end
 
       should '#print_barcodes should send print request' do
@@ -387,21 +388,21 @@ class BatchesControllerTest < ActionController::TestCase
 
         RestClient.expects(:post)
 
-        post :print_barcodes, params: { printer: barcode_printer.name, count: '3', printable: printable, batch_id: (@batch.id).to_s }
+        post :print_barcodes, params: { printer: barcode_printer.name, count: '3', printable: printable, batch_id: @batch.id.to_s }
       end
 
       should '#print_multiplex_barcodes should send print request' do
         pipeline = create :pipeline,
-          name: 'Test pipeline',
-          workflow: LabInterface::Workflow.create!(item_limit: 8),
-          multiplexed: true
+                          name: 'Test pipeline',
+                          workflow: LabInterface::Workflow.create!(item_limit: 8),
+                          multiplexed: true
         batch = pipeline.batches.create!
         library_tube = create :library_tube, barcode: '111'
         printable = { library_tube.id => 'on' }
 
         RestClient.expects(:post)
 
-        post :print_multiplex_barcodes, params: { printer: barcode_printer.name, count: '3', printable: printable, batch_id: (batch.id).to_s }
+        post :print_multiplex_barcodes, params: { printer: barcode_printer.name, count: '3', printable: printable, batch_id: batch.id.to_s }
       end
     end
   end

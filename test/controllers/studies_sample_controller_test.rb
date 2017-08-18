@@ -7,19 +7,21 @@
 require 'test_helper'
 require 'studies/workflows_controller'
 
-class Studies::SamplesControllerTest < ActionController::TestCase
-  context 'Studies controller' do
-    setup do
-      @controller = Studies::SamplesController.new
-      @request    = ActionController::TestRequest.create(@controller)
+module Studies
+  class SamplesControllerTest < ActionController::TestCase
+    context 'Studies controller' do
+      setup do
+        @controller = Studies::SamplesController.new
+        @request    = ActionController::TestRequest.create(@controller)
 
-      @user = create :user
-      session[:user] = @user.id
-      @workflow = create :submission_workflow
+        @user = create :user
+        session[:user] = @user.id
+        @workflow = create :submission_workflow
+      end
+
+      should_require_login(:index, resource: 'sample', parent: 'study')
+
+      resource_test('sample', parent: 'study', actions: ['index'], ignore_actions: ['show'], formats: ['html'])
     end
-
-    should_require_login(:index, resource: 'sample', parent: 'study')
-
-    resource_test('sample', parent: 'study', actions: ['index'], ignore_actions: ['show'], formats: ['html'])
   end
 end

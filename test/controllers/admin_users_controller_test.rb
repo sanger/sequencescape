@@ -7,65 +7,70 @@
 require 'test_helper'
 require 'samples_controller'
 
-class Admin::UsersControllerTest < ActionController::TestCase
-  context 'Admin Users controller' do
-    setup do
-      @controller = Admin::UsersController.new
-      @request    = ActionController::TestRequest.create(@controller)
-    end
-
-    should_require_login
-
-    resource_test(
-      'user', ignore_actions: ['update'],
-              actions: ['show', 'edit', 'index'],
-              formats: ['html'],
-              defaults: { login: 'abc1234' },
-              user: -> { FactoryGirl.create(:admin) },
-
-              # Setup needed because 'edit' assumes presence of at least one Study and Project
-              setup: -> { FactoryGirl.create(:study); FactoryGirl.create(:project) }
-    )
-
-    context '#filter' do
+module Admin
+  class UsersControllerTest < ActionController::TestCase
+    context 'Admin Users controller' do
       setup do
-        @user = FactoryGirl.create :user
-        @admin = FactoryGirl.create :admin
-
-        session[:user] = @admin
-
-        @user_to_find = FactoryGirl.create :user, first_name: 'Some', last_name: 'Body', login: 'sb1'
-        @another_user = FactoryGirl.create :user, first_name: 'No', last_name: 'One', login: 'no1'
+        @controller = Admin::UsersController.new
+        @request    = ActionController::TestRequest.create(@controller)
       end
 
-      should 'find a user based on name' do
-        post :filter, params: { q: 'Some' }
+      should_require_login
 
-        @users = assigns(:users)
-        assert_equal @user_to_find, @users.first
-      end
+      resource_test(
+        'user', ignore_actions: ['update'],
+                actions: ['show', 'edit', 'index'],
+                formats: ['html'],
+                defaults: { login: 'abc1234' },
+                user: -> { FactoryGirl.create(:admin) },
 
-      should 'find a user based on login' do
-        post :filter, params: { q: 'sb' }
+                # Setup needed because 'edit' assumes presence of at least one Study and Project
+                setup: lambda do
+                  FactoryGirl.create(:study)
+                  FactoryGirl.create(:project)
+                end
+      )
 
-        @users = assigns(:users)
-        assert_equal @user_to_find, @users.first
-      end
+      context '#filter' do
+        setup do
+          @user = FactoryGirl.create :user
+          @admin = FactoryGirl.create :admin
 
-      should 'find multiple users with shared characters in their logins' do
-        post :filter, params: { q: '1' }
+          session[:user] = @admin
 
-        @users = assigns(:users)
-        assert @users.detect { |u| u == @user_to_find }
-        assert @users.detect { |u| u == @another_user }
-      end
+          @user_to_find = FactoryGirl.create :user, first_name: 'Some', last_name: 'Body', login: 'sb1'
+          @another_user = FactoryGirl.create :user, first_name: 'No', last_name: 'One', login: 'no1'
+        end
 
-      should 'find multiple users with shared characters in their names' do
-        post :filter, params: { q: 'o' }
+        should 'find a user based on name' do
+          post :filter, params: { q: 'Some' }
 
-        @users = assigns(:users)
-        assert @users.detect { |u| u == @user_to_find }
-        assert @users.detect { |u| u == @another_user }
+          @users = assigns(:users)
+          assert_equal @user_to_find, @users.first
+        end
+
+        should 'find a user based on login' do
+          post :filter, params: { q: 'sb' }
+
+          @users = assigns(:users)
+          assert_equal @user_to_find, @users.first
+        end
+
+        should 'find multiple users with shared characters in their logins' do
+          post :filter, params: { q: '1' }
+
+          @users = assigns(:users)
+          assert @users.detect { |u| u == @user_to_find }
+          assert @users.detect { |u| u == @another_user }
+        end
+
+        should 'find multiple users with shared characters in their names' do
+          post :filter, params: { q: 'o' }
+
+          @users = assigns(:users)
+          assert @users.detect { |u| u == @user_to_find }
+          assert @users.detect { |u| u == @another_user }
+        end
       end
     end
   end

@@ -23,20 +23,20 @@ class RequestsControllerTest < ActionController::TestCase
       end
 
       should 'cancel request' do
-         request = FactoryGirl.create :request, user: @user, request_type: FactoryGirl.create(:request_type), study: FactoryGirl.create(:study, name: 'ReqCon2'), workflow: FactoryGirl.create(:submission_workflow)
-         get :cancel, params: { id: request.id }
+        request = FactoryGirl.create :request, user: @user, request_type: FactoryGirl.create(:request_type), study: FactoryGirl.create(:study, name: 'ReqCon2'), workflow: FactoryGirl.create(:submission_workflow)
+        get :cancel, params: { id: request.id }
 
-         assert_equal flash[:notice], "Request #{request.id} has been cancelled"
-         assert Request.find(request.id).cancelled?
-         assert_response :redirect
+        assert_equal flash[:notice], "Request #{request.id} has been cancelled"
+        assert Request.find(request.id).cancelled?
+        assert_response :redirect
       end
 
       should 'cancel started request' do
-         request = FactoryGirl.create :request, state: 'started', user: @user, request_type: FactoryGirl.create(:request_type), study: FactoryGirl.create(:study, name: 'ReqCon2'), workflow: FactoryGirl.create(:submission_workflow)
-         get :cancel, params: { id: request.id }
+        request = FactoryGirl.create :request, state: 'started', user: @user, request_type: FactoryGirl.create(:request_type), study: FactoryGirl.create(:study, name: 'ReqCon2'), workflow: FactoryGirl.create(:submission_workflow)
+        get :cancel, params: { id: request.id }
 
-         assert_equal flash[:error], "Request #{request.id} in progress. Can't be cancelled"
-         assert_response :redirect
+        assert_equal flash[:error], "Request #{request.id} in progress. Can't be cancelled"
+        assert_response :redirect
       end
     end
 
@@ -47,22 +47,22 @@ class RequestsControllerTest < ActionController::TestCase
 
       should 'when quotas is copied and redirect' do
         @request_initial = FactoryGirl.create :request, user: @user, request_type: FactoryGirl.create(:request_type), study: FactoryGirl.create(:study, name: 'ReqCon2'), workflow: FactoryGirl.create(:submission_workflow)
-         get :copy, params: { id: @request_initial.id }
+        get :copy, params: { id: @request_initial.id }
 
-         @new_request = Request.last
-         assert_equal flash[:notice], "Created request #{@new_request.id}"
-         assert_response :redirect
+        @new_request = Request.last
+        assert_equal flash[:notice], "Created request #{@new_request.id}"
+        assert_response :redirect
       end
 
       should 'set failed requests to pending' do
         @request_initial = FactoryGirl.create :request, user: @user, request_type: FactoryGirl.create(:request_type), study: FactoryGirl.create(:study, name: 'ReqCon2'), workflow: FactoryGirl.create(:submission_workflow), state: 'failed'
-         get :copy, params: { id: @request_initial.id }
+        get :copy, params: { id: @request_initial.id }
 
-         @new_request = Request.last
-         assert_equal flash[:notice], "Created request #{@new_request.id}"
-         assert_response :redirect
+        @new_request = Request.last
+        assert_equal flash[:notice], "Created request #{@new_request.id}"
+        assert_response :redirect
 
-         assert_equal 'pending', @new_request.state
+        assert_equal 'pending', @new_request.state
       end
     end
 
@@ -104,8 +104,8 @@ class RequestsControllerTest < ActionController::TestCase
         session[:user] = @user.id
 
         @project = FactoryGirl.create(:project_with_order, name: 'Prj1')
-         @reqwest = FactoryGirl.create :request, user: @user, request_type: FactoryGirl.create(:request_type), study: FactoryGirl.create(:study, name: 'ReqCon XXX'),
-                                                 workflow: FactoryGirl.create(:submission_workflow), project: @project
+        @reqwest = FactoryGirl.create :request, user: @user, request_type: FactoryGirl.create(:request_type), study: FactoryGirl.create(:study, name: 'ReqCon XXX'),
+                                                workflow: FactoryGirl.create(:submission_workflow), project: @project
       end
 
       context 'update invalid and failed' do

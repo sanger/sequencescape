@@ -7,27 +7,29 @@
 require 'test_helper'
 require 'studies/workflows_controller'
 
-class Studies::WorkflowsControllerTest < ActionController::TestCase
-  context 'Studies::Workflows controller' do
-    setup do
-      @controller = Studies::WorkflowsController.new
-      @request    = ActionController::TestRequest.create(@controller)
+module Studies
+  class WorkflowsControllerTest < ActionController::TestCase
+    context 'Studies::Workflows controller' do
+      setup do
+        @controller = Studies::WorkflowsController.new
+        @request    = ActionController::TestRequest.create(@controller)
 
-      @workflow = create :submission_workflow
-      @user     = create :user, workflow_id: @workflow.id
-      session[:user] = @user.id
-      @study = create :study
-    end
+        @workflow = create :submission_workflow
+        @user     = create :user, workflow_id: @workflow.id
+        session[:user] = @user.id
+        @study = create :study
+      end
 
-    should_require_login(:show, resource: 'workflow', parent: 'study')
+      should_require_login(:show, resource: 'workflow', parent: 'study')
 
-     context '#show' do
+      context '#show' do
         setup do
           get :show, params: { id: @workflow.id, study_id: @study.id }
         end
 
         should respond_with :success
         should render_template :show
-     end
+      end
+    end
   end
 end

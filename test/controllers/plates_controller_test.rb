@@ -44,7 +44,7 @@ class PlatesControllerTest < ActionController::TestCase
       end
 
       context '#create' do
-       context 'with no source plates' do
+        context 'with no source plates' do
           setup do
             @plate_count = Plate.count
             post :create, params: { plates: { creator_id: @gel_dilution_plates_creator.id, barcode_printer: @barcode_printer.id, user_barcode: '2470000100730' } }
@@ -55,7 +55,7 @@ class PlatesControllerTest < ActionController::TestCase
           end
           should respond_with :redirect
           should set_flash.to(/Created/)
-       end
+        end
 
         context 'Create a Plate' do
           context 'with one source plate' do
@@ -154,8 +154,7 @@ class PlatesControllerTest < ActionController::TestCase
                       @plate_count = Plate.count
                       post :create, params: { plates: { creator_id: @dilution_plates_creator.id, barcode_printer: @barcode_printer.id,
                                                         source_plates: "#{@parent_raw_barcode},#{@parent2_raw_barcode}", user_barcode: '2470000100730',
-                                                        dilution_factor: 2.0
-                      } }
+                                                        dilution_factor: 2.0 } }
                     end
 
                     should 'change Plate.count by 2' do

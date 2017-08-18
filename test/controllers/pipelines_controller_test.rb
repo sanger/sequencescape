@@ -39,7 +39,7 @@ class PipelinesControllerTest < ActionController::TestCase
 
       context 'with 1 batch' do
         setup do
-         FactoryGirl.create :batch, pipeline: @pipeline
+          FactoryGirl.create :batch, pipeline: @pipeline
           get :batches, params: { id: @pipeline.id.to_s }
         end
 

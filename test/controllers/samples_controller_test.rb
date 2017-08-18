@@ -20,20 +20,20 @@ class SamplesControllerTest < ActionController::TestCase
 
     resource_test(
       'sample', defaults: {
-          name: 'Sample22',
-          sample_metadata_attributes: {
-             cohort: 'Cohort',
-             gender: 'Male',
-             genotype: '',
-             phenotype: '',
-             reference_genome_id: FactoryGirl.create(:reference_genome).id
-            }
-        },
+        name: 'Sample22',
+        sample_metadata_attributes: {
+          cohort: 'Cohort',
+          gender: 'Male',
+          genotype: '',
+          phenotype: '',
+          reference_genome_id: FactoryGirl.create(:reference_genome).id
+        }
+      },
                 formats: ['html'],
                 ignore_actions: %w(show create destroy),
                 protect_on_update: [:name],
                 extra_on_update: { sample_metadata_attributes: { check: { genotype: 'false', phenotype: 'true' } } },
-                user: -> { user = FactoryGirl.create(:user); user.is_administrator; user }
+                user: -> { FactoryGirl.create(:admin) }
     )
 
     # TODO: Test without admin

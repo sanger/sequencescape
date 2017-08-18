@@ -133,7 +133,8 @@ class SequenomControllerTest < ActionController::TestCase
         SequenomController::STEPS.each do |step|
           context "and marking '#{step.name}' completed" do
             setup do
-              @plate, @user = FactoryGirl.create(:plate), FactoryGirl.create(:user, barcode: 'ID99999D')
+              @plate = FactoryGirl.create(:plate)
+              @user = FactoryGirl.create(:user, barcode: 'ID99999D')
               post :update, params: { id: @plate.id, sequenom_step: step.name, user_barcode: '2470099999680' }
             end
 

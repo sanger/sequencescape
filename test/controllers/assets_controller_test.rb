@@ -30,9 +30,9 @@ class AssetsControllerTest < ActionController::TestCase
 
     should set_flash.to(/Asset was successfully created/)
 
-     should 'change Asset.count by 1' do
-       assert_equal 1, Asset.count - @asset_count, 'Expected Asset.count to change by 1'
-     end
+    should 'change Asset.count by 1' do
+      assert_equal 1, Asset.count - @asset_count, 'Expected Asset.count to change by 1'
+    end
   end
 
   context 'an asset_id' do
@@ -83,17 +83,17 @@ class AssetsControllerTest < ActionController::TestCase
     should '#print_assets should send print request' do
       asset = create :child_plate
       RestClient.expects(:post)
-      post :print_assets, params: { printables: asset, printer: barcode_printer.name, id: (asset.id).to_s }
+      post :print_assets, params: { printables: asset, printer: barcode_printer.name, id: asset.id.to_s }
     end
     should '#print_labels should send print request' do
       asset = create :sample_tube
       RestClient.expects(:post)
-      post :print_labels, params: { printables: { (asset.id).to_s => 'true' }, printer: barcode_printer.name, id: (asset.id).to_s }
+      post :print_labels, params: { printables: { asset.id.to_s => 'true' }, printer: barcode_printer.name, id: asset.id.to_s }
     end
   end
 
   def valid_json_create_request(asset, request_type, study, project)
-    %Q{
+    %(
       {
         "api_version": "#{RELEASE.api_version}",
         "api_key": "abc",
@@ -113,12 +113,12 @@ class AssetsControllerTest < ActionController::TestCase
           }
         }
       }
-    }
+    )
   end
 
   def json_new_asset(barcode)
     # /assets
-    %Q{
+    %(
       {
         "api_version": "#{RELEASE.api_version}",
         "api_key": "abc",
@@ -128,6 +128,6 @@ class AssetsControllerTest < ActionController::TestCase
           "label": "SampleTube"
         }
       }
-    }
+    )
   end
 end

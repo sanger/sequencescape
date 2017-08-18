@@ -34,7 +34,7 @@ class RobotVerificationsControllerTest < ActionController::TestCase
         @expected_layout[0].each do |_barcode, bed_number|
           @robot.robot_properties.create(key: "DEST#{bed_number}", value: '5')
         end
-        count = 1;
+        count = 1
         @expected_layout[1].each do |barcode, bed_number|
           @robot.robot_properties.create(key: "SCRC#{bed_number}", value: bed_number)
           @source_plate = FactoryGirl.create :plate, barcode: barcode

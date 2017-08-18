@@ -52,22 +52,24 @@ class SubmissionsControllerTest < ActionController::TestCase
         @samples = samples = Well.with_aliquots.each.map { |w| w.aliquots.first.sample.name }
 
         post(:create, params: {
-          submission: {
-            is_a_sequencing_order: 'false',
-            comments: '',
-            template_id: @submission_template.id.to_s,
-            order_params: {
-              'read_length' => '37',
-              'fragment_size_required_to' => '400',
-              'bait_library_name' => 'Human all exon 50MB',
-              'fragment_size_required_from' => '100',
-              'library_type' => 'Agilent Pulldown' },
-            asset_group_id: '',
-            study_id: @study.id.to_s,
-            sample_names_text: samples[1..4].join("\n"),
-            plate_purpose_id: @plate.plate_purpose.id.to_s,
-            project_name: 'A project'
-          } })
+               submission: {
+                 is_a_sequencing_order: 'false',
+                 comments: '',
+                 template_id: @submission_template.id.to_s,
+                 order_params: {
+                   'read_length' => '37',
+                   'fragment_size_required_to' => '400',
+                   'bait_library_name' => 'Human all exon 50MB',
+                   'fragment_size_required_from' => '100',
+                   'library_type' => 'Agilent Pulldown'
+                 },
+                 asset_group_id: '',
+                 study_id: @study.id.to_s,
+                 sample_names_text: samples[1..4].join("\n"),
+                 plate_purpose_id: @plate.plate_purpose.id.to_s,
+                 project_name: 'A project'
+               }
+             })
       end
 
       should 'create the appropriate orders' do
@@ -80,17 +82,19 @@ class SubmissionsControllerTest < ActionController::TestCase
           @well = create :well, map: Map.find_by(description: 'A1'), plate: @new_plate
           create(:aliquot, sample: Sample.find_by(name: @samples.first), receptacle: @well)
           post(:create, params: { submission: {
-            is_a_sequencing_order: 'false',
-            comments: '',
-            template_id: @submission_template.id.to_s,
-            order_params: {
-              'read_length' => '37', 'fragment_size_required_to' => '400',
-              'bait_library_name' => 'Human all exon 50MB',
-              'fragment_size_required_from' => '100', 'library_type' => 'Agilent Pulldown' },
-            asset_group_id: '',
-            study_id: @study.id.to_s,
-            sample_names_text: @samples[0...4].join("\n"),
-            plate_purpose_id: @plate.plate_purpose.id.to_s, project_name: 'A project' } })
+                 is_a_sequencing_order: 'false',
+                 comments: '',
+                 template_id: @submission_template.id.to_s,
+                 order_params: {
+                   'read_length' => '37', 'fragment_size_required_to' => '400',
+                   'bait_library_name' => 'Human all exon 50MB',
+                   'fragment_size_required_from' => '100', 'library_type' => 'Agilent Pulldown'
+                 },
+                 asset_group_id: '',
+                 study_id: @study.id.to_s,
+                 sample_names_text: @samples[0...4].join("\n"),
+                 plate_purpose_id: @plate.plate_purpose.id.to_s, project_name: 'A project'
+               } })
         end
 
         should 'find the latest version' do
@@ -112,28 +116,29 @@ class SubmissionsControllerTest < ActionController::TestCase
           B1 B2 B3
           C1 C2 C3
         ).each do |location|
-        well = create :empty_well, map: Map.find_by(description: location)
+          well = create :empty_well, map: Map.find_by(description: location)
           well.aliquots.create(sample: @plate.wells.located_at(location).first.aliquots.first.sample)
           @wd_plate.wells << well
         end
         samples = @wd_plate.wells.with_aliquots.each.map { |w| w.aliquots.first.sample.name }
 
         post(:create, params: { submission: {
-          is_a_sequencing_order: 'false',
-          comments: '',
-          template_id: @submission_template.id.to_s,
-          order_params: {
-            'read_length' => '37',
-            'fragment_size_required_to' => '400',
-            'bait_library_name' => 'Human all exon 50MB',
-            'fragment_size_required_from' => '100',
-            'library_type' => 'Agilent Pulldown'
-          },
-          asset_group_id: '',
-          study_id: @study.id.to_s,
-          sample_names_text: samples[1..4].join("\n"),
-          plate_purpose_id: @wd_plate.plate_purpose.id.to_s,
-          project_name: 'A project' } })
+               is_a_sequencing_order: 'false',
+               comments: '',
+               template_id: @submission_template.id.to_s,
+               order_params: {
+                 'read_length' => '37',
+                 'fragment_size_required_to' => '400',
+                 'bait_library_name' => 'Human all exon 50MB',
+                 'fragment_size_required_from' => '100',
+                 'library_type' => 'Agilent Pulldown'
+               },
+               asset_group_id: '',
+               study_id: @study.id.to_s,
+               sample_names_text: samples[1..4].join("\n"),
+               plate_purpose_id: @wd_plate.plate_purpose.id.to_s,
+               project_name: 'A project'
+             } })
       end
 
       should 'used the working dilution plate' do
@@ -144,7 +149,7 @@ class SubmissionsControllerTest < ActionController::TestCase
 
     context 'by plate barcode' do
       setup do
-         @order_count = Order.count
+        @order_count = Order.count
         post :create, params: plate_submission('DN123456P')
       end
 
@@ -243,13 +248,14 @@ class SubmissionsControllerTest < ActionController::TestCase
         'fragment_size_required_to' => '400',
         'bait_library_name' => 'Human all exon 50MB',
         'fragment_size_required_from' => '100',
-        'library_type' => 'Agilent Pulldown' },
+        'library_type' => 'Agilent Pulldown'
+      },
       asset_group_id: '',
       study_id: @study.id.to_s,
       sample_names_text: '',
       barcodes_wells_text: text,
       plate_purpose_id: @plate.plate_purpose.id.to_s,
-      project_name: 'A project' }
-    }
+      project_name: 'A project'
+    } }
   end
 end

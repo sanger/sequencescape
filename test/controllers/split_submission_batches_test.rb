@@ -34,24 +34,26 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
         @submission_template = SubmissionTemplate.find_by!(name: 'Illumina-C - Library creation - Single ended sequencing')
 
         post(:create, params: {
-          submission: {
-            is_a_sequencing_order: 'true',
-            comments: '',
-            template_id: @submission_template.id,
-            order_params: {
-              'read_length' => '37',
-              'fragment_size_required_to' => '400',
-              'bait_library_name' => 'Human all exon 50MB',
-              'fragment_size_required_from' => '100',
-              'library_type' => 'Agilent Pulldown' },
-            asset_group_id: @asset_group.id,
-            study_id: @study.id,
-            sample_names_text: '',
-            plate_purpose_id: @plate_purpose.id,
-            project_name: @project.name,
-            lanes_of_sequencing_required: '5',
-            priority: 1
-          } })
+               submission: {
+                 is_a_sequencing_order: 'true',
+                 comments: '',
+                 template_id: @submission_template.id,
+                 order_params: {
+                   'read_length' => '37',
+                   'fragment_size_required_to' => '400',
+                   'bait_library_name' => 'Human all exon 50MB',
+                   'fragment_size_required_from' => '100',
+                   'library_type' => 'Agilent Pulldown'
+                 },
+                 asset_group_id: @asset_group.id,
+                 study_id: @study.id,
+                 sample_names_text: '',
+                 plate_purpose_id: @plate_purpose.id,
+                 project_name: @project.name,
+                 lanes_of_sequencing_required: '5',
+                 priority: 1
+               }
+             })
 
         Submission.last.built!
         Delayed::Worker.new.work_off
@@ -92,40 +94,40 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
     end
 
     context 'which is multiplexed' do
-         setup do
-           # We're using the submissions controller as things are a bit screwy if we go to the plate creator (PlateCreater) directly
-           # However, as this seems to relate to the multiplier, it may be related to out problem.
-           # @asset_group.assets.each_with_index {|a,i| tag=FactoryGirl.create :tag; a.aliquots.first.update_attributes!(:tag=>tag)}
-           @submission_template = SubmissionTemplate.find_by!(name: 'Illumina-C - Multiplexed Library Creation - Single ended sequencing')
-           @library_pipeline = Pipeline.find_by!(name: 'Illumina-B MX Library Preparation')
+      setup do
+        # We're using the submissions controller as things are a bit screwy if we go to the plate creator (PlateCreater) directly
+        # However, as this seems to relate to the multiplier, it may be related to out problem.
+        # @asset_group.assets.each_with_index {|a,i| tag=FactoryGirl.create :tag; a.aliquots.first.update_attributes!(:tag=>tag)}
+        @submission_template = SubmissionTemplate.find_by!(name: 'Illumina-C - Multiplexed Library Creation - Single ended sequencing')
+        @library_pipeline = Pipeline.find_by!(name: 'Illumina-B MX Library Preparation')
 
-           post(:create, params: { submission: {
-             is_a_sequencing_order: 'true',
-             comments: '',
-             template_id: @submission_template.id.to_s,
-             order_params: {
-               'read_length' => '37', 'fragment_size_required_to' => '400', 'bait_library_name' => 'Human all exon 50MB',
-               'fragment_size_required_from' => '100', 'library_type' => 'Standard'
+        post(:create, params: { submission: {
+               is_a_sequencing_order: 'true',
+               comments: '',
+               template_id: @submission_template.id.to_s,
+               order_params: {
+                 'read_length' => '37', 'fragment_size_required_to' => '400', 'bait_library_name' => 'Human all exon 50MB',
+                 'fragment_size_required_from' => '100', 'library_type' => 'Standard'
                },
-             asset_group_id: @asset_group.id.to_s,
-             study_id: @study.id.to_s,
-             sample_names_text: '',
-             plate_purpose_id: @plate_purpose.id.to_s,
-             project_name: @project.name,
-             lanes_of_sequencing_required: '5',
-             priority: 1
+               asset_group_id: @asset_group.id.to_s,
+               study_id: @study.id.to_s,
+               sample_names_text: '',
+               plate_purpose_id: @plate_purpose.id.to_s,
+               project_name: @project.name,
+               lanes_of_sequencing_required: '5',
+               priority: 1
              } })
 
-           Submission.last.built!
-           Delayed::Worker.new.work_off
-         end
+        Submission.last.built!
+        Delayed::Worker.new.work_off
+      end
 
-         should 'report correct groupings from the start' do
-           assert_equal MultiplexedLibraryCreationRequest.first.id + 4, MultiplexedLibraryCreationRequest.first.next_requests(@library_pipeline) { |_r| true }.first.id
-           assert_equal MultiplexedLibraryCreationRequest.first.id + 4, MultiplexedLibraryCreationRequest.all[2].next_requests(@library_pipeline) { |_r| true }.first.id
-           assert_equal 5, MultiplexedLibraryCreationRequest.first.next_requests(@library_pipeline) { |_r| true }.size
-           assert_equal MultiplexedLibraryCreationRequest.first.id + 8, MultiplexedLibraryCreationRequest.first.next_requests(@library_pipeline) { |_r| true }.last.id
-         end
+      should 'report correct groupings from the start' do
+        assert_equal MultiplexedLibraryCreationRequest.first.id + 4, MultiplexedLibraryCreationRequest.first.next_requests(@library_pipeline) { |_r| true }.first.id
+        assert_equal MultiplexedLibraryCreationRequest.first.id + 4, MultiplexedLibraryCreationRequest.all[2].next_requests(@library_pipeline) { |_r| true }.first.id
+        assert_equal 5, MultiplexedLibraryCreationRequest.first.next_requests(@library_pipeline) { |_r| true }.size
+        assert_equal MultiplexedLibraryCreationRequest.first.id + 8, MultiplexedLibraryCreationRequest.first.next_requests(@library_pipeline) { |_r| true }.last.id
+      end
     end
   end
 end
