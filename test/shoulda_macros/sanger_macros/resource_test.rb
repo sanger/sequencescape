@@ -170,7 +170,7 @@ module Sanger
                     @object = create resource_name
                     @input_params[:id] = @object.id
                     assert_raise AbstractController::ActionNotFound do
-                      get action, @input_params
+                      get action, params: @input_params
                     end
                   end
                 end
