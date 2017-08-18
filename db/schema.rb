@@ -1016,13 +1016,13 @@ ActiveRecord::Schema.define(version: 20170717095922) do
   end
 
   create_table "qc_reports", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
-    t.string   "report_identifier",   limit: 255,   null: false
-    t.integer  "study_id",            limit: 4,     null: false
-    t.integer  "product_criteria_id", limit: 4,     null: false
-    t.boolean  "exclude_existing",                  null: false
+    t.string "report_identifier", null: false
+    t.integer "study_id", null: false
+    t.integer "product_criteria_id", null: false
+    t.boolean "exclude_existing", null: false
     t.string "state"
-    t.datetime "created_at",                        null: false
-    t.datetime "updated_at",                        null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.text "plate_purposes"
     t.index ["product_criteria_id"], name: "fk_qc_reports_to_product_criteria"
     t.index ["report_identifier"], name: "index_qc_reports_on_report_identifier", unique: true
@@ -1718,24 +1718,6 @@ ActiveRecord::Schema.define(version: 20170717095922) do
   end
 
   create_table "transfer_templates", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
-  create_table "transfer_request_collection_transfer_requests", force: :cascade do |t|
-    t.integer  "transfer_request_collection_id", limit: 4
-    t.integer  "transfer_request_id",            limit: 4
-    t.datetime "created_at",                               null: false
-    t.datetime "updated_at",                               null: false
-  end
-
-  add_index "transfer_request_collection_transfer_requests", ["transfer_request_collection_id"], name: "fk_rails_6b9c820b32", using: :btree
-  add_index "transfer_request_collection_transfer_requests", ["transfer_request_id"], name: "fk_rails_67a3295574", using: :btree
-
-  create_table "transfer_request_collections", force: :cascade do |t|
-    t.integer  "user_id",    limit: 4
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
-  end
-
-  add_index "transfer_request_collections", ["user_id"], name: "fk_rails_e542f48171", using: :btree
-
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "name"
@@ -1842,8 +1824,8 @@ ActiveRecord::Schema.define(version: 20170717095922) do
   create_table "work_completions", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.integer "user_id", null: false
     t.integer "target_id", null: false
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.index ["target_id"], name: "fk_rails_f8fb9e95de"
     t.index ["user_id"], name: "fk_rails_204fc81a92"
   end
