@@ -29,8 +29,8 @@ namespace :traction do
 
           RequestType::Validator.create!(
             request_type: rt,
-            request_option: 'file_type',
-            valid_options: RequestType::Validator::ArrayWithDefault.new(['FAST5', 'FASTQ'], 'FAST5')
+            request_option: 'data_type',
+            valid_options: RequestType::Validator::ArrayWithDefault.new(['basecalls', 'basecalls and raw data'], 'basecalls')
           )
         end
       end

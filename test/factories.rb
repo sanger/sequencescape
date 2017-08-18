@@ -157,7 +157,7 @@ FactoryGirl.define do
 
   factory :request_traction_grid_ion_metadata, class: Request::Traction::GridIon::Metadata do
     library_type 'Rapid'
-    file_type 'FASTQ'
+    data_type 'basecalls and raw data'
     association(:owner, factory: :request_traction_grid_ion)
   end
 

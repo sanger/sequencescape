@@ -11,14 +11,14 @@ describe Request::Traction::GridIon do
 
   context 'with valid metadata' do
     let(:metadata) do
-      { library_type: 'Rapid', file_type: 'FASTQ' }
+      { library_type: 'Rapid', data_type: 'basecalls and raw data' }
     end
     it { is_expected.to be_valid }
 
     it 'saves the metadata' do
       subject.save!
       expect(subject.request_metadata.library_type).to eq('Rapid')
-      expect(subject.request_metadata.file_type).to eq('FASTQ')
+      expect(subject.request_metadata.data_type).to eq('basecalls and raw data')
     end
 
     it 'registers a submission callback' do
