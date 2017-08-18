@@ -167,8 +167,10 @@ module Sanger
               context 'should not have untested action' do
                 untested_actions.each do |action|
                   should action.to_s do
+                    @object = create resource_name
+                    @input_params[:id] = @object.id
                     assert_raise AbstractController::ActionNotFound do
-                      get action
+                      get action, @input_params
                     end
                   end
                 end

@@ -391,6 +391,7 @@ GEM
     tilt (2.0.7)
     timecop (0.9.1)
     transactional_capybara (0.2.0)
+      rails (>= 3.0.0)
       capybara
     tzinfo (1.2.3)
       thread_safe (~> 0.1)
@@ -492,6 +493,7 @@ DEPENDENCIES
   therubyracer
   therubyrhino
   timecop
+  traceroute
   transactional_capybara
   uglifier (>= 1.0.3)
   uuidtools

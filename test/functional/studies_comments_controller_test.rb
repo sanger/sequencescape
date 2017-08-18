@@ -13,7 +13,7 @@ class Studies::CommentsControllerTest < ActionController::TestCase
       @request    = ActionController::TestRequest.create(@controller)
     end
 
-    should_require_login
+    should_require_login(:index, resource: 'comment', parent: 'study')
 
     resource_test('comment', actions: ['index'], ignore_actions: %w(new edit update show destroy create), formats: ['html'], parent: 'study', other_actions: ['add'])
   end

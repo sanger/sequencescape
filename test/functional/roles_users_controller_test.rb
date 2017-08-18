@@ -14,7 +14,7 @@ class Admin::Roles::UsersControllerTest < ActionController::TestCase
       @request    = ActionController::TestRequest.create(@controller)
     end
 
-    should_require_login
+    should_require_login(:index, resource: 'user', parent: 'role')
 
     resource_test(
       'user', parent: 'role',

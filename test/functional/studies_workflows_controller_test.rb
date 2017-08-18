@@ -19,7 +19,7 @@ class Studies::WorkflowsControllerTest < ActionController::TestCase
       @study = create :study
     end
 
-    should_require_login(:show)
+    should_require_login(:show, resource: 'workflow', parent: 'study')
 
      context '#show' do
         setup do

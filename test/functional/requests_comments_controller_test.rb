@@ -15,7 +15,7 @@ class Requests::CommentsControllerTest < ActionController::TestCase
       session[:user] = @user.id
     end
 
-    should_require_login
+    should_require_login(:index, resource: 'comment', parent: 'request')
 
     resource_test('comment', actions: ['index'], ignore_actions: %w(new edit update show destroy create), formats: ['html'], parent: 'request')
 

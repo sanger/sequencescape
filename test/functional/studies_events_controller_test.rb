@@ -17,7 +17,7 @@ class Studies::EventsControllerTest < ActionController::TestCase
       @study = create :study
     end
 
-    should_require_login(:index)
+    should_require_login(:index, resource: 'event', parent: 'study')
 
      context '#index' do
         setup do

@@ -15,7 +15,7 @@ class Studies::SampleRegistrationControllerTest < ActionController::TestCase
       @study      = FactoryGirl.create :study
     end
 
-    should_require_login
+    should_require_login(:index, parent: 'study')
 
     context 'when logged in' do
       setup do
