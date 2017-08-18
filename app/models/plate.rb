@@ -80,18 +80,17 @@ class Plate < Asset
   # We also look up studies and projects through wells
   has_many :studies, ->() { distinct }, through: :wells
   has_many :projects, ->() { distinct }, through: :wells
-
   has_many :well_requests_as_target, through: :wells, source: :requests_as_target
   has_many :orders_as_target, ->() { distinct }, through: :well_requests_as_target, source: :order
-
   # We use stock well associations here as stock_wells is already used to generate some kind of hash.
   has_many :stock_requests, ->() { distinct }, through: :stock_well_associations, source: :requests
   has_many :stock_well_associations, ->() { distinct }, through: :wells, source: :stock_wells
   has_many :stock_orders, ->() { distinct }, through: :stock_requests, source: :order
   has_many :extraction_attributes, foreign_key: 'target_id'
-
   has_many :siblings, through: :parents, source: :children
-
+  # Transfer requests into a plate are the requests leading into the wells of said plate.
+  has_many :transfer_requests, through: :wells, source: :transfer_requests_as_target
+  has_many :transfer_requests_as_source, through: :wells
   has_many :transfer_request_collections, through: :transfer_requests_as_source
 
   # The default state for a plate comes from the plate purpose
@@ -138,10 +137,6 @@ class Plate < Asset
   delegate :dilution_factor, :dilution_factor=, to: :plate_metadata
 
   validates_length_of :fluidigm_barcode, is: 10, allow_blank: true
-
-  # Transfer requests into a plate are the requests leading into the wells of said plate.
-  has_many :transfer_requests, through: :wells, source: :transfer_requests_as_target
-  has_many :transfer_requests_as_source, through: :wells
 
   scope :include_for_show, ->() {
     includes(

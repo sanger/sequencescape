@@ -515,12 +515,6 @@ class Study < ActiveRecord::Base
     ethical_approval_required? ? !ethically_approved.nil? : ethically_approved != false
   end
 
-  private
-
-  def valid_ethically_approved?
-    ethical_approval_required? ? !ethically_approved.nil? : ethically_approved != false
-  end
-
   def set_default_ethical_approval
     self.ethically_approved ||= ethical_approval_required? ? false : nil
     true
