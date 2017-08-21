@@ -377,7 +377,7 @@ class Plate < Asset
     wells.sorted
   end
 
-  def children_and_holded
+  def children_and_wells
     (children | wells)
   end
 

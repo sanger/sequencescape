@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170711153937) do
+ActiveRecord::Schema.define(version: 20170821140140) do
 
   create_table "aliquot_indices", force: :cascade do |t|
     t.integer  "aliquot_id",    limit: 4, null: false
@@ -1041,13 +1041,14 @@ ActiveRecord::Schema.define(version: 20170711153937) do
 
   create_table "qc_files", force: :cascade do |t|
     t.integer  "asset_id",     limit: 4
-    t.string   "asset_type",   limit: 255
     t.integer  "size",         limit: 4
     t.string   "content_type", limit: 255
     t.string   "filename",     limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "qc_files", ["asset_id"], name: "fk_rails_31d6eeacb9", using: :btree
 
   create_table "qc_metric_requests", force: :cascade do |t|
     t.integer  "qc_metric_id", limit: 4, null: false
@@ -1950,6 +1951,7 @@ ActiveRecord::Schema.define(version: 20170711153937) do
     t.integer  "version",       limit: 4
   end
 
+  add_foreign_key "qc_files", "assets"
   add_foreign_key "sample_manifests", "plate_purposes", column: "purpose_id"
   add_foreign_key "tag_layout_templates", "tag_groups", column: "tag2_group_id"
   add_foreign_key "tag_layouts", "tag_groups", column: "tag2_group_id"

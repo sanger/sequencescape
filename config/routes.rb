@@ -451,6 +451,7 @@ Sequencescape::Application.routes.draw do
       post :move
     end
 
+    resources :qc_files
     resources :comments, controller: 'assets/comments'
   end
 
@@ -605,7 +606,7 @@ Sequencescape::Application.routes.draw do
 
   resources :labwhere_receptions, only: [:index, :create]
 
-  resources :qc_files, only: [:show]
+  resources :qc_files, only: [:show, :create]
 
   resources :user_queries, only: [:new, :create]
 
