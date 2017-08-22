@@ -208,6 +208,7 @@ class Well < Aliquot::Receptacle
   delegate_to_well_attribute(:study_id)
   delegate_to_well_attribute(:gender)
   delegate_to_well_attribute(:rin)
+  writer_for_well_attribute_as_float(:rin)
 
   delegate_to_well_attribute(:concentration)
   alias_method(:get_pico_result, :get_concentration)
@@ -242,12 +243,12 @@ class Well < Aliquot::Receptacle
 
   delegate_to_well_attribute(:gender_markers)
 
-  def update_qc_values_with_hash(updated_data)
+  def update_qc_values_with_hash(updated_data, scale)
     ActiveRecord::Base.transaction do
-      unless updated_data.nil? || !(updated_data.values.all? { |v| v.nil? || v.downcase.strip.match(/^\d/) })
-        updated_data.each do |method_name, value|
-          send(method_name, value.strip) unless value.nil? || value.blank?
-        end
+      scale.each do |attribute, multiplier|
+        value = extract_float(updated_data[attribute])
+        next if value.blank?
+        send(attribute, value * multiplier)
       end
     end
   end
@@ -346,5 +347,15 @@ class Well < Aliquot::Receptacle
 
   def source_plate
     plate && plate.source_plate
+  end
+
+  private
+
+  def extract_float(value)
+    # If we're already numeric, we don't care.
+    return value if value.is_a?(Numeric) || value.nil?
+    matches = /\A\({0,1}(?<decimal>\d+\.{0,1}\d*)/.match(value.strip)
+    return nil if matches.nil?
+    matches[:decimal].to_f
   end
 end
