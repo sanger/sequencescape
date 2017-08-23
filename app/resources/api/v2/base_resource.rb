@@ -21,12 +21,45 @@ module Api
         @default_includes = inclusions
       end
 
+      def self.inclusions
+        @default_includes
+      end
+
       # Extends the default bheaviour to add our default inclusions if provided
       def self.apply_includes(records, options = {})
         if @default_includes.present?
-          super.includes(*@default_includes)
+          super.includes(*inclusions)
         else
           super
+        end
+      end
+
+      # The majority of this is lifted from JSONAPI::Resource
+      # We've had to modify the when Symbol chunk to handle nested includes
+      # We disable the cops for the shared section to avoid accidental drift
+      # due to auto-correct.
+      # rubocop:disable all
+      def self.resolve_relationship_names_to_relations(resource_klass, model_includes, options = {})
+        case model_includes
+          when Array
+            return model_includes.map do |value|
+              resolve_relationship_names_to_relations(resource_klass, value, options)
+            end
+          when Hash
+            model_includes.keys.each do |key|
+              relationship = resource_klass._relationships[key]
+              value = model_includes[key]
+              model_includes.delete(key)
+              model_includes[relationship.relation_name(options)] = resolve_relationship_names_to_relations(relationship.resource_klass, value, options)
+            end
+            return model_includes
+          when Symbol
+            relationship = resource_klass._relationships[model_includes]
+            # rubocop:enable all
+            # MODIFICATION BEGINS
+            inclusions = relationship.resource_klass.inclusions || []
+            { relationship.relation_name(options) => inclusions }
+          # MODIFICATION ENDS
         end
       end
     end

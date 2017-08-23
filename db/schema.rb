@@ -1961,6 +1961,7 @@ ActiveRecord::Schema.define(version: 20170727121949) do
     t.integer  "version",       limit: 4
   end
 
+  add_foreign_key "requests", "work_orders"
   add_foreign_key "sample_manifests", "plate_purposes", column: "purpose_id"
   add_foreign_key "transfer_request_collection_transfer_requests", "requests", column: "transfer_request_id"
   add_foreign_key "transfer_request_collection_transfer_requests", "transfer_request_collections"

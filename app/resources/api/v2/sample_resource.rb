@@ -10,10 +10,6 @@ module Api
       attribute :name
       attribute :sanger_sample_id
       attribute :uuid
-
-      def self.apply_includes(records, options = {})
-        super.includes(:uuid_object)
-      end
     end
   end
 end

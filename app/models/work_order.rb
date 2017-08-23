@@ -12,7 +12,9 @@ class WorkOrder < ActiveRecord::Base
   has_one :study, through: :example_request, source: :initial_study
   has_one :project, through: :example_request, source: :initial_project
   has_one :source_receptacle, through: :example_request, source: :asset
-  has_one :example_request, ->() { order(id: :asc).readonly }, class_name: 'CustomerRequest'
+  # where.not(work_order_id: nil assists the MySQL query optimizer as otherwise is seems
+  # to get confused by the large number of null entries in requests.work_order_id
+  has_one :example_request, ->() { order(id: :asc).where.not(work_order_id: nil).readonly }, class_name: 'CustomerRequest'
 
   has_many :samples, ->() { distinct }, through: :example_request
 
