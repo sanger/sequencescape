@@ -23,7 +23,7 @@ class BatchesController < ApplicationController
   def index
     if logged_in?
       @user = current_user
-      @batches = Batch.where('assignee_id = :user OR user_id = :user', user: @user).order(id: :desc).page(params[:page])
+      @batches = Batch.where(assignee_id: @user).or(Batch.where(user_id: @user)).order(id: :desc).page(params[:page])
     else
       # Can end up here with XML. And it causes pain.
       @batches = Batch.order(id: :asc).page(params[:page]).limit(10)
