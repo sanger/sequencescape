@@ -9,7 +9,7 @@ module Api
 
       immutable # uncomment to make the resource immutable
 
-      default_includes :uuid, :map, plate: :barcode_prefix
+      default_includes :uuid_object, :map, plate: :barcode_prefix
 
       # Associations:
       has_many :samples, readonly: true
