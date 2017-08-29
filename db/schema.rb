@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170711153937) do
+ActiveRecord::Schema.define(version: 20170727121949) do
 
   create_table "aliquot_indices", force: :cascade do |t|
     t.integer  "aliquot_id",    limit: 4, null: false
@@ -307,6 +307,20 @@ ActiveRecord::Schema.define(version: 20170711153937) do
 
   add_index "billing_events", ["kind"], name: "index_billing_events_on_kind", using: :btree
   add_index "billing_events", ["reference"], name: "index_billing_events_on_reference", using: :btree
+
+  create_table "billing_items", force: :cascade do |t|
+    t.integer  "request_id",              limit: 4
+    t.string   "project_cost_code",       limit: 255
+    t.string   "units",                   limit: 255
+    t.string   "fin_product_code",        limit: 255
+    t.string   "fin_product_description", limit: 255
+    t.string   "request_passed_date",     limit: 255
+    t.datetime "reported_at"
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
+  end
+
+  add_index "billing_items", ["request_id"], name: "index_billing_items_on_request_id", using: :btree
 
   create_table "broadcast_events", force: :cascade do |t|
     t.string   "sti_type",   limit: 255
@@ -1179,6 +1193,7 @@ ActiveRecord::Schema.define(version: 20170711153937) do
     t.integer  "target_purpose_id",               limit: 4
     t.boolean  "customer_accepts_responsibility"
     t.integer  "pcr_cycles",                      limit: 4
+    t.string   "file_type",                       limit: 255
   end
 
   add_index "request_metadata", ["request_id"], name: "index_request_metadata_on_request_id", using: :btree
@@ -1266,6 +1281,7 @@ ActiveRecord::Schema.define(version: 20170711153937) do
     t.string   "sti_type",           limit: 255
     t.integer  "order_id",           limit: 4
     t.integer  "request_purpose_id", limit: 4
+    t.integer  "work_order_id",      limit: 4
   end
 
   add_index "requests", ["asset_id"], name: "index_requests_on_asset_id", using: :btree
@@ -1278,6 +1294,7 @@ ActiveRecord::Schema.define(version: 20170711153937) do
   add_index "requests", ["submission_id"], name: "index_requests_on_submission_id", using: :btree
   add_index "requests", ["target_asset_id"], name: "index_requests_on_target_asset_id", using: :btree
   add_index "requests", ["updated_at"], name: "index_requests_on_updated_at", using: :btree
+  add_index "requests", ["work_order_id"], name: "index_requests_on_work_order_id", using: :btree
 
   create_table "robot_properties", force: :cascade do |t|
     t.string   "name",       limit: 255
@@ -1937,6 +1954,22 @@ ActiveRecord::Schema.define(version: 20170711153937) do
   add_index "work_completions_submissions", ["submission_id"], name: "fk_rails_1ac4e93988", using: :btree
   add_index "work_completions_submissions", ["work_completion_id"], name: "fk_rails_5ea64f1af2", using: :btree
 
+  create_table "work_order_types", force: :cascade do |t|
+    t.string   "name",       limit: 255, null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "work_order_types", ["name"], name: "index_work_order_types_on_name", unique: true, using: :btree
+
+  create_table "work_orders", force: :cascade do |t|
+    t.integer  "work_order_type_id", limit: 4, null: false
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+  end
+
+  add_index "work_orders", ["work_order_type_id"], name: "fk_rails_80841fcb4c", using: :btree
+
   create_table "workflow_samples", force: :cascade do |t|
     t.text     "name",          limit: 65535
     t.integer  "user_id",       limit: 4
@@ -1950,6 +1983,7 @@ ActiveRecord::Schema.define(version: 20170711153937) do
     t.integer  "version",       limit: 4
   end
 
+  add_foreign_key "billing_items", "requests"
   add_foreign_key "sample_manifests", "plate_purposes", column: "purpose_id"
   add_foreign_key "tag_layout_templates", "tag_groups", column: "tag2_group_id"
   add_foreign_key "tag_layouts", "tag_groups", column: "tag2_group_id"
@@ -1960,4 +1994,5 @@ ActiveRecord::Schema.define(version: 20170711153937) do
   add_foreign_key "work_completions", "users"
   add_foreign_key "work_completions_submissions", "submissions"
   add_foreign_key "work_completions_submissions", "work_completions"
+  add_foreign_key "work_orders", "work_order_types"
 end
