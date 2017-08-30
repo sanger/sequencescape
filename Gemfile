@@ -92,6 +92,10 @@ group :default do
   gem 'builder'
 
   gem 'sanger_barcode_format', github: 'sanger/sanger_barcode_format', branch: 'development'
+
+  # Provides null db adapter, that blocks access to remote database
+  # (in our case used for Agresso db in non-production environments)
+  gem 'activerecord-nulldb-adapter', require: false
 end
 
 group :warehouse do

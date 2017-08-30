@@ -41,7 +41,7 @@ module Billing
 
     # fin_product_code will be received from Agresso based on fin_product name
     def fin_product_code
-      ''
+      '' # AgressoProduct.product_code(fin_product.name)
     end
 
     def fin_product_description
