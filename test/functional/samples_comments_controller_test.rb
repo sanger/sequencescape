@@ -14,7 +14,7 @@ class Samples::CommentsControllerTest < ActionController::TestCase
       @response   = ActionController::TestResponse.new
     end
 
-    should_require_login
+    should_require_login(:index, resource: 'comment', parent: 'sample')
 
     resource_test('comment', actions: ['index'], ignore_actions: %w(destroy create edit new show update), formats: ['html'], parent: 'sample')
   end

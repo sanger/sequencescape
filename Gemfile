@@ -119,6 +119,8 @@ group :development do
   # MiniProfiler allows you to see the speed of a request conveniently on the page.
   # It also shows the SQL queries performed and allows you to profile a specific block of code.
   gem 'rack-mini-profiler'
+  # find unused routes and controller actions by runnung `rake traceroute` from CL
+  gem 'traceroute'
 end
 
 group :test do

@@ -15,7 +15,7 @@ class Pipelines::AssetsControllerTest < ActionController::TestCase
     end
 
     should route(:get, '/pipelines/assets/new/1').to(action: 'new', id: '1')
-    should_require_login(:new)
+    should_require_login(:new, resource: 'asset', parent: 'pipeline')
 
     context 'GET "new"' do
       setup do
