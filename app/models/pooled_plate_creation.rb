@@ -13,6 +13,8 @@ class PooledPlateCreation < AssetCreation
     belongs_to :parent, class_name: 'Asset'
   end
 
+  attr_accessor :barcode
+
   has_many :parent_associations, foreign_key: 'asset_creation_id', class_name: 'PooledPlateCreation::ParentAssociation'
 
   # This is the child that is created from the parent.  It cannot be assigned before validation.
