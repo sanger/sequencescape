@@ -216,6 +216,12 @@ GEM
       railties (>= 3.2.16)
     json (2.1.0)
     knapsack (1.14.0)
+    jsonapi-resources (0.9.0)
+      activerecord (>= 4.1)
+      concurrent-ruby
+      railties (>= 4.1)
+    jsonapi-resources-matchers (1.0.0)
+      jsonapi-resources (>= 0.9.0)
       rake
     launchy (2.4.3)
       addressable (~> 2.3)
@@ -456,6 +462,8 @@ DEPENDENCIES
   jquery-ui-rails
   jrjackson
   json
+  jsonapi-resources
+  jsonapi-resources-matchers
   knapsack
   launchy
   march_hare (~> 2.18.0)

@@ -107,7 +107,7 @@ class Aliquot < ActiveRecord::Base
   end
 
   # It can belong to a library asset
-  belongs_to :library, class_name: 'Aliquot::Receptacle'
+  belongs_to :library, class_name: 'Receptacle'
   composed_of :insert_size, mapping: [%w{insert_size_from from}, %w{insert_size_to to}], class_name: 'Aliquot::InsertSize', allow_nil: true
 
   # Cloning an aliquot should unset the receptacle ID because otherwise it won't get reassigned.  We should

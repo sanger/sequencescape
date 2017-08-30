@@ -55,6 +55,10 @@ group :default do
   gem 'multi_json'
   gem 'cancan'
 
+  # API v2
+  gem 'jsonapi-resources'
+  gem 'jsonapi-resources-matchers'
+
   # MarchHare and Bunny are both RabbitMQ clients.
   # While bunny does work with Jruby, it is not recommended
   # and we ran into a few issues following the Rails 4 upgrade.
