@@ -292,7 +292,7 @@ Given /^the (library tube|plate) "([^\"]+)" is a child of the (sample tube|plate
   parent = parent_model.gsub(/\s+/, '_').classify.constantize.find_by(name: parent_name) or raise StandardError, "Cannot find the #{parent_model} #{parent_name.inspect}"
   child  = child_model.gsub(/\s+/, '_').classify.constantize.find_by(name: child_name) or raise StandardError, "Cannot find the #{child_model} #{child_name.inspect}"
   parent.children << child
-  if [parent, child].all? { |a| a.is_a?(Aliquot::Receptacle) }
+  if [parent, child].all? { |a| a.is_a?(Receptacle) }
     child.aliquots = []
     RequestType.transfer.create!(asset: parent, target_asset: child)
     child.save!
@@ -303,7 +303,7 @@ Given /^the well "([^\"]+)" is a child of the well "([^\"]+)"$/ do |child_name, 
   parent = Uuid.find_by(external_id: parent_name).resource or raise StandardError, "Cannot find #{parent_name.inspect}"
   child  = Uuid.find_by(external_id: child_name).resource or raise StandardError, "Cannot find #{child_name.inspect}"
   parent.children << child
-  if [parent, child].all? { |a| a.is_a?(Aliquot::Receptacle) }
+  if [parent, child].all? { |a| a.is_a?(Receptacle) }
     child.aliquots = []
     RequestType.transfer.create!(asset: parent, target_asset: child)
     child.save!

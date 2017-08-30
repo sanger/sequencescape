@@ -28,8 +28,9 @@ class Request < ActiveRecord::Base
   PERMISSABLE_NEXT_REQUESTS = ->(request) { request.pending? or request.blocked? }
 
   # Class attributes
-  class_attribute :customer_request
+  class_attribute :customer_request, :sequencing
 
+  self.sequencing = false
   self.per_page = 500
   self.inheritance_column = 'sti_type'
   self.customer_request = false
@@ -52,6 +53,7 @@ class Request < ActiveRecord::Base
   belongs_to :initial_project, class_name: 'Project'
   # same as project with study
   belongs_to :initial_study, class_name: 'Study'
+  belongs_to :work_order, required: false
 
   has_one :order_role, through: :order
 
@@ -288,10 +290,6 @@ class Request < ActiveRecord::Base
 
   def validator_for(request_option)
     request_type.request_type_validators.find_by(request_option: request_option.to_s) || RequestType::Validator::NullValidator.new
-  end
-
-  def customer_request?
-    customer_request
   end
 
   def current_request_event

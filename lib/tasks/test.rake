@@ -13,41 +13,10 @@ namespace :test do
       end
 
       if Rails.env.test?
-
-        # TODO: All these factories should be updated to make them valid
-        # Any tests which break as a result should be fixed.
-        invalid_factories = [
-          :transfer_template,
-          :pooling_transfer_template,
-          :multiplex_transfer_template,
-          :inverted_tag_layout_template,
-          :entire_plate_tag_layout_template,
-          :tag_layout,
-          :parent_plate_purpose,
-          :child_plate_purpose,
-          :plate_creation,
-          :child_tube_purpose,
-          :tube_creation,
-          :illumina_htp_requests_std_library_request_metadata,
-          :library_types_request_type,
-          :submission__,
-          :order_with_submission,
-          :tag2_lot
-        ]
-        ignored = 0
-        factories_to_lint = if ENV.fetch('LINT_ALL', false)
-                              FactoryGirl.factories.to_a
-                            else
-                              ignored = invalid_factories.length
-                              FactoryGirl.factories.reject do |factory|
-                                invalid_factories.include?(factory.name)
-                              end
-                            end
         begin
           DatabaseCleaner.start
-          puts "Linting #{factories_to_lint.length} factories. (Ignored #{ignored})"
-          puts 'Use LINT_ALL=true to lint all factories' unless ENV.fetch('LINT_ALL', false)
-          FactoryGirl.lint factories_to_lint
+          puts 'Linting factories.'
+          FactoryGirl.lint
           puts 'Linted'
         ensure
           DatabaseCleaner.clean
