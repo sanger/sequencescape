@@ -54,6 +54,24 @@ class OrderTest < ActiveSupport::TestCase
         assert yielded, 'duplicates_within failed to yield'
       end
     end
+
+    context 'with no sequencing requests' do
+      should 'not be a sequencing order' do
+        refute @order.is_a_sequencing_order?
+      end
+    end
+
+    %w(SequencingRequest PacBioSequencingRequest).each do |request_class|
+      context "with #{request_class}" do
+        setup do
+          @sequencing_request_type = create :request_type, request_class_name: request_class
+          @order.request_types << @sequencing_request_type.id
+        end
+        should 'be a sequencing order' do
+          assert @order.is_a_sequencing_order?
+        end
+      end
+    end
   end
 
   test 'order should not be valid if study is not active' do

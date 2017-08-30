@@ -51,7 +51,7 @@ class Aliquot < ActiveRecord::Base
   belongs_to :bait_library
 
   # It can belong to a library asset
-  belongs_to :library, class_name: 'Aliquot::Receptacle'
+  belongs_to :library, class_name: 'Receptacle'
   composed_of :insert_size, mapping: [%w{insert_size_from from}, %w{insert_size_to to}], class_name: 'Aliquot::InsertSize', allow_nil: true
 
   scope :include_summary, -> { includes([:sample, { tag: :tag_group }, { tag2: :tag_group }]) }
