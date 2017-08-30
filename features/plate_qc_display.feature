@@ -3,15 +3,6 @@ Feature: Display QC data for a plate in a grid
 
   Background:
     Given I am logged in as "user"
-  Scenario: A plate has holded wells
-    Given a "Stock Plate" plate purpose and of type "Plate" with barcode "1220000123724" exists
-      And plate "123" has "3" wells
-      And I am on the show page for asset "1220000123724"
-    Then the asset relations table should be:
-      | Relationship type | Map |
-      | Child             | A1  |
-      | Child             | A2  |
-      | Child             | A3  |
 
   Scenario: A plate has no QC results
     Given a "Stock Plate" plate purpose and of type "Plate" with barcode "1220000123724" exists
