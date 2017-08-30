@@ -1117,7 +1117,7 @@ ActiveRecord::Schema.define(version: 20170727121949) do
     t.integer "target_purpose_id"
     t.boolean "customer_accepts_responsibility"
     t.integer "pcr_cycles"
-    t.string   "data_type",                       limit: 255
+    t.string "data_type"
     t.index ["request_id"], name: "index_request_metadata_on_request_id"
   end
 
@@ -1201,7 +1201,7 @@ ActiveRecord::Schema.define(version: 20170727121949) do
     t.string "sti_type"
     t.integer "order_id"
     t.integer "request_purpose_id"
-    t.integer  "work_order_id",      limit: 4
+    t.integer "work_order_id"
     t.index ["asset_id"], name: "index_requests_on_asset_id"
     t.index ["initial_project_id"], name: "index_requests_on_project_id"
     t.index ["initial_study_id", "request_type_id", "state"], name: "index_requests_on_project_id_and_request_type_id_and_state"
@@ -1212,12 +1212,12 @@ ActiveRecord::Schema.define(version: 20170727121949) do
     t.index ["submission_id"], name: "index_requests_on_submission_id"
     t.index ["target_asset_id"], name: "index_requests_on_target_asset_id"
     t.index ["updated_at"], name: "index_requests_on_updated_at"
+    t.index ["work_order_id"], name: "index_requests_on_work_order_id"
   end
 
   create_table "robot_properties", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.string "name"
     t.string "value"
-  add_index "requests", ["work_order_id"], name: "index_requests_on_work_order_id", using: :btree
     t.string "key", limit: 50
     t.integer "robot_id"
     t.datetime "created_at"
@@ -1840,6 +1840,19 @@ ActiveRecord::Schema.define(version: 20170727121949) do
     t.index ["work_completion_id"], name: "fk_rails_5ea64f1af2"
   end
 
+  create_table "work_order_types", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "work_orders", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+    t.integer "work_order_type_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["work_order_type_id"], name: "fk_rails_80841fcb4c"
+  end
+
   create_table "workflow_samples", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.text "name"
     t.integer "user_id"
@@ -1852,21 +1865,6 @@ ActiveRecord::Schema.define(version: 20170727121949) do
     t.integer "size", default: 1
     t.integer "version"
   end
-
-  create_table "work_order_types", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"do |t|
-    t.string   "name",       limit: 255, null: false
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
-  end
-
-  create_table "work_orders", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
-    t.integer  "work_order_type_id", limit: 4, null: false
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
-  end
-
-  add_index "work_orders", ["work_order_type_id"], name: "fk_rails_80841fcb4c", using: :btree
-
 
   add_foreign_key "requests", "work_orders"
   add_foreign_key "sample_manifests", "plate_purposes", column: "purpose_id"
