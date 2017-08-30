@@ -35,7 +35,7 @@ FactoryGirl.define do
     end
   end
 
-  factory :aliquot_receptacle, class: Aliquot::Receptacle, aliases: [:receptacle] do
+  factory :receptacle, class: Receptacle do
   end
 
   factory :event do
@@ -153,6 +153,12 @@ FactoryGirl.define do
   factory :request_metadata, class: Request::Metadata do
     read_length 76
     customer_accepts_responsibility false
+  end
+
+  factory :request_traction_grid_ion_metadata, class: Request::Traction::GridIon::Metadata do
+    library_type 'Rapid'
+    data_type 'basecalls and raw data'
+    association(:owner, factory: :request_traction_grid_ion)
   end
 
   #  Automatically generated request types
@@ -416,7 +422,7 @@ FactoryGirl.define do
   end
 
   factory :asset_group_asset do
-    association(:asset, factory: :aliquot_receptacle)
+    association(:asset, factory: :receptacle)
     asset_group
   end
 
@@ -559,7 +565,7 @@ FactoryGirl.define do
     transient do
       oligo { generate :oligo }
     end
-    name 'Tag 2 layout template'
+    sequence(:name) { |n| "Tag 2 layout template #{n}" }
     tag { |tag| tag.association :tag, oligo: oligo }
   end
 

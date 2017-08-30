@@ -198,6 +198,12 @@ GEM
     jrjackson (0.3.8)
     json (1.8.6)
     json (1.8.6-java)
+    jsonapi-resources (0.9.0)
+      activerecord (>= 4.1)
+      concurrent-ruby
+      railties (>= 4.1)
+    jsonapi-resources-matchers (1.0.0)
+      jsonapi-resources (>= 0.9.0)
     knapsack (1.13.0)
       rake
       timecop (>= 0.1.0)
@@ -443,6 +449,8 @@ DEPENDENCIES
   jquery-ui-rails
   jrjackson
   json
+  jsonapi-resources
+  jsonapi-resources-matchers
   knapsack
   launchy
   march_hare (~> 2.18.0)

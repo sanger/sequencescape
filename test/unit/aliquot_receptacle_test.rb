@@ -1,9 +1,9 @@
 require 'test_helper'
 
-class Aliquot::ReceptacleTest < ActiveSupport::TestCase
-  context 'Aliquot::Receptacle' do
+class ReceptacleTest < ActiveSupport::TestCase
+  context 'Receptacle' do
     setup do
-      @receptacle = create :aliquot_receptacle
+      @receptacle = create :receptacle
     end
 
     [

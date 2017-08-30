@@ -98,7 +98,7 @@ class Asset < ActiveRecord::Base
   scope :include_for_show, ->() { includes(requests: :request_metadata) }
 
   # Assets usually have studies through aliquots, which is only relevant to
-  # Aliquot::Receptacles. This method just ensures all assets respond to studies
+  # Receptacles. This method just ensures all assets respond to studies
   def studies
     Study.none
   end
@@ -503,7 +503,7 @@ class Asset < ActiveRecord::Base
     false
   end
 
-  # See Aliquot::Receptacle for handling of assets with contents
+  # See Receptacle for handling of assets with contents
   def tag_count
     nil
   end

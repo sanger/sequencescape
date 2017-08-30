@@ -41,11 +41,17 @@ FactoryGirl.define do
       request.request_metadata_attributes = attributes_for(:"request_metadata_for_#{request.request_type.name.downcase.gsub(/[^a-z]+/, '_')}") if request.request_metadata.new_record?
       request.sti_type = request.request_type.request_class_name
     end
+
+    factory :customer_request, class: CustomerRequest do
+      sti_type 'CustomerRequest' # Oddly, this seems to be necessary!
+      association(:request_type, factory: :customer_request_type)
+    end
   end
 
   factory :sequencing_request, class: SequencingRequest do
     association(:request_type, factory: :sequencing_request_type)
     request_purpose
+    sti_type 'SequencingRequest'
 
     # Ensure that the request metadata is correctly setup based on the request type
     after(:build) do |request|
@@ -169,5 +175,13 @@ FactoryGirl.define do
     asset { |asset| asset.association(:well) }
     target_asset { |asset| asset.association(:well) }
     request_purpose
+  end
+
+  factory :request_traction_grid_ion, class: Request::Traction::GridIon do
+    association(:asset, factory: :well)
+    target_asset nil
+    request_purpose
+    association(:request_type, factory: :well_request_type)
+    request_metadata_attributes { attributes_for(:request_traction_grid_ion_metadata) }
   end
 end

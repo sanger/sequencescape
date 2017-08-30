@@ -22,6 +22,7 @@ require 'capybara/rspec'
 require 'capybara/poltergeist'
 require 'webmock/rspec'
 require 'support/user_login'
+require 'jsonapi/resources/matchers'
 
 require 'pry'
 
