@@ -1843,20 +1843,6 @@ ActiveRecord::Schema.define(version: 20170727121949) do
   create_table "workflow_samples", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.text "name"
     t.integer "user_id"
-  create_table "work_order_types", force: :cascade do |t|
-    t.string   "name",       limit: 255, null: false
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
-  end
-
-  create_table "work_orders", force: :cascade do |t|
-    t.integer  "work_order_type_id", limit: 4, null: false
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
-  end
-
-  add_index "work_orders", ["work_order_type_id"], name: "fk_rails_80841fcb4c", using: :btree
-
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean "control", default: false
@@ -1866,6 +1852,21 @@ ActiveRecord::Schema.define(version: 20170727121949) do
     t.integer "size", default: 1
     t.integer "version"
   end
+
+  create_table "work_order_types", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"do |t|
+    t.string   "name",       limit: 255, null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  create_table "work_orders", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+    t.integer  "work_order_type_id", limit: 4, null: false
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+  end
+
+  add_index "work_orders", ["work_order_type_id"], name: "fk_rails_80841fcb4c", using: :btree
+
 
   add_foreign_key "requests", "work_orders"
   add_foreign_key "sample_manifests", "plate_purposes", column: "purpose_id"
