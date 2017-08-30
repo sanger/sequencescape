@@ -269,11 +269,6 @@ class Plate < Asset
       proxy_association.owner.plate_purpose.pool_wells(self)
     end
 
-    # Yields each pool and the wells that are in it
-    def walk_in_pools(&block)
-      with_pool_id.group_by(&:pool_id).each(&block)
-    end
-
     # Walks the wells A1, B1, C1, ... A2, B2, C2, ... H12
     def walk_in_column_major_order
       in_column_major_order.each { |well| yield(well, well.map.column_order) }

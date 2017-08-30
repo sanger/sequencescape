@@ -1734,7 +1734,10 @@ ActiveRecord::Schema.define(version: 20170727121949) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "walking_algorithm",   limit: 255, default: "TagLayout::WalkWellsByPools"
+    t.integer  "tag2_group_id",       limit: 4
   end
+
+  add_index "tag_layout_templates", ["tag2_group_id"], name: "fk_rails_1c2c01e708", using: :btree
 
   create_table "tag_layouts", force: :cascade do |t|
     t.string   "direction_algorithm", limit: 255
@@ -1746,7 +1749,10 @@ ActiveRecord::Schema.define(version: 20170727121949) do
     t.string   "substitutions",       limit: 1525
     t.string   "walking_algorithm",   limit: 255,  default: "TagLayout::WalkWellsByPools"
     t.integer  "initial_tag",         limit: 4,    default: 0,                             null: false
+    t.integer  "tag2_group_id",       limit: 4
   end
+
+  add_index "tag_layouts", ["tag2_group_id"], name: "fk_rails_d221e7c041", using: :btree
 
   create_table "tags", force: :cascade do |t|
     t.string   "oligo",        limit: 255
@@ -1963,6 +1969,8 @@ ActiveRecord::Schema.define(version: 20170727121949) do
 
   add_foreign_key "requests", "work_orders"
   add_foreign_key "sample_manifests", "plate_purposes", column: "purpose_id"
+  add_foreign_key "tag_layout_templates", "tag_groups", column: "tag2_group_id"
+  add_foreign_key "tag_layouts", "tag_groups", column: "tag2_group_id"
   add_foreign_key "transfer_request_collection_transfer_requests", "requests", column: "transfer_request_id"
   add_foreign_key "transfer_request_collection_transfer_requests", "transfer_request_collections"
   add_foreign_key "transfer_request_collections", "users"
