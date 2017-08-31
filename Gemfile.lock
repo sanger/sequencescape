@@ -215,13 +215,14 @@ GEM
     jquery-ui-rails (6.0.1)
       railties (>= 3.2.16)
     json (2.1.0)
-    knapsack (1.14.0)
     jsonapi-resources (0.9.0)
       activerecord (>= 4.1)
       concurrent-ruby
       railties (>= 4.1)
     jsonapi-resources-matchers (1.0.0)
       jsonapi-resources (>= 0.9.0)
+      rake
+    knapsack (1.14.1)
       rake
     launchy (2.4.3)
       addressable (~> 2.3)
@@ -512,4 +513,4 @@ DEPENDENCIES
   yard
 
 BUNDLED WITH
-   1.15.1
+   1.15.3
