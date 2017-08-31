@@ -4,9 +4,8 @@
 # Copyright (C) 2011,2012 Genome Research Ltd.
 FactoryGirl.define do
   factory :submission__ do
-    factory :submission_without_order do
-      user
-    end
+    user
+    factory :submission_without_order
   end
 
   factory :order do
@@ -16,7 +15,7 @@ FactoryGirl.define do
     user
     item_options          {}
     request_options       {}
-    assets                []
+    assets                { create_list(:sample_tube, 1) }
     request_types         { [create(:request_type).id] }
 
     factory :order_with_submission do

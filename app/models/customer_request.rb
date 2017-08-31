@@ -16,6 +16,8 @@ class CustomerRequest < Request
   def customer_accepts_responsibility!
     request_metadata.update_attributes!(customer_accepts_responsibility: true)
   end
+
+  delegate :customer_accepts_responsibility, :customer_accepts_responsibility=, to: :request_metadata
 end
 
 # how do observers work here?

@@ -4,11 +4,11 @@
 # authorship of this file.
 # Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
-class Aliquot::Receptacle < Asset
+class Receptacle < Asset
   include Transfer::State
   include Aliquot::Remover
 
-  SAMPLE_PARTIAL = 'assets/samples_partials/asset_samples'
+  SAMPLE_PARTIAL = 'assets/samples_partials/asset_samples'.freeze
 
   has_many :transfer_requests, class_name: 'TransferRequest', foreign_key: :target_asset_id
   has_many :transfer_requests_as_source, class_name: 'TransferRequest', foreign_key: :asset_id
@@ -49,7 +49,7 @@ class Aliquot::Receptacle < Asset
 
   scope :for_study_and_request_type, ->(study, request_type) { joins(:aliquots, :requests).where(aliquots: { study_id: study }).where(requests: { request_type_id: request_type }) }
 
-  # This is a lambda as otherwise the scope selects Aliquot::Receptacles
+  # This is a lambda as otherwise the scope selects Receptacles
   scope :with_aliquots, -> { joins(:aliquots) }
 
   # Provide some named scopes that will fit with what we've used in the past

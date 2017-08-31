@@ -1,7 +1,7 @@
 #!/usr/bin/env script/runner
 
 # Ensure that the classes are loaded before we modify them!
-Aliquot::Receptacle ; Well ; Tube ; Request ; Plate ; Lane
+Receptacle ; Well ; Tube ; Request ; Plate ; Lane
 
 module Graphable
   def node_id
@@ -41,7 +41,7 @@ class Aliquot
   end
 end if ARGV.include?('--include-aliquots')
 
-class Aliquot::Receptacle
+class Receptacle
   def output_nodes(outputter, details = :recurse)
     self.aliquots.each { |aliquot| aliquot.output_nodes(outputter) }
   end
@@ -206,4 +206,4 @@ end
 
 receptacle_ids = ARGV.select { |a| a =~ /^\d+$/ }.map(&:to_i)
 raise "Specify receptacles to follow" if receptacle_ids.empty?
-Walker.new(Outputter.new, Aliquot::Receptacle.find(receptacle_ids)).walk
+Walker.new(Outputter.new, Receptacle.find(receptacle_ids)).walk

@@ -1,4 +1,5 @@
 # encoding: utf-8
+
 # This file is part of SEQUENCESCAPE; it is distributed under the terms of
 # GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
@@ -8,6 +9,8 @@
 class SequencingRequest < CustomerRequest
   extend Request::AccessioningRequired
   include Api::Messages::FlowcellIO::LaneExtensions
+
+  self.sequencing = true
 
   has_metadata as: Request do
     # redundant with library creation , but THEY are using it .

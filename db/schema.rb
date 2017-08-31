@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170717095922) do
+ActiveRecord::Schema.define(version: 20170727121949) do
 
   create_table "aliquot_indices", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.integer "aliquot_id", null: false
@@ -1117,6 +1117,7 @@ ActiveRecord::Schema.define(version: 20170717095922) do
     t.integer "target_purpose_id"
     t.boolean "customer_accepts_responsibility"
     t.integer "pcr_cycles"
+    t.string "data_type"
     t.index ["request_id"], name: "index_request_metadata_on_request_id"
   end
 
@@ -1200,6 +1201,7 @@ ActiveRecord::Schema.define(version: 20170717095922) do
     t.string "sti_type"
     t.integer "order_id"
     t.integer "request_purpose_id"
+    t.integer "work_order_id"
     t.index ["asset_id"], name: "index_requests_on_asset_id"
     t.index ["initial_project_id"], name: "index_requests_on_project_id"
     t.index ["initial_study_id", "request_type_id", "state"], name: "index_requests_on_project_id_and_request_type_id_and_state"
@@ -1210,6 +1212,7 @@ ActiveRecord::Schema.define(version: 20170717095922) do
     t.index ["submission_id"], name: "index_requests_on_submission_id"
     t.index ["target_asset_id"], name: "index_requests_on_target_asset_id"
     t.index ["updated_at"], name: "index_requests_on_updated_at"
+    t.index ["work_order_id"], name: "index_requests_on_work_order_id"
   end
 
   create_table "robot_properties", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -1837,6 +1840,19 @@ ActiveRecord::Schema.define(version: 20170717095922) do
     t.index ["work_completion_id"], name: "fk_rails_5ea64f1af2"
   end
 
+  create_table "work_order_types", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "work_orders", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+    t.integer "work_order_type_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["work_order_type_id"], name: "fk_rails_80841fcb4c"
+  end
+
   create_table "workflow_samples", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.text "name"
     t.integer "user_id"
@@ -1850,6 +1866,7 @@ ActiveRecord::Schema.define(version: 20170717095922) do
     t.integer "version"
   end
 
+  add_foreign_key "requests", "work_orders"
   add_foreign_key "sample_manifests", "plate_purposes", column: "purpose_id"
   add_foreign_key "tag_layout_templates", "tag_groups", column: "tag2_group_id"
   add_foreign_key "tag_layouts", "tag_groups", column: "tag2_group_id"
@@ -1860,4 +1877,5 @@ ActiveRecord::Schema.define(version: 20170717095922) do
   add_foreign_key "work_completions", "users"
   add_foreign_key "work_completions_submissions", "submissions"
   add_foreign_key "work_completions_submissions", "work_completions"
+  add_foreign_key "work_orders", "work_order_types"
 end
