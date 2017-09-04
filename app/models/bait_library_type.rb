@@ -19,4 +19,10 @@ class BaitLibraryType < ActiveRecord::Base
     self.visible = false
     save!
   end
+
+  # this name is used for billing,
+  # to differentiate between products with Custom and Standard bait libraries
+  def short_name
+    name.split('-').first.strip.downcase
+  end
 end

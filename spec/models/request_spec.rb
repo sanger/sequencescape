@@ -1,20 +1,19 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
-require 'test_helper'
+require 'rails_helper'
+require 'shoulda'
 
-class RequestTest < ActiveSupport::TestCase
+describe Request do
   include AASM
   context 'A Request' do
-    should belong_to :user
-    should belong_to :request_type
-    should belong_to :item
-    should have_many :events
-    should validate_presence_of :request_purpose
-    should_have_instance_methods :pending?, :start, :started?, :fail, :failed?, :pass, :passed?, :reset, :workflow_id
+
+    it 'has the right associations and basic methods' do
+      should belong_to :user
+      should belong_to :request_type
+      should belong_to :item
+      should have_many :events
+      should validate_presence_of :request_purpose
+      expect(subject).to respond_to :pending?, :start, :started?, :fail, :failed?, :pass, :passed?, :reset, :workflow_id
+    end
 
     context 'while scoping with #for_order_including_submission_based_requests' do
       setup do
@@ -43,7 +42,7 @@ class RequestTest < ActiveSupport::TestCase
         @request3 = create :request, order: @order4, submission: @order4.submission
         @sequencing_request2 = create :request_with_sequencing_request_type, submission: @order4.submission
       end
-      should 'the sequencing requests are included' do
+      it 'the sequencing requests are included' do
         assert_equal 1, @order1.requests.length
         assert_equal 1, @order2.requests.length
         assert_equal 0, @order3.requests.length
@@ -51,24 +50,24 @@ class RequestTest < ActiveSupport::TestCase
         assert_equal 2, @submission.requests.for_order_including_submission_based_requests(@order1).length
         assert_equal 2, @submission.requests.for_order_including_submission_based_requests(@order2).length
       end
-      should 'an order without requests should at least find the sequencing requests' do
+      it 'an order without requests should at least find the sequencing requests' do
         assert_equal 1, @submission.requests.for_order_including_submission_based_requests(@order3).length
       end
 
-      should 'when filtering from submission and scoping with an order of another submission, none of the requests are included' do
+      it 'when filtering from submission and scoping with an order of another submission, none of the requests are included' do
         assert_equal 0, @order4.submission.requests.for_order_including_submission_based_requests(@order1).length
         assert_equal 0, @order4.submission.requests.for_order_including_submission_based_requests(@order2).length
         assert_equal 0, @order4.submission.requests.for_order_including_submission_based_requests(@order3).length
         assert_equal 0, @submission.requests.for_order_including_submission_based_requests(@order4).length
       end
 
-      should 'requests from other submission behave independently' do
+      it 'requests from other submission behave independently' do
         assert_equal 1, @order4.requests.length
         assert_equal 2, @order4.submission.requests.length
         assert_equal 2, @order4.submission.requests.for_order_including_submission_based_requests(@order4).length
       end
 
-      should 'can be used as any other request scope' do
+      it 'can be used as any other request scope' do
         assert_equal 2, Request.for_order_including_submission_based_requests(@order1).length
         assert_equal 2, Request.for_order_including_submission_based_requests(@order2).length
         assert_equal 1, Request.for_order_including_submission_based_requests(@order3).length
@@ -102,7 +101,7 @@ class RequestTest < ActiveSupport::TestCase
         setup do
           @request2 = create :request, item: @item, submission: @submission, request_type: @genotyping_request_type, pipeline: @genotype_pipeline
         end
-        should 'return the correct next request' do
+        it 'return the correct next request' do
           assert_equal [@request2], @request1.next_requests(@cherrypick_pipeline)
         end
       end
@@ -111,7 +110,7 @@ class RequestTest < ActiveSupport::TestCase
         setup do
           @request2 = create :request, asset: nil, item: @item, submission: @submission, request_type: @genotyping_request_type, pipeline: @genotype_pipeline
         end
-        should 'return the correct next request' do
+        it 'return the correct next request' do
           assert_equal [@request2], @request1.next_requests(@cherrypick_pipeline)
         end
       end
@@ -126,7 +125,7 @@ class RequestTest < ActiveSupport::TestCase
           @request1.reload
           @request2.reload
         end
-        should 'set the target asset of request 1 to be the asset of request 2' do
+        it 'set the target asset of request 1 to be the asset of request 2' do
           assert_equal @request1.target_asset, @request2.asset
         end
       end
@@ -142,7 +141,7 @@ class RequestTest < ActiveSupport::TestCase
          @new_request = @request.copy
        end
 
-       should 'return same properties' do
+       it 'return same properties' do
          @request.reload
          @new_request.reload
          original_attributes = @request.request_metadata.attributes.merge('id' => nil, 'request_id' => nil, 'updated_at' => nil)
@@ -150,15 +149,15 @@ class RequestTest < ActiveSupport::TestCase
          assert_equal original_attributes, copied_attributes
        end
 
-       should 'return same item_id' do
+       it 'return same item_id' do
          assert_equal @request.item_id, @new_request.item_id
        end
 
-       should 'remove target_asset' do
+       it 'remove target_asset' do
          assert_nil @new_request.target_asset_id
        end
 
-       should 'be pending' do
+       it 'be pending' do
          assert @new_request.pending?
        end
     end
@@ -172,11 +171,11 @@ class RequestTest < ActiveSupport::TestCase
         @request = create :request, request_type: @request_type, study: @study, workflow: @workflow, item: @item
       end
 
-      should 'return a workflow id on request' do
+      it 'return a workflow id on request' do
         assert_kind_of Integer, @request.workflow_id
       end
 
-      should 'return a valid value if workflow exists' do
+      it 'return a valid value if workflow exists' do
         assert_equal @workflow.id, @request.workflow_id
       end
     end
@@ -187,16 +186,14 @@ class RequestTest < ActiveSupport::TestCase
           @workflow = create :submission_workflow
           @study = create :study
           # Create a new request
-          assert_nothing_raised do
-            @request = create :request, study: @study
-          end
+          expect{ @request = create :request, study: @study }.not_to raise_error
         end
 
-        should 'not have ActiveRecord errors' do
+        it 'not have ActiveRecord errors' do
           assert_equal 0, @request.errors.size
         end
 
-        should 'have request as valid' do
+        it 'have request as valid' do
           assert @request.valid?
         end
       end
@@ -208,13 +205,11 @@ class RequestTest < ActiveSupport::TestCase
           @study = create :study
         end
 
-        should 'not return an AR error' do
-          assert_nothing_raised do
-            @request = create :request, study: @study
-          end
+        it 'not return an AR error' do
+          expect{ @request = create :request, study: @study }.not_to raise_error
         end
 
-        should 'fail to create a new request' do
+        it 'fail to create a new request' do
           begin
             @requests = Request.all
             @request = create :request, study: @study
@@ -235,7 +230,7 @@ class RequestTest < ActiveSupport::TestCase
       end
 
       context 'when a new request is created' do
-        should "return the default state 'pending'" do
+        it "return the default state 'pending'" do
           assert_equal 'pending', @request.state
         end
       end
@@ -245,33 +240,33 @@ class RequestTest < ActiveSupport::TestCase
           @request.start!
         end
 
-        should "return 'Started'" do
+        it "return 'Started'" do
           assert_equal 'started', @request.state
         end
 
-        should 'not be pending' do
+        it 'not be pending' do
           assert_equal false, @request.pending?
         end
 
-        should 'not be passed' do
+        it 'not be passed' do
           assert_equal false, @request.passed?
         end
 
-        should 'not be failed' do
+        it 'not be failed' do
           assert_equal false, @request.failed?
         end
 
-        should 'be started' do
+        it 'be started' do
           assert @request.started?
         end
 
         context 'allow transition' do
-          should 'to pass' do
+          it 'to pass' do
             @request.state = 'started'
             @request.pass!
           end
 
-          should 'to fail' do
+          it 'to fail' do
             @request.state = 'started'
             @request.fail!
           end
@@ -284,23 +279,23 @@ class RequestTest < ActiveSupport::TestCase
           @request.pass!
         end
 
-        should "return status of 'passed'" do
+        it "return status of 'passed'" do
           assert_equal 'passed', @request.state
         end
 
-        should 'not be pending' do
+        it 'not be pending' do
           assert_equal false, @request.pending?
         end
 
-        should 'not be failed' do
+        it 'not be failed' do
           assert_equal false, @request.failed?
         end
 
-        should 'not be started' do
+        it 'not be started' do
           assert_equal false, @request.started?
         end
 
-        should 'be passed' do
+        it 'be passed' do
           assert @request.passed?
         end
 
@@ -309,9 +304,9 @@ class RequestTest < ActiveSupport::TestCase
             @request.state = 'passed'
           end
 
-          should 'to started' do
+          it 'to started' do
             # At least we'll know when and where it's blowing up.
-            assert_raise(AASM::InvalidTransition) { @request.start! }
+            expect{ @request.start! }.to raise_error(AASM::InvalidTransition)
           end
         end
       end
@@ -322,33 +317,29 @@ class RequestTest < ActiveSupport::TestCase
           @request.fail!
         end
 
-        should "return status of 'failed'" do
+        it "return status of 'failed'" do
           assert_equal 'failed', @request.state
         end
 
-        should 'not be pending' do
+        it 'not be pending' do
           assert_equal false, @request.pending?
         end
 
-        should 'not be passed' do
+        it 'not be passed' do
           assert_equal false, @request.passed?
         end
 
-        should 'not be started' do
+        it 'not be started' do
           assert_equal false, @request.started?
         end
 
-        should 'be failed' do
+        it 'be failed' do
           assert @request.failed?
         end
 
-        should 'not allow transition to passed' do
-          assert_raise(AASM::InvalidTransition) do
-            @request.pass!
-          end
-          assert_nothing_raised do
-            @request.retrospective_pass!
-          end
+        it 'not allow transition to passed' do
+          expect{ @request.pass! }.to raise_error(AASM::InvalidTransition)
+          expect{ @request.retrospective_pass! }.not_to raise_error
         end
       end
     end
@@ -367,12 +358,12 @@ class RequestTest < ActiveSupport::TestCase
         assert_equal @all_states.size, Request.count
       end
       context 'open requests' do
-        should 'total right number' do
+        it 'total right number' do
           assert_equal @open_states.size, Request.opened.count
         end
       end
       context 'closed requests' do
-        should 'total right number' do
+        it 'total right number' do
           assert_equal @closed_states.size, Request.closed.count
         end
       end
@@ -383,7 +374,7 @@ class RequestTest < ActiveSupport::TestCase
         @library_creation_request = create(:library_creation_request_for_testing_sequencing_requests)
       end
 
-      should 'check any non-sequencing request is always ready' do
+      it 'check any non-sequencing request is always ready' do
         assert_equal true, @library_creation_request.ready?
       end
     end
@@ -394,17 +385,23 @@ class RequestTest < ActiveSupport::TestCase
         @request.state = 'started'
       end
 
-      should 'update when request is started' do
+      it 'update when request is started' do
         @request.request_metadata.update_attributes!(customer_accepts_responsibility: true)
         assert @request.request_metadata.customer_accepts_responsibility?
       end
 
-      should 'not update once a request is failed' do
+      it 'not update once a request is failed' do
         @request.fail!
-        assert_raise ActiveRecord::RecordInvalid do
-          @request.request_metadata.update_attributes!(customer_accepts_responsibility: true)
-        end
+        expect{ @request.request_metadata.update_attributes!(customer_accepts_responsibility: true) }.to raise_error ActiveRecord::RecordInvalid
       end
+    end
+
+    it 'should know bait library short name' do
+      request = Request.new
+      expect(request.bait_library_short_name).to be nil
+      bait_library = create(:bait_library, bait_library_type: create(:bait_library_type, name: 'Custom'))
+      request = RequestType.find_by(key: :pulldown_isc).create!(request_metadata: Pulldown::Requests::IscLibraryRequest::Metadata.new(bait_library: bait_library))
+      expect(request.bait_library_short_name).to eq 'custom'
     end
   end
 end

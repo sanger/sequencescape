@@ -1,18 +1,17 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+require 'rails_helper'
+require 'shoulda'
 
-require 'test_helper'
-
-class RequestTypeTest < ActiveSupport::TestCase
+describe RequestType do
   context RequestType do
-    should have_many :requests
-    #    should_belong_to :workflow, :class_name => "Submission::Workflow"
-    should validate_presence_of :order
-    should validate_presence_of :request_purpose
-    should validate_numericality_of :order
+
+    it 'has write associations and validations' do
+      should have_many :requests
+      should belong_to :billing_product_catalogue
+      #    should_belong_to :workflow, :class_name => "Submission::Workflow"
+      should validate_presence_of :order
+      should validate_presence_of :request_purpose
+      should validate_numericality_of :order
+    end
 
     context '#for_multiplexing?' do
       context 'when it is for multiplexing' do
@@ -20,7 +19,7 @@ class RequestTypeTest < ActiveSupport::TestCase
           @request_type = create :multiplexed_library_creation_request_type
         end
 
-        should 'return true' do
+        it 'return true' do
           assert @request_type.for_multiplexing?
         end
       end
@@ -30,7 +29,7 @@ class RequestTypeTest < ActiveSupport::TestCase
           @request_type = create :library_creation_request_type
         end
 
-        should 'return false' do
+        it 'return false' do
           assert !@request_type.for_multiplexing?
         end
       end
@@ -41,7 +40,7 @@ class RequestTypeTest < ActiveSupport::TestCase
         @non_deprecated_request_type = create(:request_type)
       end
 
-      should 'create requests' do
+      it 'create requests' do
         @non_deprecated_request_type.create!
       end
     end
@@ -52,7 +51,7 @@ class RequestTypeTest < ActiveSupport::TestCase
         @nrequest_type = create(:request_type, request_purpose: @rp)
       end
 
-      should 'set purpose on request' do
+      it 'set purpose on request' do
         request = @nrequest_type.create!
         assert_equal @rp, request.request_purpose
       end
@@ -63,10 +62,8 @@ class RequestTypeTest < ActiveSupport::TestCase
         @deprecated_request_type = create(:request_type, deprecated: true)
       end
 
-      should 'not create deprecated requests' do
-        assert_raise RequestType::DeprecatedError do
-          @deprecated_request_type.create!
-        end
+      it 'not create deprecated requests' do
+        expect{ @deprecated_request_type.create! }.to raise_error RequestType::DeprecatedError
       end
     end
   end

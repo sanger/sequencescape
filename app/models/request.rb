@@ -256,8 +256,6 @@ class Request < ActiveRecord::Base
 
   scope :for_initial_study_id, ->(id) { where(initial_study_id: id) }
 
-  delegate :study, :study_id, to: :asset, allow_nil: true
-
   scope :for_workflow, ->(workflow) { joins(:workflow).where(workflow: { key: workflow }) }
   scope :for_request_types, ->(types) { joins(:request_type).where(request_types: { key: types }) }
 
@@ -286,6 +284,10 @@ class Request < ActiveRecord::Base
   delegate :name, to: :request_metadata
 
   delegate :date_for_state, to: :request_events
+
+  delegate :study, :study_id, to: :asset, allow_nil: true
+
+  delegate :read_length, to: :request_metadata, allow_nil: true
 
   def self.delegate_validator
     DelegateValidation::AlwaysValidValidator
@@ -530,6 +532,11 @@ class Request < ActiveRecord::Base
   end
 
   def manifest_processed!; end
+
+  def bait_library_short_name
+    bait_library = request_metadata.try(:bait_library)
+    bait_library.short_name if bait_library.present?
+  end
 end
 
 require_dependency 'system_request'
