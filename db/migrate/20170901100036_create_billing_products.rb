@@ -3,7 +3,7 @@ class CreateBillingProducts < ActiveRecord::Migration
     create_table :billing_products do |t|
       t.string :name
       t.string :differentiator_value
-      t.references :product_catalogue, null: false, foreign_key: true
+      t.references :billing_product_catalogue, null: false, foreign_key: true
 
       t.timestamps null: false
     end

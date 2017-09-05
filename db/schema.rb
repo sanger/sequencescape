@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170904103502) do
+ActiveRecord::Schema.define(version: 20170905090034) do
 
   create_table "aliquot_indices", force: :cascade do |t|
     t.integer  "aliquot_id",    limit: 4, null: false
@@ -330,14 +330,14 @@ ActiveRecord::Schema.define(version: 20170904103502) do
   end
 
   create_table "billing_products", force: :cascade do |t|
-    t.string   "name",                 limit: 255
-    t.string   "differentiator_value", limit: 255
-    t.integer  "product_catalogue_id", limit: 4,   null: false
-    t.datetime "created_at",                       null: false
-    t.datetime "updated_at",                       null: false
+    t.string   "name",                         limit: 255
+    t.string   "differentiator_value",         limit: 255
+    t.integer  "billing_product_catalogue_id", limit: 4,   null: false
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
   end
 
-  add_index "billing_products", ["product_catalogue_id"], name: "fk_rails_710101238d", using: :btree
+  add_index "billing_products", ["billing_product_catalogue_id"], name: "fk_rails_01eabb683d", using: :btree
 
   create_table "broadcast_events", force: :cascade do |t|
     t.string   "sti_type",   limit: 255
@@ -1302,9 +1302,11 @@ ActiveRecord::Schema.define(version: 20170904103502) do
     t.integer  "order_id",           limit: 4
     t.integer  "request_purpose_id", limit: 4
     t.integer  "work_order_id",      limit: 4
+    t.integer  "billing_product_id", limit: 4
   end
 
   add_index "requests", ["asset_id"], name: "index_requests_on_asset_id", using: :btree
+  add_index "requests", ["billing_product_id"], name: "index_requests_on_billing_product_id", using: :btree
   add_index "requests", ["initial_project_id"], name: "index_requests_on_project_id", using: :btree
   add_index "requests", ["initial_study_id", "request_type_id", "state"], name: "index_requests_on_project_id_and_request_type_id_and_state", using: :btree
   add_index "requests", ["initial_study_id"], name: "index_request_on_project_id", using: :btree
@@ -2004,8 +2006,9 @@ ActiveRecord::Schema.define(version: 20170904103502) do
   end
 
   add_foreign_key "billing_items", "requests"
-  add_foreign_key "billing_products", "product_catalogues"
+  add_foreign_key "billing_products", "billing_product_catalogues"
   add_foreign_key "request_types", "billing_product_catalogues"
+  add_foreign_key "requests", "billing_products"
   add_foreign_key "requests", "work_orders"
   add_foreign_key "sample_manifests", "plate_purposes", column: "purpose_id"
   add_foreign_key "tag_layout_templates", "tag_groups", column: "tag2_group_id"

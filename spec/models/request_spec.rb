@@ -1,20 +1,8 @@
-
 require 'rails_helper'
-require 'shoulda'
 
-describe Request do
+RSpec.describe Request do
   include AASM
   context 'A Request' do
-
-    it 'has the right associations and basic methods' do
-      should belong_to :user
-      should belong_to :request_type
-      should belong_to :item
-      should have_many :events
-      should validate_presence_of :request_purpose
-      expect(subject).to respond_to :pending?, :start, :started?, :fail, :failed?, :pass, :passed?, :reset, :workflow_id
-    end
-
     context 'while scoping with #for_order_including_submission_based_requests' do
       setup do
         @study = create :study
@@ -81,7 +69,7 @@ describe Request do
 
         @genotyping_request_type = create :request_type, name: 'genotyping'
         @cherrypick_request_type = create :request_type, name: 'cherrypick', target_asset_type: nil
-        @submission = FactoryHelp::submission(request_types: [@cherrypick_request_type, @genotyping_request_type].map(&:id), asset_group_name: 'to avoid asset errors')
+        @submission = FactoryHelp.submission(request_types: [@cherrypick_request_type, @genotyping_request_type].map(&:id), asset_group_name: 'to avoid asset errors')
         @item = create :item, submission: @submission
 
         @genotype_pipeline = create :pipeline, name: 'genotyping pipeline', request_types: [@genotyping_request_type]
@@ -132,34 +120,34 @@ describe Request do
     end
 
     context '#copy' do
-       setup do
-         @study = create :study
-         @workflow = create :submission_workflow
-         @request_type = create :request_type
-         @item         = create :item
-         @request = create :request, request_type: @request_type, study: @study, workflow: @workflow, item: @item, state: 'failed'
-         @new_request = @request.copy
-       end
+      setup do
+        @study = create :study
+        @workflow = create :submission_workflow
+        @request_type = create :request_type
+        @item         = create :item
+        @request = create :request, request_type: @request_type, study: @study, workflow: @workflow, item: @item, state: 'failed'
+        @new_request = @request.copy
+      end
 
-       it 'return same properties' do
-         @request.reload
-         @new_request.reload
-         original_attributes = @request.request_metadata.attributes.merge('id' => nil, 'request_id' => nil, 'updated_at' => nil)
-         copied_attributes   = @new_request.request_metadata.attributes.merge('id' => nil, 'request_id' => nil, 'updated_at' => nil)
-         assert_equal original_attributes, copied_attributes
-       end
+      it 'return same properties' do
+        @request.reload
+        @new_request.reload
+        original_attributes = @request.request_metadata.attributes.merge('id' => nil, 'request_id' => nil, 'updated_at' => nil)
+        copied_attributes   = @new_request.request_metadata.attributes.merge('id' => nil, 'request_id' => nil, 'updated_at' => nil)
+        assert_equal original_attributes, copied_attributes
+      end
 
-       it 'return same item_id' do
-         assert_equal @request.item_id, @new_request.item_id
-       end
+      it 'return same item_id' do
+        assert_equal @request.item_id, @new_request.item_id
+      end
 
-       it 'remove target_asset' do
-         assert_nil @new_request.target_asset_id
-       end
+      it 'remove target_asset' do
+        assert_nil @new_request.target_asset_id
+      end
 
-       it 'be pending' do
-         assert @new_request.pending?
-       end
+      it 'be pending' do
+        assert @new_request.pending?
+      end
     end
 
     context '#workflow' do
@@ -186,7 +174,7 @@ describe Request do
           @workflow = create :submission_workflow
           @study = create :study
           # Create a new request
-          expect{ @request = create :request, study: @study }.not_to raise_error
+          expect { @request = create :request, study: @study }.not_to raise_error
         end
 
         it 'not have ActiveRecord errors' do
@@ -206,7 +194,7 @@ describe Request do
         end
 
         it 'not return an AR error' do
-          expect{ @request = create :request, study: @study }.not_to raise_error
+          expect { @request = create :request, study: @study }.not_to raise_error
         end
 
         it 'fail to create a new request' do
@@ -306,7 +294,7 @@ describe Request do
 
           it 'to started' do
             # At least we'll know when and where it's blowing up.
-            expect{ @request.start! }.to raise_error(AASM::InvalidTransition)
+            expect { @request.start! }.to raise_error(AASM::InvalidTransition)
           end
         end
       end
@@ -338,8 +326,8 @@ describe Request do
         end
 
         it 'not allow transition to passed' do
-          expect{ @request.pass! }.to raise_error(AASM::InvalidTransition)
-          expect{ @request.retrospective_pass! }.not_to raise_error
+          expect { @request.pass! }.to raise_error(AASM::InvalidTransition)
+          expect { @request.retrospective_pass! }.not_to raise_error
         end
       end
     end
@@ -392,7 +380,7 @@ describe Request do
 
       it 'not update once a request is failed' do
         @request.fail!
-        expect{ @request.request_metadata.update_attributes!(customer_accepts_responsibility: true) }.to raise_error ActiveRecord::RecordInvalid
+        expect { @request.request_metadata.update_attributes!(customer_accepts_responsibility: true) }.to raise_error ActiveRecord::RecordInvalid
       end
     end
 

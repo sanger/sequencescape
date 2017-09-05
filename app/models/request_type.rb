@@ -23,7 +23,6 @@ class RequestType < ActiveRecord::Base
   include Uuid::Uuidable
   include SharedBehaviour::Named
 
-
   MORPHOLOGIES = [
     LINEAR = 0, # one-to-one
     CONVERGENT = 1, # many-to-one
@@ -44,7 +43,7 @@ class RequestType < ActiveRecord::Base
   # Returns a collect of pipelines for which this RequestType is valid control.
   # ...so only valid for ControlRequest producing RequestTypes...
   has_many :control_pipelines, class_name: 'Pipeline', foreign_key: :control_request_type_id
-    # Defines the acceptable plate purposes or the request type.  Essentially this is used to limit the
+  # Defines the acceptable plate purposes or the request type.  Essentially this is used to limit the
   # cherrypick plate types when going into pulldown to the correct list.
   has_many :plate_purposes, class_name: 'RequestType::RequestTypePlatePurpose'
   has_many :acceptable_plate_purposes, through: :plate_purposes, source: :plate_purpose
@@ -81,7 +80,7 @@ class RequestType < ActiveRecord::Base
        AND deprecated IS FALSE',
          asset.asset_type_for_request_types.name
     ])
-                              }
+                               }
 
   # Helper method for generating a request constructor, like 'create!'
   def self.request_constructor(name, options = {})
@@ -98,6 +97,7 @@ class RequestType < ActiveRecord::Base
           request.request_purpose ||= self.request_purpose
           yield(request) if block_given?
         end.tap do |request|
+          request.billing_product = find_product_for_request(request)
           requests << request
         end
       end
@@ -159,9 +159,12 @@ class RequestType < ActiveRecord::Base
     end
   end
 
-
   def default_library_type
     library_types.find_by(library_types_request_types: { is_default: true })
+  end
+
+  def find_product_for_request(request)
+    billing_product_catalogue.find_product_for_request(request) if billing_product_catalogue.present?
   end
 
   delegate :pool_count,             to: :pooling_method

@@ -1,18 +1,7 @@
 require 'rails_helper'
-require 'shoulda'
 
 describe RequestType do
   context RequestType do
-
-    it 'has write associations and validations' do
-      should have_many :requests
-      should belong_to :billing_product_catalogue
-      #    should_belong_to :workflow, :class_name => "Submission::Workflow"
-      should validate_presence_of :order
-      should validate_presence_of :request_purpose
-      should validate_numericality_of :order
-    end
-
     context '#for_multiplexing?' do
       context 'when it is for multiplexing' do
         setup do
@@ -63,7 +52,7 @@ describe RequestType do
       end
 
       it 'not create deprecated requests' do
-        expect{ @deprecated_request_type.create! }.to raise_error RequestType::DeprecatedError
+        expect { @deprecated_request_type.create! }.to raise_error RequestType::DeprecatedError
       end
     end
   end
