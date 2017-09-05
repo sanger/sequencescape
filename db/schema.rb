@@ -1960,8 +1960,6 @@ ActiveRecord::Schema.define(version: 20170727121949) do
     t.datetime "updated_at",             null: false
   end
 
-  add_index "work_order_types", ["name"], name: "index_work_order_types_on_name", unique: true, using: :btree
-
   create_table "work_orders", force: :cascade do |t|
     t.integer  "work_order_type_id", limit: 4, null: false
     t.datetime "created_at",                   null: false
