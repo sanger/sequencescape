@@ -55,5 +55,25 @@ describe RequestType do
         expect { @deprecated_request_type.create! }.to raise_error RequestType::DeprecatedError
       end
     end
+
+    context 'with billing product catalogue' do
+      it 'should assign the right product to request' do
+        request_type = RequestType.find_by(key: :illumina_c_miseq_sequencing)
+        billing_product_catalogue = create :miseq_paired_end_product_catalogue
+        billing_product = (create :billing_product,
+                                  name: 'product_with_read_length_250',
+                                  differentiator_value: 250,
+                                  billing_product_catalogue: billing_product_catalogue)
+        request_type.billing_product_catalogue = billing_product_catalogue
+        request = request_type.create!(
+          request_metadata: SequencingRequest::Metadata.new(
+            read_length: 250,
+            fragment_size_required_to: 150,
+            fragment_size_required_from: 150
+          )
+        )
+        expect(request.billing_product).to eq billing_product
+      end
+    end
   end
 end
