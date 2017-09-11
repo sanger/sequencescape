@@ -1,7 +1,5 @@
 module Billing
   # a group of products
-  # if there is more than one product in a group,
-  # it should have a differentiator to be able to find the right product
   class ProductCatalogue < ActiveRecord::Base
     has_many :billing_products, class_name: Billing::Product, foreign_key: :billing_product_catalogue_id
     has_many :request_types
