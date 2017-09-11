@@ -30,6 +30,7 @@ group :default do
   gem 'dynamic_form'
 
   gem 'puma'
+  gem 'daemons'
 
   # We pull down a slightly later version as there are commits on head
   # which we depend on, but don't have an official release yet.
