@@ -62,7 +62,7 @@ describe RequestType do
         billing_product_catalogue = create :miseq_paired_end_product_catalogue
         billing_product = (create :billing_product,
                                   name: 'product_with_read_length_250',
-                                  differentiator_value: 250,
+                                  identifier: 250,
                                   billing_product_catalogue: billing_product_catalogue)
         request_type.billing_product_catalogue = billing_product_catalogue
         request = request_type.create!(

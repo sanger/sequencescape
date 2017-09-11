@@ -323,15 +323,14 @@ ActiveRecord::Schema.define(version: 20170905090034) do
   add_index "billing_items", ["request_id"], name: "index_billing_items_on_request_id", using: :btree
 
   create_table "billing_product_catalogues", force: :cascade do |t|
-    t.string   "name",           limit: 255
-    t.string   "differentiator", limit: 255
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.string   "name",       limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
   end
 
   create_table "billing_products", force: :cascade do |t|
     t.string   "name",                         limit: 255
-    t.string   "differentiator_value",         limit: 255
+    t.string   "identifier",                   limit: 255
     t.integer  "billing_product_catalogue_id", limit: 4,   null: false
     t.datetime "created_at",                               null: false
     t.datetime "updated_at",                               null: false

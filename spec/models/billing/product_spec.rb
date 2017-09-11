@@ -11,7 +11,7 @@ describe Billing::Product do
   end
 
   it 'can have a differentiator value' do
-    product.differentiator_value = 'test'
-    expect(product.differentiator_value). to eq 'test'
+    product.identifier = 'test'
+    expect(product.identifier). to eq 'test'
   end
 end

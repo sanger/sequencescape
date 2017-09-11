@@ -12,10 +12,9 @@ namespace :billing do
       },
       {
         name: :isc_pulldown,
-        differentiator: :bait_library_short_name,
         billing_products_attributes: [
-          { name: 'ISC Standard pulldown', differentiator_value: 'standard' },
-          { name: 'ISC Custom pulldown', differentiator_value: 'custom' }
+          { name: 'ISC Standard pulldown', identifier: 'standard' },
+          { name: 'ISC Custom pulldown', identifier: 'custom' }
         ]
       },
       {
@@ -32,28 +31,25 @@ namespace :billing do
       },
       {
         name: :lcmb_isc_pulldown,
-        differentiator: :bait_library_short_name,
         billing_products_attributes: [
-          { name: 'LCMB - ISC Standard pulldown', differentiator_value: 'standard' },
-          { name: 'LCMB - ISC Custom pulldown', differentiator_value: 'custom' }
+          { name: 'LCMB - ISC Standard pulldown', identifier: 'standard' },
+          { name: 'LCMB - ISC Custom pulldown', identifier: 'custom' }
         ]
       },
       { name: :miseq_paired_end,
-        differentiator: :read_length,
         billing_products_attributes: [
-          { name: 'Illumina MiSeq Paired End read length 25 (50 cycle)', differentiator_value: 25 },
-          { name: 'Illumina MiSeq Paired End read length 75 (150 cycle)', differentiator_value: 75 },
-          { name: 'Illumina MiSeq Paired End read length 150 (300 cycle)', differentiator_value: 150 },
-          { name: 'Illumina MiSeq Paired End read length 250 (500 cycle)', differentiator_value: 250 },
-          { name: 'Illumina MiSeq Paired End read length 300 (600 cycle)', differentiator_value: 300 }
+          { name: 'Illumina MiSeq Paired End read length 25 (50 cycle)', identifier: 25 },
+          { name: 'Illumina MiSeq Paired End read length 75 (150 cycle)', identifier: 75 },
+          { name: 'Illumina MiSeq Paired End read length 150 (300 cycle)', identifier: 150 },
+          { name: 'Illumina MiSeq Paired End read length 250 (500 cycle)', identifier: 250 },
+          { name: 'Illumina MiSeq Paired End read length 300 (600 cycle)', identifier: 300 }
         ] },
       {
         name: :hiseq_2500_paired_end,
-        differentiator: :read_length,
         billing_products_attributes: [
-          { name: 'Illumina HiSeq 2500 Rapid Runs Paired End read length 250 run', differentiator_value: 250 },
-          { name: 'Illumina HiSeq 2500 Rapid Runs Paired End read length 75 run', differentiator_value: 75 },
-          { name: 'Illumina HiSeq 2500 Rapid Runs Paired End read length 100 run', differentiator_value: 100 }
+          { name: 'Illumina HiSeq 2500 Rapid Runs Paired End read length 250 run', identifier: 250 },
+          { name: 'Illumina HiSeq 2500 Rapid Runs Paired End read length 75 run', identifier: 75 },
+          { name: 'Illumina HiSeq 2500 Rapid Runs Paired End read length 100 run', identifier: 100 }
         ]
       },
       {
@@ -64,18 +60,16 @@ namespace :billing do
       },
       {
         name: :hiseq_v4_paired_end,
-        differentiator: :read_length,
         billing_products_attributes: [
-          { name: 'Illumina HiSeq V4 Paired End read length 75', differentiator_value: 75 },
-          { name: 'Illumina HiSeq V4 Paired End read length 125', differentiator_value: 125 }
+          { name: 'Illumina HiSeq V4 Paired End read length 75', identifier: 75 },
+          { name: 'Illumina HiSeq V4 Paired End read length 125', identifier: 125 }
         ]
       },
       {
         name: :hiseq_v4_single_end,
-        differentiator: :read_length,
         billing_products_attributes: [
-          { name: 'Illumina HiSeq V4 SINGLE End read length 19 SE', differentiator_value: 19 },
-          { name: 'Illumina HiSeq V4 SINGLE End read length 50 SE', differentiator_value: 50 }
+          { name: 'Illumina HiSeq V4 SINGLE End read length 19 SE', identifier: 19 },
+          { name: 'Illumina HiSeq V4 SINGLE End read length 50 SE', identifier: 50 }
         ]
       },
       {
@@ -86,11 +80,10 @@ namespace :billing do
       },
       {
         name: :hiseq_4000_paired_end,
-        differentiator: :read_length,
         billing_products_attributes: [
-          { name: 'HiSeq 4000 Paired End read length 75', differentiator_value: 75 },
-          { name: 'HiSeq 4000 Paired End read length 150', differentiator_value: 150 },
-          { name: 'HiSeq 4000 Paired End read length 25', differentiator_value: 25 }
+          { name: 'HiSeq 4000 Paired End read length 75', identifier: 75 },
+          { name: 'HiSeq 4000 Paired End read length 150', identifier: 150 },
+          { name: 'HiSeq 4000 Paired End read length 25', identifier: 25 }
         ]
       }
     ]

@@ -288,8 +288,6 @@ class Request < ActiveRecord::Base
 
   delegate :study, :study_id, to: :asset, allow_nil: true
 
-  delegate :read_length, to: :request_metadata, allow_nil: true
-
   def self.delegate_validator
     DelegateValidation::AlwaysValidValidator
   end
@@ -534,10 +532,7 @@ class Request < ActiveRecord::Base
 
   def manifest_processed!; end
 
-  def bait_library_short_name
-    bait_library = request_metadata.try(:bait_library)
-    bait_library.short_name if bait_library.present?
-  end
+  def billing_product_identifier; end
 end
 
 require_dependency 'system_request'

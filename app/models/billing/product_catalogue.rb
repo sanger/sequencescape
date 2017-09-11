@@ -10,7 +10,7 @@ module Billing
 
     def find_product_for_request(request)
       return billing_products.first if single_product?
-      billing_products.find_by(differentiator_value: request.send(differentiator))
+      billing_products.find_by(identifier: request.billing_product_identifier)
     end
 
     def single_product?

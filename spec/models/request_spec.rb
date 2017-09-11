@@ -384,12 +384,9 @@ RSpec.describe Request do
       end
     end
 
-    it 'should know bait library short name' do
+    it 'should respond to #billing_product_identifier' do
       request = Request.new
-      expect(request.bait_library_short_name).to be nil
-      bait_library = create(:bait_library, bait_library_type: create(:bait_library_type, name: 'Custom'))
-      request = RequestType.find_by(key: :pulldown_isc).create!(request_metadata: Pulldown::Requests::IscLibraryRequest::Metadata.new(bait_library: bait_library))
-      expect(request.bait_library_short_name).to eq 'custom'
+      expect(request.billing_product_identifier).to be nil
     end
   end
 end
