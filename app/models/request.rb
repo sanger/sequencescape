@@ -63,6 +63,7 @@ class Request < ActiveRecord::Base
   has_many :qc_metrics, through: :qc_metric_requests
   has_many :request_events, ->() { order(:current_from) }, inverse_of: :request
   has_many :upstream_requests, through: :asset, source: :requests_as_target
+  has_many :billing_items, class_name: Billing::Item
 
   # Validations
   # On create we perform a full and complete validation.
@@ -70,6 +71,8 @@ class Request < ActiveRecord::Base
   # Just makes sure we don't set it to nil. Avoids the need to load request_purpose
   # EVERY time we touch a request.
   validates_presence_of :request_purpose_id
+
+  after_save :create_billing_events
 
   # Scopes
   scope :for_pipeline, ->(pipeline) {
@@ -290,8 +293,38 @@ class Request < ActiveRecord::Base
   # we now need to be explicit in how we want it delegated.
   delegate :name, to: :request_metadata
 
+  delegate :date_for_state, to: :request_events
+
   def self.delegate_validator
     DelegateValidation::AlwaysValidValidator
+  end
+
+  def self.group_requests(options = {})
+    target = options[:by_target] ? 'target_asset_id' : 'asset_id'
+    groupings = options.delete(:group) || {}
+
+    select('requests.*, tca.container_id AS container_id, tca.content_id AS content_id')
+      .joins("INNER JOIN container_associations tca ON tca.content_id=#{target}")
+      .readonly(false)
+      .group(groupings)
+  end
+
+  def self.for_study(study)
+    Request.for_study_id(study.id)
+  end
+
+  # TODO: There is probably a MUCH better way of getting this information. This is just a rewrite of the old approach
+  def self.get_target_plate_ids(request_ids)
+    ContainerAssociation.joins('INNER JOIN requests ON content_id = target_asset_id')
+                        .where(['requests.id IN  (?)', request_ids]).uniq.pluck(:container_id)
+  end
+
+  def self.number_expected_for_submission_id_and_request_type_id(submission_id, request_type_id)
+    Request.where(submission_id: submission_id, request_type_id: request_type_id)
+  end
+
+  def self.accessioning_required?
+    false
   end
 
   def validator_for(request_option)
@@ -342,26 +375,6 @@ class Request < ActiveRecord::Base
     return asset.studies.uniq if asset.present?
     return submission.studies if submission.present?
     []
-  end
-
-  def self.group_requests(options = {})
-    target = options[:by_target] ? 'target_asset_id' : 'asset_id'
-    groupings = options.delete(:group) || {}
-
-    select('requests.*, tca.container_id AS container_id, tca.content_id AS content_id')
-      .joins("INNER JOIN container_associations tca ON tca.content_id=#{target}")
-      .readonly(false)
-      .group(groupings)
-  end
-
-  def self.for_study(study)
-    Request.for_study_id(study.id)
-  end
-
-  # TODO: There is probably a MUCH better way of getting this information. This is just a rewrite of the old approach
-  def self.get_target_plate_ids(request_ids)
-    ContainerAssociation.joins('INNER JOIN requests ON content_id = target_asset_id')
-                        .where(['requests.id IN  (?)', request_ids]).uniq.pluck(:container_id)
   end
 
   # The options that are required for creation.  In other words, the truly required options that must
@@ -440,10 +453,6 @@ class Request < ActiveRecord::Base
     comments.create(description: comment, user: user)
   end
 
-  def self.number_expected_for_submission_id_and_request_type_id(submission_id, request_type_id)
-    Request.where(submission_id: submission_id, request_type_id: request_type_id)
-  end
-
   def return_pending_to_inbox!
     raise StandardError, "Can only return pending requests, request is #{state}" unless pending?
     remove_unused_assets
@@ -517,10 +526,6 @@ class Request < ActiveRecord::Base
     order.try(:role)
   end
 
-  def self.accessioning_required?
-    false
-  end
-
   def ready?
     true
   end
@@ -534,6 +539,20 @@ class Request < ActiveRecord::Base
   end
 
   def manifest_processed!; end
+
+  def create_billing_events
+    return unless can_be_billed?
+    factory = Billing::Factory.build(self)
+    factory.create! if factory.valid?
+  end
+
+  def can_be_billed?
+    biffable? && billing_items.empty? && passed?
+  end
+
+  def biffable?
+    billable?
+  end
 end
 
 require_dependency 'system_request'

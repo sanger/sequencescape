@@ -308,6 +308,20 @@ ActiveRecord::Schema.define(version: 20170727121949) do
   add_index "billing_events", ["kind"], name: "index_billing_events_on_kind", using: :btree
   add_index "billing_events", ["reference"], name: "index_billing_events_on_reference", using: :btree
 
+  create_table "billing_items", force: :cascade do |t|
+    t.integer  "request_id",              limit: 4
+    t.string   "project_cost_code",       limit: 255
+    t.string   "units",                   limit: 255
+    t.string   "fin_product_code",        limit: 255
+    t.string   "fin_product_description", limit: 255
+    t.string   "request_passed_date",     limit: 255
+    t.datetime "reported_at"
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
+  end
+
+  add_index "billing_items", ["request_id"], name: "index_billing_items_on_request_id", using: :btree
+
   create_table "broadcast_events", force: :cascade do |t|
     t.string   "sti_type",   limit: 255
     t.string   "seed_type",  limit: 255
@@ -1967,6 +1981,7 @@ ActiveRecord::Schema.define(version: 20170727121949) do
     t.integer  "version",       limit: 4
   end
 
+  add_foreign_key "billing_items", "requests"
   add_foreign_key "requests", "work_orders"
   add_foreign_key "sample_manifests", "plate_purposes", column: "purpose_id"
   add_foreign_key "tag_layout_templates", "tag_groups", column: "tag2_group_id"
