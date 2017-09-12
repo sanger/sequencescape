@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Request do
+describe Request, billing: true do
   it 'creates a billing item if the request is in the right state' do
     request = create(:sequencing_request_with_assets, request_type: create(:sequencing_request_type, billable: true))
     request.start!
@@ -32,7 +32,7 @@ describe Request do
   end
 
   it 'does not create a billing item if the request does not adhere to billing item validation' do
-    request = create(:sequencing_request_with_assets, request_type: create(:sequencing_request_type, billable: true))
+    request = create(:sequencing_request_with_assets, request_type: create(:sequencing_request_type, key: 'illumina_c_miseq_sequencing', billable: true))
     request.start!
     request.target_asset.aliquots = []
     request.pass!

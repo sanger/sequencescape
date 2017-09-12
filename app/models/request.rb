@@ -542,8 +542,8 @@ class Request < ActiveRecord::Base
 
   def create_billing_events
     return unless can_be_billed?
-    factory = Billing::ItemsFactory.new(request: self)
-    factory.create_billing_items if factory.valid?
+    factory = Billing::Factory.build(self)
+    factory.create! if factory.valid?
   end
 
   def can_be_billed?
