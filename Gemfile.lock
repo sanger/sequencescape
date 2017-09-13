@@ -81,6 +81,8 @@ GEM
       arel (~> 6.0)
     activerecord-jdbc-adapter (1.3.22)
       activerecord (>= 2.2)
+    activerecord-nulldb-adapter (0.3.7)
+      activerecord (>= 2.0.0)
     activerecord-oracle_enhanced-adapter (1.6.7)
     activeresource (4.0.0)
       activemodel (~> 4.0)
@@ -330,8 +332,8 @@ GEM
       rainbow (>= 1.99.1, < 3.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (~> 1.0, >= 1.0.1)
-    ruby-oci8 (2.2.4)
-    ruby-ole (1.2.12.1)
+    ruby-oci8 (2.2.4.1)
+    ruby-ole (1.2.11.8)
     ruby-progressbar (1.8.1)
     ruby_parser (3.8.2)
       sexp_processor (~> 4.1)
@@ -424,6 +426,7 @@ DEPENDENCIES
   actionpack-page_caching
   actionpack-xml_parser
   activerecord-jdbc-adapter
+  activerecord-nulldb-adapter
   activerecord-oracle_enhanced-adapter (~> 1.6.0)
   activeresource
   acts-as-dag!
