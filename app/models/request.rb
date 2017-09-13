@@ -65,7 +65,7 @@ class Request < ActiveRecord::Base
   has_many :upstream_requests, through: :asset, source: :requests_as_target
 
   belongs_to :billing_product, class_name: 'Billing::Product'
-  has_many :billing_items, class_name: Billing::Item
+  has_many :billing_items, class_name: 'Billing::Item'
 
   # Validations
   # On create we perform a full and complete validation.
@@ -557,5 +557,6 @@ class Request < ActiveRecord::Base
   def biffable?
     billable?
   end
+end
 
 require_dependency 'system_request'
