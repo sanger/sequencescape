@@ -63,7 +63,9 @@ class Request < ActiveRecord::Base
   has_many :qc_metrics, through: :qc_metric_requests
   has_many :request_events, ->() { order(:current_from) }, inverse_of: :request
   has_many :upstream_requests, through: :asset, source: :requests_as_target
-  has_many :billing_items, class_name: Billing::Item
+
+  belongs_to :billing_product, class_name: 'Billing::Product'
+  has_many :billing_items, class_name: 'Billing::Item'
 
   # Validations
   # On create we perform a full and complete validation.
@@ -264,8 +266,6 @@ class Request < ActiveRecord::Base
 
   scope :for_initial_study_id, ->(id) { where(initial_study_id: id) }
 
-  delegate :study, :study_id, to: :asset, allow_nil: true
-
   scope :for_workflow, ->(workflow) { joins(:workflow).where(workflow: { key: workflow }) }
   scope :for_request_types, ->(types) { joins(:request_type).where(request_types: { key: types }) }
 
@@ -294,6 +294,8 @@ class Request < ActiveRecord::Base
   delegate :name, to: :request_metadata
 
   delegate :date_for_state, to: :request_events
+
+  delegate :study, :study_id, to: :asset, allow_nil: true
 
   def self.delegate_validator
     DelegateValidation::AlwaysValidValidator
@@ -539,6 +541,8 @@ class Request < ActiveRecord::Base
   end
 
   def manifest_processed!; end
+
+  def billing_product_identifier; end
 
   def create_billing_events
     return unless can_be_billed?

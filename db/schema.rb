@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170727121949) do
+ActiveRecord::Schema.define(version: 20170905090034) do
 
   create_table "aliquot_indices", force: :cascade do |t|
     t.integer  "aliquot_id",    limit: 4, null: false
@@ -321,6 +321,22 @@ ActiveRecord::Schema.define(version: 20170727121949) do
   end
 
   add_index "billing_items", ["request_id"], name: "index_billing_items_on_request_id", using: :btree
+
+  create_table "billing_product_catalogues", force: :cascade do |t|
+    t.string   "name",       limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  create_table "billing_products", force: :cascade do |t|
+    t.string   "name",                         limit: 255
+    t.string   "identifier",                   limit: 255
+    t.integer  "billing_product_catalogue_id", limit: 4,   null: false
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
+  end
+
+  add_index "billing_products", ["billing_product_catalogue_id"], name: "fk_rails_01eabb683d", using: :btree
 
   create_table "broadcast_events", force: :cascade do |t|
     t.string   "sti_type",   limit: 255
@@ -1228,28 +1244,31 @@ ActiveRecord::Schema.define(version: 20170727121949) do
   end
 
   create_table "request_types", force: :cascade do |t|
-    t.string   "key",                limit: 100
-    t.string   "name",               limit: 255
-    t.integer  "workflow_id",        limit: 4
+    t.string   "key",                          limit: 100
+    t.string   "name",                         limit: 255
+    t.integer  "workflow_id",                  limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "asset_type",         limit: 255
-    t.integer  "order",              limit: 4
-    t.string   "initial_state",      limit: 20
-    t.string   "target_asset_type",  limit: 255
-    t.boolean  "multiples_allowed",                default: false
-    t.string   "request_class_name", limit: 255
-    t.text     "request_parameters", limit: 65535
-    t.integer  "morphology",         limit: 4,     default: 0
-    t.boolean  "for_multiplexing",                 default: false
-    t.boolean  "billable",                         default: false
-    t.integer  "product_line_id",    limit: 4
-    t.boolean  "deprecated",                       default: false, null: false
-    t.boolean  "no_target_asset",                  default: false, null: false
-    t.integer  "target_purpose_id",  limit: 4
-    t.integer  "pooling_method_id",  limit: 4
-    t.integer  "request_purpose_id", limit: 4
+    t.string   "asset_type",                   limit: 255
+    t.integer  "order",                        limit: 4
+    t.string   "initial_state",                limit: 20
+    t.string   "target_asset_type",            limit: 255
+    t.boolean  "multiples_allowed",                          default: false
+    t.string   "request_class_name",           limit: 255
+    t.text     "request_parameters",           limit: 65535
+    t.integer  "morphology",                   limit: 4,     default: 0
+    t.boolean  "for_multiplexing",                           default: false
+    t.boolean  "billable",                                   default: false
+    t.integer  "product_line_id",              limit: 4
+    t.boolean  "deprecated",                                 default: false, null: false
+    t.boolean  "no_target_asset",                            default: false, null: false
+    t.integer  "target_purpose_id",            limit: 4
+    t.integer  "pooling_method_id",            limit: 4
+    t.integer  "request_purpose_id",           limit: 4
+    t.integer  "billing_product_catalogue_id", limit: 4
   end
+
+  add_index "request_types", ["billing_product_catalogue_id"], name: "index_request_types_on_billing_product_catalogue_id", using: :btree
 
   create_table "request_types_extended_validators", force: :cascade do |t|
     t.integer  "request_type_id",       limit: 4, null: false
@@ -1282,9 +1301,11 @@ ActiveRecord::Schema.define(version: 20170727121949) do
     t.integer  "order_id",           limit: 4
     t.integer  "request_purpose_id", limit: 4
     t.integer  "work_order_id",      limit: 4
+    t.integer  "billing_product_id", limit: 4
   end
 
   add_index "requests", ["asset_id"], name: "index_requests_on_asset_id", using: :btree
+  add_index "requests", ["billing_product_id"], name: "index_requests_on_billing_product_id", using: :btree
   add_index "requests", ["initial_project_id"], name: "index_requests_on_project_id", using: :btree
   add_index "requests", ["initial_study_id", "request_type_id", "state"], name: "index_requests_on_project_id_and_request_type_id_and_state", using: :btree
   add_index "requests", ["initial_study_id"], name: "index_request_on_project_id", using: :btree
@@ -1982,6 +2003,9 @@ ActiveRecord::Schema.define(version: 20170727121949) do
   end
 
   add_foreign_key "billing_items", "requests"
+  add_foreign_key "billing_products", "billing_product_catalogues"
+  add_foreign_key "request_types", "billing_product_catalogues"
+  add_foreign_key "requests", "billing_products"
   add_foreign_key "requests", "work_orders"
   add_foreign_key "sample_manifests", "plate_purposes", column: "purpose_id"
   add_foreign_key "tag_layout_templates", "tag_groups", column: "tag2_group_id"

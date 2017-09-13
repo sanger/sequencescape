@@ -1,33 +1,33 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2012,2015,2016 Genome Research Ltd.
 
-require 'test_helper'
+require 'rails_helper'
 
-class BaitLibraryTypeTest < ActiveSupport::TestCase
+describe BaitLibraryType do
   context 'When a bait library exists' do
-    setup do
-      @bait_library = create :bait_library
+    let(:bait_library) { create :bait_library }
+
+    it 'Bait Library Types exist' do
+      expect(BaitLibraryType.count > 0).to be true
     end
 
-    should 'Bait Library Types exist' do
-      assert BaitLibraryType.count > 0
+    it 'bait libraries have library types' do
+      expect(bait_library.bait_library_type).to be_truthy
     end
 
-    should 'bait libraries have library types' do
-      assert @bait_library.bait_library_type
+    it 'has a short_name' do
+      standard_bait_library_type = BaitLibraryType.new(name: 'Standard - test')
+      expect(standard_bait_library_type.short_name).to eq 'standard'
+      custom_bait_library_type = BaitLibraryType.new(name: 'Custom')
+      expect(custom_bait_library_type.short_name).to eq 'custom'
     end
   end
 
   context 'A request with a bait library' do
-    setup do
+    before do
       @sample = create :sample
 
       @pulldown_request_type = create :request_type, name: 'Bait Pulldown', target_asset_type: nil
       @sequencing_request_type = create :request_type, name: 'Single ended sequencing2'
-      @submission = FactoryHelp::submission(request_types: [@pulldown_request_type, @sequencing_request_type].map(&:id), asset_group_name: 'to avoid asset errors')
+      @submission = FactoryHelp.submission(request_types: [@pulldown_request_type, @sequencing_request_type].map(&:id), asset_group_name: 'to avoid asset errors')
       @item = create :item, submission: @submission
 
       @genotype_pipeline = create :pipeline, name: 'Cluster formation SE2', request_types: [@sequencing_request_type]
@@ -46,8 +46,8 @@ class BaitLibraryTypeTest < ActiveSupport::TestCase
       # @request1.request_metadata.bait_library = create(:bait_library)
     end
 
-    should 'have a bait library type' do
-      assert BaitLibrary.find(@request1.request_metadata.bait_library_id).bait_library_type
+    it 'have a bait library type' do
+      expect(BaitLibrary.find(@request1.request_metadata.bait_library_id).bait_library_type).to be_truthy
     end
   end
 end
