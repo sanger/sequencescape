@@ -28,8 +28,9 @@ class Request < ActiveRecord::Base
   PERMISSABLE_NEXT_REQUESTS = ->(request) { request.pending? or request.blocked? }
 
   # Class attributes
-  class_attribute :customer_request
+  class_attribute :customer_request, :sequencing
 
+  self.sequencing = false
   self.per_page = 500
   self.inheritance_column = 'sti_type'
   self.customer_request = false
@@ -52,6 +53,7 @@ class Request < ActiveRecord::Base
   belongs_to :initial_project, class_name: 'Project'
   # same as project with study
   belongs_to :initial_study, class_name: 'Study'
+  belongs_to :work_order, required: false
 
   has_one :order_role, through: :order
 
@@ -61,7 +63,7 @@ class Request < ActiveRecord::Base
   has_many :qc_metrics, through: :qc_metric_requests
   has_many :request_events, ->() { order(:current_from) }, inverse_of: :request
   has_many :upstream_requests, through: :asset, source: :requests_as_target
-  has_many :billing_items
+  has_many :billing_items, class_name: Billing::Item
 
   # Validations
   # On create we perform a full and complete validation.
@@ -69,6 +71,8 @@ class Request < ActiveRecord::Base
   # Just makes sure we don't set it to nil. Avoids the need to load request_purpose
   # EVERY time we touch a request.
   validates_presence_of :request_purpose_id
+
+  after_save :create_billing_events
 
   # Scopes
   scope :for_pipeline, ->(pipeline) {
@@ -97,7 +101,13 @@ class Request < ActiveRecord::Base
         ]
       end
 
-    select('uuids.external_id AS pool_id, GROUP_CONCAT(DISTINCT pw_location.description ORDER BY pw.map_id ASC SEPARATOR ",") AS pool_into, MIN(requests.id) AS id, MIN(requests.sti_type) AS sti_type, MIN(requests.submission_id) AS submission_id, MIN(requests.request_type_id) AS request_type_id')
+    select(%{uuids.external_id AS pool_id,
+              GROUP_CONCAT(DISTINCT pw_location.description ORDER BY pw.map_id ASC SEPARATOR ",") AS pool_into,
+              SUM(requests.state = 'passed') > 0 AS pool_complete,
+              MIN(requests.id) AS id,
+              MIN(requests.sti_type) AS sti_type,
+              MIN(requests.submission_id) AS submission_id,
+              MIN(requests.request_type_id) AS request_type_id})
       .joins(add_joins + [
         'INNER JOIN maps AS pw_location ON pw.map_id=pw_location.id',
         'INNER JOIN container_associations ON container_associations.content_id=pw.id',
@@ -321,10 +331,6 @@ class Request < ActiveRecord::Base
     request_type.request_type_validators.find_by(request_option: request_option.to_s) || RequestType::Validator::NullValidator.new
   end
 
-  def customer_request?
-    customer_request
-  end
-
   def current_request_event
     if request_events.loaded?
       request_events.detect(&:current?)
@@ -499,7 +505,8 @@ class Request < ActiveRecord::Base
 
   # Adds any pool information to the structure so that it can be reported to client applications
   def update_pool_information(pool_information)
-    # Does not need anything here
+    pool_information[:request_type] = request_type.key
+    pool_information[:for_multiplexing] = request_type.for_multiplexing?
   end
 
   # def submission_siblings
@@ -532,6 +539,20 @@ class Request < ActiveRecord::Base
   end
 
   def manifest_processed!; end
+
+  def create_billing_events
+    return unless can_be_billed?
+    factory = Billing::Factory.build(self)
+    factory.create! if factory.valid?
+  end
+
+  def can_be_billed?
+    biffable? && billing_items.empty? && passed?
+  end
+
+  def biffable?
+    billable?
+  end
 end
 
 require_dependency 'system_request'

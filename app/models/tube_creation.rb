@@ -21,23 +21,21 @@ class TubeCreation < AssetCreation
     record.errors.add(:parent, 'has no pooling information') if record.parent.pools.empty?
   end
 
+  private
+
   def no_pooling_expected?
     parent_nil?
   end
-  private :no_pooling_expected?
 
   def target_for_ownership
     children
   end
-  private :target_for_ownership
 
   def create_children!
     self.children = Array.new(parent.pools.size) { child_purpose.create! }
   end
-  private :create_children!
 
   def record_creation_of_children
     #    children.each { |child| parent.events.create_tube!(child_purpose, child, user) }
   end
-  private :record_creation_of_children
 end

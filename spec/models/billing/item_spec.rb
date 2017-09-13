@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Billing::Item do
+describe Billing::Item, billing: true do
   let!(:fields_attributes) { YAML.load_file(Rails.root.join('spec', 'data', 'billing', 'fields.yml')).with_indifferent_access }
   let(:fields_list) { Billing::FieldsList.new(fields_attributes) }
   let!(:billing_item) { create :billing_item }

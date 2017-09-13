@@ -85,7 +85,7 @@ module AssetsHelper
   end
 
   def asset_types
-    ['All', *Aliquot::Receptacle.descendants.map(&:name)]
+    ['All', *Receptacle.descendants.map(&:name)]
   end
 
   def asset_types_for_select

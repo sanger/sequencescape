@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170721104249) do
+ActiveRecord::Schema.define(version: 20170727121949) do
 
   create_table "aliquot_indices", force: :cascade do |t|
     t.integer  "aliquot_id",    limit: 4, null: false
@@ -1193,7 +1193,7 @@ ActiveRecord::Schema.define(version: 20170721104249) do
     t.integer  "target_purpose_id",               limit: 4
     t.boolean  "customer_accepts_responsibility"
     t.integer  "pcr_cycles",                      limit: 4
-    t.string   "file_type",                       limit: 255
+    t.string   "data_type",                       limit: 255
   end
 
   add_index "request_metadata", ["request_id"], name: "index_request_metadata_on_request_id", using: :btree
@@ -1960,8 +1960,6 @@ ActiveRecord::Schema.define(version: 20170721104249) do
     t.datetime "updated_at",             null: false
   end
 
-  add_index "work_order_types", ["name"], name: "index_work_order_types_on_name", unique: true, using: :btree
-
   create_table "work_orders", force: :cascade do |t|
     t.integer  "work_order_type_id", limit: 4, null: false
     t.datetime "created_at",                   null: false
@@ -1984,6 +1982,7 @@ ActiveRecord::Schema.define(version: 20170721104249) do
   end
 
   add_foreign_key "billing_items", "requests"
+  add_foreign_key "requests", "work_orders"
   add_foreign_key "sample_manifests", "plate_purposes", column: "purpose_id"
   add_foreign_key "tag_layout_templates", "tag_groups", column: "tag2_group_id"
   add_foreign_key "tag_layouts", "tag_groups", column: "tag2_group_id"

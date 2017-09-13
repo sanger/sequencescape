@@ -17,6 +17,10 @@ FactoryGirl.define do
     initial_state 'pending'
     request_purpose
 
+    factory :customer_request_type do
+      request_class CustomerRequest
+    end
+
     factory :well_request_type do
       asset_type 'Well'
       request_class CustomerRequest
@@ -104,6 +108,7 @@ FactoryGirl.define do
   end
 
   factory :library_types_request_type do
+    request_type
     library_type
     is_default true
   end

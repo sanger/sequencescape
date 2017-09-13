@@ -16,6 +16,11 @@ module Request::Statemachine
 
   module ClassMethods
     def redefine_aasm(options = {}, &block)
+      destroy_aasm
+      aasm(options, &block)
+    end
+
+    def destroy_aasm
       # Destroy all evidence of the statemachine we've inherited!  Ugly, but it works!
       old_machine = AASM::StateMachineStore.fetch(self) && AASM::StateMachineStore.fetch(self).machine(:default)
       if old_machine
@@ -28,9 +33,9 @@ module Request::Statemachine
           undef_method(:"#{state}?")
         end
       end
-      # Wipe out the inherited state machine. Can't use unregister.
+      # Wipe out the inherited state machine. Can't use unregister
+      # as we still need the state machine on the parent class.
       AASM::StateMachineStore.register(self, true)
-      aasm(options, &block)
     end
 
     # Determines the most likely event that should be fired when transitioning between the two states.  If there is

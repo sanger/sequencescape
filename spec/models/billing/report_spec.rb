@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'timecop'
 
-describe Billing::Report do
+describe Billing::Report, billing: true do
   before do
     Billing.configure do |config|
       config.fields = config.load_file(File.join('spec', 'data', 'billing'), 'fields')
@@ -16,8 +16,8 @@ describe Billing::Report do
     @request2 = create :sequencing_request_with_assets, request_type: (create :sequencing_request_type, name: 'Request Type 2')
     @request2.start!
     @request2.pass!
-    Billing::ItemsFactory.new(request: @request1).create_billing_items
-    Billing::ItemsFactory.new(request: @request2).create_billing_items
+    Billing::Factory::Base.new(request: @request1).create!
+    Billing::Factory::Base.new(request: @request2).create!
     fields = Billing.configuration.fields
     @report = Billing::Report.new(file_name: 'test_file', start_date: '06/04/2017', end_date: '08/04/2017', fields: fields)
   end
