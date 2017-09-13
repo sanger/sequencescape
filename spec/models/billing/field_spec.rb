@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Billing::Field do
+describe Billing::Field, billing: true do
   let(:field) { build :billing_field }
 
   it 'should have required attributes' do
