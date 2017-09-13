@@ -6,13 +6,15 @@ module Billing
       NO_PROJECT_COST_CODE = 'S0755'.freeze
 
       attr_accessor :request
+      attr_reader :billing_product
 
-      validates :request, :passed_date, presence: true
+      validates :request, :passed_date, :billing_product, presence: true
 
       def initialize(attributes = {})
         super
 
         self.passed_date = request
+        self.billing_product = request
       end
 
       def passed_date=(request)
@@ -25,17 +27,22 @@ module Billing
         @passed_date.strftime('%Y%m%d')
       end
 
-      def project_cost_code
-        NO_PROJECT_COST_CODE
+      def billing_product=(request)
+        return unless request.present?
+        @billing_product = request.billing_product
       end
 
-      # fin_product_code will be received from Agresso based on fin_product name
-      def fin_product_code
-        ''
+      def project_cost_code(cost_code = nil)
+        cost_code || NO_PROJECT_COST_CODE
       end
 
-      def fin_product_description
-        request.request_type.name # should be fin_product.description ?
+      # billing_product_code will be received from Agresso based on billing_product name
+      def billing_product_code
+        '' # AgressoProduct.billing_product_code(billing_product.name)
+      end
+
+      def billing_product_description
+        billing_product.name
       end
 
       def units(*_args)
@@ -48,8 +55,8 @@ module Billing
           request: request,
           project_cost_code: project_cost_code,
           units: units,
-          fin_product_code: fin_product_code,
-          fin_product_description: fin_product_description,
+          billing_product_code: billing_product_code,
+          billing_product_description: billing_product_description,
           request_passed_date: passed_date
         )
       end

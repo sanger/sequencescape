@@ -555,7 +555,7 @@ class Request < ActiveRecord::Base
   end
 
   def biffable?
-    billable?
+    billing_product.present?
   end
 end
 

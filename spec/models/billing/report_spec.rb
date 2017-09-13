@@ -10,14 +10,12 @@ describe Billing::Report, billing: true do
   end
 
   before(:each) do
-    @request1 = create :sequencing_request_with_assets, request_type: (create :sequencing_request_type, name: 'Request Type 1')
+    @request1 = create :sequencing_request_with_assets, billing_product: (create :billing_product, name: 'test_product_1')
     @request1.start!
     @request1.pass!
-    @request2 = create :sequencing_request_with_assets, request_type: (create :sequencing_request_type, name: 'Request Type 2')
+    @request2 = create :sequencing_request_with_assets, billing_product: (create :billing_product, name: 'test_product_2')
     @request2.start!
     @request2.pass!
-    Billing::Factory::Base.new(request: @request1).create!
-    Billing::Factory::Base.new(request: @request2).create!
     fields = Billing.configuration.fields
     @report = Billing::Report.new(file_name: 'test_file', start_date: '06/04/2017', end_date: '08/04/2017', fields: fields)
   end
@@ -31,7 +29,7 @@ describe Billing::Report, billing: true do
   it 'should find the right billing items, generate the right data' do
     expect(@report.valid?).to be true
     expect(@report.billing_items.count). to eq 2
-    data = "STD                      BI                       LM                       GLGR                       3730                     0223                     S0755                                                                                               ILL                                               XX                                                GBP                                           0                   0           100                                                         Request Type 1                                                                                                                                                                                                                                                 2017040720170407\nSTD                      BI                       LM                       GLGR                       3730                     0223                     S0755                                                                                               ILL                                               XX                                                GBP                                           0                   0           100                                                         Request Type 2                                                                                                                                                                                                                                                 2017040720170407\n" # rubocop:disable Metrics/LineLength
+    data = "STD                      BI                       LM                       GLGR                       3730                     0223                     S0755                                                                                               ILL                                               XX                                                GBP                                           0                   0           100                                                         test_product_1                                                                                                                                                                                                                                                 2017040720170407\nSTD                      BI                       LM                       GLGR                       3730                     0223                     S0755                                                                                               ILL                                               XX                                                GBP                                           0                   0           100                                                         test_product_2                                                                                                                                                                                                                                                 2017040720170407\n" # rubocop:disable Metrics/LineLength
     expect(@report.data).to eq data
   end
 

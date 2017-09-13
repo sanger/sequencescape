@@ -309,15 +309,15 @@ ActiveRecord::Schema.define(version: 20170905090034) do
   add_index "billing_events", ["reference"], name: "index_billing_events_on_reference", using: :btree
 
   create_table "billing_items", force: :cascade do |t|
-    t.integer  "request_id",              limit: 4
-    t.string   "project_cost_code",       limit: 255
-    t.string   "units",                   limit: 255
-    t.string   "fin_product_code",        limit: 255
-    t.string   "fin_product_description", limit: 255
-    t.string   "request_passed_date",     limit: 255
+    t.integer  "request_id",                  limit: 4
+    t.string   "project_cost_code",           limit: 255
+    t.string   "units",                       limit: 255
+    t.string   "billing_product_code",        limit: 255
+    t.string   "billing_product_description", limit: 255
+    t.string   "request_passed_date",         limit: 255
     t.datetime "reported_at"
-    t.datetime "created_at",                          null: false
-    t.datetime "updated_at",                          null: false
+    t.datetime "created_at",                              null: false
+    t.datetime "updated_at",                              null: false
   end
 
   add_index "billing_items", ["request_id"], name: "index_billing_items_on_request_id", using: :btree
@@ -1980,6 +1980,8 @@ ActiveRecord::Schema.define(version: 20170905090034) do
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
   end
+
+  add_index "work_order_types", ["name"], name: "index_work_order_types_on_name", unique: true, using: :btree
 
   create_table "work_orders", force: :cascade do |t|
     t.integer  "work_order_type_id", limit: 4, null: false

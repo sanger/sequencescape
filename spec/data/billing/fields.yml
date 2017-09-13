@@ -60,7 +60,7 @@ dim_3:
   position_to: 202
   right_justified: false
   order: 9
-  dynamic_attribute: :fin_product_code
+  dynamic_attribute: :billing_product_code
 dim_6:
   number_of_spaces: 25
   position_from: 253
@@ -109,7 +109,7 @@ descriptions:
   position_to: 745
   right_justified: false
   order: 16
-  dynamic_attribute: :fin_product_description
+  dynamic_attribute: :billing_product_description
 transaction_date:
   number_of_spaces: 8
   position_from: 746
