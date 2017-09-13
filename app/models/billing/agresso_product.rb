@@ -2,7 +2,7 @@
 class AgressoProduct < ActiveRecord::Base
   establish_connection :agresso_test_db
 
-  self.table_name = 'AGR55.UVIOPSPRODMAPPING'
+  self.table_name = 'AGRESSOTABLE'
 
   def self.product_code(product_name)
     product = find_by(fin_prod_name: product_name)
