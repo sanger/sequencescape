@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe 'Billing::Factories', billing: true do
-  let!(:request) { create :sequencing_request_with_assets }
+  let!(:request) { create :sequencing_request_with_assets, billing_product: (create :billing_product) }
 
   it 'is not valid without a request' do
     factory = Billing::Factory::Base.new
@@ -10,6 +10,13 @@ describe 'Billing::Factories', billing: true do
   end
 
   it 'is not valid unless the request has a passed date' do
+    factory = Billing::Factory::Base.new(request: request)
+    expect(factory).to_not be_valid
+    expect(factory.errors).to_not be_empty
+  end
+
+  it 'is not valid unless the request has a billing_product' do
+    request = create :sequencing_request_with_assets
     factory = Billing::Factory::Base.new(request: request)
     expect(factory).to_not be_valid
     expect(factory.errors).to_not be_empty
@@ -33,8 +40,8 @@ describe 'Billing::Factories', billing: true do
     expect(billing_item.request).to eq(factory.request)
     expect(billing_item.project_cost_code).to eq(factory.project_cost_code)
     expect(billing_item.units).to eq(factory.units.to_s)
-    expect(billing_item.fin_product_code).to eq(factory.fin_product_code)
-    expect(billing_item.fin_product_description).to eq(factory.fin_product_description)
+    expect(billing_item.billing_product_code).to eq(factory.billing_product_code)
+    expect(billing_item.billing_product_description).to eq(factory.billing_product_description)
     expect(billing_item.request_passed_date).to eq(factory.passed_date)
   end
 
@@ -71,11 +78,13 @@ describe 'Billing::Factories', billing: true do
     end
 
     it 'creates some billing items' do
+      Billing::Item.destroy_all
       request.target_asset.aliquots << create_list(:aliquot, 3)
       factory = Billing::Factory::Sequencing.new(request: request)
       factory.create!
       expect(Billing::Item.count).to eq(2)
       expect(Billing::Item.first.units).to eq '25'
+      expect(Billing::Item.first.project_cost_code).to eq(Billing::Factory::Base::NO_PROJECT_COST_CODE)
       expect(Billing::Item.last.units).to eq '75'
     end
   end

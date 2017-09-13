@@ -10,8 +10,8 @@ describe Billing::Item, billing: true do
     expect(billing_item.request.class).to eq Request
     expect(billing_item.project_cost_code).to eq 'cost_code'
     expect(billing_item.units).to eq '30'
-    expect(billing_item.fin_product_code).to eq 'L1000'
-    expect(billing_item.fin_product_description).to eq 'Some description'
+    expect(billing_item.billing_product_code).to eq 'L1000'
+    expect(billing_item.billing_product_description).to eq 'Some description'
     expect(billing_item.request_passed_date).to eq '20170727'
     expect(billing_item.reported_at).to eq nil
   end
@@ -21,8 +21,8 @@ describe Billing::Item, billing: true do
     item_attributes = { request: request,
                         project_cost_code: 'cost_code',
                         units: '30',
-                        fin_product_code: 'L1000',
-                        fin_product_description: 'Some description',
+                        billing_product_code: 'L1000',
+                        billing_product_description: 'Some description',
                         request_passed_date: '20170727' }
     billing_item = create :billing_item, item_attributes
     entry = "STD                      BI                       LM                       GLGR                       3730                     0223                     cost_code                L1000                                                                      ILL                                               XX                                                GBP                                           0                   0           30                                                          Some description                                                                                                                                                                                                                                               2017072720170727\n" #rubocop:disable all

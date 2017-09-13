@@ -4,8 +4,8 @@ class CreateBillingItems < ActiveRecord::Migration
       t.references :request, index: true, foreign_key: true
       t.string :project_cost_code
       t.string :units
-      t.string :fin_product_code
-      t.string :fin_product_description
+      t.string :billing_product_code
+      t.string :billing_product_description
       t.string :request_passed_date
       t.timestamp :reported_at
 

@@ -7,7 +7,6 @@ module Billing
 
       def initialize(attributes = {})
         super
-
         self.aliquots = request
       end
 
@@ -19,20 +18,16 @@ module Billing
       # TODO: create should be abstracted.
       def create!
         return unless valid?
-        aliquots.by_project_cost_code.each do |project_cost_code, count|
+        aliquots.by_project_cost_code.each do |cost_code, count|
           Billing::Item.create!(
             request: request,
-            project_cost_code: project_cost_code,
+            project_cost_code: project_cost_code(cost_code),
             units: units(count, aliquots.length),
-            fin_product_code: fin_product_code,
-            fin_product_description: fin_product_description,
+            billing_product_code: billing_product_code,
+            billing_product_description: billing_product_description,
             request_passed_date: passed_date
           )
         end
-      end
-
-      def project_cost_code(cost_code)
-        cost_code || super
       end
 
       def units(count, total)

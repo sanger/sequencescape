@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Billing report', js: true do
+feature 'Billing report', js: true, billing: true do
   before do
     Billing.configure do |config|
       config.fields = config.load_file(File.join('spec', 'data', 'billing'), 'fields')
