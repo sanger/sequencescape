@@ -1,5 +1,3 @@
-# We'll try and do this through the API with the live version
-
 namespace :billing do
   desc 'Create billing catalogues and products'
   task create_products: [:environment] do
