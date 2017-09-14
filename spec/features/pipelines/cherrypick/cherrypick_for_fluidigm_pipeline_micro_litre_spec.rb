@@ -53,6 +53,14 @@ feature 'cherrypick for fluidigm pipeline - micro litre', js: true do
   scenario 'required volume is 13' do
     login_user(user)
     visit pipeline_path(pipeline)
+    first(:button, 'Select all').click
+    find_all(:checkbox).each do |checkbox|
+      expect(checkbox).to be_checked
+    end
+    first(:button, 'Deselect all').click
+    find_all(:checkbox).each do |checkbox|
+      expect(checkbox).to_not be_checked
+    end
     check('Select DN1S for batch')
     check('Select DN10I for batch')
     check('Select DN5W for batch')

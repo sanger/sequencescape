@@ -185,11 +185,13 @@ module Tasks::CherrypickHandler
         plate.wells << wells
       end
 
-      plate_and_requests.each do |target_plate, requests|
-        Plate.with_requests(requests).each do |source_plate|
-          AssetLink::Job.create(source_plate, [target_plate])
+      links = plate_and_requests.flat_map do |target_plate, requests|
+        Plate.with_requests(requests).map do |source_plate|
+          [source_plate.id, target_plate.id]
         end
-      end
+      end.uniq
+
+      AssetLink::BuilderJob.create(links)
 
       # Now pass each of the requests we used and ditch any there weren't back into the inbox.
       used_requests.map(&:pass!)

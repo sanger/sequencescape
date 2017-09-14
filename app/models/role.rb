@@ -13,6 +13,10 @@ class Role < ActiveRecord::Base
     self.table_name = ('roles_users')
     belongs_to :role
     belongs_to :user
+
+    after_destroy :touch_authorizable
+
+    delegate :touch_authorizable, to: :role
   end
 
   has_many :user_role_bindings, class_name: 'Role::UserRole'
@@ -23,11 +27,13 @@ class Role < ActiveRecord::Base
   validates_presence_of :name
   scope :general_roles, -> { where('authorizable_type IS NULL') }
 
+  after_destroy :touch_authorizable
+
   def self.keys
     Role.all.map { |r| r.name }.uniq
   end
 
-  def before_destroy
+  def touch_authorizable
     authorizable.touch unless authorizable.nil?
   end
 
@@ -52,13 +58,6 @@ class Role < ActiveRecord::Base
           joins(:roles, :users)
             .where(roles: { name: role_name.to_s }, users: { id: user.id })
         }
-      end
-
-      def has_many_users_through_roles(name)
-        define_method(name.to_s.pluralize.to_sym) do
-          role = roles.find_by(name: name.to_s.singularize)
-          role.nil? ? [] : role.users
-        end
       end
     end
   end

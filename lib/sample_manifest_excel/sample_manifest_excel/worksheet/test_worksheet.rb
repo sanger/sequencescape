@@ -5,7 +5,7 @@ module SampleManifestExcel
     class TestWorksheet < Base
       include Helpers::Worksheet
 
-      attr_accessor :data, :no_of_rows, :study, :supplier, :count, :type, :validation_errors, :missing_columns, :manifest_type
+      attr_accessor :data, :no_of_rows, :study, :supplier, :count, :type, :validation_errors, :missing_columns, :manifest_type, :partial
 
       attr_reader :dynamic_attributes, :tags
 
@@ -40,7 +40,7 @@ module SampleManifestExcel
         first_to_last.each do |n|
           axlsx_worksheet.add_row do |row|
             columns.each do |column|
-              row.add_cell add_cell_data(column, n), type: column.type, style: styles[:unlocked].reference
+              row.add_cell add_cell_data(column, n, partial), type: column.type, style: styles[:unlocked].reference
             end
           end
         end
@@ -64,8 +64,13 @@ module SampleManifestExcel
         @assets ||= []
       end
 
-      def add_cell_data(column, n)
-        unless validation_errors.include?(:insert_size_from) && column.name == 'insert_size_from' && n == first_row
+      def add_cell_data(column, n, partial)
+        if partial && n == last_row
+          default_column = 'supplier_sample_name'
+          (data[column.name] || dynamic_attributes[n][column.name]) unless column.name == default_column
+        elsif validation_errors.include?(:insert_size_from) && column.name == 'insert_size_from' && n == first_row
+          nil
+        else
           data[column.name] || dynamic_attributes[n][column.name]
         end
       end

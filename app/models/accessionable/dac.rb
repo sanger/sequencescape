@@ -9,7 +9,7 @@ class Accessionable::Dac < Accessionable::Base
   def initialize(study)
     @study = study
     @name = study.dac_refname
-    @contacts = study.send('Data Access Contacts').map do |contact|
+    @contacts = study.data_access_contacts.map do |contact|
       {
         email: contact.email,
         name: contact.name,

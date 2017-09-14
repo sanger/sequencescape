@@ -20,7 +20,7 @@
       <tr>
         <td><%= link_to(h(asset.display_name), asset_path(asset)) %></td>
         <td>
-          <% if asset.is_a?(Aliquot::Receptacle) and not asset.aliquots.empty? %>
+          <% if asset.is_a?(Receptacle) and not asset.aliquots.empty? %>
               <% asset.aliquots.each do |aliquot| %>
                 <%= link_to aliquot.sample.name, sample_path(aliquot.sample) %>
               <% end %>

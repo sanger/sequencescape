@@ -35,7 +35,7 @@ FactoryGirl.define do
     end
   end
 
-  factory :aliquot_receptacle, class: Aliquot::Receptacle, aliases: [:receptacle] do
+  factory :receptacle, class: Receptacle do
   end
 
   factory :event do
@@ -84,17 +84,14 @@ FactoryGirl.define do
   end
 
   factory :study do
-    name { |_a| generate :study_name }
+    name { generate :study_name }
     user
     blocked              false
     state                'active'
     enforce_data_release false
     enforce_accessioning false
     reference_genome     { ReferenceGenome.find_by(name: '') }
-
-    # study_metadata
-
-    after(:build) { |study| study.study_metadata = create(:study_metadata, study: study) }
+    study_metadata
   end
 
   factory  :budget_division do
@@ -156,6 +153,12 @@ FactoryGirl.define do
   factory :request_metadata, class: Request::Metadata do
     read_length 76
     customer_accepts_responsibility false
+  end
+
+  factory :request_traction_grid_ion_metadata, class: Request::Traction::GridIon::Metadata do
+    library_type 'Rapid'
+    data_type 'basecalls and raw data'
+    association(:owner, factory: :request_traction_grid_ion)
   end
 
   #  Automatically generated request types
@@ -355,7 +358,7 @@ FactoryGirl.define do
     end
 
     factory :manager do
-      roles { |role| [role.association(:manager_role, authorizable: authorizable)] }
+      roles { |role| Array(authorizable).map { |auth| role.association(:manager_role, authorizable: auth) } }
 
       transient do
         authorizable { create :study }
@@ -419,16 +422,11 @@ FactoryGirl.define do
   end
 
   factory :asset_group_asset do
-    association(:asset, factory: :aliquot_receptacle)
+    association(:asset, factory: :receptacle)
     asset_group
   end
 
   factory :fragment do
-  end
-
-  factory(:new_stock_tube_purpose, class: IlluminaHtp::StockTubePurpose) do |_p|
-    name { generate :purpose_name }
-    target_type 'StockMultiplexedLibraryTube'
   end
 
   factory(:request_purpose) do
@@ -567,7 +565,7 @@ FactoryGirl.define do
     transient do
       oligo { generate :oligo }
     end
-    name 'Tag 2 layout template'
+    sequence(:name) { |n| "Tag 2 layout template #{n}" }
     tag { |tag| tag.association :tag, oligo: oligo }
   end
 

@@ -98,7 +98,7 @@ class Asset < ActiveRecord::Base
   scope :include_for_show, ->() { includes(requests: :request_metadata) }
 
   # Assets usually have studies through aliquots, which is only relevant to
-  # Aliquot::Receptacles. This method just ensures all assets respond to studies
+  # Receptacles. This method just ensures all assets respond to studies
   def studies
     Study.none
   end
@@ -453,9 +453,14 @@ class Asset < ActiveRecord::Base
     AssetLink.create_edge!(parent, self)
   end
 
-  def attach_tag(tag)
-    tag.tag!(self) if tag.present?
+  def attach_tag(tag, tag2 = nil)
+    tags = { tag: tag, tag2: tag2 }.compact
+    return if tags.empty?
+    raise StandardError, 'Cannot tag an empty asset'   if aliquots.empty?
+    raise StandardError, 'Cannot tag multiple samples' if aliquots.size > 1
+    aliquots.first.update_attributes!(tags)
   end
+  alias attach_tags attach_tag
 
   def requests_status(request_type)
     requests.order('id ASC').where(request_type: request_type).pluck(:state)
@@ -498,7 +503,7 @@ class Asset < ActiveRecord::Base
     false
   end
 
-  # See Aliquot::Receptacle for handling of assets with contents
+  # See Receptacle for handling of assets with contents
   def tag_count
     nil
   end

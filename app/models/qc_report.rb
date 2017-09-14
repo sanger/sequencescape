@@ -81,7 +81,7 @@ class QcReport < ActiveRecord::Base
     # You can trigger a synchronous report manually by calling #generate!
     def generate_report
       begin
-        study.each_well_for_qc_report_in_batches(exclude_existing, product_criteria) do |assets|
+        study.each_well_for_qc_report_in_batches(exclude_existing, product_criteria, (plate_purposes.empty? ? nil : plate_purposes)) do |assets|
           # If there are some wells of interest, we get them in a list
           connected_wells = Well.hash_stock_with_targets(assets, product_criteria.target_plate_purposes)
 
@@ -116,6 +116,8 @@ class QcReport < ActiveRecord::Base
   has_one :product, through: :product_criteria
   belongs_to :study
   has_many :qc_metrics
+
+  serialize :plate_purposes, Array
 
   before_validation :generate_report_identifier, if: :identifier_required?
 
