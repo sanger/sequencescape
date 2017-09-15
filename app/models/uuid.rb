@@ -122,10 +122,13 @@ class Uuid < ActiveRecord::Base
   end
 
   def self.translate_uuids_to_ids_in_params(params)
-    params.keys.each do |key|
-      next unless params[key].match?(ValidRegexp)
-      params[key] = find_id(params[key])
+    params.transform_values! do |value|
+      uuid?(value) ? find_id(value) : value
     end
+  end
+
+  def self.uuid?(value)
+    value.is_a?(String) && value.match?(ValidRegexp)
   end
 
   def self.find_uuid_instance!(resource_type, resource_id)
