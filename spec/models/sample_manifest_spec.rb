@@ -4,14 +4,14 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
-require 'test_helper'
+require 'rails_helper'
 
-class SampleManifestTest < ActiveSupport::TestCase
+RSpec.describe SampleManifest, type: :model do
   context '#generate' do
     setup do
-      barcode = mock('barcode')
-      barcode.stubs(:barcode).returns(23)
-      PlateBarcode.stubs(:create).returns(barcode)
+      barcode = double('barcode')
+      allow(barcode).to receive(:barcode).and_return(23)
+      allow(PlateBarcode).to receive(:create).and_return(barcode)
 
       @study = create :study, name: 'CARD1'
       @study.study_metadata.study_name_abbreviation = 'CARD1'
@@ -32,7 +32,7 @@ class SampleManifestTest < ActiveSupport::TestCase
             @manifest.generate
           end
 
-          should "create #{count} plate(s) and #{count * 96} wells and samples in the right study" do
+          it "should create #{count} plate(s) and #{count * 96} wells and samples in the right study" do
             assert_equal (count * 96), Sample.count - @initial_samples
             assert_equal (count * 1), Plate.count - @initial_plates
             assert_equal (count * 96), Well.count - @initial_wells
@@ -49,7 +49,7 @@ class SampleManifestTest < ActiveSupport::TestCase
           @manifest.generate
         end
 
-        should 'create a plate of the correct purpose' do
+        it 'should create a plate of the correct purpose' do
           assert_equal @purpose, Plate.last.purpose
         end
       end
@@ -64,13 +64,13 @@ class SampleManifestTest < ActiveSupport::TestCase
           @manifest.generate
         end
 
-        should 'create 1 tubes and samples in the right study' do
+        it 'should create 1 tubes and samples in the right study' do
           assert_equal 1, Sample.count - @initial_samples
           assert_equal 1, SampleTube.count - @initial_tubes
           assert_equal 1, @study.samples.count - @initial_in_study
         end
 
-        should 'create create asset requests when jobs are processed' do
+        it 'should create create asset requests when jobs are processed' do
           # Not entirely certain this behaviour is all that useful to us.
           Delayed::Worker.new.work_off
           assert_equal SampleTube.last.requests.count, 1
@@ -92,7 +92,7 @@ class SampleManifestTest < ActiveSupport::TestCase
             @manifest.generate
           end
 
-          should "create 1 tubes(s) and #{count} samples in the right study" do
+          it "should create 1 tubes(s) and #{count} samples in the right study" do
             assert_equal (count), Sample.count                 - @initial_samples
             # We need to create library tubes as we have downstream dependencies that assume a unique library tube
             assert_equal (count), LibraryTube.count            - @initial_library_tubes
@@ -117,7 +117,7 @@ class SampleManifestTest < ActiveSupport::TestCase
           @manifest.generate
         end
 
-        should 'create 1 tubes and sample in the right study' do
+        it 'should create 1 tubes and sample in the right study' do
           assert_equal 1, Sample.count - @initial_samples
           # We need to create library tubes as we have downstream dependencies that assume a unique library tube
           assert_equal 1, LibraryTube.count - @initial_library_tubes
@@ -142,7 +142,7 @@ class SampleManifestTest < ActiveSupport::TestCase
             @manifest.generate
           end
 
-          should "create #{count} tubes(s) and #{count} samples in the right study" do
+          it "should create #{count} tubes(s) and #{count} samples in the right study" do
             assert_equal (count), Sample.count - @initial_samples
             # We need to create library tubes as we have downstream dependencies that assume a unique library tube
             assert_equal (count), SampleTube.count - @initial_sample_tubes
@@ -165,22 +165,22 @@ class SampleManifestTest < ActiveSupport::TestCase
       setup do
         @well_with_sample_and_without_plate = create :well_with_sample_and_without_plate
       end
-      should 'not try to add an event to a plate' do
-        assert_nothing_raised do
+      it 'should not try to add an event to a plate' do
+        expect do
           SampleManifest::PlateBehaviour::Core.new(SampleManifest.new).updated_by!(
             @user, [
               @well_with_sample_and_plate.primary_aliquot.sample,
               @well_with_sample_and_without_plate.primary_aliquot.sample
             ]
           )
-        end
+        end.not_to raise_error
       end
     end
     context 'where a well has a plate' do
-      should 'add an event to the plate' do
+      it 'should add an event to the plate' do
         SampleManifest::PlateBehaviour::Core.new(SampleManifest.new).updated_by!(@user, [@well_with_sample_and_plate.primary_aliquot.sample])
         assert_equal Event.last, @well_with_sample_and_plate.plate.events.last
-        assert_not_nil @well_with_sample_and_plate.plate.events.last
+        expect(@well_with_sample_and_plate.plate.events.last).not_to be_nil
       end
     end
   end
@@ -192,7 +192,7 @@ class SampleManifestTest < ActiveSupport::TestCase
   context 'creating extremely large manifests' do
     setup do
       # Stub out the behaviour of PlateBarcode so that it can be "fudged"
-      PlateBarcode.stubs(:create).returns(Object.new.tap do |fudged_barcode|
+      allow(PlateBarcode).to receive(:create).and_return(Object.new.tap do |fudged_barcode|
         def fudged_barcode.barcode
           @barcode = (@barcode || 0) + 1
         end
@@ -202,7 +202,7 @@ class SampleManifestTest < ActiveSupport::TestCase
       @manifest.generate
     end
 
-    should 'have one job per plate' do
+    it 'should have one job per plate' do
       assert_equal(@manifest.count, Delayed::Job.count, 'number of delayed jobs does not match number of plates')
     end
 
@@ -212,7 +212,7 @@ class SampleManifestTest < ActiveSupport::TestCase
         Delayed::Job.first.invoke_job
       end
 
-      should 'change Well.count by 96' do
+      it 'should change Well.count by 96' do
         assert_equal 96, Sample.count - @well_count, 'Expected Well.count to change by 96'
       end
     end
