@@ -38,6 +38,9 @@ RSpec.describe SampleManifest, type: :model do
             assert_equal (count * 96), Well.count - @initial_wells
             assert_equal (count * 96), @study.samples.count - @initial_in_study
             assert_equal (count * 96), Messenger.count - @initial_messenger_count
+            # This test is a bit overloaded for performance reasons.
+            expect(@manifest.labware.count).to eq(count)
+            expect(@manifest.labware.first).to be_a(Plate)
           end
         end
       end
@@ -51,30 +54,6 @@ RSpec.describe SampleManifest, type: :model do
 
         it 'should create a plate of the correct purpose' do
           assert_equal @purpose, Plate.last.purpose
-        end
-      end
-
-      context 'tubes' do
-        setup do
-          @initial_samples  = Sample.count
-          @initial_tubes    = SampleTube.count
-          @initial_in_study = @study.samples.count
-
-          @manifest = create :sample_manifest, study: @study, count: 1, asset_type: '1dtube'
-          @manifest.generate
-        end
-
-        it 'should create 1 tubes and samples in the right study' do
-          assert_equal 1, Sample.count - @initial_samples
-          assert_equal 1, SampleTube.count - @initial_tubes
-          assert_equal 1, @study.samples.count - @initial_in_study
-        end
-
-        it 'should create create asset requests when jobs are processed' do
-          # Not entirely certain this behaviour is all that useful to us.
-          Delayed::Worker.new.work_off
-          assert_equal SampleTube.last.requests.count, 1
-          assert SampleTube.last.requests.first.is_a?(CreateAssetRequest)
         end
       end
     end
@@ -100,31 +79,49 @@ RSpec.describe SampleManifest, type: :model do
             assert_equal (1),     MultiplexedLibraryTube.count - @initial_mx_tubes
             assert_equal (count), @study.samples.count         - @initial_in_study
           end
+
+          describe '#labware' do
+            subject { @manifest.labware }
+            it 'has one element' do
+              expect(subject.count).to eq(1)
+            end
+            it 'is a multiplexed library tube' do
+              expect(subject.first).to be_a(MultiplexedLibraryTube)
+            end
+          end
         end
       end
     end
 
     context 'for a library' do
-      context 'library tubes' do
-        setup do
-          @initial_samples       = Sample.count
-          @initial_library_tubes = LibraryTube.count
-          @initial_mx_tubes      = MultiplexedLibraryTube.count
-          @initial_in_study      = @study.samples.count
-          @initial_tubes = SampleTube.count
+      setup do
+        @initial_samples       = Sample.count
+        @initial_library_tubes = LibraryTube.count
+        @initial_mx_tubes      = MultiplexedLibraryTube.count
+        @initial_in_study      = @study.samples.count
+        @initial_tubes = SampleTube.count
 
-          @manifest = create :sample_manifest, study: @study, count: 1, asset_type: 'library'
-          @manifest.generate
+        @manifest = create :sample_manifest, study: @study, count: 1, asset_type: 'library'
+        @manifest.generate
+      end
+
+      it 'should create 1 tubes and sample in the right study' do
+        assert_equal 1, Sample.count - @initial_samples
+        # We need to create library tubes as we have downstream dependencies that assume a unique library tube
+        assert_equal 1, LibraryTube.count - @initial_library_tubes
+        assert LibraryTube.last.aliquots.first.library_id
+        assert_equal @initial_mx_tubes, MultiplexedLibraryTube.count
+        assert_equal 1, @study.samples.count - @initial_in_study
+        assert_equal @initial_tubes, SampleTube.count
+      end
+
+      describe '#labware' do
+        subject { @manifest.labware }
+        it 'has one element' do
+          expect(subject.count).to eq(1)
         end
-
-        it 'should create 1 tubes and sample in the right study' do
-          assert_equal 1, Sample.count - @initial_samples
-          # We need to create library tubes as we have downstream dependencies that assume a unique library tube
-          assert_equal 1, LibraryTube.count - @initial_library_tubes
-          assert LibraryTube.last.aliquots.first.library_id
-          assert_equal @initial_mx_tubes, MultiplexedLibraryTube.count
-          assert_equal 1, @study.samples.count - @initial_in_study
-          assert_equal @initial_tubes, SampleTube.count
+        it 'is a library tube' do
+          expect(subject.first).to be_a(LibraryTube)
         end
       end
     end
@@ -149,6 +146,21 @@ RSpec.describe SampleManifest, type: :model do
             refute SampleTube.last.aliquots.first.library_id
             assert_equal (count), @study.samples.count - @initial_in_study
             assert_equal count, Messenger.count - @initial_messenger_count
+          end
+          it 'should create create asset requests when jobs are processed' do
+            # Not entirely certain this behaviour is all that useful to us.
+            Delayed::Worker.new.work_off
+            assert_equal SampleTube.last.requests.count, 1
+            assert SampleTube.last.requests.first.is_a?(CreateAssetRequest)
+          end
+          describe '#labware' do
+            subject { @manifest.labware }
+            it 'has one element' do
+              expect(subject.count).to eq(count)
+            end
+            it 'is a sample tube' do
+              expect(subject.first).to be_a(SampleTube)
+            end
           end
         end
       end

@@ -63,7 +63,7 @@ class SampleManifest < ActiveRecord::Base
   # and can even prevent manifest resubmission.
   before_save :truncate_errors
 
-  delegate :printables, :acceptable_purposes, to: :core_behaviour
+  delegate :printables, :acceptable_purposes, :labware, to: :core_behaviour
 
   def truncate_errors
     if last_errors && last_errors.join.length > LIMIT_ERROR_LENGTH

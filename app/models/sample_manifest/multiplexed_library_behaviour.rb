@@ -49,6 +49,10 @@ module SampleManifest::MultiplexedLibraryBehaviour
       @mx_tube || raise(MxLibraryTubeException.new, 'Mx tube not found')
     end
 
+    def labware
+      [multiplexed_library_tube]
+    end
+
     def printables
       multiplexed_library_tube
     end
