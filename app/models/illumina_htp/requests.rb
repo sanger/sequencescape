@@ -9,15 +9,15 @@ module IlluminaHtp::Requests
     fragment_size_details(:no_default, :no_default)
 
     const_get(:Metadata).class_eval do
-      attribute(:pcr_cycles, integer: true, minimum: 0, validator: true)
+      custom_attribute(:pcr_cycles, integer: true, minimum: 0, validator: true)
     end
 
     # Ensure that the bait library information is also included in the pool information.
     def update_pool_information(pool_information)
       super
-      pool_information[:target_tube_purpose] = target_tube.purpose.uuid if target_tube
-      pool_information[:request_type] = request_type.key
       pool_information[:pcr_cycles] = request_metadata.pcr_cycles
+      pool_information[:request_type] = request_type.key
+      pool_information[:for_multiplexing] = request_type.for_multiplexing?
     end
 
     delegate :role, to: :order
@@ -65,6 +65,12 @@ module IlluminaHtp::Requests
 
     def failed_downstream!
       retrospective_fail! if passed?
+    end
+
+    # Ensure that the bait library information is also included in the pool information.
+    def update_pool_information(pool_information)
+      super
+      pool_information[:target_tube_purpose] = target_tube.purpose.uuid if target_tube
     end
   end
 

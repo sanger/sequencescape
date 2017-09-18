@@ -67,7 +67,6 @@
     $(document.body).on("ajaxDomUpdate", function() {
       var tables = $("table.sortable");
       tables.tablesorter(TABLE_SORTER_CONFIG);
-      //tables.tablesorterPager(TABLE_SORTER_PAGER_CONFIG);
       tables.trigger("sortReset");
     });
     $(document.body).trigger("ajaxDomUpdate");

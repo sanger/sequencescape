@@ -17,7 +17,7 @@ class Admin::UsersController < ApplicationController
 
   def edit
     @user_roles = @user.roles.where(name: ['administrator', 'manager', 'internal'])
-    @all_roles = Role.select(:name).uniq.pluck(:name)
+    @all_roles = Role.select(:name).distinct.pluck(:name)
     @users_roles = @user.study_and_project_roles.order(name: :asc)
     @studies = Study.order(:id)
     @projects = Project.order(:id)

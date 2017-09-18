@@ -19,7 +19,7 @@ class SubmissionsController < ApplicationController
   end
 
   def create
-    @presenter = Submission::SubmissionCreator.new(current_user, params[:submission])
+    @presenter = Submission::SubmissionCreator.new(current_user, params[:submission].to_unsafe_h)
 
     if @presenter.save
       render partial: 'saved_order',

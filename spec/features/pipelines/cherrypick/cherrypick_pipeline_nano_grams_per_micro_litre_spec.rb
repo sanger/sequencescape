@@ -170,7 +170,15 @@ feature 'cherrypick pipeline - nano grams per micro litre', js: true do
   end
 
   def fetch_table(selector)
-    find(selector).all('tr').map { |row| row.all('th,td').map { |cell| cell.text.squish } }
+    find(selector).all('tr').map do |row|
+      row.all('th,td').map do |cell|
+        if cell.all('option').present?
+          cell.all('option').collect(&:text).join(' ')
+        else
+          cell.text.squish
+        end
+      end
+    end
   end
 
   def compare_lines_in_mri(tecan_file_line, generated_line)

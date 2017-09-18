@@ -1,4 +1,4 @@
-class AddWorkOrderTypes < ActiveRecord::Migration
+class AddWorkOrderTypes < ActiveRecord::Migration[5.1]
   def change
     create_table :work_order_types do |t|
       t.string :name, null: false, index: { unique: true }
