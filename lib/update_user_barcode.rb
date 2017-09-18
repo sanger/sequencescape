@@ -24,9 +24,9 @@ def read_user_id
   open_barcode_stream do |f|
     while l = f.gets
       l.strip!
-      break if /rows selected/i =~l
-      break if /^$/ =~l
-      raise Exception.new, "'#{l}' is not a valid id" unless /^\d+$/ =~l
+      break if /rows selected/i.match?(l)
+      break if /^$/.match?(l)
+      raise Exception.new, "'#{l}' is not a valid id" unless /^\d+$/.match?(l)
       id = l.to_i
       user = f.gets.strip
 

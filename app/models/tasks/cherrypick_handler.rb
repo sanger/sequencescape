@@ -158,8 +158,8 @@ module Tasks::CherrypickHandler
           row_params.each do |col, request_id|
             request, well =
               case
-              when request_id.blank?           then next
-              when request_id.match(/control/) then create_control_request_and_add_to_batch(task, request_id)
+              when request_id.blank? then next
+              when request_id.match?(/control/) then create_control_request_and_add_to_batch(task, request_id)
               else request_and_well[request_id.gsub('well_', '').to_i] or raise ActiveRecord::RecordNotFound, "Cannot find request #{request_id.inspect}"
               end
 
