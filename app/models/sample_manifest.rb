@@ -50,6 +50,9 @@ class SampleManifest < ActiveRecord::Base
   belongs_to :project
   belongs_to :user
   belongs_to :purpose
+  has_many :samples
+  accepts_nested_attributes_for :samples
+
   serialize :last_errors
   serialize :barcodes
 
@@ -64,6 +67,7 @@ class SampleManifest < ActiveRecord::Base
   before_save :truncate_errors
 
   delegate :printables, :acceptable_purposes, :labware, to: :core_behaviour
+  delegate :name, to: :supplier, prefix: true
 
   def truncate_errors
     if last_errors && last_errors.join.length > LIMIT_ERROR_LENGTH

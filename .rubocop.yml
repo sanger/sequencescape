@@ -65,3 +65,7 @@ Rails/DynamicFindBy:
 
 Style/IndentArray:
   EnforcedStyle: consistent
+
+# Temporarily disabled while we switch back from the nested style to the inline
+Style/ClassAndModuleChildren:
+  Enabled: false

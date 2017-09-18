@@ -72,12 +72,12 @@ RSpec.describe SampleManifest, type: :model do
           end
 
           it "should create 1 tubes(s) and #{count} samples in the right study" do
-            assert_equal (count), Sample.count                 - @initial_samples
+            assert_equal count, Sample.count                 - @initial_samples
             # We need to create library tubes as we have downstream dependencies that assume a unique library tube
-            assert_equal (count), LibraryTube.count            - @initial_library_tubes
+            assert_equal count, LibraryTube.count            - @initial_library_tubes
             assert LibraryTube.last.aliquots.first.library_id
-            assert_equal (1),     MultiplexedLibraryTube.count - @initial_mx_tubes
-            assert_equal (count), @study.samples.count         - @initial_in_study
+            assert_equal 1,     MultiplexedLibraryTube.count - @initial_mx_tubes
+            assert_equal count, @study.samples.count         - @initial_in_study
           end
 
           describe '#labware' do
@@ -140,11 +140,11 @@ RSpec.describe SampleManifest, type: :model do
           end
 
           it "should create #{count} tubes(s) and #{count} samples in the right study" do
-            assert_equal (count), Sample.count - @initial_samples
+            assert_equal count, Sample.count - @initial_samples
             # We need to create library tubes as we have downstream dependencies that assume a unique library tube
-            assert_equal (count), SampleTube.count - @initial_sample_tubes
+            assert_equal count, SampleTube.count - @initial_sample_tubes
             refute SampleTube.last.aliquots.first.library_id
-            assert_equal (count), @study.samples.count - @initial_in_study
+            assert_equal count, @study.samples.count - @initial_in_study
             assert_equal count, Messenger.count - @initial_messenger_count
           end
           it 'should create create asset requests when jobs are processed' do
