@@ -19,7 +19,7 @@ namespace :test do
           FactoryGirl.lint
           puts 'Linted'
         ensure
-          DatabaseCleaner.clean
+          DatabaseCleaner.clean, except: %w(ar_internal_metadata)
         end
 
       else
