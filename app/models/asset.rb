@@ -53,10 +53,11 @@ class Asset < ActiveRecord::Base
   has_many :asset_groups, through: :asset_group_assets
   has_many :asset_audits
   has_many :volume_updates, foreign_key: :target_id
-  has_many :events_on_requests, through: :requests, source: :events
 
   # TODO: Remove 'requests' and 'source_request' as they are abiguous
+  # :requests should go before :events_on_requests, through: :requests
   has_many :requests
+  has_many :events_on_requests, through: :requests, source: :events
   has_one  :source_request,     ->() { includes(:request_metadata) }, class_name: 'Request', foreign_key: :target_asset_id
   has_many :requests_as_source, ->() { includes(:request_metadata) },  class_name: 'Request', foreign_key: :asset_id
   has_many :requests_as_target, ->() { includes(:request_metadata) },  class_name: 'Request', foreign_key: :target_asset_id
@@ -95,7 +96,7 @@ class Asset < ActiveRecord::Base
 
   scope :recent_first, -> { order(id: :desc) }
 
-  scope :include_for_show, ->() { includes(requests: :request_metadata) }
+  scope :include_for_show, ->() { includes({ requests: [:request_type, :request_metadata] }, requests_as_target: [:request_type, :request_metadata]) }
 
   # Assets usually have studies through aliquots, which is only relevant to
   # Receptacles. This method just ensures all assets respond to studies
@@ -125,7 +126,7 @@ class Asset < ActiveRecord::Base
     arguments = { name: "%#{query}%" }
 
     # The entire string consists of one of more numeric characters, treat it as an id or barcode
-    if /\A\d+\z/ === query
+    if /\A\d+\z/.match?(query)
       search << ' OR (assets.id = :id) OR (assets.barcode = :barcode)'
       arguments[:id] = query.to_i
       arguments[:barcode] = query.to_s
@@ -426,7 +427,7 @@ class Asset < ActiveRecord::Base
     elsif match = /\A([A-z]{2})([0-9]{1,7})\w{0,1}\z/.match(source_barcode) # Human Readable
       prefix = BarcodePrefix.find_by(prefix: match[1])
       find_by(barcode: match[2], barcode_prefix_id: prefix.id)
-    elsif /\A[0-9]{1,7}\z/ =~ source_barcode # Just a number
+    elsif /\A[0-9]{1,7}\z/.match?(source_barcode) # Just a number
       find_by(barcode: source_barcode)
     end
   end

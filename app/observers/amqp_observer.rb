@@ -223,7 +223,8 @@ class ActiveRecord::Base
     def transaction_with_amqp(opts = {}, &block)
       transaction_without_amqp(opts) { AmqpObserver.instance.transaction(&block) }
     end
-    alias_method_chain(:transaction, :amqp)
+    alias transaction_without_amqp transaction
+    alias transaction transaction_with_amqp
   end
   def routing_key;
     nil;

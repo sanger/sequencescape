@@ -62,7 +62,7 @@ end
 
 Given /^"([^\"]+)" of (the plate .+) have been (submitted to "[^"]+")$/ do |range, plate, template|
   request_options = { read_length: 100, fragment_size_required_from: 100, fragment_size_required_to: 200 }
-  request_options[:bait_library_name] = 'Human all exon 50MB' if template.name =~ /Pulldown I?SC/
+  request_options[:bait_library_name] = 'Human all exon 50MB' if template.name.match?(/Pulldown I?SC/)
 
   create_submission_of_assets(
     template,
@@ -73,7 +73,7 @@ end
 
 Given /^"([^\"]+)" of (the plate .+) and (the plate .+) both been (submitted to "[^"]+")$/ do |range, plate, plate2, template|
   request_options = { read_length: 100, fragment_size_required_from: 100, fragment_size_required_to: 200 }
-  request_options[:bait_library_name] = 'Human all exon 50MB' if template.name =~ /Pulldown I?SC/
+  request_options[:bait_library_name] = 'Human all exon 50MB' if template.name.match?(/Pulldown I?SC/)
   create_submission_of_assets(
     template,
     plate.wells.select(&range.method(:include?)) + plate2.wells.select(&range.method(:include?)),

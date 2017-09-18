@@ -17,24 +17,18 @@ describe LabwhereReceptionsController do
     let(:sample_tube) { create :sample_tube, barcode: 1 }
     let(:location) { create :location }
 
-    setup do
-      @controller = LabwhereReceptionsController.new
-      @request    = ActionController::TestRequest.new
-      @response   = ActionController::TestResponse.new
-    end
-
     shared_examples 'a reception' do
       setup do
         expect(LabWhereClient::Scan).to receive(:create).with(
           location_barcode: location_barcode, user_code: user.barcode, labware_barcodes: [plate.ean13_barcode, plate_2.ean13_barcode, sample_tube.ean13_barcode]
         ).and_return(MockResponse.new(true, ''))
 
-        post :create, labwhere_reception: {
+        post :create, params: { labwhere_reception: {
           barcodes: [plate.ean13_barcode, plate_2.ean13_barcode, sample_tube.ean13_barcode],
           location_id: location.id,
           user_code: user.barcode,
           location_barcode: location_barcode
-        }
+        }}
       end
 
       it 'Move items in sequencescape' do

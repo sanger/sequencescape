@@ -246,7 +246,7 @@ class StudiesController < ApplicationController
     @study = Study.find(params[:id])
     respond_to do |format|
       xml_text = @study.accession_service.accession_study_xml(@study)
-      format.xml { render(text: xml_text) }
+      format.xml { render(xml: xml_text) }
     end
   end
 
@@ -254,7 +254,7 @@ class StudiesController < ApplicationController
     @study = Study.find(params[:id])
     respond_to do |format|
       xml_text = @study.accession_service.accession_policy_xml(@study)
-      format.xml { render(text: xml_text) }
+      format.xml { render(xml: xml_text) }
     end
    end
 
@@ -262,7 +262,7 @@ class StudiesController < ApplicationController
     @study = Study.find(params[:id])
     respond_to do |format|
       xml_text = @study.accession_service.accession_dac_xml(@study)
-      format.xml { render(text: xml_text) }
+      format.xml { render(xml: xml_text) }
     end
    end
 

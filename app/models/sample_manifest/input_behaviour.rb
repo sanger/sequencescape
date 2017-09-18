@@ -43,7 +43,11 @@ module SampleManifest::InputBehaviour
       extend ValidationStateGuard
       validation_guard(:override_previous_manifest)
 
-      alias_method_chain(:update_attributes!, :sample_manifest)
+      # Ensure that we can update the samples of a manifest
+      has_many :samples
+      accepts_nested_attributes_for :samples
+      alias_method(:update_attributes_without_sample_manifest!, :update_attributes!)
+      alias_method(:update_attributes!, :update_attributes_with_sample_manifest!)
 
       # Can be removed once the initial changes have gone live.
       # Ensures code remains backwards compatible for existing jobs.

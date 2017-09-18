@@ -22,7 +22,8 @@ class User < ActiveRecord::Base
   has_many :requests
   has_many :comments
   has_many :settings
-  has_many :roles
+  has_many :user_role_bindings, class_name: 'Role::UserRole'
+  has_many :roles, through: :user_role_bindings
   has_many :submissions
   has_many :project_roles, ->() { where(authorizable_type: 'Project') }, class_name: 'Role'
   has_many :study_roles,   ->() { where(authorizable_type: 'Study') },   class_name: 'Role'
@@ -45,7 +46,7 @@ class User < ActiveRecord::Base
 
   acts_as_authorized_user
 
-  scope :owners, ->() { where.not(last_name: nil).joins(:roles).where(roles: { name: 'owner' }).order(:last_name).uniq }
+  scope :owners, ->() { where.not(last_name: nil).joins(:roles).where(roles: { name: 'owner' }).order(:last_name).distinct }
 
   attr_accessor :password
 
@@ -255,6 +256,6 @@ class User < ActiveRecord::Base
     end
 
     def password_required?
-      crypted_password.blank? || !password.blank?
+      crypted_password.blank? || password.present?
     end
 end

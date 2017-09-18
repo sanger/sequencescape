@@ -252,7 +252,7 @@ class CherrypickTask < Task
   private :get_well_from_control_param
 
   def create_control_request_from_well(control_param)
-    return nil unless control_param =~ /control/
+    return nil unless control_param.match?(/control/)
     well = get_well_from_control_param(control_param)
     return nil if well.nil?
     generate_control_request(well)

@@ -42,9 +42,11 @@ describe BulkSubmission, with: :uploader do
     let(:number_submissions_created) { subject.completed_submissions.first.length }
     let(:generated_submissions) { Submission.find(subject.completed_submissions.first) }
     let(:generated_submission) { generated_submissions.first }
+    let(:submission_template) { create :limber_wgs_submission_template, name: 'limber wgs' }
+    let(:request_type) { submission_template.submission_parameters[:request_type_ids_list].first.first.to_s }
 
     before(:each) do
-      create :limber_wgs_submission_template, name: 'limber wgs'
+      submission_template
     end
 
     let(:expected_request_options) do
@@ -54,7 +56,7 @@ describe BulkSubmission, with: :uploader do
         'pcr_cycles' => '5',
         'read_length' => '100',
         'library_type' => 'Standard',
-        'multiplier' => { '39' => 1 }
+        'multiplier' => { request_type => 1 }
       }
     end
 
