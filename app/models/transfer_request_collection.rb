@@ -15,7 +15,7 @@ class TransferRequestCollection < ActiveRecord::Base
   # a nested has_many association. This makes the handling of
   # class specific attributes, such as barcodes, a bit cumbersome,
   # especially when we are trying to eager load that information.
-  has_many :target_tubes, -> { uniq }, through: :transfer_requests, source: :target_asset, class_name: 'Tube'
+  has_many :target_tubes, -> { distinct }, through: :transfer_requests, source: :target_asset, class_name: 'Tube'
 
   belongs_to :user, required: true
   accepts_nested_attributes_for :transfer_requests

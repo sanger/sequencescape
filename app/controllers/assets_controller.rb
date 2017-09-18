@@ -171,7 +171,7 @@ class AssetsController < ApplicationController
 
   def update
     respond_to do |format|
-      if @asset.update_attributes(asset_params.merge(params.fetch(:lane, {})))
+      if @asset.update_attributes(asset_params.merge(params.to_unsafe_h.fetch(:lane, {})))
         flash[:notice] = 'Asset was successfully updated.'
         if params[:lab_view]
           format.html { redirect_to(action: :lab_view, barcode: @asset.barcode) }
@@ -294,7 +294,7 @@ class AssetsController < ApplicationController
       user: current_user,
       assets: [@asset],
       request_types: [@request_type.id],
-      request_options: request_options,
+      request_options: request_options.to_unsafe_h,
       comments: params[:comments],
       priority: params[:priority]
     )

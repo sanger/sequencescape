@@ -55,7 +55,7 @@ class LocationsController < ApplicationController
 
   def update
     respond_to do |format|
-      if @location.update_attributes(params[:location])
+      if @location.update_attributes(params[:location] || {})
         flash[:notice] = 'Location was successfully updated.'
         format.html { redirect_to(@location) }
         format.xml  { head :ok }

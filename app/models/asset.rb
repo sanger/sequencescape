@@ -53,10 +53,11 @@ class Asset < ActiveRecord::Base
   has_many :asset_groups, through: :asset_group_assets
   has_many :asset_audits
   has_many :volume_updates, foreign_key: :target_id
-  has_many :events_on_requests, through: :requests, source: :events
 
   # TODO: Remove 'requests' and 'source_request' as they are abiguous
+  # :requests should go before :events_on_requests, through: :requests
   has_many :requests
+  has_many :events_on_requests, through: :requests, source: :events
   has_one  :source_request,     ->() { includes(:request_metadata) }, class_name: 'Request', foreign_key: :target_asset_id
   has_many :requests_as_source, ->() { includes(:request_metadata) },  class_name: 'Request', foreign_key: :asset_id
   has_many :requests_as_target, ->() { includes(:request_metadata) },  class_name: 'Request', foreign_key: :target_asset_id

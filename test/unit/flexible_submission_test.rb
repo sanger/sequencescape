@@ -9,7 +9,7 @@ require 'test_helper'
 class FlexibleSubmissionTest < ActiveSupport::TestCase
   context 'FlexibleSubmission' do
     setup do
-      @assets       = create(:two_column_plate).wells
+      @assets       = create(:two_column_plate).wells.to_a
       @workflow     = create :submission_workflow
       @pooling      = create :pooling_method
     end

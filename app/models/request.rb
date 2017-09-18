@@ -211,7 +211,7 @@ class Request < ActiveRecord::Base
 
   # Note: These scopes use preload due to a limitation in the way rails handles custom selects with eager loading
   # https://github.com/rails/rails/issues/15185
-  scope :loaded_for_inbox_display, -> { preload([{ submission: { orders: :study }, asset: [:scanned_into_lab_event, :studies] }]) }
+  scope :loaded_for_inbox_display, -> { preload([{ submission: { orders: :study }, asset: %i(scanned_into_lab_event studies) }]) }
   scope :loaded_for_grouped_inbox_display, -> { preload([{ submission: :orders }, :target_asset]) }
   scope :loaded_for_pacbio_inbox_display, -> { preload([{ submission: :orders }, :request_type, :target_asset]) }
 
@@ -361,7 +361,7 @@ class Request < ActiveRecord::Base
   # TODO: There is probably a MUCH better way of getting this information. This is just a rewrite of the old approach
   def self.get_target_plate_ids(request_ids)
     ContainerAssociation.joins('INNER JOIN requests ON content_id = target_asset_id')
-                        .where(['requests.id IN  (?)', request_ids]).uniq.pluck(:container_id)
+                        .where(['requests.id IN  (?)', request_ids]).distinct.pluck(:container_id)
   end
 
   # The options that are required for creation.  In other words, the truly required options that must

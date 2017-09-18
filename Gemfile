@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 group :default do
-  gem 'rails'
+  gem 'rails', '~> 5.1.2'
   gem 'rails-observers'
 
   # State machine
@@ -15,9 +15,9 @@ group :default do
   # Legacy support for parsing XML into params
   gem 'actionpack-xml_parser'
 
-  gem 'activerecord-jdbc-adapter', platforms: :jruby
-  gem 'activeresource', require: 'active_resource'
-  gem 'jdbc-mysql', platforms: :jruby
+  gem 'activerecord-jdbc-adapter', platforms: :jruby, github:'jruby/activerecord-jdbc-adapter', branch: 'v5.0.pre1'
+  gem 'activeresource', github: 'rails/activeresource', branch: 'master'
+  gem 'jdbc-mysql', platforms: :jruby, github:'jruby/activerecord-jdbc-adapter', branch: 'v5.0.pre1'
   gem 'mysql2', platforms: :mri
   gem 'spreadsheet'
   gem 'will_paginate'
@@ -30,6 +30,7 @@ group :default do
   gem 'dynamic_form'
 
   gem 'puma'
+  gem 'daemons'
 
   # We pull down a slightly later version as there are commits on head
   # which we depend on, but don't have an official release yet.
@@ -120,10 +121,12 @@ group :development do
   # Automatically generate documentation
   gem 'yard', require: false
   # Enforces coding styles and detects some bad practices
-  gem 'rubocop', require: false
+  gem 'rubocop', '~> 0.47.1', require: false
   # MiniProfiler allows you to see the speed of a request conveniently on the page.
   # It also shows the SQL queries performed and allows you to profile a specific block of code.
   gem 'rack-mini-profiler'
+  # find unused routes and controller actions by runnung `rake traceroute` from CL
+  gem 'traceroute'
 end
 
 group :test do
@@ -133,10 +136,12 @@ group :test do
   # Provides json expectations for rspec. Makes test more readable,
   # and test failures more descriptive.
   gem 'rspec-json_expectations', require: false
+  # It is needed to use #assigns(attribute) in controllers tests
+  gem 'rails-controller-testing'
 end
 
-group :test,:cucumber do
-  gem 'factory_girl', require: false
+group :test, :cucumber do
+  gem 'factory_girl_rails', require: false
   gem 'launchy', require: false
   gem 'mocha', require: false # avoids load order problems
   gem 'nokogiri', require: false
@@ -150,9 +155,11 @@ group :test,:cucumber do
   # - Patches rails to share a database connection between threads while Testing
   # - Pathes rspec to ensure capybara has done its stuff before killing the connection
   gem 'transactional_capybara'
+  gem 'pry'
 end
 
 group :cucumber do
+  gem 'rubyzip'
   gem 'capybara'
   gem 'mime-types'
   gem 'cucumber-rails', require: false
