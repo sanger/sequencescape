@@ -45,7 +45,7 @@ class StockAssetsController < ApplicationController
       )
       stock_asset.assign_relationships(asset.parents, asset)
     end
-    flash[:notice] = "#{params[:assets].count} stock #{'tubes'.pluralize(params[:assets].count)} created"
+    flash[:notice] = "#{params[:assets].to_unsafe_h.count} stock #{'tubes'.pluralize(params[:assets].to_unsafe_h.count)} created"
     redirect_to batch_path(params[:batch_id])
   end
 

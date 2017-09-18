@@ -17,8 +17,8 @@ require 'rexml/text'
 #++
 class SampleRegistrar < ActiveRecord::Base
   # UPGRADE TODO: This hack is horrible! Find out what its doing and fix it!
-  def initialize(attributes = {}, what = {})
-    super({ sample_attributes: {}, sample_tube_attributes: {} }.merge(attributes.symbolize_keys), what)
+  def initialize(attributes = {})
+    super({ sample_attributes: {}, sample_tube_attributes: {} }.merge(attributes.symbolize_keys))
   end
 
   # Raised if the call to SampleRegistrar.register! fails for any reason, and so that calling code

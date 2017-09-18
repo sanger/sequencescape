@@ -6,12 +6,12 @@ module ApiV2Helper
 
   def api_get(path, headers: {})
     headers.merge!(DEFAULT_HEADERS)
-    get(path, headers)
+    get(path, headers: headers)
   end
 
   def api_patch(path, payload, headers: {})
     headers.merge!(DEFAULT_HEADERS)
-    patch(path, payload.to_json, headers)
+    patch(path, params: payload.to_json, headers: headers)
   end
 
   def json

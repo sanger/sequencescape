@@ -18,7 +18,7 @@ module SampleManifestExcel
 
       validates_presence_of :start_row, :sanger_sample_id_column, :sample_manifest
       validate :check_columns, :check_processor, :check_rows
-      validate :check_processor, if: 'processor.present?'
+      validate :check_processor, if: :processor?
 
       delegate :processed?, to: :processor
 
@@ -96,6 +96,10 @@ module SampleManifestExcel
             errors.add key, value
           end
         end
+      end
+
+      def processor?
+        processor.present?
       end
     end
   end

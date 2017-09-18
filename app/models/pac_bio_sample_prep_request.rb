@@ -6,8 +6,8 @@
 
 class PacBioSamplePrepRequest < CustomerRequest
   has_metadata as: Request do
-    attribute(:insert_size)
-    attribute(:sequencing_type)
+    custom_attribute(:insert_size)
+    custom_attribute(:sequencing_type)
   end
   include Request::CustomerResponsibility
 
