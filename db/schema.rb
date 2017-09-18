@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170727121949) do
+ActiveRecord::Schema.define(version: 20170821140140) do
 
   create_table "aliquot_indices", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.integer "aliquot_id", null: false
@@ -986,12 +986,12 @@ ActiveRecord::Schema.define(version: 20170727121949) do
 
   create_table "qc_files", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.integer "asset_id"
-    t.string "asset_type"
     t.integer "size"
     t.string "content_type"
     t.string "filename"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.index ["asset_id"], name: "fk_rails_31d6eeacb9"
   end
 
   create_table "qc_metric_requests", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -1866,6 +1866,7 @@ ActiveRecord::Schema.define(version: 20170727121949) do
     t.integer "version"
   end
 
+  add_foreign_key "qc_files", "assets"
   add_foreign_key "requests", "work_orders"
   add_foreign_key "sample_manifests", "plate_purposes", column: "purpose_id"
   add_foreign_key "tag_layout_templates", "tag_groups", column: "tag2_group_id"

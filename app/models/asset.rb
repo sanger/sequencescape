@@ -96,7 +96,7 @@ class Asset < ActiveRecord::Base
 
   scope :recent_first, -> { order(id: :desc) }
 
-  scope :include_for_show, ->() { includes(requests: :request_metadata) }
+  scope :include_for_show, ->() { includes({ requests: [:request_type, :request_metadata] }, requests_as_target: [:request_type, :request_metadata]) }
 
   # Assets usually have studies through aliquots, which is only relevant to
   # Receptacles. This method just ensures all assets respond to studies

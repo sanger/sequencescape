@@ -12,24 +12,23 @@ class QcFile < ActiveRecord::Base
     # Adds accessors for named fields and attaches documents to them
 
     def has_qc_files
-      line = __LINE__ + 1
-      class_eval("
-        has_many(:qc_files, {:as => :asset, :dependent => :destroy })
+      class_eval do
+        has_many :qc_files, foreign_key: :asset_id, dependent: :destroy
 
-        def add_qc_file(file, filename=nil)
-          opts = {:uploaded_data => {:tempfile=>file, :filename=>filename}}
-          opts.merge!(:filename=>filename) unless filename.nil?
-          qc_files.create!(opts) unless file.blank?
+        def add_qc_file(file, filename = nil)
+          opts = { uploaded_data: { tempfile: file, filename: filename } }
+          opts[:filename] = filename unless filename.nil?
+          qc_files.create!(opts) if file.present?
         end
 
-        def update_qc_values_with_parser(parser)
+        def update_qc_values_with_parser(_parser)
           true
         end
-      ", __FILE__, line)
+      end
     end
   end
 
-  belongs_to :asset, polymorphic: true
+  belongs_to :asset
   validates_presence_of :asset
 
   # Handle some of the metadata with this callback
@@ -38,6 +37,7 @@ class QcFile < ActiveRecord::Base
 
   # CarrierWave uploader - gets the uploaded_data file, but saves the identifier to the "filename" column
   has_uploaded :uploaded_data, serialization_column: 'filename'
+  validates :uploaded_data, presence: :true
 
   # Method provided for backwards compatibility
   def current_data

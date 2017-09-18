@@ -377,7 +377,7 @@ class Plate < Asset
     wells.sorted
   end
 
-  def children_and_holded
+  def children_and_wells
     (children | wells)
   end
 
@@ -777,15 +777,18 @@ class Plate < Asset
     PlatePurpose.compatible_with_purpose(purpose)
   end
 
-  def update_qc_values_with_parser(parser)
-    ActiveRecord::Base.transaction do
-      well_hash = wells.include_map.includes(:well_attribute).index_by(&:map_description)
+  def well_hash
+    @well_hash ||= wells.include_map.includes(:well_attribute).index_by(&:map_description)
+  end
 
+  def update_qc_values_with_parser(parser, scale: nil)
+    ActiveRecord::Base.transaction do
       parser.each_well_and_parameters do |position, well_updates|
         # We might have a nil well if a plate was only partially cherrypicked
         well = well_hash[position]
+        scale ||= well_updates.keys.map { |k| [k, 1] }
         next if well.nil?
-        well.update_qc_values_with_hash(well_updates)
+        well.update_qc_values_with_hash(well_updates, scale)
         well.save!
       end
     end
