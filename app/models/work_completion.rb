@@ -80,6 +80,6 @@ class WorkCompletion < ActiveRecord::Base
   end
 
   def target_wells
-    @target_wells ||= target.wells.include_stock_wells.include_requests_as_target
+    @target_wells ||= target.wells.include_stock_wells.include_requests_as_target.where(requests: { submission_id: submissions })
   end
 end

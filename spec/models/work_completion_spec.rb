@@ -68,5 +68,19 @@ describe WorkCompletion do
         expect(library_requests.first).to be_failed
       end
     end
+
+    context 'when no submission is included' do
+      before(:each) do
+        WorkCompletion.create!(
+          user: create(:user),
+          target: target_plate,
+          submissions: []
+        )
+      end
+
+      it "doesn't pass the request" do
+        expect(library_requests.first).to be_started
+      end
+    end
   end
 end
