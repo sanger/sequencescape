@@ -96,7 +96,7 @@ class Asset < ActiveRecord::Base
 
   scope :recent_first, -> { order(id: :desc) }
 
-  scope :include_for_show, ->() { includes(requests: :request_metadata) }
+  scope :include_for_show, ->() { includes({ requests: [:request_type, :request_metadata] }, requests_as_target: [:request_type, :request_metadata]) }
 
   # Assets usually have studies through aliquots, which is only relevant to
   # Receptacles. This method just ensures all assets respond to studies
@@ -126,7 +126,7 @@ class Asset < ActiveRecord::Base
     arguments = { name: "%#{query}%" }
 
     # The entire string consists of one of more numeric characters, treat it as an id or barcode
-    if /\A\d+\z/ === query
+    if /\A\d+\z/.match?(query)
       search << ' OR (assets.id = :id) OR (assets.barcode = :barcode)'
       arguments[:id] = query.to_i
       arguments[:barcode] = query.to_s
@@ -427,7 +427,7 @@ class Asset < ActiveRecord::Base
     elsif match = /\A([A-z]{2})([0-9]{1,7})\w{0,1}\z/.match(source_barcode) # Human Readable
       prefix = BarcodePrefix.find_by(prefix: match[1])
       find_by(barcode: match[2], barcode_prefix_id: prefix.id)
-    elsif /\A[0-9]{1,7}\z/ =~ source_barcode # Just a number
+    elsif /\A[0-9]{1,7}\z/.match?(source_barcode) # Just a number
       find_by(barcode: source_barcode)
     end
   end

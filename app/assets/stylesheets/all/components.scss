@@ -33,3 +33,46 @@ table.table-dense-information tbody {
 
 .formtastic .boolean label.ft-label { width: auto; }
 .formtastic input.btn { padding: 6px 12px; }
+
+/* A collapsible info panel, which may contain tabulated data
+ * A more semantic representation of bootstrap panels */
+section.info-panel {
+  @extend .panel;
+  @extend .panel-default;
+
+  header {
+    @extend .panel-heading;
+
+    h3 {
+      @extend .panel-title;
+    }
+
+    .counter {
+      @extend .badge;
+    }
+
+    .show-hide { float: right; }
+  }
+
+  table {
+    @extend .table;
+    @extend .table-condensed;
+    @extend .table-striped;
+
+    caption {
+      @extend .panel-body;
+    }
+  }
+}
+
+navigation.toc {
+  @extend .panel;
+  @extend .panel-default;
+  @extend .col-md-6;
+
+  ul {
+    @extend .nav;
+    @extend .nav-pills;
+    @extend .nav-stacked;
+  }
+}

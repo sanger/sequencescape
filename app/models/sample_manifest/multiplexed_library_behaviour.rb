@@ -105,7 +105,7 @@ module SampleManifest::MultiplexedLibraryBehaviour
       end
 
       numeric_fields.each do |field|
-        yield  "#{sample.sanger_sample_id} #{field.downcase} should be a number." unless /^[0-9]+$/ === row[field].strip
+        yield  "#{sample.sanger_sample_id} #{field.downcase} should be a number." unless /^[0-9]+$/.match?(row[field].strip)
         yield  "#{sample.sanger_sample_id} #{field.downcase} should be greater than 0." unless row[field].to_i > 0
       end
 

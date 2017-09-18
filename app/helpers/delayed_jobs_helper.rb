@@ -6,9 +6,9 @@
 
 module DelayedJobsHelper
   def job_type(job)
-    if job.name =~ /StudyReport/
+    if job.name.match?(/StudyReport/)
       'generate study report'
-    elsif job.name =~ /Submission/
+    elsif job.name.match?(/Submission/)
         'process submission '
     else
       job.name

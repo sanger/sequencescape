@@ -138,7 +138,7 @@ class Aliquot < ActiveRecord::Base
       case object
       when Aliquot
         # we cut the walk if the new aliquot doesn't "match" the current one
-        object if object =~ self
+        object if object.match?(self)
       else # other objects
         [] # are walked but not returned
       end

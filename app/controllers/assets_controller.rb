@@ -11,11 +11,11 @@ class AssetsController < ApplicationController
   before_action :discover_asset, only: [:show, :edit, :update, :destory, :summary, :close, :print_assets, :print, :show_plate, :history, :holded_assets]
 
   def index
-    @assets_without_requests = []
-    @assets_with_requests = []
     if params[:study_id]
       @study = Study.find(params[:study_id])
       @assets = @study.assets_through_aliquots.order(:name).page(params[:page])
+    else
+      @assets = Asset.page(params[:page])
     end
 
     respond_to do |format|
@@ -27,7 +27,7 @@ class AssetsController < ApplicationController
       if params[:study_id]
         format.xml { render xml: Study.find(params[:study_id]).assets_through_requests.to_xml }
       elsif params[:sample_id]
-          format.xml { render xml: Sample.find(params[:sample_id]).assets.to_xml }
+        format.xml { render xml: Sample.find(params[:sample_id]).assets.to_xml }
       elsif params[:asset_id]
         @asset = Asset.find(params[:asset_id])
         format.xml { render xml: ['relations' => { 'parents' => @asset.parents, 'children' => @asset.children }].to_xml }
@@ -365,7 +365,7 @@ class AssetsController < ApplicationController
     elsif match = /\A([A-z]{2})([0-9]{1,7})[A-z]{0,1}\z/.match(barcode) # Human Readable
       prefix = BarcodePrefix.find_by(prefix: match[1])
       @asset = Asset.find_by(barcode: match[2], barcode_prefix_id: prefix.id) if prefix
-    elsif /\A[0-9]{1,7}\z/ =~ barcode # Just a number
+    elsif /\A[0-9]{1,7}\z/.match?(barcode) # Just a number
       @asset = Asset.find_by(barcode: barcode)
     else
       flash[:error] = "'#{barcode}' is not a recognized barcode format"
