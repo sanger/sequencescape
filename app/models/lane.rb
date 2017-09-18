@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
-class Lane < Aliquot::Receptacle
+class Lane < Receptacle
   include Api::LaneIO::Extensions
   include LocationAssociation::Locatable
   include AliquotIndexer::Indexable

@@ -55,6 +55,10 @@ group :default do
   gem 'multi_json'
   gem 'cancan'
 
+  # API v2
+  gem 'jsonapi-resources'
+  gem 'jsonapi-resources-matchers'
+
   # MarchHare and Bunny are both RabbitMQ clients.
   # While bunny does work with Jruby, it is not recommended
   # and we ran into a few issues following the Rails 4 upgrade.
@@ -83,7 +87,12 @@ group :default do
   gem 'uglifier', '>= 1.0.3'
 
   # Excel file generation
-  gem 'axlsx'
+  # Note: We're temporarily using out own for of the project to make use of a few changes
+  # which have not yet been merged into a proper release. (Latest release 2.0.1 at time of writing)
+  # Future releases SHOULD contain the changes made in our fork, and should be adopted as soon as
+  # reasonable once they are available. The next version looks like it may be v3.0.0, so be
+  # aware of possible breaking changes.
+  gem 'axlsx', github: 'sanger/axlsx', branch: 'v2.0.2sgr'
   # Excel file reading
   gem 'roo'
 
@@ -144,7 +153,6 @@ group :test,:cucumber do
 end
 
 group :cucumber do
-  gem 'rubyzip', '~>0.9'
   gem 'capybara'
   gem 'mime-types'
   gem 'cucumber-rails', require: false
