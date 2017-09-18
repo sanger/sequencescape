@@ -114,13 +114,22 @@ class SampleManifest < ActiveRecord::Base
       self.barcodes = []
       core_behaviour.generate
     end
+    create_broadcast_event if broadcast_event_subjects_ready?
     nil
+  end
+
+  def broadcast_event_subjects_ready?
+    samples.present? && labware.present? && study.present?
   end
 
   def create_sample(sanger_sample_id)
     Sample.create!(name: sanger_sample_id, sanger_sample_id: sanger_sample_id, sample_manifest: self).tap do |sample|
       sample.events.created_using_sample_manifest!(user)
     end
+  end
+
+  def create_broadcast_event
+    BroadcastEvent::SampleManifestCreated.create!(seed: self, user: user)
   end
 
   private

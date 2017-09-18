@@ -76,12 +76,6 @@ RSpec.describe SampleManifestGenerator, type: :model do
     expect(generator.sample_manifest.password).to be_present
   end
 
-  it 'adds broadcast event' do
-    generator = SampleManifestGenerator.new(attributes, user, configuration)
-    expect { generator.execute }.to change { BroadcastEvent::SampleManifestCreated.count }.by(1)
-    expect(BroadcastEvent::SampleManifestCreated.last.to_json).to be_a String
-  end
-
   it 'has an asset_type' do
     generator = SampleManifestGenerator.new(attributes.merge(template: 'tube_full'), user, configuration)
     generator.execute

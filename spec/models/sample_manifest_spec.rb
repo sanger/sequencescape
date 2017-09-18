@@ -58,6 +58,21 @@ RSpec.describe SampleManifest, type: :model do
       end
     end
 
+    context 'broadcast event' do
+      it 'does not add broadcast event if subjects are not ready (created on delayed job)' do
+        manifest = create :sample_manifest, study: @study, count: 1, purpose: @purpose, rapid_generation: true
+        expect { manifest.generate }.not_to change { BroadcastEvent::SampleManifestCreated.count }
+      end
+
+      it 'adds broadcast event when samples are created in real time' do
+        manifest = create :sample_manifest, study: @study, count: 1, purpose: @purpose
+        expect { manifest.generate }.to change { BroadcastEvent::SampleManifestCreated.count }.by(1)
+        broadcast_event = BroadcastEvent::SampleManifestCreated.last
+        expect(broadcast_event.subjects.count).to eq 98
+        expect(broadcast_event.to_json).to be_a String
+      end
+    end
+
     context 'for a multiplexed library' do
       [2, 3].each do |count|
         context "#{count} libraries(s)" do
@@ -66,18 +81,22 @@ RSpec.describe SampleManifest, type: :model do
             @initial_library_tubes = LibraryTube.count
             @initial_mx_tubes      = MultiplexedLibraryTube.count
             @initial_in_study      = @study.samples.count
+            @initial_broadcast_events = BroadcastEvent.count
 
             @manifest = create :sample_manifest, study: @study, count: count, asset_type: 'multiplexed_library'
             @manifest.generate
           end
 
           it "should create 1 tubes(s) and #{count} samples in the right study" do
-            assert_equal count, Sample.count                 - @initial_samples
+            expect(Sample.count - @initial_samples).to eq count
             # We need to create library tubes as we have downstream dependencies that assume a unique library tube
-            assert_equal count, LibraryTube.count            - @initial_library_tubes
-            assert LibraryTube.last.aliquots.first.library_id
-            assert_equal 1,     MultiplexedLibraryTube.count - @initial_mx_tubes
-            assert_equal count, @study.samples.count         - @initial_in_study
+            expect(LibraryTube.count - @initial_library_tubes).to eq count
+            expect(LibraryTube.last.aliquots.first.library_id).to be_truthy
+            expect(MultiplexedLibraryTube.count - @initial_mx_tubes).to eq 1
+            expect(@study.samples.count - @initial_in_study).to eq count
+            expect(BroadcastEvent.count - @initial_broadcast_events).to eq 1
+            # the test below can be added when sample manifest is able to find multiplexed library tube from database
+            # expect(BroadcastEvent.last.subjects.count).to eq(count+2)
           end
 
           describe '#labware' do
@@ -100,19 +119,21 @@ RSpec.describe SampleManifest, type: :model do
         @initial_mx_tubes      = MultiplexedLibraryTube.count
         @initial_in_study      = @study.samples.count
         @initial_tubes = SampleTube.count
+        @initial_broadcast_events = BroadcastEvent.count
 
         @manifest = create :sample_manifest, study: @study, count: 1, asset_type: 'library'
         @manifest.generate
       end
 
       it 'should create 1 tubes and sample in the right study' do
-        assert_equal 1, Sample.count - @initial_samples
+        expect(Sample.count - @initial_samples).to eq 1
         # We need to create library tubes as we have downstream dependencies that assume a unique library tube
-        assert_equal 1, LibraryTube.count - @initial_library_tubes
-        assert LibraryTube.last.aliquots.first.library_id
-        assert_equal @initial_mx_tubes, MultiplexedLibraryTube.count
-        assert_equal 1, @study.samples.count - @initial_in_study
-        assert_equal @initial_tubes, SampleTube.count
+        expect(LibraryTube.count - @initial_library_tubes).to eq 1
+        expect(LibraryTube.last.aliquots.first.library_id).to be_truthy
+        expect(MultiplexedLibraryTube.count).to eq @initial_mx_tubes
+        expect(@study.samples.count - @initial_in_study).to eq 1
+        expect(SampleTube.count).to eq @initial_tubes
+        expect(BroadcastEvent.count - @initial_broadcast_events).to eq 1
       end
 
       describe '#labware' do
@@ -134,18 +155,20 @@ RSpec.describe SampleManifest, type: :model do
             @initial_sample_tubes = SampleTube.count
             @initial_in_study = @study.samples.count
             @initial_messenger_count = Messenger.count
+            @initial_broadcast_events = BroadcastEvent.count
 
             @manifest = create :sample_manifest, study: @study, count: count, asset_type: '1dtube'
             @manifest.generate
           end
 
           it "should create #{count} tubes(s) and #{count} samples in the right study" do
-            assert_equal count, Sample.count - @initial_samples
+            expect(Sample.count - @initial_samples).to eq count
             # We need to create library tubes as we have downstream dependencies that assume a unique library tube
-            assert_equal count, SampleTube.count - @initial_sample_tubes
-            refute SampleTube.last.aliquots.first.library_id
-            assert_equal count, @study.samples.count - @initial_in_study
-            assert_equal count, Messenger.count - @initial_messenger_count
+            expect(SampleTube.count - @initial_sample_tubes).to eq count
+            expect(SampleTube.last.aliquots.first.library_id).to be_falsey
+            expect(@study.samples.count - @initial_in_study).to eq count
+            expect(Messenger.count - @initial_messenger_count).to eq count
+            expect(BroadcastEvent.count - @initial_broadcast_events).to eq 1
           end
           it 'should create create asset requests when jobs are processed' do
             # Not entirely certain this behaviour is all that useful to us.
@@ -221,11 +244,14 @@ RSpec.describe SampleManifest, type: :model do
     context 'delayed jobs' do
       setup do
         @well_count = Sample.count
+        @initial_broadcast_events = BroadcastEvent.count
         Delayed::Job.first.invoke_job
       end
 
-      it 'should change Well.count by 96' do
+      it 'should change Well.count by 96, create 1 broadcast event' do
         assert_equal 96, Sample.count - @well_count, 'Expected Well.count to change by 96'
+        expect(BroadcastEvent.count - @initial_broadcast_events).to eq 1
+        expect(BroadcastEvent.last.subjects.count).to eq 98
       end
     end
   end
