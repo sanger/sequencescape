@@ -24,6 +24,16 @@ GIT
       activerecord (>= 4.0.0)
 
 GIT
+  remote: git://github.com/sanger/axlsx.git
+  revision: 3555519d96329e2561406a8cb1e0350098026ee9
+  branch: v2.0.2sgr
+  specs:
+    axlsx (2.0.2sgr)
+      htmlentities (~> 4.3.4)
+      nokogiri (>= 1.6.6)
+      rubyzip (>= 1.2.1)
+
+GIT
   remote: git://github.com/sanger/irods_reader.git
   revision: 14db88aa7783118d2d4a8351c5028d07e6ee5644
   specs:
@@ -108,10 +118,6 @@ GEM
     ast (2.3.0)
     autoprefixer-rails (7.1.2.2)
       execjs
-    axlsx (2.0.1)
-      htmlentities (~> 4.3.1)
-      nokogiri (>= 1.4.1)
-      rubyzip (~> 1.0.0)
     bootstrap-sass (3.3.7)
       autoprefixer-rails (>= 5.2.1)
       sass (>= 3.3.4)
@@ -314,10 +320,9 @@ GEM
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
-    roo (1.13.2)
-      nokogiri
-      rubyzip
-      spreadsheet (> 0.6.4)
+    roo (2.7.1)
+      nokogiri (~> 1)
+      rubyzip (~> 1.1, < 2.0.0)
     rspec-core (3.6.0)
       rspec-support (~> 3.6.0)
     rspec-expectations (3.6.0)
@@ -347,7 +352,7 @@ GEM
     ruby-progressbar (1.8.1)
     ruby_parser (3.9.0)
       sexp_processor (~> 4.1)
-    rubyzip (1.0.0)
+    rubyzip (1.2.1)
     safe_yaml (1.0.4)
     sass (3.5.1)
       sass-listen (~> 4.0.0)
@@ -437,7 +442,7 @@ DEPENDENCIES
   activerecord-oracle_enhanced-adapter (~> 1.6.0)
   activeresource!
   acts-as-dag!
-  axlsx
+  axlsx!
   bootstrap-sass
   builder
   bullet

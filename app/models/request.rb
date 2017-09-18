@@ -98,8 +98,13 @@ class Request < ActiveRecord::Base
         ]
       end
 
-    # rubocop:disable all
-    select('uuids.external_id AS pool_id, GROUP_CONCAT(DISTINCT pw_location.description ORDER BY pw.map_id ASC SEPARATOR ",") AS pool_into, MIN(requests.id) AS id, MIN(requests.sti_type) AS sti_type, MIN(requests.submission_id) AS submission_id, MIN(requests.request_type_id) AS request_type_id, MIN(target_asset_id) AS target_asset_id')
+    select(%{uuids.external_id AS pool_id,
+              GROUP_CONCAT(DISTINCT pw_location.description ORDER BY pw.map_id ASC SEPARATOR ",") AS pool_into,
+              SUM(requests.state = 'passed') > 0 AS pool_complete,
+              MIN(requests.id) AS id,
+              MIN(requests.sti_type) AS sti_type,
+              MIN(requests.submission_id) AS submission_id,
+              MIN(requests.request_type_id) AS request_type_id})
       .joins(add_joins + [
         'INNER JOIN maps AS pw_location ON pw.map_id=pw_location.id',
         'INNER JOIN container_associations ON container_associations.content_id=pw.id',
@@ -112,7 +117,6 @@ class Request < ActiveRecord::Base
         plate.id, submission_ids
       ])
   }
-  # rubocop:enable all
 
   scope :for_pre_cap_grouping_of, ->(plate) {
     add_joins =
@@ -492,7 +496,8 @@ class Request < ActiveRecord::Base
 
   # Adds any pool information to the structure so that it can be reported to client applications
   def update_pool_information(pool_information)
-    # Does not need anything here
+    pool_information[:request_type] = request_type.key
+    pool_information[:for_multiplexing] = request_type.for_multiplexing?
   end
 
   # def submission_siblings
