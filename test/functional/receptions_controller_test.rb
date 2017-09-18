@@ -80,7 +80,7 @@ class ReceptionsControllerTest < ActionController::TestCase
         should respond_with :success
 
         should 'create a broadcast event' do
-          assert BroadcastEvent::LabwareReceived.find_by(seed: @plate).present?, "No event created"
+          assert BroadcastEvent::LabwareReceived.find_by(seed: @plate).present?, 'No event created'
         end
       end
 

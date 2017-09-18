@@ -11,7 +11,6 @@ describe LabwhereReceptionsController do
   MockResponse = Struct.new(:valid?, :error)
 
   context 'Sample Reception' do
-
     let(:user) { create :user, barcode: 'ID123', swipecard_code: '02face' }
     let(:plate) { create :plate, barcode: 1 }
     let(:plate_2) { create :plate, barcode: 2 }
@@ -49,23 +48,22 @@ describe LabwhereReceptionsController do
         [plate, plate_2, sample_tube].each do |asset|
           expect(asset.events.last).to be_a Event::ScannedIntoLabEvent
           expect(asset.events.last.message).to eq "Scanned into #{location.name}"
-          expect(BroadcastEvent::LabwareReceived.find_by(seed:asset)).to be_a BroadcastEvent::LabwareReceived
+          expect(BroadcastEvent::LabwareReceived.find_by(seed: asset)).to be_a BroadcastEvent::LabwareReceived
         end
       end
 
       it('Sets the flash') { expect(flash.notice).to eq 'Locations updated!' }
       it { is_expected.to redirect_to('/labwhere_receptions') }
-
     end
 
     describe '#create' do
       context 'with multiple assets' do
-        let(:location_barcode) { 'labwhere_location'}
+        let(:location_barcode) { 'labwhere_location' }
         it_behaves_like 'a reception'
       end
 
       context 'with no location' do
-        let(:location_barcode) { ''}
+        let(:location_barcode) { '' }
         it_behaves_like 'a reception'
       end
     end
