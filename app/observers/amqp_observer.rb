@@ -29,7 +29,7 @@ class AmqpObserver < ActiveRecord::Observer
         configatron.amqp.url,
         spec: '09',
         frame_max: configatron.amqp.fetch(:maximum_frame, 0),
-        heartbeat: configatron.amqp.fetch(:heartbeat, 30),
+        heartbeat: configatron.amqp.fetch(:heartbeat, 30)
       ) do |client|
         client.with_channel do |channel|
           yield channel.exchange('psd.sequencescape', passive: true)
