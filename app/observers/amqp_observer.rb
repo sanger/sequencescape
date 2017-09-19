@@ -25,8 +25,15 @@ class AmqpObserver < ActiveRecord::Observer
     # the Mongrel process will start killing threads because of too many open files.  Run handles
     # all this for us.
     def self.exchange
-      Bunny.run(configatron.amqp.url, spec: '09', frame_max: configatron.amqp.fetch(:maximum_frame, 0)) do |client|
-        yield client.exchange('psd.sequencescape', passive: true)
+      Bunny.run(
+        configatron.amqp.url,
+        spec: '09',
+        frame_max: configatron.amqp.fetch(:maximum_frame, 0),
+        heartbeat: configatron.amqp.fetch(:heartbeat, 30),
+      ) do |client|
+        client.with_channel do |channel|
+          yield channel.exchange('psd.sequencescape', passive: true)
+        end
       end
     rescue Bunny::ConnectionTimeout, StandardError => exception
       Rails.logger.error { "Unable to broadcast: #{exception.message}\n#{exception.backtrace.join("\n")}" }
