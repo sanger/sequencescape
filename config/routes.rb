@@ -471,6 +471,7 @@ Sequencescape::Application.routes.draw do
   get 'assets/import_from_snp' => 'assets#import_from_snp'
   get 'assets/find_by_barcode' => 'assets#find_by_barcode'
   get 'lab_view' => 'assets#lab_view', :as => :lab_view
+  post 'assets/lab_view'
 
   resources :families
 
