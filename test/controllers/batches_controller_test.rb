@@ -332,7 +332,7 @@ class BatchesControllerTest < ActionController::TestCase
         @e.add_descriptor Descriptor.new(name: 'Chip Barcode', value: 'Chip Barcode: 62c7gaaxx')
         @e.batch_id = @batch.id
         @e.save
-        get :find_batch_by_barcode, params: { id: '62c7gaaxx', format: :xml }
+        get :find_batch_by_barcode, params: { id: '62c7gaaxx' }, format: :xml
       end
       should 'show batch' do
         assert_response :success
@@ -344,7 +344,7 @@ class BatchesControllerTest < ActionController::TestCase
     context 'Find by barcode (not found)' do
       setup do
         @controller.stubs(:current_user).returns(@admin)
-        get :find_batch_by_barcode, params: { id: '62c7axx', format: :xml }
+        get :find_batch_by_barcode, params: { id: '62c7axx' }, format: :xml
       end
       should 'show error' do
         # this is the wrong response!
