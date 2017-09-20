@@ -11,7 +11,7 @@
 # end
 
 ActiveSupport::Inflector.inflections(:en) do |inflect|
-  inflect.uncountable %w( health )
+  inflect.uncountable %w(health)
 end
 
 # These inflection rules are supported but not enabled by default:
