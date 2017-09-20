@@ -104,12 +104,12 @@ class Study < ActiveRecord::Base
   # load all the associated requests with attemps and request type
   has_many :eager_items, ->() { includes(requests: :request_type) }, class_name: 'Item', through: :requests, source: :item
   has_many :aliquots
+  has_many :initial_requests, class_name: 'Request', foreign_key: :initial_study_id
   has_many :assets_through_aliquots,  ->() { distinct }, class_name: 'Asset', through: :aliquots, source: :receptacle
   has_many :assets_through_requests,  ->() { distinct }, class_name: 'Asset', through: :initial_requests, source: :asset
   has_many :requests, through: :assets_through_aliquots, source: :requests_as_source
   has_many :items, ->() { distinct }, through: :requests
   has_many :projects, ->() { distinct }, through: :orders
-  has_many :initial_requests, class_name: 'Request', foreign_key: :initial_study_id
   has_many :comments, as: :commentable
   has_many :events, ->() { order('created_at ASC, id ASC') }, as: :eventful
   has_many :documents, as: :documentable
