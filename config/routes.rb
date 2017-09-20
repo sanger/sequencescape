@@ -106,7 +106,6 @@ Sequencescape::Application.routes.draw do
       get :edit_volume_and_concentration
       put :update_volume_and_concentration
       get :fail
-      get :find_batch_by_barcode
       get :pacbio_sample_sheet
       get :print
       post :print_multiplex_barcodes
@@ -127,6 +126,7 @@ Sequencescape::Application.routes.draw do
       post :print_plate_barcodes
       post :print_multiplex_barcodes
       post :sort
+      get 'find_batch_by_barcode/:id', action: 'find_batch_by_barcode'
     end
   end
   resources :uuids, only: [:show]
@@ -274,6 +274,7 @@ Sequencescape::Application.routes.draw do
       get :copy
       get :cancel
       get :print
+      delete 'reset_qc_information/:event_id', action: :reset_qc_information
     end
 
     collection do
