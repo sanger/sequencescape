@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'models/sample_manifest/sample_manifest_uploader'
 require 'pry'
 
 RSpec.describe SampleManifestUploader, type: :model do

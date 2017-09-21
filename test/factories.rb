@@ -98,6 +98,8 @@ FactoryGirl.define do
   factory :submission_workflow, class: Submission::Workflow do
     name { |_a| generate :item_name }
     item_label 'library'
+    factory :workflow do
+    end
   end
 
   factory :submission do

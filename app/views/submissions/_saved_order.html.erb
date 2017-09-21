@@ -9,16 +9,26 @@
   <span class="completed badge">✔</span>
 
   <h4>
-    Study:
-    <% presenter.order_studies do |name,study| %>
-      <%= link_to(name, study, target: "_blank") %>
+    <% if order.study.present? %>
+      Study:
+      <%= link_to(order.study.name, order.study, target: "_blank") %>
+    <% else %>
+      Cross Studies:
+      <% order.source_asset_studies.each do |study| %>
+        <%= link_to(study.name, study, target: "_blank") %>
+      <% end %>
     <% end %>
   </h4>
 
   <h4>
-    Project:
-    <% presenter.order_projects do |name,project| %>
-      <%= link_to(name, project, target: "_blank") %>
+    <% if order.project.present? %>
+      Project:
+      <%= link_to(order.project.name, order.project, target: "_blank") %>
+    <% else %>
+      Cross Projects:
+      <% order.source_asset_projects.each do |project| %>
+        <%= link_to(project.name, project, target: "_blank") %>
+      <% end %>
     <% end %>
   </h4>
 

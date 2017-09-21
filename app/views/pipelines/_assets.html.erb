@@ -50,13 +50,13 @@
       <% line.parentless? do %>
         <tr>
           <!-- Shared Fields -->
-          <td class="bg-danger">&nbsp;</td>
-          <td class="bg-danger">&nbsp;</td>
+          <td class="bg-danger"></td>
+          <td class="bg-danger"></td>
           <!-- Custom Fields -->
           <td class="request center" width='5%' colspan="3" style="background:red;font-weight:bold;">Empty parent ID set</td>
           <td class="bg-danger"><%= line.wells %></td>
           <% (@inbox_presenter.field_count-2).times do %>
-            <td class="bg-danger">&nbsp;</td>
+            <td class="bg-danger"></td>
           <% end %>
         </tr>
       <% end -%>

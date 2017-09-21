@@ -69,10 +69,9 @@ class TagGroupsController < ApplicationController
 
   # Permits oligo and mapi_id, filters out any unfilled fields
   def tag_params
-    params.fetch(:tags, []).reject do |_index, attributes|
-      attributes[:oligo].blank?
-    end.map do |_index, attributes|
-      attributes.permit(:map_id, :oligo)
-    end
+    params.permit(tags: [:map_id, :oligo])
+          .fetch(:tags, {})
+          .reject { |_index, attributes| attributes[:oligo].blank? }
+          .values.map(&:to_h)
   end
 end

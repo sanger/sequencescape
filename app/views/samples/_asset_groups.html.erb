@@ -1,0 +1,17 @@
+<div class='info'>
+  <h3>Asset Groups <span class='badge'><%= @sample.asset_groups.length %></span></h3>
+  <table width='100%'>
+    <thead>
+      <tr>
+        <th width='70%'></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @sample.asset_groups.each do |asset_group| %>
+        <tr>
+          <td><%= link_to asset_group.name, study_asset_group_path(asset_group.study_id,asset_group) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

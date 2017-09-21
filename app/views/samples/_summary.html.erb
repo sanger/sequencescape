@@ -1,0 +1,35 @@
+ <div id="sample-summary" class="sample_summary">
+  <table width="100%" cellspacing="0" cellpadding="0">
+    <tr>
+      <td class="item" width="40%">Name:</td>
+      <td width="60%"><strong><%=h @sample.name %></strong></td>
+    </tr>
+    <tr>
+      <td class="item">Sequencescape Sample ID:</td>
+      <td><strong><%=h @sample.id.to_s %></strong></td>
+    </tr>
+    <tr>
+      <td class="item">Sanger Sample ID:</td>
+      <td><strong><%=h @sample.sanger_sample_id.to_s %></strong></td>
+    </tr>
+    <tr>
+      <td class="item">Supplier Sample Name:</td>
+      <td><strong><%=h @sample.sample_metadata.supplier_name %></strong></td>
+    </tr>
+    <% if @sample.sample_manifest %>
+    <tr>
+      <td class="item">Manifest:</td>
+      <td><strong><%= link_to @sample.sample_manifest.try(:name), sample_manifest_path(@sample.sample_manifest) %></strong></td>
+    </tr>
+    <% end %>
+    <tr>
+      <td class="item">Created at:</td>
+      <td><strong><%=h @sample.created_at.to_formatted_s(:day_full_with_time) %></strong></td>
+    </tr>
+     <%= render partial: "shared/external_properties", locals: {item: @sample } %>
+  </table>
+  <div id="template_form_body">
+      <%= render(partial: 'shared/metadata/show/sample', locals: { sample: @sample }) %>
+  </div>
+  <br />
+</div>
