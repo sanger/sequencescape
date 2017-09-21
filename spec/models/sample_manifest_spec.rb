@@ -58,13 +58,13 @@ RSpec.describe SampleManifest, type: :model do
       end
     end
 
-    context 'broadcast event' do
-      it 'does not add broadcast event if subjects are not ready (created on delayed job)' do
+    context 'created broadcast event' do
+      it 'does not add created broadcast event if subjects are not ready (created on delayed job)' do
         manifest = create :sample_manifest, study: @study, count: 1, purpose: @purpose, rapid_generation: true
         expect { manifest.generate }.not_to change { BroadcastEvent::SampleManifestCreated.count }
       end
 
-      it 'adds broadcast event when samples are created in real time' do
+      it 'adds created broadcast event when samples are created in real time' do
         manifest = create :sample_manifest, study: @study, count: 1, purpose: @purpose
         expect { manifest.generate }.to change { BroadcastEvent::SampleManifestCreated.count }.by(1)
         broadcast_event = BroadcastEvent::SampleManifestCreated.last

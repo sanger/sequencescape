@@ -114,7 +114,7 @@ class SampleManifest < ActiveRecord::Base
       self.barcodes = []
       core_behaviour.generate
     end
-    create_broadcast_event if broadcast_event_subjects_ready?
+    created_broadcast_event if broadcast_event_subjects_ready?
     nil
   end
 
@@ -128,8 +128,12 @@ class SampleManifest < ActiveRecord::Base
     end
   end
 
-  def create_broadcast_event
+  def created_broadcast_event
     BroadcastEvent::SampleManifestCreated.create!(seed: self, user: user)
+  end
+
+  def updated_broadcast_event(user_updating_manifest, updated_samples_ids)
+    BroadcastEvent::SampleManifestUpdated.create!(seed: self, user: user_updating_manifest, properties: { updated_samples_ids: updated_samples_ids })
   end
 
   private

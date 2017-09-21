@@ -3,6 +3,8 @@ require 'rails_helper'
 require 'pry'
 
 feature 'cherrypick pipeline - nano grams per micro litre', js: true do
+  include FetchTable
+
   let(:user) { create :admin, barcode: 'ID41440E' }
   let(:project) { create :project, name: 'Test project' }
   let(:study) { create :study }
@@ -167,10 +169,6 @@ feature 'cherrypick pipeline - nano grams per micro litre', js: true do
         compare_lines_in_mri(tecan_file_lines[index], generated_line)
       end
     end
-  end
-
-  def fetch_table(selector)
-    find(selector).all('tr').map { |row| row.all('th,td').map { |cell| cell.text.squish } }
   end
 
   def compare_lines_in_mri(tecan_file_line, generated_line)
