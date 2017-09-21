@@ -14,7 +14,6 @@ require 'uri'
 require 'cgi'
 require_relative '../paths'
 require 'webmock/cucumber'
-require 'pry'
 WebMock.disable_net_connect!(allow_localhost: true)
 
 module WithinHelpers
