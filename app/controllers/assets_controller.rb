@@ -9,6 +9,7 @@ class AssetsController < ApplicationController
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   before_action :discover_asset, only: [:show, :edit, :update, :destory, :summary, :close, :print_assets, :print, :show_plate, :history, :holded_assets]
+  before_action :prepare_asset, only: [:new_request, :create_request]
 
   def index
     if params[:study_id]
@@ -258,8 +259,6 @@ class AssetsController < ApplicationController
 
   def show_plate
   end
-
-  before_action :prepare_asset, only: [:new_request, :create_request]
 
   def new_request
     @request_types = RequestType.applicable_for_asset(@asset)
