@@ -36,7 +36,7 @@ ActiveRecord::Base.transaction do
   # If we have an environment variable that defines the seed version to use then we need to filter
   # any that are not that version.
   unfiltered, handler = handler, lambda do |seed_data_file|
-    unfiltered.call(seed_data_file) if seed_data_file =~ %r{/#{ENV['VERSION']}_[^/]+\.rb$}
+    unfiltered.call(seed_data_file) if seed_data_file.match?(%r{/#{ENV['VERSION']}_[^/]+\.rb$})
   end unless ENV['VERSION'].blank?
 
   # Load all of the files under the 'seeds' directory in their sorted order.  This allows us to define

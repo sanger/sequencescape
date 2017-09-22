@@ -1,4 +1,4 @@
-class CreateBillingItems < ActiveRecord::Migration
+class CreateBillingItems < ActiveRecord::Migration[4.2]
   def change
     create_table :billing_items do |t|
       t.references :request, index: true, foreign_key: true

@@ -27,143 +27,29 @@
   <% add :menu, "Edit" => edit_asset_path(@asset) -%>
 <% end %>
 
-<% if @asset.respond_to?(:samples) %>
-  <% @asset.samples.each do |sample| %>
-    <% add :menu, "Back to sample #{sample.name}" => sample_path(sample) -%>
-  <% end %>
+<% if @asset.respond_to?(:related_studies) %>
   <% @asset.related_studies.each do |study| %>
     <% add :menu, "Back to study #{study.name}" => study_path(study) -%>
   <% end %>
 <% end %>
 
-
 <%= page_title('Asset',@asset.display_name) %>
 
-<%= render partial: "asset", locals: { asset: @asset } %>
-
-<h3>Relations</h3>
-<div class='help'>
-  This asset has <%= pluralize @asset.parents.size+@asset.children.size, "relation" %>.
-  <a data-collapse-element-id="relations-table" data-hidden="false" class="shown-button">Collapse</a>
+<div class="row">
+  <%= render partial: 'asset_summary', locals: {asset: @asset} %>
+  <navigation class="toc">
+    <ul>
+      <li><a href="#asset-summary">Summary</a></li>
+      <li><a href="#samples-table">Samples</a></li>
+      <li><a href="#relations-table-container">Parents and Children</a></li>
+      <li><a href="#requests-table-container">Requests</a></li>
+      <li><a href="#metadata-table-container">Metadata</a></li>
+      <li><a href="#qc_files-table-container">QC Files</a></li>
+    </ul>
+  </navigation>
 </div>
-
-<table id="relations-table" width='100%' class='sortable asset_relations' >
-  <thead>
-    <tr>
-      <th><%= link_to "Asset", "javascript:void(0);" %></th>
-      <th><%= link_to "Relationship type", "javascript:void(0);" %></th>
-      <th><%= link_to "Map", "javascript:void(0);" %></th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @asset.parents.each do |parent| %>
-    <tr>
-      <td><%= link_to "#{(parent.label or "").titleize}: #{parent.display_name}", asset_url(parent) %></td>
-      <td>Parent</td>
-      <td>
-        <% if parent.is_a?(Well) && parent.map %>
-          <%= parent.map.description %>
-        <% end %>
-      </td>
-    </tr>
-    <% end %>
-
-    <% child_assets = @asset.is_a?(Plate) ? @asset.children_and_holded : @asset.children %>
-    <% child_assets.each do |child| %>
-    <tr>
-      <td><%= link_to "#{(child.label or "").titleize}: #{child.display_name}", asset_url(child) %></td>
-      <td>Child</td>
-      <td>
-      <% if child.is_a?(Well) && child.map %>
-        <%= child.map.description %>
-      <% end %>
-      </td>
-    </tr>
-    <% end %>
-  </tbody>
- </table>
-
-<h3>Requests</h3>
-<div class='help'>
-  This asset has <%= pluralize @asset.requests.size, "request" %>.
-  <a data-collapse-element-id="requests_table" data-hidden="false" class="shown-button">Collapse</a>
-</div>
-
-<table id="requests_table" width='100%' class='sortable' cellpadding="4" cellspacing="1">
-  <thead>
-    <tr>
-      <th width='5%'>Request ID</th>
-      <th width='10%'>Request type</th>
-      <th width='10%'>Submission name </th>
-      <th width='10%'>State</th>
-      <th width='10%'>Batches</th>
-      <th width='20%'>Target</th>
-      <% if current_user.manager_or_administrator? || current_user.owner?(@asset) %>
-        <th width='5%'>Copy</th>
-        <th width='5%'>Cancel</th>
-      <% end %>
-      <th width='10%'>Created at</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @asset.requests.each do |request| %>
-    <tr>
-      <td><%= link_to(request.id, request_url(request), title: "#{ request.request_type.try(:name) || 'Unknown' } request") %></td>
-      <td><%= request.request_type and request.request_type.name %></td>
-      <td>
-        <% if request.submission %>
-          <%= link_to(request.submission.name, submission_path(request.submission) ) %>
-        <% elsif @asset.studies.present? %>
-          <% first_study = @asset.studies.first %>
-          Study: <%= link_to(first_study.name, study_path(first_study)) %>
-        <% else %>
-          NA
-        <% end %>
-      </td>
-      <td><%= request_status(request) %></td>
-      <td>
-      <% request.with_batch_id do |batch_id| %>
-        <%= link_to batch_id, batch_url(batch_id) %>
-      <% end %>
-      </td>
-      <% if request.target_asset %>
-        <td><%= link_to(h(request.target_asset.display_name), asset_url(request.target_asset)) %></td>
-      <% else %>
-        <td></td>
-      <% end %>
-      <% if current_user.manager_or_administrator? || current_user.owner?(@asset) %>
-        <td><%= link_to 'Copy', copy_request_url(request)   %></td>
-        <td><%= link_to 'Cancel', cancel_request_url(request),confirm: "Are you sure you want to cancel request #{request.id}?" %></td>
-      <% end %>
-      <td><%=h request.created_at.to_formatted_s(:long) %></td>
-    </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<% if @asset.custom_metadatum_collection.present?%>
-  <h3>Metadata</h3>
-  <div class='help'>
-    Metadata table
-    <a data-collapse-element-id="metadata-table" data-hidden="false" class="shown-button">Collapse</a>
-  </div>
-
-  <table id="metadata-table" width='100%' class='sortable asset_relations' >
-    <thead>
-      <tr>
-        <th><%= link_to "Key", "javascript:void(0);" %></th>
-        <th><%= link_to "Value", "javascript:void(0);" %></th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @asset.metadata.each do |k, v| %>
-        <tr>
-          <td><%= k %></td>
-          <td><%= v %></td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
-
-<%end%>
-
+<%= render partial: @asset.sample_partial, locals: {asset: @asset} %>
+<%= render partial: 'relations', locals: { asset: @asset } %>
+<%= render partial: 'requests', locals: { asset: @asset } %>
+<%= render partial: 'metadata', locals: {asset: @asset} %>
+<%= render partial: 'qc_files', locals: {asset: @asset} %>

@@ -54,7 +54,7 @@ module Pulldown::Requests
     include PreCapturePool::Poolable
 
     Metadata.class_eval do
-      attribute(:pre_capture_plex_level, default: 8, integer: true)
+      custom_attribute(:pre_capture_plex_level, default: 8, integer: true)
     end
 
     def update_pool_information(pool_information)

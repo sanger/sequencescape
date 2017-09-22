@@ -32,9 +32,9 @@ class Request::LibraryCreation < CustomerRequest
     class_eval do
       has_metadata as: Request do
         # Redefine the fragment size attributes as they are fixed
-        attribute(:fragment_size_required_from, minimum_details)
-        attribute(:fragment_size_required_to, maximum_details)
-        attribute(:gigabases_expected, positive_float: true)
+        custom_attribute(:fragment_size_required_from, minimum_details)
+        custom_attribute(:fragment_size_required_to, maximum_details)
+        custom_attribute(:gigabases_expected, positive_float: true)
       end
       include Request::LibraryManufacture
     end

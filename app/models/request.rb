@@ -216,7 +216,7 @@ class Request < ActiveRecord::Base
 
   # Note: These scopes use preload due to a limitation in the way rails handles custom selects with eager loading
   # https://github.com/rails/rails/issues/15185
-  scope :loaded_for_inbox_display, -> { preload([{ submission: { orders: :study }, asset: [:scanned_into_lab_event, :studies] }]) }
+  scope :loaded_for_inbox_display, -> { preload([{ submission: { orders: :study }, asset: %i(scanned_into_lab_event studies) }]) }
   scope :loaded_for_grouped_inbox_display, -> { preload([{ submission: :orders }, :target_asset]) }
   scope :loaded_for_pacbio_inbox_display, -> { preload([{ submission: :orders }, :request_type, :target_asset]) }
 

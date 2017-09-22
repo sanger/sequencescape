@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe StockAssetsController do
@@ -7,7 +8,7 @@ RSpec.describe StockAssetsController do
 
     shared_examples 'an inactive endpoint' do
       it 'returns the user to the batch page with a warning' do
-        get :new, { batch_id: batch.id }, user: current_user.id
+        get :new, params: { batch_id: batch.id }, session: { user: current_user.id }
         expect(response).to redirect_to batch
         expect(flash[:alert]).to eq(warning)
       end
@@ -25,7 +26,7 @@ RSpec.describe StockAssetsController do
 
       context 'without a stock tube' do
         it 'renders the form' do
-          get :new, { batch_id: batch.id }, user: current_user.id
+          get :new, params: { batch_id: batch.id }, session: { user: current_user.id }
           expect(assigns(:assets).length).to eq(2)
           assigns(:assets).each do |asset|
             expect(asset.last).to be_a(StockLibraryTube)
@@ -64,7 +65,7 @@ RSpec.describe StockAssetsController do
 
         context 'without stock tubes' do
           it 'renders the form' do
-            get :new, { batch_id: batch.id }, user: current_user.id
+            get :new, params: { batch_id: batch.id }, session: { user: current_user.id }
             expect(assigns(:assets).length).to eq(1)
             assigns(:assets).each do |asset|
               expect(asset.first).to eq(multiplexed_library_tube.id)
@@ -93,10 +94,10 @@ RSpec.describe StockAssetsController do
     let(:library_tube_2) { create :library_tube }
 
     it 'creates the required stock assets' do
-      post :create, { batch_id: batch.id, assets: {
+      post :create, params: { batch_id: batch.id, assets: {
         library_tube_1.id => { name: 'My stock 1', volume: '100', concentration: '200' },
         library_tube_2.id => { name: 'My stock 2', volume: '100', concentration: '200' }
-      } }, user: current_user.id
+      } }, session: { user: current_user.id }
       expect(response).to redirect_to(batch)
       expect(flash[:notice]).to eq('2 stock tubes created')
       expect(library_tube_1.reload.parents.first).to be_a(StockLibraryTube)
