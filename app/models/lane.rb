@@ -34,7 +34,7 @@ class Lane < Receptacle
 
   extend Metadata
   has_metadata do
-    attribute(:release_reason, in: LIST_REASONS)
+    custom_attribute(:release_reason, in: LIST_REASONS)
   end
 
   has_one_as_child(:spiked_in_buffer, ->() { where(sti_type: 'SpikedBuffer') })

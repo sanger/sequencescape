@@ -11,8 +11,8 @@ class PreCapturePool < ActiveRecord::Base
   module Poolable
     def self.included(base)
       base.class_eval do
-        has_one :pre_capture_pool, through: :pooled_request, inverse_of: :pooled_requests
         has_one :pooled_request, dependent: :destroy, class_name: 'PreCapturePool::PooledRequest', foreign_key: :request_id, inverse_of: :request
+        has_one :pre_capture_pool, through: :pooled_request, inverse_of: :pooled_requests
       end
     end
   end

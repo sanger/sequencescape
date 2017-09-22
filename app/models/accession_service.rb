@@ -58,7 +58,7 @@ class AccessionService
             { name: acc.schema_type.upcase, local_name: file.path, remote_name: acc.file_name }
                                 end)
         Rails::logger.debug { xml_result }
-        raise AccessionServiceError, "EBI Server Error. Couldnt get accession number: #{xml_result}" if xml_result =~ /(Server error|Auth required|Login failed)/
+        raise AccessionServiceError, "EBI Server Error. Couldnt get accession number: #{xml_result}" if xml_result.match?(/(Server error|Auth required|Login failed)/)
 
         xmldoc  = Document.new(xml_result)
         success = xmldoc.root.attributes['success']

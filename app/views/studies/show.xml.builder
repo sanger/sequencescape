@@ -37,10 +37,10 @@ xml.study(api_data) do |study|
         descriptor.name(attribute.to_field_info.display_name)
         if (attribute.to_field_info.display_name == "Reference Genome") && (value.blank?)
           descriptor.value(nil)
-        else 
+        else
           descriptor.value(value)
         end
       end
     end
-  end  
+  end
 end

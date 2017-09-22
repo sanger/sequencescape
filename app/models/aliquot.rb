@@ -113,7 +113,8 @@ class Aliquot < ActiveRecord::Base
   def tag_with_unassigned_behaviour
     untagged? ? nil : tag_without_unassigned_behaviour
   end
-  alias_method_chain(:tag, :unassigned_behaviour)
+  alias_method(:tag_without_unassigned_behaviour, :tag)
+  alias_method(:tag, :tag_with_unassigned_behaviour)
 
   def set_library
     self.library = receptacle
@@ -147,7 +148,7 @@ class Aliquot < ActiveRecord::Base
       case object
       when Aliquot
         # we cut the walk if the new aliquot doesn't "match" the current one
-        object if object =~ self
+        object if object.match?(self)
       else # other objects
         [] # are walked but not returned
       end

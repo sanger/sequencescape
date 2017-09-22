@@ -178,10 +178,6 @@ Given /^the sample "([^"]*)" should not have an accession number$/ do |sample_na
   assert_nil sample.sample_metadata.sample_ebi_accession_number
 end
 
-Given /^I run the "([^\"]+)" cron script$/ do |script_name|
-  eval File.read("#{Rails.root}/lib/cron_scripts/#{script_name}")
-end
-
 Given(/^the sample "([^\"]+)" has the accession number "([^\"]+)"$/) do |name, value|
   sample = Sample.find_by!(name: name)
   sample.sample_metadata.sample_ebi_accession_number = value.blank? ? nil : value

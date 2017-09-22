@@ -143,7 +143,7 @@ module SubmissionsHelper
   def request_description(presenter, request_type)
     request_type_name = request_type.name.titleize
 
-    return request_type_name unless request_type.request_class_name =~ /SequencingRequest$/
+    return request_type_name unless request_type.request_class_name.match?(/SequencingRequest$/)
 
     content_tag(:em, pluralize(presenter.lanes_of_sequencing, 'Lane') + ' of ') + request_type_name
   end

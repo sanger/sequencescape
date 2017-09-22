@@ -1,7 +1,6 @@
 require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
-require 'action_dispatch/xml_params_parser'
 
 Bundler.require(:default, Rails.env)
 
@@ -59,8 +58,6 @@ module Sequencescape
     config.autoload_paths += %W{#{Rails.root}/lib}
     config.autoload_paths += %W{#{Rails.root}/lib/sample_manifest_excel}
     config.autoload_paths += %W{#{Rails.root}/lib/accession}
-
-    config.middleware.insert_after ActionDispatch::ParamsParser, ActionDispatch::XmlParamsParser
 
     config.encoding = 'utf-8'
 

@@ -118,7 +118,7 @@ module Authorization
 
       # Try to find a model to query for permissions
       def get_model(str)
-        if str =~ /\s*([A-Z]+\w*)\s*/
+        if str.match?(/\s*([A-Z]+\w*)\s*/)
           # Handle model class
           begin
             Module.const_get(str)
