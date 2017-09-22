@@ -65,6 +65,16 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
     expect(upload.sample_manifest.state).to eq 'completed'
   end
 
+  it 'knows how to create sample_manifest.updated broadcast event' do
+    download = build(:test_download, columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup)
+    download.save(test_file)
+    upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: columns, start_row: 9)
+    user = create :user, login: 'test_user'
+    expect { upload.broadcast_sample_manifest_updated_event(user) }.to change { BroadcastEvent.count }.by(1)
+    # subjects are 1 study, 6 tubes and 6 samples
+    expect(BroadcastEvent.first.subjects.count).to eq 13
+  end
+
   describe '#processor' do
     context '1dtube' do
       let!(:columns) { SampleManifestExcel.configuration.columns.tube_full.dup }
