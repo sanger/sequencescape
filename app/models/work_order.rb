@@ -28,14 +28,12 @@ class WorkOrder < ActiveRecord::Base
   end
 
   def state=(new_state)
+    super
     requests.each do |request|
       request.state = new_state
       request.save!
     end
-    example_request.reload
   end
-
-  delegate :state, to: :example_request
 
   def at_risk
     example_request.customer_accepts_responsibility

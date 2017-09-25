@@ -17,7 +17,7 @@ describe 'WorkOrders API', with: :api_v2 do
         { work_order_type: other_work_order_type, request_type: other_request_type, state: 'started' }
       ].map do |options|
         wot = options.delete(:work_order_type)
-        create(:work_order, requests: [create(:library_request, options)], work_order_type: wot)
+        create(:work_order, requests: [create(:library_request, options)], work_order_type: wot, state: options[:state])
       end
     end
 
