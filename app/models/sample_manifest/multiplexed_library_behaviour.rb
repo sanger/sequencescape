@@ -46,6 +46,8 @@ module SampleManifest::MultiplexedLibraryBehaviour
     end
 
     def multiplexed_library_tube
+      # Should we add something to be able to find the multiplexed library tube from database
+      # samples.first.primary_receptacle.requests.first.target_asset
       @mx_tube || raise(MxLibraryTubeException.new, 'Mx tube not found')
     end
 

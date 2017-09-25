@@ -39,7 +39,6 @@ class SampleManifestGenerator
       ActiveRecord::Base.transaction do
         @sample_manifest = SampleManifest.create!(attributes)
         sample_manifest.generate
-        create_broadcast_event
         create_download
         execute_print_job
         true
@@ -63,10 +62,6 @@ class SampleManifestGenerator
 
   def check_template
     errors.add(:base, "#{params[:template]} is not a valid template") if columns.blank?
-  end
-
-  def create_broadcast_event
-    BroadcastEvent::SampleManifestCreated.create!(seed: sample_manifest, user: user)
   end
 
   def create_download

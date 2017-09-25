@@ -11,7 +11,7 @@ class Assets::CommentsController < ApplicationController
   before_action :discover_asset
 
   def index
-    @comments = @asset.comments.order('created_at ASC')
+    @comments = @asset.comments.order(created_at: :asc)
     if request.xhr?
       render partial: 'simple_list', locals: { descriptions: @comments.pluck(:description) }
     else

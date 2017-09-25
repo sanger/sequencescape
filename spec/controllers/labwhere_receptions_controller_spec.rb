@@ -28,7 +28,7 @@ describe LabwhereReceptionsController do
           location_id: location.id,
           user_code: user.barcode,
           location_barcode: location_barcode
-        }}
+        } }
       end
 
       it 'Move items in sequencescape' do

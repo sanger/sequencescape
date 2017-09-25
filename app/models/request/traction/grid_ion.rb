@@ -8,8 +8,8 @@ class Request
       after_create :register_work_orders
 
       has_metadata as: Request do
-        attribute(:library_type, required: true, validator: true, selection: true)
-        attribute(:data_type,    required: true, validator: true, selection: true)
+        custom_attribute(:library_type, required: true, validator: true, selection: true)
+        custom_attribute(:data_type,    required: true, validator: true, selection: true)
       end
 
       validates :state, presence: true

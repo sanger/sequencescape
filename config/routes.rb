@@ -6,6 +6,7 @@
 
 Sequencescape::Application.routes.draw do
   root to: 'homes#show'
+  resource :health, only: [:show]
   resource :home, only: [:show]
 
   mount Api::RootService.new => '/api/1'
@@ -106,7 +107,6 @@ Sequencescape::Application.routes.draw do
       get :edit_volume_and_concentration
       put :update_volume_and_concentration
       get :fail
-      get :find_batch_by_barcode
       get :pacbio_sample_sheet
       get :print
       post :print_multiplex_barcodes
@@ -127,6 +127,7 @@ Sequencescape::Application.routes.draw do
       post :print_plate_barcodes
       post :print_multiplex_barcodes
       post :sort
+      get 'find_batch_by_barcode/:id', action: 'find_batch_by_barcode'
     end
   end
   resources :uuids, only: [:show]
@@ -274,6 +275,7 @@ Sequencescape::Application.routes.draw do
       get :copy
       get :cancel
       get :print
+      delete 'reset_qc_information/:event_id', action: :reset_qc_information
     end
 
     collection do
@@ -471,6 +473,7 @@ Sequencescape::Application.routes.draw do
   get 'assets/import_from_snp' => 'assets#import_from_snp'
   get 'assets/find_by_barcode' => 'assets#find_by_barcode'
   get 'lab_view' => 'assets#lab_view', :as => :lab_view
+  post 'assets/lab_view'
 
   resources :families
 
@@ -668,8 +671,6 @@ Sequencescape::Application.routes.draw do
 
   post 'get_your_qc_completed_tubes_here' => 'get_your_qc_completed_tubes_here#create', as: :get_your_qc_completed_tubes_here
   resources :sample_manifest_upload_with_tag_sequences, only: [:new, :create]
-
-  resources :healths, only: [:index]
 
   # this is for test only test/functional/authentication_controller_test.rb
   # to be removed?
