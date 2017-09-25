@@ -12,8 +12,8 @@ module Billing
     def to_s(fields)
       ''.tap do |result|
         fields.each do |field|
-          result << format("%#{field.alignment}#{field.length}.#{field.length}s", field.value(self))
-          result << format("%-#{fields.spaces_to_next_field(field)}.#{fields.spaces_to_next_field(field)}s", '')
+          result << field.value(self).public_send(field.alignment, field.length)
+          result << " "*fields.spaces_to_next_field(field).to_i
         end
         result << "\n"
       end

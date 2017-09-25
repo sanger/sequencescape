@@ -17,9 +17,9 @@ describe Billing::Field, billing: true do
   end
 
   it 'should know its alignment' do
-    expect(field.alignment).to eq '-'
+    expect(field.alignment).to eq :ljust
     field.right_justified = true
-    expect(field.alignment).to eq ''
+    expect(field.alignment).to eq :rjust
   end
 
   it 'should know its value if it is dynamic' do
