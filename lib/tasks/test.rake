@@ -13,15 +13,12 @@ namespace :test do
       end
 
       if Rails.env.test?
-        begin
-          DatabaseCleaner.start
+        DatabaseCleaner.strategy = :transaction
+        DatabaseCleaner.cleaning do
           puts 'Linting factories.'
           FactoryGirl.lint
           puts 'Linted'
-        ensure
-          DatabaseCleaner.clean except: ['ar_internal_metadata']
         end
-
       else
         system("bundle exec rake factory_girl:lint RAILS_ENV='test'")
       end
