@@ -117,7 +117,12 @@ FactoryGirl.define do
         request_types { [create(:library_request_type)] }
       end
       sequence(:name) { |i| "Template #{i}" }
-      submission_parameters { { workflow_id: 1, request_type_ids_list: request_types.map { |rt| [rt.id] } } }
+      submission_parameters do
+        {
+          workflow_id: Submission::Workflow.first.id,
+          request_type_ids_list: request_types.map { |rt| [rt.id] }
+        }
+      end
     end
   end
 

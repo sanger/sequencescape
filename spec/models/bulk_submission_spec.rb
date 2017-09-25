@@ -5,6 +5,10 @@ describe BulkSubmission, with: :uploader do
   let(:spreadsheet_path) { Rails.root.join('features', 'submission', 'csv', spreadsheet_filename) }
   let(:submission_file) { fixture_file_upload(spreadsheet_path) }
 
+  let(:number_submissions_created) { subject.completed_submissions.first.length }
+  let(:generated_submissions) { Submission.find(subject.completed_submissions.first) }
+  let(:generated_submission) { generated_submissions.first }
+
   after(:each) { submission_file.close }
 
   before(:each) do
@@ -20,9 +24,6 @@ describe BulkSubmission, with: :uploader do
 
   context 'a simple submission' do
     let(:spreadsheet_filename) { '1_valid_rows.csv' }
-    let(:number_submissions_created) { subject.completed_submissions.first.length }
-    let(:generated_submissions) { Submission.find(subject.completed_submissions.first) }
-    let(:generated_submission) { generated_submissions.first }
 
     it 'is valid' do
       expect(subject).to be_valid
@@ -39,13 +40,13 @@ describe BulkSubmission, with: :uploader do
 
   context 'a submission with PCR cycles' do
     let(:spreadsheet_filename) { 'pcr_cycles.csv' }
-    let(:number_submissions_created) { subject.completed_submissions.first.length }
-    let(:generated_submissions) { Submission.find(subject.completed_submissions.first) }
-    let(:generated_submission) { generated_submissions.first }
 
-    before(:each) do
-      create :limber_wgs_submission_template, name: 'limber wgs'
+    let!(:submission_template) do
+      create :limber_wgs_submission_template,
+             name: 'pcr_cycle_test',
+             request_types: [ request_type ]
     end
+    let(:request_type) { create(:library_request_type) }
 
     let(:expected_request_options) do
       {
@@ -54,7 +55,7 @@ describe BulkSubmission, with: :uploader do
         'pcr_cycles' => '5',
         'read_length' => '100',
         'library_type' => 'Standard',
-        'multiplier' => { '39' => 1 }
+        'multiplier' => { request_type.id.to_s => 1 }
       }
     end
 
