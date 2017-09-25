@@ -44,7 +44,7 @@ describe BulkSubmission, with: :uploader do
     let!(:submission_template) do
       create :limber_wgs_submission_template,
              name: 'pcr_cycle_test',
-             request_types: [ request_type ]
+             request_types: [request_type]
     end
     let(:request_type) { create(:library_request_type) }
 
