@@ -515,6 +515,10 @@ class Batch < ActiveRecord::Base
     yield(next_requests_needing_asset) unless next_requests_needing_asset.blank?
   end
 
+  def rebroadcast
+    messengers.each(&:resend)
+  end
+
   private
 
   def all_requests_qced?
@@ -551,10 +555,6 @@ class Batch < ActiveRecord::Base
     requests_to_update.each do |request_details|
       Request.find(request_details.first).update_attributes!(asset_id: request_details.last)
     end
-  end
-
-  def rebroadcast
-    messengers.each(&:resend)
   end
 
   def need_target_assets_on_requests?
