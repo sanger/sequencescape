@@ -200,7 +200,7 @@ class Batch < ActiveRecord::Base
         next if batch_request.request.asset.try(:resource?)
         batch_request.move_to_position!(batch_request.position + number)
       end
-      batch.rebroadcast
+      rebroadcast
     end
   end
 
