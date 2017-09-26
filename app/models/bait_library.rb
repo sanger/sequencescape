@@ -59,7 +59,7 @@ class BaitLibrary < ActiveRecord::Base
 
   scope :visible, -> { where(visible: true) }
 
-  delegate :short_name, to: :bait_library_type
+  delegate :category, to: :bait_library_type
 
   def hide
     self.visible = false

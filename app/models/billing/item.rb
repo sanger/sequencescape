@@ -13,7 +13,7 @@ module Billing
       ''.tap do |result|
         fields.each do |field|
           result << field.value(self).public_send(field.alignment, field.length)
-          result << " "*fields.spaces_to_next_field(field).to_i
+          result << ' ' * fields.spaces_to_next_field(field).to_i
         end
         result << "\n"
       end

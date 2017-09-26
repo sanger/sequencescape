@@ -64,7 +64,7 @@ module Pulldown::Requests
 
     def billing_product_identifier
       bait_library = request_metadata.try(:bait_library)
-      bait_library.short_name if bait_library.present?
+      bait_library.category if bait_library.present?
     end
   end
 
