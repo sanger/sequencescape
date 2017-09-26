@@ -12,7 +12,6 @@ class StudiesController < ApplicationController
   before_action :evil_parameter_hack!
   include REXML
   include Informatics::Globals
-  include XmlCacheHelper::ControllerHelper
 
   before_action :login_required
   before_action :admin_login_required, only: [:settings, :administer, :manage, :managed_update, :grant_role, :remove_role]
@@ -95,7 +94,7 @@ class StudiesController < ApplicationController
           redirect_to study_workflow_path(@study, current_user.workflow)
         end
       end
-      format.xml { cache_xml_response(@study) }
+      format.xml { render layout: false }
       format.json { render json: @study.to_json }
     end
   end

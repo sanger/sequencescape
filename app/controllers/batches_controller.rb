@@ -9,7 +9,6 @@ class BatchesController < ApplicationController
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
 
   before_action :evil_parameter_hack!
-  include XmlCacheHelper::ControllerHelper
 
   before_action :login_required, except: %i(released qc_criteria)
   before_action :find_batch_by_id, only: %i(
@@ -50,7 +49,7 @@ class BatchesController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.xml { cache_xml_response(@batch) }
+      format.xml { render layout: false }
     end
   end
 

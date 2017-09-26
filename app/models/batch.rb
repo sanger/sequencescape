@@ -50,6 +50,7 @@ class Batch < ActiveRecord::Base
   validate :requests_have_same_read_length, :cluster_formation_requests_must_be_over_minimum, :all_requests_are_ready?, on: :create
 
   after_create :generate_target_assets_for_requests, if: :need_target_assets_on_requests?
+  after_save :rebroadcast
 
   # Named scope for search by query string behavior
   scope :for_search_query, ->(query, _with_includes) {
@@ -199,6 +200,7 @@ class Batch < ActiveRecord::Base
         next if batch_request.request.asset.try(:resource?)
         batch_request.move_to_position!(batch_request.position + number)
       end
+      batch.rebroadcast
     end
   end
 
@@ -550,6 +552,10 @@ class Batch < ActiveRecord::Base
     requests_to_update.each do |request_details|
       Request.find(request_details.first).update_attributes!(asset_id: request_details.last)
     end
+  end
+
+  def rebroadcast
+    messengers.each(&:resend)
   end
 
   def need_target_assets_on_requests?
