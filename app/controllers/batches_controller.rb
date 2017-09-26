@@ -224,6 +224,7 @@ class BatchesController < ApplicationController
 
   def sort
     @batch.assign_positions_to_requests!(params['requests_list'].map(&:to_i))
+    @batch.rebroadcast
     head :ok
   end
 
