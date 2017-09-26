@@ -18,7 +18,7 @@ module Billing
       # TODO: create should be abstracted.
       def create!
         return unless valid?
-        aliquots.by_project_cost_code.each do |cost_code, count|
+        aliquots.count_by_project_cost_code.each do |cost_code, count|
           Billing::Item.create!(
             request: request,
             project_cost_code: project_cost_code(cost_code),

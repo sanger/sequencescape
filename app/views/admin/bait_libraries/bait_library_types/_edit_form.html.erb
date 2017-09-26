@@ -5,6 +5,8 @@
 # Copyright (C) 2012,2015 Genome Research Ltd.%>
 
 <p>
-  <%= f.label :name %><br />
-  <%= f.text_field :name %>
+  <%= f.label :name %>
+  <%= f.text_field :name %> <br>
+  <%= f.label :category %>
+  <%= f.select :category, options_for_select(BaitLibraryType.categories.keys.to_a, selected: @bait_library_type.category, class: 'form-control') %>
 </p>

@@ -11,7 +11,7 @@ module Billing
     end
 
     def alignment
-      right_justified ? '' : '-'
+      right_justified ? :rjust : :ljust
     end
 
     def value(billing_item = nil)

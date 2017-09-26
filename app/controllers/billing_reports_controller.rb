@@ -11,7 +11,7 @@ class BillingReportsController < ApplicationController
                 filename: "#{@billing_report.file_name}.bif",
                 disposition: 'attachment'
     else
-      flash[:error] = @billing_report.errors.full_messages.join(', ')
+      flash.now[:error] = @billing_report.errors.full_messages.join(', ')
       render :new
     end
   end

@@ -65,7 +65,7 @@ class Aliquot < ActiveRecord::Base
   # returns a hash, where keys are cost_codes and values are number of aliquots related to particular cost code
   # {'cost_code_1' => 20, 'cost_code_2' => 3, 'cost_code_3' => 8 }
   # this one does not work, as project is not always there: joins(project: :project_metadata).group("project_metadata.project_cost_code").count
-  def self.by_project_cost_code
+  def self.count_by_project_cost_code
     joins('LEFT JOIN projects ON aliquots.project_id = projects.id')
       .joins('LEFT JOIN project_metadata ON project_metadata.project_id = projects.id')
       .group('project_metadata.project_cost_code')

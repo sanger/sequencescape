@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170905090034) do
+ActiveRecord::Schema.define(version: 20170925153015) do
 
   create_table "aliquot_indices", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.integer "aliquot_id", null: false
@@ -219,6 +219,7 @@ ActiveRecord::Schema.define(version: 20170905090034) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean "visible", default: true, null: false
+    t.integer "category"
     t.index ["name"], name: "index_bait_library_types_on_name", unique: true
   end
 
@@ -1231,7 +1232,7 @@ ActiveRecord::Schema.define(version: 20170905090034) do
     t.string "sti_type"
     t.integer "order_id"
     t.integer "request_purpose_id"
-    t.integer "work_order_id"
+    t.bigint "work_order_id"
     t.integer "billing_product_id"
     t.index ["asset_id"], name: "index_requests_on_asset_id"
     t.index ["billing_product_id"], name: "index_requests_on_billing_product_id"
@@ -1872,18 +1873,18 @@ ActiveRecord::Schema.define(version: 20170905090034) do
     t.index ["work_completion_id"], name: "fk_rails_5ea64f1af2"
   end
 
-  create_table "work_order_types", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "work_order_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_work_order_types_on_name", unique: true
   end
 
-  create_table "work_orders", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
-    t.integer "work_order_type_id", null: false
+  create_table "work_orders", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+    t.bigint "work_order_type_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["work_order_type_id"], name: "fk_rails_80841fcb4c"
+    t.index ["work_order_type_id"], name: "index_work_orders_on_work_order_type_id"
   end
 
   create_table "workflow_samples", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|

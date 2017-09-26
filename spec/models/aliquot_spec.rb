@@ -118,6 +118,6 @@ RSpec.describe Aliquot, type: :model do
     default_project_cost_code = aliquots.last.project.project_metadata.project_cost_code
     receptacle = create :empty_well
     receptacle.aliquots << aliquots
-    expect(receptacle.aliquots.by_project_cost_code).to eq('new_cost_code' => 1, default_project_cost_code => 3, nil => 1)
+    expect(receptacle.aliquots.count_by_project_cost_code).to eq('new_cost_code' => 1, default_project_cost_code => 3, nil => 1)
   end
 end

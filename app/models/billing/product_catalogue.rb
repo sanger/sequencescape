@@ -12,7 +12,7 @@ module Billing
     end
 
     def single_product?
-      billing_products.length == 1
+      billing_products.size == 1
     end
   end
 end
