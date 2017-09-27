@@ -1,16 +1,15 @@
 Rails.application.configure do
-  # Settings specified here will take precedence over those in config/application.rb.
+  # Used for accurately profiling calls.
 
-  # In the development environment your application's code is reloaded on
-  # every request. This slows down response time but is perfect for development
-  # since you don't have to restart the web server when you make code changes.
+  # We NEED to cache classes for ruby-rpof
   config.cache_classes = false
-
-  # Do not eager load code on boot.
-  config.eager_load = false
+  # Eager load on boot
+  config.eager_load = true
 
   # Show full error reports.
   config.consider_all_requests_local = true
+
+  config.cache_template_loading = true
 
   # Enable/disable caching. By default caching is disabled.
   if Rails.root.join('tmp/caching-dev.txt').exist? #rubocop:disable all
