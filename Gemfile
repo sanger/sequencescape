@@ -85,7 +85,6 @@ group :default do
   gem 'roo'
 
   # Used in XML generation.
-
   gem 'builder'
 
   gem 'sanger_barcode_format', github: 'sanger/sanger_barcode_format', branch: 'development'
