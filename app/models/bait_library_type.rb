@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2012,2015 Genome Research Ltd.
 
-class BaitLibraryType < ActiveRecord::Base
+class BaitLibraryType < ApplicationRecord
   include SharedBehaviour::Named
 
   has_many :bait_libraries

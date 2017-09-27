@@ -10,7 +10,7 @@ require 'external_properties'
 require 'eventful_record'
 require 'external_properties'
 
-class Asset < ActiveRecord::Base
+class Asset < ApplicationRecord
   include StudyReport::AssetDetails
   include ModelExtensions::Asset
   include AssetLink::Associations

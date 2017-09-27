@@ -6,7 +6,7 @@
 
 # This class allows plates to be associated with wells. It was initially more flexible
 # but that flexibility has not been used and has resulted in complications elsewhere.
-class ContainerAssociation < ActiveRecord::Base
+class ContainerAssociation < ApplicationRecord
   # Rails doesn't handle through associations very well when single table inheritance is also in play.
   # For example the following:
   # Plate.first.wells.includes(:plate)

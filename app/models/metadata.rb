@@ -116,7 +116,7 @@ module Metadata
     const_set(:Metadata, metadata)
   end
 
-  class Base < ActiveRecord::Base
+  class Base < ApplicationRecord
     # All derived classes have their own table.  We're just here to help with some behaviour
     self.abstract_class = true
 

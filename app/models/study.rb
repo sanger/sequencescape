@@ -6,7 +6,7 @@
 
 require 'aasm'
 
-class Study < ActiveRecord::Base
+class Study < ApplicationRecord
   # It has to be here, as there are has_many through: :roles associations in modules
   # Includes / Extendes
   has_many :roles

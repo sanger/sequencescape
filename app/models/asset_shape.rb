@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2015 Genome Research Ltd.
 
-class AssetShape < ActiveRecord::Base
+class AssetShape < ApplicationRecord
   include SharedBehaviour::Named
 
   validates_presence_of :name, :horizontal_ratio, :vertical_ratio, :description_strategy

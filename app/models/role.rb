@@ -8,8 +8,8 @@
 # objects in a polymorphic fashion. For example, you could create a role
 # "moderator" for an instance of a model (i.e., an object), a model class,
 # or without any specification at all.
-class Role < ActiveRecord::Base
-  class UserRole < ActiveRecord::Base
+class Role < ApplicationRecord
+  class UserRole < ApplicationRecord
     self.table_name = ('roles_users')
     belongs_to :role
     belongs_to :user

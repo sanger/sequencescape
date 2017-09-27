@@ -6,7 +6,7 @@
 
 require 'aasm'
 
-class WellAttribute < ActiveRecord::Base
+class WellAttribute < ApplicationRecord
   include AASM
 
   belongs_to :well, inverse_of: :well_attribute

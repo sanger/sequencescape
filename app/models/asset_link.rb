@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
 
-class AssetLink < ActiveRecord::Base
+class AssetLink < ApplicationRecord
   include Api::AssetLinkIO::Extensions
 
   acts_as_dag_links node_class_name: 'Asset'

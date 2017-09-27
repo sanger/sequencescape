@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
 
-class BatchRequest < ActiveRecord::Base
+class BatchRequest < ApplicationRecord
   include Api::BatchRequestIO::Extensions
   include Uuid::Uuidable
 

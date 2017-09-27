@@ -4,8 +4,8 @@
 # authorship of this file.
 # Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
-class Order < ActiveRecord::Base
-  class OrderRole < ActiveRecord::Base
+class Order < ApplicationRecord
+  class OrderRole < ApplicationRecord
     self.table_name = ('order_roles')
   end
 

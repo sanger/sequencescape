@@ -9,7 +9,7 @@ require 'openssl'
 require 'digest/sha1'
 # require 'curb'
 
-class User < ActiveRecord::Base
+class User < ApplicationRecord
   include Authentication
   include Workflowed
   extend EventfulRecord

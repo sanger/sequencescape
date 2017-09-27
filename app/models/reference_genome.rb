@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
-class ReferenceGenome < ActiveRecord::Base
+class ReferenceGenome < ApplicationRecord
   extend Attributable::Association::Target
   include Api::ReferenceGenomeIO::Extensions
   include Uuid::Uuidable

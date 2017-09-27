@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
 
-class StudySample < ActiveRecord::Base
+class StudySample < ApplicationRecord
   include Api::StudySampleIO::Extensions
 
   self.per_page = 500

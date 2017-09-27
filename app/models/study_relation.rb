@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
-class StudyRelation < ActiveRecord::Base
+class StudyRelation < ApplicationRecord
   belongs_to :study
   belongs_to :related_study, class_name: 'Study'
   belongs_to :study_relation_type

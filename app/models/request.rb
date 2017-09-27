@@ -6,7 +6,7 @@
 
 require 'aasm'
 
-class Request < ActiveRecord::Base
+class Request < ApplicationRecord
   # Include
   include ModelExtensions::Request
   include Aliquot::DeprecatedBehaviours::Request

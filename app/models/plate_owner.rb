@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2015 Genome Research Ltd.
 
-class PlateOwner < ActiveRecord::Base
+class PlateOwner < ApplicationRecord
   belongs_to :user
   belongs_to :plate
   belongs_to :eventable, polymorphic: true

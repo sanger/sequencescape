@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2014,2015 Genome Research Ltd.
 
-class LibraryTypesRequestType < ActiveRecord::Base
+class LibraryTypesRequestType < ApplicationRecord
   belongs_to :library_type, inverse_of: :library_types_request_types
   belongs_to :request_type, inverse_of: :library_types_request_types
 end

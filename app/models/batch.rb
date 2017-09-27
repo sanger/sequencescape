@@ -8,7 +8,7 @@ require 'timeout'
 require 'tecan_file_generation'
 require 'aasm'
 
-class Batch < ActiveRecord::Base
+class Batch < ApplicationRecord
   include Api::BatchIO::Extensions
   include Api::Messages::FlowcellIO::Extensions
   include AASM
