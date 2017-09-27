@@ -53,6 +53,11 @@ class CustomerRequest < Request
     )
   end
 
+  #
+  # Generate a request event indicating the request has been destroyed
+  #
+  # @return [RequestEvent] The generated request event
+  #
   def generate_destroy_request_event
     time = DateTime.current
     current_request_event&.expire!(time)
