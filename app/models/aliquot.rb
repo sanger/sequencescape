@@ -86,11 +86,10 @@ class Aliquot < ActiveRecord::Base
     TAG_COUNT_NAMES[tag_count]
   end
 
-  def tag_with_unassigned_behaviour
-    untagged? ? nil : tag_without_unassigned_behaviour
+  # Optimization: Avoids us hitting the database for untagged aliquots
+  def tag
+    untagged? ? nil : super
   end
-  alias_method(:tag_without_unassigned_behaviour, :tag)
-  alias_method(:tag, :tag_with_unassigned_behaviour)
 
   # It may have a bait library but not necessarily.
   belongs_to :bait_library

@@ -82,6 +82,7 @@ class Batch < ActiveRecord::Base
   scope :most_recent, ->(number) { latest_first.limit(number) }
 
   delegate :size, to: :requests
+  delegate :sequencing?, to: :pipeline
 
   def study
     studies.first
@@ -507,7 +508,7 @@ class Batch < ActiveRecord::Base
   end
 
   def show_fail_link?
-    released? && pipeline.sequencing?
+    released? && sequencing?
   end
 
   def downstream_requests_needing_asset(request)

@@ -35,20 +35,20 @@ class BatchesController < ApplicationController
   end
 
   def show
-    @submenu_presenter = Presenters::BatchSubmenuPresenter.new(current_user, @batch)
-
-    @pipeline = @batch.pipeline
-    @tasks    = @batch.tasks.sort_by(&:sorted)
-    @rits = @pipeline.request_information_types
-    @input_assets, @output_assets = [], []
-
-    if @pipeline.group_by_parent
-      @input_assets = @batch.input_group
-      @output_assets = @batch.output_group_by_holder unless @pipeline.is_a?(PulldownMultiplexLibraryPreparationPipeline)
-    end
-
     respond_to do |format|
-      format.html
+      format.html do
+        @submenu_presenter = Presenters::BatchSubmenuPresenter.new(current_user, @batch)
+
+        @pipeline = @batch.pipeline
+        @tasks    = @batch.tasks.sort_by(&:sorted)
+        @rits = @pipeline.request_information_types
+        @input_assets, @output_assets = [], []
+
+        if @pipeline.group_by_parent
+          @input_assets = @batch.input_group
+          @output_assets = @batch.output_group_by_holder unless @pipeline.is_a?(PulldownMultiplexLibraryPreparationPipeline)
+        end
+      end
       format.xml { render layout: false }
     end
   end
