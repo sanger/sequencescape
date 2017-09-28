@@ -8,6 +8,7 @@ class AssetLink < ApplicationRecord
   include Api::AssetLinkIO::Extensions
 
   acts_as_dag_links node_class_name: 'Asset'
+  is_broadcast_via_warren
 
   self.per_page = 500
   include Uuid::Uuidable

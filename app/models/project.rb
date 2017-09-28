@@ -28,6 +28,8 @@ class Project < ApplicationRecord
   has_many_events
   has_many_lab_events
 
+  is_broadcast_via_warren
+
   aasm column: :state, whiny_persistence: true do
     state :pending, initial: true
     state :active

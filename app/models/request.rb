@@ -71,6 +71,8 @@ class Request < ApplicationRecord
   # EVERY time we touch a request.
   validates_presence_of :request_purpose_id
 
+  is_broadcast_via_warren
+
   # Scopes
   scope :for_pipeline, ->(pipeline) {
       joins('LEFT JOIN pipelines_request_types prt ON prt.request_type_id=requests.request_type_id')

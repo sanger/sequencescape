@@ -7,6 +7,7 @@
 class Messenger < ApplicationRecord
   belongs_to :target, polymorphic: true
   validates_presence_of :target, :root, :template
+  is_broadcast_via_warren
 
   def shoot
     raise StandardErrror, "Hey, don't shoot the messenger"

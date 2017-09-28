@@ -35,6 +35,8 @@ Sequencescape::Application.configure do
   # ActionMailer::Base.deliveries array.
   config.action_mailer.delivery_method = :test
 
+  config.warren = Warren.construct(type: :test)
+
   # Avoids threading issues with cucumber and some ajax requests
   # particularly: features/studies/3871492_links_from_study_workflow_view.feature
   # under MRI. If hit to overall test performance is grim, might need to

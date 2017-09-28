@@ -76,6 +76,8 @@ class Asset < ApplicationRecord
   has_one :custom_metadatum_collection
   delegate :metadata, to: :custom_metadatum_collection
 
+  is_broadcast_via_warren
+
   scope :requests_as_source_is_a?, ->(t) { joins(:requests_as_source).where(requests: { sti_type: [t, *t.descendants].map(&:name) }) }
 
   # to override in subclass

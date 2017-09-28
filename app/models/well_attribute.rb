@@ -16,6 +16,8 @@ class WellAttribute < ApplicationRecord
     gender_markers.try(:to_s)
   end
 
+  broadcasts_associated_via_warren :well
+
   aasm column: :pico_pass, whiny_persistence: true do
     state :ungraded, initial: true
     # These states are originally used in SNP

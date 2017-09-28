@@ -233,7 +233,4 @@ class ActiveRecord::Base
     alias transaction_without_amqp transaction
     alias transaction transaction_with_amqp
   end
-  def routing_key;
-    nil;
-  end
 end if ActiveRecord::Base.observers.include?(:amqp_observer)

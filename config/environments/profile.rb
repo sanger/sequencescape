@@ -44,7 +44,7 @@ Rails.application.configure do
   # Suppress logger output for asset requests.
   config.assets.quiet = true
 
-  config.active_record.observers = [:customer_request_observer]
+  config.warren = Warren.construct(type: :log)
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true

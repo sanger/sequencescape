@@ -16,7 +16,9 @@ class Role < ApplicationRecord
 
     after_destroy :touch_authorizable
 
-    delegate :touch_authorizable, to: :role
+    delegate :touch_authorizable, :authorizable, to: :role
+
+    broadcasts_associated_via_warren :authorizable
   end
 
   has_many :user_role_bindings, class_name: 'Role::UserRole'
@@ -28,6 +30,8 @@ class Role < ApplicationRecord
   scope :general_roles, -> { where('authorizable_type IS NULL') }
 
   after_destroy :touch_authorizable
+
+  broadcasts_associated_via_warren :authorizable
 
   def self.keys
     Role.all.map { |r| r.name }.uniq

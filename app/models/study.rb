@@ -148,6 +148,8 @@ class Study < ApplicationRecord
     end
   end
 
+  is_broadcast_via_warren
+
   squishify :name
 
   has_metadata do

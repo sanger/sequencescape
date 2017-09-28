@@ -31,7 +31,7 @@ configatron.ssr_emails = ['ssr@example.com']
 configatron.api_documentation_url = 'http://localhost:3000/documentation'
 configatron.api_url = 'http://localhost:3000'
 
-configatron.authentication = ENV.fetch('AUTH','local')
+configatron.authentication = ENV.fetch('AUTH', 'local')
 configatron.barcode_service_url = 'http://localhost:9998/barcode_service.wsdl'
 
 configatron.pmb_api = 'http://localhost:9292/v1'

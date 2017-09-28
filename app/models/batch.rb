@@ -46,6 +46,7 @@ class Batch < ApplicationRecord
   has_many_lab_events
 
   accepts_nested_attributes_for :requests
+  is_broadcast_via_warren
 
   validate :requests_have_same_read_length, :cluster_formation_requests_must_be_over_minimum, :all_requests_are_ready?, on: :create
 
