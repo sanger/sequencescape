@@ -9,7 +9,7 @@ class Warren::Test
     end
 
     def <<(message)
-      @warren._publish_(message)
+      @warren << message
     end
   end
   #
@@ -22,8 +22,20 @@ class Warren::Test
     @messages = []
   end
 
-  def reinitialize; end
+  #
+  # Provides API compatibility with the RabbitMQ versions
+  # Does nothing in this case
+  #
+  def connect
+  end
 
+  #
+  # Yields an exchange which gets returned to the pool on block closure
+  #
+  #
+  # @return [void]
+  #
+  # @yieldreturn [Warren::Test::Channel] A rabbitMQ channel that logs messaged to the test warren
   def with_chanel
     yield Channel.new(self)
   end
@@ -44,16 +56,7 @@ class Warren::Test
     @messages.count { |message| message.routing_key == routing_key }
   end
 
-  def debug!
-    puts "#{@messages.count} messages"
-    p @messages.map(&:routing_key)
-  end
-
-  #
-  # Do not use this directly. Intended solely for testing
-  # invoked via Channel
-  #
-  def _publish_(message)
+  def <<(message)
     @messages << message
   end
 end

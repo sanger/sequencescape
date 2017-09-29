@@ -4,35 +4,27 @@
 #
 class Warren::Log
   class Channel
-    def initialize(warren)
-      @warren = warren
-    end
-
     def <<(message)
-      @warren._publish_(message)
+      Rails.logged.info "Published: #{message.routing_key}"
+      Rails.logger.debug "Payload: #{message.payload}"
     end
   end
-  #
-  # Creates a test warren with no messages.
-  # Test warrens are shared across all threads.
-  #
-  # @param [_] *_args Configuration arguments are ignored.
-  #
-  def initialize(*_args)
 
+  #
+  # Provides API compatibility with the RabbitMQ versions
+  # Does nothing in this case
+  #
+  def connect
   end
 
-  def reinitialize; end
-
+  #
+  # Yields a Warren::Log::Channel
+  #
+  #
+  # @return [void]
+  #
+  # @yieldreturn [Warren::Log::Channel] A rabbitMQ channel that logs messaged to the test warren
   def with_chanel
-    yield Channel.new(self)
-  end
-
-  #
-  # Do not use this directly. Intended solely for testing
-  # invoked via Channel
-  #
-  def _publish_(message)
-    Rails.logger.info "Published: #{message.payload} with routing key: #{message.routing_key}"
+    yield Channel.new
   end
 end

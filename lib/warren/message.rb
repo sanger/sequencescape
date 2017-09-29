@@ -6,7 +6,11 @@ class Warren::Message
   end
 
   def routing_key
-    record.routing_key || "#{Rails.env}.saved.#{record.class.name.underscore}.#{record.id}"
+    if record.respond_to?(:routing_key)
+      record.routing_key
+    else
+      "#{Rails.env}.saved.#{record.class.name.underscore}.#{record.id}"
+    end
   end
 
   def payload

@@ -40,34 +40,13 @@ class AmqpObserver < ActiveRecord::Observer
     end
   end
 
-  module HareExchange
-    def self.exchange
-      client = MarchHare.connect(uri: configatron.amqp.url)
-      begin
-        ch = client.create_channel
-        exchange = ch.topic('psd.sequencescape', durable: true)
-        yield exchange
-      ensure
-        client.close
-      end
-    rescue MarchHare::ConnectionRefused, StandardError => exception
-      Rails.logger.error { "Unable to broadcast: #{exception.message}\n#{exception.backtrace.join("\n")}" }
-    end
-  end
+  self.exchange_interface = BunnyExchange
 
-  # Switch our AMQP client depending on which is included
-  # MarchHare in case of Jruby, Bunny of MRI
-  self.exchange_interface = if defined?(JRuby)
-                              HareExchange
-                            else
-                              BunnyExchange
-                            end
-
-    # Ensure we capture records being saved as well as deleted.
-    #
-    # NOTE: Oddly you can't alias_method the after_destroy, it has to be physically defined!
-    class_eval('def after_save(record) ; self << record ; true ; end')
-    class_eval('def after_destroy(record) ; record.class.render_class.associations.each {|a,_| record.send(a) } ; self << record ; true ; end')
+  # Ensure we capture records being saved as well as deleted.
+  #
+  # NOTE: Oddly you can't alias_method the after_destroy, it has to be physically defined!
+  class_eval('def after_save(record) ; self << record ; true ; end')
+  class_eval('def after_destroy(record) ; record.class.render_class.associations.each {|a,_| record.send(a) } ; self << record ; true ; end')
 
   # To prevent ActiveRecord::Observer doing something unwanted when we test this, we pull
   # out the implementation in a module (which can be tested) and leave the rest behind.

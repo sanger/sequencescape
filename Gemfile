@@ -88,6 +88,11 @@ group :default do
   gem 'builder'
 
   gem 'sanger_barcode_format', github: 'sanger/sanger_barcode_format', branch: 'development'
+
+  # Allow simple connection pooling on non-database connections
+  # Using it to maintain our warren's of bunnies.
+  # Or the connection pool of RabbitMQ channels to get technical
+  gem 'connection_pool'
 end
 
 group :warehouse do

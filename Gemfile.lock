@@ -144,6 +144,7 @@ GEM
     coffee-script-source (1.12.2)
     concurrent-ruby (1.0.5)
     configatron (4.5.1)
+    connection_pool (2.2.1)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
     cucumber (2.4.0)
@@ -444,6 +445,7 @@ DEPENDENCIES
   carrierwave
   coffee-rails
   configatron
+  connection_pool
   cucumber-rails
   daemons
   database_cleaner
