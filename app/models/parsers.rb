@@ -19,7 +19,7 @@ module Parsers
     csv = parse_with_fallback_encodings(cleaned_content)
     return Parsers::QuantParser.new(csv) if Parsers::QuantParser.is_quant_file?(csv)
     return Parsers::BioanalysisCsvParser.new(csv) if Parsers::BioanalysisCsvParser.is_bioanalyzer?(csv)
-    return Parsers::IscXtenParser.new(csv) if Parsers::IscXtenParser.is_isc_xten_file?(csv)
+    return Parsers::PlateReader.new(csv) if Parsers::PlateReader.is_plate_reader_file?(csv)
     nil
   end
 
