@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe 'Warren::BroadcastMessages' do
-  let(:warren) { Rails.application.config.warren }
+RSpec.describe 'Warren::BroadcastMessages', warren: true do
+  let(:warren) { Warren.handler }
 
   # Using study and study_metadata as examples
 

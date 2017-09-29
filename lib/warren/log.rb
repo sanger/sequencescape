@@ -5,7 +5,7 @@
 class Warren::Log
   class Channel
     def <<(message)
-      Rails.logged.info "Published: #{message.routing_key}"
+      Rails.logger.info "Published: #{message.routing_key}"
       Rails.logger.debug "Payload: #{message.payload}"
     end
   end
@@ -26,5 +26,9 @@ class Warren::Log
   # @yieldreturn [Warren::Log::Channel] A rabbitMQ channel that logs messaged to the test warren
   def with_chanel
     yield Channel.new
+  end
+
+  def <<(message)
+    with_chanel { |c| c << message }
   end
 end

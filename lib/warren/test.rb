@@ -56,7 +56,19 @@ class Warren::Test
     @messages.count { |message| message.routing_key == routing_key }
   end
 
+  def enable!
+    @enabled = true
+    clear_messages
+  end
+
+  # Clean up after ourselves to avoid memory leaks
+  def disable!
+    @enabled = false
+    clear_messages
+  end
+
+  # Disable message logging if not required
   def <<(message)
-    @messages << message
+    @messages << message if @enabled
   end
 end

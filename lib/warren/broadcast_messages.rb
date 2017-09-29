@@ -68,6 +68,6 @@ module Warren::BroadcastMessages
   # @return [#<<,#with_chanel,#connect] The configure warren.
   #
   def warren
-    Rails.application.config.warren
+    Warren.handler
   end
 end

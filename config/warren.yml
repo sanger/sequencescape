@@ -1,0 +1,10 @@
+development:
+  type: log
+profile:
+  type: log
+test:
+  type: test
+cucumber:
+  type: test
+production:
+  type: log
