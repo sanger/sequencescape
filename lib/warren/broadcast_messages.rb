@@ -1,3 +1,6 @@
+
+require_relative 'message'
+
 #
 # Module Warren::BroadcastMessages provides methods to assist with
 # setting up message broadcast
