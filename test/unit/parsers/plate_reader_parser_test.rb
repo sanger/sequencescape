@@ -7,7 +7,7 @@
 require './test/test_helper'
 require 'csv'
 
-class PlateReaderTest < ActiveSupport::TestCase
+class PlateReaderParserTest < ActiveSupport::TestCase
   def read_file(filename)
     content = nil
     File.open(filename, 'r') do |fd|
@@ -24,7 +24,7 @@ class PlateReaderTest < ActiveSupport::TestCase
         @csv = CSV.parse(@content)
       end
 
-      should 'return a Parsers::PlateReader' do
+      should 'return a Parsers::PlateReaderParser' do
         assert_equal true, (!Parsers.parser_for(@filename, nil, @content).nil?)
       end
     end
@@ -35,7 +35,7 @@ class PlateReaderTest < ActiveSupport::TestCase
         @content = read_file @filename
       end
 
-      should 'not return a Parsers::PlateReader' do
+      should 'not return a Parsers::PlateReaderParser' do
         assert_nil Parsers.parser_for(@filename, nil, @content)
       end
     end
@@ -46,19 +46,19 @@ class PlateReaderTest < ActiveSupport::TestCase
         @content = read_file @filename
       end
 
-      should 'not return a Parsers::PlateReader' do
+      should 'not return a Parsers::PlateReaderParser' do
         assert_nil Parsers.parser_for(@filename, nil, @content)
       end
     end
   end
 
-  context 'A Parsers::PlateReader parser of CSV' do
-    context 'with a valid CSV Parsers::PlateReader file' do
+  context 'A Parsers::PlateReaderParser parser of CSV' do
+    context 'with a valid CSV Parsers::PlateReaderParser file' do
       setup do
         filename = Rails.root.to_s + '/test/data/plate_reader_parsing_Zebrafish_example.csv'
         content = read_file filename
 
-        @parser = Parsers::PlateReader.new(CSV.parse(content))
+        @parser = Parsers::PlateReaderParser.new(CSV.parse(content))
       end
 
       # should "parse last sample of testing file correctly" do
@@ -101,11 +101,11 @@ class PlateReaderTest < ActiveSupport::TestCase
         filename = Rails.root.to_s + '/test/data/bioanalysis_qc_results-with-error.csv'
         content = read_file filename
 
-        @parser = Parsers::PlateReader.new(CSV.parse(content))
+        @parser = Parsers::PlateReaderParser.new(CSV.parse(content))
       end
 
       should 'raise an exception while accessing any information' do
-        assert_raises(Parsers::PlateReader::InvalidFile) { @parser.concentration('A1') }
+        assert_raises(Parsers::PlateReaderParser::InvalidFile) { @parser.concentration('A1') }
       end
     end
   end

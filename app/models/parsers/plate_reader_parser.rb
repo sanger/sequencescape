@@ -3,7 +3,7 @@
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2015 Genome Research Ltd.
-class Parsers::PlateReader
+class Parsers::PlateReaderParser
   class InvalidFile < StandardError; end
 
   def headers
@@ -49,8 +49,8 @@ class Parsers::PlateReader
     }[sym_name]
   end
 
-  def self.is_plate_reader_file?(content)
-    parser = Parsers::PlateReader.new(content)
+  def self.parses?(content)
+    parser = Parsers::PlateReaderParser.new(content)
     [:row, :col, :content, :raw_data, :concentration].each_with_index.map do |sym, pos|
       parser.get_column_for_header(sym) == pos
     end.all?

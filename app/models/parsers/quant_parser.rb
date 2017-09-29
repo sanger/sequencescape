@@ -18,7 +18,7 @@ class Parsers::QuantParser
     content.find_index { |l| l[0] == HEADER_IDENTIFIER }
   end
 
-  def self.is_quant_file?(content)
+  def self.parses?(content)
     (content[0][0] == 'Assay Plate Barcode') && headers_index(content)
   end
 
