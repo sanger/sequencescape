@@ -148,7 +148,7 @@ class Study < ApplicationRecord
     end
   end
 
-  is_broadcast_via_warren
+  broadcast_via_warren
 
   squishify :name
 

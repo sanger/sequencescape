@@ -7,13 +7,13 @@ module Warren
     case type
     when 'test' then Warren::Test.new
     when 'log' then Warren::Log.new
-    when 'broadcast' then Warren::Broadcast.new(url: url, frame_max: 0, heartbeat: heartbeat)
+    when 'broadcast' then Warren::Broadcast.new(url: url, frame_max: frame_max, heartbeat: heartbeat)
     else raise StandardError, "Unknown type warren: #{type}"
     end
   end
 
   def self.setup(opts)
-    Rails.logger.warn "Recreating Warren handler when one already exists" if handler.present?
+    Rails.logger.warn 'Recreating Warren handler when one already exists' if handler.present?
     @handler = construct(opts.symbolize_keys)
   end
 

@@ -13,7 +13,7 @@ class ReferenceGenome < ApplicationRecord
   has_many :studies
   has_many :samples
   validates_uniqueness_of :name, message: 'of reference genome already present in database', allow_blank: true
-  is_broadcast_via_warren
+  broadcast_via_warren
 
   module Associations
     def self.included(base)

@@ -65,7 +65,7 @@ class Order < ApplicationRecord
   after_destroy :on_delete_destroy_submission
 
   acts_as_authorizable
-  is_broadcast_via_warren
+  broadcast_via_warren
 
   scope :include_for_study_view, -> { includes(:submission) }
   scope :containing_samples, ->(samples) { joins(assets: :samples).where(samples: { id: samples }) }
@@ -102,7 +102,6 @@ class Order < ApplicationRecord
       # call submission with appropriate Order subclass
       Submission.build!({ template: self }.merge(options))
     end
-
   end
 
   def is_building_submission?
@@ -196,7 +195,6 @@ class Order < ApplicationRecord
     yield matching_samples, matching_orders, matching_submissions if block_given?
     true
   end
-
 
   def request_type_ids_list; @request_type_ids_list ||= [[]]; end
 

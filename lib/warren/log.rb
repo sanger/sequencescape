@@ -14,8 +14,7 @@ class Warren::Log
   # Provides API compatibility with the RabbitMQ versions
   # Does nothing in this case
   #
-  def connect
-  end
+  def connect; end
 
   #
   # Yields a Warren::Log::Channel

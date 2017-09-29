@@ -30,7 +30,7 @@ class PlatePurpose < Purpose
 
   include Relationship::Associations
 
-  is_broadcast_via_warren
+  broadcast_via_warren
 
   scope :compatible_with_purpose, ->(purpose) {
     if purpose.nil?

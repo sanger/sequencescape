@@ -37,7 +37,6 @@ FactoryGirl.define do
     reference_genome     { ReferenceGenome.find_by(name: '') }
     study_metadata
 
-
     # These have to build a user list
     factory(:study_with_manager) do
       after(:build) do |study|

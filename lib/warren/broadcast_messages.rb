@@ -11,7 +11,7 @@ module Warren::BroadcastMessages
     #
     # @return [void]
     #
-    def is_broadcast_via_warren
+    def broadcast_via_warren
       after_commit :broadcast
     end
 

@@ -17,7 +17,7 @@ class Warren::Broadcast
     private
 
     def exchange
-      raise StandardError, "No exchange configured" if @exchange_name.nil?
+      raise StandardError, 'No exchange configured' if @exchange_name.nil?
       @exchange ||= @bun_channel.topic(@exchange_name, auto_delete: false, durable: true)
     end
   end
@@ -62,7 +62,7 @@ class Warren::Broadcast
   # @return [Warren::Broadcast] Returns itself to allow chaining. But you're probably better off using #with_chanel inthat case
   #
   def <<(message)
-    with_chanel {|chanel| chanel << message }
+    with_chanel { |chanel| chanel << message }
     self
   end
 

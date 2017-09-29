@@ -35,7 +35,7 @@ class Submission < ApplicationRecord
   before_destroy :cancel_all_requests_on_destruction
 
   accepts_nested_attributes_for :orders, update_only: true
-  is_broadcast_via_warren
+  broadcast_via_warren
 
   scope :including_associations_for_json, -> { includes([
     :uuid_object,

@@ -12,8 +12,8 @@ RSpec.describe 'Warren::Broadcast' do
   describe '#connect' do
     before do
       expect(Bunny).to receive(:new)
-                        .with('example', frame_max: 0, heartbeat: 30)
-                        .and_return(bun_session)
+        .with('example', frame_max: 0, heartbeat: 30)
+        .and_return(bun_session)
       expect(bun_session).to receive(:start)
     end
 
@@ -25,8 +25,8 @@ RSpec.describe 'Warren::Broadcast' do
   describe '#with_channel' do
     before do
       expect(Bunny).to receive(:new)
-                        .with('example', frame_max: 0, heartbeat: 30)
-                        .and_return(bun_session)
+        .with('example', frame_max: 0, heartbeat: 30)
+        .and_return(bun_session)
       # expect(bun_session).to receive(:start)
       expect(bun_session).to receive(:create_channel).and_return(bun_channel)
     end
@@ -45,10 +45,10 @@ RSpec.describe 'Warren::Broadcast' do
 
       before do
         expect(bun_channel).to receive(:topic)
-        .with('exchange', auto_delete: false, durable: true)
-        .and_return(bun_exchange)
+          .with('exchange', auto_delete: false, durable: true)
+          .and_return(bun_exchange)
         expect(bun_exchange).to receive(:publish)
-        .with('payload', routing_key: 'key')
+          .with('payload', routing_key: 'key')
       end
 
       it { is_expected.to be_a(Warren::Broadcast::Channel) }

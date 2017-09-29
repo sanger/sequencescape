@@ -21,7 +21,7 @@ class BroadcastEvent < ApplicationRecord
   serialize :properties
   self.inheritance_column = 'sti_type'
 
-  is_broadcast_via_warren
+  broadcast_via_warren
 
   def initialize(*args)
     raise StandardError, 'BroadcastEvents can not be created directly' unless self.class < BroadcastEvent

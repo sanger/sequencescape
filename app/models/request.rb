@@ -71,7 +71,7 @@ class Request < ApplicationRecord
   # EVERY time we touch a request.
   validates_presence_of :request_purpose_id
 
-  is_broadcast_via_warren
+  broadcast_via_warren
 
   # Scopes
   scope :for_pipeline, ->(pipeline) {

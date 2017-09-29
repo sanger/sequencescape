@@ -15,5 +15,5 @@ class StudySample < ApplicationRecord
 
   validates_uniqueness_of :sample_id, scope: [:study_id], message: 'cannot be added to the same study more than once'
 
-  is_broadcast_via_warren
+  broadcast_via_warren
 end

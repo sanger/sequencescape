@@ -33,7 +33,7 @@ class BatchRequest < ApplicationRecord
     record.position = (record.batch.batch_requests.map(&:position).compact.max || 0) + 1
   end
 
-  is_broadcast_via_warren
+  broadcast_via_warren
 
   def move_to_position!(position)
     update_attributes!(sorting_requests_within_batch: true, position: position)

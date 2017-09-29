@@ -29,7 +29,7 @@ class Sample < ApplicationRecord
   EgaFields = %w(subject disease treatment gender phenotype)
 
   acts_as_authorizable
-  is_broadcast_via_warren
+  broadcast_via_warren
 
   has_many :study_samples, dependent: :destroy, inverse_of: :sample
   has_many :studies, through: :study_samples, inverse_of: :samples

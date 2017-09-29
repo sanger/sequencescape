@@ -51,7 +51,7 @@ class Aliquot < ApplicationRecord
   belongs_to :tag2, class_name: 'Tag'
   before_validation { |record| record.tag2_id ||= UNASSIGNED_TAG }
 
-  is_broadcast_via_warren
+  broadcast_via_warren
 
   # Validating the uniqueness of tags in rails was causing issues, as it was resulting the in the preform_transfer_of_contents
   # in transfer request to fail, without any visible sign that something had gone wrong. This essentially meant that tag clashes
