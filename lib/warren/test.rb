@@ -22,11 +22,13 @@ class Warren::Test
     @messages = []
   end
 
+
   #
-  # Provides API compatibility with the RabbitMQ versions
-  # Does nothing in this case
+  # Provide API compatibility with the RabbitMQ versions
+  # Do nothing in this case
   #
   def connect; end
+  def disconnect; end
 
   #
   # Yields an exchange which gets returned to the pool on block closure

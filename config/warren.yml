@@ -1,5 +1,6 @@
 development:
   type: log
+  exchange: psd.sequencescape
 profile:
   type: log
 test:

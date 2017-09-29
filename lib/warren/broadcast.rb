@@ -14,6 +14,10 @@ class Warren::Broadcast
       self
     end
 
+    def close
+      @bun_channel.close
+    end
+
     private
 
     def exchange
@@ -27,19 +31,32 @@ class Warren::Broadcast
   # @param [_] *_args Configuration arguments are ignored.
   #
   def initialize(url:, frame_max:, heartbeat:, exchange:)
-    @session = Bunny.new(url, frame_max: frame_max, heartbeat: heartbeat)
+    @url = url
+    @frame_max = frame_max
+    @heartbeat = heartbeat
     @exchange_name = exchange
   end
 
   #
   # Opens a connection to the RabbitMQ server. Will need to be re-initialized after forking.
-  #
+  # We make sure we reset the connecti
   #
   # @return [true] We've connected!
   #
   def connect
-    @session.start
+    reset_pool
+    session.start
     true
+  end
+
+  #
+  # Closes the connection. Call before forking to avoid leaking connections
+  #
+  #
+  # @return [true] We've disconnected
+  #
+  def disconnect
+    close_session
   end
 
   #
@@ -68,9 +85,24 @@ class Warren::Broadcast
 
   private
 
+  def session
+    @session ||= Bunny.new(@url, frame_max: @frame_max, heartbeat: @heartbeat)
+  end
+
   def connection_pool
     @connection_pool ||= ConnectionPool.new(size: 5, timeout: 5) do
       Channel.new(@session.create_channel, exchange: @exchange_name)
     end
+  end
+
+  def close_session
+    reset_pool
+    @session.close
+    @session = nil
+  end
+
+  def reset_pool
+    @connection_pool&.shutdown { |ch| ch.close }
+    @connection_pool = nil
   end
 end
