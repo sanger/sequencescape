@@ -9,7 +9,7 @@ class CustomerRequest < Request
   self.customer_request = true
 
   after_create :generate_create_request_event
-  before_save :generate_request_event, if: :state_changed?
+  after_save :generate_request_event, if: :saved_change_to_state?
   before_destroy :generate_destroy_request_event
 
   delegate :customer_accepts_responsibility, :customer_accepts_responsibility=, to: :request_metadata
@@ -47,7 +47,7 @@ class CustomerRequest < Request
     current_request_event&.expire!(time)
     request_events.create!(
       event_name: 'state_changed',
-      from_state: state_was,
+      from_state: state_before_last_save,
       to_state: state,
       current_from: time
     )

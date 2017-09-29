@@ -39,7 +39,6 @@ class Warren::Broadcast
 
   #
   # Opens a connection to the RabbitMQ server. Will need to be re-initialized after forking.
-  # We make sure we reset the connecti
   #
   # @return [true] We've connected!
   #
@@ -91,13 +90,13 @@ class Warren::Broadcast
 
   def connection_pool
     @connection_pool ||= ConnectionPool.new(size: 5, timeout: 5) do
-      Channel.new(@session.create_channel, exchange: @exchange_name)
+      Channel.new(session.create_channel, exchange: @exchange_name)
     end
   end
 
   def close_session
     reset_pool
-    @session.close
+    @session&.close
     @session = nil
   end
 

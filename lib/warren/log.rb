@@ -15,6 +15,7 @@ class Warren::Log
   # Do nothing in this case
   #
   def connect; end
+
   def disconnect; end
 
   #

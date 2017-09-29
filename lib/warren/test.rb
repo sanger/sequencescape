@@ -22,12 +22,12 @@ class Warren::Test
     @messages = []
   end
 
-
   #
   # Provide API compatibility with the RabbitMQ versions
   # Do nothing in this case
   #
   def connect; end
+
   def disconnect; end
 
   #
