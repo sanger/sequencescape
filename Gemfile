@@ -58,7 +58,6 @@ group :default do
 
   # API v2
   gem 'jsonapi-resources'
-  gem 'jsonapi-resources-matchers'
 
   # MarchHare and Bunny are both RabbitMQ clients.
   # While bunny does work with Jruby, it is not recommended
@@ -145,7 +144,9 @@ group :test, :cucumber do
   gem 'launchy', require: false
   gem 'mocha', require: false # avoids load order problems
   gem 'nokogiri', require: false
-  gem 'shoulda', require: false
+  gem 'shoulda-context', require: false
+  gem 'shoulda-matchers', require: false
+  gem 'jsonapi-resources-matchers', require: false
   gem 'timecop', require: false
   gem 'simplecov', require: false
   gem 'database_cleaner'
