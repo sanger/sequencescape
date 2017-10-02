@@ -35,12 +35,12 @@ Feature: Patients should be able to withdraw consent
   @batch
   Scenario: Withdrawn consent is visible in batch xml
     Given the batch exists with ID 1
-    And batch "1" in "Pulldown library preparation" has been setup with "sample_okay_group" for feature 27224545
+    And batch "1" has been setup with "sample_okay_group" for feature 27224545
     When I get the XML for the batch "1"
     Then the value of the "consent_withdrawn" attribute of the XML element "//batch/lanes/lane/library/sample" should be "false"
 
     Given the batch exists with ID 2
-    And batch "2" in "Pulldown library preparation" has been setup with "sample_withdrawn_group" for feature 27224545
+    And batch "2" has been setup with "sample_withdrawn_group" for feature 27224545
     When I get the XML for the batch "2"
     Then the value of the "consent_withdrawn" attribute of the XML element "//batch/lanes/lane/library/sample" should be "true"
 

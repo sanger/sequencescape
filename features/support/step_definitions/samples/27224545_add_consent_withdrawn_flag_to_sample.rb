@@ -69,13 +69,13 @@ Then /^the order should (not |)be built$/ do |n|
   assert Order.last != @order if n == 'not '
 end
 
-Given /^batch "([^"]*)" in "Pulldown library preparation" has been setup with "([^"]*)" for feature 27224545$/ do |id, asset_group|
-  pipeline    = Pipeline.find_by!(name: 'Pulldown library preparation')
+Given /^batch "([^"]*)" has been setup with "([^"]*)" for feature 27224545$/ do |id, asset_group|
+  pipeline    = FactoryGirl.create :sequencing_pipeline
   batch       = Batch.find(id)
   asset_group = AssetGroup.find_by(name: asset_group)
   requests = []
   asset_group.assets.each do |asset|
-    target_asset = FactoryGirl.create :empty_library_tube, samples: [asset.samples.first], name: "#{asset.name}_target"
+    target_asset = FactoryGirl.create :lane, samples: [asset.samples.first], name: "#{asset.name}_target"
     request = pipeline.request_types.last.create!(
       asset: asset,
       target_asset: target_asset,
