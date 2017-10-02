@@ -74,6 +74,7 @@ RSpec.describe StudiesController do
 
   describe '#grant_role' do
     let(:user) { create :admin }
+
     before do
       session[:user] = user.id
       post :grant_role, params: { role: { user: user.id, authorizable_type: 'manager' }, id: study.id }, xhr: true
