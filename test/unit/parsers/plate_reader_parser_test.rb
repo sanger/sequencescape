@@ -25,7 +25,7 @@ class PlateReaderParserTest < ActiveSupport::TestCase
       end
 
       should 'return a Parsers::PlateReaderParser' do
-        assert_equal true, (!Parsers.parser_for(@filename, nil, @content).nil?)
+        assert_equal true, !Parsers.parser_for(@filename, nil, @content).nil?
       end
     end
 

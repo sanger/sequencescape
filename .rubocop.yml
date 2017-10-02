@@ -61,3 +61,7 @@ Rails/DynamicFindBy:
 
 Style/IndentArray:
   EnforcedStyle: consistent
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+

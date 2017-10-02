@@ -23,11 +23,9 @@ class Parsers::PlateReaderParser
   end
 
   def concentration(location)
-    begin
-      get_row(location)[get_column_for_header(:concentration)]
-    rescue NoMethodError # Ugh! I want to catch these where they happen
-      raise InvalidFile
-    end
+    get_row(location)[get_column_for_header(:concentration)]
+  rescue NoMethodError # Ugh! I want to catch these where they happen
+    raise InvalidFile
   end
 
   def get_column_for_header(sym)
