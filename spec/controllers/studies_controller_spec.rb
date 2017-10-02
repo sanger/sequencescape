@@ -2,7 +2,6 @@
 require 'rails_helper'
 
 RSpec.describe StudiesController do
-
   it_behaves_like 'it requires login'
 
   let(:user) { create(:owner) }
@@ -28,20 +27,20 @@ RSpec.describe StudiesController do
     context 'with valid options' do
       let(:params) do
         { 'study' => {
-        'name' => 'hello',
-        'reference_genome_id' => ReferenceGenome.find_by(name: '').id,
-        'study_metadata_attributes' => {
-          'faculty_sponsor_id' => FacultySponsor.create!(name: 'Me'),
-          'study_description' => 'some new study',
-          'program_id' => program.id,
-          'contains_human_dna' => 'No',
-          'contaminated_human_dna' => 'No',
-          'commercially_available' => 'No',
-          'data_release_study_type_id' => DataReleaseStudyType.find_by(name: 'genomic sequencing'),
-          'data_release_strategy' => 'open',
-          'study_type_id' => StudyType.find_by(name: 'Not specified').id
+          'name' => 'hello',
+          'reference_genome_id' => ReferenceGenome.find_by(name: '').id,
+          'study_metadata_attributes' => {
+            'faculty_sponsor_id' => FacultySponsor.create!(name: 'Me'),
+            'study_description' => 'some new study',
+            'program_id' => program.id,
+            'contains_human_dna' => 'No',
+            'contaminated_human_dna' => 'No',
+            'commercially_available' => 'No',
+            'data_release_study_type_id' => DataReleaseStudyType.find_by(name: 'genomic sequencing'),
+            'data_release_strategy' => 'open',
+            'study_type_id' => StudyType.find_by(name: 'Not specified').id
           }
-        }}
+        } }
       end
       it { is_expected.to set_flash.to('Your study has been created') }
       it { is_expected.to redirect_to('study path') { study_path(Study.last) } }

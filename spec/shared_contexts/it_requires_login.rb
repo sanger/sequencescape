@@ -9,7 +9,7 @@ shared_examples 'it requires login' do |*actions|
           begin
             get action, params
           rescue AbstractController::ActionNotFound
-             flunk "Testing for an unknown action: #{action}"
+            flunk "Testing for an unknown action: #{action}"
           rescue ActiveRecord::RecordNotFound
             assert true
           rescue ActionView::MissingTemplate
@@ -17,7 +17,7 @@ shared_examples 'it requires login' do |*actions|
           end
         end
         it 'does not redirect' do
-          expect(@response.code).not_to be_in (300..307)
+          expect(@response.code).not_to be_in(300..307)
         end
       end
       context 'when not logged in' do
