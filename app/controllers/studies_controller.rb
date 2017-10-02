@@ -156,7 +156,7 @@ class StudiesController < ApplicationController
 
   def collaborators
     @study = Study.find(params[:id])
-    @all_roles  = Role.select(:name).uniq.pluck(:name)
+    @all_roles  = Role.distinct.pluck(:name)
     @roles      = Role.where(authorizable_id: @study.id, authorizable_type: 'Study')
     @users      = User.order(:first_name)
   end
@@ -336,15 +336,15 @@ class StudiesController < ApplicationController
          if request.xhr?
            if params[:role]
              block.call(@user, @study, params[:role][:authorizable_type].to_s)
-             status, flash[:notice] = 200, "Role #{success_action}"
+             status, flash.now[:notice] = 200, "Role #{success_action}"
            else
-             status, flash[:error] = 500, "A problem occurred while #{error_action} the role"
+             status, flash.now[:error] = 500, "A problem occurred while #{error_action} the role"
            end
          else
-           status, flash[:error] = 401, "A problem occurred while #{error_action} the role"
+           status, flash.now[:error] = 401, "A problem occurred while #{error_action} the role"
          end
 
-         @roles = @study.roles(true).all
+         @roles = @study.roles.reload
          render partial: 'roles', status: status
        end
      end
