@@ -40,7 +40,7 @@ module Billing
       def billing_product_code
         AgressoProduct.billing_product_code(billing_product.name)
       rescue
-        ''
+        nil
       end
 
       delegate :name, to: :billing_product, prefix: true
