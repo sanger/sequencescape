@@ -291,26 +291,27 @@ ActiveRecord::Schema.define(version: 20170925153015) do
     t.index ["reference"], name: "index_billing_events_on_reference"
   end
 
-  create_table "billing_items", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "billing_items", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "request_id"
     t.string "project_cost_code"
     t.string "units"
     t.string "billing_product_code"
+    t.string "billing_product_name"
     t.string "billing_product_description"
     t.string "request_passed_date"
-    t.datetime "reported_at"
+    t.timestamp "reported_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["request_id"], name: "index_billing_items_on_request_id"
   end
 
-  create_table "billing_product_catalogues", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "billing_product_catalogues", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "billing_products", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "billing_products", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "name"
     t.string "identifier"
     t.integer "billing_product_catalogue_id", null: false
@@ -1873,14 +1874,14 @@ ActiveRecord::Schema.define(version: 20170925153015) do
     t.index ["work_completion_id"], name: "fk_rails_5ea64f1af2"
   end
 
-  create_table "work_order_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "work_order_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_work_order_types_on_name", unique: true
   end
 
-  create_table "work_orders", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "work_orders", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.bigint "work_order_type_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

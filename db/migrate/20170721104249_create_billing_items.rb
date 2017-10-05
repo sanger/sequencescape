@@ -5,6 +5,7 @@ class CreateBillingItems < ActiveRecord::Migration[4.2]
       t.string :project_cost_code
       t.string :units
       t.string :billing_product_code
+      t.string :billing_product_name
       t.string :billing_product_description
       t.string :request_passed_date
       t.timestamp :reported_at

@@ -41,6 +41,7 @@ describe 'Billing::Factories', billing: true do
     expect(billing_item.project_cost_code).to eq(factory.project_cost_code)
     expect(billing_item.units).to eq(factory.units.to_s)
     expect(billing_item.billing_product_code).to eq(factory.billing_product_code)
+    expect(billing_item.billing_product_name).to eq(factory.billing_product_name)
     expect(billing_item.billing_product_description).to eq(factory.billing_product_description)
     expect(billing_item.request_passed_date).to eq(factory.passed_date)
   end

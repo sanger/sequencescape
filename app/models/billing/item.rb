@@ -10,6 +10,7 @@ module Billing
 
     # this method transfers billing_item to one BIF file entry (string)
     def to_s(fields)
+      check_product_code
       ''.tap do |result|
         fields.each do |field|
           result << field.value(self).public_send(field.alignment, field.length)
@@ -17,6 +18,12 @@ module Billing
         end
         result << "\n"
       end
+    end
+
+    private
+
+    def check_product_code
+      update_attributes!(billing_product_code: AgressoProduct.billing_product_code(billing_product_name)) unless billing_product_code.present?
     end
   end
 end
