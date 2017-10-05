@@ -60,22 +60,28 @@ FactoryGirl.define do
 
   factory(:empty_library_tube, class: LibraryTube) do
     qc_state ''
-    name     { |_| generate :asset_name }
+    name     { generate :asset_name }
     purpose  { Tube::Purpose.standard_library_tube }
-  end
 
-  factory(:library_tube, parent: :empty_library_tube) do
-    after(:create) do |library_tube|
-      library_tube.aliquots.create!(sample: create(:sample), library_type: 'Standard')
+    transient do
+      sample_count 0
+      samples { create_list(:sample, sample_count) }
+      aliquot_factory :aliquot
+    end
+
+    factory(:library_tube) do
+      after(:create) do |library_tube, evaluator|
+        library_tube.aliquots = evaluator.samples.map { |s| create(evaluator.aliquot_factory, sample: s, library_type: 'Standard') }
+      end
+    end
+
+    factory(:library_tube_with_barcode) do
+       sequence(:barcode) { |i| i }
+       after(:create) do |library_tube|
+         library_tube.aliquots.create!(sample: create(:sample_with_sanger_sample_id), library_type: 'Standard')
+       end
     end
   end
-
- factory(:library_tube_with_barcode, parent: :empty_library_tube) do
-    sequence(:barcode) { |i| i }
-    after(:create) do |library_tube|
-      library_tube.aliquots.create!(sample: create(:sample_with_sanger_sample_id), library_type: 'Standard')
-    end
- end
 
   factory(:tagged_library_tube, class: LibraryTube) do
     transient do
