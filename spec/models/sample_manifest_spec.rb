@@ -7,6 +7,8 @@
 require 'rails_helper'
 
 RSpec.describe SampleManifest do
+  let(:user) { create :user }
+
   context '#generate' do
 
     let(:study) { create :study }
@@ -41,6 +43,7 @@ RSpec.describe SampleManifest do
             assert_equal (count * 96), Well.count - @initial_wells
             assert_equal (count * 96), study.samples.count - @initial_in_study
             assert_equal (count * 96), Messenger.count - @initial_messenger_count
+            expect(manifest.samples.first.primary_aliquot.study).to eq(study)
           end
         end
       end
@@ -73,6 +76,7 @@ RSpec.describe SampleManifest do
             assert LibraryTube.last.aliquots.first.library_id
             assert_equal 1,     MultiplexedLibraryTube.count - @initial_mx_tubes
             assert_equal (count), study.samples.count         - @initial_in_study
+            expect(manifest.samples.first.primary_aliquot.study).to eq(study)
           end
         end
       end
@@ -92,26 +96,8 @@ RSpec.describe SampleManifest do
           assert_equal @initial_mx_tubes, MultiplexedLibraryTube.count
           assert_equal 1, study.samples.count - @initial_in_study
           assert_equal @initial_sample_tubes, SampleTube.count
+          expect(manifest.samples.first.primary_aliquot.study).to eq(study)
         end
-      end
-    end
-
-   context 'tubes' do
-      let(:asset_type) { '1dtube' }
-      let(:count) { 1 }
-      setup { manifest.generate }
-
-      it 'create 1 tubes and samples in the right study' do
-        assert_equal 1, Sample.count - @initial_samples
-        assert_equal 1, SampleTube.count - @initial_sample_tubes
-        assert_equal 1, study.samples.count - @initial_in_study
-      end
-
-      it 'create create asset requests when jobs are processed' do
-        # Not entirely certain this behaviour is all that useful to us.
-        Delayed::Worker.new.work_off
-        assert_equal SampleTube.last.requests.count, 1
-        assert SampleTube.last.requests.first.is_a?(CreateAssetRequest)
       end
     end
 
@@ -121,10 +107,7 @@ RSpec.describe SampleManifest do
       [1, 2].each do |count|
         context "#{count} tubes(s)" do
           let(:count) { count }
-          setup do
-            @manifest = create :sample_manifest, study: study, count: count, asset_type: '1dtube'
-            @manifest.generate
-          end
+          setup { manifest.generate }
 
           it "create #{count} tubes(s) and #{count} samples in the right study" do
             assert_equal (count), Sample.count - @initial_samples
@@ -133,6 +116,13 @@ RSpec.describe SampleManifest do
             refute SampleTube.last.aliquots.first.library_id
             assert_equal (count), study.samples.count - @initial_in_study
             assert_equal count, Messenger.count - @initial_messenger_count
+            expect(manifest.samples.first.primary_aliquot.study).to eq(study)
+          end
+          it 'create create asset requests when jobs are processed' do
+            # Not entirely certain this behaviour is all that useful to us.
+            Delayed::Worker.new.work_off
+            assert_equal SampleTube.last.requests.count, 1
+            assert SampleTube.last.requests.first.is_a?(CreateAssetRequest)
           end
         end
       end
@@ -140,11 +130,9 @@ RSpec.describe SampleManifest do
   end
 
   context 'update event' do
-    setup do
-      @user = create :user
-      @well_with_sample_and_plate = create :well_with_sample_and_plate
-      @well_with_sample_and_plate.save
-    end
+
+    let(:well_with_sample_and_plate) { create :well_with_sample_and_plate }
+
     context 'where a well has no plate' do
       setup do
         @well_with_sample_and_without_plate = create :well_with_sample_and_without_plate
@@ -152,8 +140,8 @@ RSpec.describe SampleManifest do
       it 'not try to add an event to a plate' do
         expect do
           SampleManifest::PlateBehaviour::Core.new(SampleManifest.new).updated_by!(
-            @user, [
-              @well_with_sample_and_plate.primary_aliquot.sample,
+            user, [
+              well_with_sample_and_plate.primary_aliquot.sample,
               @well_with_sample_and_without_plate.primary_aliquot.sample
             ]
           )
@@ -162,9 +150,9 @@ RSpec.describe SampleManifest do
     end
     context 'where a well has a plate' do
       it 'add an event to the plate' do
-        SampleManifest::PlateBehaviour::Core.new(SampleManifest.new).updated_by!(@user, [@well_with_sample_and_plate.primary_aliquot.sample])
-        assert_equal Event.last, @well_with_sample_and_plate.plate.events.last
-        expect(@well_with_sample_and_plate.plate.events.last).to_not be_nil
+        SampleManifest::PlateBehaviour::Core.new(SampleManifest.new).updated_by!(user, [well_with_sample_and_plate.primary_aliquot.sample])
+        assert_equal Event.last, well_with_sample_and_plate.plate.events.last
+        expect(well_with_sample_and_plate.plate.events.last).to_not be_nil
       end
     end
   end
