@@ -55,59 +55,10 @@ feature 'Sample#consent_withdrawn', js: false do
       end
     end
 
-  #   @submission
-  # Scenario: Submissions can not be created containing withdrawn samples
-  # Given I try to create a "Illumina-C - Multiplexed Library Creation - Single ended sequencing" order with the following setup:
-  #   | Project                     | Project A              |
-  #   | Study                       | Study A                |
-  #   | Asset Group                 | sample_withdrawn_group |
-  #   | Fragment size required from | 300                    |
-  #   | Fragment size required to   | 400                    |
-  #   | Read length                 | 108                    |
-  # Then the order should be invalid
-  # And the order should have errors
-  # And the last error should contain "Samples in this submission have had patient consent withdrawn: sample_withdrawn"
-  # When I try to save the order
-  # Then the order should not be built
-  # Given I try to create a "Illumina-C - Multiplexed Library Creation - Single ended sequencing" order with the following setup:
-  #   | Project                     | Project A              |
-  #   | Study                       | Study A                |
-  #   | Asset                       | sample_withdrawn_tube  |
-  #   | Fragment size required from | 300                    |
-  #   | Fragment size required to   | 400                    |
-  #   | Read length                 | 108                    |
-  # Then the order should be invalid
-  # And the order should have errors
-  # And the last error should contain "Samples in this submission have had patient consent withdrawn: sample_withdrawn"
-  # When I try to save the order
-  # Then the order should not be built
-  # Given I try to create a "Illumina-C - Multiplexed Library Creation - Single ended sequencing" order with the following setup:
-  #   | Project                     | Project A              |
-  #   | Study                       | Study A                |
-  #   | Asset Group                 | sample_okay_group |
-  #   | Fragment size required from | 300                    |
-  #   | Fragment size required to   | 400                    |
-  #   | Read length                 | 108                    |
-  # Then the order should be valid
-  # And the order should not have errors
-  # When I try to save the order
-  # Then the order should be built
-  # Given I try to create a "Illumina-C - Multiplexed Library Creation - Single ended sequencing" order with the following setup:
-  #   | Project                     | Project A              |
-  #   | Study                       | Study A                |
-  #   | Asset                       | sample_okay_tube       |
-  #   | Fragment size required from | 300                    |
-  #   | Fragment size required to   | 400                    |
-  #   | Read length                 | 108                    |
-  # Then the order should be valid
-  # And the order should not have errors
-  # When I try to save the order
-  # Then the order should be built
-
     context 'an order' do
       # Lifted straight from the feature test with minimal rspecification
       # and optimization
-      let(:submission_template) { SubmissionTemplate.find_by(name: 'Illumina-C - Multiplexed Library Creation - Single ended sequencing') }
+      let(:submission_template) { create :submission_template, request_type_ids_list: [[create(:request_type).id]] }
       let(:sample_tube) { create :sample_tube, sample: sample }
       let(:asset_group) { create :asset_group, assets: [ sample_tube ] }
 
