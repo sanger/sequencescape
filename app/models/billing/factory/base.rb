@@ -38,8 +38,12 @@ module Billing
 
       # billing_product_code will be received from Agresso based on billing_product name
       def billing_product_code
-        '' # AgressoProduct.billing_product_code(billing_product.name)
+        AgressoProduct.billing_product_code(billing_product.name)
+      rescue
+        ''
       end
+
+      delegate :name, to: :billing_product, prefix: true
 
       def billing_product_description
         billing_product.name
@@ -56,6 +60,7 @@ module Billing
           project_cost_code: project_cost_code,
           units: units,
           billing_product_code: billing_product_code,
+          billing_product_name: billing_product_name,
           billing_product_description: billing_product_description,
           request_passed_date: passed_date
         )
