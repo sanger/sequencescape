@@ -1,0 +1,200 @@
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+
+require 'rails_helper'
+
+RSpec.describe SampleManifest do
+  context '#generate' do
+
+    let(:study) { create :study }
+    let(:manifest) { create :sample_manifest, study: study, count: count, asset_type: asset_type, purpose: purpose }
+    let(:purpose) { nil }
+
+    setup do
+      barcode = double('barcode', barcode: 23)
+      allow(PlateBarcode).to receive(:create).and_return(barcode)
+      @initial_samples  = Sample.count
+      @initial_plates   = Plate.count
+      @initial_wells    = Well.count
+      @initial_sample_tubes    = SampleTube.count
+      @initial_in_study = study.samples.count
+      @initial_messenger_count = Messenger.count
+      @initial_library_tubes = LibraryTube.count
+      @initial_mx_tubes      = MultiplexedLibraryTube.count
+    end
+
+    context 'asset_type: plate' do
+      let(:asset_type) { 'plate' }
+
+      [1, 2].each do |count|
+        context "count: #{count}" do
+          let(:count) { count }
+
+          setup { manifest.generate }
+
+          it "create #{count} plate(s) and #{count * 96} wells and samples in the right study" do
+            assert_equal (count * 96), Sample.count - @initial_samples
+            assert_equal (count * 1), Plate.count - @initial_plates
+            assert_equal (count * 96), Well.count - @initial_wells
+            assert_equal (count * 96), study.samples.count - @initial_in_study
+            assert_equal (count * 96), Messenger.count - @initial_messenger_count
+          end
+        end
+      end
+
+      context 'with a custom purpose' do
+        let(:purpose) { create :plate_purpose }
+        let(:count) { 1 }
+        let(:asset_type) { 'plate' }
+
+        setup { manifest.generate }
+
+        it 'create a plate of the correct purpose' do
+          assert_equal purpose, Plate.last.purpose
+        end
+      end
+    end
+
+    context 'for a multiplexed library' do
+      let(:asset_type) { 'multiplexed_library' }
+      [2, 3].each do |count|
+        context "#{count} libraries(s)" do
+          let(:count) { count }
+
+          setup { manifest.generate }
+
+          it "create 1 tubes(s) and #{count} samples in the right study" do
+            assert_equal (count), Sample.count                 - @initial_samples
+            # We need to create library tubes as we have downstream dependencies that assume a unique library tube
+            assert_equal (count), LibraryTube.count            - @initial_library_tubes
+            assert LibraryTube.last.aliquots.first.library_id
+            assert_equal 1,     MultiplexedLibraryTube.count - @initial_mx_tubes
+            assert_equal (count), study.samples.count         - @initial_in_study
+          end
+        end
+      end
+    end
+
+    context 'for a library' do
+      let(:asset_type) { 'library' }
+      let(:count) { 1 }
+      context 'library tubes' do
+        setup { manifest.generate }
+
+        it 'create 1 tubes and sample in the right study' do
+          assert_equal 1, Sample.count - @initial_samples
+          # We need to create library tubes as we have downstream dependencies that assume a unique library tube
+          assert_equal 1, LibraryTube.count - @initial_library_tubes
+          assert LibraryTube.last.aliquots.first.library_id
+          assert_equal @initial_mx_tubes, MultiplexedLibraryTube.count
+          assert_equal 1, study.samples.count - @initial_in_study
+          assert_equal @initial_sample_tubes, SampleTube.count
+        end
+      end
+    end
+
+   context 'tubes' do
+      let(:asset_type) { '1dtube' }
+      let(:count) { 1 }
+      setup { manifest.generate }
+
+      it 'create 1 tubes and samples in the right study' do
+        assert_equal 1, Sample.count - @initial_samples
+        assert_equal 1, SampleTube.count - @initial_sample_tubes
+        assert_equal 1, study.samples.count - @initial_in_study
+      end
+
+      it 'create create asset requests when jobs are processed' do
+        # Not entirely certain this behaviour is all that useful to us.
+        Delayed::Worker.new.work_off
+        assert_equal SampleTube.last.requests.count, 1
+        assert SampleTube.last.requests.first.is_a?(CreateAssetRequest)
+      end
+    end
+
+    context 'for a sample tube' do
+      let(:asset_type) { '1dtube' }
+
+      [1, 2].each do |count|
+        context "#{count} tubes(s)" do
+          let(:count) { count }
+          setup do
+            @manifest = create :sample_manifest, study: study, count: count, asset_type: '1dtube'
+            @manifest.generate
+          end
+
+          it "create #{count} tubes(s) and #{count} samples in the right study" do
+            assert_equal (count), Sample.count - @initial_samples
+            # We need to create library tubes as we have downstream dependencies that assume a unique library tube
+            assert_equal (count), SampleTube.count - @initial_sample_tubes
+            refute SampleTube.last.aliquots.first.library_id
+            assert_equal (count), study.samples.count - @initial_in_study
+            assert_equal count, Messenger.count - @initial_messenger_count
+          end
+        end
+      end
+    end
+  end
+
+  context 'update event' do
+    setup do
+      @user = create :user
+      @well_with_sample_and_plate = create :well_with_sample_and_plate
+      @well_with_sample_and_plate.save
+    end
+    context 'where a well has no plate' do
+      setup do
+        @well_with_sample_and_without_plate = create :well_with_sample_and_without_plate
+      end
+      it 'not try to add an event to a plate' do
+        expect do
+          SampleManifest::PlateBehaviour::Core.new(SampleManifest.new).updated_by!(
+            @user, [
+              @well_with_sample_and_plate.primary_aliquot.sample,
+              @well_with_sample_and_without_plate.primary_aliquot.sample
+            ]
+          )
+        end.not_to raise_error
+      end
+    end
+    context 'where a well has a plate' do
+      it 'add an event to the plate' do
+        SampleManifest::PlateBehaviour::Core.new(SampleManifest.new).updated_by!(@user, [@well_with_sample_and_plate.primary_aliquot.sample])
+        assert_equal Event.last, @well_with_sample_and_plate.plate.events.last
+        expect(@well_with_sample_and_plate.plate.events.last).to_not be_nil
+      end
+    end
+  end
+
+  # This is testing a specific case pulled from production where the size of the delayed job 'handler' column was
+  # being filled because we're passing large parameter data (it happens that ~37 plates cause this).  Because of this
+  # the parameters were being truncated, ironically to create valid YAML, and the production code was erroring
+  # because the last parameter was being dropped.  Good thing the plate IDs were last, right!?!!
+  context 'creating extremely large manifests' do
+    setup do
+
+      allow(PlateBarcode).to receive(:create).and_return(*Array.new(37) { |i| double('barcode',barcode: i+1) })
+
+      @manifest = create(:sample_manifest, count: 37, asset_type: 'plate', rapid_generation: true)
+      @manifest.generate
+    end
+
+    it 'have one job per plate' do
+      assert_equal(@manifest.count, Delayed::Job.count, 'number of delayed jobs does not match number of plates')
+    end
+
+    context 'delayed jobs' do
+      setup do
+        @well_count = Sample.count
+        Delayed::Job.first.invoke_job
+      end
+
+      it 'change Well.count by 96' do
+        assert_equal 96, Sample.count - @well_count, 'Expected Well.count to change by 96'
+      end
+    end
+  end
+end
