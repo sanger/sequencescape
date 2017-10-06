@@ -66,13 +66,15 @@ FactoryGirl.define do
     transient do
       sample_count 0
       samples { create_list(:sample, sample_count) }
-      aliquot_factory :aliquot
+      aliquot_factory { :untagged_aliquot }
+    end
+
+    after(:create) do |library_tube, evaluator|
+      library_tube.aliquots = evaluator.samples.map { |s| create(evaluator.aliquot_factory, sample: s, library_type: 'Standard', receptacle: library_tube) }
     end
 
     factory(:library_tube) do
-      after(:create) do |library_tube, evaluator|
-        library_tube.aliquots = evaluator.samples.map { |s| create(evaluator.aliquot_factory, sample: s, library_type: 'Standard') }
-      end
+      transient { sample_count 1 }
     end
 
     factory(:library_tube_with_barcode) do
