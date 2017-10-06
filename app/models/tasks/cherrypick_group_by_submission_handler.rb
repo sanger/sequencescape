@@ -37,7 +37,7 @@ module Tasks::CherrypickGroupBySubmissionHandler
     ActiveRecord::Base.transaction do
       task.send(
         :"pick_by_#{cherrypick_action}",
-        batch.ordered_requests, robot, partial_plate || plate_purpose, params[cherrypick_action]
+        batch.ordered_requests, robot, partial_plate || plate_purpose, params[cherrypick_action].to_h
       )
     end
 

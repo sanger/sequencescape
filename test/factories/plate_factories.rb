@@ -6,15 +6,7 @@
 
 # The factories in here, at time of writing could do with a bit of TLC.
 FactoryGirl.define do
-  factory :plate do
-    plate_purpose
-    name 'Plate name'
-    value               ''
-    qc_state            ''
-    resource            nil
-    barcode
-    size 96
-
+  trait :with_wells do
     transient do
       well_count { 0 }
       well_locations { Map.where_plate_size(size).where_plate_shape(AssetShape.default).where(column_order: (0...well_count)) }
@@ -25,6 +17,18 @@ FactoryGirl.define do
         build(:well, map: map)
       end
     end
+  end
+
+  factory :plate do
+    plate_purpose
+    name 'Plate name'
+    value               ''
+    qc_state            ''
+    resource            nil
+    barcode
+    size 96
+
+    with_wells
 
     factory :input_plate do
       association(:plate_purpose, factory: :input_plate_purpose)
@@ -105,6 +109,16 @@ FactoryGirl.define do
           create(:empty_well, map: map)
         end
       end
+    end
+  end
+
+  # StripTubes are effectively thin plates
+  factory :strip_tube do
+    name               'Strip_tube'
+    size               '8'
+    plate_purpose      { create :strip_tube_purpose }
+    after(:create) do |st|
+      st.wells = st.maps.map { |map| create(:well, map: map) }
     end
   end
 end

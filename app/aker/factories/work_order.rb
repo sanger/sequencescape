@@ -30,12 +30,11 @@ module Aker
         @materials = create_materials(materials)
       end
 
-
       ##
       # Persists a Work Order and all associated materials.
       def create
         return unless valid?
-        @model = Aker::WorkOrder.create(aker_id: aker_id, samples: materials.collect(&:create))
+        @model = Aker::WorkOrder.create(aker_id: aker_id, samples: collect_materials)
       end
 
       def as_json(_options = {})
@@ -68,7 +67,8 @@ module Aker
 
       def create_materials(materials)
         (materials || []).collect do |material|
-          Aker::Factories::Material.new(material)
+          indifferent_material = material.to_h.with_indifferent_access
+          Sample.find_by_name(indifferent_material[:_id]) || Aker::Factories::Material.new(indifferent_material)
         end
       end
 
@@ -78,6 +78,12 @@ module Aker
           material.errors.each do |key, value|
             errors.add key, value
           end
+        end
+      end
+
+      def collect_materials
+        materials.collect do |material|
+          material.instance_of?(Aker::Factories::Material) ? material.create : material
         end
       end
     end

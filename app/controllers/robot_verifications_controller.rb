@@ -31,7 +31,7 @@ class RobotVerificationsController < ApplicationController
       @robot_verification.set_plate_types(params[:source_plate_types])
       @batch = Batch.find(params[:batch_id])
       @batch.robot_verified!(params[:user_id])
-      @destination_plate_id = Plate.with_machine_barcode(params[:destination_plate_barcodes].first.first).first.barcode
+      @destination_plate_id = Plate.with_machine_barcode(params[:destination_plate_barcodes].to_h.first.first).first.barcode
     else
       flash[:error] = "Error: #{@robot_verification.errors.join('; ')}"
       redirect_to action: :index

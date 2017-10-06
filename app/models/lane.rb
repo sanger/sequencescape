@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
-class Lane < Aliquot::Receptacle
+class Lane < Receptacle
   include Api::LaneIO::Extensions
   include LocationAssociation::Locatable
   include AliquotIndexer::Indexable
@@ -34,7 +34,7 @@ class Lane < Aliquot::Receptacle
 
   extend Metadata
   has_metadata do
-    attribute(:release_reason, in: LIST_REASONS)
+    custom_attribute(:release_reason, in: LIST_REASONS)
   end
 
   has_one_as_child(:spiked_in_buffer, ->() { where(sti_type: 'SpikedBuffer') })

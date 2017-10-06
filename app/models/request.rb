@@ -7,55 +7,84 @@
 require 'aasm'
 
 class Request < ActiveRecord::Base
+  # Include
   include ModelExtensions::Request
   include Aliquot::DeprecatedBehaviours::Request
-
   include Api::RequestIO::Extensions
-
-  self.per_page = 500
-
   include Uuid::Uuidable
   include AASM
   include Commentable
   include StandardNamedScopes
   include Request::Statemachine
-  extend Request::Statistics
   include Batch::RequestBehaviour
-
+  # Extend
+  extend Request::Statistics
   extend EventfulRecord
+  extend ::Metadata
+
+  # Constants
+  # This is used for the default next or previous request check.  It means that if the caller does not specify a
+  # block then we can use this one in its place.
+  PERMISSABLE_NEXT_REQUESTS = ->(request) { request.pending? or request.blocked? }
+
+  # Class attributes
+  class_attribute :customer_request, :sequencing
+
+  self.sequencing = false
+  self.per_page = 500
+  self.inheritance_column = 'sti_type'
+  self.customer_request = false
+
+  # Associations
   has_many_events
   has_many_lab_events
 
-  self.inheritance_column = 'sti_type'
+  belongs_to :pipeline
+  belongs_to :item
+  belongs_to :request_type, inverse_of: :requests
+  belongs_to :workflow, class_name: 'Submission::Workflow'
+  belongs_to :user
+  belongs_to :request_purpose
+  belongs_to :order, inverse_of: :requests
+  belongs_to :submission, inverse_of: :requests
+  belongs_to :submission_pool, foreign_key: :submission_id
+  # project is read only so we can set it everywhere
+  # but it will be only used in specific and controlled place
+  belongs_to :initial_project, class_name: 'Project'
+  # same as project with study
+  belongs_to :initial_study, class_name: 'Study'
+  belongs_to :work_order, required: false
 
-  class_attribute :customer_request
-  self.customer_request = false
+  has_one :order_role, through: :order
 
-  def self.delegate_validator
-    DelegateValidation::AlwaysValidValidator
-  end
+  has_many :failures, as: :failable
+  has_many :samples, through: :asset, source: :samples
+  has_many :qc_metric_requests
+  has_many :qc_metrics, through: :qc_metric_requests
+  has_many :request_events, ->() { order(:current_from) }, inverse_of: :request
+  has_many :upstream_requests, through: :asset, source: :requests_as_target
 
+  # Validations
+  # On create we perform a full and complete validation.
+  validates_presence_of :request_purpose, on: :create
+  # Just makes sure we don't set it to nil. Avoids the need to load request_purpose
+  # EVERY time we touch a request.
+  validates_presence_of :request_purpose_id
+
+  # Scopes
   scope :for_pipeline, ->(pipeline) {
       joins('LEFT JOIN pipelines_request_types prt ON prt.request_type_id=requests.request_type_id')
         .where(['prt.pipeline_id=?', pipeline.id])
         .readonly(false)
   }
 
-  def validator_for(request_option)
-    request_type.request_type_validators.find_by(request_option: request_option.to_s) || RequestType::Validator::NullValidator.new
-  end
-
   scope :customer_requests, ->() { where(sti_type: [CustomerRequest, *CustomerRequest.descendants].map(&:name)) }
 
-  def customer_request?
-    customer_request
-  end
-
-   scope :for_pipeline, ->(pipeline) {
-      joins('LEFT JOIN pipelines_request_types prt ON prt.request_type_id=requests.request_type_id')
-        .where(['prt.pipeline_id=?', pipeline.id])
-        .readonly(false)
-                        }
+  scope :for_pipeline, ->(pipeline) {
+    joins('LEFT JOIN pipelines_request_types prt ON prt.request_type_id=requests.request_type_id')
+      .where(['prt.pipeline_id=?', pipeline.id])
+      .readonly(false)
+  }
 
   scope :for_pooling_of, ->(plate) {
     submission_ids = plate.all_submission_ids
@@ -69,7 +98,13 @@ class Request < ActiveRecord::Base
         ]
       end
 
-    select('uuids.external_id AS pool_id, GROUP_CONCAT(DISTINCT pw_location.description ORDER BY pw.map_id ASC SEPARATOR ",") AS pool_into, MIN(requests.id) AS id, MIN(requests.sti_type) AS sti_type, MIN(requests.submission_id) AS submission_id, MIN(requests.request_type_id) AS request_type_id')
+    select(%{uuids.external_id AS pool_id,
+              GROUP_CONCAT(DISTINCT pw_location.description ORDER BY pw.map_id ASC SEPARATOR ",") AS pool_into,
+              SUM(requests.state = 'passed') > 0 AS pool_complete,
+              MIN(requests.id) AS id,
+              MIN(requests.sti_type) AS sti_type,
+              MIN(requests.submission_id) AS submission_id,
+              MIN(requests.request_type_id) AS request_type_id})
       .joins(add_joins + [
         'INNER JOIN maps AS pw_location ON pw.map_id=pw_location.id',
         'INNER JOIN container_associations ON container_associations.content_id=pw.id',
@@ -125,91 +160,16 @@ class Request < ActiveRecord::Base
     where(['requests.order_id=? OR (requests.order_id IS NULL AND requests.submission_id=?)', order.id, order.submission.id])
   }
 
-  belongs_to :pipeline
-  belongs_to :item
-
-  has_many :failures, as: :failable
-
-  has_many :samples, through: :asset, source: :samples
-
-  belongs_to :request_type, inverse_of: :requests
-  delegate :billable?, to: :request_type, allow_nil: true
-  belongs_to :workflow, class_name: 'Submission::Workflow'
-
-  belongs_to :user
-  belongs_to :request_purpose
-  validates_presence_of :request_purpose
-
-  belongs_to :submission, inverse_of: :requests
-  belongs_to :submission_pool, foreign_key: :submission_id
-
-  belongs_to :order, inverse_of: :requests
-  has_one :order_role, through: :order
-
-  # has_many :submission_siblings, ->(request) { where(:request_type_id => request.request_type_id) }, :through => :submission, :source => :requests, :class_name => 'Request'
-  has_many :qc_metric_requests
-  has_many :qc_metrics, through: :qc_metric_requests
-  has_many :request_events, ->() { order(:current_from) }, inverse_of: :request
-
   scope :with_request_type_id, ->(id) { where(request_type_id: id) }
   scope :for_pacbio_sample_sheet, -> { includes([{ target_asset: :map }, :request_metadata]) }
   scope :for_billing, -> { includes([:initial_project, :request_type, { target_asset: :aliquots }]) }
 
-  # project is read only so we can set it everywhere
-  # but it will be only used in specific and controlled place
-  belongs_to :initial_project, class_name: 'Project'
+  scope :between, ->(source, target) { where(asset_id: source.id, target_asset_id: target.id) }
+  scope :into_by_id, ->(target_ids) { where(target_asset_id: target_ids) }
 
-  def current_request_event
-    request_events.current.last
-  end
-
-  def project_id=(project_id)
-    raise RuntimeError, 'Initial project already set' if initial_project_id
-    self.initial_project_id = project_id
-  end
-
-  def submission_plate_count
-    submission.requests
-              .where(request_type_id: request_type_id)
-              .joins('LEFT JOIN container_associations AS spca ON spca.content_id = requests.asset_id')
-              .count('DISTINCT(spca.container_id)')
-  end
-
-  def update_responsibilities!
-    # Do nothing
-  end
-
-  def project=(project)
-    return unless project
-    self.project_id = project.id
-  end
-
-  # same as project with study
-  belongs_to :initial_study, class_name: 'Study'
-
-  def study_id=(study_id)
-    raise RuntimeError, 'Initial study already set' if initial_study_id
-    self.initial_study_id = study_id
-  end
-
-  def study=(study)
-    return unless study
-    self.study_id = study.id
-  end
-
-  def associated_studies
-    return [initial_study] if initial_study.present?
-    return asset.studies.uniq if asset.present?
-    return submission.studies if submission.present?
-    []
-  end
-
- scope :between, ->(source, target) { where(asset_id: source.id, target_asset_id: target.id) }
- scope :into_by_id, ->(target_ids) { where(target_asset_id: target_ids) }
-
- scope :request_type, ->(request_type) {
+  scope :request_type, ->(request_type) {
     where(request_type_id: request_type)
-                      }
+  }
 
   scope :where_is_a?,     ->(clazz) { where(sti_type: [clazz, *clazz.descendants].map(&:name)) }
   scope :where_is_not_a?, ->(clazz) { where(['sti_type NOT IN (?)', [clazz, *clazz.descendants].map(&:name)]) }
@@ -251,8 +211,9 @@ class Request < ActiveRecord::Base
 
   # Note: These scopes use preload due to a limitation in the way rails handles custom selects with eager loading
   # https://github.com/rails/rails/issues/15185
-  scope :loaded_for_inbox_display, -> { preload([{ submission: { orders: :study }, asset: [:scanned_into_lab_event, :studies] }]) }
-  scope :loaded_for_grouped_inbox_display, -> { preload([{ submission: :orders }, :asset, :target_asset, :request_type]) }
+  scope :loaded_for_inbox_display, -> { preload([{ submission: { orders: :study }, asset: %i(scanned_into_lab_event studies) }]) }
+  scope :loaded_for_grouped_inbox_display, -> { preload([{ submission: :orders }, :target_asset]) }
+  scope :loaded_for_pacbio_inbox_display, -> { preload([{ submission: :orders }, :request_type, :target_asset]) }
 
   scope :ordered_for_ungrouped_inbox, -> { order(id: :desc) }
   scope :ordered_for_submission_grouped_inbox, -> { order(submission_id: :desc, id: :asc) }
@@ -260,17 +221,6 @@ class Request < ActiveRecord::Base
   scope :group_conditions, ->(conditions, variables) {
     where([conditions.join(' OR '), *variables])
   }
-
-  def self.group_requests(options = {})
-    target = options[:by_target] ? 'target_asset_id' : 'asset_id'
-    groupings = options.delete(:group) || {}
-
-    select('requests.*, tca.container_id AS container_id, tca.content_id AS content_id')
-      .joins("INNER JOIN container_associations tca ON tca.content_id=#{target}")
-      .readonly(false)
-      .preload(:request_metadata)
-      .group(groupings)
-  end
 
   scope :for_submission_id, ->(id) { where(submission_id: id) }
   scope :for_asset_id, ->(id) { where(asset_id: id) }
@@ -309,10 +259,6 @@ class Request < ActiveRecord::Base
       .select(scrubbed_atts)
   }
 
-  def self.for_study(study)
-    Request.for_study_id(study.id)
-  end
-
   scope :for_initial_study_id, ->(id) { where(initial_study_id: id) }
 
   delegate :study, :study_id, to: :asset, allow_nil: true
@@ -331,13 +277,91 @@ class Request < ActiveRecord::Base
      where(initial_study_id: studies)
    }
 
-  scope :with_assets_for_starting_requests, -> { includes([:request_metadata, { asset: :aliquots, target_asset: :aliquots }]) }
+  scope :with_assets_for_starting_requests, -> { includes([:request_metadata, :request_events, { asset: :aliquots, target_asset: :aliquots }]) }
   scope :not_failed, -> { where(['state != ?', 'failed']) }
+
+  # Class method calls
+  has_metadata do
+  end
+
+  # Delegations
+  delegate :billable?, to: :request_type, allow_nil: true
+  # NOTE: With properties Request#name would have been silently sent through to the property.  With metadata
+  # we now need to be explicit in how we want it delegated.
+  delegate :name, to: :request_metadata
+
+  def self.delegate_validator
+    DelegateValidation::AlwaysValidValidator
+  end
+
+  def validator_for(request_option)
+    request_type.request_type_validators.find_by(request_option: request_option.to_s) || RequestType::Validator::NullValidator.new
+  end
+
+  def current_request_event
+    if request_events.loaded?
+      request_events.detect(&:current?)
+    else
+      request_events.current.last
+    end
+  end
+
+  def project_id=(project_id)
+    raise RuntimeError, 'Initial project already set' if initial_project_id
+    self.initial_project_id = project_id
+  end
+
+  def submission_plate_count
+    submission.requests
+              .where(request_type_id: request_type_id)
+              .joins('LEFT JOIN container_associations AS spca ON spca.content_id = requests.asset_id')
+              .count('DISTINCT(spca.container_id)')
+  end
+
+  def update_responsibilities!
+    # Do nothing
+  end
+
+  def project=(project)
+    return unless project
+    self.project_id = project.id
+  end
+
+  def study_id=(study_id)
+    raise RuntimeError, 'Initial study already set' if initial_study_id
+    self.initial_study_id = study_id
+  end
+
+  def study=(study)
+    return unless study
+    self.study_id = study.id
+  end
+
+  def associated_studies
+    return [initial_study] if initial_study.present?
+    return asset.studies.uniq if asset.present?
+    return submission.studies if submission.present?
+    []
+  end
+
+  def self.group_requests(options = {})
+    target = options[:by_target] ? 'target_asset_id' : 'asset_id'
+    groupings = options.delete(:group) || {}
+
+    select('requests.*, tca.container_id AS container_id, tca.content_id AS content_id')
+      .joins("INNER JOIN container_associations tca ON tca.content_id=#{target}")
+      .readonly(false)
+      .group(groupings)
+  end
+
+  def self.for_study(study)
+    Request.for_study_id(study.id)
+  end
 
   # TODO: There is probably a MUCH better way of getting this information. This is just a rewrite of the old approach
   def self.get_target_plate_ids(request_ids)
     ContainerAssociation.joins('INNER JOIN requests ON content_id = target_asset_id')
-                        .where(['requests.id IN  (?)', request_ids]).uniq.pluck(:container_id)
+                        .where(['requests.id IN  (?)', request_ids]).distinct.pluck(:container_id)
   end
 
   # The options that are required for creation.  In other words, the truly required options that must
@@ -381,10 +405,6 @@ class Request < ActiveRecord::Base
   def event_with_key_value(k, v = nil)
     v.nil? ? false : lab_events.with_descriptor(k, v).first
   end
-
-  # This is used for the default next or previous request check.  It means that if the caller does not specify a
-  # block then we can use this one in its place.
-  PERMISSABLE_NEXT_REQUESTS = ->(request) { request.pending? or request.blocked? }
 
   def next_requests(pipeline, &block)
     # TODO: remove pipeline parameters
@@ -474,17 +494,10 @@ class Request < ActiveRecord::Base
     # Do nothing
   end
 
-  extend ::Metadata
-  has_metadata do
-  end
-
-  # NOTE: With properties Request#name would have been silently sent through to the property.  With metadata
-  # we now need to be explicit in how we want it delegated.
-  delegate :name, to: :request_metadata
-
   # Adds any pool information to the structure so that it can be reported to client applications
   def update_pool_information(pool_information)
-    # Does not need anything here
+    pool_information[:request_type] = request_type.key
+    pool_information[:for_multiplexing] = request_type.for_multiplexing?
   end
 
   # def submission_siblings

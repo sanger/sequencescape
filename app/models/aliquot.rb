@@ -89,7 +89,8 @@ class Aliquot < ActiveRecord::Base
   def tag_with_unassigned_behaviour
     untagged? ? nil : tag_without_unassigned_behaviour
   end
-  alias_method_chain(:tag, :unassigned_behaviour)
+  alias_method(:tag_without_unassigned_behaviour, :tag)
+  alias_method(:tag, :tag_with_unassigned_behaviour)
 
   # It may have a bait library but not necessarily.
   belongs_to :bait_library
@@ -106,7 +107,7 @@ class Aliquot < ActiveRecord::Base
   end
 
   # It can belong to a library asset
-  belongs_to :library, class_name: 'Aliquot::Receptacle'
+  belongs_to :library, class_name: 'Receptacle'
   composed_of :insert_size, mapping: [%w{insert_size_from from}, %w{insert_size_to to}], class_name: 'Aliquot::InsertSize', allow_nil: true
 
   # Cloning an aliquot should unset the receptacle ID because otherwise it won't get reassigned.  We should
@@ -137,7 +138,7 @@ class Aliquot < ActiveRecord::Base
       case object
       when Aliquot
         # we cut the walk if the new aliquot doesn't "match" the current one
-        object if object =~ self
+        object if object.match?(self)
       else # other objects
         [] # are walked but not returned
       end

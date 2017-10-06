@@ -3,22 +3,21 @@ require 'rails_helper'
 
 RSpec.describe 'WorkOrders', type: :feature, aker: true do
 
-  let!(:work_order) { create(:work_order_with_samples) }
+  let!(:work_order) { create(:aker_work_order_with_samples) }
   let(:url) { "#{Rails.configuration.aker['urls']['work_orders']}/work_orders/#{work_order.aker_id}" }
   let(:request) { RestClient::Request.new(method: :get, url: url) }
   let(:work_order_json) do
-    file = File.read(File.join('spec', 'data', 'aker', 'work_order.json'))
-    JSON.parse(file)
+    File.read(File.join('spec', 'data', 'aker', 'work_order.json'))
   end
 
   scenario 'view all work orders' do
-    create_list(:work_order_with_samples, 5)
+    create_list(:aker_work_order_with_samples, 5)
     visit aker_work_orders_path
     expect(find('.work-orders')).to have_css('.work-order', count: 6)
   end
 
   scenario 'view a work order' do
-    allow(RestClient).to receive(:get).with(url).and_return(RestClient::Response.create(work_order_json, Net::HTTPResponse.new('1.1',200,''), request, Time.now))
+    allow(RestClient).to receive(:get).with(url).and_return(RestClient::Response.create(work_order_json, Net::HTTPResponse.new('1.1',200,''), request))
     visit aker_work_order_path(work_order)
     expect(page).to have_content("Work Orders")
     json = work_order_json['work_order']

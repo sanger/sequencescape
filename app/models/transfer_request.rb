@@ -7,6 +7,23 @@
 # Every request "moving" an asset from somewhere to somewhere else without really transforming it
 # (chemically) as, cherrypicking, pooling, spreading on the floor etc
 class TransferRequest < SystemRequest
+  include DefaultAttributes
+
+  has_many :transfer_request_collection_transfer_requests
+  has_many :transfer_request_collections, through: :transfer_request_collection_transfer_requests
+
+  # Ensure that the source and the target assets are not the same, otherwise bad things will happen!
+  validate :source_and_target_assets_are_different
+
+  set_defaults request_type: ->(_transfer_request) { RequestType.transfer },
+               request_purpose: ->(transfer_request) { transfer_request.request_type.request_purpose }
+
+  after_create(:perform_transfer_of_contents)
+
+  # States which are still considered to be processable (ie. not failed or cancelled)
+  ACTIVE_STATES = %w(pending started passed qc_complete).freeze
+
+  # state machine
   redefine_aasm column: :state, whiny_persistence: true do
     # The statemachine for transfer requests is more promiscuous than normal requests, as well
     # as being more concise as it has fewer states.
@@ -51,16 +68,13 @@ class TransferRequest < SystemRequest
     end
   end
 
-  # Ensure that the source and the target assets are not the same, otherwise bad things will happen!
-  validate do |record|
-    if record.asset.present? and record.asset == record.target_asset
-      record.errors.add(:asset, 'cannot be the same as the target')
-      record.errors.add(:target_asset, 'cannot be the same as the source')
-    end
+  # validation method
+  def source_and_target_assets_are_different
+    return true unless asset_id.present? && asset_id == target_asset_id
+    errors.add(:asset, 'cannot be the same as the target')
+    errors.add(:target_asset, 'cannot be the same as the source')
+    false
   end
-
-  before_create(:add_request_type)
-  after_create(:perform_transfer_of_contents)
 
   def remove_unused_assets
     # Don't remove assets for transfer requests as they are made on creation
@@ -72,16 +86,13 @@ class TransferRequest < SystemRequest
 
   private
 
-  def add_request_type
-    self.request_type ||= RequestType.transfer
-  end
-
+  # after_create callback method
   def perform_transfer_of_contents
     begin
       target_asset.aliquots << asset.aliquots.map(&:dup) unless asset.failed? or asset.cancelled?
     rescue ActiveRecord::RecordNotUnique => exception
       # We'll specifically handle tag clashes here so that we can produce more informative messages
-      raise exception unless /aliquot_tags_and_tag2s_are_unique_within_receptacle/ === exception.message
+      raise exception unless /aliquot_tags_and_tag2s_are_unique_within_receptacle/.match?(exception.message)
       errors.add(:asset, "contains aliquots which can't be transferred due to tag clash")
       raise Aliquot::TagClash, self
     end
@@ -95,6 +106,5 @@ class TransferRequest < SystemRequest
   def on_failed
     target_asset.remove_downstream_aliquots if target_asset
   end
-
   alias_method :on_cancelled, :on_failed
 end

@@ -1,12 +1,10 @@
 language: ruby
 rvm:
   - 2.4.1
-  - jruby-9.1.12.0
 dist: trusty
 sudo: required
 services: mysql
 cache: bundler
-jdk: oraclejdk8
 bundler_args: --without warehouse deployment
 env:
   matrix:
@@ -15,14 +13,17 @@ env:
     - "DB_REQUIRED='true' RAILS_ENV=cucumber CI_NODE_TOTAL=2 CI_NODE_INDEX=0 JRUBY_OPTS='' PRECOMPILE_ASSETS=true CUCUMBER_FORMAT=DebugFormatter TZ=Europe/London SUITE='rake knapsack:cucumber'"
     - "DB_REQUIRED='true' RAILS_ENV=cucumber CI_NODE_TOTAL=2 CI_NODE_INDEX=1 JRUBY_OPTS='' PRECOMPILE_ASSETS=true CUCUMBER_FORMAT=DebugFormatter TZ=Europe/London SUITE='rake knapsack:cucumber'"
     - "SUITE=rubocop"
+before_install:
+  - "export PATH=$PWD/travis_phantomjs/phantomjs-2.1.1-linux-x86_64/bin:$PATH"
+  - "if [ $(phantomjs --version) != '2.1.1' ]; then rm -rf $PWD/travis_phantomjs; mkdir -p $PWD/travis_phantomjs; fi"
+  - "if [ $(phantomjs --version) != '2.1.1' ]; then wget https://assets.membergetmember.co/software/phantomjs-2.1.1-linux-x86_64.tar.bz2 -O $PWD/travis_phantomjs/phantomjs-2.1.1-linux-x86_64.tar.bz2; fi"
+  - "if [ $(phantomjs --version) != '2.1.1' ]; then tar -xvf $PWD/travis_phantomjs/phantomjs-2.1.1-linux-x86_64.tar.bz2 -C $PWD/travis_phantomjs; fi"
+  - "phantomjs --version"
 before_script:
   - 'if [[ "$DB_REQUIRED" == "true" ]]; then bundle exec rake db:setup; fi'
   - 'if [[ "$PRECOMPILE_ASSETS" == "true" ]]; then bundle exec rake assets:precompile; fi'
 script:
   - "bundle exec $SUITE"
-matrix:
-  allow_failures:
-  - rvm: jruby-9.1.12.0
 addons:
   apt:
     packages:

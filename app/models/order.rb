@@ -34,6 +34,13 @@ class Order < ActiveRecord::Base
   belongs_to :project
   validates :project, presence: true, unless: :cross_project_allowed
 
+  # In the case of some cross study/project orders, such as resequencing of
+  # mixed pools, there is no study/project on the order itself.
+  # In some cases, such as viewing submission, it can be useful to display
+  # the associated studies/projects
+  has_many :source_asset_studies, ->() { distinct }, through: :assets, source: :studies
+  has_many :source_asset_projects, ->() { distinct }, through: :assets, source: :projects
+
   belongs_to :order_role, class_name: 'Order::OrderRole'
   delegate :role, to: :order_role, allow_nil: true
 
@@ -359,11 +366,7 @@ class Order < ActiveRecord::Base
 
   # Returns true if this is an order for sequencing
   def is_a_sequencing_order?
-    [
-      PacBioSequencingRequest,
-      SequencingRequest,
-      *SequencingRequest.descendants
-    ].include?(RequestType.find(request_types.last).request_class)
+    RequestType.find(request_types).any? { |rt| rt.request_class.sequencing? }
   end
 
   def collect_gigabases_expected?

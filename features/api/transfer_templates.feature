@@ -160,11 +160,9 @@ Feature: Access transfer templates through the API
       And the UUID for the transfer template "Test transfers" is "00000000-1111-2222-3333-444444444444"
 
     Given a source transfer plate called "Source plate" exists
-      And the plate "Source plate" is a "Stock plate"
       And the UUID for the plate "Source plate" is "11111111-2222-3333-4444-000000000001"
       And a destination transfer plate called "Destination plate" exists as a child of "Source plate"
       And the UUID for the plate "Destination plate" is "11111111-2222-3333-4444-000000000002"
-      And transfers between "Stock plate" and "Child plate purpose" plates are done by "Transfer" requests
 
     Given "A1-B1" of the plate "Source plate" are part of the same submission
 
@@ -207,12 +205,10 @@ Feature: Access transfer templates through the API
       And the UUID for the transfer template "Test transfers" is "00000000-1111-2222-3333-444444444444"
 
     Given a source transfer plate called "Source plate" exists
-      And the plate "Source plate" is a "Stock plate"
       And the UUID for the plate "Source plate" is "11111111-2222-3333-4444-000000000001"
       And the wells "A1-A1" on the plate "Source plate" are empty
       And a destination transfer plate called "Destination plate" exists as a child of "Source plate"
       And the UUID for the plate "Destination plate" is "11111111-2222-3333-4444-000000000002"
-      And transfers between "Stock plate" and "Child plate purpose" plates are done by "Transfer" requests
 
     Given "A1-B1" of the plate "Source plate" are part of the same submission
 
@@ -286,7 +282,7 @@ Feature: Access transfer templates through the API
       """
 
   @transfer @create @authenticated
-  Scenario: Creating a transfer from a transfer template by multiplex request
+  Scenario: Creating a transfer from a transfer template by multiplex request automatically
     Given the multiplex transfer template called "Test transfers" exists
       And the UUID for the transfer template "Test transfers" is "00000000-1111-2222-3333-444444444444"
 

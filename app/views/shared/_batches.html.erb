@@ -27,6 +27,7 @@
       <th>&nbsp;</th>
     </tr>
   </thead>
+
   <tbody>
     <% batches.each_with_index do |batch, index| %>
     <tr class="batch">
@@ -35,16 +36,17 @@
       <td><%= batch.user.blank? ? "Unknown" : batch.user.login %></td>
       <td><%= batch.assigned_user %></td>
       <td><%= batch.created_at.to_date.to_formatted_s(:rfc822) %></td>
-      <% if batch.failed? %>
       <td>
-        <%= batch.state.capitalize %>
-        <% unless batch.failures.blank? %>
-          (<%= batch.failures.first.reason  %>) <!-- TODO: Make sure a reason is being saved when failing a batch -->
+        <% if batch.failed? %>
+          <%= batch.state.capitalize %>
+          <% unless batch.failures.blank? %>
+            (<%= batch.failures.first.reason  %>) <!-- TODO: Make sure a reason is being saved when failing a batch -->
+          <% end %>
+        <% else %>
+          <%= batch.state.humanize %>
         <% end %>
       </td>
-      <% else %>
-        <td><%= batch.state.humanize %></td>
-      <% end %>
+
       <% if in_progress %>
         <% unless batch.last_completed_task.nil? %>
           <td><%= batch.last_completed_task.name %></td>
@@ -70,16 +72,10 @@
       </tr>
     <% end %>
   </tbody>
-  <% unless showing_all %>
-    <tfoot>
-      <tr>
-        <td colspan="7">
-          <%= link_to "View all #{batches.first.state} batches", controller: :batches, action: batches.first.state, pipeline_id: @pipeline.id %>
-        </td>
-      </tr>
-    </tfoot>
-  <% end %>
 </table>
+<% if @pipeline %>
+  <%= link_to "View all #{batches.first.state} batches", controller: :batches, action: batches.first.state, pipeline_id: @pipeline.id %>
+<% end %>
 <% else -%>
   <p>No batches have this status</p>
 <% end -%>

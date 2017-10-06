@@ -22,7 +22,7 @@ class Uuid < ActiveRecord::Base
         after_create :ensure_uuid_created
 
         # Some named scopes ...
-        scope :include_uuid, -> { includes(:uuid_object) }
+        scope :include_uuid, ->() { includes(:uuid_object) }
       end
     end
 
@@ -64,7 +64,8 @@ class Uuid < ActiveRecord::Base
     # that do not have UUIDs have their UUIDs created, but we also need to do this unobtrusively.
     module ArExtensionsFix
       def self.extended(base)
-        base.singleton_class.alias_method_chain(:import, :uuid_creation)
+        base.singleton_class.alias_method(:import_without_uuid_creation, :import)
+        base.singleton_class.alias_method(:import, :import_with_uuid_creation)
       end
 
       def import_with_uuid_creation(*args, &block)
@@ -108,6 +109,8 @@ class Uuid < ActiveRecord::Base
   scope :include_resource, -> { includes(:resource) }
   scope :with_external_id, ->(external_id) { where(external_id: external_id) }
   scope :with_resource_by_type_and_id, ->(t, id) { where(resource_type: t, resource_id: id) }
+  # Limits the query to resources of the given type if provided. Otherwise returns all
+  scope :limited_to_resource, ->(resource_type) { resource_type.nil? ? all : where(resource_type: resource_type) }
 
   before_validation do |record|
     record.external_id = Uuid.generate_uuid if record.new_record? and record.external_id.blank?
@@ -122,15 +125,17 @@ class Uuid < ActiveRecord::Base
   end
 
   def self.translate_uuids_to_ids_in_params(params)
-    params.keys.each do |key|
-      next unless params[key] =~ ValidRegexp
-      params[key] = find_id(params[key])
+    params.transform_values! do |value|
+      uuid?(value) ? find_id(value) : value
     end
   end
 
+  def self.uuid?(value)
+    value.is_a?(String) && value.match?(ValidRegexp)
+  end
+
   def self.find_uuid_instance!(resource_type, resource_id)
-    with_resource_by_type_and_id(resource_type, resource_id).first or
-      raise ActiveRecord::RecordNotFound, 'Unable to find UUID'
+    find_by!(resource_type: resource_type, resource_id: resource_id)
   end
 
   # Find the uuid corresponding id and system.
@@ -139,11 +144,7 @@ class Uuid < ActiveRecord::Base
   # @return [String, nil] the uuid if found.
 
   def self.find_uuid(resource_type, resource_id)
-    begin
-      find_uuid_instance!(resource_type, resource_id).external_id
-    rescue ActiveRecord::RecordNotFound => exception
-      return nil
-    end
+    find_by(resource_type: resource_type, resource_id: resource_id).try(:external_id)
   end
 
   # Find an Uuid or create it if needed.
@@ -187,15 +188,7 @@ class Uuid < ActiveRecord::Base
   # @return [String, nil]
   # @raise Response::Exception if system doesn't macth.
   def self.find_id(uuid, resource_type = nil)
-    begin
-      uuid_object = with_external_id(uuid).first or raise ActiveRecord::RecordNotFound, "Could not find UUID #{uuid.inspect}"
-
-      Response::InvalidUuid.throw_new(uuid) if resource_type && resource_type != uuid_object.resource_type
-
-      uuid_object.resource_id
-    rescue
-      return nil
-    end
+    with_external_id(uuid).limited_to_resource(resource_type).limit(1).pluck(:resource_id).first
   end
 
   class << self

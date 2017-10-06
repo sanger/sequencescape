@@ -45,35 +45,51 @@ FactoryGirl.define do
   factory :dilution_plate do
     plate_purpose { PlatePurpose.find_by!(name: 'Stock plate') }
     barcode
+    with_wells
+    size 96
   end
   factory :gel_dilution_plate do
     plate_purpose { PlatePurpose.find_by!(name: 'Gel Dilution') }
     barcode
+    with_wells
+    size 96
   end
   factory :pico_assay_a_plate do
     plate_purpose { PlatePurpose.find_by!(name: 'Pico Assay A') }
     barcode
+    with_wells
+    size 96
   end
   factory :pico_assay_b_plate do
     plate_purpose { PlatePurpose.find_by!(name: 'Pico Assay B') }
     barcode
+    with_wells
+    size 96
   end
   factory :pico_assay_plate do
     plate_purpose { PlatePurpose.find_by!(name: 'Stock plate') }
     barcode
+    with_wells
+    size 96
   end
   factory :pico_dilution_plate do
     plate_purpose { PlatePurpose.find_by!(name: 'Pico Dilution') }
     barcode
+    with_wells
+    size 96
   end
   factory :sequenom_qc_plate do
     sequence(:name) { |i| "Sequenom #{i}" }
     plate_purpose { PlatePurpose.find_by!(name: 'Sequenom') }
     barcode
+    with_wells
+    size 96
   end
   factory :working_dilution_plate do
     plate_purpose { PlatePurpose.find_by!(name: 'Working Dilution') }
     barcode
+    with_wells
+    size 96
   end
 
   factory :batch do
@@ -351,6 +367,7 @@ FactoryGirl.define do
     location_id      2
     row_order        1
     column_order     8
+    asset_shape AssetShape.default
   end
 
   factory :plate_template do
@@ -426,43 +443,7 @@ FactoryGirl.define do
     interactive           nil
   end
 
-  factory :plate_purpose do
-    name { generate :purpose_name }
-    size 96
-    association(:barcode_printer_type, factory: :plate_barcode_printer_type)
-    target_type 'Plate'
-    asset_shape { AssetShape.default }
-
-    factory :source_plate_purpose do
-      after(:build) do |source_plate_purpose, _evaluator|
-        source_plate_purpose.source_purpose = source_plate_purpose
-      end
-
-      factory :input_plate_purpose, class: PlatePurpose::Input do
-        stock_plate true
-      end
-    end
-  end
-
-  factory :purpose do
-    name { generate :purpose_name }
-    target_type 'Asset'
-
-    factory :stock_purpose do
-      stock_plate true
-    end
-  end
-
-  factory(:tube_purpose, class: Tube::Purpose) do
-    name        { generate :purpose_name }
-    target_type 'MultiplexedLibraryTube'
-  end
-
-  factory :dilution_plate_purpose do
-    name    'Dilution'
-  end
-
   factory :barcode_prefix do
-    prefix  'DN'
+    prefix 'DN'
   end
 end

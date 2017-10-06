@@ -11,19 +11,19 @@ class BatchesController < ApplicationController
   before_action :evil_parameter_hack!
   include XmlCacheHelper::ControllerHelper
 
-  before_action :login_required, except: [:released, :qc_criteria]
-  before_action :find_batch_by_id, only: [
-    :show, :edit, :update, :qc_information, :qc_batch, :save, :fail, :fail_items,
-    :fail_batch, :control, :add_control, :print_labels, :print_plate_labels, :print_multiplex_labels,
-    :print, :verify, :verify_tube_layout, :reset_batch, :previous_qc_state, :filtered, :swap,
-    :download_spreadsheet, :gwl_file, :pacbio_sample_sheet, :sample_prep_worksheet
-  ]
-  before_action :find_batch_by_batch_id, only: [:sort, :print_multiplex_barcodes, :print_pulldown_multiplex_tube_labels, :print_plate_barcodes, :print_barcodes]
+  before_action :login_required, except: %i(released qc_criteria)
+  before_action :find_batch_by_id, only: %i(
+    show edit update qc_information qc_batch save fail fail_items
+    fail_batch control add_control print_labels print_plate_labels print_multiplex_labels
+    print verify verify_tube_layout reset_batch previous_qc_state filtered swap
+    download_spreadsheet gwl_file pacbio_sample_sheet sample_prep_worksheet
+  )
+  before_action :find_batch_by_batch_id, only: %i(sort print_multiplex_barcodes print_pulldown_multiplex_tube_labels print_plate_barcodes print_barcodes)
 
   def index
     if logged_in?
       @user = current_user
-      @batches = Batch.where('assignee_id = :user OR user_id = :user', user: @user).order(id: :desc).page(params[:page])
+      @batches = Batch.where(assignee_id: @user).or(Batch.where(user_id: @user)).order(id: :desc).page(params[:page])
     else
       # Can end up here with XML. And it causes pain.
       @batches = Batch.order(id: :asc).page(params[:page]).limit(10)
@@ -56,7 +56,7 @@ class BatchesController < ApplicationController
 
   def edit
     @rits = @batch.pipeline.request_information_types
-    @requests = @batch.ordered_requests
+    @requests = @batch.ordered_requests.includes(:batch_request, :asset, :target_asset, :comments)
     @users = User.all
     @controls = @batch.pipeline.controls
   end
@@ -89,7 +89,7 @@ class BatchesController < ApplicationController
       @pipeline = Pipeline.find(params[:id])
 
       # TODO: These should be different endpoints
-      requests = @pipeline.extract_requests_from_input_params(params)
+      requests = @pipeline.extract_requests_from_input_params(params.to_unsafe_h)
 
       case params[:action_on_requests]
       when 'cancel_requests'
@@ -143,14 +143,14 @@ class BatchesController < ApplicationController
     # The params fallback here reflects an older route where pipeline got passed in as :id. It should be removed
     # in the near future.
     @pipeline = Pipeline.find(params[:pipeline_id] || params[:id])
-    @batches = @pipeline.batches.pending.order(id: :desc).includes([:user, :pipeline]).page(params[:page])
+    @batches = @pipeline.batches.pending.order(id: :desc).includes(%i(user pipeline)).page(params[:page])
   end
 
   def started
     # The params fallback here reflects an older route where pipeline got passed in as :id. It should be removed
     # in the near future.
     @pipeline = Pipeline.find(params[:pipeline_id] || params[:id])
-    @batches = @pipeline.batches.started.order(id: :desc).includes([:user, :pipeline]).page(params[:page])
+    @batches = @pipeline.batches.started.order(id: :desc).includes(%i(user pipeline)).page(params[:page])
   end
 
   def released
@@ -158,7 +158,7 @@ class BatchesController < ApplicationController
     # in the near future.
     @pipeline = Pipeline.find(params[:pipeline_id] || params[:id])
 
-    @batches = @pipeline.batches.released.order(id: :desc).includes([:user, :pipeline]).page(params[:page])
+    @batches = @pipeline.batches.released.order(id: :desc).includes(%i(user pipeline)).page(params[:page])
     respond_to do |format|
       format.html
       format.xml { render layout: false }
@@ -169,14 +169,14 @@ class BatchesController < ApplicationController
     # The params fallback here reflects an older route where pipeline got passed in as :id. It should be removed
     # in the near future.
     @pipeline = Pipeline.find(params[:pipeline_id] || params[:id])
-    @batches = @pipeline.batches.completed.order(id: :desc).includes([:user, :pipeline]).page(params[:page])
+    @batches = @pipeline.batches.completed.order(id: :desc).includes(%i(user pipeline)).page(params[:page])
   end
 
   def failed
     # The params fallback here reflects an older route where pipeline got passed in as :id. It should be removed
     # in the near future.
     @pipeline = Pipeline.find(params[:pipeline_id] || params[:id])
-    @batches = @pipeline.batches.failed.order(id: :desc).includes([:user, :pipeline]).page(params[:page])
+    @batches = @pipeline.batches.failed.order(id: :desc).includes(%i(user pipeline)).page(params[:page])
   end
 
   def fail
@@ -225,7 +225,7 @@ class BatchesController < ApplicationController
 
   def sort
     @batch.assign_positions_to_requests!(params['requests_list'].map(&:to_i))
-    render nothing: true
+    head :ok
   end
 
   def save
@@ -283,7 +283,7 @@ class BatchesController < ApplicationController
     @output_assets.each do |parent, _children|
       unless parent.nil?
         plate_barcode = parent.barcode
-        unless plate_barcode.blank?
+        if plate_barcode.present?
           @output_barcodes << plate_barcode
         end
       end
@@ -554,13 +554,27 @@ class BatchesController < ApplicationController
   # This is the expected create behaviour, and is only in a seperate
   # method due to the overloading on the create endpoint.
   def standard_create(requests)
-    ActiveRecord::Base.transaction do
-      unless @pipeline.valid_number_of_checked_request_groups?(params)
-        return pipeline_error_on_batch_creation("Too many request groups selected, maximum is #{@pipeline.max_number_of_groups}")
+    return pipeline_error_on_batch_creation('All plates in a submission must be selected') unless @pipeline.all_requests_from_submissions_selected?(requests)
+    return pipeline_error_on_batch_creation("Maximum batch size is #{@pipeline.max_size}") if @pipeline.max_size && requests.length > @pipeline.max_size
+
+    begin
+      ActiveRecord::Base.transaction do
+        @batch = @pipeline.batches.create!(requests: requests, user: current_user)
       end
-      return pipeline_error_on_batch_creation('All plates in a submission must be selected') unless @pipeline.all_requests_from_submissions_selected?(requests)
-      return pipeline_error_on_batch_creation("Maximum batch size is #{@pipeline.max_size}") if @pipeline.max_size && requests.length > @pipeline.max_size
-      @batch = @pipeline.batches.create!(requests: requests, user: current_user)
+    rescue ActiveRecord::RecordNotUnique => exception
+      # We don't explicitly check for this on creation of batch_request for performance reasons, and the front end usually
+      # ensures this situation isn't possible. However if the user opens duplicate tabs it is possible.
+      # Fortunately we can detect the corresponding exception, and generate a friendly error message.
+
+      # If this isn't the exception we're expecting, re-raise it.
+      raise exception unless /request_id/.match?(exception.message)
+      # Find the requests which casued the clash.
+      batched_requests = BatchRequest.where(request_id: requests.map(&:id)).pluck(:request_id)
+      # Limit the length of the error message, otherwise big batches may generate errors which are too
+      # big to pass back in the flash.
+      listed_requests = batched_requests.join(', ').truncate(200, separator: ' ')
+      # And finally report the error
+      return pipeline_error_on_batch_creation("Could not create batch as requests were already in a batch: #{listed_requests}")
     end
 
     respond_to do |format|

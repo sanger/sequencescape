@@ -22,24 +22,76 @@ class Plate < Asset
   extend QcFile::Associations
   has_qc_files
 
+  has_many :container_associations, foreign_key: :container_id, inverse_of: :plate
+  has_many :wells, through: :container_associations, inverse_of: :plate do
+    def attach(records)
+      ActiveRecord::Base.transaction do
+        proxy_association.owner.wells << records
+      end
+    end
+    deprecate attach: 'Legacy method pre-jruby just use standard rails plate.wells << other_wells' # Legacy pre-jruby method to handle bulk import
+
+    def construct!
+      Map.where_plate_size(proxy_association.owner.size).where_plate_shape(proxy_association.owner.asset_shape).in_row_major_order.map do |location|
+        build(map: location)
+      end.tap do
+        proxy_association.owner.save!
+      end
+    end
+
+    def map_from_locations
+      {}.tap do |location_to_well|
+        walk_in_column_major_order do |well, _|
+          raise "Duplicated well at #{well.map.description}" if location_to_well.key?(well.map)
+          location_to_well[well.map] = well
+        end
+      end
+    end
+
+    # Returns the wells with their pool identifier included
+    def with_pool_id
+      proxy_association.owner.plate_purpose.pool_wells(self)
+    end
+
+    # Yields each pool and the wells that are in it
+    def walk_in_pools(&block)
+      with_pool_id.group_by(&:pool_id).each(&block)
+    end
+
+    # Walks the wells A1, B1, C1, ... A2, B2, C2, ... H12
+    def walk_in_column_major_order
+      in_column_major_order.each { |well| yield(well, well.map.column_order) }
+    end
+
+    # Walks the wells A1, A2, ... B1, B2, ... H12
+    def walk_in_row_major_order
+      in_row_major_order.each { |well| yield(well, well.map.row_order) }
+    end
+
+    def in_preferred_order
+      proxy_association.owner.plate_purpose.in_preferred_order(self)
+    end
+  end
+
   # Contained associations all look up through wells (Wells in turn delegate to aliquots)
   has_many :contained_samples, through: :wells, source: :samples
   has_many :conatined_aliquots, through: :wells, source: :aliquots
 
   # We also look up studies and projects through wells
-  has_many :studies, ->() { uniq }, through: :wells
-  has_many :projects, ->() { uniq }, through: :wells
-
+  has_many :studies, ->() { distinct }, through: :wells
+  has_many :projects, ->() { distinct }, through: :wells
   has_many :well_requests_as_target, through: :wells, source: :requests_as_target
-  has_many :orders_as_target, ->() { uniq }, through: :well_requests_as_target, source: :order
-
+  has_many :orders_as_target, ->() { distinct }, through: :well_requests_as_target, source: :order
   # We use stock well associations here as stock_wells is already used to generate some kind of hash.
-  has_many :stock_requests, ->() { uniq }, through: :stock_well_associations, source: :requests
-  has_many :stock_well_associations, ->() { uniq }, through: :wells, source: :stock_wells
-  has_many :stock_orders, ->() { uniq }, through: :stock_requests, source: :order
+  has_many :stock_requests, ->() { distinct }, through: :stock_well_associations, source: :requests
+  has_many :stock_well_associations, ->() { distinct }, through: :wells, source: :stock_wells
+  has_many :stock_orders, ->() { distinct }, through: :stock_requests, source: :order
   has_many :extraction_attributes, foreign_key: 'target_id'
-
   has_many :siblings, through: :parents, source: :children
+  # Transfer requests into a plate are the requests leading into the wells of said plate.
+  has_many :transfer_requests, through: :wells, source: :transfer_requests_as_target
+  has_many :transfer_requests_as_source, through: :wells
+  has_many :transfer_request_collections, through: :transfer_requests_as_source
 
   # The default state for a plate comes from the plate purpose
   delegate :default_state, to: :plate_purpose, allow_nil: true
@@ -86,16 +138,12 @@ class Plate < Asset
 
   validates_length_of :fluidigm_barcode, is: 10, allow_blank: true
 
-  # Transfer requests into a plate are the requests leading into the wells of said plate.
-  has_many :transfer_requests, through: :wells, source: :transfer_requests_as_target
-  has_many :transfer_requests_as_source, through: :wells
-
   scope :include_for_show, ->() {
     includes(
       requests: :request_metadata,
       wells: [
         :map_id,
-        { aliquots: [:samples, :tag, :tag2] }
+        { aliquots: %i(samples tag tag2) }
       ]
     )
   }
@@ -105,14 +153,14 @@ class Plate < Asset
     @siat ||= container_associations
               .joins('LEFT JOIN requests ON requests.target_asset_id = container_associations.content_id')
               .where.not(requests: { submission_id: nil }).where.not(requests: { state: Request::Statemachine::INACTIVE })
-              .uniq.pluck(:submission_id)
+              .distinct.pluck(:submission_id)
   end
 
   def submission_ids_as_source
     @sias ||= container_associations
               .joins('LEFT JOIN requests ON requests.asset_id = container_associations.content_id')
               .where(['requests.submission_id IS NOT NULL AND requests.state NOT IN (?)', Request::Statemachine::INACTIVE])
-              .uniq.pluck(:submission_id)
+              .distinct.pluck(:submission_id)
   end
 
   def all_submission_ids
@@ -130,14 +178,14 @@ class Plate < Asset
   end
 
   def submissions
-    s = Submission.select('submissions.*',).uniq
+    s = Submission.select('submissions.*',).distinct
                   .joins([
                     'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
                     'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.asset_id'
                   ])
                   .where(['caplp.container_id = ?', id])
-    return s unless s.blank?
-    Submission.select('submissions.*',).uniq
+    return s if s.present?
+    Submission.select('submissions.*',).distinct
               .joins([
                 'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
                 'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.target_asset_id'
@@ -236,58 +284,7 @@ class Plate < Asset
   end
   deprecate study: 'Plates can belong to multiple studies, use #studies instead.'
 
-  has_many :container_associations, foreign_key: :container_id, inverse_of: :plate
-  has_many :wells, through: :container_associations, inverse_of: :plate do
-    def attach(records)
-      ActiveRecord::Base.transaction do
-        proxy_association.owner.wells << records
-      end
-    end
-    deprecate attach: 'Legacy method pre-jruby just use standard rails plate.wells << other_wells' # Legacy pre-jruby method to handle bulk import
-
-    def construct!
-      Map.where_plate_size(proxy_association.owner.size).where_plate_shape(proxy_association.owner.asset_shape).in_row_major_order.map do |location|
-        build(map: location)
-      end.tap do
-        proxy_association.owner.save!
-      end
-    end
-
-    def map_from_locations
-      {}.tap do |location_to_well|
-        walk_in_column_major_order do |well, _|
-          raise "Duplicated well at #{well.map.description}" if location_to_well.key?(well.map)
-          location_to_well[well.map] = well
-        end
-      end
-    end
-
-    # Returns the wells with their pool identifier included
-    def with_pool_id
-      proxy_association.owner.plate_purpose.pool_wells(self)
-    end
-
-    # Yields each pool and the wells that are in it
-    def walk_in_pools(&block)
-      with_pool_id.group_by(&:pool_id).each(&block)
-    end
-
-    # Walks the wells A1, B1, C1, ... A2, B2, C2, ... H12
-    def walk_in_column_major_order
-      in_column_major_order.each { |well| yield(well, well.map.column_order) }
-    end
-
-    # Walks the wells A1, A2, ... B1, B2, ... H12
-    def walk_in_row_major_order
-      in_row_major_order.each { |well| yield(well, well.map.row_order) }
-    end
-
-    def in_preferred_order
-      proxy_association.owner.plate_purpose.in_preferred_order(self)
-    end
-  end
-
-  scope :include_wells_and_attributes, -> { includes(wells: [:map, :well_attribute]) }
+  scope :include_wells_and_attributes, -> { includes(wells: %i(map well_attribute)) }
 
   # has_many :wells, :as => :holder, :class_name => "Well"
   DEFAULT_SIZE = 96
@@ -307,7 +304,7 @@ class Plate < Asset
 
   # TODO: Make these more railsy
   scope :with_sample, ->(sample) {
-      select('assets.*').uniq
+      select('assets.*').distinct
                         .joins([
                           'LEFT OUTER JOIN container_associations AS wscas ON wscas.container_id = assets.id',
                           'LEFT JOIN assets AS wswells ON wswells.id = content_id',
@@ -317,7 +314,7 @@ class Plate < Asset
   }
 
  scope :with_requests, ->(requests) {
-   select('assets.*').uniq
+   select('assets.*').distinct
                      .joins([
                        'INNER JOIN container_associations AS wrca ON wrca.container_id = assets.id',
                        'INNER JOIN requests AS wrr ON wrr.asset_id = wrca.content_id'
@@ -355,7 +352,7 @@ class Plate < Asset
   scope :with_descendants_owned_by, ->(user) {
     joins(descendant_plates: :plate_owner)
       .where(plate_owners: { user_id: user })
-      .uniq
+      .distinct
   }
 
   scope :source_plates, -> {
@@ -380,7 +377,7 @@ class Plate < Asset
     wells.sorted
   end
 
-  def children_and_holded
+  def children_and_wells
     (children | wells)
   end
 
@@ -395,7 +392,7 @@ class Plate < Asset
       description: description,
       asset_size: size,
       asset_shape_id: asset_shape
-)
+    )
   end
 
   def find_well_by_rowcol(row, col)
@@ -501,7 +498,6 @@ class Plate < Asset
     return %w(storage_area storage_device building_area building).map do |key|
       get_external_value(key)
     end.compact.join(' - ')
-
   rescue LabWhereClient::LabwhereException => e
     @storage_location_service = 'None'
     return "Not found (#{e.message})"
@@ -604,31 +600,9 @@ class Plate < Asset
     Submission::Workflow.find_by(key: 'microarray_genotyping')
   end
 
-  def self.create_plates_submission(project, study, plates, user)
-    return false if user.nil? || project.nil? || study.nil?
-    current_time = Time.now
-
-    project.save
-    plates.each do |plate|
-      plate.generate_plate_submission(project, study, user, current_time)
-    end
-
-    true
-  end
-
   # Should return true if any samples on the plate contains gender information
   def contains_gendered_samples?
     contained_samples.with_gender.any?
-  end
-
-  def generate_plate_submission(project, study, user, current_time)
-    submission = create_plate_submission(project, study, user, current_time)
-    if submission
-      events.create!(message: I18n.t('studies.submissions.plate.event.success', barcode: barcode, submission_id: submission.id), created_by: user.login)
-    else
-      events.create!(message: I18n.t('studies.submissions.plate.event.failed', barcode: barcode), created_by: user.login)
-      study.errors.add('plate_barcode', "Couldnt create submission for plate #{plate_barcode}")
-    end
   end
 
   def create_sample_tubes
@@ -690,26 +664,6 @@ class Plate < Asset
   def ancestors_of_purpose(ancestor_purpose_id)
     return [self] if plate_purpose_id == ancestor_purpose_id
     ancestors.order(created_at: :desc).where(plate_purpose_id: ancestor_purpose_id)
-  end
-
-  def child_dilution_plates_filtered_by_type(parent_model)
-    children.select { |p| p.is_a?(parent_model) }
-  end
-
-  def children_of_dilution_plates(parent_model, child_model)
-    child_dilution_plates_filtered_by_type(parent_model).map { |dilution_plate| dilution_plate.children.select { |p| p.is_a?(child_model) } }.flatten.select { |p| !p.nil? }
-  end
-
-  def child_pico_assay_plates
-    children_of_dilution_plates(PicoDilutionPlate, PicoAssayAPlate)
-  end
-
-  def child_gel_dilution_plates
-    children_of_dilution_plates(WorkingDilutionPlate, GelDilutionPlate)
-  end
-
-  def child_sequenom_qc_plates
-    children_of_dilution_plates(WorkingDilutionPlate, SequenomQcPlate)
   end
 
   def find_study_abbreviation_from_parent
@@ -779,8 +733,8 @@ class Plate < Asset
 
   extend Metadata
   has_metadata do
-    attribute(:infinium_barcode)
-    attribute(:fluidigm_barcode)
+    custom_attribute(:infinium_barcode)
+    custom_attribute(:fluidigm_barcode)
   end
 
   def barcode_label_for_printing
@@ -802,10 +756,16 @@ class Plate < Asset
 
   # This method returns a map from the wells on the plate to their stock well.
   def stock_wells
-    # Optimisation: if the plate is a stock plate then it's wells are it's stock wells!
-    return Hash[wells.with_pool_id.map { |w| [w, [w]] }] if stock_plate?
-    Hash[wells.include_stock_wells.with_pool_id.map { |w| [w, w.stock_wells.sort_by { |sw| sw.map.column_order }] }.reject { |_, v| v.empty? }].tap do |stock_wells_hash|
-      raise "No stock plate associated with #{id}" if stock_wells_hash.empty?
+    # Optimisation: if the plate is a stock plate then it's wells are it's stock wells!]
+    if stock_plate?
+      wells.with_pool_id.each_with_object({}) { |w, store| store[w] = [w] }
+    else
+      wells.include_stock_wells.with_pool_id.each_with_object({}) do |w, store|
+        storted_stock_wells = w.stock_wells.sort_by { |sw| sw.map.column_order }
+        store[w] = storted_stock_wells unless storted_stock_wells.empty?
+      end.tap do |stock_wells_hash|
+        raise "No stock plate associated with #{id}" if stock_wells_hash.empty?
+      end
     end
   end
 
@@ -817,15 +777,18 @@ class Plate < Asset
     PlatePurpose.compatible_with_purpose(purpose)
   end
 
-  def update_qc_values_with_parser(parser)
-    ActiveRecord::Base.transaction do
-      well_hash = Hash[wells.include_map.includes(:well_attribute).map { |w| [w.map_description, w] }]
+  def well_hash
+    @well_hash ||= wells.include_map.includes(:well_attribute).index_by(&:map_description)
+  end
 
+  def update_qc_values_with_parser(parser, scale: nil)
+    ActiveRecord::Base.transaction do
       parser.each_well_and_parameters do |position, well_updates|
         # We might have a nil well if a plate was only partially cherrypicked
         well = well_hash[position]
+        scale ||= well_updates.keys.map { |k| [k, 1] }
         next if well.nil?
-        well.update_qc_values_with_hash(well_updates)
+        well.update_qc_values_with_hash(well_updates, scale)
         well.save!
       end
     end

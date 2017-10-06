@@ -4,7 +4,7 @@ module Aker
     before_action :login_required, except: [:complete, :cancel, :show, :index]
 
     def index
-      @work_orders = WorkOrder.all
+      @work_orders = Aker::WorkOrder.all
     end
 
     def show
@@ -27,7 +27,7 @@ module Aker
     private
 
     def current_resource
-      @current_resource ||= WorkOrder.find(params[:id]) if params[:id]
+      @current_resource ||= Aker::WorkOrder.find(params[:id]) if params[:id]
     end
   end
 end

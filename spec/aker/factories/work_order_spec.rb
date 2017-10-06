@@ -57,4 +57,12 @@ RSpec.describe Aker::Factories::WorkOrder, type: :model, aker: true do
     end
     expect(json[:materials].count).to eq(work_order.materials.count)
   end
+
+  it 'creating a work order with existing materials will find those existing materials' do
+    params[:materials].each { |material| Aker::Factories::Material.create(material) }
+    work_order = Aker::Factories::WorkOrder.create(params)
+    work_order = Aker::WorkOrder.find_by(aker_id: work_order.aker_id)
+    expect(work_order).to be_present
+    expect(work_order.samples.count).to eq(params[:materials].count)
+  end
 end

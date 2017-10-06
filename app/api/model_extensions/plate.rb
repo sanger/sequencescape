@@ -50,7 +50,10 @@ module ModelExtensions::Plate
   # ignored within the returned result.
   def pools
     Request.include_request_metadata.for_pooling_of(self).each_with_object({}) do |request, pools|
-      pools[request.pool_id] = { wells: request.pool_into.split(',') }.tap do |pool_information|
+      pools[request.pool_id] = {
+        wells: request.pool_into.split(','),
+        pool_complete: request.pool_complete == 1
+      }.tap do |pool_information|
         request.update_pool_information(pool_information)
       end unless request.pool_id.nil?
     end

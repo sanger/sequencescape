@@ -22,13 +22,12 @@ class OwnerTest < ActionController::TestCase
       @barcode_printer.stubs(:blank?).returns(true)
 
       @user = create :user
-      @parent_plate_purpose = create :parent_plate_purpose
-      @parent_plate = create :plate, purpose: @parent_plate_purpose
+      @parent_plate = create :plate
 
       @pc_event = PlateCreation.create(
         user: @user,
         parent: @parent_plate,
-        child_purpose: @parent_plate_purpose.child_purposes.first
+        child_purpose: create(:plate_purpose)
       )
       @child_plate = @pc_event.child
     end

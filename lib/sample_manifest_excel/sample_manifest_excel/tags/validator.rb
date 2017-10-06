@@ -28,7 +28,7 @@ module SampleManifestExcel
 
         def check_formatting
           if value.present?
-            unless value =~ /\A[acgtACGT]+\z/
+            unless value.match?(/\A[acgtACGT]+\z/)
               errors.add(:tag, 'must be a combination of A,C,G and T')
             end
           end

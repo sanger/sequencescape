@@ -75,7 +75,7 @@ And I have a "full" authorised user with the key "cucumber"
     And the JSON should be:
       """
       {
-        "general": [ "Unable to find UUID" ]
+        "general": [ "Couldn't find Uuid" ]
       }
       """
 

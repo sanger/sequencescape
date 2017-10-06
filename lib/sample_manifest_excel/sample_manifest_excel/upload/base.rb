@@ -18,7 +18,7 @@ module SampleManifestExcel
 
       validates_presence_of :start_row, :sanger_sample_id_column, :sample_manifest
       validate :check_columns, :check_processor, :check_rows
-      validate :check_processor, if: 'processor.present?'
+      validate :check_processor, if: :processor?
 
       delegate :processed?, to: :processor
 
@@ -51,8 +51,14 @@ module SampleManifestExcel
       # Processing involves updating the sample manifest and all of its associated samples.
       def process(tag_group)
         ActiveRecord::Base.transaction do
+          sample_manifest.last_errors = nil
+          sample_manifest.start!
           processor.run(tag_group)
         end
+      end
+
+      def complete
+        sample_manifest.finished!
       end
 
       private
@@ -90,6 +96,10 @@ module SampleManifestExcel
             errors.add key, value
           end
         end
+      end
+
+      def processor?
+        processor.present?
       end
     end
   end
