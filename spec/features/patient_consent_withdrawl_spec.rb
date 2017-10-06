@@ -38,12 +38,12 @@ feature 'Sample#consent_withdrawn', js: false do
 
     scenario 'we generate a warehouse message' do
       message = JSON.parse(sample.to_json)
-      expect(message.dig('sample','consent_withdrawn')).to eq warehouse_value
+      expect(message.dig('sample', 'consent_withdrawn')).to eq warehouse_value
     end
 
     context 'when batched' do
       let(:batch) { create :sequencing_batch, state: 'started' }
-      let(:lane) { create :lane, samples: [ sample ] }
+      let(:lane) { create :lane, samples: [sample] }
 
       before do
         batch.requests << create(:sequencing_request_with_assets, target_asset: lane)
@@ -60,7 +60,7 @@ feature 'Sample#consent_withdrawn', js: false do
       # and optimization
       let(:submission_template) { create :submission_template, request_type_ids_list: [[create(:request_type).id]] }
       let(:sample_tube) { create :sample_tube, sample: sample }
-      let(:asset_group) { create :asset_group, assets: [ sample_tube ] }
+      let(:asset_group) { create :asset_group, assets: [sample_tube] }
 
       context 'defined by asset group' do
         let(:order) do
@@ -116,7 +116,7 @@ feature 'Sample#consent_withdrawn', js: false do
     scenario 'a user visit the sample show page' do
       login_user user
       visit sample_path(sample)
-      expect(page).to have_content "Patient consent has been withdrawn for this sample."
+      expect(page).to have_content 'Patient consent has been withdrawn for this sample.'
     end
 
     it_behaves_like 'it reports information elsewhere'
@@ -139,7 +139,7 @@ feature 'Sample#consent_withdrawn', js: false do
     scenario 'and a user visit the sample show page' do
       login_user user
       visit sample_path(sample)
-      expect(page).not_to have_content "Patient consent has been withdrawn for this sample."
+      expect(page).not_to have_content 'Patient consent has been withdrawn for this sample.'
     end
 
     it_behaves_like 'it reports information elsewhere'
