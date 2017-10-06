@@ -39,9 +39,9 @@ RSpec.describe Sample, type: :model, accession: true do
   end
 
   context 'Aker' do
-    it 'can belong to a work order' do
-      work_order = create(:work_order)
-      expect(create(:sample, work_order: work_order).work_order).to eq(work_order)
+    it 'can have many work orders' do
+      work_order = create(:aker_work_order)
+      expect(create(:sample, work_orders: [work_order]).work_orders).to include(work_order)
     end
 
     it 'can belong to a container' do
