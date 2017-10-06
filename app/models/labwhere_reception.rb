@@ -35,8 +35,7 @@ class LabwhereReception
   def new_record?; true; end
 
   def user
-    @user ||= User.lookup_by_barcode(@user_code) ||
-              User.with_swipecard_code(@user_code).first
+    @user ||= User.find_with_barcode_or_swipecard_code(@user_code)
   end
 
   # save attempts to perform the actions, and returns true if it was successful
