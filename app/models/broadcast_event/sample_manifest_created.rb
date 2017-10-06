@@ -6,9 +6,7 @@
 
 class BroadcastEvent::SampleManifestCreated < BroadcastEvent
   set_event_type 'sample_manifest.created'
-
-  # Properties takes :order_id
-
+  
   seed_class SampleManifest
 
   has_subject(:study, :study)
