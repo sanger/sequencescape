@@ -7,8 +7,6 @@
 class BroadcastEvent::LabwareReceived < BroadcastEvent
   set_event_type 'labware.received'
 
-  # Properties takes :order_id
-
   seed_class Asset
 
   seed_subject :labware
