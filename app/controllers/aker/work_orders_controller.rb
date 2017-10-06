@@ -21,7 +21,7 @@ module Aker
       response = RestClient::Request.execute(
         method: :post,
         url: "#{Rails.configuration.aker['urls']['work_orders']}/work_orders/#{work_order.aker_id}/complete",
-        params: { work_order: {id: work_order.aker_id, comment: params[:comment]} },
+        payload: { work_order: {id: work_order.aker_id, comment: params[:comment]} }.to_json,
         headers: { content_type: :json },
         proxy: nil
       )
@@ -33,7 +33,7 @@ module Aker
       response = RestClient::Request.execute(
         method: :post,
         url: "#{Rails.configuration.aker['urls']['work_orders']}/work_orders/#{work_order.aker_id}/cancel",
-        params: { work_order: {id: work_order.aker_id, comment: params[:comment]} }, 
+        payload: { work_order: {id: work_order.aker_id, comment: params[:comment]} }.to_json, 
         headers: {content_type: :json},
         proxy: nil
       )
