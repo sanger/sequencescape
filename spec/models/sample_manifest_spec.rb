@@ -10,7 +10,6 @@ RSpec.describe SampleManifest do
   let(:user) { create :user }
 
   context '#generate' do
-
     let(:study) { create :study }
     let(:manifest) { create :sample_manifest, study: study, count: count, asset_type: asset_type, purpose: purpose }
     let(:purpose) { nil }
@@ -21,7 +20,7 @@ RSpec.describe SampleManifest do
       @initial_samples  = Sample.count
       @initial_plates   = Plate.count
       @initial_wells    = Well.count
-      @initial_sample_tubes    = SampleTube.count
+      @initial_sample_tubes = SampleTube.count
       @initial_in_study = study.samples.count
       @initial_messenger_count = Messenger.count
       @initial_library_tubes = LibraryTube.count
@@ -38,11 +37,11 @@ RSpec.describe SampleManifest do
           setup { manifest.generate }
 
           it "create #{count} plate(s) and #{count * 96} wells and samples in the right study" do
-            assert_equal (count * 96), Sample.count - @initial_samples
-            assert_equal (count * 1), Plate.count - @initial_plates
-            assert_equal (count * 96), Well.count - @initial_wells
-            assert_equal (count * 96), study.samples.count - @initial_in_study
-            assert_equal (count * 96), Messenger.count - @initial_messenger_count
+            expect(Sample.count - @initial_samples).to eq(count * 96)
+            expect(Plate.count - @initial_plates).to eq(count * 1)
+            expect(Well.count - @initial_wells).to eq(count * 96)
+            expect(study.samples.count - @initial_in_study).to eq(count * 96)
+            expect(Messenger.count - @initial_messenger_count).to eq(count * 96)
             expect(manifest.samples.first.primary_aliquot.study).to eq(study)
           end
         end
@@ -70,12 +69,12 @@ RSpec.describe SampleManifest do
           setup { manifest.generate }
 
           it "create 1 tubes(s) and #{count} samples in the right study" do
-            assert_equal (count), Sample.count                 - @initial_samples
+            assert_equal count, Sample.count                 - @initial_samples
             # We need to create library tubes as we have downstream dependencies that assume a unique library tube
-            assert_equal (count), LibraryTube.count            - @initial_library_tubes
+            assert_equal count, LibraryTube.count            - @initial_library_tubes
             assert LibraryTube.last.aliquots.first.library_id
-            assert_equal 1,     MultiplexedLibraryTube.count - @initial_mx_tubes
-            assert_equal (count), study.samples.count         - @initial_in_study
+            assert_equal 1, MultiplexedLibraryTube.count - @initial_mx_tubes
+            assert_equal count, study.samples.count - @initial_in_study
             expect(manifest.samples.first.primary_aliquot.study).to eq(study)
           end
         end
@@ -110,11 +109,11 @@ RSpec.describe SampleManifest do
           setup { manifest.generate }
 
           it "create #{count} tubes(s) and #{count} samples in the right study" do
-            assert_equal (count), Sample.count - @initial_samples
+            assert_equal count, Sample.count - @initial_samples
             # We need to create library tubes as we have downstream dependencies that assume a unique library tube
-            assert_equal (count), SampleTube.count - @initial_sample_tubes
+            assert_equal count, SampleTube.count - @initial_sample_tubes
             refute SampleTube.last.aliquots.first.library_id
-            assert_equal (count), study.samples.count - @initial_in_study
+            assert_equal count, study.samples.count - @initial_in_study
             assert_equal count, Messenger.count - @initial_messenger_count
             expect(manifest.samples.first.primary_aliquot.study).to eq(study)
           end
@@ -130,7 +129,6 @@ RSpec.describe SampleManifest do
   end
 
   context 'update event' do
-
     let(:well_with_sample_and_plate) { create :well_with_sample_and_plate }
 
     context 'where a well has no plate' do
@@ -163,8 +161,7 @@ RSpec.describe SampleManifest do
   # because the last parameter was being dropped.  Good thing the plate IDs were last, right!?!!
   context 'creating extremely large manifests' do
     setup do
-
-      allow(PlateBarcode).to receive(:create).and_return(*Array.new(37) { |i| double('barcode',barcode: i+1) })
+      allow(PlateBarcode).to receive(:create).and_return(*Array.new(37) { |i| double('barcode', barcode: i + 1) })
 
       @manifest = create(:sample_manifest, count: 37, asset_type: 'plate', rapid_generation: true)
       @manifest.generate
