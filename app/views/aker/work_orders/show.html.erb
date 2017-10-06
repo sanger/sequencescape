@@ -1,38 +1,12 @@
-<h1>Work Orders</h1>
+<nav aria-label="breadcrumb" role="navigation">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item" aria-current="page"><a href="<%= aker_work_orders_path %>">Aker Work Orders</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Work Order <%= @work_order.aker_id %></li>
+  </ol>
+</nav>
+
 <section class='work-order'>
-  <ul>
-    <li>
-      Product name: <%= @aker_work_order['product_name'] %>
-    </li>
-    <li>
-      Product version: <%= @aker_work_order['product_version'] %>
-    </li>
-    <li>
-      Product UUID: <%= @aker_work_order['product_uuid'] %>
-    </li>
-    <li>
-      Proposal ID: <%= @aker_work_order['proposal_id'] %>
-    </li>
-    <li>
-      Proposal Name: <%= @aker_work_order['proposal_name'] %>
-    </li>
-    <li>
-      Cost code: <%= @aker_work_order['cost_code'] %>
-    </li>
-    <li>
-      Comment: <%= @aker_work_order['comment'] %>
-    </li>
-    <li>
-      Desired date: <%= @aker_work_order['desired_date'] %>
-    </li>
-    <li>
-      <ul>
-        <% @work_order.samples.each do |sample| %>
-          <li class='sample'>
-            Sample: <%= sample.name %>
-          </li>
-        <% end %>
-      </ul>
-    </li>
-  </ul>
+  <%= render partial: 'work_order', locals: {aker_work_order: @aker_work_order, work_order: @work_order } %>
 </section>
+
+<a class="btn btn-default" href="<%= aker_work_orders_path %>">Back</a>
