@@ -50,6 +50,9 @@ class SampleManifest < ApplicationRecord
   belongs_to :project
   belongs_to :user
   belongs_to :purpose
+  has_many :samples
+  accepts_nested_attributes_for :samples
+
   serialize :last_errors
   serialize :barcodes
 
@@ -63,7 +66,8 @@ class SampleManifest < ApplicationRecord
   # and can even prevent manifest resubmission.
   before_save :truncate_errors
 
-  delegate :printables, :acceptable_purposes, to: :core_behaviour
+  delegate :printables, :acceptable_purposes, :labware, to: :core_behaviour
+  delegate :name, to: :supplier, prefix: true
 
   def truncate_errors
     if last_errors && last_errors.join.length > LIMIT_ERROR_LENGTH
@@ -110,13 +114,26 @@ class SampleManifest < ApplicationRecord
       self.barcodes = []
       core_behaviour.generate
     end
+    created_broadcast_event if broadcast_event_subjects_ready?
     nil
+  end
+
+  def broadcast_event_subjects_ready?
+    samples.present? && labware.present? && study.present?
   end
 
   def create_sample(sanger_sample_id)
     Sample.create!(name: sanger_sample_id, sanger_sample_id: sanger_sample_id, sample_manifest: self).tap do |sample|
       sample.events.created_using_sample_manifest!(user)
     end
+  end
+
+  def created_broadcast_event
+    BroadcastEvent::SampleManifestCreated.create!(seed: self, user: user)
+  end
+
+  def updated_broadcast_event(user_updating_manifest, updated_samples_ids)
+    BroadcastEvent::SampleManifestUpdated.create!(seed: self, user: user_updating_manifest, properties: { updated_samples_ids: updated_samples_ids })
   end
 
   private

@@ -516,7 +516,9 @@ class Asset < ApplicationRecord
     []
   end
 
-  def contained_samples; []; end
+  def contained_samples
+    Sample.none
+  end
 
   def source_plate
     nil

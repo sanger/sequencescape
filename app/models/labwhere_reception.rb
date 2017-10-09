@@ -34,6 +34,10 @@ class LabwhereReception
 
   def new_record?; true; end
 
+  def user
+    @user ||= User.find_with_barcode_or_swipecard_code(@user_code)
+  end
+
   # save attempts to perform the actions, and returns true if it was successful
   # This maintains compatibility with rails
   def save
@@ -60,6 +64,7 @@ class LabwhereReception
     assets.each do |asset|
       asset.location = location
       asset.events.create_scanned_into_lab!(location)
+      BroadcastEvent::LabwareReceived.create!(seed: asset, user: user)
     end
 
     valid?

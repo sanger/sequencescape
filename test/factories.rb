@@ -121,7 +121,12 @@ FactoryGirl.define do
         request_types { [create(:library_request_type)] }
       end
       sequence(:name) { |i| "Template #{i}" }
-      submission_parameters { { workflow_id: 1, request_type_ids_list: request_types.map { |rt| [rt.id] } } }
+      submission_parameters do
+        {
+          workflow_id: Submission::Workflow.first.id,
+          request_type_ids_list: request_types.map { |rt| [rt.id] }
+        }
+      end
     end
   end
 
@@ -318,37 +323,6 @@ FactoryGirl.define do
     "tag_group_#{i}"
   end
 
-  factory :user do
-    first_name        'fn'
-    last_name         'ln'
-    login
-    email             { |a| "#{a.login}@example.com".downcase }
-    workflow          { |workflow| workflow.association(:submission_workflow) }
-    api_key           '123456789'
-    password              'password'
-    password_confirmation 'password'
-
-    factory :admin do
-      roles { |role| [role.association(:admin_role)] }
-    end
-
-    factory :manager do
-      roles { |role| Array(authorizable).map { |auth| role.association(:manager_role, authorizable: auth) } }
-
-      transient do
-        authorizable { create :study }
-      end
-    end
-
-    factory :owner do
-      roles { |role| [role.association(:owner_role)] }
-    end
-
-    factory :data_access_coordinator do
-      roles { |role| [role.association(:data_access_coordinator_role)] }
-    end
-  end
-
   factory :role do
     sequence(:name) { |i| "Role #{i}" }
     authorizable nil
@@ -465,28 +439,6 @@ FactoryGirl.define do
 
   factory :supplier do
     name 'Test supplier'
-  end
-
-  factory :sample_manifest do
-    study
-    supplier
-    asset_type 'plate'
-    count 1
-
-    factory :sample_manifest_with_samples do
-      samples { FactoryGirl.create_list(:sample_with_well, 5) }
-    end
-
-    factory :tube_sample_manifest do
-      asset_type '1dtube'
-
-      factory :tube_sample_manifest_with_samples do
-        samples { FactoryGirl.create_list(:sample_tube, 5).map(&:samples).flatten }
-      end
-      factory :tube_sample_manifest_with_several_tubes do
-        count 5
-      end
-    end
   end
 
   factory :db_file do
