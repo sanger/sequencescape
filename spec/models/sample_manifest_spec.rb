@@ -6,8 +6,7 @@
 
 require 'rails_helper'
 
-
-RSpec.describe SampleManifest, type: :model  do
+RSpec.describe SampleManifest, type: :model do
   let(:user) { create :user }
 
   context '#generate' do
@@ -169,7 +168,6 @@ RSpec.describe SampleManifest, type: :model  do
           end
 
           describe '#labware' do
-
             subject { manifest.labware }
 
             it 'has one element' do
@@ -214,7 +212,6 @@ RSpec.describe SampleManifest, type: :model  do
   # the parameters were being truncated, ironically to create valid YAML, and the production code was erroring
   # because the last parameter was being dropped.  Good thing the plate IDs were last, right!?!!
   context 'creating extremely large manifests' do
-
     let(:manifest) { create(:sample_manifest, count: 37, asset_type: 'plate', rapid_generation: true) }
 
     setup do
