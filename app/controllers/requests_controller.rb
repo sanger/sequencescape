@@ -147,15 +147,15 @@ class RequestsController < ApplicationController
   end
 
   def expanded(_options = {})
-    render text: '', status: :gone
+    render plain: '', status: :gone
   end
 
   def pending
-    render text: '', status: :gone
+    render plain: '', status: :gone
   end
 
   def incomplete_requests_for_family(_options = {})
-    render text: '', status: :gone
+    render plain: '', status: :gone
   end
 
   def redirect_if_not_owner_or_admin
