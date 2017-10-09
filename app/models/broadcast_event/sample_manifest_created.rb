@@ -6,7 +6,7 @@
 
 class BroadcastEvent::SampleManifestCreated < BroadcastEvent
   set_event_type 'sample_manifest.created'
-  
+
   seed_class SampleManifest
 
   has_subject(:study, :study)

@@ -234,7 +234,6 @@ class Sample < ActiveRecord::Base
     end
   end
 
-
   #
   # Checks to see if the sample or its metadata has been changed since it was last loaded.
   # Used to detect samples which have been updated by sample manifests.

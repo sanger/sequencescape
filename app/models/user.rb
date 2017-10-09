@@ -61,8 +61,8 @@ class User < ActiveRecord::Base
   end
 
   def self.find_with_barcode_or_swipecard_code(user_code)
-    lookup_by_barcode(@user_code) ||
-      with_swipecard_code(@user_code).first
+    lookup_by_barcode(user_code) ||
+      with_swipecard_code(user_code).first
   end
 
   # returns emails of all admins

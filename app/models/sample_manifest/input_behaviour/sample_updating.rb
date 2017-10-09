@@ -71,7 +71,7 @@ module SampleManifest::InputBehaviour::SampleUpdating
     @generate_no_update_event = true
   end
 
-   def generate_no_update_event?
+  def generate_no_update_event?
     @generate_no_update_event
   end
 
