@@ -25,7 +25,7 @@ FactoryGirl.define do
     end
 
     after(:create) do |sample_tube, evaluator|
-      create_list(:untagged_aliquot, 1, sample: evaluator.sample, receptacle: sample_tube, study: evaluator.study, project: evaluator.project)
+      sample_tube.aliquots = create_list(:untagged_aliquot, 1, sample: evaluator.sample, receptacle: sample_tube, study: evaluator.study, project: evaluator.project)
     end
 
     factory :sample_tube_with_sanger_sample_id do
