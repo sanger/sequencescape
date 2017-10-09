@@ -261,17 +261,9 @@ Given /^study "([^\"]*)" DNA properties value$/ do |name|
   study.save!
 end
 
-####################################################################################################################
-# Used in features/listing_by_type
-####################################################################################################################
-Given /^studies will appear in the following study lists:$/ do |table|
-  table.raw.each do |study_list|
-    step(%Q{a study will appear in the study list "#{study_list}"})
-  end
-end
 
 Given /^a study will appear in the study list "([^\"]+)"$/ do |study_list|
-  FactoryGirl.create(:"study_for_study_list_#{ study_list.downcase.gsub(/[^a-z0-9]+/, '_') }")
+  FactoryGirl.create(:"study_for_study_list_#{ study_list.downcase.gsub(/[^a-z0-9]+/, '_') }", user: User.find_by(login: 'listing_studies_user'))
 end
 
 Then /^I should see the studies for the following study lists:$/ do |table|
