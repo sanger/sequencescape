@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
-class SubclassAttribute < ActiveRecord::Base
+class SubclassAttribute < ApplicationRecord
   belongs_to :attributable, polymorphic: true
 
   validates_uniqueness_of :name, scope: :attributable_id

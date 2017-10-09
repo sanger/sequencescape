@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2014,2015 Genome Research Ltd.
 
-class QcableCreator < ActiveRecord::Base
+class QcableCreator < ApplicationRecord
   include Uuid::Uuidable
 
   belongs_to :user

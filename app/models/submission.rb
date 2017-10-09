@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
-class Submission < ActiveRecord::Base
+class Submission < ApplicationRecord
   include Uuid::Uuidable
   extend  Submission::StateMachine
   include Submission::DelayedJobBehaviour
@@ -13,31 +13,30 @@ class Submission < ActiveRecord::Base
   include Request::Statistics::DeprecatedMethods
   include Submission::Priorities
 
-  belongs_to :user
-  validates_presence_of :user
+  PER_ORDER_REQUEST_OPTIONS = ['pre_capture_plex_level', 'gigabases_expected']
+
+  self.per_page = 500
+
+  belongs_to :user, required: true
 
   # Created during the lifetime ...
   has_many :requests, inverse_of: :submission
   has_many :items, through: :requests
   has_many :events, through: :requests
-
   has_many :orders, inverse_of: :submission
   has_many :studies, through: :orders
-  accepts_nested_attributes_for :orders, update_only: true
-
   has_many :comments_from_requests, through: :requests, source: :comments
 
-  def comments
-    orders.pluck(:comments).compact
-  end
+  # Required at initial construction time ...
+  validate :validate_orders_are_compatible
 
-  def add_comment(description, user)
-    requests.where_is_not_a?(TransferRequest).map do |request|
-      request.add_comment(description, user)
-    end
-  end
+  before_destroy :building?, :empty_of_orders?
+  # Before destroying this instance we should cancel all of the requests it has made
+  before_destroy :cancel_all_requests_on_destruction
 
-  self.per_page = 500
+  accepts_nested_attributes_for :orders, update_only: true
+  broadcast_via_warren
+
   scope :including_associations_for_json, -> { includes([
     :uuid_object,
     { orders: [
@@ -55,51 +54,9 @@ class Submission < ActiveRecord::Base
 
   scope :for_search_query, ->(query, _with_includes) { where(name: query) }
 
-  before_destroy :building?, :empty_of_orders?
-
-  def empty_of_orders?
-    orders.empty?
-  end
-
-  # Before destroying this instance we should cancel all of the requests it has made
-  before_destroy :cancel_all_requests_on_destruction
-
-  PER_ORDER_REQUEST_OPTIONS = ['pre_capture_plex_level', 'gigabases_expected']
-
-  def cancel_all_requests_on_destruction
-    ActiveRecord::Base.transaction do
-      requests.find_each do |request|
-        request.submission_cancelled! # Cancel first to prevent event doing something stupid
-        request.events.create!(message: "Submission #{id} as destroyed")
-      end
-    end
-  end
-  private :cancel_all_requests_on_destruction
-
-  def cancel_all_requests
-    ActiveRecord::Base.transaction do
-      requests.each(&:submission_cancelled!)
-    end
-  end
-  private :cancel_all_requests
-
-  def requests_cancellable?
-    requests.all?(&:cancellable?)
-  end
-
   def self.render_class
     Api::SubmissionIO
   end
-
-  def url_name
-    'submission'
-  end
-  alias_method(:json_root, :url_name)
-
-  def subject_type
-    'submission'
-  end
-  alias_attribute :friendly_name, :name
 
   def self.build!(options)
     submission_options = {}
@@ -118,6 +75,34 @@ class Submission < ActiveRecord::Base
       order.submission
     end
   end
+
+  def comments
+    orders.pluck(:comments).compact
+  end
+
+  def add_comment(description, user)
+    requests.where_is_not_a?(TransferRequest).map do |request|
+      request.add_comment(description, user)
+    end
+  end
+
+  def empty_of_orders?
+    orders.empty?
+  end
+
+  def requests_cancellable?
+    requests.all?(&:cancellable?)
+  end
+
+  def url_name
+    'submission'
+  end
+  alias_method(:json_root, :url_name)
+
+  def subject_type
+    'submission'
+  end
+  alias_attribute :friendly_name, :name
 
   def safe_to_delete?
     ActiveSupport::Deprecation.warn 'Submission#safe_to_delete? may not recognise all states'
@@ -180,19 +165,6 @@ class Submission < ActiveRecord::Base
     yield store[:samples].uniq, store[:submissions].uniq unless store[:samples].empty?
   end
 
-  # Required at initial construction time ...
-  validate :validate_orders_are_compatible
-
-  # Order needs to have the 'structure'
-  def validate_orders_are_compatible
-    return true if orders.size < 2
-    # check every order against the first one
-    first_order = orders.first
-    orders[1..-1].each { |o| check_orders_compatible?(o, first_order) }
-    return false if errors.count > 0
-  end
-  private :validate_orders_are_compatible
-
   # this method is part of the submission
   # not order, because it is submission
   # which decide if orders are compatible or not
@@ -203,7 +175,7 @@ class Submission < ActiveRecord::Base
   end
 
   def request_options_compatible?(a, b)
-   a.request_options.reject { |k, _| PER_ORDER_REQUEST_OPTIONS.include?(k) } == b.request_options.reject { |k, _| PER_ORDER_REQUEST_OPTIONS.include?(k) }
+    a.request_options.reject { |k, _| PER_ORDER_REQUEST_OPTIONS.include?(k) } == b.request_options.reject { |k, _| PER_ORDER_REQUEST_OPTIONS.include?(k) }
   end
 
   def check_studies_compatible?(a, b)
@@ -286,5 +258,31 @@ class Submission < ActiveRecord::Base
 
   def cross_study?
     multiplexed? && orders.map(&:study_id).uniq.size > 1
+  end
+
+  private
+
+  def cancel_all_requests_on_destruction
+    ActiveRecord::Base.transaction do
+      requests.find_each do |request|
+        request.submission_cancelled! # Cancel first to prevent event doing something stupid
+        request.events.create!(message: "Submission #{id} as destroyed")
+      end
+    end
+  end
+
+  def cancel_all_requests
+    ActiveRecord::Base.transaction do
+      requests.each(&:submission_cancelled!)
+    end
+  end
+
+  # Order needs to have the 'structure'
+  def validate_orders_are_compatible
+    return true if orders.size < 2
+    # check every order against the first one
+    first_order = orders.first
+    orders[1..-1].each { |o| check_orders_compatible?(o, first_order) }
+    return false if errors.count > 0
   end
 end

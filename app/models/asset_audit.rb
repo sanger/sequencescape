@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
 
-class AssetAudit < ActiveRecord::Base
+class AssetAudit < ApplicationRecord
   include Api::AssetAuditIO::Extensions
   include Uuid::Uuidable
   include ::Io::AssetAudit::ApiIoSupport

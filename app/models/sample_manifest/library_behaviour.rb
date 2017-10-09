@@ -70,9 +70,10 @@ module SampleManifest::LibraryBehaviour
       true
     end
 
-    def printables
+    def labware
       samples.map { |sample| sample.assets.first }
     end
+    alias printables labware
 
     def acceptable_purposes
       Purpose.none

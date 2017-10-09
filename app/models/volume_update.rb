@@ -6,7 +6,7 @@
 #
 #--
 #++
-class VolumeUpdate < ActiveRecord::Base
+class VolumeUpdate < ApplicationRecord
   include Uuid::Uuidable
 
   validates_presence_of :created_by

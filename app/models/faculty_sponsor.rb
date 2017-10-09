@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
-class FacultySponsor < ActiveRecord::Base
+class FacultySponsor < ApplicationRecord
   include SharedBehaviour::Named
   extend Attributable::Association::Target
 

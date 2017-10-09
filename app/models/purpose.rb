@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2012,2013,2015 Genome Research Ltd.
 
-class Purpose < ActiveRecord::Base
+class Purpose < ApplicationRecord
   self.table_name = ('plate_purposes')
 
   include Relationship::Associations

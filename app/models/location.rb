@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
-class Location < ActiveRecord::Base
+class Location < ApplicationRecord
   has_many :pipelines
   # has_many :assets, :as => :holder
 

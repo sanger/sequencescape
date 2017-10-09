@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
 
-class Transfer < ActiveRecord::Base
+class Transfer < ApplicationRecord
   module Associations
     def self.included(base)
       base.class_eval do

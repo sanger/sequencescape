@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
-class ProjectManager < ActiveRecord::Base
+class ProjectManager < ApplicationRecord
   extend Attributable::Association::Target
 
   has_many :project

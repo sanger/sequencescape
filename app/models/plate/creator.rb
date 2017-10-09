@@ -4,17 +4,17 @@
 # authorship of this file.
 # Copyright (C) 2011,2012,2013,2015,2016 Genome Research Ltd.
 
-class Plate::Creator < ActiveRecord::Base
+class Plate::Creator < ApplicationRecord
   PlateCreationError = Class.new(StandardError)
 
-  class PurposeRelationship < ActiveRecord::Base
+  class PurposeRelationship < ApplicationRecord
     self.table_name = ('plate_creator_purposes')
 
     belongs_to :plate_purpose
     belongs_to :plate_creator, class_name: 'Plate::Creator'
   end
 
-  class ParentPurposeRelationship < ActiveRecord::Base
+  class ParentPurposeRelationship < ApplicationRecord
     self.table_name = ('plate_creator_parent_purposes')
 
     belongs_to :plate_purpose, class_name: 'Purpose'

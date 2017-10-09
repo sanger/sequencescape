@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2014,2015 Genome Research Ltd.
 
-class ApiApplication < ActiveRecord::Base
+class ApiApplication < ApplicationRecord
   include SharedBehaviour::Named
 
   validates_presence_of :name, :key, :contact, :privilege

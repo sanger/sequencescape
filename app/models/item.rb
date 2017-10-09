@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
 
-class Item < ActiveRecord::Base
+class Item < ApplicationRecord
   include Uuid::Uuidable
   include EventfulRecord
   include Workflowed

@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015,2016 Genome Research Ltd.
 
-class Comment < ActiveRecord::Base
+class Comment < ApplicationRecord
   # include Uuid::Uuidable
   belongs_to :commentable, polymorphic: true
   has_many :comments, as: :commentable

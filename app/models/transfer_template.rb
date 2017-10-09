@@ -10,7 +10,7 @@
 # For pulldown there are at least a couple of these templates:
 # - several plate-to-plate transfers of various columns (but all rows)
 # - one whole plate to tube transfer
-class TransferTemplate < ActiveRecord::Base
+class TransferTemplate < ApplicationRecord
   include Uuid::Uuidable
 
   # A name is a useful way to identify templates!

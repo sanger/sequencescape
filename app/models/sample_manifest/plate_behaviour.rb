@@ -88,9 +88,10 @@ module SampleManifest::PlateBehaviour
       @details
     end
 
-    def printables
+    def labware
       plates
     end
+    alias printables labware
   end
 
   class Core < Base
@@ -130,9 +131,10 @@ module SampleManifest::PlateBehaviour
       end
     end
 
-    def printables
+    def labware
       samples.map { |s| s.primary_receptacle.plate }.uniq
     end
+    alias printables labware
   end
 
   def self.included(base)

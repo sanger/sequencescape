@@ -10,7 +10,7 @@ require 'external_properties'
 require 'eventful_record'
 require 'external_properties'
 
-class Asset < ActiveRecord::Base
+class Asset < ApplicationRecord
   include StudyReport::AssetDetails
   include ModelExtensions::Asset
   include AssetLink::Associations
@@ -75,6 +75,8 @@ class Asset < ActiveRecord::Base
   has_many :messengers, as: :target, inverse_of: :target
   has_one :custom_metadatum_collection
   delegate :metadata, to: :custom_metadatum_collection
+
+  broadcast_via_warren
 
   scope :requests_as_source_is_a?, ->(t) { joins(:requests_as_source).where(requests: { sti_type: [t, *t.descendants].map(&:name) }) }
 
@@ -514,7 +516,9 @@ class Asset < ActiveRecord::Base
     []
   end
 
-  def contained_samples; []; end
+  def contained_samples
+    Sample.none
+  end
 
   def source_plate
     nil

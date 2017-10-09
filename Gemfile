@@ -15,9 +15,7 @@ group :default do
   # Legacy support for parsing XML into params
   gem 'actionpack-xml_parser'
 
-  gem 'activerecord-jdbc-adapter', platforms: :jruby, github:'jruby/activerecord-jdbc-adapter', branch: 'v5.0.pre1'
   gem 'activeresource', github: 'rails/activeresource', branch: 'master'
-  gem 'jdbc-mysql', platforms: :jruby, github:'jruby/activerecord-jdbc-adapter', branch: 'v5.0.pre1'
   gem 'mysql2', platforms: :mri
   gem 'spreadsheet'
   gem 'will_paginate'
@@ -52,24 +50,14 @@ group :default do
   gem 'sinatra', require: false
   gem 'rack-acceptable', require: 'rack/acceptable'
   gem 'json'
-  gem 'jrjackson', platforms: :jruby
   gem 'multi_json'
   gem 'cancan'
 
   # API v2
   gem 'jsonapi-resources'
 
-  # MarchHare and Bunny are both RabbitMQ clients.
-  # While bunny does work with Jruby, it is not recommended
-  # and we ran into a few issues following the Rails 4 upgrade.
-  # Both have very similar API's and so we switch between then
-  # depending on environment.
-  gem 'march_hare', "~> 2.18.0", platforms: :jruby
-  gem 'bunny', platforms: :mri
-
-  gem 'spoon'
-  # Spoon lets jruby spawn processes, such as the dbconsole. Part of launchy,
-  # but we'll need it in production if dbconsole is to work
+  # Bunny is a RabbitMQ client.
+  gem 'bunny'
 
   gem 'jquery-rails'
   gem 'jquery-ui-rails'
@@ -81,7 +69,6 @@ group :default do
   # gem 'font-awesome-sass'
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
-  gem 'therubyrhino', platforms: :jruby
   gem 'therubyracer', platforms: :mri
   # Pat of the JS assets pipleine
   gem 'uglifier', '>= 1.0.3'
@@ -97,10 +84,14 @@ group :default do
   gem 'roo'
 
   # Used in XML generation.
-
   gem 'builder'
 
   gem 'sanger_barcode_format', github: 'sanger/sanger_barcode_format', branch: 'development'
+
+  # Allow simple connection pooling on non-database connections
+  # Using it to maintain our warren's of bunnies.
+  # Or the connection pool of RabbitMQ channels to get technical
+  gem 'connection_pool'
 end
 
 group :warehouse do
@@ -126,6 +117,11 @@ group :development do
   gem 'rack-mini-profiler'
   # find unused routes and controller actions by runnung `rake traceroute` from CL
   gem 'traceroute'
+end
+
+group :profile do
+  # Ruby prof requires a separate environments so that is can run in production like mode.
+  gem 'ruby-prof'
 end
 
 group :test do
