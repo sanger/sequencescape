@@ -9,7 +9,7 @@
 # well_links to the plate on which the orignal library_creation
 # requests were made. This provides a means of finding the library
 # creation requests.
-class WorkCompletion < ActiveRecord::Base
+class WorkCompletion < ApplicationRecord
   include Uuid::Uuidable
   # The user who performed the state change
   belongs_to :user, required: true

@@ -4,5 +4,5 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
-class LabInterface < ActiveRecord::Base
+class LabInterface < ApplicationRecord
 end

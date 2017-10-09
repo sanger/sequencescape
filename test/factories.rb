@@ -35,7 +35,7 @@ FactoryGirl.define do
     end
   end
 
-  factory :receptacle, class: Receptacle do
+  factory :receptacle do
   end
 
   factory :event do
@@ -67,12 +67,6 @@ FactoryGirl.define do
     name { |_a| generate :budget_division_name }
   end
 
-  factory :project_metadata, class: Project::Metadata do
-    project_cost_code 'Some Cost Code'
-    project_funding_model 'Internal'
-    budget_division { |budget| budget.association(:budget_division) }
-  end
-
   factory :project do
     name                { |_p| generate :project_name }
     enforce_quotas      false
@@ -80,6 +74,12 @@ FactoryGirl.define do
     state               'active'
 
     after(:build) { |project| project.project_metadata = create(:project_metadata, project: project) }
+  end
+
+  factory :project_metadata, class: Project::Metadata do
+    project_cost_code 'Some Cost Code'
+    project_funding_model 'Internal'
+    budget_division { |budget| budget.association(:budget_division) }
   end
 
   factory :program do
@@ -109,7 +109,11 @@ FactoryGirl.define do
   factory :submission_template do
     submission_class_name LinearSubmission.name
     name                  'my_template'
-    submission_parameters(workflow_id: 1, request_type_ids_list: [])
+
+    transient do
+      request_type_ids_list []
+    end
+    submission_parameters { { workflow_id: 1, request_type_ids_list: request_type_ids_list } }
     product_catalogue { |pc| pc.association(:single_product_catalogue) }
 
     factory :limber_wgs_submission_template do
@@ -418,16 +422,14 @@ FactoryGirl.define do
     request_purpose
   end
 
-  factory(:empty_lane, class: Lane) do
-    name                { generate :asset_name }
-    external_release    nil
-  end
-
-  factory(:lane, parent: :empty_lane) do
+  factory(:lane, traits: [:with_sample_builder]) do
+    name { generate :asset_name }
+    external_release nil
+    factory(:empty_lane)
   end
 
   factory  :spiked_buffer do
-    name { |_a| generate :asset_name }
+    name { generate :asset_name }
     volume 50
   end
 
@@ -496,6 +498,12 @@ FactoryGirl.define do
     root 'a_plate'
     template 'FluidigmPlateIO'
     purpose { |purpose| purpose.association(:plate_purpose) }
+  end
+
+  factory :messenger do
+    root 'barcode'
+    association(:target, factory: :asset)
+    template 'Barcode'
   end
 
   factory(:barcode_printer) do

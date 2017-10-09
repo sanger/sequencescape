@@ -64,7 +64,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
   delegate :cross_compatible?, to: :order
 
   def create_order
-    order_role = Order::OrderRole.find_by(role: order_params.delete('order_role')) if order_params.present?
+    order_role = OrderRole.find_by(role: order_params.delete('order_role')) if order_params.present?
     new_order = template.new_order(
       study: study,
       project: project,

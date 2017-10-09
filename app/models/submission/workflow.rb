@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
-class Submission::Workflow < ActiveRecord::Base
+class Submission::Workflow < ApplicationRecord
   has_many :request_types
   has_many :orders
   has_many :items

@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
-class CustomText < ActiveRecord::Base
+class CustomText < ApplicationRecord
   after_save :clear_text_cache!
 
   # If the value of this CustomText instance was saved in cache

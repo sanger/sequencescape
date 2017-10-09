@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015,2016 Genome Research Ltd.
 
-class RequestInformationType < ActiveRecord::Base
+class RequestInformationType < ApplicationRecord
   has_many :pipeline_request_information_types
   has_many :pipelines, through: :pipeline_request_information_types
 

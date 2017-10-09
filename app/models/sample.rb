@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 require 'rexml/text'
-class Sample < ActiveRecord::Base
+class Sample < ApplicationRecord
   include ModelExtensions::Sample
   include Api::SampleIO::Extensions
 
@@ -38,6 +38,7 @@ class Sample < ActiveRecord::Base
   EgaFields = %w(subject disease treatment gender phenotype)
 
   acts_as_authorizable
+  broadcast_via_warren
 
   has_many :study_samples, dependent: :destroy, inverse_of: :sample
   has_many :studies, through: :study_samples, inverse_of: :samples

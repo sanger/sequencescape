@@ -116,9 +116,11 @@ module Metadata
     const_set(:Metadata, metadata)
   end
 
-  class Base < ActiveRecord::Base
+  class Base < ApplicationRecord
     # All derived classes have their own table.  We're just here to help with some behaviour
     self.abstract_class = true
+
+    broadcasts_associated_via_warren :owner
 
     # This ensures that the default values are stored within the DB, meaning that this information will be
     # preserved for the future, unlike the original properties information which didn't store values when

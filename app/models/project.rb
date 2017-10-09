@@ -6,7 +6,7 @@
 
 require 'aasm'
 
-class Project < ActiveRecord::Base
+class Project < ApplicationRecord
   # It has to be here, as there are has_many through: :orders associations in modules
   has_many :orders
   include Api::ProjectIO::Extensions
@@ -27,6 +27,8 @@ class Project < ActiveRecord::Base
   ACTIVE_STATE = 'active'
   has_many_events
   has_many_lab_events
+
+  broadcast_via_warren
 
   aasm column: :state, whiny_persistence: true do
     state :pending, initial: true

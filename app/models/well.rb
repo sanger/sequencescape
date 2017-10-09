@@ -14,7 +14,7 @@ class Well < Receptacle
   include Tag::Associations
   include Api::Messages::FluidigmPlateIO::WellExtensions
 
-  class Link < ActiveRecord::Base
+  class Link < ApplicationRecord
     self.table_name = 'well_links'
     self.inheritance_column = nil
 

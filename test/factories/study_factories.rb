@@ -16,20 +16,13 @@ FactoryGirl.define do
     enforce_accessioning false
     reference_genome     { ReferenceGenome.find_by(name: '') }
     study_metadata
-  end
 
-  # The fairly obvious ones ;)
-  factory(:study_for_study_list_pending, parent: :study) do
-    name  'Study: Pending'
-    state 'pending'
-  end
-  factory(:study_for_study_list_active, parent: :study) do
-    name  'Study: Active'
-    state 'active'
-  end
-  factory(:study_for_study_list_inactive, parent: :study) do
-    name  'Study: Inactive'
-    state 'inactive'
+    # These have to build a user list
+    factory(:study_with_manager) do
+      after(:build) do |study|
+        create(:manager, authorizable: study)
+      end
+    end
   end
 
   factory(:managed_study, parent: :study) do
@@ -72,77 +65,81 @@ FactoryGirl.define do
     contaminated_human_dna 'No'
     commercially_available 'No'
   end
-  factory(:study_for_study_list_pending_ethical_approval, parent: :study) do
-    name               'Study: Pending ethical approval'
-    ethically_approved false
-    after(:build) do |study|
-      study.study_metadata.update_attributes!(FactoryGirl.attributes_for(:study_metadata_for_study_list_pending_ethical_approval, study: study, faculty_sponsor: study.study_metadata.faculty_sponsor))
-      study.save # Required to re-force before_validation event
-    end
-  end
 
   factory(:study_metadata_for_study_list_contaminated_with_human_dna, parent: :study_metadata) do
     contaminated_human_dna 'Yes'
-  end
-  factory(:study_for_study_list_contaminated_with_human_dna, parent: :study) do
-    name 'Study: Contaminated with human dna'
-    after(:build) do |study|
-      study.study_metadata.update_attributes!(FactoryGirl.attributes_for(:study_metadata_for_study_list_contaminated_with_human_dna, study: study, faculty_sponsor: study.study_metadata.faculty_sponsor))
-    end
   end
 
   factory(:study_metadata_for_study_list_remove_x_and_autosomes, parent: :study_metadata) do
     remove_x_and_autosomes 'Yes'
   end
-  factory(:study_for_study_list_remove_x_and_autosomes, parent: :study) do
-    name 'Study: Remove x and autosomes'
-    after(:build) do |study|
-      study.study_metadata.update_attributes!(FactoryGirl.attributes_for(:study_metadata_for_study_list_remove_x_and_autosomes, study: study, faculty_sponsor: study.study_metadata.faculty_sponsor))
+
+  factory :study_for_study_list, parent: :study do
+    transient do
+      user
+      role_name 'manager'
     end
-  end
 
-  # These have to build a user list
-  factory(:study_for_study_list_managed_active, parent: :study) do
-    name  'Study: Managed & active'
-    state 'active'
-
-    after(:build) do |study|
-      (user = User.find_by(login: 'listing_studies_user')) || create(:listing_studies_user)
-      user.has_role('manager', study)
+    after(:build) do |study, evaluator|
+      evaluator.user.has_role(evaluator.role_name, study)
     end
-  end
-  factory(:study_for_study_list_managed_inactive, parent: :study) do
-    name  'Study: Managed & inactive'
-    state 'inactive'
 
-    after(:build) do |study|
-      (user = User.find_by(login: 'listing_studies_user')) || create(:listing_studies_user)
-      user.has_role('manager', study)
+    # The fairly obvious ones ;)
+    factory(:study_for_study_list_pending) do
+      name  'Study: Pending'
+      state 'pending'
     end
-  end
-  factory(:study_for_study_list_followed, parent: :study) do
-    name 'Study: Followed'
 
-    after(:build) do |study|
-      (user = User.find_by(login: 'listing_studies_user')) || create(:listing_studies_user)
-      user.has_role('follower', study)
+    factory(:study_for_study_list_active) do
+      name  'Study: Active'
+      state 'active'
     end
-  end
-  factory(:study_for_study_list_collaborations, parent: :study) do
-    name 'Study: Collaborations'
 
-    after(:build) do |study|
-      (user = User.find_by(login: 'listing_studies_user')) || create(:listing_studies_user)
-      user.has_role('collaborator', study)
+    factory(:study_for_study_list_inactive) do
+      name  'Study: Inactive'
+      state 'inactive'
     end
-  end
-  factory(:study_for_study_list_interesting, parent: :study) do
-    name 'Study: Interesting'
 
-    # NOTE: Doesn't appear to matter what role the user has!
-    after(:build) do |study|
-      (user = User.find_by(login: 'listing_studies_user')) || create(:listing_studies_user)
-      user.has_role('follower', study)
+    factory(:study_for_study_list_pending_ethical_approval) do
+      name               'Study: Pending ethical approval'
+      ethically_approved false
+      study_metadata_attributes { FactoryGirl.attributes_for :study_metadata_for_study_list_pending_ethical_approval }
+    end
+
+    factory(:study_for_study_list_remove_x_and_autosomes) do
+      name 'Study: Remove x and autosomes'
+      study_metadata_attributes { attributes_for(:study_metadata_for_study_list_remove_x_and_autosomes) }
+    end
+    factory(:study_for_study_list_contaminated_with_human_dna) do
+      name 'Study: Contaminated with human dna'
+      study_metadata_attributes { attributes_for(:study_metadata_for_study_list_contaminated_with_human_dna) }
+    end
+
+    # These have to build a user list
+    factory(:study_for_study_list_managed_active) do
+      name  'Study: Managed & active'
+      state 'active'
+    end
+
+    factory(:study_for_study_list_managed_inactive) do
+      name  'Study: Managed & inactive'
+      state 'inactive'
+    end
+
+    factory(:study_for_study_list_followed) do
+      name 'Study: Followed'
+
+      transient { role_name 'follower' }
+    end
+
+    factory(:study_for_study_list_collaborations) do
+      name 'Study: Collaborations'
+      transient { role_name 'collaborator' }
+    end
+
+    factory(:study_for_study_list_interesting) do
+      name 'Study: Interesting'
+      transient { role_name 'follower' }
     end
   end
 end
