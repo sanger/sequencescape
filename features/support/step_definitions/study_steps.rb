@@ -261,7 +261,6 @@ Given /^study "([^\"]*)" DNA properties value$/ do |name|
   study.save!
 end
 
-
 Given /^a study will appear in the study list "([^\"]+)"$/ do |study_list|
   FactoryGirl.create(:"study_for_study_list_#{ study_list.downcase.gsub(/[^a-z0-9]+/, '_') }", user: User.find_by(login: 'listing_studies_user'))
 end

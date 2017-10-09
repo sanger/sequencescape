@@ -84,7 +84,7 @@ FactoryGirl.define do
       evaluator.user.has_role(evaluator.role_name, study)
     end
 
-        # The fairly obvious ones ;)
+    # The fairly obvious ones ;)
     factory(:study_for_study_list_pending) do
       name  'Study: Pending'
       state 'pending'
@@ -99,7 +99,6 @@ FactoryGirl.define do
       name  'Study: Inactive'
       state 'inactive'
     end
-
 
     factory(:study_for_study_list_pending_ethical_approval) do
       name               'Study: Pending ethical approval'
