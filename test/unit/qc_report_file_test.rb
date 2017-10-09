@@ -14,7 +14,7 @@ class QcReport::FileTest < ActiveSupport::TestCase
   context 'QcReport File' do
     context 'given a non-csv file' do
       setup do
-        @file = fixture_file_upload("#{Rails.root}/test/data/190_tube_sample_info.xls",'text/csv')
+        @file = fixture_file_upload("#{Rails.root}/test/data/190_tube_sample_info.xls", 'text/csv')
         @qcr_file = QcReport::File.new(@file, false, '190_tube_sample_info.xls', 'application/excel')
       end
 
@@ -30,7 +30,7 @@ class QcReport::FileTest < ActiveSupport::TestCase
 
     context 'given a non-compatible csv file' do
       setup do
-        @file = fixture_file_upload("#{Rails.root}/test/data/fluidigm.csv",'text/csv')
+        @file = fixture_file_upload("#{Rails.root}/test/data/fluidigm.csv", 'text/csv')
         @qcr_file = QcReport::File.new(@file, false, 'fluidigm.csv', 'text/csv')
       end
 
@@ -46,7 +46,7 @@ class QcReport::FileTest < ActiveSupport::TestCase
 
     context 'given a file with no report' do
       setup do
-        @file = fixture_file_upload("#{Rails.root}/test/data/qc_report.csv",'text/csv')
+        @file = fixture_file_upload("#{Rails.root}/test/data/qc_report.csv", 'text/csv')
         @qcr_file = QcReport::File.new(@file, false)
       end
 
@@ -75,7 +75,7 @@ class QcReport::FileTest < ActiveSupport::TestCase
         2.times do |i|
           create :qc_metric, qc_report: @report, qc_decision: ['passed', 'failed'][i], asset: create(:well, id: i + 1)
         end
-        @file = fixture_file_upload("#{Rails.root}/test/data/qc_report.csv",'text/csv')
+        @file = fixture_file_upload("#{Rails.root}/test/data/qc_report.csv", 'text/csv')
 
         @qcr_file = QcReport::File.new(@file, false, 'qc_report.csv', 'text/csv')
       end
@@ -118,7 +118,7 @@ class QcReport::FileTest < ActiveSupport::TestCase
           m = create :qc_metric, qc_report: @report, qc_decision: ['passed', 'failed'][i], asset: create(:well, id: i + 1)
           @asset_ids << m.asset_id
         end
-        @file = fixture_file_upload("#{Rails.root}/test/data/qc_report.csv",'text/csv')
+        @file = fixture_file_upload("#{Rails.root}/test/data/qc_report.csv", 'text/csv')
 
         @qcr_file = QcReport::File.new(@file, true, 'qc_report.csv', 'text/csv')
       end
@@ -148,7 +148,7 @@ class QcReport::FileTest < ActiveSupport::TestCase
         2.times do |i|
           create :qc_metric, qc_report: @report, qc_decision: ['passed', 'failed'][i]
         end
-        @file = fixture_file_upload("#{Rails.root}/test/data/qc_report.csv",'text/csv')
+        @file = fixture_file_upload("#{Rails.root}/test/data/qc_report.csv", 'text/csv')
 
         @qcr_file = QcReport::File.new(@file, true, 'qc_report.csv', 'text/csv')
       end
