@@ -171,15 +171,18 @@ module SampleManifest::InputBehaviour
 
     return fail_with_errors!(sample_errors) unless sample_errors.empty?
 
-    samples_attributes = samples_to_updated_attributes.map(&:last)
-
     ActiveRecord::Base.transaction do
-      samples_to_be_broadcasted = find_samples_to_be_broadcasted(samples_attributes, override_sample_information)
       update_attributes!({
         override_previous_manifest: override_sample_information,
-        samples_attributes: samples_attributes
+        samples_attributes: samples_to_updated_attributes.map(&:last)
       }, user_updating_manifest)
+
       core_behaviour.updated_by!(user_updating_manifest, samples_to_updated_attributes.map(&:first).compact)
+
+      samples_to_be_broadcasted = samples.each_with_object([]) do |sample, array|
+        array << sample.id if sample.changed_by_manifest?
+      end
+
       updated_broadcast_event(user_updating_manifest, samples_to_be_broadcasted) if samples_to_be_broadcasted.present?
     end
 
@@ -209,22 +212,6 @@ module SampleManifest::InputBehaviour
     fail!
   end
   private :fail_with_errors!
-
-  def find_samples_to_be_broadcasted(samples_attributes, override_sample_information)
-    samples_ids = samples_attributes.map do |sample_attributes|
-      sample_attributes[:id] unless sample_supplier_name_empty?(sample_attributes[:sample_metadata_attributes][:supplier_name])
-    end.compact
-    if override_sample_information
-      samples_ids
-    else
-      samples = Sample.find(samples_ids)
-      samples.map { |sample| sample.id unless sample.updated_by_manifest }.compact
-    end
-  end
-
-  def sample_supplier_name_empty?(supplier_sample_name)
-    supplier_sample_name.blank? || ['empty', 'blank', 'water', 'no supplier name available', 'none'].include?(supplier_sample_name.downcase)
-  end
 
   def ensure_samples_are_being_updated_by_manifest(attributes, user)
     attributes.fetch(:samples_attributes, []).each do |sample_attributes|

@@ -106,7 +106,7 @@ feature 'track SampleManifest updates' do
 
     visit('/sdb/')
     click_on 'View all manifests'
-    attach_file('File to upload', 'test/data/test_blank_wells_with_no_blanks.csv')
+    attach_file('File to upload', 'test/data/test_blank_wells_with_no_blanks_new_data.csv')
 
     # upload with override
     check 'Override previously uploaded samples'
@@ -125,10 +125,12 @@ feature 'track SampleManifest updates' do
     expect(fetch_table('table#events')).to eq(table)
 
     visit(history_sample_path(sample7))
-    # why there is no third event updated by jane?
+
     table = [['Message', 'Content', 'Created at', 'Created by'],
              ['Created by Sample Manifest', '2010-07-12', 'Monday 12 July, 2010', 'john'],
+             ['Updated by Sample Manifest', '2010-07-12', 'Monday 12 July, 2010', 'jane'],
              ['Updated by Sample Manifest', '2010-07-12', 'Monday 12 July, 2010', 'jane']]
+
     expect(fetch_table('table#events')).to eq(table)
 
     asset = Asset.find_from_machine_barcode('1221234567841')

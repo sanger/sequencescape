@@ -71,6 +71,10 @@ module SampleManifest::InputBehaviour::SampleUpdating
     @generate_no_update_event = true
   end
 
+   def generate_no_update_event?
+    @generate_no_update_event
+  end
+
   def can_override_previous_manifest?
     # Have to use the previous value of 'updated_by_manifest' here as it may have been changed by
     # the current update.
