@@ -180,8 +180,8 @@ class SamplesController < ApplicationController
      body = rc.get.body
 
      respond_to do |format|
-       format.js { render text: body }
-       format.xml { render text: body }
+       format.js { render plain: body }
+       format.xml { render plain: body }
        #      format.html {render :nothing}
      end
    end
