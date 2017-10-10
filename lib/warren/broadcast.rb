@@ -30,11 +30,12 @@ class Warren::Broadcast
   #
   # @param [_] *_args Configuration arguments are ignored.
   #
-  def initialize(url:, frame_max:, heartbeat:, exchange:)
+  def initialize(url:, frame_max:, heartbeat:, exchange:, pool_size:)
     @url = url
     @frame_max = frame_max
     @heartbeat = heartbeat
     @exchange_name = exchange
+    @pool_size = pool_size
   end
 
   #
@@ -88,7 +89,7 @@ class Warren::Broadcast
   end
 
   def connection_pool
-    @connection_pool ||= start_session && ConnectionPool.new(size: 5, timeout: 5) do
+    @connection_pool ||= start_session && ConnectionPool.new(size: @pool_size, timeout: 5) do
       Channel.new(session.create_channel, exchange: @exchange_name)
     end
   end
