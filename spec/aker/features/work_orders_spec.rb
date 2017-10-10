@@ -17,10 +17,11 @@ RSpec.describe 'WorkOrders', type: :feature, aker: true do
   end
 
   scenario 'view a work order' do
+
     allow(RestClient::Request).to receive(:execute).with(method: :get, url: url, proxy: nil, headers: { content_type: :json, Accept: :json }).and_return(RestClient::Response.create(work_order_json, Net::HTTPResponse.new('1.1',200,''), request))
     visit aker_work_order_path(work_order)
     expect(page).to have_content("Work Orders")
-    json = work_order_json['work_order']
+    json = JSON.parse(work_order_json)['work_order']
     within('.work-order') do
       expect(page).to have_content(json['product_name'])
       expect(page).to have_content(json['product_version'])
