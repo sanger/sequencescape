@@ -43,6 +43,7 @@ describe LabwhereReceptionsController do
           expect(asset.events.last).to be_a Event::ScannedIntoLabEvent
           expect(asset.events.last.message).to eq "Scanned into #{location.name}"
           expect(BroadcastEvent::LabwareReceived.find_by(seed: asset)).to be_a BroadcastEvent::LabwareReceived
+          expect(BroadcastEvent::LabwareReceived.find_by(seed: asset).to_json).to be_a String
         end
       end
 
