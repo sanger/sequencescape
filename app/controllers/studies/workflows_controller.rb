@@ -89,7 +89,7 @@ class Studies::WorkflowsController < ApplicationController
         # effective the above is before trying that.
         # Receptacle.for_study_and_request_type(@study,@request_type).where(id:@assets_to_detail.map(&:id)).group('assets.id','requests.state').count
         if @assets_to_detail.empty?
-          render text: 'No requests of this type can be found'
+          render plain: 'No requests of this type can be found'
         else
           render partial: 'summary_for_request_type'
         end

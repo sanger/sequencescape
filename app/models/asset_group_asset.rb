@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
-class AssetGroupAsset < ActiveRecord::Base
+class AssetGroupAsset < ApplicationRecord
   default_scope ->() { includes(:asset, :asset_group) }
   belongs_to :asset, class_name: 'Receptacle', inverse_of: :asset_group_assets
   belongs_to :asset_group, inverse_of: :asset_group_assets

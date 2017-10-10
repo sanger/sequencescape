@@ -12,7 +12,7 @@ class Transfer::BetweenPlateAndTubes < Transfer
     ]
   }
 
-  class WellToTube < ActiveRecord::Base
+  class WellToTube < ApplicationRecord
     self.table_name = ('well_to_tube_transfers')
 
     belongs_to :transfer, class_name: 'Transfer::BetweenPlateAndTubes'

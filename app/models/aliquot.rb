@@ -6,7 +6,7 @@
 
 # An aliquot can be considered to be an amount of a material in a liquid.  The material could be the DNA
 # of a sample, or it might be a library (a combination of the DNA sample and a tag).
-class Aliquot < ActiveRecord::Base
+class Aliquot < ApplicationRecord
   include Uuid::Uuidable
   include Api::Messages::FlowcellIO::AliquotExtensions
   include AliquotIndexer::AliquotScopes
@@ -53,6 +53,8 @@ class Aliquot < ActiveRecord::Base
   # It can belong to a library asset
   belongs_to :library, class_name: 'Receptacle'
   composed_of :insert_size, mapping: [%w{insert_size_from from}, %w{insert_size_to to}], class_name: 'Aliquot::InsertSize', allow_nil: true
+
+  broadcast_via_warren
 
   scope :include_summary, -> { includes([:sample, { tag: :tag_group }, { tag2: :tag_group }]) }
   scope :in_tag_order, -> {
@@ -110,11 +112,10 @@ class Aliquot < ActiveRecord::Base
     TAG_COUNT_NAMES[tag_count]
   end
 
-  def tag_with_unassigned_behaviour
-    untagged? ? nil : tag_without_unassigned_behaviour
+  # Optimization: Avoids us hitting the database for untagged aliquots
+  def tag
+    untagged? ? nil : super
   end
-  alias_method(:tag_without_unassigned_behaviour, :tag)
-  alias_method(:tag, :tag_with_unassigned_behaviour)
 
   def set_library
     self.library = receptacle

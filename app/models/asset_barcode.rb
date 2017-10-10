@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
 
-class AssetBarcode < ActiveRecord::Base
+class AssetBarcode < ApplicationRecord
   # This class only a concurrency safe counter to generate asset barcode
   def self.new_barcode
     barcode = (AssetBarcode.create!).id

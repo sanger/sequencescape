@@ -6,7 +6,7 @@
 
 require 'aasm'
 
-class Request < ActiveRecord::Base
+class Request < ApplicationRecord
   # Include
   include ModelExtensions::Request
   include Aliquot::DeprecatedBehaviours::Request
@@ -75,6 +75,7 @@ class Request < ActiveRecord::Base
   validates_presence_of :request_purpose_id
 
   after_save :create_billing_events
+  broadcast_via_warren
 
   # Scopes
   scope :for_pipeline, ->(pipeline) {

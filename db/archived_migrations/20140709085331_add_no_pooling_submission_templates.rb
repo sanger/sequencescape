@@ -12,7 +12,7 @@ class AddNoPoolingSubmissionTemplates < ActiveRecord::Migration
         :submission_parameters => {
           :request_type_ids_list => [[RequestType.find_by_key('illumina_c_pcr_no_pool').id]],
           :workflow_id => Submission::Workflow.find_by_key('short_read_sequencing').id,
-          :order_role_id => Order::OrderRole.find_by_role('PCR').id,
+          :order_role_id => OrderRole.find_by_role('PCR').id,
           :info_differential => 1
         }
       )

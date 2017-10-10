@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2013,2014,2015 Genome Research Ltd.
 
-class QcFile < ActiveRecord::Base
+class QcFile < ApplicationRecord
   extend DbFile::Uploader
   include Uuid::Uuidable
 

@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2013,2015 Genome Research Ltd.
 
-class RequestEvent < ActiveRecord::Base
+class RequestEvent < ApplicationRecord
   belongs_to :request, inverse_of: :request_events
 
   validates :request, :to_state, :current_from, :event_name, presence: true

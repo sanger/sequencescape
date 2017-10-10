@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
-class AssetGroup < ActiveRecord::Base
+class AssetGroup < ApplicationRecord
   include Uuid::Uuidable
   include ModelExtensions::AssetGroup
   include SharedBehaviour::Named

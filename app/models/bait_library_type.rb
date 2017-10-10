@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2012,2015 Genome Research Ltd.
 
-class BaitLibraryType < ActiveRecord::Base
+class BaitLibraryType < ApplicationRecord
   include SharedBehaviour::Named
 
   # category is used for billing, to differentiate between products with Custom and Standard bait libraries

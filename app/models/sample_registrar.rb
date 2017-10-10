@@ -15,7 +15,7 @@ require 'rexml/text'
 # Rails 3, and we need some of those above-and-beyond just validation.  If required, the after_create
 # callback could be removed to keep track of sample registrations.
 #++
-class SampleRegistrar < ActiveRecord::Base
+class SampleRegistrar < ApplicationRecord
   # UPGRADE TODO: This hack is horrible! Find out what its doing and fix it!
   def initialize(attributes = {})
     super({ sample_attributes: {}, sample_tube_attributes: {} }.merge(attributes.symbolize_keys))

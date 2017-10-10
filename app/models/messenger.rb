@@ -4,9 +4,10 @@
 # authorship of this file.
 # Copyright (C) 2014,2015 Genome Research Ltd.
 
-class Messenger < ActiveRecord::Base
+class Messenger < ApplicationRecord
   belongs_to :target, polymorphic: true
   validates_presence_of :target, :root, :template
+  broadcast_via_warren
 
   def shoot
     raise StandardErrror, "Hey, don't shoot the messenger"

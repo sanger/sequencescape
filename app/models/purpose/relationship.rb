@@ -1,4 +1,4 @@
-class Purpose::Relationship < ActiveRecord::Base
+class Purpose::Relationship < ApplicationRecord
   module Associations
     def self.included(base)
       base.class_eval do
