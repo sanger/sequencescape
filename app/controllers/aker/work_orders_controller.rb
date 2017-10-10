@@ -12,6 +12,7 @@ module Aker
       @aker_work_order = RestClient::Request.execute(
         method: :get,
         url: "#{Rails.configuration.aker['urls']['work_orders']}/work_orders/#{@work_order.aker_id}",
+        headers: { content_type: :json, Accept: :json },
         proxy: nil
       )['work_order']
     end
