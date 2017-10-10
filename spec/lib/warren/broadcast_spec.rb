@@ -27,7 +27,7 @@ RSpec.describe 'Warren::Broadcast' do
       expect(Bunny).to receive(:new)
         .with('example', frame_max: 0, heartbeat: 30)
         .and_return(bun_session)
-      # expect(bun_session).to receive(:start)
+      expect(bun_session).to receive(:start)
       expect(bun_session).to receive(:create_channel).and_return(bun_channel)
     end
 

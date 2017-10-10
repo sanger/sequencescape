@@ -44,8 +44,7 @@ class Warren::Broadcast
   #
   def connect
     reset_pool
-    session.start
-    true
+    start_session
   end
 
   #
@@ -89,9 +88,14 @@ class Warren::Broadcast
   end
 
   def connection_pool
-    @connection_pool ||= ConnectionPool.new(size: 5, timeout: 5) do
+    @connection_pool ||= start_session && ConnectionPool.new(size: 5, timeout: 5) do
       Channel.new(session.create_channel, exchange: @exchange_name)
     end
+  end
+
+  def start_session
+    session.start
+    true
   end
 
   def close_session
