@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Billing::ProductCatalogue do
+describe Billing::ProductCatalogue, billing: true do
   let!(:product_catalogue) { create :billing_product_catalogue, name: 'general' }
 
   it 'should have a unique name' do
