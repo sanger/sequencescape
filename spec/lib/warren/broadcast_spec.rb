@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'Warren::Broadcast' do
   subject(:warren) do
-    Warren::Broadcast.new(url: 'example', heartbeat: 30, frame_max: 0, exchange: 'exchange')
+    Warren::Broadcast.new(url: 'example', heartbeat: 30, frame_max: 0, exchange: 'exchange', pool_size: 2)
   end
 
   let(:bun_session) { instance_double(Bunny::Session) }
