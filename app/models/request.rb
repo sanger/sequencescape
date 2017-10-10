@@ -75,6 +75,7 @@ class Request < ApplicationRecord
   validates_presence_of :request_purpose_id
 
   after_save :create_billing_events
+
   broadcast_via_warren
 
   # Scopes
