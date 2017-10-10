@@ -1,4 +1,4 @@
-class PlateType < ActiveRecord::Base
+class PlateType < ApplicationRecord
   validates_presence_of :name, :maximum_volume
 
   class << self

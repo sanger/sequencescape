@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2015 Genome Research Ltd.
 
-class AliquotIndex < ActiveRecord::Base
+class AliquotIndex < ApplicationRecord
   belongs_to :aliquot
   belongs_to :lane
 

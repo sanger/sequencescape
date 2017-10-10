@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2015,2016 Genome Research Ltd.
 
-class QcMetric < ActiveRecord::Base
+class QcMetric < ApplicationRecord
   extend QcMetric::QcState
 
   InvalidValue = Class.new(StandardError)

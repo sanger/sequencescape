@@ -31,7 +31,7 @@ configatron.ssr_emails = ['ssr@example.com']
 configatron.api_documentation_url = 'http://localhost:3000/documentation'
 configatron.api_url = 'http://localhost:3000'
 
-configatron.authentication = 'local'
+configatron.authentication = ENV.fetch('AUTH', 'local')
 configatron.barcode_service_url = 'http://localhost:9998/barcode_service.wsdl'
 
 configatron.pmb_api = 'http://localhost:9292/v1'
@@ -65,7 +65,7 @@ configatron.external_applications = [
   ['Crier', 'http://www.example.com']
 ]
 
-if Rails.env == 'development'
+if Rails.env.development? || Rails.env.profile?
 
   configatron.asset_audits_url = 'http://localhost:3014/process_plates/new'
 
@@ -113,7 +113,7 @@ if Rails.env == 'development'
 
   configatron.register_printers_automatically = false
 end
-if (Rails.env == 'test') || (Rails.env == 'cucumber')
+if Rails.env.test? || Rails.env.cucumber?
 
   configatron.barcode_images_url = 'http://example.com/deliberately_broken_url'
   configatron.barcode_prefix = 'NT'

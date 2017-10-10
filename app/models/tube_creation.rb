@@ -5,7 +5,7 @@
 # Copyright (C) 2012,2013,2014,2015 Genome Research Ltd.
 
 class TubeCreation < AssetCreation
-  class ChildTube < ActiveRecord::Base
+  class ChildTube < ApplicationRecord
     self.table_name = ('tube_creation_children')
     belongs_to :tube_creation
     belongs_to :tube

@@ -12,8 +12,8 @@
 # behaviour => the module that will be included in the validator, must respond to validate(submission)
 # options   => serialized hash for configuration
 
-class ExtendedValidator < ActiveRecord::Base
-  class RequestTypeExtendedValidator < ActiveRecord::Base
+class ExtendedValidator < ApplicationRecord
+  class RequestTypeExtendedValidator < ApplicationRecord
     self.table_name = ('request_types_extended_validators')
 
     belongs_to :extended_validator

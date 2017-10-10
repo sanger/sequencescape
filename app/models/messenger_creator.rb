@@ -9,7 +9,7 @@
 # for a given plate. They are currently triggered by:
 # 1. Cherrypick batch release
 # They specify both a template (under Api::Messages) and a root
-class MessengerCreator < ActiveRecord::Base
+class MessengerCreator < ApplicationRecord
   class SelfFinder
     def initialize(base)
       @base = base

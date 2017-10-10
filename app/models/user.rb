@@ -9,7 +9,7 @@ require 'openssl'
 require 'digest/sha1'
 # require 'curb'
 
-class User < ActiveRecord::Base
+class User < ApplicationRecord
   include Authentication
   include Workflowed
   extend EventfulRecord
@@ -52,6 +52,38 @@ class User < ActiveRecord::Base
 
   def self.prefix
     'ID'
+  end
+
+  def self.lookup_by_barcode(user_barcode)
+    barcode = Barcode.barcode_to_human(user_barcode)
+    return find_by(barcode: barcode) if barcode
+    nil
+  end
+
+  def self.find_with_barcode_or_swipecard_code(user_code)
+    lookup_by_barcode(user_code) ||
+      with_swipecard_code(user_code).first
+  end
+
+  # returns emails of all admins
+  def self.all_administrators_emails
+    all_administrators.uniq.pluck(:email).compact
+  end
+
+  # Encrypts some data with the salt.
+  def self.encrypt(password, salt)
+    Digest::SHA1.hexdigest("--#{salt}--#{password}--")
+  end
+
+  def self.valid_barcode?(code)
+    begin
+      human_code = Barcode.barcode_to_human!(code, prefix)
+    rescue
+      return false
+    end
+    return false unless find_by(barcode: human_code)
+
+    true
   end
 
   def study_roles
@@ -186,16 +218,6 @@ class User < ActiveRecord::Base
     is_administrator?
   end
 
-  # returns emails of all admins
-  def self.all_administrators_emails
-    all_administrators.pluck(:email).compact.uniq
-  end
-
-  # Encrypts some data with the salt.
-  def self.encrypt(password, salt)
-    Digest::SHA1.hexdigest("--#{salt}--#{password}--")
-  end
-
   def new_api_key(length = 32)
     u = Digest::SHA1.hexdigest(login)[0..12]
     k = Digest::SHA1.hexdigest(Time.now.to_s + rand(12341234).to_s)[1..length]
@@ -227,26 +249,6 @@ class User < ActiveRecord::Base
   # User has a relationship by role to these studies
   def interesting_studies
     Study.of_interest_to(self)
-  end
-
-  def self.valid_barcode?(code)
-    begin
-      human_code = Barcode.barcode_to_human!(code, prefix)
-    rescue
-      return false
-    end
-    return false unless User.find_by(barcode: human_code)
-
-    true
-  end
-
-  def self.lookup_by_barcode(user_barcode)
-    barcode = Barcode.barcode_to_human(user_barcode)
-    if barcode
-      return User.find_by(barcode: barcode)
-    end
-
-    nil
   end
 
   protected

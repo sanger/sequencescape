@@ -7,7 +7,7 @@
 ##
 # A lot type governs the behaviour of a lot
 
-class LotType < ActiveRecord::Base
+class LotType < ApplicationRecord
   include Uuid::Uuidable
 
   has_many :lots, inverse_of: :lot_type

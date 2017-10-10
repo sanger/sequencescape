@@ -91,6 +91,7 @@ class ReceptionsController < ApplicationController
           asset.update_attributes(location: location)
           asset_count += 1
           asset.events.create_scanned_into_lab!(location)
+          BroadcastEvent::LabwareReceived.create!(seed: asset, user: current_user)
         end
       end
 
