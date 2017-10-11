@@ -80,13 +80,17 @@ describe 'Billing::Factories', billing: true do
 
     it 'creates some billing items' do
       Billing::Item.destroy_all
-      request.target_asset.aliquots << create_list(:aliquot, 3)
+      project = build(:project)
+      project.project_metadata.project_cost_code = 'another_cost_code'
+      project.save
+      request.target_asset.aliquots << create_list(:aliquot, 3, project: project)
       factory = Billing::Factory::Sequencing.new(request: request)
       factory.create!
       expect(Billing::Item.count).to eq(2)
       expect(Billing::Item.first.units).to eq '25'
-      expect(Billing::Item.first.project_cost_code).to eq(Billing::Factory::Base::NO_PROJECT_COST_CODE)
+      expect(Billing::Item.first.project_cost_code).to eq 'Some Cost Code'
       expect(Billing::Item.last.units).to eq '75'
+      expect(Billing::Item.last.project_cost_code).to eq 'another_cost_code'
     end
   end
 
