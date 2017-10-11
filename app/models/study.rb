@@ -508,7 +508,7 @@ class Study < ApplicationRecord
   end
 
   def rebroadcast
-    ActiveRecord::Base.transaction { AmqpObserver.instance << self }
+    broadcast
   end
 
   private
