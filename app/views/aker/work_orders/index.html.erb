@@ -1,7 +1,9 @@
 <h1>Work Orders</h1>
 <section class='work-orders'>
   <% @work_orders.each do |work_order| %>
-    <div class='work-order'>
+    <div class='work-order' id="<%= dom_id(work_order) %>">
+      <div><%= work_order.id %></div>
+      <div><%= link_to 'Show', aker_work_order_path(work_order) %></div>
     </div>
   <% end %>
 </section>
