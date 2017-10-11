@@ -374,46 +374,6 @@ date_of_sample_extraction:
       formula:
         operator: ">"
         operand: 5
-is_sample_a_control:
-  heading: IS SAMPLE A CONTROL?
-  unlocked: true
-  validation:
-    options:
-      type: :list
-      formula1: "$A$1:$A$2"
-      allowBlank: false
-      showDropDown: false
-      showInputMessage: true
-      promptTitle: "Is the Sample a Control?"
-      prompt: "Please Enter Y or N."
-      showErrorMessage: true
-      errorStyle: :stop
-      errorTitle: "Is the Sample a Control?"
-      error: "You must enter either Y or N."
-    range_name: :yes_no
-  conditional_formattings:
-    empty_cell:
-    is_error:
-is_re_submitted_sample:
-  heading: IS RE-SUBMITTED SAMPLE?
-  unlocked: true
-  validation:
-    options:
-      type: :list
-      formula1: "$A$1:$A$2"
-      allowBlank: false
-      showDropDown: false
-      showInputMessage: true
-      promptTitle: "Is the Sample being Resubmitted?"
-      prompt: "Please Enter Y or N."
-      showErrorMessage: true
-      errorStyle: :stop
-      errorTitle: "Is the Sample being Resubmitted?"
-      error: "You must enter either Y or N."
-    :range_name: :yes_no
-  conditional_formattings:
-    empty_cell:
-    is_error:
 sample_extraction_method:
   heading: DNA EXTRACTION METHOD
   unlocked: true
@@ -595,11 +555,6 @@ sample_description:
     empty_cell:
 sample_strain_att:
   heading: STRAIN
-  unlocked: true
-  conditional_formattings:
-    empty_cell:
-sample_visibility:
-  heading: SAMPLE VISIBILITY
   unlocked: true
   conditional_formattings:
     empty_cell:
