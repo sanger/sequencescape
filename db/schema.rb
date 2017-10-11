@@ -314,6 +314,7 @@ ActiveRecord::Schema.define(version: 20170925153015) do
   create_table "billing_products", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "name"
     t.string "identifier"
+    t.integer "category"
     t.integer "billing_product_catalogue_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

@@ -57,6 +57,10 @@ module SampleManifestExcel
         end
       end
 
+      def broadcast_sample_manifest_updated_event(user)
+        sample_manifest.updated_broadcast_event(user, samples_to_be_broadcasted)
+      end
+
       def complete
         sample_manifest.finished!
       end
@@ -100,6 +104,10 @@ module SampleManifestExcel
 
       def processor?
         processor.present?
+      end
+
+      def samples_to_be_broadcasted
+        rows.map { |row| row.sample.id }
       end
     end
   end

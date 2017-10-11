@@ -8,7 +8,6 @@ class SamplesController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
-  include XmlCacheHelper::ControllerHelper
 
   before_action :admin_login_required, only: [:administer, :destroy]
 
@@ -181,8 +180,8 @@ class SamplesController < ApplicationController
      body = rc.get.body
 
      respond_to do |format|
-       format.js { render text: body }
-       format.xml { render text: body }
+       format.js { render plain: body }
+       format.xml { render plain: body }
        #      format.html {render :nothing}
      end
    end

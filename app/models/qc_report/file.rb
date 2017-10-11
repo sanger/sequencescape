@@ -20,7 +20,7 @@ class QcReport::File
   attr_reader :errors, :filename, :mime_type
 
   def initialize(file, set_decision, filename = nil, mime_type = ACCEPTED_MIMETYPE)
-    @file = file
+    @file = file.to_io
     @filename = filename || File.basename(file.path)
     @mime_type = mime_type
     @errors = []

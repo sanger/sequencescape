@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Billing::Product do
+describe Billing::Product, billing: true do
   let(:product) { create :billing_product, name: 'name' }
 
   it 'should have a unique name' do
@@ -10,8 +10,15 @@ describe Billing::Product do
     expect(product_with_nonunique_name.valid?).to be false
   end
 
-  it 'can have a differentiator value' do
+  it 'can have an identifier' do
     product.identifier = 'test'
     expect(product.identifier). to eq 'test'
+  end
+
+  it 'should have a particular category' do
+    expect(product.category).to eq 'sequencing'
+    product.category = 'library_creation'
+    expect(product.category).to eq 'library_creation'
+    expect { product.category = 'wrong_category' }.to raise_error ArgumentError
   end
 end

@@ -80,38 +80,29 @@ describe 'Billing::Factories', billing: true do
 
     it 'creates some billing items' do
       Billing::Item.destroy_all
-      request.target_asset.aliquots << create_list(:aliquot, 3)
+      project = build(:project)
+      project.project_metadata.project_cost_code = 'another_cost_code'
+      project.save
+      request.target_asset.aliquots << create_list(:aliquot, 3, project: project)
       factory = Billing::Factory::Sequencing.new(request: request)
       factory.create!
       expect(Billing::Item.count).to eq(2)
       expect(Billing::Item.first.units).to eq '25'
-      expect(Billing::Item.first.project_cost_code).to eq(Billing::Factory::Base::NO_PROJECT_COST_CODE)
+      expect(Billing::Item.first.project_cost_code).to eq 'Some Cost Code'
       expect(Billing::Item.last.units).to eq '75'
+      expect(Billing::Item.last.project_cost_code).to eq 'another_cost_code'
     end
   end
 
   describe 'build' do
-    it 'builds a sequencing factory for the relevant request types' do
-      expect(Billing::Factory.build(create(:request, request_type: RequestType.find_by(key: 'illumina_c_miseq_sequencing')))).to be_instance_of(Billing::Factory::Sequencing)
-      expect(Billing::Factory.build(create(:request, request_type: RequestType.find_by(key: 'illumina_c_hiseq_2500_paired_end_sequencing')))).to be_instance_of(Billing::Factory::Sequencing)
-      expect(Billing::Factory.build(create(:request, request_type: RequestType.find_by(key: 'illumina_b_hiseq_2500_paired_end_sequencing')))).to be_instance_of(Billing::Factory::Sequencing)
-      expect(Billing::Factory.build(create(:request, request_type: RequestType.find_by(key: 'illumina_b_hiseq_2500_single_end_sequencing')))).to be_instance_of(Billing::Factory::Sequencing)
-      expect(Billing::Factory.build(create(:request, request_type: RequestType.find_by(key: 'illumina_c_hiseq_2500_single_end_sequencing')))).to be_instance_of(Billing::Factory::Sequencing)
-      expect(Billing::Factory.build(create(:request, request_type: RequestType.find_by(key: 'illumina_b_miseq_sequencing')))).to be_instance_of(Billing::Factory::Sequencing)
-      expect(Billing::Factory.build(create(:request, request_type: RequestType.find_by(key: 'illumina_b_hiseq_v4_paired_end_sequencing')))).to be_instance_of(Billing::Factory::Sequencing)
-      expect(Billing::Factory.build(create(:request, request_type: RequestType.find_by(key: 'illumina_c_hiseq_v4_paired_end_sequencing')))).to be_instance_of(Billing::Factory::Sequencing)
-      expect(Billing::Factory.build(create(:request, request_type: RequestType.find_by(key: 'illumina_b_hiseq_x_paired_end_sequencing')))).to be_instance_of(Billing::Factory::Sequencing)
-      expect(Billing::Factory.build(create(:request, request_type: RequestType.find_by(key: 'illumina_c_hiseq_v4_single_end_sequencing')))).to be_instance_of(Billing::Factory::Sequencing)
-      expect(Billing::Factory.build(create(:request, request_type: RequestType.find_by(key: 'bespoke_hiseq_x_paired_end_sequencing')))).to be_instance_of(Billing::Factory::Sequencing)
-      expect(Billing::Factory.build(create(:request, request_type: RequestType.find_by(key: 'illumina_htp_hiseq_4000_paired_end_sequencing')))).to be_instance_of(Billing::Factory::Sequencing)
-      expect(Billing::Factory.build(create(:request, request_type: RequestType.find_by(key: 'illumina_c_hiseq_4000_paired_end_sequencing')))).to be_instance_of(Billing::Factory::Sequencing)
+    it 'builds a sequencing factory for the request with relevant billing_product category' do
+      request = create :request, billing_product: (create :billing_product, category: 'sequencing')
+      expect(Billing::Factory.build(request)).to be_instance_of(Billing::Factory::Sequencing)
     end
 
-    it 'builds a library creation factory for the relevant request types' do
-      expect(Billing::Factory.build(create(:request, request_type: create(:request_type, key: 'limber_wgs')))).to be_instance_of(Billing::Factory::LibraryCreation)
-      expect(Billing::Factory.build(create(:request, request_type: create(:request_type, key: 'limber_isc')))).to be_instance_of(Billing::Factory::LibraryCreation)
-      expect(Billing::Factory.build(create(:request, request_type: create(:request_type, key: 'limber_pcr_free')))).to be_instance_of(Billing::Factory::LibraryCreation)
-      expect(Billing::Factory.build(create(:request, request_type: create(:request_type, key: 'limber_lcmb')))).to be_instance_of(Billing::Factory::LibraryCreation)
+    it 'builds a library creation factory for the request with relevant billing_product category' do
+      request = create :request, billing_product: (create :billing_product, category: 'library_creation')
+      expect(Billing::Factory.build(request)).to be_instance_of(Billing::Factory::LibraryCreation)
     end
   end
 end

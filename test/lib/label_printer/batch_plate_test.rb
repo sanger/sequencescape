@@ -12,7 +12,7 @@ class BatchPlateTest < ActiveSupport::TestCase
     asset = create :empty_sample_tube
     @role = 'test role'
     @study_abbreviation = 'WTCCC'
-    order_role = Order::OrderRole.new role: role
+    order_role = OrderRole.new role: role
 
     order = create :order, order_role: order_role, study: study, assets: [asset], project: project
     request = create :well_request, asset: (create :well_with_sample_and_plate), target_asset: (create :well_with_sample_and_plate), order: order

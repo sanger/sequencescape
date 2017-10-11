@@ -52,17 +52,7 @@ FactoryGirl.define do
     association(:request_type, factory: :sequencing_request_type)
     request_purpose
     sti_type 'SequencingRequest'
-
-    # Ensure that the request metadata is correctly setup based on the request type
-    after(:build) do |request|
-      next if request.request_type.nil?
-      request.request_metadata = build(:request_metadata_for_standard_sequencing_with_read_length, request: request, owner: request) if request.request_metadata.new_record?
-      request.sti_type = request.request_type.request_class_name
-    end
-
-    after(:create) do |request|
-      request.request_metadata.owner = request
-    end
+    request_metadata_attributes { attributes_for :request_metadata_for_standard_sequencing_with_read_length }
 
     factory(:sequencing_request_with_assets) do
       association(:asset, factory: :library_tube)

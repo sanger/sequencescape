@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
-class StudyRelationType < ActiveRecord::Base
+class StudyRelationType < ApplicationRecord
   has_many :study_relations
   validates_uniqueness_of :name
   validates_uniqueness_of :reversed_name

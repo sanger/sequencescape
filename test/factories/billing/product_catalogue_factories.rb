@@ -7,8 +7,8 @@ FactoryGirl.define do
     name :miseq_paired_end
     after(:create) do |catalogue|
       catalogue.billing_products.create!([
-        { name: 'product_with_read_length_150', identifier: 150 },
-        { name: 'product_with_read_length_175', identifier: 175 }
+        { name: 'product_with_read_length_150', identifier: 150, category: 'sequencing' },
+        { name: 'product_with_read_length_175', identifier: 175, category: 'sequencing' }
       ])
     end
   end

@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
-class LocationAssociation < ActiveRecord::Base
+class LocationAssociation < ApplicationRecord
   belongs_to :locatable, class_name: 'Asset'
   belongs_to :location
 
@@ -24,6 +24,7 @@ class LocationAssociation < ActiveRecord::Base
 
         has_one :location, through: :location_association
         delegate :location_id, to: :location_association, allow_nil: true
+        delegate :name, to: :location, prefix: true
 
        scope :located_in, ->(location) {
           joins(:location_association).where(location_associations: { location_id: location })

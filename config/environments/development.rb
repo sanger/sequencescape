@@ -45,8 +45,6 @@ Rails.application.configure do
   # Suppress logger output for asset requests.
   config.assets.quiet = true
 
-  config.active_record.observers = [:batch_cache_sweeper, :customer_request_observer]
-
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
 
@@ -57,9 +55,9 @@ Rails.application.configure do
   if ENV['WITH_BULLET'] == 'true'
     config.after_initialize do
       require 'bullet'
-      Bullet.enable
+      Bullet.enable = true
       Bullet.alert = ENV['NOISY_BULLET'] == 'true'
-      Bullet.bullet_logger
+      Bullet.bullet_logger = true
     end
   end
 end

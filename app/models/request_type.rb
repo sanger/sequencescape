@@ -4,12 +4,12 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
-class RequestType < ActiveRecord::Base
+class RequestType < ApplicationRecord
   include RequestType::Validation
 
   class DeprecatedError < RuntimeError; end
 
-  class RequestTypePlatePurpose < ActiveRecord::Base
+  class RequestTypePlatePurpose < ApplicationRecord
     self.table_name = ('request_type_plate_purposes')
 
     belongs_to :request_type

@@ -1,5 +1,5 @@
 
-class ExtractionAttribute < ActiveRecord::Base
+class ExtractionAttribute < ApplicationRecord
   include Uuid::Uuidable
 
   validates_presence_of :created_by

@@ -6,7 +6,7 @@
 
 require 'aasm'
 
-class Request < ActiveRecord::Base
+class Request < ApplicationRecord
   # Include
   include ModelExtensions::Request
   include Aliquot::DeprecatedBehaviours::Request
@@ -74,7 +74,7 @@ class Request < ActiveRecord::Base
   # EVERY time we touch a request.
   validates_presence_of :request_purpose_id
 
-  after_save :create_billing_events
+  broadcast_via_warren
 
   # Scopes
   scope :for_pipeline, ->(pipeline) {
@@ -543,20 +543,6 @@ class Request < ActiveRecord::Base
   def manifest_processed!; end
 
   def billing_product_identifier; end
-
-  def create_billing_events
-    return unless can_be_billed?
-    factory = Billing::Factory.build(self)
-    factory.create! if factory.valid?
-  end
-
-  def can_be_billed?
-    biffable? && billing_items.empty? && passed?
-  end
-
-  def biffable?
-    billing_product.present?
-  end
 end
 
 require_dependency 'system_request'

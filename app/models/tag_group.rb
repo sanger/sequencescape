@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
-class TagGroup < ActiveRecord::Base
+class TagGroup < ApplicationRecord
   include Uuid::Uuidable
 
   has_many :tags, ->() { order('map_id ASC') }

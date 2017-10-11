@@ -5,83 +5,83 @@ namespace :billing do
       {
         name: :standard_wgs,
         billing_products_attributes: [
-          { name: 'Standard WGS' }
+          { name: 'Standard WGS', category: 'library_creation' }
         ]
       },
       {
         name: :isc_pulldown,
         billing_products_attributes: [
-          { name: 'ISC Standard pulldown', identifier: 'standard' },
-          { name: 'ISC Custom pulldown', identifier: 'custom' }
+          { name: 'ISC Standard pulldown', identifier: 'standard', category: 'library_creation' },
+          { name: 'ISC Custom pulldown', identifier: 'custom', category: 'library_creation' }
         ]
       },
       {
         name: :pcr_free_wgs,
         billing_products_attributes: [
-          { name: 'PCR-Free WGS' }
+          { name: 'PCR-Free WGS', category: 'library_creation' }
         ]
       },
       {
         name: :lcmb_wgs,
         billing_products_attributes: [
-          { name: 'LCMB - WGS' }
+          { name: 'LCMB - WGS', category: 'library_creation' }
         ]
       },
       {
         name: :lcmb_isc_pulldown,
         billing_products_attributes: [
-          { name: 'LCMB - ISC Standard pulldown', identifier: 'standard' },
-          { name: 'LCMB - ISC Custom pulldown', identifier: 'custom' }
+          { name: 'LCMB - ISC Standard pulldown', identifier: 'standard', category: 'library_creation' },
+          { name: 'LCMB - ISC Custom pulldown', identifier: 'custom', category: 'library_creation' }
         ]
       },
       { name: :miseq_paired_end,
         billing_products_attributes: [
-          { name: 'Illumina MiSeq Paired End read length 25 (50 cycle)', identifier: 25 },
-          { name: 'Illumina MiSeq Paired End read length 75 (150 cycle)', identifier: 75 },
-          { name: 'Illumina MiSeq Paired End read length 150 (300 cycle)', identifier: 150 },
-          { name: 'Illumina MiSeq Paired End read length 250 (500 cycle)', identifier: 250 },
-          { name: 'Illumina MiSeq Paired End read length 300 (600 cycle)', identifier: 300 }
+          { name: 'Illumina MiSeq Paired End read length 25 (50 cycle)', identifier: 25, category: 'sequencing' },
+          { name: 'Illumina MiSeq Paired End read length 75 (150 cycle)', identifier: 75, category: 'sequencing' },
+          { name: 'Illumina MiSeq Paired End read length 150 (300 cycle)', identifier: 150, category: 'sequencing' },
+          { name: 'Illumina MiSeq Paired End read length 250 (500 cycle)', identifier: 250, category: 'sequencing' },
+          { name: 'Illumina MiSeq Paired End read length 300 (600 cycle)', identifier: 300, category: 'sequencing' }
         ] },
       {
         name: :hiseq_2500_paired_end,
         billing_products_attributes: [
-          { name: 'Illumina HiSeq 2500 Rapid Runs Paired End read length 250 run', identifier: 250 },
-          { name: 'Illumina HiSeq 2500 Rapid Runs Paired End read length 75 run', identifier: 75 },
-          { name: 'Illumina HiSeq 2500 Rapid Runs Paired End read length 100 run', identifier: 100 }
+          { name: 'Illumina HiSeq 2500 Rapid Runs Paired End read length 250 run', identifier: 250, category: 'sequencing' },
+          { name: 'Illumina HiSeq 2500 Rapid Runs Paired End read length 75 run', identifier: 75, category: 'sequencing' },
+          { name: 'Illumina HiSeq 2500 Rapid Runs Paired End read length 100 run', identifier: 100, category: 'sequencing' }
         ]
       },
       {
         name: :hiseq_2500_single_end,
         billing_products_attributes: [
-          { name: 'Illumina HiSeq 2500 Rapid Runs SINGLE End read length 50SE run' }
+          { name: 'Illumina HiSeq 2500 Rapid Runs SINGLE End read length 50SE run', category: 'sequencing' }
         ]
       },
       {
         name: :hiseq_v4_paired_end,
         billing_products_attributes: [
-          { name: 'Illumina HiSeq V4 Paired End read length 75', identifier: 75 },
-          { name: 'Illumina HiSeq V4 Paired End read length 125', identifier: 125 }
+          { name: 'Illumina HiSeq V4 Paired End read length 75', identifier: 75, category: 'sequencing' },
+          { name: 'Illumina HiSeq V4 Paired End read length 125', identifier: 125, category: 'sequencing' }
         ]
       },
       {
         name: :hiseq_v4_single_end,
         billing_products_attributes: [
-          { name: 'Illumina HiSeq V4 SINGLE End read length 19 SE', identifier: 19 },
-          { name: 'Illumina HiSeq V4 SINGLE End read length 50 SE', identifier: 50 }
+          { name: 'Illumina HiSeq V4 SINGLE End read length 19 SE', identifier: 19, category: 'sequencing' },
+          { name: 'Illumina HiSeq V4 SINGLE End read length 50 SE', identifier: 50, category: 'sequencing' }
         ]
       },
       {
         name: :hiseq_x_paired_end,
         billing_products_attributes: [
-          { name: 'HiSeq X Ten Paired End read length 150' }
+          { name: 'HiSeq X Ten Paired End read length 150', category: 'sequencing' }
         ]
       },
       {
         name: :hiseq_4000_paired_end,
         billing_products_attributes: [
-          { name: 'HiSeq 4000 Paired End read length 75', identifier: 75 },
-          { name: 'HiSeq 4000 Paired End read length 150', identifier: 150 },
-          { name: 'HiSeq 4000 Paired End read length 25', identifier: 25 }
+          { name: 'HiSeq 4000 Paired End read length 75', identifier: 75, category: 'sequencing' },
+          { name: 'HiSeq 4000 Paired End read length 150', identifier: 150, category: 'sequencing' },
+          { name: 'HiSeq 4000 Paired End read length 25', identifier: 25, category: 'sequencing' }
         ]
       }
     ]

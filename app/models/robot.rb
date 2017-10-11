@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
 
-class Robot < ActiveRecord::Base
+class Robot < ApplicationRecord
   include Uuid::Uuidable
   include ModelExtensions::Robot
   validates_presence_of :name

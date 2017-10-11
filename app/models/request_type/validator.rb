@@ -10,7 +10,7 @@
 # request_option => The option that will be validated
 # valid_options  => A serialized object that responds to include? Returning true if the option is present
 #                   It should also return an array of valid options in response to to_a
-class RequestType::Validator < ActiveRecord::Base
+class RequestType::Validator < ApplicationRecord
   class LibraryTypeValidator
     attr_reader :request_type_id
     def initialize(request_type_id)
