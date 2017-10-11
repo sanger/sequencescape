@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
-class Implement < ActiveRecord::Base
+class Implement < ApplicationRecord
   validates_presence_of :name
   validates :barcode, presence: true, on: :update
   @@barcode_prefix = 'LE'

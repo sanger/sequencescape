@@ -6,7 +6,7 @@
 
 # Creating an instance of this class causes the target to become converted to the new
 # plate purpose
-class PlateConversion < ActiveRecord::Base
+class PlateConversion < ApplicationRecord
   include Uuid::Uuidable
 
   belongs_to :target, class_name: 'Plate'

@@ -3,6 +3,8 @@ require 'rails_helper'
 require 'pry'
 
 feature 'cherrypick pipeline - nano grams per micro litre', js: true do
+  include FetchTable
+
   let(:user) { create :admin, barcode: 'ID41440E' }
   let(:project) { create :project, name: 'Test project' }
   let(:study) { create :study }
@@ -165,18 +167,6 @@ feature 'cherrypick pipeline - nano grams per micro litre', js: true do
         # The relaxed constraints are a little more permissive than
         # would be ideal.
         compare_lines_in_mri(tecan_file_lines[index], generated_line)
-      end
-    end
-  end
-
-  def fetch_table(selector)
-    find(selector).all('tr').map do |row|
-      row.all('th,td').map do |cell|
-        if cell.all('option').present?
-          cell.all('option').collect(&:text).join(' ')
-        else
-          cell.text.squish
-        end
       end
     end
   end

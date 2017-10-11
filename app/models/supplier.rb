@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
 
-class Supplier < ActiveRecord::Base
+class Supplier < ApplicationRecord
   include Uuid::Uuidable
   include ::Io::Supplier::ApiIoSupport
   include SampleManifest::Associations

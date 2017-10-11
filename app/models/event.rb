@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2013,2015,2016 Genome Research Ltd.
 
-class Event < ActiveRecord::Base
+class Event < ApplicationRecord
   include Api::EventIO::Extensions
   include Uuid::Uuidable
 

@@ -7,7 +7,7 @@
 # Lays out the tags in the specified tag group in a particular pattern.
 #
 # Applies a single tag 2 to the entire plate
-class Tag2Layout < ActiveRecord::Base
+class Tag2Layout < ApplicationRecord
   include Uuid::Uuidable
 
   attr_writer :layout_template
@@ -18,7 +18,7 @@ class Tag2Layout < ActiveRecord::Base
   #    This helps avoid potential race conditions (Although they won't be handled
   #    especially elegantly)
   # 2) It provides an easy means of looking up used templates
-  class TemplateSubmission < ActiveRecord::Base
+  class TemplateSubmission < ApplicationRecord
     belongs_to :submission
     belongs_to :tag2_layout_template
     validates_presence_of   :tag2_layout_template_id, :submission_id

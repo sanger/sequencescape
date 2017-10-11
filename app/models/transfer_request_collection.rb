@@ -2,7 +2,7 @@
 # of bulk creating transfer requests between arbitrary
 # sources and destinations.
 
-class TransferRequestCollection < ActiveRecord::Base
+class TransferRequestCollection < ApplicationRecord
   include Uuid::Uuidable
 
   has_many :transfer_request_collection_transfer_requests

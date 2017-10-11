@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
-class SubmittedAsset < ActiveRecord::Base
+class SubmittedAsset < ApplicationRecord
   belongs_to :order
   belongs_to :asset, class_name: 'Receptacle'
 

@@ -6,7 +6,7 @@ class AddNewIlaOrderRoles < ActiveRecord::Migration
   def self.up
     ActiveRecord::Base.transaction do
       each_role do |role|
-        Order::OrderRole.create!(:role=>role)
+        OrderRole.create!(:role=>role)
       end
     end
   end
@@ -14,7 +14,7 @@ class AddNewIlaOrderRoles < ActiveRecord::Migration
   def self.down
     ActiveRecord::Base.transaction do
       each_role do |role|
-        Order::OrderRole.find_by_role(role).destroy
+        OrderRole.find_by_role(role).destroy
       end
     end
   end
