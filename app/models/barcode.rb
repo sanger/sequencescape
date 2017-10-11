@@ -17,9 +17,7 @@ class Barcode
         class_attribute :prefix
         self.prefix = 'NT'
 
-        if ActiveRecord::Base.observers.include?(:amqp_observer)
-          after_save :broadcast_barcode, if: :broadcast_barcode?
-        end
+        after_save :broadcast_barcode, if: :saved_change_to_barcode?
       end
     end
 
@@ -28,7 +26,7 @@ class Barcode
     end
 
     def broadcast_barcode
-      AmqpObserver.instance << Messenger.new(template: 'BarcodeIO', root: 'barcode', target: self)
+      Messenger.new(template: 'BarcodeIO', root: 'barcode', target: self).broadcast
     end
 
     def barcode_type
@@ -79,10 +77,6 @@ class Barcode
 
     def barcode!
       barcode
-    end
-
-    def broadcast_barcode?
-      previous_changes.include?(:barcode)
     end
   end
 
