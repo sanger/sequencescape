@@ -2,7 +2,6 @@ source 'https://rubygems.org'
 
 group :default do
   gem 'rails', '~> 5.1.2'
-  gem 'rails-observers'
 
   # State machine
   gem 'aasm'

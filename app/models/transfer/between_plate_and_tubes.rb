@@ -65,7 +65,7 @@ class Transfer::BetweenPlateAndTubes < Transfer
       prefix: barcoded.barcode_prefix.prefix,
       two_dimensional: barcoded.two_dimensional_barcode,
       ean13: barcoded.ean13_barcode,
-      type: barcoded.barcode_type
+      type: barcoded.barcode_format
     }) if barcoded.present?
   end
 
