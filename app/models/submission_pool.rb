@@ -5,7 +5,7 @@
 # Copyright (C) 2015,2016 Genome Research Ltd.
 
 # SubmissionPools are designed to view submissions in the context of a particular asset
-class SubmissionPool < ActiveRecord::Base
+class SubmissionPool < ApplicationRecord
   module Association
     module Plate
       def self.included(base)

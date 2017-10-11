@@ -1,4 +1,4 @@
-class CustomMetadatumCollection < ActiveRecord::Base
+class CustomMetadatumCollection < ApplicationRecord
   include Uuid::Uuidable
 
   belongs_to :user

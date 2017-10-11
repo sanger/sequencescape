@@ -6,7 +6,7 @@
 
 require 'aasm'
 
-class WellAttribute < ActiveRecord::Base
+class WellAttribute < ApplicationRecord
   include AASM
 
   belongs_to :well, inverse_of: :well_attribute
@@ -15,6 +15,8 @@ class WellAttribute < ActiveRecord::Base
   def gender_markers_string
     gender_markers.try(:to_s)
   end
+
+  broadcasts_associated_via_warren :well
 
   aasm column: :pico_pass, whiny_persistence: true do
     state :ungraded, initial: true

@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2015,2016 Genome Research Ltd.
 
-class RequestType::PoolingMethod < ActiveRecord::Base
+class RequestType::PoolingMethod < ApplicationRecord
   has_many :request_types
   validates_presence_of :pooling_behaviour
   serialize :pooling_options

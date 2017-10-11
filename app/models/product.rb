@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2015,2016 Genome Research Ltd.
 
-class Product < ActiveRecord::Base
+class Product < ApplicationRecord
   include SharedBehaviour::Indestructable
   include SharedBehaviour::Deprecatable
 

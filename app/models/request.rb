@@ -6,7 +6,7 @@
 
 require 'aasm'
 
-class Request < ActiveRecord::Base
+class Request < ApplicationRecord
   # Include
   include ModelExtensions::Request
   include Aliquot::DeprecatedBehaviours::Request
@@ -70,6 +70,8 @@ class Request < ActiveRecord::Base
   # Just makes sure we don't set it to nil. Avoids the need to load request_purpose
   # EVERY time we touch a request.
   validates_presence_of :request_purpose_id
+
+  broadcast_via_warren
 
   # Scopes
   scope :for_pipeline, ->(pipeline) {

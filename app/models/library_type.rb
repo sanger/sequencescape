@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2014,2015 Genome Research Ltd.
 
-class LibraryType < ActiveRecord::Base
+class LibraryType < ApplicationRecord
   validates_presence_of :name
 
   has_many :library_types_request_types, inverse_of: :library_type, dependent: :destroy

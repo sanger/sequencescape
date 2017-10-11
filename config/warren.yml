@@ -1,0 +1,11 @@
+development:
+  type: log
+  exchange: psd.sequencescape
+profile:
+  type: log
+test:
+  type: test
+cucumber:
+  type: test
+production:
+  type: log

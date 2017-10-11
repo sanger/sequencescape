@@ -10,7 +10,7 @@
 # by rows.  Depending on the size of the tag group that is used by the layout template it either repeats (for
 # example, 8 tags in the group laid out in columns would repeat the tags across the plate), or it
 # doesn't (for example, a 96 tag group would occupy an entire 96 well plate).
-class TagLayout < ActiveRecord::Base
+class TagLayout < ApplicationRecord
   include Uuid::Uuidable
   include ModelExtensions::TagLayout
   include Asset::Ownership::ChangesOwner

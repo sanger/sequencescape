@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2015,2016 Genome Research Ltd.
 
-class QcReport < ActiveRecord::Base
+class QcReport < ApplicationRecord
   # :id => The primary key for internal use only
   # :report_identifier => A unique identifier exposed to customers
   # :state => Tracks report processing and return

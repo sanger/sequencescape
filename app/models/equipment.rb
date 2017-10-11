@@ -3,7 +3,7 @@
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2015 Genome Research Ltd.
-class Equipment < ActiveRecord::Base
+class Equipment < ApplicationRecord
   validates_presence_of :name, :equipment_type
   before_validation :set_defaults
   after_create :update_barcode

@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
-class Identifier < ActiveRecord::Base
+class Identifier < ApplicationRecord
   validates_presence_of :resource_name, :identifiable_id
   validates_uniqueness_of :external_id, scope: [:identifiable_id, :resource_name] # only one external per asset per resource
 

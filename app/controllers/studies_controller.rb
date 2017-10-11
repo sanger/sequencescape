@@ -12,7 +12,6 @@ class StudiesController < ApplicationController
   before_action :evil_parameter_hack!
   include REXML
   include Informatics::Globals
-  include XmlCacheHelper::ControllerHelper
 
   before_action :login_required
   before_action :admin_login_required, only: [:settings, :administer, :manage, :managed_update, :grant_role, :remove_role]
@@ -95,7 +94,7 @@ class StudiesController < ApplicationController
           redirect_to study_workflow_path(@study, current_user.workflow)
         end
       end
-      format.xml { cache_xml_response(@study) }
+      format.xml { render layout: false }
       format.json { render json: @study.to_json }
     end
   end
@@ -156,7 +155,7 @@ class StudiesController < ApplicationController
 
   def collaborators
     @study = Study.find(params[:id])
-    @all_roles  = Role.select(:name).uniq.pluck(:name)
+    @all_roles  = Role.distinct.pluck(:name)
     @roles      = Role.where(authorizable_id: @study.id, authorizable_type: 'Study')
     @users      = User.order(:first_name)
   end
@@ -331,20 +330,17 @@ class StudiesController < ApplicationController
    def self.role_helper(name, success_action, error_action, &block)
      define_method("#{name}_role") do
        ActiveRecord::Base.transaction do
-         @user, @study = User.find(params[:role][:user]), Study.find(params[:id])
+         @study = Study.find(params[:id])
+         @user = User.find(params.require(:role).fetch(:user))
 
          if request.xhr?
-           if params[:role]
-             block.call(@user, @study, params[:role][:authorizable_type].to_s)
-             status, flash[:notice] = 200, "Role #{success_action}"
-           else
-             status, flash[:error] = 500, "A problem occurred while #{error_action} the role"
-           end
+           block.call(@user, @study, params[:role][:authorizable_type].to_s)
+           status, flash.now[:notice] = 200, "Role #{success_action}"
          else
-           status, flash[:error] = 401, "A problem occurred while #{error_action} the role"
+           status, flash.now[:error] = 401, "A problem occurred while #{error_action} the role"
          end
 
-         @roles = @study.roles(true).all
+         @roles = @study.roles.reload
          render partial: 'roles', status: status
        end
      end

@@ -8,7 +8,7 @@ require 'timeout'
 require 'tecan_file_generation'
 require 'aasm'
 
-class Batch < ActiveRecord::Base
+class Batch < ApplicationRecord
   include Api::BatchIO::Extensions
   include Api::Messages::FlowcellIO::Extensions
   include AASM
@@ -40,16 +40,18 @@ class Batch < ActiveRecord::Base
   has_many :studies, ->() { distinct }, through: :orders
   has_many :projects,  ->() { distinct }, through: :orders
   has_many :aliquots,  ->() { distinct }, through: :source_assets
-  has_many :samples, ->() { distinct }, through: :assets
+  has_many :samples, ->() { distinct }, through: :assets, source: :samples
 
   has_many_events
   has_many_lab_events
 
   accepts_nested_attributes_for :requests
+  broadcast_via_warren
 
   validate :requests_have_same_read_length, :cluster_formation_requests_must_be_over_minimum, :all_requests_are_ready?, on: :create
 
   after_create :generate_target_assets_for_requests, if: :need_target_assets_on_requests?
+  after_save :rebroadcast
 
   # Named scope for search by query string behavior
   scope :for_search_query, ->(query, _with_includes) {
@@ -81,6 +83,7 @@ class Batch < ActiveRecord::Base
   scope :most_recent, ->(number) { latest_first.limit(number) }
 
   delegate :size, to: :requests
+  delegate :sequencing?, to: :pipeline
 
   def study
     studies.first
@@ -506,12 +509,16 @@ class Batch < ActiveRecord::Base
   end
 
   def show_fail_link?
-    released? && pipeline.sequencing?
+    released? && sequencing?
   end
 
   def downstream_requests_needing_asset(request)
     next_requests_needing_asset = request.next_requests(pipeline).select { |r| r.asset_id.blank? }
     yield(next_requests_needing_asset) unless next_requests_needing_asset.blank?
+  end
+
+  def rebroadcast
+    messengers.each(&:resend)
   end
 
   private
