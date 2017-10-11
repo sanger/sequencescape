@@ -29,7 +29,7 @@ class Barcode
       Messenger.new(template: 'BarcodeIO', root: 'barcode', target: self).broadcast
     end
 
-    def barcode_type
+    def barcode_format
       'SangerEan13'
     end
 
