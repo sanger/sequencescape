@@ -73,6 +73,13 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
     expect { upload.broadcast_sample_manifest_updated_event(user) }.to change { BroadcastEvent.count }.by(1)
     # subjects are 1 study, 6 tubes and 6 samples
     expect(BroadcastEvent.first.subjects.count).to eq 13
+
+    download = build(:test_download, columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup, manifest_type: 'multiplexed_library')
+    download.save(test_file)
+    upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: columns, start_row: 9)
+    expect { upload.broadcast_sample_manifest_updated_event(user) }.to change { BroadcastEvent.count }.by(1)
+    # subjects are 1 study, 1 tubes and 6 samples
+    expect(BroadcastEvent.last.subjects.count).to eq 8
   end
 
   describe '#processor' do
