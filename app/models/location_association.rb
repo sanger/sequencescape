@@ -24,6 +24,7 @@ class LocationAssociation < ApplicationRecord
 
         has_one :location, through: :location_association
         delegate :location_id, to: :location_association, allow_nil: true
+        delegate :name, to: :location, prefix: true
 
        scope :located_in, ->(location) {
           joins(:location_association).where(location_associations: { location_id: location })

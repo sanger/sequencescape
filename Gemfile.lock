@@ -295,8 +295,6 @@ GEM
       nokogiri (>= 1.6)
     rails-html-sanitizer (1.0.3)
       loofah (~> 2.0)
-    rails-observers (0.1.5)
-      activemodel (>= 4.0)
     rails-perftest (0.0.7)
     railties (5.1.2)
       actionpack (= 5.1.2)
@@ -477,7 +475,6 @@ DEPENDENCIES
   rack-mini-profiler
   rails (~> 5.1.2)
   rails-controller-testing
-  rails-observers
   rails-perftest
   rest-client
   roo
@@ -508,4 +505,4 @@ DEPENDENCIES
   yard
 
 BUNDLED WITH
-   1.15.3
+   1.15.4

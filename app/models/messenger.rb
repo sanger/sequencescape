@@ -27,6 +27,6 @@ class Messenger < ApplicationRecord
   end
 
   def resend
-    AmqpObserver.instance << self
+    broadcast
   end
 end
