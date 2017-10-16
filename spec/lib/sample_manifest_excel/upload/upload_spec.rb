@@ -82,6 +82,16 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
     expect(BroadcastEvent.last.subjects.count).to eq 8
   end
 
+  it 'should know if it is initial or reupload' do
+    download = build(:test_download, columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup)
+    download.save(test_file)
+    upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: columns, start_row: 9)
+    expect(upload.reuploaded?).to be_falsey
+    upload.sample_manifest.start!
+    upload.sample_manifest.finished!
+    expect(upload.reuploaded?).to be_truthy
+  end
+
   describe '#processor' do
     context '1dtube' do
       let!(:columns) { SampleManifestExcel.configuration.columns.tube_full.dup }

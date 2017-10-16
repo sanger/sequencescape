@@ -109,7 +109,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
     expect(empty_row.empty?).to be true
   end
 
-  context 'aliquot transfer on multiplex library tubes' do
+  context 'aliquot transfer and update on multiplex library tubes' do
     attr_reader :rows
 
     let!(:library_tubes) { create_list(:library_tube_with_barcode, 5) }
@@ -141,6 +141,57 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
         sample.primary_receptacle.requests.each do |request|
           expect(request.state).to eq('passed')
         end
+      end
+    end
+  end
+
+  context 'update downstream aliquots' do
+    attr_reader :rows
+
+    let!(:library_tubes) { create_list(:library_tube_with_barcode, 3) }
+    let!(:mx_library_tube) { create(:multiplexed_library_tube) }
+    let(:tags) { SampleManifestExcel::Tags::ExampleData.new.take(0, 1) }
+
+    before(:each) do
+      aliquot1 = library_tubes[0].aliquots.first
+      aliquot2 = library_tubes[1].aliquots.first
+      aliquot1.update_attributes!(tag: Tag.first, library_id: '1')
+      aliquot2.update_attributes!(tag: Tag.last, library_id: '2')
+      library_tubes.each do |library_tube|
+        mx_library_tube.aliquots << library_tube.aliquots.map(&:dup)
+      end
+      mx_library_tube.save!
+      @rows = []
+      #
+      library_tubes[0..1].each_with_index do |tube, i|
+        row_data = data.dup
+        row_data[0] = tube.samples.first.assets.first.sanger_human_barcode
+        row_data[1] = tube.samples.first.sanger_sample_id
+        row_data[2] = tags[i][:tag_oligo]
+        row_data[3] = tags[i][:tag2_oligo]
+        rows << SampleManifestExcel::Upload::Row.new(number: i + 1, data: row_data, columns: columns)
+      end
+      # on this row all attributes related to aliquot stay the same, nothing changes
+      row_data = data.dup
+      row_data[0] = library_tubes.last.samples.first.assets.first.sanger_human_barcode
+      row_data[1] = library_tubes.last.samples.first.sanger_sample_id
+      row_data[4] = 'Standard'
+      row_data[5] = nil
+      row_data[6] = nil
+      rows << SampleManifestExcel::Upload::Row.new(number: 3, data: row_data, columns: columns)
+    end
+
+    it 'update downstream' do
+      rows.each do |row|
+        row.update_sample(tag_group)
+        row.update_downstream_aliquots
+      end
+      # if aliquots data has not changed, aliquots should not be updated
+      expect(rows.select { |row| row.downstream_aliquots_to_be_updated? }.all? { |row| row.downstream_aliquots_updated? }).to be_truthy
+      # updated aliquots are now last in multiplexed library tube
+      mx_library_tube.aliquots[1..2].each_with_index do |aliquot, i|
+        expect(aliquot.tag.oligo).to eq(tags[i][:tag_oligo])
+        expect(aliquot.tag2.oligo).to eq(tags[i][:tag2_oligo])
       end
     end
   end

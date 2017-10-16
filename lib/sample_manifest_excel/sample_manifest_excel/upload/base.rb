@@ -65,6 +65,10 @@ module SampleManifestExcel
         sample_manifest.finished!
       end
 
+      def reuploaded?
+        sample_manifest.completed?
+      end
+
       private
 
       def create_processor

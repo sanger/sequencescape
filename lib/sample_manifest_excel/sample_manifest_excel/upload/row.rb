@@ -109,12 +109,26 @@ module SampleManifestExcel
         end
       end
 
+      # if manifest is reuploaded only aliquots, that are in 'fake' library tubes will be updated
+      # actual aliquots in multiplexed library tube and other aliquots downstream are updated by this method
+      def update_downstream_aliquots
+        @downstream_aliquots_updated = TagSubstitution.new([aliquot.substitution_hash]).save if downstream_aliquots_to_be_updated?
+      end
+
+      def downstream_aliquots_to_be_updated?
+        aliquot.substitution_hash.present?
+      end
+
       def sample_updated?
         @sample_updated
       end
 
       def aliquot_transferred?
         @aliquot_transferred
+      end
+
+      def downstream_aliquots_updated?
+        @downstream_aliquots_updated
       end
 
       def empty?

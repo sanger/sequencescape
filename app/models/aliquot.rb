@@ -10,12 +10,25 @@ class Aliquot < ApplicationRecord
   include Uuid::Uuidable
   include Api::Messages::FlowcellIO::AliquotExtensions
   include AliquotIndexer::AliquotScopes
+  include Api::AliquotIO::Extensions
+  include ChangesForSubstitution
+
+  # An aliquot can represent a library, which is a processed sample that has been fragmented.  In which case it
+  # has a receptacle that held the library aliquot and has an insert size describing the fragment positions.
+  class InsertSize < Range
+    alias_method :from, :first
+    alias_method :to,   :last
+  end
 
   TAG_COUNT_NAMES = ['Untagged', 'Single', 'Dual']
+  # It may have a tag but not necessarily.  If it does, however, that tag needs to be unique within the receptacle.
+  # To ensure that there can only be one untagged aliquot present in a receptacle we use a special value for tag_id,
+  # rather than NULL which does not work in MySQL.  It also works because the unassigned tag ID never gets matched
+  # for a Tag and so the result is nil!
+  UNASSIGNED_TAG = -1
 
   TagClash = Class.new(ActiveRecord::RecordInvalid)
 
-  include Api::AliquotIO::Extensions
   # An aliquot is held within a receptacle
   belongs_to :receptacle, class_name: 'Asset'
 
@@ -26,7 +39,21 @@ class Aliquot < ApplicationRecord
   # An aliquot is an amount of a sample
   belongs_to :sample
 
+  belongs_to :tag
+  belongs_to :tag2, class_name: 'Tag'
+  # It may have a bait library but not necessarily.
+  belongs_to :bait_library
+
+  # It can belong to a library asset
+  belongs_to :library, class_name: 'Receptacle'
+  composed_of :insert_size, mapping: [%w{insert_size_from from}, %w{insert_size_to to}], class_name: 'Aliquot::InsertSize', allow_nil: true
+
   has_one :aliquot_index, dependent: :destroy
+
+  before_validation { |record| record.tag_id ||= UNASSIGNED_TAG }
+  before_validation { |record| record.tag2_id ||= UNASSIGNED_TAG }
+
+  broadcast_via_warren
 
   scope :include_summary, -> { includes([:sample, { tag: :tag_group }, { tag2: :tag_group }]) }
   scope :in_tag_order, -> {
@@ -39,19 +66,6 @@ class Aliquot < ApplicationRecord
   def aliquot_index_value
     aliquot_index.try(:aliquot_index)
   end
-
-  # It may have a tag but not necessarily.  If it does, however, that tag needs to be unique within the receptacle.
-  # To ensure that there can only be one untagged aliquot present in a receptacle we use a special value for tag_id,
-  # rather than NULL which does not work in MySQL.  It also works because the unassigned tag ID never gets matched
-  # for a Tag and so the result is nil!
-  UNASSIGNED_TAG = -1
-  belongs_to :tag
-  before_validation { |record| record.tag_id ||= UNASSIGNED_TAG }
-
-  belongs_to :tag2, class_name: 'Tag'
-  before_validation { |record| record.tag2_id ||= UNASSIGNED_TAG }
-
-  broadcast_via_warren
 
   # Validating the uniqueness of tags in rails was causing issues, as it was resulting the in the preform_transfer_of_contents
   # in transfer request to fail, without any visible sign that something had gone wrong. This essentially meant that tag clashes
@@ -93,23 +107,9 @@ class Aliquot < ApplicationRecord
     untagged? ? nil : super
   end
 
-  # It may have a bait library but not necessarily.
-  belongs_to :bait_library
-
   def set_library
     self.library = receptacle
   end
-
-  # An aliquot can represent a library, which is a processed sample that has been fragmented.  In which case it
-  # has a receptacle that held the library aliquot and has an insert size describing the fragment positions.
-  class InsertSize < Range
-    alias_method :from, :first
-    alias_method :to,   :last
-  end
-
-  # It can belong to a library asset
-  belongs_to :library, class_name: 'Receptacle'
-  composed_of :insert_size, mapping: [%w{insert_size_from from}, %w{insert_size_to to}], class_name: 'Aliquot::InsertSize', allow_nil: true
 
   # Cloning an aliquot should unset the receptacle ID because otherwise it won't get reassigned.  We should
   # also reset the timestamp information as this is a new aliquot really.
