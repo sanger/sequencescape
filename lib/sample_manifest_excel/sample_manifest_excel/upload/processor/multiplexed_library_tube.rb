@@ -19,8 +19,6 @@ module SampleManifestExcel
         def update_samples_and_transfer_aliquots(tag_group)
           upload.rows.each do |row|
             row.update_sample(tag_group)
-            # if manifest is reuploaded, and new rows are filled in, should we transfer these aliquots?
-            # what if other tubes were created downstream?
             row.transfer_aliquot unless upload.reuploaded?
             row.update_downstream_aliquots if upload.reuploaded?
           end
