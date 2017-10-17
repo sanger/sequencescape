@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170821140140) do
+ActiveRecord::Schema.define(version: 20171017092942) do
 
   create_table "aliquot_indices", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.integer "aliquot_id", null: false
@@ -681,6 +681,7 @@ ActiveRecord::Schema.define(version: 20170821140140) do
     t.string "template", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.index ["target_id", "target_type"], name: "index_messengers_on_target_id_and_target_type"
   end
 
   create_table "order_roles", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
