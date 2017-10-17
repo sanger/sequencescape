@@ -88,6 +88,17 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
     upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: columns, start_row: 9)
     expect(upload.reuploaded?).to be_falsey
     upload.sample_manifest.start!
+    expect(upload.reuploaded?).to be_falsey
+    upload.sample_manifest.finished!
+    expect(upload.reuploaded?).to be_falsey
+
+    download.save(test_file)
+    download.worksheet.sample_manifest.start!
+    download.worksheet.sample_manifest.finished!
+    upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: columns, start_row: 9)
+    expect(upload.reuploaded?).to be_truthy
+    upload.sample_manifest.start!
+    expect(upload.reuploaded?).to be_truthy
     upload.sample_manifest.finished!
     expect(upload.reuploaded?).to be_truthy
   end

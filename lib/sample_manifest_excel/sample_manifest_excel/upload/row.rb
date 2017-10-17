@@ -29,7 +29,6 @@ module SampleManifestExcel
         @sanger_sample_id ||= if columns.present? && data.present?
                                 value(:sanger_sample_id)
                               end
-
         @sample ||= Sample.find_by(sanger_sample_id: sanger_sample_id)
         @specialised_fields = create_specialised_fields
       end
@@ -115,6 +114,7 @@ module SampleManifestExcel
         @downstream_aliquots_updated = TagSubstitution.new([aliquot.substitution_hash]).save if downstream_aliquots_to_be_updated?
       end
 
+      # this method should only be called if multiplexed library tube sample manifest upload is reuploaded
       def downstream_aliquots_to_be_updated?
         aliquot.substitution_hash.present?
       end

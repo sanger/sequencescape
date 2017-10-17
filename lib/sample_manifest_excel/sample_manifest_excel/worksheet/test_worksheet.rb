@@ -14,6 +14,7 @@ module SampleManifestExcel
         @validation_errors ||= []
         create_library_type
         create_dynamic_attributes
+        create_requests
         create_styles
         add_title_and_description(study, supplier, count)
         add_headers
@@ -64,7 +65,7 @@ module SampleManifestExcel
         @assets ||= []
       end
 
-      def add_cell_data(column, n, partial)
+      def add_cell_data(column, n, partial = false)
         if partial && n == last_row
           default_column = 'supplier_sample_name'
           (data[column.name] || dynamic_attributes[n][column.name]) unless column.name == default_column
@@ -99,9 +100,14 @@ module SampleManifestExcel
                 else
                   FactoryGirl.create(:sample_tube_with_sanger_sample_id)
                 end
-        FactoryGirl.create(:external_multiplexed_library_tube_creation_request, asset: asset, target_asset: multiplexed_library_tube) if manifest_type == 'multiplexed_library'
         assets << asset
         yield(asset) if block_given?
+      end
+
+      def create_requests
+        assets.each do |asset|
+          FactoryGirl.create(:external_multiplexed_library_tube_creation_request, asset: asset, target_asset: multiplexed_library_tube) if manifest_type == 'multiplexed_library'
+        end
       end
 
       def initialize_dynamic_attributes

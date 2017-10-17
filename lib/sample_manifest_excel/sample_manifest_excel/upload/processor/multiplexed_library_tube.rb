@@ -39,7 +39,11 @@ module SampleManifestExcel
         end
 
         def aliquots_transferred_or_updated?
-          upload.reuploaded? ? downstream_aliquots_updated? : aliquots_transferred?
+          if upload.reuploaded?
+            downstream_aliquots_updated?
+          else
+            aliquots_transferred?
+          end
         end
       end
     end
