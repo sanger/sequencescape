@@ -1,4 +1,4 @@
-module Aliquot::ChangesForSubstitution
+module Aliquot::DataForSubstitution
   def substitution_hash
     return if id_previously_changed?
     generate_substitution_hash if saved_changes?

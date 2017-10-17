@@ -153,16 +153,22 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
     let(:tags) { SampleManifestExcel::Tags::ExampleData.new.take(0, 1) }
 
     before(:each) do
+      @rows = []
       aliquot1 = library_tubes[0].aliquots.first
       aliquot2 = library_tubes[1].aliquots.first
+
+      # tags should be in place to be able to pool aliquots to multiplexed tube
+      # library_id should be in place to update downstream aliquots
       aliquot1.update_attributes!(tag: Tag.first, library_id: '1')
       aliquot2.update_attributes!(tag: Tag.last, library_id: '2')
+
+      #transferred all 3 aliquots to multiplexed library tube
       library_tubes.each do |library_tube|
         mx_library_tube.aliquots << library_tube.aliquots.map(&:dup)
       end
       mx_library_tube.save!
-      @rows = []
-      #
+
+      # create 2 rows with for 2 library tubes but with new tag and tag2 oligos
       library_tubes[0..1].each_with_index do |tube, i|
         row_data = data.dup
         row_data[0] = tube.samples.first.assets.first.sanger_human_barcode
@@ -171,7 +177,9 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
         row_data[3] = tags[i][:tag2_oligo]
         rows << SampleManifestExcel::Upload::Row.new(number: i + 1, data: row_data, columns: columns)
       end
-      # on this row all attributes related to aliquot stay the same, nothing changes
+
+      # on this row (related to last library tube) all attributes related to aliquot stay the same, nothing changes
+      # this row should not update downstream aliquots
       row_data = data.dup
       row_data[0] = library_tubes.last.samples.first.assets.first.sanger_human_barcode
       row_data[1] = library_tubes.last.samples.first.sanger_sample_id
@@ -186,7 +194,10 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
         row.update_sample(tag_group)
         row.update_downstream_aliquots
       end
+      # last row should not update downstream aliquots
       # if aliquots data has not changed, aliquots should not be updated
+      expect(rows.all? { |row| row.downstream_aliquots_updated? }).to be_falsey
+      # but if data related to aliquots has changed, row should update downstream aliquots
       expect(rows.select { |row| row.downstream_aliquots_to_be_updated? }.all? { |row| row.downstream_aliquots_updated? }).to be_truthy
       # updated aliquots are now last in multiplexed library tube
       mx_library_tube.aliquots[1..2].each_with_index do |aliquot, i|
