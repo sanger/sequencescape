@@ -50,9 +50,7 @@ class TagSubstitution
     end
 
     def rebroadcast_lanes
-      Lane.joins(:aliquots).where(aliquots: { id: matching_aliquots }).includes(requests_as_target: :batch).each do |lane|
-        lane.requests_as_target.each { |r| r.batch.try(:rebroadcast) }
-      end
+      Lane.with_required_aliquots(matching_aliquots).each(&:rebroadcast)
     end
 
     # Nullify tags sets all tags to null. We need to do this first

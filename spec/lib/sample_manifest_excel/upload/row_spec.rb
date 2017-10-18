@@ -162,7 +162,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
       aliquot1.update_attributes!(tag: Tag.first, library_id: '1')
       aliquot2.update_attributes!(tag: Tag.last, library_id: '2')
 
-      #transferred all 3 aliquots to multiplexed library tube
+      # transferred all 3 aliquots to multiplexed library tube
       library_tubes.each do |library_tube|
         mx_library_tube.aliquots << library_tube.aliquots.map(&:dup)
       end
