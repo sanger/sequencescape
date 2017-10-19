@@ -25,6 +25,7 @@ module Billing
             units: units(count, aliquots.length),
             billing_product_code: billing_product_code,
             billing_product_description: billing_product_description,
+            billing_product_name: billing_product_name,
             request_passed_date: passed_date
           )
         end
