@@ -35,7 +35,7 @@ class SampleManifestUploadWithTagSequencesController < ApplicationController
 
   def find_tags_clash
     if params[:upload].present?
-      @uploader = SampleManifestUploader.new(params[:upload].open, SampleManifestExcel.configuration)
+      @uploader = SampleManifestUploader.new(params[:upload].open, SampleManifestExcel.configuration, current_user)
       flash[:error] = @uploader.tags_clash_message
       redirect_to '/sample_manifest_upload_with_tag_sequences/new'
     else

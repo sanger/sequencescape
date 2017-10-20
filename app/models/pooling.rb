@@ -63,7 +63,6 @@ class Pooling
 
   def tags_combinations
     @tags_combinations || []
-
   end
 
   def source_assets?
