@@ -218,7 +218,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
 
         should 'add a control request to the batch' do
           plates, source_plates = @task.pick_onto_partial_plate([], @template, @robot, @batch, @partial)
-          assert_equal(1, @batch.requests(true).size)
+          assert_equal(1, @batch.requests.reload.size)
         end
 
         should 'add the control plate to the source list' do

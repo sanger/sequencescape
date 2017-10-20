@@ -7,11 +7,13 @@
 # Creating an instance of this class causes a child plate, with the specified plate type, to be created from
 # the parent.
 class PooledPlateCreation < AssetCreation
-  class ParentAssociation < ActiveRecord::Base
+  class ParentAssociation < ApplicationRecord
     self.table_name = ('asset_creation_parents')
     belongs_to :asset_creation
     belongs_to :parent, class_name: 'Asset'
   end
+
+  attr_accessor :barcode
 
   has_many :parent_associations, foreign_key: 'asset_creation_id', class_name: 'PooledPlateCreation::ParentAssociation'
 

@@ -2,7 +2,7 @@
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2007-2011,2011,2012 Genome Research Ltd.
-class Program < ActiveRecord::Base
+class Program < ApplicationRecord
   extend Attributable::Association::Target
 
   default_scope ->() { order(:name) }

@@ -9,7 +9,7 @@ require 'openssl'
 require 'digest/sha1'
 # require 'curb'
 
-class User < ActiveRecord::Base
+class User < ApplicationRecord
   include Authentication
   include Workflowed
   extend EventfulRecord
@@ -22,7 +22,8 @@ class User < ActiveRecord::Base
   has_many :requests
   has_many :comments
   has_many :settings
-  has_many :roles
+  has_many :user_role_bindings, class_name: 'Role::UserRole'
+  has_many :roles, through: :user_role_bindings
   has_many :submissions
   has_many :project_roles, ->() { where(authorizable_type: 'Project') }, class_name: 'Role'
   has_many :study_roles,   ->() { where(authorizable_type: 'Study') },   class_name: 'Role'
@@ -45,12 +46,44 @@ class User < ActiveRecord::Base
 
   acts_as_authorized_user
 
-  scope :owners, ->() { where.not(last_name: nil).joins(:roles).where(roles: { name: 'owner' }).order(:last_name).uniq }
+  scope :owners, ->() { where.not(last_name: nil).joins(:roles).where(roles: { name: 'owner' }).order(:last_name).distinct }
 
   attr_accessor :password
 
   def self.prefix
     'ID'
+  end
+
+  def self.lookup_by_barcode(user_barcode)
+    barcode = Barcode.barcode_to_human(user_barcode)
+    return find_by(barcode: barcode) if barcode
+    nil
+  end
+
+  def self.find_with_barcode_or_swipecard_code(user_code)
+    lookup_by_barcode(user_code) ||
+      with_swipecard_code(user_code).first
+  end
+
+  # returns emails of all admins
+  def self.all_administrators_emails
+    all_administrators.uniq.pluck(:email).compact
+  end
+
+  # Encrypts some data with the salt.
+  def self.encrypt(password, salt)
+    Digest::SHA1.hexdigest("--#{salt}--#{password}--")
+  end
+
+  def self.valid_barcode?(code)
+    begin
+      human_code = Barcode.barcode_to_human!(code, prefix)
+    rescue
+      return false
+    end
+    return false unless find_by(barcode: human_code)
+
+    true
   end
 
   def study_roles
@@ -185,16 +218,6 @@ class User < ActiveRecord::Base
     is_administrator?
   end
 
-  # returns emails of all admins
-  def self.all_administrators_emails
-    all_administrators.pluck(:email).compact.uniq
-  end
-
-  # Encrypts some data with the salt.
-  def self.encrypt(password, salt)
-    Digest::SHA1.hexdigest("--#{salt}--#{password}--")
-  end
-
   def new_api_key(length = 32)
     u = Digest::SHA1.hexdigest(login)[0..12]
     k = Digest::SHA1.hexdigest(Time.now.to_s + rand(12341234).to_s)[1..length]
@@ -228,26 +251,6 @@ class User < ActiveRecord::Base
     Study.of_interest_to(self)
   end
 
-  def self.valid_barcode?(code)
-    begin
-      human_code = Barcode.barcode_to_human!(code, prefix)
-    rescue
-      return false
-    end
-    return false unless User.find_by(barcode: human_code)
-
-    true
-  end
-
-  def self.lookup_by_barcode(user_barcode)
-    barcode = Barcode.barcode_to_human(user_barcode)
-    if barcode
-      return User.find_by(barcode: barcode)
-    end
-
-    nil
-  end
-
   protected
 
     # before filter
@@ -258,6 +261,6 @@ class User < ActiveRecord::Base
     end
 
     def password_required?
-      crypted_password.blank? || !password.blank?
+      crypted_password.blank? || password.present?
     end
 end

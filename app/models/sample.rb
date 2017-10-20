@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 require 'rexml/text'
-class Sample < ActiveRecord::Base
+class Sample < ApplicationRecord
   include ModelExtensions::Sample
   include Api::SampleIO::Extensions
 
@@ -18,6 +18,15 @@ class Sample < ActiveRecord::Base
   include Aliquot::Aliquotable
 
   extend EventfulRecord
+
+  GC_CONTENTS     = ['Neutral', 'High AT', 'High GC']
+  GENDERS         = ['Male', 'Female', 'Mixed', 'Hermaphrodite', 'Unknown', 'Not Applicable']
+  DNA_SOURCES     = ['Genomic', 'Whole Genome Amplified', 'Blood', 'Cell Line', 'Saliva', 'Brain', 'FFPE',
+                     'Amniocentesis Uncultured', 'Amniocentesis Cultured', 'CVS Uncultured', 'CVS Cultured', 'Fetal Blood', 'Tissue']
+  SRA_HOLD_VALUES = ['Hold', 'Public', 'Protect']
+  AGE_REGEXP      = '\d+(?:\.\d+|\-\d+|\.\d+\-\d+\.\d+|\.\d+\-\d+\.\d+)?\s+(?:second|minute|day|week|month|year)s?|Not Applicable|N/A|To be provided'
+  DOSE_REGEXP     = '\d+(?:\.\d+)?\s+\w+(?:\/\w+)?|Not Applicable|N/A|To be provided'
+
   has_many_events do
     event_constructor(:created_using_sample_manifest!, Event::SampleManifestEvent, :created_sample!)
     event_constructor(:updated_using_sample_manifest!, Event::SampleManifestEvent, :updated_sample!)
@@ -29,6 +38,7 @@ class Sample < ActiveRecord::Base
   EgaFields = %w(subject disease treatment gender phenotype)
 
   acts_as_authorizable
+  broadcast_via_warren
 
   has_many :study_samples, dependent: :destroy, inverse_of: :sample
   has_many :studies, through: :study_samples, inverse_of: :samples
@@ -55,7 +65,7 @@ class Sample < ActiveRecord::Base
   validates_format_of :name, with: /\A[\(\)\+\s\w._-]+\z/i, message: I18n.t('samples.name_format'), if: :new_name_format, on: :update
   validates_uniqueness_of :name, on: :create, message: 'already in use', unless: :sample_manifest_id?
 
-  validate :name_unchanged, if: :name_changed?, on: :update
+  validate :name_unchanged, if: :will_save_change_to_name?, on: :update
 
   def name_unchanged
     errors.add(:name, 'cannot be changed') unless can_rename_sample
@@ -225,76 +235,80 @@ class Sample < ActiveRecord::Base
     end
   end
 
-  GC_CONTENTS     = ['Neutral', 'High AT', 'High GC']
-  GENDERS         = ['Male', 'Female', 'Mixed', 'Hermaphrodite', 'Unknown', 'Not Applicable']
-  DNA_SOURCES     = ['Genomic', 'Whole Genome Amplified', 'Blood', 'Cell Line', 'Saliva', 'Brain', 'FFPE',
-                     'Amniocentesis Uncultured', 'Amniocentesis Cultured', 'CVS Uncultured', 'CVS Cultured', 'Fetal Blood', 'Tissue']
-  SRA_HOLD_VALUES = ['Hold', 'Public', 'Protect']
-  AGE_REGEXP      = '\d+(?:\.\d+|\-\d+|\.\d+\-\d+\.\d+|\.\d+\-\d+\.\d+)?\s+(?:second|minute|day|week|month|year)s?|Not Applicable|N/A|To be provided'
-  DOSE_REGEXP     = '\d+(?:\.\d+)?\s+\w+(?:\/\w+)?|Not Applicable|N/A|To be provided'
+  #
+  # Checks to see if the sample or its metadata has been changed since it was last loaded.
+  # Used to detect samples which have been updated by sample manifests.
+  # Excludes samples which have only been flagged to indicate they have no supplier name.
+  #
+  # @return [Boolean] True if the sample has been updated
+  #
+  def changed_by_manifest?
+    (previous_changes.present? || sample_metadata.previous_changes.present?) && !generate_no_update_event?
+  end
 
   extend Metadata
   has_metadata do
     include ReferenceGenome::Associations
     association(:reference_genome, :name, required: true)
 
-    attribute(:organism)
-    attribute(:cohort)
-    attribute(:country_of_origin)
-    attribute(:geographical_region)
-    attribute(:ethnicity)
-    attribute(:volume)
-    attribute(:supplier_plate_id)
-    attribute(:mother)
-    attribute(:father)
-    attribute(:replicate)
-    attribute(:gc_content, in: Sample::GC_CONTENTS)
-    attribute(:gender, in: Sample::GENDERS)
-    attribute(:donor_id)
-    attribute(:dna_source, in: Sample::DNA_SOURCES)
-    attribute(:sample_public_name)
-    attribute(:sample_common_name)
-    attribute(:sample_strain_att)
-    attribute(:sample_taxon_id)
-    attribute(:sample_ebi_accession_number)
-    attribute(:sample_description)
-    attribute(:sample_sra_hold, in: Sample::SRA_HOLD_VALUES)
+    custom_attribute(:organism)
+    custom_attribute(:organism)
+    custom_attribute(:cohort)
+    custom_attribute(:country_of_origin)
+    custom_attribute(:geographical_region)
+    custom_attribute(:ethnicity)
+    custom_attribute(:volume)
+    custom_attribute(:supplier_plate_id)
+    custom_attribute(:mother)
+    custom_attribute(:father)
+    custom_attribute(:replicate)
+    custom_attribute(:gc_content, in: Sample::GC_CONTENTS)
+    custom_attribute(:gender, in: Sample::GENDERS)
+    custom_attribute(:donor_id)
+    custom_attribute(:dna_source, in: Sample::DNA_SOURCES)
+    custom_attribute(:sample_public_name)
+    custom_attribute(:sample_common_name)
+    custom_attribute(:sample_strain_att)
+    custom_attribute(:sample_taxon_id)
+    custom_attribute(:sample_ebi_accession_number)
+    custom_attribute(:sample_description)
+    custom_attribute(:sample_sra_hold, in: Sample::SRA_HOLD_VALUES)
 
-    attribute(:sibling)
-    attribute(:is_resubmitted)              # TODO[xxx]: selection of yes/no?
-    attribute(:date_of_sample_collection)   # TODO[xxx]: Date field?
-    attribute(:date_of_sample_extraction)   # TODO[xxx]: Date field?
-    attribute(:sample_extraction_method)
-    attribute(:sample_purified)             # TODO[xxx]: selection of yes/no?
-    attribute(:purification_method)         # TODO[xxx]: tied to the field above?
-    attribute(:concentration)
-    attribute(:concentration_determined_by)
-    attribute(:sample_type)
-    attribute(:sample_storage_conditions)
+    custom_attribute(:sibling)
+    custom_attribute(:is_resubmitted)              # TODO[xxx]: selection of yes/no?
+    custom_attribute(:date_of_sample_collection)   # TODO[xxx]: Date field?
+    custom_attribute(:date_of_sample_extraction)   # TODO[xxx]: Date field?
+    custom_attribute(:sample_extraction_method)
+    custom_attribute(:sample_purified)             # TODO[xxx]: selection of yes/no?
+    custom_attribute(:purification_method)         # TODO[xxx]: tied to the field above?
+    custom_attribute(:concentration)
+    custom_attribute(:concentration_determined_by)
+    custom_attribute(:sample_type)
+    custom_attribute(:sample_storage_conditions)
 
     # Array Express
-    attribute(:genotype)
-    attribute(:phenotype)
-    # attribute(:strain_or_line) strain
+    custom_attribute(:genotype)
+    custom_attribute(:phenotype)
+    # custom_attribute(:strain_or_line) strain
     # TODO: split age in two fields and use a composed_of
-    attribute(:age, with: Regexp.new("\\A#{Sample::AGE_REGEXP}\\z"))
-    attribute(:developmental_stage)
-    # attribute(:sex) gender
-    attribute(:cell_type)
-    attribute(:disease_state)
-    attribute(:compound) # TODO : yes/no?
-    attribute(:dose, with: Regexp.new("\\A#{Sample::DOSE_REGEXP}\\z"))
-    attribute(:immunoprecipitate)
-    attribute(:growth_condition)
-    attribute(:rnai)
-    attribute(:organism_part)
-    # attribute(:species) common name
-    attribute(:time_point)
+    custom_attribute(:age, with: Regexp.new("\\A#{Sample::AGE_REGEXP}\\z"))
+    custom_attribute(:developmental_stage)
+    # custom_attribute(:sex) gender
+    custom_attribute(:cell_type)
+    custom_attribute(:disease_state)
+    custom_attribute(:compound) # TODO : yes/no?
+    custom_attribute(:dose, with: Regexp.new("\\A#{Sample::DOSE_REGEXP}\\z"))
+    custom_attribute(:immunoprecipitate)
+    custom_attribute(:growth_condition)
+    custom_attribute(:rnai)
+    custom_attribute(:organism_part)
+    # custom_attribute(:species) common name
+    custom_attribute(:time_point)
 
     # EGA
-    attribute(:treatment)
-    attribute(:subject)
-    attribute(:disease)
+    custom_attribute(:treatment)
+    custom_attribute(:subject)
+    custom_attribute(:disease)
 
     with_options(if: :validating_ena_required_fields?) do |ena_required_fields|
       ena_required_fields.validates_presence_of :service_specific_fields
@@ -404,7 +418,8 @@ class Sample < ActiveRecord::Base
     self.validating_ena_required_fields_without_first_study = state
     @ena_study.try(:validating_ena_required_fields=, state)
   end
-  alias_method_chain(:validating_ena_required_fields=, :first_study)
+  alias validating_ena_required_fields_without_first_study= validating_ena_required_fields=
+  alias validating_ena_required_fields= validating_ena_required_fields_with_first_study=
 
   def validate_ena_required_fields!
     # Do not alter the order of this line, otherwise @ena_study won't be set correctly!

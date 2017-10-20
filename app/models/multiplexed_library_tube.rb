@@ -10,7 +10,7 @@ class MultiplexedLibraryTube < Tube
   include Api::MultiplexedLibraryTubeIO::Extensions
   include Transfer::Associations
 
-  has_many :order_roles, ->() { uniq }, through: :requests_as_target
+  has_many :order_roles, ->() { distinct }, through: :requests_as_target
 
   # Transfer requests into a tube are direct requests where the tube is the target.
   def transfer_requests
@@ -38,7 +38,7 @@ class MultiplexedLibraryTube < Tube
   end
 
   def team
-    creation_requests.first.request_type.try(:product_line).try(:name)
+    creation_requests.first&.request_type&.product_line&.name
   end
 
   def library_source_plates

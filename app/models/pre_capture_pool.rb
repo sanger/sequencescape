@@ -4,20 +4,20 @@
 # authorship of this file.
 # Copyright (C) 2013,2015 Genome Research Ltd.
 
-class PreCapturePool < ActiveRecord::Base
+class PreCapturePool < ApplicationRecord
   # We build pre capture groups at submission so that they are not affected by failing of wells or
   # re-arraying.
 
   module Poolable
     def self.included(base)
       base.class_eval do
-        has_one :pre_capture_pool, through: :pooled_request, inverse_of: :pooled_requests
         has_one :pooled_request, dependent: :destroy, class_name: 'PreCapturePool::PooledRequest', foreign_key: :request_id, inverse_of: :request
+        has_one :pre_capture_pool, through: :pooled_request, inverse_of: :pooled_requests
       end
     end
   end
 
-  class PooledRequest < ActiveRecord::Base
+  class PooledRequest < ApplicationRecord
     belongs_to :request
     validates_presence_of :request
     validates_uniqueness_of :request_id

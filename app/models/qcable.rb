@@ -12,7 +12,7 @@
 
 require 'aasm'
 
-class Qcable < ActiveRecord::Base
+class Qcable < ApplicationRecord
   include Uuid::Uuidable
   include AASM
   include Qcable::Statemachine
@@ -28,7 +28,7 @@ class Qcable < ActiveRecord::Base
 
   before_validation :create_asset!, on: :create
 
-  delegate :bed, :order, to: :stamp_qcable, nil: true
+  delegate :bed, :order, to: :stamp_qcable, allow_nil: true
 
   scope :include_for_json, -> { includes([:asset, :lot, :stamp, :stamp_qcable]) }
 

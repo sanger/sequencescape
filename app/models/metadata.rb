@@ -25,7 +25,8 @@ module Metadata
     association_name = "#{as_name}_metadata".underscore.to_sym
     class_name = "#{name}::Metadata"
 
-    has_one(association_name, { class_name: class_name, dependent: :destroy, validate: true, autosave: true, inverse_of: :owner }.merge(options).merge(foreign_key: "#{as_name}_id", inverse_of: :owner))
+    default_options = { class_name: class_name, dependent: :destroy, validate: true, autosave: true, inverse_of: :owner, foreign_key: "#{as_name}_id" }
+    has_one association_name, default_options.merge(options)
     accepts_nested_attributes_for(association_name, update_only: true)
     scope :"include_#{ association_name }", -> { includes(association_name) }
 
@@ -40,7 +41,8 @@ module Metadata
         build_#{association_name}
       end
 
-      alias_method_chain(:#{association_name}, :initialization)
+      alias_method(:#{association_name}_without_initialization, :#{association_name})
+      alias_method(:#{association_name}, :#{association_name}_with_initialization)
 
       def validating_ena_required_fields=(state)
         @validating_ena_required_fields = !!state
@@ -63,7 +65,7 @@ module Metadata
         @tags ||= []
       end
 
-      before_validation { |record| record.#{association_name} }
+      before_validation :#{association_name}, on: :create
 
     ", __FILE__, line)
 
@@ -114,9 +116,11 @@ module Metadata
     const_set(:Metadata, metadata)
   end
 
-  class Base < ActiveRecord::Base
+  class Base < ApplicationRecord
     # All derived classes have their own table.  We're just here to help with some behaviour
     self.abstract_class = true
+
+    broadcasts_associated_via_warren :owner
 
     # This ensures that the default values are stored within the DB, meaning that this information will be
     # preserved for the future, unlike the original properties information which didn't store values when

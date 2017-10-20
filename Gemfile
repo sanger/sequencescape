@@ -1,8 +1,7 @@
 source 'https://rubygems.org'
 
 group :default do
-  gem 'rails'
-  gem 'rails-observers'
+  gem 'rails', '~> 5.1.2'
 
   # State machine
   gem 'aasm'
@@ -15,9 +14,7 @@ group :default do
   # Legacy support for parsing XML into params
   gem 'actionpack-xml_parser'
 
-  gem 'activerecord-jdbc-adapter', platforms: :jruby
-  gem 'activeresource', require: 'active_resource'
-  gem 'jdbc-mysql', platforms: :jruby
+  gem 'activeresource', github: 'rails/activeresource', branch: 'master'
   gem 'mysql2', platforms: :mri
   gem 'spreadsheet'
   gem 'will_paginate'
@@ -30,6 +27,7 @@ group :default do
   gem 'dynamic_form'
 
   gem 'puma'
+  gem 'daemons'
 
   # We pull down a slightly later version as there are commits on head
   # which we depend on, but don't have an official release yet.
@@ -51,21 +49,14 @@ group :default do
   gem 'sinatra', require: false
   gem 'rack-acceptable', require: 'rack/acceptable'
   gem 'json'
-  gem 'jrjackson', platforms: :jruby
   gem 'multi_json'
   gem 'cancan'
 
-  # MarchHare and Bunny are both RabbitMQ clients.
-  # While bunny does work with Jruby, it is not recommended
-  # and we ran into a few issues following the Rails 4 upgrade.
-  # Both have very similar API's and so we switch between then
-  # depending on environment.
-  gem 'march_hare', "~> 2.18.0", platforms: :jruby
-  gem 'bunny', platforms: :mri
+  # API v2
+  gem 'jsonapi-resources'
 
-  gem 'spoon'
-  # Spoon lets jruby spawn processes, such as the dbconsole. Part of launchy,
-  # but we'll need it in production if dbconsole is to work
+  # Bunny is a RabbitMQ client.
+  gem 'bunny'
 
   gem 'jquery-rails'
   gem 'jquery-ui-rails'
@@ -77,21 +68,29 @@ group :default do
   # gem 'font-awesome-sass'
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
-  gem 'therubyrhino', platforms: :jruby
   gem 'therubyracer', platforms: :mri
   # Pat of the JS assets pipleine
   gem 'uglifier', '>= 1.0.3'
 
   # Excel file generation
-  gem 'axlsx'
+  # Note: We're temporarily using out own for of the project to make use of a few changes
+  # which have not yet been merged into a proper release. (Latest release 2.0.1 at time of writing)
+  # Future releases SHOULD contain the changes made in our fork, and should be adopted as soon as
+  # reasonable once they are available. The next version looks like it may be v3.0.0, so be
+  # aware of possible breaking changes.
+  gem 'axlsx', github: 'sanger/axlsx', branch: 'v2.0.2sgr'
   # Excel file reading
   gem 'roo'
 
   # Used in XML generation.
-
   gem 'builder'
 
   gem 'sanger_barcode_format', github: 'sanger/sanger_barcode_format', branch: 'development'
+
+  # Allow simple connection pooling on non-database connections
+  # Using it to maintain our warren's of bunnies.
+  # Or the connection pool of RabbitMQ channels to get technical
+  gem 'connection_pool'
 end
 
 group :warehouse do
@@ -106,15 +105,22 @@ group :development do
   gem 'flay', require: false
   gem 'flog', require: false
   # Detect n+1 queries
-  gem 'bullet', require: false
+  gem 'bullet'
   gem 'pry'
   # Automatically generate documentation
   gem 'yard', require: false
   # Enforces coding styles and detects some bad practices
-  gem 'rubocop', require: false
+  gem 'rubocop', '~> 0.47.1', require: false
   # MiniProfiler allows you to see the speed of a request conveniently on the page.
   # It also shows the SQL queries performed and allows you to profile a specific block of code.
   gem 'rack-mini-profiler'
+  # find unused routes and controller actions by runnung `rake traceroute` from CL
+  gem 'traceroute'
+end
+
+group :profile do
+  # Ruby prof requires a separate environments so that is can run in production like mode.
+  gem 'ruby-prof'
 end
 
 group :test do
@@ -124,14 +130,18 @@ group :test do
   # Provides json expectations for rspec. Makes test more readable,
   # and test failures more descriptive.
   gem 'rspec-json_expectations', require: false
+  # It is needed to use #assigns(attribute) in controllers tests
+  gem 'rails-controller-testing'
 end
 
-group :test,:cucumber do
-  gem 'factory_girl', require: false
+group :test, :cucumber do
+  gem 'factory_girl_rails', require: false
   gem 'launchy', require: false
   gem 'mocha', require: false # avoids load order problems
   gem 'nokogiri', require: false
-  gem 'shoulda', require: false
+  gem 'shoulda-context', require: false
+  gem 'shoulda-matchers', require: false
+  gem 'jsonapi-resources-matchers', require: false
   gem 'timecop', require: false
   gem 'simplecov', require: false
   gem 'database_cleaner'
@@ -141,10 +151,11 @@ group :test,:cucumber do
   # - Patches rails to share a database connection between threads while Testing
   # - Pathes rspec to ensure capybara has done its stuff before killing the connection
   gem 'transactional_capybara'
+  gem 'pry'
 end
 
 group :cucumber do
-  gem 'rubyzip', '~>0.9'
+  gem 'rubyzip'
   gem 'capybara'
   gem 'mime-types'
   gem 'cucumber-rails', require: false

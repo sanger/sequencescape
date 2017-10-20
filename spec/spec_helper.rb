@@ -22,6 +22,7 @@ require 'capybara/rspec'
 require 'capybara/poltergeist'
 require 'webmock/rspec'
 require 'support/user_login'
+require 'jsonapi/resources/matchers'
 
 require 'pry'
 
@@ -118,6 +119,12 @@ RSpec.configure do |config|
   config.order = :random
 
   config.include UserLogin
+
+  config.around(:each, warren: true) do |ex|
+    Warren.handler.enable!
+    ex.run
+    Warren.handler.disable!
+  end
 
   # Seed global randomization in this process using the `--seed` CLI option.
   # Setting this allows you to use `--seed` to deterministically reproduce

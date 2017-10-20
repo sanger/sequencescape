@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
-class RequestInformation < ActiveRecord::Base
+class RequestInformation < ApplicationRecord
   belongs_to :request_information_type
   belongs_to :request
 

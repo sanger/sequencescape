@@ -134,7 +134,8 @@ RSpec.describe IlluminaHtp::Requests::StdLibraryRequest, type: :model do
         insert_size: { from: fragment_size_required_from, to: fragment_size_required_to },
         library_type: { name: library_type },
         request_type: subject.request_type.key,
-        pcr_cycles: pcr_cycles
+        pcr_cycles: pcr_cycles,
+        for_multiplexing: false
       }
     end
 

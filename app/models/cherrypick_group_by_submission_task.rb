@@ -25,13 +25,13 @@ class CherrypickGroupBySubmissionTask < Task
     'cherrypick_group_by_submission_batches'
   end
 
-  def render_task(workflow, params)
+  def render_task(workflow_controller, params)
     super
-    workflow.render_cherrypick_group_by_submission_task(self, params)
+    workflow_controller.render_cherrypick_group_by_submission_task(self, params)
   end
 
-  def do_task(workflow, params)
-    workflow.do_cherrypick_group_by_submission_task(self, params)
+  def do_task(workflow_controller, params)
+    workflow_controller.do_cherrypick_group_by_submission_task(self, params)
   end
 
   def valid_params?(options = {})

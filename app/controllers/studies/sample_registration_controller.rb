@@ -16,7 +16,7 @@ class Studies::SampleRegistrationController < ApplicationController
   def create
     # We have to remap the contents of the 'sample_registrars' parameter from a hash to an array, because
     # that's what it actually is: a map from index to attributes for that SampleRegistrar instance.
-    attributes = clean_params_from_check(params['sample_registrars']).each_with_object([]) do |(index_as_string, parameters), store|
+    attributes = clean_params_from_check(params['sample_registrars']).to_h.each_with_object([]) do |(index_as_string, parameters), store|
       store[index_as_string.to_i] = parameters.merge(study: @study, user: current_user)
     end.compact
 

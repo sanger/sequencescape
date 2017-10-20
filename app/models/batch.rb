@@ -8,7 +8,21 @@ require 'timeout'
 require 'tecan_file_generation'
 require 'aasm'
 
-class Batch < ActiveRecord::Base
+class Batch < ApplicationRecord
+  include Api::BatchIO::Extensions
+  include Api::Messages::FlowcellIO::Extensions
+  include AASM
+  include SequencingQcBatch
+  include Commentable
+  include Uuid::Uuidable
+  include StandardNamedScopes
+  include ::Batch::PipelineBehaviour
+  include ::Batch::StateMachineBehaviour
+  include ::Batch::TecanBehaviour
+  extend EventfulRecord
+
+  DEFAULT_VOLUME = 13
+
   self.per_page = 500
 
   belongs_to :user, foreign_key: 'user_id'
@@ -26,23 +40,55 @@ class Batch < ActiveRecord::Base
   has_many :studies, ->() { distinct }, through: :orders
   has_many :projects,  ->() { distinct }, through: :orders
   has_many :aliquots,  ->() { distinct }, through: :source_assets
-  has_many :samples, ->() { distinct }, through: :assets
+  has_many :samples, ->() { distinct }, through: :assets, source: :samples
+
+  has_many_events
+  has_many_lab_events
+
+  accepts_nested_attributes_for :requests
+  broadcast_via_warren
+
+  validate :requests_have_same_read_length, :cluster_formation_requests_must_be_over_minimum, :all_requests_are_ready?, on: :create
+
+  after_create :generate_target_assets_for_requests, if: :need_target_assets_on_requests?
+  after_save :rebroadcast
+
+  # Named scope for search by query string behavior
+  scope :for_search_query, ->(query, _with_includes) {
+    conditions = { id: query }
+    if user = User.find_by(login: query)
+      conditions = { user_id: user }
+    end
+    where(conditions)
+  }
+
+  scope :includes_for_ui,    -> { limit(5).includes(:user, :assignee, :pipeline) }
+  scope :pending_for_ui,     -> { where(state: 'pending',   production_state: nil).latest_first }
+  scope :released_for_ui,    -> { where(state: 'released',  production_state: nil).latest_first }
+  scope :completed_for_ui,   -> { where(state: 'completed', production_state: nil).latest_first }
+  scope :failed_for_ui,      -> { where(production_state: 'fail').includes(:failures).latest_first }
+  scope :in_progress_for_ui, -> { where(state: 'started', production_state: nil).latest_first }
+  scope :include_pipeline, -> { includes(pipeline: :uuid_object) }
+  scope :include_user, -> { includes(:user) }
+  scope :include_requests, -> {
+    includes(requests: [
+      :uuid_object, :request_metadata, :request_type,
+      { submission: :uuid_object },
+      { asset: [:uuid_object, :barcode_prefix, { aliquots: [:sample, :tag] }] },
+      { target_asset: [:uuid_object, :barcode_prefix, { aliquots: [:sample, :tag] }] }
+    ])
+  }
+
+  scope :latest_first, -> { order(created_at: :desc) }
+  scope :most_recent, ->(number) { latest_first.limit(number) }
+
+  delegate :size, to: :requests
+  delegate :sequencing?, to: :pipeline
 
   def study
     studies.first
   end
   deprecate study: 'Batches can belong to multiple studies'
-
-  include Api::BatchIO::Extensions
-  include Api::Messages::FlowcellIO::Extensions
-  include AASM
-  include SequencingQcBatch
-  include Commentable
-  include Uuid::Uuidable
-  include ModelExtensions::Batch
-  include StandardNamedScopes
-
-  validate :requests_have_same_read_length, :cluster_formation_requests_must_be_over_minimum, :all_requests_are_ready?, on: :create
 
   def all_requests_are_ready?
     # Checks that SequencingRequests have at least one LibraryCreationRequest in passed status before being processed (as refered by #75102998)
@@ -53,7 +99,7 @@ class Batch < ActiveRecord::Base
 
   def cluster_formation_requests_must_be_over_minimum
     if (!pipeline.min_size.nil?) && (requests.size < pipeline.min_size)
-      errors.add :base, 'You must create batches of at least ' + pipeline.min_size.to_s + ' requests in the pipeline ' + pipeline.name
+      errors.add :base, "You must create batches of at least #{pipeline.min_size} requests in the pipeline #{pipeline.name}"
     end
   end
 
@@ -62,37 +108,6 @@ class Batch < ActiveRecord::Base
       errors.add :base, "The selected requests must have the same values in their 'Read length' field."
     end
   end
-
-  extend EventfulRecord
-  has_many_events
-  has_many_lab_events
-
-  DEFAULT_VOLUME = 13
-
-  include ::Batch::PipelineBehaviour
-  include ::Batch::StateMachineBehaviour
-  include ::Batch::TecanBehaviour
-
- # Named scope for search by query string behavior
- scope :for_search_query, ->(query, _with_includes) {
-    conditions = ['id=?', query]
-    if user = User.find_by(login: query)
-      conditions = ['user_id=?', user.id]
-    end
-    where(conditions)
-                          }
-
-  scope :includes_for_ui,    -> { limit(5).includes(:user) }
-  scope :pending_for_ui,     -> { where(state: 'pending',   production_state: nil).latest_first }
-  scope :released_for_ui,    -> { where(state: 'released',  production_state: nil).latest_first }
-  scope :completed_for_ui,   -> { where(state: 'completed', production_state: nil).latest_first }
-  scope :failed_for_ui,      -> { where(production_state: 'fail').latest_first }
-  scope :in_progress_for_ui, -> { where(state: 'started', production_state: nil).latest_first }
-
-  scope :latest_first,       -> { order('created_at DESC') }
-  scope :most_recent, ->(number) { latest_first.limit(number) }
-
-  delegate :size, to: :requests
 
   # Fail was removed from State Machine (as a state) to allow the addition of qc_state column and features
   def fail(reason, comment, ignore_requests = false)
@@ -276,22 +291,6 @@ class Batch < ActiveRecord::Base
 
   def display_tags?
     multiplexed?
-  end
-
-  # Returns meaningful events excluding discriptors/descriptor_fields clutter
-  def formatted_events
-    ev = lab_events
-    d = []
-    unless ev.empty?
-      ev.sort_by { |i| i[:created_at] }.each do |t|
-        if t.descriptors
-          if g = t.descriptor_value('task')
-            d << { 'task' => g, 'description' => t.description, 'message' => t.message, 'data' => t.data, 'created_at' => t.created_at }
-          end
-        end
-      end
-    end
-    d
   end
 
   def multiplexed_items_with_unique_library_ids
@@ -496,10 +495,6 @@ class Batch < ActiveRecord::Base
     requests.count
   end
 
-  def pulldown_report_headers
-    ['Plate', 'Well', 'Study', 'Pooled Tube', 'Tag Group', 'Tag', 'Expected Sequence', 'Sample Name', 'Measured Volume', 'Measured Concentration']
-  end
-
   def show_actions?
     released? == false or
       pipeline.class.const_get(:ALWAYS_SHOW_RELEASE_ACTIONS)
@@ -513,6 +508,21 @@ class Batch < ActiveRecord::Base
     end
   end
 
+  def show_fail_link?
+    released? && sequencing?
+  end
+
+  def downstream_requests_needing_asset(request)
+    next_requests_needing_asset = request.next_requests(pipeline).select { |r| r.asset_id.blank? }
+    yield(next_requests_needing_asset) unless next_requests_needing_asset.blank?
+  end
+
+  def rebroadcast
+    messengers.each(&:broadcast)
+  end
+
+  private
+
   def all_requests_qced?
     requests.all? do |request|
       request.asset.resource? ||
@@ -520,7 +530,36 @@ class Batch < ActiveRecord::Base
     end
   end
 
-  def show_fail_link?
-    released? && pipeline.sequencing?
+  def generate_target_assets_for_requests
+    requests_to_update, asset_links = [], []
+
+    asset_type = pipeline.asset_type.constantize
+    requests.reload.each do |request|
+      # we need to call downstream request before setting the target_asset
+      # otherwise, the request use the target asset to find the next request
+      target_asset = asset_type.create! do |asset|
+        asset.barcode = AssetBarcode.new_barcode unless [Lane, Well].include?(asset_type)
+        asset.generate_name(request.asset.name)
+      end
+
+      downstream_requests_needing_asset(request) do |downstream_requests|
+        requests_to_update.concat(downstream_requests.map { |r| [r.id, target_asset.id] })
+      end
+
+      request.update_attributes!(target_asset: target_asset)
+
+      # All links between the two assets as new, so we can bulk create them!
+      asset_links << [request.asset.id, request.target_asset.id]
+    end
+
+    AssetLink::BuilderJob.create(asset_links)
+
+    requests_to_update.each do |request_details|
+      Request.find(request_details.first).update_attributes!(asset_id: request_details.last)
+    end
+  end
+
+  def need_target_assets_on_requests?
+    pipeline.need_target_assets_on_requests?
   end
 end

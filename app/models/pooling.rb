@@ -5,8 +5,8 @@ class Pooling
   attr_accessor :barcodes, :source_assets, :stock_mx_tube_required, :stock_mx_tube, :standard_mx_tube, :barcode_printer, :count
 
   validates_presence_of :source_assets, message: 'were not scanned or were not found in sequencescape'
-  validate :all_source_assets_are_in_sqsc, if: 'source_assets.present?'
-  validate :source_assets_can_be_pooled, if: 'source_assets.present?'
+  validate :all_source_assets_are_in_sqsc, if: :source_assets?
+  validate :source_assets_can_be_pooled, if: :source_assets?
 
   def execute
     @stock_mx_tube = Tube::Purpose.stock_mx_tube.create!(name: '(s)') if stock_mx_tube_required?
@@ -63,6 +63,11 @@ class Pooling
 
   def tags_combinations
     @tags_combinations || []
+
+  end
+
+  def source_assets?
+    source_assets.present?
   end
 
   def find_source_assets

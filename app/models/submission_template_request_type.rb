@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
-class SubmissionTemplateRequestType < ActiveRecord::Base
+class SubmissionTemplateRequestType < ApplicationRecord
   belongs_to :submission_template
   belongs_to :request_type
 end

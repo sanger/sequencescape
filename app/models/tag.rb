@@ -4,7 +4,14 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
 
-class Tag < ActiveRecord::Base
+# A Tag is a short, know sequence of DNA which gets applied to a sample.
+# The tag remains attached through subsequent processing, and means that it is
+# possible to identify the origin of a sample if multiple samples are subsequently
+# pooled together.
+# Tags are sometimes referred to as barcodes by our users.
+# Tag is stored on aliquot, and an individual aliquot can have two tags
+# identified as tag and tag2, these may also be known as i7 and i5 respectively.
+class Tag < ApplicationRecord
   module Associations
     def untag!
       aliquots.first.try(:update_attributes!, tag: nil)
@@ -21,6 +28,8 @@ class Tag < ActiveRecord::Base
   has_many :assets, through: :aliquots, source: :receptacle
   has_many :requests, ->() { distinct }, through: :assets
 
+  broadcast_via_warren
+
   scope :sorted, ->() { order('map_id ASC') }
 
   def name
@@ -29,9 +38,7 @@ class Tag < ActiveRecord::Base
 
   # Connects a tag instance to the specified asset
   def tag!(asset)
-    raise StandardError, 'Cannot tag an empty asset'   if asset.aliquots.empty?
-    raise StandardError, 'Cannot tag multiple samples' if asset.aliquots.size > 1
-    asset.aliquots.first.update_attributes!(tag: self)
+    asset.attach_tag(self)
   end
 
   # Allows the application of multiple tags to an aliquot

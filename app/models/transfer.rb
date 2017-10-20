@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
 
-class Transfer < ActiveRecord::Base
+class Transfer < ApplicationRecord
   module Associations
     def self.included(base)
       base.class_eval do
@@ -122,8 +122,9 @@ class Transfer < ActiveRecord::Base
   module TransfersBySchema
     def self.included(base)
       base.class_eval do
-        serialize :transfers
-        validates :transfers, presence: true, allow_blank: false
+        serialize :transfers_hash
+        alias_attribute :transfers, :transfers_hash
+        validates :transfers_hash, presence: true, allow_blank: false
       end
     end
   end
@@ -145,8 +146,9 @@ class Transfer < ActiveRecord::Base
     def self.included(base)
       base.class_eval do
         # Ensure that the transfers are recorded so we can see what happened.
-        serialize :transfers
-        validates_unassigned :transfers
+        serialize :transfers_hash
+        alias_attribute :transfers, :transfers_hash
+        validates_unassigned :transfers_hash
       end
     end
 

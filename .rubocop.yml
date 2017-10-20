@@ -1,10 +1,6 @@
 inherit_from: .rubocop_todo.yml
 AllCops:
-  # Caution! Setting this to 2.4 can cause issues with
-  # rolling back to jruby 9.1.x.x which only supports 2.3
-  # Its mainly just regex matchers. But we should wait until
-  # we're happy on MRI.
-  TargetRubyVersion: 2.3
+  TargetRubyVersion: 2.4
   Include:
     - Rakefile
     - config.ru
@@ -65,3 +61,7 @@ Rails/DynamicFindBy:
 
 Style/IndentArray:
   EnforcedStyle: consistent
+
+# Temporarily disabled while we switch back from the nested style to the inline
+Style/ClassAndModuleChildren:
+  Enabled: false

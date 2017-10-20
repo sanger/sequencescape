@@ -12,7 +12,7 @@ class Transfer::BetweenPlateAndTubes < Transfer
     ]
   }
 
-  class WellToTube < ActiveRecord::Base
+  class WellToTube < ApplicationRecord
     self.table_name = ('well_to_tube_transfers')
 
     belongs_to :transfer, class_name: 'Transfer::BetweenPlateAndTubes'
@@ -30,7 +30,7 @@ class Transfer::BetweenPlateAndTubes < Transfer
 
   # Records the transfers from the wells on the plate to the assets they have gone into.
   has_many :well_to_tubes, class_name: 'Transfer::BetweenPlateAndTubes::WellToTube', foreign_key: :transfer_id
-  has_many :destinations, ->() { uniq }, through: :well_to_tubes
+  has_many :destinations, ->() { distinct }, through: :well_to_tubes
   scope :include_transfers, -> { includes(well_to_tubes: DESTINATION_INCLUDES) }
 
   after_create :build_well_to_tube_transfers

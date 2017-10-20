@@ -28,7 +28,9 @@ namespace :limber do
   task create_request_types: [:environment, :create_plates] do
     puts 'Creating request types...'
     ActiveRecord::Base.transaction do
-      Limber::Helper::RequestTypeConstructor.new('WGS').build!
+      ['WGS', 'LCMB'].each do |prefix|
+        Limber::Helper::RequestTypeConstructor.new(prefix).build!
+      end
       Limber::Helper::RequestTypeConstructor.new('PCR Free', default_purpose: 'PF Cherrypicked').build!
 
       Limber::Helper::RequestTypeConstructor.new(
@@ -67,14 +69,9 @@ namespace :limber do
   task create_submission_templates: [:environment, :create_request_types] do
     puts 'Creating submission templates....'
     ActiveRecord::Base.transaction do
-      %w(WGS ISC ReISC).each do |prefix|
-        catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: prefix)
-        Limber::Helper::TemplateConstructor.new(
-          name: prefix,
-          role: prefix,
-          type: "limber_#{prefix.downcase}",
-          catalogue: catalogue
-        ).build!
+      %w(WGS ISC ReISC).each do |suffix|
+        catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: suffix)
+        Limber::Helper::TemplateConstructor.new(suffix: suffix, catalogue: catalogue).build!
       end
       # PCR Free is HiSeqX only
       'PCR Free'.tap do |prefix|
@@ -88,5 +85,9 @@ namespace :limber do
         ).build!
       end
     end
+    lcbm_catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'LCMB')
+    Limber::Helper::LibraryOnlyTemplateConstructor.new(suffix: 'LCMB', catalogue: lcbm_catalogue).build!
+    catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'Generic')
+    Limber::Helper::TemplateConstructor.new(suffix: 'Multiplexing', catalogue: catalogue).build!
   end
 end

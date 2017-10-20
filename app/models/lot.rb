@@ -8,7 +8,7 @@
 # A lot represents a received batch of consumables (eg. tag plates)
 # that can be assumed to share some level of QC.
 
-class Lot < ActiveRecord::Base
+class Lot < ApplicationRecord
   module Template
     def self.included(base)
       base.class_eval do

@@ -44,25 +44,26 @@ class Cherrypick::StrategyTest < ActiveSupport::TestCase
         end
 
         context 'return partially filled plate' do
-          teardown do
+          should 'contiguous wells' do
+            @plate = @purpose.create!(:do_not_create_wells, barcode: 1).tap do |plate|
+              @purpose.well_locations.to_a.slice(0, 12).each do |location|
+                plate.wells.create!(map: location)
+              end
+            end
             assert_equal(
               Cherrypick::Strategy::PickPlate.new(@purpose, 12).to_a,
               @strategy.send(:wrap_plate, @plate).to_a
             )
           end
 
-          should 'contiguous wells' do
-            @plate = @purpose.create!(:do_not_create_wells, barcode: 1).tap do |plate|
-              @purpose.well_locations.slice(0, 12).each do |location|
-                plate.wells.create!(map: location)
-              end
-            end
-          end
-
           should 'non-contiguous wells' do
             @plate = @purpose.create!(:do_not_create_wells, barcode: 1).tap do |plate|
               plate.wells.create!(map: @purpose.well_locations[11])
             end
+            assert_equal(
+              Cherrypick::Strategy::PickPlate.new(@purpose, 12).to_a,
+              @strategy.send(:wrap_plate, @plate).to_a
+            )
           end
         end
       end

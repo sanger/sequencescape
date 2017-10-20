@@ -18,7 +18,7 @@ module SampleManifestExcel
 
       validates_presence_of :start_row, :sanger_sample_id_column, :sample_manifest
       validate :check_columns, :check_processor, :check_rows
-      validate :check_processor, if: 'processor.present?'
+      validate :check_processor, if: :processor?
 
       delegate :processed?, :tags_clash_message, to: :processor
 
@@ -51,6 +51,8 @@ module SampleManifestExcel
       # Processing involves updating the sample manifest and all of its associated samples.
       def process(tag_group)
         ActiveRecord::Base.transaction do
+          sample_manifest.last_errors = nil
+          sample_manifest.start!
           processor.run(tag_group)
         end
       end
@@ -58,6 +60,14 @@ module SampleManifestExcel
       def data_for(column_name)
         required_column = columns.find_by(:name, column_name)
         data.column(required_column.number) if required_column.present?
+      end
+
+      def broadcast_sample_manifest_updated_event(user)
+        sample_manifest.updated_broadcast_event(user, samples_to_be_broadcasted)
+      end
+
+      def complete
+        sample_manifest.finished!
       end
 
       private
@@ -95,6 +105,14 @@ module SampleManifestExcel
             errors.add key, value
           end
         end
+      end
+
+      def processor?
+        processor.present?
+      end
+
+      def samples_to_be_broadcasted
+        rows.map { |row| row.sample.id }
       end
     end
   end

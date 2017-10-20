@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'models/sample_manifest/sample_manifest_generator'
 
 RSpec.describe SampleManifestGenerator, type: :model do
   before(:all) do

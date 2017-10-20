@@ -26,7 +26,7 @@ module Api
       end
 
       def file_addition(action, http_method)
-        send(http_method, %r{^/([\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12})(?:/([^/]+(?:/[^/]+)*))?$}, file_attatched: true) do
+        send(http_method, %r{/([\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12})(?:/([^/]+(?:/[^/]+)*))?}, file_attatched: true) do
           raise Core::Service::ContentFiltering::InvalidRequestedContentTypeOnFile if request.acceptable_media_types.prioritize(registered_mimetypes).present?
           report('file') do
             filename = /filename="([^"]*)"/.match(request.env['HTTP_CONTENT_DISPOSITION']).try(:[], 1) || 'unnamed_file'
@@ -55,7 +55,7 @@ module Api
       end
 
       def file_model_addition(action, http_method)
-        send(http_method, %r{^/([^\d/][^/]+(?:/[^/]+){0,2})$}, file_attatched: true) do
+        send(http_method, %r{/([^\d/][^/]+(?:/[^/]+){0,2})}, file_attatched: true) do
           raise Core::Service::ContentFiltering::InvalidRequestedContentType if request.acceptable_media_types.prioritize(registered_mimetypes).present?
           report('model') do
             filename = /filename="([^"]*)"/.match(request.env['HTTP_CONTENT_DISPOSITION']).try(:[], 1) || 'unnamed_file'
@@ -81,7 +81,7 @@ module Api
       end
 
       def file_model_action(_action, http_method)
-        send(http_method, %r{^/([^\d/][^/]+(?:/[^/]+){0,2})$}, file_requested: true) do
+        send(http_method, %r{/([^\d/][^/]+(?:/[^/]+){0,2})}, file_requested: true) do
           report('model') do
             raise Core::Service::ContentFiltering::InvalidRequestedContentType
           end
@@ -89,7 +89,7 @@ module Api
       end
 
       def file_action(action, http_method)
-        send(http_method, %r{^/([\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12})(?:/([^/]+(?:/[^/]+)*))?$}, file_requested: true) do
+        send(http_method, %r{/([\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12})(?:/([^/]+(?:/[^/]+)*))?}, file_requested: true) do
           report('file') do
             uuid_in_url, parts = params[:captures][0], params[:captures][1].try(:split, '/') || []
             uuid = Uuid.find_by(external_id: uuid_in_url) or raise ActiveRecord::RecordNotFound, 'UUID does not exist'
@@ -104,7 +104,7 @@ module Api
       end
 
       def instance_action(action, http_method)
-        send(http_method, %r{^/([\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12})(?:/([^/]+(?:/[^/]+)*))?$}, file_attatched: false, file_requested: false) do
+        send(http_method, %r{/([\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12})(?:/([^/]+(?:/[^/]+)*))?}, file_attatched: false, file_requested: false) do
           report('instance') do
             uuid_in_url, parts = params[:captures][0], params[:captures][1].try(:split, '/') || []
             uuid = Uuid.find_by(external_id: uuid_in_url) or raise ActiveRecord::RecordNotFound, 'UUID does not exist'
@@ -117,7 +117,7 @@ module Api
       end
 
       def model_action(action, http_method)
-        send(http_method, %r{^/([^\d/][^/]+(?:/[^/]+){0,2})$}, file_attatched: false, file_requested: false) do
+        send(http_method, %r{/([^\d/][^/]+(?:/[^/]+){0,2})}, file_attatched: false, file_requested: false) do
           report('model') do
             determine_model_from_parts(*params[:captures].join.split('/')) do |model, parts|
               handle_request(:model, request, action, parts) do |request|

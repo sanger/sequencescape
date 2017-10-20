@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
-class Failure < ActiveRecord::Base
+class Failure < ApplicationRecord
   belongs_to :failable, polymorphic: true
   after_create :notify_remote
 

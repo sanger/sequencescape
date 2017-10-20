@@ -9,13 +9,14 @@ class AssetsController < ApplicationController
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   before_action :discover_asset, only: [:show, :edit, :update, :destory, :summary, :close, :print_assets, :print, :show_plate, :history, :holded_assets]
+  before_action :prepare_asset, only: [:new_request, :create_request]
 
   def index
-    @assets_without_requests = []
-    @assets_with_requests = []
     if params[:study_id]
       @study = Study.find(params[:study_id])
       @assets = @study.assets_through_aliquots.order(:name).page(params[:page])
+    else
+      @assets = Asset.page(params[:page])
     end
 
     respond_to do |format|
@@ -27,7 +28,7 @@ class AssetsController < ApplicationController
       if params[:study_id]
         format.xml { render xml: Study.find(params[:study_id]).assets_through_requests.to_xml }
       elsif params[:sample_id]
-          format.xml { render xml: Sample.find(params[:sample_id]).assets.to_xml }
+        format.xml { render xml: Sample.find(params[:sample_id]).assets.to_xml }
       elsif params[:asset_id]
         @asset = Asset.find(params[:asset_id])
         format.xml { render xml: ['relations' => { 'parents' => @asset.parents, 'children' => @asset.children }].to_xml }
@@ -171,7 +172,7 @@ class AssetsController < ApplicationController
 
   def update
     respond_to do |format|
-      if @asset.update_attributes(asset_params.merge(params.fetch(:lane, {})))
+      if @asset.update_attributes(asset_params.merge(params.to_unsafe_h.fetch(:lane, {})))
         flash[:notice] = 'Asset was successfully updated.'
         if params[:lab_view]
           format.html { redirect_to(action: :lab_view, barcode: @asset.barcode) }
@@ -259,8 +260,6 @@ class AssetsController < ApplicationController
   def show_plate
   end
 
-  before_action :prepare_asset, only: [:new_request, :create_request]
-
   def new_request
     @request_types = RequestType.applicable_for_asset(@asset)
     # In rare cases the user links in to the 'new request' page
@@ -294,7 +293,7 @@ class AssetsController < ApplicationController
       user: current_user,
       assets: [@asset],
       request_types: [@request_type.id],
-      request_options: request_options,
+      request_options: request_options.to_unsafe_h,
       comments: params[:comments],
       priority: params[:priority]
     )
@@ -365,7 +364,7 @@ class AssetsController < ApplicationController
     elsif match = /\A([A-z]{2})([0-9]{1,7})[A-z]{0,1}\z/.match(barcode) # Human Readable
       prefix = BarcodePrefix.find_by(prefix: match[1])
       @asset = Asset.find_by(barcode: match[2], barcode_prefix_id: prefix.id) if prefix
-    elsif /\A[0-9]{1,7}\z/ =~ barcode # Just a number
+    elsif /\A[0-9]{1,7}\z/.match?(barcode) # Just a number
       @asset = Asset.find_by(barcode: barcode)
     else
       flash[:error] = "'#{barcode}' is not a recognized barcode format"

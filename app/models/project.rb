@@ -6,7 +6,9 @@
 
 require 'aasm'
 
-class Project < ActiveRecord::Base
+class Project < ApplicationRecord
+  # It has to be here, as there are has_many through: :orders associations in modules
+  has_many :orders
   include Api::ProjectIO::Extensions
   include ModelExtensions::Project
   include Api::Messages::FlowcellIO::ProjectExtensions
@@ -23,9 +25,10 @@ class Project < ActiveRecord::Base
   end
 
   ACTIVE_STATE = 'active'
-
   has_many_events
   has_many_lab_events
+
+  broadcast_via_warren
 
   aasm column: :state, whiny_persistence: true do
     state :pending, initial: true
@@ -52,7 +55,6 @@ class Project < ActiveRecord::Base
   }
 
   has_many :roles, as: :authorizable
-  has_many :orders
   has_many :studies, ->() { distinct }, class_name: 'Study', through: :orders, source: :study
   has_many :submissions,  ->() { distinct }, through: :orders, source: :submission
   has_many :sample_manifests
@@ -186,13 +188,13 @@ class Project < ActiveRecord::Base
     include ProjectManager::Associations
     include BudgetDivision::Associations
 
-    attribute(:project_cost_code, required: true)
-    attribute(:funding_comments)
-    attribute(:collaborators)
-    attribute(:external_funding_source)
-    attribute(:sequencing_budget_cost_centre)
-    attribute(:project_funding_model, in: PROJECT_FUNDING_MODELS)
-    attribute(:gt_committee_tracking_id)
+    custom_attribute(:project_cost_code, required: true)
+    custom_attribute(:funding_comments)
+    custom_attribute(:collaborators)
+    custom_attribute(:external_funding_source)
+    custom_attribute(:sequencing_budget_cost_centre)
+    custom_attribute(:project_funding_model, in: PROJECT_FUNDING_MODELS)
+    custom_attribute(:gt_committee_tracking_id)
 
     before_validation do |record|
       record.project_cost_code = nil if record.project_cost_code.blank?

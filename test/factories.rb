@@ -35,7 +35,7 @@ FactoryGirl.define do
     end
   end
 
-  factory :aliquot_receptacle, class: Aliquot::Receptacle, aliases: [:receptacle] do
+  factory :receptacle do
   end
 
   factory :event do
@@ -63,48 +63,8 @@ FactoryGirl.define do
     name  { generate :data_release_study_type_name }
   end
 
-  factory :study_metadata, class: Study::Metadata do
-    faculty_sponsor
-    study_description           'Some study on something'
-    program                     { Program.find_or_create_by(name: 'General') }
-    contaminated_human_dna      'No'
-    contains_human_dna          'No'
-    commercially_available      'No'
-    # Study type is implemented poorly. But I'm in the middle of the rails 4
-    # upgrade at the moment, so I need to get things working before I change them.
-    study_type                  { StudyType.find_or_create_by(name: 'Not specified') }
-    # This is probably a bit grim as well
-    data_release_study_type     { DataReleaseStudyType.find_or_create_by(name: 'genomic sequencing') }
-    reference_genome            { ReferenceGenome.find_by!(name: '') }
-    data_release_strategy       'open'
-    study_name_abbreviation     'WTCCC'
-    data_access_group           'something'
-    s3_email_list               'aa1@sanger.ac.uk;aa2@sanger.ac.uk'
-    data_deletion_period        '3 months'
-  end
-
-  factory :study do
-    name { |_a| generate :study_name }
-    user
-    blocked              false
-    state                'active'
-    enforce_data_release false
-    enforce_accessioning false
-    reference_genome     { ReferenceGenome.find_by(name: '') }
-
-    # study_metadata
-
-    after(:build) { |study| study.study_metadata = create(:study_metadata, study: study) }
-  end
-
   factory  :budget_division do
     name { |_a| generate :budget_division_name }
-  end
-
-  factory :project_metadata, class: Project::Metadata do
-    project_cost_code 'Some Cost Code'
-    project_funding_model 'Internal'
-    budget_division { |budget| budget.association(:budget_division) }
   end
 
   factory :project do
@@ -114,6 +74,12 @@ FactoryGirl.define do
     state               'active'
 
     after(:build) { |project| project.project_metadata = create(:project_metadata, project: project) }
+  end
+
+  factory :project_metadata, class: Project::Metadata do
+    project_cost_code 'Some Cost Code'
+    project_funding_model 'Internal'
+    budget_division { |budget| budget.association(:budget_division) }
   end
 
   factory :program do
@@ -132,6 +98,8 @@ FactoryGirl.define do
   factory :submission_workflow, class: Submission::Workflow do
     name { |_a| generate :item_name }
     item_label 'library'
+    factory :workflow do
+    end
   end
 
   factory :submission do
@@ -141,7 +109,11 @@ FactoryGirl.define do
   factory :submission_template do
     submission_class_name LinearSubmission.name
     name                  'my_template'
-    submission_parameters(workflow_id: 1, request_type_ids_list: [])
+
+    transient do
+      request_type_ids_list []
+    end
+    submission_parameters { { workflow_id: 1, request_type_ids_list: request_type_ids_list } }
     product_catalogue { |pc| pc.association(:single_product_catalogue) }
 
     factory :limber_wgs_submission_template do
@@ -149,13 +121,24 @@ FactoryGirl.define do
         request_types { [create(:library_request_type)] }
       end
       sequence(:name) { |i| "Template #{i}" }
-      submission_parameters { { workflow_id: 1, request_type_ids_list: request_types.map { |rt| [rt.id] } } }
+      submission_parameters do
+        {
+          workflow_id: Submission::Workflow.first.id,
+          request_type_ids_list: request_types.map { |rt| [rt.id] }
+        }
+      end
     end
   end
 
   factory :request_metadata, class: Request::Metadata do
     read_length 76
     customer_accepts_responsibility false
+  end
+
+  factory :request_traction_grid_ion_metadata, class: Request::Traction::GridIon::Metadata do
+    library_type 'Rapid'
+    data_type 'basecalls and raw data'
+    association(:owner, factory: :request_traction_grid_ion)
   end
 
   #  Automatically generated request types
@@ -340,37 +323,6 @@ FactoryGirl.define do
     "tag_group_#{i}"
   end
 
-  factory :user do
-    first_name        'fn'
-    last_name         'ln'
-    login
-    email             { |a| "#{a.login}@example.com".downcase }
-    workflow          { |workflow| workflow.association(:submission_workflow) }
-    api_key           '123456789'
-    password              'password'
-    password_confirmation 'password'
-
-    factory :admin do
-      roles { |role| [role.association(:admin_role)] }
-    end
-
-    factory :manager do
-      roles { |role| [role.association(:manager_role, authorizable: authorizable)] }
-
-      transient do
-        authorizable { create :study }
-      end
-    end
-
-    factory :owner do
-      roles { |role| [role.association(:owner_role)] }
-    end
-
-    factory :data_access_coordinator do
-      roles { |role| [role.association(:data_access_coordinator_role)] }
-    end
-  end
-
   factory :role do
     sequence(:name) { |i| "Role #{i}" }
     authorizable nil
@@ -419,16 +371,11 @@ FactoryGirl.define do
   end
 
   factory :asset_group_asset do
-    association(:asset, factory: :aliquot_receptacle)
+    association(:asset, factory: :receptacle)
     asset_group
   end
 
   factory :fragment do
-  end
-
-  factory(:new_stock_tube_purpose, class: IlluminaHtp::StockTubePurpose) do |_p|
-    name { generate :purpose_name }
-    target_type 'StockMultiplexedLibraryTube'
   end
 
   factory(:request_purpose) do
@@ -475,16 +422,14 @@ FactoryGirl.define do
     request_purpose
   end
 
-  factory(:empty_lane, class: Lane) do
-    name                { generate :asset_name }
-    external_release    nil
-  end
-
-  factory(:lane, parent: :empty_lane) do
+  factory(:lane, traits: [:with_sample_builder]) do
+    name { generate :asset_name }
+    external_release nil
+    factory(:empty_lane)
   end
 
   factory  :spiked_buffer do
-    name { |_a| generate :asset_name }
+    name { generate :asset_name }
     volume 50
   end
 
@@ -494,28 +439,6 @@ FactoryGirl.define do
 
   factory :supplier do
     name 'Test supplier'
-  end
-
-  factory :sample_manifest do
-    study
-    supplier
-    asset_type 'plate'
-    count 1
-
-    factory :sample_manifest_with_samples do
-      samples { FactoryGirl.create_list(:sample_with_well, 5) }
-    end
-
-    factory :tube_sample_manifest do
-      asset_type '1dtube'
-
-      factory :tube_sample_manifest_with_samples do
-        samples { FactoryGirl.create_list(:sample_tube, 5).map(&:samples).flatten }
-      end
-      factory :tube_sample_manifest_with_several_tubes do
-        count 5
-      end
-    end
   end
 
   factory :db_file do
@@ -567,7 +490,7 @@ FactoryGirl.define do
     transient do
       oligo { generate :oligo }
     end
-    name 'Tag 2 layout template'
+    sequence(:name) { |n| "Tag 2 layout template #{n}" }
     tag { |tag| tag.association :tag, oligo: oligo }
   end
 
@@ -575,6 +498,12 @@ FactoryGirl.define do
     root 'a_plate'
     template 'FluidigmPlateIO'
     purpose { |purpose| purpose.association(:plate_purpose) }
+  end
+
+  factory :messenger do
+    root 'barcode'
+    association(:target, factory: :asset)
+    template 'Barcode'
   end
 
   factory(:barcode_printer) do

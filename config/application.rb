@@ -1,7 +1,6 @@
 require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
-require 'action_dispatch/xml_params_parser'
 
 Bundler.require(:default, Rails.env)
 
@@ -60,14 +59,14 @@ module Sequencescape
     config.autoload_paths += %W{#{Rails.root}/lib/sample_manifest_excel}
     config.autoload_paths += %W{#{Rails.root}/lib/accession}
 
-    config.middleware.insert_after ActionDispatch::ParamsParser, ActionDispatch::XmlParamsParser
-
     config.encoding = 'utf-8'
 
     # Make Time.zone default to the specified zone, and make Active Record store time values
     # in the database in UTC, and return them converted to the specified local zone.
     # Run "rake -D time" for a list of tasks for finding time zone names. Uncomment to use default local time.
     config.time_zone = 'London'
+
+    config.warren = config_for(:warren)
 
     # Your secret key for verifying cookie session data integrity.
     # If you change this key, all old sessions will become invalid!

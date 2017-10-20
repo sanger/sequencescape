@@ -10,6 +10,8 @@ class WorkflowsController < ApplicationController
   before_action :evil_parameter_hack!
   before_action :find_workflow_by_id, only: [:show, :edit, :duplicate, :batches, :update, :destroy, :reorder_tasks]
 
+  attr_accessor :plate_purpose_options
+
   include Tasks::AddSpikedInControlHandler
   include Tasks::AssignTagsHandler
   include Tasks::AssignTagsToWellsHandler
@@ -95,7 +97,7 @@ class WorkflowsController < ApplicationController
 
   def update
     respond_to do |format|
-      if @workflow.update_attributes(params[:workflow])
+      if @workflow.update_attributes(params[:workflow] || {})
         flash[:notice] = 'Workflow was successfully updated.'
         format.html { redirect_to workflow_url(@workflow) }
         format.xml  { head :ok }
@@ -125,7 +127,7 @@ class WorkflowsController < ApplicationController
       task.sorted = params['task_list'].index(task.id.to_s) + 1
       task.save
     end
-    render nothing: true
+    head :ok
   end
 
   # TODO: This needs to be made RESTful.
@@ -140,20 +142,20 @@ class WorkflowsController < ApplicationController
     @workflow = LabInterface::Workflow.includes(:tasks).find(params[:workflow_id])
     @stage = params[:id].to_i
     @task = @workflow.tasks[@stage]
+    # If params[:next_stage] is nil then just render the current task
+    # else actually execute the task.
+    unless params[:next_stage].nil?
 
-    ActiveRecord::Base.transaction do
-      # If params[:next_stage] is nil then just render the current task
-      # else actually execute the task.
-      unless params[:next_stage].nil?
+      eager_loading = @task.included_for_do_task
+      @batch ||= Batch.includes(eager_loading).find(params[:batch_id])
 
-        eager_loading = @task.included_for_do_task
-        @batch ||= Batch.includes(eager_loading).find(params[:batch_id])
-        unless @batch.editable?
-          flash[:error] = 'You cannot make changes to a completed batch.'
-          redirect_to :back
-          return false
-        end
+      unless @batch.editable?
+        flash[:error] = 'You cannot make changes to a completed batch.'
+        redirect_back fallback_location: root_path
+        return false
+      end
 
+      ActiveRecord::Base.transaction do
         if @task.do_task(self, params)
           # Task completed, start the batch is necessary and display the next one
           do_start_batch_task(@task, params)
@@ -162,17 +164,17 @@ class WorkflowsController < ApplicationController
           @task = @workflow.tasks[@stage]
         end
       end
+    end
 
-      # Is this the last task in the workflow?
-      if @stage >= @workflow.tasks.size
-        # All requests have finished all tasks: finish workflow
-        redirect_to finish_batch_url(@batch)
-      else
-        if @batch.nil? || @task.included_for_render_task != eager_loading
-          @batch = Batch.includes(@task.included_for_render_task).find(params[:batch_id])
-        end
-        @task.render_task(self, params)
+    # Is this the last task in the workflow?
+    if @stage >= @workflow.tasks.size
+      # All requests have finished all tasks: finish workflow
+      redirect_to finish_batch_url(@batch)
+    else
+      if @batch.nil? || @task.included_for_render_task != eager_loading
+        @batch = Batch.includes(@task.included_for_render_task).find(params[:batch_id])
       end
+      @task.render_task(self, params)
     end
   end
 
