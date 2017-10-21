@@ -668,8 +668,6 @@ Sequencescape::Application.routes.draw do
   resources :user_queries, only: [:new, :create]
 
   resources :poolings, only: [:new, :create]
-  get '/poolings/find_tags_clash'
-  post '/poolings/find_tags_clash'
 
   post 'get_your_qc_completed_tubes_here' => 'get_your_qc_completed_tubes_here#create', as: :get_your_qc_completed_tubes_here
 

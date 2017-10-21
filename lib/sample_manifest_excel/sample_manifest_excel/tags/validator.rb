@@ -10,6 +10,7 @@ module SampleManifestExcel
           validate :check_tags
         end
 
+        # it happens for every row now. Probably it should not.
         def check_tags
           tag_oligos = upload.data_for(:tag_oligo)
           tag2_oligos = upload.data_for(:tag2_oligo)

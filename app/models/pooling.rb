@@ -54,11 +54,6 @@ class Pooling
     @message ||= {}
   end
 
-  def tags_clash_message
-    duplicates = find_tags_clash(tags_combinations)
-    create_tags_clashes_message(duplicates.except([]))
-  end
-
   private
 
   def tags_combinations
@@ -98,7 +93,15 @@ class Pooling
       end
     end
     errors.add(:source_assets, "with barcode(s) #{assets_with_no_aliquot.join(', ')} do not have any aliquots") unless assets_with_no_aliquot.empty?
-    errors.add(:tags_combinations, 'are not unique') unless tags_combinations.length == tags_combinations.uniq.length
+    errors.add(:tags_combinations, tags_clash_message) if duplicates.present?
+  end
+
+  def duplicates
+    @duplicates ||= find_tags_clash(tags_combinations)
+  end
+
+  def tags_clash_message
+    create_tags_clashes_message(duplicates.except([]))
   end
 
   def execute_print_job

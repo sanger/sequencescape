@@ -28,8 +28,6 @@ feature 'Pooling', js: true do
       click_on 'Transfer'
       expect(page).to have_content 'Source assets with barcode(s) 1234567890123 were not found in sequencescape'
       expect(page).to have_content "Source assets with barcode(s) #{empty_lb_tube1.ean13_barcode}, #{empty_lb_tube2.ean13_barcode} do not have any aliquots"
-      expect(page).to have_content 'Tags combinations are not unique'
-      click_on 'Find tags clash'
       expect(page).to have_content 'Same tags are used on rows 3, 4.'
       first('a', text: 'Remove from list').click
       first('a', text: 'Remove from list').click
