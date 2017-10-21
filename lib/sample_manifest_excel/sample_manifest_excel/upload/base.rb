@@ -20,7 +20,7 @@ module SampleManifestExcel
       validate :check_columns, :check_processor, :check_rows
       validate :check_processor, if: :processor?
 
-      delegate :processed?, :tags_clash_message, to: :processor
+      delegate :processed?, to: :processor
 
       def initialize(attributes = {})
         super

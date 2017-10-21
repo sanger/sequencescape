@@ -7,7 +7,6 @@ module SampleManifestExcel
       # *If valid transfers aliquots from library tubes to multiplexed library tubes.
       class MultiplexedLibraryTube < Base
         include Tags::Validator::Uniqueness
-        include Tags::ClashesFinder
 
         def run(tag_group)
           if valid?
@@ -29,17 +28,6 @@ module SampleManifestExcel
 
         def processed?
           @processed ||= samples_updated? && sample_manifest_updated? && aliquots_transferred?
-        end
-
-        def tags_clash_message
-          tag_oligos = upload.data_for(:tag_oligo)
-          tag2_oligos = upload.data_for(:tag2_oligo)
-          if tag_oligos.present? && tag2_oligos.present?
-            duplicates = find_tags_clash(tag_oligos.zip(tag2_oligos))
-            create_tags_clashes_message(duplicates, FIRST_ROW)
-          else
-            'Tags data was not found in sample manifest'
-          end
         end
       end
     end

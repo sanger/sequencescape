@@ -40,8 +40,6 @@ feature 'Sample manifest with tag sequences' do
       attach_file('File to upload', test_file)
       click_button('Upload manifest')
       expect(page).to have_content('The following error messages prevented the sample manifest from being uploaded')
-      attach_file('File to upload', test_file)
-      click_button('Find tags clash')
       expect(page).to have_content('Same tags AA, TT are used on rows 10, 15.')
     end
 

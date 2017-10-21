@@ -669,12 +669,11 @@ Sequencescape::Application.routes.draw do
 
   resources :poolings, only: [:new, :create]
   get '/poolings/find_tags_clash'
+  post '/poolings/find_tags_clash'
 
   post 'get_your_qc_completed_tubes_here' => 'get_your_qc_completed_tubes_here#create', as: :get_your_qc_completed_tubes_here
 
   resources :sample_manifest_upload_with_tag_sequences, only: [:new, :create]
-  post '/poolings/find_tags_clash'
-  post '/sample_manifest_upload_with_tag_sequences/find_tags_clash'
 
   # this is for test only test/functional/authentication_controller_test.rb
   # to be removed?

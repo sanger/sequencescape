@@ -97,7 +97,6 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
            processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(upload)
            processor.run(tag_group)
            expect(processor).to_not be_valid
-           expect(processor.tags_clash_message).to eq 'Same tags AA, TT are used on rows 10, 15.'
         end
       end
     end
