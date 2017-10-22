@@ -12,8 +12,8 @@ module SampleManifestExcel
 
         # it happens for every row now. Probably it should not.
         def check_tags
-          tag_oligos = upload.data_for(:tag_oligo)
-          tag2_oligos = upload.data_for(:tag2_oligo)
+          tag_oligos = upload.data_at(:tag_oligo)
+          tag2_oligos = upload.data_at(:tag2_oligo)
           duplicates = find_tags_clash(tag_oligos.zip(tag2_oligos)) if tag_oligos.present? && tag2_oligos.present?
           unless duplicates.empty?
             errors.add(:tags_clash, create_tags_clashes_message(duplicates, FIRST_ROW))

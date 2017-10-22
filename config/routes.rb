@@ -670,7 +670,6 @@ Sequencescape::Application.routes.draw do
   resources :poolings, only: [:new, :create]
 
   post 'get_your_qc_completed_tubes_here' => 'get_your_qc_completed_tubes_here#create', as: :get_your_qc_completed_tubes_here
-
   resources :sample_manifest_upload_with_tag_sequences, only: [:new, :create]
 
   # this is for test only test/functional/authentication_controller_test.rb

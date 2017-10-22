@@ -57,9 +57,9 @@ module SampleManifestExcel
         end
       end
 
-      def data_for(column_name)
+      def data_at(column_name)
         required_column = columns.find_by(:name, column_name)
-        data.column(required_column.number) if required_column.present?
+        rows.data_at(required_column.number) if required_column.present?
       end
 
       def broadcast_sample_manifest_updated_event(user)
