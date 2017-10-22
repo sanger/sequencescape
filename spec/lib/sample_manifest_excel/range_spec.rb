@@ -55,64 +55,62 @@ RSpec.describe SampleManifestExcel::Range, type: :model, sample_manifest_excel: 
                                      absolute_reference: range.absolute_reference)
     end
 
-    it "is static, not dynamic" do
+    it 'is static, not dynamic' do
       expect(range.static?).to be_truthy
       expect(range.dynamic?).to be_falsey
     end
   end
 
-
-  context "with dynamic options" do
-
+  context 'with dynamic options' do
     # Ensure we have at least one option.
     let!(:library_type) { create :library_type }
     let!(:original_option_size) { LibraryType.count }
-    let(:attributes) { {name: "library_type", identifier: :name, scope: :alphabetical, first_row: 4} }
+    let(:attributes) { { name: 'library_type', identifier: :name, scope: :alphabetical, first_row: 4 } }
     let(:range) { SampleManifestExcel::Range.new(attributes) }
 
-    it "has identifier, scope, options" do
+    it 'has identifier, scope, options' do
       assert range.identifier
       assert range.scope
       assert_equal original_option_size, range.options.count
     end
 
-    it "has a first row" do
+    it 'has a first row' do
       assert_equal 4, range.first_row
     end
 
-    it "sets the first column" do
+    it 'sets the first column' do
       assert_equal 1, range.first_column
     end
 
-    it "sets the last column" do
+    it 'sets the last column' do
       assert_equal original_option_size, range.last_column
-      assert_equal 3+original_option_size, SampleManifestExcel::Range.new(attributes.merge(first_column: 4)).last_column
+      assert_equal 3 + original_option_size, SampleManifestExcel::Range.new(attributes.merge(first_column: 4)).last_column
     end
 
-    it "has a first_cell" do
+    it 'has a first_cell' do
       assert_equal SampleManifestExcel::Cell.new(range.first_row, range.first_column), range.first_cell
     end
 
-    it "has a last_cell" do
+    it 'has a last_cell' do
       assert_equal SampleManifestExcel::Cell.new(range.last_row, range.last_column), range.last_cell
     end
 
-    it "has a first cell reference" do
+    it 'has a first cell reference' do
       assert_equal range.first_cell.reference, range.first_cell_reference
     end
 
-    it "sets the reference" do
+    it 'sets the reference' do
       assert_equal "#{range.first_cell.reference}:#{range.last_cell.reference}", range.reference
     end
 
-    it "sets the fixed reference" do
+    it 'sets the fixed reference' do
       assert_equal "#{range.first_cell.fixed}:#{range.last_cell.fixed}", range.fixed_reference
     end
 
-    it "#references should return first_cell reference, reference, fixed_reference and absolute_reference" do
-      assert_equal({first_cell_reference: range.first_cell_reference,
-        reference: range.reference, fixed_reference: range.fixed_reference,
-        absolute_reference: range.absolute_reference}, range.references)
+    it '#references should return first_cell reference, reference, fixed_reference and absolute_reference' do
+      assert_equal({ first_cell_reference: range.first_cell_reference,
+                     reference: range.reference, fixed_reference: range.fixed_reference,
+                     absolute_reference: range.absolute_reference }, range.references)
     end
 
     it 'knows it is dynamic' do
@@ -120,13 +118,12 @@ RSpec.describe SampleManifestExcel::Range, type: :model, sample_manifest_excel: 
       assert range.dynamic?
     end
 
-    it "adjusts to changes in option number" do
+    it 'adjusts to changes in option number' do
       previous_last_cell = range.last_cell.column
       create :library_type
-      assert_equal original_option_size+1, range.last_column
+      assert_equal original_option_size + 1, range.last_column
       assert_equal previous_last_cell.next, range.last_cell.column
     end
-
   end
 
   context 'without first row' do

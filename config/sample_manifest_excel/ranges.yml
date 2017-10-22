@@ -45,3 +45,6 @@ dna_storage_conditions:
 library_type:
   identifier: :name
   scope: :alphabetical
+reference_genome:
+  identifier: :name
+  scope: :alphabetical

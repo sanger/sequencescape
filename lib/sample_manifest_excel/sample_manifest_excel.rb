@@ -49,5 +49,4 @@ module SampleManifestExcel
   def self.reset!
     @configuration = Configuration.new
   end
-
 end

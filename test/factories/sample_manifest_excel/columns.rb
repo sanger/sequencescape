@@ -65,6 +65,12 @@ FactoryGirl.define do
       value     { "LIBRARY TYPE #{number}" }
     end
 
+    factory :reference_genome_column do
+      name      { :reference_genome }
+      heading   { 'REFERENCE GENOME' }
+      value     { "REFERENCE GENOME #{number}" }
+    end
+
     factory :insert_size_from_column do
       name      { :insert_size_from }
       heading   { 'INSERT SIZE FROM' }

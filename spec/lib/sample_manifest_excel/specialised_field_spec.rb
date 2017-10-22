@@ -12,6 +12,7 @@ RSpec.describe SampleManifestExcel::SpecialisedField, type: :model, sample_manif
 
   let!(:sample) { create(:sample_with_well) }
   let!(:library_type) { create(:library_type) }
+  let!(:reference_genome) { create(:reference_genome, name: 'new one') }
   let(:aliquot) { sample.aliquots.first }
 
   describe 'Thing' do
@@ -40,6 +41,19 @@ RSpec.describe SampleManifestExcel::SpecialisedField, type: :model, sample_manif
       specialised_field = SampleManifestExcel::SpecialisedField::LibraryType.new(value: library_type.name)
       specialised_field.update(aliquot: aliquot)
       expect(aliquot.library_type).to eq(library_type.name)
+    end
+  end
+
+  describe 'Reference Genome' do
+    it 'will not be valid without a persisted reference genome' do
+      expect(SampleManifestExcel::SpecialisedField::ReferenceGenome.new(value: reference_genome.name, sample: sample)).to be_valid
+      expect(SampleManifestExcel::SpecialisedField::ReferenceGenome.new(value: 'A new reference genome', sample: sample)).to_not be_valid
+    end
+
+    it 'will add reference genome to sample_metadata' do
+      specialised_field = SampleManifestExcel::SpecialisedField::ReferenceGenome.new(value: reference_genome.name, sample: sample)
+      specialised_field.update
+      expect(sample.sample_metadata.reference_genome).to eq(reference_genome)
     end
   end
 
