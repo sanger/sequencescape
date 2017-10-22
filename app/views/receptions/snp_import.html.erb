@@ -1,6 +1,8 @@
-<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.%>
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.%>
 
 <% add :title, "SNP Import" -%>
 <% add :menu, "Resource lookup" => assets_lookup_path -%>
@@ -21,9 +23,9 @@
       <p>Enter plate IDs (1 per line)</p>
     </div>
     <br />
-    <%= form_for :asset, :url => { :action => :receive_snp_barcode } do |f| %>
+    <%= form_for :asset, url: { action: :receive_snp_barcode } do |f| %>
     <ul class="plate_import">
-      <li><%= text_area_tag "barcodes", nil, :rows => 20 %></li>
+      <li><%= text_area_tag "barcodes", nil, rows: 20 %></li>
       <li><%= submit_tag "Submit" %></li>
     </ul>
     <% end %>

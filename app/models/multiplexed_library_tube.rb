@@ -1,11 +1,16 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2014,2015,2016 Genome Research Ltd.
+require_dependency 'tube/purpose'
 
 class MultiplexedLibraryTube < Tube
   include ModelExtensions::MultiplexedLibraryTube
   include Api::MultiplexedLibraryTubeIO::Extensions
   include Transfer::Associations
+
+  has_many :order_roles, ->() { distinct }, through: :requests_as_target
 
   # Transfer requests into a tube are direct requests where the tube is the target.
   def transfer_requests
@@ -29,15 +34,19 @@ class MultiplexedLibraryTube < Tube
   def creation_requests
     direct = requests_as_target.where_is_a?(Request::LibraryCreation)
     return direct unless direct.empty?
-    parents.find(:all,:include=>:creation_request).map(&:creation_request)
+    parents.includes(:creation_request).map(&:creation_request)
   end
 
   def team
-    creation_requests.first.request_type.try(:product_line).try(:name)
+    creation_requests.first&.request_type&.product_line&.name
   end
 
   def library_source_plates
     purpose.library_source_plates(self)
+  end
+
+  def role
+    order_roles.first.try(:role)
   end
 
   def self.stock_asset_type

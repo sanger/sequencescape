@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 module Pulldown::Requests
   module BaitLibraryRequest
@@ -23,21 +25,20 @@ module Pulldown::Requests
       def self.included(base)
         base.class_eval do
           include BaitLibrary::Associations
-          association(:bait_library, :name, :scope => :visible)
+          association(:bait_library, :name, scope: :visible)
           validates_presence_of :bait_library
           validate :bait_library_valid
         end
       end
 
       def bait_library_valid
-        errors.add(:bait_library_id, "Validation failed: Bait library is no longer available.") unless bait_library.visible?
+        errors.add(:bait_library_id, 'Validation failed: Bait library is no longer available.') unless bait_library.visible?
       end
       private :bait_library_valid
     end
   end
 
   class LibraryCreation < Request::LibraryCreation
-
   end
 
   class WgsLibraryRequest < LibraryCreation
@@ -53,18 +54,28 @@ module Pulldown::Requests
     include PreCapturePool::Poolable
 
     Metadata.class_eval do
-      attribute(:pre_capture_plex_level, :default => 8, :integer => true)
+      custom_attribute(:pre_capture_plex_level, default: 8, integer: true)
     end
 
     def update_pool_information(pool_information)
       super
       pool_information[:request_type] = request_type.key
     end
+  end
 
+  class ReIscLibraryRequest < IscLibraryRequest
+    # Pre-capture pools depend on the ability to identify the library requests
+    # when pooling occurs.
+    # The requires us to identify the stock wells of the well we are looking at.
+    # In the case of repool requests however these well are not stock wells by default.
+    # Instead we add them manually.
+    after_create :flag_asset_as_stock_well
+    def flag_asset_as_stock_well
+      asset.stock_wells << asset
+    end
   end
 
   class IscLibraryRequestPart < IscLibraryRequest
     include IlluminaHtp::Requests::LibraryCompletion::FailUpstream
   end
-
 end

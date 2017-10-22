@@ -1,6 +1,5 @@
 module SampleManifestExcel
   class ManifestTypeList
-
     include Enumerable
     include Comparable
 
@@ -37,18 +36,17 @@ module SampleManifestExcel
     end
 
     def <=>(other)
-      return unless other.is_a?(self.class) 
+      return unless other.is_a?(self.class)
       manifest_types <=> other.manifest_types
     end
 
     class ManifestType
-
-      include HashAttributes
+      include Helpers::Attributes
 
       set_attributes :name, :columns, :heading, :asset_type
 
       def initialize(attributes = {})
-        create_attributes(attributes)
+        super
       end
 
       def to_a
@@ -58,13 +56,13 @@ module SampleManifestExcel
       def ==(other)
         return false unless other.is_a?(self.class)
         name == other.name &&
-        columns == other.columns &&
-        heading == other.heading &&
-        asset_type == other.asset_type
+          columns == other.columns &&
+          heading == other.heading &&
+          asset_type == other.asset_type
       end
     end
 
-  private
+    private
 
     def create_manifest_types(manifest_types)
       self.manifest_types.tap do |mf|

@@ -1,14 +1,30 @@
 language: ruby
 rvm:
-  - jruby-9.0.5.0
-sudo: false
+  - 2.4.1
+dist: trusty
+sudo: required
+services: mysql
 cache: bundler
 bundler_args: --without warehouse deployment
 env:
-  - RAILS_ENV=test TZ=Europe/London SUITE='rake test' RUBYOPT='-W0'" # RUBYOPT disables warnings turned on by default in rake 11. See note in README
-  - RAILS_ENV=cucumber CI_NODE_TOTAL=2 CI_NODE_INDEX=0 JRUBY_OPTS='' CUCUMBER_FORMAT=progress TZ=Europe/London SUITE='rake knapsack:cucumber'"
-  - RAILS_ENV=cucumber CI_NODE_TOTAL=2 CI_NODE_INDEX=1 JRUBY_OPTS='' CUCUMBER_FORMAT=progress TZ=Europe/London SUITE='rake knapsack:cucumber'"
+  matrix:
+    - "DB_REQUIRED='true' RAILS_ENV=test TZ=Europe/London SUITE='rake test' RUBYOPT='-W0'" # RUBYOPT disables warnings turned on by default in rake 11. See note in README
+    - "DB_REQUIRED='true' RAILS_ENV=test TZ=Europe/London SUITE='rspec'"
+    - "DB_REQUIRED='true' RAILS_ENV=cucumber CI_NODE_TOTAL=2 CI_NODE_INDEX=0 JRUBY_OPTS='' PRECOMPILE_ASSETS=true CUCUMBER_FORMAT=DebugFormatter TZ=Europe/London SUITE='rake knapsack:cucumber'"
+    - "DB_REQUIRED='true' RAILS_ENV=cucumber CI_NODE_TOTAL=2 CI_NODE_INDEX=1 JRUBY_OPTS='' PRECOMPILE_ASSETS=true CUCUMBER_FORMAT=DebugFormatter TZ=Europe/London SUITE='rake knapsack:cucumber'"
+    - "SUITE=rubocop"
+before_install:
+  - "export PATH=$PWD/travis_phantomjs/phantomjs-2.1.1-linux-x86_64/bin:$PATH"
+  - "if [ $(phantomjs --version) != '2.1.1' ]; then rm -rf $PWD/travis_phantomjs; mkdir -p $PWD/travis_phantomjs; fi"
+  - "if [ $(phantomjs --version) != '2.1.1' ]; then wget https://assets.membergetmember.co/software/phantomjs-2.1.1-linux-x86_64.tar.bz2 -O $PWD/travis_phantomjs/phantomjs-2.1.1-linux-x86_64.tar.bz2; fi"
+  - "if [ $(phantomjs --version) != '2.1.1' ]; then tar -xvf $PWD/travis_phantomjs/phantomjs-2.1.1-linux-x86_64.tar.bz2 -C $PWD/travis_phantomjs; fi"
+  - "phantomjs --version"
 before_script:
-  - "RAILS_ENV=test bundle exec rake db:setup"
+  - 'if [[ "$DB_REQUIRED" == "true" ]]; then bundle exec rake db:setup; fi'
+  - 'if [[ "$PRECOMPILE_ASSETS" == "true" ]]; then bundle exec rake assets:precompile; fi'
 script:
   - "bundle exec $SUITE"
+addons:
+  apt:
+    packages:
+      - haveged

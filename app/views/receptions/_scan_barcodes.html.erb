@@ -1,6 +1,8 @@
-<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015,2016 Genome Research Ltd.%>
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015,2016 Genome Research Ltd.%>
 
 <div class="content">
   <% unless @errors.nil? %>
@@ -12,16 +14,16 @@
   <% end %>
   <div id='form'>
     <div id='message'>
-      <%= render :partial => message %>
+      <%= render partial: message %>
     </div>
     <br />
-    <%= form_for :asset, :url => { :action => receive_barcode }, :html => {:class => 'form-inline'} do |f| %>
+    <%= form_for :asset, url: { action: receive_barcode }, html: {class: 'form-inline'} do |f| %>
     <ul class="plate_import">
       <% num_text_boxes ||= 10 %>
       <% num_text_boxes.times do |i| %>
-      <li><%= text_field :barcode, i, { :class => 'big form-control' } %></li>
+      <li><%= text_field :barcode, i, { class: 'big form-control' } %></li>
       <% end %>
-      <li><%= submit_tag "Submit", :class => 'form-control' %></li>
+      <li><%= submit_tag "Submit", class: 'form-control' %></li>
     </ul>
     <% end %>
   </div>

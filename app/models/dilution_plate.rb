@@ -1,36 +1,43 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 class DilutionPlate < Plate
+  PICO_TYPES = [PicoAssayPlate, PicoAssayAPlate, PicoAssayBPlate].map(&:name)
 
-  # We have to put the asset_links.direct condition on here, rather than go through :links_as_parent as it seems that
-  # rails doesn't cope with conditions on has_many_through relationships where the relationship itself also have conditions
+  has_many :pico_descendants, ->() { where(sti_type: PICO_TYPES) }, through: :links_as_ancestor, source: :descendant, class_name: 'PicoAssayPlate'
+  has_many :pico_children,    ->() { where(sti_type: PICO_TYPES) }, through: :links_as_parent,   source: :descendant, class_name: 'PicoAssayPlate'
+
+  # Note: joins here fails as it doesn't populate the associations
+  # includes ends up generating invalid sql, as rails doesn't seem to know how to apply conditions to a has_many through
+  # Eager load works just fine however. This effectively uses the join SQL, but populates the association
   scope :with_pico_children,  -> {
-    joins(:pico_descendants).
-    select('DISTINCT `assets`.*').
-    where(:asset_links=>{:direct =>true})
+    eager_load(pico_children: [:barcode_prefix, :plate_metadata])
+      .where.not(pico_children_assets: { id: nil })
   }
 
-  has_many :pico_descendants,
-    :through => :links_as_ancestor,
-    :conditions => { :sti_type=>[PicoAssayPlate,PicoAssayAPlate,PicoAssayBPlate].map(&:name) },
-    :source => :descendant
-
-  def pico_children
-    pico_descendants.find(:all,:conditions=>['asset_links.direct = ?',true])
-  end
+  scope :for_pico_view, -> {
+    preload(:barcode_prefix, :plate_metadata)
+  }
 
   def to_pico_hash
-    {:pico_dilution => {
-        :child_barcodes => pico_children.map{ |plate| plate.barcode_dilution_factor_created_at_hash }
+    { pico_dilution: {
+        child_barcodes: pico_children.map { |plate| plate.barcode_dilution_factor_created_at_hash }
       }.merge(barcode_dilution_factor_created_at_hash),
-        :study_name => study_name
+      study_name: study_name
     }
   end
 
-  def study_name
-    study.try(:name) || ""
-  end
+  private
 
+  def study_name
+    names = studies.pluck(:name)
+    if names.length <= 1
+      names.first
+    else
+      "#{names.first} (#{names.length - 1} others)"
+    end
+  end
 end

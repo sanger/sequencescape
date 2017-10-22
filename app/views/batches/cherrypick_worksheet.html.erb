@@ -1,6 +1,8 @@
-<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.%>
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.%>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -8,14 +10,14 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
   <%= stylesheet_link_tag "print" %>
-  <%= stylesheet_link_tag "print",:media => "print" %>
+  <%= stylesheet_link_tag "print",media: "print" %>
   <title>Batch <%= @batch.id %></title>
 </head>
 <body>
 
   <% @plates.each do |plate| %>
     <% robot_plate_layout = @batch.tecan_layout_plate_barcodes(plate.barcode) %>
-    <%= render :partial => 'cherrypick_single_worksheet' , :locals => {:batch => @batch, :robot_plate_layout => robot_plate_layout, :plate_barcode => plate.barcode} %>
+    <%= render partial: 'cherrypick_single_worksheet' , locals: {batch: @batch, robot_plate_layout: robot_plate_layout, plate_barcode: plate.barcode} %>
   <hr>
   <% end %>
   <% unless ["cucumber", "test"].include?(Rails.env) %>

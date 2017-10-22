@@ -1,12 +1,13 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2013,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2013,2014,2015 Genome Research Ltd.
 
 class PacBioSamplePrepRequest < CustomerRequest
-
-  has_metadata :as => Request do
-    attribute(:insert_size)
-    attribute(:sequencing_type)
+  has_metadata as: Request do
+    custom_attribute(:insert_size)
+    custom_attribute(:sequencing_type)
   end
   include Request::CustomerResponsibility
 
@@ -20,7 +21,7 @@ class PacBioSamplePrepRequest < CustomerRequest
   private
 
   def on_started
-    target_asset.generate_name(asset.display_name.gsub(':','-'))
+    target_asset.generate_name(asset.display_name.tr(':', '-'))
     target_asset.save
   end
 
@@ -35,12 +36,4 @@ class PacBioSamplePrepRequest < CustomerRequest
   def final_transfer
     target_asset.requests_as_target.where_is_a?(TransferRequest).last
   end
-
-  class Initial < TransferRequest
-    include TransferRequest::InitialTransfer::Behaviour
-    def outer_request
-      asset.requests.detect{|r| r.is_a?(PacBioSamplePrepRequest)}
-    end
-  end
-
 end

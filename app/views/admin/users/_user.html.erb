@@ -1,6 +1,8 @@
-<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
 
 <tr class='<%= cycle("rowodd", "roweven") %>'>
   <td><%=h user.name %></td>
@@ -11,6 +13,6 @@
     <td>&nbsp;</td>
   <% end %>
   <td><%= link_to "Show profile", admin_user_path(user) %></td>
-  <td><%= link_to "Edit profile", edit_admin_user_path(user), :title => "Edit user #{user.login}" %></td>
+  <td><%= link_to "Edit profile", edit_admin_user_path(user), title: "Edit user #{user.login}" %></td>
   <td><%= link_to "Switch to user", switch_admin_user_path(user) %></td>
 </tr>

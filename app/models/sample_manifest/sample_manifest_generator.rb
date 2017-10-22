@@ -1,6 +1,5 @@
 class SampleManifestGenerator
-
-  REQUIRED_ATTRIBUTES = [ "template", "count"]
+  REQUIRED_ATTRIBUTES = ['template', 'count']
 
   include ActiveModel::Validations
 
@@ -9,7 +8,7 @@ class SampleManifestGenerator
   validates_presence_of :user, :configuration
 
   validate :check_required_attributes
-  validate :check_template, if: Proc.new { |s| s.configuration.present? }
+  validate :check_template, if: proc { |s| s.configuration.present? }
 
   def self.model_name
     ActiveModel::Name.new(SampleManifest)
@@ -53,16 +52,16 @@ class SampleManifestGenerator
     @print_job_message ||= {}
   end
 
-private
+  private
 
   def check_required_attributes
     REQUIRED_ATTRIBUTES.each do |attribute|
-      errors.add(:base, "#{attribute} attribute should be present") unless params[attribute].present?
+      errors.add(:base, "#{attribute} attribute should be present") if params[attribute].blank?
     end
   end
 
   def check_template
-    errors.add(:base, "#{params[:template]} is not a valid template") unless columns.present?
+    errors.add(:base, "#{params[:template]} is not a valid template") if columns.blank?
   end
 
   def create_download
@@ -86,15 +85,14 @@ private
 
   def attributes
     params.except(:template, :barcode_printer, :only_first_label)
-    .merge(user: user, rapid_generation: true, asset_type: asset_type)
+          .merge(user: user, rapid_generation: true, asset_type: asset_type)
   end
 
   def asset_type
-    params[:asset_type].present? ? params[:asset_type] : configuration.manifest_types.find_by(params[:template]).asset_type
+    configuration.manifest_types.find_by(params[:template]).asset_type
   end
 
   def only_first_label
-    ActiveRecord::ConnectionAdapters::Column.value_to_boolean(params[:only_first_label])
+    ActiveRecord::Type::Boolean.new.cast(params[:only_first_label])
   end
-
 end

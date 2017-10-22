@@ -1,6 +1,5 @@
-# Load the rails application
-$:<< File.join(File.dirname(__FILE__), '..')
-require File.expand_path('../application', __FILE__)
+# Load the Rails application.
+require_relative 'application'
 
-# Initialize the rails application
-Sequencescape::Application.initialize!
+# Initialize the Rails application.
+Rails.application.initialize!

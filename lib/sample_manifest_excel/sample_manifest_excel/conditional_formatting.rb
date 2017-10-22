@@ -1,20 +1,20 @@
 module SampleManifestExcel
-
   ##
   # A single conditional formatting rule.
   # This will consist of:
   # - options: which relate to Excel options e.g. type: :cellIs
   # - style: The style which will be added when conditional formatting applies.
   # - formula: See Formula class.
-	class ConditionalFormatting
+  class ConditionalFormatting
+    include Helpers::Attributes
 
-    include HashAttributes
+    set_attributes :name, :options, :style, :formula
 
-    set_attributes :options, :style, :formula
+    validates_presence_of :name, :options
 
-		def initialize(attributes={})
-      create_attributes(attributes)
-		end
+    def initialize(attributes = {})
+      super
+    end
 
     ##
     # If a worksheet attribute is present then add the conditional formatting
@@ -22,7 +22,6 @@ module SampleManifestExcel
     # If conditional formatting has a formula then update the formula option
     # with the passed attributes.
     def update(attributes = {})
-
       if attributes[:worksheet].present?
         options['dxfId'] = attributes[:worksheet].workbook.styles.add_style(style)
       end
@@ -48,9 +47,9 @@ module SampleManifestExcel
 
     ##
     # A conditional formatting is only valid if there are some options.
-    def valid?
-      options.present?
-    end
+    # def valid?
+    #   options.present?
+    # end
 
     ##
     # Return the options as a hash
@@ -66,5 +65,8 @@ module SampleManifestExcel
       super
     end
 
-	end
+    def inspect
+      "<#{self.class}: @name=#{name}, @options=#{options}, @style=#{style}, @formula=#{formula}>"
+    end
+  end
 end

@@ -1,10 +1,12 @@
-<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
 
 <h2>Task: <%= @task.name %></h2>
 <ul>
   <li><%= link_to 'Edit this task', edit_task_path(@task) %></li>
-  <li><%= link_to 'Add another task', new_task_url(:workflow_id => @task.workflow.id) %></li>
+  <li><%= link_to 'Add another task', new_task_url(workflow_id: @task.workflow.id) %></li>
   <li><%= link_to 'Back to workflow', workflow_path(@task.workflow) %></li>
 </ul>

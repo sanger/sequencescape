@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 class ::Core::Registry
   include ::Singleton
@@ -19,7 +21,7 @@ class ::Core::Registry
   end
 
   def lookup_target_class_through_model_hierarchy!(model_class, root_lookup_model_class = model_class)
-    raise UnregisteredError, "Unable to locate for #{root_lookup_model_class.name.inspect} (#{self.inspect})" if model_class.nil? or ActiveRecord::Base == model_class
+    raise UnregisteredError, "Unable to locate for #{root_lookup_model_class.name.inspect} (#{inspect})" if model_class.nil? or ActiveRecord::Base == model_class
 
     target_class = lookup_target_class_in_registry(model_class)
     return target_class unless target_class.nil?
@@ -40,7 +42,7 @@ class ::Core::Registry
   end
 
   def inspect
-    Hash[@model_class_to_target.map { |k,v| [k.to_s, v.to_s] }].inspect
+    Hash[@model_class_to_target.map { |k, v| [k.to_s, v.to_s] }].inspect
   end
 
   def is_already_registered?(model_class)
@@ -49,7 +51,7 @@ class ::Core::Registry
   private :is_already_registered?
 
   def register(model_class, io_class)
-    raise StandardError, "Weird class (#{model_class.name.inspect} => #{model_class.inspect})" unless model_class.name =~ /^[A-Z][A-Za-z0-9:]+$/
+    raise StandardError, "Weird class (#{model_class.name.inspect} => #{model_class.inspect})" unless model_class.name.match?(/^[A-Z][A-Za-z0-9:]+$/)
     @model_class_to_target[model_class.name] = io_class
   end
   private :register

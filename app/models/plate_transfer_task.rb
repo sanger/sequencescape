@@ -1,13 +1,16 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2013,2015 Genome Research Ltd.
 
 class PlateTransferTask < Task
-
   belongs_to :purpose
 
   def render_task(workflow, params)
-    workflow.render_plate_transfer_task(self, params)
+    ActiveRecord::Base.transaction do
+      workflow.render_plate_transfer_task(self, params)
+    end
   end
 
   def do_task(workflow, params)
@@ -21,5 +24,4 @@ class PlateTransferTask < Task
   def included_for_render_task
     [:pipeline]
   end
-
 end

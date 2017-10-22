@@ -1,20 +1,25 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2014,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2014,2015,2016 Genome Research Ltd.
 
 require 'simplecov'
 
-ENV["RAILS_ENV"] = "test"
-require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
+ENV['RAILS_ENV'] = 'test'
+require File.expand_path(File.dirname(__FILE__) + '/../config/environment')
 
 require 'minitest/autorun'
-require 'shoulda'
+require 'shoulda/context'
+require 'shoulda/matchers'
 require 'rails/test_help'
 require 'factory_girl'
+require 'webmock/minitest'
 
 begin
   require 'pry'
-rescue LoadError => exception
+rescue LoadError
+  # No pry? That's okay, we're probably on the CI server
 end
 
 require File.expand_path(File.join(Rails.root, %w{test factories.rb}))
@@ -30,6 +35,8 @@ Dir.glob(File.expand_path(File.join(Rails.root, %w{test shoulda_macros *.rb}))) 
 end
 
 require "#{Rails.root}/test/unit/task_test_base"
+
+# Rails.application.load_seed
 
 class ActiveSupport::TestCase
   extend Sanger::Testing::Controller::Macros
@@ -53,27 +60,27 @@ class ActiveSupport::TestCase
   # The only drawback to using transactional fixtures is when you actually
   # need to test transactions.  Since your test is bracketed by a transaction,
   # any transactions started in your code will be automatically rolled back.
-  self.use_transactional_fixtures = true
+  self.use_transactional_tests = true
 
   # Instantiated fixtures are slow, but give you @david where otherwise you
   # would need people(:david).  If you don't want to migrate your existing
   # test cases which use the @david style and don't mind the speed hit (each
   # instantiated fixtures translates to a database query per test method),
   # then set this back to true.
-  self.use_instantiated_fixtures  = false
+  self.use_instantiated_fixtures = false
 
   # DON'T...
   # Setup all fixtures in test/fixtures/*.(yml|csv) for all tests in alphabetical order.
   #
   # Note: You'll currently still have to declare fixtures explicitly in integration tests
   # -- they do not yet inherit this setting
-  #fixtures :all
+  # fixtures :all
   # Fixtures have been deprecated because they are brittle and rubbish.
   # Use Factories and mocks to *explicity* setup what your test requires
 
   # Used by Quiet Backtrace pluging to reduce testing noise
-  #self.backtrace_silencers << :rails_vendor
-  #self.backtrace_filters   << :Rails.root
+  # self.backtrace_silencers << :rails_vendor
+  # self.backtrace_filters   << :Rails.root
   # Add more helper methods to be used by all tests here...
 end
 
@@ -81,4 +88,23 @@ class ActionController::TestCase
   include FactoryGirl::Syntax::Methods
 end
 
+require 'mocha'
+require 'minitest/unit'
+require 'mocha/mini_test'
 
+Shoulda::Matchers.configure do |config|
+  config.integrate do |with|
+    # Choose a test framework:
+    # with.test_framework :rspec
+    with.test_framework :minitest
+    # with.test_framework :minitest_4
+    # with.test_framework :test_unit
+
+    # Choose one or more libraries:
+    # with.library :active_record
+    # with.library :active_model
+    # with.library :action_controller
+    # Or, choose the following (which implies all of the above):
+    with.library :rails
+  end
+end

@@ -1,17 +1,19 @@
-<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
 
 <% role_class_name =  authorizable_type.first.class.name %>
 
 <div id="<%= role_class_name.downcase %>_role">
 <h3><%= role_class_name %></h3>
 <div class='text-center'>
-  <%= form_tag [:grant_user_role_admin,@user], :remote => true, :data => {:success => "#role_list"}, :class => 'form-inline remote-form' do -%>
-    <label for="role_authorizable_name"><%= role_class_name %> role</label> <%= select "role", "authorizable_name", @all_roles.map {|r| [r.name, r.name]}.compact, { :prompt => true }, {:class => 'form-control'} %>
-    <label for="role_authorizable_id">for <%= authorizable_type.first.class.name %></label> <%= select "role", "authorizable_id", authorizable_type.map {|r| [r.name, r.id]}, { :prompt => true }, {:class => 'form-control'} %>
+  <%= form_tag [:grant_user_role_admin,@user], remote: true, data: {success: "#role_list"}, class: 'form-inline remote-form' do -%>
+    <label for="role_authorizable_name"><%= role_class_name %> role</label> <%= select "role", "authorizable_name", @all_roles, { prompt: true }, {class: 'form-control'} %>
+    <label for="role_authorizable_id">for <%= authorizable_type.first.class.name %></label> <%= select "role", "authorizable_id", authorizable_type.map {|r| [r.name, r.id]}, { prompt: true }, {class: 'form-control'} %>
     <%= hidden_field_tag 'role[authorizable_type]', role_class_name %>
-    <%= submit_tag "Add #{role_class_name} role", :class=>'btn btn-success' %>
+    <%= submit_tag "Add #{role_class_name} role", class: 'btn btn-success' %>
   <% end -%>
 </div>
 </div>

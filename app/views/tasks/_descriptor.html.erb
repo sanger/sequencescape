@@ -1,6 +1,8 @@
-<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
 
 <div id='descriptor_<%= field_number %>' class='descriptor_container'>
 <table width='100%' cellpadding='2' cellspacing='0'>
@@ -27,11 +29,11 @@
         <% option_count = 1 %>
         <% unless field.selection.nil? -%>
           <% field.selection.each_value do |option| %>
-            <%= render :partial => 'option', :locals => { :field => field, :name => option, :field_number => field_number, :option_number => option_count } %>
+            <%= render partial: 'option', locals: { field: field, name: option, field_number: field_number, option_number: option_count } %>
             <% option_count = option_count + 1 %>
           <% end %>
         <% else %>
-          <%= render :partial => 'option', :locals => { :field => field, :name => '', :field_number => field_number, :option_number => option_count } %>
+          <%= render partial: 'option', locals: { field: field, name: '', field_number: field_number, option_number: option_count } %>
         <% end %>
       </div>
       <input type='hidden' name='option_count_<%= field_number %>' id='option_count_<%= field_number %>' value = '<%= option_count %>' />

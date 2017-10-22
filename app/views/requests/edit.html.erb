@@ -1,6 +1,8 @@
-<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
 
 <% add :title, "Edit request." -%>
 <% add :menu, "Back to request" => request_path(@request) -%>
@@ -11,7 +13,7 @@
 Edit your request. Required fields are marked with <%= required_marker %>.
 </div>
 <div id="study">
-  <%= form_for :request, :url => request_path(@request), :html => {:method => :put} do |form| -%>
-    <%= render :partial => "form", :locals => { :read_only => false, :form => form } %>
+  <%= form_for :request, url: request_path(@request), html: {method: :put} do |form| -%>
+    <%= render partial: "form", locals: { read_only: false, form: form } %>
   <% end -%>
 </div>

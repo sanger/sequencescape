@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 module User::Authentication
   def self.included(base)
@@ -16,18 +18,18 @@ module User::Authentication
   end
 
   def update_profile_via_ldap
-    ldap = Net::LDAP.new(:host => configatron.ldap_server, :port => configatron.ldap_port)
+    ldap = Net::LDAP.new(host: configatron.ldap_server, port: configatron.ldap_port)
 
-    filter = Net::LDAP::Filter.eq( "uid", self.login )
-    treebase = "ou=people,dc=sanger,dc=ac,dc=uk"
+    filter = Net::LDAP::Filter.eq('uid', login)
+    treebase = 'ou=people,dc=sanger,dc=ac,dc=uk'
 
-    ldap_profile = ldap.search( :base => treebase, :filter => filter )[0]
+    ldap_profile = ldap.search(base: treebase, filter: filter)[0]
     # If we have two or more records, something is off with LDAP
 
-    {:email => "mail", :first_name => "givenname", :last_name => "sn"}.each do |attr,ldap_attr|
+    { email: 'mail', first_name: 'givenname', last_name: 'sn' }.each do |attr, ldap_attr|
       self[attr] = ldap_profile[ldap_attr][0] if self[attr].blank?
     end
-    self.save if self.changed?
+    save if changed?
 
   rescue StandardError => e
     logger.error "Profile failed for user #{login}: result code #{ldap.get_operation_result.code} message #{ldap.get_operation_result.message} - #{e}"
@@ -37,37 +39,30 @@ module User::Authentication
   module ClassMethods
     # Authenticates a user by their login name and unencrypted password.  Returns the user or nil.
     def authenticate(login, password)
-      if configatron.authentication == "ldap"
+      if configatron.authentication == 'ldap'
         authenticated = authenticate_with_ldap(login, password)
+        authenticated ? register_or_update_via_ldap(login) : nil
+      elsif configatron.authentication == 'none'
+        raise StandardError, 'Can only disable authentication in development' unless Rails.env.development?
+        User.find_by(login: login)
       else
         authenticated = authenticate_by_local(login, password)
-      end
-      if authenticated
-        u = find_or_create_by_login(login)
-        if u.nil?
-          logger.error "Failed to find or create user #{login}"
-        else
-          u.send(:update_profile_via_ldap) unless u.profile_complete?
-        end
-        u
-      else
-        nil
       end
     end
   end
 
   module Ldap
     def authenticate_with_ldap(login, password)
-      # TODO - Extract LDAP specifics to configuration
-      username = "uid=" << login << ",ou=people,dc=sanger,dc=ac,dc=uk"
+      # TODO: - Extract LDAP specifics to configuration
+      username = 'uid=' << login << ',ou=people,dc=sanger,dc=ac,dc=uk'
       ldap = Net::LDAP.new(
-          :host => configatron.ldap_server,
-          :port => configatron.ldap_secure_port,
-          :encryption => :simple_tls,
-          :auth => {
-            :method => :simple,
-            :username => username,
-            :password => password
+          host: configatron.ldap_server,
+          port: configatron.ldap_secure_port,
+          encryption: :simple_tls,
+          auth: {
+            method: :simple,
+            username: username,
+            password: password
           }
       )
       begin
@@ -75,20 +70,30 @@ module User::Authentication
       rescue StandardError => e
         raise e, "LDAP connection problem: #{e}", caller
       end
-      password = "" # clear out in case of crashes
+      password = '' # clear out in case of crashes
       if ldap.bind
-        logger.info "Authentication succeeded"
+        logger.info 'Authentication succeeded'
         true
       else
         logger.warn "Authentication failed for user #{login}: result code #{ldap.get_operation_result.code} message #{ldap.get_operation_result.message}"
         false
       end
     end
+
+    def register_or_update_via_ldap(login)
+      u = find_or_create_by(login: login)
+      if u.nil?
+        logger.error "Failed to find or create user #{login}"
+      else
+        u.send(:update_profile_via_ldap) unless u.profile_complete?
+      end
+      u
+    end
   end
 
   module Local
     def authenticate_by_local(login, password)
-      u = find_by_login(login) # need to get the salt
+      u = find_by(login: login) # need to get the salt
       u && u.authenticated?(password) ? u : nil
     end
   end

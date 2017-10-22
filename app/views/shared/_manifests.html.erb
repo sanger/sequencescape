@@ -1,6 +1,8 @@
-<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
 
 <table id="study_list" width="100%" class="sortable" cellpadding="4" cellspacing="0">
   <thead>
@@ -20,7 +22,7 @@
   <tbody>
   <% manifests.each do |manifest| %>
     <tr>
-      <td><%= link_to manifest.name, sample_manifest_path(manifest), :title => "Manifest for #{manifest.study.name}" %></td>
+      <td><%= link_to manifest.name, sample_manifest_path(manifest), title: "Manifest for #{manifest.study.name}" %></td>
       <td><%= pluralize(manifest.count, manifest.asset_type || "plate") %></td>
       <td><%= link_to manifest.study.name, study_path(manifest.study) %></td>
       <td><%= link_to manifest.supplier.name, supplier_path(manifest.supplier) %></td>
@@ -40,7 +42,7 @@
       </td>
       <td>
       <% if manifest.last_errors %>
-        <%= link_to 'Errors', sample_manifest_path(manifest), :title => "Errors for manifest for #{manifest.study.name}" %>
+        <%= link_to 'Errors', sample_manifest_path(manifest), title: "Errors for manifest for #{manifest.study.name}" %>
       <% end %>
       </td>
       <td><% if ! manifest.uploaded_document %>

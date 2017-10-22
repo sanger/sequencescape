@@ -1,4 +1,21 @@
 module SampleManifestExcel
+  class NullRange
+    ##
+    # Always returns A1:A10.
+    def reference
+      'A1:A10'
+    end
+
+    ##
+    # Always returns worksheet1!A1:A10
+    def absolute_reference
+      "worksheet1!#{reference}"
+    end
+
+    def ==(other)
+      other.is_a?(self.class)
+    end
+  end
 
   ##
   # A range of cells signified by a reference.
@@ -6,10 +23,9 @@ module SampleManifestExcel
   # The first row is the only mandatory field everything else can be inferred.
   # Each field that is not passed in the initializer is lazy loaded.
   class Range
+    include Helpers::Attributes
 
-    include HashAttributes
-
-    set_attributes :options, :identifier, :name, :scope, :first_row, :last_row, :first_column, :last_column, :worksheet_name
+    set_attributes :options, :identifier, :name, :scope, :first_row, :last_row, :first_column, :last_column, :worksheet_name, defaults: { first_column: 1, options: {} }
 
     attr_reader :first_cell, :last_cell, :reference, :absolute_reference
 
@@ -17,17 +33,12 @@ module SampleManifestExcel
     # If the range is valid i.e. has a first row then a first cell and last cell are created
     # these are used for references.
     def initialize(attributes = {})
-      create_attributes(attributes)
+      super(default_attributes.merge(attributes))
 
       if valid?
         @first_cell = Cell.new(first_row, first_column)
         @last_cell = Cell.new(last_row, last_column) unless dynamic?
       end
-    end
-
-    # If not defined defaults to one.
-    def first_column
-      @first_column ||= 1
     end
 
     # If not defined and options are empty is set to first column.
@@ -57,7 +68,6 @@ module SampleManifestExcel
       @last_row ||= first_row
     end
 
-    ##
     # If not defined is set to an empty hash.
     def options
       if static?
@@ -69,7 +79,6 @@ module SampleManifestExcel
       end
     end
 
-    ##
     # The reference for a range is a valid Excel reference e.g. $A$1:$H$10
     # Defined by the fixed reference of the first cell and the fixed reference
     # of the last cell.
@@ -81,11 +90,15 @@ module SampleManifestExcel
       "#{first_cell.fixed}:#{last_cell.fixed}"
     end
 
+    # rubocop:disable Rails/Delegate
+    # Would change this to:
+    # delegate :reference, to: :first_cell, prefix: true
     ##
     # The reference of the first cell.
     def first_cell_reference
       first_cell.reference
     end
+    # rubocop:enable Rails/Delegate
 
     ##
     # An absolute reference is defined as a reference preceded by the name of the
@@ -95,7 +108,7 @@ module SampleManifestExcel
       if worksheet_name.present?
         "#{worksheet_name}!#{fixed_reference}"
       else
-        "#{fixed_reference}"
+        (fixed_reference).to_s
       end
     end
 
@@ -154,6 +167,8 @@ module SampleManifestExcel
       @klass ||= @name.classify.constantize
     end
 
+    def inspect
+      "<#{self.class}: @options=#{options}, @first_row=#{first_row}, @last_row=#{last_row}, @first_column=#{first_column}, @last_column=#{last_column}, @worksheet_name=#{worksheet_name}>"
+    end
   end
-
 end

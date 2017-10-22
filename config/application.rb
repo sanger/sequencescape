@@ -2,12 +2,7 @@ require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
 
-if defined?(Bundler)
-  # If you precompile assets before deploying to production, use this line
-  Bundler.require(*Rails.groups(:assets => %w(development test)))
-  # If you want your assets lazily compiled in production, use this line
-  # Bundler.require(:default, :assets, Rails.env)
-end
+Bundler.require(:default, Rails.env)
 
 module Sequencescape
   class Application < Rails::Application
@@ -34,7 +29,7 @@ module Sequencescape
     # config.i18n.default_locale = :de
 
     # Configure the default encoding used in templates for Ruby 1.9.
-    config.encoding = "utf-8"
+    config.encoding = 'utf-8'
 
     # Configure sensitive parameters which will be filtered from the log file.
     config.filter_parameters += [:password]
@@ -47,45 +42,31 @@ module Sequencescape
     # like if you have constraints or database-specific column types
     # config.active_record.schema_format = :sql
 
-    # Enforce whitelist mode for mass assignment.
-    # This will create an empty whitelist of attributes available for mass-assignment for all models
-    # in your app. As such, your models will need to explicitly whitelist or blacklist accessible
-    # parameters by using an attr_accessible or attr_protected declaration.
-    config.active_record.whitelist_attributes = true
+    config.filter_parameters += [:password, :credential_1, :uploaded_data]
 
-    config.filter_parameters += [:password,:credential_1, :uploaded_data]
-
-    # Enable the asset pipeline
-    config.assets.enabled = true
-    config.assets.prefix = 'public'
+    config.assets.prefix = '/public'
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
-      # Settings in config/environments/* take precedence over those specified here.
-
+    # Settings in config/environments/* take precedence over those specified here.
 
     # Add additional load paths for your own custom dirs
     # config.load_paths += %W( #{Rails.root}/extras )
-    config.autoload_paths += %W{ #{Rails.root}/app/observers }
-    config.autoload_paths += %W{ #{Rails.root}/app/metal }
-    config.autoload_paths += %W{ #{Rails.root}/app }
-    config.autoload_paths += %W{ #{Rails.root}/lib }
-    config.autoload_paths += %W{ #{Rails.root}/lib/sample_manifest_excel }
+    config.autoload_paths += %W{#{Rails.root}/app/observers}
+    config.autoload_paths += %W{#{Rails.root}/app/metal}
+    config.autoload_paths += %W{#{Rails.root}/app}
+    config.autoload_paths += %W{#{Rails.root}/lib}
+    config.autoload_paths += %W{#{Rails.root}/lib/sample_manifest_excel}
+    config.autoload_paths += %W{#{Rails.root}/lib/accession}
 
-    # config.middleware.use "Api::EndpointHandler"
-    # config.middleware.use "Api::RootService"
-
-    # UPDATE ? - Is this old rails code or custom code?
-    # if %w(development test sandbox production cucumber).include? Rails.env
-    #   config.load_paths += Dir["#{Rails.root}/vendor/gems/**"].map do |dir|
-    #     File.directory?(lib = "#{dir}/lib") ? lib : dir
-    #   end
-    # end
+    config.encoding = 'utf-8'
 
     # Make Time.zone default to the specified zone, and make Active Record store time values
     # in the database in UTC, and return them converted to the specified local zone.
     # Run "rake -D time" for a list of tasks for finding time zone names. Uncomment to use default local time.
     config.time_zone = 'London'
+
+    config.warren = config_for(:warren)
 
     # Your secret key for verifying cookie session data integrity.
     # If you change this key, all old sessions will become invalid!
@@ -100,6 +81,7 @@ module Sequencescape
     config.i18n.load_path = Dir[File.join(Rails.root, %w{config locales metadata *.{rb,yml}})]
     I18n.enforce_available_locales = false
 
+    config.cherrypickable_default_type = 'ABgene_0800'
 
     # Jruby 1.7 seems to try and use the http.proxyX settings, but ignores the noProxyHost ENV.
     if defined?(ENV_JAVA)

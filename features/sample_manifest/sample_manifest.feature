@@ -22,36 +22,32 @@ Feature: Sample manifest
     When I follow "Sample Manifests"
     Then I should see "Create manifest for plates"
 
-  Scenario: Create a plate manifest and print just the first barcode when selecting option Only First Label
-    When I follow "Create manifest for plates"
+  Scenario: Create a tube manifest and print just the first barcode when selecting option Only First Label
+    When I follow "Create manifest for 1D tubes"
     Then I should see "Barcode printer"
     When I select "Test study" from "Study"
-    And I select "Default Plate" from "Template"
+    And I select "Default Tube" from "Template"
     And I select "Test supplier name" from "Supplier"
     And I select "xyz" from "Barcode printer"
-    And I select "Default Plate" from "Template"
-    And the plate barcode service is available with barcodes "1..4"
-    And I fill in the field labeled "Plates required" with "4"
+    And I fill in the field labeled "Tubes required" with "2"
     And I check "Print only the first label"
     And Pmb has the required label templates
     And Pmb is up and running
     When I press "Create manifest and print labels"
     And I should see "Your 1 label(s) have been sent to printer xyz"
 
-  Scenario: Create a plate manifest and print all the barcodes
-    When I follow "Create manifest for plates"
+  Scenario: Create a tube manifest and print all the barcodes
+    When I follow "Create manifest for 1D tubes"
     Then I should see "Barcode printer"
     When I select "Test study" from "Study"
-    And I select "Default Plate" from "Template"
+    And I select "Default Tube" from "Template"
     And I select "Test supplier name" from "Supplier"
     And I select "xyz" from "Barcode printer"
-    And I select "Default Plate" from "Template"
-    And the plate barcode service is available with barcodes "1..4"
-    And I fill in the field labeled "Plates required" with "4"
+    And I fill in the field labeled "Tubes required" with "2"
     And Pmb has the required label templates
     And Pmb is up and running
     When I press "Create manifest and print labels"
-    And I should see "Your 4 label(s) have been sent to printer xyz"
+    And I should see "Your 2 label(s) have been sent to printer xyz"
 
   Scenario: Create a plate manifest and upload a manifest file without processing it
     Given a manifest has been created for "Test study"
@@ -73,7 +69,6 @@ Feature: Sample manifest
     And I select "Default Plate" from "Template"
     And I select "Test supplier name" from "Supplier"
     And I select "xyz" from "Barcode printer"
-    And I select "Default Plate" from "Template"
     And I fill in the field labeled "Count" with "1"
     When I press "Create manifest and print labels"
     Then I should see "Manifest_"
@@ -85,7 +80,7 @@ Feature: Sample manifest
 
   Scenario: Create a manifest then upload an excel file instead of a csv file
     Given a manifest has been created for "Test study"
-    When I fill in "File to upload" with the file "data/base_manifest.xls"
+    When I fill in "File to upload" with the file "data/sample_information.xls"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
     Then I should see the manifest table:

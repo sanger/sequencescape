@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2012,2015 Genome Research Ltd.
 
 module ::Core::Io::Json::Grammar
   module Intermediate
@@ -34,26 +36,24 @@ module ::Core::Io::Json::Grammar
     end
 
     def merge_children_with(node)
-      Hash[
-        (node.children.keys + @children.keys).uniq.map do |k|
-          cloned = case
-          when @children.key?(k) && node.children.key?(k) then node.children[k].merge(@children[k])
-          when @children.key?(k)                          then @children[k]
-          when node.children.key?(k)                      then node.children[k]
-          else raise "Odd, how did that happen?"
-          end
+      (node.children.keys + @children.keys).uniq.each_with_object({}) do |k, store|
+        cloned = case
+                 when @children.key?(k) && node.children.key?(k) then node.children[k].merge(@children[k])
+                 when @children.key?(k)                          then @children[k]
+                 when node.children.key?(k)                      then node.children[k]
+                 else raise 'Odd, how did that happen?'
+                 end
 
-          [k,cloned]
-        end
-      ]
+        store[k] = cloned
+      end
     end
 
     def inspect
       @children.values.inspect
     end
 
-    def duplicate(&block)
-      yield(Hash[@children.map { |k,v| [k,v.dup] }])
+    def duplicate
+      yield(Hash[@children.map { |k, v| [k, v.dup] }])
     end
     private :duplicate
   end
@@ -70,7 +70,7 @@ module ::Core::Io::Json::Grammar
       duplicate { |children| self.class.new(owner, children) }
     end
 
-    delegate :json_root, :to => :@owner
+    delegate :json_root, to: :@owner
 
     def encode(object, options)
       object_encoder(object, options).call(object, options, options[:stream])
@@ -148,7 +148,7 @@ module ::Core::Io::Json::Grammar
     end
 
     def call(object, options, stream)
-      value = @attribute_path.inject(object) { |o,k| return if o.nil? ; o.send(k) } or return
+      value = @attribute_path.inject(object) { |o, k| return if o.nil?; o.send(k) } or return
       stream.attribute(@name, value.send(@attribute), options)
     end
 
@@ -157,8 +157,8 @@ module ::Core::Io::Json::Grammar
       self.class.new(name, attribute)
     end
 
-    def merge(node)
-      raise "Cannot merge into a leaf as it is attribute only!"
+    def merge(_node)
+      raise 'Cannot merge into a leaf as it is attribute only!'
     end
 
     def merge_children_with(node)
@@ -175,8 +175,8 @@ module ::Core::Io::Json::Grammar
   module Resource
     def resource_details(endpoint, object, options, stream)
       stream.block('actions') do |nested_stream|
-        endpoint.send(:actions, object, options.merge(:target => object)).map do |action,url|
-          nested_stream.attribute(action,url)
+        endpoint.send(:actions, object, options.merge(target: object)).map do |action, url|
+          nested_stream.attribute(action, url)
         end
         actions(object, options, nested_stream)
       end
@@ -202,7 +202,7 @@ module ::Core::Io::Json::Grammar
     end
 
     def merge(_)
-      raise "Cannot merge into an actions leaf as it is actions only!"
+      raise 'Cannot merge into an actions leaf as it is actions only!'
     end
 
     def dup

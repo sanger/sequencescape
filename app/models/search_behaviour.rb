@@ -1,9 +1,10 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
 
 module SearchBehaviour
-
   MINIMUM_QUERY_LENGTH = 3
 
   def self.included(base)
@@ -17,21 +18,21 @@ module SearchBehaviour
     @render_start = Time.now
     respond_to do |format|
       format.html
-      format.js { render :partial => 'search', :layout => false}
+      format.js { render partial: 'search', layout: false }
     end
   end
 
-private
+  private
 
   def perform_search(query)
     searchable_classes.each do |clazz|
-      instance_variable_set("@#{ clazz.name.underscore.pluralize }", clazz.for_search_query(query,extended).all)
+      instance_variable_set("@#{clazz.name.underscore.pluralize}", clazz.for_search_query(query, extended).all)
     end
   end
 
-  def each_non_empty_search_result(&block)
+  def each_non_empty_search_result
     searchable_classes.each do |clazz|
-      results = instance_variable_get("@#{ clazz.name.underscore.pluralize }")
+      results = instance_variable_get("@#{clazz.name.underscore.pluralize}")
       yield(clazz.name.underscore, results) unless results.blank?
     end
   end

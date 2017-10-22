@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2015 Genome Research Ltd.
 
 # A template is effectively a partially constructed Transfer instance, containing only the
 # transfers that should be made and the final Transfer class that should be constructed.
@@ -8,7 +10,7 @@
 # For pulldown there are at least a couple of these templates:
 # - several plate-to-plate transfers of various columns (but all rows)
 # - one whole plate to tube transfer
-class TransferTemplate < ActiveRecord::Base
+class TransferTemplate < ApplicationRecord
   include Uuid::Uuidable
 
   # A name is a useful way to identify templates!
@@ -27,12 +29,12 @@ class TransferTemplate < ActiveRecord::Base
 
   def self.transfer_constructor(name)
     line = __LINE__ + 1
-    class_eval(%Q{
+    class_eval("
       def #{name}(attributes)
         attributes.merge!(:transfers => self.transfers) unless self.transfers.blank?
         transfer_class.#{name}(attributes)
       end
-    }, __FILE__, line)
+    ", __FILE__, line)
   end
 
   transfer_constructor(:create!)

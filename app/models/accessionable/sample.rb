@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2015,2016 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2015,2016 Genome Research Ltd.
 
 module Accessionable
   class Sample < Base
@@ -11,7 +13,7 @@ module Accessionable
 
       sampname = sample.sample_metadata.sample_public_name
       @name = sampname.blank? ? sample.name : sampname
-      @name = @name.gsub(/[^a-z\d]/i,'_') unless @name.blank?
+      @name = @name.gsub(/[^a-z\d]/i, '_') unless @name.blank?
 
       @common_name = sample.sample_metadata.sample_common_name
       @taxon_id    = sample.sample_metadata.sample_taxon_id
@@ -23,9 +25,9 @@ module Accessionable
         Tag.new(label_scope, datum.name, sample.sample_metadata[datum.tag], datum.downcase)
       end
 
-      #TODO maybe unify this with the previous loop
+      # TODO: maybe unify this with the previous loop
       # Don't send managed AE data to SRA
-      if !sample.accession_service.private?
+      unless sample.accession_service.private?
         ::Sample::ArrayExpressFields.each do |datum|
           value = sample.sample_metadata.send(datum)
           next unless value.present?
@@ -52,10 +54,10 @@ module Accessionable
     def sample_element_attributes
       # In case the accession number is defined, we won't send the alias
       {
-        :alias => self.alias,
-        :accession => accession_number
+        alias: self.alias,
+        accession: accession_number
       }.tap do |obj|
-        obj.delete(:alias) unless self.accession_number.blank?
+        obj.delete(:alias) unless accession_number.blank?
       end
     end
 
@@ -64,30 +66,28 @@ module Accessionable
       xml.instruct!
       xml.SAMPLE_SET('xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance') {
         xml.SAMPLE(sample_element_attributes) {
-          xml.TITLE self.title unless title.nil?
+          xml.TITLE title unless title.nil?
           xml.SAMPLE_NAME {
-            xml.COMMON_NAME  self.common_name
-            xml.TAXON_ID     self.taxon_id
+            xml.COMMON_NAME  common_name
+            xml.TAXON_ID     taxon_id
           }
           xml.SAMPLE_ATTRIBUTES {
-            self.tags.each do |tag|
+            tags.each do |tag|
               xml.SAMPLE_ATTRIBUTE {
                 tag.build(xml)
               }
             end
-          } unless self.tags.blank?
+          } unless tags.blank?
 
-          xml.SAMPLE_LINKS {
-
-          } unless self.links.blank?
+          xml.SAMPLE_LINKS {} unless links.blank?
         }
       }
-      return xml.target!
+      xml.target!
     end
 
     def update_accession_number!(user, accession_number)
       @accession_number = accession_number
-      add_updated_event(user, "Sample #{@sample.id}",  @sample) if @accession_number
+      add_updated_event(user, "Sample #{@sample.id}", @sample) if @accession_number
       @sample.sample_metadata.sample_ebi_accession_number = accession_number
       @sample.save!
     end
@@ -99,21 +99,21 @@ module Accessionable
     def released?
       @sample.released?
     end
-
   end
+
   private
 
   class ArrayExpressTag < Base::Tag
     def label
-      default_tag =  "ArrayExpress-#{I18n.t("#{@scope}.#{ @name }.label").gsub(" ","_").camelize}"
-      I18n.t("#{@scope}.#{ @name }.era_label", :default => default_tag)
+      default_tag = "ArrayExpress-#{I18n.t("#{@scope}.#{@name}.label").tr(" ", "_").camelize}"
+      I18n.t("#{@scope}.#{@name}.ena_label", default: default_tag)
     end
   end
 
-  class EgaTag< Base::Tag
+  class EgaTag < Base::Tag
     def label
-      default_tag =  "EGA-#{I18n.t("#{@scope}.#{ @name }.label").gsub(" ","_").camelize}"
-      I18n.t("#{@scope}.#{ @name }.era_label", :default => default_tag)
+      default_tag = "EGA-#{I18n.t("#{@scope}.#{@name}.label").tr(" ", "_").camelize}"
+      I18n.t("#{@scope}.#{@name}.ena_label", default: default_tag)
     end
   end
 end

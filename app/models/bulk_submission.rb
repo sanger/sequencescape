@@ -1,19 +1,19 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
-
+# Encoding: utf-8
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 class ActiveRecord::Base
   class << self
     def find_by_id_or_name!(id, name)
-      return find(id) unless id.blank?
-      raise StandardError, "Must specify at least ID or name" if name.blank?
-      find_by_name!(name)
+      find_by_id_or_name(id, name) || raise(ActiveRecord::RecordNotFound, "Could not find #{self.name}: #{id || name}")
     end
 
     def find_by_id_or_name(id, name)
       return find(id) unless id.blank?
-      raise StandardError, "Must specify at least ID or name" if name.blank?
-      find_by_name(name)
+      raise StandardError, 'Must specify at least ID or name' if name.blank?
+      find_by(name: name)
     end
   end
 end
@@ -33,6 +33,9 @@ class Array
 end
 
 class BulkSubmission
+  # This is the default output from excel
+  DEFAULT_ENCODING = 'Windows-1252'
+
   include ActiveModel::AttributeMethods
   include ActiveModel::Validations
   include ActiveModel::Conversion
@@ -40,37 +43,41 @@ class BulkSubmission
 
   include Submission::AssetSubmissionFinder
 
-  attr_accessor :spreadsheet
+  attr_accessor :spreadsheet, :encoding
   define_attribute_methods [:spreadsheet]
 
   validates_presence_of :spreadsheet
   validate :process_file
 
   def persisted?; false; end
+
   def id; nil; end
 
-  def initialize(attrs={})
+  def initialize(attrs = {})
     self.spreadsheet = attrs[:spreadsheet]
+    self.encoding = attrs.fetch(:encoding, DEFAULT_ENCODING)
   end
 
   include ManifestUtil
 
   def process_file
     # Slightly inelegant file-type checking
-    #TODO (jr) Find a better way of verifying the CSV file?
+    # TODO (jr) Find a better way of verifying the CSV file?
     unless spreadsheet.blank?
       if spreadsheet.size == 0
-        errors.add(:spreadsheet, "The supplied file was empty")
+        errors.add(:spreadsheet, 'The supplied file was empty')
       else
-        if /^.*\.csv$/.match(spreadsheet.original_filename)
+        if spreadsheet.original_filename.end_with?('.csv')
           process
         else
-          errors.add(:spreadsheet, "The supplied file was not a CSV file")
+          errors.add(:spreadsheet, 'The supplied file was not a CSV file')
         end
       end
     end
   rescue CSV::MalformedCSVError
-    errors.add(:spreadsheet, "The supplied file was not a valid CSV file (try opening it with MS Excel)")
+    errors.add(:spreadsheet, 'The supplied file was not a valid CSV file (try opening it with MS Excel)')
+  rescue Encoding::InvalidByteSequenceError
+    errors.add(:encoding, "didn't match for the provided file.")
   end
 
   def headers
@@ -79,17 +86,17 @@ class BulkSubmission
   private :headers
 
   def csv_data_rows
-    @csv_rows.slice(header_index+1...@csv_rows.length)
+    @csv_rows.slice(header_index + 1...@csv_rows.length)
   end
   private :csv_data_rows
 
   def header_index
     @header_index ||= @csv_rows.each_with_index do |row, index|
-      next if index == 0 && row[0] == "This row is guidance only"
+      next if index == 0 && row[0] == 'This row is guidance only'
       return index if header_row?(row)
     end
     # We've got through all rows without finding a header
-    errors.add(:spreadsheet, "The supplied file does not contain a valid header row (try downloading a template)")
+    errors.add(:spreadsheet, 'The supplied file does not contain a valid header row (try downloading a template)')
     nil
   end
   private :header_index
@@ -100,21 +107,21 @@ class BulkSubmission
   private :start_row
 
   def header_row?(row)
-    row.each {|col| col.try(:downcase!)}
+    row.each { |col| col.try(:downcase!) }
     (row & COMMON_FIELDS).length > 0
   end
   private :header_row?
 
   def valid_header?
     return false if headers.nil?
-    return true if headers.include? "submission name"
+    return true if headers.include? 'submission name'
     errors.add :spreadsheet, "You submitted an incompatible spreadsheet. Please ensure your spreadsheet contains the 'submission name' column"
     false
   end
 
   def max_priority(orders)
-    orders.inject(0) do |max,order|
-      priority = Submission::Priorities.priorities.index(order['priority'])||order['priority'].to_i
+    orders.inject(0) do |max, order|
+      priority = Submission::Priorities.priorities.index(order['priority']) || order['priority'].to_i
       priority > max ? priority.to_i : max
     end
   end
@@ -130,25 +137,27 @@ class BulkSubmission
     # Store the details of the successful submissions so the user can be presented with a summary
     @submission_ids = []
     @completed_submissions = {}
-    @csv_rows = CSV.parse(spreadsheet.read)
+
+    csv_content = spreadsheet.read
+    @csv_rows = CSV.parse(csv_content.encode!('utf-8', encoding))
 
     if spreadsheet_valid?
       submission_details = submission_structure
 
-      raise ActiveRecord::RecordInvalid, self if self.errors.count > 0
+      raise ActiveRecord::RecordInvalid, self if errors.count > 0
       # Within a single transaction process each of the rows of the CSV file as a separate submission.  Any name
       # fields need to be mapped to IDs, and the 'assets' field needs to be split up and processed if present.
       ActiveRecord::Base.transaction do
         submission_details.each do |submissions|
-          submissions.each do |submission_name,orders|
-            user = User.find_by_login(orders.first['user login'])
+          submissions.each do |submission_name, orders|
+            user = User.find_by(login: orders.first['user login'])
             if user.nil?
-              errors.add :spreadsheet, orders.first["user login"].nil? ? "No user specified for #{submission_name}" : "Cannot find user #{orders.first["user login"].inspect}"
+              errors.add :spreadsheet, orders.first['user login'].nil? ? "No user specified for #{submission_name}" : "Cannot find user #{orders.first["user login"].inspect}"
               next
             end
 
             begin
-              submission = Submission.create!(:name=>submission_name, :user => user, :orders => orders.map(&method(:prepare_order)).compact, :priority=>max_priority(orders))
+              submission = Submission.create!(name: submission_name, user: user, orders: orders.map(&method(:prepare_order)).compact, priority: max_priority(orders))
               submission.built!
               # Collect successful submissions
               @submission_ids << submission.id
@@ -164,7 +173,7 @@ class BulkSubmission
       end
 
     end
-  end #process
+  end # process
 
   COMMON_FIELDS = [
     # Needed to construct the submission ...
@@ -176,6 +185,7 @@ class BulkSubmission
     # Needed to identify the assets and what happens to them ...
     'asset group id', 'asset group name',
     'fragment size from', 'fragment size to',
+    'pcr cycles',
     'read length',
     'library type',
     'bait library', 'bait library name',
@@ -193,12 +203,12 @@ class BulkSubmission
   }
 
   def translate(header)
-    ALIAS_FIELDS[header]||header
+    ALIAS_FIELDS[header] || header
   end
 
-  def validate_entry(header,pos,row,index)
+  def validate_entry(header, pos, row, index)
     return [translate(header), row[pos].try(:strip)] unless header.nil? && row[pos].present?
-    errors.add(:spreadsheet, "Row #{index}, column #{pos+1} contains data but no heading.")
+    errors.add(:spreadsheet, "Row #{index}, column #{pos + 1} contains data but no heading.")
   end
   private :validate_entry
 
@@ -207,16 +217,16 @@ class BulkSubmission
   #    "submission name" => array of orders
   #    where each order is a hash of headers to values (grouped by "asset group name")
   def submission_structure
-    Hash.new {|h,i| h[i] = Array.new}.tap do |submission|
+    Hash.new { |h, i| h[i] = Array.new }.tap do |submission|
       csv_data_rows.each_with_index do |row, index|
         next if row.all?(&:nil?)
-        details = Hash[headers.each_with_index.map { |header, pos| validate_entry(header,pos,row,index+start_row) }].merge('row' => index+start_row)
+        details = Hash[headers.each_with_index.map { |header, pos| validate_entry(header, pos, row, index + start_row) }].merge('row' => index + start_row)
         submission[details['submission name']] << details
       end
     end.map do |submission_name, rows|
       order = rows.group_by do |details|
-        details["asset group name"]
-      end.map do |group_name, rows|
+        details['asset group name']
+      end.map do |_group_name, rows|
 
         Hash[shared_options!(rows)].tap do |details|
           details['rows']          = rows.comma_separate_field_list_for_display('row')
@@ -224,19 +234,20 @@ class BulkSubmission
           details['asset names']   = rows.field_list('asset name', 'asset names')
           details['plate well']    = rows.field_list('plate well')
           details['barcode']       = rows.field_list('barcode')
-        end.delete_if { |_,v| v.blank? }
-
+        end.delete_if { |_, v| v.blank? }
       end
       Hash[submission_name, order]
     end
   end
 
-
   def shared_options!(rows)
     # Builds an array of the common fields. Raises and exception if the fields are inconsistent
     COMMON_FIELDS.map do |field|
-      option = rows.map {|r| r[field] }.uniq
-      self.errors.add(:spreadsheet, "Column, #{field}, should be identical for all requests in asset group #{rows.first['asset group name']}") if option.count > 1
+      option = rows.map { |r| r[field] }.uniq
+      if option.count > 1
+        provided_values = option.map { |o| "'#{o}'" }.to_sentence
+        errors.add(:spreadsheet, "#{field} should be identical for all requests in asset group '#{rows.first['asset group name']}'. Given values were: #{provided_values}.")
+      end
       [field, option.first]
     end
   end
@@ -247,40 +258,44 @@ class BulkSubmission
     end
   end
 
+  def extract_request_options(details)
+    {
+      read_length: details['read length'],
+      multiplier: {}
+    }.tap do |request_options|
+      request_options['library_type']                  = details['library type']           unless details['library type'].blank?
+      request_options['fragment_size_required_from']   = details['fragment size from']     unless details['fragment size from'].blank?
+      request_options['fragment_size_required_to']     = details['fragment size to']       unless details['fragment size to'].blank?
+      request_options['pcr_cycles']                    = details['pcr cycles']             unless details['pcr cycles'].blank?
+      request_options[:bait_library_name]              = details['bait library name']      unless details['bait library name'].blank?
+      request_options[:bait_library_name]            ||= details['bait library']           unless details['bait library'].blank?
+      request_options['pre_capture_plex_level']        = details['pre-capture plex level'] unless details['pre-capture plex level'].blank?
+      request_options['gigabases_expected']            = details['gigabases expected']     unless details['gigabases expected'].blank?
+    end
+  end
+
   # Returns an order for the given details
   def prepare_order(details)
     begin
       # Retrieve common attributes
       study   = Study.find_by_id_or_name!(details['study id'], details['study name'])
       project = Project.find_by_id_or_name!(details['project id'], details['project name'])
-      user    = User.find_by_login(details['user login']) or raise StandardError, "Cannot find user #{details['user login'].inspect}"
+      user    = User.find_by(login: details['user login']) or raise StandardError, "Cannot find user #{details['user login'].inspect}"
 
       # The order attributes are initially
       attributes = {
-        :study   => study,
-        :project => project,
-        :user => user,
-        :comments => details['comments'],
-        :request_options => {
-          :read_length  => details['read length']
-        },
-        :pre_cap_group => details['pre-capture group']
+        study: study,
+        project: project,
+        user: user,
+        comments: details['comments'],
+        request_options: extract_request_options(details),
+        pre_cap_group: details['pre-capture group']
       }
-
-      attributes[:request_options]['library_type']                  = details['library type']           unless details['library type'].blank?
-      attributes[:request_options]['fragment_size_required_from']   = details['fragment size from']     unless details['fragment size from'].blank?
-      attributes[:request_options]['fragment_size_required_to']     = details['fragment size to']       unless details['fragment size to'].blank?
-      attributes[:request_options][:bait_library_name]              = details['bait library name']      unless details['bait library name'].blank?
-      attributes[:request_options][:bait_library_name]            ||= details['bait library']           unless details['bait library'].blank?
-      attributes[:request_options]['pre_capture_plex_level']        = details['pre-capture plex level'] unless details['pre-capture plex level'].blank?
-      attributes[:request_options]['gigabases_expected']            = details['gigabases expected']     unless details['gigabases expected'].blank?
-      attributes[:request_options][:multiplier]                     = {}
 
       # Deal with the asset group: either it's one we should be loading, or one we should be creating.
 
       attributes[:asset_group] = study.asset_groups.find_by_id_or_name(details['asset group id'], details['asset group name'])
       attributes[:asset_group_name] = details['asset group name'] if attributes[:asset_group].nil?
-
 
       ##
       # We go ahead and find our assets regardless of whether we have an asset group.
@@ -299,11 +314,11 @@ class BulkSubmission
       else
 
         asset_ids, asset_names = details.fetch('asset ids', ''), details.fetch('asset names', '')
-        if attributes[:asset_group] && asset_ids.blank? && asset_names.blank?
-          found_assets    = []
-        else
-          found_assets    = Array(find_all_assets_by_id_or_name_including_samples!(asset_ids, asset_names)).uniq
-        end
+        found_assets = if attributes[:asset_group] && asset_ids.blank? && asset_names.blank?
+          []
+                       else
+          Array(find_all_assets_by_id_or_name_including_samples!(asset_ids, asset_names)).uniq
+                       end
 
         assets_found, expecting = found_assets.map { |asset| "#{asset.name}(#{asset.id})" }, asset_ids.size + asset_names.size
         raise StandardError, "Too few assets found for #{details['rows']}: #{assets_found.inspect}"  if assets_found.size < expecting
@@ -317,7 +332,6 @@ class BulkSubmission
         raise StandardError, "Asset Group '#{attributes[:asset_group].name}' contains different assets to those you specified. You may be reusing an asset group name" if found_assets.present? && found_assets != attributes[:asset_group].assets
       end
       add_study_to_assets(found_assets, study)
-
 
       # Create the order.  Ensure that the number of lanes is correctly set.
       sub_template      = find_template(details['template name'])
@@ -336,14 +350,13 @@ class BulkSubmission
 
   # Returns the SubmissionTemplate and checks that it is valid
   def find_template(template_name)
-    template = SubmissionTemplate.find_by_name(template_name) or raise StandardError, "Cannot find template #{template_name}"
+    template = SubmissionTemplate.find_by(name: template_name) or raise StandardError, "Cannot find template #{template_name}"
     raise(StandardError, "Template: '#{template_name}' is deprecated and no longer in use.") unless template.visible
     template
   end
 
   # This is used to present a list of successes
   def completed_submissions
-    return @submission_ids, @completed_submissions
+    [@submission_ids, @completed_submissions]
   end
-
 end

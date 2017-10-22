@@ -38,9 +38,9 @@ Feature: Print barcodes for the cherrypicking for pulldown and pulldown multiple
     And I press the first "Submit"
     When I follow "Select Plate Template"
     And I fill in the following:
-      | Minimum Volume    | 10   |
-      | Maximum Volume    | 50   |
-      | Quantity to pick  | 1000 |
+      | nano_grams_minimum_volume    | 10   |
+      | nano_grams_maximum_volume    | 50   |
+      | nano_grams_total_nano_grams  | 1000 |
     And I choose "Pick by ng"
     And I press "Next step"
     When I press "Next step"
@@ -157,26 +157,6 @@ Feature: Print barcodes for the cherrypicking for pulldown and pulldown multiple
     Then I should see "You have 3 requests selected"
     When I uncheck "Select DN333P for batch"
     Then I should see "You have no requests selected"
-
-  @wip
-  Scenario: Print tube barcodes for pulldown multiplexing
-    Given I have a project called "Test project"
-
-    Given I have an active study called "Test study"
-    And I have an active study called "Study A"
-
-    Given I have a tag group called "UK10K tag group" with 8 tags
-    Given I have a pulldown batch
-    When I follow "Assign Tags"
-    When I select "UK10K tag group" from "Tag Group"
-    And I press "Next step"
-    And I press "Next step"
-    When I press "Release this batch"
-    Given all library tube barcodes are set to know values
-    When I follow "Print labels"
-    When I select "xyz" from "Print to"
-    When I press "Print labels"
-    Then I should see "Your labels have been sent to printer xyz"
 
   Scenario: Cherrypick for pulldown and print barcodes
     Given I have a project called "Test project"

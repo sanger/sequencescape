@@ -1,18 +1,20 @@
-<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015,2016 Genome Research Ltd.%>
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015,2016 Genome Research Ltd.%>
 
 <%= form_for(@project) do |f| %>
   <%= f.error_messages %>
 
-  <%= form_collection(f.label(:name, nil, :class => 'required'), f.text_field(:name, :class=>'form-control' ) ) %>
+  <%= form_collection(f.label(:name, nil, class: 'required'), f.text_field(:name, class: 'form-control' ) ) %>
 
-  <%= render(:partial => 'shared/metadata/edit/project', :locals => { :project => @project }) %>
+  <%= render(partial: 'shared/metadata/edit/project', locals: { project: @project }) %>
 
   <% unless @project.new_record? %>
-    <%= submit_tag :project, :value => "Update" %> or <%= link_to "cancel", project_path(@project) %>
+    <%= submit_tag :project, value: "Update" %> or <%= link_to "cancel", project_path(@project) %>
   <% else %>
-    <%= submit_tag :project, :value => "Create" %> or <%= link_to "cancel", projects_path %>
+    <%= submit_tag :project, value: "Create" %> or <%= link_to "cancel", projects_path %>
   <% end %>
 
 <% end %>

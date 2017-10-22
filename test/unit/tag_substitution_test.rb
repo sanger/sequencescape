@@ -1,12 +1,11 @@
-require "test_helper"
+require 'test_helper'
 
 class TagSubstitutionTest < ActiveSupport::TestCase
-
   # We have a large number of scenarios here, because unfortunately
   # things can get quite complicated.
 
-  context "TagSubstitution" do
-    context "with a simple tag swap" do
+  context 'TagSubstitution' do
+    context 'with a simple tag swap' do
       # Works for: Library manifests, old tube pipelines
       # We have two samples, each with unique tags, which only exist
       # in aliquots identified by the library id. We don't need to consider:
@@ -36,8 +35,8 @@ class TagSubstitutionTest < ActiveSupport::TestCase
 
       should 'perform the correct tag substitutions' do
         instructions = [
-          {sample_id:@sample_a.id,library_id:@library_tube_a.id,original_tag_id:@sample_a_orig_tag.id,substitute_tag_id:@sample_b_orig_tag.id},
-          {sample_id:@sample_b.id,library_id:@library_tube_b.id,original_tag_id:@sample_b_orig_tag.id,substitute_tag_id:@sample_a_orig_tag.id}
+          { sample_id: @sample_a.id, library_id: @library_tube_a.id, original_tag_id: @sample_a_orig_tag.id, substitute_tag_id: @sample_b_orig_tag.id },
+          { sample_id: @sample_b.id, library_id: @library_tube_b.id, original_tag_id: @sample_b_orig_tag.id, substitute_tag_id: @sample_a_orig_tag.id }
         ]
         ts = TagSubstitution.new(instructions)
         assert ts.save, "TagSubstitution did not save. #{ts.errors.full_messages}"
@@ -49,8 +48,8 @@ class TagSubstitutionTest < ActiveSupport::TestCase
 
       should 'perform the correct tag2 substitutions' do
         instructions = [
-          {sample_id:@sample_a.id,library_id:@library_tube_a.id,original_tag_id:@sample_a_orig_tag.id,substitute_tag_id:@sample_b_orig_tag.id,original_tag2_id:@sample_a_orig_tag2.id,substitute_tag2_id:@sample_b_orig_tag2.id},
-          {sample_id:@sample_b.id,library_id:@library_tube_b.id,original_tag_id:@sample_b_orig_tag.id,substitute_tag_id:@sample_a_orig_tag.id,original_tag2_id:@sample_b_orig_tag2.id,substitute_tag2_id:@sample_a_orig_tag2.id}
+          { sample_id: @sample_a.id, library_id: @library_tube_a.id, original_tag_id: @sample_a_orig_tag.id, substitute_tag_id: @sample_b_orig_tag.id, original_tag2_id: @sample_a_orig_tag2.id, substitute_tag2_id: @sample_b_orig_tag2.id },
+          { sample_id: @sample_b.id, library_id: @library_tube_b.id, original_tag_id: @sample_b_orig_tag.id, substitute_tag_id: @sample_a_orig_tag.id, original_tag2_id: @sample_b_orig_tag2.id, substitute_tag2_id: @sample_a_orig_tag2.id }
         ]
         ts = TagSubstitution.new(instructions)
         assert ts.save, "TagSubstitution did not save. #{ts.errors.full_messages}"
@@ -66,24 +65,24 @@ class TagSubstitutionTest < ActiveSupport::TestCase
 
       should 'return false and an error of the details don\'t match' do
         instructions = [
-          {sample_id:@sample_a.id,library_id:@library_tube_a.id,original_tag_id:@sample_b_orig_tag.id,substitute_tag_id:@sample_a_orig_tag.id,original_tag2_id:@sample_a_orig_tag2.id,substitute_tag2_id:@sample_b_orig_tag2.id},
-          {sample_id:@sample_b.id,library_id:@library_tube_b.id,original_tag_id:@sample_a_orig_tag.id,substitute_tag_id:@sample_b_orig_tag.id,original_tag2_id:@sample_b_orig_tag2.id,substitute_tag2_id:@sample_a_orig_tag2.id}
+          { sample_id: @sample_a.id, library_id: @library_tube_a.id, original_tag_id: @sample_b_orig_tag.id, substitute_tag_id: @sample_a_orig_tag.id, original_tag2_id: @sample_a_orig_tag2.id, substitute_tag2_id: @sample_b_orig_tag2.id },
+          { sample_id: @sample_b.id, library_id: @library_tube_b.id, original_tag_id: @sample_a_orig_tag.id, substitute_tag_id: @sample_b_orig_tag.id, original_tag2_id: @sample_b_orig_tag2.id, substitute_tag2_id: @sample_a_orig_tag2.id }
         ]
         ts = TagSubstitution.new(instructions)
-        assert !ts.save, "Substitution saved when it should have errord"
-        assert_include ts.errors.full_messages, 'Substitution Matching aliquots could not be found'
+        refute ts.save, 'Substitution saved when it should have errord'
+        assert_includes ts.errors.full_messages, 'Substitution Matching aliquots could not be found'
       end
 
       should 'also update allow update of other attributes' do
         @library_type = create :library_type
         instructions = [
-          {sample_id:@sample_a.id,library_id:@library_tube_a.id,original_tag_id:@sample_a_orig_tag.id,substitute_tag_id:@sample_a_orig_tag.id, library_type:@library_type.name, insert_size_from:20, insert_size_to:400},
-          {sample_id:@sample_b.id,library_id:@library_tube_b.id,original_tag_id:@sample_b_orig_tag.id,substitute_tag_id:@sample_b_orig_tag.id, library_type:@library_type.name, insert_size_from:20, insert_size_to:400}
+          { sample_id: @sample_a.id, library_id: @library_tube_a.id, original_tag_id: @sample_a_orig_tag.id, substitute_tag_id: @sample_a_orig_tag.id, library_type: @library_type.name, insert_size_from: 20, insert_size_to: 400 },
+          { sample_id: @sample_b.id, library_id: @library_tube_b.id, original_tag_id: @sample_b_orig_tag.id, substitute_tag_id: @sample_b_orig_tag.id, library_type: @library_type.name, insert_size_from: 20, insert_size_to: 400 }
         ]
         ts = TagSubstitution.new(instructions)
         assert ts.save, "TagSubstitution did not save. #{ts.errors.full_messages}"
 
-        [@library_aliquot_a,@library_aliquot_b,@mx_aliquot_a,@mx_aliquot_b].each do |aliquot|
+        [@library_aliquot_a, @library_aliquot_b, @mx_aliquot_a, @mx_aliquot_b].each do |aliquot|
           aliquot.reload
           assert_equal aliquot.library_type, @library_type.name
           assert_equal 20, aliquot.insert_size_from
@@ -92,7 +91,7 @@ class TagSubstitutionTest < ActiveSupport::TestCase
       end
     end
 
-    context "with a multi-tag sample tag swap" do
+    context 'with a multi-tag sample tag swap' do
       setup do
         @sample_a = create :sample
         @sample_b = create :sample
@@ -101,7 +100,6 @@ class TagSubstitutionTest < ActiveSupport::TestCase
         @sample_a_orig_tag_b  = create :tag
         @sample_b_orig_tag_b  = create :tag
         @other_tag            = create :tag
-
 
         @library_tube_a = create :library_tube
         @library_aliquot_a_a = create :aliquot, sample: @sample_a, tag: @sample_a_orig_tag_a, library: @library_tube_a, receptacle: @library_tube_a
@@ -120,9 +118,9 @@ class TagSubstitutionTest < ActiveSupport::TestCase
 
       should 'perform the correct substitutions' do
         instructions = [
-          {sample_id:@sample_a.id,library_id:@library_tube_a.id,original_tag_id:@sample_a_orig_tag_a.id,substitute_tag_id:@sample_b_orig_tag_a.id},
-          {sample_id:@sample_a.id,library_id:@library_tube_a.id,original_tag_id:@sample_a_orig_tag_b.id,substitute_tag_id:@other_tag.id},
-          {sample_id:@sample_b.id,library_id:@library_tube_b.id,original_tag_id:@sample_b_orig_tag_a.id,substitute_tag_id:@sample_a_orig_tag_a.id}
+          { sample_id: @sample_a.id, library_id: @library_tube_a.id, original_tag_id: @sample_a_orig_tag_a.id, substitute_tag_id: @sample_b_orig_tag_a.id },
+          { sample_id: @sample_a.id, library_id: @library_tube_a.id, original_tag_id: @sample_a_orig_tag_b.id, substitute_tag_id: @other_tag.id },
+          { sample_id: @sample_b.id, library_id: @library_tube_b.id, original_tag_id: @sample_b_orig_tag_a.id, substitute_tag_id: @sample_a_orig_tag_a.id }
         ]
         ts = TagSubstitution.new(instructions)
         assert ts.save, "TagSubstitution did not save. #{ts.errors.full_messages}"
@@ -138,5 +136,4 @@ class TagSubstitutionTest < ActiveSupport::TestCase
       end
     end
   end
-
 end

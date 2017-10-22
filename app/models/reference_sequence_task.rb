@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 class ReferenceSequenceTask < Task
   class ReferenceSequenceData < Task::RenderElement
@@ -14,7 +16,7 @@ class ReferenceSequenceTask < Task
   end
 
   def partial
-    "reference_sequence_batches"
+    'reference_sequence_batches'
   end
 
   def render_task(workflow, params)
@@ -25,5 +27,4 @@ class ReferenceSequenceTask < Task
   def do_task(workflow, params)
     workflow.do_reference_sequence_task(self, params)
   end
-
 end

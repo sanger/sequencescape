@@ -2,8 +2,8 @@
   <li><%= link_to item.text, item.link %></li>
 <% else %>
   <% if item.method.nil? -%>
-    <li><%= link_to item.text, item.link, :confirm => item.confirm %></li>
+    <li><%= link_to item.text, item.link, confirm: item.confirm %></li>
   <% else -%>
-    <li><%= link_to item.text, item.link, :method => item.method, :confirm => item.confirm %></li>
+    <li><%= link_to item.text, item.link, method: item.method, confirm: item.confirm %></li>
   <% end -%>
 <% end -%>

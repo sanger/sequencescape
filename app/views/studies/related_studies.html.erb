@@ -1,6 +1,8 @@
-<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
 
 <% add :title, "Related studies for study." -%>
 <% add :back_menu, I18n.t("navigation.menu.back_to_study") => study_path(@study) -%>
@@ -18,7 +20,7 @@ Study <%= @study.id %> &middot; Created on <%= @study.created_at.to_formatted_s(
 </div>
 <div id="related_studies">
   <!-- renders related studies of this study -->
-  <%= render :partial => "related_studies" -%>
+  <%= render partial: "related_studies" -%>
 </div>
 
 <% if current_user.is_manager?(@study) -%>
@@ -26,6 +28,6 @@ Study <%= @study.id %> &middot; Created on <%= @study.created_at.to_formatted_s(
   <!-- renders all available study relations type and studies form -->
   <div style="text-align:center">
     <h3 id="relate_study">Add a study relation</h3>
-    <%= render :partial => "add_related_study" -%>
+    <%= render partial: "add_related_study" -%>
   </div>
 <% end -%>

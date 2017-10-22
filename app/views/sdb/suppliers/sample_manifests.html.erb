@@ -1,10 +1,12 @@
-<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
 
 <% add :menu, "SDB Home" => '/sdb/' %>
 <% add :menu, "Create manifest" => new_sample_manifest_path() %>
 <h2>Sample Manifests for <%= @supplier.name %></h2>
 <%= pagination @sample_manifests %>
-<%= render :partial => 'shared/manifests', :locals => { :manifests => @sample_manifests, :show_uploaded => true} %>
+<%= render partial: 'shared/manifests', locals: { manifests: @sample_manifests, show_uploaded: true} %>
 <%= pagination @sample_manifests %>

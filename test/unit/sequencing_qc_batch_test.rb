@@ -1,20 +1,21 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class SequencingQcBatchTest < ActiveSupport::TestCase
-  STATES = [ 'qc_pending', 'qc_submitted', 'qc_manual', 'qc_manual_in_progress', 'qc_completed' ]
+  STATES = %w(qc_pending qc_submitted qc_manual qc_manual_in_progress qc_completed)
 
   context SequencingQcBatch do
     context '.included' do
       should 'setup the appropriate behaviour' do
         batch = Class.new
-        batch.expects(:extend).with(SequencingQcBatch::ClassMethods)
 
-        batch.expects(:validates_inclusion_of).with(:qc_state, :in => STATES, :allow_blank => true)
-        batch.expects(:belongs_to).with(:qc_pipeline, :class_name => 'Pipeline')
+        batch.expects(:validates_inclusion_of).with(:qc_state, in: STATES, allow_blank: true)
+        batch.expects(:belongs_to).with(:qc_pipeline, class_name: 'Pipeline')
         batch.expects(:before_create).with(:qc_pipeline_update)
 
         batch.send(:include, SequencingQcBatch)
@@ -23,7 +24,7 @@ class SequencingQcBatchTest < ActiveSupport::TestCase
 
     setup do
       @batch = Object.new
-      @batch.extend(SequencingQcBatch)  # Avoids the self.included callback
+      @batch.extend(SequencingQcBatch) # Avoids the self.included callback
     end
 
     context '#qc_states' do
@@ -99,9 +100,9 @@ class SequencingQcBatchTest < ActiveSupport::TestCase
         assert_nil @batch.qc_next_state
       end
 
-      STATES[0..-2].each_with_index do |current_state,index|
-        next_state = STATES[ index+1 ]
-        should "return '#{ next_state }' for current state of '#{ current_state }'" do
+      STATES[0..-2].each_with_index do |current_state, index|
+        next_state = STATES[index + 1]
+        should "return '#{next_state}' for current state of '#{current_state}'" do
           @batch.stubs(:qc_state).returns(current_state)
           assert_equal next_state, @batch.qc_next_state
         end
@@ -119,9 +120,9 @@ class SequencingQcBatchTest < ActiveSupport::TestCase
         assert_nil @batch.qc_previous_state
       end
 
-      STATES[0..-2].each_with_index do |previous_state,index|
-        current_state = STATES[ index+1 ]
-        should "return '#{ previous_state }' for current state of '#{ current_state }'" do
+      STATES[0..-2].each_with_index do |previous_state, index|
+        current_state = STATES[index + 1]
+        should "return '#{previous_state}' for current state of '#{current_state}'" do
           @batch.stubs(:qc_state).returns(current_state)
           assert_equal previous_state, @batch.qc_previous_state
         end

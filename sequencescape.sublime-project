@@ -10,7 +10,10 @@
       "folder_exclude_patterns": [
         ".bundle",
         "pids",
-        "work"
+        "work",
+        "db/archived_migrations",
+        ".yardoc",
+        "doc"
       ],
       "file_exclude_patterns":[
         ".swp",

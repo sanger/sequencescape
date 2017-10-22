@@ -1,6 +1,8 @@
-<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.%>
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.%>
 
 <table id="study_list" width="100%" class="sortable" cellpadding="4" cellspacing="0">
   <thead>
@@ -25,14 +27,14 @@
       </td>
       <td>
       <% if study_report.report.present? %>
-         <%= link_to 'Download', study_report_path(study_report), :title => "Download report for #{study_report.study.name}" %>
+         <%= link_to 'Download', study_report_path(study_report), title: "Download report for #{study_report.study.name}" %>
       <% else %>
         Processing
       <% end %>
       </td>
       <td>
         <% if study_report.report.present? %>
-          <%= link_to "Rerun", new_study_report_path(:study => study_report.study) %>
+          <%= link_to "Rerun", new_study_report_path(study: study_report.study) %>
         <% end %>
       </td>
     </tr>

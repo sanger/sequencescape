@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012,2014,2015 Genome Research Ltd.
 
 # Picks the specified wells from one plate into the wells of another.  In this case transfers
 # is a hash from source to destination well location and destination is the target plate for
@@ -19,7 +21,7 @@ class Transfer::BetweenPlates < Transfer
 
   # The values in the transfers must be a hash and must be valid well positions on both the
   # source and destination plates.
-  validates_each(:transfers) do |record, attribute, value|
+  validates_each(:transfers) do |record, _attribute, value|
     if not value.is_a?(Hash)
       record.errors.add(:transfers, 'must be a map from source to destination location')
     elsif record.source.present? and not record.source.valid_positions?(value.keys)
@@ -29,50 +31,103 @@ class Transfer::BetweenPlates < Transfer
     end
   end
 
+  private
+
   #--
   # Transfers between plates may encounter empty source wells, in which case we don't bother
   # making that transfer.  In the case of the pulldown pipeline this could happen after the
   # plate has been put on the robot, as the number of columns transfered could be less than
   # an entire plate.  Subsequent plates are therefore only partially complete.
   #++
-  def each_transfer(&block)
+  def each_transfer
     # Partition the source plate wells into ones that are good and others that are bad.  The
     # bad wells will be eliminated after we've done the transfers for the good ones.
     bad_wells, good_wells = source.wells.located_at_position(transfers.keys).with_pool_id.partition(&method(:should_well_not_be_transferred?))
-    source_wells          = Hash[good_wells.map { |well| [well.map.description, well] }]
+    source_wells          = good_wells.index_by(&:map_description)
     destination_locations = source_wells.keys.map { |p| transfers[p] }.flatten
-    destination_wells     = Hash[destination.wells.located_at_position(destination_locations).map { |well| [well.map_description, well] }]
-
-    # Build a list of source wells for each destination well.
-    dest_sources = Hash.new {|h,i| h[i] = Array.new }
-    transfers.each {|source,dests| dests.each {|dest| dest_sources[dest] << source }} if destination.supports_multiple_submissions?
-
-    pcg = source.pre_cap_groups
-    location_subs = dest_sources.inject({}) do |store, dest_source|
-      dest_loc, sources = *dest_source
-      uuid, transfer_details = pcg.detect {|k,v| v[:wells].sort == sources.sort}
-      raise StandardError, "Could not find appropriate pool" if transfer_details.nil?
-      pcg.delete(uuid)
-      store[dest_loc] = transfer_details[:submission_id]
-      store
-    end
+    destination_wells     = destination.wells.located_at_position(destination_locations).index_by(&:map_description)
 
     source_wells.each do |location, source_well|
-      Array(transfers[location]).flatten.each do |target_well_location|
-        yield(source_well, destination_wells[target_well_location],location_subs[target_well_location])
+      Array(transfers[location]).each do |target_well_location|
+        yield(source_well, destination_wells[target_well_location], location_submissions[target_well_location])
       end
     end
 
     # Eliminate any of the transfers that were not made because of the bad source wells
-    transfers_we_did_not_make = bad_wells.map { |well| well.map.description }
-    transfers.delete_if { |k,_| transfers_we_did_not_make.include?(k) }
+    transfers_we_did_not_make = bad_wells.map(&:map_description)
+    transfers.delete_if { |k, _| transfers_we_did_not_make.include?(k) }
   end
-  private :each_transfer
+
+  #
+  # A hash of destination wells and the submission the are associated
+  # Returns an empty hash if not relevant.
+  # This is relevant when ISC repool submissions have been made as
+  # not only will the new well belong to a different submission to
+  # the original, but potentially one source well may be part of
+  # multiple re-pool submissions.
+  # @return [Hash] Destination wells and associated submission
+  #                eg. { 'A1' => 12345, 'B1' -> 67890 }
+  def location_submissions
+    @location_submissions ||= calculate_location_submissions
+  end
+
+  #
+  # See: #location_submissions which memoizes this
+  #
+  # @return [Hash] Destination wells and associated submission
+  #                eg. { 'A1' => 12345, 'B1' -> 67890 }
+  def calculate_location_submissions
+    # We're probably just stamping
+    return {} if simple_stamp? || pre_cap_groups.empty?
+
+    destination_sources.each_with_object({}) do |dest_source, store|
+      dest_loc, sources = *dest_source
+      uuid, transfer_details = pre_cap_groups.detect { |_uuid, group_details| group_details[:wells].sort == sources.sort }
+
+      if transfer_details.nil?
+        errors.add(:base, "Could not find appropriate pool for #{sources} to #{dest_loc}. Check you don't have repool submissions on failed wells.")
+        raise ActiveRecord::RecordInvalid, self
+      end
+
+      pre_cap_groups.delete(uuid)
+      store[dest_loc] = transfer_details[:submission_id]
+    end
+  end
+
+  def pre_cap_groups
+    @pre_cap_groups ||= source.pre_cap_groups
+  end
+
+  #
+  # For most transfers we have a one to one mapping of source and destination
+  # in these cases we don't care about setting new submissions. We don't actually
+  # check the number of items in the array, as repools of a single well are still
+  # valid.
+  #
+  # @return [<type>] <description>
+  #
+  def simple_stamp?
+    transfers.values.none? { |destination| destination.is_a?(Array) }
+  end
+
+  #
+  # A hash of destination wells and their sources
+  #
+  # @return [Hash] Destination wells with an array of source wells
+  #                eg. { 'A1' => ['A1', 'B1'] }
+  #
+  def destination_sources
+    @destination_sources ||= begin
+      dest_sources = Hash.new { |h, i| h[i] = [] }
+      transfers.each do |source, dests|
+        dests.each { |dest| dest_sources[dest] << source }
+      end
+      dest_sources
+    end
+  end
 
   # Request type for transfers is based on the plates, not the wells we're transferring
-  def request_type_between(ignored_a, ignored_b)
-    destination.transfer_request_type_from(source)
+  def request_type_between(_ignored_a, _ignored_b)
+    @request_type_between ||= destination.transfer_request_type_from(source)
   end
-  private :request_type_between
 end
-

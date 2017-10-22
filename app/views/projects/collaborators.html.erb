@@ -1,6 +1,8 @@
-<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
 
 <% add :title, "Contacts for project." -%>
 <% add :back_menu, I18n.t("navigation.menu.back_to_project") => project_path(@project) -%>
@@ -15,7 +17,7 @@ Project <%= @project.id %> &middot; Created on <%= @project.created_at.to_format
 </div>
 <div id="role_list">
   <!-- renders all roles on this project -->
-  <%= render :partial => "roles" -%>
+  <%= render partial: "roles" -%>
 </div>
 
 <% if current_user.administrator? -%>
@@ -23,6 +25,6 @@ Project <%= @project.id %> &middot; Created on <%= @project.created_at.to_format
   <!-- renders all available roles with all users form -->
   <div style="text-align:center">
     <h3 id="add_new_role">Assign roles to users</h3>
-    <%= render :partial => "role" -%>
+    <%= render partial: "role" -%>
   </div>
 <% end -%>

@@ -1,14 +1,17 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2014,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2014,2015 Genome Research Ltd.
 
 class ::Io::Order < ::Core::Io::Base
   REQUEST_OPTIONS_FIELDS = Hash[{
-    :read_length                 => 'read_length',
-    :library_type                => 'library_type',
-    :fragment_size_required_from => 'fragment_size_required.from',
-    :fragment_size_required_to   => 'fragment_size_required.to'
-  }.map { |k,v| [ "request_options.#{k}".to_sym, "request_options.#{v}"] }]
+    read_length: 'read_length',
+    library_type: 'library_type',
+    fragment_size_required_from: 'fragment_size_required.from',
+    fragment_size_required_to: 'fragment_size_required.to',
+    pcr_cycles: 'pcr_cycles'
+  }.map { |k, v| ["request_options.#{k}".to_sym, "request_options.#{v}"] }]
 
   def self.json_field_for(attribute)
     REQUEST_OPTIONS_FIELDS[attribute.to_sym] || super
@@ -18,7 +21,7 @@ class ::Io::Order < ::Core::Io::Base
   set_json_root(:order)
   set_eager_loading { |model| model.include_study.include_project.include_assets }
 
-  define_attribute_and_json_mapping(%Q{
+  define_attribute_and_json_mapping("
                                           study <=  study
                                      study.name  => study.name
 
@@ -34,5 +37,5 @@ class ::Io::Order < ::Core::Io::Base
                      request_options_structured <=> request_options
 
                                            user <=  user
-  })
+  ")
 end

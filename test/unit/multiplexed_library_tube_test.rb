@@ -1,15 +1,17 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
-require "test_helper"
+require 'test_helper'
 
 class MultiplexedLibraryTubeTest < ActiveSupport::TestCase
-  context "A multiplexed Library tube" do
+  context 'A multiplexed Library tube' do
     setup do
       @multiplexed_library_tube = create :multiplexed_library_tube
     end
-    context "#has_stock_asset?" do
+    context '#has_stock_asset?' do
       setup do
         @multiplexed_library_tube_with_stock_tube = create :multiplexed_library_tube
         @stock_multiplexed_library_tube = create :stock_multiplexed_library_tube
@@ -17,15 +19,15 @@ class MultiplexedLibraryTubeTest < ActiveSupport::TestCase
       end
 
       should "return false if it doesn't have a stock asset" do
-        assert ! @multiplexed_library_tube.has_stock_asset?
+        assert !@multiplexed_library_tube.has_stock_asset?
       end
 
-      should "return true if it does have a stock asset" do
+      should 'return true if it does have a stock asset' do
         assert @multiplexed_library_tube_with_stock_tube.has_stock_asset?
       end
     end
 
-    context "#create_stock_asset!" do
+    context '#create_stock_asset!' do
       context 'straight creation' do
         setup do
           @stock = @multiplexed_library_tube.create_stock_asset!
@@ -46,7 +48,7 @@ class MultiplexedLibraryTubeTest < ActiveSupport::TestCase
 
       context 'should allow overriding of attributes' do
         setup do
-          @stock = @multiplexed_library_tube.create_stock_asset!(:name => 'Foo', :barcode => '1111')
+          @stock = @multiplexed_library_tube.create_stock_asset!(name: 'Foo', barcode: '1111')
         end
 
         should 'use the specified name' do

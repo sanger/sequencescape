@@ -37,7 +37,7 @@ CHANGES (from most recent to oldest)
   def index
     if current_user.permit? 'admin'
       # show all projects
-      @projects = Project.find(:all)
+      @projects = Project.all
     else
       @projects = current_user.is_show_for_what(Project)
     end
@@ -126,7 +126,7 @@ CHANGES (from most recent to oldest)
 
 * Added attr_protected for habtm and has_many role ids to block security concern if developers use update_attributes(params[:auth_obj]) on an authorizable object [Michael Schuerig]
 
-* Use before_filter rather than prepend_before_filter so necessary instance variables (and methods) can be established before trying authorization checks. This fix came about for Mephisto blog where a class-level permit "admin of site" was used. The site attribute was set in a before_filter. If you prepend your authorization filter, it will execute before any other before_filter, which is probably not a good idea.
+* Use before_action rather than prepend_before_action so necessary instance variables (and methods) can be established before trying authorization checks. This fix came about for Mephisto blog where a class-level permit "admin of site" was used. The site attribute was set in a before_action. If you prepend your authorization filter, it will execute before any other before_action, which is probably not a good idea.
 
 * Add "about" yaml for future Rails plugin directory.
 

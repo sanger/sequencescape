@@ -1,10 +1,12 @@
-<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
 
 <h1>Gel scoring</h1>
 
-<%= form_tag(lookup_gels_url, :method => :post) do %>
+<%= form_tag(lookup_gels_url, method: :post) do %>
   <%= label_tag :barcode, "Find gel plate:" %>
   <%= text_field_tag :barcode %>
   <br /><br />
@@ -27,8 +29,8 @@
     <tr>
       <td><%= link_to plate.barcode, asset_path(plate) %></td>
       <td>
-      <% if plate.study %>
-        <%= link_to plate.study.try(:name), study_path(plate.study) %>
+      <% plate.studies.each do |study| %>
+        <%= link_to study.name, study_path(study) %>
       <% end %>
       </td>
       <td class="strong faint"><span style="display:none"><%= plate.created_at %></span><%= plate.created_at.to_formatted_s(:sortable) %></td>

@@ -1,9 +1,11 @@
-<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.%>
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.%>
 
 <p>This checks to see if any External Sample names are duplicated within a study.</p>
-<%= form_for @workflow, :url => { :action => "stage", :id => @stage, :workflow_id => @workflow.id, :batch_id => @batch.id, :next_stage => true }, :html => { :id => "stage_form"} do |form| %>
+<%= form_for @workflow, url: { action: "stage", id: @stage, workflow_id: @workflow.id, batch_id: @batch.id, next_stage: true }, html: { id: "stage_form"} do |form| %>
 
   <% if @duplicate_samples.blank? -%>
     <h2>Requests do not contain duplicate external sample names.</h2>
@@ -59,5 +61,5 @@
     </table>
   <% end -%>
 
-  <%= render(:partial => 'next_stage_submit') %>
+  <%= render(partial: 'next_stage_submit') %>
 <% end %>

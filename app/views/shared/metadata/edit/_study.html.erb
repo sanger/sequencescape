@@ -1,17 +1,19 @@
-<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.%>
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.%>
 
 <%# NOTE[xxx]: Kind of a hack because we need 'study[study_metadata_attributes][X]' -%>
 
 <%= fields_for(study) do |form| %>
-  <%= form.fields_for(:study_metadata, :builder => Metadata::FormBuilder) do |metadata_fields| %>
+  <%= form.fields_for(:study_metadata, builder: Metadata::FormBuilder) do |metadata_fields| %>
     <%= metadata_fields.select_by_association(:faculty_sponsor)%>
     <%= metadata_fields.select_by_association(:program)%>
     <%= metadata_fields.text_field(:number_of_gigabases_per_sample) %>
     <%= metadata_fields.text_field(:prelim_id) %>
 
-    <% metadata_fields.with_options(:grouping => 'ENA requirement') do |group| %>
+    <% metadata_fields.with_options(grouping: 'ENA requirement') do |group| %>
       <%= group.text_field(:study_study_title) %>
       <%= group.select_by_association(:study_type)%>
       <%= group.text_area(:study_description) %>
@@ -25,56 +27,57 @@
     <%= metadata_fields.select(:remove_x_and_autosomes, Study::YES_OR_NO) %>
     <%= metadata_fields.check_box(:separate_y_chromosome_data) %>
 
-    <%= metadata_fields.text_field(:study_project_id, :grouping => 'SRA') %>
-    <%= metadata_fields.text_field(:study_ebi_accession_number, :grouping => 'SRA AN') %>
+    <%= metadata_fields.text_field(:study_project_id, grouping: 'SRA') %>
+    <%= metadata_fields.text_field(:study_ebi_accession_number, grouping: 'SRA AN') %>
     <%= metadata_fields.text_field(:study_name_abbreviation) %>
 
     <%= metadata_fields.check_box(:bam) %>
 
-    <% metadata_fields.with_options(:grouping => 'Data Release') do |group| %>
+    <% metadata_fields.with_options(grouping: 'Data Release') do |group| %>
       <%= metadata_fields.text_field(:data_access_group) %>
       <%= group.select_by_association(:data_release_study_type)%>
       <% strategies = Study::DATA_RELEASE_STRATEGIES.map { |s| [t(s.downcase.gsub(' ','_'),scope:'metadata.study.metadata.data_release_strategy.values'),s ] } %>
       <%= group.select(:data_release_strategy, strategies) %>
-      <% metadata_fields.related_fields(:to => :data_release_strategy, :when => Study::DATA_RELEASE_STRATEGY_MANAGED) do %>
+      <% metadata_fields.related_fields(to: :data_release_strategy, when: Study::DATA_RELEASE_STRATEGY_MANAGED) do %>
         <%= group.select(:data_release_standard_agreement, Study::YES_OR_NO) %>
-        <% metadata_fields.related_fields(:to => :data_release_standard_agreement, :when => Study::NO) do %>
+        <% metadata_fields.related_fields(to: :data_release_standard_agreement, when: Study::NO) do %>
           <%= group.document_field(:data_release_non_standard_agreement) %>
         <% end %>
-      <%= metadata_fields.text_field(:dac_policy_title) %>
-      <%= metadata_fields.text_field(:dac_policy) %>
-      <%= metadata_fields.text_field(:ega_dac_accession_number) %>
-      <%= metadata_fields.text_field(:ega_policy_accession_number) %>
-      <%= metadata_fields.text_field(:array_express_accession_number) if study.for_array_express? %>
+        <%= metadata_fields.text_field(:dac_policy_title) %>
+        <%= metadata_fields.text_field(:dac_policy) %>
+        <%= metadata_fields.text_field(:ega_dac_accession_number) %>
+        <%= metadata_fields.text_field(:ega_policy_accession_number) %>
+        <%= metadata_fields.text_field(:array_express_accession_number) if study.for_array_express? %>
+        <%= metadata_fields.text_field :hmdmc_approval_number %>
       <% end %>
 
       <%= metadata_fields.select(:data_release_timing, Study::DATA_RELEASE_TIMINGS + [ Study::DATA_RELEASE_TIMING_NEVER ]) %>
       <%
-        metadata_fields.change_select_options_for(:data_release_timing, :when => :data_release_strategy, :values => {
+        metadata_fields.change_select_options_for(:data_release_timing, when: :data_release_strategy, values: {
           Study::DATA_RELEASE_STRATEGY_NOT_APPLICABLE                                    => Study::DATA_RELEASE_TIMING_NEVER,
           (Study::DATA_RELEASE_STRATEGIES-[Study::DATA_RELEASE_STRATEGY_NOT_APPLICABLE]) => Study::DATA_RELEASE_TIMINGS
         })
       %>
 
-      <% metadata_fields.related_fields(:to => :data_release_strategy, :when => Study::DATA_RELEASE_STRATEGY_NOT_APPLICABLE) do %>
+      <% metadata_fields.related_fields(to: :data_release_strategy, when: Study::DATA_RELEASE_STRATEGY_NOT_APPLICABLE) do %>
         <%= group.select(:data_release_prevention_reason, Study::DATA_RELEASE_PREVENTION_REASONS) %>
         <%= group.select(:data_release_prevention_approval, Study::YES_OR_NO) %>
         <%= group.text_area(:data_release_prevention_reason_comment) %>
       <% end %>
-      <% metadata_fields.related_fields(:to => :data_release_strategy, :in => Study::DATA_RELEASE_STRATEGIES, :not => Study::DATA_RELEASE_STRATEGY_NOT_APPLICABLE) do %>
-        <% metadata_fields.related_fields(:to => :data_release_timing, :when => Study::DATA_RELEASE_TIMING_DELAYED) do %>
+      <% metadata_fields.related_fields(to: :data_release_strategy, in: Study::DATA_RELEASE_STRATEGIES, not: Study::DATA_RELEASE_STRATEGY_NOT_APPLICABLE) do %>
+        <% metadata_fields.related_fields(to: :data_release_timing, when: Study::DATA_RELEASE_TIMING_DELAYED) do %>
           <%= group.select(:data_release_delay_reason, Study::DATA_RELEASE_DELAY_REASONS_STANDARD) %>
           <%
-            group.change_select_options_for(:data_release_delay_reason, :when => :data_release_study_type_id, :values => {
+            group.change_select_options_for(:data_release_delay_reason, when: :data_release_study_type_id, values: {
               DataReleaseStudyType.assay_types.map(&:id)     => [ '' ] + Study::DATA_RELEASE_DELAY_REASONS_ASSAY,
               DataReleaseStudyType.non_assay_types.map(&:id) => [ '' ] + Study::DATA_RELEASE_DELAY_REASONS_STANDARD
             })
           %>
 
           <%= group.select(:data_release_delay_period, Study::DATA_RELEASE_DELAY_PERIODS) %>
-          <% metadata_fields.related_fields(:to => :data_release_delay_reason, :when => Study::DATA_RELEASE_DELAY_FOR_OTHER) do %>
+          <% metadata_fields.related_fields(to: :data_release_delay_reason, when: Study::DATA_RELEASE_DELAY_FOR_OTHER) do %>
             <%= group.text_area(:data_release_delay_other_comment) %>
-            <% metadata_fields.related_fields(:to => :data_release_delay_period, :in => Study::DATA_RELEASE_DELAY_PERIODS) do %>
+            <% metadata_fields.related_fields(to: :data_release_delay_period, in: Study::DATA_RELEASE_DELAY_PERIODS) do %>
               <%= group.select(:data_release_delay_approval, Study::YES_OR_NO) %>
               <%= group.text_area(:data_release_delay_reason_comment) %>
             <% end %>
@@ -82,6 +85,9 @@
         <% end %>
       <% end %>
     <% end %>
+
+    <%= metadata_fields.text_field(:s3_email_list) %>
+    <%= metadata_fields.select(:data_deletion_period, ['','3 months']) %>
 
     <% metadata_fields.finalize_related_fields %>
   <% end %>

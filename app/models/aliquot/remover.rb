@@ -1,6 +1,8 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2012,2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2012,2013,2015 Genome Research Ltd.
 
 module Aliquot::Remover
   class AliquotRecord
@@ -19,26 +21,24 @@ module Aliquot::Remover
     end
 
     def tagged?
-      !self.untagged?
+      !untagged?
     end
 
     def untagged?
-      self.tag_id.nil? or (self.tag_id == Aliquot::UNASSIGNED_TAG)
+      tag_id.nil? or (tag_id == Aliquot::UNASSIGNED_TAG)
     end
 
     def no_tag2?
-      self.tag2_id.nil? or (self.tag2_id == Aliquot::UNASSIGNED_TAG)
+      tag2_id.nil? or (tag2_id == Aliquot::UNASSIGNED_TAG)
     end
-
   end
 
   def remove_downstream_aliquots
     # On the target asset of the failed request.
     ActiveRecord::Base.transaction do
-      target_aliquots = aliquots.map {|aliquot| AliquotRecord.new(aliquot)}
+      target_aliquots = aliquots.map { |aliquot| AliquotRecord.new(aliquot) }
       on_downstream_aliquots(target_aliquots)
     end
-
   end
 
   def on_downstream_aliquots(aliquots_to_remove)
@@ -54,7 +54,6 @@ module Aliquot::Remover
 
   def remove_matching_aliquots(aliquots_to_remove)
     aliquots_to_remove.map do |aliquot_to_remove|
-
       to_remove = aliquots.select do |aliquot|
         aliquot.matches?(aliquot_to_remove)
       end
@@ -68,8 +67,6 @@ module Aliquot::Remover
       else # We have noting to remove
         nil
       end
-
     end.compact
   end
-
 end

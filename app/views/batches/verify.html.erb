@@ -1,31 +1,33 @@
-<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
 
 <% add :title, "Verifying tube layout" %>
 <% add :menu, "View all batches" => batches_path %>
 <% add :menu, "Back to batch" => batch_path(@batch) %>
 <% add :back_menu, "Back to pipeline" => pipeline_path(@batch.pipeline) %>
 
-<h1>BATCH <%= @batch.id %></h1>
+<%= page_title 'Verify Tube Layout', "Batch #{@batch.id}" %>
 <div class="info">
   Please scan the barcodes from the sample tubes into the table below.
 </div>
 
-<%= form_tag :action => :verify_tube_layout, :id => @batch.id  do %>
+<%= form_tag action: :verify_tube_layout, id: @batch.id  do %>
 
 <table width="100%" cellspacing="0" cellpadding="0">
   <tr>
     <% @count.times do |i| %>
-      <% if ! (i == 3 && @pipeline.has_controls?) %>
+      <% unless (i == 3 && @pipeline.has_controls?) %>
         <td width="12.5%">Position <%= i + 1 %></td>
       <% end %>
     <% end %>
   </tr>
   <tr>
     <% @count.times do |i| %>
-      <% if ! (i == 3 && @pipeline.has_controls?) %>
-        <td><%= text_field_tag "barcode_#{i}", "",  { :size => 13 } %></td>
+      <% unless (i == 3 && @pipeline.has_controls?) %>
+        <td><%= text_field_tag "barcode_#{i}", "",  { size: 13 } %></td>
       <% end %>
     <% end %>
   </tr>

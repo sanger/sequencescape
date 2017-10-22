@@ -6,7 +6,7 @@ module LinefeedFix
   # also handles odd \r\r\n seen at the end of some excel
   # generated csvs
   def self.scrub!(string)
-    string.gsub!(/\r{0,1}\r\n/,"\n")
+    string.gsub!(/\r{0,1}\r\n/, "\n")
     string
   end
 end

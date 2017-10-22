@@ -1,9 +1,7 @@
 
 module LabelPrinter
   module Label
-
     class BatchPlate < BasePlate
-
       attr_reader :count, :printable, :batch
 
       def initialize(options)
@@ -12,8 +10,8 @@ module LabelPrinter
         @batch = options[:batch]
       end
 
-      def top_right(plate=nil)
-        batch.study.abbreviation
+      def top_right(_plate = nil)
+        batch.studies.first.abbreviation
       end
 
       def bottom_right(plate)
@@ -21,10 +19,9 @@ module LabelPrinter
       end
 
       def plates
-        barcodes = printable.select{|barcode, check| check == 'on'}.keys
-        batch.plate_group_barcodes.keys.select {|plate| barcodes.include?(plate.barcode)}
+        barcodes = printable.select { |_barcode, check| check == 'on' }.keys
+        batch.plate_group_barcodes.keys.select { |plate| barcodes.include?(plate.barcode) }
       end
-
     end
   end
 end

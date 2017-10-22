@@ -1,11 +1,14 @@
-<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.%>
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.%>
 
 <% add :title, "Finished batch" -%>
 <% add :back_menu, "Back to pipeline" => pipeline_path(@batch.pipeline) -%>
 
-<h1>FINISHED PIPELINE</h1>
+<%= page_title("Finish", @pipeline.name) %>
+
 <div class="content">
   <div class="info">
     Batch <%= @batch.id %> has completed the '<%= @pipeline.name %>' pipeline.
@@ -13,7 +16,7 @@
   <div class="info">
     <div style="text-align: center;">
       <p>
-      <%= form_tag release_batch_url(@batch) do -%>
+      <%= form_tag release_batch_url(@batch), method: :get do -%>
         <%= submit_tag "Release this batch" %>
       <% end -%>
       </p>
@@ -22,7 +25,7 @@
       </p>
       <p>
       <% @batch.workflow.tasks.each_with_index do |task, index| -%>
-        <%= link_to task.name, :controller => :workflows, :action => :stage, :id => index, :batch_id => @batch.id, :workflow_id => @batch.workflow.id %><br />
+        <%= link_to task.name, controller: :workflows, action: :stage, id: index, batch_id: @batch.id, workflow_id: @batch.workflow.id %><br />
       <% end -%>
       </p>
 
@@ -31,7 +34,7 @@
   <% if @pipeline.summary %>
     <div id="sample">
       <h4>Batch Summary</h4>
-      <%= render :partial => 'event_requests'%>
+      <%= render partial: 'event_requests'%>
     </div>
   <% end %>
 </div>

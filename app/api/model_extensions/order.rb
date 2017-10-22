@@ -1,13 +1,15 @@
-#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2011,2012,2013,2015 Genome Research Ltd.
+# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2011,2012,2013,2015 Genome Research Ltd.
 
 module ModelExtensions::Order
   module Validations
     def self.included(base)
       base.class_eval do
         extend DelegateValidation
-        delegate_validation :request_options_for_validation, :as => 'request_options', :to => :request_types, :if => :validate_request_options?
+        delegate_validation :request_options_for_validation, as: 'request_options', to: :request_types, if: :validate_request_options?
       end
     end
 
@@ -15,12 +17,12 @@ module ModelExtensions::Order
     # request options have been specified.  Once they are specified they are always checked, unless they are
     # completely blanked.
     def validate_request_options?
-      not building? or not self.request_options.blank?
+      not building? or not request_options.blank?
     end
     private :validate_request_options?
 
     def request_types_delegate_validator
-      DelegateValidation::CompositeValidator::CompositeValidator(*::RequestType.find(self.request_types.flatten).map(&:delegate_validator))
+      DelegateValidation::CompositeValidator.construct(*::RequestType.find(request_types.flatten).map(&:delegate_validator))
     end
 
     # If this returns true then we check values that have not been set, otherwise we can ignore them.  This would
@@ -30,14 +32,14 @@ module ModelExtensions::Order
     end
 
     def request_options_for_validation
-      OpenStruct.new({ :owner => self }.reverse_merge(self.request_options || {})).tap do |v|
-        v.class.delegate(:errors, :include_unset_values?, :to => :owner)
+      OpenStruct.new({ owner: self }.reverse_merge(request_options || {})).tap do |v|
+        v.class.delegate(:errors, :include_unset_values?, to: :owner)
       end
     end
   end
 
   def validate_new_record(assets)
-    raise StandardError, 'requested action is not supported on this resource' if not new_record? and  asset_group? and assets.present?
+    raise StandardError, 'requested action is not supported on this resource' if not new_record? and asset_group? and assets.present?
     true
   end
 
@@ -47,43 +49,38 @@ module ModelExtensions::Order
 
       before_validation :merge_in_structured_request_options
 
-      scope :include_study, -> { includes( :study => :uuid_object ) }
-      scope :include_project, -> { includes( :project => :uuid_object ) }
-      scope :include_assets, -> { includes( :assets => :uuid_object ) }
+      scope :include_study, -> { includes(study: :uuid_object) }
+      scope :include_project, -> { includes(project: :uuid_object) }
+      scope :include_assets, -> { includes(assets: :uuid_object) }
 
-      has_many :submitted_assets
-      has_many :assets, :through => :submitted_assets, :before_add => :validate_new_record
+      has_many :submitted_assets, -> { joins(:asset) }, inverse_of: :order
+      has_many :assets, through: :submitted_assets, before_add: :validate_new_record
 
      scope :that_submitted_asset_id, ->(asset_id) {
-        { :conditions => { :submitted_assets => { :asset_id => asset_id } }, :joins => :submitted_assets }
-      }
+       where(submitted_assets: { asset_id: asset_id }).joins(:submitted_assets)
+     }
 
       validate :extended_validation
       def extended_validation
-        extended_validators.reduce(true) {|valid,validator| validator.validate_order(self) && valid }
+        extended_validators.reduce(true) { |valid, validator| validator.validate_order(self) && valid }
       end
 
       # The API can create submissions but we have to prevent someone from changing the study
       # and the project once they have been set.
-      validates_each(:study, :project) do |record, attr, value|
-        # NOTE: This can get called after the record has been saved but before it has been completely saved, i.e. after_create
-        # In this case the original value of the attribute will be nil, so we account for that here.
-        attr_value_was, attr_value_is = record.send(:"#{attr}_id_was"), record.send(:"#{attr}_id")
-        record.errors.add(attr, 'cannot be changed') if not record.new_record? and attr_value_was != attr_value_is and attr_value_was.present?
+      validates_each(:study, :project, on: :update) do |record, attr, _value|
+        record.errors.add(attr, 'cannot be changed') if record.send(:"will_save_change_to_#{attr}_id?")
       end
 
       def extended_validators
         ExtendedValidator.for_submission(self)
       end
-
-      extend ClassMethods
     end
   end
 
   class NonNilHash
     def initialize(key_style_operation = :symbolize_keys)
       @key_style_operation = key_style_operation
-      @store = {}
+      @store = ActiveSupport::HashWithIndifferentAccess.new
     end
 
     def deep_merge(hash)
@@ -110,25 +107,26 @@ module ModelExtensions::Order
       Hash.new.deep_merge(@store)
     end
 
-    def node_and_leaf(*keys, &block)
+    def node_and_leaf(*keys)
       leaf = keys.pop
-      node = keys.inject(@store) { |h,k| h[k] ||= {} }
+      node = keys.inject(@store) { |h, k| h[k] ||= ActiveSupport::HashWithIndifferentAccess.new }
       yield(node, leaf)
     end
     private :node_and_leaf
   end
 
-  def request_type_multiplier(&block)
+  def request_type_multiplier
     yield(request_types.last.to_s.to_sym) unless request_types.blank?
   end
 
   def request_options_structured
     NonNilHash.new(:stringify_keys).tap do |json|
-      NonNilHash.new.deep_merge(self.request_options).tap do |attributes|
+      NonNilHash.new.deep_merge(request_options).tap do |attributes|
         json['read_length']                    = attributes[:read_length].try(:to_i)
         json['library_type']                   = attributes[:library_type]
         json['fragment_size_required', 'from'] = attributes[:fragment_size_required_from].try(:to_i)
         json['fragment_size_required', 'to']   = attributes[:fragment_size_required_to].try(:to_i)
+        json['pcr_cycles']                     = attributes[:pcr_cycles].try(:to_i)
         json['bait_library']                   = attributes[:bait_library_name]
         json['sequencing_type']                = attributes[:sequencing_type]
         json['insert_size']                    = attributes[:insert_size].try(:to_i)
@@ -146,6 +144,7 @@ module ModelExtensions::Order
         attributes['library_type']                = json['library_type']
         attributes['fragment_size_required_from'] = json['fragment_size_required', 'from']
         attributes['fragment_size_required_to']   = json['fragment_size_required', 'to']
+        attributes['pcr_cycles']                  = json['pcr_cycles']
         attributes[:bait_library_name]            = json['bait_library']
         attributes[:sequencing_type]              = json['sequencing_type']
         attributes[:insert_size]                  = json['insert_size']
@@ -162,7 +161,7 @@ module ModelExtensions::Order
   private :merge_in_structured_request_options
 
   def request_type_objects
-    return [] if self.request_types.blank?
-    ::RequestType.find(self.request_types)
+    return [] if request_types.blank?
+    ::RequestType.find(request_types)
   end
 end

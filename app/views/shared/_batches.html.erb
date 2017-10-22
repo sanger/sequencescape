@@ -1,8 +1,17 @@
-<%#This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-#Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-#Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
 
 <% unless batches.empty? %>
+<%= pagination batches if showing_all %>
+<%# We call to_a here as otherwise rails tries to 'optimise' the query with a nested scope. Not
+  # only would this be less eficient, it is also invalid SQL.
+  # We also need to build the cache manualy, at least until rails provides eager_count. You CAN do it with
+  # custom selects and joins, but that gets a little messy.
+%>
+<% request_count_cache = BatchRequest.where(batch_id:batches.to_a).group(:batch_id).count %>
 <table class="sortable table table-striped">
   <thead>
     <tr>
@@ -18,24 +27,26 @@
       <th>&nbsp;</th>
     </tr>
   </thead>
+
   <tbody>
     <% batches.each_with_index do |batch, index| %>
     <tr class="batch">
-      <td><%= link_to batch.id, batch_path(batch), {:title => "#{batch.state} batch #{batch.id}"} %></td>
-      <td><%= batch.request_count %></td>
+      <td><%= link_to batch.id, batch_path(batch), {title: "#{batch.state} batch #{batch.id}"} %></td>
+      <td><%= request_count_cache[batch.id]||0 %></td>
       <td><%= batch.user.blank? ? "Unknown" : batch.user.login %></td>
       <td><%= batch.assigned_user %></td>
       <td><%= batch.created_at.to_date.to_formatted_s(:rfc822) %></td>
-      <% if batch.failed? %>
       <td>
-        <%= batch.state.capitalize %>
-        <% unless batch.failures.blank? %>
-          (<%= batch.failures.first.reason  %>) <!-- TODO: Make sure a reason is being saved when failing a batch -->
+        <% if batch.failed? %>
+          <%= batch.state.capitalize %>
+          <% unless batch.failures.blank? %>
+            (<%= batch.failures.first.reason  %>) <!-- TODO: Make sure a reason is being saved when failing a batch -->
+          <% end %>
+        <% else %>
+          <%= batch.state.humanize %>
         <% end %>
       </td>
-      <% else %>
-        <td><%= batch.state.humanize %></td>
-      <% end %>
+
       <% if in_progress %>
         <% unless batch.last_completed_task.nil? %>
           <td><%= batch.last_completed_task.name %></td>
@@ -51,34 +62,20 @@
       <% end %>
         <td>
           <% if batch.pipeline %>
-            <% if batch.pipeline.automated? %>
-              <%= link_to "View batch", :controller => :workflows, :action => :auto_batch, :id => batch.pipeline.workflow.id, :batch_id => batch.id %>
-            <% else %>
-              <% if batch.state == "completed" -%>
-                <%= link_to "Release batch", release_batch_url(batch) %>
-              <% else -%>
-                <%= link_to("View batch", batch_path(batch), :title => "View #{batch_state} batch #{index+1}") %>
-              <% end -%>
-            <% end %>
+            <% if batch.state == "completed" -%>
+              <%= link_to "Release batch", release_batch_url(batch) %>
+            <% else -%>
+              <%= link_to("View batch", batch_path(batch), title: "View #{batch_state} batch #{index+1}") %>
+            <% end -%>
           <% end %>
         </td>
       </tr>
     <% end %>
   </tbody>
-  <% unless showing_all %>
-    <tfoot>
-      <tr>
-        <td colspan="7">
-          <% if @pipeline.qc? %>
-            <%= link_to "View all batches in this state", :controller => :batches, :action => "quality_control", :id => batches.first.qc_pipeline.id, :qc_state => batches.first.qc_state, :state => batches.first.state %>
-          <% else %>
-            <%= link_to "View all #{batches.first.state} batches", :controller => :batches, :action => batches.first.state, :id => @pipeline.id %>
-          <% end %>
-        </td>
-      </tr>
-    </tfoot>
-  <% end %>
 </table>
+<% if @pipeline %>
+  <%= link_to "View all #{batches.first.state} batches", controller: :batches, action: batches.first.state, pipeline_id: @pipeline.id %>
+<% end %>
 <% else -%>
   <p>No batches have this status</p>
 <% end -%>

@@ -1,9 +1,7 @@
 module SampleManifestExcel
-
   ##
   # Holds the reference of a cell in an Excel spreadsheet based on its x (row) and y (column) position.
   class Cell
-
     attr_reader :row, :column
 
     ##
@@ -22,7 +20,7 @@ module SampleManifestExcel
     end
 
     ##
-    # Also known as absolute reference. Used in Excel to ensure the reference does not 
+    # Also known as absolute reference. Used in Excel to ensure the reference does not
     # change when copied or filled. Particularly useful for applying ranges.
     # Designated by the addition of a dollar sign ($) e.g. $A$1
     def fixed
@@ -32,16 +30,19 @@ module SampleManifestExcel
     ##
     # Two cells are comparable if their row and column are the same.
     def ==(other)
-      return false unless other.is_a?(self.class) 
+      return false unless other.is_a?(self.class)
       row == other.row &&
-      column == other.column
+        column == other.column
     end
 
-  private
+    def inspect
+      "<#{self.class}: @row=#{row}, @column=#{column}>"
+    end
+
+    private
 
     def to_alpha(n)
-      (n-1)<26 ? ((n-1)%26+65).chr : ((n-1)/26+64).chr + ((n-1)%26+65).chr
+      (n - 1) < 26 ? ((n - 1) % 26 + 65).chr : ((n - 1) / 26 + 64).chr + ((n - 1) % 26 + 65).chr
     end
-    
   end
 end

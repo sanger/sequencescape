@@ -1,8 +1,6 @@
 module LabelPrinter
   module Label
-
-    class SampleManifestPlate< BasePlate
-
+    class SampleManifestPlate < BasePlate
       attr_reader :sample_manifest, :only_first_label
 
       def initialize(options)
@@ -10,8 +8,8 @@ module LabelPrinter
         @only_first_label = options[:only_first_label]
       end
 
-      def top_right(plate=nil)
-        PlatePurpose.stock_plate_purpose.name.to_s
+      def top_right(_plate = nil)
+        @sample_manifest.purpose.name
       end
 
       def bottom_right(plate)
@@ -22,7 +20,6 @@ module LabelPrinter
         return [sample_manifest.printables.first] if only_first_label
         sample_manifest.printables
       end
-
     end
   end
 end

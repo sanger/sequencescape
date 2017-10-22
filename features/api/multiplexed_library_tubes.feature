@@ -12,27 +12,7 @@ Feature: Access multiplexed library tubes through the API
     And the WTSI single sign-on service recognises "I-am-authenticated" as "John Smith"
 
     Given I am using the latest version of the API
-And I have a "full" authorised user with the key "cucumber"
-
-  @read
-  Scenario: Reading the JSON for a UUID
-    Given the multiplexed library tube exists with ID 1
-      And the UUID for the multiplexed library tube with ID 1 is "00000000-1111-2222-3333-444444444444"
-
-    When I GET the API path "/00000000-1111-2222-3333-444444444444"
-    Then the HTTP response should be "200 OK"
-     And the JSON should match the following for the specified fields:
-      """
-      {
-        "multiplexed_library_tube": {
-          "actions": {
-            "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
-          },
-
-          "uuid": "00000000-1111-2222-3333-444444444444"
-        }
-      }
-      """
+    And I have a "full" authorised user with the key "cucumber"
 
   @read
   Scenario: BigDecimal render bug

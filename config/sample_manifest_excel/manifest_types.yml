@@ -5,36 +5,36 @@ plate_default:
     - :sanger_plate_id
     - :well
     - :sanger_sample_id
-    - :supplier_sample_name
+    - :supplier_name
     - :cohort
     - :volume
-    - :conc
+    - :concentration
     - :gender
     - :country_of_origin
     - :geographical_region
     - :ethnicity
     - :dna_source
     - :date_of_sample_collection
-    - :date_of_dna_extraction
-    - :is_sample_a_control?
-    - :is_re_submitted_sample?
-    - :dna_extraction_method
-    - :sample_purified?
+    - :date_of_sample_extraction
+    - :is_sample_a_control
+    - :is_resubmitted_sample
+    - :sample_extraction_method
+    - :sample_purified
     - :purification_method
     - :concentration_determined_by
-    - :dna_storage_conditions
+    - :sample_storage_conditions
     - :mother
     - :father
     - :sibling
     - :gc_content
-    - :public_name
-    - :taxon_id
-    - :common_name
+    - :sample_public_name
+    - :sample_taxon_id
+    - :sample_common_name
     - :sample_description
-    - :strain
+    - :sample_strain_att
     - :sample_visibility
     - :sample_type
-    - :sample_accession_number
+    - :sample_ebi_accession_number
     - :donor_id
     - :phenotype
 plate_full:
@@ -44,33 +44,33 @@ plate_full:
     - :sanger_plate_id
     - :well
     - :sanger_sample_id
-    - :supplier_sample_name
+    - :supplier_name
     - :cohort
     - :volume
-    - :conc
+    - :concentration
     - :gender
     - :country_of_origin
     - :geographical_region
     - :ethnicity
     - :dna_source
     - :date_of_sample_collection
-    - :date_of_dna_extraction
-    - :is_sample_a_control?
-    - :is_re_submitted_sample?
-    - :dna_extraction_method
-    - :sample_purified?
+    - :date_of_sample_extraction
+    - :is_sample_a_control
+    - :is_resubmitted_sample
+    - :sample_extraction_method
+    - :sample_purified
     - :purification_method
     - :concentration_determined_by
-    - :dna_storage_conditions
+    - :sample_storage_conditions
     - :mother
     - :father
     - :sibling
     - :gc_content
-    - :public_name
-    - :taxon_id
-    - :common_name
+    - :sample_public_name
+    - :sample_taxon_id
+    - :sample_common_name
     - :sample_description
-    - :strain
+    - :sample_strain_att
     - :sample_visibility
     - :sample_type
     - :genotype
@@ -84,14 +84,14 @@ plate_full:
     - :immunoprecipitate
     - :growth_condition
     - :rnai
-    - :rnai_2
+    - :rnai2
     - :organism_part
     - :time_point
     - :treatment
     - :subject
     - :disease
-    - :sample_accession_number
-    - :donor_id_2
+    - :sample_ebi_accession_number
+    - :donor_id2
 plate_rnachip:
   heading: "RNA/ChIP Plate"
   asset_type: "plate"
@@ -99,18 +99,18 @@ plate_rnachip:
     - :sanger_plate_id
     - :well
     - :sanger_sample_id
-    - :supplier_sample_name
+    - :supplier_name
     - :cohort
     - :volume
-    - :conc
+    - :concentration
     - :gender
     - :dna_source
     - :gc_content
-    - :public_name
-    - :taxon_id
-    - :common_name
+    - :sample_public_name
+    - :sample_taxon_id
+    - :sample_common_name
     - :sample_description
-    - :strain
+    - :sample_strain_att
     - :sample_visibility
     - :sample_type
     - :phenotype
@@ -118,44 +118,44 @@ plate_rnachip:
     - :cell_type
     - :immunoprecipitate
     - :organism_part
-    - :sample_accession_number
-    - :donor_id_2
+    - :sample_ebi_accession_number
+    - :donor_id2
 tube_default:
   heading: "Default Tube"
   asset_type: "1dtube"
   columns:
     - :sanger_tube_id
     - :sanger_sample_id
-    - :supplier_sample_name
+    - :supplier_name
     - :cohort
     - :volume
-    - :conc
+    - :concentration
     - :gender
     - :country_of_origin
     - :geographical_region
     - :ethnicity
     - :dna_source
     - :date_of_sample_collection
-    - :date_of_dna_extraction
-    - :is_sample_a_control?
-    - :is_re_submitted_sample?
-    - :dna_extraction_method
-    - :sample_purified?
+    - :date_of_sample_extraction
+    - :is_sample_a_control
+    - :is_resubmitted_sample
+    - :sample_extraction_method
+    - :sample_purified
     - :purification_method
     - :concentration_determined_by
-    - :dna_storage_conditions
+    - :sample_storage_conditions
     - :mother
     - :father
     - :sibling
     - :gc_content
-    - :public_name
-    - :taxon_id
-    - :common_name
+    - :sample_public_name
+    - :sample_taxon_id
+    - :sample_common_name
     - :sample_description
-    - :strain
+    - :sample_strain_att
     - :sample_visibility
     - :sample_type
-    - :sample_accession_number
+    - :sample_ebi_accession_number
     - :donor_id
     - :phenotype
 tube_full:
@@ -164,33 +164,33 @@ tube_full:
   columns:
     - :sanger_tube_id
     - :sanger_sample_id
-    - :supplier_sample_name
+    - :supplier_name
     - :cohort
     - :volume
-    - :conc
+    - :concentration
     - :gender
     - :country_of_origin
     - :geographical_region
     - :ethnicity
     - :dna_source
     - :date_of_sample_collection
-    - :date_of_dna_extraction
-    - :is_sample_a_control?
-    - :is_re_submitted_sample?
-    - :dna_extraction_method
-    - :sample_purified?
+    - :date_of_sample_extraction
+    - :is_sample_a_control
+    - :is_resubmitted_sample
+    - :sample_extraction_method
+    - :sample_purified
     - :purification_method
     - :concentration_determined_by
-    - :dna_storage_conditions
+    - :sample_storage_conditions
     - :mother
     - :father
     - :sibling
     - :gc_content
-    - :public_name
-    - :taxon_id
-    - :common_name
+    - :sample_public_name
+    - :sample_taxon_id
+    - :sample_common_name
     - :sample_description
-    - :strain
+    - :sample_strain_att
     - :sample_visibility
     - :sample_type
     - :genotype
@@ -204,32 +204,32 @@ tube_full:
     - :immunoprecipitate
     - :growth_condition
     - :rnai
-    - :rnai_2
+    - :rnai2
     - :organism_part
     - :time_point
     - :treatment
     - :subject
     - :disease
-    - :sample_accession_number
-    - :donor_id_2
+    - :sample_ebi_accession_number
+    - :donor_id2
 tube_rnachip:
   heading: "RNA/ChIP Tube"
   asset_type: "1dtube"
   columns:
     - :sanger_tube_id
     - :sanger_sample_id
-    - :supplier_sample_name
+    - :supplier_name
     - :cohort
     - :volume
-    - :conc
+    - :concentration
     - :gender
     - :dna_source
     - :gc_content
-    - :public_name
-    - :taxon_id
-    - :common_name
+    - :sample_public_name
+    - :sample_taxon_id
+    - :sample_common_name
     - :sample_description
-    - :strain
+    - :sample_strain_att
     - :sample_visibility
     - :sample_type
     - :phenotype
@@ -237,8 +237,8 @@ tube_rnachip:
     - :cell_type
     - :immunoprecipitate
     - :organism_part
-    - :sample_accession_number
-    - :donor_id_2
+    - :sample_ebi_accession_number
+    - :donor_id2
 tube_multiplexed_library:
   heading: "Multiplexed Library Tube"
   asset_type: "multiplexed_library"
@@ -252,35 +252,121 @@ tube_multiplexed_library:
     - :library_type
     - :insert_size_from
     - :insert_size_to
-    - :supplier_sample_name
+    - :supplier_name
     - :cohort
     - :volume
-    - :conc
+    - :concentration
     - :gender
     - :country_of_origin
     - :geographical_region
     - :ethnicity
     - :dna_source
     - :date_of_sample_collection
-    - :date_of_dna_extraction
-    - :is_sample_a_control?
-    - :is_re_submitted_sample?
-    - :dna_extraction_method
-    - :sample_purified?
+    - :date_of_sample_extraction
+    - :is_sample_a_control
+    - :is_resubmitted_sample
+    - :sample_extraction_method
+    - :sample_purified
     - :purification_method
     - :concentration_determined_by
-    - :dna_storage_conditions
+    - :sample_storage_conditions
     - :mother
     - :father
     - :sibling
     - :gc_content
-    - :public_name
-    - :taxon_id
-    - :common_name
+    - :sample_public_name
+    - :sample_taxon_id
+    - :sample_common_name
     - :sample_description
-    - :strain
+    - :sample_strain_att
     - :sample_visibility
     - :sample_type
-    - :sample_accession_number
+    - :sample_ebi_accession_number
+    - :donor_id
+    - :phenotype
+tube_library_with_tag_sequences:
+  heading: "Library Tube with Tag Sequences"
+  asset_type: "library"
+  columns:
+    - :sanger_tube_id
+    - :sanger_sample_id
+    - :tag_oligo
+    - :tag2_oligo
+    - :library_type
+    - :insert_size_from
+    - :insert_size_to
+    - :supplier_name
+    - :cohort
+    - :volume
+    - :concentration
+    - :gender
+    - :country_of_origin
+    - :geographical_region
+    - :ethnicity
+    - :dna_source
+    - :date_of_sample_collection
+    - :date_of_sample_extraction
+    - :is_sample_a_control
+    - :is_re_submitted_sample
+    - :sample_extraction_method
+    - :sample_purified
+    - :purification_method
+    - :concentration_determined_by
+    - :sample_storage_conditions
+    - :mother
+    - :father
+    - :sibling
+    - :gc_content
+    - :sample_public_name
+    - :sample_taxon_id
+    - :sample_common_name
+    - :sample_description
+    - :sample_strain_att
+    - :sample_visibility
+    - :sample_type
+    - :sample_ebi_accession_number
+    - :donor_id
+    - :phenotype
+tube_multiplexed_library_with_tag_sequences:
+  heading: "Multiplexed Library Tube with Tag Sequences"
+  asset_type: "multiplexed_library"
+  columns:
+    - :sanger_tube_id
+    - :sanger_sample_id
+    - :tag_oligo
+    - :tag2_oligo
+    - :library_type
+    - :insert_size_from
+    - :insert_size_to
+    - :supplier_name
+    - :cohort
+    - :volume
+    - :concentration
+    - :gender
+    - :country_of_origin
+    - :geographical_region
+    - :ethnicity
+    - :dna_source
+    - :date_of_sample_collection
+    - :date_of_sample_extraction
+    - :is_sample_a_control
+    - :is_re_submitted_sample
+    - :sample_extraction_method
+    - :sample_purified
+    - :purification_method
+    - :concentration_determined_by
+    - :sample_storage_conditions
+    - :mother
+    - :father
+    - :sibling
+    - :gc_content
+    - :sample_public_name
+    - :sample_taxon_id
+    - :sample_common_name
+    - :sample_description
+    - :sample_strain_att
+    - :sample_visibility
+    - :sample_type
+    - :sample_ebi_accession_number
     - :donor_id
     - :phenotype
