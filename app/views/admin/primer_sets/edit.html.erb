@@ -6,12 +6,17 @@
 
 <%= page_title 'Primer Set', 'Edit' %>
 
+<%= alert :danger do %>
+  <strong>Warning</strong>
+  <p>Editing a primer set will affect <em>all</em> experiments where a primer set has been used.</p>
+<% end %>
+
 <%= form_for([:admin, @primer_set]) do |f| %>
   <%= f.error_messages %>
 
   <%= render partial: "edit_form", locals: {f: f } %>
   <p>
-    <%= f.submit "Update" %>
+    <%= f.submit "Update", class: 'btn btn-warning' %>
   </p>
 <% end %>
 

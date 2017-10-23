@@ -11,7 +11,6 @@
       <th><a>Name</a></th>
       <th><a>SNP Count</a></th>
       <th>Edit</th>
-      <th>Delete</th>
     </tr>
   </thead>
   <tbody>
@@ -20,7 +19,6 @@
       <td><%= primer_set.name %></td>
       <td><%= primer_set.snp_count %></td>
       <td><%= link_to 'Edit', edit_admin_primer_set_path(primer_set), title: "Edit #{primer_set.name}" %></td>
-      <td><%= link_to 'Delete', admin_primer_set_path(primer_set), title: "Delete #{primer_set.name}", confirm: 'Are you sure?', method: :delete %></td>
     </tr>
   <% end %>
   </tbody>
@@ -28,4 +26,4 @@
 
 <br />
 
-<%= link_to 'New Primer Set', new_admin_primer_set_path %>
+<%= link_to 'New Primer Set', new_admin_primer_set_path, class: 'btn btn-default' %>

@@ -6,9 +6,9 @@
 
 <p>
   <%= f.label :name %><br />
-  <%= f.text_field :name, required: true %>
+  <%= f.text_field :name, required: true, class: 'form-control' %>
 </p>
 <p>
   <%= f.label :snp_count %><br />
-  <%= f.number_field :snp_count, required: true, min: 1, step: 1 %>
+  <%= f.number_field :snp_count, required: true, min: 1, step: 1, class: 'form-control' %>
 </p>
