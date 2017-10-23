@@ -13,6 +13,10 @@ class RequestEvent < ApplicationRecord
 
   scope :current, -> { where(current_to: nil) }
 
+  def self.date_for_state(state)
+    where(to_state: state).last.try(:current_from)
+  end
+
   def expire!(date_time)
     raise StandardError, 'This event has already expired!' unless current_to.nil?
     update_attributes!(current_to: date_time)
