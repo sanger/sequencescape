@@ -15,6 +15,8 @@ module SampleManifestExcel
 
       def update(_attributes = {})
       end
+
+      delegate :present?, to: :value, prefix: true
     end
   end
 end

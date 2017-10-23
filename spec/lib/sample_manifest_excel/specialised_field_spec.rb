@@ -21,6 +21,13 @@ RSpec.describe SampleManifestExcel::SpecialisedField, type: :model, sample_manif
       expect(thing.value).to eq 'value'
       expect(thing.sample).to eq sample
     end
+
+    it 'knows if value is present' do
+      thing = Thing.new(sample: sample)
+      expect(thing.value_present?).to be_falsey
+      thing.value = 'value'
+      expect(thing.value_present?).to be_truthy
+    end
   end
 
   describe 'value required' do
@@ -45,7 +52,11 @@ RSpec.describe SampleManifestExcel::SpecialisedField, type: :model, sample_manif
   end
 
   describe 'Reference Genome' do
-    it 'will not be valid without a persisted reference genome' do
+    it 'is valid, if a value was not provided' do
+      expect(SampleManifestExcel::SpecialisedField::ReferenceGenome.new(sample: sample)).to be_valid
+    end
+
+    it 'will not be valid without a persisted reference genome if a value is provided' do
       expect(SampleManifestExcel::SpecialisedField::ReferenceGenome.new(value: reference_genome.name, sample: sample)).to be_valid
       expect(SampleManifestExcel::SpecialisedField::ReferenceGenome.new(value: 'A new reference genome', sample: sample)).to_not be_valid
     end

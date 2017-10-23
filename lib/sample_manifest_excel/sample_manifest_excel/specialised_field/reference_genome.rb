@@ -6,7 +6,7 @@ module SampleManifestExcel
     class ReferenceGenome
       include Base
 
-      validate :check_reference_genome_exists
+      validate :check_reference_genome_exists, if: :value_present?
 
       attr_accessor :reference_genome
 
