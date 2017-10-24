@@ -26,6 +26,12 @@ module SampleManifestExcel
         items.each(&block)
       end
 
+      # Return values for rows for a particular column number
+      # there is a similar method data#column(n), but it returns column of data for all rows (including empty ones)
+      def data_at(n)
+        map { |row| row.at(n) }
+      end
+
       private
 
       def create_rows
