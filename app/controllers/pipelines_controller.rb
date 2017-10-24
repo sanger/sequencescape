@@ -56,6 +56,7 @@ class PipelinesController < ApplicationController
       # the result now anyway.
       @requests_comment_count = Comment.counts_for(@requests.to_a)
       @assets_comment_count = Comment.counts_for(@requests.map(&:asset))
+      @requests_samples_count = Request.where(id: @requests.to_a).joins(:samples).group(:id).count
     end
   end
 
