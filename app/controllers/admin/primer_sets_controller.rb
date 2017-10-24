@@ -5,7 +5,6 @@
 # Copyright (C) 2017 Genome Research Ltd.
 
 class Admin::PrimerSetsController < ApplicationController
-
   before_action :admin_login_required
   before_action :discover_primer_set, only: [:edit, :update]
 
@@ -17,11 +16,9 @@ class Admin::PrimerSetsController < ApplicationController
     @primer_set = PrimerSet.new
   end
 
-  def show
-  end
+  def show; end
 
-  def edit
-  end
+  def edit; end
 
   def create
     @primer_set = PrimerSet.new(primer_set_params)
