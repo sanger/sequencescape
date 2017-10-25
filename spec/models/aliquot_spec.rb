@@ -121,4 +121,14 @@ RSpec.describe Aliquot, type: :model do
       expect(aliquot.substitution_hash).to eq(sample_id: aliquot.sample_id, library_id: aliquot.library_id, original_tag_id: tag_id, substitute_tag_id: Tag.first.id, 'insert_size_from' => 5, 'insert_size_to' => 15)
     end
   end
+
+  it 'provides number of aliquots by cost code' do
+    aliquots = create_list(:aliquot, 5)
+    aliquots.first.update_attributes!(project: nil)
+    aliquots.second.project.project_metadata.update_attributes!(project_cost_code: 'new_cost_code')
+    default_project_cost_code = aliquots.last.project.project_metadata.project_cost_code
+    receptacle = create :empty_well
+    receptacle.aliquots << aliquots
+    expect(receptacle.aliquots.count_by_project_cost_code).to eq('new_cost_code' => 1, default_project_cost_code => 3, nil => 1)
+  end
 end

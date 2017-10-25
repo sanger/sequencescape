@@ -65,10 +65,9 @@ module SampleManifestExcel
         @assets ||= []
       end
 
-      def add_cell_data(column, n, partial = false)
-        if partial && n == last_row
-          default_column = 'supplier_sample_name'
-          (data[column.name] || dynamic_attributes[n][column.name]) unless column.name == default_column
+      def add_cell_data(column, n, partial)
+        if partial && empty_row?(n)
+          (data[column.name] || dynamic_attributes[n][column.name]) unless empty_columns.include?(column.name)
         elsif validation_errors.include?(:insert_size_from) && column.name == 'insert_size_from' && n == first_row
           nil
         else
@@ -78,6 +77,14 @@ module SampleManifestExcel
 
       def first_to_last
         first_row..last_row
+      end
+
+      def empty_row?(n)
+        (n == last_row) || (n == (last_row - 1))
+      end
+
+      def empty_columns
+        ['supplier_name', 'tag_oligo', 'tag2_oligo']
       end
 
       def manifest_type

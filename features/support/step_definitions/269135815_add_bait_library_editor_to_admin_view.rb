@@ -30,7 +30,7 @@ Then /^the supplier_identifier for "([^\"]*)" should be nil$/ do |name|
 end
 
 Given /^I have a bait library type called "([^\"]*)"$/ do |name|
-  BaitLibraryType.create!(name: name)
+  BaitLibraryType.create!(name: name, category: 'standard')
 end
 
 Given /^I have a supplier called "([^\"]*)"$/ do |name|
@@ -44,7 +44,7 @@ end
 
 Given /^the last bait library has type "([^\"]*)"$/ do |name|
   BaitLibrary.last.update_attributes(
-    bait_library_type: BaitLibraryType.create!(name: name)
+    bait_library_type: BaitLibraryType.create!(name: name, category: 'standard')
   )
 end
 

@@ -68,6 +68,16 @@ test: &test
 cucumber:
   <<: *test
 
+
+# In production environments adapter should be 'oracle_enhanced',
+# Username, password and database are values that go to sqlplus login <username>/<password>@<database>
+
+agresso_test_db:
+  adapter: nulldb
+  database: database
+  username: username
+  password: password
+
 # These other connections are exported during deploy, from:
 # ssh://git/repos/git/psd/config/private.git/
 ### Staging

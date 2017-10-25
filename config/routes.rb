@@ -672,6 +672,8 @@ Sequencescape::Application.routes.draw do
   post 'get_your_qc_completed_tubes_here' => 'get_your_qc_completed_tubes_here#create', as: :get_your_qc_completed_tubes_here
   resources :sample_manifest_upload_with_tag_sequences, only: [:new, :create]
 
+  resources :billing_reports, only: [:new, :create]
+
   # this is for test only test/functional/authentication_controller_test.rb
   # to be removed?
   get 'authentication/open'
