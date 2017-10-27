@@ -63,7 +63,7 @@ module SampleManifestExcel
 
         def aliquots_updated?
           if upload.reuploaded?
-            downstream_aliquots_updated? || substitutions.empty?
+            downstream_aliquots_updated?
           else
             aliquots_transferred?
           end

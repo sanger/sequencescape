@@ -107,7 +107,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
 
       context 'manifest reuploaded' do
         let!(:download) { build(:test_download, columns: columns, manifest_type: 'multiplexed_library') }
-        let(:new_test_file) { 'new_test_file.xlsx' }
+        let!(:new_test_file) { 'new_test_file.xlsx' }
 
         before(:each) do
           upload.process(tag_group)
@@ -139,11 +139,12 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
         end
 
         it 'will not update the aliquots downstream if there is nothing to update' do
+          download.save(new_test_file)
           reupload = SampleManifestExcel::Upload::Base.new(filename: new_test_file, column_list: columns, start_row: 9)
           processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(reupload)
           processor.update_samples_and_aliquots(tag_group)
           expect(processor.substitutions.compact).to be_empty
-          expect(processor.downstream_aliquots_updated?).to be_falsey
+          expect(processor.downstream_aliquots_updated?).to be_truthy
         end
 
         after(:each) do
