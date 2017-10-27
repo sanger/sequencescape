@@ -109,7 +109,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
     expect(empty_row.empty?).to be true
   end
 
-  context 'aliquot transfer and update on multiplex library tubes' do
+  context 'aliquot transfer on multiplex library tubes' do
     attr_reader :rows
 
     let!(:library_tubes) { create_list(:library_tube_with_barcode, 5) }
@@ -142,51 +142,6 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
           expect(request.state).to eq('passed')
         end
       end
-    end
-  end
-
-  context 'update downstream aliquots' do
-    attr_reader :rows
-
-    let!(:library_tubes) { create_list(:library_tube_with_barcode, 3) }
-    let!(:mx_library_tube) { create(:multiplexed_library_tube) }
-    let(:tags) { SampleManifestExcel::Tags::ExampleData.new.take(0, 1) }
-
-    before(:each) do
-      @rows = []
-      aliquot1 = library_tubes[0].aliquots.first
-      aliquot2 = library_tubes[1].aliquots.first
-
-      # tags should be in place to be able to pool aliquots to multiplexed tube
-      # library_id should be in place to update downstream aliquots
-      aliquot1.update_attributes!(tag: Tag.first, library_id: '1')
-      aliquot2.update_attributes!(tag: Tag.last, library_id: '2')
-
-      # transferred all 3 aliquots to multiplexed library tube
-      library_tubes.each do |library_tube|
-        mx_library_tube.aliquots << library_tube.aliquots.map(&:dup)
-      end
-      mx_library_tube.save!
-
-      # create 2 rows with for 2 library tubes but with new tag and tag2 oligos
-      library_tubes[0..1].each_with_index do |tube, i|
-        row_data = data.dup
-        row_data[0] = tube.samples.first.assets.first.sanger_human_barcode
-        row_data[1] = tube.samples.first.sanger_sample_id
-        row_data[2] = tags[i][:tag_oligo]
-        row_data[3] = tags[i][:tag2_oligo]
-        rows << SampleManifestExcel::Upload::Row.new(number: i + 1, data: row_data, columns: columns)
-      end
-
-      # on this row (related to last library tube) all attributes related to aliquot stay the same, nothing changes
-      # this row should not update downstream aliquots
-      row_data = data.dup
-      row_data[0] = library_tubes.last.samples.first.assets.first.sanger_human_barcode
-      row_data[1] = library_tubes.last.samples.first.sanger_sample_id
-      row_data[4] = 'Standard'
-      row_data[5] = nil
-      row_data[6] = nil
-      rows << SampleManifestExcel::Upload::Row.new(number: 3, data: row_data, columns: columns)
     end
   end
 

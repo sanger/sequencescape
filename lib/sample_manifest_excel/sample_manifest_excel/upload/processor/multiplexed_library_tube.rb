@@ -62,10 +62,10 @@ module SampleManifestExcel
         end
 
         def aliquots_updated?
-          unless upload.reuploaded?
-            aliquots_transferred?
-          else
+          if upload.reuploaded?
             downstream_aliquots_updated? || substitutions.empty?
+          else
+            aliquots_transferred?
           end
         end
       end
