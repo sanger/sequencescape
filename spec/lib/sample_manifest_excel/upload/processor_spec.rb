@@ -90,6 +90,21 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
         end
       end
 
+      context 'partial' do
+        let!(:download) { build(:test_partial_download, manifest_type: 'multiplexed_library', columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup) }
+
+        it 'will process partial upload and cancel unprocessed requests' do
+          processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(upload)
+          expect(upload.sample_manifest.pending_external_library_creation_requests.count).to eq 6
+          processor.update_samples_and_transfer_aliquots(tag_group)
+          expect(upload.sample_manifest.pending_external_library_creation_requests.count).to eq 2
+          processor.cancel_unprocessed_external_library_creation_requests
+          expect(upload.sample_manifest.pending_external_library_creation_requests.count).to eq 0
+          processor.update_sample_manifest
+          expect(processor).to be_processed
+        end
+      end
+
       context 'mismatched tags' do
         let!(:download) { build(:test_download, columns: columns, manifest_type: 'multiplexed_library', validation_errors: [:tags]) }
 
