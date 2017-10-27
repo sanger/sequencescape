@@ -44,8 +44,8 @@ RSpec.describe SampleManifestExcel::Upload::Rows, type: :model, sample_manifest_
     download = build(:test_download, columns: columns, validation_errors: [:insert_size_from])
     download.save(test_file)
     rows = SampleManifestExcel::Upload::Rows.new(SampleManifestExcel::Upload::Data.new(test_file, 9), columns)
-    # column 6 is insert_size_from
-    expect(rows.data_at(6)).to eq [nil, '200', '200', '200', '200', '200']
+    # column 7 is insert_size_from
+    expect(rows.data_at(7)).to eq [nil, '200', '200', '200', '200', '200']
   end
 
   after(:each) do
