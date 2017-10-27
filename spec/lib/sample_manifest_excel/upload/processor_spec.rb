@@ -115,8 +115,8 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
         end
 
         it 'will update the aliquots downstream if aliquots data has changed' do
-          download.worksheet.axlsx_worksheet.rows[10].cells[5].value = '100'
-          download.worksheet.axlsx_worksheet.rows[11].cells[6].value = '1000'
+          download.worksheet.axlsx_worksheet.rows[10].cells[6].value = '100'
+          download.worksheet.axlsx_worksheet.rows[11].cells[7].value = '1000'
           download.save(new_test_file)
           reupload = SampleManifestExcel::Upload::Base.new(filename: new_test_file, column_list: columns, start_row: 9)
           processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(reupload)

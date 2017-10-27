@@ -13,6 +13,7 @@ module SampleManifestExcel
         super
         @validation_errors ||= []
         create_library_type
+        create_reference_genome
         create_dynamic_attributes
         create_requests
         create_styles
@@ -134,6 +135,12 @@ module SampleManifestExcel
       def create_library_type
         unless validation_errors.include?(:library_type)
           LibraryType.where(name: data[:library_type]).first_or_create
+        end
+      end
+
+      def create_reference_genome
+        unless validation_errors.include?(:reference_genome)
+          ReferenceGenome.where(name: data[:reference_genome]).first_or_create
         end
       end
 

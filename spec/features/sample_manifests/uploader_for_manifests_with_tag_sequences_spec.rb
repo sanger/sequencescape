@@ -94,6 +94,19 @@ feature 'Sample manifest with tag sequences' do
       expect(download.worksheet.multiplexed_library_tube.aliquots.reload.count).to eq 6
       expect(download.worksheet.multiplexed_library_tube.aliquots.select { |a| a.library_type == new_library_type_name }.count).to eq 2
     end
+
+    context 'invalid' do
+      let(:download) { build(:test_download, columns: columns, manifest_type: 'multiplexed_library', validation_errors: [:library_type, :tags]) }
+
+      scenario 'validation errors' do
+        login_user(user)
+        visit('sample_manifest_upload_with_tag_sequences/new')
+        attach_file('File to upload', test_file)
+        click_button('Upload manifest')
+        expect(page).to have_content('The following error messages prevented the sample manifest from being uploaded')
+        expect(page).to have_content('Same tags AA, TT are used on rows 10, 15.')
+      end
+    end
   end
 
   after(:all) do
