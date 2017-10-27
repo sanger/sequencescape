@@ -57,9 +57,9 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
 
   it 'is not valid unless all specialised fields are valid' do
     expect(SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns)).to be_valid
-    data[4] = 'Dodgy library type'
+    data[5] = 'Dodgy library type'
     expect(SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns)).to_not be_valid
-    data[4] = 'My New Library Type'
+    data[5] = 'My New Library Type'
     data[6] = 'one'
     expect(SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns)).to_not be_valid
   end
