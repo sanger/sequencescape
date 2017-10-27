@@ -3,8 +3,7 @@
 namespace :limber do
   desc 'Create the Limber cherrypick plate'
   task create_plates: :environment do
-    ['LB Cherrypick', 'scRNA Stock'].each do |name|
-      p Purpose.find_by(name: name)
+    ['LB Cherrypick', 'scRNA Stock', 'LBR Cherrypick'].each do |name|
       # Caution: This is provided to help setting up limber development environments
       unless Purpose.where(name: name).exists?
         puts "Caution! Limber purposes do not exist. Creating #{name} plate."
@@ -38,6 +37,12 @@ namespace :limber do
         'ISC',
         request_class: 'Pulldown::Requests::IscLibraryRequest',
         library_types: 'Agilent Pulldown'
+      ).build!
+
+      Limber::Helper::RequestTypeConstructor.new(
+        'RNAA',
+        library_types: 'RNA PolyA',
+        default_purpose: 'LBR Cherrypick'
       ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
@@ -89,7 +94,7 @@ namespace :limber do
           catalogue: catalogue
         ).build!
       end
-      'scRNA'.tap do |prefix|
+      ['scRNA', 'RNAA'].each do |prefix|
         catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: prefix)
         Limber::Helper::TemplateConstructor.new(
           name: prefix,
