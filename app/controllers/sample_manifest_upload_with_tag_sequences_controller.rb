@@ -24,7 +24,7 @@ class SampleManifestUploadWithTagSequencesController < ApplicationController
           render :new
         end
       else
-        flash.now[:error] = @uploader.errors.full_messages
+        flash.now[:error] = @uploader.errors.full_messages.unshift('The following error messages prevented the sample manifest from being uploaded:')
         render :new
       end
     else
