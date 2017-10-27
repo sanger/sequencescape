@@ -56,17 +56,18 @@ class WorkCompletion < ApplicationRecord
   end
 
   def detect_upstream_requests(target_well)
-    target_well.stock_wells.each do |source_well|
+    upstream_requests = target_well.stock_wells.each_with_object(upstream_requests) do |source_well, upstream_requests|
       # We may have multiple requests out of each well, however we're only concerned
       # about those associated with the active submission.
       # We've already eager loaded requests out of the stock wells, so filter in Ruby.
       source_well.requests.each do |r|
-        return r if suitable_request?(r)
+        upstream_requests << r if suitable_request?(r)
       end
     end
     # We've looked at all the requests, on all the stock wells and still haven't found
     # what we're looking for.
-    raise("Could not find matching upstream requests for #{target_well.map_description}")
+    raise("Could not find matching upstream requests for #{target_well.map_description}") if upstream_requests.empty?
+    upstream_requests
   end
 
   def suitable_request?(request)
