@@ -13,6 +13,7 @@ module SampleManifestExcel
         super
         @validation_errors ||= []
         create_library_type
+        create_reference_genome
         create_dynamic_attributes
         create_styles
         add_title_and_description(study, supplier, count)
@@ -65,9 +66,8 @@ module SampleManifestExcel
       end
 
       def add_cell_data(column, n, partial)
-        if partial && n == last_row
-          default_column = 'supplier_sample_name'
-          (data[column.name] || dynamic_attributes[n][column.name]) unless column.name == default_column
+        if partial && empty_row?(n)
+          (data[column.name] || dynamic_attributes[n][column.name]) unless empty_columns.include?(column.name)
         elsif validation_errors.include?(:insert_size_from) && column.name == 'insert_size_from' && n == first_row
           nil
         else
@@ -77,6 +77,14 @@ module SampleManifestExcel
 
       def first_to_last
         first_row..last_row
+      end
+
+      def empty_row?(n)
+        (n == last_row) || (n == (last_row - 1))
+      end
+
+      def empty_columns
+        ['supplier_name', 'tag_oligo', 'tag2_oligo']
       end
 
       def manifest_type
@@ -121,6 +129,12 @@ module SampleManifestExcel
       def create_library_type
         unless validation_errors.include?(:library_type)
           LibraryType.where(name: data[:library_type]).first_or_create
+        end
+      end
+
+      def create_reference_genome
+        unless validation_errors.include?(:reference_genome)
+          ReferenceGenome.where(name: data[:reference_genome]).first_or_create
         end
       end
 

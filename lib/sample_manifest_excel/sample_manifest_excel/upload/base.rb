@@ -21,6 +21,7 @@ module SampleManifestExcel
       validate :check_processor, if: :processor?
 
       delegate :processed?, to: :processor
+      delegate :data_at, to: :rows
 
       def initialize(attributes = {})
         super
@@ -55,6 +56,11 @@ module SampleManifestExcel
           sample_manifest.start!
           processor.run(tag_group)
         end
+      end
+
+      def data_at(column_name)
+        required_column = columns.find_by(:name, column_name)
+        rows.data_at(required_column.number) if required_column.present?
       end
 
       def broadcast_sample_manifest_updated_event(user)

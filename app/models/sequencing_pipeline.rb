@@ -8,6 +8,7 @@ class SequencingPipeline < Pipeline
   self.batch_worksheet = 'simplified_worksheet'
   self.sequencing = true
   self.purpose_information = false
+  self.inbox_eager_loading = :loaded_for_sequencing_inbox_display
 
   def request_actions
     [:remove]

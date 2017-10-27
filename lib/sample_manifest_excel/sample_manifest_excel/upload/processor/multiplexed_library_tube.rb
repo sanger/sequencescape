@@ -11,6 +11,7 @@ module SampleManifestExcel
         def run(tag_group)
           if valid?
             update_samples_and_transfer_aliquots(tag_group)
+            cancel_unprocessed_external_library_creation_requests
             update_sample_manifest
           end
         end
@@ -28,6 +29,16 @@ module SampleManifestExcel
 
         def processed?
           @processed ||= samples_updated? && sample_manifest_updated? && aliquots_transferred?
+        end
+
+        # if partial manifest was uploaded, we do not want to give an option to upload the remaining samples
+        # the reason is if aliquots were transferred downstream, it is difficult to find all downstream tubes
+        # and add the remaining aliquots there
+        # Also it does not make sense in real life
+        def cancel_unprocessed_external_library_creation_requests
+          upload.sample_manifest.pending_external_library_creation_requests.each do |request|
+            request.cancel!
+          end
         end
       end
     end

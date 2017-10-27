@@ -4,17 +4,19 @@ module SampleManifestExcel
     module Validator
       module Uniqueness
         extend ActiveSupport::Concern
+        include Tags::ClashesFinder
 
         included do
           validate :check_tags
         end
 
+        # it happens for every row now. Probably it should not.
         def check_tags
-          tag_oligo_column = upload.columns.find_by(:name, :tag_oligo)
-          tag2_oligo_column = upload.columns.find_by(:name, :tag2_oligo)
-          if tag_oligo_column.present? & tag2_oligo_column.present?
-            combinations = upload.data.column(tag_oligo_column.number).zip(upload.data.column(tag2_oligo_column.number))
-            errors.add(:tags_combinations, 'are not unique') unless combinations.length == combinations.uniq.length
+          tag_oligos = upload.data_at(:tag_oligo)
+          tag2_oligos = upload.data_at(:tag2_oligo)
+          duplicates = find_tags_clash(tag_oligos.zip(tag2_oligos)) if tag_oligos.present? && tag2_oligos.present?
+          unless duplicates.empty?
+            errors.add(:tags_clash, create_tags_clashes_message(duplicates, FIRST_ROW))
           end
         end
       end

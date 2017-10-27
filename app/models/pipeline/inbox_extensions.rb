@@ -15,7 +15,7 @@ module Pipeline::InboxExtensions
     actions << [(pipeline.group_by_parent? ? :holder_located : :located), pipeline.location_id]
 
     if action != :count
-      actions << :include_request_metadata
+      actions << :include_request_metadata if pipeline.request_information_types.exists?
       actions << (pipeline.group_by_submission? ? :ordered_for_submission_grouped_inbox : :ordered_for_ungrouped_inbox)
       actions << pipeline.inbox_eager_loading
     end
