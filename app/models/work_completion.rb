@@ -34,7 +34,6 @@ class WorkCompletion < ApplicationRecord
       next if target_well.stock_wells.empty?
       # Upstream requests our on our stock wells.
       detect_upstream_requests(target_well).each do |upstream|
-
         # We need to find the downstream requests BEFORE connecting the upstream
         # This is because submission.next_requests tries to take a shortcut through
         # the target_asset if it is defined.
@@ -57,12 +56,12 @@ class WorkCompletion < ApplicationRecord
   end
 
   def detect_upstream_requests(target_well)
-    upstream_requests = target_well.stock_wells.each_with_object([]) do |source_well, upstream_requests|
+    upstream_requests = target_well.stock_wells.each_with_object([]) do |source_well, found_upstream_requests|
       # We may have multiple requests out of each well, however we're only concerned
       # about those associated with the active submission.
       # We've already eager loaded requests out of the stock wells, so filter in Ruby.
       source_well.requests.each do |r|
-        upstream_requests << r if suitable_request?(r)
+        found_upstream_requests << r if suitable_request?(r)
       end
     end
     # We've looked at all the requests, on all the stock wells and still haven't found
