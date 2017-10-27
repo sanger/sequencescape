@@ -23,6 +23,8 @@ FactoryGirl.define do
 
     skip_create
 
+    # in partial download, 4 rows out of 6 are populated
+    # 2 empty rows do not have supplier_sample_name and tags
     factory :test_partial_download, class: SampleManifestExcel::TestDownload do
       partial true
     end

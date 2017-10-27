@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'models/sample_manifest/sample_manifest_uploader'
 require 'pry'
 
-RSpec.describe SampleManifestUploader, type: :model do
+RSpec.describe SampleManifestUploader, type: :model, sample_manifest_excel: true do
   before(:all) do
     SampleManifestExcel.configure do |config|
       config.folder = File.join('spec', 'data', 'sample_manifest_excel')
@@ -62,7 +62,7 @@ RSpec.describe SampleManifestUploader, type: :model do
     File.delete(test_file) if File.exist?(test_file)
   end
 
-  it 'will upload a valid partial sample manifest' do
+  it 'will upload a valid partial tube sample manifest' do
     download = build(:test_partial_download, columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup)
     download.save(test_file)
     Delayed::Worker.delay_jobs = false
@@ -73,6 +73,16 @@ RSpec.describe SampleManifestUploader, type: :model do
     File.delete(test_file) if File.exist?(test_file)
   end
 
+  it 'will upload a valid partial multiplexed library tube sample manifest' do
+    download = build(:test_partial_download, manifest_type: 'multiplexed_library', columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup)
+    download.save(test_file)
+    Delayed::Worker.delay_jobs = false
+    uploader = SampleManifestUploader.new(test_file, SampleManifestExcel.configuration, user)
+    uploader.run!
+    expect(uploader).to be_processed
+    Delayed::Worker.delay_jobs = true
+    File.delete(test_file) if File.exist?(test_file)
+  end
   after(:all) do
     SampleManifestExcel.reset!
   end

@@ -21,6 +21,7 @@ module SampleManifestExcel
       validate :check_processor, if: :processor?
 
       delegate :processed?, to: :processor
+      delegate :data_at, to: :rows
 
       def initialize(attributes = {})
         super
