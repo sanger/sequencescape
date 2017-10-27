@@ -64,6 +64,13 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
     expect(SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns)).to_not be_valid
   end
 
+  it 'is not valid unless metadata is valid' do
+    row = SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns)
+    expect(SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns)).to be_valid
+    data[16] = 'Cell-line'
+    expect(SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns)).to_not be_valid
+  end
+
   it 'updates the aliquot with the specialised fields' do
     row = SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns)
     row.update_specialised_fields(tag_group)
