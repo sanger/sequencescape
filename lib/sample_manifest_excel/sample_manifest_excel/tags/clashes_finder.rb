@@ -7,11 +7,11 @@ module SampleManifestExcel
       # {['AA', 'TT'] => [0, 3], ['CC', 'GG'] => [1, 5]}
 
       def find_tags_clash(tag_and_tag2_oligos_combinations)
-        combinations_sorted = {}
+        combinations_with_indexes = {}
         tag_and_tag2_oligos_combinations.each_with_index do |combination, index|
-          (combinations_sorted[combination] ||= []) << index
+          (combinations_with_indexes[combination] ||= []) << index
         end
-        combinations_sorted.select { |_key, value| value.length > 1 }
+        combinations_with_indexes.select { |_key, value| value.length > 1 }
       end
 
       # This methos takes a hash of not unique tags combinations with indexes, i.e
