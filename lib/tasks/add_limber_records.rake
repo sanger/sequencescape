@@ -46,6 +46,11 @@ namespace :limber do
         default_purpose: 'LB Lib PCR-XP'
       ).build!
 
+      Limber::Helper::RequestTypeConstructor.new(
+        'scRNA',
+        library_types: 'scRNA'
+      ).build!
+
       unless RequestType.where(key: 'limber_multiplexing').exists?
         RequestType.create!(
           name: 'Limber Multiplexing',

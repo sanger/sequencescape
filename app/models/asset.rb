@@ -7,9 +7,6 @@
 require 'eventful_record'
 require 'external_properties'
 
-require 'eventful_record'
-require 'external_properties'
-
 class Asset < ApplicationRecord
   include StudyReport::AssetDetails
   include ModelExtensions::Asset
