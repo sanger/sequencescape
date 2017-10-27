@@ -9,40 +9,30 @@ module SampleManifestExcel
       class MultiplexedLibraryTube < Base
         include Tags::Validator::Uniqueness
 
+        attr_accessor :substitutions
+
         def run(tag_group)
           if valid?
-            update_samples_and_transfer_aliquots(tag_group)
+            update_samples_and_aliquots(tag_group)
             cancel_unprocessed_external_library_creation_requests
             update_sample_manifest
           end
         end
 
-        def update_samples_and_transfer_aliquots(tag_group)
+        def update_samples_and_aliquots(tag_group)
           upload.rows.each do |row|
             row.update_sample(tag_group)
             row.transfer_aliquot unless upload.reuploaded?
-            row.update_downstream_aliquots if upload.reuploaded?
+            substitutions << row.aliquot.substitution_hash if upload.reuploaded?
           end
+          update_downstream_aliquots if upload.reuploaded? && substitutions.present?
         end
 
-        def aliquots_transferred?
-          upload.rows.all? { |row| row.aliquot_transferred? }
-        end
-
-        def downstream_aliquots_updated?
-          upload.rows.select { |row| row.downstream_aliquots_to_be_updated? }.all? { |row| row.downstream_aliquots_updated? }
-        end
-
-        def processed?
-          @processed ||= samples_updated? && sample_manifest_updated? && aliquots_transferred_or_updated?
-        end
-
-        def aliquots_transferred_or_updated?
-          if upload.reuploaded?
-            downstream_aliquots_updated?
-          else
-            aliquots_transferred?
-          end
+        # if manifest is reuploaded, only aliquots, that are in 'fake' library tubes will be updated
+        # actual aliquots in multiplexed library tube and other aliquots downstream are updated by this method
+        # library updates all aliquots in one go, doing it row by row is inefficient and may trigger tag clash
+        def update_downstream_aliquots
+          @downstream_aliquots_updated = TagSubstitution.new(substitutions.compact).save
         end
 
         # if partial manifest was uploaded, we do not want to give an option to upload the remaining samples
@@ -52,6 +42,30 @@ module SampleManifestExcel
         def cancel_unprocessed_external_library_creation_requests
           upload.sample_manifest.pending_external_library_creation_requests.each do |request|
             request.cancel!
+          end
+        end
+
+        def substitutions
+          @substitutions ||= []
+        end
+
+        def aliquots_transferred?
+          upload.rows.all? { |row| row.aliquot_transferred? }
+        end
+
+        def downstream_aliquots_updated?
+          @downstream_aliquots_updated
+        end
+
+        def processed?
+          @processed ||= samples_updated? && aliquots_updated? && sample_manifest_updated?
+        end
+
+        def aliquots_updated?
+          unless upload.reuploaded?
+            aliquots_transferred?
+          else
+            downstream_aliquots_updated? || substitutions.empty?
           end
         end
       end

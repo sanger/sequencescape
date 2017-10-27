@@ -188,23 +188,6 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
       row_data[6] = nil
       rows << SampleManifestExcel::Upload::Row.new(number: 3, data: row_data, columns: columns)
     end
-
-    it 'update downstream' do
-      rows.each do |row|
-        row.update_sample(tag_group)
-        row.update_downstream_aliquots
-      end
-      # last row should not update downstream aliquots
-      # if aliquots data has not changed, aliquots should not be updated
-      expect(rows.all? { |row| row.downstream_aliquots_updated? }).to be_falsey
-      # but if data related to aliquots has changed, row should update downstream aliquots
-      expect(rows.select { |row| row.downstream_aliquots_to_be_updated? }.all? { |row| row.downstream_aliquots_updated? }).to be_truthy
-      # updated aliquots are now last in multiplexed library tube
-      mx_library_tube.aliquots[1..2].each_with_index do |aliquot, i|
-        expect(aliquot.tag.oligo).to eq(tags[i][:tag_oligo])
-        expect(aliquot.tag2.oligo).to eq(tags[i][:tag2_oligo])
-      end
-    end
   end
 
   after(:all) do
