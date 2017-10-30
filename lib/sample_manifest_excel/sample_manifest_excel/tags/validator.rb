@@ -10,11 +10,14 @@ module SampleManifestExcel
           validate :check_tags
         end
 
-        # it happens for every row now. Probably it should not.
         def check_tags
           tag_oligos = upload.data_at(:tag_oligo)
           tag2_oligos = upload.data_at(:tag2_oligo)
-          duplicates = find_tags_clash(tag_oligos.zip(tag2_oligos)) if tag_oligos.present? && tag2_oligos.present?
+          duplicates = if tag_oligos.present? && tag2_oligos.present?
+                         find_tags_clash(tag_oligos.zip(tag2_oligos))
+                       else
+                         {}
+                       end
           unless duplicates.empty?
             errors.add(:tags_clash, create_tags_clashes_message(duplicates, FIRST_ROW))
           end
