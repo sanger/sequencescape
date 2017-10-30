@@ -11,6 +11,7 @@ class Aliquot < ApplicationRecord
   include Api::Messages::FlowcellIO::AliquotExtensions
   include AliquotIndexer::AliquotScopes
   include Api::AliquotIO::Extensions
+  include DataForSubstitution
 
   TagClash = Class.new(ActiveRecord::RecordInvalid)
 
@@ -22,7 +23,6 @@ class Aliquot < ApplicationRecord
   end
 
   TAG_COUNT_NAMES = ['Untagged', 'Single', 'Dual']
-
   # It may have a tag but not necessarily.  If it does, however, that tag needs to be unique within the receptacle.
   # To ensure that there can only be one untagged aliquot present in a receptacle we use a special value for tag_id,
   # rather than NULL which does not work in MySQL.  It also works because the unassigned tag ID never gets matched
@@ -33,10 +33,7 @@ class Aliquot < ApplicationRecord
   belongs_to :receptacle, class_name: 'Asset'
 
   belongs_to :tag
-  before_validation { |record| record.tag_id ||= UNASSIGNED_TAG }
-
   belongs_to :tag2, class_name: 'Tag'
-  before_validation { |record| record.tag2_id ||= UNASSIGNED_TAG }
 
   # An aliquot can belong to a study and a project.
   belongs_to :study
@@ -45,14 +42,17 @@ class Aliquot < ApplicationRecord
   # An aliquot is an amount of a sample
   belongs_to :sample
 
-  has_one :aliquot_index, dependent: :destroy
-
   # It may have a bait library but not necessarily.
   belongs_to :bait_library
 
   # It can belong to a library asset
   belongs_to :library, class_name: 'Receptacle'
   composed_of :insert_size, mapping: [%w{insert_size_from from}, %w{insert_size_to to}], class_name: 'Aliquot::InsertSize', allow_nil: true
+
+  has_one :aliquot_index, dependent: :destroy
+
+  before_validation { |record| record.tag_id ||= UNASSIGNED_TAG }
+  before_validation { |record| record.tag2_id ||= UNASSIGNED_TAG }
 
   broadcast_via_warren
 

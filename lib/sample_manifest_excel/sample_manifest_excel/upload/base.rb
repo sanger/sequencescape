@@ -31,6 +31,7 @@ module SampleManifestExcel
         @rows = Rows.new(data, columns)
         @sample_manifest = get_sample_manifest
         @processor = create_processor
+        @reuploaded = @sample_manifest.completed? if sample_manifest.present?
       end
 
       def inspect
@@ -69,6 +70,10 @@ module SampleManifestExcel
 
       def complete
         sample_manifest.finished!
+      end
+
+      def reuploaded?
+        @reuploaded
       end
 
       private

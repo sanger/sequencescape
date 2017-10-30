@@ -28,7 +28,6 @@ module SampleManifestExcel
         @sanger_sample_id ||= if columns.present? && data.present?
                                 value(:sanger_sample_id)
                               end
-
         @sample ||= Sample.find_by(sanger_sample_id: sanger_sample_id)
         @specialised_fields = create_specialised_fields
       end
