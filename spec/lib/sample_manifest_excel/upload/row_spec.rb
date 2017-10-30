@@ -12,8 +12,8 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
   let(:data)          {
     [sample_tube.samples.first.assets.first.sanger_human_barcode, sample_tube.samples.first.sanger_sample_id,
      'AA', '', 'My reference genome', 'My New Library Type', 200, 1500, 'SCG--1222_A01', '', 1, 1, 'Unknown', '', '', '',
-     'Cell Line', 'Nov-16', 'Nov-16', '', '', '', 'No', '', 'OTHER', '', '', '', '', '', 'SCG--1222_A01',
-     9606, 'Homo sapiens', '', '', '', '', '', 11, 'Unknown']
+     'Cell Line', 'Nov-16', 'Nov-16', '', 'No', '', 'OTHER', '', '', '', '', '', 'SCG--1222_A01',
+     9606, 'Homo sapiens', '', '', '', '', 11, 'Unknown']
   }
   let!(:library_type) { create(:library_type, name: 'My New Library Type') }
   let!(:reference_genome) { create(:reference_genome, name: 'My reference genome') }
