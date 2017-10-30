@@ -518,7 +518,7 @@ class Batch < ApplicationRecord
   end
 
   def rebroadcast
-    messengers.each(&:resend)
+    messengers.each(&:broadcast)
   end
 
   private

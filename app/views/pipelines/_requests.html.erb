@@ -38,6 +38,7 @@
       <%- requests.each do |request| -%>
         <% request_comments_count = @requests_comment_count.fetch(request.id,0) -%>
         <% asset_comments_count = @assets_comment_count.fetch(request.asset_id,0)-%>
+        <% request_samples_count = @requests_samples_count.fetch(request.id,0)-%>
         <tr>
           <td class="request center">
             <%= hidden_label_tag_for_testing("request_#{request.id}", "Select #{request.asset.sti_type} #{request.asset.barcode} for batch") %>
@@ -78,7 +79,7 @@
             <% else -%>
               <td>&nbsp;</td>
             <% end -%>
-            <td><%= request.asset.samples.count %></td>
+            <td><%= request_samples_count %></td>
             <td><%= request.asset.concentration %></td>
             <td><%= request.asset.scanned_in_date %></td>
             <td><%= request.submitted_at %></td>
