@@ -15,7 +15,7 @@ module Warren::BroadcastMessages
     # @return [void]
     #
     def broadcast_via_warren
-      after_commit :broadcast
+      after_commit :queue_for_broadcast
     end
 
     #
@@ -36,6 +36,14 @@ module Warren::BroadcastMessages
       class_attribute :associated_to_broadcast, instance_writer: false
       extend ClassMethods
     end
+  end
+
+  def queue_for_broadcast
+    # Message rendering is slow in some cases. This
+    # broadcasts an initial lightweight message which can
+    # be picked up and rendered asynchronously
+    # Borrows connection as per #broadcast
+    warren << Warren::QueueBroadcastMessage.new(self)
   end
 
   def broadcast
