@@ -12,3 +12,10 @@
     <% end %></ul>
   <% end %>
 <% end %>
+
+<% if presenter.unready_samples_names.present? %>
+  <%= alert(:danger) do %>
+    <strong>Warning! Some samples might not be suitable for this submission </strong>
+    <p> Samples <%=presenter.unready_samples_names %> might not have all required metadata</p>
+  <% end %>
+<% end %>

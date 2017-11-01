@@ -1,23 +1,15 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
+require 'rails_helper'
 
-require 'test_helper'
-
-class SubmissionTest < ActiveSupport::TestCase
+RSpec.describe Submission, type: :model do
   def orders_compatible?(a, b, key = nil)
-    begin
-      submission = Submission.new(user: create(:user), orders: [a, b])
-      submission.save!
-      true
-    rescue ActiveRecord::RecordInvalid => exception
-      if key
-        !submission.errors[key]
-      else
-        false
-      end
+    submission = Submission.new(user: create(:user), orders: [a, b])
+    submission.save!
+    true
+  rescue ActiveRecord::RecordInvalid
+    if key
+      !submission.errors[key]
+    else
+      false
     end
   end
 
@@ -26,17 +18,17 @@ class SubmissionTest < ActiveSupport::TestCase
       @submission = Submission.new(user: create(:user))
     end
 
-    should 'be 0 by default' do
+    it 'be 0 by default' do
       assert_equal 0, @submission.priority
     end
 
-    should 'be changable' do
+    it 'be changable' do
       @submission.priority = 3
       assert @submission.valid?
       assert_equal 3, @submission.priority
     end
 
-    should 'have a maximum of 3' do
+    it 'have a maximum of 3' do
       @submission.priority = 4
       assert_equal false, @submission.valid?
     end
@@ -73,7 +65,7 @@ class SubmissionTest < ActiveSupport::TestCase
           @study2.reference_genome = @reference_genome1
         end
 
-        should 'be compatible' do
+        it 'be compatible' do
           assert orders_compatible?(@order1, @order2)
         end
       end
@@ -83,7 +75,7 @@ class SubmissionTest < ActiveSupport::TestCase
           @study2.study_metadata.contaminated_human_dna = false
         end
 
-        should 'be incompatible' do
+        it 'be incompatible' do
           assert_equal false, orders_compatible?(@order1, @order2)
         end
       end
@@ -93,7 +85,7 @@ class SubmissionTest < ActiveSupport::TestCase
           @order1.request_options = { option: 'value' }
         end
 
-        should 'be incompatible' do
+        it 'be incompatible' do
           assert_equal false, orders_compatible?(@order1, @order2, :request_options)
         end
       end
@@ -103,10 +95,25 @@ class SubmissionTest < ActiveSupport::TestCase
           @order2.project = @project2
         end
 
-        should 'be incompatible' do
+        it 'be incompatible' do
           assert_equal false, orders_compatible?(@order1, @order2)
         end
       end
     end
+  end
+
+  it 'knows all samples that can not be included in submission' do
+    sample_manifest = create :tube_sample_manifest_with_samples
+    sample_manifest.samples.first.sample_metadata.update_attributes(supplier_name: 'new_name')
+    samples = sample_manifest.samples[1..-1]
+    order1 = create :order, assets: sample_manifest.labware
+
+    asset = create :empty_sample_tube
+    no_manifest_sample = create :sample, assets: [asset]
+    order2 = create :order, assets: no_manifest_sample.assets
+
+    submission = Submission.new(user: create(:user), orders: [order1, order2])
+
+    expect(submission.unready_samples).to eq samples
   end
 end

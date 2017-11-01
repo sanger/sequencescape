@@ -39,6 +39,8 @@ class Submission::PresenterSkeleton
     submission.each_submission_warning(&block)
   end
 
+  delegate :unready_samples_names, to: :submission
+
   def lanes_from_request_options
     return order.request_options.fetch(:multiplier, {}).values.last || 1 if order.request_types[-2].nil?
 

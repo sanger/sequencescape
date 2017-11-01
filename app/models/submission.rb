@@ -165,6 +165,14 @@ class Submission < ApplicationRecord
     yield store[:samples].uniq, store[:submissions].uniq unless store[:samples].empty?
   end
 
+  def unready_samples
+    @unready_samples ||= orders.map(&:unready_samples).flatten
+  end
+
+  def unready_samples_names
+    @unready_samples_names ||= unready_samples.map(&:name).join(', ')
+  end
+
   # this method is part of the submission
   # not order, because it is submission
   # which decide if orders are compatible or not

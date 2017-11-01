@@ -1,13 +1,9 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-# Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
+require 'rails_helper'
 
-require 'test_helper'
-
-class OrderTest < ActiveSupport::TestCase
+RSpec.describe Order, type: :model do
   attr_reader :study, :asset, :project
 
-  def setup
+  before(:each) do
     @study = create :study, state: 'pending'
     @project = create :project
     @asset = create :empty_sample_tube
@@ -20,7 +16,7 @@ class OrderTest < ActiveSupport::TestCase
       @order   = create :order, assets: [@asset_a], template_name: @shared_template
     end
 
-    should 'not detect duplicates when there are none' do
+    it 'not detect duplicates when there are none' do
       refute @order.duplicates_within(1.month)
     end
 
@@ -29,7 +25,7 @@ class OrderTest < ActiveSupport::TestCase
         @other_template = 'other_template'
         @secondary_order = create :order, assets: [@asset_a], template_name: @other_template
       end
-      should 'not detect duplicates' do
+      it 'not detect duplicates' do
         refute @order.duplicates_within(1.month)
       end
     end
@@ -40,10 +36,10 @@ class OrderTest < ActiveSupport::TestCase
         @secondary_submission = create :submission
         @secondary_order = create :order, assets: [@asset_b], template_name: @shared_template, submission: @secondary_submission
       end
-      should 'detect duplicates' do
+      it 'detect duplicates' do
         assert @order.duplicates_within(1.month)
       end
-      should 'yield the samples, order and submission to a block' do
+      it 'yield the samples, order and submission to a block' do
         yielded = false
         @order.duplicates_within(1.month) do |samples, orders, submissions|
           yielded = true
@@ -56,7 +52,7 @@ class OrderTest < ActiveSupport::TestCase
     end
 
     context 'with no sequencing requests' do
-      should 'not be a sequencing order' do
+      it 'not be a sequencing order' do
         refute @order.is_a_sequencing_order?
       end
     end
@@ -67,19 +63,19 @@ class OrderTest < ActiveSupport::TestCase
           @sequencing_request_type = create :request_type, request_class_name: request_class
           @order.request_types << @sequencing_request_type.id
         end
-        should 'be a sequencing order' do
+        it 'be a sequencing order' do
           assert @order.is_a_sequencing_order?
         end
       end
     end
   end
 
-  test 'order should not be valid if study is not active' do
+  it 'order should not be valid if study is not active' do
     order = build :order, study: study, assets: [asset], project: project
     refute order.valid?
   end
 
-  test 'order should be valid if study is active on create' do
+  it 'order should be valid if study is active on create' do
     study.activate!
     order = create :order, study: study, assets: [asset], project: project
     assert order.valid?
@@ -87,5 +83,19 @@ class OrderTest < ActiveSupport::TestCase
     new_asset = create :empty_sample_tube
     order.assets << new_asset
     assert order.valid?
+  end
+
+  it 'should know if it has samples that can not be included in submission' do
+    sample_manifest = create :tube_sample_manifest_with_samples
+    order = create :order, assets: sample_manifest.labware
+    expect(order.unready_samples.count).to eq 5
+    sample = sample_manifest.samples.first
+    sample.sample_metadata.update_attributes(supplier_name: 'new_name')
+    expect(order.reload.unready_samples.count).to eq 4
+
+    no_manifest_sample = create :sample, assets: [asset]
+    order = create :order, assets: no_manifest_sample.assets
+    expect(order.all_samples).to_not be_empty
+    expect(order.unready_samples).to be_empty
   end
 end
