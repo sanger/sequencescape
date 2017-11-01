@@ -2,9 +2,9 @@ require 'rails_helper'
 
 RSpec.describe 'Warren::Broadcast' do
   subject(:warren) do
-    Warren::Broadcast.new(url: 'example', heartbeat: 30, frame_max: 0, exchange: 'exchange', pool_size: 2)
+    Warren::Broadcast.new(server: server_options, exchange: 'exchange', pool_size: 2)
   end
-
+  let(:server_options) { { heartbeat: 30, frame_max: 0 } }
   let(:bun_session) { instance_double(Bunny::Session) }
   let(:bun_channel) { instance_double(Bunny::Channel) }
   let(:bun_exchange) { instance_double(Bunny::Exchange) }
@@ -12,7 +12,7 @@ RSpec.describe 'Warren::Broadcast' do
   describe '#connect' do
     before do
       expect(Bunny).to receive(:new)
-        .with('example', frame_max: 0, heartbeat: 30)
+        .with(server_options)
         .and_return(bun_session)
       expect(bun_session).to receive(:start)
     end
@@ -25,7 +25,7 @@ RSpec.describe 'Warren::Broadcast' do
   describe '#with_channel' do
     before do
       expect(Bunny).to receive(:new)
-        .with('example', frame_max: 0, heartbeat: 30)
+        .with(server_options)
         .and_return(bun_session)
       expect(bun_session).to receive(:start)
       expect(bun_session).to receive(:create_channel).and_return(bun_channel)
