@@ -50,7 +50,7 @@ module Metadata
       end
 
       def validating_ena_required_fields?
-        @validating_ena_required_fields
+        instance_variable_defined?(:@validating_ena_required_fields) && @validating_ena_required_fields
       end
 
       def tags
