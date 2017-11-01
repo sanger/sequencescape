@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe TransferRequestCollection, type: :model, transfer_request_collection: true  do
+RSpec.describe TransferRequestCollection, type: :model, transfer_request_collection: true do
   let(:user) { create :user }
   let(:asset) { create :tagged_well }
   let(:target_asset) { create :empty_library_tube }

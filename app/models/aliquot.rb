@@ -13,6 +13,8 @@ class Aliquot < ApplicationRecord
   include Api::AliquotIO::Extensions
   include DataForSubstitution
 
+  self.lazy_uuid_generation = true
+
   TagClash = Class.new(ActiveRecord::RecordInvalid)
 
   # An aliquot can represent a library, which is a processed sample that has been fragmented.  In which case it

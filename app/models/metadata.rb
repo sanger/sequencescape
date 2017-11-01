@@ -36,6 +36,9 @@ module Metadata
     line = __LINE__ + 1
     class_eval("
 
+      class_attribute :lazy_metadata
+      self.lazy_metadata = false
+
       def #{association_name}_with_initialization
         #{association_name}_without_initialization ||
         build_#{association_name}
@@ -65,7 +68,7 @@ module Metadata
         @tags ||= []
       end
 
-      before_validation :#{association_name}, on: :create
+      before_validation :#{association_name}, on: :create, unless: :lazy_metadata?
 
     ", __FILE__, line)
 

@@ -24,9 +24,11 @@ class TransferRequestCollection < ApplicationRecord
     @drt ||= RequestType.transfer
   end
 
+  # These are optimizations to reduce the number of queries that need to be
+  # performed while the transfer takes place.
   def transfer_requests_attributes=(args)
     asset_ids = extract_asset_ids(args)
-    asset_cache = Asset.includes(:aliquots).find(asset_ids).index_by(&:id)
+    asset_cache = Asset.includes(:aliquots, :transfer_requests).find(asset_ids).index_by(&:id)
     optimized_parameters = args.map do |param|
       param[:request_type] ||= default_request_type unless param[:request_type_id]
       param[:asset] ||= asset_cache[param[:asset_id]]

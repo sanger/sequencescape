@@ -133,7 +133,7 @@ class Well < Receptacle
   has_one :well_attribute, inverse_of: :well
   accepts_nested_attributes_for :well_attribute
 
-  before_create { |w| w.create_well_attribute unless w.well_attribute.present? }
+  before_create(&:well_attribute)
 
   scope :pooled_as_target_by, ->(type) {
     joins('LEFT JOIN requests patb ON assets.id=patb.target_asset_id')
