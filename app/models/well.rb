@@ -133,7 +133,7 @@ class Well < Receptacle
   has_one :well_attribute, inverse_of: :well
   accepts_nested_attributes_for :well_attribute
 
-  before_create(&:well_attribute)
+  before_create { |w| w.well_attribute } # rubocop:disable Style/SymbolProc
 
   scope :pooled_as_target_by, ->(type) {
     joins('LEFT JOIN requests patb ON assets.id=patb.target_asset_id')
@@ -196,12 +196,9 @@ class Well < Receptacle
     display_name
   end
 
-  # hotfix
-  def well_attribute_with_creation
-    well_attribute_without_creation || build_well_attribute
+  def well_attribute
+    super || build_well_attribute
   end
-  alias_method(:well_attribute_without_creation, :well_attribute)
-  alias_method(:well_attribute, :well_attribute_with_creation)
 
   delegate_to_well_attribute(:pico_pass)
   delegate_to_well_attribute(:sequenom_count)
