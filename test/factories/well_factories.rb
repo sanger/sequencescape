@@ -35,7 +35,7 @@ FactoryGirl.define do
 
   factory :untagged_well, parent: :empty_well do
     transient do
-      aliquot_options {}
+      aliquot_options({})
     end
     after(:build) do |well, evaluator|
       well.aliquots << build(:untagged_aliquot, evaluator.aliquot_options.merge(receptacle: well))
