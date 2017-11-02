@@ -352,7 +352,7 @@ class Order < ApplicationRecord
     end
   end
 
-  # returns an array of names of samples, that can not be included in submission
+  # returns an array of samples, that potentially can not be included in submission
   def unready_samples
     all_samples.reject { |sample| sample.can_be_included_in_submission? }
   end

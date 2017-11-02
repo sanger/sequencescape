@@ -165,6 +165,7 @@ class Submission < ApplicationRecord
     yield store[:samples].uniq, store[:submissions].uniq unless store[:samples].empty?
   end
 
+  # returns an array of samples, that potentially can not be included in submission
   def unready_samples
     @unready_samples ||= orders.map(&:unready_samples).flatten
   end
