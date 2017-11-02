@@ -1,9 +1,7 @@
 require 'rails_helper'
 
 describe RequestEvent do
-
-  context "Customer Requests" do
-
+  context 'Customer Requests' do
     let!(:request) { create :customer_request, asset: create(:well), target_asset: create(:well) }
 
     context 'creating requests' do
@@ -60,8 +58,7 @@ describe RequestEvent do
     end
   end
 
-  context "Transfer Requests" do
-
+  context 'Transfer Requests' do
     let!(:request) { create :transfer_request }
 
     context 'creating requests' do

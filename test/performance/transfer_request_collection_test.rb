@@ -22,6 +22,8 @@ class TransferRequestCollectionTest < ActionDispatch::PerformanceTest
   end
 
   test 'TransferRequestCollection::Create' do
-    TransferRequestCollection.create!(user: @user, transfer_requests_attributes: @transfer_requests_attributes)
+    ActiveRecord::Base.transaction do
+      TransferRequestCollection.create!(user: @user, transfer_requests_attributes: @transfer_requests_attributes)
+    end
   end
 end
