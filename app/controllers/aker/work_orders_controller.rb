@@ -9,12 +9,12 @@ module Aker
 
     def show
       @work_order = current_resource
-      @aker_work_order = RestClient::Request.execute(
+      @aker_work_order = JSON.parse(RestClient::Request.execute(
         method: :get,
         url: "#{Rails.configuration.aker['urls']['work_orders']}/work_orders/#{@work_order.aker_id}",
-        headers: { content_type: :json },
+        headers: { content_type: :json, Accept: :json },
         proxy: nil
-      )['work_order']
+      ).body)['work_order']
     end
 
     def complete

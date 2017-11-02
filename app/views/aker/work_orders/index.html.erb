@@ -2,6 +2,7 @@
 <section class='work-orders'>
   <% @work_orders.each do |work_order| %>
     <div class='work-order'>
+      <%= render partial: 'work_order', local: {aker_work_order: aker_work_order, work_order: work_order } %>
     </div>
   <% end %>
 </section>

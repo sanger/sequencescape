@@ -1,4 +1,4 @@
-source 'https://rubygems.org'
+ source 'https://rubygems.org'
 
 group :default do
   gem 'rails', '~> 5.1.2'
@@ -139,6 +139,7 @@ group :test do
   gem 'rails-controller-testing'
 end
 
+gem 'factory_girl_rails', require: false
 group :test, :cucumber do
   gem 'factory_girl_rails', require: false
   gem 'launchy', require: false
