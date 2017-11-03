@@ -7,6 +7,7 @@
       "proposal_id":9,
       "proposal_name":"MyProject",
       "cost_code":"S1234",
+      "status": "active",
       "materials":[
          {
             "_id":"2be2072d-7c96-49c3-b7ac-9c51d01c109b",

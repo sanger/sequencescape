@@ -26,6 +26,15 @@
       Desired date: <%= @aker_work_order['desired_date'] %>
     </li>
     <li>
+      Status: <%= @aker_work_order['status'] %>
+    </li>
+    <li>
+      <%= link_to "Complete", complete_aker_work_order_path(@aker_work_order['work_order_id']) %>
+    </li>
+    <li>
+      <%= link_to "Cancel", cancel_aker_work_order_path(@aker_work_order['work_order_id']) %>
+    </li>
+    <li>
       <ul>
         <% @work_order.samples.each do |sample| %>
           <li class='sample'>

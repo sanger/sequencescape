@@ -18,6 +18,7 @@ RSpec.describe Aker::Factories::WorkOrder, type: :model, aker: true do
     expect(work_order.cost_code).to eq(params[:cost_code])
     expect(work_order.comment).to eq(params[:comment])
     expect(work_order.desired_date).to eq(params[:desired_date])
+    expect(work_order.status).to eq(params[:status])
     expect(work_order.materials.count).to eq(params[:materials].count)
   end
 
