@@ -1,38 +1,56 @@
-<ul>
-  <li>
-    Product name: <%= aker_work_order['product_name'] %>
+<dl class="list-group">
+  <li class="list-group-item">
+    <dt>Product name:</dt> <dd><%= aker_work_order['product_name'] %></dd>
   </li>
-  <li>
-    Product version: <%= aker_work_order['product_version'] %>
+  <li class="list-group-item">
+    <dt>Product version:</dt> <dd><%= aker_work_order['product_version'] %></dd>
   </li>
-  <li>
-    Product UUID: <%= aker_work_order['product_uuid'] %>
+  <li class="list-group-item">
+    <dt>Product UUID:</dt> <dd><%= aker_work_order['product_uuid'] %></dd>
   </li>
-  <li>
-    Proposal ID: <%= aker_work_order['proposal_id'] %>
+  <li class="list-group-item">
+    <dt>Proposal ID:</dt> <dd><%= aker_work_order['proposal_id'] %></dd>
   </li>
-  <li>
-    Proposal Name: <%= aker_work_order['proposal_name'] %>
+  <li class="list-group-item">
+    <dt>Proposal Name:</dt> <dd><%= aker_work_order['proposal_name'] %></dd>
   </li>
-  <li>
-    Cost code: <%= aker_work_order['cost_code'] %>
+  <li class="list-group-item">
+    <dt>Cost code:</dt> <dd><%= aker_work_order['cost_code'] %></dd>
   </li>
-  <li>
-    Comment: <%= aker_work_order['comment'] %>
+  <li class="list-group-item">
+    <dt>Comment:</dt> <dd><%= aker_work_order['comment'] %></dd>
   </li>
-  <li>
-    Desired date: <%= aker_work_order['desired_date'] %>
+  <li class="list-group-item">
+    <dt>Desired date:</dt> <dd><%= aker_work_order['desired_date'] %></dd>
   </li>
-  <li>
-    <ul>
+  <li class="list-group-item">
+    <dt>Status:</dt> <dd><span class="badge badge-secondary"><%= @aker_work_order['status'] %></span></dd>
+  </li>
+<% unless (aker_work_order['status']=='completed') || (aker_work_order['status']=='cancelled') %>
+  <li class="list-group-item">
+    <dt>Actions:</dt>
+    <dd>
+      <div class="btn-group">
+        <div class="pull-left"><%= button_to 'Complete', complete_aker_work_order_path(work_order), class: 'btn btn-danger' %></div>
+        &nbsp;
+        <div class="pull-right"><%= button_to 'Cancel', cancel_aker_work_order_path(work_order), class: 'btn btn-danger' %></div>
+      </div>
+    </dd>
+  </li>
+<% end %>
+
+  <li class="list-group-item">
+    <dt>Samples:</dt>
+    <dd>
+    <ul class="list-group">
+
       <% work_order.samples.each do |sample| %>
-        <li class='sample'>
-          Sample: <%= sample.name %>
+        <li class='sample list-group-item'>
+          <%= sample.name %>
         </li>
       <% end %>
     </ul>
+    </dd>
   </li>
-</ul>
+</dl>
 
-<% unless readonly %>
-<% end %>
