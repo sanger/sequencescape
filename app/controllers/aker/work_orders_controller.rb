@@ -62,6 +62,9 @@ module Aker
       rescue Errno::ECONNREFUSED => e
         flash[:error] = 'Cannot connect with Aker Work orders service. Please contact the administrators'
         redirect_to aker_work_orders_path
+      rescue RestClient::NotFound => e
+        flash[:error] = 'The work order was not found in Aker Work orders service.'
+        redirect_to aker_work_orders_path
       rescue RestClient::InternalServerError => e
         flash[:error] = "There was a problem in the Aker Work orders service. Please contact the administrators"
         redirect_to aker_work_orders_path
