@@ -4,7 +4,7 @@ module Aker
     before_action :login_required, except: [:complete, :cancel, :show, :index]
 
     def index
-      @work_orders = Aker::WorkOrder.all
+      @work_orders = Aker::WorkOrder.paginate(page: params[:page], per_page: 10)
     end
 
     def show
