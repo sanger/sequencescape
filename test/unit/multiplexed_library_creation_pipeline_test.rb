@@ -15,12 +15,16 @@ class MultiplexedLibraryCreationPipelineTest < ActiveSupport::TestCase
   context 'batch interaction' do
     setup do
       @batch = create(:batch, pipeline: @pipeline)
-      @batch.requests = (1..5).map { |_| create(:request_suitable_for_starting, request_type: @batch.pipeline.request_types.last) }
+      @batch.requests = create_list(:request_suitable_for_starting, 5, request_type: @batch.pipeline.request_types.last)
     end
 
     context 'for completion' do
       setup do
         @batch.start!(@user)
+        # The loaded target_assets are still empty, as the code updates them through an eager
+        # loaded scope. Complete! is only called on a freshly loaded batch in a separate
+        # web request, so this is merely a side effect of the way the tests are written.
+        @batch.reload
       end
 
       should 'add errors if there are untagged target asset aliquots' do

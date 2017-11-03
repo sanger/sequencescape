@@ -42,8 +42,6 @@ Sequencescape::Application.configure do
   # https://github.com/rails/rails/issues/15089
   config.allow_concurrency = false
 
-  config.active_record.observers = [:batch_cache_sweeper, :customer_request_observer]
-
   if defined?(ENV_JAVA)
     ENV_JAVA['http.proxyHost'] = nil
     ENV_JAVA['http.proxyPort'] = nil

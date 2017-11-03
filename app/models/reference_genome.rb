@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
-class ReferenceGenome < ActiveRecord::Base
+class ReferenceGenome < ApplicationRecord
   extend Attributable::Association::Target
   include Api::ReferenceGenomeIO::Extensions
   include Uuid::Uuidable
@@ -13,6 +13,7 @@ class ReferenceGenome < ActiveRecord::Base
   has_many :studies
   has_many :samples
   validates_uniqueness_of :name, message: 'of reference genome already present in database', allow_blank: true
+  broadcast_via_warren
 
   module Associations
     def self.included(base)

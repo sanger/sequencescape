@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
 
-class LabEvent < ActiveRecord::Base
+class LabEvent < ApplicationRecord
   belongs_to :batch
   belongs_to :user
   belongs_to :eventful, polymorphic: true

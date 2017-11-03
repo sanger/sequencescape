@@ -13,7 +13,7 @@
 # machine for the asset is defined within the client application, hence the statemachine on the requests will
 # be removed from the core of sequencescape at some point.
 #++
-class StateChange < ActiveRecord::Base
+class StateChange < ApplicationRecord
   include Uuid::Uuidable
 
   belongs_to :user

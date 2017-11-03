@@ -8,7 +8,7 @@
 # cf. RequestType which defines how it will be fulfilled.
 # Both RequestType and Request have a purpose, with the former acting as the default for
 # the latter.
-class RequestPurpose < ActiveRecord::Base
+class RequestPurpose < ApplicationRecord
   STANDARD_PURPOSE = 'standard'
 
   validates_presence_of :key

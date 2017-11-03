@@ -9,7 +9,6 @@ class BatchesController < ApplicationController
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
 
   before_action :evil_parameter_hack!
-  include XmlCacheHelper::ControllerHelper
 
   before_action :login_required, except: %i(released qc_criteria)
   before_action :find_batch_by_id, only: %i(
@@ -36,21 +35,21 @@ class BatchesController < ApplicationController
   end
 
   def show
-    @submenu_presenter = Presenters::BatchSubmenuPresenter.new(current_user, @batch)
-
-    @pipeline = @batch.pipeline
-    @tasks    = @batch.tasks.sort_by(&:sorted)
-    @rits = @pipeline.request_information_types
-    @input_assets, @output_assets = [], []
-
-    if @pipeline.group_by_parent
-      @input_assets = @batch.input_group
-      @output_assets = @batch.output_group_by_holder unless @pipeline.is_a?(PulldownMultiplexLibraryPreparationPipeline)
-    end
-
     respond_to do |format|
-      format.html
-      format.xml { cache_xml_response(@batch) }
+      format.html do
+        @submenu_presenter = Presenters::BatchSubmenuPresenter.new(current_user, @batch)
+
+        @pipeline = @batch.pipeline
+        @tasks    = @batch.tasks.sort_by(&:sorted)
+        @rits = @pipeline.request_information_types
+        @input_assets, @output_assets = [], []
+
+        if @pipeline.group_by_parent
+          @input_assets = @batch.input_group
+          @output_assets = @batch.output_group_by_holder unless @pipeline.is_a?(PulldownMultiplexLibraryPreparationPipeline)
+        end
+      end
+      format.xml { render layout: false }
     end
   end
 
@@ -225,6 +224,7 @@ class BatchesController < ApplicationController
 
   def sort
     @batch.assign_positions_to_requests!(params['requests_list'].map(&:to_i))
+    @batch.rebroadcast
     head :ok
   end
 

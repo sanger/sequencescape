@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2013,2014,2015 Genome Research Ltd.
 
-class BulkTransfer < ActiveRecord::Base
+class BulkTransfer < ApplicationRecord
   include Uuid::Uuidable
 
   has_many :transfers

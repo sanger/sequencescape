@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 require 'rexml/text'
-class Sample < ActiveRecord::Base
+class Sample < ApplicationRecord
   include ModelExtensions::Sample
   include Api::SampleIO::Extensions
 
@@ -18,6 +18,15 @@ class Sample < ActiveRecord::Base
   include Aliquot::Aliquotable
 
   extend EventfulRecord
+
+  GC_CONTENTS     = ['Neutral', 'High AT', 'High GC']
+  GENDERS         = ['Male', 'Female', 'Mixed', 'Hermaphrodite', 'Unknown', 'Not Applicable']
+  DNA_SOURCES     = ['Genomic', 'Whole Genome Amplified', 'Blood', 'Cell Line', 'Saliva', 'Brain', 'FFPE',
+                     'Amniocentesis Uncultured', 'Amniocentesis Cultured', 'CVS Uncultured', 'CVS Cultured', 'Fetal Blood', 'Tissue']
+  SRA_HOLD_VALUES = ['Hold', 'Public', 'Protect']
+  AGE_REGEXP      = '\d+(?:\.\d+|\-\d+|\.\d+\-\d+\.\d+|\.\d+\-\d+\.\d+)?\s+(?:second|minute|day|week|month|year)s?|Not Applicable|N/A|To be provided'
+  DOSE_REGEXP     = '\d+(?:\.\d+)?\s+\w+(?:\/\w+)?|Not Applicable|N/A|To be provided'
+
   has_many_events do
     event_constructor(:created_using_sample_manifest!, Event::SampleManifestEvent, :created_sample!)
     event_constructor(:updated_using_sample_manifest!, Event::SampleManifestEvent, :updated_sample!)
@@ -29,6 +38,7 @@ class Sample < ActiveRecord::Base
   EgaFields = %w(subject disease treatment gender phenotype)
 
   acts_as_authorizable
+  broadcast_via_warren
 
   has_many :study_samples, dependent: :destroy, inverse_of: :sample
   has_many :studies, through: :study_samples, inverse_of: :samples
@@ -230,13 +240,16 @@ class Sample < ActiveRecord::Base
     end
   end
 
-  GC_CONTENTS     = ['Neutral', 'High AT', 'High GC']
-  GENDERS         = ['Male', 'Female', 'Mixed', 'Hermaphrodite', 'Unknown', 'Not Applicable']
-  DNA_SOURCES     = ['Genomic', 'Whole Genome Amplified', 'Blood', 'Cell Line', 'Saliva', 'Brain', 'FFPE',
-                     'Amniocentesis Uncultured', 'Amniocentesis Cultured', 'CVS Uncultured', 'CVS Cultured', 'Fetal Blood', 'Tissue']
-  SRA_HOLD_VALUES = ['Hold', 'Public', 'Protect']
-  AGE_REGEXP      = '\d+(?:\.\d+|\-\d+|\.\d+\-\d+\.\d+|\.\d+\-\d+\.\d+)?\s+(?:second|minute|day|week|month|year)s?|Not Applicable|N/A|To be provided'
-  DOSE_REGEXP     = '\d+(?:\.\d+)?\s+\w+(?:\/\w+)?|Not Applicable|N/A|To be provided'
+  #
+  # Checks to see if the sample or its metadata has been changed since it was last loaded.
+  # Used to detect samples which have been updated by sample manifests.
+  # Excludes samples which have only been flagged to indicate they have no supplier name.
+  #
+  # @return [Boolean] True if the sample has been updated
+  #
+  def changed_by_manifest?
+    (previous_changes.present? || sample_metadata.previous_changes.present?) && !generate_no_update_event?
+  end
 
   extend Metadata
   has_metadata do

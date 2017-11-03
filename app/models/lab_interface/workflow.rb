@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
 
-class LabInterface::Workflow < ActiveRecord::Base
+class LabInterface::Workflow < ApplicationRecord
   has_many :tasks, ->() { order('sorted') }, dependent: :destroy, foreign_key: :pipeline_workflow_id
   has_many :families
 

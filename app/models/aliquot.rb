@@ -6,7 +6,7 @@
 
 # An aliquot can be considered to be an amount of a material in a liquid.  The material could be the DNA
 # of a sample, or it might be a library (a combination of the DNA sample and a tag).
-class Aliquot < ActiveRecord::Base
+class Aliquot < ApplicationRecord
   include Uuid::Uuidable
   include Api::Messages::FlowcellIO::AliquotExtensions
   include AliquotIndexer::AliquotScopes
@@ -51,6 +51,8 @@ class Aliquot < ActiveRecord::Base
   belongs_to :tag2, class_name: 'Tag'
   before_validation { |record| record.tag2_id ||= UNASSIGNED_TAG }
 
+  broadcast_via_warren
+
   # Validating the uniqueness of tags in rails was causing issues, as it was resulting the in the preform_transfer_of_contents
   # in transfer request to fail, without any visible sign that something had gone wrong. This essentially meant that tag clashes
   # would result in sample dropouts. (presumably because << triggers save not save!)
@@ -86,11 +88,10 @@ class Aliquot < ActiveRecord::Base
     TAG_COUNT_NAMES[tag_count]
   end
 
-  def tag_with_unassigned_behaviour
-    untagged? ? nil : tag_without_unassigned_behaviour
+  # Optimization: Avoids us hitting the database for untagged aliquots
+  def tag
+    untagged? ? nil : super
   end
-  alias_method(:tag_without_unassigned_behaviour, :tag)
-  alias_method(:tag, :tag_with_unassigned_behaviour)
 
   # It may have a bait library but not necessarily.
   belongs_to :bait_library

@@ -11,7 +11,7 @@ class AddXtenResubmissionTemplate < ActiveRecord::Migration
         :name => "HiSeq-X library re-sequencing",
         :submission_class_name => 'FlexibleSubmission',
         :submission_parameters => {
-          :order_role_id => Order::OrderRole.find_or_create_by(role:'HSqX'),
+          :order_role_id => OrderRole.find_or_create_by(role:'HSqX'),
           :request_type_ids_list => request_types,
           :workflow_id => Submission::Workflow.find_by_key("short_read_sequencing").id
         },

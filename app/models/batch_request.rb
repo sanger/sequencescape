@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
 
-class BatchRequest < ActiveRecord::Base
+class BatchRequest < ApplicationRecord
   include Api::BatchRequestIO::Extensions
   include Uuid::Uuidable
 
@@ -32,6 +32,8 @@ class BatchRequest < ActiveRecord::Base
   before_validation(if: :requires_position?, unless: :position?) do |record|
     record.position = (record.batch.batch_requests.map(&:position).compact.max || 0) + 1
   end
+
+  broadcast_via_warren
 
   def move_to_position!(position)
     update_attributes!(sorting_requests_within_batch: true, position: position)

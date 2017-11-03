@@ -20,7 +20,7 @@ module BatchesHelper
   # Used by both assets/show.xml.builder and batches/show.xml.builder
   def output_aliquot(xml, aliquot)
     xml.sample(
-      sample_id: aliquot.sample.id,
+      sample_id: aliquot.sample_id,
       library_id: aliquot.library_id,
       library_name: aliquot.library.try(:name),
       library_type: aliquot.library_type,
