@@ -89,7 +89,7 @@ module Sequencescape
       ENV_JAVA['https.proxyPort'] = nil
     end
 
-    config.aker = config_for(:aker).with_indifferent_access
+    config.aker = config_for(:aker).with_indifferent_access if File.exist?('config/aker.yml')
 
     config.generators do |g|
       g.test_framework :rspec,
