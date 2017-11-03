@@ -20,7 +20,7 @@ RSpec.describe 'WorkOrders', type: :feature, aker: true do
   scenario 'view a work order' do
 
     allow(RestClient::Request).to receive(:execute).with(
-      verify: false,
+      verify_ssl: false,
       method: :get, url: url, proxy: nil, 
       headers: { content_type: :json, Accept: :json }).and_return(RestClient::Response.create(
         work_order_json, Net::HTTPResponse.new('1.1',200,''), request))
