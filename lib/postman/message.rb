@@ -35,7 +35,7 @@ class Postman
 
       begin
         broadcast_payload
-        main_exchange.ack(delivery_info.delivery_tag)
+        ack
       rescue ActiveRecord::StatementInvalid => exception
         if database_connection_error?(exception)
           # We have some temporary database issues. Requeue the message and pause
