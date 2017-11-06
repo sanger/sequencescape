@@ -13,6 +13,8 @@ module SampleManifestExcel
 
       attr_accessor :value, :sample
 
+      delegate :present?, to: :value, prefix: true
+
       def update(_attributes = {})
       end
     end

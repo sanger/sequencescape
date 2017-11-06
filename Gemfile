@@ -15,6 +15,10 @@ group :default do
   gem 'actionpack-xml_parser'
 
   gem 'activeresource', github: 'rails/activeresource', branch: 'master'
+
+  # Provides bulk insert capabilities
+  gem 'activerecord-import'
+
   gem 'mysql2', platforms: :mri
   gem 'spreadsheet'
   gem 'will_paginate'
