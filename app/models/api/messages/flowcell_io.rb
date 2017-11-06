@@ -50,10 +50,6 @@ class Api::Messages::FlowcellIO < Api::Base
           return nil if request_type.product_line.nil?
           request_type.product_line.name
         end
-
-        def request_purpose_key
-          request_purpose.try(:key)
-        end
       end
     end
   end
@@ -93,10 +89,6 @@ class Api::Messages::FlowcellIO < Api::Base
 
         def lane_identifier
           'control_lane'
-        end
-
-        def request_purpose_key
-          request_purpose.try(:key)
         end
       end
     end
@@ -184,7 +176,7 @@ class Api::Messages::FlowcellIO < Api::Base
     map_attribute_to_json_attribute(:external_release, 'external_release')
     map_attribute_to_json_attribute(:lane_identifier, 'entity_id_lims')
     map_attribute_to_json_attribute(:product_line, 'team')
-    map_attribute_to_json_attribute(:request_purpose_key, 'purpose')
+    map_attribute_to_json_attribute(:request_purpose, 'purpose')
 
     with_nested_has_many_association(:samples) do # actually aliquots
       map_attribute_to_json_attribute(:aliquot_index_value, 'tag_index')

@@ -15,7 +15,7 @@ class AddBespokeSpecificHiseqXSequencing < ActiveRecord::Migration
         order: 2,
         product_line_id: ProductLine.find_by!(name: 'Illumina-C'),
         request_class_name: 'HiSeqSequencingRequest',
-        request_purpose: RequestPurpose.standard,
+        request_purpose: :standard,
         workflow_id: Submission::Workflow.find_by(key: 'short_read_sequencing')
       )
       ['Standard', 'HiSeqX PCR free', 'qPCR only', 'Pre-quality controlled'].each do |name|

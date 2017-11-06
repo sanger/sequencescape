@@ -17,7 +17,7 @@ module IlluminaB::RequestStatemachineChecks
       @owner.instance_eval do
         context "##{name}" do
           setup do
-            @request = target.new(request_purpose: create(:request_purpose), target_asset: create(:well))
+            @request = target.new(request_purpose: :standard, target_asset: create(:well))
             @request.stubs(:perform_transfer_of_contents).returns(true)
           end
 

@@ -188,7 +188,7 @@ FactoryGirl.define do
     asset_type 'Well'
     order 1
     request_class_name 'TransferRequest::InitialDownstream'
-    request_purpose { |rp| rp.association(:request_purpose) }
+    request_purpose :internal
   end
 
   # Plate creations
@@ -261,7 +261,7 @@ FactoryGirl.define do
     request_type { |_target| RequestType.find_by(name: 'Pulldown ISC') or raise StandardError, "Could not find 'Pulldown ISC' request type" }
     asset        { |target| target.association(:well_with_sample_and_plate) }
     target_asset { |target| target.association(:empty_well) }
-    request_purpose { |rp| rp.association(:request_purpose) }
+    request_purpose :standard
     after(:build) do |request|
       request.request_metadata.fragment_size_required_from = 100
       request.request_metadata.fragment_size_required_to   = 400
@@ -273,7 +273,7 @@ FactoryGirl.define do
     association(:request_type, factory: :library_request_type)
     asset        { |target| target.association(:well_with_sample_and_plate) }
     target_asset { |target| target.association(:empty_well) }
-    request_purpose { |rp| rp.association(:request_purpose) }
+    request_purpose :standard
     after(:build) do |request|
       request.request_metadata.fragment_size_required_from = 100
       request.request_metadata.fragment_size_required_to   = 400

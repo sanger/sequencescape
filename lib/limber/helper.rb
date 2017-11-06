@@ -55,7 +55,7 @@ module Limber::Helper
         initial_state: 'pending',
         billable: true,
         product_line: ProductLine.find_by(name: PRODUCTLINE),
-        request_purpose: RequestPurpose.standard
+        request_purpose: :standard
       ) do |rt|
         rt.acceptable_plate_purposes << Purpose.find_by!(name: @default_purpose)
         rt.library_types = LibraryType.where(name: @library_types)

@@ -34,10 +34,9 @@ RSpec.describe TransferRequest, type: :model do
 
     it 'should assign correct attributes if attributes were passed' do
       request_type = RequestType.find_by(key: 'initial_transfer')
-      request_purpose = RequestPurpose.find_by(key: 'control')
-      transfer_request = TransferRequest.create(asset: source, target_asset: destination, request_type: request_type, request_purpose: request_purpose)
+      transfer_request = TransferRequest.create(asset: source, target_asset: destination, request_type: request_type, request_purpose: :control)
       expect(transfer_request.request_type).to eq request_type
-      expect(transfer_request.request_purpose).to eq request_purpose
+      expect(transfer_request.request_purpose).to eq 'control'
     end
 
     it 'should not permit transfers to the same asset' do
