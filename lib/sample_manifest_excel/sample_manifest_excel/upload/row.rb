@@ -16,8 +16,7 @@ module SampleManifestExcel
       validates :number, presence: true, numericality: true
       validates_presence_of :data, :columns
       validate :check_sample_present
-      validate :check_primary_receptacle, if: :sample_present?
-      validate :check_specialised_fields
+      validate :sample_can_be_updated
       delegate :present?, to: :sample, prefix: true
 
       ##
@@ -29,7 +28,6 @@ module SampleManifestExcel
         @sanger_sample_id ||= if columns.present? && data.present?
                                 value(:sanger_sample_id)
                               end
-
         @sample ||= Sample.find_by(sanger_sample_id: sanger_sample_id)
         @specialised_fields = create_specialised_fields
       end
@@ -77,7 +75,7 @@ module SampleManifestExcel
       def update_sample(tag_group)
         if valid?
           update_specialised_fields(tag_group)
-          update_metadata_fields
+          update_metadata_fields # can be removed from here as it is called for validation
           aliquot.save
           metadata.save
           @sample_updated = sample.save
@@ -126,6 +124,14 @@ module SampleManifestExcel
 
       private
 
+      def sample_can_be_updated
+        if errors.empty?
+          check_primary_receptacle
+          check_specialised_fields
+          check_sample_metadata
+        end
+      end
+
       def check_primary_receptacle
         errors.add(:base, "#{row_title} Does not have a primary receptacle.") unless sample.primary_receptacle.present?
       end
@@ -137,6 +143,14 @@ module SampleManifestExcel
               errors.add(:base, "#{row_title} #{specialised_field.errors.full_messages.join(', ')}")
             end
           end
+        end
+      end
+
+      def check_sample_metadata
+        # it has to be called here, otherwise metadata errors will not appear
+        update_metadata_fields
+        unless metadata.valid?
+          errors.add(:base, "#{row_title} #{metadata.errors.full_messages.join(', ')}")
         end
       end
 

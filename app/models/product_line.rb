@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2012,2015 Genome Research Ltd.
 
-class ProductLine < ActiveRecord::Base
+class ProductLine < ApplicationRecord
   has_many :request_types
   has_many :submission_templates
 end

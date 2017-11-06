@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
-class StudyType < ActiveRecord::Base
+class StudyType < ApplicationRecord
   extend Attributable::Association::Target
 
   has_many :study

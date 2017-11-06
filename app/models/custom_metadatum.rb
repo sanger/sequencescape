@@ -1,4 +1,4 @@
-class CustomMetadatum < ActiveRecord::Base
+class CustomMetadatum < ApplicationRecord
   belongs_to :custom_metadatum_collection
 
   validates_presence_of :value

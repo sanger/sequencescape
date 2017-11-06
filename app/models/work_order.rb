@@ -5,7 +5,7 @@
 # A work order groups requests together based on submission and asset
 # providing a unified interface for external applications.
 # It is likely that its behaviour will be extended in future
-class WorkOrder < ActiveRecord::Base
+class WorkOrder < ApplicationRecord
   has_many :requests
   belongs_to :work_order_type, required: true
 

@@ -21,7 +21,7 @@ describe Pooling do
     expect(pooling.errors.messages.count).to eq 2
     expect(pooling.errors.full_messages).to include 'Source assets with barcode(s) -1, -2 were not found in sequencescape'
     expect(pooling.errors.full_messages).to include "Source assets with barcode(s) #{empty_lb_tube.ean13_barcode} do not have any aliquots"
-    expect(pooling.errors.full_messages).to include 'Tags combinations are not unique'
+    expect(pooling.errors.full_messages).to include 'Tags combinations Same tags  are used on rows 2, 3.'
   end
 
   context 'execute' do

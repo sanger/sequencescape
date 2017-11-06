@@ -33,8 +33,12 @@ module Metadata
     # We now ensure that, if the metadata is not already created, that a blank instance is built.  We cannot
     # do this through the initialization of our model because we use the ActiveRecord::Base#becomes method in
     # our code, which would create a new default instance.
+    # If lazy metadata is true we do NOT generate metadata upfront. This is the case for internal requests,
+    # where metadata is unused anyway.
     line = __LINE__ + 1
     class_eval("
+      class_attribute :lazy_metadata
+      self.lazy_metadata = false
 
       def #{association_name}_with_initialization
         #{association_name}_without_initialization ||
@@ -50,7 +54,7 @@ module Metadata
       end
 
       def validating_ena_required_fields?
-        @validating_ena_required_fields
+        instance_variable_defined?(:@validating_ena_required_fields) && @validating_ena_required_fields
       end
 
       def tags
@@ -65,7 +69,7 @@ module Metadata
         @tags ||= []
       end
 
-      before_validation :#{association_name}, on: :create
+      before_validation :#{association_name}, on: :create, unless: :lazy_metadata?
 
     ", __FILE__, line)
 
@@ -116,9 +120,11 @@ module Metadata
     const_set(:Metadata, metadata)
   end
 
-  class Base < ActiveRecord::Base
+  class Base < ApplicationRecord
     # All derived classes have their own table.  We're just here to help with some behaviour
     self.abstract_class = true
+
+    broadcasts_associated_via_warren :owner
 
     # This ensures that the default values are stored within the DB, meaning that this information will be
     # preserved for the future, unlike the original properties information which didn't store values when

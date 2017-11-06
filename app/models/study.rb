@@ -6,7 +6,7 @@
 
 require 'aasm'
 
-class Study < ActiveRecord::Base
+class Study < ApplicationRecord
   # It has to be here, as there are has_many through: :roles associations in modules
   # Includes / Extendes
   has_many :roles
@@ -147,6 +147,8 @@ class Study < ActiveRecord::Base
       transitions to: :inactive, from: [:pending, :active]
     end
   end
+
+  broadcast_via_warren
 
   squishify :name
 
@@ -506,7 +508,7 @@ class Study < ActiveRecord::Base
   end
 
   def rebroadcast
-    ActiveRecord::Base.transaction { AmqpObserver.instance << self }
+    broadcast
   end
 
   private

@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
-class BudgetDivision < ActiveRecord::Base
+class BudgetDivision < ApplicationRecord
   extend Attributable::Association::Target
 
   validates_presence_of :name

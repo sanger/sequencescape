@@ -4,6 +4,8 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
+require 'models/sample_manifest/sample_manifest_uploader.rb'
+
 class SampleManifestUploadWithTagSequencesController < ApplicationController
   before_action :login_required
 
@@ -12,7 +14,7 @@ class SampleManifestUploadWithTagSequencesController < ApplicationController
 
   def create
     if params[:upload].present?
-      @uploader = SampleManifestUploader.new(params[:upload].open, SampleManifestExcel.configuration)
+      @uploader = SampleManifestUploader.new(params[:upload].open, SampleManifestExcel.configuration, current_user)
       if @uploader.valid?
         if @uploader.run!
           flash[:notice] = 'Sample manifest successfully uploaded.'
@@ -22,7 +24,7 @@ class SampleManifestUploadWithTagSequencesController < ApplicationController
           render :new
         end
       else
-        flash.now[:error] = "The following error messages prevented the sample manifest from being uploaded:\n #{@uploader.errors.full_messages.join(', ')}"
+        flash.now[:error] = @uploader.errors.full_messages.unshift('The following error messages prevented the sample manifest from being uploaded:')
         render :new
       end
     else

@@ -39,9 +39,15 @@ environment ENV.fetch('RAILS_ENV') { 'development' }
 # or connections that may have been created at application boot, Ruby
 # cannot share connections between processes.
 #
-# on_worker_boot do
-#   ActiveRecord::Base.establish_connection if defined?(ActiveRecord)
-# end
+
+before_fork do
+  Warren.handler.disconnect
+end
+
+on_worker_boot do
+  ActiveRecord::Base.establish_connection if defined?(ActiveRecord)
+  Warren.handler.connect
+end
 
 # Allow puma to be restarted by `rails restart` command.
 plugin :tmp_restart

@@ -12,7 +12,7 @@
 # You must implement a 'scope' method that takes a hash of the parameters as a parameter and returns a
 # named scope like object (i.e. something the calling code can then call first, last, all or paginate on).
 # It is not your search implementations responsibility to decide how many things are being searched for.
-class Search < ActiveRecord::Base
+class Search < ApplicationRecord
   include Uuid::Uuidable
 
   validates_presence_of :name
