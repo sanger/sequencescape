@@ -13,6 +13,8 @@ class Aliquot < ApplicationRecord
   include Api::AliquotIO::Extensions
   include DataForSubstitution
 
+  self.lazy_uuid_generation = true
+
   TagClash = Class.new(ActiveRecord::RecordInvalid)
 
   # An aliquot can represent a library, which is a processed sample that has been fragmented.  In which case it
@@ -123,11 +125,9 @@ class Aliquot < ApplicationRecord
 
   # Cloning an aliquot should unset the receptacle ID because otherwise it won't get reassigned.  We should
   # also reset the timestamp information as this is a new aliquot really.
-  def dup
-    super.tap do |cloned_aliquot|
-      cloned_aliquot.receptacle_id = nil
-      cloned_aliquot.created_at = nil
-      cloned_aliquot.updated_at = nil
+  def dup(receptacle_id: nil)
+    super().tap do |cloned_aliquot|
+      cloned_aliquot.receptacle_id = receptacle_id
     end
   end
 
