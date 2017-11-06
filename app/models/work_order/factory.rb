@@ -19,7 +19,8 @@ class WorkOrder
 
     def create_work_orders!
       requests.group_by(&:asset_id).map do |_asset_id, requests|
-        WorkOrder.create!(work_order_type: work_order_type, requests: requests)
+        state = requests.first.state
+        WorkOrder.create!(work_order_type: work_order_type, requests: requests, state: state)
       end
     end
 
