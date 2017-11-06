@@ -52,7 +52,7 @@ class AmqpClient
     end
 
     def config
-      @config ||= Rails.application.config.warren.symbolize_keys
+      @config ||= Rails.application.config.warren.deep_symbolize_keys
     end
 
     def server_config
@@ -60,7 +60,7 @@ class AmqpClient
     end
 
     def queue_config
-      config.dig(:subscriptions, @app_name).symbolize_keys
+      config.dig(:subscriptions, @app_name)
     end
 
     def daemon(instance)

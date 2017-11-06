@@ -18,7 +18,7 @@ class Postman
 
     def subscribe(consumer_tag, &block)
       channel.prefetch(10)
-      queue.subscribe(manual_ack: true, block: false, consumer_tag: consumer_tag, &block)
+      queue.subscribe(manual_ack: true, block: false, consumer_tag: consumer_tag, durable: true, &block)
     end
 
     # Publishes a message to the configured queue
