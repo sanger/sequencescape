@@ -1,5 +1,5 @@
 development:
-  type: broadcast
+  type: log
   config:
     exchange: psd.sequencescape
   subscriptions:
