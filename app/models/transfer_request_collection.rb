@@ -21,7 +21,7 @@ class TransferRequestCollection < ApplicationRecord
   accepts_nested_attributes_for :transfer_requests
 
   def default_request_type
-    @drt ||= RequestType.transfer
+    @default_request_type ||= RequestType.transfer
   end
 
   # These are optimizations to reduce the number of queries that need to be
