@@ -1,8 +1,7 @@
 #!/bin/bash -l
 
 # Usage: worker identity action
-# Eg: worker unified_warehouse.production.1 start
-
+# Eg: worker sequencescape.production.1 start
 PID_DIR='tmp/pids'
 
 function worker_start() {

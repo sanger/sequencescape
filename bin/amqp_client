@@ -5,6 +5,7 @@ require 'daemons'
 require 'bunny'
 require 'rails'
 require './lib/postman'
+require './lib/postman/channel'
 
 APP_PATH = File.expand_path('../config/application', __dir__)
 
@@ -52,15 +53,15 @@ class AmqpClient
     end
 
     def config
-      @config ||= Rails.application.config.warren.deep_symbolize_keys
+      @config ||= Rails.application.config.warren.symbolize_keys
     end
 
     def server_config
-      config.dig(:config, :server) || {}
+      config.dig(:config, 'server').deep_symbolize_keys || {}
     end
 
     def queue_config
-      config.dig(:subscriptions, @app_name)
+      config.dig(:subscriptions, @app_name).deep_symbolize_keys
     end
 
     def daemon(instance)
