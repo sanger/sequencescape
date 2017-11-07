@@ -30,7 +30,7 @@ class Postman
     end
 
     def process
-      info 'Started message process'
+      debug 'Started message process'
       debug payload
 
       begin
@@ -49,7 +49,7 @@ class Postman
         deadletter(exception)
       end
 
-      info 'Finished message process'
+      debug 'Finished message process'
     end
 
     private
