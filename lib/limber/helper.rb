@@ -43,7 +43,6 @@ module Limber::Helper
     # already exists.
     def build!
       return true if RequestType.where(key: key).exists?
-
       rt = RequestType.create!(
         name: "Limber #{@prefix}",
         key: key,
@@ -58,7 +57,7 @@ module Limber::Helper
         request_purpose: RequestPurpose.standard
       ) do |rt|
         rt.acceptable_plate_purposes << Purpose.find_by!(name: @default_purpose)
-        rt.library_types = LibraryType.where(name: @library_types)
+        rt.library_types = @library_types.map {|name| LibraryType.find_or_create_by(name: name)}
       end
 
       RequestType::Validator.create!(
