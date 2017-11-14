@@ -88,14 +88,14 @@ RSpec.describe Order, type: :model do
   it 'should know if it has samples that can not be included in submission' do
     sample_manifest = create :tube_sample_manifest_with_samples
     order = create :order, assets: sample_manifest.labware
-    expect(order.unready_samples.count).to eq 5
+    expect(order.not_ready_samples.count).to eq 5
     sample = sample_manifest.samples.first
     sample.sample_metadata.update_attributes(supplier_name: 'new_name')
-    expect(order.reload.unready_samples.count).to eq 4
+    expect(order.reload.not_ready_samples.count).to eq 4
 
     no_manifest_sample = create :sample, assets: [asset]
     order = create :order, assets: no_manifest_sample.assets
     expect(order.all_samples).to_not be_empty
-    expect(order.unready_samples).to be_empty
+    expect(order.not_ready_samples).to be_empty
   end
 end

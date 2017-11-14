@@ -166,12 +166,12 @@ class Submission < ApplicationRecord
   end
 
   # returns an array of samples, that potentially can not be included in submission
-  def unready_samples
-    @unready_samples ||= orders.map(&:unready_samples).flatten
+  def not_ready_samples
+    @not_ready_samples ||= orders.map(&:not_ready_samples).flatten
   end
 
-  def unready_samples_names
-    @unready_samples_names ||= unready_samples.map(&:name).join(', ')
+  def not_ready_samples_names
+    @not_ready_samples_names ||= not_ready_samples.map(&:name).join(', ')
   end
 
   # this method is part of the submission

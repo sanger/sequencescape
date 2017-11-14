@@ -114,6 +114,6 @@ RSpec.describe Submission, type: :model do
 
     submission = Submission.new(user: create(:user), orders: [order1, order2])
 
-    expect(submission.unready_samples).to eq samples
+    expect(submission.not_ready_samples).to eq samples
   end
 end
