@@ -30,6 +30,8 @@ class PlatePurpose < Purpose
 
   include Relationship::Associations
 
+  broadcast_via_warren
+
   scope :compatible_with_purpose, ->(purpose) {
     if purpose.nil?
       none
@@ -188,7 +190,7 @@ class PlatePurpose < Purpose
   end
 
   def size
-    attributes['size'] || 96
+    super || 96
   end
 
   def well_locations

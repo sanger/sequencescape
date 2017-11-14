@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
-class PipelinesRequestType < ActiveRecord::Base
+class PipelinesRequestType < ApplicationRecord
   belongs_to :pipeline, inverse_of: :pipelines_request_types
   belongs_to :request_type, inverse_of: :pipelines_request_types
 
@@ -12,7 +12,7 @@ class PipelinesRequestType < ActiveRecord::Base
   validates_presence_of :request_type, :pipeline
 end
 
-class Pipeline < ActiveRecord::Base
+class Pipeline < ApplicationRecord
   include Uuid::Uuidable
   include Pipeline::InboxUngrouped
   include Pipeline::BatchValidation

@@ -12,7 +12,7 @@
 
 require 'aasm'
 
-class Qcable < ActiveRecord::Base
+class Qcable < ApplicationRecord
   include Uuid::Uuidable
   include AASM
   include Qcable::Statemachine

@@ -7,7 +7,7 @@ RSpec.describe SampleManifestExcel::ColumnList, type: :model, sample_manifest_ex
   let(:yaml)                    { load_file(folder, 'columns') }
   let(:conditional_formattings) { SampleManifestExcel::ConditionalFormattingDefaultList.new(load_file(folder, 'conditional_formattings')) }
   let(:column_list)             { SampleManifestExcel::ColumnList.new(yaml, conditional_formattings) }
-  let(:ranges)                  { build(:range_list, options: load_file(folder, 'ranges')) }
+  let(:ranges)                  { build(:range_list, ranges_data: load_file(folder, 'ranges')) }
 
   it 'creates a list of columns' do
     expect(column_list.count).to eq(yaml.length)

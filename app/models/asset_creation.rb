@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2012,2013,2015 Genome Research Ltd.
 
-class AssetCreation < ActiveRecord::Base
+class AssetCreation < ApplicationRecord
   include Uuid::Uuidable
   include Asset::Ownership::ChangesOwner
   extend ModelExtensions::Plate::NamedScopeHelpers

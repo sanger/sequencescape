@@ -5,7 +5,7 @@
 # A work order groups requests together based on submission and asset
 # providing a unified interface for external applications.
 # It is likely that its behaviour will be extended in future
-class WorkOrder < ActiveRecord::Base
+class WorkOrder < ApplicationRecord
   has_many :requests
   belongs_to :work_order_type, required: true
 
@@ -28,14 +28,12 @@ class WorkOrder < ActiveRecord::Base
   end
 
   def state=(new_state)
+    super
     requests.each do |request|
       request.state = new_state
       request.save!
     end
-    example_request.reload
   end
-
-  delegate :state, to: :example_request
 
   def at_risk
     example_request.customer_accepts_responsibility

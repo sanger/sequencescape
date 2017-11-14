@@ -56,6 +56,7 @@ class PipelinesController < ApplicationController
       # the result now anyway.
       @requests_comment_count = Comment.counts_for(@requests.to_a)
       @assets_comment_count = Comment.counts_for(@requests.map(&:asset))
+      @requests_samples_count = Request.where(id: @requests.to_a).joins(:samples).group(:id).count
     end
   end
 
@@ -129,10 +130,10 @@ class PipelinesController < ApplicationController
     request  = Request.find(params[:request_id])
     ActiveRecord::Base.transaction do
       request.update_priority
-      render text: '', layout: false
+      render plain: '', layout: false
     end
   rescue ActiveRecord::RecordInvalid => _exception
-    render text: '', layout: false, status: :unprocessable_entity
+    render plain: '', layout: false, status: :unprocessable_entity
   end
 
   private

@@ -51,14 +51,6 @@ class PrintJobTest < ActiveSupport::TestCase
     assert_equal 1, print_job.errors.count
   end
 
-  test '#execute is false if while printing a label for multiplex sample manifest there is no mx_tube' do
-    manifest = create :sample_manifest, asset_type: 'multiplexed_library', count: 1
-    options = { sample_manifest: manifest, only_first_label: false }
-    print_job = LabelPrinter::PrintJob.new(barcode_printer.name, LabelPrinter::Label::SampleManifestRedirect, options)
-    refute print_job.execute
-    assert_equal 1, print_job.errors.count
-  end
-
   test '#execute is false if pmb is down' do
     print_job = LabelPrinter::PrintJob.new(barcode_printer.name, LabelPrinter::Label::PlateCreator, {})
     RestClient.expects(:post).raises(Errno::ECONNREFUSED)

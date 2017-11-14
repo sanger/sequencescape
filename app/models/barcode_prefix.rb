@@ -4,6 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
-class BarcodePrefix < ActiveRecord::Base
+class BarcodePrefix < ApplicationRecord
   has_many :assets
 end

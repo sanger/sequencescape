@@ -65,6 +65,44 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
     expect(upload.sample_manifest.state).to eq 'completed'
   end
 
+  it 'knows how to create sample_manifest.updated broadcast event' do
+    download = build(:test_download, columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup)
+    download.save(test_file)
+    upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: columns, start_row: 9)
+    user = create :user, login: 'test_user'
+    expect { upload.broadcast_sample_manifest_updated_event(user) }.to change { BroadcastEvent.count }.by(1)
+    # subjects are 1 study, 6 tubes and 6 samples
+    expect(BroadcastEvent.first.subjects.count).to eq 13
+
+    download = build(:test_download, columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup, manifest_type: 'multiplexed_library')
+    download.save(test_file)
+    upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: columns, start_row: 9)
+    expect { upload.broadcast_sample_manifest_updated_event(user) }.to change { BroadcastEvent.count }.by(1)
+    # subjects are 1 study, 1 tubes and 6 samples
+    expect(BroadcastEvent.last.subjects.count).to eq 8
+  end
+
+  it 'should know if it is initial or reupload' do
+    download = build(:test_download, columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup)
+    download.save(test_file)
+    upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: columns, start_row: 9)
+    expect(upload.reuploaded?).to be_falsey
+    upload.sample_manifest.start!
+    expect(upload.reuploaded?).to be_falsey
+    upload.sample_manifest.finished!
+    expect(upload.reuploaded?).to be_falsey
+
+    download.save(test_file)
+    download.worksheet.sample_manifest.start!
+    download.worksheet.sample_manifest.finished!
+    upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: columns, start_row: 9)
+    expect(upload.reuploaded?).to be_truthy
+    upload.sample_manifest.start!
+    expect(upload.reuploaded?).to be_truthy
+    upload.sample_manifest.finished!
+    expect(upload.reuploaded?).to be_truthy
+  end
+
   describe '#processor' do
     context '1dtube' do
       let!(:columns) { SampleManifestExcel.configuration.columns.tube_full.dup }
