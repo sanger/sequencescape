@@ -535,6 +535,6 @@ class Asset < ApplicationRecord
   end
 
   def name_needs_to_be_generated?
-    @name_needs_to_be_generated
+    instance_variable_defined?(:@name_needs_to_be_generated) && @name_needs_to_be_generated
   end
 end

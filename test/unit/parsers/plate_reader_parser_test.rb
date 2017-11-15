@@ -7,7 +7,7 @@
 require './test/test_helper'
 require 'csv'
 
-class IscXtenParserTest < ActiveSupport::TestCase
+class PlateReaderParserTest < ActiveSupport::TestCase
   def read_file(filename)
     content = nil
     File.open(filename, 'r') do |fd|
@@ -19,13 +19,13 @@ class IscXtenParserTest < ActiveSupport::TestCase
   context 'Parser' do
     context 'With a valid csv file' do
       setup do
-        @filename = Rails.root.to_s + '/test/data/isc_xten_parsing_Zebrafish_example.csv'
+        @filename = Rails.root.to_s + '/test/data/plate_reader_parsing_Zebrafish_example.csv'
         @content = read_file @filename
         @csv = CSV.parse(@content)
       end
 
-      should 'return a Parsers::IscXtenParser' do
-        assert_equal true, (!Parsers.parser_for(@filename, nil, @content).nil?)
+      should 'return a Parsers::PlateReaderParser' do
+        assert_equal true, !Parsers.parser_for(@filename, nil, @content).nil?
       end
     end
 
@@ -35,7 +35,7 @@ class IscXtenParserTest < ActiveSupport::TestCase
         @content = read_file @filename
       end
 
-      should 'not return a Parsers::IscXtenParser' do
+      should 'not return a Parsers::PlateReaderParser' do
         assert_nil Parsers.parser_for(@filename, nil, @content)
       end
     end
@@ -46,19 +46,19 @@ class IscXtenParserTest < ActiveSupport::TestCase
         @content = read_file @filename
       end
 
-      should 'not return a Parsers::IscXtenParser' do
+      should 'not return a Parsers::PlateReaderParser' do
         assert_nil Parsers.parser_for(@filename, nil, @content)
       end
     end
   end
 
-  context 'A Parsers::IscXtenParser parser of CSV' do
-    context 'with a valid CSV Parsers::IscXtenParser file' do
+  context 'A Parsers::PlateReaderParser parser of CSV' do
+    context 'with a valid CSV Parsers::PlateReaderParser file' do
       setup do
-        filename = Rails.root.to_s + '/test/data/isc_xten_parsing_Zebrafish_example.csv'
+        filename = Rails.root.to_s + '/test/data/plate_reader_parsing_Zebrafish_example.csv'
         content = read_file filename
 
-        @parser = Parsers::IscXtenParser.new(CSV.parse(content))
+        @parser = Parsers::PlateReaderParser.new(CSV.parse(content))
       end
 
       # should "parse last sample of testing file correctly" do
@@ -101,11 +101,11 @@ class IscXtenParserTest < ActiveSupport::TestCase
         filename = Rails.root.to_s + '/test/data/bioanalysis_qc_results-with-error.csv'
         content = read_file filename
 
-        @parser = Parsers::IscXtenParser.new(CSV.parse(content))
+        @parser = Parsers::PlateReaderParser.new(CSV.parse(content))
       end
 
       should 'raise an exception while accessing any information' do
-        assert_raises(Parsers::IscXtenParser::InvalidFile) { @parser.concentration('A1') }
+        assert_raises(Parsers::PlateReaderParser::InvalidFile) { @parser.concentration('A1') }
       end
     end
   end
