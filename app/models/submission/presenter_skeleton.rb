@@ -8,7 +8,7 @@ class Submission::PresenterSkeleton
   class_attribute :attributes, instance_writer: false
   self.attributes = Array.new
 
-  delegate :not_ready_samples_names, to: :submissions
+  delegate :not_ready_samples_names, to: :submission
 
   def initialize(user, submission_attributes = {})
     submission_attributes = {} if submission_attributes.blank?

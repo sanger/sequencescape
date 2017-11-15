@@ -1,13 +1,11 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2012,2013,2015 Genome Research Ltd.
+# frozen_string_literal: true
+require 'rails_helper'
 
-require 'test_helper'
-require 'submissions_controller'
+RSpec.describe SubmissionsController, type: :controller do
+  render_views
 
-class SubmissionsControllerTest < ActionController::TestCase
+  it_behaves_like 'it requires login'
+
   context 'Submissions controller' do
     setup do
       @user       = create :user
@@ -39,12 +37,10 @@ class SubmissionsControllerTest < ActionController::TestCase
         post :change_priority, params: { id: @submission.id, submission: { priority: 3 } }
       end
 
-      should 'allow update of priorities' do
+      it 'allow update of priorities' do
         assert_equal 3, @submission.reload.priority
       end
     end
-
-    should_require_login
 
     # Mainly to verify that it isn't the new test that is broken
     context 'by sample name' do
@@ -72,7 +68,7 @@ class SubmissionsControllerTest < ActionController::TestCase
              })
       end
 
-      should 'create the appropriate orders' do
+      it 'create the appropriate orders' do
         assert_equal 4, Order.first.assets.count
       end
 
@@ -97,7 +93,7 @@ class SubmissionsControllerTest < ActionController::TestCase
                } })
         end
 
-        should 'find the latest version' do
+        it 'find the latest version' do
           per_plate = Order.last.assets.group_by(&:plate)
           # Return an empty hash if we have no hits, makes the test failures clearer.
           per_plate.default = []
@@ -141,7 +137,7 @@ class SubmissionsControllerTest < ActionController::TestCase
              } })
       end
 
-      should 'used the working dilution plate' do
+      it 'used the working dilution plate' do
         assert_equal 1, Order.count - @order_count
         assert_equal @wd_plate, Order.last.assets.first.plate
       end
@@ -153,7 +149,7 @@ class SubmissionsControllerTest < ActionController::TestCase
         post :create, params: plate_submission('DN123456P')
       end
 
-      should 'create the appropriate orders' do
+      it 'create the appropriate orders' do
         assert Order.first.present?, 'No order was created!'
         assert_equal 9, Order.first.assets.count
       end
@@ -165,37 +161,37 @@ class SubmissionsControllerTest < ActionController::TestCase
         post :create, params: plate_submission('DN123456P')
       end
 
-      should 'create the appropriate orders' do
+      it 'create the appropriate orders' do
         assert_equal 9, Order.first.assets.count
       end
     end
 
-    context 'should allow submission by plate barcode and wells' do
+    context 'it allow submission by plate barcode and wells' do
       setup do
         post :create, params: plate_submission('DN123456P:A1,B3,C2')
       end
 
-      should 'create the appropriate orders' do
+      it 'create the appropriate orders' do
         assert_equal 3, Order.first.assets.count
       end
     end
 
-    context 'should allow submission by plate barcode and rows' do
+    context 'it allow submission by plate barcode and rows' do
       setup do
         post :create, params: plate_submission('DN123456P:B,C')
       end
 
-      should 'create the appropriate orders' do
+      it 'create the appropriate orders' do
         assert_equal 6, Order.first.assets.count
       end
     end
 
-    context 'should allow submission by plate barcode and columns' do
+    context 'it allow submission by plate barcode and columns' do
       setup do
         post :create, params: plate_submission('DN123456P:1,2,3')
       end
 
-      should 'create the appropriate orders' do
+      it 'create the appropriate orders' do
         assert_equal 9, Order.first.assets.count
       end
     end
@@ -212,7 +208,7 @@ class SubmissionsControllerTest < ActionController::TestCase
         @order = create :order, assets: [@asset_a], template_name: @shared_template, submission: @submission
       end
 
-      should 'warn the user about duplicates' do
+      it 'warn the user about duplicates' do
         get :show, params: { id: @submission.id }
         assert_select 'div.alert-danger' do
           assert_select 'strong', 'Warning! Similar submissions detected'
@@ -222,7 +218,25 @@ class SubmissionsControllerTest < ActionController::TestCase
       end
     end
 
-    context 'A submission without clashing orders' do
+    context 'A submission with not ready samples' do
+      setup do
+        @shared_template = 'shared_template'
+        sample_manifest = create :tube_sample_manifest_with_samples
+        @samples_names = sample_manifest.samples.map(&:name).join(', ')
+        @submission = create :submission
+        @order = create :order, assets: sample_manifest.labware, template_name: @shared_template, submission: @submission
+      end
+
+      it 'warn the user about not ready samples' do
+        get :show, params: { id: @submission.id }
+        assert_select 'div.alert-danger' do
+          assert_select 'strong', 'Warning! Some samples might not be suitable for this submission'
+          assert_select 'p', "Samples #{@samples_names} might not have all required metadata"
+        end
+      end
+    end
+
+    context 'A submission without warnings' do
       setup do
         @shared_template = 'shared_template'
         @sample  = create :sample
@@ -231,7 +245,7 @@ class SubmissionsControllerTest < ActionController::TestCase
         @order = create :order, assets: [@asset_a], template_name: @shared_template, submission: @submission
       end
 
-      should 'not warn the user about duplicates' do
+      it 'not warn the user about duplicates or samples' do
         get :show, params: { id: @submission.id }
         assert_select 'div.alert-danger', 0
       end
