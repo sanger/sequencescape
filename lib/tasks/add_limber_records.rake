@@ -65,6 +65,11 @@ namespace :limber do
     end
   end
 
+  desc 'Create the limber searches'
+  task create_searches: [:environment] do
+    Search::FindPlates.create_with(default_parameters: {limit: 30}).find_or_create_by!(name: 'Find plates')
+  end
+
   desc 'Create the limber submission templates'
   task create_submission_templates: [:environment, :create_request_types] do
     puts 'Creating submission templates....'

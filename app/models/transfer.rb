@@ -22,7 +22,7 @@ class Transfer < ApplicationRecord
         }
 
         scope :including_used_plates?, ->(filter) {
-          filter ? where('true') : with_no_outgoing_transfers
+          filter ? all : with_no_outgoing_transfers
         }
       end
     end

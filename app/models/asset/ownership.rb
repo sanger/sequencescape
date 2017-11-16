@@ -41,10 +41,10 @@ module Asset::Ownership
         has_one :plate_owner
         has_one :owner, source: :user, through: :plate_owner
 
-         scope :for_user, ->(user) {
-            joins(:plate_owner)
-              .where(plate_owners: { user_id: user })
-                          }
+        scope :for_user, ->(user) {
+          user.nil? ? all : joins(:plate_owner)
+                            .where(plate_owners: { user_id: user })
+        }
       end
     end
 
