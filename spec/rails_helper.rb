@@ -76,7 +76,6 @@ RSpec.configure do |config|
 
   config.include ApiV2Helper, with: :api_v2
 
-
   Capybara.add_selector(:data_behavior) do
     xpath { |name| XPath.css("[data-behavior='#{name}']") }
   end

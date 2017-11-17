@@ -9,5 +9,4 @@ RSpec.describe Aker::WorkOrder, type: :model, aker: true do
     work_order = create(:aker_work_order)
     expect(work_order.as_json).to eq('work_order': { 'id': work_order.id, 'aker_id': work_order.aker_id })
   end
-
 end

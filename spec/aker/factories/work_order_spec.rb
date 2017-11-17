@@ -51,7 +51,6 @@ RSpec.describe Aker::Factories::WorkOrder, type: :model, aker: true do
 
   it '#as_json returns work order' do
     work_order = Aker::Factories::WorkOrder.new(params)
-    ar_work_order = work_order.create
     json = work_order.as_json[:work_order]
     Aker::Factories::WorkOrder::ATTRIBUTES.each do |attribute|
       expect(json[attribute]).to be_present

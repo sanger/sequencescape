@@ -1,6 +1,5 @@
 module Aker
   class WorkOrdersController < ApplicationController
-
     before_action :login_required, except: [:complete, :cancel, :show, :index]
 
     def index
@@ -27,7 +26,7 @@ module Aker
           verify_ssl: false,
           method: :post,
           url: "#{Rails.configuration.aker['urls']['work_orders']}/work_orders/#{work_order.aker_id}/complete",
-          payload: { work_order: {work_order_id: work_order.aker_id, comment: params[:comment]} }.to_json,
+          payload: { work_order: { work_order_id: work_order.aker_id, comment: params[:comment] } }.to_json,
           headers: { content_type: :json },
           proxy: nil
         )
@@ -44,8 +43,8 @@ module Aker
           verify_ssl: false,
           method: :post,
           url: "#{Rails.configuration.aker['urls']['work_orders']}/work_orders/#{work_order.aker_id}/cancel",
-          payload: { work_order: {work_order_id: work_order.aker_id, comment: params[:comment]} }.to_json, 
-          headers: {content_type: :json},
+          payload: { work_order: { work_order_id: work_order.aker_id, comment: params[:comment] } }.to_json,
+          headers: { content_type: :json },
           proxy: nil
         )
         flash[:notice] = JSON.parse(response.body)['message']
@@ -56,19 +55,17 @@ module Aker
 
     private
 
-    def recover_from_connection_refused(&block)
-      begin
-        yield
-      rescue Errno::ECONNREFUSED => e
-        flash[:error] = 'Cannot connect with Aker Work orders service. Please contact the administrators'
-        redirect_to aker_work_orders_path
-      rescue RestClient::NotFound => e
-        flash[:error] = 'The work order was not found in Aker Work orders service.'
-        redirect_to aker_work_orders_path
-      rescue RestClient::InternalServerError => e
-        flash[:error] = "There was a problem in the Aker Work orders service. Please contact the administrators"
-        redirect_to aker_work_orders_path
-      end
+    def recover_from_connection_refused
+      yield
+    rescue Errno::ECONNREFUSED
+      flash[:error] = 'Cannot connect with Aker Work orders service. Please contact the administrators'
+      redirect_to aker_work_orders_path
+    rescue RestClient::NotFound
+      flash[:error] = 'The work order was not found in Aker Work orders service.'
+      redirect_to aker_work_orders_path
+    rescue RestClient::InternalServerError
+      flash[:error] = 'There was a problem in the Aker Work orders service. Please contact the administrators'
+      redirect_to aker_work_orders_path
     end
 
     def current_resource

@@ -1,6 +1,5 @@
 module Aker
   class WorkOrder < ActiveRecord::Base
-    
     has_many :sample_work_orders
     has_many :samples, through: :sample_work_orders
 
@@ -14,6 +13,5 @@ module Aker
         }
       }
     end
-
   end
 end

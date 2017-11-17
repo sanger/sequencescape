@@ -8,7 +8,7 @@ module Api
 
         def create
           @work_order = ::Aker::Factories::WorkOrder.new(params[:work_order].permit!)
-          
+
           if @work_order.valid?
 
             @work_order.create

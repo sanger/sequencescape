@@ -6,10 +6,10 @@ module Aker
     class WorkOrder
       include ActiveModel::Model
 
-      ATTRIBUTES = [ :work_order_id, :product_name, :product_version, :product_uuid, :proposal_id, :proposal_name, :cost_code, :materials, :comment, :desired_date, :status ]
-      DEFAULT_ATTRIBUTES = { materials: {} }
+      ATTRIBUTES = [:work_order_id, :product_name, :product_version, :product_uuid, :proposal_id, :proposal_name, :cost_code, :materials, :comment, :desired_date, :status].freeze
+      DEFAULT_ATTRIBUTES = { materials: {} }.freeze
 
-      attr_accessor *ATTRIBUTES
+      attr_accessor(*ATTRIBUTES)
       attr_reader :aker_id, :model
 
       validates_presence_of :aker_id, :materials
@@ -39,21 +39,21 @@ module Aker
 
       def as_json(_options = {})
         {
-          work_order: get_json_attributes
+          work_order: json_attributes
         }
       end
 
       private
 
-      def get_json_attributes
-         {}.tap do |json|
+      def json_attributes
+        {}.tap do |json|
           ATTRIBUTES.each do |attribute|
-            json[attribute] = get_json_attribute(attribute)
+            json[attribute] = json_attribute(attribute)
           end
         end
       end
 
-      def get_json_attribute(attribute)
+      def json_attribute(attribute)
         value = send(attribute)
         case value
         when Array
@@ -68,7 +68,7 @@ module Aker
       def create_materials(materials)
         (materials || []).collect do |material|
           indifferent_material = material.to_h.with_indifferent_access
-          Sample.find_by_name(indifferent_material[:_id]) || Aker::Factories::Material.new(indifferent_material)
+          Sample.find_by(name: indifferent_material[:_id]) || Aker::Factories::Material.new(indifferent_material)
         end
       end
 

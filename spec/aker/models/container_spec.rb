@@ -12,9 +12,9 @@ RSpec.describe Aker::Container, type: :model, aker: true do
 
   it '#as_json returns correct attributes' do
     container = create(:container_with_address)
-    expect(container.as_json).to eq({ 'barcode': container.barcode, 'address': container.address })
+    expect(container.as_json).to eq('barcode': container.barcode, 'address': container.address)
 
     container = create(:container)
-    expect(container.as_json).to eq({ 'barcode': container.barcode })
+    expect(container.as_json).to eq('barcode': container.barcode)
   end
 end

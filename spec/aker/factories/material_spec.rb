@@ -49,9 +49,7 @@ RSpec.describe Aker::Factories::Material, type: :model, aker: true do
   it '#as_json returns the correct attributes' do
     material = Aker::Factories::Material.new(params)
     material.create
-    expect(material.as_json).to eq( { _id: material.name, gender: material.gender, donor_id: material.donor_id, 
-                                      phenotype: material.phenotype, common_name: material.sample_common_name, container: material.container.as_json
-                                    }
-                                  )
+    expect(material.as_json).to eq(_id: material.name, gender: material.gender, donor_id: material.donor_id,
+                                   phenotype: material.phenotype, common_name: material.sample_common_name, container: material.container.as_json)
   end
 end
