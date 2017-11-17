@@ -190,7 +190,7 @@ class PlatePurpose < Purpose
   end
 
   def size
-    attributes['size'] || 96
+    super || 96
   end
 
   def well_locations

@@ -1,6 +1,14 @@
 development:
   type: log
-  exchange: psd.sequencescape
+  config:
+    exchange: psd.sequencescape
+  subscriptions:
+    queue_broadcast_consumer:
+      exchange: psd.sequencescape
+      queue: psd.queue_broadcast
+      routing_keys:
+        - development.queue_broadcast.#
+      deadletter_exchange: deadletters
 profile:
   type: log
 test:

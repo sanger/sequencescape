@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'shared_contexts/limber_shared_context'
 
-describe '/api/1/transfer_request_collection' do
+describe '/api/1/transfer_request_collection', transfer_request_collection: true do
   include_context 'a limber target plate with submissions'
 
   subject { '/api/1/transfer_request_collection' }

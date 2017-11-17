@@ -8,7 +8,7 @@ module SampleManifestExcel
       include ValueRequired
       include ValueToInteger
 
-      validates_numericality_of :value, greater_than: 0
+      validates_numericality_of :value, greater_than: 0, message: "'insert size to' must be greater than 0"
 
       def update(attributes = {})
         if valid? && attributes[:aliquot].present?

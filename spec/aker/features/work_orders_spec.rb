@@ -21,7 +21,7 @@ RSpec.describe 'WorkOrders', type: :feature, aker: true do
     context 'active' do
 
       before(:each) do
-        allow(RestClient::Request).to receive(:execute).with(method: :get, url: get_url, proxy: nil, headers: { content_type: :json, Accept: :json }).and_return(RestClient::Response.create(work_order_json, Net::HTTPResponse.new('1.1',200,''), request))
+        allow(RestClient::Request).to receive(:execute).with(verify_ssl: false, method: :get, url: get_url, headers: { content_type: :json, Accept: :json}, proxy: nil).and_return(RestClient::Response.create(work_order_json, Net::HTTPResponse.new('1.1',200,''), request))
       end
 
       scenario 'view a work order' do
@@ -38,32 +38,43 @@ RSpec.describe 'WorkOrders', type: :feature, aker: true do
           expect(page).to have_content(json['comment'])
           expect(page).to have_content(json['desired_date'])
           expect(page).to have_content(json['status'])
-          expect(page).to have_link("Complete")
-          expect(page).to have_link("Cancel")
+          expect(page).to have_button("Complete")
+          expect(page).to have_button("Cancel")
           expect(page).to have_css('.sample', count: work_order.samples.count)
         end
       end
 
       scenario 'complete' do
+        allow(RestClient::Request).to receive(:execute).with(verify_ssl: false, method: :post, url: "#{get_url}/complete", payload: { work_order: {work_order_id: work_order.aker_id, comment: nil} }.to_json, headers: { content_type: :json}, proxy: nil).and_return(RestClient::Response.create(work_order_json, Net::HTTPResponse.new('1.1',200,''), request))
+
         visit aker_work_orders_path
         within("#aker_work_order_#{work_order.id}") do
-          click_link "Show"
+          click_link "Work order #{work_order.aker_id}"
         end
-        click_link "Complete"
-        expect(page).to have content("Work Order successfully completed")
+        click_button "Complete"
+        expect(page).to have_content(work_order.aker_id)
       end
 
       scenario 'complete new or updated materials'
 
-      scenario 'cancel'
+      scenario 'cancel' do
+         allow(RestClient::Request).to receive(:execute).with(verify_ssl: false, method: :post, url: "#{get_url}/cancel", payload: { work_order: {work_order_id: work_order.aker_id, comment: nil} }.to_json, headers: { content_type: :json}, proxy: nil).and_return(RestClient::Response.create(work_order_json, Net::HTTPResponse.new('1.1',200,''), request))
+
+        visit aker_work_orders_path
+        within("#aker_work_order_#{work_order.id}") do
+          click_link "Work order #{work_order.aker_id}"
+        end
+        click_button "Cancel"
+        expect(page).to have_content(work_order.aker_id)
+      end
       end
     end
 
     context 'completed or cancelled' do
       scenario 'view' do
         visit aker_work_order_path(work_order)
-        expect(page).to_not have_link("Complete")
-        expect(page).to_not have_link("Cancel")
+        expect(page).to_not have_button("Complete")
+        expect(page).to_not have_button("Cancel")
       end
     end
 

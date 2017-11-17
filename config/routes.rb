@@ -688,6 +688,7 @@ Sequencescape::Application.routes.draw do
       end
     end
   end
+  resources :billing_reports, only: [:new, :create]
 
   # this is for test only test/functional/authentication_controller_test.rb
   # to be removed?

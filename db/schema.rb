@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171006081245) do
+ActiveRecord::Schema.define(version: 20171017092942) do
 
   create_table "aker_containers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "barcode"
@@ -232,6 +232,7 @@ ActiveRecord::Schema.define(version: 20171006081245) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean "visible", default: true, null: false
+    t.integer "category"
     t.index ["name"], name: "index_bait_library_types_on_name", unique: true
   end
 
@@ -301,6 +302,36 @@ ActiveRecord::Schema.define(version: 20171006081245) do
     t.integer "request_id", null: false
     t.index ["kind"], name: "index_billing_events_on_kind"
     t.index ["reference"], name: "index_billing_events_on_reference"
+  end
+
+  create_table "billing_items", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "request_id"
+    t.string "project_cost_code"
+    t.string "units"
+    t.string "billing_product_code"
+    t.string "billing_product_name"
+    t.string "billing_product_description"
+    t.string "request_passed_date"
+    t.timestamp "reported_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["request_id"], name: "index_billing_items_on_request_id"
+  end
+
+  create_table "billing_product_catalogues", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "billing_products", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string "name"
+    t.string "identifier"
+    t.integer "category"
+    t.integer "billing_product_catalogue_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["billing_product_catalogue_id"], name: "fk_rails_01eabb683d"
   end
 
   create_table "broadcast_events", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -694,6 +725,7 @@ ActiveRecord::Schema.define(version: 20171006081245) do
     t.string "template", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.index ["target_id", "target_type"], name: "index_messengers_on_target_id_and_target_type"
   end
 
   create_table "order_roles", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -1183,6 +1215,8 @@ ActiveRecord::Schema.define(version: 20171006081245) do
     t.integer "target_purpose_id"
     t.integer "pooling_method_id"
     t.integer "request_purpose_id"
+    t.integer "billing_product_catalogue_id"
+    t.index ["billing_product_catalogue_id"], name: "index_request_types_on_billing_product_catalogue_id"
   end
 
   create_table "request_types_extended_validators", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -1214,8 +1248,10 @@ ActiveRecord::Schema.define(version: 20171006081245) do
     t.string "sti_type"
     t.integer "order_id"
     t.integer "request_purpose_id"
-    t.integer "work_order_id"
+    t.bigint "work_order_id"
+    t.integer "billing_product_id"
     t.index ["asset_id"], name: "index_requests_on_asset_id"
+    t.index ["billing_product_id"], name: "index_requests_on_billing_product_id"
     t.index ["initial_project_id"], name: "index_requests_on_project_id"
     t.index ["initial_study_id", "request_type_id", "state"], name: "index_requests_on_project_id_and_request_type_id_and_state"
     t.index ["initial_study_id"], name: "index_request_on_project_id"
@@ -1866,16 +1902,19 @@ ActiveRecord::Schema.define(version: 20171006081245) do
     t.index ["work_completion_id"], name: "fk_rails_5ea64f1af2"
   end
 
-  create_table "work_order_types", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "work_order_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_work_order_types_on_name", unique: true
   end
 
-  create_table "work_orders", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
-    t.integer "work_order_type_id", null: false
+  create_table "work_orders", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "work_order_type_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "state", null: false
+    t.index ["work_order_type_id", "state"], name: "index_work_orders_on_work_order_type_id_and_state"
     t.index ["work_order_type_id"], name: "fk_rails_80841fcb4c"
   end
 
@@ -1892,7 +1931,11 @@ ActiveRecord::Schema.define(version: 20171006081245) do
     t.integer "version"
   end
 
+  add_foreign_key "billing_items", "requests"
+  add_foreign_key "billing_products", "billing_product_catalogues"
   add_foreign_key "qc_files", "assets"
+  add_foreign_key "request_types", "billing_product_catalogues"
+  add_foreign_key "requests", "billing_products"
   add_foreign_key "requests", "work_orders"
   add_foreign_key "sample_manifests", "plate_purposes", column: "purpose_id"
   add_foreign_key "tag_layout_templates", "tag_groups", column: "tag2_group_id"

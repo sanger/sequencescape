@@ -5,8 +5,8 @@
 # Copyright (C) 2011,2012,2015 Genome Research Ltd.
 
 # Generate a few bait libraries.
-['Standard', 'Custom - Pipeline', 'Custom - Customer'].each do |name|
-  BaitLibraryType.create!(name: name)
+{ 'Standard' => 'standard', 'Custom - Pipeline' => 'custom', 'Custom - Customer' => 'custom' }.each do |name, category|
+  BaitLibraryType.create!(name: name, category: category)
 end
 
 BaitLibrary::Supplier.create!(name: 'Agilent').tap do |supplier|

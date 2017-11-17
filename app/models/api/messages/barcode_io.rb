@@ -11,7 +11,7 @@ class Api::Messages::BarcodeIO < Api::Base
   map_attribute_to_json_attribute(:sti_type, 'barcodable_type')
   map_attribute_to_json_attribute(:ean13_barcode, 'machine_readable_barcode')
   map_attribute_to_json_attribute(:sanger_human_barcode, 'human_readable_barcode')
-  map_attribute_to_json_attribute(:barcode_type, 'barcode_type')
+  map_attribute_to_json_attribute(:barcode_format, 'barcode_type')
   map_attribute_to_json_attribute(:updated_at)
   map_attribute_to_json_attribute(:created_at)
 end

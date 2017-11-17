@@ -90,6 +90,68 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
         end
       end
 
+      context 'partial' do
+        let!(:download) { build(:test_partial_download, manifest_type: 'multiplexed_library', columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup) }
+
+        it 'will process partial upload and cancel unprocessed requests' do
+          processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(upload)
+          expect(upload.sample_manifest.pending_external_library_creation_requests.count).to eq 6
+          processor.update_samples_and_aliquots(tag_group)
+          expect(upload.sample_manifest.pending_external_library_creation_requests.count).to eq 2
+          processor.cancel_unprocessed_external_library_creation_requests
+          expect(upload.sample_manifest.pending_external_library_creation_requests.count).to eq 0
+          processor.update_sample_manifest
+          expect(processor).to be_processed
+        end
+      end
+
+      context 'manifest reuploaded' do
+        let!(:download) { build(:test_download, columns: columns, manifest_type: 'multiplexed_library') }
+        let!(:new_test_file) { 'new_test_file.xlsx' }
+
+        before(:each) do
+          upload.process(tag_group)
+          upload.complete
+        end
+
+        it 'will update the aliquots downstream if aliquots data has changed' do
+          download.worksheet.axlsx_worksheet.rows[10].cells[6].value = '100'
+          download.worksheet.axlsx_worksheet.rows[11].cells[7].value = '1000'
+          download.save(new_test_file)
+          reupload = SampleManifestExcel::Upload::Base.new(filename: new_test_file, column_list: columns, start_row: 9)
+          processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(reupload)
+          processor.update_samples_and_aliquots(tag_group)
+          expect(processor.substitutions[1]).to include('insert_size_from' => 100)
+          expect(processor.substitutions[2]).to include('insert_size_to' => 1000)
+          expect(processor.downstream_aliquots_updated?).to be_truthy
+        end
+
+        it 'will update the aliquots downstream if taggs were swapped' do
+          tag_oligo_1 = download.worksheet.axlsx_worksheet.rows[10].cells[2].value
+          tag_oligo_2 = download.worksheet.axlsx_worksheet.rows[11].cells[2].value
+          download.worksheet.axlsx_worksheet.rows[10].cells[2].value = tag_oligo_2
+          download.worksheet.axlsx_worksheet.rows[11].cells[2].value = tag_oligo_1
+          download.save(new_test_file)
+          reupload = SampleManifestExcel::Upload::Base.new(filename: new_test_file, column_list: columns, start_row: 9)
+          processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(reupload)
+          processor.update_samples_and_aliquots(tag_group)
+          expect(processor.downstream_aliquots_updated?).to be_truthy
+        end
+
+        it 'will not update the aliquots downstream if there is nothing to update' do
+          download.save(new_test_file)
+          reupload = SampleManifestExcel::Upload::Base.new(filename: new_test_file, column_list: columns, start_row: 9)
+          processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(reupload)
+          processor.update_samples_and_aliquots(tag_group)
+          expect(processor.substitutions.compact).to be_empty
+          expect(processor.downstream_aliquots_updated?).to be_truthy
+        end
+
+        after(:each) do
+          File.delete(new_test_file) if File.exist?(new_test_file)
+        end
+      end
+
       context 'mismatched tags' do
         let!(:download) { build(:test_download, columns: columns, manifest_type: 'multiplexed_library', validation_errors: [:tags]) }
 

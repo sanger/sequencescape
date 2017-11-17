@@ -2,7 +2,6 @@ source 'https://rubygems.org'
 
 group :default do
   gem 'rails', '~> 5.1.2'
-  gem 'rails-observers'
 
   # State machine
   gem 'aasm'
@@ -16,6 +15,10 @@ group :default do
   gem 'actionpack-xml_parser'
 
   gem 'activeresource', github: 'rails/activeresource', branch: 'master'
+
+  # Provides bulk insert capabilities
+  gem 'activerecord-import'
+
   gem 'mysql2', platforms: :mri
   gem 'spreadsheet'
   gem 'will_paginate'
@@ -88,6 +91,10 @@ group :default do
 
   gem 'sanger_barcode_format', github: 'sanger/sanger_barcode_format', branch: 'development'
 
+  # Provides null db adapter, that blocks access to remote database
+  # (in our case used for Agresso db in non-production environments)
+  gem 'activerecord-nulldb-adapter', require: false
+
   # Allow simple connection pooling on non-database connections
   # Using it to maintain our warren's of bunnies.
   # Or the connection pool of RabbitMQ channels to get technical
@@ -99,7 +106,7 @@ group :warehouse do
   gem 'ruby-oci8', platforms: :mri
   # No ruby-oci8, (Need to use Oracle JDBC drivers Instead)
   # any newer version requires ruby-oci8 => 2.0.1
-  gem 'activerecord-oracle_enhanced-adapter', '~> 1.6.0'
+  gem 'activerecord-oracle_enhanced-adapter', '~> 1.8'
 end
 
 group :development do

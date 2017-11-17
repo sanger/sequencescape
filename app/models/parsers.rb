@@ -9,6 +9,7 @@ require 'linefeed_fix'
 
 module Parsers
   ENCODINGS = ['Windows-1252', 'iso-8859-1', 'utf-8', 'utf-16'].freeze
+  PARSERS = [QuantParser, BioanalysisCsvParser, PlateReaderParser].freeze
 
   def self.parser_for(filename, content_type, content)
     return nil unless filename.downcase.end_with?('.csv') || content_type == 'text/csv'
@@ -17,10 +18,8 @@ module Parsers
     # This converts everything to \n before processing
     cleaned_content = LinefeedFix.scrub!(content.dup)
     csv = parse_with_fallback_encodings(cleaned_content)
-    return Parsers::QuantParser.new(csv) if Parsers::QuantParser.is_quant_file?(csv)
-    return Parsers::BioanalysisCsvParser.new(csv) if Parsers::BioanalysisCsvParser.is_bioanalyzer?(csv)
-    return Parsers::IscXtenParser.new(csv) if Parsers::IscXtenParser.is_isc_xten_file?(csv)
-    nil
+    parser_class = PARSERS.detect { |parser| parser.parses?(csv) }
+    parser_class ? parser_class.new(csv) : nil
   end
 
   def self.parse_with_fallback_encodings(content)
