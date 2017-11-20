@@ -82,7 +82,6 @@ class Order < ApplicationRecord
   }
 
   delegate :role, to: :order_role, allow_nil: true
-  delegate :left_building_state?, to: :submission, allow_nil: true
 
   class << self
     alias_method :create_order!, :create!

@@ -5,6 +5,10 @@
 # Copyright (C) 2011,2012,2013,2015 Genome Research Ltd.
 
 module ModelExtensions::Order
+  class RequestOptionForValidation < OpenStruct
+    delegate :errors, :include_unset_values?, to: :owner
+  end
+
   module Validations
     def self.included(base)
       base.class_eval do
@@ -32,9 +36,7 @@ module ModelExtensions::Order
     end
 
     def request_options_for_validation
-      OpenStruct.new({ owner: self }.reverse_merge(request_options || {})).tap do |v|
-        v.class.delegate(:errors, :include_unset_values?, to: :owner)
-      end
+      RequestOptionForValidation.new({ owner: self }.reverse_merge(request_options || {}))
     end
   end
 

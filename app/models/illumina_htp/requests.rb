@@ -23,11 +23,12 @@ module IlluminaHtp::Requests
     end
 
     delegate :role, to: :order
+    delegate :acceptable_plate_purposes, to: :request_type
 
-    validate :valid_purpose?
+    validate :valid_purpose?, if: :asset_id_changed?
     def valid_purpose?
-      return true if request_type.acceptable_plate_purposes.empty? ||
-                     request_type.acceptable_plate_purposes.include?(asset.plate.purpose)
+      return true if acceptable_plate_purposes.empty? ||
+                     acceptable_plate_purposes.include?(asset.plate.purpose)
       errors.add(:asset, "#{asset.plate.purpose.name} is not a suitable plate purpose.")
       false
     end
