@@ -1,0 +1,12 @@
+development: &DEV
+  urls:
+    work_orders: http://localhost:3000/api/v1
+
+staging:
+  <<: *DEV
+
+test:
+  <<: *DEV
+
+production:
+  <<: *DEV
