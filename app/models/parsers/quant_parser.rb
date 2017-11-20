@@ -1,8 +1,14 @@
 class Parsers::QuantParser
   class InvalidFile < StandardError; end
 
-  HEADER_IDENTIFIER = 'Headers'
-  LOCATION_HEADER = 'Well Location'
+  HEADER_IDENTIFIER = 'Headers'.freeze
+  LOCATION_HEADER = 'Well Location'.freeze
+  COLUMN_MAPS = {
+    'concentration' => :set_concentration,
+    'molarity'      => :set_molarity,
+    'volume'        => :set_current_volume,
+    'rin'           => :set_rin
+  }.freeze
 
   def initialize(content)
     @content = content
@@ -12,7 +18,7 @@ class Parsers::QuantParser
     content.find_index { |l| l[0] == HEADER_IDENTIFIER }
   end
 
-  def self.is_quant_file?(content)
+  def self.parses?(content)
     (content[0][0] == 'Assay Plate Barcode') && headers_index(content)
   end
 
@@ -31,25 +37,15 @@ class Parsers::QuantParser
     end
 
     def headers_section
-      @content[self.class.headers_index(@content) + 1]
+      @content[headers_index + 1]
     end
 
     def data_section
-      @content.slice(self.class.headers_index(@content) + 2, @content.length)
-    end
-
-    def localization_text(attribute_name)
-      I18n.t(:label, scope: [:metadata, :well, :metadata, attribute_name], default: attribute_name)
+      @content.slice(headers_index + 2, @content.length)
     end
 
     def column_maps
-     @column_maps ||= {
-        'concentration' => :set_concentration,
-        'volume'        => :set_current_volume,
-        'rin'           => :set_rin
-      }.merge(localization_text('concentration').strip.downcase => :set_concentration,
-              localization_text('volume').strip.downcase        => :set_current_volume,
-              localization_text('rin').strip.downcase           => :set_rin)
+      COLUMN_MAPS
     end
 
     def method_set_list
@@ -61,5 +57,9 @@ class Parsers::QuantParser
 
     def qc_values_for_row(row)
       Hash[method_set_list.zip(row).reject { |header, _value| header.nil? }]
+    end
+
+    def headers_index
+      @headers_index ||= self.class.headers_index(@content)
     end
 end

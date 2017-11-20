@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171017092942) do
+ActiveRecord::Schema.define(version: 20171117110424) do
 
   create_table "aliquot_indices", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.integer "aliquot_id", null: false
@@ -744,6 +744,7 @@ ActiveRecord::Schema.define(version: 20171017092942) do
     t.integer "product_id"
     t.index ["state_to_delete"], name: "index_submissions_on_state"
     t.index ["study_id"], name: "index_submissions_on_project_id"
+    t.index ["submission_id"], name: "index_orders_on_submission_id"
   end
 
   create_table "pac_bio_library_tube_metadata", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -1887,7 +1888,9 @@ ActiveRecord::Schema.define(version: 20171017092942) do
     t.bigint "work_order_type_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["work_order_type_id"], name: "index_work_orders_on_work_order_type_id"
+    t.string "state", null: false
+    t.index ["work_order_type_id", "state"], name: "index_work_orders_on_work_order_type_id_and_state"
+    t.index ["work_order_type_id"], name: "fk_rails_80841fcb4c"
   end
 
   create_table "workflow_samples", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|

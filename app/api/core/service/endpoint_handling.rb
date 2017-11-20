@@ -12,16 +12,12 @@ module Core::Service::EndpointHandling
   end
 
   def instance(action, endpoint)
-    benchmark('Instance handling') do
-      @endpoint = endpoint
-      @endpoint.instance_handler.send(action, self, path)
-    end
+    @endpoint = endpoint
+    @endpoint.instance_handler.send(action, self, path)
   end
 
   def model(action, endpoint)
-    benchmark('Model handling') do
-      @endpoint = endpoint
-      @endpoint.model_handler.send(action, self, path)
-    end
+    @endpoint = endpoint
+    @endpoint.model_handler.send(action, self, path)
   end
 end

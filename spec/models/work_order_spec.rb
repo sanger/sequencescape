@@ -13,6 +13,20 @@ describe WorkOrder do
     it { is_expected.not_to be_valid }
   end
 
+  context 'with requests' do
+    let(:requests) { build_list(:request, 2) }
+    let(:work_order) { build :work_order, requests: requests }
+
+    describe '#state=' do
+      before { work_order.state = 'passed' }
+      it 'update the associated requests' do
+        requests.each do |request|
+          expect(request.state).to eq('passed')
+        end
+      end
+    end
+  end
+
   describe WorkOrder::Factory do
     let(:submission) { create :submission, requests: requests }
     let(:request_type) { create :request_type }
@@ -41,11 +55,15 @@ describe WorkOrder do
           expect(work_order.work_order_type.name).to eq(request_type.key)
         end
       end
+
+      it 'sets the state on each work order' do
+        work_orders = subject.create_work_orders!
+        expect(work_orders.first.state).to eq('pending')
+      end
     end
 
     context 'where request types clash' do
       let(:requests_set_b) { create_list(:request, 3, asset: create(:well)) }
-
       it { is_expected.not_to be_valid }
     end
   end

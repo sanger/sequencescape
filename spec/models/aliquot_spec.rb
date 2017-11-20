@@ -111,6 +111,17 @@ RSpec.describe Aliquot, type: :model do
     end
   end
 
+  describe 'for tags substitution' do
+    it 'should generate correct substitution hash' do
+      aliquot = create :aliquot
+      tag_id = aliquot.tag_id
+      expect(aliquot.substitution_hash).to be nil
+      aliquot.update_attributes!(tag_id: Tag.first.id, insert_size_from: 5, insert_size_to: 15)
+      expect(aliquot.other_attributes_for_substitution).to eq('insert_size_from' => 5, 'insert_size_to' => 15)
+      expect(aliquot.substitution_hash).to eq(sample_id: aliquot.sample_id, library_id: aliquot.library_id, original_tag_id: tag_id, substitute_tag_id: Tag.first.id, 'insert_size_from' => 5, 'insert_size_to' => 15)
+    end
+  end
+
   it 'provides number of aliquots by cost code' do
     aliquots = create_list(:aliquot, 5)
     aliquots.first.update_attributes!(project: nil)
