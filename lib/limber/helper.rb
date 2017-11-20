@@ -57,7 +57,7 @@ module Limber::Helper
         request_purpose: RequestPurpose.standard
       ) do |rt|
         rt.acceptable_plate_purposes << Purpose.find_by!(name: @default_purpose)
-        rt.library_types = @library_types.map {|name| LibraryType.find_or_create_by(name: name)}
+        rt.library_types = @library_types.map { |name| LibraryType.find_or_create_by(name: name) }
       end
 
       RequestType::Validator.create!(
