@@ -9,7 +9,7 @@ RSpec.describe 'Warren::BroadcastMessages', warren: true do
     setup { warren.clear_messages }
 
     let(:resource_key) { subject.class.name.underscore }
-    let(:routing_key) { "test.saved.#{resource_key}.#{subject.id}" }
+    let(:routing_key) { "test.queue_broadcast.#{resource_key}.#{subject.id}" }
 
     it 'broadcasts the resource' do
       subject.save!
@@ -20,7 +20,7 @@ RSpec.describe 'Warren::BroadcastMessages', warren: true do
   shared_context 'an associated broadcast class' do
     setup { warren.clear_messages }
     let(:resource_key) { resource.class.name.underscore }
-    let(:routing_key) { "test.saved.#{resource_key}.#{resource.id}" }
+    let(:routing_key) { "test.queue_broadcast.#{resource_key}.#{resource.id}" }
 
     it 'broadcasts the associated resource' do
       subject.save!
@@ -130,22 +130,24 @@ RSpec.describe 'Warren::BroadcastMessages', warren: true do
   context 'messenger' do
     subject { build :messenger }
     setup { warren.clear_messages }
-    let(:routing_key) { subject.routing_key }
-    it 'broadcasts the resource' do
-      subject.save!
-      expect(warren.messages_matching(routing_key)).to eq(1)
-    end
+    it_behaves_like 'a self broadcast resource'
+    #  let(:routing_key) { subject.routing_key }
+    # it 'broadcasts the resource' do
+    #   subject.save!
+    #   expect(warren.messages_matching(routing_key)).to eq(1)
+    # end
   end
 
   context 'broadcast_event' do
     subject { build :broadcast_event_asset_audit }
     setup { warren.clear_messages }
+    it_behaves_like 'a self broadcast resource'
 
-    let(:routing_key) { "test.event.some_key.#{subject.id}" }
+    # let(:routing_key) { "test.event.some_key.#{subject.id}" }
 
-    it 'broadcasts the resource' do
-      subject.save!
-      expect(warren.messages_matching(routing_key)).to eq(1)
-    end
+    # it 'broadcasts the resource' do
+    #   subject.save!
+    #   expect(warren.messages_matching(routing_key)).to eq(1)
+    # end
   end
 end

@@ -18,7 +18,9 @@ class WorkCompletion < ApplicationRecord
   # The submissions which were passed. Mainly kept for auditing
   # purposes
   has_many :work_completions_submissions, dependent: :destroy
-  has_many :submissions, through: :work_completions_submissions
+  # Submissions should already be valid at this point.
+  # We don't re-validate for performance reasons.
+  has_many :submissions, through: :work_completions_submissions, validate: false
 
   after_create :pass_and_attach_requests
 
@@ -39,7 +41,6 @@ class WorkCompletion < ApplicationRecord
         # the target_asset if it is defined.
         downstream = upstream.submission.next_requests(upstream)
         downstream.each { |ds| ds.update_attributes!(asset: target_well) }
-
         # In some cases, such as the Illumina-C pipelines, requests might be
         # connected upfront. We don't want to touch these.
         upstream.target_asset ||= target_well
@@ -60,7 +61,7 @@ class WorkCompletion < ApplicationRecord
       # We may have multiple requests out of each well, however we're only concerned
       # about those associated with the active submission.
       # We've already eager loaded requests out of the stock wells, so filter in Ruby.
-      source_well.requests.each do |r|
+      source_well.requests_as_source.each do |r|
         found_upstream_requests << r if suitable_request?(r)
       end
     end
@@ -75,12 +76,18 @@ class WorkCompletion < ApplicationRecord
   end
 
   def update_stock_wells
-    target_wells.each do |target_well|
-      target_well.stock_wells = [target_well]
-    end
+    Well::Link.stock.where(target_well_id: target_wells.map(&:id)).delete_all
+    Well::Link.stock.import(target_wells.map { |well| { source_well_id: well.id, target_well_id: well.id } })
+    # target_wells.each do |target_well|
+    #   target_well.stock_wells = [target_well]
+    # end
   end
 
   def target_wells
-    @target_wells ||= target.wells.include_stock_wells.include_requests_as_target.where(requests: { submission_id: submissions })
+    @target_wells ||= target.wells
+                            .includes(:aliquots)
+                            .include_stock_wells_for_modification
+                            .include_requests_as_target
+                            .where(requests: { submission_id: submissions })
   end
 end

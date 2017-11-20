@@ -54,7 +54,7 @@ class Asset < ApplicationRecord
   # TODO: Remove 'requests' and 'source_request' as they are abiguous
   # :requests should go before :events_on_requests, through: :requests
   has_many :requests
-  has_many :events_on_requests, through: :requests, source: :events
+  has_many :events_on_requests, through: :requests, source: :events, validate: false
   has_one  :source_request,     ->() { includes(:request_metadata) }, class_name: 'Request', foreign_key: :target_asset_id
   has_many :requests_as_source, ->() { includes(:request_metadata) },  class_name: 'Request', foreign_key: :asset_id
   has_many :requests_as_target, ->() { includes(:request_metadata) },  class_name: 'Request', foreign_key: :target_asset_id
@@ -257,7 +257,7 @@ class Asset < ApplicationRecord
   after_create :generate_name_with_id, if: :name_needs_to_be_generated?
 
   def name_needs_to_be_generated?
-    @name_needs_to_be_generated
+    instance_variable_defined?(:@name_needs_to_be_generated) && @name_needs_to_be_generated
   end
   private :name_needs_to_be_generated?
 

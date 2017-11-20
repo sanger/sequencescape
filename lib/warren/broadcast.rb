@@ -28,12 +28,13 @@ class Warren::Broadcast
   #
   # Creates a warren but does not connect.
   #
-  # @param [_] *_args Configuration arguments are ignored.
+  # @param [Hash] server: {} Server config options passes straight to Bunny
+  # @param [String] exchange: The name of the exchange to connect to
+  # @param [Integer] pool_size: The connection pool size
+  # @param [Void] subscriptions: Not used by warren. Used by consumers
   #
-  def initialize(url:, frame_max:, heartbeat:, exchange:, pool_size:)
-    @url = url
-    @frame_max = frame_max
-    @heartbeat = heartbeat
+  def initialize(server: {}, exchange:, pool_size: 14)
+    @server = server
     @exchange_name = exchange
     @pool_size = pool_size
   end
@@ -85,7 +86,7 @@ class Warren::Broadcast
   private
 
   def session
-    @session ||= Bunny.new(@url, frame_max: @frame_max, heartbeat: @heartbeat)
+    @session ||= Bunny.new(@server)
   end
 
   def connection_pool

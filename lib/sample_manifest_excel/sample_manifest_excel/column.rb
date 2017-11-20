@@ -67,7 +67,7 @@ module SampleManifestExcel
     end
 
     def metadata_field?
-      @metadata_field ||= Column.sample_metadata_model.respond_to?(name)
+      @metadata_field ||= Column.sample_metadata_model.respond_to?(name) unless specialised_field?
     end
 
     def update_metadata(metadata, value)
