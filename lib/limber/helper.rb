@@ -26,9 +26,9 @@ module Limber::Helper
 
   class RequestTypeConstructor
     def initialize(prefix,
-      request_class: DEFAULT_REQUEST_CLASS,
-      library_types: DEFAULT_LIBRARY_TYPES,
-      default_purpose: DEFAULT_PURPOSE)
+                   request_class: DEFAULT_REQUEST_CLASS,
+                   library_types: DEFAULT_LIBRARY_TYPES,
+                   default_purpose: DEFAULT_PURPOSE)
       @prefix = prefix
       @request_class = request_class
       @library_types = library_types

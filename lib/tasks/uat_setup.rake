@@ -114,7 +114,7 @@ You can specify an expected environment like so: rake uat:setup[file_path,enviro
 **********************************************************************************************************
       MESSAGE
 
-      elsif args[:expected_env].downcase.to_sym == Rails.env.downcase.to_sym && Rails.env.downcase.to_sym != :production
+    elsif args[:expected_env].downcase.to_sym == Rails.env.downcase.to_sym && Rails.env.downcase.to_sym != :production
 
       # Kept tables
       kept = %w(
@@ -247,7 +247,8 @@ You can specify an expected environment like so: rake uat:setup[file_path,enviro
               }
             ),
             study: study
-          )}
+          )
+          }
           puts "Stock: #{plate.ean13_barcode}-#{plate.sanger_human_barcode}"
         end
         (1..4).each do |i|

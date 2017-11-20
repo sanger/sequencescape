@@ -9,7 +9,7 @@ RSpec.describe SampleManifestExcel::TestDownload, type: :model, sample_manifest_
                                                         columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup,
                                                         data: {}, no_of_rows: 5, study: 'WTCCC', supplier: 'Test supplier',
                                                         count: 1, type: 'Tubes'
-                                                        )
+    )
   }
 
   before(:all) do

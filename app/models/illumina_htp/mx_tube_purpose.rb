@@ -28,7 +28,7 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
         Request::Statemachine::OPENED_STATE,
         [TransferRequest, *TransferRequest.descendants].map(&:name)
       ]
-)
+    )
   end
   private :target_requests
 

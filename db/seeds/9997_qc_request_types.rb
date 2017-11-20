@@ -18,7 +18,7 @@ rt = RequestType.create!(
   billable: true,
   deprecated: false,
   no_target_asset: false
-  ) do |rt|
+) do |rt|
   Pipeline.find_by(name: 'MiSeq sequencing').request_types << rt
 end
 RequestType::Validator.create!(request_type: rt, request_option: 'read_length', valid_options: [11, 25])

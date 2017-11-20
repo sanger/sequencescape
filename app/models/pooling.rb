@@ -46,8 +46,8 @@ class Pooling
 
   def print_job
     @print_job ||= LabelPrinter::PrintJob.new(barcode_printer,
-                      LabelPrinter::Label::MultiplexedTube,
-                      assets: target_assets, count: count)
+                                              LabelPrinter::Label::MultiplexedTube,
+                                              assets: target_assets, count: count)
   end
 
   def message

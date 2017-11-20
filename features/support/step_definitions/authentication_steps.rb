@@ -23,13 +23,13 @@ Given /^I am an? "([^\"]*)" user logged in as "([^\"]*)"$/ do |role_name, login|
   wk = Submission::Workflow.find_by!(key: 'short_read_sequencing')
 
   @current_user = FactoryGirl.create(:user,
-    login: login,
-    first_name: 'John',
-    last_name: 'Doe',
-    password: 'generic',
-    password_confirmation: 'generic',
-    email: "#{login}@example.com",
-    workflow_id: wk.id)
+                                     login: login,
+                                     first_name: 'John',
+                                     last_name: 'Doe',
+                                     password: 'generic',
+                                     password_confirmation: 'generic',
+                                     email: "#{login}@example.com",
+                                     workflow_id: wk.id)
 
   @current_user.roles << FactoryGirl.create(:role, name: role_name)
 

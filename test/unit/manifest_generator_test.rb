@@ -31,11 +31,11 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
       setup do
         @study = create :study
         @expected_header = [['Institute Name:', 'WTSI', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-         ['Date:', '2010-5-7'],
-         ['Comments:', (@study.abbreviation).to_s],
-         ['Row', 'Institute Plate Label', 'Well', 'Is Control', 'Institute Sample Label', 'Species',
-          'Sex', 'Comments', 'Volume (ul)', 'Conc (ng/ul)', 'Extraction Method', 'WGA Method (if Applicable)',
-          'Mass of DNA used in WGA', 'Parent 1', 'Parent 2', 'Replicate(s)', 'Tissue Source']]
+                            ['Date:', '2010-5-7'],
+                            ['Comments:', (@study.abbreviation).to_s],
+                            ['Row', 'Institute Plate Label', 'Well', 'Is Control', 'Institute Sample Label', 'Species',
+                             'Sex', 'Comments', 'Volume (ul)', 'Conc (ng/ul)', 'Extraction Method', 'WGA Method (if Applicable)',
+                             'Mass of DNA used in WGA', 'Parent 1', 'Parent 2', 'Replicate(s)', 'Tissue Source']]
         @manifest_header = ManifestGenerator.create_header([], @study)
       end
       [0, 2, 3].each do |header_line_index|

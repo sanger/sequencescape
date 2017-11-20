@@ -147,8 +147,8 @@ class Studies::AssetGroupsController < ApplicationController
     @study = Study.find(params[:study_id])
 
     print_job = LabelPrinter::PrintJob.new(params[:printer],
-                                          LabelPrinter::Label::AssetRedirect,
-                                          printables: params[:printables])
+                                           LabelPrinter::Label::AssetRedirect,
+                                           printables: params[:printables])
     if print_job.execute
       flash[:notice] = print_job.success
       redirect_to study_asset_groups_path(@study)

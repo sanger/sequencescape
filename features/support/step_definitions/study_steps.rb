@@ -417,7 +417,7 @@ When /^I have an? (managed|open) study without a data release group called "(.*?
         contains_human_dna: 'Yes',
         commercially_available: 'No'
       }
-    )
+  )
 end
 
 Given /^the study "(.*?)" has a data access group of "(.*?)"$/ do |study_name, dag|

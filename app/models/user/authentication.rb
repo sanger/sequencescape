@@ -30,7 +30,6 @@ module User::Authentication
       self[attr] = ldap_profile[ldap_attr][0] if self[attr].blank?
     end
     save if changed?
-
   rescue StandardError => e
     logger.error "Profile failed for user #{login}: result code #{ldap.get_operation_result.code} message #{ldap.get_operation_result.message} - #{e}"
   end

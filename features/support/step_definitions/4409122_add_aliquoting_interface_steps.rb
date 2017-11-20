@@ -25,7 +25,7 @@ Given /^study "([^\"]+)" has the following registered samples in sample tubes( w
       assets: [sample_tube],
       workflow: @current_user.workflow,
       state: 'ready'
-    )
+     )
 
     step %Q{the asset "#{sample_tube_name}" belongs to study "#{study_name}"} if with_a_request
   end

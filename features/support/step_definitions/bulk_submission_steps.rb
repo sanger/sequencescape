@@ -100,7 +100,7 @@ Then /^there should be an order with the gigabases expected set to "(.*?)"$/ do 
     assert_not_nil(
     Order.all.detect { |o| o.request_options['gigabases_expected'] == gigabase },
     "There is no order with the gigabases expected set to #{gigabase}"
-  )
+    )
 end
 
 Then /^the last submission should contain two assets$/ do

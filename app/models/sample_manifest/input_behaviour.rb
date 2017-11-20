@@ -188,7 +188,6 @@ module SampleManifest::InputBehaviour
 
     self.last_errors = nil
     finished!
-
   rescue ActiveRecord::RecordInvalid => exception
     errors.add(:base, exception.message)
     fail_with_errors!(errors.full_messages)

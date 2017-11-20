@@ -24,7 +24,8 @@ class Api::AliquotIO < Api::Base
           { tag: :uuid_object },
           { library: :uuid_object },
           { receptacle: :uuid_object }
-        ])}
+        ])
+        }
       end
     end
   end

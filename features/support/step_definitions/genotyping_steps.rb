@@ -165,7 +165,7 @@ Given(/^I have a "([^"]*)" submission for plate "([^"]*)" with project "([^"]*)"
     workflow: Submission::Workflow.find_by(key: 'microarray_genotyping'),
     user: User.last,
     assets: wells
-    )
+  )
   step('1 pending delayed jobs are processed')
 end
 
@@ -181,7 +181,7 @@ Given(/^I have a Cherrypicking submission for asset group "([^"]*)"$/) do |asset
     workflow: Submission::Workflow.find_by(key: 'microarray_genotyping'),
     user: User.last,
     assets: asset_group.assets
-    )
+  )
   step('1 pending delayed jobs are processed')
 end
 
