@@ -21,7 +21,7 @@ module SampleManifestExcel
       private
 
       def check_reference_genome_exists
-        errors.add(:base, "could not find #{value} reference genome.") unless reference_genome.present?
+        errors.add(:base, "could not find #{value} reference genome.") if reference_genome.blank?
       end
     end
   end

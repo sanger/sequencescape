@@ -97,7 +97,7 @@ feature 'Sample manifest with tag sequences' do
     end
 
     context 'invalid' do
-      let(:download) { build(:test_download, columns: columns, manifest_type: 'multiplexed_library', validation_errors: [:library_type, :tags]) }
+      let(:download) { build(:test_download, columns: columns, manifest_type: 'multiplexed_library', validation_errors: %i[library_type tags]) }
 
       scenario 'validation errors' do
         login_user(user)
