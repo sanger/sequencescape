@@ -3,7 +3,7 @@
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2015 Genome Research Ltd.
-class Parsers::IscXtenParser
+class Parsers::PlateReaderParser
   class InvalidFile < StandardError; end
 
   def headers
@@ -23,11 +23,9 @@ class Parsers::IscXtenParser
   end
 
   def concentration(location)
-    begin
-      get_row(location)[get_column_for_header(:concentration)]
-    rescue NoMethodError # Ugh! I want to catch these where they happen
-      raise InvalidFile
-    end
+    get_row(location)[get_column_for_header(:concentration)]
+  rescue NoMethodError # Ugh! I want to catch these where they happen
+    raise InvalidFile
   end
 
   def get_column_for_header(sym)
@@ -49,9 +47,9 @@ class Parsers::IscXtenParser
     }[sym_name]
   end
 
-  def self.is_isc_xten_file?(content)
-    parser = Parsers::IscXtenParser.new(content)
-    [:row, :col, :content, :raw_data, :concentration].each_with_index.map do |sym, pos|
+  def self.parses?(content)
+    parser = Parsers::PlateReaderParser.new(content)
+    %i[row col content raw_data concentration].each_with_index.map do |sym, pos|
       parser.get_column_for_header(sym) == pos
     end.all?
   end

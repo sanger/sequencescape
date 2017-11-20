@@ -10,7 +10,7 @@ class CustomerRequest < Request
 
   after_create :generate_create_request_event
   after_save :generate_request_event, if: :saved_change_to_state?
-  after_save :create_billing_events
+  after_save :create_billing_events, if: :can_be_billed?
   before_destroy :generate_destroy_request_event
 
   delegate :customer_accepts_responsibility, :customer_accepts_responsibility=, to: :request_metadata
@@ -72,7 +72,6 @@ class CustomerRequest < Request
   end
 
   def create_billing_events
-    return unless can_be_billed?
     factory = Billing::Factory.build(self)
     factory.create! if factory.valid?
   end

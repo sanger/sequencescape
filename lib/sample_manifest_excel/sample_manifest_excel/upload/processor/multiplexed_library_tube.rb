@@ -11,7 +11,7 @@ module SampleManifestExcel
       class MultiplexedLibraryTube < Base
         include Tags::Validator::Uniqueness
 
-        attr_accessor :substitutions
+        attr_writer :substitutions
 
         def run(tag_group)
           if valid?

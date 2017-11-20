@@ -63,9 +63,9 @@ RSpec.describe SampleManifestExcel::Tags, type: :model, sample_manifest_excel: t
 
     it 'finds tags clashes and creates tags clashes message' do
       tag_clashes_finder = TestTagClashesFinder.new
-      tags_oligos_combinations = [['AA', 'TT'], ['AA', 'GC'], ['TT', 'AA'], ['AA', 'TT']]
+      tags_oligos_combinations = [%w[AA TT], %w[AA GC], %w[TT AA], %w[AA TT]]
       result = tag_clashes_finder.find_tags_clash(tags_oligos_combinations)
-      expect(result).to eq(['AA', 'TT'] => [0, 3])
+      expect(result).to eq(%w[AA TT] => [0, 3])
       message = tag_clashes_finder.create_tags_clashes_message(result)
       expect(message).to eq('Same tags AA, TT are used on rows 1, 4.')
       first_row = 5
@@ -75,7 +75,7 @@ RSpec.describe SampleManifestExcel::Tags, type: :model, sample_manifest_excel: t
 
     it 'finds nothing if there are no tag clashes' do
       tag_clashes_finder = TestTagClashesFinder.new
-      tags_oligos_combinations = [['AA', 'TT'], ['AA', 'GC'], ['TT', 'AA']]
+      tags_oligos_combinations = [%w[AA TT], %w[AA GC], %w[TT AA]]
       result = tag_clashes_finder.find_tags_clash(tags_oligos_combinations)
       expect(result).to eq({})
     end
