@@ -54,7 +54,6 @@ class LabwhereReception
         errors.add(:scan, scan.error)
         return false
       end
-
     rescue LabWhereClient::LabwhereException => exception
       errors.add(:base, 'Could not connect to Labwhere. Sequencescape location has still been updated')
       return false

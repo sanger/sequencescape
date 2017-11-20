@@ -21,16 +21,6 @@ Bundler/OrderedGems:
   Exclude:
     - 'Gemfile'
 
-# Offense count: 5
-# Cop supports --auto-correct.
-Layout/EmptyLinesAroundExceptionHandlingKeywords:
-  Exclude:
-    - 'app/models/labwhere_reception.rb'
-    - 'app/models/qc_report.rb'
-    - 'app/models/sample_manifest/input_behaviour.rb'
-    - 'app/models/submission/submission_creator.rb'
-    - 'app/models/user/authentication.rb'
-
 # Offense count: 3
 # Cop supports --auto-correct.
 # Configuration parameters: AllowForAlignment, ForceEqualSignAlignment.
