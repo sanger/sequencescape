@@ -49,7 +49,7 @@ class Parsers::PlateReaderParser
 
   def self.parses?(content)
     parser = Parsers::PlateReaderParser.new(content)
-    [:row, :col, :content, :raw_data, :concentration].each_with_index.map do |sym, pos|
+    %i[row col content raw_data concentration].each_with_index.map do |sym, pos|
       parser.get_column_for_header(sym) == pos
     end.all?
   end

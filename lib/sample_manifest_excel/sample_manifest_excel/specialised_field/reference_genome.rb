@@ -8,7 +8,7 @@ module SampleManifestExcel
 
       validate :check_reference_genome_exists, if: :value_present?
 
-      attr_accessor :reference_genome
+      attr_writer :reference_genome
 
       def update(_attributes = {})
         sample.sample_metadata.reference_genome = reference_genome if valid?
@@ -21,7 +21,7 @@ module SampleManifestExcel
       private
 
       def check_reference_genome_exists
-        errors.add(:base, "could not find #{value} reference genome.") unless reference_genome.present?
+        errors.add(:base, "could not find #{value} reference genome.") if reference_genome.blank?
       end
     end
   end
