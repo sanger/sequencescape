@@ -58,7 +58,6 @@ class RequestType < ApplicationRecord
     control: 4
   }
 
-
   belongs_to :product_line
   # The target asset can either be described by a purpose, or by the target asset type.
   belongs_to :target_purpose, class_name: 'Purpose'

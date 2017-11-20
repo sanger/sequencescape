@@ -66,7 +66,7 @@ class Request < ApplicationRecord
   belongs_to :billing_product, class_name: 'Billing::Product'
   has_many :billing_items, class_name: 'Billing::Item'
 
-  # A RequestPurpose is a simple means of distinguishing WHY a request was made.
+  # A request_purpose is a simple means of distinguishing WHY a request was made.
   # cf. RequestType which defines how it will be fulfilled.
   # Both RequestType and Request have a purpose, with the former acting as the default for
   # the latter.
@@ -79,7 +79,6 @@ class Request < ApplicationRecord
   # Validations
   # On create we perform a full and complete validation.
   validates_presence_of :request_purpose
-
 
   broadcast_via_warren
 

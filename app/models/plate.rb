@@ -36,7 +36,10 @@ class Plate < Asset
       proxy_association.owner.maps.in_row_major_order.pluck(:id).map do |location_id|
         Well.create!(map_id: location_id)
       end.tap do |wells|
-        ContainerAssociation.import(wells.map {|w| {content_id: w.id, container_id: proxy_association.owner.id } })
+        ContainerAssociation.import(wells.map { |w| { content_id: w.id, container_id: proxy_association.owner.id } })
+        # If the well association has already been loaded, reload it. Otherwise rails will continue
+        # to think the plate has no wells.
+        proxy_association.reload if proxy_association.loaded?
       end
     end
 
