@@ -23,13 +23,13 @@ module Aliquot::DataForSubstitution
   end
 
   def tag_id_substitution
-    return {} unless changes[:tag_id].present?
+    return {} if changes[:tag_id].blank?
     { original_tag_id: original_tag_id,
       substitute_tag_id: substitute_tag_id }
   end
 
   def tag2_id_substitution
-    return {} unless changes[:tag2_id].present?
+    return {} if changes[:tag2_id].blank?
     { original_tag2_id: original_tag2_id,
       substitute_tag2_id: substitute_tag2_id }
   end
