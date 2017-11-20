@@ -18,7 +18,7 @@ class LabwhereReceptionTest < ActiveSupport::TestCase
   test 'it should scan the labware into the location' do
     LabWhereClient::Scan.expects(:create).with(
             location_barcode: 'labwhere_location', user_code: user.barcode, labware_barcodes: labware_barcodes_in_ss
-          ).returns(MockResponse.new(true, ''))
+    ).returns(MockResponse.new(true, ''))
     labwhere_reception = LabwhereReception.new(user.barcode, 'labwhere_location', location.id, labware_barcodes_in_ss)
     assert labwhere_reception.save
   end
@@ -26,7 +26,7 @@ class LabwhereReceptionTest < ActiveSupport::TestCase
   test 'it should scan the labware into the location if the labware is not in ss' do
     LabWhereClient::Scan.expects(:create).with(
             location_barcode: 'labwhere_location', user_code: user.barcode, labware_barcodes: labware_barcodes_not_in_ss
-          ).returns(MockResponse.new(true, ''))
+    ).returns(MockResponse.new(true, ''))
     labwhere_reception = LabwhereReception.new(user.barcode, 'labwhere_location', location.id, labware_barcodes_not_in_ss)
     assert_equal true, labwhere_reception.save
   end
@@ -34,7 +34,7 @@ class LabwhereReceptionTest < ActiveSupport::TestCase
   test 'it should scan the labware into the location if labware is or is not in ss' do
     LabWhereClient::Scan.expects(:create).with(
             location_barcode: 'labwhere_location', user_code: user.barcode, labware_barcodes: labware_barcodes_both
-          ).returns(MockResponse.new(true, ''))
+    ).returns(MockResponse.new(true, ''))
     labwhere_reception = LabwhereReception.new(user.barcode, 'labwhere_location', location.id, labware_barcodes_both)
     assert_equal true, labwhere_reception.save
   end

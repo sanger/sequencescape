@@ -292,7 +292,7 @@ ActiveRecord::Base.transaction do
   cherrypickable_target: true,
   cherrypick_direction: 'column',
   asset_shape: AssetShape.find_by(name: 'Standard')
-)
+  )
 PlatePurpose.create!(
   name: 'STA2',
   default_state: 'pending',

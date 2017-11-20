@@ -44,7 +44,8 @@ class Submission < ApplicationRecord
       { assets: :uuid_object },
       { study: :uuid_object },
       :user] }
-  ])}
+  ])
+  }
 
   scope :building, -> { where(state: 'building') }
   scope :pending,  -> { where(state: 'pending') }

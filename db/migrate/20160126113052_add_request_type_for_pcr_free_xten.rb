@@ -22,7 +22,7 @@ class AddRequestTypeForPcrFreeXten < ActiveRecord::Migration
         request_class_name: 'IlluminaHtp::Requests::StdLibraryRequest',
         workflow: Submission::Workflow.find_by!(key: 'short_read_sequencing'),
         product_line: ProductLine.find_by!(name: 'Illumina-HTP')
-        )
+      )
 
       rt.acceptable_plate_purposes << Purpose.find_by!(name: 'PF Cherrypicked')
 

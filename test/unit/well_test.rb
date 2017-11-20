@@ -321,7 +321,7 @@ class WellTest < ActiveSupport::TestCase
       context "when testing #{scenario}" do
         setup do
           @result_volume = ('%.1f' % @well.volume_to_cherrypick_by_nano_grams_per_micro_litre(volume_required,
-            concentration_required, source_concentration, source_volume, robot_minimum_pick_volume)).to_f
+                                                                                              concentration_required, source_concentration, source_volume, robot_minimum_pick_volume)).to_f
           @result_buffer_volume = ('%.1f' % @well.get_buffer_volume).to_f
         end
         should 'gets correct volume quantity' do

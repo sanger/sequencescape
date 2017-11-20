@@ -14,7 +14,8 @@ module ModelExtensions::SampleManifest
             primary_study: { study_metadata: :reference_genome }
           }
         ]
-      ) }
+      )
+      }
       delegate :io_samples, to: :core_behaviour
     end
   end

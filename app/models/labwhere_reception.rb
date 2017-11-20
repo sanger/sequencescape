@@ -44,7 +44,6 @@ class LabwhereReception
     return false unless valid?
 
     begin
-
       scan = LabWhereClient::Scan.create(
         location_barcode: location_barcode,
         user_code: user_code,

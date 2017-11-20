@@ -142,7 +142,7 @@ class BatchTest < ActiveSupport::TestCase
     context 'when a batch is not associated with any events, it' do
       should 'return false.' do
         assert_equal false, @batch.has_event('Tube layout verified'),
-          '#has_event should return false if an event is not found'
+                     '#has_event should return false if an event is not found'
       end
     end
     context 'when a batch has a LabEvent' do
@@ -596,7 +596,7 @@ class BatchTest < ActiveSupport::TestCase
                 @user,
                 'batch_1' => { 'id' => @left_batch.id.to_s, 'lane' => left_position.to_s },
                 'batch_2' => { 'id' => @right_batch.id.to_s, 'lane' => right_position.to_s }
-             )
+              )
             )
 
             # The two requests should have been swapped

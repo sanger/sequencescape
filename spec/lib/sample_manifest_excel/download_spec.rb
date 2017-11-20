@@ -25,20 +25,20 @@ RSpec.describe SampleManifestExcel::Download, type: :model, sample_manifest_exce
 
   it 'should not be valid without a sample manifest' do
     download = SampleManifestExcel::Download.new(nil,
-      SampleManifestExcel.configuration.columns.plate_full.dup,
-      SampleManifestExcel.configuration.ranges.dup)
+                                                 SampleManifestExcel.configuration.columns.plate_full.dup,
+                                                 SampleManifestExcel.configuration.ranges.dup)
     expect(download).to_not be_valid
   end
 
   it 'should not be valid without some columns' do
     download = SampleManifestExcel::Download.new(create(:sample_manifest), nil,
-      SampleManifestExcel.configuration.ranges.dup)
+                                                 SampleManifestExcel.configuration.ranges.dup)
     expect(download).to_not be_valid
   end
 
   it 'should not be valid without some ranges' do
     download = SampleManifestExcel::Download.new(create(:sample_manifest),
-      SampleManifestExcel.configuration.columns.plate_full.dup, nil)
+                                                 SampleManifestExcel.configuration.columns.plate_full.dup, nil)
     expect(download).to_not be_valid
   end
 
@@ -47,7 +47,7 @@ RSpec.describe SampleManifestExcel::Download, type: :model, sample_manifest_exce
       sample_manifest = create(:sample_manifest, rapid_generation: true)
       sample_manifest.generate
       @download = SampleManifestExcel::Download.new(sample_manifest,
-        SampleManifestExcel.configuration.columns.plate_full.dup, SampleManifestExcel.configuration.ranges.dup)
+                                                    SampleManifestExcel.configuration.columns.plate_full.dup, SampleManifestExcel.configuration.ranges.dup)
       save_file
     end
 
@@ -70,7 +70,7 @@ RSpec.describe SampleManifestExcel::Download, type: :model, sample_manifest_exce
       sample_manifest = create(:tube_sample_manifest, rapid_generation: true)
       sample_manifest.generate
       @download = SampleManifestExcel::Download.new(sample_manifest,
-        SampleManifestExcel.configuration.columns.tube_full.dup, SampleManifestExcel.configuration.ranges.dup)
+                                                    SampleManifestExcel.configuration.columns.tube_full.dup, SampleManifestExcel.configuration.ranges.dup)
       save_file
     end
 
@@ -93,7 +93,7 @@ RSpec.describe SampleManifestExcel::Download, type: :model, sample_manifest_exce
       sample_manifest = create(:tube_sample_manifest, asset_type: 'multiplexed_library', rapid_generation: true)
       sample_manifest.generate
       @download = SampleManifestExcel::Download.new(sample_manifest,
-        SampleManifestExcel.configuration.columns.tube_multiplexed_library.dup, SampleManifestExcel.configuration.ranges.dup)
+                                                    SampleManifestExcel.configuration.columns.tube_multiplexed_library.dup, SampleManifestExcel.configuration.ranges.dup)
       save_file
     end
 
@@ -117,7 +117,7 @@ RSpec.describe SampleManifestExcel::Download, type: :model, sample_manifest_exce
       sample_manifest = create(:tube_sample_manifest_with_samples, asset_type: 'library', rapid_generation: true)
       sample_manifest.generate
       @download = SampleManifestExcel::Download.new(sample_manifest,
-        SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup, SampleManifestExcel.configuration.ranges.dup)
+                                                    SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup, SampleManifestExcel.configuration.ranges.dup)
       save_file
     end
 

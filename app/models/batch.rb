@@ -393,7 +393,7 @@ class Batch < ApplicationRecord
     return nil if requests.empty?
     requests.first.asset.ancestors.joins(
       'INNER JOIN plate_purposes ON assets.plate_purpose_id = plate_purposes.id'
-)
+    )
             .find_by(plate_purposes: { name: name })
   end
 

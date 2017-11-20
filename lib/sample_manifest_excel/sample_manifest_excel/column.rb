@@ -8,7 +8,7 @@ module SampleManifestExcel
     include Helpers::Attributes
 
     set_attributes :name, :heading, :number, :type, :validation, :value, :unlocked, :conditional_formattings, :attribute, :range,
-                    defaults: { number: 0, type: :string, conditional_formattings: {}, validation: NullValidation.new }
+                   defaults: { number: 0, type: :string, conditional_formattings: {}, validation: NullValidation.new }
 
     validates_presence_of :name, :heading
 

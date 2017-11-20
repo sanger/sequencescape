@@ -178,5 +178,5 @@ Given /^the tag2 layout template "(.*?)" is associated with the last submission$
   Tag2Layout::TemplateSubmission.create!(
     tag2_layout_template: Tag2LayoutTemplate.find_by!(name: template),
     submission: Submission.last
-    )
+  )
 end

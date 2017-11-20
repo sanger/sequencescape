@@ -60,7 +60,7 @@ class Sdb::SampleManifestsController < Sdb::BaseController
 
   def create
     @sample_manifest_generator = SampleManifestGenerator.new(params[:sample_manifest],
-                                  current_user, SampleManifestExcel.configuration)
+                                                             current_user, SampleManifestExcel.configuration)
 
     if @sample_manifest_generator.execute
 
@@ -89,8 +89,8 @@ class Sdb::SampleManifestsController < Sdb::BaseController
 
   def print_labels
     print_job = LabelPrinter::PrintJob.new(params[:printer],
-                      LabelPrinter::Label::SampleManifestRedirect,
-                      sample_manifest: @sample_manifest)
+                                           LabelPrinter::Label::SampleManifestRedirect,
+                                           sample_manifest: @sample_manifest)
     if print_job.execute
       flash[:notice] = print_job.success
     else

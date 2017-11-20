@@ -234,8 +234,8 @@ class AssetsController < ApplicationController
 
   def print_labels
     print_job = LabelPrinter::PrintJob.new(params[:printer],
-                                          LabelPrinter::Label::AssetRedirect,
-                                          printables: params[:printables])
+                                           LabelPrinter::Label::AssetRedirect,
+                                           printables: params[:printables])
     if print_job.execute
       flash[:notice] = print_job.success
     else
@@ -247,8 +247,8 @@ class AssetsController < ApplicationController
 
   def print_assets
     print_job = LabelPrinter::PrintJob.new(params[:printer],
-                                          LabelPrinter::Label::AssetRedirect,
-                                          printables: @asset)
+                                           LabelPrinter::Label::AssetRedirect,
+                                           printables: @asset)
     if print_job.execute
       flash[:notice] = print_job.success
     else
