@@ -1,6 +1,6 @@
 module Aker
-  class Container < ActiveRecord::Base
-    has_many :samples
+  class Container < ApplicationRecord
+    has_many :samples, dependent: :destroy
 
     validates :barcode, presence: true, uniqueness: true
 

@@ -6,7 +6,7 @@ module Aker
     class WorkOrder
       include ActiveModel::Model
 
-      ATTRIBUTES = [:work_order_id, :product_name, :product_version, :product_uuid, :proposal_id, :proposal_name, :cost_code, :materials, :comment, :desired_date, :status].freeze
+      ATTRIBUTES = %i[work_order_id product_name product_version product_uuid proposal_id proposal_name cost_code materials comment desired_date status].freeze
       DEFAULT_ATTRIBUTES = { materials: {} }.freeze
 
       attr_accessor(*ATTRIBUTES)
