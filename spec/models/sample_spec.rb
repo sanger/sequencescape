@@ -64,4 +64,16 @@ RSpec.describe Sample, type: :model, accession: true do
       expect(sample.can_be_included_in_submission?).to be_truthy
     end
   end
+
+  context 'Aker' do
+    it 'can have many work orders' do
+      work_order = create(:aker_work_order)
+      expect(create(:sample, work_orders: [work_order]).work_orders).to include(work_order)
+    end
+
+    it 'can belong to a container' do
+      container = create(:container)
+      expect(create(:sample, container: container).container).to eq(container)
+    end
+  end
 end

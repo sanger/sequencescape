@@ -22,18 +22,9 @@ module Submission::StateMachine
   end
 
   module InstanceMethods
-    # TODO[xxx]: This should be a guard but what the heck ...
-    def left_building_state?
-      not building? or !!@leaving_building_state
-    end
-
     def valid_for_leaving_building_state
-      @leaving_building_state = true
       raise ActiveRecord::RecordInvalid, self unless valid?
-    ensure
-      @leaving_building_state = false
     end
-    # TODO[xxx]: ... to here
 
     def complete_building
       orders.reload.each(&:complete_building)

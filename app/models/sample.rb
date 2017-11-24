@@ -218,6 +218,11 @@ class Sample < ApplicationRecord
   acts_as_authorizable
   broadcast_via_warren
 
+  # Aker
+  has_many :sample_work_orders
+  has_many :work_orders, class_name: 'Aker::WorkOrder', through: :sample_work_orders
+  belongs_to :container, class_name: 'Aker::Container'
+
   validates_presence_of :name
   validates_format_of :name, with: /\A[\w_-]+\z/i, message: I18n.t('samples.name_format'), if: :new_name_format, on: :create
   validates_format_of :name, with: /\A[\(\)\+\s\w._-]+\z/i, message: I18n.t('samples.name_format'), if: :new_name_format, on: :update

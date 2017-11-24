@@ -8,7 +8,7 @@ RSpec.describe Asset, type: :model do
         @result_hash = @asset.barcode_and_created_at_hash
       end
       it 'return a hash with the barcode and created_at time' do
-        assert !@result_hash.blank?
+        assert @result_hash.present?
         assert @result_hash.is_a?(Hash)
         assert @result_hash[:barcode].is_a?(String)
         assert @result_hash[:created_at].is_a?(ActiveSupport::TimeWithZone)

@@ -13,7 +13,7 @@ AllCops:
 # The cop is meant to enforce conventions regarding variables containing numbers
 # However in 0.43.0 it is bugged. Both changed on master and disabled by default
 # The exclusions don't even get added to the rubocop_todo properly!
-Style/VariableNumber:
+Naming/VariableNumber:
   Enabled: false
 Rails:
   Enabled: true
@@ -42,10 +42,6 @@ Metrics/BlockLength:
     - 'spec/**/*'
     - 'config/routes.rb'
 
-# Enforces the new rails 5 style. Re-enable on Rails 5 upgrade.
-Rails/HttpPositionalArguments:
-  Enabled: false
-
 # We have a few custom find_by methods which we maintain.
 # At least for now. find_by_id_or_name is a bit clunky.
 Rails/DynamicFindBy:
@@ -59,7 +55,7 @@ Rails/DynamicFindBy:
     - find_by_id_or_name
     - find_by_id_or_name!
 
-Style/IndentArray:
+Layout/IndentArray:
   EnforcedStyle: consistent
   
 Style/ClassAndModuleChildren:
