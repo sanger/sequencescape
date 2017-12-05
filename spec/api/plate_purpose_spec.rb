@@ -19,7 +19,8 @@ describe '/api/1/plate_purposes' do
           "name": "External Plate Purpose",
           "stock_plate": true,
           "input_plate": true,
-          "parents": ["#{parent_purpose.uuid}"]
+          "parents": ["#{parent_purpose.uuid}"],
+          "size": 384
         }
       }}
     end
@@ -30,6 +31,7 @@ describe '/api/1/plate_purposes' do
           "actions": {},
           "name": "External Plate Purpose",
           "stock_plate": true,
+          "size": 384,
           "plates": {
             "actions": {}
           },

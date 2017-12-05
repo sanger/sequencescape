@@ -36,7 +36,7 @@ namespace :limber do
       Limber::Helper::RequestTypeConstructor.new(
         'ISC',
         request_class: 'Pulldown::Requests::IscLibraryRequest',
-        library_types: 'Agilent Pulldown'
+        library_types: ['Agilent Pulldown']
       ).build!
 
       Limber::Helper::RequestTypeConstructor.new(

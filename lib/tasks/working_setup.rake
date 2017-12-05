@@ -1,4 +1,5 @@
 namespace :working do
+
   task setup: :environment do
     ActiveRecord::Base.transaction do
   class PlateBarcode < ActiveResource::Base
@@ -35,8 +36,8 @@ namespace :working do
           plate.wells.each { |w| w.aliquots.create!(sample: Sample.create!(name: "sample_in_stock_well_#{w.map.description}", studies: [study])) }
           puts "Stock: #{plate.ean13_barcode}-#{plate.sanger_human_barcode}"
        end
-        8.times do |i|
-          Purpose.find_by(name: 'Cherrypicked').create!(location: locations[:htp]).tap do |plate|
+        4.times do |i|
+          Purpose.find_by(name: 'LB Cherrypick').create!(location: locations[:htp]).tap do |plate|
             plate.wells.each { |w| w.aliquots.create!(sample: Sample.create!(name: "sample_in_cp#{i}_well_#{w.map.description}", studies: [study])) }
             puts "Cherrypicked: #{plate.ean13_barcode}-#{plate.sanger_human_barcode}"
           end
