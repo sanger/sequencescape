@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171117110424) do
+ActiveRecord::Schema.define(version: 20171205143326) do
 
   create_table "aker_containers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "barcode"
@@ -602,14 +602,12 @@ ActiveRecord::Schema.define(version: 20171117110424) do
     t.integer "workflow_sample_id"
     t.boolean "closed", default: false
     t.integer "pool_id"
-    t.integer "workflow_id"
     t.integer "version"
     t.integer "submission_id"
     t.index ["name"], name: "index_items_on_name"
     t.index ["study_id"], name: "index_items_on_study_id"
     t.index ["submission_id"], name: "index_items_on_submission_id"
     t.index ["version"], name: "index_items_on_version"
-    t.index ["workflow_id"], name: "index_items_on_workflow_id"
     t.index ["workflow_sample_id"], name: "index_items_on_sample_id"
   end
 
@@ -736,7 +734,6 @@ ActiveRecord::Schema.define(version: 20171117110424) do
 
   create_table "orders", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.integer "study_id"
-    t.integer "workflow_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "state_to_delete", limit: 20
@@ -1197,7 +1194,6 @@ ActiveRecord::Schema.define(version: 20171117110424) do
   create_table "request_types", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.string "key", limit: 100
     t.string "name"
-    t.integer "workflow_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "asset_type"
@@ -1236,7 +1232,6 @@ ActiveRecord::Schema.define(version: 20171117110424) do
     t.integer "user_id"
     t.string "state", limit: 20, default: "pending"
     t.integer "sample_pool_id"
-    t.integer "workflow_id"
     t.integer "request_type_id"
     t.integer "item_id"
     t.integer "asset_id"
@@ -1821,7 +1816,6 @@ ActiveRecord::Schema.define(version: 20171117110424) do
     t.string "api_key"
     t.string "first_name"
     t.string "last_name"
-    t.integer "workflow_id"
     t.boolean "pipeline_administrator"
     t.string "barcode"
     t.string "cookie"
