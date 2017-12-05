@@ -8,9 +8,9 @@ class BatchMultiplexTest < ActiveSupport::TestCase
 
   def setup
     pipeline = create :pipeline,
-      name: 'Test pipeline',
-      workflow: LabInterface::Workflow.create!(item_limit: 8),
-      multiplexed: true
+                      name: 'Test pipeline',
+                      workflow: LabInterface::Workflow.create!(item_limit: 8),
+                      multiplexed: true
     batch = pipeline.batches.create!
 
     @prefix = 'NT'

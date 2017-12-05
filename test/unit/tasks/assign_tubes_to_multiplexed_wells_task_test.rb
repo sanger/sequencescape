@@ -58,7 +58,7 @@ class AssignTubestoMultiplexedWellsTaskTest < ActiveSupport::TestCase
             asset = create :pac_bio_library_tube
             asset.aliquots.first.update_attributes!(tag: @tags[i - 1])
             mock("request_#{i}",
-              asset: asset).tap do |request|
+                 asset: asset).tap do |request|
               request.expects(:target_asset=).with(@mock_wells[request_target[i]])
               request.expects(:save!)
               request.expects(:id).at_least_once.returns(i)
@@ -83,7 +83,7 @@ class AssignTubestoMultiplexedWellsTaskTest < ActiveSupport::TestCase
             asset = create :pac_bio_library_tube
             asset.aliquots.first.update_attributes!(tag: @tags[i - 1])
             mock("request_#{i}",
-              asset: asset).tap do |request|
+                 asset: asset).tap do |request|
               request.expects(:id).at_least_once.returns(i)
             end
           end
@@ -112,7 +112,7 @@ class AssignTubestoMultiplexedWellsTaskTest < ActiveSupport::TestCase
             asset = create :pac_bio_library_tube
             asset.aliquots.first.update_attributes!(tag: @tags[i - 1])
             mock("request_#{i}",
-              asset: asset).tap do |request|
+                 asset: asset).tap do |request|
               request.expects(:id).at_least_once.returns(i)
               request.expects(:shared_attributes).at_least_once.returns("clash#{i}")
             end

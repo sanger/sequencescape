@@ -33,10 +33,10 @@ module PlatePurpose::Stock
     unique_states = wells_states.uniq
     return UNREADY_STATE if unique_states.include?(:unready)
     case unique_states.sort
-     when ['failed'] then 'failed'
-     when ['cancelled'] then 'cancelled'
-     when ['cancelled', 'failed'] then 'failed'
-     else READY_STATE
+    when ['failed'] then 'failed'
+    when ['cancelled'] then 'cancelled'
+    when ['cancelled', 'failed'] then 'failed'
+    else READY_STATE
     end
   end
 

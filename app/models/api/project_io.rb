@@ -21,7 +21,8 @@ class Api::ProjectIO < Api::Base
               project_metadata: [:project_manager, :budget_division],
               roles: :users
             }
-        ])}
+        ])
+        }
       end
     end
 

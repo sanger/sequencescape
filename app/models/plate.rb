@@ -612,8 +612,8 @@ class Plate < Asset
   def create_sample_tubes_and_print_barcodes(barcode_printer, location = nil)
     sample_tubes = create_sample_tubes
     print_job = LabelPrinter::PrintJob.new(barcode_printer.name,
-                                          LabelPrinter::Label::PlateToTubes,
-                                          sample_tubes: sample_tubes)
+                                           LabelPrinter::Label::PlateToTubes,
+                                           sample_tubes: sample_tubes)
     print_job.execute
     if location
       location.set_locations(sample_tubes)

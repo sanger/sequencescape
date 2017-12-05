@@ -34,7 +34,8 @@ class Api::RequestIO < Api::Base
               initial_study: :uuid_object,
               initial_project: :uuid_object
             }
-        ])}
+        ])
+        }
 
         alias_method(:json_root, :url_name)
       end

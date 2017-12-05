@@ -21,7 +21,8 @@ class Api::StudyIO < Api::Base
             study_metadata: [:faculty_sponsor, :reference_genome, :study_type, :data_release_study_type],
             roles: :users
           }
-        ])}
+        ])
+        }
       end
     end
 

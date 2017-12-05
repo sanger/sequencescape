@@ -88,7 +88,6 @@ def output_pool(item, i)
   end
 end
 
-
 xml.instruct!
 xml.comment!("/requests/incomplete_requests_for_family has been deprecated and will be removed in Sequencescape 3.1 - use /requests/pending?request_type='key_for_request_type' instead")
 xml.requests({api_version: '0.1'}) do |requests|

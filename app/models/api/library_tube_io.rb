@@ -23,7 +23,8 @@ class Api::LibraryTubeIO < Api::Base
               primary_aliquot: { sample: :uuid_object, tag: [:uuid_object, { tag_group: :uuid_object }] }
             },
           :scanned_into_lab_event
-        ])}
+        ])
+        }
 
         alias_method(:json_root, :url_name)
       end

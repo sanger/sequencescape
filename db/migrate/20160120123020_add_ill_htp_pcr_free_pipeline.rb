@@ -12,7 +12,7 @@ class AddIllHtpPcrFreePipeline < ActiveRecord::Migration
       stock_name = 'PF Cherrypicked'
 
       branches = [[stock_name, 'PF Shear', 'PF Post Shear', 'PF Post Shear XP', 'PF Lib', 'PF Lib XP', 'PF Lib XP2', 'PF EM Pool', 'PF Lib Norm'],
-        ['PF Lib XP2', 'PF MiSeq Stock', 'PF MiSeq QC'], ['PF MiSeq Stock', 'PF MiSeq QCR']]
+                  ['PF Lib XP2', 'PF MiSeq Stock', 'PF MiSeq QC'], ['PF MiSeq Stock', 'PF MiSeq QCR']]
 
       plate_flow = [stock_name, 'PF Shear', 'PF Post Shear', 'PF Post Shear XP', 'PF Lib', 'PF Lib XP', 'PF Lib XP2', 'PF EM Pool', 'PF Lib Norm']
 

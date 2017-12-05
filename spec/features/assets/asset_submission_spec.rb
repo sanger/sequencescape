@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'rails_helper'
 require 'pry'
 
@@ -16,11 +17,11 @@ feature 'Asset submission', js: true do
       request_types.each_with_index do |request_type, index|
         read_length = read_lengths[index]
         request = create(request_factory,
-                            study: study,
-                            project: project,
-                            asset: asset,
-                            target_asset: target_asset,
-                            request_type: request_type)
+                         study: study,
+                         project: project,
+                         asset: asset,
+                         target_asset: target_asset,
+                         request_type: request_type)
         login_user user
         visit asset_path(asset)
         click_link 'Request additional sequencing'

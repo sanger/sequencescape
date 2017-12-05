@@ -216,9 +216,9 @@ module ApplicationHelper
       [content_tag(:td, class: 'error item') do
         "Your #{params.first} has not been created."
       end,
-      content_tag(:td, class: 'error') do
-        raw(error_messages)
-      end].join.html_safe
+       content_tag(:td, class: 'error') do
+         raw(error_messages)
+       end].join.html_safe
     end
   end
 

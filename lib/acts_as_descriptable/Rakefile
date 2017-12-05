@@ -48,5 +48,5 @@ task :rails_plugin=>:clobber
 
 desc 'Removes packaged files and docs'
 task :clobber=>[:clobber_package, :clobber_rdoc] do |task|
-    #
+  #
 end

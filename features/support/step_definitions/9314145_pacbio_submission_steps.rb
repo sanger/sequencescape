@@ -30,7 +30,7 @@ Given /^I have a PacBio submission$/ do
     user: User.last,
     assets: Plate.find_by(barcode: 1234567).wells.all,
     request_options: { :multiplier => { '1' => '1', '3' => '1' }, 'insert_size' => '500', 'sequencing_type' => 'Standard' }
-    )
+  )
   step('1 pending delayed jobs are processed')
 end
 

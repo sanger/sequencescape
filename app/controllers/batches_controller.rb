@@ -336,8 +336,8 @@ class BatchesController < ApplicationController
 
   def print_multiplex_barcodes
     print_job = LabelPrinter::PrintJob.new(params[:printer],
-                                        LabelPrinter::Label::BatchMultiplex,
-                                        count: params[:count], printable: params[:printable], batch: @batch)
+                                           LabelPrinter::Label::BatchMultiplex,
+                                           count: params[:count], printable: params[:printable], batch: @batch)
     if print_job.execute
       flash[:notice] = print_job.success
     else
@@ -365,8 +365,8 @@ class BatchesController < ApplicationController
       flash[:notice] = 'Your batch contains no requests.'
     else
       print_job = LabelPrinter::PrintJob.new(params[:printer],
-                                          LabelPrinter::Label::BatchTube,
-                                          stock: params[:stock], count: params[:count], printable: params[:printable], batch: @batch)
+                                             LabelPrinter::Label::BatchTube,
+                                             stock: params[:stock], count: params[:count], printable: params[:printable], batch: @batch)
       if print_job.execute
         flash[:notice] = print_job.success
       else

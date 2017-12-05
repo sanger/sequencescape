@@ -129,7 +129,7 @@ class BroadcastEventTest < ActiveSupport::TestCase
           dynamic_relation: @dynamic,
           id: 1,
           data_method_a: @value_a
-)
+        )
         @event = ExampleEvent.new(seed: @seed, user: @user, created_at: @time)
       end
 
