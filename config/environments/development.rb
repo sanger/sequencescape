@@ -7,7 +7,7 @@ Rails.application.configure do
   config.cache_classes = false
 
   # Do not eager load code on boot.
-  config.eager_load = false
+  config.eager_load = true
 
   # Show full error reports.
   config.consider_all_requests_local = true
@@ -33,7 +33,7 @@ Rails.application.configure do
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
-  config.logger = Logger.new(STDOUT)
+  config.logger = ActiveSupport::Logger.new(STDOUT)
 
   # Raise an error on page load if there are pending migrations.
   config.active_record.migration_error = :page_load

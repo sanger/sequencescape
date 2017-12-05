@@ -11,6 +11,9 @@ class Uuid < ApplicationRecord
   module Uuidable
     def self.included(base)
       base.class_eval do
+        # Lazy uuid generation disables uuid generation on record creation. For the most part this is
+        # undesireable (see below) but is useful for aliquots, as we do not expose the uuids via the API
+        # and only require them asynchronously.
         class_attribute :lazy_uuid_generation
         self.lazy_uuid_generation = false
         # Ensure that the resource has a UUID and that it's always created when the instance is created.

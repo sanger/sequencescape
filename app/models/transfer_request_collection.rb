@@ -21,11 +21,14 @@ class TransferRequestCollection < ApplicationRecord
   accepts_nested_attributes_for :transfer_requests
 
   def default_request_type
-    @drt ||= RequestType.transfer
+    @default_request_type ||= RequestType.transfer
   end
 
   # These are optimizations to reduce the number of queries that need to be
   # performed while the transfer takes place.
+  # Transfer requests rely both on the aliquots in an assets, and the transfer rquests
+  # into the asset (used to track state). Here we eager load all necessary assets
+  # and associated records, and pass them to the transfer requests directly.
   def transfer_requests_attributes=(args)
     asset_ids = extract_asset_ids(args)
     asset_cache = Asset.includes(:aliquots, :transfer_requests).find(asset_ids).index_by(&:id)
@@ -39,6 +42,8 @@ class TransferRequestCollection < ApplicationRecord
     super(optimized_parameters)
   end
 
+  # Args is an array of transfer request parameters (in hash format)
+  # We extract any referenced asset and target asset ids into an array.
   def extract_asset_ids(args)
     args.each_with_object([]) do |param, asset_ids|
       asset_ids << param[:asset_id] if param[:asset_id]

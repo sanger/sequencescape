@@ -30,12 +30,12 @@ class Postman
     end
 
     def process
-      info 'Started message process'
+      debug 'Started message process'
       debug payload
 
       begin
         broadcast_payload
-        main_exchange.ack(delivery_info.delivery_tag)
+        ack
       rescue ActiveRecord::StatementInvalid => exception
         if database_connection_error?(exception)
           # We have some temporary database issues. Requeue the message and pause
@@ -45,11 +45,11 @@ class Postman
         else
           deadletter(exception)
         end
-      rescue => exception
+      rescue StandardError => exception
         deadletter(exception)
       end
 
-      info 'Finished message process'
+      debug 'Finished message process'
     end
 
     private

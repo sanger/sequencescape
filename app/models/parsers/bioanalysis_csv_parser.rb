@@ -151,7 +151,7 @@ class Parsers::BioanalysisCsvParser
     end
   end
 
-  def self.is_bioanalyzer?(content)
+  def self.parses?(content)
     # We don't go through the whole file
     content[0..10].detect do |line|
       /Version Created/ === line[0] && /^B.*/ === line[1]

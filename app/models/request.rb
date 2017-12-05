@@ -60,7 +60,20 @@ class Request < ApplicationRecord
   has_many :samples, through: :asset, source: :samples
   has_many :qc_metric_requests
   has_many :qc_metrics, through: :qc_metric_requests
-  has_many :request_events, ->() { order(:current_from) }, inverse_of: :request
+
+  has_many :request_events, ->() { order(:current_from) }, inverse_of: :request do
+    def date_for_state(state)
+      # Annoyingly we get a new scope generated within the class method
+      # so can't actually check if we have the events loaded. This optimization
+      # improves performance when passing large numbers of requests, as it
+      # lets us eager load request events, reducing database hits.
+      if loaded?
+        reverse.detect { |event| event.to_state == state }.current_from
+      else
+        super
+      end
+    end
+  end
   has_many :upstream_requests, through: :asset, source: :requests_as_target
 
   belongs_to :billing_product, class_name: 'Billing::Product'
@@ -517,10 +530,6 @@ class Request < ApplicationRecord
     pool_information[:request_type] = request_type.key
     pool_information[:for_multiplexing] = request_type.for_multiplexing?
   end
-
-  # def submission_siblings
-  #   submission.requests.with_request_type_id(request_type_id)
-  # end
 
   # The date at which the submission was made. In most cases this will be similar to the request's created_at
   # timestamp. We go via submission to ensure that copied requests bear the original timestamp.

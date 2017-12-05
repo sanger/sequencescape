@@ -672,6 +672,22 @@ Sequencescape::Application.routes.draw do
   post 'get_your_qc_completed_tubes_here' => 'get_your_qc_completed_tubes_here#create', as: :get_your_qc_completed_tubes_here
   resources :sample_manifest_upload_with_tag_sequences, only: [:new, :create]
 
+  namespace :api do
+    namespace :v2 do
+      namespace :aker do
+        resources :work_orders, only: [:create]
+      end
+    end
+  end
+
+  namespace :aker do
+    resources :work_orders, only: [:index, :show] do
+      member do
+        post 'complete'
+        post 'cancel'
+      end
+    end
+  end
   resources :billing_reports, only: [:new, :create]
 
   # this is for test only test/functional/authentication_controller_test.rb

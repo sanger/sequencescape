@@ -1,5 +1,7 @@
 require 'bunny'
 require_relative 'postman/state_machine'
+require_relative 'postman/channel'
+require_relative 'postman/message'
 
 # A postman listens to a rabbitMQ message queues
 # and manages state and reconnection.

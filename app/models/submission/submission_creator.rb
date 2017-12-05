@@ -142,6 +142,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
     order.errors.empty?
   end
 
+  # this is more order_receptacles, asset_group is actually receptacle group
   def order_assets
     input_methods = [:asset_group_id, :sample_names_text, :barcodes_wells_text].select { |input_method| send(input_method).present? }
 

@@ -33,9 +33,10 @@ module Metadata
     # We now ensure that, if the metadata is not already created, that a blank instance is built.  We cannot
     # do this through the initialization of our model because we use the ActiveRecord::Base#becomes method in
     # our code, which would create a new default instance.
+    # If lazy metadata is true we do NOT generate metadata upfront. This is the case for internal requests,
+    # where metadata is unused anyway.
     line = __LINE__ + 1
     class_eval("
-
       class_attribute :lazy_metadata
       self.lazy_metadata = false
 
