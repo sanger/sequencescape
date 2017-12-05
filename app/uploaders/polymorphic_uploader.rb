@@ -74,30 +74,30 @@ module CarrierWave
 
         private
 
-          # Gets the current data from the database
-          def current_data
-            @uploader.model.db_files.map(&:data).join
-          end
+        # Gets the current data from the database
+        def current_data
+          @uploader.model.db_files.map(&:data).join
+        end
 
-          # Destroys the file. Called in the after_destroy callback
-          def destroy_file
-            @uploader.model.db_files.each do |db_file|
-              db_file.delete
-            end
+        # Destroys the file. Called in the after_destroy callback
+        def destroy_file
+          @uploader.model.db_files.each do |db_file|
+            db_file.delete
           end
+        end
 
-          # Yields the partitions for the file with the max_part_size boundary
-          def each_slice(data)
-            max_part_size = 200.kilobytes
-            beginning = 0;
-            left = data.size
-            while left > 0
-              part_size = [left, max_part_size].min
-              yield beginning, part_size
-              beginning += part_size
-              left -= part_size
-            end
+        # Yields the partitions for the file with the max_part_size boundary
+        def each_slice(data)
+          max_part_size = 200.kilobytes
+          beginning = 0;
+          left = data.size
+          while left > 0
+            part_size = [left, max_part_size].min
+            yield beginning, part_size
+            beginning += part_size
+            left -= part_size
           end
+        end
       end
     end # Database
   end # Storage
@@ -115,7 +115,7 @@ class PolymorphicUploader < CarrierWave::Uploader::Base
 
   # This is where files are stored on upload. We are using callbacks to empty it after upload
   def self.cache_dir
-     "#{Rails.root}/tmp/uploads"
+    "#{Rails.root}/tmp/uploads"
   end
 
   def cache_dir

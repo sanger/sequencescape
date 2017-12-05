@@ -55,14 +55,14 @@ module User::Authentication
       # TODO: - Extract LDAP specifics to configuration
       username = 'uid=' << login << ',ou=people,dc=sanger,dc=ac,dc=uk'
       ldap = Net::LDAP.new(
-          host: configatron.ldap_server,
-          port: configatron.ldap_secure_port,
-          encryption: :simple_tls,
-          auth: {
-            method: :simple,
-            username: username,
-            password: password
-          }
+        host: configatron.ldap_server,
+        port: configatron.ldap_secure_port,
+        encryption: :simple_tls,
+        auth: {
+          method: :simple,
+          username: username,
+          password: password
+        }
       )
       begin
         ldap.bind

@@ -117,10 +117,10 @@ class PreCapGroupsTest < ActiveSupport::TestCase
     context 'with repooling requests downstream' do
       setup do
         @test_plate.wells.located_at(['A1', 'D1']).each do |well|
-         create(:re_isc_request,
-                asset: well,
-                pre_capture_pool: @pools[2],
-                submission_id: 3)
+          create(:re_isc_request,
+                 asset: well,
+                 pre_capture_pool: @pools[2],
+                 submission_id: 3)
         end
       end
       should 'include all pools' do

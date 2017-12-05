@@ -37,9 +37,9 @@ class Tube < Receptacle
   has_many :submissions, ->() { distinct }, through: :requests_as_target
   scope :include_scanned_into_lab_event, -> { includes(:scanned_into_lab_event) }
 
- scope :with_purpose, ->(*purposes) {
-    where(plate_purpose_id: purposes.flatten.map(&:id))
-                      }
+  scope :with_purpose, ->(*purposes) {
+                         where(plate_purpose_id: purposes.flatten.map(&:id))
+                       }
 
   def submission
     submissions.first

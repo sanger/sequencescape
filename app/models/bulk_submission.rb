@@ -316,9 +316,9 @@ class BulkSubmission
 
         asset_ids, asset_names = details.fetch('asset ids', ''), details.fetch('asset names', '')
         found_assets = if attributes[:asset_group] && asset_ids.blank? && asset_names.blank?
-          []
+                         []
                        else
-          Array(find_all_assets_by_id_or_name_including_samples!(asset_ids, asset_names)).uniq
+                         Array(find_all_assets_by_id_or_name_including_samples!(asset_ids, asset_names)).uniq
                        end
 
         assets_found, expecting = found_assets.map { |asset| "#{asset.name}(#{asset.id})" }, asset_ids.size + asset_names.size

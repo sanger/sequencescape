@@ -64,14 +64,14 @@ class AssetsController < ApplicationController
 
   def find_parents(text)
     return [] unless text.present?
-      names = text.lines.map(&:chomp).reject { |l| l.blank? }
-      objects = Asset.where(id: names).all
-      objects += Asset.where(barcode: names).all
-      name_set = Set.new(names)
-      found_set = Set.new(objects.map(&:name))
-      not_found = name_set - found_set
-      raise InvalidInputException, "#{Asset.table_name} #{not_found.to_a.join(", ")} not founds" unless not_found.empty?
-      objects
+    names = text.lines.map(&:chomp).reject { |l| l.blank? }
+    objects = Asset.where(id: names).all
+    objects += Asset.where(barcode: names).all
+    name_set = Set.new(names)
+    found_set = Set.new(objects.map(&:name))
+    not_found = name_set - found_set
+    raise InvalidInputException, "#{Asset.table_name} #{not_found.to_a.join(", ")} not founds" unless not_found.empty?
+    objects
   end
 
   def create

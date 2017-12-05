@@ -15,23 +15,23 @@ class SubmissionPool < ApplicationRecord
           has_many :submission_pools, ->() { select('submissions.*, requests.id AS outer_request_id').group('submissions.id').uniq },
                    through: :well_requests_as_target do
 
-              def count(*args)
-                # Horrid hack due to the behaviour of count with a group_by
-                # We can't use uniq alone, as the outer_request_id makes
-                # the vairous rows unique.
-                s = super
-                return s if s.is_a?(Numeric)
-                s.length
-              end
+            def count(*args)
+              # Horrid hack due to the behaviour of count with a group_by
+              # We can't use uniq alone, as the outer_request_id makes
+              # the vairous rows unique.
+              s = super
+              return s if s.is_a?(Numeric)
+              s.length
+            end
 
-              def size(*args)
-                # Horrid hack due to the behaviour of count with a group_by
-                # We can't use uniq alone, as the outer_request_id makes
-                # the vairous rows unique.
-                s = super
-                return s if s.is_a?(Numeric)
-                s.length
-              end
+            def size(*args)
+              # Horrid hack due to the behaviour of count with a group_by
+              # We can't use uniq alone, as the outer_request_id makes
+              # the vairous rows unique.
+              s = super
+              return s if s.is_a?(Numeric)
+              s.length
+            end
           end
 
           def submission_pools
@@ -70,23 +70,23 @@ class SubmissionPool < ApplicationRecord
       .group('submissions.id')
   } do
 
-      def count(*_args)
-        # Horrid hack due to the behaviour of count with a group_by
-        # We can't use uniq alone, as the outer_request_id makes
-        # the vairous rows unique.
-        s = super(:id)
-        return s if s.is_a?(Numeric)
-        s.length
-      end
+    def count(*_args)
+      # Horrid hack due to the behaviour of count with a group_by
+      # We can't use uniq alone, as the outer_request_id makes
+      # the vairous rows unique.
+      s = super(:id)
+      return s if s.is_a?(Numeric)
+      s.length
+    end
 
-      def size(*args)
-        # Horrid hack due to the behaviour of count with a group_by
-        # We can't use uniq alone, as the outer_request_id makes
-        # the vairous rows unique.
-        s = super
-        return s if s.is_a?(Numeric)
-        s.length
-      end
+    def size(*args)
+      # Horrid hack due to the behaviour of count with a group_by
+      # We can't use uniq alone, as the outer_request_id makes
+      # the vairous rows unique.
+      s = super
+      return s if s.is_a?(Numeric)
+      s.length
+    end
   end
 
   def plates_in_submission

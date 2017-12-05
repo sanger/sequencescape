@@ -62,6 +62,6 @@ Given /^a user with human barcode "(ID\d+.)" exists$/ do |human_barcode|
 end
 
 Given /^user "([^"]*)" has nil first and last names$/ do |login|
-   user = User.find_by(login: login)
-   user.update_attributes!(last_name: nil, first_name: nil)
+  user = User.find_by(login: login)
+  user.update_attributes!(last_name: nil, first_name: nil)
 end

@@ -40,13 +40,13 @@ desc 'Packages up the plugin for remote installation'
 Rake::RailsPluginPackageTask.new(ProjectInfo[:name], ProjectInfo[:version]) do |p|
   p.package_files = PluginPackageFiles
   p.plugin_files = FileList["fast_tabs/**/*"]
-  p.extra_links = { "Project page"=>ProjectInfo[:homepage],
-                    "Author: #{ProjectInfo[:author_name]}"=>ProjectInfo[:author_link] }
+  p.extra_links = { "Project page" => ProjectInfo[:homepage],
+                    "Author: #{ProjectInfo[:author_name]}" => ProjectInfo[:author_link] }
   p.verbose = true
 end
-task :rails_plugin=>:clobber
+task :rails_plugin => :clobber
 
 desc 'Removes packaged files and docs'
-task :clobber=>[:clobber_package, :clobber_rdoc] do |task|
+task :clobber => [:clobber_package, :clobber_rdoc] do |task|
   #
 end

@@ -86,7 +86,7 @@ module SampleManifestExcel
 
     def specialised_field
       @specialised_field ||= if SampleManifestExcel.const_defined? classify_name
-                                SampleManifestExcel.const_get(classify_name)
+                               SampleManifestExcel.const_get(classify_name)
                              end
     end
 

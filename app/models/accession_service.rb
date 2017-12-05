@@ -48,14 +48,14 @@ class AccessionService
       files = [] # maybe not necessary, but just to be sure that the tempfile still exists when they are sent
       begin
         xml_result = post_files(submission.all_accessionables.map do |acc|
-            file = Tempfile.open("#{acc.schema_type}_file")
-            files << file
-            file.puts(acc.xml)
-            file.open # reopen for read
+                                  file = Tempfile.open("#{acc.schema_type}_file")
+                                  files << file
+                                  file.puts(acc.xml)
+                                  file.open # reopen for read
 
-            Rails::logger.debug { file.each_line.to_a.join("\n") }
+                                  Rails::logger.debug { file.each_line.to_a.join("\n") }
 
-            { name: acc.schema_type.upcase, local_name: file.path, remote_name: acc.file_name }
+                                  { name: acc.schema_type.upcase, local_name: file.path, remote_name: acc.file_name }
                                 end)
         Rails::logger.debug { xml_result }
         raise AccessionServiceError, "EBI Server Error. Couldnt get accession number: #{xml_result}" if xml_result.match?(/(Server error|Auth required|Login failed)/)
@@ -286,7 +286,7 @@ class AccessionService
       $! = nil
       raise AccessionServiceError
     else
-    return ''
+      return ''
     end
   rescue StandardError => exception
     raise AccessionServiceError, "Could not get accession number. EBI may be down or invalid data submitted: #{$!}"

@@ -5,7 +5,7 @@ FactoryGirl.define do
       plate.wells = Map.where_description(%w(A1 B1 C1 D1 E1 F1 G1 H1))
                        .where_plate_size(plate.size)
                        .where_plate_shape(AssetShape.default).map do |map|
-              build(:tagged_well, map: map, requests: [create(:lib_pcr_xp_request)])
+        build(:tagged_well, map: map, requests: [create(:lib_pcr_xp_request)])
       end
     end
   end
@@ -16,7 +16,7 @@ FactoryGirl.define do
       plate.wells = Map.where_description(%w(A1 B2 E6))
                        .where_plate_size(plate.size)
                        .where_plate_shape(AssetShape.default).map do |map|
-              build(:tagged_well, map: map, requests: [create(:lib_pcr_xp_request)])
+        build(:tagged_well, map: map, requests: [create(:lib_pcr_xp_request)])
       end
       plate.wells.each do |well|
         well.well_attribute.current_volume = 160
@@ -33,7 +33,7 @@ FactoryGirl.define do
       plate.wells = Map.where_description(%w(A1 B1 C1 D1 E1 F1 G1 H1))
                        .where_plate_size(plate.size)
                        .where_plate_shape(AssetShape.default).map do |map|
-              build(:tagged_well, map: map, requests: [create(:lib_pcr_xp_request)])
+        build(:tagged_well, map: map, requests: [create(:lib_pcr_xp_request)])
       end
     end
   end

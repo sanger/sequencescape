@@ -13,15 +13,15 @@ xml.sample(api_data) {
   # Descriptors
 
   xml.properties {
-    @sample.sample_metadata.attribute_value_pairs.each do |attribute,value|
-      #puts attribute.name.to_s
+    @sample.sample_metadata.attribute_value_pairs.each do |attribute, value|
+      # puts attribute.name.to_s
       xml.property {
         # NOTE: The display text is targeted at HTML, so contains escaped entities, which we must unescape for XML.
         xml.name(REXML::Text.unnormalize(attribute.to_field_info.display_name))
         xml.value(value)
       }
     end
-    @sample.sample_metadata.association_value_pairs.each do |attribute,value|
+    @sample.sample_metadata.association_value_pairs.each do |attribute, value|
       xml.property {
         # NOTE: The display text is targeted at HTML, so contains escaped entities, which we must unescape for XML.
         xml.name(REXML::Text.unnormalize(attribute.to_field_info.display_name))

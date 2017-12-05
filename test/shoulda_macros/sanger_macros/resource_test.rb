@@ -213,9 +213,9 @@ module Sanger
                         get :show, params: @input_params
                       end
                       should respond_with :success
-                        assert_select resource_name.to_s.pluralize do
-                          assert_select "[api_version='0.6']"
-                        end
+                      assert_select resource_name.to_s.pluralize do
+                        assert_select "[api_version='0.6']"
+                      end
                     end
                   end
                 end

@@ -36,13 +36,13 @@ group :default do
   # We pull down a slightly later version as there are commits on head
   # which we depend on, but don't have an official release yet.
   # This is mainly https://github.com/resgraph/acts-as-dag/commit/be2c0179983aaed44fda0842742c7abc96d26c4e
-  gem 'acts-as-dag', github:'resgraph/acts-as-dag', branch:'5e185dddff6563ee9ee92611555cd9d9a519d280'
+  gem 'acts-as-dag', github: 'resgraph/acts-as-dag', branch: '5e185dddff6563ee9ee92611555cd9d9a519d280'
 
   # For background processing
   # Locked for ruby version
   gem 'delayed_job_active_record'
 
-  gem 'ruby_walk',  '>= 0.0.3',
+  gem 'ruby_walk', '>= 0.0.3',
       :github => 'sanger/ruby_walk'
 
   gem 'irods_reader', '>=0.0.2',

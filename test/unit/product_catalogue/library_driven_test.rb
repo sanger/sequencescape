@@ -35,16 +35,17 @@ class LibraryDrivenTest < ActiveSupport::TestCase
             @submission_template = FactoryGirl.create :submission_template, name: 'ST 1',
                                                                             product_catalogue: @product_catalogue,
                                                                             submission_parameters: {
-               workflow_id: 1,
-               request_type_ids_list: [],
-               request_options: { library_type: 'Another library' } }
+                                                                              workflow_id: 1,
+                                                                              request_type_ids_list: [],
+                                                                              request_options: { library_type: 'Another library' }
+                                                                            }
 
             @submission_template2 = FactoryGirl.create :submission_template, name: 'ST 2',
                                                                              product_catalogue: @product_catalogue,
                                                                              submission_parameters: {
-               workflow_id: 1,
-               request_type_ids_list: []
-               }
+                                                                               workflow_id: 1,
+                                                                               request_type_ids_list: []
+                                                                             }
           end
           should 'not select any product (return nil)' do
             order = @submission_template.new_order
@@ -68,16 +69,18 @@ class LibraryDrivenTest < ActiveSupport::TestCase
             @submission_template = FactoryGirl.create :submission_template, name: 'ST 1',
                                                                             product_catalogue: @product_catalogue,
                                                                             submission_parameters: {
-               workflow_id: 1,
-               request_type_ids_list: [],
-               request_options: { library_type: @library_type.name } }
+                                                                              workflow_id: 1,
+                                                                              request_type_ids_list: [],
+                                                                              request_options: { library_type: @library_type.name }
+                                                                            }
 
             @submission_template2 = FactoryGirl.create :submission_template, name: 'ST 2',
                                                                              product_catalogue: @product_catalogue,
                                                                              submission_parameters: {
-               workflow_id: 1,
-               request_type_ids_list: [],
-               request_options: { library_type: @library_type2.name } }
+                                                                               workflow_id: 1,
+                                                                               request_type_ids_list: [],
+                                                                               request_options: { library_type: @library_type2.name }
+                                                                             }
           end
 
           should 'selects the right product for this submission using the library type' do
@@ -94,9 +97,9 @@ class LibraryDrivenTest < ActiveSupport::TestCase
             @submission_template3 = FactoryGirl.create :submission_template, name: 'ST 3',
                                                                              product_catalogue: @product_catalogue,
                                                                              submission_parameters: {
-               workflow_id: 1,
-               request_type_ids_list: []
-             }
+                                                                               workflow_id: 1,
+                                                                               request_type_ids_list: []
+                                                                             }
           end
 
           should 'select the first product of the default products' do
@@ -109,9 +112,10 @@ class LibraryDrivenTest < ActiveSupport::TestCase
             @submission_template4 = FactoryGirl.create :submission_template, name: 'ST 4',
                                                                              product_catalogue: @product_catalogue,
                                                                              submission_parameters: {
-               workflow_id: 1,
-               request_type_ids_list: [],
-               request_options: { library_type: 'Standard' } }
+                                                                               workflow_id: 1,
+                                                                               request_type_ids_list: [],
+                                                                               request_options: { library_type: 'Standard' }
+                                                                             }
           end
           should 'select the first product of the default products' do
             order = @submission_template4.new_order
@@ -127,9 +131,10 @@ class LibraryDrivenTest < ActiveSupport::TestCase
             @submission_template5 = FactoryGirl.create :submission_template, name: 'ST 5',
                                                                              product_catalogue: @product_catalogue,
                                                                              submission_parameters: {
-               workflow_id: 1,
-               request_type_ids_list: [],
-               request_options: { library_type: @library_type.name } }
+                                                                               workflow_id: 1,
+                                                                               request_type_ids_list: [],
+                                                                               request_options: { library_type: @library_type.name }
+                                                                             }
           end
           should 'select the first product of the default products' do
             order = @submission_template5.new_order

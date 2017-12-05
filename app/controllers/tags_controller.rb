@@ -31,11 +31,11 @@ class TagsController < ApplicationController
 
   private
 
-    def find_tag_group
-      @tag_group = TagGroup.find(params[:tag_group_id])
-    end
+  def find_tag_group
+    @tag_group = TagGroup.find(params[:tag_group_id])
+  end
 
-    def find_tag_by_id
-      @tag = Tag.find(params[:id])
-    end
+  def find_tag_by_id
+    @tag = Tag.find(params[:id])
+  end
 end

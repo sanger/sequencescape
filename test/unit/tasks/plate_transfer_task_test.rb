@@ -52,13 +52,13 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
           @task.render_task(@workflows_controller, params)
         end
 
-         should 'change Plate.count by 1' do
-           assert_equal 1,  Plate.count - @plate_count, 'Expected Plate.count to change by 1'
-         end
+        should 'change Plate.count by 1' do
+          assert_equal 1,  Plate.count - @plate_count, 'Expected Plate.count to change by 1'
+        end
 
-         should 'change TransferRequest.count by 6' do
-           assert_equal 6,  TransferRequest.count - @transferrequest_count, 'Expected TransferRequest.count to change by 6'
-         end
+        should 'change TransferRequest.count by 6' do
+          assert_equal 6,  TransferRequest.count - @transferrequest_count, 'Expected TransferRequest.count to change by 6'
+        end
 
         should 'mimic the original layout' do
           @source_plate.wells.each do |w|
@@ -88,9 +88,9 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
           @task.render_task(@workflows_controller, params)
         end
 
-         should 'change Plate.count by 1' do
-           assert_equal 1,  Plate.count - @plate_count, 'Expected Plate.count to change by 1'
-         end
+        should 'change Plate.count by 1' do
+          assert_equal 1,  Plate.count - @plate_count, 'Expected Plate.count to change by 1'
+        end
 
         should 'find the existing plate' do
         end
@@ -123,11 +123,11 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
         PlateBarcode.stubs(:create).returns(plate_barcode)
 
         params = { plate_transfer_task: {}, batch_id: @batch.id }
-                  # @workflows_controller.batch = mock("Batch")
+        # @workflows_controller.batch = mock("Batch")
 
-                  params = { batch_id: @batch.id }
-          @task.render_task(@workflows_controller, params)
-          @task.do_task(@workflows_controller, params)
+        params = { batch_id: @batch.id }
+        @task.render_task(@workflows_controller, params)
+        @task.do_task(@workflows_controller, params)
       end
 
       should 'pass the transfer requests' do

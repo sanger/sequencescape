@@ -32,34 +32,34 @@ class Parsers::QuantParser
 
   private
 
-    def location_index
-      @location_index ||= headers_section.find_index { |cell| cell == LOCATION_HEADER }
-    end
+  def location_index
+    @location_index ||= headers_section.find_index { |cell| cell == LOCATION_HEADER }
+  end
 
-    def headers_section
-      @content[headers_index + 1]
-    end
+  def headers_section
+    @content[headers_index + 1]
+  end
 
-    def data_section
-      @content.slice(headers_index + 2, @content.length)
-    end
+  def data_section
+    @content.slice(headers_index + 2, @content.length)
+  end
 
-    def column_maps
-      COLUMN_MAPS
-    end
+  def column_maps
+    COLUMN_MAPS
+  end
 
-    def method_set_list
-      @method_set_list ||= headers_section.map do |description|
-        next if description.blank?
-        column_maps[description.strip.downcase]
-      end
+  def method_set_list
+    @method_set_list ||= headers_section.map do |description|
+      next if description.blank?
+      column_maps[description.strip.downcase]
     end
+  end
 
-    def qc_values_for_row(row)
-      Hash[method_set_list.zip(row).reject { |header, _value| header.nil? }]
-    end
+  def qc_values_for_row(row)
+    Hash[method_set_list.zip(row).reject { |header, _value| header.nil? }]
+  end
 
-    def headers_index
-      @headers_index ||= self.class.headers_index(@content)
-    end
+  def headers_index
+    @headers_index ||= self.class.headers_index(@content)
+  end
 end

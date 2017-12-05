@@ -38,22 +38,22 @@ module UiHelper
 
     def load_event(event)
       add(SummaryItem.new(
-        message: event.message,
-        object: event.eventful,
-        timestamp: event.created_at,
-        external_message: "Run #{event.identifier}",
-        external_link: "#{configatron.run_information_url}#{event.identifier}"
+            message: event.message,
+            object: event.eventful,
+            timestamp: event.created_at,
+            external_message: "Run #{event.identifier}",
+            external_link: "#{configatron.run_information_url}#{event.identifier}"
       ))
     end
 
     def load_study(study)
       study.events.find_each do |event|
         add(SummaryItem.new(
-          message: event.message,
-          object: study,
-          timestamp: event.created_at,
-          external_message: "Study #{study.id}",
-          external_link: ''
+              message: event.message,
+              object: study,
+              timestamp: event.created_at,
+              external_message: "Study #{study.id}",
+              external_link: ''
         ))
       end
     end

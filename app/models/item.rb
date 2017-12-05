@@ -24,9 +24,9 @@ class Item < ApplicationRecord
   validates_presence_of :name
   validates_uniqueness_of :name, scope: [:workflow_id, :version], on: :create, message: 'already in use (item)'
 
- scope :for_search_query, ->(query, _with_includes) {
-    where(['name LIKE ? OR id=?', "%#{query}%", query])
-                          }
+  scope :for_search_query, ->(query, _with_includes) {
+                             where(['name LIKE ? OR id=?', "%#{query}%", query])
+                           }
 
   before_validation :set_version, on: :create
 

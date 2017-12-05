@@ -50,7 +50,7 @@ class ReceptionsController < ApplicationController
       asset = Asset.find_from_machine_barcode(barcode)
 
       if asset.nil?
-          @errors << "Asset with barcode #{barcode} not found"
+        @errors << "Asset with barcode #{barcode} not found"
       else
         @assets << asset
       end

@@ -510,16 +510,16 @@ class BatchTest < ActiveSupport::TestCase
           @batch = create :batch, pipeline: @pipeline, state: 'started'
         end
 
-       should 'raise an exception' do
+        should 'raise an exception' do
           assert_raise AASM::InvalidTransition do
             @batch.reset!(@user)
           end
-       end
+        end
       end
 
       {
-         sequencing_pipeline: :sequencing_request_with_assets,
-         pipeline: :request
+        sequencing_pipeline: :sequencing_request_with_assets,
+        pipeline: :request
       }.each do |pipeline_type, request_factory|
         context "of a #{pipeline_type}" do
           setup do
@@ -562,7 +562,7 @@ class BatchTest < ActiveSupport::TestCase
         @batch.update_attributes!(qc_state: 'qc_completed')
       end
       should 'move batch to previous qc state' do
-        assert_equal'qc_completed', @batch.qc_state
+        assert_equal 'qc_completed', @batch.qc_state
         @batch.qc_previous_state!(@user)
         assert_equal 'qc_manual_in_progress', @batch.qc_state
         @batch.qc_previous_state!(@user)

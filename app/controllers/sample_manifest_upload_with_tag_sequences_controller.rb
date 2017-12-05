@@ -28,8 +28,8 @@ class SampleManifestUploadWithTagSequencesController < ApplicationController
         render :new
       end
     else
-        flash.now[:error] = 'No file attached'
-        render :new
+      flash.now[:error] = 'No file attached'
+      render :new
     end
   end
 end

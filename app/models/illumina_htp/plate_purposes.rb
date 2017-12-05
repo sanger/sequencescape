@@ -255,11 +255,11 @@ module IlluminaHtp::PlatePurposes
 
     def create_plate_purpose(plate_purpose_name, options = {})
       purpose_for(plate_purpose_name).create!(options.reverse_merge(
-        name: plate_purpose_name,
-        cherrypickable_target: false,
-        cherrypick_direction: 'column',
-        stock_plate: self::OUTPUT_PLATE_PURPOSES.include?(plate_purpose_name),
-        asset_shape_id: AssetShape.default.id
+                                                name: plate_purpose_name,
+                                                cherrypickable_target: false,
+                                                cherrypick_direction: 'column',
+                                                stock_plate: self::OUTPUT_PLATE_PURPOSES.include?(plate_purpose_name),
+                                                asset_shape_id: AssetShape.default.id
       )).tap do |plate_purpose|
         plate_purpose.barcode_printer_type = BarcodePrinterType.find_by(type: 'BarcodePrinterType96Plate') || plate_purpose.barcode_printer_type
       end
@@ -269,9 +269,9 @@ module IlluminaHtp::PlatePurposes
       purpose = purpose_for(tube_purpose_name)
       target_type = 'StockMultiplexedLibraryTube'
       purpose.create!(options.reverse_merge(
-        name: tube_purpose_name,
-        target_type: target_type,
-        barcode_printer_type: BarcodePrinterType.find_by(type: 'BarcodePrinterType1DTube')
+                        name: tube_purpose_name,
+                        target_type: target_type,
+                        barcode_printer_type: BarcodePrinterType.find_by(type: 'BarcodePrinterType1DTube')
       ))
     end
     private :create_tube_purpose

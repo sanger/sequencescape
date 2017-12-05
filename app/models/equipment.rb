@@ -18,7 +18,7 @@ class Equipment < ApplicationRecord
   end
 
   def barcode_number
-     Barcode.number_to_human(self.ean13_barcode)
+    Barcode.number_to_human(self.ean13_barcode)
   end
 
   def suffix

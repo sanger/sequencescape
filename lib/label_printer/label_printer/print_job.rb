@@ -7,7 +7,7 @@
 
 module LabelPrinter
   class PrintJob
-  include ActiveModel::Validations
+    include ActiveModel::Validations
 
     attr_reader :printer_name, :label_class, :options, :labels
 

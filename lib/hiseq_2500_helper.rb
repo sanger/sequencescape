@@ -5,15 +5,15 @@
 module Hiseq2500Helper
   def self.create_request_type(pl, ended = 'paired')
     RequestType.create!(
-        key: "illumina_#{pl}_hiseq_2500_#{ended}_end_sequencing",
-        name: "Illumina-#{pl.upcase} HiSeq 2500 #{ended.titleize} end sequencing",
-        workflow: Submission::Workflow.find_by(key: 'short_read_sequencing'),
-        asset_type: 'LibraryTube',
-        order: 2,
-        initial_state: 'pending',
-        multiples_allowed: true,
-        request_class_name: 'HiSeqSequencingRequest',
-        product_line: ProductLine.find_by(name: "Illumina-#{pl.upcase}")
+      key: "illumina_#{pl}_hiseq_2500_#{ended}_end_sequencing",
+      name: "Illumina-#{pl.upcase} HiSeq 2500 #{ended.titleize} end sequencing",
+      workflow: Submission::Workflow.find_by(key: 'short_read_sequencing'),
+      asset_type: 'LibraryTube',
+      order: 2,
+      initial_state: 'pending',
+      multiples_allowed: true,
+      request_class_name: 'HiSeqSequencingRequest',
+      product_line: ProductLine.find_by(name: "Illumina-#{pl.upcase}")
     )
   end
 

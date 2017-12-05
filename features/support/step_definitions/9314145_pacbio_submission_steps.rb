@@ -212,7 +212,7 @@ Given /^the study "([^"]*)" has a reference genome of "([^"]*)"$/ do |study_name
 end
 
 Then /^the default protocols should be:$/ do |_expected_results_table|
-    actual_table = table(fetch_table('table#reference_sequence'))
+  actual_table = table(fetch_table('table#reference_sequence'))
 end
 
 Then /^the PacBio manifest should be:$/ do |expected_results_table|

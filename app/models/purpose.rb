@@ -33,7 +33,7 @@ class Purpose < ApplicationRecord
   # subclass loading while seeding.
   validates :target_type, presence: true
 
- scope :where_is_a?, ->(clazz) { where(type: [clazz, *clazz.descendants].map(&:name)) }
+  scope :where_is_a?, ->(clazz) { where(type: [clazz, *clazz.descendants].map(&:name)) }
 
   def target_class
     target_type.constantize

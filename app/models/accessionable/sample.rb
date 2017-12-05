@@ -40,7 +40,7 @@ module Accessionable
     end
 
     def accessionable_id
-     @sample.id
+      @sample.id
     end
 
     def alias

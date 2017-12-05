@@ -10,14 +10,14 @@ class UserTest < ActiveSupport::TestCase
   context 'A User' do
     context 'authenticate' do
       setup do
-          @user = create :admin, login: 'xyz987', api_key: 'my_key', crypted_password: '1'
-          @ldap = mock('LDAP')
-          @ldap.stubs(:bind).returns(true)
-          Net::LDAP.stubs(:new).returns(@ldap)
+        @user = create :admin, login: 'xyz987', api_key: 'my_key', crypted_password: '1'
+        @ldap = mock('LDAP')
+        @ldap.stubs(:bind).returns(true)
+        Net::LDAP.stubs(:new).returns(@ldap)
 
-          @response = mock('Response')
-          @response.stubs(:body).returns('{"valid":1,"username":"xyz987"}')
-          Net::HTTP.stubs(:post_form).returns(@response)
+        @response = mock('Response')
+        @response.stubs(:body).returns('{"valid":1,"username":"xyz987"}')
+        Net::HTTP.stubs(:post_form).returns(@response)
       end
 
       should 'login_in_user' do
@@ -123,10 +123,10 @@ class UserTest < ActiveSupport::TestCase
 
     context '#new_api_key' do
       setup do
-         @user = create :user, first_name: 'Alan', last_name: 'Brown'
-         @old_api_key = @user.api_key
-         @user.new_api_key
-         @user.save
+        @user = create :user, first_name: 'Alan', last_name: 'Brown'
+        @old_api_key = @user.api_key
+        @user.new_api_key
+        @user.save
       end
       should 'have an api key' do
         assert_not_nil User.find(@user.id).api_key

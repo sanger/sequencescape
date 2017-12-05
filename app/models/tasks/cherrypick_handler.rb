@@ -58,11 +58,11 @@ module Tasks::CherrypickHandler
 
     @workflow = LabInterface::Workflow.includes(:tasks).find(params[:workflow_id])
     @map_info = if @spreadsheet_layout
-      @spreadsheet_layout
+                  @spreadsheet_layout
                 elsif @plate.present?
-      @task.pick_onto_partial_plate(@requests, plate_template, @robot, @batch, @plate)
+                  @task.pick_onto_partial_plate(@requests, plate_template, @robot, @batch, @plate)
                 else
-      @task.pick_new_plate(@requests, plate_template, @robot, @batch, @plate_purpose)
+                  @task.pick_new_plate(@requests, plate_template, @robot, @batch, @plate_purpose)
                 end
     @plates = @map_info[0]
     @source_plate_ids = @map_info[1]

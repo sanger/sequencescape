@@ -185,9 +185,9 @@ Given(/^the sample "([^\"]+)" has the accession number "([^\"]+)"$/) do |name, v
 end
 
 When /^I (create|update) an? accession number for sample "([^\"]+)"$/ do |action_type, sample_name|
- step %Q{I am on the show page for sample "#{sample_name}"}
- action_str = (action_type == 'create') ? 'Generate Accession Number' : 'Update EBI Sample data'
- step(%Q{I follow "#{action_str}"})
+  step %Q{I am on the show page for sample "#{sample_name}"}
+  action_str = (action_type == 'create') ? 'Generate Accession Number' : 'Update EBI Sample data'
+  step(%Q{I follow "#{action_str}"})
 end
 
 Then /^I (should|should not) have (sent|received) the attribute "([^\"]*)" for the sample element (to|from) the accessioning service$/ do |state_action, type_action, attr_name, _dest|

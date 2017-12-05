@@ -72,15 +72,15 @@ Given /^study "([^\"]*)" has assets registered$/ do |study|
 end
 
 Given /^the following user records$/ do |table|
-   table.hashes.each do |hash|
-     if usr = User.find_by(login: hash['login'])
-       usr.first_name = hash['first_name']
-       usr.last_name = hash['last_name']
-     else
-       usr = FactoryGirl.create(:user, hash)
-     end
-       usr.save
-   end
+  table.hashes.each do |hash|
+    if usr = User.find_by(login: hash['login'])
+      usr.first_name = hash['first_name']
+      usr.last_name = hash['last_name']
+    else
+      usr = FactoryGirl.create(:user, hash)
+    end
+    usr.save
+  end
 end
 
 Given /^user "([^\"]*)" is an? "([^\"]*)" of study "([^\"]*)"$/ do |login, role_name, study|
@@ -330,24 +330,24 @@ Then /^I should exactly see "([^"]*)"$/ do |text|
 end
 
 When /^I generate an? (dac|policy|array express) accession number for study "([^\"]+)"$/ do |type, study_name|
- type = { 'dac' => 'DAC', 'policy' => 'Policy', 'array express' => '' }.fetch(type, type)
- step %Q{I am on the workflow page for study "#{study_name}"}
- step %Q{I follow "Generate #{type} Accession Number"}.gsub(/  +/, ' ')
+  type = { 'dac' => 'DAC', 'policy' => 'Policy', 'array express' => '' }.fetch(type, type)
+  step %Q{I am on the workflow page for study "#{study_name}"}
+  step %Q{I follow "Generate #{type} Accession Number"}.gsub(/  +/, ' ')
 end
 
 When /^I generate an? accession number for study "([^\"]+)"$/ do |study_name|
- step %Q{I am on the workflow page for study "#{study_name}"}
- step('I follow "Generate Accession Number"')
+  step %Q{I am on the workflow page for study "#{study_name}"}
+  step('I follow "Generate Accession Number"')
 end
 
 When /^I update an? accession number for study "([^\"]+)"$/ do |study_name|
- step %Q{I am on the workflow page for study "#{study_name}"}
- step('I follow "Update EBI Study data"')
+  step %Q{I am on the workflow page for study "#{study_name}"}
+  step('I follow "Update EBI Study data"')
 end
 
 Given /^the study "([^\"]+)" has a valid policy$/ do |study_name|
-    step(%Q{the policy for study "#{study_name}" is "http://www.example.com"})
-    step(%Q{the dac accession number for study "#{study_name}" is "EGAC00000001"})
+  step(%Q{the policy for study "#{study_name}" is "http://www.example.com"})
+  step(%Q{the dac accession number for study "#{study_name}" is "EGAC00000001"})
 end
 
 Given /^the study "([^\"]+)" has a valid dac$/ do |study_name|
@@ -362,11 +362,11 @@ Given /^the study "([^\"]+)" is "([^\"]+)" of study "([^\"]+)"/ do |related_stud
 end
 
 Given /^a study named "([^\"]+)" exists for accession/ do |study_name|
-    step(%Q{a study named "#{study_name}" exists})
-    step(%Q{an accession number is required for study "#{study_name}"})
-    step %Q{the title of study "#{study_name}" is "Testing accession numbers"}
-    step %Q{the description of study "#{study_name}" is "To find out if something is broken"}
-    step %Q{the abstract of study "#{study_name}" is "Ok, not ok?"}
+  step(%Q{a study named "#{study_name}" exists})
+  step(%Q{an accession number is required for study "#{study_name}"})
+  step %Q{the title of study "#{study_name}" is "Testing accession numbers"}
+  step %Q{the description of study "#{study_name}" is "To find out if something is broken"}
+  step %Q{the abstract of study "#{study_name}" is "Ok, not ok?"}
   step %Q{the study "#{study_name}" is a "Whole Genome Sequencing" study}
 end
 Given /^a study named "([^\"]+)" exists for array express/ do |study_name|
@@ -405,18 +405,18 @@ end
 
 When /^I have an? (managed|open) study without a data release group called "(.*?)"$/ do |managed, study_name|
   Study.create!(
-      name: study_name,
-      study_metadata_attributes: {
-        program: Program.find_by(name: 'General'),
-        faculty_sponsor: FactoryGirl.create(:faculty_sponsor),
-        study_type: StudyType.last,
-        data_release_strategy: managed,
-        study_description: 'blah',
-        data_release_study_type: DataReleaseStudyType.first,
-        contaminated_human_dna: 'No',
-        contains_human_dna: 'Yes',
-        commercially_available: 'No'
-      }
+    name: study_name,
+    study_metadata_attributes: {
+      program: Program.find_by(name: 'General'),
+      faculty_sponsor: FactoryGirl.create(:faculty_sponsor),
+      study_type: StudyType.last,
+      data_release_strategy: managed,
+      study_description: 'blah',
+      data_release_study_type: DataReleaseStudyType.first,
+      contaminated_human_dna: 'No',
+      contains_human_dna: 'Yes',
+      commercially_available: 'No'
+    }
   )
 end
 

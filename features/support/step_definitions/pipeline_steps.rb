@@ -110,7 +110,7 @@ Then /^I have added some output plates$/ do
 end
 
 Then /^the pipeline inbox should be:$/ do |expected_results_table|
-   expected_results_table.diff!(table(fetch_table('table#pipeline_inbox')))
+  expected_results_table.diff!(table(fetch_table('table#pipeline_inbox')))
 end
 
 When /^I click on the last "([^\"]*)" batch$/ do |status|

@@ -84,7 +84,7 @@ class Api::Messages::FlowcellIO < Api::Base
         end
 
         def external_release
-         false
+          false
         end
 
         def controls

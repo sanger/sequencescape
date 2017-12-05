@@ -250,7 +250,7 @@ class Study < ApplicationRecord
 
   # Scopes
   scope :for_search_query, ->(query, _with_includes) {
-    joins(:study_metadata).where(['name LIKE ? OR studies.id=? OR prelim_id=?', "%#{query}%", query, query])
+                             joins(:study_metadata).where(['name LIKE ? OR studies.id=? OR prelim_id=?', "%#{query}%", query, query])
                            }
 
   scope :with_no_ethical_approval, -> { where(ethically_approved: false) }
@@ -271,38 +271,38 @@ class Study < ApplicationRecord
   }
 
   scope :for_sample_accessioning, ->() {
-        joins(:study_metadata)
-          .where("study_metadata.study_ebi_accession_number <> ''")
-          .where(study_metadata: { data_release_strategy: [Study::DATA_RELEASE_STRATEGY_OPEN, Study::DATA_RELEASE_STRATEGY_MANAGED], data_release_timing: Study::DATA_RELEASE_TIMINGS })
+    joins(:study_metadata)
+      .where("study_metadata.study_ebi_accession_number <> ''")
+      .where(study_metadata: { data_release_strategy: [Study::DATA_RELEASE_STRATEGY_OPEN, Study::DATA_RELEASE_STRATEGY_MANAGED], data_release_timing: Study::DATA_RELEASE_TIMINGS })
   }
 
   scope :awaiting_ethical_approval, ->() {
     joins(:study_metadata)
       .where(
-      ethically_approved: false,
-      study_metadata: {
-        contains_human_dna: Study::YES,
-        contaminated_human_dna: Study::NO,
-        commercially_available: Study::NO
-      }
+        ethically_approved: false,
+        study_metadata: {
+          contains_human_dna: Study::YES,
+          contaminated_human_dna: Study::NO,
+          commercially_available: Study::NO
+        }
       )
   }
 
   scope :contaminated_with_human_dna, ->() {
     joins(:study_metadata)
       .where(
-      study_metadata: {
-        contaminated_human_dna: Study::YES
-      }
+        study_metadata: {
+          contaminated_human_dna: Study::YES
+        }
       )
   }
 
   scope :with_remove_x_and_autosomes, ->() {
     joins(:study_metadata)
       .where(
-      study_metadata: {
-        remove_x_and_autosomes: Study::YES
-      }
+        study_metadata: {
+          remove_x_and_autosomes: Study::YES
+        }
       )
   }
 

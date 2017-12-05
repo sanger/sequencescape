@@ -15,11 +15,11 @@ class AddBespokeRnaProduct < ActiveRecord::Migration
   ]
 
   RNA_CONFIG = {
-      concentration: { less_than: 1 },
-      concentration_from_normalization: { less_than: 1 },
-      rin: { less_than: 6 },
-      gender_markers: {}
-    }
+    concentration: { less_than: 1 },
+    concentration_from_normalization: { less_than: 1 },
+    rin: { less_than: 6 },
+    gender_markers: {}
+  }
 
   def product_catalogue
     @product_catalogue ||= ProductCatalogue.find_by!(name: 'GenericPCR')

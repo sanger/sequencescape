@@ -49,13 +49,13 @@ SequencingPipeline.create!(name: 'MiSeq sequencing QC') do |pipeline|
     workflow.locale     = 'External'
     workflow.item_limit = 1
   end.tap do |workflow|
-      t1 = SetDescriptorsTask.create!(name: 'Specify Dilution Volume', sorted: 0, workflow: workflow)
-      Descriptor.create!(kind: 'Text', sorter: 1, name: 'Concentration', task: t1)
-      t2 = SetDescriptorsTask.create!(name: 'Cluster Generation', sorted: 0, workflow: workflow)
-      Descriptor.create!(kind: 'Text', sorter: 1, name: 'Chip barcode', task: t2)
-      Descriptor.create!(kind: 'Text', sorter: 2, name: 'Cartridge barcode', task: t2)
-      Descriptor.create!(kind: 'Text', sorter: 3, name: 'Operator', task: t2)
-      Descriptor.create!(kind: 'Text', sorter: 4, name: 'Machine name', task: t2)
+    t1 = SetDescriptorsTask.create!(name: 'Specify Dilution Volume', sorted: 0, workflow: workflow)
+    Descriptor.create!(kind: 'Text', sorter: 1, name: 'Concentration', task: t1)
+    t2 = SetDescriptorsTask.create!(name: 'Cluster Generation', sorted: 0, workflow: workflow)
+    Descriptor.create!(kind: 'Text', sorter: 1, name: 'Chip barcode', task: t2)
+    Descriptor.create!(kind: 'Text', sorter: 2, name: 'Cartridge barcode', task: t2)
+    Descriptor.create!(kind: 'Text', sorter: 3, name: 'Operator', task: t2)
+    Descriptor.create!(kind: 'Text', sorter: 4, name: 'Machine name', task: t2)
   end
 end.tap do |pipeline|
   create_request_information_types(pipeline, 'fragment_size_required_from', 'fragment_size_required_to', 'library_type', 'read_length')
