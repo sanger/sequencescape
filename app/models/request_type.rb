@@ -74,12 +74,12 @@ class RequestType < ApplicationRecord
   scope :non_billable, -> { where(billable: false) }
   scope :needing_target_asset, -> { where(target_purpose: nil, target_asset_type: nil) }
   scope :applicable_for_asset, ->(asset) {
-    where([
-      'asset_type = ?
-       AND request_class_name != "ControlRequest"
-       AND deprecated IS FALSE',
-      asset.asset_type_for_request_types.name
-    ])
+                                 where([
+                                   'asset_type = ?
+                                    AND request_class_name != "ControlRequest"
+                                    AND deprecated IS FALSE',
+                                   asset.asset_type_for_request_types.name
+                                 ])
                                }
 
   # Helper method for generating a request constructor, like 'create!'

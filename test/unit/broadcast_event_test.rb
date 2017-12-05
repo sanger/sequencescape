@@ -177,47 +177,47 @@ class BroadcastEventTest < ActiveSupport::TestCase
 
         expected_json = {
           'event' => {
-          'uuid' => @event.uuid,
-          'event_type' => 'example_event',
-          'occured_at' => '2012-03-11T10:22:42+00:00',
-          'user_identifier' => 'example@example.com',
-          'subjects' => [
-            {
-              'role_type' => 'seed',
-              'subject_type' => 'seed_type',
-              'friendly_name' => 'seed_subject',
-              'uuid' => '004'
-            },
-            {
-              'role_type' => 'single',
-              'subject_type' => 'single_type',
-              'friendly_name' => 'single_subject',
-              'uuid' => '000'
-            },
-            {
-              'role_type' => 'many',
-              'subject_type' => 'many_type',
-              'friendly_name' => 'many_subject_1',
-              'uuid' => '001'
-            },
-            {
-              'role_type' => 'many',
-              'subject_type' => 'many_type',
-              'friendly_name' => 'many_subject_2',
-              'uuid' => '002'
-            },
-            {
-              'role_type' => 'block',
-              'subject_type' => 'dynamic_type',
-              'friendly_name' => 'dynamic_subject',
-              'uuid' => '003'
+            'uuid' => @event.uuid,
+            'event_type' => 'example_event',
+            'occured_at' => '2012-03-11T10:22:42+00:00',
+            'user_identifier' => 'example@example.com',
+            'subjects' => [
+              {
+                'role_type' => 'seed',
+                'subject_type' => 'seed_type',
+                'friendly_name' => 'seed_subject',
+                'uuid' => '004'
+              },
+              {
+                'role_type' => 'single',
+                'subject_type' => 'single_type',
+                'friendly_name' => 'single_subject',
+                'uuid' => '000'
+              },
+              {
+                'role_type' => 'many',
+                'subject_type' => 'many_type',
+                'friendly_name' => 'many_subject_1',
+                'uuid' => '001'
+              },
+              {
+                'role_type' => 'many',
+                'subject_type' => 'many_type',
+                'friendly_name' => 'many_subject_2',
+                'uuid' => '002'
+              },
+              {
+                'role_type' => 'block',
+                'subject_type' => 'dynamic_type',
+                'friendly_name' => 'dynamic_subject',
+                'uuid' => '003'
+              }
+            ],
+            'metadata' => {
+              'data_a' => 'value_a',
+              'data_b' => 'value_b',
+              'data_c' => 'value_c'
             }
-          ],
-          'metadata' => {
-            'data_a' => 'value_a',
-            'data_b' => 'value_b',
-            'data_c' => 'value_c'
-          }
           },
           'lims' => 'SQSCP'
         }

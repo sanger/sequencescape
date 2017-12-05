@@ -72,19 +72,19 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
       path.inject(initial_structure) { |part, step| part[step] ||= {} }
       code << "process_if_present(params, #{json.split('.').inspect}) do |value|"
       code << if path.empty?
-        '  attributes.tap do |section|'
+                '  attributes.tap do |section|'
               else
-        "  #{path.inspect}.inject(attributes) { |a,s| a[s] }.tap do |section|"
+                "  #{path.inspect}.inject(attributes) { |a,s| a[s] }.tap do |section|"
               end
 
       code << if model.nil?
-        "    section[:#{leaf}] = value #nil"
+                "    section[:#{leaf}] = value #nil"
               elsif model.respond_to?(:reflections) and association = model.reflections[leaf]
-        "    handle_#{association.macro}(section, #{leaf.inspect}, value, object)"
+                "    handle_#{association.macro}(section, #{leaf.inspect}, value, object)"
               elsif model.respond_to?(:klass) and association = model.klass.reflections[leaf]
-        "    handle_#{association.macro}(section, #{leaf.inspect}, value, object)"
+                "    handle_#{association.macro}(section, #{leaf.inspect}, value, object)"
               else
-        "    section[:#{leaf}] = value"
+                "    section[:#{leaf}] = value"
               end
       code << '  end'
       code << 'end'

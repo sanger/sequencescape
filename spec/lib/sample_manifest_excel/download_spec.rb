@@ -11,10 +11,10 @@ RSpec.describe SampleManifestExcel::Download, type: :model, sample_manifest_exce
   end
 
   before(:all) do
-     SampleManifestExcel.configure do |config|
+    SampleManifestExcel.configure do |config|
       config.folder = File.join('spec', 'data', 'sample_manifest_excel')
       config.load!
-     end
+    end
   end
 
   before(:each) do

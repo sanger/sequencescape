@@ -26,40 +26,40 @@ module SubmissionSerializer
     attributes = st.attributes
     new_attributes = {}
 
-   STRAIGHT_CLONE.each do |key|
-     new_attributes[key.to_sym] = attributes[key].duplicable? ? attributes[key].dup : attributes[key]
-   end
+    STRAIGHT_CLONE.each do |key|
+      new_attributes[key.to_sym] = attributes[key].duplicable? ? attributes[key].dup : attributes[key]
+    end
 
-   new_attributes[:product_line] = ProductLine.find(attributes['product_line_id']).name if attributes['product_line_id']
-   new_attributes[:product_catalogue] = ProductCatalogue.find(attributes['product_catalogue_id']).name if attributes['product_catalogue_id']
-   new_attributes[:superceded_by] = SubmissionTemplate.find(attributes['superceded_by_id']).name if attributes['superceded_by_id'] > 0
-   new_attributes[:superceded_by_id] = attributes['superceded_by_id']
-   new_attributes[:superceded_at] = attributes['superceded_at'].to_s if attributes['superceded_at']
+    new_attributes[:product_line] = ProductLine.find(attributes['product_line_id']).name if attributes['product_line_id']
+    new_attributes[:product_catalogue] = ProductCatalogue.find(attributes['product_catalogue_id']).name if attributes['product_catalogue_id']
+    new_attributes[:superceded_by] = SubmissionTemplate.find(attributes['superceded_by_id']).name if attributes['superceded_by_id'] > 0
+    new_attributes[:superceded_by_id] = attributes['superceded_by_id']
+    new_attributes[:superceded_at] = attributes['superceded_at'].to_s if attributes['superceded_at']
 
-   sp = attributes['submission_parameters'] || {}
-   ensp = new_attributes[:submission_parameters] = {}
+    sp = attributes['submission_parameters'] || {}
+    ensp = new_attributes[:submission_parameters] = {}
 
-   SP_STRAIGHT_CLONE.each do |key|
-     ensp[key] = sp[key] if sp[key].present?
-   end
+    SP_STRAIGHT_CLONE.each do |key|
+      ensp[key] = sp[key] if sp[key].present?
+    end
 
-   if ensp[:request_options] && ensp[:request_options][:initial_state]
-     new_initial = Hash[ensp[:request_options][:initial_state].map { |k, v| [RequestType.find(k).key, v] }]
-     ensp[:request_options][:initial_state] = new_initial
-   end
+    if ensp[:request_options] && ensp[:request_options][:initial_state]
+      new_initial = Hash[ensp[:request_options][:initial_state].map { |k, v| [RequestType.find(k).key, v] }]
+      ensp[:request_options][:initial_state] = new_initial
+    end
 
-   ensp[:request_types] = sp[:request_type_ids_list].flatten.map { |id| RequestType.find(id).key }
-   ensp[:workflow] = Submission::Workflow.find(sp[:workflow_id]).key if sp[:workflow_id]
-   ensp[:order_role] = OrderRole.find(sp[:order_role_id]).role if sp[:order_role_id]
+    ensp[:request_types] = sp[:request_type_ids_list].flatten.map { |id| RequestType.find(id).key }
+    ensp[:workflow] = Submission::Workflow.find(sp[:workflow_id]).key if sp[:workflow_id]
+    ensp[:order_role] = OrderRole.find(sp[:order_role_id]).role if sp[:order_role_id]
 
-   new_attributes
+    new_attributes
   end
 
   def self.construct!(hash)
     st = {}
 
     STRAIGHT_CLONE.each do |key|
-     st[key.to_sym] = hash[key.to_sym]
+      st[key.to_sym] = hash[key.to_sym]
     end
 
     st[:product_line_id] = ProductLine.find_or_create_by(name: hash[:product_line]).id if hash[:product_line]
@@ -71,12 +71,12 @@ module SubmissionSerializer
     ensp = hash[:submission_parameters]
 
     SP_STRAIGHT_CLONE.each do |key|
-     sp[key] = ensp[key] if ensp[key].present?
+      sp[key] = ensp[key] if ensp[key].present?
     end
 
     if sp[:request_options] && sp[:request_options][:initial_state]
-     new_initial = Hash[sp[:request_options][:initial_state].map { |k, v| [RequestType.find_by(key: k).id, v] }]
-     sp[:request_options][:initial_state] = new_initial
+      new_initial = Hash[sp[:request_options][:initial_state].map { |k, v| [RequestType.find_by(key: k).id, v] }]
+      sp[:request_options][:initial_state] = new_initial
     end
 
     sp[:request_type_ids_list] = ensp[:request_types].map { |rtk| [RequestType.find_by!(key: rtk).id] }

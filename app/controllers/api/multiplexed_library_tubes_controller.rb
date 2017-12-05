@@ -12,7 +12,7 @@ class Api::MultiplexedLibraryTubesController < Api::AssetsController
 
   private
 
-    def prepare_list_context
-      @context = ::MultiplexedLibraryTube.including_associations_for_json
-    end
+  def prepare_list_context
+    @context = ::MultiplexedLibraryTube.including_associations_for_json
+  end
 end

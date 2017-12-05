@@ -193,9 +193,9 @@ class LinearSubmissionTest < ActiveSupport::TestCase
             @submission.process!
           end
 
-         should "change Request.count by #{SX_ASSET_COUNT * 3}" do
-           assert_equal SX_ASSET_COUNT * 3, Request.count - @request_count, "Expected Request.count to change by #{SX_ASSET_COUNT * 3}"
-         end
+          should "change Request.count by #{SX_ASSET_COUNT * 3}" do
+            assert_equal SX_ASSET_COUNT * 3, Request.count - @request_count, "Expected Request.count to change by #{SX_ASSET_COUNT * 3}"
+          end
 
           context '#create_requests_for_items' do
             setup do
@@ -204,13 +204,13 @@ class LinearSubmissionTest < ActiveSupport::TestCase
               @submission.create_requests
             end
 
-           should "change Request.count by #{SX_ASSET_COUNT * 3}" do
-             assert_equal SX_ASSET_COUNT * 3,  Request.count  - @request_count, "Expected Request.count to change by #{SX_ASSET_COUNT * 3}"
-           end
+            should "change Request.count by #{SX_ASSET_COUNT * 3}" do
+              assert_equal SX_ASSET_COUNT * 3,  Request.count  - @request_count, "Expected Request.count to change by #{SX_ASSET_COUNT * 3}"
+            end
 
-           should "change Comment.count by #{SX_ASSET_COUNT * 3}" do
-             assert_equal SX_ASSET_COUNT * 3,  Comment.count  - @comment_count, "Expected Comment.count to change by #{SX_ASSET_COUNT * 3}"
-           end
+            should "change Comment.count by #{SX_ASSET_COUNT * 3}" do
+              assert_equal SX_ASSET_COUNT * 3,  Comment.count  - @comment_count, "Expected Comment.count to change by #{SX_ASSET_COUNT * 3}"
+            end
 
             should 'assign submission ids to the requests' do
               assert_equal @submission, @submission.items.first.requests.first.submission
@@ -304,9 +304,9 @@ class LinearSubmissionTest < ActiveSupport::TestCase
             @submission_with_multiplication_factor.process!
           end
 
-           should 'change Request.count by 12' do
-             assert_equal 12, Request.count - @request_count, 'Expected Request.count to change by 12'
-           end
+          should 'change Request.count by 12' do
+            assert_equal 12, Request.count - @request_count, 'Expected Request.count to change by 12'
+          end
 
           should 'create 2 library requests' do
             lib_requests = Request.where(submission_id: @submission_with_multiplication_factor, request_type_id: @lib_request_type.id)

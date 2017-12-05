@@ -37,7 +37,8 @@ class AddRequestTypeForPcrFreeXten < ActiveRecord::Migration
       %w(
         htp_pcr_free_lib
         illumina_htp_strip_tube_creation
-        illumina_b_hiseq_x_paired_end_sequencing illumina_a_hiseq_x_paired_end_sequencing illumina_b_hiseq_x_paired_end_sequencing).each do |xtlb_name|
+        illumina_b_hiseq_x_paired_end_sequencing illumina_a_hiseq_x_paired_end_sequencing illumina_b_hiseq_x_paired_end_sequencing
+      ).each do |xtlb_name|
         RequestType.find_by(key: xtlb_name).library_types << lt
       end
 
@@ -46,12 +47,13 @@ class AddRequestTypeForPcrFreeXten < ActiveRecord::Migration
                                            product_line: 'Illumina-HTP',
                                            product_catalogue: 'PFHSqX',
                                            submission_parameters: {
-          request_types: [
-            'htp_pcr_free_lib',
-            'illumina_htp_strip_tube_creation',
-            'illumina_b_hiseq_x_paired_end_sequencing'],
-          workflow: 'short_read_sequencing'
-        })
+                                             request_types: [
+                                               'htp_pcr_free_lib',
+                                               'illumina_htp_strip_tube_creation',
+                                               'illumina_b_hiseq_x_paired_end_sequencing'
+                                             ],
+                                             workflow: 'short_read_sequencing'
+                                           })
     end
   end
 

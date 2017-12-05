@@ -55,5 +55,5 @@ Given /^a batch in "Illumina-B MX Library Preparation" has been setup for featur
 end
 
 When /^I select all requests$/ do
- page.all('.request_checkbox').each { |checkbox| checkbox.set(true) }
+  page.all('.request_checkbox').each { |checkbox| checkbox.set(true) }
 end

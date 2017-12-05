@@ -304,29 +304,29 @@ class Plate < Asset
 
   # TODO: Make these more railsy
   scope :with_sample, ->(sample) {
-      select('assets.*').distinct
-                        .joins([
-                          'LEFT OUTER JOIN container_associations AS wscas ON wscas.container_id = assets.id',
-                          'LEFT JOIN assets AS wswells ON wswells.id = content_id',
-                          'LEFT JOIN aliquots AS wsaliquots ON wsaliquots.receptacle_id = wswells.id'
-                        ])
-                        .where(['wsaliquots.sample_id IN(?)', Array(sample)])
+    select('assets.*').distinct
+                      .joins([
+                        'LEFT OUTER JOIN container_associations AS wscas ON wscas.container_id = assets.id',
+                        'LEFT JOIN assets AS wswells ON wswells.id = content_id',
+                        'LEFT JOIN aliquots AS wsaliquots ON wsaliquots.receptacle_id = wswells.id'
+                      ])
+                      .where(['wsaliquots.sample_id IN(?)', Array(sample)])
   }
 
- scope :with_requests, ->(requests) {
-   select('assets.*').distinct
-                     .joins([
-                       'INNER JOIN container_associations AS wrca ON wrca.container_id = assets.id',
-                       'INNER JOIN requests AS wrr ON wrr.asset_id = wrca.content_id'
-                     ]).where([
-                       'wrr.id IN (?)',
-                       requests.map(&:id)
-                     ])
-                       }
+  scope :with_requests, ->(requests) {
+                          select('assets.*').distinct
+                                            .joins([
+                                              'INNER JOIN container_associations AS wrca ON wrca.container_id = assets.id',
+                                              'INNER JOIN requests AS wrr ON wrr.asset_id = wrca.content_id'
+                                            ]).where([
+                                              'wrr.id IN (?)',
+                                              requests.map(&:id)
+                                            ])
+                        }
 
   scope :output_by_batch, ->(batch) {
-      joins(wells: { requests_as_target: :batch })
-        .where(batches: { id: batch })
+    joins(wells: { requests_as_target: :batch })
+      .where(batches: { id: batch })
   }
 
   scope :include_wells, -> { includes(:wells) } do
@@ -340,9 +340,9 @@ class Plate < Asset
   end
 
   scope :with_wells, ->(wells) {
-      select('DISTINCT assets.*')
-        .joins(:container_associations)
-        .where(container_associations: { content_id: wells.map(&:id) })
+    select('DISTINCT assets.*')
+      .joins(:container_associations)
+      .where(container_associations: { content_id: wells.map(&:id) })
   }
   #->() {where(:assets=>{:sti_type=>[Plate,*Plate.descendants].map(&:name)})},
   has_many :descendant_plates, class_name: 'Plate', through: :links_as_ancestor, foreign_key: :ancestor_id, source: :descendant

@@ -104,8 +104,8 @@ class Studies::AssetGroupsController < ApplicationController
     end
     @asset_group = AssetGroup.find(params[:id])
     respond_to do |format|
-       format.html # index.html.erb
-       format.xml  { render xml: @assets }
+      format.html # index.html.erb
+      format.xml  { render xml: @assets }
     end
   end
 
@@ -119,9 +119,9 @@ class Studies::AssetGroupsController < ApplicationController
     end
 
     respond_to do |format|
-       format.html { redirect_to(study_asset_group_url(@study, @asset_group)) }
-       format.xml  { render xml: @assets }
-       format.json { render json: @assets }
+      format.html { redirect_to(study_asset_group_url(@study, @asset_group)) }
+      format.xml  { render xml: @assets }
+      format.json { render json: @assets }
     end
   end
 

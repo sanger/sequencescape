@@ -82,7 +82,8 @@ module Sanger
             temp = [
               "A;#{source_barcode};;#{source_name};#{source_position};;#{tecan_precision_value(mapping['volume'])}",
               "D;#{dest_plate_barcode};;#{plate_details["name"]};#{destination_position};;#{tecan_precision_value(mapping['volume'])}",
-              "W;\n"].join("\n")
+              "W;\n"
+            ].join("\n")
             dyn_mappings += temp
           end
           dyn_mappings

@@ -73,7 +73,7 @@ Given(/^plate "([^"]*)" has concentration results$/) do |plate_barcode|
 end
 
 Given(/^plate "([^"]*)" has nonzero concentration results$/) do |plate_barcode|
- step(%Q{plate "#{plate_barcode}" has concentration results})
+  step(%Q{plate "#{plate_barcode}" has concentration results})
 
   plate = Plate.find_by(barcode: plate_barcode)
   plate.wells.each_with_index do |well, _index|
@@ -220,25 +220,25 @@ Given(/^I have a plate "([^"]*)" with the following wells:$/) do |plate_barcode,
 end
 
 Given(/^I have a "([^"]*)" submission with 2 plates$/) do |submission_template_name|
-    project = FactoryGirl.create :project
-    study = FactoryGirl.create :study
-    plate_1 = FactoryGirl.create :plate, barcode: '333'
-    plate_2 = FactoryGirl.create :plate, barcode: '222'
-    [plate_1, plate_2].each do |plate|
-      Well.create!(map_id: 1, plate: plate)
-    end
+  project = FactoryGirl.create :project
+  study = FactoryGirl.create :study
+  plate_1 = FactoryGirl.create :plate, barcode: '333'
+  plate_2 = FactoryGirl.create :plate, barcode: '222'
+  [plate_1, plate_2].each do |plate|
+    Well.create!(map_id: 1, plate: plate)
+  end
 
-    submission_template = SubmissionTemplate.find_by(name: submission_template_name)
+  submission_template = SubmissionTemplate.find_by(name: submission_template_name)
 
-    submission = submission_template.create_and_build_submission!(
-      study: study,
-      project: project,
-      workflow: Submission::Workflow.find_by(key: 'short_read_sequencing'),
-      user: User.last,
-      assets: Well.all,
-      request_options: { :multiplier => { '1' => '1', '3' => '1' }, 'read_length' => '100', 'fragment_size_required_to' => '300', 'fragment_size_required_from' => '250', 'library_type' => 'Standard' }
-    )
-    step('1 pending delayed jobs are processed')
+  submission = submission_template.create_and_build_submission!(
+    study: study,
+    project: project,
+    workflow: Submission::Workflow.find_by(key: 'short_read_sequencing'),
+    user: User.last,
+    assets: Well.all,
+    request_options: { :multiplier => { '1' => '1', '3' => '1' }, 'read_length' => '100', 'fragment_size_required_to' => '300', 'fragment_size_required_from' => '250', 'library_type' => 'Standard' }
+  )
+  step('1 pending delayed jobs are processed')
 end
 
 When /^the last batch is sorted in row order$/ do

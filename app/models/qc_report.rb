@@ -24,38 +24,38 @@ class QcReport < ApplicationRecord
         # with decriptions.
 
         aasm column: :state, whiny_persistence: true do
-        # A report has just been created and is awaiting processing. There is probably a corresponding delayed job
-        state :queued, initial: true
+          # A report has just been created and is awaiting processing. There is probably a corresponding delayed job
+          state :queued, initial: true
 
-        # A report has failed one or more times. Generally this means there is a problem.
-        state :requeued
+          # A report has failed one or more times. Generally this means there is a problem.
+          state :requeued
 
-        # The report has been picked up by the delayed job. Entry into this state triggers building.
-        state :generating, after_enter: :generate_report
+          # The report has been picked up by the delayed job. Entry into this state triggers building.
+          state :generating, after_enter: :generate_report
 
-        # The report has been generated and is awaiting customer feedback
-        state :awaiting_proceed
+          # The report has been generated and is awaiting customer feedback
+          state :awaiting_proceed
 
-        # Customer feedback has been uploaded. This is generally an end state, but a report can be re-uploaded
-        # at a later date if necessary.
-        state :complete
+          # Customer feedback has been uploaded. This is generally an end state, but a report can be re-uploaded
+          # at a later date if necessary.
+          state :complete
 
-        # Triggered automatically on after_create. This event is handled via
-        # schedule_report, which creates a delayed job. It can be called manually.
-        event :generate do
-          transitions from: [:queued, :requeued], to: :generating
-        end
+          # Triggered automatically on after_create. This event is handled via
+          # schedule_report, which creates a delayed job. It can be called manually.
+          event :generate do
+            transitions from: [:queued, :requeued], to: :generating
+          end
 
-        # Called on report failure. Generally the delayed job will cycle it through a few times
-        # but most reports in this state will require manual intervention.
-        event :requeue do
-          transitions from: :generating, to: :requeued
-        end
+          # Called on report failure. Generally the delayed job will cycle it through a few times
+          # but most reports in this state will require manual intervention.
+          event :requeue do
+            transitions from: :generating, to: :requeued
+          end
 
-        # Called automatically when a report is generated
-        event :generation_complete do
-          transitions from: :generating, to: :awaiting_proceed
-        end
+          # Called automatically when a report is generated
+          event :generation_complete do
+            transitions from: :generating, to: :awaiting_proceed
+          end
 
           # A QC report might be uploaded multiple times
           event :proceed_decision do
@@ -123,9 +123,9 @@ class QcReport < ApplicationRecord
   after_create :schedule_report
 
   scope :for_report_page, ->(conditions) {
-      order('id desc')
-        .where(conditions)
-        .joins(:product_criteria)
+    order('id desc')
+      .where(conditions)
+      .joins(:product_criteria)
   }
 
   validates_presence_of :product_criteria, :study, :state

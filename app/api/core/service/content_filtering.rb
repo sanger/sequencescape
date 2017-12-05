@@ -40,7 +40,7 @@ module Core::Service::ContentFiltering
     end
 
     def process_json_response_body
-     headers('Content-Type' => 'application/json')
+      headers('Content-Type' => 'application/json')
     end
 
     ACCEPTABLE_TYPES = ['application/json']

@@ -135,7 +135,7 @@ module SampleManifest::InputBehaviour
 
       if sample.nil?
         sample_errors.push("Sample #{sanger_sample_id} does not appear to be part of this manifest")
-         errors = true
+        errors = true
       elsif sample.primary_receptacle.nil?
         sample_errors.push("Sample #{sanger_sample_id} appears to not have a receptacle defined! Contact PSD")
         errors = true
@@ -173,9 +173,9 @@ module SampleManifest::InputBehaviour
 
     ActiveRecord::Base.transaction do
       update_attributes!({
-        override_previous_manifest: override_sample_information,
-        samples_attributes: samples_to_updated_attributes.map(&:last)
-      }, user_updating_manifest)
+                           override_previous_manifest: override_sample_information,
+                           samples_attributes: samples_to_updated_attributes.map(&:last)
+                         }, user_updating_manifest)
 
       core_behaviour.updated_by!(user_updating_manifest, samples_to_updated_attributes.map(&:first).compact)
 

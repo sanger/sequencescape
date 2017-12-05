@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 Then /^the overview of the plates should look like:$/ do |expected_results_table|
-   expected_results_table.diff!(table(fetch_table('table#qc_overview_table')))
+  expected_results_table.diff!(table(fetch_table('table#qc_overview_table')))
 end
 
 Then /^I create a "([^"]*)" from plate "([^"]*)"$/ do |plate_types, source_plate|

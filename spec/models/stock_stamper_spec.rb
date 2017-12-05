@@ -17,9 +17,9 @@ describe StockStamper do
     new_time = Time.local(2008, 9, 1, 12, 0, 0)
     Timecop.freeze(new_time)
     @tecan_data = {
-                    'user' => user.login,
-                    'time' => new_time,
-                    'source' =>
+      'user' => user.login,
+      'time' => new_time,
+      'source' =>
                     {
                       "#{plate.ean13_barcode}_s" =>
                       {
@@ -27,7 +27,7 @@ describe StockStamper do
                         'plate_size' => 96
                       }
                     },
-                    'destination' =>
+      'destination' =>
                     {
                       "#{plate.ean13_barcode}_d" =>
                       {
@@ -64,7 +64,7 @@ describe StockStamper do
                         ]
                       }
                     }
-                  }
+    }
   end
 
   describe 'it verifies the plates' do

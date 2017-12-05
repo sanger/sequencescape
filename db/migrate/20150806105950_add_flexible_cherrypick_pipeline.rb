@@ -24,7 +24,7 @@ class AddFlexibleCherrypickPipeline < ActiveRecord::Migration
         pl.workflow = LabInterface::Workflow.new(name: 'Flexible Cherrypick', pipeline: pl)
         pl.request_types << RequestType.find_by(key: 'flexible_cherrypick')
       end
-       MultiplexedCherrypickingTask.create!(workflow: pl.workflow, name: 'Set Plate Layout', lab_activity: true)
+      MultiplexedCherrypickingTask.create!(workflow: pl.workflow, name: 'Set Plate Layout', lab_activity: true)
     end
   end
 

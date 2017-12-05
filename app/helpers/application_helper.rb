@@ -81,9 +81,9 @@ module ApplicationHelper
   def dynamic_link_to(summary_item)
     object = summary_item.object
     if object.instance_of?(Asset)
-        return link_to((object.name).to_s, asset_path(object))
+      return link_to((object.name).to_s, asset_path(object))
     elsif object.instance_of?(Request)
-        return link_to("Request #{object.id}", request_path(object))
+      return link_to("Request #{object.id}", request_path(object))
     else
       return 'No link available'
     end
@@ -97,11 +97,11 @@ module ApplicationHelper
     # 1 request  => request summary page
     # N requests => summary overview
     if count == 1
-       url_path = request_path(matching_requests.first)
-       link_to count, url_path, html_options
+      url_path = request_path(matching_requests.first)
+      link_to count, url_path, html_options
     elsif count > 1
-       url_path = study_requests_path(study, state: state, request_type_id: request_type.id, asset_id: asset.id)
-       link_to count, url_path, html_options
+      url_path = study_requests_path(study, state: state, request_type_id: request_type.id, asset_id: asset.id)
+      link_to count, url_path, html_options
     end
   end
 

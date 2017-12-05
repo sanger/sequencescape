@@ -797,8 +797,7 @@ tags = { 'TruSeq small RNA index tags - 6 mer tags' =>
     [93, 'GACAGTGC'],
     [94, 'GAGTTAGC'],
     [95, 'GATGAATC'],
-    [96, 'GCCAAGAC']]
-}
+    [96, 'GCCAAGAC']] }
 
 TagGroup.create!(tag_group_names.map { |n| { name: n } })
 tags.each do |tag_group_name, tags_in_group|

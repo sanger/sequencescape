@@ -16,7 +16,7 @@ module ViewsSchema
       yield(name, definition)
     end
   rescue ActiveRecord::StatementInvalid => exception
-      puts "\e[1;31m
+    puts "\e[1;31m
 ==============================================================
 *                          WARNING!                          *
 *        The attempt to dump the view schema failed.         *
@@ -33,7 +33,7 @@ module ViewsSchema
 *                        disruption.                         *
 ==============================================================
 \e[0m"
-      raise exception
+    raise exception
   end
 
   def self.all_views

@@ -16,11 +16,12 @@ class Api::RequestIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        scope :including_associations_for_json, -> { includes([
-          :uuid_object,
-          :request_type,
-          :request_metadata,
-          :user, {
+        scope :including_associations_for_json, -> {
+          includes([
+            :uuid_object,
+            :request_type,
+            :request_metadata,
+            :user, {
               asset: [
                 :uuid_object,
                 :barcode_prefix,
@@ -34,7 +35,7 @@ class Api::RequestIO < Api::Base
               initial_study: :uuid_object,
               initial_project: :uuid_object
             }
-        ])
+          ])
         }
 
         alias_method(:json_root, :url_name)
@@ -67,23 +68,23 @@ class Api::RequestIO < Api::Base
   end
 
   with_association(:submission) do
-        map_attribute_to_json_attribute(:uuid, 'submission_uuid')
-        map_attribute_to_json_attribute(:id, 'submission_internal_id')
-        map_attribute_to_json_attribute(:url, 'submission_url')
+    map_attribute_to_json_attribute(:uuid, 'submission_uuid')
+    map_attribute_to_json_attribute(:id, 'submission_internal_id')
+    map_attribute_to_json_attribute(:url, 'submission_url')
   end
 
   with_association(:initial_study) do
-        map_attribute_to_json_attribute(:url, 'study_url')
-        map_attribute_to_json_attribute(:uuid, 'study_uuid')
-        map_attribute_to_json_attribute(:id, 'study_internal_id')
-        map_attribute_to_json_attribute(:name, 'study_name')
+    map_attribute_to_json_attribute(:url, 'study_url')
+    map_attribute_to_json_attribute(:uuid, 'study_uuid')
+    map_attribute_to_json_attribute(:id, 'study_internal_id')
+    map_attribute_to_json_attribute(:name, 'study_name')
   end
 
   with_association(:initial_project) do
-        map_attribute_to_json_attribute(:url, 'project_url')
-        map_attribute_to_json_attribute(:uuid, 'project_uuid')
-        map_attribute_to_json_attribute(:id, 'project_internal_id')
-        map_attribute_to_json_attribute(:name, 'project_name')
+    map_attribute_to_json_attribute(:url, 'project_url')
+    map_attribute_to_json_attribute(:uuid, 'project_uuid')
+    map_attribute_to_json_attribute(:id, 'project_internal_id')
+    map_attribute_to_json_attribute(:name, 'project_name')
   end
 
   with_association(:asset) do

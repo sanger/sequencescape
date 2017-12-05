@@ -81,8 +81,7 @@ class EventTest < ActiveSupport::TestCase
                       eventful_type: 'Request',
                       identifier: 'ID',
                       location: 'Loc',
-                      message: 'updating request'
-                    }
+                      message: 'updating request' }
 
         assert @request.started?
       end

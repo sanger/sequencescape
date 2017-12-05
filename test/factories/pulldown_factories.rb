@@ -11,7 +11,7 @@ FactoryGirl.define do
       plate.wells << Map.where_description(['A1', 'B1', 'C1'])
                         .where_plate_size(plate.size)
                         .where_plate_shape(AssetShape.find_by(name: 'Standard')).map do |location|
-          create(:tagged_well, map: location)
+        create(:tagged_well, map: location)
       end
     end
 

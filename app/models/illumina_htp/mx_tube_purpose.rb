@@ -48,9 +48,9 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
     Plate
       .joins(wells: :requests)
       .where(requests: {
-        target_asset_id: tube.id,
-        sti_type: [Request::Multiplexing, Request::AutoMultiplexing, Request::LibraryCreation, *Request::LibraryCreation.descendants].map(&:name)
-      }).distinct
+               target_asset_id: tube.id,
+               sti_type: [Request::Multiplexing, Request::AutoMultiplexing, Request::LibraryCreation, *Request::LibraryCreation.descendants].map(&:name)
+             }).distinct
   end
 
   def request_state(request, state)

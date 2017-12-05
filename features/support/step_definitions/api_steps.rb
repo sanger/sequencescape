@@ -242,7 +242,7 @@ end
 Then /^the HTTP response should be "([^\"]+)"$/ do |status|
   match = /^(\d+).*/.match(status) or raise StandardError, "Status #{status.inspect} should be an HTTP status code + message"
   begin
-  assert_equal(match[1].to_i, page.driver.status_code)
+    assert_equal(match[1].to_i, page.driver.status_code)
   rescue MiniTest::Assertion => e
     step 'show me the HTTP response body'
     raise e
@@ -321,15 +321,15 @@ end
 Given /^the pathogen project called "([^"]*)" exists$/ do |project_name|
   project = FactoryGirl.create :project, name: project_name, approved: true, state: 'active'
   project.update_attributes!(project_metadata_attributes: {
-    project_manager: ProjectManager.find_by(name: 'Unallocated'),
-    project_cost_code: 'ABC',
-    funding_comments: 'External funding',
-    collaborators: 'No collaborators',
-    external_funding_source: 'EU',
-    budget_division: BudgetDivision.find_by(name: 'Pathogen (including malaria)'),
-    sequencing_budget_cost_centre: 'Sanger',
-    project_funding_model: 'Internal'
-  })
+                               project_manager: ProjectManager.find_by(name: 'Unallocated'),
+                               project_cost_code: 'ABC',
+                               funding_comments: 'External funding',
+                               collaborators: 'No collaborators',
+                               external_funding_source: 'EU',
+                               budget_division: BudgetDivision.find_by(name: 'Pathogen (including malaria)'),
+                               sequencing_budget_cost_centre: 'Sanger',
+                               project_funding_model: 'Internal'
+                             })
 end
 
 Given /^project "([^"]*)" has an owner called "([^"]*)"$/ do |project_name, login_name|

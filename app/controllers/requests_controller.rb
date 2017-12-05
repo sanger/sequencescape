@@ -200,10 +200,10 @@ class RequestsController < ApplicationController
     @change_decision = Request::ChangeDecision.new({ request: @request, user: @current_user }.merge(params[:change_decision] || {})).execute!
     flash[:notice] = 'Update. Below you find the new situation.'
     redirect_to filter_change_decision_request_path(params[:id])
-   rescue Request::ChangeDecision::InvalidDecision => exception
-      flash[:error] = 'Failed! Please, read the list of problem below.'
-      @change_decision = exception.object
-      render(action: :filter_change_decision)
+  rescue Request::ChangeDecision::InvalidDecision => exception
+    flash[:error] = 'Failed! Please, read the list of problem below.'
+    @change_decision = exception.object
+    render(action: :filter_change_decision)
   end
 
   def search_params

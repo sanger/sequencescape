@@ -96,7 +96,7 @@ class Project < ApplicationRecord
   def billable_events
     e = []
     samples.each do |sample|
-     e << sample.billable_events
+      e << sample.billable_events
     end
     e.flatten
   end

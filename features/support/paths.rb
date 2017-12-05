@@ -29,7 +29,7 @@ module NavigationHelpers
     case page_name
 
     when /the homepage/
-     '/'
+      '/'
     when /login/
       login_path
     when /the admin page/

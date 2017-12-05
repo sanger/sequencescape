@@ -36,17 +36,17 @@ class LabInterface::WorkflowTest < ActiveSupport::TestCase
         assert_equal 1, LabInterface::Workflow.count - @labinterface_workflow_count, 'Expected LabInterface::Workflow.count to change by 1'
       end
 
-       should 'change Task.count by 1' do
-         assert_equal 1,  Task.count - @task_count, 'Expected Task.count to change by 1'
-       end
+      should 'change Task.count by 1' do
+        assert_equal 1,  Task.count - @task_count, 'Expected Task.count to change by 1'
+      end
 
-       should 'change Pipeline.count by 1' do
-         assert_equal 1,  Pipeline.count - @pipeline_count, 'Expected Pipeline.count to change by 1'
-       end
+      should 'change Pipeline.count by 1' do
+        assert_equal 1,  Pipeline.count - @pipeline_count, 'Expected Pipeline.count to change by 1'
+      end
 
-       should 'change Descriptor.count by 2' do
-         assert_equal 2,  Descriptor.count - @descriptor_count, 'Expected Descriptor.count to change by 2'
-       end
+      should 'change Descriptor.count by 2' do
+        assert_equal 2,  Descriptor.count - @descriptor_count, 'Expected Descriptor.count to change by 2'
+      end
 
       should 'duplicate workflow' do
         assert_equal 'Workflow for LabInterface::WorkflowTest_dup', LabInterface::Workflow.last.name

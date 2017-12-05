@@ -78,19 +78,19 @@ class Well < Receptacle
   scope :include_stock_wells_for_modification, -> {
     includes(:stock_well_links,
              stock_wells: {
-              requests_as_source: [
-                :target_asset,
-                :request_type,
-                :billing_product,
-                :request_metadata,
-                :billing_items,
-                :request_events,
-                {
-                  initial_project: :project_metadata,
-                  submission: :orders
-                }
-              ]
-            })
+               requests_as_source: [
+                 :target_asset,
+                 :request_type,
+                 :billing_product,
+                 :request_metadata,
+                 :billing_items,
+                 :request_events,
+                 {
+                   initial_project: :project_metadata,
+                   submission: :orders
+                 }
+               ]
+             })
   }
   scope :include_map, -> { includes(:map) }
 
@@ -99,18 +99,18 @@ class Well < Receptacle
   }
 
   scope :on_plate_purpose, ->(purposes) {
-      joins(:plate)
-        .where(plates_assets: { plate_purpose_id: purposes })
+    joins(:plate)
+      .where(plates_assets: { plate_purpose_id: purposes })
   }
 
   scope :for_study_through_sample, ->(study) {
-      joins(aliquots: { sample: :study_samples })
-        .where(study_samples: { study_id: study })
+    joins(aliquots: { sample: :study_samples })
+      .where(study_samples: { study_id: study })
   }
 
   scope :for_study_through_aliquot, ->(study) {
-      joins(:aliquots)
-        .where(aliquots: { study_id: study })
+    joins(:aliquots)
+      .where(aliquots: { study_id: study })
   }
 
   #
@@ -135,8 +135,8 @@ class Well < Receptacle
   scope :target_wells_for, ->(wells) {
     select('assets.*, well_links.source_well_id AS stock_well_id')
       .joins(:stock_well_links).where(well_links: {
-        source_well_id: wells
-        })
+                                        source_well_id: wells
+                                      })
   }
 
   scope :located_at_position, ->(position) { joins(:map).readonly(false).where(maps: { description: position }) }

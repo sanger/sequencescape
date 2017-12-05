@@ -295,8 +295,7 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
          ['WG0017831-DNA', 'F11', 0, '124184', 'WTCCCT480968', 'Homo sapiens', 'male', 30, 50,
           'WG0017831-DNA,F11,0,124184_F11_WTCCCT480968,Homo sapiens,M,,30,50,-,,0,,,,-'],
          ['WG0109327-DNA', 'D6', 0, '141863', 'MIG682626', 'Homo sapiens', 'female', 13, 50,
-          'WG0109327-DNA,D06,0,141863_D06_MIG682626,Homo sapiens,F,,13,50,-,,0,,,,-']
-          ].each do |plate_label, map_description, control, plate_barcode, sample_name, species, gender, volume, concentration, target_row|
+          'WG0109327-DNA,D06,0,141863_D06_MIG682626,Homo sapiens,F,,13,50,-,,0,,,,-']].each do |plate_label, map_description, control, plate_barcode, sample_name, species, gender, volume, concentration, target_row|
           context "for #{plate_label} #{map_description} #{sample_name}" do
             setup do
               @plate_barcode = plate_barcode

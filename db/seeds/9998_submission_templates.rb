@@ -2092,8 +2092,8 @@
      request_types: [
        'htp_pcr_free_lib',
        'illumina_htp_strip_tube_creation',
-       'illumina_b_hiseq_x_paired_end_sequencing'],
+       'illumina_b_hiseq_x_paired_end_sequencing'
+     ],
      workflow: 'short_read_sequencing'
    }
- }
-].each { |params| SubmissionSerializer.construct!(params) }
+ }].each { |params| SubmissionSerializer.construct!(params) }

@@ -49,7 +49,7 @@ class TaskTest < ActiveSupport::TestCase
       end
 
       should 'get descriptor with a default value' do
-        assert_equal'my_default_value', @task.get_descriptor_value('new_name', 'my_default_value')
+        assert_equal 'my_default_value', @task.get_descriptor_value('new_name', 'my_default_value')
       end
     end
   end

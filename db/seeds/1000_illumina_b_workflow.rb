@@ -18,13 +18,13 @@ ActiveRecord::Base.transaction do
 
   # For B
   shared_options_b = {
-        workflow: workflow,
-        asset_type: 'Well',
-        order: 1,
-        initial_state: 'pending',
-        billable: true,
-        product_line_id: ProductLine.find_by(name: 'Illumina-B'),
-        no_target_asset: false
+    workflow: workflow,
+    asset_type: 'Well',
+    order: 1,
+    initial_state: 'pending',
+    billable: true,
+    product_line_id: ProductLine.find_by(name: 'Illumina-B'),
+    no_target_asset: false
   }
 
   shared_options_a = shared_options_b.clone.merge(product_line_id: ProductLine.find_by(name: 'Illumina-A'))
@@ -84,13 +84,13 @@ ActiveRecord::Base.transaction do
       no_target_asset: false
     },
     {
-  key: 'illumina_a_pool',
-  name: 'Illumina-A Pooled',
-  request_class_name: 'IlluminaHtp::Requests::LibraryCompletion',
-  for_multiplexing: true,
-  no_target_asset: false,
-  target_purpose: Purpose.find_by!(name: 'Lib Pool Norm')
-},
+      key: 'illumina_a_pool',
+      name: 'Illumina-A Pooled',
+      request_class_name: 'IlluminaHtp::Requests::LibraryCompletion',
+      for_multiplexing: true,
+      no_target_asset: false,
+      target_purpose: Purpose.find_by!(name: 'Lib Pool Norm')
+    },
     {
       key: 'illumina_a_isc',
       name: 'Illumina-A ISC',
@@ -168,7 +168,7 @@ ActiveRecord::Base.transaction do
     RequestType.find_by(key: request).acceptable_plate_purposes << Purpose.find_by(name: purpose)
   end
 
-re_request = RequestType.create!(
+  re_request = RequestType.create!(
     key: 'illumina_a_re_isc',
     name: 'Illumina-A ReISC',
     workflow: workflow,
@@ -179,10 +179,10 @@ re_request = RequestType.create!(
     for_multiplexing: true,
     product_line: ProductLine.find_by(name: 'Illumina-A'),
     target_purpose: Purpose.find_by(name: 'Standard MX')
-) do |rt|
-  rt.acceptable_plate_purposes << Purpose.find_by!(name: 'Lib PCR-XP')
-     RequestType::Validator.create!(request_type: rt, request_option: 'library_type', valid_options: RequestType::Validator::LibraryTypeValidator.new(rt.id))
-end
+  ) do |rt|
+    rt.acceptable_plate_purposes << Purpose.find_by!(name: 'Lib PCR-XP')
+    RequestType::Validator.create!(request_type: rt, request_option: 'library_type', valid_options: RequestType::Validator::LibraryTypeValidator.new(rt.id))
+  end
 
   RequestType.create!(
     name: 'Illumina-HTP Library Creation',
@@ -199,16 +199,16 @@ end
     product_line: ProductLine.find_by!(name: 'Illumina-B')
   ) do |rt|
     rt.pooling_method = RequestType::PoolingMethod.create!(
-        pooling_behaviour: 'PlateRow',
-        pooling_options: { pool_count: 8 }
+      pooling_behaviour: 'PlateRow',
+      pooling_options: { pool_count: 8 }
     )
-      rt.acceptable_plate_purposes << Purpose.find_by!(name: 'PF Cherrypicked')
-      RequestType::Validator.create!(
-        request_type: rt,
-        request_option: 'library_type',
-        valid_options: RequestType::Validator::LibraryTypeValidator.new(rt.id)
-      )
-      rt.library_types << LibraryType.find_or_create_by(name: 'HiSeqX PCR free')
+    rt.acceptable_plate_purposes << Purpose.find_by!(name: 'PF Cherrypicked')
+    RequestType::Validator.create!(
+      request_type: rt,
+      request_option: 'library_type',
+      valid_options: RequestType::Validator::LibraryTypeValidator.new(rt.id)
+    )
+    rt.library_types << LibraryType.find_or_create_by(name: 'HiSeqX PCR free')
   end
 
   RequestType.create!(
@@ -231,31 +231,31 @@ end
     rt.acceptable_plate_purposes << Purpose.find_by!(name: 'PF Cherrypicked')
   end
 
-    RequestType.create!(
-      name: 'Illumina-HTP Strip Tube Creation',
-      key: 'illumina_htp_strip_tube_creation',
-      workflow: Submission::Workflow.find_by!(key: 'short_read_sequencing'),
-      asset_type: 'Well',
-      order: 2,
-      initial_state: 'pending',
-      multiples_allowed: true,
-      request_class_name: 'StripCreationRequest',
-      for_multiplexing: false,
-      billable: false,
-      product_line: ProductLine.find_by!(name: 'Illumina-B')
-    )
+  RequestType.create!(
+    name: 'Illumina-HTP Strip Tube Creation',
+    key: 'illumina_htp_strip_tube_creation',
+    workflow: Submission::Workflow.find_by!(key: 'short_read_sequencing'),
+    asset_type: 'Well',
+    order: 2,
+    initial_state: 'pending',
+    multiples_allowed: true,
+    request_class_name: 'StripCreationRequest',
+    for_multiplexing: false,
+    billable: false,
+    product_line: ProductLine.find_by!(name: 'Illumina-B')
+  )
 
-      RequestType.find_by!(key: 'illumina_b_hiseq_x_paired_end_sequencing').acceptable_plate_purposes << PlatePurpose.create!(
-        name: 'Strip Tube Purpose',
-        target_type: 'StripTube',
-        stock_plate: false,
-        cherrypickable_target: false,
-        barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
-        cherrypick_direction: 'column',
-        size: 8,
-        asset_shape: AssetShape.find_by(name: 'StripTubeColumn'),
-        barcode_for_tecan: 'ean13_barcode'
-      )
+  RequestType.find_by!(key: 'illumina_b_hiseq_x_paired_end_sequencing').acceptable_plate_purposes << PlatePurpose.create!(
+    name: 'Strip Tube Purpose',
+    target_type: 'StripTube',
+    stock_plate: false,
+    cherrypickable_target: false,
+    barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
+    cherrypick_direction: 'column',
+    size: 8,
+    asset_shape: AssetShape.find_by(name: 'StripTubeColumn'),
+    barcode_for_tecan: 'ean13_barcode'
+  )
 end
 
 StripTubeCreationPipeline.create!(
