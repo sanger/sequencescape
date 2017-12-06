@@ -76,7 +76,7 @@ class Well < Receptacle
 
   scope :include_stock_wells, -> { includes(stock_wells: :requests_as_source) }
   scope :include_stock_wells_for_modification, -> {
-    includes(:stock_well_links,
+    preload(:stock_well_links,
              stock_wells: {
               requests_as_source: [
                 :target_asset,
