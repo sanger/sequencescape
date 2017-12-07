@@ -262,7 +262,6 @@ StripTubeCreationPipeline.create!(
   name: 'Strip Tube Creation',
   automated: false,
   active: true,
-  location: Location.find_by(name: 'Cluster formation freezer'),
   group_by_parent: true,
   sorter: 8,
   paginate: false,
