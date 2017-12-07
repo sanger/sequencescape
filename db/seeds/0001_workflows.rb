@@ -51,19 +51,6 @@ def set_pipeline_flow_to(sequence)
   end
 end
 
-locations_data = [
-  'Library creation freezer',
-  'Cluster formation freezer',
-  'Sample logistics freezer',
-  'Genotyping freezer',
-  'Pulldown freezer',
-  'PacBio library prep freezer',
-  'PacBio sequencing freezer',
-  'Illumina high throughput freezer'
-]
-locations_data.each do |location|
-  Location.create!(name: location)
-end
 # import [ :name ], locations_data, :validate => false
 
 #### RequestInformationTypes
@@ -105,8 +92,6 @@ LibraryCreationPipeline.create!(name: 'Illumina-C Library preparation') do |pipe
   pipeline.sorter     = 0
   pipeline.automated  = false
   pipeline.active     = true
-
-  pipeline.location = Location.find_by(name: 'Library creation freezer') or raise StandardError, "Cannot find 'Library creation freezer' location"
 
   pipeline.request_types << RequestType.create!(workflow: next_gen_sequencing, key: 'library_creation', name: 'Library creation',
                                                 deprecated: true) do |request_type|
@@ -150,8 +135,6 @@ MultiplexedLibraryCreationPipeline.create!(name: 'Illumina-B MX Library Preparat
   pipeline.automated           = false
   pipeline.active              = true
   pipeline.multiplexed         = true
-
-  pipeline.location = Location.find_by(name: 'Library creation freezer') or raise StandardError, "Cannot find 'Library creation freezer' location"
 
   pipeline.request_types << RequestType.create!(
     workflow: next_gen_sequencing,
@@ -209,8 +192,6 @@ MultiplexedLibraryCreationPipeline.create!(name: 'Illumina-C MX Library Preparat
   pipeline.multiplexed = true
   pipeline.group_name  = 'Library creation'
 
-  pipeline.location = Location.find_by(name: 'Library creation freezer') or raise StandardError, "Cannot find 'Library creation freezer' location"
-
   pipeline.request_types << RequestType.create!(
     workflow: Submission::Workflow.find_by(key: 'short_read_sequencing'),
     key: 'illumina_c_multiplexed_library_creation',
@@ -259,8 +240,6 @@ PulldownLibraryCreationPipeline.create!(name: 'Pulldown library preparation') do
   pipeline.sorter     = 12
   pipeline.automated  = false
   pipeline.active     = true
-
-  pipeline.location = Location.find_by(name: 'Library creation freezer') or raise StandardError, "Cannot find 'Library creation freezer' location"
 
   pipeline.request_types << RequestType.create!(workflow: next_gen_sequencing, key: 'pulldown_library_creation', name: 'Pulldown library creation') do |request_type|
     request_type.billable          = true
@@ -321,7 +300,6 @@ SequencingPipeline.create!(name: 'Cluster formation SE (spiked in controls)', re
   pipeline.automated  = false
   pipeline.active     = true
 
-  pipeline.location = Location.find_by(name: 'Cluster formation freezer') or raise StandardError, "Cannot find 'Cluster formation freezer' location"
   pipeline.workflow = LabInterface::Workflow.create!(name: 'Cluster formation SE (spiked in controls)') do |workflow|
     workflow.locale     = 'Internal'
     workflow.item_limit = 8
@@ -350,8 +328,6 @@ SequencingPipeline.create!(name: 'Cluster formation SE', request_types: cluster_
   pipeline.automated  = false
   pipeline.active     = true
 
-  pipeline.location = Location.find_by(name: 'Cluster formation freezer') or raise StandardError, "Cannot find 'Cluster formation freezer' location"
-
   pipeline.workflow = LabInterface::Workflow.create!(name: 'Cluster formation SE') do |workflow|
     workflow.locale     = 'Internal'
     workflow.item_limit = 8
@@ -377,8 +353,6 @@ SequencingPipeline.create!(name: 'Cluster formation SE (no controls)', request_t
   pipeline.sorter     = 2
   pipeline.automated  = false
   pipeline.active     = true
-
-  pipeline.location = Location.find_by(name: 'Cluster formation freezer') or raise StandardError, "Cannot find 'Cluster formation freezer' location"
 
   pipeline.workflow = LabInterface::Workflow.create!(name: 'Cluster formation SE (no controls)') do |workflow|
     workflow.locale     = 'Internal'
@@ -429,8 +403,6 @@ SequencingPipeline.create!(name: 'Cluster formation SE HiSeq', request_types: si
   pipeline.automated  = false
   pipeline.active     = true
 
-  pipeline.location = Location.find_by(name: 'Cluster formation freezer') or raise StandardError, "Cannot find 'Cluster formation freezer' location"
-
   pipeline.workflow = LabInterface::Workflow.create!(name: 'Cluster formation SE HiSeq') do |workflow|
     workflow.locale     = 'Internal'
     workflow.item_limit = 8
@@ -456,8 +428,6 @@ SequencingPipeline.create!(name: 'Cluster formation SE HiSeq (no controls)', req
   pipeline.sorter     = 2
   pipeline.automated  = false
   pipeline.active     = true
-
-  pipeline.location = Location.find_by(name: 'Cluster formation freezer') or raise StandardError, "Cannot find 'Cluster formation freezer' location"
 
   pipeline.workflow = LabInterface::Workflow.create!(name: 'Cluster formation SE HiSeq (no controls)') do |workflow|
     workflow.locale     = 'Internal'
@@ -535,7 +505,6 @@ SequencingPipeline.create!(name: 'Cluster formation PE', request_types: cluster_
   pipeline.sorter     = 3
   pipeline.automated  = false
   pipeline.active     = true
-  pipeline.location   = Location.find_by(name: 'Cluster formation freezer') or raise StandardError, "Cannot find 'Cluster formation freezer' location"
 
   pipeline.workflow = LabInterface::Workflow.create!(name: 'Cluster formation PE') do |workflow|
     workflow.locale     = 'Internal'
@@ -563,7 +532,6 @@ SequencingPipeline.create!(name: 'Cluster formation PE (no controls)', request_t
   pipeline.automated       = false
   pipeline.active          = true
   pipeline.group_by_parent = false
-  pipeline.location        = Location.find_by(name: 'Cluster formation freezer') or raise StandardError, "Cannot find 'Cluster formation freezer' location"
 
   pipeline.workflow = LabInterface::Workflow.create!(name: 'Cluster formation PE (no controls)') do |workflow|
     workflow.locale     = 'Internal'
@@ -590,7 +558,6 @@ SequencingPipeline.create!(name: 'Cluster formation PE (spiked in controls)', re
   pipeline.automated       = false
   pipeline.active          = true
   pipeline.group_by_parent = false
-  pipeline.location        = Location.find_by(name: 'Cluster formation freezer') or raise StandardError, "Cannot find 'Cluster formation freezer' location"
 
   pipeline.workflow = LabInterface::Workflow.create!(name: 'Cluster formation PE (spiked in controls)') do |workflow|
     workflow.locale     = 'Internal'
@@ -619,7 +586,6 @@ SequencingPipeline.create!(name: 'HiSeq Cluster formation PE (spiked in controls
   pipeline.automated       = false
   pipeline.active          = true
   pipeline.group_by_parent = false
-  pipeline.location        = Location.find_by(name: 'Cluster formation freezer') or raise StandardError, "Cannot find 'Cluster formation freezer' location"
 
   pipeline.workflow = LabInterface::Workflow.create!(name: 'HiSeq Cluster formation PE (spiked in controls)') do |workflow|
     workflow.locale     = 'Internal'
@@ -649,7 +615,6 @@ SequencingPipeline.create!(name: 'HiSeq 2500 PE (spiked in controls)', request_t
   pipeline.automated       = false
   pipeline.active          = true
   pipeline.group_by_parent = false
-  pipeline.location        = Location.find_by(name: 'Cluster formation freezer') or raise StandardError, "Cannot find 'Cluster formation freezer' location"
 
   pipeline.workflow = LabInterface::Workflow.create!(name: 'HiSeq 2500 PE (spiked in controls)') do |workflow|
     workflow.locale     = 'Internal'
@@ -678,7 +643,6 @@ SequencingPipeline.create!(name: 'HiSeq 2500 SE (spiked in controls)', request_t
   pipeline.automated       = false
   pipeline.active          = true
   pipeline.group_by_parent = false
-  pipeline.location        = Location.find_by(name: 'Cluster formation freezer') or raise StandardError, "Cannot find 'Cluster formation freezer' location"
 
   pipeline.workflow = LabInterface::Workflow.create!(name: 'HiSeq 2500 SE (spiked in controls)') do |workflow|
     workflow.locale     = 'Internal'
@@ -705,7 +669,6 @@ SequencingPipeline.create!(name: 'Cluster formation SE HiSeq (spiked in controls
   pipeline.automated       = false
   pipeline.active          = true
   pipeline.group_by_parent = false
-  pipeline.location        = Location.find_by(name: 'Cluster formation freezer') or raise StandardError, "Cannot find 'Cluster formation freezer' location"
 
   pipeline.workflow = LabInterface::Workflow.create!(name: 'Cluster formation SE HiSeq (spiked in controls)') do |workflow|
     workflow.locale     = 'Internal'
@@ -734,7 +697,6 @@ SequencingPipeline.create!(name: 'HiSeq Cluster formation PE (no controls)') do 
   pipeline.automated       = false
   pipeline.active          = true
   pipeline.group_by_parent = false
-  pipeline.location        = Location.find_by(name: 'Cluster formation freezer') or raise StandardError, "Cannot find 'Cluster formation freezer' location"
 
   ['a', 'b', 'c'].each do |pl|
     pipeline.request_types << RequestType.create!(workflow: next_gen_sequencing, key: "illumina_#{pl}_hiseq_paired_end_sequencing", name: "Illumina-#{pl.upcase} HiSeq Paired end sequencing", product_line: ProductLine.find_by(name: "Illumina-#{pl.upcase}")) do |request_type|
@@ -796,8 +758,6 @@ CherrypickPipeline.create!(name: 'Cherrypick') do |pipeline|
   pipeline.active              = true
   pipeline.group_by_parent     = true
 
-  pipeline.location = Location.find_by(name: 'Sample logistics freezer') or raise StandardError, "Cannot find 'Sample logistics freezer' location"
-
   pipeline.request_types << RequestType.create!(workflow: microarray_genotyping, key: 'cherrypick', name: 'Cherrypick') do |request_type|
     request_type.initial_state     = 'pending'
     request_type.target_asset_type = 'Well'
@@ -811,8 +771,7 @@ CherrypickPipeline.create!(name: 'Cherrypick') do |pipeline|
     # NOTE[xxx]: Note that the order here, and 'Set Location' being interactive, do not mimic the behaviour of production
     [
       { class: PlateTemplateTask,      name: 'Select Plate Template',              sorted: 1, batched: true, lab_activity: true },
-      { class: CherrypickTask,         name: 'Approve Plate Layout',               sorted: 2, batched: true, lab_activity: true },
-      { class: SetLocationTask,        name: 'Set Location',                       sorted: 4, lab_activity: true }
+      { class: CherrypickTask,         name: 'Approve Plate Layout',               sorted: 2, batched: true, lab_activity: true }
     ].each do |details|
       details.delete(:class).create!(details.merge(workflow: workflow))
     end
@@ -825,8 +784,6 @@ CherrypickForPulldownPipeline.create!(name: 'Cherrypicking for Pulldown') do |pi
   pipeline.automated           = false
   pipeline.active              = true
   pipeline.group_by_parent     = true
-
-  pipeline.location = Location.find_by(name: 'Sample logistics freezer') or raise StandardError, "Cannot find 'Sample logistics freezer' location"
 
   cherrypicking_attributes = lambda do |request_type|
     request_type.initial_state     = 'pending'
@@ -847,8 +804,7 @@ CherrypickForPulldownPipeline.create!(name: 'Cherrypicking for Pulldown') do |pi
   pipeline.workflow = LabInterface::Workflow.create!(name: 'Cherrypicking for Pulldown').tap do |workflow|
     # NOTE[xxx]: Note that the order here, and 'Set Location' being interactive, do not mimic the behaviour of production
     [
-      { class: CherrypickGroupBySubmissionTask, name: 'Cherrypick Group By Submission', sorted: 1, batched: true },
-      { class: SetLocationTask,                 name: 'Set location', sorted: 2 }
+      { class: CherrypickGroupBySubmissionTask, name: 'Cherrypick Group By Submission', sorted: 1, batched: true }
     ].each do |details|
       details.delete(:class).create!(details.merge(workflow: workflow))
     end
@@ -860,8 +816,6 @@ DnaQcPipeline.create!(name: 'DNA QC') do |pipeline|
   pipeline.automated           = false
   pipeline.active              = true
   pipeline.group_by_parent     = true
-
-  pipeline.location = Location.find_by(name: 'Sample logistics freezer') or raise StandardError, "Cannot find 'Sample logistics freezer' location"
 
   pipeline.request_types << RequestType.create!(workflow: microarray_genotyping, key: 'dna_qc', name: 'DNA QC', no_target_asset: true) do |request_type|
     request_type.initial_state     = 'pending'
@@ -885,8 +839,6 @@ GenotypingPipeline.create!(name: 'Genotyping') do |pipeline|
   pipeline.automated = false
   pipeline.active = true
   pipeline.group_by_parent = true
-
-  pipeline.location = Location.find_by(name: 'Genotyping freezer') or raise StandardError, "Cannot find 'Genotyping freezer' location"
 
   pipeline.request_types << RequestType.create!(workflow: microarray_genotyping, key: 'genotyping', name: 'Genotyping') do |request_type|
     request_type.initial_state     = 'pending'
@@ -913,8 +865,6 @@ PulldownMultiplexLibraryPreparationPipeline.create!(name: 'Pulldown Multiplex Li
   pipeline.active               = true
   pipeline.group_by_parent      = true
   pipeline.max_size             = 96
-
-  pipeline.location = Location.find_by(name: 'Pulldown freezer') or raise StandardError, "Cannot find 'Pulldown freezer' location"
 
   pipeline.request_types << RequestType.create!(workflow: next_gen_sequencing, key: 'pulldown_multiplexing', name: 'Pulldown Multiplex Library Preparation') do |request_type|
     request_type.billable          = true
@@ -946,8 +896,6 @@ PacBioSamplePrepPipeline.create!(name: 'PacBio Library Prep') do |pipeline|
   pipeline.asset_type           = 'PacBioLibraryTube'
   pipeline.group_by_parent      = true
 
-  pipeline.location = Location.find_by(name: 'PacBio library prep freezer') or raise StandardError, "Cannot find 'PacBio library prep freezer' location"
-
   pipeline.request_types << RequestType.create!(workflow: next_gen_sequencing, key: 'pacbio_sample_prep', name: 'PacBio Library Prep') do |request_type|
     request_type.initial_state     = 'pending'
     request_type.asset_type        = 'Well'
@@ -976,8 +924,6 @@ PacBioSequencingPipeline.create!(name: 'PacBio Sequencing') do |pipeline|
   pipeline.max_size             = 96
 
   pipeline.group_by_parent = false
-
-  pipeline.location = Location.find_by(name: 'PacBio sequencing freezer') or raise StandardError, "Cannot find 'PacBio sequencing freezer' location"
 
   pipeline.request_types << RequestType.create!(workflow: next_gen_sequencing, key: 'pacbio_sequencing', name: 'PacBio Sequencing') do |request_type|
     request_type.initial_state     = 'pending'
@@ -1042,8 +988,6 @@ set_pipeline_flow_to('PacBio Library Prep' => 'PacBio Sequencing')
       pipeline.asset_type         = 'LibraryTube'
       pipeline.externally_managed = true
 
-      pipeline.location = Location.find_by(name: 'Pulldown freezer') or raise StandardError, 'Pulldown freezer does not appear to exist!'
-
       pipeline.request_types << RequestType.create!(workflow: next_gen_sequencing, name: pipeline_name) do |request_type|
         request_type.billable          = true
         request_type.key               = pipeline_name.downcase.underscore.gsub(/\s+/, '_')
@@ -1061,14 +1005,11 @@ set_pipeline_flow_to('PacBio Library Prep' => 'PacBio Sequencing')
   end
 end
 
-mi_seq_freezer = Location.create!(name: 'MiSeq freezer')
 SequencingPipeline.create!(name: 'MiSeq sequencing') do |pipeline|
   pipeline.asset_type = 'Lane'
   pipeline.sorter     = 2
   pipeline.automated  = false
   pipeline.active     = true
-
-  pipeline.location = mi_seq_freezer
 
   pipeline.request_types << RequestType.create!(workflow: next_gen_sequencing, key: 'miseq_sequencing', name: 'MiSeq sequencing') do |request_type|
     request_type.initial_state     = 'pending'
@@ -1129,7 +1070,6 @@ CherrypickPipeline.create!(
   name: 'Illumina-C Cherrypick',
   active: true,
   automated: false,
-  location_id: Location.find_by(name: 'Library creation freezer'),
   group_by_parent: true,
   asset_type: 'Well',
   group_name: 'Illumina-C Library creation',
@@ -1195,20 +1135,10 @@ CherrypickTask.create!(
   batched: true,
   lab_activity: true
 )
-SetLocationTask.create!(
-  name: 'Set Location',
-  pipeline_workflow_id: liw.id,
-  sorted: 3,
-  batched: true,
-  lab_activity: true
-) do |task|
-  task.location_id = Location.find_by(name: 'Sample logistics freezer').id
-end
 
 CherrypickPipeline.create!(
   name: 'Cherrypick for Fluidigm',
   active: true,
-  location: Location.find_by(name: 'Sample logistics freezer'),
   group_by_parent: true,
   asset_type: 'Well',
   sorter: 11,
@@ -1286,7 +1216,6 @@ v4_pipelines = ['(spiked in controls)', '(no controls)'].each do |type|
     name: "HiSeq v4 PE #{type}",
     automated: false,
     active: true,
-    location: Location.find_by(name: 'Cluster formation freezer'),
     group_by_parent: false,
     asset_type: 'Lane',
     sorter: 9,
@@ -1321,7 +1250,6 @@ v4_pipelines = ['(spiked in controls)', '(no controls)'].each do |type|
     name: "HiSeq v4 SE #{type}",
     automated: false,
     active: true,
-    location: Location.find_by(name: 'Cluster formation freezer'),
     group_by_parent: false,
     asset_type: 'Lane',
     sorter: 9,
@@ -1357,7 +1285,6 @@ x10_pipelines = ['(spiked in controls)', '(no controls)'].each do |type|
     name: "HiSeq X PE #{type}",
     automated: false,
     active: true,
-    location: Location.find_by(name: 'Cluster formation freezer'),
     group_by_parent: false,
     asset_type: 'Lane',
     sorter: 9,
@@ -1392,7 +1319,6 @@ st_x10_pipelines = ['(spiked in controls) from strip-tubes'].each do |type|
     name: "HiSeq X PE #{type}",
     automated: false,
     active: true,
-    location: Location.find_by(name: 'Cluster formation freezer'),
     group_by_parent: true,
     asset_type: 'Lane',
     sorter: 9,
@@ -1523,7 +1449,6 @@ SequencingPipeline.create!(
   asset_type: 'Lane',
   automated: false,
   active: true,
-  location:  Location.find_by(name: 'Cluster formation freezer'),
   sorter: 10,
   max_size: 8,
   group_name: 'Sequencing',
@@ -1542,7 +1467,6 @@ SequencingPipeline.create!(
   asset_type: 'Lane',
   automated: false,
   active: true,
-  location:  Location.find_by(name: 'Cluster formation freezer'),
   sorter: 10,
   max_size: 8,
   group_name: 'Sequencing',
