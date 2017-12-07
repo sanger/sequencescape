@@ -69,7 +69,6 @@ feature 'cherrypick pipeline - nano grams per micro litre', js: true do
     fill_in('nano_grams_per_micro_litre_robot_minimum_picking_volume', with: '1.0')
     click_button 'Next step'
     click_button 'Next step'
-    click_button 'Next step'
     click_button 'Release this batch'
     expect(page).to have_content('Batch released!')
 
