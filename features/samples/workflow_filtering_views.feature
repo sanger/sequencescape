@@ -6,7 +6,7 @@ Feature: The various sample views should not be filtered by the users workflow
 
   # NOTE: Checking for the fields themselves, not the headers!
   Scenario Outline: Sample registration views
-    Given user "John Smith" has a workflow "<workflow>"
+
 
     Given I am on the page for choosing how to register samples for study "Testing filtering sample views"
     And I follow "1. Manual entry"
@@ -32,7 +32,7 @@ Feature: The various sample views should not be filtered by the users workflow
       |Microarray genotyping|
 
   Scenario Outline: Sample editing views
-    Given user "John Smith" has a workflow "<workflow>"
+
     And the sample named "testing_sample_edit" exists
 
     When I am on the edit page for sample "testing_sample_edit"

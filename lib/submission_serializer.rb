@@ -49,7 +49,6 @@ module SubmissionSerializer
     end
 
     ensp[:request_types] = sp[:request_type_ids_list].flatten.map { |id| RequestType.find(id).key }
-    ensp[:workflow] = Submission::Workflow.find(sp[:workflow_id]).key if sp[:workflow_id]
     ensp[:order_role] = OrderRole.find(sp[:order_role_id]).role if sp[:order_role_id]
 
     new_attributes
@@ -80,7 +79,6 @@ module SubmissionSerializer
     end
 
     sp[:request_type_ids_list] = ensp[:request_types].map { |rtk| [RequestType.find_by!(key: rtk).id] }
-    sp[:workflow_id] = Submission::Workflow.find_by!(key: ensp[:workflow]).id if ensp[:workflow]
     sp[:order_role_id] = OrderRole.find_or_create_by(role: ensp[:order_role]).id if ensp[:order_role]
 
     SubmissionTemplate.create!(st)

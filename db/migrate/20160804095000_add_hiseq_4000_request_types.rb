@@ -1,10 +1,14 @@
 class AddHiseq4000RequestTypes < ActiveRecord::Migration
+  class SubmissionWorkflow < ApplicationRecord
+    self.table_name = 'submission_workflows'
+  end
+
   def self.up
     ActiveRecord::Base.transaction do
       ['htp', 'c'].each do |pipeline|
         RequestType.create!(key: "illumina_#{pipeline}_hiseq_4000_paired_end_sequencing",
                             name: "Illumina-#{pipeline.upcase} HiSeq 4000 Paired end sequencing",
-                            workflow: Submission::Workflow.find_by(key: 'short_read_sequencing'),
+                            workflow_id: SubmissionWorkflow.find_by(key: 'short_read_sequencing').id,
                             asset_type: 'LibraryTube',
                             order: 2,
                             initial_state: 'pending',
@@ -16,7 +20,7 @@ class AddHiseq4000RequestTypes < ActiveRecord::Migration
         end
         RequestType.create!(key: "illumina_#{pipeline}_hiseq_4000_single_end_sequencing",
                             name: "Illumina-#{pipeline.upcase} HiSeq 4000 Single end sequencing",
-                            workflow: Submission::Workflow.find_by(key: 'short_read_sequencing'),
+                            workflow_id: SubmissionWorkflow.find_by(key: 'short_read_sequencing').id,
                             asset_type: 'LibraryTube',
                             order: 2,
                             initial_state: 'pending',

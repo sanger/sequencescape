@@ -55,7 +55,6 @@ class AssetsControllerTest < ActionController::TestCase
       @study = create :study
       @project = create :project, enforce_quotas: true
       @request_type = create :request_type
-      @workflow = create :submission_workflow
       @json_data = valid_json_create_request(@asset, @request_type, @study, @project)
 
       @request.accept = @request.env['CONTENT_TYPE'] = 'application/json'

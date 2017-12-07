@@ -1,78 +1,78 @@
---- 
+---
 :class: Sample
 :id: 7280
-:attribute: 
-  control: 
+:attribute:
+  control:
   empty_supplier_sample_name: true
   name: Sample_7280
   new_name_format: true
-  sample_manifest_id: 
+  sample_manifest_id:
   id: 7280
-  sanger_sample_id: 
+  sanger_sample_id:
   updated_by_manifest: false
---- 
+---
 :class: SampleTube
 :id: 57421
-:attribute: 
+:attribute:
   name: SampleTube_57421
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
   holder_id: 1
-  public_name: 
-  resource: 
-  archive: 
+  public_name:
+  resource:
+  archive:
   barcode: "31538"
-  concentration: 
+  concentration:
   id: 57421
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
-  qc_state: 
+  plate_purpose_id:
+  qc_state:
   material_type: Sample
-  two_dimensional_barcode: 
-  external_release: 
-  map_id: 
+  two_dimensional_barcode:
+  external_release:
+  map_id:
   sti_type: SampleTube
---- 
+---
 :class: LibraryTube
 :id: 57422
-:attribute: 
+:attribute:
   name: LibraryTube_57422
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
   holder_id: 2
-  public_name: 
-  resource: 
-  archive: 
+  public_name:
+  resource:
+  archive:
   barcode: "22371"
-  concentration: 
+  concentration:
   id: 57422
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: pending
   material_type: Sample
-  two_dimensional_barcode: 
-  external_release: 
-  map_id: 
+  two_dimensional_barcode:
+  external_release:
+  map_id:
   sti_type: LibraryTube
---- 
+---
 :class: SequencingRequest
 :id: 31540
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 76375
@@ -81,19 +81,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5278
   asset_id: 57422
   state: passed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 2911542
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 1423155
@@ -102,19 +101,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5278
   asset_id: 57422
   state: failed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 2911543
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 1423156
@@ -123,19 +121,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5278
   asset_id: 57422
   state: failed
   sti_type: SequencingRequest
---- 
+---
 :class: LibraryCreationRequest
 :id: 31539
-:attribute: 
+:attribute:
   pipeline_id: 1
   request_type_id: 1
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 57422
@@ -144,114 +141,112 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5278
   asset_id: 57421
   state: passed
   sti_type: LibraryCreationRequest
---- 
+---
 :class: Submission
 :id: 3831
-:attribute: 
-  item_options: 
-  request_types: 
-  comments: 
-  assets: 
+:attribute:
+  item_options:
+  request_types:
+  comments:
+  assets:
   project_id: 333
-  asset_group_name: 
-  asset_group_id: 
+  asset_group_name:
+  asset_group_id:
   id: 3831
-  request_options: 
-  template_name: 
+  request_options:
+  template_name:
   study_id: 333
   user_id: 145
-  workflow_id: 1
-  message: 
+  message:
   state: ready
   sti_type: Submission
---- 
+---
 :class: LibraryCreationRequest::Metadata
 :id: 23240
-:attribute: 
+:attribute:
   name: LibraryCreationRequest::Metadata_23240
   pipeline_id: 22371
-  failure: 
+  failure:
   request_id: 31539
   batch_id: 4195
   read_length: 37
-  tag: 
+  tag:
   fragment_size_required_to: 4kb
   id: 23240
   fragment_size_required_from: 3kb
-  insert_size: 
-  sequencing_type: 
-  pass: 
+  insert_size:
+  sequencing_type:
+  pass:
   library_creation_complete: "YES"
   library_type: High complexity
---- 
+---
 :class: SampleTube
 :id: 57433
-:attribute: 
+:attribute:
   name: SampleTube_57433
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
   holder_id: 1
-  public_name: 
-  resource: 
-  archive: 
+  public_name:
+  resource:
+  archive:
   barcode: "31592"
-  concentration: 
+  concentration:
   id: 57433
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
-  qc_state: 
+  plate_purpose_id:
+  qc_state:
   material_type: Sample
-  two_dimensional_barcode: 
-  external_release: 
-  map_id: 
+  two_dimensional_barcode:
+  external_release:
+  map_id:
   sti_type: SampleTube
---- 
+---
 :class: LibraryTube
 :id: 57434
-:attribute: 
+:attribute:
   name: LibraryTube_57434
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
   holder_id: 2
-  public_name: 
-  resource: 
-  archive: 
+  public_name:
+  resource:
+  archive:
   barcode: "22298"
-  concentration: 
+  concentration:
   id: 57434
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: pending
   material_type: Sample
-  two_dimensional_barcode: 
-  external_release: 
-  map_id: 
+  two_dimensional_barcode:
+  external_release:
+  map_id:
   sti_type: LibraryTube
---- 
+---
 :class: SequencingRequest
 :id: 31594
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 76393
@@ -260,19 +255,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: failed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 36084
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 78456
@@ -281,19 +275,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: passed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 36085
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 78458
@@ -302,19 +295,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: passed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 36086
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 78460
@@ -323,19 +315,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: passed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 36087
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 78462
@@ -344,19 +335,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: passed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 36088
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 78464
@@ -365,19 +355,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: passed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 36089
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 78466
@@ -386,19 +375,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: passed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 36090
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 78468
@@ -407,19 +395,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: passed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 36091
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 86013
@@ -428,19 +415,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: passed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 36092
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 78472
@@ -449,19 +435,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: passed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 36093
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 86014
@@ -470,19 +455,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: passed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 36094
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 86015
@@ -491,19 +475,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: passed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 36095
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 86143
@@ -512,19 +495,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: passed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 36096
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 85677
@@ -533,19 +515,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: cancelled
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 36097
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 85678
@@ -554,19 +535,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: cancelled
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 36098
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 86144
@@ -575,19 +555,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: passed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 36099
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 78485
@@ -596,19 +575,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: passed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 36100
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 78486
@@ -617,19 +595,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: passed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 36101
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 78488
@@ -638,19 +615,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: passed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 36102
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 78490
@@ -659,19 +635,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: passed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 36103
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 78491
@@ -680,19 +655,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: passed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 36104
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 78492
@@ -701,19 +675,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: passed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 36105
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 78493
@@ -722,19 +695,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: passed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 36106
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 78494
@@ -743,19 +715,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: passed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 36107
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 78495
@@ -764,19 +735,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: passed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 36108
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 78496
@@ -785,19 +755,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: passed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 36109
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 78497
@@ -806,19 +775,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: passed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 36110
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 78498
@@ -827,19 +795,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: passed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 36111
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 78499
@@ -848,19 +815,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: passed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 36112
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 78500
@@ -869,19 +835,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: passed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 36113
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 78501
@@ -890,19 +855,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: passed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 36114
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 78502
@@ -911,19 +875,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: passed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 36115
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 78503
@@ -932,19 +895,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: passed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 2911554
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 1423167
@@ -953,19 +915,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: failed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 2911555
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 1423168
@@ -974,19 +935,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: failed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 2912606
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 1424219
@@ -995,19 +955,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: failed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 2912607
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 1424220
@@ -1016,19 +975,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: failed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 2912608
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 1424221
@@ -1037,19 +995,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: failed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 2912609
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 1424222
@@ -1058,19 +1015,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: failed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 2912610
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 1424223
@@ -1079,19 +1035,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: failed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 2912611
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 1424224
@@ -1100,19 +1055,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: failed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 2912612
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 1424225
@@ -1121,19 +1075,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: failed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 2912613
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 1424226
@@ -1142,19 +1095,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: failed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 2912614
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 1424227
@@ -1163,19 +1115,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: failed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 2912615
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 1424228
@@ -1184,19 +1135,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: failed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 2912616
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 1424229
@@ -1205,19 +1155,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: failed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 2912617
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 1424230
@@ -1226,19 +1175,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: failed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 2912618
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 1424231
@@ -1247,19 +1195,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: failed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 2912619
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 1424232
@@ -1268,19 +1215,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: failed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 2912620
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 1424233
@@ -1289,19 +1235,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: failed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 2912621
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 1424234
@@ -1310,19 +1255,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: failed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 2912622
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 1424235
@@ -1331,19 +1275,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: failed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 2912623
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 1424236
@@ -1352,19 +1295,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: failed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 2912624
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 1424237
@@ -1373,19 +1315,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: failed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 2912625
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 1424238
@@ -1394,19 +1335,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: failed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 2912626
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 1424239
@@ -1415,19 +1355,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: failed
   sti_type: SequencingRequest
---- 
+---
 :class: SequencingRequest
 :id: 2912627
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 1424240
@@ -1436,19 +1375,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57434
   state: failed
   sti_type: SequencingRequest
---- 
+---
 :class: LibraryCreationRequest
 :id: 31593
-:attribute: 
+:attribute:
   pipeline_id: 1
   request_type_id: 1
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 57434
@@ -1457,114 +1395,112 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5296
   asset_id: 57433
   state: passed
   sti_type: LibraryCreationRequest
---- 
+---
 :class: Submission
 :id: 3834
-:attribute: 
-  item_options: 
-  request_types: 
-  comments: 
-  assets: 
+:attribute:
+  item_options:
+  request_types:
+  comments:
+  assets:
   project_id: 333
-  asset_group_name: 
-  asset_group_id: 
+  asset_group_name:
+  asset_group_id:
   id: 3834
-  request_options: 
-  template_name: 
+  request_options:
+  template_name:
   study_id: 333
   user_id: 145
-  workflow_id: 1
-  message: 
+  message:
   state: ready
   sti_type: Submission
---- 
+---
 :class: LibraryCreationRequest::Metadata
 :id: 23294
-:attribute: 
+:attribute:
   name: LibraryCreationRequest::Metadata_23294
   pipeline_id: 22298
-  failure: 
+  failure:
   request_id: 31593
   batch_id: 4187
   read_length: 108
-  tag: 
+  tag:
   fragment_size_required_to: "400"
   id: 23294
   fragment_size_required_from: "300"
-  insert_size: 
-  sequencing_type: 
-  pass: 
+  insert_size:
+  sequencing_type:
+  pass:
   library_creation_complete: "YES"
   library_type: No PCR
---- 
+---
 :class: SampleTube
 :id: 58140
-:attribute: 
+:attribute:
   name: SampleTube_58140
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
   holder_id: 1
-  public_name: 
-  resource: 
-  archive: 
+  public_name:
+  resource:
+  archive:
   barcode: "33801"
-  concentration: 
+  concentration:
   id: 58140
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
-  qc_state: 
+  plate_purpose_id:
+  qc_state:
   material_type: Sample
-  two_dimensional_barcode: 
-  external_release: 
-  map_id: 
+  two_dimensional_barcode:
+  external_release:
+  map_id:
   sti_type: SampleTube
---- 
+---
 :class: LibraryTube
 :id: 58141
-:attribute: 
+:attribute:
   name: LibraryTube_58141
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
   holder_id: 2
-  public_name: 
-  resource: 
-  archive: 
+  public_name:
+  resource:
+  archive:
   barcode: "24413"
-  concentration: 
+  concentration:
   id: 58141
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: pending
   material_type: Sample
-  two_dimensional_barcode: 
-  external_release: 
-  map_id: 
+  two_dimensional_barcode:
+  external_release:
+  map_id:
   sti_type: LibraryTube
---- 
+---
 :class: SequencingRequest
 :id: 33803
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 77459
@@ -1573,19 +1509,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5862
   asset_id: 58141
   state: passed
   sti_type: SequencingRequest
---- 
+---
 :class: LibraryCreationRequest
 :id: 33802
-:attribute: 
+:attribute:
   pipeline_id: 1
   request_type_id: 1
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 58141
@@ -1594,114 +1529,112 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5862
   asset_id: 58140
   state: passed
   sti_type: LibraryCreationRequest
---- 
+---
 :class: Submission
 :id: 3978
-:attribute: 
-  item_options: 
-  request_types: 
-  comments: 
-  assets: 
+:attribute:
+  item_options:
+  request_types:
+  comments:
+  assets:
   project_id: 333
-  asset_group_name: 
-  asset_group_id: 
+  asset_group_name:
+  asset_group_id:
   id: 3978
-  request_options: 
-  template_name: 
+  request_options:
+  template_name:
   study_id: 333
   user_id: 145
-  workflow_id: 1
-  message: 
+  message:
   state: ready
   sti_type: Submission
---- 
+---
 :class: LibraryCreationRequest::Metadata
 :id: 25152
-:attribute: 
+:attribute:
   name: LibraryCreationRequest::Metadata_25152
   pipeline_id: 24413
-  failure: 
+  failure:
   request_id: 33802
   batch_id: 4439
   read_length: 76
-  tag: 
+  tag:
   fragment_size_required_to: "500"
   id: 25152
   fragment_size_required_from: "400"
-  insert_size: 
-  sequencing_type: 
-  pass: 
+  insert_size:
+  sequencing_type:
+  pass:
   library_creation_complete: "YES"
   library_type: No PCR
---- 
+---
 :class: SampleTube
 :id: 58150
-:attribute: 
+:attribute:
   name: SampleTube_58150
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
   holder_id: 1
-  public_name: 
-  resource: 
-  archive: 
+  public_name:
+  resource:
+  archive:
   barcode: "33921"
-  concentration: 
+  concentration:
   id: 58150
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
-  qc_state: 
+  plate_purpose_id:
+  qc_state:
   material_type: Sample
-  two_dimensional_barcode: 
-  external_release: 
-  map_id: 
+  two_dimensional_barcode:
+  external_release:
+  map_id:
   sti_type: SampleTube
---- 
+---
 :class: LibraryTube
 :id: 58151
-:attribute: 
+:attribute:
   name: LibraryTube_58151
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
   holder_id: 2
-  public_name: 
-  resource: 
-  archive: 
+  public_name:
+  resource:
+  archive:
   barcode: "24419"
-  concentration: 
+  concentration:
   id: 58151
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: pending
   material_type: Sample
-  two_dimensional_barcode: 
-  external_release: 
-  map_id: 
+  two_dimensional_barcode:
+  external_release:
+  map_id:
   sti_type: LibraryTube
---- 
+---
 :class: SequencingRequest
 :id: 33923
-:attribute: 
+:attribute:
   pipeline_id: 4
   request_type_id: 3
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 77468
@@ -1710,19 +1643,18 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5873
   asset_id: 58151
   state: passed
   sti_type: SequencingRequest
---- 
+---
 :class: LibraryCreationRequest
 :id: 33922
-:attribute: 
+:attribute:
   pipeline_id: 1
   request_type_id: 1
-  sample_pool_id: 
+  sample_pool_id:
   project_id: 333
   priority: 0
   target_asset_id: 58151
@@ -1731,1686 +1663,1684 @@
   study_id: 333
   user_id: 145
   sample_id: 7280
-  workflow_id: 1
-  charge: 
+  charge:
   item_id: 5873
   asset_id: 58150
   state: passed
   sti_type: LibraryCreationRequest
---- 
+---
 :class: Submission
 :id: 3984
-:attribute: 
-  item_options: 
-  request_types: 
-  comments: 
-  assets: 
+:attribute:
+  item_options:
+  request_types:
+  comments:
+  assets:
   project_id: 333
-  asset_group_name: 
-  asset_group_id: 
+  asset_group_name:
+  asset_group_id:
   id: 3984
-  request_options: 
-  template_name: 
+  request_options:
+  template_name:
   study_id: 333
   user_id: 145
-  workflow_id: 1
-  message: 
+  message:
   state: ready
   sti_type: Submission
---- 
+---
 :class: LibraryCreationRequest::Metadata
 :id: 25247
-:attribute: 
+:attribute:
   name: LibraryCreationRequest::Metadata_25247
   pipeline_id: 24419
-  failure: 
+  failure:
   request_id: 33922
   batch_id: 4439
   read_length: 76
-  tag: 
+  tag:
   fragment_size_required_to: "500"
   id: 25247
   fragment_size_required_from: "400"
-  insert_size: 
-  sequencing_type: 
-  pass: 
+  insert_size:
+  sequencing_type:
+  pass:
   library_creation_complete: "YES"
   library_type: No PCR
---- 
+---
 :class: Lane
 :id: 76375
-:attribute: 
+:attribute:
   name: Lane_76375
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 76375
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 76393
-:attribute: 
+:attribute:
   name: Lane_76393
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 76393
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: failed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: false
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 77459
-:attribute: 
+:attribute:
   name: Lane_77459
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 77459
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 77468
-:attribute: 
+:attribute:
   name: Lane_77468
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 77468
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 78456
-:attribute: 
+:attribute:
   name: Lane_78456
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 78456
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 78458
-:attribute: 
+:attribute:
   name: Lane_78458
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 78458
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 78460
-:attribute: 
+:attribute:
   name: Lane_78460
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 78460
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 78462
-:attribute: 
+:attribute:
   name: Lane_78462
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 78462
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 78464
-:attribute: 
+:attribute:
   name: Lane_78464
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 78464
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 78466
-:attribute: 
+:attribute:
   name: Lane_78466
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 78466
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 78468
-:attribute: 
+:attribute:
   name: Lane_78468
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 78468
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 78472
-:attribute: 
+:attribute:
   name: Lane_78472
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 78472
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 78485
-:attribute: 
+:attribute:
   name: Lane_78485
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 78485
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 78486
-:attribute: 
+:attribute:
   name: Lane_78486
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 78486
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 78488
-:attribute: 
+:attribute:
   name: Lane_78488
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 78488
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 78490
-:attribute: 
+:attribute:
   name: Lane_78490
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 78490
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 78491
-:attribute: 
+:attribute:
   name: Lane_78491
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 78491
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 78492
-:attribute: 
+:attribute:
   name: Lane_78492
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 78492
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 78493
-:attribute: 
+:attribute:
   name: Lane_78493
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 78493
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 78494
-:attribute: 
+:attribute:
   name: Lane_78494
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 78494
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 78495
-:attribute: 
+:attribute:
   name: Lane_78495
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 78495
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 78496
-:attribute: 
+:attribute:
   name: Lane_78496
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 78496
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 78497
-:attribute: 
+:attribute:
   name: Lane_78497
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 78497
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 78498
-:attribute: 
+:attribute:
   name: Lane_78498
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 78498
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 78499
-:attribute: 
+:attribute:
   name: Lane_78499
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 78499
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 78500
-:attribute: 
+:attribute:
   name: Lane_78500
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 78500
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 78501
-:attribute: 
+:attribute:
   name: Lane_78501
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 78501
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 78502
-:attribute: 
+:attribute:
   name: Lane_78502
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 78502
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 78503
-:attribute: 
+:attribute:
   name: Lane_78503
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 78503
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 86013
-:attribute: 
+:attribute:
   name: Lane_86013
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 86013
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 86014
-:attribute: 
+:attribute:
   name: Lane_86014
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 86014
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 86015
-:attribute: 
+:attribute:
   name: Lane_86015
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 86015
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 86143
-:attribute: 
+:attribute:
   name: Lane_86143
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 86143
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 86144
-:attribute: 
+:attribute:
   name: Lane_86144
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 86144
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 1423155
-:attribute: 
+:attribute:
   name: Lane_1423155
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 1423155
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 1423156
-:attribute: 
+:attribute:
   name: Lane_1423156
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 1423156
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 1423167
-:attribute: 
+:attribute:
   name: Lane_1423167
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 1423167
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: failed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: false
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 1423168
-:attribute: 
+:attribute:
   name: Lane_1423168
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 1423168
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: failed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: false
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 1424219
-:attribute: 
+:attribute:
   name: Lane_1424219
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 1424219
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 1424220
-:attribute: 
+:attribute:
   name: Lane_1424220
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 1424220
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 1424221
-:attribute: 
+:attribute:
   name: Lane_1424221
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 1424221
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 1424222
-:attribute: 
+:attribute:
   name: Lane_1424222
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 1424222
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 1424223
-:attribute: 
+:attribute:
   name: Lane_1424223
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 1424223
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 1424224
-:attribute: 
+:attribute:
   name: Lane_1424224
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 1424224
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 1424225
-:attribute: 
+:attribute:
   name: Lane_1424225
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 1424225
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 1424226
-:attribute: 
+:attribute:
   name: Lane_1424226
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 1424226
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 1424227
-:attribute: 
+:attribute:
   name: Lane_1424227
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 1424227
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 1424228
-:attribute: 
+:attribute:
   name: Lane_1424228
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 1424228
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 1424229
-:attribute: 
+:attribute:
   name: Lane_1424229
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 1424229
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 1424230
-:attribute: 
+:attribute:
   name: Lane_1424230
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 1424230
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 1424231
-:attribute: 
+:attribute:
   name: Lane_1424231
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 1424231
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 1424232
-:attribute: 
+:attribute:
   name: Lane_1424232
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 1424232
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 1424233
-:attribute: 
+:attribute:
   name: Lane_1424233
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 1424233
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 1424234
-:attribute: 
+:attribute:
   name: Lane_1424234
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 1424234
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 1424237
-:attribute: 
+:attribute:
   name: Lane_1424237
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 1424237
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 1424238
-:attribute: 
+:attribute:
   name: Lane_1424238
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 1424238
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 1424239
-:attribute: 
+:attribute:
   name: Lane_1424239
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 1424239
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: Lane
 :id: 1424240
-:attribute: 
+:attribute:
   name: Lane_1424240
   material_id: 7280
-  size: 
-  descriptor_fields: 
+  size:
+  descriptor_fields:
   holder_type: Location
   closed: false
-  holder_id: 
-  public_name: 
-  resource: 
-  archive: 
-  barcode: 
-  concentration: 
+  holder_id:
+  public_name:
+  resource:
+  archive:
+  barcode:
+  concentration:
   id: 1424240
-  descriptors: 
-  value: 
-  volume: 
+  descriptors:
+  value:
+  volume:
   barcode_prefix_id: 4
-  plate_purpose_id: 
+  plate_purpose_id:
   qc_state: passed
   material_type: Sample
-  two_dimensional_barcode: 
+  two_dimensional_barcode:
   external_release: true
-  map_id: 
+  map_id:
   sti_type: Lane
---- 
+---
 :class: StudySample
 :id: 6789
-:attribute: 
+:attribute:
   id: 6789
   study_id: 333
   sample_id: 7280
---- 
+---
 :class: Study
 :id: 333
-:attribute: 
+:attribute:
   ethically_approved: true
   name: Study_333
   enforce_data_release: true

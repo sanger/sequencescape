@@ -3,7 +3,7 @@
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
-
+# rubocop:disable Metrics/MethodLength
 module Sanger
   module Testing
     module Controller
@@ -256,3 +256,4 @@ module Sanger
     end
   end
 end
+# rubocop:enable Metrics/MethodLength

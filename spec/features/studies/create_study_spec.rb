@@ -39,7 +39,7 @@ feature 'Create a study' do
     click_button 'Create'
     expect(page).to have_content('Your study has been created')
     study = Study.last
-    expect(page).to have_current_path("/studies/#{study.id}/workflows/#{Submission::Workflow.last.id}")
+    expect(page).to have_current_path("/studies/#{study.id}/information")
     expect(study.abbreviation).to eq 'CCC3'
     expect(study.study_metadata.bam).to eq false
   end

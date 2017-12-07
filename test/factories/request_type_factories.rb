@@ -13,7 +13,6 @@ FactoryGirl.define do
     asset_type     'SampleTube'
     request_class  Request
     order          1
-    workflow { |workflow| workflow.association(:submission_workflow) }
     initial_state 'pending'
     request_purpose
 

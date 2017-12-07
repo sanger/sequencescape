@@ -5,26 +5,24 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 require 'test_helper'
-require 'studies/workflows_controller'
+require 'studies/information_controller'
 
 module Studies
-  class WorkflowsControllerTest < ActionController::TestCase
-    context 'Studies::Workflows controller' do
+  class InformationControllerTest < ActionController::TestCase
+    context 'Studies::Information controller' do
       setup do
-        @controller = Studies::WorkflowsController.new
+        @controller = Studies::InformationController.new
         @request    = ActionController::TestRequest.create(@controller)
-
-        @workflow = create :submission_workflow
-        @user     = create :user, workflow_id: @workflow.id
+        @user = create :user
         session[:user] = @user.id
         @study = create :study
       end
 
-      should_require_login(:show, resource: 'workflow', parent: 'study')
+      should_require_login(:show, parent: 'study')
 
       context '#show' do
         setup do
-          get :show, params: { id: @workflow.id, study_id: @study.id }
+          get :show, params: { id: 'unused', study_id: @study.id }
         end
 
         should respond_with :success

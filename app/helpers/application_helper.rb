@@ -80,8 +80,10 @@ module ApplicationHelper
 
   def dynamic_link_to(summary_item)
     object = summary_item.object
-    if object.instance_of?(Asset)
-      return link_to((object.name).to_s, asset_path(object))
+    if object.instance_of?(Submission)
+      return link_to("Submission #{object.id}", study_information_submission_path(object.study, object))
+    elsif object.instance_of?(Asset)
+      return link_to("#{object.label.capitalize} #{object.name}", asset_path(object))
     elsif object.instance_of?(Request)
       return link_to("Request #{object.id}", request_path(object))
     else

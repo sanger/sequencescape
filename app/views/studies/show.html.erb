@@ -27,13 +27,6 @@
         <th>Submissions</th>
       </tr>
     </thead>
-    <% @workflows.each do |workflow| %>
-    <tr>
-      <td class='strong'><%= link_to workflow.name, study_workflow_path(@study, workflow) %></td>
-      <td><%= @study.submissions.select { |s| s.workflow == workflow }.size %></td>
-    </tr>
-    <% end %>
-
   </table>
 </div>
 <br />

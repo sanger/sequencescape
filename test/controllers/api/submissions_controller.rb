@@ -24,8 +24,7 @@ module Api
           study = FactoryGirl.create :study
           project = FactoryGirl.create :project
           sample_tube = FactoryGirl.create :sample_tube
-          workflow = FactoryGirl.create :submission_workflow, id: 1 # Submission needs a workflow
-          rt = FactoryGirl.create :request_type, workflow: workflow
+          rt = FactoryGirl.create :request_type
           template.request_types << rt
 
           post :create, params: { order: { project_id: project.id, study_id: study.id, sample_tubes: [sample_tube.id.to_s], number_of_lanes: '2', type: template.key } }

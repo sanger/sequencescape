@@ -101,16 +101,16 @@ Given /^I have an active study called "([^\"]*)"$/ do |study_name|
 end
 
 Given /^I am visiting "([^\"]*)" page with ID "([^\"]*)" homepage$/ do |_page, id|
-  visit study_workflow_path(Study.find(id), Submission::Workflow.first)
+  visit study_information_path(Study.find(id))
 end
 
 Given /^I am visiting study "([^\"]*)" homepage$/ do |study_name|
   study = Study.find_by(name: study_name)
-  visit study_workflow_path(study, Submission::Workflow.first)
+  visit study_information_path(study)
 end
 
 And /^the study have a workflow$/ do
-  FactoryGirl.create :submission_workflow
+  # Do nothing
 end
 
 def given_fixed_study_metadata(attribute, value, regexp)

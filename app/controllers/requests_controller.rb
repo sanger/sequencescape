@@ -32,7 +32,7 @@ class RequestsController < ApplicationController
 
     # Deprecated?: It would be great if we could remove this
     if params[:request_type] and params[:workflow]
-      request_source = request_source.for_request_types(params[:request_type]).for_workflow(params[:workflow]).includes(:user)
+      request_source = request_source.for_request_types(params[:request_type]).includes(:user)
     end
 
     # Now, here we go: find all of the requests!
@@ -207,7 +207,7 @@ class RequestsController < ApplicationController
   end
 
   def search_params
-    permitted = params.permit(:asset_id, :item_id, :state, :request_type_id, :workflow_id)
+    permitted = params.permit(:asset_id, :item_id, :state, :request_type_id)
     permitted[:initial_study_id] = params[:study_id] if params[:study_id]
     permitted
   end

@@ -26,7 +26,6 @@ Given /^I have a PacBio submission$/ do
   submission = submission_template.create_and_build_submission!(
     study: study,
     project: project,
-    workflow: Submission::Workflow.find_by(key: 'short_read_sequencing'),
     user: User.last,
     assets: Plate.find_by(barcode: 1234567).wells.all,
     request_options: { :multiplier => { '1' => '1', '3' => '1' }, 'insert_size' => '500', 'sequencing_type' => 'Standard' }

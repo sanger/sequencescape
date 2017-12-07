@@ -42,7 +42,6 @@ class Request < ApplicationRecord
   belongs_to :pipeline
   belongs_to :item
   belongs_to :request_type, inverse_of: :requests
-  belongs_to :workflow, class_name: 'Submission::Workflow'
   belongs_to :user
   belongs_to :request_purpose
   belongs_to :order, inverse_of: :requests
@@ -280,7 +279,6 @@ class Request < ApplicationRecord
 
   scope :for_initial_study_id, ->(id) { where(initial_study_id: id) }
 
-  scope :for_workflow, ->(workflow) { joins(:workflow).where(workflow: { key: workflow }) }
   scope :for_request_types, ->(types) { joins(:request_type).where(request_types: { key: types }) }
 
   scope :for_search_query, ->(query, _with_includes) {

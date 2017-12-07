@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171205143326) do
+ActiveRecord::Schema.define(version: 20171207121754) do
 
   create_table "aker_containers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "barcode"
@@ -1613,14 +1613,6 @@ ActiveRecord::Schema.define(version: 20171205143326) do
     t.integer "product_catalogue_id"
     t.index ["name", "superceded_by_id"], name: "name_and_superceded_by_unique_idx", unique: true
     t.index ["product_catalogue_id"], name: "fk_submission_templates_to_product_catalogues"
-  end
-
-  create_table "submission_workflows", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
-    t.string "key", limit: 50
-    t.string "name"
-    t.string "item_label"
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
   create_table "submissions", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|

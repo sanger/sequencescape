@@ -68,8 +68,7 @@ SubmissionTemplate.create!(
     request_options: {
     },
     request_type_ids_list: [[rt.id]],
-    workflow_id: Submission::Workflow.find_by(key: 'short_read_sequencing').id,
-    info_differential: Submission::Workflow.find_by(key: 'short_read_sequencing').id
+    info_differential: nil
   },
   superceded_by_id: -2,
   product_catalogue: ProductCatalogue.find_by(name: 'Generic')
@@ -81,8 +80,7 @@ SubmissionTemplate.create!(
     request_options: {
     },
     request_type_ids_list: [[rt.id]],
-    workflow_id: Submission::Workflow.find_by(key: 'short_read_sequencing').id,
-    info_differential: Submission::Workflow.find_by(key: 'short_read_sequencing').id
+    info_differential: nil
   },
   superceded_by_id: -2,
   product_catalogue: ProductCatalogue.find_by(name: 'Generic')

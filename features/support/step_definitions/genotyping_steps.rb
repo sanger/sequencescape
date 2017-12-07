@@ -162,7 +162,6 @@ Given(/^I have a "([^"]*)" submission for plate "([^"]*)" with project "([^"]*)"
   submission = submission_template.create_and_build_submission!(
     study: study,
     project: project,
-    workflow: Submission::Workflow.find_by(key: 'microarray_genotyping'),
     user: User.last,
     assets: wells
   )
@@ -178,7 +177,6 @@ Given(/^I have a Cherrypicking submission for asset group "([^"]*)"$/) do |asset
   submission = submission_template.create_and_build_submission!(
     study: study,
     project: project,
-    workflow: Submission::Workflow.find_by(key: 'microarray_genotyping'),
     user: User.last,
     assets: asset_group.assets
   )

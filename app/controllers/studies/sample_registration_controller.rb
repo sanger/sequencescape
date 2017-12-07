@@ -53,7 +53,6 @@ class Studies::SampleRegistrationController < ApplicationController
   end
 
   def upload
-    @workflow = @current_user.workflow if !@current_user.nil? && !@current_user.workflow.nil?
   end
 
   private
