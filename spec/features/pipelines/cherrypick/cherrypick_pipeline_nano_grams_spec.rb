@@ -66,7 +66,6 @@ feature 'cherrypick pipeline - nano grams', js: true do
     fill_in('nano_grams_robot_minimum_picking_volume', with: '2.0')
     click_button 'Next step'
     click_button 'Next step'
-    click_button 'Next step'
     click_button 'Release this batch'
     expect(page).to have_content('Batch released!')
   end

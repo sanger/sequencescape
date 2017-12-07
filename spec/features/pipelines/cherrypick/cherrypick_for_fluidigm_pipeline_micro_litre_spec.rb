@@ -71,7 +71,6 @@ feature 'cherrypick for fluidigm pipeline - micro litre', js: true do
     fill_in('micro_litre_volume_required', with: '13')
     click_button 'Next step'
     click_button 'Next step'
-    click_button 'Next step'
     click_button 'Release this batch'
     expect(page).to have_content('Batch released!')
   end
