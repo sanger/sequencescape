@@ -10,7 +10,7 @@ class ::Endpoints::Pipelines < ::Core::Endpoint::Base
 
   instance do
     has_many(
-      :inbox, scoped: 'full_inbox.order_most_recently_created_first',
+      :inbox, scoped: 'ready_in_storage.full_inbox.order_most_recently_created_first',
               include: [],
               json: 'requests', to: 'requests'
     )

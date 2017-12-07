@@ -202,14 +202,9 @@ class Request < ApplicationRecord
 
   scope :siblings_of, ->(request) { where(asset_id: request.asset_id).where.not(id: request.id) }
 
-  # Asset are Locatable (or at least some of them)
-  belongs_to :location_association, primary_key: :locatable_id, foreign_key: :asset_id
-  scope :located, ->(location_id) { joins(:location_association).where(['location_associations.location_id = ?', location_id]).readonly(false) }
-
   # Use container location
-  scope :holder_located, ->(location_id) {
-    joins(['INNER JOIN container_associations hl ON hl.content_id = asset_id', 'INNER JOIN location_associations ON location_associations.locatable_id = hl.container_id'])
-      .where(['location_associations.location_id = ?', location_id])
+  scope :holder_located, ->() {
+    joins('INNER JOIN container_associations hl ON hl.content_id = asset_id')
       .readonly(false)
   }
 

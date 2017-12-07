@@ -10,7 +10,7 @@
 # across two.
 module Pipeline::InboxGroupedBySubmission
   def self.included(base)
-    base.has_many :inbox, class_name: 'Request', extend: Pagination
+    base.has_many :inbox, class_name: 'Request', extend: [Pipeline::RequestsInStorage, Pagination]
   end
 
   # Always group by submission
@@ -39,7 +39,7 @@ module Pipeline::InboxGroupedBySubmission
     #++
     def submissions(finder_method, options = {})
       with_exclusive_scope do
-        full_inbox.send(finder_method, options.merge(select: 'DISTINCT submission_id', order: 'submission_id ASC'))
+        ready_in_storage.full_inbox.send(finder_method, options.merge(select: 'DISTINCT submission_id', order: 'submission_id ASC'))
       end
     end
     private :submissions
