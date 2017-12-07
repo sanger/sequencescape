@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171207102802) do
+ActiveRecord::Schema.define(version: 20171207110902) do
 
   create_table "aker_containers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "barcode"
@@ -879,7 +879,6 @@ ActiveRecord::Schema.define(version: 20171207102802) do
     t.integer "barcode_printer_type_id"
     t.boolean "cherrypickable_target", default: true, null: false
     t.string "cherrypick_direction", default: "column", null: false
-    t.integer "default_location_id"
     t.string "cherrypick_filters"
     t.integer "size", default: 96
     t.integer "asset_shape_id", default: 1, null: false

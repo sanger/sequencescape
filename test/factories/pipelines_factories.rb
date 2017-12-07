@@ -125,7 +125,6 @@ FactoryGirl.define do
     active                true
     next_pipeline_id      nil
     previous_pipeline_id  nil
-    location
 
     transient do
       item_limit 2
@@ -147,7 +146,6 @@ FactoryGirl.define do
     name            { generate :pipeline_name }
     automated       false
     active          true
-    location
     group_by_parent true
     asset_type      'Well'
     max_size        3000
@@ -170,7 +168,6 @@ FactoryGirl.define do
     active                true
     next_pipeline_id      nil
     previous_pipeline_id  nil
-    location              { |location| location.association(:location) }
 
     association(:workflow, factory: :lab_workflow_for_pipeline)
     after(:build) do |pipeline|
@@ -197,7 +194,6 @@ FactoryGirl.define do
     active                true
     next_pipeline_id      nil
     previous_pipeline_id  nil
-    location
 
     after(:build) do |pipeline|
       pipeline.request_types << create(:request_type)
@@ -212,7 +208,6 @@ FactoryGirl.define do
     active                true
     next_pipeline_id      nil
     previous_pipeline_id  nil
-    location              { |location| location.association(:location) }
 
     after(:build) do |pipeline|
       pipeline.request_types << create(:request_type)
@@ -238,7 +233,6 @@ FactoryGirl.define do
     active                true
     next_pipeline_id      nil
     previous_pipeline_id  nil
-    location              { |location| location.association(:location) }
 
     after(:build) do |pipeline|
       pipeline.request_types << create(:request_type)
@@ -293,10 +287,6 @@ FactoryGirl.define do
   factory :pipeline_request_information_type do
     pipeline                  { |pipeline| pipeline.association(:pipeline) }
     request_information_type  { |request_information_type| request_information_type.association(:request_information_type) }
-  end
-
-  factory :location do
-    name 'Some fridge'
   end
 
   factory :implement do
@@ -394,7 +384,6 @@ FactoryGirl.define do
     pipeline_workflow_id { |workflow| workflow.association(:lab_workflow) }
     sorted                nil
     batched               nil
-    location              ''
     interactive           nil
   end
 
