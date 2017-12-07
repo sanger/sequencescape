@@ -383,6 +383,7 @@ FactoryGirl.define do
     name 'New task'
     pipeline_workflow_id { |workflow| workflow.association(:lab_workflow) }
     sorted                nil
+    location              ''
     batched               nil
     interactive           nil
   end

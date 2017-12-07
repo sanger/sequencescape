@@ -7,12 +7,11 @@ feature 'cherrypick for fluidigm pipeline - micro litre', js: true do
   let(:user) { create :admin }
   let(:project) { create :project, name: 'Test project' }
   let(:study) { create :study }
-  let(:location) { Location.find_by(name: 'Sample logistics freezer') }
   let(:pipeline_name) { 'Cherrypick for Fluidigm' }
   let(:pipeline) { Pipeline.find_by(name: pipeline_name) }
-  let(:plate1) { create :plate_with_untagged_wells, sample_count: 2, barcode: '1', location: location }
-  let(:plate2) { create :plate_with_untagged_wells, sample_count: 2, barcode: '10', location: location }
-  let(:plate3) { create :plate_with_untagged_wells, sample_count: 2, barcode: '5', location: location }
+  let(:plate1) { create :plate_with_untagged_wells, sample_count: 2, barcode: '1' }
+  let(:plate2) { create :plate_with_untagged_wells, sample_count: 2, barcode: '10' }
+  let(:plate3) { create :plate_with_untagged_wells, sample_count: 2, barcode: '5' }
   let(:plates) { [plate1, plate2, plate3] }
   let(:submission_template) { SubmissionTemplate.find_by!(name: pipeline_name) }
   let(:workflow) { Submission::Workflow.find_by(key: 'microarray_genotyping') }
@@ -72,7 +71,6 @@ feature 'cherrypick for fluidigm pipeline - micro litre', js: true do
     fill_in('micro_litre_volume_required', with: '13')
     click_button 'Next step'
     click_button 'Next step'
-    select('Genotyping freezer', from: 'Location')
     click_button 'Next step'
     click_button 'Release this batch'
     expect(page).to have_content('Batch released!')

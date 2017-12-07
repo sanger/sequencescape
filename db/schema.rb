@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171207110902) do
+ActiveRecord::Schema.define(version: 20171207114831) do
 
   create_table "aker_containers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "barcode"
@@ -786,7 +786,6 @@ ActiveRecord::Schema.define(version: 20171207110902) do
     t.datetime "updated_at"
     t.integer "next_pipeline_id"
     t.integer "previous_pipeline_id"
-    t.integer "location_id"
     t.boolean "group_by_parent"
     t.string "asset_type", limit: 50
     t.boolean "group_by_submission_to_delete"

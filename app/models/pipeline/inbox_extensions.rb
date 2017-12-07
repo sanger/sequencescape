@@ -12,7 +12,6 @@ module Pipeline::InboxExtensions
     actions = [:unbatched]
     actions.concat(pipeline.custom_inbox_actions)
     actions << ((pipeline.group_by_parent? or show_held_requests) ? :full_inbox : :pipeline_pending)
-    actions << [(pipeline.group_by_parent? ? :holder_located : :located), pipeline.location_id]
 
     if action != :count
       actions << :include_request_metadata if pipeline.request_information_types.exists?
@@ -31,6 +30,6 @@ module Pipeline::InboxExtensions
 
   # Used by the Pipeline class to retrieve the list of requests that are coming into the pipeline.
   def inputs(show_held_requests = false)
-    ready_in_storage.send(show_held_requests ? :full_inbox : :pipeline_pending)
+    show_held_requests ? full_inbox : pipeline_pending
   end
 end
