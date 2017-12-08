@@ -14,5 +14,5 @@ class BroadcastEvent::LabwareReceived < BroadcastEvent
   has_subjects(:labware, :labware)
   has_subjects(:sample, :contained_samples)
 
-  has_metadata(:location_barcode) { |asset, event| event.properties[:location_barcode] }
+  has_metadata(:location_barcode) { |_asset, event| event.properties[:location_barcode] }
 end

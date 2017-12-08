@@ -88,8 +88,8 @@ class ReceptionsController < ApplicationController
           @errors << "Asset not found with asset ID #{asset_id}"
         else
           asset_count += 1
-          asset.events.create_scanned_into_lab!("OLD RECEPTION")
-          BroadcastEvent::LabwareReceived.create!(seed: asset, user: current_user, properties: { location_barcode: "OLD RECEPTION" })
+          asset.events.create_scanned_into_lab!('OLD RECEPTION')
+          BroadcastEvent::LabwareReceived.create!(seed: asset, user: current_user, properties: { location_barcode: 'OLD RECEPTION' })
         end
       end
 

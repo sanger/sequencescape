@@ -22,7 +22,7 @@ class ReceptionsControllerTest < ActionController::TestCase
       context 'with 1 plate' do
         setup do
           @plate_count = Plate.count
-          post :import_from_snp, params: { snp_plates: { '1' => '1234' }}
+          post :import_from_snp, params: { snp_plates: { '1' => '1234' } }
         end
 
         should 'change Plate.count by 1' do
@@ -35,7 +35,7 @@ class ReceptionsControllerTest < ActionController::TestCase
       context 'with 3 plates' do
         setup do
           @plate_count = Plate.count
-          post :import_from_snp, params: { snp_plates: { '1' => '1234', '5' => '7654', '10' => '3456' }}
+          post :import_from_snp, params: { snp_plates: { '1' => '1234', '5' => '7654', '10' => '3456' } }
         end
 
         should 'change Plate.count by 3' do

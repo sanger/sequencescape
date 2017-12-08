@@ -204,7 +204,7 @@ class PlatePurpose < Purpose
   def create!(*args, &block)
     attributes          = args.extract_options!
     do_not_create_wells = args.first.present?
-    attributes[:size]     ||= size
+    attributes[:size] ||= size
     attributes[:purpose] = self
     pla = target_class.create_with_barcode!(attributes, &block).tap do |plate|
       plate.wells.construct! unless do_not_create_wells
