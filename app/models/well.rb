@@ -76,21 +76,21 @@ class Well < Receptacle
 
   scope :include_stock_wells, -> { includes(stock_wells: :requests_as_source) }
   scope :include_stock_wells_for_modification, -> {
-    includes(:stock_well_links,
-             stock_wells: {
-              requests_as_source: [
-                :target_asset,
-                :request_type,
-                :billing_product,
-                :request_metadata,
-                :billing_items,
-                :request_events,
-                {
-                  initial_project: :project_metadata,
-                  submission: :orders
-                }
-              ]
-            })
+    preload(:stock_well_links,
+            stock_wells: {
+             requests_as_source: [
+               :target_asset,
+               :request_type,
+               :billing_product,
+               :request_metadata,
+               :billing_items,
+               :request_events,
+               {
+                 initial_project: :project_metadata,
+                 submission: :orders
+               }
+             ]
+           })
   }
   scope :include_map, -> { includes(:map) }
 
