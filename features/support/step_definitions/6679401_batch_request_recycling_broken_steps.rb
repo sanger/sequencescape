@@ -28,11 +28,6 @@ Given /^I have a "([^\"]+)" submission of asset group "([^\"]+)" under project "
   step('all pending delayed jobs are processed')
 end
 
-Given /^all assets for requests in the "([^\"]+)" pipeline have been scanned into the lab$/ do |name|
-  pipeline = Pipeline.find_by!(name: name)
-  pipeline.requests.each { |request| request.asset.labware.update_attributes!() }
-end
-
 When /^I check "([^\"]+)" for (\d+) to (\d+)$/ do |label_root, start, finish|
   (start.to_i..finish.to_i).each do |i|
     step(%Q{I check "#{label_root} #{i}"})
