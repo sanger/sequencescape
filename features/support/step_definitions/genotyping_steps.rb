@@ -104,7 +104,6 @@ When(/^I complete the cherrypicking batch with "([^"]*)" plate purpose but dont 
   step(%Q{I select "#{plate_purpose_name}" from "Output plate purpose"})
   step('I press "Next step"')
   step('I press "Next step"')
-  step('I press "Next step"')
 end
 
 When(/^I complete the cherrypicking batch with "([^"]*)" plate purpose$/) do |plate_purpose_name|

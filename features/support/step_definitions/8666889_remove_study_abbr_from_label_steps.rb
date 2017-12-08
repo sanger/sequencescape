@@ -29,7 +29,7 @@ Given /^I have a "([^"]*)" submission with (\d+) sample tubes as part of "([^"]*
   study = FactoryGirl.create :study, name: study_name
   sample_tubes = []
   1.upto(number_of_tubes.to_i) do |i|
-    sample_tubes << FactoryGirl.create(:sample_tube, name: "Sample Tube #{i}", location: Location.find_by(name: 'Library creation freezer'), barcode: i.to_s)
+    sample_tubes << FactoryGirl.create(:sample_tube, name: "Sample Tube #{i}", barcode: i.to_s)
   end
 
   submission_template = SubmissionTemplate.find_by(name: submission_template_name)
