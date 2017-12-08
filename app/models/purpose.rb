@@ -23,7 +23,6 @@ class Purpose < ApplicationRecord
   end
 
   # Things that are created are often in a default location!
-  belongs_to :default_location, class_name: 'Location'
   has_many :messenger_creators, inverse_of: :purpose
 
   validates :name, format: { with: /\A\w[\s\w\.\-]+\w\z/i }, presence: true, uniqueness: true

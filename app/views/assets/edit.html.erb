@@ -30,13 +30,6 @@
     </div>
   <% end %>
 
-  <% if @asset.location %>
-      <div class="form-group">
-        <%= f.label :location_id %>
-        <%= f.select :location_id, Location.pluck(:name, :id), {}, { class: 'select2' }  %>
-     </div>
-  <% end %>
-
   <% if @asset.is_a?(Lane) %>
     <div class="form-group">
       <%= f.label :external_release, "Should the data be released?" %>
