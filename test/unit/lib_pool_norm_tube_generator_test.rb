@@ -76,7 +76,6 @@ class LibPoolNormTubeGeneratorTest < ActiveSupport::TestCase
       assert generator.destination_tubes.all? { |dt| dt.state == 'qc_complete' }
       assert generator.asset_group.present?
       assert_equal generator.destination_tubes.length, generator.asset_group.assets.length
-      assert generator.destination_tubes.all? { |dt| dt.location.name == 'Cluster formation freezer' }
     end
   end
 end
