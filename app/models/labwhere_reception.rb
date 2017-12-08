@@ -13,13 +13,12 @@ class LabwhereReception
   include ActiveModel::Conversion
   include ActiveModel::Validations
 
-  attr_reader :asset_barcodes, :user_code, :location_barcode, :location_id
+  attr_reader :asset_barcodes, :user_code, :location_barcode
 
   validates :asset_barcodes, :user_code, presence: true
 
-  def initialize(user_code, location_barcode, location_id, asset_barcodes)
+  def initialize(user_code, location_barcode, asset_barcodes)
     @asset_barcodes = asset_barcodes.map(&:strip) if asset_barcodes.present?
-    @location_id = location_id.to_i
     @location_barcode = location_barcode.try(:strip)
     @user_code = user_code.try(:strip)
   end

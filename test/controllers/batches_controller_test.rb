@@ -165,9 +165,9 @@ class BatchesControllerTest < ActionController::TestCase
           @batch_two = create(:batch, pipeline: @pipeline_qc)
 
           @sample   = create :sample_tube
-          @library1 = create :empty_library_tube, location: @pipeline.location
+          @library1 = create :empty_library_tube
           @library1.parents << @sample
-          @library2 = create :empty_library_tube, location: @pipeline.location
+          @library2 = create :empty_library_tube
           @library2.parents << @sample
 
           @target_one = create(:sample_tube)
