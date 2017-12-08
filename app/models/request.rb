@@ -205,6 +205,7 @@ class Request < ApplicationRecord
   # Use container location
   scope :holder_located, ->() {
     joins('INNER JOIN container_associations hl ON hl.content_id = asset_id')
+      .where('hl.id is not null')
       .readonly(false)
   }
 

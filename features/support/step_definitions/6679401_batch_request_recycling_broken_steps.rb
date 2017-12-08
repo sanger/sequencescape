@@ -116,7 +116,7 @@ def build_batch_for(name, count)
 
     # Setup the assets so that they have samples and they are scanned into the correct lab.
     assets: assets,
-    request_types: rts,
+    request_types: [rts.first],
 
     # Request parameter options
     request_options: submission_details[:request_options]
