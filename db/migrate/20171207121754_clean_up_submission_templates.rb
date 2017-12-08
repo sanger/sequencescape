@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # We've removed submission workflow
 # Submission templates sometimes include a reference to this in
 # their submission parameters

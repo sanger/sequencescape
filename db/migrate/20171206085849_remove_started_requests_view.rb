@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# We break this view by removing workflow_id but the view isn't needed, so lets kill it.
 class RemoveStartedRequestsView < ActiveRecord::Migration[5.1]
   # rubocop:disable Metrics/LineLength
   def up

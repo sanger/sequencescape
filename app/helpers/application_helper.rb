@@ -13,9 +13,6 @@ module ApplicationHelper
         differential: differential
       )
 
-      # .debug
-      #  "No custom text found for #{identifier} #{differential}." if custom_text.nil?
-
       custom_text.try(:content) || ''
     end
   end
@@ -131,54 +128,19 @@ module ApplicationHelper
   end
 
   def progress_bar(count)
-    color = ''
-    if count < 25
-      color = 'ccaaaa'
-    elsif count > 99
-      color = 'aaddaa'
-    else
-      color = 'DAEE34'
-    end
+    color = if count < 25
+              'ccaaaa'
+            elsif count > 99
+              'aaddaa'
+            else
+              'DAEE34'
+            end
 
     # TODO: Refactor this to use the bootstrap styles
     content_tag(:span, count, style: 'display:none') <<
       content_tag(:div, style: 'width: 100px; background-color: #CCCCCC; color: inherit;') do
         content_tag(:div, "#{count}%", style: "width: #{count}px; background-color: ##{color}; color: inherit; text-align:center")
       end
-  end
-
-  def completed(object, request_type = nil, cache = {})
-    total  = 0
-    passed = 0
-    failed = 0
-
-    if request_type
-
-      if cache.blank?
-        total = object.requests.request_type(request_type).size
-        passed = object.requests.request_type(request_type).passed.count
-        failed = object.requests.request_type(request_type).failed.count
-      else
-        passed_cache = cache[:passed]
-        failed_cache = cache[:failed]
-        total_cache  = cache[:total]
-
-        total = total_cache[request_type][object.id]
-        passed = passed_cache[request_type][object.id]
-        failed = failed_cache[request_type][object.id]
-
-      end
-    else
-      total = object.requests.request_type(request_type).size
-      passed = object.requests.passed.size
-      failed = object.requests.failed.size
-    end
-
-    if (total - failed) > 0
-      return ((passed.to_f / (total - failed).to_f) * 100).to_i
-    else
-      return 0
-    end
   end
 
   def study_state(state)

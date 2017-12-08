@@ -331,17 +331,17 @@ end
 
 When /^I generate an? (dac|policy|array express) accession number for study "([^\"]+)"$/ do |type, study_name|
   type = { 'dac' => 'DAC', 'policy' => 'Policy', 'array express' => '' }.fetch(type, type)
-  step %Q{I am on the workflow page for study "#{study_name}"}
+  step %Q{I am on the information page for study "#{study_name}"}
   step %Q{I follow "Generate #{type} Accession Number"}.gsub(/  +/, ' ')
 end
 
 When /^I generate an? accession number for study "([^\"]+)"$/ do |study_name|
-  step %Q{I am on the workflow page for study "#{study_name}"}
+  step %Q{I am on the information page for study "#{study_name}"}
   step('I follow "Generate Accession Number"')
 end
 
 When /^I update an? accession number for study "([^\"]+)"$/ do |study_name|
-  step %Q{I am on the workflow page for study "#{study_name}"}
+  step %Q{I am on the information page for study "#{study_name}"}
   step('I follow "Update EBI Study data"')
 end
 
