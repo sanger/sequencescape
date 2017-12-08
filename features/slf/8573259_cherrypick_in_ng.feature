@@ -46,7 +46,6 @@ Feature: Pick a ng quantity using the Tecan robot
     And "Pulldown" plate purpose picks with "Cherrypick::Strategy::Filter::InRowOrder"
     When I choose "Pick by ng"
     And I press "Next step"
-    And I press "Next step"
     When I press "Release this batch"
     Given the last batch has a barcode of "550000555760"
     Then the downloaded tecan file for batch "550000555760" and plate "1220099999705" is
