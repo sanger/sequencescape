@@ -7,7 +7,6 @@ Feature: Creating sample tubes from a plate, add to asset group, and print barco
     Then I should see "Convert plates to tubes"
     And I should see "Source plates"
     And I should see "Study"
-    And I should see "Destination freezer"
     And I should see "Barcode printer"
 
   Scenario: plate barcode scanned and plate exists
