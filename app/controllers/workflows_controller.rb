@@ -31,7 +31,6 @@ class WorkflowsController < ApplicationController
   include Tasks::SamplePrepQcHandler
   include Tasks::SetDescriptorsHandler
   include Tasks::SetCharacterisationDescriptorsHandler
-  include Tasks::SetLocationHandler
   include Tasks::TagGroupHandler
   include Tasks::ValidateSampleSheetHandler
   include Tasks::StartBatchHandler

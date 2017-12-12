@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171117110424) do
+ActiveRecord::Schema.define(version: 20171208104106) do
 
   create_table "aker_containers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "barcode"
@@ -664,17 +664,6 @@ ActiveRecord::Schema.define(version: 20171117110424) do
     t.index ["request_type_id"], name: "fk_library_types_request_types_to_request_types"
   end
 
-  create_table "location_associations", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
-    t.integer "locatable_id", null: false
-    t.integer "location_id", null: false
-    t.index ["locatable_id"], name: "single_location_per_locatable_idx", unique: true
-    t.index ["location_id"], name: "index_location_associations_on_location_id"
-  end
-
-  create_table "locations", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
-    t.string "name"
-  end
-
   create_table "lot_types", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.string "name", null: false
     t.string "template_class", null: false
@@ -797,7 +786,6 @@ ActiveRecord::Schema.define(version: 20171117110424) do
     t.datetime "updated_at"
     t.integer "next_pipeline_id"
     t.integer "previous_pipeline_id"
-    t.integer "location_id"
     t.boolean "group_by_parent"
     t.string "asset_type", limit: 50
     t.boolean "group_by_submission_to_delete"
@@ -890,7 +878,6 @@ ActiveRecord::Schema.define(version: 20171117110424) do
     t.integer "barcode_printer_type_id"
     t.boolean "cherrypickable_target", default: true, null: false
     t.string "cherrypick_direction", default: "column", null: false
-    t.integer "default_location_id"
     t.string "cherrypick_filters"
     t.integer "size", default: 96
     t.integer "asset_shape_id", default: 1, null: false

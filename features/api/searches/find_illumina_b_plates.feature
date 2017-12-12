@@ -39,10 +39,14 @@ Feature: Searching for Illumina-B plates by barcode
       Then the HTTP response should be "300 Multiple Choices"
        And the JSON should match the following for the specified fields:
         """
-        {"size":3,
+        {"size":4,
          "searches":
           [
-            {"name":"Testing the API B",
+           {"name":"Testing the API A",
+            "plate_purpose":{"name":"ILB_STD_INPUT"},
+            "uuid":"00000000-1111-2222-3333-000000000001",
+            "state":"passed"},
+           {"name":"Testing the API B",
             "plate_purpose":{"name":"ILB_STD_COVARIS"},
             "uuid":"00000000-1111-2222-3333-000000000002",
             "state":"pending"},
@@ -57,31 +61,6 @@ Feature: Searching for Illumina-B plates by barcode
             ]
          }
         """
-
-    Scenario: I should be able to find Illumina-B Stock Plates in the right fridge
-      Given the UUID for the search "Find Illumina-B stock plates" is "00000000-1111-2222-3333-444444444445"
-      And the plate "Testing the API A" is in the "Illumina high throughput freezer" freezer
-      When I POST the following JSON to the API path "/00000000-1111-2222-3333-444444444445/all":
-       """
-       {
-         "search": {
-           "state": ["pending","started","failed","passed"]
-         }
-       }
-       """
-       Then the HTTP response should be "300 Multiple Choices"
-        And the JSON should match the following for the specified fields:
-         """
-         {"size":1,
-          "searches":
-           [
-             {"name":"Testing the API A",
-             "plate_purpose":{"name":"ILB_STD_INPUT"},
-             "uuid":"00000000-1111-2222-3333-000000000001",
-             "state":"passed"}
-             ]
-          }
-         """
 
     Scenario: I should be able to find plates for a particular user
       Given user "plate_owner" exists with barcode "owner"

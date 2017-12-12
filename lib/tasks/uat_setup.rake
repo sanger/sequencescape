@@ -121,7 +121,7 @@ namespace :uat do
         asset_shapes bait_libraries bait_library_layouts bait_library_suppliers bait_library_types
         barcode_prefixes barcode_printer_types barcode_printers budget_divisions controls
         custom_texts data_release_study_types descriptors families lab_interface_workflows
-        library_types library_types_request_types locations lot_types maps order_roles
+        library_types library_types_request_types lot_types maps order_roles
         pipeline_request_information_types pipelines pipelines_request_types plate_creator_purposes
         plate_creators plate_purpose_relationships plate_purposes product_lines project_managers
         reference_genomes request_information_types request_type_plate_purposes request_type_validators
@@ -253,12 +253,12 @@ namespace :uat do
           puts "Stock: #{plate.ean13_barcode}-#{plate.sanger_human_barcode}"
         end
         (1..4).each do |i|
-          child = Purpose.find_by(name: 'Cherrypicked').create!(barcode: i + (10 * study.id), location: Location.find_by(name: 'Illumina high throughput freezer'))
+          child = Purpose.find_by(name: 'Cherrypicked').create!(barcode: i + (10 * study.id))
           child.wells.each { |w| w.aliquots << stock.wells.located_at(w.map_description).first.aliquots.first.clone }
           puts "Cherrypicked: #{child.ean13_barcode}-#{child.sanger_human_barcode}"
         end
         (1..4).each do |i|
-          child = Purpose.find_by(name: 'ILC Stock').create!(barcode: i + 4 + (10 * study.id), location: Location.find_by(name: 'Illumina high throughput freezer'))
+          child = Purpose.find_by(name: 'ILC Stock').create!(barcode: i + 4 + (10 * study.id))
           child.wells.each { |w| w.aliquots << stock.wells.located_at(w.map_description).first.aliquots.first.clone }
           puts "ILC Stock: #{child.ean13_barcode}-#{child.sanger_human_barcode}"
         end

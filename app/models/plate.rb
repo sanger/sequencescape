@@ -9,7 +9,6 @@ require 'lab_where_client'
 class Plate < Asset
   include Api::PlateIO::Extensions
   include ModelExtensions::Plate
-  include LocationAssociation::Locatable
   include Transfer::Associations
   include Transfer::State::PlateState
   include PlatePurpose::Associations
@@ -550,8 +549,6 @@ class Plate < Asset
       params[:snp_plates].each do |_index, plate_barcode_id|
         next if plate_barcode_id.blank?
         plate = Plate.create(barcode: plate_barcode_id.to_s, name: "Plate #{plate_barcode_id}", size: DEFAULT_SIZE)
-        storage_location = Location.find(params[:asset][:location_id])
-        plate.location = storage_location
         plate.save!
       end
     rescue
@@ -609,26 +606,23 @@ class Plate < Asset
     wells.map(&:create_child_sample_tube)
   end
 
-  def create_sample_tubes_and_print_barcodes(barcode_printer, location = nil)
+  def create_sample_tubes_and_print_barcodes(barcode_printer)
     sample_tubes = create_sample_tubes
     print_job = LabelPrinter::PrintJob.new(barcode_printer.name,
                                            LabelPrinter::Label::PlateToTubes,
                                            sample_tubes: sample_tubes)
     print_job.execute
-    if location
-      location.set_locations(sample_tubes)
-    end
 
     sample_tubes
   end
 
-  def self.create_sample_tubes_asset_group_and_print_barcodes(plates, barcode_printer, location, study)
+  def self.create_sample_tubes_asset_group_and_print_barcodes(plates, barcode_printer, study)
     return nil if plates.empty?
     plate_barcodes = plates.map { |plate| plate.barcode }
     asset_group = AssetGroup.find_or_create_asset_group("#{plate_barcodes.join('-')} #{Time.now.to_formatted_s(:sortable)} ", study)
     plates.each do |plate|
       next if plate.wells.empty?
-      asset_group.assets << plate.create_sample_tubes_and_print_barcodes(barcode_printer, location)
+      asset_group.assets << plate.create_sample_tubes_and_print_barcodes(barcode_printer)
     end
 
     return nil if asset_group.assets.empty?
@@ -727,7 +721,6 @@ class Plate < Asset
   def set_plate_name_and_size
     self.name = "Plate #{barcode}" if name.blank?
     self.size = default_plate_size if size.nil?
-    self.location = Location.find_by(name: 'Sample logistics freezer') if location_id.nil?
   end
   private :set_plate_name_and_size
 

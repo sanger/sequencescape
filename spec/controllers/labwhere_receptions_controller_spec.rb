@@ -16,7 +16,6 @@ describe LabwhereReceptionsController do
     let(:plate) { create :plate, barcode: 1 }
     let(:plate_2) { create :plate, barcode: 2 }
     let(:sample_tube) { create :sample_tube, barcode: 1 }
-    let(:location) { create :location }
 
     shared_examples 'a reception' do
       setup do
@@ -26,23 +25,15 @@ describe LabwhereReceptionsController do
 
         post :create, params: { labwhere_reception: {
           barcodes: [plate.ean13_barcode, plate_2.ean13_barcode, sample_tube.ean13_barcode],
-          location_id: location.id,
           user_code: user.barcode,
           location_barcode: location_barcode
         } }
       end
 
-      it 'Move items in sequencescape' do
-        [plate, plate_2, sample_tube].each do |asset|
-          asset.reload
-          assert_equal location, asset.location, "Did not move #{asset}"
-        end
-      end
-
       it 'Create reception events' do
         [plate, plate_2, sample_tube].each do |asset|
           expect(asset.events.last).to be_a Event::ScannedIntoLabEvent
-          expect(asset.events.last.message).to eq "Scanned into #{location.name}"
+          # expect(asset.events.last.message).to eq "Scanned into #{location.name}"
           expect(BroadcastEvent::LabwareReceived.find_by(seed: asset)).to be_a BroadcastEvent::LabwareReceived
           expect(BroadcastEvent::LabwareReceived.find_by(seed: asset).to_json).to be_a String
         end

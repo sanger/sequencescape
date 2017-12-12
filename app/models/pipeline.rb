@@ -45,7 +45,6 @@ class Pipeline < ApplicationRecord
 
   delegate :item_limit, :has_batch_limit?, to: :workflow
 
-  belongs_to :location
   belongs_to :control_request_type, class_name: 'RequestType'
   belongs_to :next_pipeline,     class_name: 'Pipeline'
   belongs_to :previous_pipeline, class_name: 'Pipeline'

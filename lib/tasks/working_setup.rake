@@ -14,13 +14,9 @@ namespace :working do
       end
 
       class WorkingSetupSeeder
-        attr_reader :locations, :program
+        attr_reader :program
 
         def initialize
-          @locations = {
-            htp: Location.find_by(name: 'Illumina high throughput freezer'),
-            ilc: Location.find_by(name: 'Library creation freezer')
-          }
           @program = Program.find_by(name: 'General')
         end
 
@@ -36,19 +32,19 @@ namespace :working do
             puts "Stock: #{plate.ean13_barcode}-#{plate.sanger_human_barcode}"
           end
           8.times do |i|
-            Purpose.find_by(name: 'Cherrypicked').create!(location: locations[:htp]).tap do |plate|
+            Purpose.find_by(name: 'Cherrypicked').create!.tap do |plate|
               plate.wells.each { |w| w.aliquots.create!(sample: Sample.create!(name: "sample_in_cp#{i}_well_#{w.map.description}", studies: [study])) }
               puts "Cherrypicked: #{plate.ean13_barcode}-#{plate.sanger_human_barcode}"
             end
           end
           4.times do |i|
-            Purpose.find_by(name: 'ILC Stock').create!(location: locations[:ilc]).tap do |plate|
+            Purpose.find_by(name: 'ILC Stock').create!.tap do |plate|
               plate.wells.each { |w| w.aliquots.create!(sample: Sample.create!(name: "sample_in_ilc#{i}_well_#{w.map.description}", studies: [study])) }
               puts "ILC Stock: #{plate.ean13_barcode}-#{plate.sanger_human_barcode}"
             end
           end
 
-          Robot.create!(name: 'Picking robot', location: 'In a lab').tap do |robot|
+          Robot.create!(name: 'Picking robot').tap do |robot|
             robot.create_max_plates_property(value: 10)
           end
 
@@ -71,7 +67,7 @@ namespace :working do
             received_at: DateTime.now
           )
           qcc = QcableCreator.create!(lot: lot, user: user, count: 30)
-          qcc.qcables.each { |qcable| qcable.update_attributes!(state: 'available'); qcable.asset.update_attributes!(location: locations[:htp]); puts "Tag Plate: #{qcable.asset.ean13_barcode}" }
+          qcc.qcables.each { |qcable| qcable.update_attributes!(state: 'available'); qcable.asset.update_attributes!; puts "Tag Plate: #{qcable.asset.ean13_barcode}" }
         end
 
         private
