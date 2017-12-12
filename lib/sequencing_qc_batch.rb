@@ -104,7 +104,7 @@ module SequencingQcBatch
 
   def assets_qc_tasks_results
     auto_qc_pipeline = Pipeline.find_by!(name: 'quality control', automated: true)
-    qc_workflow = LabInterface::Workflow.find_by pipeline_id: auto_qc_pipeline.id
+    qc_workflow = Workflow.find_by pipeline_id: auto_qc_pipeline.id
     qc_tasks = qc_workflow.tasks
     results = []
     qc_tasks.each do |task|

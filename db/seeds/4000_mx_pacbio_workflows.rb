@@ -20,7 +20,7 @@ PacBioSamplePrepPipeline.create!(name: 'PacBio Tagged Library Prep') do |pipelin
     request_type.request_class = PacBioSamplePrepRequest
   end
 
-  pipeline.workflow = LabInterface::Workflow.create!(name: 'PacBio Tagged Library Prep').tap do |workflow|
+  pipeline.workflow = Workflow.create!(name: 'PacBio Tagged Library Prep').tap do |workflow|
     [
       { class: PrepKitBarcodeTask,    name: 'DNA Template Prep Kit Box Barcode',    sorted: 1, batched: true, lab_activity: true },
       { class: PlateTransferTask,     name: 'Transfer to plate',                    sorted: 2, batched: nil,  lab_activity: true, purpose: Purpose.find_by(name: 'PacBio Sheared') },

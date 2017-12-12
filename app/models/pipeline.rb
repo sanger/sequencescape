@@ -49,7 +49,7 @@ class Pipeline < ApplicationRecord
   belongs_to :next_pipeline,     class_name: 'Pipeline'
   belongs_to :previous_pipeline, class_name: 'Pipeline'
 
-  has_one :workflow, class_name: 'LabInterface::Workflow', inverse_of: :pipeline, required: true
+  has_one :workflow, class_name: 'Workflow', inverse_of: :pipeline, required: true
 
   has_many :controls
   has_many :pipeline_request_information_types

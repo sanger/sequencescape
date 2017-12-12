@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171208104106) do
+ActiveRecord::Schema.define(version: 20171212112846) do
 
   create_table "aker_containers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "barcode"
@@ -631,14 +631,6 @@ ActiveRecord::Schema.define(version: 20171208104106) do
     t.index ["description", "eventful_type"], name: "index_lab_events_find_flowcell", length: { description: 20 }
     t.index ["eventful_id"], name: "index_lab_events_on_eventful_id"
     t.index ["eventful_type"], name: "index_lab_events_on_eventful_type"
-  end
-
-  create_table "lab_interface_workflows", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
-    t.string "name"
-    t.integer "item_limit"
-    t.text "locale"
-    t.integer "pipeline_id"
-    t.index ["pipeline_id"], name: "index_lab_interface_workflows_on_pipeline_id"
   end
 
   create_table "lane_metadata", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -1915,6 +1907,14 @@ ActiveRecord::Schema.define(version: 20171208104106) do
     t.string "state", limit: 20
     t.integer "size", default: 1
     t.integer "version"
+  end
+
+  create_table "workflows", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+    t.string "name"
+    t.integer "item_limit"
+    t.text "locale"
+    t.integer "pipeline_id"
+    t.index ["pipeline_id"], name: "index_workflows_on_pipeline_id"
   end
 
   add_foreign_key "billing_items", "requests"

@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
-module LabInterface::WorkflowsHelper
+module WorkflowsHelper
   # Returns descriptor from params, if it's not there try the @study.
   # If @study's not set or it doesn't hold the descriptor, return a
   # blank string...

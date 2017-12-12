@@ -26,7 +26,7 @@ ProductLine.create(name: 'Illumina-HTP')
 #   submission_workflow = Submission::Workflow.create! do |workflow|
 #     # Update workflow attributes here
 #   end
-#   LabInterface::Workflow.create!(:name => XXXX) do |workflow|
+#   Workflow.create!(:name => XXXX) do |workflow|
 #     workflow.pipeline = PipelineClass.create!(:name => XXXX) do |pipeline|
 #       # Set the Pipeline attributes here
 #
@@ -36,7 +36,7 @@ ProductLine.create(name: 'Illumina-HTP')
 #       end
 #     end
 #   end.tap do |workflow|
-#     # Setup tasks for your LabInterface::Workflow here
+#     # Setup tasks for your Workflow here
 #   end
 #
 # That should be enough for you to work out what you need to do.
@@ -111,7 +111,7 @@ LibraryCreationPipeline.create!(name: 'Illumina-C Library preparation') do |pipe
            request_type.request_class_name = LibraryCreationRequest.name
          end
 
-  pipeline.workflow = LabInterface::Workflow.create!(name: 'Library preparation') do |workflow|
+  pipeline.workflow = Workflow.create!(name: 'Library preparation') do |workflow|
     workflow.locale = 'External'
   end.tap do |workflow|
     fragment_family = Family.create!(name: 'Fragment', description: 'Archived fragment')
@@ -166,7 +166,7 @@ MultiplexedLibraryCreationPipeline.create!(name: 'Illumina-B MX Library Preparat
     request_type.for_multiplexing  = true
   end
 
-  pipeline.workflow = LabInterface::Workflow.create!(name: 'Illumina-B MX Library Preparation') do |workflow|
+  pipeline.workflow = Workflow.create!(name: 'Illumina-B MX Library Preparation') do |workflow|
     workflow.locale = 'External'
   end.tap do |workflow|
     [
@@ -207,7 +207,7 @@ MultiplexedLibraryCreationPipeline.create!(name: 'Illumina-C MX Library Preparat
     request_type.for_multiplexing  = true
   end
 
-  pipeline.workflow = LabInterface::Workflow.create!(name: 'Illumina-C MX Library Preparation workflow') do |workflow|
+  pipeline.workflow = Workflow.create!(name: 'Illumina-C MX Library Preparation workflow') do |workflow|
     workflow.locale = 'External'
   end.tap do |workflow|
     {
@@ -250,7 +250,7 @@ PulldownLibraryCreationPipeline.create!(name: 'Pulldown library preparation') do
     request_type.request_class = LibraryCreationRequest
   end
 
-  pipeline.workflow = LabInterface::Workflow.create!(name: 'Pulldown library preparation') do |workflow|
+  pipeline.workflow = Workflow.create!(name: 'Pulldown library preparation') do |workflow|
     workflow.locale = 'External'
   end.tap do |workflow|
     [
@@ -300,7 +300,7 @@ SequencingPipeline.create!(name: 'Cluster formation SE (spiked in controls)', re
   pipeline.automated  = false
   pipeline.active     = true
 
-  pipeline.workflow = LabInterface::Workflow.create!(name: 'Cluster formation SE (spiked in controls)') do |workflow|
+  pipeline.workflow = Workflow.create!(name: 'Cluster formation SE (spiked in controls)') do |workflow|
     workflow.locale     = 'Internal'
     workflow.item_limit = 8
   end.tap do |workflow|
@@ -328,7 +328,7 @@ SequencingPipeline.create!(name: 'Cluster formation SE', request_types: cluster_
   pipeline.automated  = false
   pipeline.active     = true
 
-  pipeline.workflow = LabInterface::Workflow.create!(name: 'Cluster formation SE') do |workflow|
+  pipeline.workflow = Workflow.create!(name: 'Cluster formation SE') do |workflow|
     workflow.locale     = 'Internal'
     workflow.item_limit = 8
   end.tap do |workflow|
@@ -354,7 +354,7 @@ SequencingPipeline.create!(name: 'Cluster formation SE (no controls)', request_t
   pipeline.automated  = false
   pipeline.active     = true
 
-  pipeline.workflow = LabInterface::Workflow.create!(name: 'Cluster formation SE (no controls)') do |workflow|
+  pipeline.workflow = Workflow.create!(name: 'Cluster formation SE (no controls)') do |workflow|
     workflow.locale     = 'Internal'
     workflow.item_limit = 8
   end.tap do |workflow|
@@ -403,7 +403,7 @@ SequencingPipeline.create!(name: 'Cluster formation SE HiSeq', request_types: si
   pipeline.automated  = false
   pipeline.active     = true
 
-  pipeline.workflow = LabInterface::Workflow.create!(name: 'Cluster formation SE HiSeq') do |workflow|
+  pipeline.workflow = Workflow.create!(name: 'Cluster formation SE HiSeq') do |workflow|
     workflow.locale     = 'Internal'
     workflow.item_limit = 8
   end.tap do |workflow|
@@ -429,7 +429,7 @@ SequencingPipeline.create!(name: 'Cluster formation SE HiSeq (no controls)', req
   pipeline.automated  = false
   pipeline.active     = true
 
-  pipeline.workflow = LabInterface::Workflow.create!(name: 'Cluster formation SE HiSeq (no controls)') do |workflow|
+  pipeline.workflow = Workflow.create!(name: 'Cluster formation SE HiSeq (no controls)') do |workflow|
     workflow.locale     = 'Internal'
     workflow.item_limit = 8
   end.tap do |workflow|
@@ -506,7 +506,7 @@ SequencingPipeline.create!(name: 'Cluster formation PE', request_types: cluster_
   pipeline.automated  = false
   pipeline.active     = true
 
-  pipeline.workflow = LabInterface::Workflow.create!(name: 'Cluster formation PE') do |workflow|
+  pipeline.workflow = Workflow.create!(name: 'Cluster formation PE') do |workflow|
     workflow.locale     = 'Internal'
     workflow.item_limit = 8
   end.tap do |workflow|
@@ -533,7 +533,7 @@ SequencingPipeline.create!(name: 'Cluster formation PE (no controls)', request_t
   pipeline.active          = true
   pipeline.group_by_parent = false
 
-  pipeline.workflow = LabInterface::Workflow.create!(name: 'Cluster formation PE (no controls)') do |workflow|
+  pipeline.workflow = Workflow.create!(name: 'Cluster formation PE (no controls)') do |workflow|
     workflow.locale     = 'Internal'
     workflow.item_limit = 8
   end.tap do |workflow|
@@ -559,7 +559,7 @@ SequencingPipeline.create!(name: 'Cluster formation PE (spiked in controls)', re
   pipeline.active          = true
   pipeline.group_by_parent = false
 
-  pipeline.workflow = LabInterface::Workflow.create!(name: 'Cluster formation PE (spiked in controls)') do |workflow|
+  pipeline.workflow = Workflow.create!(name: 'Cluster formation PE (spiked in controls)') do |workflow|
     workflow.locale     = 'Internal'
     workflow.item_limit = 8
   end.tap do |workflow|
@@ -587,7 +587,7 @@ SequencingPipeline.create!(name: 'HiSeq Cluster formation PE (spiked in controls
   pipeline.active          = true
   pipeline.group_by_parent = false
 
-  pipeline.workflow = LabInterface::Workflow.create!(name: 'HiSeq Cluster formation PE (spiked in controls)') do |workflow|
+  pipeline.workflow = Workflow.create!(name: 'HiSeq Cluster formation PE (spiked in controls)') do |workflow|
     workflow.locale     = 'Internal'
     workflow.item_limit = 8
   end.tap do |workflow|
@@ -616,7 +616,7 @@ SequencingPipeline.create!(name: 'HiSeq 2500 PE (spiked in controls)', request_t
   pipeline.active          = true
   pipeline.group_by_parent = false
 
-  pipeline.workflow = LabInterface::Workflow.create!(name: 'HiSeq 2500 PE (spiked in controls)') do |workflow|
+  pipeline.workflow = Workflow.create!(name: 'HiSeq 2500 PE (spiked in controls)') do |workflow|
     workflow.locale     = 'Internal'
     workflow.item_limit = 2
   end.tap do |workflow|
@@ -644,7 +644,7 @@ SequencingPipeline.create!(name: 'HiSeq 2500 SE (spiked in controls)', request_t
   pipeline.active          = true
   pipeline.group_by_parent = false
 
-  pipeline.workflow = LabInterface::Workflow.create!(name: 'HiSeq 2500 SE (spiked in controls)') do |workflow|
+  pipeline.workflow = Workflow.create!(name: 'HiSeq 2500 SE (spiked in controls)') do |workflow|
     workflow.locale     = 'Internal'
     workflow.item_limit = 2
   end.tap do |workflow|
@@ -670,7 +670,7 @@ SequencingPipeline.create!(name: 'Cluster formation SE HiSeq (spiked in controls
   pipeline.active          = true
   pipeline.group_by_parent = false
 
-  pipeline.workflow = LabInterface::Workflow.create!(name: 'Cluster formation SE HiSeq (spiked in controls)') do |workflow|
+  pipeline.workflow = Workflow.create!(name: 'Cluster formation SE HiSeq (spiked in controls)') do |workflow|
     workflow.locale     = 'Internal'
     workflow.item_limit = 8
   end.tap do |workflow|
@@ -722,7 +722,7 @@ SequencingPipeline.create!(name: 'HiSeq Cluster formation PE (no controls)') do 
     request_type.request_class = HiSeqSequencingRequest
   end
 
-  pipeline.workflow = LabInterface::Workflow.create!(name: 'HiSeq Cluster formation PE (no controls)') do |workflow|
+  pipeline.workflow = Workflow.create!(name: 'HiSeq Cluster formation PE (no controls)') do |workflow|
     workflow.locale     = 'Internal'
     workflow.item_limit = 8
   end.tap do |workflow|
@@ -767,7 +767,7 @@ CherrypickPipeline.create!(name: 'Cherrypick') do |pipeline|
     request_type.multiples_allowed = false
   end
 
-  pipeline.workflow = LabInterface::Workflow.create!(name: 'Cherrypick').tap do |workflow|
+  pipeline.workflow = Workflow.create!(name: 'Cherrypick').tap do |workflow|
     # NOTE[xxx]: Note that the order here, and 'Set Location' being interactive, do not mimic the behaviour of production
     [
       { class: PlateTemplateTask,      name: 'Select Plate Template',              sorted: 1, batched: true, lab_activity: true },
@@ -801,7 +801,7 @@ CherrypickForPulldownPipeline.create!(name: 'Cherrypicking for Pulldown') do |pi
   pipeline.request_types << RequestType.create!(workflow: next_gen_sequencing, key: 'cherrypick_for_illumina_b', name: 'Cherrypick for Illumina-B', &cherrypicking_attributes)
   pipeline.request_types << RequestType.create!(workflow: next_gen_sequencing, key: 'cherrypick_for_illumina_c', name: 'Cherrypick for Illumina-C', &cherrypicking_attributes)
 
-  pipeline.workflow = LabInterface::Workflow.create!(name: 'Cherrypicking for Pulldown').tap do |workflow|
+  pipeline.workflow = Workflow.create!(name: 'Cherrypicking for Pulldown').tap do |workflow|
     # NOTE[xxx]: Note that the order here, and 'Set Location' being interactive, do not mimic the behaviour of production
     [
       { class: CherrypickGroupBySubmissionTask, name: 'Cherrypick Group By Submission', sorted: 1, batched: true }
@@ -825,7 +825,7 @@ DnaQcPipeline.create!(name: 'DNA QC') do |pipeline|
     request_type.multiples_allowed = false
   end
 
-  pipeline.workflow = LabInterface::Workflow.create!(name: 'DNA QC').tap do |workflow|
+  pipeline.workflow = Workflow.create!(name: 'DNA QC').tap do |workflow|
     [
       { class: DnaQcTask, name: 'QC result', sorted: 1, batched: false, interactive: false }
     ].each do |details|
@@ -848,7 +848,7 @@ GenotypingPipeline.create!(name: 'Genotyping') do |pipeline|
     request_type.multiples_allowed = false
   end
 
-  pipeline.workflow = LabInterface::Workflow.create!(name: 'Genotyping').tap do |workflow|
+  pipeline.workflow = Workflow.create!(name: 'Genotyping').tap do |workflow|
     [
       { class: AttachInfiniumBarcodeTask, name: 'Attach Infinium Barcode', sorted: 1, batched: true },
       { class: GenerateManifestsTask,     name: 'Generate Manifests',      sorted: 2, batched: true }
@@ -876,7 +876,7 @@ PulldownMultiplexLibraryPreparationPipeline.create!(name: 'Pulldown Multiplex Li
     request_type.for_multiplexing  = true
   end
 
-  pipeline.workflow = LabInterface::Workflow.create!(name: 'Pulldown Multiplex Library Preparation').tap do |workflow|
+  pipeline.workflow = Workflow.create!(name: 'Pulldown Multiplex Library Preparation').tap do |workflow|
     [
       { class: TagGroupsTask,         name: 'Tag Groups',           sorted: 1 },
       { class: AssignTagsToWellsTask, name: 'Assign Tags to Wells', sorted: 2 }
@@ -904,7 +904,7 @@ PacBioSamplePrepPipeline.create!(name: 'PacBio Library Prep') do |pipeline|
     request_type.request_class = PacBioSamplePrepRequest
   end
 
-  pipeline.workflow = LabInterface::Workflow.create!(name: 'PacBio Library Prep').tap do |workflow|
+  pipeline.workflow = Workflow.create!(name: 'PacBio Library Prep').tap do |workflow|
     [
       { class: PrepKitBarcodeTask, name: 'DNA Template Prep Kit Box Barcode',    sorted: 1, batched: true, lab_activity: true },
       { class: PlateTransferTask,  name: 'Transfer to plate',                    sorted: 2, batched: nil,  lab_activity: true, purpose: Purpose.find_by(name: 'PacBio Sheared') },
@@ -941,7 +941,7 @@ PacBioSequencingPipeline.create!(name: 'PacBio Sequencing') do |pipeline|
     ])
   end
 
-  pipeline.workflow = LabInterface::Workflow.create!(name: 'PacBio Sequencing').tap do |workflow|
+  pipeline.workflow = Workflow.create!(name: 'PacBio Sequencing').tap do |workflow|
     [
       { class: BindingKitBarcodeTask,              name: 'Binding Kit Box Barcode', sorted: 1, batched: true, lab_activity: true },
       { class: MovieLengthTask,                    name: 'Movie Lengths',           sorted: 2, batched: true, lab_activity: true },
@@ -1000,7 +1000,7 @@ set_pipeline_flow_to('PacBio Library Prep' => 'PacBio Sequencing')
         request_type.for_multiplexing  = true
       end
 
-      pipeline.workflow = LabInterface::Workflow.create!(name: pipeline_name)
+      pipeline.workflow = Workflow.create!(name: pipeline_name)
     end
   end
 end
@@ -1029,7 +1029,7 @@ SequencingPipeline.create!(name: 'MiSeq sequencing') do |pipeline|
     end
   end
 
-  pipeline.workflow = LabInterface::Workflow.create!(name: 'MiSeq sequencing') do |workflow|
+  pipeline.workflow = Workflow.create!(name: 'MiSeq sequencing') do |workflow|
     workflow.locale     = 'External'
     workflow.item_limit = 1
   end.tap do |workflow|
@@ -1057,9 +1057,9 @@ cprt = RequestType.create!(
   request_class_name: 'Request'
 )
 
-liw = LabInterface::Workflow.create!(name: 'Illumina-C Cherrypick')
+liw = Workflow.create!(name: 'Illumina-C Cherrypick')
 
-LabInterface::Workflow.find_by(name: 'Cherrypick').tasks.each do |task|
+Workflow.find_by(name: 'Cherrypick').tasks.each do |task|
   # next if task.name == 'Set Location'
   new_task = task.dup
   new_task.workflow = liw
@@ -1119,7 +1119,7 @@ RequestType.create!(workflow: Submission::Workflow.find_by(name: 'Microarray gen
   rt.acceptable_plate_purposes << Purpose.find_by!(name: 'SNP Type')
 end
 
-liw = LabInterface::Workflow.create!(name: 'Cherrypick for Fluidigm')
+liw = Workflow.create!(name: 'Cherrypick for Fluidigm')
 
 FluidigmTemplateTask.create!(
   name: 'Select Plate Template',
@@ -1226,7 +1226,7 @@ v4_pipelines = ['(spiked in controls)', '(no controls)'].each do |type|
     group_name: 'Sequencing',
     control_request_type_id: 0
   ) do |pipeline|
-    pipeline.workflow = LabInterface::Workflow.create!(name: pipeline.name) do |workflow|
+    pipeline.workflow = Workflow.create!(name: pipeline.name) do |workflow|
       workflow.locale     = 'Internal'
       workflow.item_limit = 8
     end.tap do |workflow|
@@ -1260,7 +1260,7 @@ v4_pipelines = ['(spiked in controls)', '(no controls)'].each do |type|
     group_name: 'Sequencing',
     control_request_type_id: 0
   ) do |pipeline|
-    pipeline.workflow = LabInterface::Workflow.create!(name: pipeline.name) do |workflow|
+    pipeline.workflow = Workflow.create!(name: pipeline.name) do |workflow|
       workflow.locale     = 'Internal'
       workflow.item_limit = 8
     end.tap do |workflow|
@@ -1295,7 +1295,7 @@ x10_pipelines = ['(spiked in controls)', '(no controls)'].each do |type|
     group_name: 'Sequencing',
     control_request_type_id: 0
   ) do |pipeline|
-    pipeline.workflow = LabInterface::Workflow.create!(name: pipeline.name) do |workflow|
+    pipeline.workflow = Workflow.create!(name: pipeline.name) do |workflow|
       workflow.locale     = 'Internal'
       workflow.item_limit = 8
     end.tap do |workflow|
@@ -1329,7 +1329,7 @@ st_x10_pipelines = ['(spiked in controls) from strip-tubes'].each do |type|
     group_name: 'Sequencing',
     control_request_type_id: 0
   ) do |pipeline|
-    pipeline.workflow = LabInterface::Workflow.create!(name: pipeline.name) do |workflow|
+    pipeline.workflow = Workflow.create!(name: pipeline.name) do |workflow|
       workflow.locale     = 'Internal'
       workflow.item_limit = 8
     end.tap do |workflow|

@@ -394,7 +394,7 @@ class BatchesControllerTest < ActionController::TestCase
       should '#print_multiplex_barcodes should send print request' do
         pipeline = create :pipeline,
                           name: 'Test pipeline',
-                          workflow: LabInterface::Workflow.create!(item_limit: 8),
+                          workflow: Workflow.create!(item_limit: 8),
                           multiplexed: true
         batch = pipeline.batches.create!
         library_tube = create :library_tube, barcode: '111'

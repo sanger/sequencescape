@@ -59,7 +59,7 @@ module Tasks::SetCharacterisationDescriptorsHandler
     @rits = @batch.pipeline.request_information_types
     @requests = @batch.ordered_requests
 
-    @workflow = LabInterface::Workflow.includes(:tasks).find(params[:workflow_id])
+    @workflow = Workflow.includes(:tasks).find(params[:workflow_id])
     @task = @workflow.tasks[params[:id].to_i]
     @stage = params[:id].to_i
     @count = 0
