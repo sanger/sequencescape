@@ -5,55 +5,40 @@ Feature: The various sample views should not be filtered by the users workflow
     And I have an active study called "Testing filtering sample views"
 
   # NOTE: Checking for the fields themselves, not the headers!
-  Scenario Outline: Sample registration views
-
-
+  Scenario: Sample registration views
     Given I am on the page for choosing how to register samples for study "Testing filtering sample views"
     And I follow "1. Manual entry"
-    Then the "<workflow>" fields listed below should be appropriately displayed:
-      |field                           | workflow              |
-      |Cohort for sample 0             | <workflow> |
-      |Gender for sample 0             | <workflow> |
-      |Country of origin for sample 0  | <workflow> |
-      |Geographical region for sample 0| <workflow> |
-      |Ethnicity for sample 0          | <workflow> |
-      |DNA source for sample 0         | <workflow> |
-      |Volume (µl) for sample 0        | <workflow> |
-      |Plate for sample 0              | <workflow> |
-      |Mother for sample 0             | <workflow> |
-      |Father for sample 0             | <workflow> |
-      |Replicate for sample 0          | <workflow> |
-      |Organism for sample 0           | <workflow> |
-      |GC content for sample 0         | <workflow> |
+    Then the fields listed below should be displayed:
+      |field                           |
+      |Cohort for sample 0             |
+      |Gender for sample 0             |
+      |Country of origin for sample 0  |
+      |Geographical region for sample 0|
+      |Ethnicity for sample 0          |
+      |DNA source for sample 0         |
+      |Volume (µl) for sample 0        |
+      |Plate for sample 0              |
+      |Mother for sample 0             |
+      |Father for sample 0             |
+      |Replicate for sample 0          |
+      |Organism for sample 0           |
+      |GC content for sample 0         |
 
-    Examples:
-      |workflow|
-      |Next-gen sequencing|
-      |Microarray genotyping|
-
-  Scenario Outline: Sample editing views
-
+  Scenario: Sample editing views
     And the sample named "testing_sample_edit" exists
-
     When I am on the edit page for sample "testing_sample_edit"
-
-    Then the "<workflow>" fields listed below should be appropriately displayed:
-      |field               | workflow              |
-      |Cohort              | <workflow> |
-      |Gender              | <workflow> |
-      |Country of origin   | <workflow> |
-      |Geographical region | <workflow> |
-      |Ethnicity           | <workflow> |
-      |DNA source          | <workflow> |
-      |Volume (µl)         | <workflow> |
-      |Plate               | <workflow> |
-      |Mother              | <workflow> |
-      |Father              | <workflow> |
-      |Replicate           | <workflow> |
-      |Organism            | <workflow> |
-      |GC content          | <workflow> |
-
-    Examples:
-      |workflow|
-      |Next-gen sequencing|
-      |Microarray genotyping|
+    Then the fields listed below should be displayed:
+      |field               |
+      |Cohort              |
+      |Gender              |
+      |Country of origin   |
+      |Geographical region |
+      |Ethnicity           |
+      |DNA source          |
+      |Volume (µl)         |
+      |Plate               |
+      |Mother              |
+      |Father              |
+      |Replicate           |
+      |Organism            |
+      |GC content          |
