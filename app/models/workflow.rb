@@ -4,17 +4,17 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
 
-class LabInterface::Workflow < ApplicationRecord
+class Workflow < ApplicationRecord
   has_many :tasks, ->() { order('sorted') }, dependent: :destroy, foreign_key: :pipeline_workflow_id
-  has_many :families
+  has_many :families, dependent: :nullify
 
   belongs_to :pipeline, inverse_of: :workflow
-  validates_uniqueness_of :pipeline_id, message: 'only one workflow per pipeline!'
+  validates :pipeline_id, uniqueness: { message: 'only one workflow per pipeline!' }
 
-  validates_uniqueness_of :name
+  validates :name, uniqueness: true
 
-  def has_batch_limit?
-    !item_limit.blank?
+  def batch_limit?
+    item_limit.present?
   end
 
   def controls
@@ -45,9 +45,7 @@ class LabInterface::Workflow < ApplicationRecord
         new_workflow.name = new_workflow.name + suffix
         new_workflow.tasks = tasks.map do |task|
           new_task = task.dup
-          new_task.descriptors = task.descriptors.map do |descriptor|
-            descriptor.dup
-          end
+          new_task.descriptors = task.descriptors.map(&:dup)
           new_task
         end
         new_workflow.pipeline = nil
@@ -67,7 +65,7 @@ class LabInterface::Workflow < ApplicationRecord
   def change_sorter_of_all_tasks(value)
     return nil if tasks.nil?
     tasks.each do |task|
-      next if task.sorted + value < 0
+      next if (task.sorted + value).negative?
       task.sorted = task.sorted + value
       task.save
     end

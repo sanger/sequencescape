@@ -23,7 +23,7 @@ module Tasks::DnaQcHandler
       ]
     ).sort_by { |r| r.source_well.map.column_order }
 
-    @workflow = LabInterface::Workflow.includes(:tasks).find(params[:workflow_id])
+    @workflow = Workflow.includes(:tasks).find(params[:workflow_id])
     @task = task # @workflow.tasks[params[:id].to_i]
     @stage = params[:id].to_i
     @count = 0

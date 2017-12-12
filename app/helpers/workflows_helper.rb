@@ -4,14 +4,14 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
-module LabInterface::WorkflowsHelper
+module WorkflowsHelper
   # Returns descriptor from params, if it's not there try the @study.
   # If @study's not set or it doesn't hold the descriptor, return a
   # blank string...
   def descriptor_value(descriptor)
     # Refactored to remove reliance on @values
-    params[:values].try(:[], descriptor.name) or
-      @study.try(:descriptor_value, descriptor.name) or ''
+    params[:values].try(:[], descriptor.name) ||
+      @study.try(:descriptor_value, descriptor.name) || ''
   end
 
   # Returns a link to any available request comments with "None" as a
@@ -44,16 +44,14 @@ module LabInterface::WorkflowsHelper
   end
 
   def qc_select_box(request, status, html_options = {})
-    select_options = ['pass', 'fail']
+    select_options = %w[pass fail]
     select_options.unshift('') if html_options.delete(:generate_blank)
     select_tag("#{request.id}[qc_state]", options_for_select(select_options, status), html_options.merge(class: 'qc_state'))
   end
 
   def gel_qc_select_box(request, status, html_options = {})
-    blank = html_options.delete(:generate_blank) ? '<option></option>' : ''
-    if status.blank? || status == 'Pass'
-      status = 'OK'
-    end
+    html_options.delete(:generate_blank)
+    status = 'OK' if status.blank? || status == 'Pass'
     select_tag("wells[#{request.id}][qc_state]", options_for_select({ 'Pass' => 'OK', 'Fail' => 'Fail', 'Weak' => 'Weak', 'No Band' => 'Band Not Visible', 'Degraded' => 'Degraded' }, status), html_options)
   end
 end

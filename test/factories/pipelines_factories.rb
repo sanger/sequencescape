@@ -257,7 +257,7 @@ FactoryGirl.define do
     pipeline_administrator true
   end
 
-  factory :lab_workflow, class: LabInterface::Workflow do
+  factory :lab_workflow, class: Workflow do
     name                  { FactoryGirl.generate :lab_workflow_name }
     item_limit            2
     locale                'Internal'
@@ -265,7 +265,7 @@ FactoryGirl.define do
     pipeline { |workflow| workflow.association(:pipeline, workflow: workflow.instance_variable_get('@instance')) }
   end
 
-  factory :lab_workflow_for_pipeline, class: LabInterface::Workflow do
+  factory :lab_workflow_for_pipeline, class: Workflow do
     name                  { |_a| FactoryGirl.generate :lab_workflow_name }
     item_limit            2
     locale                'Internal'

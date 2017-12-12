@@ -7,7 +7,7 @@ class BatchTubeTest < ActiveSupport::TestCase
     should 'when multiplexed should return the right tubes and top line' do
       pipeline = create :pipeline,
                         name: 'Test pipeline',
-                        workflow: LabInterface::Workflow.create!(item_limit: 8),
+                        workflow: Workflow.create!(item_limit: 8),
                         multiplexed: true
       batch = pipeline.batches.create!
 
@@ -51,7 +51,7 @@ class BatchTubeTest < ActiveSupport::TestCase
     should 'when multiplexed should return the right tubes and top line' do
       @pipeline = create :pipeline,
                          name: 'Test pipeline',
-                         workflow: LabInterface::Workflow.create!(item_limit: 8),
+                         workflow: Workflow.create!(item_limit: 8),
                          multiplexed: true
 
       batch = @pipeline.batches.create!

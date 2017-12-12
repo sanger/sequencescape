@@ -37,7 +37,7 @@ class WorkflowsController < ApplicationController
   include Tasks::StripTubeCreationHandler
 
   def index
-    @workflows = LabInterface::Workflow.all
+    @workflows = Workflow.all
 
     respond_to do |format|
       format.html
@@ -55,7 +55,7 @@ class WorkflowsController < ApplicationController
   end
 
   def new
-    @workflow = LabInterface::Workflow.new
+    @workflow = Workflow.new
   end
 
   def edit
@@ -74,13 +74,13 @@ class WorkflowsController < ApplicationController
   end
 
   def batches
-    @workflow = LabInterface::Workflow.find(params[:id])
+    @workflow = Workflow.find(params[:id])
     # TODO: association broken here - something to do with the attachables polymorph?
     @batches = Batch.where(workflow_id: @workflow.id).sort_by { |batch| batch.id }.reverse
   end
 
   def create
-    @workflow = LabInterface::Workflow.new(params[:workflow])
+    @workflow = Workflow.new(params[:workflow])
 
     respond_to do |format|
       if @workflow.save
@@ -120,7 +120,7 @@ class WorkflowsController < ApplicationController
   end
 
   def sort
-    @workflow = LabInterface::Workflow.find(params[:workflow_id])
+    @workflow = Workflow.find(params[:workflow_id])
     @task_list = @workflow.tasks
     @task_list.each do |task|
       task.sorted = params['task_list'].index(task.id.to_s) + 1
@@ -138,7 +138,7 @@ class WorkflowsController < ApplicationController
   # 5: We need to improve the repeatability of tasks.
   # 6: GET should be Idempotent. doing a task should be a POST
   def stage
-    @workflow = LabInterface::Workflow.includes(:tasks).find(params[:workflow_id])
+    @workflow = Workflow.includes(:tasks).find(params[:workflow_id])
     @stage = params[:id].to_i
     @task = @workflow.tasks[@stage]
     # If params[:next_stage] is nil then just render the current task
@@ -181,7 +181,7 @@ class WorkflowsController < ApplicationController
     @rits = @batch.pipeline.request_information_types
     @requests = @batch.requests
 
-    @workflow = LabInterface::Workflow.includes(:tasks).find(params[:workflow_id])
+    @workflow = Workflow.includes(:tasks).find(params[:workflow_id])
     @task = task
   end
 
@@ -222,7 +222,7 @@ class WorkflowsController < ApplicationController
   end
 
   def find_workflow_by_id
-    @workflow = LabInterface::Workflow.find(params[:id])
+    @workflow = Workflow.find(params[:id])
   end
 
   def eventify_batch(batch, task)

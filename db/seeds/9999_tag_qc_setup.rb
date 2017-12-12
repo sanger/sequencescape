@@ -42,7 +42,7 @@ SequencingPipeline.create!(name: 'MiSeq sequencing QC') do |pipeline|
 
   pipeline.request_types << rt
 
-  pipeline.workflow = LabInterface::Workflow.create!(name: 'MiSeq sequencing QC') do |workflow|
+  pipeline.workflow = Workflow.create!(name: 'MiSeq sequencing QC') do |workflow|
     workflow.locale     = 'External'
     workflow.item_limit = 1
   end.tap do |workflow|
