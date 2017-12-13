@@ -18,8 +18,8 @@ module UiHelper
       @item_per_page = options[:per_page].to_i || 10
     end
 
-    def load(study, workflow)
-      study.submissions_for_workflow(workflow).each do |submission|
+    def load(study)
+      study.submissions.each do |submission|
         submission.events.where('message LIKE "Run%"').find_each do |event|
           load_event(event)
         end

@@ -101,16 +101,16 @@ Given /^I have an active study called "([^\"]*)"$/ do |study_name|
 end
 
 Given /^I am visiting "([^\"]*)" page with ID "([^\"]*)" homepage$/ do |_page, id|
-  visit study_workflow_path(Study.find(id), Submission::Workflow.first)
+  visit study_information_path(Study.find(id))
 end
 
 Given /^I am visiting study "([^\"]*)" homepage$/ do |study_name|
   study = Study.find_by(name: study_name)
-  visit study_workflow_path(study, Submission::Workflow.first)
+  visit study_information_path(study)
 end
 
 And /^the study have a workflow$/ do
-  FactoryGirl.create :submission_workflow
+  # Do nothing
 end
 
 def given_fixed_study_metadata(attribute, value, regexp)
@@ -331,17 +331,17 @@ end
 
 When /^I generate an? (dac|policy|array express) accession number for study "([^\"]+)"$/ do |type, study_name|
   type = { 'dac' => 'DAC', 'policy' => 'Policy', 'array express' => '' }.fetch(type, type)
-  step %Q{I am on the workflow page for study "#{study_name}"}
+  step %Q{I am on the information page for study "#{study_name}"}
   step %Q{I follow "Generate #{type} Accession Number"}.gsub(/  +/, ' ')
 end
 
 When /^I generate an? accession number for study "([^\"]+)"$/ do |study_name|
-  step %Q{I am on the workflow page for study "#{study_name}"}
+  step %Q{I am on the information page for study "#{study_name}"}
   step('I follow "Generate Accession Number"')
 end
 
 When /^I update an? accession number for study "([^\"]+)"$/ do |study_name|
-  step %Q{I am on the workflow page for study "#{study_name}"}
+  step %Q{I am on the information page for study "#{study_name}"}
   step('I follow "Update EBI Study data"')
 end
 

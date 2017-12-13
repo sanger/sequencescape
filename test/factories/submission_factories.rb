@@ -10,7 +10,6 @@ FactoryGirl.define do
 
   factory :order do
     study
-    workflow { |workflow| workflow.association(:submission_workflow) }
     project
     user
     item_options          {}

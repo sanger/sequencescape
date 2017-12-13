@@ -13,7 +13,7 @@ Feature: Links from the study workflow page
         | passed  |   1   | Asset 1 - 3871492 | sample_1-3871492 |
         | failed  |   2   | Asset 1 - 3871492 | sample_1-3871492 |
 
-      And I am on the study workflow page for "Study 3871492"
+      And I am on the study information page for "Study 3871492"
       And I activate the "Paired end sequencing" tab
 
   Scenario: The count for started requests is not a link

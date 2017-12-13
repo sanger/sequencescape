@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UpdateViewPlates < ActiveRecord::Migration[5.1]
   def self.up
     ActiveRecord::Base.transaction do

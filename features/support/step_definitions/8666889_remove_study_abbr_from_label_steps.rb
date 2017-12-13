@@ -36,7 +36,6 @@ Given /^I have a "([^"]*)" submission with (\d+) sample tubes as part of "([^"]*
   submission = submission_template.create_and_build_submission!(
     study: study,
     project: project,
-    workflow: Submission::Workflow.find_by(key: 'short_read_sequencing'),
     user: User.last,
     assets: sample_tubes,
     request_options: { :multiplier => { '1' => '1', '3' => '1' }, 'read_length' => '76', 'fragment_size_required_to' => '300', 'fragment_size_required_from' => '250', 'library_type' => 'Illumina cDNA protocol' }

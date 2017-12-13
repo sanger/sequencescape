@@ -11,7 +11,6 @@ require 'digest/sha1'
 
 class User < ApplicationRecord
   include Authentication
-  include Workflowed
   extend EventfulRecord
   include Uuid::Uuidable
   include Swipecardable
@@ -34,7 +33,6 @@ class User < ApplicationRecord
 
   before_save :encrypt_password
   before_create { |record| record.new_api_key if record.api_key.blank? }
-  before_create { |record| record.workflow ||= Submission::Workflow.default_workflow }
 
   validates_presence_of :login
   validates_uniqueness_of :login
@@ -159,10 +157,6 @@ class User < ApplicationRecord
 
   def sorted_study_names_and_ids
     interesting_studies.alphabetical.pluck(:name, :id)
-  end
-
-  def workflow_name
-    workflow && workflow.name
   end
 
   def has_preference_for(key)

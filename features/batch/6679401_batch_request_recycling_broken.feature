@@ -2,7 +2,7 @@
 Feature: Recycling requests in the Cherrypicking pipeline
   Background:
     Given I am an "administrator" user logged in as "John Smith"
-    And user "John Smith" has a workflow "Microarray genotyping"
+
 
     Given I have a project called "Testing batch request recycling"
     And I have an "active" study called "Testing batch request recycling"

@@ -253,7 +253,6 @@ FactoryGirl.define do
   factory :pipeline_admin, class: User do
     login         'ad1'
     email         { |a| "#{a.login}@example.com".downcase }
-    workflow      { |workflow| workflow.association(:submission_workflow) }
     pipeline_administrator true
   end
 

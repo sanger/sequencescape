@@ -20,11 +20,7 @@ class AssetsController < ApplicationController
     end
 
     respond_to do |format|
-      if params[:print]
-        format.html { render action: :print_index }
-      else
-        format.html
-      end
+      format.html
       if params[:study_id]
         format.xml { render xml: Study.find(params[:study_id]).assets_through_requests.to_xml }
       elsif params[:sample_id]
@@ -289,7 +285,6 @@ class AssetsController < ApplicationController
     submission = ReRequestSubmission.build!(
       study: @study,
       project: @project,
-      workflow: @request_type.workflow,
       user: current_user,
       assets: [@asset],
       request_types: [@request_type.id],

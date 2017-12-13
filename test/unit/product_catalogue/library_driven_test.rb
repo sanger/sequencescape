@@ -35,7 +35,6 @@ class LibraryDrivenTest < ActiveSupport::TestCase
             @submission_template = FactoryGirl.create :submission_template, name: 'ST 1',
                                                                             product_catalogue: @product_catalogue,
                                                                             submission_parameters: {
-                                                                              workflow_id: 1,
                                                                               request_type_ids_list: [],
                                                                               request_options: { library_type: 'Another library' }
                                                                             }
@@ -43,7 +42,6 @@ class LibraryDrivenTest < ActiveSupport::TestCase
             @submission_template2 = FactoryGirl.create :submission_template, name: 'ST 2',
                                                                              product_catalogue: @product_catalogue,
                                                                              submission_parameters: {
-                                                                               workflow_id: 1,
                                                                                request_type_ids_list: []
                                                                              }
           end
@@ -69,7 +67,6 @@ class LibraryDrivenTest < ActiveSupport::TestCase
             @submission_template = FactoryGirl.create :submission_template, name: 'ST 1',
                                                                             product_catalogue: @product_catalogue,
                                                                             submission_parameters: {
-                                                                              workflow_id: 1,
                                                                               request_type_ids_list: [],
                                                                               request_options: { library_type: @library_type.name }
                                                                             }
@@ -77,7 +74,6 @@ class LibraryDrivenTest < ActiveSupport::TestCase
             @submission_template2 = FactoryGirl.create :submission_template, name: 'ST 2',
                                                                              product_catalogue: @product_catalogue,
                                                                              submission_parameters: {
-                                                                               workflow_id: 1,
                                                                                request_type_ids_list: [],
                                                                                request_options: { library_type: @library_type2.name }
                                                                              }
@@ -97,7 +93,6 @@ class LibraryDrivenTest < ActiveSupport::TestCase
             @submission_template3 = FactoryGirl.create :submission_template, name: 'ST 3',
                                                                              product_catalogue: @product_catalogue,
                                                                              submission_parameters: {
-                                                                               workflow_id: 1,
                                                                                request_type_ids_list: []
                                                                              }
           end
@@ -112,7 +107,6 @@ class LibraryDrivenTest < ActiveSupport::TestCase
             @submission_template4 = FactoryGirl.create :submission_template, name: 'ST 4',
                                                                              product_catalogue: @product_catalogue,
                                                                              submission_parameters: {
-                                                                               workflow_id: 1,
                                                                                request_type_ids_list: [],
                                                                                request_options: { library_type: 'Standard' }
                                                                              }
@@ -131,7 +125,6 @@ class LibraryDrivenTest < ActiveSupport::TestCase
             @submission_template5 = FactoryGirl.create :submission_template, name: 'ST 5',
                                                                              product_catalogue: @product_catalogue,
                                                                              submission_parameters: {
-                                                                               workflow_id: 1,
                                                                                request_type_ids_list: [],
                                                                                request_options: { library_type: @library_type.name }
                                                                              }

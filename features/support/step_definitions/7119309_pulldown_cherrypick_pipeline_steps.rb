@@ -29,7 +29,6 @@ Given(/^plate "([^"]*)" with (\d+) samples in study "([^"]*)" has a "([^"]*)" su
   submission = submission_template.create_and_build_submission!(
     study: study,
     project: project,
-    workflow: Submission::Workflow.find_by(key: 'short_read_sequencing'),
     user: User.last,
     assets: wells,
     request_options: { :multiplier => { '1' => '1', '3' => '1' }, 'read_length' => '100', 'fragment_size_required_to' => '400', 'fragment_size_required_from' => '300', 'library_type' => 'Standard' }
@@ -52,7 +51,6 @@ Given(/^plate "([^"]*)" with (\d+) samples in study "([^"]*)" has a "([^"]*)" su
   submission = submission_template.create_and_build_submission!(
     study: Study.find_by(name: study_name),
     project: Project.find_by(name: 'Test project'),
-    workflow: Submission::Workflow.find_by(key: 'short_read_sequencing'),
     user: User.last,
     assets: wells
   )
@@ -227,7 +225,6 @@ Given(/^I have a "([^"]*)" submission with 2 plates$/) do |submission_template_n
   submission = submission_template.create_and_build_submission!(
     study: study,
     project: project,
-    workflow: Submission::Workflow.find_by(key: 'short_read_sequencing'),
     user: User.last,
     assets: Well.all,
     request_options: { :multiplier => { '1' => '1', '3' => '1' }, 'read_length' => '100', 'fragment_size_required_to' => '300', 'fragment_size_required_from' => '250', 'library_type' => 'Standard' }
