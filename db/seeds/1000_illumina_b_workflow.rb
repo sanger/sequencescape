@@ -8,8 +8,7 @@
 # TODO: This should probably still get refactored, but disabling this here allows us to drastically reduce the
 # maximum block size in the todo yaml.
 ActiveRecord::Base.transaction do
-  workflow   = Submission::Workflow.find_by(key: 'short_read_sequencing') or raise StandardError, 'Cannot find Next-gen sequencing workflow'
-  cherrypick = RequestType.find_by(name: 'Cherrypicking for Pulldown')    or raise StandardError, 'Cannot find Cherrypicking for Pulldown request type'
+  cherrypick = RequestType.find_by(name: 'Cherrypicking for Pulldown') or raise StandardError, 'Cannot find Cherrypicking for Pulldown request type'
 
   pipeline_name = 'Illumina-B STD'
 
@@ -18,7 +17,6 @@ ActiveRecord::Base.transaction do
 
   # For B
   shared_options_b = {
-    workflow: workflow,
     asset_type: 'Well',
     order: 1,
     initial_state: 'pending',
@@ -136,8 +134,7 @@ ActiveRecord::Base.transaction do
     RequestType.where(name: sequencing_request_type_names_for('Illumina-B')).find_each do |sequencing_request_type|
       submission                   = LinearSubmission.new
       submission.request_type_ids  = [cherrypick.id, pulldown_request_types.map(&:id), sequencing_request_type.id].flatten
-      submission.info_differential = workflow.id
-      submission.workflow          = workflow
+      submission.info_differential = nil
       submission.request_options   = defaults
       submission.request_type_ids  = [pulldown_request_types.map(&:id), sequencing_request_type.id].flatten
     end
@@ -154,8 +151,7 @@ ActiveRecord::Base.transaction do
     RequestType.where(name: sequencing_request_type_names_for('Illumina-A')).find_each do |sequencing_request_type|
       submission                   = LinearSubmission.new
       submission.request_type_ids  = [cherrypick.id, pulldown_request_types.map(&:id), sequencing_request_type.id].flatten
-      submission.info_differential = workflow.id
-      submission.workflow          = workflow
+      submission.info_differential = nil
       submission.request_options   = defaults
 
       submission.request_type_ids  = [pulldown_request_types.map(&:id), sequencing_request_type.id].flatten
@@ -168,7 +164,6 @@ ActiveRecord::Base.transaction do
   re_request = RequestType.create!(
     key: 'illumina_a_re_isc',
     name: 'Illumina-A ReISC',
-    workflow: workflow,
     asset_type: 'Well',
     initial_state: 'pending',
     order: 1,
@@ -184,7 +179,6 @@ ActiveRecord::Base.transaction do
   RequestType.create!(
     name: 'Illumina-HTP Library Creation',
     key: 'illumina_htp_library_creation',
-    workflow: Submission::Workflow.find_by!(key: 'short_read_sequencing'),
     asset_type: 'Well',
     order: 1,
     initial_state: 'pending',
@@ -222,7 +216,6 @@ ActiveRecord::Base.transaction do
     pooling_method: RequestType::PoolingMethod.find_by!(pooling_behaviour: 'PlateRow'),
     request_purpose: RequestPurpose.find_by!(key: 'standard'),
     request_class_name: 'IlluminaHtp::Requests::StdLibraryRequest',
-    workflow: Submission::Workflow.find_by!(key: 'short_read_sequencing'),
     product_line: ProductLine.find_by!(name: 'Illumina-HTP')
   ) do |rt|
     rt.acceptable_plate_purposes << Purpose.find_by!(name: 'PF Cherrypicked')
@@ -231,7 +224,6 @@ ActiveRecord::Base.transaction do
   RequestType.create!(
     name: 'Illumina-HTP Strip Tube Creation',
     key: 'illumina_htp_strip_tube_creation',
-    workflow: Submission::Workflow.find_by!(key: 'short_read_sequencing'),
     asset_type: 'Well',
     order: 2,
     initial_state: 'pending',
@@ -259,7 +251,6 @@ StripTubeCreationPipeline.create!(
   name: 'Strip Tube Creation',
   automated: false,
   active: true,
-  location: Location.find_by(name: 'Cluster formation freezer'),
   group_by_parent: true,
   sorter: 8,
   paginate: false,
@@ -271,7 +262,7 @@ StripTubeCreationPipeline.create!(
   group_name: 'Sequencing'
 ) do |pipeline|
   pipeline.request_types << RequestType.find_by!(key: 'illumina_htp_strip_tube_creation')
-  pipeline.workflow = LabInterface::Workflow.create!(name: 'Strip Tube Creation').tap do |workflow|
+  pipeline.workflow = Workflow.create!(name: 'Strip Tube Creation').tap do |workflow|
     stct = StripTubeCreationTask.create!(
       name: 'Strip Tube Creation',
       workflow: workflow,

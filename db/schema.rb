@@ -10,16 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171212104332) do
+ActiveRecord::Schema.define(version: 20171212112846) do
 
-  create_table "aker_containers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "aker_containers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "barcode"
     t.string "address"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "aker_work_orders", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "aker_work_orders", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "aker_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -602,14 +602,12 @@ ActiveRecord::Schema.define(version: 20171212104332) do
     t.integer "workflow_sample_id"
     t.boolean "closed", default: false
     t.integer "pool_id"
-    t.integer "workflow_id"
     t.integer "version"
     t.integer "submission_id"
     t.index ["name"], name: "index_items_on_name"
     t.index ["study_id"], name: "index_items_on_study_id"
     t.index ["submission_id"], name: "index_items_on_submission_id"
     t.index ["version"], name: "index_items_on_version"
-    t.index ["workflow_id"], name: "index_items_on_workflow_id"
     t.index ["workflow_sample_id"], name: "index_items_on_sample_id"
   end
 
@@ -633,14 +631,6 @@ ActiveRecord::Schema.define(version: 20171212104332) do
     t.index ["eventful_type"], name: "index_lab_events_on_eventful_type"
   end
 
-  create_table "lab_interface_workflows", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
-    t.string "name"
-    t.integer "item_limit"
-    t.text "locale"
-    t.integer "pipeline_id"
-    t.index ["pipeline_id"], name: "index_lab_interface_workflows_on_pipeline_id"
-  end
-
   create_table "lane_metadata", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.integer "lane_id"
     t.string "release_reason"
@@ -662,17 +652,6 @@ ActiveRecord::Schema.define(version: 20171212104332) do
     t.datetime "updated_at"
     t.index ["library_type_id"], name: "fk_library_types_request_types_to_library_types"
     t.index ["request_type_id"], name: "fk_library_types_request_types_to_request_types"
-  end
-
-  create_table "location_associations", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
-    t.integer "locatable_id", null: false
-    t.integer "location_id", null: false
-    t.index ["locatable_id"], name: "single_location_per_locatable_idx", unique: true
-    t.index ["location_id"], name: "index_location_associations_on_location_id"
-  end
-
-  create_table "locations", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
-    t.string "name"
   end
 
   create_table "lot_types", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -736,7 +715,6 @@ ActiveRecord::Schema.define(version: 20171212104332) do
 
   create_table "orders", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.integer "study_id"
-    t.integer "workflow_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "state_to_delete", limit: 20
@@ -797,7 +775,6 @@ ActiveRecord::Schema.define(version: 20171212104332) do
     t.datetime "updated_at"
     t.integer "next_pipeline_id"
     t.integer "previous_pipeline_id"
-    t.integer "location_id"
     t.boolean "group_by_parent"
     t.string "asset_type", limit: 50
     t.boolean "group_by_submission_to_delete"
@@ -891,7 +868,6 @@ ActiveRecord::Schema.define(version: 20171212104332) do
     t.integer "barcode_printer_type_id"
     t.boolean "cherrypickable_target", default: true, null: false
     t.string "cherrypick_direction", default: "column", null: false
-    t.integer "default_location_id"
     t.string "cherrypick_filters"
     t.integer "size", default: 96
     t.integer "asset_shape_id", default: 1, null: false
@@ -1198,7 +1174,6 @@ ActiveRecord::Schema.define(version: 20171212104332) do
   create_table "request_types", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.string "key", limit: 100
     t.string "name"
-    t.integer "workflow_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "asset_type"
@@ -1237,7 +1212,6 @@ ActiveRecord::Schema.define(version: 20171212104332) do
     t.integer "user_id"
     t.string "state", limit: 20, default: "pending"
     t.integer "sample_pool_id"
-    t.integer "workflow_id"
     t.integer "request_type_id"
     t.integer "item_id"
     t.integer "asset_id"
@@ -1417,11 +1391,13 @@ ActiveRecord::Schema.define(version: 20171212104332) do
     t.boolean "consent_withdrawn", default: false, null: false
     t.integer "work_order_id"
     t.integer "container_id"
+    t.index ["container_id"], name: "index_samples_on_container_id"
     t.index ["created_at"], name: "index_samples_on_created_at"
     t.index ["name"], name: "index_samples_on_name"
     t.index ["sample_manifest_id"], name: "index_samples_on_sample_manifest_id"
     t.index ["sanger_sample_id"], name: "index_samples_on_sanger_sample_id"
     t.index ["updated_at"], name: "index_samples_on_updated_at"
+    t.index ["work_order_id"], name: "index_samples_on_work_order_id"
   end
 
   create_table "sanger_sample_ids", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -1619,14 +1595,6 @@ ActiveRecord::Schema.define(version: 20171212104332) do
     t.integer "product_catalogue_id"
     t.index ["name", "superceded_by_id"], name: "name_and_superceded_by_unique_idx", unique: true
     t.index ["product_catalogue_id"], name: "fk_submission_templates_to_product_catalogues"
-  end
-
-  create_table "submission_workflows", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
-    t.string "key", limit: 50
-    t.string "name"
-    t.string "item_label"
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
   create_table "submissions", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -1858,7 +1826,6 @@ ActiveRecord::Schema.define(version: 20171212104332) do
     t.string "api_key"
     t.string "first_name"
     t.string "last_name"
-    t.integer "workflow_id"
     t.boolean "pipeline_administrator"
     t.string "barcode"
     t.string "cookie"
@@ -1965,6 +1932,14 @@ ActiveRecord::Schema.define(version: 20171212104332) do
     t.string "state", limit: 20
     t.integer "size", default: 1
     t.integer "version"
+  end
+
+  create_table "workflows", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+    t.string "name"
+    t.integer "item_limit"
+    t.text "locale"
+    t.integer "pipeline_id"
+    t.index ["pipeline_id"], name: "index_workflows_on_pipeline_id"
   end
 
   add_foreign_key "billing_items", "requests"

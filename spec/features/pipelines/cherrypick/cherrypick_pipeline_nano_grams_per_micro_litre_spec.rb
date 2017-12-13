@@ -9,15 +9,13 @@ feature 'cherrypick pipeline - nano grams per micro litre', js: true do
   let(:user) { create :admin, barcode: 'ID41440E' }
   let(:project) { create :project, name: 'Test project' }
   let(:study) { create :study }
-  let(:location) { Location.find_by(name: 'Sample logistics freezer') }
   let(:pipeline_name) { 'Cherrypick' }
   let(:pipeline) { Pipeline.find_by(name: pipeline_name) }
-  let(:plate1) { create :plate_with_untagged_wells, well_order: :row_order, sample_count: 2, barcode: '1', location: location }
-  let(:plate2) { create :plate_with_untagged_wells, well_order: :row_order, sample_count: 2, barcode: '10', location: location }
-  let(:plate3) { create :plate_with_untagged_wells, well_order: :row_order, sample_count: 2, barcode: '5', location: location }
+  let(:plate1) { create :plate_with_untagged_wells, well_order: :row_order, sample_count: 2, barcode: '1' }
+  let(:plate2) { create :plate_with_untagged_wells, well_order: :row_order, sample_count: 2, barcode: '10' }
+  let(:plate3) { create :plate_with_untagged_wells, well_order: :row_order, sample_count: 2, barcode: '5' }
   let(:plates) { [plate1, plate2, plate3] }
   let(:submission_template) { SubmissionTemplate.find_by(name: pipeline_name) }
-  let(:workflow) { Submission::Workflow.find_by(key: 'microarray_genotyping') }
   let(:barcode) { 99999 }
   let(:robot) { create :robot, barcode: '444' }
   let!(:plate_template) { create :plate_template }
@@ -35,7 +33,6 @@ feature 'cherrypick pipeline - nano grams per micro litre', js: true do
     submission = submission_template.create_and_build_submission!(
       study: study,
       project: project,
-      workflow: workflow,
       user: user,
       assets: assets
     )
@@ -69,8 +66,6 @@ feature 'cherrypick pipeline - nano grams per micro litre', js: true do
     fill_in('nano_grams_per_micro_litre_volume_required', with: '65')
     fill_in('nano_grams_per_micro_litre_robot_minimum_picking_volume', with: '1.0')
     click_button 'Next step'
-    click_button 'Next step'
-    select('Genotyping freezer', from: 'Location')
     click_button 'Next step'
     click_button 'Release this batch'
     expect(page).to have_content('Batch released!')

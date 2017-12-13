@@ -13,19 +13,14 @@ class LabwhereReception
   include ActiveModel::Conversion
   include ActiveModel::Validations
 
-  attr_reader :asset_barcodes, :user_code, :location_barcode, :location_id
+  attr_reader :asset_barcodes, :user_code, :location_barcode
 
-  validates :asset_barcodes, :user_code, :location, presence: true
+  validates :asset_barcodes, :user_code, presence: true
 
-  def initialize(user_code, location_barcode, location_id, asset_barcodes)
+  def initialize(user_code, location_barcode, asset_barcodes)
     @asset_barcodes = asset_barcodes.map(&:strip) if asset_barcodes.present?
-    @location_id = location_id.to_i
     @location_barcode = location_barcode.try(:strip)
     @user_code = user_code.try(:strip)
-  end
-
-  def location
-    @location ||= Location.find_by(id: location_id)
   end
 
   def id; nil; end
@@ -60,9 +55,8 @@ class LabwhereReception
     end
 
     assets.each do |asset|
-      asset.location = location
-      asset.events.create_scanned_into_lab!(location)
-      BroadcastEvent::LabwareReceived.create!(seed: asset, user: user)
+      asset.events.create_scanned_into_lab!(location_barcode)
+      BroadcastEvent::LabwareReceived.create!(seed: asset, user: user, properties: { location_barcode: location_barcode })
     end
 
     valid?

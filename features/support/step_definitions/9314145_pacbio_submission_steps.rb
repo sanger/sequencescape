@@ -6,7 +6,7 @@
 
 Given /^I have a sample tube "([^"]*)" in study "([^"]*)" in asset group "([^"]*)"$/ do |sample_tube_barcode, study_name, asset_group_name|
   study = Study.find_by(name: study_name)
-  sample_tube = FactoryGirl.create(:sample_tube, barcode: sample_tube_barcode, location: Location.find_by(name: 'PacBio library prep freezer'))
+  sample_tube = FactoryGirl.create(:sample_tube, barcode: sample_tube_barcode)
   sample_tube.primary_aliquot.sample.rename_to!("Sample_#{sample_tube_barcode}")
   asset_group = AssetGroup.find_by(name: asset_group_name)
   if asset_group.nil?
@@ -26,7 +26,6 @@ Given /^I have a PacBio submission$/ do
   submission = submission_template.create_and_build_submission!(
     study: study,
     project: project,
-    workflow: Submission::Workflow.find_by(key: 'short_read_sequencing'),
     user: User.last,
     assets: Plate.find_by(barcode: 1234567).wells.all,
     request_options: { :multiplier => { '1' => '1', '3' => '1' }, 'insert_size' => '500', 'sequencing_type' => 'Standard' }
@@ -42,13 +41,12 @@ Given /^I have a plate for PacBio$/ do
   plate = PlatePurpose.stock_plate_purpose.create!(:without_wells, barcode: 1234567) do |plate|
     plate.wells.build(map: Map.find_by(asset_size: 96, description: 'A1'), aliquots: SampleTube.find_by(barcode: 111).aliquots.map(&:dup))
     plate.wells.build(map: Map.find_by(asset_size: 96, description: 'B1'), aliquots: SampleTube.find_by(barcode: 222).aliquots.map(&:dup)) if SampleTube.find_by(barcode: 222).present?
-    plate.location = Location.find_by(name: 'PacBio library prep freezer')
   end
   AssetGroup.create!(name: 'PacBio group', study: Study.find_by(name: 'Test study')).assets << plate.wells
 end
 
 Given(/^I have a plate for PacBio in study "([^"]*)"$/) do |study_name|
-  plate = FactoryGirl.create :plate_with_untagged_wells, sample_count: 1, barcode: '1234567', location: Location.find_by(name: 'PacBio library prep freezer')
+  plate = FactoryGirl.create :plate_with_untagged_wells, sample_count: 1, barcode: '1234567'
   AssetGroup.create!(name: 'PacBio group', study: Study.find_by(name: study_name)).assets << plate.wells
 end
 
@@ -79,10 +77,9 @@ Given /^I have a fast PacBio sequencing batch$/ do
   step('I have a sample tube "222" in study "Test study" in asset group "Test study group"')
   step('the sample tubes are part of the study')
   step('I have a PacBio submission')
-  location = Location.find_by(name: 'PacBio sequencing freezer')
-  library_1 = PacBioLibraryTube.create!(location: location, barcode: '333', aliquots: SampleTube.find_by(barcode: 111).aliquots.map(&:dup))
+  library_1 = PacBioLibraryTube.create!(barcode: '333', aliquots: SampleTube.find_by(barcode: 111).aliquots.map(&:dup))
   library_1.pac_bio_library_tube_metadata.update_attributes!(prep_kit_barcode: '999', smrt_cells_available: 3)
-  library_2 = PacBioLibraryTube.create!(location: location, barcode: '444', aliquots: SampleTube.find_by(barcode: 222).aliquots.map(&:dup))
+  library_2 = PacBioLibraryTube.create!(barcode: '444', aliquots: SampleTube.find_by(barcode: 222).aliquots.map(&:dup))
   library_2.pac_bio_library_tube_metadata.update_attributes!(prep_kit_barcode: '999', smrt_cells_available: 1)
   PacBioSequencingRequest.first.update_attributes!(asset: library_1)
   PacBioSequencingRequest.last.update_attributes!(asset: library_2)
@@ -104,8 +101,6 @@ Given /^I have a PacBio sequencing batch$/ do
   step('I select "Pass" from "QC PacBioLibraryTube 444"')
   step('I press "Next step"')
   step('I press "Release this batch"')
-  step('set the location of PacBioLibraryTube "3980000333858" to be in "PacBio sequencing freezer"')
-  step('set the location of PacBioLibraryTube "3980000444684" to be in "PacBio sequencing freezer"')
   step('I am on the show page for pipeline "PacBio Sequencing"')
   step('I check "Select Request Group 0"')
   step('I check the invisible "Select Request 0"')
@@ -127,10 +122,6 @@ end
 Given /^sample tube "([^"]*)" is part of study "([^"]*)"$/ do |barcode, study_name|
   sample_tube = SampleTube.find_by(barcode: barcode)
   Study.find_by(name: study_name).samples << sample_tube.primary_aliquot.sample
-end
-
-When /^set the location of PacBioLibraryTube "([^"]*)" to be in "([^"]*)"$/ do |barcode, freezer|
-  Asset.find_from_machine_barcode(barcode).update_attributes!(location: Location.find_by(name: freezer))
 end
 
 Then /^(\d+) PacBioSequencingRequests for "([^"]*)" should be "([^"]*)"$/ do |number_of_requests, asset_barcode, state|

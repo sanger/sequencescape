@@ -7,7 +7,6 @@
 class Item < ApplicationRecord
   include Uuid::Uuidable
   include EventfulRecord
-  include Workflowed
   extend EventfulRecord
   has_many_events
   has_many_lab_events
@@ -22,7 +21,7 @@ class Item < ApplicationRecord
 
   validates_presence_of :version
   validates_presence_of :name
-  validates_uniqueness_of :name, scope: [:workflow_id, :version], on: :create, message: 'already in use (item)'
+  validates_uniqueness_of :name, scope: [:version], on: :create, message: 'already in use (item)'
 
   scope :for_search_query, ->(query, _with_includes) {
                              where(['name LIKE ? OR id=?', "%#{query}%", query])
@@ -31,7 +30,7 @@ class Item < ApplicationRecord
   before_validation :set_version, on: :create
 
   def set_version
-    things_with_same_name = self.class.where(name: name, workflow_id: workflow_id)
+    things_with_same_name = self.class.where(name: name)
     if things_with_same_name.empty?
       increment(:version)
     else

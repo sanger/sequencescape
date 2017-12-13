@@ -107,8 +107,7 @@ FactoryGirl.define do
     project
     state 'pending'
     study
-    user              { User.find_by(login: user_login) || create(:user, login: user_login) }
-    workflow          { |workflow| workflow.association(:submission_workflow) }
+    user { User.find_by(login: user_login) || create(:user, login: user_login) }
   end
 
   factory :request, parent: :request_without_assets do
@@ -119,7 +118,6 @@ FactoryGirl.define do
     factory :request_with_submission do
       after(:build) do |request|
         request.submission = FactoryHelp::submission(
-          workflow: request.workflow,
           study: request.initial_study,
           project: request.initial_project,
           request_types: [request.request_type.try(:id)].compact.map(&:to_s),

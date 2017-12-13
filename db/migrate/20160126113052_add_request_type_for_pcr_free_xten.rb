@@ -4,6 +4,10 @@
 # authorship of this file.
 # Copyright (C) 2016 Genome Research Ltd.
 class AddRequestTypeForPcrFreeXten < ActiveRecord::Migration
+  class SubmissionWorkflow < ApplicationRecord
+    self.table_name = 'submission_workflows'
+  end
+
   def self.up
     ActiveRecord::Base.transaction do |_t|
       rt = RequestType.create!(
@@ -20,7 +24,7 @@ class AddRequestTypeForPcrFreeXten < ActiveRecord::Migration
         pooling_method: RequestType::PoolingMethod.find_by!(pooling_behaviour: 'PlateRow'),
         request_purpose: RequestPurpose.find_by!(key: 'standard'),
         request_class_name: 'IlluminaHtp::Requests::StdLibraryRequest',
-        workflow: Submission::Workflow.find_by!(key: 'short_read_sequencing'),
+        workflow_id: SubmissionWorkflow.find_by!(key: 'short_read_sequencing').id,
         product_line: ProductLine.find_by!(name: 'Illumina-HTP')
       )
 

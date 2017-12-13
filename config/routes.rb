@@ -141,7 +141,7 @@ Sequencescape::Application.routes.draw do
   match '/taxon_lookup_by_term/:term' => 'samples#taxon_lookup', :via => :get
   match '/taxon_lookup_by_id/:id' => 'samples#taxon_lookup', :via => :get
 
-  match '/studies/:study_id/workflows/:workflow_id/summary_detailed/:id' => 'studies/workflows#summary_detailed', :via => :post
+  match '/studies/:study_id/information/summary_detailed/:id' => 'studies/information#summary_detailed', :via => :post
 
   match 'studies/accession/:id' => 'studies#accession', :via => :get
   match 'studies/policy_accession/:id' => 'studies#policy_accession', :via => :get
@@ -230,7 +230,7 @@ Sequencescape::Application.routes.draw do
       resources :wells, expect: [:destroy, :edit]
     end
 
-    resources :workflows, controller: 'studies/workflows' do
+    resource :information, controller: 'studies/information' do
       member do
         get :summary
         get :show_summary
@@ -284,8 +284,6 @@ Sequencescape::Application.routes.draw do
       get :get_children_requests
     end
   end
-
-  get 'studies/:study_id/workflows/:id' => 'study_workflows#show', :as => :study_workflow_status
 
   resources :searches
 
@@ -402,7 +400,6 @@ Sequencescape::Application.routes.draw do
     end
   end
 
-  resources :locations
   resources :request_information_types
 
   match 'pipelines/assets/new/:id' => 'pipelines/assets#new', :via => 'get'

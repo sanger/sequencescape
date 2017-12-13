@@ -42,7 +42,6 @@ class Request < ApplicationRecord
   belongs_to :pipeline
   belongs_to :item
   belongs_to :request_type, inverse_of: :requests
-  belongs_to :workflow, class_name: 'Submission::Workflow'
   belongs_to :user
   belongs_to :request_purpose
   belongs_to :order, inverse_of: :requests
@@ -199,14 +198,12 @@ class Request < ApplicationRecord
   scope :with_target, -> { where('target_asset_id is not null and (target_asset_id <> asset_id)') }
   scope :join_asset,  -> { joins(:asset) }
   scope :with_asset_location, -> { includes(asset: :map) }
-  # Asset are Locatable (or at least some of them)
-  belongs_to :location_association, primary_key: :locatable_id, foreign_key: :asset_id
-  scope :located, ->(location_id) { joins(:location_association).where(['location_associations.location_id = ?', location_id]).readonly(false) }
+  scope :siblings_of, ->(request) { where(asset_id: request.asset_id).where.not(id: request.id) }
 
   # Use container location
-  scope :holder_located, ->(location_id) {
-    joins(['INNER JOIN container_associations hl ON hl.content_id = asset_id', 'INNER JOIN location_associations ON location_associations.locatable_id = hl.container_id'])
-      .where(['location_associations.location_id = ?', location_id])
+  scope :holder_located, ->() {
+    joins('INNER JOIN container_associations hl ON hl.content_id = asset_id')
+      .where('hl.id is not null')
       .readonly(false)
   }
 
@@ -277,7 +274,6 @@ class Request < ApplicationRecord
 
   scope :for_initial_study_id, ->(id) { where(initial_study_id: id) }
 
-  scope :for_workflow, ->(workflow) { joins(:workflow).where(workflow: { key: workflow }) }
   scope :for_request_types, ->(types) { joins(:request_type).where(request_types: { key: types }) }
 
   scope :for_search_query, ->(query, _with_includes) {

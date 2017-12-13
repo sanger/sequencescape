@@ -20,7 +20,6 @@ class Order < ApplicationRecord
   include Submission::RequestOptionsBehaviour
   include Submission::AccessionBehaviour
   include ModelExtensions::Order
-  include Workflowed
 
   class CompositeAttribute
     attr_reader :display_name, :key, :default, :options
@@ -75,7 +74,6 @@ class Order < ApplicationRecord
   belongs_to :project, optional: true
   belongs_to :user, required: true
   belongs_to :product, optional: true
-  belongs_to :workflow, class_name: 'Submission::Workflow', required: true
   belongs_to :order_role, optional: true
   belongs_to :submission, inverse_of: :orders
   # In the case of some cross study/project orders, such as resequencing of
@@ -198,7 +196,6 @@ class Order < ApplicationRecord
     em = request_type.extract_metadata_from_hash(request_options)
     request_type.create!(attributes) do |request|
       request.submission_id               = submission_id
-      request.workflow                    = workflow
       request.study                       = study
       request.initial_project             = project
       request.user                        = user
@@ -214,7 +211,7 @@ class Order < ApplicationRecord
 
   def duplicate(&block)
     create_parameters = template_parameters
-    new_order = Order.create(create_parameters.merge(study: study, workflow: workflow,
+    new_order = Order.create(create_parameters.merge(study: study,
                                                      user: user, assets: assets, state: state,
                                                      request_types: request_types,
                                                      request_options: request_options,
@@ -247,7 +244,6 @@ class Order < ApplicationRecord
       request_types: request_types,
       comments: comments,
       request_type_ids_list: request_type_ids_list,
-      workflow_id: workflow.id,
       info_differential: info_differential,
       customize_partial: customize_partial,
       asset_input_methods: asset_input_methods != DefaultAssetInputMethods ? asset_input_methods : nil

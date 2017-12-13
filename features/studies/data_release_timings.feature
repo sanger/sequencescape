@@ -14,14 +14,14 @@ Feature: Studies have timings for release of their data
   Scenario: When the data release is standard
     Given I select "standard" from "How is the data release to be timed?"
     When I press "Create"
-    Then I should be on the study workflow page for "Testing data release strategies"
+    Then I should be on the study information page for "Testing data release strategies"
     And I should see "Your study has been created"
 
 
   Scenario: When the data release is immediate
     Given I select "immediate" from "How is the data release to be timed?"
     When I press "Create"
-    Then I should be on the study workflow page for "Testing data release strategies"
+    Then I should be on the study information page for "Testing data release strategies"
     And I should see "Your study has been created"
 
 
@@ -31,7 +31,7 @@ Feature: Studies have timings for release of their data
     Then the "Comment regarding data release timing and approval" field is hidden
     When I select "6 months" from "Delay for"
       And I press "Create"
-    Then I should be on the study workflow page for "Testing data release strategies"
+    Then I should be on the study information page for "Testing data release strategies"
       And I should see "Your study has been created"
 
   Scenario Outline: When the data release is delayed but no reasons are provided
@@ -58,7 +58,7 @@ Feature: Studies have timings for release of their data
     And I select "<period>" from "Delay for"
     And I fill in "Comment regarding data release timing and approval" with "Because it is ok?"
     When I press "Create"
-    Then I should be on the study workflow page for "Testing data release strategies"
+    Then I should be on the study information page for "Testing data release strategies"
     And I should see "Your study has been created"
 
     Examples:
@@ -81,5 +81,5 @@ Feature: Studies have timings for release of their data
     And I select "never" from "How is the data release to be timed?"
     And I fill in "Comment regarding prevention of data release and approval" with "Some reason"
     When I press "Create"
-    Then I should be on the study workflow page for "Testing data release strategies"
+    Then I should be on the study information page for "Testing data release strategies"
     And I should see "Your study has been created"

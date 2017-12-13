@@ -19,7 +19,6 @@ class RequestType < ApplicationRecord
     validates_uniqueness_of :plate_purpose_id, scope: :request_type_id
   end
 
-  include Workflowed
   include Uuid::Uuidable
   include SharedBehaviour::Named
 
@@ -81,6 +80,9 @@ class RequestType < ApplicationRecord
                                    asset.asset_type_for_request_types.name
                                  ])
                                }
+
+  # Temporary scope: Remove once converted to enum
+  scope :standard, ->() { where(request_purpose: RequestPurpose.find_by(key: 'standard')) }
 
   def construct_request(construct_method, attributes, klass = request_class)
     raise RequestType::DeprecatedError if deprecated?

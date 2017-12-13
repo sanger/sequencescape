@@ -2,7 +2,7 @@
 Feature: Recycling requests in the Cherrypicking pipeline
   Background:
     Given I am an "administrator" user logged in as "John Smith"
-    And user "John Smith" has a workflow "Microarray genotyping"
+
 
     Given I have a project called "Testing batch request recycling"
     And I have an "active" study called "Testing batch request recycling"
@@ -15,8 +15,6 @@ Feature: Recycling requests in the Cherrypicking pipeline
       | Study |     Testing batch request recycling |
     Given 1 pending delayed jobs are processed
 
-
-    And all assets for requests in the "Cherrypick" pipeline have been scanned into the lab
 
     Given I am on the "Cherrypick" pipeline page
     When I check "Include request 1"

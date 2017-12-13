@@ -22,7 +22,7 @@ Feature: Registering samples
   Scenario: Registering a single sample
     When I fill in "Sample name for sample 0" with "sample_name_for_0"
     And I press "Register samples"
-    Then I should be on the study workflow page for "Testing registering samples"
+    Then I should be on the study information page for "Testing registering samples"
     And I should see "Your samples have been registered"
 
   Scenario: Registering a sample that already exists
@@ -36,7 +36,7 @@ Feature: Registering samples
     When I fill in "Sample name for sample 0" with "sample_for_asset_group"
     And I fill in "Asset group name for sample 0" with "asset_group_for_sample"
     And I press "Register samples"
-    Then I should be on the study workflow page for "Testing registering samples"
+    Then I should be on the study information page for "Testing registering samples"
 
     When I follow "Asset groups"
     And I follow "asset_group_for_sample"
@@ -46,7 +46,7 @@ Feature: Registering samples
     When I fill in "Sample name for sample 0" with "sample_for_asset_group"
     And I fill in "Asset group name for sample 0" with " asset_group_for_sample"
     And I press "Register samples"
-    Then I should be on the study workflow page for "Testing registering samples"
+    Then I should be on the study information page for "Testing registering samples"
 
     When I follow "Asset groups"
     And I follow "asset_group_for_sample"
@@ -75,7 +75,7 @@ Feature: Registering samples
     When I fill in "Sample name for sample 0" with "sample_name_for_0"
     And I fill in "Asset group name" with "Does not exist group"
     And I press "Register samples"
-    Then I should be on the study workflow page for "Testing registering samples"
+    Then I should be on the study information page for "Testing registering samples"
     And I should see "Your samples have been registered"
 
   Scenario: Fields filled with data should remain so after invalid submission
@@ -90,7 +90,7 @@ Feature: Registering samples
 
   @sample_registration
    Scenario: Uploading a spreadsheet of data for sequencing
-    Given user "John Smith" has a workflow "Next-gen sequencing"
+
 
     Given I am on the page for choosing how to register samples for study "Testing registering samples"
     And I follow "2. Spreadsheet load"

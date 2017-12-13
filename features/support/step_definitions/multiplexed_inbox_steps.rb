@@ -17,7 +17,6 @@ Given(/^that there are (\d+) requests in that pipeline$/) do |number_requests|
       asset: FactoryGirl.create(asset_type)
     )
 
-    request.asset.location = @pipeline.location
     request.asset.save!
   end
 end

@@ -28,7 +28,7 @@ class TasksController < ApplicationController
 
   def new
     @task = SetDescriptorsTask.new
-    @workflow = LabInterface::Workflow.find(params[:workflow_id])
+    @workflow = Workflow.find(params[:workflow_id])
     @task.descriptors << Descriptor.new(name: '', value: '')
     @count = @task.descriptors.size
   end

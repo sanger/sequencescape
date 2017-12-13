@@ -22,7 +22,6 @@ class SamplesController < ApplicationController
 
   def new
     @sample = Sample.new
-    @workflows = Submission::Workflow.all
     @studies = Study.alphabetical
   end
 
@@ -40,9 +39,8 @@ class SamplesController < ApplicationController
         flash[:notice] = 'Sample successfully created'
         format.html { redirect_to sample_path(@sample) }
         format.xml  { render xml: @sample, status: :created, location: @sample }
-        format.json  { render json: @sample, status: :created, location: @sample }
+        format.json { render json: @sample, status: :created, location: @sample }
       else
-        @workflows = Submission::Workflow.all
         flash[:error] = 'Problems creating your new sample'
         format.html { render action: :new }
         format.xml  { render xml: @sample.errors, status: :unprocessable_entity }
@@ -100,7 +98,6 @@ class SamplesController < ApplicationController
         flash[:notice] = 'Sample details have been updated'
         redirect_to sample_path(@sample)
       else
-        @workflows = Submission::Workflow.all
         flash[:error] = 'Failed to update attributes for sample'
         render action: 'edit', id: @sample.id
       end

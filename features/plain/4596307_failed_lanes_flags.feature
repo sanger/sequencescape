@@ -9,7 +9,6 @@ Feature: Pipeline shows status of requests in pipeline
     And I am using "local" to authenticate
     And I have administrative role
     And I have lab manager role
-    And I have an associated workflow "Next-gen sequencing"
     And I have an "active" study called "Priority Study"
     And I have a control called "PhiX" for "Cluster formation SE"
     And I have a batch in "Illumina-C Library preparation"

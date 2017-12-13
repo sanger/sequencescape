@@ -192,7 +192,7 @@ module IlluminaHtp::PlatePurposes
       )
 
       flow.each do |name|
-        create_plate_purpose(name, default_location: library_creation_freezer, source_purpose_id: stock_plate.id)
+        create_plate_purpose(name, source_purpose_id: stock_plate.id)
       end
     end
 
@@ -240,11 +240,6 @@ module IlluminaHtp::PlatePurposes
       request_class || :standard
     end
     private :transfer_request_class_between
-
-    def library_creation_freezer
-      Location.find_by(name: 'Illumina high throughput freezer') or raise 'Cannot find Illumina high throughput freezer'
-    end
-    private :library_creation_freezer
 
     def create_plate_purpose(plate_purpose_name, options = {})
       purpose_for(plate_purpose_name).create!(options.reverse_merge(
