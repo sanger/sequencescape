@@ -36,7 +36,6 @@ class Sample < ApplicationRecord
     association(:reference_genome, :name, required: true)
 
     custom_attribute(:organism)
-    custom_attribute(:organism)
     custom_attribute(:cohort)
     custom_attribute(:country_of_origin)
     custom_attribute(:geographical_region)
