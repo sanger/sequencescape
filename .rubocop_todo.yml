@@ -2486,6 +2486,7 @@ Style/Documentation:
     - 'config/initializers/formtastic.rb'
     - 'config/initializers/process_locale_files_with_erb.rb'
     - 'config/initializers/ruby_net_http_proxy_hack.rb'
+    - 'db/migrate/*.rb'
     - 'db/migrate/20150803092346_update_dilution_factor_for_wd_and_pd.rb'
     - 'db/migrate/20150806102405_add_flexible_cherrypick_request.rb'
     - 'db/migrate/20150806105950_add_flexible_cherrypick_pipeline.rb'

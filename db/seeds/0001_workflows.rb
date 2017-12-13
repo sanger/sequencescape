@@ -66,7 +66,6 @@ LibraryCreationPipeline.create!(name: 'Illumina-C Library preparation') do |pipe
   pipeline.automated  = false
   pipeline.active     = true
 
-
   pipeline.request_types << RequestType.create!(key: 'library_creation', name: 'Library creation', deprecated: true) do |request_type|
     request_type.billable           = true
     request_type.initial_state      = 'pending'
@@ -800,7 +799,6 @@ GenotypingPipeline.create!(name: 'Genotyping') do |pipeline|
   pipeline.active = true
   pipeline.group_by_parent = true
 
-
   pipeline.request_types << RequestType.create!(key: 'genotyping', name: 'Genotyping') do |request_type|
     request_type.initial_state     = 'pending'
     request_type.asset_type        = 'Well'
@@ -826,7 +824,6 @@ PulldownMultiplexLibraryPreparationPipeline.create!(name: 'Pulldown Multiplex Li
   pipeline.active               = true
   pipeline.group_by_parent      = true
   pipeline.max_size             = 96
-
 
   pipeline.request_types << RequestType.create!(key: 'pulldown_multiplexing', name: 'Pulldown Multiplex Library Preparation') do |request_type|
     request_type.billable          = true

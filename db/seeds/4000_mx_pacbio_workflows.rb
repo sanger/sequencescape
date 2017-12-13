@@ -11,7 +11,6 @@ PacBioSamplePrepPipeline.create!(name: 'PacBio Tagged Library Prep') do |pipelin
   pipeline.asset_type           = 'PacBioLibraryTube'
   pipeline.group_by_parent      = true
 
-
   pipeline.request_types << RequestType.create!(key: 'pacbio_tagged_library_prep', name: 'PacBio Tagged Library Prep') do |request_type|
     request_type.initial_state     = 'pending'
     request_type.asset_type        = 'Well'
