@@ -19,7 +19,6 @@ feature 'track SampleManifest updates' do
   let(:barcode) { 1234567 }
   let!(:supplier) { create :supplier }
   let!(:study) { create :study }
-  let!(:submission_workflow) { create :submission_workflow }
 
   background do
     new_time = Time.zone.local(2010, 7, 12, 10, 25, 0)

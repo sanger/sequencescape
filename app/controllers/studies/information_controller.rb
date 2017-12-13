@@ -4,20 +4,20 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
-class Studies::WorkflowsController < ApplicationController
+class Studies::InformationController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
-  before_action :discover_study, :discover_workflow
+  before_action :discover_study, :standard_request_types
 
-  before_action :setup_tabs, only: [:show, :show_summary]
+  before_action :setup_tabs, only: %i[show show_summary]
 
   def setup_tabs
-    @total_requests = compute_total_request(@study)
+    @total_requests = compute_total_request
     @cache          = { total: @total_requests }
 
     # Request types are already loaded, so we sort in ruby
-    @request_types  = @workflow.request_types.sort_by(&:order).reject { |r| @total_requests[r].zero? }
+    @request_types  = standard_request_types.order(:order).reject { |r| @total_requests[r].zero? }
 
     @basic_tabs = ['Summary', 'Sample progress', 'Assets progress']
     @summaries = @basic_tabs + @request_types.map(&:name)
@@ -25,21 +25,15 @@ class Studies::WorkflowsController < ApplicationController
   private :setup_tabs
 
   def show
-    unless @current_user.nil?
-      @current_user.workflow = @workflow
-      @current_user.save!
-    end
-    @workflows = Submission::Workflow.order('name DESC')
-
     @default_tab_label = 'Sample progress'
     @summary = params[:summary].to_i
     @summary = @basic_tabs.index(@default_tab_label) if params[:summary].nil?
 
-    @submissions = @study.submissions_for_workflow(@workflow)
+    @submissions = @study.submissions
 
     # We need to propagate the extra_parameters - as page - to the summary partial
     @extra_params = params.dup
-    [:summary, :study_id, :id, :action, :controller].each do |key|
+    %i[summary study_id id action controller].each do |key|
       @extra_params.delete key
     end
 
@@ -96,26 +90,23 @@ class Studies::WorkflowsController < ApplicationController
       end
     else
       page_params[:summary] = params[:summary]
-      redirect_to study_workflow_path(@study, @workflow, page_params)
+      redirect_to study_information_path(@study, page_params)
     end
   end
 
   def summary
     s = UiHelper::Summary.new
-    @summary = s.load(@study, @workflow).paginate page: params[:page], per_page: 30
-    # @summary.load(@study, @workflow)
+    @summary = s.load(@study).paginate page: params[:page], per_page: 30
     respond_to do |format|
       format.html
     end
   end
 
-  def compute_total_request(_study)
-    total_requests = {}
-    report = @study.total_requests_report
-    @workflow.request_types.each do |rt|
+  def compute_total_request
+    report = @study.total_requests_report(standard_request_types)
+    standard_request_types.each_with_object({}) do |rt, total_requests|
       total_requests[rt] = report[rt.id] || 0
     end
-    total_requests
   end
 
   def group_count(enumerable)
@@ -131,12 +122,12 @@ class Studies::WorkflowsController < ApplicationController
 
   private
 
+  def standard_request_types
+    @standard_request_types ||= RequestType.standard
+  end
+
   def discover_study
     @study = Study.find(params[:study_id])
     flash.now[:warning] = @study.warnings if @study.warnings.present?
-  end
-
-  def discover_workflow
-    @workflow = Submission::Workflow.includes(:request_types).find(params[:id])
   end
 end

@@ -362,8 +362,8 @@ class Study < ApplicationRecord
     comments.collect { |c| c.description unless c.description.blank? }.compact.join(', ')
   end
 
-  def completed(workflow = nil)
-    rts = workflow.present? ? workflow.request_types.map(&:id) : RequestType.all.map(&:id)
+  def completed(_workflow = nil)
+    rts = RequestType.standard.pluck(:id)
     total = requests.request_type(rts).count
     failed = requests.failed.request_type(rts).count
     cancelled = requests.cancelled.request_type(rts).count
@@ -373,10 +373,6 @@ class Study < ApplicationRecord
     else
       return 0
     end
-  end
-
-  def submissions_for_workflow(workflow)
-    orders.for_workflow(workflow).include_for_study_view.map(&:submission).compact.uniq
   end
 
   # Yields information on the state of all request types in a convenient fashion for displaying in a table.

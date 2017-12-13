@@ -69,8 +69,6 @@ class PlatesController < ApplicationController
       if asset_group = Plate.create_sample_tubes_asset_group_and_print_barcodes(plates, barcode_printer, study)
         flash[:notice] = 'Created tubes and printed barcodes'
         # makes request properties partial show
-        @current_user.workflow = Submission::Workflow.find_by(key: 'short_read_sequencing')
-        @current_user.save!
         format.html { redirect_to(new_submission_path(study_id: asset_group.study.id)) }
         format.xml  { render xml: asset_group, status: :created }
         format.json { render json: asset_group, status: :created }

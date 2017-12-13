@@ -6,13 +6,13 @@
 
 <%- add :title, "Study specification and management." %>
 <% add :admin_option, "Study manage" => url_for(controller: "admin/studies", action: "show", id: @study.id) -%>
-<% add :back_menu, I18n.t("navigation.menu.back_to_study") => study_workflow_path(@study, @workflow) -%>
+<% add :back_menu, I18n.t("navigation.menu.back_to_study") => study_information_path(@study) -%>
 
 <div id='content-links'>
  <%= link_to "Full details", study_path(@study) -%>
 </div>
 
-<h1>Summary of <%= @study.name %>  : <%= @workflow.name %></h1>
+<h1>Summary of <%= @study.name %></h1>
 <div class='subtitle'>
   Study <%= @study.id %> &middot; Created on <%= @study.created_at.to_formatted_s(:long) %> &middot; <%= @study.state.capitalize %>
 </div>

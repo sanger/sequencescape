@@ -578,25 +578,6 @@ class Plate < Asset
     end
   end
 
-  def create_plate_submission(project, study, user, _current_time)
-    LinearSubmission.build!(
-      study: study,
-      project: project,
-      workflow: genotyping_submission_workflow,
-      user: user,
-      assets: wells,
-      request_types: submission_workflow_request_type_ids(genotyping_submission_workflow)
-    )
-  end
-
-  def submission_workflow_request_type_ids(submission_workflow)
-    submission_workflow.request_types.map(&:id)
-  end
-
-  def genotyping_submission_workflow
-    Submission::Workflow.find_by(key: 'microarray_genotyping')
-  end
-
   # Should return true if any samples on the plate contains gender information
   def contains_gendered_samples?
     contained_samples.with_gender.any?

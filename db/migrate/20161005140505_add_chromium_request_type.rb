@@ -1,4 +1,8 @@
 class AddChromiumRequestType < ActiveRecord::Migration
+  class SubmissionWorkflow < ApplicationRecord
+    self.table_name = 'submission_workflows'
+  end
+
   def up
     ActiveRecord::Base.transaction do
       rt = RequestType.create!(
@@ -6,7 +10,7 @@ class AddChromiumRequestType < ActiveRecord::Migration
         key: 'illumina_c_chromium_library',
         request_class_name: 'IlluminaC::Requests::LibraryRequest', # See class deprecation notice above
         for_multiplexing: true,
-        workflow: Submission::Workflow.find_by(name: 'Next-gen sequencing'),
+        workflow_id: SubmissionWorkflow.find_by(name: 'Next-gen sequencing').id,
         asset_type: 'Well',
         order: 1,
         initial_state: 'pending',

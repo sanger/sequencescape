@@ -99,14 +99,12 @@ def build_batch_for(name, count)
     FactoryGirl.create(submission_details[:asset_type], asset_attributes)
   end
 
-  wf = pipeline.request_types.last.workflow
   rts = pipeline.request_types.reject(&:deprecated?).map(&:id)
   # Build a submission that should end up in the appropriate inbox, once all of the assets have been
   # deemed as scanned into the lab!
   LinearSubmission.build!(
     study: FactoryGirl.create(:study),
     project: FactoryGirl.create(:project),
-    workflow: wf,
     user: user,
 
     # Setup the assets so that they have samples and they are scanned into the correct lab.

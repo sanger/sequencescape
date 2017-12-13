@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.%>
 
-<% add :title, "This page details the current status of a workflow." -%>
+<% add :title, "This page details the current status of a study." -%>
 <% if @study.approved? && @study.active? -%>
   <% add :manager_option, "Create Submission" => new_submission_path(study_id: @study.id) -%>
     <% add :manager_option, "Start a Bulk Submission" => {controller: "/bulk_submissions", action: "new"} -%>
@@ -15,7 +15,7 @@
 <% add :menu, "Samples" => study_samples_path(@study) -%>
 <% add :menu, "Sample Manifests" => sample_manifests_study_path(@study) %>
 <% add :menu, "Suppliers" => suppliers_study_path(@study) %>
-<% add :menu, "Assets" => study_workflow_assets_path(@study, @workflow) -%>
+<% add :menu, "Assets" => study_information_assets_path(@study) -%>
 <% add :menu, "Asset groups" => study_asset_groups_path(@study) -%>
 <% add :menu, "Projects" => projects_study_path(@study) -%>
 <% if current_user.is_administrator? || current_user.is_manager?(@study) || current_user.owner?(@study) || current_user.lab? %>
@@ -23,7 +23,7 @@
 <% end %>
 <% add :menu, "&nbsp;" => '' -%>
 <% add :menu, "Contacts" => collaborators_study_path(@study) -%>
-<% add :menu, "History" => summary_study_workflow_path(@study, @workflow) -%>
+<% add :menu, "History" => summary_study_information_path(@study) -%>
 <% add :menu, "&nbsp;" => '' -%>
 <% if current_user.is_administrator? || current_user.is_manager?(@study) %>
   <% if @study.active? -%>
@@ -61,17 +61,10 @@
  <%= link_to "Study details", properties_study_path(@study) -%>
 </div>
 
-<h1><%= link_to @study.name, study_path(@study) %> : <%= @workflow.name %></h1>
+<h1><%= link_to @study.name, study_path(@study) %></h1>
 <div class='subtitle'>
-  Switch to
-  <% @workflows.each do |workflow| -%>
-    <% if workflow != @workflow -%>
-      : <%= link_to workflow.name, study_workflow_path(@study, workflow) %>
-    <% end -%>
-  <% end -%>
-  <br />
   Study <%= @study.id %> &middot; Created on <%= @study.created_at.to_formatted_s(:long) %> &middot; <%= @study.state.capitalize %> <br />
-  Overall progress: <%= raw(progress_bar(@study.completed(@workflow))) %>
+  Overall progress: <%= raw(progress_bar(@study.completed)) %>
 </div>
 
 <div class="content">
@@ -89,7 +82,7 @@
       <% else -%>
         <% if (! @submissions.empty?) || (@study.requests.count > 0) -%>
           <%= render partial: "submission_warning" %>
-          <%= render partial: "study_summary" %>
+          <%= render partial: "study_summary", locals: { request_types: @standard_request_types } %>
           <br />
           <%= render partial: "items", locals: {summary: @summary} %>
         <% else -%>
@@ -98,17 +91,12 @@
           <% else %>
             <%= display_user_guide(I18n.t('studies.status.not_active')) %>
           <% end %>
-          <% @workflows.each do |workflow| -%>
-            <% if workflow != @workflow %>
-              <%= display_user_guide("Or maybe you want to view #{link_to workflow.name, study_workflow_path(@study, workflow) }")%>
-            <% end -%>
-          <% end -%>
         <% end -%>
       <% end -%>
     <% end %>
   <% else %>
     <%= render partial: "submission_warning" %>
-    <%= render partial: "study_summary" %>
+    <%= render partial: "study_summary", locals: { request_types: @standard_request_types } %>
     <br />
     <%= render partial: "items", locals: {summary: @summary} %>
   <% end -%>

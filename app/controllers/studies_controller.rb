@@ -86,14 +86,7 @@ class StudiesController < ApplicationController
     @study = Study.find(params[:id])
     flash.keep
     respond_to do |format|
-      format.html do
-        if current_user.workflow.nil?
-          flash[:notice] = 'Your profile is incomplete. Please select a workflow.'
-          redirect_to edit_profile_path(current_user)
-        else
-          redirect_to study_workflow_path(@study, current_user.workflow)
-        end
-      end
+      format.html { redirect_to study_information_path(@study) }
       format.xml { render layout: false }
       format.json { render json: @study.to_json }
     end
@@ -220,7 +213,7 @@ class StudiesController < ApplicationController
       current_user.has_role 'follower', @study
       flash[:notice] = "You are now following the '#{@study.name}' study."
     end
-    redirect_to study_workflow_path(@study, current_user.workflow)
+    redirect_to study_information_path(@study)
   end
 
   def close

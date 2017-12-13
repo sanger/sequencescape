@@ -17,32 +17,10 @@ ProductLine.create(name: 'Illumina-B')
 ProductLine.create(name: 'Illumina-C')
 ProductLine.create(name: 'Illumina-HTP')
 
-##################################################################################################################
-# Submission workflows and their associated pipelines.
-##################################################################################################################
-# There is a common pattern to create a Submission::Workflow and it's supporting entities.  You can pretty much copy
-# this structure and replace the appropriate values:
-#
-#   submission_workflow = Submission::Workflow.create! do |workflow|
-#     # Update workflow attributes here
-#   end
-#   Workflow.create!(:name => XXXX) do |workflow|
-#     workflow.pipeline = PipelineClass.create!(:name => XXXX) do |pipeline|
-#       # Set the Pipeline attributes here
-#
-#       pipeline.location = Location.where(:name => YYYY).first or raise StandardError, "Cannot find 'YYYY' location'
-#       pipeline.request_types << RequestType.create!(:workflow => submission_workflow, :key => xxxx, :name => XXXX) do |request_type|
-#         # Set the RequestType attributes here
-#       end
-#     end
-#   end.tap do |workflow|
-#     # Setup tasks for your Workflow here
-#   end
-#
-# That should be enough for you to work out what you need to do.
-
 # Utility method for getting a sequence of Pipeline instances to flow properly.  Call with a Hash mapping the
 # flow from left to right, if you get what I mean!
+# This is pretty much legacy behaviour now. I wouldn't worry too much about this for any new pipelines.
+# Besides, whey are you adding new pipelines to Sequencescape, this interface is incredibly clunky.
 def set_pipeline_flow_to(sequence)
   sequence.each do |current_name, next_name|
     current_pipeline, next_pipeline = [current_name, next_name].map { |name| Pipeline.find_by(name: name) or raise "Cannot find pipeline '#{name}'" }
@@ -81,11 +59,6 @@ end
 ##################################################################################################################
 # Next-gen sequencing
 ##################################################################################################################
-next_gen_sequencing = Submission::Workflow.create! do |workflow|
-  workflow.key        = 'short_read_sequencing'
-  workflow.name       = 'Next-gen sequencing'
-  workflow.item_label = 'library'
-end
 
 LibraryCreationPipeline.create!(name: 'Illumina-C Library preparation') do |pipeline|
   pipeline.asset_type = 'LibraryTube'
@@ -93,15 +66,14 @@ LibraryCreationPipeline.create!(name: 'Illumina-C Library preparation') do |pipe
   pipeline.automated  = false
   pipeline.active     = true
 
-  pipeline.request_types << RequestType.create!(workflow: next_gen_sequencing, key: 'library_creation', name: 'Library creation',
-                                                deprecated: true) do |request_type|
+  pipeline.request_types << RequestType.create!(key: 'library_creation', name: 'Library creation', deprecated: true) do |request_type|
     request_type.billable           = true
     request_type.initial_state      = 'pending'
     request_type.asset_type         = 'SampleTube'
     request_type.order              = 1
     request_type.multiples_allowed  = false
     request_type.request_class_name = LibraryCreationRequest.name
-  end << RequestType.create!(workflow: next_gen_sequencing, key: 'illumina_c_library_creation', name: 'Illumina-C Library creation',
+  end << RequestType.create!(key: 'illumina_c_library_creation', name: 'Illumina-C Library creation',
                              product_line: ProductLine.find_by(name: 'Illumina-C')) do |request_type|
            request_type.billable = true
            request_type.initial_state      = 'pending'
@@ -137,7 +109,6 @@ MultiplexedLibraryCreationPipeline.create!(name: 'Illumina-B MX Library Preparat
   pipeline.multiplexed         = true
 
   pipeline.request_types << RequestType.create!(
-    workflow: next_gen_sequencing,
     key: 'multiplexed_library_creation',
     name: 'Multiplexed library creation'
   ) do |request_type|
@@ -151,7 +122,6 @@ MultiplexedLibraryCreationPipeline.create!(name: 'Illumina-B MX Library Preparat
   end
 
   pipeline.request_types << RequestType.create!(
-    workflow: Submission::Workflow.find_by(key: 'short_read_sequencing'),
     key: 'illumina_b_multiplexed_library_creation',
     name: 'Illumina-B Multiplexed Library Creation',
     product_line: ProductLine.find_by(name: 'Illumina-B'),
@@ -193,7 +163,6 @@ MultiplexedLibraryCreationPipeline.create!(name: 'Illumina-C MX Library Preparat
   pipeline.group_name  = 'Library creation'
 
   pipeline.request_types << RequestType.create!(
-    workflow: Submission::Workflow.find_by(key: 'short_read_sequencing'),
     key: 'illumina_c_multiplexed_library_creation',
     name: 'Illumina-C Multiplexed Library Creation',
     product_line: ProductLine.find_by(name: 'Illumina-C')
@@ -241,7 +210,7 @@ PulldownLibraryCreationPipeline.create!(name: 'Pulldown library preparation') do
   pipeline.automated  = false
   pipeline.active     = true
 
-  pipeline.request_types << RequestType.create!(workflow: next_gen_sequencing, key: 'pulldown_library_creation', name: 'Pulldown library creation') do |request_type|
+  pipeline.request_types << RequestType.create!(key: 'pulldown_library_creation', name: 'Pulldown library creation') do |request_type|
     request_type.billable          = true
     request_type.initial_state     = 'pending'
     request_type.asset_type        = 'SampleTube'
@@ -268,7 +237,6 @@ end
 
 cluster_formation_se_request_type = ['a', 'b', 'c'].map do |pl|
   RequestType.create!(
-    workflow: next_gen_sequencing,
     key: "illumina_#{pl}_single_ended_sequencing",
     name: "Illumina-#{pl.upcase} Single ended sequencing",
     product_line: ProductLine.find_by(name: "Illumina-#{pl.upcase}")
@@ -281,7 +249,6 @@ cluster_formation_se_request_type = ['a', 'b', 'c'].map do |pl|
     request_type.request_class = SequencingRequest
   end
 end << RequestType.create!(
-  workflow: next_gen_sequencing,
   key: 'single_ended_sequencing',
   name: 'Single ended sequencing',
   deprecated: true
@@ -375,7 +342,7 @@ end.tap do |pipeline|
 end
 
 single_ended_hi_seq_sequencing = ['a', 'b', 'c'].map do |pl|
-  RequestType.create!(workflow: next_gen_sequencing, key: "illumina_#{pl}_single_ended_hi_seq_sequencing", name: "Illumina-#{pl.upcase} Single ended hi seq sequencing", product_line: ProductLine.find_by(name: "Illumina-#{pl.upcase}")) do |request_type|
+  RequestType.create!(key: "illumina_#{pl}_single_ended_hi_seq_sequencing", name: "Illumina-#{pl.upcase} Single ended hi seq sequencing", product_line: ProductLine.find_by(name: "Illumina-#{pl.upcase}")) do |request_type|
     request_type.billable          = true
     request_type.initial_state     = 'pending'
     request_type.asset_type        = 'LibraryTube'
@@ -384,7 +351,6 @@ single_ended_hi_seq_sequencing = ['a', 'b', 'c'].map do |pl|
     request_type.request_class = HiSeqSequencingRequest
   end
 end << RequestType.create!(
-  workflow: next_gen_sequencing,
   key: 'single_ended_hi_seq_sequencing',
   name: 'Single ended hi seq sequencing',
   deprecated: true
@@ -450,7 +416,7 @@ end.tap do |pipeline|
 end
 
 cluster_formation_pe_request_types = ['a', 'b', 'c'].map do |pl|
-  RequestType.create!(workflow: next_gen_sequencing, key: "illumina_#{pl}_paired_end_sequencing", name: "Illumina-#{pl.upcase} Paired end sequencing", product_line: ProductLine.find_by(name: "Illumina-#{pl.upcase}")) do |request_type|
+  RequestType.create!(key: "illumina_#{pl}_paired_end_sequencing", name: "Illumina-#{pl.upcase} Paired end sequencing", product_line: ProductLine.find_by(name: "Illumina-#{pl.upcase}")) do |request_type|
     request_type.billable          = true
     request_type.initial_state     = 'pending'
     request_type.asset_type        = 'LibraryTube'
@@ -459,7 +425,6 @@ cluster_formation_pe_request_types = ['a', 'b', 'c'].map do |pl|
     request_type.request_class = SequencingRequest
   end
 end << RequestType.create!(
-  workflow: next_gen_sequencing,
   key: 'paired_end_sequencing',
   name: 'Paired end sequencing',
   deprecated: true
@@ -476,7 +441,7 @@ hiseq_2500_request_types = ['a', 'b', 'c'].map do |pl|
   RequestType.create!(
     key: "illumina_#{pl}_hiseq_2500_paired_end_sequencing",
     name: "Illumina-#{pl.upcase} HiSeq 2500 Paired end sequencing",
-    workflow: Submission::Workflow.find_by(key: 'short_read_sequencing'),
+
     asset_type: 'LibraryTube',
     order: 2,
     initial_state: 'pending',
@@ -490,7 +455,7 @@ hiseq_2500_se_request_types = ['a', 'b', 'c'].map do |pl|
   RequestType.create!(
     key: "illumina_#{pl}_hiseq_2500_single_end_sequencing",
     name: "Illumina-#{pl.upcase} HiSeq 2500 Single end sequencing",
-    workflow: Submission::Workflow.find_by(key: 'short_read_sequencing'),
+
     asset_type: 'LibraryTube',
     order: 2,
     initial_state: 'pending',
@@ -699,7 +664,7 @@ SequencingPipeline.create!(name: 'HiSeq Cluster formation PE (no controls)') do 
   pipeline.group_by_parent = false
 
   ['a', 'b', 'c'].each do |pl|
-    pipeline.request_types << RequestType.create!(workflow: next_gen_sequencing, key: "illumina_#{pl}_hiseq_paired_end_sequencing", name: "Illumina-#{pl.upcase} HiSeq Paired end sequencing", product_line: ProductLine.find_by(name: "Illumina-#{pl.upcase}")) do |request_type|
+    pipeline.request_types << RequestType.create!(key: "illumina_#{pl}_hiseq_paired_end_sequencing", name: "Illumina-#{pl.upcase} HiSeq Paired end sequencing", product_line: ProductLine.find_by(name: "Illumina-#{pl.upcase}")) do |request_type|
       request_type.billable          = true
       request_type.initial_state     = 'pending'
       request_type.asset_type        = 'LibraryTube'
@@ -709,7 +674,6 @@ SequencingPipeline.create!(name: 'HiSeq Cluster formation PE (no controls)') do 
     end
   end
   pipeline.request_types << RequestType.create!(
-    workflow: next_gen_sequencing,
     key: 'hiseq_paired_end_sequencing',
     name: 'HiSeq Paired end sequencing',
     deprecated: true
@@ -745,11 +709,6 @@ end
 ##################################################################################################################
 # Microarray genotyping
 ##################################################################################################################
-microarray_genotyping = Submission::Workflow.create! do |workflow|
-  workflow.key        = 'microarray_genotyping'
-  workflow.name       = 'Microarray genotyping'
-  workflow.item_label = 'Run'
-end
 
 CherrypickPipeline.create!(name: 'Cherrypick') do |pipeline|
   pipeline.asset_type          = 'Well'
@@ -758,7 +717,7 @@ CherrypickPipeline.create!(name: 'Cherrypick') do |pipeline|
   pipeline.active              = true
   pipeline.group_by_parent     = true
 
-  pipeline.request_types << RequestType.create!(workflow: microarray_genotyping, key: 'cherrypick', name: 'Cherrypick') do |request_type|
+  pipeline.request_types << RequestType.create!(key: 'cherrypick', name: 'Cherrypick') do |request_type|
     request_type.initial_state     = 'pending'
     request_type.target_asset_type = 'Well'
     request_type.asset_type        = 'Well'
@@ -795,11 +754,11 @@ CherrypickForPulldownPipeline.create!(name: 'Cherrypicking for Pulldown') do |pi
     request_type.for_multiplexing  = false
   end
 
-  pipeline.request_types << RequestType.create!(workflow: next_gen_sequencing, key: 'cherrypick_for_pulldown', name: 'Cherrypicking for Pulldown',  &cherrypicking_attributes)
+  pipeline.request_types << RequestType.create!(key: 'cherrypick_for_pulldown', name: 'Cherrypicking for Pulldown',  &cherrypicking_attributes)
 
-  pipeline.request_types << RequestType.create!(workflow: next_gen_sequencing, key: 'cherrypick_for_illumina',   name: 'Cherrypick for Illumina',   &cherrypicking_attributes)
-  pipeline.request_types << RequestType.create!(workflow: next_gen_sequencing, key: 'cherrypick_for_illumina_b', name: 'Cherrypick for Illumina-B', &cherrypicking_attributes)
-  pipeline.request_types << RequestType.create!(workflow: next_gen_sequencing, key: 'cherrypick_for_illumina_c', name: 'Cherrypick for Illumina-C', &cherrypicking_attributes)
+  pipeline.request_types << RequestType.create!(key: 'cherrypick_for_illumina',   name: 'Cherrypick for Illumina',   &cherrypicking_attributes)
+  pipeline.request_types << RequestType.create!(key: 'cherrypick_for_illumina_b', name: 'Cherrypick for Illumina-B', &cherrypicking_attributes)
+  pipeline.request_types << RequestType.create!(key: 'cherrypick_for_illumina_c', name: 'Cherrypick for Illumina-C', &cherrypicking_attributes)
 
   pipeline.workflow = Workflow.create!(name: 'Cherrypicking for Pulldown').tap do |workflow|
     # NOTE[xxx]: Note that the order here, and 'Set Location' being interactive, do not mimic the behaviour of production
@@ -817,7 +776,7 @@ DnaQcPipeline.create!(name: 'DNA QC') do |pipeline|
   pipeline.active              = true
   pipeline.group_by_parent     = true
 
-  pipeline.request_types << RequestType.create!(workflow: microarray_genotyping, key: 'dna_qc', name: 'DNA QC', no_target_asset: true) do |request_type|
+  pipeline.request_types << RequestType.create!(key: 'dna_qc', name: 'DNA QC', no_target_asset: true) do |request_type|
     request_type.initial_state     = 'pending'
     request_type.asset_type        = 'Well'
     request_type.order             = 1
@@ -840,7 +799,7 @@ GenotypingPipeline.create!(name: 'Genotyping') do |pipeline|
   pipeline.active = true
   pipeline.group_by_parent = true
 
-  pipeline.request_types << RequestType.create!(workflow: microarray_genotyping, key: 'genotyping', name: 'Genotyping') do |request_type|
+  pipeline.request_types << RequestType.create!(key: 'genotyping', name: 'Genotyping') do |request_type|
     request_type.initial_state     = 'pending'
     request_type.asset_type        = 'Well'
     request_type.order             = 3
@@ -866,7 +825,7 @@ PulldownMultiplexLibraryPreparationPipeline.create!(name: 'Pulldown Multiplex Li
   pipeline.group_by_parent      = true
   pipeline.max_size             = 96
 
-  pipeline.request_types << RequestType.create!(workflow: next_gen_sequencing, key: 'pulldown_multiplexing', name: 'Pulldown Multiplex Library Preparation') do |request_type|
+  pipeline.request_types << RequestType.create!(key: 'pulldown_multiplexing', name: 'Pulldown Multiplex Library Preparation') do |request_type|
     request_type.billable          = true
     request_type.asset_type        = 'Well'
     request_type.target_asset_type = 'PulldownMultiplexedLibraryTube'
@@ -896,7 +855,7 @@ PacBioSamplePrepPipeline.create!(name: 'PacBio Library Prep') do |pipeline|
   pipeline.asset_type           = 'PacBioLibraryTube'
   pipeline.group_by_parent      = true
 
-  pipeline.request_types << RequestType.create!(workflow: next_gen_sequencing, key: 'pacbio_sample_prep', name: 'PacBio Library Prep') do |request_type|
+  pipeline.request_types << RequestType.create!(key: 'pacbio_sample_prep', name: 'PacBio Library Prep') do |request_type|
     request_type.initial_state     = 'pending'
     request_type.asset_type        = 'Well'
     request_type.order             = 1
@@ -925,7 +884,7 @@ PacBioSequencingPipeline.create!(name: 'PacBio Sequencing') do |pipeline|
 
   pipeline.group_by_parent = false
 
-  pipeline.request_types << RequestType.create!(workflow: next_gen_sequencing, key: 'pacbio_sequencing', name: 'PacBio Sequencing') do |request_type|
+  pipeline.request_types << RequestType.create!(key: 'pacbio_sequencing', name: 'PacBio Sequencing') do |request_type|
     request_type.initial_state     = 'pending'
     request_type.asset_type        = 'PacBioLibraryTube'
     request_type.order             = 1
@@ -988,7 +947,7 @@ set_pipeline_flow_to('PacBio Library Prep' => 'PacBio Sequencing')
       pipeline.asset_type         = 'LibraryTube'
       pipeline.externally_managed = true
 
-      pipeline.request_types << RequestType.create!(workflow: next_gen_sequencing, name: pipeline_name) do |request_type|
+      pipeline.request_types << RequestType.create!(name: pipeline_name) do |request_type|
         request_type.billable          = true
         request_type.key               = pipeline_name.downcase.underscore.gsub(/\s+/, '_')
         request_type.initial_state     = 'pending'
@@ -1011,7 +970,7 @@ SequencingPipeline.create!(name: 'MiSeq sequencing') do |pipeline|
   pipeline.automated  = false
   pipeline.active     = true
 
-  pipeline.request_types << RequestType.create!(workflow: next_gen_sequencing, key: 'miseq_sequencing', name: 'MiSeq sequencing') do |request_type|
+  pipeline.request_types << RequestType.create!(key: 'miseq_sequencing', name: 'MiSeq sequencing') do |request_type|
     request_type.initial_state     = 'pending'
     request_type.asset_type        = 'LibraryTube'
     request_type.order             = 1
@@ -1020,7 +979,7 @@ SequencingPipeline.create!(name: 'MiSeq sequencing') do |pipeline|
   end
 
   ['a', 'b', 'c'].each do |pl|
-    pipeline.request_types << RequestType.create!(workflow: next_gen_sequencing, key: "illumina_#{pl}_miseq_sequencing", name: "Illumina-#{pl.upcase} MiSeq sequencing") do |request_type|
+    pipeline.request_types << RequestType.create!(key: "illumina_#{pl}_miseq_sequencing", name: "Illumina-#{pl.upcase} MiSeq sequencing") do |request_type|
       request_type.initial_state     = 'pending'
       request_type.asset_type        = 'LibraryTube'
       request_type.order             = 1
@@ -1049,7 +1008,6 @@ end
 cprt = RequestType.create!(
   key: 'illumina_c_cherrypick',
   name: 'Illumina-C Cherrypick',
-  workflow_id: Submission::Workflow.find_by(key: 'short_read_sequencing').id,
   asset_type: 'Well',
   order: 2,
   initial_state: 'pending',
@@ -1084,7 +1042,6 @@ end
 ## Fluidigm Stuff
 
 shared_options = {
-  workflow: Submission::Workflow.find_by(name: 'Microarray genotyping'),
   asset_type: 'Well',
   target_asset_type: 'Well',
   initial_state: 'pending'
@@ -1108,14 +1065,15 @@ RequestType.create!(shared_options.merge(key: 'pick_to_fluidigm',
                                          request_class_name: 'CherrypickForFluidigmRequest')).tap do |rt|
   rt.acceptable_plate_purposes << Purpose.find_by!(name: 'STA2')
 end
-RequestType.create!(workflow: Submission::Workflow.find_by(name: 'Microarray genotyping'),
-                    asset_type: 'Well',
-                    target_asset_type: 'Well',
-                    initial_state: 'pending',
-                    key: 'pick_to_snp_type',
-                    name: 'Pick to SNP Type',
-                    order: 3,
-                    request_class_name: 'CherrypickForPulldownRequest').tap do |rt|
+RequestType.create!(
+  asset_type: 'Well',
+  target_asset_type: 'Well',
+  initial_state: 'pending',
+  key: 'pick_to_snp_type',
+  name: 'Pick to SNP Type',
+  order: 3,
+  request_class_name: 'CherrypickForPulldownRequest'
+).tap do |rt|
   rt.acceptable_plate_purposes << Purpose.find_by!(name: 'SNP Type')
 end
 
@@ -1160,7 +1118,7 @@ tofluidigm = RequestType.find_by(key: 'pick_to_fluidigm').id
 v4_requests_types_pe = ['a', 'b', 'c'].map do |pipeline|
   RequestType.create!(key: "illumina_#{pipeline}_hiseq_v4_paired_end_sequencing",
                       name: "Illumina-#{pipeline.upcase} HiSeq V4 Paired end sequencing",
-                      workflow: Submission::Workflow.find_by(key: 'short_read_sequencing'),
+
                       asset_type: 'LibraryTube',
                       order: 2,
                       initial_state: 'pending',
@@ -1172,7 +1130,7 @@ end
 v4_requests_types_se = [
   RequestType.create!(key: 'illumina_c_hiseq_v4_single_end_sequencing',
                       name: 'Illumina-C HiSeq V4 Single end sequencing',
-                      workflow: Submission::Workflow.find_by(key: 'short_read_sequencing'),
+
                       asset_type: 'LibraryTube',
                       order: 2,
                       initial_state: 'pending',
@@ -1184,7 +1142,7 @@ v4_requests_types_se = [
 x10_requests_types = ['a', 'b'].map do |pipeline|
   RequestType.create!(key: "illumina_#{pipeline}_hiseq_x_paired_end_sequencing",
                       name: "Illumina-#{pipeline.upcase} HiSeq X Paired end sequencing",
-                      workflow: Submission::Workflow.find_by(key: 'short_read_sequencing'),
+
                       asset_type: 'LibraryTube',
                       order: 2,
                       initial_state: 'pending',
@@ -1193,7 +1151,7 @@ x10_requests_types = ['a', 'b'].map do |pipeline|
                       product_line: ProductLine.find_by(name: "Illumina-#{pipeline.upcase}"))
 end << RequestType.create!(key: 'bespoke_hiseq_x_paired_end_sequencing',
                            name: 'Bespoke HiSeq X Paired end sequencing',
-                           workflow: Submission::Workflow.find_by(key: 'short_read_sequencing'),
+
                            asset_type: 'LibraryTube',
                            order: 2,
                            initial_state: 'pending',
@@ -1203,7 +1161,7 @@ end << RequestType.create!(key: 'bespoke_hiseq_x_paired_end_sequencing',
 
 st_x10 = [RequestType.create!(key: 'hiseq_x_paired_end_sequencing',
                               name: 'HiSeq X Paired end sequencing',
-                              workflow: Submission::Workflow.find_by(key: 'short_read_sequencing'),
+
                               asset_type: 'Well',
                               order: 2,
                               initial_state: 'pending',
@@ -1350,7 +1308,7 @@ end
 ['htp', 'c'].each do |pipeline|
   RequestType.create!(key: "illumina_#{pipeline}_hiseq_4000_paired_end_sequencing",
                       name: "Illumina-#{pipeline.upcase} HiSeq 4000 Paired end sequencing",
-                      workflow: Submission::Workflow.find_by(key: 'short_read_sequencing'),
+
                       asset_type: 'LibraryTube',
                       order: 2,
                       initial_state: 'pending',
@@ -1362,7 +1320,7 @@ end
   end
   RequestType.create!(key: "illumina_#{pipeline}_hiseq_4000_single_end_sequencing",
                       name: "Illumina-#{pipeline.upcase} HiSeq 4000 Single end sequencing",
-                      workflow: Submission::Workflow.find_by(key: 'short_read_sequencing'),
+
                       asset_type: 'LibraryTube',
                       order: 2,
                       initial_state: 'pending',
