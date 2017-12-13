@@ -199,9 +199,6 @@ class Request < ApplicationRecord
   scope :with_target, -> { where('target_asset_id is not null and (target_asset_id <> asset_id)') }
   scope :join_asset,  -> { joins(:asset) }
   scope :with_asset_location, -> { includes(asset: :map) }
-
-  scope :siblings_of, ->(request) { where(asset_id: request.asset_id).where.not(id: request.id) }
-
   # Asset are Locatable (or at least some of them)
   belongs_to :location_association, primary_key: :locatable_id, foreign_key: :asset_id
   scope :located, ->(location_id) { joins(:location_association).where(['location_associations.location_id = ?', location_id]).readonly(false) }

@@ -10,9 +10,9 @@ class Transfer < ApplicationRecord
       base.class_eval do
         include Transfer::State
 
-        has_many :transfers_as_source,      ->() { order('created_at ASC') }, class_name: 'Transfer', foreign_key: :source_id
-        has_many :transfers_to_tubes,       ->() { order('created_at ASC') }, class_name: 'Transfer::BetweenPlateAndTubes', foreign_key: :source_id
-        has_many :transfers_as_destination, ->() { order('id ASC') },         class_name: 'Transfer', foreign_key: :destination_id
+        has_many :transfers_as_source,      ->() { order(created_at: :asc) }, class_name: 'Transfer', foreign_key: :source_id
+        has_many :transfers_to_tubes,       ->() { order(created_at: :asc) }, class_name: 'Transfer::BetweenPlateAndTubes', foreign_key: :source_id
+        has_many :transfers_as_destination, ->() { order(id: :asc) },         class_name: 'Transfer', foreign_key: :destination_id
 
         # This looks odd but it's a LEFT OUTER JOIN, meaning that the rows we would be interested in have no source_id.
         scope :with_no_outgoing_transfers, -> {
@@ -22,7 +22,7 @@ class Transfer < ApplicationRecord
         }
 
         scope :including_used_plates?, ->(filter) {
-          filter ? where('true') : with_no_outgoing_transfers
+          filter ? all : with_no_outgoing_transfers
         }
       end
     end
@@ -183,7 +183,7 @@ class Transfer < ApplicationRecord
     # Note: submission is optional. Unlike methods, blocks don't support default argument
     # values, but any attributes not yielded will be nil. Apparently 1.9 is more consistent
     each_transfer do |source, destination, submission|
-      request_type_between(source, destination).create!(
+      transfer_request_class_between(source, destination).create!(
         asset: source,
         target_asset: destination,
         submission_id: submission || source.pool_id

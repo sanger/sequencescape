@@ -20,10 +20,6 @@ class TransferRequestCollection < ApplicationRecord
   belongs_to :user, required: true
   accepts_nested_attributes_for :transfer_requests
 
-  def default_request_type
-    @default_request_type ||= RequestType.transfer
-  end
-
   # These are optimizations to reduce the number of queries that need to be
   # performed while the transfer takes place.
   # Transfer requests rely both on the aliquots in an assets, and the transfer rquests
@@ -34,7 +30,7 @@ class TransferRequestCollection < ApplicationRecord
     asset_cache = Asset.includes(:aliquots, :transfer_requests).find(asset_ids).index_by(&:id)
     optimized_parameters = args.map do |param|
       param.stringify_keys!
-      param['request_type'] ||= default_request_type unless param['request_type_id']
+      param['request_class_name'] ||= :standard
       param['asset'] ||= asset_cache[param['asset_id']]
       param['target_asset'] ||= asset_cache[param['target_asset_id']]
       param

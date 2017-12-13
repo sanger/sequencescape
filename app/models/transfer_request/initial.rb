@@ -9,7 +9,7 @@
 # subsequent aliquots, according to the library creation request.
 # Ensures that plates picked under a different study get assigned to
 # the correct study/project when work starts.
-class TransferRequest::InitialTransfer < TransferRequest
+class TransferRequest::Initial < TransferRequest
   module Behaviour
     def perform_transfer_of_contents
       target_asset.aliquots << asset.aliquots.map do |a|

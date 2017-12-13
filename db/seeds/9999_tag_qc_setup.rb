@@ -27,11 +27,11 @@ ActiveRecord::Base.transaction do
   initial = Purpose.find_by(name: 'Tag Plate')
   purpose_order.inject(initial) do |parent, child_settings|
     child_settings.delete(:class).create(child_settings.merge(shared)).tap do |child|
-      parent.child_relationships.create!(child: child, transfer_request_type: RequestType.find_by(name: 'Transfer'))
+      parent.child_relationships.create!(child: child, transfer_request_class_name: :standard)
     end
   end
-  Purpose::Relationship.create!(parent: Purpose.find_by(name: 'Reporter Plate'), child: Purpose.find_by(name: 'Tag PCR'), transfer_request_type: RequestType.transfer)
-  Purpose::Relationship.create!(parent: Purpose.find_by(name: 'Pre Stamped Tag Plate'), child: Purpose.find_by(name: 'Tag PCR'), transfer_request_type: RequestType.transfer)
+  Purpose::Relationship.create!(parent: Purpose.find_by(name: 'Reporter Plate'), child: Purpose.find_by(name: 'Tag PCR'), transfer_request_class_name: :standard)
+  Purpose::Relationship.create!(parent: Purpose.find_by(name: 'Pre Stamped Tag Plate'), child: Purpose.find_by(name: 'Tag PCR'), transfer_request_class_name: :standard)
 end
 
 mi_seq_freezer = Location.find_by(name: 'MiSeq freezer')

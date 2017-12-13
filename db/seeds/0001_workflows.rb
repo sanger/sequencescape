@@ -1016,15 +1016,6 @@ end.tap do |pipeline|
   create_request_information_types(pipeline, 'sequencing_type', 'insert_size')
 end
 
-RequestType.create!(
-  key: 'initial_pacbio_transfer',
-  name: 'Initial Pacbio Transfer',
-  asset_type: 'Well',
-  request_class_name: 'PacBioSamplePrepRequest::Initial',
-  order: 1,
-  target_purpose: Purpose.find_by(name: 'PacBio Sheared')
-)
-
 set_pipeline_flow_to('PacBio Library Prep' => 'PacBio Sequencing')
 
 # Pulldown pipelines

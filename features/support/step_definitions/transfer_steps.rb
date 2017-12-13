@@ -60,7 +60,7 @@ end
 
 Given /^a destination transfer plate called "([^\"]+)" exists as a child of "([^\"]+)"$/ do |name, parent|
   parent_plate = Plate.find_by(name: parent) or raise "Cannot find parent plate #{parent.inspect}"
-  AssetLink.create!(ancestor: parent_plate, descendant: FactoryGirl.create(:destination_transfer_plate, name: name))
+  AssetLink.create!(ancestor: parent_plate, descendant: FactoryGirl.create(:transfer_plate, name: name))
 end
 
 Given /^the "([^\"]+)" transfer template has been used between "([^\"]+)" and "([^\"]+)"$/ do |template_name, source_name, destination_name|

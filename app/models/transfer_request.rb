@@ -6,11 +6,22 @@
 
 # Every request "moving" an asset from somewhere to somewhere else without really transforming it
 # (chemically) as, cherrypicking, pooling, spreading on the floor etc
-class TransferRequest < SystemRequest
+class TransferRequest < ApplicationRecord
   include DefaultAttributes
+  include ModelExtensions::Request
+  include Uuid::Uuidable
+  include AASM
+  extend Request::Statemachine::ClassMethods
+
+  self.inheritance_column = 'sti_type'
 
   has_many :transfer_request_collection_transfer_requests
   has_many :transfer_request_collections, through: :transfer_request_collection_transfer_requests
+
+  belongs_to :order
+  belongs_to :submission
+
+  scope :for_request, ->(request) { where(asset_id: request.asset_id) }
 
   # Ensure that the source and the target assets are not the same, otherwise bad things will happen!
   validate :source_and_target_assets_are_different
@@ -24,7 +35,7 @@ class TransferRequest < SystemRequest
   ACTIVE_STATES = %w(pending started passed qc_complete).freeze
 
   # state machine
-  redefine_aasm column: :state, whiny_persistence: true do
+  aasm column: :state, whiny_persistence: true do
     # The statemachine for transfer requests is more promiscuous than normal requests, as well
     # as being more concise as it has fewer states.
     state :pending, initial: true
@@ -68,6 +79,10 @@ class TransferRequest < SystemRequest
     end
   end
 
+  def self.subclass(name)
+    TransferRequest.const_get(name.to_s.classify)
+  end
+
   # validation method
   def source_and_target_assets_are_different
     return true unless asset_id.present? && asset_id == target_asset_id
@@ -78,6 +93,10 @@ class TransferRequest < SystemRequest
 
   def remove_unused_assets
     # Don't remove assets for transfer requests as they are made on creation
+  end
+
+  def transition_to(target_state)
+    send("#{self.class.suggested_transition_between(state, target_state)}!")
   end
 
   def outer_request

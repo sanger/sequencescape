@@ -82,33 +82,33 @@ class RequestType < ApplicationRecord
                                  ])
                                }
 
-  # Helper method for generating a request constructor, like 'create!'
-  def self.request_constructor(name, options = {})
-    target        = options[:target] || :request_class
-    target_method = options[:method] || name
-
-    line = __LINE__ + 1
-    class_eval("
-      def #{name}(attributes = nil, &block)
-        raise RequestType::DeprecatedError if self.deprecated
-        attributes ||= {}
-        #{target}.#{target_method}(attributes.merge(request_parameters || {})) do |request|
-          request.request_type = self
-          request.request_purpose ||= self.request_purpose
-          yield(request) if block_given?
-        end.tap do |request|
-          request.billing_product = find_product_for_request(request)
-          requests << request
-        end
-      end
-    ", __FILE__, line)
+  def construct_request(construct_method, attributes, klass = request_class)
+    raise RequestType::DeprecatedError if deprecated?
+    # The check beneath is temporary and is intended to assist with the move to a
+    # separate TransferRequest class
+    # TODO: Remove this before merge to main branch
+    raise StandardError, "#{request_class_name} is not a Request" unless request_class <= Request
+    new_request = klass.public_send(construct_method, attributes) do |request|
+      request.request_type = self
+      request.request_purpose ||= request_purpose
+      yield(request) if block_given?
+    end
+    # Prevent us caching all our requests
+    requests.reset
+    new_request
   end
 
-  request_constructor(:create!)
-  request_constructor(:new)
-  alias_method(:new_request, :new)
+  def create!(attributes = {}, &block)
+    construct_request(:create!, attributes, &block)
+  end
 
-  request_constructor(:create_control!, target: 'ControlRequest', method: :create!)
+  def new(attributes = {}, &block)
+    construct_request(:new, attributes, &block)
+  end
+
+  def create_control!(attributes = {}, &block)
+    construct_request(:create!, attributes, ControlRequest, &block)
+  end
 
   def self.dna_qc
     find_by(key: 'dna_qc') or raise 'Cannot find dna_qc request type'

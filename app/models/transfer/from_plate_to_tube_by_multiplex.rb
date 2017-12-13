@@ -29,7 +29,7 @@ class Transfer::FromPlateToTubeByMultiplex < Transfer::BetweenPlateAndTubes
   # before_create :create_transfer_requests
   def create_transfer_requests
     each_transfer do |source, destination|
-      request_type_between(source, destination).create!(
+      transfer_request_class_between(source, destination).create!(
         asset: source,
         target_asset: destination,
         submission_id: destination.requests_as_target.first.submission_id

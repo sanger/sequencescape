@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171117110424) do
+ActiveRecord::Schema.define(version: 20171212104332) do
 
   create_table "aker_containers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "barcode"
@@ -876,7 +876,8 @@ ActiveRecord::Schema.define(version: 20171117110424) do
   create_table "plate_purpose_relationships", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.integer "parent_id"
     t.integer "child_id"
-    t.integer "transfer_request_type_id", null: false
+    t.integer "transfer_request_type_id"
+    t.integer "transfer_request_class_name", default: 0, null: false
   end
 
   create_table "plate_purposes", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -1779,6 +1780,42 @@ ActiveRecord::Schema.define(version: 20171117110424) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "fk_rails_e542f48171"
+  end
+
+  create_table "transfer_requests", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+    t.integer "initial_study_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer "user_id"
+    t.string "state", limit: 20, default: "pending"
+    t.integer "sample_pool_id"
+    t.integer "workflow_id"
+    t.integer "request_type_id"
+    t.integer "item_id"
+    t.integer "asset_id"
+    t.integer "target_asset_id"
+    t.integer "pipeline_id"
+    t.integer "submission_id"
+    t.boolean "charge"
+    t.integer "initial_project_id"
+    t.integer "priority", default: 0
+    t.string "sti_type"
+    t.integer "order_id"
+    t.integer "request_purpose_id"
+    t.bigint "work_order_id"
+    t.integer "billing_product_id"
+    t.index ["asset_id"], name: "index_requests_on_asset_id"
+    t.index ["billing_product_id"], name: "index_requests_on_billing_product_id"
+    t.index ["initial_project_id"], name: "index_requests_on_project_id"
+    t.index ["initial_study_id", "request_type_id", "state"], name: "index_requests_on_project_id_and_request_type_id_and_state"
+    t.index ["initial_study_id"], name: "index_request_on_project_id"
+    t.index ["item_id"], name: "index_request_on_item_id"
+    t.index ["request_type_id", "state"], name: "request_type_id_state_index"
+    t.index ["state", "request_type_id", "initial_study_id"], name: "request_project_index"
+    t.index ["submission_id"], name: "index_requests_on_submission_id"
+    t.index ["target_asset_id"], name: "index_requests_on_target_asset_id"
+    t.index ["updated_at"], name: "index_requests_on_updated_at"
+    t.index ["work_order_id"], name: "index_requests_on_work_order_id"
   end
 
   create_table "transfer_templates", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|

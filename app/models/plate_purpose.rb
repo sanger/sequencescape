@@ -23,8 +23,8 @@ class PlatePurpose < Purpose
     end
 
     # Delegate the transfer request type determination to our plate purpose
-    def transfer_request_type_from(source)
-      purpose.transfer_request_type_from(source.plate_purpose)
+    def transfer_request_class_from(source)
+      purpose.transfer_request_class_from(source.plate_purpose)
     end
   end
 
@@ -119,8 +119,11 @@ class PlatePurpose < Purpose
 
   module Overrideable
     def transition_state_requests(wells, state)
-      wells = wells.includes(requests_as_target: { asset: :aliquots, target_asset: :aliquots })
-      wells.each { |w| w.requests_as_target.each { |r| r.transition_to(state) } }
+      wells = wells.includes(requests_as_target: { asset: :aliquots, target_asset: :aliquots }, transfer_requests_as_target: { asset: :aliquots, target_asset: :aliquots })
+      wells.each do |w|
+        w.requests_as_target.each { |r| r.transition_to(state) }
+        w.transfer_requests_as_target.each { |r| r.transition_to(state) }
+      end
     end
     private :transition_state_requests
 
@@ -154,7 +157,7 @@ class PlatePurpose < Purpose
       parameters.concat(args)
     end
     raise 'Apparently there are not requests on these wells?' if conditions.empty?
-    Request.where_is_not_a?(TransferRequest).where(["(#{conditions.join(' OR ')})", *parameters]).map do |request|
+    Request.where(["(#{conditions.join(' OR ')})", *parameters]).map do |request|
       # This can probably be switched for an each, as I don't think the array is actually used for anything.
       request.request_metadata.update_attributes!(customer_accepts_responsibility: true) if customer_accepts_responsibility
       request.passed? ? request.retrospective_fail! : request.fail!

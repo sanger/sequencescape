@@ -98,13 +98,6 @@ FactoryGirl.define do
         request_type.extended_validators << create(:extended_validator)
       end
     end
-
-    factory :transfer_request_type do
-      request_class TransferRequest
-      name 'Transfer'
-      key 'transfer'
-      asset_type 'Asset'
-    end
   end
 
   factory :library_types_request_type do

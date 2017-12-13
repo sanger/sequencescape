@@ -123,8 +123,8 @@ class Transfer::BetweenPlateAndTubes < Transfer
   end
 
   # Request type is based on the destination tube from the source plate
-  def request_type_between(_, destination)
-    destination.transfer_request_type_from(source)
+  def transfer_request_class_between(_, destination)
+    destination.transfer_request_class_from(source)
   end
 
   def build_asset_links

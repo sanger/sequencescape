@@ -68,14 +68,14 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
 
         should 'create transfer requests between wells' do
           @source_plate.wells.each do |w|
-            assert_equal w.requests_as_source.where_is_a?(TransferRequest).last.target_asset, Plate.last.wells.located_at(w.map_description).first
+            assert_equal w.transfer_requests_as_source.last.target_asset, Plate.last.wells.located_at(w.map_description).first
           end
         end
 
         should 'create transfer to the Library tubes' do
           @batch.requests.each do |r|
             w = r.asset
-            assert_equal r.target_asset, Plate.order(:id).last.wells.located_at(w.map_description).first.requests.first.target_asset
+            assert_equal r.target_asset, Plate.order(:id).last.wells.located_at(w.map_description).first.transfer_requests_as_source.first.target_asset
           end
         end
       end
@@ -131,7 +131,7 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
       end
 
       should 'pass the transfer requests' do
-        assert_equal 'passed', @batch.requests.first.asset.requests.where_is_a?(TransferRequest).first.state
+        assert_equal 'passed', @batch.requests.first.asset.transfer_requests_as_source.first.state
       end
     end
   end
