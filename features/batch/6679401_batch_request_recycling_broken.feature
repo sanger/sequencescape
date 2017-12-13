@@ -16,8 +16,6 @@ Feature: Recycling requests in the Cherrypicking pipeline
     Given 1 pending delayed jobs are processed
 
 
-    And all assets for requests in the "Cherrypick" pipeline have been scanned into the lab
-
     Given I am on the "Cherrypick" pipeline page
     When I check "Include request 1"
     And I select "Create Batch" from the first "Action to perform"

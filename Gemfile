@@ -114,7 +114,6 @@ group :development do
   gem 'flog', require: false
   # Detect n+1 queries
   gem 'bullet'
-  gem 'pry'
   # Automatically generate documentation
   gem 'yard', require: false
   # Enforces coding styles and detects some bad practices
@@ -124,6 +123,10 @@ group :development do
   gem 'rack-mini-profiler'
   # find unused routes and controller actions by runnung `rake traceroute` from CL
   gem 'traceroute'
+end
+
+group :development, :test, :cucumber do
+  gem 'pry'
 end
 
 group :profile do
@@ -159,7 +162,6 @@ group :test, :cucumber do
   # - Patches rails to share a database connection between threads while Testing
   # - Pathes rspec to ensure capybara has done its stuff before killing the connection
   gem 'transactional_capybara'
-  gem 'pry'
 end
 
 group :cucumber do

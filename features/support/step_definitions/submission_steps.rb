@@ -4,14 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
-Given /^I have a plate in study "([^"]*)" with samples with known sanger_sample_ids$/ do |study_name|
-  study = Study.find_by(name: study_name)
-  plate = PlatePurpose.stock_plate_purpose.create!(true, barcode: '1234567', location: Location.find_by(name: 'Sample logistics freezer'))
-  1.upto(4) do |i|
-    Well.create!(plate: plate, map_id: i).aliquots.create!(sample: Sample.create!(name: "Sample_#{i}", sanger_sample_id: "ABC_#{i}"))
-  end
-end
-
 Given /^I have an empty submission$/ do
   FactoryGirl.create(:submission_without_order)
 end

@@ -12,9 +12,7 @@ Given(/^Pipeline "([^\"]*)" and a setup for submitted at$/) do |name|
   asset = FactoryGirl.create(asset_type)
   request = FactoryGirl.create :request_with_submission, request_type: request_type, asset: asset, request_metadata: metadata
   if request.asset.is_a?(Well)
-    request.asset.plate = FactoryGirl.create(:plate, location: pipeline.location) if request.asset.plate.nil?
-  else
-    request.asset.location = pipeline.location
+    request.asset.plate = FactoryGirl.create(:plate) if request.asset.plate.nil?
   end
 
   request.asset.save!

@@ -34,18 +34,15 @@ ActiveRecord::Base.transaction do
   Purpose::Relationship.create!(parent: Purpose.find_by(name: 'Pre Stamped Tag Plate'), child: Purpose.find_by(name: 'Tag PCR'), transfer_request_type: RequestType.transfer)
 end
 
-mi_seq_freezer = Location.find_by(name: 'MiSeq freezer')
 SequencingPipeline.create!(name: 'MiSeq sequencing QC') do |pipeline|
   pipeline.asset_type = 'Lane'
   pipeline.sorter     = 2
   pipeline.automated  = false
   pipeline.active     = true
 
-  pipeline.location = mi_seq_freezer
-
   pipeline.request_types << rt
 
-  pipeline.workflow = LabInterface::Workflow.create!(name: 'MiSeq sequencing QC') do |workflow|
+  pipeline.workflow = Workflow.create!(name: 'MiSeq sequencing QC') do |workflow|
     workflow.locale     = 'External'
     workflow.item_limit = 1
   end.tap do |workflow|

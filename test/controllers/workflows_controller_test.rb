@@ -40,12 +40,12 @@ class WorkflowsControllerTest < ActionController::TestCase
 
     context '#create_workflow' do
       setup do
-        @old_count = LabInterface::Workflow.count
+        @old_count = Workflow.count
         post :create, params: { :workflow => { name: 'Workflow 42', item_limit: 1, locale: 'Internal' }, 'commit' => 'Create' }
       end
 
       should '#create_workflow' do
-        assert_equal @old_count + 1, LabInterface::Workflow.count
+        assert_equal @old_count + 1, Workflow.count
         assert_redirected_to workflow_path(assigns(:workflow))
       end
 
@@ -56,7 +56,7 @@ class WorkflowsControllerTest < ActionController::TestCase
 
         context '#show_workflow' do
           setup do
-            get :show, params: { id: LabInterface::Workflow.first.id }
+            get :show, params: { id: Workflow.first.id }
           end
 
           should 'show workflow' do
@@ -66,7 +66,7 @@ class WorkflowsControllerTest < ActionController::TestCase
 
         context 'edit' do
           setup do
-            get :edit, params: { id: LabInterface::Workflow.first.id }
+            get :edit, params: { id: Workflow.first.id }
           end
 
           should 'render edit' do
@@ -76,7 +76,7 @@ class WorkflowsControllerTest < ActionController::TestCase
 
         context '#update_workflow' do
           setup do
-            put :update, params: { id: LabInterface::Workflow.first.id, workflow: {} }
+            put :update, params: { id: Workflow.first.id, workflow: {} }
           end
 
           should 'update the workflow' do
@@ -86,12 +86,12 @@ class WorkflowsControllerTest < ActionController::TestCase
 
         context '#destroy_workflow' do
           setup do
-            @old_count = LabInterface::Workflow.count
-            delete :destroy, params: { id: LabInterface::Workflow.first.id }
+            @old_count = Workflow.count
+            delete :destroy, params: { id: Workflow.first.id }
           end
 
           should 'not destroy a workflow' do
-            assert_equal @old_count, LabInterface::Workflow.count
+            assert_equal @old_count, Workflow.count
             assert_redirected_to workflows_path
           end
         end

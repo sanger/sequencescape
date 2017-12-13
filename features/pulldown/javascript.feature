@@ -174,7 +174,6 @@ Feature: Print barcodes for the cherrypicking for pulldown and pulldown multiple
     And I choose "Pick by ng/µl"
     And I select "WGS stock DNA" from "Plate Purpose"
     And I press "Next step"
-    And I press "Next step"
     When I press "Release this batch"
     When I follow "Print plate labels"
     Then I should see "99999"

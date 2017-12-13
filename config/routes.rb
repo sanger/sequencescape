@@ -400,7 +400,6 @@ Sequencescape::Application.routes.draw do
     end
   end
 
-  resources :locations
   resources :request_information_types
 
   match 'pipelines/assets/new/:id' => 'pipelines/assets#new', :via => 'get'

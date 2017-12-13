@@ -51,7 +51,6 @@ class LibPoolNormTubeGenerator
           end
 
           @asset_group = AssetGroup.create(assets: destination_tubes, study: study, name: "#{plate.sanger_human_barcode}_qc_completed_tubes")
-          Location.find_by(name: 'Cluster formation freezer').set_locations(destination_tubes)
         end
         true
       rescue => e

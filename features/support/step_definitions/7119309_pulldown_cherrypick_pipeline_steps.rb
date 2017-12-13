@@ -129,12 +129,6 @@ Then /^the default plates to wells table should look like:$/ do |expected_result
   expected_results_table.diff!(actual_table)
 end
 
-When /^I set (PacBioLibraryTube|Plate|Sample|Multiplexed Library|Library|Pulldown Multiplexed Library) "([^"]*)" to be in freezer "([^"]*)"$/ do |_asset_type, plate_barcode, freezer_name|
-  asset = Asset.find_from_machine_barcode(plate_barcode)
-  location = Location.find_by(name: freezer_name)
-  asset.update_attributes!(location: location)
-end
-
 Given(/^I have a pulldown batch$/) do
   step('plate "1234567" with 8 samples in study "Test study" has a "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing" submission')
   step('plate "222" with 8 samples in study "Study A" has a "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing" submission')

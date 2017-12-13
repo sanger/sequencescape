@@ -56,19 +56,17 @@ class PlatesController < ApplicationController
   end
 
   def to_sample_tubes
-    @locations = Location.all
     @barcode_printers = BarcodePrinter.all
     @studies = Study.alphabetical
   end
 
   def create_sample_tubes
-    location = Location.find(params[:plates][:destination_freezer])
     barcode_printer = BarcodePrinter.find(params[:plates][:barcode_printer])
     plates = Plate.plates_from_scanned_plates_and_typed_plate_ids(params[:plates][:source_plates])
     study = Study.find(params[:plates][:study])
 
     respond_to do |format|
-      if asset_group = Plate.create_sample_tubes_asset_group_and_print_barcodes(plates, barcode_printer, location, study)
+      if asset_group = Plate.create_sample_tubes_asset_group_and_print_barcodes(plates, barcode_printer, study)
         flash[:notice] = 'Created tubes and printed barcodes'
         # makes request properties partial show
         format.html { redirect_to(new_submission_path(study_id: asset_group.study.id)) }

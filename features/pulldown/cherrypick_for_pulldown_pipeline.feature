@@ -61,7 +61,6 @@ Feature: Cherrypicking for Pulldown pipeline
    And I select "WGS stock DNA" from "Plate Purpose"
    And I fill in "nano_grams_per_micro_litre_concentration_required" with "50"
    And I press "Next step"
-   And I press "Next step"
    When I press "Release this batch"
    Then I should see "Batch released!"
    Given the last batch has a barcode of "550000555760"

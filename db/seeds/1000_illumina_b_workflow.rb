@@ -254,7 +254,6 @@ StripTubeCreationPipeline.create!(
   name: 'Strip Tube Creation',
   automated: false,
   active: true,
-  location: Location.find_by(name: 'Cluster formation freezer'),
   group_by_parent: true,
   sorter: 8,
   paginate: false,
@@ -266,7 +265,7 @@ StripTubeCreationPipeline.create!(
   group_name: 'Sequencing'
 ) do |pipeline|
   pipeline.request_types << RequestType.find_by!(key: 'illumina_htp_strip_tube_creation')
-  pipeline.workflow = LabInterface::Workflow.create!(name: 'Strip Tube Creation').tap do |workflow|
+  pipeline.workflow = Workflow.create!(name: 'Strip Tube Creation').tap do |workflow|
     stct = StripTubeCreationTask.create!(
       name: 'Strip Tube Creation',
       workflow: workflow,
