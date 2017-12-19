@@ -37,7 +37,7 @@ class Sample < ApplicationRecord
   self.lazy_metadata = false
 
   before_validation :sample_metadata, on: :create, unless: :lazy_metadata?
-  scope :include_sample_metadata, -> { includes(:sample_metadata) }
+  # scope :include_sample_metadata, -> { includes(:sample_metadata) }
   # extend Metadata
   # has_metadata do
   #   include ReferenceGenome::Associations
