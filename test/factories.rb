@@ -253,7 +253,7 @@ FactoryGirl.define do
     end
   end
 
-  factory :sample_metadata, class: Sample::Metadata do
+  factory :sample_metadata, class: SampleMetadata do
     factory :sample_metadata_with_gender do
       gender :male
     end

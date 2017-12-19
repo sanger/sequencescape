@@ -78,7 +78,7 @@ RSpec.describe Sample, type: :model, accession: true do
   end
 
   context 'metadata attributes' do
-    let(:sample) { create :sample }
+    let(:sample) { create :sample, sample_metadata: SampleMetadata.new }
 
     it 'has organism' do
         sample.sample_metadata.update_attributes(organism: 'organism 1')
@@ -392,13 +392,13 @@ RSpec.describe Sample, type: :model, accession: true do
       expect(sample.sample_metadata.reference_genome.name).to eq(reference_genome.name)
     end
 
-    it 'validation succeed if reference genome name found' do
+    it 'succesfully validates sample if reference genome name found' do
       reference_genome = create :reference_genome, name: 'reference genome 1'
       sample.sample_metadata.reference_genome_name = reference_genome.name
       expect(sample).to be_valid
     end
 
-    it 'validation fails if reference genome not found' do
+    it 'fails validation if reference genome not found' do
       create :reference_genome, name: 'reference genome 1'
       sample.sample_metadata.reference_genome_name = 'inexistent reference genome'
       expect(sample).to_not be_valid
@@ -414,6 +414,9 @@ RSpec.describe Sample, type: :model, accession: true do
       expect(sample.sample_metadata.gender).to eq('Male')
       expect(sample.sample_metadata.dna_source).to eq('Genomic')
       expect(sample.sample_metadata.sample_sra_hold).to eq('Hold')
+      sample.sample_metadata.update_attributes(gender: '')
+      expect(sample).to be_valid
+      expect(sample.sample_metadata.gender).to eq(nil)
     end
 
   end

@@ -30,163 +30,170 @@ class Sample < ApplicationRecord
   extend EventfulRecord
   extend ValidationStateGuard
 
-  extend Metadata
-  has_metadata do
-    include ReferenceGenome::Associations
-    association(:reference_genome, :name, required: true)
+  has_one :sample_metadata, validate: true
 
-    custom_attribute(:organism)
-    custom_attribute(:cohort)
-    custom_attribute(:country_of_origin)
-    custom_attribute(:geographical_region)
-    custom_attribute(:ethnicity)
-    custom_attribute(:volume)
-    custom_attribute(:supplier_plate_id)
-    custom_attribute(:mother)
-    custom_attribute(:father)
-    custom_attribute(:replicate)
-    custom_attribute(:gc_content, in: Sample::GC_CONTENTS)
-    custom_attribute(:gender, in: Sample::GENDERS)
-    custom_attribute(:donor_id)
-    custom_attribute(:dna_source, in: Sample::DNA_SOURCES)
-    custom_attribute(:sample_public_name)
-    custom_attribute(:sample_common_name)
-    custom_attribute(:sample_strain_att)
-    custom_attribute(:sample_taxon_id)
-    custom_attribute(:sample_ebi_accession_number)
-    custom_attribute(:sample_description)
-    custom_attribute(:sample_sra_hold, in: Sample::SRA_HOLD_VALUES)
+  class_attribute :lazy_metadata
+  self.lazy_metadata = false
 
-    custom_attribute(:sibling)
-    custom_attribute(:is_resubmitted)              # TODO[xxx]: selection of yes/no?
-    custom_attribute(:date_of_sample_collection)   # TODO[xxx]: Date field?
-    custom_attribute(:date_of_sample_extraction)   # TODO[xxx]: Date field?
-    custom_attribute(:sample_extraction_method)
-    custom_attribute(:sample_purified)             # TODO[xxx]: selection of yes/no?
-    custom_attribute(:purification_method)         # TODO[xxx]: tied to the field above?
-    custom_attribute(:concentration)
-    custom_attribute(:concentration_determined_by)
-    custom_attribute(:sample_type)
-    custom_attribute(:sample_storage_conditions)
+  before_validation :sample_metadata, on: :create, unless: :lazy_metadata?
 
-    # Array Express
-    custom_attribute(:genotype)
-    custom_attribute(:phenotype)
-    # custom_attribute(:strain_or_line) strain
-    # TODO: split age in two fields and use a composed_of
-    custom_attribute(:age, with: Regexp.new("\\A#{Sample::AGE_REGEXP}\\z"))
-    custom_attribute(:developmental_stage)
-    # custom_attribute(:sex) gender
-    custom_attribute(:cell_type)
-    custom_attribute(:disease_state)
-    custom_attribute(:compound) # TODO : yes/no?
-    custom_attribute(:dose, with: Regexp.new("\\A#{Sample::DOSE_REGEXP}\\z"))
-    custom_attribute(:immunoprecipitate)
-    custom_attribute(:growth_condition)
-    custom_attribute(:rnai)
-    custom_attribute(:organism_part)
-    # custom_attribute(:species) common name
-    custom_attribute(:time_point)
+  # extend Metadata
+  # has_metadata do
+  #   include ReferenceGenome::Associations
+  #   association(:reference_genome, :name, required: true)
 
-    # EGA
-    custom_attribute(:treatment)
-    custom_attribute(:subject)
-    custom_attribute(:disease)
+  #   custom_attribute(:organism)
+  #   custom_attribute(:cohort)
+  #   custom_attribute(:country_of_origin)
+  #   custom_attribute(:geographical_region)
+  #   custom_attribute(:ethnicity)
+  #   custom_attribute(:volume)
+  #   custom_attribute(:supplier_plate_id)
+  #   custom_attribute(:mother)
+  #   custom_attribute(:father)
+  #   custom_attribute(:replicate)
+  #   custom_attribute(:gc_content, in: Sample::GC_CONTENTS)
+  #   custom_attribute(:gender, in: Sample::GENDERS)
+  #   custom_attribute(:donor_id)
+  #   custom_attribute(:dna_source, in: Sample::DNA_SOURCES)
+  #   custom_attribute(:sample_public_name)
+  #   custom_attribute(:sample_common_name)
+  #   custom_attribute(:sample_strain_att)
+  #   custom_attribute(:sample_taxon_id)
+  #   custom_attribute(:sample_ebi_accession_number)
+  #   custom_attribute(:sample_description)
+  #   custom_attribute(:sample_sra_hold, in: Sample::SRA_HOLD_VALUES)
 
-    with_options(if: :validating_ena_required_fields?) do |ena_required_fields|
-      ena_required_fields.validates_presence_of :service_specific_fields
-    end
+  #   custom_attribute(:sibling)
+  #   custom_attribute(:is_resubmitted)              # TODO[xxx]: selection of yes/no?
+  #   custom_attribute(:date_of_sample_collection)   # TODO[xxx]: Date field?
+  #   custom_attribute(:date_of_sample_extraction)   # TODO[xxx]: Date field?
+  #   custom_attribute(:sample_extraction_method)
+  #   custom_attribute(:sample_purified)             # TODO[xxx]: selection of yes/no?
+  #   custom_attribute(:purification_method)         # TODO[xxx]: tied to the field above?
+  #   custom_attribute(:concentration)
+  #   custom_attribute(:concentration_determined_by)
+  #   custom_attribute(:sample_type)
+  #   custom_attribute(:sample_storage_conditions)
 
-    # The spreadsheets that people upload contain various fields that could be mistyped.  Here we ensure that the
-    # capitalisation of these is correct.
-    REMAPPED_ATTRIBUTES = {
-      gc_content: GC_CONTENTS,
-      gender: GENDERS,
-      dna_source: DNA_SOURCES,
-      sample_sra_hold: SRA_HOLD_VALUES
-    }.each_with_object({}) do |(k, v), h|
-      h[k] = v.each_with_object({}) { |b, a| a[b.downcase] = b }
-    end
+  #   # Array Express
+  #   custom_attribute(:genotype)
+  #   custom_attribute(:phenotype)
+  #   # custom_attribute(:strain_or_line) strain
+  #   # TODO: split age in two fields and use a composed_of
+  #   custom_attribute(:age, with: Regexp.new("\\A#{Sample::AGE_REGEXP}\\z"))
+  #   custom_attribute(:developmental_stage)
+  #   # custom_attribute(:sex) gender
+  #   custom_attribute(:cell_type)
+  #   custom_attribute(:disease_state)
+  #   custom_attribute(:compound) # TODO : yes/no?
+  #   custom_attribute(:dose, with: Regexp.new("\\A#{Sample::DOSE_REGEXP}\\z"))
+  #   custom_attribute(:immunoprecipitate)
+  #   custom_attribute(:growth_condition)
+  #   custom_attribute(:rnai)
+  #   custom_attribute(:organism_part)
+  #   # custom_attribute(:species) common name
+  #   custom_attribute(:time_point)
 
-    before_validation do |record|
-      record.reference_genome_id = 1 if record.reference_genome_id.blank?
+  #   # EGA
+  #   custom_attribute(:treatment)
+  #   custom_attribute(:subject)
+  #   custom_attribute(:disease)
 
-      # Unfortunately it appears that some of the functionality of this implementation relies on non-capitalisation!
-      # So we remap the lowercased versions to their proper values here
-      REMAPPED_ATTRIBUTES.each do |attribute, mapping|
-        record[attribute] = mapping.fetch(record[attribute].try(:downcase), record[attribute])
-        record[attribute] = nil if record[attribute].blank? # Empty strings should be nil
-      end
-    end
-  end
+  #   with_options(if: :validating_ena_required_fields?) do |ena_required_fields|
+  #     ena_required_fields.validates_presence_of :service_specific_fields
+  #   end
 
-  include_tag(:sample_strain_att)
-  include_tag(:sample_description)
+  #   # The spreadsheets that people upload contain various fields that could be mistyped.  Here we ensure that the
+  #   # capitalisation of these is correct.
+  #   REMAPPED_ATTRIBUTES = {
+  #     gc_content: GC_CONTENTS,
+  #     gender: GENDERS,
+  #     dna_source: DNA_SOURCES,
+  #     sample_sra_hold: SRA_HOLD_VALUES
+  #   }.each_with_object({}) do |(k, v), h|
+  #     h[k] = v.each_with_object({}) { |b, a| a[b.downcase] = b }
+  #   end
 
-  include_tag(:gender, services: :EGA, downcase: true)
-  include_tag(:phenotype, services: :EGA)
-  include_tag(:donor_id, services: :EGA, as: 'subject_id')
+  #   before_validation do |record|
+  #     record.reference_genome_id = 1 if record.reference_genome_id.blank?
 
-  require_tag(:sample_taxon_id)
-  require_tag(:sample_common_name)
-  require_tag(:gender, :EGA)
-  require_tag(:phenotype, :EGA)
-  require_tag(:donor_id, :EGA)
+  #     # Unfortunately it appears that some of the functionality of this implementation relies on non-capitalisation!
+  #     # So we remap the lowercased versions to their proper values here
+  #     REMAPPED_ATTRIBUTES.each do |attribute, mapping|
+  #       record[attribute] = mapping.fetch(record[attribute].try(:downcase), record[attribute])
+  #       record[attribute] = nil if record[attribute].blank? # Empty strings should be nil
+  #     end
+  #   end
+  # end
+
+  # include_tag(:sample_strain_att)
+  # include_tag(:sample_description)
+
+  # include_tag(:gender, services: :EGA, downcase: true)
+  # include_tag(:phenotype, services: :EGA)
+  # include_tag(:donor_id, services: :EGA, as: 'subject_id')
+
+  # require_tag(:sample_taxon_id)
+  # require_tag(:sample_common_name)
+  # require_tag(:gender, :EGA)
+  # require_tag(:phenotype, :EGA)
+  # require_tag(:donor_id, :EGA)
 
   # This needs to appear after the metadata has been defined to ensure that the Metadata class
   # is present.
-  include SampleManifest::InputBehaviour::SampleUpdating
+  # include SampleManifest::InputBehaviour::SampleUpdating
 
-  class Metadata
-    attr_reader :reference_genome_set_by_name
+  # class Metadata
+  #   attr_reader :reference_genome_set_by_name
 
-    # If we set a reference genome via its name, we want to validate that we found it.
-    # We can't just raise and exception when we don't find it, as this cases the sample manifest
-    # delayed job to fail completely.
-    validate :reference_genome_found, if: :reference_genome_set_by_name
+  #   # If we set a reference genome via its name, we want to validate that we found it.
+  #   # We can't just raise and exception when we don't find it, as this cases the sample manifest
+  #   # delayed job to fail completely.
+  #   validate :reference_genome_found, if: :reference_genome_set_by_name
 
-    # here we are aliasing ArrayExpress attribute from normal one
-    # This is easier that way so the name is exactly the name of the array-express field
-    # and the values can be easily remapped
-    # The other solution would be to have a different label for the accession file and the xml/edit page
-    def strain_or_line
-      sample_strain_att
-    end
+  #   # here we are aliasing ArrayExpress attribute from normal one
+  #   # This is easier that way so the name is exactly the name of the array-express field
+  #   # and the values can be easily remapped
+  #   # The other solution would be to have a different label for the accession file and the xml/edit page
+  #   def strain_or_line
+  #     sample_strain_att
+  #   end
 
-    def sex
-      gender && gender.downcase
-    end
+  #   def sex
+  #     gender && gender.downcase
+  #   end
 
-    def species
-      sample_common_name
-    end
+  #   def species
+  #     sample_common_name
+  #   end
 
-    def reference_genome_name=(reference_genome_name)
-      return unless reference_genome_name.present?
-      @reference_genome_set_by_name = reference_genome_name
-      self.reference_genome = ReferenceGenome.find_by(name: reference_genome_name)
-    end
+  #   def reference_genome_name=(reference_genome_name)
+  #     return unless reference_genome_name.present?
+  #     @reference_genome_set_by_name = reference_genome_name
+  #     self.reference_genome = ReferenceGenome.find_by(name: reference_genome_name)
+  #   end
 
-    def reference_genome_found
-      # A reference genome of nil automatically get converted to the reference genome named "", so
-      # we need to explicitly check the name has been set as expected.
-      return true if reference_genome.name == reference_genome_set_by_name
-      errors.add(:base, "Couldn't find a Reference Genome with named '#{reference_genome_set_by_name}'.")
-      false
-    end
+  #   def reference_genome_found
+  #     # A reference genome of nil automatically get converted to the reference genome named "", so
+  #     # we need to explicitly check the name has been set as expected.
+  #     return true if reference_genome.name == reference_genome_set_by_name
+  #     errors.add(:base, "Couldn't find a Reference Genome with named '#{reference_genome_set_by_name}'.")
+  #     false
+  #   end
 
-    # This is misleading, as samples are rarely released through
-    # Sequencescape, so our flag gets out of sync with the ENA/EGA
-    def released?
-      sample_sra_hold == 'Public'
-    end
+  #   # This is misleading, as samples are rarely released through
+  #   # Sequencescape, so our flag gets out of sync with the ENA/EGA
+  #   def released?
+  #     sample_sra_hold == 'Public'
+  #   end
 
-    # Rarely actually used
-    def release
-      self.sample_sra_hold = 'Public'
-      save!
-    end
-  end
+  #   # Rarely actually used
+  #   def release
+  #     self.sample_sra_hold = 'Public'
+  #     save!
+  #   end
+  # end
 
   # this method should be before has_many through assets
   receptacle_alias(:assets) do
@@ -233,6 +240,21 @@ class Sample < ApplicationRecord
   def rename_to!(new_name)
     update_attributes!(name: new_name)
   end
+
+  ### Added from Metaprogramming
+  def tags
+    self.class.tags.select{|tag| tag.for?(accession_service.provider)}
+  end
+
+  def required_tags
+    self.class.required_tags[accession_service.try(:provider)]+self.class.required_tags[:all]
+  end
+
+  def self.tags
+    @tags ||= []
+  end
+  ### End
+
 
   validation_guard(:can_rename_sample)
   validation_guarded_by(:rename_to!, :can_rename_sample)
@@ -415,7 +437,11 @@ class Sample < ApplicationRecord
     self.validating_ena_required_fields_without_first_study = state
     @ena_study.try(:validating_ena_required_fields=, state)
   end
-  alias validating_ena_required_fields_without_first_study= validating_ena_required_fields=
+
+  def validating_ena_required_fields_without_first_study=(state)
+    @validating_ena_required_fields = !!state
+    self.sample_metadata.validating_ena_required_fields = state
+  end
   alias validating_ena_required_fields= validating_ena_required_fields_with_first_study=
 
   def validate_ena_required_fields!
@@ -431,6 +457,11 @@ class Sample < ApplicationRecord
     # Do not alter the order of this line, otherwise the @ena_study won't be reset!
     self.validating_ena_required_fields, @ena_study = false, nil
   end
+
+  def validating_ena_required_fields?
+    instance_variable_defined?(:@validating_ena_required_fields) && @validating_ena_required_fields
+  end
+
 
   def sample_reference_genome
     return sample_metadata.reference_genome unless sample_metadata.reference_genome.try(:name).blank?
