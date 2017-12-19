@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RenameTransferRequestSubclasses < ActiveRecord::Migration[5.1]
   class TransferRequest < ApplicationRecord
     self.table_name = 'transfer_requests'

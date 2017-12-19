@@ -737,7 +737,7 @@ CherrypickPipeline.create!(name: 'Cherrypick') do |pipeline|
   end
 end
 
-CherrypickForPulldownPipeline.create!(name: 'Cherrypicking for Pulldown') do |pipeline|
+CherrypickForPulldownPipeline.create!(name: 'Cherrypicking for Pulldown', active: false) do |pipeline|
   pipeline.asset_type          = 'Well'
   pipeline.sorter              = 13
   pipeline.automated           = false
@@ -759,15 +759,7 @@ CherrypickForPulldownPipeline.create!(name: 'Cherrypicking for Pulldown') do |pi
   pipeline.request_types << RequestType.create!(key: 'cherrypick_for_illumina',   name: 'Cherrypick for Illumina',   &cherrypicking_attributes)
   pipeline.request_types << RequestType.create!(key: 'cherrypick_for_illumina_b', name: 'Cherrypick for Illumina-B', &cherrypicking_attributes)
   pipeline.request_types << RequestType.create!(key: 'cherrypick_for_illumina_c', name: 'Cherrypick for Illumina-C', &cherrypicking_attributes)
-
-  pipeline.workflow = Workflow.create!(name: 'Cherrypicking for Pulldown').tap do |workflow|
-    # NOTE[xxx]: Note that the order here, and 'Set Location' being interactive, do not mimic the behaviour of production
-    [
-      { class: CherrypickGroupBySubmissionTask, name: 'Cherrypick Group By Submission', sorted: 1, batched: true }
-    ].each do |details|
-      details.delete(:class).create!(details.merge(workflow: workflow))
-    end
-  end
+  pipeline.workflow = Workflow.create!(name: 'Cherrypicking for Pulldown')
 end
 
 DnaQcPipeline.create!(name: 'DNA QC') do |pipeline|

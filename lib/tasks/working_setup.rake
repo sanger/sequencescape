@@ -44,7 +44,7 @@ namespace :working do
             end
           end
 
-          Robot.create!(name: 'Picking robot').tap do |robot|
+          Robot.create!(name: 'Picking robot', location: 'Hello poor merge conflict resolver! Go with the other one.').tap do |robot|
             robot.create_max_plates_property(value: 10)
           end
 
@@ -67,7 +67,10 @@ namespace :working do
             received_at: DateTime.now
           )
           qcc = QcableCreator.create!(lot: lot, user: user, count: 30)
-          qcc.qcables.each { |qcable| qcable.update_attributes!(state: 'available'); qcable.asset.update_attributes!; puts "Tag Plate: #{qcable.asset.ean13_barcode}" }
+          qcc.qcables.each do |qcable|
+            qcable.update_attributes!(state: 'available')
+            puts "Tag Plate: #{qcable.asset.ean13_barcode}"
+          end
         end
 
         private

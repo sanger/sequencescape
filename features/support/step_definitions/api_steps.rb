@@ -293,7 +293,7 @@ Given /^the (library tube|plate) "([^\"]+)" is a child of the (sample tube|plate
   parent.children << child
   if [parent, child].all? { |a| a.is_a?(Receptacle) }
     child.aliquots = []
-    RequestType.transfer.create!(asset: parent, target_asset: child)
+    FactoryGirl.create(:transfer_request, asset: parent, target_asset: child)
     child.save!
   end
 end
@@ -302,11 +302,9 @@ Given /^the well "([^\"]+)" is a child of the well "([^\"]+)"$/ do |child_name, 
   parent = Uuid.find_by(external_id: parent_name).resource or raise StandardError, "Cannot find #{parent_name.inspect}"
   child  = Uuid.find_by(external_id: child_name).resource or raise StandardError, "Cannot find #{child_name.inspect}"
   parent.children << child
-  if [parent, child].all? { |a| a.is_a?(Receptacle) }
-    child.aliquots = []
-    RequestType.transfer.create!(asset: parent, target_asset: child)
-    child.save!
-  end
+  child.aliquots.clear
+  FactoryGirl.create(:transfer_request, asset: parent, target_asset: child)
+  child.save!
 end
 
 Given /^the sample "([^\"]+)" is in (\d+) sample tubes? with sequential IDs starting at (\d+)$/ do |name, count, base_id|

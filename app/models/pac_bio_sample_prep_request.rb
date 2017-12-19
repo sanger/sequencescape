@@ -34,6 +34,6 @@ class PacBioSamplePrepRequest < CustomerRequest
   end
 
   def final_transfer
-    target_asset.requests_as_target.where_is_a?(TransferRequest).last
+    target_asset.transfer_requests_as_target.last
   end
 end

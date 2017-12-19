@@ -97,8 +97,7 @@ module Pulldown::PlatePurposes
       branch.inject(initial) do |parent, new_purpose_name|
         Pulldown::PlatePurposes::PLATE_PURPOSE_TYPE[new_purpose_name].create!(name: new_purpose_name).tap do |child_purpose|
           transfer_request_class = transfer_request_class_between(parent, child_purpose)
-          puts "Checking #{parent.name}=>#{child_purpose.name} #{transfer_request_class == parent.default_transfer_class_name}"
-          parent.child_relationships.create!(child: child_purpose, transfer_request_class_name: transfer_request_class_between(parent, child_purpose))
+          parent.child_relationships.create!(child: child_purpose, transfer_request_class_name: transfer_request_class)
         end
       end
     end

@@ -8,9 +8,19 @@ class Tube::StandardMx < Tube::Purpose
   # state is anything but "started" or "pending" then the pulldown library creation request should also be
   # set to the same state
   def transition_to(tube, state, _user, _ = nil, _customer_accepts_responsibility = false)
-    update_all_requests = !['started', 'pending'].include?(state)
-    tube.requests_as_target.opened.for_billing.each do |request|
-      request.transition_to(state) if update_all_requests or request.is_a?(TransferRequest)
+    if update_all_requests?(state)
+      tube.requests_as_target.opened.for_billing.each do |request|
+        request.transition_to(state)
+      end
     end
+    tube.transfer_requests_as_target.each do |request|
+      request.transition_to(state)
+    end
+  end
+
+  private
+
+  def update_all_requests?(state)
+    !['started', 'pending'].include?(state)
   end
 end

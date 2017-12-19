@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This file is part of SEQUENCESCAPE; it is distributed under the terms of
 # GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
@@ -10,20 +12,27 @@
 # Ensures that plates picked under a different study get assigned to
 # the correct study/project when work starts.
 class TransferRequest::Initial < TransferRequest
+  # Shared behaviour common to other initial request variations
+  # In particular it modifies the movement of aliquots to ensure
+  # they become associated with the study/project specified in the
+  # outer request.
+  # This is necessary, as it is possible to cherrypick the sample
+  # under one study, and then create libraries under another.
   module Behaviour
     def perform_transfer_of_contents
+      return if asset.failed? || asset.cancelled?
       target_asset.aliquots << asset.aliquots.map do |a|
         aliquot = a.dup
         aliquot.study_id = outer_request.initial_study_id
         aliquot.project_id = outer_request.initial_project_id
         aliquot
-      end unless asset.failed? or asset.cancelled?
+      end
     end
     private :perform_transfer_of_contents
 
     # Requests are already loaded when this is used, hence filtering in Ruby rather than using scopes.
     def outer_request
-      asset.requests.detect { |r| r.customer_request? && r.submission_id == submission_id }
+      asset.requests.detect { |r| r.submission_id == submission_id }
     end
   end
 

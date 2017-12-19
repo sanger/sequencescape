@@ -102,7 +102,7 @@ Feature: Access plates through the API
     And the tag 2 layout template "test template" exists
     And the UUID for the last tag2 layout template is "00000000-2222-2222-3333-444444444444"
     And the tag2 layout template "test template" is associated with the last submission
-    Given a destination transfer plate called "child" exists as a child of "Plate name"
+    Given a transfer plate called "child" exists as a child of "Plate name"
     And the UUID for the last plate is "00000000-1111-2222-3333-444444444444"
     When I GET the API path "/00000000-1111-2222-3333-444444444444/submission_pools"
     Then the HTTP response should be "200 OK"

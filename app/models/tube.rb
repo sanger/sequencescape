@@ -15,11 +15,6 @@ class Tube < Receptacle
   extend QcFile::Associations
   has_qc_files
 
-  # Transfer requests into a tube are direct requests where the tube is the target.
-  def transfer_requests
-    requests_as_target.where_is_a?(TransferRequest)
-  end
-
   def automatic_move?
     true
   end

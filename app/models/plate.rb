@@ -11,7 +11,7 @@ class Plate < Asset
   include ModelExtensions::Plate
   include Transfer::Associations
   include Transfer::State::PlateState
-  include PlatePurpose::Associations
+  # include PlatePurpose::Associations
   include Barcode::Barcodeable
   include Asset::Ownership::Owned
   include Plate::FluidigmBehaviour
@@ -20,6 +20,9 @@ class Plate < Asset
 
   extend QcFile::Associations
   has_qc_files
+
+  belongs_to :plate_purpose, foreign_key: :plate_purpose_id
+  belongs_to :purpose, foreign_key: :plate_purpose_id
 
   has_many :container_associations, foreign_key: :container_id, inverse_of: :plate
   has_many :wells, through: :container_associations, inverse_of: :plate do
@@ -90,6 +93,7 @@ class Plate < Asset
   # Transfer requests into a plate are the requests leading into the wells of said plate.
   has_many :transfer_requests, through: :wells, source: :transfer_requests_as_target
   has_many :transfer_requests_as_source, through: :wells
+  has_many :transfer_requests_as_target, through: :wells
   has_many :transfer_request_collections, through: :transfer_requests_as_source
 
   # The default state for a plate comes from the plate purpose
@@ -146,10 +150,14 @@ class Plate < Asset
       ]
     )
   }
+  scope :with_plate_purpose, ->(*purposes) { where(plate_purpose_id: purposes.flatten) }
 
   # About 10x faster than going through the wells
   def submission_ids
     @siat ||= container_associations
+              .joins('LEFT JOIN transfer_requests ON transfer_requests.target_asset_id = container_associations.content_id')
+              .where.not(transfer_requests: { submission_id: nil }).where.not(transfer_requests: { state: Request::Statemachine::INACTIVE })
+              .distinct.pluck(:submission_id) + container_associations
               .joins('LEFT JOIN requests ON requests.target_asset_id = container_associations.content_id')
               .where.not(requests: { submission_id: nil }).where.not(requests: { state: Request::Statemachine::INACTIVE })
               .distinct.pluck(:submission_id)
@@ -159,6 +167,9 @@ class Plate < Asset
     @sias ||= container_associations
               .joins('LEFT JOIN requests ON requests.asset_id = container_associations.content_id')
               .where(['requests.submission_id IS NOT NULL AND requests.state NOT IN (?)', Request::Statemachine::INACTIVE])
+              .distinct.pluck(:submission_id) + container_associations
+              .joins('LEFT JOIN transfer_requests ON transfer_requests.asset_id = container_associations.content_id')
+              .where(['transfer_requests.submission_id IS NOT NULL AND transfer_requests.state NOT IN (?)', Request::Statemachine::INACTIVE])
               .distinct.pluck(:submission_id)
   end
 
@@ -210,53 +221,14 @@ class Plate < Asset
     iter.zero? ? nil : iter # Maintains compatibility with legacy version
   end
 
-  class CommentsProxy
-    attr_reader :plate
+  # Delegate the change of state to our plate purpose.
+  def transition_to(state, user, contents = nil, customer_accepts_responsibility = false)
+    purpose.transition_to(self, state, user, contents, customer_accepts_responsibility)
+  end
 
-    def initialize(plate)
-      @plate = plate
-    end
-
-    def comment_assn
-      @asn ||= Comment.for_plate(plate)
-    end
-
-    def method_missing(method, *args)
-      comment_assn.send(method, *args)
-    end
-
-    ##
-    # We add the comments to each submission to ensure that are available for all the requests.
-    # At time of writing, submissions add comments to each request, so there are a lot of comments
-    # getting created here. (The intent is to change this so requests are treated similarly to plates)
-    def create!(options)
-      plate.submissions.each { |s| s.add_comment(options[:description], options[:user]) }
-      Comment.create!(options.merge(commentable: plate))
-    end
-
-    def create(options)
-      plate.submissions.each { |s| s.add_comment(options[:description], options[:user]) }
-      Comment.create(options.merge(commentable: plate))
-    end
-
-    # By default rails treats sizes for grouped queries different to sizes
-    # for ungrouped queries. Unfortunately plates could end up performing either.
-    # Grouped return a hash, for which we want the length
-    # otherwise we get an integer
-    # We need to urgently revisit this, as this solution is horrible.
-    # Adding to the horrible: The :all passed in to the super is to address a
-    # rails bug with count and custom selects.
-    def size(*args)
-      s = super
-      return s.length if s.respond_to?(:length)
-      s
-    end
-
-    def count(*_args)
-      s = super(:all)
-      return s.length if s.respond_to?(:length)
-      s
-    end
+  # Delegate the transfer request type determination to our plate purpose
+  def transfer_request_class_from(source)
+    purpose.transfer_request_class_from(source.plate_purpose)
   end
 
   def comments

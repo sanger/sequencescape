@@ -230,13 +230,7 @@ module IlluminaHtp::PlatePurposes
     private :purpose_for
 
     def transfer_request_class_between(parent, child)
-      # std = RequestPurpose.find_by(key: 'standard')
       _, _, request_class = self::PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES.detect { |a, b, _| (parent.name == a) && (child.name == b) }
-      # return RequestType.transfer if request_class.nil?
-      # return RequestType.initial_transfer if request_class == :initial
-      # request_type_name = "#{request_type_prefix} #{parent.name}-#{child.name}"
-      # RequestType.create!(name: request_type_name, key: request_type_name.gsub(/\W+/, '_'), request_class_name: request_class, asset_type: 'Well', order: 1,
-      #                     request_purpose: std)
       request_class || :standard
     end
     private :transfer_request_class_between

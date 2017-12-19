@@ -45,7 +45,7 @@ class Transfer < ApplicationRecord
     # The state of an asset is based on the transfer requests for the asset.  If they are all in the same
     # state then it takes that state.  Otherwise we take the "most optimum"!
     def state
-      state_from(transfer_requests)
+      state_from(transfer_requests_as_target)
     end
 
     def state_from(state_requests)
@@ -69,7 +69,7 @@ class Transfer < ApplicationRecord
                                query_conditions, join_options = 'transfer_requests_as_target.state IN (?)', [
                                  'STRAIGHT_JOIN `container_associations` ON (`assets`.`id` = `container_associations`.`container_id`)',
                                  "INNER JOIN `assets` wells_assets ON (`wells_assets`.`id` = `container_associations`.`content_id`) AND (`wells_assets`.`sti_type` = 'Well')",
-                                 "LEFT OUTER JOIN `requests` transfer_requests_as_target ON transfer_requests_as_target.target_asset_id = wells_assets.id AND (transfer_requests_as_target.`sti_type` IN (#{[TransferRequest, *TransferRequest.descendants].map(&:name).map(&:inspect).join(',')}))"
+                                 'LEFT OUTER JOIN `transfer_requests` transfer_requests_as_target ON transfer_requests_as_target.target_asset_id = wells_assets.id'
                                ]
 
                                # Note that 'state IS NULL' is included here for plates that are stock plates, because they will not have any
@@ -101,7 +101,7 @@ class Transfer < ApplicationRecord
                              if states.sort != ALL_STATES.sort
 
                                join_options = [
-                                 "LEFT OUTER JOIN `requests` transfer_requests_as_target ON transfer_requests_as_target.target_asset_id = `assets`.id AND (transfer_requests_as_target.`sti_type` IN (#{[TransferRequest, *TransferRequest.descendants].map(&:name).map(&:inspect).join(',')}))"
+                                 'LEFT OUTER JOIN `transfer_requests` transfer_requests_as_target ON transfer_requests_as_target.target_asset_id = `assets`.id'
                                ]
 
                                joins(join_options).where(transfer_requests_as_target: { state: states })

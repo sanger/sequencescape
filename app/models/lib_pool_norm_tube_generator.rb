@@ -29,11 +29,7 @@ class LibPoolNormTubeGenerator
   end
 
   def lib_pool_tubes
-    @lib_pool_tubes ||= plate.wells.map(&:requests).flatten.select do |r|
-      r.request_type.key == 'Illumina_Lib_PCR_XP_Lib_Pool'
-    end
-                             .map(&:target_asset)
-                             .uniq
+    @lib_pool_tubes ||= plate.children.select { |c| c.is_a?(StockMultiplexedLibraryTube) }
                              .reject { |tube| tube.state == 'failed' || tube.state == 'qc_complete' || tube.state == 'cancelled' }
   end
 
@@ -44,7 +40,7 @@ class LibPoolNormTubeGenerator
   def create!
     if valid?
       begin
-        ActiveRecord::Base.transaction do |_t|
+        ActiveRecord::Base.transaction do
           lib_pool_tubes.each do |tube|
             pass_and_complete(tube)
             pass_and_complete(create_lib_pool_norm_tube(tube))

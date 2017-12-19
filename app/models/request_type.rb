@@ -93,6 +93,7 @@ class RequestType < ApplicationRecord
     new_request = klass.public_send(construct_method, attributes) do |request|
       request.request_type = self
       request.request_purpose ||= request_purpose
+      request.billing_product = find_product_for_request(request)
       yield(request) if block_given?
     end
     # Prevent us caching all our requests
@@ -118,14 +119,6 @@ class RequestType < ApplicationRecord
 
   def self.genotyping
     find_by(key: 'genotyping') or raise 'Cannot find genotyping request type'
-  end
-
-  def self.transfer
-    find_by(key: 'transfer') or raise 'Cannot find transfer request type'
-  end
-
-  def self.initial_transfer
-    find_by(key: 'initial_transfer') or raise 'Cannot find initial request type'
   end
 
   def request_class

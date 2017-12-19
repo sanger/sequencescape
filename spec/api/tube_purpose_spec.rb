@@ -3,10 +3,6 @@
 require 'rails_helper'
 
 describe '/api/1/tube/purposes' do
-  before(:each) do
-    create :transfer_request_type
-  end
-
   let(:authorised_app) { create :api_application }
   let(:parent_purpose) { create :plate_purpose }
 

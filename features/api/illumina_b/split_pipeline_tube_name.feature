@@ -64,9 +64,6 @@ And I have a "full" authorised user with the key "cucumber"
       }
       """
      And all stock multiplexed library tubes have sequential UUIDs based on "98989898-1111-2222-3333"
-
-    # Make the transfers from the plate to the appropriate stock MX library tubes
-    Then log "Make the transfers from the plate to the appropriate stock MX library tubes" for debugging
     When I make an authorised POST with the following JSON to the API path "/22222222-3333-4444-5555-000000000001":
       """
       {

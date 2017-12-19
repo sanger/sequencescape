@@ -46,6 +46,7 @@ class Well < Receptacle
 
   has_many :customer_requests, class_name: 'CustomerRequest', foreign_key: :asset_id
   has_many :outer_requests, through: :stock_wells, source: :customer_requests
+  has_many :submissions, ->() { distinct }, through: :transfer_requests_as_target
 
   def outer_request(submission_id)
     outer_requests.order(id: :desc).find_by(submission_id: submission_id)
@@ -156,9 +157,8 @@ class Well < Receptacle
 
   before_create :well_attribute # Ensure all wells have attributes
 
-  scope :pooled_as_target_by, ->(type) {
-    joins('LEFT JOIN requests patb ON assets.id=patb.target_asset_id')
-      .where(['(patb.sti_type IS NULL OR patb.sti_type IN (?))', [type, *type.descendants].map(&:name)])
+  scope :pooled_as_target_by_transfer, ->() {
+    joins('LEFT JOIN transfer_requests patb ON assets.id=patb.target_asset_id')
       .select('assets.*, patb.submission_id AS pool_id').distinct
   }
   scope :pooled_as_source_by, ->(type) {

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DuplicateRequestsTable < ActiveRecord::Migration[5.1]
   TRANSFER_REQUEST_CLASSES = '
     "TransferRequest",
@@ -6,7 +8,7 @@ class DuplicateRequestsTable < ActiveRecord::Migration[5.1]
     "TransferRequest::InitialTransfer",
     "TransferRequest::InitialDownstream",
     "CherrypickForFluidigmRequest",
-    "CherrypickForPulldownRequest"'.freeze
+    "CherrypickForPulldownRequest"'
 
   def up
     ActiveRecord::Base.connection.execute('CREATE TABLE transfer_requests LIKE requests')

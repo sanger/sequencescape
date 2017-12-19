@@ -7,7 +7,7 @@
 module Io
   class TransferRequest < ::Core::Io::Base
     set_model_for_input(::TransferRequest)
-    set_json_root(:request)
+    set_json_root(:transfer_request)
     set_eager_loading do |model|
       model
         .includes(asset: :uuid_object)

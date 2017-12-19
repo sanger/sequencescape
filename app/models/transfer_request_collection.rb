@@ -30,7 +30,6 @@ class TransferRequestCollection < ApplicationRecord
     asset_cache = Asset.includes(:aliquots, :transfer_requests).find(asset_ids).index_by(&:id)
     optimized_parameters = args.map do |param|
       param.stringify_keys!
-      param['request_class_name'] ||= :standard
       param['asset'] ||= asset_cache[param['asset_id']]
       param['target_asset'] ||= asset_cache[param['target_asset_id']]
       param

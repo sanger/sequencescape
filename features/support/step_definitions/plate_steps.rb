@@ -264,8 +264,8 @@ end
 Given /^(passed|started|pending|failed) transfer requests exist between (\d+) wells on "([^"]*)" and "([^"]*)"$/ do |state, count, source_name, dest_name|
   source = Plate.find_by(name: source_name)
   destination = Plate.find_by(name: dest_name)
-  (0...count.to_i).each do |i|
-    RequestType.transfer.create!(asset: source.wells.in_row_major_order[i], target_asset: destination.wells.in_row_major_order[i], state: state)
+  count.to_i.times do |i|
+    FactoryGirl.create(:transfer_request, asset: source.wells.in_row_major_order[i], target_asset: destination.wells.in_row_major_order[i], state: state)
     Well::Link.create!(source_well: source.wells.in_row_major_order[i], target_well: destination.wells.in_row_major_order[i], type: 'stock')
   end
   AssetLink.create(ancestor: source, descendant: destination)

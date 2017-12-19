@@ -19,7 +19,6 @@ class WorkflowsController < ApplicationController
   include Tasks::AssignTubesToWellsHandler
   include Tasks::AttachInfiniumBarcodeHandler
   include Tasks::BindingKitBarcodeHandler
-  include Tasks::CherrypickGroupBySubmissionHandler
   include Tasks::CherrypickHandler
   include Tasks::DnaQcHandler
   include Tasks::GenerateManifestHandler

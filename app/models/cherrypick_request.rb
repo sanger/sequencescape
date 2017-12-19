@@ -6,18 +6,6 @@
 
 # This class is due to replace CherrypickForPulldownRequest
 class CherrypickRequest < CustomerRequest
-  def on_failed
-    # Do nothing
-  end
-
-  alias_method :on_cancelled, :on_failed
-
-  # This is almost certainly not what we want
-  def perform_transfer_of_contents
-    transfer_aliquots # Ensures we set the study/project
-  end
-  private :perform_transfer_of_contents
-
   after_create :build_stock_well_links
 
   def build_stock_well_links

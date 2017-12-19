@@ -6,10 +6,6 @@ require 'support/barcode_helper'
 describe '/api/1/plate_purposes' do
   subject { '/api/1/plate_purposes' }
 
-  before(:each) do
-    create :transfer_request_type
-  end
-
   let(:authorised_app) { create :api_application }
   let(:parent_purpose) { create :plate_purpose }
 

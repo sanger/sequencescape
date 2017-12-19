@@ -8,7 +8,6 @@
 # (chemically) as, cherrypicking, pooling, spreading on the floor etc
 class TransferRequest < ApplicationRecord
   include DefaultAttributes
-  include ModelExtensions::Request
   include Uuid::Uuidable
   include AASM
   extend Request::Statemachine::ClassMethods
@@ -18,16 +17,18 @@ class TransferRequest < ApplicationRecord
   has_many :transfer_request_collection_transfer_requests
   has_many :transfer_request_collections, through: :transfer_request_collection_transfer_requests
 
+  # The assets on a request can be treated as a particular class when being used by certain pieces of code.  For instance,
+  # QC might be performed on a source asset that is a well, in which case we'd like to load it as such.
+  belongs_to :target_asset, class_name: 'Receptacle', inverse_of: :transfer_requests_as_source, required: true
+  belongs_to :asset, class_name: 'Receptacle', inverse_of: :transfer_requests_as_source, required: true
+
   belongs_to :order
   belongs_to :submission
 
   scope :for_request, ->(request) { where(asset_id: request.asset_id) }
-
+  scope :include_submission, -> { includes(submission: :uuid_object) }
   # Ensure that the source and the target assets are not the same, otherwise bad things will happen!
   validate :source_and_target_assets_are_different
-
-  set_defaults request_type: ->(_transfer_request) { RequestType.transfer },
-               request_purpose: ->(transfer_request) { transfer_request.request_type.request_purpose }
 
   after_create(:perform_transfer_of_contents)
 
@@ -96,7 +97,7 @@ class TransferRequest < ApplicationRecord
   end
 
   def transition_to(target_state)
-    send("#{self.class.suggested_transition_between(state, target_state)}!")
+    aasm.fire!(suggested_transition_to(target_state))
   end
 
   def outer_request
@@ -104,6 +105,14 @@ class TransferRequest < ApplicationRecord
   end
 
   private
+
+  # Determines the most likely event that should be fired when transitioning between the two states.  If there is
+  # only one option then that is what is returned, otherwise an exception is raised.
+  def suggested_transition_to(target)
+    valid_events = aasm.events(permitted: true).select { |e| e.transitions_to_state?(target.to_sym) }
+    raise StandardError, "No obvious transition from #{current.inspect} to #{target.inspect}" unless valid_events.size == 1
+    valid_events.first.name
+  end
 
   # after_create callback method
   def perform_transfer_of_contents

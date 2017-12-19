@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171212112846) do
+ActiveRecord::Schema.define(version: 20171218135152) do
 
   create_table "aker_containers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "barcode"
@@ -1951,8 +1951,8 @@ ActiveRecord::Schema.define(version: 20171212112846) do
   add_foreign_key "sample_manifests", "plate_purposes", column: "purpose_id"
   add_foreign_key "tag_layout_templates", "tag_groups", column: "tag2_group_id"
   add_foreign_key "tag_layouts", "tag_groups", column: "tag2_group_id"
-  add_foreign_key "transfer_request_collection_transfer_requests", "requests", column: "transfer_request_id"
   add_foreign_key "transfer_request_collection_transfer_requests", "transfer_request_collections"
+  add_foreign_key "transfer_request_collection_transfer_requests", "transfer_requests"
   add_foreign_key "transfer_request_collections", "users"
   add_foreign_key "work_completions", "assets", column: "target_id"
   add_foreign_key "work_completions", "users"

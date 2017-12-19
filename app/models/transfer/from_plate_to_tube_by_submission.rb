@@ -13,7 +13,7 @@ class Transfer::FromPlateToTubeBySubmission < Transfer::BetweenPlateAndTubes
   private
 
   def locate_mx_library_tube_for(well, _stock_wells)
-    asset_cache[well.creation_request.submission_id]
+    asset_cache[well.submission_ids.first]
   end
 
   #

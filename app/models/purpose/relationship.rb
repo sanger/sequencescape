@@ -16,10 +16,6 @@ class Purpose::Relationship < ApplicationRecord
       relationship.transfer_request_class
     end
 
-    deprecate def default_transfer
-      stock_plate? ? RequestType.initial_transfer : RequestType.transfer
-    end
-
     def default_transfer_class_name
       stock_plate? ? :initial : :standard
     end
