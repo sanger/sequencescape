@@ -1,13 +1,22 @@
+require_dependency 'attributable'
+
 class SampleMetadata < ApplicationRecord
   GC_CONTENTS     = ['Neutral', 'High AT', 'High GC']
   GENDERS         = ['Male', 'Female', 'Mixed', 'Hermaphrodite', 'Unknown', 'Not Applicable']
   DNA_SOURCES     = ['Genomic', 'Whole Genome Amplified', 'Blood', 'Cell Line', 'Saliva', 'Brain', 'FFPE',
                      'Amniocentesis Uncultured', 'Amniocentesis Cultured', 'CVS Uncultured', 'CVS Cultured', 'Fetal Blood', 'Tissue']
   SRA_HOLD_VALUES = ['Hold', 'Public', 'Protect']
+  AGE_REGEXP      = '\d+(?:\.\d+|\-\d+|\.\d+\-\d+\.\d+|\.\d+\-\d+\.\d+)?\s+(?:second|minute|day|week|month|year)s?|Not Applicable|N/A|To be provided'
+  DOSE_REGEXP     = '\d+(?:\.\d+)?\s+\w+(?:\/\w+)?|Not Applicable|N/A|To be provided'
+
+  ArrayExpressFields = %w(genotype phenotype strain_or_line developmental_stage sex cell_type disease_state compound dose immunoprecipitate growth_condition rnai organism_part species time_point age treatment)
+
+
 
   belongs_to :sample, validate: false, autosave: false
   belongs_to :owner, validate: false, autosave: false
   include ReferenceGenome::Associations
+  include Attributable
 
   attr_reader :reference_genome_set_by_name
   # The spreadsheets that people upload contain various fields that could be mistyped.  Here we ensure that the
@@ -75,6 +84,43 @@ class SampleMetadata < ApplicationRecord
     self.sample_sra_hold = 'Public'
     save!
   end
+
+  def self.metadata_attribute_path(field)
+    metadata_attribute_path_store[field]
+  end
+
+  def self.metadata_attribute_path_store
+    @md_a_p ||= Hash.new { |h, field| h[field] = metadata_attribute_path_generator(field) }
+  end
+
+  def self.metadata_attribute_path_generator(field)
+    name.underscore.split('/').map(&:to_sym) + [field.to_sym]
+  end
+
+
+  def self.localised_sections(field)
+    localised_sections_store[field]
+  end
+
+  def self.localised_sections_store
+    @loc_sec ||= Hash.new { |h, field| h[field] = localised_sections_generator(field) }
+  end
+
+  SECTION_FIELDS = [:edit_info, :help, :label, :unspecified]
+  Section = Struct.new(*SECTION_FIELDS, :label_options)
+
+  def self.localised_sections_generator(field)
+    Section.new(
+      * (SECTION_FIELDS.map do |section|
+        I18n.t(
+          section,
+          scope: [:metadata, metadata_attribute_path(field)].flatten,
+          default: I18n.t(section, scope: [:metadata, :defaults])
+        )
+      end << {})
+    )
+  end
+
   ### End
 
   def validating_ena_required_fields?

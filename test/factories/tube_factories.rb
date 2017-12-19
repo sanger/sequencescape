@@ -19,7 +19,7 @@ FactoryGirl.define do
 
   factory :sample_tube, parent: :empty_sample_tube do
     transient do
-      sample { create(:sample, sample_metadata: SampleMetadata.new) }
+      sample { create(:sample) }
       study { create(:study) }
       project { create(:project) }
     end

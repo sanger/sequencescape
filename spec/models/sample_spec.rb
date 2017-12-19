@@ -78,7 +78,7 @@ RSpec.describe Sample, type: :model, accession: true do
   end
 
   context 'metadata attributes' do
-    let(:sample) { create :sample, sample_metadata: SampleMetadata.new }
+    let(:sample) { create :sample }
 
     it 'has organism' do
         sample.sample_metadata.update_attributes(organism: 'organism 1')

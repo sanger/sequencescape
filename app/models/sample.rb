@@ -31,12 +31,13 @@ class Sample < ApplicationRecord
   extend ValidationStateGuard
 
   has_one :sample_metadata, validate: true
+  accepts_nested_attributes_for :sample_metadata
 
   class_attribute :lazy_metadata
   self.lazy_metadata = false
 
   before_validation :sample_metadata, on: :create, unless: :lazy_metadata?
-
+  scope :include_sample_metadata, -> { includes(:sample_metadata) }
   # extend Metadata
   # has_metadata do
   #   include ReferenceGenome::Associations
@@ -127,18 +128,62 @@ class Sample < ApplicationRecord
   #   end
   # end
 
-  # include_tag(:sample_strain_att)
-  # include_tag(:sample_description)
 
-  # include_tag(:gender, services: :EGA, downcase: true)
-  # include_tag(:phenotype, services: :EGA)
-  # include_tag(:donor_id, services: :EGA, as: 'subject_id')
+  ### Added from Metaprogramming
+  def self.required_tags
+    @required_tags ||= Hash.new { |h, k| h[k] = Array.new }
+  end
 
-  # require_tag(:sample_taxon_id)
-  # require_tag(:sample_common_name)
-  # require_tag(:gender, :EGA)
-  # require_tag(:phenotype, :EGA)
-  # require_tag(:donor_id, :EGA)
+  def self.tags
+    @tags ||= []
+  end
+
+  def tags
+    self.class.tags.select{|tag| tag.for?(accession_service.provider)}
+  end
+
+  def required_tags
+    self.class.required_tags[accession_service.try(:provider)]+self.class.required_tags[:all]
+  end
+
+  def self.include_tag(tag, options = Hash.new)
+    tags << AccessionedTag.new(tag, options[:as], options[:services], options[:downcase])
+  end
+
+  def self.require_tag(tag, services = :all)
+    [services].flatten.each do |service|
+      required_tags[service] << tag
+    end
+  end
+
+  class AccessionedTag
+    attr_reader :tag, :name, :downcase
+    def initialize(tag, as = nil, services = [], downcase = false)
+      @tag = tag
+      @name = as || tag
+      @services = [services].flatten.compact
+      @downcase = downcase
+    end
+
+    def for?(service)
+      @services.empty? || @services.include?(service)
+    end
+  end
+
+  ### End
+
+  include_tag(:sample_strain_att)
+  include_tag(:sample_description)
+
+  include_tag(:gender, services: :EGA, downcase: true)
+  include_tag(:phenotype, services: :EGA)
+  include_tag(:donor_id, services: :EGA, as: 'subject_id')
+
+  require_tag(:sample_taxon_id)
+  require_tag(:sample_common_name)
+  require_tag(:gender, :EGA)
+  require_tag(:phenotype, :EGA)
+  require_tag(:donor_id, :EGA)
 
   # This needs to appear after the metadata has been defined to ensure that the Metadata class
   # is present.
@@ -240,20 +285,6 @@ class Sample < ApplicationRecord
   def rename_to!(new_name)
     update_attributes!(name: new_name)
   end
-
-  ### Added from Metaprogramming
-  def tags
-    self.class.tags.select{|tag| tag.for?(accession_service.provider)}
-  end
-
-  def required_tags
-    self.class.required_tags[accession_service.try(:provider)]+self.class.required_tags[:all]
-  end
-
-  def self.tags
-    @tags ||= []
-  end
-  ### End
 
 
   validation_guard(:can_rename_sample)
@@ -428,6 +459,7 @@ class Sample < ApplicationRecord
   def changed_by_manifest?
     (previous_changes.present? || sample_metadata.previous_changes.present?) && !generate_no_update_event?
   end
+
 
   def ena_study
     @ena_study

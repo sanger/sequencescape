@@ -236,6 +236,7 @@ FactoryGirl.define do
   end
 
   factory :sample do
+    sample_metadata
     name { |_a| generate :sample_name }
 
     factory :sample_with_well do
