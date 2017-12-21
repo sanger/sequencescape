@@ -35,7 +35,7 @@ Given(/^plate "([^"]*)" has measured volume results$/) do |plate_barcode|
   end
 end
 
-Then /^I should see cherrypick worksheet table:$/ do |expected_results_table|
+Then /^I should see the cherrypick worksheet table:$/ do |expected_results_table|
   actual_table = table(fetch_table('table.plate_layout'))
   expected_results_table.column_names.each do |column_name|
     expected_results_table.map_column!(column_name.to_s) { |text| text.squish }
