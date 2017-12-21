@@ -829,8 +829,7 @@ PulldownMultiplexLibraryPreparationPipeline.create!(name: 'Pulldown Multiplex Li
 
   pipeline.workflow = Workflow.create!(name: 'Pulldown Multiplex Library Preparation').tap do |workflow|
     [
-      { class: TagGroupsTask,         name: 'Tag Groups',           sorted: 1 },
-      { class: AssignTagsToWellsTask, name: 'Assign Tags to Wells', sorted: 2 }
+      { class: TagGroupsTask, name: 'Tag Groups', sorted: 1 }
     ].each do |details|
       details.delete(:class).create!(details.merge(workflow: workflow))
     end
