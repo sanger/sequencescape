@@ -430,7 +430,8 @@ RSpec.describe Study, type: :model do
   end
 
   describe 'metadata' do
-    let(:metadata) { {
+    let(:metadata) do
+      {
         prelim_id: 'A1234',
         study_description: 'A particularly good study.',
         contaminated_human_dna: 'Yes',
@@ -469,68 +470,68 @@ RSpec.describe Study, type: :model do
         s3_email_list: 'aa1@sanger.ac.uk;aa2@sanger.ac.uk',
         data_deletion_period: '3 months'
       }
-    }
+    end
 
     context 'standard data release' do
-      let(:study) { create(:study, study_metadata: create(:study_metadata, metadata))}
+      let(:study) { create(:study, study_metadata: create(:study_metadata, metadata)) }
 
       it 'will have a prelim_id' do
         expect(study.study_metadata.prelim_id).to eq(metadata[:prelim_id])
       end
 
-       it 'will have a study_description' do
+      it 'will have a study_description' do
         expect(study.study_metadata.study_description).to eq(metadata[:study_description])
       end
 
-       it 'will have a contaminated_human_dna' do
+      it 'will have a contaminated_human_dna' do
         expect(study.study_metadata.contaminated_human_dna).to eq(metadata[:contaminated_human_dna])
       end
 
-       it 'will have a remove_x_and_autosomes' do
+      it 'will have a remove_x_and_autosomes' do
         expect(study.study_metadata.remove_x_and_autosomes).to eq(metadata[:remove_x_and_autosomes])
       end
 
-       it 'will have a separate_y_chromosome_data' do
+      it 'will have a separate_y_chromosome_data' do
         expect(study.study_metadata.separate_y_chromosome_data).to eq(metadata[:separate_y_chromosome_data])
       end
 
-       it 'will have a study_project_id' do
+      it 'will have a study_project_id' do
         expect(study.study_metadata.study_project_id).to eq(metadata[:study_project_id])
       end
 
-       it 'will have a study_abstract' do
+      it 'will have a study_abstract' do
         expect(study.study_metadata.study_abstract).to eq(metadata[:study_abstract])
       end
 
-       it 'will have a study_study_title' do
+      it 'will have a study_study_title' do
         expect(study.study_metadata.study_study_title).to eq(metadata[:study_study_title])
       end
 
-       it 'will have a study_ebi_accession_number' do
+      it 'will have a study_ebi_accession_number' do
         expect(study.study_metadata.study_ebi_accession_number).to eq(metadata[:study_ebi_accession_number])
       end
 
-       it 'will have a study_sra_hold' do
+      it 'will have a study_sra_hold' do
         expect(study.study_metadata.study_sra_hold).to eq(metadata[:study_sra_hold])
       end
 
-       it 'will have a contains_human_dna' do
+      it 'will have a contains_human_dna' do
         expect(study.study_metadata.contains_human_dna).to eq(metadata[:contains_human_dna])
       end
 
-       it 'will have a commercially_available' do
+      it 'will have a commercially_available' do
         expect(study.study_metadata.commercially_available).to eq(metadata[:commercially_available])
       end
 
-       it 'will have a study_name_abbreviation' do
+      it 'will have a study_name_abbreviation' do
         expect(study.study_metadata.study_name_abbreviation).to eq(metadata[:study_name_abbreviation])
       end
 
-       it 'will have a data_release_strategy' do
+      it 'will have a data_release_strategy' do
         expect(study.study_metadata.data_release_strategy).to eq(metadata[:data_release_strategy])
       end
 
-       it 'will have a data_release_timing' do
+      it 'will have a data_release_timing' do
         expect(study.study_metadata.data_release_timing).to eq(metadata[:data_release_timing])
       end
 
@@ -597,25 +598,22 @@ RSpec.describe Study, type: :model do
       it 'must have a program' do
         expect(study.study_metadata.program).to_not be_nil
       end
-
     end
 
     context 'delayed release' do
-
-      let(:study) { create(:study, study_metadata: create(:study_metadata, metadata.merge(data_release_timing: 'delayed')))}
+      let(:study) { create(:study, study_metadata: create(:study_metadata, metadata.merge(data_release_timing: 'delayed'))) }
 
       it 'will have a data_release_delay_reason' do
         expect(study.study_metadata.data_release_delay_reason).to eq(metadata[:data_release_delay_reason])
       end
 
-       it 'will have a data_release_delay_period' do
+      it 'will have a data_release_delay_period' do
         expect(study.study_metadata.data_release_delay_period).to eq(metadata[:data_release_delay_period])
       end
-
     end
 
     context 'managed study' do
-      let(:study) { create(:study, study_metadata: create(:study_metadata, metadata.merge(data_release_strategy: 'managed')))}
+      let(:study) { create(:study, study_metadata: create(:study_metadata, metadata.merge(data_release_strategy: 'managed'))) }
 
       it 'will have a data_release_standard_agreement' do
         expect(study.study_metadata.data_release_standard_agreement).to eq(metadata[:data_release_standard_agreement])
@@ -625,14 +623,13 @@ RSpec.describe Study, type: :model do
         expect(study.study_metadata.dac_policy).to eq(metadata[:dac_policy])
       end
 
-       it 'will have a dac_policy_title' do
+      it 'will have a dac_policy_title' do
         expect(study.study_metadata.dac_policy_title).to eq(metadata[:dac_policy_title])
       end
     end
 
     context 'delayed for other reasons' do
-
-      let(:study) { create(:study, study_metadata: create(:study_metadata, metadata.merge(data_release_timing: 'delayed', data_release_delay_reason: 'other')))}
+      let(:study) { create(:study, study_metadata: create(:study_metadata, metadata.merge(data_release_timing: 'delayed', data_release_delay_reason: 'other'))) }
 
       it 'will have a data_release_delay_other_comment' do
         expect(study.study_metadata.data_release_delay_other_comment).to eq(metadata[:data_release_delay_other_comment])
@@ -641,20 +638,18 @@ RSpec.describe Study, type: :model do
       it 'will have a data_release_delay_reason_comment' do
         expect(study.study_metadata.data_release_delay_reason_comment).to eq(metadata[:data_release_delay_reason_comment])
       end
-
     end
 
     context 'delayed for long time' do
-      let(:study) { create(:study, study_metadata: create(:study_metadata, metadata.merge(data_release_timing: 'delayed', data_release_delay_period: '6 months')))}
+      let(:study) { create(:study, study_metadata: create(:study_metadata, metadata.merge(data_release_timing: 'delayed', data_release_delay_period: '6 months'))) }
 
       it 'will have a data_release_delay_approval' do
         expect(study.study_metadata.data_release_delay_approval).to eq(metadata[:data_release_delay_approval])
       end
-      
     end
 
     context 'never released' do
-      let(:study) { create(:study, study_metadata: create(:study_metadata, metadata.merge(data_release_timing: 'never')))}
+      let(:study) { create(:study, study_metadata: create(:study_metadata, metadata.merge(data_release_timing: 'never'))) }
 
       it 'will have a data_release_prevention_reason' do
         expect(study.study_metadata.data_release_prevention_reason).to eq(metadata[:data_release_prevention_reason])
@@ -667,24 +662,6 @@ RSpec.describe Study, type: :model do
       it 'will have a data_release_prevention_reason_comment' do
         expect(study.study_metadata.data_release_prevention_reason_comment).to eq(metadata[:data_release_prevention_reason_comment])
       end
-
     end
-
-
-
-  
- 
-
- 
-
-
-
-   
-
-  
-
-  
-
-
   end
 end
