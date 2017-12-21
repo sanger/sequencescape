@@ -60,7 +60,6 @@ class SubmissionTemplateTest < ActiveSupport::TestCase
     context 'without input_field_infos' do
       setup do
         @test_request_typ_b = create :library_creation_request_type
-        @test_request_typ_b
         @test_request_type = create :sequencing_request_type
         @order.request_types = [@test_request_typ_b, @test_request_type]
         @order.request_type_ids_list = [[@test_request_typ_b.id], [@test_request_type.id]]

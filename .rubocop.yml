@@ -72,3 +72,7 @@ Style/ClassAndModuleChildren:
 # Anyway, leaving this off for now.
 Performance/UnfreezeString:
   Enabled: false
+# This should be the rubocop defaults, not sure why its kicking up a fuss.
+Layout/SpaceBeforeBlockBraces:
+  EnforcedStyle: space
+  EnforcedStyleForEmptyBraces: space

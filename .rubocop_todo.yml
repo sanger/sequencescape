@@ -49,24 +49,6 @@ Layout/EmptyLinesAroundArguments:
     - 'test/controllers/admin_users_controller_test.rb'
     - 'test/unit/api/core/io/json_output_test.rb'
 
-# Offense count: 12
-# Cop supports --auto-correct.
-# Configuration parameters: .
-# SupportedStyles: space, no_space
-# SupportedStylesForEmptyBraces: space, no_space
-Layout/SpaceBeforeBlockBraces:
-  EnforcedStyle: space
-  EnforcedStyleForEmptyBraces: space
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, EnforcedStyleForEmptyBrackets.
-# SupportedStyles: space, no_space, compact
-# SupportedStylesForEmptyBrackets: space, no_space
-Layout/SpaceInsideArrayLiteralBrackets:
-  Exclude:
-    - 'app/models/illumina_b/plate_purposes.rb'
-
 # Offense count: 10
 Lint/AmbiguousBlockAssociation:
   Exclude:
@@ -377,11 +359,11 @@ Lint/UselessAssignment:
     - 'test/unit/well_test.rb'
 
 # Offense count: 11
-Lint/Void:
-  Exclude:
-    - 'app/models/fluidigm_file.rb'
-    - 'app/models/pulldown_plate.rb'
-    - 'test/unit/submission_template_test.rb'
+# Lint/Void:
+#   Exclude:
+#     - 'app/models/fluidigm_file.rb'
+#     - 'app/models/pulldown_plate.rb'
+#     - 'test/unit/submission_template_test.rb'
 
 # Offense count: 464
 Metrics/AbcSize:
@@ -709,13 +691,6 @@ Rails/Date:
     - 'test/lib/label_printer/sample_manifest_tube_test.rb'
     - 'test/lib/label_printer/sequenom_384plate_test.rb'
     - 'test/lib/label_printer/sequenom_96plate_test.rb'
-
-# Offense count: 2
-# Cop supports --auto-correct.
-Rails/EnvironmentComparison:
-  Exclude:
-    - 'app/api/core/service/content_filtering.rb'
-    - 'app/models/plate_barcode.rb'
 
 # Offense count: 68
 Rails/FilePath:

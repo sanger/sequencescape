@@ -106,7 +106,6 @@ class FluidigmFile
   def initialize(file_contents)
     @csv = CSV.parse(file_contents)
     build_wells
-    self
   end
 
   def each_well

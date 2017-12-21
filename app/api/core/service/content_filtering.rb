@@ -44,7 +44,7 @@ module Core::Service::ContentFiltering
     end
 
     ACCEPTABLE_TYPES = ['application/json']
-    ACCEPTABLE_TYPES << '*/*' if Rails.env == 'development'
+    ACCEPTABLE_TYPES << '*/*' if Rails.env.development?
 
     def acceptable_types
       ACCEPTABLE_TYPES + ::Api::EndpointHandler.registered_mimetypes
