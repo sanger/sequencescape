@@ -21,6 +21,9 @@ class SampleMetadata < ApplicationRecord
   attr_reader :reference_genome_set_by_name
   # The spreadsheets that people upload contain various fields that could be mistyped.  Here we ensure that the
   # capitalisation of these is correct.
+
+  # TODO: Rewrite attribute re-mapping using Rails'
+  # ActiveRecord::Attributes::ClassMethods#attribute and cast
   REMAPPED_ATTRIBUTES = {
     gc_content: GC_CONTENTS,
     gender: GENDERS,
