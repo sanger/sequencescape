@@ -1,12 +1,15 @@
+# frozen_string_literal: true
+
 # A transfer request collection provides a means
 # of bulk creating transfer requests between arbitrary
 # sources and destinations.
 
+# Used to provide a means of bulk creating transfer requests via the API
 class TransferRequestCollection < ApplicationRecord
   include Uuid::Uuidable
 
-  has_many :transfer_request_collection_transfer_requests
-  has_many :transfer_requests, ->() { preload(:uuid_object, asset: :uuid_object, target_asset: :uuid_object, submission: :uuid_object) }, through: :transfer_request_collection_transfer_requests
+  has_many :transfer_request_collection_transfer_requests, dependent: :destroy
+  has_many :transfer_requests, -> { preload(:uuid_object, asset: :uuid_object, target_asset: :uuid_object, submission: :uuid_object) }, through: :transfer_request_collection_transfer_requests, inverse_of: :transfer_request_collection
 
   # Transfer requests themselves can go to any receptacle,
   # mostly wells and tubes. Unfortunately the current API

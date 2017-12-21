@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This file is part of SEQUENCESCAPE; it is distributed under the terms of
 # GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
@@ -12,10 +14,13 @@ class TransferRequest < ApplicationRecord
   include AASM
   extend Request::Statemachine::ClassMethods
 
+  # States which are still considered to be processable (ie. not failed or cancelled)
+  ACTIVE_STATES = %w[pending started passed qc_complete].freeze
+
   self.inheritance_column = 'sti_type'
 
-  has_many :transfer_request_collection_transfer_requests
-  has_many :transfer_request_collections, through: :transfer_request_collection_transfer_requests
+  has_many :transfer_request_collection_transfer_requests, dependent: :destroy
+  has_many :transfer_request_collections, through: :transfer_request_collection_transfer_requests, inverse_of: :transfer_requests
 
   # The assets on a request can be treated as a particular class when being used by certain pieces of code.  For instance,
   # QC might be performed on a source asset that is a well, in which case we'd like to load it as such.
@@ -31,9 +36,6 @@ class TransferRequest < ApplicationRecord
   validate :source_and_target_assets_are_different
 
   after_create(:perform_transfer_of_contents)
-
-  # States which are still considered to be processable (ie. not failed or cancelled)
-  ACTIVE_STATES = %w(pending started passed qc_complete).freeze
 
   # state machine
   aasm column: :state, whiny_persistence: true do
@@ -116,14 +118,12 @@ class TransferRequest < ApplicationRecord
 
   # after_create callback method
   def perform_transfer_of_contents
-    begin
-      target_asset.aliquots << asset.aliquots.map(&:dup) unless asset.failed? or asset.cancelled?
-    rescue ActiveRecord::RecordNotUnique => exception
-      # We'll specifically handle tag clashes here so that we can produce more informative messages
-      raise exception unless /aliquot_tags_and_tag2s_are_unique_within_receptacle/.match?(exception.message)
-      errors.add(:asset, "contains aliquots which can't be transferred due to tag clash")
-      raise Aliquot::TagClash, self
-    end
+    target_asset.aliquots << asset.aliquots.map(&:dup) unless asset.failed? || asset.cancelled?
+  rescue ActiveRecord::RecordNotUnique => exception
+    # We'll specifically handle tag clashes here so that we can produce more informative messages
+    raise exception unless /aliquot_tags_and_tag2s_are_unique_within_receptacle/.match?(exception.message)
+    errors.add(:asset, "contains aliquots which can't be transferred due to tag clash")
+    raise Aliquot::TagClash, self
   end
 
   # Run on start, or if start is bypassed
@@ -132,7 +132,7 @@ class TransferRequest < ApplicationRecord
   end
 
   def on_failed
-    target_asset.remove_downstream_aliquots if target_asset
+    target_asset&.remove_downstream_aliquots
   end
-  alias_method :on_cancelled, :on_failed
+  alias on_cancelled on_failed
 end

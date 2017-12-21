@@ -62,9 +62,8 @@ class SubmissionPool < ApplicationRecord
         'LEFT JOIN container_associations as spw ON spw.content_id = our.asset_id'
       ])
       .where([
-        'spw.container_id =? AND our.sti_type NOT IN (?) AND our.state IN (?)',
+        'spw.container_id =? AND AND our.state IN (?)',
         stock_plate.id,
-        [TransferRequest, *TransferRequest.descendants].map(&:name),
         Request::Statemachine::ACTIVE
       ])
       .group('submissions.id')
