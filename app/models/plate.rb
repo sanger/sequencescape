@@ -73,6 +73,10 @@ class Plate < Asset
     def in_preferred_order
       proxy_association.owner.plate_purpose.in_preferred_order(self)
     end
+
+    def indexed_by_location
+      @index_well_cache ||= index_by(&:map_description)
+    end
   end
 
   # Contained associations all look up through wells (Wells in turn delegate to aliquots)
@@ -358,18 +362,17 @@ class Plate < Asset
 
   def find_map_by_rowcol(row, col)
     # Count from 0
-    description = asset_shape.location_from_row_and_column(row, col + 1, size)
-    Map.find_by(
-      description: description,
-      asset_size: size,
-      asset_shape_id: asset_shape
-    )
+    maps.find_by(description: map_description(row, col))
+  end
+
+  def map_description(row, col)
+    asset_shape.location_from_row_and_column(row, col + 1, size)
   end
 
   def find_well_by_rowcol(row, col)
-    map = find_map_by_rowcol(row, col)
-    return nil if map.nil?
-    find_well_by_name(map.description)
+    map_description = map_description(row, col)
+    return nil if map_description.nil?
+    find_well_by_name(map_description)
   end
 
   def add_well_holder(well)
@@ -396,20 +399,20 @@ class Plate < Asset
   end
 
   def find_well_by_name(well_name)
-    wells.located_at_position(well_name).first
+    if wells.loaded?
+      wells.indexed_by_location[well_name]
+    else
+      wells.located_at_position(well_name).first
+    end
   end
   alias :find_well_by_map_description :find_well_by_name
-
-  def plate_header
-    [''] + plate_columns
-  end
 
   def plate_rows
     ('A'..((?A.getbyte(0) + height - 1).chr).to_s).to_a
   end
 
   def plate_columns
-    (1..width).to_a
+    (1..width)
   end
 
   def get_plate_type
@@ -452,26 +455,6 @@ class Plate < Asset
 
   def storage_location_service
     @storage_location_service
-  end
-
-  def obtain_storage_location
-    # From LabWhere
-    info_from_labwhere = LabWhereClient::Labware.find_by_barcode(ean13_barcode) # rubocop:disable Rails/DynamicFindBy
-    unless info_from_labwhere.nil? || info_from_labwhere.location.nil?
-      @storage_location_service = 'LabWhere'
-      return info_from_labwhere.location.location_info
-    end
-
-    # From ETS
-    @storage_location_service = 'ETS'
-    return 'Control' if is_a?(ControlPlate)
-    return '' if barcode.blank?
-    return %w(storage_area storage_device building_area building).map do |key|
-      get_external_value(key)
-    end.compact.join(' - ')
-  rescue LabWhereClient::LabwhereException => e
-    @storage_location_service = 'None'
-    return "Not found (#{e.message})"
   end
 
   def barcode_for_tecan
@@ -523,10 +506,9 @@ class Plate < Asset
         plate = Plate.create(barcode: plate_barcode_id.to_s, name: "Plate #{plate_barcode_id}", size: DEFAULT_SIZE)
         plate.save!
       end
-    rescue
+    rescue ActiveRecord::RecordInvalid
       return false
     end
-
     true
   end
 
@@ -592,12 +574,6 @@ class Plate < Asset
   def stock_plate
     @stock_plate ||= stock_plate? ? self : lookup_stock_plate
   end
-
-  def lookup_stock_plate
-    spp = PlatePurpose.considered_stock_plate.pluck(:id)
-    ancestors.order('created_at DESC').find_by(plate_purpose_id: spp)
-  end
-  private :lookup_stock_plate
 
   def original_stock_plates
     ancestors.where(plate_purpose_id: PlatePurpose.stock_plate_purpose)
@@ -671,25 +647,10 @@ class Plate < Asset
     name
   end
 
-  def set_plate_name_and_size
-    self.name = "Plate #{barcode}" if name.blank?
-    self.size = default_plate_size if size.nil?
-  end
-  private :set_plate_name_and_size
-
   extend Metadata
   has_metadata do
     custom_attribute(:infinium_barcode)
     custom_attribute(:fluidigm_barcode)
-  end
-
-  def barcode_label_for_printing
-    PrintBarcode::Label.new(
-      number: barcode,
-      study: find_study_abbreviation_from_parent,
-      suffix: parent.try(:barcode),
-      prefix: barcode_prefix.prefix
-    )
   end
 
   def height
@@ -758,8 +719,8 @@ class Plate < Asset
     ]).find_by(['ca.container_id = ?', id]).try(:name) || 'UNKNOWN'
   end
 
-  # Barcode is stored as a string, jet in a number of places is treated as
-  # a number. If we conver it before searching, things are faster!
+  # Barcode is stored as a string, yet in a number of places is treated as
+  # a number. If we convert it before searching, things are faster!
   def find_by_barcode(barcode)
     super(barcode.to_s)
   end
@@ -767,5 +728,37 @@ class Plate < Asset
   alias_method :friendly_name, :sanger_human_barcode
   def subject_type
     'plate'
+  end
+
+  private
+
+  def obtain_storage_location
+    # From LabWhere
+    info_from_labwhere = LabWhereClient::Labware.find_by_barcode(ean13_barcode) # rubocop:disable Rails/DynamicFindBy
+    unless info_from_labwhere.nil? || info_from_labwhere.location.nil?
+      @storage_location_service = 'LabWhere'
+      return info_from_labwhere.location.location_info
+    end
+
+    # From ETS
+    @storage_location_service = 'ETS'
+    return 'Control' if is_a?(ControlPlate)
+    return '' if barcode.blank?
+    return %w(storage_area storage_device building_area building).map do |key|
+      get_external_value(key)
+    end.compact.join(' - ')
+  rescue LabWhereClient::LabwhereException => e
+    @storage_location_service = 'None'
+    return "Not found (#{e.message})"
+  end
+
+  def lookup_stock_plate
+    spp = PlatePurpose.considered_stock_plate.pluck(:id)
+    ancestors.order('created_at DESC').find_by(plate_purpose_id: spp)
+  end
+
+  def set_plate_name_and_size
+    self.name = "Plate #{barcode}" if name.blank?
+    self.size = default_plate_size if size.nil?
   end
 end

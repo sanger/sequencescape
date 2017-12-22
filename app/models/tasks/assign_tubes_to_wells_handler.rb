@@ -10,7 +10,7 @@ module Tasks::AssignTubesToWellsHandler
   def do_assign_requests_to_multiplexed_wells_task(task, params, plate = nil)
     plate ||= find_or_create_plate(task.purpose)
 
-    well_hash = Hash[plate.wells.located_at(params[:request_locations].values.uniq).map { |w| [w.map_description, w] }]
+    well_hash = plate.wells.located_at(params[:request_locations].values.uniq).index_by(&:map_description)
 
     problem_wells = wells_with_duplicates(params)
 

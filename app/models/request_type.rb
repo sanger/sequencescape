@@ -62,7 +62,7 @@ class RequestType < ApplicationRecord
   validates_presence_of :order
   validates_numericality_of :order, integer_only: true
   validates_numericality_of :morphology, in: MORPHOLOGIES
-  validates_presence_of :request_class_name
+  validates :request_class, presence: true, inclusion: { in: ->(_) { [Request, *Request.descendants] } }
 
   serialize :request_parameters
 

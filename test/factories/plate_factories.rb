@@ -40,7 +40,7 @@ FactoryGirl.define do
       end
 
       after(:build) do |plate, evaluator|
-        well_hash = Hash[evaluator.parent.wells.map { |w| [w.map_description, w] }]
+        well_hash = evaluator.parent.wells.index_by(&:map_description)
         plate.wells.each do |well|
           well.stock_well_links << build(:stock_well_link, target_well: well, source_well: well_hash[well.map_description])
         end

@@ -3,12 +3,12 @@
 class UpdateTransferRequestClassName < ActiveRecord::Migration[5.1]
   TRANSFER_REQUEST_CLASSES = {
     'TransferRequest' => :standard,
-    'CherrypickRequest' => :cherrypick,
+    'CherrypickRequest' => :standard,
     'PacBioSamplePrepRequest::Initial' => :pacbio_initial,
     'TransferRequest::InitialTransfer' => :initial,
     'TransferRequest::InitialDownstream' => :initial_downstream,
-    'CherrypickForFluidigmRequest' => :cherrypick,
-    'CherrypickForPulldownRequest' => :cherrypick
+    'CherrypickForFluidigmRequest' => :standard,
+    'CherrypickForPulldownRequest' => :standard
   }.freeze
 
   class RequestType < ApplicationRecord
@@ -17,7 +17,7 @@ class UpdateTransferRequestClassName < ActiveRecord::Migration[5.1]
 
   class PlatePurposeRelationship < ApplicationRecord
     self.table_name = 'plate_purpose_relationships'
-    enum transfer_request_class_name: [:standard, :initial, :initial_downstream, :cherrypick, :pacbio_initial]
+    enum transfer_request_class_name: [:standard, :initial, :initial_downstream, :pacbio_initial]
   end
 
   def change

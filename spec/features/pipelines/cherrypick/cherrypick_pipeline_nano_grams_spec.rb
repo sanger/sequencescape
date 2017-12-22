@@ -66,5 +66,9 @@ feature 'cherrypick pipeline - nano grams', js: true do
     click_button 'Next step'
     click_button 'Release this batch'
     expect(page).to have_content('Batch released!')
+    within('#output_assets') do
+      click_link 'Show plate'
+    end
+    expect(page).to have_content(plate1.contained_samples.first.name)
   end
 end

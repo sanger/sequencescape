@@ -29,7 +29,7 @@ class Purpose::Relationship < ApplicationRecord
   belongs_to :parent, class_name: 'Purpose'
   belongs_to :child, class_name: 'Purpose'
 
-  enum transfer_request_class_name: %i[standard initial initial_downstream cherrypick pacbio_initial]
+  enum transfer_request_class_name: %i[standard initial initial_downstream pacbio_initial]
 
   scope :with_parent, ->(plate_purpose) { where(parent_id: plate_purpose) }
   scope :with_child,  ->(plate_purpose) { where(child_id: plate_purpose) }

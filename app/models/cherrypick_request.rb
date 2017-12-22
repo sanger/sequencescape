@@ -8,16 +8,24 @@
 class CherrypickRequest < CustomerRequest
   after_create :build_stock_well_links
 
-  def build_stock_well_links
-    stock_wells = asset.plate.try(:plate_purpose).try(:stock_plate?) ? [asset] : asset.stock_wells
-    target_asset.stock_wells.attach!(stock_wells)
+  # On starting a request the aliquots are copied from the source asset to the target
+  # and updated with the project and study information from the request itself.
+  def on_started
+    # raise StandardError
+    TransferRequest::Standard.create(asset: asset, target_asset: target_asset, state: 'passed')
   end
-  private :build_stock_well_links
 
   def reduce_source_volume
     return unless asset.get_current_volume
     subtracted_volume = target_asset.get_picked_volume
     new_volume = asset.get_current_volume - subtracted_volume
     asset.set_current_volume(new_volume)
+  end
+
+  private
+
+  def build_stock_well_links
+    stock_wells = asset.plate.try(:plate_purpose).try(:stock_plate?) ? [asset] : asset.stock_wells
+    target_asset.stock_wells.attach!(stock_wells)
   end
 end
