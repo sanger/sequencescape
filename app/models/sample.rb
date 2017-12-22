@@ -118,10 +118,9 @@ class Sample < ApplicationRecord
   #   end
   # end
 
-
   ### Added from Metaprogramming
   def self.required_tags
-    @required_tags ||= Hash.new { |h, k| h[k] = Array.new }
+    @required_tags ||= Hash.new { |h, k| h[k] = [] }
   end
 
   def self.tags
@@ -129,14 +128,14 @@ class Sample < ApplicationRecord
   end
 
   def tags
-    self.class.tags.select{|tag| tag.for?(accession_service.provider)}
+    self.class.tags.select { |tag| tag.for?(accession_service.provider) }
   end
 
   def required_tags
-    self.class.required_tags[accession_service.try(:provider)]+self.class.required_tags[:all]
+    self.class.required_tags[accession_service.try(:provider)] + self.class.required_tags[:all]
   end
 
-  def self.include_tag(tag, options = Hash.new)
+  def self.include_tag(tag, options = {})
     tags << AccessionedTag.new(tag, options[:as], options[:services], options[:downcase])
   end
 
@@ -275,7 +274,6 @@ class Sample < ApplicationRecord
   def rename_to!(new_name)
     update_attributes!(name: new_name)
   end
-
 
   validation_guard(:can_rename_sample)
   validation_guarded_by(:rename_to!, :can_rename_sample)
@@ -450,7 +448,6 @@ class Sample < ApplicationRecord
     (previous_changes.present? || sample_metadata.previous_changes.present?) && !generate_no_update_event?
   end
 
-
   def ena_study
     @ena_study
   end
@@ -462,7 +459,7 @@ class Sample < ApplicationRecord
 
   def validating_ena_required_fields_without_first_study=(state)
     @validating_ena_required_fields = !!state
-    self.sample_metadata.validating_ena_required_fields = state
+    sample_metadata.validating_ena_required_fields = state
   end
   alias validating_ena_required_fields= validating_ena_required_fields_with_first_study=
 
@@ -483,7 +480,6 @@ class Sample < ApplicationRecord
   def validating_ena_required_fields?
     instance_variable_defined?(:@validating_ena_required_fields) && @validating_ena_required_fields
   end
-
 
   def sample_reference_genome
     return sample_metadata.reference_genome unless sample_metadata.reference_genome.try(:name).blank?

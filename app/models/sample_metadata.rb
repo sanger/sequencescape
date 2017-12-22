@@ -1,17 +1,17 @@
+# frozen_string_literal: true
+
 require_dependency 'attributable'
 
 class SampleMetadata < ApplicationRecord
-  GC_CONTENTS     = ['Neutral', 'High AT', 'High GC']
-  GENDERS         = ['Male', 'Female', 'Mixed', 'Hermaphrodite', 'Unknown', 'Not Applicable']
+  GC_CONTENTS     = ['Neutral', 'High AT', 'High GC'].freeze
+  GENDERS         = ['Male', 'Female', 'Mixed', 'Hermaphrodite', 'Unknown', 'Not Applicable'].freeze
   DNA_SOURCES     = ['Genomic', 'Whole Genome Amplified', 'Blood', 'Cell Line', 'Saliva', 'Brain', 'FFPE',
-                     'Amniocentesis Uncultured', 'Amniocentesis Cultured', 'CVS Uncultured', 'CVS Cultured', 'Fetal Blood', 'Tissue']
-  SRA_HOLD_VALUES = ['Hold', 'Public', 'Protect']
+                     'Amniocentesis Uncultured', 'Amniocentesis Cultured', 'CVS Uncultured', 'CVS Cultured', 'Fetal Blood', 'Tissue'].freeze
+  SRA_HOLD_VALUES = %w[Hold Public Protect].freeze
   AGE_REGEXP      = '\d+(?:\.\d+|\-\d+|\.\d+\-\d+\.\d+|\.\d+\-\d+\.\d+)?\s+(?:second|minute|day|week|month|year)s?|Not Applicable|N/A|To be provided'
   DOSE_REGEXP     = '\d+(?:\.\d+)?\s+\w+(?:\/\w+)?|Not Applicable|N/A|To be provided'
 
-  ArrayExpressFields = %w(genotype phenotype strain_or_line developmental_stage sex cell_type disease_state compound dose immunoprecipitate growth_condition rnai organism_part species time_point age treatment)
-
-
+  ArrayExpressFields = %w[genotype phenotype strain_or_line developmental_stage sex cell_type disease_state compound dose immunoprecipitate growth_condition rnai organism_part species time_point age treatment].freeze
 
   belongs_to :sample, validate: false, autosave: false
   belongs_to :owner, validate: false, autosave: false
@@ -50,19 +50,19 @@ class SampleMetadata < ApplicationRecord
     record.errors.add(:base, 'Sample has no study') if value.blank?
   end
 
-  validates_inclusion_of :gc_content, in: GC_CONTENTS, allow_nil: true
-  validates_inclusion_of :gender, in: GENDERS, allow_nil: true
-  validates_inclusion_of :dna_source, in: DNA_SOURCES, allow_nil: true
-  validates_inclusion_of :sample_sra_hold, in: SRA_HOLD_VALUES, allow_nil: true
-  validates_format_of :age, with: Regexp.new("\\A#{AGE_REGEXP}\\z"), allow_nil: true
-  validates_format_of :dose, with: Regexp.new("\\A#{DOSE_REGEXP}\\z"), allow_nil: true
+  validates :gc_content, inclusion: { in: GC_CONTENTS, allow_nil: true }
+  validates :gender, inclusion: { in: GENDERS, allow_nil: true }
+  validates :dna_source, inclusion: { in: DNA_SOURCES, allow_nil: true }
+  validates :sample_sra_hold, inclusion: { in: SRA_HOLD_VALUES, allow_nil: true }
+  validates :age, format: { with: Regexp.new("\\A#{AGE_REGEXP}\\z"), allow_nil: true }
+  validates :dose, format: { with: Regexp.new("\\A#{DOSE_REGEXP}\\z"), allow_nil: true }
 
   def strain_or_line
     sample_strain_att
   end
 
   def sex
-    gender && gender.downcase
+    gender&.downcase
   end
 
   def species
@@ -70,7 +70,7 @@ class SampleMetadata < ApplicationRecord
   end
 
   def reference_genome_name=(reference_genome_name)
-    return unless reference_genome_name.present?
+    return if reference_genome_name.blank?
     @reference_genome_set_by_name = reference_genome_name
     self.reference_genome = ReferenceGenome.find_by(name: reference_genome_name)
   end
@@ -106,7 +106,6 @@ class SampleMetadata < ApplicationRecord
     name.underscore.split('/').map(&:to_sym) + [field.to_sym]
   end
 
-
   def self.localised_sections(field)
     localised_sections_store[field]
   end
@@ -115,7 +114,7 @@ class SampleMetadata < ApplicationRecord
     @loc_sec ||= Hash.new { |h, field| h[field] = localised_sections_generator(field) }
   end
 
-  SECTION_FIELDS = [:edit_info, :help, :label, :unspecified]
+  SECTION_FIELDS = [:edit_info, :help, :label, :unspecified].freeze
   Section = Struct.new(*SECTION_FIELDS, :label_options)
 
   def self.localised_sections_generator(field)
@@ -135,6 +134,4 @@ class SampleMetadata < ApplicationRecord
   def validating_ena_required_fields?
     instance_variable_defined?(:@validating_ena_required_fields) && @validating_ena_required_fields
   end
-
 end
-
