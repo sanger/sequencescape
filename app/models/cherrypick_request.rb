@@ -6,13 +6,16 @@
 
 # This class is due to replace CherrypickForPulldownRequest
 class CherrypickRequest < CustomerRequest
-  after_create :build_stock_well_links
+  after_create :build_stock_well_links, :transfer_aliquots
 
-  # On starting a request the aliquots are copied from the source asset to the target
-  # and updated with the project and study information from the request itself.
   def on_started
-    # raise StandardError
-    TransferRequest::Standard.create(asset: asset, target_asset: target_asset, state: 'passed')
+    # Aliquots are transferred on creation by transfer requests.
+    # This isn't ideal, but makes the transition easier without
+    # slowing actual picks down.
+  end
+
+  def on_passed
+    target_asset.transfer_requests_as_target.where(submission_id: submission_id).each(&:pass!)
   end
 
   def reduce_source_volume
@@ -23,6 +26,11 @@ class CherrypickRequest < CustomerRequest
   end
 
   private
+
+  # The transfer requests handle the actual transfer
+  def transfer_aliquots
+    TransferRequest::Standard.create(asset: asset, target_asset: target_asset, submission_id: submission_id)
+  end
 
   def build_stock_well_links
     stock_wells = asset.plate.try(:plate_purpose).try(:stock_plate?) ? [asset] : asset.stock_wells
