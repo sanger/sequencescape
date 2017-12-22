@@ -50,6 +50,12 @@ class SampleMetadata < ApplicationRecord
     record.errors.add(:base, 'Sample has no study') if value.blank?
   end
 
+  validates_inclusion_of :gc_content, in: GC_CONTENTS, allow_nil: true
+  validates_inclusion_of :gender, in: GENDERS, allow_nil: true
+  validates_inclusion_of :dna_source, in: DNA_SOURCES, allow_nil: true
+  validates_inclusion_of :sample_sra_hold, in: SRA_HOLD_VALUES, allow_nil: true
+  validates_format_of :age, with: Regexp.new("\\A#{AGE_REGEXP}\\z"), allow_nil: true
+  validates_format_of :dose, with: Regexp.new("\\A#{DOSE_REGEXP}\\z"), allow_nil: true
 
   def strain_or_line
     sample_strain_att

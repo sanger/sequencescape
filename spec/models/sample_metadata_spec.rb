@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe SampleMetadata, type: :model do
 
   context 'metadata attributes' do
-    let(:sample_metadata) { SampleMetadata.create! }
+    let(:sample_metadata) { create :sample_metadata }
 
     it 'has organism' do
       sample_metadata.update_attributes(organism: 'organism 1')
@@ -71,9 +71,25 @@ RSpec.describe SampleMetadata, type: :model do
     end
 
 
+    it 'validates correctly gc_content' do
+      sample_metadata.update_attributes(gc_content: 'gc_content 1')
+      expect(sample_metadata).to_not be_valid
+      sample_metadata.update_attributes(gc_content: 'neutral')
+      expect(sample_metadata).to be_valid
+    end
+
+
     it 'has gender' do
       sample_metadata.update_attributes(gender: 'gender 1')
       expect(sample_metadata.gender).to eq('gender 1')
+    end
+
+
+    it 'validates correctly gender' do
+      sample_metadata.update_attributes(gender: 'gender 1')
+      expect(sample_metadata).to_not be_valid
+      sample_metadata.update_attributes(gender: 'male')
+      expect(sample_metadata).to be_valid
     end
 
 
@@ -86,6 +102,14 @@ RSpec.describe SampleMetadata, type: :model do
     it 'has dna_source' do
       sample_metadata.update_attributes(dna_source: 'dna_source 1')
       expect(sample_metadata.dna_source).to eq('dna_source 1')
+    end
+
+
+    it 'validates correctly dna_source' do
+      sample_metadata.update_attributes(dna_source: 'dna_source 1')
+      expect(sample_metadata).to_not be_valid
+      sample_metadata.update_attributes(dna_source: 'genomic')
+      expect(sample_metadata).to be_valid
     end
 
 
@@ -128,6 +152,14 @@ RSpec.describe SampleMetadata, type: :model do
     it 'has sample_sra_hold' do
       sample_metadata.update_attributes(sample_sra_hold: 'sample_sra_hold 1')
       expect(sample_metadata.sample_sra_hold).to eq('sample_sra_hold 1')
+    end
+
+
+    it 'validates correctly sample_sra_hold' do
+      sample_metadata.update_attributes(sample_sra_hold: 'sample_sra_hold 1')
+      expect(sample_metadata).to_not be_valid
+      sample_metadata.update_attributes(sample_sra_hold: 'HOLD')
+      expect(sample_metadata).to be_valid
     end
 
 
@@ -212,6 +244,14 @@ RSpec.describe SampleMetadata, type: :model do
     it 'has age' do
       sample_metadata.update_attributes(age: 'age 1')
       expect(sample_metadata.age).to eq('age 1')
+    end
+
+
+    it 'validates correctly age' do
+      sample_metadata.update_attributes(age: 'age 1')
+      expect(sample_metadata).to_not be_valid
+      sample_metadata.update_attributes(age: 'Not Applicable')
+      expect(sample_metadata).to be_valid
     end
 
 
