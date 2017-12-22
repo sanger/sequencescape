@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # There are LOTS of associations that transfer_requests simply don't care about
 class RemoveUnecessaryTransferRequestColumns < ActiveRecord::Migration[5.1]
   def change

@@ -15,7 +15,7 @@ class CherrypickRequest < CustomerRequest
   end
 
   def on_passed
-    target_asset.transfer_requests_as_target.where(submission_id: submission_id).each(&:pass!)
+    target_asset.transfer_requests_as_target.where(submission_id: submission_id).find_each(&:pass!)
   end
 
   def reduce_source_volume
