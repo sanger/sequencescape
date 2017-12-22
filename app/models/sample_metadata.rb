@@ -3,6 +3,9 @@
 require_dependency 'attributable'
 
 class SampleMetadata < ApplicationRecord
+  include ReferenceGenome::Associations
+  include Attributable
+
   GC_CONTENTS     = ['Neutral', 'High AT', 'High GC'].freeze
   GENDERS         = ['Male', 'Female', 'Mixed', 'Hermaphrodite', 'Unknown', 'Not Applicable'].freeze
   DNA_SOURCES     = ['Genomic', 'Whole Genome Amplified', 'Blood', 'Cell Line', 'Saliva', 'Brain', 'FFPE',
@@ -15,8 +18,6 @@ class SampleMetadata < ApplicationRecord
 
   belongs_to :sample, validate: false, autosave: false
   belongs_to :owner, validate: false, autosave: false
-  include ReferenceGenome::Associations
-  include Attributable
 
   attr_reader :reference_genome_set_by_name
   # The spreadsheets that people upload contain various fields that could be mistyped.  Here we ensure that the
@@ -50,12 +51,12 @@ class SampleMetadata < ApplicationRecord
     record.errors.add(:base, 'Sample has no study') if value.blank?
   end
 
+  validates :age, format: { with: Regexp.new("\\A#{AGE_REGEXP}\\z"), allow_nil: true }
+  validates :dna_source, inclusion: { in: DNA_SOURCES, allow_nil: true }
+  validates :dose, format: { with: Regexp.new("\\A#{DOSE_REGEXP}\\z"), allow_nil: true }
   validates :gc_content, inclusion: { in: GC_CONTENTS, allow_nil: true }
   validates :gender, inclusion: { in: GENDERS, allow_nil: true }
-  validates :dna_source, inclusion: { in: DNA_SOURCES, allow_nil: true }
   validates :sample_sra_hold, inclusion: { in: SRA_HOLD_VALUES, allow_nil: true }
-  validates :age, format: { with: Regexp.new("\\A#{AGE_REGEXP}\\z"), allow_nil: true }
-  validates :dose, format: { with: Regexp.new("\\A#{DOSE_REGEXP}\\z"), allow_nil: true }
 
   def strain_or_line
     sample_strain_att
