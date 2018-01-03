@@ -22,6 +22,44 @@ class Order < ApplicationRecord
   include ModelExtensions::Order
   include Workflowed
 
+  class CompositeAttribute
+    attr_reader :display_name, :key, :default, :options
+    def initialize(key)
+      @key = key
+    end
+
+    def add(attribute, metadata)
+      @display_name ||= attribute.display_name
+      @key            = attribute.assignable_attribute_name
+      @default      ||= attribute.find_default(nil, metadata)
+      @kind           = attribute.kind if @kind.nil? || attribute.required?
+      if attribute.selection?
+        new_options   = attribute.selection_options(metadata)
+        @options    ||= new_options if selection?
+        @options     &= new_options
+      end
+    end
+
+    def kind
+      @kind || FieldInfo::TEXT
+    end
+
+    def selection?
+      kind == FieldInfo::SELECTION
+    end
+
+    def to_field_infos
+      values = {
+        display_name: display_name,
+        key: key,
+        default_value: default,
+        kind: kind
+      }
+      values.update(selection: options) if selection?
+      FieldInfo.new(values)
+    end
+  end
+
   self.inheritance_column = 'sti_type'
   self.per_page = 500
 
@@ -82,7 +120,6 @@ class Order < ApplicationRecord
   }
 
   delegate :role, to: :order_role, allow_nil: true
-  delegate :left_building_state?, to: :submission, allow_nil: true
 
   class << self
     alias_method :create_order!, :create!
@@ -229,44 +266,6 @@ class Order < ApplicationRecord
     asset_groups
   end
 
-  class CompositeAttribute
-    attr_reader :display_name, :key, :default, :options
-    def initialize(key)
-      @key = key
-    end
-
-    def add(attribute, metadata)
-      @display_name ||= attribute.display_name
-      @key            = attribute.assignable_attribute_name
-      @default      ||= attribute.find_default(nil, metadata)
-      @kind           = attribute.kind if @kind.nil? || attribute.required?
-      if attribute.selection?
-        new_options   = attribute.selection_options(metadata)
-        @options    ||= new_options if selection?
-        @options     &= new_options
-      end
-    end
-
-    def kind
-      @kind || FieldInfo::TEXT
-    end
-
-    def selection?
-      kind == FieldInfo::SELECTION
-    end
-
-    def to_field_infos
-      values = {
-        display_name: display_name,
-        key: key,
-        default_value: default,
-        kind: kind
-      }
-      values.update(selection: options) if selection?
-      FieldInfo.new(values)
-    end
-  end
-
   def request_attributes
     attributes = Hash.new { |hash, value| hash[value] = CompositeAttribute.new(value) }
     request_types_list.flatten.each do |request_type|
@@ -350,6 +349,11 @@ class Order < ApplicationRecord
     if study.present? && !study.active?
       errors.add(:study, 'is not active')
     end
+  end
+
+  # returns an array of samples, that potentially can not be included in submission
+  def not_ready_samples
+    all_samples.reject { |sample| sample.can_be_included_in_submission? }
   end
 
   protected

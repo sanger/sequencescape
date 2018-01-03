@@ -119,7 +119,7 @@ class AmqpClient
 
   # Only bother loading rails if necessary
   def preload_required?
-    %w(start restart reload run).include?(@action)
+    %w[start restart reload run].include?(@action)
   end
 
   # If we're not daemonising we limit ourselves to one worker.

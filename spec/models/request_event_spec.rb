@@ -100,7 +100,18 @@ describe RequestEvent do
       passed = Time.local(2009, 9, 1, 12, 0, 0)
       event2 = create :request_event, to_state: 'passed', current_from: passed
       event3 = create :request_event, to_state: 'later_state'
-      expect(RequestEvent.all.date_for_state('passed').strftime('%Y%m%d')).to eq '20090901'
+      expect(RequestEvent.date_for_state('passed').strftime('%Y%m%d')).to eq '20090901'
+    end
+
+    let(:request) { create :customer_request }
+
+    it 'knows the date when passed through request' do
+      event1 = create :request_event, request: request
+      passed = Time.local(2009, 9, 1, 12, 0, 0)
+      event2 = create :request_event, to_state: 'passed', current_from: passed, request: request
+      event3 = create :request_event, to_state: 'later_state', request: request
+      request.reload.request_events
+      expect(request.date_for_state('passed').strftime('%Y%m%d')).to eq '20090901'
     end
     # rubocop:enable all
   end

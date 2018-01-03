@@ -45,7 +45,7 @@ class Postman
         else
           deadletter(exception)
         end
-      rescue => exception
+      rescue StandardError => exception
         deadletter(exception)
       end
 
