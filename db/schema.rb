@@ -12,6 +12,19 @@
 
 ActiveRecord::Schema.define(version: 20171117110424) do
 
+  create_table "aker_containers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string "barcode"
+    t.string "address"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "aker_work_orders", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "aker_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "aliquot_indices", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.integer "aliquot_id", null: false
     t.integer "lane_id", null: false
@@ -1381,6 +1394,15 @@ ActiveRecord::Schema.define(version: 20171117110424) do
     t.integer "asset_group_id"
   end
 
+  create_table "sample_work_orders", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "sample_id"
+    t.bigint "work_order_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sample_id"], name: "index_sample_work_orders_on_sample_id"
+    t.index ["work_order_id"], name: "index_sample_work_orders_on_work_order_id"
+  end
+
   create_table "samples", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.string "name"
     t.boolean "new_name_format", default: true
@@ -1392,6 +1414,8 @@ ActiveRecord::Schema.define(version: 20171117110424) do
     t.boolean "empty_supplier_sample_name", default: false
     t.boolean "updated_by_manifest", default: false
     t.boolean "consent_withdrawn", default: false, null: false
+    t.integer "work_order_id"
+    t.integer "container_id"
     t.index ["created_at"], name: "index_samples_on_created_at"
     t.index ["name"], name: "index_samples_on_name"
     t.index ["sample_manifest_id"], name: "index_samples_on_sample_manifest_id"
