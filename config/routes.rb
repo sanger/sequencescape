@@ -257,7 +257,7 @@ Sequencescape::Application.routes.draw do
     end
     member do
       post :change_priority
-      get :cancel
+      post :cancel
     end
   end
 
