@@ -183,10 +183,6 @@ class Plate < Asset
       submission_ids
   end
 
-  def self.derived_classes
-    [self, *descendants].map(&:name)
-  end
-
   def prefix
     barcode_prefix.try(:prefix) || self.class.prefix
   end
@@ -347,14 +343,6 @@ class Plate < Asset
       }
     ])
   }
-
-  def wells_sorted_by_map_id
-    wells.sorted
-  end
-
-  def children_and_wells
-    (children | wells)
-  end
 
   def maps
     Map.where_plate_size(size).where_plate_shape(asset_shape)
@@ -601,10 +589,6 @@ class Plate < Asset
     barcode    = nil if barcode.present? and unscoped.find_by(barcode: barcode).present?
     barcode  ||= PlateBarcode.create.barcode
     create!(attributes.merge(barcode: barcode), &block)
-  end
-
-  def self.plates_from_scanned_plate_barcodes(source_plate_barcodes)
-    source_plate_barcodes.scan(/\d+/).map { |barcode| find_from_machine_barcode(barcode) }
   end
 
   #--

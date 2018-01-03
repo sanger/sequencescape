@@ -49,10 +49,6 @@ class PlatePurpose < Purpose
     Cherrypick::Strategy.new(self)
   end
 
-  def cherrypick_dimension
-    cherrypick_direction == 'column' ? plate_height : plate_width
-  end
-
   def cherrypick_completed(plate)
     messenger_creators.each { |creator| creator.create!(plate) }
   end
