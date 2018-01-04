@@ -428,4 +428,240 @@ RSpec.describe Study, type: :model do
       it { is_expected.to eq ['ssr@example.com'] }
     end
   end
+
+  describe 'metadata' do
+    let(:metadata) do
+      {
+        prelim_id: 'A1234',
+        study_description: 'A particularly good study.',
+        contaminated_human_dna: 'Yes',
+        remove_x_and_autosomes: 'No',
+        separate_y_chromosome_data: true,
+        study_project_id: '1',
+        study_abstract: 'blah blah blah',
+        study_study_title: 'Study Title',
+        study_ebi_accession_number: 'EBI123456',
+        study_sra_hold: 'Hold',
+        contains_human_dna: 'Yes',
+        commercially_available: 'Yes',
+        study_name_abbreviation: 'WTCCC',
+        data_release_strategy: 'open',
+        data_release_standard_agreement: 'Yes',
+        data_release_timing: 'standard',
+        data_release_delay_reason: 'phd study',
+        data_release_delay_period: '3 months',
+        bam: true,
+        data_release_delay_other_comment: 'Data Release delay other comment',
+        data_release_delay_reason_comment: 'Data Release delay reason comment',
+        dac_policy: configatron.default_policy_text,
+        dac_policy_title: configatron.default_policy_title,
+        ega_dac_accession_number: 'DAC123456',
+        ega_policy_accession_number: 'POL123456',
+        array_express_accession_number: 'ARR123456',
+        data_release_delay_approval: 'Yes',
+        data_release_prevention_reason: 'data validity',
+        data_release_prevention_approval: 'Yes',
+        data_release_prevention_reason_comment: 'Data Release prevention reason comment',
+        data_access_group: 'something',
+        snp_study_id: 123456,
+        snp_parent_study_id: 123456,
+        number_of_gigabases_per_sample: 6,
+        hmdmc_approval_number: 'HDMC123456',
+        s3_email_list: 'aa1@sanger.ac.uk;aa2@sanger.ac.uk',
+        data_deletion_period: '3 months'
+      }
+    end
+
+    context 'standard data release' do
+      let(:study) { create(:study, study_metadata: create(:study_metadata, metadata)) }
+
+      it 'will have a prelim_id' do
+        expect(study.study_metadata.prelim_id).to eq(metadata[:prelim_id])
+      end
+
+      it 'will have a study_description' do
+        expect(study.study_metadata.study_description).to eq(metadata[:study_description])
+      end
+
+      it 'will have a contaminated_human_dna' do
+        expect(study.study_metadata.contaminated_human_dna).to eq(metadata[:contaminated_human_dna])
+      end
+
+      it 'will have a remove_x_and_autosomes' do
+        expect(study.study_metadata.remove_x_and_autosomes).to eq(metadata[:remove_x_and_autosomes])
+      end
+
+      it 'will have a separate_y_chromosome_data' do
+        expect(study.study_metadata.separate_y_chromosome_data).to eq(metadata[:separate_y_chromosome_data])
+      end
+
+      it 'will have a study_project_id' do
+        expect(study.study_metadata.study_project_id).to eq(metadata[:study_project_id])
+      end
+
+      it 'will have a study_abstract' do
+        expect(study.study_metadata.study_abstract).to eq(metadata[:study_abstract])
+      end
+
+      it 'will have a study_study_title' do
+        expect(study.study_metadata.study_study_title).to eq(metadata[:study_study_title])
+      end
+
+      it 'will have a study_ebi_accession_number' do
+        expect(study.study_metadata.study_ebi_accession_number).to eq(metadata[:study_ebi_accession_number])
+      end
+
+      it 'will have a study_sra_hold' do
+        expect(study.study_metadata.study_sra_hold).to eq(metadata[:study_sra_hold])
+      end
+
+      it 'will have a contains_human_dna' do
+        expect(study.study_metadata.contains_human_dna).to eq(metadata[:contains_human_dna])
+      end
+
+      it 'will have a commercially_available' do
+        expect(study.study_metadata.commercially_available).to eq(metadata[:commercially_available])
+      end
+
+      it 'will have a study_name_abbreviation' do
+        expect(study.study_metadata.study_name_abbreviation).to eq(metadata[:study_name_abbreviation])
+      end
+
+      it 'will have a data_release_strategy' do
+        expect(study.study_metadata.data_release_strategy).to eq(metadata[:data_release_strategy])
+      end
+
+      it 'will have a data_release_timing' do
+        expect(study.study_metadata.data_release_timing).to eq(metadata[:data_release_timing])
+      end
+
+      it 'will have a bam' do
+        expect(study.study_metadata.bam).to eq(metadata[:bam])
+      end
+
+      it 'will have a ega_dac_accession_number' do
+        expect(study.study_metadata.ega_dac_accession_number).to eq(metadata[:ega_dac_accession_number])
+      end
+
+      it 'will have a ega_policy_accession_number' do
+        expect(study.study_metadata.ega_policy_accession_number).to eq(metadata[:ega_policy_accession_number])
+      end
+
+      it 'will have a array_express_accession_number' do
+        expect(study.study_metadata.array_express_accession_number).to eq(metadata[:array_express_accession_number])
+      end
+
+      it 'will have a data_access_group' do
+        expect(study.study_metadata.data_access_group).to eq(metadata[:data_access_group])
+      end
+
+      it 'will have a snp_study_id' do
+        expect(study.study_metadata.snp_study_id).to eq(metadata[:snp_study_id])
+      end
+
+      it 'will have a snp_parent_study_id' do
+        expect(study.study_metadata.snp_parent_study_id).to eq(metadata[:snp_parent_study_id])
+      end
+
+      it 'will have a number_of_gigabases_per_sample' do
+        expect(study.study_metadata.number_of_gigabases_per_sample).to eq(metadata[:number_of_gigabases_per_sample])
+      end
+
+      it 'will have a hmdmc_approval_number' do
+        expect(study.study_metadata.hmdmc_approval_number).to eq(metadata[:hmdmc_approval_number])
+      end
+
+      it 'will have a s3_email_list' do
+        expect(study.study_metadata.s3_email_list).to eq(metadata[:s3_email_list])
+      end
+
+      it 'will have a data_deletion_period' do
+        expect(study.study_metadata.data_deletion_period).to eq(metadata[:data_deletion_period])
+      end
+
+      it 'must have a study type' do
+        expect(study.study_metadata.study_type).to_not be_nil
+      end
+
+      it 'must have a data release study type' do
+        expect(study.study_metadata.data_release_study_type).to_not be_nil
+      end
+
+      it 'must have a reference genome' do
+        expect(study.study_metadata.reference_genome).to_not be_nil
+      end
+
+      it 'must have a faculty sponsor' do
+        expect(study.study_metadata.faculty_sponsor).to_not be_nil
+      end
+
+      it 'must have a program' do
+        expect(study.study_metadata.program).to_not be_nil
+      end
+    end
+
+    context 'delayed release' do
+      let(:study) { create(:study, study_metadata: create(:study_metadata, metadata.merge(data_release_timing: 'delayed'))) }
+
+      it 'will have a data_release_delay_reason' do
+        expect(study.study_metadata.data_release_delay_reason).to eq(metadata[:data_release_delay_reason])
+      end
+
+      it 'will have a data_release_delay_period' do
+        expect(study.study_metadata.data_release_delay_period).to eq(metadata[:data_release_delay_period])
+      end
+    end
+
+    context 'managed study' do
+      let(:study) { create(:study, study_metadata: create(:study_metadata, metadata.merge(data_release_strategy: 'managed'))) }
+
+      it 'will have a data_release_standard_agreement' do
+        expect(study.study_metadata.data_release_standard_agreement).to eq(metadata[:data_release_standard_agreement])
+      end
+
+      it 'will have a dac_policy' do
+        expect(study.study_metadata.dac_policy).to eq(metadata[:dac_policy])
+      end
+
+      it 'will have a dac_policy_title' do
+        expect(study.study_metadata.dac_policy_title).to eq(metadata[:dac_policy_title])
+      end
+    end
+
+    context 'delayed for other reasons' do
+      let(:study) { create(:study, study_metadata: create(:study_metadata, metadata.merge(data_release_timing: 'delayed', data_release_delay_reason: 'other'))) }
+
+      it 'will have a data_release_delay_other_comment' do
+        expect(study.study_metadata.data_release_delay_other_comment).to eq(metadata[:data_release_delay_other_comment])
+      end
+
+      it 'will have a data_release_delay_reason_comment' do
+        expect(study.study_metadata.data_release_delay_reason_comment).to eq(metadata[:data_release_delay_reason_comment])
+      end
+    end
+
+    context 'delayed for long time' do
+      let(:study) { create(:study, study_metadata: create(:study_metadata, metadata.merge(data_release_timing: 'delayed', data_release_delay_period: '6 months'))) }
+
+      it 'will have a data_release_delay_approval' do
+        expect(study.study_metadata.data_release_delay_approval).to eq(metadata[:data_release_delay_approval])
+      end
+    end
+
+    context 'never released' do
+      let(:study) { create(:study, study_metadata: create(:study_metadata, metadata.merge(data_release_timing: 'never'))) }
+
+      it 'will have a data_release_prevention_reason' do
+        expect(study.study_metadata.data_release_prevention_reason).to eq(metadata[:data_release_prevention_reason])
+      end
+
+      it 'will have a data_release_prevention_approval' do
+        expect(study.study_metadata.data_release_prevention_approval).to eq(metadata[:data_release_prevention_approval])
+      end
+
+      it 'will have a data_release_prevention_reason_comment' do
+        expect(study.study_metadata.data_release_prevention_reason_comment).to eq(metadata[:data_release_prevention_reason_comment])
+      end
+    end
+  end
 end
