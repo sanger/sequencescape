@@ -14,7 +14,7 @@ Feature: Requests should disappear from the inbox when a batch is started
     And I check "Select DN222J for batch"
     And I select "Create Batch" from the first "Action to perform"
     And I press the first "Submit"
-    When I follow "Cherrypick Group By Submission"
+    When I follow "Back to pipeline"
     Given I am on the show page for pipeline "Cherrypick"
     Then I should not see "222"
 
