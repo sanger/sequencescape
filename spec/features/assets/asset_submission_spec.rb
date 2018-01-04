@@ -48,12 +48,12 @@ feature 'Asset submission', js: true do
     end
   end
 
-  context 'an admin' do
+  context 'when an admin' do
     let(:user) { create :admin }
     it_behaves_like 'it allows additional sequencing'
   end
 
-  context 'a regular user' do
+  context 'when a regular user' do
     let(:user) { create :user }
     it_behaves_like 'it forbids additional sequencing'
   end

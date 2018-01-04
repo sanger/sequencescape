@@ -35,8 +35,7 @@ module IlluminaB::PlatePurposes
   STOCK_PLATE_PURPOSE = 'ILB_STD_INPUT'
 
   # Don't have ILllumina B QC plates at the momnet...
-  PLATE_PURPOSE_LEADING_TO_QC_PLATES = [
-  ]
+  PLATE_PURPOSE_LEADING_TO_QC_PLATES = []
 
   STOCK_PLATE_PURPOSE_TO_OUTER_REQUEST = {
     'ILB_STD_INPUT' => 'illumina_b_std'

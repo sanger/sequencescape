@@ -83,50 +83,6 @@ class Project < ApplicationRecord
     joins(:roles).on(roles[:name].eq('manager')).where(roles[:id].eq(nil))
   }
 
-  def ended_billable_lanes(ended)
-    events = []
-    samples.each do |sample|
-      if sample.ended.casecmp(ended).zero?
-        events << sample.billable_events
-      end
-    end
-    events = events.flatten
-  end
-
-  def billable_events
-    e = []
-    samples.each do |sample|
-      e << sample.billable_events
-    end
-    e.flatten
-  end
-
-  def billable_events_between(from, to)
-    a = []
-    billable_events.each do |event|
-      if event.created_at.to_date >= from and event.created_at.to_date <= to
-        a << event
-      end
-    end
-    a
-  end
-
-  def ended_billable_lanes_between(from, to, ended)
-    events = ended_billable_lanes(ended)
-
-    a = []
-    events.each do |event|
-      if event.created_at.to_date >= from and event.created_at.to_date <= to
-        a << event
-      end
-    end
-    a.size
-  end
-
-  def billable_lanes_between(from, to)
-    billable_events_between(from, to).size
-  end
-
   def owners
     role = roles.detect { |r| r.name == 'owner' }
     if role.nil?

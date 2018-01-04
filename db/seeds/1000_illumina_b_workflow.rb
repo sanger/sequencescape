@@ -69,9 +69,6 @@ ActiveRecord::Base.transaction do
 
   Pulldown::PlatePurposes.create_purposes(Pulldown::PlatePurposes::PLATE_PURPOSE_FLOWS.last)
 
-  tube_purpose = Tube::Purpose.find_by(name: 'Cap Lib Pool Norm') or raise 'Cannot find standard MX tube purpose'
-  Purpose.find_by(name: Pulldown::PlatePurposes::PLATE_PURPOSE_FLOWS.last.last).child_relationships.create!(child: tube_purpose, transfer_request_type: RequestType.transfer)
-
   [
     {
       key: 'illumina_a_shared',

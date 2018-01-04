@@ -162,55 +162,6 @@ class AccessionService
 
   private
 
-  def accession_study_set_xml_quarantine(study, studydata)
-    xml = Builder::XmlMarkup.new
-    xml.instruct!
-    xml.STUDY_SET('xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance') {
-      xml.STUDY(alias: studydata[:alias], accession: study.study_metadata.study_ebi_accession_number) {
-        xml.DESCRIPTOR {
-          xml.STUDY_TITLE         studydata[:study_title]
-          xml.STUDY_DESCRIPTION   studydata[:description]
-          xml.CENTER_PROJECT_NAME studydata[:center_study_name]
-          xml.CENTER_NAME         studydata[:center_name]
-          xml.STUDY_ABSTRACT      studydata[:study_abstract]
-
-          xml.PROJECT_ID(studydata[:study_id] || '0')
-          study_type = studydata[:existing_study_type]
-          if StudyType.include?(study_type)
-            xml.STUDY_TYPE(existing_study_type: study_type)
-          else
-            xml.STUDY_TYPE(existing_study_type: Study::Other_type, new_study_type: study_type)
-          end
-        }
-      }
-    }
-    xml.target!
-  end
-
-  def accession_sample_set_xml_quarantine(sample, sampledata)
-    xml = Builder::XmlMarkup.new
-    xml.instruct!
-    xml.SAMPLE_SET('xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance') {
-      xml.SAMPLE(alias: sampledata[:alias], accession: sample.sample_metadata.sample_ebi_accession_number) {
-        xml.SAMPLE_NAME {
-          xml.COMMON_NAME  sampledata[:sample_common_name]
-          xml.TAXON_ID     sampledata[:taxon_id]
-        }
-        xml.SAMPLE_ATTRIBUTES {
-          sampledata[:tags].each do |tagpair|
-            xml.SAMPLE_ATTRIBUTE {
-              xml.TAG   tagpair[:tag]
-              xml.VALUE tagpair[:value]
-            }
-          end
-        } unless sampledata[:tags].blank?
-
-        xml.SAMPLE_LINKS {} unless sampledata[:links].blank?
-      }
-    }
-    xml.target!
-  end
-
   def accession_submission_xml(submission, accession_number)
     xml = Builder::XmlMarkup.new
     xml.instruct!

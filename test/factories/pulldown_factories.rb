@@ -6,6 +6,7 @@
 FactoryGirl.define do
   factory(:transfer_plate, class: Plate) do
     size 96
+    plate_purpose
 
     after(:create) do |plate|
       plate.wells << Map.where_description(['A1', 'B1', 'C1'])
@@ -13,14 +14,6 @@ FactoryGirl.define do
                         .where_plate_shape(AssetShape.find_by(name: 'Standard')).map do |location|
         create(:tagged_well, map: location)
       end
-    end
-
-    factory(:source_transfer_plate) do
-      plate_purpose
-    end
-
-    factory(:destination_transfer_plate) do
-      plate_purpose
     end
   end
 
@@ -96,19 +89,19 @@ FactoryGirl.define do
   # Transfers and their templates
   factory(:transfer_between_plates, class: Transfer::BetweenPlates) do
     user
-    association(:source,      factory: :source_transfer_plate)
-    association(:destination, factory: :destination_transfer_plate)
+    association(:source,      factory: :transfer_plate)
+    association(:destination, factory: :transfer_plate)
     transfers('A1' => 'A1', 'B1' => 'B1')
   end
 
   factory(:transfer_from_plate_to_tube, class: Transfer::FromPlateToTube) do
     user
-    source      { |target| target.association(:source_transfer_plate) }
+    source      { |target| target.association(:transfer_plate) }
     destination { |target| target.association(:library_tube) }
     transfers(['A1', 'B1'])
 
     after(:build) do |transfer|
-      transfer.source.plate_purpose.child_relationships.create!(child: transfer.destination.purpose, transfer_request_type: RequestType.transfer)
+      transfer.source.plate_purpose.child_relationships.create!(child: transfer.destination.purpose, transfer_request_class_name: :standard)
     end
   end
 
@@ -182,15 +175,8 @@ FactoryGirl.define do
     name 'Parent plate purpose'
 
     after(:create) do |plate_purpose|
-      plate_purpose.child_relationships.create!(child: create(:plate_purpose), transfer_request_type: RequestType.transfer)
+      plate_purpose.child_relationships.create!(child: create(:plate_purpose), transfer_request_class_name: :standard)
     end
-  end
-
-  factory(:pooling_transfer, class: RequestType) do
-    asset_type 'Well'
-    order 1
-    request_class_name 'TransferRequest::InitialDownstream'
-    request_purpose { |rp| rp.association(:request_purpose) }
   end
 
   # Plate creations
@@ -199,7 +185,7 @@ FactoryGirl.define do
     stock_plate true
     after(:create) do |plate_purpose|
       cpp = create(:plate_purpose)
-      plate_purpose.child_relationships.create!(child: cpp, transfer_request_type: create(:pooling_transfer))
+      plate_purpose.child_relationships.create!(child: cpp, transfer_request_class_name: :initial_downstream)
     end
   end
 
@@ -237,7 +223,7 @@ FactoryGirl.define do
       tube_creation.parent.wells.in_column_major_order.in_groups_of(tube_creation.parent.wells.size / 2).each_with_index do |pool, i|
         submission = create :submission
         pool.each do |well|
-          RequestType.transfer.create!(asset: stock_wells[i], target_asset: well, submission: submission);
+          create :transfer_request, asset: stock_wells[i], target_asset: well, submission: submission
           mock_request_type.create!(asset: stock_wells[i], target_asset: well, submission: submission, request_metadata_attributes: create(:request_metadata_for_library_creation).attributes);
           create :stock_well_link, target_well: well, source_well: stock_wells[i]
         end

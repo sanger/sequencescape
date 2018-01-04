@@ -237,16 +237,6 @@ class Asset < ApplicationRecord
     with_machine_barcode(source_barcode).first
   end
 
-  def self.find_by_human_barcode(barcode, location)
-    data = Barcode.split_human_barcode(barcode)
-    if data[0] == 'DN'
-      plate = Plate.find_by(barcode: data[1])
-      well = plate.find_well_by_name(location)
-      return well if well
-    end
-    raise ActiveRecord::RecordNotFound, "Couldn't find well with for #{barcode} #{location}"
-  end
-
   def summary_hash
     {
       asset_id: id

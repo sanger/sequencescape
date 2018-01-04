@@ -77,14 +77,14 @@
           </div>
           <ul>
           <% @task.families.each do |family| -%>
-            <li><%= family.name %> <%= link_to 'x', family_path(family), method: :delete %></li>
+            <li><%= family.name %> (Removal disabled)</li>
           <% end -%>
           </ul>
         <% end %>
       </div>
     </div>
     <div>
-      <span class='bullet'>&raquo;</span> <%= link_to 'Specify assets', controller: 'families', action: 'new', id: @task.id %>
+      <span class='bullet'>&raquo;</span>Specify assets (disabled)
       <div class='helper'>Detail items to be created during this pipeline</div>
     </div>
     <div>

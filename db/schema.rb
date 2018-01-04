@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171212112846) do
+ActiveRecord::Schema.define(version: 20171222105504) do
 
   create_table "aker_containers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "barcode"
@@ -853,7 +853,8 @@ ActiveRecord::Schema.define(version: 20171212112846) do
   create_table "plate_purpose_relationships", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.integer "parent_id"
     t.integer "child_id"
-    t.integer "transfer_request_type_id", null: false
+    t.integer "transfer_request_type_id"
+    t.integer "transfer_request_class_name", default: 0, null: false
   end
 
   create_table "plate_purposes", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -1749,6 +1750,20 @@ ActiveRecord::Schema.define(version: 20171212112846) do
     t.index ["user_id"], name: "fk_rails_e542f48171"
   end
 
+  create_table "transfer_requests", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string "state", limit: 20, default: "pending"
+    t.integer "asset_id"
+    t.integer "target_asset_id"
+    t.integer "submission_id"
+    t.string "sti_type"
+    t.integer "order_id"
+    t.index ["asset_id"], name: "index_requests_on_asset_id"
+    t.index ["submission_id"], name: "index_requests_on_submission_id"
+    t.index ["target_asset_id"], name: "index_requests_on_target_asset_id"
+  end
+
   create_table "transfer_templates", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -1914,8 +1929,8 @@ ActiveRecord::Schema.define(version: 20171212112846) do
   add_foreign_key "sample_manifests", "plate_purposes", column: "purpose_id"
   add_foreign_key "tag_layout_templates", "tag_groups", column: "tag2_group_id"
   add_foreign_key "tag_layouts", "tag_groups", column: "tag2_group_id"
-  add_foreign_key "transfer_request_collection_transfer_requests", "requests", column: "transfer_request_id"
   add_foreign_key "transfer_request_collection_transfer_requests", "transfer_request_collections"
+  add_foreign_key "transfer_request_collection_transfer_requests", "transfer_requests"
   add_foreign_key "transfer_request_collections", "users"
   add_foreign_key "work_completions", "assets", column: "target_id"
   add_foreign_key "work_completions", "users"

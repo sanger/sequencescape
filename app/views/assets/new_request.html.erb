@@ -70,7 +70,10 @@
     <% @request_types.each do |request_type| %>
       <fieldset id="request_type_options_for_<%= request_type.id %>" class="request_options">
         <h3><%= request_type.name %> Options</h3>
-          <%= render partial: 'shared/metadata/edit/request', locals: { request: request_type.new_request(request_metadata_attributes: @asset.created_with_request_options) } %>
+          <%= render partial: 'shared/metadata/edit/request',
+                     locals: {
+                      request: request_type.new(request_metadata_attributes: @asset.created_with_request_options)
+                    } %>
       </fieldset>
     <% end %>
   <% end %>

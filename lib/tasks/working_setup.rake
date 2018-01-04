@@ -67,7 +67,10 @@ namespace :working do
             received_at: DateTime.now
           )
           qcc = QcableCreator.create!(lot: lot, user: user, count: 30)
-          qcc.qcables.each { |qcable| qcable.update_attributes!(state: 'available'); puts "Tag Plate: #{qcable.asset.ean13_barcode}" }
+          qcc.qcables.each do |qcable|
+            qcable.update_attributes!(state: 'available')
+            puts "Tag Plate: #{qcable.asset.ean13_barcode}"
+          end
         end
 
         private

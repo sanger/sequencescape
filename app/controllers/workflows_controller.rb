@@ -14,12 +14,10 @@ class WorkflowsController < ApplicationController
 
   include Tasks::AddSpikedInControlHandler
   include Tasks::AssignTagsHandler
-  include Tasks::AssignTagsToWellsHandler
   include Tasks::AssignTagsToTubesHandler
   include Tasks::AssignTubesToWellsHandler
   include Tasks::AttachInfiniumBarcodeHandler
   include Tasks::BindingKitBarcodeHandler
-  include Tasks::CherrypickGroupBySubmissionHandler
   include Tasks::CherrypickHandler
   include Tasks::DnaQcHandler
   include Tasks::GenerateManifestHandler
@@ -27,7 +25,6 @@ class WorkflowsController < ApplicationController
   include Tasks::PlateTemplateHandler
   include Tasks::PlateTransferHandler
   include Tasks::PrepKitBarcodeHandler
-  include Tasks::ReferenceSequenceHandler
   include Tasks::SamplePrepQcHandler
   include Tasks::SetDescriptorsHandler
   include Tasks::SetCharacterisationDescriptorsHandler

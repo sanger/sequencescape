@@ -77,12 +77,11 @@ class Transfer::BetweenPlateAndTubes < Transfer
   # well as a source and the target is an MX library tube.
   #++
   def well_to_destination
-    Hash[
-      source.stock_wells.map do |well, stock_wells|
-        tube = locate_mx_library_tube_for(well, stock_wells)
-        (tube.nil? or should_well_not_be_transferred?(well)) ? nil : [well, [tube, stock_wells]]
-      end.compact
-    ]
+    source.stock_wells.each_with_object({}) do |(well, stock_wells), store|
+      tube = locate_mx_library_tube_for(well, stock_wells)
+      next if tube.nil? or should_well_not_be_transferred?(well)
+      store[well] = [tube, stock_wells]
+    end
   end
 
   def record_transfer(source, destination, stock_well)
@@ -123,8 +122,8 @@ class Transfer::BetweenPlateAndTubes < Transfer
   end
 
   # Request type is based on the destination tube from the source plate
-  def request_type_between(_, destination)
-    destination.transfer_request_type_from(source)
+  def transfer_request_class_between(_, destination)
+    destination.transfer_request_class_from(source)
   end
 
   def build_asset_links

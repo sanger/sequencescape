@@ -290,13 +290,6 @@ Sequencescape::Application.routes.draw do
   namespace :admin do
     resources :custom_texts
 
-    resources :settings do
-      collection do
-        get :reset
-        get :apply
-      end
-    end
-
     resources :studies, except: [:destroy] do
       collection do
         get :index
@@ -366,28 +359,7 @@ Sequencescape::Application.routes.draw do
     end
   end
 
-  resources :verifications do
-    collection do
-      get :input
-      post :verify
-    end
-  end
-
   resources :plate_templates
-
-  get 'implements/print_labels' => 'implements#print_labels'
-
-  resources :implements
-  resources :pico_sets do
-    collection do
-      get :create_from_stock
-    end
-    member do
-      get :analyze
-      post :score
-      get :normalise_plate
-    end
-  end
 
   resources :gels do
     collection do
@@ -400,7 +372,7 @@ Sequencescape::Application.routes.draw do
     end
   end
 
-  resources :request_information_types
+  resources :machine_barcodes, only: [:show]
 
   match 'pipelines/assets/new/:id' => 'pipelines/assets#new', :via => 'get'
 
@@ -433,7 +405,6 @@ Sequencescape::Application.routes.draw do
   end
 
   resources :lab_searches
-  resources :errors
   resources :events
 
   resources :workflows, except: :delete do
@@ -471,8 +442,6 @@ Sequencescape::Application.routes.draw do
   get 'assets/find_by_barcode' => 'assets#find_by_barcode'
   get 'lab_view' => 'assets#lab_view', :as => :lab_view
   post 'assets/lab_view'
-
-  resources :families
 
   resources :tag_groups, except: [:destroy] do
     resources :tags, except: [:destroy, :index, :create, :new, :edit]

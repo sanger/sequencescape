@@ -359,7 +359,7 @@ class Study < ApplicationRecord
   end
 
   def text_comments
-    comments.collect { |c| c.description unless c.description.blank? }.compact.join(', ')
+    comments.each_with_object([]) { |c, array| array << c.description unless c.description.blank? }.join(', ')
   end
 
   def completed(_workflow = nil)

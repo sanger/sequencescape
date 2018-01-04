@@ -1,12 +1,18 @@
+# frozen_string_literal: true
+
 # A transfer request collection provides a means
 # of bulk creating transfer requests between arbitrary
 # sources and destinations.
 
+# Used to provide a means of bulk creating transfer requests via the API
 class TransferRequestCollection < ApplicationRecord
   include Uuid::Uuidable
 
-  has_many :transfer_request_collection_transfer_requests
-  has_many :transfer_requests, ->() { preload(:uuid_object, asset: :uuid_object, target_asset: :uuid_object, submission: :uuid_object) }, through: :transfer_request_collection_transfer_requests
+  has_many :transfer_request_collection_transfer_requests, dependent: :destroy
+  has_many :transfer_requests,
+           -> { preload(:uuid_object, asset: :uuid_object, target_asset: :uuid_object, submission: :uuid_object) },
+           through: :transfer_request_collection_transfer_requests,
+           inverse_of: :transfer_request_collections
 
   # Transfer requests themselves can go to any receptacle,
   # mostly wells and tubes. Unfortunately the current API
@@ -20,10 +26,6 @@ class TransferRequestCollection < ApplicationRecord
   belongs_to :user, required: true
   accepts_nested_attributes_for :transfer_requests
 
-  def default_request_type
-    @default_request_type ||= RequestType.transfer
-  end
-
   # These are optimizations to reduce the number of queries that need to be
   # performed while the transfer takes place.
   # Transfer requests rely both on the aliquots in an assets, and the transfer rquests
@@ -34,7 +36,6 @@ class TransferRequestCollection < ApplicationRecord
     asset_cache = Asset.includes(:aliquots, :transfer_requests).find(asset_ids).index_by(&:id)
     optimized_parameters = args.map do |param|
       param.stringify_keys!
-      param['request_type'] ||= default_request_type unless param['request_type_id']
       param['asset'] ||= asset_cache[param['asset_id']]
       param['target_asset'] ||= asset_cache[param['target_asset_id']]
       param

@@ -159,10 +159,9 @@ FactoryGirl.define do
     target_asset { |asset| asset.association(:empty_library_tube) }
   end
 
-  factory :initial_transfer_request, class: TransferRequest::InitialTransfer do
+  factory :initial_transfer_request, class: TransferRequest::Initial do
     asset { |asset| asset.association(:well) }
     target_asset { |asset| asset.association(:well) }
-    request_purpose
   end
 
   factory :request_traction_grid_ion, class: Request::Traction::GridIon do

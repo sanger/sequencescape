@@ -11,7 +11,7 @@ class Plate < Asset
   include ModelExtensions::Plate
   include Transfer::Associations
   include Transfer::State::PlateState
-  include PlatePurpose::Associations
+  # include PlatePurpose::Associations
   include Barcode::Barcodeable
   include Asset::Ownership::Owned
   include Plate::FluidigmBehaviour
@@ -20,6 +20,9 @@ class Plate < Asset
 
   extend QcFile::Associations
   has_qc_files
+
+  belongs_to :plate_purpose, foreign_key: :plate_purpose_id
+  belongs_to :purpose, foreign_key: :plate_purpose_id
 
   has_many :container_associations, foreign_key: :container_id, inverse_of: :plate
   has_many :wells, through: :container_associations, inverse_of: :plate do
@@ -70,6 +73,10 @@ class Plate < Asset
     def in_preferred_order
       proxy_association.owner.plate_purpose.in_preferred_order(self)
     end
+
+    def indexed_by_location
+      @index_well_cache ||= index_by(&:map_description)
+    end
   end
 
   # Contained associations all look up through wells (Wells in turn delegate to aliquots)
@@ -90,6 +97,7 @@ class Plate < Asset
   # Transfer requests into a plate are the requests leading into the wells of said plate.
   has_many :transfer_requests, through: :wells, source: :transfer_requests_as_target
   has_many :transfer_requests_as_source, through: :wells
+  has_many :transfer_requests_as_target, through: :wells
   has_many :transfer_request_collections, through: :transfer_requests_as_source
 
   # The default state for a plate comes from the plate purpose
@@ -146,10 +154,14 @@ class Plate < Asset
       ]
     )
   }
+  scope :with_plate_purpose, ->(*purposes) { where(plate_purpose_id: purposes.flatten) }
 
   # About 10x faster than going through the wells
   def submission_ids
     @siat ||= container_associations
+              .joins('LEFT JOIN transfer_requests ON transfer_requests.target_asset_id = container_associations.content_id')
+              .where.not(transfer_requests: { submission_id: nil }).where.not(transfer_requests: { state: Request::Statemachine::INACTIVE })
+              .distinct.pluck(:submission_id) + container_associations
               .joins('LEFT JOIN requests ON requests.target_asset_id = container_associations.content_id')
               .where.not(requests: { submission_id: nil }).where.not(requests: { state: Request::Statemachine::INACTIVE })
               .distinct.pluck(:submission_id)
@@ -159,6 +171,9 @@ class Plate < Asset
     @sias ||= container_associations
               .joins('LEFT JOIN requests ON requests.asset_id = container_associations.content_id')
               .where(['requests.submission_id IS NOT NULL AND requests.state NOT IN (?)', Request::Statemachine::INACTIVE])
+              .distinct.pluck(:submission_id) + container_associations
+              .joins('LEFT JOIN transfer_requests ON transfer_requests.asset_id = container_associations.content_id')
+              .where(['transfer_requests.submission_id IS NOT NULL AND transfer_requests.state NOT IN (?)', Request::Statemachine::INACTIVE])
               .distinct.pluck(:submission_id)
   end
 
@@ -166,10 +181,6 @@ class Plate < Asset
     submission_ids_as_source.present? ?
       submission_ids_as_source :
       submission_ids
-  end
-
-  def self.derived_classes
-    [self, *descendants].map(&:name)
   end
 
   def prefix
@@ -210,53 +221,14 @@ class Plate < Asset
     iter.zero? ? nil : iter # Maintains compatibility with legacy version
   end
 
-  class CommentsProxy
-    attr_reader :plate
+  # Delegate the change of state to our plate purpose.
+  def transition_to(state, user, contents = nil, customer_accepts_responsibility = false)
+    purpose.transition_to(self, state, user, contents, customer_accepts_responsibility)
+  end
 
-    def initialize(plate)
-      @plate = plate
-    end
-
-    def comment_assn
-      @asn ||= Comment.for_plate(plate)
-    end
-
-    def method_missing(method, *args)
-      comment_assn.send(method, *args)
-    end
-
-    ##
-    # We add the comments to each submission to ensure that are available for all the requests.
-    # At time of writing, submissions add comments to each request, so there are a lot of comments
-    # getting created here. (The intent is to change this so requests are treated similarly to plates)
-    def create!(options)
-      plate.submissions.each { |s| s.add_comment(options[:description], options[:user]) }
-      Comment.create!(options.merge(commentable: plate))
-    end
-
-    def create(options)
-      plate.submissions.each { |s| s.add_comment(options[:description], options[:user]) }
-      Comment.create(options.merge(commentable: plate))
-    end
-
-    # By default rails treats sizes for grouped queries different to sizes
-    # for ungrouped queries. Unfortunately plates could end up performing either.
-    # Grouped return a hash, for which we want the length
-    # otherwise we get an integer
-    # We need to urgently revisit this, as this solution is horrible.
-    # Adding to the horrible: The :all passed in to the super is to address a
-    # rails bug with count and custom selects.
-    def size(*args)
-      s = super
-      return s.length if s.respond_to?(:length)
-      s
-    end
-
-    def count(*_args)
-      s = super(:all)
-      return s.length if s.respond_to?(:length)
-      s
-    end
+  # Delegate the transfer request type determination to our plate purpose
+  def transfer_request_class_from(source)
+    purpose.transfer_request_class_from(source.plate_purpose)
   end
 
   def comments
@@ -372,32 +344,23 @@ class Plate < Asset
     ])
   }
 
-  def wells_sorted_by_map_id
-    wells.sorted
-  end
-
-  def children_and_wells
-    (children | wells)
-  end
-
   def maps
     Map.where_plate_size(size).where_plate_shape(asset_shape)
   end
 
   def find_map_by_rowcol(row, col)
     # Count from 0
-    description = asset_shape.location_from_row_and_column(row, col + 1, size)
-    Map.find_by(
-      description: description,
-      asset_size: size,
-      asset_shape_id: asset_shape
-    )
+    maps.find_by(description: map_description(row, col))
+  end
+
+  def map_description(row, col)
+    asset_shape.location_from_row_and_column(row, col + 1, size)
   end
 
   def find_well_by_rowcol(row, col)
-    map = find_map_by_rowcol(row, col)
-    return nil if map.nil?
-    find_well_by_name(map.description)
+    map_description = map_description(row, col)
+    return nil if map_description.nil?
+    find_well_by_name(map_description)
   end
 
   def add_well_holder(well)
@@ -424,20 +387,20 @@ class Plate < Asset
   end
 
   def find_well_by_name(well_name)
-    wells.located_at_position(well_name).first
+    if wells.loaded?
+      wells.indexed_by_location[well_name]
+    else
+      wells.located_at_position(well_name).first
+    end
   end
   alias :find_well_by_map_description :find_well_by_name
-
-  def plate_header
-    [''] + plate_columns
-  end
 
   def plate_rows
     ('A'..((?A.getbyte(0) + height - 1).chr).to_s).to_a
   end
 
   def plate_columns
-    (1..width).to_a
+    (1..width)
   end
 
   def get_plate_type
@@ -480,26 +443,6 @@ class Plate < Asset
 
   def storage_location_service
     @storage_location_service
-  end
-
-  def obtain_storage_location
-    # From LabWhere
-    info_from_labwhere = LabWhereClient::Labware.find_by_barcode(ean13_barcode) # rubocop:disable Rails/DynamicFindBy
-    unless info_from_labwhere.nil? || info_from_labwhere.location.nil?
-      @storage_location_service = 'LabWhere'
-      return info_from_labwhere.location.location_info
-    end
-
-    # From ETS
-    @storage_location_service = 'ETS'
-    return 'Control' if is_a?(ControlPlate)
-    return '' if barcode.blank?
-    return %w(storage_area storage_device building_area building).map do |key|
-      get_external_value(key)
-    end.compact.join(' - ')
-  rescue LabWhereClient::LabwhereException => e
-    @storage_location_service = 'None'
-    return "Not found (#{e.message})"
   end
 
   def barcode_for_tecan
@@ -551,10 +494,9 @@ class Plate < Asset
         plate = Plate.create(barcode: plate_barcode_id.to_s, name: "Plate #{plate_barcode_id}", size: DEFAULT_SIZE)
         plate.save!
       end
-    rescue
+    rescue ActiveRecord::RecordInvalid
       return false
     end
-
     true
   end
 
@@ -621,12 +563,6 @@ class Plate < Asset
     @stock_plate ||= stock_plate? ? self : lookup_stock_plate
   end
 
-  def lookup_stock_plate
-    spp = PlatePurpose.considered_stock_plate.pluck(:id)
-    ancestors.order('created_at DESC').find_by(plate_purpose_id: spp)
-  end
-  private :lookup_stock_plate
-
   def original_stock_plates
     ancestors.where(plate_purpose_id: PlatePurpose.stock_plate_purpose)
   end
@@ -653,10 +589,6 @@ class Plate < Asset
     barcode    = nil if barcode.present? and unscoped.find_by(barcode: barcode).present?
     barcode  ||= PlateBarcode.create.barcode
     create!(attributes.merge(barcode: barcode), &block)
-  end
-
-  def self.plates_from_scanned_plate_barcodes(source_plate_barcodes)
-    source_plate_barcodes.scan(/\d+/).map { |barcode| find_from_machine_barcode(barcode) }
   end
 
   #--
@@ -699,25 +631,10 @@ class Plate < Asset
     name
   end
 
-  def set_plate_name_and_size
-    self.name = "Plate #{barcode}" if name.blank?
-    self.size = default_plate_size if size.nil?
-  end
-  private :set_plate_name_and_size
-
   extend Metadata
   has_metadata do
     custom_attribute(:infinium_barcode)
     custom_attribute(:fluidigm_barcode)
-  end
-
-  def barcode_label_for_printing
-    PrintBarcode::Label.new(
-      number: barcode,
-      study: find_study_abbreviation_from_parent,
-      suffix: parent.try(:barcode),
-      prefix: barcode_prefix.prefix
-    )
   end
 
   def height
@@ -786,8 +703,8 @@ class Plate < Asset
     ]).find_by(['ca.container_id = ?', id]).try(:name) || 'UNKNOWN'
   end
 
-  # Barcode is stored as a string, jet in a number of places is treated as
-  # a number. If we conver it before searching, things are faster!
+  # Barcode is stored as a string, yet in a number of places is treated as
+  # a number. If we convert it before searching, things are faster!
   def find_by_barcode(barcode)
     super(barcode.to_s)
   end
@@ -795,5 +712,37 @@ class Plate < Asset
   alias_method :friendly_name, :sanger_human_barcode
   def subject_type
     'plate'
+  end
+
+  private
+
+  def obtain_storage_location
+    # From LabWhere
+    info_from_labwhere = LabWhereClient::Labware.find_by_barcode(ean13_barcode) # rubocop:disable Rails/DynamicFindBy
+    unless info_from_labwhere.nil? || info_from_labwhere.location.nil?
+      @storage_location_service = 'LabWhere'
+      return info_from_labwhere.location.location_info
+    end
+
+    # From ETS
+    @storage_location_service = 'ETS'
+    return 'Control' if is_a?(ControlPlate)
+    return '' if barcode.blank?
+    return %w(storage_area storage_device building_area building).map do |key|
+      get_external_value(key)
+    end.compact.join(' - ')
+  rescue LabWhereClient::LabwhereException => e
+    @storage_location_service = 'None'
+    return "Not found (#{e.message})"
+  end
+
+  def lookup_stock_plate
+    spp = PlatePurpose.considered_stock_plate.pluck(:id)
+    ancestors.order('created_at DESC').find_by(plate_purpose_id: spp)
+  end
+
+  def set_plate_name_and_size
+    self.name = "Plate #{barcode}" if name.blank?
+    self.size = default_plate_size if size.nil?
   end
 end

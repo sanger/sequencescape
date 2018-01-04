@@ -23,46 +23,6 @@ class ProjectTest < ActiveSupport::TestCase
       end
     end
 
-    context '#billable_events' do
-      setup do
-        @sample1 = mock('Sample 1', billable_events: [1, 2, 3])
-        @sample2 = mock('Sample 2', billable_events: [1, 2, 3, 4])
-
-        @project = Project.new name: "Project : #{Time.now}"
-        @project.expects(:samples).returns([@sample1, @sample2])
-
-        @billable_events = @project.billable_events
-      end
-
-      should 'return an array of billable events' do
-        assert_equal 7, @billable_events.size
-      end
-    end
-
-    context '#billable_events_between' do
-      setup do
-        # FIXME: Does the implementation deal in Times
-        from = Time.parse('2008-04-01')
-        to = Time.parse('2008-04-15')
-
-        @event1 = mock('Event 1')
-        @event1.expects(:created_at).returns(Time.parse('2008-04-15')).times(2)
-        @event2 = mock('Event 2')
-        @event2.expects(:created_at).returns(Time.parse('2008-04-15')).times(2)
-        @event3 = mock('Event 3')
-        @event3.expects(:created_at).returns(Time.parse('2008-04-16')).times(2)
-
-        @project = Project.new name: "Project : #{Time.now}"
-        @project.expects(:billable_events).returns([@event1, @event2, @event3])
-
-        @billable_events = @project.billable_events_between from.to_date, to.to_date
-      end
-
-      should 'return an array of billable events filtered' do
-        assert_equal [@event1, @event2], @billable_events
-      end
-    end
-
     context 'Request' do
       setup do
         @project         = create :project
