@@ -407,7 +407,7 @@ Sequencescape::Application.routes.draw do
   resources :lab_searches
   resources :events
 
-  resources :workflows, except: :delete do
+  resources :workflows, only: [:index, :show] do
     member do
       # Yes, this is every bit as horrible as it looks.
       # HTTP Verbs! Gotta catch em all!
@@ -416,8 +416,6 @@ Sequencescape::Application.routes.draw do
       patch 'stage/:id' => 'workflows#stage'
       get   'stage/:id' => 'workflows#stage'
       post 'stage/:id' => 'workflows#stage'
-      get :duplicate
-      get :reorder_tasks
       get :auto
     end
     collection do
@@ -426,7 +424,6 @@ Sequencescape::Application.routes.draw do
     end
   end
 
-  resources :tasks
   resources :asset_audits
 
   resources :qc_reports, except: [:delete, :update] do
