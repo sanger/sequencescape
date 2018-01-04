@@ -22,14 +22,14 @@ class IlluminaHtp::InitialStockTubePurpose < IlluminaHtp::StockTubePurpose
   end
 
   ##
-  # We find sibling tubes by first finding the outer request type (library completion) and the transfer request type
+  # We find sibling tubes by first finding the outer request type (library completion) and the transfer request class
   # We find all outer requests of the same type in the submission, and match these up with the transfer requests
   # The RIGHT OUTER JOIN ensures we have a null result for any outer requests which don't have matching transfer requests
   # We only pick up open requests, just in case a whole tube has failed / been cancelled.
   def sibling_tubes(tube)
     return [] if tube.submission.nil?
     submission_id     = tube.submission.id
-    tfr_request_type  = tube.transfer_requests_as_target.first.request_type_id
+    tfr_request_type  = tube.transfer_requests_as_target.first.sti_type
     outr_request_type = tube.transfer_requests_as_target.first.outer_request.request_type_id
 
     siblings = Tube.select('assets.*, tfr.state AS quick_state').distinct.joins([
@@ -38,7 +38,7 @@ class IlluminaHtp::InitialStockTubePurpose < IlluminaHtp::StockTubePurpose
     ])
                    .where(
                      outr: { submission_id: submission_id, request_type_id: outr_request_type, state: Request::Statemachine::OPENED_STATE },
-                     tfr:  { request_type_id: tfr_request_type, submission_id: submission_id, state: TransferRequest::ACTIVE_STATES }
+                     tfr:  { sti_type: tfr_request_type, submission_id: submission_id, state: TransferRequest::ACTIVE_STATES }
                    )
                    .includes(:uuid_object, :barcode_prefix)
 

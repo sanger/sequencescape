@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # We need to remove the indexes, this is best accomplished before removing the columns
 # as it makes it easier to accurately regenerate compound indexes
 class RemoveUnwantedIndexes < ActiveRecord::Migration[5.1]

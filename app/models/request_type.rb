@@ -118,7 +118,7 @@ class RequestType < ApplicationRecord
   end
 
   def request_class
-    request_class_name.constantize
+    request_class_name&.constantize
   end
 
   def request_class=(request_class)

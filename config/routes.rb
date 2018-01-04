@@ -372,7 +372,7 @@ Sequencescape::Application.routes.draw do
     end
   end
 
-  resources :machine_barcodes, only: [ :show ]
+  resources :machine_barcodes, only: [:show]
 
   match 'pipelines/assets/new/:id' => 'pipelines/assets#new', :via => 'get'
 
