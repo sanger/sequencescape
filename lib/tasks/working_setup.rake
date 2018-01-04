@@ -44,7 +44,7 @@ namespace :working do
             end
           end
 
-          Robot.create!(name: 'Picking robot', location: 'Hello poor merge conflict resolver! Go with the other one.').tap do |robot|
+          Robot.create!(name: 'Picking robot', location: 'In a lab').tap do |robot|
             robot.create_max_plates_property(value: 10)
           end
 
