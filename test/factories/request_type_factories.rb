@@ -70,6 +70,16 @@ FactoryGirl.define do
       end
     end
 
+    factory :miseq_sequencing_request_type do
+      request_class MiSeqSequencingRequest
+      asset_type 'LibraryTube'
+
+      after(:build) do |request_type|
+        srv = create(:sequencing_request_type_validator, request_type: request_type, options: [54, 150, 250])
+        request_type.request_type_validators << srv
+      end
+    end
+
     factory :multiplexed_library_creation_request_type do
       request_class      MultiplexedLibraryCreationRequest
       asset_type         'SampleTube'
@@ -96,13 +106,6 @@ FactoryGirl.define do
       after(:create) do |request_type|
         request_type.extended_validators << create(:extended_validator)
       end
-    end
-
-    factory :transfer_request_type do
-      request_class TransferRequest
-      name 'Transfer'
-      key 'transfer'
-      asset_type 'Asset'
     end
   end
 

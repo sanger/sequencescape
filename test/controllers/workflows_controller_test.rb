@@ -28,76 +28,6 @@ class WorkflowsControllerTest < ActionController::TestCase
       should respond_with :success
     end
 
-    context '#new' do
-      setup do
-        get :new
-      end
-
-      should '#render new' do
-        assert_response :success
-      end
-    end
-
-    context '#create_workflow' do
-      setup do
-        @old_count = Workflow.count
-        post :create, params: { :workflow => { name: 'Workflow 42', item_limit: 1, locale: 'Internal' }, 'commit' => 'Create' }
-      end
-
-      should '#create_workflow' do
-        assert_equal @old_count + 1, Workflow.count
-        assert_redirected_to workflow_path(assigns(:workflow))
-      end
-
-      context 'actions on exsiting records' do
-        setup do
-          @wk = FactoryGirl.create(:pipeline, name: 'New workflow').workflow
-        end
-
-        context '#show_workflow' do
-          setup do
-            get :show, params: { id: Workflow.first.id }
-          end
-
-          should 'show workflow' do
-            assert_response :success
-          end
-        end
-
-        context 'edit' do
-          setup do
-            get :edit, params: { id: Workflow.first.id }
-          end
-
-          should 'render edit' do
-            assert_response :success
-          end
-        end
-
-        context '#update_workflow' do
-          setup do
-            put :update, params: { id: Workflow.first.id, workflow: {} }
-          end
-
-          should 'update the workflow' do
-            assert_redirected_to workflow_path(assigns(:workflow))
-          end
-        end
-
-        context '#destroy_workflow' do
-          setup do
-            @old_count = Workflow.count
-            delete :destroy, params: { id: Workflow.first.id }
-          end
-
-          should 'not destroy a workflow' do
-            assert_equal @old_count, Workflow.count
-            assert_redirected_to workflows_path
-          end
-        end
-      end
-    end
-
     context '#stage' do
       setup do
         @pipeline = FactoryGirl.create :pipeline, name: 'Generic workflow'
@@ -157,24 +87,6 @@ class WorkflowsControllerTest < ActionController::TestCase
           assert_equal 'Complete', Batch.find(@batch.id).lab_events.last.description
         end
       end
-    end
-
-    context '#duplicate' do
-      setup do
-        @workflow = FactoryGirl.create(:pipeline).workflow
-        get :duplicate, params: { id: @workflow.id.to_s }
-      end
-
-      should respond_with :redirect
-    end
-
-    context '#reorder_tasks' do
-      setup do
-        @workflow = FactoryGirl.create(:pipeline).workflow
-        get :reorder_tasks, params: { id: @workflow.id.to_s }
-      end
-
-      should respond_with :success
     end
 
     context '#sort' do

@@ -85,21 +85,13 @@ module IlluminaHtp::PlatePurposes
     'Cherrypicked' => 'illumina_b_shared'
   }
 
-  PF_PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES = [
-    ['PF Cherrypicked', 'PF Shear', :initial],
-    ['PF Shear', 'PF Post Shear'],
-    ['PF Post Shear', 'PF Post Shear XP'],
-    ['PF Post Shear XP', 'PF Lib XP'],
-    ['PF Lib XP', 'PF Lib XP2']
-  ]
-
   PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES = [
     ['PF Cherrypicked', 'PF Shear',            :initial],
     ['Cherrypicked',    'Shear',               :initial],
-    ['Lib PCR-XP',      'Lib Pool',            'TransferRequest::InitialDownstream'],
-    ['Lib PCRR-XP',     'Lib Pool',            'TransferRequest::InitialDownstream'],
-    ['Lib PCR-XP',      'Lib Pool Pippin',     'TransferRequest::InitialDownstream'],
-    ['Lib PCRR-XP',     'Lib Pool Pippin',     'TransferRequest::InitialDownstream']
+    ['Lib PCR-XP',      'Lib Pool',            :initial_downstream],
+    ['Lib PCRR-XP',     'Lib Pool',            :initial_downstream],
+    ['Lib PCR-XP',      'Lib Pool Pippin',     :initial_downstream],
+    ['Lib PCRR-XP',     'Lib Pool Pippin',     :initial_downstream]
   ]
 
   PLATE_PURPOSE_TYPE = {
@@ -221,7 +213,7 @@ module IlluminaHtp::PlatePurposes
       branch = branch_o.clone
       branch.inject(Purpose.find_by!(name: branch.shift)) do |parent, child|
         Purpose.find_by!(name: child).tap do |child_purpose|
-          parent.child_relationships.create!(child: child_purpose, transfer_request_type: request_type_between(parent, child_purpose))
+          parent.child_relationships.create!(child: child_purpose, transfer_request_class_name: transfer_request_class_between(parent, child_purpose))
         end
       end
     end
@@ -237,16 +229,11 @@ module IlluminaHtp::PlatePurposes
     end
     private :purpose_for
 
-    def request_type_between(parent, child)
-      std = RequestPurpose.find_by(key: 'standard')
+    def transfer_request_class_between(parent, child)
       _, _, request_class = self::PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES.detect { |a, b, _| (parent.name == a) && (child.name == b) }
-      return RequestType.transfer if request_class.nil?
-      return RequestType.initial_transfer if request_class == :initial
-      request_type_name = "#{request_type_prefix} #{parent.name}-#{child.name}"
-      RequestType.create!(name: request_type_name, key: request_type_name.gsub(/\W+/, '_'), request_class_name: request_class, asset_type: 'Well', order: 1,
-                          request_purpose: std)
+      request_class || :standard
     end
-    private :request_type_between
+    private :transfer_request_class_between
 
     def create_plate_purpose(plate_purpose_name, options = {})
       purpose_for(plate_purpose_name).create!(options.reverse_merge(
@@ -282,7 +269,7 @@ module IlluminaHtp::PlatePurposes
     def create_qc_plate_for(name)
       qc_plate_purpose = purpose_for("#{name} QC").create!(name: "#{name} QC", cherrypickable_target: false)
       plate_purpose = Purpose.find_by!(name: name)
-      plate_purpose.child_relationships.create!(child: qc_plate_purpose, transfer_request_type: RequestType.find_by(name: 'Transfer'))
+      plate_purpose.child_relationships.create!(child: qc_plate_purpose, transfer_request_class_name: :standard)
     end
   end
 

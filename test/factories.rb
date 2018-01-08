@@ -377,8 +377,6 @@ FactoryGirl.define do
   factory :transfer_request do
     association(:asset, factory: :well)
     association(:target_asset, factory: :well)
-    association(:request_type, factory: :transfer_request_type)
-    request_purpose
   end
 
   factory(:library_creation_request_for_testing_sequencing_requests, class: Request::LibraryCreation) do

@@ -13,8 +13,6 @@ And I have a "full" authorised user with the key "cucumber"
     Given a plate purpose called "Parent plate purpose" with UUID "11111111-2222-3333-4444-000000000001"
       And a plate purpose called "Child plate purpose" with UUID "11111111-2222-3333-4444-000000000002"
       And a plate purpose called "Original plate purpose" with UUID "11111111-2222-3333-4444-000000000003"
-      And the plate purpose "Parent plate purpose" is a parent of the plate purpose "Child plate purpose"
-
     Given a "Parent plate purpose" plate called "Testing the API" exists with barcode "1000001"
       And the UUID for the plate "Testing the API" is "00000000-1111-2222-3333-000000000001"
     Given a "Original plate purpose" plate called "Converted Plate" exists with barcode "1000002"

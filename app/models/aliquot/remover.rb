@@ -1,15 +1,18 @@
+# frozen_string_literal: true
+
 # This file is part of SEQUENCESCAPE; it is distributed under the terms of
 # GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2012,2013,2015 Genome Research Ltd.
 
+# Provides behaviour to walk downstream and remove aliquots from
+# any downstream assets in the event of a retrospective fail.
 module Aliquot::Remover
+  # We can't use the aliquot itself, as it will have been destroyed by
+  # the time we want to look at it. The aliquot record mimics
+  # an aliquot in the comparison functions
   class AliquotRecord
-    # We can't use the aliquot itself, as it will have been destroyed by
-    # the time we want to look at it. The aliquot record mimics
-    # an aliquot in the comparison functions
-
     attr_reader :tag_id, :sample_id, :library_id, :bait_library_id, :tag2_id
 
     def initialize(aliquot)
@@ -25,11 +28,11 @@ module Aliquot::Remover
     end
 
     def untagged?
-      tag_id.nil? or (tag_id == Aliquot::UNASSIGNED_TAG)
+      tag_id.nil? || (tag_id == Aliquot::UNASSIGNED_TAG)
     end
 
     def no_tag2?
-      tag2_id.nil? or (tag2_id == Aliquot::UNASSIGNED_TAG)
+      tag2_id.nil? || (tag2_id == Aliquot::UNASSIGNED_TAG)
     end
   end
 
@@ -42,6 +45,9 @@ module Aliquot::Remover
   end
 
   def on_downstream_aliquots(aliquots_to_remove)
+    transfer_requests_as_source.each do |request|
+      request.target_asset.process_aliquots(aliquots_to_remove)
+    end
     requests_as_source.with_target.each do |request|
       request.target_asset.process_aliquots(aliquots_to_remove)
     end
@@ -54,19 +60,12 @@ module Aliquot::Remover
 
   def remove_matching_aliquots(aliquots_to_remove)
     aliquots_to_remove.map do |aliquot_to_remove|
-      to_remove = aliquots.select do |aliquot|
-        aliquot.matches?(aliquot_to_remove)
-      end
-
-      case
-      when to_remove.count > 1 then raise "Duplicate aliquots detected in asset #{display_name}."
-      when to_remove.count == 1
-        removed_aliquot = AliquotRecord.new(to_remove.first)
-        to_remove.first.destroy
-        removed_aliquot
-      else # We have noting to remove
-        nil
-      end
+      to_remove = aliquots.select { |aliquot| aliquot.matches?(aliquot_to_remove) }
+      raise "Duplicate aliquots detected in asset #{display_name}." if to_remove.count > 1
+      next unless to_remove.count == 1
+      removed_aliquot = AliquotRecord.new(to_remove.first)
+      to_remove.first.destroy
+      removed_aliquot
     end.compact
   end
 end

@@ -10,16 +10,18 @@ class Purpose::Relationship < ApplicationRecord
       end
     end
 
-    # Returns the transfer request type to use between this purpose and the parent given
-    # If no relationship exists, use the default transfer
-    def transfer_request_type_from(parent_purpose)
+    def transfer_request_class_from(parent_purpose)
       relationship = parent_relationships.find_by(parent_id: parent_purpose.id)
-      return parent_purpose.default_transfer if relationship.nil?
-      relationship.transfer_request_type
+      return parent_purpose.default_transfer_class if relationship.nil?
+      relationship.transfer_request_class
     end
 
-    def default_transfer
-      stock_plate? ? RequestType.initial_transfer : RequestType.transfer
+    def default_transfer_class_name
+      stock_plate? ? :initial : :standard
+    end
+
+    def default_transfer_class
+      TransferRequest.subclass(default_transfer_class_name)
     end
   end
 
@@ -27,16 +29,18 @@ class Purpose::Relationship < ApplicationRecord
   belongs_to :parent, class_name: 'Purpose'
   belongs_to :child, class_name: 'Purpose'
 
-  belongs_to :transfer_request_type, class_name: 'RequestType'
-
-  before_validation :set_default_transfer_request
+  enum transfer_request_class_name: %i[standard initial initial_downstream pacbio_initial]
 
   scope :with_parent, ->(plate_purpose) { where(parent_id: plate_purpose) }
   scope :with_child,  ->(plate_purpose) { where(child_id: plate_purpose) }
 
+  def transfer_request_class
+    TransferRequest.subclass(transfer_request_class_name)
+  end
+
   private
 
   def set_default_transfer_request
-    self.transfer_request_type ||= parent.default_transfer
+    self.transfer_request_class_name ||= parent.default_transfer_class_name
   end
 end

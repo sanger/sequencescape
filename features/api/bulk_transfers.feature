@@ -15,13 +15,13 @@ Feature: Conduct multiple transfers through the API
 
   @read
   Scenario: Reading the JSON for a bulk transfer between two plates
-    Given a source transfer plate called "Source plate A" exists
+    Given a transfer plate called "Source plate A" exists
       And the UUID for the plate "Source plate A" is "11111111-2222-3333-4444-000000000001"
-      And a source transfer plate called "Source plate B" exists
+      And a transfer plate called "Source plate B" exists
       And the UUID for the plate "Source plate B" is "11111111-2222-3333-4444-000000000002"
-      And a destination transfer plate called "Destination plate A" exists
+      And a transfer plate called "Destination plate A" exists
       And the UUID for the plate "Destination plate A" is "11111111-2222-3333-4444-000000000003"
-      And a destination transfer plate called "Destination plate B" exists
+      And a transfer plate called "Destination plate B" exists
       And the UUID for the plate "Destination plate B" is "11111111-2222-3333-4444-000000000004"
       Given a user with UUID "99999999-8888-7777-6666-555555555555" exists
 
@@ -134,9 +134,9 @@ Feature: Conduct multiple transfers through the API
         """
 
   Scenario: Trtansfering the same well to two locations
-    Given a source transfer plate called "Source plate A" exists
+    Given a transfer plate called "Source plate A" exists
       And the UUID for the plate "Source plate A" is "11111111-2222-3333-4444-000000000001"
-      And a destination transfer plate called "Destination plate A" exists
+      And a transfer plate called "Destination plate A" exists
       And the UUID for the plate "Destination plate A" is "11111111-2222-3333-4444-000000000003"
 
 
@@ -216,7 +216,7 @@ Feature: Conduct multiple transfers through the API
 
   @read
   Scenario: Creating with an invalid target
-    Given a source transfer plate called "Source plate A" exists
+    Given a transfer plate called "Source plate A" exists
       And the UUID for the plate "Source plate A" is "11111111-2222-3333-4444-000000000001"
       And a library tube called "Invalid Destination" exists
       And the UUID for the library tube "Invalid Destination" is "11111111-2222-3333-4444-000000000003"

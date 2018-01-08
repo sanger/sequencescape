@@ -5,23 +5,8 @@
 # Copyright (C) 2014,2015 Genome Research Ltd.
 
 module Qcable::Statemachine
-  module ClassMethods
-    # A little more sensitive than the request state machine
-    def suggested_transition_between(current, target)
-      aasm.state_machine.events.select do |_name, event|
-        event.transitions_from_state(current.to_sym).any? do |transition|
-          transition.options[:allow_automated?] && transition.to == target.to_sym
-        end
-      end.tap do |events|
-        raise StandardError, "No automated transition from #{current.inspect} to #{target.inspect}" unless events.size == 1
-      end.first.first
-    end
-  end
-
   def self.included(base)
     base.class_eval do
-      extend ClassMethods
-
       ## State machine
       ## namespace: true as destroyed clashes with rails, but we can't easily rename the state
       aasm column: :state, whiny_persistence: true, namespace: true, name: 'qc_state' do
@@ -41,12 +26,12 @@ module Qcable::Statemachine
           transitions to: :pending, from: [:created]
         end
 
-        event :destroy_labware do
-          transitions to: :destroyed, from: [:pending, :available], allow_automated?: true
+        event :destroy_labware, allow_automated?: true do
+          transitions to: :destroyed, from: [:pending, :available]
         end
 
-        event :qc do
-          transitions to: :qc_in_progress, from: [:pending], allow_automated?: true
+        event :qc, allow_automated?: true do
+          transitions to: :qc_in_progress, from: [:pending]
         end
 
         event :release do
@@ -61,8 +46,8 @@ module Qcable::Statemachine
           transitions to: :failed, from: [:qc_in_progress, :pending]
         end
 
-        event :use do
-          transitions to: :exhausted, from: [:available], allow_automated?: true
+        event :use, allow_automated?: true do
+          transitions to: :exhausted, from: [:available]
         end
       end
 
@@ -102,6 +87,19 @@ module Qcable::Statemachine
   def on_used; end
 
   def transition_to(target_state)
-    send("#{self.class.suggested_transition_between(state, target_state)}!")
+    aasm.fire!(suggested_transition_to(target_state))
+  end
+
+  private
+
+  # Determines the most likely event that should be fired when transitioning between the two states.  If there is
+  # only one option then that is what is returned, otherwise an exception is raised.
+  # A little more sensitive than the request state machine as only some events can be automated
+  def suggested_transition_to(target)
+    valid_events = aasm.events(permitted: true).select do |e|
+      e.options[:allow_automated?] && e.transitions_to_state?(target&.to_sym)
+    end
+    raise StandardError, "No obvious transition from #{current.inspect} to #{target.inspect}" unless valid_events.size == 1
+    valid_events.first.name
   end
 end

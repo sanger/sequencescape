@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This file is part of SEQUENCESCAPE; it is distributed under the terms of
 # GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
@@ -6,25 +8,37 @@
 
 # Every request "moving" an asset from somewhere to somewhere else without really transforming it
 # (chemically) as, cherrypicking, pooling, spreading on the floor etc
-class TransferRequest < SystemRequest
+class TransferRequest < ApplicationRecord
   include DefaultAttributes
+  include Uuid::Uuidable
+  include AASM
+  extend Request::Statemachine::ClassMethods
 
-  has_many :transfer_request_collection_transfer_requests
-  has_many :transfer_request_collections, through: :transfer_request_collection_transfer_requests
+  # States which are still considered to be processable (ie. not failed or cancelled)
+  ACTIVE_STATES = %w[pending started passed qc_complete].freeze
 
+  self.inheritance_column = 'sti_type'
+
+  has_many :transfer_request_collection_transfer_requests, dependent: :destroy
+  has_many :transfer_request_collections, through: :transfer_request_collection_transfer_requests, inverse_of: :transfer_requests
+
+  # The assets on a request can be treated as a particular class when being used by certain pieces of code.  For instance,
+  # QC might be performed on a source asset that is a well, in which case we'd like to load it as such.
+  belongs_to :target_asset, class_name: 'Receptacle', inverse_of: :transfer_requests_as_source, required: true
+  belongs_to :asset, class_name: 'Receptacle', inverse_of: :transfer_requests_as_source, required: true
+
+  belongs_to :order
+  belongs_to :submission
+
+  scope :for_request, ->(request) { where(asset_id: request.asset_id) }
+  scope :include_submission, -> { includes(submission: :uuid_object) }
   # Ensure that the source and the target assets are not the same, otherwise bad things will happen!
   validate :source_and_target_assets_are_different
 
-  set_defaults request_type: ->(_transfer_request) { RequestType.transfer },
-               request_purpose: ->(transfer_request) { transfer_request.request_type.request_purpose }
-
   after_create(:perform_transfer_of_contents)
 
-  # States which are still considered to be processable (ie. not failed or cancelled)
-  ACTIVE_STATES = %w(pending started passed qc_complete).freeze
-
   # state machine
-  redefine_aasm column: :state, whiny_persistence: true do
+  aasm column: :state, whiny_persistence: true do
     # The statemachine for transfer requests is more promiscuous than normal requests, as well
     # as being more concise as it has fewer states.
     state :pending, initial: true
@@ -68,6 +82,10 @@ class TransferRequest < SystemRequest
     end
   end
 
+  def self.subclass(name)
+    TransferRequest.const_get(name.to_s.classify)
+  end
+
   # validation method
   def source_and_target_assets_are_different
     return true unless asset_id.present? && asset_id == target_asset_id
@@ -80,22 +98,32 @@ class TransferRequest < SystemRequest
     # Don't remove assets for transfer requests as they are made on creation
   end
 
+  def transition_to(target_state)
+    aasm.fire!(suggested_transition_to(target_state))
+  end
+
   def outer_request
     asset.outer_request(submission_id)
   end
 
   private
 
+  # Determines the most likely event that should be fired when transitioning between the two states.  If there is
+  # only one option then that is what is returned, otherwise an exception is raised.
+  def suggested_transition_to(target)
+    valid_events = aasm.events(permitted: true).select { |e| e.transitions_to_state?(target.to_sym) }
+    raise StandardError, "No obvious transition from #{current.inspect} to #{target.inspect}" unless valid_events.size == 1
+    valid_events.first.name
+  end
+
   # after_create callback method
   def perform_transfer_of_contents
-    begin
-      target_asset.aliquots << asset.aliquots.map(&:dup) unless asset.failed? or asset.cancelled?
-    rescue ActiveRecord::RecordNotUnique => exception
-      # We'll specifically handle tag clashes here so that we can produce more informative messages
-      raise exception unless /aliquot_tags_and_tag2s_are_unique_within_receptacle/.match?(exception.message)
-      errors.add(:asset, "contains aliquots which can't be transferred due to tag clash")
-      raise Aliquot::TagClash, self
-    end
+    target_asset.aliquots << asset.aliquots.map(&:dup) unless asset.failed? || asset.cancelled?
+  rescue ActiveRecord::RecordNotUnique => exception
+    # We'll specifically handle tag clashes here so that we can produce more informative messages
+    raise exception unless /aliquot_tags_and_tag2s_are_unique_within_receptacle/.match?(exception.message)
+    errors.add(:asset, "contains aliquots which can't be transferred due to tag clash")
+    raise Aliquot::TagClash, self
   end
 
   # Run on start, or if start is bypassed
@@ -104,7 +132,7 @@ class TransferRequest < SystemRequest
   end
 
   def on_failed
-    target_asset.remove_downstream_aliquots if target_asset
+    target_asset&.remove_downstream_aliquots
   end
-  alias_method :on_cancelled, :on_failed
+  alias on_cancelled on_failed
 end

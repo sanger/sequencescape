@@ -737,7 +737,7 @@ CherrypickPipeline.create!(name: 'Cherrypick') do |pipeline|
   end
 end
 
-CherrypickForPulldownPipeline.create!(name: 'Cherrypicking for Pulldown') do |pipeline|
+CherrypickForPulldownPipeline.create!(name: 'Cherrypicking for Pulldown', active: false) do |pipeline|
   pipeline.asset_type          = 'Well'
   pipeline.sorter              = 13
   pipeline.automated           = false
@@ -759,15 +759,7 @@ CherrypickForPulldownPipeline.create!(name: 'Cherrypicking for Pulldown') do |pi
   pipeline.request_types << RequestType.create!(key: 'cherrypick_for_illumina',   name: 'Cherrypick for Illumina',   &cherrypicking_attributes)
   pipeline.request_types << RequestType.create!(key: 'cherrypick_for_illumina_b', name: 'Cherrypick for Illumina-B', &cherrypicking_attributes)
   pipeline.request_types << RequestType.create!(key: 'cherrypick_for_illumina_c', name: 'Cherrypick for Illumina-C', &cherrypicking_attributes)
-
-  pipeline.workflow = Workflow.create!(name: 'Cherrypicking for Pulldown').tap do |workflow|
-    # NOTE[xxx]: Note that the order here, and 'Set Location' being interactive, do not mimic the behaviour of production
-    [
-      { class: CherrypickGroupBySubmissionTask, name: 'Cherrypick Group By Submission', sorted: 1, batched: true }
-    ].each do |details|
-      details.delete(:class).create!(details.merge(workflow: workflow))
-    end
-  end
+  pipeline.workflow = Workflow.create!(name: 'Cherrypicking for Pulldown')
 end
 
 DnaQcPipeline.create!(name: 'DNA QC') do |pipeline|
@@ -837,8 +829,7 @@ PulldownMultiplexLibraryPreparationPipeline.create!(name: 'Pulldown Multiplex Li
 
   pipeline.workflow = Workflow.create!(name: 'Pulldown Multiplex Library Preparation').tap do |workflow|
     [
-      { class: TagGroupsTask,         name: 'Tag Groups',           sorted: 1 },
-      { class: AssignTagsToWellsTask, name: 'Assign Tags to Wells', sorted: 2 }
+      { class: TagGroupsTask, name: 'Tag Groups', sorted: 1 }
     ].each do |details|
       details.delete(:class).create!(details.merge(workflow: workflow))
     end
@@ -920,15 +911,6 @@ PacBioSequencingPipeline.create!(name: 'PacBio Sequencing') do |pipeline|
 end.tap do |pipeline|
   create_request_information_types(pipeline, 'sequencing_type', 'insert_size')
 end
-
-RequestType.create!(
-  key: 'initial_pacbio_transfer',
-  name: 'Initial Pacbio Transfer',
-  asset_type: 'Well',
-  request_class_name: 'PacBioSamplePrepRequest::Initial',
-  order: 1,
-  target_purpose: Purpose.find_by(name: 'PacBio Sheared')
-)
 
 set_pipeline_flow_to('PacBio Library Prep' => 'PacBio Sequencing')
 

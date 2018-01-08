@@ -53,10 +53,9 @@ class SequencingRequest < CustomerRequest
     return false if asset.nil? || !asset.aliquots.exists?
     # It's ready if I don't have any lib creation requests or if all my lib creation requests are closed and
     # at least one of them is in 'passed' status
-    library_creation_requests = upstream_requests.customer_requests
-    library_creation_requests.empty? ||
-      library_creation_requests.all?(&:closed?) &&
-        library_creation_requests.any?(&:passed?)
+    upstream_requests.empty? ||
+      upstream_requests.all?(&:closed?) &&
+        upstream_requests.any?(&:passed?)
   end
 
   def self.delegate_validator

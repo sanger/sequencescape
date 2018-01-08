@@ -3,7 +3,7 @@
 # authorship of this file.
 # Copyright (C) 2016 Genome Research Ltd.
 
-# Use in migrations to degrecate request classes
+# Use in migrations to deprecate request classes
 # Usage:
 # include RequestClassDeprecator
 # deprecate_class('ClassName',options)
