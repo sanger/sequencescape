@@ -253,32 +253,32 @@ Given /^the supplier sample name of the last sample is "([^\"]+)"$/ do |name|
   sample.update_attributes!(sample_metadata_attributes: { supplier_name: name })
 end
 
-Given /^the sample called "([^\"]+)" is (#{Sample::GENDERS.join('|')})$/ do |name, gender|
+Given /^the sample called "([^\"]+)" is (#{SampleMetadata::GENDERS.join('|')})$/ do |name, gender|
   sample = Sample.find_by(name: name) or raise StandardError, "Cannot find the sample #{name.inspect}"
   sample.update_attributes!(sample_metadata_attributes: { gender: gender })
 end
 
-Given /^the GC content of the sample called "([^\"]+)" is (#{Sample::GC_CONTENTS.join('|')})$/ do |name, gc_content|
+Given /^the GC content of the sample called "([^\"]+)" is (#{SampleMetadata::GC_CONTENTS.join('|')})$/ do |name, gc_content|
   sample = Sample.find_by(name: name) or raise StandardError, "Cannot find the sample #{name.inspect}"
   sample.update_attributes!(sample_metadata_attributes: { gc_content: gc_content })
 end
 
-Given /^the DNA source of the sample called "([^\"]+)" is (#{Sample::DNA_SOURCES.join('|')})$/ do |name, source|
+Given /^the DNA source of the sample called "([^\"]+)" is (#{SampleMetadata::DNA_SOURCES.join('|')})$/ do |name, source|
   sample = Sample.find_by(name: name) or raise StandardError, "Cannot find the sample #{name.inspect}"
   sample.update_attributes!(sample_metadata_attributes: { dna_source: source })
 end
 
-Given /^the SRA status of the sample called "([^\"]+)" is (#{Sample::SRA_HOLD_VALUES.join('|')})$/ do |name, sra_status|
+Given /^the SRA status of the sample called "([^\"]+)" is (#{SampleMetadata::SRA_HOLD_VALUES.join('|')})$/ do |name, sra_status|
   sample = Sample.find_by(name: name) or raise StandardError, "Cannot find the sample #{name.inspect}"
   sample.update_attributes!(sample_metadata_attributes: { sample_sra_hold: sra_status })
 end
 
-Given /^the sample called "([^\"]+)" is (#{Sample::AGE_REGEXP}) old$/ do |name, age|
+Given /^the sample called "([^\"]+)" is (#{SampleMetadata::AGE_REGEXP}) old$/ do |name, age|
   sample = Sample.find_by(name: name) or raise StandardError, "Cannot find the sample #{name.inspect}"
   sample.update_attributes!(sample_metadata_attributes: { age: age })
 end
 
-Given /^the dosage of the sample called "([^\"]+)" is (#{Sample::DOSE_REGEXP})/ do |name, dose|
+Given /^the dosage of the sample called "([^\"]+)" is (#{SampleMetadata::DOSE_REGEXP})/ do |name, dose|
   sample = Sample.find_by(name: name) or raise StandardError, "Cannot find the sample #{name.inspect}"
   sample.update_attributes!(sample_metadata_attributes: { dose: dose })
 end

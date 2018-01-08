@@ -152,11 +152,11 @@
 
               <%# Fields for 'Microarray genotyping' %>
               <%= metadata_fields.text_field(:cohort) %>
-              <%= metadata_fields.select(:gender, Sample::GENDERS, include_blank: true) %>
+              <%= metadata_fields.select(:gender, SampleMetadata::GENDERS, include_blank: true) %>
               <%= metadata_fields.text_field(:country_of_origin) %>
               <%= metadata_fields.text_field(:geographical_region) %>
               <%= metadata_fields.text_field(:ethnicity) %>
-              <%= metadata_fields.select(:dna_source, Sample::DNA_SOURCES) %>
+              <%= metadata_fields.select(:dna_source, SampleMetadata::DNA_SOURCES) %>
               <%= metadata_fields.text_field(:volume) %>
               <%= metadata_fields.text_field(:supplier_plate_id) %>
               <%= metadata_fields.text_field(:mother) %>
@@ -165,7 +165,7 @@
 
               <%# Fields for 'Next-gen sequencing' %>
               <%= metadata_fields.text_field(:organism) %>
-              <%= metadata_fields.select(:gc_content, Sample::GC_CONTENTS) %>
+              <%= metadata_fields.select(:gc_content, SampleMetadata::GC_CONTENTS) %>
 
               <!-- SRA -->
               <% metadata_fields.with_options(grouping: 'SRA') do |group| %>
@@ -174,7 +174,7 @@
 
               <!-- ENA requirement -->
               <% metadata_fields.with_options(grouping: 'ENA requirement') do |group| %>
-                <%= group.select(:sample_sra_hold, Sample::SRA_HOLD_VALUES) %>
+                <%= group.select(:sample_sra_hold, SampleMetadata::SRA_HOLD_VALUES) %>
                 <%= group.text_field(:sample_common_name, 'data-organism' => 'common_name') %>
                 <%= group.text_field(:sample_taxon_id,    'data-organism' => 'taxon_id') %>
               <% end %>

@@ -1,5 +1,5 @@
 FactoryGirl.define do
-  factory :sample_metadata_for_accessioning, class: Sample::Metadata do
+  factory :sample_metadata_for_accessioning, class: SampleMetadata do
     sample_taxon_id 1
     sample_common_name 'A common name'
     donor_id '1'
@@ -14,7 +14,7 @@ FactoryGirl.define do
     end
   end
 
-  factory :minimal_sample_metadata_for_accessioning, class: Sample::Metadata do
+  factory :minimal_sample_metadata_for_accessioning, class: SampleMetadata do
     sample_taxon_id 1
     sample_common_name 'A common name'
   end

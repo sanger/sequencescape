@@ -166,7 +166,7 @@ class SampleRegistrar < ApplicationRecord
     # needs to be decoded using CGI HTML unescaping (the old format), and the other needs the column decoded
     # using the XML encoding (the new format).  Every column is mapped using both encodings, with the XML version
     # being the preferred decoding.
-    definitions = Sample::Metadata.attribute_details.inject({}) do |hash, attribute|
+    definitions = SampleMetadata.attribute_details.inject({}) do |hash, attribute|
       label   = attribute.to_field_info.display_name
       handler = ->(attributes, value) { attributes[:sample_attributes][:sample_metadata_attributes][attribute.name] = value }
       hash.tap do
