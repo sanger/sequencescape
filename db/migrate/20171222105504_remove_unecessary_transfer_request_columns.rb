@@ -8,7 +8,6 @@ class RemoveUnecessaryTransferRequestColumns < ActiveRecord::Migration[5.1]
     remove_column :transfer_requests, :initial_project_id, :integer
     remove_column :transfer_requests, :user_id, :integer
     remove_column :transfer_requests, :sample_pool_id, :integer
-    remove_column :transfer_requests, :workflow_id, :integer
     remove_column :transfer_requests, :item_id, :integer
     remove_column :transfer_requests, :pipeline_id, :integer
     remove_column :transfer_requests, :charge, :boolean

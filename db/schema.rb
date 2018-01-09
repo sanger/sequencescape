@@ -12,14 +12,14 @@
 
 ActiveRecord::Schema.define(version: 20171222105504) do
 
-  create_table "aker_containers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "aker_containers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "barcode"
     t.string "address"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "aker_work_orders", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "aker_work_orders", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "aker_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -1391,13 +1391,11 @@ ActiveRecord::Schema.define(version: 20171222105504) do
     t.boolean "consent_withdrawn", default: false, null: false
     t.integer "work_order_id"
     t.integer "container_id"
-    t.index ["container_id"], name: "index_samples_on_container_id"
     t.index ["created_at"], name: "index_samples_on_created_at"
     t.index ["name"], name: "index_samples_on_name"
     t.index ["sample_manifest_id"], name: "index_samples_on_sample_manifest_id"
     t.index ["sanger_sample_id"], name: "index_samples_on_sanger_sample_id"
     t.index ["updated_at"], name: "index_samples_on_updated_at"
-    t.index ["work_order_id"], name: "index_samples_on_work_order_id"
   end
 
   create_table "sanger_sample_ids", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
