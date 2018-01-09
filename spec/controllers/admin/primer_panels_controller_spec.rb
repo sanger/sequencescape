@@ -7,8 +7,8 @@
 
 require 'rails_helper'
 
-describe Admin::PrimerSetsController do
-  let(:primer_set) { create :primer_set }
+describe Admin::PrimerPanelsController do
+  let(:primer_panel) { create :primer_panel }
 
   context 'as admin' do
     before do
@@ -22,8 +22,8 @@ describe Admin::PrimerSetsController do
         expect(response).to render_template('index')
       end
 
-      it 'finds the primer sets' do
-        expect(assigns(:primer_sets)).to eq(PrimerSet.all)
+      it 'finds the primer panels' do
+        expect(assigns(:primer_panels)).to eq(PrimerPanel.all)
       end
     end
 
@@ -34,28 +34,28 @@ describe Admin::PrimerSetsController do
         expect(response).to render_template('new')
       end
 
-      it 'initializes the primer sets' do
-        expect(assigns(:primer_set)).to be_a(PrimerSet)
+      it 'initializes the primer panels' do
+        expect(assigns(:primer_panel)).to be_a(PrimerPanel)
       end
     end
 
     describe '#edit' do
-      before { get :edit, params: { id: primer_set.id } }
+      before { get :edit, params: { id: primer_panel.id } }
 
       it 'renders the edit template' do
         expect(response).to render_template('edit')
       end
 
-      it 'finds the primer set' do
-        expect(assigns(:primer_set)).to eq(primer_set)
+      it 'finds the primer panel' do
+        expect(assigns(:primer_panel)).to eq(primer_panel)
       end
     end
 
     describe '#create' do
-      before { post :create, params: { primer_set: attributes_for(:primer_set) } }
+      before { post :create, params: { primer_panel: attributes_for(:primer_panel) } }
 
       it 'renders the edit template' do
-        expect(response).to redirect_to admin_primer_sets_path
+        expect(response).to redirect_to admin_primer_panels_path
       end
     end
   end
@@ -79,13 +79,13 @@ describe Admin::PrimerSetsController do
     end
     describe '#edit' do
       it 'redirects' do
-        get :edit, params: { id: primer_set.id }
+        get :edit, params: { id: primer_panel.id }
         expect(response).to redirect_to('/login')
       end
     end
     describe '#create' do
       it 'redirects' do
-        post :create, params: attributes_for(:primer_set)
+        post :create, params: attributes_for(:primer_panel)
         expect(response).to redirect_to('/login')
       end
     end

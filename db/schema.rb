@@ -889,7 +889,7 @@ ActiveRecord::Schema.define(version: 20171023101540) do
     t.datetime "updated_at"
   end
 
-  create_table "primer_sets", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "primer_panels", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "name", null: false
     t.integer "snp_count", null: false
     t.datetime "created_at", null: false

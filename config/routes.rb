@@ -299,7 +299,7 @@ Sequencescape::Application.routes.draw do
       end
     end
 
-    resources :primer_sets, except: :destroy
+    resources :primer_panels, except: :destroy
 
     resources :studies, except: [:destroy] do
       collection do
