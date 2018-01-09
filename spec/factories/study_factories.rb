@@ -39,7 +39,7 @@ FactoryGirl.define do
       study.study_metadata.update_attributes!(data_release_strategy: 'managed', study_ebi_accession_number: evaluator.accession_number)
     end
   end
-
+ 
   factory(:open_study, parent: :study) do
     transient do
       accession_number nil
