@@ -42,7 +42,6 @@ class Request < ApplicationRecord
   belongs_to :pipeline
   belongs_to :item
   belongs_to :request_type, inverse_of: :requests
-  belongs_to :workflow, class_name: 'Submission::Workflow'
   belongs_to :user
   belongs_to :request_purpose
   belongs_to :order, inverse_of: :requests
@@ -91,9 +90,9 @@ class Request < ApplicationRecord
 
   # Scopes
   scope :for_pipeline, ->(pipeline) {
-      joins('LEFT JOIN pipelines_request_types prt ON prt.request_type_id=requests.request_type_id')
-        .where(['prt.pipeline_id=?', pipeline.id])
-        .readonly(false)
+    joins('LEFT JOIN pipelines_request_types prt ON prt.request_type_id=requests.request_type_id')
+      .where(['prt.pipeline_id=?', pipeline.id])
+      .readonly(false)
   }
 
   scope :customer_requests, ->() { where(sti_type: [CustomerRequest, *CustomerRequest.descendants].map(&:name)) }
@@ -121,6 +120,7 @@ class Request < ApplicationRecord
               SUM(requests.state = 'passed') > 0 AS pool_complete,
               MIN(requests.id) AS id,
               MIN(requests.sti_type) AS sti_type,
+              MIN(requests.target_asset_id) AS target_asset_id,
               MIN(requests.submission_id) AS submission_id,
               MIN(requests.request_type_id) AS request_type_id})
       .joins(add_joins + [
@@ -129,11 +129,10 @@ class Request < ApplicationRecord
         'INNER JOIN uuids ON uuids.resource_id=requests.submission_id AND uuids.resource_type="Submission"'
       ])
       .group('uuids.external_id')
-      .customer_requests
-      .where([
-        'container_associations.container_id=? AND requests.submission_id IN (?)',
-        plate.id, submission_ids
-      ])
+      .where(
+        container_associations: { container_id: plate.id },
+        requests: { submission_id: submission_ids }
+      )
   }
 
   scope :for_pre_cap_grouping_of, ->(plate) {
@@ -147,26 +146,25 @@ class Request < ApplicationRecord
         ]
       end
 
-      select('min(uuids.external_id) AS group_id, GROUP_CONCAT(DISTINCT pw_location.description SEPARATOR ",") AS group_into, MIN(requests.id) AS id, MIN(requests.submission_id) AS submission_id, MIN(requests.request_type_id) AS request_type_id')
-        .joins(add_joins + [
-          'INNER JOIN maps AS pw_location ON pw.map_id = pw_location.id',
-          'INNER JOIN container_associations ON container_associations.content_id=pw.id',
-          'INNER JOIN pre_capture_pool_pooled_requests ON requests.id=pre_capture_pool_pooled_requests.request_id',
-          'INNER JOIN uuids ON uuids.resource_id = pre_capture_pool_pooled_requests.pre_capture_pool_id AND uuids.resource_type="PreCapturePool"'
-        ])
-        .group('pre_capture_pool_pooled_requests.pre_capture_pool_id')
-        .customer_requests
-        .where(state: ['started', 'pending'])
-        .where([
-          'container_associations.container_id=?',
-          plate.id
-        ])
+    select('min(uuids.external_id) AS group_id, GROUP_CONCAT(DISTINCT pw_location.description SEPARATOR ",") AS group_into, MIN(requests.id) AS id, MIN(requests.submission_id) AS submission_id, MIN(requests.request_type_id) AS request_type_id')
+      .joins(add_joins + [
+        'INNER JOIN maps AS pw_location ON pw.map_id = pw_location.id',
+        'INNER JOIN container_associations ON container_associations.content_id=pw.id',
+        'INNER JOIN pre_capture_pool_pooled_requests ON requests.id=pre_capture_pool_pooled_requests.request_id',
+        'INNER JOIN uuids ON uuids.resource_id = pre_capture_pool_pooled_requests.pre_capture_pool_id AND uuids.resource_type="PreCapturePool"'
+      ])
+      .group('pre_capture_pool_pooled_requests.pre_capture_pool_id')
+      .where(state: ['started', 'pending'])
+      .where([
+        'container_associations.container_id=?',
+        plate.id
+      ])
   }
 
   scope :in_order, ->(order) { where(order_id: order) }
 
   scope :for_event_notification_by_order, ->(order) {
-    customer_requests.in_order(order).where(state: 'passed')
+    in_order(order).where(state: 'passed')
   }
 
   scope :including_samples_from_target, ->() { includes(target_asset: { aliquots: :sample }) }
@@ -182,7 +180,6 @@ class Request < ApplicationRecord
   scope :for_pacbio_sample_sheet, -> { includes([{ target_asset: :map }, :request_metadata]) }
   scope :for_billing, -> { includes([:initial_project, :request_type, { target_asset: :aliquots }]) }
 
-  scope :between, ->(source, target) { where(asset_id: source.id, target_asset_id: target.id) }
   scope :into_by_id, ->(target_ids) { where(target_asset_id: target_ids) }
 
   scope :request_type, ->(request_type) {
@@ -199,17 +196,12 @@ class Request < ApplicationRecord
   scope :with_target, -> { where('target_asset_id is not null and (target_asset_id <> asset_id)') }
   scope :join_asset,  -> { joins(:asset) }
   scope :with_asset_location, -> { includes(asset: :map) }
-
   scope :siblings_of, ->(request) { where(asset_id: request.asset_id).where.not(id: request.id) }
 
-  # Asset are Locatable (or at least some of them)
-  belongs_to :location_association, primary_key: :locatable_id, foreign_key: :asset_id
-  scope :located, ->(location_id) { joins(:location_association).where(['location_associations.location_id = ?', location_id]).readonly(false) }
-
   # Use container location
-  scope :holder_located, ->(location_id) {
-    joins(['INNER JOIN container_associations hl ON hl.content_id = asset_id', 'INNER JOIN location_associations ON location_associations.locatable_id = hl.container_id'])
-      .where(['location_associations.location_id = ?', location_id])
+  scope :holder_located, ->() {
+    joins('INNER JOIN container_associations hl ON hl.content_id = asset_id')
+      .where('hl.id is not null')
       .readonly(false)
   }
 
@@ -244,8 +236,8 @@ class Request < ApplicationRecord
   scope :for_submission_id, ->(id) { where(submission_id: id) }
   scope :for_asset_id, ->(id) { where(asset_id: id) }
   scope :for_study_ids, ->(ids) {
-       joins('INNER JOIN aliquots AS al ON requests.asset_id = al.receptacle_id')
-         .where(['al.study_id IN (?)', ids]).uniq
+                          joins('INNER JOIN aliquots AS al ON requests.asset_id = al.receptacle_id')
+                            .where(['al.study_id IN (?)', ids]).uniq
                         }
 
   scope :for_study_id, ->(id) { for_study_ids(id) }
@@ -280,19 +272,18 @@ class Request < ApplicationRecord
 
   scope :for_initial_study_id, ->(id) { where(initial_study_id: id) }
 
-  scope :for_workflow, ->(workflow) { joins(:workflow).where(workflow: { key: workflow }) }
   scope :for_request_types, ->(types) { joins(:request_type).where(request_types: { key: types }) }
 
   scope :for_search_query, ->(query, _with_includes) {
-     where(['id=?', query])
+                             where(['id=?', query])
                            }
 
-   scope :find_all_target_asset, ->(target_asset_id) {
-     where(['target_asset_id = ?', target_asset_id.to_s])
-   }
-   scope :for_studies, ->(*studies) {
-     where(initial_study_id: studies)
-   }
+  scope :find_all_target_asset, ->(target_asset_id) {
+    where(['target_asset_id = ?', target_asset_id.to_s])
+  }
+  scope :for_studies, ->(*studies) {
+    where(initial_study_id: studies)
+  }
 
   scope :with_assets_for_starting_requests, -> { includes([:request_metadata, :request_events, { asset: :aliquots, target_asset: :aliquots }]) }
   scope :not_failed, -> { where(['state != ?', 'failed']) }

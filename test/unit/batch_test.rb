@@ -142,7 +142,7 @@ class BatchTest < ActiveSupport::TestCase
     context 'when a batch is not associated with any events, it' do
       should 'return false.' do
         assert_equal false, @batch.has_event('Tube layout verified'),
-          '#has_event should return false if an event is not found'
+                     '#has_event should return false if an event is not found'
       end
     end
     context 'when a batch has a LabEvent' do
@@ -510,16 +510,16 @@ class BatchTest < ActiveSupport::TestCase
           @batch = create :batch, pipeline: @pipeline, state: 'started'
         end
 
-       should 'raise an exception' do
+        should 'raise an exception' do
           assert_raise AASM::InvalidTransition do
             @batch.reset!(@user)
           end
-       end
+        end
       end
 
       {
-         sequencing_pipeline: :sequencing_request_with_assets,
-         pipeline: :request
+        sequencing_pipeline: :sequencing_request_with_assets,
+        pipeline: :request
       }.each do |pipeline_type, request_factory|
         context "of a #{pipeline_type}" do
           setup do
@@ -562,7 +562,7 @@ class BatchTest < ActiveSupport::TestCase
         @batch.update_attributes!(qc_state: 'qc_completed')
       end
       should 'move batch to previous qc state' do
-        assert_equal'qc_completed', @batch.qc_state
+        assert_equal 'qc_completed', @batch.qc_state
         @batch.qc_previous_state!(@user)
         assert_equal 'qc_manual_in_progress', @batch.qc_state
         @batch.qc_previous_state!(@user)
@@ -596,7 +596,7 @@ class BatchTest < ActiveSupport::TestCase
                 @user,
                 'batch_1' => { 'id' => @left_batch.id.to_s, 'lane' => left_position.to_s },
                 'batch_2' => { 'id' => @right_batch.id.to_s, 'lane' => right_position.to_s }
-             )
+              )
             )
 
             # The two requests should have been swapped

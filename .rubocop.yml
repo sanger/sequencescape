@@ -36,12 +36,14 @@ Style/NumericLiterals:
 # Blocks are used to structure tests and are part of the shoulda dsl.
 # The standard BlockLength limits are too stringent for this purpose.
 # Block DSL is also used in routes
+# We should be careful keeping rake tasks here, as large tasks are still an issue.
+# Not sure if we need to split namespaces across several files though.
 Metrics/BlockLength:
   Exclude:
     - 'test/**/*'
     - 'spec/**/*'
     - 'config/routes.rb'
-
+    - 'lib/tasks/*'
 # We have a few custom find_by methods which we maintain.
 # At least for now. find_by_id_or_name is a bit clunky.
 Rails/DynamicFindBy:
@@ -57,6 +59,20 @@ Rails/DynamicFindBy:
 
 Layout/IndentArray:
   EnforcedStyle: consistent
-  
+
 Style/ClassAndModuleChildren:
   Enabled: false
+
+# Rubocop has a few issues with this when generating the ignore files.
+# Also, I'm far from convinced that its correct. It argues in favour of
+# +'' over Sting.new when creating a mutable string due to marginal
+# performance improvements.
+# See: http://www.rubydoc.info/gems/rubocop/RuboCop/Cop/Performance/UnfreezeString
+# That said, I can see potential advantages wrt. encoding
+# Anyway, leaving this off for now.
+Performance/UnfreezeString:
+  Enabled: false
+# This should be the rubocop defaults, not sure why its kicking up a fuss.
+Layout/SpaceBeforeBlockBraces:
+  EnforcedStyle: space
+  EnforcedStyleForEmptyBraces: space

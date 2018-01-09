@@ -31,9 +31,9 @@ class EventFactoryTest < ActiveSupport::TestCase
         EventFactory.new_project(@project, @user)
       end
 
-     should 'change Event.count by 1' do
-       assert_equal 1, Event.count - @event_count, 'Expected Event.count to change by 1'
-     end
+      should 'change Event.count by 1' do
+        assert_equal 1, Event.count - @event_count, 'Expected Event.count to change by 1'
+      end
 
       context 'send 1 email to 1 recipient' do
         should 'send email' do
@@ -129,9 +129,9 @@ class EventFactoryTest < ActiveSupport::TestCase
         EventFactory.project_approved(@project, @user2)
       end
 
-       should 'change Event.count by 1' do
-         assert_equal 1,  Event.count  - @event_count, 'Expected Event.count to change by 1'
-       end
+      should 'change Event.count by 1' do
+        assert_equal 1, Event.count - @event_count, 'Expected Event.count to change by 1'
+      end
 
       context ': send email to project manager' do
         should 'Have sent an email' do
@@ -171,9 +171,9 @@ class EventFactoryTest < ActiveSupport::TestCase
         EventFactory.study_has_samples_registered(@study, @samples, @user1)
       end
 
-       should 'change Event.count by 1' do
-         assert_equal 1,  Event.count  - @event_count, 'Expected Event.count to change by 1'
-       end
+      should 'change Event.count by 1' do
+        assert_equal 1, Event.count - @event_count, 'Expected Event.count to change by 1'
+      end
 
       context 'send email to project manager' do
         should 'Have sent an email' do
@@ -204,9 +204,9 @@ class EventFactoryTest < ActiveSupport::TestCase
         EventFactory.request_update_note_to_manager(@request, @user3, message)
       end
 
-       should 'change Event.count by 1' do
-         assert_equal 1,  Event.count  - @event_count, 'Expected Event.count to change by 1'
-       end
+      should 'change Event.count by 1' do
+        assert_equal 1, Event.count - @event_count, 'Expected Event.count to change by 1'
+      end
 
       context 'send email to project manager' do
         should 'Have sent an email' do

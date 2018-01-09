@@ -1,4 +1,8 @@
 class AddBespokeSpecificHiseqXSequencing < ActiveRecord::Migration
+  class SubmissionWorkflow < ApplicationRecord
+    self.table_name = 'submission_workflows'
+  end
+
   def up
     ActiveRecord::Base.transaction do
       rt = RequestType.create!(
@@ -16,7 +20,7 @@ class AddBespokeSpecificHiseqXSequencing < ActiveRecord::Migration
         product_line_id: ProductLine.find_by!(name: 'Illumina-C'),
         request_class_name: 'HiSeqSequencingRequest',
         request_purpose: RequestPurpose.standard,
-        workflow_id: Submission::Workflow.find_by(key: 'short_read_sequencing')
+        workflow_id: SubmissionWorkflow.find_by(key: 'short_read_sequencing').id
       )
       ['Standard', 'HiSeqX PCR free', 'qPCR only', 'Pre-quality controlled'].each do |name|
         rt.library_types << LibraryType.find_by!(name: name)

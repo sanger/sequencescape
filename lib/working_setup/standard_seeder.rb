@@ -1,19 +1,15 @@
+# frozen_string_literal: true
 
-#
-# Class WorkingSetup::WorkingSetupSeeder provides tools to assist
-# with automatic creation of plates etc. for development
-#
-# @author Genome Research Ltd.
-#
 module WorkingSetup
+  # Class WorkingSetup::WorkingSetupSeeder provides tools to assist
+  # with automatic creation of plates etc. for development
+  #
+  # @author Genome Research Ltd.
+  #
   class StandardSeeder
-    attr_reader :locations, :program
+    attr_reader :program
 
     def initialize(purposes = [])
-      @locations = {
-        htp: Location.find_by(name: 'Illumina high throughput freezer'),
-        ilc: Location.find_by(name: 'Library creation freezer')
-      }
       @program = Program.find_by(name: 'General')
       @purposes = purposes
     end
@@ -45,10 +41,10 @@ module WorkingSetup
       Sample.all.each { |s| study_b.samples << s }
     end
 
-    def plates_of_purpose(name, number, location = nil)
+    def plates_of_purpose(name, number)
       purpose = Purpose.find_by!(name: name)
       number.times do
-        purpose.create!(location: location).tap do |plate|
+        purpose.create!.tap do |plate|
           plate.wells.each { |w| w.aliquots.create!(sample: Sample.create!(name: "sample_#{plate.sanger_human_barcode}_#{w.map.description}", studies: [study])) }
           puts "#{name}: #{plate.ean13_barcode}-#{plate.sanger_human_barcode}"
         end
@@ -66,7 +62,6 @@ module WorkingSetup
       qcc = QcableCreator.create!(lot: lot, user: user, count: 30)
       qcc.qcables.each do |qcable|
         qcable.update_attributes!(state: 'available')
-        qcable.asset.update_attributes!(location: locations[:htp])
         puts "Tag Plate: #{qcable.asset.ean13_barcode}"
       end
     end

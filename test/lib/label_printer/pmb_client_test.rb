@@ -36,8 +36,8 @@ class PmbClientTest < ActiveSupport::TestCase
                    'labels' => labels }
 
     RestClient.expects(:post).with('http://localhost:9292/v1/print_jobs',
-                        { 'data' => { 'attributes' => attributes } }.to_json,
-                        content_type: 'application/vnd.api+json', accept: 'application/vnd.api+json')
+                                   { 'data' => { 'attributes' => attributes } }.to_json,
+                                   content_type: 'application/vnd.api+json', accept: 'application/vnd.api+json')
               .returns(201)
 
     assert_equal 201, LabelPrinter::PmbClient.print(attributes)
@@ -76,18 +76,18 @@ class PmbClientTest < ActiveSupport::TestCase
   test 'should register printer in pmb if it was not there' do
     RestClient.expects(:get)
               .with('http://localhost:9292/v1/printers?filter[name]=test_printer',
-                content_type: 'application/vnd.api+json', accept: 'application/vnd.api+json')
+                    content_type: 'application/vnd.api+json', accept: 'application/vnd.api+json')
               .returns('{"data":[]}')
     RestClient.expects(:post)
               .with('http://localhost:9292/v1/printers',
-                        { 'data' => { 'attributes' => { 'name' => 'test_printer' } } }.to_json,
-                        content_type: 'application/vnd.api+json', accept: 'application/vnd.api+json')
+                    { 'data' => { 'attributes' => { 'name' => 'test_printer' } } }.to_json,
+                    content_type: 'application/vnd.api+json', accept: 'application/vnd.api+json')
               .returns(201)
     assert_equal 201, LabelPrinter::PmbClient.register_printer('test_printer')
 
     RestClient.expects(:get)
               .with('http://localhost:9292/v1/printers?filter[name]=test_printer',
-            content_type: 'application/vnd.api+json', accept: 'application/vnd.api+json')
+                    content_type: 'application/vnd.api+json', accept: 'application/vnd.api+json')
               .returns('{"data":[{"id":"49","type":"printers","attributes":{"name":"test_printer","protocol":"LPD"}}]}')
     refute LabelPrinter::PmbClient.register_printer('test_printer')
   end

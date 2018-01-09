@@ -50,7 +50,6 @@ FactoryGirl.define do
   factory :item do
     name               { |_a| generate :item_name }
     sequence(:version) { |a| a }
-    workflow           { |workflow| workflow.association(:submission_workflow) }
     count              nil
     closed             false
   end
@@ -95,13 +94,6 @@ FactoryGirl.define do
     sample
   end
 
-  factory :submission_workflow, class: Submission::Workflow do
-    name { |_a| generate :item_name }
-    item_label 'library'
-    factory :workflow do
-    end
-  end
-
   factory :submission do
     user  { |user| user.association(:user) }
   end
@@ -113,7 +105,7 @@ FactoryGirl.define do
     transient do
       request_type_ids_list []
     end
-    submission_parameters { { workflow_id: 1, request_type_ids_list: request_type_ids_list } }
+    submission_parameters { { request_type_ids_list: request_type_ids_list } }
     product_catalogue { |pc| pc.association(:single_product_catalogue) }
 
     factory :limber_wgs_submission_template do
@@ -123,7 +115,6 @@ FactoryGirl.define do
       sequence(:name) { |i| "Template #{i}" }
       submission_parameters do
         {
-          workflow_id: Submission::Workflow.first.id,
           request_type_ids_list: request_types.map { |rt| [rt.id] }
         }
       end
@@ -385,8 +376,6 @@ FactoryGirl.define do
   factory :transfer_request do
     association(:asset, factory: :well)
     association(:target_asset, factory: :well)
-    association(:request_type, factory: :transfer_request_type)
-    request_purpose
   end
 
   factory(:library_creation_request_for_testing_sequencing_requests, class: Request::LibraryCreation) do

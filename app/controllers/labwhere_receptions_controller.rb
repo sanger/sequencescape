@@ -8,14 +8,14 @@ class LabwhereReceptionsController < ApplicationController
   before_action :login_required, except: [:index, :create]
 
   def index
-    @labwhere_reception = LabwhereReception.new(params[:user_code], params[:location_barcode], params[:location_id], [])
+    @labwhere_reception = LabwhereReception.new(params[:user_code], params[:location_barcode], [])
   end
 
   def create
     # user_barcode,location_barcode,asset_barcodes
     input = params[:labwhere_reception] || {}
 
-    @labwhere_reception = LabwhereReception.new(input[:user_code], input[:location_barcode], input[:location_id], input[:barcodes])
+    @labwhere_reception = LabwhereReception.new(input[:user_code], input[:location_barcode], input[:barcodes])
     if @labwhere_reception.save
       flash.now[:notice] = 'Locations updated!'
     else

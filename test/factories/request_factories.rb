@@ -107,8 +107,7 @@ FactoryGirl.define do
     project
     state 'pending'
     study
-    user              { User.find_by(login: user_login) || create(:user, login: user_login) }
-    workflow          { |workflow| workflow.association(:submission_workflow) }
+    user { User.find_by(login: user_login) || create(:user, login: user_login) }
   end
 
   factory :request, parent: :request_without_assets do
@@ -119,7 +118,6 @@ FactoryGirl.define do
     factory :request_with_submission do
       after(:build) do |request|
         request.submission = FactoryHelp::submission(
-          workflow: request.workflow,
           study: request.initial_study,
           project: request.initial_project,
           request_types: [request.request_type.try(:id)].compact.map(&:to_s),
@@ -161,10 +159,9 @@ FactoryGirl.define do
     target_asset { |asset| asset.association(:empty_library_tube) }
   end
 
-  factory :initial_transfer_request, class: TransferRequest::InitialTransfer do
+  factory :initial_transfer_request, class: TransferRequest::Initial do
     asset { |asset| asset.association(:well) }
     target_asset { |asset| asset.association(:well) }
-    request_purpose
   end
 
   factory :request_traction_grid_ion, class: Request::Traction::GridIon do

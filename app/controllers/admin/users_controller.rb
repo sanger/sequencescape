@@ -61,9 +61,9 @@ class Admin::UsersController < ApplicationController
     if request.xhr?
       if params[:role]
         authorizable_object = if params[:role][:authorizable_type] == 'Project'
-          Project.find(params[:role][:authorizable_id])
+                                Project.find(params[:role][:authorizable_id])
                               else
-          Study.find(params[:role][:authorizable_id])
+                                Study.find(params[:role][:authorizable_id])
                               end
         @user.has_role(params[:role][:authorizable_name].to_s, authorizable_object)
         @users_roles = @user.study_and_project_roles.order(name: :asc)
@@ -86,9 +86,9 @@ class Admin::UsersController < ApplicationController
     if request.xhr?
       if params[:role]
         authorizable_object = if params[:role][:authorizable_type] == 'project'
-          Project.find(params[:role][:authorizable_id])
+                                Project.find(params[:role][:authorizable_id])
                               else
-          Study.find(params[:role][:authorizable_id])
+                                Study.find(params[:role][:authorizable_id])
                               end
         @user.has_no_role(params[:role][:authorizable_name].to_s, authorizable_object)
         @users_roles = @user.study_and_project_roles.order(name: :asc)

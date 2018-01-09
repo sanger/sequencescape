@@ -20,7 +20,6 @@ class Io::Plate < Io::Asset
                                   pre_cap_groups => pre_cap_groups
                                             role => label.prefix
                                     purpose.name => label.text
-                                   location.name => location
                                         priority => priority
 
                                source_plate.uuid  => stock_plate.uuid

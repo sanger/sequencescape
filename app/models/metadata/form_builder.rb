@@ -119,12 +119,12 @@ class Metadata::FormBuilder < Metadata::BuilderBase
   def finalize_related_fields
     related = @related_fields.compact.uniq.map(&:to_s)
     concat(render(
-      partial: 'shared/metadata/related_fields',
-      locals: {
-        root: sanitized_object_name,
-        related: related,
-        changing_fields: @changing
-      }
+             partial: 'shared/metadata/related_fields',
+             locals: {
+               root: sanitized_object_name,
+               related: related,
+               changing_fields: @changing
+             }
     )) unless related.empty?
   end
 

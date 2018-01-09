@@ -20,8 +20,8 @@ class Transfer::BetweenSpecificTubes < Transfer
   end
   private :each_transfer
 
-  def request_type_between(_ignored_a, _ignored_b)
-    destination.transfer_request_type_from(source)
+  def transfer_request_class_between(_ignored_a, _ignored_b)
+    destination.transfer_request_class_from(source)
   end
-  private :request_type_between
+  private :transfer_request_class_between
 end

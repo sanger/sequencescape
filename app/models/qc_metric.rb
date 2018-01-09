@@ -38,8 +38,8 @@ class QcMetric < ApplicationRecord
   scope :with_asset_ids, ->(ids) { where(asset_id: ids) }
 
   scope :for_product, ->(product) {
-      joins(qc_report: :product_criteria)
-        .where(product_criteria: { product_id: product })
+    joins(qc_report: :product_criteria)
+      .where(product_criteria: { product_id: product })
   }
 
   scope :stock_metric, ->() {

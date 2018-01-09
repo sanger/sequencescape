@@ -22,84 +22,84 @@ class GeneratorTest < ActiveSupport::TestCase
         '95020' => {
           'name' => 'ABgene 0765',
           'plate_size' => 96,
-          }
-        },
+        }
+      },
       'destination' => {
-          '119572' => {
-            'name' => 'ABgene 0800',
-            'plate_size' => 96,
-            'mapping' => [
-              { 'src_well' =>  ['95020', 'B7'], 'dst_well' => 'A1', 'volume' => 13, 'buffer_volume' => 0.0  },
-              { 'src_well' =>  ['95020', 'C7'], 'dst_well' => 'B1', 'volume' => 13, 'buffer_volume' => 0.0  },
-              { 'src_well' =>  ['95020', 'D7'], 'dst_well' => 'C1', 'volume' => 13, 'buffer_volume' => 0.0  },
-              { 'src_well' =>  ['95020', 'E7'], 'dst_well' => 'D1', 'volume' => 13, 'buffer_volume' => 0.0  },
-              { 'src_well' =>  ['95020', 'H7'], 'dst_well' => 'E1', 'volume' => 13, 'buffer_volume' => 0.0  },
-              { 'src_well' =>  ['95020', 'D8'], 'dst_well' => 'F1', 'volume' => 13, 'buffer_volume' => 0.0  },
-              { 'src_well' =>  ['95020', 'E8'], 'dst_well' => 'G1', 'volume' => 6.77, 'buffer_volume' => 6.23 },
-              { 'src_well' =>  ['95020', 'A8'], 'dst_well' => 'H1', 'volume' => 13, 'buffer_volume' => 0.0  },
-              { 'src_well' =>  ['95020', 'G8'], 'dst_well' => 'A2', 'volume' => 13, 'buffer_volume' => 0.0  },
-              { 'src_well' =>  ['95020', 'H8'], 'dst_well' => 'B2', 'volume' => 13, 'buffer_volume' => 0.0  },
-              { 'src_well' =>  ['95020', 'A9'], 'dst_well' => 'C2', 'volume' => 13, 'buffer_volume' => 0.0  },
-              { 'src_well' =>  ['95020', 'B9'], 'dst_well' => 'D2', 'volume' => 13, 'buffer_volume' => 0.0  },
-              { 'src_well' =>  ['95020', 'C9'], 'dst_well' => 'E2', 'volume' => 13, 'buffer_volume' => 0.0  },
-              { 'src_well' =>  ['95020', 'D9'], 'dst_well' => 'F2', 'volume' => 13, 'buffer_volume' => 0.0  },
-              { 'src_well' =>  ['95020', 'E9'], 'dst_well' => 'G2', 'volume' => 13, 'buffer_volume' => 0.0  },
-              { 'src_well' =>  ['95020', 'F9'], 'dst_well' => 'H2', 'volume' => 13, 'buffer_volume' => 0.0  },
-              { 'src_well' =>  ['95020', 'G9'], 'dst_well' => 'A3', 'volume' => 13, 'buffer_volume' => 0.0  },
-              { 'src_well' =>  ['95020', 'H9'], 'dst_well' => 'B3', 'volume' => 13, 'buffer_volume' => 0.0  },
-              { 'src_well' => ['95020', 'C10'], 'dst_well' => 'C3', 'volume' => 9.48, 'buffer_volume' => 3.52 },
-              { 'src_well' => ['95020', 'E10'], 'dst_well' => 'D3', 'volume' => 13, 'buffer_volume' => 0.0  },
-              { 'src_well' => ['95020', 'F10'], 'dst_well' => 'E3', 'volume' => 13, 'buffer_volume' => 0.0  },
-              { 'src_well' => ['95020', 'H10'], 'dst_well' => 'F3', 'volume' => 13, 'buffer_volume' => 0.0  },
-              { 'src_well' => ['95020', 'D11'], 'dst_well' => 'G3', 'volume' => 6.91, 'buffer_volume' => 6.09 },
-              { 'src_well' => ['95020', 'A11'], 'dst_well' => 'H3', 'volume' => 13, 'buffer_volume' => 0.0  },
-              { 'src_well' => ['95020', 'B11'], 'dst_well' => 'A4', 'volume' => 13, 'buffer_volume' => 0.0  },
-              { 'src_well' => ['95020', 'E11'], 'dst_well' => 'B4', 'volume' => 13, 'buffer_volume' => 0.0  },
-              { 'src_well' => ['95020', 'G11'], 'dst_well' => 'C4', 'volume' => 13, 'buffer_volume' => 0.0  },
-              { 'src_well' => ['95020', 'B12'], 'dst_well' => 'D4', 'volume' => 7.83, 'buffer_volume' => 5.17 },
-              { 'src_well' => ['95020', 'A12'], 'dst_well' => 'E4', 'volume' => 13, 'buffer_volume' => 0.0  },
-              { 'src_well' => ['95020', 'C12'], 'dst_well' => 'F4', 'volume' => 13, 'buffer_volume' => 0.0  },
-              { 'src_well' => ['95020', 'D12'], 'dst_well' => 'G4', 'volume' => 13, 'buffer_volume' => 0.0  },
-              { 'src_well' => ['95020', 'F12'], 'dst_well' => 'H4', 'volume' => 13, 'buffer_volume' => 0.0  }
-            ]
-          }
+        '119572' => {
+          'name' => 'ABgene 0800',
+          'plate_size' => 96,
+          'mapping' => [
+            { 'src_well' =>  ['95020', 'B7'], 'dst_well' => 'A1', 'volume' => 13, 'buffer_volume' => 0.0  },
+            { 'src_well' =>  ['95020', 'C7'], 'dst_well' => 'B1', 'volume' => 13, 'buffer_volume' => 0.0  },
+            { 'src_well' =>  ['95020', 'D7'], 'dst_well' => 'C1', 'volume' => 13, 'buffer_volume' => 0.0  },
+            { 'src_well' =>  ['95020', 'E7'], 'dst_well' => 'D1', 'volume' => 13, 'buffer_volume' => 0.0  },
+            { 'src_well' =>  ['95020', 'H7'], 'dst_well' => 'E1', 'volume' => 13, 'buffer_volume' => 0.0  },
+            { 'src_well' =>  ['95020', 'D8'], 'dst_well' => 'F1', 'volume' => 13, 'buffer_volume' => 0.0  },
+            { 'src_well' =>  ['95020', 'E8'], 'dst_well' => 'G1', 'volume' => 6.77, 'buffer_volume' => 6.23 },
+            { 'src_well' =>  ['95020', 'A8'], 'dst_well' => 'H1', 'volume' => 13, 'buffer_volume' => 0.0  },
+            { 'src_well' =>  ['95020', 'G8'], 'dst_well' => 'A2', 'volume' => 13, 'buffer_volume' => 0.0  },
+            { 'src_well' =>  ['95020', 'H8'], 'dst_well' => 'B2', 'volume' => 13, 'buffer_volume' => 0.0  },
+            { 'src_well' =>  ['95020', 'A9'], 'dst_well' => 'C2', 'volume' => 13, 'buffer_volume' => 0.0  },
+            { 'src_well' =>  ['95020', 'B9'], 'dst_well' => 'D2', 'volume' => 13, 'buffer_volume' => 0.0  },
+            { 'src_well' =>  ['95020', 'C9'], 'dst_well' => 'E2', 'volume' => 13, 'buffer_volume' => 0.0  },
+            { 'src_well' =>  ['95020', 'D9'], 'dst_well' => 'F2', 'volume' => 13, 'buffer_volume' => 0.0  },
+            { 'src_well' =>  ['95020', 'E9'], 'dst_well' => 'G2', 'volume' => 13, 'buffer_volume' => 0.0  },
+            { 'src_well' =>  ['95020', 'F9'], 'dst_well' => 'H2', 'volume' => 13, 'buffer_volume' => 0.0  },
+            { 'src_well' =>  ['95020', 'G9'], 'dst_well' => 'A3', 'volume' => 13, 'buffer_volume' => 0.0  },
+            { 'src_well' =>  ['95020', 'H9'], 'dst_well' => 'B3', 'volume' => 13, 'buffer_volume' => 0.0  },
+            { 'src_well' => ['95020', 'C10'], 'dst_well' => 'C3', 'volume' => 9.48, 'buffer_volume' => 3.52 },
+            { 'src_well' => ['95020', 'E10'], 'dst_well' => 'D3', 'volume' => 13, 'buffer_volume' => 0.0  },
+            { 'src_well' => ['95020', 'F10'], 'dst_well' => 'E3', 'volume' => 13, 'buffer_volume' => 0.0  },
+            { 'src_well' => ['95020', 'H10'], 'dst_well' => 'F3', 'volume' => 13, 'buffer_volume' => 0.0  },
+            { 'src_well' => ['95020', 'D11'], 'dst_well' => 'G3', 'volume' => 6.91, 'buffer_volume' => 6.09 },
+            { 'src_well' => ['95020', 'A11'], 'dst_well' => 'H3', 'volume' => 13, 'buffer_volume' => 0.0  },
+            { 'src_well' => ['95020', 'B11'], 'dst_well' => 'A4', 'volume' => 13, 'buffer_volume' => 0.0  },
+            { 'src_well' => ['95020', 'E11'], 'dst_well' => 'B4', 'volume' => 13, 'buffer_volume' => 0.0  },
+            { 'src_well' => ['95020', 'G11'], 'dst_well' => 'C4', 'volume' => 13, 'buffer_volume' => 0.0  },
+            { 'src_well' => ['95020', 'B12'], 'dst_well' => 'D4', 'volume' => 7.83, 'buffer_volume' => 5.17 },
+            { 'src_well' => ['95020', 'A12'], 'dst_well' => 'E4', 'volume' => 13, 'buffer_volume' => 0.0  },
+            { 'src_well' => ['95020', 'C12'], 'dst_well' => 'F4', 'volume' => 13, 'buffer_volume' => 0.0  },
+            { 'src_well' => ['95020', 'D12'], 'dst_well' => 'G4', 'volume' => 13, 'buffer_volume' => 0.0  },
+            { 'src_well' => ['95020', 'F12'], 'dst_well' => 'H4', 'volume' => 13, 'buffer_volume' => 0.0  }
+          ]
         }
       }
+    }
 
     @testcases << { data_object: data_object, expected_output: expected_output }
 
     file = File.open(configatron.tecan_files_location + '/tecan/' + '127073.gwl', 'rb')
     expected_output = file.read
     data_object = {
-        'user' => 'xyz987',
-        'time' => 'Fri Nov 27 10:11:13 2009',
-        'source' => {
-          '122289' => {
-            'name' => 'ABgene 0765',
-            'plate_size' => 96,
-          },
-          '80785' => {
-            'name' => 'ABgene 0765',
-            'plate_size' => 96,
-          },
-          '122290' => {
-            'name' => 'ABgene 0765',
-            'plate_size' => 96,
-          }
+      'user' => 'xyz987',
+      'time' => 'Fri Nov 27 10:11:13 2009',
+      'source' => {
+        '122289' => {
+          'name' => 'ABgene 0765',
+          'plate_size' => 96,
         },
-        'destination' => {
-          '127073' => {
-            'name' => 'ABgene 0800',
-            'plate_size' => 96,
-            'mapping' => [
-              { 'src_well' => ['122289', 'G7'], 'dst_well' => 'D4', 'volume' => 3.33, 'buffer_volume' => 9.67 },
-              { 'src_well' =>  ['80785', 'A1'],  'dst_well' => 'E4', 'volume' => 13, 'buffer_volume' => 0.0 },
-              { 'src_well' =>  ['122289', 'H7'], 'dst_well' => 'F4', 'volume' => 3.27, 'buffer_volume' => 9.73 },
-              { 'src_well' =>  ['122290', 'A1'], 'dst_well' => 'E9', 'volume' => 2.8, 'buffer_volume' => 10.2 },
-              { 'src_well' =>  ['122290', 'B1'], 'dst_well' => 'F9', 'volume' => 4.08, 'buffer_volume' => 8.92 }
-            ]
-          }
+        '80785' => {
+          'name' => 'ABgene 0765',
+          'plate_size' => 96,
+        },
+        '122290' => {
+          'name' => 'ABgene 0765',
+          'plate_size' => 96,
         }
+      },
+      'destination' => {
+        '127073' => {
+          'name' => 'ABgene 0800',
+          'plate_size' => 96,
+          'mapping' => [
+            { 'src_well' => ['122289', 'G7'], 'dst_well' => 'D4', 'volume' => 3.33, 'buffer_volume' => 9.67 },
+            { 'src_well' =>  ['80785', 'A1'],  'dst_well' => 'E4', 'volume' => 13, 'buffer_volume' => 0.0 },
+            { 'src_well' =>  ['122289', 'H7'], 'dst_well' => 'F4', 'volume' => 3.27, 'buffer_volume' => 9.73 },
+            { 'src_well' =>  ['122290', 'A1'], 'dst_well' => 'E9', 'volume' => 2.8, 'buffer_volume' => 10.2 },
+            { 'src_well' =>  ['122290', 'B1'], 'dst_well' => 'F9', 'volume' => 4.08, 'buffer_volume' => 8.92 }
+          ]
+        }
+      }
     }
 
     @testcases << { data_object: data_object, expected_output: expected_output }
@@ -204,11 +204,10 @@ class GeneratorTest < ActiveSupport::TestCase
             { 'src_well' =>  ['66666', 'H7'], 'dst_well' => 'B2', 'volume' => 13, 'buffer_volume' => 0.0  },
             { 'src_well' =>  ['99999', 'C7'], 'dst_well' => 'B3', 'volume' => 13, 'buffer_volume' => 0.0  },
             { 'src_well' =>  ['88888', 'A1'], 'dst_well' => 'H9', 'volume' => 13, 'buffer_volume' => 0.0  }
-          ]
-          }
-        }
-        @expected_order = { '88888' => 1, '66666' => 2, '99999' => 3 }
-        @source_index = Sanger::Robots::Tecan::Generator.source_barcode_to_plate_index(@barcodes)
+          ] }
+      }
+      @expected_order = { '88888' => 1, '66666' => 2, '99999' => 3 }
+      @source_index = Sanger::Robots::Tecan::Generator.source_barcode_to_plate_index(@barcodes)
     end
 
     should 'remap barcodes to start at 1' do

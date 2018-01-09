@@ -202,8 +202,8 @@ class Asset < ApplicationRecord
       end
     end
 
-      where([query_details[:query].join(' OR '), *query_details[:parameters].flatten.compact])
-        .joins(query_details[:joins].compact.uniq)
+    where([query_details[:query].join(' OR '), *query_details[:parameters].flatten.compact])
+      .joins(query_details[:joins].compact.uniq)
   }
 
   scope :source_assets_from_machine_barcode, ->(destination_barcode) {
@@ -213,7 +213,7 @@ class Asset < ApplicationRecord
       if source_asset_ids.empty?
         none
       else
-         where(id: source_asset_ids)
+        where(id: source_asset_ids)
       end
     else
       none
@@ -235,16 +235,6 @@ class Asset < ApplicationRecord
 
   def self.find_from_machine_barcode(source_barcode)
     with_machine_barcode(source_barcode).first
-  end
-
-  def self.find_by_human_barcode(barcode, location)
-    data = Barcode.split_human_barcode(barcode)
-    if data[0] == 'DN'
-      plate = Plate.find_by(barcode: data[1])
-      well = plate.find_well_by_name(location)
-      return well if well
-    end
-    raise ActiveRecord::RecordNotFound, "Couldn't find well with for #{barcode} #{location}"
   end
 
   def summary_hash

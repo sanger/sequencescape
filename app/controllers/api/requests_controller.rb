@@ -14,11 +14,11 @@ class Api::RequestsController < Api::BaseController
 
   def prepare_list_context
     @context = if not params[:sample_tube_id].blank?
-      ::SampleTube.find(params[:sample_tube_id]).requests
+                 ::SampleTube.find(params[:sample_tube_id]).requests
                elsif not params[:library_tube_id].blank?
-      ::LibraryTube.find(params[:library_tube_id]).requests
+                 ::LibraryTube.find(params[:library_tube_id]).requests
                else
-      Request.including_associations_for_json
+                 Request.including_associations_for_json
                end
   end
 end

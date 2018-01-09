@@ -7,7 +7,6 @@
 rt = RequestType.create!(
   key: 'qc_miseq_sequencing',
   name: 'MiSeq sequencing QC',
-  workflow: Submission::Workflow.find_by(key: 'short_read_sequencing'),
   asset_type: 'LibraryTube',
   order: 1,
   initial_state: 'pending',
@@ -18,7 +17,7 @@ rt = RequestType.create!(
   billable: true,
   deprecated: false,
   no_target_asset: false
-  ) do |rt|
+) do |rt|
   Pipeline.find_by(name: 'MiSeq sequencing').request_types << rt
 end
 RequestType::Validator.create!(request_type: rt, request_option: 'read_length', valid_options: [11, 25])

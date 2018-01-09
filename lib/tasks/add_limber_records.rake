@@ -67,7 +67,6 @@ namespace :limber do
           key: 'limber_multiplexing',
           request_class_name: 'Request::Multiplexing',
           for_multiplexing: true,
-          workflow: Submission::Workflow.find_by(name: 'Next-gen sequencing'),
           asset_type: 'Well',
           order: 2,
           initial_state: 'pending',

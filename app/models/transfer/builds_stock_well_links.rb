@@ -22,8 +22,8 @@ module Transfer::BuildsStockWellLinks
       source.transfer_requests_as_source
             .where(target_asset_id: eligable)
             .includes(:target_asset, asset: :stock_wells).each do |request|
-           stock = stock_well_picker.call(request.asset)
-           t[request.target_asset].concat(stock)
+        stock = stock_well_picker.call(request.asset)
+        t[request.target_asset].concat(stock)
       end
     end.each do |well, stock_wells|
       well.stock_wells.attach!(stock_wells)

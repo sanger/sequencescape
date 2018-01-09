@@ -26,9 +26,9 @@ module Limber::Helper
 
   class RequestTypeConstructor
     def initialize(prefix,
-      request_class: DEFAULT_REQUEST_CLASS,
-      library_types: DEFAULT_LIBRARY_TYPES,
-      default_purpose: DEFAULT_PURPOSE)
+                   request_class: DEFAULT_REQUEST_CLASS,
+                   library_types: DEFAULT_LIBRARY_TYPES,
+                   default_purpose: DEFAULT_PURPOSE)
       @prefix = prefix
       @request_class = request_class
       @library_types = library_types
@@ -48,7 +48,6 @@ module Limber::Helper
         key: key,
         request_class_name: @request_class,
         for_multiplexing: false,
-        workflow: Submission::Workflow.find_by(name: 'Next-gen sequencing'),
         asset_type: 'Well',
         order: 1,
         initial_state: 'pending',
@@ -187,9 +186,7 @@ module Limber::Helper
     def submission_parameters(cherrypick, sequencing)
       {
         request_type_ids_list: request_type_ids(cherrypick, sequencing),
-        workflow_id: Submission::Workflow.find_by(key: 'short_read_sequencing').id,
-        order_role_id: OrderRole.find_or_create_by(role: role).id,
-        info_differential: Submission::Workflow.find_by(key: 'short_read_sequencing').id
+        order_role_id: OrderRole.find_or_create_by(role: role).id
       }
     end
   end

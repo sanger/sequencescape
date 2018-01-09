@@ -1,5 +1,5 @@
 @reception
-Feature: I want to scan an asset into a lab reception freezer
+Feature: I want to scan an asset into a lab reception
   Background:
     Given I am an "External" user logged in as "abc123"
 
@@ -13,7 +13,6 @@ Feature: I want to scan an asset into a lab reception freezer
       And I press "Submit"
       Then I should see "I have placed the above barcoded Samples in the reception fridge in the following lab"
       And I should see "DN1234567"
-      When I select "Sample logistics freezer" from "Freezers"
       And I press "Confirm"
       Then I should see "Successfully updated"
       And I am on the show page for asset "Plate 1234567"
@@ -33,7 +32,6 @@ Feature: I want to scan an asset into a lab reception freezer
       And I press "Submit"
       Then I should see "I have placed the above barcoded Samples in the reception fridge in the following lab"
       And I should see "DN1234567"
-      When I select "Sample logistics freezer" from "Freezers"
       And I press "Confirm"
       Then I should see "Successfully updated"
       And I am on the show page for asset "Plate 1234567"

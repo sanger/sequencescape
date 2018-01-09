@@ -1,4 +1,3 @@
-
 namespace :working do
   desc 'Confirms that the environment is correct for the task'
   task :env_check do
@@ -44,8 +43,8 @@ namespace :working do
     ActiveRecord::Base.transaction do
       seeder = WorkingSetup::StandardSeeder.new([
         ['Stock Plate', 1],
-        ['LB Cherrypick', 4, Location.find_by(name: 'Illumina high throughput freezer')],
-        ['ILC Stock', 4, Location.find_by(name: 'Library creation freezer')]
+        ['LB Cherrypick', 4],
+        ['ILC Stock', 4]
       ])
       seeder.seed
       seeder.tag_plates

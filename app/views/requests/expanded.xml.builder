@@ -34,7 +34,7 @@ def output_pool(item, i)
         sample_pools.sample_pool do |sample_pool|
           sample_pool.id @request.item.id
           sample_pool.descriptors do |descriptors|
-            @request.request_metadata.attribute_value_pairs.each do |attribute,value|
+            @request.request_metadata.attribute_value_pairs.each do |attribute, value|
               descriptors.descriptor do |descriptor|
                 descriptor.name  attribute.to_field_info.display_name
                 descriptor.value value
@@ -50,27 +50,27 @@ end
 xml.instruct!
 xml.comment!("/requests/expanded has been deprecated and will be removed in Sequencescape 3.1")
 xml.request(api_data) do |request|
-	request.id @request.id
-	request.created_at @request.created_at
-	request.updated_at @request.updated_at
-	request.study_id @request.study.id
-	request.study_name @request.study.name
-	request.state      @request.state
-	request.sample_name @request.sample_name
-	request.descriptors do |descriptors|
+  request.id @request.id
+  request.created_at @request.created_at
+  request.updated_at @request.updated_at
+  request.study_id @request.study.id
+  request.study_name @request.study.name
+  request.state      @request.state
+  request.sample_name @request.sample_name
+  request.descriptors do |descriptors|
   end
   request.read_length @request.request_metadata.read_length
-	request.internal_pipeline_id @request.previous_pipeline_id
-	request.items do |items|
-	  [@request.item].each do |i|
-	    items.item do |item|
-	      item.id i.id
-	      item.name i.name
-	      item.count i.count
-	      item.study_id @request.study.id
-	      item.study_name @request.study.name
-	      output_sample(item, i)
-	    end
-	  end
-	end
+  request.internal_pipeline_id @request.previous_pipeline_id
+  request.items do |items|
+    [@request.item].each do |i|
+      items.item do |item|
+        item.id i.id
+        item.name i.name
+        item.count i.count
+        item.study_id @request.study.id
+        item.study_name @request.study.name
+        output_sample(item, i)
+      end
+    end
+  end
 end

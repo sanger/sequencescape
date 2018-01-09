@@ -16,7 +16,7 @@ class Api::PlateIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        scope :including_associations_for_json, -> { includes([:uuid_object, :plate_metadata, :barcode_prefix, :location, { plate_purpose: :uuid_object }]) }
+        scope :including_associations_for_json, -> { includes([:uuid_object, :plate_metadata, :barcode_prefix, { plate_purpose: :uuid_object }]) }
         alias_method(:json_root, :url_name)
       end
     end
@@ -38,10 +38,6 @@ class Api::PlateIO < Api::Base
   with_association(:plate_metadata) do
     map_attribute_to_json_attribute(:infinium_barcode)
     map_attribute_to_json_attribute(:fluidigm_barcode)
-  end
-
-  with_association(:location) do
-    map_attribute_to_json_attribute(:name, 'location')
   end
 
   with_association(:plate_purpose, if_nil_use: :stock_plate_purpose) do

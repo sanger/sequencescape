@@ -91,25 +91,25 @@ class Map < ApplicationRecord
       horizontal_plate_position_to_description(index - 1, size)
     end
 
-  class << self
-    # Given the well position described in terms of a direction (vertical or horizontal) this function
-    # will map it to the alternate positional representation, i.e. a vertical position will be mapped
-    # to a horizontal one.  It does this with the divisor and multiplier, which will be reversed for
-    # the alternate.
-    #
-    # NOTE: I don't like this, it just makes things clearer than it was!
-    # NOTE: I hate the nil returns but external code would take too long to change this time round
-    def alternate_position(well_position, size, *dimensions)
-      return nil unless Map.valid_well_position?(well_position)
-      divisor, multiplier = dimensions.map { |n| send("plate_#{n}", size) }
-      return nil if divisor.nil? or multiplier.nil?
-      column, row = (well_position - 1).divmod(divisor)
-      return nil unless (0...multiplier).cover?(column)
-      return nil unless (0...divisor).cover?(row)
-      alternate = (row * multiplier) + column + 1
+    class << self
+      # Given the well position described in terms of a direction (vertical or horizontal) this function
+      # will map it to the alternate positional representation, i.e. a vertical position will be mapped
+      # to a horizontal one.  It does this with the divisor and multiplier, which will be reversed for
+      # the alternate.
+      #
+      # NOTE: I don't like this, it just makes things clearer than it was!
+      # NOTE: I hate the nil returns but external code would take too long to change this time round
+      def alternate_position(well_position, size, *dimensions)
+        return nil unless Map.valid_well_position?(well_position)
+        divisor, multiplier = dimensions.map { |n| send("plate_#{n}", size) }
+        return nil if divisor.nil? or multiplier.nil?
+        column, row = (well_position - 1).divmod(divisor)
+        return nil unless (0...multiplier).cover?(column)
+        return nil unless (0...divisor).cover?(row)
+        alternate = (row * multiplier) + column + 1
+      end
+      private :alternate_position
     end
-    private :alternate_position
-  end
   end
 
   module Sequential
@@ -124,13 +124,13 @@ class Map < ApplicationRecord
     end
   end
 
- scope :for_position_on_plate, ->(position, plate_size, asset_shape) {
-    where(
-        row_order: position - 1,
-        asset_size: plate_size,
-        asset_shape_id: asset_shape.id
-    )
-                               }
+  scope :for_position_on_plate, ->(position, plate_size, asset_shape) {
+                                  where(
+                                    row_order: position - 1,
+                                    asset_size: plate_size,
+                                    asset_shape_id: asset_shape.id
+                                  )
+                                }
 
   scope :where_description, ->(*descriptions) { where(description: descriptions.flatten) }
   scope :where_plate_size,  ->(size) { where(asset_size: size) }
@@ -267,10 +267,10 @@ class Map < ApplicationRecord
     map.description
   end
 
-   scope :in_row_major_order,            -> { order('row_order ASC') }
-   scope :in_reverse_row_major_order,    -> { order('row_order DESC') }
-   scope :in_column_major_order,         -> { order('column_order ASC') }
-   scope :in_reverse_column_major_order, -> { order('column_order DESC') }
+  scope :in_row_major_order,            -> { order('row_order ASC') }
+  scope :in_reverse_row_major_order,    -> { order('row_order DESC') }
+  scope :in_column_major_order,         -> { order('column_order ASC') }
+  scope :in_reverse_column_major_order, -> { order('column_order DESC') }
 
   class << self
     # Caution! Only use for seeds. Not valid elsewhere

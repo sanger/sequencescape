@@ -23,8 +23,8 @@ class StockStampersController < ApplicationController
 
   def print_label
     print_job = LabelPrinter::PrintJob.new(params[:printer],
-                                          LabelPrinter::Label::AssetRedirect,
-                                          printables: params[:printable])
+                                           LabelPrinter::Label::AssetRedirect,
+                                           printables: params[:printable])
     if print_job.execute
       flash[:notice] = print_job.success
     else

@@ -32,7 +32,6 @@ Feature: Push samples through the PacBio pipeline with javascript
     And I press "Next step"
     And I press "Next step"
     When I press "Release this batch"
-    When I set PacBioLibraryTube "3980000333858" to be in freezer "PacBio sequencing freezer"
     Given I am on the show page for pipeline "PacBio Sequencing"
     When I check "Select Request Group 0"
     And I press the first "Submit"

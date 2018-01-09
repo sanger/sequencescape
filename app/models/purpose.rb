@@ -23,7 +23,6 @@ class Purpose < ApplicationRecord
   end
 
   # Things that are created are often in a default location!
-  belongs_to :default_location, class_name: 'Location'
   has_many :messenger_creators, inverse_of: :purpose
 
   validates :name, format: { with: /\A\w[\s\w\.\-]+\w\z/i }, presence: true, uniqueness: true
@@ -33,7 +32,7 @@ class Purpose < ApplicationRecord
   # subclass loading while seeding.
   validates :target_type, presence: true
 
- scope :where_is_a?, ->(clazz) { where(type: [clazz, *clazz.descendants].map(&:name)) }
+  scope :where_is_a?, ->(clazz) { where(type: [clazz, *clazz.descendants].map(&:name)) }
 
   def target_class
     target_type.constantize

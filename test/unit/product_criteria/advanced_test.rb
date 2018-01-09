@@ -4,8 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2015,2016 Genome Research Ltd.
 
-# require File.dirname(__FILE__) + '/../../test_helper'
-
 require 'test_helper'
 
 class ProductCriteriaAdvancedTest < ActiveSupport::TestCase
@@ -29,11 +27,11 @@ class ProductCriteriaAdvancedTest < ActiveSupport::TestCase
         @well = create :well, well_attribute: @well_attribute
 
         @target_wells = create_list :well, 7
-        @target_wells.last.set_concentration(30)
+        @target_wells[4].well_attribute.update_attributes(concentration: 30, updated_at: Time.current + 1.hour)
         @criteria = ProductCriteria::Advanced.new(@params, @well, @target_wells)
       end
       should 'get the most recent target well from the supplied list' do
-        assert_equal @criteria.most_recent_concentration_from_target_well_by_updating_date, @target_wells.last.get_concentration
+        assert_equal @criteria.most_recent_concentration_from_target_well_by_updating_date, @target_wells[4].get_concentration
         @criteria2 = ProductCriteria::Advanced.new(@params, @well, nil)
         assert_nil @criteria2.most_recent_concentration_from_target_well_by_updating_date
       end

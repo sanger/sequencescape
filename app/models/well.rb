@@ -46,6 +46,7 @@ class Well < Receptacle
 
   has_many :customer_requests, class_name: 'CustomerRequest', foreign_key: :asset_id
   has_many :outer_requests, through: :stock_wells, source: :customer_requests
+  has_many :submissions, ->() { distinct }, through: :transfer_requests_as_target
 
   def outer_request(submission_id)
     outer_requests.order(id: :desc).find_by(submission_id: submission_id)
@@ -76,21 +77,24 @@ class Well < Receptacle
 
   scope :include_stock_wells, -> { includes(stock_wells: :requests_as_source) }
   scope :include_stock_wells_for_modification, -> {
+    # Preload rather than include, as otherwise joins result
+    # in exponential expansion of the number of records loaded
+    # and you run out of memory.
     preload(:stock_well_links,
             stock_wells: {
-             requests_as_source: [
-               :target_asset,
-               :request_type,
-               :billing_product,
-               :request_metadata,
-               :billing_items,
-               :request_events,
-               {
-                 initial_project: :project_metadata,
-                 submission: :orders
-               }
-             ]
-           })
+              requests_as_source: [
+                :target_asset,
+                :request_type,
+                :billing_product,
+                :request_metadata,
+                :billing_items,
+                :request_events,
+                {
+                  initial_project: :project_metadata,
+                  submission: :orders
+                }
+              ]
+            })
   }
   scope :include_map, -> { includes(:map) }
 
@@ -99,18 +103,18 @@ class Well < Receptacle
   }
 
   scope :on_plate_purpose, ->(purposes) {
-      joins(:plate)
-        .where(plates_assets: { plate_purpose_id: purposes })
+    joins(:plate)
+      .where(plates_assets: { plate_purpose_id: purposes })
   }
 
   scope :for_study_through_sample, ->(study) {
-      joins(aliquots: { sample: :study_samples })
-        .where(study_samples: { study_id: study })
+    joins(aliquots: { sample: :study_samples })
+      .where(study_samples: { study_id: study })
   }
 
   scope :for_study_through_aliquot, ->(study) {
-      joins(:aliquots)
-        .where(aliquots: { study_id: study })
+    joins(:aliquots)
+      .where(aliquots: { study_id: study })
   }
 
   #
@@ -135,8 +139,8 @@ class Well < Receptacle
   scope :target_wells_for, ->(wells) {
     select('assets.*, well_links.source_well_id AS stock_well_id')
       .joins(:stock_well_links).where(well_links: {
-        source_well_id: wells
-        })
+                                        source_well_id: wells
+                                      })
   }
 
   scope :located_at_position, ->(position) { joins(:map).readonly(false).where(maps: { description: position }) }
@@ -156,9 +160,8 @@ class Well < Receptacle
 
   before_create :well_attribute # Ensure all wells have attributes
 
-  scope :pooled_as_target_by, ->(type) {
-    joins('LEFT JOIN requests patb ON assets.id=patb.target_asset_id')
-      .where(['(patb.sti_type IS NULL OR patb.sti_type IN (?))', [type, *type.descendants].map(&:name)])
+  scope :pooled_as_target_by_transfer, ->() {
+    joins('LEFT JOIN transfer_requests patb ON assets.id=patb.target_asset_id')
       .select('assets.*, patb.submission_id AS pool_id').distinct
   }
   scope :pooled_as_source_by, ->(type) {

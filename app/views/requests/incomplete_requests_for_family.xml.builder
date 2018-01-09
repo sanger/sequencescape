@@ -88,26 +88,25 @@ def output_pool(item, i)
   end
 end
 
-
 xml.instruct!
 xml.comment!("/requests/incomplete_requests_for_family has been deprecated and will be removed in Sequencescape 3.1 - use /requests/pending?request_type='key_for_request_type' instead")
-xml.requests({api_version: '0.1'}) do |requests|
+xml.requests({ api_version: '0.1' }) do |requests|
   @requests.each do |r|
     cache(r.cache_key) do
-    requests.request do |request|
-      request.id r.id
-      request.attempt r.attempts.size
-      request.created_at r.created_at
-      request.updated_at r.updated_at
-      request.study_id r.study.id
-      request.study_name r.study.name
-      if r.previous_pipeline_id
-        request.internal_pipeline_id r.previous_pipeline_id
+      requests.request do |request|
+        request.id r.id
+        request.attempt r.attempts.size
+        request.created_at r.created_at
+        request.updated_at r.updated_at
+        request.study_id r.study.id
+        request.study_name r.study.name
+        if r.previous_pipeline_id
+          request.internal_pipeline_id r.previous_pipeline_id
+        end
+        request.read_length r.request_metadata.read_length
+        output_items(request, r)
+        output_sample_pool(request, r)
       end
-      request.read_length r.request_metadata.read_length
-      output_items(request, r)
-      output_sample_pool(request, r)
-    end
     end
   end
 end

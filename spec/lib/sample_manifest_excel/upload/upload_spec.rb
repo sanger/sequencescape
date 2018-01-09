@@ -1,12 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel: true do
-   before(:all) do
+  before(:all) do
     SampleManifestExcel.configure do |config|
       config.folder = File.join('spec', 'data', 'sample_manifest_excel')
       config.load!
     end
-   end
+  end
 
   let(:test_file)               { 'test_file.xlsx' }
   let!(:tag_group)              { create(:tag_group) }
@@ -184,7 +184,7 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
     File.delete(test_file) if File.exist?(test_file)
   end
 
-   after(:all) do
+  after(:all) do
     SampleManifestExcel.reset!
-   end
+  end
 end

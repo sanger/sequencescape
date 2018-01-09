@@ -10,9 +10,9 @@ class Transfer < ApplicationRecord
       base.class_eval do
         include Transfer::State
 
-        has_many :transfers_as_source,      ->() { order('created_at ASC') }, class_name: 'Transfer', foreign_key: :source_id
-        has_many :transfers_to_tubes,       ->() { order('created_at ASC') }, class_name: 'Transfer::BetweenPlateAndTubes', foreign_key: :source_id
-        has_many :transfers_as_destination, ->() { order('id ASC') },         class_name: 'Transfer', foreign_key: :destination_id
+        has_many :transfers_as_source,      ->() { order(created_at: :asc) }, class_name: 'Transfer', foreign_key: :source_id
+        has_many :transfers_to_tubes,       ->() { order(created_at: :asc) }, class_name: 'Transfer::BetweenPlateAndTubes', foreign_key: :source_id
+        has_many :transfers_as_destination, ->() { order(id: :asc) },         class_name: 'Transfer', foreign_key: :destination_id
 
         # This looks odd but it's a LEFT OUTER JOIN, meaning that the rows we would be interested in have no source_id.
         scope :with_no_outgoing_transfers, -> {
@@ -45,7 +45,7 @@ class Transfer < ApplicationRecord
     # The state of an asset is based on the transfer requests for the asset.  If they are all in the same
     # state then it takes that state.  Otherwise we take the "most optimum"!
     def state
-      state_from(transfer_requests)
+      state_from(transfer_requests_as_target)
     end
 
     def state_from(state_requests)
@@ -57,35 +57,35 @@ class Transfer < ApplicationRecord
     module PlateState
       def self.included(base)
         base.class_eval do
-         scope :in_state, ->(states) {
-            states = Array(states).map(&:to_s)
+          scope :in_state, ->(states) {
+                             states = Array(states).map(&:to_s)
 
-            # If all of the states are present there is no point in actually adding this set of conditions because we're
-            # basically looking for all of the plates.
-            if states.sort != ALL_STATES.sort
-              # NOTE: The use of STRAIGHT_JOIN here forces the most optimum query on MySQL, where it is better to reduce
-              # assets to the plates, then look for the wells, rather than vice-versa.  The former query takes fractions
-              # of a second, the latter over 60.
-              query_conditions, join_options = 'transfer_requests_as_target.state IN (?)', [
-                'STRAIGHT_JOIN `container_associations` ON (`assets`.`id` = `container_associations`.`container_id`)',
-                "INNER JOIN `assets` wells_assets ON (`wells_assets`.`id` = `container_associations`.`content_id`) AND (`wells_assets`.`sti_type` = 'Well')",
-                "LEFT OUTER JOIN `requests` transfer_requests_as_target ON transfer_requests_as_target.target_asset_id = wells_assets.id AND (transfer_requests_as_target.`sti_type` IN (#{[TransferRequest, *TransferRequest.descendants].map(&:name).map(&:inspect).join(',')}))"
-              ]
+                             # If all of the states are present there is no point in actually adding this set of conditions because we're
+                             # basically looking for all of the plates.
+                             if states.sort != ALL_STATES.sort
+                               # NOTE: The use of STRAIGHT_JOIN here forces the most optimum query on MySQL, where it is better to reduce
+                               # assets to the plates, then look for the wells, rather than vice-versa.  The former query takes fractions
+                               # of a second, the latter over 60.
+                               query_conditions, join_options = 'transfer_requests_as_target.state IN (?)', [
+                                 'STRAIGHT_JOIN `container_associations` ON (`assets`.`id` = `container_associations`.`container_id`)',
+                                 "INNER JOIN `assets` wells_assets ON (`wells_assets`.`id` = `container_associations`.`content_id`) AND (`wells_assets`.`sti_type` = 'Well')",
+                                 'LEFT OUTER JOIN `transfer_requests` transfer_requests_as_target ON transfer_requests_as_target.target_asset_id = wells_assets.id'
+                               ]
 
-              # Note that 'state IS NULL' is included here for plates that are stock plates, because they will not have any
-              # transfer requests coming into their wells and so we can assume they are pending (from the perspective of
-              # pulldown at least).
-              query_conditions = 'transfer_requests_as_target.state IN (?)'
-              if states.include?('pending')
-                join_options << 'INNER JOIN `plate_purposes` ON (`plate_purposes`.`id` = `assets`.`plate_purpose_id`)'
-                query_conditions << ' OR (transfer_requests_as_target.state IS NULL AND plate_purposes.stock_plate=TRUE)'
-              end
+                               # Note that 'state IS NULL' is included here for plates that are stock plates, because they will not have any
+                               # transfer requests coming into their wells and so we can assume they are pending (from the perspective of
+                               # pulldown at least).
+                               query_conditions = 'transfer_requests_as_target.state IN (?)'
+                               if states.include?('pending')
+                                 join_options << 'INNER JOIN `plate_purposes` ON (`plate_purposes`.`id` = `assets`.`plate_purpose_id`)'
+                                 query_conditions << ' OR (transfer_requests_as_target.state IS NULL AND plate_purposes.stock_plate=TRUE)'
+                               end
 
-              joins(join_options).where([query_conditions, states])
-            else
-              {}
-            end
-                          }
+                               joins(join_options).where([query_conditions, states])
+                             else
+                               {}
+                             end
+                           }
         end
       end
     end
@@ -93,25 +93,25 @@ class Transfer < ApplicationRecord
     module TubeState
       def self.included(base)
         base.class_eval do
-         scope :in_state, ->(states) {
-            states = Array(states).map(&:to_s)
+          scope :in_state, ->(states) {
+                             states = Array(states).map(&:to_s)
 
-            # If all of the states are present there is no point in actually adding this set of conditions because we're
-            # basically looking for all of the plates.
-            if states.sort != ALL_STATES.sort
+                             # If all of the states are present there is no point in actually adding this set of conditions because we're
+                             # basically looking for all of the plates.
+                             if states.sort != ALL_STATES.sort
 
-              join_options = [
-                "LEFT OUTER JOIN `requests` transfer_requests_as_target ON transfer_requests_as_target.target_asset_id = `assets`.id AND (transfer_requests_as_target.`sti_type` IN (#{[TransferRequest, *TransferRequest.descendants].map(&:name).map(&:inspect).join(',')}))"
-              ]
+                               join_options = [
+                                 'LEFT OUTER JOIN `transfer_requests` transfer_requests_as_target ON transfer_requests_as_target.target_asset_id = `assets`.id'
+                               ]
 
-              joins(join_options).where(transfer_requests_as_target: { state: states })
-            else
-              all
-            end
-                          }
-         scope :without_finished_tubes, ->(purpose) {
-            where.not(["assets.plate_purpose_id IN (?) AND transfer_requests_as_target.state = 'passed'", purpose.map(&:id)])
-                                        }
+                               joins(join_options).where(transfer_requests_as_target: { state: states })
+                             else
+                               all
+                             end
+                           }
+          scope :without_finished_tubes, ->(purpose) {
+                                           where.not(["assets.plate_purpose_id IN (?) AND transfer_requests_as_target.state = 'passed'", purpose.map(&:id)])
+                                         }
         end
       end
     end
@@ -183,7 +183,7 @@ class Transfer < ApplicationRecord
     # Note: submission is optional. Unlike methods, blocks don't support default argument
     # values, but any attributes not yielded will be nil. Apparently 1.9 is more consistent
     each_transfer do |source, destination, submission|
-      request_type_between(source, destination).create!(
+      transfer_request_class_between(source, destination).create!(
         asset: source,
         target_asset: destination,
         submission_id: submission || source.pool_id

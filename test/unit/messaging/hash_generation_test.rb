@@ -69,11 +69,11 @@ class HashGenerationTest < ActiveSupport::TestCase
       should 'generate the expected hash' do
         hash = ExampleApi.to_hash(@example_model)
         assert_equal({
-          'name' => 'example',
-          'association_value' => 'example_2',
-          'has_many_association' => [{ 'nested_value' => 'example_3', 'has_many_more' => [{ 'nested_value_2' => 'example_4' }] }],
-          'updated_at' => Date.new(2013, 1, 4)
-        }, hash)
+                       'name' => 'example',
+                       'association_value' => 'example_2',
+                       'has_many_association' => [{ 'nested_value' => 'example_3', 'has_many_more' => [{ 'nested_value_2' => 'example_4' }] }],
+                       'updated_at' => Date.new(2013, 1, 4)
+                     }, hash)
       end
     end
 
@@ -85,11 +85,11 @@ class HashGenerationTest < ActiveSupport::TestCase
       should 'record an updated timestamp' do
         hash = ExampleApi.to_hash(@example_model)
         assert_equal({
-          'name' => 'example',
-          'association_value' => 'example_2',
-          'has_many_association' => [{ 'nested_value' => 'example_3', 'has_many_more' => [{ 'nested_value_2' => 'example_4' }] }],
-          'updated_at' => Date.new(2013, 1, 6)
-        }, hash)
+                       'name' => 'example',
+                       'association_value' => 'example_2',
+                       'has_many_association' => [{ 'nested_value' => 'example_3', 'has_many_more' => [{ 'nested_value_2' => 'example_4' }] }],
+                       'updated_at' => Date.new(2013, 1, 6)
+                     }, hash)
       end
     end
   end

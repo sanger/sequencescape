@@ -30,8 +30,8 @@ class SampleManifestGenerator
 
   def print_job
     @print_job ||= LabelPrinter::PrintJob.new(params[:barcode_printer],
-                      LabelPrinter::Label::SampleManifestRedirect,
-                      only_first_label: only_first_label, sample_manifest: sample_manifest)
+                                              LabelPrinter::Label::SampleManifestRedirect,
+                                              only_first_label: only_first_label, sample_manifest: sample_manifest)
   end
 
   def execute

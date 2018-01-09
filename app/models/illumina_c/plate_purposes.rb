@@ -87,7 +87,7 @@ module IlluminaC::PlatePurposes
       qc_tube_purpose = purpose_for(self::QC_TUBE).create!(name: self::QC_TUBE, target_type: 'QcTube', barcode_printer_type: BarcodePrinterType.find_by(type: 'BarcodePrinterType1DTube'))
       self::PLATE_PURPOSE_LEADING_TO_QC_TUBES.each do |name|
         plate_purpose = Purpose.find_by(name: name) or raise StandardError, "Cannot find purpose #{name.inspect}"
-        plate_purpose.child_relationships.create!(child: qc_tube_purpose, transfer_request_type: RequestType.find_by(name: 'Transfer'))
+        plate_purpose.child_relationships.create!(child: qc_tube_purpose, transfer_request_class_name: :standard)
       end
     end
   end
