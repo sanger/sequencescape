@@ -87,7 +87,7 @@ class WorkCompletion < ApplicationRecord
     @target_wells ||= target.wells
                             .includes(:aliquots)
                             .include_stock_wells_for_modification
-                            .include_requests_as_target
-                            .where(requests: { submission_id: submissions })
+                            .includes(:transfer_requests_as_target)
+                            .where(transfer_requests: { submission_id: submissions })
   end
 end
