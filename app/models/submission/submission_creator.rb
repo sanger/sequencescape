@@ -88,6 +88,10 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
     @order_params
   end
 
+  def pre_capture_plex_level
+    order.input_field_infos.detect {|ifi| ifi.key == :pre_capture_plex_level }&.default_value
+  end
+
   def order_fields
     if order.input_field_infos.flatten.empty?
       order.request_type_ids_list = order.request_types.map { |rt| [rt] }

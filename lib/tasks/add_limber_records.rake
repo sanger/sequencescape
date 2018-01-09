@@ -1,6 +1,10 @@
 # We'll try and do this through the API with the live version
 
 namespace :limber do
+
+  desc 'Setup all the necessary limber records'
+  task setup: ['limber:create_submission_templates', 'limber:create_searches']
+
   desc 'Create the Limber cherrypick plate'
   task create_plates: :environment do
     ['LB Cherrypick', 'scRNA Stock', 'LBR Cherrypick'].each do |name|

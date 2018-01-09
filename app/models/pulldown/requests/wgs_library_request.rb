@@ -5,4 +5,7 @@
 # Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 module Pulldown::Requests
+  class WgsLibraryRequest < LibraryCreation
+    fragment_size_details(300, 500)
+  end
 end
