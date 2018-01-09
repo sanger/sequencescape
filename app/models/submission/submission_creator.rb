@@ -89,7 +89,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
   end
 
   def pre_capture_plex_level
-    order.input_field_infos.detect {|ifi| ifi.key == :pre_capture_plex_level }&.default_value
+    order.input_field_infos.detect { |ifi| ifi.key == :pre_capture_plex_level }&.default_value
   end
 
   def order_fields

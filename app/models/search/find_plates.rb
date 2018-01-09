@@ -1,9 +1,13 @@
+# frozen_string_literal: true
+
 # This file is part of SEQUENCESCAPE; it is distributed under the terms of
 # GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2012,2015 Genome Research Ltd.
 
+# General purpose flexible search. Can eventually replace a number of existing searches.
+# Allows the user to customise the parameters.
 class Search::FindPlates < Search
   def scope(user_criteria)
     # We find all plates that do not have transfers where they are the source.  Once a plate has been transferred (or marked

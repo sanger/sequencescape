@@ -1,7 +1,6 @@
 # We'll try and do this through the API with the live version
 
 namespace :limber do
-
   desc 'Setup all the necessary limber records'
   task setup: ['limber:create_submission_templates', 'limber:create_searches']
 
@@ -81,7 +80,7 @@ namespace :limber do
 
   desc 'Create the limber searches'
   task create_searches: [:environment] do
-    Search::FindPlates.create_with(default_parameters: {limit: 30}).find_or_create_by!(name: 'Find plates')
+    Search::FindPlates.create_with(default_parameters: { limit: 30 }).find_or_create_by!(name: 'Find plates')
   end
 
   desc 'Create the limber submission templates'

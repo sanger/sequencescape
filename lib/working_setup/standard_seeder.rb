@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# This is part of a rake task
+# rubocop:disable Rails/Output
 module WorkingSetup
   # Class WorkingSetup::WorkingSetupSeeder provides tools to assist
   # with automatic creation of plates etc. for development
@@ -57,7 +59,7 @@ module WorkingSetup
         lot_number: 'UATTaglot',
         template: TagLayoutTemplate.find_by(name: 'Sanger_168tags - 10 mer tags in columns ignoring pools (first oligo: ATCACGTT)'),
         user: user,
-        received_at: DateTime.current
+        received_at: Time.current
       )
       qcc = QcableCreator.create!(lot: lot, user: user, count: 30)
       qcc.qcables.each do |qcable|
@@ -83,9 +85,7 @@ module WorkingSetup
     def create_or_find_user
       existing = User.find_by(login: 'admin')
       return existing if existing
-      User.create!(login: 'admin', password: 'admin', swipecard_code: 'abcdef', barcode: 'ID99A') do |user|
-        user.is_administrator
-      end
+      User.create!(login: 'admin', password: 'admin', swipecard_code: 'abcdef', barcode: 'ID99A', &:is_administrator)
     end
 
     def faculty_sponsor
@@ -102,10 +102,8 @@ module WorkingSetup
         project_metadata_attributes: {
           project_cost_code: '1111',
           project_funding_model: 'Internal'
-        }
-      ) do |project|
-        project.activate!
-      end
+        }, &:activate!
+      )
     end
 
     def create_study(name)
@@ -132,53 +130,55 @@ module WorkingSetup
 
     def sample_named(name, study)
       {
-          'sample_tube_attributes' => { 'two_dimensional_barcode' => '' },
-          'study' => study,
-          'asset_group_name' => 'asset_group',
-          'sample_attributes' => {
-            'name' => name,
-            'sample_metadata_attributes' => {
-              'replicate' => '',
-              'organism' => '',
-              'sample_strain_att' => '',
-              'cell_type' => '',
-              'immunoprecipitate' => '',
-              'ethnicity' => '',
-              'gc_content' => 'Neutral',
-              'compound' => '',
-              'dna_source' => 'Genomic',
-              'supplier_plate_id' => '',
-              'mother' => '',
-              'sample_public_name' => '',
-              'sample_common_name' => '',
-              'sample_ebi_accession_number' => '',
-              'disease_state' => '',
-              'reference_genome_id' => '1',
-              'organism_part' => '',
-              'gender' => '',
-              'country_of_origin' => '',
-              'sample_taxon_id' => '',
-              'genotype' => '',
-              'growth_condition' => '',
-              'subject' => '',
-              'volume' => '',
-              'treatment' => '',
-              'geographical_region' => '',
-              'sample_sra_hold' => 'Hold',
-              'rnai' => '', 'time_point' => '',
-              'sample_description' => '',
-              'age' => '',
-              'developmental_stage' => '',
-              'dose' => '',
-              'cohort' => '',
-              'father' => '',
-              'phenotype' => '',
-              'disease' => ''
-            }
-          },
-          'user' => user,
-          'ignore' => '0'
-        }
+        'sample_tube_attributes' => { 'two_dimensional_barcode' => '' },
+        'study' => study,
+        'asset_group_name' => 'asset_group',
+        'sample_attributes' => {
+          'name' => name,
+          'sample_metadata_attributes' => {
+            'replicate' => '',
+            'organism' => '',
+            'sample_strain_att' => '',
+            'cell_type' => '',
+            'immunoprecipitate' => '',
+            'ethnicity' => '',
+            'gc_content' => 'Neutral',
+            'compound' => '',
+            'dna_source' => 'Genomic',
+            'supplier_plate_id' => '',
+            'mother' => '',
+            'sample_public_name' => '',
+            'sample_common_name' => '',
+            'sample_ebi_accession_number' => '',
+            'disease_state' => '',
+            'reference_genome_id' => '1',
+            'organism_part' => '',
+            'gender' => '',
+            'country_of_origin' => '',
+            'sample_taxon_id' => '',
+            'genotype' => '',
+            'growth_condition' => '',
+            'subject' => '',
+            'volume' => '',
+            'treatment' => '',
+            'geographical_region' => '',
+            'sample_sra_hold' => 'Hold',
+            'rnai' => '', 'time_point' => '',
+            'sample_description' => '',
+            'age' => '',
+            'developmental_stage' => '',
+            'dose' => '',
+            'cohort' => '',
+            'father' => '',
+            'phenotype' => '',
+            'disease' => ''
+          }
+        },
+        'user' => user,
+        'ignore' => '0'
+      }
     end
   end
 end
+# This is part of a rake task
+# rubocop:enable Rails/Output
