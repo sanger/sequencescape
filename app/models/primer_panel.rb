@@ -6,6 +6,7 @@
 # @author Genome Research Ltd.
 #
 class PrimerPanel < ApplicationRecord
+  serialize :programs
   # The name: Used to identify the assay set.
   validates :name, presence: true
   # The number of SNP sites targeted by the panel. Primarily used for reference, and to ensure

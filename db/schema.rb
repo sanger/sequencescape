@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171023101540) do
+ActiveRecord::Schema.define(version: 20180109161148) do
 
   create_table "aliquot_indices", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.integer "aliquot_id", null: false
@@ -894,6 +894,7 @@ ActiveRecord::Schema.define(version: 20171023101540) do
     t.integer "snp_count", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "programs"
   end
 
   create_table "product_catalogues", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
