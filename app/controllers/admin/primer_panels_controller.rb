@@ -14,6 +14,7 @@ class Admin::PrimerPanelsController < ApplicationController
 
   def new
     @primer_panel = PrimerPanel.new
+    initialize_programs
   end
 
   def show; end
@@ -46,11 +47,17 @@ class Admin::PrimerPanelsController < ApplicationController
 
   private
 
+  def initialize_programs
+    @primer_panel.programs = { 'pcr 1' => {'name' => '', 'duration' => ''},
+                               'pcr 2' => {'name' => '', 'duration' => ''}}
+  end
+
   def discover_primer_panel
     @primer_panel = PrimerPanel.find(params[:id])
   end
 
   def primer_panel_params
-    params.require(:primer_panel).permit(:name, :snp_count)
+    params.require(:primer_panel).permit(:name, :snp_count, programs: ['pcr 1': [:name, :duration],
+                                                                       'pcr 2': [:name, :duration]])
   end
 end
