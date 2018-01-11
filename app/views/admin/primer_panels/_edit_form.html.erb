@@ -14,24 +14,17 @@
 </p>
 
 <%= f.fields_for :programs do |program| %>
-  <p>
-  <%= f.label 'Pcr 1' %><br />
-  <%= program.fields_for 'pcr 1' do |pcr| %>
-    <%= f.label :name %><br />
-    <%= pcr.text_field :name, value: f.object.programs['pcr 1']['name'], class: 'form-control' %>
-    <%= f.label :duration %><br />
-    <%= pcr.text_field :duration, value: f.object.programs['pcr 1']['duration'], class: 'form-control' %>
+  <% f.object.programs.each do |key, value| %>
+    <p>
+    <%= f.label key %><br />
+    <%= program.fields_for key do |pcr| %>
+      <%= f.label :name %><br />
+      <%= pcr.text_field :name, value: f.object.programs[key]['name'], class: 'form-control' %>
+      <%= f.label :duration %><br />
+      <%= pcr.text_field :duration, value: f.object.programs[key]['duration'], class: 'form-control' %>
+      </p>
+    <% end %>
   <% end %>
-  </p>
-  <p>
-  <%= f.label 'Pcr 2' %><br />
-  <%= program.fields_for 'pcr 2' do |pcr| %>
-    <%= f.label :name %><br />
-    <%= pcr.text_field :name, value: f.object.programs['pcr 2']['name'], class: 'form-control' %>
-    <%= f.label :duration %><br />
-    <%= pcr.text_field :duration, value: f.object.programs['pcr 2']['duration'], class: 'form-control' %>
-  <% end %>
-  </p>
 
 <% end %>
 
