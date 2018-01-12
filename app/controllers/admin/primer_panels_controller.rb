@@ -48,8 +48,8 @@ class Admin::PrimerPanelsController < ApplicationController
   private
 
   def initialize_programs
-    @primer_panel.programs = { 'pcr 1' => {'name' => '', 'duration' => ''},
-                               'pcr 2' => {'name' => '', 'duration' => ''}}
+    @primer_panel.programs = { 'pcr 1' => {'name' => nil, 'duration' => nil},
+                               'pcr 2' => {'name' => nil, 'duration' => nil}}
   end
 
   def discover_primer_panel

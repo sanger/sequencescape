@@ -2,7 +2,7 @@ require 'rails_helper'
 
 feature 'Primer Panel' do
   let(:user) { create :admin, email: 'login@example.com' }
-  let(:primer_panel) { create :primer_panel }
+  let(:primer_panel) { create :primer_panel, name: 'Primer Panel 1' }
 
   scenario 'user can add a new primer panel' do
     login_user user
@@ -25,9 +25,9 @@ feature 'Primer Panel' do
     expect(page).to have_content('Editing a primer panel will affect all experiments where a primer panel has been used.')
     expect(find_field('Name').value).to eq('Primer Panel 1')
     expect(find_field('SNP count').value).to eq('1')
-    expect(find_field('primer_panel_programs_pcr_1_name').value).to eq('pcr1 program 1')
+    expect(find_field('primer_panel_programs_pcr_1_name').value).to eq('pcr1 program')
     expect(find_field('primer_panel_programs_pcr_1_duration').value).to eq('45')
-    expect(find_field('primer_panel_programs_pcr_2_name').value).to eq('pcr2 program 1')
+    expect(find_field('primer_panel_programs_pcr_2_name').value).to eq('pcr2 program')
     expect(find_field('primer_panel_programs_pcr_2_duration').value).to eq('20')
     click_on 'Update'
     expect(page).to have_content('Primer Panel was successfully updated.')
