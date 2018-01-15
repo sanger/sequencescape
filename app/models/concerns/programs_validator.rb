@@ -9,9 +9,24 @@ class ProgramsValidator < ActiveModel::EachValidator
   def validate_each(record, attribute, value)
     value.each do |program, params|
       record.errors.add attribute, "invalid label #{program}" unless program.in?(PROGRAMS_LABELS)
-      params.keys.each do |key|
+      params.each do |key, val|
         record.errors.add attribute, "invalid attribute #{key}" unless key.in?(PROGRAMS_PARAMS)
+        if key == 'duration'
+          validate_duration(record, attribute, val)
+        end
       end
     end
+  end
+
+  private
+
+  def validate_duration(record, attribute, val)
+    if !val.nil?
+      record.errors.add attribute, "duration must be a number" unless valid_number?(val)
+    end
+  end
+
+  def valid_number?(val)
+    true if Integer val rescue false
   end
 end

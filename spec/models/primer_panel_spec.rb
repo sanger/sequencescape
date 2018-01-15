@@ -12,6 +12,8 @@ RSpec.describe PrimerPanel, type: :model do
     expect(primer_panel).to_not be_valid
     primer_panel.programs = { "pcr 1" => {'invalid_argument' => ''} }
     expect(primer_panel).to_not be_valid
+    primer_panel.programs = { "pcr 1" => {'duration' => '2min'} }
+    expect(primer_panel).to_not be_valid
   end
 
   it 'invalidates a primer panel with non numerical snp_count' do
@@ -28,6 +30,8 @@ RSpec.describe PrimerPanel, type: :model do
     primer_panel.programs = { "pcr 1" => {} }
     expect(primer_panel).to be_valid
     primer_panel.programs = { "pcr 1" => {'name' => 'name 1'} }
+    expect(primer_panel).to be_valid
+    primer_panel.programs = { "pcr 1" => {'duration' => '2'} }
     expect(primer_panel).to be_valid
   end
 
