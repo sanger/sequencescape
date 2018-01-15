@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180111164515) do
+ActiveRecord::Schema.define(version: 20180115153147) do
 
   create_table "aliquot_indices", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.integer "aliquot_id", null: false
@@ -1127,6 +1127,7 @@ ActiveRecord::Schema.define(version: 20180111164515) do
     t.boolean "customer_accepts_responsibility"
     t.integer "pcr_cycles"
     t.string "data_type"
+    t.integer "primer_panel_id"
     t.index ["request_id"], name: "index_request_metadata_on_request_id"
   end
 
