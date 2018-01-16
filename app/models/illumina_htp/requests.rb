@@ -4,6 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2013,2014,2015,2016 Genome Research Ltd.
 
-# Mdule for namespacing ITHP requests
+# Module for namespacing ITHP requests
 module IlluminaHtp::Requests
 end

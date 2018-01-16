@@ -53,11 +53,11 @@ module WorkingSetup
       end
     end
 
-    def tag_plates
+    def tag_plates(lot_type: 'IDT Tags', template: 'Sanger_168tags - 10 mer tags in columns ignoring pools (first oligo: ATCACGTT)')
       puts 'Setting up tag plates...'
-      lot = LotType.find_by(name: 'IDT Tags').lots.create!(
+      lot = LotType.find_by(name: lot_type).lots.create!(
         lot_number: 'UATTaglot',
-        template: TagLayoutTemplate.find_by(name: 'Sanger_168tags - 10 mer tags in columns ignoring pools (first oligo: ATCACGTT)'),
+        template: TagLayoutTemplate.find_by(name: template),
         user: user,
         received_at: Time.current
       )

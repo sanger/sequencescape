@@ -10,7 +10,7 @@ module ModelExtensions::Well
       scope :for_api_plate_json, -> {
         preload(
           :map,
-          :transfer_requests, # Should be :transfer_requests_as_target
+          :transfer_requests_as_target, # Should be :transfer_requests_as_target
           # :uuid_object is included elsewhere, and trying to also include it here
           # actually disrupts the eager loading.
           plate: :uuid_object,

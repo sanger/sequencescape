@@ -1,3 +1,5 @@
+require './lib/oligo_enumerator'
+
 namespace :working do
   desc 'Confirms that the environment is correct for the task'
   task :env_check do
@@ -54,6 +56,22 @@ namespace :working do
   desc 'Add plates read for GbS'
   task generate_gbs_plates: ['working:env_check', 'working:printers', 'working:basic', :environment] do
     PlatePurpose::Input.create_with(size: 384, target_type: 'Plate', stock_plate: true).find_or_create_by!(name: 'GBS Stock')
-    WorkingSetup::StandardSeeder.new([['GBS Stock', 4]]).seed
+    seeder = WorkingSetup::StandardSeeder.new([['GBS Stock', 4]])
+    seeder.seed
+    tg = TagGroup.create!(name: 'Test - 384').tags.create!(OligoEnumerator.new(384).map { |i| { oligo: i } })
+    tg2 = TagGroup.create!(name: 'Test 2 - 384').tags.create!(OligoEnumerator.new(384).map { |i| { oligo: i } })
+    TagLayoutTemplate.create!(
+      name: 'Test 384 - 1',
+      direction_algorithm: 'TagLayout::InColumns',
+      walking_algorithm: 'TagLayout::WalkWellsOfPlate',
+      tag_group: tg, tag2_group: tg
+    )
+    TagLayoutTemplate.create!(
+      name: 'Test 384 - 2',
+      direction_algorithm: 'TagLayout::InColumns',
+      walking_algorithm: 'TagLayout::WalkWellsOfPlate',
+      tag_group: tg, tag2_group: tg2
+    )
+    seeder.tag_plates('Pre Stamped Tags - 384', 'Test 384 - 1')
   end
 end
