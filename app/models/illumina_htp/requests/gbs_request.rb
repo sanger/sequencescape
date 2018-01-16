@@ -1,5 +1,5 @@
 module IlluminaHtp::Requests
-  class GBSRequest < StdLibraryRequest
+  class GbsRequest < StdLibraryRequest
     fragment_size_details(:no_default, :no_default)
 
     Metadata.class_eval do
