@@ -14,17 +14,26 @@
 </p>
 
 <%= f.fields_for :programs do |program| %>
-  <% f.object.programs.each do |key, program_fields| %>
+
+  <div class="form-inline">
+    <% f.object.programs.each do |key, program_fields| %>
     <p>
     <%= f.label key %><br />
     <%= program.fields_for key do |pcr| %>
-      <%= f.label :name %><br />
+      <div class="form-group">
+      <%= f.label :name, class: 'control-label' %>
       <%= pcr.text_field :name, value: program_fields['name'], class: 'form-control' %>
-      <%= f.label :duration, "Duration (minutes)" %><br />
+      </div>
+      <div class="form-group">
+      <%= f.label :duration, "Duration (minutes)", class: 'control-label' %>
       <%= pcr.number_field :duration, value: program_fields['duration'], class: 'form-control' %>
-    </p>
+      </div>
+      <br />
+      </p>
     <% end %>
   <% end %>
+
+  </div>
 <% end %>
 
 
