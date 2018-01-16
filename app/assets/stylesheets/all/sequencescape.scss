@@ -1349,6 +1349,10 @@ form#new_labwhere_reception ul li a {
   cursor: pointer;
 }
 
+.form-inline .form-group .form-control {
+  margin-right: 1em;
+}
+
 /* Table for manual sample registration was inheriting white color for text from bootstrap-sass */
 table#samples_to_register .label {
   font-size: inherit;
