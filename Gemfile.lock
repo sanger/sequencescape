@@ -358,7 +358,7 @@ GEM
     ruby-oci8 (2.2.5.1)
     ruby-ole (1.2.12.1)
     ruby-plsql (0.6.0)
-    ruby-prof (0.17.0)
+    ruby-prof (0.15.9)
     ruby-progressbar (1.9.0)
     ruby_parser (3.10.1)
       sexp_processor (~> 4.9)
@@ -499,7 +499,7 @@ DEPENDENCIES
   rspec-rails
   rubocop
   ruby-oci8
-  ruby-prof
+  ruby-prof (~> 0.15.9)
   ruby_walk (>= 0.0.3)!
   rubyzip
   sanger_barcode_format!
