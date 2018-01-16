@@ -141,7 +141,7 @@ Sequencescape::Application.routes.draw do
   match '/taxon_lookup_by_term/:term' => 'samples#taxon_lookup', :via => :get
   match '/taxon_lookup_by_id/:id' => 'samples#taxon_lookup', :via => :get
 
-  match '/studies/:study_id/workflows/:workflow_id/summary_detailed/:id' => 'studies/workflows#summary_detailed', :via => :post
+  match '/studies/:study_id/information/summary_detailed/:id' => 'studies/information#summary_detailed', :via => :post
 
   match 'studies/accession/:id' => 'studies#accession', :via => :get
   match 'studies/policy_accession/:id' => 'studies#policy_accession', :via => :get
@@ -230,7 +230,7 @@ Sequencescape::Application.routes.draw do
       resources :wells, expect: [:destroy, :edit]
     end
 
-    resources :workflows, controller: 'studies/workflows' do
+    resource :information, controller: 'studies/information' do
       member do
         get :summary
         get :show_summary
@@ -257,7 +257,7 @@ Sequencescape::Application.routes.draw do
     end
     member do
       post :change_priority
-      get :cancel
+      post :cancel
     end
   end
 
@@ -285,19 +285,10 @@ Sequencescape::Application.routes.draw do
     end
   end
 
-  get 'studies/:study_id/workflows/:id' => 'study_workflows#show', :as => :study_workflow_status
-
   resources :searches
 
   namespace :admin do
     resources :custom_texts
-
-    resources :settings do
-      collection do
-        get :reset
-        get :apply
-      end
-    end
 
     resources :primer_panels, except: :destroy
 
@@ -370,28 +361,7 @@ Sequencescape::Application.routes.draw do
     end
   end
 
-  resources :verifications do
-    collection do
-      get :input
-      post :verify
-    end
-  end
-
   resources :plate_templates
-
-  get 'implements/print_labels' => 'implements#print_labels'
-
-  resources :implements
-  resources :pico_sets do
-    collection do
-      get :create_from_stock
-    end
-    member do
-      get :analyze
-      post :score
-      get :normalise_plate
-    end
-  end
 
   resources :gels do
     collection do
@@ -404,8 +374,7 @@ Sequencescape::Application.routes.draw do
     end
   end
 
-  resources :locations
-  resources :request_information_types
+  resources :machine_barcodes, only: [:show]
 
   match 'pipelines/assets/new/:id' => 'pipelines/assets#new', :via => 'get'
 
@@ -438,10 +407,9 @@ Sequencescape::Application.routes.draw do
   end
 
   resources :lab_searches
-  resources :errors
   resources :events
 
-  resources :workflows, except: :delete do
+  resources :workflows, only: [:index, :show] do
     member do
       # Yes, this is every bit as horrible as it looks.
       # HTTP Verbs! Gotta catch em all!
@@ -450,8 +418,6 @@ Sequencescape::Application.routes.draw do
       patch 'stage/:id' => 'workflows#stage'
       get   'stage/:id' => 'workflows#stage'
       post 'stage/:id' => 'workflows#stage'
-      get :duplicate
-      get :reorder_tasks
       get :auto
     end
     collection do
@@ -460,7 +426,6 @@ Sequencescape::Application.routes.draw do
     end
   end
 
-  resources :tasks
   resources :asset_audits
 
   resources :qc_reports, except: [:delete, :update] do
@@ -476,8 +441,6 @@ Sequencescape::Application.routes.draw do
   get 'assets/find_by_barcode' => 'assets#find_by_barcode'
   get 'lab_view' => 'assets#lab_view', :as => :lab_view
   post 'assets/lab_view'
-
-  resources :families
 
   resources :tag_groups, except: [:destroy] do
     resources :tags, except: [:destroy, :index, :create, :new, :edit]
@@ -673,6 +636,24 @@ Sequencescape::Application.routes.draw do
 
   post 'get_your_qc_completed_tubes_here' => 'get_your_qc_completed_tubes_here#create', as: :get_your_qc_completed_tubes_here
   resources :sample_manifest_upload_with_tag_sequences, only: [:new, :create]
+
+  namespace :api do
+    namespace :v2 do
+      namespace :aker do
+        resources :work_orders, only: [:create]
+      end
+    end
+  end
+
+  namespace :aker do
+    resources :work_orders, only: [:index, :show] do
+      member do
+        post 'complete'
+        post 'cancel'
+      end
+    end
+  end
+  resources :billing_reports, only: [:new, :create]
 
   # this is for test only test/functional/authentication_controller_test.rb
   # to be removed?

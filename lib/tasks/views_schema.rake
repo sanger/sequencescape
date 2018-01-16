@@ -19,7 +19,12 @@ namespace :db do
 
     desc 'Reload the dumped schema'
     task schema_load: :environment do
-      require './db/views_schema'
+      ActiveRecord::Tasks::DatabaseTasks.send(:each_current_configuration, ActiveRecord::Tasks::DatabaseTasks.env) do |config|
+        ActiveRecord::Base.establish_connection(config)
+        load Rails.root.join('db', 'views_schema.rb')
+      end
+      # Ensure we switch back to the main dev database.
+      ActiveRecord::Base.establish_connection
     end
   end
 end

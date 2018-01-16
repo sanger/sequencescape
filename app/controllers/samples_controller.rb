@@ -22,7 +22,6 @@ class SamplesController < ApplicationController
 
   def new
     @sample = Sample.new
-    @workflows = Submission::Workflow.all
     @studies = Study.alphabetical
   end
 
@@ -40,9 +39,8 @@ class SamplesController < ApplicationController
         flash[:notice] = 'Sample successfully created'
         format.html { redirect_to sample_path(@sample) }
         format.xml  { render xml: @sample, status: :created, location: @sample }
-        format.json  { render json: @sample, status: :created, location: @sample }
+        format.json { render json: @sample, status: :created, location: @sample }
       else
-        @workflows = Submission::Workflow.all
         flash[:error] = 'Problems creating your new sample'
         format.html { render action: :new }
         format.xml  { render xml: @sample.errors, status: :unprocessable_entity }
@@ -100,7 +98,6 @@ class SamplesController < ApplicationController
         flash[:notice] = 'Sample details have been updated'
         redirect_to sample_path(@sample)
       else
-        @workflows = Submission::Workflow.all
         flash[:error] = 'Failed to update attributes for sample'
         render action: 'edit', id: @sample.id
       end
@@ -161,30 +158,30 @@ class SamplesController < ApplicationController
     redirect_to(sample_path(@sample))
   end
 
-   def taxon_lookup
-     if params[:term]
-       url = configatron.taxon_lookup_url + "/esearch.fcgi?db=taxonomy&term=#{params[:term].gsub(/\s/, '_')}"
-     elsif params[:id]
-       url = configatron.taxon_lookup_url + "/efetch.fcgi?db=taxonomy&mode=xml&id=#{params[:id]}"
-     else return
-     end
+  def taxon_lookup
+    if params[:term]
+      url = configatron.taxon_lookup_url + "/esearch.fcgi?db=taxonomy&term=#{params[:term].gsub(/\s/, '_')}"
+    elsif params[:id]
+      url = configatron.taxon_lookup_url + "/efetch.fcgi?db=taxonomy&mode=xml&id=#{params[:id]}"
+    else return
+    end
 
-     rc = RestClient::Resource.new(URI.parse(url).to_s)
-     if configatron.disable_web_proxy == true
-       RestClient.proxy = ''
-     elsif not configatron.proxy.blank?
-       RestClient.proxy = configatron.proxy
-       rc.headers['User-Agent'] = 'Internet Explorer 5.0'
-     end
-     # rc.verbose = true
-     body = rc.get.body
+    rc = RestClient::Resource.new(URI.parse(url).to_s)
+    if configatron.disable_web_proxy == true
+      RestClient.proxy = ''
+    elsif not configatron.proxy.blank?
+      RestClient.proxy = configatron.proxy
+      rc.headers['User-Agent'] = 'Internet Explorer 5.0'
+    end
+    # rc.verbose = true
+    body = rc.get.body
 
-     respond_to do |format|
-       format.js { render plain: body }
-       format.xml { render plain: body }
-       #      format.html {render :nothing}
-     end
-   end
+    respond_to do |format|
+      format.js { render plain: body }
+      format.xml { render plain: body }
+      #      format.html {render :nothing}
+    end
+  end
 
   private
 

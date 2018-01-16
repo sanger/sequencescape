@@ -15,18 +15,18 @@ module Asset::Stock
 
         def create_stock_asset!(attributes = {}, &block)
           self.class.stock_asset_type.create!(attributes.reverse_merge(
-            name:     "(s) #{name}",
-            barcode:  AssetBarcode.new_barcode,
-            aliquots: aliquots.map(&:dup),
-            purpose:  self.class.stock_asset_purpose
+                                                name:     "(s) #{name}",
+                                                barcode:  AssetBarcode.new_barcode,
+                                                aliquots: aliquots.map(&:dup),
+                                                purpose:  self.class.stock_asset_purpose
           ), &block)
         end
 
         def new_stock_asset(attributes = {}, &block)
           self.class.stock_asset_type.new(attributes.reverse_merge(
-            name:     "(s) #{name}",
-            aliquots: aliquots.map(&:dup),
-            purpose:  self.class.stock_asset_purpose
+                                            name:     "(s) #{name}",
+                                            aliquots: aliquots.map(&:dup),
+                                            purpose:  self.class.stock_asset_purpose
           ), &block)
         end
 

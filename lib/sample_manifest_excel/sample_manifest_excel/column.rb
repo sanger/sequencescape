@@ -8,7 +8,7 @@ module SampleManifestExcel
     include Helpers::Attributes
 
     set_attributes :name, :heading, :number, :type, :validation, :value, :unlocked, :conditional_formattings, :attribute, :range,
-                    defaults: { number: 0, type: :string, conditional_formattings: {}, validation: NullValidation.new }
+                   defaults: { number: 0, type: :string, conditional_formattings: {}, validation: NullValidation.new }
 
     validates_presence_of :name, :heading
 
@@ -67,7 +67,7 @@ module SampleManifestExcel
     end
 
     def metadata_field?
-      @metadata_field ||= Column.sample_metadata_model.respond_to?(name)
+      @metadata_field ||= Column.sample_metadata_model.respond_to?(name) unless specialised_field?
     end
 
     def update_metadata(metadata, value)
@@ -86,7 +86,7 @@ module SampleManifestExcel
 
     def specialised_field
       @specialised_field ||= if SampleManifestExcel.const_defined? classify_name
-                                SampleManifestExcel.const_get(classify_name)
+                               SampleManifestExcel.const_get(classify_name)
                              end
     end
 

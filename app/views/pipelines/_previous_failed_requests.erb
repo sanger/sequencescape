@@ -4,8 +4,8 @@
 # authorship of this file.
 # Copyright (C) 2011,2015 Genome Research Ltd.%>
 
-<% if request.previous_failed_requests.empty? %>
-  <%=  image_tag "true.gif", size: "16x16", id: "passed" %>
-<% else %>
+<% if request.previous_failed_requests? %>
   <%=  image_tag "error.png", size: "16x16", id: "failed" %>
+<% else %>
+  <%=  image_tag "true.gif", size: "16x16", id: "passed" %>
 <% end %>

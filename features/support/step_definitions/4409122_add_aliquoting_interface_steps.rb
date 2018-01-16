@@ -20,7 +20,7 @@ Given /^study "([^\"]+)" has the following registered samples in sample tubes( w
     sample      = study.samples.create!(name: details['sample'])
     sample_tube = FactoryGirl.create(:empty_sample_tube, name: sample_tube_name).tap { |tube| tube.aliquots.create!(sample: sample) }
 
-     FactoryHelp::submission(
+    FactoryHelp::submission(
       study: study,
       assets: [sample_tube],
       workflow: @current_user.workflow,

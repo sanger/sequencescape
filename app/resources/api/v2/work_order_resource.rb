@@ -27,10 +27,7 @@ module Api
       attribute :options
       attribute :at_risk
 
-      filter :state, apply: (lambda do |records, value, _options|
-        records.where(requests: { state: value })
-      end)
-
+      filter :state
       filter :order_type, apply: (lambda do |records, value, _options|
         records.where(work_order_types: { name: value })
       end)

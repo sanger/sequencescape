@@ -1,0 +1,19 @@
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2015,2016 Genome Research Ltd.%>
+<h1>Labwhere Reception</h1>
+
+<h4>Receipt</h4>
+<p>The following labware has been scanned in.</p>
+<ul>
+  <% @labwhere_reception.assets.each do |asset| %>
+    <li><%= asset.sanger_human_barcode %>: <%= asset.purpose&.name %></li>
+  <% end %>
+  <% @labwhere_reception.missing_barcodes.each do |barcode| %>
+    <li class="text-danger">Could not find: <%= barcode %></li>
+  <% end %>
+</ul>
+
+<%= render partial: 'form', locals: {labwhere_reception: @labwhere_reception} %>

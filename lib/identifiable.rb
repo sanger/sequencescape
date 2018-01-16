@@ -6,14 +6,14 @@ module Identifiable
   def self.included(base)
     base.send(:has_many, :identifiers, as: :identifiable)
     base.instance_eval do
-     scope :with_identifier, ->(t) {
-        includes(:identifiers).where(identifiers: { resource_name: t })
-                             }
+      scope :with_identifier, ->(t) {
+                                includes(:identifiers).where(identifiers: { resource_name: t })
+                              }
 
-    scope :sync_identifier, ->(t) {
-      joins("INNER JOIN identifiers sid ON sid.identifiable_id=samples.id AND sid.identifiable_type IN (#{[self, *descendants].map(&:name).map(&:inspect).join(',')})")
-        .where(['sid.resource_name=? AND NOT sid.do_not_sync AND sid.external_id IS NOT NULL', t])
-    }
+      scope :sync_identifier, ->(t) {
+        joins("INNER JOIN identifiers sid ON sid.identifiable_id=samples.id AND sid.identifiable_type IN (#{[self, *descendants].map(&:name).map(&:inspect).join(',')})")
+          .where(['sid.resource_name=? AND NOT sid.do_not_sync AND sid.external_id IS NOT NULL', t])
+      }
     end
   end
 

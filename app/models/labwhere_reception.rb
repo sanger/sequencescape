@@ -13,19 +13,14 @@ class LabwhereReception
   include ActiveModel::Conversion
   include ActiveModel::Validations
 
-  attr_reader :asset_barcodes, :user_code, :location_barcode, :location_id
+  attr_reader :asset_barcodes, :user_code, :location_barcode
 
-  validates :asset_barcodes, :user_code, :location, presence: true
+  validates :asset_barcodes, :user_code, presence: true
 
-  def initialize(user_code, location_barcode, location_id, asset_barcodes)
-    @asset_barcodes = asset_barcodes.map(&:strip) if asset_barcodes.present?
-    @location_id = location_id.to_i
+  def initialize(user_code, location_barcode, asset_barcodes)
+    @asset_barcodes = (asset_barcodes || []).map(&:strip)
     @location_barcode = location_barcode.try(:strip)
     @user_code = user_code.try(:strip)
-  end
-
-  def location
-     @location ||= Location.find_by(id: location_id)
   end
 
   def id; nil; end
@@ -44,7 +39,6 @@ class LabwhereReception
     return false unless valid?
 
     begin
-
       scan = LabWhereClient::Scan.create(
         location_barcode: location_barcode,
         user_code: user_code,
@@ -55,24 +49,24 @@ class LabwhereReception
         errors.add(:scan, scan.error)
         return false
       end
-
     rescue LabWhereClient::LabwhereException => exception
       errors.add(:base, 'Could not connect to Labwhere. Sequencescape location has still been updated')
       return false
     end
 
     assets.each do |asset|
-      asset.location = location
-      asset.events.create_scanned_into_lab!(location)
-      BroadcastEvent::LabwareReceived.create!(seed: asset, user: user)
+      asset.events.create_scanned_into_lab!(location_barcode)
+      BroadcastEvent::LabwareReceived.create!(seed: asset, user: user, properties: { location_barcode: location_barcode })
     end
 
     valid?
   end
 
-  private
-
   def assets
     @assets ||= Asset.with_machine_barcode(asset_barcodes)
+  end
+
+  def missing_barcodes
+    asset_barcodes - @assets.map(&:ean13_barcode)
   end
 end

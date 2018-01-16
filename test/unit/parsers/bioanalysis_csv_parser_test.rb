@@ -67,7 +67,7 @@ class BioanalysisCsvParserTest < ActiveSupport::TestCase
 
       should 'use get_groups method to find matching regexp' do
         test_data = [[24, 25], [37, 38], [49, 50], [61, 62], [73, 74], [85, 86],
-        [97, 98], [109, 110], [121, 122], [133, 134], [145, 146], [157, 158]]
+                     [97, 98], [109, 110], [121, 122], [133, 134], [145, 146], [157, 158]]
         assert_equal test_data, @parser.get_groups(/Overall.*/m)
       end
 

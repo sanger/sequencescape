@@ -11,7 +11,7 @@ module DefaultAttributes
   extend ActiveSupport::Concern
 
   module ClassMethods
-    # rubocop:disable Style/AccessorMethodName
+    # rubocop:disable Naming/AccessorMethodName
     def set_defaults(attributes = {})
       attributes.each do |attribute, default_value|
         if default_value.is_a? Proc
@@ -30,6 +30,6 @@ module DefaultAttributes
         super() || send("#{attribute}=", default_value || yield(self))
       end
     end
-    # rubocop:enable Metrics/LineLength, Style/StringLiterals
+    # rubocop:enable Naming/AccessorMethodName
   end
 end

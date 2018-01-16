@@ -13,9 +13,6 @@ module ApplicationHelper
         differential: differential
       )
 
-      # .debug
-      #  "No custom text found for #{identifier} #{differential}." if custom_text.nil?
-
       custom_text.try(:content) || ''
     end
   end
@@ -80,10 +77,12 @@ module ApplicationHelper
 
   def dynamic_link_to(summary_item)
     object = summary_item.object
-    if object.instance_of?(Asset)
-        return link_to((object.name).to_s, asset_path(object))
+    if object.instance_of?(Submission)
+      return link_to("Submission #{object.id}", study_information_submission_path(object.study, object))
+    elsif object.instance_of?(Asset)
+      return link_to("#{object.label.capitalize} #{object.name}", asset_path(object))
     elsif object.instance_of?(Request)
-        return link_to("Request #{object.id}", request_path(object))
+      return link_to("Request #{object.id}", request_path(object))
     else
       return 'No link available'
     end
@@ -97,11 +96,11 @@ module ApplicationHelper
     # 1 request  => request summary page
     # N requests => summary overview
     if count == 1
-       url_path = request_path(matching_requests.first)
-       link_to count, url_path, html_options
+      url_path = request_path(matching_requests.first)
+      link_to count, url_path, html_options
     elsif count > 1
-       url_path = study_requests_path(study, state: state, request_type_id: request_type.id, asset_id: asset.id)
-       link_to count, url_path, html_options
+      url_path = study_requests_path(study, state: state, request_type_id: request_type.id, asset_id: asset.id)
+      link_to count, url_path, html_options
     end
   end
 
@@ -129,54 +128,19 @@ module ApplicationHelper
   end
 
   def progress_bar(count)
-    color = ''
-    if count < 25
-      color = 'ccaaaa'
-    elsif count > 99
-      color = 'aaddaa'
-    else
-      color = 'DAEE34'
-    end
+    color = if count < 25
+              'ccaaaa'
+            elsif count > 99
+              'aaddaa'
+            else
+              'DAEE34'
+            end
 
     # TODO: Refactor this to use the bootstrap styles
     content_tag(:span, count, style: 'display:none') <<
       content_tag(:div, style: 'width: 100px; background-color: #CCCCCC; color: inherit;') do
         content_tag(:div, "#{count}%", style: "width: #{count}px; background-color: ##{color}; color: inherit; text-align:center")
       end
-  end
-
-  def completed(object, request_type = nil, cache = {})
-    total  = 0
-    passed = 0
-    failed = 0
-
-    if request_type
-
-      if cache.blank?
-        total = object.requests.request_type(request_type).size
-        passed = object.requests.request_type(request_type).passed.count
-        failed = object.requests.request_type(request_type).failed.count
-      else
-        passed_cache = cache[:passed]
-        failed_cache = cache[:failed]
-        total_cache  = cache[:total]
-
-        total = total_cache[request_type][object.id]
-        passed = passed_cache[request_type][object.id]
-        failed = failed_cache[request_type][object.id]
-
-      end
-    else
-      total = object.requests.request_type(request_type).size
-      passed = object.requests.passed.size
-      failed = object.requests.failed.size
-    end
-
-    if (total - failed) > 0
-      return ((passed.to_f / (total - failed).to_f) * 100).to_i
-    else
-      return 0
-    end
   end
 
   def study_state(state)
@@ -216,9 +180,9 @@ module ApplicationHelper
       [content_tag(:td, class: 'error item') do
         "Your #{params.first} has not been created."
       end,
-      content_tag(:td, class: 'error') do
-        raw(error_messages)
-      end].join.html_safe
+       content_tag(:td, class: 'error') do
+         raw(error_messages)
+       end].join.html_safe
     end
   end
 

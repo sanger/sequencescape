@@ -59,6 +59,8 @@ class BaitLibrary < ApplicationRecord
 
   scope :visible, -> { where(visible: true) }
 
+  delegate :category, to: :bait_library_type
+
   def hide
     self.visible = false
     save!

@@ -97,23 +97,23 @@ module SequencingQcBatch
 
   private
 
-    def qc_pipeline_update
-      self.qc_pipeline = Pipeline.find_by(name: 'quality control', automated: true)
-      self.qc_state    = 'qc_pending'
-    end
+  def qc_pipeline_update
+    self.qc_pipeline = Pipeline.find_by(name: 'quality control', automated: true)
+    self.qc_state    = 'qc_pending'
+  end
 
-    def assets_qc_tasks_results
-      auto_qc_pipeline = Pipeline.find_by!(name: 'quality control', automated: true)
-      qc_workflow = LabInterface::Workflow.find_by pipeline_id: auto_qc_pipeline.id
-      qc_tasks = qc_workflow.tasks
-      results = []
-      qc_tasks.each do |task|
-        requests.each do |request|
-          if request.asset && request.asset.resource.nil?
-            results << request.has_passed(self, task)
-          end
+  def assets_qc_tasks_results
+    auto_qc_pipeline = Pipeline.find_by!(name: 'quality control', automated: true)
+    qc_workflow = Workflow.find_by pipeline_id: auto_qc_pipeline.id
+    qc_tasks = qc_workflow.tasks
+    results = []
+    qc_tasks.each do |task|
+      requests.each do |request|
+        if request.asset && request.asset.resource.nil?
+          results << request.has_passed(self, task)
         end
       end
-      results
     end
+    results
+  end
 end

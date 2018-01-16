@@ -12,10 +12,10 @@ module Pipeline::InboxExtensions
     actions = [:unbatched]
     actions.concat(pipeline.custom_inbox_actions)
     actions << ((pipeline.group_by_parent? or show_held_requests) ? :full_inbox : :pipeline_pending)
-    actions << [(pipeline.group_by_parent? ? :holder_located : :located), pipeline.location_id]
+    actions << [(pipeline.group_by_parent? ? :holder_located : :all)]
 
     if action != :count
-      actions << :include_request_metadata
+      actions << :include_request_metadata if pipeline.request_information_types.exists?
       actions << (pipeline.group_by_submission? ? :ordered_for_submission_grouped_inbox : :ordered_for_ungrouped_inbox)
       actions << pipeline.inbox_eager_loading
     end

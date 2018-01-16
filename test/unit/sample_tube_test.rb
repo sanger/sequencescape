@@ -31,20 +31,21 @@ class SampleTubeTest < ActiveSupport::TestCase
 
     should 'render what we expect' do
       assert_equal({
-        'lims' => 'SQSCP',
-        'stock_resource' => {
-          'created_at' => '2012-03-11T10:22:42+00:00',
-          'updated_at' => '2012-03-11T10:22:42+00:00',
-          'samples' => [
-            'sample_uuid' => @sample.uuid,
-            'study_uuid' => @study.uuid
-          ],
-          'stock_resource_id' => @sample_tube.id,
-          'stock_resource_uuid' => @sample_tube.uuid,
-          'machine_barcode' => '3980012345764',
-          'human_barcode' => 'NT12345L',
-          'labware_type' => 'tube' }
-        }, JSON.parse(@messenger.to_json))
+                     'lims' => 'SQSCP',
+                     'stock_resource' => {
+                       'created_at' => '2012-03-11T10:22:42+00:00',
+                       'updated_at' => '2012-03-11T10:22:42+00:00',
+                       'samples' => [
+                         'sample_uuid' => @sample.uuid,
+                         'study_uuid' => @study.uuid
+                       ],
+                       'stock_resource_id' => @sample_tube.id,
+                       'stock_resource_uuid' => @sample_tube.uuid,
+                       'machine_barcode' => '3980012345764',
+                       'human_barcode' => 'NT12345L',
+                       'labware_type' => 'tube'
+                     }
+                   }, JSON.parse(@messenger.to_json))
     end
 
     should 'allow registration of messengers' do

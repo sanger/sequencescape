@@ -66,7 +66,7 @@ Feature: Update the data release fields for creating a study
     And I select "No" from "Does this study contain samples that are contaminated with human DNA which must be removed prior to analysis?"
     And I select "Open (ENA)" from "What is the data release strategy for this study?"
     When I press "Create"
-    Then I should be on the study workflow page for "new study"
+    Then I should be on the study information page for "new study"
 
     Examples:
       | delay_period |

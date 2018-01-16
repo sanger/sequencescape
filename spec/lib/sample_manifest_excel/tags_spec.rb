@@ -55,4 +55,35 @@ RSpec.describe SampleManifestExcel::Tags, type: :model, sample_manifest_excel: t
       SampleManifestExcel.reset!
     end
   end
+
+  describe 'clash_finder' do
+    class TestTagClashesFinder
+      include SampleManifestExcel::Tags::ClashesFinder
+    end
+
+    it 'finds tags clashes and creates tags clashes message' do
+      tag_clashes_finder = TestTagClashesFinder.new
+      tags_oligos_combinations = [%w[AA TT], %w[AA GC], %w[TT AA], %w[AA TT]]
+      result = tag_clashes_finder.find_tags_clash(tags_oligos_combinations)
+      expect(result).to eq(%w[AA TT] => [0, 3])
+      message = tag_clashes_finder.create_tags_clashes_message(result)
+      expect(message).to eq('Same tags AA, TT are used on rows 1, 4.')
+      first_row = 5
+      message_for_manifest = tag_clashes_finder.create_tags_clashes_message(result, first_row)
+      expect(message_for_manifest).to eq('Same tags AA, TT are used on rows 6, 9.')
+    end
+
+    it 'finds nothing if there are no tag clashes' do
+      tag_clashes_finder = TestTagClashesFinder.new
+      tags_oligos_combinations = [%w[AA TT], %w[AA GC], %w[TT AA]]
+      result = tag_clashes_finder.find_tags_clash(tags_oligos_combinations)
+      expect(result).to eq({})
+    end
+
+    it 'finds nothing if receives an empty array' do
+      tag_clashes_finder = TestTagClashesFinder.new
+      result = tag_clashes_finder.find_tags_clash([])
+      expect(result).to eq({})
+    end
+  end
 end

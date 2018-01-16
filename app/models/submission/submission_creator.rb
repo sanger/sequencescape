@@ -88,6 +88,10 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
     @order_params
   end
 
+  def pre_capture_plex_level
+    order.input_field_infos.detect { |ifi| ifi.key == :pre_capture_plex_level }&.default_value
+  end
+
   def order_fields
     if order.input_field_infos.flatten.empty?
       order.request_type_ids_list = order.request_types.map { |rt| [rt] }
@@ -125,7 +129,6 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
         new_order.save!
         @order = new_order
       end
-
     rescue Submission::ProjectValidation::Error => project_exception
       order.errors.add(:base, project_exception.message)
     rescue InvalidInputException => input_exception
@@ -142,6 +145,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
     order.errors.empty?
   end
 
+  # this is more order_receptacles, asset_group is actually receptacle group
   def order_assets
     input_methods = [:asset_group_id, :sample_names_text, :barcodes_wells_text].select { |input_method| send(input_method).present? }
 
@@ -186,61 +190,6 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
   def plate_purpose
     @plate_purpose ||= PlatePurpose.find(plate_purpose_id)
   end
-
-  # Returns Samples based on Sample name or Sanger ID
-  # This is a legacy of the old controller...
-  def find_samples_from_text(sample_text)
-    names = sample_text.lines.map(&:chomp).reject(&:blank?).map(&:strip)
-
-    samples = Sample.includes(:assets).where(['name IN (:names) OR sanger_sample_id IN (:names)', { names: names }])
-
-    name_set  = Set.new(names)
-    found_set = Set.new(samples.map { |s| [s.name, s.sanger_sample_id] }.flatten)
-    not_found = name_set - found_set
-    raise InvalidInputException, "#{Sample.table_name} #{not_found.to_a.join(", ")} not found" unless not_found.empty?
-    samples
-  end
-  private :find_samples_from_text
-
-  def find_assets_from_text(assets_text)
-    plates_wells = assets_text.lines.map(&:chomp).reject(&:blank?).map(&:strip)
-
-    plates_wells.map do |plate_wells|
-      plate_barcode, well_locations = plate_wells.split(':')
-      begin
-        plate = Plate.find_from_machine_barcode(Barcode.human_to_machine_barcode(plate_barcode))
-      rescue SBCF::BarcodeError => exception
-        raise InvalidInputException, "Invalid Barcode #{plate_barcode}: #{exception}"
-      end
-      raise InvalidInputException, "No plate found for barcode #{plate_barcode}." if plate.nil?
-      well_array = (well_locations || '').split(',').reject(&:blank?).map(&:strip)
-
-      find_wells_in_array(plate, well_array)
-    end.flatten
-  end
-  private :find_assets_from_text
-
-  def find_wells_in_array(plate, well_array)
-    return plate.wells.with_aliquots.select('DISTINCT assets.*').all if well_array.empty?
-    well_array.map do |map_description|
-      case map_description
-      when /^[a-z,A-Z][0-9]+$/ # A well
-        well = plate.find_well_by_name(map_description)
-        if well.nil? or well.aliquots.empty?
-          raise InvalidInputException, "Well #{map_description} on #{plate.sanger_human_barcode} does not exist or is empty."
-        else
-          well
-        end
-      when /^[a-z,A-Z]$/ # A row
-        plate.wells.with_aliquots.in_plate_row(map_description, plate.size).select('DISTINCT assets.*').all
-      when /^[0-9]+$/ # A column
-        plate.wells.with_aliquots.in_plate_column(map_description, plate.size).select('DISTINCT assets.*').all
-      else
-        raise InvalidInputException, "#{map_description} is not a valid well location"
-      end
-    end
-  end
-  private :find_wells_in_array
 
   def study
     @study ||= (Study.find(@study_id) if @study_id.present?)
@@ -287,5 +236,59 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
 
   def template_name
     submission.orders.first.template_name
+  end
+
+  private
+
+  # Returns Samples based on Sample name or Sanger ID
+  # This is a legacy of the old controller...
+  def find_samples_from_text(sample_text)
+    names = sample_text.lines.map(&:chomp).reject(&:blank?).map(&:strip)
+
+    samples = Sample.includes(:assets).where(['name IN (:names) OR sanger_sample_id IN (:names)', { names: names }])
+
+    name_set  = Set.new(names)
+    found_set = Set.new(samples.map { |s| [s.name, s.sanger_sample_id] }.flatten)
+    not_found = name_set - found_set
+    raise InvalidInputException, "#{Sample.table_name} #{not_found.to_a.join(", ")} not found" unless not_found.empty?
+    samples
+  end
+
+  def find_assets_from_text(assets_text)
+    plates_wells = assets_text.lines.map(&:chomp).reject(&:blank?).map(&:strip)
+
+    plates_wells.map do |plate_wells|
+      plate_barcode, well_locations = plate_wells.split(':')
+      begin
+        plate = Plate.find_from_machine_barcode(Barcode.human_to_machine_barcode(plate_barcode))
+      rescue SBCF::BarcodeError => exception
+        raise InvalidInputException, "Invalid Barcode #{plate_barcode}: #{exception}"
+      end
+      raise InvalidInputException, "No plate found for barcode #{plate_barcode}." if plate.nil?
+      well_array = (well_locations || '').split(',').reject(&:blank?).map(&:strip)
+
+      find_wells_in_array(plate, well_array)
+    end.flatten
+  end
+
+  def find_wells_in_array(plate, well_array)
+    return plate.wells.with_aliquots.distinct if well_array.empty?
+    well_array.map do |map_description|
+      case map_description
+      when /^[a-z,A-Z][0-9]+$/ # A well
+        well = plate.find_well_by_name(map_description)
+        if well.nil? or well.aliquots.empty?
+          raise InvalidInputException, "Well #{map_description} on #{plate.sanger_human_barcode} does not exist or is empty."
+        else
+          well
+        end
+      when /^[a-z,A-Z]$/ # A row
+        plate.wells.with_aliquots.in_plate_row(map_description, plate.size).distinct
+      when /^[0-9]+$/ # A column
+        plate.wells.with_aliquots.in_plate_column(map_description, plate.size).distinct
+      else
+        raise InvalidInputException, "#{map_description} is not a valid well location"
+      end
+    end
   end
 end

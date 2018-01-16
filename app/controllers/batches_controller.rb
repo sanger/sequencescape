@@ -85,20 +85,20 @@ class BatchesController < ApplicationController
   end
 
   def create
-      @pipeline = Pipeline.find(params[:id])
+    @pipeline = Pipeline.find(params[:id])
 
-      # TODO: These should be different endpoints
-      requests = @pipeline.extract_requests_from_input_params(params.to_unsafe_h)
+    # TODO: These should be different endpoints
+    requests = @pipeline.extract_requests_from_input_params(params.to_unsafe_h)
 
-      case params[:action_on_requests]
-      when 'cancel_requests'
-        return cancel_requests(requests)
-      when 'hide_from_inbox'
-        return hide_from_inbox(requests)
-      else
-        # This is the standard create action
-        standard_create(requests)
-      end
+    case params[:action_on_requests]
+    when 'cancel_requests'
+      return cancel_requests(requests)
+    when 'hide_from_inbox'
+      return hide_from_inbox(requests)
+    else
+      # This is the standard create action
+      standard_create(requests)
+    end
   rescue ActiveRecord::RecordInvalid => exception
     respond_to do |format|
       format.html {
@@ -336,8 +336,8 @@ class BatchesController < ApplicationController
 
   def print_multiplex_barcodes
     print_job = LabelPrinter::PrintJob.new(params[:printer],
-                                        LabelPrinter::Label::BatchMultiplex,
-                                        count: params[:count], printable: params[:printable], batch: @batch)
+                                           LabelPrinter::Label::BatchMultiplex,
+                                           count: params[:count], printable: params[:printable], batch: @batch)
     if print_job.execute
       flash[:notice] = print_job.success
     else
@@ -365,8 +365,8 @@ class BatchesController < ApplicationController
       flash[:notice] = 'Your batch contains no requests.'
     else
       print_job = LabelPrinter::PrintJob.new(params[:printer],
-                                          LabelPrinter::Label::BatchTube,
-                                          stock: params[:stock], count: params[:count], printable: params[:printable], batch: @batch)
+                                             LabelPrinter::Label::BatchTube,
+                                             stock: params[:stock], count: params[:count], printable: params[:printable], batch: @batch)
       if print_job.execute
         flash[:notice] = print_job.success
       else

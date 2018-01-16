@@ -1,13 +1,13 @@
 require 'rails_helper'
 
 RSpec.describe SampleManifestExcel::Column, type: :model, sample_manifest_excel: true do
-  let(:range_list)  { build(:range_list, options: { FactoryGirl.attributes_for(:validation)[:range_name] => FactoryGirl.attributes_for(:range) }) }
+  let(:range_list)  { build(:range_list, ranges_data: { FactoryGirl.attributes_for(:validation)[:range_name] => FactoryGirl.attributes_for(:range) }) }
   let(:worksheet)   { Axlsx::Workbook.new.add_worksheet }
   let(:options)     {
     { heading: 'PUBLIC NAME', name: :public_name, type: :string, value: 10, number: 125, attribute: :barcode,
       validation: FactoryGirl.attributes_for(:validation),
-      conditional_formattings: { simple: FactoryGirl.attributes_for(:conditional_formatting), complex: FactoryGirl.attributes_for(:conditional_formatting_with_formula) }
-                    } }
+      conditional_formattings: { simple: FactoryGirl.attributes_for(:conditional_formatting), complex: FactoryGirl.attributes_for(:conditional_formatting_with_formula) } }
+  }
 
   it 'must have a heading' do
     expect(SampleManifestExcel::Column.new(options).heading).to eq(options[:heading])

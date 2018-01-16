@@ -21,10 +21,10 @@ RSpec.describe SampleManifestExcel::Configuration, type: :model, sample_manifest
   end
 
   describe 'without a folder' do
-     it 'will not be loaded' do
+    it 'will not be loaded' do
       configuration.load!
       expect(configuration).to_not be_loaded
-     end
+    end
   end
 
   describe 'with a valid folder' do

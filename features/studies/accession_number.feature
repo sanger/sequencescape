@@ -10,11 +10,11 @@ Feature: Studies should be able to generate accession numbers
     And the abstract of study "Study for accession number testing" is "Ok, not ok?"
     And the study "Study for accession number testing" is a "Whole Genome Sequencing" study
 
-    Given I am on the workflow page for study "Study for accession number testing"
+    Given I am on the information page for study "Study for accession number testing"
 
   Scenario: The study does not have an accession number but doesn't need one anyway
     When I follow "Generate Accession Number"
-    Then I should be on the workflow page for study "Study for accession number testing"
+    Then I should be on the information page for study "Study for accession number testing"
     And I should see "An accession number is not required for this study"
 
   Scenario: The study already has an accession number
@@ -42,9 +42,9 @@ Feature: Studies should be able to generate accession numbers
     Given an accession number is required for study "Study for accession number testing"
 
     When I follow "Generate Accession Number"
-    #    Then I should be on the workflow page for study "Study for accession number testing"
+    #    Then I should be on the information page for study "Study for accession number testing"
     And I should see "Accession number generated: EGAN00001000234"
-    Given I am on the workflow page for study "Study for accession number testing"
+    Given I am on the information page for study "Study for accession number testing"
     When I follow "Study details"
     Then I should see "EGAN00001000234"
 

@@ -7,9 +7,9 @@
 module StudiesHelper
   def status_link_title
     if @study.inactive? || @study.pending?
-     'Open'
+      'Open'
     else
-     'Close'
+      'Close'
     end
   end
 

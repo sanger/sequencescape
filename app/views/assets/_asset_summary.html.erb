@@ -70,10 +70,6 @@
       </td>
     </tr>
   <% end %>
-  <tr>
-    <th>Scanned into lab?</th>
-    <td><%= @asset.location.nil? ? 'No' : @asset.location.name %></td>
-  </tr>
   <% if @asset.qc_state %>
     <tr>
       <th>QC state</th>

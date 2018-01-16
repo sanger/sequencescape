@@ -46,7 +46,8 @@ module Attributable
     end
 
     def from(record)
-      record.send(@name).send(@method)
+      record.send(@name)
+            .try(@method)
     end
 
     def display_name

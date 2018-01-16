@@ -16,5 +16,6 @@ class Io::PlatePurpose < Core::Io::Base
     input_plate <= input_plate
     parent_purposes <= parents
     child_purposes <= children
+    size <=> size
   ")
 end

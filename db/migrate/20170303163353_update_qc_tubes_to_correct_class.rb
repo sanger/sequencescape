@@ -1,5 +1,5 @@
 class UpdateQcTubesToCorrectClass < ActiveRecord::Migration
-   PURPOSE_OLD_TARGET = {
+  PURPOSE_OLD_TARGET = {
     'PF MiSeq Stock' => 'StockMultiplexedLibraryTube',
     'PF MiSeq QC' => 'MultiplexedLibraryTube',
     'PF MiSeq QCR' => 'MultiplexedLibraryTube'

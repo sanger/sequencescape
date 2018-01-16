@@ -20,6 +20,7 @@ class Warren::Test
   #
   def initialize(*_args)
     @messages = []
+    @enabled = false
   end
 
   #

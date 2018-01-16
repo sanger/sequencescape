@@ -32,7 +32,7 @@ Given /^the lot exists with the attributes:$/ do |table|
     received_at: settings['received_at'],
     template: TagLayoutTemplate.find_by(name: settings['template']) || PlateTemplate.find_by(name: settings['template']),
     user: User.last
-    )
+  )
 end
 
 Given /^the UUID for the lot with lot number "(.*?)" is "(.*?)"$/ do |lot_number, uuid|

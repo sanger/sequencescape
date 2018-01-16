@@ -9,6 +9,7 @@ module SampleManifestExcel
     require_relative 'specialised_field/insert_size_from'
     require_relative 'specialised_field/insert_size_to'
     require_relative 'specialised_field/library_type'
+    require_relative 'specialised_field/reference_genome'
     require_relative 'specialised_field/sample_ebi_accession_number'
     require_relative 'specialised_field/sanger_plate_id'
     require_relative 'specialised_field/sanger_sample_id'

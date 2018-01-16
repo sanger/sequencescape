@@ -10,9 +10,9 @@ module Tasks::PlateTemplateHandler
     set_plate_purpose_options(task)
     suitable_sizes = @plate_purpose_options.map { |o| o[1] }.uniq
     @plate_templates = if (@batch.pipeline.control_request_type.nil?)
-      PlateTemplate.with_sizes(suitable_sizes).select(&:without_control_wells?)
+                         PlateTemplate.with_sizes(suitable_sizes).select(&:without_control_wells?)
                        else
-      PlateTemplate.with_sizes(suitable_sizes)
+                         PlateTemplate.with_sizes(suitable_sizes)
                        end
   end
 
@@ -24,9 +24,9 @@ module Tasks::PlateTemplateHandler
     return true if params[:file].blank?
 
     plate_size = if params[:plate_template].blank?
-      PlatePurpose.find(params[:plate_purpose_id]).size
+                   PlatePurpose.find(params[:plate_purpose_id]).size
                  else
-      PlateTemplate.find(params[:plate_template]['0'].to_i).size
+                   PlateTemplate.find(params[:plate_template]['0'].to_i).size
                  end
 
     parsed_plate_details = parse_uploaded_spreadsheet_layout(params[:file].read, plate_size)

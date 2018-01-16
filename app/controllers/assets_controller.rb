@@ -8,7 +8,7 @@ class AssetsController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
-  before_action :discover_asset, only: [:show, :edit, :update, :destory, :summary, :close, :print_assets, :print, :show_plate, :history, :holded_assets]
+  before_action :discover_asset, only: [:show, :edit, :update, :destory, :summary, :close, :print_assets, :print, :history, :holded_assets]
   before_action :prepare_asset, only: [:new_request, :create_request]
 
   def index
@@ -20,11 +20,7 @@ class AssetsController < ApplicationController
     end
 
     respond_to do |format|
-      if params[:print]
-        format.html { render action: :print_index }
-      else
-        format.html
-      end
+      format.html
       if params[:study_id]
         format.xml { render xml: Study.find(params[:study_id]).assets_through_requests.to_xml }
       elsif params[:sample_id]
@@ -64,14 +60,14 @@ class AssetsController < ApplicationController
 
   def find_parents(text)
     return [] unless text.present?
-      names = text.lines.map(&:chomp).reject { |l| l.blank? }
-      objects = Asset.where(id: names).all
-      objects += Asset.where(barcode: names).all
-      name_set = Set.new(names)
-      found_set = Set.new(objects.map(&:name))
-      not_found = name_set - found_set
-      raise InvalidInputException, "#{Asset.table_name} #{not_found.to_a.join(", ")} not founds" unless not_found.empty?
-      objects
+    names = text.lines.map(&:chomp).reject { |l| l.blank? }
+    objects = Asset.where(id: names).all
+    objects += Asset.where(barcode: names).all
+    name_set = Set.new(names)
+    found_set = Set.new(objects.map(&:name))
+    not_found = name_set - found_set
+    raise InvalidInputException, "#{Asset.table_name} #{not_found.to_a.join(", ")} not founds" unless not_found.empty?
+    objects
   end
 
   def create
@@ -188,7 +184,7 @@ class AssetsController < ApplicationController
   end
 
   private def asset_params
-    permitted = [:location_id, :volume, :concentration]
+    permitted = [:volume, :concentration]
     permitted << :name if current_user.administrator? #
     permitted << :plate_purpose_id if current_user.administrator? || current_user.lab_manager?
     params.require(:asset).permit(permitted)
@@ -234,8 +230,8 @@ class AssetsController < ApplicationController
 
   def print_labels
     print_job = LabelPrinter::PrintJob.new(params[:printer],
-                                          LabelPrinter::Label::AssetRedirect,
-                                          printables: params[:printables])
+                                           LabelPrinter::Label::AssetRedirect,
+                                           printables: params[:printables])
     if print_job.execute
       flash[:notice] = print_job.success
     else
@@ -247,8 +243,8 @@ class AssetsController < ApplicationController
 
   def print_assets
     print_job = LabelPrinter::PrintJob.new(params[:printer],
-                                          LabelPrinter::Label::AssetRedirect,
-                                          printables: @asset)
+                                           LabelPrinter::Label::AssetRedirect,
+                                           printables: @asset)
     if print_job.execute
       flash[:notice] = print_job.success
     else
@@ -258,6 +254,7 @@ class AssetsController < ApplicationController
   end
 
   def show_plate
+    @asset = Plate.find(params[:id])
   end
 
   def new_request
@@ -289,7 +286,6 @@ class AssetsController < ApplicationController
     submission = ReRequestSubmission.build!(
       study: @study,
       project: @project,
-      workflow: @request_type.workflow,
       user: current_user,
       assets: [@asset],
       request_types: [@request_type.id],

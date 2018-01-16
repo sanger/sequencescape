@@ -67,7 +67,7 @@ class NpgActions::AssetsController < ApplicationController
   end
 
   def xml_valid?
-   raise XmlInvalid, 'XML invalid' if params[:qc_information].nil?
+    raise XmlInvalid, 'XML invalid' if params[:qc_information].nil?
   end
 
   def npg_action_invalid?

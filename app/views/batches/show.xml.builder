@@ -13,7 +13,7 @@ xml.batch do
               { aliquots: [:library, :tag, :tag2, :aliquot_index, :sample] }
             ],
             aliquots: [:library, :tag, :tag2, :aliquot_index, :bait_library, :sample]
-          }},
+          } },
           :asset
         ]
       ).each do |batch_request|
@@ -35,7 +35,7 @@ xml.batch do
             ) {
               request.asset.aliquots.each { |aliquot| output_aliquot(xml, aliquot) }
             }
-            next    # Loop as there will never be a spiked in buffer on this.
+            next # Loop as there will never be a spiked in buffer on this.
           end
 
           target_asset_aliquots = request.target_asset.aliquots

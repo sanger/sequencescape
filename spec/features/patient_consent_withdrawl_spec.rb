@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'rails_helper'
 
 feature 'Sample#consent_withdrawn', js: false do
@@ -68,7 +69,6 @@ feature 'Sample#consent_withdrawn', js: false do
             project: create(:project),
             study: study,
             asset_group: asset_group,
-            workflow: Submission::Workflow.first,
             user: user,
             request_options: {
               'fragment_size_required_from' => 300,
@@ -85,7 +85,6 @@ feature 'Sample#consent_withdrawn', js: false do
             project: create(:project),
             study: study,
             assets: [sample_tube],
-            workflow: Submission::Workflow.first,
             user: user,
             request_options: {
               'fragment_size_required_from' => 300,

@@ -11,11 +11,12 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
   let(:columns)       { SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup }
   let(:data)          {
     [sample_tube.samples.first.assets.first.sanger_human_barcode, sample_tube.samples.first.sanger_sample_id,
-     'AA', '', 'My New Library Type', 200, 1500, 'SCG--1222_A01', '', 1, 1, 'Unknown', '', '', '',
-     'Cell Line', 'Nov-16', 'Nov-16', '', '', '', 'No', '', 'OTHER', '', '', '', '', '', 'SCG--1222_A01',
-     9606, 'Homo sapiens', '', '', '', '', '', 11, 'Unknown']
+     'AA', '', 'My reference genome', 'My New Library Type', 200, 1500, 'SCG--1222_A01', '', 1, 1, 'Unknown', '', '', '',
+     'Cell Line', 'Nov-16', 'Nov-16', '', 'No', '', 'OTHER', '', '', '', '', '', 'SCG--1222_A01',
+     9606, 'Homo sapiens', '', '', '', '', 11, 'Unknown']
   }
   let!(:library_type) { create(:library_type, name: 'My New Library Type') }
+  let!(:reference_genome) { create(:reference_genome, name: 'My reference genome') }
   let!(:sample_tube)  { create(:sample_tube_with_sanger_sample_id) }
   let!(:tag_group)    { create(:tag_group) }
 
@@ -60,6 +61,13 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
     expect(SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns)).to_not be_valid
     data[5] = 'My New Library Type'
     data[6] = 'one'
+    expect(SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns)).to_not be_valid
+  end
+
+  it 'is not valid unless metadata is valid' do
+    row = SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns)
+    expect(SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns)).to be_valid
+    data[16] = 'Cell-line'
     expect(SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns)).to_not be_valid
   end
 

@@ -1,12 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel: true do
-   before(:all) do
+  before(:all) do
     SampleManifestExcel.configure do |config|
       config.folder = File.join('spec', 'data', 'sample_manifest_excel')
       config.load!
     end
-   end
+  end
 
   let(:test_file)               { 'test_file.xlsx' }
   let!(:tag_group)              { create(:tag_group) }
@@ -80,6 +80,27 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
     expect { upload.broadcast_sample_manifest_updated_event(user) }.to change { BroadcastEvent.count }.by(1)
     # subjects are 1 study, 1 tubes and 6 samples
     expect(BroadcastEvent.last.subjects.count).to eq 8
+  end
+
+  it 'should know if it is initial or reupload' do
+    download = build(:test_download, columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup)
+    download.save(test_file)
+    upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: columns, start_row: 9)
+    expect(upload.reuploaded?).to be_falsey
+    upload.sample_manifest.start!
+    expect(upload.reuploaded?).to be_falsey
+    upload.sample_manifest.finished!
+    expect(upload.reuploaded?).to be_falsey
+
+    download.save(test_file)
+    download.worksheet.sample_manifest.start!
+    download.worksheet.sample_manifest.finished!
+    upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: columns, start_row: 9)
+    expect(upload.reuploaded?).to be_truthy
+    upload.sample_manifest.start!
+    expect(upload.reuploaded?).to be_truthy
+    upload.sample_manifest.finished!
+    expect(upload.reuploaded?).to be_truthy
   end
 
   describe '#processor' do
@@ -163,7 +184,7 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
     File.delete(test_file) if File.exist?(test_file)
   end
 
-   after(:all) do
+  after(:all) do
     SampleManifestExcel.reset!
-   end
+  end
 end

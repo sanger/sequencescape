@@ -41,7 +41,7 @@ en:
 
   global_links:
     welcome: "Welcome"
-    workflow: "Workflow is"
+    edit_profile: "Edit profile"
     workflow_not_set: "not set!"
     settings: "Profile"
     login: "Login"

@@ -22,7 +22,7 @@ Given /^I have a bait library called "([^\"]*)"$/ do |name|
     bait_library_type: BaitLibraryType.find_by(visible: true),
     bait_library_supplier: BaitLibrary::Supplier.find_by(visible: true),
     target_species: 'Dragon'
-    )
+  )
 end
 
 Then /^the supplier_identifier for "([^\"]*)" should be nil$/ do |name|
@@ -30,7 +30,7 @@ Then /^the supplier_identifier for "([^\"]*)" should be nil$/ do |name|
 end
 
 Given /^I have a bait library type called "([^\"]*)"$/ do |name|
-  BaitLibraryType.create!(name: name)
+  BaitLibraryType.create!(name: name, category: 'standard')
 end
 
 Given /^I have a supplier called "([^\"]*)"$/ do |name|
@@ -44,7 +44,7 @@ end
 
 Given /^the last bait library has type "([^\"]*)"$/ do |name|
   BaitLibrary.last.update_attributes(
-    bait_library_type: BaitLibraryType.create!(name: name)
+    bait_library_type: BaitLibraryType.create!(name: name, category: 'standard')
   )
 end
 

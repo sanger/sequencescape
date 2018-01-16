@@ -5,7 +5,6 @@
 # Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 class Tube < Receptacle
-  include LocationAssociation::Locatable
   include Barcode::Barcodeable
   include ModelExtensions::Tube
   include Tag::Associations
@@ -15,11 +14,6 @@ class Tube < Receptacle
 
   extend QcFile::Associations
   has_qc_files
-
-  # Transfer requests into a tube are direct requests where the tube is the target.
-  def transfer_requests
-    requests_as_target.where_is_a?(TransferRequest)
-  end
 
   def automatic_move?
     true
@@ -34,12 +28,10 @@ class Tube < Receptacle
     save!
   end
 
-  has_many :submissions, ->() { distinct }, through: :requests_as_target
-  scope :include_scanned_into_lab_event, -> { includes(:scanned_into_lab_event) }
+  has_many :submissions, ->() { distinct }, through: :transfer_requests_as_target
 
- scope :with_purpose, ->(*purposes) {
-    where(plate_purpose_id: purposes.flatten.map(&:id))
-                      }
+  scope :include_scanned_into_lab_event, -> { includes(:scanned_into_lab_event) }
+  scope :with_purpose, ->(*purposes) { where(plate_purpose_id: purposes) }
 
   def submission
     submissions.first
@@ -80,8 +72,8 @@ class Tube < Receptacle
     purpose.try(:name) || 'Tube'
   end
 
-  def transfer_request_type_from(source)
-    purpose.transfer_request_type_from(source.purpose)
+  def transfer_request_class_from(source)
+    purpose.transfer_request_class_from(source.purpose)
   end
 
   def self.create_with_barcode!(*args, &block)

@@ -4,7 +4,7 @@ class LibPoolNormTubeGeneratorTest < ActiveSupport::TestCase
   attr_reader :plate, :user, :study
 
   def valid_plate
-    plate = create(:plate_with_wells)
+    plate = create(:lib_pcr_xp_plate_with_tubes)
     plate.plate_purpose.stubs(:name).returns('Lib PCR-XP')
     plate.stubs(:state).returns('qc_complete')
     plate
@@ -16,9 +16,11 @@ class LibPoolNormTubeGeneratorTest < ActiveSupport::TestCase
   end
 
   def mock_transfer(generator)
-    transfer = mock('transfer')
-    transfer.stubs(:destination).returns(create(:lib_pcr_xp_tube))
-    generator.transfer_template.stubs(:create!).returns(transfer)
+    generator.lib_pool_tubes.each do |source|
+      transfer = mock('transfer')
+      transfer.stubs(:destination).returns(create(:lib_pool_norm_tube, parent_tube: source))
+      generator.transfer_template.stubs(:create!).with(user: @user, source: source).returns(transfer)
+    end
   end
 
   test 'should not be valid without a valid plate barcode' do
@@ -38,7 +40,7 @@ class LibPoolNormTubeGeneratorTest < ActiveSupport::TestCase
   end
 
   test 'should not be valid unless the state of the plate is qc complete' do
-    plate = create(:lib_pcr_xp_plate)
+    plate = create(:lib_pcr_xp_plate_with_tubes)
     refute LibPoolNormTubeGenerator.new(plate.ean13_barcode, user, study).valid?
   end
 
@@ -66,17 +68,16 @@ class LibPoolNormTubeGeneratorTest < ActiveSupport::TestCase
       assert generator.transfer_template.present?
     end
 
-    should 'set the state of the lib pool tubes to qc complete, create all of the destination tubes with a state of qc complete, create an asset group which includes all of the destination tubes, put all of the destination tubes in the Cluster formation freezer' do
-      generator.stubs(:lib_pool_tubes).returns(create_list(:lib_pcr_xp_tube, 3))
+    should 'set the state of the lib pool tubes to qc complete, create all of the destination tubes with a state of qc complete, create an asset group which includes all of the destination tubes' do
+      generator.stubs(:lib_pool_tubes).returns(create_list(:lib_pool_tube, 3))
       mock_transfer(generator)
-      generator.create!
-      assert generator.lib_pool_tubes.all? { |lpt| lpt.state == 'qc_complete' }
+      assert generator.create!
+      assert generator.lib_pool_tubes.all? { |lpt| lpt.reload.state == 'qc_complete' }, "States were: #{generator.lib_pool_tubes.map(&:state)}"
       refute generator.destination_tubes.empty?
       assert_equal generator.lib_pool_tubes.length, generator.destination_tubes.length
-      assert generator.destination_tubes.all? { |dt| dt.state == 'qc_complete' }
+      assert generator.destination_tubes.all? { |dt| dt.reload.state == 'qc_complete' }, "States were: #{generator.destination_tubes.map(&:state)}"
       assert generator.asset_group.present?
       assert_equal generator.destination_tubes.length, generator.asset_group.assets.length
-      assert generator.destination_tubes.all? { |dt| dt.location.name == 'Cluster formation freezer' }
     end
   end
 end

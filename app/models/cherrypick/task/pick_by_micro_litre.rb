@@ -5,11 +5,6 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 module Cherrypick::Task::PickByMicroLitre
-  def pick_by_micro_litre(*args)
-    options = args.extract_options!
-    cherrypick_wells_grouped_by_submission(*args, &create_micro_litre_picker(options))
-  end
-
   def valid_params_for_micro_litre_pick?(options)
     valid_float_param?(options[:volume_required])
   end

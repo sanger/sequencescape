@@ -31,7 +31,7 @@ class IlluminaHtp::StockTubePurpose < Tube::Purpose
   private :terminated_states
 
   def pool_id(tube)
-    tube.requests_as_target.first.submission_id
+    tube.transfer_requests_as_target.first.submission_id
   end
 
   def name_for_child_tube(tube)
@@ -39,13 +39,13 @@ class IlluminaHtp::StockTubePurpose < Tube::Purpose
   end
 
   def stock_plate(tube)
-    return nil if tube.requests_as_target.empty?
+    return nil if tube.transfer_requests_as_target.empty?
 
-    assets = [tube.requests_as_target.first.asset]
+    assets = [tube.transfer_requests_as_target.first.asset]
     until assets.empty?
       asset = assets.shift
       return asset.plate if asset.is_a?(Well) and asset.plate.stock_plate?
-      assets.push(asset.requests_as_target.first.asset).compact
+      assets.push(asset.transfer_requests_as_target.first.asset).compact
     end
 
     raise "Cannot locate stock plate for #{tube.display_name.inspect}"

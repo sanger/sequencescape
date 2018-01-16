@@ -26,7 +26,6 @@ Feature: Interacting with plates through the API
             "barcode_prefix": "DN",
             "plate_purpose_name": "Stock Plate",
             "infinium_barcode": "WG123456",
-            "location": "Sample logistics freezer",
 
             "created_at": "2010-09-16T13:45:00+01:00",
             "uuid": "00000000-1111-2222-3333-444444444444",
@@ -58,7 +57,6 @@ Feature: Interacting with plates through the API
           "barcode_prefix": "DN",
           "plate_purpose_name": "Stock Plate",
           "infinium_barcode": "WG123456",
-          "location": "Sample logistics freezer",
 
           "created_at": "2010-09-16T13:45:00+01:00",
           "uuid": "00000000-1111-2222-3333-444444444444",

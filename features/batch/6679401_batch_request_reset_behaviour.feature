@@ -3,7 +3,7 @@ Feature: Resetting batches and their requests across the various pipelines
     Given I am an "administrator" user logged in as "John Smith"
 
   Scenario Outline:
-    Given user "John Smith" has a workflow "<workflow>"
+
     And I have a batch with 5 requests for the "<pipeline>" pipeline
     And the batch and all its requests are pending
 

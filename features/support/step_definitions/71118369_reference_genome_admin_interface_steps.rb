@@ -9,13 +9,13 @@ Given /^study named "([^"]*)" with reference genome id (\d+)$/ do |name_study, r
 end
 
 When /^I (POST|PUT) following XML to see the reference genome on the study called "([^"]*)"$/ do |action, xml, name_study|
- study = Study.find_by(name: name_study)
- step %Q{I #{action} the following XML to "/studies/#{study.id}":}, xml
+  study = Study.find_by(name: name_study)
+  step %Q{I #{action} the following XML to "/studies/#{study.id}":}, xml
 end
 
 When /^I (POST|PUT) following XML to see the empty reference genome on the study called "([^"]*)"$/ do |action, xml, name_study|
- study = Study.find_by(name: name_study)
- step %Q{I #{action} the following XML to "/studies/#{study.id}":}, xml
+  study = Study.find_by(name: name_study)
+  step %Q{I #{action} the following XML to "/studies/#{study.id}":}, xml
 end
 
 # When /^I request XML for the study named (.+)$/ do |page_name|

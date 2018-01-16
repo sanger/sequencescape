@@ -1,5 +1,6 @@
 class Pooling
   include ActiveModel::Model
+  include SampleManifestExcel::Tags::ClashesFinder
 
   attr_accessor :barcodes, :source_assets, :stock_mx_tube_required, :stock_mx_tube, :standard_mx_tube, :barcode_printer, :count
 
@@ -17,7 +18,7 @@ class Pooling
   def transfer
     target_assets.each do |target_asset|
       source_assets.each do |source_asset|
-        RequestType.transfer.create!(asset: source_asset, target_asset: target_asset)
+        TransferRequest::Standard.create!(asset: source_asset, target_asset: target_asset)
       end
     end
     message[:notice] = (message[:notice] || '') + success
@@ -45,8 +46,8 @@ class Pooling
 
   def print_job
     @print_job ||= LabelPrinter::PrintJob.new(barcode_printer,
-                      LabelPrinter::Label::MultiplexedTube,
-                      assets: target_assets, count: count)
+                                              LabelPrinter::Label::MultiplexedTube,
+                                              assets: target_assets, count: count)
   end
 
   def message
@@ -54,6 +55,10 @@ class Pooling
   end
 
   private
+
+  def tags_combinations
+    @tags_combinations || []
+  end
 
   def source_assets?
     source_assets.present?
@@ -78,16 +83,25 @@ class Pooling
 
   def source_assets_can_be_pooled
     assets_with_no_aliquot = []
-    tags_combinations = []
+    @tags_combinations = []
     source_assets.each do |asset|
       if asset.aliquots.empty?
         assets_with_no_aliquot << asset.ean13_barcode
+        @tags_combinations << []
       else
-        asset.aliquots.each { |aliquot| tags_combinations << aliquot.tags_combination }
+        asset.aliquots.each { |aliquot| @tags_combinations << aliquot.tags_combination }
       end
     end
     errors.add(:source_assets, "with barcode(s) #{assets_with_no_aliquot.join(', ')} do not have any aliquots") unless assets_with_no_aliquot.empty?
-    errors.add(:tags_combinations, 'are not unique') unless tags_combinations.length == tags_combinations.uniq.length
+    errors.add(:tags_combinations, tags_clash_message) if duplicates.present?
+  end
+
+  def duplicates
+    @duplicates ||= find_tags_clash(tags_combinations)
+  end
+
+  def tags_clash_message
+    create_tags_clashes_message(duplicates.except([]))
   end
 
   def execute_print_job

@@ -40,6 +40,14 @@ RSpec.describe SampleManifestExcel::Upload::Rows, type: :model, sample_manifest_
     expect(rows.first.number).to eq(10)
   end
 
+  it 'knows values for all rows at particular column' do
+    download = build(:test_download, columns: columns, validation_errors: [:insert_size_from])
+    download.save(test_file)
+    rows = SampleManifestExcel::Upload::Rows.new(SampleManifestExcel::Upload::Data.new(test_file, 9), columns)
+    # column 7 is insert_size_from
+    expect(rows.data_at(7)).to eq [nil, '200', '200', '200', '200', '200']
+  end
+
   after(:each) do
     File.delete(test_file) if File.exist?(test_file)
   end

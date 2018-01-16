@@ -15,14 +15,18 @@ class Well < Receptacle
   include Api::Messages::FluidigmPlateIO::WellExtensions
 
   class Link < ApplicationRecord
+    # Caution! We are using delete_all and import to manage well links.
+    # Any callbacks you add here will not be called in those circumstances.
     self.table_name = 'well_links'
     self.inheritance_column = nil
 
     belongs_to :target_well, class_name: 'Well'
     belongs_to :source_well, class_name: 'Well'
+
+    scope :stock, ->() { where(type: 'stock') }
   end
 
-  has_many :stock_well_links, ->() { where(type: 'stock') }, class_name: 'Well::Link', foreign_key: :target_well_id
+  has_many :stock_well_links, ->() { stock }, class_name: 'Well::Link', foreign_key: :target_well_id
 
   has_many :stock_wells, through: :stock_well_links, source: :source_well do
     def attach!(wells)
@@ -42,6 +46,7 @@ class Well < Receptacle
 
   has_many :customer_requests, class_name: 'CustomerRequest', foreign_key: :asset_id
   has_many :outer_requests, through: :stock_wells, source: :customer_requests
+  has_many :submissions, ->() { distinct }, through: :transfer_requests_as_target
 
   def outer_request(submission_id)
     outer_requests.order(id: :desc).find_by(submission_id: submission_id)
@@ -71,25 +76,45 @@ class Well < Receptacle
   has_many :latest_child_well, ->() { limit(1).order('asset_links.descendant_id DESC').where(assets: { sti_type: 'Well' }) }, class_name: 'Well', through: :links_as_parent, source: :descendant
 
   scope :include_stock_wells, -> { includes(stock_wells: :requests_as_source) }
-  scope :include_map,         -> { includes(:map) }
+  scope :include_stock_wells_for_modification, -> {
+    # Preload rather than include, as otherwise joins result
+    # in exponential expansion of the number of records loaded
+    # and you run out of memory.
+    preload(:stock_well_links,
+            stock_wells: {
+              requests_as_source: [
+                :target_asset,
+                :request_type,
+                :billing_product,
+                :request_metadata,
+                :billing_items,
+                :request_events,
+                {
+                  initial_project: :project_metadata,
+                  submission: :orders
+                }
+              ]
+            })
+  }
+  scope :include_map, -> { includes(:map) }
 
   scope :located_at, ->(location) {
     joins(:map).where(maps: { description: location })
   }
 
   scope :on_plate_purpose, ->(purposes) {
-      joins(:plate)
-        .where(plates_assets: { plate_purpose_id: purposes })
+    joins(:plate)
+      .where(plates_assets: { plate_purpose_id: purposes })
   }
 
   scope :for_study_through_sample, ->(study) {
-      joins(aliquots: { sample: :study_samples })
-        .where(study_samples: { study_id: study })
+    joins(aliquots: { sample: :study_samples })
+      .where(study_samples: { study_id: study })
   }
 
   scope :for_study_through_aliquot, ->(study) {
-      joins(:aliquots)
-        .where(aliquots: { study_id: study })
+    joins(:aliquots)
+      .where(aliquots: { study_id: study })
   }
 
   #
@@ -103,7 +128,7 @@ class Well < Receptacle
       .having('NOT BIT_OR(wr_pc.product_id = ? AND wr_pc.stage = ?)', product_criteria.product_id, product_criteria.stage)
   }
 
-  has_many :target_well_links, ->() { where(type: 'stock') }, class_name: 'Well::Link', foreign_key: :source_well_id
+  has_many :target_well_links, ->() { stock }, class_name: 'Well::Link', foreign_key: :source_well_id
   has_many :target_wells, through: :target_well_links, source: :target_well
 
   scope :stock_wells_for, ->(wells) {
@@ -114,8 +139,8 @@ class Well < Receptacle
   scope :target_wells_for, ->(wells) {
     select('assets.*, well_links.source_well_id AS stock_well_id')
       .joins(:stock_well_links).where(well_links: {
-        source_well_id: wells
-        })
+                                        source_well_id: wells
+                                      })
   }
 
   scope :located_at_position, ->(position) { joins(:map).readonly(false).where(maps: { description: position }) }
@@ -133,11 +158,10 @@ class Well < Receptacle
   has_one :well_attribute, inverse_of: :well
   accepts_nested_attributes_for :well_attribute
 
-  before_create { |w| w.create_well_attribute unless w.well_attribute.present? }
+  before_create :well_attribute # Ensure all wells have attributes
 
-  scope :pooled_as_target_by, ->(type) {
-    joins('LEFT JOIN requests patb ON assets.id=patb.target_asset_id')
-      .where(['(patb.sti_type IS NULL OR patb.sti_type IN (?))', [type, *type.descendants].map(&:name)])
+  scope :pooled_as_target_by_transfer, ->() {
+    joins('LEFT JOIN transfer_requests patb ON assets.id=patb.target_asset_id')
       .select('assets.*, patb.submission_id AS pool_id').distinct
   }
   scope :pooled_as_source_by, ->(type) {
@@ -196,12 +220,9 @@ class Well < Receptacle
     display_name
   end
 
-  # hotfix
-  def well_attribute_with_creation
-    well_attribute_without_creation || build_well_attribute
+  def well_attribute
+    super || build_well_attribute
   end
-  alias_method(:well_attribute_without_creation, :well_attribute)
-  alias_method(:well_attribute, :well_attribute_with_creation)
 
   delegate_to_well_attribute(:pico_pass)
   delegate_to_well_attribute(:sequenom_count)
