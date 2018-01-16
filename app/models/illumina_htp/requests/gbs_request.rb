@@ -6,6 +6,7 @@ module IlluminaHtp::Requests
     Metadata.class_eval do
       belongs_to :primer_panel
       association(:primer_panel, :name)
+      validates_presence_of :primer_panel
     end
 
     def update_pool_information(pool_information)
