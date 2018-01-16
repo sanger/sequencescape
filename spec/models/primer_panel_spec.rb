@@ -8,11 +8,11 @@ RSpec.describe PrimerPanel, type: :model do
   end
 
   it 'invalidates a primer panel with invalid programs' do
-    primer_panel.programs = { "invalid_label" => {} }
+    primer_panel.programs = { 'invalid_label' => {} }
     expect(primer_panel).to_not be_valid
-    primer_panel.programs = { "pcr 1" => {'invalid_argument' => ''} }
+    primer_panel.programs = { 'pcr 1' => { 'invalid_argument' => '' } }
     expect(primer_panel).to_not be_valid
-    primer_panel.programs = { "pcr 1" => {'duration' => '2min'} }
+    primer_panel.programs = { 'pcr 1' => { 'duration' => '2min' } }
     expect(primer_panel).to_not be_valid
   end
 
@@ -27,12 +27,11 @@ RSpec.describe PrimerPanel, type: :model do
   end
 
   it 'validates a primer panel with valid programs' do
-    primer_panel.programs = { "pcr 1" => {} }
+    primer_panel.programs = { 'pcr 1' => {} }
     expect(primer_panel).to be_valid
-    primer_panel.programs = { "pcr 1" => {'name' => 'name 1'} }
+    primer_panel.programs = { 'pcr 1' => { 'name' => 'name 1' } }
     expect(primer_panel).to be_valid
-    primer_panel.programs = { "pcr 1" => {'duration' => '2'} }
+    primer_panel.programs = { 'pcr 1' => { 'duration' => '2' } }
     expect(primer_panel).to be_valid
   end
-
 end

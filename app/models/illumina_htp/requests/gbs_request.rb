@@ -1,12 +1,11 @@
 module IlluminaHtp::Requests
   class GBSRequest < StdLibraryRequest
-
     fragment_size_details(:no_default, :no_default)
 
     Metadata.class_eval do
       belongs_to :primer_panel
       association(:primer_panel, :name)
-      validates_presence_of :primer_panel
+      validates :primer_panel, presence: true
     end
 
     def update_pool_information(pool_information)

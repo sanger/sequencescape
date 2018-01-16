@@ -3,17 +3,15 @@ class ProgramsValidator < ActiveModel::EachValidator
   # {'pcr 1' => { 'name' => "pcr1 program", 'duration' => 45 },
   #  'pcr 2' => { 'name' => "pcr2 program" , 'duration' => 20 }}
 
-  PROGRAMS_LABELS = ['pcr 1', 'pcr 2']
-  PROGRAMS_PARAMS = ['name', 'duration']
+  PROGRAMS_LABELS = ['pcr 1', 'pcr 2'].freeze
+  PROGRAMS_PARAMS = ['name', 'duration'].freeze
 
   def validate_each(record, attribute, value)
     value.each do |program, params|
       record.errors.add attribute, "invalid label #{program}" unless program.in?(PROGRAMS_LABELS)
       params.each do |key, val|
         record.errors.add attribute, "invalid attribute #{key}" unless key.in?(PROGRAMS_PARAMS)
-        if key == 'duration'
-          validate_duration(record, attribute, val)
-        end
+        validate_duration(record, attribute, val) if key == 'duration'
       end
     end
   end
@@ -21,12 +19,12 @@ class ProgramsValidator < ActiveModel::EachValidator
   private
 
   def validate_duration(record, attribute, val)
-    if !val.nil?
-      record.errors.add attribute, "duration must be a number" unless valid_number?(val)
-    end
+    record.errors.add attribute, 'duration must be a number' if !val.nil? && !valid_number?(val)
   end
 
   def valid_number?(val)
-    true if Integer val rescue false
+    true if Integer val
+  rescue
+    false
   end
 end
