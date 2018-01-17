@@ -131,7 +131,7 @@ end
 
 group :profile do
   # Ruby prof requires a separate environments so that is can run in production like mode.
-  gem 'ruby-prof', '~>0.15.9'
+  gem 'ruby-prof'
 end
 
 group :test do
