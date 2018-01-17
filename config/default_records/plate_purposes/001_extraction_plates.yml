@@ -8,3 +8,8 @@ SWGA Stock:
   stock_plate: true
   barcode_printer_type: '96 Well Plate'
   plate_creator: true
+LB Lib PCR-XP:
+  target_type: 'Plate'
+  stock_plate: false
+  barcode_printer_type: '96 Well Plate'
+  plate_creator: true
