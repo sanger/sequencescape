@@ -46,10 +46,10 @@ class Api::Messages::FlowcellIO < Api::Base
           target_asset_id
         end
 
-        def product_line
-          return nil if request_type.product_line.nil?
-          request_type.product_line.name
-        end
+        # def product_line
+        #   return nil if request_type.product_line.nil?
+        #   request_type.product_line.name
+        # end
 
         def request_purpose_key
           request_purpose.try(:key)

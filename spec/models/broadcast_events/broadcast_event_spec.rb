@@ -72,23 +72,8 @@ class ExampleEvent < BroadcastEvent
   end
 end
 
-RSpec.describe BroadcastEvent, type: :model do
+RSpec.describe BroadcastEvent, type: :model, broadcast_event: true do
   
-  shared_examples 'a valid subject' do |test_subject, role_type|
-    expect(subject.subjects).to be_present
-
-    detected_subject = subject.subjects.detect { |s| s.uuid == test_subject.uuid }
-
-    expect(detected_subject).to be_present
-    expect(detected_subject.friendly_name).to eq(test_subject.friendly_name)
-    expect(detected_subject.subject_type).to eq(test_subject.subject_type)
-    expect(detected_subject.role_type).to eq(role_type)
-  end
-
-  shared_examples 'valid metadata' do |event, key, value|
-    expect(event.metadata[key]).to eq(value)
-  end
-
   it 'is not directly instantiated' do
     expect { BroadcastEvent.new }.to raise_error(StandardError)
   end
