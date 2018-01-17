@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module IlluminaHtp::Requests
   class GbsRequest < StdLibraryRequest
     fragment_size_details(:no_default, :no_default)

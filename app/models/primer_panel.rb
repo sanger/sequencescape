@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # A primer panel is a set of primers used in a genotyping by sequencing assay.
 # These primers bind to known regions of DNA, localised near SNPs (Single Nucleotide polymorphisms)

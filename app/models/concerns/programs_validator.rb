@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 class ProgramsValidator < ActiveModel::EachValidator
   # attribute should be of the form:
   # {'pcr 1' => { 'name' => "pcr1 program", 'duration' => 45 },
   #  'pcr 2' => { 'name' => "pcr2 program" , 'duration' => 20 }}
 
   PROGRAMS_LABELS = ['pcr 1', 'pcr 2'].freeze
-  PROGRAMS_PARAMS = ['name', 'duration'].freeze
+  PROGRAMS_PARAMS = %w[name duration].freeze
 
   def validate_each(record, attribute, value)
     value.each do |program, params|
@@ -24,7 +26,7 @@ class ProgramsValidator < ActiveModel::EachValidator
 
   def valid_number?(val)
     true if Integer val
-  rescue
+  rescue StandardError
     false
   end
 end
