@@ -1,10 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Api::V2::WorkOrdersController, type: :request, aker: true do
-  let(:params) do
-    file = File.read(File.join('spec', 'data', 'aker', 'work_order.json'))
-    JSON.parse(file)
-  end
+  let(:params) { { 'work_order' => build(:aker_work_order_json).with_indifferent_access } }
 
   it 'creates a new work order' do
     expect do

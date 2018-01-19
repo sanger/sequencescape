@@ -8,6 +8,7 @@
       "project_name":"MyProject",
       "cost_code":"S1234",
       "status": "active",
+      "data_release_uuid": "87ae1f44-d978-40d0-8b28-663fe94473be",
       "materials":[
          {
             "_id":"2be2072d-7c96-49c3-b7ac-9c51d01c109b",
