@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreatePrimerPanelTable < ActiveRecord::Migration[5.1]
   def change
     create_table :primer_panel do |t|
