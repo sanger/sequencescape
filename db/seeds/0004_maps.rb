@@ -34,8 +34,6 @@ map_data = []
   end
 end
 
-COLUMNS = [:location_id, :description, :asset_size, :column_order, :row_order]
-
 map_data.each do |details|
   Map.create(details)
 end
