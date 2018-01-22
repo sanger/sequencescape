@@ -15,8 +15,7 @@ class Admin::PrimerPanelsController < ApplicationController
   end
 
   def new
-    @primer_panel = PrimerPanel.new
-    initialize_programs
+    @primer_panel = PrimerPanel.new(programs: default_programs)
   end
 
   def show; end
@@ -49,9 +48,9 @@ class Admin::PrimerPanelsController < ApplicationController
 
   private
 
-  def initialize_programs
-    @primer_panel.programs = { 'pcr 1' => { 'name' => nil, 'duration' => nil },
-                               'pcr 2' => { 'name' => nil, 'duration' => nil } }
+  def default_programs
+    { 'pcr 1' => { 'name' => nil, 'duration' => nil },
+      'pcr 2' => { 'name' => nil, 'duration' => nil } }
   end
 
   def discover_primer_panel

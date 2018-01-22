@@ -13,7 +13,6 @@
 Bundler/OrderedGems:
   Exclude:
     - 'Gemfile'
-
 # Offense count: 95
 # Cop supports --auto-correct.
 Layout/EmptyLinesAroundArguments:
@@ -362,7 +361,7 @@ Lint/UselessAssignment:
     - 'test/unit/tasks/plate_transfer_task_test.rb'
     - 'test/unit/well_test.rb'
 
-# Offense count: 457
+# Offense count: 458
 Metrics/AbcSize:
   Max: 200
 
@@ -2401,6 +2400,7 @@ Style/Documentation:
     - 'app/models/search/find_qcable_by_barcode.rb'
     - 'app/models/search/find_robot_by_barcode.rb'
     - 'app/models/search/find_source_assets_by_destination_asset_barcode.rb'
+    - 'app/models/search/find_tubes.rb'
     - 'app/models/search/find_user_by_login.rb'
     - 'app/models/search/find_user_by_swipecard_code.rb'
     - 'app/models/search_behaviour.rb'
@@ -3065,7 +3065,6 @@ Style/FormatStringToken:
     - 'script/license_application.rb'
     - 'test/unit/qc_report_presenter_test.rb'
 
-# Offense count: 1855
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: when_needed, always, never
@@ -3297,6 +3296,7 @@ Style/FrozenStringLiteralComment:
     - 'app/controllers/admin/delayed_jobs_controller.rb'
     - 'app/controllers/admin/faculty_sponsors_controller.rb'
     - 'app/controllers/admin/plate_purposes_controller.rb'
+    - 'app/controllers/admin/primer_panels_controller.rb'
     - 'app/controllers/admin/programs_controller.rb'
     - 'app/controllers/admin/projects_controller.rb'
     - 'app/controllers/admin/robot_properties_controller.rb'
@@ -3565,6 +3565,7 @@ Style/FrozenStringLiteralComment:
     - 'app/models/cherrypicking_pipeline.rb'
     - 'app/models/comment.rb'
     - 'app/models/concerns/default_attributes.rb'
+    - 'app/models/concerns/programs_validator.rb'
     - 'app/models/container_association.rb'
     - 'app/models/control.rb'
     - 'app/models/control_plate.rb'
@@ -3643,6 +3644,7 @@ Style/FrozenStringLiteralComment:
     - 'app/models/illumina_htp/pooled_plate_purpose.rb'
     - 'app/models/illumina_htp/post_shear_qc_plate_purpose.rb'
     - 'app/models/illumina_htp/requests.rb'
+    - 'app/models/illumina_htp/requests/gbs_request.rb'
     - 'app/models/illumina_htp/stock_tube_purpose.rb'
     - 'app/models/illumina_htp/transferable_plate_purpose.rb'
     - 'app/models/implement.rb'
@@ -3733,6 +3735,7 @@ Style/FrozenStringLiteralComment:
     - 'app/models/presenters/batch_submenu_presenter.rb'
     - 'app/models/presenters/grouped_pipeline_inbox_presenter.rb'
     - 'app/models/presenters/qc_report_presenter.rb'
+    - 'app/models/primer_panel.rb'
     - 'app/models/product.rb'
     - 'app/models/product_catalogue.rb'
     - 'app/models/product_catalogue/library_driven.rb'
@@ -4210,9 +4213,13 @@ Style/FrozenStringLiteralComment:
     - 'db/migrate/20170925153015_add_category_to_bait_library_types.rb'
     - 'db/migrate/20171006081245_create_sample_work_order.rb'
     - 'db/migrate/20171017092942_add_index_to_messengers.rb'
+    - 'db/migrate/20171023101540_create_primer_panels_table.rb'
     - 'db/migrate/20171117110424_index_order_by_submission_id.rb'
     - 'db/migrate/20171205143326_remove_submission_workflow_columns.rb'
     - 'db/migrate/20171205145351_remove_submission_workflows_table.rb'
+    - 'db/migrate/20180109161148_add_programs_to_primer_panels.rb'
+    - 'db/migrate/20180111164515_change_programs_in_primer_panels.rb'
+    - 'db/migrate/20180115153147_add_primer_panel_id_to_request_metadata.rb'
     - 'db/seeds.rb'
     - 'db/seeds/0000_api_applications.rb'
     - 'db/seeds/0000_barcode_prefix.rb'
@@ -4627,6 +4634,7 @@ Style/FrozenStringLiteralComment:
     - 'spec/api/tag_layout_template_spec.rb'
     - 'spec/api/transfer_request_collection_spec.rb'
     - 'spec/api/work_completion_spec.rb'
+    - 'spec/features/admin/add_a_primer_panel_spec.rb'
     - 'spec/features/billing_report_spec.rb'
     - 'spec/features/labwhere_reception_spec.rb'
     - 'spec/features/pooling_spec.rb'
@@ -4691,6 +4699,7 @@ Style/FrozenStringLiteralComment:
     - 'spec/models/order_spec.rb'
     - 'spec/models/plate_type_spec.rb'
     - 'spec/models/pooling_spec.rb'
+    - 'spec/models/primer_panel_spec.rb'
     - 'spec/models/pulldown/requests_spec.rb'
     - 'spec/models/qc_report_spec.rb'
     - 'spec/models/request/traction/grid_ion_spec.rb'
@@ -4780,6 +4789,7 @@ Style/FrozenStringLiteralComment:
     - 'test/controllers/tag_groups_controller_test.rb'
     - 'test/controllers/users_controller_test.rb'
     - 'test/controllers/workflows_controller_test.rb'
+    - 'test/factories/primer_panel_factories.rb'
     - 'test/functional/api_routing_test.rb'
     - 'test/functional/external_validator_test.rb'
     - 'test/functional/pre_cap_groups_test.rb'
@@ -5943,6 +5953,7 @@ Style/RescueStandardError:
     - 'app/models/batch/tecan_behaviour.rb'
     - 'app/models/billing/factory/base.rb'
     - 'app/models/bulk_submission.rb'
+    - 'app/models/concerns/programs_validator.rb'
     - 'app/models/lib_pool_norm_tube_generator.rb'
     - 'app/models/plate_volume.rb'
     - 'app/models/qc_report.rb'
@@ -6306,6 +6317,7 @@ Style/WordArray:
     - 'app/models/api/multiplexed_library_tube_io.rb'
     - 'app/models/api_application.rb'
     - 'app/models/asset.rb'
+    - 'app/models/concerns/programs_validator.rb'
     - 'app/models/control_plate.rb'
     - 'app/models/event.rb'
     - 'app/models/event/request_descriptor_update_event.rb'
