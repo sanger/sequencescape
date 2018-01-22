@@ -1,0 +1,39 @@
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2012,2015 Genome Research Ltd.%>
+
+<p>
+  <%= f.label :name %><br />
+  <%= f.text_field :name, required: true, class: 'form-control' %>
+</p>
+<p>
+  <%= f.label :snp_count %><br />
+  <%= f.number_field :snp_count, required: true, min: 1, step: 1, class: 'form-control' %>
+</p>
+
+<%= f.fields_for :programs do |program| %>
+
+  <div class="form-inline">
+    <% f.object.programs.each do |key, program_fields| %>
+    <p>
+    <%= f.label key %><br />
+    <%= program.fields_for key do |pcr| %>
+      <div class="form-group">
+      <%= f.label :name, class: 'control-label' %>
+      <%= pcr.text_field :name, value: program_fields['name'], class: 'form-control' %>
+      </div>
+      <div class="form-group">
+      <%= f.label :duration, "Duration (minutes)", class: 'control-label' %>
+      <%= pcr.number_field :duration, value: program_fields['duration'], class: 'form-control' %>
+      </div>
+      <br />
+      </p>
+    <% end %>
+  <% end %>
+
+  </div>
+<% end %>
+
+

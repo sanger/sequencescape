@@ -1,0 +1,29 @@
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2012,2015 Genome Research Ltd.%>
+
+<%= page_title 'Primer Panels', 'Index' %>
+<table id="primer_panel_list" class="sortable table table-striped">
+  <thead>
+    <tr>
+      <th><a>Name</a></th>
+      <th><a>SNP Count</a></th>
+      <th>Edit</th>
+    </tr>
+  </thead>
+  <tbody>
+  <% @primer_panels.each do |primer_panel| %>
+    <tr>
+      <td><%= primer_panel.name %></td>
+      <td><%= primer_panel.snp_count %></td>
+      <td><%= link_to 'Edit', edit_admin_primer_panel_path(primer_panel), title: "Edit #{primer_panel.name}" %></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+
+<br />
+
+<%= link_to 'New Primer Panel', new_admin_primer_panel_path, class: 'btn btn-default' %>
