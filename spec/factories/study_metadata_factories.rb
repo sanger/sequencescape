@@ -13,7 +13,7 @@ FactoryGirl.define do
     study_type                  { StudyType.find_or_create_by(name: 'Not specified') }
     # This is probably a bit grim as well
     data_release_study_type     { DataReleaseStudyType.find_or_create_by(name: 'genomic sequencing') }
-    reference_genome            { ReferenceGenome.find_by!(name: '') }
+    reference_genome
     data_release_strategy       'open'
     study_name_abbreviation     'WTCCC'
     data_access_group           'something'

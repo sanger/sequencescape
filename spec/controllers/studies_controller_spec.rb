@@ -8,6 +8,7 @@ RSpec.describe StudiesController do
   let(:user) { create(:owner) }
   let(:program) { create(:program) }
   let(:study) { create :study }
+  let(:reference_genome) { create :reference_genome }
 
   setup do
     session[:user] = user.id
@@ -29,7 +30,7 @@ RSpec.describe StudiesController do
       let(:params) do
         { 'study' => {
           'name' => 'hello',
-          'reference_genome_id' => ReferenceGenome.find_by(name: '').id,
+          'reference_genome_id' => reference_genome.id,
           'study_metadata_attributes' => {
             'faculty_sponsor_id' => FacultySponsor.create!(name: 'Me'),
             'study_description' => 'some new study',
