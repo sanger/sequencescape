@@ -55,6 +55,11 @@ FactoryGirl.define do
     end
   end
 
+  factory :automated_order do
+    user
+    request_types { create_list(:sequencing_request_type, 1).map(&:id) }
+  end
+
   # Builds a submission on the provided assets suitable for processing through
   # an external library pipeline such as Limber
   # Note: Not yet complete. (Just in case something crops up before I finish this!)

@@ -10,7 +10,7 @@ describe '/api/1/multiplexed-library-tube-uuid' do
   let(:purpose_uuid) { '00000000-1111-2222-3333-666666666666' }
 
   let(:purpose) { create :tube_purpose, :uuidable, uuid: purpose_uuid, name: 'Example purpose' }
-  let(:tube) { create :multiplexed_library_tube, purpose: purpose }
+  let(:tube) { create :multiplexed_library_tube, purpose: purpose, volume: 8.76000000 }
   let(:collection) { create(:custom_metadatum_collection, asset: tube) }
 
   before(:each) do
@@ -32,13 +32,20 @@ describe '/api/1/multiplexed-library-tube-uuid' do
               "read": "http://www.example.com/api/1/#{custom_metadata_uuid}"
             }
           },
+          "studies": {
+            "size": 0,
+            "actions": {
+              "read": "http://www.example.com/api/1/#{uuid}/studies"
+            }
+          },
           "purpose": {
             "actions": {
               "read": "http://www.example.com/api/1/#{purpose_uuid}"
             },
             "name": "Example purpose"
           },
-          "uuid": "#{uuid}"
+          "uuid": "#{uuid}",
+          "volume": 8.76
         }
       }}
     end

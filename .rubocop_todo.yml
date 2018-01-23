@@ -973,24 +973,6 @@ Rails/OutputSafety:
     - 'app/helpers/bootstrap_helper.rb'
     - 'app/helpers/submissions_helper.rb'
 
-# Offense count: 15
-# Cop supports --auto-correct.
-Rails/Presence:
-  Exclude:
-    - 'app/helpers/requests_helper.rb'
-    - 'app/models/accessionable/sample.rb'
-    - 'app/models/accessionable/study.rb'
-    - 'app/models/asset.rb'
-    - 'app/models/broadcast_event.rb'
-    - 'app/models/broadcast_event/asset_audit.rb'
-    - 'app/models/plate.rb'
-    - 'app/models/study.rb'
-    - 'app/models/submission.rb'
-    - 'app/models/submission/submission_creator.rb'
-    - 'features/support/step_definitions/9314145_pacbio_submission_steps.rb'
-    - 'features/support/step_definitions/samples_steps.rb'
-    - 'features/support/step_definitions/study_steps.rb'
-
 # Offense count: 76
 # Cop supports --auto-correct.
 # Configuration parameters: NotNilAndNotEmpty, NotBlank, UnlessBlank.
