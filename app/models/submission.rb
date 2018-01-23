@@ -248,7 +248,7 @@ class Submission < ApplicationRecord
 
   def name
     given_name = super || study_names
-    given_name.present? ? given_name : "##{id}"
+    given_name.presence || "##{id}"
   end
 
   def study_names

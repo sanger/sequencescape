@@ -290,6 +290,8 @@ Sequencescape::Application.routes.draw do
   namespace :admin do
     resources :custom_texts
 
+    resources :primer_panels, except: :destroy
+
     resources :studies, except: [:destroy] do
       collection do
         get :index

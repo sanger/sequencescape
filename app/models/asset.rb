@@ -368,7 +368,7 @@ class Asset < ApplicationRecord
   end
 
   def display_name
-    name.blank? ? "#{sti_type} #{id}" : name
+    name.presence || "#{sti_type} #{id}"
   end
 
   def external_identifier

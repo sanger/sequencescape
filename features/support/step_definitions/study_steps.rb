@@ -133,7 +133,7 @@ given_fixed_study_metadata(:commercially_available,  Study::NO,  /^the study "([
 def given_study_metadata(attribute, regexp)
   Given(regexp) do |name, value|
     study = Study.find_by(name: name) or raise StandardError, "There appears to be no study named '#{name}'"
-    study.study_metadata.send(:"#{ attribute }=", value.blank? ? nil : value)
+    study.study_metadata.send(:"#{ attribute }=", value.presence)
     study.save!
   end
 end

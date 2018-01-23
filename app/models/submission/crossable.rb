@@ -17,4 +17,3 @@ module Submission::Crossable
     true
   end
 end
-

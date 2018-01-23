@@ -45,7 +45,7 @@ namespace :working do
     ActiveRecord::Base.transaction do
       seeder = WorkingSetup::StandardSeeder.new([
         ['Stock Plate', 1],
-        ['LB Cherrypick', 4],
+        # ['LB Cherrypick', 4],
         ['ILC Stock', 4]
       ])
       seeder.seed

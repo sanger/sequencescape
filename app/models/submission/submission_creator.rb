@@ -231,7 +231,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
   end
 
   def url(view)
-    view.send(:submission_path, submission.present? ? submission : { id: 'DUMMY_ID' })
+    view.send(:submission_path, submission.presence || { id: 'DUMMY_ID' })
   end
 
   def template_name

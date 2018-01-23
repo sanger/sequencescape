@@ -21,7 +21,7 @@ module Accessionable
       @center_study_name = @study_title
 
       pid = study.study_metadata.study_project_id
-      @study_id = pid.blank? ? '0' : pid
+      @study_id = pid.presence || '0'
 
       study_abstract = study.study_metadata.study_abstract
       @study_abstract = study_abstract unless study_abstract.blank?

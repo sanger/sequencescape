@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171222105504) do
+ActiveRecord::Schema.define(version: 20180115153147) do
 
   create_table "aker_containers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "barcode"
@@ -911,6 +911,14 @@ ActiveRecord::Schema.define(version: 20171222105504) do
     t.datetime "updated_at"
   end
 
+  create_table "primer_panels", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string "name", null: false
+    t.integer "snp_count", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.text "programs"
+  end
+
   create_table "product_catalogues", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.string "name", null: false
     t.string "selection_behaviour", default: "SingleProduct", null: false
@@ -1141,6 +1149,7 @@ ActiveRecord::Schema.define(version: 20171222105504) do
     t.boolean "customer_accepts_responsibility"
     t.integer "pcr_cycles"
     t.string "data_type"
+    t.integer "primer_panel_id"
     t.index ["request_id"], name: "index_request_metadata_on_request_id"
   end
 

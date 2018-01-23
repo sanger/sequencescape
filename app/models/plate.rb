@@ -178,9 +178,7 @@ class Plate < Asset
   end
 
   def all_submission_ids
-    submission_ids_as_source.present? ?
-      submission_ids_as_source :
-      submission_ids
+    submission_ids_as_source.presence || submission_ids
   end
 
   def prefix

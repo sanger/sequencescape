@@ -12,7 +12,7 @@ module Accessionable
       super(sample.ebi_accession_number)
 
       sampname = sample.sample_metadata.sample_public_name
-      @name = sampname.blank? ? sample.name : sampname
+      @name = sampname.presence || sample.name
       @name = @name.gsub(/[^a-z\d]/i, '_') unless @name.blank?
 
       @common_name = sample.sample_metadata.sample_common_name
@@ -36,7 +36,7 @@ module Accessionable
       end
 
       sample_hold = sample.sample_metadata.sample_sra_hold
-      @hold = sample_hold.blank? ? 'hold' : sample_hold
+      @hold = sample_hold.presence || 'hold'
     end
 
     def accessionable_id

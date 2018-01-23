@@ -453,7 +453,7 @@ class Study < ApplicationRecord
 
   def abbreviation
     abbreviation = study_metadata.study_name_abbreviation
-    abbreviation.blank? ? "#{id}STDY" : abbreviation
+    abbreviation.presence || "#{id}STDY"
   end
 
   def dehumanise_abbreviated_name
