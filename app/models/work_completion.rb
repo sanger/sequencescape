@@ -72,15 +72,12 @@ class WorkCompletion < ApplicationRecord
   end
 
   def suitable_request?(request)
-    request.library_creation? && submission_ids.include?(request.submission_id)
+    submission_ids.include?(request.submission_id)
   end
 
   def update_stock_wells
     Well::Link.stock.where(target_well_id: target_wells.map(&:id)).delete_all
     Well::Link.stock.import(target_wells.map { |well| { source_well_id: well.id, target_well_id: well.id } })
-    # target_wells.each do |target_well|
-    #   target_well.stock_wells = [target_well]
-    # end
   end
 
   def target_wells

@@ -17,4 +17,14 @@ class PrimerPanel < ApplicationRecord
   # that SNP calls can be presented along with the expected number of hits.
   validates :snp_count, numericality: { greater_than: 0, only_integer: true }
   validates :programs, programs: true
+
+  #
+  # A summary of the primer panel behaviour, suitable for embedding in
+  # eg. pool information via the API
+  #
+  # @return [Hash] A hash containing all necessary information
+  #
+  def summary_hash
+    attributes.slice('name','snp_count','programs')
+  end
 end

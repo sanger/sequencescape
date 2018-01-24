@@ -58,6 +58,7 @@ FactoryGirl.define do
   factory :automated_order do
     user
     request_types { create_list(:sequencing_request_type, 1).map(&:id) }
+    assets { create_list :library_tube, 1 }
   end
 
   # Builds a submission on the provided assets suitable for processing through

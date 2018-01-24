@@ -36,4 +36,17 @@ RSpec.describe PrimerPanel, type: :model do
     primer_panel.programs = { 'pcr 1' => { 'duration' => '2' } }
     expect(primer_panel).to be_valid
   end
+
+  describe '#summary_hash' do
+    it 'returns a summary suitable for exposing in the api' do
+      expect(primer_panel.summary_hash).to eq(
+        'name' => primer_panel.name,
+        'snp_count' => primer_panel.snp_count,
+        'programs' => {
+          'pcr 1' => { 'name' => 'pcr1 program', 'duration' => 45 },
+          'pcr 2' => { 'name' => 'pcr2 program', 'duration' => 20 }
+        }
+      )
+    end
+  end
 end

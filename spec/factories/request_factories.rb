@@ -80,6 +80,10 @@ FactoryGirl.define do
     association(:request_type, factory: :library_request_type)
     request_purpose
     request_metadata_attributes { attributes_for :request_metadata_for_library_manufacture }
+
+    factory :gbs_request, class: IlluminaHtp::Requests::GbsRequest do
+      request_metadata_attributes { attributes_for :request_metadata_for_gbs }
+    end
   end
 
   factory(:multiplex_request, class: Request::Multiplexing) do

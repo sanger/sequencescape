@@ -34,20 +34,19 @@ module WorkingSetup
 
     def seed
       sample_registrar
+      Sample.all.each { |s| study_b.samples << s }
       create_purposes
 
       Robot.create!(name: 'Picking robot', location: 'In a lab').tap do |robot|
         robot.create_max_plates_property(value: 10)
       end
-
-      Sample.all.each { |s| study_b.samples << s }
     end
 
     def plates_of_purpose(name, number)
       purpose = Purpose.find_by!(name: name)
       number.times do
         purpose.create!.tap do |plate|
-          plate.wells.each { |w| w.aliquots.create!(sample: Sample.create!(name: "sample_#{plate.sanger_human_barcode}_#{w.map.description}", studies: [study])) }
+          plate.wells.each { |w| w.aliquots.create!(sample: Sample.create!(name: "sample_#{plate.sanger_human_barcode}_#{w.map.description}", studies: [study, study_b])) }
           puts "#{name}: #{plate.ean13_barcode}-#{plate.sanger_human_barcode}"
         end
       end
