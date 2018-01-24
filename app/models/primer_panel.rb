@@ -25,6 +25,6 @@ class PrimerPanel < ApplicationRecord
   # @return [Hash] A hash containing all necessary information
   #
   def summary_hash
-    attributes.slice('name','snp_count','programs')
+    attributes.slice('name', 'snp_count', 'programs')
   end
 end

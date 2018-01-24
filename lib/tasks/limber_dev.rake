@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # We'll try and do this through the API with the live version
 require './lib/oligo_enumerator'
 

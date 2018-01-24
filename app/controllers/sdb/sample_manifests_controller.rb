@@ -59,7 +59,7 @@ class Sdb::SampleManifestsController < Sdb::BaseController
 
   def create
     @sample_manifest_generator = SampleManifest::Generator.new(params[:sample_manifest],
-                                                             current_user, SampleManifestExcel.configuration)
+                                                               current_user, SampleManifestExcel.configuration)
 
     if @sample_manifest_generator.execute
 

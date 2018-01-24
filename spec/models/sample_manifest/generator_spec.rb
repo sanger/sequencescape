@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe SampleManifest::Generator, type: :model, sample_manifest_excel: true do
@@ -20,10 +22,10 @@ RSpec.describe SampleManifest::Generator, type: :model, sample_manifest_excel: t
   let!(:barcode_printer)  { create(:barcode_printer) }
   let(:configuration)     { SampleManifestExcel.configuration }
 
-  let(:attributes) {
+  let(:attributes) do
     { "template": 'plate_full', "study_id": study.id, "supplier_id": supplier.id,
       "count": '4' }.with_indifferent_access
-  }
+  end
 
   it 'model name is sample manifest' do
     expect(SampleManifest::Generator.model_name).to eq('SampleManifest')
@@ -86,7 +88,7 @@ RSpec.describe SampleManifest::Generator, type: :model, sample_manifest_excel: t
     allow(LabelPrinter::PmbClient).to receive(:get_label_template_by_name).and_return('data' => [{ 'id' => 15 }])
 
     generator = SampleManifest::Generator.new(attributes.merge(barcode_printer: barcode_printer.name,
-                                                             only_first_label: '0'), user, configuration)
+                                                               only_first_label: '0'), user, configuration)
 
     allow(RestClient).to receive(:post)
     expect(generator).to be_print_job_required
@@ -98,7 +100,7 @@ RSpec.describe SampleManifest::Generator, type: :model, sample_manifest_excel: t
     allow(LabelPrinter::PmbClient).to receive(:get_label_template_by_name).and_return('data' => [{ 'id' => 15 }])
 
     generator = SampleManifest::Generator.new(attributes.merge(barcode_printer: 'dodgy_printer',
-                                                             only_first_label: '0'), user, configuration)
+                                                               only_first_label: '0'), user, configuration)
     expect(generator).to be_print_job_required
     generator.execute
     expect(generator.print_job_message.key?(:error)).to be_truthy

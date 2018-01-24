@@ -1,11 +1,19 @@
+# frozen_string_literal: true
+
+#
+# Class SampleManifest::Generator provides an interface for generating
+# sample manifests from the controller
+#
+# @author Genome Research Ltd.
+#
 class SampleManifest::Generator
-  REQUIRED_ATTRIBUTES = ['template', 'count']
+  REQUIRED_ATTRIBUTES = %w[template count].freeze
 
   include ActiveModel::Validations
 
   attr_reader :sample_manifest, :params, :user, :configuration
 
-  validates_presence_of :user, :configuration
+  validates :user, :configuration, presence: true
 
   validate :check_required_attributes
   validate :check_template, if: proc { |s| s.configuration.present? }
@@ -74,12 +82,11 @@ class SampleManifest::Generator
   end
 
   def execute_print_job
-    if print_job_required?
-      if print_job.execute
-        print_job_message[:notice] = print_job.success
-      else
-        print_job_message[:error] = print_job.errors.full_messages.join('; ')
-      end
+    return unless print_job_required?
+    if print_job.execute
+      print_job_message[:notice] = print_job.success
+    else
+      print_job_message[:error] = print_job.errors.full_messages.join('; ')
     end
   end
 
