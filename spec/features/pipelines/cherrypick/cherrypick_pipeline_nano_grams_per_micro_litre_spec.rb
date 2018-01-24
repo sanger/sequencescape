@@ -30,6 +30,8 @@ feature 'cherrypick pipeline - nano grams per micro litre', js: true do
         )
       end
     end
+
+
     submission = submission_template.create_and_build_submission!(
       study: study,
       project: project,
@@ -48,6 +50,11 @@ feature 'cherrypick pipeline - nano grams per micro litre', js: true do
     robot.robot_properties.create(key: 'SCRC2', value: '2')
     robot.robot_properties.create(key: 'SCRC3', value: '3')
     robot.robot_properties.create(key: 'DEST1', value: '20')
+
+    create :plate_type, name: 'ABgene_0765', maximum_volume: 800
+    create :plate_type, name: 'ABgene_0800', maximum_volume: 180
+    create :plate_type, name: 'FluidX075', maximum_volume: 500
+    create :plate_type, name: 'FluidX03', maximum_volume: 280
   end
 
   # from 6628187_tests_for_fix_tecan_volumes.feature
