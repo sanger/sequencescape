@@ -28,7 +28,6 @@
     $('#labwhere_reception_user_code').bind("keydown", function(e) {
       /* We don't take tab index into account here */
       var ENTER = 13, TAB = 9, code;
-      console.log('Prevent')
       code=e.charCode || e.keyCode;
       if (code==ENTER || code==TAB) {
         e.preventDefault();
@@ -36,7 +35,7 @@
         return false;
       }
     });
-    
+
     // Update the query string automatically on changing the location field
     // Allows the user to bookmark a particular location
     $( '#labwhere_reception_location_id' ).bind('change', function() {
