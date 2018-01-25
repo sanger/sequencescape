@@ -9,7 +9,7 @@ require 'test_helper'
 class RobotVerificationsControllerTest < ActionController::TestCase
   context 'RobotVerificationsController' do
     setup do
-      create :plate_type, name: 'ABgene_0765', maximum_volume: 800
+      FactoryGirl.create :plate_type, name: 'ABgene_0765', maximum_volume: 800
       @controller = RobotVerificationsController.new
       @request    = ActionController::TestRequest.create(@controller)
       @user = FactoryGirl.create :user, barcode: 'ID41440E'
