@@ -28,7 +28,13 @@ RSpec.describe SubmissionsController, type: :controller do
       @plate.save
       @study = create :study, name: 'A study'
       @project = create :project, name: 'A project'
-      @submission_template = SubmissionTemplate.find_by!(name: 'Cherrypicking for pulldown')
+      submission_template_hash = { name: 'Cherrypicking for Pulldown',
+                                   submission_class_name: 'LinearSubmission',
+                                   product_catalogue: 'Generic',
+                                   submission_parameters: { info_differential: 5,
+                                                            asset_input_methods: ['select an asset group', 'enter a list of sample names found on plates'],
+                                                            request_types: ['cherrypick_for_pulldown'] } }
+      @submission_template = SubmissionSerializer.construct!(submission_template_hash)
     end
 
     context 'when a submission exists' do

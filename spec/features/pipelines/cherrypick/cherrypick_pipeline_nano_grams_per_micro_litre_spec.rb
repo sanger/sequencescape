@@ -15,7 +15,6 @@ feature 'cherrypick pipeline - nano grams per micro litre', js: true do
   let(:plate2) { create :plate_with_untagged_wells, well_order: :row_order, sample_count: 2, barcode: '10' }
   let(:plate3) { create :plate_with_untagged_wells, well_order: :row_order, sample_count: 2, barcode: '5' }
   let(:plates) { [plate1, plate2, plate3] }
-  let(:submission_template) { SubmissionTemplate.find_by(name: pipeline_name) }
   let(:barcode) { 99999 }
   let(:robot) { create :robot, barcode: '444' }
   let!(:plate_template) { create :plate_template }
@@ -30,8 +29,15 @@ feature 'cherrypick pipeline - nano grams per micro litre', js: true do
         )
       end
     end
-
-
+    submission_template_hash = {
+      name: 'Cherrypick',
+      submission_class_name: 'LinearSubmission',
+      product_catalogue: 'Generic',
+      submission_parameters: { info_differential: 6,
+                               asset_input_methods: ['select an asset group', 'enter a list of sample names found on plates'],
+                               request_types: ['cherrypick'] }
+    }
+    submission_template = SubmissionSerializer.construct!(submission_template_hash)
     submission = submission_template.create_and_build_submission!(
       study: study,
       project: project,
