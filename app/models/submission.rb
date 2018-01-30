@@ -84,7 +84,7 @@ class Submission < ApplicationRecord
   end
 
   def add_comment(description, user)
-    requests.where_is_not_a?(TransferRequest).map do |request|
+    requests.map do |request|
       request.add_comment(description, user)
     end
   end

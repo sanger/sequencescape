@@ -94,10 +94,6 @@ class TransferRequest < ApplicationRecord
     false
   end
 
-  def remove_unused_assets
-    # Don't remove assets for transfer requests as they are made on creation
-  end
-
   def transition_to(target_state)
     aasm.fire!(suggested_transition_to(target_state))
   end

@@ -170,8 +170,6 @@ class Asset < ApplicationRecord
     end
   }
 
-  scope :with_name, ->(*names) { where(name: names.flatten) }
-
   # We accept not only an individual barcode but also an array of them.  This builds an appropriate
   # set of conditions that can find any one of these barcodes.  We map each of the individual barcodes
   # to their appropriate query conditions (as though they operated on their own) and then we join

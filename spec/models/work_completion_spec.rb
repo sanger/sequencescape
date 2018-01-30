@@ -67,13 +67,12 @@ describe WorkCompletion do
       it 'joins up the library requests' do
         library_requests.each do |request|
           expect(request.target_asset).not_to be_nil
-          expect(request.target_asset.plate).to eq(target_plate)
-          expect(request.target_asset.map_description).to eq(request.asset.map_description)
+          expect(request.target_asset).to eq(target_tube)
         end
       end
 
       it 'joins up the multiplex requests' do
-        expect(multiplex_requests.map(&:asset).uniq.size).to eq(tested_wells)
+        expect(all_multiplex_requests.map(&:asset).compact.uniq.size).to eq(1)
       end
     end
 

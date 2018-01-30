@@ -10,9 +10,11 @@ class Receptacle < Asset
 
   SAMPLE_PARTIAL = 'assets/samples_partials/asset_samples'.freeze
 
-  has_many :transfer_requests, foreign_key: :target_asset_id
   has_many :transfer_requests_as_source, class_name: 'TransferRequest', foreign_key: :asset_id
   has_many :transfer_requests_as_target, class_name: 'TransferRequest', foreign_key: :target_asset_id
+  has_many :upstream_assets, through: :transfer_requests_as_target, source: :asset
+  has_many :downstream_assets, through: :transfer_requests_as_source, source: :target_asset
+
   has_many :requests, inverse_of: :asset, foreign_key: :asset_id
   has_one  :source_request, ->() { includes(:request_metadata) }, class_name: 'Request', foreign_key: :target_asset_id
   has_many :requests_as_source, ->() { includes(:request_metadata) }, class_name: 'Request', foreign_key: :asset_id

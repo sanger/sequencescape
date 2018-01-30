@@ -37,7 +37,7 @@ namespace :limber do
       task gbs_tag_set: ['working:env_check', :environment] do
         next if TagLayoutTemplate.find_by(name: 'GbS Tag Set')
         tg = TagGroup.create!(name: 'GbS Test - 384') do |group|
-          group.tags.build(OligoEnumerator.new(384).each_with_index.map { |oligo, map_id| { oligo: oligo, map_id: map_id+1 } })
+          group.tags.build(OligoEnumerator.new(384).each_with_index.map { |oligo, map_id| { oligo: oligo, map_id: map_id + 1 } })
         end
         TagLayoutTemplate.create!(
           name: 'GbS Tag Set',

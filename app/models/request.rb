@@ -97,12 +97,6 @@ class Request < ApplicationRecord
 
   scope :customer_requests, ->() { where(sti_type: [CustomerRequest, *CustomerRequest.descendants].map(&:name)) }
 
-  scope :for_pipeline, ->(pipeline) {
-    joins('LEFT JOIN pipelines_request_types prt ON prt.request_type_id=requests.request_type_id')
-      .where(['prt.pipeline_id=?', pipeline.id])
-      .readonly(false)
-  }
-
   scope :for_pooling_of, ->(plate) {
     submission_ids = plate.all_submission_ids
     add_joins =

@@ -20,7 +20,6 @@ class WorkCompletion::TubeCompletion
   end
 
   def connect_requests
-    return if target_tube.stock_wells.empty?
     # Upstream requests our on our stock wells.
     detect_upstream_requests(target_tube).each do |upstream|
       # We need to find the downstream requests BEFORE connecting the upstream
@@ -42,22 +41,34 @@ class WorkCompletion::TubeCompletion
     end
   end
 
+  # This method is probably horrifically broken.
   def detect_upstream_requests(target_tube)
-    upstream_requests = target_tube.stock_wells.each_with_object([]) do |source_well, found_upstream_requests|
-      # We may have multiple requests out of each well, however we're only concerned
-      # about those associated with the active submission.
-      # We've already eager loaded requests out of the stock wells, so filter in Ruby.
-      source_well.requests_as_source.each do |r|
-        found_upstream_requests << r if suitable_request?(r)
-      end
+    # upstream_requests = target_tube.stock_wells.each_with_object([]) do |source_well, found_upstream_requests|
+    #   # We may have multiple requests out of each well, however we're only concerned
+    #   # about those associated with the active submission.
+    #   # We've already eager loaded requests out of the stock wells, so filter in Ruby.
+    #   source_well.requests_as_source.each do |r|
+    #     found_upstream_requests << r if suitable_request?(r)
+    #   end
+    # end
+    # # We've looked at all the requests, on all the stock wells and still haven't found
+    # # what we're looking for.
+    # raise("Could not find matching upstream requests for #{target_tube.map_description}") if upstream_requests.empty?
+    # upstream_requests
+    wells = collect_upstream_wells([], target_tube)
+    wells.reduce([]) do |requests, well|
+      requests + well.outer_requests.where(submission_id: well.submissions)
     end
-    # We've looked at all the requests, on all the stock wells and still haven't found
-    # what we're looking for.
-    raise("Could not find matching upstream requests for #{target_tube.map_description}") if upstream_requests.empty?
-    upstream_requests
   end
 
-  def suitable_request?(request)
-    submission_ids.include?(request.submission_id)
+  # This isn't very OO. I'm trying to keep the horror confined until
+  # we have a stable solution
+  def collect_upstream_wells(collection, asset)
+    if asset.is_a?(Well)
+      collection << asset
+    else
+      asset.upstream_assets.each { |next_asset| collect_upstream_wells(collection, next_asset) }
+    end
+    collection
   end
 end

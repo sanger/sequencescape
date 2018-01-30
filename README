@@ -22,7 +22,7 @@ $ cp config/config.yml.example config/config.yml
 $ $EDITOR config/config.yml
 $ gem install bundler
 $ bundle install
-$ bundle exec rake db:create db:setup
+$ bundle exec rake db:setup
 # The task below is optional, but creates an admin user account and a
 # few example studies and plates
 $ bundle exec rake working:setup
