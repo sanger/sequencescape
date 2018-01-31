@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require 'pry'
 
 feature 'Asset submission', js: true do
   let(:project) { create :project }
