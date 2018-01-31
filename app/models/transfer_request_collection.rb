@@ -33,7 +33,7 @@ class TransferRequestCollection < ApplicationRecord
   # and associated records, and pass them to the transfer requests directly.
   def transfer_requests_attributes=(args)
     asset_ids = extract_asset_ids(args)
-    asset_cache = Asset.includes(:aliquots, :transfer_requests).find(asset_ids).index_by(&:id)
+    asset_cache = Asset.includes(:aliquots, :transfer_requests_as_source).find(asset_ids).index_by(&:id)
     optimized_parameters = args.map do |param|
       param.stringify_keys!
       param['asset'] ||= asset_cache[param['asset_id']]

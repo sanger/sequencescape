@@ -7,9 +7,7 @@
 require 'test_helper'
 require 'tecan_file_generation'
 
-include Sanger::Robots::Tecan
-
-class GeneratorTest < ActiveSupport::TestCase
+class Sanger::Robots::Tecan::GeneratorTest < ActiveSupport::TestCase
   context 'Sanger::Robots::Tecan::Generator' do
     @testcases = []
     # original
