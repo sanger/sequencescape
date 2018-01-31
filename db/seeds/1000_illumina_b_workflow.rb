@@ -4,6 +4,9 @@
 # authorship of this file.
 # Copyright (C) 2012,2013,2014,2015,2016 Genome Research Ltd.
 
+# rubocop:disable Metrics/BlockLength
+# TODO: This should probably still get refactored, but disabling this here allows us to drastically reduce the
+# maximum block size in the todo yaml.
 ActiveRecord::Base.transaction do
   workflow   = Submission::Workflow.find_by(key: 'short_read_sequencing') or raise StandardError, 'Cannot find Next-gen sequencing workflow'
   cherrypick = RequestType.find_by(name: 'Cherrypicking for Pulldown')    or raise StandardError, 'Cannot find Cherrypicking for Pulldown request type'
@@ -80,14 +83,14 @@ ActiveRecord::Base.transaction do
       for_multiplexing: false,
       no_target_asset: false
     },
-        {
-      key: 'illumina_a_pool',
-      name: 'Illumina-A Pooled',
-      request_class_name: 'IlluminaHtp::Requests::LibraryCompletion',
-      for_multiplexing: true,
-      no_target_asset: false,
-      target_purpose: Purpose.find_by!(name: 'Lib Pool Norm')
-    },
+    {
+  key: 'illumina_a_pool',
+  name: 'Illumina-A Pooled',
+  request_class_name: 'IlluminaHtp::Requests::LibraryCompletion',
+  for_multiplexing: true,
+  no_target_asset: false,
+  target_purpose: Purpose.find_by!(name: 'Lib Pool Norm')
+},
     {
       key: 'illumina_a_isc',
       name: 'Illumina-A ISC',
@@ -113,11 +116,11 @@ ActiveRecord::Base.transaction do
   def sequencing_request_type_names_for(pipeline)
     [
       'Single ended sequencing',
-    'Single ended hi seq sequencing',
-    'Paired end sequencing',
-    'HiSeq Paired end sequencing',
-    'HiSeq 2500 Single end sequencing',
-    'HiSeq 2500 Paired end sequencing'
+      'Single ended hi seq sequencing',
+      'Paired end sequencing',
+      'HiSeq Paired end sequencing',
+      'HiSeq 2500 Single end sequencing',
+      'HiSeq 2500 Paired end sequencing'
     ].map { |s| "#{pipeline} #{s}" }
   end
 
@@ -176,10 +179,10 @@ re_request = RequestType.create!(
     for_multiplexing: true,
     product_line: ProductLine.find_by(name: 'Illumina-A'),
     target_purpose: Purpose.find_by(name: 'Standard MX')
-  ) do |rt|
-    rt.acceptable_plate_purposes << Purpose.find_by!(name: 'Lib PCR-XP')
+) do |rt|
+  rt.acceptable_plate_purposes << Purpose.find_by!(name: 'Lib PCR-XP')
      RequestType::Validator.create!(request_type: rt, request_option: 'library_type', valid_options: RequestType::Validator::LibraryTypeValidator.new(rt.id))
-  end
+end
 
   RequestType.create!(
     name: 'Illumina-HTP Library Creation',
@@ -194,11 +197,11 @@ re_request = RequestType.create!(
     for_multiplexing: true,
     billable: false,
     product_line: ProductLine.find_by!(name: 'Illumina-B')
-    ) do |rt|
-      rt.pooling_method = RequestType::PoolingMethod.create!(
-          pooling_behaviour: 'PlateRow',
-          pooling_options: { pool_count: 8 }
-        )
+  ) do |rt|
+    rt.pooling_method = RequestType::PoolingMethod.create!(
+        pooling_behaviour: 'PlateRow',
+        pooling_options: { pool_count: 8 }
+    )
       rt.acceptable_plate_purposes << Purpose.find_by!(name: 'PF Cherrypicked')
       RequestType::Validator.create!(
         request_type: rt,
@@ -206,7 +209,7 @@ re_request = RequestType.create!(
         valid_options: RequestType::Validator::LibraryTypeValidator.new(rt.id)
       )
       rt.library_types << LibraryType.find_or_create_by(name: 'HiSeqX PCR free')
-    end
+  end
 
   RequestType.create!(
     name: 'HTP PCR Free Library',
@@ -224,9 +227,9 @@ re_request = RequestType.create!(
     request_class_name: 'IlluminaHtp::Requests::StdLibraryRequest',
     workflow: Submission::Workflow.find_by!(key: 'short_read_sequencing'),
     product_line: ProductLine.find_by!(name: 'Illumina-HTP')
-    ) do |rt|
-      rt.acceptable_plate_purposes << Purpose.find_by!(name: 'PF Cherrypicked')
-    end
+  ) do |rt|
+    rt.acceptable_plate_purposes << Purpose.find_by!(name: 'PF Cherrypicked')
+  end
 
     RequestType.create!(
       name: 'Illumina-HTP Strip Tube Creation',
@@ -292,3 +295,4 @@ StripTubeCreationPipeline.create!(
     )
   end
 end
+# rubocop:enable Metrics/BlockLength

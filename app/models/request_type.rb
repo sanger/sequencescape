@@ -78,7 +78,7 @@ class RequestType < ApplicationRecord
       'asset_type = ?
        AND request_class_name != "ControlRequest"
        AND deprecated IS FALSE',
-         asset.asset_type_for_request_types.name
+      asset.asset_type_for_request_types.name
     ])
                                }
 

@@ -125,7 +125,6 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
         new_order.save!
         @order = new_order
       end
-
     rescue Submission::ProjectValidation::Error => project_exception
       order.errors.add(:base, project_exception.message)
     rescue InvalidInputException => input_exception

@@ -285,7 +285,7 @@ class Study < ApplicationRecord
         contaminated_human_dna: Study::NO,
         commercially_available: Study::NO
       }
-    )
+      )
   }
 
   scope :contaminated_with_human_dna, ->() {
@@ -294,7 +294,7 @@ class Study < ApplicationRecord
       study_metadata: {
         contaminated_human_dna: Study::YES
       }
-    )
+      )
   }
 
   scope :with_remove_x_and_autosomes, ->() {
@@ -303,7 +303,7 @@ class Study < ApplicationRecord
       study_metadata: {
         remove_x_and_autosomes: Study::YES
       }
-    )
+      )
   }
 
   scope :by_state, ->(state) { where(state: state) }

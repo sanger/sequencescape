@@ -14,7 +14,7 @@ module Hiseq2500Helper
         multiples_allowed: true,
         request_class_name: 'HiSeqSequencingRequest',
         product_line: ProductLine.find_by(name: "Illumina-#{pl.upcase}")
-      )
+    )
   end
 
   def self.template(settings)

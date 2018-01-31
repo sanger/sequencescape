@@ -42,7 +42,7 @@ FactoryGirl.define do
     factory :invalid_accession_sample do
       sample {
         create(:sample_for_accessioning_with_open_study,
-        sample_metadata: create(:sample_metadata_with_accession_number))
+               sample_metadata: create(:sample_metadata_with_accession_number))
       }
     end
 

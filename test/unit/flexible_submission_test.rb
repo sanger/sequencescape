@@ -321,7 +321,7 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
                 assets: @assets,
                 request_types: @mx_request_type_ids,
                 comments: ''
-              )
+            )
           end
 
           should 'multiply the sequencing' do
@@ -345,7 +345,7 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
                 assets: @assets,
                 request_types: @ux_request_type_ids,
                 comments: ''
-              )
+            )
           end
 
           should 'multiply the library creation' do

@@ -42,8 +42,8 @@ class Plate::Creator < ApplicationRecord
       return false if new_plates.empty?
       new_plates.group_by(&:plate_purpose).each do |plate_purpose, plates|
         print_job = LabelPrinter::PrintJob.new(barcode_printer.name,
-                                              LabelPrinter::Label::PlateCreator,
-                                              plates: plates, plate_purpose: plate_purpose, user_login: scanned_user.login)
+                                               LabelPrinter::Label::PlateCreator,
+                                               plates: plates, plate_purpose: plate_purpose, user_login: scanned_user.login)
         return false unless print_job.execute
       end
       true

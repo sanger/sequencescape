@@ -108,8 +108,8 @@ module SubmissionsHelper
       :asset_group_id,
       asset_groups, :id, :name,
       { prompt: prompt },
-              class: 'submission_asset_group_id required form-control',
-              disabled: (asset_groups.size == 0)
+      class: 'submission_asset_group_id required form-control',
+      disabled: (asset_groups.size == 0)
     )
   end
 

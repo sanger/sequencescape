@@ -98,7 +98,6 @@ class QcReport < ApplicationRecord
           end
         end
         generation_complete!
-
       rescue => e
         # If something goes wrong, requeue the report and re-raise the exception
         qc_metrics.clear

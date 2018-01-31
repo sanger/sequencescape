@@ -43,10 +43,10 @@ group :default do
   gem 'delayed_job_active_record'
 
   gem 'ruby_walk',  '>= 0.0.3',
-    :github => 'sanger/ruby_walk'
+      :github => 'sanger/ruby_walk'
 
   gem 'irods_reader', '>=0.0.2',
-    :github => 'sanger/irods_reader'
+      :github => 'sanger/irods_reader'
 
   # For the API level
   gem 'uuidtools'
@@ -174,7 +174,7 @@ end
 
 group :deployment do
   gem 'psd_logger',
-    :github => 'sanger/psd_logger'
+      :github => 'sanger/psd_logger'
   gem 'gmetric', '~>0.1.3'
   gem 'exception_notification'
 end

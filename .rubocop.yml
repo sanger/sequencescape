@@ -36,11 +36,14 @@ Style/NumericLiterals:
 # Blocks are used to structure tests and are part of the shoulda dsl.
 # The standard BlockLength limits are too stringent for this purpose.
 # Block DSL is also used in routes
+# We should be careful keeping rake tasks here, as large tasks are still an issue.
+# Not sure if we need to split namespaces across several files though.
 Metrics/BlockLength:
   Exclude:
     - 'test/**/*'
     - 'spec/**/*'
     - 'config/routes.rb'
+    - 'lib/tasks/*'
 
 # We have a few custom find_by methods which we maintain.
 # At least for now. find_by_id_or_name is a bit clunky.

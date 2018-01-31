@@ -122,7 +122,7 @@ Given /^a plate of type "([^"]*)" with barcode "([^"]*)" exists$/ do |plate_type
   plate_type.constantize.create!(
     barcode: Barcode.number_to_human(machine_barcode.to_s),
     plate_purpose: "#{plate_type}Purpose".constantize.first
-)
+  )
 end
 
 Given /^a "([^"]*)" plate purpose and of type "([^"]*)" with barcode "([^"]*)" exists$/ do |plate_purpose_name, plate_type, machine_barcode|
@@ -130,7 +130,7 @@ Given /^a "([^"]*)" plate purpose and of type "([^"]*)" with barcode "([^"]*)" e
     barcode: Barcode.number_to_human(machine_barcode.to_s),
     plate_purpose: PlatePurpose.find_by(name: plate_purpose_name),
     name: machine_barcode
-)
+  )
 end
 
 Given /^plate (\d+) has is a stock plate$/ do |plate_id|
@@ -145,15 +145,15 @@ end
 Given /^a plate with purpose "([^"]*)" and barcode "([^"]*)" exists$/ do |plate_purpose_name, machine_barcode|
   # Plate.create!(:barcode =>Barcode.number_to_human("#{machine_barcode}"), :plate_purpose => PlatePurpose.find_by_name(plate_purpose_name))
   FactoryGirl.create(:plate,
-    barcode: Barcode.number_to_human(machine_barcode.to_s),
-    plate_purpose: Purpose.find_by(name: plate_purpose_name))
+                     barcode: Barcode.number_to_human(machine_barcode.to_s),
+                     plate_purpose: Purpose.find_by(name: plate_purpose_name))
 end
 
 Given /^a stock plate with barcode "([^"]*)" exists$/ do |machine_barcode|
   @stock_plate = FactoryGirl.create(:plate,
-    name: 'A_TEST_STOCK_PLATE',
-    barcode: Barcode.number_to_human(machine_barcode.to_s),
-    plate_purpose: PlatePurpose.find_by(name: 'Stock Plate'))
+                                    name: 'A_TEST_STOCK_PLATE',
+                                    barcode: Barcode.number_to_human(machine_barcode.to_s),
+                                    plate_purpose: PlatePurpose.find_by(name: 'Stock Plate'))
 end
 
 Then /^plate "([^"]*)" is the parent of plate "([^"]*)"$/ do |parent_plate_barcode, child_plate_barcode|

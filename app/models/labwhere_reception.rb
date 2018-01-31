@@ -44,7 +44,6 @@ class LabwhereReception
     return false unless valid?
 
     begin
-
       scan = LabWhereClient::Scan.create(
         location_barcode: location_barcode,
         user_code: user_code,
@@ -55,7 +54,6 @@ class LabwhereReception
         errors.add(:scan, scan.error)
         return false
       end
-
     rescue LabWhereClient::LabwhereException => exception
       errors.add(:base, 'Could not connect to Labwhere. Sequencescape location has still been updated')
       return false

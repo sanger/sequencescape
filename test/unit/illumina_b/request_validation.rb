@@ -18,7 +18,7 @@ class IlluminaB::RequestValidationTest < ActiveSupport::TestCase
             fragment_size_required_to: 20,
             library_type: 'Standard'
           }
-        )
+      )
       assert r
     end
 
@@ -32,7 +32,7 @@ class IlluminaB::RequestValidationTest < ActiveSupport::TestCase
               fragment_size_required_to: 20,
               library_type: 'Standard'
             }
-          )
+        )
       assert r
       end
     end

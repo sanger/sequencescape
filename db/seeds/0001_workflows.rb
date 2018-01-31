@@ -293,7 +293,7 @@ cluster_formation_se_request_type = ['a', 'b', 'c'].map do |pl|
     key: "illumina_#{pl}_single_ended_sequencing",
     name: "Illumina-#{pl.upcase} Single ended sequencing",
     product_line: ProductLine.find_by(name: "Illumina-#{pl.upcase}")
-) do |request_type|
+  ) do |request_type|
     request_type.billable          = true
     request_type.initial_state     = 'pending'
     request_type.asset_type        = 'LibraryTube'
@@ -306,14 +306,14 @@ end << RequestType.create!(
     key: 'single_ended_sequencing',
     name: 'Single ended sequencing',
     deprecated: true
-  ) do |request_type|
+) do |request_type|
     request_type.billable          = true
     request_type.initial_state     = 'pending'
     request_type.asset_type        = 'LibraryTube'
     request_type.order             = 2
     request_type.multiples_allowed = true
     request_type.request_class = SequencingRequest
-  end
+       end
 
 SequencingPipeline.create!(name: 'Cluster formation SE (spiked in controls)', request_types: cluster_formation_se_request_type) do |pipeline|
   pipeline.asset_type = 'Lane'
@@ -414,14 +414,14 @@ end << RequestType.create!(
     key: 'single_ended_hi_seq_sequencing',
     name: 'Single ended hi seq sequencing',
     deprecated: true
-  ) do |request_type|
+) do |request_type|
     request_type.billable          = true
     request_type.initial_state     = 'pending'
     request_type.asset_type        = 'LibraryTube'
     request_type.order             = 2
     request_type.multiples_allowed = true
     request_type.request_class = HiSeqSequencingRequest
-  end
+       end
 
 SequencingPipeline.create!(name: 'Cluster formation SE HiSeq', request_types: single_ended_hi_seq_sequencing) do |pipeline|
   pipeline.asset_type = 'Lane'
@@ -493,14 +493,14 @@ end << RequestType.create!(
     key: 'paired_end_sequencing',
     name: 'Paired end sequencing',
     deprecated: true
-  ) do |request_type|
+) do |request_type|
     request_type.billable          = true
     request_type.initial_state     = 'pending'
     request_type.asset_type        = 'LibraryTube'
     request_type.order             = 2
     request_type.multiples_allowed = true
     request_type.request_class = SequencingRequest
-  end
+       end
 
 hiseq_2500_request_types = ['a', 'b', 'c'].map do |pl|
   RequestType.create!(
@@ -1011,7 +1011,7 @@ PacBioSequencingPipeline.create!(name: 'PacBio Sequencing') do |pipeline|
       kind: 'Selection',
       selection: [30, 60, 90, 120, 180, 210, 240, 270, 300, 330, 360],
       value: 180
-    )
+  )
 end.tap do |pipeline|
   create_request_information_types(pipeline, 'sequencing_type', 'insert_size')
 end
@@ -1114,7 +1114,7 @@ end
         initial_state: 'pending',
         target_asset_type: 'Well',
         request_class_name: 'Request'
-        )
+    )
 
       liw = LabInterface::Workflow.create!(name: 'Illumina-C Cherrypick')
 
@@ -1295,7 +1295,7 @@ v4_pipelines = ['(spiked in controls)', '(no controls)'].each do |type|
     summary: true,
     group_name: 'Sequencing',
     control_request_type_id: 0
-    ) do |pipeline|
+  ) do |pipeline|
       pipeline.workflow = LabInterface::Workflow.create!(name: pipeline.name) do |workflow|
         workflow.locale     = 'Internal'
         workflow.item_limit = 8
@@ -1314,7 +1314,7 @@ v4_pipelines = ['(spiked in controls)', '(no controls)'].each do |type|
         end
       end
       pipeline.request_types = v4_requests_types_pe
-    end
+  end
 
   SequencingPipeline.create!(
     name: "HiSeq v4 SE #{type}",
@@ -1330,7 +1330,7 @@ v4_pipelines = ['(spiked in controls)', '(no controls)'].each do |type|
     summary: true,
     group_name: 'Sequencing',
     control_request_type_id: 0
-    ) do |pipeline|
+  ) do |pipeline|
       pipeline.workflow = LabInterface::Workflow.create!(name: pipeline.name) do |workflow|
         workflow.locale     = 'Internal'
         workflow.item_limit = 8
@@ -1348,7 +1348,7 @@ v4_pipelines = ['(spiked in controls)', '(no controls)'].each do |type|
         end
       end
       pipeline.request_types = v4_requests_types_se
-    end
+  end
 end
 
 x10_pipelines = ['(spiked in controls)', '(no controls)'].each do |type|
@@ -1366,7 +1366,7 @@ x10_pipelines = ['(spiked in controls)', '(no controls)'].each do |type|
     summary: true,
     group_name: 'Sequencing',
     control_request_type_id: 0
-    ) do |pipeline|
+  ) do |pipeline|
       pipeline.workflow = LabInterface::Workflow.create!(name: pipeline.name) do |workflow|
         workflow.locale     = 'Internal'
         workflow.item_limit = 8
@@ -1384,7 +1384,7 @@ x10_pipelines = ['(spiked in controls)', '(no controls)'].each do |type|
         end
       end
       pipeline.request_types = x10_requests_types
-    end
+  end
 end
 st_x10_pipelines = ['(spiked in controls) from strip-tubes'].each do |type|
   UnrepeatableSequencingPipeline.create!(
@@ -1401,7 +1401,7 @@ st_x10_pipelines = ['(spiked in controls) from strip-tubes'].each do |type|
     summary: true,
     group_name: 'Sequencing',
     control_request_type_id: 0
-    ) do |pipeline|
+  ) do |pipeline|
       pipeline.workflow = LabInterface::Workflow.create!(name: pipeline.name) do |workflow|
         workflow.locale     = 'Internal'
         workflow.item_limit = 8
@@ -1417,7 +1417,7 @@ st_x10_pipelines = ['(spiked in controls) from strip-tubes'].each do |type|
         end
       end
       pipeline.request_types = st_x10
-    end
+  end
 end
 
 ['htp', 'c'].each do |pipeline|
@@ -1528,13 +1528,13 @@ end
         group_name: 'Sequencing',
         control_request_type_id: 0,
         min_size: 8
-      ) do |pipeline|
+ ) do |pipeline|
         pipeline.request_types = RequestType.where("`key` LIKE 'illumina_%_hiseq_4000_paired_end_sequencing'")
         pipeline.build_workflow(name: 'HiSeq 4000 PE').tap do |wf|
           build_4000_tasks_for(wf, true)
         end
         add_4000_information_types_to(pipeline)
-      end
+ end
 
       SequencingPipeline.create!(
         name: 'HiSeq 4000 SE (spiked in controls)',

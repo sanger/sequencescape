@@ -8,17 +8,17 @@ describe TransferRequest::InitialTransfer do
   let(:example_project) { create :project }
   let!(:library_request) do
     create :library_request,
-      asset: source_asset,
-      initial_study: example_study,
-      initial_project: example_project,
-      state: library_state
+           asset: source_asset,
+           initial_study: example_study,
+           initial_project: example_project,
+           state: library_state
   end
 
   subject do
     create :initial_transfer_request,
-      asset: source_asset,
-      target_asset: target_asset,
-      submission: library_request.submission
+           asset: source_asset,
+           target_asset: target_asset,
+           submission: library_request.submission
   end
 
   context 'with a pending library request' do

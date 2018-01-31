@@ -71,6 +71,6 @@ module TubePurposeHelper
         cherrypickable_target: false,
         cherrypick_direction: 'column',
         barcode_for_tecan: 'ean13_barcode'
-      )
+    )
   end
 end
