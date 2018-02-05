@@ -45,6 +45,9 @@ class Lane < Receptacle
     'lane'
   end
 
+  def friendly_name
+  end
+
   def rebroadcast
     requests_as_target.each { |r| r.batch.try(:rebroadcast) }
   end
