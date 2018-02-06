@@ -199,7 +199,6 @@ Lint/ShadowingOuterLocalVariable:
     - 'app/models/pipeline/inbox_extensions.rb'
     - 'app/models/plate_purpose/works_on_library_requests.rb'
     - 'app/models/plate_volume.rb'
-    - 'app/models/sample_registrar.rb'
     - 'app/models/submission/linear_request_graph.rb'
     - 'app/models/tasks/cherrypick_handler.rb'
     - 'db/migrate/20150806105950_add_flexible_cherrypick_pipeline.rb'
@@ -291,7 +290,6 @@ Lint/UselessAssignment:
     - 'app/models/request_type/validation.rb'
     - 'app/models/sample_manifest/input_behaviour.rb'
     - 'app/models/sample_manifest/library_behaviour.rb'
-    - 'app/models/sample_registrar.rb'
     - 'app/models/single_request_submission.rb'
     - 'app/models/task.rb'
     - 'app/models/tasks/plate_template_handler.rb'
@@ -993,7 +991,6 @@ Rails/Present:
     - 'app/models/plate_purpose.rb'
     - 'app/models/plate_purpose/request_attachment.rb'
     - 'app/models/sample.rb'
-    - 'app/models/sample_registrar.rb'
     - 'app/models/search_behaviour.rb'
     - 'app/models/study.rb'
     - 'app/models/submission/asset_group_behaviour.rb'
@@ -1179,7 +1176,6 @@ Rails/Validation:
     - 'app/models/sample_manifest.rb'
     - 'app/models/sample_manifest/sample_manifest_generator.rb'
     - 'app/models/sample_manifest/sample_manifest_uploader.rb'
-    - 'app/models/sample_registrar.rb'
     - 'app/models/search.rb'
     - 'app/models/search/find_model_by_name.rb'
     - 'app/models/sequencing_request.rb'
@@ -1259,7 +1255,6 @@ Style/Alias:
     - 'app/models/product_criteria/basic.rb'
     - 'app/models/sample_manifest/plate_behaviour.rb'
     - 'app/models/sample_manifest/sample_tube_behaviour.rb'
-    - 'app/models/sample_registrar.rb'
     - 'app/models/sanger_sample_id.rb'
     - 'app/models/submission.rb'
     - 'app/models/submission/flexible_request_graph.rb'
@@ -1343,7 +1338,6 @@ Style/AndOr:
     - 'app/models/sample_manifest/input_behaviour.rb'
     - 'app/models/sample_manifest/plate_behaviour.rb'
     - 'app/models/sample_manifest/shared_tube_behaviour.rb'
-    - 'app/models/sample_registrar.rb'
     - 'app/models/sequenom_qc_plate.rb'
     - 'app/models/spiked_buffer.rb'
     - 'app/models/study.rb'
@@ -2360,7 +2354,6 @@ Style/Documentation:
     - 'app/models/sample_manifest/state_machine.rb'
     - 'app/models/sample_manifest/unspecified_behaviour.rb'
     - 'app/models/sample_prep_qc_task.rb'
-    - 'app/models/sample_registrar.rb'
     - 'app/models/sample_tube.rb'
     - 'app/models/sample_work_order.rb'
     - 'app/models/sanger_sample_id.rb'
@@ -2787,7 +2780,6 @@ Style/DoubleNegation:
     - 'app/models/api/base.rb'
     - 'app/models/metadata.rb'
     - 'app/models/sample_manifest/input_behaviour.rb'
-    - 'app/models/sample_registrar.rb'
     - 'features/support/developing.rb'
 
 # Offense count: 1
@@ -3819,7 +3811,6 @@ Style/FrozenStringLiteralComment:
     - 'app/models/sample_manifest/state_machine.rb'
     - 'app/models/sample_manifest/unspecified_behaviour.rb'
     - 'app/models/sample_prep_qc_task.rb'
-    - 'app/models/sample_registrar.rb'
     - 'app/models/sample_tube.rb'
     - 'app/models/sample_work_order.rb'
     - 'app/models/sanger_sample_id.rb'
@@ -5080,7 +5071,6 @@ Style/IfUnlessModifier:
     - 'app/models/presenters/batch_submenu_presenter.rb'
     - 'app/models/sample.rb'
     - 'app/models/sample_manifest/sample_manifest_uploader.rb'
-    - 'app/models/sample_registrar.rb'
     - 'app/models/sequenom_qc_plate.rb'
     - 'app/models/study.rb'
     - 'app/models/study/metadata.rb'
@@ -5363,7 +5353,6 @@ Style/MutableConstant:
     - 'app/models/sample_manifest/barcode_printer_behaviour.rb'
     - 'app/models/sample_manifest/headers.rb'
     - 'app/models/sample_manifest/sample_manifest_generator.rb'
-    - 'app/models/sample_registrar.rb'
     - 'app/models/shared_behaviour/immutable.rb'
     - 'app/models/study.rb'
     - 'app/models/submission.rb'
@@ -5590,7 +5579,6 @@ Style/ParallelAssignment:
     - 'app/models/sample_manifest/plate_behaviour.rb'
     - 'app/models/sample_manifest/sample_tube_behaviour.rb'
     - 'app/models/sample_manifest/shared_tube_behaviour.rb'
-    - 'app/models/sample_registrar.rb'
     - 'app/models/submission/asset_submission_finder.rb'
     - 'app/models/submission_template.rb'
     - 'app/models/tasks/cherrypick_handler.rb'
@@ -6001,7 +5989,6 @@ Style/SelfAssignment:
   Exclude:
     - 'app/helpers/application_helper.rb'
     - 'app/models/manifest_generator.rb'
-    - 'app/models/sample_registrar.rb'
     - 'app/views/batches/released.xml.builder'
 
 # Offense count: 16
@@ -6162,7 +6149,6 @@ Style/SymbolProc:
     - 'app/models/sample_manifest/multiplexed_library_behaviour.rb'
     - 'app/models/sample_manifest/plate_behaviour.rb'
     - 'app/models/sample_manifest/sample_tube_behaviour.rb'
-    - 'app/models/sample_registrar.rb'
     - 'app/models/study.rb'
     - 'app/models/submission/flexible_request_graph.rb'
     - 'app/models/tag.rb'
@@ -6394,7 +6380,6 @@ Style/YodaCondition:
   Exclude:
     - 'app/models/attributable.rb'
     - 'app/models/plate_template.rb'
-    - 'app/models/sample_registrar.rb'
 
 # Offense count: 18
 # Cop supports --auto-correct.
