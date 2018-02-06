@@ -72,7 +72,4 @@ RSpec.describe BroadcastEvent::SequencingComplete, type: :model, broadcast_event
     expect(json['event']['metadata']['result']).to eq('passed')
   end
 
-  it 'will broadcast a message' do
-  end
-
 end
