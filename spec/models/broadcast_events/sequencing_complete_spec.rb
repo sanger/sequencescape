@@ -5,14 +5,15 @@ RSpec.describe BroadcastEvent::SequencingComplete, type: :model, broadcast_event
   let(:study) { create(:study) }
   let(:project) { create(:project) }
   let(:sample)  { create(:sample) }
+  let(:aliquot) { create(:aliquot, study: study, project: project, sample: sample) }
   let(:pipeline) { create(:pipeline) }
   let(:submission) { create(:submission_without_order, priority: 3) }
   let(:request_type) { create(:sequencing_request_type, product_line: create(:product_line))}
   let(:lane) { create(:lane) }
   let!(:request) { create(:sequencing_request_with_assets_and_ancestors,
                           pipeline: pipeline,
-                          project: project,
-                          study: study,
+                          project: nil,
+                          study: nil,
                           request_type: request_type,
                           submission: submission,
                           target_asset: lane,
@@ -21,10 +22,6 @@ RSpec.describe BroadcastEvent::SequencingComplete, type: :model, broadcast_event
                             fragment_size_required_to: 200,
                             read_length: 76 })
   }
-  let!(:order) { create(:order) do |o|
-                  o.requests << request
-                end
-              }
 
   let(:event) { BroadcastEvent::SequencingComplete.create!(seed: lane, user: user, properties: {}, created_at: DateTime.parse("2018-01-12T13:37:03+00:00")) }
   let(:json)  { JSON.parse(event.to_json) }
@@ -48,6 +45,7 @@ RSpec.describe BroadcastEvent::SequencingComplete, type: :model, broadcast_event
   end
 
   it 'has the correct subjects' do
+    lane.aliquots << aliquot
     subject_role_types = json['event']['subjects'].collect { |subject| subject['role_type']}
     expect(subject_role_types).to include('sequencing_source_labware')
     expect(subject_role_types).to include('project')
@@ -59,7 +57,7 @@ RSpec.describe BroadcastEvent::SequencingComplete, type: :model, broadcast_event
   end
 
   it 'can have library source labware' do
-    allow(lane.requests_as_target.map(&:asset).map(&:labware).uniq.first).to receive(:library_source_plates).and_return(create(:plate))
+    allow(lane.source_labwares.first).to receive(:library_source_plates).and_return(create(:plate))
     expect(json['event']['subjects'].collect { |subject| subject['role_type']}).to include('library_source_labware')
   end
 

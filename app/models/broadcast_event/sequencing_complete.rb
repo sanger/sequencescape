@@ -26,7 +26,7 @@ class BroadcastEvent::SequencingComplete < BroadcastEvent
 
   def source_labwares(lane)
     @_source_labwares ||= {}
-    @_source_labwares[lane] ||= lane.requests_as_target.map(&:asset).map(&:labware).uniq
+    @_source_labwares[lane] ||= lane.source_labwares
   end
 
   def lane_first_request(lane)

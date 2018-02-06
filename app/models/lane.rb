@@ -46,6 +46,11 @@ class Lane < Receptacle
   end
 
   def friendly_name
+    name # TODO: Maybe add location?
+  end
+
+  def source_labwares
+    requests_as_target.map(&:asset).map(&:labware).uniq
   end
 
   def rebroadcast

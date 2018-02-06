@@ -2,14 +2,17 @@
 
 require 'rails_helper'
 
-describe Lane do
+RSpec.describe Lane do
+  let(:lane) { create :lane }
+  let(:request) { create :sequencing_request_with_assets_and_ancestors, target_asset: lane }
+
+
   it 'should find lanes that have requested aliquots' do
     aliquots = create_list(:aliquot, 5)
     requested_aliquots = [aliquots.pop, aliquots.pop]
     requested_aliquots_ids = requested_aliquots.map(&:id)
 
     # lane without requested aliquots
-    lane = create :lane
     lane.aliquots << aliquots
 
     # lanes containing requested aliquots
@@ -23,13 +26,24 @@ describe Lane do
   end
 
   it 'can be rebroadcasted' do
-    lane = create :lane
-    request = create :sequencing_request, target_asset: lane
+    # request = create :sequencing_request, target_asset: lane
     batch = create :sequencing_batch
     batch.requests << request
     # as requests_as_targets is a scope, not the above instance of batch receive the message
     expect(Batch.count).to eq 1
     expect_any_instance_of(Batch).to receive(:rebroadcast)
     lane.rebroadcast
+  end
+
+  it 'can have library source labware' do
+    allow(lane.source_labwares.first).to receive(:library_source_plates).and_return(create(:plate))
+  end
+
+  it 'has some samples' do
+    allow(lane).to receive(:samples).and_return([create(:sample)])
+  end
+
+  it 'has a friendly name matching with name' do
+    expect(lane.friendly_name).to eq(lane.name)
   end
 end
