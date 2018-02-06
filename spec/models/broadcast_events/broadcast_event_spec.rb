@@ -7,7 +7,9 @@ class TestSeed
 
   attr_accessor :uuid, :friendly_name, :subject_type, :single_relation, :many_relation, :dynamic_relation, :id, :data_method_a
 
-  def self.primary_key; :id; end
+  def self.primary_key
+    :id
+  end
 
   def attributes
     {
@@ -73,13 +75,11 @@ class ExampleEvent < BroadcastEvent
 end
 
 RSpec.describe BroadcastEvent, type: :model, broadcast_event: true do
-  
   it 'is not directly instantiated' do
     expect { BroadcastEvent.new }.to raise_error(StandardError)
   end
 
   context 'ExampleEvent' do
-
     it 'is instantiated' do
       expect(ExampleEvent.new).to be_present
     end
@@ -92,22 +92,23 @@ RSpec.describe BroadcastEvent, type: :model, broadcast_event: true do
       let(:value_b) { 'value_b' }
       let(:dynamic) { DynamicSubject.new(dynamic_target, value_b) }
       let(:value_a) { 'value_a' }
-      let(:user) { create(:user, email: 'example@example.com' ) }
-      let(:time) { DateTime.parse('2012-03-11 10:22:42') }
-      let(:seed) { TestSeed.new(
-                    uuid: '004',
-                    friendly_name: 'seed_subject',
-                    subject_type: 'seed_type',
-                    single_relation: single,
-                    many_relation: [many_one, many_two],
-                    dynamic_relation: dynamic,
-                    id: 1,
-                    data_method_a: value_a
-                ) }
+      let(:user) { create(:user, email: 'example@example.com') }
+      let(:time) { Time.zone.parse('2012-03-11 10:22:42') }
+      let(:seed) do
+        TestSeed.new(
+          uuid: '004',
+          friendly_name: 'seed_subject',
+          subject_type: 'seed_type',
+          single_relation: single,
+          many_relation: [many_one, many_two],
+          dynamic_relation: dynamic,
+          id: 1,
+          data_method_a: value_a
+        )
+      end
       let(:event) { ExampleEvent.new(seed: seed, user: user, created_at: time) }
 
       it 'finds subjects with a 1 to 1 relationship' do
-
         expect(event.subjects).to be_present
 
         test_subject = event.subjects.detect { |s| s.uuid == single.uuid }
@@ -119,14 +120,11 @@ RSpec.describe BroadcastEvent, type: :model, broadcast_event: true do
       end
 
       it 'has five subjects' do
-
         expect(event.subjects).to be_present
         assert_equal 5, event.subjects.length
-
       end
 
       it 'finds subjects with a 1 to many relationship' do
-
         test_subject = event.subjects.detect { |s| s.uuid == many_one.uuid }
 
         expect(test_subject).to be_present
@@ -143,7 +141,6 @@ RSpec.describe BroadcastEvent, type: :model, broadcast_event: true do
       end
 
       it 'finds subjects with a block relationship' do
-
         test_subject = event.subjects.detect { |s| s.uuid == dynamic_target.uuid }
 
         expect(test_subject).to be_present
@@ -153,7 +150,6 @@ RSpec.describe BroadcastEvent, type: :model, broadcast_event: true do
       end
 
       it 'finds the seed subject' do
-
         test_subject = event.subjects.detect { |s| s.uuid == seed.uuid }
 
         expect(test_subject).to be_present
@@ -225,12 +221,11 @@ RSpec.describe BroadcastEvent, type: :model, broadcast_event: true do
               'data_c' => 'value_c'
             }
           },
-        'lims' => 'SQSCP'
+          'lims' => 'SQSCP'
         }
 
         assert_equal expected_json, JSON.parse(event.to_json)
       end
     end
-
   end
 end

@@ -29,7 +29,7 @@ class NpgActions::AssetsController < ApplicationController
 
   private
 
-  def self.action_for_qc_state(state, create_method_name, send_method_name)
+  def action_for_qc_state(state, create_method_name, send_method_name)
     ActiveRecord::Base.transaction do
       state_str = "#{state}ed"
       @lane.set_qc_state(state_str)
@@ -40,18 +40,18 @@ class NpgActions::AssetsController < ApplicationController
 
       request = @lane.source_request
       batch = request.batch
-      raise ActiveRecord::RecordNotFound, "Unable to find a batch for the Request" if (batch.nil?)
+      raise ActiveRecord::RecordNotFound, 'Unable to find a batch for the Request' if (batch.nil?)
 
       message = "#{state}ed manual QC".capitalize
-      send_method.call(request.id, "", message, "","npg", :need_to_know_exceptions => true)
+      send_method.call(request.id, '', message, '', 'npg', need_to_know_exceptions: true)
 
       batch.npg_set_state
       BroadcastEvent::SequencingComplete.create!(seed: @lane,
-                                                 properties: {:result => state_str})
+                                                 properties: { result: state_str })
 
       respond_to do |format|
-        format.xml  { render file: 'assets/show'}
-        format.html { render template: 'assets/show.xml.builder'}
+        format.xml  { render file: 'assets/show' }
+        format.html { render template: 'assets/show.xml.builder' }
       end
     end
   end

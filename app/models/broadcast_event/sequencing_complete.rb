@@ -24,7 +24,6 @@ class BroadcastEvent::SequencingComplete < BroadcastEvent
   has_metadata(:team) { |lane, e| e.lane_first_request(lane).product_line }
   has_metadata(:result) { |_, e| e.properties[:result] }
 
-
   def source_labwares(lane)
     @_source_labwares ||= {}
     @_source_labwares[lane] ||= lane.source_labwares
