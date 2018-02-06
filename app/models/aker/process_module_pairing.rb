@@ -10,7 +10,8 @@ module Aker
       {
         id: id,
         from_step: from_step.name,
-        to_step: to_step.name
+        to_step: to_step.name,
+        default_path: default_path
       }
     end
 

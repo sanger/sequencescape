@@ -688,7 +688,7 @@ Sequencescape::Application.routes.draw do
       end
     end
 
-    resources :products, only: [:show]
+    resources :products, only: [:index, :show]
   end
   resources :billing_reports, only: [:new, :create]
 
