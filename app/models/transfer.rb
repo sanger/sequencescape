@@ -21,6 +21,8 @@ class Transfer < ApplicationRecord
   validates_presence_of :source
   scope :include_source, -> { includes(source: ModelExtensions::Plate::PLATE_INCLUDES) }
 
+  belongs_to :destination, class_name: 'Asset'
+
   # Before creating an instance of this class the appropriate transfers need to be made from a source
   # asset to the destination one.
   before_create :create_transfer_requests
