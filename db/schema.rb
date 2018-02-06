@@ -10,11 +10,53 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171117110424) do
+ActiveRecord::Schema.define(version: 20180202124837) do
 
   create_table "aker_containers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "barcode"
     t.string "address"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "aker_process_module_pairings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "from_step_id"
+    t.bigint "to_step_id"
+    t.bigint "aker_process_id"
+    t.boolean "default_path", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["aker_process_id"], name: "index_aker_process_module_pairings_on_aker_process_id"
+    t.index ["from_step_id"], name: "index_aker_process_module_pairings_on_from_step_id"
+    t.index ["to_step_id"], name: "index_aker_process_module_pairings_on_to_step_id"
+  end
+
+  create_table "aker_process_modules", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "aker_processes", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string "name"
+    t.integer "turnaround_time"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "aker_product_processes", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "aker_product_id"
+    t.bigint "aker_process_id"
+    t.integer "stage"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["aker_process_id"], name: "index_aker_product_processes_on_aker_process_id"
+    t.index ["aker_product_id"], name: "index_aker_product_processes_on_aker_product_id"
+  end
+
+  create_table "aker_products", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string "name"
+    t.string "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -932,6 +974,15 @@ ActiveRecord::Schema.define(version: 20171117110424) do
   create_table "pre_capture_pools", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "processes_products", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "product_id", null: false
+    t.bigint "process_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["process_id"], name: "index_processes_products_on_process_id"
+    t.index ["product_id"], name: "index_processes_products_on_product_id"
   end
 
   create_table "product_catalogues", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
