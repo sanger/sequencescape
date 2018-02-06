@@ -22,6 +22,7 @@ class BroadcastEvent::SequencingComplete < BroadcastEvent
   has_metadata(:read_length) { |lane, e| e.lane_first_request(lane).request_metadata.read_length }
   has_metadata(:pipeline) { |lane, e| e.lane_first_request(lane).pipeline.name }
   has_metadata(:team) { |lane, e| e.lane_first_request(lane).product_line }
+  has_metadata(:result) { |_, e| e.properties[:result] }
 
 
   def source_labwares(lane)

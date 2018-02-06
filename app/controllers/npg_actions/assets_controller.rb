@@ -31,7 +31,8 @@ class NpgActions::AssetsController < ApplicationController
 
   def self.action_for_qc_state(state, create_method_name, send_method_name)
     ActiveRecord::Base.transaction do
-      @lane.set_qc_state("#{state}ed")
+      state_str = "#{state}ed"
+      @lane.set_qc_state(state_str)
       create_method = @lane.events.method(create_method_name)
       send_method = EventSender.method(send_method_name)
 
@@ -45,6 +46,8 @@ class NpgActions::AssetsController < ApplicationController
       send_method.call(request.id, "", message, "","npg", :need_to_know_exceptions => true)
 
       batch.npg_set_state
+      BroadcastEvent::SequencingComplete.create!(seed: @lane,
+                                                 properties: {:result => state_str})
 
       respond_to do |format|
         format.xml  { render file: 'assets/show'}

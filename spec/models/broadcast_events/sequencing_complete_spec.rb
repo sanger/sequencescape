@@ -22,8 +22,10 @@ RSpec.describe BroadcastEvent::SequencingComplete, type: :model, broadcast_event
                             fragment_size_required_to: 200,
                             read_length: 76 })
   }
-
-  let(:event) { BroadcastEvent::SequencingComplete.create!(seed: lane, user: user, properties: {}, created_at: DateTime.parse("2018-01-12T13:37:03+00:00")) }
+  let(:event) { BroadcastEvent::SequencingComplete.create!(seed: lane,
+                                                           user: user,
+                                                           properties: {:result => :passed},
+                                                           created_at: DateTime.parse("2018-01-12T13:37:03+00:00")) }
   let(:json)  { JSON.parse(event.to_json) }
 
   it 'has the correct event type' do
@@ -64,6 +66,10 @@ RSpec.describe BroadcastEvent::SequencingComplete, type: :model, broadcast_event
   it 'has some samples' do
     allow(lane).to receive(:samples).and_return([create(:sample)])
     expect(json['event']['subjects'].collect { |subject| subject['role_type']}).to include('sample')
+  end
+
+  it 'stores the result as metadata' do
+    expect(json['event']['metadata']['result']).to eq('passed')
   end
 
   it 'will broadcast a message' do

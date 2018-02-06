@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe Lane do
   let(:lane) { create :lane }
-  let(:request) { create :sequencing_request_with_assets_and_ancestors, target_asset: lane }
+  let!(:request) { create :sequencing_request_with_assets_and_ancestors, target_asset: lane }
 
 
   it 'should find lanes that have requested aliquots' do
