@@ -1,6 +1,6 @@
 module Aker
   class Process < ApplicationRecord
-    validates :name, :turnaround_time, presence: true
+    validates :name, :tat, presence: true
     validates :name, uniqueness: true
 
     has_many :product_processes, foreign_key: :aker_process_id, dependent: :destroy
@@ -11,7 +11,7 @@ module Aker
       {
         id: id,
         name: name,
-        turnaround_time: turnaround_time,
+        tat: tat,
         process_module_pairings: process_module_pairings
       }
     end

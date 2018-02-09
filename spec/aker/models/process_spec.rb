@@ -11,7 +11,7 @@ RSpec.describe Aker::Process, type: :model, aker: true do
   end
 
   it 'is not valid without a turnaround time' do
-    expect(build(:aker_process, turnaround_time: nil)).to_not be_valid
+    expect(build(:aker_process, tat: nil)).to_not be_valid
   end
 
   it 'can have many products' do

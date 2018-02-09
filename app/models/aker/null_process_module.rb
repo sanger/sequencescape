@@ -1,8 +1,6 @@
 module Aker
   class NullProcessModule
-    def name
-      'null'
-    end
+    def name; end
 
     def null?
       true

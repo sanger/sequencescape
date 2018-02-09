@@ -10,7 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180202124837) do
+ActiveRecord::Schema.define(version: 20180209080919) do
+
+  create_table "aker_catalogues", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string "pipeline"
+    t.string "lims_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "aker_containers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "barcode"
@@ -39,7 +46,7 @@ ActiveRecord::Schema.define(version: 20180202124837) do
 
   create_table "aker_processes", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "name"
-    t.integer "turnaround_time"
+    t.integer "tat"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -59,6 +66,12 @@ ActiveRecord::Schema.define(version: 20180202124837) do
     t.string "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "aker_catalogue_id"
+    t.integer "product_version", default: 1
+    t.boolean "availability", default: true
+    t.string "requested_biomaterial_type"
+    t.string "product_class"
+    t.index ["aker_catalogue_id"], name: "index_aker_products_on_catalogue_id"
   end
 
   create_table "aker_work_orders", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

@@ -1,7 +1,7 @@
 FactoryGirl.define do
   factory :aker_process, class: Aker::Process do
     sequence(:name) { |n| "Process#{n}" }
-    turnaround_time 5
+    tat 5
 
     factory :aker_process_with_process_module_pairings do
       transient do

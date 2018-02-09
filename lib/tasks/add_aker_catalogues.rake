@@ -2,10 +2,11 @@
 
 namespace :aker do
   desc 'Create a product and all of its associated data'
-  task create_product: [:environment] do
+  task create_catalogue: [:environment] do
     ActiveRecord::Base.transaction do
-      product = Aker::Product.create(name: 'QC', description: 'Lorem Ipsum')
-      process = Aker::Process.create(name: 'QC', turnaround_time: 5)
+      catalogue = Aker::Catalogue.create(pipeline: 'WGS', lims_id: 'SQSC')
+      product = Aker::Product.create(name: 'QC', description: 'Lorem Ipsum', requested_biomaterial_type: 'blood', product_class: 'genotyping', catalogue: catalogue)
+      process = Aker::Process.create(name: 'QC', tat: 5)
 
       Aker::ProductProcess.create(product: product, process: process, stage: 1)
 
@@ -19,10 +20,10 @@ namespace :aker do
       process.process_module_pairings.build(to_step: genotyping_ddd)
       process.process_module_pairings.build(to_step: genotyping_humgen)
 
-      process.process_module_pairings.build(from_step: quantification, default_path: true)
+      process.process_module_pairings.build(from_step: quantification)
       process.process_module_pairings.build(from_step: genotyping_cgp)
       process.process_module_pairings.build(from_step: genotyping_ddd)
-      process.process_module_pairings.build(from_step: genotyping_humgen)
+      process.process_module_pairings.build(from_step: genotyping_humgen, default_path: true)
 
       process.process_module_pairings.build(from_step: quantification, to_step: genotyping_cgp, default_path: true)
       process.process_module_pairings.build(from_step: quantification, to_step: genotyping_ddd)
@@ -31,9 +32,10 @@ namespace :aker do
     end
   end
 
-  desc 'Remove all Aker Products and its associated data'
-  task remove_products: [:environment] do
+  desc 'Remove all Aker Catalogues and its associated data'
+  task remove_catalogues: [:environment] do
     ActiveRecord::Base.transaction do
+      Aker::Catalogue.delete_all
       Aker::Product.delete_all
       Aker::Process.delete_all
       Aker::ProductProcess.delete_all

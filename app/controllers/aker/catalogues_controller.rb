@@ -1,9 +1,9 @@
 module Aker
-  class ProductsController < ApplicationController
+  class CataloguesController < ApplicationController
     before_action :login_required, except: %i[show index]
 
     def index
-      render json: Aker::Product.all
+      render json: Aker::Catalogue.all
     end
 
     def show
@@ -11,7 +11,7 @@ module Aker
     end
 
     def current_resource
-      @current_resource ||= Aker::Product.find(params[:id]) if params[:id]
+      @current_resource ||= Aker::Catalogue.find(params[:id]) if params[:id]
     end
   end
 end

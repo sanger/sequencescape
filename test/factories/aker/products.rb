@@ -1,7 +1,10 @@
 FactoryGirl.define do
   factory :aker_product, class: Aker::Product do
+    catalogue { create(:aker_catalogue) }
     sequence(:name) { |n| "Product#{n}" }
     description 'This is a product'
+    requested_biomaterial_type 'blood'
+    product_class 'genotyping'
 
     factory :aker_product_with_process_module_pairings do
       transient do

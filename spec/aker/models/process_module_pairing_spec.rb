@@ -15,8 +15,8 @@ RSpec.describe Aker::ProcessModulePairing, type: :model, aker: true do
     expect(build(:aker_process_module_pairing, from_step: nil, to_step: nil)).to_not be_valid
   end
 
-  it 'when from step or to step is empty should return null' do
-    expect(build(:aker_process_module_pairing, from_step: nil).from_step.name).to eq('null')
-    expect(build(:aker_process_module_pairing, to_step: nil).to_step.name).to eq('null')
+  it 'when from step or to step is empty should return nil' do
+    expect(build(:aker_process_module_pairing, from_step: nil).from_step.name).to be_nil
+    expect(build(:aker_process_module_pairing, to_step: nil).to_step.name).to be_nil
   end
 end
