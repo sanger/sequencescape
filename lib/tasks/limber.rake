@@ -55,7 +55,8 @@ namespace :limber do
         'GBS',
         request_class: 'IlluminaHtp::Requests::GbsRequest',
         library_types: ['GBS'],
-        default_purpose: 'GBS Stock'
+        default_purpose: 'GBS Stock',
+        for_multiplexing: true
       ).build!
 
       Limber::Helper::RequestTypeConstructor.new(

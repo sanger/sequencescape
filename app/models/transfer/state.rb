@@ -8,7 +8,7 @@ module Transfer::State
   ALL_STATES = %w[started qc_complete pending passed failed cancelled].freeze
 
   def self.state_helper(names)
-    Array(names).each do |name|
+    names.each do |name|
       module_eval do
         define_method("#{name}?") { state == name }
       end
@@ -51,7 +51,7 @@ module Transfer::State
                              # Note that 'state IS NULL' is included here for plates that are stock plates, because they will not have any
                              # transfer requests coming into their wells and so we can assume they are pending (from the perspective of
                              # pulldown at least).
-                             query_conditions = 'transfer_requests_as_target.state IN (?)'
+                             query_conditions = +'transfer_requests_as_target.state IN (?)'
                              if states.include?('pending')
                                join_options << 'INNER JOIN `plate_purposes` ON (`plate_purposes`.`id` = `assets`.`plate_purpose_id`)'
                                query_conditions << ' OR (transfer_requests_as_target.state IS NULL AND plate_purposes.stock_plate=TRUE)'
@@ -59,7 +59,7 @@ module Transfer::State
 
                              joins(join_options).where([query_conditions, states])
                            else
-                             {}
+                             all
                            end
                          }
       end
