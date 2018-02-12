@@ -98,7 +98,7 @@ class Plate < Asset
   has_many :transfer_requests, through: :wells, source: :transfer_requests_as_target
   has_many :transfer_requests_as_source, through: :wells
   has_many :transfer_requests_as_target, through: :wells
-  has_many :transfer_request_collections, through: :transfer_requests_as_source
+  has_many :transfer_request_collections, ->() { distinct }, through: :transfer_requests_as_source
 
   # The default state for a plate comes from the plate purpose
   delegate :default_state, to: :plate_purpose, allow_nil: true
