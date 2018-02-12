@@ -6,7 +6,7 @@
 
 class NpgActions::AssetsController < ApplicationController
   before_action :login_required, except: [:pass, :fail]
-  before_action :find_lane, only: [:pass, :fail]
+  before_action :find_asset, only: [:pass, :fail]
   before_action :find_request, only: [:pass, :fail]
   before_action :npg_action_invalid?, only: [:pass, :fail]
   before_action :xml_valid?, only: [:pass, :fail]
@@ -32,13 +32,13 @@ class NpgActions::AssetsController < ApplicationController
   def action_for_qc_state(state, create_method_name, send_method_name)
     ActiveRecord::Base.transaction do
       state_str = "#{state}ed"
-      @lane.set_qc_state(state_str)
-      create_method = @lane.events.method(create_method_name)
+      @asset.set_qc_state(state_str)
+      create_method = @asset.events.method(create_method_name)
       send_method = EventSender.method(send_method_name)
 
       create_method.call(params[:qc_information][:message] || 'No reason given')
 
-      request = @lane.source_request
+      request = @asset.source_request
       batch = request.batch
       raise ActiveRecord::RecordNotFound, 'Unable to find a batch for the Request' if (batch.nil?)
 
@@ -46,7 +46,7 @@ class NpgActions::AssetsController < ApplicationController
       send_method.call(request.id, '', message, '', 'npg', need_to_know_exceptions: true)
 
       batch.npg_set_state
-      BroadcastEvent::SequencingComplete.create!(seed: @lane,
+      BroadcastEvent::SequencingComplete.create!(seed: @asset,
                                                  properties: { result: state_str })
 
       respond_to do |format|
@@ -56,14 +56,14 @@ class NpgActions::AssetsController < ApplicationController
     end
   end
 
-  def find_lane
-    @lane ||= Lane.find(params[:asset_id])
+  def find_asset
+    @asset ||= Asset.find(params[:asset_id])
   end
 
   def find_request
-    @lane ||= Lane.find(params[:asset_id])
-    if ((@lane.has_many_requests?) || (@lane.source_request.nil?))
-      raise ActiveRecord::RecordNotFound, "Unable to find a request for Lane: #{params[:id]}"
+    @asset ||= Asset.find(params[:asset_id])
+    if ((@asset.has_many_requests?) || (@asset.source_request.nil?))
+      raise ActiveRecord::RecordNotFound, "Unable to find a request for Asset: #{params[:id]}"
     end
   end
 
@@ -72,8 +72,8 @@ class NpgActions::AssetsController < ApplicationController
   end
 
   def npg_action_invalid?
-    @lane ||= Lane.find(params[:asset_id])
-    request = @lane.source_request
+    @asset ||= Asset.find(params[:asset_id])
+    request = @asset.source_request
     npg_events = Event.npg_events(request.id)
     raise NPGActionInvalid, 'NPG user run this action. Please, contact USG' if npg_events.exists?
   end
