@@ -45,7 +45,7 @@ class NpgActions::AssetsController < ApplicationController
       message = "#{state}ed manual QC".capitalize
       send_method.call(request.id, '', message, '', 'npg', need_to_know_exceptions: true)
 
-      batch.npg_set_state
+      batch.npg_set_state if (state == 'pass')
       BroadcastEvent::SequencingComplete.create!(seed: @asset,
                                                  properties: { result: state_str })
 
