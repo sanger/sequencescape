@@ -10,7 +10,7 @@ class IlluminaHtp::StockTubePurpose < Tube::Purpose
   end
 
   def transition_to(tube, state, _user, _ = nil, customer_accepts_responsibility = false)
-    tube.requests_as_target.where.not(state: terminated_states).find_each do |request|
+    tube.transfer_requests_as_target.where.not(state: terminated_states).find_each do |request|
       request.transition_to(state)
     end
     outer_requests_for(tube).each do |request|

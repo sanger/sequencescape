@@ -391,6 +391,20 @@ class Request < ApplicationRecord
     {}
   end
 
+  #
+  # Passed into cloned aliquots at the beginning of a pipeline to set
+  # appropriate options
+  #
+  #
+  # @return [Hash] A hash of aliquot attributes
+  #
+  def aliquot_attributes
+    {
+      study_id: initial_study_id,
+      project_id: initial_project_id
+    }
+  end
+
   def get_value(request_information_type)
     return '' unless request_metadata.respond_to?(request_information_type.key.to_sym)
     value = request_metadata.send(request_information_type.key.to_sym)

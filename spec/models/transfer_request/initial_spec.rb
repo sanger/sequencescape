@@ -32,6 +32,12 @@ describe TransferRequest::Initial do
       expect(target_asset.aliquots.first.project).to eq(example_project)
     end
 
+    it 'sets appropriate metadata on the aliquots' do
+      subject
+      expect(target_asset.aliquots.first.library_type).to eq(library_request.library_type)
+      expect(target_asset.aliquots.first.insert_size).to eq(library_request.insert_size)
+    end
+
     it 'starts the library request when started' do
       subject.start!
       expect(library_request.reload.state).to eq('started')

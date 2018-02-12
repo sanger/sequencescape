@@ -22,10 +22,7 @@ class TransferRequest::Initial < TransferRequest
     def perform_transfer_of_contents
       return if asset.failed? || asset.cancelled?
       target_asset.aliquots << asset.aliquots.map do |a|
-        aliquot = a.dup
-        aliquot.study_id = outer_request.initial_study_id
-        aliquot.project_id = outer_request.initial_project_id
-        aliquot
+        a.dup(outer_request.aliquot_attributes)
       end
     end
     private :perform_transfer_of_contents

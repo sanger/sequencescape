@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180115153147) do
+ActiveRecord::Schema.define(version: 20180212151213) do
 
   create_table "aker_containers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "barcode"
@@ -50,7 +50,9 @@ ActiveRecord::Schema.define(version: 20180115153147) do
     t.integer "bait_library_id"
     t.integer "tag2_id", default: -1
     t.boolean "suboptimal", default: false, null: false
+    t.bigint "primer_panel_id"
     t.index ["library_id"], name: "index_aliquots_on_library_id"
+    t.index ["primer_panel_id"], name: "index_aliquots_on_primer_panel_id"
     t.index ["receptacle_id", "tag_id", "tag2_id"], name: "aliquot_tags_and_tag2s_are_unique_within_receptacle", unique: true
     t.index ["sample_id"], name: "index_aliquots_on_sample_id"
     t.index ["study_id"], name: "index_aliquots_on_study_id"
@@ -1927,6 +1929,7 @@ ActiveRecord::Schema.define(version: 20180115153147) do
     t.index ["pipeline_id"], name: "index_workflows_on_pipeline_id"
   end
 
+  add_foreign_key "aliquots", "primer_panels"
   add_foreign_key "billing_items", "requests"
   add_foreign_key "billing_products", "billing_product_catalogues"
   add_foreign_key "qc_files", "assets"
