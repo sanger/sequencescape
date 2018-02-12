@@ -687,6 +687,8 @@ Sequencescape::Application.routes.draw do
         post 'cancel'
       end
     end
+
+    resources :catalogues, only: [:index, :show]
   end
   resources :billing_reports, only: [:new, :create]
 

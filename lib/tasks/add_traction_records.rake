@@ -38,7 +38,7 @@ namespace :traction do
   end
 
   desc 'Create the traction submission templates'
-  task create_submission_templates: %i(environment create_request_types) do
+  task create_submission_templates: %i[environment create_request_types] do
     puts 'Creating submission templates....'
     ActiveRecord::Base.transaction do
       unless SubmissionTemplate.where(name: 'Traction - GridION').exists?
