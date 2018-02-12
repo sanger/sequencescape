@@ -11,7 +11,7 @@ module Aker
       {
         id: id,
         name: name,
-        tat: tat,
+        TAT: tat,
         process_module_pairings: process_module_pairings
       }
     end

@@ -56,6 +56,7 @@ RSpec.describe 'Get Aker Catalogue', type: :request, aker: true do
       expect(json.length).to eq(1)
       process = json.first
       expect(process['name']).to eq(catalogue.products.first.processes.first.name)
+      expect(process['TAT']).to eq(catalogue.products.first.processes.first.tat)
     end
 
     it 'contains the process module pairings for each process' do
