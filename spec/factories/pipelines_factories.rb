@@ -226,6 +226,7 @@ FactoryGirl.define do
     after(:build) do |request|
       request.request_metadata.fragment_size_required_from = 300
       request.request_metadata.fragment_size_required_to   = 500
+      request.request_metadata.library_type                = create(:library_type)
     end
   end
 

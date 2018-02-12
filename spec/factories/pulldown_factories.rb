@@ -256,6 +256,7 @@ FactoryGirl.define do
       request.request_metadata.fragment_size_required_from = 100
       request.request_metadata.fragment_size_required_to   = 400
       request.request_metadata.bait_library                = BaitLibrary.first || create(:bait_library)
+      request.request_metadata.library_type                = create(:library_type)
     end
   end
 
