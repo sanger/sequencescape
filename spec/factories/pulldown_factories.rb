@@ -236,10 +236,12 @@ FactoryGirl.define do
   factory(:bait_library_supplier, class: BaitLibrary::Supplier) do
     sequence(:name) { |i| "Bait Library Type #{i}" }
   end
+
   factory(:bait_library_type) do
     sequence(:name) { |i| "Bait Library Supplier #{i}" }
     category 'custom'
   end
+
   factory(:bait_library) do
     bait_library_supplier
     bait_library_type
