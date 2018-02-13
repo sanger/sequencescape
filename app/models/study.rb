@@ -306,6 +306,10 @@ class Study < ApplicationRecord
       )
   }
 
+  scope :by_state, ->(state) { where(state: state) }
+
+  scope :by_user, ->(login) { joins(:roles, :users).where(roles: { name: ['follower', 'manager', 'owner'], users: { login: [login] } }) }
+
   # Delegations
   alias_attribute :friendly_name, :name
 
