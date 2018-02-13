@@ -1039,8 +1039,6 @@ Rails/SkipsModelValidations:
     - 'features/support/step_definitions/transfer_steps.rb'
     - 'lib/request_class_deprecator.rb'
     - 'lib/sequencing_qc_batch.rb'
-    - 'lib/tag_substitution.rb'
-
 # Offense count: 79
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: strict, flexible
