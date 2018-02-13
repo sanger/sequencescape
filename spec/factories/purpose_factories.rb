@@ -21,6 +21,7 @@ FactoryGirl.define do
     size               '8'
     asset_shape        { AssetShape.find_by!(name: 'StripTubeColumn') }
     barcode_for_tecan  'ean13_barcode'
+    target_type 'StripTube'
   end
 
   factory :plate_purpose do
