@@ -6,10 +6,6 @@
 require_dependency 'tube/purpose'
 
 class IlluminaHtp::MxTubePurpose < Tube::Purpose
-  def created_with_request_options(tube)
-    tube.requests_as_target.where_is_a?(Request::LibraryCreation).first.try(:request_options_for_creation) || {}
-  end
-
   def transition_to(tube, state, user, _ = nil, customer_accepts_responsibility = false)
     transition_customer_requests(tube, mappings[state], user, customer_accepts_responsibility) if mappings[state]
     tube.transfer_requests_as_target.each { |request| request.transition_to(state) }

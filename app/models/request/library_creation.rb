@@ -70,10 +70,6 @@ class Request::LibraryCreation < CustomerRequest
 
   include Request::CustomerResponsibility
 
-  def request_options_for_creation
-    Hash[[:fragment_size_required_from, :fragment_size_required_to, :library_type].map { |f| [f, request_metadata[f]] }]
-  end
-
   def library_creation?
     true
   end

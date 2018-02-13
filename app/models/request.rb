@@ -378,19 +378,6 @@ class Request < ApplicationRecord
     []
   end
 
-  # The options that are required for creation.  In other words, the truly required options that must
-  # be filled in and cannot be changed if the asset we're creating is used downstream.  For example,
-  # a library tube definitely has to have fragment_size_required_from, fragment_size_required_to and
-  # library_type and these cannot be changed once the library has been made.
-  #
-  #--
-  # Side note: really this information should be stored on the asset itself, which suggests there is
-  # a discrepancy in our model somewhere.
-  #++
-  def request_options_for_creation
-    {}
-  end
-
   #
   # Passed into cloned aliquots at the beginning of a pipeline to set
   # appropriate options

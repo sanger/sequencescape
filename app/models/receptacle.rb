@@ -120,6 +120,10 @@ class Receptacle < Asset
     end
   end
 
+  def created_with_request_options
+    aliquots.first&.created_with_request_options || {}
+  end
+
   # Library types are still just a string on aliquot.
   def library_types
     aliquots.pluck(:library_type).uniq

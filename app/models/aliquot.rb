@@ -80,6 +80,14 @@ class Aliquot < ApplicationRecord
     aliquot_index.try(:aliquot_index)
   end
 
+  def created_with_request_options
+    {
+      fragment_size_required_from: insert_size_from,
+      fragment_size_required_to: insert_size_to,
+      library_type: library_type
+    }
+  end
+
   # Validating the uniqueness of tags in rails was causing issues, as it was resulting the in the preform_transfer_of_contents
   # in transfer request to fail, without any visible sign that something had gone wrong. This essentially meant that tag clashes
   # would result in sample dropouts. (presumably because << triggers save not save!)

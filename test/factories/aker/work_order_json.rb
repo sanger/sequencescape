@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryGirl.define do
   factory :aker_work_order_json, class: Hash do
     skip_create
@@ -22,9 +24,7 @@ FactoryGirl.define do
     initialize_with { attributes.stringify_keys }
 
     after(:build) do |work_order, evaluator|
-      if evaluator.study.present?
-        work_order['data_release_uuid'] = evaluator.study.uuid
-      end
+      work_order['data_release_uuid'] = evaluator.study.uuid if evaluator.study.present?
     end
   end
 end

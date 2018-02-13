@@ -52,8 +52,4 @@ class LibraryCreationRequest < CustomerRequest
       insert_size: insert_size
     }
   end
-
-  def request_options_for_creation
-    Hash[[:fragment_size_required_from, :fragment_size_required_to, :library_type, :pcr_cycles].map { |f| [f, request_metadata[f]] }]
-  end
 end
