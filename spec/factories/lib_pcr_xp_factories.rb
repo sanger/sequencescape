@@ -34,7 +34,7 @@ FactoryGirl.define do
 
   factory :lib_pcr_xp_plate_with_tubes, parent: :plate do
     size 96
-    plate_purpose { |_| PlatePurpose.find_by(name: 'Lib PCR-XP') }
+    plate_purpose
 
     after(:create) do |plate|
       plate.wells = Map.where_description(%w[A1 B1 C1])

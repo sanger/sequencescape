@@ -375,6 +375,7 @@ FactoryGirl.define do
   end
 
   factory :strip_tube_creation_task do
+    purpose_id { create(:plate_purpose, name: 'Strip Tube Purpose').id }
   end
 
   factory :plate_transfer_task do
