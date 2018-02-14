@@ -28,11 +28,13 @@ module Limber::Helper
     def initialize(prefix,
                    request_class: DEFAULT_REQUEST_CLASS,
                    library_types: DEFAULT_LIBRARY_TYPES,
-                   default_purpose: DEFAULT_PURPOSE)
+                   default_purpose: DEFAULT_PURPOSE,
+                   for_multiplexing: false)
       @prefix = prefix
       @request_class = request_class
       @library_types = library_types
       @default_purpose = default_purpose
+      @for_multiplexing = for_multiplexing
     end
 
     def key
@@ -53,7 +55,8 @@ module Limber::Helper
         initial_state: 'pending',
         billable: true,
         product_line: ProductLine.find_by(name: PRODUCTLINE),
-        request_purpose: RequestPurpose.standard
+        request_purpose: RequestPurpose.standard,
+        for_multiplexing: @for_multiplexing
       ) do |rt|
         rt.acceptable_plate_purposes << Purpose.find_by!(name: @default_purpose)
         rt.library_types = @library_types.map { |name| LibraryType.find_or_create_by(name: name) }
