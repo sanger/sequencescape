@@ -49,7 +49,6 @@ module Limber::Helper
         name: "Limber #{@prefix}",
         key: key,
         request_class_name: @request_class,
-        for_multiplexing: false,
         asset_type: 'Well',
         order: 1,
         initial_state: 'pending',
