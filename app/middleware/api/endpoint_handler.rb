@@ -186,6 +186,7 @@ module Api
           request.service = self
           request.path    = parts
           request.json    = @json
+          Rails.logger.info("API[payload]: #{@json}")
           yield(request)
         end
 
