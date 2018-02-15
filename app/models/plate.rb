@@ -161,7 +161,7 @@ class Plate < Asset
   # May not have been started yet
   has_many :waiting_submissions, -> { distinct }, through: :well_requests_as_source, source: :submission
   # The requests which were being processed to make the plate
-  has_many :in_progress_submissions, -> { distinct }, through: :transfer_requests_as_source, source: :submission
+  has_many :in_progress_submissions, -> { distinct }, through: :transfer_requests_as_target, source: :submission
 
   def submission_ids
     @siat ||= in_progress_submissions.pluck(:submission_id)
