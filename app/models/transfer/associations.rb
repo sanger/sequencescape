@@ -30,8 +30,6 @@ module Transfer::Associations
           .joins("LEFT OUTER JOIN `transfers` outgoing_transfers ON outgoing_transfers.`source_id`=#{base.quoted_table_name}.`id`")
           .where('outgoing_transfers.source_id IS NULL')
       }
-
-      scope :including_used_plates?, ->(filter) { filter ? all : with_no_outgoing_transfers }
     end
   end
 end

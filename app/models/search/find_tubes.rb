@@ -12,7 +12,7 @@ class Search::FindTubes < Search
                   end
 
     Tube.with_purpose(purpose_ids)
-        .including_used_plates?(criteria['include_used'])
+        .include_plates_with_children(criteria['include_used'])
         .includes(:transfer_requests_as_target, aliquots: Io::Aliquot::PRELOADS)
         .page(criteria['page']).limit(criteria['limit']).order(id: :desc)
   end
