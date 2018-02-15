@@ -163,7 +163,6 @@ class Plate < Asset
   # The requests which were being processed to make the plate
   has_many :in_progress_submissions, -> { distinct }, through: :transfer_requests_as_source, source: :submission
 
-
   def submission_ids
     @siat ||= in_progress_submissions.pluck(:submission_id)
   end
