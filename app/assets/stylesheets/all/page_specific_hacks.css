@@ -5,3 +5,12 @@
 /* Formtastic automaticall sizes our elements. This doesn't play nicely with some pages */
 .formtastic.plates .stringish input { width: 100%; }
 .formtastic.plates .text textarea { width: 100%; }
+
+/* Select2 custom result elements */
+#select2-plates_dilution_factor-results.select2-results__options li { padding: 0px 0px 0px 0px; }
+#select2-plates_dilution_factor-results.select2-results__options li div { padding: 6px 6px 6px 6px; }
+
+li div.highlighted-val {
+	background-color: green;
+	color: white;
+}
