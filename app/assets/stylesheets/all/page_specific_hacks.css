@@ -6,11 +6,7 @@
 .formtastic.plates .stringish input { width: 100%; }
 .formtastic.plates .text textarea { width: 100%; }
 
-/* Select2 custom result elements */
-#select2-plates_dilution_factor-results.select2-results__options li { padding: 0px 0px 0px 0px; }
-#select2-plates_dilution_factor-results.select2-results__options li div { padding: 6px 6px 6px 6px; }
-
-li div.highlighted-val {
+#select2-plates_dilution_factor-results li:first-child {
 	background-color: green;
 	color: white;
 }

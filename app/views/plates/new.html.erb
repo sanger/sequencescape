@@ -30,7 +30,7 @@
     <% end %>
   };
   var dilutionFactorsNodes = $("#plates_dilution_factor");
-  var defaultOption = "<option highlighted-val='false' value='1.0'>1.0</option>";
+  var defaultOption = "<option value='1.0'>1.0</option>";
 
   dilutionFactorsNodes.html(defaultOption);
 
@@ -40,9 +40,8 @@
       var validDilutionFactors = plate_creator_parameters[name].valid_dilution_factors;
       for (var i=0; i<validDilutionFactors.length; i++) {
         var val = validDilutionFactors[i]
-        dilutionFactorsNodes.append("<option highlighted-val='false' value='"+val+"'>"+val+"</option>");
+        dilutionFactorsNodes.append("<option value='"+val+"'>"+val+"</option>");
       }
-      dilutionFactorsNodes.children().first()[0].setAttribute('highlighted-val', 'true');
     }
     else {
       dilutionFactorsNodes.append(defaultOption);
@@ -55,20 +54,8 @@
   $("#plates_creator_id").change();
 })(jQuery)
 
-function formatState (state) {
-  if (!state.element) return;
-  var resultClass = 'basic-val';
-  if ($(state.element).attr('highlighted-val') == 'true')
-    resultClass = 'highlighted-val';
-  $state = $(
-    '<div class="' + resultClass + '">' + state.text + '</div>'
-  );
-  return $state;
-};
-
 $(document).ready(function () {
-  $('#plates_dilution_factor').select2({templateResult: formatState,
-                                        theme: "bootstrap",
+  $('#plates_dilution_factor').select2({theme: "bootstrap",
                                         minimumResultsForSearch: -1});
 });
 </script>
