@@ -96,7 +96,7 @@ class PlatePurpose < Purpose
     def transition_state_requests(wells, state)
       wells = wells.includes(
         requests_as_target: { asset: :aliquots, target_asset: :aliquots },
-        transfer_requests_as_target: { asset: :aliquots, target_asset: :aliquots }
+        transfer_requests_as_target: { asset: %i[aliquots requests], target_asset: :aliquots }
       )
       wells.each do |w|
         w.requests_as_target.each { |r| r.transition_to(state) }

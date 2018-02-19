@@ -102,6 +102,11 @@ class TransferRequest < ApplicationRecord
     asset.outer_request(submission_id)
   end
 
+  # A sibling request is a customer request out of the same asset and in the same submission
+  def sibling_requests
+    asset.requests.select { |r| r.customer_request? && r.submission_id == submission_id }
+  end
+
   private
 
   # Determines the most likely event that should be fired when transitioning between the two states.  If there is
@@ -124,7 +129,9 @@ class TransferRequest < ApplicationRecord
 
   # Run on start, or if start is bypassed
   def on_started
-    nil # Do nothing
+    sibling_requests.each do |sr|
+      sr.start! if sr.may_start?
+    end
   end
 
   def on_failed
