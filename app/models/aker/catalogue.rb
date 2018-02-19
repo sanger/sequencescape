@@ -25,7 +25,7 @@ module Aker
     private
 
     def broadcast_catalogue
-      Aker.broadcast_catalogue(self.to_json)
+      Aker.broadcast_catalogue(to_json)
     end
   end
 end
