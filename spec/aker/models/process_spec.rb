@@ -24,4 +24,12 @@ RSpec.describe Aker::Process, type: :model, aker: true do
     process_with_pairings = create(:aker_process_with_process_module_pairings, number_of_pairs: 5)
     expect(process_with_pairings.process_module_pairings.count).to eq(5)
   end
+
+  it 'json can include stage' do
+    process = create(:aker_process)
+    product = create(:aker_product)
+    product_process = create(:aker_product_process, process: process, product: product)
+    json = process.as_json(product_id: product.id)
+    expect(json[:stage]).to eq(product_process.stage)
+  end
 end

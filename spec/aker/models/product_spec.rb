@@ -39,4 +39,11 @@ RSpec.describe Aker::Product, type: :model, aker: true do
     expect(product.availability).to be_falsey
     expect(product.product_version).to eq(2)
   end
+
+  it 'json contains stages' do
+    product = create(:aker_product)
+    create_list(:aker_product_process, 3, product: product)
+    json = product.as_json
+    expect(json[:processes].all? { |p| p[:stage].present? }).to be_truthy
+  end
 end

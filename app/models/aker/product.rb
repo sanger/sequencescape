@@ -19,7 +19,7 @@ module Aker
         availability: availability,
         requested_biomaterial_type: requested_biomaterial_type,
         product_class: product_class,
-        processes: processes
+        processes: processes.collect { |p| p.as_json(product_id: id) }
       }
     end
 
