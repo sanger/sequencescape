@@ -43,6 +43,8 @@ class TransferRequest < ApplicationRecord
     # as being more concise as it has fewer states.
     state :pending, initial: true
     state :started
+    state :processed_1
+    state :processed_2
     state :failed, enter: :on_failed
     state :passed
     state :qc_complete
@@ -53,6 +55,14 @@ class TransferRequest < ApplicationRecord
       transitions to: :started, from: [:pending], after: :on_started
     end
 
+    event :process_1 do
+      transitions to: :processed_1, from: [:started]
+    end
+
+    event :process_2 do
+      transitions to: :processed_2, from: [:processed_1]
+    end
+
     event :pass do
       # Jumping straight to passed moves through an implied started state.
       transitions to: :passed, from: :pending, after: :on_started
@@ -60,11 +70,11 @@ class TransferRequest < ApplicationRecord
     end
 
     event :fail do
-      transitions to: :failed, from: [:pending, :started, :passed]
+      transitions to: :failed, from: [:pending, :started, :processed_1, :processed_2, :passed]
     end
 
     event :cancel do
-      transitions to: :cancelled, from: [:started, :passed, :qc_complete]
+      transitions to: :cancelled, from: [:started, :processed_1, :processed_2, :passed, :qc_complete]
     end
 
     event :cancel_before_started do
