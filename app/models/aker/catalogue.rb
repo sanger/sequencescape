@@ -4,6 +4,8 @@ module Aker
 
     has_many :products, foreign_key: :aker_catalogue_id, dependent: :destroy
 
+    after_update :broadcast_catalogue
+
     def url
       'dev.psd.sanger.ac.uk'
     end
@@ -18,6 +20,12 @@ module Aker
           products: products
         }
       }
+    end
+
+    private
+
+    def broadcast_catalogue
+      Aker.broadcast_catalogue(self.to_json)
     end
   end
 end

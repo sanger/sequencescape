@@ -2,6 +2,7 @@ development: &DEV
   urls:
     work_orders: http://localhost:3000/api/v1
   bunny:
+    broadcast: true
     host: 1.2.3.4
     vhost: test
     user: sequencescape 
@@ -12,6 +13,8 @@ staging:
 
 test:
   <<: *DEV
+  bunny:
+    broadcast: true
 
 production:
   <<: *DEV

@@ -14,4 +14,11 @@ RSpec.describe Aker::Catalogue, type: :model, aker: true do
     create_list(:aker_product, 3, catalogue: catalogue)
     expect(catalogue.products.count).to eq(3)
   end
+
+  it 'will broadcast a message' do
+    catalogue = create(:aker_catalogue)
+
+    expect(Aker).to receive(:broadcast_catalogue).with(catalogue.to_json)
+    catalogue.save
+  end
 end
