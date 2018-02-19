@@ -1,6 +1,11 @@
 development: &DEV
   urls:
     work_orders: http://localhost:3000/api/v1
+  bunny:
+    host: 1.2.3.4
+    vhost: test
+    user: sequencescape 
+    password: password
 
 staging:
   <<: *DEV

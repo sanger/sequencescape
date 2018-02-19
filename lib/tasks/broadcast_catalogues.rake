@@ -3,7 +3,7 @@ require 'bunny'
 namespace :aker do
   desc 'Broadcast a catalogue and all of its data.'
   task broadcast_catalogues: [:environment] do
-    conn = Bunny.new(host: '172.27.87.187', vhost: 'aker', user: 'sequencescape', password: 'LGwbFkQpMWkf66Lq')
+    conn = Bunny.new(Rails.configuration.aker['bunny'])
     conn.start
     ch = conn.create_channel
     q = ch.queue
