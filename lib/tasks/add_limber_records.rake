@@ -40,20 +40,20 @@ namespace :limber do
 
       Limber::Helper::RequestTypeConstructor.new(
         'RNAA',
-        library_types: 'RNA PolyA',
+        library_types: ['RNA PolyA'],
         default_purpose: 'LBR Cherrypick'
       ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
         'ReISC',
         request_class: 'Pulldown::Requests::ReIscLibraryRequest',
-        library_types: 'Agilent Pulldown',
+        library_types: ['Agilent Pulldown'],
         default_purpose: 'LB Lib PCR-XP'
       ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
         'scRNA',
-        library_types: 'scRNA',
+        library_types: ['scRNA'],
         default_purpose: 'scRNA Stock'
       ).build!
 

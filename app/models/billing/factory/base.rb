@@ -10,6 +10,8 @@ module Billing
 
       validates :request, :passed_date, :billing_product, presence: true
 
+      delegate :name, to: :billing_product, prefix: true
+
       def initialize(attributes = {})
         super
 
@@ -38,12 +40,11 @@ module Billing
 
       # billing_product_code will be received from Agresso based on billing_product name
       def billing_product_code
-        AgressoProduct.billing_product_code(billing_product.name)
+        # this is been disabled because of Agresso performance issues
+        # AgressoProduct.billing_product_code(billing_product.name)
       rescue
         nil
       end
-
-      delegate :name, to: :billing_product, prefix: true
 
       def billing_product_description
         billing_product.name

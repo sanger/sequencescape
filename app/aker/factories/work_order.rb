@@ -6,15 +6,15 @@ module Aker
     class WorkOrder
       include ActiveModel::Model
 
-      ATTRIBUTES = %i[work_order_id product_name product_version product_uuid proposal_id proposal_name cost_code materials comment desired_date status].freeze
+      ATTRIBUTES = %i[work_order_id product_name product_version product_uuid project_uuid project_name cost_code materials comment desired_date status data_release_uuid].freeze
       DEFAULT_ATTRIBUTES = { materials: {} }.freeze
 
       attr_accessor(*ATTRIBUTES)
       attr_reader :aker_id, :model
 
-      validates_presence_of :aker_id, :materials
+      validates_presence_of :aker_id, :data_release_uuid, :materials
 
-      validate :check_materials
+      validate :check_materials, :check_study
 
       def self.create(params)
         new(params).create
@@ -78,6 +78,15 @@ module Aker
           material.errors.each do |key, value|
             errors.add key, value
           end
+        end
+      end
+
+      def check_study
+        study = Uuid.find_by(external_id: data_release_uuid)
+        if study.nil?
+          errors.add(:data_release_uuid, 'is unknown')
+        else
+          errors.add(:data_release_uuid, 'is not active') unless Study.find(study.resource_id).active?
         end
       end
 
