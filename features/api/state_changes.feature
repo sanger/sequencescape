@@ -66,7 +66,6 @@ And I have a "full" authorised user with the key "cucumber"
     Then the state of the plate "Destination plate" should be "<state>"
      And the state of all the transfer requests to the plate "Destination plate" should be "<state>"
      And the request type of all the transfer requests to the the plate "Destination plate" should be "Transfer"
-     #And the state of all the pulldown library creation requests from the plate "Source plate" should be "<library state>"
 
     Scenarios:
       | state     |
@@ -254,8 +253,8 @@ And I have a "full" authorised user with the key "cucumber"
     Scenarios:
       | state     | library state |
       | pending   | pending       |
-      | started   | pending       |
-      | passed    | pending       |
+      | started   | started       |
+      | passed    | started       |
 
     Scenarios:
       | state   | library state |

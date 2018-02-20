@@ -119,7 +119,7 @@ class PlatePurpose < Purpose
 
   module Overrideable
     def transition_state_requests(wells, state)
-      wells = wells.includes(requests_as_target: { asset: :aliquots, target_asset: :aliquots })
+      wells = wells.includes(requests_as_target: { asset: %i[aliquots requests], target_asset: :aliquots })
       wells.each { |w| w.requests_as_target.each { |r| r.transition_to(state) } }
     end
     private :transition_state_requests
