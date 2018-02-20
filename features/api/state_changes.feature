@@ -15,7 +15,6 @@ Feature: Access state changes through the API
     Given a user with UUID "99999999-8888-7777-6666-555555555555" exists
     Given the plate barcode webservice returns "1000001"
       And the plate barcode webservice returns "1000002"
-    Given transfers between "Stock plate" and "Pulldown QC plate" plates are standard transfers
     Given a "Stock plate" plate called "Source plate" exists
       And 2 wells on the plate "Source plate" have unique samples
       And a "Pulldown QC plate" plate called "Destination plate" exists as a child of "Source plate"

@@ -63,9 +63,7 @@ ActiveRecord::Base.transaction do
   end
 
   IlluminaB::PlatePurposes.create_plate_purposes
-  IlluminaB::PlatePurposes.create_branches
   IlluminaHtp::PlatePurposes.create_plate_purposes
-  IlluminaHtp::PlatePurposes.create_branches
 
   Pulldown::PlatePurposes.create_purposes(Pulldown::PlatePurposes::PLATE_PURPOSE_FLOWS.last)
 

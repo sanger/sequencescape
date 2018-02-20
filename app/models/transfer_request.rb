@@ -9,15 +9,12 @@
 # Every request "moving" an asset from somewhere to somewhere else without really transforming it
 # (chemically) as, cherrypicking, pooling, spreading on the floor etc
 class TransferRequest < ApplicationRecord
-  include DefaultAttributes
   include Uuid::Uuidable
   include AASM
   extend Request::Statemachine::ClassMethods
 
   # States which are still considered to be processable (ie. not failed or cancelled)
   ACTIVE_STATES = %w[pending started passed qc_complete].freeze
-
-  self.inheritance_column = 'sti_type'
 
   has_many :transfer_request_collection_transfer_requests, dependent: :destroy
   has_many :transfer_request_collections, through: :transfer_request_collection_transfer_requests, inverse_of: :transfer_requests
@@ -26,6 +23,8 @@ class TransferRequest < ApplicationRecord
   # QC might be performed on a source asset that is a well, in which case we'd like to load it as such.
   belongs_to :target_asset, class_name: 'Receptacle', inverse_of: :transfer_requests_as_source, required: true
   belongs_to :asset, class_name: 'Receptacle', inverse_of: :transfer_requests_as_source, required: true
+
+  has_many :associated_requests, through: :asset, source: :requests_as_source
 
   belongs_to :order
   belongs_to :submission
@@ -82,10 +81,6 @@ class TransferRequest < ApplicationRecord
     end
   end
 
-  def self.subclass(name)
-    TransferRequest.const_get(name.to_s.classify)
-  end
-
   # validation method
   def source_and_target_assets_are_different
     return true unless asset_id.present? && asset_id == target_asset_id
@@ -104,7 +99,11 @@ class TransferRequest < ApplicationRecord
 
   # A sibling request is a customer request out of the same asset and in the same submission
   def sibling_requests
-    asset.requests.select { |r| r.customer_request? && r.submission_id == submission_id }
+    if associated_requests.loaded?
+      associated_requests.select { |r| r.submission_id == submission_id }
+    else
+      associated_requests.where(submission: submission_id)
+    end
   end
 
   private
@@ -119,12 +118,19 @@ class TransferRequest < ApplicationRecord
 
   # after_create callback method
   def perform_transfer_of_contents
-    target_asset.aliquots << asset.aliquots.map(&:dup) unless asset.failed? || asset.cancelled?
+    return if asset.failed? || asset.cancelled?
+    target_asset.aliquots << asset.aliquots.map do |a|
+      a.dup(aliquot_attributes)
+    end
   rescue ActiveRecord::RecordNotUnique => exception
     # We'll specifically handle tag clashes here so that we can produce more informative messages
     raise exception unless /aliquot_tags_and_tag2s_are_unique_within_receptacle/.match?(exception.message)
     errors.add(:asset, "contains aliquots which can't be transferred due to tag clash")
     raise Aliquot::TagClash, self
+  end
+
+  def aliquot_attributes
+    sibling_requests.first&.aliquot_attributes || {}
   end
 
   # Run on start, or if start is bypassed

@@ -19,9 +19,4 @@ class Transfer::BetweenSpecificTubes < Transfer
     yield(source, destination)
   end
   private :each_transfer
-
-  def transfer_request_class_between(_ignored_a, _ignored_b)
-    destination.transfer_request_class_from(source)
-  end
-  private :transfer_request_class_between
 end

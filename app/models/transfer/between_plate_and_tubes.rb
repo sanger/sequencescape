@@ -121,11 +121,6 @@ class Transfer::BetweenPlateAndTubes < Transfer
     "#{plate_name} #{first}:#{last}"
   end
 
-  # Request type is based on the destination tube from the source plate
-  def transfer_request_class_between(_, destination)
-    destination.transfer_request_class_from(source)
-  end
-
   def build_asset_links
     AssetLink::Job.create(source, destinations)
   end

@@ -43,7 +43,7 @@ class Transfer < ApplicationRecord
     # Note: submission is optional. Unlike methods, blocks don't support default argument
     # values, but any attributes not yielded will be nil. Apparently 1.9 is more consistent
     each_transfer do |source, destination, submission|
-      transfer_request_class_between(source, destination).create!(
+      TransferRequest.create!(
         asset: source,
         target_asset: destination,
         submission_id: submission || source.pool_id

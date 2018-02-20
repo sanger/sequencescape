@@ -246,41 +246,7 @@ end
   PlatePurpose.create!(name: "Aliquot #{index}", stock_plate: true, cherrypickable_target: true)
 end
 
-# Build the links between the parent and child plate purposes
-relationships = {
-  'Working Dilution'    => ['Working Dilution', 'Pico Dilution'],
-  'Pico Dilution'       => ['Working Dilution', 'Pico Dilution'],
-  'Pico Assay A'        => ['Pico Assay A', 'Pico Assay B'],
-  'Pulldown'            => ['Pulldown Aliquot'],
-  'Dilution Plates'     => ['Working Dilution', 'Pico Dilution'],
-  'Pico Assay Plates'   => ['Pico Assay A', 'Pico Assay B'],
-  'Pico Assay B'        => ['Pico Assay A', 'Pico Assay B'],
-  'Gel Dilution Plates' => ['Gel Dilution'],
-  'Pulldown Aliquot'    => ['Sonication'],
-  'Sonication'          => ['Run of Robot'],
-  'Run of Robot'        => ['EnRichment 1'],
-  'EnRichment 1'        => ['EnRichment 2'],
-  'EnRichment 2'        => ['EnRichment 3'],
-  'EnRichment 3'        => ['EnRichment 4'],
-  'EnRichment 4'        => ['Sequence Capture'],
-  'Sequence Capture'    => ['Pulldown PCR'],
-  'Pulldown PCR'        => ['Pulldown qPCR']
-}
-
 ActiveRecord::Base.transaction do
-  # All of the PlatePurpose names specified in the keys of RELATIONSHIPS have complicated relationships.
-  # The others are simply maps to themselves.
-  PlatePurpose.where(['name NOT IN (?)', relationships.keys]).each do |purpose|
-    purpose.child_relationships.create!(child: purpose, transfer_request_class_name: :standard)
-  end
-
-  # Here are the complicated ones:
-  PlatePurpose.where(name: relationships.keys).each do |purpose|
-    PlatePurpose.where(name: relationships[purpose.name]).each do |child|
-      purpose.child_relationships.create!(child: child, transfer_request_class_name: :standard)
-    end
-  end
-
   # A couple of legacy pulldown types
   PlatePurpose.create!(name: 'SEQCAP WG', cherrypickable_target: false)  # Superceded by Pulldown WGS below (here for transition period)
   PlatePurpose.create!(name: 'SEQCAP SC', cherrypickable_target: false)  # Superceded by Pulldown SC/ISC below (here for transition period)

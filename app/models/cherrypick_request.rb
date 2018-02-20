@@ -33,7 +33,7 @@ class CherrypickRequest < CustomerRequest
 
   # The transfer requests handle the actual transfer
   def transfer_aliquots
-    TransferRequest::Standard.create(asset: asset, target_asset: target_asset, submission_id: submission_id)
+    TransferRequest.create(asset: asset, target_asset: target_asset, submission_id: submission_id)
   end
 
   def build_stock_well_links

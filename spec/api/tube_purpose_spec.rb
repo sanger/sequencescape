@@ -11,7 +11,6 @@ describe '/api/1/tube/purposes' do
       "tube_purpose":{
         "name":"Test Purpose",
         "target_type":"MultiplexedLibraryTube",
-        "parents": ["#{parent_purpose.uuid}"],
         "type": "IlluminaHtp::InitialStockTubePurpose"
       }
     }}
@@ -21,8 +20,6 @@ describe '/api/1/tube/purposes' do
     %{{
       "tube_purpose":{
         "actions": { },
-        "parents": { "size": 1 },
-        "children": { "size": 0 },
         "tubes": { "size": 0 },
         "name":"Test Purpose"
       }

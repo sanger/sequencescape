@@ -17,8 +17,6 @@ And I have a "full" authorised user with the key "cucumber"
     Given the plate barcode webservice returns "1000001"
       And the plate barcode webservice returns "1000002"
 
-    Given transfers between "SC stock DNA" and "SC hyb" plates are standard transfers
-
     # Setup the plates so that they flow appropriately.  This is a bit of a cheat in that it's only
     # a direct link and that we're faking out the pipeline work but it suffices.
     Given a "SC stock DNA" plate called "Testing bait libraries" exists

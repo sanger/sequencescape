@@ -94,6 +94,12 @@ FactoryGirl.define do
     association(:source,      factory: :transfer_plate)
     association(:destination, factory: :transfer_plate)
     transfers('A1' => 'A1', 'B1' => 'B1')
+
+    factory(:full_transfer_between_plates) do
+      association(:source,      factory: :full_plate)
+      association(:destination, factory: :full_plate)
+      transfers(Hash[('A'..'H').map { |r| (1..12).map { |c| "#{r}#{c}" } }.flatten.map { |w| [w, w] }])
+    end
   end
 
   factory(:transfer_from_plate_to_tube, class: Transfer::FromPlateToTube) do
@@ -101,10 +107,6 @@ FactoryGirl.define do
     source      { |target| target.association(:transfer_plate) }
     destination { |target| target.association(:library_tube) }
     transfers(%w[A1 B1])
-
-    after(:build) do |transfer|
-      transfer.source.plate_purpose.child_relationships.create!(child: transfer.destination.purpose, transfer_request_class_name: :standard)
-    end
   end
 
   factory(:transfer_template) do
@@ -175,20 +177,12 @@ FactoryGirl.define do
 
   factory(:parent_plate_purpose, class: PlatePurpose) do
     name 'Parent plate purpose'
-
-    after(:create) do |plate_purpose|
-      plate_purpose.child_relationships.create!(child: create(:plate_purpose), transfer_request_class_name: :standard)
-    end
   end
 
   # Plate creations
   factory(:pooling_plate_purpose, class: PlatePurpose) do
     sequence(:name) { |i| "Pooling purpose #{i}" }
     stock_plate true
-    after(:create) do |plate_purpose|
-      cpp = create(:plate_purpose)
-      plate_purpose.child_relationships.create!(child: cpp, transfer_request_class_name: :initial_downstream)
-    end
   end
 
   factory(:initial_downstream_plate_purpose, class: Pulldown::InitialDownstreamPlatePurpose) do

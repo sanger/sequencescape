@@ -5,9 +5,6 @@
 # Copyright (C) 2016 Genome Research Ltd.
 class AddIllHtpPcrFreePipeline < ActiveRecord::Migration
   def up
-    # IlluminaHtp::PlatePurposes.create_plate_purposes
-    # IlluminaHtp::PlatePurposes.create_branches
-
     ActiveRecord::Base.transaction do |_t|
       stock_name = 'PF Cherrypicked'
 
@@ -21,10 +18,6 @@ class AddIllHtpPcrFreePipeline < ActiveRecord::Migration
       IlluminaHtp::PlatePurposes.create_tube_flow(tube_flow)
       IlluminaHtp::PlatePurposes.create_tube_flow(['PF MiSeq QCR'])
       IlluminaHtp::PlatePurposes.create_plate_flow(plate_flow)
-      branches.each do |branch|
-        IlluminaHtp::PlatePurposes.create_branch(branch)
-      end
-
       IlluminaHtp::PlatePurposes.create_qc_plate_for('PF EM Pool')
     end
   end

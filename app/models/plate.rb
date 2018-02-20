@@ -208,11 +208,6 @@ class Plate < Asset
     purpose.transition_to(self, state, user, contents, customer_accepts_responsibility)
   end
 
-  # Delegate the transfer request type determination to our plate purpose
-  def transfer_request_class_from(source)
-    purpose.transfer_request_class_from(source.plate_purpose)
-  end
-
   def comments
     @comments ||= CommentsProxy.new(self)
   end

@@ -74,10 +74,6 @@ class Tube < Receptacle
     purpose.try(:name) || 'Tube'
   end
 
-  def transfer_request_class_from(source)
-    purpose.transfer_request_class_from(source.purpose)
-  end
-
   def self.create_with_barcode!(*args, &block)
     attributes = args.extract_options!
     barcode    = args.first || attributes[:barcode]

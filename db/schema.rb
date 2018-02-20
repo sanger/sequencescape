@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180212151213) do
+ActiveRecord::Schema.define(version: 20180219170900) do
 
   create_table "aker_containers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "barcode"
@@ -826,7 +826,7 @@ ActiveRecord::Schema.define(version: 20180212151213) do
     t.string "eventable_type", null: false
   end
 
-  create_table "plate_purpose_relationships", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "plate_purpose_relationships_bkp", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.integer "parent_id"
     t.integer "child_id"
     t.integer "transfer_request_type_id"
@@ -1715,7 +1715,6 @@ ActiveRecord::Schema.define(version: 20180212151213) do
     t.integer "asset_id"
     t.integer "target_asset_id"
     t.integer "submission_id"
-    t.string "sti_type"
     t.integer "order_id"
     t.index ["asset_id"], name: "index_requests_on_asset_id"
     t.index ["submission_id"], name: "index_requests_on_submission_id"

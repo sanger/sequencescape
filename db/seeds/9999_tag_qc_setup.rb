@@ -24,14 +24,9 @@ shared = {
 }
 
 ActiveRecord::Base.transaction do
-  initial = Purpose.find_by(name: 'Tag Plate')
-  purpose_order.inject(initial) do |parent, child_settings|
-    child_settings.delete(:class).create(child_settings.merge(shared)).tap do |child|
-      parent.child_relationships.create!(child: child, transfer_request_class_name: :standard)
-    end
+  purpose_order.each do |child_settings|
+    child_settings.delete(:class).create(child_settings.merge(shared))
   end
-  Purpose::Relationship.create!(parent: Purpose.find_by(name: 'Reporter Plate'), child: Purpose.find_by(name: 'Tag PCR'), transfer_request_class_name: :standard)
-  Purpose::Relationship.create!(parent: Purpose.find_by(name: 'Pre Stamped Tag Plate'), child: Purpose.find_by(name: 'Tag PCR'), transfer_request_class_name: :standard)
 end
 
 SequencingPipeline.create!(name: 'MiSeq sequencing QC') do |pipeline|

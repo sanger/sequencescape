@@ -47,10 +47,4 @@ class Transfer::BetweenPlatesBySubmission < Transfer
     self.transfers[source.map.description] = destination.map.description
   end
   private :record_transfer
-
-  # Request type for transfers is based on the plates, not the wells we're transferring
-  def transfer_request_class_between(_ignored_a, _ignored_b)
-    destination.transfer_request_class_from(source)
-  end
-  private :transfer_request_class_between
 end
