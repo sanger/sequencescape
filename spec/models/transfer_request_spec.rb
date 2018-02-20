@@ -106,9 +106,11 @@ RSpec.describe TransferRequest, type: :model do
     {
       start: { pending: :started },
       pass: { pending: :passed, started: :passed, failed: :passed },
+      process_1: { started: :processed_1 },
+      process_2: { processed_1: :processed_2 },
       qc: { passed: :qc_complete },
-      fail: { pending: :failed, started: :failed, passed: :failed },
-      cancel: { started: :cancelled, passed: :cancelled, qc_complete: :cancelled },
+      fail: { pending: :failed, started: :failed, processed_1: :failed, processed_2: :failed, passed: :failed },
+      cancel: { started: :cancelled, processed_1: :cancelled, processed_2: :cancelled, passed: :cancelled, qc_complete: :cancelled },
       cancel_before_started: { pending: :cancelled }
     }.each do |event, transitions|
       transitions.each do |from_state, to_state|
