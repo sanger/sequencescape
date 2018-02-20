@@ -69,7 +69,7 @@ namespace :limber do
           initial_state: 'pending',
           billable: false,
           product_line: ProductLine.find_by(name: 'Illumina-Htp'),
-          request_purpose: RequestPurpose.standard,
+          request_purpose: :standard,
           target_purpose: Purpose.find_by(name: 'LB Lib Pool Norm')
         )
       end

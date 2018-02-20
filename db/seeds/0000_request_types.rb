@@ -4,10 +4,10 @@
 # authorship of this file.
 # Copyright (C) 2012,2013,2015,2016 Genome Research Ltd.
 
-std = RequestPurpose.create!(key: 'standard')
-qc = RequestPurpose.create!(key: 'qc')
-int = RequestPurpose.create!(key: 'internal')
-ctl = RequestPurpose.create!(key: 'control')
+std = :standard
+qc = :qc
+int = :internal
+ctl = :control
 
 RequestType.create!(
   name: 'Create Asset', key: 'create_asset', order: 1,

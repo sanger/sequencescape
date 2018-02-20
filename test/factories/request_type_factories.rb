@@ -15,7 +15,7 @@ FactoryGirl.define do
     order          1
     workflow { |workflow| workflow.association(:submission_workflow) }
     initial_state 'pending'
-    request_purpose
+    request_purpose :standard
 
     factory :customer_request_type do
       request_class CustomerRequest

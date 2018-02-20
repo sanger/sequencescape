@@ -5,23 +5,21 @@
 # A plate that has exactly the right number of wells!
 FactoryGirl.define do
   factory(:transfer_plate, class: Plate) do
+    transient do
+      well_count { 3 }
+      well_locations { Map.where_plate_size(size).where_plate_shape(AssetShape.default).where(column_order: (0...well_count)) }
+    end
+    plate_purpose
     size 96
 
-    after(:create) do |plate|
-      plate.wells << Map.where_description(['A1', 'B1', 'C1'])
-                        .where_plate_size(plate.size)
-                        .where_plate_shape(AssetShape.find_by(name: 'Standard')).map do |location|
-          create(:tagged_well, map: location)
+    after(:create) do |plate, evaluator|
+      plate.wells << evaluator.well_locations.map do |location|
+        create(:tagged_well, map: location)
       end
     end
 
-    factory(:source_transfer_plate) do
-      plate_purpose
-    end
-
-    factory(:destination_transfer_plate) do
-      plate_purpose
-    end
+    factory(:source_transfer_plate)
+    factory(:destination_transfer_plate)
   end
 
   factory(:full_plate, class: Plate) do
@@ -190,7 +188,7 @@ FactoryGirl.define do
     asset_type 'Well'
     order 1
     request_class_name 'TransferRequest::InitialDownstream'
-    request_purpose { |rp| rp.association(:request_purpose) }
+    request_purpose :internal
   end
 
   # Plate creations
@@ -263,7 +261,7 @@ FactoryGirl.define do
     request_type { |_target| RequestType.find_by(name: 'Pulldown ISC') or raise StandardError, "Could not find 'Pulldown ISC' request type" }
     asset        { |target| target.association(:well_with_sample_and_plate) }
     target_asset { |target| target.association(:empty_well) }
-    request_purpose { |rp| rp.association(:request_purpose) }
+    request_purpose :standard
     after(:build) do |request|
       request.request_metadata.fragment_size_required_from = 100
       request.request_metadata.fragment_size_required_to   = 400
@@ -275,7 +273,7 @@ FactoryGirl.define do
     association(:request_type, factory: :library_request_type)
     asset        { |target| target.association(:well_with_sample_and_plate) }
     target_asset { |target| target.association(:empty_well) }
-    request_purpose { |rp| rp.association(:request_purpose) }
+    request_purpose :standard
     after(:build) do |request|
       request.request_metadata.fragment_size_required_from = 100
       request.request_metadata.fragment_size_required_to   = 400
