@@ -244,8 +244,8 @@ Feature: Access state changes through the API
     Scenarios:
       | state     | library state |
       | pending   | pending       |
-      | started   | pending       |
-      | passed    | pending       |
+      | started   | started       |
+      | passed    | started       |
 
     Scenarios:
       | state   | library state |
