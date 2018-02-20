@@ -4,7 +4,7 @@ module Aker
 
     has_many :products, foreign_key: :aker_catalogue_id, dependent: :destroy
 
-    after_update :broadcast_catalogue
+    after_save :broadcast_catalogue
 
     def url
       'dev.psd.sanger.ac.uk'
@@ -25,7 +25,8 @@ module Aker
     private
 
     def broadcast_catalogue
-      Aker.broadcast_catalogue(to_json)
+      Aker.broadcast_catalogue(self)
+      true
     end
   end
 end

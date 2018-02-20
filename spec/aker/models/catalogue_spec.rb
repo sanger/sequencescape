@@ -18,7 +18,7 @@ RSpec.describe Aker::Catalogue, type: :model, aker: true do
   it 'will broadcast a message' do
     catalogue = create(:aker_catalogue)
 
-    expect(Aker).to receive(:broadcast_catalogue).with(catalogue.to_json)
+    expect(Aker).to receive(:broadcast_catalogue).with(catalogue)
     catalogue.save
   end
 end

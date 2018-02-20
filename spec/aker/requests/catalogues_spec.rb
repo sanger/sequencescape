@@ -41,6 +41,7 @@ RSpec.describe 'Get Aker Catalogue', type: :request, aker: true do
     it 'contains the products' do
       json = ActiveSupport::JSON.decode(response.body)['catalogue']['products']
       expect(json.length).to eq(1)
+      catalogue.reload
       product = catalogue.products.first
       json = json.first
       expect(json['name']).to eq(product.name)

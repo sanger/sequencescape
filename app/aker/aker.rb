@@ -15,7 +15,7 @@ module Aker
     conn.start
     ch = conn.create_channel
     q = ch.queue
-    q.publish(catalogue)
+    q.publish(catalogue.to_json)
     conn.close
   end
 end
