@@ -2,6 +2,6 @@
 
 FactoryGirl.define do
   factory :reference_genome do
-    name ''
+    sequence(:name) { |n| "ReferenceGenome#{n}" }
   end
 end
