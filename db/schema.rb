@@ -1124,12 +1124,6 @@ ActiveRecord::Schema.define(version: 20180219170900) do
     t.index ["request_id"], name: "index_request_metadata_on_request_id"
   end
 
-  create_table "request_purposes", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
-    t.string "key", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "request_quotas_bkp", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.integer "request_id", null: false
     t.integer "quota_id", null: false
@@ -1170,7 +1164,7 @@ ActiveRecord::Schema.define(version: 20180219170900) do
     t.boolean "no_target_asset", default: false, null: false
     t.integer "target_purpose_id"
     t.integer "pooling_method_id"
-    t.integer "request_purpose_id"
+    t.integer "request_purpose"
     t.integer "billing_product_catalogue_id"
     t.index ["billing_product_catalogue_id"], name: "index_request_types_on_billing_product_catalogue_id"
   end
@@ -1202,7 +1196,7 @@ ActiveRecord::Schema.define(version: 20180219170900) do
     t.integer "priority", default: 0
     t.string "sti_type"
     t.integer "order_id"
-    t.integer "request_purpose_id"
+    t.integer "request_purpose"
     t.bigint "work_order_id"
     t.integer "billing_product_id"
     t.index ["asset_id"], name: "index_requests_on_asset_id"

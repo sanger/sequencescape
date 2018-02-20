@@ -78,7 +78,7 @@ module IlluminaC::PlatePurposes
 
   def self.create_qc_tubes
     ActiveRecord::Base.transaction do
-      qc_tube_purpose = purpose_for(self::QC_TUBE).create!(name: self::QC_TUBE, target_type: 'QcTube', barcode_printer_type: BarcodePrinterType.find_by(type: 'BarcodePrinterType1DTube'))
+      purpose_for(self::QC_TUBE).create!(name: self::QC_TUBE, target_type: 'QcTube', barcode_printer_type: BarcodePrinterType.find_by(type: 'BarcodePrinterType1DTube'))
     end
   end
 end

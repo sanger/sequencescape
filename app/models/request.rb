@@ -43,7 +43,6 @@ class Request < ApplicationRecord
   belongs_to :item
   belongs_to :request_type, inverse_of: :requests
   belongs_to :user
-  belongs_to :request_purpose
   belongs_to :order, inverse_of: :requests
   belongs_to :submission, inverse_of: :requests
   belongs_to :submission_pool, foreign_key: :submission_id
@@ -79,12 +78,19 @@ class Request < ApplicationRecord
   belongs_to :billing_product, class_name: 'Billing::Product'
   has_many :billing_items, class_name: 'Billing::Item'
 
+  # A request_purpose is a simple means of distinguishing WHY a request was made.
+  # cf. RequestType which defines how it will be fulfilled.
+  # Both RequestType and Request have a purpose, with the former acting as the default for
+  # the latter.
+  enum request_purpose: {
+    standard: 1,
+    internal: 2,
+    qc: 3,
+    control: 4
+  }
   # Validations
   # On create we perform a full and complete validation.
-  validates_presence_of :request_purpose, on: :create
-  # Just makes sure we don't set it to nil. Avoids the need to load request_purpose
-  # EVERY time we touch a request.
-  validates_presence_of :request_purpose_id
+  validates_presence_of :request_purpose
 
   broadcast_via_warren
 

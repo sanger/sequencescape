@@ -27,7 +27,6 @@ ActiveRecord::Base.transaction do
     'Pulldown PCR'        => ['Pulldown qPCR']
   }
 
-
   PlatePurpose.where(name: [
     'Stock Plate', 'Normalisation', 'Pico Standard', 'Pulldown',
     'Dilution Plates', 'Pico Assay Plates', 'Gel Dilution Plates',

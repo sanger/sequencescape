@@ -15,6 +15,7 @@
 #++
 class StateChange < ApplicationRecord
   include Uuid::Uuidable
+  include Asset::Ownership::ChangesOwner
 
   belongs_to :user
   validates_presence_of :user
@@ -31,7 +32,6 @@ class StateChange < ApplicationRecord
   end
   private :targetted_for_failure?
 
-  include Asset::Ownership::ChangesOwner
   set_target_for_owner(:target)
 
   # Some targets can have "contents" updated (notably plates).  The meaning of this is is dealt with by the

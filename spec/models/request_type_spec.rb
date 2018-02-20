@@ -30,13 +30,13 @@ describe RequestType do
 
     context 'with a purpose' do
       setup do
-        @rp = create(:request_purpose)
+        @rp = :internal
         @nrequest_type = create(:request_type, request_purpose: @rp)
       end
 
       it 'set purpose on request' do
         request = @nrequest_type.create!
-        assert_equal @rp, request.request_purpose
+        assert_equal 'internal', request.request_purpose
       end
     end
 

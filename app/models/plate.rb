@@ -33,11 +33,15 @@ class Plate < Asset
     end
     deprecate attach: 'Legacy method pre-jruby just use standard rails plate.wells << other_wells' # Legacy pre-jruby method to handle bulk import
 
+    # Build empty wells for the plate.
     def construct!
-      Map.where_plate_size(proxy_association.owner.size).where_plate_shape(proxy_association.owner.asset_shape).in_row_major_order.map do |location|
-        build(map: location)
-      end.tap do
-        proxy_association.owner.save!
+      proxy_association.owner.maps.in_row_major_order.pluck(:id).map do |location_id|
+        Well.create!(map_id: location_id)
+      end.tap do |wells|
+        ContainerAssociation.import(wells.map { |w| { content_id: w.id, container_id: proxy_association.owner.id } })
+        # If the well association has already been loaded, reload it. Otherwise rails will continue
+        # to think the plate has no wells.
+        proxy_association.reload if proxy_association.loaded?
       end
     end
 

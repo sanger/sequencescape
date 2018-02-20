@@ -12,11 +12,12 @@ FactoryGirl.define do
     transient do
       well_count { 0 }
       well_locations { Map.where_plate_size(size).where_plate_shape(AssetShape.default).where(column_order: (0...well_count)) }
+      well_factory :well
     end
 
     after(:build) do |plate, evaluator|
       plate.wells = evaluator.well_locations.map do |map|
-        build(:well, map: map)
+        build(evaluator.well_factory, map: map)
       end
     end
   end

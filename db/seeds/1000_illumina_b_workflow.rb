@@ -212,7 +212,7 @@ ActiveRecord::Base.transaction do
     no_target_asset: false,
     order: 1,
     pooling_method: RequestType::PoolingMethod.find_by!(pooling_behaviour: 'PlateRow'),
-    request_purpose: RequestPurpose.find_by!(key: 'standard'),
+    request_purpose: :standard,
     request_class_name: 'IlluminaHtp::Requests::StdLibraryRequest',
     product_line: ProductLine.find_by!(name: 'Illumina-HTP')
   ) do |rt|

@@ -50,7 +50,12 @@ class RequestType < ApplicationRecord
   # While a request type describes what a request is, a request purpose describes why it is being done.
   # ie. standrad, qc, internal
   # The value on request type acts as a default for requests
-  belongs_to :request_purpose
+  enum request_purpose: {
+    standard: 1,
+    internal: 2,
+    qc: 3,
+    control: 4
+  }
 
   belongs_to :product_line
   # The target asset can either be described by a purpose, or by the target asset type.

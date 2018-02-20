@@ -35,7 +35,7 @@ FactoryGirl.define do
 
   factory :request_base, class: Request do
     request_type
-    request_purpose
+    request_purpose :standard
 
     # Ensure that the request metadata is correctly setup based on the request type
     after(:build) do |request|
@@ -52,7 +52,7 @@ FactoryGirl.define do
 
   factory :sequencing_request, class: SequencingRequest do
     association(:request_type, factory: :sequencing_request_type)
-    request_purpose
+    request_purpose :standard
     sti_type 'SequencingRequest'
     request_metadata_attributes { attributes_for :request_metadata_for_standard_sequencing_with_read_length }
 
@@ -78,7 +78,7 @@ FactoryGirl.define do
   factory :library_request, class: IlluminaHtp::Requests::StdLibraryRequest do
     association(:asset, factory: :well)
     association(:request_type, factory: :library_request_type)
-    request_purpose
+    request_purpose :standard
     request_metadata_attributes { attributes_for :request_metadata_for_library_manufacture }
 
     factory :gbs_request, class: IlluminaHtp::Requests::GbsRequest do
@@ -89,13 +89,13 @@ FactoryGirl.define do
   factory(:multiplex_request, class: Request::Multiplexing) do
     asset nil
     association(:target_asset, factory: :multiplexed_library_tube)
-    request_purpose
+    request_purpose :standard
   end
 
   factory :cherrypick_request do
     association :asset, factory: :well
     association :target_asset, factory: :well
-    request_purpose
+    request_purpose :standard
 
     # Adds the associations needed for processing down a pipeline
     factory :cherrypick_request_for_pipeline do
@@ -158,7 +158,7 @@ FactoryGirl.define do
 
   factory :pooled_cherrypick_request do
     asset { |asset| asset.association(:well_with_sample_and_without_plate) }
-    request_purpose
+    request_purpose :standard
   end
 
   factory :lib_pcr_xp_request, parent: :request_without_assets do
@@ -170,7 +170,7 @@ FactoryGirl.define do
   factory :request_traction_grid_ion, class: Request::Traction::GridIon do
     association(:asset, factory: :well)
     target_asset nil
-    request_purpose
+    request_purpose :standard
     association(:request_type, factory: :well_request_type)
     request_metadata_attributes { attributes_for(:request_traction_grid_ion_metadata) }
   end

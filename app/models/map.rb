@@ -106,7 +106,7 @@ class Map < ApplicationRecord
         column, row = (well_position - 1).divmod(divisor)
         return nil unless (0...multiplier).cover?(column)
         return nil unless (0...divisor).cover?(row)
-        alternate = (row * multiplier) + column + 1
+        (row * multiplier) + column + 1
       end
       private :alternate_position
     end
@@ -136,6 +136,7 @@ class Map < ApplicationRecord
   scope :where_plate_size,  ->(size) { where(asset_size: size) }
   scope :where_plate_shape, ->(asset_shape) { where(asset_shape_id: asset_shape) }
   scope :where_vertical_plate_position, ->(*positions) { where(column_order: positions.map { |v| v - 1 }) }
+  scope :for_plate, ->(plate) { where_plate_size(plate.size).where_plate_shape(plate.asset_shape) }
 
   belongs_to :asset_shape, class_name: 'AssetShape'
   delegate :standard?, to: :asset_shape
