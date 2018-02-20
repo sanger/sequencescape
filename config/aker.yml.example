@@ -14,7 +14,7 @@ staging:
 test:
   <<: *DEV
   bunny:
-    broadcast: true
+    broadcast: false
 
 production:
   <<: *DEV
