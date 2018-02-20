@@ -3,8 +3,19 @@
 module Aker
   ##
   # All Aker tables need to be prefixed with Aker.
-  # This method will autmoatically included as long as they are namespaced.
+  # This method will automatically included as long as they are namespaced.
   def self.table_name_prefix
     'aker_'
+  end
+
+  def self.broadcast_catalogue(catalogue)
+    config = Rails.configuration.aker['bunny']
+    return unless config['broadcast']
+    conn = Bunny.new(config)
+    conn.start
+    ch = conn.create_channel
+    q = ch.queue
+    q.publish(catalogue.to_json)
+    conn.close
   end
 end

@@ -676,6 +676,8 @@ Sequencescape::Application.routes.draw do
     namespace :v2 do
       namespace :aker do
         resources :work_orders, only: [:create]
+        jsonapi_resources :process_module_pairings, only: [:index, :show]
+        jsonapi_resources :processes, only: [:index, :show]
       end
     end
   end
@@ -687,6 +689,8 @@ Sequencescape::Application.routes.draw do
         post 'cancel'
       end
     end
+
+    resources :catalogues, only: [:index, :show]
   end
   resources :billing_reports, only: [:new, :create]
 
