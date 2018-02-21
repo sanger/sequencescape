@@ -205,6 +205,7 @@ Feature: Access state changes through the API
     Given the UUID of the next state change created will be "11111111-2222-3333-4444-000000000001"
       And "A1-B1" of the plate "Source plate" have been submitted to "Pulldown WGS - HiSeq Paired end sequencing"
       And all requests are in the last submission
+      And all transfer requests are in the last submission
 
     When I make an authorised POST with the following JSON to the API path "/state_changes":
       """

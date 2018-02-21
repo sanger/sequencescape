@@ -39,7 +39,7 @@ module Tasks::AssignTagsHandler
           sequencing_request.update_attributes!(asset: multiplexed_library)
         end
 
-        TransferRequest::Standard.create!(asset: request.target_asset, target_asset: multiplexed_library, state: 'passed')
+        TransferRequest.create!(asset: request.target_asset, target_asset: multiplexed_library, state: 'passed')
       end
     end
 
