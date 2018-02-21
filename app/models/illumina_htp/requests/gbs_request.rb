@@ -9,6 +9,7 @@ module IlluminaHtp::Requests
   #
   class GbsRequest < StdLibraryRequest
     fragment_size_details(:no_default, :no_default)
+    delegate :primer_panel, to: :request_metadata
 
     Metadata.class_eval do
       belongs_to :primer_panel
