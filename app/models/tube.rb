@@ -28,8 +28,6 @@ class Tube < Receptacle
     save!
   end
 
-  has_many :submissions, ->() { distinct }, through: :transfer_requests_as_target
-
   scope :include_scanned_into_lab_event, -> { includes(:scanned_into_lab_event) }
   scope :with_purpose, ->(*purposes) { where(plate_purpose_id: purposes) }
 

@@ -32,6 +32,8 @@ class Receptacle < Asset
 
   has_many :tags, through: :aliquots
 
+  has_many :submissions, ->() { distinct }, through: :transfer_requests_as_target
+
   # Our receptacle needs to report its tagging status based on the most highly tagged aliquot. This retrieves it
   has_one :most_tagged_aliquot, ->() { order(tag2_id: :desc, tag_id: :desc).readonly }, class_name: 'Aliquot', foreign_key: :receptacle_id
 

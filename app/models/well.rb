@@ -46,7 +46,6 @@ class Well < Receptacle
 
   has_many :customer_requests, class_name: 'CustomerRequest', foreign_key: :asset_id
   has_many :outer_requests, through: :stock_wells, source: :customer_requests
-  has_many :submissions, ->() { distinct }, through: :transfer_requests_as_target
 
   def outer_request(submission_id)
     outer_requests.order(id: :desc).find_by(submission_id: submission_id)

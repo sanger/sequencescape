@@ -21,7 +21,7 @@ class WorkCompletion::TubeCompletion
 
   def connect_requests
     # Upstream requests our on our stock wells.
-    detect_upstream_requests(target_tube).each do |upstream|
+    detect_upstream_requests.each do |upstream|
       # We need to find the downstream requests BEFORE connecting the upstream
       # This is because submission.next_requests tries to take a shortcut through
       # the target_asset if it is defined.
@@ -42,23 +42,14 @@ class WorkCompletion::TubeCompletion
   end
 
   # This method is probably horrifically broken.
-  def detect_upstream_requests(target_tube)
-    # upstream_requests = target_tube.stock_wells.each_with_object([]) do |source_well, found_upstream_requests|
-    #   # We may have multiple requests out of each well, however we're only concerned
-    #   # about those associated with the active submission.
-    #   # We've already eager loaded requests out of the stock wells, so filter in Ruby.
-    #   source_well.requests_as_source.each do |r|
-    #     found_upstream_requests << r if suitable_request?(r)
-    #   end
-    # end
-    # # We've looked at all the requests, on all the stock wells and still haven't found
-    # # what we're looking for.
-    # raise("Could not find matching upstream requests for #{target_tube.map_description}") if upstream_requests.empty?
-    # upstream_requests
+  # It is also dependant of requests being from wells
+  def detect_upstream_requests
     wells = collect_upstream_wells([], target_tube)
-    wells.reduce([]) do |requests, well|
-      requests + well.outer_requests.where(submission_id: well.submissions)
-    end
+    # Not great, but substantially faster than the alternative of just grabbing
+    # everything through well.
+    CustomerRequest.includes(:submission, source_well: { target_wells: :submissions })
+                   .where(target_wells_assets: { id: wells })
+                   .where('requests.submission_id = transfer_requests.submission_id')
   end
 
   # This isn't very OO. I'm trying to keep the horror confined until
