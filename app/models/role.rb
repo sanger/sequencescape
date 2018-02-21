@@ -52,6 +52,7 @@ class Role < ApplicationRecord
         has_many :users, through: :roles
 
         scope :with_related_users_included, -> { includes(roles: :users) }
+        scope :with_related_owners_included, -> { includes(:owners) }
         scope :of_interest_to, ->(user) { joins(:users).where(users: { id: user }).distinct }
       end
     end

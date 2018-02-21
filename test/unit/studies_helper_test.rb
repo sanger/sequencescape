@@ -13,26 +13,6 @@ class StudiesHelperTest < ActiveSupport::TestCase
       @helper.send(:extend, StudiesHelper)
     end
 
-    context '#display_owner' do
-      setup do
-        @study = mock('Study')
-      end
-
-      teardown do
-        assert_equal @expected, @helper.display_owner(@study)
-      end
-
-      should 'return "Not available" for no owner' do
-        @study.stubs(:owner).returns(nil)
-        @expected = 'Not available'
-      end
-
-      should 'return the owner name' do
-        @study.stubs(:owner).returns(mock('Owner', name: 'John Smith'))
-        @expected = 'John Smith'
-      end
-    end
-
     context '#display_owners' do
       setup do
         @roles = []

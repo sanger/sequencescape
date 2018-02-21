@@ -9,7 +9,7 @@ namespace :working do
       puts 'This script is intended for the development environment only.'
       puts 'Running this task in test WILL cause failures, and could cause issues in other environments.'
       puts 'Are you sure you wish to continue? (Y for yes)'
-      exit unless STDIN.gets.chomp == 'y'
+      exit unless STDIN.gets.chomp == 'Y'
     end
   end
 

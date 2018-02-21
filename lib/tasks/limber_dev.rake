@@ -27,7 +27,7 @@ namespace :limber do
         seeder.create_purposes
       end
 
-      desc 'Create 4 LB Cherrypick plates'
+      desc 'Create 4 GBS stock plates'
       task gbs: ['limber:setup'] do
         seeder = WorkingSetup::StandardSeeder.new([['GBS Stock', 4]])
         seeder.create_purposes

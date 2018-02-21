@@ -12,7 +12,7 @@ module WorkingSetup
     attr_reader :program
 
     def initialize(purposes = [])
-      @program = Program.find_by(name: 'General')
+      @program = Program.find_or_create_by!(name: 'General')
       @purposes = purposes
     end
 

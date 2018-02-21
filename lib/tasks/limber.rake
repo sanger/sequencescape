@@ -3,7 +3,7 @@
 # We'll try and do this through the API with the live version
 namespace :limber do
   desc 'Setup all the necessary limber records'
-  task setup: ['limber:create_submission_templates', 'limber:create_searches']
+  task setup: ['limber:create_submission_templates', 'limber:create_searches', 'limber:create_tag_templates']
 
   desc 'Create the Limber cherrypick plate'
   task create_plates: :environment do
@@ -100,6 +100,21 @@ namespace :limber do
   task create_searches: [:environment] do
     Search::FindPlates.create_with(default_parameters: { limit: 30 }).find_or_create_by!(name: 'Find plates')
     Search::FindTubes.create_with(default_parameters: { limit: 30 }).find_or_create_by!(name: 'Find tubes')
+  end
+
+  desc 'Create tag plate lots and templates'
+  task create_tag_templates: :environment do
+    tp  = QcablePlatePurpose.find_or_create_by!(name: 'Tag Plate', target_type: 'Plate', default_state: 'created')
+    rp  = QcablePlatePurpose.find_or_create_by!(name: 'Reporter Plate', target_type: 'Plate', default_state: 'created')
+    itt = QcableTubePurpose.find_or_create_by!(name: 'Tag 2 Tube', target_type: 'Tube')
+    pstp = QcablePlatePurpose.find_or_create_by!(name: 'Pre Stamped Tag Plate', target_type: 'Plate', default_state: 'available')
+    btp  = QcablePlatePurpose.find_or_create_by!(name: 'Tag Plate - 384', target_type: 'Plate', default_state: 'available', size: 384)
+    LotType.find_or_create_by!(name: 'IDT Tags',         template_class: 'TagLayoutTemplate', target_purpose: tp)
+    LotType.find_or_create_by!(name: 'IDT Reporters',    template_class: 'PlateTemplate',     target_purpose: rp)
+    LotType.find_or_create_by!(name: 'Tag 2 Tubes',      template_class: 'Tag2LayoutTemplate', target_purpose: itt)
+    LotType.find_or_create_by!(name: 'Pre Stamped Tags', template_class: 'TagLayoutTemplate', target_purpose: pstp)
+    LotType.find_or_create_by!(name: 'Tag 2 Tubes',      template_class: 'Tag2LayoutTemplate', target_purpose: itt)
+    LotType.find_or_create_by!(name: 'Pre Stamped Tags - 384', template_class: 'TagLayoutTemplate', target_purpose: btp)
   end
 
   desc 'Create the limber submission templates'
