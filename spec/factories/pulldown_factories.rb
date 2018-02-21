@@ -13,7 +13,6 @@ FactoryGirl.define do
     end
     plate_purpose
     size 96
-    plate_purpose
 
     after(:create) do |plate, evaluator|
       plate.wells << evaluator.well_locations.map do |location|

@@ -53,8 +53,4 @@ FactoryGirl.define do
     name        { generate :purpose_name }
     target_type 'MultiplexedLibraryTube'
   end
-
-  factory :request_purpose do
-    key { generate :purpose_name }
-  end
 end

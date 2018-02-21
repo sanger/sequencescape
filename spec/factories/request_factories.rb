@@ -176,8 +176,8 @@ FactoryGirl.define do
   end
 
   factory :request_without_submission, class: Request do
-    request_type    { |rt| rt.association(:request_type) }
-    request_purpose { |rt| rt.association(:request_purpose) }
+    request_type
+    request_purpose :standard
 
     # Ensure that the request metadata is correctly setup based on the request type
     after(:build) do |request|
@@ -189,7 +189,7 @@ FactoryGirl.define do
 
   factory(:library_creation_request_for_testing_sequencing_requests, class: Request::LibraryCreation) do
     request_type { |_target| RequestType.find_by!(name: 'Library creation') }
-    request_purpose { |rp| rp.association(:request_purpose) }
+    request_purpose :standard
     asset        { |target| target.association(:well_with_sample_and_plate) }
     target_asset { |target| target.association(:empty_well) }
     after(:build) do |request|
@@ -200,7 +200,7 @@ FactoryGirl.define do
 
   factory(:external_multiplexed_library_tube_creation_request, class: ExternalLibraryCreationRequest) do
     request_type { |_target| RequestType.find_by!(name: 'External Multiplexed Library Creation') }
-    request_purpose { |rp| rp.association(:request_purpose) }
+    request_purpose :standard
     asset { create(:library_tube) }
     target_asset { create(:multiplexed_library_tube) }
   end
@@ -209,7 +209,7 @@ FactoryGirl.define do
     target_asset    { |ta| ta.association(:pac_bio_library_tube) }
     asset           { |a|   a.association(:well) }
     submission      { |s|   s.association(:submission) }
-    request_purpose { |rp| rp.association(:request_purpose) }
+    request_purpose :standard
   end
 
   factory :pac_bio_sequencing_request do
@@ -217,6 +217,6 @@ FactoryGirl.define do
     asset           { |a|   a.association(:pac_bio_library_tube) }
     submission      { |s|   s.association(:submission) }
     request_type    { |s| s.association(:pac_bio_sequencing_request_type) }
-    request_purpose
+    request_purpose :standard
   end
 end
