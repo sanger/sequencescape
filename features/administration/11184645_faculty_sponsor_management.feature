@@ -15,7 +15,7 @@ Feature: Manage a list of faculty sponsors
     When I follow "Edit Johnny Smith"
     Then I should see "Editing Faculty Sponsor"
     When I fill in "Name" with "Jane Doe"
-      And I press "Update"
+      And I press "Save Study"
     Then I should see "Faculty Sponsor was successfully updated"
       And I should be on the faculty sponsor homepage
       And I should see "Jane Doe"
@@ -82,7 +82,7 @@ Feature: Manage a list of faculty sponsors
     Then I should see "John Doe"
     When I follow "Edit"
       And I select "Jack Sponsor" from "Faculty Sponsor"
-      And I press "Update"
+      And I press "Save Study"
     Then I should see "Your study has been updated"
     When I follow "Study details"
     Then I should see "Jack Sponsor"
