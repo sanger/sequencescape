@@ -57,7 +57,7 @@ module SetupLibraryTypes
       'Pulldown::Requests::IscLibraryRequestPart' => 'Agilent Pulldown',
       'IlluminaC::Requests::PcrLibraryRequest' => 'Manual Standard WGS (Plate)',
       'IlluminaC::Requests::NoPcrLibraryRequest' => 'No PCR (Plate)'
-   }[request_type.request_class_name]
+    }[request_type.request_class_name]
   end
 end
 LibraryType.create!([
@@ -87,27 +87,27 @@ RequestType.find_each do |request_type|
     )
   end
 
-    # By Key
-    read_lengths = {
-      'illumina_a_hiseq_2500_paired_end_sequencing' => [75, 100],
-      'illumina_b_hiseq_2500_paired_end_sequencing' => [75, 100],
-      'illumina_c_hiseq_2500_paired_end_sequencing' => [75, 100],
-      'illumina_a_hiseq_2500_single_end_sequencing' => [50],
-      'illumina_b_hiseq_2500_single_end_sequencing' => [50],
-      'illumina_c_hiseq_2500_single_end_sequencing' => [50],
-      'illumina_a_hiseq_v4_paired_end_sequencing' => [75, 125],
-      'illumina_b_hiseq_v4_paired_end_sequencing' => [75, 125],
-      'illumina_c_hiseq_v4_paired_end_sequencing' => [75, 125],
-      'illumina_c_hiseq_v4_single_end_sequencing' => [19, 50],
-      'illumina_a_hiseq_x_paired_end_sequencing' => [150],
-      'illumina_b_hiseq_x_paired_end_sequencing' => [150],
-      'bespoke_hiseq_x_paired_end_sequencing' => [150]
-      }[request_type.key] || {
-      # By request class
-      'HiSeqSequencingRequest' => [50, 75, 100],
-      'MiSeqSequencingRequest' => [25, 50, 130, 150, 250, 300],
-      'SequencingRequest'      => [37, 54, 76, 108]
-    }[request_type.request_class_name]
+  # By Key
+  read_lengths = {
+    'illumina_a_hiseq_2500_paired_end_sequencing' => [75, 100],
+    'illumina_b_hiseq_2500_paired_end_sequencing' => [75, 100],
+    'illumina_c_hiseq_2500_paired_end_sequencing' => [75, 100],
+    'illumina_a_hiseq_2500_single_end_sequencing' => [50],
+    'illumina_b_hiseq_2500_single_end_sequencing' => [50],
+    'illumina_c_hiseq_2500_single_end_sequencing' => [50],
+    'illumina_a_hiseq_v4_paired_end_sequencing' => [75, 125],
+    'illumina_b_hiseq_v4_paired_end_sequencing' => [75, 125],
+    'illumina_c_hiseq_v4_paired_end_sequencing' => [75, 125],
+    'illumina_c_hiseq_v4_single_end_sequencing' => [19, 50],
+    'illumina_a_hiseq_x_paired_end_sequencing' => [150],
+    'illumina_b_hiseq_x_paired_end_sequencing' => [150],
+    'bespoke_hiseq_x_paired_end_sequencing' => [150]
+  }[request_type.key] || {
+    # By request class
+    'HiSeqSequencingRequest' => [50, 75, 100],
+    'MiSeqSequencingRequest' => [25, 50, 130, 150, 250, 300],
+    'SequencingRequest'      => [37, 54, 76, 108]
+  }[request_type.request_class_name]
 
   if read_lengths.present?
     RequestType::Validator.create!(request_type: request_type, request_option: 'read_length', valid_options: read_lengths)
@@ -127,7 +127,8 @@ library_types = LibraryType.create!([
   'TraDIS qPCR only', 'Transcriptome counting qPCR only', 'Nextera single index qPCR only',
   'Nextera dual index qPCR only', 'Bisulphate qPCR only', 'TraDIS pre quality controlled',
   'Transcriptome counting pre quality controlled', 'Nextera single index pre quality controlled',
-  'Nextera dual index pre quality controlled', 'Bisulphate pre quality controlled'].map { |name| { name: name } })
+  'Nextera dual index pre quality controlled', 'Bisulphate pre quality controlled'
+].map { |name| { name: name } })
 
 [:illumina_c_multiplexed_library_creation, :illumina_c_library_creation].each do |request_class_symbol|
   request_type = RequestType.find_by(key: request_class_symbol.to_s)

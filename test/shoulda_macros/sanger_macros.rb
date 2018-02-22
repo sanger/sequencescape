@@ -39,7 +39,7 @@ module Sanger
                   begin
                     get action, params
                   rescue AbstractController::ActionNotFound
-                     flunk "Testing for an unknown action: #{action}"
+                    flunk "Testing for an unknown action: #{action}"
                   rescue ActiveRecord::RecordNotFound
                     assert true
                   rescue ActionView::MissingTemplate

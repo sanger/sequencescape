@@ -256,7 +256,6 @@ class Sample < ApplicationRecord
   # so in reality these methods are usually misleading.
   delegate :released?, :release, to: :sample_metadata
 
-  scope :with_name, ->(*names) { where(name: names.flatten) }
   scope :with_gender, ->(*_names) { joins(:sample_metadata).where.not(sample_metadata: { gender: nil }) }
 
   scope :for_search_query, ->(query, _with_includes) {

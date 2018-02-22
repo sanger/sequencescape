@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'rails_helper'
 require 'pry'
 
@@ -54,17 +55,17 @@ feature 'Bulk submission', js: false do
     end
 
     context 'Uploading a valid file with gb expected specified should set the gb expected' do
-        let(:file_name) { '2_valid_rows.csv' }
-        let(:submission_count) { 2 }
-        let(:expected_content) { 'Your submissions:' }
+      let(:file_name) { '2_valid_rows.csv' }
+      let(:submission_count) { 2 }
+      let(:expected_content) { 'Your submissions:' }
 
-        it 'allows file upload' do
-          process_submission(file_name)
-          Array[expected_content].flatten.each do |content|
-            expect(page).to have_content content
-          end
-          expect(Order.last.request_options['gigabases_expected']).to eq('1.35')
+      it 'allows file upload' do
+        process_submission(file_name)
+        Array[expected_content].flatten.each do |content|
+          expect(page).to have_content content
         end
+        expect(Order.last.request_options['gigabases_expected']).to eq('1.35')
+      end
     end
 
     context 'with no submissions' do

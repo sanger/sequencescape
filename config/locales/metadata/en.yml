@@ -40,6 +40,9 @@ en:
         bait_library:
           label: Bait library
 
+        primer_panel:
+          label: Primer panel
+
         gigabases_expected:
           label: Gigabases expected
 

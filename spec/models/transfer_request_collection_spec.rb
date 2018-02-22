@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe TransferRequestCollection, type: :model, transfer_request_collection: true do

@@ -23,6 +23,10 @@ class Core::Endpoint::BasicHandler::Associations::HasMany::Handler < Core::Endpo
     ", __FILE__, line)
   end
 
+  def results_per_page
+    @options[:per_page] || super
+  end
+
   def association_details_for(request)
     association_class = request.target.class.reflections[@association.to_s].klass
     association_io    = ::Core::Io::Registry.instance.lookup_for_class(association_class)

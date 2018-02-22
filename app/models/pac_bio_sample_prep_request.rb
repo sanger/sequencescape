@@ -26,14 +26,14 @@ class PacBioSamplePrepRequest < CustomerRequest
   end
 
   def on_passed
-    final_transfer.pass!
+    final_transfers.each(&:pass!)
   end
 
   def on_failed
-    final_transfer.fail!
+    final_transfers.each(&:fail!)
   end
 
-  def final_transfer
-    target_asset.requests_as_target.where_is_a?(TransferRequest).last
+  def final_transfers
+    target_asset.transfer_requests_as_target
   end
 end

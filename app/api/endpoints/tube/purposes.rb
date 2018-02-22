@@ -10,8 +10,6 @@ class ::Endpoints::Tube::Purposes < ::Core::Endpoint::Base
   end
 
   instance do
-    has_many(:child_purposes, json: 'children', to: 'children')
-    has_many(:parent_purposes, json: 'parents', to: 'parents')
     has_many(:tubes, json: 'tubes', to: 'tubes')
   end
 end

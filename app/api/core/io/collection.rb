@@ -13,9 +13,9 @@ module ::Core::Io::Collection
       stream.open do
         ::Core::Io::Registry.instance.lookup_for_object(object).object_json(
           object, options.merge(
-            stream: stream,
-            target: object,
-            nested: true
+                    stream: stream,
+                    target: object,
+                    nested: true
           )
         )
       end

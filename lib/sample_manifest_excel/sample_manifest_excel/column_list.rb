@@ -74,7 +74,7 @@ module SampleManifestExcel
     ##
     # A forwarding method - Update each column in the list of columns.
     def update(first_row, last_row, ranges, worksheet)
-       each { |column| column.update(first_row, last_row, ranges, worksheet) }
+      each { |column| column.update(first_row, last_row, ranges, worksheet) }
     end
 
     def initialize_dup(source)

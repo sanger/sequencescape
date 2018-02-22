@@ -5,15 +5,15 @@
 require 'test_helper'
 
 class SampleTest < ActiveSupport::TestCase
-    def assert_accession_service(type)
-      service = {
-        ega: EgaAccessionService,
-        ena: EnaAccessionService,
-        none: NoAccessionService,
-        unsuitable: UnsuitableAccessionService
-      }[type]
-      assert @sample.accession_service.is_a?(service), "Sent to #{@sample.accession_service.provider} not #{type}"
-    end
+  def assert_accession_service(type)
+    service = {
+      ega: EgaAccessionService,
+      ena: EnaAccessionService,
+      none: NoAccessionService,
+      unsuitable: UnsuitableAccessionService
+    }[type]
+    assert @sample.accession_service.is_a?(service), "Sent to #{@sample.accession_service.provider} not #{type}"
+  end
 
   context 'A Sample' do
     should have_many :study_samples
@@ -25,8 +25,8 @@ class SampleTest < ActiveSupport::TestCase
         @tube_a = create :empty_library_tube
         @tube_b = create :empty_sample_tube
 
-       create(:aliquot, sample: @sample, receptacle: @tube_b)
-       create(:aliquot, sample: @sample, receptacle: @tube_a)
+        create(:aliquot, sample: @sample, receptacle: @tube_b)
+        create(:aliquot, sample: @sample, receptacle: @tube_a)
       end
 
       should 'have the first tube it was added to as a primary asset' do

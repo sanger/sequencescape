@@ -66,8 +66,8 @@ class SequenomQcPlatesController < ApplicationController
         format.html { render :new }
       else
         print_job = LabelPrinter::PrintJob.new(barcode_printer.name,
-                                              LabelPrinter::Label::SequenomPlateRedirect,
-                                              plates: new_plates, count: 3, plate384: barcode_printer.plate384_printer?)
+                                               LabelPrinter::Label::SequenomPlateRedirect,
+                                               plates: new_plates, count: 3, plate384: barcode_printer.plate384_printer?)
 
         # and redirect to a fresh page with an appropriate flash[:notice]
 

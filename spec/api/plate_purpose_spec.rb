@@ -1,13 +1,10 @@
 # frozen_string_literal: true
+
 require 'rails_helper'
 require 'support/barcode_helper'
 
 describe '/api/1/plate_purposes' do
   subject { '/api/1/plate_purposes' }
-
-  before(:each) do
-    create :transfer_request_type
-  end
 
   let(:authorised_app) { create :api_application }
   let(:parent_purpose) { create :plate_purpose }
@@ -19,7 +16,7 @@ describe '/api/1/plate_purposes' do
           "name": "External Plate Purpose",
           "stock_plate": true,
           "input_plate": true,
-          "parents": ["#{parent_purpose.uuid}"]
+          "size": 384
         }
       }}
     end
@@ -30,10 +27,8 @@ describe '/api/1/plate_purposes' do
           "actions": {},
           "name": "External Plate Purpose",
           "stock_plate": true,
+          "size": 384,
           "plates": {
-            "actions": {}
-          },
-          "children": {
             "actions": {}
           }
         }
@@ -73,11 +68,6 @@ describe '/api/1/plate-purpose-uuid' do
           "plates": {
             "actions": {
               "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444/plates"
-            }
-          },
-          "children": {
-            "actions": {
-              "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444/children"
             }
           }
         }

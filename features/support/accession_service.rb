@@ -36,13 +36,13 @@ class FakeAccessionService
           stub_request(:post, accession_url)
             .with(basic_auth: service_login)
             .to_return do |_request|
-              response = FakeAccessionService.instance.next!
-              status = response.nil? ? 500 : 200
-              {
-                headers: { 'Content-Type' => 'text/xml' },
-                body: response,
-                status: status
-              }
+            response = FakeAccessionService.instance.next!
+            status = response.nil? ? 500 : 200
+            {
+              headers: { 'Content-Type' => 'text/xml' },
+              body: response,
+              status: status
+            }
           end
         end
       end

@@ -58,41 +58,6 @@ describe RequestEvent do
     end
   end
 
-  context 'Transfer Requests' do
-    let!(:request) { create :transfer_request }
-
-    context 'creating requests' do
-      it 'should not record a RequestEvent' do
-        expect(RequestEvent.count).to eq 0
-      end
-
-      it 'should not record a RequestEvent for each new Request' do
-        expect(request.request_events.count).to eq 0
-      end
-    end
-
-    context 'changing request state to start' do
-      before(:each) do
-        request.start!
-      end
-      it 'should not record new state change RequestEvents for each request' do
-        expect(RequestEvent.count).to eq 0
-      end
-    end
-
-    context 'destroying a request' do
-      before(:each) do
-        @old_request_id = request.id
-        request.destroy
-        @destroyed_ids = RequestEvent.where(event_name: 'destroyed').pluck(:request_id)
-      end
-
-      it 'should not record a destroy RequestEvent for each request' do
-        expect(@destroyed_ids).to eq []
-      end
-    end
-  end
-
   context 'find date when the request was moved to a particular state' do
     # rubocop:disable all
     it 'knows the date when passed' do

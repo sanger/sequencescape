@@ -11,12 +11,7 @@ module TubePurposeHelper
       @migration = migration
     end
 
-    def to(target_purpose)
-      purposes.each do |name|
-        say "Updating #{name}..."
-        Purpose.find_by(name: name).child_relationships.first.update_attributes!(child: target_purpose)
-      end
-    end
+    def to(_); end
   end
 
   class RequestTypeMigrator
@@ -63,14 +58,14 @@ module TubePurposeHelper
   def new_illumina_mx_tube(name)
     say "Creating '#{name}'' purpose"
     IlluminaHtp::MxTubeNoQcPurpose.create!(
-        name: name,
-        target_type: 'MultiplexedLibraryTube',
-        stock_plate: false,
-        default_state: 'pending',
-        barcode_printer_type: BarcodePrinterType.find_by(name: '1D Tube'),
-        cherrypickable_target: false,
-        cherrypick_direction: 'column',
-        barcode_for_tecan: 'ean13_barcode'
-      )
+      name: name,
+      target_type: 'MultiplexedLibraryTube',
+      stock_plate: false,
+      default_state: 'pending',
+      barcode_printer_type: BarcodePrinterType.find_by(name: '1D Tube'),
+      cherrypickable_target: false,
+      cherrypick_direction: 'column',
+      barcode_for_tecan: 'ean13_barcode'
+    )
   end
 end

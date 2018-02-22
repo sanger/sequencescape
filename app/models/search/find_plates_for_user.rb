@@ -15,7 +15,7 @@ class Search::FindPlatesForUser < Search
 
     Plate.with_plate_purpose(criteria['plate_purpose_ids'])
          .for_user(Uuid.lookup_single_uuid(criteria['user_uuid']).resource)
-         .including_used_plates?(criteria['include_used'])
+         .include_plates_with_children(criteria['include_used'])
          .page(criteria['page']).limit(criteria['limit']).order('plate_owners.id DESC')
   end
 end

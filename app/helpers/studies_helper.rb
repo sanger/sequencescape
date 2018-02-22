@@ -7,19 +7,14 @@
 module StudiesHelper
   def status_link_title
     if @study.inactive? || @study.pending?
-     'Open'
+      'Open'
     else
-     'Close'
+      'Close'
     end
   end
 
-  def display_owner(study)
-    owners_for_display([study.owner].compact)
-  end
-
   def display_owners(study)
-    owners = study.roles.map { |role| role.name == 'owner' ? role.users : nil }.compact
-    owners_for_display(owners.flatten)
+    owners_for_display(study.owners)
   end
 
   private

@@ -33,10 +33,10 @@ module PlatePurpose::Stock
     unique_states = wells_states.uniq
     return UNREADY_STATE if unique_states.include?(:unready)
     case unique_states.sort
-     when ['failed'] then 'failed'
-     when ['cancelled'] then 'cancelled'
-     when ['cancelled', 'failed'] then 'failed'
-     else READY_STATE
+    when ['failed'] then 'failed'
+    when ['cancelled'] then 'cancelled'
+    when ['cancelled', 'failed'] then 'failed'
+    else READY_STATE
     end
   end
 
@@ -47,10 +47,11 @@ module PlatePurpose::Stock
     cancelled || :unready
   end
 
+  private
+
   def transition_state_requests(*args)
     # Does nothing, we'll do it in a moment!
   end
-  private :transition_state_requests
 
   # The requests that we're going to be failing are based on the requests coming out of the
   # wells, and the wells themselves, for stock plates.
@@ -60,5 +61,4 @@ module PlatePurpose::Stock
       yield(submission_ids, [well.id]) unless submission_ids.empty?
     end
   end
-  private :fail_request_details_for
 end

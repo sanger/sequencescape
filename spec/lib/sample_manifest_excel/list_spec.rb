@@ -23,10 +23,10 @@ RSpec.describe SampleManifestExcel::List, type: :model, sample_manifest_excel: t
   let(:item_4) { ListItem.new('m', 'n', 'o', 'p', false) }
   let(:my_list) {
     MyList.new do |list|
-                    list.add item_1
-                    list.add item_2
-                    list.add item_3
-                    list.add item_4
+      list.add item_1
+      list.add item_2
+      list.add item_3
+      list.add item_4
     end
   }
 

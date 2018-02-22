@@ -13,7 +13,7 @@ class BroadcastEvent::AssetAudit < BroadcastEvent
 
   def user_identifier
     return seed.created_by if user.nil?
-    user.email.blank? ? user.login : user.email
+    user.email.presence || user.login
   end
 
   has_subject(:labware, :asset)

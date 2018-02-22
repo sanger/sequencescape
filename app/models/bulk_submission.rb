@@ -1,4 +1,5 @@
 # Encoding: utf-8
+
 # This file is part of SEQUENCESCAPE; it is distributed under the terms of
 # GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
@@ -315,9 +316,9 @@ class BulkSubmission
 
         asset_ids, asset_names = details.fetch('asset ids', ''), details.fetch('asset names', '')
         found_assets = if attributes[:asset_group] && asset_ids.blank? && asset_names.blank?
-          []
+                         []
                        else
-          Array(find_all_assets_by_id_or_name_including_samples!(asset_ids, asset_names)).uniq
+                         Array(find_all_assets_by_id_or_name_including_samples!(asset_ids, asset_names)).uniq
                        end
 
         assets_found, expecting = found_assets.map { |asset| "#{asset.name}(#{asset.id})" }, asset_ids.size + asset_names.size

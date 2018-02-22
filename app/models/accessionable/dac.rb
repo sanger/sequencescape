@@ -33,17 +33,13 @@ class Accessionable::Dac < Accessionable::Base
     xml.instruct!
     xml.DAC_SET('xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance') {
       xml.DAC(alias: self.alias, accession: accession_number, center_name: center_name) {
-      xml.CONTACTS {
-      contacts.each do |contact|
-      xml.CONTACT({
-        name: contact[:name],
-        email: contact[:email],
-        organisation: contact[:organisation]
-        }.tap do |att|
-         att[:telephone] = tel if (tel = contact[:telephone])
-        end)
-      end
-      }
+        xml.CONTACTS {
+          contacts.each do |contact|
+            xml.CONTACT(name: contact[:name],
+                        email: contact[:email],
+                        organisation: contact[:organisation])
+          end
+        }
       }
     }
     xml.target!

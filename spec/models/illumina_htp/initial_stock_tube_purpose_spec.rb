@@ -21,8 +21,8 @@ describe IlluminaHtp::InitialStockTubePurpose do
     let(:sibling_state) { 'pending' }
 
     before do
-      tr = create :transfer_request, asset: parent_well, target_asset: tube, submission: current_submission
-      create :transfer_request, asset: parents_sibling_well, target_asset: sibling_tube, submission: sibling_submission, request_type: tr.request_type, state: sibling_state
+      create :transfer_request, asset: parent_well, target_asset: tube, submission: current_submission
+      create :transfer_request, asset: parents_sibling_well, target_asset: sibling_tube, submission: sibling_submission, state: sibling_state
       lr = create :library_request, asset: parent_well, target_asset: target_tube, submission: current_submission
       create :library_request, asset: parents_sibling_well, target_asset: target_tube, submission: sibling_submission, request_type: lr.request_type
     end

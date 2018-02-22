@@ -6,7 +6,7 @@
 <% suffix = "_#{File.read(File.join(Rails.root, 'database_suffix'))}".strip rescue nil %>
 
 mysql: &MYSQL
-  adapter: <%= defined?(JRuby) ? "mysql" : "mysql2" %>
+  adapter: mysql2
   username: <%= ENV.fetch('DBUSERNAME','root') %>
   password: <%= ENV['DBPASSWORD'] %>
   encoding: utf8
@@ -17,6 +17,10 @@ mysql: &MYSQL
   reaping_frequency: 600
   variables:
     sql_mode: TRADITIONAL
+    # This improbably large value mimics the global option for production
+    # Without this things fall back to 1024 (At least with my setup) which
+    # is too small for larger pools.
+    group_concat_max_len: 67108864
 
 development:
   <<: *MYSQL
