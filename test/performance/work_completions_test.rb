@@ -2,7 +2,7 @@ require 'test_helper'
 require 'rails/performance_test_help'
 
 class WorkCompletionsTest < ActionDispatch::PerformanceTest
-  self.profile_options = { runs: 1, metrics: %i[wall_time memory] }
+  self.profile_options = { runs: 1, metrics: %i[wall_time memory], formats: [:flat] }
   # Refer to the documentation for all available options
   # self.profile_options = { runs: 5, metrics: [:wall_time, :memory],
   #                          output: 'tmp/performance', formats: [:flat] }
