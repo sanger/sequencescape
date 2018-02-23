@@ -101,7 +101,7 @@ describe TagLayout do
         let(:walking_by) { 'quadrants' }
 
         context 'with a 384 well plate' do
-          let(:plate) { create :plate_with_untagged_wells, sample_count: 4*16, size: 384 }
+          let(:plate) { create :plate_with_untagged_wells, sample_count: 4 * 16, size: 384 }
           let(:tag_count) { 384 }
           let(:tag2_group) { create :tag_group, tag_count: tag_count }
           let(:expected_tag_layout) do

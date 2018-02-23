@@ -11,7 +11,7 @@ FactoryGirl.define do
     transient do
       study { build :study }
       project { build :project }
-      aliquot_options { { study: study, project: project } }
+      aliquot_options { |_e, well| { study: study, project: project, receptacle: well } }
     end
     value               ''
     qc_state            ''
