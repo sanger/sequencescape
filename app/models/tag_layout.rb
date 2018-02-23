@@ -27,7 +27,8 @@ class TagLayout < ApplicationRecord
     'wells of plate'     => 'TagLayout::WalkWellsOfPlate',
     'manual by pool'     => 'TagLayout::WalkManualWellsByPools',
     'as group by plate'  => 'TagLayout::AsGroupByPlate',
-    'manual by plate'    => 'TagLayout::WalkManualWellsOfPlate'
+    'manual by plate'    => 'TagLayout::WalkManualWellsOfPlate',
+    'quadrants'          => 'TagLayout::Quadrants'
   }.freeze
 
   self.inheritance_column = 'sti_type'
@@ -53,12 +54,12 @@ class TagLayout < ApplicationRecord
   set_target_for_owner(:plate)
 
   def direction=(new_direction)
-    self.direction_algorithm = DIRECTIONS.fetch(new_direction) { unrecognized_import!(new_direction, direction) }
+    self.direction_algorithm = DIRECTIONS.fetch(new_direction) { unrecognized_import!(new_direction, 'direction') }
     extend(direction_algorithm.constantize)
   end
 
   def walking_by=(walk)
-    self.walking_algorithm = WALKING_ALGORITHMS.fetch(walk) { unrecognized_import!(new_direction, direction) }
+    self.walking_algorithm = WALKING_ALGORITHMS.fetch(walk) { unrecognized_import!(walk, 'walking by') }
     extend(walking_algorithm.constantize)
   end
 
@@ -77,16 +78,17 @@ class TagLayout < ApplicationRecord
   def wells_in_walking_order
     @wiwo ||= plate.wells
                    .send(:"in_#{direction.tr(' ', '_')}_major_order")
-                   .includes(aliquots: :tag)
+                   .includes(aliquots: [:tag, :tag2])
   end
 
   # Convenience mechanism for laying out tags in a particular fashion.
   def layout_tags_into_wells
     # Make sure that the substitutions requested by the user are handled before applying the tags
     # to the wells.
-    walk_wells do |well, index|
+    walk_wells do |well, index, index2 = index|
       tag_index = (index + initial_tag) % tags.length
-      apply_tags(well, tags[tag_index], tag2s[tag_index])
+      tag2_index = (index2 + initial_tag) % tag2s.length if tag2?
+      apply_tags(well, tags[tag_index], tag2s[tag2_index || 0])
       well.set_as_library
     end
   end

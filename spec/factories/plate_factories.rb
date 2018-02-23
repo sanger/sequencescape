@@ -78,9 +78,9 @@ FactoryGirl.define do
         well_order :column_order
       end
 
-      after(:create) do |plate, evaluator|
+      after(:build) do |plate, evaluator|
         plate.wells = evaluator.occupied_map_locations.map do |map|
-          create(:untagged_well, map: map)
+          build(:untagged_well, map: map)
         end
       end
     end

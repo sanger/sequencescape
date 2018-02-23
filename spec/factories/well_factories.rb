@@ -7,15 +7,12 @@
 # Copyright (C) 2011,2012,2015,2016 Genome Research Ltd.
 
 FactoryGirl.define do
-  factory :well do
+  factory :well, aliases: [:empty_well] do
     value               ''
     qc_state            ''
     resource            nil
     barcode             nil
     well_attribute
-
-    # For compatibility.
-    factory :empty_well
   end
 
   factory :well_attribute do
@@ -29,28 +26,23 @@ FactoryGirl.define do
     end
   end
 
-  factory :well_with_sample_and_without_plate, parent: :empty_well do
-    after(:build) do |well|
-      well.aliquots << build(:tagged_aliquot, receptacle: well)
-    end
-  end
-
   factory :untagged_well, parent: :empty_well do
     transient do
       aliquot_options({})
     end
-    after(:build) do |well, evaluator|
-      well.aliquots << build(:untagged_aliquot, evaluator.aliquot_options.merge(receptacle: well))
-    end
+
+    aliquots { build_list(:untagged_aliquot, 1, aliquot_options) }
   end
 
-  factory :tagged_well, parent: :empty_well do
-    after(:create) do |well|
-      well.aliquots << build(:tagged_aliquot, receptacle: well)
+  factory :tagged_well, parent: :empty_well, aliases: [:well_with_sample_and_without_plate] do
+    transient do
+      aliquot_options({})
     end
+
+    aliquots { build_list(:tagged_aliquot, 1, aliquot_options) }
   end
 
-  factory :well_with_sample_and_plate, parent: :well_with_sample_and_without_plate do
+  factory :well_with_sample_and_plate, parent: :tagged_well do
     map
     plate
   end
