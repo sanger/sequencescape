@@ -5,7 +5,7 @@ FactoryGirl.define do
     first_name        'fn'
     last_name         'ln'
     login
-    email             { |a| "#{a.login}@example.com".downcase }
+    email             { "#{login}@example.com".downcase }
     api_key           '123456789'
     password              'password'
     password_confirmation 'password'

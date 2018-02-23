@@ -8,11 +8,20 @@
 
 FactoryGirl.define do
   factory :well, aliases: [:empty_well] do
+    transient do
+      study { build :study }
+      project { build :project }
+      aliquot_options { { study: study, project: project } }
+    end
     value               ''
     qc_state            ''
     resource            nil
     barcode             nil
-    well_attribute
+    association(:well_attribute, strategy: :build)
+
+    factory :untagged_well, parent: :well do
+      aliquots { build_list(:untagged_aliquot, 1, aliquot_options) }
+    end
   end
 
   factory :well_attribute do
@@ -26,19 +35,7 @@ FactoryGirl.define do
     end
   end
 
-  factory :untagged_well, parent: :empty_well do
-    transient do
-      aliquot_options({})
-    end
-
-    aliquots { build_list(:untagged_aliquot, 1, aliquot_options) }
-  end
-
-  factory :tagged_well, parent: :empty_well, aliases: [:well_with_sample_and_without_plate] do
-    transient do
-      aliquot_options({})
-    end
-
+  factory :tagged_well, parent: :well, aliases: [:well_with_sample_and_without_plate] do
     aliquots { build_list(:tagged_aliquot, 1, aliquot_options) }
   end
 
@@ -47,7 +44,7 @@ FactoryGirl.define do
     plate
   end
 
-  factory :cross_pooled_well, parent: :empty_well do
+  factory :cross_pooled_well, parent: :well do
     map
     plate
     after(:build) do |well|
@@ -72,10 +69,6 @@ FactoryGirl.define do
   end
 
   factory :well_for_qc_report, parent: :well do
-    transient do
-      study { create(:study) }
-    end
-
     samples { [create(:study_sample, study: study).sample] }
     plate { create(:plate) }
     map { create(:map) }
