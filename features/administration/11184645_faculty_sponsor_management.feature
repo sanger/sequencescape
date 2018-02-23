@@ -15,7 +15,7 @@ Feature: Manage a list of faculty sponsors
     When I follow "Edit Johnny Smith"
     Then I should see "Editing Faculty Sponsor"
     When I fill in "Name" with "Jane Doe"
-      And I press "Save Study"
+      And I press "Update"
     Then I should see "Faculty Sponsor was successfully updated"
       And I should be on the faculty sponsor homepage
       And I should see "Jane Doe"
@@ -24,7 +24,7 @@ Feature: Manage a list of faculty sponsors
     Then I should see "Faculty Sponsor was successfully deleted"
       And I should not see "Jane Doe"
 
-  @admin @javascript
+  @admin
   Scenario: List the studies associated with a Faculty Sponsor
     Given a faculty sponsor called "Adam Apple" exists
       And a faculty sponsor called "Barry Ball" exists
@@ -53,7 +53,7 @@ Feature: Manage a list of faculty sponsors
       | Big study         |
       | Another Big study |
 
-  @admin @javascript
+  @admin
   Scenario: Create a sponsor and use it to create a study
     Given I am a "administrator" user logged in as "user"
       And I am on the faculty sponsor homepage
@@ -72,7 +72,6 @@ Feature: Manage a list of faculty sponsors
     When I follow "Study details"
     Then I should see "John Doe"
 
-  @javascript
   Scenario: Update the faculty sponsor on an existing study
     Given a faculty sponsor called "Jack Sponsor" exists
     Given I am a "administrator" user logged in as "user"

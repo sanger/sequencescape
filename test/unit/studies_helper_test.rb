@@ -15,11 +15,11 @@ class StudiesHelperTest < ActiveSupport::TestCase
 
     context '#display_owners' do
       setup do
-        @roles = []
+        @owners = []
       end
 
       teardown do
-        study = mock('Study', roles: @roles)
+        study = mock('Study', owners: @owners)
         assert_equal @expected, @helper.display_owners(study)
       end
 
@@ -28,12 +28,12 @@ class StudiesHelperTest < ActiveSupport::TestCase
       end
 
       should 'return the single owner name' do
-        @roles << mock('Role', name: 'owner', users: [mock('User', name: 'John Smith')])
+        @owners << mock('User', name: 'John Smith')
         @expected = 'John Smith'
       end
 
       should 'comma-separate multiple owners' do
-        @roles << mock('Role', name: 'owner', users: [mock('User', name: 'John Smith'), mock('User', name: 'Jane Doe')])
+        @owners << mock('User', name: 'John Smith') << mock('User', name: 'Jane Doe')
         @expected = 'John Smith, Jane Doe'
       end
     end
