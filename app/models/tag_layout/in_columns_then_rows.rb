@@ -5,8 +5,8 @@
 # Copyright (C) 2011,2012,2015 Genome Research Ltd.
 
 # Lays out the tags so that they are column ordered.
-module TagLayout::InColumns
+module TagLayout::InColumnsThenRows
   def self.direction
-    'column'
+    'column then rows'
   end
 end

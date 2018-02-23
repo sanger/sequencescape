@@ -13,18 +13,11 @@
 # Four different tag 2s then get applied to each cluster. These tags are
 # laid out in *ROW* order
 # ie. A1 => 1, A2 => 2, B1 => 3, B2 => 4
-module TagLayout::Quadrants
+class TagLayout::Quadrants < TagLayout::Walker
   # Each row and column is essentially duplicated. So our scale
   # is 2 (not four)
   PLATE_SCALE = 2
-
-  def self.walking_by
-    'quadrants'
-  end
-
-  def walking_by
-    TagLayout::Quadrants.walking_by
-  end
+  self.walking_by = 'quadrants'
 
   def walk_wells
     wells_in_walking_order.includes(:map).each do |well|
@@ -35,5 +28,4 @@ module TagLayout::Quadrants
       yield(well, index, index2)
     end
   end
-  private :walk_wells
 end

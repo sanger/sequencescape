@@ -6,9 +6,7 @@
 
 # Lays out the tags so that they are row ordered.
 module TagLayout::InRows
-  extend self
-
-  def direction
+  def self.direction
     'row'
   end
 end

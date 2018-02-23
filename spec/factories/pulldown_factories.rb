@@ -171,10 +171,6 @@ FactoryGirl.define do
 
     direction_algorithm 'TagLayout::InColumns'
     walking_algorithm   'TagLayout::WalkWellsOfPlate'
-
-    # FactoryGirl girl builds things in bits, rather than all at once, so we need to trigger the after_initialize call
-    # after the instance has been built so that the correct behaviours are installed.
-    after(:build, &:import_behaviour)
   end
 
   factory(:parent_plate_purpose, class: PlatePurpose) do

@@ -6,9 +6,7 @@
 
 # Lays out the tags so that they are inverse row ordered.
 module TagLayout::InInverseRows
-  extend self
-
-  def direction
+  def self.direction
     'inverse row'
   end
 end
