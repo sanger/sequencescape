@@ -99,6 +99,7 @@ describe TagLayout do
 
       context 'quadrants' do
         let(:walking_by) { 'quadrants' }
+        let(:direction) { 'column then row' }
 
         context 'with a 384 well plate' do
           let(:plate) { create :plate_with_untagged_wells, sample_count: 4 * 16, size: 384 }

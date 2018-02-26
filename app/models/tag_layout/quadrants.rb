@@ -21,11 +21,25 @@ class TagLayout::Quadrants < TagLayout::Walker
 
   def walk_wells
     wells_in_walking_order.includes(:map).each do |well|
-      tag_col = (well.map.column / PLATE_SCALE)
-      tag_row = (well.map.row / PLATE_SCALE)
-      index = tag_row + (well.map.height / PLATE_SCALE * tag_col)
-      index2 = well.map.column % 2 + (well.map.row % 2) * 2
+      row = well.map.row
+      col = well.map.column
+      index = direction_helper.primary_index(row, col, PLATE_SCALE, height)
+      index2 = direction_helper.secondary_index(row, col, PLATE_SCALE)
       yield(well, index, index2)
     end
+  end
+
+  private
+
+  def height
+    @height ||= plate.height
+  end
+
+  def width
+    @width ||= plate.wdith
+  end
+
+  def direction_helper
+    tag_layout.direction_algorithm_module
   end
 end

@@ -21,11 +21,11 @@ class TagLayout < ApplicationRecord
   UnknownWalking = Struct.new(:walking_by)
 
   DIRECTIONS = {
-    'column'           => 'TagLayout::InColumns',
-    'row'              => 'TagLayout::InRows',
-    'inverse column'   => 'TagLayout::InInverseColumns',
-    'inverse row'      => 'TagLayout::InInverseRows',
-    'column then rows' => 'TagLayout::InColumnThenRows'
+    'column'          => 'TagLayout::InColumns',
+    'row'             => 'TagLayout::InRows',
+    'inverse column'  => 'TagLayout::InInverseColumns',
+    'inverse row'     => 'TagLayout::InInverseRows',
+    'column then row' => 'TagLayout::InColumnsThenRows'
   }.freeze
 
   WALKING_ALGORITHMS = {
@@ -60,7 +60,7 @@ class TagLayout < ApplicationRecord
 
   set_target_for_owner(:plate)
 
-  delegate :direction, to: :direction_algorithm_class
+  delegate :direction, to: :direction_algorithm_module
   delegate :walking_by, :walk_wells, :apply_tags, to: :walking_algorithm_helper
 
   def direction=(new_direction)
@@ -73,16 +73,15 @@ class TagLayout < ApplicationRecord
 
   def wells_in_walking_order
     @wiwo ||= plate.wells
-                   .send(:"in_#{direction.tr(' ', '_')}_major_order")
+                   .send(direction_algorithm_module.well_order_scope)
                    .includes(aliquots: [:tag, :tag2])
   end
 
-
-  private
-
-  def direction_algorithm_class
+  def direction_algorithm_module
     direction_algorithm.constantize
   end
+
+  private
 
   def walking_algorithm_class
     walking_algorithm.constantize
@@ -91,6 +90,7 @@ class TagLayout < ApplicationRecord
   def walking_algorithm_helper
     @walking_algorithm_helper ||= walking_algorithm_class.new(self)
   end
+
   # Convenience mechanism for laying out tags in a particular fashion.
   def layout_tags_into_wells
     # Make sure that the substitutions requested by the user are handled before applying the tags
