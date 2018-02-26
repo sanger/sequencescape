@@ -373,6 +373,30 @@ class Plate < Asset
     ])
   }
 
+  def self.search_for_plates(study_id: nil, plate_purpose_ids: nil, start_date: nil, end_date: nil)
+    with_study_id(study_id)
+      .with_plate_purpose_ids(plate_purpose_ids)
+      .created_after(start_date)
+      .created_before(end_date)
+      .distinct
+  end
+
+  scope :with_study_id, (proc { |study_id|
+    joins(:studies).where(studies: { id: study_id }) if study_id.present?
+  })
+
+  scope :with_plate_purpose_ids, (proc { |plate_purpose_ids|
+    joins(:plate_purpose).where(plate_purposes: { id: plate_purpose_ids }) if plate_purpose_ids.present?
+  })
+
+  scope :created_after, (proc { |date|
+    where('assets.created_at >= ?', date) if date.present?
+  })
+
+  scope :created_before, (proc { |date|
+    where('assets.created_at <= ?', date) if date.present?
+  })
+
   def wells_sorted_by_map_id
     wells.sorted
   end

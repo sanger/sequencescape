@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171117110424) do
+ActiveRecord::Schema.define(version: 20180131163110) do
 
   create_table "aker_containers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "barcode"
@@ -669,6 +669,22 @@ ActiveRecord::Schema.define(version: 20171117110424) do
     t.integer "location_id", null: false
     t.index ["locatable_id"], name: "single_location_per_locatable_idx", unique: true
     t.index ["location_id"], name: "index_location_associations_on_location_id"
+  end
+
+  create_table "location_reports", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "user_id", null: false
+    t.string "name", null: false
+    t.string "report_type", null: false
+    t.string "barcodes"
+    t.bigint "study_id"
+    t.string "plate_purpose_ids"
+    t.datetime "start_date"
+    t.datetime "end_date"
+    t.string "report_filename"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["study_id"], name: "index_location_reports_on_study_id"
+    t.index ["user_id"], name: "index_location_reports_on_user_id"
   end
 
   create_table "locations", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
