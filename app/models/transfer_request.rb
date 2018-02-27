@@ -84,6 +84,11 @@ class TransferRequest < SystemRequest
     asset.outer_request(submission_id)
   end
 
+  # A sibling request is a customer request out of the same asset and in the same submission
+  def sibling_requests
+    asset.requests.select { |r| r.customer_request? && r.submission_id == submission_id }
+  end
+
   private
 
   # after_create callback method
@@ -100,7 +105,9 @@ class TransferRequest < SystemRequest
 
   # Run on start, or if start is bypassed
   def on_started
-    nil # Do nothing
+    sibling_requests.each do |sr|
+      sr.start! if sr.may_start?
+    end
   end
 
   def on_failed

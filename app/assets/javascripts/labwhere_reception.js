@@ -28,7 +28,6 @@
     $('#labwhere_reception_user_code').bind("keydown", function(e) {
       /* We don't take tab index into account here */
       var ENTER = 13, TAB = 9, code;
-      console.log('Prevent')
       code=e.charCode || e.keyCode;
       if (code==ENTER || code==TAB) {
         e.preventDefault();
