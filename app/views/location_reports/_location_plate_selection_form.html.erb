@@ -4,30 +4,30 @@
 # authorship of this file.
 # Copyright (C) 2018 Genome Research Ltd.%>
 
-<%= form_for(location_report, html: {class: 'submit_once', id: "new_report_from_selection"}) do |f| %>
-  <div class="form-group">
-    <%= f.label "study_id", 'Study' %>
-    <%= f.select :study_id, studies, { prompt: 'Select study...', disabled: [''], "required" => false }, { autocomplete: 'off', class: 'form-control select2' } %>
+<%= form_for(location_report, html: {class: 'submit_once', id: 'new_report_from_selection'}) do |f| %>
+  <div class='form-group'>
+    <%= f.label 'study_id', 'Study' %>
+    <%= f.select :study_id, studies, { prompt: 'Select study...', include_blank: true }, { class: 'form-control select2' } %>
   </div>
 
-  <div class="form-group">
-    <%= f.label "start_date", 'Start date' %><br>
+  <div class='form-group'>
+    <%= f.label 'start_date', 'Start date' %><br>
     <%= f.date_field :start_date %>
   </div>
 
-  <div class="form-group">
-    <%= f.label "end_date", 'End date' %><br>
+  <div class='form-group'>
+    <%= f.label 'end_date', 'End date' %><br>
     <%= f.date_field :end_date %>
   </div>
 
-  <div class="form-group">
-    <%= f.label "plate_purpose_ids", 'Plate purposes' %>
+  <div class='form-group'>
+    <%= f.label 'plate_purpose_ids', 'Plate purposes' %>
     <%= f.select :plate_purpose_ids, options_for_select(plate_purposes, @location_report.plate_purpose_ids), { prompt: 'Select plate purposes...', include_hidden: false }, { class: 'form-control select2', :multiple => true } %>
   </div>
 
   <%= f.hidden_field :report_type, value: 'selection' %>
 
-  <div class="form-group actions-group">
+  <div class='form-group actions-group'>
     <%= f.submit('Create report from selection', autocomplete: 'off',class: 'disable_on_submit btn btn-success') %>
   </div>
 <% end %>

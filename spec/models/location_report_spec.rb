@@ -122,8 +122,23 @@ RSpec.describe LocationReport, type: :model do
         expect(location_report.valid?).to be_falsey
       end
 
+      it 'is not valid if there is a poorly formatted barcode in the list' do
+        location_report.barcodes_text = '1234567890123 INVALID123 DN1S'
+        expect(location_report.valid?).to be_falsey
+      end
+
+      it 'is valid to use human readable barcodes' do
+        location_report.barcodes_text = 'DN1S'
+        expect(location_report.valid?).to be_truthy
+      end
+
+      it 'is valid to use human readable barcodes missing the check digit character' do
+        location_report.barcodes_text = 'DN1'
+        expect(location_report.valid?).to be_truthy
+      end
+
       it 'is valid to have multiple barcodes in the text field with variable spacing' do
-        location_report.barcodes_text = ' 1234567890101 1234567890102     1234567890103          1234567890104 '
+        location_report.barcodes_text = ' 1234567890101 DN1S     1234567890103          DN2 '
         expect(location_report.valid?).to be_truthy
       end
 
@@ -208,8 +223,8 @@ RSpec.describe LocationReport, type: :model do
         context 'when selecting by dates and study' do
           let(:study_id) { study_1.id }
           let(:start_date) { '2016-01-01 00:00:00' }
-          let(:end_date) { '2016-05-01 00:00:00' }
-          let(:expected_lines) { [headers_line, plt_1_line] }
+          let(:end_date) { '2016-11-01 00:00:00' }
+          let(:expected_lines) { [headers_line, plt_1_line, plt_2_line_1, plt_2_line_2] }
 
           it_behaves_like 'a successful report'
         end

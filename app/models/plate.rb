@@ -390,11 +390,11 @@ class Plate < Asset
   })
 
   scope :created_after, (proc { |date|
-    where('assets.created_at >= ?', date) if date.present?
+    where('assets.created_at >= ?', date.midnight) if date.present?
   })
 
   scope :created_before, (proc { |date|
-    where('assets.created_at <= ?', date) if date.present?
+    where('assets.created_at <= ?', date.end_of_day) if date.present?
   })
 
   def wells_sorted_by_map_id
