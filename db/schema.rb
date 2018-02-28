@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171117110424) do
+ActiveRecord::Schema.define(version: 20180228141638) do
 
   create_table "aker_containers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "barcode"
@@ -1702,6 +1702,17 @@ ActiveRecord::Schema.define(version: 20171117110424) do
     t.index ["name"], name: "tag_groups_unique_name", unique: true
   end
 
+  create_table "tag_layout_template_submissions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "submission_id", null: false
+    t.integer "tag_layout_template_id", null: false
+    t.boolean "enforce_uniqueness"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["submission_id", "tag_layout_template_id", "enforce_uniqueness"], name: "tag_layout_uniqueness", unique: true
+    t.index ["submission_id"], name: "index_tag_layout_template_submissions_on_submission_id"
+    t.index ["tag_layout_template_id"], name: "index_tag_layout_template_submissions_on_tag_layout_template_id"
+  end
+
   create_table "tag_layout_templates", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.string "direction_algorithm"
     t.integer "tag_group_id"
@@ -1937,6 +1948,8 @@ ActiveRecord::Schema.define(version: 20171117110424) do
   add_foreign_key "requests", "billing_products"
   add_foreign_key "requests", "work_orders"
   add_foreign_key "sample_manifests", "plate_purposes", column: "purpose_id"
+  add_foreign_key "tag_layout_template_submissions", "submissions"
+  add_foreign_key "tag_layout_template_submissions", "tag_layout_templates"
   add_foreign_key "tag_layout_templates", "tag_groups", column: "tag2_group_id"
   add_foreign_key "tag_layouts", "tag_groups", column: "tag2_group_id"
   add_foreign_key "transfer_request_collection_transfer_requests", "requests", column: "transfer_request_id"
