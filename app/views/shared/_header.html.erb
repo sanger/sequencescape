@@ -4,60 +4,45 @@
 # authorship of this file.
 # Copyright (C) 2015 Genome Research Ltd.%>
 
-<div class="header small">
-  <ul class="list-inline">
-  <li><span id="institute"><%= link_to I18n.t('application.institute'), I18n.t('application.institute_link') %></span></li>
+<div class="user-session-controls">
+  <ul>
+  <li id="institute"><%= link_to I18n.t('application.institute'), I18n.t('application.institute_link') %></li>
   <% if logged_in? -%>
-  <li>
-    <%= I18n.t('global_links.welcome') %> <%= link_to current_user.name, profile_path(current_user) %> ·
-  </li>
-  <li>
-    <%= link_to I18n.t('global_links.edit_profile'), edit_profile_path(current_user) %> ·
-  </li>
-  <li>
-    <%= link_to I18n.t('global_links.logout'), logout_path -%>
-  </li>
+    <li>
+      <%= I18n.t('global_links.welcome') %> <%= link_to current_user.name, profile_path(current_user) %>
+    </li>
+    <li>
+      <%= link_to I18n.t('global_links.edit_profile'), edit_profile_path(current_user) %>
+    </li>
+    <li>
+      <%= link_to I18n.t('global_links.logout'), logout_path -%>
+    </li>
   <% end -%>
-  </ul>
-</div>
+  </ul
+></div>
 
-<nav class="navbar navbar-default">
-  <div class="container-fluid">
-
-    <!-- navbar-header remains visible even at low resolutions. It groups the logo with a toggle button which appears if the menu collapses -->
-    <div class="navbar-header">
-      <div id="logo_container" class="navbar-brand">
-        <div id="sequencescape_logo">
-          <%= link_to image_tag("sequencescape.gif"), '/' %>
-        </div>
-        <% if Rails.env == 'production' %>
-          <div id="app_name"><%= link_to I18n.t('application.name').upcase, '/' %></div>
-        <% else %>
-          <div id="app_name"><%= link_to Rails.env.humanize, '/' %></div>
-        <% end %>
-      </div>
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-      <span class="sr-only">Toggle navigation</span>
-      <!-- These spans for the bars of the hamburger (menu) navigation -->
-      <span class="icon-bar"></span>
-      <span class="icon-bar"></span>
-      <span class="icon-bar"></span>
-      </button>
+<nav class="main-nav">
+  <div id="logo_container">
+    <div id="sequencescape_logo"><%= link_to image_tag("sequencescape.gif"), '/' %></div>
+    <div id="app_name">
+      <% if Rails.env.production? %>
+        <%= link_to t('application.name').upcase, '/' %>
+      <% else %>
+        <%= link_to Rails.env.humanize, '/' %>
+      <% end %>
     </div>
-    <!-- The main body of the navbar. Collapses at low resolutions -->
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-    <ul class="nav navbar-nav">
-      <%= render partial: 'shared/tab', collection: @tabs.items %>
-    </ul>
-    <%= form_tag searches_path, method: :get, class: "navbar-form navbar-right", role: "search" do %>
-      <div class="form-group">
-      <%= select_tag :type, options_for_select(search_options,""), id: 'layout_search_options', class: "form-control" %>
-      <%= search_field_tag :q, "", size: 20, type: "search", placeholder: "name, id, barcode", id: 'layout_search', class: 'form-control' %>
+  </div>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-nav-items" aria-controls="main-nav-items" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+  <!-- The main body of the navbar. Collapses at low resolutions -->
+  <div id="main-nav-items">
+    <ul><%= render partial: 'shared/tab', collection: @tabs.items %></ul>
+    <%= form_tag searches_path, method: :get, role: "search" do %>
+      <div class="input-group">
+        <%= select_tag :type, options_for_select(search_options,""), id: 'layout_search_options' %>
+        <%= search_field_tag :q, "", size: 20, type: "search", placeholder: "name, id, barcode", id: 'layout_search' %>
       </div>
     <% end %>
   </div><!-- /.navbar-collapse -->
-
-  </div>
 </nav>
 
 <%- unless custom_text("app_info_box", 1).blank? -%>

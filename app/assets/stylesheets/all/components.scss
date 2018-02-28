@@ -37,14 +37,14 @@ table.table-dense-information tbody {
 /* A collapsible info panel, which may contain tabulated data
  * A more semantic representation of bootstrap panels */
 section.info-panel {
-  @extend .panel;
-  @extend .panel-default;
+  @extend .card;
+//  @extend .card-default;
 
   header {
-    @extend .panel-heading;
+    @extend .card-header;
 
     h3 {
-      @extend .panel-title;
+      @extend .card-title;
     }
 
     .counter {
@@ -56,23 +56,23 @@ section.info-panel {
 
   table {
     @extend .table;
-    @extend .table-condensed;
+    @extend .table-sm;
     @extend .table-striped;
 
     caption {
-      @extend .panel-body;
+      @extend .card-body;
     }
   }
 }
 
 navigation.toc {
-  @extend .panel;
-  @extend .panel-default;
+  @extend .card;
+ // @extend .card-default;
   @extend .col-md-6;
 
   ul {
     @extend .nav;
     @extend .nav-pills;
-    @extend .nav-stacked;
+    @extend .flex-column;
   }
 }

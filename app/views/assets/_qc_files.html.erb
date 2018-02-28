@@ -26,7 +26,7 @@
         </tbody>
       </table>
     </div>
-    <div class="panel-body">
+    <div class="card-body">
       Upload additional QC files. <span class="text-warning">Correctly formatted files will result in the update of volume and concentration information.</span>
       <%= form_for(asset.qc_files.new) do |f| %>
         <%= f.hidden_field :asset_id %>

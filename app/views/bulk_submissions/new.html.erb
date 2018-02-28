@@ -89,15 +89,15 @@
 </div>
 <div class='col-md-6'>
   <h4>All submission templates</h4>
-  <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+  <div class="card-group" id="accordion" role="tablist" aria-multiselectable="true">
   <% open = 'in' %>
   <% @submission_template_groups.each do |group,templates| %>
-    <div class="panel panel-default">
-      <div class="panel-heading" role="tab" id="heading<%= group.gsub(' ','_').camelize %>" data-toggle="collapse" data-parent="#accordion" href="#collapse<%= group.gsub(' ','_').camelize %>">
-        <h5 class="panel-title"><%= group %></h5>
+    <div class="card card-default">
+      <div class="card-header" role="tab" id="heading<%= group.gsub(' ','_').camelize %>" data-toggle="collapse" data-parent="#accordion" href="#collapse<%= group.gsub(' ','_').camelize %>">
+        <h5 class="card-title"><%= group %></h5>
         <span class="caret pull-right"></span>
       </div>
-      <div id='collapse<%= group.gsub(' ','_').camelize %>' class="panel-collapse collapse <%= open %>" role="tabpanel" aria-labelledby="heading<%= group.gsub(' ','_').camelize %>">
+      <div id='collapse<%= group.gsub(' ','_').camelize %>' class="card-collapse collapse <%= open %>" role="tabpanel" aria-labelledby="heading<%= group.gsub(' ','_').camelize %>">
         <ul class='list-group'><% templates.each do |template| %>
           <li class='list-group-item'><%= template.name %></li>
         <% end %></ul>

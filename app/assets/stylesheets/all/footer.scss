@@ -1,0 +1,10 @@
+footer#main-footer {
+  @extend .text-muted;
+  @extend .border-top;
+  @extend .bg-light;
+  @extend .font-weight-light;
+  padding: 3em;
+  font-size: small;
+  bottom: 0;
+  width: 100%
+}

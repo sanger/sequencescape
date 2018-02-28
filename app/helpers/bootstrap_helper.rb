@@ -6,26 +6,24 @@
 
 module BootstrapHelper
   def panel(type = :default, options = {}, &block)
-    bs_custom_panel(type, :div, { class: 'panel-body' }, options, &block)
+    bs_custom_panel(type, :div, { class: 'card-body' }, options, &block)
   end
 
   def list_panel(type = :default, options = {}, &block)
-    bs_custom_panel(type, :ul, { class: 'list-group' }, options, &block)
+    bs_custom_panel(type, :ul, { class: 'list-group list-group-flush' }, options, &block)
   end
 
   def link_panel(type = :default, options = {}, &block)
-    bs_custom_panel(type, :div, { class: 'list-group' }, options, &block)
+    bs_custom_panel(type, :div, { class: 'list-group list-group-flush' }, options, &block)
   end
 
   def bs_custom_panel(type, body_type, body_options, options, &block)
     title = options.delete(:title)
     options[:class] ||= String.new
-    options[:class] << " panel panel-#{type}"
+    options[:class] << " card card-#{type} mb-3"
     content_tag(:div, options) do
       out = String.new.html_safe
-      out << content_tag(:div, class: 'panel-heading') do
-        content_tag(:h3, title, class: 'panel-title')
-      end unless title.nil?
+      out << content_tag(:h3, title, class: 'card-header') unless title.nil?
       out << content_tag(body_type, body_options, &block)
     end
   end
@@ -44,8 +42,8 @@ module BootstrapHelper
   # Summary composits a panel with a table to deliver
   # a list of key-value pairs
   # <div class="col-md-6">
-  #   <div class="panel panel-default">
-  #     <div class="panel-heading"><h3 class="panel-title">Summary</h3></div>
+  #   <div class="card card-default">
+  #     <h3 class="card-header">Summary</h3>
   #     <table class='table table-summary'>
   #       <tr>
   #         <th>Array[0][0]</th>
@@ -59,12 +57,10 @@ module BootstrapHelper
     title = options.delete(:title) || 'Summary'
     size = options.delete(:size) || '6'
     options[:class] ||= String.new
-    options[:class] << " panel panel-#{bs_type}"
+    options[:class] << " card card-#{bs_type}"
     content_tag(:div, class: "col-md-#{size}") do
       content_tag(:div, options) do
-        content_tag(:div, class: 'panel-heading') do
-          content_tag(:h3, title, class: 'panel-title')
-        end <<
+        content_tag(:h3, title, class: 'card-header') <<
           content_tag(:table, class: 'table table-summary') do
             String.new.html_safe.tap do |rows|
               yield.each do |key, value|

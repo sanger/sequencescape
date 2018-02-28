@@ -1,0 +1,10 @@
+// Controls the page header
+// Note: Some components MAY be elsewhere
+
+.help-button {
+  @extend .btn;
+  @extend .btn-info;
+  @extend .btn-lg;
+  @extend .btn-block;
+  @extend .mb-3;
+}

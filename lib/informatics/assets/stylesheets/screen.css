@@ -562,11 +562,6 @@ div#view-menu {
   float: right;
 }
 
-span#institute {
-  position: relative;
-  left: 0px;
-  padding-left: 5px;
-}
 
 div#main-title {
   background: #336699;
@@ -600,12 +595,6 @@ div.link_title {
   text-transform: uppercase;
   padding-top: 15px;
   font-weight: bold;
-}
-
-div#menu {
-  float: right;
-  width: 230px;
-  margin-bottom: 10px;
 }
 
 div#comment_links {

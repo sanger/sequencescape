@@ -74,20 +74,6 @@ div.callout p {
   color: #0000ff;
 }
 
-footer {
-  font-size: 10px;
-  line-height: 17px;
-  color: #666;
-}
-
-footer a, footer a:link, footer a:visited {
-  color: #3e87b3;
-  text-decoration: none;
-}
-
-footer a:hover {
-  color: #880000;
-}
 
 td.blank {
   color: #888;
@@ -472,12 +458,6 @@ div.bar li {
   float: right;
 }
 
-#institute {
-  position: relative;
-  left: 0px;
-  padding-left: 5px;
-}
-
 #help {
   background: #A0D6FC;
   padding: 5px 5px 5px 10px;
@@ -489,10 +469,6 @@ div.link_title {
   text-transform: uppercase;
   padding-top: 15px;
   font-weight: bold;
-}
-
-#menu {
-  font-size: 1em;
 }
 
 #comment_links {

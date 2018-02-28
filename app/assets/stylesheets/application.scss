@@ -7,10 +7,13 @@
 @import "jquery-tablesorter/theme.bootstrap";
 @import "jquery-ui";
 @import "all/sequencescape";
+@import "all/header";
+@import "all/footer";
+@import "all/sidebar";
 @import "all/page_specific_hacks";
-@import "all/screen";
+//@import "all/screen";
 @import "all/components";
-@import "bootstrap-sprockets";
+//@import "bootstrap-sprockets";
 @import "bootstrap";
 @import "formtastic";
 @import "select2";

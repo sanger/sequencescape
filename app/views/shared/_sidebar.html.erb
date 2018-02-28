@@ -4,14 +4,12 @@
 # authorship of this file.
 # Copyright (C) 2015 Genome Research Ltd.%>
 <% if @about.present? %>
-  <%= panel(:default,title:"About this page") do %>
+  <%= panel(:default, title:"About this page") do %>
     <%= @about %>
   <% end %>
 <% end %>
 
-<%= panel(:info) do %>
-  <a type="button" class="btn btn-info btn-lg btn-block" href=<%=new_user_query_path%> > HELP </a>
-<% end %>
+<%= link_to 'Help', new_user_query_path, class: 'help-button' %>
 
 <%= panel(:default,title:"Links") do %>
   <%= render partial: "shared/menu" %>

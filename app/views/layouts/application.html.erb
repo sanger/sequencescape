@@ -22,40 +22,35 @@
     <title>
       Sequencescape : <%= controller.controller_name.capitalize %> - <%= @page_name || controller.action_name %>
     </title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <%= stylesheet_link_tag "tabview", "application", media: "all" %>
-
-
-    <%#= stylesheet_link_tag("formtastic") + stylesheet_link_tag("formtastic_changes") %>
     <%= javascript_include_tag "application" %>
-
     <%= csrf_meta_tags %>
-
     <link rel="shortcut icon" href="/favicon.ico" type="image/vnd.microsoft.icon" />
     <link rel="icon" href="/favicon.ico" type="image/vnd.microsoft.icon" />
   </head>
 
   <body class="<%= Rails.env %> <%= DeploymentEnvironment.role %>">
-  <div id="doc3" class="container-fluid">
-
-    <header><%= render partial: 'shared/header' %></header>
-
-    <section class="clearfix main-row">
-      <section class="col-md-10">
-        <%= render_flashes %>
-        <div id="yield">
-          <%= yield %>
+    <div id='main-content'>
+      <header><%= render partial: 'shared/header' %></header>
+      <section class="row">
+        <section id="page-content">
+          <%= render_flashes %>
+          <div id="yield">
+            <%= yield %>
+          </div>
+        </section>
+        <div id="menu">
+          <%= render partial: 'shared/sidebar' %>
         </div>
       </section>
-      <div id="menu" class="col-md-2"><%= render partial: 'shared/sidebar' %></div>
-    </section>
-
-    <footer>
-      <div class="well">
-        <%= link_to "Feedback", "mailto:#{configatron.admin_email}" %> · <%= Deployed::VERSION_STRING %> · A tool from <%= link_to configatron.fetch(:team_name,'LIMS and Informatics'), configatron.fetch(:team_url,'http://www.sanger.ac.uk/science/groups/production-software-development') %>
-      </div>
-    </footer>
-
     </div>
+    <footer id="main-footer">
+      <ul>
+        <li><%= link_to "Feedback", "mailto:#{configatron.admin_email}" %></li>
+        <li><%= Deployed::VERSION_STRING %></li>
+        <li>A tool from <%= link_to configatron.fetch(:team_name,'LIMS and Informatics'), configatron.fetch(:team_url,'http://www.sanger.ac.uk/science/groups/production-software-development') %></li>
+      </ul>
+    </footer>
   </body>
 </html>

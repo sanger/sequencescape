@@ -5,4 +5,5 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 class BarcodePrinterType96Plate < BarcodePrinterType
+
 end

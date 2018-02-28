@@ -5,7 +5,7 @@
 # Copyright (C) 2016 Genome Research Ltd.%>
 <%= link_panel(style,title:"Latest Batches") do %>
   <% if latest_batches.present? %>
-    <div class="panel-body">
+    <div class="card-body">
       <h4>Owned batches</h4>
       <p>Your most recent owned batches</p>
     </div>
@@ -14,7 +14,7 @@
     <% end -%>
   <% end %>
   <% if assigned_batches.present? %>
-    <div class="panel-body">
+    <div class="card-body">
       <h4>Assigned batches</h4>
       <p>The most recent batches assigned to you. This excludes any you may have taken ownership of.</p>
     </div>

@@ -61,8 +61,8 @@
 
     markPaneIncomplete : function() {
 
-      this.addClass('panel-info').
-        removeClass('panel-success panel-danger');
+      this.addClass('card-info').
+        removeClass('card-success card-danger');
 
       // Move this to an initialised callback
       $('#add-order').attr('disabled',true);
@@ -72,14 +72,14 @@
 
     markPaneInvalid : function() {
 
-      return this.addClass('panel-danger').
-        removeClass('panel-info panel-success');
+      return this.addClass('card-danger').
+        removeClass('card-info card-success');
     },
 
     markPaneComplete : function() {
 
-      this.addClass('panel-success').
-        removeClass('panel-info panel-danger').
+      this.addClass('card-success').
+        removeClass('card-info card-danger').
         find('input, select');
 
       // Move this to an initialised callback

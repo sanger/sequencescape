@@ -65,7 +65,7 @@ group :default do
   gem 'jquery-rails'
   gem 'jquery-ui-rails'
   gem 'jquery-tablesorter'
-  gem 'bootstrap-sass'
+  gem 'bootstrap'
   gem 'sass-rails'
   gem 'coffee-rails'
   gem 'select2-rails'
