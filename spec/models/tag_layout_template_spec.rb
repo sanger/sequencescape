@@ -18,6 +18,7 @@ describe TagLayoutTemplate do
     subject { template.create!(plate: plate, user: user) }
     let(:plate) { create :plate }
     let(:tag2_group) { nil }
+    let(:enforce_uniqueness) { nil }
 
     context 'by plate in columns' do
       let(:direction_algorithm) { 'TagLayout::InColumns' }
@@ -40,15 +41,29 @@ describe TagLayoutTemplate do
         expect(TagLayout::TemplateSubmission.where(submission_id: submissions)).to be_present
         TagLayout::TemplateSubmission.where(submission_id: submissions).each do |tlts|
           expect(tlts.tag_layout_template).to eq(template)
+          expect(tlts.enforce_uniqueness).to eq(enforce_uniqueness)
         end
       end
 
       context 'with a tag2 group' do
         it { is_expected.to be_a TagLayout }
         let(:tag2_group) { create :tag_group }
+        let(:enforce_uniqueness) { true }
+
         it 'passes in the correct properties' do
           expect(subject.plate).to eq(plate)
           expect(subject.tag2_group).to eq(tag2_group)
+        end
+        it 'records itself against the submissions' do
+          # First double check we have submissions
+          # otherwise out test is a false positive
+          subject
+          submissions =  plate.submissions.map(&:id)
+          expect(TagLayout::TemplateSubmission.where(submission_id: submissions)).to be_present
+          TagLayout::TemplateSubmission.where(submission_id: submissions).each do |tlts|
+            expect(tlts.tag_layout_template).to eq(template)
+            expect(tlts.enforce_uniqueness).to eq(enforce_uniqueness)
+          end
         end
       end
     end

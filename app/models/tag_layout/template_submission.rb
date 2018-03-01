@@ -27,4 +27,12 @@ class TagLayout::TemplateSubmission < ApplicationRecord
 
   validates :tag_layout_template, uniqueness: { scope: :submission }, if: :enforce_uniqueness?
   validates :enforce_uniqueness, inclusion: { in: [true, nil] }
+
+  before_validation :coerce_false_enforce_uniqueness_to_nil
+
+  # By setting the value to nil, we can bypass the uniqueness constraint
+  # on the database.
+  def coerce_false_enforce_uniqueness_to_nil
+    self.enforce_uniqueness = nil if enforce_uniqueness == false
+  end
 end
