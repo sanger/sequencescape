@@ -45,10 +45,10 @@ class Aliquot < ApplicationRecord
   belongs_to :sample
 
   # It may have a bait library but not necessarily.
-  belongs_to :bait_library
+  belongs_to :bait_library, optional: true
 
   # It can belong to a library asset
-  belongs_to :library, class_name: 'Receptacle'
+  belongs_to :library, class_name: 'Receptacle', optional: true
   composed_of :insert_size, mapping: [%w{insert_size_from from}, %w{insert_size_to to}], class_name: 'Aliquot::InsertSize', allow_nil: true
 
   has_one :aliquot_index, dependent: :destroy

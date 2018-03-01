@@ -19,6 +19,19 @@ FactoryGirl.define do
     end
   end
 
+  trait :with_submissions do
+    transient do
+      submission_count { 1 }
+      submissions { create_list :submission, submission_count }
+      submission_cycle { submissions.cycle }
+    end
+    after(:create) do |plate, evaluator|
+      plate.wells.each do |well|
+        well.requests_as_target << create(:transfer_request, target_asset: well, submission: evaluator.submission_cycle.next)
+      end
+    end
+  end
+
   factory :plate do
     plate_purpose
     name 'Plate name'

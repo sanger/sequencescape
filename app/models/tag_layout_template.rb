@@ -50,6 +50,14 @@ class TagLayoutTemplate < ApplicationRecord
 
   # Create a TagLayout instance that does the actual work of laying out the tags.
   def create!(attributes = {}, &block)
-    TagLayout.create!(attributes.merge(tag_layout_attributes), &block)
+    TagLayout.create!(attributes.merge(tag_layout_attributes), &block).tap do |tag_layout|
+      record_template_use(tag_layout.plate)
+    end
+  end
+
+  def record_template_use(plate)
+    plate.submissions.each do |submission|
+      TagLayout::TemplateSubmission.create!(submission: submission, tag_layout_template: self)
+    end
   end
 end

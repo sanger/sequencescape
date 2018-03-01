@@ -9,7 +9,8 @@ describe TagLayoutTemplate do
     build :tag_layout_template,
           direction_algorithm: direction_algorithm,
           walking_algorithm: walking_algorithm,
-          tag2_group: tag2_group
+          tag2_group: tag2_group,
+          tags: ['AAA']
   end
 
   describe '#create!' do
@@ -21,6 +22,7 @@ describe TagLayoutTemplate do
     context 'by plate in columns' do
       let(:direction_algorithm) { 'TagLayout::InColumns' }
       let(:walking_algorithm) { 'TagLayout::WalkWellsOfPlate' }
+      let(:plate) { create :plate, :with_submissions, well_count: 1 }
       it { is_expected.to be_a TagLayout }
 
       it 'passes in the correct properties' do
@@ -28,6 +30,17 @@ describe TagLayoutTemplate do
         expect(subject.direction).to eq('column')
         expect(subject.walking_by).to eq('wells of plate')
         expect(tag2_group).to eq(tag2_group)
+      end
+
+      it 'records itself against the submissions' do
+        # First double check we have submissions
+        # otherwise out test is a false positive
+        subject
+        submissions =  plate.submissions.map(&:id)
+        expect(TagLayout::TemplateSubmission.where(submission_id: submissions)).to be_present
+        TagLayout::TemplateSubmission.where(submission_id: submissions).each do |tlts|
+          expect(tlts.tag_layout_template).to eq(template)
+        end
       end
 
       context 'with a tag2 group' do
