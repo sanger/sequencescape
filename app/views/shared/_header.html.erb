@@ -6,7 +6,6 @@
 
 <div class="user-session-controls">
   <ul>
-  <li id="institute"><%= link_to I18n.t('application.institute'), I18n.t('application.institute_link') %></li>
   <% if logged_in? -%>
     <li>
       <%= I18n.t('global_links.welcome') %> <%= link_to current_user.name, profile_path(current_user) %>

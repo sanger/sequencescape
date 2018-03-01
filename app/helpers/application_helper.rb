@@ -72,7 +72,7 @@ module ApplicationHelper
   end
 
   def display_status(status)
-    content_tag(:span, status, class: "request-state label label-#{bootstrapify_request_state(status)}")
+    content_tag(:span, status, class: "request-state badge badge-#{bootstrapify_request_state(status)}")
   end
 
   def dynamic_link_to(summary_item)

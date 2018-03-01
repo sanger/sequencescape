@@ -82,7 +82,7 @@ module BootstrapHelper
       content_tag(:h1) do
         concat title.titleize
         concat ' '
-        concat content_tag(:small, subtitle) if subtitle.present?
+        concat content_tag(:span, subtitle, class: 'subtitle') if subtitle.present?
       end
     end
   end

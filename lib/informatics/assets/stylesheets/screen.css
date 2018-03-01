@@ -243,11 +243,6 @@ div#title a:hover {
   color: #efefef;
 }
 
-div#tab_bar {
-  background: #aad4f4;
-  border-bottom: 1px solid #bbb;
-}
-
 div#tabs {
   background: #aad4f4;
   color: #31353d;
@@ -488,30 +483,6 @@ div#message h1 {
   font-weight: bold;
   margin: 0px 0px 5px 0px;
   padding: 0px;
-}
-
-div#quick_links {
-  background: #31353d;
-  color: #efefef;
-  font-size: 12px;
-  border-top: 3px solid #055694;
-  padding: 3px 10px 2px 10px;
-}
-
-div#quick_links.staging {
-  background: #000 url(/images/staging.png);
-  border-top: 3px solid #000;
-  font-weight: bold;
-}
-
-div#quick_links a, div#quick_links a:link, div#quick_links a:visited {
-  color: #fff;
-  text-decoration: none;
-}
-
-div#quick_links a:hover {
-  color: #ff0;
-  text-decoration: underline;
 }
 
 div#description {

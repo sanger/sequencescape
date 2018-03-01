@@ -17,6 +17,12 @@ a:visited {
   @extend .mt-3;
 }
 
+.page-header {
+  h1 { @extend .display-4;
+    .subtitle { @extend .text-muted; @extend .font-weight-light; font-size: 50%; }
+  }
+}
+
 /* Formats the tubes in the layout_tubes_on_plate task */
 .library_tube { margin:0.1em; padding:0.2em; background:#E3EEFC; border-radius:5px; }
 .tube_tag {padding: 0.2em; margin-left:0.2em; background: #6997BF; color: white; border-radius:5px; }
@@ -102,20 +108,6 @@ div.quota {
 
 #tabs ul {
   padding-top: 1px;
-}
-
-#tab_bar {
-  background: #aad4f4;
-  background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(100%, #aad4f4), color-stop(0%, #8CBCDF));
-  background-image: -moz-linear-gradient(top, #aad4f4 0%, #8CBCDF 100%);
-  background-image: linear-gradient(top, #aad4f4 0%, #8CBCDF 100%);
-  -pie-background: linear-gradient(#aad4f4, #8CBCDF);
-  clear:both;
-  font-size: 12px;
-  -moz-box-shadow: 1px 1px 2px 0 #C3CEDA;
-  box-shadow: 1px 1px 2px 0 #C3CEDA;
-  border-bottom: 1px solid #bbb;
-
 }
 
 table#plate-samples-table .well_location {
@@ -228,26 +220,6 @@ padding: 5px;
 
 #qc_indent {
 padding-left: 10px;
-}
-#quick_links a,#quick_links a:link,#quick_links a:visited {
-color: #fff;
-text-decoration: none;
-}
-#quick_links a:hover {
-color: #ff0;
-text-decoration: underline;
-}
-#quick_links.staging {
-background: #000 url(/images/staging.png);
-border-top: 3px solid #000;
-font-weight: bold;
-}
-#quick_links {
-background: #31353d;
-color: #efefef;
-font-size: 12px;
-border-top: 3px solid #055694;
-padding: 3px 10px 2px 10px;
 }
 
 #sequencescape_logo {
@@ -1082,62 +1054,6 @@ ul#orders ul.errors li {
 ul#orders > li.buttons {
   padding: 0;
   margin-top: 30px;
-}
-
-.button {
-  cursor: pointer;
-  -moz-box-shadow:inset 0px 1px 0px 0px #bbdaf7;
-  -webkit-box-shadow:inset 0px 1px 0px 0px #bbdaf7;
-  box-shadow:inset 0px 1px 0px 0px #395F94, 0 1px 3px #999;
-  background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #0066B8), color-stop(1, #00498C) );
-  background:-moz-linear-gradient( center top, #0066B8 5%, #00498C 100% );
-  background-color:#00498C;
-  position: relative;
-  -moz-border-radius:6px;
-  -webkit-border-radius:6px;
-  border-radius: 6px;
-  border:1px solid #002C5C;
-  display:inline-block;
-  color:#ffffff;
-  font-size:15px;
-  font-weight:bold;
-  padding:4px 15px;
-  text-decoration:none;
-  text-shadow: 0px -1px 0px #1B3752;
-  -moz-transition:    all 0.5s ease-in-out 0s;
-  -webkit-transition: all 0.5s ease-in-out 0s;
-  transition:         all 0.5s ease-in-out 0s;
-
-}
-
-.button:hover {
-  color: #E5E68E;
-  background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #00498C), color-stop(1, #004390) );
-  background:-moz-linear-gradient( center top, #00498C 5%, #004390 100% );
-}
-
-.button[disabled] {
-  -moz-box-shadow: 0 0 0 0;
-  -webkit-box-shadow: 0 0 0 0;
-  box-shadow: 0 0 0 0;
-  background:#ACACAC;
-
-  border-color:#6E6E6E;
-  text-shadow:none;
-  color: #ddd;
-  opacity: 0.2;
-
-}
-
-.button[disabled]:hover {
-  -moz-box-shadow: 0 0 0 0;
-  -webkit-box-shadow: 0 0 0 0;
-  box-shadow: 0 0 0 0;
-  background:#ACACAC;
-
-  border-color:#6E6E6E;
-  text-shadow:0px 0px 0px #528ecc;
-  color: #ddd;
 }
 
 #asset_input_methods td { vertical-align: top; }
