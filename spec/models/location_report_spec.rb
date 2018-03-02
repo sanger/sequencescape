@@ -60,18 +60,10 @@ RSpec.describe LocationReport, type: :model do
   let(:headers_line)          { 'Ean13Barcode,HumanBarcode,Type,Created,Location,Service,Study,Owner' }
   let(:locn_prefix)           { 'Sanger - Ogilvie - AA209 - Freezer 1' }
 
-  context 'when checking basic model functionality' do
+  context 'when no report type is set' do
     let(:location_report) { create :location_report_barcodes, barcodes_text: '1234567890123' }
 
-    it 'is not valid without a report name' do
-      expect(location_report.name).to be_present
-    end
-
-    it 'is not valid unless the name has a specific format' do
-      expect(location_report.name).to match(/[0-9]{14}/)
-    end
-
-    it 'is not valid without a report type' do
+    it 'the report is not valid' do
       expect(build(:location_report, report_type: nil)).to_not be_valid
     end
   end
@@ -81,6 +73,7 @@ RSpec.describe LocationReport, type: :model do
       build(
         :location_report,
         report_type: report_type,
+        name: name,
         barcodes_text: barcodes_text,
         study_id: study_id,
         start_date: start_date,
@@ -89,6 +82,7 @@ RSpec.describe LocationReport, type: :model do
       )
     end
     let(:report_type) { nil }
+    let(:name) { nil }
     let(:barcodes_text) { nil }
     let(:study_id) { nil }
     let(:start_date) { nil }
@@ -98,19 +92,71 @@ RSpec.describe LocationReport, type: :model do
     context 'when checking report type selection validations' do
       let(:report_type) { :type_selection }
 
-      it 'is not valid if there is no start date' do
-        location_report.end_date = '2016-07-01 00:00:00'
-        expect(location_report).to_not be_valid
+      context 'when a name is not supplied' do
+        let(:start_date) { '2016-01-01 00:00:00' }
+        let(:end_date) { '2016-07-01 00:00:00' }
+
+        it 'a report name should be generated' do
+          location_report.save
+          expect(location_report.name).to be_present
+        end
+
+        it 'the report name has a timestamp format' do
+          location_report.save
+          expect(location_report.name).to match(/[0-9]{14}/)
+        end
       end
 
-      it 'is not valid if there is no end date' do
-        location_report.start_date = '2016-06-01 00:00:00'
-        expect(location_report).to_not be_valid
+      context 'when a name is supplied' do
+        let(:name) { 'Test name' }
+        let(:start_date) { '2016-01-01 00:00:00' }
+        let(:end_date) { '2016-07-01 00:00:00' }
+
+        it 'is used instead of auto-generating one' do
+          location_report.save
+          expect(location_report.name).to eq('Test name')
+        end
+      end
+
+      context 'when selecting using dates' do
+        it 'is not valid if there is no start date' do
+          location_report.end_date = '2016-07-01 00:00:00'
+          expect(location_report).to_not be_valid
+        end
+
+        it 'is not valid if there is no end date' do
+          location_report.start_date = '2016-06-01 00:00:00'
+          expect(location_report).to_not be_valid
+        end
       end
     end
 
     context 'when checking report type barcodes validations' do
       let(:report_type) { :type_barcodes }
+
+      context 'when a name is not supplied' do
+        let(:barcodes_text) { 'DN1S' }
+
+        it 'a report name should be generated' do
+          location_report.save
+          expect(location_report.name).to be_present
+        end
+
+        it 'the report name has a timestamp format' do
+          location_report.save
+          expect(location_report.name).to match(/[0-9]{14}/)
+        end
+      end
+
+      context 'when a name is supplied' do
+        let(:barcodes_text) { 'DN1S' }
+        let(:name) { 'Test name' }
+
+        it 'is used instead of auto-generating one' do
+          location_report.save
+          expect(location_report.name).to eq('Test name')
+        end
+      end
 
       it 'is not valid if there are no barcodes in the list' do
         location_report.barcodes_text = nil

@@ -46,6 +46,6 @@ class LocationReportsController < ApplicationController
   private
 
   def location_report_parameters
-    params.require(:location_report).permit(:report_type, :barcodes_text, :study_id, :start_date, :end_date, plate_purpose_ids: [])
+    params.require(:location_report).permit(:report_type, :name, :barcodes_text, :study_id, :start_date, :end_date, plate_purpose_ids: [])
   end
 end

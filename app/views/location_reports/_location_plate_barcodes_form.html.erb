@@ -5,9 +5,14 @@
 # Copyright (C) 2018 Genome Research Ltd.%>
 
 <%= form_for(location_report, html: {class: 'submit_once', id: "new_report_from_barcodes"}) do |f| %>
+  <div class='form-group'>
+    <%= f.label 'name', 'Report name' %><br>
+    <%= f.text_field :name, class: 'form-control' %>
+  </div>
+
   <div class="form-group">
     <%= f.label "barcodes_text", 'List of Barcodes (new line for each)' %><br/>
-    <%= f.text_area :barcodes_text, {prompt: 'Enter barcodes...', size: '50x10'} %>
+    <%= f.text_area :barcodes_text, {prompt: 'Enter barcodes...', size: '50x10', class: 'form-control'} %>
   </div>
 
   <%= f.hidden_field :report_type, value: 'type_barcodes' %>

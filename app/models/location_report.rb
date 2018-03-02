@@ -115,6 +115,8 @@ class LocationReport < ApplicationRecord
     end
   end
 
+  private
+
   def generate_plates_list
     @plates_list = if type_barcodes?
                      Plate.with_machine_barcode(barcodes)
@@ -150,10 +152,8 @@ class LocationReport < ApplicationRecord
             end
   end
 
-  private
-
   def generate_name
-    self.name ||= Time.current.to_formatted_s(:number)
+    self.name = Time.current.to_formatted_s(:number) if name.blank?
   end
 
   def search_for_plates_by_selection

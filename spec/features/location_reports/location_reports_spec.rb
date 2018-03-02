@@ -24,6 +24,7 @@ feature 'Creating location reports from entered barcodes' do
     visit location_reports_path
     expect(page).to have_content 'Plate Location Reports'
     within('#new_report_from_barcodes') do
+      fill_in 'name', with: 'Test report'
       fill_in 'location_report_barcodes_text', with: plate_1.machine_barcode
     end
     click_button('Create report from barcodes')
@@ -35,6 +36,7 @@ feature 'Creating location reports from entered barcodes' do
     visit location_reports_path
     expect(page).to have_content 'Plate Location Reports'
     within('#new_report_from_barcodes') do
+      fill_in 'name', with: 'Test report'
       fill_in 'location_report_barcodes_text', with: 'INVALIDBC'
     end
     click_button('Create report from barcodes')
@@ -46,6 +48,7 @@ feature 'Creating location reports from entered barcodes' do
     visit location_reports_path
     expect(page).to have_content 'Plate Location Reports'
     within('#new_report_from_barcodes') do
+      fill_in 'name', with: 'Test report'
       fill_in 'location_report_barcodes_text', with: "#{plate_1.machine_barcode} INVALIDBC"
     end
     click_button('Create report from barcodes')
@@ -80,6 +83,7 @@ feature 'Creating location reports from selected criteria' do
     visit location_reports_path
     expect(page).to have_content 'Plate Location Reports'
     within('#new_report_from_selection') do
+      fill_in 'name', with: 'Test report'
       fill_in 'location_report_start_date', with: '01/01/2016'
       fill_in 'location_report_end_date', with: '01/09/2016'
     end
@@ -92,6 +96,7 @@ feature 'Creating location reports from selected criteria' do
     visit location_reports_path
     expect(page).to have_content 'Plate Location Reports'
     within('#new_report_from_selection') do
+      fill_in 'name', with: 'Test report'
       select(study_1.name, from: 'location_report_study_id')
       fill_in 'location_report_start_date', with: '01/01/2016'
       fill_in 'location_report_end_date', with: '01/09/2016'
@@ -105,6 +110,7 @@ feature 'Creating location reports from selected criteria' do
     visit location_reports_path
     expect(page).to have_content 'Plate Location Reports'
     within('#new_report_from_selection') do
+      fill_in 'name', with: 'Test report'
       fill_in 'location_report_start_date', with: '01/01/2016'
       fill_in 'location_report_end_date', with: '01/09/2016'
       select(plt_1_purpose, from: 'location_report_plate_purpose_ids')
@@ -118,6 +124,7 @@ feature 'Creating location reports from selected criteria' do
     visit location_reports_path
     expect(page).to have_content 'Plate Location Reports'
     within('#new_report_from_selection') do
+      fill_in 'name', with: 'Test report'
       select(study_1.name, from: 'location_report_study_id')
       fill_in 'location_report_start_date', with: '01/01/2016'
       fill_in 'location_report_end_date', with: '01/09/2016'
@@ -132,6 +139,7 @@ feature 'Creating location reports from selected criteria' do
     visit location_reports_path
     expect(page).to have_content 'Plate Location Reports'
     within('#new_report_from_selection') do
+      fill_in 'name', with: 'Test report'
       select(study_1.name, from: 'location_report_study_id')
       fill_in 'location_report_end_date', with: '01/09/2016'
     end
@@ -144,6 +152,7 @@ feature 'Creating location reports from selected criteria' do
     visit location_reports_path
     expect(page).to have_content 'Plate Location Reports'
     within('#new_report_from_selection') do
+      fill_in 'name', with: 'Test report'
       select(study_1.name, from: 'location_report_study_id')
       fill_in 'location_report_start_date', with: '01/01/2017'
       fill_in 'location_report_end_date', with: '01/09/2017'

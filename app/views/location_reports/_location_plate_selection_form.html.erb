@@ -6,6 +6,11 @@
 
 <%= form_for(location_report, html: {class: 'submit_once', id: 'new_report_from_selection'}) do |f| %>
   <div class='form-group'>
+    <%= f.label 'name', 'Report name' %><br>
+    <%= f.text_field :name, class: 'form-control' %>
+  </div>
+
+  <div class='form-group'>
     <%= f.label 'study_id', 'Study' %>
     <%= f.select :study_id, studies, { prompt: 'Select study...', include_blank: true }, { class: 'form-control select2' } %>
   </div>
