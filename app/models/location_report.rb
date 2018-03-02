@@ -5,115 +5,89 @@
 # Copyright (C) 2018 Genome Research Ltd.
 
 class LocationReport < ApplicationRecord
+  # includes / extends
   extend DbFile::Uploader
 
+  # attributes / variables
   attr_accessor :barcodes_list
+  serialize :plate_purpose_ids, Array
+  serialize :barcodes, Array
+  self.per_page = 20
+  enum report_type: %i[type_barcodes type_selection]
+
+  # relations
+  belongs_to :study
+  belongs_to :user
+
+  # scopes
+  scope :for_user, ->(user) { where(user_id: user.id) }
+
+  # actions
+  before_validation :generate_name, on: %i[create build]
+  before_validation :check_entered_barcodes, on: %i[create build], if: :type_barcodes?
+  after_create :schedule_report
+  has_uploaded :report, serialization_column: 'report_filename'
+
+  # validations
+  validates :report_type, presence: true
+  validates :barcodes, presence: { if: :type_barcodes? }
+  validate :barcodes_are_recognised, on: %i[create build], if: :type_barcodes?
+  validates :study, presence: true, if: :type_selection?, allow_nil: true
+  validates :start_date, presence: { if: :type_selection? }
+  validates :end_date, presence: { if: :type_selection?, date: { after_or_equal_to: :start_date } }
+  validate :plates_are_found, if: :type_selection?
 
   def barcodes_text
     barcodes_list.join(' ') unless @barcodes_list.nil?
   end
 
+  # converts the barcodes entered by the user into a list
   def barcodes_text=(value)
     self.barcodes_list = if value.nil?
-                           nil
+                           []
                          else
                            value.strip.split(/[\s]+/)
                          end
   end
 
-  self.per_page = 10
-
-  scope :for_user, ->(user) { where(user_id: user.id) }
-
-  belongs_to :study
-  belongs_to :user
-
-  has_uploaded :report, serialization_column: 'report_filename'
-
-  def headers
-    %w[Barcode HumanBarcode Type Created Location Service Study Owner]
+  def column_headers
+    %w[Ean13Barcode HumanBarcode Type Created Location Service Study Owner]
   end
 
   def generate!
+    csv_options = { row_sep: "\r\n", force_quotes: true }
+    filename    = "location_report_#{name}.csv"
+
     ActiveRecord::Base.transaction do
-      csv_options = { row_sep: "\r\n", force_quotes: true }
-      filename    = "location_report_#{name}.csv"
       Tempfile.open(filename) do |tempfile|
         generate_report_rows do |fields|
-          tempfile.puts(CSV.generate_line(fields, csv_options))
+          tempfile << CSV.generate_line(fields, csv_options)
         end
-        tempfile.open # Reopen the temporary file
+        tempfile.rewind
         update_attributes!(report: tempfile)
       end
     end
   end
 
-  serialize :plate_purpose_ids, Array
-
-  before_validation :generate_name, on: %i[create build]
-
-  after_create :schedule_report
-
-  validates :report_type, presence: true
-
-  validates :study_id, numericality: true, if: :report_type_selection?, allow_nil: true
-  validates :start_date, presence: { if: :report_type_selection? }
-  validates :end_date, presence: { if: :report_type_selection?, date: { after_or_equal_to: :start_date } }
-
-  validates :barcodes_text, presence: { if: :report_type_barcodes? }
-  validate :barcodes_are_recognised, if: :report_type_barcodes?
-  validate :plates_are_found, if: :report_type_selection?
-
-  def report_type_selection?
-    report_type == 'selection'
-  end
-
-  def report_type_barcodes?
-    report_type == 'barcodes'
+  def check_entered_barcodes
+    @invalid_barcodes_list = []
+    barcodes_list.each do |cur_bc|
+      if barcode_is_human_readable?(cur_bc)
+        barcodes << Barcode.human_to_machine_barcode(cur_bc).to_s
+      elsif barcode_is_ean13?(cur_bc)
+        barcodes << cur_bc
+      else
+        @invalid_barcodes_list << cur_bc
+      end
+    end
   end
 
   def barcodes_are_recognised
-    if barcodes_list.blank?
-      errors.add(:barcodes_text, 'Please enter some barcodes in the text area')
-      return
-    end
-
-    ean13_barcodes_list = []
-    invalid_barcodes_list = []
-    barcodes_list.each do |cur_bc|
-      if barcode_is_human_readable?(cur_bc)
-        # human readable format
-        ean13_barcodes_list.push(Barcode.human_to_machine_barcode(cur_bc))
-      elsif barcode_is_ean13?(cur_bc)
-        # already ean 13 format so unchanged
-        ean13_barcodes_list.push(cur_bc)
-      else
-        invalid_barcodes_list.push(cur_bc)
-      end
-    end
-
-    unless invalid_barcodes_list.size.zero?
-      errors.add(:barcodes_text, "Invalid barcodes found: #{invalid_barcodes_list.join(',')}")
-      return
-    end
-
-    if ean13_barcodes_list.size.zero?
-      errors.add(:barcodes_text, 'Please enter some valid barcodes (human or scannable) in the text area')
-      return
-    end
-
-    self.barcodes = ean13_barcodes_list.join(' ')
+    errors.add(:base, I18n.t('location_reports.errors.invalid_barcodes_found') + @invalid_barcodes_list.join(',')) unless @invalid_barcodes_list.size.zero?
   end
 
   def plates_are_found
-    unless Plate.search_for_plates(
-      study_id:             study_id,
-      start_date:           start_date,
-      end_date:             end_date,
-      plate_purpose_ids:    plate_purpose_ids
-    ).any?
-      errors.add(:study_id, 'Those selection criteria return no plates')
-    end
+    errors.add(:base, I18n.t('location_reports.errors.no_rows_found')) unless search_for_plates_by_selection.any?
   end
 
   def schedule_report
@@ -121,66 +95,59 @@ class LocationReport < ApplicationRecord
   end
 
   def generate_report_rows
-    plates_list = []
+    generate_plates_list
 
-    if report_type == 'barcodes'
-      ean13_barcodes_list = []
-      self.barcodes_list = barcodes.strip.split(/[\s]+/)
-      if barcodes_list.empty?
-        yield(['Error: barcodes list was empty when generating the report'])
-        return
-      end
-      barcodes_list.each do |cur_bc|
-        if barcode_is_human_readable?(cur_bc)
-          # human readable format
-          ean13_barcodes_list.push(Barcode.human_to_machine_barcode(cur_bc))
-        elsif barcode_is_ean13?(cur_bc)
-          # ean 13 format so unchanged
-          ean13_barcodes_list.push(cur_bc)
-        end
-      end
-
-      # fetch the plates for the batch of barcodes
-      plates_list = Plate.with_machine_barcode(ean13_barcodes_list)
-    elsif report_type == 'selection'
-      plates_list = search_for_plates_by_selection
-    end
-
-    if plates_list.empty?
-      yield(['Error: plates list was empty when generating the report'])
+    if @plates_list.empty?
+      yield([I18n.t('location_reports.errors.plate_list_empty')])
       return
     end
 
-    yield headers
+    yield column_headers
 
-    plates_list.each do |cur_plate|
+    @plates_list.each do |cur_plate|
       if cur_plate.studies.present?
         cur_plate.studies.each do |cur_study|
-          yield([
-            cur_plate.machine_barcode,
-            cur_plate.sanger_human_barcode,
-            cur_plate.plate_purpose.name,
-            cur_plate.created_at.strftime('%Y-%m-%d %H:%M:%S'),
-            cur_plate.storage_location,
-            cur_plate.storage_location_service,
-            cur_study.name,
-            cur_study.study_metadata.faculty_sponsor.name
-          ])
+          yield(generate_report_row(cur_plate, cur_study))
         end
       else
-        # no study found (unlikely)
-        yield([
-          cur_plate.machine_barcode,
-          cur_plate.sanger_human_barcode,
-          cur_plate.plate_purpose.name,
-          cur_plate.created_at.strftime('%Y-%m-%d %H:%M:%S'),
-          cur_plate.storage_location,
-          cur_plate.storage_location_service,
-          'Unknown',
-          'Unknown'
-        ])
+        yield(generate_report_row(cur_plate, nil))
       end
     end
+  end
+
+  def generate_plates_list
+    @plates_list = if type_barcodes?
+                     Plate.with_machine_barcode(barcodes)
+                   elsif type_selection?
+                     search_for_plates_by_selection
+                   else
+                     []
+                   end
+  end
+
+  def generate_report_row(cur_plate, cur_study)
+    row = generate_plate_cols_for_row(cur_plate)
+    row + generate_study_cols_for_row(cur_study)
+  end
+
+  def generate_plate_cols_for_row(cur_plate)
+    cols = [] << cur_plate.machine_barcode
+    cols << cur_plate.sanger_human_barcode
+    cols << cur_plate.plate_purpose.name
+    cols << cur_plate.created_at.strftime('%Y-%m-%d %H:%M:%S')
+    cols << cur_plate.storage_location
+    cols << cur_plate.storage_location_service
+  end
+
+  def generate_study_cols_for_row(cur_study)
+    return %w[Unknown Unknown] if cur_study.blank?
+
+    cols = [] << cur_study.name ||= 'Unknown'
+    cols << if cur_study.study_metadata.present?
+              cur_study.study_metadata.faculty_sponsor.name ||= 'Unknown'
+            else
+              'Unknown'
+            end
   end
 
   private

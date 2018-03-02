@@ -674,7 +674,7 @@ ActiveRecord::Schema.define(version: 20180131163110) do
   create_table "location_reports", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.bigint "user_id", null: false
     t.string "name", null: false
-    t.string "report_type", null: false
+    t.integer "report_type", null: false
     t.string "barcodes"
     t.bigint "study_id"
     t.string "plate_purpose_ids"

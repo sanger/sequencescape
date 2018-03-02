@@ -57,7 +57,7 @@ RSpec.describe LocationReport, type: :model do
   let(:plt_3_purpose)         { plate_3.plate_purpose.name }
   let(:plt_3_created)         { plate_3.created_at.strftime('%Y-%m-%d %H:%M:%S') }
 
-  let(:headers_line)          { 'Barcode,HumanBarcode,Type,Created,Location,Service,Study,Owner' }
+  let(:headers_line)          { 'Ean13Barcode,HumanBarcode,Type,Created,Location,Service,Study,Owner' }
   let(:locn_prefix)           { 'Sanger - Ogilvie - AA209 - Freezer 1' }
 
   context 'when checking basic model functionality' do
@@ -96,7 +96,7 @@ RSpec.describe LocationReport, type: :model do
     let(:plate_purpose_ids) { nil }
 
     context 'when checking report type selection validations' do
-      let(:report_type) { 'selection' }
+      let(:report_type) { :type_selection }
 
       it 'is not valid if there is no start date' do
         location_report.end_date = '2016-07-01 00:00:00'
@@ -110,7 +110,7 @@ RSpec.describe LocationReport, type: :model do
     end
 
     context 'when checking report type barcodes validations' do
-      let(:report_type) { 'barcodes' }
+      let(:report_type) { :type_barcodes }
 
       it 'is not valid if there are no barcodes in the list' do
         location_report.barcodes_text = nil
@@ -210,7 +210,7 @@ RSpec.describe LocationReport, type: :model do
       end
 
       context 'where plates are identified by selection' do
-        let(:report_type) { 'selection' }
+        let(:report_type) { :type_selection }
 
         context 'when selecting by dates only' do
           let(:start_date) { '2016-01-01 00:00:00' }
@@ -288,7 +288,7 @@ RSpec.describe LocationReport, type: :model do
       end
 
       context 'where plates are selected by a list of barcodes' do
-        let(:report_type) { 'barcodes' }
+        let(:report_type) { :type_barcodes }
 
         context 'when for a single-study plate' do
           let(:barcodes_text) { plate_1.machine_barcode.to_s }

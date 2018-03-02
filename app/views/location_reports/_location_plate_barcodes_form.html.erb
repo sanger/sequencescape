@@ -10,7 +10,7 @@
     <%= f.text_area :barcodes_text, {prompt: 'Enter barcodes...', size: '50x10'} %>
   </div>
 
-  <%= f.hidden_field :report_type, value: 'barcodes' %>
+  <%= f.hidden_field :report_type, value: 'type_barcodes' %>
   
   <div class="form-group actions-group">
     <%= f.submit('Create report from barcodes', autocomplete: 'off',class: 'disable_on_submit btn btn-success') %>

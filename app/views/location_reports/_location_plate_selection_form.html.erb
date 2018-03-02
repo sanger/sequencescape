@@ -25,7 +25,7 @@
     <%= f.select :plate_purpose_ids, options_for_select(plate_purposes, @location_report.plate_purpose_ids), { prompt: 'Select plate purposes...', include_hidden: false }, { class: 'form-control select2', :multiple => true } %>
   </div>
 
-  <%= f.hidden_field :report_type, value: 'selection' %>
+  <%= f.hidden_field :report_type, value: 'type_selection' %>
 
   <div class='form-group actions-group'>
     <%= f.submit('Create report from selection', autocomplete: 'off',class: 'disable_on_submit btn btn-success') %>

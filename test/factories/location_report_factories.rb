@@ -8,11 +8,11 @@ FactoryGirl.define do
     user
 
     factory :location_report_selection do
-      report_type   'selection'
+      report_type   :type_selection
     end
 
     factory :location_report_barcodes do
-      report_type   'barcodes'
+      report_type   :type_barcodes
     end
   end
 end

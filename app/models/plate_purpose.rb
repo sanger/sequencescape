@@ -28,6 +28,8 @@ class PlatePurpose < Purpose
     end
   end
 
+  # includes / extends
+  include SharedBehaviour::Named
   include Relationship::Associations
 
   broadcast_via_warren

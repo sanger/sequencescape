@@ -9,10 +9,9 @@ class LocationReportsController < ApplicationController
 
   def index
     @studies                = Study.alphabetical.pluck(:name, :id)
-    @plate_purposes         = PlatePurpose.pluck(:name, :id).sort
+    @plate_purposes         = PlatePurpose.alphabetical.pluck(:name, :id)
     @location_reports       = LocationReport.order(id: :desc).page(params[:page])
-    @location_report        = LocationReport.new
-    @location_report.user   = @current_user
+    @location_report        = LocationReport.new(user: @current_user)
   end
 
   def create
@@ -20,13 +19,13 @@ class LocationReportsController < ApplicationController
     @location_report.user   = @current_user
 
     if @location_report.save
-      flash[:notice] = 'Your report has been requested and will be listed at the bottom of this page when complete.'
+      flash[:notice] = I18n.t('location_reports.success')
       redirect_to location_reports_path
     else
       error_messages          = @location_report.errors.full_messages.join('; ')
-      flash[:error]           = "Failed to create report: #{error_messages}"
+      flash.now[:error]       = "Failed to create report: #{error_messages}"
       @studies                = Study.alphabetical.pluck(:name, :id)
-      @plate_purposes         = PlatePurpose.pluck(:name, :id).sort
+      @plate_purposes         = PlatePurpose.alphabetical.pluck(:name, :id)
       @location_reports       = LocationReport.order(id: :desc).page(params[:page])
       @location_report.errors.clear
       render 'index'
@@ -47,6 +46,6 @@ class LocationReportsController < ApplicationController
   private
 
   def location_report_parameters
-    params.require(:location_report).permit(:user, :report_type, :barcodes_text, :study_id, :start_date, :end_date, plate_purpose_ids: [])
+    params.require(:location_report).permit(:report_type, :barcodes_text, :study_id, :start_date, :end_date, plate_purpose_ids: [])
   end
 end
