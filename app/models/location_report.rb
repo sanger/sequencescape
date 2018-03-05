@@ -35,7 +35,7 @@ class LocationReport < ApplicationRecord
   validates :study, presence: true, if: :type_selection?, allow_nil: true
   validates :start_date, presence: { if: :type_selection? }
   validates :end_date, presence: { if: :type_selection?, date: { after_or_equal_to: :start_date } }
-  validate :plates_are_found, if: :type_selection?
+  validate :plates_are_found, on: %i[create], if: :type_selection?
 
   def barcodes_text
     barcodes_list.join(' ') unless @barcodes_list.nil?
@@ -56,7 +56,7 @@ class LocationReport < ApplicationRecord
 
   def generate!
     csv_options = { row_sep: "\r\n", force_quotes: true }
-    filename    = "location_report_#{name}.csv"
+    filename    = ['locn_rpt', name].join('_') + '.csv'
 
     ActiveRecord::Base.transaction do
       Tempfile.open(filename) do |tempfile|
@@ -153,6 +153,7 @@ class LocationReport < ApplicationRecord
   end
 
   def generate_name
+    self.name = name.gsub(/[^A-Za-z0-9_\-\.\s]/, '').squish.gsub(/\s/, '_') if name.present?
     self.name = Time.current.to_formatted_s(:number) if name.blank?
   end
 

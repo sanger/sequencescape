@@ -114,7 +114,7 @@ RSpec.describe LocationReport, type: :model do
 
         it 'is used instead of auto-generating one' do
           location_report.save
-          expect(location_report.name).to eq('Test name')
+          expect(location_report.name).to eq('Test_name')
         end
       end
 
@@ -154,7 +154,7 @@ RSpec.describe LocationReport, type: :model do
 
         it 'is used instead of auto-generating one' do
           location_report.save
-          expect(location_report.name).to eq('Test name')
+          expect(location_report.name).to eq('Test_name')
         end
       end
 
