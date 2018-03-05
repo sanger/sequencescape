@@ -381,21 +381,21 @@ class Plate < Asset
       .distinct
   end
 
-  scope :with_study_id, (proc { |study_id|
+  scope :with_study_id, ->(study_id) {
     joins(:studies).where(studies: { id: study_id }) if study_id.present?
-  })
+  }
 
-  scope :with_plate_purpose_ids, (proc { |plate_purpose_ids|
+  scope :with_plate_purpose_ids, ->(plate_purpose_ids) {
     joins(:plate_purpose).where(plate_purposes: { id: plate_purpose_ids }) if plate_purpose_ids.present?
-  })
+  }
 
-  scope :created_after, (proc { |date|
+  scope :created_after, ->(date) {
     where('assets.created_at >= ?', date.midnight) if date.present?
-  })
+  }
 
-  scope :created_before, (proc { |date|
+  scope :created_before, ->(date) {
     where('assets.created_at <= ?', date.end_of_day) if date.present?
-  })
+  }
 
   def wells_sorted_by_map_id
     wells.sorted
