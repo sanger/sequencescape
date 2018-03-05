@@ -51,7 +51,7 @@ class LocationReport < ApplicationRecord
   end
 
   def column_headers
-    %w[Ean13Barcode HumanBarcode Type Created Location Service Study Owner]
+    %w[ScannedBarcode HumanBarcode Type Created Location Service Study Owner]
   end
 
   def generate!
@@ -144,12 +144,8 @@ class LocationReport < ApplicationRecord
   def generate_study_cols_for_row(cur_study)
     return %w[Unknown Unknown] if cur_study.blank?
 
-    cols = [] << cur_study.name ||= 'Unknown'
-    cols << if cur_study.study_metadata.present?
-              cur_study.study_metadata.faculty_sponsor.name ||= 'Unknown'
-            else
-              'Unknown'
-            end
+    cols = [] << cur_study.name || cur_study.id
+    cols << cur_study.study_metadata.faculty_sponsor&.name || 'Unknown'
   end
 
   def generate_name

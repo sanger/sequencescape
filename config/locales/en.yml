@@ -205,7 +205,7 @@ en:
   location_reports:
     success: "Your report has been requested and will be listed at the bottom of this page when complete."
     errors:
-      no_rows_found: " - That selection returns no plates, no report generated."
-      invalid_barcodes_found: " - Invalid barcodes found, no report generated: "
+      no_rows_found: "That selection returns no plates, no report generated."
+      invalid_barcodes_found: "Invalid barcodes found, no report generated: "
       plate_list_empty: "No plates found when attempting to generate the report."
 

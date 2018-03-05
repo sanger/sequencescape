@@ -57,7 +57,7 @@ RSpec.describe LocationReport, type: :model do
   let(:plt_3_purpose)         { plate_3.plate_purpose.name }
   let(:plt_3_created)         { plate_3.created_at.strftime('%Y-%m-%d %H:%M:%S') }
 
-  let(:headers_line)          { 'Ean13Barcode,HumanBarcode,Type,Created,Location,Service,Study,Owner' }
+  let(:headers_line)          { 'ScannedBarcode,HumanBarcode,Type,Created,Location,Service,Study,Owner' }
   let(:locn_prefix)           { 'Sanger - Ogilvie - AA209 - Freezer 1' }
 
   context 'when no report type is set' do

@@ -40,7 +40,7 @@ feature 'Creating location reports from entered barcodes' do
       fill_in 'location_report_barcodes_text', with: 'INVALIDBC'
     end
     click_button('Create report from barcodes')
-    expect(page).to have_content "Failed to create report: Barcodes can't be blank; - Invalid barcodes found, no report generated: INVALIDBC"
+    expect(page).to have_content "Failed to create report: Barcodes can't be blank; Invalid barcodes found, no report generated: INVALIDBC"
   end
 
   scenario 'with a mix of valid and invalid barcodes' do
@@ -52,7 +52,7 @@ feature 'Creating location reports from entered barcodes' do
       fill_in 'location_report_barcodes_text', with: "#{plate_1.machine_barcode} INVALIDBC"
     end
     click_button('Create report from barcodes')
-    expect(page).to have_content 'Failed to create report: - Invalid barcodes found, no report generated: INVALIDBC'
+    expect(page).to have_content 'Failed to create report: Invalid barcodes found, no report generated: INVALIDBC'
   end
 end
 
@@ -159,6 +159,6 @@ feature 'Creating location reports from selected criteria' do
       select(plt_1_purpose, from: 'location_report_plate_purpose_ids')
     end
     click_button('Create report from selection')
-    expect(page).to have_content 'Failed to create report: - That selection returns no plates, no report generated.'
+    expect(page).to have_content 'Failed to create report: That selection returns no plates, no report generated.'
   end
 end
