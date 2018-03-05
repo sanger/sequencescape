@@ -20,7 +20,3 @@ end
 Given /^today's date is "([^"]*)"$/ do |target_date|
   Timecop.travel Date.parse(target_date)
 end
-
-Given /^all of this is happening (\d+) hours from now$/ do |hours|
-  Timecop.travel(hours.to_i.hours.from_now)
-end

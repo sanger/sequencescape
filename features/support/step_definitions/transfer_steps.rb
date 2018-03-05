@@ -41,10 +41,6 @@ Then /^the transfers from (the plate .+) to (the plate .+) should be:$/ do |sour
   end
 end
 
-Given /^a transfer plate exists with ID (\d+)$/ do |id|
-  FactoryGirl.create(:transfer_plate, id: id)
-end
-
 Given /^a (source|destination) transfer plate called "([^\"]+)" exists$/ do |type, name|
   FactoryGirl.create("#{type}_transfer_plate", name: name)
 end

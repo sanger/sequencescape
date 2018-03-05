@@ -112,10 +112,6 @@ Then /^I should see the (MRI |JRuby |)cherrypick worksheet table:$/ do |interpre
   end
 end
 
-When /^I look at the pulldown report for the batch it should be:$/ do |expected_results_table|
-  expected_results_table.diff!(CSV.parse(page.source).collect { |r| r.collect { |c| c ? c : '' } })
-end
-
 Given(/^I have a tag group called "([^"]*)" with (\d+) tags$/) do |tag_group_name, number_of_tags|
   oligos = %w(ATCACG CGATGT TTAGGC TGACCA)
   tag_group = TagGroup.create!(name: tag_group_name)
@@ -125,85 +121,10 @@ Given(/^I have a tag group called "([^"]*)" with (\d+) tags$/) do |tag_group_nam
   end
 end
 
-Then /^the default plates to wells table should look like:$/ do |expected_results_table|
-  actual_table = table(fetch_table('table.plate').collect { |row| row.collect { |cell| cell[/^(Tag [\d]+)|(\w+)/] } })
-
-  expected_results_table.diff!(actual_table)
-end
-
 When /^I set (PacBioLibraryTube|Plate|Sample|Multiplexed Library|Library|Pulldown Multiplexed Library) "([^"]*)" to be in freezer "([^"]*)"$/ do |_asset_type, plate_barcode, freezer_name|
   asset = Asset.find_from_machine_barcode(plate_barcode)
   location = Location.find_by(name: freezer_name)
   asset.update_attributes!(location: location)
-end
-
-Given(/^I have a pulldown batch$/) do
-  step('plate "1234567" with 8 samples in study "Test study" has a "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing" submission')
-  step('plate "222" with 8 samples in study "Study A" has a "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing" submission')
-  step('plate "1234567" has nonzero concentration results')
-  step('plate "1234567" has measured volume results')
-  step('plate "222" has nonzero concentration results')
-  step('plate "222" has measured volume results')
-
-  step('the plate barcode webservice returns "99999"')
-  step('I am on the show page for pipeline "Cherrypicking for Pulldown"')
-  step('I check "Select DN1234567T for batch"')
-  step('I check "Select DN222J for batch"')
-  step('I select "Create Batch" from the first "action_on_requests"')
-  step('I press "Submit"')
-  step('I follow "Cherrypick Group By Submission"')
-  step('I select "Pulldown Aliquot" from "Plate Purpose"')
-  step('I press "Next step"')
-  step('I press "Release this batch"')
-  step('I set Plate "1220099999705" to be in freezer "Pulldown freezer"')
-  step('I am on the show page for pipeline "Pulldown Multiplex Library Preparation"')
-  step('I check "Select DN99999F for batch"')
-  step('I press "Submit"')
-end
-
-Given(/^I have 2 pulldown plates$/) do
-  step('plate "1234567" with 1 samples in study "Test study" has a "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing" submission')
-  step('plate "1234567" has nonzero concentration results')
-  step('plate "1234567" has measured volume results')
-
-  step('the plate barcode webservice returns "99999"')
-  step('I am on the show page for pipeline "Cherrypicking for Pulldown"')
-  step('I check "Select DN1234567T for batch"')
-  step('I select "Create Batch" from the first "action_on_requests"')
-  step('I press "Submit"')
-  step('I follow "Cherrypick Group By Submission"')
-  step('I select "Pulldown Aliquot" from "Plate Purpose"')
-  step('I press "Next step"')
-  step('I press "Release this batch"')
-  step('I set Plate "1220099999705" to be in freezer "Pulldown freezer"')
-
-  step('plate "222" with 1 samples in study "Study A" has a "Cherrypicking for Pulldown - Pulldown Multiplex Library Preparation - HiSeq Paired end sequencing" submission')
-  step('plate "222" has nonzero concentration results')
-  step('plate "222" has measured volume results')
-  step('the plate barcode webservice returns "88888"')
-  step('I am on the show page for pipeline "Cherrypicking for Pulldown"')
-  step('I check "Select DN222J for batch"')
-  step('I press "Submit"')
-  step('I follow "Cherrypick Group By Submission"')
-  step('I select "Pulldown Aliquot" from "Plate Purpose"')
-  step('I press "Next step"')
-  step('I press "Release this batch"')
-  step('I set Plate "1220088888782" to be in freezer "Pulldown freezer"')
-end
-
-Given(/^all library tube barcodes are set to know values$/) do
-  PulldownMultiplexedLibraryTube.all.each_with_index do |tube, index|
-    tube.update_attributes!(barcode: (index + 1).to_s)
-  end
-end
-
-Then /^the worksheet for the last batch should be:$/ do |expected_results_table|
-  expected_results_table.diff!(table(fetch_table('table#pulldown_worksheet_details')))
-end
-
-Then /^library "([^"]*)" should have (\d+) sequencing requests$/ do |library_barcode, number_of_sequencing_requests|
-  library = Asset.find_from_machine_barcode(library_barcode) or raise "Cannot find library with barcode #{library_barcode.inspect}"
-  assert_equal number_of_sequencing_requests.to_i, SequencingRequest.count(conditions: ["asset_id = #{library.id}"])
 end
 
 Given(/^the CherrypickForPulldownPipeline pipeline has a max batch size of (\d+)$/) do |max_size|

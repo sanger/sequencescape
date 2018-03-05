@@ -13,21 +13,6 @@ Given /^study "([^\"]+)" has an asset group called "([^\"]+)" with (\d+) wells$/
   end
 end
 
-Given /^I have a "([^\"]+)" submission of asset group "([^\"]+)" under project "([^\"]+)"$/ do |template_name, group_name, project_name|
-  asset_group = AssetGroup.find_by(name: group_name) or raise StandardError, "Cannot find the asset group #{group_name.inspect}"
-
-  # NOTE: Working with Submission from the code at this point is a nightmare, so use the UI!
-  step(%Q{I am on the show page for study "#{asset_group.study.name}"})
-  step('I follow "Create Submission"')
-  step(%Q{I select "#{template_name}" from "Template"})
-  step('I press "Next"')
-  step(%Q{I select "#{project_name}" from "Select a financial project"})
-  step(%Q{I select "#{group_name}" from "Select a group to submit"})
-  step('I create the order and submit the submission')
-
-  step('all pending delayed jobs are processed')
-end
-
 Given /^all assets for requests in the "([^\"]+)" pipeline have been scanned into the lab$/ do |name|
   pipeline = Pipeline.find_by!(name: name)
   pipeline.requests.each { |request| request.asset.labware.update_attributes!(location: pipeline.location) }
@@ -37,11 +22,6 @@ When /^I check "([^\"]+)" for (\d+) to (\d+)$/ do |label_root, start, finish|
   (start.to_i..finish.to_i).each do |i|
     step(%Q{I check "#{label_root} #{i}"})
   end
-end
-
-Given /^all of the requests in the "([^\"]+)" pipeline are in the "([^\"]+)" state$/ do |name, state|
-  pipeline = Pipeline.find_by(name: name) or raise StandardError, "Cannot find pipeline #{name.inspect}"
-  pipeline.requests.each { |request| request.update_attributes!(state: state) }
 end
 
 Then /^the inbox should contain (\d+) requests?$/ do |count|
@@ -56,10 +36,6 @@ end
 
 Then /^the batch (input|output) asset table should be:$/ do |name, expected_table|
   expected_table.diff!(table(fetch_table("##{name}_assets")))
-end
-
-Then /^the batch input asset table should have 1 row with (\d+) wells$/ do |count|
-  Cucumber::Ast::Table.new([{ 'Wells' => count }]).diff!(table(fetch_table("##{name}_assets")))
 end
 
 Given /^the plate template "([^\"]+)" exists$/ do |name|
@@ -203,13 +179,6 @@ Given /^I have a batch with (\d+) requests? for the "(#{LIBRARY_CREATION_PIPELIN
   end
 end
 
-Then /^the (\d+) requests should be in the "(#{LIBRARY_CREATION_PIPELINES})" pipeline inbox$/ do |count, name|
-  requests_for_pipeline(name, count.to_i) do |requests_in_inbox|
-    assert(Batch.first.requests.empty?, "There are still requests present in the #{name.inspect} batch")
-    assert(requests_in_inbox.all? { |r| r.target_asset.nil? }, "There are #{name.inspect} requests with target assets")
-  end
-end
-
 GENOTYPING_PIPELINES = [
   'Manual Quality Control',
   'DNA QC',
@@ -223,13 +192,5 @@ Given /^I have a batch with (\d+) requests? for the "(#{GENOTYPING_PIPELINES})" 
       asset_type: :well,
       holder_type: :plate
     }
-  end
-end
-
-# Even though the other test says that there is one request visible in the inbox and we have to look at
-# the wells, this one has 5 requests visible in the inbox because the wells are from different plates.
-Then /^the (\d+) requests should be in the "(#{GENOTYPING_PIPELINES})" pipeline inbox$/ do |count, name|
-  requests_for_pipeline(name, count.to_i) do |requests_in_inbox|
-    # Not really much else to check here, they should just appear!
   end
 end
