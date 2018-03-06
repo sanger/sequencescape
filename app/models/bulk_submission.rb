@@ -187,6 +187,7 @@ class BulkSubmission
     'asset group id', 'asset group name',
     'fragment size from', 'fragment size to',
     'pcr cycles',
+    'primer panel',
     'read length',
     'library type',
     'bait library', 'bait library name',
@@ -272,6 +273,7 @@ class BulkSubmission
       request_options[:bait_library_name]            ||= details['bait library']           unless details['bait library'].blank?
       request_options['pre_capture_plex_level']        = details['pre-capture plex level'] unless details['pre-capture plex level'].blank?
       request_options['gigabases_expected']            = details['gigabases expected']     unless details['gigabases expected'].blank?
+      request_options['primer_panel_name']             = details['primer panel']           unless details['primer panel'].blank?
     end
   end
 

@@ -2,12 +2,11 @@
 
 FactoryGirl.define do
   factory :project do
-    name                { |_p| generate :project_name }
+    name                { generate :project_name }
     enforce_quotas      false
     approved            true
     state               'active'
-
-    after(:build) { |project| project.project_metadata = create(:project_metadata, project: project) }
+    project_metadata
 
     factory :project_with_order do
       after(:build) { |project| project.orders ||= [create(:order, project: project)] }

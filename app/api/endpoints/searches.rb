@@ -8,6 +8,7 @@ class ::Endpoints::Searches < ::Core::Endpoint::Base
   module SearchActions
     def search_action(name)
       bind_action(:create, to: name.to_s, as: name.to_sym) do |action, request, response|
+        request.json['search']['page'] ||= request.path.fetch(1).to_i if request.path.fetch(1, false)
         scope = request.target.scope(request.json['search']).send(name)
         # If we're not paginated, just convert to an array. This will stop
         # the api from trying to paginate the results. Ideally all searches should be

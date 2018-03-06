@@ -94,4 +94,5 @@ module Batch::TecanBehaviour
     end
     true
   end
+  deprecate tecan_gwl_file: "this is writing to the Sequencescape data directory. I don't believe it is used."
 end

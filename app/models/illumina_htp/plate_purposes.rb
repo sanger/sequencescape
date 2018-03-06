@@ -200,6 +200,21 @@ module IlluminaHtp::PlatePurposes
       end
     end
 
+    def create_branch(branch_o)
+      branch = branch_o.clone
+      branch.inject(Purpose.find_by!(name: branch.shift)) do |parent, child|
+        Purpose.find_by!(name: child).tap do |child_purpose|
+          parent.child_relationships.create!(child: child_purpose)
+        end
+      end
+    end
+
+    def create_branches
+      self::BRANCHES.each do |branch|
+        create_branch(branch)
+      end
+    end
+
     def purpose_for(name)
       self::PLATE_PURPOSE_TYPE[name] || raise("NO class configured for #{name}")
     end
@@ -237,7 +252,9 @@ module IlluminaHtp::PlatePurposes
     end
 
     def create_qc_plate_for(name)
-      purpose_for("#{name} QC").create!(name: "#{name} QC", cherrypickable_target: false)
+      qc_plate_purpose = purpose_for("#{name} QC").create!(name: "#{name} QC", cherrypickable_target: false)
+      plate_purpose = Purpose.find_by!(name: name)
+      plate_purpose.child_relationships.create!(child: qc_plate_purpose)
     end
   end
 

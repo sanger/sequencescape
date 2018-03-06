@@ -5,6 +5,7 @@
 # Copyright (C) 2012,2013,2015 Genome Research Ltd.
 
 class Purpose < ApplicationRecord
+  include Relationship::Associations
   include Uuid::Uuidable
 
   self.table_name = ('plate_purposes')

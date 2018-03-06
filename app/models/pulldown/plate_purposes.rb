@@ -87,8 +87,11 @@ module Pulldown::PlatePurposes
 
   class << self
     def create_purposes(branch)
-      branch[1..-1].each do |new_purpose_name|
-        Pulldown::PlatePurposes::PLATE_PURPOSE_TYPE[new_purpose_name].create!(name: new_purpose_name)
+      initial = Purpose.find_by!(name: branch.first)
+      branch[1..-1].inject(initial) do |parent, new_purpose_name|
+        Pulldown::PlatePurposes::PLATE_PURPOSE_TYPE[new_purpose_name].create!(name: new_purpose_name).tap do |child_purpose|
+          parent.child_relationships.create!(child: child_purpose)
+        end
       end
     end
   end
