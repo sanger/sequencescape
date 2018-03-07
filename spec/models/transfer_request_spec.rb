@@ -105,8 +105,8 @@ RSpec.describe TransferRequest, type: :model do
 
     {
       start: { pending: :started },
-      pass: { pending: :passed, started: :passed, failed: :passed },
-      process_1: { started: :processed_1 },
+      pass: { pending: :passed, started: :passed, failed: :passed, processed_2: :passed },
+      process_1: { pending: :processed_1 },
       process_2: { processed_1: :processed_2 },
       qc: { passed: :qc_complete },
       fail: { pending: :failed, started: :failed, processed_1: :failed, processed_2: :failed, passed: :failed },
