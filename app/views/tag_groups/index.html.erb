@@ -11,23 +11,21 @@
     <th>Name</th>
     <th>No. of Tags</th>
     <th></th>
-    <th></th>
   </thead>
-
-<% for tag_group in @tag_groups %>
-  <tr>
-    <td><%=h tag_group.name %></td>
-    <td><%=h tag_group.tags.count %></td>
-    <td><%= link_to 'Show', tag_group %></td>
-    <td><% if current_user.administrator? %><%= link_to 'Edit', edit_tag_group_path(tag_group) %><% end %></td>
-  </tr>
-<% end %>
+  <tbody>
+  <% for tag_group in @tag_groups %>
+    <tr>
+      <td><%=h tag_group.name %></td>
+      <td><%=h tag_group.tags.count %></td>
+      <td><%= link_to 'Show', tag_group %></td>
+    </tr>
+  <% end %>
+  </tbody>
 </table>
 
 <br />
 <script type="text/javascript">$('table tbody > tr:nth-child(even)').addClass('roweven');</script>
 
 <% if current_user.administrator? %>
-<%= link_to 'New Tag Group with 12 tags', new_tag_group_path(number_of_tags: 12) %>
-<%= link_to 'New Tag Group with 96 tags', new_tag_group_path(number_of_tags: 96) %>
+<%= link_to 'Create a new Tag Group', new_tag_group_path %>
 <% end %>

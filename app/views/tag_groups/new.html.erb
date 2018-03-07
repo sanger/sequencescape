@@ -2,35 +2,25 @@
 # GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
-# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.%>
+# Copyright (C) 2007-2011,2012,2015,2018 Genome Research Ltd.%>
 
 <h1>New Tag Group</h1>
 
-<%= form_for(@tag_group) do |f| %>
+<%= form_for(@tag_group, html: {class: 'submit_once'}) do |f| %>
   <%= f.error_messages %>
-  <p>
-    <%= f.label :name %><br />
-    <%= f.text_field :name %>
-  </p>
+  <div class='form-group'>
+    <%= f.label :name, 'Tag Group name' %><br>
+    <%= f.text_field :name, class: 'form-control' %>
+  </div>
 
-  <table>
-    <thead>
-      <th>Index</th>
-      <th>Expected Sequence</th>
-    </thead>
-    <% @number_of_tags ||= "12" %>
-  <% @number_of_tags.to_i.times do |i| -%>
-    <tr>
-      <%= hidden_field_tag "tags[#{i}][map_id]", "#{i+1}" %>
-      <td><%= label_tag "tags_#{i}_oligo", "Index #{i+1}" %></td>
-      <td><%= text_field_tag "tags[#{i}][oligo]" %></td>
-    </tr>
-  <% end -%>
-  </table>
+  <div class="form-group">
+    <%= f.label :oligos_text, 'List of oligos (new line for each)' %><br/>
+    <%= f.text_area :oligos_text, {prompt: 'Enter oligos...', size: '50x10', class: 'form-control'} %>
+  </div>
 
-  <p>
-    <%= f.submit "Create" %>
-  </p>
+  <div class="form-group actions-group">
+    <%= f.submit('Create tag group', class: 'disable_on_submit btn btn-success') %>
+  </div>
 <% end %>
 
-<%= link_to 'Back', tag_groups_path %>
+<%= link_to 'Back to tag groups list', tag_groups_path %>

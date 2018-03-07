@@ -202,3 +202,7 @@ en:
     exclude_existing:
       yes: New samples
       no: All samples
+  tag_groups:
+    errors:
+      invalid_oligos_found: "Please check the following oligos, they must contain only A, T, G or C characters and oligos must be separated by spaces: "
+      no_valid_oligos_found: "No correctly formatted oligos were found, please enter oligos as sequences of ATGC characters and separate oligos with spaces."
