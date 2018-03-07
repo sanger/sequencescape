@@ -1,6 +1,7 @@
 language: ruby
 rvm:
   - 2.4.1
+  - 2.5.0
 dist: trusty
 sudo: required
 services: mysql
@@ -29,3 +30,7 @@ addons:
   apt:
     packages:
       - haveged
+matrix:
+  allow_failures:
+  - rvm: 2.5.0
+

@@ -140,7 +140,7 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
                 @xs_mpx_submission.process!
               end
 
-              should "change Request.count by #{(16 + 8)}" do
+              should("change Request.count by #{16 + 8}") do
                 assert_equal (16 + 8), Request.count - @request_count
               end
 
@@ -183,13 +183,13 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
               @sub.process!
             end
 
-             should "change Request.count by #{1 + 8}" do
-               assert_equal (1 + 8), Request.count - @request_count
-             end
+            should("change Request.count by #{1 + 8}") do
+              assert_equal (1 + 8), Request.count - @request_count
+            end
 
-             should 'not set request study or projects' do
-              assert @sub.requests.all? { |r| r.initial_study_id.nil? && r.initial_project_id.nil? }
-             end
+            should('not set request study or projects') do
+              assert(@sub.requests.all? { |r| r.initial_study_id.nil? && r.initial_project_id.nil? })
+            end
           end
         end
       end
@@ -314,14 +314,14 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
         context 'for multiplexed libraries and sequencing' do
           setup do
             @mx_submission_with_multiplication_factor = FlexibleSubmission.build!(
-                study: @study,
-                project: @project,
-                workflow: @workflow,
-                user: @user,
-                assets: @assets,
-                request_types: @mx_request_type_ids,
-                comments: ''
-              )
+              study: @study,
+              project: @project,
+              workflow: @workflow,
+              user: @user,
+              assets: @assets,
+              request_types: @mx_request_type_ids,
+              comments: ''
+            )
           end
 
           should 'multiply the sequencing' do
@@ -338,14 +338,14 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
         context 'for unplexed libraries and sequencing' do
           setup do
             @ux_submission_with_multiplication_factor = FlexibleSubmission.build!(
-                study: @study,
-                project: @project,
-                workflow: @workflow,
-                user: @user,
-                assets: @assets,
-                request_types: @ux_request_type_ids,
-                comments: ''
-              )
+              study: @study,
+              project: @project,
+              workflow: @workflow,
+              user: @user,
+              assets: @assets,
+              request_types: @ux_request_type_ids,
+              comments: ''
+            )
           end
 
           should 'multiply the library creation' do
