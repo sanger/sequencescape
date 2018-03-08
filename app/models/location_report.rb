@@ -51,7 +51,7 @@ class LocationReport < ApplicationRecord
   end
 
   def column_headers
-    %w[ScannedBarcode HumanBarcode Type Created Location Service Study Owner]
+    %w[ScannedBarcode HumanBarcode Type Created Location Service StudyName StudyId FacultySponsor]
   end
 
   def generate!
@@ -135,7 +135,8 @@ class LocationReport < ApplicationRecord
   def generate_plate_cols_for_row(cur_plate)
     cols = [] << cur_plate.machine_barcode
     cols << cur_plate.sanger_human_barcode
-    cols << cur_plate.plate_purpose.name
+    # NB. some older plates do not have a purpose
+    cols << (cur_plate.plate_purpose&.name || 'Unknown')
     cols << cur_plate.created_at.strftime('%Y-%m-%d %H:%M:%S')
     cols << cur_plate.storage_location
     cols << cur_plate.storage_location_service
@@ -144,8 +145,11 @@ class LocationReport < ApplicationRecord
   def generate_study_cols_for_row(cur_study)
     return %w[Unknown Unknown] if cur_study.blank?
 
-    cols = [] << cur_study.name || cur_study.id
-    cols << cur_study.study_metadata.faculty_sponsor&.name || 'Unknown'
+    # NB. some older studies may not have a name
+    cols = [] << (cur_study.name || cur_study.id)
+    cols << cur_study.id
+    # NB. some studies may not have a faculty sponsor
+    cols << (cur_study.study_metadata.faculty_sponsor&.name || 'Unknown')
   end
 
   def generate_name

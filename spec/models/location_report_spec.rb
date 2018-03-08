@@ -15,10 +15,7 @@ RSpec.describe LocationReport, type: :model do
   let(:study_1)               { studies[0] }
   let(:study_2)               { studies[1] }
 
-  let(:study_1_name)          { study_1.name }
   let(:study_1_sponsor)       { study_1.study_metadata.faculty_sponsor.name }
-
-  let(:study_2_name)          { study_2.name }
   let(:study_2_sponsor)       { study_2.study_metadata.faculty_sponsor.name }
 
   let(:plate_1) do
@@ -57,7 +54,7 @@ RSpec.describe LocationReport, type: :model do
   let(:plt_3_purpose)         { plate_3.plate_purpose.name }
   let(:plt_3_created)         { plate_3.created_at.strftime('%Y-%m-%d %H:%M:%S') }
 
-  let(:headers_line)          { 'ScannedBarcode,HumanBarcode,Type,Created,Location,Service,Study,Owner' }
+  let(:headers_line)          { 'ScannedBarcode,HumanBarcode,Type,Created,Location,Service,StudyName,StudyId,FacultySponsor' }
   let(:locn_prefix)           { 'Sanger - Ogilvie - AA209 - Freezer 1' }
 
   context 'when no report type is set' do
@@ -195,10 +192,10 @@ RSpec.describe LocationReport, type: :model do
     end
 
     context 'when checking report generation' do
-      let(:plt_1_line) { "#{plate_1.machine_barcode},#{plate_1.sanger_human_barcode},#{plt_1_purpose},#{plt_1_created},#{locn_prefix} - Shelf 1,LabWhere,#{study_1_name},#{study_1_sponsor}" }
-      let(:plt_2_line_1) { "#{plate_2.machine_barcode},#{plate_2.sanger_human_barcode},#{plt_2_purpose},#{plt_2_created},#{locn_prefix} - Shelf 2,LabWhere,#{study_1_name},#{study_1_sponsor}" }
-      let(:plt_2_line_2) { "#{plate_2.machine_barcode},#{plate_2.sanger_human_barcode},#{plt_2_purpose},#{plt_2_created},#{locn_prefix} - Shelf 2,LabWhere,#{study_2_name},#{study_2_sponsor}" }
-      let(:plt_3_line) { "#{plate_3.machine_barcode},#{plate_3.sanger_human_barcode},#{plt_3_purpose},#{plt_3_created},#{locn_prefix} - Shelf 3,LabWhere,#{study_2_name},#{study_2_sponsor}" }
+      let(:plt_1_line) { "#{plate_1.machine_barcode},#{plate_1.sanger_human_barcode},#{plt_1_purpose},#{plt_1_created},#{locn_prefix} - Shelf 1,LabWhere,#{study_1.name},#{study_1.id},#{study_1_sponsor}" }
+      let(:plt_2_line_1) { "#{plate_2.machine_barcode},#{plate_2.sanger_human_barcode},#{plt_2_purpose},#{plt_2_created},#{locn_prefix} - Shelf 2,LabWhere,#{study_1.name},#{study_1.id},#{study_1_sponsor}" }
+      let(:plt_2_line_2) { "#{plate_2.machine_barcode},#{plate_2.sanger_human_barcode},#{plt_2_purpose},#{plt_2_created},#{locn_prefix} - Shelf 2,LabWhere,#{study_2.name},#{study_2.id},#{study_2_sponsor}" }
+      let(:plt_3_line) { "#{plate_3.machine_barcode},#{plate_3.sanger_human_barcode},#{plt_3_purpose},#{plt_3_created},#{locn_prefix} - Shelf 3,LabWhere,#{study_2.name},#{study_2.id},#{study_2_sponsor}" }
 
       before(:each) do
         plate_1
@@ -331,6 +328,56 @@ RSpec.describe LocationReport, type: :model do
 
           it_behaves_like 'a successful report'
         end
+
+        context 'when given a name and selecting by dates' do
+          let(:name) { 'Test report   name ^%*£ ' }
+          let(:start_date) { '2016-01-01 00:00:00' }
+          let(:end_date) { '2016-07-01 00:00:00' }
+          let(:expected_lines) { [headers_line, plt_1_line, plt_2_line_1, plt_2_line_2] }
+
+          it_behaves_like 'a successful report'
+
+          it 'has a name with underscores between words and any symbols are removed' do
+            location_report.save
+            expect(location_report.name).to eq('Test_report_name')
+          end
+        end
+
+        context 'when selecting a plate with no purpose' do
+          let(:plate_4) do
+            create(
+              :plate_with_wells_for_specified_studies,
+              studies: [study_1],
+              name: 'Plate_4',
+              created_at: '2017-02-01 00:00:00',
+              purpose: nil
+            )
+          end
+
+          let(:start_date) { '2017-01-01 00:00:00' }
+          let(:end_date) { '2017-03-01 00:00:00' }
+          let(:plt_4_created) { plate_4.created_at.strftime('%Y-%m-%d %H:%M:%S') }
+          let(:plt_4_line) { "#{plate_4.machine_barcode},#{plate_4.sanger_human_barcode},Unknown,#{plt_4_created},#{locn_prefix} - Shelf 1,LabWhere,#{study_1.name},#{study_1.id},#{study_1_sponsor}" }
+          let(:expected_lines) { [headers_line, plt_4_line] }
+
+          before(:each) do
+            plate_4
+
+            allow(LabWhereClient::Labware).to receive(:find_by_barcode)
+              .with(plate_4.ean13_barcode.to_s)
+              .and_return(
+                LabWhereClient::Labware.new(
+                  'barcode' => plate_4.ean13_barcode,
+                  'location' => {
+                    'name' => 'Shelf 1',
+                    'parentage' => locn_prefix
+                  }
+                )
+              )
+          end
+
+          it_behaves_like 'a successful report'
+        end
       end
 
       context 'where plates are selected by a list of barcodes' do
@@ -369,6 +416,21 @@ RSpec.describe LocationReport, type: :model do
           let(:expected_lines) { [headers_line, plt_1_line] }
 
           it_behaves_like 'a successful report'
+        end
+
+        context 'when given a name' do
+          context 'when for a single-study plate' do
+            let(:name) { 'Test report   name ^%*£ ' }
+            let(:barcodes_text) { plate_1.machine_barcode.to_s }
+            let(:expected_lines) { [headers_line, plt_1_line] }
+
+            it_behaves_like 'a successful report'
+
+            it 'it has a name with underscores between words and any symbols are removed' do
+              location_report.save
+              expect(location_report.name).to eq('Test_report_name')
+            end
+          end
         end
       end
     end
