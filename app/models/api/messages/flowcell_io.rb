@@ -212,6 +212,9 @@ class Api::Messages::FlowcellIO < Api::Base
         map_attribute_to_json_attribute(:project_cost_code_for_uwh, 'cost_code')
         map_attribute_to_json_attribute(:r_and_d?, 'is_r_and_d')
       end
+      with_association(:primer_panel) do
+        map_attribute_to_json_attribute(:name, 'primer_panel')
+      end
       map_attribute_to_json_attribute(:external_library_id, 'id_library_lims')
       map_attribute_to_json_attribute(:library_id, 'legacy_library_id')
       map_attribute_to_json_attribute(:aliquot_type, 'entity_type')
