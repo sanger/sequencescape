@@ -378,6 +378,7 @@ class Plate < Asset
       .with_plate_purpose_ids(plate_purpose_ids)
       .created_after(start_date)
       .created_before(end_date)
+      .where.not(barcode: nil)
       .distinct
   end
 
