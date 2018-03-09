@@ -3,36 +3,38 @@
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2015 Genome Research Ltd.%>
-<% if @manager_menu -%>
-  <% if logged_in? && current_user.manager_or_administrator? -%>
-  <ul id="manager_menu" class="nav nav-pills nav-stacked">
-    <%= render partial: "/item", collection: @manager_menu.items %>
+<%= panel(:default, title:"Links") do %>
+  <% if @manager_menu -%>
+    <% if logged_in? && current_user.manager_or_administrator? -%>
+    <ul id="manager_menu" class="link-list">
+      <%= render partial: '/item', collection: @manager_menu.items %>
+    </ul>
+    <% end -%>
+  <% end -%>
+
+  <% if @menu -%>
+  <ul id="base-Menu" class="link-list">
+    <%= render partial: '/item', collection: @menu.items %>
   </ul>
   <% end -%>
-<% end -%>
 
-<% if @menu -%>
-<ul id="base-Menu" class="nav nav-pills nav-stacked">
-  <%= render partial: "/item", collection: @menu.items %>
-</ul>
-<% end -%>
+  <% if @admin_menu -%>
+    <% if logged_in? && current_user.administrator? -%>
+    <ul id="admin_menu" class="link-list">
+      <%= render partial: '/item', collection: @admin_menu.items %>
+    </ul>
+    <% end -%>
+  <% end -%>
 
-<% if @admin_menu -%>
-  <% if logged_in? && current_user.administrator? -%>
-  <ul id="admin_menu" class="nav nav-pills nav-stacked">
-    <%= render partial: "/item", collection: @admin_menu.items %>
+  <% if @back_menu -%>
+  <ul id="back_menu" class="link-list">
+    <%= render partial: '/item', collection: @back_menu.items %>
   </ul>
   <% end -%>
-<% end -%>
 
-<% if @back_menu -%>
-<ul id="back_menu" class="nav nav-pills nav-stacked">
-  <%= render partial: "/item", collection: @back_menu.items %>
-</ul>
-<% end -%>
-
-<% if @legend -%>
-<ul id="legend" class="nav nav-pills nav-stacked">
-  <%= render partial: "/item", collection: @legend.items %>
-</ul>
-<% end -%>
+  <% if @legend -%>
+  <ul id="legend" class="link-list">
+    <%= render partial: '/item', collection: @legend.items %>
+  </ul>
+  <% end -%>
+<% end %>

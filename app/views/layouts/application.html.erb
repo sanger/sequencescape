@@ -32,7 +32,9 @@
 
   <body class="<%= Rails.env %> <%= DeploymentEnvironment.role %>">
     <div id='main-content'>
+
       <header><%= render partial: 'shared/header' %></header>
+
       <section class="row">
         <section id="page-content">
           <%= render_flashes %>
@@ -44,18 +46,19 @@
           <%= render partial: 'shared/sidebar' %>
         </div>
       </section>
+
       <footer id="main-footer">
-      <ul class="contact">
-        <li>A tool from <%= link_to configatron.fetch(:team_name,'LIMS and Informatics'), configatron.fetch(:team_url,'http://www.sanger.ac.uk/science/groups/production-software-development') %></li>
-        <li id="institute"><%= link_to I18n.t('application.institute'), I18n.t('application.institute_link') %></li>
-        <li><%= link_to "Feedback", "mailto:#{configatron.admin_email}" %></li>
-      </ul>
-      <ul class="deployment-info">
-        <li><%= Deployed::VERSION_STRING %></li>
-        <li><%= Deployed::RELEASE_NAME %></li>
-        <li><%= Deployed::HOSTNAME %></li>
-      </ul>
-    </footer>
+        <ul class="contact">
+          <li id="institute"><%= link_to I18n.t('application.institute'), I18n.t('application.institute_link') %></li>
+          <li>A tool from <%= link_to configatron.fetch(:team_name,'LIMS and Informatics'), configatron.fetch(:team_url,'http://www.sanger.ac.uk/science/groups/production-software-development') %></li>
+          <li><%= link_to "Feedback", "mailto:#{configatron.admin_email}" %></li>
+        </ul>
+        <ul class="deployment-info">
+          <li><%= Deployed::VERSION_STRING %></li>
+          <li><%= Deployed::RELEASE_NAME %></li>
+          <li><%= Deployed::HOSTNAME %></li>
+        </ul>
+      </footer>
     </div>
   </body>
 </html>

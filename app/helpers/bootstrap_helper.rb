@@ -23,7 +23,7 @@ module BootstrapHelper
     options[:class] << " card card-#{type} mb-3"
     content_tag(:div, options) do
       out = String.new.html_safe
-      out << content_tag(:h3, title, class: 'card-header') unless title.nil?
+      out << content_tag(:h3, title, class: 'card-header-custom') unless title.nil?
       out << content_tag(body_type, body_options, &block)
     end
   end
@@ -60,7 +60,7 @@ module BootstrapHelper
     options[:class] << " card card-#{bs_type}"
     content_tag(:div, class: "col-md-#{size}") do
       content_tag(:div, options) do
-        content_tag(:h3, title, class: 'card-header') <<
+        content_tag(:h3, title, class: 'card-header reduced') <<
           content_tag(:table, class: 'table table-summary') do
             String.new.html_safe.tap do |rows|
               yield.each do |key, value|

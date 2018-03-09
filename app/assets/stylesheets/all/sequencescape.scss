@@ -23,6 +23,12 @@ a:visited {
   }
 }
 
+// The default bootstrap size is uncomfortably large
+h3.card-header-custom {
+  @extend .card-header;
+  font-size: 1.1rem;
+}
+
 /* Formats the tubes in the layout_tubes_on_plate task */
 .library_tube { margin:0.1em; padding:0.2em; background:#E3EEFC; border-radius:5px; }
 .tube_tag {padding: 0.2em; margin-left:0.2em; background: #6997BF; color: white; border-radius:5px; }

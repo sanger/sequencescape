@@ -8,3 +8,15 @@
   @extend .btn-block;
   @extend .mb-3;
 }
+
+.link-list {
+  @extend .nav;
+  @extend .nav-pills;
+  @extend .flex-column;
+  li {
+    @extend .nav-item;
+    a {
+      @extend .nav-link;
+    }
+  }
+}
