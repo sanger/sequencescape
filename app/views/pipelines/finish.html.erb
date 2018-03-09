@@ -17,7 +17,7 @@
     <div style="text-align: center;">
       <p>
       <%= form_tag release_batch_url(@batch), method: :get do -%>
-        <%= submit_tag "Release this batch" %>
+        <%= submit_tag "Release this batch", class: 'release-batch' %>
       <% end -%>
       </p>
       <p>

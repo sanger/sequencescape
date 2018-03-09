@@ -54,32 +54,37 @@
 
 <script type="text/javascript">
   (function($, undefined) {
+
+    function verifyplate(num_cols, num_rows, num_plates) {
+      var hiddenFields = '', valid = true;
+
+      $('table.destination_plate tbody tr').each(function(){
+        var wells = $(this).children('td');
+
+        if ( wells.length > num_cols ) {
+          alert('All rows must have at most ' + num_cols + ' wells ');
+          valid = false;
+          return false;
+        }
+        for ( var i=0; i < wells.length; i += 1 ) {
+          var value, name;
+          value = wells[i].id;
+          name = wells[i].parentNode.id;
+          hiddenFields += '<input type="hidden" name="' + name + '['+i+']" value="' + value + '"/>';
+        }
+      });
+
+      $('#stage_form').append(hiddenFields);
+      return valid;
+    }
+
     return $('#stage_button').click(function(e) {
       if (verifyplate(<%= @plate_cols %>, <%= @plate_rows %>, <%= @plates.size %>)) {
         return true;
       } else {
         e.preventDefault();
-        return false
+        return false;
       };
     });
   })(jQuery);
-
-  function verifyplate(num_cols,num_rows,num_plates) {
-    var hiddenFields = '';
-
-    jQuery('table.destination_plate tbody tr').each(function(){
-      var wells;
-      wells = $(this).children('td');
-      if ( wells.length > 12 ) { alert('All rows must have at most '+num_cols+' wells '); return false; }
-      for ( var i=0; i < wells.length; i += 1 ) {
-        var value, name;
-        value = wells[i].id
-        name = wells[i].parentNode.id
-        hiddenFields += '<input type="hidden" name="'+name+'['+i+']" value="'+value+'"/>';
-      }
-    })
-
-    jQuery('#stage_form').append(hiddenFields);
-    return true;
-  }
 </script>

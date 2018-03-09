@@ -52,6 +52,12 @@ h3.card-header-custom {
 
 .show-hide { float: right; }
 
+.release-batch {
+  @extend .btn;
+  @extend .btn-success;
+  @extend .btn-lg;
+}
+
 div.quota {
   color: #333;
   padding-left: 3px;

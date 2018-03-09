@@ -55,7 +55,7 @@ class TransferRequest < ApplicationRecord
     end
 
     event :process_1 do
-      transitions to: :processed_1, from: [:started]
+      transitions to: :processed_1, from: [:pending]
     end
 
     event :process_2 do
@@ -65,7 +65,7 @@ class TransferRequest < ApplicationRecord
     event :pass do
       # Jumping straight to passed moves through an implied started state.
       transitions to: :passed, from: :pending, after: :on_started
-      transitions to: :passed, from: [:started, :failed]
+      transitions to: :passed, from: [:started, :failed, :processed_2]
     end
 
     event :fail do
@@ -122,7 +122,7 @@ class TransferRequest < ApplicationRecord
   # only one option then that is what is returned, otherwise an exception is raised.
   def suggested_transition_to(target)
     valid_events = aasm.events(permitted: true).select { |e| e.transitions_to_state?(target.to_sym) }
-    raise StandardError, "No obvious transition from #{current.inspect} to #{target.inspect}" unless valid_events.size == 1
+    raise StandardError, "No obvious transition from #{state.inspect} to #{target.inspect}" unless valid_events.size == 1
     valid_events.first.name
   end
 
