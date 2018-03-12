@@ -18,6 +18,7 @@ class AssetsControllerTest < ActionController::TestCase
 
   context '#create a new asset with JSON input' do
     setup do
+      FactoryGirl.create(:sample, name: 'phiX_for_spiked_buffers')  # Required by controller
       @asset_count = Asset.count
 
       @barcode = FactoryGirl.generate :sanger_barcode

@@ -20,8 +20,9 @@ FactoryGirl.define do
     end
   end
 
-  factory  :spiked_buffer do
-    name { generate :asset_name }
+  factory :spiked_buffer do
+    name   { generate :asset_name }
+    sample { create :sample, name: 'phiX_for_spiked_buffers' }
     volume 50
   end
 end
