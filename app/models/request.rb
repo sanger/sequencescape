@@ -192,9 +192,11 @@ class Request < ApplicationRecord
 
   scope :full_inbox, -> { where(state: ['pending', 'hold']) }
 
-  scope :with_asset,  -> { where('asset_id is not null') }
+  scope :with_asset, -> { where.not(asset_id: nil) }
+  # Ensures the actual record is present
+  scope :with_present_asset, -> { includes(:asset).where.not(assets: { id: nil }) }
   scope :with_target, -> { where('target_asset_id is not null and (target_asset_id <> asset_id)') }
-  scope :join_asset,  -> { joins(:asset) }
+  scope :join_asset, -> { joins(:asset) }
   scope :with_asset_location, -> { includes(asset: :map) }
   scope :siblings_of, ->(request) { where(asset_id: request.asset_id).where.not(id: request.id) }
 
