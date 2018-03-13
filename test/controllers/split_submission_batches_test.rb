@@ -35,8 +35,8 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
                                      submission_class_name: 'LinearSubmission',
                                      product_catalogue: 'Generic',
                                      submission_parameters: { info_differential: 5,
-                                     request_types: ['illumina_c_library_creation',
-                                                     'illumina_c_single_ended_sequencing'] } }
+                                                              request_types: %w[illumina_c_library_creation
+                                                                                illumina_c_single_ended_sequencing] } }
 
         @submission_template = SubmissionSerializer.construct!(submission_template_hash)
 
@@ -109,8 +109,8 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
                                      submission_class_name: 'LinearSubmission',
                                      product_catalogue: 'Generic',
                                      submission_parameters: { info_differential: 5,
-                                     request_types: ['illumina_c_multiplexed_library_creation',
-                                                     'illumina_c_single_ended_sequencing'] } }
+                                                              request_types: %w[illumina_c_multiplexed_library_creation
+                                                                                illumina_c_single_ended_sequencing] } }
 
         @submission_template = SubmissionSerializer.construct!(submission_template_hash)
         @library_pipeline = Pipeline.find_by!(name: 'Illumina-B MX Library Preparation')

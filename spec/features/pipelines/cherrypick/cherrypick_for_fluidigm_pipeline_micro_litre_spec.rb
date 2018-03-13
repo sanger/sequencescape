@@ -31,7 +31,7 @@ feature 'cherrypick for fluidigm pipeline - micro litre', js: true do
       submission_class_name: 'LinearSubmission',
       product_catalogue: 'Generic',
       submission_parameters: { info_differential: 6,
-                               request_types: %w(pick_to_sta pick_to_sta2 pick_to_snp_type pick_to_fluidigm) }
+                               request_types: %w[pick_to_sta pick_to_sta2 pick_to_snp_type pick_to_fluidigm] }
     }
     submission_template = SubmissionSerializer.construct!(submission_template_hash)
     submission = submission_template.create_and_build_submission!(

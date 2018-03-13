@@ -40,9 +40,9 @@ feature 'Bulk submission', js: false do
         submission_parameters: { info_differential: 5,
                                  request_options: { 'fragment_size_required_to' => '400',
                                                     'fragment_size_required_from' => '100' },
-                                 request_types: ['cherrypick_for_pulldown',
-                                                 'pulldown_wgs',
-                                                 'illumina_a_hiseq_paired_end_sequencing'] }
+                                 request_types: %w[cherrypick_for_pulldown
+                                                   pulldown_wgs
+                                                   illumina_a_hiseq_paired_end_sequencing] }
       }
       SubmissionSerializer.construct!(submission_template_hash)
     end
@@ -95,9 +95,9 @@ feature 'Bulk submission', js: false do
             submission_parameters: { info_differential: 5,
                                      request_options: { 'fragment_size_required_to' => '400',
                                                         'fragment_size_required_from' => '100' },
-                                     request_types: ['cherrypick_for_pulldown',
-                                                      'pulldown_wgs',
-                                                      'illumina_a_hiseq_paired_end_sequencing'] }
+                                     request_types: %w[cherrypick_for_pulldown
+                                                       pulldown_wgs
+                                                       illumina_a_hiseq_paired_end_sequencing] }
           }
           SubmissionSerializer.construct!(submission_template_hash)
         end

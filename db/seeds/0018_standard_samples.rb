@@ -5,6 +5,4 @@
 # Copyright (C) 2011,2015 Genome Research Ltd.
 
 # There are some samples that should always exist
-unless Rails.env.test?
-  Sample.create!(name: 'phiX_for_spiked_buffers')
-end
+Sample.create!(name: 'phiX_for_spiked_buffers') unless Rails.env.test?

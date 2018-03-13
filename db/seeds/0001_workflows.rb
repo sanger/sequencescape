@@ -1420,7 +1420,6 @@ SequencingPipeline.create!(
   add_4000_information_types_to(pipeline)
 end
 
-
 RequestType.find_each do |request_type|
   read_lengths = {
     # By request class
@@ -1429,7 +1428,5 @@ RequestType.find_each do |request_type|
     'SequencingRequest'      => [37, 54, 76, 108]
   }[request_type.request_class_name]
 
-  if read_lengths.present?
-    RequestType::Validator.create!(request_type: request_type, request_option: 'read_length', valid_options: read_lengths)
-  end
+  RequestType::Validator.create!(request_type: request_type, request_option: 'read_length', valid_options: read_lengths) if read_lengths.present?
 end

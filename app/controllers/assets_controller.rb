@@ -141,7 +141,6 @@ class AssetsController < ApplicationController
       flash[:error] = ex.message
     rescue => exception
       saved = false
-      # binding.pry
       flash[:error] = exception.message
     end
 

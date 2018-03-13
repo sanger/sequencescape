@@ -1,9 +1,11 @@
 require 'rails_helper'
 
 describe Pulldown::Requests do
-  let(:bait_library) { create :bait_library,
-                              bait_library_type: create(:bait_library_type,
-                                                        category: 'standard') }
+  let(:bait_library) do
+    create(:bait_library,
+           bait_library_type: create(:bait_library_type,
+                                     category: 'standard'))
+  end
 
   [:wgs, :sc, :isc].each do |request_type|
     context request_type.to_s.upcase do

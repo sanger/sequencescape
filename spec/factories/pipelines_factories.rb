@@ -4,6 +4,7 @@
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
+
 require 'factory_girl'
 require 'control_request_type_creation'
 
@@ -219,11 +220,14 @@ FactoryGirl.define do
   end
 
   factory :library_completion, class: IlluminaHtp::Requests::LibraryCompletion do
-    request_type { create :request_type, name: 'Illumina-B Pooled',
-                                         key: 'illumina_b_pool',
-                                         request_class_name: 'IlluminaHtp::Requests::LibraryCompletion',
-                                         for_multiplexing: true,
-                                         no_target_asset: false }
+    request_type do
+      create(:request_type,
+             name: 'Illumina-B Pooled',
+             key: 'illumina_b_pool',
+             request_class_name: 'IlluminaHtp::Requests::LibraryCompletion',
+             for_multiplexing: true,
+             no_target_asset: false)
+    end
     asset        { |target| target.association(:well_with_sample_and_plate) }
     target_asset { |target| target.association(:empty_well) }
     request_purpose :standard
