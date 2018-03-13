@@ -17,12 +17,6 @@ module ApplicationHelper
     end
   end
 
-  def loading_bar(identifier = 'loading')
-    content_tag('div', id: identifier, class: 'loading_bar', style: 'display:none') do
-      image_tag 'loader-bar.gif', size: '200x19'
-    end
-  end
-
   def remote_error(identifier = 'remote_error')
     content_tag('div', id: identifier, class: 'error', style: 'display:none;') do
       'An error has occurred and the results can not be shown at the moment'
@@ -60,7 +54,7 @@ module ApplicationHelper
   end
 
   def display_user_guide(display_text, link = nil)
-    alert(:info) do
+    alert(:user_guide) do
       link.present? ? link_to(display_text, link) : display_text
     end
   end
@@ -127,22 +121,6 @@ module ApplicationHelper
     end
   end
 
-  def progress_bar(count)
-    color = if count < 25
-              'ccaaaa'
-            elsif count > 99
-              'aaddaa'
-            else
-              'DAEE34'
-            end
-
-    # TODO: Refactor this to use the bootstrap styles
-    content_tag(:span, count, style: 'display:none') <<
-      content_tag(:div, style: 'width: 100px; background-color: #CCCCCC; color: inherit;') do
-        content_tag(:div, "#{count}%", style: "width: #{count}px; background-color: ##{color}; color: inherit; text-align:center")
-      end
-  end
-
   def study_state(state)
     if state == 'active'
       "<span style='color:green;'>#{state}</span>".html_safe
@@ -161,8 +139,8 @@ module ApplicationHelper
 
   ## From Pipelines
 
-  def render_title(title = '')
-    add :title, title
+  def about(title = '')
+    add :about, title
   end
 
   def render_help(help = '')
@@ -186,8 +164,31 @@ module ApplicationHelper
     end
   end
 
-  def horizontal_tab(name, key, related_div, tab_no, selected = false)
-    link_to raw(name.to_s), 'javascript:void(0);', 'data-tab-refers': "##{related_div}", 'data-tab-group': tab_no, id: key.to_s, class: "#{selected ? "selected " : ""}tab#{tab_no}"
+  def horizontal_tab(name, key, related_div, tab_no, active = false)
+    link_to name, '#', 'data-tab-refers': "##{related_div}", 'data-tab-group': tab_no, id: key.to_s, class: "nav-link #{active ? "active" : ""} tab#{tab_no}"
+  end
+
+  # <li class="nav-item">
+  #   <a class="nav-link <active>" id="name-tab" data-toggle="tab" href="#name"
+  #    role="tab" aria-controls="name" aria-selected="true">name</a>
+  # </li>
+  def tab(name, target: nil, active: false, id: nil)
+    target ||= name.parameterize
+    active_class = active ? 'active' : ''
+    id ||= "#{name}-tab".parameterize
+    content_tag(:li, class: 'nav-item') do
+      link_to name, "##{target}", id: id, data: { toggle: 'tab' }, role: 'tab', aria_controls: target, class: ['nav-link', active_class]
+    end
+  end
+
+  # <div class="tab-pane fade show <active>" id="pending" role="tabpanel" aria-labelledby="peding-tab">
+  #   yield
+  # </div>
+  def tab_pane(name, id: nil, tab_id: nil, active: false, &block)
+    tab_id ||= "#{name}-tab".parameterize
+    id ||= name.parameterize
+    active_class = active ? 'active' : ''
+    content_tag(:div, class: ['tab-pane', 'fade', 'show', active_class], id: id, role: 'tabpanel', aria_labelledby: tab_id, &block)
   end
 
   def item_status(item)

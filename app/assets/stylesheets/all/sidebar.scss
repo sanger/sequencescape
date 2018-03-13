@@ -11,12 +11,11 @@
 
 .link-list {
   @extend .nav;
-  @extend .nav-pills;
   @extend .flex-column;
+  text-align: right;
+
   li {
     @extend .nav-item;
-    a {
-      @extend .nav-link;
-    }
+    a { @extend .nav-link; }
   }
 }

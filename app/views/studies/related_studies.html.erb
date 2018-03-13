@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
 
-<% add :title, "Related studies for study." -%>
+<% add :about, "Related studies for study." -%>
 <% add :back_menu, I18n.t("navigation.menu.back_to_study") => study_path(@study) -%>
 <% if current_user.is_administrator? || current_user.is_manager?(@study) %>
   <% add :menu, "Edit" => edit_study_path(@study) -%>

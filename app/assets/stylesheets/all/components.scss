@@ -22,8 +22,15 @@ table.table-dense-information tbody {
 .main-row { margin-bottom:10px; }
 
 
-.loading-bar { width: 100% !important; }
-.loading-bar-container { display: none; }
+.loading-bar-container {
+  @extend .progress;
+  .loading-bar {
+    width: 100%;
+    @extend .progress-bar;
+    @extend .progress-bar-striped;
+    @extend .progress-bar-animated;
+  }
+}
 .loading-bar-placeholder {  margin: 11px 0;}
 
 .formtastic label.ft-label { width: 25%; }
@@ -65,7 +72,7 @@ section.info-panel {
   }
 }
 
-navigation.toc {
+nav.toc {
   @extend .card;
  // @extend .card-default;
   @extend .col-md-6;
@@ -74,5 +81,13 @@ navigation.toc {
     @extend .nav;
     @extend .nav-pills;
     @extend .flex-column;
+  }
+}
+
+.pagination {
+  li {
+    @extend .page-item;
+    a { @extend .page-link; }
+    span { @extend .page-link; }
   }
 }

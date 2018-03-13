@@ -4,6 +4,8 @@ a:visited {
   color: #444488;
 }
 
+// Bootstrap bug? Card headers have the wrong margins
+
 #main-content {
   @extend .container-fluid;
 }
@@ -21,12 +23,19 @@ a:visited {
   h1 { @extend .display-4;
     .subtitle { @extend .text-muted; @extend .font-weight-light; font-size: 50%; }
   }
+  h1.title-long {
+    font-size: 2rem
+  }
 }
 
 // The default bootstrap size is uncomfortably large
 h3.card-header-custom {
   @extend .card-header;
   font-size: 1.1rem;
+}
+
+.batch-statuses {
+  @extend .card;
 }
 
 /* Formats the tubes in the layout_tubes_on_plate task */
@@ -58,11 +67,24 @@ h3.card-header-custom {
   @extend .btn-lg;
 }
 
+.alert-user_guide {
+  @extend .alert-info;
+  a {
+    @extend .alert-link;
+  }
+}
+
 div.quota {
-  color: #333;
-  padding-left: 3px;
-  background: #CBDCEF;
-  border: 1px solid #7BBDD8;
+  @extend .card;
+  @extend .bg-info;
+  @extend .text-white;
+  @extend .mb-3;
+  @extend .mt-3;
+  a { @extend .card-link; }
+  // color: #333;
+  // padding-left: 3px;
+  // background: #CBDCEF;
+  // border: 1px solid #7BBDD8;
 }
 
 #barcode_list li {
@@ -181,45 +203,6 @@ background: #A0D6FC;
 padding: 5px 5px 5px 10px;
 font-size: 12px;
 }
-#horizontal_tabs a,#horizontal_tabs a:link,#horizontal_tabs a:visited {
-border-top: 1px solid #666;
-border-left: 1px solid #666;
-border-right: 1px solid #666;
-background: #efefef;
-padding: 4px 4px 4px 4px;
-margin-right: 2px;
-}
-#horizontal_tabs a,#horizontal_tabs a:link,#horizontal_tabs a:visited {
-border-top: 1px solid #666;
-border-left: 1px solid #666;
-border-right: 1px solid #666;
-border-bottom: 1px solid #666;
-background: #d0d0d0;
-padding: 4px 4px 4px 4px;
-margin-right: 2px;
-}
-#horizontal_tabs a.selected,#horizontal_tabs a.selected:link,#horizontal_tabs a.selected:visited {
-background: #ffffff;
-border-bottom: 1px solid #fff;
-font-weight: bold;
-}
-#horizontal_tabs a.selected,#horizontal_tabs a.selected:link,#horizontal_tabs a.selected:visited {
-background: #ffffff;
-font-weight: bold;
-}
-#horizontal_tabs li {
-display: inline;
-}
-#horizontal_tabs ul {
-padding: 0px;
-margin: 0px;
-list-style: none;
-}
-#horizontal_tabs {
-padding-bottom: 3px;
-border-bottom: 1px solid #666;
-margin-bottom: 15px;
-}
 #main-items {
 width: 475px;
 float: left;
@@ -332,15 +315,8 @@ padding-left: 12px;
 }
 
 .help {
-  background: #FBFFC7;
-  padding: 5px;
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  border-radius: 3px;
-  border: 1px solid #FC6;
-  color: #A65200;
-  margin-bottom: 15px;
-
+  @extend .alert;
+  @extend .alert-secondary;
 }
 
 table.sample_list td:first-child {text-align:right; padding-right:0.5em;}
@@ -1266,25 +1242,6 @@ table#samples_to_register .label {
   color: inherit;
 }
 
-.yui-skin-sam .yui-navset .yui-nav .selected, .yui-skin-sam .yui-navset .yui-navset-top .yui-nav .selected {
-    margin: 0 .16em 0px 0;
-}
-
-.yui-skin-sam .yui-navset .yui-content, .yui-skin-sam .yui-navset .yui-navset-top .yui-content {
-    padding: 0 0;
-}
-
-
-ul.nav.nav-tabs li {
-  padding: inherit;
-  margin: inherit;
-  border-color: inherit;
-  border-style: inherit;
-  border-radius: inherit;
-  border-width: inherit;
-  margin-bottom: -1px;
-}
-
 ul#orders div.sub-panel li {
   list-style-type: none;
   margin-bottom: -1px;
@@ -1298,13 +1255,6 @@ ul#orders li.order { text-align: left;}
 
 .selected { background-color: inherit;}
 
-.yui-skin-sam .yui-navset .yui-content {
-  border: 1px solid #ddd;
-}
-
-.yui-skin-sam .yui-navset .yui-content .table {
-  background: white;
-}
 .nav.nav-tabs { border-bottom: inherit; }
 
 .nav.nav-tabs li a { color: inherit;}
@@ -1340,9 +1290,6 @@ ul.sub-panel h3 {
 }
 
 ul#orders .card-body ul.sub-panel li { padding-top: 0px;}
-
-
-.yui-skin-sam .yui-navset .yui-content { padding: 1em;}
 
 div.grouper { padding-left: 1em; padding-right: 1em;}
 

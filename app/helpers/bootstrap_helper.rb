@@ -77,10 +77,15 @@ module BootstrapHelper
   # <div class="page-header">
   #   <h1>Title <small>subtitle</small></h1>
   # </div>
-  def page_title(title, subtitle = nil)
+  def page_title(title, subtitle = nil, titlecase: true)
     content_tag(:div, class: 'page-header') do
-      content_tag(:h1) do
-        concat title.titleize
+      title_class = title.length > 25 ? 'title-long' : 'title-short'
+      content_tag(:h1, class: title_class) do
+        if titlecase
+          concat title.titleize
+        else
+          concat title
+        end
         concat ' '
         concat content_tag(:span, subtitle, class: 'subtitle') if subtitle.present?
       end
@@ -109,6 +114,20 @@ module BootstrapHelper
   #   end
   # end
 
+  def progress_bar(count)
+    css_class = if count < 25
+                  'bg-danger'
+                elsif count > 99
+                  'bg-success'
+                else
+                  'bg-warning'
+                end
+    content_tag(:span, count, style: 'display:none') <<
+      content_tag(:div, class: 'progress') do
+        content_tag(:div, "#{count}%", class: ['progress-bar', 'progress-bar-striped', css_class], role: 'progressbar', style: "width: #{count}%;")
+      end
+  end
+
   # <div class="progress">
   #   <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
   #     <span class="sr-only">45% Complete</span>
@@ -116,8 +135,8 @@ module BootstrapHelper
   # </div>
   def loading_bar(id = 'update_loader')
     content_tag(:div, class: 'loading-bar-placeholder') do
-      content_tag(:div, id: id, class: 'progress loading-bar-container') do
-        content_tag(:div, 'Loading', class: 'progress-bar progress-bar-striped active loading-bar', role: 'progressbar')
+      content_tag(:div, id: id, class: 'loading-bar-container', style: 'display: none;') do
+        content_tag(:div, 'Loading', class: 'loading-bar', role: 'progressbar')
       end
     end
   end

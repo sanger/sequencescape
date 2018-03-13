@@ -7,18 +7,12 @@
 <div class="user-session-controls">
   <ul>
   <% if logged_in? -%>
-    <li>
-      <%= I18n.t('global_links.welcome') %> <%= link_to current_user.name, profile_path(current_user) %>
-    </li>
-    <li>
-      <%= link_to I18n.t('global_links.edit_profile'), edit_profile_path(current_user) %>
-    </li>
-    <li>
-      <%= link_to I18n.t('global_links.logout'), logout_path -%>
-    </li>
+    <li><%= I18n.t('global_links.welcome') %> <%= link_to current_user.name, profile_path(current_user) %></li>
+    <li><%= link_to I18n.t('global_links.edit_profile'), edit_profile_path(current_user) %></li>
+    <li><%= link_to I18n.t('global_links.logout'), logout_path -%></li>
   <% end -%>
-  </ul
-></div>
+  </ul>
+</div>
 
 <nav class="main-nav">
   <div id="logo_container">

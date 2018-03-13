@@ -5,41 +5,26 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.%>
 
 <%= render_flashes %>
-<div style="padding: 0px 5px 5px 0px; margin: 0px 10px 3px 10px; border-bottom: 1px solid #ccc;">
-  <h1>SEQUENCESCAPE <small><%= Deployed::VERSION_ID %></small></h1>
-  <div class='intro'>
-    Sample and study management for sequencing and genotyping at the Wellcome Sanger Institute.
-  </div>
+<div class="title-section">
+  <%= page_title 'Sequencescape', Deployed::VERSION_ID %>
+  <div class='card-subtitle'>Sample and study management for sequencing and genotyping at the Wellcome Sanger Institute.</div>
 </div>
-<div id="account_box">
-  <div id="account_form">
-    <%= form_tag({}, {class: 'form-horizontal'}) do %>
+<div id="account_form">
+  <%= form_tag do %>
+    <div class="form-help">Please use your Sanger username and password to login</div>
 
-        <div class="account_item account_labe col-sm-10 col-sm-offset-2">
-          <div style="padding:0px 10px 10px 0px;font-weight:bold;color:green;">Please use your Sanger username and password to login</div>
-        </div>
+    <div class='form-group'>
+      <%= label_tag 'login', 'Username' %>
+      <%= text_field_tag "login", "", required: true %>
+    </div>
 
-        <div class='form-group'>
-          <%= label_tag 'login', 'Username', class: 'control-label col-sm-2' %>
-          <div class="col-sm-8">
-          <%= text_field_tag "login", "", { class: 'form-control' } %>
-          </div>
-        </div>
+    <div class='form-group'>
+      <%= label_tag 'password', 'Password' %>
+      <%= password_field_tag "password", "", required: true %>
+    </div>
 
-        <div class='form-group'>
-          <%= label_tag 'password', 'Password', class: 'control-label col-sm-2' %>
-          <div class="col-sm-8">
-            <%= password_field_tag "password", "", { class: 'form-control' } %>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <div class="col-sm-offset-2 col-sm-8">
-            <%= submit_tag I18n.t('global_links.login'), class: 'btn btn-default' %>
-          </div>
-        </div>
-
-
-    <% end %>
-  </div>
+    <div class="form-group">
+      <%= submit_tag I18n.t('global_links.login') %>
+    </div>
+  <% end %>
 </div>

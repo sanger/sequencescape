@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.%>
 
-<%- add :title, "This page displays details of a asset" %>
+<%- add :about, "This page displays details of a asset" %>
 <% add :menu, (pluralize @asset.comments.size, "comment") => asset_comments_path(@asset) -%>
 <% if @asset.printable? %>
   <% add :menu, "Print label" => print_asset_path(@asset) -%>
@@ -37,7 +37,7 @@
 
 <div class="row">
   <%= render partial: 'asset_summary', locals: {asset: @asset} %>
-  <navigation class="toc">
+  <nav class="toc">
     <ul>
       <li><a href="#asset-summary">Summary</a></li>
       <li><a href="#samples-table">Samples</a></li>
@@ -46,7 +46,7 @@
       <li><a href="#metadata-table-container">Metadata</a></li>
       <li><a href="#qc_files-table-container">QC Files</a></li>
     </ul>
-  </navigation>
+  </nav>
 </div>
 <%= render partial: @asset.sample_partial, locals: {asset: @asset} %>
 <%= render partial: 'relations', locals: { asset: @asset } %>
