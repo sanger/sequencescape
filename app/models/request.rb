@@ -132,6 +132,8 @@ class Request < ApplicationRecord
       .where(
         container_associations: { container_id: plate.id },
         requests: { submission_id: submission_ids }
+      ).where.not(
+        requests: { state: 'cancelled' }
       )
   }
 
