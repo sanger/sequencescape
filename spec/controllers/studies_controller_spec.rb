@@ -9,6 +9,7 @@ RSpec.describe StudiesController do
   let(:program) { create(:program) }
   let(:study) { create :study }
   let(:reference_genome) { create :reference_genome }
+  let(:data_release_study_type) { create :data_release_study_type, name: 'genomic sequencing' }
 
   setup do
     session[:user] = user.id
@@ -38,7 +39,7 @@ RSpec.describe StudiesController do
             'contains_human_dna' => 'No',
             'contaminated_human_dna' => 'No',
             'commercially_available' => 'No',
-            'data_release_study_type_id' => DataReleaseStudyType.find_by(name: 'genomic sequencing'),
+            'data_release_study_type_id' => data_release_study_type,
             'data_release_strategy' => 'open',
             'study_type_id' => StudyType.find_by(name: 'Not specified').id
           }
