@@ -180,7 +180,7 @@ end
 
 Given(/^the sample "([^\"]+)" has the accession number "([^\"]+)"$/) do |name, value|
   sample = Sample.find_by!(name: name)
-  sample.sample_metadata.sample_ebi_accession_number = value.blank? ? nil : value
+  sample.sample_metadata.sample_ebi_accession_number = value.presence
   sample.save!
 end
 

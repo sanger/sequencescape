@@ -83,4 +83,36 @@ describe BulkSubmission, with: :uploader do
       expect(generated_submission.orders.first.request_options).to eq(expected_request_options)
     end
   end
+
+  context 'a submission with primer_panels' do
+    let(:spreadsheet_filename) { 'primer_panels.csv' }
+    let!(:primer_panel) { create :primer_panel, name: 'Test panel' }
+
+    let!(:submission_template) do
+      create :limber_wgs_submission_template,
+             name: 'primer_panel_test',
+             request_types: [request_type]
+    end
+    let(:request_type) { create(:gbs_request_type) }
+
+    let(:expected_request_options) do
+      {
+        'fragment_size_required_to' => '400',
+        'fragment_size_required_from' => '100',
+        'pcr_cycles' => '5',
+        'read_length' => '100',
+        'library_type' => 'Standard',
+        'primer_panel_name' => 'Test panel',
+        'multiplier' => { request_type.id.to_s => 1 }
+      }
+    end
+
+    it 'is valid' do
+      expect(subject).to be_valid
+    end
+    it 'sets the expected request options' do
+      subject.process
+      expect(generated_submission.orders.first.request_options).to eq(expected_request_options)
+    end
+  end
 end

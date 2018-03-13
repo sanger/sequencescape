@@ -14,8 +14,8 @@ class SequencingRequest < CustomerRequest
 
   has_metadata as: Request do
     # redundant with library creation , but THEY are using it .
-    custom_attribute(:fragment_size_required_from, required: true, integer: true)
-    custom_attribute(:fragment_size_required_to, required: true, integer: true)
+    custom_attribute(:fragment_size_required_from, integer: true)
+    custom_attribute(:fragment_size_required_to, integer: true)
 
     custom_attribute(:read_length, integer: true, validator: true, required: true, selection: true)
   end
@@ -40,8 +40,8 @@ class SequencingRequest < CustomerRequest
 
   class RequestOptionsValidator < DelegateValidation::Validator
     delegate :fragment_size_required_from, :fragment_size_required_to, to: :target
-    validates_numericality_of :fragment_size_required_from, integer_only: true, greater_than: 0
-    validates_numericality_of :fragment_size_required_to, integer_only: true, greater_than: 0
+    validates_numericality_of :fragment_size_required_from, integer_only: true, greater_than: 0, allow_nil: true
+    validates_numericality_of :fragment_size_required_to, integer_only: true, greater_than: 0, allow_nil: true
   end
 
   def order=(_)

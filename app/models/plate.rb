@@ -33,11 +33,15 @@ class Plate < Asset
     end
     deprecate attach: 'Legacy method pre-jruby just use standard rails plate.wells << other_wells' # Legacy pre-jruby method to handle bulk import
 
+    # Build empty wells for the plate.
     def construct!
-      Map.where_plate_size(proxy_association.owner.size).where_plate_shape(proxy_association.owner.asset_shape).in_row_major_order.map do |location|
-        build(map: location)
-      end.tap do
-        proxy_association.owner.save!
+      proxy_association.owner.maps.in_row_major_order.pluck(:id).map do |location_id|
+        Well.create!(map_id: location_id)
+      end.tap do |wells|
+        ContainerAssociation.import(wells.map { |w| { content_id: w.id, container_id: proxy_association.owner.id } })
+        # If the well association has already been loaded, reload it. Otherwise rails will continue
+        # to think the plate has no wells.
+        proxy_association.reload if proxy_association.loaded?
       end
     end
 
@@ -87,6 +91,7 @@ class Plate < Asset
   has_many :studies, ->() { distinct }, through: :wells
   has_many :projects, ->() { distinct }, through: :wells
   has_many :well_requests_as_target, through: :wells, source: :requests_as_target
+  has_many :well_requests_as_source, through: :wells, source: :requests_as_source
   has_many :orders_as_target, ->() { distinct }, through: :well_requests_as_target, source: :order
   # We use stock well associations here as stock_wells is already used to generate some kind of hash.
   has_many :stock_requests, ->() { distinct }, through: :stock_well_associations, source: :requests
@@ -98,7 +103,7 @@ class Plate < Asset
   has_many :transfer_requests, through: :wells, source: :transfer_requests_as_target
   has_many :transfer_requests_as_source, through: :wells
   has_many :transfer_requests_as_target, through: :wells
-  has_many :transfer_request_collections, through: :transfer_requests_as_source
+  has_many :transfer_request_collections, ->() { distinct }, through: :transfer_requests_as_source
 
   # The default state for a plate comes from the plate purpose
   delegate :default_state, to: :plate_purpose, allow_nil: true
@@ -156,51 +161,32 @@ class Plate < Asset
   }
   scope :with_plate_purpose, ->(*purposes) { where(plate_purpose_id: purposes.flatten) }
 
-  # About 10x faster than going through the wells
+  # Submissions on requests out of the plate
+  # May not have been started yet
+  has_many :waiting_submissions, -> { distinct }, through: :well_requests_as_source, source: :submission
+  # The requests which were being processed to make the plate
+  has_many :in_progress_submissions, -> { distinct }, through: :transfer_requests_as_target, source: :submission
+
   def submission_ids
-    @siat ||= container_associations
-              .joins('LEFT JOIN transfer_requests ON transfer_requests.target_asset_id = container_associations.content_id')
-              .where.not(transfer_requests: { submission_id: nil }).where.not(transfer_requests: { state: Request::Statemachine::INACTIVE })
-              .distinct.pluck(:submission_id) + container_associations
-              .joins('LEFT JOIN requests ON requests.target_asset_id = container_associations.content_id')
-              .where.not(requests: { submission_id: nil }).where.not(requests: { state: Request::Statemachine::INACTIVE })
-              .distinct.pluck(:submission_id)
+    @siat ||= in_progress_submissions.pluck(:submission_id)
   end
 
   def submission_ids_as_source
-    @sias ||= container_associations
-              .joins('LEFT JOIN requests ON requests.asset_id = container_associations.content_id')
-              .where(['requests.submission_id IS NOT NULL AND requests.state NOT IN (?)', Request::Statemachine::INACTIVE])
-              .distinct.pluck(:submission_id) + container_associations
-              .joins('LEFT JOIN transfer_requests ON transfer_requests.asset_id = container_associations.content_id')
-              .where(['transfer_requests.submission_id IS NOT NULL AND transfer_requests.state NOT IN (?)', Request::Statemachine::INACTIVE])
-              .distinct.pluck(:submission_id)
+    @sias ||= waiting_submissions.pluck(:submission_id)
   end
 
+  # Prioritised the submissions that have been made from the plate
+  # then falls back onto the ones under which the plate was made
   def all_submission_ids
-    submission_ids_as_source.present? ?
-      submission_ids_as_source :
-      submission_ids
+    submission_ids_as_source.presence || submission_ids
+  end
+
+  def submissions
+    waiting_submissions.presence || in_progress_submissions
   end
 
   def prefix
     barcode_prefix.try(:prefix) || self.class.prefix
-  end
-
-  def submissions
-    s = Submission.select('submissions.*',).distinct
-                  .joins([
-                    'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
-                    'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.asset_id'
-                  ])
-                  .where(['caplp.container_id = ?', id])
-    return s if s.present?
-    Submission.select('submissions.*',).distinct
-              .joins([
-                'INNER JOIN requests as reqp ON reqp.submission_id = submissions.id',
-                'INNER JOIN container_associations AS caplp ON caplp.content_id = reqp.target_asset_id'
-              ])
-              .where(['caplp.container_id = ?', id])
   end
 
   def barcode_dilution_factor_created_at_hash
@@ -224,11 +210,6 @@ class Plate < Asset
   # Delegate the change of state to our plate purpose.
   def transition_to(state, user, contents = nil, customer_accepts_responsibility = false)
     purpose.transition_to(self, state, user, contents, customer_accepts_responsibility)
-  end
-
-  # Delegate the transfer request type determination to our plate purpose
-  def transfer_request_class_from(source)
-    purpose.transfer_request_class_from(source.plate_purpose)
   end
 
   def comments

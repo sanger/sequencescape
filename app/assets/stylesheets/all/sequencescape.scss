@@ -27,6 +27,12 @@ a:visited {
 
 .show-hide { float: right; }
 
+.release-batch {
+  @extend .btn;
+  @extend .btn-success;
+  @extend .btn-lg;
+}
+
 #app_name {
   padding: 0;
   font-size: 8px;
@@ -1348,6 +1354,10 @@ form#new_labwhere_reception .form-group {
 
 form#new_labwhere_reception ul li a {
   cursor: pointer;
+}
+
+.form-inline .form-group .form-control {
+  margin-right: 1em;
 }
 
 /* Table for manual sample registration was inheriting white color for text from bootstrap-sass */

@@ -18,7 +18,7 @@ class LabwhereReception
   validates :asset_barcodes, :user_code, presence: true
 
   def initialize(user_code, location_barcode, asset_barcodes)
-    @asset_barcodes = asset_barcodes.map(&:strip) if asset_barcodes.present?
+    @asset_barcodes = (asset_barcodes || []).map(&:strip)
     @location_barcode = location_barcode.try(:strip)
     @user_code = user_code.try(:strip)
   end
@@ -62,9 +62,11 @@ class LabwhereReception
     valid?
   end
 
-  private
-
   def assets
     @assets ||= Asset.with_machine_barcode(asset_barcodes)
+  end
+
+  def missing_barcodes
+    asset_barcodes - @assets.map(&:ean13_barcode)
   end
 end

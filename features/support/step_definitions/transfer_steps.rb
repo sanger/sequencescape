@@ -136,9 +136,3 @@ Given /^(the plate .+) is a "([^\"]+)"$/ do |plate, name|
   plate_purpose = PlatePurpose.find_by(name: name) or raise StandardError, "Cannot find the plate purpose #{name.inspect}"
   plate.update_attributes!(plate_purpose: plate_purpose)
 end
-
-Given /^transfers between "([^\"]+)" and "([^\"]+)" plates are standard transfers$/ do |source, destination|
-  source_plate_purpose      = PlatePurpose.find_by!(name: source)
-  destination_plate_purpose = PlatePurpose.find_by!(name: destination)
-  source_plate_purpose.child_relationships.create!(child: destination_plate_purpose, transfer_request_class_name: :standard)
-end

@@ -138,7 +138,13 @@ class Asset < ApplicationRecord
 
   scope :recent_first, -> { order(id: :desc) }
 
-  scope :include_for_show, ->() { includes({ requests: [:request_type, :request_metadata] }, requests_as_target: [:request_type, :request_metadata]) }
+  scope :include_for_show, -> { includes({ requests: [:request_type, :request_metadata] }, requests_as_target: [:request_type, :request_metadata]) }
+
+  # The use of a sub-query here is a performance optimization. If we join onto the asset_links
+  # table instead, rails is unable to paginate the results efficiently, as it needs to use DISTINCT
+  # when working out offsets. This is substantially slower.
+  scope :without_children, -> { where.not(id: AssetLink.where(direct: true).select(:ancestor_id)) }
+  scope :include_plates_with_children, ->(filter) { filter ? all : without_children }
 
   # Named scope for search by query string behaviour
   scope :for_search_query, ->(query, with_includes) {
@@ -169,8 +175,6 @@ class Asset < ApplicationRecord
       where(search, arguments).includes(:requests).order('requests.pipeline_id ASC')
     end
   }
-
-  scope :with_name, ->(*names) { where(name: names.flatten) }
 
   # We accept not only an individual barcode but also an array of them.  This builds an appropriate
   # set of conditions that can find any one of these barcodes.  We map each of the individual barcodes
@@ -368,7 +372,7 @@ class Asset < ApplicationRecord
   end
 
   def display_name
-    name.blank? ? "#{sti_type} #{id}" : name
+    name.presence || "#{sti_type} #{id}"
   end
 
   def external_identifier

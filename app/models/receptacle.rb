@@ -10,9 +10,11 @@ class Receptacle < Asset
 
   SAMPLE_PARTIAL = 'assets/samples_partials/asset_samples'.freeze
 
-  has_many :transfer_requests, foreign_key: :target_asset_id
   has_many :transfer_requests_as_source, class_name: 'TransferRequest', foreign_key: :asset_id
   has_many :transfer_requests_as_target, class_name: 'TransferRequest', foreign_key: :target_asset_id
+  has_many :upstream_assets, through: :transfer_requests_as_target, source: :asset
+  has_many :downstream_assets, through: :transfer_requests_as_source, source: :target_asset
+
   has_many :requests, inverse_of: :asset, foreign_key: :asset_id
   has_one  :source_request, ->() { includes(:request_metadata) }, class_name: 'Request', foreign_key: :target_asset_id
   has_many :requests_as_source, ->() { includes(:request_metadata) }, class_name: 'Request', foreign_key: :asset_id
@@ -30,6 +32,8 @@ class Receptacle < Asset
 
   has_many :tags, through: :aliquots
 
+  has_many :submissions, ->() { distinct }, through: :transfer_requests_as_target
+
   # Our receptacle needs to report its tagging status based on the most highly tagged aliquot. This retrieves it
   has_one :most_tagged_aliquot, ->() { order(tag2_id: :desc, tag_id: :desc).readonly }, class_name: 'Aliquot', foreign_key: :receptacle_id
 
@@ -42,7 +46,7 @@ class Receptacle < Asset
 
   # Named scopes for the future
   scope :include_aliquots, ->() { includes(aliquots: %i(sample tag bait_library)) }
-  scope :include_aliquots_for_api, ->() { includes(aliquots: [{ sample: [:uuid_object, :study_reference_genome, { sample_metadata: :reference_genome }] }, { tag: :tag_group }, :bait_library]) }
+  scope :include_aliquots_for_api, ->() { includes(aliquots: Io::Aliquot::PRELOADS) }
   scope :for_summary, ->() { includes(:map, :samples, :studies, :projects) }
   scope :include_creation_batches, ->() { includes(:creation_batches) }
   scope :include_source_batches, ->() { includes(:source_batches) }
@@ -116,6 +120,10 @@ class Receptacle < Asset
       aliquot.tag2 = tag
       aliquot.save!
     end
+  end
+
+  def created_with_request_options
+    aliquots.first&.created_with_request_options || {}
   end
 
   # Library types are still just a string on aliquot.

@@ -28,7 +28,8 @@ class Metadata::FormBuilder < Metadata::BuilderBase
   end
 
   def select_by_association(association, options = {}, html_options = {})
-    association_target, options = association.to_s.classify.constantize, {}
+    html_options[:class] ||= 'select2'
+    association_target = association.to_s.classify.constantize
     options[:selected] = association_target.default.for_select_dropdown.last if @object.send(association).nil? and association_target.default.present?
     select(:"#{association}_id", association_target.for_select_association, options, html_options)
   end

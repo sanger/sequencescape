@@ -33,12 +33,6 @@ class Transfer::FromPlateToTube < Transfer
   end
   private :each_transfer
 
-  # Request type is based on the destination tube from the source plate
-  def transfer_request_class_between(_, destination)
-    destination.transfer_request_class_from(source)
-  end
-  private :transfer_request_class_between
-
   after_create :update_tube_name
 
   def update_tube_name

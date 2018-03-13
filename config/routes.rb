@@ -257,7 +257,7 @@ Sequencescape::Application.routes.draw do
     end
     member do
       post :change_priority
-      get :cancel
+      post :cancel
     end
   end
 
@@ -289,6 +289,8 @@ Sequencescape::Application.routes.draw do
 
   namespace :admin do
     resources :custom_texts
+
+    resources :primer_panels, except: :destroy
 
     resources :studies, except: [:destroy] do
       collection do

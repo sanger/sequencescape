@@ -4,8 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
-require 'models/sample_manifest/sample_manifest_uploader.rb'
-
 class SampleManifestUploadWithTagSequencesController < ApplicationController
   before_action :login_required
 
@@ -14,7 +12,7 @@ class SampleManifestUploadWithTagSequencesController < ApplicationController
 
   def create
     if params[:upload].present?
-      @uploader = SampleManifestUploader.new(params[:upload].open, SampleManifestExcel.configuration, current_user)
+      @uploader = SampleManifest::Uploader.new(params[:upload].open, SampleManifestExcel.configuration, current_user)
       if @uploader.valid?
         if @uploader.run!
           flash[:notice] = 'Sample manifest successfully uploaded.'

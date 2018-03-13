@@ -9,6 +9,7 @@
 # registered within.
 class Core::Endpoint::BasicHandler::Actions::Bound::Handler < Core::Endpoint::BasicHandler
   include Core::Endpoint::BasicHandler::Actions::InnerAction
+  include Core::Endpoint::BasicHandler::Paged
 
   def initialize(owner, name, options, &block)
     super(name, options, &block)

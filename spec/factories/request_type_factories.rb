@@ -16,7 +16,7 @@ FactoryGirl.define do
     request_class  Request
     order          1
     initial_state 'pending'
-    request_purpose
+    request_purpose :standard
 
     factory :customer_request_type do
       request_class CustomerRequest
@@ -30,6 +30,10 @@ FactoryGirl.define do
         request_class IlluminaHtp::Requests::StdLibraryRequest
         billable true
         library_request_validators
+
+        factory :gbs_request_type do
+          request_class IlluminaHtp::Requests::GbsRequest
+        end
       end
 
       factory :multiplex_request_type do

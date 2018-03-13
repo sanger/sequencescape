@@ -145,7 +145,7 @@ def pool_by_strategy(source, destination, pooling_strategy)
     submission_id = Submission.create!(user: User.first || User.create!(login: 'a')).id
     wells_for_source, wells_for_destination = source_wells.slice!(0, pool), destination_wells.slice!(0, pool)
     wells_for_source.zip(wells_for_destination).each do |w|
-      TransferRequest::Standard.create!(asset: w.first, target_asset: w.last, submission_id: submission_id)
+      TransferRequest.create!(asset: w.first, target_asset: w.last, submission_id: submission_id)
       FactoryGirl.create :request_without_submission, asset: w.first, target_asset: w.last, submission_id: submission_id
     end
   end

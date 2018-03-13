@@ -2,11 +2,13 @@ require 'test_helper'
 require 'rails/performance_test_help'
 
 class TransferRequestCollectionTest < ActionDispatch::PerformanceTest
-  self.profile_options = { runs: 1, metrics: [:wall_time] }
+  self.profile_options = { runs: 1, metrics: [:wall_time], formats: [:flat] }
   # Refer to the documentation for all available options
   # self.profile_options = { runs: 5, metrics: [:wall_time, :memory],
   #                          output: 'tmp/performance', formats: [:flat] }
-  SIZE = 96
+
+  SIZE = 6
+
   def setup
     ao = {
       sample: FactoryGirl.create(:sample),

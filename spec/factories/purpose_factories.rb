@@ -14,6 +14,10 @@ FactoryGirl.define do
 
       factory :illumina_htp_initial_stock_tube_purpose, class: IlluminaHtp::InitialStockTubePurpose
     end
+
+    factory(:mixed_submission_mx, class: Tube::MixedSubmissionMx) do
+      target_type 'StockMultiplexedLibraryTube'
+    end
   end
 
   factory :strip_tube_purpose, class: PlatePurpose do
@@ -49,9 +53,5 @@ FactoryGirl.define do
   factory :tube_purpose, class: Tube::Purpose do
     name        { generate :purpose_name }
     target_type 'MultiplexedLibraryTube'
-  end
-
-  factory :request_purpose do
-    key { generate :purpose_name }
   end
 end

@@ -11,12 +11,7 @@ module TubePurposeHelper
       @migration = migration
     end
 
-    def to(target_purpose)
-      purposes.each do |name|
-        say "Updating #{name}..."
-        Purpose.find_by(name: name).child_relationships.first.update_attributes!(child: target_purpose)
-      end
-    end
+    def to(_); end
   end
 
   class RequestTypeMigrator

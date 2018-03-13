@@ -18,7 +18,7 @@ class Pooling
   def transfer
     target_assets.each do |target_asset|
       source_assets.each do |source_asset|
-        TransferRequest::Standard.create!(asset: source_asset, target_asset: target_asset)
+        TransferRequest.create!(asset: source_asset, target_asset: target_asset)
       end
     end
     message[:notice] = (message[:notice] || '') + success

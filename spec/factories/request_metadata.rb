@@ -81,6 +81,11 @@ FactoryGirl.define do
     factory :request_metadata_for_illumina_c_multiplexed_library_creation
     factory :request_metadata_for_pulldown_library_creation
     factory :request_metadata_for_pulldown_multiplex_library_preparation
+
+    factory :request_metadata_for_gbs, class: IlluminaHtp::Requests::GbsRequest::Metadata do
+      primer_panel_name { create(:primer_panel).name }
+      association(:owner, factory: :gbs_request)
+    end
   end
 
   # Bait libraries

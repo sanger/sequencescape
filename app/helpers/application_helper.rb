@@ -188,7 +188,6 @@ module ApplicationHelper
 
   def horizontal_tab(name, key, related_div, tab_no, selected = false)
     link_to raw(name.to_s), 'javascript:void(0);', 'data-tab-refers': "##{related_div}", 'data-tab-group': tab_no, id: key.to_s, class: "#{selected ? "selected " : ""}tab#{tab_no}"
-    # link_to raw("#{name}"), "javascript:void(0);", :onclick => %Q{swap_tab("#{key}", "#{related_div}", "#{tab_no}");}, :id => "#{key}", :class => "#{selected ? "selected " : ""}tab#{tab_no}"
   end
 
   def item_status(item)

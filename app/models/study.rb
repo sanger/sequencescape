@@ -306,6 +306,10 @@ class Study < ApplicationRecord
       )
   }
 
+  scope :by_state, ->(state) { where(state: state) }
+
+  scope :by_user, ->(login) { joins(:roles, :users).where(roles: { name: ['follower', 'manager', 'owner'], users: { login: [login] } }) }
+
   # Delegations
   alias_attribute :friendly_name, :name
 
@@ -453,7 +457,7 @@ class Study < ApplicationRecord
 
   def abbreviation
     abbreviation = study_metadata.study_name_abbreviation
-    abbreviation.blank? ? "#{id}STDY" : abbreviation
+    abbreviation.presence || "#{id}STDY"
   end
 
   def dehumanise_abbreviated_name

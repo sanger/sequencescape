@@ -16,7 +16,7 @@ class AddChromiumRequestType < ActiveRecord::Migration
         initial_state: 'pending',
         billable: true,
         product_line: ProductLine.find_by(name: 'Illumina-C'),
-        request_purpose: RequestPurpose.standard,
+        request_purpose: :standard,
         target_purpose: Purpose.find_by(name: 'ILC Lib Pool Norm')
       )
       rt.acceptable_plate_purposes << Purpose.find_by(name: 'ILC Stock')

@@ -1,14 +1,71 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 require 'shared_contexts/limber_shared_context'
 
 RSpec.describe TransferRequest, type: :model do
-  let!(:source) { LibraryTube.create!.tap { |tube| tube.aliquots.create!(sample: create(:sample)) } }
-  let!(:tag) { create(:tag).tag!(source) }
-  let!(:destination) { LibraryTube.create! }
+  let(:source) { create :well_with_sample_and_without_plate }
+  let(:tag) { create(:tag).tag!(source) }
+  let(:destination) { create :well }
+  let(:example_study) { create :study }
+  let(:example_project) { create :project }
+
+  context 'with a library request' do
+    subject do
+      create :transfer_request,
+             asset: source,
+             target_asset: destination,
+             submission: library_request.submission
+    end
+
+    let(:library_request) do
+      create :library_request,
+             asset: source,
+             initial_study: example_study,
+             initial_project: example_project,
+             state: library_state
+    end
+
+    context 'with a pending library request' do
+      let(:library_state) { 'pending' }
+
+      it 'sets the target aliquots to the library request study and project' do
+        subject
+        expect(destination.aliquots.first.study).to eq(example_study)
+        expect(destination.aliquots.first.project).to eq(example_project)
+      end
+
+      it 'sets appropriate metadata on the aliquots' do
+        subject
+        expect(destination.aliquots.first.library_type).to eq(library_request.library_type)
+        expect(destination.aliquots.first.insert_size).to eq(library_request.insert_size)
+      end
+
+      it 'starts the library request when started' do
+        subject.start!
+        expect(library_request.reload.state).to eq('started')
+      end
+
+      # Users can jump straight to passed from pending. So we need to handle that as well.
+      it 'starts the library request when passed' do
+        subject.pass!
+        expect(library_request.reload.state).to eq('started')
+      end
+    end
+
+    context 'with a started outer request' do
+      let(:library_state) { 'started' }
+
+      it 'transitions without changing the library request' do
+        subject.pass!
+        expect(library_request.reload.state).to eq('started')
+      end
+    end
+  end
 
   context 'TransferRequest' do
     context 'when using the constuctor' do
-      let!(:transfer_request) { TransferRequest::Standard.create!(asset: source, target_asset: destination) }
+      let!(:transfer_request) { TransferRequest.create!(asset: source, target_asset: destination) }
 
       it 'should duplicate the aliquots' do
         expected_aliquots = source.aliquots.map { |a| [a.sample_id, a.tag_id] }
@@ -17,7 +74,6 @@ RSpec.describe TransferRequest, type: :model do
       end
 
       it 'should have the correct attributes' do
-        expect(transfer_request.sti_type).to eq 'TransferRequest::Standard'
         expect(transfer_request.state).to eq 'pending'
         expect(transfer_request.asset_id).to eq source.id
         expect(transfer_request.target_asset_id).to eq destination.id
@@ -26,7 +82,7 @@ RSpec.describe TransferRequest, type: :model do
 
     it 'should not permit transfers to the same asset' do
       asset = create(:sample_tube)
-      expect { TransferRequest::Standard.create!(asset: asset, target_asset: asset) }.to raise_error(ActiveRecord::RecordInvalid)
+      expect { TransferRequest.create!(asset: asset, target_asset: asset) }.to raise_error(ActiveRecord::RecordInvalid)
     end
 
     context 'with a tag clash' do
@@ -38,7 +94,7 @@ RSpec.describe TransferRequest, type: :model do
 
       it 'should raise an exception' do
         expect do
-          TransferRequest::Standard.create!(asset: aliquot_2.receptacle.reload, target_asset: target_asset)
+          TransferRequest.create!(asset: aliquot_2.receptacle.reload, target_asset: target_asset)
         end.to raise_error(Aliquot::TagClash)
       end
     end
@@ -49,10 +105,12 @@ RSpec.describe TransferRequest, type: :model do
 
     {
       start: { pending: :started },
-      pass: { pending: :passed, started: :passed, failed: :passed },
+      pass: { pending: :passed, started: :passed, failed: :passed, processed_2: :passed },
+      process_1: { pending: :processed_1 },
+      process_2: { processed_1: :processed_2 },
       qc: { passed: :qc_complete },
-      fail: { pending: :failed, started: :failed, passed: :failed },
-      cancel: { started: :cancelled, passed: :cancelled, qc_complete: :cancelled },
+      fail: { pending: :failed, started: :failed, processed_1: :failed, processed_2: :failed, passed: :failed },
+      cancel: { started: :cancelled, processed_1: :cancelled, processed_2: :cancelled, passed: :cancelled, qc_complete: :cancelled },
       cancel_before_started: { pending: :cancelled }
     }.each do |event, transitions|
       transitions.each do |from_state, to_state|

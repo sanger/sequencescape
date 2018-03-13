@@ -27,11 +27,6 @@ class LibraryTube < Tube
     get_tag.tag_group.tags.order(:map_id).pluck(:name, :id)
   end
 
-  # A library tube is created with request options that come from the request in which it is the target asset.
-  def created_with_request_options
-    creation_request.try(:request_options_for_creation) || {}
-  end
-
   def self.stock_asset_type
     StockLibraryTube
   end

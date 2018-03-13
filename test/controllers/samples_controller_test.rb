@@ -25,8 +25,7 @@ class SamplesControllerTest < ActionController::TestCase
           cohort: 'Cohort',
           gender: 'Male',
           genotype: '',
-          phenotype: '',
-          reference_genome_id: FactoryGirl.create(:reference_genome).id
+          phenotype: ''
         }
       },
                 formats: ['html'],

@@ -15,7 +15,7 @@ class AddHiseq4000RequestTypes < ActiveRecord::Migration
                             request_class_name: 'HiSeqSequencingRequest',
                             billable: true,
                             product_line: ProductLine.find_by(name: "Illumina-#{pipeline.upcase}"),
-                            request_purpose: RequestPurpose.standard).tap do |rt|
+                            request_purpose: :standard).tap do |rt|
           RequestType::Validator.create!(request_type: rt, request_option: 'read_length', valid_options: [150, 75])
         end
         RequestType.create!(key: "illumina_#{pipeline}_hiseq_4000_single_end_sequencing",
@@ -27,7 +27,7 @@ class AddHiseq4000RequestTypes < ActiveRecord::Migration
                             request_class_name: 'HiSeqSequencingRequest',
                             billable: true,
                             product_line: ProductLine.find_by(name: "Illumina-#{pipeline.upcase}"),
-                            request_purpose: RequestPurpose.standard).tap do |rt|
+                            request_purpose: :standard).tap do |rt|
           RequestType::Validator.create!(request_type: rt, request_option: 'read_length', valid_options: [50])
         end
       end

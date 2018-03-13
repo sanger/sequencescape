@@ -27,7 +27,7 @@ module ControlRequestTypeCreation
       crt.initial_state      = last_request_type.initial_state
       crt.asset_type         = last_request_type.asset_type
       crt.order              = last_request_type.order
-      crt.request_purpose    = RequestPurpose.find_by!(key: 'control')
+      crt.request_purpose    = :control
     end.tap do |control_request_type|
       self.control_request_type = control_request_type
     end

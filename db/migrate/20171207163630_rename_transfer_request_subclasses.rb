@@ -11,7 +11,8 @@ class RenameTransferRequestSubclasses < ActiveRecord::Migration[5.1]
     'CherrypickForFluidigmRequest' => 'TransferRequest::Standard',
     'CherrypickForPulldownRequest' => 'TransferRequest::Standard',
     'TransferRequest' => 'TransferRequest::Standard',
-    'PacBioSamplePrepRequest::Initial' => 'TransferRequest::PacbioInitial'
+    'PacBioSamplePrepRequest::Initial' => 'TransferRequest::PacbioInitial',
+    'TransferRequest::InitialTransfer' => 'TransferRequest::Initial'
   }.freeze
 
   def up

@@ -16,10 +16,6 @@ class Tube::Purpose < ::Purpose
     []
   end
 
-  def created_with_request_options(tube)
-    tube.creation_request.try(:request_options_for_creation) || {}
-  end
-
   def create!(*args, &block)
     target_class.create_with_barcode!(*args, &block).tap { |t| tubes << t }
   end

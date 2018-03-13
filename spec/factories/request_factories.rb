@@ -35,7 +35,7 @@ FactoryGirl.define do
 
   factory :request_base, class: Request do
     request_type
-    request_purpose
+    request_purpose :standard
 
     # Ensure that the request metadata is correctly setup based on the request type
     after(:build) do |request|
@@ -52,7 +52,7 @@ FactoryGirl.define do
 
   factory :sequencing_request, class: SequencingRequest do
     association(:request_type, factory: :sequencing_request_type)
-    request_purpose
+    request_purpose :standard
     sti_type 'SequencingRequest'
     request_metadata_attributes { attributes_for :request_metadata_for_standard_sequencing_with_read_length }
 
@@ -78,20 +78,24 @@ FactoryGirl.define do
   factory :library_request, class: IlluminaHtp::Requests::StdLibraryRequest do
     association(:asset, factory: :well)
     association(:request_type, factory: :library_request_type)
-    request_purpose
+    request_purpose :standard
     request_metadata_attributes { attributes_for :request_metadata_for_library_manufacture }
+
+    factory :gbs_request, class: IlluminaHtp::Requests::GbsRequest do
+      request_metadata_attributes { attributes_for :request_metadata_for_gbs }
+    end
   end
 
   factory(:multiplex_request, class: Request::Multiplexing) do
     asset nil
     association(:target_asset, factory: :multiplexed_library_tube)
-    request_purpose
+    request_purpose :standard
   end
 
   factory :cherrypick_request do
     association :asset, factory: :well
     association :target_asset, factory: :well
-    request_purpose
+    request_purpose :standard
 
     # Adds the associations needed for processing down a pipeline
     factory :cherrypick_request_for_pipeline do
@@ -154,7 +158,7 @@ FactoryGirl.define do
 
   factory :pooled_cherrypick_request do
     asset { |asset| asset.association(:well_with_sample_and_without_plate) }
-    request_purpose
+    request_purpose :standard
   end
 
   factory :lib_pcr_xp_request, parent: :request_without_assets do
@@ -163,22 +167,17 @@ FactoryGirl.define do
     target_asset { |asset| asset.association(:empty_library_tube) }
   end
 
-  factory :initial_transfer_request, class: TransferRequest::Initial do
-    asset { |asset| asset.association(:well) }
-    target_asset { |asset| asset.association(:well) }
-  end
-
   factory :request_traction_grid_ion, class: Request::Traction::GridIon do
     association(:asset, factory: :well)
     target_asset nil
-    request_purpose
+    request_purpose :standard
     association(:request_type, factory: :well_request_type)
     request_metadata_attributes { attributes_for(:request_traction_grid_ion_metadata) }
   end
 
   factory :request_without_submission, class: Request do
-    request_type    { |rt| rt.association(:request_type) }
-    request_purpose { |rt| rt.association(:request_purpose) }
+    request_type
+    request_purpose :standard
 
     # Ensure that the request metadata is correctly setup based on the request type
     after(:build) do |request|
@@ -190,7 +189,7 @@ FactoryGirl.define do
 
   factory(:library_creation_request_for_testing_sequencing_requests, class: Request::LibraryCreation) do
     request_type { |_target| RequestType.find_by!(name: 'Library creation') }
-    request_purpose { |rp| rp.association(:request_purpose) }
+    request_purpose :standard
     asset        { |target| target.association(:well_with_sample_and_plate) }
     target_asset { |target| target.association(:empty_well) }
     after(:build) do |request|
@@ -201,7 +200,7 @@ FactoryGirl.define do
 
   factory(:external_multiplexed_library_tube_creation_request, class: ExternalLibraryCreationRequest) do
     request_type { |_target| RequestType.find_by!(name: 'External Multiplexed Library Creation') }
-    request_purpose { |rp| rp.association(:request_purpose) }
+    request_purpose :standard
     asset { create(:library_tube) }
     target_asset { create(:multiplexed_library_tube) }
   end
@@ -210,7 +209,7 @@ FactoryGirl.define do
     target_asset    { |ta| ta.association(:pac_bio_library_tube) }
     asset           { |a|   a.association(:well) }
     submission      { |s|   s.association(:submission) }
-    request_purpose { |rp| rp.association(:request_purpose) }
+    request_purpose :standard
   end
 
   factory :pac_bio_sequencing_request do
@@ -218,6 +217,6 @@ FactoryGirl.define do
     asset           { |a|   a.association(:pac_bio_library_tube) }
     submission      { |s|   s.association(:submission) }
     request_type    { |s| s.association(:pac_bio_sequencing_request_type) }
-    request_purpose
+    request_purpose :standard
   end
 end

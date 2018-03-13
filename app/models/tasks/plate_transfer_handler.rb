@@ -29,12 +29,12 @@ module Tasks::PlateTransferHandler
 
       batch_requests.each do |outer_request|
         source = outer_request.asset
-        TransferRequest::PacBioInitial.create!(
+        TransferRequest.create!(
           asset: source,
           target_asset: well_map[source.map_id],
           submission_id: outer_request.submission_id
         )
-        TransferRequest::Standard.create!(
+        TransferRequest.create!(
           asset: well_map[source.map_id],
           target_asset: outer_request.target_asset,
           submission_id: outer_request.submission_id

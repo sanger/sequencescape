@@ -7,6 +7,26 @@
 unless Rails.env.test?
   ActiveRecord::Base.transaction do
     excluded = ['Dilution Plates']
+    # Build the links between the parent and child plate purposes
+    relationships = {
+      'Working Dilution'    => ['Working Dilution', 'Pico Dilution'],
+      'Pico Dilution'       => ['Working Dilution', 'Pico Dilution'],
+      'Pico Assay A'        => ['Pico Assay A', 'Pico Assay B'],
+      'Pulldown'            => ['Pulldown Aliquot'],
+      'Dilution Plates'     => ['Working Dilution', 'Pico Dilution'],
+      'Pico Assay Plates'   => ['Pico Assay A', 'Pico Assay B'],
+      'Pico Assay B'        => ['Pico Assay A', 'Pico Assay B'],
+      'Gel Dilution Plates' => ['Gel Dilution'],
+      'Pulldown Aliquot'    => ['Sonication'],
+      'Sonication'          => ['Run of Robot'],
+      'Run of Robot'        => ['EnRichment 1'],
+      'EnRichment 1'        => ['EnRichment 2'],
+      'EnRichment 2'        => ['EnRichment 3'],
+      'EnRichment 3'        => ['EnRichment 4'],
+      'EnRichment 4'        => ['Sequence Capture'],
+      'Sequence Capture'    => ['Pulldown PCR'],
+      'Pulldown PCR'        => ['Pulldown qPCR']
+    }
 
     PlatePurpose.where(name: [
       'Stock Plate', 'Normalisation', 'Pico Standard', 'Pulldown',
@@ -14,7 +34,7 @@ unless Rails.env.test?
       'Aliquot 1', 'Aliquot 2', 'Aliquot 3', 'Aliquot 4', 'Aliquot 5'
     ]).find_each do |plate_purpose|
       Plate::Creator.create!(name: plate_purpose.name).tap do |creator|
-        creator.plate_purposes = plate_purpose.child_plate_purposes
+        creator.plate_purposes = Purpose.where(name: relationships[plate_purpose.name] || plate_purpose.name)
       end unless excluded.include?(plate_purpose.name)
     end
 

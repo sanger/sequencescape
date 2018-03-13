@@ -3,7 +3,6 @@
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
-require 'models/sample_manifest/sample_manifest_generator'
 
 class Sdb::SampleManifestsController < Sdb::BaseController
   before_action :set_sample_manifest_id, only: [:show, :generated, :print_labels]
@@ -59,8 +58,8 @@ class Sdb::SampleManifestsController < Sdb::BaseController
   end
 
   def create
-    @sample_manifest_generator = SampleManifestGenerator.new(params[:sample_manifest],
-                                                             current_user, SampleManifestExcel.configuration)
+    @sample_manifest_generator = SampleManifest::Generator.new(params[:sample_manifest],
+                                                               current_user, SampleManifestExcel.configuration)
 
     if @sample_manifest_generator.execute
 

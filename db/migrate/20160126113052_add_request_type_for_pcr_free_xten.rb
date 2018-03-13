@@ -22,7 +22,7 @@ class AddRequestTypeForPcrFreeXten < ActiveRecord::Migration
         no_target_asset: false,
         order: 1,
         pooling_method: RequestType::PoolingMethod.find_by!(pooling_behaviour: 'PlateRow'),
-        request_purpose: RequestPurpose.find_by!(key: 'standard'),
+        request_purpose: :standard,
         request_class_name: 'IlluminaHtp::Requests::StdLibraryRequest',
         workflow_id: SubmissionWorkflow.find_by!(key: 'short_read_sequencing').id,
         product_line: ProductLine.find_by!(name: 'Illumina-HTP')

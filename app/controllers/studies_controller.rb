@@ -47,7 +47,7 @@ class StudiesController < ApplicationController
   def study_list
     return redirect_to(studies_path) unless request.xhr?
     setup_studies_from_scope
-    render partial: 'study_list', locals: { studies: @studies.with_related_users_included.all }
+    render partial: 'study_list', locals: { studies: @studies.with_related_owners_included }
   end
 
   def new

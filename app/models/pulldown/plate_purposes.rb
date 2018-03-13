@@ -83,30 +83,17 @@ module Pulldown::PlatePurposes
     'ISC cap lib PCR-XP'
   ]
 
-  PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES = [
-    ['Lib PCR-XP',   'ISCH lib pool', :initial],
-    ['Lib PCRR-XP',  'ISCH lib pool', :initial]
-  ]
-
   STOCK_PLATE_PURPOSES = ['WGS stock DNA', 'SC stock DNA', 'ISC stock DNA']
 
   class << self
-    def create_purposes(branch_o)
-      branch = branch_o.clone
-      initial = Purpose.find_by!(name: branch.shift)
-      branch.inject(initial) do |parent, new_purpose_name|
+    def create_purposes(branch)
+      initial = Purpose.find_by!(name: branch.first)
+      branch[1..-1].inject(initial) do |parent, new_purpose_name|
         Pulldown::PlatePurposes::PLATE_PURPOSE_TYPE[new_purpose_name].create!(name: new_purpose_name).tap do |child_purpose|
-          transfer_request_class = transfer_request_class_between(parent, child_purpose)
-          parent.child_relationships.create!(child: child_purpose, transfer_request_class_name: transfer_request_class)
+          parent.child_relationships.create!(child: child_purpose)
         end
       end
     end
-
-    def transfer_request_class_between(parent, child)
-      _, _, request_class = self::PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES.detect { |a, b, _| (parent.name == a) && (child.name == b) }
-      request_class || :standard
-    end
-    private :transfer_request_class_between
   end
 end
 

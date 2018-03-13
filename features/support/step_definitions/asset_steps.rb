@@ -39,7 +39,3 @@ Given /^there is an asset link between "([^"]*)" and "([^"]*)"$/ do |source, tar
     Well::Link.create!(target_well: target_well, source_well: source_well, type: 'stock')
   end
 end
-
-Given /^the multiplexed library tube with ID (\d+) has a BigDecimal volume$/ do |id|
-  MultiplexedLibraryTube.find(id).update_attributes!(volume: 8.76000000)
-end

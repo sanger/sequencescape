@@ -88,6 +88,10 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
     @order_params
   end
 
+  def pre_capture_plex_level
+    order.input_field_infos.detect { |ifi| ifi.key == :pre_capture_plex_level }&.default_value
+  end
+
   def order_fields
     if order.input_field_infos.flatten.empty?
       order.request_type_ids_list = order.request_types.map { |rt| [rt] }
@@ -227,7 +231,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
   end
 
   def url(view)
-    view.send(:submission_path, submission.present? ? submission : { id: 'DUMMY_ID' })
+    view.send(:submission_path, submission.presence || { id: 'DUMMY_ID' })
   end
 
   def template_name

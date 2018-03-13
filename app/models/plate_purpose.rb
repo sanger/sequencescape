@@ -5,8 +5,6 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 class PlatePurpose < Purpose
-  include Relationship::Associations
-
   broadcast_via_warren
 
   scope :compatible_with_purpose, ->(purpose) {
@@ -94,10 +92,7 @@ class PlatePurpose < Purpose
     private
 
     def transition_state_requests(wells, state)
-      wells = wells.includes(
-        requests_as_target: { asset: :aliquots, target_asset: :aliquots },
-        transfer_requests_as_target: { asset: :aliquots, target_asset: :aliquots }
-      )
+      wells = wells.includes(:requests_as_target, transfer_requests_as_target: { asset: :requests })
       wells.each do |w|
         w.requests_as_target.each { |r| r.transition_to(state) }
         w.transfer_requests_as_target.each { |r| r.transition_to(state) }

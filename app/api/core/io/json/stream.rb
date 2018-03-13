@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This file is part of SEQUENCESCAPE; it is distributed under the terms of
 # GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
@@ -6,6 +8,19 @@
 
 module ::Core::Io::Json
   class Stream
+    # An interface matches object who respond to the provided method
+    class Interface
+      def initialize(interface)
+        @method = interface
+      end
+
+      def ===(other)
+        other.respond_to?(:zip)
+      end
+    end
+
+    ZIPPABLE = Interface.new(:zip).freeze
+
     def initialize(buffer)
       @buffer, @have_output_value = buffer, []
     end
@@ -35,19 +50,19 @@ module ::Core::Io::Json
     end
 
     def encode(object, options = {})
-      case
-      when object.nil? then unencoded('null')
-      when Symbol                        === object    then string_encode(object)
-      when TrueClass                     === object    then unencoded('true')
-      when FalseClass                    === object    then unencoded('false')
-      when String                        === object    then string_encode(object)
-      when Integer                       === object    then unencoded(object.to_s)
-      when Float                         === object    then unencoded(object.to_s)
-      when Date                          === object    then string_encode(object)
-      when ActiveSupport::TimeWithZone   === object    then string_encode(object.to_s)
-      when Time                          === object    then string_encode(object.to_s(:compatible))
-      when Hash                          === object    then hash_encode(object, options)
-      when object.respond_to?(:zip)                    then array_encode(object) { |o| encode(o, options) }
+      case object
+      when NilClass                    then unencoded('null')
+      when Symbol                      then string_encode(object)
+      when TrueClass                   then unencoded('true')
+      when FalseClass                  then unencoded('false')
+      when String                      then string_encode(object)
+      when Integer                     then unencoded(object.to_s)
+      when Float                       then unencoded(object.to_s)
+      when Date                        then string_encode(object)
+      when ActiveSupport::TimeWithZone then string_encode(object.to_s)
+      when Time                        then string_encode(object.to_s(:compatible))
+      when Hash                        then hash_encode(object, options)
+      when ZIPPABLE                    then array_encode(object) { |o| encode(o, options) }
       else object_encode(object, options)
       end
     end
@@ -88,10 +103,11 @@ module ::Core::Io::Json
       # Use length rather than size, as otherwise we perform
       # a count query. Not only is this unnecessary, but seems
       # to generate inaccurate numbers in some cases.
-      array.zip([','] * (array.length - 1)).each do |value, separator|
+      last_item = array.length - 1
+      array.each_with_index do |value, index|
         yield(value)
-        unencoded(separator) unless separator.nil?
-      end unless array.empty?
+        unencoded(',') unless index == last_item
+      end
       unencoded(']')
     end
     private :array_encode

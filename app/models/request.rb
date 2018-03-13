@@ -43,7 +43,6 @@ class Request < ApplicationRecord
   belongs_to :item
   belongs_to :request_type, inverse_of: :requests
   belongs_to :user
-  belongs_to :request_purpose
   belongs_to :order, inverse_of: :requests
   belongs_to :submission, inverse_of: :requests
   belongs_to :submission_pool, foreign_key: :submission_id
@@ -79,12 +78,19 @@ class Request < ApplicationRecord
   belongs_to :billing_product, class_name: 'Billing::Product'
   has_many :billing_items, class_name: 'Billing::Item'
 
+  # A request_purpose is a simple means of distinguishing WHY a request was made.
+  # cf. RequestType which defines how it will be fulfilled.
+  # Both RequestType and Request have a purpose, with the former acting as the default for
+  # the latter.
+  enum request_purpose: {
+    standard: 1,
+    internal: 2,
+    qc: 3,
+    control: 4
+  }
   # Validations
   # On create we perform a full and complete validation.
-  validates_presence_of :request_purpose, on: :create
-  # Just makes sure we don't set it to nil. Avoids the need to load request_purpose
-  # EVERY time we touch a request.
-  validates_presence_of :request_purpose_id
+  validates_presence_of :request_purpose
 
   broadcast_via_warren
 
@@ -96,12 +102,6 @@ class Request < ApplicationRecord
   }
 
   scope :customer_requests, ->() { where(sti_type: [CustomerRequest, *CustomerRequest.descendants].map(&:name)) }
-
-  scope :for_pipeline, ->(pipeline) {
-    joins('LEFT JOIN pipelines_request_types prt ON prt.request_type_id=requests.request_type_id')
-      .where(['prt.pipeline_id=?', pipeline.id])
-      .readonly(false)
-  }
 
   scope :for_pooling_of, ->(plate) {
     submission_ids = plate.all_submission_ids
@@ -384,17 +384,18 @@ class Request < ApplicationRecord
     []
   end
 
-  # The options that are required for creation.  In other words, the truly required options that must
-  # be filled in and cannot be changed if the asset we're creating is used downstream.  For example,
-  # a library tube definitely has to have fragment_size_required_from, fragment_size_required_to and
-  # library_type and these cannot be changed once the library has been made.
   #
-  #--
-  # Side note: really this information should be stored on the asset itself, which suggests there is
-  # a discrepancy in our model somewhere.
-  #++
-  def request_options_for_creation
-    {}
+  # Passed into cloned aliquots at the beginning of a pipeline to set
+  # appropriate options
+  #
+  #
+  # @return [Hash] A hash of aliquot attributes
+  #
+  def aliquot_attributes
+    {
+      study_id: initial_study_id,
+      project_id: initial_project_id
+    }
   end
 
   def get_value(request_information_type)

@@ -184,6 +184,8 @@ en:
         faculty_sponsor_id: "Faculty sponsor"
         faculty_sponsor: "Faculty sponsor"
         study_description: "Study description"
+      primer_panel:
+        snp_count: SNP count
   activemodel:
     errors:
       messages:

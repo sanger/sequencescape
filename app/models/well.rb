@@ -46,7 +46,6 @@ class Well < Receptacle
 
   has_many :customer_requests, class_name: 'CustomerRequest', foreign_key: :asset_id
   has_many :outer_requests, through: :stock_wells, source: :customer_requests
-  has_many :submissions, ->() { distinct }, through: :transfer_requests_as_target
 
   def outer_request(submission_id)
     outer_requests.order(id: :desc).find_by(submission_id: submission_id)
@@ -77,21 +76,24 @@ class Well < Receptacle
 
   scope :include_stock_wells, -> { includes(stock_wells: :requests_as_source) }
   scope :include_stock_wells_for_modification, -> {
-    includes(:stock_well_links,
-             stock_wells: {
-               requests_as_source: [
-                 :target_asset,
-                 :request_type,
-                 :billing_product,
-                 :request_metadata,
-                 :billing_items,
-                 :request_events,
-                 {
-                   initial_project: :project_metadata,
-                   submission: :orders
-                 }
-               ]
-             })
+    # Preload rather than include, as otherwise joins result
+    # in exponential expansion of the number of records loaded
+    # and you run out of memory.
+    preload(:stock_well_links,
+            stock_wells: {
+              requests_as_source: [
+                :target_asset,
+                :request_type,
+                :billing_product,
+                :request_metadata,
+                :billing_items,
+                :request_events,
+                {
+                  initial_project: :project_metadata,
+                  submission: :orders
+                }
+              ]
+            })
   }
   scope :include_map, -> { includes(:map) }
 

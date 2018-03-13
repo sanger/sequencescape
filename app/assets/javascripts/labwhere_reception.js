@@ -23,6 +23,19 @@
 
     var barcode_list = $('#barcode_list')[0]
 
+    // The swipecard scanners send a return.
+    // This stops it from submitting the form.
+    $('#labwhere_reception_user_code').bind("keydown", function(e) {
+      /* We don't take tab index into account here */
+      var ENTER = 13, TAB = 9, code;
+      code=e.charCode || e.keyCode;
+      if (code==ENTER || code==TAB) {
+        e.preventDefault();
+        $('#asset_scan').focus();
+        return false;
+      }
+    });
+
     // Update the query string automatically on changing the location field
     // Allows the user to bookmark a particular location
     $( '#labwhere_reception_location_id' ).bind('change', function() {

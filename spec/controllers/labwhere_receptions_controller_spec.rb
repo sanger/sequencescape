@@ -40,7 +40,6 @@ describe LabwhereReceptionsController do
       end
 
       it('Sets the flash') { expect(flash.notice).to eq 'Locations updated!' }
-      it { is_expected.to redirect_to('/labwhere_receptions') }
     end
 
     describe '#create' do

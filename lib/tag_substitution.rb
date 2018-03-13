@@ -59,7 +59,8 @@ class TagSubstitution
       tags_hash = {}
       tags_hash[:tag_id]  = nil if original_tag_id
       tags_hash[:tag2_id] = nil if original_tag2_id
-      Aliquot.where(id: matching_aliquots).update_all(tags_hash) if tags_hash.present?
+      # We DO NOT want to trigger validations here
+      Aliquot.where(id: matching_aliquots).update_all(tags_hash) if tags_hash.present? # rubocop:disable Rails/SkipsModelValidations
     end
 
     def substitute_tags

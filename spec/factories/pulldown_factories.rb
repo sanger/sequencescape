@@ -7,13 +7,15 @@
 # A plate that has exactly the right number of wells!
 FactoryGirl.define do
   factory(:transfer_plate, class: Plate) do
-    size 96
+    transient do
+      well_count { 3 }
+      well_locations { Map.where_plate_size(size).where_plate_shape(AssetShape.default).where(column_order: (0...well_count)) }
+    end
     plate_purpose
+    size 96
 
-    after(:create) do |plate|
-      plate.wells << Map.where_description(%w[A1 B1 C1])
-                        .where_plate_size(plate.size)
-                        .where_plate_shape(AssetShape.find_by(name: 'Standard')).map do |location|
+    after(:create) do |plate, evaluator|
+      plate.wells << evaluator.well_locations.map do |location|
         create(:tagged_well, map: location)
       end
     end
@@ -94,6 +96,12 @@ FactoryGirl.define do
     association(:source,      factory: :transfer_plate)
     association(:destination, factory: :transfer_plate)
     transfers('A1' => 'A1', 'B1' => 'B1')
+
+    factory(:full_transfer_between_plates) do
+      association(:source,      factory: :full_plate)
+      association(:destination, factory: :full_plate)
+      transfers(Hash[('A'..'H').map { |r| (1..12).map { |c| "#{r}#{c}" } }.flatten.map { |w| [w, w] }])
+    end
   end
 
   factory(:transfer_from_plate_to_tube, class: Transfer::FromPlateToTube) do
@@ -101,10 +109,6 @@ FactoryGirl.define do
     source      { |target| target.association(:transfer_plate) }
     destination { |target| target.association(:library_tube) }
     transfers(%w[A1 B1])
-
-    after(:build) do |transfer|
-      transfer.source.plate_purpose.child_relationships.create!(child: transfer.destination.purpose, transfer_request_class_name: :standard)
-    end
   end
 
   factory(:transfer_template) do
@@ -173,28 +177,16 @@ FactoryGirl.define do
 
     direction_algorithm 'TagLayout::InColumns'
     walking_algorithm   'TagLayout::WalkWellsOfPlate'
-
-    # FactoryGirl girl builds things in bits, rather than all at once, so we need to trigger the after_initialize call
-    # after the instance has been built so that the correct behaviours are installed.
-    after(:build, &:import_behaviour)
   end
 
   factory(:parent_plate_purpose, class: PlatePurpose) do
     name 'Parent plate purpose'
-
-    after(:create) do |plate_purpose|
-      plate_purpose.child_relationships.create!(child: create(:plate_purpose), transfer_request_class_name: :standard)
-    end
   end
 
   # Plate creations
   factory(:pooling_plate_purpose, class: PlatePurpose) do
     sequence(:name) { |i| "Pooling purpose #{i}" }
     stock_plate true
-    after(:create) do |plate_purpose|
-      cpp = create(:plate_purpose)
-      plate_purpose.child_relationships.create!(child: cpp, transfer_request_class_name: :initial_downstream)
-    end
   end
 
   factory(:initial_downstream_plate_purpose, class: Pulldown::InitialDownstreamPlatePurpose) do
@@ -259,7 +251,7 @@ FactoryGirl.define do
     request_type { |_target| RequestType.find_by(name: 'Pulldown ISC') || raise(StandardError, "Could not find 'Pulldown ISC' request type") }
     asset        { |target| target.association(:well_with_sample_and_plate) }
     target_asset { |target| target.association(:empty_well) }
-    request_purpose { |rp| rp.association(:request_purpose) }
+    request_purpose :standard
     after(:build) do |request|
       request.request_metadata.fragment_size_required_from = 100
       request.request_metadata.fragment_size_required_to   = 400
@@ -272,7 +264,7 @@ FactoryGirl.define do
     association(:request_type, factory: :library_request_type)
     asset        { |target| target.association(:well_with_sample_and_plate) }
     target_asset { |target| target.association(:empty_well) }
-    request_purpose { |rp| rp.association(:request_purpose) }
+    request_purpose :standard
     after(:build) do |request|
       request.request_metadata.fragment_size_required_from = 100
       request.request_metadata.fragment_size_required_to   = 400

@@ -5,23 +5,14 @@
 # Copyright (C) 2012,2013,2015 Genome Research Ltd.
 
 class Purpose < ApplicationRecord
-  self.table_name = ('plate_purposes')
-
   include Relationship::Associations
   include Uuid::Uuidable
 
-  def source_plate(asset)
-    source_purpose_id.present? ? asset.ancestor_of_purpose(source_purpose_id) : asset.stock_plate
-  end
+  self.table_name = ('plate_purposes')
 
   # There's a barcode printer type that has to be used to print the labels for this type of plate.
   belongs_to :barcode_printer_type
   belongs_to :source_purpose, class_name: 'Purpose'
-
-  def barcode_type
-    barcode_printer_type.printer_type_id
-  end
-
   # Things that are created are often in a default location!
   has_many :messenger_creators, inverse_of: :purpose
 
@@ -33,6 +24,14 @@ class Purpose < ApplicationRecord
   validates :target_type, presence: true
 
   scope :where_is_a?, ->(clazz) { where(type: [clazz, *clazz.descendants].map(&:name)) }
+
+  def source_plate(asset)
+    source_purpose_id.present? ? asset.ancestor_of_purpose(source_purpose_id) : asset.stock_plate
+  end
+
+  def barcode_type
+    barcode_printer_type.printer_type_id
+  end
 
   def target_class
     target_type.constantize

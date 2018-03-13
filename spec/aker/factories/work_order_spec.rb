@@ -1,10 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Aker::Factories::WorkOrder, type: :model, aker: true do
-  let(:params) do
-    file = File.read(File.join('spec', 'data', 'aker', 'work_order.json'))
-    JSON.parse(file).with_indifferent_access[:work_order]
-  end
+  let(:params) { build(:aker_work_order_json).with_indifferent_access }
 
   it 'is valid with aker id and materials' do
     work_order = Aker::Factories::WorkOrder.new(params)
@@ -13,12 +10,13 @@ RSpec.describe Aker::Factories::WorkOrder, type: :model, aker: true do
     expect(work_order.product_name).to eq(params[:product_name])
     expect(work_order.product_version).to eq(params[:product_version])
     expect(work_order.product_uuid).to eq(params[:product_uuid])
-    expect(work_order.proposal_id).to eq(params[:proposal_id])
-    expect(work_order.proposal_name).to eq(params[:proposal_name])
+    expect(work_order.project_uuid).to eq(params[:project_uuid])
+    expect(work_order.project_name).to eq(params[:project_name])
     expect(work_order.cost_code).to eq(params[:cost_code])
     expect(work_order.comment).to eq(params[:comment])
     expect(work_order.desired_date).to eq(params[:desired_date])
     expect(work_order.status).to eq(params[:status])
+    expect(work_order.data_release_uuid).to eq(params[:data_release_uuid])
     expect(work_order.materials.count).to eq(params[:materials].count)
   end
 
@@ -64,5 +62,21 @@ RSpec.describe Aker::Factories::WorkOrder, type: :model, aker: true do
     work_order = Aker::WorkOrder.find_by(aker_id: work_order.aker_id)
     expect(work_order).to be_present
     expect(work_order.samples.count).to eq(params[:materials].count)
+  end
+
+  it 'is not valid unless there is a data release uuid (study)' do
+    work_order = Aker::Factories::WorkOrder.new(params.except(:data_release_uuid))
+    expect(work_order).to_not be_valid
+  end
+
+  it 'is not valid unless the study exists' do
+    work_order = Aker::Factories::WorkOrder.new(params.merge(data_release_uuid: SecureRandom.uuid))
+    expect(work_order).to_not be_valid
+  end
+
+  it 'is not valid unless the study is active' do
+    study = create(:study_for_study_list_inactive)
+    work_order = Aker::Factories::WorkOrder.new(params.merge(data_release_uuid: study.uuid))
+    expect(work_order).to_not be_valid
   end
 end

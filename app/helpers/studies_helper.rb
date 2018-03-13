@@ -13,13 +13,8 @@ module StudiesHelper
     end
   end
 
-  def display_owner(study)
-    owners_for_display([study.owner].compact)
-  end
-
   def display_owners(study)
-    owners = study.roles.map { |role| role.name == 'owner' ? role.users : nil }.compact
-    owners_for_display(owners.flatten)
+    owners_for_display(study.owners)
   end
 
   private

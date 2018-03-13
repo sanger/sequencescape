@@ -15,12 +15,11 @@ class LabwhereReceptionsController < ApplicationController
     # user_barcode,location_barcode,asset_barcodes
     input = params[:labwhere_reception] || {}
 
-    lwr = LabwhereReception.new(input[:user_code], input[:location_barcode], input[:barcodes])
-    if lwr.save
-      flash[:notice] = 'Locations updated!'
+    @labwhere_reception = LabwhereReception.new(input[:user_code], input[:location_barcode], input[:barcodes])
+    if @labwhere_reception.save
+      flash.now[:notice] = 'Locations updated!'
     else
-      flash[:error] = lwr.errors.full_messages.join('; ')
+      flash.now[:error] = @labwhere_reception.errors.full_messages.join('; ')
     end
-    redirect_to labwhere_receptions_path
   end
 end

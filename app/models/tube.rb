@@ -28,10 +28,10 @@ class Tube < Receptacle
     save!
   end
 
-  has_many :submissions, ->() { distinct }, through: :transfer_requests_as_target
-
   scope :include_scanned_into_lab_event, -> { includes(:scanned_into_lab_event) }
   scope :with_purpose, ->(*purposes) { where(plate_purpose_id: purposes) }
+
+  delegate :source_purpose, to: :purpose, allow_nil: true
 
   def submission
     submissions.first
@@ -61,7 +61,7 @@ class Tube < Receptacle
 
   # TODO: change column name to account for purpose, not plate_purpose!
   belongs_to :purpose, class_name: 'Tube::Purpose', foreign_key: :plate_purpose_id
-  delegate_to_purpose(:transition_to, :created_with_request_options, :pool_id, :name_for_child_tube, :stock_plate)
+  delegate_to_purpose(:transition_to, :pool_id, :name_for_child_tube, :stock_plate)
   delegate :barcode_type, to: :purpose
 
   def name_for_label
@@ -70,10 +70,6 @@ class Tube < Receptacle
 
   def details
     purpose.try(:name) || 'Tube'
-  end
-
-  def transfer_request_class_from(source)
-    purpose.transfer_request_class_from(source.purpose)
   end
 
   def self.create_with_barcode!(*args, &block)

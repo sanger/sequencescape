@@ -7,7 +7,6 @@
 # rubocop:disable Metrics/BlockLength
 # TODO: This should probably still get refactored, but disabling this here allows us to drastically reduce the
 # maximum block size in the todo yaml.
-
 unless Rails.env.test?
   ActiveRecord::Base.transaction do
     cherrypick = RequestType.find_by(name: 'Cherrypicking for Pulldown') or raise StandardError, 'Cannot find Cherrypicking for Pulldown request type'
@@ -65,9 +64,7 @@ unless Rails.env.test?
     end
 
     IlluminaB::PlatePurposes.create_plate_purposes
-    IlluminaB::PlatePurposes.create_branches
     IlluminaHtp::PlatePurposes.create_plate_purposes
-    IlluminaHtp::PlatePurposes.create_branches
 
     Pulldown::PlatePurposes.create_purposes(Pulldown::PlatePurposes::PLATE_PURPOSE_FLOWS.last)
 
@@ -216,7 +213,7 @@ unless Rails.env.test?
       no_target_asset: false,
       order: 1,
       pooling_method: RequestType::PoolingMethod.find_by!(pooling_behaviour: 'PlateRow'),
-      request_purpose: RequestPurpose.find_by!(key: 'standard'),
+      request_purpose: :standard,
       request_class_name: 'IlluminaHtp::Requests::StdLibraryRequest',
       product_line: ProductLine.find_by!(name: 'Illumina-HTP')
     ) do |rt|

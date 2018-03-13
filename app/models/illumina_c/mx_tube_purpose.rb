@@ -5,10 +5,6 @@
 # Copyright (C) 2013,2014,2015 Genome Research Ltd.
 
 class IlluminaC::MxTubePurpose < IlluminaHtp::MxTubePurpose
-  def created_with_request_options(tube)
-    library_request(tube).try(:request_options_for_creation) || {}
-  end
-
   def stock_plate(tube)
     lt = library_request(tube)
     return lt.asset.plate if lt.present?
