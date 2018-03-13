@@ -17,6 +17,7 @@ Feature: The XML for the sequencescape API
     And the study "Study for XML" does not contain samples commercially available
     And the study "Study for XML" has samples which need x and autosome data removed
     And the study "Study for XML" has a data access group of "group1"
+    And the reference genome for study "Study for XML" is "RefGenome"
     And the study "Study for XML" has the following contacts
       | login   | role    |
       | owner   | owner   |
@@ -95,7 +96,7 @@ Feature: The XML for the sequencescape API
           </descriptor>
           <descriptor>
             <name>Reference Genome</name>
-            <value></value>
+            <value>RefGenome</value>
           </descriptor>
           <descriptor>
             <name>Study Visibility</name>

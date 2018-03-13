@@ -22,7 +22,7 @@ FactoryGirl.define do
 
   factory :spiked_buffer do
     name   { generate :asset_name }
-    sample { create :sample, name: 'phiX_for_spiked_buffers' }
+    sample { Sample.find_or_create_by!(name: 'phiX_for_spiked_buffers') }
     volume 50
   end
 end
