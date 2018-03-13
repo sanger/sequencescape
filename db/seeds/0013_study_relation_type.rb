@@ -4,5 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
-StudyRelationType.create!(name: 'sra public study', reversed_name: 'ega private study')
-StudyRelationType.create!(name: 'test', reversed_name: 'reversed test')
+unless Rails.env.test?
+  StudyRelationType.create!(name: 'sra public study', reversed_name: 'ega private study')
+  StudyRelationType.create!(name: 'test', reversed_name: 'reversed test')
+end
