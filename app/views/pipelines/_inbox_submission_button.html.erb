@@ -3,11 +3,14 @@
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2007-2011,2014,2015 Genome Research Ltd.%>
+
+<% actions ||= [["Create Batch","create_batch"], ["Cancel Requests","cancel_requests"], ["Hide from Inbox","hide_from_inbox"]] %>
+
 <div class="batch-controls">
   <div class="batch-actions">
     <div class="input-group">
     <%= label_tag('action_on_requests', 'Action to perform', style: 'display:none;') %>
-    <%= select_tag("action_on_requests", options_for_select([["Create Batch","create_batch"], ["Cancel Requests","cancel_requests"], ["Hide from Inbox","hide_from_inbox"]]), {class: 'action_on_request'}) %>
+    <%= select_tag("action_on_requests", options_for_select(actions), {class: 'action_on_request'}) %>
     <%= submit_tag "Submit", disable_with: "Please wait..." %>
     </div>
   </div>

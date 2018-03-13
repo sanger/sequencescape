@@ -50,7 +50,8 @@ class SequencingRequest < CustomerRequest
 
   def ready?
     # Reject any requests with missing or empty assets.
-    return false if asset.nil? || !asset.aliquots.exists?
+    # We use most tagged aliquot here, as its already loaded.
+    return false if asset.nil? || asset.most_tagged_aliquot.nil?
     # It's ready if I don't have any lib creation requests or if all my lib creation requests are closed and
     # at least one of them is in 'passed' status
     upstream_requests.empty? ||

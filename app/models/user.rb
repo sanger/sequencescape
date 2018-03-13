@@ -176,7 +176,8 @@ class User < ApplicationRecord
   end
 
   def lab_manager?
-    has_role? 'lab_manager'
+    return @lab_manager if instance_variable_defined?('@lab_manager')
+    @lab_manager = has_role? 'lab_manager'
   end
 
   def slf_manager?
