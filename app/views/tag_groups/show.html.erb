@@ -12,10 +12,6 @@
 </p>
 
 <%= render partial: "shared/tags_list", locals: { tag_group: @tag_group, tags: @tag_group.tags } %>
-
-
+<br>
 <script type="text/javascript">$('table tbody > tr:nth-child(even)').addClass('roweven');</script>
-<% if current_user.administrator? %>
-  <%= link_to 'Edit', edit_tag_group_path(@tag_group) %> |
-<% end %>
-<%= link_to 'Back', tag_groups_path %>
+<%= link_to 'Back to tag groups list', tag_groups_path %>

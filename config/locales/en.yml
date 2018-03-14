@@ -204,5 +204,8 @@ en:
       no: All samples
   tag_groups:
     errors:
-      invalid_oligos_found: "Please check the following oligos, they must contain only A, T, G or C characters and oligos must be separated by spaces: "
-      no_valid_oligos_found: "No correctly formatted oligos were found, please enter oligos as sequences of ATGC characters and separate oligos with spaces."
+      duplicate_oligo_found: "The following oligo was found to be present more than once in the list, please correct: "
+      invalid_oligos_found: "Oligos can contain only A, T, G or C characters and must be separated by spaces or commas, the following are invalid: "
+      no_valid_oligos_found: "No correctly formatted oligos were found, please enter oligos as sequences of ATGC characters and separate oligos with spaces or commas."
+      tag_group_form_invalid: "The tag group form object was invalid, please check oligos and tag group name."
+      failed_to_save_tag_group: "The tag group was not saved successfully."
