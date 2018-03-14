@@ -6,7 +6,7 @@
 
 <% add :about, "Administrators can customise Sequencescape from here, including data management and reporting tools." -%>
 
-<h1>User management</h1>
+<div class="page-header"><h1>User management</h1></div>
 
 <%= form_tag(filter_admin_users_url, remote: true, data: { update: "#users", throbber: '#update_loader' }, id: 'filter_form', class: 'remote-form observed') do %>
 <div class="callout_filter">

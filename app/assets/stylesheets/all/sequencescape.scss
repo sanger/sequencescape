@@ -33,9 +33,16 @@ h3.card-header-custom {
   @extend .card-header;
   font-size: 1.1rem;
 }
-
-.batch-statuses {
+.tabbed-panel {
   @extend .card;
+  header {
+    @extend .card-header;
+  }
+  ul {
+    @extend .nav;
+    @extend .nav-tabs;
+    @extend .card-header-tabs;
+  }
 }
 
 /* Formats the tubes in the layout_tubes_on_plate task */
@@ -898,34 +905,42 @@ body.yui-skin-sam ul.ui-menu {
   font-size: 12px;
 }
 
+#add-order {
+  @extend .mt-3;
+  @extend .mb-3;
+  @extend .btn;
+  @extend .btn-lg;
+  @extend .btn-block;
+  @extend .btn-primary;
+}
+
+#start-submission {
+  @extend .mt-3;
+  @extend .mb-3;
+  @extend .btn;
+  @extend .btn-lg;
+  @extend .btn-block;
+  @extend .btn-success;
+}
+
 ul#orders {
   color:#333129;
   padding: 0;
   clear: both;
   margin: 15px 0;
   list-style: none outside none;
-  -moz-transition:    all 0.3s ease-in-out 0s;
-  -webkit-transition: all 0.3s ease-in-out 0s;
-  transition:         all 0.3s ease-in-out 0s;
+  -moz-transition:    all 0.1s ease-in-out 0s;
+  -webkit-transition: all 0.1s ease-in-out 0s;
+  transition:         all 0.1s ease-in-out 0s;
 }
 
-
-/* This overly verbose rule is needed to override formtastic styling  */
-ul#orders li.order, ul#orders li.buttons {
-  margin: 15px 0;
-  color: #00498C;
-  background: #fff;
-  list-style: none outside none;
-  text-align: right;
-  position: relative;
+.save-buttons {
+  @extend .mt-3;
+  @extend .mb-3;
+  .save-order { @extend .btn-success; }
+  .cancel-order { @extend .btn-warning; }
+  .delete-order { @extend .btn-danger; }
 }
-
-ul#orders li.order .save-buttons {
-  position: absolute;
-  bottom: -20px;
-  right: 10px;
-}
-
 
 ul#orders li.completed {
   border-color: #017903;
@@ -1024,8 +1039,14 @@ div.sub-panel {
 h2.error {
   color: #920000;
 }
-div#order-template.card-success h3:after { content:' ✓'; float:right;}
-div#order-template.card-danger h3:after { content:' ❌'; float:right;}
+div#order-template.section-complete {
+  @extend .bg-success; @extend .text-white;
+  h3:after { content:' ✓'; float:right; }
+}
+div#order-template.section-error {
+  h3:after { content:' ❌'; float:right; }
+  content:' ❌'; float:right;
+}
 
 ul#orders ul.errors li {
   width: 100%;

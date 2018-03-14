@@ -33,7 +33,7 @@
   </div>
 
 <% else %>
-  <h1>Manage project: <%= @project.name %></h1>
+  <div class="page-header"><h1>Manage project: <%= @project.name %></h1></div>
   <p>You can update the billing information and approval status for a project here.</p>
   <%= render partial: "manage_single_project" %>
 <% end %>

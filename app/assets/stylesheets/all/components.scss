@@ -41,6 +41,16 @@ table.table-dense-information tbody {
 .formtastic .boolean label.ft-label { width: auto; }
 .formtastic input.btn { padding: 6px 12px; }
 
+.card-style-feature {
+  @extend .bg-primary;
+  @extend .text-white;
+}
+
+// Apply basic button formatting to all buttons
+input[type=submit] {
+  @extend .btn;
+}
+
 /* A collapsible info panel, which may contain tabulated data
  * A more semantic representation of bootstrap panels */
 section.info-panel {

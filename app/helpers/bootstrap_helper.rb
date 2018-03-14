@@ -20,7 +20,7 @@ module BootstrapHelper
   def bs_custom_panel(type, body_type, body_options, options, &block)
     title = options.delete(:title)
     options[:class] ||= String.new
-    options[:class] << " card card-#{type} mb-3"
+    options[:class] << " card card-style-#{type} mb-3"
     content_tag(:div, options) do
       out = String.new.html_safe
       out << content_tag(:h3, title, class: 'card-header-custom') unless title.nil?
