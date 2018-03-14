@@ -7,7 +7,7 @@
 <%- add :about, I18n.t("studies.about") %>
 <%- add :back_menu, I18n.t("navigation.menu.back_to_study") => study_path(@study) -%>
 
-<h1><%= @study.name %> : Samples</h1>
+<div class="page-header"><h1><%= @study.name %> : Samples</h1></div>
 <div class='subtitle'>
   Study <%= @study.id %> &middot; Created on <%= @study.created_at.to_formatted_s(:long) %> &middot; <%= @study.state.capitalize %>
 </div>

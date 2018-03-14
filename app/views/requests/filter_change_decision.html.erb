@@ -7,7 +7,7 @@
 <% add :about, "Change Decision by request." -%>
 <% add :menu, "Back to request" => request_path(@request) -%>
 
-<h1>Request <%= @request.id %></h1>
+<div class="page-header"><h1>Request <%= @request.id %></h1></div>
 
 <% if @request.finished? %>
 <div id="study">

@@ -6,7 +6,7 @@
 
 <% add :about, "This page lists the un-built submissions containing orders for a study." -%>
 
-<h1>Submissions containing orders for study: <%= @study.name %></h1>
+<div class="page-header"><h1>Submissions containing orders for study: <%= @study.name %></h1></div>
 <%= render partial: "list", locals:
   { submissions: @submissions } %>
 

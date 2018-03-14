@@ -6,7 +6,7 @@
 
 <% add :about, "You can search for studies, samples and assets here." -%>
 
-<h1>Search for <%= @query %></h1>
+<div class="page-header"><h1>Search for <%= @query %></h1></div>
 
 <%= form_tag searches_path(q: params["q"]), method: :get do -%>
   <div>

@@ -12,7 +12,7 @@
  <%= link_to "Full details", properties_study_path(@study) -%>
 </div>
 
-<h1><%= @study.name %></h1>
+<div class="page-header"><h1><%= @study.name %></h1></div>
 <div class='subtitle'>
   Study <%= @study.id %> &middot; Created on <%= @study.created_at.to_formatted_s(:long) %> &middot; <%= @study.state.capitalize %>
 </div>

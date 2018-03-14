@@ -7,7 +7,7 @@
 <% add :about, I18n.t("studies.about") -%>
 <% add :back_menu, I18n.t("navigation.menu.back_to_study") => study_path(@study) -%>
 
-<h1>Edit <%= @study.name %></h1>
+<div class="page-header"><h1>Edit <%= @study.name %></h1></div>
 
 <p>Edit your study. Required fields are marked with <%= required_marker %>.</p>
 

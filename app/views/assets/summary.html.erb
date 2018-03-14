@@ -6,7 +6,7 @@
 
 <%- add :about, "Asset summary" %>
 
-<h1>Summary of <%= h(@asset.display_name) %></h1>
+<div class="page-header"><h1>Summary of <%= h(@asset.display_name) %></h1></div>
 <div class='subtitle'>
   <%= @asset.sti_type %> <%= @asset.id %> &middot; Created on <%= @asset.created_at.to_formatted_s(:long) %>
 </div>

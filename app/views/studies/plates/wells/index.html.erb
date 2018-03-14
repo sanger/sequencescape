@@ -7,7 +7,7 @@
 <%- add :about, I18n.t("studies.about") %>
 <%- add :menu, "Back to all plates" => study_plates_path(@study) %>
 
-<h1>Wells for plate <%= @plate.id %></h1>
+<div class="page-header"><h1>Wells for plate <%= @plate.id %></h1></div>
 <h3>Number of wells: <%= @wells.size %></h3>
 
 <table width="100%" cellspacing="0" cellpadding="5">
