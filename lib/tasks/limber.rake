@@ -7,7 +7,18 @@ namespace :limber do
 
   desc 'Create the Limber cherrypick plate'
   task create_plates: :environment do
-    ['LB Cherrypick', 'scRNA Stock', 'LBR Cherrypick'].each do |name|
+    purposes = [{:name => 'LB Cherrypick',
+                 :size => 96},
+                {:name => 'scRNA Stock',
+                 :size => 96},
+                {:name => 'LBR Cherrypick',
+                 :size => 96},
+                {:name => 'scRNA-384 Stock',
+                 :size => 384}]
+
+    purposes.each do |purpose|
+      name = purpose[:name]
+      size = purpose[:size]
       # Caution: This is provided to help setting up limber development environments
       next if Purpose.where(name: name).exists?
       if Rails.env.production?
@@ -26,10 +37,10 @@ namespace :limber do
         target_type: 'Plate',
         stock_plate: true,
         default_state: 'pending',
-        barcode_printer_type_id: BarcodePrinterType.find_by(name: '96 Well Plate'),
+        barcode_printer_type_id: BarcodePrinterType.find_by(name: "96 Well Plate"),
         cherrypickable_target: true,
         cherrypick_direction: 'column',
-        size: 96,
+        size: size,
         asset_shape: AssetShape.default,
         barcode_for_tecan: 'ean13_barcode'
       )
@@ -76,6 +87,12 @@ namespace :limber do
         'scRNA',
         library_types: ['scRNA'],
         default_purpose: 'scRNA Stock'
+      ).build!
+
+      Limber::Helper::RequestTypeConstructor.new(
+        'scRNA-384',
+        library_types: ['scRNA 384'],
+        default_purpose: 'scRNA-384 Stock'
       ).build!
 
       unless RequestType.where(key: 'limber_multiplexing').exists?
@@ -134,7 +151,7 @@ namespace :limber do
           catalogue: catalogue
         ).build!
       end
-      %w[scRNA RNAA].each do |prefix|
+      %w[scRNA scRNA-384 RNAA].each do |prefix|
         catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: prefix)
         Limber::Helper::TemplateConstructor.new(
           name: prefix,
