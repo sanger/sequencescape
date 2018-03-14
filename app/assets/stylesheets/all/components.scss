@@ -84,13 +84,10 @@ section.info-panel {
 
 nav.toc {
   @extend .card;
- // @extend .card-default;
-  @extend .col-md-6;
+  @extend .col-md-2;
 
   ul {
-    @extend .nav;
-    @extend .nav-pills;
-    @extend .flex-column;
+    @extend .link-list;
   }
 }
 

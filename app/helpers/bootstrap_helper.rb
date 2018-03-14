@@ -97,8 +97,8 @@ module BootstrapHelper
   end
 
   # <div class="col-md-size form-group"></div>
-  def form_group(size = 12, &block)
-    content_tag(:div, class: "form-group col-md-#{size}", &block)
+  def form_group(&block)
+    content_tag(:div, class: "form-group row", &block)
   end
 
   def bs_column(size = 6, screen = 'md', &block)
@@ -142,29 +142,18 @@ module BootstrapHelper
   end
 
   def render_section(form, field_name, sections, field)
-    form_group do
-      fg = content_tag(:div, class: 'col-md-4') do
-        label = form.label(field_name, sections.label, sections.label_options)
-        label << content_tag(:br)
-        label << content_tag(:span, sections.edit_info, class: 'property_edit_info') if sections.edit_info
-      end
-      fg << content_tag(:div, field, class: 'col-md-5')
-      fg << content_tag(:div, class: 'col-md-3') do
-        help_text("#{sections.label} help text", field.hash) do
-          raw(sections.help)
-        end if sections.help.present?
-      end
-    end
+    label = form.label(field_name, sections.label, sections.label_options) <<
+            content_tag(:span, sections.edit_info, class: 'property_edit_info')
+    help = sections.help
+    form_collection(label, field, help)
   end
 
-  def form_collection(label, field, help = nil, friendly_label = 'Field')
+  def form_collection(label, field, help = nil)
     form_group do
-      fg = bs_column(4, 'md') { label }
-      fg << bs_column(5, 'md') { field }
-      fg << bs_column(3, 'md') do
-        help_text("#{friendly_label} help text") { raw(help) }
-      end if help
-      fg
+      bs_column(2, 'md') { label } <<
+        bs_column(10, 'md') do
+          field << help_text { raw(help) }
+        end
     end
   end
 
@@ -174,7 +163,7 @@ module BootstrapHelper
       args << {}
     end
     args.last[:class] ||= ''
-    args.last[:class] << ' form-control'
+    args.last[:class] << ' custom-select'
     select(*args)
   end
 

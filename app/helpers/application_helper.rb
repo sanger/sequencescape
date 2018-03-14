@@ -23,6 +23,12 @@ module ApplicationHelper
     end
   end
 
+  # PhantomJS is effectively an ancient browser, and struggles
+  # with bootstrap collapsible menus.
+  def phantom_js?
+    request.user_agent&.include?('PhantomJS')
+  end
+
   def display_for_setting(setting)
     display = true
     if logged_in?
@@ -257,11 +263,8 @@ module ApplicationHelper
     '&nbsp;'.html_safe
   end
 
-  def help_text(_label_text = nil, suggested_id = nil, &block)
-    content = capture(&block)
-    return if content.blank?
-    tooltip_id = "prop_#{suggested_id || content.hash}_help"
-    tooltip('?', id: tooltip_id, &block)
+  def help_text(&block)
+    content_tag(:small, class: 'form-text text-muted col',  &block)
   end
 
   # The admin email address should be stored in config.yml for the current environment

@@ -1,8 +1,6 @@
 /* This is the canonical CSS file for Sequencescape. */
 /* Please use it instead of screen.css which is deprecated. */
-a:visited {
-  color: #444488;
-}
+li a:visited { color: #444488; }
 
 // Bootstrap bug? Card headers have the wrong margins
 
@@ -986,15 +984,10 @@ ul#orders .errors li {
 
 ul#orders li.completed span.completed {
   background: #017903;
-  background: -moz-radial-gradient(top left, cover, hsl(120, 59%, 35%) 0%, hsl(120, 59%, 12%) 100%);
-  background: -webkit-radial-gradient(top left, cover, hsl(120, 59%, 35%) 0%, hsl(120, 59%, 12%) 100%);
-
   display: block;
 }
 ul#orders li.invalid span.invalid {
   background: #920000;
-  background: -moz-radial-gradient(top left, cover, #B60000 0%, #710000 100%);
-  background: -webkit-radial-gradient(top left, cover, #B60000 0%, #710000 100%);
   display: block;
 }
 

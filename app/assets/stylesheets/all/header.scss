@@ -51,7 +51,6 @@ body.production {
 }
 
 #main-nav-items {
-  @extend .collapse;
   @extend .navbar-collapse;
   @extend .justify-content-between;
 
@@ -73,5 +72,16 @@ body.production {
     select {
       @extend .custom-select;
     }
+  }
+}
+
+#main-nav-items.modern {
+  @extend .collapse;
+}
+
+#main-nav-items.legacy {
+  ul {
+    display: inline-block;
+    li { display: inline-block; }
   }
 }
