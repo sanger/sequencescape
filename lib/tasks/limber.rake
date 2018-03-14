@@ -7,14 +7,14 @@ namespace :limber do
 
   desc 'Create the Limber cherrypick plate'
   task create_plates: :environment do
-    purposes = [{:name => 'LB Cherrypick',
-                 :size => 96},
-                {:name => 'scRNA Stock',
-                 :size => 96},
-                {:name => 'LBR Cherrypick',
-                 :size => 96},
-                {:name => 'scRNA-384 Stock',
-                 :size => 384}]
+    purposes = [{ name: 'LB Cherrypick',
+                  size: 96 },
+                { name: 'scRNA Stock',
+                  size: 96 },
+                { name: 'LBR Cherrypick',
+                  size: 96 },
+                { name: 'scRNA-384 Stock',
+                  size: 384 }]
 
     purposes.each do |purpose|
       name = purpose[:name]
@@ -37,7 +37,7 @@ namespace :limber do
         target_type: 'Plate',
         stock_plate: true,
         default_state: 'pending',
-        barcode_printer_type_id: BarcodePrinterType.find_by(name: "96 Well Plate"),
+        barcode_printer_type_id: BarcodePrinterType.find_by(name: '96 Well Plate'),
         cherrypickable_target: true,
         cherrypick_direction: 'column',
         size: size,
