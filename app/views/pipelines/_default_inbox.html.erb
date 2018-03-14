@@ -19,13 +19,15 @@
     <%= render partial: "requests", locals: {requests: grouped_by_ready[true]} %>
     <%= render partial: 'inbox_submission_button' %>
   <% end -%>
-  <h3>Upcoming requests</h3>
-  <p>The following requests are still being processed through the previous pipeline. They'll appear in the section above once they are fully passed.</p>
-  <%= form_tag({controller: :batches, action: :create, id: @pipeline.id}, id: "upcomming-requests") do -%>
-    <%= render partial: 'inbox_submission_button', locals: {actions: [["Cancel Requests","cancel_requests"]]} %>
-    <%= render partial: "requests", locals: {requests: grouped_by_ready[false], table_class: 'danger'} %>
-    <%= render partial: 'inbox_submission_button', locals: {actions: [["Cancel Requests","cancel_requests"]]} %>
-  <% end -%>
+  <% if grouped_by_ready[false].present? %>
+    <h3>Upcoming requests</h3>
+    <p>The following requests are still being processed through the previous pipeline. They'll appear in the section above once they are fully passed.</p>
+    <%= form_tag({controller: :batches, action: :create, id: @pipeline.id}, id: "upcomming-requests") do -%>
+      <%= render partial: 'inbox_submission_button', locals: {actions: [["Cancel Requests","cancel_requests"]]} %>
+      <%= render partial: "requests", locals: {requests: grouped_by_ready[false], table_class: 'danger'} %>
+      <%= render partial: 'inbox_submission_button', locals: {actions: [["Cancel Requests","cancel_requests"]]} %>
+    <% end -%>
+  <% end %>
 
  <%= render partial: 'pipeline_paginate' %>
 <% else -%>
