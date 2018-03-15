@@ -90,4 +90,14 @@ FactoryGirl.define do
       well.aliquots.each { |a| a.update_attributes!(study: evaluator.study) }
     end
   end
+
+  factory :well_for_location_report, parent: :well do
+    transient do
+      study { create(:study) }
+    end
+
+    after(:create) do |well, evaluator|
+      well.aliquots << build(:tagged_aliquot, receptacle: well, study: evaluator.study)
+    end
+  end
 end
