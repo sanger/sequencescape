@@ -8,6 +8,11 @@ feature 'stamping of stock', js: true do
   let(:plate) { create :plate_with_3_wells, barcode: '1' }
   let!(:barcode_printer) { create :barcode_printer }
 
+  before do
+    create :plate_type, name: 'ABgene_0800', maximum_volume: 180
+    create :plate_type, name: 'ABgene_0765', maximum_volume: 800
+  end
+
   scenario 'stamping of stock' do
     plate.wells.first.set_current_volume(1000)
     login_user(user)

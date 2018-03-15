@@ -4,6 +4,7 @@
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
+
 require 'factory_girl'
 require 'control_request_type_creation'
 
@@ -219,13 +220,21 @@ FactoryGirl.define do
   end
 
   factory :library_completion, class: IlluminaHtp::Requests::LibraryCompletion do
-    request_type { |_target| RequestType.find_by(name: 'Illumina-B Pooled') || raise(StandardError, "Could not find 'Illumina-B Pooled' request type") }
+    request_type do
+      create(:request_type,
+             name: 'Illumina-B Pooled',
+             key: 'illumina_b_pool',
+             request_class_name: 'IlluminaHtp::Requests::LibraryCompletion',
+             for_multiplexing: true,
+             no_target_asset: false)
+    end
     asset        { |target| target.association(:well_with_sample_and_plate) }
     target_asset { |target| target.association(:empty_well) }
     request_purpose :standard
     after(:build) do |request|
       request.request_metadata.fragment_size_required_from = 300
       request.request_metadata.fragment_size_required_to   = 500
+      request.request_metadata.library_type                = create(:library_type)
     end
   end
 
@@ -374,6 +383,7 @@ FactoryGirl.define do
   end
 
   factory :strip_tube_creation_task do
+    purpose_id { create(:strip_tube_purpose, name: 'Strip Tube Purpose').id }
   end
 
   factory :plate_transfer_task do

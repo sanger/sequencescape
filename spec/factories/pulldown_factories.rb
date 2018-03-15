@@ -125,6 +125,12 @@ FactoryGirl.define do
       transfer_class_name 'Transfer::FromPlateToTubeByMultiplex'
       transfers nil
     end
+
+    factory(:between_tubes_transfer_template) do
+      name 'Transfer from tube to tube by submission'
+      transfer_class_name 'Transfer::BetweenTubesBySubmission.name'
+      transfers nil
+    end
   end
   # A tag group that works for the tag layouts
   sequence(:tag_group_for_layout_name) { |n| "Tag group #{n}" }
@@ -228,10 +234,12 @@ FactoryGirl.define do
   factory(:bait_library_supplier, class: BaitLibrary::Supplier) do
     sequence(:name) { |i| "Bait Library Type #{i}" }
   end
+
   factory(:bait_library_type) do
     sequence(:name) { |i| "Bait Library Supplier #{i}" }
     category 'custom'
   end
+
   factory(:bait_library) do
     bait_library_supplier
     bait_library_type
@@ -248,6 +256,7 @@ FactoryGirl.define do
       request.request_metadata.fragment_size_required_from = 100
       request.request_metadata.fragment_size_required_to   = 400
       request.request_metadata.bait_library                = BaitLibrary.first || create(:bait_library)
+      request.request_metadata.library_type                = create(:library_type)
     end
   end
 

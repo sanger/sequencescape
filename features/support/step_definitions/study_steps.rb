@@ -172,7 +172,7 @@ end
 
 Given(/^the reference genome for study "([^\"]+)" is "([^\"]+)"$/) do |name, value|
   study = Study.find_by!(name: name)
-  ref_genome = ReferenceGenome.find_by!(name: value)
+  ref_genome = ReferenceGenome.find_or_create_by!(name: value)
   study.study_metadata.reference_genome = ref_genome
   study.save!
 end

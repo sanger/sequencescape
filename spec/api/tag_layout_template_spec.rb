@@ -45,10 +45,7 @@ describe '/api/1/tag_layout_templates' do
     end
     let(:response_code) { 200 }
 
-    let!(:example_template) do
-      # The partial matches only match against the FIRST entry in the array.
-      TagLayoutTemplate.first
-    end
+    let!(:example_template) { create :tag_layout_template, tags: ['', ''] }
 
     let(:example_template_uuid) { example_template.uuid }
     let(:example_group) { example_template.tag_group }

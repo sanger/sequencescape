@@ -15,7 +15,6 @@ feature 'cherrypick pipeline - nano grams per micro litre', js: true do
   let(:plate2) { create :plate_with_untagged_wells, well_order: :row_order, sample_count: 2, barcode: '10' }
   let(:plate3) { create :plate_with_untagged_wells, well_order: :row_order, sample_count: 2, barcode: '5' }
   let(:plates) { [plate1, plate2, plate3] }
-  let(:submission_template) { SubmissionTemplate.find_by(name: pipeline_name) }
   let(:barcode) { 99999 }
   let(:robot) { create :robot, barcode: '444' }
   let!(:plate_template) { create :plate_template }
@@ -30,6 +29,15 @@ feature 'cherrypick pipeline - nano grams per micro litre', js: true do
         )
       end
     end
+    submission_template_hash = {
+      name: 'Cherrypick',
+      submission_class_name: 'LinearSubmission',
+      product_catalogue: 'Generic',
+      submission_parameters: { info_differential: 6,
+                               asset_input_methods: ['select an asset group', 'enter a list of sample names found on plates'],
+                               request_types: ['cherrypick'] }
+    }
+    submission_template = SubmissionSerializer.construct!(submission_template_hash)
     submission = submission_template.create_and_build_submission!(
       study: study,
       project: project,
@@ -48,6 +56,11 @@ feature 'cherrypick pipeline - nano grams per micro litre', js: true do
     robot.robot_properties.create(key: 'SCRC2', value: '2')
     robot.robot_properties.create(key: 'SCRC3', value: '3')
     robot.robot_properties.create(key: 'DEST1', value: '20')
+
+    create :plate_type, name: 'ABgene_0765', maximum_volume: 800
+    create :plate_type, name: 'ABgene_0800', maximum_volume: 180
+    create :plate_type, name: 'FluidX075', maximum_volume: 500
+    create :plate_type, name: 'FluidX03', maximum_volume: 280
   end
 
   # from 6628187_tests_for_fix_tecan_volumes.feature

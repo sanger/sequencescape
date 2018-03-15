@@ -13,6 +13,7 @@ class TagGroupsTaskTest < TaskTestBase
 
   context '#render_tag_groups_task' do
     setup do
+      create :tag_group
       @object = task_instance_for(::Tasks::TagGroupHandler) do
         attr_reader :tag_groups
       end
