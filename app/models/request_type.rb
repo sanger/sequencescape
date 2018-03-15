@@ -87,7 +87,7 @@ class RequestType < ApplicationRecord
                                }
 
   # Temporary scope: Remove once converted to enum
-  scope :standard, ->() { where(request_purpose: :standard) }
+  scope :standard, -> { where(request_purpose: :standard) }
 
   def construct_request(construct_method, attributes, klass = request_class)
     raise RequestType::DeprecatedError if deprecated?

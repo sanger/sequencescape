@@ -2,8 +2,6 @@
 
 require Rails.root.join('spec', 'support', 'mock_accession')
 
-include MockAccession
-
 FactoryGirl.define do
   factory :accession_response, class: Accession::Response do
     response { MockAccession::Response.new(400, '') }
