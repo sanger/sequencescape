@@ -52,13 +52,11 @@ class Metadata::FormBuilder < Metadata::BuilderBase
     alias_method(field, "#{field}_with_bootstrap")
   end
 
-  def select_with_bootstrap(method, choices, options = {}, html_options = {}, &block)
+  def select(method, choices, options = {}, html_options = {}, &block)
     html_options[:class] ||= ''
-    html_options[:class] << ' form-control'
-    select_without_bootstrap(method, choices, options, html_options, &block)
+    html_options[:class] << ' custom-select'
+    super(method, choices, options, html_options, &block)
   end
-  alias select_without_bootstrap select
-  alias select select_with_bootstrap
 
   # We wrap each of the following field types (text_field, select, etc) within a special
   # layout for our properties

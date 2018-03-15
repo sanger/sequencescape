@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.%>
 
-<% add :title, "This page details the current status of a study." -%>
+<% add :about, "This page details the current status of a study." -%>
 <% if @study.approved? && @study.active? -%>
   <% add :manager_option, "Create Submission" => new_submission_path(study_id: @study.id) -%>
     <% add :manager_option, "Start a Bulk Submission" => {controller: "/bulk_submissions", action: "new"} -%>
@@ -61,13 +61,13 @@
  <%= link_to "Study details", properties_study_path(@study) -%>
 </div>
 
-<h1><%= link_to @study.name, study_path(@study) %></h1>
-<div class='subtitle'>
-  Study <%= @study.id %> &middot; Created on <%= @study.created_at.to_formatted_s(:long) %> &middot; <%= @study.state.capitalize %> <br />
+<%= page_title @study.name, @study.id, titlecase: false %>
+<div class='lead'>
+  Created on <%= @study.created_at.to_formatted_s(:long) %> <%= @study.state.capitalize %> <br />
   Overall progress: <%= raw(progress_bar(@study.completed)) %>
 </div>
 
-<div class="content">
+<div class="content mt-3">
   <% if current_user.is_administrator? || current_user.is_manager?(@study) %>
     <% unless @study.approved? -%>
       <%= display_user_guide(I18n.t('studies.status.not_approved')) %>
@@ -80,10 +80,9 @@
       <% if @study.samples.empty? -%>
         <%= display_user_guide(I18n.t('studies.samples.no_samples_registered'), study_sample_registration_index_path(@study)) %>
       <% else -%>
-        <% if (! @submissions.empty?) || (@study.requests.count > 0) -%>
+        <% if (@submissions.exists?) || (@study.requests.count > 0) -%>
           <%= render partial: "submission_warning" %>
           <%= render partial: "study_summary", locals: { request_types: @standard_request_types } %>
-          <br />
           <%= render partial: "items", locals: {summary: @summary} %>
         <% else -%>
           <% if @study.active? %>
@@ -97,7 +96,6 @@
   <% else %>
     <%= render partial: "submission_warning" %>
     <%= render partial: "study_summary", locals: { request_types: @standard_request_types } %>
-    <br />
     <%= render partial: "items", locals: {summary: @summary} %>
   <% end -%>
 </div>

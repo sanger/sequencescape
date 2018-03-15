@@ -4,13 +4,18 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2014,2015 Genome Research Ltd.%>
 
-<br />
-
 <% actions ||= [["Create Batch","create_batch"], ["Cancel Requests","cancel_requests"], ["Hide from Inbox","hide_from_inbox"]] %>
 
-<%= button_tag "Select all", type: "button", name: "select", class: "select-all-behaviour" %>
-<%= button_tag "Deselect all", type: "button", name: "unselect", class: "deselect-all-behaviour" %>
-<br> <br>
-<%= label_tag('action_on_requests', 'Action to perform', style: 'display:none;') %>
-<%= select_tag("action_on_requests", options_for_select(actions), {class: 'action_on_request'}) %>
-<%= submit_tag "Submit", disable_with: "Please wait..." %>
+<div class="batch-controls">
+  <div class="batch-actions">
+    <div class="input-group">
+    <%= label_tag('action_on_requests', 'Action to perform', style: 'display:none;') %>
+    <%= select_tag("action_on_requests", options_for_select(actions), {class: 'action_on_request'}) %>
+    <%= submit_tag "Submit", disable_with: "Please wait..." %>
+    </div>
+  </div>
+  <div class="select-deselect" role="group" aria-label="Select/Deselect">
+    <%= button_tag "Select all", type: "button", name: "select", class: "select-all-behaviour" %>
+    <%= button_tag "Deselect all", type: "button", name: "unselect", class: "deselect-all-behaviour" %>
+  </div>
+</div>

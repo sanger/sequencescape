@@ -21,27 +21,27 @@
   form.label(:study_owner_id, 'Study owner name' ),
   select_tag("study_owner_id",
     options_from_collection_for_select(User.owners, :id, :name, study.owner.try(:id)||params[:study_owner_id].to_i ),
-    prompt: 'Select an owner...', class: 'form-control select2'
+    prompt: 'Select an owner...', class: 'custom-select select2'
   )
 ) %>
 
 <% unless creation %>
   <div class="row">
-    <div class="item col-md-4"><%= form.label("Related studies:") %></div>
-    <div class="item col-md-5"><%= link_to "edit", related_studies_study_path(study)%></div>
+    <div class="item col"><%= form.label("Related studies:") %></div>
+    <div class="item col"><%= link_to "edit", related_studies_study_path(study)%></div>
   </div>
 <% end %>
 
 <%= fields_for(study) do |form| %>
   <%= form.fields_for(:study_metadata, builder: Metadata::FormBuilder) do |metadata_fields| %>
-    <%= metadata_fields.select_by_association(:reference_genome, {}, {class: 'select2'}) %>
+    <%= metadata_fields.select_by_association(:reference_genome, {}, {class: 'custom-select select2'}) %>
   <% end %>
 <% end %>
 
 <h3>Properties</h3>
 <%= render partial: 'shared/metadata/edit/study', locals: { study: study } %>
 
-<div class="col-md-offset-4">
-  <%= form.submit class: 'btn btn-success' %> or
+<div class="offset-md-2">
+  <%= form.submit class: 'btn btn-success' %>
   <%= link_to "cancel", :back, class: 'btn btn-danger' %>
 </div>

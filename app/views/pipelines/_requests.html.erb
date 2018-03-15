@@ -4,18 +4,14 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.%>
 <% table_class ||= '' %>
-<% unless @information_types.find_by_key("read_length").nil? %>
-  <%= label_tag 'filter', 'Filter by '+@information_types.find_by_key("read_length").name %>
-  <input type="text" value="" id="filter-for-pipeline_inbox" rel="pipeline_inbox">
-<% end %>
-  <table class="sortable table table-striped table-dense-information <%= table_class %>" id="pipeline_inbox">
-    <thead>
-      <%= render partial: 'requests_header' %>
-    </thead>
-    <tbody>
-      <%= render partial: 'request', collection: requests -%>
-    </tbody>
-  </table>
+<table class="sortable table table-striped table-dense-information <%= table_class %>" id="pipeline_inbox">
+  <thead>
+    <%= render partial: 'requests_header' %>
+  </thead>
+  <tbody>
+    <%= render partial: 'request', collection: requests -%>
+  </tbody>
+</table>
 
 
 <%= javascript_include_tag 'pipeline.js' %>

@@ -13,14 +13,12 @@ module ApplicationHelper
     l = Informatics::Support::Options.collect(link)
     case type
     when :menu
-      @menu = Informatics::View::Menu::List.new unless @menu
+      @menu ||= Informatics::View::Menu::List.new
       @menu = add_link(@menu, l, o, options)
     when :back_menu
-      @back_menu = Informatics::View::Menu::List.new unless @back_menu
+      @back_menu ||= Informatics::View::Menu::List.new
       @back_menu.add_item text: l.first_key, link: l.first_value
-    when :about # Replaces :title
-      @about = link
-    when :title # This option is deprecated in favour of :about as that is how it was getting used
+    when :about, :title # Replaces :title
       @about = link
     when :lab_option
       @lab_menu = add_link(@lab_menu, l, o, options)

@@ -30,6 +30,7 @@ class Studies::InformationController < ApplicationController
     @summary = @basic_tabs.index(@default_tab_label) if params[:summary].nil?
 
     @submissions = @study.submissions
+    @awaiting_submissions = @study.submissions.where.not(state: 'ready')
 
     # We need to propagate the extra_parameters - as page - to the summary partial
     @extra_params = params.dup
