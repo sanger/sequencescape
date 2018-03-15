@@ -20,6 +20,7 @@ And I have a "full" authorised user with the key "cucumber"
     And a study "Testing the API" is pending
     And the UUID for the study "Testing the API" is "00000000-1111-2222-3333-444444444444"
     And the faculty sponsor for study "Testing the API" is "John Smith"
+    And the reference genome for study "Testing the API" is "RefGenome"
 
     When I GET the API path "/00000000-1111-2222-3333-444444444444"
     Then the HTTP response should be "200 OK"
@@ -52,7 +53,7 @@ And I have a "full" authorised user with the key "cucumber"
           "commercially_available": "No",
           "data_release_sort_of_study": "genomic sequencing",
           "data_release_strategy": "open",
-          "reference_genome": "",
+          "reference_genome": "RefGenome",
 
           "samples": {
             "actions": {

@@ -35,18 +35,13 @@ module IlluminaB::PlatePurposes
   STOCK_PLATE_PURPOSE = 'ILB_STD_INPUT'
 
   # Don't have ILllumina B QC plates at the momnet...
-  PLATE_PURPOSE_LEADING_TO_QC_PLATES = [
-  ]
+  PLATE_PURPOSE_LEADING_TO_QC_PLATES = []
 
   STOCK_PLATE_PURPOSE_TO_OUTER_REQUEST = {
     'ILB_STD_INPUT' => 'illumina_b_std'
   }
 
   OUTPUT_PLATE_PURPOSES = []
-
-  PLATE_PURPOSES_TO_REQUEST_CLASS_NAMES = [
-    ['ILB_STD_INPUT',  'ILB_STD_COVARIS', :initial]
-  ]
 
   PLATE_PURPOSE_TYPE = {
     'ILB_STD_INPUT'   => PlatePurpose::Input,

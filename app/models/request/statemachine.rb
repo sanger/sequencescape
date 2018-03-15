@@ -37,18 +37,6 @@ module Request::Statemachine
       # as we still need the state machine on the parent class.
       AASM::StateMachineStore.register(self, true)
     end
-
-    # Determines the most likely event that should be fired when transitioning between the two states.  If there is
-    # only one option then that is what is returned, otherwise an exception is raised.
-    def suggested_transition_between(current, target)
-      aasm.state_machine.events.select do |_name, event|
-        event.transitions_from_state(current.to_sym).any? do |transition|
-          transition.to == target.to_sym
-        end
-      end.tap do |events|
-        raise StandardError, "No obvious transition from #{current.inspect} to #{target.inspect}" unless events.size == 1
-      end.first.first
-    end
   end
 
   def self.included(base)
@@ -137,18 +125,18 @@ module Request::Statemachine
         end
       end
 
-     scope :for_state, ->(state) { where(state: state) }
+      scope :for_state, ->(state) { where(state: state) }
 
-     scope :completed,        -> { where(state: COMPLETED_STATE) }
+      scope :completed,        -> { where(state: COMPLETED_STATE) }
 
-     scope :pipeline_pending, -> { where(state: 'pending') } #  we don't want the blocked one here }
-     scope :pending,          -> { where(state: ['pending', 'blocked']) } # block is a kind of substate of pending }
+      scope :pipeline_pending, -> { where(state: 'pending') } #  we don't want the blocked one here }
+      scope :pending,          -> { where(state: ['pending', 'blocked']) } # block is a kind of substate of pending }
 
-     scope :started,          -> { where(state: 'started') }
-     scope :cancelled,        -> { where(state: 'cancelled') }
+      scope :started,          -> { where(state: 'started') }
+      scope :cancelled,        -> { where(state: 'cancelled') }
 
-     scope :opened,           -> { where(state: OPENED_STATE) }
-     scope :closed,           -> { where(state: ['passed', 'failed', 'cancelled']) }
+      scope :opened,           -> { where(state: OPENED_STATE) }
+      scope :closed,           -> { where(state: ['passed', 'failed', 'cancelled']) }
     end
   end
 
@@ -231,6 +219,16 @@ module Request::Statemachine
   end
 
   def transition_to(target_state)
-    send("#{self.class.suggested_transition_between(state, target_state)}!")
+    aasm.fire!(suggested_transition_to(target_state))
+  end
+
+  private
+
+  # Determines the most likely event that should be fired when transitioning between the two states.  If there is
+  # only one option then that is what is returned, otherwise an exception is raised.
+  def suggested_transition_to(target)
+    valid_events = aasm.events(permitted: true).select { |e| e.transitions_to_state?(target.to_sym) }
+    raise StandardError, "No obvious transition from #{current.inspect} to #{target.inspect}" unless valid_events.size == 1
+    valid_events.first.name
   end
 end

@@ -53,8 +53,8 @@ Then /^I should be at (.+)$/ do |path|
 end
 
 Given /^I am editing the custom text field "([^\"]+)"$/ do |name|
- field = CustomText.find_by(identifier: name) or raise StandardError, "Cannot find custom text field #{name.inspect}"
- visit edit_admin_custom_text_path(field)
+  field = CustomText.find_by(identifier: name) or raise StandardError, "Cannot find custom text field #{name.inspect}"
+  visit edit_admin_custom_text_path(field)
 end
 
 Then /^the page should contain the following$/ do |table|

@@ -46,8 +46,6 @@
         <%# NOTE[xxx]: Kind of a hack because we're not actually building a form %>
         <%= fields_for(Sample.new) do |form| %>
           <%= form.fields_for(:sample_metadata, builder: Metadata::FormBuilder) do |metadata_fields| %>
-            <% metadata_fields.filter { |field| current_user.workflow.visible_attribute?(field) } %>
-
             <%# Fields for 'Microarray genotyping' %>
             <%= metadata_fields.header(:cohort) %>
             <%= metadata_fields.header(:gender) %>
@@ -151,7 +149,6 @@
             <%= sample_fields.fields_for(:sample_metadata, builder: Metadata::FormBuilder) do |metadata_fields| %>
               <% metadata_fields.view_for(:field, 'shared/metadata/edit_value') %>
               <% metadata_fields.locals = { index: index } %>
-              <% metadata_fields.filter { |field| current_user.workflow.visible_attribute?(field) } %>
 
               <%# Fields for 'Microarray genotyping' %>
               <%= metadata_fields.text_field(:cohort) %>

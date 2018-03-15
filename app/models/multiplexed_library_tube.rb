@@ -14,7 +14,7 @@ class MultiplexedLibraryTube < Tube
 
   # Transfer requests into a tube are direct requests where the tube is the target.
   def transfer_requests
-    requests_as_target.where_is_a?(TransferRequest)
+    transfer_requests_as_target
   end
 
   # You can do sequencing with this asset type, even though the request types suggest otherwise!

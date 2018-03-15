@@ -12,9 +12,9 @@ class AddSubmissionTemplateNoPcrxTen < ActiveRecord::Migration
                                            submission_class_name: 'LinearSubmission',
                                            product_line: 'Illumina-C',
                                            submission_parameters: {
-          request_types: ['illumina_c_nopcr', 'illumina_b_hiseq_x_paired_end_sequencing'],
-          workflow: 'short_read_sequencing'
-        })
+                                             request_types: ['illumina_c_nopcr', 'illumina_b_hiseq_x_paired_end_sequencing'],
+                                             workflow: 'short_read_sequencing'
+                                           })
       lt = LibraryType.find_or_create_by(name: 'HiSeqX PCR free')
       rt = RequestType.find_by(key: 'illumina_c_nopcr').library_types << lt
       ['illumina_a_hiseq_x_paired_end_sequencing', 'illumina_b_hiseq_x_paired_end_sequencing'].each do |xtlb_name|

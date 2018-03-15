@@ -31,9 +31,9 @@ class Accessionable::Policy < Accessionable::Base
       xml.POLICY(alias: self.alias,
                  accession: accession_number,
                  center_name: center_name) {
-      xml.TITLE title
-      xml.DAC_REF(accession: dac_accession_number)
-      xml.POLICY_FILE policy_url
+        xml.TITLE title
+        xml.DAC_REF(accession: dac_accession_number)
+        xml.POLICY_FILE policy_url
       }
     }
     xml.target!

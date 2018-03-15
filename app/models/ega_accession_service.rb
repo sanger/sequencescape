@@ -5,8 +5,8 @@
 # Copyright (C) 2007-2011,2012,2013,2015,2016 Genome Research Ltd.
 
 class EgaAccessionService < AccessionService
-   self.priority = 2
-   self.operational = true
+  self.priority = 2
+  self.operational = true
 
   def provider
     :EGA

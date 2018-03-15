@@ -28,7 +28,7 @@ class SessionsController < ApplicationController
       redirect_back_or_default(controller: :studies)
     else
       if params
-        flash.now[:notice] = "Your log in details don't match our records. Please try again."
+        flash.now[:error] = "Your log in details don't match our records. Please try again."
       end
     end
   end

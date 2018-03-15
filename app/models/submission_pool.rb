@@ -13,25 +13,25 @@ class SubmissionPool < ApplicationRecord
           # Rails 4 takes scopes as second argument, we can probably also tidy up and remove the counter_sql
           # as it is the :group by seems to throw rails, and distinct will throw off out count.
           has_many :submission_pools, ->() { select('submissions.*, requests.id AS outer_request_id').group('submissions.id').uniq },
-            through: :well_requests_as_target do
+                   through: :well_requests_as_target do
 
-              def count(*args)
-                # Horrid hack due to the behaviour of count with a group_by
-                # We can't use uniq alone, as the outer_request_id makes
-                # the vairous rows unique.
-                s = super
-                return s if s.is_a?(Numeric)
-                s.length
-              end
+            def count(*args)
+              # Horrid hack due to the behaviour of count with a group_by
+              # We can't use uniq alone, as the outer_request_id makes
+              # the vairous rows unique.
+              s = super
+              return s if s.is_a?(Numeric)
+              s.length
+            end
 
-              def size(*args)
-                # Horrid hack due to the behaviour of count with a group_by
-                # We can't use uniq alone, as the outer_request_id makes
-                # the vairous rows unique.
-                s = super
-                return s if s.is_a?(Numeric)
-                s.length
-              end
+            def size(*args)
+              # Horrid hack due to the behaviour of count with a group_by
+              # We can't use uniq alone, as the outer_request_id makes
+              # the vairous rows unique.
+              s = super
+              return s if s.is_a?(Numeric)
+              s.length
+            end
           end
 
           def submission_pools
@@ -54,39 +54,37 @@ class SubmissionPool < ApplicationRecord
   scope :for_plate, ->(plate) {
     stock_plate = plate.stock_plate
 
-    return where('false') if stock_plate.nil?
+    return none if stock_plate.nil?
 
     select('submissions.*, MIN(our.id) AS outer_request_id')
       .joins([
         'LEFT JOIN requests AS our ON our.submission_id = submissions.id',
         'LEFT JOIN container_associations as spw ON spw.content_id = our.asset_id'
       ])
-      .where([
-        'spw.container_id =? AND our.sti_type NOT IN (?) AND our.state IN (?)',
-        stock_plate.id,
-        [TransferRequest, *TransferRequest.descendants].map(&:name),
-        Request::Statemachine::ACTIVE
-      ])
+      .where(
+        spw: { container_id: stock_plate.id },
+        our: { state: Request::Statemachine::ACTIVE }
+      )
       .group('submissions.id')
   } do
 
-      def count(*_args)
-        # Horrid hack due to the behaviour of count with a group_by
-        # We can't use uniq alone, as the outer_request_id makes
-        # the vairous rows unique.
-        s = super(:id)
-        return s if s.is_a?(Numeric)
-        s.length
-      end
+    def count(*_args)
+      # Horrid hack due to the behaviour of count with a group_by
+      # We can't use uniq alone, as the outer_request_id makes
+      # the vairous rows unique.
+      s = super(:id)
+      return s if s.is_a?(Numeric)
+      s.length
+    end
 
-      def size(*args)
-        # Horrid hack due to the behaviour of count with a group_by
-        # We can't use uniq alone, as the outer_request_id makes
-        # the vairous rows unique.
-        s = super
-        return s if s.is_a?(Numeric)
-        s.length
-      end
+    def size(*args)
+      # Horrid hack due to the behaviour of count with a group_by
+      # We can't use uniq alone, as the outer_request_id makes
+      # the vairous rows unique.
+      s = super
+      return s if s.is_a?(Numeric)
+      s.length
+    end
   end
 
   def plates_in_submission

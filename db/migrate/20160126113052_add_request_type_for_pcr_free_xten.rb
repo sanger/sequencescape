@@ -4,6 +4,10 @@
 # authorship of this file.
 # Copyright (C) 2016 Genome Research Ltd.
 class AddRequestTypeForPcrFreeXten < ActiveRecord::Migration
+  class SubmissionWorkflow < ApplicationRecord
+    self.table_name = 'submission_workflows'
+  end
+
   def self.up
     ActiveRecord::Base.transaction do |_t|
       rt = RequestType.create!(
@@ -18,11 +22,11 @@ class AddRequestTypeForPcrFreeXten < ActiveRecord::Migration
         no_target_asset: false,
         order: 1,
         pooling_method: RequestType::PoolingMethod.find_by!(pooling_behaviour: 'PlateRow'),
-        request_purpose: RequestPurpose.find_by!(key: 'standard'),
+        request_purpose: :standard,
         request_class_name: 'IlluminaHtp::Requests::StdLibraryRequest',
-        workflow: Submission::Workflow.find_by!(key: 'short_read_sequencing'),
+        workflow_id: SubmissionWorkflow.find_by!(key: 'short_read_sequencing').id,
         product_line: ProductLine.find_by!(name: 'Illumina-HTP')
-        )
+      )
 
       rt.acceptable_plate_purposes << Purpose.find_by!(name: 'PF Cherrypicked')
 
@@ -37,7 +41,8 @@ class AddRequestTypeForPcrFreeXten < ActiveRecord::Migration
       %w(
         htp_pcr_free_lib
         illumina_htp_strip_tube_creation
-        illumina_b_hiseq_x_paired_end_sequencing illumina_a_hiseq_x_paired_end_sequencing illumina_b_hiseq_x_paired_end_sequencing).each do |xtlb_name|
+        illumina_b_hiseq_x_paired_end_sequencing illumina_a_hiseq_x_paired_end_sequencing illumina_b_hiseq_x_paired_end_sequencing
+      ).each do |xtlb_name|
         RequestType.find_by(key: xtlb_name).library_types << lt
       end
 
@@ -46,12 +51,13 @@ class AddRequestTypeForPcrFreeXten < ActiveRecord::Migration
                                            product_line: 'Illumina-HTP',
                                            product_catalogue: 'PFHSqX',
                                            submission_parameters: {
-          request_types: [
-            'htp_pcr_free_lib',
-            'illumina_htp_strip_tube_creation',
-            'illumina_b_hiseq_x_paired_end_sequencing'],
-          workflow: 'short_read_sequencing'
-        })
+                                             request_types: [
+                                               'htp_pcr_free_lib',
+                                               'illumina_htp_strip_tube_creation',
+                                               'illumina_b_hiseq_x_paired_end_sequencing'
+                                             ],
+                                             workflow: 'short_read_sequencing'
+                                           })
     end
   end
 

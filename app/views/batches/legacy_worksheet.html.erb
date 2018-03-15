@@ -1,0 +1,35 @@
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.%>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <%= stylesheet_link_tag "print" %>
+  <%= stylesheet_link_tag "print",media: "print" %>
+  <title>Batch <%= @batch.id %></title>
+</head>
+<body>
+
+ <div id="header">
+      <div class="page-header"><h1>Batch <%= @batch.id %></h1></div>
+      <div id="batchbarcode">
+        <img src='<%= "#{configatron.barcode_images_url}/barcode_images/ean13/0#{Barcode.calculate_barcode('BA',@batch.id)}" %>'/>
+      </div>
+  </div>
+
+<div>
+  <p>This batch belongs to a legacy pipeline. Unfortunately it is no longer possible to generate a worksheet. Please contact PSD if you need assistance.</p>
+</div>
+
+  <div id="footer">Created: <%= @batch.updated_at.strftime("%I:%M %p on %A %d %B, %Y") %> for <%= @batch.user.login if @batch.user %> -
+  Printed: <%= Time.now.strftime("%I:%M %p on %A %d %B, %Y") %> for <%= current_user.login if current_user %></div>
+  <script language="javascript">
+     window.print();
+  </script>
+</body>
+</html>

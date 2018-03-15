@@ -37,7 +37,7 @@ Then /^the transfers from (the plate .+) to (the plate .+) should be:$/ do |sour
 
     source_well      = source.wells.located_at(source_well_location).first           or raise StandardError, "Plate #{source.id} does not have well #{source_well_location.inspect}"
     destination_well = destination.wells.located_at(destination_well_location).first or raise StandardError, "Plate #{destination.id} does not have well #{destination_well_location.inspect}"
-    assert_not_nil(TransferRequest.between(source_well, destination_well).first, "No transfer between #{source_well_location.inspect} and #{destination_well_location.inspect}")
+    assert_not_nil(TransferRequest.find_by(asset_id: source_well, target_asset_id: destination_well), "No transfer between #{source_well_location.inspect} and #{destination_well_location.inspect}")
   end
 end
 
@@ -45,8 +45,8 @@ Given /^a transfer plate exists with ID (\d+)$/ do |id|
   FactoryGirl.create(:transfer_plate, id: id)
 end
 
-Given /^a (source|destination) transfer plate called "([^\"]+)" exists$/ do |type, name|
-  FactoryGirl.create("#{type}_transfer_plate", name: name)
+Given /^a transfer plate called "([^\"]+)" exists$/ do |name|
+  FactoryGirl.create(:transfer_plate, name: name)
 end
 
 Given /^the plate "(.*?)" has additional wells$/ do |name|
@@ -58,9 +58,9 @@ Given /^the plate "(.*?)" has additional wells$/ do |name|
   end
 end
 
-Given /^a destination transfer plate called "([^\"]+)" exists as a child of "([^\"]+)"$/ do |name, parent|
+Given /^a transfer plate called "([^\"]+)" exists as a child of "([^\"]+)"$/ do |name, parent|
   parent_plate = Plate.find_by(name: parent) or raise "Cannot find parent plate #{parent.inspect}"
-  AssetLink.create!(ancestor: parent_plate, descendant: FactoryGirl.create(:destination_transfer_plate, name: name))
+  AssetLink.create!(ancestor: parent_plate, descendant: FactoryGirl.create(:transfer_plate, name: name))
 end
 
 Given /^the "([^\"]+)" transfer template has been used between "([^\"]+)" and "([^\"]+)"$/ do |template_name, source_name, destination_name|
@@ -71,10 +71,10 @@ Given /^the "([^\"]+)" transfer template has been used between "([^\"]+)" and "(
 end
 
 def assert_request_state(state, targets, direction, request_class)
-  association = (direction == 'to') ? :requests_as_target : :requests_as_source
+  association = (direction == 'to') ? :target_asset_id : :asset_id
   assert_equal(
     [state],
-    Array(targets).map(&association).flatten.select { |r| r.is_a?(request_class) }.map(&:state).uniq,
+    request_class.where(association => targets).pluck(:state).uniq,
     "Some #{request_class.name} requests are in the wrong state"
   )
 end
@@ -135,11 +135,4 @@ end
 Given /^(the plate .+) is a "([^\"]+)"$/ do |plate, name|
   plate_purpose = PlatePurpose.find_by(name: name) or raise StandardError, "Cannot find the plate purpose #{name.inspect}"
   plate.update_attributes!(plate_purpose: plate_purpose)
-end
-
-Given /^transfers between "([^\"]+)" and "([^\"]+)" plates are done by "([^\"]+)" requests$/ do |source, destination, typename|
-  source_plate_purpose      = PlatePurpose.find_by(name: source)      or raise StandardError, "Cannot find the plate purpose #{source.inspect}"
-  destination_plate_purpose = PlatePurpose.find_by(name: destination) or raise StandardError, "Cannot find the plate purpose #{destination.inspect}"
-  request_type              = RequestType.find_by(name: typename)     or raise StandardError, "Cannot find request type #{typename.inspect}"
-  source_plate_purpose.child_relationships.create!(child: destination_plate_purpose, transfer_request_type: request_type)
 end

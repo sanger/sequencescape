@@ -6,11 +6,11 @@
 
 class AdjustRequestTypeAllocationToPipelines < ActiveRecord::Migration
   def self.all_keys
-     %w(miseq_sequencing illumina_c_miseq_sequencing illumina_a_miseq_sequencing illumina_b_miseq_sequencing qc_miseq_sequencing)
+    %w(miseq_sequencing illumina_c_miseq_sequencing illumina_a_miseq_sequencing illumina_b_miseq_sequencing qc_miseq_sequencing)
   end
 
   def self.qc_keys
-     ['qc_miseq_sequencing']
+    ['qc_miseq_sequencing']
   end
 
   def self.standard_keys

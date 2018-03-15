@@ -15,7 +15,7 @@
 <% add :menu, "&nbsp;" => '' -%>
 <% add :menu, "Back to projects" => projects_path -%>
 
-<h1><%=h @project.name %></h1>
+<div class="page-header"><h1><%=h @project.name %></h1></div>
 
 <div id="template_form_body">
   <%= render partial: "shared/metadata/show/project", locals: { project: @project } %>

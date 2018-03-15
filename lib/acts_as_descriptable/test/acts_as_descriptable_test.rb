@@ -80,8 +80,7 @@ class ActsAsDescriptableTest < Test::Unit::TestCase
   def test_active_descriptors_create
     post = ActivePost.new
     params = { 0 => { name: 'test_name', value: 'test_value' },
-               1 => { name: 'test_name1', value: 'test_value1' }
-              }
+               1 => { name: 'test_name1', value: 'test_value1' } }
     post.create_descriptors(params)
     assert_equal 2, post.descriptors.size
     descriptor = post.descriptors.first
@@ -98,12 +97,12 @@ class ActsAsDescriptableTest < Test::Unit::TestCase
   def test_active_descriptors_sort
     post = ActivePost.new
     params = {
-                5 => { name: 'test_name_e', value: 'test_value_e' },
-                4 => { name: 'test_name_d', value: 'test_value_d' },
-                3 => { name: 'test_name_c', value: 'test_value_c' },
-                2 => { name: 'test_name_b', value: 'test_value_b' },
-                1 => { name: 'test_name_a', value: 'test_value_a' },
-              }
+      5 => { name: 'test_name_e', value: 'test_value_e' },
+      4 => { name: 'test_name_d', value: 'test_value_d' },
+      3 => { name: 'test_name_c', value: 'test_value_c' },
+      2 => { name: 'test_name_b', value: 'test_value_b' },
+      1 => { name: 'test_name_a', value: 'test_value_a' },
+    }
     post.create_descriptors(params)
     assert_equal 5, post.descriptors.size
     assert_equal 'test_name_a', post.descriptors[0].name
@@ -116,14 +115,12 @@ class ActsAsDescriptableTest < Test::Unit::TestCase
   def test_active_descriptors_update
     post = ActivePost.new
     params = { 0 => { name: 'test_name', value: 'test_value' },
-               1 => { name: 'test_name1', value: 'test_value1' }
-              }
+               1 => { name: 'test_name1', value: 'test_value1' } }
     post.create_descriptors(params)
     assert_equal 2, post.descriptors.size
     params = { 0 => { name: 'another_name', value: 'another_value' },
                1 => { name: 'another_name1', value: 'another_value1' },
-               2 => { name: 'another_name2', value: 'another_value2' }
-              }
+               2 => { name: 'another_name2', value: 'another_value2' } }
     post.update_descriptors(params)
     assert_equal 3, post.descriptors.size
   end
@@ -131,8 +128,7 @@ class ActsAsDescriptableTest < Test::Unit::TestCase
   def test_active_descriptors_remove
     post = ActivePost.new
     params = { 0 => { name: 'test_name', value: 'test_value' },
-               1 => { name: 'test_name1', value: 'test_value1' }
-              }
+               1 => { name: 'test_name1', value: 'test_value1' } }
     post.create_descriptors(params)
     post.save
     assert_equal 2, post.descriptors.size

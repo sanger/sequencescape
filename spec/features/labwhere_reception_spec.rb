@@ -8,7 +8,6 @@ feature 'Labwhere reception', js: true do
     login_user user
     visit labwhere_receptions_path
     expect(page).to have_content 'Labwhere Reception'
-    select('Library creation freezer', from: 'Sequencescape location')
     fill_in('User barcode or swipecard', with: 12345)
     click_on 'Update locations'
     expect(page).to have_content "Asset barcodes can't be blank"

@@ -11,7 +11,12 @@ module Sanger
         def should_default_everything_but(properties_type, *keys)
           properties_type.defaults.reject { |k, _v| keys.include?(k) }.each do |name, value|
             should "leave the value of #{name} as default" do
-              assert_equal(value, subject.send(name))
+              subject_property_value = subject.send(name)
+              if value.nil?
+                assert_nil(subject_property_value)
+              else
+                assert_equal(value, subject_property_value)
+              end
             end
           end
         end

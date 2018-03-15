@@ -8,10 +8,10 @@ class Event::ScannedIntoLabEvent < Event
   after_create :set_qc_state_pending, unless: :test?
   alias_method :asset, :eventful
 
-  def self.create_for_asset!(asset, location)
+  def self.create_for_asset!(asset, location_barcode)
     create!(
       eventful: asset,
-      message: "Scanned into #{location.name}",
+      message: "Scanned into #{location_barcode}",
       content: Date.today.to_s,
       family: 'scanned_into_lab'
     )

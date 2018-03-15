@@ -152,7 +152,7 @@ module Presenters
     end
 
     def plate_purpose
-      parent.purpose.name
+      parent.purpose&.name
     end
 
     def pick_to

@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.%>
 
-<% add :title, "Pipelines" -%>
+
 <% add :menu, "Create Plate Barcodes" => new_plate_path -%>
 <% if current_user.slf_manager? || current_user.slf_gel?|| current_user.manager_or_administrator? %>
   <% add :menu, "Sample Management" => sample_logistics_path -%>
@@ -15,13 +15,11 @@
 
 <%= page_title "Pipelines", "Available pipelines" %>
 
-<div class="col-md-6">
+<div class="card-columns">
+  <% if current_user.pipelines.active.present? %>
+    <%= render partial: 'pipelines', locals: { title: 'Your Most Recent', pipelines: current_user.pipelines.active, style: 'feature' } %>
+  <% end %>
   <% @grouping.each do |group_name, pipelines| %>
-    <%= render partial: 'pipelines', locals: { title: group_name, pipelines: pipelines, style: 'info' } %>
+    <%= render partial: 'pipelines', locals: { title: group_name, pipelines: pipelines, style: 'standard' } %>
   <% end %>
 </div>
-<% if current_user.pipelines.active.present? %>
-  <div class="col-md-6">
-    <%= render partial: 'pipelines', locals: { title: 'Your Most Recent', pipelines: current_user.pipelines.active, style: 'success' } %>
-  </div>
-<% end %>

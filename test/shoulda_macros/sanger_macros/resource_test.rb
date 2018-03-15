@@ -3,7 +3,7 @@
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
-
+# rubocop:disable Metrics/MethodLength
 module Sanger
   module Testing
     module Controller
@@ -213,9 +213,9 @@ module Sanger
                         get :show, params: @input_params
                       end
                       should respond_with :success
-                        assert_select resource_name.to_s.pluralize do
-                          assert_select "[api_version='0.6']"
-                        end
+                      assert_select resource_name.to_s.pluralize do
+                        assert_select "[api_version='0.6']"
+                      end
                     end
                   end
                 end
@@ -256,3 +256,4 @@ module Sanger
     end
   end
 end
+# rubocop:enable Metrics/MethodLength

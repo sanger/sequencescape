@@ -4,19 +4,31 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.%>
 
-<h2>Input requests</h2>
 <%= render partial: "batch_statuses" %>
 <%= render partial: 'pipeline_limit' %>
 <% unless @requests_waiting == 0  -%>
   <%= render partial: 'pipeline_paginate' %>
   <!-- _default_inbox.html.erb -->
-  <%= form_tag({controller: :batches, action: :create, id: @pipeline.id}, id: "requests_to_batch_form") do -%>
-    <% if @pipeline.item_limit -%>
-      <input type="hidden" id="batch_item_limit" value="<%= @pipeline.item_limit %>" />
+  <% grouped_by_ready = @requests.group_by(&:ready?) %>
+  <%= panel do %>
+    <%= form_tag({controller: :batches, action: :create, id: @pipeline.id}, id: "requests_to_batch_form") do -%>
+      <% if @pipeline.item_limit -%>
+        <input type="hidden" id="batch_item_limit" value="<%= @pipeline.item_limit %>" />
+      <% end -%>
+      <%= render partial: 'inbox_submission_button' %>
+      <%= render partial: "requests", locals: {requests: grouped_by_ready[true]} %>
+      <%= render partial: 'inbox_submission_button' %>
     <% end -%>
-    <%= render partial: "requests", locals: {requests: @requests} %>
-    <%= render partial: 'inbox_submission_button' %>
-  <% end -%>
+  <% end %>
+  <%= panel do %>
+    <h3>Upcoming requests</h3>
+    <p>The following requests are still being processed through the previous pipeline. They'll appear in the section above once they are fully passed.</p>
+    <%= form_tag({controller: :batches, action: :create, id: @pipeline.id}, id: "upcomming-requests") do -%>
+      <%= render partial: 'inbox_submission_button', locals: {actions: [["Cancel Requests","cancel_requests"]]} %>
+      <%= render partial: "requests", locals: {requests: grouped_by_ready[false], table_class: 'danger'} %>
+      <%= render partial: 'inbox_submission_button', locals: {actions: [["Cancel Requests","cancel_requests"]]} %>
+    <% end -%>
+  <% end if grouped_by_ready[false].present? %>
 
  <%= render partial: 'pipeline_paginate' %>
 <% else -%>

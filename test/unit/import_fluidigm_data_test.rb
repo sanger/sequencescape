@@ -7,61 +7,61 @@
 require 'test_helper'
 require 'csv'
 class ImportFluidigmDataTest < ActiveSupport::TestCase
-    def create_fluidigm_file
-      @XY = 'M'
-      @XX = 'F'
-      @YY = 'F'
-      @NC = 'Unknown'
+  def create_fluidigm_file
+    @XY = 'M'
+    @XX = 'F'
+    @YY = 'F'
+    @NC = 'Unknown'
 
-      @file = File.open("#{Rails.root}/test/data/fluidigm.csv")
-      @fluidigm = FluidigmFile.new(@file.read)
-      @well_maps = {
-        'S06' => {
-          markers: [@XY, @XY, @XY],
-          count: 94
-        },
-        'S04' => {
-          markers: [@NC, @XX, @XX],
-          count: 92
-        },
-        'S43' => {
-          markers: [@XX, @XX, @XX],
-          count: 94
-        }
+    @file = File.open("#{Rails.root}/test/data/fluidigm.csv")
+    @fluidigm = FluidigmFile.new(@file.read)
+    @well_maps = {
+      'S06' => {
+        markers: [@XY, @XY, @XY],
+        count: 94
+      },
+      'S04' => {
+        markers: [@NC, @XX, @XX],
+        count: 92
+      },
+      'S43' => {
+        markers: [@XX, @XX, @XX],
+        count: 94
       }
-      @fluidigm
-    end
+    }
+    @fluidigm
+  end
 
-    def create_stock_plate(barcode)
-      plate_source = create :plate, name: "Stock plate #{barcode}",
-                                    size: 192,
-                                    purpose: Purpose.find_by(name: 'Stock Plate'),
-                                    barcode: barcode
-      @sample = create :sample, name: 'abc'
-            well_source = Well.create!.tap { |well| well.aliquots.create!(sample: @sample) }
-      plate_source.add_and_save_well(well_source)
-      plate_source
-    end
+  def create_stock_plate(barcode)
+    plate_source = create :plate, name: "Stock plate #{barcode}",
+                                  size: 192,
+                                  purpose: Purpose.find_by(name: 'Stock Plate'),
+                                  barcode: barcode
+    @sample = create :sample, name: 'abc'
+    well_source = Well.create!.tap { |well| well.aliquots.create!(sample: @sample) }
+    plate_source.add_and_save_well(well_source)
+    plate_source
+  end
 
-    def create_plate_with_fluidigm(barcode, fluidigm_barcode, stock_plate)
-      plate_target = create :plate,         name: "Cherrypicked #{barcode}",
-                                            size: 192,
-                                            barcode: barcode,
-                                            plate_metadata_attributes: {
-          fluidigm_barcode: fluidigm_barcode
-        }
+  def create_plate_with_fluidigm(barcode, fluidigm_barcode, stock_plate)
+    plate_target = create :plate,         name: "Cherrypicked #{barcode}",
+                                          size: 192,
+                                          barcode: barcode,
+                                          plate_metadata_attributes: {
+                                            fluidigm_barcode: fluidigm_barcode
+                                          }
 
-      well_target = Well.new
-      plate_target.add_and_save_well(well_target)
+    well_target = Well.new
+    plate_target.add_and_save_well(well_target)
 
-      RequestType.find_by!(key: 'pick_to_fluidigm').create!(state: 'passed',
-                                                            asset: stock_plate.wells.first,
-                                                            target_asset: well_target,
-                                                            request_metadata_attributes: {
-            target_purpose_id: PlatePurpose.find_by!(name: 'Fluidigm 192-24').id
-          })
-      plate_target
-    end
+    RequestType.find_by!(key: 'pick_to_fluidigm').create!(state: 'passed',
+                                                          asset: stock_plate.wells.first,
+                                                          target_asset: well_target,
+                                                          request_metadata_attributes: {
+                                                            target_purpose_id: PlatePurpose.find_by!(name: 'Fluidigm 192-24').id
+                                                          })
+    plate_target
+  end
 
   context 'With a fluidigm file' do
     setup do

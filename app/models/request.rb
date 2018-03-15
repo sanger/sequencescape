@@ -42,9 +42,7 @@ class Request < ApplicationRecord
   belongs_to :pipeline
   belongs_to :item
   belongs_to :request_type, inverse_of: :requests
-  belongs_to :workflow, class_name: 'Submission::Workflow'
   belongs_to :user
-  belongs_to :request_purpose
   belongs_to :order, inverse_of: :requests
   belongs_to :submission, inverse_of: :requests
   belongs_to :submission_pool, foreign_key: :submission_id
@@ -80,29 +78,30 @@ class Request < ApplicationRecord
   belongs_to :billing_product, class_name: 'Billing::Product'
   has_many :billing_items, class_name: 'Billing::Item'
 
+  # A request_purpose is a simple means of distinguishing WHY a request was made.
+  # cf. RequestType which defines how it will be fulfilled.
+  # Both RequestType and Request have a purpose, with the former acting as the default for
+  # the latter.
+  enum request_purpose: {
+    standard: 1,
+    internal: 2,
+    qc: 3,
+    control: 4
+  }
   # Validations
   # On create we perform a full and complete validation.
-  validates_presence_of :request_purpose, on: :create
-  # Just makes sure we don't set it to nil. Avoids the need to load request_purpose
-  # EVERY time we touch a request.
-  validates_presence_of :request_purpose_id
+  validates_presence_of :request_purpose
 
   broadcast_via_warren
 
   # Scopes
   scope :for_pipeline, ->(pipeline) {
-      joins('LEFT JOIN pipelines_request_types prt ON prt.request_type_id=requests.request_type_id')
-        .where(['prt.pipeline_id=?', pipeline.id])
-        .readonly(false)
-  }
-
-  scope :customer_requests, ->() { where(sti_type: [CustomerRequest, *CustomerRequest.descendants].map(&:name)) }
-
-  scope :for_pipeline, ->(pipeline) {
     joins('LEFT JOIN pipelines_request_types prt ON prt.request_type_id=requests.request_type_id')
       .where(['prt.pipeline_id=?', pipeline.id])
       .readonly(false)
   }
+
+  scope :customer_requests, ->() { where(sti_type: [CustomerRequest, *CustomerRequest.descendants].map(&:name)) }
 
   scope :for_pooling_of, ->(plate) {
     submission_ids = plate.all_submission_ids
@@ -121,6 +120,7 @@ class Request < ApplicationRecord
               SUM(requests.state = 'passed') > 0 AS pool_complete,
               MIN(requests.id) AS id,
               MIN(requests.sti_type) AS sti_type,
+              MIN(requests.target_asset_id) AS target_asset_id,
               MIN(requests.submission_id) AS submission_id,
               MIN(requests.request_type_id) AS request_type_id})
       .joins(add_joins + [
@@ -129,11 +129,12 @@ class Request < ApplicationRecord
         'INNER JOIN uuids ON uuids.resource_id=requests.submission_id AND uuids.resource_type="Submission"'
       ])
       .group('uuids.external_id')
-      .customer_requests
-      .where([
-        'container_associations.container_id=? AND requests.submission_id IN (?)',
-        plate.id, submission_ids
-      ])
+      .where(
+        container_associations: { container_id: plate.id },
+        requests: { submission_id: submission_ids }
+      ).where.not(
+        requests: { state: 'cancelled' }
+      )
   }
 
   scope :for_pre_cap_grouping_of, ->(plate) {
@@ -147,26 +148,25 @@ class Request < ApplicationRecord
         ]
       end
 
-      select('min(uuids.external_id) AS group_id, GROUP_CONCAT(DISTINCT pw_location.description SEPARATOR ",") AS group_into, MIN(requests.id) AS id, MIN(requests.submission_id) AS submission_id, MIN(requests.request_type_id) AS request_type_id')
-        .joins(add_joins + [
-          'INNER JOIN maps AS pw_location ON pw.map_id = pw_location.id',
-          'INNER JOIN container_associations ON container_associations.content_id=pw.id',
-          'INNER JOIN pre_capture_pool_pooled_requests ON requests.id=pre_capture_pool_pooled_requests.request_id',
-          'INNER JOIN uuids ON uuids.resource_id = pre_capture_pool_pooled_requests.pre_capture_pool_id AND uuids.resource_type="PreCapturePool"'
-        ])
-        .group('pre_capture_pool_pooled_requests.pre_capture_pool_id')
-        .customer_requests
-        .where(state: ['started', 'pending'])
-        .where([
-          'container_associations.container_id=?',
-          plate.id
-        ])
+    select('min(uuids.external_id) AS group_id, GROUP_CONCAT(DISTINCT pw_location.description SEPARATOR ",") AS group_into, MIN(requests.id) AS id, MIN(requests.submission_id) AS submission_id, MIN(requests.request_type_id) AS request_type_id')
+      .joins(add_joins + [
+        'INNER JOIN maps AS pw_location ON pw.map_id = pw_location.id',
+        'INNER JOIN container_associations ON container_associations.content_id=pw.id',
+        'INNER JOIN pre_capture_pool_pooled_requests ON requests.id=pre_capture_pool_pooled_requests.request_id',
+        'INNER JOIN uuids ON uuids.resource_id = pre_capture_pool_pooled_requests.pre_capture_pool_id AND uuids.resource_type="PreCapturePool"'
+      ])
+      .group('pre_capture_pool_pooled_requests.pre_capture_pool_id')
+      .where(state: ['started', 'pending'])
+      .where([
+        'container_associations.container_id=?',
+        plate.id
+      ])
   }
 
   scope :in_order, ->(order) { where(order_id: order) }
 
   scope :for_event_notification_by_order, ->(order) {
-    customer_requests.in_order(order).where(state: 'passed')
+    in_order(order).where(state: 'passed')
   }
 
   scope :including_samples_from_target, ->() { includes(target_asset: { aliquots: :sample }) }
@@ -182,7 +182,6 @@ class Request < ApplicationRecord
   scope :for_pacbio_sample_sheet, -> { includes([{ target_asset: :map }, :request_metadata]) }
   scope :for_billing, -> { includes([:initial_project, :request_type, { target_asset: :aliquots }]) }
 
-  scope :between, ->(source, target) { where(asset_id: source.id, target_asset_id: target.id) }
   scope :into_by_id, ->(target_ids) { where(target_asset_id: target_ids) }
 
   scope :request_type, ->(request_type) {
@@ -195,21 +194,18 @@ class Request < ApplicationRecord
 
   scope :full_inbox, -> { where(state: ['pending', 'hold']) }
 
-  scope :with_asset,  -> { where('asset_id is not null') }
+  scope :with_asset, -> { where.not(asset_id: nil) }
+  # Ensures the actual record is present
+  scope :with_present_asset, -> { includes(:asset).where.not(assets: { id: nil }) }
   scope :with_target, -> { where('target_asset_id is not null and (target_asset_id <> asset_id)') }
-  scope :join_asset,  -> { joins(:asset) }
+  scope :join_asset, -> { joins(:asset) }
   scope :with_asset_location, -> { includes(asset: :map) }
-
   scope :siblings_of, ->(request) { where(asset_id: request.asset_id).where.not(id: request.id) }
 
-  # Asset are Locatable (or at least some of them)
-  belongs_to :location_association, primary_key: :locatable_id, foreign_key: :asset_id
-  scope :located, ->(location_id) { joins(:location_association).where(['location_associations.location_id = ?', location_id]).readonly(false) }
-
   # Use container location
-  scope :holder_located, ->(location_id) {
-    joins(['INNER JOIN container_associations hl ON hl.content_id = asset_id', 'INNER JOIN location_associations ON location_associations.locatable_id = hl.container_id'])
-      .where(['location_associations.location_id = ?', location_id])
+  scope :holder_located, ->() {
+    joins('INNER JOIN container_associations hl ON hl.content_id = asset_id')
+      .where('hl.id is not null')
       .readonly(false)
   }
 
@@ -244,8 +240,8 @@ class Request < ApplicationRecord
   scope :for_submission_id, ->(id) { where(submission_id: id) }
   scope :for_asset_id, ->(id) { where(asset_id: id) }
   scope :for_study_ids, ->(ids) {
-       joins('INNER JOIN aliquots AS al ON requests.asset_id = al.receptacle_id')
-         .where(['al.study_id IN (?)', ids]).uniq
+                          joins('INNER JOIN aliquots AS al ON requests.asset_id = al.receptacle_id')
+                            .where(['al.study_id IN (?)', ids]).uniq
                         }
 
   scope :for_study_id, ->(id) { for_study_ids(id) }
@@ -280,19 +276,18 @@ class Request < ApplicationRecord
 
   scope :for_initial_study_id, ->(id) { where(initial_study_id: id) }
 
-  scope :for_workflow, ->(workflow) { joins(:workflow).where(workflow: { key: workflow }) }
   scope :for_request_types, ->(types) { joins(:request_type).where(request_types: { key: types }) }
 
   scope :for_search_query, ->(query, _with_includes) {
-     where(['id=?', query])
+                             where(['id=?', query])
                            }
 
-   scope :find_all_target_asset, ->(target_asset_id) {
-     where(['target_asset_id = ?', target_asset_id.to_s])
-   }
-   scope :for_studies, ->(*studies) {
-     where(initial_study_id: studies)
-   }
+  scope :find_all_target_asset, ->(target_asset_id) {
+    where(['target_asset_id = ?', target_asset_id.to_s])
+  }
+  scope :for_studies, ->(*studies) {
+    where(initial_study_id: studies)
+  }
 
   scope :with_assets_for_starting_requests, -> { includes([:request_metadata, :request_events, { asset: :aliquots, target_asset: :aliquots }]) }
   scope :not_failed, -> { where(['state != ?', 'failed']) }
@@ -393,17 +388,18 @@ class Request < ApplicationRecord
     []
   end
 
-  # The options that are required for creation.  In other words, the truly required options that must
-  # be filled in and cannot be changed if the asset we're creating is used downstream.  For example,
-  # a library tube definitely has to have fragment_size_required_from, fragment_size_required_to and
-  # library_type and these cannot be changed once the library has been made.
   #
-  #--
-  # Side note: really this information should be stored on the asset itself, which suggests there is
-  # a discrepancy in our model somewhere.
-  #++
-  def request_options_for_creation
-    {}
+  # Passed into cloned aliquots at the beginning of a pipeline to set
+  # appropriate options
+  #
+  #
+  # @return [Hash] A hash of aliquot attributes
+  #
+  def aliquot_attributes
+    {
+      study_id: initial_study_id,
+      project_id: initial_project_id
+    }
   end
 
   def get_value(request_information_type)

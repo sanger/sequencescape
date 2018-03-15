@@ -6,7 +6,6 @@
 
 class Lane < Receptacle
   include Api::LaneIO::Extensions
-  include LocationAssociation::Locatable
   include AliquotIndexer::Indexable
 
   LIST_REASONS_NEGATIVE = [

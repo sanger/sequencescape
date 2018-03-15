@@ -73,9 +73,9 @@ Feature: Access transfer templates through the API
     Given the transfer template called "Test transfers" exists
       And the UUID for the transfer template "Test transfers" is "00000000-1111-2222-3333-444444444444"
 
-    Given a source transfer plate called "Source plate" exists
+    Given a transfer plate called "Source plate" exists
       And the UUID for the plate "Source plate" is "11111111-2222-3333-4444-000000000001"
-      And a destination transfer plate called "Destination plate" exists
+      And a transfer plate called "Destination plate" exists
       And the UUID for the plate "Destination plate" is "11111111-2222-3333-4444-000000000002"
 
     When I make an authorised POST with the following JSON to the API path "/00000000-1111-2222-3333-444444444444":
@@ -117,10 +117,10 @@ Feature: Access transfer templates through the API
     Given the transfer template called "Test transfers" exists
       And the UUID for the transfer template "Test transfers" is "00000000-1111-2222-3333-444444444444"
 
-    Given a source transfer plate called "Source plate" exists
+    Given a transfer plate called "Source plate" exists
       And the UUID for the plate "Source plate" is "11111111-2222-3333-4444-000000000001"
       And the wells "A1-A1" on the plate "Source plate" are empty
-      And a destination transfer plate called "Destination plate" exists
+      And a transfer plate called "Destination plate" exists
       And the UUID for the plate "Destination plate" is "11111111-2222-3333-4444-000000000002"
 
     When I make an authorised POST with the following JSON to the API path "/00000000-1111-2222-3333-444444444444":
@@ -159,9 +159,9 @@ Feature: Access transfer templates through the API
     Given the pooling transfer template called "Test transfers" exists
       And the UUID for the transfer template "Test transfers" is "00000000-1111-2222-3333-444444444444"
 
-    Given a source transfer plate called "Source plate" exists
+    Given a transfer plate called "Source plate" exists
       And the UUID for the plate "Source plate" is "11111111-2222-3333-4444-000000000001"
-      And a destination transfer plate called "Destination plate" exists as a child of "Source plate"
+      And a transfer plate called "Destination plate" exists as a child of "Source plate"
       And the UUID for the plate "Destination plate" is "11111111-2222-3333-4444-000000000002"
 
     Given "A1-B1" of the plate "Source plate" are part of the same submission
@@ -204,10 +204,10 @@ Feature: Access transfer templates through the API
     Given the pooling transfer template called "Test transfers" exists
       And the UUID for the transfer template "Test transfers" is "00000000-1111-2222-3333-444444444444"
 
-    Given a source transfer plate called "Source plate" exists
+    Given a transfer plate called "Source plate" exists
       And the UUID for the plate "Source plate" is "11111111-2222-3333-4444-000000000001"
       And the wells "A1-A1" on the plate "Source plate" are empty
-      And a destination transfer plate called "Destination plate" exists as a child of "Source plate"
+      And a transfer plate called "Destination plate" exists as a child of "Source plate"
       And the UUID for the plate "Destination plate" is "11111111-2222-3333-4444-000000000002"
 
     Given "A1-B1" of the plate "Source plate" are part of the same submission
@@ -248,9 +248,9 @@ Feature: Access transfer templates through the API
     Given the transfer template called "Test transfers" exists
       And the UUID for the transfer template "Test transfers" is "00000000-1111-2222-3333-444444444444"
 
-    Given a source transfer plate called "Source plate" exists
+    Given a transfer plate called "Source plate" exists
       And the UUID for the plate "Source plate" is "11111111-2222-3333-4444-000000000001"
-      And a destination transfer plate called "Destination plate" exists
+      And a transfer plate called "Destination plate" exists
       And the UUID for the plate "Destination plate" is "11111111-2222-3333-4444-000000000002"
 
     When I make an authorised POST with the following JSON to the API path "/00000000-1111-2222-3333-444444444444/preview":
@@ -286,7 +286,7 @@ Feature: Access transfer templates through the API
     Given the multiplex transfer template called "Test transfers" exists
       And the UUID for the transfer template "Test transfers" is "00000000-1111-2222-3333-444444444444"
 
-    Given a source transfer plate called "Source plate" exists
+    Given a transfer plate called "Source plate" exists
       And the plate "Source plate" is a "ILC Lib PCR-XP"
       And the plate "Source plate" has additional wells
       And the UUID for the plate "Source plate" is "11111111-2222-3333-4444-000000000001"

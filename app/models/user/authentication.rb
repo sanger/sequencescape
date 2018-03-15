@@ -30,7 +30,6 @@ module User::Authentication
       self[attr] = ldap_profile[ldap_attr][0] if self[attr].blank?
     end
     save if changed?
-
   rescue StandardError => e
     logger.error "Profile failed for user #{login}: result code #{ldap.get_operation_result.code} message #{ldap.get_operation_result.message} - #{e}"
   end
@@ -56,14 +55,14 @@ module User::Authentication
       # TODO: - Extract LDAP specifics to configuration
       username = 'uid=' << login << ',ou=people,dc=sanger,dc=ac,dc=uk'
       ldap = Net::LDAP.new(
-          host: configatron.ldap_server,
-          port: configatron.ldap_secure_port,
-          encryption: :simple_tls,
-          auth: {
-            method: :simple,
-            username: username,
-            password: password
-          }
+        host: configatron.ldap_server,
+        port: configatron.ldap_secure_port,
+        encryption: :simple_tls,
+        auth: {
+          method: :simple,
+          username: username,
+          password: password
+        }
       )
       begin
         ldap.bind

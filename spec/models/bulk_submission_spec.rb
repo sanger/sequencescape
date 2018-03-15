@@ -23,6 +23,22 @@ describe BulkSubmission, with: :uploader do
   end
 
   context 'a simple submission' do
+    setup do
+      submission_template_hash = {
+        name: 'Illumina-A - Cherrypick for pulldown - Pulldown WGS - HiSeq Paired end sequencing',
+        submission_class_name: 'LinearSubmission',
+        product_catalogue: 'Generic',
+        superceeded_by_id: -2,
+        submission_parameters: { info_differential: 5,
+                                 request_options: { 'fragment_size_required_to' => '400',
+                                                    'fragment_size_required_from' => '100' },
+                                 request_types: %w[cherrypick_for_pulldown
+                                                   pulldown_wgs
+                                                   illumina_a_hiseq_paired_end_sequencing] }
+      }
+      SubmissionSerializer.construct!(submission_template_hash)
+    end
+
     let(:spreadsheet_filename) { '1_valid_rows.csv' }
 
     it 'is valid' do
@@ -55,6 +71,38 @@ describe BulkSubmission, with: :uploader do
         'pcr_cycles' => '5',
         'read_length' => '100',
         'library_type' => 'Standard',
+        'multiplier' => { request_type.id.to_s => 1 }
+      }
+    end
+
+    it 'is valid' do
+      expect(subject).to be_valid
+    end
+    it 'sets the expected request options' do
+      subject.process
+      expect(generated_submission.orders.first.request_options).to eq(expected_request_options)
+    end
+  end
+
+  context 'a submission with primer_panels' do
+    let(:spreadsheet_filename) { 'primer_panels.csv' }
+    let!(:primer_panel) { create :primer_panel, name: 'Test panel' }
+
+    let!(:submission_template) do
+      create :limber_wgs_submission_template,
+             name: 'primer_panel_test',
+             request_types: [request_type]
+    end
+    let(:request_type) { create(:gbs_request_type) }
+
+    let(:expected_request_options) do
+      {
+        'fragment_size_required_to' => '400',
+        'fragment_size_required_from' => '100',
+        'pcr_cycles' => '5',
+        'read_length' => '100',
+        'library_type' => 'Standard',
+        'primer_panel_name' => 'Test panel',
         'multiplier' => { request_type.id.to_s => 1 }
       }
     end

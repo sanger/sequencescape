@@ -11,7 +11,7 @@ class IlluminaC::StockPurpose < PlatePurpose
     return unless ['failed', 'cancelled'].include?(state)
     plate.wells.located_at(contents).include_requests_as_target.include_requests_as_source.each do |well|
       well.requests.each { |r| r.send(transition_from(r.state)) if r.is_a?(IlluminaC::Requests::LibraryRequest) && transition_from(r.state) }
-      well.requests_as_target.each { |r| r.transition_to('failed') if r.is_a?(TransferRequest) }
+      well.transfer_requests_as_target.each { |r| r.transition_to('failed') }
     end
   end
 

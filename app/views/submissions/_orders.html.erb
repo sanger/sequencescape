@@ -7,41 +7,36 @@
 
 <%= javascript_include_tag('submissions') %>
 
-  <div> <!-- Horrible div start
-  This div ensures that the form tag closes at the end of the panel, but that
-  We're able to persist the scope of f into the remainder of the page. It is
-  a horrible hack, and should be removed ASAP. We can probably use fields-form,
-  but I need to fix the broken-broken stuff first.
-  -->
-  <%= form_for(:submission, class: 'form-horizontal') do |f| -%>
+
+  <%= form_for(:submission, class: 'form-inline') do |f| -%>
 
     <%= panel(:info,title: 'Order Template',id: 'order-template',class: 'pane') do %>
-      <div class='form-group col-md-8'>
-         <%= f.grouped_collection_select :template_id,
+      <div class="row">
+        <div class="col form-group">
+        <%= f.label(:template_id, 'Template') %>
+        <%= f.grouped_collection_select :template_id,
           @presenter.product_lines, :last, :first, :id, :name,
           {prompt: "Please select a template..."},
           {class: 'form-control select2'}
         %>
-      </div>
-
-      <div class='form-group col-md-4 form-inline'>
-        <%= label("submission[priority]", 'Priority') %>
-        <%= select_tag(
-            "submission[priority]",
-            options_for_select(
-              Submission::Priorities.options
-            ),
-            {class: 'form-control'}
+        </div>
+        <div class="col form-group">
+        <%= f.label(:priority, 'Priority') %>
+        <%= f.select(:priority,
+            options_for_select(Submission::Priorities.options),
+            {},
+            {class: 'custom-select'}
           )%>
+        </div>
       </div>
-
-      <div id="order-parameters" >
+      <div id="order-parameters">
         <%= render partial: 'order_fields' if @presenter.submission.present? %>
       </div>
 
     <% end %>
-    </div> <!-- Horrible div end -->
+  <% end %>
 
+  <%= fields_for(:submission) do |f| %>
   <ul id="orders">
 
     <%# Render completed Orders %>
@@ -60,7 +55,6 @@
   <li id="order-controls" class="buttons">
     <%= submit_tag raw("&#10010; Add Order"),
       id: "add-order",
-      class: "btn btn-primary",
       disabled: @presenter.orders.empty?
     %>
   </li>

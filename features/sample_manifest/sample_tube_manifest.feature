@@ -33,7 +33,6 @@ Feature: Sample manifest
     And Pmb is up and running
     And I press "Create manifest and print labels"
     Then I should see "Your 5 label(s) have been sent to printer xyz"
-    Then I should see "Manifest_"
     Then I should see "Download Blank Manifest"
     Given 3 pending delayed jobs are processed
     And sample tubes are barcoded sequentially from 81
