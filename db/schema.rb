@@ -633,6 +633,22 @@ ActiveRecord::Schema.define(version: 20180219170446) do
     t.index ["request_type_id"], name: "fk_library_types_request_types_to_request_types"
   end
 
+  create_table "location_reports", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "user_id", null: false
+    t.string "name", null: false
+    t.integer "report_type", null: false
+    t.string "barcodes"
+    t.bigint "study_id"
+    t.string "plate_purpose_ids"
+    t.datetime "start_date"
+    t.datetime "end_date"
+    t.string "report_filename"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["study_id"], name: "index_location_reports_on_study_id"
+    t.index ["user_id"], name: "index_location_reports_on_user_id"
+  end
+
   create_table "lot_types", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.string "name", null: false
     t.string "template_class", null: false

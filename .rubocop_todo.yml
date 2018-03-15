@@ -232,14 +232,13 @@ Lint/UnreachableCode:
   Exclude:
     - 'lib/rails-authorization-plugin/lib/publishare/parser.rb'
 
-# Offense count: 5
+# Offense count: 4
 # Cop supports --auto-correct.
 # Configuration parameters: IgnoreEmptyBlocks, AllowUnusedKeywordArguments.
 Lint/UnusedBlockArgument:
   Exclude:
     - 'app/views/requests/pending.xml.builder'
     - 'app/views/studies/index_deprecated_xml.xml.builder'
-    - 'features/support/step_definitions/tag_layout_steps.rb'
 
 # Offense count: 10
 # Configuration parameters: ContextCreatingMethods, MethodCreatingMethods.
@@ -363,7 +362,7 @@ Lint/UselessAssignment:
 Metrics/AbcSize:
   Max: 200
 
-# Offense count: 82
+# Offense count: 109
 # Configuration parameters: CountComments, ExcludedMethods.
 Metrics/BlockLength:
   Max: 76
@@ -397,7 +396,7 @@ Metrics/ModuleLength:
 Metrics/ParameterLists:
   Max: 10
 
-# Offense count: 57
+# Offense count: 59
 Metrics/PerceivedComplexity:
   Max: 35
 
@@ -480,7 +479,7 @@ Naming/HeredocDelimiterNaming:
     - 'lib/update_user_barcode.rb'
     - 'test/controllers/projects_controller_test.rb'
 
-# Offense count: 67
+# Offense count: 68
 # Configuration parameters: NamePrefix, NamePrefixBlacklist, NameWhitelist, MethodDefinitionMacros.
 # NamePrefix: is_, has_, have_
 # NamePrefixBlacklist: is_, has_, have_
@@ -545,7 +544,7 @@ Performance/CompareWithBlock:
     - 'lib/tasks/code_quality_tests.rake'
     - 'lib/tecan_file_generation.rb'
 
-# Offense count: 46
+# Offense count: 47
 # Cop supports --auto-correct.
 # Configuration parameters: AutoCorrect.
 Performance/HashEachMethods:
@@ -564,6 +563,7 @@ Performance/HashEachMethods:
     - 'app/models/tag_layout/walk_manual_wells_by_pools.rb'
     - 'app/models/tasks/cherrypick_handler.rb'
     - 'app/models/tasks/set_descriptors_handler.rb'
+    - 'app/models/tasks/set_location_handler.rb'
     - 'app/views/requests/pending.xml.builder'
     - 'app/views/studies/index_deprecated_xml.xml.builder'
     - 'config/initializers/rails_rack_metal_fix.rb'
@@ -615,7 +615,7 @@ Rails/ApplicationRecord:
     - 'test/unit/eventful_entry_test.rb'
     - 'test/unit/external_propertied_test.rb'
 
-# Offense count: 35
+# Offense count: 37
 # Cop supports --auto-correct.
 # Configuration parameters: NilOrEmpty, NotPresent, UnlessPresent.
 Rails/Blank:
@@ -685,7 +685,14 @@ Rails/Date:
     - 'test/lib/label_printer/sequenom_384plate_test.rb'
     - 'test/lib/label_printer/sequenom_96plate_test.rb'
 
-# Offense count: 61
+# Offense count: 2
+# Cop supports --auto-correct.
+Rails/EnvironmentComparison:
+  Exclude:
+    - 'app/api/core/service/content_filtering.rb'
+    - 'app/models/plate_barcode.rb'
+
+# Offense count: 68
 Rails/FilePath:
   Exclude:
     - 'app/middleware/api/root_service.rb'
@@ -723,7 +730,7 @@ Rails/FilePath:
     - 'test/unit/import_fluidigm_data_test.rb'
     - 'test/unit/qc_report_file_test.rb'
 
-# Offense count: 128
+# Offense count: 136
 # Configuration parameters: Include.
 # Include: app/models/**/*.rb
 Rails/HasManyOrHasOneDependent:
@@ -805,7 +812,7 @@ Rails/HttpPositionalArguments:
     - 'spec/shared_contexts/it_requires_login.rb'
     - 'test/shoulda_macros/sanger_macros.rb'
 
-# Offense count: 138
+# Offense count: 144
 # Configuration parameters: Include.
 # Include: app/models/**/*.rb
 Rails/InverseOf:
@@ -827,9 +834,12 @@ Rails/InverseOf:
     - 'app/models/faculty_sponsor.rb'
     - 'app/models/family.rb'
     - 'app/models/item.rb'
+    - 'app/models/lab_interface/workflow.rb'
     - 'app/models/lane.rb'
+    - 'app/models/location_association.rb'
     - 'app/models/lot_type.rb'
     - 'app/models/map.rb'
+    - 'app/models/order.rb'
     - 'app/models/pipeline.rb'
     - 'app/models/pipeline/inbox_grouped_by_submission.rb'
     - 'app/models/pipeline/inbox_ungrouped.rb'
@@ -878,7 +888,6 @@ Rails/InverseOf:
     - 'app/models/well.rb'
     - 'app/models/work_completion.rb'
     - 'app/models/work_order.rb'
-    - 'app/models/workflow.rb'
 
 # Offense count: 66
 # Configuration parameters: Include.
@@ -953,7 +962,25 @@ Rails/OutputSafety:
     - 'app/helpers/bootstrap_helper.rb'
     - 'app/helpers/submissions_helper.rb'
 
-# Offense count: 76
+# Offense count: 16
+# Cop supports --auto-correct.
+Rails/Presence:
+  Exclude:
+    - 'app/helpers/requests_helper.rb'
+    - 'app/models/accessionable/sample.rb'
+    - 'app/models/accessionable/study.rb'
+    - 'app/models/asset.rb'
+    - 'app/models/broadcast_event.rb'
+    - 'app/models/broadcast_event/asset_audit.rb'
+    - 'app/models/plate.rb'
+    - 'app/models/study.rb'
+    - 'app/models/submission.rb'
+    - 'app/models/submission/submission_creator.rb'
+    - 'features/support/step_definitions/9314145_pacbio_submission_steps.rb'
+    - 'features/support/step_definitions/samples_steps.rb'
+    - 'features/support/step_definitions/study_steps.rb'
+
+# Offense count: 78
 # Cop supports --auto-correct.
 # Configuration parameters: NotNilAndNotEmpty, NotBlank, UnlessBlank.
 Rails/Present:
@@ -1015,7 +1042,7 @@ Rails/RedundantReceiverInWithOptions:
     - 'app/models/study/metadata.rb'
     - 'test/functional/api_routing_test.rb'
 
-# Offense count: 30
+# Offense count: 32
 # Configuration parameters: Blacklist.
 # Blacklist: decrement!, decrement_counter, increment!, increment_counter, toggle!, touch, update_all, update_attribute, update_column, update_columns, update_counters
 Rails/SkipsModelValidations:
@@ -1039,7 +1066,9 @@ Rails/SkipsModelValidations:
     - 'features/support/step_definitions/transfer_steps.rb'
     - 'lib/request_class_deprecator.rb'
     - 'lib/sequencing_qc_batch.rb'
-# Offense count: 79
+    - 'lib/tag_substitution.rb'
+
+# Offense count: 88
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: strict, flexible
 Rails/TimeZone:
@@ -1225,7 +1254,7 @@ Security/YAMLLoad:
     - 'lib/import_pulled_data.rb'
     - 'lib/tasks/code_quality_tests.rake'
 
-# Offense count: 52
+# Offense count: 55
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: prefer_alias, prefer_alias_method
@@ -1264,7 +1293,7 @@ Style/Alias:
     - 'lib/libxml_helper.rb'
     - 'lib/rails-authorization-plugin/lib/publishare/object_roles_table.rb'
 
-# Offense count: 482
+# Offense count: 544
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: always, conditionals
@@ -1432,13 +1461,13 @@ Style/AndOr:
     - 'test/unit/cherrypick_task_test.rb'
     - 'test/unit/multiplexed_library_creation_pipeline_test.rb'
 
-# Offense count: 1
+# Offense count: 3
 # Configuration parameters: AllowedChars.
 Style/AsciiComments:
   Exclude:
     - 'app/models/asset.rb'
 
-# Offense count: 154
+# Offense count: 162
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: percent_q, bare_percent
@@ -1663,7 +1692,7 @@ Style/DateTime:
     - 'test/unit/sample_tube_test.rb'
     - 'test/unit/well_test.rb'
 
-# Offense count: 1429
+# Offense count: 1444
 Style/Documentation:
   Exclude:
     - 'spec/**/*'
@@ -2778,9 +2807,16 @@ Style/DoubleNegation:
     - 'app/models/api/base.rb'
     - 'app/models/metadata.rb'
     - 'app/models/sample_manifest/input_behaviour.rb'
+    - 'app/models/sample_registrar.rb'
     - 'features/support/developing.rb'
 
 # Offense count: 1
+# Cop supports --auto-correct.
+Style/EmptyBlockParameter:
+  Exclude:
+    - 'features/support/step_definitions/batch_steps.rb'
+
+# Offense count: 22
 # Cop supports --auto-correct.
 Style/EmptyBlockParameter:
   Exclude:
@@ -2815,7 +2851,7 @@ Style/EmptyElse:
     - 'app/controllers/batches_controller.rb'
     - 'app/controllers/requests/comments_controller.rb'
 
-# Offense count: 132
+# Offense count: 129
 # Cop supports --auto-correct.
 Style/EmptyLambdaParameter:
   Exclude:
@@ -2829,6 +2865,7 @@ Style/EmptyLambdaParameter:
     - 'app/models/batch/request_behaviour.rb'
     - 'app/models/container_association.rb'
     - 'app/models/dilution_plate.rb'
+    - 'app/models/lab_interface/workflow.rb'
     - 'app/models/lane.rb'
     - 'app/models/library_type.rb'
     - 'app/models/multiplexed_library_tube.rb'
@@ -2843,7 +2880,6 @@ Style/EmptyLambdaParameter:
     - 'app/models/receptacle.rb'
     - 'app/models/request.rb'
     - 'app/models/request_information_type.rb'
-    - 'app/models/request_type.rb'
     - 'app/models/robot.rb'
     - 'app/models/robot_property.rb'
     - 'app/models/sample.rb'
@@ -2860,12 +2896,12 @@ Style/EmptyLambdaParameter:
     - 'app/models/tag_group.rb'
     - 'app/models/transfer.rb'
     - 'app/models/transfer/between_plate_and_tubes.rb'
+    - 'app/models/transfer_request_collection.rb'
     - 'app/models/tube.rb'
     - 'app/models/user.rb'
     - 'app/models/uuid.rb'
     - 'app/models/well.rb'
     - 'app/models/work_order.rb'
-    - 'app/models/workflow.rb'
     - 'lib/acts_as_descriptable/lib/acts_as_descriptable.rb'
     - 'lib/eventful_record.rb'
     - 'spec/models/specific_tube_creations_spec.rb'
@@ -2963,7 +2999,7 @@ Style/Encoding:
     - 'app/models/sequencing_request.rb'
     - 'config/initializers/formtastic.rb'
 
-# Offense count: 38
+# Offense count: 39
 Style/EvalWithLocation:
   Exclude:
     - 'app/api/core/abilities.rb'
@@ -2987,6 +3023,7 @@ Style/EvalWithLocation:
     - 'app/models/metadata.rb'
     - 'app/models/metadata/form_builder.rb'
     - 'app/models/request/statistics.rb'
+    - 'app/models/request_type.rb'
     - 'app/models/transfer.rb'
     - 'app/models/transfer_template.rb'
     - 'app/models/tube.rb'
@@ -3037,6 +3074,7 @@ Style/FormatStringToken:
     - 'script/license_application.rb'
     - 'test/unit/qc_report_presenter_test.rb'
 
+# Offense count: 1941
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: when_needed, always, never
@@ -4910,7 +4948,7 @@ Style/GlobalVars:
   Exclude:
     - 'test/unit/assign_tags_task_test.rb'
 
-# Offense count: 109
+# Offense count: 112
 # Configuration parameters: MinBodyLength.
 Style/GuardClause:
   Exclude:
@@ -5016,7 +5054,7 @@ Style/IfInsideElse:
     - 'app/models/accession_service.rb'
     - 'app/models/bulk_submission.rb'
 
-# Offense count: 149
+# Offense count: 157
 # Cop supports --auto-correct.
 Style/IfUnlessModifier:
   Exclude:
@@ -5044,6 +5082,7 @@ Style/IfUnlessModifier:
     - 'app/controllers/users_controller.rb'
     - 'app/controllers/workflows_controller.rb'
     - 'app/helpers/application_helper.rb'
+    - 'app/helpers/lab_interface/workflows_helper.rb'
     - 'app/helpers/requests_helper.rb'
     - 'app/models/accessionable/dac.rb'
     - 'app/models/api/sample_io.rb'
@@ -5063,8 +5102,10 @@ Style/IfUnlessModifier:
     - 'app/models/plate.rb'
     - 'app/models/plate/creator.rb'
     - 'app/models/presenters/batch_submenu_presenter.rb'
+    - 'app/models/project.rb'
     - 'app/models/sample.rb'
     - 'app/models/sample_manifest/sample_manifest_uploader.rb'
+    - 'app/models/sample_registrar.rb'
     - 'app/models/sequenom_qc_plate.rb'
     - 'app/models/study.rb'
     - 'app/models/study/metadata.rb'
@@ -5122,6 +5163,9 @@ Style/IfUnlessModifier:
     - 'lib/tasks/add_templates_and_printers_to_pmb.rake'
     - 'lib/update_sample_accession_numbers.rb'
     - 'lib/validateable.rb'
+    - 'test/factories/aker/work_order_json.rb'
+    - 'test/factories/batch_factories.rb'
+    - 'test/factories/submission_factories.rb'
 
 # Offense count: 7
 # Cop supports --auto-correct.
@@ -5136,7 +5180,7 @@ Style/InverseMethods:
     - 'app/models/library_creation_pipeline.rb'
     - 'lib/rails-authorization-plugin/lib/authorization.rb'
 
-# Offense count: 107
+# Offense count: 110
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: line_count_dependent, lambda, literal
@@ -5216,7 +5260,7 @@ Style/MixinUsage:
   Exclude:
     - 'bin/setup'
     - 'bin/update'
-    - 'spec/factories/accession/responses.rb'
+    - 'test/factories/accession/responses.rb'
     - 'test/unit/tecan_file_generation_test.rb'
 
 # Offense count: 4
@@ -5300,7 +5344,7 @@ Style/MultipleComparison:
   Exclude:
     - 'app/helpers/application_helper.rb'
 
-# Offense count: 220
+# Offense count: 221
 # Cop supports --auto-correct.
 Style/MutableConstant:
   Exclude:
@@ -5432,7 +5476,7 @@ Style/NonNilCheck:
     - 'test/unit/product_criteria_test.rb'
     - 'test/unit/product_test.rb'
 
-# Offense count: 56
+# Offense count: 58
 # Cop supports --auto-correct.
 Style/Not:
   Exclude:
@@ -5620,7 +5664,7 @@ Style/ParenthesesAroundCondition:
     - 'db/migrate/20150914104607_populate_ancestors_from_plate_to_tube.rb'
     - 'lib/acts_as_descriptable/rake/contrib/rails_plugin_package_task.rb'
 
-# Offense count: 306
+# Offense count: 325
 # Cop supports --auto-correct.
 # Configuration parameters: PreferredDelimiters.
 Style/PercentLiteralDelimiters:
@@ -5642,6 +5686,7 @@ Style/PercentLiteralDelimiters:
     - 'app/models/submission/priorities.rb'
     - 'app/models/submission/state_machine.rb'
     - 'app/models/transfer.rb'
+    - 'app/models/transfer_request.rb'
     - 'app/resources/api/v2/work_order_resource.rb'
     - 'config/application.rb'
     - 'config/initializers/inflections.rb'
@@ -5729,6 +5774,8 @@ Style/PercentLiteralDelimiters:
     - 'test/controllers/studies_asset_groups_controller_test.rb'
     - 'test/controllers/studies_comments_controller_test.rb'
     - 'test/controllers/studies_controller_test.rb'
+    - 'test/factories/lib_pcr_xp_factories.rb'
+    - 'test/factories/request_factories.rb'
     - 'test/shoulda_macros/sanger_macros/resource_test.rb'
     - 'test/test_helper.rb'
     - 'test/unit/api/core/io/json/stream_test.rb'
@@ -5772,7 +5819,7 @@ Style/Proc:
     - 'app/models/lib_pool_norm_tube_generator.rb'
     - 'app/models/qcable/statemachine.rb'
 
-# Offense count: 7
+# Offense count: 9
 # Cop supports --auto-correct.
 Style/RedundantBegin:
   Exclude:
@@ -5783,6 +5830,7 @@ Style/RedundantBegin:
     - 'app/models/request/change_decision.rb'
     - 'app/models/submission/project_validation.rb'
     - 'app/models/submission/submission_creator.rb'
+    - 'app/models/transfer_request.rb'
 
 # Offense count: 2
 # Cop supports --auto-correct.
@@ -5904,7 +5952,7 @@ Style/RescueModifier:
   Exclude:
     - 'features/support/step_definitions/api_steps.rb'
 
-# Offense count: 25
+# Offense count: 29
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: implicit, explicit
@@ -5917,12 +5965,14 @@ Style/RescueStandardError:
     - 'app/models/batch/tecan_behaviour.rb'
     - 'app/models/billing/factory/base.rb'
     - 'app/models/bulk_submission.rb'
-    - 'app/models/concerns/programs_validator.rb'
     - 'app/models/lib_pool_norm_tube_generator.rb'
+    - 'app/models/plate.rb'
     - 'app/models/plate_volume.rb'
     - 'app/models/qc_report.rb'
     - 'app/models/robot.rb'
     - 'app/models/submission/delayed_job_behaviour.rb'
+    - 'app/models/tasks/assign_tags_to_wells_handler.rb'
+    - 'app/models/tasks/cherrypick_group_by_submission_handler.rb'
     - 'app/models/user.rb'
     - 'app/views/requests/pending.xml.builder'
     - 'config/initializers/ruby_net_http_proxy_hack.rb'
@@ -5937,7 +5987,7 @@ Style/RescueStandardError:
     - 'spec/models/request_spec.rb'
     - 'test/shoulda_macros/sanger_macros.rb'
 
-# Offense count: 48
+# Offense count: 51
 # Cop supports --auto-correct.
 # Configuration parameters: ConvertCodeThatCanStartToReturnNil.
 Style/SafeNavigation:
@@ -6266,7 +6316,7 @@ Style/WhileUntilModifier:
   Exclude:
     - 'app/models/asset_barcode.rb'
 
-# Offense count: 429
+# Offense count: 438
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, MinSize, WordRegex.
 # SupportedStyles: percent, brackets
@@ -6391,7 +6441,7 @@ Style/ZeroLengthPredicate:
     - 'features/support/step_definitions/samples_steps.rb'
     - 'test/shoulda_macros/sanger_macros/resource_test.rb'
 
-# Offense count: 9744
+# Offense count: 9806
 # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
 # URISchemes: http, https
 Metrics/LineLength:

@@ -95,6 +95,22 @@ FactoryGirl.define do
         child_plate.purpose.source_purpose = evaluator.parent.purpose
       end
     end
+
+    factory :plate_with_wells_for_specified_studies do
+      transient do
+        studies { create_list(:study, 2) }
+        occupied_map_locations do
+          Map.where_plate_size(size).where_plate_shape(AssetShape.default).where(well_order => (0...studies.size))
+        end
+        well_order :column_order
+      end
+
+      after(:create) do |plate, evaluator|
+        plate.wells = evaluator.occupied_map_locations.map.with_index do |map, i|
+          create(:well_for_location_report, map: map, study: evaluator.studies[i])
+        end
+      end
+    end
   end
 
   # StripTubes are effectively thin plates

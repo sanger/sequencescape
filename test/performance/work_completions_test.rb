@@ -3,9 +3,6 @@ require 'rails/performance_test_help'
 
 class WorkCompletionsTest < ActionDispatch::PerformanceTest
   self.profile_options = { runs: 1, metrics: %i[wall_time memory], formats: [:flat] }
-  # Refer to the documentation for all available options
-  # self.profile_options = { runs: 5, metrics: [:wall_time, :memory],
-  #                          output: 'tmp/performance', formats: [:flat] }
 
   def setup
     @user = create :user
@@ -35,8 +32,7 @@ class WorkCompletionsTest < ActionDispatch::PerformanceTest
     end
   end
 
-  test 'WorkCompletion.create' do
-    Rails.logger.level = 0
+  test 'WorkCompletion.create performance' do
     ActiveRecord::Base.transaction do
       WorkCompletion.create!(
         user_id: @user.id,
@@ -44,6 +40,5 @@ class WorkCompletionsTest < ActionDispatch::PerformanceTest
         submission_ids: [@target_submission.id]
       )
     end
-    Rails.logger.level = 1
   end
 end

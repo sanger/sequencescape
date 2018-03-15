@@ -1,0 +1,36 @@
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2018 Genome Research Ltd.%>
+
+<table class="location_reports sortable detailed table table-striped">
+  <thead>
+    <tr>
+      <th><%= link_to "Name", "javascript:void(0);" %></th>
+      <th><%= link_to "Created on", "javascript:void(0);" %></th>
+      <th><%= link_to "Created by", "javascript:void(0);" %></th>
+      <th><%= link_to "Download", "javascript:void(0);" %></th>
+    </tr>
+  </thead>
+  <tbody>
+  <% location_reports.each do |location_report| %>
+    <tr>
+      <td><%= location_report.name %></td>
+      <td class="strong faint"><%= location_report.created_at.to_formatted_s(:sortable) %></td>
+      <td>
+        <% if location_report.user %>
+          <%= location_report.user.login %>
+        <% end %>
+      </td>
+      <td>
+      <% if location_report.report_filename.present? %>
+         <%= link_to 'Download', location_report_path(location_report), title: "Download report for #{location_report.name}" %>
+      <% else %>
+        Processing
+      <% end %>
+      </td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>

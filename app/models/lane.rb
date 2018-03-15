@@ -44,6 +44,14 @@ class Lane < Receptacle
     'lane'
   end
 
+  def friendly_name
+    name # TODO: Maybe add location?
+  end
+
+  def source_labwares
+    requests_as_target.map(&:asset).map(&:labware).uniq
+  end
+
   def rebroadcast
     requests_as_target.each { |r| r.batch.try(:rebroadcast) }
   end

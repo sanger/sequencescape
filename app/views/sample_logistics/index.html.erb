@@ -37,6 +37,9 @@
       <li><%= link_to "View All", sample_manifests_path  %></li>
     </ul>
   <% end %>
+</div>
+
+<div class="col-sm-4">
   <%= link_panel(:default,title:"Suppliers") do %>
     <ul>
       <li><%= link_to "Create", new_supplier_path  %></li>
@@ -56,11 +59,19 @@
       <% if current_user.slf_manager? || current_user.manager_or_administrator? %>
       <li><%= link_to "QC overview", qc_overview_sample_logistics_path %></li>
       <li><%= link_to "Pico Green", "#{configatron.pico_green_url}" %></li>
-      <li><%= link_to "QC Reports", qc_reports_path %></li>
-      <li><%= link_to "Study QC Reports", study_reports_path %></li>
       <li><%= link_to "Cherrypicking plate templates", plate_templates_path %></li>
       <li><%= link_to "Convert Plates to Tubes", to_sample_tubes_plates_path  %></li>
       <% end %>
+    </ul>
+  <% end %>
+</div>
+
+<div class="col-sm-4">
+  <%= link_panel(:default,title:"Reports") do %>
+    <ul>
+      <li><%= link_to "QC Reports", qc_reports_path %></li>
+      <li><%= link_to "Study QC Reports", study_reports_path %></li>
+      <li><%= link_to "Plate Location Reports", location_reports_path  %></li>
     </ul>
   <% end %>
 </div>

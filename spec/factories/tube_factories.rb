@@ -77,6 +77,13 @@ FactoryGirl.define do
 
     factory(:library_tube) do
       transient { sample_count 1 }
+
+      # TODO: better name
+      factory(:library_tube_with_ancestors) do
+        after(:create) do |library_tube|
+          library_tube.ancestors << create(:plate, plate_purpose: PlatePurpose.stock_plate_purpose)
+        end
+      end
     end
 
     factory(:library_tube_with_barcode) do

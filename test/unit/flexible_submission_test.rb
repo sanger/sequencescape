@@ -136,7 +136,7 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
                 @xs_mpx_submission.process!
               end
 
-              should "change Request.count by #{(16 + 8)}" do
+              should("change Request.count by #{16 + 8}") do
                 assert_equal (16 + 8), Request.count - @request_count
               end
 
@@ -177,12 +177,12 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
               @sub.process!
             end
 
-            should "change Request.count by #{1 + 8}" do
+            should("change Request.count by #{1 + 8}") do
               assert_equal (1 + 8), Request.count - @request_count
             end
 
-            should 'not set request study or projects' do
-              assert @sub.requests.all? { |r| r.initial_study_id.nil? && r.initial_project_id.nil? }
+            should('not set request study or projects') do
+              assert(@sub.requests.all? { |r| r.initial_study_id.nil? && r.initial_project_id.nil? })
             end
           end
         end
