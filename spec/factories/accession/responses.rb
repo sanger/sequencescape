@@ -9,11 +9,11 @@ FactoryGirl.define do
     initialize_with { new(response) }
 
     factory :successful_accession_response do
-      response { successful_accession_response }
+      response { MockAccession.successful_accession_response }
     end
 
     factory :failed_accession_response do
-      response { failed_accession_response }
+      response { MockAccession.failed_accession_response }
     end
 
     skip_create
