@@ -264,7 +264,7 @@ module ApplicationHelper
   end
 
   def help_text(&block)
-    content_tag(:small, class: 'form-text text-muted col',  &block)
+    content_tag(:small, class: 'form-text text-muted col', &block)
   end
 
   # The admin email address should be stored in config.yml for the current environment

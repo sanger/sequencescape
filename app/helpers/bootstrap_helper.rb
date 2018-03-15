@@ -98,7 +98,7 @@ module BootstrapHelper
 
   # <div class="col-md-size form-group"></div>
   def form_group(&block)
-    content_tag(:div, class: "form-group row", &block)
+    content_tag(:div, class: 'form-group row', &block)
   end
 
   def bs_column(size = 6, screen = 'md', &block)

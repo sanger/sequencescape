@@ -320,9 +320,7 @@ Given /^the study "([^\"]+)" has a (library tube) called "([^\"]+)"$/ do |study_
 end
 
 Then /^the help text for "([^\"]*)" should contain:$/ do |label_name, expected_tooltip_text|
-  link = find(:xpath, "//label[text()='#{label_name}']/../..//span[text()='?']")
-  link.click
-  step %Q{I should see "#{expected_tooltip_text}"}
+  find(:xpath, "//label[text()='#{label_name}']/../..//small").assert_text(expected_tooltip_text)
 end
 
 Then /^I should exactly see "([^"]*)"$/ do |text|

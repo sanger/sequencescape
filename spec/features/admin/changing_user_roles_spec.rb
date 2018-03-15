@@ -54,5 +54,4 @@ feature 'Manage users' do
     end
     expect(page).to have_content 'Manager'
   end
-
 end

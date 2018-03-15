@@ -28,7 +28,7 @@
       <%= render partial: "requests", locals: {requests: grouped_by_ready[false], table_class: 'danger'} %>
       <%= render partial: 'inbox_submission_button', locals: {actions: [["Cancel Requests","cancel_requests"]]} %>
     <% end -%>
-  <% end unless grouped_by_ready[false].empty? %>
+  <% end if grouped_by_ready[false].present? %>
 
  <%= render partial: 'pipeline_paginate' %>
 <% else -%>
