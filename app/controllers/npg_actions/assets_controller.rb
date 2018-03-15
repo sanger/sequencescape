@@ -19,50 +19,51 @@ class NpgActions::AssetsController < ApplicationController
   NPGActionInvalid = Class.new(StandardError)
   rescue_from(NPGActionInvalid, with: :rescue_error_internal_server_error)
 
-  # this procedure build a procedure called "state". In this case: pass and fail.
-  # The rendering of xml in response to an html request looks a little odd.
-  # This is as requests without an Accept header falls back to html, not xml.
-  # Some requests from NPG were missing the accept header.
-  # It is likely that this behaviour can be removed in the near future.
-  def self.construct_action_for_qc_state(state)
-    line = __LINE__ + 1
-    class_eval(%Q{
-      def #{state}
-        ActiveRecord::Base.transaction do
-          @asset.set_qc_state('#{state}ed')
-          @asset.events.create_#{state}!(params[:qc_information][:message] || 'No reason given')
-          request =  @asset.source_request
-
-          batch = request.batch
-          raise ActiveRecord::RecordNotFound, "Unable to find a batch for the Request" if (batch.nil?)
-
-          message = "#{state}ed manual QC".capitalize
-          EventSender.send_#{state}_event(request.id, "", message, "","npg", :need_to_know_exceptions => true)
-
-          batch.npg_set_state   if ('#{state}' == 'pass')
-
-          respond_to do |format|
-            format.xml  { render file: 'assets/show'}
-            format.html { render template: 'assets/show.xml.builder'}
-          end
-        end
-      end
-    }, __FILE__, line)
+  def fail
+    action_for_qc_state('fail', :create_fail!, :send_fail_event)
   end
 
-  construct_action_for_qc_state('pass')
-  construct_action_for_qc_state('fail')
+  def pass
+    action_for_qc_state('pass', :create_pass!, :send_pass_event)
+  end
 
   private
 
+  def action_for_qc_state(state, create_method_name, send_method_name)
+    ActiveRecord::Base.transaction do
+      state_str = "#{state}ed"
+      @asset.set_qc_state(state_str)
+      create_method = @asset.events.method(create_method_name)
+      send_method = EventSender.method(send_method_name)
+
+      create_method.call(params[:qc_information][:message] || 'No reason given')
+
+      request = @asset.source_request
+      batch = request.batch
+      raise ActiveRecord::RecordNotFound, 'Unable to find a batch for the Request' if (batch.nil?)
+
+      message = "#{state}ed manual QC".capitalize
+      send_method.call(request.id, '', message, '', 'npg', need_to_know_exceptions: true)
+
+      batch.npg_set_state if (state == 'pass')
+      BroadcastEvent::SequencingComplete.create!(seed: @asset,
+                                                 properties: { result: state_str })
+
+      respond_to do |format|
+        format.xml  { render file: 'assets/show' }
+        format.html { render template: 'assets/show.xml.builder' }
+      end
+    end
+  end
+
   def find_asset
-    @asset ||= Asset.find(params[:asset_id])
+    @asset ||= Lane.find(params[:asset_id])
   end
 
   def find_request
-    @asset ||= Asset.find(params[:asset_id])
+    @asset ||= Lane.find(params[:asset_id])
     if ((@asset.has_many_requests?) || (@asset.source_request.nil?))
-      raise ActiveRecord::RecordNotFound, "Unable to find a request for Lane: #{params[:id]}"
+      raise ActiveRecord::RecordNotFound, "Unable to find a request for Asset: #{params[:id]}"
     end
   end
 
@@ -71,7 +72,7 @@ class NpgActions::AssetsController < ApplicationController
   end
 
   def npg_action_invalid?
-    @asset ||= Asset.find(params[:asset_id])
+    @asset ||= Lane.find(params[:asset_id])
     request = @asset.source_request
     npg_events = Event.npg_events(request.id)
     raise NPGActionInvalid, 'NPG user run this action. Please, contact USG' if npg_events.exists?

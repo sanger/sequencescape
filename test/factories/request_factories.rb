@@ -58,6 +58,11 @@ FactoryGirl.define do
       association(:asset, factory: :library_tube)
       association(:target_asset, factory: :lane)
     end
+
+    factory(:sequencing_request_with_assets_and_ancestors) do
+      association(:asset, factory: :library_tube_with_ancestors)
+      association(:target_asset, factory: :lane)
+    end
   end
 
   factory(:library_creation_request, parent: :request, class: LibraryCreationRequest) do
