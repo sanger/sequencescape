@@ -33,7 +33,6 @@ describe TagSubstitution do
     let!(:mx_aliquot_b) { create :aliquot, sample: sample_b, tag: sample_b_orig_tag, tag2: sample_b_orig_tag2, library: library_tube_b, receptacle: mx_library_tube }
 
     context 'with only tag 1' do
-
       let(:instructions) do
         [
           { sample_id: sample_a.id, library_id: library_tube_a.id, original_tag_id: sample_a_orig_tag.id, substitute_tag_id: sample_b_orig_tag.id },
@@ -51,7 +50,6 @@ describe TagSubstitution do
     end
 
     context 'with tag2s defined' do
-
       let(:instructions) do
         [
           { sample_id: sample_a.id, library_id: library_tube_a.id, original_tag_id: sample_a_orig_tag.id, substitute_tag_id: sample_b_orig_tag.id, original_tag2_id: sample_a_orig_tag2.id, substitute_tag2_id: sample_b_orig_tag2.id },
@@ -87,7 +85,6 @@ describe TagSubstitution do
     end
 
     context 'when other attributes are updated' do
-
       let(:instructions) do
         [
           { sample_id: sample_a.id, library_id: library_tube_a.id, original_tag_id: sample_a_orig_tag.id, substitute_tag_id: sample_a_orig_tag.id, library_type: library_type.name, insert_size_from: 20, insert_size_to: 400 },
@@ -123,7 +120,6 @@ describe TagSubstitution do
       ]
     end
 
-
     let!(:library_aliquot_a_a) { create :aliquot, sample: sample_a, tag: sample_a_orig_tag_a, library: library_tube_a, receptacle: library_tube_a }
     let!(:library_aliquot_a_b) { create :aliquot, sample: sample_a, tag: sample_a_orig_tag_b, library: library_tube_a, receptacle: library_tube_a }
 
@@ -134,7 +130,6 @@ describe TagSubstitution do
     let!(:mx_aliquot_a_b) { create :aliquot, sample: sample_a, tag: sample_a_orig_tag_b, library: library_tube_a, receptacle: mx_library_tube }
     let!(:mx_aliquot_b_a) { create :aliquot, sample: sample_b, tag: sample_b_orig_tag_a, library: library_tube_b, receptacle: mx_library_tube }
     let!(:mx_aliquot_b_b) { create :aliquot, sample: sample_b, tag: sample_b_orig_tag_b, library: library_tube_b, receptacle: mx_library_tube }
-
 
     it 'perform the correct substitutions' do
       assert subject.save, "TagSubstitution did not save. #{subject.errors.full_messages}"
@@ -149,5 +144,4 @@ describe TagSubstitution do
       expect(mx_aliquot_b_b.reload.tag).to eq sample_b_orig_tag_b
     end
   end
-
 end
