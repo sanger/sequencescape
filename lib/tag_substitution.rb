@@ -13,13 +13,11 @@ class TagSubstitution
   validate :substitutions_valid
 
   def substitutions_valid
-    valid = true
-    @substitutions.each do |sub|
-      next if sub.valid?
+    @substitutions.reduce(true) do |valid, sub|
+      next valid if sub.valid?
       errors.add(:substitution, sub.errors.full_messages)
-      valid = false
+      valid && false
     end
-    valid
   end
 
   class Substitution
