@@ -6,13 +6,20 @@
 FactoryGirl.define do
   factory :location_report, class: LocationReport do
     user
-
-    factory :location_report_selection do
-      report_type   :type_selection
-    end
+    sequence(:name) { |n| "Tag Group #{n}" }
+    report_type :type_barcodes
+    barcodes_text 'DN1S'
 
     factory :location_report_barcodes do
-      report_type   :type_barcodes
+    end
+
+    factory :location_report_selection do
+      report_type :type_selection
+
+      before(:create) { create(:plate_with_wells_for_specified_studies, created_at: '2018-01-02 00:00:00') }
+
+      start_date  '2018-01-01 00:00:00'
+      end_date    '2018-01-03 00:00:00'
     end
   end
 end
