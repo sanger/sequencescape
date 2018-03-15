@@ -51,6 +51,13 @@ input[type=submit] {
   @extend .btn;
 }
 
+.link-panel {
+  @extend .list-group;
+  @extend .list-group-flush;
+  a { @extend .list-group-item; }
+}
+
+
 /* A collapsible info panel, which may contain tabulated data
  * A more semantic representation of bootstrap panels */
 section.info-panel {
