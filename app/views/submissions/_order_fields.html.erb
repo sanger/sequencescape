@@ -9,13 +9,14 @@
 
   <% if @presenter.order_fields.present? -%>
 
+    <div class="row">
     <% @presenter.order_fields.sort_by(&:display_name).each do |order_param| -%>
-      <div class="col-md-6 form-group">
-        <div><%= order_input_label(order_param) %></div>
-        <div><%= order_input_tag(@presenter.order, order_param) %></div>
+      <div class="col form-group">
+        <%= order_input_label(order_param) %>
+        <%= order_input_tag(@presenter.order, order_param) %>
       </div>
     <% end -%>
-
+  </div>
   <% end -%>
 
   <script type="text/javascript">

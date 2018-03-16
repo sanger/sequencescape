@@ -9,7 +9,7 @@ feature 'Contact us' do
     number_of_mails = ActionMailer::Base.deliveries.count
     login_user user
     visit root_path
-    click_link 'HELP'
+    click_link 'Help'
     expect(page).to have_content('Please, fill in this form')
     expect(find_field('Your email').value).to eq 'login@example.com'
     expect(find('#user_query_url', visible: false).value).to eq 'http://www.example.com/'

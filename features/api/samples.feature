@@ -24,6 +24,7 @@ Feature: Access samples through the API
       And the SRA status of the sample called "testing_the_api" is Hold
       And the sample called "testing_the_api" is 10 weeks old
       And the dosage of the sample called "testing_the_api" is 10 something
+      And the reference genome for sample "testing_the_api" is "RefGenome"
 
     When I GET the API path "/00000000-1111-2222-3333-444444444444"
     Then the HTTP response should be "200 OK"
@@ -87,7 +88,7 @@ Feature: Access samples through the API
             "organism": "organism"
           },
           "reference": {
-            "genome": null
+            "genome": "RefGenome"
           },
           "data_release": {
             "visibility": "Hold",

@@ -390,11 +390,11 @@ RSpec.describe Study, type: :model do
     end
 
     context '#each_well_for_qc_report_in_batches' do
-      let!(:study)          { create(:study) }
-      let!(:well_1)         { create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: PlatePurpose.find_by(name: 'Stock Plate'))) }
-      let!(:well_2)         { create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: PlatePurpose.find_by(name: 'ISC lib PCR-XP'))) }
-      let!(:well_3)         { create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: PlatePurpose.find_by(name: 'Lib PCR-XP'))) }
-      let!(:well_4)         { create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: PlatePurpose.find_by(name: 'PF Post Shear'))) }
+      let!(:study)  { create(:study) }
+      let!(:well_1) { create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: PlatePurpose.find_by(name: 'Stock Plate'))) }
+      let!(:well_2) { create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: PlatePurpose.find_by(name: 'ISC lib PCR-XP'))) }
+      let!(:well_3) { create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: create(:plate_purpose, name: 'Lib PCR-XP'))) }
+      let!(:well_4) { create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: create(:plate_purpose, name: 'PF Post Shear'))) }
 
       it 'will limit by stock plate purposes if there are no plate purposes' do
         wells_count = 0

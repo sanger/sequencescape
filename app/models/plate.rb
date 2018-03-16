@@ -325,6 +325,31 @@ class Plate < Asset
     ])
   }
 
+  def self.search_for_plates(study_id: nil, plate_purpose_ids: nil, start_date: nil, end_date: nil)
+    with_study_id(study_id)
+      .with_plate_purpose_ids(plate_purpose_ids)
+      .created_after(start_date)
+      .created_before(end_date)
+      .where.not(barcode: nil)
+      .distinct
+  end
+
+  scope :with_study_id, ->(study_id) {
+    joins(:studies).where(studies: { id: study_id }) if study_id.present?
+  }
+
+  scope :with_plate_purpose_ids, ->(plate_purpose_ids) {
+    joins(:plate_purpose).where(plate_purposes: { id: plate_purpose_ids }) if plate_purpose_ids.present?
+  }
+
+  scope :created_after, ->(date) {
+    where('assets.created_at >= ?', date.midnight) if date.present?
+  }
+
+  scope :created_before, ->(date) {
+    where('assets.created_at <= ?', date.end_of_day) if date.present?
+  }
+
   def maps
     Map.where_plate_size(size).where_plate_shape(asset_shape)
   end

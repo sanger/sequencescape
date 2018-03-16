@@ -172,7 +172,7 @@ end
 
 Given(/^the reference genome for study "([^\"]+)" is "([^\"]+)"$/) do |name, value|
   study = Study.find_by!(name: name)
-  ref_genome = ReferenceGenome.find_by!(name: value)
+  ref_genome = ReferenceGenome.find_or_create_by!(name: value)
   study.study_metadata.reference_genome = ref_genome
   study.save!
 end
@@ -320,9 +320,7 @@ Given /^the study "([^\"]+)" has a (library tube) called "([^\"]+)"$/ do |study_
 end
 
 Then /^the help text for "([^\"]*)" should contain:$/ do |label_name, expected_tooltip_text|
-  link = find(:xpath, "//label[text()='#{label_name}']/../..//span[text()='?']")
-  link.click
-  step %Q{I should see "#{expected_tooltip_text}"}
+  find(:xpath, "//label[text()='#{label_name}']/../..//small").assert_text(expected_tooltip_text)
 end
 
 Then /^I should exactly see "([^"]*)"$/ do |text|

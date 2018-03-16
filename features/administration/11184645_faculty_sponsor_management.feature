@@ -5,7 +5,7 @@ Feature: Manage a list of faculty sponsors
   Scenario: Add and update a faculty sponsor
     Given I am a "administrator" user logged in as "user"
       And I am on the faculty sponsor homepage
-    Then I should see "Listing All Faculty Sponsors"
+    Then I should see "Faculty Sponsors"
     When I follow "New Faculty Sponsor"
       And I fill in "Name" with "Johnny Smith"
       And I press "Create"
@@ -13,7 +13,7 @@ Feature: Manage a list of faculty sponsors
       And I should be on the faculty sponsor homepage
       And I should see "Johnny Smith"
     When I follow "Edit Johnny Smith"
-    Then I should see "Editing Faculty Sponsor"
+    Then I should see "Faculty Sponsor"
     When I fill in "Name" with "Jane Doe"
       And I press "Update"
     Then I should see "Faculty Sponsor was successfully updated"

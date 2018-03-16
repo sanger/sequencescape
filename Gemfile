@@ -65,7 +65,7 @@ group :default do
   gem 'jquery-rails'
   gem 'jquery-ui-rails'
   gem 'jquery-tablesorter'
-  gem 'bootstrap-sass'
+  gem 'bootstrap'
   gem 'sass-rails'
   gem 'coffee-rails'
   gem 'select2-rails'
@@ -143,6 +143,9 @@ group :test do
   gem 'rspec-json_expectations', require: false
   # It is needed to use #assigns(attribute) in controllers tests
   gem 'rails-controller-testing'
+  # Temporarily lock minitest to a specific version due to incompatibilities
+  # with rails versions.
+  gem 'minitest', '5.10.3'
 end
 
 group :test, :cucumber do

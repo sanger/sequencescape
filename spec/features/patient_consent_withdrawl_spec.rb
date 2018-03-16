@@ -10,7 +10,7 @@ feature 'Sample#consent_withdrawn', js: false do
   # - If a patient withdraws consent we need to make sure everyone downstream knows
   # - We need to stop new orders being made.
   let(:user) { create :user, email: 'login@example.com' }
-  let(:sample) { create :sample, consent_withdrawn: consent_withdrawn }
+  let(:sample) { create :sample_with_gender, consent_withdrawn: consent_withdrawn }
   let(:study) { create :study }
 
   before do

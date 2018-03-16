@@ -7,7 +7,7 @@
   attachEvents = function(){
     $('.popover-trigger[data-toggle="popover"]').popover({
       trigger: 'hover click',
-      html: 'true'
+      html: true
     });
   };
 

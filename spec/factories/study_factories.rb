@@ -16,7 +16,6 @@ FactoryGirl.define do
     state                'active'
     enforce_data_release false
     enforce_accessioning false
-    reference_genome     { ReferenceGenome.find_by(name: '') }
     study_metadata
 
     # These have to build a user list

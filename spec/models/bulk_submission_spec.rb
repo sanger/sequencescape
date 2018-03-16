@@ -23,6 +23,22 @@ describe BulkSubmission, with: :uploader do
   end
 
   context 'a simple submission' do
+    setup do
+      submission_template_hash = {
+        name: 'Illumina-A - Cherrypick for pulldown - Pulldown WGS - HiSeq Paired end sequencing',
+        submission_class_name: 'LinearSubmission',
+        product_catalogue: 'Generic',
+        superceeded_by_id: -2,
+        submission_parameters: { info_differential: 5,
+                                 request_options: { 'fragment_size_required_to' => '400',
+                                                    'fragment_size_required_from' => '100' },
+                                 request_types: %w[cherrypick_for_pulldown
+                                                   pulldown_wgs
+                                                   illumina_a_hiseq_paired_end_sequencing] }
+      }
+      SubmissionSerializer.construct!(submission_template_hash)
+    end
+
     let(:spreadsheet_filename) { '1_valid_rows.csv' }
 
     it 'is valid' do

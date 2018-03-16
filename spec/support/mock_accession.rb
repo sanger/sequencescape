@@ -10,4 +10,6 @@ module MockAccession
     Response.new(200,
                  '<RECEIPT success="false"><ERROR>Error 1</ERROR><ERROR>Error 2</ERROR></RECEIPT>')
   end
+
+  module_function :successful_accession_response, :failed_accession_response
 end

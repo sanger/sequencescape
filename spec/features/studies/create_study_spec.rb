@@ -4,7 +4,11 @@ require 'rails_helper'
 
 feature 'Create a study' do
   let(:user) { create :admin }
-  let!(:faculty_sponsor) { create :faculty_sponsor, name: 'Jack Sponsor' }
+
+  setup do
+    create :faculty_sponsor, name: 'Jack Sponsor'
+    create :data_release_study_type, name: 'genomic sequencing'
+  end
 
   scenario 'create managed study', js: true do
     login_user user

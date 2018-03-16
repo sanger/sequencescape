@@ -4,17 +4,19 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
-dr_study_types = [
-  ['genomic sequencing', false, false],
-  ['transcriptomics',              false,       true],
-  ['other sequencing-based assay', false,       true],
-  ['genotyping or cytogenetics',   true,        false]
-]
+unless Rails.env.test?
+  dr_study_types = [
+    ['genomic sequencing',           false, false],
+    ['transcriptomics',              false, true],
+    ['other sequencing-based assay', false, true],
+    ['genotyping or cytogenetics',   true,  false]
+  ]
 
-dr_study_types.each do |type|
-  DataReleaseStudyType.create!(
-    name: type[0],
-    is_default: type[1],
-    is_assay_type: type[2]
-  )
+  dr_study_types.each do |type|
+    DataReleaseStudyType.create!(
+      name: type[0],
+      is_default: type[1],
+      is_assay_type: type[2]
+    )
+  end
 end

@@ -22,8 +22,15 @@ table.table-dense-information tbody {
 .main-row { margin-bottom:10px; }
 
 
-.loading-bar { width: 100% !important; }
-.loading-bar-container { display: none; }
+.loading-bar-container {
+  @extend .progress;
+  .loading-bar {
+    width: 100%;
+    @extend .progress-bar;
+    @extend .progress-bar-striped;
+    @extend .progress-bar-animated;
+  }
+}
 .loading-bar-placeholder {  margin: 11px 0;}
 
 .formtastic label.ft-label { width: 25%; }
@@ -34,17 +41,34 @@ table.table-dense-information tbody {
 .formtastic .boolean label.ft-label { width: auto; }
 .formtastic input.btn { padding: 6px 12px; }
 
+.card-style-feature {
+  @extend .bg-primary;
+  @extend .text-white;
+}
+
+// Apply basic button formatting to all buttons
+input[type=submit] {
+  @extend .btn;
+}
+
+.link-panel {
+  @extend .list-group;
+  @extend .list-group-flush;
+  a { @extend .list-group-item; }
+}
+
+
 /* A collapsible info panel, which may contain tabulated data
  * A more semantic representation of bootstrap panels */
 section.info-panel {
-  @extend .panel;
-  @extend .panel-default;
+  @extend .card;
+//  @extend .card-default;
 
   header {
-    @extend .panel-heading;
+    @extend .card-header;
 
     h3 {
-      @extend .panel-title;
+      @extend .card-title;
     }
 
     .counter {
@@ -56,23 +80,28 @@ section.info-panel {
 
   table {
     @extend .table;
-    @extend .table-condensed;
+    @extend .table-sm;
     @extend .table-striped;
 
     caption {
-      @extend .panel-body;
+      @extend .card-body;
     }
   }
 }
 
-navigation.toc {
-  @extend .panel;
-  @extend .panel-default;
-  @extend .col-md-6;
+nav.toc {
+  @extend .card;
+  @extend .col-md-2;
 
   ul {
-    @extend .nav;
-    @extend .nav-pills;
-    @extend .nav-stacked;
+    @extend .link-list;
+  }
+}
+
+.pagination {
+  li {
+    @extend .page-item;
+    a { @extend .page-link; }
+    span { @extend .page-link; }
   }
 }

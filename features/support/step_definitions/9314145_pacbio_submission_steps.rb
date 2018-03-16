@@ -194,16 +194,8 @@ Then /^the sample reference sequence table should look like:$/ do |expected_resu
   expected_results_table.diff!(table(fetch_table('table#reference_sequence')))
 end
 
-Then /^Library tube "([^"]*)" should have protocol "([^"]*)"$/ do |barcode, expected_protocol|
-  assert_equal expected_protocol, PacBioLibraryTube.find_by(barcode: barcode).pac_bio_library_tube_metadata.protocol
-end
-
 Given /^the study "([^"]*)" has a reference genome of "([^"]*)"$/ do |study_name, reference_genome_name|
   Study.find_by(name: study_name).study_metadata.update_attributes!(reference_genome: ReferenceGenome.find_by(name: reference_genome_name))
-end
-
-Then /^the default protocols should be:$/ do |_expected_results_table|
-  actual_table = table(fetch_table('table#reference_sequence'))
 end
 
 Then /^the PacBio manifest should be:$/ do |expected_results_table|

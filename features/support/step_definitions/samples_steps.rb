@@ -62,6 +62,13 @@ Given /^the sample "([^\"]+)" has the phenotype "([^\"]*)"$/ do |name, phenotype
   sample.save!
 end
 
+Given /^the reference genome for sample "([^\"]+)" is "([^\"]+)"$/ do |name, value|
+  sample = Sample.find_by!(name: name)
+  ref_genome = ReferenceGenome.find_or_create_by!(name: value)
+  sample.sample_metadata.reference_genome = ref_genome
+  sample.save!
+end
+
 Given /^the sample "([^\"]+)" belongs to the study "([^\"]+)"$/ do |sample_name, study_name|
   sample = Sample.find_by(name: sample_name) or raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
   study  = Study.find_by(name: study_name) or raise StandardError, "Cannot find study with name #{study_name.inspect}"

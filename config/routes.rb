@@ -653,10 +653,16 @@ Sequencescape::Application.routes.draw do
       end
     end
   end
+
   resources :billing_reports, only: [:new, :create]
+
+  resources :location_reports, only: [:index, :show, :create]
 
   # this is for test only test/functional/authentication_controller_test.rb
   # to be removed?
   get 'authentication/open'
   get 'authentication/restricted'
+
+  # We removed workflows, which broke study links. Some customers may have their own studies bookmarked
+  get 'studies/:study_id/workflows/:id', to: redirect('studies/%{study_id}/information')
 end

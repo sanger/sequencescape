@@ -6,17 +6,17 @@
 
 <div class="content">
   <% unless @errors.nil? %>
-  <table class="error">
-    <% @errors.each do |error| %>
-    <tr><td class="error"><%= error %></td></tr>
-    <% end %>
-  </table>
+    <table class="error">
+      <% @errors.each do |error| %>
+      ]<tr><td class="error"><%= error %></td></tr>
+      <% end %>
+    </table>
   <% end %>
   <div id='form'>
     <div id='message'>
       <%= render partial: message %>
     </div>
-    <br />
+    <strong>Scan your sample:</strong>
     <%= form_for :asset, url: { action: receive_barcode }, html: {class: 'form-inline'} do |f| %>
     <ul class="plate_import">
       <% num_text_boxes ||= 10 %>
