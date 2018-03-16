@@ -22,7 +22,7 @@ Feature: Added property "commercially_available". Add and edit this value. Pendi
     And I select "<commercial>" from "Are all the samples to be used in this study commercially available, unlinked anonymised cell-lines?"
     And I select "Open (ENA)" from "What is the data release strategy for this study?"
     When I press "Create"
-    Then I should be on the study workflow page for "new study"
+    Then I should be on the study information page for "new study"
     Then abbreviation for Study "new study" should be "CCC3435"
     When I follow "Studies"
     Then I should see "Pending ethical approval"

@@ -2,7 +2,7 @@
 Feature: Set wells with blank samples to Fail
   Background:
     Given I am an "administrator" user logged in as "John Smith"
-    And user "John Smith" has a workflow "Microarray genotyping"
+
     And I have an "active" study called "Study B"
     And I have a project called "Test project"
 

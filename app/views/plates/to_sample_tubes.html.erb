@@ -10,7 +10,6 @@
   <%= form.inputs name: "" do %>
     <%= form.input :source_plates,   as: :text %>
     <%= form.input :study,   as: :select, collection: @studies %>
-    <%= form.input :destination_freezer,   as: :select, collection: @locations %>
     <%= form.input :barcode_printer, as: :select, collection: @barcode_printers %>
     <%= form.action(:submit) %>
   <% end %>

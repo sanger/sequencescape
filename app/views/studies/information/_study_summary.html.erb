@@ -1,0 +1,36 @@
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.%>
+
+
+  <table class="table">
+    <thead>
+      <tr>
+      <th>Request type</th>
+      <th>Requested</th>
+      <th>Pending</th>
+      <th>Started</th>
+      <th>Passed</th>
+      <th>Failed</th>
+      <th>Cancelled</th>
+      </tr>
+    </thead>
+    <% @study.request_progress do |results| %>
+      <% request_types.each do |request_type| %>
+        <% statistics = results[request_type] %>
+        <% next if statistics.total.zero? -%>
+        <tr>
+          <td><%= request_type.name %></td>
+          <td><%= request_link(@study, statistics.total, request_type) %></td>
+          <td><%= request_link(@study, statistics.pending, request_type, 'pending') %></td>
+          <td><%= request_link(@study, statistics.started, request_type, 'started') %></td>
+          <td><%= request_link(@study, statistics.passed, request_type, 'passed') %></td>
+          <td><%= request_link(@study, statistics.failed, request_type, 'failed') %></td>
+          <td><%= request_link(@study, statistics.cancelled, request_type, 'cancelled') %></td>
+        </tr>
+      <% end %>
+    <% end %>
+  </table>
+

@@ -3,12 +3,12 @@
     <header>
       <a href='#qc_files-table-collapser' role="button" data-toggle='collapse'>
       <h3>QC Files
-        <span class='counter'><%= asset.qc_files.size %> </span>
+        <span class='badge badge-primary'><%= asset.qc_files.size %> </span>
         <small class='show-hide'>Click to toggle</small>
       </h3>
       </a>
     </header>
-    <div id="qc_files-table-collapser" class="collapse in">
+    <div id="qc_files-table-collapser" class="collapse in show">
       <table id="qc_files-table" class="sortable">
         <thead>
           <tr>
@@ -26,7 +26,7 @@
         </tbody>
       </table>
     </div>
-    <div class="panel-body">
+    <div class="card-body">
       Upload additional QC files. <span class="text-warning">Correctly formatted files will result in the update of volume and concentration information.</span>
       <%= form_for(asset.qc_files.new) do |f| %>
         <%= f.hidden_field :asset_id %>

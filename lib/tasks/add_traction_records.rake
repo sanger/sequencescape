@@ -10,12 +10,11 @@ namespace :traction do
           name: 'Traction GridION',
           key: 'traction_grid_ion',
           request_class_name: 'Request::Traction::GridIon',
-          workflow: Submission::Workflow.find_by(name: 'Next-gen sequencing'),
           asset_type: 'Well',
           order: 1,
           initial_state: 'pending',
           billable: true,
-          request_purpose: RequestPurpose.standard
+          request_purpose: :standard
         ) do |rt|
           LibraryTypesRequestType.create!(request_type: rt, library_type: LibraryType.find_or_create_by!(name: 'Rapid'), is_default: true)
 
@@ -47,8 +46,7 @@ namespace :traction do
           submission_class_name: 'LinearSubmission',
           product_catalogue: ProductCatalogue.find_by(name: 'Generic'),
           submission_parameters: {
-            request_type_ids_list: [RequestType.where(key: 'traction_grid_ion').pluck(:id)],
-            workflow_id: Submission::Workflow.find_by(key: 'short_read_sequencing').id
+            request_type_ids_list: [RequestType.where(key: 'traction_grid_ion').pluck(:id)]
           }
         )
       end

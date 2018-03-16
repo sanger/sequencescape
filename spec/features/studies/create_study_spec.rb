@@ -1,9 +1,14 @@
 # frozen_string_literal: true
+
 require 'rails_helper'
 
 feature 'Create a study' do
   let(:user) { create :admin }
-  let!(:faculty_sponsor) { create :faculty_sponsor, name: 'Jack Sponsor' }
+
+  setup do
+    create :faculty_sponsor, name: 'Jack Sponsor'
+    create :data_release_study_type, name: 'genomic sequencing'
+  end
 
   scenario 'create managed study', js: true do
     login_user user
@@ -38,7 +43,7 @@ feature 'Create a study' do
     click_button 'Create'
     expect(page).to have_content('Your study has been created')
     study = Study.last
-    expect(page).to have_current_path("/studies/#{study.id}/workflows/#{Submission::Workflow.last.id}")
+    expect(page).to have_current_path("/studies/#{study.id}/information")
     expect(study.abbreviation).to eq 'CCC3'
     expect(study.study_metadata.bam).to eq false
   end

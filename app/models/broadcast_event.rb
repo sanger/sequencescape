@@ -31,7 +31,7 @@ class BroadcastEvent < ApplicationRecord
   # Prefer email, fall back to login if missing
   def user_identifier
     return UNKNOWN_USER_IDENTIFIER if user.nil? # User has probably been deleted
-    user.email.blank? ? user.login : user.email
+    user.email.presence || user.login
   end
 
   # Returns an array of all subjects

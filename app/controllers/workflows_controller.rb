@@ -8,18 +8,16 @@ class WorkflowsController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
-  before_action :find_workflow_by_id, only: [:show, :edit, :duplicate, :batches, :update, :destroy, :reorder_tasks]
+  before_action :find_workflow_by_id, only: [:show, :batches]
 
   attr_accessor :plate_purpose_options
 
   include Tasks::AddSpikedInControlHandler
   include Tasks::AssignTagsHandler
-  include Tasks::AssignTagsToWellsHandler
   include Tasks::AssignTagsToTubesHandler
   include Tasks::AssignTubesToWellsHandler
   include Tasks::AttachInfiniumBarcodeHandler
   include Tasks::BindingKitBarcodeHandler
-  include Tasks::CherrypickGroupBySubmissionHandler
   include Tasks::CherrypickHandler
   include Tasks::DnaQcHandler
   include Tasks::GenerateManifestHandler
@@ -27,26 +25,22 @@ class WorkflowsController < ApplicationController
   include Tasks::PlateTemplateHandler
   include Tasks::PlateTransferHandler
   include Tasks::PrepKitBarcodeHandler
-  include Tasks::ReferenceSequenceHandler
   include Tasks::SamplePrepQcHandler
   include Tasks::SetDescriptorsHandler
   include Tasks::SetCharacterisationDescriptorsHandler
-  include Tasks::SetLocationHandler
   include Tasks::TagGroupHandler
   include Tasks::ValidateSampleSheetHandler
   include Tasks::StartBatchHandler
   include Tasks::StripTubeCreationHandler
 
   def index
-    @workflows = LabInterface::Workflow.all
+    @workflows = Workflow.all
 
     respond_to do |format|
       format.html
       format.xml { render xml: @workflows.to_xml }
     end
   end
-
-  public
 
   def show
     respond_to do |format|
@@ -55,73 +49,14 @@ class WorkflowsController < ApplicationController
     end
   end
 
-  def new
-    @workflow = LabInterface::Workflow.new
-  end
-
-  def edit
-  end
-
-  def duplicate
-    if @workflow.deep_copy
-      flash[:notice] = 'Workflow was successfully duplicated.'
-    else
-      flash[:error] = 'Something has gone wrong.'
-    end
-    respond_to do |format|
-      format.html { redirect_to workflows_url }
-      format.xml  { head :ok }
-    end
-  end
-
   def batches
-    @workflow = LabInterface::Workflow.find(params[:id])
+    @workflow = Workflow.find(params[:id])
     # TODO: association broken here - something to do with the attachables polymorph?
     @batches = Batch.where(workflow_id: @workflow.id).sort_by { |batch| batch.id }.reverse
   end
 
-  def create
-    @workflow = LabInterface::Workflow.new(params[:workflow])
-
-    respond_to do |format|
-      if @workflow.save
-        flash[:notice] = 'Workflow was successfully created.'
-        format.html { redirect_to workflow_url(@workflow) }
-        format.xml  { head :created, location: workflow_url(@workflow) }
-      else
-        format.html { render action: 'new' }
-        format.xml  { render xml: @workflow.errors.to_xml }
-      end
-    end
-  end
-
-  def update
-    respond_to do |format|
-      if @workflow.update_attributes(params[:workflow] || {})
-        flash[:notice] = 'Workflow was successfully updated.'
-        format.html { redirect_to workflow_url(@workflow) }
-        format.xml  { head :ok }
-      else
-        format.html { render action: 'edit' }
-        format.xml  { render xml: @workflow.errors.to_xml }
-      end
-    end
-  end
-
-  def destroy
-    flash[:error] = 'Sorry. The ability to delete workflows has been removed.'
-
-    respond_to do |format|
-      format.html { redirect_to workflows_url }
-      format.xml  { head :ok }
-    end
-  end
-
-  def reorder_tasks
-  end
-
   def sort
-    @workflow = LabInterface::Workflow.find(params[:workflow_id])
+    @workflow = Workflow.find(params[:workflow_id])
     @task_list = @workflow.tasks
     @task_list.each do |task|
       task.sorted = params['task_list'].index(task.id.to_s) + 1
@@ -139,7 +74,7 @@ class WorkflowsController < ApplicationController
   # 5: We need to improve the repeatability of tasks.
   # 6: GET should be Idempotent. doing a task should be a POST
   def stage
-    @workflow = LabInterface::Workflow.includes(:tasks).find(params[:workflow_id])
+    @workflow = Workflow.includes(:tasks).find(params[:workflow_id])
     @stage = params[:id].to_i
     @task = @workflow.tasks[@stage]
     # If params[:next_stage] is nil then just render the current task
@@ -182,7 +117,7 @@ class WorkflowsController < ApplicationController
     @rits = @batch.pipeline.request_information_types
     @requests = @batch.requests
 
-    @workflow = LabInterface::Workflow.includes(:tasks).find(params[:workflow_id])
+    @workflow = Workflow.includes(:tasks).find(params[:workflow_id])
     @task = task
   end
 
@@ -223,7 +158,7 @@ class WorkflowsController < ApplicationController
   end
 
   def find_workflow_by_id
-    @workflow = LabInterface::Workflow.find(params[:id])
+    @workflow = Workflow.find(params[:id])
   end
 
   def eventify_batch(batch, task)

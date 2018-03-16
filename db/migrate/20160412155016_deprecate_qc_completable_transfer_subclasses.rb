@@ -5,7 +5,7 @@
 require './lib/request_class_deprecator'
 
 class DeprecateQcCompletableTransferSubclasses < ActiveRecord::Migration
- include RequestClassDeprecator
+  include RequestClassDeprecator
 
   def up
     ActiveRecord::Base.transaction do

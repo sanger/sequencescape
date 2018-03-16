@@ -1,5 +1,5 @@
-<div class='info'>
-  <h3>Assets <span class='badge'><%= @sample.assets.length %></span></h3>
+<%= panel do %>
+  <h3>Assets <span class='badge badge-primary'><%= @sample.assets.length %></span></h3>
 
   <table width='100%'>
     <thead>
@@ -15,4 +15,4 @@
       <% end %>
     </tbody>
   </table>
-</div>
+<% end %>

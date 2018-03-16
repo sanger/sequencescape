@@ -11,7 +11,6 @@ require 'digest/sha1'
 
 class User < ApplicationRecord
   include Authentication
-  include Workflowed
   extend EventfulRecord
   include Uuid::Uuidable
   include Swipecardable
@@ -34,7 +33,6 @@ class User < ApplicationRecord
 
   before_save :encrypt_password
   before_create { |record| record.new_api_key if record.api_key.blank? }
-  before_create { |record| record.workflow ||= Submission::Workflow.default_workflow }
 
   validates_presence_of :login
   validates_uniqueness_of :login
@@ -161,10 +159,6 @@ class User < ApplicationRecord
     interesting_studies.alphabetical.pluck(:name, :id)
   end
 
-  def workflow_name
-    workflow && workflow.name
-  end
-
   def has_preference_for(key)
     setting_for?(key)
   end
@@ -182,7 +176,8 @@ class User < ApplicationRecord
   end
 
   def lab_manager?
-    has_role? 'lab_manager'
+    return @lab_manager if instance_variable_defined?('@lab_manager')
+    @lab_manager = has_role? 'lab_manager'
   end
 
   def slf_manager?
@@ -253,14 +248,14 @@ class User < ApplicationRecord
 
   protected
 
-    # before filter
-    def encrypt_password
-      return if password.blank?
-      self.salt = Digest::SHA1.hexdigest("--#{Time.now}--#{login}--") if new_record?
-      self.crypted_password = encrypt(password)
-    end
+  # before filter
+  def encrypt_password
+    return if password.blank?
+    self.salt = Digest::SHA1.hexdigest("--#{Time.now}--#{login}--") if new_record?
+    self.crypted_password = encrypt(password)
+  end
 
-    def password_required?
-      crypted_password.blank? || password.present?
-    end
+  def password_required?
+    crypted_password.blank? || password.present?
+  end
 end

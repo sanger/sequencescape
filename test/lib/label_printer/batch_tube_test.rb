@@ -6,9 +6,9 @@ class BatchTubeTest < ActiveSupport::TestCase
   context 'stock' do
     should 'when multiplexed should return the right tubes and top line' do
       pipeline = create :pipeline,
-        name: 'Test pipeline',
-        workflow: LabInterface::Workflow.create!(item_limit: 8),
-        multiplexed: true
+                        name: 'Test pipeline',
+                        workflow: Workflow.create!(item_limit: 8),
+                        multiplexed: true
       batch = pipeline.batches.create!
 
       library_tube_with_stock_tube = create :library_tube, barcode: '111'
@@ -50,9 +50,9 @@ class BatchTubeTest < ActiveSupport::TestCase
   context 'no stock' do
     should 'when multiplexed should return the right tubes and top line' do
       @pipeline = create :pipeline,
-        name: 'Test pipeline',
-        workflow: LabInterface::Workflow.create!(item_limit: 8),
-        multiplexed: true
+                         name: 'Test pipeline',
+                         workflow: Workflow.create!(item_limit: 8),
+                         multiplexed: true
 
       batch = @pipeline.batches.create!
       tag_map_id = 3

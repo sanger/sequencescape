@@ -165,9 +165,9 @@ class BatchesControllerTest < ActionController::TestCase
           @batch_two = create(:batch, pipeline: @pipeline_qc)
 
           @sample   = create :sample_tube
-          @library1 = create :empty_library_tube, location: @pipeline.location
+          @library1 = create :empty_library_tube
           @library1.parents << @sample
-          @library2 = create :empty_library_tube, location: @pipeline.location
+          @library2 = create :empty_library_tube
           @library2.parents << @sample
 
           @target_one = create(:sample_tube)
@@ -394,7 +394,7 @@ class BatchesControllerTest < ActionController::TestCase
       should '#print_multiplex_barcodes should send print request' do
         pipeline = create :pipeline,
                           name: 'Test pipeline',
-                          workflow: LabInterface::Workflow.create!(item_limit: 8),
+                          workflow: Workflow.create!(item_limit: 8),
                           multiplexed: true
         batch = pipeline.batches.create!
         library_tube = create :library_tube, barcode: '111'

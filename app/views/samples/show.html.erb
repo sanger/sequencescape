@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.%>
 
-<% add :title, "This page details a registered sample." -%>
+<% add :about, "This page details a registered sample." -%>
 <% add :menu, (pluralize @sample.comments.size, "comment") => sample_comments_path(@sample) -%>
 <% add :menu, 'Event history' => history_sample_path(@sample) -%>
 
@@ -25,18 +25,18 @@
   <% add :menu, "Back to samples for #{study.name}" => study_samples_path(study) -%>
 <% end %>
 
-<%= page_title "Sample Specification" %>
+<%= page_title "Sample Specification", @sample.sanger_sample_id %>
 
-<div class='alert alert-info'>
+<%= alert(:info) do %>
   <h2 class="alert-heading">Important notice</h2>
     Sample names need to be unique and can only contain letters, numbers, underscores and hyphens.<br />
     Spaces are not allowed.<br />
     For any help editing or creating new samples, please email <%= help_email_link %>
-</div>
+<% end %>
 <% if @sample.consent_withdrawn? %>
-  <div class='alert alert-danger'>
+  <%= alert(:danger) do %>
     Patient consent has been withdrawn for this sample.
-  </div>
+  <% end %>
 <% end %>
 <div class="columnize">
   <%= render partial: 'summary', locals: { sample: @sample } %>

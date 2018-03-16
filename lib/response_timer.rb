@@ -40,11 +40,11 @@ class ResponseTimer
 
   def header
     engine = defined?(RUBY_ENGINE) ? RUBY_ENGINE : 'mri'
-    @output.syswrite <<-HEADER
-Rails response log
-Started at: #{Time.now}
-Environment: #{Rails.env}:R#{RUBY_VERSION}:#{File.split(Rails.root).last.capitalize}:#{engine}
-------------
+    @output.syswrite <<~HEADER
+      Rails response log
+      Started at: #{Time.now}
+      Environment: #{Rails.env}:R#{RUBY_VERSION}:#{File.split(Rails.root).last.capitalize}:#{engine}
+      ------------
     HEADER
   end
 end

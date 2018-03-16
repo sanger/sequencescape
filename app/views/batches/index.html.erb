@@ -14,6 +14,5 @@
 
 <%= page_title 'Batches', 'Index' %>
 
-<div class="content">
-  <%= render partial: "shared/batches", locals: {batches: @batches, showing_all: true, in_progress: true, batch_state: 'assigned'} %>
-</div>
+<%= render partial: "shared/batches", locals: {batches: @batches, showing_all: true, in_progress: true, batch_state: 'assigned'} %>
+

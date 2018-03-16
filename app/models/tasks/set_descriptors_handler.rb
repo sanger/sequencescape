@@ -18,7 +18,7 @@ module Tasks::SetDescriptorsHandler
       @batch.save
     end
 
-    @workflow = LabInterface::Workflow.includes(:tasks).find(params[:workflow_id])
+    @workflow = Workflow.includes(:tasks).find(params[:workflow_id])
     @task = @workflow.tasks[params[:id].to_i]
     @stage = params[:id].to_i
     @count = 0
@@ -115,7 +115,7 @@ module Tasks::SetDescriptorsHandler
     @batch = Batch.includes(:requests, :pipeline, :lab_events).find(params[:batch_id])
     @rits = @batch.pipeline.request_information_types
     @requests = @batch.ordered_requests
-    @workflow = LabInterface::Workflow.includes(:tasks).find(params[:workflow_id])
+    @workflow = Workflow.includes(:tasks).find(params[:workflow_id])
     @task = @workflow.tasks[params[:id].to_i]
     @stage = params[:id].to_i
     @count = 0

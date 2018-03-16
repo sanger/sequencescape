@@ -36,17 +36,17 @@ group :default do
   # We pull down a slightly later version as there are commits on head
   # which we depend on, but don't have an official release yet.
   # This is mainly https://github.com/resgraph/acts-as-dag/commit/be2c0179983aaed44fda0842742c7abc96d26c4e
-  gem 'acts-as-dag', github:'resgraph/acts-as-dag', branch:'5e185dddff6563ee9ee92611555cd9d9a519d280'
+  gem 'acts-as-dag', github: 'resgraph/acts-as-dag', branch: '5e185dddff6563ee9ee92611555cd9d9a519d280'
 
   # For background processing
   # Locked for ruby version
   gem 'delayed_job_active_record'
 
-  gem 'ruby_walk',  '>= 0.0.3',
-    :github => 'sanger/ruby_walk'
+  gem 'ruby_walk', '>= 0.0.3',
+      :github => 'sanger/ruby_walk'
 
   gem 'irods_reader', '>=0.0.2',
-    :github => 'sanger/irods_reader'
+      :github => 'sanger/irods_reader'
 
   # For the API level
   gem 'uuidtools'
@@ -65,7 +65,7 @@ group :default do
   gem 'jquery-rails'
   gem 'jquery-ui-rails'
   gem 'jquery-tablesorter'
-  gem 'bootstrap-sass'
+  gem 'bootstrap'
   gem 'sass-rails'
   gem 'coffee-rails'
   gem 'select2-rails'
@@ -114,7 +114,6 @@ group :development do
   gem 'flog', require: false
   # Detect n+1 queries
   gem 'bullet'
-  gem 'pry'
   # Automatically generate documentation
   gem 'yard', require: false
   # Enforces coding styles and detects some bad practices
@@ -124,6 +123,10 @@ group :development do
   gem 'rack-mini-profiler'
   # find unused routes and controller actions by runnung `rake traceroute` from CL
   gem 'traceroute'
+end
+
+group :development, :test, :cucumber do
+  gem 'pry'
 end
 
 group :profile do
@@ -140,6 +143,9 @@ group :test do
   gem 'rspec-json_expectations', require: false
   # It is needed to use #assigns(attribute) in controllers tests
   gem 'rails-controller-testing'
+  # Temporarily lock minitest to a specific version due to incompatibilities
+  # with rails versions.
+  gem 'minitest', '5.10.3'
 end
 
 group :test, :cucumber do
@@ -159,7 +165,6 @@ group :test, :cucumber do
   # - Patches rails to share a database connection between threads while Testing
   # - Pathes rspec to ensure capybara has done its stuff before killing the connection
   gem 'transactional_capybara'
-  gem 'pry'
 end
 
 group :cucumber do
@@ -174,7 +179,7 @@ end
 
 group :deployment do
   gem 'psd_logger',
-    :github => 'sanger/psd_logger'
+      :github => 'sanger/psd_logger'
   gem 'gmetric', '~>0.1.3'
   gem 'exception_notification'
 end

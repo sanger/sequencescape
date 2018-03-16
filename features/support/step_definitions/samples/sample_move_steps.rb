@@ -16,10 +16,10 @@ When /^I move sample "([^\"]*)" from study "([^\"]*)" to "([^\"]*)", to asset gr
 
   if asset_group.present?
     begin
-  step(%Q{I select "#{asset_group}" from "asset_group_id"})
+      step(%Q{I select "#{asset_group}" from "asset_group_id"})
     rescue Capybara::OptionNotFound => ex
-  # asset group doesn't exist, create a new one then.
-  step(%Q{I fill in "new_assets_name" with "#{asset_group}"})
+      # asset group doesn't exist, create a new one then.
+      step(%Q{I fill in "new_assets_name" with "#{asset_group}"})
     end
   end
 
@@ -27,8 +27,8 @@ When /^I move sample "([^\"]*)" from study "([^\"]*)" to "([^\"]*)", to asset gr
   step 'I press "Move Sample"'
 end
 
- When /^I move samples between studies using the spreadsheet "([^\"]*)"$/ do |file_name|
+When /^I move samples between studies using the spreadsheet "([^\"]*)"$/ do |file_name|
   step('I am on the sample move using spreadsheet page')
   step(%Q{I fill in "file" with "data/#{file_name}"})
   step 'I press "Upload spreadsheet"'
- end
+end

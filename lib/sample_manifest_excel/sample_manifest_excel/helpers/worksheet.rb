@@ -5,8 +5,7 @@ module SampleManifestExcel
     module Worksheet
       STYLES = { unlocked: { locked: false, border: { style: :thin, color: '00' } },
                  wrap_text: { alignment: { horizontal: :center, vertical: :center, wrap_text: true },
-                              border: { style: :thin, color: '00', edges: [:left, :right, :top, :bottom] } }
-                }
+                              border: { style: :thin, color: '00', edges: [:left, :right, :top, :bottom] } } }
 
       def create_worksheet
         insert_axlsx_worksheet('DNA Collections Form')

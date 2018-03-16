@@ -31,7 +31,6 @@ module Api
           report('file') do
             filename = /filename="([^"]*)"/.match(request.env['HTTP_CONTENT_DISPOSITION']).try(:[], 1) || 'unnamed_file'
             begin
-
               file = Tempfile.new(filename)
               file.binmode
               file.unlink
@@ -187,6 +186,7 @@ module Api
           request.service = self
           request.path    = parts
           request.json    = @json
+          Rails.logger.info("API[payload]: #{@json}")
           yield(request)
         end
 

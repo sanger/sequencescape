@@ -29,6 +29,11 @@ class Io::Aliquot < Core::Io::Base
              tag.oligo  => tag.oligo
     tag.tag_group.name  => tag.group
 
+              tag2.name  => tag2.name
+            tag2.map_id  => tag2.identifier
+             tag2.oligo  => tag2.oligo
+    tag2.tag_group.name  => tag2.group
+
           bait_library  => bait_library
 
       insert_size.from  => insert_size.from

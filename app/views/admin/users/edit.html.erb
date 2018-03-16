@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2014,2015 Genome Research Ltd.%>
 
-<%- add :title, "Update your user profile." %>
+<%- add :about, "Update your user profile." %>
 <%- add :menu, "Back to all users" => admin_users_path %>
 
 <%= page_title "Edit profile", @user.name %>
@@ -79,12 +79,11 @@
 </div>
 <br/>
 <hr>
-<div style="text-align:center">
-  <h3 id="add_new_role">Add new roles</h3>
+<%= panel(title: 'Add new roles') do %>
   <%= bs_column(6,'lg') do %>
-    <%= render partial: "add_role", locals: {authorizable_type: @studies} %>
+    <%= render partial: "add_role", locals: {role_class_name: 'Study', authorizable_type: @studies} %>
   <% end %>
   <%= bs_column(6,'lg') do %>
-    <%= render partial: "add_role", locals: {authorizable_type: @projects} %>
+    <%= render partial: "add_role", locals: {role_class_name: 'Project', authorizable_type: @projects} %>
   <% end %>
-</div>
+<% end %>

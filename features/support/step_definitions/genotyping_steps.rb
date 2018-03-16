@@ -50,7 +50,7 @@ end
 Given(/^I have a "([^"]*)" plate "([^"]*)" in study "([^"]*)" with (\d+) samples in asset group "([^"]*)"$/) do |purpose_name, plate_barcode, study_name, number_of_samples, asset_group_name|
   study = Study.find_by(name: study_name)
   purpose = Purpose.find_by(name: purpose_name)
-  plate = FactoryGirl.create(:plate, purpose: purpose, barcode: plate_barcode, location: Location.find_by(name: 'Sample logistics freezer'))
+  plate = FactoryGirl.create(:plate, purpose: purpose, barcode: plate_barcode)
 
   asset_group = study.asset_groups.find_by(name: asset_group_name) || study.asset_groups.create!(name: asset_group_name)
   asset_group.assets << (1..number_of_samples.to_i).map do |index|
@@ -103,8 +103,6 @@ When(/^I complete the cherrypicking batch with "([^"]*)" plate purpose but dont 
   step('I select "testtemplate" from "Plate Template"')
   step(%Q{I select "#{plate_purpose_name}" from "Output plate purpose"})
   step('I press "Next step"')
-  step('I press "Next step"')
-  step('I select "Genotyping freezer" from "Location"')
   step('I press "Next step"')
 end
 
@@ -162,10 +160,9 @@ Given(/^I have a "([^"]*)" submission for plate "([^"]*)" with project "([^"]*)"
   submission = submission_template.create_and_build_submission!(
     study: study,
     project: project,
-    workflow: Submission::Workflow.find_by(key: 'microarray_genotyping'),
     user: User.last,
     assets: wells
-    )
+  )
   step('1 pending delayed jobs are processed')
 end
 
@@ -178,10 +175,9 @@ Given(/^I have a Cherrypicking submission for asset group "([^"]*)"$/) do |asset
   submission = submission_template.create_and_build_submission!(
     study: study,
     project: project,
-    workflow: Submission::Workflow.find_by(key: 'microarray_genotyping'),
     user: User.last,
     assets: asset_group.assets
-    )
+  )
   step('1 pending delayed jobs are processed')
 end
 

@@ -24,26 +24,20 @@
   <% add :menu, name => link %>
 <% end %>
 
-<% if @latest_batches.present? || @assigned_batches.present? %>
-  <div class="col-md-6">
-  <%= render partial: 'batches', locals: { latest_batches: @latest_batches, assigned_batches: @assigned_batches, style: 'success' } %>
-  </div>
-<% end %>
+<div class="card-columns">
+  <% if @latest_batches.present? || @assigned_batches.present? %>
+    <%= render partial: 'batches', locals: { latest_batches: @latest_batches, assigned_batches: @assigned_batches, style: 'success' } %>
+  <% end %>
 
-<% if @submissions.present? %>
-  <div class="col-md-6">
-  <%= render partial: 'submissions', locals: { submissions: @submissions, style: 'success' } %>
-  </div>
-<% end %>
+  <% if @submissions.present? %>
+    <%= render partial: 'submissions', locals: { submissions: @submissions, style: 'success' } %>
+  <% end %>
 
-<% if @pipelines.present? %>
-  <div class="col-md-6">
-    <%= render partial: 'pipelines/pipelines', locals: { title: 'Your Most Recent', pipelines: @pipelines, style: 'success' } %>
-  </div>
-<% end %>
+  <% if @pipelines.present? %>
+      <%= render partial: 'pipelines/pipelines', locals: { title: 'Your Most Recent', pipelines: @pipelines, style: 'success' } %>
+  <% end %>
 
-<% if @studies.present? %>
-  <div class="col-md-6">
-  <%= render partial: 'studies', locals: { studies: @studies, style: 'success' } %>
-  </div>
-<% end %>
+  <% if @studies.present? %>
+    <%= render partial: 'studies', locals: { studies: @studies, style: 'success' } %>
+  <% end %>
+</div>

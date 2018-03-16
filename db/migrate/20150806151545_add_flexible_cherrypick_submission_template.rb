@@ -5,6 +5,10 @@
 # Copyright (C) 2015 Genome Research Ltd.
 
 class AddFlexibleCherrypickSubmissionTemplate < ActiveRecord::Migration
+  class SubmissionWorkflow < ApplicationRecord
+    self.table_name = 'submission_workflows'
+  end
+
   def self.up
     ActiveRecord::Base.transaction do
       flex_id = RequestType.find_by(key: 'flexible_cherrypick').id
@@ -13,7 +17,7 @@ class AddFlexibleCherrypickSubmissionTemplate < ActiveRecord::Migration
         name: 'Flexible Cherrypick',
         submission_class_name: 'LinearSubmission',
         submission_parameters: {
-          workflow_id: Submission::Workflow.find_by(key: 'microarray_genotyping').id,
+          workflow_id: SubmissionWorkflow.find_by(key: 'microarray_genotyping').id,
           request_options: {
             initial_state: { flex_id => :pending }
           },

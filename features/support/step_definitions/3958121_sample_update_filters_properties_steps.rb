@@ -13,21 +13,10 @@ Given /^I am the owner of sample "([^\"]+)"$/ do |name|
   @current_user.is_owner_of(sample)
 end
 
-Given /^I have no associated workflow$/ do
-  @current_user.update_attribute(:workflow_id, nil)
-  @current_user.reload
-end
-
-Given /^I have an associated workflow "([^\"]+)"$/ do |name|
-  workflow = Submission::Workflow.find_by!(name: name) or raise StandardError, "Workflow '#{name}' does not exist"
-  @current_user.update_attribute(:workflow_id, workflow.id)
-  @current_user.reload
-end
-
 Given /^the field labeled "([^\"]+)" should not exist$/ do |field_name|
-    # begin
+  # begin
 
-    assert_nil field_labeled(field_name), "Field labeled '#{field_name}' found!"
+  assert_nil field_labeled(field_name), "Field labeled '#{field_name}' found!"
   # rescue Webrat::NotFoundError => exception
   # Cool, let this pass
   # end

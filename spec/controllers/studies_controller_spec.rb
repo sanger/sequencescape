@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe StudiesController do
@@ -7,6 +8,8 @@ RSpec.describe StudiesController do
   let(:user) { create(:owner) }
   let(:program) { create(:program) }
   let(:study) { create :study }
+  let(:reference_genome) { create :reference_genome }
+  let(:data_release_study_type) { create :data_release_study_type, name: 'genomic sequencing' }
 
   setup do
     session[:user] = user.id
@@ -28,7 +31,7 @@ RSpec.describe StudiesController do
       let(:params) do
         { 'study' => {
           'name' => 'hello',
-          'reference_genome_id' => ReferenceGenome.find_by(name: '').id,
+          'reference_genome_id' => reference_genome.id,
           'study_metadata_attributes' => {
             'faculty_sponsor_id' => FacultySponsor.create!(name: 'Me'),
             'study_description' => 'some new study',
@@ -36,7 +39,7 @@ RSpec.describe StudiesController do
             'contains_human_dna' => 'No',
             'contaminated_human_dna' => 'No',
             'commercially_available' => 'No',
-            'data_release_study_type_id' => DataReleaseStudyType.find_by(name: 'genomic sequencing'),
+            'data_release_study_type_id' => data_release_study_type,
             'data_release_strategy' => 'open',
             'study_type_id' => StudyType.find_by(name: 'Not specified').id
           }

@@ -3,7 +3,7 @@
 # authorship of this file.
 # Copyright (C) 2016 Genome Research Ltd.
 
-# Use in migrations to degrecate request classes
+# Use in migrations to deprecate request classes
 # Usage:
 # include RequestClassDeprecator
 # deprecate_class('ClassName',options)
@@ -35,14 +35,14 @@ module RequestClassDeprecator
 
         state_changes.each do |from_state, to_state|
           say "Moving #{rt.name} from #{from_state} to #{to_state}", true
-          mig = rt_requests.where(state: from_state).update_all(state: to_state)
+          mig = rt_requests.where(state: from_state).update_all(state: to_state) # rubocop:disable Rails/SkipsModelValidations
           say "Moved: #{mig}", true
         end
 
         say 'Updating requests:'
-        mig = rt_requests.update_all(sti_type: new_class_name, request_type_id: new_request_type.id)
+        mig = rt_requests.update_all(sti_type: new_class_name, request_type_id: new_request_type.id) # rubocop:disable Rails/SkipsModelValidations
         say "Updated: #{mig}", true
-        PlatePurpose::Relationship.where(transfer_request_type_id: rt.id).update_all(transfer_request_type_id: new_request_type.id)
+        PlatePurpose::Relationship.where(transfer_request_type_id: rt.id).update_all(transfer_request_type_id: new_request_type.id) # rubocop:disable Rails/SkipsModelValidations
       end
     end
   end

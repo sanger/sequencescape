@@ -4,136 +4,127 @@
 # authorship of this file.
 # Copyright (C) 2011,2012,2013,2015,2016 Genome Research Ltd.%>
 
-<span class="invalid badge">✘</span>
-<span class="completed badge">✔</span>
+<span class="invalid badge">✘ From HTML</span>
+<span class="completed badge">✔ From HTML</span>
 <%= panel :info, title:'New Order' do %>
-<span class="project-details" style="dislay:none;"></span>
+<span class="project-details"></span>
 
-<div class="sub-panel row">
-  <h3>Study and Project</h3>
-  <div class="col-md-6">
-    <%= form.label :study_id, "Study" %>:
+<fieldset class="study-and-project">
+  <legend>Study and Project</legend>
+  <div class="form-group">
+    <%= form.label :study_id, "Study" %>
     <%= studies_select(form, @presenter.studies) %>
     <div class='cross-compatible'>
       <%= form.label    :cross_study, 'This is a cross-study pool' %>
       <%= form.check_box :cross_study, class: 'cross_study form-control' %>
     </div>
   </div>
-  <div class="project col-md-6">
-    <%= form.label :project_name, "Project Name" %>:
+  <div class="form-group">
+    <div>
+    <%= form.label :project_name, "Project Name" %>
     <%= projects_select(form, @presenter.user_valid_projects) %>
     <div class='cross-compatible'>
       <%= form.label    :cross_project, 'This is a cross-project pool' %>
       <%= form.check_box :cross_project, class: 'cross_project form-control' %>
     </div>
   </div>
-</div>
+</fieldset>
 
-<div class="sub-panel row assets">
-  <h3>Add Samples</h3>
-  <div class="assets ">
-    <div class="yui-navset">
-      <ul class="nav nav-tabs">
-        <li class="selected active"><a data-tab-refers="asset_group_selector" data-tab-group="add_samples_sources">From Study asset group</a></li>
-        <li><a data-tab-refers="sample_name_selector" data-tab-group="add_samples_sources">From Plate</a></li>
-        <li><a data-tab-refers="plate_wells_selector" data-tab-group="add_samples_sources">From Plate and Wells</a></li>
+<fieldset class="assets">
+  <legend>Add Samples</legend>
+  <div class="assets tabbed-panel">
+    <header class='card-header'>
+      <ul class="nav nav-tabs card-header-tabs" role="tablist">
+        <%= tab 'From Study asset group', active: true %>
+        <%= tab 'From Plate' %>
+        <%= tab 'From Plate and Wells' %>
       </ul>
-      <div class="yui-content">
-        <ul>
-          <li class="assets asset_group_selector" data-tab-content="asset_group_selector">
-            <h3>Add Samples from Study asset group</h3>
-            <div class="study-assets">First select a study for this order...</div>
-          </li>
-          <li class="assets sample_name_selector container-fluid" data-tab-content="sample_name_selector" style="display:none;">
-            <h3>Add Samples from Plate</h3>
-            <div class="row">
-              <div class="col-md-6">
-                <div>
-                <%= form.label :plate_purpose_id, 'Type of Plate:' %>
-                </div>
-                <div>
-                  <%= form.collection_select :plate_purpose_id,
-                    PlatePurpose.for_submissions.all, :id, :name,
-                    { selected: PlatePurpose.stock_plate_purpose.id },
-                    class: 'submission_plate_purpose_id form-control'
-                  %>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div>
-                  <%= form.label :sample_names_text, 'Names of samples:' %>
-                </div>
-                <div>
-                  <%= form.text_area :sample_names_text,
-                    cols: 40,
-                    rows: 4,
-                    class: "submission_sample_names_text form-control"
-                  %>
-                </div>
+    </header>
+    <div class="tab-content" id="myTabContent">
+      <%= tab_pane('From Study asset group', active: true) do %>
+        <div class="card-body">
+          <div class="study-assets">First select a study for this order...</div>
+        </div>
+      <% end %>
+      <%= tab_pane('From Plate') do %>
+        <div class="card-body">
+          <div class="col">
+            <%= form.label :plate_purpose_id, 'Type of Plate' %>
+            <%= form.collection_select :plate_purpose_id,
+              PlatePurpose.for_submissions.all, :id, :name,
+              { selected: PlatePurpose.stock_plate_purpose.id },
+              class: 'submission_plate_purpose_id select-2'
+            %>
+          </div>
+          <div class="col">
+            <%= form.label :sample_names_text, 'Names of samples' %>
+            <%= form.text_area :sample_names_text,
+              cols: 40,
+              rows: 4,
+              class: "submission_sample_names_text form-control"
+            %>
+          </div>
+        </div>
+      <% end %>
+      <%= tab_pane('From Plate and Wells') do %>
+        <div class="card-body">
+          <div class="row">
+            <div class="col">
+              <div><%= form.label :barcodes_wells_text, 'Plates and wells' %></div>
+              <div><%= form.text_area :barcodes_wells_text,
+                  cols: 40,
+                  rows: 4,
+                  class: "submission_barcodes_wells_text form-control"
+                %></div>
+            </div>
+            <div class="col">
+              <div class="form-text">
+                Examples:
+                <ul>
+                  <li>DN123456P:A1,A2,A3 (Wells A1,A2,A3)</li>
+                  <li>DN123456P:1,2,3 (Columns 1,2,3)</li>
+                  <li>DN123456P:A,B (Rows A,B)</li>
+                  <li>DN123456P (Entire Plate)</li>
+                </ul>
               </div>
             </div>
-          </li>
-
-          <li class="assets plate_wells_selector container-fluid" data-tab-content="plate_wells_selector" style="display:none;">
-            <h3>Add Samples from Plate and Wells</h3>
-            <div class="row">
-              <div class="col-md-6">
-                <div><%= form.label :barcodes_wells_text, 'Plates and wells:' %></div>
-                <div><%= form.text_area :barcodes_wells_text,
-                    cols: 40,
-                    rows: 4,
-                    class: "submission_barcodes_wells_text form-control"
-                  %></div>
-              </div>
-              <div class="col-md-6">
-                <div><i>Examples:</i></div>
-                <div>
-                  <ul>
-                    <li>DN123456P:A1,A2,A3 (Wells A1,A2,A3)</li>
-                    <li>DN123456P:1,2,3 (Columns 1,2,3)</li>
-                    <li>DN123456P:A,B (Rows A,B)</li>
-                    <li>DN123456P (Entire Plate)</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </li>
-        </ul>
-      </div>
+          </div>
+        </div>
+      <% end %>
     </div>
   </div>
-</div>
+</fieldset>
 
-<div class="sub-panel row comments-panel">
-  <h3>Comments</h3>
+<fieldset>
+  <legend>Comments</legend>
   <%= form.text_area :comments,
     rows: 5,
     placeholder: "Optionally, please add comments for this order here...",
     class: 'submission_comments comments form-control',
     disabled: true
   %>
-</div>
+</fieldset>
 
 
-<div class="lanes-of-sequencing">
+<fieldset class="lanes-of-sequencing">
   <%= form.label :lanes_of_sequencing, 'Lanes of sequencing required' %>
   <%= form.text_field :lanes_of_sequencing, class: 'lanes_of_sequencing form-control', value: 1 %>
-</div>
+</fieldset>
 
-<div class="pre-capture-plex-level">
+<fieldset class="pre-capture-plex-level">
   <%= form.label :pre_capture_plex_level, 'Pre-capture plex level' %>
   <%= form.text_field :pre_capture_plex_level, class: 'pre_capture_plex_level form-control', value: 8 %>
-</div>
+</fieldset>
 
-<div class="pre-capture-plex-group">
+<fieldset class="pre-capture-plex-group">
   <%= form.label :pre_capture_plex_group, 'Pre-capture plex group' %>
   <%= form.text_field :pre_capture_plex_group, class: 'pre_capture_plex_group form-control', value: nil %>
-</div>
+</fieldset>
 
-<div class="gigabases-expected">
+<fieldset class="gigabases-expected">
   <%= form.label :gigabases_expected, 'Gigabases expected' %>
   <%= form.text_field :gigabases_expected, class: 'gigabases_expected form-control', value: nil %>
-</div>
+</fieldset>
 
 <div class="save-buttons">
   <% if order.present? -%>
@@ -141,19 +132,19 @@
       order.id,
       class: 'order-id' %>
 
-    <%= submit_tag "♻  Delete Order",
-      class: "delete-order btn btn-danger form-control"
+    <%= submit_tag "Delete Order",
+      class: "delete-order"
     %>
 
   <% else -%>
-    <%= submit_tag raw("&#10004; Save Order"),
-      class: "save-order btn btn-success ",
+    <%= submit_tag raw("Save Order"),
+      class: "save-order",
       disabled: true,
       disable_with: 'Creating...'
     %>
 
     <%= submit_tag "Cancel",
-      class: "cancel-order btn btn-warning ",
+      class: "cancel-order",
       disabled: true
     %>
 

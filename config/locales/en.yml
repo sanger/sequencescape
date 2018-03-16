@@ -36,12 +36,12 @@ en:
 
   application:
     name: "Sequencescape"
-    institute: "Wellcome Trust Sanger Institute"
+    institute: "Wellcome Sanger Institute"
     institute_link: "http://sanger.ac.uk/"
 
   global_links:
     welcome: "Welcome"
-    workflow: "Workflow is"
+    edit_profile: "Edit profile"
     workflow_not_set: "not set!"
     settings: "Profile"
     login: "Login"
@@ -89,7 +89,7 @@ en:
   studies:
     about: "Studies bundle together samples and quotas and enable you to make requests for work."
     status:
-      not_approved: "This study has not been approved yet."
+      not_approved: "This study has not been approved yet. You cannot apply to have work carried out on any of the samples you have registered until the study is approved."
       not_active: "This study has not been activated yet."
     guidance:
       nothing_interesting: "You don't have any studies you own, manage or are following. Please create your first study"
@@ -184,6 +184,8 @@ en:
         faculty_sponsor_id: "Faculty sponsor"
         faculty_sponsor: "Faculty sponsor"
         study_description: "Study description"
+      primer_panel:
+        snp_count: SNP count
   activemodel:
     errors:
       messages:
@@ -202,6 +204,12 @@ en:
     exclude_existing:
       yes: New samples
       no: All samples
+  location_reports:
+    success: "Your report has been requested and will be listed at the bottom of this page when complete."
+    errors:
+      no_rows_found: "That selection returns no plates, no report generated."
+      invalid_barcodes_found: "Invalid barcodes found, no report generated: "
+      plate_list_empty: "No plates found when attempting to generate the report."
   tag_groups:
     errors:
       duplicate_oligo_found: "The following oligo was found to be present more than once in the list, please correct: "

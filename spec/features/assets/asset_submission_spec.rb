@@ -1,6 +1,6 @@
 # frozen_string_literal: true
+
 require 'rails_helper'
-require 'pry'
 
 feature 'Asset submission', js: true do
   let(:project) { create :project }
@@ -16,11 +16,11 @@ feature 'Asset submission', js: true do
       request_types.each_with_index do |request_type, index|
         read_length = read_lengths[index]
         request = create(request_factory,
-                            study: study,
-                            project: project,
-                            asset: asset,
-                            target_asset: target_asset,
-                            request_type: request_type)
+                         study: study,
+                         project: project,
+                         asset: asset,
+                         target_asset: target_asset,
+                         request_type: request_type)
         login_user user
         visit asset_path(asset)
         click_link 'Request additional sequencing'
@@ -47,12 +47,12 @@ feature 'Asset submission', js: true do
     end
   end
 
-  context 'an admin' do
+  context 'when an admin' do
     let(:user) { create :admin }
     it_behaves_like 'it allows additional sequencing'
   end
 
-  context 'a regular user' do
+  context 'when a regular user' do
     let(:user) { create :user }
     it_behaves_like 'it forbids additional sequencing'
   end

@@ -67,12 +67,12 @@ class RobotVerification
       batch.events.create(
         message: I18n.t('bed_verification.layout.valid', plate_barcode: destination_plate_barcode),
         created_by: user.login
-)
+      )
     else
       batch.events.create(
         message: I18n.t('bed_verification.layout.invalid', plate_barcode: destination_plate_barcode),
         created_by: user.login
-)
+      )
       @errors << 'Bed layout invalid'
       return false
     end

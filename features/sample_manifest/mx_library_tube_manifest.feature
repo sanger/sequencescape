@@ -28,7 +28,7 @@ Feature: Sample manifest
     And I select "xyz" from "Barcode printer"
     And I fill in the field labeled "Number of samples in library" with "5"
     When I press "Create manifest and print labels"
-    Then I should see "Manifest_"
+    Then I should see "Manifest "
     Then I should see "Download Blank Manifest"
     Given 3 pending delayed jobs are processed
     And library tubes are barcoded sequentially from 81

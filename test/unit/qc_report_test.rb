@@ -53,10 +53,10 @@ class QcReportTest < ActiveSupport::TestCase
           assert_equal 'passed', metric.qc_decision
           assert_nil metric.proceed
           assert_equal({
-            total_micrograms: 100,
-            comment: '',
-            sanger_sample_id: 'TEST1'
-          }, metric.metrics)
+                         total_micrograms: 100,
+                         comment: '',
+                         sanger_sample_id: 'TEST1'
+                       }, metric.metrics)
         end
       end
     end

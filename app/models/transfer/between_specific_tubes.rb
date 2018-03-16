@@ -19,9 +19,4 @@ class Transfer::BetweenSpecificTubes < Transfer
     yield(source, destination)
   end
   private :each_transfer
-
-  def request_type_between(_ignored_a, _ignored_b)
-    destination.transfer_request_type_from(source)
-  end
-  private :request_type_between
 end

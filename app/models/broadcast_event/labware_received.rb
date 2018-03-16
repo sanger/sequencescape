@@ -11,8 +11,8 @@ class BroadcastEvent::LabwareReceived < BroadcastEvent
 
   seed_subject :labware
   has_subjects(:study, :studies)
-  has_subjects(:labware, :labware)
+  has_subject(:labware, :labware)
   has_subjects(:sample, :contained_samples)
 
-  has_metadata(:location, :location_name)
+  has_metadata(:location_barcode) { |_asset, event| event.properties[:location_barcode] }
 end

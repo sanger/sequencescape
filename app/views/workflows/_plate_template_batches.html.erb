@@ -10,26 +10,16 @@
   <%= panel(:info,title:"Step 1: Layout wells on plates") do %>
   <fieldset class="col-md-5">
     <legend>Automatic</legend>
-    <table cellspacing='0' cellpadding='0'>
-      <tr>
-         <td><label for="plate_purpose_id">Output plate purpose</label>:</td>
-         <td><%= select_tag("plate_purpose_id", options_for_select(@plate_purpose_options, PlatePurpose.stock_plate_purpose.id)) %></td>
-       </tr>
-       <tr>
-        <td><strong>Optional: </strong>Scan partial plate:</td>
-        <td><%= text_field_tag 'existing_plate' %></td>
-      </tr>
-      <tr>
-        <td><label for="plate_template_0">Plate Template</label>:</td>
-        <td><%= select("plate_template", "0", @plate_templates.collect {|p| [ (p.control_well? ? p.name+" - control well" : p.name), p.id ] })  %></td>
-      </tr>
-    </table>
-    <p class='help-block'>Templates define which wells to leave empty on a plate when you cherrypick samples. You can add to an existing partial plate by scanning the barcode, or entering the plate ID.  The plate must have been previously picked in SequenceScape.  Wells can be rearranged in the next step.</p>
+    <label for="plate_purpose_id">Output plate purpose</label>
+    <%= select_tag("plate_purpose_id", options_for_select(@plate_purpose_options, PlatePurpose.stock_plate_purpose.id), class: 'form-control select2') %>
+    <label for="existing_plate">Scan partial plate <em>Optional</em></label>
+    <%= text_field_tag 'existing_plate', nil, class: 'form-control' %>
+    <label for="plate_template_0">Plate Template</label>
+    <%= select(:plate_template, "0", @plate_templates.map { |pt| [pt.name, pt.id ] }, {}, class: 'form-control select2')  %>
+    <p class='help-block'>Templates define which wells to leave empty on a plate when you cherrypick samples. You can add to an existing partial plate by scanning the barcode, or entering the plate ID.  The plate must have been previously picked in Sequencescape.  Wells can be rearranged in the next step.</p>
   </fieldset>
 
-  <div class="col-md-2">
-  <h3 class="center-block">OR</h3>
-  </div>
+  <div class="col-md-2"><h3 class="center-block">OR</h3></div>
 
   <fieldset class="col-md-5">
     <legend>Manual</legend>

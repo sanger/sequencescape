@@ -7,7 +7,7 @@
 <%= form_for @task, url: { action: "stage", id: @stage, workflow_id: @workflow.id, batch_id: @batch.id, next_stage: true }, html: { id: "stage_form"} do |form| %>
 <%= render partial: "shared/batch", locals: { requests: @batch.ordered_requests, edit: false, stage: true } %>
         <br />
-        <h1>TASK DETAILS</h1>
+        <div class="page-header"><h1>TASK DETAILS</h1></div>
           <div class="content">
   <p class="info">Please scan the barcode of the aliquot of spiked hybridization buffer that will be used for the selected lane.</p>
 <p>

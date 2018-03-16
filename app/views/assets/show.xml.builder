@@ -44,7 +44,7 @@ xml.asset(api_data) {
   else # just send the ids
     xml.request_ids {
       @asset.request_ids.each do |request_id|
-        xml.id  request_id
+        xml.id request_id
       end
     }
   end
