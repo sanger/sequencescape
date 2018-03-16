@@ -481,6 +481,8 @@ Sequencescape::Application.routes.draw do
     resources :tags, except: [:destroy, :index, :create, :new, :edit]
   end
 
+  resources :tag_layout_templates, only: [:index, :new, :create, :show]
+
   resources :assets do
     collection do
       get :snp_register

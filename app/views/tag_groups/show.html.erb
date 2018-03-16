@@ -12,6 +12,8 @@
 </p>
 
 <%= render partial: "shared/tags_list", locals: { tag_group: @tag_group, tags: @tag_group.tags } %>
-<br>
 <script type="text/javascript">$('table tbody > tr:nth-child(even)').addClass('roweven');</script>
+<br>
+<%= link_to 'Create a new tag layout template from this tag group', new_tag_layout_template_path(tag_group_id: @tag_group.id) %>
+<br>
 <%= link_to 'Back to tag groups list', tag_groups_path %>

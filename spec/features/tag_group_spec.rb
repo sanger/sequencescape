@@ -17,6 +17,7 @@ feature 'Create a new tag group' do
     expect(page).to have_content 'Tag Group was successfully created.'
     expect(page).to have_content 'ACTGGTCA'
     expect(page).to have_content 'GGTTCCAA'
+    expect(page).to have_content 'Create a new tag layout template from this tag group'
   end
 
   scenario 'view tag groups and attempt to create a new one with invalid oligos', js: true do
@@ -34,5 +35,6 @@ feature 'Create a new tag group' do
     expect(page).to have_content 'Tag Group was successfully created.'
     expect(page).to have_content 'ACTGGTCA'
     expect(page).to have_content 'GGTTCCAA'
+    expect(page).to have_content 'Create a new tag layout template from this tag group'
   end
 end

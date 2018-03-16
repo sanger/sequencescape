@@ -10,19 +10,19 @@
   <thead>
     <th>Name</th>
     <th>Tag Group</th>
-    <th>Tag Group 2</th>
-    <th>Direction</th>
-    <th>Walking</th>
+    <th>Tag2 Group</th>
+    <th>Direction tags are laid out</th>
+    <th>Walking by</th>
     <th></th>
   </thead>
   <tbody>
   <% for tag_layout_template in @tag_layout_templates %>
     <tr>
       <td><%=h tag_layout_template.name %></td>
-      <td><%=h tag_layout_template.tag_group.name %></td>
-      <td><%=h tag_layout_template.tag2_group.name %></td>
+      <td><%=h tag_layout_template.tag_group&.name || 'na' %></td>
+      <td><%=h tag_layout_template.tag2_group&.name || 'na' %></td>
       <td><%=h tag_layout_template.direction %></td>
-
+      <td><%=h tag_layout_template.walking_by %></td>
       <td><%= link_to 'Show', tag_layout_template %></td>
     </tr>
   <% end %>
@@ -30,3 +30,6 @@
 </table>
 
 <script type="text/javascript">$('table tbody > tr:nth-child(even)').addClass('roweven');</script>
+
+<br>
+<%= link_to 'To tag groups list', tag_groups_path %>

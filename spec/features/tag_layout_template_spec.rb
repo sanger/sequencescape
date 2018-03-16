@@ -4,19 +4,63 @@ require 'rails_helper'
 
 feature 'Create a new tag layout template' do
   let(:user) { create :admin }
+  let(:tag_group_1) { create(:tag_group_with_tags, name: 'Test tag group 1') }
+  let(:tag_group_2) { create(:tag_group_with_tags, name: 'Test tag group 2') }
+
+  before(:each) do
+    tag_group_1
+    tag_group_2
+  end
 
   scenario 'create a new layout template from a tag group', js: true do
     login_user user
-    visit tag_groups_path
-    expect(page).to have_content 'Listing Tag Groups'
-    click_on 'Create a new Tag Group'
-    expect(page).to have_content 'New Tag Group'
-    fill_in('tag_group_name', with: 'Test tag group')
-    fill_in('tag_group_oligos_text', with: 'ACTGGTCA GGTTCCAA')
-    click_on 'Create tag group'
-    expect(page).to have_content 'Tag Group was successfully created.'
-    click_on 'Create tag layout template'
-    expect(page).to have_content '?' # TODO: new tag layout page
-    # TODO: fill in options and click create
+    visit tag_group_path(tag_group_1)
+    expect(page).to have_content 'Test tag group 1'
+    click_on 'Create a new tag layout template from this tag group'
+    expect(page).to have_content 'New Tag Layout Template'
+    within('#new_tag_layout_template') do
+      fill_in('tag_layout_template_name', with: 'Test tag layout template')
+      select('InColumns', from: 'tag_layout_template_direction_algorithm')
+      click_on 'Create tag layout template'
+    end
+    expect(page).to have_content 'Tag Layout Template was successfully created.'
+    expect(page).to have_content 'Name: Test tag layout template'
+    expect(page).to have_content "Tag Group: #{tag_group_1.name}"
+    expect(page).to have_content 'Tag2 Group: na'
+    expect(page).to have_content 'Direction the tags are laid out by: column'
+    expect(page).to have_content 'Walking by: wells of plate'
+    expect(page).to have_content 'To tag layout templates list'
+  end
+
+  scenario 'create a new layout template directly', js: true do
+    login_user user
+    visit new_tag_layout_template_path
+    expect(page).to have_content 'New Tag Layout Template'
+    within('#new_tag_layout_template') do
+      fill_in('tag_layout_template_name', with: 'Test tag layout template')
+      select(tag_group_1.name, from: 'tag_layout_template_tag_group_id')
+      select(tag_group_2.name, from: 'tag_layout_template_tag2_group_id')
+      select('InColumns', from: 'tag_layout_template_direction_algorithm')
+      click_on 'Create tag layout template'
+    end
+    expect(page).to have_content 'Tag Layout Template was successfully created.'
+    expect(page).to have_content 'Name: Test tag layout template'
+    expect(page).to have_content "Tag Group: #{tag_group_1.name}"
+    expect(page).to have_content "Tag2 Group: #{tag_group_2.name}"
+    expect(page).to have_content 'Direction the tags are laid out by: column'
+    expect(page).to have_content 'Walking by: wells of plate'
+    expect(page).to have_content 'To tag layout templates list'
+  end
+
+  scenario 'get an error when creating a new layout template', js: true do
+    login_user user
+    visit new_tag_layout_template_path
+    expect(page).to have_content 'New Tag Layout Template'
+    within('#new_tag_layout_template') do
+      fill_in('tag_layout_template_name', with: 'Test tag layout template')
+      select('InColumns', from: 'tag_layout_template_direction_algorithm')
+      click_on 'Create tag layout template'
+    end
+    expect(page).to have_content 'error prohibited this tag layout template from being saved There were problems with the following fields: Tag group must exist'
   end
 end
