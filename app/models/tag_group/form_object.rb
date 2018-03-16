@@ -6,6 +6,10 @@
 # authorship of this file.
 # Copyright (C) 2018 Genome Research Ltd.
 
+##
+# This form object class handles the user interaction for creating new Tag Groups.
+# It sensibility checks the user-entered list of Tag oligo sequences before creating
+# the Tag Group and Tags.
 class TagGroup::FormObject
   include ActiveModel::Model
 
@@ -30,7 +34,7 @@ class TagGroup::FormObject
     end
   end
 
-  # form builder methods (e.g. form_to) need this to be set
+  # form builder methods (e.g. form_to) need the Active Model name to be set
   def self.model_name
     ActiveModel::Name.new(TagGroup)
   end

@@ -4,8 +4,11 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
+##
+# This class is the controller for Tag Groups, which are basically used to record the grouping
+# of a set of Sequencing Tags. It allows you to create and view Tag Groups.
 class TagGroupsController < ApplicationController
-  before_action :admin_login_required, only: [:new, :edit, :create, :update]
+  before_action :admin_login_required, only: [:new, :create]
 
   def index
     @tag_groups = TagGroup.all
@@ -23,6 +26,9 @@ class TagGroupsController < ApplicationController
     end
   end
 
+  ##
+  # The new method uses a form object to handle the naming of the Tag Group and the input
+  # and validation of the Tag oligo sequences.
   def new
     @form_object = TagGroup::FormObject.new
 
@@ -31,6 +37,9 @@ class TagGroupsController < ApplicationController
     end
   end
 
+  ##
+  # The create method uses a form object to validate the user input of the oligo sequences
+  # and handle the creation of Tags within a new Tag Group.
   def create
     @form_object = TagGroup::FormObject.new(tag_group_form_object_params)
 

@@ -211,6 +211,7 @@ en:
       invalid_barcodes_found: "Invalid barcodes found, no report generated: "
       plate_list_empty: "No plates found when attempting to generate the report."
   tag_groups:
+    success: 'The Tag Layout Template has been successfully created.'
     errors:
       duplicate_oligo_found: "The following oligo was found to be present more than once in the list, please correct: "
       invalid_oligos_found: "Oligos can contain only A, T, G or C characters and must be separated by spaces or commas, the following are invalid: "

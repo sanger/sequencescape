@@ -23,7 +23,7 @@ feature 'Create a new tag layout template' do
       select('InColumns', from: 'tag_layout_template_direction_algorithm')
       click_on 'Create tag layout template'
     end
-    expect(page).to have_content 'Tag Layout Template was successfully created.'
+    expect(page).to have_content 'The Tag Layout Template has been successfully created.'
     expect(page).to have_content 'Name: Test tag layout template'
     expect(page).to have_content "Tag Group: #{tag_group_1.name}"
     expect(page).to have_content 'Tag2 Group: na'
@@ -43,7 +43,7 @@ feature 'Create a new tag layout template' do
       select('InColumns', from: 'tag_layout_template_direction_algorithm')
       click_on 'Create tag layout template'
     end
-    expect(page).to have_content 'Tag Layout Template was successfully created.'
+    expect(page).to have_content 'The Tag Layout Template has been successfully created.'
     expect(page).to have_content 'Name: Test tag layout template'
     expect(page).to have_content "Tag Group: #{tag_group_1.name}"
     expect(page).to have_content "Tag2 Group: #{tag_group_2.name}"
