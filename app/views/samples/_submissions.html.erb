@@ -1,5 +1,5 @@
-<div class='info'>
-  <h3>Submissions <span class='badge'><%= @sample.submissions.length %></span></h3>
+<%= panel do %>
+  <h3>Submissions <span class='badge badge-primary'><%= @sample.submissions.length %></span></h3>
   <table width='100%'>
     <thead>
       <tr>
@@ -14,4 +14,4 @@
       <% end %>
     </tbody>
   </table>
-</div>
+<% end %>

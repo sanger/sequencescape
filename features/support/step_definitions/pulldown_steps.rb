@@ -139,8 +139,10 @@ def finalise_pipeline_for(plate)
   plate.purpose.connect_requests(plate, 'qc_complete')
   plate.wells.each do |well|
     well.requests_as_target.each do |r|
-      target_state = r.library_creation? ? 'passed' : 'qc_complete'
-      r.update_attributes!(state: target_state)
+      r.update_attributes!(state: 'passed')
+    end
+    well.transfer_requests_as_target.each do |r|
+      r.update_attributes!(state: 'qc_complete')
     end
   end
 end
@@ -214,6 +216,11 @@ Given /^all requests are in the last submission$/ do
   Request.update_all("submission_id=#{submission.id}")
 end
 
+Given /^all transfer requests are in the last submission$/ do
+  submission = Submission.last or raise StandardError, 'There are no submissions!'
+  TransferRequest.update_all("submission_id=#{submission.id}")
+end
+
 Given /^(the plate .+) will pool into 1 tube$/ do |plate|
   stock_plate = PlatePurpose.find(2).create!(:do_not_create_wells) { |p| p.wells = [FactoryGirl.create(:empty_well)] }
   stock_well  = stock_plate.wells.first
@@ -222,7 +229,7 @@ Given /^(the plate .+) will pool into 1 tube$/ do |plate|
   AssetLink.create!(ancestor: stock_plate, descendant: plate)
 
   plate.wells.in_column_major_order.readonly(false).each do |well|
-    RequestType.transfer.create!(asset: stock_well, target_asset: well, submission: submission)
+    FactoryGirl.create(:transfer_request, asset: stock_well, target_asset: well, submission: submission)
     well.stock_wells.attach!([stock_well])
     FactoryGirl.create :library_creation_request, asset: stock_well, target_asset: well, submission: submission
   end

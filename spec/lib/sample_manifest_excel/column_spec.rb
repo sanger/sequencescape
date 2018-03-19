@@ -6,8 +6,8 @@ RSpec.describe SampleManifestExcel::Column, type: :model, sample_manifest_excel:
   let(:options)     {
     { heading: 'PUBLIC NAME', name: :public_name, type: :string, value: 10, number: 125, attribute: :barcode,
       validation: FactoryGirl.attributes_for(:validation),
-      conditional_formattings: { simple: FactoryGirl.attributes_for(:conditional_formatting), complex: FactoryGirl.attributes_for(:conditional_formatting_with_formula) }
-                    } }
+      conditional_formattings: { simple: FactoryGirl.attributes_for(:conditional_formatting), complex: FactoryGirl.attributes_for(:conditional_formatting_with_formula) } }
+  }
 
   it 'must have a heading' do
     expect(SampleManifestExcel::Column.new(options).heading).to eq(options[:heading])

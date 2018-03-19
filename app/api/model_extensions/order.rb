@@ -53,14 +53,14 @@ module ModelExtensions::Order
 
       scope :include_study, -> { includes(study: :uuid_object) }
       scope :include_project, -> { includes(project: :uuid_object) }
-      scope :include_assets, -> { includes(assets: :uuid_object) }
+      scope :include_assets, -> { includes(assets: [:uuid_object, { aliquots: Io::Aliquot::PRELOADS }]) }
 
       has_many :submitted_assets, -> { joins(:asset) }, inverse_of: :order
       has_many :assets, through: :submitted_assets, before_add: :validate_new_record
 
-     scope :that_submitted_asset_id, ->(asset_id) {
-       where(submitted_assets: { asset_id: asset_id }).joins(:submitted_assets)
-     }
+      scope :that_submitted_asset_id, ->(asset_id) {
+        where(submitted_assets: { asset_id: asset_id }).joins(:submitted_assets)
+      }
 
       validate :extended_validation
       def extended_validation

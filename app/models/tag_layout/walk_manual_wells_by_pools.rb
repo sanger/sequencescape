@@ -4,14 +4,8 @@
 # authorship of this file.
 # Copyright (C) 2014,2015 Genome Research Ltd.
 
-module TagLayout::WalkManualWellsByPools
-  def self.walking_by
-    'wells in pools'
-  end
-
-  def walking_by
-    TagLayout::WalkManualWellsByPools.walking_by
-  end
+class TagLayout::WalkManualWellsByPools < TagLayout::Walker
+  self.walking_by = 'wells in pools'
 
   def walk_wells
     # This is much simple than the automated method
@@ -22,5 +16,4 @@ module TagLayout::WalkManualWellsByPools
       wells.each_with_index { |(well, _), index| yield(well, index) unless well.nil? }
     end
   end
-  private :walk_wells
 end

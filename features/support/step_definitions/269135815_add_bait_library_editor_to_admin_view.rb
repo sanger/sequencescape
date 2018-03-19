@@ -22,7 +22,7 @@ Given /^I have a bait library called "([^\"]*)"$/ do |name|
     bait_library_type: BaitLibraryType.find_by(visible: true),
     bait_library_supplier: BaitLibrary::Supplier.find_by(visible: true),
     target_species: 'Dragon'
-    )
+  )
 end
 
 Then /^the supplier_identifier for "([^\"]*)" should be nil$/ do |name|

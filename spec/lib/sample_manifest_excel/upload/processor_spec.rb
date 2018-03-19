@@ -156,9 +156,9 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
         let!(:download) { build(:test_download, columns: columns, manifest_type: 'multiplexed_library', validation_errors: [:tags]) }
 
         it 'will not be valid' do
-           processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(upload)
-           processor.run(tag_group)
-           expect(processor).to_not be_valid
+          processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(upload)
+          processor.run(tag_group)
+          expect(processor).to_not be_valid
         end
       end
     end

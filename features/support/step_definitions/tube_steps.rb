@@ -21,8 +21,7 @@ Given /^the tube "([^"]*)" is the target of a (started|passed|pending) "([^"]*)"
     { state: state,
       asset: source,
       target_asset: tube,
-      submission: submission
-    }.merge(request_defaults(request_type))
+      submission: submission }.merge(request_defaults(request_type))
   )
 end
 

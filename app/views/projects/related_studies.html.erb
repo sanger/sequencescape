@@ -5,5 +5,5 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
 
 <% add :menu, "Back to project" => project_path(@project) -%>
-<h1>Studies for project <%= @project.name %></h1>
+<div class="page-header"><h1>Studies for project <%= @project.name %></h1></div>
 <%= render partial: "studies/study_list",  locals: {studies: @studies} %>

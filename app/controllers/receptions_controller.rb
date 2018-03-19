@@ -50,7 +50,7 @@ class ReceptionsController < ApplicationController
       asset = Asset.find_from_machine_barcode(barcode)
 
       if asset.nil?
-          @errors << "Asset with barcode #{barcode} not found"
+        @errors << "Asset with barcode #{barcode} not found"
       else
         @assets << asset
       end
@@ -78,7 +78,6 @@ class ReceptionsController < ApplicationController
 
   def confirm_reception
     ActiveRecord::Base.transaction do
-      location = Location.find(params[:location_id])
       assets = params[:asset_id]
       @errors = []
       asset_count = 0
@@ -88,10 +87,9 @@ class ReceptionsController < ApplicationController
         if asset.nil?
           @errors << "Asset not found with asset ID #{asset_id}"
         else
-          asset.update_attributes(location: location)
           asset_count += 1
-          asset.events.create_scanned_into_lab!(location)
-          BroadcastEvent::LabwareReceived.create!(seed: asset, user: current_user)
+          asset.events.create_scanned_into_lab!('OLD RECEPTION')
+          BroadcastEvent::LabwareReceived.create!(seed: asset, user: current_user, properties: { location_barcode: 'OLD RECEPTION' })
         end
       end
 

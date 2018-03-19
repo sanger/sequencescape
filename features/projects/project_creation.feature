@@ -46,7 +46,7 @@ Feature: Creating projects
     And I should not see "Problems creating your new project"
 
   Scenario: Creating a microarray genotyping project
-    Given user "John Smith" has a workflow "Microarray genotyping"
+
 
     Given I am on the project creation page
     And I fill in "Name" with "Testing project creation"
@@ -58,7 +58,7 @@ Feature: Creating projects
     And I should see "Your project has been created"
 
   Scenario: Creating a next-gen sequencing project
-    Given user "John Smith" has a workflow "Next-gen sequencing"
+
 
     Given I am on the project creation page
     And I fill in "Name" with "Testing project creation"

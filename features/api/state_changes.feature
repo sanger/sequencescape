@@ -10,17 +10,11 @@ Feature: Access state changes through the API
   Background:
     Given all HTTP requests to the API have the cookie "WTSISignOn" set to "I-am-authenticated"
     And the WTSI single sign-on service recognises "I-am-authenticated" as "John Smith"
-
     Given I am using the latest version of the API
-And I have a "full" authorised user with the key "cucumber"
-
+    And I have a "full" authorised user with the key "cucumber"
     Given a user with UUID "99999999-8888-7777-6666-555555555555" exists
-
     Given the plate barcode webservice returns "1000001"
       And the plate barcode webservice returns "1000002"
-
-    Given transfers between "Stock plate" and "Pulldown QC plate" plates are done by "Transfer" requests
-
     Given a "Stock plate" plate called "Source plate" exists
       And 2 wells on the plate "Source plate" have unique samples
       And a "Pulldown QC plate" plate called "Destination plate" exists as a child of "Source plate"
@@ -31,7 +25,6 @@ And I have a "full" authorised user with the key "cucumber"
   @create
   Scenario Outline: Creating a state change on a plate
     Given the UUID of the next state change created will be "11111111-2222-3333-4444-000000000001"
-
     When I make an authorised POST with the following JSON to the API path "/state_changes":
       """
       {
@@ -62,10 +55,8 @@ And I have a "full" authorised user with the key "cucumber"
         }
       }
       """
-
     Then the state of the plate "Destination plate" should be "<state>"
-     And the state of all the transfer requests to the plate "Destination plate" should be "<state>"
-     And the request type of all the transfer requests to the the plate "Destination plate" should be "Transfer"
+    And the state of all the transfer requests to the plate "Destination plate" should be "<state>"
 
     Scenarios:
       | state     |
@@ -77,7 +68,6 @@ And I have a "full" authorised user with the key "cucumber"
   @create
   Scenario Outline: Creating a state change on a plate where the state requires a reason
     Given the UUID of the next state change created will be "11111111-2222-3333-4444-000000000001"
-
     When I make an authorised POST with the following JSON to the API path "/state_changes":
       """
       {
@@ -169,6 +159,7 @@ And I have a "full" authorised user with the key "cucumber"
     Given the UUID of the next state change created will be "11111111-2222-3333-4444-000000000001"
       And "A1-H12" of the plate "Source plate" have been submitted to "Pulldown WGS - HiSeq Paired end sequencing"
       And all requests are in the last submission
+      And all transfer requests are in the last submission
       And all the "Pulldown::Requests::WgsLibraryRequest" requests in the last submission have been started
     When I make an authorised POST with the following JSON to the API path "/state_changes":
       """
@@ -214,6 +205,7 @@ And I have a "full" authorised user with the key "cucumber"
     Given the UUID of the next state change created will be "11111111-2222-3333-4444-000000000001"
       And "A1-B1" of the plate "Source plate" have been submitted to "Pulldown WGS - HiSeq Paired end sequencing"
       And all requests are in the last submission
+      And all transfer requests are in the last submission
 
     When I make an authorised POST with the following JSON to the API path "/state_changes":
       """
@@ -265,6 +257,7 @@ And I have a "full" authorised user with the key "cucumber"
     Given the UUID of the next state change created will be "11111111-2222-3333-4444-000000000001"
     And "A1-B1" of the plate "Source plate" have been submitted to "Pulldown WGS - HiSeq Paired end sequencing"
       And all requests are in the last submission
+      And all transfer requests are in the last submission
       And all the "Pulldown::Requests::WgsLibraryRequest" requests in the last submission have been started
 
     When I make an authorised POST with the following JSON to the API path "/state_changes":
@@ -301,7 +294,6 @@ And I have a "full" authorised user with the key "cucumber"
 
     Then the state of the plate "Destination plate" should be "failed"
      And the state of all the transfer requests to the plate "Destination plate" should be "failed"
-     And the request type of all the transfer requests to the the plate "Destination plate" should be "Transfer"
      And the state of all the pulldown library creation requests from the plate "Source plate" should be "failed"
      And the user should accept responsibility for pulldown library creation requests from the plate "Source plate"
 

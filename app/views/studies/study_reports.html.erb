@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
 
 <% add :menu, "All reports" => study_reports_path() %>
-<h1>QC Reports for <%= @study.name %></h1>
+<div class="page-header"><h1>QC Reports for <%= @study.name %></h1></div>
 
 <h2><%= link_to "New report", new_study_report_path(study: @study) %></h2>
 

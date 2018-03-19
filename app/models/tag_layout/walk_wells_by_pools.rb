@@ -4,14 +4,8 @@
 # authorship of this file.
 # Copyright (C) 2012,2013,2015 Genome Research Ltd.
 
-module TagLayout::WalkWellsByPools
-  def self.walking_by
-    'wells in pools'
-  end
-
-  def walking_by
-    TagLayout::WalkWellsByPools.walking_by
-  end
+class TagLayout::WalkWellsByPools < TagLayout::Walker
+  self.walking_by = 'wells in pools'
 
   def walk_wells
     # Adjust each of the groups so that any wells that are in the same pool as those at the same position
@@ -43,5 +37,4 @@ module TagLayout::WalkWellsByPools
       group.each_with_index { |(well, _), index| yield(well, index) unless well.nil? }
     end
   end
-  private :walk_wells
 end

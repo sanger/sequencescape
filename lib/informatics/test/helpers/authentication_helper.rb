@@ -74,20 +74,20 @@ class BaseLoginProxy
 
   private
 
-    def authenticated
-      raise NotImplementedError
-    end
+  def authenticated
+    raise NotImplementedError
+  end
 
-    def check
-      raise NotImplementedError
-    end
+  def check
+    raise NotImplementedError
+  end
 
-    def method_missing(method, *args)
-      @controller.reset!
-      authenticate
-      @controller.send(method, *args)
-      check
-    end
+  def method_missing(method, *args)
+    @controller.reset!
+    authenticate
+    @controller.send(method, *args)
+    check
+  end
 end
 
 class HttpLoginProxy < BaseLoginProxy

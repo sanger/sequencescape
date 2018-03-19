@@ -80,6 +80,14 @@ class Aliquot < ApplicationRecord
     aliquot_index.try(:aliquot_index)
   end
 
+  def created_with_request_options
+    {
+      fragment_size_required_from: insert_size_from,
+      fragment_size_required_to: insert_size_to,
+      library_type: library_type
+    }
+  end
+
   # Validating the uniqueness of tags in rails was causing issues, as it was resulting the in the preform_transfer_of_contents
   # in transfer request to fail, without any visible sign that something had gone wrong. This essentially meant that tag clashes
   # would result in sample dropouts. (presumably because << triggers save not save!)
@@ -125,9 +133,10 @@ class Aliquot < ApplicationRecord
 
   # Cloning an aliquot should unset the receptacle ID because otherwise it won't get reassigned.  We should
   # also reset the timestamp information as this is a new aliquot really.
-  def dup(receptacle_id: nil)
+  # Any options passed in as parameters will override the aliquot defaults
+  def dup(params = {})
     super().tap do |cloned_aliquot|
-      cloned_aliquot.receptacle_id = receptacle_id
+      cloned_aliquot.attributes = params
     end
   end
 

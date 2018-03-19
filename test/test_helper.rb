@@ -22,12 +22,8 @@ rescue LoadError
   # No pry? That's okay, we're probably on the CI server
 end
 
-require File.expand_path(File.join(Rails.root, %w{test factories.rb}))
-Dir.glob(File.expand_path(File.join(Rails.root, %w{test factories ** *.rb}))) do |factory_filename|
- require factory_filename
-end
-Dir.glob(File.expand_path(File.join(Rails.root, %w{test lib sample_manifest_excel factories ** *.rb}))) do |factory_filename|
- require factory_filename
+Dir.glob(File.expand_path(File.join(Rails.root, %w{spec factories ** *.rb}))) do |factory_filename|
+  require factory_filename
 end
 
 Dir.glob(File.expand_path(File.join(Rails.root, %w{test shoulda_macros *.rb}))) do |macro_filename|
@@ -94,17 +90,7 @@ require 'mocha/mini_test'
 
 Shoulda::Matchers.configure do |config|
   config.integrate do |with|
-    # Choose a test framework:
-    # with.test_framework :rspec
     with.test_framework :minitest
-    # with.test_framework :minitest_4
-    # with.test_framework :test_unit
-
-    # Choose one or more libraries:
-    # with.library :active_record
-    # with.library :active_model
-    # with.library :action_controller
-    # Or, choose the following (which implies all of the above):
     with.library :rails
   end
 end

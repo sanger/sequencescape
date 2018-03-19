@@ -5,10 +5,6 @@ describe BaitLibraryType do
   context 'When a bait library exists' do
     let(:bait_library) { create :bait_library }
 
-    it 'Bait Library Types exist' do
-      expect(BaitLibraryType.count > 0).to be true
-    end
-
     it 'bait libraries have library types' do
       expect(bait_library.bait_library_type).to be_truthy
     end

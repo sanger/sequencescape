@@ -138,7 +138,13 @@ class Asset < ApplicationRecord
 
   scope :recent_first, -> { order(id: :desc) }
 
-  scope :include_for_show, ->() { includes({ requests: [:request_type, :request_metadata] }, requests_as_target: [:request_type, :request_metadata]) }
+  scope :include_for_show, -> { includes({ requests: [:request_type, :request_metadata] }, requests_as_target: [:request_type, :request_metadata]) }
+
+  # The use of a sub-query here is a performance optimization. If we join onto the asset_links
+  # table instead, rails is unable to paginate the results efficiently, as it needs to use DISTINCT
+  # when working out offsets. This is substantially slower.
+  scope :without_children, -> { where.not(id: AssetLink.where(direct: true).select(:ancestor_id)) }
+  scope :include_plates_with_children, ->(filter) { filter ? all : without_children }
 
   # Named scope for search by query string behaviour
   scope :for_search_query, ->(query, with_includes) {
@@ -170,8 +176,6 @@ class Asset < ApplicationRecord
     end
   }
 
-  scope :with_name, ->(*names) { where(name: names.flatten) }
-
   # We accept not only an individual barcode but also an array of them.  This builds an appropriate
   # set of conditions that can find any one of these barcodes.  We map each of the individual barcodes
   # to their appropriate query conditions (as though they operated on their own) and then we join
@@ -202,8 +206,8 @@ class Asset < ApplicationRecord
       end
     end
 
-      where([query_details[:query].join(' OR '), *query_details[:parameters].flatten.compact])
-        .joins(query_details[:joins].compact.uniq)
+    where([query_details[:query].join(' OR '), *query_details[:parameters].flatten.compact])
+      .joins(query_details[:joins].compact.uniq)
   }
 
   scope :source_assets_from_machine_barcode, ->(destination_barcode) {
@@ -213,7 +217,7 @@ class Asset < ApplicationRecord
       if source_asset_ids.empty?
         none
       else
-         where(id: source_asset_ids)
+        where(id: source_asset_ids)
       end
     else
       none
@@ -235,16 +239,6 @@ class Asset < ApplicationRecord
 
   def self.find_from_machine_barcode(source_barcode)
     with_machine_barcode(source_barcode).first
-  end
-
-  def self.find_by_human_barcode(barcode, location)
-    data = Barcode.split_human_barcode(barcode)
-    if data[0] == 'DN'
-      plate = Plate.find_by(barcode: data[1])
-      well = plate.find_well_by_name(location)
-      return well if well
-    end
-    raise ActiveRecord::RecordNotFound, "Couldn't find well with for #{barcode} #{location}"
   end
 
   def summary_hash
@@ -378,7 +372,7 @@ class Asset < ApplicationRecord
   end
 
   def display_name
-    name.blank? ? "#{sti_type} #{id}" : name
+    name.presence || "#{sti_type} #{id}"
   end
 
   def external_identifier

@@ -41,6 +41,6 @@ class Comment < ApplicationRecord
   def self.counts_for(commentables)
     return 0 if commentables.empty?
     type = commentables.first.class.base_class.name
-    where(commentable_type: type, commentable_id: commentables).group(:commentable_id).count
+    where(commentable_type: type, commentable_id: commentables.map(&:id)).group(:commentable_id).count
   end
 end

@@ -5,9 +5,9 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
 
 <% if @workflow.source_is_external? -%>
-<%= render_title "Samples and requests" %>
+<%= about "Samples and requests" %>
 <% else -%>
-<%= render_title "Samples" %>
+<%= about "Samples" %>
 <% end -%>
 
 <%= render_help "Samples available for the '#{@workflow.name}' pipeline"%>

@@ -250,7 +250,7 @@ class Study < ApplicationRecord
 
   # Scopes
   scope :for_search_query, ->(query, _with_includes) {
-    joins(:study_metadata).where(['name LIKE ? OR studies.id=? OR prelim_id=?', "%#{query}%", query, query])
+                             joins(:study_metadata).where(['name LIKE ? OR studies.id=? OR prelim_id=?', "%#{query}%", query, query])
                            }
 
   scope :with_no_ethical_approval, -> { where(ethically_approved: false) }
@@ -271,39 +271,39 @@ class Study < ApplicationRecord
   }
 
   scope :for_sample_accessioning, ->() {
-        joins(:study_metadata)
-          .where("study_metadata.study_ebi_accession_number <> ''")
-          .where(study_metadata: { data_release_strategy: [Study::DATA_RELEASE_STRATEGY_OPEN, Study::DATA_RELEASE_STRATEGY_MANAGED], data_release_timing: Study::DATA_RELEASE_TIMINGS })
+    joins(:study_metadata)
+      .where("study_metadata.study_ebi_accession_number <> ''")
+      .where(study_metadata: { data_release_strategy: [Study::DATA_RELEASE_STRATEGY_OPEN, Study::DATA_RELEASE_STRATEGY_MANAGED], data_release_timing: Study::DATA_RELEASE_TIMINGS })
   }
 
   scope :awaiting_ethical_approval, ->() {
     joins(:study_metadata)
       .where(
-      ethically_approved: false,
-      study_metadata: {
-        contains_human_dna: Study::YES,
-        contaminated_human_dna: Study::NO,
-        commercially_available: Study::NO
-      }
-    )
+        ethically_approved: false,
+        study_metadata: {
+          contains_human_dna: Study::YES,
+          contaminated_human_dna: Study::NO,
+          commercially_available: Study::NO
+        }
+      )
   }
 
   scope :contaminated_with_human_dna, ->() {
     joins(:study_metadata)
       .where(
-      study_metadata: {
-        contaminated_human_dna: Study::YES
-      }
-    )
+        study_metadata: {
+          contaminated_human_dna: Study::YES
+        }
+      )
   }
 
   scope :with_remove_x_and_autosomes, ->() {
     joins(:study_metadata)
       .where(
-      study_metadata: {
-        remove_x_and_autosomes: Study::YES
-      }
-    )
+        study_metadata: {
+          remove_x_and_autosomes: Study::YES
+        }
+      )
   }
 
   scope :by_state, ->(state) { where(state: state) }
@@ -363,11 +363,11 @@ class Study < ApplicationRecord
   end
 
   def text_comments
-    comments.collect { |c| c.description unless c.description.blank? }.compact.join(', ')
+    comments.each_with_object([]) { |c, array| array << c.description unless c.description.blank? }.join(', ')
   end
 
-  def completed(workflow = nil)
-    rts = workflow.present? ? workflow.request_types.map(&:id) : RequestType.all.map(&:id)
+  def completed(_workflow = nil)
+    rts = RequestType.standard.pluck(:id)
     total = requests.request_type(rts).count
     failed = requests.failed.request_type(rts).count
     cancelled = requests.cancelled.request_type(rts).count
@@ -377,10 +377,6 @@ class Study < ApplicationRecord
     else
       return 0
     end
-  end
-
-  def submissions_for_workflow(workflow)
-    orders.for_workflow(workflow).include_for_study_view.map(&:submission).compact.uniq
   end
 
   # Yields information on the state of all request types in a convenient fashion for displaying in a table.
@@ -461,7 +457,7 @@ class Study < ApplicationRecord
 
   def abbreviation
     abbreviation = study_metadata.study_name_abbreviation
-    abbreviation.blank? ? "#{id}STDY" : abbreviation
+    abbreviation.presence || "#{id}STDY"
   end
 
   def dehumanise_abbreviated_name

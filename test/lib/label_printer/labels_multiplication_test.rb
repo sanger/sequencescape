@@ -28,24 +28,19 @@ class ExampleLabelTest < ActiveSupport::TestCase
     @labels = { body: [{ main_label:
                         { left: 'Plate 1',
                           right: 'DN',
-                          barcode: '1111' }
-                      },
+                          barcode: '1111' } },
                        { main_label:
                          { left: 'Plate 2',
                            right: 'DN',
-                           barcode: '2222' }
-                       },
+                           barcode: '2222' } },
                        { main_label:
                          { left: 'Plate 3',
                            right: 'DN',
-                           barcode: '3333' }
-                       },
+                           barcode: '3333' } },
                        { main_label:
                          { left: 'Plate 4',
                            right: 'DN',
-                           barcode: '4444' }
-                       }
-              ] }
+                           barcode: '4444' } }] }
   end
 
   test 'should return the right label' do

@@ -16,15 +16,17 @@ class Api::AliquotIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        scope :including_associations_for_json, -> { includes([
-          :uuid_object,
-          { sample: :uuid_object },
-          { study: :uuid_object },
-          { project: :uuid_object },
-          { tag: :uuid_object },
-          { library: :uuid_object },
-          { receptacle: :uuid_object }
-        ])}
+        scope :including_associations_for_json, -> {
+          includes([
+            :uuid_object,
+            { sample: :uuid_object },
+            { study: :uuid_object },
+            { project: :uuid_object },
+            { tag: :uuid_object },
+            { library: :uuid_object },
+            { receptacle: :uuid_object }
+          ])
+        }
       end
     end
   end

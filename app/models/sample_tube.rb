@@ -19,10 +19,6 @@ class SampleTube < Tube
     record.label = 'SampleTube' if record.label.blank?
   end
 
-  def created_with_request_options
-    {}
-  end
-
   def can_be_created?
     true
   end

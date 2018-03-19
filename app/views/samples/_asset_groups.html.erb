@@ -1,5 +1,5 @@
-<div class='info'>
-  <h3>Asset Groups <span class='badge'><%= @sample.asset_groups.length %></span></h3>
+<%= panel do %>
+  <h3>Asset Groups <span class='badge badge-primary'><%= @sample.asset_groups.length %></span></h3>
   <table width='100%'>
     <thead>
       <tr>
@@ -14,4 +14,4 @@
       <% end %>
     </tbody>
   </table>
-</div>
+<% end %>

@@ -6,7 +6,6 @@
 
 class Lane < Receptacle
   include Api::LaneIO::Extensions
-  include LocationAssociation::Locatable
   include AliquotIndexer::Indexable
 
   LIST_REASONS_NEGATIVE = [
@@ -43,6 +42,14 @@ class Lane < Receptacle
 
   def subject_type
     'lane'
+  end
+
+  def friendly_name
+    name # TODO: Maybe add location?
+  end
+
+  def source_labwares
+    requests_as_target.map(&:asset).map(&:labware).uniq
   end
 
   def rebroadcast

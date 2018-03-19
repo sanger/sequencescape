@@ -17,8 +17,6 @@ class LinearSubmissionTest < ActiveSupport::TestCase
 
   context 'A LinearSubmission' do
     setup do
-      @workflow = create :submission_workflow
-
       @study = build :study
       @project = build :project
       @user = build :user
@@ -41,7 +39,6 @@ class LinearSubmissionTest < ActiveSupport::TestCase
             @basic_options = {
               study: @study,
               project: @project,
-              workflow: @workflow,
               user: @user,
               request_types: @mpx_request_type_ids,
               request_options: @request_options,
@@ -79,7 +76,6 @@ class LinearSubmissionTest < ActiveSupport::TestCase
             @basic_options = {
               study: @study,
               project: @project,
-              workflow: @workflow,
               user: @user,
               assets: @mpx_assets,
               request_types: @mpx_request_type_ids,
@@ -125,7 +121,6 @@ class LinearSubmissionTest < ActiveSupport::TestCase
                 @multiple_mpx_submission = LinearSubmission.build!(
                   study: @study,
                   project: @project,
-                  workflow: @workflow,
                   user: @user,
                   assets: @mpx_assets,
                   request_types: @mpx_request_type_ids,
@@ -164,7 +159,6 @@ class LinearSubmissionTest < ActiveSupport::TestCase
           @submission = LinearSubmission.build!(
             study: @study,
             project: @project,
-            workflow: @workflow,
             user: @user,
             assets: @assets,
             request_types: @request_type_ids,
@@ -193,9 +187,9 @@ class LinearSubmissionTest < ActiveSupport::TestCase
             @submission.process!
           end
 
-         should "change Request.count by #{SX_ASSET_COUNT * 3}" do
-           assert_equal SX_ASSET_COUNT * 3, Request.count - @request_count, "Expected Request.count to change by #{SX_ASSET_COUNT * 3}"
-         end
+          should "change Request.count by #{SX_ASSET_COUNT * 3}" do
+            assert_equal SX_ASSET_COUNT * 3, Request.count - @request_count, "Expected Request.count to change by #{SX_ASSET_COUNT * 3}"
+          end
 
           context '#create_requests_for_items' do
             setup do
@@ -204,13 +198,13 @@ class LinearSubmissionTest < ActiveSupport::TestCase
               @submission.create_requests
             end
 
-           should "change Request.count by #{SX_ASSET_COUNT * 3}" do
-             assert_equal SX_ASSET_COUNT * 3,  Request.count  - @request_count, "Expected Request.count to change by #{SX_ASSET_COUNT * 3}"
-           end
+            should "change Request.count by #{SX_ASSET_COUNT * 3}" do
+              assert_equal SX_ASSET_COUNT * 3,  Request.count  - @request_count, "Expected Request.count to change by #{SX_ASSET_COUNT * 3}"
+            end
 
-           should "change Comment.count by #{SX_ASSET_COUNT * 3}" do
-             assert_equal SX_ASSET_COUNT * 3,  Comment.count  - @comment_count, "Expected Comment.count to change by #{SX_ASSET_COUNT * 3}"
-           end
+            should "change Comment.count by #{SX_ASSET_COUNT * 3}" do
+              assert_equal SX_ASSET_COUNT * 3,  Comment.count  - @comment_count, "Expected Comment.count to change by #{SX_ASSET_COUNT * 3}"
+            end
 
             should 'assign submission ids to the requests' do
               assert_equal @submission, @submission.items.first.requests.first.submission
@@ -260,7 +254,6 @@ class LinearSubmissionTest < ActiveSupport::TestCase
       setup do
         @study = create :study
         @project = create :project
-        @workflow = create :submission_workflow
 
         @user = create :user
 
@@ -278,7 +271,6 @@ class LinearSubmissionTest < ActiveSupport::TestCase
         @submission_with_multiplication_factor = LinearSubmission.build!(
           study: @study,
           project: @project,
-          workflow: @workflow,
           user: @user,
           assets: [@asset_1, @asset_2],
           request_types: [@lib_request_type.id, @pe_request_type.id],
@@ -288,7 +280,6 @@ class LinearSubmissionTest < ActiveSupport::TestCase
         @mx_submission_with_multiplication_factor = LinearSubmission.build!(
           study: @study,
           project: @project,
-          workflow: @workflow,
           user: @user,
           assets: [@asset_1, @asset_2],
           request_types: [@mx_request_type.id, @pe_request_type.id],
@@ -304,9 +295,9 @@ class LinearSubmissionTest < ActiveSupport::TestCase
             @submission_with_multiplication_factor.process!
           end
 
-           should 'change Request.count by 12' do
-             assert_equal 12, Request.count - @request_count, 'Expected Request.count to change by 12'
-           end
+          should 'change Request.count by 12' do
+            assert_equal 12, Request.count - @request_count, 'Expected Request.count to change by 12'
+          end
 
           should 'create 2 library requests' do
             lib_requests = Request.where(submission_id: @submission_with_multiplication_factor, request_type_id: @lib_request_type.id)

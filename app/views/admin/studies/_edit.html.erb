@@ -17,7 +17,7 @@
           <%= form_group do %>
             <%= form.label :state, "State", class: 'col-md-4' %>
             <div class='col-md-8'>
-              <%= form.select :state, Study.aasm.states_for_select, {}, {class: 'form-control'} %>
+              <%= form.select :state, Study.aasm.states_for_select, {}, {class: 'custom-select'} %>
             </div>
           <% end %>
         <% end %>
@@ -33,7 +33,7 @@
     <%= panel(:info,title:'Study information') do %>
         <%= fields_for(study) do |form| %>
           <%= form.fields_for(:study_metadata, builder: Metadata::FormBuilder) do |metadata_fields| %>
-            <%= metadata_fields.select_by_association(:reference_genome,{}, {class: 'form-control'}) %>
+            <%= metadata_fields.select_by_association(:reference_genome, {}, { class: 'select2' }) %>
           <% end %>
         <% end %>
     <% end %>

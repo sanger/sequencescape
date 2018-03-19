@@ -12,7 +12,6 @@ Given /^study "([^"]+)" has a registered sample "([^"]+)"$/ do |study_name, samp
   FactoryHelp::submission(
     study: study,
     assets: [st],
-    workflow: @current_user.workflow,
     state: 'ready'
   )
 end
@@ -41,7 +40,7 @@ Given /^study "([^"]+)" has made the following "([^"]+)" requests:$/ do |study_n
         FactoryGirl.create(
           :request,
           request_type: request_type,
-          user: @current_user, workflow: @current_user.workflow,
+          user: @current_user,
           study: study, asset: asset, state: state
         )
       end

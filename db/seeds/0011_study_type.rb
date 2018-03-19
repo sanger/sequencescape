@@ -27,4 +27,4 @@ study_types.each do |type|
 end
 
 # Other study related configuration
-Program.create!(name: 'General').save
+Program.create!(name: 'General')

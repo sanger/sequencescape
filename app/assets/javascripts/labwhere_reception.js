@@ -35,7 +35,7 @@
         return false;
       }
     });
-    
+
     // Update the query string automatically on changing the location field
     // Allows the user to bookmark a particular location
     $( '#labwhere_reception_location_id' ).bind('change', function() {

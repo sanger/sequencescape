@@ -34,7 +34,7 @@ def create_request_for_pipeline(pipeline_name, options = {})
   request_metadata = FactoryGirl.create :"request_metadata_for_#{pipeline.request_types.first.key}"
   request_parameters = options.merge(request_type: pipeline.request_types.last, asset: FactoryGirl.create(pipeline_name_to_asset_type(pipeline_name)), request_metadata: request_metadata)
   FactoryGirl.create(:request_with_submission, request_parameters).tap do |request|
-    request.asset.update_attributes!(location: pipeline.location, barcode: request.asset.id % 9999999)
+    request.asset.update_attributes!(barcode: request.asset.id % 9999999)
   end
 end
 
@@ -89,10 +89,6 @@ Then /^the requests from "([^\"]+)" batches should not be in the inbox$/ do |nam
   end
 end
 
-Given /^I have a freezer called "([^\"]*)"$/ do |location_name|
-  FactoryGirl.create :location, name: location_name
-end
-
 When /^I fill in the plate barcode$/ do
   step(%Q{I fill in "barcode_0" with "#{Plate.last.ean13_barcode}"})
   #  puts "Plate #{Plate.last.id} -- #{Plate.last.location_id}"
@@ -110,7 +106,7 @@ Then /^I have added some output plates$/ do
 end
 
 Then /^the pipeline inbox should be:$/ do |expected_results_table|
-   expected_results_table.diff!(table(fetch_table('table#pipeline_inbox')))
+  expected_results_table.diff!(table(fetch_table('table#pipeline_inbox')))
 end
 
 When /^I click on the last "([^\"]*)" batch$/ do |status|

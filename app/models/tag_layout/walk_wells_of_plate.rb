@@ -4,19 +4,12 @@
 # authorship of this file.
 # Copyright (C) 2012,2015 Genome Research Ltd.
 
-module TagLayout::WalkWellsOfPlate
-  def self.walking_by
-    'wells of plate'
-  end
-
-  def walking_by
-    TagLayout::WalkWellsOfPlate.walking_by
-  end
+class TagLayout::WalkWellsOfPlate < TagLayout::Walker
+  self.walking_by = 'wells of plate'
 
   def walk_wells
     wells_in_walking_order.each_with_index do |well, index|
       yield(well, index) unless well.nil?
     end
   end
-  private :walk_wells
 end

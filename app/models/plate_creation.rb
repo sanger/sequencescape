@@ -39,7 +39,7 @@ class PlateCreation < AssetCreation
     private :children
 
     def create_children!
-      self.child = child_purpose.create!(location: parent.location, barcode: barcode)
+      self.child = child_purpose.create!(barcode: barcode)
     end
     private :create_children!
   end
