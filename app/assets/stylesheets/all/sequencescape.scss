@@ -92,6 +92,23 @@ div.quota {
   // border: 1px solid #7BBDD8;
 }
 
+.grid-form {
+  @extend .form-group;
+  @extend .row;
+  label {
+    @extend .col-sm-2;
+    @extend .col-form-label;
+  }
+  div.field {
+    @extend .col-sm-10;
+    input { @extend .form-control; }
+    select { @extend .custom-select; }
+    .form-help {
+      @extend .text-muted;
+    }
+  }
+}
+
 #barcode_list li {
   width: 20em;
   border: 1px solid black;

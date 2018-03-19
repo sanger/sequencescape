@@ -15,11 +15,13 @@ module Aliquot::DataForSubstitution
       .merge(other_attributes_for_substitution)
   end
 
-  def aliquot_identifiers
-    {
-      sample_id: sample_id,
-      library_id: library_id
-    }
+  def identifiers_for_substitution
+    aliquot_identifiers.merge(
+      original_tag_id: tag_id,
+      substitute_tag_id: tag_id,
+      original_tag2_id: tag2_id,
+      substitute_tag2_id: tag2_id
+    )
   end
 
   def tag_id_substitution
@@ -56,5 +58,14 @@ module Aliquot::DataForSubstitution
 
   def changes
     @changes ||= saved_changes
+  end
+
+  private
+
+  def aliquot_identifiers
+    {
+      sample_id: sample_id,
+      library_id: library_id
+    }
   end
 end

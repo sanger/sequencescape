@@ -8,9 +8,24 @@
 # TagSubstitution.new(see_initialize_documentations).save
 # Returns false if things failed
 class TagSubstitution
-  include ActiveModel::Validations
+  include ActiveModel::Model
 
-  validate :substitutions_valid
+  # Named arguments:
+  # substitutions: Provide an array of hashes describing your desired substitutions
+  # {
+  #   sample_id: The id of the sample to change,
+  #   libary_id: The corresponding library id,
+  #   original_tag_id: The original tag id, [Required if substitute_tag_id supplied]
+  #   substitute_tag_id: the replacement tag id, [Optional]
+  #   original_tag2_id: The original tag2 id, [Required if original_tag2_id supplied]
+  #   substitute_tag2_id: The replacement tag2 id [Optional]
+  # }
+  # user: the user performing the substitution [optional]
+  # ticket: support ticket number [optional]
+  # comment: any additional comment [optional]
+
+  validates_presence_of :substitutions
+  validate :substitutions_valid, if: :substitutions
 
   def substitutions_valid
     @substitutions.reduce(true) do |valid, sub|
@@ -21,11 +36,12 @@ class TagSubstitution
   end
 
   class Substitution
+    include ActiveModel::Model
     extend ActiveModel::Naming
     include ActiveModel::Conversion
     include ActiveModel::Validations
 
-    attr_reader :sample_id, :library_id, :original_tag_id, :substitute_tag_id, :original_tag2_id, :substitute_tag2_id
+    attr_accessor :sample_id, :library_id, :original_tag_id, :substitute_tag_id, :original_tag2_id, :substitute_tag2_id
 
     validates_presence_of :sample_id, :library_id
     validates_presence_of :original_tag_id, if: :substitute_tag_id
@@ -34,12 +50,7 @@ class TagSubstitution
     validates_presence_of :matching_aliquots, message: 'could not be found'
 
     def initialize(attributes)
-      @sample_id  = attributes.delete(:sample_id)
-      @library_id = attributes.delete(:library_id)
-      @original_tag_id = attributes.delete(:original_tag_id)
-      @substitute_tag_id = attributes.delete(:substitute_tag_id)
-      @original_tag2_id = attributes.delete(:original_tag2_id)
-      @substitute_tag2_id = attributes.delete(:substitute_tag2_id)
+      super(attributes.extract!(:sample_id, :library_id, :original_tag_id, :substitute_tag_id, :original_tag2_id, :substitute_tag2_id))
       @other_attributes = attributes
     end
 
@@ -97,21 +108,11 @@ class TagSubstitution
       Aliquot.where(attributes).pluck(:id)
     end
   end
-  # substitutions: Provide an array of hashes describing your desired substitutions
-  # {
-  #   sample_id: The id of the sample to change,
-  #   libary_id: The corresponding library id,
-  #   original_tag_id: The original tag id, [Required if substitute_tag_id supplied]
-  #   substitute_tag_id: the replacement tag id, [Optional]
-  #   original_tag2_id: The original tag2 id, [Required if original_tag2_id supplied]
-  #   substitute_tag2_id: The replacement tag2 id [Optional]
-  # }
-  # Named arguments:
-  # user: the user performing the substitution [optional]
-  # ticket: support ticket number [optional]
-  # comment: any additional comment [optional]
-  def initialize(substitutions, user: nil, ticket: nil, comment: nil)
-    @user, @ticket, @comment = user, ticket, comment
+
+  attr_accessor :user, :ticket, :comment
+  attr_reader :substitutions
+
+  def substitutions=(substitutions)
     @substitutions = substitutions.map { |attrs| Substitution.new(attrs) }
   end
 
@@ -125,6 +126,23 @@ class TagSubstitution
       apply_comments
     end
     true
+  end
+
+  #
+  # Provide an asset to build a tag substitution form
+  # Will auto populate the fields on substitutions
+  # @param asset [Receptacle] The receptacle which you want to base your substitutions on
+  #
+  # @return [type] [description]
+  def template_asset=(asset)
+    @substitutions = asset.aliquots.map do |aliquot|
+      Substitution.new(aliquot.identifiers_for_substitution)
+    end
+    @name = asset.display_name
+  end
+
+  def name
+    @name ||= 'Custom'
   end
 
   private
@@ -143,7 +161,7 @@ class TagSubstitution
   end
 
   def commented_assets
-    (Tube.with_required_aliquots(all_aliquots).pluck(:id) + Lane.with_required_aliquots(all_aliquots).pluck(:id)).uniq
+    @commented_assets ||= (Tube.with_required_aliquots(all_aliquots).pluck(:id) + Lane.with_required_aliquots(all_aliquots).pluck(:id)).uniq
   end
 
   def apply_comments

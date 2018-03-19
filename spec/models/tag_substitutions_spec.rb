@@ -20,10 +20,9 @@ describe TagSubstitution do
   let(:library_type) { create :library_type }
   let(:additional_parameters) { {} }
 
-  subject { TagSubstitution.new(instructions, additional_parameters) }
+  subject { TagSubstitution.new({ substitutions: instructions }.merge(additional_parameters)) }
 
   shared_examples 'tag substitution' do
-
     before { assert subject.save, "TagSubstitution did not save. #{subject.errors.full_messages}" }
 
     it 'perform the correct tag substitutions' do
@@ -64,7 +63,6 @@ describe TagSubstitution do
 
     let!(:lane) { create :lane }
     let!(:lane_aliquot_a) { create :aliquot, sample: sample_a, tag: sample_a_orig_tag, tag2: sample_a_orig_tag2, library: library_tube_a, receptacle: lane }
-
 
     context 'with only tag 1' do
       let(:sample_a_new_tag2) { sample_a_orig_tag2 }
@@ -121,6 +119,27 @@ describe TagSubstitution do
       end
 
       it_behaves_like 'tag substitution'
+
+      describe 'TagSubstitution.new(template_asset: asset)' do
+        subject { TagSubstitution.new(template_asset: mx_library_tube) }
+
+        it 'populates the basics' do
+          expect(subject.substitutions.length).to eq 2
+          indexed = subject.substitutions.index_by(&:sample_id)
+          a = indexed[sample_a.id]
+          expect(a.library_id).to eq library_tube_a.id
+          expect(a.original_tag_id).to eq sample_a_orig_tag.id
+          expect(a.substitute_tag_id).to eq sample_a_orig_tag.id
+          expect(a.original_tag2_id).to eq sample_a_orig_tag2.id
+          expect(a.substitute_tag2_id).to eq sample_a_orig_tag2.id
+          expect(a.library_id).to eq library_tube_a.id
+          b = indexed[sample_b.id]
+          expect(b.original_tag_id).to eq sample_b_orig_tag.id
+          expect(b.substitute_tag_id).to eq sample_b_orig_tag.id
+          expect(b.original_tag2_id).to eq sample_b_orig_tag2.id
+          expect(b.substitute_tag2_id).to eq sample_b_orig_tag2.id
+        end
+      end
     end
 
     context 'when details don\'t match' do
