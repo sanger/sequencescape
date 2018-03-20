@@ -1,0 +1,47 @@
+<% add :about, "Allows correction of tag errors for one or more libraries." %>
+<%= page_title 'Tag Substitution', @tag_substitution.name %>
+<p class="lead">This page allows you to perform tag substitutions for cases where an incorrect tag was either recorded for a particular library, or where a lab mistake resulted in an incorrect tag being applied.</p>
+<p>This page should only be used in cases where a mistake occurred at the point at which tags were either applied or recorded. If the mistake occurred later in the library preparation process, such as mistake in pooling, or a tube swap, then this page will result in incorrect information being recorded.</p>
+<p>This form will modify <em>all</em> instances of a particular library, including those on other sequencing lanes.</p>
+<%= form_for(@tag_substitution) do |form| %>
+  <%# We redirect back to the asset we started from %>
+  <%= hidden_field_tag :asset_id, @asset_id %>
+  <%= field_set_tag 'Summary' do %>
+    <div class="grid-form">
+      <%= form.label :ticket, 'Ticket number' %>
+      <div class="field"><%= form.text_field :ticket %></div>
+    </div>
+    <div class="grid-form">
+      <%= form.label :comment, 'Reason' %>
+      <div class="field">
+        <%= form.select :comment, options_for_select(@suggested_reasons), prompt: 'Select a reason, or type a new one.', required: true %>
+        <small class="form-help">If providing a custom reason, please double check that a suitable reason is not already available in the drop-down. Please double check the guidelines above to confirm that this is the correct action.</small>
+      </div>
+    </div>
+  <% end %>
+  <%= field_set_tag 'Substitutions' do %>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Sample</th><th>Library id</th><th>Original Tag</th><th>Substitute Tag</th><th>Original Tag 2</th><th>Substitute Tag 2</th></tr>
+        </tr>
+      </thead>
+      <tbody>
+        <% @tag_substitution.substitutions.each do |substitution| %>
+          <%= form.fields_for :substitutions, substitution, index: nil do |sub| %>
+            <tr>
+              <td><%= sub.hidden_field :sample_id %><%= substitution.sample_id %>: <%= substitution.sample_friendly_name %></td>
+              <td><%= sub.hidden_field :library_id %><%= substitution.library_id %></td>
+              <td><%= sub.hidden_field :original_tag_id %></td>
+              <td><%= sub.text_field :substitute_tag_id %></td>
+              <td><%= sub.hidden_field :original_tag2_id %></td>
+              <td><%= sub.text_field :substitute_tag2_id %></td>
+            </tr>
+          <% end %>
+        <% end %>
+      </tbody>
+    </table>
+    <%= form.submit 'Substitute Tags', disable_with: 'Substituting...', class: 'btn-success btn-lg btn' %>
+  <% end %>
+<% end %>
+

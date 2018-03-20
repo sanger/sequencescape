@@ -15,15 +15,6 @@ module Aliquot::DataForSubstitution
       .merge(other_attributes_for_substitution)
   end
 
-  def identifiers_for_substitution
-    aliquot_identifiers.merge(
-      original_tag_id: tag_id,
-      substitute_tag_id: tag_id,
-      original_tag2_id: tag2_id,
-      substitute_tag2_id: tag2_id
-    )
-  end
-
   def tag_id_substitution
     return {} if changes[:tag_id].blank?
     { original_tag_id: original_tag_id,

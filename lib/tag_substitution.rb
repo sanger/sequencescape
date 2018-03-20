@@ -12,22 +12,22 @@ class TagSubstitution
 
   # Named arguments:
   # substitutions: Provide an array of hashes describing your desired substitutions
-  # {
-  #   sample_id: The id of the sample to change,
-  #   libary_id: The corresponding library id,
-  #   original_tag_id: The original tag id, [Required if substitute_tag_id supplied]
-  #   substitute_tag_id: the replacement tag id, [Optional]
-  #   original_tag2_id: The original tag2 id, [Required if original_tag2_id supplied]
-  #   substitute_tag2_id: The replacement tag2 id [Optional]
-  # }
+  #   {
+  #     sample_id: The id of the sample to change,
+  #     libary_id: The corresponding library id,
+  #     original_tag_id: The original tag id, [Required if substitute_tag_id supplied]
+  #     substitute_tag_id: the replacement tag id, [Optional]
+  #     original_tag2_id: The original tag2 id, [Required if original_tag2_id supplied]
+  #     substitute_tag2_id: The replacement tag2 id [Optional]
+  #   }
   # user: the user performing the substitution [optional]
   # ticket: support ticket number [optional]
   # comment: any additional comment [optional]
 
   validates_presence_of :substitutions
-  validate :substitutions_valid, if: :substitutions
+  validate :substitutions_valid?, if: :substitutions
 
-  def substitutions_valid
+  def substitutions_valid?
     @substitutions.reduce(true) do |valid, sub|
       next valid if sub.valid?
       errors.add(:substitution, sub.errors.full_messages)
@@ -37,21 +37,35 @@ class TagSubstitution
 
   class Substitution
     include ActiveModel::Model
-    extend ActiveModel::Naming
-    include ActiveModel::Conversion
-    include ActiveModel::Validations
 
     attr_accessor :sample_id, :library_id, :original_tag_id, :substitute_tag_id, :original_tag2_id, :substitute_tag2_id
+
+    delegate :friendly_name, to: :sample, prefix: true
 
     validates_presence_of :sample_id, :library_id
     validates_presence_of :original_tag_id, if: :substitute_tag_id
     validates_presence_of :original_tag2_id, if: :substitute_tag2_id
-
     validates_presence_of :matching_aliquots, message: 'could not be found'
 
     def initialize(attributes)
-      super(attributes.extract!(:sample_id, :library_id, :original_tag_id, :substitute_tag_id, :original_tag2_id, :substitute_tag2_id))
+      super(attributes.extract!(:sample_id, :library_id, :original_tag_id, :substitute_tag_id, :original_tag2_id, :substitute_tag2_id, :aliquot))
       @other_attributes = attributes
+    end
+
+    # Used when seeding from a template asset
+    # Lets us populate web forms
+    def aliquot=(aliquot)
+      @sample_id = aliquot.sample_id
+      @sample = aliquot.sample
+      @library_id = aliquot.library_id
+      @original_tag_id = aliquot.tag_id
+      @substitute_tag_id = aliquot.tag_id
+      @original_tag2_id = aliquot.tag2_id
+      @substitute_tag2_id = aliquot.tag2_id
+    end
+
+    def sample
+      @sample ||= Sample.find(@sample_id)
     end
 
     def matching_aliquots
@@ -72,7 +86,7 @@ class TagSubstitution
       Aliquot.where(id: matching_aliquots).find_each do |aliquot|
         aliquot.tag_id = substitute_tag_id if substitute_tag?
         aliquot.tag2_id = substitute_tag2_id if substitute_tag2?
-        aliquot.update_attributes(@other_attributes)
+        aliquot.update_attributes(@other_attributes) if @other_attributes.present?
         aliquot.save!
       end
     end
@@ -135,8 +149,8 @@ class TagSubstitution
   #
   # @return [type] [description]
   def template_asset=(asset)
-    @substitutions = asset.aliquots.map do |aliquot|
-      Substitution.new(aliquot.identifiers_for_substitution)
+    @substitutions = asset.aliquots.includes(:sample).map do |aliquot|
+      Substitution.new(aliquot: aliquot)
     end
     @name = asset.display_name
   end
