@@ -1,15 +1,34 @@
+# frozen_string_literal: true
+
+# Used by TagSubstitution to handle the individual substitutions per
+# library.
+#
+# @author [grl]
+#
 class TagSubstitution::Substitution
   include ActiveModel::Model
 
   attr_accessor :sample_id, :library_id, :original_tag_id, :substitute_tag_id, :original_tag2_id, :substitute_tag2_id
+  attr_reader :tag_substitution
 
   delegate :friendly_name, to: :sample, prefix: true
-
   validates_presence_of :sample_id, :library_id
   validates_presence_of :original_tag_id, if: :substitute_tag_id
   validates_presence_of :original_tag2_id, if: :substitute_tag2_id
   validates_presence_of :matching_aliquots, message: 'could not be found'
 
+  #
+  # Generate a tag substitutes for a single library
+  # @param attributes [Hash] Details describing the library and its new state
+  #   sample_id: The ssample_id for the aliquots to update
+  #   library_id: The library_id for the aliquots to update
+  #   original_tag_id: The current tag_id of the aliquots to update
+  #   substitute_tag_id: The new tag_id of the aliquots to update
+  #   original_tag2_id: The current tag2_id of the aliquots to update
+  #   substitute_tag2_id: The new tag2_id of the aliquots to update
+  #   OR
+  #   aliquot: Provide an aliquot to act as a template. Useful for pre-populating forms
+  #
   def initialize(attributes)
     super(attributes.extract!(:sample_id, :library_id, :original_tag_id, :substitute_tag_id, :original_tag2_id, :substitute_tag2_id, :aliquot))
     @other_attributes = attributes
@@ -27,10 +46,13 @@ class TagSubstitution::Substitution
     @substitute_tag2_id = aliquot.tag2_id
   end
 
+  # Returns the sample. Caution! Will be slow if not populated by aliquot
   def sample
     @sample ||= Sample.find(@sample_id)
   end
 
+  # All aliquots which match the criteria
+  # @return [Array<Integer>] An array of aliquot ids.
   def matching_aliquots
     @matching_aliquots ||= find_matching_aliquots
   end

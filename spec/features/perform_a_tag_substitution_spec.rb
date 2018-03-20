@@ -9,11 +9,12 @@ feature 'Perform a tag substitution' do
   let(:library_tube_b) { create :library_tube }
   let(:mx_library_tube) { create :multiplexed_library_tube }
   let(:library_type) { create :library_type }
-  let(:sample_a_orig_tag) { create :tag }
-  let(:sample_a_orig_tag2) { create :tag }
+  let(:used_tag_group) { create :tag_group }
+  let(:sample_a_orig_tag) { create :tag, tag_group: used_tag_group, map_id: 1 }
+  let(:sample_a_orig_tag2) { create :tag, tag_group: used_tag_group, map_id: 2 }
 
-  let(:sample_b_orig_tag) { create :tag }
-  let(:sample_b_orig_tag2) { create :tag }
+  let(:sample_b_orig_tag) { create :tag, tag_group: used_tag_group, map_id: 3 }
+  let(:sample_b_orig_tag2) { create :tag, tag_group: used_tag_group, map_id: 4 }
 
   let!(:lane) { create :lane }
 
@@ -37,10 +38,10 @@ feature 'Perform a tag substitution' do
     select('Incorrect tags selected in Sequencescape.', from: 'Reason')
     find('td', text: "#{sample_a.id}: #{sample_a.sanger_sample_id}")
       .ancestor('tr')
-      .fill_in('tag_substitution[substitutions][][substitute_tag_id]', with: sample_b_orig_tag.id)
+      .select("#{sample_b_orig_tag.map_id} - #{sample_b_orig_tag.oligo}", from: 'tag_substitution[substitutions][][substitute_tag_id]')
     find('td', text: "#{sample_b.id}: #{sample_a.sanger_sample_id}")
       .ancestor('tr')
-      .fill_in('tag_substitution[substitutions][][substitute_tag_id]', with: sample_a_orig_tag.id)
+      .select("#{sample_a_orig_tag.map_id} - #{sample_a_orig_tag.oligo}", from: 'tag_substitution[substitutions][][substitute_tag_id]')
     click_button 'Substitute Tags'
     expect(page).to have_content "Asset #{lane.display_name}"
     expect(page).to have_content 'Your substitution was performed.'

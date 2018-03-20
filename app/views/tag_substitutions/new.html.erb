@@ -32,10 +32,10 @@
             <tr>
               <td><%= sub.hidden_field :sample_id %><%= substitution.sample_id %>: <%= substitution.sample_friendly_name %></td>
               <td><%= sub.hidden_field :library_id %><%= substitution.library_id %></td>
-              <td><%= sub.hidden_field :original_tag_id %></td>
-              <td><%= sub.text_field :substitute_tag_id %></td>
-              <td><%= sub.hidden_field :original_tag2_id %></td>
-              <td><%= sub.text_field :substitute_tag2_id %></td>
+              <td><%= sub.hidden_field :original_tag_id %><%= @tag_substitution.tag_name(substitution.original_tag_id) %></td>
+              <td><%= sub.select :substitute_tag_id, @tag_substitution.tag_options_for(substitution.original_tag_id), {}, class: 'select2' %></td>
+              <td><%= sub.hidden_field :original_tag2_id %><%= @tag_substitution.tag_name(substitution.original_tag2_id) %></td>
+              <td><%= sub.select :substitute_tag2_id, @tag_substitution.tag_options_for(substitution.original_tag2_id), {}, class: 'select2' %></td>
             </tr>
           <% end %>
         <% end %>

@@ -71,6 +71,17 @@ class TagSubstitution
     @name ||= 'Custom'
   end
 
+  # Returns a user friendly name for the corresponding tag
+  def tag_name(tag_id)
+    return 'Untagged' if tag_id == Aliquot::UNASSIGNED_TAG
+    complete_tags.fetch(tag_id)[0]
+  end
+
+  def tag_options_for(tag_id)
+    return [['Untagged', Aliquot::UNASSIGNED_TAG]] if tag_id == Aliquot::UNASSIGNED_TAG
+    tags_in_groups[complete_tags.fetch(tag_id).last]
+  end
+
   private
 
   def comment_header
@@ -94,6 +105,23 @@ class TagSubstitution
     Comment.create!(commented_assets.map do |asset_id|
       { commentable_id: asset_id, commentable_type: 'Asset', user_id: @user&.id, description: comment_text }
     end)
+  end
+
+  def tags_in_groups
+    @tags_in_groups ||= complete_tags.each_with_object({}) do |(_id, info), store|
+      store[info.last] ||= []
+      store[info.last] << info[0, 2]
+    end
+  end
+
+  def complete_tags
+    @complete_tags ||= Tag.includes(:tag_group)
+                          .pluck('CONCAT(map_id, " - ", oligo)', :id, 'tag_groups.name')
+                          .index_by(&:second)
+  end
+
+  def used_tag_groups
+    Tags.where(id: all_tags).distinct.pluck(:tag_group_id)
   end
 
   def oligo_index
