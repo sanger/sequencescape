@@ -39,7 +39,7 @@ class Request < ApplicationRecord
   has_many_events
   has_many_lab_events
 
-  belongs_to :pipeline
+  has_one :pipeline, through: :batch
   belongs_to :item
   belongs_to :request_type, inverse_of: :requests
   belongs_to :user

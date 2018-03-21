@@ -569,10 +569,6 @@ class Plate < Asset
     @stock_plate ||= stock_plate? ? self : lookup_stock_plate
   end
 
-  def original_stock_plates
-    ancestors.where(plate_purpose_id: PlatePurpose.stock_plate_purpose)
-  end
-
   def ancestor_of_purpose(ancestor_purpose_id)
     return self if plate_purpose_id == ancestor_purpose_id
     ancestors.order(created_at: :desc).find_by(plate_purpose_id: ancestor_purpose_id)
