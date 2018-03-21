@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-feature 'Perform a tag substitution' do
+feature 'Perform a tag substitution', js: true do
   let(:sample_a) { create :sample }
   let(:sample_b) { create :sample }
   let(:library_tube_a) { create :library_tube }
@@ -49,5 +49,24 @@ feature 'Perform a tag substitution' do
     find('td', text: sample_a.name).sibling('td', text: "(#{sample_a_orig_tag2.oligo})")
     find('td', text: sample_b.name).sibling('td', text: "(#{sample_a_orig_tag.oligo})")
     find('td', text: sample_b.name).sibling('td', text: "(#{sample_b_orig_tag2.oligo})")
+  end
+
+  scenario 'Performing an invalid tag swap' do
+    login_user user
+    visit asset_path(lane)
+    click_link 'perform tag substitution'
+    expect(page).to have_content(lane.name)
+    fill_in('Ticket', with: '12345')
+    select('Incorrect tags selected in Sequencescape.', from: 'Reason')
+    find('td', text: "#{sample_a.id}: #{sample_a.sanger_sample_id}")
+      .ancestor('tr')
+      .select("#{sample_b_orig_tag.map_id} - #{sample_b_orig_tag.oligo}", from: 'tag_substitution[substitutions][][substitute_tag_id]')
+    find('td', text: "#{sample_a.id}: #{sample_a.sanger_sample_id}")
+      .ancestor('tr')
+      .select("#{sample_b_orig_tag2.map_id} - #{sample_b_orig_tag2.oligo}", from: 'tag_substitution[substitutions][][substitute_tag2_id]')
+    click_button 'Substitute Tags'
+    expect(page).to have_content(lane.name)
+    expect(page).to have_content 'Your tag substitution could not be performed.'
+    expect(page).to have_content "Tag pair #{sample_b_orig_tag.oligo}-#{sample_b_orig_tag2.oligo} features multiple times in the pool."
   end
 end

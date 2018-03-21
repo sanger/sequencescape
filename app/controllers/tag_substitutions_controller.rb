@@ -17,28 +17,38 @@ class TagSubstitutionsController < ApplicationController
     'Tag substituted intentionally, but unsupported by Sequencescape.'
   ].freeze
 
+  before_action :prepare_form, only: :new
+
   def new
     @asset_id = params[:asset_id]
-    @suggested_reasons = SUGGESTED_REASONS
     @tag_substitution = TagSubstitution.new(template_asset: Asset.find(params[:asset_id]))
   end
 
   def create
     @asset_id = params[:asset_id]
     @tag_substitution = TagSubstitution.new(tag_substitution_params)
+
     if @tag_substitution.save
       redirect_to asset_path(params[:asset_id]), notice: 'Your substitution was performed.'
     else
-      flash.now[:error] = 'Your tag substitution could not be performed'
+      prepare_form
+      flash.now[:error] = 'Your tag substitution could not be performed.'
       render action: :new
     end
   end
 
   private
 
+  def prepare_form
+    @suggested_reasons = SUGGESTED_REASONS
+    @complete_tags = Tag.includes(:tag_group)
+                        .pluck('CONCAT(map_id, " - ", oligo)', :id, 'tag_groups.name')
+                        .index_by(&:second)
+  end
+
   def tag_substitution_params
     params.require(:tag_substitution).permit(
-      :reason, :ticket, substitutions: [
+      :reason, :ticket, :name, substitutions: [
         :sample_id, :library_id, :original_tag_id, :substitute_tag_id, :original_tag2_id, :substitute_tag2_id
       ]
     ).merge(user: current_user)

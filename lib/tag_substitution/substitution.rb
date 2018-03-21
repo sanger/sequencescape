@@ -90,6 +90,10 @@ class TagSubstitution::Substitution
     [original_tag_id, substitute_tag_id, original_tag2_id, substitute_tag2_id].compact
   end
 
+  def tag_pair
+    [substitute_tag_id.to_i, substitute_tag2_id.to_i]
+  end
+
   private
 
   def substitute_tag?

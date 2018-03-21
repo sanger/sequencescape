@@ -3,9 +3,13 @@
 <p class="lead">This page allows you to perform tag substitutions for cases where an incorrect tag was either recorded for a particular library, or where a lab mistake resulted in an incorrect tag being applied.</p>
 <p>This page should only be used in cases where a mistake occurred at the point at which tags were either applied or recorded. If the mistake occurred later in the library preparation process, such as mistake in pooling, or a tube swap, then this page will result in incorrect information being recorded.</p>
 <p>This form will modify <em>all</em> instances of a particular library, including those on other sequencing lanes.</p>
+
+<%= tabulated_error_messages_for('tag_substitution') %>
+
 <%= form_for(@tag_substitution) do |form| %>
   <%# We redirect back to the asset we started from %>
   <%= hidden_field_tag :asset_id, @asset_id %>
+  <%= form.hidden_field :name %>
   <%= field_set_tag 'Summary' do %>
     <div class="grid-form">
       <%= form.label :ticket, 'Ticket number' %>
@@ -38,10 +42,10 @@
             <tr>
               <td><%= sub.hidden_field :sample_id %><%= substitution.sample_id %>: <%= substitution.sample_friendly_name %></td>
               <td><%= sub.hidden_field :library_id %><%= substitution.library_id %></td>
-              <td><%= sub.hidden_field :original_tag_id %><%= @tag_substitution.tag_name(substitution.original_tag_id) %></td>
-              <td><%= sub.select :substitute_tag_id, @tag_substitution.tag_options_for(substitution.original_tag_id), {}, class: 'select2 tag-list' %></td>
-              <td><%= sub.hidden_field :original_tag2_id %><%= @tag_substitution.tag_name(substitution.original_tag2_id) %></td>
-              <td><%= sub.select :substitute_tag2_id, @tag_substitution.tag_options_for(substitution.original_tag2_id), {}, class: 'select2 tag-list' %></td>
+              <td><%= sub.hidden_field :original_tag_id %><%= tag_name(substitution.original_tag_id) %></td>
+              <td><%= sub.select :substitute_tag_id, tag_options_for(substitution.substitute_tag_id), {}, class: 'select2 tag-list' %></td>
+              <td><%= sub.hidden_field :original_tag2_id %><%= tag_name(substitution.original_tag2_id) %></td>
+              <td><%= sub.select :substitute_tag2_id, tag_options_for(substitution.substitute_tag2_id), {}, class: 'select2 tag-list' %></td>
             </tr>
           <% end %>
         <% end %>
@@ -54,7 +58,7 @@
 <script>
   $(function() {
 
-    var tagGroupsList = <%= @tag_substitution.tags_in_groups.to_json.html_safe %>;
+    var tagGroupsList = <%= tags_in_groups.to_json.html_safe %>;
 
     $("#tag-group-list").select2({
       theme: "bootstrap4",

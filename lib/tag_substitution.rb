@@ -10,6 +10,10 @@
 class TagSubstitution
   include ActiveModel::Model
 
+  attr_accessor :user, :ticket, :comment
+  attr_reader :substitutions
+  attr_writer :name
+
   # Named arguments:
   # substitutions: Provide an array of hashes describing your desired substitutions
   #   {
@@ -26,6 +30,7 @@ class TagSubstitution
 
   validates_presence_of :substitutions
   validate :substitutions_valid?, if: :substitutions
+  validate :no_duplicate_tag_pairs, if: :substitutions
 
   def substitutions_valid?
     @substitutions.reduce(true) do |valid, sub|
@@ -34,9 +39,6 @@ class TagSubstitution
       valid && false
     end
   end
-
-  attr_accessor :user, :ticket, :comment
-  attr_reader :substitutions
 
   def substitutions=(substitutions)
     @substitutions = substitutions.map { |attrs| Substitution.new(attrs) }
@@ -52,6 +54,11 @@ class TagSubstitution
       apply_comments
     end
     true
+  rescue ActiveRecord::RecordNotUnique => exception
+    # We'll specifically handle tag clashes here so that we can produce more informative messages
+    raise exception unless /aliquot_tags_and_tag2s_are_unique_within_receptacle/.match?(exception.message)
+    errors.add(:base, 'A tag clash was detected while performing the substitutions. No changes have been made.')
+    false
   end
 
   #
@@ -71,25 +78,21 @@ class TagSubstitution
     @name ||= 'Custom'
   end
 
-  # Returns a user friendly name for the corresponding tag
-  def tag_name(tag_id)
-    return 'Untagged' if tag_id == Aliquot::UNASSIGNED_TAG
-    complete_tags.fetch(tag_id)[0]
-  end
-
-  def tag_options_for(tag_id)
-    return { 'No group' => [['Untagged', Aliquot::UNASSIGNED_TAG]] } if tag_id == Aliquot::UNASSIGNED_TAG
-    tags_in_groups.slice(complete_tags.fetch(tag_id).last)
-  end
-
-  def tags_in_groups
-    @tags_in_groups ||= complete_tags.each_with_object({}) do |(_id, info), store|
-      store[info.last] ||= []
-      store[info.last] << info[0, 2]
+  def no_duplicate_tag_pairs
+    tag_pairs.each_with_object(Set.new) do |pair, set|
+      errors.add(:base, "Tag pair #{pair.join('-')} features multiple times in the pool.") if set.include?(pair)
+      set << pair
     end
   end
 
   private
+
+  def tag_pairs
+    @substitutions.map do |sub|
+      tag, tag2 = sub.tag_pair
+      [oligo_index[tag], oligo_index[tag2]]
+    end
+  end
 
   def comment_header
     header = +"Tag substitution performed.\n"
@@ -112,16 +115,6 @@ class TagSubstitution
     Comment.create!(commented_assets.map do |asset_id|
       { commentable_id: asset_id, commentable_type: 'Asset', user_id: @user&.id, description: comment_text }
     end)
-  end
-
-  def complete_tags
-    @complete_tags ||= Tag.includes(:tag_group)
-                          .pluck('CONCAT(map_id, " - ", oligo)', :id, 'tag_groups.name')
-                          .index_by(&:second)
-  end
-
-  def used_tag_groups
-    Tags.where(id: all_tags).distinct.pluck(:tag_group_id)
   end
 
   def oligo_index
