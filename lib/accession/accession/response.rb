@@ -29,9 +29,9 @@ module Accession
     # based on the xml receipt
     def accessioned?
       return false unless success?
-      ActiveRecord::ConnectionAdapters::Column::TRUE_VALUES.include?(
+      ActiveRecord::Type::Boolean.new.cast(
         xml.at('RECEIPT').attribute('success').value
-)
+      )
     end
 
     # If the request was successful and the receipt says so extract the accession number

@@ -8,11 +8,17 @@
 # objects in a polymorphic fashion. For example, you could create a role
 # "moderator" for an instance of a model (i.e., an object), a model class,
 # or without any specification at all.
-class Role < ActiveRecord::Base
-  class UserRole < ActiveRecord::Base
+class Role < ApplicationRecord
+  class UserRole < ApplicationRecord
     self.table_name = ('roles_users')
     belongs_to :role
     belongs_to :user
+
+    after_destroy :touch_authorizable
+
+    delegate :touch_authorizable, :authorizable, to: :role
+
+    broadcasts_associated_via_warren :authorizable
   end
 
   has_many :user_role_bindings, class_name: 'Role::UserRole'
@@ -23,11 +29,15 @@ class Role < ActiveRecord::Base
   validates_presence_of :name
   scope :general_roles, -> { where('authorizable_type IS NULL') }
 
+  after_destroy :touch_authorizable
+
+  broadcasts_associated_via_warren :authorizable
+
   def self.keys
     Role.all.map { |r| r.name }.uniq
   end
 
-  def before_destroy
+  def touch_authorizable
     authorizable.touch unless authorizable.nil?
   end
 
@@ -42,6 +52,7 @@ class Role < ActiveRecord::Base
         has_many :users, through: :roles
 
         scope :with_related_users_included, -> { includes(roles: :users) }
+        scope :with_related_owners_included, -> { includes(:owners) }
         scope :of_interest_to, ->(user) { joins(:users).where(users: { id: user }).distinct }
       end
     end
@@ -52,13 +63,6 @@ class Role < ActiveRecord::Base
           joins(:roles, :users)
             .where(roles: { name: role_name.to_s }, users: { id: user.id })
         }
-      end
-
-      def has_many_users_through_roles(name)
-        define_method(name.to_s.pluralize.to_sym) do
-          role = roles.find_by(name: name.to_s.singularize)
-          role.nil? ? [] : role.users
-        end
       end
     end
   end

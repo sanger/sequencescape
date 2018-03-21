@@ -12,6 +12,7 @@ if ENV['RAILS_ENV'] != 'cucumber'
 end
 
 require 'cucumber/rails'
+require 'factory_girl_rails'
 
 # Capybara defaults to CSS3 selectors rather than XPath.
 # If you'd prefer to use XPath, just uncomment this line and adjust any
@@ -61,7 +62,16 @@ end
 # Possible values are :truncation and :transaction
 # The :transaction strategy is faster, but might give you threading problems.
 # See https://github.com/cucumber/cucumber-rails/blob/master/features/choose_javascript_database_strategy.feature
+# We're using a gem to try and improve the robustness of this
+# https://github.com/iangreenleaf/transactional_capybara
 Cucumber::Rails::Database.javascript_strategy = :transaction
+require 'transactional_capybara'
+TransactionalCapybara.share_connection
 
 require 'minitest/spec'
 World(MultiTest::MinitestWorld)
+
+After('@javascript') do
+  # See https://github.com/iangreenleaf/transactional_capybara
+  TransactionalCapybara::AjaxHelpers.wait_for_ajax(page)
+end

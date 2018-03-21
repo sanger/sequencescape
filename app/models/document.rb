@@ -6,7 +6,7 @@
 
 require 'carrierwave'
 
-class Document < ActiveRecord::Base
+class Document < ApplicationRecord
   extend DbFile::Uploader
 
   module Associations

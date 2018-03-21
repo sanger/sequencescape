@@ -10,9 +10,11 @@ class MultiplexedLibraryTube < Tube
   include Api::MultiplexedLibraryTubeIO::Extensions
   include Transfer::Associations
 
+  has_many :order_roles, ->() { distinct }, through: :requests_as_target
+
   # Transfer requests into a tube are direct requests where the tube is the target.
   def transfer_requests
-    requests_as_target.where_is_a?(TransferRequest)
+    transfer_requests_as_target
   end
 
   # You can do sequencing with this asset type, even though the request types suggest otherwise!
@@ -36,11 +38,15 @@ class MultiplexedLibraryTube < Tube
   end
 
   def team
-    creation_requests.first.request_type.try(:product_line).try(:name)
+    creation_requests.first&.request_type&.product_line&.name
   end
 
   def library_source_plates
     purpose.library_source_plates(self)
+  end
+
+  def role
+    order_roles.first.try(:role)
   end
 
   def self.stock_asset_type

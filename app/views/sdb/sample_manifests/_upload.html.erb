@@ -6,10 +6,14 @@
 
 <h2>Upload a sample manifest</h2>
 
+<div class='alert alert-warning'>
+  <strong>Warning!</strong> New sample manifests with Tag Sequences should be uploaded using the new page.
+</div>
+
 <%= form_for :sample_manifest, url: upload_sample_manifests_url, html: { multipart: true } do |form| -%>
   <label style='display: none;' for="sample_manifest_uploaded">File to upload</label>
-  <%= form.file_field :uploaded %><br/><br />
+  <%= form.file_field :uploaded, required: true %><br/><br />
   <%= form.check_box :override %><label  for="sample_manifest_override">Override previously uploaded samples</label>
   <br/><br />
-  <%= form.submit 'Upload manifest' %>
+  <%= form.submit 'Upload manifest', class: 'btn btn-success' %>
 <% end %>

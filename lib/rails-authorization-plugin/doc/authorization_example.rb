@@ -6,12 +6,12 @@ class MeetingController < ApplicationController
   permit 'rubyists and wanna_be_rubyists', except: :public_page
 
   def public_page
-    render text: "We're all in Chicago"
+    render plain: "We're all in Chicago"
   end
 
   def secret_info
     permit '(matz or dhh) and interested in Answers' do
-      render text: 'The Answer = 42'
+      render plain: 'The Answer = 42'
     end
   end
 

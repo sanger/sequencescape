@@ -9,19 +9,20 @@
 
   <% if @presenter.order_fields.present? -%>
 
+    <div class="row">
     <% @presenter.order_fields.sort_by(&:display_name).each do |order_param| -%>
-      <div class="col-md-6 form-group">
-        <div><%= order_input_label(order_param) %></div>
-        <div><%= order_input_tag(@presenter.order, order_param) %></div>
+      <div class="col form-group">
+        <%= order_input_label(order_param) %>
+        <%= order_input_tag(@presenter.order, order_param) %>
       </div>
     <% end -%>
-
+  </div>
   <% end -%>
 
   <script type="text/javascript">
   (function(window,$,undefined) {
     SCAPE.submission.is_a_sequencing_order  = <%= @presenter.order.is_a_sequencing_order? %>;
-    SCAPE.submission.pre_capture_plex_level = <%= (@presenter.template.submission_parameters[:request_options]||{})['pre_capture_plex_level']||'null' %>;
+    SCAPE.submission.pre_capture_plex_level = <%= @presenter.pre_capture_plex_level || 'null' %>;
     SCAPE.submission.pre_capture_plex_group = null;
     SCAPE.submission.show_gigabses_expected = <%= @presenter.order.collect_gigabases_expected? %>;
 

@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2013,2014,2015 Genome Research Ltd.
 
-class QcFile < ActiveRecord::Base
+class QcFile < ApplicationRecord
   extend DbFile::Uploader
   include Uuid::Uuidable
 
@@ -12,24 +12,23 @@ class QcFile < ActiveRecord::Base
     # Adds accessors for named fields and attaches documents to them
 
     def has_qc_files
-      line = __LINE__ + 1
-      class_eval("
-        has_many(:qc_files, {:as => :asset, :dependent => :destroy })
+      class_eval do
+        has_many :qc_files, foreign_key: :asset_id, dependent: :destroy
 
-        def add_qc_file(file, filename=nil)
-          opts = {:uploaded_data => {:tempfile=>file, :filename=>filename}}
-          opts.merge!(:filename=>filename) unless filename.nil?
-          qc_files.create!(opts) unless file.blank?
+        def add_qc_file(file, filename = nil)
+          opts = { uploaded_data: { tempfile: file, filename: filename } }
+          opts[:filename] = filename unless filename.nil?
+          qc_files.create!(opts) if file.present?
         end
 
-        def update_qc_values_with_parser(parser)
+        def update_qc_values_with_parser(_parser)
           true
         end
-      ", __FILE__, line)
+      end
     end
   end
 
-  belongs_to :asset, polymorphic: true
+  belongs_to :asset
   validates_presence_of :asset
 
   # Handle some of the metadata with this callback
@@ -38,6 +37,7 @@ class QcFile < ActiveRecord::Base
 
   # CarrierWave uploader - gets the uploaded_data file, but saves the identifier to the "filename" column
   has_uploaded :uploaded_data, serialization_column: 'filename'
+  validates :uploaded_data, presence: :true
 
   # Method provided for backwards compatibility
   def current_data
@@ -45,16 +45,13 @@ class QcFile < ActiveRecord::Base
   end
 
   def retrieve_file
-    begin
-      uploaded_data.cache!(uploaded_data.file)
-      yield(uploaded_data)
-    ensure
-      # We can't actually delete the cache file here, as the send_file
-      # operation happens asynchronously. Instead we can use:
-      # PolymorphicUploader.clean_cached_files!
-      # This cleans the last 24h worth of files, so should be a daily
-      # cron
-    end
+    uploaded_data.cache!(uploaded_data.file)
+    yield(uploaded_data)
+    # We can't actually delete the cache file here, as the send_file
+    # operation happens asynchronously. Instead we can use:
+    # PolymorphicUploader.clean_cached_files!
+    # This cleans the last 24h worth of files, so should be a daily
+    # cron
   end
 
   private

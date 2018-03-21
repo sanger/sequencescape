@@ -4,8 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
-class Tube < Aliquot::Receptacle
-  include LocationAssociation::Locatable
+class Tube < Receptacle
   include Barcode::Barcodeable
   include ModelExtensions::Tube
   include Tag::Associations
@@ -15,11 +14,6 @@ class Tube < Aliquot::Receptacle
 
   extend QcFile::Associations
   has_qc_files
-
-  # Transfer requests into a tube are direct requests where the tube is the target.
-  def transfer_requests
-    requests_as_target.where_is_a?(TransferRequest)
-  end
 
   def automatic_move?
     true
@@ -34,12 +28,10 @@ class Tube < Aliquot::Receptacle
     save!
   end
 
-  has_many :submissions, ->() { distinct }, through: :requests_as_target
   scope :include_scanned_into_lab_event, -> { includes(:scanned_into_lab_event) }
+  scope :with_purpose, ->(*purposes) { where(plate_purpose_id: purposes) }
 
- scope :with_purpose, ->(*purposes) {
-    where(plate_purpose_id: purposes.flatten.map(&:id))
-                      }
+  delegate :source_purpose, to: :purpose, allow_nil: true
 
   def submission
     submissions.first
@@ -47,7 +39,7 @@ class Tube < Aliquot::Receptacle
 
   def source_plate
     return nil if purpose.nil?
-    purpose.source_plate(self)
+    @source_plate ||= purpose.source_plate(self)
   end
 
   def ancestor_of_purpose(ancestor_purpose_id)
@@ -69,7 +61,7 @@ class Tube < Aliquot::Receptacle
 
   # TODO: change column name to account for purpose, not plate_purpose!
   belongs_to :purpose, class_name: 'Tube::Purpose', foreign_key: :plate_purpose_id
-  delegate_to_purpose(:transition_to, :created_with_request_options, :pool_id, :name_for_child_tube, :stock_plate)
+  delegate_to_purpose(:transition_to, :pool_id, :name_for_child_tube, :stock_plate)
   delegate :barcode_type, to: :purpose
 
   def name_for_label
@@ -78,10 +70,6 @@ class Tube < Aliquot::Receptacle
 
   def details
     purpose.try(:name) || 'Tube'
-  end
-
-  def transfer_request_type_from(source)
-    purpose.transfer_request_type_from(source.purpose)
   end
 
   def self.create_with_barcode!(*args, &block)

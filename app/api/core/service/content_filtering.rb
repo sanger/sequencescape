@@ -40,11 +40,11 @@ module Core::Service::ContentFiltering
     end
 
     def process_json_response_body
-     headers('Content-Type' => 'application/json')
+      headers('Content-Type' => 'application/json')
     end
 
     ACCEPTABLE_TYPES = ['application/json']
-    ACCEPTABLE_TYPES << '*/*' if Rails.env == 'development'
+    ACCEPTABLE_TYPES << '*/*' if Rails.env.development?
 
     def acceptable_types
       ACCEPTABLE_TYPES + ::Api::EndpointHandler.registered_mimetypes

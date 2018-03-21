@@ -15,6 +15,9 @@ require 'rspec/json_expectations'
 
 require 'support/api_helper'
 
+require 'shared_contexts/it_requires_login'
+require 'shoulda/matchers'
+
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
 # run as spec files by default. This means that files in spec/support that end
@@ -62,4 +65,26 @@ RSpec.configure do |config|
 
   config.include TransactionalCapybara::AjaxHelpers
   config.include ApiHelper
+  config.include TableHelper
+  # In a few places we have models that receive a file from an uploader
+  # fixture_file_upload() ensures that the tests mimic the live behaviour.
+  # This include make sit available to us. Including it globally causes
+  # issues eleswhere
+  config.include ActionDispatch::TestProcess, with: :uploader
+
+  config.include Rails.application.routes.url_helpers
+
+  config.include ApiV2Helper, with: :api_v2
+
+  Capybara.add_selector(:data_behavior) do
+    xpath { |name| XPath.css("[data-behavior='#{name}']") }
+  end
+end
+
+Shoulda::Matchers.configure do |config|
+  config.integrate do |with|
+    # Choose a test framework:
+    with.test_framework :rspec
+    with.library :rails
+  end
 end

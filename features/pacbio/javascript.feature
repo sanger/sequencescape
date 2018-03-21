@@ -5,7 +5,6 @@ Feature: Push samples through the PacBio pipeline with javascript
     Given I am a "manager" user logged in as "user"
     Given I have a project called "Test project"
     Given I have an active study called "Test study"
-    Given I am on the show page for study "Test study"
     Given the "1D Tube" barcode printer "xyz" exists
     Given the "96 Well Plate" barcode printer "abc" exists
     And the plate barcode webservice returns "99998"
@@ -33,7 +32,6 @@ Feature: Push samples through the PacBio pipeline with javascript
     And I press "Next step"
     And I press "Next step"
     When I press "Release this batch"
-    When I set PacBioLibraryTube "3980000333858" to be in freezer "PacBio sequencing freezer"
     Given I am on the show page for pipeline "PacBio Sequencing"
     When I check "Select Request Group 0"
     And I press the first "Submit"

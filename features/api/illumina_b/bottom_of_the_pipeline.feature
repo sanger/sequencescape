@@ -10,7 +10,7 @@ Feature: The bottom of the illumina_b pipeline
       And the WTSI single sign-on service recognises "I-am-authenticated" as "John Smith"
 
     Given I am using the latest version of the API
-And I have a "full" authorised user with the key "cucumber"
+    And I have a "full" authorised user with the key "cucumber"
 
     Given a user with UUID "99999999-8888-7777-6666-555555555555" exists
 
@@ -210,7 +210,6 @@ And I have a "full" authorised user with the key "cucumber"
 
     Then the state of the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be "started"
      And the state of all the transfer requests to the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be "started"
-     And the request type of all the transfer requests to the the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be "Transfer"
      And the state of all the illumina-b library creation requests to the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be "started"
 
     Then the state of the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000002" should be "pending"

@@ -3,37 +3,40 @@
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2014,2015,2016 Genome Research Ltd.%>
-
-
-<h3>Samples</h3>
-
-<div class="help">
-  This asset has <%= @asset.aliquots.count %> samples.
-  <a data-collapse-element-id="lanes-table" data-hidden="false" class="shown-button">Collapse</a>
-</div>
-
- <table id="lanes-table" width="100%" cellspacing="0" cellpadding="0" class="sortable">
-  <colgroup>
-    <col class="npg_aliquot_index">
-  </colgroup>
-  <thead>
-    <tr>
-      <th><a>NPG Aliquot Index</a></th>
-      <th><a>Sample Name</a></th>
-      <th><a>Sanger Sample Id</a></th>
-      <th><a>Tag</a></th>
-      <th><a>Tag2</a></th>
-    </tr>
-  </thead>
-  <tbody>
- <% @asset.aliquots.include_summary.each_with_index do |aliquot,i| %>
- <tr class="<%= i.odd? ? 'rowodd' : 'roweven' %>">
-   <td><%= aliquot.aliquot_index.try(:aliquot_index)||'Not Set' %></td>
-   <td><strong><%= link_to(aliquot.sample.name, sample_url(aliquot.sample)) -%></strong></td>
-   <td><%= aliquot.sample.sanger_sample_id %></td>
-   <td><%= render partial: 'shared/tag_info', locals: {tag: aliquot.tag } if aliquot.tag.present? %></td>
-   <td><%= render partial: 'shared/tag_info', locals: {tag: aliquot.tag2 } if aliquot.tag2.present? %></td>
- </tr>
- <% end %>
- </tbody>
- </table>
+<section id="samples-table" class='info-panel'>
+  <header>
+    <a href='#plate-samples-table-collapser' role="button" data-toggle='collapse'>
+    <h3>Samples
+      <span class='badge badge-primary'><%= @asset.aliquots.count %></span>
+      <small class='show-hide'>Click to toggle</small>
+    </h3>
+    </a>
+  </header>
+  <div id="plate-samples-table-collapser" class="collapse in show">
+    <table id="plate-samples-table" class="sortable">
+      <colgroup>
+        <col class="npg_aliquot_index">
+      </colgroup>
+      <thead>
+        <tr>
+          <th><a>NPG Aliquot Index</a></th>
+          <th><a>Sample Name</a></th>
+          <th><a>Sanger Sample Id</a></th>
+          <th><a>Tag</a></th>
+          <th><a>Tag2</a></th>
+        </tr>
+      </thead>
+      <tbody>
+       <% @asset.aliquots.include_summary.each_with_index do |aliquot,i| %>
+       <tr>
+         <td><%= aliquot.aliquot_index.try(:aliquot_index)||'Not Set' %></td>
+         <td><%= link_to(aliquot.sample.name, sample_url(aliquot.sample)) -%></td>
+         <td><%= aliquot.sample.sanger_sample_id %></td>
+         <td><%= render partial: 'shared/tag_info', locals: {tag: aliquot.tag } if aliquot.tag.present? %></td>
+         <td><%= render partial: 'shared/tag_info', locals: {tag: aliquot.tag2 } if aliquot.tag2.present? %></td>
+       </tr>
+       <% end %>
+      </tbody>
+    </table>
+  </div>
+</section>

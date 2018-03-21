@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
 
-class DataReleaseStudyType < ActiveRecord::Base
+class DataReleaseStudyType < ApplicationRecord
   extend Attributable::Association::Target
 
   has_many :study
@@ -12,8 +12,8 @@ class DataReleaseStudyType < ActiveRecord::Base
   validates_presence_of :name
   validates_uniqueness_of :name, message: 'of data release study type already present in database'
 
- scope :assay_types, -> { where(is_assay_type: true) }
- scope :non_assay_types, -> { where(is_assay_type: false) }
+  scope :assay_types, -> { where(is_assay_type: true) }
+  scope :non_assay_types, -> { where(is_assay_type: false) }
 
   DATA_RELEASE_TYPES_SAMPLES = ['genotyping or cytogenetics']
   DATA_RELEASE_TYPES_STUDIES = []

@@ -21,7 +21,7 @@ class ::Endpoints::Plates < ::Core::Endpoint::Base
       action(:create, to: :standard_create!)
     end
 
-    has_many(:wells,                     json: 'wells', to: 'wells', scoped: 'for_api_plate_json.in_row_major_order')
+    has_many(:wells,                     json: 'wells', to: 'wells', scoped: 'for_api_plate_json.in_row_major_order', per_page: 400)
     has_many(:submission_pools,          json: 'submission_pools', to: 'submission_pools')
     has_many(:requests,                  json: 'requests', to: 'requests')
     belongs_to(:plate_purpose,           json: 'plate_purpose')
@@ -39,9 +39,11 @@ class ::Endpoints::Plates < ::Core::Endpoint::Base
       end
     end
 
+    has_many(:transfer_request_collections, json: 'transfer_request_collections', to: 'transfer_request_collections')
+
     has_many(:transfers_as_source,           json: 'source_transfers', to: 'source_transfers')
     has_many(:transfers_to_tubes,            json: 'transfers_to_tubes', to: 'transfers_to_tubes')
     has_many(:transfers_as_destination,      json: 'creation_transfers', to: 'creation_transfers')
-  belongs_to(:custom_metadatum_collection, json: 'custom_metadatum_collection', to: 'custom_metadatum_collection')
+    belongs_to(:custom_metadatum_collection, json: 'custom_metadatum_collection', to: 'custom_metadatum_collection')
   end
 end

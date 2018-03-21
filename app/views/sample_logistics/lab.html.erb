@@ -3,32 +3,29 @@
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.%>
+<%= page_title "Sample Management", "Lab view" %>
+<div class="card-columns">
+  <%= panel :info, title: 'Verification' do %>
+    <h3><%= link_to "Lab Activity", asset_audits_path %></h3>
+      <p>Scan what your doing, and what instrument your using.</p>
+    <h3><%= link_to "Bed verification", robot_verifications_path %></h3>
+      <p>Verify cherrypicked plates which have been created in Sequencescape.</p>
+  <% end %>
 
-<fieldset>
-  <legend>Verification</legend>
-  <h3><%= link_to "Lab Activity", asset_audits_path %></h3>
-    <p>Scan what your doing, and what instrument your using.</p>
-  <h3><%= link_to "Bed verification", robot_verifications_path %></h3>
-    <p>Verify cherrypicked plates which have been created in Sequencescape.</p>
-</fieldset>
+  <%= panel :info, title: 'Barcode Printing' do %>
+    <h3><%= link_to "Print plate barcodes", new_plate_path  %></h3>
+      <p>Create plates and print barcodes.</p>
+    <h3><%= link_to "Print Sequenom plate barcode", new_sequenom_qc_plate_path  %></h3>
+    <p>Create a plate to send to Sequenom from dilution plates</p>
+  <% end %>
 
-<fieldset>
-  <legend>Barcode Printing</legend>
-  <h3><%= link_to "Print plate barcodes", new_plate_path  %></h3>
-    <p>Create plates and print barcodes.</p>
-  <h3><%= link_to "Print Sequenom plate barcode", new_sequenom_qc_plate_path  %></h3>
-  <p>Create a plate to send to Sequenom from dilution plates</p>
-</fieldset>
+  <%= panel :info, title: 'Tracking' do %>
+    <h3><%= link_to "Lab reception", receptions_path %></h3>
+      <p>When plates/tubes come into the lab, scan them into the reception freezer.</p>
+  <% end %>
 
-
-<fieldset>
-  <legend>Tracking</legend>
-  <h3><%= link_to "Lab reception", receptions_path %></h3>
-    <p>When plates/tubes come into the lab, scan them into the reception freezer.</p>
-</fieldset>
-
-<fieldset>
-  <legend>Other</legend>
-  <h3><%= link_to "Stamping of stock", new_stock_stamper_path %></h3>
-    <p>Transfers all stock from one plate to another plate with the same barcode.</p>
-</fieldset>
+  <%= panel :info, title: 'Other' do %>
+    <h3><%= link_to "Stamping of stock", new_stock_stamper_path %></h3>
+      <p>Transfers all stock from one plate to another plate with the same barcode.</p>
+  <% end %>
+</div>

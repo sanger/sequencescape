@@ -32,7 +32,7 @@ class RequestsController < ApplicationController
 
     # Deprecated?: It would be great if we could remove this
     if params[:request_type] and params[:workflow]
-      request_source = request_source.for_request_types(params[:request_type]).for_workflow(params[:workflow]).includes(:user)
+      request_source = request_source.for_request_types(params[:request_type]).includes(:user)
     end
 
     # Now, here we go: find all of the requests!
@@ -147,15 +147,15 @@ class RequestsController < ApplicationController
   end
 
   def expanded(_options = {})
-    render text: '', status: :gone
+    render plain: '', status: :gone
   end
 
   def pending
-    render text: '', status: :gone
+    render plain: '', status: :gone
   end
 
   def incomplete_requests_for_family(_options = {})
-    render text: '', status: :gone
+    render plain: '', status: :gone
   end
 
   def redirect_if_not_owner_or_admin
@@ -200,14 +200,14 @@ class RequestsController < ApplicationController
     @change_decision = Request::ChangeDecision.new({ request: @request, user: @current_user }.merge(params[:change_decision] || {})).execute!
     flash[:notice] = 'Update. Below you find the new situation.'
     redirect_to filter_change_decision_request_path(params[:id])
-   rescue Request::ChangeDecision::InvalidDecision => exception
-      flash[:error] = 'Failed! Please, read the list of problem below.'
-      @change_decision = exception.object
-      render(action: :filter_change_decision)
+  rescue Request::ChangeDecision::InvalidDecision => exception
+    flash[:error] = 'Failed! Please, read the list of problem below.'
+    @change_decision = exception.object
+    render(action: :filter_change_decision)
   end
 
   def search_params
-    permitted = params.permit(:asset_id, :item_id, :state, :request_type_id, :workflow_id)
+    permitted = params.permit(:asset_id, :item_id, :state, :request_type_id)
     permitted[:initial_study_id] = params[:study_id] if params[:study_id]
     permitted
   end

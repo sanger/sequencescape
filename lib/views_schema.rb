@@ -5,16 +5,18 @@
 module ViewsSchema
   def self.each_view
     all_views.each do |name|
-      query = ActiveRecord::Base.connection.execute("SHOW CREATE TABLE #{name}")
-      if query.respond_to?(:fetch_hash)
-        query.fetch_hash['Create View'].gsub(/DEFINER=`[^`]*`@`[^`]*` /, '')
-      else
-        definition = query.first['Create View'].gsub(/DEFINER=`[^`]*`@`[^`]*` /, '')
-      end
+      query = ActiveRecord::Base.connection.execute("SHOW CREATE TABLE #{name}").first
+      definition = if query.is_a?(Hash)
+                     query['Create View'].gsub(/DEFINER=`[^`]*`@`[^`]*` /, '')
+                   elsif query.is_a?(Array)
+                     query[1].gsub(/DEFINER=`[^`]*`@`[^`]*` /, '')
+                   else
+                     raise 'Unknown query format'
+                   end
       yield(name, definition)
     end
   rescue ActiveRecord::StatementInvalid => exception
-      puts "\e[1;31m
+    puts "\e[1;31m
 ==============================================================
 *                          WARNING!                          *
 *        The attempt to dump the view schema failed.         *
@@ -31,7 +33,7 @@ module ViewsSchema
 *                        disruption.                         *
 ==============================================================
 \e[0m"
-      raise exception
+    raise exception
   end
 
   def self.all_views
@@ -49,8 +51,12 @@ module ViewsSchema
   end
 
   def self.update_view(name, definition)
-    raise 'Invalid name' unless /^[a-z0-9_]*$/ === name
-    ActiveRecord::Base.connection.execute("DROP VIEW IF EXISTS `#{name}`;")
+    drop_view(name)
     create_view(name, definition)
+  end
+
+  def self.drop_view(name)
+    raise "Invalid name: `#{name}`" unless /^[a-z0-9_]*$/.match?(name)
+    ActiveRecord::Base.connection.execute("DROP VIEW IF EXISTS `#{name}`;")
   end
 end

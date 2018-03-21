@@ -86,8 +86,8 @@ module Informatics
 
     private
 
-      def parsed(filename)
-        ERB.new(File.new(filename, 'r').read).result(binding)
-      end
+    def parsed(filename)
+      ERB.new(File.new(filename, 'r').read).result(binding)
+    end
   end
 end

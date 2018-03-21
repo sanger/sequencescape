@@ -19,15 +19,15 @@ class SubmissionsController < ApplicationController
   end
 
   def create
-    @presenter = Submission::SubmissionCreator.new(current_user, params[:submission])
+    @presenter = Submission::SubmissionCreator.new(current_user, params[:submission].to_unsafe_h)
 
     if @presenter.save
       render partial: 'saved_order',
              locals: {
-          presenter: @presenter,
-          order: @presenter.order,
-          form: :dummy_form_symbol
-        },
+               presenter: @presenter,
+               order: @presenter.order,
+               form: :dummy_form_symbol
+             },
              layout: false
     else
       render partial: 'order_errors', layout: false, status: 422

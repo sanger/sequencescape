@@ -8,26 +8,23 @@ class AssetsController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
-  before_action :discover_asset, only: [:show, :edit, :update, :destory, :summary, :close, :print_assets, :print, :show_plate, :history, :holded_assets]
+  before_action :discover_asset, only: [:show, :edit, :update, :destory, :summary, :close, :print_assets, :print, :history, :holded_assets]
+  before_action :prepare_asset, only: [:new_request, :create_request]
 
   def index
-    @assets_without_requests = []
-    @assets_with_requests = []
     if params[:study_id]
       @study = Study.find(params[:study_id])
       @assets = @study.assets_through_aliquots.order(:name).page(params[:page])
+    else
+      @assets = Asset.page(params[:page])
     end
 
     respond_to do |format|
-      if params[:print]
-        format.html { render action: :print_index }
-      else
-        format.html
-      end
+      format.html
       if params[:study_id]
         format.xml { render xml: Study.find(params[:study_id]).assets_through_requests.to_xml }
       elsif params[:sample_id]
-          format.xml { render xml: Sample.find(params[:sample_id]).assets.to_xml }
+        format.xml { render xml: Sample.find(params[:sample_id]).assets.to_xml }
       elsif params[:asset_id]
         @asset = Asset.find(params[:asset_id])
         format.xml { render xml: ['relations' => { 'parents' => @asset.parents, 'children' => @asset.children }].to_xml }
@@ -63,14 +60,14 @@ class AssetsController < ApplicationController
 
   def find_parents(text)
     return [] unless text.present?
-      names = text.lines.map(&:chomp).reject { |l| l.blank? }
-      objects = Asset.where(id: names).all
-      objects += Asset.where(barcode: names).all
-      name_set = Set.new(names)
-      found_set = Set.new(objects.map(&:name))
-      not_found = name_set - found_set
-      raise InvalidInputException, "#{Asset.table_name} #{not_found.to_a.join(", ")} not founds" unless not_found.empty?
-      objects
+    names = text.lines.map(&:chomp).reject { |l| l.blank? }
+    objects = Asset.where(id: names).all
+    objects += Asset.where(barcode: names).all
+    name_set = Set.new(names)
+    found_set = Set.new(objects.map(&:name))
+    not_found = name_set - found_set
+    raise InvalidInputException, "#{Asset.table_name} #{not_found.to_a.join(", ")} not founds" unless not_found.empty?
+    objects
   end
 
   def create
@@ -129,7 +126,7 @@ class AssetsController < ApplicationController
             # All new assets are assumed to have a phiX sample in them as that's the only asset that
             # is created this way.
             asset.save!
-            aliquot_attributes = { sample: SpikedBuffer.phiX_sample, study_id: 198 }
+            aliquot_attributes = { sample: SpikedBuffer.phix_sample, study_id: 198 }
             aliquot_attributes[:library] = asset if asset.is_a?(LibraryTube) or asset.is_a?(SpikedBuffer)
             asset.aliquots.create!(aliquot_attributes)
           end
@@ -171,7 +168,7 @@ class AssetsController < ApplicationController
 
   def update
     respond_to do |format|
-      if @asset.update_attributes(asset_params.merge(params.fetch(:lane, {})))
+      if @asset.update_attributes(asset_params.merge(params.to_unsafe_h.fetch(:lane, {})))
         flash[:notice] = 'Asset was successfully updated.'
         if params[:lab_view]
           format.html { redirect_to(action: :lab_view, barcode: @asset.barcode) }
@@ -187,7 +184,7 @@ class AssetsController < ApplicationController
   end
 
   private def asset_params
-    permitted = [:location_id, :volume, :concentration]
+    permitted = [:volume, :concentration]
     permitted << :name if current_user.administrator? #
     permitted << :plate_purpose_id if current_user.administrator? || current_user.lab_manager?
     params.require(:asset).permit(permitted)
@@ -233,8 +230,8 @@ class AssetsController < ApplicationController
 
   def print_labels
     print_job = LabelPrinter::PrintJob.new(params[:printer],
-                                          LabelPrinter::Label::AssetRedirect,
-                                          printables: params[:printables])
+                                           LabelPrinter::Label::AssetRedirect,
+                                           printables: params[:printables])
     if print_job.execute
       flash[:notice] = print_job.success
     else
@@ -246,8 +243,8 @@ class AssetsController < ApplicationController
 
   def print_assets
     print_job = LabelPrinter::PrintJob.new(params[:printer],
-                                          LabelPrinter::Label::AssetRedirect,
-                                          printables: @asset)
+                                           LabelPrinter::Label::AssetRedirect,
+                                           printables: @asset)
     if print_job.execute
       flash[:notice] = print_job.success
     else
@@ -257,9 +254,8 @@ class AssetsController < ApplicationController
   end
 
   def show_plate
+    @asset = Plate.find(params[:id])
   end
-
-  before_action :prepare_asset, only: [:new_request, :create_request]
 
   def new_request
     @request_types = RequestType.applicable_for_asset(@asset)
@@ -290,11 +286,10 @@ class AssetsController < ApplicationController
     submission = ReRequestSubmission.build!(
       study: @study,
       project: @project,
-      workflow: @request_type.workflow,
       user: current_user,
       assets: [@asset],
       request_types: [@request_type.id],
-      request_options: request_options,
+      request_options: request_options.to_unsafe_h,
       comments: params[:comments],
       priority: params[:priority]
     )
@@ -324,30 +319,6 @@ class AssetsController < ApplicationController
       format.json { render json: exception.message, status: :precondition_failed }
     end
   end
-
-  def get_barcode
-    barcode = Asset.get_barcode_from_params(params)
-    render(text: "#{Barcode.barcode_to_human(barcode)} => #{barcode}")
-  end
-
-  def get_barcode_from_params(params)
-    prefix, asset = 'NT', nil
-    if params[:prefix]
-      prefix = params[:prefix]
-    else
-      begin
-        asset = Asset.find(params[:id])
-      rescue
-      end
-    end
-
-    if asset and asset.barcode
-      Barcode.calculate_barcode(asset.prefix, asset.barcode.to_i)
-    else
-      Barcode.calculate_barcode(prefix, params[:id].to_i)
-    end
-  end
-  private :get_barcode_from_params
 
   def lookup
     if params[:asset] && params[:asset][:barcode]
@@ -389,7 +360,7 @@ class AssetsController < ApplicationController
     elsif match = /\A([A-z]{2})([0-9]{1,7})[A-z]{0,1}\z/.match(barcode) # Human Readable
       prefix = BarcodePrefix.find_by(prefix: match[1])
       @asset = Asset.find_by(barcode: match[2], barcode_prefix_id: prefix.id) if prefix
-    elsif /\A[0-9]{1,7}\z/ =~ barcode # Just a number
+    elsif /\A[0-9]{1,7}\z/.match?(barcode) # Just a number
       @asset = Asset.find_by(barcode: barcode)
     else
       flash[:error] = "'#{barcode}' is not a recognized barcode format"

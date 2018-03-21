@@ -19,7 +19,8 @@ end
 Before('@javascript') do
   class Timecop
     class << self
-      alias_method_chain :freeze, :warning
+      alias_method :freeze_without_warning, :freeze
+      alias_method :freeze, :freeze_with_warning
     end
   end
 end

@@ -4,14 +4,9 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
-class Lane < Aliquot::Receptacle
+class Lane < Receptacle
   include Api::LaneIO::Extensions
-  include LocationAssociation::Locatable
   include AliquotIndexer::Indexable
-
-  def subject_type
-    'lane'
-  end
 
   LIST_REASONS_NEGATIVE = [
     'Failed on yield but sufficient data for experiment',
@@ -33,11 +28,31 @@ class Lane < Aliquot::Receptacle
   SAMPLE_PARTIAL = 'assets/samples_partials/lane_samples'
 
   extend Metadata
+
   has_metadata do
-    attribute(:release_reason, in: LIST_REASONS)
+    custom_attribute(:release_reason, in: LIST_REASONS)
   end
 
-  has_one_as_child(:spiked_in_buffer, ->() { where(sti_type: 'SpikedBuffer') })
+  has_one :spiked_in_buffer_links, ->() { joins(:ancestor).where(assets: { sti_type: 'SpikedBuffer' }).direct }, class_name: 'AssetLink', foreign_key: :descendant_id
+  has_one :spiked_in_buffer, through: :spiked_in_buffer_links, source: :ancestor
 
   has_many :aliquot_indicies, inverse_of: :lane, class_name: 'AliquotIndex'
+
+  scope :with_required_aliquots, ->(aliquots_ids) { joins(:aliquots).where(aliquots: { id: aliquots_ids }).includes(requests_as_target: :batch) }
+
+  def subject_type
+    'lane'
+  end
+
+  def friendly_name
+    name # TODO: Maybe add location?
+  end
+
+  def source_labwares
+    requests_as_target.map(&:asset).map(&:labware).uniq
+  end
+
+  def rebroadcast
+    requests_as_target.each { |r| r.batch.try(:rebroadcast) }
+  end
 end

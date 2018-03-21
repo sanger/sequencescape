@@ -27,11 +27,6 @@ class LibraryTube < Tube
     get_tag.tag_group.tags.order(:map_id).pluck(:name, :id)
   end
 
-  # A library tube is created with request options that come from the request in which it is the target asset.
-  def created_with_request_options
-    creation_request.try(:request_options_for_creation) || {}
-  end
-
   def self.stock_asset_type
     StockLibraryTube
   end
@@ -42,6 +37,9 @@ class LibraryTube < Tube
 
   def specialized_from_manifest=(attributes)
     if first_update?
+      # library_id is assigned on aliquot creation in `tube_sample_creation` method
+      # in sample_manifest `library` and `multiplexed library` behaviours
+      # library_id should be removed from here at some point (20/04/2017)
       aliquots.first.update_attributes!(attributes.merge(library_id: id))
       requests.each(&:manifest_processed!)
     end

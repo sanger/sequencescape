@@ -22,8 +22,6 @@ Given(/^I have a released cherrypicking batch with (\d+) samples and the minimum
   fill_in('nano_grams_per_micro_litre_robot_minimum_picking_volume', with: minimum_robot_pick)
   step('I press "Next step"')
   step('I press "Next step"')
-  step('I select "Genotyping freezer" from "Location"')
-  step('I press "Next step"')
   step('I press "Release this batch"')
   step('the last batch has a barcode of "550000555760"')
 end
@@ -41,8 +39,6 @@ Given(/^I have a released low concentration cherrypicking batch with (\d+) sampl
   step('I fill in "nano_grams_per_micro_litre_concentration_required" with "50"')
   fill_in('nano_grams_per_micro_litre_robot_minimum_picking_volume', with: minimum_robot_pick)
   step('I press "Next step"')
-  step('I press "Next step"')
-  step('I select "Genotyping freezer" from "Location"')
   step('I press "Next step"')
   step('I press "Release this batch"')
   step('the last batch has a barcode of "550000555760"')
@@ -81,8 +77,6 @@ Given(/^I have a released cherrypicking batch with 3 plates and the minimum robo
   fill_in('nano_grams_per_micro_litre_robot_minimum_picking_volume', with: minimum_robot_pick)
   step('I press "Next step"')
   step('I press "Next step"')
-  step('I select "Genotyping freezer" from "Location"')
-  step('I press "Next step"')
   step('I press "Release this batch"')
   step('the last batch has a barcode of "550000555760"')
 end
@@ -111,20 +105,7 @@ Then /^the downloaded tecan file for batch "([^"]*)" and plate "([^"]*)" is$/ do
   assert_not_nil generated_lines
   tecan_file_lines = tecan_file.split(/\n/)
   generated_lines.each_with_index do |line, index|
-    if defined?(JRuby)
-      assert_equal tecan_file_lines[index], line
-    else
-      # MRI and Jruby have different float rounding behaviour
-      # Both are valid, here we relax constraints for MRI.
-      # The relaxed constraints are a little more permissive than
-      # would be ideal.
-      _expect_line, expect_root, expect_round = /(.*)(\.\d)/.match(tecan_file_lines[index])
-      _actual_line, actual_root, actual_round = /(.*)(\.\d)/.match(line)
-      assert_equal expect_root, actual_root
-      valid_end = (expect_round == actual_round) || # The rounded digets match
-                  (expect_round.to_i - actual_round.to_i == 1) && (actual_round.to_i.even?) # The digit has been rounded down to even
-        assert valid_end
-    end
+    assert_equal tecan_file_lines[index], line
   end
 end
 

@@ -46,7 +46,17 @@ module SampleManifest::MultiplexedLibraryBehaviour
     end
 
     def multiplexed_library_tube
-      @mx_tube || raise(MxLibraryTubeException.new, 'Mx tube not found')
+      # Should we add something to be able to find the multiplexed library tube from database
+      # samples.first.primary_receptacle.requests.first.target_asset
+      @mx_tube || samples.first.primary_receptacle.requests.first.target_asset || raise(MxLibraryTubeException.new, 'Mx tube not found')
+    end
+
+    def pending_external_library_creation_requests
+      multiplexed_library_tube.requests_as_target.for_state('pending')
+    end
+
+    def labware
+      [multiplexed_library_tube]
     end
 
     def printables
@@ -105,7 +115,7 @@ module SampleManifest::MultiplexedLibraryBehaviour
       end
 
       numeric_fields.each do |field|
-        yield  "#{sample.sanger_sample_id} #{field.downcase} should be a number." unless /^[0-9]+$/ === row[field].strip
+        yield  "#{sample.sanger_sample_id} #{field.downcase} should be a number." unless /^[0-9]+$/.match?(row[field].strip)
         yield  "#{sample.sanger_sample_id} #{field.downcase} should be greater than 0." unless row[field].to_i > 0
       end
 
@@ -145,6 +155,10 @@ module SampleManifest::MultiplexedLibraryBehaviour
         end
       end
     end
+
+    def assign_library?
+      true
+    end
   end
 
   RapidCore = Core
@@ -161,14 +175,4 @@ module SampleManifest::MultiplexedLibraryBehaviour
       RequestFactory.create_external_multiplexed_library_creation_requests(tubes, mx_tube, study)
     end
   end
-
-  def sample_tube_sample_creation(samples_data, _study_id)
-    study.samples << samples_data.map do |barcode, sanger_sample_id, _prefix|
-      create_sample(sanger_sample_id).tap do |sample|
-        sample_tube = LibraryTube.find_by(barcode: barcode) or raise ActiveRecord::RecordNotFound, "Cannot find library tube with barcode #{barcode.inspect}"
-        sample_tube.aliquots.create!(sample: sample)
-      end
-    end
-  end
-  private :sample_tube_sample_creation
 end

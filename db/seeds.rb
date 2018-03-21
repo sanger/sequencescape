@@ -12,16 +12,16 @@
 # they are doing.  So here we're preventing you from actually doing that.
 ##########################################################################################################
 unless [:development, :test, :seeding, :cucumber].include?(Rails.env.to_sym)
-  raise StandardError, <<-END_OF_MESSAGE
-**********************************************************************************************************
-********************************** SERIOUSLY, YOU DON'T WANT TO DO THIS **********************************
+  raise StandardError, <<~END_OF_MESSAGE
+    **********************************************************************************************************
+    ********************************** SERIOUSLY, YOU DON'T WANT TO DO THIS **********************************
 
-You are quite clearly either wreckless, incompetent or careless.  You are trying to seed the #{Rails.env}
-database which should never be done.  Please recheck your shell environment to ensure that Rails.env
-is not set, or is set to either 'development' or 'test'.
+    You are quite clearly either wreckless, incompetent or careless.  You are trying to seed the #{Rails.env}
+    database which should never be done.  Please recheck your shell environment to ensure that Rails.env
+    is not set, or is set to either 'development' or 'test'.
 
-**********************************************************************************************************
-**********************************************************************************************************
+    **********************************************************************************************************
+    **********************************************************************************************************
 END_OF_MESSAGE
 end
 
@@ -36,7 +36,7 @@ ActiveRecord::Base.transaction do
   # If we have an environment variable that defines the seed version to use then we need to filter
   # any that are not that version.
   unfiltered, handler = handler, lambda do |seed_data_file|
-    unfiltered.call(seed_data_file) if seed_data_file =~ %r{/#{ENV['VERSION']}_[^/]+\.rb$}
+    unfiltered.call(seed_data_file) if seed_data_file.match?(%r{/#{ENV['VERSION']}_[^/]+\.rb$})
   end unless ENV['VERSION'].blank?
 
   # Load all of the files under the 'seeds' directory in their sorted order.  This allows us to define

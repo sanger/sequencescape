@@ -19,7 +19,7 @@ class SequenomQcPlatesController < ApplicationController
     @barcode_printers  = BarcodePrinter.all
     barcode_printer    = BarcodePrinter.find(params[:barcode_printer][:id])
     number_of_barcodes = params[:number_of_barcodes].to_i
-    input_plate_names   = params[:input_plate_names]
+    input_plate_names   = params[:input_plate_names].to_unsafe_h
     user_barcode        = params[:user_barcode]
 
     # It's been decided that a blank dummy plate will be created for each barcode label required
@@ -66,8 +66,8 @@ class SequenomQcPlatesController < ApplicationController
         format.html { render :new }
       else
         print_job = LabelPrinter::PrintJob.new(barcode_printer.name,
-                                              LabelPrinter::Label::SequenomPlateRedirect,
-                                              plates: new_plates, count: 3, plate384: barcode_printer.plate384_printer?)
+                                               LabelPrinter::Label::SequenomPlateRedirect,
+                                               plates: new_plates, count: 3, plate384: barcode_printer.plate384_printer?)
 
         # and redirect to a fresh page with an appropriate flash[:notice]
 

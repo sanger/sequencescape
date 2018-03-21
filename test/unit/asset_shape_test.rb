@@ -12,45 +12,45 @@ class AssetShapeTest < ActiveSupport::TestCase
       @shape = AssetShape.new(name: 'Test', horizontal_ratio: 3, vertical_ratio: 2, description_strategy: 'Map::Coordinate')
     end
 
-  context '96 wells ' do
-    context 'conversion between horizontal and back' do
-      (1..96).step(1) do |i|
-        should "revert to same value #{i}" do
-          assert_equal i, @shape.vertical_to_horizontal(@shape.horizontal_to_vertical(i, 96), 96)
-          assert_equal i, @shape.horizontal_to_vertical(@shape.vertical_to_horizontal(i, 96), 96)
+    context '96 wells ' do
+      context 'conversion between horizontal and back' do
+        (1..96).step(1) do |i|
+          should "revert to same value #{i}" do
+            assert_equal i, @shape.vertical_to_horizontal(@shape.horizontal_to_vertical(i, 96), 96)
+            assert_equal i, @shape.horizontal_to_vertical(@shape.vertical_to_horizontal(i, 96), 96)
+          end
+        end
+      end
+
+      { 1 => 1, 2 => 9, 96 => 96, 51 => 21, 85 => 8 }.each do |hor, vert|
+        should "map horizontal #{hor} to vertical #{vert}" do
+          assert_equal vert, @shape.horizontal_to_vertical(hor, 96)
+        end
+        should "map vertical #{vert} to horizontal #{hor}" do
+          assert_equal hor, @shape.vertical_to_horizontal(vert, 96)
         end
       end
     end
 
-    { 1 => 1, 2 => 9, 96 => 96, 51 => 21, 85 => 8 }.each do |hor, vert|
-      should "map horizontal #{hor} to vertical #{vert}" do
-        assert_equal vert, @shape.horizontal_to_vertical(hor, 96)
+    context '384 wells ' do
+      context 'and back' do
+        (1..384).step(1) do |i|
+          should "revert back to same value #{i}" do
+            assert_equal i, @shape.vertical_to_horizontal(@shape.horizontal_to_vertical(i, 384), 384)
+            assert_equal i, @shape.horizontal_to_vertical(@shape.vertical_to_horizontal(i, 384), 384)
+          end
+        end
       end
-      should "map vertical #{vert} to horizontal #{hor}" do
-        assert_equal hor, @shape.vertical_to_horizontal(vert, 96)
-      end
-    end
-  end
 
-  context '384 wells ' do
-    context 'and back' do
-      (1..384).step(1) do |i|
-        should "revert back to same value #{i}" do
-          assert_equal i, @shape.vertical_to_horizontal(@shape.horizontal_to_vertical(i, 384), 384)
-          assert_equal i, @shape.horizontal_to_vertical(@shape.vertical_to_horizontal(i, 384), 384)
+      { 1 => 1, 2 => 17, 384 => 384, 370 => 160, 26 => 18 }.each do |hor, vert|
+        should "map horizontal #{hor} to vertical #{vert}" do
+          assert_equal vert, @shape.horizontal_to_vertical(hor, 384)
+        end
+        should "map vertical #{vert} to horizontal #{hor}" do
+          assert_equal hor, @shape.vertical_to_horizontal(vert, 384)
         end
       end
     end
-
-    { 1 => 1, 2 => 17, 384 => 384, 370 => 160, 26 => 18 }.each do |hor, vert|
-      should "map horizontal #{hor} to vertical #{vert}" do
-        assert_equal vert, @shape.horizontal_to_vertical(hor, 384)
-      end
-      should "map vertical #{vert} to horizontal #{hor}" do
-        assert_equal hor, @shape.vertical_to_horizontal(vert, 384)
-      end
-    end
-  end
   end
 
   context 'Fluidigm plates of 96 wells' do

@@ -5,3 +5,8 @@
 /* Formtastic automaticall sizes our elements. This doesn't play nicely with some pages */
 .formtastic.plates .stringish input { width: 100%; }
 .formtastic.plates .text textarea { width: 100%; }
+
+#select2-plates_dilution_factor-results li:first-child {
+	background-color: green;
+	color: white;
+}

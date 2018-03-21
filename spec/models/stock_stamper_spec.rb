@@ -7,6 +7,11 @@ describe StockStamper do
   let!(:user) { create :user, login: 'abc', barcode: 'ID41440E' }
 
   before(:each) do
+    create :plate_type, name: 'ABgene_0765', maximum_volume: 800
+    create :plate_type, name: 'ABgene_0800', maximum_volume: 180
+    create :plate_type, name: 'FluidX075', maximum_volume: 500
+    create :plate_type, name: 'FluidX03', maximum_volume: 280
+
     @attributes = { user_barcode: '2470041440697',
                     source_plate_barcode: plate.ean13_barcode,
                     destination_plate_barcode: plate.ean13_barcode,
@@ -17,9 +22,9 @@ describe StockStamper do
     new_time = Time.local(2008, 9, 1, 12, 0, 0)
     Timecop.freeze(new_time)
     @tecan_data = {
-                    'user' => user.login,
-                    'time' => new_time,
-                    'source' =>
+      'user' => user.login,
+      'time' => new_time,
+      'source' =>
                     {
                       "#{plate.ean13_barcode}_s" =>
                       {
@@ -27,7 +32,7 @@ describe StockStamper do
                         'plate_size' => 96
                       }
                     },
-                    'destination' =>
+      'destination' =>
                     {
                       "#{plate.ean13_barcode}_d" =>
                       {
@@ -64,7 +69,7 @@ describe StockStamper do
                         ]
                       }
                     }
-                  }
+    }
   end
 
   describe 'it verifies the plates' do

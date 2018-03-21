@@ -22,14 +22,16 @@ require 'capybara/rspec'
 require 'capybara/poltergeist'
 require 'webmock/rspec'
 require 'support/user_login'
+require 'jsonapi/resources/matchers'
+require 'aasm/rspec'
 
 require 'pry'
 
-Capybara.javascript_driver = :poltergeist
-
 Capybara.register_driver :poltergeist do |app|
-  Capybara::Poltergeist::Driver.new(app, timeout: 2.minutes)
+  Capybara::Poltergeist::Driver.new(app, timeout: 1.minute, window_size: [1600, 3200])
 end
+
+Capybara.javascript_driver = :poltergeist
 
 WebMock.disable_net_connect!(allow_localhost: true)
 
@@ -114,6 +116,12 @@ RSpec.configure do |config|
   config.order = :random
 
   config.include UserLogin
+
+  config.around(:each, warren: true) do |ex|
+    Warren.handler.enable!
+    ex.run
+    Warren.handler.disable!
+  end
 
   # Seed global randomization in this process using the `--seed` CLI option.
   # Setting this allows you to use `--seed` to deterministically reproduce

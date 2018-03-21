@@ -3,6 +3,7 @@
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
+require_relative '../../lib/deployment_environment'
 
 class SessionsController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
@@ -27,7 +28,7 @@ class SessionsController < ApplicationController
       redirect_back_or_default(controller: :studies)
     else
       if params
-        flash.now[:notice] = "Your log in details don't match our records. Please try again."
+        flash.now[:error] = "Your log in details don't match our records. Please try again."
       end
     end
   end

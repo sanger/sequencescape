@@ -41,6 +41,13 @@ module IlluminaC::Requests
       end
     end
 
+    def update_request_types
+      each_request_type do |params|
+        key = params.delete(:key)
+        RequestType.find_by(key: key).update_attributes!(params)
+      end
+    end
+
     def destroy_request_types
       each_request_type do |params|
         RequestType.find_by(name: params[:name]).destroy
@@ -85,17 +92,18 @@ module IlluminaC::Requests
         {
           name:               'Illumina-C Multiplexing',
           key:                'illumina_c_multiplexing',
-          request_class_name: 'Request::Multiplexing',
+          request_class_name: 'Request::AutoMultiplexing',
           for_multiplexing:   true,
           target_purpose:     Purpose.find_by(name: 'ILC Lib Pool Norm')
         }
       ].each do |params|
-         params.merge!(workflow: Submission::Workflow.find_by(name: 'Next-gen sequencing'),
-                       asset_type: 'Well',
-                       order: 1,
-                       initial_state: 'pending',
-                       billable: true,
-                       product_line: ProductLine.find_by(name: 'Illumina-C'))
+        params.merge!(
+          asset_type: 'Well',
+          order: 1,
+          initial_state: 'pending',
+          billable: true,
+          product_line: ProductLine.find_by(name: 'Illumina-C')
+        )
         yield(params)
       end
     end

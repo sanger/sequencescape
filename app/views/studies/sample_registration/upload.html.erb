@@ -4,10 +4,10 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.%>
 
-<% add :title, I18n.t("studies.about") -%>
+<% add :about, I18n.t("studies.about") -%>
 <% add :menu, "Register without spreadsheet" => new_study_sample_registration_path -%>
 
-<h1>Sample Registration using spreadsheet</h1>
+<div class="page-header"><h1>Sample Registration using spreadsheet</h1></div>
 <div class='help'>
   <h2>Important notice</h2>
     For any help about Reference Genome list, please email <%= help_email_link %><br />
@@ -16,10 +16,9 @@
 <%= form_tag spreadsheet_study_sample_registration_index_path, multipart: true do -%>
 <h2>1. Please select a spreadsheet to upload:</h2>
 
-<% unless @workflow.nil? %>
-  <p>Uploading a spreadsheet uses the data supplied to pre-fill the normal registration form.</p>
-  <p>An spreadsheet template in the format required is <%= link_to "available to download",'root' + "data/#{@workflow.key}/sample_information.xls" %></p>
-<% end %>
+<p>Uploading a spreadsheet uses the data supplied to pre-fill the normal registration form.</p>
+<%= link_to "Download template for sequencing samples", '/data/short_read_sequencing/sample_information.xls' %>
+<%= link_to "Download template for genotyping samples", '/data/microarray_genotyping/sample_information.xls' %>
 
 <%= display_user_guide "Only #{configatron.uploaded_spreadsheet.max_number_of_samples.to_s} samples in one spreadsheet are currently allowed" %>
 

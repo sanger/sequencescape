@@ -4,10 +4,11 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.%>
 
-<% add :title, "Finished batch" -%>
+<% add :about, "Finished batch" -%>
 <% add :back_menu, "Back to pipeline" => pipeline_path(@batch.pipeline) -%>
 
-<h1>FINISHED PIPELINE</h1>
+<%= page_title("Finish", @pipeline.name) %>
+
 <div class="content">
   <div class="info">
     Batch <%= @batch.id %> has completed the '<%= @pipeline.name %>' pipeline.
@@ -15,8 +16,8 @@
   <div class="info">
     <div style="text-align: center;">
       <p>
-      <%= form_tag release_batch_url(@batch) do -%>
-        <%= submit_tag "Release this batch" %>
+      <%= form_tag release_batch_url(@batch), method: :get do -%>
+        <%= submit_tag "Release this batch", class: 'release-batch' %>
       <% end -%>
       </p>
       <p>

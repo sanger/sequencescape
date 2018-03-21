@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'rails_helper'
 
 feature 'SampleManifest controller' do
@@ -22,6 +23,10 @@ feature 'SampleManifest controller' do
       expect(PlateBarcode).to receive(:create).and_return(build(:plate_barcode, barcode: barcode))
       select(study.name, from: 'Study')
       select(supplier.name, from: 'Supplier')
+      within('#sample_manifest_template') do
+        expect(page).to have_selector('option', count: 5)
+        expect(page).not_to have_selector('option', text: 'Default Tube')
+      end
       select('Default Plate', from: 'Template')
       select(printer.name, from: 'Barcode printer')
       select(selected_purpose.name, from: 'Plate purpose') if selected_purpose
@@ -55,6 +60,9 @@ feature 'SampleManifest controller' do
 
     scenario 'indicate the purpose field is used for plates only' do
       visit(new_sample_manifest_path)
+      within('#sample_manifest_template') do
+        expect(page).to have_selector('option', count: 11)
+      end
       select(created_purpose.name, from: 'Plate purpose')
       expect(page).to have_text('Used for plate manifests only')
     end

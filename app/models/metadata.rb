@@ -25,22 +25,29 @@ module Metadata
     association_name = "#{as_name}_metadata".underscore.to_sym
     class_name = "#{name}::Metadata"
 
-    has_one(association_name, { class_name: class_name, dependent: :destroy, validate: true, autosave: true, inverse_of: :owner }.merge(options).merge(foreign_key: "#{as_name}_id", inverse_of: :owner))
+    default_options = { class_name: class_name, dependent: :destroy, validate: true, autosave: true, inverse_of: :owner, foreign_key: "#{as_name}_id" }
+    has_one association_name, default_options.merge(options)
     accepts_nested_attributes_for(association_name, update_only: true)
-    scope :"include_#{ association_name }", -> { includes(association_name) }
+
+    scope :"include_#{ association_name }", -> { includes(association_name) } unless respond_to?(:"include_#{ association_name }")
 
     # We now ensure that, if the metadata is not already created, that a blank instance is built.  We cannot
     # do this through the initialization of our model because we use the ActiveRecord::Base#becomes method in
     # our code, which would create a new default instance.
+    # If lazy metadata is true we do NOT generate metadata upfront. This is the case for internal requests,
+    # where metadata is unused anyway.
     line = __LINE__ + 1
     class_eval("
+      class_attribute :lazy_metadata
+      self.lazy_metadata = false
 
       def #{association_name}_with_initialization
         #{association_name}_without_initialization ||
         build_#{association_name}
       end
 
-      alias_method_chain(:#{association_name}, :initialization)
+      alias_method(:#{association_name}_without_initialization, :#{association_name})
+      alias_method(:#{association_name}, :#{association_name}_with_initialization)
 
       def validating_ena_required_fields=(state)
         @validating_ena_required_fields = !!state
@@ -48,7 +55,7 @@ module Metadata
       end
 
       def validating_ena_required_fields?
-        @validating_ena_required_fields
+        instance_variable_defined?(:@validating_ena_required_fields) && @validating_ena_required_fields
       end
 
       def tags
@@ -63,7 +70,7 @@ module Metadata
         @tags ||= []
       end
 
-      before_validation { |record| record.#{association_name} }
+      before_validation :#{association_name}, on: :create, unless: :lazy_metadata?
 
     ", __FILE__, line)
 
@@ -114,9 +121,11 @@ module Metadata
     const_set(:Metadata, metadata)
   end
 
-  class Base < ActiveRecord::Base
+  class Base < ApplicationRecord
     # All derived classes have their own table.  We're just here to help with some behaviour
     self.abstract_class = true
+
+    broadcasts_associated_via_warren :owner
 
     # This ensures that the default values are stored within the DB, meaning that this information will be
     # preserved for the future, unlike the original properties information which didn't store values when
@@ -129,7 +138,10 @@ module Metadata
 
     def merge_instance_defaults
       # Replace attributes with the default if the value is nil
-      self.attributes = instance_defaults.merge(attributes.symbolize_keys) { |_key, default, attribute| attribute.nil? ? default : attribute }
+      instance_defaults.each do |attribute, value|
+        next unless send(attribute).nil?
+        send(:"#{attribute}=", value)
+      end
     end
 
     include Attributable

@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2012,2013,2015 Genome Research Ltd.
 
-class AssetCreation < ActiveRecord::Base
+class AssetCreation < ApplicationRecord
   include Uuid::Uuidable
   include Asset::Ownership::ChangesOwner
   extend ModelExtensions::Plate::NamedScopeHelpers
@@ -30,10 +30,6 @@ class AssetCreation < ActiveRecord::Base
 
   def create_ancestor_asset!(asset, child)
     AssetLink.create_edge!(asset, child)
-  end
-
-  def can_create_ancestor_plate?(asset, child)
-    (asset.kind_of? Well) && (!child.nil?) && (!child.ancestors.include?(asset))
   end
 
   def connect_parent_and_children

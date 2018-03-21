@@ -10,12 +10,21 @@
 class Transfer::FromPlateToTubeBySubmission < Transfer::BetweenPlateAndTubes
   after_create :build_asset_links
 
-  def locate_mx_library_tube_for(well, stock_wells)
-    return nil if stock_wells.empty?
-    current_submission = well.creation_request.submission_id
-    stock_wells.first.requests_as_source.detect do |request|
-      request.submission_id == current_submission && request.target_asset.is_a?(Tube)
-    end.try(:target_asset)
+  private
+
+  def locate_mx_library_tube_for(well, _stock_wells)
+    asset_cache[well.submission_ids.first]
   end
-  private :locate_mx_library_tube_for
+
+  #
+  # The asset cache saves the asset for each submission, ensuring we only need
+  # to look it up once.
+  #
+  # @return [Asset] The asset into which the well should be transferred
+  #
+  def asset_cache
+    @asset_cache ||= Hash.new do |cache, submission_id|
+      cache[submission_id] = Submission.find(submission_id).multiplexed_asset
+    end
+  end
 end

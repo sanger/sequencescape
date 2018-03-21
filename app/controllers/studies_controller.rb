@@ -12,7 +12,6 @@ class StudiesController < ApplicationController
   before_action :evil_parameter_hack!
   include REXML
   include Informatics::Globals
-  include XmlCacheHelper::ControllerHelper
 
   before_action :login_required
   before_action :admin_login_required, only: [:settings, :administer, :manage, :managed_update, :grant_role, :remove_role]
@@ -48,7 +47,7 @@ class StudiesController < ApplicationController
   def study_list
     return redirect_to(studies_path) unless request.xhr?
     setup_studies_from_scope
-    render partial: 'study_list', locals: { studies: @studies.with_related_users_included.all }
+    render partial: 'study_list', locals: { studies: @studies.with_related_owners_included }
   end
 
   def new
@@ -87,15 +86,8 @@ class StudiesController < ApplicationController
     @study = Study.find(params[:id])
     flash.keep
     respond_to do |format|
-      format.html do
-        if current_user.workflow.nil?
-          flash[:notice] = 'Your profile is incomplete. Please select a workflow.'
-          redirect_to edit_profile_path(current_user)
-        else
-          redirect_to study_workflow_path(@study, current_user.workflow)
-        end
-      end
-      format.xml { cache_xml_response(@study) }
+      format.html { redirect_to study_information_path(@study) }
+      format.xml { render layout: false }
       format.json { render json: @study.to_json }
     end
   end
@@ -156,7 +148,7 @@ class StudiesController < ApplicationController
 
   def collaborators
     @study = Study.find(params[:id])
-    @all_roles  = Role.select(:name).uniq.pluck(:name)
+    @all_roles  = Role.distinct.pluck(:name)
     @roles      = Role.where(authorizable_id: @study.id, authorizable_type: 'Study')
     @users      = User.order(:first_name)
   end
@@ -200,15 +192,15 @@ class StudiesController < ApplicationController
 
   def relate_study
     update_study_relation do |relation_type_name, related_study|
-        StudyRelationType::relate_studies_by_name!(relation_type_name, @study, related_study)
-        flash[:notice] = 'Relation added'
+      StudyRelationType::relate_studies_by_name!(relation_type_name, @study, related_study)
+      flash[:notice] = 'Relation added'
     end
   end
 
   def unrelate_study
     update_study_relation do |relation_type_name, related_study|
-        StudyRelationType::unrelate_studies_by_name!(relation_type_name, @study, related_study)
-        flash[:notice] = 'Relation removed'
+      StudyRelationType::unrelate_studies_by_name!(relation_type_name, @study, related_study)
+      flash[:notice] = 'Relation removed'
     end
   end
 
@@ -221,7 +213,7 @@ class StudiesController < ApplicationController
       current_user.has_role 'follower', @study
       flash[:notice] = "You are now following the '#{@study.name}' study."
     end
-    redirect_to study_workflow_path(@study, current_user.workflow)
+    redirect_to study_information_path(@study)
   end
 
   def close
@@ -246,132 +238,129 @@ class StudiesController < ApplicationController
     @study = Study.find(params[:id])
     respond_to do |format|
       xml_text = @study.accession_service.accession_study_xml(@study)
-      format.xml { render(text: xml_text) }
+      format.xml { render(xml: xml_text) }
     end
   end
 
-   def show_policy_accession
+  def show_policy_accession
     @study = Study.find(params[:id])
     respond_to do |format|
       xml_text = @study.accession_service.accession_policy_xml(@study)
-      format.xml { render(text: xml_text) }
+      format.xml { render(xml: xml_text) }
     end
-   end
+  end
 
-   def show_dac_accession
+  def show_dac_accession
     @study = Study.find(params[:id])
     respond_to do |format|
       xml_text = @study.accession_service.accession_dac_xml(@study)
-      format.xml { render(text: xml_text) }
+      format.xml { render(xml: xml_text) }
     end
-   end
+  end
 
-   def rescue_accession_errors
-     yield
-   rescue ActiveRecord::RecordInvalid => exception
-     flash[:error] = 'Please fill in the required fields'
-     render(action: :edit)
-   rescue AccessionService::NumberNotRequired => exception
-     flash[:warning] = exception.message || 'An accession number is not required for this study'
-     redirect_to(study_path(@study))
-   rescue AccessionService::NumberNotGenerated => exception
-     flash[:warning] = 'No accession number was generated'
-     redirect_to(study_path(@study))
-   rescue AccessionService::AccessionServiceError => exception
-     flash[:error] = exception.message
-     redirect_to(edit_study_path(@study))
-   end
+  def rescue_accession_errors
+    yield
+  rescue ActiveRecord::RecordInvalid => exception
+    flash[:error] = 'Please fill in the required fields'
+    render(action: :edit)
+  rescue AccessionService::NumberNotRequired => exception
+    flash[:warning] = exception.message || 'An accession number is not required for this study'
+    redirect_to(study_path(@study))
+  rescue AccessionService::NumberNotGenerated => exception
+    flash[:warning] = 'No accession number was generated'
+    redirect_to(study_path(@study))
+  rescue AccessionService::AccessionServiceError => exception
+    flash[:error] = exception.message
+    redirect_to(edit_study_path(@study))
+  end
 
-   def accession
-     rescue_accession_errors do
-       @study = Study.find(params[:id])
-       @study.validate_ena_required_fields!
-       @study.accession_service.submit_study_for_user(@study, current_user)
-
-       flash[:notice] = "Accession number generated: #{@study.ebi_accession_number}"
-       redirect_to(study_path(@study))
-     end
-   end
-
-   def accession_all_samples
+  def accession
+    rescue_accession_errors do
       @study = Study.find(params[:id])
-      @study.accession_all_samples
-      flash[:notice] = 'All of the samples in this study have been sent for accessioning.'
+      @study.validate_ena_required_fields!
+      @study.accession_service.submit_study_for_user(@study, current_user)
+
+      flash[:notice] = "Accession number generated: #{@study.ebi_accession_number}"
       redirect_to(study_path(@study))
-   end
+    end
+  end
 
-   def dac_accession
-     rescue_accession_errors do
-       @study = Study.find(params[:id])
-       @study.accession_service.submit_dac_for_user(@study, current_user)
+  def accession_all_samples
+    @study = Study.find(params[:id])
+    @study.accession_all_samples
+    flash[:notice] = 'All of the samples in this study have been sent for accessioning.'
+    redirect_to(study_path(@study))
+  end
 
-       flash[:notice] = "Accession number generated: #{@study.dac_accession_number}"
-       redirect_to(study_path(@study))
-     end
-   end
+  def dac_accession
+    rescue_accession_errors do
+      @study = Study.find(params[:id])
+      @study.accession_service.submit_dac_for_user(@study, current_user)
 
-   def policy_accession
-     rescue_accession_errors do
-       @study = Study.find(params[:id])
-       @study.accession_service.submit_policy_for_user(@study, current_user)
+      flash[:notice] = "Accession number generated: #{@study.dac_accession_number}"
+      redirect_to(study_path(@study))
+    end
+  end
 
-       flash[:notice] = "Accession number generated: #{@study.policy_accession_number}"
-       redirect_to(study_path(@study))
-     end
-   end
+  def policy_accession
+    rescue_accession_errors do
+      @study = Study.find(params[:id])
+      @study.accession_service.submit_policy_for_user(@study, current_user)
 
-   def sra
-     @study = Study.find(params[:id])
-   end
+      flash[:notice] = "Accession number generated: #{@study.policy_accession_number}"
+      redirect_to(study_path(@study))
+    end
+  end
 
-   def state
-     @study = Study.find(params[:id])
-   end
+  def sra
+    @study = Study.find(params[:id])
+  end
 
-   def self.role_helper(name, success_action, error_action, &block)
-     define_method("#{name}_role") do
-       ActiveRecord::Base.transaction do
-         @user, @study = User.find(params[:role][:user]), Study.find(params[:id])
+  def state
+    @study = Study.find(params[:id])
+  end
 
-         if request.xhr?
-           if params[:role]
-             block.call(@user, @study, params[:role][:authorizable_type].to_s)
-             status, flash[:notice] = 200, "Role #{success_action}"
-           else
-             status, flash[:error] = 500, "A problem occurred while #{error_action} the role"
-           end
-         else
-           status, flash[:error] = 401, "A problem occurred while #{error_action} the role"
-         end
+  def self.role_helper(name, success_action, error_action, &block)
+    define_method("#{name}_role") do
+      ActiveRecord::Base.transaction do
+        @study = Study.find(params[:id])
+        @user = User.find(params.require(:role).fetch(:user))
 
-         @roles = @study.roles(true).all
-         render partial: 'roles', status: status
-       end
-     end
-   end
+        if request.xhr?
+          block.call(@user, @study, params[:role][:authorizable_type].to_s)
+          status, flash.now[:notice] = 200, "Role #{success_action}"
+        else
+          status, flash.now[:error] = 401, "A problem occurred while #{error_action} the role"
+        end
 
-   role_helper(:grant, 'added', 'adding')     { |user, study, name| user.has_role(name, study) }
-   role_helper(:remove, 'remove', 'removing') { |user, study, name| user.has_no_role(name, study) }
+        @roles = @study.roles.reload
+        render partial: 'roles', status: status
+      end
+    end
+  end
 
-   def projects
-     @study = Study.find(params[:id])
-     @projects = @study.projects.page(params[:page])
-   end
+  role_helper(:grant, 'added', 'adding')     { |user, study, name| user.has_role(name, study) }
+  role_helper(:remove, 'remove', 'removing') { |user, study, name| user.has_no_role(name, study) }
 
-   def sample_manifests
-     @study = Study.find(params[:id])
-     @sample_manifests = @study.sample_manifests.page(params[:page]).order(id: :desc)
-   end
+  def projects
+    @study = Study.find(params[:id])
+    @projects = @study.projects.page(params[:page])
+  end
 
-   def suppliers
-     @study = Study.find(params[:id])
-     @suppliers = @study.suppliers.page(params[:page])
-   end
+  def sample_manifests
+    @study = Study.find(params[:id])
+    @sample_manifests = @study.sample_manifests.page(params[:page]).order(id: :desc)
+  end
 
-   def study_reports
-     @study = Study.find(params[:id])
-     @study_reports = StudyReport.for_study(@study).page(params[:page]).order(id: :desc)
-   end
+  def suppliers
+    @study = Study.find(params[:id])
+    @suppliers = @study.suppliers.page(params[:page])
+  end
+
+  def study_reports
+    @study = Study.find(params[:id])
+    @study_reports = StudyReport.for_study(@study).page(params[:page]).order(id: :desc)
+  end
 
   private
 

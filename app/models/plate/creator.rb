@@ -4,17 +4,17 @@
 # authorship of this file.
 # Copyright (C) 2011,2012,2013,2015,2016 Genome Research Ltd.
 
-class Plate::Creator < ActiveRecord::Base
+class Plate::Creator < ApplicationRecord
   PlateCreationError = Class.new(StandardError)
 
-  class PurposeRelationship < ActiveRecord::Base
+  class PurposeRelationship < ApplicationRecord
     self.table_name = ('plate_creator_purposes')
 
     belongs_to :plate_purpose
     belongs_to :plate_creator, class_name: 'Plate::Creator'
   end
 
-  class ParentPurposeRelationship < ActiveRecord::Base
+  class ParentPurposeRelationship < ApplicationRecord
     self.table_name = ('plate_creator_parent_purposes')
 
     belongs_to :plate_purpose, class_name: 'Purpose'
@@ -42,8 +42,8 @@ class Plate::Creator < ActiveRecord::Base
       return false if new_plates.empty?
       new_plates.group_by(&:plate_purpose).each do |plate_purpose, plates|
         print_job = LabelPrinter::PrintJob.new(barcode_printer.name,
-                                              LabelPrinter::Label::PlateCreator,
-                                              plates: plates, plate_purpose: plate_purpose, user_login: scanned_user.login)
+                                               LabelPrinter::Label::PlateCreator,
+                                               plates: plates, plate_purpose: plate_purpose, user_login: scanned_user.login)
         return false unless print_job.execute
       end
       true
@@ -76,7 +76,7 @@ class Plate::Creator < ActiveRecord::Base
       # Because then you get multiple matches.  So we take the first match, which is just not right.
       scanned_barcodes.each_with_object([]) do |scanned, plates|
         plate =
-          Plate.with_machine_barcode(scanned).includes(:location, wells: :aliquots).first or
+          Plate.with_machine_barcode(scanned).includes(wells: :aliquots).first or
           raise ActiveRecord::RecordNotFound, "Could not find plate with machine barcode #{scanned.inspect}"
 
         unless can_create_plates?(plate)
@@ -97,7 +97,6 @@ class Plate::Creator < ActiveRecord::Base
       target_plate_purpose.target_class.create_with_barcode!(plate.barcode) do |child_plate|
         child_plate.plate_purpose = target_plate_purpose
         child_plate.size          = plate.size
-        child_plate.location      = plate.location
         child_plate.name          = "#{target_plate_purpose.name} #{child_plate.barcode}"
       end.tap do |child_plate|
         child_plate.wells << parent_wells.map do |well|

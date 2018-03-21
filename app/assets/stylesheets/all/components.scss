@@ -1,0 +1,107 @@
+/* This file contains the styling for shared components
+ * Please ensure you keep it commented
+ */
+
+/* A Summary table presents simple key-value pairs */
+.table-summary th { text-align: right;}
+.table-summary th:after {
+  content: ":";
+}
+/*table.sortable { table-layout:fixed; }*/
+
+table.sortable th:focus {
+  outline: none;
+}
+
+/* Dense Information tables use smaller fonts */
+table.table-dense-information tbody {
+  font-size: smaller;
+}
+
+/* main-row encomasses the bulk of the application */
+.main-row { margin-bottom:10px; }
+
+
+.loading-bar-container {
+  @extend .progress;
+  .loading-bar {
+    width: 100%;
+    @extend .progress-bar;
+    @extend .progress-bar-striped;
+    @extend .progress-bar-animated;
+  }
+}
+.loading-bar-placeholder {  margin: 11px 0;}
+
+.formtastic label.ft-label { width: 25%; }
+.formtastic input[type="file"] {
+  display: inline-block;
+}
+
+.formtastic .boolean label.ft-label { width: auto; }
+.formtastic input.btn { padding: 6px 12px; }
+
+.card-style-feature {
+  @extend .bg-primary;
+  @extend .text-white;
+}
+
+// Apply basic button formatting to all buttons
+input[type=submit] {
+  @extend .btn;
+}
+
+.link-panel {
+  @extend .list-group;
+  @extend .list-group-flush;
+  a { @extend .list-group-item; }
+}
+
+
+/* A collapsible info panel, which may contain tabulated data
+ * A more semantic representation of bootstrap panels */
+section.info-panel {
+  @extend .card;
+//  @extend .card-default;
+
+  header {
+    @extend .card-header;
+
+    h3 {
+      @extend .card-title;
+    }
+
+    .counter {
+      @extend .badge;
+    }
+
+    .show-hide { float: right; }
+  }
+
+  table {
+    @extend .table;
+    @extend .table-sm;
+    @extend .table-striped;
+
+    caption {
+      @extend .card-body;
+    }
+  }
+}
+
+nav.toc {
+  @extend .card;
+  @extend .col-md-2;
+
+  ul {
+    @extend .link-list;
+  }
+}
+
+.pagination {
+  li {
+    @extend .page-item;
+    a { @extend .page-link; }
+    span { @extend .page-link; }
+  }
+}

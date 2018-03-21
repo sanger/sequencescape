@@ -7,16 +7,42 @@
 require 'eventful_record'
 require 'external_properties'
 
-require 'eventful_record'
-require 'external_properties'
-
-class Asset < ActiveRecord::Base
+class Asset < ApplicationRecord
   include StudyReport::AssetDetails
   include ModelExtensions::Asset
   include AssetLink::Associations
   include SharedBehaviour::Named
 
+  # Key/value stores and attributes
+  include ExternalProperties
+  acts_as_descriptable :serialized
+
+  include Uuid::Uuidable
+
+  # Links to other databases
+  include Identifiable
+
+  include Commentable
+  include Event::PlateEvents
+
   SAMPLE_PARTIAL = 'assets/samples_partials/blank'
+
+  QC_STATES = [
+    ['passed',  'pass'],
+    ['failed',  'fail'],
+    ['pending', 'pending'],
+    [nil, '']
+  ]
+
+  QC_STATES.reject { |k, _v| k.nil? }.each do |state, qc_state|
+    line = __LINE__ + 1
+    class_eval("
+      def qc_#{qc_state}
+        self.qc_state = #{state.inspect}
+        self.save!
+      end
+    ", __FILE__, line)
+  end
 
   class_attribute :stock_message_template, instance_writer: false
 
@@ -36,16 +62,6 @@ class Asset < ActiveRecord::Base
   class VolumeError < StandardError
   end
 
-  def summary_hash
-    {
-      asset_id: id
-    }
-  end
-
-  def sample_partial
-    self.class::SAMPLE_PARTIAL
-  end
-
   self.per_page = 500
   self.inheritance_column = 'sti_type'
 
@@ -53,103 +69,25 @@ class Asset < ActiveRecord::Base
   has_many :asset_groups, through: :asset_group_assets
   has_many :asset_audits
   has_many :volume_updates, foreign_key: :target_id
-  has_many :events_on_requests, through: :requests, source: :events
 
   # TODO: Remove 'requests' and 'source_request' as they are abiguous
+  # :requests should go before :events_on_requests, through: :requests
   has_many :requests
+  has_many :events_on_requests, through: :requests, source: :events, validate: false
   has_one  :source_request,     ->() { includes(:request_metadata) }, class_name: 'Request', foreign_key: :target_asset_id
   has_many :requests_as_source, ->() { includes(:request_metadata) },  class_name: 'Request', foreign_key: :asset_id
   has_many :requests_as_target, ->() { includes(:request_metadata) },  class_name: 'Request', foreign_key: :target_asset_id
   has_many :state_changes, foreign_key: :target_id
-
-  scope :include_requests_as_target, -> { includes(:requests_as_target) }
-  scope :include_requests_as_source, -> { includes(:requests_as_source) }
-
-  scope :where_is_a?,     ->(clazz) { where(sti_type: [clazz, *clazz.descendants].map(&:name)) }
-  scope :where_is_not_a?, ->(clazz) { where(['sti_type NOT IN (?)', [clazz, *clazz.descendants].map(&:name)]) }
 
   # Orders
   has_many :submitted_assets
   has_many :orders, through: :submitted_assets
   has_many :messengers, as: :target, inverse_of: :target
   has_one :custom_metadatum_collection
-  delegate :metadata, to: :custom_metadatum_collection
-
-  scope :requests_as_source_is_a?, ->(t) { joins(:requests_as_source).where(requests: { sti_type: [t, *t.descendants].map(&:name) }) }
-
-  # to override in subclass
-  def location
-    nil
-  end
+  has_one :creation_request, class_name: 'Request', foreign_key: :target_asset_id
 
   belongs_to :map
   belongs_to :barcode_prefix
-  scope :sorted, ->() { order('map_id ASC') }
-
-  scope :position_name, ->(description, size) {
-    joins(:map).where(description: description, asset_size: size)
-  }
-  scope :for_summary, -> { includes([:map, :barcode_prefix]) }
-
-  scope :of_type, ->(*args) { where(sti_type: args.map { |t| [t, *t.descendants] }.flatten.map(&:name)) }
-
-  scope :recent_first, -> { order(id: :desc) }
-
-  scope :include_for_show, ->() { includes(requests: :request_metadata) }
-
-  # Assets usually have studies through aliquots, which is only relevant to
-  # Aliquot::Receptacles. This method just ensures all assets respond to studies
-  def studies
-    Study.none
-  end
-
-  def barcode_and_created_at_hash
-    return {} if barcode.blank?
-    {
-      barcode: generate_machine_barcode,
-      created_at: created_at
-    }
-  end
-
-  def study_ids
-    []
-  end
-
-  # All studies related to this asset
-  def related_studies
-    (orders.map(&:study) + studies).compact.uniq
-  end
- # Named scope for search by query string behaviour
- scope :for_search_query, ->(query, with_includes) {
-    search = '(assets.sti_type != "Well") AND ((assets.name IS NOT NULL AND assets.name LIKE :name)'
-    arguments = { name: "%#{query}%" }
-
-    # The entire string consists of one of more numeric characters, treat it as an id or barcode
-    if /\A\d+\z/ === query
-      search << ' OR (assets.id = :id) OR (assets.barcode = :barcode)'
-      arguments[:id] = query.to_i
-      arguments[:barcode] = query.to_s
-    end
-
-    # If We're a Sanger Human barcode
-    if match = /\A([A-z]{2})(\d{1,7})[A-z]{0,1}\z/.match(query)
-      prefix_id = BarcodePrefix.find_by(prefix: match[1]).try(:id)
-      number = match[2]
-      search << ' OR (assets.barcode = :barcode AND assets.barcode_prefix_id = :prefix_id)' unless prefix_id.nil?
-      arguments[:barcode] = number
-      arguments[:prefix_id] = prefix_id
-    end
-
-    search << ')'
-
-    if with_includes
-      where(search, arguments)
-    else
-      where(search, arguments).includes(:requests).order('requests.pipeline_id ASC')
-    end
-                          }
-
- scope :with_name, ->(*names) { where(name: names.flatten) }
 
   extend EventfulRecord
   has_many_events do
@@ -175,17 +113,171 @@ class Asset < ActiveRecord::Base
   has_one_event_with_family 'scanned_into_lab'
   has_one_event_with_family 'moved_to_2d_tube'
 
-  # Key/value stores and attributes
-  include ExternalProperties
-  acts_as_descriptable :serialized
+  delegate :metadata, to: :custom_metadatum_collection
 
-  include Uuid::Uuidable
+  broadcast_via_warren
 
-  # Links to other databases
-  include Identifiable
+  after_create :generate_name_with_id, if: :name_needs_to_be_generated?
 
-  include Commentable
-  include Event::PlateEvents
+  scope :requests_as_source_is_a?, ->(t) { joins(:requests_as_source).where(requests: { sti_type: [t, *t.descendants].map(&:name) }) }
+
+  scope :include_requests_as_target, -> { includes(:requests_as_target) }
+  scope :include_requests_as_source, -> { includes(:requests_as_source) }
+
+  scope :where_is_a?,     ->(clazz) { where(sti_type: [clazz, *clazz.descendants].map(&:name)) }
+  scope :where_is_not_a?, ->(clazz) { where(['sti_type NOT IN (?)', [clazz, *clazz.descendants].map(&:name)]) }
+
+  scope :sorted, ->() { order('map_id ASC') }
+
+  scope :position_name, ->(description, size) {
+    joins(:map).where(description: description, asset_size: size)
+  }
+  scope :for_summary, -> { includes([:map, :barcode_prefix]) }
+
+  scope :of_type, ->(*args) { where(sti_type: args.map { |t| [t, *t.descendants] }.flatten.map(&:name)) }
+
+  scope :recent_first, -> { order(id: :desc) }
+
+  scope :include_for_show, -> { includes({ requests: [:request_type, :request_metadata] }, requests_as_target: [:request_type, :request_metadata]) }
+
+  # The use of a sub-query here is a performance optimization. If we join onto the asset_links
+  # table instead, rails is unable to paginate the results efficiently, as it needs to use DISTINCT
+  # when working out offsets. This is substantially slower.
+  scope :without_children, -> { where.not(id: AssetLink.where(direct: true).select(:ancestor_id)) }
+  scope :include_plates_with_children, ->(filter) { filter ? all : without_children }
+
+  # Named scope for search by query string behaviour
+  scope :for_search_query, ->(query, with_includes) {
+    search = '(assets.sti_type != "Well") AND ((assets.name IS NOT NULL AND assets.name LIKE :name)'
+    arguments = { name: "%#{query}%" }
+
+    # The entire string consists of one of more numeric characters, treat it as an id or barcode
+    if /\A\d+\z/.match?(query)
+      search << ' OR (assets.id = :id) OR (assets.barcode = :barcode)'
+      arguments[:id] = query.to_i
+      arguments[:barcode] = query.to_s
+    end
+
+    # If We're a Sanger Human barcode
+    if match = /\A([A-z]{2})(\d{1,7})[A-z]{0,1}\z/.match(query)
+      prefix_id = BarcodePrefix.find_by(prefix: match[1]).try(:id)
+      number = match[2]
+      search << ' OR (assets.barcode = :barcode AND assets.barcode_prefix_id = :prefix_id)' unless prefix_id.nil?
+      arguments[:barcode] = number
+      arguments[:prefix_id] = prefix_id
+    end
+
+    search << ')'
+
+    if with_includes
+      where(search, arguments)
+    else
+      where(search, arguments).includes(:requests).order('requests.pipeline_id ASC')
+    end
+  }
+
+  # We accept not only an individual barcode but also an array of them.  This builds an appropriate
+  # set of conditions that can find any one of these barcodes.  We map each of the individual barcodes
+  # to their appropriate query conditions (as though they operated on their own) and then we join
+  # them together with 'OR' to get the overall conditions.
+  scope :with_machine_barcode, ->(*barcodes) {
+    query_details = barcodes.flatten.map do |source_barcode|
+      case source_barcode.to_s
+      when /^\d{13}$/ # An EAN13 barcode
+        barcode_number = Barcode.number_to_human(source_barcode)
+        prefix_string  = Barcode.prefix_from_barcode(source_barcode)
+        barcode_prefix = BarcodePrefix.find_by(prefix: prefix_string)
+
+        if barcode_number.nil? or prefix_string.nil? or barcode_prefix.nil?
+          { query: 'FALSE' }
+        else
+          { query: '(barcode=? AND barcode_prefix_id=?)', parameters: [barcode_number, barcode_prefix.id] }
+        end
+      when /^\d{10}$/ # A Fluidigm barcode
+        { joins: 'JOIN plate_metadata AS pmmb ON pmmb.plate_id = assets.id', query: '(pmmb.fluidigm_barcode=?)', parameters: source_barcode.to_s }
+      else
+        { query: 'FALSE' }
+      end
+    end.inject(query: ['FALSE'], parameters: [nil], joins: []) do |building, current|
+      building.tap do
+        building[:joins]      << current[:joins]
+        building[:query]      << current[:query]
+        building[:parameters] << current[:parameters]
+      end
+    end
+
+    where([query_details[:query].join(' OR '), *query_details[:parameters].flatten.compact])
+      .joins(query_details[:joins].compact.uniq)
+  }
+
+  scope :source_assets_from_machine_barcode, ->(destination_barcode) {
+    destination_asset = find_from_machine_barcode(destination_barcode)
+    if destination_asset
+      source_asset_ids = destination_asset.parents.map(&:id)
+      if source_asset_ids.empty?
+        none
+      else
+        where(id: source_asset_ids)
+      end
+    else
+      none
+    end
+  }
+
+  def self.find_from_any_barcode(source_barcode)
+    if source_barcode.blank?
+      nil
+    elsif source_barcode.size == 13 && Barcode.check_EAN(source_barcode)
+      with_machine_barcode(source_barcode).first
+    elsif match = /\A([A-z]{2})([0-9]{1,7})\w{0,1}\z/.match(source_barcode) # Human Readable
+      prefix = BarcodePrefix.find_by(prefix: match[1])
+      find_by(barcode: match[2], barcode_prefix_id: prefix.id)
+    elsif /\A[0-9]{1,7}\z/.match?(source_barcode) # Just a number
+      find_by(barcode: source_barcode)
+    end
+  end
+
+  def self.find_from_machine_barcode(source_barcode)
+    with_machine_barcode(source_barcode).first
+  end
+
+  def summary_hash
+    {
+      asset_id: id
+    }
+  end
+
+  def sample_partial
+    self.class::SAMPLE_PARTIAL
+  end
+
+  # to override in subclass
+  def location
+    nil
+  end
+
+  # Assets usually have studies through aliquots, which is only relevant to
+  # Receptacles. This method just ensures all assets respond to studies
+  def studies
+    Study.none
+  end
+
+  def barcode_and_created_at_hash
+    return {} if barcode.blank?
+    {
+      barcode: generate_machine_barcode,
+      created_at: created_at
+    }
+  end
+
+  def study_ids
+    []
+  end
+
+  # All studies related to this asset
+  def related_studies
+    (orders.map(&:study) + studies).compact.uniq
+  end
 
   # Returns the request options used to create this asset.  By default assumed to be empty.
   def created_with_request_options
@@ -218,8 +310,6 @@ class Asset < ActiveRecord::Base
     stock_plate
   end
 
-  has_one :creation_request, class_name: 'Request', foreign_key: :target_asset_id
-
   def label
     sti_type || 'Unknown'
   end
@@ -234,10 +324,6 @@ class Asset < ActiveRecord::Base
 
   def scanned_in_date
     scanned_into_lab_event.try(:content) || ''
-  end
-
-  def moved_to_2D_tube_date
-    moved_to_2d_tube_event.try(:content) || ''
   end
 
   def create_asset_group_wells(user, params)
@@ -257,13 +343,6 @@ class Asset < ActiveRecord::Base
 
     asset_group
   end
-
-  after_create :generate_name_with_id, if: :name_needs_to_be_generated?
-
-  def name_needs_to_be_generated?
-    @name_needs_to_be_generated
-  end
-  private :name_needs_to_be_generated?
 
   def generate_name_with_id
     update_attributes!(name: "#{name} #{id}")
@@ -293,7 +372,7 @@ class Asset < ActiveRecord::Base
   end
 
   def display_name
-    name.blank? ? "#{sti_type} #{id}" : name
+    name.presence || "#{sti_type} #{id}"
   end
 
   def external_identifier
@@ -302,23 +381,6 @@ class Asset < ActiveRecord::Base
 
   def details
     nil
-  end
-
-  QC_STATES = [
-    ['passed',  'pass'],
-    ['failed',  'fail'],
-    ['pending', 'pending'],
-    [nil, '']
-  ]
-
-  QC_STATES.reject { |k, _v| k.nil? }.each do |state, qc_state|
-    line = __LINE__ + 1
-    class_eval("
-      def qc_#{qc_state}
-        self.qc_state = #{state.inspect}
-        self.save!
-      end
-    ", __FILE__, line)
   end
 
   def compatible_qc_state
@@ -348,95 +410,12 @@ class Asset < ActiveRecord::Base
     end
   end
 
-  def update_external_release
-    external_release_nil_before = external_release.nil?
-    yield
-    save!
-    events.create_external_release!(!external_release_nil_before) unless external_release.nil?
-  end
-  private :update_external_release
-
-  def self.find_by_human_barcode(barcode, location)
-    data = Barcode.split_human_barcode(barcode)
-    if data[0] == 'DN'
-      plate = Plate.find_by(barcode: data[1])
-      well = plate.find_well_by_name(location)
-      return well if well
-    end
-    raise ActiveRecord::RecordNotFound, "Couldn't find well with for #{barcode} #{location}"
-  end
-
   def assign_relationships(parents, child)
     parents.each do |parent|
       parent.children.delete(child)
       AssetLink.create_edge(parent, self)
     end
     AssetLink.create_edge(self, child)
-  end
-
-  # We accept not only an individual barcode but also an array of them.  This builds an appropriate
-  # set of conditions that can find any one of these barcodes.  We map each of the individual barcodes
-  # to their appropriate query conditions (as though they operated on their own) and then we join
-  # them together with 'OR' to get the overall conditions.
-  scope :with_machine_barcode, ->(*barcodes) {
-    query_details = barcodes.flatten.map do |source_barcode|
-      case source_barcode.to_s
-      when /^\d{13}$/ # An EAN13 barcode
-        barcode_number = Barcode.number_to_human(source_barcode)
-        prefix_string  = Barcode.prefix_from_barcode(source_barcode)
-        barcode_prefix = BarcodePrefix.find_by(prefix: prefix_string)
-
-        if barcode_number.nil? or prefix_string.nil? or barcode_prefix.nil?
-          { query: 'FALSE' }
-        else
-          { query: '(barcode=? AND barcode_prefix_id=?)', parameters: [barcode_number, barcode_prefix.id] }
-        end
-      when /^\d{10}$/ # A Fluidigm barcode
-        { joins: 'JOIN plate_metadata AS pmmb ON pmmb.plate_id = assets.id', query: '(pmmb.fluidigm_barcode=?)', parameters: source_barcode.to_s }
-      else
-        { query: 'FALSE' }
-      end
-    end.inject(query: ['FALSE'], parameters: [nil], joins: []) do |building, current|
-      building.tap do
-        building[:joins]      << current[:joins]
-        building[:query]      << current[:query]
-        building[:parameters] << current[:parameters]
-      end
-    end
-
-      where([query_details[:query].join(' OR '), *query_details[:parameters].flatten.compact])
-        .joins(query_details[:joins].compact.uniq)
-  }
-
-  scope :source_assets_from_machine_barcode, ->(destination_barcode) {
-    destination_asset = find_from_machine_barcode(destination_barcode)
-    if destination_asset
-      source_asset_ids = destination_asset.parents.map(&:id)
-      if source_asset_ids.empty?
-        none
-      else
-         where(id: source_asset_ids)
-      end
-    else
-      none
-    end
-  }
-
-  def self.find_from_any_barcode(source_barcode)
-    if source_barcode.blank?
-      nil
-    elsif source_barcode.size == 13 && Barcode.check_EAN(source_barcode)
-      with_machine_barcode(source_barcode).first
-    elsif match = /\A([A-z]{2})([0-9]{1,7})\w{0,1}\z/.match(source_barcode) # Human Readable
-      prefix = BarcodePrefix.find_by(prefix: match[1])
-      find_by(barcode: match[2], barcode_prefix_id: prefix.id)
-    elsif /\A[0-9]{1,7}\z/ =~ source_barcode # Just a number
-      find_by(barcode: source_barcode)
-    end
-  end
-
-  def self.find_from_machine_barcode(source_barcode)
-    with_machine_barcode(source_barcode).first
   end
 
   def generate_machine_barcode
@@ -451,15 +430,19 @@ class Asset < ActiveRecord::Base
   def add_parent(parent)
     return unless parent
     # should be self.parents << parent but that doesn't work
-
     save!
     parent.save!
     AssetLink.create_edge!(parent, self)
   end
 
-  def attach_tag(tag)
-    tag.tag!(self) if tag.present?
+  def attach_tag(tag, tag2 = nil)
+    tags = { tag: tag, tag2: tag2 }.compact
+    return if tags.empty?
+    raise StandardError, 'Cannot tag an empty asset'   if aliquots.empty?
+    raise StandardError, 'Cannot tag multiple samples' if aliquots.size > 1
+    aliquots.first.update_attributes!(tags)
   end
+  alias attach_tags attach_tag
 
   def requests_status(request_type)
     requests.order('id ASC').where(request_type: request_type).pluck(:state)
@@ -502,7 +485,7 @@ class Asset < ActiveRecord::Base
     false
   end
 
-  # See Aliquot::Receptacle for handling of assets with contents
+  # See Receptacle for handling of assets with contents
   def tag_count
     nil
   end
@@ -512,7 +495,9 @@ class Asset < ActiveRecord::Base
     []
   end
 
-  def contained_samples; []; end
+  def contained_samples
+    Sample.none
+  end
 
   def source_plate
     nil
@@ -532,5 +517,18 @@ class Asset < ActiveRecord::Base
   def register_stock!
     raise StandardError, "No stock template configured for #{self.class.name}. If #{self.class.name} is a stock, set stock_template on the class." if stock_message_template.nil?
     Messenger.create!(target: self, template: stock_message_template, root: 'stock_resource')
+  end
+
+  private
+
+  def update_external_release
+    external_release_nil_before = external_release.nil?
+    yield
+    save!
+    events.create_external_release!(!external_release_nil_before) unless external_release.nil?
+  end
+
+  def name_needs_to_be_generated?
+    instance_variable_defined?(:@name_needs_to_be_generated) && @name_needs_to_be_generated
   end
 end

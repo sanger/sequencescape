@@ -27,10 +27,7 @@ namespace :pmb do
                 'fine_adjustment' => '04',
                 'pitch_length' => '0110',
                 'print_width' => '0920',
-                'print_length' => '0080'
-              }
-            }
-          }
+                'print_length' => '0080' } } }
         end
 
         def label_type_tube
@@ -41,10 +38,7 @@ namespace :pmb do
                 'fine_adjustment' => '10',
                 'pitch_length' => '0430',
                 'print_width' => '0300',
-                'print_length' => '0400'
-              }
-            }
-          }
+                'print_length' => '0400' } } }
         end
 
         def get_label_types
@@ -78,12 +72,8 @@ namespace :pmb do
                     ],
                     'barcodes_attributes' => [
                       { 'x_origin' => '0200', 'y_origin' => '0000', 'field_name' => 'barcode', 'barcode_type' => '5', 'one_module_width' => '02', 'height' => '0070', 'rotational_angle' => nil, 'one_cell_width' => nil, 'type_of_check_digit' => '2', 'bar_height' => nil, 'no_of_columns' => nil }
-                    ]
-                  }
-                ]
-              }
-            }
-          }
+                    ] }
+                ] } } }
         end
 
         def sqsc_384plate_label_template
@@ -96,18 +86,14 @@ namespace :pmb do
                   { 'name' => 'main_label',
                     'bitmaps_attributes' => [
                       { 'x_origin' =>  '0140', 'y_origin' =>  '0035', 'field_name' =>  'top_left', 'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G', 'space_adjustment' => '03', 'rotational_angles' => '00' },
-                      { 'x_origin' =>  '0140', 'y_origin' =>  '0070', 'field_name' =>  'bottom_left', 'horizontal_magnification' =>  '05', 'vertical_magnification' =>  '1', 'font' =>  'G', 'space_adjustment' =>  '03', 'rotational_angles' => '00' },
+                      { 'x_origin' =>  '0140', 'y_origin' =>  '0070', 'field_name' =>  'bottom_left', 'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G', 'space_adjustment' => '03', 'rotational_angles' => '00' },
                       { 'x_origin' =>  '0610', 'y_origin' =>  '0035', 'field_name' =>  'top_right', 'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G', 'space_adjustment' => '00', 'rotational_angles' => '00' },
                       { 'x_origin' =>  '0610', 'y_origin' =>  '0070', 'field_name' =>  'bottom_right', 'horizontal_magnification' => '05', 'vertical_magnification' => '1', 'font' => 'G', 'space_adjustment' => '00', 'rotational_angles' => '00' }
                     ],
                     'barcodes_attributes' => [
                       { 'x_origin' =>  '0330', 'y_origin' =>  '0010', 'field_name' =>  'barcode', 'barcode_type' => '5', 'one_module_width' => '02', 'height' => '0070', 'rotational_angle' => nil, 'one_cell_width' => nil, 'type_of_check_digit' => '2', 'bar_height' => nil, 'no_of_columns' => nil }
-                    ]
-                  }
-                ]
-              }
-            }
-          }
+                    ] }
+                ] } } }
         end
 
         def sqsc_1dtube_label_template
@@ -127,12 +113,8 @@ namespace :pmb do
                     ],
                     'barcodes_attributes' => [
                       { 'x_origin' => '0043', 'y_origin' => '0100', 'field_name' => 'barcode', 'barcode_type' => '5', 'one_module_width' => '01', 'height' => '0100', 'rotational_angle' => nil, 'one_cell_width' => nil, 'type_of_check_digit' => '2', 'bar_height' => nil, 'no_of_columns' => nil }
-                    ]
-                  }
-                ]
-              }
-            }
-          }
+                    ] }
+                ] } } }
         end
 
         def get_label_templates

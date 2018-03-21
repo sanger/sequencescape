@@ -1,4 +1,5 @@
 # encoding: utf-8
+
 # This file is part of SEQUENCESCAPE; it is distributed under the terms of
 # GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
@@ -9,12 +10,14 @@ class SequencingRequest < CustomerRequest
   extend Request::AccessioningRequired
   include Api::Messages::FlowcellIO::LaneExtensions
 
+  self.sequencing = true
+
   has_metadata as: Request do
     # redundant with library creation , but THEY are using it .
-    attribute(:fragment_size_required_from, required: true, integer: true)
-    attribute(:fragment_size_required_to, required: true, integer: true)
+    custom_attribute(:fragment_size_required_from, integer: true)
+    custom_attribute(:fragment_size_required_to, integer: true)
 
-    attribute(:read_length, integer: true, validator: true, required: true, selection: true)
+    custom_attribute(:read_length, integer: true, validator: true, required: true, selection: true)
   end
 
   include Request::CustomerResponsibility
@@ -37,8 +40,8 @@ class SequencingRequest < CustomerRequest
 
   class RequestOptionsValidator < DelegateValidation::Validator
     delegate :fragment_size_required_from, :fragment_size_required_to, to: :target
-    validates_numericality_of :fragment_size_required_from, integer_only: true, greater_than: 0
-    validates_numericality_of :fragment_size_required_to, integer_only: true, greater_than: 0
+    validates_numericality_of :fragment_size_required_from, integer_only: true, greater_than: 0, allow_nil: true
+    validates_numericality_of :fragment_size_required_to, integer_only: true, greater_than: 0, allow_nil: true
   end
 
   def order=(_)
@@ -46,14 +49,14 @@ class SequencingRequest < CustomerRequest
   end
 
   def ready?
+    # Reject any requests with missing or empty assets.
+    # We use most tagged aliquot here, as its already loaded.
+    return false if asset.nil? || asset.most_tagged_aliquot.nil?
     # It's ready if I don't have any lib creation requests or if all my lib creation requests are closed and
     # at least one of them is in 'passed' status
-    asset = self.asset
-    return true if asset.nil?
-    requests_as_target = self.asset.requests_as_target
-    return true if requests_as_target.nil?
-    library_creation_requests = requests_as_target.where_is_a? Request::LibraryCreation
-    (library_creation_requests.size == 0) || library_creation_requests.all?(&:closed?) && library_creation_requests.any?(&:passed?)
+    upstream_requests.empty? ||
+      upstream_requests.all?(&:closed?) &&
+        upstream_requests.any?(&:passed?)
   end
 
   def self.delegate_validator
@@ -67,5 +70,9 @@ class SequencingRequest < CustomerRequest
     dna = lab_events_for_batch(batch).first.descriptor_value('DNA Volume')
     rsb = lab_events_for_batch(batch).first.descriptor_value('RSB Volume')
     "#{dna}μl DNA in #{rsb}μl RSB"
+  end
+
+  def billing_product_identifier
+    request_metadata.read_length
   end
 end

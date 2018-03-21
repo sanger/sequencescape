@@ -99,7 +99,7 @@ rescue
 end
 
 xml.instruct!
-xml.requests({api_version: '0.1'}) do |requests|
+xml.requests({ api_version: '0.1' }) do |requests|
   @requests.each do |r|
     requests.request do |request|
       request.id r.id

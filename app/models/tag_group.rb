@@ -4,14 +4,14 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
-class TagGroup < ActiveRecord::Base
+class TagGroup < ApplicationRecord
   include Uuid::Uuidable
 
   has_many :tags, ->() { order('map_id ASC') }
 
   scope :include_tags, ->() { includes(:tags) }
 
- scope :visible, -> { where(visible: true) }
+  scope :visible, -> { where(visible: true) }
 
   validates_presence_of :name
   validates_uniqueness_of :name

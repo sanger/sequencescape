@@ -28,32 +28,19 @@ ActiveRecord::Base.transaction do
     request_type.acceptable_plate_purposes << stock_plate_purpose
 
     # Now we can build from the stock plate through to the end
-    initial_purpose = Pulldown::InitialPlatePurpose.create!(
+    Pulldown::InitialPlatePurpose.create!(
       name: flow.shift,
       cherrypickable_target: false
-    ).tap do |plate_purpose|
-      transfer = RequestType.initial_transfer
-      stock_plate_purpose.child_relationships.create!(child: plate_purpose, transfer_request_type: transfer)
-    end
-    final_purpose = flow.inject(initial_purpose) do |parent, child_plate_name|
+    )
+
+    flow.each do |child_plate_name|
       options = { name: child_plate_name, cherrypickable_target: false }
-      options[:type] = 'Pulldown::LibraryPlatePurpose' if child_plate_name =~ /^(WGS|SC|ISC) library plate$/
-      PlatePurpose.create!(options).tap do |plate_purpose|
-        parent.child_relationships.create!(child: plate_purpose, transfer_request_type: RequestType.transfer)
-      end
+      options[:type] = 'Pulldown::LibraryPlatePurpose' if child_plate_name.match?(/^(WGS|SC|ISC) library plate$/)
+      PlatePurpose.create!(options)
     end
-
-    # Ensure that the transfer to the tube at the end is possible
-    tube_purpose = Purpose.find_by!(name: 'Legacy MX tube')
-    final_purpose.child_relationships.create!(child: tube_purpose, transfer_request_type: RequestType.transfer)
   end
 
-  qc_plate_purpose = PlatePurpose.create!(name: 'Pulldown QC plate', cherrypickable_target: false)
-
-  Pulldown::PlatePurposes::PLATE_PURPOSE_LEADING_TO_QC_PLATES.each do |name|
-    plate_purpose = Purpose.find_by!(name: name)
-    plate_purpose.child_relationships.create!(child: qc_plate_purpose, transfer_request_type: RequestType.transfer)
-  end
+  PlatePurpose.create!(name: 'Pulldown QC plate', cherrypickable_target: false)
 
   PlatePurpose.create!(
     name: 'Pre-capture stock',

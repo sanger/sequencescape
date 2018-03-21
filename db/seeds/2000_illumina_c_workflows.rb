@@ -4,9 +4,11 @@
 # authorship of this file.
 # Copyright (C) 2013,2014,2015 Genome Research Ltd.
 
-ActiveRecord::Base.transaction do
-  IlluminaC::PlatePurposes.create_plate_purposes
-  IlluminaC::PlatePurposes.create_tube_purposes
-  IlluminaC::PlatePurposes.create_branches
-  IlluminaC::Requests.create_request_types
+unless Rails.env.test?
+  ActiveRecord::Base.transaction do
+    IlluminaC::PlatePurposes.create_plate_purposes
+    IlluminaC::PlatePurposes.create_tube_purposes
+    IlluminaC::PlatePurposes.create_branches
+    IlluminaC::Requests.create_request_types
+  end
 end

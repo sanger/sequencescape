@@ -23,17 +23,14 @@ class AssetGroupRedirectTest < ActiveSupport::TestCase
                     top_right: "#{prefix} #{barcode1}",
                     bottom_right: "#{asset_name} #{barcode1}",
                     top_far_right: nil,
-                    barcode: (asset1.ean13_barcode).to_s }
-                },
-                { main_label:
-                  { top_left: (Date.today.strftime('%e-%^b-%Y')).to_s,
-                    bottom_left: (asset2.sanger_human_barcode).to_s,
-                    top_right: "#{prefix} #{barcode2}",
-                    bottom_right: "#{asset_name} #{barcode2}",
-                    top_far_right: nil,
-                    barcode: (asset2.ean13_barcode).to_s }
-                }
-              ]
+                    barcode: (asset1.ean13_barcode).to_s } },
+                 { main_label:
+                   { top_left: (Date.today.strftime('%e-%^b-%Y')).to_s,
+                     bottom_left: (asset2.sanger_human_barcode).to_s,
+                     top_right: "#{prefix} #{barcode2}",
+                     bottom_right: "#{asset_name} #{barcode2}",
+                     top_far_right: nil,
+                     barcode: (asset2.ean13_barcode).to_s } }]
     end
 
     should 'should return the right assets' do
@@ -60,8 +57,7 @@ class AssetGroupRedirectTest < ActiveSupport::TestCase
                     top_right: "#{prefix} #{barcode1}",
                     bottom_right: "#{asset_name} #{barcode1}",
                     top_far_right: nil,
-                    barcode: (asset.ean13_barcode).to_s }
-                }]
+                    barcode: (asset.ean13_barcode).to_s } }]
     end
 
     should 'should return the right assets' do
@@ -80,9 +76,9 @@ class AssetGroupRedirectTest < ActiveSupport::TestCase
       @barcode2 = '22222'
       @barcode3 = '33333'
       @asset_name = 'tube name'
-      asset1 = create :sample_tube, barcode: barcode1, name: asset_name
-      asset2 = create :sample_tube, barcode: barcode2, name: asset_name
-      asset3 = create :sample_tube, barcode: barcode3
+      asset1 = create :empty_sample_tube, barcode: barcode1, name: asset_name
+      asset2 = create :empty_sample_tube, barcode: barcode2, name: asset_name
+      asset3 = create :empty_sample_tube, barcode: barcode3
       options = { printables: { (asset1.id).to_s => 'true', (asset2.id).to_s => 'true', (asset3.id).to_s => 'false' } }
       @asset_redirect = LabelPrinter::Label::AssetRedirect.new(options)
       @assets = [asset1, asset2]
@@ -92,17 +88,14 @@ class AssetGroupRedirectTest < ActiveSupport::TestCase
                     bottom_line: (Date.today.strftime('%e-%^b-%Y')).to_s,
                     round_label_top_line: prefix,
                     round_label_bottom_line: barcode1,
-                    barcode: asset1.ean13_barcode }
-                },
-                { main_label:
-                  { top_line: asset_name,
-                    middle_line: barcode2,
-                    bottom_line: (Date.today.strftime('%e-%^b-%Y')).to_s,
-                    round_label_top_line: prefix,
-                    round_label_bottom_line: barcode2,
-                    barcode: asset2.ean13_barcode }
-                }
-              ]
+                    barcode: asset1.ean13_barcode } },
+                 { main_label:
+                   { top_line: asset_name,
+                     middle_line: barcode2,
+                     bottom_line: (Date.today.strftime('%e-%^b-%Y')).to_s,
+                     round_label_top_line: prefix,
+                     round_label_bottom_line: barcode2,
+                     barcode: asset2.ean13_barcode } }]
     end
 
     should 'should return the right assets' do
@@ -119,7 +112,7 @@ class AssetGroupRedirectTest < ActiveSupport::TestCase
       @prefix = 'NT'
       @barcode1 = '11111'
       @asset_name = 'tube name'
-      @asset = create :sample_tube, barcode: barcode1, name: asset_name
+      @asset = create :empty_sample_tube, barcode: barcode1, name: asset_name
       options = { printables: asset }
       @asset_redirect = LabelPrinter::Label::AssetRedirect.new(options)
 
@@ -129,8 +122,7 @@ class AssetGroupRedirectTest < ActiveSupport::TestCase
                     bottom_line: (Date.today.strftime('%e-%^b-%Y')).to_s,
                     round_label_top_line: prefix,
                     round_label_bottom_line: barcode1,
-                    barcode: asset.ean13_barcode }
-                }]
+                    barcode: asset.ean13_barcode } }]
     end
 
     should 'should return the right assets' do

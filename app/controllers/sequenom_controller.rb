@@ -140,5 +140,6 @@ class SequenomController < ApplicationController
       rescue_find_plate_from_barcode_without_create(exception, barcode, human_barcode)
     end
   end
-  alias_method_chain(:rescue_find_plate_from_barcode, :create)
+  alias_method(:rescue_find_plate_from_barcode_without_create, :rescue_find_plate_from_barcode)
+  alias_method(:rescue_find_plate_from_barcode, :rescue_find_plate_from_barcode_with_create)
 end

@@ -6,17 +6,21 @@
 <% suffix = "_#{File.read(File.join(Rails.root, 'database_suffix'))}".strip rescue nil %>
 
 mysql: &MYSQL
-  adapter: <%= defined?(JRuby) ? "mysql" : "mysql2" %>
-  username: root
+  adapter: mysql2
+  username: <%= ENV.fetch('DBUSERNAME','root') %>
   password: <%= ENV['DBPASSWORD'] %>
   encoding: utf8
   properties:
     characterSetResults: utf8
-  host: localhost
-  port: 3306
   pool: 5
   timeout: 5000
   reaping_frequency: 600
+  variables:
+    sql_mode: TRADITIONAL
+    # This improbably large value mimics the global option for production
+    # Without this things fall back to 1024 (At least with my setup) which
+    # is too small for larger pools.
+    group_concat_max_len: 67108864
 
 development:
   <<: *MYSQL
@@ -62,11 +66,21 @@ development_snp:
 test: &test
   <<: *MYSQL
   database: sequencescape_test<%= ENV['TEST_ENV_NUMBER'] %><%= suffix %>
-  pool: 5
+  pool: 10
   timeout: 5000
 
 cucumber:
   <<: *test
+
+
+# In production environments adapter should be 'oracle_enhanced',
+# Username, password and database are values that go to sqlplus login <username>/<password>@<database>
+
+agresso_test_db:
+  adapter: nulldb
+  database: database
+  username: username
+  password: password
 
 # These other connections are exported during deploy, from:
 # ssh://git/repos/git/psd/config/private.git/

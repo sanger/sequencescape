@@ -10,7 +10,7 @@ module SampleManifest::SharedTubeBehaviour
     study_abbreviation = study.abbreviation
 
     tubes, samples_data = [], []
-    (0...count).each do |_|
+    count.times do |_|
       tube = purpose.create!
       sanger_sample_id = SangerSampleId.generate_sanger_sample_id!(study_abbreviation, sanger_ids.shift)
 
@@ -30,13 +30,15 @@ module SampleManifest::SharedTubeBehaviour
     Delayed::Job.enqueue GenerateCreateAssetRequestsJob.new(asset_ids, study_id)
   end
 
+  private
+
   def tube_sample_creation(samples_data, _study_id)
     study.samples << samples_data.map do |barcode, sanger_sample_id, _prefix|
       create_sample(sanger_sample_id).tap do |sample|
-        sample_tube = Tube.find_by(barcode: barcode) or raise ActiveRecord::RecordNotFound, "Cannot find sample tube with barcode #{barcode.inspect}"
-        sample_tube.aliquots.create!(sample: sample)
+        tube = Tube.find_by(barcode: barcode) or raise ActiveRecord::RecordNotFound, "Cannot find sample tube with barcode #{barcode.inspect}"
+        attributes = core_behaviour.assign_library? ? { sample: sample, library_id: tube.id, study: study } : { sample: sample, study: study }
+        tube.aliquots.create!(attributes)
       end
     end
   end
-  private :tube_sample_creation
 end

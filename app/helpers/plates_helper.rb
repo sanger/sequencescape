@@ -10,8 +10,8 @@ module PlatesHelper
   def padded_wells_by_row(plate, overide = nil)
     wells = wells_hash(plate)
     padded_well_name_with_index(plate) do |padded_name, index|
-        index = padded_name == overide ? :overide : index
-        yield(padded_name, *wells[index])
+      index = padded_name == overide ? :overide : index
+      yield(padded_name, *wells[index])
     end
   end
 

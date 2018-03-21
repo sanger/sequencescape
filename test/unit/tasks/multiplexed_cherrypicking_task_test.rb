@@ -75,12 +75,12 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
 
     context '#do_assign_requests_to_multiplexed_wells_task with existing plate' do
       setup do
-          @plate = create :plate
+        @plate = create :plate
 
-          @well_array = %w(A1 B1 C1 D1 E1 F1 G1 G1)
+        @well_array = %w(A1 B1 C1 D1 E1 F1 G1 G1)
 
-          @barcode = @plate.ean13_barcode
-          @purpose_id = '33'
+        @barcode = @plate.ean13_barcode
+        @purpose_id = '33'
       end
 
       shared

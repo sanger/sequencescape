@@ -4,14 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
-def GivenSampleMetadata(attribute, regexp)
-  Given(regexp) do |name, value|
-    sample = Sample.find_by(name: name) or raise StandardError, "There appears to be no sample named '#{name}'"
-    sample.sample_metadata.send(:"#{ attribute }=", value.blank? ? nil : value)
-    sample.save!
-  end
-end
-
 When /^I attach a valid excel file$/ do
   attach_file(:file, File.join(Rails.root, 'public', 'data', 'sample_information.xls'))
 end
@@ -67,6 +59,13 @@ end
 Given /^the sample "([^\"]+)" has the phenotype "([^\"]*)"$/ do |name, phenotype|
   sample = Sample.find_by(name: name) or raise StandardError, "Cannot find sample with name #{name.inspect}"
   sample.sample_metadata.phenotype = phenotype
+  sample.save!
+end
+
+Given /^the reference genome for sample "([^\"]+)" is "([^\"]+)"$/ do |name, value|
+  sample = Sample.find_by!(name: name)
+  ref_genome = ReferenceGenome.find_or_create_by!(name: value)
+  sample.sample_metadata.reference_genome = ref_genome
   sample.save!
 end
 
@@ -186,16 +185,16 @@ Given /^the sample "([^"]*)" should not have an accession number$/ do |sample_na
   assert_nil sample.sample_metadata.sample_ebi_accession_number
 end
 
-Given /^I run the "([^\"]+)" cron script$/ do |script_name|
-  eval File.read("#{Rails.root}/lib/cron_scripts/#{script_name}")
+Given(/^the sample "([^\"]+)" has the accession number "([^\"]+)"$/) do |name, value|
+  sample = Sample.find_by!(name: name)
+  sample.sample_metadata.sample_ebi_accession_number = value.presence
+  sample.save!
 end
 
-GivenSampleMetadata(:sample_ebi_accession_number, /^the sample "([^\"]+)" has the accession number "([^\"]+)"$/)
-
 When /^I (create|update) an? accession number for sample "([^\"]+)"$/ do |action_type, sample_name|
- step %Q{I am on the show page for sample "#{sample_name}"}
- action_str = (action_type == 'create') ? 'Generate Accession Number' : 'Update EBI Sample data'
- step(%Q{I follow "#{action_str}"})
+  step %Q{I am on the show page for sample "#{sample_name}"}
+  action_str = (action_type == 'create') ? 'Generate Accession Number' : 'Update EBI Sample data'
+  step(%Q{I follow "#{action_str}"})
 end
 
 Then /^I (should|should not) have (sent|received) the attribute "([^\"]*)" for the sample element (to|from) the accessioning service$/ do |state_action, type_action, attr_name, _dest|

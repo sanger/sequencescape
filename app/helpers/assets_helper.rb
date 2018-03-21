@@ -55,7 +55,7 @@ module AssetsHelper
     content_tag(:div, class: 'col-md-5') do
       select_tag(
         field,
-        options_for_select(select_options_source.sorted_by_name.map { |x| [x.name, x.id] }, selected.try(:to_i)),
+        options_for_select(select_options_source.sorted_by_name.pluck(:name, :id), selected.try(:to_i)),
         options.merge(disabled: (selected.present? and not current_user.is_administrator?), class: 'form-control select2')
       )
     end
@@ -63,15 +63,14 @@ module AssetsHelper
 
   # Returns true if the current user can request additional sequencing on the given asset, otherwise false
   def current_user_can_request_additional_sequencing_on?(asset)
-    return false unless asset.is_sequenceable?                      # Asset must be sequenceable ...
-    return true if current_user.is_administrator?                   # ... user could be an administrator ...
-    return true if current_user.is_manager?
-    # asset.studies.any? { |study| current_user.is_manager?(study) }  # ... or a manager of any study related to the asset
+    asset.is_sequenceable? && # Asset must be sequenceable ...
+      (current_user.is_administrator? || # ... user could be an administrator ...
+        current_user.is_manager?) # ... or a manager
   end
 
   # Returns true if the current user can request an additional library on the asset, otherwise false
   def current_user_can_request_additional_library_on?(asset)
-    asset.is_a?(SampleTube) and current_user.is_administrator?
+    asset.is_a?(SampleTube) && current_user.is_administrator?
   end
 
   def current_user_can_make_additional_requests_on?(_asset, study)
@@ -82,18 +81,11 @@ module AssetsHelper
 
   def current_user_studies_from(_asset)
     return Study if current_user.is_administrator?
-
-    # Bit of a hack in that we want to provide the same interface as would be seen if this were an
-    # ActiveRecord model rather than an array.
-    Study.all.select { |study| current_user.is_manager?(study) }.tap do |results|
-      def results.sorted_by_name
-        sort_by(&:name)
-      end
-    end
+    Study.managed_by(current_user)
   end
 
   def asset_types
-    ['All', *Aliquot::Receptacle.descendants.map(&:name)]
+    ['All', *Receptacle.descendants.map(&:name)]
   end
 
   def asset_types_for_select

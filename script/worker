@@ -1,0 +1,24 @@
+#!/bin/bash -l
+
+# Usage: worker identity action
+# Eg: worker sequencescape.production.1 start
+PID_DIR='tmp/pids'
+
+function worker_start() {
+  echo "Starting Amqp worker"
+  bundle exec ./bin/amqp_client start
+  exit 0
+}
+
+function worker_stop() {
+  echo "Starting Amqp worker"
+  bundle exec ./bin/amqp_client stop
+  exit 0
+}
+
+function worker_restart() {
+  worker_stop
+  worker_start
+}
+
+worker_${2} $1

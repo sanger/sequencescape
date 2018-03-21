@@ -35,9 +35,6 @@ class TagSubstitution
 
     validates_presence_of :matching_aliquots, message: 'could not be found'
 
-    validates_presence_of :original_tag_id, unless: :original_tag2_id
-    validates_presence_of :original_tag2_id, unless: :original_tag_id
-
     def initialize(attributes)
       @sample_id  = attributes.delete(:sample_id)
       @library_id = attributes.delete(:library_id)
@@ -52,13 +49,18 @@ class TagSubstitution
       @matching_aliquots ||= find_matching_aliquots
     end
 
+    def rebroadcast_lanes
+      Lane.with_required_aliquots(matching_aliquots).each(&:rebroadcast)
+    end
+
     # Nullify tags sets all tags to null. We need to do this first
     # as otherwise we introduce tag clashes while performing substitutions
     def nullify_tags
       tags_hash = {}
       tags_hash[:tag_id]  = nil if original_tag_id
       tags_hash[:tag2_id] = nil if original_tag2_id
-      Aliquot.where(id: matching_aliquots).update_all(tags_hash)
+      # We DO NOT want to trigger validations here
+      Aliquot.where(id: matching_aliquots).update_all(tags_hash) if tags_hash.present? # rubocop:disable Rails/SkipsModelValidations
     end
 
     def substitute_tags
@@ -68,6 +70,7 @@ class TagSubstitution
         aliquot.update_attributes(@other_attributes)
         aliquot.save!
       end
+      rebroadcast_lanes
     end
 
     private

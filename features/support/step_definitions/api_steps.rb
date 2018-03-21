@@ -79,7 +79,6 @@ def api_request(action, path, body)
   headers['CONTENT_TYPE'] = 'application/json' unless body.nil?
   headers['HTTP_COOKIE'] = @cookies.map { |k, v| "#{k}=#{v}" }.join(';') unless @cookies.blank?
   yield(headers) if block_given?
-
   page.driver.send(action.downcase, "#{@api_path}#{path}", body, headers)
 end
 
@@ -243,7 +242,7 @@ end
 Then /^the HTTP response should be "([^\"]+)"$/ do |status|
   match = /^(\d+).*/.match(status) or raise StandardError, "Status #{status.inspect} should be an HTTP status code + message"
   begin
-  assert_equal(match[1].to_i, page.driver.status_code)
+    assert_equal(match[1].to_i, page.driver.status_code)
   rescue MiniTest::Assertion => e
     step 'show me the HTTP response body'
     raise e
@@ -292,9 +291,9 @@ Given /^the (library tube|plate) "([^\"]+)" is a child of the (sample tube|plate
   parent = parent_model.gsub(/\s+/, '_').classify.constantize.find_by(name: parent_name) or raise StandardError, "Cannot find the #{parent_model} #{parent_name.inspect}"
   child  = child_model.gsub(/\s+/, '_').classify.constantize.find_by(name: child_name) or raise StandardError, "Cannot find the #{child_model} #{child_name.inspect}"
   parent.children << child
-  if [parent, child].all? { |a| a.is_a?(Aliquot::Receptacle) }
+  if [parent, child].all? { |a| a.is_a?(Receptacle) }
     child.aliquots = []
-    RequestType.transfer.create!(asset: parent, target_asset: child)
+    FactoryGirl.create(:transfer_request, asset: parent, target_asset: child)
     child.save!
   end
 end
@@ -303,11 +302,9 @@ Given /^the well "([^\"]+)" is a child of the well "([^\"]+)"$/ do |child_name, 
   parent = Uuid.find_by(external_id: parent_name).resource or raise StandardError, "Cannot find #{parent_name.inspect}"
   child  = Uuid.find_by(external_id: child_name).resource or raise StandardError, "Cannot find #{child_name.inspect}"
   parent.children << child
-  if [parent, child].all? { |a| a.is_a?(Aliquot::Receptacle) }
-    child.aliquots = []
-    RequestType.transfer.create!(asset: parent, target_asset: child)
-    child.save!
-  end
+  child.aliquots.clear
+  FactoryGirl.create(:transfer_request, asset: parent, target_asset: child)
+  child.save!
 end
 
 Given /^the sample "([^\"]+)" is in (\d+) sample tubes? with sequential IDs starting at (\d+)$/ do |name, count, base_id|
@@ -322,15 +319,15 @@ end
 Given /^the pathogen project called "([^"]*)" exists$/ do |project_name|
   project = FactoryGirl.create :project, name: project_name, approved: true, state: 'active'
   project.update_attributes!(project_metadata_attributes: {
-    project_manager: ProjectManager.find_by(name: 'Unallocated'),
-    project_cost_code: 'ABC',
-    funding_comments: 'External funding',
-    collaborators: 'No collaborators',
-    external_funding_source: 'EU',
-    budget_division: BudgetDivision.find_by(name: 'Pathogen (including malaria)'),
-    sequencing_budget_cost_centre: 'Sanger',
-    project_funding_model: 'Internal'
-  })
+                               project_manager: ProjectManager.find_by(name: 'Unallocated'),
+                               project_cost_code: 'ABC',
+                               funding_comments: 'External funding',
+                               collaborators: 'No collaborators',
+                               external_funding_source: 'EU',
+                               budget_division: BudgetDivision.find_by(name: 'Pathogen (including malaria)'),
+                               sequencing_budget_cost_centre: 'Sanger',
+                               project_funding_model: 'Internal'
+                             })
 end
 
 Given /^project "([^"]*)" has an owner called "([^"]*)"$/ do |project_name, login_name|

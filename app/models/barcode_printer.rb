@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
 
-class BarcodePrinter < ActiveRecord::Base
+class BarcodePrinter < ApplicationRecord
   include Uuid::Uuidable
 
   belongs_to :barcode_printer_type

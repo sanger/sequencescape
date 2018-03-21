@@ -1,11 +1,8 @@
 # frozen_string_literal: true
-require 'rails_helper'
-require 'pry'
-describe '/api/1/tube/purposes' do
-  before(:each) do
-    create :transfer_request_type
-  end
 
+require 'rails_helper'
+
+describe '/api/1/tube/purposes' do
   let(:authorised_app) { create :api_application }
   let(:parent_purpose) { create :plate_purpose }
 
@@ -14,7 +11,6 @@ describe '/api/1/tube/purposes' do
       "tube_purpose":{
         "name":"Test Purpose",
         "target_type":"MultiplexedLibraryTube",
-        "parents": ["#{parent_purpose.uuid}"],
         "type": "IlluminaHtp::InitialStockTubePurpose"
       }
     }}
@@ -24,8 +20,6 @@ describe '/api/1/tube/purposes' do
     %{{
       "tube_purpose":{
         "actions": { },
-        "parents": { "size": 1 },
-        "children": { "size": 0 },
         "tubes": { "size": 0 },
         "name":"Test Purpose"
       }
@@ -44,6 +38,11 @@ describe '/api/1/tube/purposes' do
     expect(Tube::Purpose.last).to be_a(IlluminaHtp::InitialStockTubePurpose)
   end
 
+  it 'picks a sensible default printer type' do
+    api_request :post, subject, payload
+    expect(Tube::Purpose.last.barcode_printer_type).to be_a(BarcodePrinterType1DTube)
+  end
+
   # Move into a helper as this expands
   def api_request(action, path, body)
     headers = {
@@ -52,6 +51,6 @@ describe '/api/1/tube/purposes' do
     headers['CONTENT_TYPE'] = 'application/json' unless body.nil?
     headers['HTTP_X_SEQUENCESCAPE_CLIENT_ID'] = authorised_app.key
     yield(headers) if block_given?
-    send(action.downcase, path, body, headers)
+    send(action.downcase, path, params: body, headers: headers)
   end
 end

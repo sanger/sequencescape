@@ -6,8 +6,8 @@
 
 class PacBioSamplePrepRequest < CustomerRequest
   has_metadata as: Request do
-    attribute(:insert_size)
-    attribute(:sequencing_type)
+    custom_attribute(:insert_size)
+    custom_attribute(:sequencing_type)
   end
   include Request::CustomerResponsibility
 
@@ -26,14 +26,14 @@ class PacBioSamplePrepRequest < CustomerRequest
   end
 
   def on_passed
-    final_transfer.pass!
+    final_transfers.each(&:pass!)
   end
 
   def on_failed
-    final_transfer.fail!
+    final_transfers.each(&:fail!)
   end
 
-  def final_transfer
-    target_asset.requests_as_target.where_is_a?(TransferRequest).last
+  def final_transfers
+    target_asset.transfer_requests_as_target
   end
 end

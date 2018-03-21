@@ -11,9 +11,9 @@ class ::Io::StateChange < ::Core::Io::Base
 
   define_attribute_and_json_mapping("
                               user <=> user
-                            target <=> target
                           contents <=> contents
                             reason <=> reason
+                            target <= target
                       target_state <=> target_state
                     previous_state  => previous_state
    customer_accepts_responsibility <= customer_accepts_responsibility

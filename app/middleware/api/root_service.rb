@@ -51,7 +51,7 @@ module Api
 
     # It appears that if you go through a service like nginx or mongrel cluster(?) that the trailing
     # slash gets stripped off any requests, so we have to account for that with the root actions.
-    get(%r{^/?$}) do
+    get(%r{/?}) do
       result = report('root') do
         ::Core::Service::Request.new(request.fullpath) do |request|
           request.service = self
@@ -66,7 +66,7 @@ module Api
     end
 
     [:post, :put, :delete].each do |action|
-      send(action, %r{^/?$}) do
+      send(action, %r{/?}) do
         raise MethodNotAllowed, [:get]
       end
     end

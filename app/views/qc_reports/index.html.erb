@@ -5,7 +5,7 @@
 # Copyright (C) 2015,2016 Genome Research Ltd.%>
 <div class="col-md-6">
 <%= panel(:info,title: "New report",class: "creation",id: "new_report") do %>
-  <%= render partial: 'qc_report_form', locals: { qc_report: @qc_report, studies: @studies, products: @active_products, default_product: params[:product_id] } %>
+  <%= render partial: 'qc_report_form', locals: { qc_report: @qc_report, studies: @studies, products: @active_products, default_product: params[:product_id], plate_purposes: @plate_purposes } %>
 <% end %>
 </div>
 <div class="col-md-6">

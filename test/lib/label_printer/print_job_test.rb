@@ -17,10 +17,8 @@ class PrintJobTest < ActiveSupport::TestCase
                       top_right: (plate_purpose.name).to_s,
                       bottom_right: "user #{plate.find_study_abbreviation_from_parent}",
                       top_far_right: (plate.parent.try(:barcode)).to_s,
-                      barcode: (plate.ean13_barcode).to_s } }]
-                  },
-                    label_template_id: 15,
-                }
+                      barcode: (plate.ean13_barcode).to_s } }] },
+                    label_template_id: 15, }
     @print_job = LabelPrinter::PrintJob.new(barcode_printer.name, LabelPrinter::Label::PlateCreator, plates: plates, plate_purpose: plate_purpose, user_login: 'user')
   end
 
@@ -47,14 +45,6 @@ class PrintJobTest < ActiveSupport::TestCase
 
   test '#execute is false if printer is not registered in ss' do
     print_job = LabelPrinter::PrintJob.new('not_registered', LabelPrinter::Label::PlateCreator, {})
-    refute print_job.execute
-    assert_equal 1, print_job.errors.count
-  end
-
-  test '#execute is false if while printing a label for multiplex sample manifest there is no mx_tube' do
-    manifest = create :sample_manifest, asset_type: 'multiplexed_library', count: 1
-    options = { sample_manifest: manifest, only_first_label: false }
-    print_job = LabelPrinter::PrintJob.new(barcode_printer.name, LabelPrinter::Label::SampleManifestRedirect, options)
     refute print_job.execute
     assert_equal 1, print_job.errors.count
   end

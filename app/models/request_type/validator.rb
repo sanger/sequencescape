@@ -10,7 +10,7 @@
 # request_option => The option that will be validated
 # valid_options  => A serialized object that responds to include? Returning true if the option is present
 #                   It should also return an array of valid options in response to to_a
-class RequestType::Validator < ActiveRecord::Base
+class RequestType::Validator < ApplicationRecord
   class LibraryTypeValidator
     attr_reader :request_type_id
     def initialize(request_type_id)
@@ -22,7 +22,7 @@ class RequestType::Validator < ActiveRecord::Base
     end
 
     def include?(option)
-      request_type.library_types.map(&:name).include?(option)
+      request_type.library_types.where(name: option).exists?
     end
 
     def default
@@ -63,11 +63,27 @@ class RequestType::Validator < ActiveRecord::Base
     end
   end
 
+  # A NullValidator is used if no specific validator is provided.
+  # It accepts everything
+  class NullValidator
+    def validate?(_value)
+      true
+    end
+
+    def default
+      nil
+    end
+  end
+
   belongs_to :request_type
   validates :request_type, :request_option, :valid_options, presence: true
   serialize :valid_options
 
   delegate :include?, to: :valid_options
+
+  def validate?(value)
+    valid_options.include?(value)
+  end
 
   def options
     valid_options.to_a

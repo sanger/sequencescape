@@ -14,8 +14,8 @@ class LibraryCreationRequest < CustomerRequest
   # These are dependent upon each other
   has_metadata as: Request do
     # /!\ We don't check the read_length, because we don't know the restriction, that depends on the SequencingRequest
-    attribute(:read_length, integer: true) # meaning , so not required but some people want to set it
-    attribute(:gigabases_expected, positive_float: true)
+    custom_attribute(:read_length, integer: true) # meaning , so not required but some people want to set it
+    custom_attribute(:gigabases_expected, positive_float: true)
   end
 
   include Request::CustomerResponsibility
@@ -37,7 +37,19 @@ class LibraryCreationRequest < CustomerRequest
     end
   end
 
-  def request_options_for_creation
-    Hash[[:fragment_size_required_from, :fragment_size_required_to, :library_type].map { |f| [f, request_metadata[f]] }]
+  #
+  # Passed into cloned aliquots at the beginning of a pipeline to set
+  # appropriate options
+  #
+  #
+  # @return [Hash] A hash of aliquot attributes
+  #
+  def aliquot_attributes
+    {
+      study_id: initial_study_id,
+      project_id: initial_project_id,
+      library_type: library_type,
+      insert_size: insert_size
+    }
   end
 end

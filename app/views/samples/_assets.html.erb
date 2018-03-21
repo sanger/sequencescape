@@ -1,0 +1,18 @@
+<%= panel do %>
+  <h3>Assets <span class='badge badge-primary'><%= @sample.assets.length %></span></h3>
+
+  <table width='100%'>
+    <thead>
+      <tr>
+        <th width='70%'></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @sample.assets.each do |asset| %>
+        <tr>
+          <td><%= link_to asset.display_name, asset_path(asset) %> <%= asset.details %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>

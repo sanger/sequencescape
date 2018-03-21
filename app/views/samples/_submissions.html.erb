@@ -1,0 +1,17 @@
+<%= panel do %>
+  <h3>Submissions <span class='badge badge-primary'><%= @sample.submissions.length %></span></h3>
+  <table width='100%'>
+    <thead>
+      <tr>
+        <th width='70%'></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @sample.submissions.each do |submission| %>
+        <tr>
+          <td><%= link_to "Submission #{submission.id}", submission_path(submission) %>:<%= submission.name||'un-named' %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>

@@ -29,10 +29,6 @@ class Transfer::BetweenTubesBySubmission < Transfer
     yield(source, destination)
   end
 
-  def request_type_between(_ignored_a, _ignored_b)
-    destination.transfer_request_type_from(source)
-  end
-
   def build_asset_links
     AssetLink::Job.create(source, [destination])
   end

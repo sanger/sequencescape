@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
-class AssetGroup < ActiveRecord::Base
+class AssetGroup < ApplicationRecord
   include Uuid::Uuidable
   include ModelExtensions::AssetGroup
   include SharedBehaviour::Named
@@ -20,7 +20,7 @@ class AssetGroup < ActiveRecord::Base
   validates :name, presence: true, uniqueness: true
   validates :study, presence: true
 
- scope :for_search_query, ->(query, _with_includes) { where(['name LIKE ?', "%#{query}%"]) }
+  scope :for_search_query, ->(query, _with_includes) { where(['name LIKE ?', "%#{query}%"]) }
 
   def all_samples_have_accession_numbers?
     unaccessioned_samples.empty?

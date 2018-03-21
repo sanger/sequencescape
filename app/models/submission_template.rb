@@ -8,7 +8,7 @@
 # We could have use a Prototype Factory , and so just associate a name to existing submission
 # but that doesn't work because the submission prototype doesn't pass the validation stage.
 # Anyway that's basically a prototype factory
-class SubmissionTemplate < ActiveRecord::Base
+class SubmissionTemplate < ApplicationRecord
   include Uuid::Uuidable
 
   validates_presence_of :name
@@ -144,6 +144,3 @@ class SubmissionTemplate < ActiveRecord::Base
     end
   end
 end
-
-# SubmissionTemplate is really OrderTemplate, and the only place that actually cares is the API, so alias
-OrderTemplate = SubmissionTemplate

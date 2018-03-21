@@ -20,7 +20,7 @@ module BatchesHelper
   # Used by both assets/show.xml.builder and batches/show.xml.builder
   def output_aliquot(xml, aliquot)
     xml.sample(
-      sample_id: aliquot.sample.id,
+      sample_id: aliquot.sample_id,
       library_id: aliquot.library_id,
       library_name: aliquot.library.try(:name),
       library_type: aliquot.library_type,
@@ -56,7 +56,7 @@ module BatchesHelper
   def batch_link(batch, options)
     link_text = content_tag(:strong, "Batch #{batch.id} ") <<
                 content_tag(:span, batch.pipeline.name, class: 'pipline-name') << ' ' <<
-                content_tag(:span, batch.state, class: "batch-state label label-#{bootstrapify_batch_state(batch.state)}")
+                content_tag(:span, batch.state, class: "batch-state badge badge-#{bootstrapify_batch_state(batch.state)}")
     link_to(link_text, batch_path(batch), options)
   end
 end

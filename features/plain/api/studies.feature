@@ -16,6 +16,7 @@ Feature: Interacting with studies through the API
     And the Array Express accession number for study "Testing the JSON API" is "AE111"
     And the EGA policy accession number for study "Testing the JSON API" is "EGA222"
     And the dac accession number for study "Testing the JSON API" is "DAC333"
+    And the reference genome for study "Testing the JSON API" is "RefGenome"
 
     When I GET the API path "/studies"
     Then ignoring "updated_at|id" the JSON should be:
@@ -26,7 +27,7 @@ Feature: Interacting with studies through the API
             "uuid": "00000000-1111-2222-3333-444444444444",
             "name": "Testing the JSON API",
             "ethically_approved": false,
-            "reference_genome": "",
+            "reference_genome": "RefGenome",
             "study_type": "Not specified",
             "abstract": null,
             "sac_sponsor": "John Smith",
@@ -48,6 +49,8 @@ Feature: Interacting with studies through the API
             "ega_policy_accession_number": "EGA222",
             "ega_dac_accession_number": "DAC333",
             "data_access_group":"something",
+            "s3_email_list": "aa1@sanger.ac.uk;aa2@sanger.ac.uk",
+            "data_deletion_period": "3 months",
             "projects": "http://localhost:3000/0_5/studies/00000000-1111-2222-3333-444444444444/projects",
             "samples": "http://localhost:3000/0_5/studies/00000000-1111-2222-3333-444444444444/samples",
 
@@ -67,6 +70,7 @@ Feature: Interacting with studies through the API
     And the study "Testing the JSON API" has samples which need x and autosome data removed
     And the UUID for the study "Testing the JSON API" is "00000000-1111-2222-3333-444444444444"
     And the faculty sponsor for study "Testing the JSON API" is "John Smith"
+    And the reference genome for study "Testing the JSON API" is "RefGenome"
     When I GET the API path "/studies/00000000-1111-2222-3333-444444444444"
     Then ignoring "updated_at|id" the JSON should be:
       """
@@ -75,7 +79,7 @@ Feature: Interacting with studies through the API
           "uuid": "00000000-1111-2222-3333-444444444444",
           "name": "Testing the JSON API",
           "ethically_approved": false,
-          "reference_genome": "",
+          "reference_genome": "RefGenome",
           "study_type":  "Not specified",
           "abstract": null,
           "sac_sponsor": "John Smith",
@@ -94,6 +98,8 @@ Feature: Interacting with studies through the API
           "data_release_strategy": "open",
           "data_release_timing": "standard",
           "data_access_group": "something",
+          "s3_email_list": "aa1@sanger.ac.uk;aa2@sanger.ac.uk",
+          "data_deletion_period": "3 months",
           "projects": "http://localhost:3000/0_5/studies/00000000-1111-2222-3333-444444444444/projects",
           "samples": "http://localhost:3000/0_5/studies/00000000-1111-2222-3333-444444444444/samples",
 

@@ -5,7 +5,7 @@ xml.study(api_data) do |study|
   study.active @study.active?
   study.user_id @study.user_id
 
-  [ 'followers', 'managers', 'owners' ].each do |type_of_user|
+  ['followers', 'managers', 'owners'].each do |type_of_user|
     users, singular_user = @study.send(type_of_user), type_of_user.singularize
     study.tag!(type_of_user) do |users_tag|
       users.each do |user|
@@ -25,22 +25,22 @@ xml.study(api_data) do |study|
   study.updated_at @study.updated_at
 
   study.descriptors do |descriptors|
-    @study.study_metadata.attribute_value_pairs.each do |attribute,value|
+    @study.study_metadata.attribute_value_pairs.each do |attribute, value|
       descriptors.descriptor do |descriptor|
         descriptor.name(attribute.to_field_info.display_name)
         descriptor.value(value)
       end
     end
 
-    @study.study_metadata.association_value_pairs.each do |attribute,value|
+    @study.study_metadata.association_value_pairs.each do |attribute, value|
       descriptors.descriptor do |descriptor|
         descriptor.name(attribute.to_field_info.display_name)
         if (attribute.to_field_info.display_name == "Reference Genome") && (value.blank?)
           descriptor.value(nil)
-        else 
+        else
           descriptor.value(value)
         end
       end
     end
-  end  
+  end
 end

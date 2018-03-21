@@ -3,7 +3,7 @@
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
-
+# rubocop:disable Metrics/MethodLength
 module Sanger
   module Testing
     module Controller
@@ -92,7 +92,7 @@ module Sanger
               if actions.include?('index')
                 context 'should get index' do
                   setup do
-                    get :index, @input_params
+                    get :index, params: @input_params
                   end
                   should respond_with :success
                   should render_template :index
@@ -102,7 +102,7 @@ module Sanger
               if actions.include?('new')
                 context 'should get new' do
                   setup do
-                    get :new, @input_params
+                    get :new, params: @input_params
                   end
                   should respond_with :success
                 end
@@ -112,7 +112,7 @@ module Sanger
                 context 'should create' do
                   setup do
                     @input_params[resource_name] = @create_options
-                    post :create, @input_params
+                    post :create, params: @input_params
                   end
                   # assert eval "@object".valid?
                   should redirect_to('show page') { eval(show_url) }
@@ -124,7 +124,7 @@ module Sanger
                   setup do
                     @object = create resource_name, @factory_options
                     @input_params[:id] = @object.id
-                    get :show, @input_params
+                    get :show, params: @input_params
                   end
                   should respond_with :success
                 end
@@ -135,7 +135,7 @@ module Sanger
                   setup do
                     @object = create resource_name, @factory_options
                     @input_params[:id] = @object.id
-                    get :edit, @input_params
+                    get :edit, params: @input_params
                   end
                   should respond_with :success
                 end
@@ -147,7 +147,7 @@ module Sanger
                     @object = create resource_name
                     @input_params[resource_name] = @create_options
                     @input_params[:id] = @object.id
-                    put :update, @input_params
+                    put :update, params: @input_params
                   end
                   should redirect_to('show page') { eval(show_url) }
                 end
@@ -158,7 +158,7 @@ module Sanger
                   setup do
                     @object = create resource_name
                     @input_params[:id] = @object.id
-                    delete :destroy, @input_params
+                    delete :destroy, params: @input_params
                   end
                   should redirect_to('index page') { eval(index_url) }
                 end
@@ -167,8 +167,10 @@ module Sanger
               context 'should not have untested action' do
                 untested_actions.each do |action|
                   should action.to_s do
+                    @object = create resource_name
+                    @input_params[:id] = @object.id
                     assert_raise AbstractController::ActionNotFound do
-                      get action
+                      get action, params: @input_params
                     end
                   end
                 end
@@ -179,7 +181,7 @@ module Sanger
                   context 'should show status' do
                     setup do
                       @object = create resource_name
-                      get :status, id: @object.id
+                      get :status, params: { id: @object.id }
                     end
                     should respond_with :success
                   end
@@ -192,7 +194,7 @@ module Sanger
                       setup do
                         @object = create resource_name, @factory_options
                         @request.accept = 'application/xml'
-                        get :index, @input_params
+                        get :index, params: @input_params
                       end
                       should respond_with :success
                       should 'have api version attribute on root object' do
@@ -208,12 +210,12 @@ module Sanger
                         @request.accept = 'application/xml'
                         @object = create resource_name, @factory_options
                         @input_params[:id] = @object.id
-                        get :show, @input_params
+                        get :show, params: @input_params
                       end
                       should respond_with :success
-                        assert_select resource_name.to_s.pluralize do
-                          assert_select "[api_version='0.6']"
-                        end
+                      assert_select resource_name.to_s.pluralize do
+                        assert_select "[api_version='0.6']"
+                      end
                     end
                   end
                 end
@@ -223,7 +225,7 @@ module Sanger
                       setup do
                         @object = create resource_name, @factory_options
                         @request.accept = 'text/x-json'
-                        get :index, @input_params
+                        get :index, params: @input_params
                       end
                       should respond_with :success
                       should 'be JSON' do
@@ -237,7 +239,7 @@ module Sanger
                         @object = create resource_name, @factory_options
                         @request.accept = 'text/x-json'
                         @input_params[:id] = @object.id
-                        get :show, @input_params
+                        get :show, params: @input_params
                       end
                       should respond_with :success
                       should 'be JSON' do
@@ -254,3 +256,4 @@ module Sanger
     end
   end
 end
+# rubocop:enable Metrics/MethodLength

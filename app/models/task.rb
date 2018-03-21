@@ -4,8 +4,8 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
-class Task < ActiveRecord::Base
-  belongs_to :workflow, class_name: 'LabInterface::Workflow', foreign_key: :pipeline_workflow_id
+class Task < ApplicationRecord
+  belongs_to :workflow, class_name: 'Workflow', foreign_key: :pipeline_workflow_id
   has_many :families
   has_many :descriptors, class_name: 'Descriptor', dependent: :destroy
 

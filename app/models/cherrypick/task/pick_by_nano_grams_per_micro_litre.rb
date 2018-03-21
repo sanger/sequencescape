@@ -5,11 +5,6 @@
 # Copyright (C) 2007-2011,2012,2015, 2016 Genome Research Ltd.
 
 module Cherrypick::Task::PickByNanoGramsPerMicroLitre
-  def pick_by_nano_grams_per_micro_litre(*args)
-    options = args.extract_options!
-    cherrypick_wells_grouped_by_submission(*args, &create_nano_grams_per_micro_litre_picker(options))
-  end
-
   def valid_params_for_nano_grams_per_micro_litre_pick?(options)
     [options[:volume_required], options[:concentration_required]].all?(&method(:valid_float_param?))
   end

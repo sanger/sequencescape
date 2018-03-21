@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2015,2016 Genome Research Ltd.
 
-class QcMetric < ActiveRecord::Base
+class QcMetric < ApplicationRecord
   extend QcMetric::QcState
 
   InvalidValue = Class.new(StandardError)
@@ -38,8 +38,8 @@ class QcMetric < ActiveRecord::Base
   scope :with_asset_ids, ->(ids) { where(asset_id: ids) }
 
   scope :for_product, ->(product) {
-      joins(qc_report: :product_criteria)
-        .where(product_criteria: { product_id: product })
+    joins(qc_report: :product_criteria)
+      .where(product_criteria: { product_id: product })
   }
 
   scope :stock_metric, ->() {
@@ -48,6 +48,8 @@ class QcMetric < ActiveRecord::Base
   }
 
   scope :most_recent_first, ->() { order('created_at DESC, id DESC') }
+
+  before_save :update_aliquot_quality
 
   # Update the new state as appropriate:
   # - Don't change the state if we already match
@@ -117,7 +119,11 @@ class QcMetric < ActiveRecord::Base
   end
 
   def value_error_message(decision, accepted_list)
-    accepted = accepted_list.keys.to_sentence(last_word_connector: ', or ', two_words_connector: ' or ')
+    accepted = accepted_list.to_sentence(last_word_connector: ', or ', two_words_connector: ' or ')
     "#{decision} is not an acceptable decision. Should be #{accepted}."
+  end
+
+  def update_aliquot_quality
+    asset.update_aliquot_quality(qc_failed?)
   end
 end

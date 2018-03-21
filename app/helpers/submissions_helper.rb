@@ -13,14 +13,14 @@ module SubmissionsHelper
 
   # <label for="submission_order_params_field_info_key">field_info.display_name/label>
   def order_input_label(field_info)
-    label('submission[order_params]', field_info.key, field_info.display_name, class: 'control-label col-sm-6')
+    label('submission[order_params]', field_info.key, field_info.display_name, class: 'form-label')
   end
 
   # Returns a either a text input or a selection tag based on the 'kind'
   # of the order parameter passed in.
   # field_info is expected to be FieldInfo [sic]
   def order_input_tag(order, field_info)
-    content_tag(:div, class: 'col-sm-6') do
+    content_tag(:div) do
       case field_info.kind
       when 'Selection' then order_selection_tag(order, field_info)
       when 'Text'      then order_text_tag(order, field_info)
@@ -38,7 +38,7 @@ module SubmissionsHelper
         field_info.selection.map(&:to_s),
         order.request_options.try(:[], field_info.key)
       ),
-      class: 'required form-control',
+      class: 'custom-select',
       required: true,
       disabled: (field_info.selection.size == 1)
     )
@@ -75,7 +75,7 @@ module SubmissionsHelper
       :study_id,
       studies, :id, :name,
       { prompt: prompt },
-      disabled: true, class: 'study_id form-control'
+      disabled: true, class: 'study_id custom-select'
     )
   end
 
@@ -93,7 +93,7 @@ module SubmissionsHelper
       :project_name,
       projects, :name, :name,
       { prompt: prompt },
-      disabled: true, class: 'submission_project_name form-control'
+      disabled: true, class: 'submission_project_name custom-select'
     )
   end
 
@@ -108,8 +108,8 @@ module SubmissionsHelper
       :asset_group_id,
       asset_groups, :id, :name,
       { prompt: prompt },
-              class: 'submission_asset_group_id required form-control',
-              disabled: (asset_groups.size == 0)
+      class: 'submission_asset_group_id required form-control',
+      disabled: (asset_groups.size == 0)
     )
   end
 
@@ -143,14 +143,14 @@ module SubmissionsHelper
   def request_description(presenter, request_type)
     request_type_name = request_type.name.titleize
 
-    return request_type_name unless request_type.request_class_name =~ /SequencingRequest$/
+    return request_type_name unless request_type.request_class_name.match?(/SequencingRequest$/)
 
     content_tag(:em, pluralize(presenter.lanes_of_sequencing, 'Lane') + ' of ') + request_type_name
   end
 
   def submission_link(submission, options)
     link_text = content_tag(:strong, submission.name) << ' ' <<
-                content_tag(:span, submission.state, class: "batch-state label label-#{bootstrapify_submission_state(submission.state)}")
+                content_tag(:span, submission.state, class: "batch-state badge badge-#{bootstrapify_submission_state(submission.state)}")
     link_to(link_text, submission_path(submission), options)
   end
 end

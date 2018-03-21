@@ -8,17 +8,15 @@ class PipelinesController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
-  before_action :find_pipeline_by_id, only: [:show, :setup_inbox,
-                                   :set_inbox, :training_batch, :activate, :deactivate, :destroy, :batches]
-
+  before_action :find_pipeline_by_id, only: [:show, :setup_inbox, :set_inbox, :training_batch, :activate, :deactivate, :destroy, :batches]
   before_action :lab_manager_login_required, only: [:update_priority, :deactivate, :activate]
+  before_action :prepare_batch_and_pipeline, only: [:summary, :finish]
 
   after_action :set_cache_disabled!, only: [:show]
 
   def index
-    @pipelines = Pipeline.active.internally_managed.alphabetical.all
-    store = Hash.new { |h, k| h[k] = [] }
-    @grouping = @pipelines.each_with_object(store) { |p, h| h[p.group_name] << p }
+    @pipelines = Pipeline.active.internally_managed.alphabetical
+    @grouping = @pipelines.group_by(&:group_name)
 
     respond_to do |format|
       format.html
@@ -57,6 +55,7 @@ class PipelinesController < ApplicationController
       # the result now anyway.
       @requests_comment_count = Comment.counts_for(@requests.to_a)
       @assets_comment_count = Comment.counts_for(@requests.map(&:asset))
+      @requests_samples_count = Request.where(id: @requests.to_a).joins(:samples).group(:id).count
     end
   end
 
@@ -65,9 +64,7 @@ class PipelinesController < ApplicationController
   end
 
   def set_inbox
-    unless params[:controls].blank?
-      add_controls(@pipeline, params[:controls])
-    end
+    add_controls(@pipeline, params[:controls]) if params[:controls].present?
 
     if @pipeline.save
       flash[:notice] = 'Updated pipeline controls'
@@ -82,18 +79,10 @@ class PipelinesController < ApplicationController
     @controls = @pipeline.controls
   end
 
-  before_action :prepare_batch_and_pipeline, only: [:summary, :finish]
-  def prepare_batch_and_pipeline
-    @batch    = Batch.find(params[:id])
-    @pipeline = @batch.pipeline
-  end
-  private :prepare_batch_and_pipeline
-
-  def summary
-  end
+  def summary; end
 
   def finish
-    @batch.complete!(current_user)
+    ActiveRecord::Base.transaction { @batch.complete!(current_user) }
   rescue ActiveRecord::RecordInvalid => exception
     flash[:error] = exception.record.errors.full_messages
     redirect_to(url_for(controller: 'batches', action: 'show', id: @batch.id))
@@ -140,13 +129,18 @@ class PipelinesController < ApplicationController
     request  = Request.find(params[:request_id])
     ActiveRecord::Base.transaction do
       request.update_priority
-      render text: '', layout: false
+      render plain: '', layout: false
     end
-  rescue ActiveRecord::RecordInvalid => exception
-    render text: '', layout: false, status: :unprocessable_entity
+  rescue ActiveRecord::RecordInvalid => _exception
+    render plain: '', layout: false, status: :unprocessable_entity
   end
 
   private
+
+  def prepare_batch_and_pipeline
+    @batch    = Batch.find(params[:id])
+    @pipeline = @batch.pipeline
+  end
 
   def find_pipeline_by_id
     @pipeline = Pipeline.find(params['id'])

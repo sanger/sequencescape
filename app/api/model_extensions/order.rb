@@ -5,6 +5,10 @@
 # Copyright (C) 2011,2012,2013,2015 Genome Research Ltd.
 
 module ModelExtensions::Order
+  class RequestOptionForValidation < OpenStruct
+    delegate :errors, :include_unset_values?, to: :owner
+  end
+
   module Validations
     def self.included(base)
       base.class_eval do
@@ -22,7 +26,7 @@ module ModelExtensions::Order
     private :validate_request_options?
 
     def request_types_delegate_validator
-      DelegateValidation::CompositeValidator::CompositeValidator(*::RequestType.find(request_types.flatten).map(&:delegate_validator))
+      DelegateValidation::CompositeValidator.construct(*::RequestType.find(request_types.flatten).map(&:delegate_validator))
     end
 
     # If this returns true then we check values that have not been set, otherwise we can ignore them.  This would
@@ -32,9 +36,7 @@ module ModelExtensions::Order
     end
 
     def request_options_for_validation
-      OpenStruct.new({ owner: self }.reverse_merge(request_options || {})).tap do |v|
-        v.class.delegate(:errors, :include_unset_values?, to: :owner)
-      end
+      RequestOptionForValidation.new({ owner: self }.reverse_merge(request_options || {}))
     end
   end
 
@@ -51,14 +53,14 @@ module ModelExtensions::Order
 
       scope :include_study, -> { includes(study: :uuid_object) }
       scope :include_project, -> { includes(project: :uuid_object) }
-      scope :include_assets, -> { includes(assets: :uuid_object) }
+      scope :include_assets, -> { includes(assets: [:uuid_object, { aliquots: Io::Aliquot::PRELOADS }]) }
 
       has_many :submitted_assets, -> { joins(:asset) }, inverse_of: :order
       has_many :assets, through: :submitted_assets, before_add: :validate_new_record
 
-     scope :that_submitted_asset_id, ->(asset_id) {
-       where(submitted_assets: { asset_id: asset_id }).joins(:submitted_assets)
-     }
+      scope :that_submitted_asset_id, ->(asset_id) {
+        where(submitted_assets: { asset_id: asset_id }).joins(:submitted_assets)
+      }
 
       validate :extended_validation
       def extended_validation
@@ -67,18 +69,13 @@ module ModelExtensions::Order
 
       # The API can create submissions but we have to prevent someone from changing the study
       # and the project once they have been set.
-      validates_each(:study, :project) do |record, attr, _value|
-        # NOTE: This can get called after the record has been saved but before it has been completely saved, i.e. after_create
-        # In this case the original value of the attribute will be nil, so we account for that here.
-        attr_value_was, attr_value_is = record.send(:"#{attr}_id_was"), record.send(:"#{attr}_id")
-        record.errors.add(attr, 'cannot be changed') if not record.new_record? and attr_value_was != attr_value_is and attr_value_was.present?
+      validates_each(:study, :project, on: :update) do |record, attr, _value|
+        record.errors.add(attr, 'cannot be changed') if record.send(:"will_save_change_to_#{attr}_id?")
       end
 
       def extended_validators
         ExtendedValidator.for_submission(self)
       end
-
-      extend ClassMethods
     end
   end
 
@@ -131,6 +128,7 @@ module ModelExtensions::Order
         json['library_type']                   = attributes[:library_type]
         json['fragment_size_required', 'from'] = attributes[:fragment_size_required_from].try(:to_i)
         json['fragment_size_required', 'to']   = attributes[:fragment_size_required_to].try(:to_i)
+        json['pcr_cycles']                     = attributes[:pcr_cycles].try(:to_i)
         json['bait_library']                   = attributes[:bait_library_name]
         json['sequencing_type']                = attributes[:sequencing_type]
         json['insert_size']                    = attributes[:insert_size].try(:to_i)
@@ -148,6 +146,7 @@ module ModelExtensions::Order
         attributes['library_type']                = json['library_type']
         attributes['fragment_size_required_from'] = json['fragment_size_required', 'from']
         attributes['fragment_size_required_to']   = json['fragment_size_required', 'to']
+        attributes['pcr_cycles']                  = json['pcr_cycles']
         attributes[:bait_library_name]            = json['bait_library']
         attributes[:sequencing_type]              = json['sequencing_type']
         attributes[:insert_size]                  = json['insert_size']

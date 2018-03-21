@@ -5,7 +5,7 @@
 # Copyright (C) 2012,2013,2014,2015 Genome Research Ltd.
 
 class TubeCreation < AssetCreation
-  class ChildTube < ActiveRecord::Base
+  class ChildTube < ApplicationRecord
     self.table_name = ('tube_creation_children')
     belongs_to :tube_creation
     belongs_to :tube
@@ -21,30 +21,21 @@ class TubeCreation < AssetCreation
     record.errors.add(:parent, 'has no pooling information') if record.parent.pools.empty?
   end
 
+  private
+
   def no_pooling_expected?
     parent_nil?
   end
-  private :no_pooling_expected?
 
   def target_for_ownership
     children
   end
-  private :target_for_ownership
 
   def create_children!
-    self.children = (1..parent.pools.size).map { |_| child_purpose.create! }
+    self.children = Array.new(parent.pools.size) { child_purpose.create! }
   end
-  private :create_children!
-
-  def create_ancestor_plate!
-    children.each do |child|
-      create_ancestor_asset!(parent.plate, child) if can_create_ancestor_plate?(parent.plate, child)
-    end
-  end
-  before_save :create_ancestor_plate!
 
   def record_creation_of_children
     #    children.each { |child| parent.events.create_tube!(child_purpose, child, user) }
   end
-  private :record_creation_of_children
 end

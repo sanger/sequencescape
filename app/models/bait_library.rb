@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2011,2012,2015 Genome Research Ltd.
 
-class BaitLibrary < ActiveRecord::Base
+class BaitLibrary < ApplicationRecord
   include SharedBehaviour::Named
 
   module Associations
@@ -15,7 +15,7 @@ class BaitLibrary < ActiveRecord::Base
     end
   end
 
-  class Supplier < ActiveRecord::Base
+  class Supplier < ApplicationRecord
     self.table_name = ('bait_library_suppliers')
 
     # The names of suppliers needs to be unique
@@ -58,6 +58,8 @@ class BaitLibrary < ActiveRecord::Base
   belongs_to :bait_library_type
 
   scope :visible, -> { where(visible: true) }
+
+  delegate :category, to: :bait_library_type
 
   def hide
     self.visible = false

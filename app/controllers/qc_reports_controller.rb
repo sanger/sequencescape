@@ -18,13 +18,13 @@ class QcReportsController < ApplicationController
 
     @all_products = Product.alphabetical.all.map { |product| [product.display_name, product.id] }
     @active_products = Product.with_stock_report.active.alphabetical.all.map { |product| [product.display_name, product.id] }
+    @plate_purposes = PlatePurpose.pluck(:name).sort
   end
 
   def create
     study = Study.find_by(id: params[:qc_report][:study_id])
     exclude_existing = params[:qc_report][:exclude_existing] == '1'
-
-    qc_report = QcReport.new(study: study, product_criteria: @product.stock_criteria, exclude_existing: exclude_existing)
+    qc_report = QcReport.new(study: study, product_criteria: @product.stock_criteria, exclude_existing: exclude_existing, plate_purposes: params[:qc_report][:plate_purposes].try(:reject, &:blank?))
 
     if qc_report.save
       flash[:notice] = 'Your report has been requested and will be presented on this page when complete.'
@@ -32,7 +32,7 @@ class QcReportsController < ApplicationController
     else # We failed to save
       error_messages = qc_report.errors.full_messages.join('; ')
       flash[:error] = "Failed to create report: #{error_messages}"
-      redirect_to :back
+      redirect_back fallback_location: root_path
     end
   end
 
@@ -47,7 +47,7 @@ class QcReportsController < ApplicationController
       redirect_to file.qc_report
     else
       flash[:error] = "Failed to read report: #{file.errors.join('; ')}"
-      redirect_to :back
+      redirect_back fallback_location: root_path
     end
   end
 
@@ -86,7 +86,7 @@ class QcReportsController < ApplicationController
   end
 
   def fail(message)
-    redirect_to :back, alert: message
+    redirect_back fallback_location: root_path, alert: message
     false
   end
 

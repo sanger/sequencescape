@@ -21,8 +21,7 @@ Given /^the tube "([^"]*)" is the target of a (started|passed|pending) "([^"]*)"
     { state: state,
       asset: source,
       target_asset: tube,
-      submission: submission
-    }.merge(request_defaults(request_type))
+      submission: submission }.merge(request_defaults(request_type))
   )
 end
 
@@ -43,13 +42,6 @@ Given /^I am setup to test tubes with plate set (\d+)$/ do |num|
   step %Q{a "ILB_STD_PCRXP" plate called "middle plate #{num}" exists}
   step %Q{plate "middle plate #{num}" has "1" wells with aliquots}
   step %Q{passed transfer requests exist between 1 wells on "source plate #{num}" and "middle plate #{num}"}
-end
-
-Given(/^the tube with ID (\d+) has a custom metadatum collection with UUID "(.*?)"$/) do |id, uuid|
-    metadata = [FactoryGirl.build(:custom_metadatum, key: 'Key1', value: 'Value1'),
-                FactoryGirl.build(:custom_metadatum, key: 'Key2', value: 'Value2')]
-    collection = FactoryGirl.create(:custom_metadatum_collection, custom_metadata: metadata, asset_id: id)
-    set_uuid_for(collection, uuid)
 end
 
 def request_defaults(type)

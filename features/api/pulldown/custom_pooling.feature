@@ -15,9 +15,9 @@ And I have a "full" authorised user with the key "cucumber"
 
     Given the UUID for the transfer template "Custom pooling" is "00000000-1111-2222-3333-444444444444"
 
-    Given a source transfer plate called "Source plate" exists
+    Given a transfer plate called "Source plate" exists
       And the UUID for the plate "Source plate" is "11111111-2222-3333-4444-000000000001"
-      And a destination transfer plate called "Destination plate" exists
+      And a transfer plate called "Destination plate" exists
       And the UUID for the plate "Destination plate" is "11111111-2222-3333-4444-000000000002"
 
   Scenario: Pooling is based on the transfers from the client

@@ -85,8 +85,6 @@
       receive: function( event,ui ) {
         if (clashChecker($(this).children('.library_tube'),ui.item,reportError)) {
           $(ui.sender).sortable('cancel');
-          console.log(ui);
-          console.log(this);
           attach(ui.item.get(0),ui.sender.context);
         } else {
           attach(ui.item.get(0),this)

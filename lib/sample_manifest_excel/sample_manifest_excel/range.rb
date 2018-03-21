@@ -1,13 +1,31 @@
 module SampleManifestExcel
+  class NullRange
+    ##
+    # Always returns A1:A10.
+    def reference
+      'A1:A10'
+    end
+
+    ##
+    # Always returns worksheet1!A1:A10
+    def absolute_reference
+      "worksheet1!#{reference}"
+    end
+
+    def ==(other)
+      other.is_a?(self.class)
+    end
+  end
+
   ##
   # A range of cells signified by a reference.
   # The options are a range of text values which are used to validate a value.
   # The first row is the only mandatory field everything else can be inferred.
   # Each field that is not passed in the initializer is lazy loaded.
   class Range
-    include HashAttributes
+    include Helpers::Attributes
 
-    set_attributes :options, :first_row, :last_row, :first_column, :last_column, :worksheet_name
+    set_attributes :options, :identifier, :name, :scope, :first_row, :last_row, :first_column, :last_column, :worksheet_name, defaults: { first_column: 1, options: {} }
 
     attr_reader :first_cell, :last_cell, :reference, :absolute_reference
 
@@ -15,28 +33,33 @@ module SampleManifestExcel
     # If the range is valid i.e. has a first row then a first cell and last cell are created
     # these are used for references.
     def initialize(attributes = {})
-      create_attributes(attributes)
+      super(default_attributes.merge(attributes))
 
       if valid?
         @first_cell = Cell.new(first_row, first_column)
-        @last_cell = Cell.new(last_row, last_column)
+        @last_cell = Cell.new(last_row, last_column) unless dynamic?
       end
-    end
-
-    # If not defined defaults to one.
-    def first_column
-      @first_column ||= 1
     end
 
     # If not defined and options are empty is set to first column.
     # If not defined and there are options is set to first column plus the
     # the number of options minus one.
     def last_column
-      @last_column ||= if options.empty?
-                         first_column
-                       else
-                         options.length + (first_column - 1)
-                       end
+      @last_column || if dynamic?
+                        calculate_last_column
+                      else
+                        @last_column = calculate_last_column
+                      end
+    end
+
+    # Returns either the cached last cell, or a dynamically created one.
+    # We don't memoize this, as we dymanically recalculate the value
+    # at runtime for some ranges. For static ranges the last_cell is
+    # calculated in the initializer so will be available. Also
+    # we can't just do @last_cell || Cell.new as @last_cell can be
+    # legitimately falsey
+    def last_cell
+      dynamic? ? Cell.new(last_row, last_column) : @last_cell
     end
 
     ##
@@ -45,13 +68,17 @@ module SampleManifestExcel
       @last_row ||= first_row
     end
 
-    ##
     # If not defined is set to an empty hash.
     def options
-      @options ||= {}
+      if static?
+        @options
+      elsif dynamic?
+        create_dynamic_options
+      else
+        {}
+      end
     end
 
-    ##
     # The reference for a range is a valid Excel reference e.g. $A$1:$H$10
     # Defined by the fixed reference of the first cell and the fixed reference
     # of the last cell.
@@ -99,6 +126,18 @@ module SampleManifestExcel
     end
 
     ##
+    # A dynamic rage uses a se of options that are calculated
+    # at runtime. Such as a SampleManifestExcel::DynamicOption
+    # Arrays are assumed to be static
+    def dynamic?
+      @identifier.present?
+    end
+
+    def static?
+      @options.present?
+    end
+
+    ##
     # Return a list of references which are generally used together in other
     # classes of the module.
     def references
@@ -108,6 +147,28 @@ module SampleManifestExcel
         fixed_reference: fixed_reference,
         absolute_reference: absolute_reference
       }
+    end
+
+    private
+
+    def calculate_last_column
+      if options.empty?
+        first_column
+      else
+        options.length + (first_column - 1)
+      end
+    end
+
+    def create_dynamic_options
+      klass.public_send(@scope).pluck(@identifier)
+    end
+
+    def klass
+      @klass ||= @name.classify.constantize
+    end
+
+    def inspect
+      "<#{self.class}: @options=#{options}, @first_row=#{first_row}, @last_row=#{last_row}, @first_column=#{first_column}, @last_column=#{last_column}, @worksheet_name=#{worksheet_name}>"
     end
   end
 end

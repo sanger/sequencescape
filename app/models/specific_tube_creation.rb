@@ -5,7 +5,7 @@
 # Copyright (C) 2013,2014,2015 Genome Research Ltd.
 
 class SpecificTubeCreation < TubeCreation
-  class ChildPurpose < ActiveRecord::Base
+  class ChildPurpose < ApplicationRecord
     self.table_name = 'specific_tube_creation_purposes'
     belongs_to :specific_tube_creation
     belongs_to :tube_purpose, class_name: 'Purpose'
@@ -16,21 +16,38 @@ class SpecificTubeCreation < TubeCreation
 
   validates_presence_of :child_purposes
 
+  # [Array<Hash>] An optional array of hashes which get passed in to the create! action
+  #               on tube_purpose.
+  #               Allows overriding default attributes, or setting custom
+  #               values for. eg. name.
+  #               eg. [{ name: 'Tube one' }, { name: 'Tube two' }]
+  attr_writer :tube_attributes
+
   def set_child_purposes=(uuids)
     self.child_purposes = uuids.map { |uuid| Uuid.find_by(external_id: uuid).resource }
   end
 
+  def multiple_purposes
+    true
+  end
+
+  # If no tube attributes are specified, fall back to an array of empty hashes
+  def tube_attributes
+    @tube_attributes || Array.new(child_purposes.length, {})
+  end
+
+  private
+
   def no_pooling_expected?
     true
   end
-  private :no_pooling_expected?
 
   def create_children!
-    self.children = child_purposes.map { |child_purpose| child_purpose.create! }
-  end
-  private :create_children!
-
-  def multiple_purposes
-   true
+    self.children = child_purposes.each_with_index.map do |child_purpose, index|
+      # For each tube purpose listed in the child_purposes array
+      # create a tube via the tube purpose factory, passing in our
+      # custom attributes.
+      child_purpose.create!(tube_attributes[index])
+    end
   end
 end

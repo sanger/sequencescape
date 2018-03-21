@@ -19,15 +19,14 @@ class DilutionPlate < Plate
   }
 
   scope :for_pico_view, -> {
-    includes(:barcode_prefix, :plate_metadata, :studies)
+    preload(:barcode_prefix, :plate_metadata)
   }
 
   def to_pico_hash
     { pico_dilution: {
-        child_barcodes: pico_children.map { |plate| plate.barcode_dilution_factor_created_at_hash }
-      }.merge(barcode_dilution_factor_created_at_hash),
-      study_name: study_name
-    }
+      child_barcodes: pico_children.map { |plate| plate.barcode_dilution_factor_created_at_hash }
+    }.merge(barcode_dilution_factor_created_at_hash),
+      study_name: study_name }
   end
 
   private

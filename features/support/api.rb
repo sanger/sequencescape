@@ -49,7 +49,8 @@ module ::Core::Endpoint::BasicHandler::EndpointLookup
         return ::TestSampleEndpoint if ::Core::Endpoint::BasicHandler::EndpointLookup.testing_api? and (target.is_a?(::Sample) or target == ::Sample)
         endpoint_for_#{name}_without_object_service(target, *args, &block)
       end
-      alias_method_chain(:endpoint_for_#{name}, :object_service)
+      alias_method(:endpoint_for_#{name}_without_object_service, :endpoint_for_#{name})
+      alias_method(:endpoint_for_#{name}, :endpoint_for_#{name}_with_object_service)
     ", __FILE__, line)
   end
 

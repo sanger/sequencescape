@@ -70,8 +70,13 @@ module SampleManifest::SampleTubeBehaviour
       yield("You cannot move samples between tubes or modify their barcodes: #{sample.sanger_sample_id} should be in '#{primary_barcode}' but the manifest is trying to put it in '#{manifest_barcode}'")
     end
 
-    def printables
+    def labware
       samples.map { |sample| sample.assets.first }
+    end
+    alias printables labware
+
+    def assign_library?
+      false
     end
   end
 

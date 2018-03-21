@@ -21,7 +21,6 @@ class ReportContractTest < ActiveSupport::TestCase
     view_sample_study_reference_genome
     view_sample_tubes
     view_samples
-    view_started_requests
     view_studies
     view_tags
     view_wells

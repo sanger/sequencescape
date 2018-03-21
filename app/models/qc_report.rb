@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2015,2016 Genome Research Ltd.
 
-class QcReport < ActiveRecord::Base
+class QcReport < ApplicationRecord
   # :id => The primary key for internal use only
   # :report_identifier => A unique identifier exposed to customers
   # :state => Tracks report processing and return
@@ -24,38 +24,38 @@ class QcReport < ActiveRecord::Base
         # with decriptions.
 
         aasm column: :state, whiny_persistence: true do
-        # A report has just been created and is awaiting processing. There is probably a corresponding delayed job
-        state :queued, initial: true
+          # A report has just been created and is awaiting processing. There is probably a corresponding delayed job
+          state :queued, initial: true
 
-        # A report has failed one or more times. Generally this means there is a problem.
-        state :requeued
+          # A report has failed one or more times. Generally this means there is a problem.
+          state :requeued
 
-        # The report has been picked up by the delayed job. Entry into this state triggers building.
-        state :generating, after_enter: :generate_report
+          # The report has been picked up by the delayed job. Entry into this state triggers building.
+          state :generating, after_enter: :generate_report
 
-        # The report has been generated and is awaiting customer feedback
-        state :awaiting_proceed
+          # The report has been generated and is awaiting customer feedback
+          state :awaiting_proceed
 
-        # Customer feedback has been uploaded. This is generally an end state, but a report can be re-uploaded
-        # at a later date if necessary.
-        state :complete
+          # Customer feedback has been uploaded. This is generally an end state, but a report can be re-uploaded
+          # at a later date if necessary.
+          state :complete
 
-        # Triggered automatically on after_create. This event is handled via
-        # schedule_report, which creates a delayed job. It can be called manually.
-        event :generate do
-          transitions from: [:queued, :requeued], to: :generating
-        end
+          # Triggered automatically on after_create. This event is handled via
+          # schedule_report, which creates a delayed job. It can be called manually.
+          event :generate do
+            transitions from: [:queued, :requeued], to: :generating
+          end
 
-        # Called on report failure. Generally the delayed job will cycle it through a few times
-        # but most reports in this state will require manual intervention.
-        event :requeue do
-          transitions from: :generating, to: :requeued
-        end
+          # Called on report failure. Generally the delayed job will cycle it through a few times
+          # but most reports in this state will require manual intervention.
+          event :requeue do
+            transitions from: :generating, to: :requeued
+          end
 
-        # Called automatically when a report is generated
-        event :generation_complete do
-          transitions from: :generating, to: :awaiting_proceed
-        end
+          # Called automatically when a report is generated
+          event :generation_complete do
+            transitions from: :generating, to: :awaiting_proceed
+          end
 
           # A QC report might be uploaded multiple times
           event :proceed_decision do
@@ -81,7 +81,7 @@ class QcReport < ActiveRecord::Base
     # You can trigger a synchronous report manually by calling #generate!
     def generate_report
       begin
-        study.each_well_for_qc_report_in_batches(exclude_existing, product_criteria) do |assets|
+        study.each_well_for_qc_report_in_batches(exclude_existing, product_criteria, (plate_purposes.empty? ? nil : plate_purposes)) do |assets|
           # If there are some wells of interest, we get them in a list
           connected_wells = Well.hash_stock_with_targets(assets, product_criteria.target_plate_purposes)
 
@@ -98,7 +98,6 @@ class QcReport < ActiveRecord::Base
           end
         end
         generation_complete!
-
       rescue => e
         # If something goes wrong, requeue the report and re-raise the exception
         qc_metrics.clear
@@ -117,14 +116,16 @@ class QcReport < ActiveRecord::Base
   belongs_to :study
   has_many :qc_metrics
 
+  serialize :plate_purposes, Array
+
   before_validation :generate_report_identifier, if: :identifier_required?
 
   after_create :schedule_report
 
   scope :for_report_page, ->(conditions) {
-      order('id desc')
-        .where(conditions)
-        .joins(:product_criteria)
+    order('id desc')
+      .where(conditions)
+      .joins(:product_criteria)
   }
 
   validates_presence_of :product_criteria, :study, :state

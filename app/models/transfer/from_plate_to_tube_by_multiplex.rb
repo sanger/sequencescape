@@ -9,39 +9,36 @@
 class Transfer::FromPlateToTubeByMultiplex < Transfer::BetweenPlateAndTubes
   after_create :build_asset_links
 
+  private
+
   def locate_mx_library_tube_for(well)
     well.requests_as_source.where_is_a?(Request::Multiplexing).detect { |r| r.target_asset.aliquots.empty? }.try(:target_asset)
   end
-  private :locate_mx_library_tube_for
 
   def well_to_destination
-    @w2d ||= ActiveSupport::OrderedHash[
-      source.wells.map do |well|
-        tube = locate_mx_library_tube_for(well)
-        (tube.nil? or should_well_not_be_transferred?(well)) ? nil : [well, [tube, tube.requests_as_target.map(&:asset)]]
-      end.compact
-    ]
+    source.wells.each_with_object({}) do |well, store|
+      tube = locate_mx_library_tube_for(well)
+      next if tube.nil? or should_well_not_be_transferred?(well)
+      store[well] = [tube, tube.requests_as_target.map(&:asset)]
+    end
   end
-  private :well_to_destination
 
   # Before creating an instance of this class the appropriate transfers need to be made from a source
   # asset to the destination one.
   # before_create :create_transfer_requests
   def create_transfer_requests
     each_transfer do |source, destination|
-      request_type_between(source, destination).create!(
+      TransferRequest.create!(
         asset: source,
         target_asset: destination,
         submission_id: destination.requests_as_target.first.submission_id
       )
     end
   end
-  private :create_transfer_requests
 
   def build_asset_links
     destinations.each do |destination|
       AssetLink.create_edge!(source, destination)
     end
   end
-  private :build_asset_links
 end

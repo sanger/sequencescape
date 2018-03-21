@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2015 Genome Research Ltd.
 
-class BroadcastEvent < ActiveRecord::Base
+class BroadcastEvent < ApplicationRecord
   EVENT_JSON_ROOT = 'event'
   UNKNOWN_USER_IDENTIFIER = 'UNKNOWN'
 
@@ -21,6 +21,8 @@ class BroadcastEvent < ActiveRecord::Base
   serialize :properties
   self.inheritance_column = 'sti_type'
 
+  broadcast_via_warren
+
   def initialize(*args)
     raise StandardError, 'BroadcastEvents can not be created directly' unless self.class < BroadcastEvent
     super
@@ -29,7 +31,7 @@ class BroadcastEvent < ActiveRecord::Base
   # Prefer email, fall back to login if missing
   def user_identifier
     return UNKNOWN_USER_IDENTIFIER if user.nil? # User has probably been deleted
-    user.email.blank? ? user.login : user.email
+    user.email.presence || user.login
   end
 
   # Returns an array of all subjects

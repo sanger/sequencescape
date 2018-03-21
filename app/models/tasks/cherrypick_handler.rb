@@ -56,13 +56,13 @@ module Tasks::CherrypickHandler
     @plate_purpose = PlatePurpose.find(params[:plate_purpose_id])
     flash.now[:warning] = I18n.t('cherrypick.picking_by_row') if @plate_purpose.cherrypick_in_rows?
 
-    @workflow = LabInterface::Workflow.includes(:tasks).find(params[:workflow_id])
+    @workflow = Workflow.includes(:tasks).find(params[:workflow_id])
     @map_info = if @spreadsheet_layout
-      @spreadsheet_layout
+                  @spreadsheet_layout
                 elsif @plate.present?
-      @task.pick_onto_partial_plate(@requests, plate_template, @robot, @batch, @plate)
+                  @task.pick_onto_partial_plate(@requests, plate_template, @robot, @batch, @plate)
                 else
-      @task.pick_new_plate(@requests, plate_template, @robot, @batch, @plate_purpose)
+                  @task.pick_new_plate(@requests, plate_template, @robot, @batch, @plate_purpose)
                 end
     @plates = @map_info[0]
     @source_plate_ids = @map_info[1]
@@ -137,7 +137,7 @@ module Tasks::CherrypickHandler
       # If we overflow the plate we create a new one, even if we subsequently clear the fields.
       plates_with_samples = plates.reject { |_pid, rows| rows.values.map(&:values).flatten.all?(&:empty?) }
 
-      if fluidigm_plate.present? && plates_with_samples.count > 1
+      if fluidigm_plate.present? && plates_with_samples.to_h.size > 1
         raise Cherrypick::Error, 'Sorry, You cannot pick to multiple fluidigm plates in one batch.'
       end
 
@@ -158,8 +158,8 @@ module Tasks::CherrypickHandler
           row_params.each do |col, request_id|
             request, well =
               case
-              when request_id.blank?           then next
-              when request_id.match(/control/) then create_control_request_and_add_to_batch(task, request_id)
+              when request_id.blank? then next
+              when request_id.match?(/control/) then create_control_request_and_add_to_batch(task, request_id)
               else request_and_well[request_id.gsub('well_', '').to_i] or raise ActiveRecord::RecordNotFound, "Cannot find request #{request_id.inspect}"
               end
 
@@ -185,11 +185,13 @@ module Tasks::CherrypickHandler
         plate.wells << wells
       end
 
-      plate_and_requests.each do |target_plate, requests|
-        Plate.with_requests(requests).each do |source_plate|
-          AssetLink::Job.create(source_plate, [target_plate])
+      links = plate_and_requests.flat_map do |target_plate, requests|
+        Plate.with_requests(requests).map do |source_plate|
+          [source_plate.id, target_plate.id]
         end
-      end
+      end.uniq
+
+      AssetLink::BuilderJob.create(links)
 
       # Now pass each of the requests we used and ditch any there weren't back into the inbox.
       used_requests.map(&:pass!)

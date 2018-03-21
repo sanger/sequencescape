@@ -6,5 +6,5 @@
 
 <% add :menu, "SDB Home" => '/sdb/' %>
 <% add :menu, "Back to supplier" => supplier_path(@supplier) -%>
-<h1>Studies for supplier <%= @supplier.name %></h1>
+<div class="page-header"><h1>Studies for supplier <%= @supplier.name %></h1></div>
 <%= render partial: "studies/study_list",  locals: {studies: @studies} %>

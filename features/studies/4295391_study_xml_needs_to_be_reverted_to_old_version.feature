@@ -17,6 +17,7 @@ Feature: The XML for the sequencescape API
     And the study "Study for XML" does not contain samples commercially available
     And the study "Study for XML" has samples which need x and autosome data removed
     And the study "Study for XML" has a data access group of "group1"
+    And the reference genome for study "Study for XML" is "RefGenome"
     And the study "Study for XML" has the following contacts
       | login   | role    |
       | owner   | owner   |
@@ -95,7 +96,7 @@ Feature: The XML for the sequencescape API
           </descriptor>
           <descriptor>
             <name>Reference Genome</name>
-            <value></value>
+            <value>RefGenome</value>
           </descriptor>
           <descriptor>
             <name>Study Visibility</name>
@@ -188,6 +189,14 @@ Feature: The XML for the sequencescape API
           <descriptor>
             <name>HMDMC approval number</name>
             <value></value>
+          </descriptor>
+          <descriptor>
+            <name>S3 email list</name>
+            <value>aa1@sanger.ac.uk;aa2@sanger.ac.uk</value>
+          </descriptor>
+          <descriptor>
+            <name>Data deletion period</name>
+            <value>3 months</value>
           </descriptor>
           <descriptor><name>Data access group</name><value>group1</value></descriptor>
           <descriptor><name>EGA DAC Accession Number</name></descriptor>

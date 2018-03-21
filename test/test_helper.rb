@@ -10,7 +10,8 @@ ENV['RAILS_ENV'] = 'test'
 require File.expand_path(File.dirname(__FILE__) + '/../config/environment')
 
 require 'minitest/autorun'
-require 'shoulda'
+require 'shoulda/context'
+require 'shoulda/matchers'
 require 'rails/test_help'
 require 'factory_girl'
 require 'webmock/minitest'
@@ -21,12 +22,8 @@ rescue LoadError
   # No pry? That's okay, we're probably on the CI server
 end
 
-require File.expand_path(File.join(Rails.root, %w{test factories.rb}))
-Dir.glob(File.expand_path(File.join(Rails.root, %w{test factories ** *.rb}))) do |factory_filename|
- require factory_filename
-end
-Dir.glob(File.expand_path(File.join(Rails.root, %w{test lib sample_manifest_excel factories ** *.rb}))) do |factory_filename|
- require factory_filename
+Dir.glob(File.expand_path(File.join(Rails.root, %w{spec factories ** *.rb}))) do |factory_filename|
+  require factory_filename
 end
 
 Dir.glob(File.expand_path(File.join(Rails.root, %w{test shoulda_macros *.rb}))) do |macro_filename|
@@ -60,14 +57,14 @@ class ActiveSupport::TestCase
   # The only drawback to using transactional fixtures is when you actually
   # need to test transactions.  Since your test is bracketed by a transaction,
   # any transactions started in your code will be automatically rolled back.
-  self.use_transactional_fixtures = true
+  self.use_transactional_tests = true
 
   # Instantiated fixtures are slow, but give you @david where otherwise you
   # would need people(:david).  If you don't want to migrate your existing
   # test cases which use the @david style and don't mind the speed hit (each
   # instantiated fixtures translates to a database query per test method),
   # then set this back to true.
-  self.use_instantiated_fixtures  = false
+  self.use_instantiated_fixtures = false
 
   # DON'T...
   # Setup all fixtures in test/fixtures/*.(yml|csv) for all tests in alphabetical order.
@@ -91,3 +88,10 @@ end
 require 'mocha'
 require 'minitest/unit'
 require 'mocha/mini_test'
+
+Shoulda::Matchers.configure do |config|
+  config.integrate do |with|
+    with.test_framework :minitest
+    with.library :rails
+  end
+end

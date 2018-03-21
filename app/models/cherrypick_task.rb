@@ -64,7 +64,7 @@ class CherrypickTask < Task
     # Deals with generating the pick plate by travelling in a column direction, so A1, B1, C1 ...
     class ByColumn < PickTarget
       def well_position(wells)
-         @shape.vertical_to_horizontal(wells.size + 1, @size)
+        @shape.vertical_to_horizontal(wells.size + 1, @size)
       end
       private :well_position
 
@@ -76,7 +76,7 @@ class CherrypickTask < Task
     # Deals with generating the pick plate by travelling in an interlaced column direction, so A1, C1, E1 ...
     class ByInterlacedColumn < PickTarget
       def well_position(wells)
-         @shape.interlaced_vertical_to_horizontal(wells.size + 1, @size)
+        @shape.interlaced_vertical_to_horizontal(wells.size + 1, @size)
       end
       private :well_position
 
@@ -252,7 +252,7 @@ class CherrypickTask < Task
   private :get_well_from_control_param
 
   def create_control_request_from_well(control_param)
-    return nil unless control_param =~ /control/
+    return nil unless control_param.match?(/control/)
     well = get_well_from_control_param(control_param)
     return nil if well.nil?
     generate_control_request(well)

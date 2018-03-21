@@ -4,8 +4,8 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2014,2015,2016 Genome Research Ltd.%>
 
-
-<table class="table table-summary table-condensed">
+<div id="asset-summary" class="asset_summary">
+<table>
   <tr>
     <th>Asset name</th>
     <td><%= @asset.display_name %></td>
@@ -70,10 +70,6 @@
       </td>
     </tr>
   <% end %>
-  <tr>
-    <th>Scanned into lab?</th>
-    <td><%= @asset.location.nil? ? 'No' : @asset.location.name %></td>
-  </tr>
   <% if @asset.qc_state %>
     <tr>
       <th>QC state</th>
@@ -87,4 +83,4 @@
     </tr>
   <% end %>
 </table>
-
+</div>

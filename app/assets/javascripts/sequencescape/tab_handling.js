@@ -8,7 +8,7 @@
 
 
   function contentFor(tab) {
-    var content = $("[data-tab-content="+$(tab).data("tab-refers")+"]");
+    var content = $("li[data-tab-content='"+$(tab).data("tab-refers")+"']");
     if (content.length == 0) {
       return $($(tab).data("tab-refers"));
     } else {
@@ -17,13 +17,13 @@
   }
 
   function selectTab(tab) {
-    $(tab).parent().addClass("selected");
+    $(tab).addClass("active");
     contentFor(tab).show();
   }
 
 
   function unselectTab(tab) {
-    $(tab).parent().removeClass("selected");
+    $(tab).removeClass("active");
     contentFor(tab).hide();
   }
 

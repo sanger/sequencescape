@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
-class Submission < ActiveRecord::Base
+class Submission < ApplicationRecord
   include Uuid::Uuidable
   extend  Submission::StateMachine
   include Submission::DelayedJobBehaviour
@@ -13,39 +13,41 @@ class Submission < ActiveRecord::Base
   include Request::Statistics::DeprecatedMethods
   include Submission::Priorities
 
-  belongs_to :user
-  validates_presence_of :user
+  PER_ORDER_REQUEST_OPTIONS = ['pre_capture_plex_level', 'gigabases_expected']
+
+  self.per_page = 500
+
+  belongs_to :user, required: true
 
   # Created during the lifetime ...
   has_many :requests, inverse_of: :submission
   has_many :items, through: :requests
   has_many :events, through: :requests
-
   has_many :orders, inverse_of: :submission
   has_many :studies, through: :orders
-  accepts_nested_attributes_for :orders, update_only: true
-
   has_many :comments_from_requests, through: :requests, source: :comments
 
-  def comments
-    orders.pluck(:comments).compact
-  end
+  # Required at initial construction time ...
+  validate :validate_orders_are_compatible, if: :building?
 
-  def add_comment(description, user)
-    requests.where_is_not_a?(TransferRequest).map do |request|
-      request.add_comment(description, user)
-    end
-  end
+  before_destroy :building?, :empty_of_orders?
+  # Before destroying this instance we should cancel all of the requests it has made
+  before_destroy :cancel_all_requests_on_destruction
 
-  self.per_page = 500
-  scope :including_associations_for_json, -> { includes([
-    :uuid_object,
-    { orders: [
-      { project: :uuid_object },
-      { assets: :uuid_object },
-      { study: :uuid_object },
-      :user] }
-  ])}
+  accepts_nested_attributes_for :orders, update_only: true
+  broadcast_via_warren
+
+  scope :including_associations_for_json, -> {
+    includes([
+      :uuid_object,
+      { orders: [
+        { project: :uuid_object },
+        { assets: :uuid_object },
+        { study: :uuid_object },
+        :user
+      ] }
+    ])
+  }
 
   scope :building, -> { where(state: 'building') }
   scope :pending,  -> { where(state: 'pending') }
@@ -55,51 +57,9 @@ class Submission < ActiveRecord::Base
 
   scope :for_search_query, ->(query, _with_includes) { where(name: query) }
 
-  before_destroy :building?, :empty_of_orders?
-
-  def empty_of_orders?
-    orders.empty?
-  end
-
-  # Before destroying this instance we should cancel all of the requests it has made
-  before_destroy :cancel_all_requests_on_destruction
-
-  PER_ORDER_REQUEST_OPTIONS = ['pre_capture_plex_level', 'gigabases_expected']
-
-  def cancel_all_requests_on_destruction
-    ActiveRecord::Base.transaction do
-      requests.find_each do |request|
-        request.submission_cancelled! # Cancel first to prevent event doing something stupid
-        request.events.create!(message: "Submission #{id} as destroyed")
-      end
-    end
-  end
-  private :cancel_all_requests_on_destruction
-
-  def cancel_all_requests
-    ActiveRecord::Base.transaction do
-      requests.each(&:submission_cancelled!)
-    end
-  end
-  private :cancel_all_requests
-
-  def requests_cancellable?
-    requests.all?(&:cancellable?)
-  end
-
   def self.render_class
     Api::SubmissionIO
   end
-
-  def url_name
-    'submission'
-  end
-  alias_method(:json_root, :url_name)
-
-  def subject_type
-    'submission'
-  end
-  alias_attribute :friendly_name, :name
 
   def self.build!(options)
     submission_options = {}
@@ -118,6 +78,34 @@ class Submission < ActiveRecord::Base
       order.submission
     end
   end
+
+  def comments
+    orders.pluck(:comments).compact
+  end
+
+  def add_comment(description, user)
+    requests.map do |request|
+      request.add_comment(description, user)
+    end
+  end
+
+  def empty_of_orders?
+    orders.empty?
+  end
+
+  def requests_cancellable?
+    requests.all?(&:cancellable?)
+  end
+
+  def url_name
+    'submission'
+  end
+  alias_method(:json_root, :url_name)
+
+  def subject_type
+    'submission'
+  end
+  alias_attribute :friendly_name, :name
 
   def safe_to_delete?
     ActiveSupport::Deprecation.warn 'Submission#safe_to_delete? may not recognise all states'
@@ -180,18 +168,14 @@ class Submission < ActiveRecord::Base
     yield store[:samples].uniq, store[:submissions].uniq unless store[:samples].empty?
   end
 
-  # Required at initial construction time ...
-  validate :validate_orders_are_compatible
-
-  # Order needs to have the 'structure'
-  def validate_orders_are_compatible
-    return true if orders.size < 2
-    # check every order against the first one
-    first_order = orders.first
-    orders[1..-1].each { |o| check_orders_compatible?(o, first_order) }
-    return false if errors.count > 0
+  # returns an array of samples, that potentially can not be included in submission
+  def not_ready_samples
+    @not_ready_samples ||= orders.map(&:not_ready_samples).flatten
   end
-  private :validate_orders_are_compatible
+
+  def not_ready_samples_names
+    @not_ready_samples_names ||= not_ready_samples.map(&:name).join(', ')
+  end
 
   # this method is part of the submission
   # not order, because it is submission
@@ -203,7 +187,7 @@ class Submission < ActiveRecord::Base
   end
 
   def request_options_compatible?(a, b)
-   a.request_options.reject { |k, _| PER_ORDER_REQUEST_OPTIONS.include?(k) } == b.request_options.reject { |k, _| PER_ORDER_REQUEST_OPTIONS.include?(k) }
+    a.request_options.reject { |k, _| PER_ORDER_REQUEST_OPTIONS.include?(k) } == b.request_options.reject { |k, _| PER_ORDER_REQUEST_OPTIONS.include?(k) }
   end
 
   def check_studies_compatible?(a, b)
@@ -230,7 +214,7 @@ class Submission < ActiveRecord::Base
     if next_request_type_id.nil?
       next_request_type_id = find_next_request_type_id(request.request_type_id) or return []
     end
-    all_requests = requests.with_request_type_id([request.request_type_id, next_request_type_id]).order(id: :asc)
+    all_requests = request_cache_for(request.request_type_id, next_request_type_id).to_a
     sibling_requests, next_possible_requests = all_requests.partition { |r| r.request_type_id == request.request_type_id }
 
     if request.request_type.for_multiplexing?
@@ -243,15 +227,7 @@ class Submission < ActiveRecord::Base
       return next_possible_requests.slice(index * number_to_return, number_to_return)
 
     else
-      # If requests aren't multiplexed, then they may be batched separately, and we'll have issues
-      # if downstream changes affect the ratio. We can use the multiplier on order however, as we
-      # don't need to worry about divergence ratios f < 1
-      # Determine the number of requests that should come next from the multipliers in the orders.
-      # NOTE: This will only work whilst you order the same number of requests.
-      multipliers = orders.map { |o| (o.request_options[:multiplier].try(:[], next_request_type_id.to_s) || 1).to_i }.compact.uniq
-      raise RuntimeError, "Mismatched multiplier information for submission #{id}" if multipliers.size != 1
-      # Now we can take the group of requests from next_possible_requests that tie up.
-      divergence_ratio = multipliers.first
+      divergence_ratio = divergence_ratio_cache_for(next_request_type_id)
       index = sibling_requests.map(&:id).index(request.id)
       next_possible_requests[index * divergence_ratio, [1, divergence_ratio].max]
     end
@@ -261,18 +237,18 @@ class Submission < ActiveRecord::Base
     # We should never be receiving requests that are not part of our request graph.
     raise RuntimeError, "Request #{request.id} is not part of submission #{id}" unless request.submission_id == id
 
-      # Pick out the siblings of the request, so we can work out where it is in the list, and all of
-      # the requests in the subsequent request type, so that we can tie them up.  We order by ID
-      # here so that the earliest requests, those created by the submission build, are always first;
-      # any additional requests will have come from a sequencing batch being reset.
-      next_request_type_id = find_next_request_type_id(request.request_type_id) or return []
-      return request.target_asset.requests.where(submission_id: id, request_type_id: next_request_type_id) if request.target_asset.present?
-      next_requests_to_connect(request, next_request_type_id)
+    # Pick out the siblings of the request, so we can work out where it is in the list, and all of
+    # the requests in the subsequent request type, so that we can tie them up.  We order by ID
+    # here so that the earliest requests, those created by the submission build, are always first;
+    # any additional requests will have come from a sequencing batch being reset.
+    next_request_type_id = find_next_request_type_id(request.request_type_id) or return []
+    return request.target_asset.requests.where(submission_id: id, request_type_id: next_request_type_id) if request.target_asset.present?
+    next_requests_to_connect(request, next_request_type_id)
   end
 
   def name
     given_name = super || study_names
-    given_name.present? ? given_name : "##{id}"
+    given_name.presence || "##{id}"
   end
 
   def study_names
@@ -286,5 +262,66 @@ class Submission < ActiveRecord::Base
 
   def cross_study?
     multiplexed? && orders.map(&:study_id).uniq.size > 1
+  end
+
+  private
+
+  # When passing libraries we may end up iterating over requests in a submission
+  # We should have the same submission instance, so just cache the query result here.
+  def request_cache_for(*request_type_ids)
+    request_cache[request_type_ids]
+  end
+
+  # Divergence ratios are calculated from orders. we cache them per request type
+  # A divergence ratio is the number of downstream requests made per upstream
+  # request.
+  def divergence_ratio_cache_for(next_request_type_id)
+    divergence_ratio_cache[next_request_type_id]
+  end
+
+  def request_cache
+    @request_cache ||= Hash.new do |cache, ids|
+      cache[ids] = requests.with_request_type_id(ids)
+                           .includes(:asset, :billing_product)
+                           .order(id: :asc)
+    end
+  end
+
+  def divergence_ratio_cache
+    @divergence_ratio_cache ||= Hash.new do |cache, request_type_id|
+      # If requests aren't multiplexed, then they may be batched separately, and we'll have issues
+      # if downstream changes affect the ratio. We can use the multiplier on order however, as we
+      # don't need to worry about divergence ratios f < 1
+      # Determine the number of requests that should come next from the multipliers in the orders.
+      # NOTE: This will only work whilst you order the same number of requests.
+      multipliers = orders.reduce(Set.new) { |set, order| set << (order.request_options.dig(:multiplier, request_type_id.to_s) || 1).to_i }
+      raise RuntimeError, "Mismatched multiplier information for submission #{id}" unless multipliers.one?
+      # Now we can take the group of requests from next_possible_requests that tie up.
+      cache[request_type_id] = multipliers.first
+    end
+  end
+
+  def cancel_all_requests_on_destruction
+    ActiveRecord::Base.transaction do
+      requests.find_each do |request|
+        request.submission_cancelled! # Cancel first to prevent event doing something stupid
+        request.events.create!(message: "Submission #{id} as destroyed")
+      end
+    end
+  end
+
+  def cancel_all_requests
+    ActiveRecord::Base.transaction do
+      requests.each(&:submission_cancelled!)
+    end
+  end
+
+  # Order needs to have the 'structure'
+  def validate_orders_are_compatible
+    return true if orders.size < 2
+    # check every order against the first one
+    first_order = orders.first
+    orders[1..-1].each { |o| check_orders_compatible?(o, first_order) }
+    return false if errors.count > 0
   end
 end

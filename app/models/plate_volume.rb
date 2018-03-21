@@ -6,7 +6,7 @@
 
 require 'carrierwave'
 
-class PlateVolume < ActiveRecord::Base
+class PlateVolume < ApplicationRecord
   extend DbFile::Uploader
 
   has_uploaded :uploaded, serialization_column: 'uploaded_file_name'

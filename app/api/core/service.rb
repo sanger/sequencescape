@@ -99,13 +99,12 @@ module Core
       "#{request.scheme}://#{request.host_with_port}/#{self.class.api_version_path}/#{sub_path.compact.join('/')}"
     end
 
-    [:before, :after].each do |filter|
-      line = __LINE__ + 1
-      class_eval("
-        def self.#{filter}_all_actions(&block)
-          self.#{filter}(%r{^(/.*)?$}, &block)
-        end
-      ", __FILE__, line)
+    def self.before_all_actions(&block)
+      before('/*', &block)
+    end
+
+    def self.after_all_actions(&block)
+      after('/*', &block)
     end
 
     def command
@@ -171,7 +170,7 @@ module Core
         end
       end
 
-      def update!(instance_attributes = attributes(target))
+      def update!(instance_attributes = attributes)
         ActiveRecord::Base.transaction do
           target.tap { |o| o.update_attributes!(instance_attributes) }
         end
@@ -255,9 +254,8 @@ module Core
       def discard_all_references
         request.send(:discard_all_references)
         super
-
-        # We can also view the current connection as a reference and release that too
-        ActiveRecord::Base.connection_pool.release_connection
+        # Note: Previously we released our connection here, which prevented rails from
+        # properly sweeping the query cache.
       end
       private :discard_all_references
     end

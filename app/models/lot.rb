@@ -8,7 +8,7 @@
 # A lot represents a received batch of consumables (eg. tag plates)
 # that can be assumed to share some level of QC.
 
-class Lot < ActiveRecord::Base
+class Lot < ApplicationRecord
   module Template
     def self.included(base)
       base.class_eval do
@@ -35,19 +35,19 @@ class Lot < ActiveRecord::Base
 
   delegate :valid_template_class, :target_purpose, to: :lot_type
 
- scope :include_lot_type, -> { includes(:lot_type) }
- scope :include_template, -> { includes(:template) }
- scope :with_lot_number,  ->(lot_number) { where(lot_number: lot_number) }
+  scope :include_lot_type, -> { includes(:lot_type) }
+  scope :include_template, -> { includes(:template) }
+  scope :with_lot_number,  ->(lot_number) { where(lot_number: lot_number) }
 
- scope :with_qc_asset, ->(qc_asset) {
-    return none if qc_asset.nil?
-    sibling = qc_asset.transfers_as_destination.first.source
-    tag2_siblings = Tag2Layout.where(plate_id: qc_asset.id).pluck(:source_id)
+  scope :with_qc_asset, ->(qc_asset) {
+                          return none if qc_asset.nil?
+                          sibling = qc_asset.transfers_as_destination.first.source
+                          tag2_siblings = Tag2Layout.where(plate_id: qc_asset.id).pluck(:source_id)
 
-    asset_ids = [qc_asset.id, sibling.id, tag2_siblings].flatten
+                          asset_ids = [qc_asset.id, sibling.id, tag2_siblings].flatten
 
-    includes(:qcables).where(qcables: { asset_id: asset_ids }).where.not(qcables: { state: 'exhausted' })
-                       }
+                          includes(:qcables).where(qcables: { asset_id: asset_ids }).where.not(qcables: { state: 'exhausted' })
+                        }
 
   private
 

@@ -80,11 +80,12 @@ class BatchTest < ActiveSupport::TestCase
   context 'when batch is created' do
     setup do
       @pipeline = create :pipeline
-      @request1 = @pipeline.request_types.last.create!(asset: create(:sample_tube), target_asset: create(:empty_library_tube))
-      @request2 = @pipeline.request_types.last.create!(asset: create(:sample_tube), target_asset: create(:empty_library_tube))
+      @request1 = create :request, request_type: @pipeline.request_types.first
+      @request2 = create :request, request_type: @pipeline.request_types.first
 
       @batch = create :batch, requests: [@request1, @request2], pipeline: @pipeline
     end
+
     should 'be able to call start_requests' do
       assert_nothing_raised do
         @batch.start_requests
@@ -95,7 +96,7 @@ class BatchTest < ActiveSupport::TestCase
       assert_equal 'pending', @batch.requests.first.state
       @batch.start!(create(:user))
       assert_equal 'started', @batch.state
-      assert_equal 'started', @batch.requests(true).first.state
+      assert_equal 'started', @batch.requests.reload.first.state
     end
 
     context '#remove_request_ids' do
@@ -141,7 +142,7 @@ class BatchTest < ActiveSupport::TestCase
     context 'when a batch is not associated with any events, it' do
       should 'return false.' do
         assert_equal false, @batch.has_event('Tube layout verified'),
-          '#has_event should return false if an event is not found'
+                     '#has_event should return false if an event is not found'
       end
     end
     context 'when a batch has a LabEvent' do
@@ -509,16 +510,16 @@ class BatchTest < ActiveSupport::TestCase
           @batch = create :batch, pipeline: @pipeline, state: 'started'
         end
 
-       should 'raise an exception' do
+        should 'raise an exception' do
           assert_raise AASM::InvalidTransition do
             @batch.reset!(@user)
           end
-       end
+        end
       end
 
       {
-         sequencing_pipeline: :sequencing_request_with_assets,
-         pipeline: :request
+        sequencing_pipeline: :sequencing_request_with_assets,
+        pipeline: :request
       }.each do |pipeline_type, request_factory|
         context "of a #{pipeline_type}" do
           setup do
@@ -561,7 +562,7 @@ class BatchTest < ActiveSupport::TestCase
         @batch.update_attributes!(qc_state: 'qc_completed')
       end
       should 'move batch to previous qc state' do
-        assert_equal'qc_completed', @batch.qc_state
+        assert_equal 'qc_completed', @batch.qc_state
         @batch.qc_previous_state!(@user)
         assert_equal 'qc_manual_in_progress', @batch.qc_state
         @batch.qc_previous_state!(@user)
@@ -595,7 +596,7 @@ class BatchTest < ActiveSupport::TestCase
                 @user,
                 'batch_1' => { 'id' => @left_batch.id.to_s, 'lane' => left_position.to_s },
                 'batch_2' => { 'id' => @right_batch.id.to_s, 'lane' => right_position.to_s }
-             )
+              )
             )
 
             # The two requests should have been swapped
@@ -758,9 +759,8 @@ class BatchTest < ActiveSupport::TestCase
 
   context 'ready? all requests before creating batch' do
     setup do
-      @library_creation_request = create(:library_creation_request_for_testing_sequencing_requests)
-      @library_tube = @library_creation_request.target_asset
-      @library_creation_request_2 = create(:library_creation_request_for_testing_sequencing_requests, target_asset: @library_tube)
+      @library_tube = create :library_tube, sample_count: 1
+      @library_creation_request = create(:library_creation_request_for_testing_sequencing_requests, target_asset: @library_tube)
       @pipeline = create :sequencing_pipeline
 
       @batch = build :batch, pipeline: @pipeline
@@ -774,13 +774,9 @@ class BatchTest < ActiveSupport::TestCase
     end
 
     should 'check that I can create a batch with valid requests ready?' do
-      @library_creation_request.start!
-      @library_creation_request.pass
-      @library_creation_request.save!
-      @library_creation_request_2.start!
-      @library_creation_request_2.cancel
-      @library_creation_request_2.save!
-      assert_equal true, @batch.valid?
+      @library_creation_request.start
+      @library_creation_request.pass!
+      assert @batch.valid?
     end
   end
 end

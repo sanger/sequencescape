@@ -16,7 +16,7 @@ module Asset::Ownership
     end
 
     def assign_owner
-      [target_for_ownership].flatten.map { |target| target.change_owner_to(user, self) }
+      [target_for_ownership].flatten.each { |target| target.change_owner_to(user, self) }
     end
     private :assign_owner
 
@@ -41,10 +41,13 @@ module Asset::Ownership
         has_one :plate_owner
         has_one :owner, source: :user, through: :plate_owner
 
-         scope :for_user, ->(user) {
-            joins(:plate_owner)
-              .where(plate_owners: { user_id: user })
-                          }
+        scope :for_user, ->(user) {
+          if user.nil?
+            all
+          else
+            joins(:plate_owner).where(plate_owners: { user_id: user })
+          end
+        }
       end
     end
 

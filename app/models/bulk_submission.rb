@@ -1,4 +1,5 @@
 # Encoding: utf-8
+
 # This file is part of SEQUENCESCAPE; it is distributed under the terms of
 # GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
@@ -185,6 +186,8 @@ class BulkSubmission
     # Needed to identify the assets and what happens to them ...
     'asset group id', 'asset group name',
     'fragment size from', 'fragment size to',
+    'pcr cycles',
+    'primer panel',
     'read length',
     'library type',
     'bait library', 'bait library name',
@@ -243,7 +246,10 @@ class BulkSubmission
     # Builds an array of the common fields. Raises and exception if the fields are inconsistent
     COMMON_FIELDS.map do |field|
       option = rows.map { |r| r[field] }.uniq
-      errors.add(:spreadsheet, "Column, #{field}, should be identical for all requests in asset group #{rows.first['asset group name']}") if option.count > 1
+      if option.count > 1
+        provided_values = option.map { |o| "'#{o}'" }.to_sentence
+        errors.add(:spreadsheet, "#{field} should be identical for all requests in asset group '#{rows.first['asset group name']}'. Given values were: #{provided_values}.")
+      end
       [field, option.first]
     end
   end
@@ -251,6 +257,23 @@ class BulkSubmission
   def add_study_to_assets(assets, study)
     assets.map(&:samples).flatten.uniq.each do |sample|
       sample.studies << study unless sample.studies.include?(study)
+    end
+  end
+
+  def extract_request_options(details)
+    {
+      read_length: details['read length'],
+      multiplier: {}
+    }.tap do |request_options|
+      request_options['library_type']                  = details['library type']           unless details['library type'].blank?
+      request_options['fragment_size_required_from']   = details['fragment size from']     unless details['fragment size from'].blank?
+      request_options['fragment_size_required_to']     = details['fragment size to']       unless details['fragment size to'].blank?
+      request_options['pcr_cycles']                    = details['pcr cycles']             unless details['pcr cycles'].blank?
+      request_options[:bait_library_name]              = details['bait library name']      unless details['bait library name'].blank?
+      request_options[:bait_library_name]            ||= details['bait library']           unless details['bait library'].blank?
+      request_options['pre_capture_plex_level']        = details['pre-capture plex level'] unless details['pre-capture plex level'].blank?
+      request_options['gigabases_expected']            = details['gigabases expected']     unless details['gigabases expected'].blank?
+      request_options['primer_panel_name']             = details['primer panel']           unless details['primer panel'].blank?
     end
   end
 
@@ -268,20 +291,9 @@ class BulkSubmission
         project: project,
         user: user,
         comments: details['comments'],
-        request_options: {
-          read_length: details['read length']
-        },
+        request_options: extract_request_options(details),
         pre_cap_group: details['pre-capture group']
       }
-
-      attributes[:request_options]['library_type']                  = details['library type']           unless details['library type'].blank?
-      attributes[:request_options]['fragment_size_required_from']   = details['fragment size from']     unless details['fragment size from'].blank?
-      attributes[:request_options]['fragment_size_required_to']     = details['fragment size to']       unless details['fragment size to'].blank?
-      attributes[:request_options][:bait_library_name]              = details['bait library name']      unless details['bait library name'].blank?
-      attributes[:request_options][:bait_library_name]            ||= details['bait library']           unless details['bait library'].blank?
-      attributes[:request_options]['pre_capture_plex_level']        = details['pre-capture plex level'] unless details['pre-capture plex level'].blank?
-      attributes[:request_options]['gigabases_expected']            = details['gigabases expected']     unless details['gigabases expected'].blank?
-      attributes[:request_options][:multiplier]                     = {}
 
       # Deal with the asset group: either it's one we should be loading, or one we should be creating.
 
@@ -306,9 +318,9 @@ class BulkSubmission
 
         asset_ids, asset_names = details.fetch('asset ids', ''), details.fetch('asset names', '')
         found_assets = if attributes[:asset_group] && asset_ids.blank? && asset_names.blank?
-          []
+                         []
                        else
-          Array(find_all_assets_by_id_or_name_including_samples!(asset_ids, asset_names)).uniq
+                         Array(find_all_assets_by_id_or_name_including_samples!(asset_ids, asset_names)).uniq
                        end
 
         assets_found, expecting = found_assets.map { |asset| "#{asset.name}(#{asset.id})" }, asset_ids.size + asset_names.size

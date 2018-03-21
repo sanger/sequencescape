@@ -16,12 +16,14 @@ class Api::StudyIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        scope :including_associations_for_json, -> { includes([
-          :uuid_object, {
-            study_metadata: [:faculty_sponsor, :reference_genome, :study_type, :data_release_study_type],
-            roles: :users
-          }
-        ])}
+        scope :including_associations_for_json, -> {
+          includes([
+            :uuid_object, {
+              study_metadata: [:faculty_sponsor, :reference_genome, :study_type, :data_release_study_type],
+              roles: :users
+            }
+          ])
+        }
       end
     end
 
@@ -96,6 +98,8 @@ class Api::StudyIO < Api::Base
     map_attribute_to_json_attribute(:bam, 'alignments_in_bam')
     map_attribute_to_json_attribute(:prelim_id)
     map_attribute_to_json_attribute(:hmdmc_approval_number, 'hmdmc_number')
+    map_attribute_to_json_attribute(:s3_email_list)
+    map_attribute_to_json_attribute(:data_deletion_period)
   end
 
   self.related_resources = [:samples, :projects]

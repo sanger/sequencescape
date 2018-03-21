@@ -36,8 +36,8 @@ module Request::Statistics
       requests.request_type(request_type).cancelled.distinct.count(:id)
     end
 
-    def total_requests_report
-      requests.group(:request_type_id).count
+    def total_requests_report(request_types)
+      requests.where(request_type_id: request_types).group(:request_type_id).count
     end
   end
 

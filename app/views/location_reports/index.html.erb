@@ -1,0 +1,23 @@
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2018 Genome Research Ltd.%>
+<h2>Plate Location Reports</h2>
+
+<div class="col-md-6">
+<%= panel(:info,title: "Create a report from a list of barcodes",class: "creation",id: "new_location_report_from_barcodes") do %>
+	<%= render partial: 'location_plate_barcodes_form', locals: { location_report: @location_report } %>
+<% end %>
+</div>
+
+<div class="col-md-6">
+<%= panel(:info,title: "Create a report by parameter selection",class: "creation",id: "new_location_report_from_selection") do %>
+  <%= render partial: 'location_plate_selection_form', locals: { location_report: @location_report, studies: @studies, plate_purposes: @plate_purposes } %>
+<% end %>
+</div>
+
+<h2>Location Reports</h2>
+<%= will_paginate @location_reports %>
+<%= render partial: 'location_reports', locals: { location_reports: @location_reports } %>
+<%= will_paginate @location_reports %>

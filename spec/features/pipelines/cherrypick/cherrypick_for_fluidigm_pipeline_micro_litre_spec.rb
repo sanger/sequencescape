@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'rails_helper'
 require 'pry'
 
@@ -6,15 +7,12 @@ feature 'cherrypick for fluidigm pipeline - micro litre', js: true do
   let(:user) { create :admin }
   let(:project) { create :project, name: 'Test project' }
   let(:study) { create :study }
-  let(:location) { Location.find_by(name: 'Sample logistics freezer') }
   let(:pipeline_name) { 'Cherrypick for Fluidigm' }
   let(:pipeline) { Pipeline.find_by(name: pipeline_name) }
-  let(:plate1) { create :plate_with_untagged_wells, sample_count: 2, barcode: '1', location: location }
-  let(:plate2) { create :plate_with_untagged_wells, sample_count: 2, barcode: '10', location: location }
-  let(:plate3) { create :plate_with_untagged_wells, sample_count: 2, barcode: '5', location: location }
+  let(:plate1) { create :plate_with_untagged_wells, sample_count: 2, barcode: '1' }
+  let(:plate2) { create :plate_with_untagged_wells, sample_count: 2, barcode: '10' }
+  let(:plate3) { create :plate_with_untagged_wells, sample_count: 2, barcode: '5' }
   let(:plates) { [plate1, plate2, plate3] }
-  let(:submission_template) { SubmissionTemplate.find_by!(name: pipeline_name) }
-  let(:workflow) { Submission::Workflow.find_by(key: 'microarray_genotyping') }
   let(:barcode) { 99999 }
   let(:robot) { create :robot, barcode: '444' }
   let!(:plate_template) { create :plate_template }
@@ -28,10 +26,17 @@ feature 'cherrypick for fluidigm pipeline - micro litre', js: true do
         )
       end
     end
+    submission_template_hash = {
+      name: 'Cherrypick for Fluidigm',
+      submission_class_name: 'LinearSubmission',
+      product_catalogue: 'Generic',
+      submission_parameters: { info_differential: 6,
+                               request_types: %w[pick_to_sta pick_to_sta2 pick_to_snp_type pick_to_fluidigm] }
+    }
+    submission_template = SubmissionSerializer.construct!(submission_template_hash)
     submission = submission_template.create_and_build_submission!(
       study: study,
       project: project,
-      workflow: workflow,
       user: user,
       assets: assets,
       request_options: { target_purpose_name: 'Fluidigm 96-96' }
@@ -53,6 +58,14 @@ feature 'cherrypick for fluidigm pipeline - micro litre', js: true do
   scenario 'required volume is 13' do
     login_user(user)
     visit pipeline_path(pipeline)
+    first(:button, 'Select all').click
+    find_all(:checkbox).each do |checkbox|
+      expect(checkbox).to be_checked
+    end
+    first(:button, 'Deselect all').click
+    find_all(:checkbox).each do |checkbox|
+      expect(checkbox).to_not be_checked
+    end
     check('Select DN1S for batch')
     check('Select DN10I for batch')
     check('Select DN5W for batch')
@@ -62,8 +75,6 @@ feature 'cherrypick for fluidigm pipeline - micro litre', js: true do
     select('testtemplate', from: 'Plate Template')
     fill_in('micro_litre_volume_required', with: '13')
     click_button 'Next step'
-    click_button 'Next step'
-    select('Genotyping freezer', from: 'Location')
     click_button 'Next step'
     click_button 'Release this batch'
     expect(page).to have_content('Batch released!')

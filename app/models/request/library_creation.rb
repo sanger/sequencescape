@@ -32,19 +32,19 @@ class Request::LibraryCreation < CustomerRequest
     class_eval do
       has_metadata as: Request do
         # Redefine the fragment size attributes as they are fixed
-        attribute(:fragment_size_required_from, minimum_details)
-        attribute(:fragment_size_required_to, maximum_details)
-        attribute(:gigabases_expected, positive_float: true)
+        custom_attribute(:fragment_size_required_from, minimum_details)
+        custom_attribute(:fragment_size_required_to, maximum_details)
+        custom_attribute(:gigabases_expected, positive_float: true)
       end
       include Request::LibraryManufacture
     end
     const_get(:Metadata).class_eval do
       def fragment_size_required_from
-        self[:fragment_size_required_from].try(:to_i)
+        super.try(:to_i)
       end
 
       def fragment_size_required_to
-        self[:fragment_size_required_to].try(:to_i)
+        super.try(:to_i)
       end
     end
   end
@@ -52,11 +52,23 @@ class Request::LibraryCreation < CustomerRequest
   has_metadata as: Request do
   end
 
-  include Request::CustomerResponsibility
-
-  def request_options_for_creation
-    Hash[[:fragment_size_required_from, :fragment_size_required_to, :library_type].map { |f| [f, request_metadata[f]] }]
+  #
+  # Passed into cloned aliquots at the beginning of a pipeline to set
+  # appropriate options
+  #
+  #
+  # @return [Hash] A hash of aliquot attributes
+  #
+  def aliquot_attributes
+    {
+      study_id: initial_study_id,
+      project_id: initial_project_id,
+      library_type: library_type,
+      insert_size: insert_size
+    }
   end
+
+  include Request::CustomerResponsibility
 
   def library_creation?
     true

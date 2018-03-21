@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2015,2016 Genome Research Ltd.
 
-require 'test_helper'
+require_relative '../test_helper'
 
 class QcMetricTest < ActiveSupport::TestCase
   context 'QcMetric' do
@@ -30,21 +30,21 @@ class QcMetricTest < ActiveSupport::TestCase
       ['manually_failed', nil,   false],
       ['manually_passed', nil,   false],
     ].each do |qc_state, proceed_state, poor_quality_proceed|
-        should "return #{poor_quality_proceed} when the qc_state is #{qc_state} and proceed is #{proceed_state}" do
-          qc = create :qc_metric, qc_decision: qc_state, proceed: proceed_state
-          assert_equal poor_quality_proceed, qc.poor_quality_proceed
-        end
+      should "return #{poor_quality_proceed} when the qc_state is #{qc_state} and proceed is #{proceed_state}" do
+        qc = create :qc_metric, qc_decision: qc_state, proceed: proceed_state
+        assert_equal poor_quality_proceed, qc.poor_quality_proceed
+      end
     end
   end
 
   context 'A QcMetric' do
     [
-      ['passed',         true],
-      ['failed',         true],
-      ['manually_passed', true],
-      ['manually_failed', true],
-      ['unprocessable',  false],
-    ].each do |qc_state, proceedable|
+      ['passed',          true,  false],
+      ['failed',          true,  true],
+      ['manually_passed', true,  false],
+      ['manually_failed', true,  true],
+      ['unprocessable',   false, true],
+    ].each do |qc_state, proceedable, set_suboptimal|
 
       should "#{proceedable ? '' : 'not '}allow the proceed flag to be set to Y when #{qc_state}" do
         qc = create :qc_metric, qc_decision: qc_state
@@ -56,6 +56,16 @@ class QcMetricTest < ActiveSupport::TestCase
         qc = create :qc_metric, qc_decision: qc_state
         qc.human_proceed = 'N'
         assert_equal false, qc.proceed
+      end
+
+      should "#{set_suboptimal ? '' : 'not '}flag the aliquot as suboptimal when #{qc_state}" do
+        aliquot = create :aliquot
+        well = create :well
+        well.aliquots << aliquot
+        create :qc_metric, qc_decision: qc_state, asset: well
+        # The data NEEDS to be persisted, so we reload to check this is the case.
+        aliquot.reload
+        assert_equal set_suboptimal, aliquot.suboptimal?
       end
     end
   end
