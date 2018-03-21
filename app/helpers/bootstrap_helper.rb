@@ -14,7 +14,7 @@ module BootstrapHelper
   end
 
   def link_panel(type = :default, options = {}, &block)
-    bs_custom_panel(type, :div, { class: 'list-group list-group-flush' }, options, &block)
+    bs_custom_panel(type, :div, { class: 'link-panel' }, options, &block)
   end
 
   def bs_custom_panel(type, body_type, body_options, options, &block)

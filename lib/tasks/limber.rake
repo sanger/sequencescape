@@ -66,6 +66,12 @@ namespace :limber do
       ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
+        'RNAAG',
+        library_types: ['RNA Poly A Globin'],
+        default_purpose: 'LBR Cherrypick'
+      ).build!
+
+      Limber::Helper::RequestTypeConstructor.new(
         'ReISC',
         request_class: 'Pulldown::Requests::ReIscLibraryRequest',
         library_types: ['Agilent Pulldown'],
@@ -134,7 +140,7 @@ namespace :limber do
           catalogue: catalogue
         ).build!
       end
-      %w[scRNA RNAA].each do |prefix|
+      %w[scRNA RNAA RNAAG].each do |prefix|
         catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: prefix)
         Limber::Helper::TemplateConstructor.new(
           name: prefix,

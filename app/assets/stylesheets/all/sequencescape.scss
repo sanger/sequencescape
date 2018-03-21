@@ -355,13 +355,11 @@ table.sample_list td:first-child {text-align:right; padding-right:0.5em;}
 }
 
 .columnize .info {
-  width:45%;
-  display:inline-block;
-  float:left;
+  @extend .card;
 }
 
 .columnize {
-  overflow:auto;
+  column-count: 2;
 }
 
 .loading {
@@ -576,8 +574,15 @@ border-top: 1px solid #ccc;
   }
 }
 
-.asset_summary, .sample_summary {
+.asset_summary {
   @extend .resource_summary;
+}
+
+.sample_summary {
+  @extend .card;
+  table {
+    width: 100%;
+  }
 }
 
 
