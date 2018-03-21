@@ -146,6 +146,7 @@ group :test do
   # Temporarily lock minitest to a specific version due to incompatibilities
   # with rails versions.
   gem 'minitest', '5.10.3'
+  gem 'minitest-profiler'
 end
 
 group :test, :cucumber do
