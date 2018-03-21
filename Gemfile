@@ -136,6 +136,8 @@ end
 
 group :test do
   gem 'rspec-rails', require: false
+  gem 'minitest-profiler'
+
   # Rails performance tests
   gem 'rails-perftest'
   # Provides json expectations for rspec. Makes test more readable,
