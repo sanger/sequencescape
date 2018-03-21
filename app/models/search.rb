@@ -17,5 +17,5 @@ class Search < ApplicationRecord
 
   validates_presence_of :name
   validates_uniqueness_of :name
-  serialize :default_parameters
+  serialize :default_parameters, Hash
 end

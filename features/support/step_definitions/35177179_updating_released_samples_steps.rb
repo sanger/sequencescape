@@ -19,5 +19,5 @@ When /^ignoring "([^\"]+)" the XML submission for the sample "([^"]*)" should be
     sort_arrays(walk_hash_structure(Hash.from_xml(serialized_xml), &block)),
     sort_arrays(walk_hash_structure(Hash.from_xml(submission.xml), &block)),
     'XML differs when decoded'
-    )
+  )
 end

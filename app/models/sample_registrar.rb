@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This file is part of SEQUENCESCAPE; it is distributed under the terms of
 # GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
@@ -16,11 +18,6 @@ require 'rexml/text'
 # callback could be removed to keep track of sample registrations.
 #++
 class SampleRegistrar < ApplicationRecord
-  # UPGRADE TODO: This hack is horrible! Find out what its doing and fix it!
-  def initialize(attributes = {})
-    super({ sample_attributes: {}, sample_tube_attributes: {} }.merge(attributes.symbolize_keys))
-  end
-
   # Raised if the call to SampleRegistrar.register! fails for any reason, and so that calling code
   # can get at the SampleRegistrar instances that were in the process of being created.
   class RegistrationError < StandardError
@@ -29,20 +26,39 @@ class SampleRegistrar < ApplicationRecord
     def initialize(sample_registrars)
       @sample_registrars = sample_registrars
     end
+
+    def message
+      "#{super}: #{registrar_errors}"
+    end
+
+    def registrar_errors
+      sample_registrars.map { |sr| sr.errors.full_messages }.flatten.join('; ')
+    end
   end
 
+  # Looks up and caches asset group names
   class AssetGroupHelper
     def initialize
-      @asset_groups = {}
+      @asset_groups = Hash.new { |name_cache, name| name_cache[name] = AssetGroup.where(name: name).exists? }
     end
 
     def existing_asset_group?(name)
-      return @asset_groups[name] if @asset_groups.key?(name)
-      @asset_groups[name] = !AssetGroup.find_by(name: name).nil?
+      @asset_groups[name]
     end
   end
 
   NoSamplesError = Class.new(RegistrationError)
+
+  # We are registering samples on the behalf of a specified user within a specified study
+  belongs_to :user, required: true
+  belongs_to :study, required: true
+  belongs_to :sample, validate: true, autosave: true, required: true
+  # Samples always come in a SampleTube when coming through SampleReception
+  belongs_to :sample_tube, validate: true, autosave: true, required: true
+  belongs_to :asset_group, validate: true, autosave: true
+
+  accepts_nested_attributes_for :sample
+  accepts_nested_attributes_for :sample_tube
 
   # This method is the main registration interface, taking a list of attributes and registering the
   # associated sample and sample tubes.  You get back a list of SampleRegistrar instances.  If anything
@@ -56,29 +72,29 @@ class SampleRegistrar < ApplicationRecord
     begin
       # We perform this in a database wide transaction because it is altering several tables.  It also locks
       # the tables from change whilst we validate our instances.
-      ActiveRecord::Base.transaction do
+      transaction do
+        # We don't use all? here as we don't want to lazily validate our registrars, otherwise we only return one
+        # problem at a time, and annoy our users no-end
         all_valid = registrars.inject(true) { |all_valid_so_far, registrar| registrar.valid? && all_valid_so_far }
         raise RegistrationError, registrars unless all_valid
-        registrars.each { |registrar| registrar.save! }
+        registrars.each(&:save!)
       end
 
-      return registrars
-    rescue ActiveRecord::RecordInvalid => exception
+      registrars
+    rescue ActiveRecord::RecordInvalid
       # NOTE: this shouldn't ever happen but you never know!
       raise RegistrationError, registrars
     end
   end
 
-  # We are registering samples on the behalf of a specified user within a specified study
-  belongs_to :user
-  validates_presence_of :user
+  # Build by default
+  def sample
+    super || build_sample
+  end
 
-  belongs_to :study
-  validates_presence_of :study
-
-  belongs_to :sample, validate: true, autosave: true
-  accepts_nested_attributes_for :sample
-  validates_presence_of :sample
+  def sample_tube
+    super || build_sample_tube
+  end
 
   after_create do |record|
     # NOTE: this looks like it should be 'record.user.is_owner_of(record.sample)' but ActiveRecord and the
@@ -90,11 +106,6 @@ class SampleRegistrar < ApplicationRecord
     sample_tube.register_stock!
   end
 
-  # Samples always come in a SampleTube when coming through us
-  belongs_to :sample_tube, validate: true, autosave: true
-  accepts_nested_attributes_for :sample_tube
-  validates_presence_of :sample_tube
-
   before_validation do |record|
     record.sample_tube.name = record.sample.name
   end
@@ -105,7 +116,7 @@ class SampleRegistrar < ApplicationRecord
   # SampleTubes are registered within an AssetGroup, unless the AssetGroup is unspecified.
   attr_accessor :asset_group_helper
   attr_accessor :asset_group_name
-  belongs_to :asset_group, validate: true, autosave: true
+
   validates_each(:asset_group_name, if: :new_record?) do |record, _attr, value|
     record.errors.add(:asset_group, "#{value} already exists, please enter another name") if record.asset_group_helper.existing_asset_group?(value)
   end
@@ -115,7 +126,7 @@ class SampleRegistrar < ApplicationRecord
   end
 
   after_create do |record|
-    record.asset_group.assets.concat(record.sample_tube) unless record.asset_group.blank?
+    record.asset_group.assets.concat(record.sample_tube) if record.asset_group.present?
   end
 
   def self.create_asset_group_by_name(name, study)
@@ -126,38 +137,36 @@ class SampleRegistrar < ApplicationRecord
   # This model does not really need to exist but, without Rails 3, we can't easily use the ActiveRecord stuff.
   # So, once have created an instance we immediately destroy it.  Note that, because of the way ActiveRecord
   # works, this *must* be the LAST after_create callback in this file.
-  after_create { |record| record.delete }
+  after_create :delete
 
   # Is this instance to be ignored?
   def ignore?
-    !!@ignore
+    @ignore
   end
-  alias_method :ignore, :ignore?
+  alias ignore ignore?
 
   def ignore=(ignore)
-    @ignore = ('1' == ignore)
+    @ignore = (ignore == '1')
   end
 
   SpreadsheetError = Class.new(StandardError)
   TooManySamplesError = Class.new(SpreadsheetError)
 
   # Column names from old spreadsheets that need mapping to new names.
-  REMAPPED_COLUMN_NAMES = { 'Asset group name' => 'Asset group' }
+  REMAPPED_COLUMN_NAMES = { 'Asset group name' => 'Asset group' }.freeze
 
   # Columns that are required for the spreadsheet to be considered valid.
-  REQUIRED_COLUMNS = ['Asset group', 'Sample name']
+  REQUIRED_COLUMNS = ['Asset group', 'Sample name'].freeze
   REQUIRED_COLUMNS_SENTENCE = REQUIRED_COLUMNS.map { |w| "'#{w}'" }.to_sentence(two_words_connector: ' or ', last_word_connector: ', or ')
 
   def self.from_spreadsheet(file, study, user)
-    workbook = Spreadsheet.open(file.path) or raise SpreadsheetError, 'Problems processing your file. Only Excel spreadsheets accepted'
+    (workbook = Spreadsheet.open(file.path)) || raise(SpreadsheetError, 'Problems processing your file. Only Excel spreadsheets accepted')
     worksheet = workbook.worksheet(0)
 
     # Assume there is always 1 header row
     num_samples = worksheet.count - 1
 
-    if num_samples > configatron.uploaded_spreadsheet.max_number_of_samples
-      raise TooManySamplesError, "You can only load #{configatron.uploaded_spreadsheet.max_number_of_samples} samples at a time. Please split the file into smaller groups of samples."
-    end
+    raise TooManySamplesError, "You can only load #{configatron.uploaded_spreadsheet.max_number_of_samples} samples at a time. Please split the file into smaller groups of samples." if num_samples > configatron.uploaded_spreadsheet.max_number_of_samples
 
     # Map the header from the spreadsheet (the first row) to the attributes of the sample registrar.  Each column
     # has the same text as the label for the attribute, once it has been HTML unescaped.
@@ -181,8 +190,10 @@ class SampleRegistrar < ApplicationRecord
     )
 
     # Map the headers to their attribute handlers.  Ensure that the required headers are present.
-    used_definitions, headers = [], []
-    column_index, column_name = 0, worksheet.cell(0, 0).to_s.gsub(/\000/, '').gsub(/\.0/, '').strip
+    used_definitions = []
+    headers = []
+    column_index = 0
+    column_name = worksheet.cell(0, 0).to_s.gsub(/\000/, '').gsub(/\.0/, '').strip
     until column_name.empty?
       column_name = REMAPPED_COLUMN_NAMES.fetch(column_name, column_name)
       handler     = definitions[column_name]
@@ -191,13 +202,11 @@ class SampleRegistrar < ApplicationRecord
         headers << column_name
       end
 
-      column_index = column_index + 1
-      column_name  = worksheet.cell(0, column_index).to_s.gsub(/\000/, '').gsub(/\.0/, '').strip
+      column_index += 1
+      column_name = worksheet.cell(0, column_index).to_s.gsub(/\000/, '').gsub(/\.0/, '').strip
     end
 
-    if (headers & REQUIRED_COLUMNS) != REQUIRED_COLUMNS
-      raise SpreadsheetError, "Please check that your spreadsheet is in the latest format: one of #{REQUIRED_COLUMNS_SENTENCE} is missing or in the wrong column."
-    end
+    raise SpreadsheetError, "Please check that your spreadsheet is in the latest format: one of #{REQUIRED_COLUMNS_SENTENCE} is missing or in the wrong column." if (headers & REQUIRED_COLUMNS) != REQUIRED_COLUMNS
 
     # Build a SampleRegistrar instance for each row of the spreadsheet, mapping the cells of the
     # spreadsheet to their appropriate attribute.
@@ -211,10 +220,10 @@ class SampleRegistrar < ApplicationRecord
         sample_tube_attributes: {}
       }
 
-      used_definitions.each_with_index do |handler, index|
-        next if handler.nil?
+      used_definitions.each_with_index do |column_handler, index|
+        next if column_handler.nil?
         value = worksheet.cell(row, index).to_s.gsub(/\000/, '').gsub(/\.0/, '').strip
-        handler.call(attributes, value) unless value.blank?
+        column_handler.call(attributes, value) if value.present?
       end
       next if attributes[:sample_attributes][:name].blank?
 
@@ -228,7 +237,7 @@ class SampleRegistrar < ApplicationRecord
     end
 
     return sample_registrars
-  rescue Ole::Storage::FormatError => exception
+  rescue Ole::Storage::FormatError
     raise SpreadsheetError, 'Problems processing your file. Only Excel spreadsheets accepted'
   end
 end

@@ -1,3 +1,9 @@
+# frozen_string_literal: true
+
+# In addition to tag2 layouts, we now track tag layouts to allow
+# enforcement of unique UDIs. Unlike Tag2 templates though we
+# don't want to enforce this all the time, so can toggle our
+# uniqueness constraint.
 class AddTagLayoutTemplateSubmissions < ActiveRecord::Migration[5.1]
   def change
     create_table :tag_layout_template_submissions do |t|

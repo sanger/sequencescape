@@ -18,8 +18,6 @@ Given(/^I have a released cherrypicking batch with (\d+) samples and the minimum
   fill_in('nano_grams_per_micro_litre_robot_minimum_picking_volume', with: minimum_robot_pick)
   step('I press "Next step"')
   step('I press "Next step"')
-  step('I select "Genotyping freezer" from "Location"')
-  step('I press "Next step"')
   step('I press "Release this batch"')
   step('the last batch has a barcode of "550000555760"')
 end
@@ -37,8 +35,6 @@ Given(/^I have a released low concentration cherrypicking batch with (\d+) sampl
   step('I fill in "nano_grams_per_micro_litre_concentration_required" with "50"')
   fill_in('nano_grams_per_micro_litre_robot_minimum_picking_volume', with: minimum_robot_pick)
   step('I press "Next step"')
-  step('I press "Next step"')
-  step('I select "Genotyping freezer" from "Location"')
   step('I press "Next step"')
   step('I press "Release this batch"')
   step('the last batch has a barcode of "550000555760"')
@@ -77,8 +73,6 @@ Given(/^I have a released cherrypicking batch with 3 plates and the minimum robo
   fill_in('nano_grams_per_micro_litre_robot_minimum_picking_volume', with: minimum_robot_pick)
   step('I press "Next step"')
   step('I press "Next step"')
-  step('I select "Genotyping freezer" from "Location"')
-  step('I press "Next step"')
   step('I press "Release this batch"')
   step('the last batch has a barcode of "550000555760"')
 end
@@ -114,4 +108,3 @@ end
 Then /^the source plates should be sorted by bed:$/ do |expected_results_table|
   expected_results_table.diff!(table(fetch_table('table#source_beds')))
 end
-

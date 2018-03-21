@@ -37,14 +37,17 @@ class Submission < ApplicationRecord
   accepts_nested_attributes_for :orders, update_only: true
   broadcast_via_warren
 
-  scope :including_associations_for_json, -> { includes([
-    :uuid_object,
-    { orders: [
-      { project: :uuid_object },
-      { assets: :uuid_object },
-      { study: :uuid_object },
-      :user] }
-  ])}
+  scope :including_associations_for_json, -> {
+    includes([
+      :uuid_object,
+      { orders: [
+        { project: :uuid_object },
+        { assets: :uuid_object },
+        { study: :uuid_object },
+        :user
+      ] }
+    ])
+  }
 
   scope :building, -> { where(state: 'building') }
   scope :pending,  -> { where(state: 'pending') }
@@ -81,7 +84,7 @@ class Submission < ApplicationRecord
   end
 
   def add_comment(description, user)
-    requests.where_is_not_a?(TransferRequest).map do |request|
+    requests.map do |request|
       request.add_comment(description, user)
     end
   end
@@ -234,18 +237,18 @@ class Submission < ApplicationRecord
     # We should never be receiving requests that are not part of our request graph.
     raise RuntimeError, "Request #{request.id} is not part of submission #{id}" unless request.submission_id == id
 
-      # Pick out the siblings of the request, so we can work out where it is in the list, and all of
-      # the requests in the subsequent request type, so that we can tie them up.  We order by ID
-      # here so that the earliest requests, those created by the submission build, are always first;
-      # any additional requests will have come from a sequencing batch being reset.
-      next_request_type_id = find_next_request_type_id(request.request_type_id) or return []
-      return request.target_asset.requests.where(submission_id: id, request_type_id: next_request_type_id) if request.target_asset.present?
-      next_requests_to_connect(request, next_request_type_id)
+    # Pick out the siblings of the request, so we can work out where it is in the list, and all of
+    # the requests in the subsequent request type, so that we can tie them up.  We order by ID
+    # here so that the earliest requests, those created by the submission build, are always first;
+    # any additional requests will have come from a sequencing batch being reset.
+    next_request_type_id = find_next_request_type_id(request.request_type_id) or return []
+    return request.target_asset.requests.where(submission_id: id, request_type_id: next_request_type_id) if request.target_asset.present?
+    next_requests_to_connect(request, next_request_type_id)
   end
 
   def name
     given_name = super || study_names
-    given_name.present? ? given_name : "##{id}"
+    given_name.presence || "##{id}"
   end
 
   def study_names

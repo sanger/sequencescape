@@ -4,7 +4,7 @@ Feature: Manage Plate Purposes
   Background:
     Given I am a "administrator" user logged in as "user"
     And I am on the plate purpose homepage
-    Then I should see "Listing All Plate Purposes"
+    Then I should see "Plate Purposes"
     And I should see "Stock Plate"
     When I follow "New Plate Purpose"
 

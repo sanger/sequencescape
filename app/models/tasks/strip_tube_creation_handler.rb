@@ -44,7 +44,7 @@ module Tasks::StripTubeCreationHandler
     strip_purpose = Purpose.find_by(name: task.descriptors.find_by!(key: 'strip_tube_purpose').value)
 
     (0...tubes_to_create).each do |tube_number|
-      tube = strip_purpose.create!(name: "#{base_name}:#{tube_number + 1}", location: @batch.pipeline.location)
+      tube = strip_purpose.create!(name: "#{base_name}:#{tube_number + 1}")
       AssetLink::Job.create(source_plate, [tube])
 
       tube.size.times do |index|

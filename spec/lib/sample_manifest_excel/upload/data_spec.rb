@@ -1,12 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe SampleManifestExcel::Upload::Data, type: :model, sample_manifest_excel: true do
-   before(:all) do
+  before(:all) do
     SampleManifestExcel.configure do |config|
       config.folder = File.join('spec', 'data', 'sample_manifest_excel')
       config.load!
     end
-   end
+  end
 
   let(:test_file)               { 'test_file.xlsx' }
   let(:columns)                 { SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup }

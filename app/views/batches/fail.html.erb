@@ -4,11 +4,11 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.%>
 
-<% add :title, "Batch" -%>
+
 <% add :menu, "Edit batch" => edit_batch_path(@batch) -%>
 <% add :back_menu, "Back to batch" => batch_path(@batch) -%>
 
-<h1>FAIL ITEMS IN BATCH <%= @batch.id %></h1>
+<div class="page-header"><h1>FAIL ITEMS IN BATCH <%= @batch.id %></h1></div>
 <div class="info">
   Removing a request from a batch will result in it being returned to the inbox to be reprocessed. <br/ >
   Failing a request will result in an email being generated and sent to the project's PM.  This request will not be returned to the inbox. <br/>
@@ -18,7 +18,7 @@
 
 <%= render partial: "batch_fail", locals: { requests: @batch.ordered_requests, edit: false } %>
 
-<h1>FAILURE REASON</h1>
+<div class="page-header"><h1>FAILURE REASON</h1></div>
 <div class="info">
   <table width="100%" cellspacing="0" cellpadding="0">
     <tr>

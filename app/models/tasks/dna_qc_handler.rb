@@ -21,9 +21,9 @@ module Tasks::DnaQcHandler
         # to be in the select. We'll just end up wrestling with rails handling of the includes if
         # we try and force it here.
       ]
-).sort_by { |r| r.source_well.map.column_order }
+    ).sort_by { |r| r.source_well.map.column_order }
 
-    @workflow = LabInterface::Workflow.includes(:tasks).find(params[:workflow_id])
+    @workflow = Workflow.includes(:tasks).find(params[:workflow_id])
     @task = task # @workflow.tasks[params[:id].to_i]
     @stage = params[:id].to_i
     @count = 0

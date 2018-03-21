@@ -7,18 +7,18 @@
 # NOTE: The UUIDs for the requests are generated as sequential numbers from the study UUID
 def create_request(request_type, study, project, asset, target_asset, additional_options = {})
   request = FactoryGirl.create(:request_with_submission,
-    additional_options.merge(
-      study: study, project: project,
-      asset: asset,
-      target_asset: target_asset,
-      request_type: request_type,
-      request_metadata_attributes: {
-        fragment_size_required_to: 1,
-        fragment_size_required_from: 999,
-        library_type: 'Standard',
-        read_length: (request_type.request_class == HiSeqSequencingRequest ? 50 : 76)
-      }
-    ))
+                               additional_options.merge(
+                                 study: study, project: project,
+                                 asset: asset,
+                                 target_asset: target_asset,
+                                 request_type: request_type,
+                                 request_metadata_attributes: {
+                                   fragment_size_required_to: 1,
+                                   fragment_size_required_from: 999,
+                                   library_type: 'Standard',
+                                   read_length: (request_type.request_class == HiSeqSequencingRequest ? 50 : 76)
+                                 }
+                               ))
   request.id = additional_options[:id] if additional_options.key?(:id) # Force ID hack!
 
   # should be on target asset when we'll use target_asset
@@ -98,4 +98,3 @@ Then /^I should see the following request information:$/ do |expected|
   actual = Hash[page.all('.info .property_group_general tr').map { |row| row.all('td').map(&:text) }]
   assert_equal expected.rows_hash, actual
 end
-

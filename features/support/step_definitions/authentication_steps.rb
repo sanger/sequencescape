@@ -12,24 +12,14 @@ Given /^I am logged in as "(.*)"$/ do |login|
   step(%Q{I am an "internal" user logged in as "#{login}"})
 end
 
-Given /^user "(.*)" has a workflow "(.*)"$/ do |login, workflow_name|
-  user = @current_user = User.find_by(login: login) or raise StandardError, "Cannot find a user with login '#{login}'"
-  workflow = Submission::Workflow.find_by(name: workflow_name) or raise StandardError, "Cannot find the workflow #{workflow_name.inspect}"
-  user.workflow_id = workflow.id
-  user.save
-end
-
 Given /^I am an? "([^\"]*)" user logged in as "([^\"]*)"$/ do |role_name, login|
-  wk = Submission::Workflow.find_by!(key: 'short_read_sequencing')
-
   @current_user = FactoryGirl.create(:user,
-    login: login,
-    first_name: 'John',
-    last_name: 'Doe',
-    password: 'generic',
-    password_confirmation: 'generic',
-    email: "#{login}@example.com",
-    workflow_id: wk.id)
+                                     login: login,
+                                     first_name: 'John',
+                                     last_name: 'Doe',
+                                     password: 'generic',
+                                     password_confirmation: 'generic',
+                                     email: "#{login}@example.com")
 
   @current_user.roles << FactoryGirl.create(:role, name: role_name)
 
@@ -49,6 +39,6 @@ Then /^I should be logged in as "([^\"]*)"$/ do |login|
 end
 
 Given /^user "([^"]*)" has nil first and last names$/ do |login|
-   user = User.find_by(login: login)
-   user.update_attributes!(last_name: nil, first_name: nil)
+  user = User.find_by(login: login)
+  user.update_attributes!(last_name: nil, first_name: nil)
 end

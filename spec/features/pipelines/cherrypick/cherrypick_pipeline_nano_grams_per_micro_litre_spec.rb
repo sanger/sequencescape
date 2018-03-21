@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'rails_helper'
 require 'pry'
 
@@ -8,15 +9,12 @@ feature 'cherrypick pipeline - nano grams per micro litre', js: true do
   let(:user) { create :admin, barcode: 'ID41440E' }
   let(:project) { create :project, name: 'Test project' }
   let(:study) { create :study }
-  let(:location) { Location.find_by(name: 'Sample logistics freezer') }
   let(:pipeline_name) { 'Cherrypick' }
   let(:pipeline) { Pipeline.find_by(name: pipeline_name) }
-  let(:plate1) { create :plate_with_untagged_wells, well_order: :row_order, sample_count: 2, barcode: '1', location: location }
-  let(:plate2) { create :plate_with_untagged_wells, well_order: :row_order, sample_count: 2, barcode: '10', location: location }
-  let(:plate3) { create :plate_with_untagged_wells, well_order: :row_order, sample_count: 2, barcode: '5', location: location }
+  let(:plate1) { create :plate_with_untagged_wells, well_order: :row_order, sample_count: 2, barcode: '1' }
+  let(:plate2) { create :plate_with_untagged_wells, well_order: :row_order, sample_count: 2, barcode: '10' }
+  let(:plate3) { create :plate_with_untagged_wells, well_order: :row_order, sample_count: 2, barcode: '5' }
   let(:plates) { [plate1, plate2, plate3] }
-  let(:submission_template) { SubmissionTemplate.find_by(name: pipeline_name) }
-  let(:workflow) { Submission::Workflow.find_by(key: 'microarray_genotyping') }
   let(:barcode) { 99999 }
   let(:robot) { create :robot, barcode: '444' }
   let!(:plate_template) { create :plate_template }
@@ -31,10 +29,18 @@ feature 'cherrypick pipeline - nano grams per micro litre', js: true do
         )
       end
     end
+    submission_template_hash = {
+      name: 'Cherrypick',
+      submission_class_name: 'LinearSubmission',
+      product_catalogue: 'Generic',
+      submission_parameters: { info_differential: 6,
+                               asset_input_methods: ['select an asset group', 'enter a list of sample names found on plates'],
+                               request_types: ['cherrypick'] }
+    }
+    submission_template = SubmissionSerializer.construct!(submission_template_hash)
     submission = submission_template.create_and_build_submission!(
       study: study,
       project: project,
-      workflow: workflow,
       user: user,
       assets: assets
     )
@@ -50,6 +56,11 @@ feature 'cherrypick pipeline - nano grams per micro litre', js: true do
     robot.robot_properties.create(key: 'SCRC2', value: '2')
     robot.robot_properties.create(key: 'SCRC3', value: '3')
     robot.robot_properties.create(key: 'DEST1', value: '20')
+
+    create :plate_type, name: 'ABgene_0765', maximum_volume: 800
+    create :plate_type, name: 'ABgene_0800', maximum_volume: 180
+    create :plate_type, name: 'FluidX075', maximum_volume: 500
+    create :plate_type, name: 'FluidX03', maximum_volume: 280
   end
 
   # from 6628187_tests_for_fix_tecan_volumes.feature
@@ -68,8 +79,6 @@ feature 'cherrypick pipeline - nano grams per micro litre', js: true do
     fill_in('nano_grams_per_micro_litre_volume_required', with: '65')
     fill_in('nano_grams_per_micro_litre_robot_minimum_picking_volume', with: '1.0')
     click_button 'Next step'
-    click_button 'Next step'
-    select('Genotyping freezer', from: 'Location')
     click_button 'Next step'
     click_button 'Release this batch'
     expect(page).to have_content('Batch released!')

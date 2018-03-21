@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'rails_helper'
 require 'support/barcode_helper'
 require_relative 'shared_examples'

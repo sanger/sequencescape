@@ -34,10 +34,10 @@ module Accession
         broker_name: service.broker,
         alias: sample.ebi_alias_datestamped,
         submission_date: date
-        ) {
-          xml.CONTACTS {
-            xml.CONTACT(contact.to_h)
-          }
+      ) {
+        xml.CONTACTS {
+          xml.CONTACT(contact.to_h)
+        }
 
         xml.ACTIONS {
           xml.ACTION {

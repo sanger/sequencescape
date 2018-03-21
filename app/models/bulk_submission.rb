@@ -1,4 +1,5 @@
 # Encoding: utf-8
+
 # This file is part of SEQUENCESCAPE; it is distributed under the terms of
 # GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
@@ -186,6 +187,7 @@ class BulkSubmission
     'asset group id', 'asset group name',
     'fragment size from', 'fragment size to',
     'pcr cycles',
+    'primer panel',
     'read length',
     'library type',
     'bait library', 'bait library name',
@@ -271,6 +273,7 @@ class BulkSubmission
       request_options[:bait_library_name]            ||= details['bait library']           unless details['bait library'].blank?
       request_options['pre_capture_plex_level']        = details['pre-capture plex level'] unless details['pre-capture plex level'].blank?
       request_options['gigabases_expected']            = details['gigabases expected']     unless details['gigabases expected'].blank?
+      request_options['primer_panel_name']             = details['primer panel']           unless details['primer panel'].blank?
     end
   end
 
@@ -315,9 +318,9 @@ class BulkSubmission
 
         asset_ids, asset_names = details.fetch('asset ids', ''), details.fetch('asset names', '')
         found_assets = if attributes[:asset_group] && asset_ids.blank? && asset_names.blank?
-          []
+                         []
                        else
-          Array(find_all_assets_by_id_or_name_including_samples!(asset_ids, asset_names)).uniq
+                         Array(find_all_assets_by_id_or_name_including_samples!(asset_ids, asset_names)).uniq
                        end
 
         assets_found, expecting = found_assets.map { |asset| "#{asset.name}(#{asset.id})" }, asset_ids.size + asset_names.size

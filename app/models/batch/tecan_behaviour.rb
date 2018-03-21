@@ -22,10 +22,10 @@ module Batch::TecanBehaviour
     # return nil unless validate_for_tecan(target_barcode)
 
     data_object = {
-       'user' => user.login,
-       'time' => Time.now,
-       'source' => {},
-       'destination' => {}
+      'user' => user.login,
+      'time' => Time.now,
+      'source' => {},
+      'destination' => {}
     }
 
     requests.includes([{ asset: :plate }, { target_asset: :plate }]).where(state: 'passed').find_each do |request|
@@ -57,7 +57,8 @@ module Batch::TecanBehaviour
         'src_well'  => [full_source_barcode, request.asset.map.description],
         'dst_well'  => request.target_asset.map.description,
         'volume'    => (request.target_asset.get_picked_volume),
-        'buffer_volume' => (request.target_asset.get_buffer_volume) }
+        'buffer_volume' => (request.target_asset.get_buffer_volume)
+      }
     end
 
     data_object
@@ -93,4 +94,5 @@ module Batch::TecanBehaviour
     end
     true
   end
+  deprecate tecan_gwl_file: "this is writing to the Sequencescape data directory. I don't believe it is used."
 end

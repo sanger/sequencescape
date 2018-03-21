@@ -19,4 +19,3 @@ xml.batches do |batches|
     end
   end
 end
-

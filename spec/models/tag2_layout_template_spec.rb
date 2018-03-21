@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe Tag2LayoutTemplate, type: :model do
@@ -5,7 +7,6 @@ RSpec.describe Tag2LayoutTemplate, type: :model do
   let(:tag) { create :tag }
   let(:user) { create :user }
   let(:tag2_layout_template) { create :tag2_layout_template, tag: tag }
-
 
   subject { tag2_layout_template.create! plate: plate, tag: tag, user: user }
 
@@ -32,7 +33,7 @@ RSpec.describe Tag2LayoutTemplate, type: :model do
   it 'records itself against the submissions' do
     # First double check we have submissions
     # otherwise out test is a false positive
-    submissions =  subject.plate.submissions.map(&:id)
+    submissions = subject.plate.submissions.map(&:id)
     expect(Tag2Layout::TemplateSubmission.where(submission_id: submissions)).to be_present
     Tag2Layout::TemplateSubmission.where(submission_id: submissions).each do |t2lts|
       expect(t2lts.tag2_layout_template).to eq(tag2_layout_template)

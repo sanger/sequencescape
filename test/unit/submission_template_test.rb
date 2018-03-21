@@ -26,8 +26,7 @@ class SubmissionTemplateTest < ActiveSupport::TestCase
 
   context 'A Order' do
     setup do
-      @workflow = create :submission_workflow, key: 'microarray_genotyping'
-      @order = Order.new(workflow: @workflow)
+      @order = Order.new
     end
     context 'with a comment' do
       setup do
@@ -61,7 +60,6 @@ class SubmissionTemplateTest < ActiveSupport::TestCase
     context 'without input_field_infos' do
       setup do
         @test_request_typ_b = create :library_creation_request_type
-        @test_request_typ_b
         @test_request_type = create :sequencing_request_type
         @order.request_types = [@test_request_typ_b, @test_request_type]
         @order.request_type_ids_list = [[@test_request_typ_b.id], [@test_request_type.id]]

@@ -382,8 +382,8 @@ class Batch < ApplicationRecord
       if requests.last.submission_id.present?
         Request.where(submission_id: requests.last.submission_id, state: 'pending')
                .where.not(request_type_id: pipeline.request_type_ids).find_each do |request|
-            request.asset_id = nil
-            request.save!
+          request.asset_id = nil
+          request.save!
         end
       end
     end
@@ -393,7 +393,7 @@ class Batch < ApplicationRecord
     return nil if requests.empty?
     requests.first.asset.ancestors.joins(
       'INNER JOIN plate_purposes ON assets.plate_purpose_id = plate_purposes.id'
-)
+    )
             .find_by(plate_purposes: { name: name })
   end
 

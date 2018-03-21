@@ -9,12 +9,6 @@ Given /^I am the owner of sample "([^\"]+)"$/ do |name|
   @current_user.is_owner_of(sample)
 end
 
-Given /^I have an associated workflow "([^\"]+)"$/ do |name|
-  workflow = Submission::Workflow.find_by!(name: name) or raise StandardError, "Workflow '#{name}' does not exist"
-  @current_user.update_attribute(:workflow_id, workflow.id)
-  @current_user.reload
-end
-
 Given /^I am an administrator$/ do
   @current_user.roles.create!(name: 'administrator')
   @current_user.reload

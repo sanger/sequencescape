@@ -122,10 +122,9 @@ RSpec.describe Request do
     context '#copy' do
       setup do
         @study = create :study
-        @workflow = create :submission_workflow
         @request_type = create :request_type
         @item         = create :item
-        @request = create :request, request_type: @request_type, study: @study, workflow: @workflow, item: @item, state: 'failed'
+        @request = create :request, request_type: @request_type, study: @study, item: @item, state: 'failed'
         @new_request = @request.copy
       end
 
@@ -150,28 +149,9 @@ RSpec.describe Request do
       end
     end
 
-    context '#workflow' do
-      setup do
-        @study = create :study
-        @workflow = create :submission_workflow
-        @request_type = create :request_type
-        @item         = create :item
-        @request = create :request, request_type: @request_type, study: @study, workflow: @workflow, item: @item
-      end
-
-      it 'return a workflow id on request' do
-        assert_kind_of Integer, @request.workflow_id
-      end
-
-      it 'return a valid value if workflow exists' do
-        assert_equal @workflow.id, @request.workflow_id
-      end
-    end
-
     context '#after_create' do
       context 'successful' do
         setup do
-          @workflow = create :submission_workflow
           @study = create :study
           # Create a new request
           expect { @request = create :request, study: @study }.not_to raise_error
@@ -188,7 +168,6 @@ RSpec.describe Request do
 
       context 'failure' do
         setup do
-          @workflow = create :submission_workflow
           @user = create :user
           @study = create :study
         end

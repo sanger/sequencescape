@@ -25,7 +25,6 @@
 #
 # so we must use an xpath expression to recognise and validate them individually
 
-
 When /^I delete the attached file "([^"]+)"$/ do |filename|
   click_link("Delete #{filename}")
 end

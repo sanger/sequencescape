@@ -13,11 +13,6 @@ Given /^study "([^\"]+)" has an asset group called "([^\"]+)" with (\d+) wells$/
   end
 end
 
-Given /^all assets for requests in the "([^\"]+)" pipeline have been scanned into the lab$/ do |name|
-  pipeline = Pipeline.find_by!(name: name)
-  pipeline.requests.each { |request| request.asset.labware.update_attributes!(location: pipeline.location) }
-end
-
 When /^I check "([^\"]+)" for (\d+) to (\d+)$/ do |label_root, start, finish|
   (start.to_i..finish.to_i).each do |i|
     step(%Q{I check "#{label_root} #{i}"})
@@ -74,27 +69,23 @@ def build_batch_for(name, count)
   assets = Array.new(count.to_i) do
     asset_attributes = {}
     if submission_details.key?(:holder_type)
-      asset_attributes[:plate] = FactoryGirl.create(submission_details[:holder_type], location_id: pipeline.location_id)
+      asset_attributes[:plate] = FactoryGirl.create(submission_details[:holder_type])
       asset_attributes[:map_id] = 1
-    else
-      asset_attributes[:location_id] = pipeline.location_id
     end
     FactoryGirl.create(submission_details[:asset_type], asset_attributes)
   end
 
-  wf = pipeline.request_types.last.workflow
   rts = pipeline.request_types.reject(&:deprecated?).map(&:id)
   # Build a submission that should end up in the appropriate inbox, once all of the assets have been
   # deemed as scanned into the lab!
   LinearSubmission.build!(
     study: FactoryGirl.create(:study),
     project: FactoryGirl.create(:project),
-    workflow: wf,
     user: user,
 
     # Setup the assets so that they have samples and they are scanned into the correct lab.
     assets: assets,
-    request_types: rts,
+    request_types: [rts.first],
 
     # Request parameter options
     request_options: submission_details[:request_options]

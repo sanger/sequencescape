@@ -6,26 +6,24 @@
 
 module BootstrapHelper
   def panel(type = :default, options = {}, &block)
-    bs_custom_panel(type, :div, { class: 'panel-body' }, options, &block)
+    bs_custom_panel(type, :div, { class: 'card-body' }, options, &block)
   end
 
   def list_panel(type = :default, options = {}, &block)
-    bs_custom_panel(type, :ul, { class: 'list-group' }, options, &block)
+    bs_custom_panel(type, :ul, { class: 'list-group list-group-flush' }, options, &block)
   end
 
   def link_panel(type = :default, options = {}, &block)
-    bs_custom_panel(type, :div, { class: 'list-group' }, options, &block)
+    bs_custom_panel(type, :div, { class: 'link-panel' }, options, &block)
   end
 
   def bs_custom_panel(type, body_type, body_options, options, &block)
     title = options.delete(:title)
     options[:class] ||= String.new
-    options[:class] << " panel panel-#{type}"
+    options[:class] << " card card-style-#{type} mb-3"
     content_tag(:div, options) do
       out = String.new.html_safe
-      out << content_tag(:div, class: 'panel-heading') do
-        content_tag(:h3, title, class: 'panel-title')
-      end unless title.nil?
+      out << content_tag(:h3, title, class: 'card-header-custom') unless title.nil?
       out << content_tag(body_type, body_options, &block)
     end
   end
@@ -44,8 +42,8 @@ module BootstrapHelper
   # Summary composits a panel with a table to deliver
   # a list of key-value pairs
   # <div class="col-md-6">
-  #   <div class="panel panel-default">
-  #     <div class="panel-heading"><h3 class="panel-title">Summary</h3></div>
+  #   <div class="card card-default">
+  #     <h3 class="card-header">Summary</h3>
   #     <table class='table table-summary'>
   #       <tr>
   #         <th>Array[0][0]</th>
@@ -59,12 +57,10 @@ module BootstrapHelper
     title = options.delete(:title) || 'Summary'
     size = options.delete(:size) || '6'
     options[:class] ||= String.new
-    options[:class] << " panel panel-#{bs_type}"
+    options[:class] << " card card-#{bs_type}"
     content_tag(:div, class: "col-md-#{size}") do
       content_tag(:div, options) do
-        content_tag(:div, class: 'panel-heading') do
-          content_tag(:h3, title, class: 'panel-title')
-        end <<
+        content_tag(:h3, title, class: 'card-header reduced') <<
           content_tag(:table, class: 'table table-summary') do
             String.new.html_safe.tap do |rows|
               yield.each do |key, value|
@@ -81,12 +77,17 @@ module BootstrapHelper
   # <div class="page-header">
   #   <h1>Title <small>subtitle</small></h1>
   # </div>
-  def page_title(title, subtitle = nil)
+  def page_title(title, subtitle = nil, titlecase: true)
     content_tag(:div, class: 'page-header') do
-      content_tag(:h1) do
-        concat title.titleize
+      title_class = title.length > 25 ? 'title-long' : 'title-short'
+      content_tag(:h1, class: title_class) do
+        if titlecase
+          concat title.titleize
+        else
+          concat title
+        end
         concat ' '
-        concat content_tag(:small, subtitle) if subtitle.present?
+        concat content_tag(:span, subtitle, class: 'subtitle') if subtitle.present?
       end
     end
   end
@@ -96,8 +97,8 @@ module BootstrapHelper
   end
 
   # <div class="col-md-size form-group"></div>
-  def form_group(size = 12, &block)
-    content_tag(:div, class: "form-group col-md-#{size}", &block)
+  def form_group(&block)
+    content_tag(:div, class: 'form-group row', &block)
   end
 
   def bs_column(size = 6, screen = 'md', &block)
@@ -113,6 +114,20 @@ module BootstrapHelper
   #   end
   # end
 
+  def progress_bar(count)
+    css_class = if count < 25
+                  'bg-danger'
+                elsif count > 99
+                  'bg-success'
+                else
+                  'bg-warning'
+                end
+    content_tag(:span, count, style: 'display:none') <<
+      content_tag(:div, class: 'progress') do
+        content_tag(:div, "#{count}%", class: ['progress-bar', 'progress-bar-striped', css_class], role: 'progressbar', style: "width: #{count}%;")
+      end
+  end
+
   # <div class="progress">
   #   <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
   #     <span class="sr-only">45% Complete</span>
@@ -120,36 +135,25 @@ module BootstrapHelper
   # </div>
   def loading_bar(id = 'update_loader')
     content_tag(:div, class: 'loading-bar-placeholder') do
-      content_tag(:div, id: id, class: 'progress loading-bar-container') do
-        content_tag(:div, 'Loading', class: 'progress-bar progress-bar-striped active loading-bar', role: 'progressbar')
+      content_tag(:div, id: id, class: 'loading-bar-container', style: 'display: none;') do
+        content_tag(:div, 'Loading', class: 'loading-bar', role: 'progressbar')
       end
     end
   end
 
   def render_section(form, field_name, sections, field)
-    form_group do
-      fg = content_tag(:div, class: 'col-md-4') do
-        label = form.label(field_name, sections.label, sections.label_options)
-        label << content_tag(:br)
-        label << content_tag(:span, sections.edit_info, class: 'property_edit_info') if sections.edit_info
-      end
-      fg << content_tag(:div, field, class: 'col-md-5')
-      fg << content_tag(:div, class: 'col-md-3') do
-        help_text("#{sections.label} help text", field.hash) do
-          raw(sections.help)
-        end if sections.help.present?
-      end
-    end
+    label = form.label(field_name, sections.label, sections.label_options) <<
+            content_tag(:span, sections.edit_info, class: 'property_edit_info')
+    help = sections.help
+    form_collection(label, field, help)
   end
 
-  def form_collection(label, field, help = nil, friendly_label = 'Field')
+  def form_collection(label, field, help = nil)
     form_group do
-      fg = bs_column(4, 'md') { label }
-      fg << bs_column(5, 'md') { field }
-      fg << bs_column(3, 'md') do
-        help_text("#{friendly_label} help text") { raw(help) }
-      end if help
-      fg
+      bs_column(2, 'md') { label } <<
+        bs_column(10, 'md') do
+          field << help_text { raw(help) }
+        end
     end
   end
 
@@ -159,7 +163,7 @@ module BootstrapHelper
       args << {}
     end
     args.last[:class] ||= ''
-    args.last[:class] << ' form-control'
+    args.last[:class] << ' custom-select'
     select(*args)
   end
 

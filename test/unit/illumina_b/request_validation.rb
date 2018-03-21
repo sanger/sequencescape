@@ -12,13 +12,13 @@ class IlluminaB::RequestValidationTest < ActiveSupport::TestCase
     should 'accept the right purpose' do
       plate = Purpose.find_by(name: 'Cherrypicked').create!(barcode: 12345)
       r = RequestType.find_by(name: 'Shared Library Creation').create!(
-          asset: plate.wells.first,
-          request_metadata_attributes: {
-            fragment_size_required_from: 1,
-            fragment_size_required_to: 20,
-            library_type: 'Standard'
-          }
-        )
+        asset: plate.wells.first,
+        request_metadata_attributes: {
+          fragment_size_required_from: 1,
+          fragment_size_required_to: 20,
+          library_type: 'Standard'
+        }
+      )
       assert r
     end
 
@@ -26,14 +26,14 @@ class IlluminaB::RequestValidationTest < ActiveSupport::TestCase
       assert_raise ActiveRecord::RecordInvalid do
         plate = Purpose.find_by(name: 'ILB_STD_INPUT').create!(barcode: 12345)
         r = RequestType.find_by(name: 'Shared Library Creation').create!(
-            asset: plate.wells.first,
-            request_metadata_attributes: {
-              fragment_size_required_from: 1,
-              fragment_size_required_to: 20,
-              library_type: 'Standard'
-            }
-          )
-      assert r
+          asset: plate.wells.first,
+          request_metadata_attributes: {
+            fragment_size_required_from: 1,
+            fragment_size_required_to: 20,
+            library_type: 'Standard'
+          }
+        )
+        assert r
       end
     end
   end

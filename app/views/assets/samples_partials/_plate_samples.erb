@@ -7,12 +7,12 @@
   <header>
     <a href='#plate-samples-table-collapser' role="button" data-toggle='collapse'>
     <h3>Samples
-      <span class='counter'><%= @asset.contained_samples.count %></span>
+      <span class='badge badge-primary'><%= @asset.contained_samples.count %></span>
       <small class='show-hide'>Click to toggle</small>
     </h3>
     </a>
   </header>
-  <div id="plate-samples-table-collapser" class="collapse in">
+  <div id="plate-samples-table-collapser" class="collapse in show">
     <table id="plate-samples-table" class="sortable">
       <colgroup>
         <col class="npg_aliquot_index">

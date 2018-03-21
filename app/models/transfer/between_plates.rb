@@ -125,9 +125,4 @@ class Transfer::BetweenPlates < Transfer
       dest_sources
     end
   end
-
-  # Request type for transfers is based on the plates, not the wells we're transferring
-  def request_type_between(_ignored_a, _ignored_b)
-    @request_type_between ||= destination.transfer_request_type_from(source)
-  end
 end

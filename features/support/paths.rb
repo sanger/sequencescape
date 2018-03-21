@@ -25,11 +25,12 @@ module NavigationHelpers
   #     visit post_comments_path(post)
   #   end
   #
+  # rubocop:disable Metrics/MethodLength
   def path_to(page_name)
     case page_name
 
     when /the homepage/
-     '/'
+      '/'
     when /login/
       login_path
     when /the admin page/
@@ -51,14 +52,6 @@ module NavigationHelpers
     when /the "([^\"]+)" pipeline page/
       pipeline = Pipeline.find_by(name: $1) or raise StandardError, "Cannot find pipeline '#{$1}'"
       pipeline_path(pipeline)
-
-    when /the Sequenom homepage/
-      sequenom_root_path
-    when /the Sequenom plate page for "(DN\d+.)"/
-      prefix, number, check = Barcode.split_human_barcode($1)
-      sequenom_plate_path(Plate.find_by(barcode: number))
-    when /Batch "(\d+)"/
-      batch_path($1)
     when /the last batch show page/
       batch_path(Batch.last)
     when /the robot verification page/
@@ -88,10 +81,10 @@ module NavigationHelpers
       sample      = Sample.find_by!(name: sample_name)
       sample_path(sample)
 
-    when /the study workflow page for "([^\"]+)"/, /the workflow page for study "([^\"]+)"/
+    when /the study information page for "([^\"]+)"/, /the information page for study "([^\"]+)"/
       study_name = $1
       study      = Study.find_by!(name: study_name)
-      study_workflow_path(study, @current_user.workflow)
+      study_information_path(study)
 
     when /the study named "([^\"]+)"/
       study_name = $1
@@ -126,8 +119,7 @@ module NavigationHelpers
       workflow_name, asset_name, study_name = $1, $2, $3
       asset = Asset.find_by(name: asset_name) or raise StandardError, "Cannot find asset #{asset_name.inspect}"
       study = Study.find_by(name: study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
-      workflow = Submission::Workflow.find_by(name: workflow_name) or raise StandardError, "Cannot find workflow #{workflow_name.inspect}"
-      study_workflow_asset_path(study, workflow, asset)
+      study_information_path(study, asset)
 
     when /^the assets page for the study "([^\"]+)"$/
       study_name = $1
@@ -136,9 +128,8 @@ module NavigationHelpers
 
     when /^the assets page for the study "([^\"]+)" in the "([^\"]+)" workflow$/
       study_name, workflow_name = $1, $2
-      study    = Study.find_by(name: study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
-      workflow = Submission::Workflow.find_by(name: workflow_name) or raise StandardError, "Cannot find workflow #{workflow_name.inspect}"
-      study_workflow_assets_path(study, workflow)
+      study = Study.find_by(name: study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
+      study_information_path(study)
 
     # Sample registration has a bit of an awkward flow.  'Sample registration' page is the one where people enter
     # the details of their samples, 'Sample creation' page is the same page, under a different path, and is
@@ -166,12 +157,11 @@ module NavigationHelpers
     when /the show page for the last submission/
       submission = Submission.last or raise StandardError, 'There are no submissions!'
       order = submission.orders.first
-      # study_workflow_submission_path(order.study, order.workflow, submission)
       submission_path(submission)
 
     when /the submissions page for study "([^\"]+)"/
       study = Study.find_by(name: $1) or raise StandardError, "No study defined with name #{$1.inspect}"
-      study_workflow_submissions_path(study, @current_user.workflow)
+      study_information_submissions_path(study)
 
     when /the Qc reports homepage/
       study_reports_path
@@ -228,20 +218,6 @@ module NavigationHelpers
     when /the request page for the last request/
       request = Request.last or raise StandardError, 'Cannot find the last request'
       request_path(request)
-
-    when /the Tag Group index page/
-      tag_groups_path
-
-    when /the edit page for the first tag in "([^"]+)"/
-      tag_group = TagGroup.find_by(name: $1)
-      edit_tag_group_tag_path(tag_group, tag_group.tags.first)
-
-    when /the Tag Group new page/
-      new_tag_group_path
-
-    when /the show page for tag group "([^"]+)"/
-      tag_group = TagGroup.find_by(name: $1)
-      tag_group_path(tag_group)
 
     when /the events page for asset with barcode "(\d+)"/
       asset = Asset.find_from_machine_barcode($1)
@@ -301,6 +277,7 @@ module NavigationHelpers
             'Now, go and add a mapping in features/support/paths.rb'
     end
   end
+  # rubocop:enable Metrics/MethodLength
 end
 
 World(NavigationHelpers)

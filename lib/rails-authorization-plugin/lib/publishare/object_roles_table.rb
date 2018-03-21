@@ -33,11 +33,11 @@ module Authorization
           role = get_role(role_name, authorizable_obj)
           if role.nil?
             role = if authorizable_obj.is_a? Class
-              Role.create(name: role_name, authorizable_type: authorizable_obj.to_s)
+                     Role.create(name: role_name, authorizable_type: authorizable_obj.to_s)
                    elsif authorizable_obj
-              Role.create(name: role_name, authorizable: authorizable_obj)
+                     Role.create(name: role_name, authorizable: authorizable_obj)
                    else
-              Role.create(name: role_name)
+                     Role.create(name: role_name)
                    end
           end
           roles << role if role and not roles.exists?(role.id)

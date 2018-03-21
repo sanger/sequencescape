@@ -37,9 +37,8 @@ Given /^the request type "([^\"]+)" exists$/ do |name|
 end
 
 def submission_in_state(state, attributes = {})
-  study    = Study.first or raise StandardError, 'There are no studies!'
-  workflow = Submission::Workflow.first or raise StandardError, 'There are no workflows!'
-  submission = FactoryHelp::submission({ asset_group_name: 'Faked to prevent empty asset errors' }.merge(attributes).merge(study: study, workflow: workflow))
+  study = Study.first or raise StandardError, 'There are no studies!'
+  submission = FactoryHelp::submission({ asset_group_name: 'Faked to prevent empty asset errors' }.merge(attributes).merge(study: study))
   submission.state = state
   submission.save(validate: false)
 end
@@ -132,7 +131,6 @@ Given /^I have a "([^\"]*)" submission with the following setup:$/ do |template_
     project: Project.find_by(name: params['Project']),
     study: Study.find_by(name: params['Study']),
     asset_group: AssetGroup.find_by(name: params['Asset Group']),
-    workflow: Submission::Workflow.first,
     user: @current_user,
     request_options: request_options
   )

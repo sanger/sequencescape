@@ -7,21 +7,25 @@
 module ModelExtensions::Request
   def self.included(base)
     base.class_eval do
-      scope :include_source_asset, -> { includes(
-        asset: [
-          :uuid_object,
-          :barcode_prefix,
-          :scanned_into_lab_event,
-          { aliquots: [:sample, :tag] }
-        ]
-      )}
-      scope :include_target_asset, -> { includes(
-        target_asset: [
-          :uuid_object,
-          :barcode_prefix,
-          { aliquots: [:sample, :tag] }
-        ]
-      )}
+      scope :include_source_asset, -> {
+        includes(
+          asset: [
+            :uuid_object,
+            :barcode_prefix,
+            :scanned_into_lab_event,
+            { aliquots: [:sample, :tag] }
+          ]
+        )
+      }
+      scope :include_target_asset, -> {
+        includes(
+          target_asset: [
+            :uuid_object,
+            :barcode_prefix,
+            { aliquots: [:sample, :tag] }
+          ]
+        )
+      }
 
       scope :include_study, -> { includes(study: :uuid_object) }
       scope :include_project, -> { includes(project: :uuid_object) }

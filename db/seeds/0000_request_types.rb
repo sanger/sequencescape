@@ -4,37 +4,15 @@
 # authorship of this file.
 # Copyright (C) 2012,2013,2015,2016 Genome Research Ltd.
 
-std = RequestPurpose.create!(key: 'standard')
-qc = RequestPurpose.create!(key: 'qc')
-int = RequestPurpose.create!(key: 'internal')
-ctl = RequestPurpose.create!(key: 'control')
+std = :standard
+qc = :qc
+int = :internal
+ctl = :control
 
 RequestType.create!(
   name: 'Create Asset', key: 'create_asset', order: 1,
   asset_type: 'Asset', multiples_allowed: false,
   request_class_name: 'CreateAssetRequest', morphology: RequestType::LINEAR,
-  request_purpose: int
-)
-RequestType.create!(
-  name: 'Transfer', key: 'transfer', order: 1,
-  asset_type: 'Asset', multiples_allowed: false,
-  request_class_name: 'TransferRequest', morphology: RequestType::CONVERGENT,
-  for_multiplexing: 0, billable: 0,
-  request_purpose: int
-)
-RequestType.create!(
-  key: 'initial_pacbio_transfer',
-  name: 'Initial Pacbio Transfer',
-  asset_type: 'Well',
-  request_class_name: 'PacBioSamplePrepRequest::Initial',
-  order: 1,
-  request_purpose: int
-)
-RequestType.create!(
-  name: 'Initial Transfer', key: 'initial_transfer', order: 1,
-  asset_type: 'Asset', multiples_allowed: false,
-  request_class_name: 'TransferRequest::InitialTransfer', morphology: RequestType::CONVERGENT,
-  for_multiplexing: 0, billable: 0,
   request_purpose: int
 )
 RequestType.create!(

@@ -32,7 +32,7 @@ module SampleManifestExcel
     ##
     # Collect all of the options for each item in the list.
     def options
-     collect(&:options)
+      collect(&:options)
     end
 
     ##
@@ -41,9 +41,9 @@ module SampleManifestExcel
     def create_conditional_formattings(conditional_formattings)
       conditional_formattings.each do |key, conditional_formatting|
         add(if conditional_formatting.is_a?(Hash)
-                  ConditionalFormatting.new(conditional_formatting.merge(name: key))
+              ConditionalFormatting.new(conditional_formatting.merge(name: key))
             else
-                  key.dup
+              key.dup
             end)
       end
     end

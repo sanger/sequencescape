@@ -243,11 +243,6 @@ div#title a:hover {
   color: #efefef;
 }
 
-div#tab_bar {
-  background: #aad4f4;
-  border-bottom: 1px solid #bbb;
-}
-
 div#tabs {
   background: #aad4f4;
   color: #31353d;
@@ -490,30 +485,6 @@ div#message h1 {
   padding: 0px;
 }
 
-div#quick_links {
-  background: #31353d;
-  color: #efefef;
-  font-size: 12px;
-  border-top: 3px solid #055694;
-  padding: 3px 10px 2px 10px;
-}
-
-div#quick_links.staging {
-  background: #000 url(/images/staging.png);
-  border-top: 3px solid #000;
-  font-weight: bold;
-}
-
-div#quick_links a, div#quick_links a:link, div#quick_links a:visited {
-  color: #fff;
-  text-decoration: none;
-}
-
-div#quick_links a:hover {
-  color: #ff0;
-  text-decoration: underline;
-}
-
 div#description {
   float: left;
   padding-left: 100px;
@@ -562,11 +533,6 @@ div#view-menu {
   float: right;
 }
 
-span#institute {
-  position: relative;
-  left: 0px;
-  padding-left: 5px;
-}
 
 div#main-title {
   background: #336699;
@@ -600,12 +566,6 @@ div.link_title {
   text-transform: uppercase;
   padding-top: 15px;
   font-weight: bold;
-}
-
-div#menu {
-  float: right;
-  width: 230px;
-  margin-bottom: 10px;
 }
 
 div#comment_links {

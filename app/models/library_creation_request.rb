@@ -37,7 +37,19 @@ class LibraryCreationRequest < CustomerRequest
     end
   end
 
-  def request_options_for_creation
-    Hash[[:fragment_size_required_from, :fragment_size_required_to, :library_type, :pcr_cycles].map { |f| [f, request_metadata[f]] }]
+  #
+  # Passed into cloned aliquots at the beginning of a pipeline to set
+  # appropriate options
+  #
+  #
+  # @return [Hash] A hash of aliquot attributes
+  #
+  def aliquot_attributes
+    {
+      study_id: initial_study_id,
+      project_id: initial_project_id,
+      library_type: library_type,
+      insert_size: insert_size
+    }
   end
 end

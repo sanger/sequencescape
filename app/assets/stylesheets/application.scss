@@ -3,15 +3,21 @@
  * Note we don't use wildcards/globbing to ensure we can control load order and to avoid importing
  * eg .orig files
  */
-
 @import "jquery-tablesorter/theme.bootstrap";
 @import "jquery-ui";
 @import "all/sequencescape";
+@import "all/header";
+@import "all/footer";
+@import "all/sidebar";
 @import "all/page_specific_hacks";
-@import "all/screen";
+@import "all/sessions";
+@import "all/misc_buttons";
+@import "all/pipelines_pages";
+//@import "all/screen";
 @import "all/components";
-@import "bootstrap-sprockets";
+//@import "bootstrap-sprockets";
+@import "all/bootstrap_variables";
 @import "bootstrap";
 @import "formtastic";
 @import "select2";
-@import "select2-bootstrap"
+@import "lib/select2-bootstrap4";

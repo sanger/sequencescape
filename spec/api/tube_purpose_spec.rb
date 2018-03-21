@@ -3,10 +3,6 @@
 require 'rails_helper'
 
 describe '/api/1/tube/purposes' do
-  before(:each) do
-    create :transfer_request_type
-  end
-
   let(:authorised_app) { create :api_application }
   let(:parent_purpose) { create :plate_purpose }
 
@@ -15,7 +11,6 @@ describe '/api/1/tube/purposes' do
       "tube_purpose":{
         "name":"Test Purpose",
         "target_type":"MultiplexedLibraryTube",
-        "parents": ["#{parent_purpose.uuid}"],
         "type": "IlluminaHtp::InitialStockTubePurpose"
       }
     }}
@@ -25,8 +20,6 @@ describe '/api/1/tube/purposes' do
     %{{
       "tube_purpose":{
         "actions": { },
-        "parents": { "size": 1 },
-        "children": { "size": 0 },
         "tubes": { "size": 0 },
         "name":"Test Purpose"
       }

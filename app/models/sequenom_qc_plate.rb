@@ -170,14 +170,14 @@ class SequenomQcPlate < Plate
     end
   end
 
-def user_barcode_exist?(user_barcode)
-  if User.lookup_by_barcode(user_barcode).nil?
-    errors.add(:base, 'Please scan your user barcode') if User.lookup_by_barcode(user_barcode).nil?
-    false
-  else
-    true
+  def user_barcode_exist?(user_barcode)
+    if User.lookup_by_barcode(user_barcode).nil?
+      errors.add(:base, 'Please scan your user barcode') if User.lookup_by_barcode(user_barcode).nil?
+      false
+    else
+      true
+    end
   end
-end
 
   def do_gender_checks?
     true unless gender_check_bypass

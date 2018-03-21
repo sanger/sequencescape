@@ -5,7 +5,7 @@
 # Copyright (C) 2015 Genome Research Ltd.
 
 class AddCoreProducts < ActiveRecord::Migration
-require './lib/product_helpers'
+  require './lib/product_helpers'
   SINGLE_PRODUCTS = %w(
     MWGS
     PWGS
@@ -22,24 +22,24 @@ require './lib/product_helpers'
 
   COMPLEX_PRODUCTS = [
     {
-    name: 'GenericPCR',
-    selection_behaviour: 'LibraryDriven',
-    products: {
-      nil => 'Generic'
+      name: 'GenericPCR',
+      selection_behaviour: 'LibraryDriven',
+      products: {
+        nil => 'Generic'
       },
     },
     {
-    name: 'GenericNoPCR',
-    selection_behaviour: 'LibraryDriven',
-    products: {
-      nil => 'Generic'
+      name: 'GenericNoPCR',
+      selection_behaviour: 'LibraryDriven',
+      products: {
+        nil => 'Generic'
       },
     },
     {
-    name: 'ClassicMultiplexed',
-    selection_behaviour: 'LibraryDriven',
-    products: {
-      nil => 'Generic'
+      name: 'ClassicMultiplexed',
+      selection_behaviour: 'LibraryDriven',
+      products: {
+        nil => 'Generic'
       }
     },
     {

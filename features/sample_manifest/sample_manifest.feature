@@ -71,7 +71,7 @@ Feature: Sample manifest
     And I select "xyz" from "Barcode printer"
     And I fill in the field labeled "Count" with "1"
     When I press "Create manifest and print labels"
-    Then I should see "Manifest_"
+    Then I should see "Manifest "
     When I follow "View all manifests"
     Then I should see "Sample Manifests"
     Then I should see the manifest table:
@@ -99,7 +99,7 @@ Feature: Sample manifest
     And I select "xyz" from "Barcode printer"
     And I fill in the field labeled "Tubes required" with "10"
     When I press "Create manifest and print labels"
-    Then I should see "Manifest_"
+    Then I should see "Manifest "
     Then I should see "Download Blank Manifest"
     Given 3 pending delayed jobs are processed
     When I follow "View all manifests"

@@ -43,14 +43,13 @@ class Pipeline < ApplicationRecord
   self.can_create_stock_assets = false
   self.inbox_eager_loading = :loaded_for_inbox_display
 
-  delegate :item_limit, :has_batch_limit?, to: :workflow
+  delegate :item_limit, :batch_limit?, to: :workflow
 
-  belongs_to :location
   belongs_to :control_request_type, class_name: 'RequestType'
   belongs_to :next_pipeline,     class_name: 'Pipeline'
   belongs_to :previous_pipeline, class_name: 'Pipeline'
 
-  has_one :workflow, class_name: 'LabInterface::Workflow', inverse_of: :pipeline, required: true
+  has_one :workflow, class_name: 'Workflow', inverse_of: :pipeline, required: true
 
   has_many :controls
   has_many :pipeline_request_information_types

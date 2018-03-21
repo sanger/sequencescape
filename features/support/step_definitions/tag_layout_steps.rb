@@ -119,11 +119,11 @@ def pool_by_strategy(source, destination, pooling_strategy)
   source.wells.walk_in_column_major_order { |well, _| source_wells << well }
   destination.wells.walk_in_column_major_order { |well, _| destination_wells << well }
 
-  pooling_strategy.each_with_index do |pool, submission_id|
+  pooling_strategy.each_with_index do |pool, _old_submission_id|
     submission_id = Submission.create!(user: User.first || User.create!(login: 'a')).id
     wells_for_source, wells_for_destination = source_wells.slice!(0, pool), destination_wells.slice!(0, pool)
     wells_for_source.zip(wells_for_destination).each do |w|
-      RequestType.transfer.create!(asset: w.first, target_asset: w.last, submission_id: submission_id)
+      TransferRequest.create!(asset: w.first, target_asset: w.last, submission_id: submission_id)
       FactoryGirl.create :request_without_submission, asset: w.first, target_asset: w.last, submission_id: submission_id
     end
   end
@@ -151,4 +151,3 @@ end
 Given /^well "(.*?)" on the plate "(.*?)" is empty$/ do |well, plate|
   Plate.find_by!(name: plate).wells.located_at(well).first.aliquots.each(&:destroy)
 end
-

@@ -56,8 +56,7 @@ class ManifestGenerator
      well_sample_parent(well, 'mother'),
      well_sample_parent(well, 'father'),
      replicates.to_s,
-     tissue_source.to_s
-    ]
+     tissue_source.to_s]
   end
 
   private

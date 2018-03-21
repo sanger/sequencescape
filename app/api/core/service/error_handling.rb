@@ -54,29 +54,17 @@ module Core::Service::ErrorHandling
   end
 end
 
-class ActiveRecord::RecordNotFound
+class ActiveRecord::ActiveRecordError
   include ::Core::Service::Error::Behaviour
+  self.api_error_code = 500
+end
+
+class ActiveRecord::RecordNotFound
   self.api_error_code = 404
 end
 
 class ActiveRecord::AssociationTypeMismatch
-  include ::Core::Service::Error::Behaviour
   self.api_error_code = 422
-end
-
-class ActiveRecord::StatementInvalid
-  include ::Core::Service::Error::Behaviour
-  self.api_error_code = 500
-end
-
-class ActiveRecord::ConfigurationError
-  include ::Core::Service::Error::Behaviour
-  self.api_error_code = 500
-end
-
-class ActiveRecord::ReadOnlyRecord
-  include ::Core::Service::Error::Behaviour
-  self.api_error_code = 500
 end
 
 class ActiveRecord::RecordInvalid

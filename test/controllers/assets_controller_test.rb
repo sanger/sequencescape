@@ -18,6 +18,7 @@ class AssetsControllerTest < ActionController::TestCase
 
   context '#create a new asset with JSON input' do
     setup do
+      FactoryGirl.create(:sample, name: 'phiX_for_spiked_buffers') # Required by controller
       @asset_count = Asset.count
 
       @barcode = FactoryGirl.generate :sanger_barcode
@@ -35,17 +36,6 @@ class AssetsControllerTest < ActionController::TestCase
     end
   end
 
-  context 'an asset_id' do
-    setup do
-      @asset = create :sample_tube
-      @location = create :location
-      put :update, params: { id: @asset.id, asset: { location_id: @location.id } }
-    end
-    should 'be updateable' do
-      assert_equal @location, @asset.location
-    end
-  end
-
   context 'create request with JSON input' do
     setup do
       @submission_count = Submission.count
@@ -55,7 +45,6 @@ class AssetsControllerTest < ActionController::TestCase
       @study = create :study
       @project = create :project, enforce_quotas: true
       @request_type = create :request_type
-      @workflow = create :submission_workflow
       @json_data = valid_json_create_request(@asset, @request_type, @study, @project)
 
       @request.accept = @request.env['CONTENT_TYPE'] = 'application/json'

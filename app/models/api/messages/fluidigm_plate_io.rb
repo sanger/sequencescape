@@ -37,11 +37,11 @@ class Api::Messages::FluidigmPlateIO < Api::Base
   map_attribute_to_json_attribute(:occupied_well_count, 'plate_size_occupied')
 
   with_nested_has_many_association(:wells) do
-     map_attribute_to_json_attribute(:map_description,     'well_label')
-     map_attribute_to_json_attribute(:uuid,                'well_uuid_lims')
-     map_attribute_to_json_attribute(:cost_code,           'cost_code')
-     map_attribute_to_json_attribute(:primary_sample_uuid, 'sample_uuid')
-     map_attribute_to_json_attribute(:primary_study_uuid,  'study_uuid')
-     map_attribute_to_json_attribute(:qc_state,            'qc_state')
+    map_attribute_to_json_attribute(:map_description, 'well_label')
+    map_attribute_to_json_attribute(:uuid,                'well_uuid_lims')
+    map_attribute_to_json_attribute(:cost_code,           'cost_code')
+    map_attribute_to_json_attribute(:primary_sample_uuid, 'sample_uuid')
+    map_attribute_to_json_attribute(:primary_study_uuid,  'study_uuid')
+    map_attribute_to_json_attribute(:qc_state,            'qc_state')
   end
 end

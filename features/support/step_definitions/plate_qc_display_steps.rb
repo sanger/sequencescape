@@ -12,10 +12,10 @@ Given /^plate "([^"]*)" has QC results$/ do |barcode|
   plate = Plate.find_by(barcode: barcode)
   plate.wells.each_with_index do |well, index|
     well.well_attribute.update_attributes!(
-    measured_volume: 5 * index,
-    concentration: 10 * index,
-    sequenom_count: index,
-    gel_pass: 'OK'
+      measured_volume: 5 * index,
+      concentration: 10 * index,
+      sequenom_count: index,
+      gel_pass: 'OK'
     )
   end
 end

@@ -10,7 +10,6 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
   context 'FlexibleSubmission' do
     setup do
       @assets       = create(:two_column_plate).wells.to_a
-      @workflow     = create :submission_workflow
       @pooling      = create :pooling_method
     end
 
@@ -36,7 +35,6 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
           @mpx_submission = FlexibleSubmission.build!(
             study: @study,
             project: @project,
-            workflow: @workflow,
             user: @user,
             assets: @assets,
             request_types: @request_type_ids,
@@ -79,7 +77,7 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
           @mpx_submission = FlexibleSubmission.build!(
             study: @study,
             project: @project,
-            workflow: @workflow,
+
             user: @user,
             assets: @assets,
             request_types: @request_type_ids,
@@ -110,7 +108,6 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
             @xs_mpx_submission = FlexibleSubmission.build!(
               study: @study,
               project: @project,
-              workflow: @workflow,
               user: @user,
               assets: @assets.slice(0, 8),
               request_types: @request_type_ids,
@@ -119,7 +116,6 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
             @order_b = FlexibleSubmission.prepare!(
               study: @study_b,
               project: @project_b,
-              workflow: @workflow,
               user: @user,
               assets: @assets.slice(8, 8),
               request_types: @request_type_ids,
@@ -140,7 +136,7 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
                 @xs_mpx_submission.process!
               end
 
-              should "change Request.count by #{(16 + 8)}" do
+              should("change Request.count by #{16 + 8}") do
                 assert_equal (16 + 8), Request.count - @request_count
               end
 
@@ -158,7 +154,6 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
               FlexibleSubmission.build!(
                 study: nil,
                 project: nil,
-                workflow: @workflow,
                 user: @user,
                 assets: @assets,
                 request_types: @request_type_ids,
@@ -174,7 +169,6 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
               @sub = FlexibleSubmission.build!(
                 study: nil,
                 project: nil,
-                workflow: @workflow,
                 user: @user,
                 assets: [@pooled],
                 request_types: @request_type_ids,
@@ -183,13 +177,13 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
               @sub.process!
             end
 
-             should "change Request.count by #{1 + 8}" do
-               assert_equal (1 + 8), Request.count - @request_count
-             end
+            should("change Request.count by #{1 + 8}") do
+              assert_equal (1 + 8), Request.count - @request_count
+            end
 
-             should 'not set request study or projects' do
-              assert @sub.requests.all? { |r| r.initial_study_id.nil? && r.initial_project_id.nil? }
-             end
+            should('not set request study or projects') do
+              assert(@sub.requests.all? { |r| r.initial_study_id.nil? && r.initial_project_id.nil? })
+            end
           end
         end
       end
@@ -214,7 +208,6 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
           @mpx_submission = FlexibleSubmission.build!(
             study: @study,
             project: @project,
-            workflow: @workflow,
             user: @user,
             assets: @assets,
             request_types: @request_type_ids,
@@ -271,7 +264,6 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
         @mx_submission_with_multiplication_factor = FlexibleSubmission.build!(
           study: @study,
           project: @project,
-          workflow: @workflow,
           user: @user,
           assets: @assets,
           request_types: @request_type_ids,
@@ -314,14 +306,13 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
         context 'for multiplexed libraries and sequencing' do
           setup do
             @mx_submission_with_multiplication_factor = FlexibleSubmission.build!(
-                study: @study,
-                project: @project,
-                workflow: @workflow,
-                user: @user,
-                assets: @assets,
-                request_types: @mx_request_type_ids,
-                comments: ''
-              )
+              study: @study,
+              project: @project,
+              user: @user,
+              assets: @assets,
+              request_types: @mx_request_type_ids,
+              comments: ''
+            )
           end
 
           should 'multiply the sequencing' do
@@ -338,14 +329,13 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
         context 'for unplexed libraries and sequencing' do
           setup do
             @ux_submission_with_multiplication_factor = FlexibleSubmission.build!(
-                study: @study,
-                project: @project,
-                workflow: @workflow,
-                user: @user,
-                assets: @assets,
-                request_types: @ux_request_type_ids,
-                comments: ''
-              )
+              study: @study,
+              project: @project,
+              user: @user,
+              assets: @assets,
+              request_types: @ux_request_type_ids,
+              comments: ''
+            )
           end
 
           should 'multiply the library creation' do

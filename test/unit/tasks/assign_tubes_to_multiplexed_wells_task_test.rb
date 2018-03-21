@@ -38,16 +38,16 @@ class AssignTubestoMultiplexedWellsTaskTest < ActiveSupport::TestCase
 
     context '#do_assign_requests_to_multiplexed_wells_task' do
       setup do
-          @params = {
-            request_locations: {
-              '1' => 'A1', '2' => 'B1', '3' => 'C1', '4' => 'D1', '5' => 'E1', '6' => 'F1', '7' => 'G1', '8' => 'G1'
-            },
-            commit: 'Next step',
-            batch_id: '2',
-            next_stage: 'true',
-            workflow_id: '24',
-            id: '2'
-          }
+        @params = {
+          request_locations: {
+            '1' => 'A1', '2' => 'B1', '3' => 'C1', '4' => 'D1', '5' => 'E1', '6' => 'F1', '7' => 'G1', '8' => 'G1'
+          },
+          commit: 'Next step',
+          batch_id: '2',
+          next_stage: 'true',
+          workflow_id: '24',
+          id: '2'
+        }
       end
       context 'with no tag clashes' do
         setup do
@@ -58,7 +58,7 @@ class AssignTubestoMultiplexedWellsTaskTest < ActiveSupport::TestCase
             asset = create :pac_bio_library_tube
             asset.aliquots.first.update_attributes!(tag: @tags[i - 1])
             mock("request_#{i}",
-              asset: asset).tap do |request|
+                 asset: asset).tap do |request|
               request.expects(:target_asset=).with(@mock_wells[request_target[i]])
               request.expects(:save!)
               request.expects(:id).at_least_once.returns(i)
@@ -83,7 +83,7 @@ class AssignTubestoMultiplexedWellsTaskTest < ActiveSupport::TestCase
             asset = create :pac_bio_library_tube
             asset.aliquots.first.update_attributes!(tag: @tags[i - 1])
             mock("request_#{i}",
-              asset: asset).tap do |request|
+                 asset: asset).tap do |request|
               request.expects(:id).at_least_once.returns(i)
             end
           end
@@ -112,7 +112,7 @@ class AssignTubestoMultiplexedWellsTaskTest < ActiveSupport::TestCase
             asset = create :pac_bio_library_tube
             asset.aliquots.first.update_attributes!(tag: @tags[i - 1])
             mock("request_#{i}",
-              asset: asset).tap do |request|
+                 asset: asset).tap do |request|
               request.expects(:id).at_least_once.returns(i)
               request.expects(:shared_attributes).at_least_once.returns("clash#{i}")
             end

@@ -37,7 +37,7 @@ describe TagLayoutTemplate do
         # First double check we have submissions
         # otherwise out test is a false positive
         subject
-        submissions =  plate.submissions.map(&:id)
+        submissions = plate.submissions.map(&:id)
         expect(TagLayout::TemplateSubmission.where(submission_id: submissions)).to be_present
         TagLayout::TemplateSubmission.where(submission_id: submissions).each do |tlts|
           expect(tlts.tag_layout_template).to eq(template)
@@ -58,7 +58,7 @@ describe TagLayoutTemplate do
           # First double check we have submissions
           # otherwise out test is a false positive
           subject
-          submissions =  plate.submissions.map(&:id)
+          submissions = plate.submissions.map(&:id)
           expect(TagLayout::TemplateSubmission.where(submission_id: submissions)).to be_present
           TagLayout::TemplateSubmission.where(submission_id: submissions).each do |tlts|
             expect(tlts.tag_layout_template).to eq(template)

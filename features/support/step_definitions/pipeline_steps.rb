@@ -34,7 +34,7 @@ def create_request_for_pipeline(pipeline_name, options = {})
   request_metadata = FactoryGirl.create :"request_metadata_for_#{pipeline.request_types.first.key}"
   request_parameters = options.merge(request_type: pipeline.request_types.last, asset: FactoryGirl.create(pipeline_name_to_asset_type(pipeline_name)), request_metadata: request_metadata)
   FactoryGirl.create(:request_with_submission, request_parameters).tap do |request|
-    request.asset.update_attributes!(location: pipeline.location, barcode: request.asset.id % 9999999)
+    request.asset.update_attributes!(barcode: request.asset.id % 9999999)
   end
 end
 
