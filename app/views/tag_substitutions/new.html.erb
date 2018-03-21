@@ -20,6 +20,12 @@
     </div>
   <% end %>
   <%= field_set_tag 'Substitutions' do %>
+    <p>The lists of tags below only contain those in the tag group used for the original pool. If you wish to add additional tag groups to the list select the tag group from the list below and click 'Add tags to list'</p>
+    <div class="simple-inline-form">
+      <label for="tag_group_list">Tag groups</label>
+      <select id="tag-group-list" name="tag_group_list"></select>
+      <button id="add-tag-group-list" class='btn btn-default' type='button'>Add tags to list</button>
+    </div>
     <table class="table">
       <thead>
         <tr>
@@ -33,9 +39,9 @@
               <td><%= sub.hidden_field :sample_id %><%= substitution.sample_id %>: <%= substitution.sample_friendly_name %></td>
               <td><%= sub.hidden_field :library_id %><%= substitution.library_id %></td>
               <td><%= sub.hidden_field :original_tag_id %><%= @tag_substitution.tag_name(substitution.original_tag_id) %></td>
-              <td><%= sub.select :substitute_tag_id, @tag_substitution.tag_options_for(substitution.original_tag_id), {}, class: 'select2' %></td>
+              <td><%= sub.select :substitute_tag_id, @tag_substitution.tag_options_for(substitution.original_tag_id), {}, class: 'select2 tag-list' %></td>
               <td><%= sub.hidden_field :original_tag2_id %><%= @tag_substitution.tag_name(substitution.original_tag2_id) %></td>
-              <td><%= sub.select :substitute_tag2_id, @tag_substitution.tag_options_for(substitution.original_tag2_id), {}, class: 'select2' %></td>
+              <td><%= sub.select :substitute_tag2_id, @tag_substitution.tag_options_for(substitution.original_tag2_id), {}, class: 'select2 tag-list' %></td>
             </tr>
           <% end %>
         <% end %>
@@ -45,3 +51,27 @@
   <% end %>
 <% end %>
 
+<script>
+  $(function() {
+
+    var tagGroupsList = <%= @tag_substitution.tags_in_groups.to_json.html_safe %>;
+
+    $("#tag-group-list").select2({
+      theme: "bootstrap4",
+      data: $.map(tagGroupsList, function (obj, key) {
+        return { id: key, text: key };
+      })
+    });
+
+    $('#add-tag-group-list').click(function(){
+      var tagGroup = $("#tag-group-list").val();
+      var optgroup = document.createElement('optgroup');
+      optgroup.label = tagGroup;
+      $.each(tagGroupsList[tagGroup], function (index, obj) {
+        optgroup.append(new Option(obj[0], obj[1]));
+      });
+      $(".tag-list").append(optgroup);
+    });
+  });
+
+</script>

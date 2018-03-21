@@ -78,8 +78,15 @@ class TagSubstitution
   end
 
   def tag_options_for(tag_id)
-    return [['Untagged', Aliquot::UNASSIGNED_TAG]] if tag_id == Aliquot::UNASSIGNED_TAG
-    tags_in_groups[complete_tags.fetch(tag_id).last]
+    return { 'No group' => [['Untagged', Aliquot::UNASSIGNED_TAG]] } if tag_id == Aliquot::UNASSIGNED_TAG
+    tags_in_groups.slice(complete_tags.fetch(tag_id).last)
+  end
+
+  def tags_in_groups
+    @tags_in_groups ||= complete_tags.each_with_object({}) do |(_id, info), store|
+      store[info.last] ||= []
+      store[info.last] << info[0, 2]
+    end
   end
 
   private
@@ -105,13 +112,6 @@ class TagSubstitution
     Comment.create!(commented_assets.map do |asset_id|
       { commentable_id: asset_id, commentable_type: 'Asset', user_id: @user&.id, description: comment_text }
     end)
-  end
-
-  def tags_in_groups
-    @tags_in_groups ||= complete_tags.each_with_object({}) do |(_id, info), store|
-      store[info.last] ||= []
-      store[info.last] << info[0, 2]
-    end
   end
 
   def complete_tags
