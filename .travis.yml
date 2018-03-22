@@ -5,6 +5,7 @@ dist: trusty
 sudo: required
 services: mysql
 addons:
+  haveged: stable
   chrome: stable
 cache: bundler
 bundler_args: --without warehouse deployment
@@ -22,7 +23,4 @@ env:
     - 'if [[ "$PRECOMPILE_ASSETS" == "true" ]]; then bundle exec rake assets:precompile; fi'
 script:
   - "bundle exec $SUITE"
-addons:
-  apt:
-    packages:
-      - haveged
+
