@@ -5,7 +5,6 @@ dist: trusty
 sudo: required
 services: mysql
 addons:
-  chrome: stable
   apt:
     packages:
       - haveged
@@ -20,7 +19,6 @@ env:
     - "SUITE=rubocop"
 before_script:
   - 'cp config/aker.yml.example config/aker.yml'
-  - 'google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &'
   - 'if [[ "$DB_REQUIRED" == "true" ]]; then bundle exec rake db:setup; fi'
   - 'if [[ "$PRECOMPILE_ASSETS" == "true" ]]; then bundle exec rake assets:precompile; fi'
 script:
