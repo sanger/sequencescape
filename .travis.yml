@@ -5,10 +5,12 @@ dist: trusty
 sudo: required
 services: mysql
 addons:
-  chrome: stable
   apt:
+    sources:
+      - google-chrome
     packages:
       - haveged
+      - google-chrome-stable
 cache: bundler
 bundler_args: --without warehouse deployment
 env:
