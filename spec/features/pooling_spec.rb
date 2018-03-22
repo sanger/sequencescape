@@ -18,9 +18,7 @@ feature 'Pooling', js: true do
       click_on 'Transfer'
       expect(page).to have_content 'Source assets were not scanned or were not found in sequencescape'
       fill_in('asset_scan', with: '1234567890123')
-      within('.barcode_list') do
-        expect(page).to have_content '1234567890123'
-      end
+      expect(find('.barcode_list')).to have_content '1234567890123'
       fill_in('asset_scan', with: (empty_lb_tube1.ean13_barcode).to_s)
       fill_in('asset_scan', with: (empty_lb_tube2.ean13_barcode).to_s)
       fill_in('asset_scan', with: (untagged_lb_tube1.ean13_barcode).to_s)

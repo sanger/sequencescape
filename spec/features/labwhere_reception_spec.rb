@@ -12,9 +12,8 @@ feature 'Labwhere reception', js: true do
     click_on 'Update locations'
     expect(page).to have_content "Asset barcodes can't be blank"
     fill_in('asset_scan', with: plate.ean13_barcode)
-    within('.barcode_list') do
-      expect(page).to have_content plate.ean13_barcode
-    end
+    save_and_open_screenshot
+    expect(find('.barcode_list')).to have_content plate.ean13_barcode
     expect(page).to have_content 'Scanned: 1'
     fill_in('asset_scan', with: 222)
     fill_in('asset_scan', with: 333)
