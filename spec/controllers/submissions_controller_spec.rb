@@ -218,7 +218,7 @@ RSpec.describe SubmissionsController, type: :controller do
       it 'warn the user about duplicates' do
         get :show, params: { id: @submission.id }
         assert_select 'div.alert-danger' do
-          assert_select 'strong', 'Warning! Similar submissions detected'
+          assert_select 'h4', 'Warning! Similar submissions detected'
           assert_select 'li.sample', 1
           assert_select 'li.submission', 1
         end

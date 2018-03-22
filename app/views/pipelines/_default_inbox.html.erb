@@ -5,26 +5,27 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.%>
 
 <%= render partial: "batch_statuses" %>
-<%= render partial: 'pipeline_limit' %>
+<%= render partial: 'pipeline_limit', locals: { requests_waiting: @requests_waiting } %>
 <% unless @requests_waiting == 0  -%>
   <%= render partial: 'pipeline_paginate' %>
   <!-- _default_inbox.html.erb -->
   <% grouped_by_ready = @requests.group_by(&:ready?) %>
-  <%= panel do %>
+  <%= panel 'inbox', id: 'available-requests' do %>
+    <h3>Available requests <span class="badge badge-primary"><%= grouped_by_ready[true].length %></span></h3>
     <%= form_tag({controller: :batches, action: :create, id: @pipeline.id}, id: "requests_to_batch_form") do -%>
       <% if @pipeline.item_limit -%>
         <input type="hidden" id="batch_item_limit" value="<%= @pipeline.item_limit %>" />
       <% end -%>
-      <%= render partial: 'inbox_submission_button' %>
+      <%= render partial: 'inbox_submission_button', locals: { select_scope: '#available-requests' } %>
       <%= render partial: "requests", locals: {requests: grouped_by_ready[true]} %>
-      <%= render partial: 'inbox_submission_button' %>
+      <%= render partial: 'inbox_submission_button', locals: { select_scope: '#available-requests' }  %>
     <% end -%>
   <% end %>
-  <%= panel do %>
-    <h3>Upcoming requests</h3>
+  <%= panel 'inbox', id: 'pending-requests' do %>
+    <h3>Upcoming requests <span class="badge badge-primary"><%= grouped_by_ready[false].length %></span></h3>
     <p>The following requests are still being processed through the previous pipeline. They'll appear in the section above once they are fully passed.</p>
     <%= form_tag({controller: :batches, action: :create, id: @pipeline.id}, id: "upcomming-requests") do -%>
-      <%= render partial: 'inbox_submission_button', locals: {actions: [["Cancel Requests","cancel_requests"]]} %>
+      <%= render partial: 'inbox_submission_button', locals: {actions: [["Cancel Requests","cancel_requests"]], select_scope: '#available-requests' } %>
       <%= render partial: "requests", locals: {requests: grouped_by_ready[false], table_class: 'danger'} %>
       <%= render partial: 'inbox_submission_button', locals: {actions: [["Cancel Requests","cancel_requests"]]} %>
     <% end -%>

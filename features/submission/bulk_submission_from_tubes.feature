@@ -21,7 +21,7 @@ Feature: Bulk Submission
   Scenario: Uploading a valid file with 1 submission
     When I upload a file with valid data for 1 tube submissions
     Then I should see "Bulk submission successfully made"
-    And I should see "Your submissions:"
+    And I should see "Your bulk submission has been processed."
     And the last submission should contain two assets
     And the last submission should contain the tube with barcode "1"
     And the last submission should contain the tube with barcode "2"
