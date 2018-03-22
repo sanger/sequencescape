@@ -19,7 +19,8 @@
 
 require 'factory_girl'
 require 'capybara/rspec'
-require 'capybara/poltergeist'
+# require 'capybara/poltergeist'
+require 'selenium/webdriver'
 require 'webmock/rspec'
 require 'support/user_login'
 require 'jsonapi/resources/matchers'
@@ -27,11 +28,31 @@ require 'aasm/rspec'
 
 require 'pry'
 
-Capybara.register_driver :poltergeist do |app|
-  Capybara::Poltergeist::Driver.new(app, timeout: 1.minute, window_size: [1600, 3200])
+# Capybara.register_driver :poltergeist do |app|
+#   Capybara::Poltergeist::Driver.new(app, timeout: 1.minute)
+# end
+
+# Capybara.javascript_driver = :poltergeist
+
+# Capybara.register_driver :poltergeist do |app|
+#   Capybara::Poltergeist::Driver.new(app, timeout: 2.minutes)
+# end
+
+Capybara.register_driver :chrome do |app|
+  Capybara::Selenium::Driver.new(app, browser: :chrome)
 end
 
-Capybara.javascript_driver = :poltergeist
+Capybara.register_driver :headless_chrome do |app|
+  capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
+    chromeOptions: { args: %w(headless disable-gpu) }
+  )
+
+  Capybara::Selenium::Driver.new app,
+    browser: :chrome,
+    desired_capabilities: capabilities
+end
+
+Capybara.javascript_driver = :headless_chrome
 
 WebMock.disable_net_connect!(allow_localhost: true)
 

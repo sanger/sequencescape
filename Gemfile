@@ -159,6 +159,7 @@ group :test, :cucumber do
   gem 'timecop', require: false
   gem 'simplecov', require: false
   gem 'database_cleaner'
+  gem 'capybara-selenium'
   # Simplifies shared transactions between server and test threads
   # See: http://technotes.iangreenleaf.com/posts/the-one-true-guide-to-database-transactions-with-capybara.html
   # Essentially does two things:
@@ -172,7 +173,7 @@ group :cucumber do
   gem 'capybara'
   gem 'mime-types'
   gem 'cucumber-rails', require: false
-  gem 'poltergeist'
+  # gem 'poltergeist'
   gem 'webmock'
   gem 'knapsack'
 end

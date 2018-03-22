@@ -136,11 +136,15 @@ GEM
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
       xpath (>= 2.0, < 4.0)
+    capybara-selenium (0.0.6)
+      capybara
+      selenium-webdriver
     carrierwave (1.1.0)
       activemodel (>= 4.0.0)
       activesupport (>= 4.0.0)
       mime-types (>= 1.16)
-    cliver (0.3.2)
+    childprocess (0.9.0)
+      ffi (~> 1.0, >= 1.0.11)
     coderay (1.1.2)
     coffee-rails (4.2.2)
       coffee-script (>= 2.2.0)
@@ -265,11 +269,6 @@ GEM
     parser (2.5.0.0)
       ast (~> 2.4.0)
     path_expander (1.0.2)
-    poltergeist (1.16.0)
-      capybara (~> 2.1)
-      cliver (~> 0.3.1)
-      websocket-driver (>= 0.2.0)
-    popper_js (1.12.9)
     powerpack (0.1.1)
     pry (0.11.0)
       coderay (~> 1.1.0)
@@ -373,6 +372,9 @@ GEM
       tilt (>= 1.1, < 3)
     select2-rails (4.0.3)
       thor (~> 0.14)
+    selenium-webdriver (3.11.0)
+      childprocess (~> 0.5)
+      rubyzip (~> 1.2)
     sexp_processor (4.10.0)
     shoulda-context (1.2.2)
     shoulda-matchers (3.1.2)
@@ -450,6 +452,7 @@ DEPENDENCIES
   bunny
   cancan
   capybara
+  capybara-selenium
   carrierwave
   coffee-rails
   configatron
@@ -481,7 +484,6 @@ DEPENDENCIES
   mysql2
   net-ldap
   nokogiri
-  poltergeist
   pry
   psd_logger!
   puma
