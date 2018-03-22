@@ -185,3 +185,11 @@ Given /^I have a batch with (\d+) requests? for the "(#{GENOTYPING_PIPELINES})" 
     }
   end
 end
+
+# Even though the other test says that there is one request visible in the inbox and we have to look at
+# the wells, this one has 5 requests visible in the inbox because the wells are from different plates.
+Then /^the (\d+) requests should be in the "(#{GENOTYPING_PIPELINES})" pipeline inbox$/ do |count, name|
+  requests_for_pipeline(name, count.to_i) do |requests_in_inbox|
+    # Not really much else to check here, they should just appear!
+  end
+end

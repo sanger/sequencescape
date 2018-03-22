@@ -47,7 +47,7 @@ describe TagLayoutTemplate do
 
       context 'with a tag2 group' do
         it { is_expected.to be_a TagLayout }
-        let(:tag2_group) { create :tag_group }
+        let(:tag2_group) { create :tag_group_with_tags }
         let(:enforce_uniqueness) { true }
 
         it 'passes in the correct properties' do

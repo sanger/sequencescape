@@ -160,11 +160,11 @@ Given /^the study "([^\"]*)" has the following contacts$/ do |study, table|
   end
 end
 
-Given /^study "([^\"]*)" has asset and assetgroup called "([^\"]*)"$/ do |study, new_asset_group|
+Given /^study "([^\"]*)" has asset and assetgroup$/ do |study|
   proj = Study.find_by(name: study)
   user = User.find_by login: 'user'
 
-  id_asset_group = FactoryGirl.create :asset_group, name: new_asset_group, user: user, study: proj
+  id_asset_group = FactoryGirl.create :asset_group, user: user, study: proj
   id_asset = FactoryGirl.create :sample_tube, name: 'Cucumberirbattle', barcode: 'barcode', closed: '0'
   id_aga = FactoryGirl.create :asset_group_asset, asset_id: id_asset.id, asset_group_id: id_asset_group.id
 end

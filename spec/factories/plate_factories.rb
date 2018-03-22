@@ -39,7 +39,7 @@ FactoryGirl.define do
     end
     after(:create) do |plate, evaluator|
       plate.wells.each do |well|
-        well.requests_as_target << create(:transfer_request, target_asset: well, submission: evaluator.submission_cycle.next)
+        well.transfer_requests_as_target << create(:transfer_request, target_asset: well, submission: evaluator.submission_cycle.next)
       end
     end
   end
