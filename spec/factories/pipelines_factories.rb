@@ -368,6 +368,8 @@ FactoryGirl.define do
   end
 
   factory(:tag_group_form_object, class: TagGroup::FormObject) do
+    skip_create
+
     sequence(:name) { |n| "Tag Group #{n}" }
 
     transient do
@@ -375,12 +377,14 @@ FactoryGirl.define do
     end
 
     after(:build) do |tag_group_form_object, evaluator|
-      o_list = []
-      evaluator.oligos_count.times do |i|
-        # generates a series of 8-character oligos
-        o_list << (16384 + i).to_s(4).tr('0', 'A').tr('1', 'T').tr('2', 'C').tr('3', 'G')
+      if evaluator.oligos_count > 0
+        o_list = []
+        evaluator.oligos_count.times do |i|
+          # generates a series of 8-character oligos
+          o_list << (16384 + i).to_s(4).tr('0', 'A').tr('1', 'T').tr('2', 'C').tr('3', 'G')
+        end
+        tag_group_form_object.oligos_text = o_list.join(' ')
       end
-      tag_group_form_object.oligos_text = o_list.join(' ')
     end
 
     factory :tag_group_form_object_with_oligos do

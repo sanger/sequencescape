@@ -18,42 +18,32 @@ RSpec.describe TagGroup, type: :model do
     end
   end
 
-  context 'when the tags are sorted by map id' do
+  context 'when the tags are sorted' do
     let(:tag_group_1) { create(:tag_group) }
     let(:tag_1) { create(:tag, map_id: 1, tag_group: tag_group_1) }
     let(:tag_2) { create(:tag, map_id: 4, tag_group: tag_group_1) }
     let(:tag_3) { create(:tag, map_id: 2, tag_group: tag_group_1) }
     let(:tag_4) { create(:tag, map_id: 3, tag_group: tag_group_1) }
 
-    it 'should return the tags in the correct order' do
-      tag_group_1.tags << tag_1 << tag_2 << tag_3 << tag_4
-      expect(tag_group_1.tags_sorted_by_map_id).to eq([tag_1, tag_3, tag_4, tag_2])
+    context 'by map id' do
+      it 'should return the tags in the correct order' do
+        tag_group_1.tags << tag_1 << tag_2 << tag_3 << tag_4
+        expect(tag_group_1.tags_sorted_by_map_id).to eq([tag_1, tag_3, tag_4, tag_2])
+      end
     end
-  end
 
-  context 'when the tags are retrieved by index' do
-    let(:tag_group_1) { create(:tag_group) }
-    let(:tag_1) { create(:tag, map_id: 1, tag_group: tag_group_1) }
-    let(:tag_2) { create(:tag, map_id: 4, tag_group: tag_group_1) }
-    let(:tag_3) { create(:tag, map_id: 2, tag_group: tag_group_1) }
-    let(:tag_4) { create(:tag, map_id: 3, tag_group: tag_group_1) }
-
-    it 'should return the tags in the correct order' do
-      tag_group_1.tags << tag_1 << tag_2 << tag_3 << tag_4
-      expect(tag_group_1.indexed_tags).to eq(1 => tag_1.oligo, 2 => tag_3.oligo, 3 => tag_4.oligo, 4 => tag_2.oligo)
+    context 'by index' do
+      it 'should return the tags in the correct order' do
+        tag_group_1.tags << tag_1 << tag_2 << tag_3 << tag_4
+        expect(tag_group_1.indexed_tags).to eq(1 => tag_1.oligo, 2 => tag_3.oligo, 3 => tag_4.oligo, 4 => tag_2.oligo)
+      end
     end
   end
 
   context 'when the tag group is not visible' do
-    let(:tag_group_1) { create(:tag_group_with_tags, name: 'TG1') }
-    let(:tag_group_2) { create(:tag_group_with_tags, name: 'TG2', visible: false) }
-    let(:tag_group_3) { create(:tag_group_with_tags, name: 'TG3') }
-
-    before(:each) do
-      tag_group_1
-      tag_group_2
-      tag_group_3
-    end
+    let!(:tag_group_1) { create(:tag_group_with_tags, name: 'TG1') }
+    let!(:tag_group_2) { create(:tag_group_with_tags, name: 'TG2', visible: false) }
+    let!(:tag_group_3) { create(:tag_group_with_tags, name: 'TG3') }
 
     it 'should not be selectable by the visible scope' do
       expect(TagGroup.visible).to_not include(tag_group_2)
