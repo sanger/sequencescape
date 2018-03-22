@@ -173,7 +173,6 @@ group :cucumber do
   gem 'capybara'
   gem 'mime-types'
   gem 'cucumber-rails', require: false
-  # gem 'poltergeist'
   gem 'webmock'
   gem 'knapsack'
 end
