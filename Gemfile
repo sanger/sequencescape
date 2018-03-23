@@ -175,6 +175,7 @@ group :cucumber do
   gem 'cucumber-rails', require: false
   gem 'webmock'
   gem 'knapsack'
+  gem 'geckodriver-helper'
 end
 
 group :deployment do
