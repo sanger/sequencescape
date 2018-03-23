@@ -159,6 +159,7 @@ group :test, :cucumber do
   gem 'timecop', require: false
   gem 'simplecov', require: false
   gem 'database_cleaner'
+  gem 'capybara'
   gem 'capybara-selenium'
   # Simplifies shared transactions between server and test threads
   # See: http://technotes.iangreenleaf.com/posts/the-one-true-guide-to-database-transactions-with-capybara.html
@@ -170,12 +171,10 @@ end
 
 group :cucumber do
   gem 'rubyzip'
-  gem 'capybara'
   gem 'mime-types'
   gem 'cucumber-rails', require: false
   gem 'webmock'
   gem 'knapsack'
-  gem 'geckodriver-helper'
 end
 
 group :deployment do
