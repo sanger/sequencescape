@@ -33,13 +33,30 @@ end
 
 Capybara.register_driver :headless_chrome do |app|
   options = Selenium::WebDriver::Chrome::Options.new
-  options.add_argument('headless')
-  options.add_argument('disable_gpu')
+  download_directory = DownloadHelpers::PATH.to_s
+
+  options.add_argument('--headless')
+  options.add_argument('--disable_gpu')
+  # options.add_argument('--disable-popup-blocking')
   options.add_argument('--window-size=1600,3200')
-  Capybara::Selenium::Driver.new(app,
-                                 browser: :chrome,
-                                 options: options
-  )
+  options.add_preference(:download,
+                         directory_upgrade: true,
+                         prompt_for_download: false,
+                         default_directory: download_directory)
+  driver = Capybara::Selenium::Driver.new(app,
+                                          browser: :chrome,
+                                          options: options)
+  enable_chrome_headless_downloads(driver, download_directory)
+end
+
+def enable_chrome_headless_downloads(driver, directory)
+  bridge = driver.browser.send(:bridge)
+  path = "/session/#{bridge.session_id}/chromium/send_command"
+  bridge.http.call(:post, path, cmd: 'Page.setDownloadBehavior',
+                                params: {
+                                  behavior: 'allow',
+                                  downloadPath: directory})
+  driver
 end
 
 Capybara.javascript_driver = :headless_chrome
