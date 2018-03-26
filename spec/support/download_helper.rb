@@ -28,6 +28,6 @@ module DownloadHelpers
   end
 
   def self.remove_downloads
-    FileUtils.rm_f(downloads)
+    FileUtils.rm_r(downloads, force: true)
   end
 end
