@@ -93,10 +93,10 @@ def build_batch_for(name, count)
   assets = Array.new(count.to_i) do
     asset_attributes = {}
     if submission_details.key?(:holder_type)
-      asset_attributes[:plate] = FactoryGirl.create(submission_details[:holder_type])
+      asset_attributes[:plate] = FactoryGirl.create(submission_details[:holder_type], :scanned_into_lab)
       asset_attributes[:map_id] = 1
     end
-    FactoryGirl.create(submission_details[:asset_type], asset_attributes)
+    FactoryGirl.create(submission_details[:asset_type], :scanned_into_lab, asset_attributes)
   end
 
   rts = pipeline.request_types.reject(&:deprecated?).map(&:id)

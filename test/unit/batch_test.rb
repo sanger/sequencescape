@@ -9,9 +9,7 @@ require 'test_helper'
 class BatchTest < ActiveSupport::TestCase
   context 'A batch' do
     context 'on its own' do
-      setup do
-        @batch = build :batch
-      end
+      setup { @batch = build :batch }
 
       should 'have begin in pending then change to started' do
         assert_equal @batch.state, 'pending'
