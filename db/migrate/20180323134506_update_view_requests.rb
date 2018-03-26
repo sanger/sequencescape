@@ -54,7 +54,29 @@ class UpdateViewRequests < ActiveRecord::Migration[5.1]
             `o`.`template_name` AS `template_name`,
             `rm`.`customer_accepts_responsibility` AS `customer_accepts_responsibility`,
              ELT(`r`.`request_purpose`, 'standard', 'internal', 'qc', 'control') AS `request_purpose`
-           FROM (((((((((((((((((((((`requests` `r` left join `uuids` `u` on(((`r`.`id` = `u`.`resource_id`) and (`u`.`resource_type` = 'Request')))) left join `request_types` `rt` on((`rt`.`id` = `r`.`request_type_id`))) left join `product_lines` `pl` on((`rt`.`product_line_id` = `pl`.`id`))) left join `request_metadata` `rm` on((`rm`.`request_id` = `r`.`id`))) left join `assets` `sa` on((`r`.`asset_id` = `sa`.`id`))) left join `aliquots` `sal` on((`sa`.`id` = `sal`.`receptacle_id`))) left join `bait_libraries` `bl` on((`bl`.`id` = `rm`.`bait_library_id`))) left join `bait_library_types` `blt` on((`bl`.`bait_library_type_id` = `blt`.`id`))) left join `studies` `st` on((`st`.`id` = ifnull(`r`.`initial_study_id`,`sal`.`study_id`)))) left join `uuids` `su` on(((`st`.`id` = `su`.`resource_id`) and (`su`.`resource_type` = 'Study')))) left join `projects` `pr` on((`pr`.`id` = ifnull(`r`.`initial_project_id`,`sal`.`project_id`)))) left join `project_metadata` `pm` on((`pr`.`id` = `pm`.`project_id`))) left join `budget_divisions` `b` on((`pm`.`budget_division_id` = `b`.`id`))) left join `uuids` `pu` on(((`pr`.`id` = `pu`.`resource_id`) and (`pu`.`resource_type` = 'Project')))) left join `uuids` `sau` on(((`sa`.`id` = `sau`.`resource_id`) and (`sau`.`resource_type` = 'Asset')))) left join `uuids` `salu` on(((`sal`.`sample_id` = `salu`.`resource_id`) and (`salu`.`resource_type` = 'Sample')))) left join `barcode_prefixes` `sbp` on((`sa`.`barcode_prefix_id` = `sbp`.`id`))) left join `assets` `ta` on((`r`.`target_asset_id` = `ta`.`id`))) left join `uuids` `tau` on(((`ta`.`id` = `tau`.`resource_id`) and (`tau`.`resource_type` = 'Asset')))) left join `barcode_prefixes` `tbp` on((`ta`.`barcode_prefix_id` = `tbp`.`id`))) left join `orders` `o` on((`r`.`order_id` = `o`.`id`)))})
+           FROM (((((((((((((((((((((`requests` `r`
+             left join `uuids` `u` on(((`r`.`id` = `u`.`resource_id`) and (`u`.`resource_type` = 'Request'))))
+             left join `request_types` `rt` on((`rt`.`id` = `r`.`request_type_id`)))
+             left join `product_lines` `pl` on((`rt`.`product_line_id` = `pl`.`id`)))
+             left join `request_metadata` `rm` on((`rm`.`request_id` = `r`.`id`)))
+             left join `assets` `sa` on((`r`.`asset_id` = `sa`.`id`)))
+             left join `aliquots` `sal` on((`sa`.`id` = `sal`.`receptacle_id`)))
+             left join `bait_libraries` `bl` on((`bl`.`id` = `rm`.`bait_library_id`)))
+             left join `bait_library_types` `blt` on((`bl`.`bait_library_type_id` = `blt`.`id`)))
+             left join `studies` `st` on((`st`.`id` = ifnull(`r`.`initial_study_id`,`sal`.`study_id`))))
+             left join `uuids` `su` on(((`st`.`id` = `su`.`resource_id`) and (`su`.`resource_type` = 'Study'))))
+             left join `projects` `pr` on((`pr`.`id` = ifnull(`r`.`initial_project_id`,`sal`.`project_id`))))
+             left join `project_metadata` `pm` on((`pr`.`id` = `pm`.`project_id`)))
+             left join `budget_divisions` `b` on((`pm`.`budget_division_id` = `b`.`id`)))
+             left join `uuids` `pu` on(((`pr`.`id` = `pu`.`resource_id`) and (`pu`.`resource_type` = 'Project'))))
+             left join `uuids` `sau` on(((`sa`.`id` = `sau`.`resource_id`) and (`sau`.`resource_type` = 'Asset'))))
+             left join `uuids` `salu` on(((`sal`.`sample_id` = `salu`.`resource_id`) and (`salu`.`resource_type` = 'Sample'))))
+             left join `barcode_prefixes` `sbp` on((`sa`.`barcode_prefix_id` = `sbp`.`id`)))
+             left join `assets` `ta` on((`r`.`target_asset_id` = `ta`.`id`)))
+             left join `uuids` `tau` on(((`ta`.`id` = `tau`.`resource_id`) and (`tau`.`resource_type` = 'Asset'))))
+             left join `barcode_prefixes` `tbp` on((`ta`.`barcode_prefix_id` = `tbp`.`id`)))
+             left join `orders` `o` on((`r`.`order_id` = `o`.`id`)))}
+      )
     end
   end
 
@@ -62,7 +84,7 @@ class UpdateViewRequests < ActiveRecord::Migration[5.1]
     ActiveRecord::Base.transaction do
       ViewsSchema.update_view(
         'view_requests',
-        %Q{CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER
+        %{CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER
           VIEW `view_requests` AS
           select `u`.`external_id` AS `uuid`,
                  `r`.`id` AS `internal_id`,
@@ -107,7 +129,29 @@ class UpdateViewRequests < ActiveRecord::Migration[5.1]
                  `r`.`order_id` AS `order_id`,
                  `o`.`template_name` AS `template_name`,
                  `rm`.`customer_accepts_responsibility` AS `customer_accepts_responsibility`
-                 from (((((((((((((((((((((`requests` `r` left join `uuids` `u` on(((`r`.`id` = `u`.`resource_id`) and (`u`.`resource_type` = 'Request')))) left join `request_types` `rt` on((`rt`.`id` = `r`.`request_type_id`))) left join `product_lines` `pl` on((`rt`.`product_line_id` = `pl`.`id`))) left join `request_metadata` `rm` on((`rm`.`request_id` = `r`.`id`))) left join `assets` `sa` on((`r`.`asset_id` = `sa`.`id`))) left join `aliquots` `sal` on((`sa`.`id` = `sal`.`receptacle_id`))) left join `bait_libraries` `bl` on((`bl`.`id` = `rm`.`bait_library_id`))) left join `bait_library_types` `blt` on((`bl`.`bait_library_type_id` = `blt`.`id`))) left join `studies` `st` on((`st`.`id` = ifnull(`r`.`initial_study_id`, `sal`.`study_id`)))) left join `uuids` `su` on(((`st`.`id` = `su`.`resource_id`) and (`su`.`resource_type` = 'Study')))) left join `projects` `pr` on((`pr`.`id` = ifnull(`r`.`initial_project_id`, `sal`.`project_id`)))) left join `project_metadata` `pm` on((`pr`.`id` = `pm`.`project_id`))) left join `budget_divisions` `b` on((`pm`.`budget_division_id` = `b`.`id`))) left join `uuids` `pu` on(((`pr`.`id` = `pu`.`resource_id`) and (`pu`.`resource_type` = 'Project')))) left join `uuids` `sau` on(((`sa`.`id` = `sau`.`resource_id`) and (`sau`.`resource_type` = 'Asset')))) left join `uuids` `salu` on(((`sal`.`sample_id` = `salu`.`resource_id`) and (`salu`.`resource_type` = 'Sample')))) left join `barcode_prefixes` `sbp` on((`sa`.`barcode_prefix_id` = `sbp`.`id`))) left join `assets` `ta` on((`r`.`target_asset_id` = `ta`.`id`))) left join `uuids` `tau` on(((`ta`.`id` = `tau`.`resource_id`) and (`tau`.`resource_type` = 'Asset')))) left join `barcode_prefixes` `tbp` on((`ta`.`barcode_prefix_id` = `tbp`.`id`))) left join `orders` `o` on((`r`.`order_id` = `o`.`id`)))})
+                 from (((((((((((((((((((((`requests` `r`
+                   left join `uuids` `u` on(((`r`.`id` = `u`.`resource_id`) and (`u`.`resource_type` = 'Request'))))
+                   left join `request_types` `rt` on((`rt`.`id` = `r`.`request_type_id`)))
+                   left join `product_lines` `pl` on((`rt`.`product_line_id` = `pl`.`id`)))
+                   left join `request_metadata` `rm` on((`rm`.`request_id` = `r`.`id`)))
+                   left join `assets` `sa` on((`r`.`asset_id` = `sa`.`id`)))
+                   left join `aliquots` `sal` on((`sa`.`id` = `sal`.`receptacle_id`)))
+                   left join `bait_libraries` `bl` on((`bl`.`id` = `rm`.`bait_library_id`)))
+                   left join `bait_library_types` `blt` on((`bl`.`bait_library_type_id` = `blt`.`id`)))
+                   left join `studies` `st` on((`st`.`id` = ifnull(`r`.`initial_study_id`, `sal`.`study_id`))))
+                   left join `uuids` `su` on(((`st`.`id` = `su`.`resource_id`) and (`su`.`resource_type` = 'Study'))))
+                   left join `projects` `pr` on((`pr`.`id` = ifnull(`r`.`initial_project_id`, `sal`.`project_id`))))
+                   left join `project_metadata` `pm` on((`pr`.`id` = `pm`.`project_id`)))
+                   left join `budget_divisions` `b` on((`pm`.`budget_division_id` = `b`.`id`)))
+                   left join `uuids` `pu` on(((`pr`.`id` = `pu`.`resource_id`) and (`pu`.`resource_type` = 'Project'))))
+                   left join `uuids` `sau` on(((`sa`.`id` = `sau`.`resource_id`) and (`sau`.`resource_type` = 'Asset'))))
+                   left join `uuids` `salu` on(((`sal`.`sample_id` = `salu`.`resource_id`) and (`salu`.`resource_type` = 'Sample'))))
+                   left join `barcode_prefixes` `sbp` on((`sa`.`barcode_prefix_id` = `sbp`.`id`)))
+                   left join `assets` `ta` on((`r`.`target_asset_id` = `ta`.`id`)))
+                   left join `uuids` `tau` on(((`ta`.`id` = `tau`.`resource_id`) and (`tau`.`resource_type` = 'Asset'))))
+                   left join `barcode_prefixes` `tbp` on((`ta`.`barcode_prefix_id` = `tbp`.`id`)))
+                   left join `orders` `o` on((`r`.`order_id` = `o`.`id`)))}
+      )
     end
   end
 end
