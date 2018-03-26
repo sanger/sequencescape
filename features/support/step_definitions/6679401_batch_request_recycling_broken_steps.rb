@@ -64,8 +64,6 @@ end
 # This is a complete hack to get this to work: it knows where the wells are and goes to get them.  It knows
 # where the empty cells are and it goes and gets them too.
 When /^I drag (\d+) wells to the scratch pad$/ do |count|
-  # The new style moves the scratch pad outside the viewport, we enlarge the viewport for this test
-  page.driver.resize(1440, 2000)
   dest_pad = find('#scratch_pad tr:first-child td:first-child') or raise StandardError, 'Could not find scratch pad'
 
   (1..count.to_i).each do |index|
