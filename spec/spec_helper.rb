@@ -48,7 +48,8 @@ def enable_chrome_headless_downloads(driver, directory)
   bridge.http.call(:post, path, cmd: 'Page.setDownloadBehavior',
                                 params: {
                                   behavior: 'allow',
-                                  downloadPath: directory})
+                                  downloadPath: directory
+                                })
   driver
 end
 

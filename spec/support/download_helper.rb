@@ -1,33 +1,33 @@
+# frozen_string_literal: true
+
 module DownloadHelpers
   TIMEOUT = 5
-  PATH    = Rails.root.join("tmp/downloads")
+  PATH = Rails.root.join('tmp', 'downloads')
 
-  extend self
-
-  def downloads
-    Dir[PATH.join("*")]
+  def self.downloads
+    Dir[PATH.join('*')]
   end
 
-  def downloaded_file(file)
+  def self.downloaded_file(file)
     wait_for_download
     File.read(PATH.join(file))
   end
 
-  def wait_for_download
+  def self.wait_for_download
     Timeout.timeout(TIMEOUT) do
       sleep 0.5 until downloaded?
     end
   end
 
-  def downloaded?
+  def self.downloaded?
     !downloading? && downloads.any?
   end
 
-  def downloading?
+  def self.downloading?
     downloads.grep(/\.part$/).any?
   end
 
-  def remove_downloads
+  def self.remove_downloads
     FileUtils.rm_f(downloads)
   end
 end
