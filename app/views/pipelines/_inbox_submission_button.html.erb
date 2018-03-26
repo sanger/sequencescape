@@ -5,6 +5,7 @@
 # Copyright (C) 2007-2011,2014,2015 Genome Research Ltd.%>
 
 <% actions ||= [["Create Batch","create_batch"], ["Cancel Requests","cancel_requests"], ["Hide from Inbox","hide_from_inbox"]] %>
+<% select_scope ||= 'body' %>
 
 <div class="batch-controls">
   <div class="batch-actions">
@@ -15,7 +16,7 @@
     </div>
   </div>
   <div class="select-deselect" role="group" aria-label="Select/Deselect">
-    <%= button_tag "Select all", type: "button", name: "select", class: "select-all-behaviour" %>
-    <%= button_tag "Deselect all", type: "button", name: "unselect", class: "deselect-all-behaviour" %>
+    <%= button_tag "Select all", type: "button", name: "select", class: "select-all-behaviour", data: { scope: select_scope } %>
+    <%= button_tag "Deselect all", type: "button", name: "unselect", class: "deselect-all-behaviour", data: { scope: select_scope } %>
   </div>
 </div>

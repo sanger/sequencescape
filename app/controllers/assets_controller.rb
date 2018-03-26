@@ -44,9 +44,8 @@ class AssetsController < ApplicationController
   def new
     @asset = Asset.new
     @asset_types = { 'Library Tube' => 'LibraryTube', 'Hybridization Buffer Spiked' => 'SpikedBuffer' }
-    @phix_tag = TagGroup.find_by(name: configatron.phix_tag.tag_group_name).tags.select do |t|
-      t.map_id == configatron.phix_tag.tag_map_id
-    end.first
+    @phix_tag = Tag.joins(:tag_group)
+                   .find_by!(map_id: configatron.phix_tag.tag_map_id, tag_groups: { name: configatron.phix_tag.tag_group_name })
 
     respond_to do |format|
       format.html

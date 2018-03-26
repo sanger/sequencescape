@@ -85,6 +85,7 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
         context 'afer failing sequencing requests' do
           setup do
             @sequencing_group = SequencingRequest.all[0..1]
+            @sequencing_group.each { |sr| sr.asset.create_scanned_into_lab_event!(content: '2018-01-01') }
             @seq_batch = Batch.create!(requests: @sequencing_group, pipeline: @sequencing_pipeline)
 
             @seq_batch.requests.map(&:start!)

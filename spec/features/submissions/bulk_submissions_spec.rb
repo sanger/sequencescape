@@ -53,14 +53,14 @@ feature 'Bulk submission', js: false do
 
       context 'Uploading a valid file with 1 submission' do
         let(:file_name) { '1_valid_rows.csv' }
-        let(:expected_content) { ['Bulk submission successfully made', 'Your submissions:'] }
+        let(:expected_content) { ['Your bulk submission has been processed', 'Your bulk submission has been processed.'] }
         it_behaves_like 'bulk submission file upload'
       end
       # context "Uploading a valid file with bait library specified should set the bait library name" do
       #   # Given I have a well called "testing123"
       #   # And the sample in the last well is registered under the study "abc123_study"
       #   When I upload a file with 2 valid SC submissions
-      #   let(:expected_content) { "Your submissions:" }
+      #   let(:expected_content) { "Your bulk submission has been processed." }
       #    And there should be an order with the bait library name set to "Bait library 1"
       #    And there should be an order with the bait library name set to "Bait library 2"
       #    And the last submission should have a priority of 1
@@ -71,7 +71,7 @@ feature 'Bulk submission', js: false do
     context 'Uploading a valid file with gb expected specified should set the gb expected' do
       let(:file_name) { '2_valid_rows.csv' }
       let(:submission_count) { 2 }
-      let(:expected_content) { 'Your submissions:' }
+      let(:expected_content) { 'Your bulk submission has been processed.' }
 
       it 'allows file upload' do
         process_submission(file_name)
