@@ -31,7 +31,7 @@ Feature: Bulk Submission
 
     When I upload a file with a plate 'AssetTest' with a well in location 'A1' that contains the sample 'SampleTest' for study 'StudyB'
 
-    Then I should see "Bulk submission successfully made"
+    Then I should see "Your bulk submission has been processed"
 
     Then the sample 'Sampletest' should belong to study 'StudyA'
     And the sample 'Sampletest' should belong to study 'StudyB'

@@ -19,12 +19,12 @@ Feature: Non-standard Bulk Submission files
 
   Scenario: Uploading a file with an empty column
     When I upload a file with an empty column
-    Then I should see "Bulk submission successfully made"
+    Then I should see "Your bulk submission has been processed"
     And I should see "Your bulk submission has been processed."
 
   Scenario: Uploading a file with a header not at row 0 or 1
     When I upload a file with a header at an unexpected location
-    Then I should see "Bulk submission successfully made"
+    Then I should see "Your bulk submission has been processed"
     And I should see "Your bulk submission has been processed."
 
   Scenario: Uploading a file with a headerless column

@@ -763,6 +763,8 @@ class BatchTest < ActiveSupport::TestCase
       @library_creation_request = create(:library_creation_request_for_testing_sequencing_requests, target_asset: @library_tube)
       @pipeline = create :sequencing_pipeline
 
+      @library_tube.create_scanned_into_lab_event!(content: '2018-01-01')
+
       @batch = build :batch, pipeline: @pipeline
       @request_type = @batch.pipeline.request_types.first
       @sequencing_request = create(:sequencing_request, asset: @library_tube, request_type: @request_type)

@@ -53,7 +53,7 @@ feature 'Bulk submission', js: false do
 
       context 'Uploading a valid file with 1 submission' do
         let(:file_name) { '1_valid_rows.csv' }
-        let(:expected_content) { ['Bulk submission successfully made', 'Your bulk submission has been processed.'] }
+        let(:expected_content) { ['Your bulk submission has been processed', 'Your bulk submission has been processed.'] }
         it_behaves_like 'bulk submission file upload'
       end
       # context "Uploading a valid file with bait library specified should set the bait library name" do
