@@ -23,14 +23,14 @@ class PipelineTest < ActiveSupport::TestCase
         @pipeline = create :sequencing_pipeline, name: 'sequencing pipeline', request_types: [@request_type]
         @request1 = create(
           :sequencing_request,
-          asset: create(:sample_tube, sample: @sample),
+          asset: create(:sample_tube, :scanned_into_lab, sample: @sample),
           target_asset: nil,
           request_type: @request_type
         )
 
         @request2 = create(
           :sequencing_request,
-          asset: create(:sample_tube, sample: @sample),
+          asset: create(:sample_tube, :scanned_into_lab, sample: @sample),
           target_asset: nil,
           request_type: @request_type
         )
