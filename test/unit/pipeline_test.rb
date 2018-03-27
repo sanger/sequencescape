@@ -20,32 +20,19 @@ class PipelineTest < ActiveSupport::TestCase
         @sample = create :sample
 
         @request_type = create :request_type, name: 'sequencing', target_asset_type: nil
-        @submission = FactoryHelp::submission(request_types: [@request_type].map(&:id), asset_group_name: 'to avoid asset errors')
-        @item = create :item, submission: @submission
-
         @pipeline = create :sequencing_pipeline, name: 'sequencing pipeline', request_types: [@request_type]
-        @metadata1 = create :request_metadata
-        @metadata2 = create :request_metadata
         @request1 = create(
-          :request_without_assets,
-          request_metadata: @metadata1,
-          item: @item,
-          asset: create(:empty_sample_tube).tap { |sample_tube| sample_tube.aliquots.create!(sample: @sample) },
+          :sequencing_request,
+          asset: create(:sample_tube, sample: @sample),
           target_asset: nil,
-          submission: @submission,
-          request_type: @request_type,
-          pipeline: @pipeline
+          request_type: @request_type
         )
 
         @request2 = create(
-          :request_without_assets,
-          request_metadata: @metadata2,
-          item: @item,
-          asset: create(:empty_sample_tube).tap { |sample_tube| sample_tube.aliquots.create!(sample: @sample) },
+          :sequencing_request,
+          asset: create(:sample_tube, sample: @sample),
           target_asset: nil,
-          submission: @submission,
-          request_type: @request_type,
-          pipeline: @pipeline
+          request_type: @request_type
         )
       end
 
@@ -75,45 +62,23 @@ class PipelineTest < ActiveSupport::TestCase
       should 'check that other pipelines are not affected by different read_length attributes' do
         @pipeline2 = create :pipeline, name: 'other pipeline', request_types: [@request_type]
         @request1 = create(
-          :request_without_assets,
-          request_metadata: @metadata1,
-          item: @item,
-          asset: create(:empty_sample_tube).tap { |sample_tube| sample_tube.aliquots.create!(sample: @sample) },
+          :sequencing_request,
+          asset: create(:sample_tube, sample: @sample),
           target_asset: nil,
-          submission: @submission,
-          request_type: @request_type,
-          pipeline: @pipeline2
+          request_type: @request_type
         )
 
         @request2 = create(
-          :request_without_assets,
-          request_metadata: @metadata2,
-          item: @item,
-          asset: create(:empty_sample_tube).tap { |sample_tube| sample_tube.aliquots.create!(sample: @sample) },
+          :sequencing_request,
+          asset: create(:sample_tube, sample: @sample),
           target_asset: nil,
-          submission: @submission,
-          request_type: @request_type,
-          pipeline: @pipeline2
+          request_type: @request_type
         )
 
         @request1.request_metadata.read_length = 76
         @request2.request_metadata.read_length = 100
         @batch = @pipeline2.batches.create(requests: [@request1, @request2])
         assert @pipeline2.is_read_length_consistent_for_batch?(@batch)
-      end
-    end
-
-    context '#QC related batches' do
-      setup do
-        @pipeline_next = create :pipeline, name: 'Next pipeline'
-        @pipeline = create :pipeline, name: 'Normal pipeline', next_pipeline_id: @pipeline_next.id
-        @pipeline_qc_manual = create :qc_pipeline, name: 'Manual Quality Control', next_pipeline_id: @pipeline_next.id
-        @pipeline_qc = create :qc_pipeline, name: 'quality control', next_pipeline_id: @pipeline_qc_manual.id, automated: true
-
-        @batch_pending = create :batch, pipeline: @pipeline, qc_pipeline_id: @pipeline_qc.id, state: 'released', qc_state: 'qc_pending'
-        @batch_completed = create :batch, pipeline: @pipeline, qc_pipeline_id: @pipeline_qc.id, state: 'released', qc_state: 'qc_manual'
-        @batch_completed_pass = create :batch, pipeline: @pipeline, qc_pipeline_id: @pipeline_qc.id, state: 'released', qc_state: 'qc_completed', production_state: 'pass'
-        @batch_completed_fail = create :batch, pipeline: @pipeline, qc_pipeline_id: @pipeline_qc.id, state: 'released', qc_state: 'qc_completed', production_state: 'fail'
       end
     end
   end

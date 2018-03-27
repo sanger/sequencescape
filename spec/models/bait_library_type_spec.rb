@@ -22,7 +22,6 @@ describe BaitLibraryType do
   end
 
   context 'A request with a bait library' do
-
     let(:request_type) { create :request_type, name: 'Bait Pulldown', target_asset_type: nil }
     let(:request) { create :isc_request }
 
