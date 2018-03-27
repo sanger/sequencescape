@@ -9,28 +9,30 @@
   Please note that <strong>all</strong> submissions in your file will be processed, or if there are any errors,
   <strong>none</strong> of them will be processed. You will get feedback about any problems.</p>
 <% end %>
-<%= semantic_form_for @bulk_submission, html: {multipart: true } do |form|  %>
-  <%= form.semantic_errors :base %>
-  <%= form.inputs do %>
-    <%= form.input :spreadsheet, as: :file %>
-    <%= form.input :encoding, as: :select, collection: Encoding.list.map(&:to_s) %>
-    <span id="helpBlock" class="help-block">
-      Encoding describes the way special characters are stored in the CSV. By default Excel uses 'Windows-1252' format
-      on English language Windows systems. In most cases you can leave this option unchanged.</span>
-  <% end %>
-  <%= form.actions do %>
-    <%= form.action(:submit, button_html: { class:'btn btn-success btn-lg', disable_with: 'Processing' }) %>
-  <% end %>
-  <div id="being_created" style="display: none;">
-    <p>Your spreadsheet is being processed...</p>
-    <%= loading_bar %>
-  </div>
-<% end %>
 
-<h3>Templates &amp; Guidance</h3>
-<%= link_to "Download Blank Template", "/data/bulk_submission/blank_template.xls", class: 'btn btn-info btn-lg' %>
-<div class='row'>
-<div class='col-md-6'>
+<%= panel(:form) do %>
+  <%= semantic_form_for @bulk_submission, html: {multipart: true } do |form|  %>
+    <%= form.semantic_errors :base %>
+    <%= form.inputs do %>
+      <%= form.input :spreadsheet, as: :file %>
+      <%= form.input :encoding, as: :select, collection: Encoding.list.map(&:to_s) %>
+      <span id="helpBlock" class="form-text text-muted">
+        Encoding describes the way special characters are stored in the CSV. By default Excel uses 'Windows-1252' format
+        on English language Windows systems. In most cases you can leave this option unchanged.</span>
+    <% end %>
+    <%= form.actions do %>
+      <%= form.action(:submit, button_html: { class:'btn btn-success btn-lg', disable_with: 'Processing' }) %>
+    <% end %>
+    <div id="being_created" style="display: none;">
+      <p>Your spreadsheet is being processed...</p>
+      <%= loading_bar %>
+    </div>
+  <% end %>
+<% end %>
+<div class="columnize">
+  <%= link_to "Download Blank Template", "/data/bulk_submission/blank_template.xls", class: 'btn btn-info btn-lg btn-block mb-3' %>
+<%= panel(:help) do %>
+  <h4>Guidance</h4>
 <p>
   The template contains the following columns:
 </p>
@@ -56,6 +58,8 @@
   <dd>The number of lanes of sequencing requested per pool.</dd>
   <dt>Bait library name</dt>
   <dd>The name of the bait library to apply (ISC templates only)</dd>
+  <dt>primer panel</dt>
+  <dd>The name of the primer panel to apply (GbS templates only)</dd>
   <dt>Comments</dt><dd>Any comment to add to the submission</dd>
 </dl>
 <p>The remaining columns are mutually exclusive, although they are all present in the template and the unused ones can
@@ -86,12 +90,12 @@
   names, or across multiple rows, which you must currently do for the plate/well combinations.  If your submission spans
   multiple rows then the 'asset group name' is used to group them together, so must be identical for each row that forms
   a submission.  In this latter case the submission details must be duplicated on each line.</p>
-</div>
-<div class='col-md-6'>
-  <h4>All submission templates</h4>
+<% end %>
+<%= panel(:templates, class: 'col') do %>
+  <h4 class="card-title">All submission templates</h4>
   <div id="accordion" role="tablist" aria-multiselectable="true">
   <% @submission_template_groups.each do |group,templates| %>
-    <div class="card card-default">
+    <div class="card">
       <div class="card-header" role="tab" id="heading<%= group.gsub(' ','_').camelize %>" data-toggle="collapse" data-parent="#accordion" href="#collapse<%= group.gsub(' ','_').camelize %>">
         <h5 class="dropdown-toggle"><%= group %></h5>
       </div>
@@ -103,7 +107,7 @@
     </div>
   <% end %>
   </div>
-</div>
+<% end %>
 </div>
 <script>
 (function($, undefined) {

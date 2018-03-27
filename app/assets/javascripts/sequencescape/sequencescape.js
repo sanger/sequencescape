@@ -52,19 +52,13 @@ window.reload_batch = function(){
 }
 
 window.select_all = function(){
-  var checkboxes = $('input[type="checkbox"]');
-  checkboxes.each(function(pos, r){
-    if (!r.disabled) {
-      $(r).prop('checked', true);
-    };
-  });
+  var scope = this.dataset.scope || 'body';
+  $(scope).find('input[type="checkbox"]:enabled').prop('checked', true);
 }
 
 window.deselect_all = function(){
-  var checkboxes = $('input[type="checkbox"]');
-  checkboxes.each(function(pos, r){
-    $(r).prop('checked', false);
-  });
+  var scope = this.dataset.scope || 'body';
+  $(scope).find('input[type="checkbox"]:enabled').prop('checked', false);
 }
 
 window.disable_cr_and_change_focus = function(event, current_field, next_field) {
