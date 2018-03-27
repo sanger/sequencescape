@@ -77,7 +77,7 @@ class CustomerRequest < Request
   end
 
   def can_be_billed?
-    biffable? && billing_items.empty? && passed?
+    passed? && biffable? && billing_items.empty?
   end
 
   def biffable?

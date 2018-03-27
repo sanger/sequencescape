@@ -49,6 +49,9 @@ class Aliquot < ApplicationRecord
 
   # It can belong to a library asset
   belongs_to :library, class_name: 'Receptacle'
+
+  belongs_to :request
+
   composed_of :insert_size, mapping: [%w{insert_size_from from}, %w{insert_size_to to}], class_name: 'Aliquot::InsertSize', allow_nil: true
 
   has_one :aliquot_index, dependent: :destroy
@@ -92,11 +95,11 @@ class Aliquot < ApplicationRecord
   # in transfer request to fail, without any visible sign that something had gone wrong. This essentially meant that tag clashes
   # would result in sample dropouts. (presumably because << triggers save not save!)
   def untagged?
-    tag_id.nil? or tag_id == UNASSIGNED_TAG
+    tag_id.nil? || tag_id == UNASSIGNED_TAG
   end
 
   def no_tag2?
-    tag2_id.nil? or tag2_id == UNASSIGNED_TAG
+    tag2_id.nil? || tag2_id == UNASSIGNED_TAG
   end
 
   def tagged?

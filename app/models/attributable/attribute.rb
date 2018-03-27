@@ -72,7 +72,7 @@ module Attributable
     end
 
     def configure(model)
-      conditions = @options.slice(:if)
+      conditions = @options.slice(:if, :on)
       save_blank_value = @options.delete(:save_blank)
       allow_blank = save_blank_value
       model.with_options(conditions) do |object|
