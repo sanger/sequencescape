@@ -30,17 +30,15 @@ class LocationReport::FormObject
   attr_reader :location_report
 
   # Validations
-  validate :has_a_name?
+  validate :name_present?
   validates :report_type, presence: true
-  validates :study_id, presence: true, allow_nil: true
   validate :are_both_dates_present_if_used?
-  validate :is_end_date_after_start_date?
+  validate :end_date_after_start_date?
   validate :are_entered_barcodes_valid?
   validate :any_select_field_present?
   validate :are_any_plates_found?
 
   def save
-    p 'in save'
     if valid?
       persist!
       true
@@ -56,20 +54,19 @@ class LocationReport::FormObject
   end
 
   #######
+
   private
+
   #######
 
-  def has_a_name?
+  def name_present?
     self.name = name.gsub(/[^A-Za-z0-9_\-\.\s]/, '').squish.gsub(/\s/, '_') if name.present?
     self.name = Time.current.to_formatted_s(:number) if name.blank?
-    errors.add(:report_name, 'TODO: no name found') unless name.present?
+    errors.add(:report_name, I18n.t('location_reports.errors.no_report_name_found')) if name.blank?
   end
 
   def are_both_dates_present_if_used?
-    p 'in are_both_dates_present_if_used?'
-    if ((start_date.blank? && end_date.present?) || (start_date.present? && end_date.blank?)) then
-      errors.add(:base, 'TODO: both dates must be entered')
-    end
+    errors.add(:start_date, I18n.t('location_reports.errors.both_dates_required')) if (start_date.blank? && end_date.present?) || (start_date.present? && end_date.blank?)
   end
 
   def parse_barcodes
@@ -77,29 +74,29 @@ class LocationReport::FormObject
   end
 
   def are_entered_barcodes_valid?
-    p 'in are_entered_barcodes_valid?'
-    return true unless barcodes_text.present?
+    return if barcodes_text.blank?
     invalid_barcodes = []
     valid_barcodes = {}
     parse_barcodes.each do |cur_bc|
       if barcode_is_human_readable?(cur_bc)
-        cur_bc = Barcode.human_to_machine_barcode(cur_bc).to_s
-        check_bc_unique?(valid_barcodes, cur_bc)
+        begin
+          cur_bc = Barcode.human_to_machine_barcode(cur_bc).to_s
+          check_bc_unique?(valid_barcodes, cur_bc)
+        rescue SBCF::InvalidBarcode
+          invalid_barcodes << cur_bc
+        end
       elsif barcode_is_ean13?(cur_bc)
         check_bc_unique?(valid_barcodes, cur_bc)
       else
         invalid_barcodes << cur_bc
       end
     end
-    p "valid barcodes = #{valid_barcodes.inspect}"
     self.barcodes = valid_barcodes.keys if valid_barcodes.present?
-    p "barcodes = #{barcodes}"
-    errors.add(:base, I18n.t('location_reports.errors.invalid_barcodes_found') + invalid_barcodes.join(',')) unless invalid_barcodes.blank?
-    errors.add(:base, I18n.t('location_reports.errors.no_valid_barcodes_found')) if barcodes.blank?
+    errors.add(:barcodes_text, I18n.t('location_reports.errors.invalid_barcodes_found') + invalid_barcodes.join(',')) if invalid_barcodes.present?
+    errors.add(:barcodes_text, I18n.t('location_reports.errors.no_valid_barcodes_found')) if barcodes.blank?
   end
 
   def check_bc_unique?(valid_barcodes, cur_bc)
-    p 'in check_bc_unique'
     if valid_barcodes.key?(cur_bc)
       errors.add(:base, I18n.t('location_reports.errors.duplicate_barcode_found') + cur_bc)
       false
@@ -118,31 +115,23 @@ class LocationReport::FormObject
   end
 
   def any_select_field_present?
-    p 'in any_select_field_present'
     return unless report_type == 'type_selection'
-    p "type_selection"
-    attr_list = %i(faculty_sponsor_ids study_id start_date end_date plate_purpose_ids barcodes_text)
-    errors.add(:base, "TODO: fill summat in!") if attr_list.all?{ |attr| send(attr).blank? }
+    attr_list = %i[faculty_sponsor_ids study_id start_date end_date plate_purpose_ids barcodes_text]
+    errors.add(:base, I18n.t('location_reports.errors.no_selection_fields_filled')) if attr_list.all? { |attr| send(attr).blank? }
   end
 
   def are_any_plates_found?
-    p 'in are_any_plates_found?'
     return unless report_type == 'type_selection'
-    p 'checking plates exist'
     errors.add(:base, I18n.t('location_reports.errors.no_rows_found')) unless search_for_plates_by_selection.any?
   end
 
-  def is_end_date_after_start_date?
-    p 'in is_end_date_after_start_date?'
-    return if (start_date.blank? || end_date.blank?)
+  def end_date_after_start_date?
+    return if start_date.blank? || end_date.blank?
 
-    if end_date < start_date
-      errors.add(:end_date, "TODO: End cannot be before the start date") 
-    end 
+    errors.add(:end_date, I18n.t('location_reports.errors.end_date_after_start_date')) if end_date < start_date
   end
 
   def search_for_plates_by_selection
-    p 'in search_for_plates_by_selection'
     params = {
       faculty_sponsor_ids:  faculty_sponsor_ids,
       study_id:             study_id,
@@ -151,15 +140,18 @@ class LocationReport::FormObject
       plate_purpose_ids:    plate_purpose_ids,
       barcodes:             barcodes
     }
-    p "params = #{params.inspect}"
     Plate.search_for_plates(params)
   end
 
   def persist!
-    p 'in persist'
     LocationReport.transaction do
-      @location_report = LocationReport.new(name: name)
-      @location_report.
+      @location_report                     = LocationReport.new(user: user, name: name, report_type: report_type)
+      @location_report.faculty_sponsor_ids = faculty_sponsor_ids if faculty_sponsor_ids.present?
+      @location_report.study_id            = study_id if study_id.present?
+      @location_report.start_date          = start_date&.to_datetime if start_date.present?
+      @location_report.end_date            = end_date&.to_datetime if end_date.present?
+      @location_report.plate_purpose_ids   = plate_purpose_ids if plate_purpose_ids.present?
+      @location_report.barcodes            = barcodes if barcodes.present?
       return if @location_report.save
 
       errors.add(:base, I18n.t('location_reports.errors.failed_to_save_location_report'))

@@ -11,7 +11,6 @@ class LocationReport < ApplicationRecord
   extend DbFile::Uploader
 
   # attributes / variables
-  attr_accessor :barcodes_list
   serialize :faculty_sponsor_ids, Array
   serialize :plate_purpose_ids, Array
   serialize :barcodes, Array
@@ -19,43 +18,26 @@ class LocationReport < ApplicationRecord
   enum report_type: %i[type_selection type_labwhere]
 
   # relations
-  belongs_to :study
+  belongs_to :study, required: false
   belongs_to :user
 
   # scopes
-  scope :for_user, ->(user) { where(user_id: user.id) }
+  scope :for_user, ->(user) { where(user_id: user) }
 
   # actions
-  # before_validation :generate_name, on: %i[create build]
-  # before_validation :check_entered_barcodes, on: %i[create build], if: :barcodes_text?
   after_create :schedule_report
   has_uploaded :report, serialization_column: 'report_filename'
 
   # validations
+  validates :name, presence: true
   validates :report_type, presence: true
-  # validates :barcodes, presence: { if: :type_barcodes? }
-  validates_presence_of :barcodes, allow_nil: true
-  # validate :barcodes_are_recognised, on: %i[create build], if: :barcodes_text?
-  # validates :study, presence: true, allow_nil: true
-  # validates_presence_of :start_date, if: :end_date?
-  # validates_presence_of :end_date, if: :start_date?
-  # validates_presence_of :end_date, date: { after_or_equal_to: :start_date}
-  # validate :end_date_is_after_start_date
-  # validate :any_select_field_present?, on: %i[create build], if: :type_selection?
-  # validate :plates_are_found, on: %i[create], if: :type_selection?
+  validate :any_select_field_present?
 
-  # def barcodes_text
-  #   barcodes_list.join(' ') unless @barcodes_list.nil?
-  # end
-
-  # # converts the barcodes entered by the user into a list
-  # def barcodes_text=(value)
-  #   self.barcodes_list = if value.nil?
-  #                          []
-  #                        else
-  #                          value.strip.split(/[\s]+/)
-  #                        end
-  # end
+  def any_select_field_present?
+    return unless report_type == 'type_selection'
+    attr_list = %i[faculty_sponsor_ids study_id start_date end_date plate_purpose_ids barcodes]
+    errors.add(:base, I18n.t('location_reports.errors.no_selection_fields_filled')) if attr_list.all? { |attr| send(attr).blank? }
+  end
 
   def column_headers
     %w[ScannedBarcode HumanBarcode Type Created Location Service StudyName StudyId FacultySponsor]
@@ -75,33 +57,6 @@ class LocationReport < ApplicationRecord
       end
     end
   end
-
-  # def check_entered_barcodes
-  #   @invalid_barcodes_list = []
-  #   barcodes_list.each do |cur_bc|
-  #     if barcode_is_human_readable?(cur_bc)
-  #       barcodes << Barcode.human_to_machine_barcode(cur_bc).to_s
-  #     elsif barcode_is_ean13?(cur_bc)
-  #       barcodes << cur_bc
-  #     else
-  #       @invalid_barcodes_list << cur_bc
-  #     end
-  #   end
-  # end
-
-  # def barcodes_are_recognised
-  #   errors.add(:base, I18n.t('location_reports.errors.invalid_barcodes_found') + @invalid_barcodes_list.join(',')) unless @invalid_barcodes_list.size.zero?
-  # end
-
-  # def any_select_field_present?
-  #   if %w(faculty_sponsor_ids study start_date end_date plate_purpose_ids).all?{|attr| self[attr].blank?}
-  #     errors.add :base, "Select summat!"
-  #   end
-  # end
-
-  # def plates_are_found
-  #   errors.add(:base, I18n.t('location_reports.errors.no_rows_found')) unless search_for_plates_by_selection.any?
-  # end
 
   def schedule_report
     Delayed::Job.enqueue LocationReportJob.new(id)
@@ -129,21 +84,13 @@ class LocationReport < ApplicationRecord
   end
 
   #######
+
   private
+
   #######
 
-  # def end_date_is_after_start_date
-  #   return if end_date.blank? || start_date.blank?
-
-  #   if end_date < start_date
-  #     errors.add(:end_date, "TODO: Cannot be before the start date") 
-  #   end 
-  # end
-
   def generate_plates_list
-    @plates_list = if type_barcodes?
-                     Plate.with_machine_barcode(barcodes)
-                   elsif type_selection?
+    @plates_list = if type_selection?
                      search_for_plates_by_selection
                    else
                      []
@@ -175,11 +122,6 @@ class LocationReport < ApplicationRecord
     cols << (cur_study.study_metadata.faculty_sponsor&.name || 'Unknown')
   end
 
-  # def generate_name
-  #   self.name = name.gsub(/[^A-Za-z0-9_\-\.\s]/, '').squish.gsub(/\s/, '_') if name.present?
-  #   self.name = Time.current.to_formatted_s(:number) if name.blank?
-  # end
-
   def search_for_plates_by_selection
     params = {
       faculty_sponsor_ids:  faculty_sponsor_ids,
@@ -191,12 +133,4 @@ class LocationReport < ApplicationRecord
     }
     Plate.search_for_plates(params)
   end
-
-  # def barcode_is_human_readable?(bc)
-  #   bc.match?(/\A([A-z]{2})([0-9]{1,7})[A-z]{0,1}\z/)
-  # end
-
-  # def barcode_is_ean13?(bc)
-  #   bc.match?(/^\d{13}$/)
-  # end
 end

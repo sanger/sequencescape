@@ -27,7 +27,7 @@ RSpec.describe LocationReport::FormObject, type: :model do
     )
   end
 
-  let(:plt_1_purpose)         { plate_1.plate_purpose.name }
+  let(:plt_1_purpose)         { plate_1.plate_purpose }
   let(:plt_1_created)         { plate_1.created_at.strftime('%Y-%m-%d %H:%M:%S') }
 
   let!(:plate_2) do
@@ -39,7 +39,7 @@ RSpec.describe LocationReport::FormObject, type: :model do
     )
   end
 
-  let(:plt_2_purpose)         { plate_2.plate_purpose.name }
+  let(:plt_2_purpose)         { plate_2.plate_purpose }
   let(:plt_2_created)         { plate_2.created_at.strftime('%Y-%m-%d %H:%M:%S') }
 
   let!(:plate_3) do
@@ -51,7 +51,7 @@ RSpec.describe LocationReport::FormObject, type: :model do
     )
   end
 
-  let(:plt_3_purpose)         { plate_3.plate_purpose.name }
+  let(:plt_3_purpose)         { plate_3.plate_purpose }
   let(:plt_3_created)         { plate_3.created_at.strftime('%Y-%m-%d %H:%M:%S') }
 
   let(:headers_line)          { 'ScannedBarcode,HumanBarcode,Type,Created,Location,Service,StudyName,StudyId,FacultySponsor' }
@@ -99,6 +99,22 @@ RSpec.describe LocationReport::FormObject, type: :model do
       end
     end
 
+    context 'when entered name is only spaces' do
+      let(:name) { '          ' }
+      let(:report_type) { 'type_selection' }
+      let(:start_date) { '2016-01-01 00:00:00' }
+      let(:end_date) { '2016-07-01 00:00:00' }
+
+      it 'the model is valid' do
+        expect(location_report_form_object).to be_valid
+      end
+
+      it 'the report name has a timestamp format' do
+        location_report_form_object.valid?
+        expect(location_report_form_object.name).to match(/[0-9]{14}/)
+      end
+    end
+
     context 'when a name is supplied' do
       let(:report_type) { 'type_selection' }
       let(:name) { 'Test name' }
@@ -138,6 +154,12 @@ RSpec.describe LocationReport::FormObject, type: :model do
         expect(location_report_form_object).to_not be_valid
       end
 
+      it 'is is valid for the start date to be the same as the end date' do
+        location_report_form_object.start_date = '2016-06-01 00:00:00'
+        location_report_form_object.end_date = '2016-06-01 00:00:00'
+        expect(location_report_form_object).to_not be_valid
+      end
+
       it 'is not valid if the dates do not find any plates' do
         location_report_form_object.start_date = '2016-07-01 00:00:00'
         location_report_form_object.end_date = '2016-07-02 00:00:00'
@@ -150,121 +172,92 @@ RSpec.describe LocationReport::FormObject, type: :model do
 
       it 'is not valid if the barcodes list only contains whitespace' do
         location_report_form_object.barcodes_text = '       '
-        expect(location_report_form_object.valid?).to be_falsey
+        expect(location_report_form_object).to_not be_valid
       end
 
       it 'is not valid if there is a poorly formatted barcode in the list' do
-        location_report_form_object.barcodes_text = "plate_1.machine_barcode.to_s INVALID123 plate_1.sanger_human_barcode.to_s"
-        expect(location_report_form_object.valid?).to be_falsey
+        location_report_form_object.barcodes_text = "#{plate_1.machine_barcode} INVALID123 #{plate_2.sanger_human_barcode}"
+        expect(location_report_form_object).to_not be_valid
       end
 
       it 'is valid to use human readable barcodes' do
         location_report_form_object.barcodes_text = plate_1.sanger_human_barcode.to_s
-        expect(location_report_form_object.valid?).to be_truthy
+        expect(location_report_form_object).to be_valid
       end
 
-      # it 'is valid to use human readable barcodes missing the check digit character' do
-      #   location_report_form_object.barcodes_text = 'DN1'
-      #   expect(location_report_form_object.valid?).to be_truthy
-      # end
+      it 'is valid to use human readable barcodes missing the final check digit character' do
+        location_report_form_object.barcodes_text = plate_1.sanger_human_barcode.to_s[0...-1]
+        expect(location_report_form_object).to be_valid
+      end
 
-      # it 'is valid to have multiple barcodes in the text field with variable spacing' do
-      #   location_report_form_object.barcodes_text = ' 1234567890101 DN1S     1234567890103          DN2 '
-      #   expect(location_report_form_object.valid?).to be_truthy
-      # end
+      it 'is valid to enter barcodes with commas separating them' do
+        location_report_form_object.barcodes_text = "#{plate_1.machine_barcode},#{plate_2.machine_barcode},#{plate_3.machine_barcode}"
+        expect(location_report_form_object).to be_valid
+      end
 
-      # it 'correctly isolates the barcodes from a list with variable spacing' do
-      #   location_report_form_object.barcodes_text = ' 1234567890101 1234567890102     1234567890103          1234567890104 '
-      #   expect(location_report_form_object.barcodes.size).to eq(4)
-      # end
+      it 'is valid to enter barcodes with commas and spaces separating them' do
+        location_report_form_object.barcodes_text = "#{plate_1.machine_barcode},   #{plate_2.machine_barcode}   ,  #{plate_3.machine_barcode}"
+        expect(location_report_form_object).to be_valid
+      end
+
+      context 'when barcodes are input with varied spacing or spaces at the beginning or end' do
+        before(:each) do
+          location_report_form_object.barcodes_text = " #{plate_1.machine_barcode} #{plate_2.sanger_human_barcode}     #{plate_3.machine_barcode}        "
+        end
+
+        it 'the model is valid' do
+          expect(location_report_form_object).to be_valid
+        end
+
+        it 'correctly isolates the right number of barcodes' do
+          location_report_form_object.valid?
+          expect(location_report_form_object.barcodes&.size).to eq(3)
+        end
+      end
     end
 
-    # context 'when valid barcodes are entered' do
-    #   it 'the model is valid' do
-    #     expect(location_report_form_object_form_object).to be_valid
-    #   end
-    # end
+    context 'when using multiple barcodes and criteria that result in no plates found' do
+      let(:barcodes) { [plate_1.machine_barcode, plate_2.machine_barcode, plate_3.machine_barcode] }
+      let(:start_date) { '2016-11-15 00:00:00' }
+      let(:end_date) { '2016-11-17 00:00:00' }
 
-    # context 'when an invalid barcode is entered with valid barcodes' do
-    #   it 'the model is invalid' do
-    #     location_report_form_object_form_object.barcodes_text = 'ACGTACGT INVALID ACTGCATG'
-    #     expect(location_report_form_object_form_object).to_not be_valid
-    #   end
-    # end
+      it 'the model is not valid' do
+        expect(location_report_form_object).to_not be_valid
+      end
+    end
 
-    # context 'when only invalid barcodes are entered' do
-    #   it 'the model is invalid' do
-    #     location_report_form_object_form_object.barcodes_text = 'INVALID1 INVALID2 INVALID3'
-    #     expect(location_report_form_object_form_object).to_not be_valid
-    #   end
-    # end
+    context 'when a valid form object model is saved' do
+      let(:name) { 'Test name' }
+      let(:report_type) { 'type_selection' }
+      let(:faculty_sponsor_ids) { [study_1_sponsor.id] }
+      let(:study_id) { study_1.id }
+      let(:start_date) { '2016-01-01 00:00:00' }
+      let(:end_date) { '2016-03-01 00:00:00' }
+      let(:plate_purpose_ids) { [plt_1_purpose.id] }
+      let(:barcodes_text) { plate_1.machine_barcode.to_s }
 
-    # context 'when a duplicate barcode is entered' do
-    #   it 'the model is invalid' do
-    #     location_report_form_object_form_object.barcodes_text = 'ACGTACGT ACTGCATG ACTGCATG'
-    #     expect(location_report_form_object_form_object).to_not be_valid
-    #   end
-    # end
+      before(:each) do
+        location_report_form_object.save
+      end
 
-    # context 'when barcodes are separated by multiple spaces' do
-    #   before(:each) do
-    #     location_report_form_object_form_object.barcodes_text = ' ACGTACGT    ACTGCATG  ACTGGGCC   '
-    #   end
+      it 'creates a location report' do
+        expect(location_report_form_object.location_report).to be_present
+      end
 
-    #   it 'the model is valid' do
-    #     expect(location_report_form_object_form_object).to be_valid
-    #   end
-    # end
+      it 'creates a valid location report' do
+        expect(location_report_form_object.location_report).to be_valid
+      end
 
-    # context 'when no barcodes are entered' do
-    #   it 'the model is invalid' do
-    #     location_report_form_object_form_object.barcodes_text = '        '
-    #     expect(location_report_form_object_form_object).to_not be_valid
-    #   end
-    # end
-
-    # context 'when no name is entered' do
-    #   it 'the model is invalid' do
-    #     location_report_form_object_form_object.name = nil
-    #     expect(location_report_form_object_form_object).to_not be_valid
-    #   end
-    # end
-
-    # context 'when entered name is only spaces' do
-    #   it 'the model is invalid' do
-    #     location_report_form_object_form_object.name = '      '
-    #     expect(location_report_form_object_form_object).to_not be_valid
-    #   end
-    # end
-
-    # context 'when a valid model is saved' do
-    #   before(:each) do
-    #     location_report_form_object_form_object.save
-    #   end
-
-    #   it 'creates a valid location report' do
-    #     expect(location_report_form_object_form_object.location_report_form_object).to be_valid
-    #   end
-    # end
-
-    # context 'when the barcodes are entered with commas separating them' do
-    #   before(:each) do
-    #     location_report_form_object_form_object.barcodes_text = 'ACCTTGGA,GGTTACAC,TAATCGCA'
-    #   end
-
-    #   it 'the model is valid' do
-    #     expect(location_report_form_object_form_object).to be_valid
-    #   end
-    # end
-
-    # context 'when the barcodes are entered with commas and spaces separating them' do
-    #   before(:each) do
-    #     location_report_form_object_form_object.barcodes_text = 'ACCTTGGA, GGTTACAC,  TAATCGCA'
-    #   end
-
-    #   it 'the model is valid' do
-    #     expect(location_report_form_object_form_object).to be_valid
-    #   end
-    # end
+      it 'correctly records the form object information in the location report' do
+        expect(location_report_form_object.location_report.name).to eq('Test_name')
+        expect(location_report_form_object.location_report.report_type).to eq('type_selection')
+        expect(location_report_form_object.location_report.faculty_sponsor_ids).to eq([study_1_sponsor.id])
+        expect(location_report_form_object.location_report.study_id).to eq(study_1.id)
+        expect(location_report_form_object.location_report.start_date.strftime('%Y-%m-%d %H:%M:%S')).to eq('2016-01-01 00:00:00')
+        expect(location_report_form_object.location_report.end_date.strftime('%Y-%m-%d %H:%M:%S')).to eq('2016-03-01 00:00:00')
+        expect(location_report_form_object.location_report.plate_purpose_ids).to eq([plt_1_purpose.id])
+        expect(location_report_form_object.location_report.barcodes).to eq([plate_1.machine_barcode.to_s])
+      end
+    end
   end
 end

@@ -10,7 +10,7 @@ FactoryGirl.define do
     user
     sequence(:name) { |n| "Location Report #{n}" }
     report_type :type_selection
-    
+
     factory :location_report_selection do
     end
 
