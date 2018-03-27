@@ -3,6 +3,12 @@
 require 'factory_girl'
 
 FactoryGirl.define do
+  trait :scanned_into_lab do
+    after(:build) do |asset, _evaluator|
+      asset.create_scanned_into_lab_event!(content: '2018-01-01')
+    end
+  end
+
   factory :tube do
     name { generate :asset_name }
     association(:purpose, factory: :tube_purpose)
