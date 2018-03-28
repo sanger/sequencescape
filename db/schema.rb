@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180323134506) do
+ActiveRecord::Schema.define(version: 20180328130539) do
 
   create_table "aker_containers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "barcode"
@@ -866,6 +866,8 @@ ActiveRecord::Schema.define(version: 20180323134506) do
     t.string "barcode_for_tecan", default: "ean13_barcode", null: false
     t.integer "source_purpose_id"
     t.integer "lifespan"
+    t.integer "barcode_prefix_id"
+    t.index ["barcode_prefix_id"], name: "fk_rails_763bed2756"
     t.index ["target_type"], name: "index_plate_purposes_on_target_type"
     t.index ["type"], name: "index_plate_purposes_on_type"
   end
@@ -1890,6 +1892,7 @@ ActiveRecord::Schema.define(version: 20180323134506) do
   add_foreign_key "aliquots", "primer_panels"
   add_foreign_key "billing_items", "requests"
   add_foreign_key "billing_products", "billing_product_catalogues"
+  add_foreign_key "plate_purposes", "barcode_prefixes"
   add_foreign_key "qc_files", "assets"
   add_foreign_key "request_types", "billing_product_catalogues"
   add_foreign_key "requests", "billing_products"

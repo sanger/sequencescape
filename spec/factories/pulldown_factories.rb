@@ -179,31 +179,11 @@ FactoryGirl.define do
     walking_algorithm   'TagLayout::WalkWellsOfPlate'
   end
 
-  factory(:parent_plate_purpose, class: PlatePurpose) do
-    name 'Parent plate purpose'
-  end
-
-  # Plate creations
-  factory(:pooling_plate_purpose, class: PlatePurpose) do
-    sequence(:name) { |i| "Pooling purpose #{i}" }
-    stock_plate true
-  end
-
-  factory(:initial_downstream_plate_purpose, class: Pulldown::InitialDownstreamPlatePurpose) do
-    name { generate :pipeline_name }
-  end
-
   factory(:plate_creation) do
     user
     barcode
     association(:parent, factory: :full_plate, well_count: 2)
     association(:child_purpose, factory: :plate_purpose)
-  end
-
-  # Tube creations
-  factory(:child_tube_purpose, class: Tube::Purpose) do
-    sequence(:name) { |n| "Child tube purpose #{n}" }
-    target_type 'Tube'
   end
 
   factory(:tube_creation) do
