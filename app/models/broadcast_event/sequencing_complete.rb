@@ -19,26 +19,20 @@ class BroadcastEvent::SequencingComplete < BroadcastEvent
   seed_subject :lane
 
   # Broadcast when a sequencing request starts:
-  has_subjects(:sequencing_source_labware) { |lane, e| e.source_labwares(lane) }
+  has_subjects(:sequencing_source_labware, :source_labwares)
   has_subjects(:study, :studies)
   has_subjects(:project, :projects)
-  has_subjects(:stock_plate) { |lane, e| e.source_labwares(lane).map(&:original_stock_plates).flatten.uniq }
-  has_subjects(:library_source_labware) { |lane, e| e.source_labwares(lane).map(&:library_source_plates).flatten.uniq }
+  has_subjects(:stock_plate, :original_stock_plates)
+  has_subjects(:library_source_labware) { |lane, _| lane.source_labwares.map(&:library_source_plates).flatten.uniq }
   has_subjects(:sample, :samples)
 
   # # Metadata
-  has_metadata(:read_length) { |lane, e| e.lane_first_request(lane).request_metadata.read_length }
-  has_metadata(:pipeline) { |lane, e| e.lane_first_request(lane).pipeline.name }
-  has_metadata(:team) { |lane, e| e.lane_first_request(lane).product_line }
+  has_metadata(:read_length) { |_, e| e.lane_first_request.request_metadata.read_length }
+  has_metadata(:pipeline) { |_, e| e.lane_first_request.pipeline.name }
+  has_metadata(:team) { |_, e| e.lane_first_request.product_line }
   has_metadata(:result) { |_, e| e.properties[:result] }
 
-  def source_labwares(lane)
-    @_source_labwares ||= {}
-    @_source_labwares[lane] ||= lane.source_labwares
-  end
-
-  def lane_first_request(lane)
-    @_lane_first_requests ||= {}
-    @_lane_first_requests[lane] ||= lane.requests_as_target.first
+  def lane_first_request
+    seed.requests_as_target.first
   end
 end

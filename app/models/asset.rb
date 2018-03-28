@@ -435,6 +435,10 @@ class Asset < ApplicationRecord
     AssetLink.create_edge!(parent, self)
   end
 
+  def original_stock_plates
+    ancestors.where(plate_purpose_id: PlatePurpose.stock_plate_purpose)
+  end
+
   def attach_tag(tag, tag2 = nil)
     tags = { tag: tag, tag2: tag2 }.compact
     return if tags.empty?
