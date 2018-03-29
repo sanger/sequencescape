@@ -124,7 +124,7 @@ namespace :limber do
   end
 
   desc 'Create the limber submission templates'
-  task create_submission_templates: [:environment, :create_request_types] do
+  task create_submission_templates: [:environment, :create_request_types, 'sequencing:novaseq:setup'] do
     puts 'Creating submission templates....'
     ActiveRecord::Base.transaction do
       %w[WGS ISC ReISC].each do |prefix|
