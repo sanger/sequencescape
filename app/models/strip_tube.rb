@@ -11,8 +11,6 @@
 class StripTube < Plate
   has_many :submissions, through: :well_requests_as_target
 
-  self.prefix = 'LS'
-
   def friendly_name
     name
   end

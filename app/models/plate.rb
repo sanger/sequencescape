@@ -19,6 +19,10 @@ class Plate < Asset
   include PlateCreation::CreationChild
 
   extend QcFile::Associations
+
+  # Shouldn't actually be falling back to this, but its here just in case
+  self.default_prefix = 'DN'
+
   has_qc_files
 
   belongs_to :plate_purpose, foreign_key: :plate_purpose_id
@@ -107,6 +111,7 @@ class Plate < Asset
 
   # The default state for a plate comes from the plate purpose
   delegate :default_state, to: :plate_purpose, allow_nil: true
+
   def state
     plate_purpose.state_of(self)
   end
@@ -185,10 +190,6 @@ class Plate < Asset
     waiting_submissions.presence || in_progress_submissions
   end
 
-  def prefix
-    barcode_prefix.try(:prefix) || self.class.prefix
-  end
-
   def barcode_dilution_factor_created_at_hash
     return {} if barcode.blank?
     {
@@ -240,7 +241,6 @@ class Plate < Asset
 
   # has_many :wells, :as => :holder, :class_name => "Well"
   DEFAULT_SIZE = 96
-  self.prefix = 'DN'
 
   self.per_page = 50
 

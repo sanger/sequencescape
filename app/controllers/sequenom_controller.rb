@@ -1,9 +1,13 @@
+# frozen_string_literal: true
+
 # This file is part of SEQUENCESCAPE; it is distributed under the terms of
 # GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
+# TODO: REMOVE! This code is tested but unused in production and should be removed in the next commit!
+# Can remove tests and routes.
 class SequenomController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
@@ -72,7 +76,7 @@ class SequenomController < ApplicationController
   # Although this might seem stupid this actually enables us to use different filters
   # around this action from the #update action.  We simply need to ensure that @user
   # and @plate are setup before we get to the action code.
-  alias_method(:quick_update, :update)
+  alias quick_update update
 
   private
 
@@ -88,7 +92,7 @@ class SequenomController < ApplicationController
   # should take two parameters (the barcode and the human version of that barcode) and return the
   # value that can be used by +model_class.find_by_barcode+.  +filter_options+ are exactly as
   # would be specified for a +before_action+.
-  def self.define_find_from_barcode_filter(model_class, filter_options, &block)
+  def self.define_find_from_barcode_filter(model_class, prefix, filter_options, &block)
     name                        = model_class.name.underscore
     filter_name                 = :"find_#{ name }_from_barcode"
     rescue_exception_for_filter = :"rescue_#{ filter_name }"
@@ -97,7 +101,7 @@ class SequenomController < ApplicationController
       begin
         barcode = params[:"#{ name }_barcode"]
         raise(EmptyBarcode, "The #{name} barcode appears to be empty") if barcode.blank?
-        human_barcode = Barcode.barcode_to_human!(barcode, model_class.prefix)
+        human_barcode = Barcode.barcode_to_human!(barcode, prefix)
         object = model_class.find_by(barcode: block.call(barcode, human_barcode))
         raise ActiveRecord::RecordNotFound, "Could not find a #{name} with barcode #{barcode}" if object.nil?
         instance_variable_set("@#{name}", object)
@@ -106,16 +110,15 @@ class SequenomController < ApplicationController
       end
     end
     define_method(rescue_exception_for_filter) do |exception, barcode, human_barcode|
-      case
-      when ActiveRecord::RecordNotFound === exception
+      if ActiveRecord::RecordNotFound === exception
         flash[:error] = I18n.t("sequenom.errors.#{name}.not_found_by_barcode", barcode: barcode, human_barcode: human_barcode)
         redirect_to sequenom_root_path
 
-      when SBCF::BarcodeError === exception
+      elsif SBCF::BarcodeError === exception
         flash[:error] = I18n.t("sequenom.errors.#{name}.invalid_barcode", barcode: barcode, human_barcode: human_barcode)
         redirect_to sequenom_root_path
 
-      when EmptyBarcode === exception
+      elsif EmptyBarcode === exception
         flash[:error] = I18n.t("sequenom.errors.#{name}.empty_barcode")
         redirect_to sequenom_root_path
 
@@ -128,8 +131,9 @@ class SequenomController < ApplicationController
     before_action(filter_name, filter_options)
   end
 
-  define_find_from_barcode_filter(User,  only: [:update, :quick_update]) { |_barcode, human_barcode| human_barcode }
-  define_find_from_barcode_filter(Plate, only: [:search, :quick_update]) { |barcode, _human_barcode| Barcode.number_to_human(barcode) }
+  define_find_from_barcode_filter(User,  User.prefix, only: [:update, :quick_update]) { |_barcode, human_barcode| human_barcode }
+  # We shouldn't hardcode the prefix here, but this behaviour is due to change in the next commit or so.
+  define_find_from_barcode_filter(Plate, 'DN', only: [:search, :quick_update]) { |barcode, _human_barcode| Barcode.number_to_human(barcode) }
 
   # Handle the case where ActiveRecord::RecordNotFound is raised when looking for a Plate by
   # physically creating the Plate in the database!
@@ -140,6 +144,6 @@ class SequenomController < ApplicationController
       rescue_find_plate_from_barcode_without_create(exception, barcode, human_barcode)
     end
   end
-  alias_method(:rescue_find_plate_from_barcode_without_create, :rescue_find_plate_from_barcode)
-  alias_method(:rescue_find_plate_from_barcode, :rescue_find_plate_from_barcode_with_create)
+  alias rescue_find_plate_from_barcode_without_create rescue_find_plate_from_barcode
+  alias rescue_find_plate_from_barcode rescue_find_plate_from_barcode_with_create
 end

@@ -5,6 +5,8 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 class PlatePurpose < Purpose
+  self.default_prefix = 'DN'
+
   # includes / extends
   include SharedBehaviour::Named
   include Purpose::Relationship::Associations

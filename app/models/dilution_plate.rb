@@ -5,10 +5,8 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 class DilutionPlate < Plate
-  PICO_TYPES = [PicoAssayPlate, PicoAssayAPlate, PicoAssayBPlate].map(&:name)
-
-  has_many :pico_descendants, ->() { where(sti_type: PICO_TYPES) }, through: :links_as_ancestor, source: :descendant, class_name: 'PicoAssayPlate'
-  has_many :pico_children,    ->() { where(sti_type: PICO_TYPES) }, through: :links_as_parent,   source: :descendant, class_name: 'PicoAssayPlate'
+  has_many :pico_descendants, ->() { where(sti_type: 'PicoAssayPlate') }, through: :links_as_ancestor, source: :descendant, class_name: 'PicoAssayPlate'
+  has_many :pico_children,    ->() { where(sti_type: 'PicoAssayPlate') }, through: :links_as_parent,   source: :descendant, class_name: 'PicoAssayPlate'
 
   # Note: joins here fails as it doesn't populate the associations
   # includes ends up generating invalid sql, as rails doesn't seem to know how to apply conditions to a has_many through

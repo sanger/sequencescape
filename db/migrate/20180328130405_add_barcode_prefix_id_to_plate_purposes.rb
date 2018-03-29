@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Remove hardcoded barcode prefix ids from plate purposes.
 class AddBarcodePrefixIdToPlatePurposes < ActiveRecord::Migration[4.2]
   def change

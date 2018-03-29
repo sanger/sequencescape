@@ -57,23 +57,23 @@ FactoryGirl.define do
     with_wells
     size 96
   end
-  factory :pico_assay_a_plate do
-    plate_purpose { PlatePurpose.find_by!(name: 'Pico Assay A') }
-    barcode
-    with_wells
-    size 96
-  end
-  factory :pico_assay_b_plate do
-    plate_purpose { PlatePurpose.find_by!(name: 'Pico Assay B') }
-    barcode
-    with_wells
-    size 96
-  end
   factory :pico_assay_plate do
     plate_purpose { PlatePurpose.find_by!(name: 'Stock plate') }
     barcode
     with_wells
     size 96
+    factory :pico_assay_a_plate do
+      plate_purpose { PlatePurpose.find_by!(name: 'Pico Assay A') }
+      barcode
+      with_wells
+      size 96
+    end
+    factory :pico_assay_b_plate do
+      plate_purpose { PlatePurpose.find_by!(name: 'Pico Assay B') }
+      barcode
+      with_wells
+      size 96
+    end
   end
   factory :pico_dilution_plate do
     plate_purpose { PlatePurpose.find_by!(name: 'Pico Dilution') }

@@ -13,6 +13,10 @@ class Tube < Receptacle
   include Transfer::State::TubeState
 
   extend QcFile::Associations
+
+  # Fallback for tubes without a purpose
+  self.default_prefix = 'NT'
+
   has_qc_files
 
   def automatic_move?

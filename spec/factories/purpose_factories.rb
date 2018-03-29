@@ -1,15 +1,8 @@
 # frozen_string_literal: true
 
 FactoryGirl.define do
-  trait :with_barcode_prefix do
-    transient do
-      prefix 'DN'
-    end
-    barcode_prefix { build :barcode_prefix, prefix: prefix }
-  end
-
   factory :purpose do
-    with_barcode_prefix
+    prefix 'DN'
     name { generate :purpose_name }
     target_type 'Asset'
 
@@ -29,7 +22,7 @@ FactoryGirl.define do
   end
 
   factory :strip_tube_purpose, class: PlatePurpose do
-    with_barcode_prefix
+    prefix 'LS'
     name               { generate :purpose_name }
     size               '8'
     asset_shape        { AssetShape.find_by!(name: 'StripTubeColumn') }
@@ -38,7 +31,7 @@ FactoryGirl.define do
   end
 
   factory :plate_purpose do
-    with_barcode_prefix
+    prefix 'DN'
     name { generate :purpose_name }
     size 96
     association(:barcode_printer_type, factory: :plate_barcode_printer_type)
@@ -57,48 +50,43 @@ FactoryGirl.define do
   end
 
   factory :dilution_plate_purpose do
-    with_barcode_prefix
+    prefix 'DN'
     name 'Dilution'
   end
 
   factory :tube_purpose, class: Tube::Purpose do
-    transient do
-      prefix 'NT'
-    end
-
-    with_barcode_prefix
+    prefix 'NT'
     name        { generate :purpose_name }
     target_type 'MultiplexedLibraryTube'
   end
 
   factory :illumina_htp_mx_tube_purpose, class: IlluminaHtp::MxTubePurpose do
-    with_barcode_prefix
+    prefix 'NT'
     sequence(:name) { |n| "Illumina HTP Mx Tube Purpose #{n}" }
     target_type 'MultiplexedLibraryTube'
   end
 
   factory(:parent_plate_purpose, class: PlatePurpose) do
-    with_barcode_prefix
+    prefix 'DN'
     name 'Parent plate purpose'
   end
 
   # Plate creations
   factory(:pooling_plate_purpose, class: PlatePurpose) do
-    with_barcode_prefix
+    prefix 'DN'
     sequence(:name) { |i| "Pooling purpose #{i}" }
     stock_plate true
   end
 
   factory(:initial_downstream_plate_purpose, class: Pulldown::InitialDownstreamPlatePurpose) do
-    with_barcode_prefix
+    prefix 'DN'
     name { generate :pipeline_name }
   end
 
   # Tube creations
   factory(:child_tube_purpose, class: Tube::Purpose) do
-    with_barcode_prefix
+    prefix 'NT'
     sequence(:name) { |n| "Child tube purpose #{n}" }
     target_type 'Tube'
   end
-
 end

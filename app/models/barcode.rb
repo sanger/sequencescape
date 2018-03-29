@@ -13,11 +13,11 @@ class Barcode
   module Barcodeable
     def self.included(base)
       base.class_eval do
+        # Default prefix is the fallback prefix if no purpose is available.
+        class_attribute :default_prefix
         before_create :set_default_prefix
-        class_attribute :prefix
-        self.prefix = 'NT'
-
         after_save :broadcast_barcode, if: :saved_change_to_barcode?
+        delegate :prefix, to: :barcode_prefix
       end
     end
 
@@ -34,7 +34,7 @@ class Barcode
     end
 
     def set_default_prefix
-      self.barcode_prefix ||= purpose.barcode_prefix
+      self.barcode_prefix ||= purpose&.barcode_prefix || BarcodePrefix.find_or_create_by(prefix: default_prefix)
     end
     private :set_default_prefix
 
