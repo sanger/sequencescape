@@ -8,15 +8,15 @@ namespace :sequencing do
     desc 'Setting up NovaSeq 6000 PE pipeline'
     task :setup do
       ActiveRecord::Base.transaction do
-        unless RequestType.where(key: "illumina_htp_novaseq_6000_paired_end_sequencing").exists?
-          RequestType.create!(key: "illumina_htp_novaseq_6000_paired_end_sequencing",
-                              name: "Illumina-HTP NovaSeq 6000 Paired end sequencing",
+        unless RequestType.where(key: 'illumina_htp_novaseq_6000_paired_end_sequencing').exists?
+          RequestType.create!(key: 'illumina_htp_novaseq_6000_paired_end_sequencing',
+                              name: 'Illumina-HTP NovaSeq 6000 Paired end sequencing',
                               asset_type: 'LibraryTube',
                               order: 2,
                               initial_state: 'pending',
                               request_class_name: 'HiSeqSequencingRequest',
                               billable: true,
-                              product_line: ProductLine.find_by(name: "Illumina-HTP"),
+                              product_line: ProductLine.find_by(name: 'Illumina-HTP'),
                               request_purpose: :standard).tap do |rt|
             RequestType::Validator.create!(request_type: rt, request_option: 'read_length', valid_options: [150])
           end
@@ -45,8 +45,7 @@ namespace :sequencing do
   end
 end
 
-
-def build_tasks_for(workflow, paired_only = false)
+def build_tasks_for(workflow)
   AddSpikedInControlTask.create!(name: 'Add Spiked in control', sorted: 0, workflow: workflow)
   SetDescriptorsTask.create!(name: 'Loading', sorted: 1, workflow: workflow) do |task|
     task.descriptors.build([
@@ -98,5 +97,3 @@ def add_information_types_to(pipeline)
   pipeline.request_information_types << RequestInformationType.where(label: 'Vol.', hide_in_inbox: false).first!
   pipeline.request_information_types << RequestInformationType.where(label: 'Read length', hide_in_inbox: false).first!
 end
-
-
