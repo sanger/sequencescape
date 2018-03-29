@@ -126,30 +126,45 @@ namespace :limber do
   desc 'Create the limber submission templates'
   task create_submission_templates: [:environment, :create_request_types, 'sequencing:novaseq:setup'] do
     puts 'Creating submission templates....'
+
+    base_list = Limber::Helper::ACCEPTABLE_SEQUENCING_REQUESTS
+    base_with_novaseq = base_list + ['illumina_htp_novaseq_6000_paired_end_sequencing']
+    base_without_hiseq = base_list - ['illumina_b_hiseq_x_paired_end_sequencing']
+    st_params = {
+      'WGS': {
+        sequencing_list: base_with_novaseq
+      },
+      'ISC': {
+        sequencing_list: base_list
+      },
+      'ReISC': {
+        sequencing_list: base_list
+      },
+      'scRNA': {
+        sequencing_list: base_without_hiseq
+      },
+      'RNAA': {
+        sequencing_list: base_without_hiseq
+      },
+      'RNAAG': {
+        sequencing_list: base_without_hiseq
+      },
+      'PCR Free': {
+        sequencing_list: base_with_novaseq,
+        catalogue_name: 'PFHSqX'
+      }
+    }
+
     ActiveRecord::Base.transaction do
-      %w[WGS ISC ReISC].each do |prefix|
-        catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: prefix)
-        Limber::Helper::TemplateConstructor.new(prefix: prefix, catalogue: catalogue).build!
+      st_params.each do |prefix, params|
+        catalogue_name = (params[:catalogue_name] || prefix)
+        catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct')
+                                    .find_or_create_by!(name: catalogue_name)
+        Limber::Helper::TemplateConstructor.new(prefix: prefix,
+                                                catalogue: catalogue,
+                                                sequencing: params[:sequencing_list])
       end
-      'PCR Free'.tap do |prefix|
-        catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'PFHSqX')
-        Limber::Helper::TemplateConstructor.new(
-          name: prefix,
-          role: prefix,
-          type: "limber_#{prefix.downcase.tr(' ', '_')}",
-          catalogue: catalogue
-        ).build!
-      end
-      %w[scRNA RNAA RNAAG].each do |prefix|
-        catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: prefix)
-        Limber::Helper::TemplateConstructor.new(
-          name: prefix,
-          role: prefix,
-          type: "limber_#{prefix.downcase.tr(' ', '_')}",
-          catalogue: catalogue,
-          sequencing: Limber::Helper::ACCEPTABLE_SEQUENCING_REQUESTS - ['illumina_b_hiseq_x_paired_end_sequencing']
-        ).build!
-      end
+
       lcbm_catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'LCMB')
       Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: 'LCMB', catalogue: lcbm_catalogue).build!
       gbs_catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'GBS')
