@@ -34,7 +34,7 @@ class Barcode
     end
 
     def set_default_prefix
-      self.barcode_prefix ||= BarcodePrefix.find_by(prefix: prefix)
+      self.barcode_prefix ||= purpose.barcode_prefix
     end
     private :set_default_prefix
 
