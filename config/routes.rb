@@ -503,12 +503,6 @@ Sequencescape::Application.routes.draw do
     end
   end
 
-  match 'sequenom/index' => 'sequenom#index', :as => :sequenom_root, :via => 'get'
-  match 'sequenom/search' => 'sequenom#search', :as => :sequenom_search, :via => 'post'
-  match 'sequenom/:id' => 'sequenom#show', :as => :sequenom_plate, :via => 'get'
-  match 'sequenom/:id' => 'sequenom#update', :as => :sequenom_update, :via => 'put'
-  match 'sequenom/quick' => 'sequenom#quick_update', :as => :sequenom_quick_update, :via => 'post'
-
   resources :sequenom_qc_plates
   resources :pico_dilutions
   resources :study_reports
