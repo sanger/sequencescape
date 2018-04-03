@@ -99,6 +99,43 @@ describe TagSubstitution do
       end
     end
 
+    context 'with untagged tagged2' do
+      let(:sample_a_orig_tag2) { nil }
+      let(:sample_b_orig_tag2) { nil }
+      let(:sample_a_new_tag2) { nil }
+      let(:sample_b_new_tag2) { nil }
+
+      let(:instructions) do
+        [
+          { sample_id: sample_a.id, library_id: library_tube_a.id, original_tag_id: sample_a_orig_tag.id, substitute_tag_id: sample_a_new_tag.id, original_tag2_id: -1, substitute_tag2_id: -1 },
+          { sample_id: sample_b.id, library_id: library_tube_b.id, original_tag_id: sample_b_orig_tag.id, substitute_tag_id: sample_b_new_tag.id, original_tag2_id: -1, substitute_tag2_id: -1 }
+        ]
+      end
+
+      let(:comment) do
+        <<~COMMENT
+          Tag substitution performed.
+          Sample #{sample_a.id}: Tag changed from #{sample_a_orig_tag.oligo} to #{sample_a_new_tag.oligo};
+          Sample #{sample_b.id}: Tag changed from #{sample_b_orig_tag.oligo} to #{sample_b_new_tag.oligo};
+        COMMENT
+      end
+
+      it_behaves_like 'tag substitution'
+
+      context 'with user-ticket-comment info' do
+        let(:additional_parameters) { { user: create(:user), ticket: '12345', comment: 'I wanted my tags to spell CAT TAG' } }
+        let(:comment) do
+          <<~COMMENT
+            Tag substitution performed.
+            Referenced ticket no: 12345
+            Reason: I wanted my tags to spell CAT TAG
+            Sample #{sample_a.id}: Tag changed from #{sample_a_orig_tag.oligo} to #{sample_a_new_tag.oligo};
+            Sample #{sample_b.id}: Tag changed from #{sample_b_orig_tag.oligo} to #{sample_b_new_tag.oligo};
+          COMMENT
+        end
+      end
+    end
+
     context 'with tag2s defined' do
       let(:sample_a_new_tag2) { sample_b_orig_tag2 }
       let(:sample_b_new_tag2) { sample_a_orig_tag2 }

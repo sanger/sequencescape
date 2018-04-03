@@ -67,15 +67,25 @@ class TagSubstitution::Substitution
     Aliquot.where(id: matching_aliquots).update_all(tags_hash) if tags_hash.present? # rubocop:disable Rails/SkipsModelValidations
   end
 
+  #
+  # Applies the new tags to the aliquots.
+  #
+  # @return [Void]
   def substitute_tags
     Aliquot.where(id: matching_aliquots).find_each do |aliquot|
       aliquot.tag_id = substitute_tag_id if substitute_tag?
       aliquot.tag2_id = substitute_tag2_id if substitute_tag2?
-      aliquot.update_attributes(@other_attributes) if @other_attributes.present?
+      aliquot.update(@other_attributes) if @other_attributes.present?
       aliquot.save!
     end
   end
 
+  #
+  # Generates a comment to describe the substitutions performed
+  # The oligo index is passed in as part of a performance optimiztion to avoid repeated hits to the database to fetch oligo sequences
+  # @param oligo_index [Hash] A hash of oligo sequences indexed by oligo id.
+  #
+  # @return [String] A description of the substitution
   def comment(oligo_index)
     comment = +"Sample #{sample_id}:"
     comment << " Tag changed from #{oligo_index[original_tag_id]} to #{oligo_index[substitute_tag_id]};" if substitute_tag?
@@ -86,12 +96,24 @@ class TagSubstitution::Substitution
     comment
   end
 
+  #
+  # Returns an array of all associated tag ids. Excludes untagged representation (typically -1)
+  #
+  # @return [Array<Integer>] All tag ids which should correspond to actual tags. -1, nil etc. are ignored.
   def tag_ids
-    [original_tag_id, substitute_tag_id, original_tag2_id, substitute_tag2_id].compact
+    [original_tag_id, substitute_tag_id, original_tag2_id, substitute_tag2_id].select { |tag_id| tag_id.to_i.positive? }
   end
 
+  #
+  # A two value array representing the tag ids AFTER substitution.
+  #
+  # @return [Array<Integer>] Array of tag_id, followed by tag2_id.
   def tag_pair
     [substitute_tag_id.to_i, substitute_tag2_id.to_i]
+  end
+
+  def tag_substitutions?
+    substitute_tag? || substitute_tag2?
   end
 
   private
