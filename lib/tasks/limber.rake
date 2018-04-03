@@ -37,7 +37,7 @@ namespace :limber do
         target_type: 'Plate',
         stock_plate: true,
         default_state: 'pending',
-        barcode_printer_type_id: BarcodePrinterType.find_by(name: '96 Well Plate'),
+        barcode_printer_type_id: BarcodePrinterType.find_by(name: "#{size} Well Plate"),
         cherrypickable_target: true,
         cherrypick_direction: 'column',
         size: size,
