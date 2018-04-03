@@ -131,25 +131,25 @@ namespace :limber do
     base_with_novaseq = base_list + ['illumina_htp_novaseq_6000_paired_end_sequencing']
     base_without_hiseq = base_list - ['illumina_b_hiseq_x_paired_end_sequencing']
     st_params = {
-      'WGS'=> {
+      'WGS' => {
         sequencing_list: base_with_novaseq
       },
-      'ISC'=> {
+      'ISC' => {
         sequencing_list: base_list
       },
-      'ReISC'=> {
+      'ReISC' => {
         sequencing_list: base_list
       },
-      'scRNA'=> {
+      'scRNA' => {
         sequencing_list: base_without_hiseq
       },
-      'RNAA'=> {
+      'RNAA' => {
         sequencing_list: base_without_hiseq
       },
-      'RNAAG'=> {
+      'RNAAG' => {
         sequencing_list: base_without_hiseq
       },
-      'PCR Free'=> {
+      'PCR Free' => {
         sequencing_list: base_with_novaseq,
         catalogue_name: 'PFHSqX'
       }
