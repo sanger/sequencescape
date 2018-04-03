@@ -47,10 +47,6 @@ class Tube < Receptacle
     ancestors.order(created_at: :desc).find_by(plate_purpose_id: ancestor_purpose_id)
   end
 
-  def original_stock_plates
-    ancestors.where(plate_purpose_id: PlatePurpose.stock_plate_purpose)
-  end
-
   alias_method :friendly_name, :sanger_human_barcode
 
   def self.delegate_to_purpose(*methods)

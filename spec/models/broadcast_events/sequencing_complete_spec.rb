@@ -11,12 +11,12 @@ RSpec.describe BroadcastEvent::SequencingComplete, type: :model, broadcast_event
   let(:pipeline) { create(:pipeline) }
   let(:submission) { create(:submission_without_order, priority: 3) }
   let(:request_type) { create(:sequencing_request_type, product_line: create(:product_line)) }
-  let(:lane) { create(:lane) }
+  let(:lane) { create(:lane_with_stock_plate) }
   let!(:request) do
-    create(:sequencing_request_with_assets_and_ancestors,
-           pipeline: pipeline,
+    create(:sequencing_request_with_assets,
            project: nil,
            study: nil,
+           batch: create(:batch, pipeline: pipeline),
            request_type: request_type,
            submission: submission,
            target_asset: lane,
@@ -48,7 +48,7 @@ RSpec.describe BroadcastEvent::SequencingComplete, type: :model, broadcast_event
 
   it 'has some metadata' do
     expect(json['event']['metadata']['read_length']).to eq(76)
-    expect(json['event']['metadata']['pipeline']).to eq(request.pipeline.name)
+    expect(json['event']['metadata']['pipeline']).to eq(pipeline.name)
     expect(json['event']['metadata']['team']).to eq(request_type.product_line.name)
   end
 
