@@ -65,8 +65,6 @@ RSpec.describe Request do
 
     context '#next_request' do
       setup do
-        @sample = create :sample
-
         @genotyping_request_type = create :request_type, name: 'genotyping'
         @cherrypick_request_type = create :request_type, name: 'cherrypick', target_asset_type: nil
         @submission = FactoryHelp.submission(request_types: [@cherrypick_request_type, @genotyping_request_type].map(&:id), asset_group_name: 'to avoid asset errors')
@@ -78,16 +76,15 @@ RSpec.describe Request do
         @request1 = create(
           :request_without_assets,
           item: @item,
-          asset: create(:empty_sample_tube).tap { |sample_tube| sample_tube.aliquots.create!(sample: @sample) },
+          asset: create(:sample_tube),
           target_asset: nil,
           submission: @submission,
-          request_type: @cherrypick_request_type,
-          pipeline: @cherrypick_pipeline
+          request_type: @cherrypick_request_type
         )
       end
       context 'with valid input' do
         setup do
-          @request2 = create :request, item: @item, submission: @submission, request_type: @genotyping_request_type, pipeline: @genotype_pipeline
+          @request2 = create :request, item: @item, submission: @submission, request_type: @genotyping_request_type
         end
         it 'return the correct next request' do
           assert_equal [@request2], @request1.next_requests(@cherrypick_pipeline)
@@ -96,7 +93,7 @@ RSpec.describe Request do
 
       context 'where asset hasnt been created for second request' do
         setup do
-          @request2 = create :request, asset: nil, item: @item, submission: @submission, request_type: @genotyping_request_type, pipeline: @genotype_pipeline
+          @request2 = create :request, asset: nil, item: @item, submission: @submission, request_type: @genotyping_request_type
         end
         it 'return the correct next request' do
           assert_equal [@request2], @request1.next_requests(@cherrypick_pipeline)
@@ -105,8 +102,8 @@ RSpec.describe Request do
 
       context '#associate_pending_requests_for_downstream_pipeline' do
         setup do
-          @request2 = create :request_without_assets, asset: nil, item: @item, submission: @submission, request_type: @genotyping_request_type, pipeline: @genotype_pipeline
-          @request3 = create :request_without_assets, asset: nil, item: @item, submission: @submission, request_type: @genotyping_request_type, pipeline: @genotype_pipeline
+          @request2 = create :request_without_assets, asset: nil, item: @item, submission: @submission, request_type: @genotyping_request_type
+          @request3 = create :request_without_assets, asset: nil, item: @item, submission: @submission, request_type: @genotyping_request_type
 
           @batch = @cherrypick_pipeline.batches.create!(requests: [@request1])
 
@@ -151,38 +148,15 @@ RSpec.describe Request do
 
     context '#after_create' do
       context 'successful' do
-        setup do
-          @study = create :study
-          # Create a new request
-          expect { @request = create :request, study: @study }.not_to raise_error
-        end
+        let(:study) { create :study }
+        let(:request) { create :request, study: study }
 
         it 'not have ActiveRecord errors' do
-          assert_equal 0, @request.errors.size
+          expect(request.errors).to be_empty
         end
 
         it 'have request as valid' do
-          assert @request.valid?
-        end
-      end
-
-      context 'failure' do
-        setup do
-          @user = create :user
-          @study = create :study
-        end
-
-        it 'not return an AR error' do
-          expect { @request = create :request, study: @study }.not_to raise_error
-        end
-
-        it 'fail to create a new request' do
-          begin
-            @requests = Request.all
-            @request = create :request, study: @study
-          rescue
-            assert_equal @requests, Request.all
-          end
+          expect(request).to be_valid
         end
       end
     end

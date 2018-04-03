@@ -1,15 +1,21 @@
 <% presenter.each_submission_warning  do |samples,submissions| %>
-  <%= alert(:danger) do %>
-    <strong>Warning! Similar submissions detected</strong>
+  <%= alert(:submission_warning) do %>
+    <h4>Warning! Similar submissions detected</h4>
     <p>Submission <%= presenter.id %> contains samples which have recently had similar submissions made on them. Please double check that this submission was not made in error.</p>
-    <p>Affected samples:</p>
-    <ul class='list-inline'><% samples.each do |sample| %>
-      <li class='sample list-inline-item'><%= link_to sample.sanger_sample_id, sample %></li>
-    <% end %></ul>
-    <p>Potential duplicate submissions:</p>
-    <ul class='list-inline'><% submissions.each do |submission| %>
-      <li class='submission list-inline-item'><%= link_to submission.name, submission %></li>
-    <% end %></ul>
+    <div class="row">
+      <div class="col">
+        <h5>Affected samples</h5>
+        <ul class='list-inline'><% samples.each do |sample| %>
+          <li class='sample list-inline-item'><%= link_to sample.sanger_sample_id, sample %></li>
+        <% end %></ul>
+      </div>
+      <div class="col">
+        <h5>Potential duplicate submissions</h5>
+        <ul class='list-inline'><% submissions.each do |submission| %>
+          <li class='submission list-inline-item'><%= link_to submission.name, submission %></li>
+        <% end %></ul>
+      </div>
+    </div>
   <% end %>
 <% end %>
 
