@@ -26,6 +26,10 @@ li a:visited { color: #444488; }
   }
 }
 
+.batch-statuses {
+  @extend .card;
+}
+
 // The default bootstrap size is uncomfortably large
 h3.card-header-custom {
   @extend .card-header;
@@ -70,6 +74,12 @@ h3.card-header-custom {
   @extend .btn;
   @extend .btn-success;
   @extend .btn-lg;
+}
+
+.alert-submission_warning {
+  @extend .alert-danger;
+  h4 { @extend .alert-heading; }
+  a { @extend .alert-link; }
 }
 
 .alert-user_guide {
