@@ -106,12 +106,12 @@ class LocationReport::FormObject
     end
   end
 
-  def barcode_is_human_readable?(bc)
-    bc.match?(/\A([A-z]{2})([0-9]{1,7})[A-z]{0,1}\z/)
+  def barcode_is_human_readable?(barcode)
+    barcode.match?(/\A([A-z]{2})([0-9]{1,7})[A-z]{0,1}\z/)
   end
 
-  def barcode_is_ean13?(bc)
-    bc.match?(/^\d{13}$/)
+  def barcode_is_ean13?(barcode)
+    barcode.match?(/^\d{13}$/)
   end
 
   def any_select_field_present?
