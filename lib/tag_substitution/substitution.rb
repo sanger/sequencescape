@@ -113,7 +113,7 @@ class TagSubstitution::Substitution
   end
 
   def tag_substitutions?
-    substitute_tag? || substitute_tag2?
+    original_tag_id || original_tag2_id
   end
 
   private
