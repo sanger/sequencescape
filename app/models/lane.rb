@@ -38,7 +38,7 @@ class Lane < Receptacle
 
   has_many :aliquot_indicies, inverse_of: :lane, class_name: 'AliquotIndex'
 
-  scope :with_required_aliquots, ->(aliquots_ids) { joins(:aliquots).where(aliquots: { id: aliquots_ids }).includes(requests_as_target: :batch) }
+  scope :for_rebroadcast, -> { includes(requests_as_target: :batch) }
 
   def subject_type
     'lane'

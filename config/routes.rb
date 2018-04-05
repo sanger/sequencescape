@@ -453,6 +453,8 @@ Sequencescape::Application.routes.draw do
       post :print_labels
     end
 
+    resources :tag_substitutions, only: :new
+
     member do
       get :parent_assets
       get :child_assets
@@ -508,6 +510,8 @@ Sequencescape::Application.routes.draw do
   resources :sequenom_qc_plates
   resources :pico_dilutions
   resources :study_reports
+
+  resources :tag_substitutions, only: :create
 
   resources :sample_logistics do
     collection do
