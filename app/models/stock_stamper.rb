@@ -45,7 +45,7 @@ class StockStamper
         }
       }
     }
-    plate.wells.each do |well|
+    plate.wells.without_blank_samples.each do |well|
       next unless well.get_current_volume
       data_object['destination'][destination_barcode]['mapping'] << {
         'src_well'  => [source_barcode, well.map.description],
