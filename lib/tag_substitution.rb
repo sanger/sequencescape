@@ -89,7 +89,6 @@ class TagSubstitution
 
   def tag_pairs
     @substitutions.each_with_object([]) do |sub, substitutions|
-      next unless sub.tag_substitutions?
       tag, tag2 = sub.tag_pair
       substitutions << [oligo_index[tag], oligo_index[tag2]]
     end

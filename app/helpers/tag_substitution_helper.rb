@@ -16,7 +16,7 @@ module TagSubstitutionHelper
   end
 
   def tags_in_groups
-    @_helper_tags_in_groups ||= @complete_tags.each_with_object({}) do |(_id, info), store|
+    @tags_in_groups ||= @complete_tags.each_with_object({}) do |(_id, info), store|
       store[info.last] ||= []
       store[info.last] << info[0, 2]
     end
