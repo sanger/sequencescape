@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180323134506) do
+ActiveRecord::Schema.define(version: 20180403070751) do
 
   create_table "aker_containers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "barcode"
@@ -1048,6 +1048,19 @@ ActiveRecord::Schema.define(version: 20180323134506) do
     t.index ["product_criteria_id"], name: "fk_qc_reports_to_product_criteria"
     t.index ["report_identifier"], name: "index_qc_reports_on_report_identifier", unique: true
     t.index ["study_id"], name: "fk_qc_reports_to_studies"
+  end
+
+  create_table "qc_results", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "asset_id"
+    t.string "key"
+    t.string "value"
+    t.string "units"
+    t.decimal "cv", precision: 10
+    t.string "assay_type"
+    t.string "assay_version"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["asset_id"], name: "index_qc_results_on_asset_id"
   end
 
   create_table "qcable_creators", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
