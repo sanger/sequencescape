@@ -210,4 +210,11 @@ en:
       no_rows_found: "That selection returns no plates, no report generated."
       invalid_barcodes_found: "Invalid barcodes found, no report generated: "
       plate_list_empty: "No plates found when attempting to generate the report."
-
+  tag_groups:
+    success: 'The Tag Layout Template has been successfully created.'
+    errors:
+      duplicate_oligo_found: "The following oligo was found to be present more than once in the list, please correct: "
+      invalid_oligos_found: "Oligos can contain only A, T, G or C characters and must be separated by spaces or commas, the following are invalid: "
+      no_valid_oligos_found: "No correctly formatted oligos were found, please enter oligos as sequences of ATGC characters and separate oligos with spaces or commas."
+      tag_group_form_invalid: "The tag group form object was invalid, please check oligos and tag group name."
+      failed_to_save_tag_group: "The tag group was not saved successfully."
