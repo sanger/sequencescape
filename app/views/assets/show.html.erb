@@ -27,10 +27,8 @@
   <% add :menu, "Edit" => edit_asset_path(@asset) -%>
 <% end %>
 
-<% if @asset.respond_to?(:related_studies) %>
-  <% @asset.related_studies.each do |study| %>
-    <% add :menu, "Back to study #{study.name}" => study_path(study) -%>
-  <% end %>
+<% @asset.related_studies.each do |study| %>
+  <% add :menu, "Back to study #{study.name}" => study_path(study) -%>
 <% end %>
 
 <%= page_title('Asset',@asset.display_name) %>

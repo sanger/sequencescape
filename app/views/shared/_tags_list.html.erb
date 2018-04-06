@@ -5,15 +5,18 @@
 # Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.%>
 
 <table>
-  <tr>
-    <th>Index</th>
-    <th>Expected Sequence</th>
-  </tr>
-
-<% for tag in tags %>
-  <tr>
-    <td><%=h tag.map_id %></td>
-    <td><%=h tag.oligo %></td>
-  </tr>
-<% end %>
+  <thead>
+    <tr>
+      <th>Index&nbsp;</th>
+      <th>Expected Sequence</th>
+    </tr>
+  </thead>
+  <tbody>
+  <% for tag in tags %>
+    <tr>
+      <td><%=h tag.map_id %></td>
+      <td><%=h tag.oligo %></td>
+    </tr>
+  <% end %>
+  </tbody>
 </table>
