@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe QcResult, type: :model, qc_result: true do
-  
   it 'is not valid without a key' do
     expect(build(:qc_result, key: nil)).to_not be_valid
   end

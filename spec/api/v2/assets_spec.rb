@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe Api::V2::AssetsController, type: :request, qc_result: true do
@@ -9,5 +11,4 @@ RSpec.describe Api::V2::AssetsController, type: :request, qc_result: true do
     json = ActiveSupport::JSON.decode(response.body)
     expect(json['data'].first['attributes']['uuid']).to eq(asset.uuid)
   end
-
 end

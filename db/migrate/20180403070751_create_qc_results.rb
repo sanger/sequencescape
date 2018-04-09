@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# CreatQcResults
 class CreateQcResults < ActiveRecord::Migration[5.1]
   def change
     create_table :qc_results do |t|

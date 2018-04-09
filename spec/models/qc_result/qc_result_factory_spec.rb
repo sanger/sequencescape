@@ -1,9 +1,9 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe QcResultFactory, type: :model, qc_result: true do
-
   describe 'multiple resources' do
-
     let(:asset_1) { attributes_for(:qc_result).merge(uuid: create(:asset).uuid) }
     let(:asset_2) { attributes_for(:qc_result).merge(uuid: create(:asset).uuid) }
     let(:asset_3) { attributes_for(:qc_result).merge(uuid: create(:asset).uuid) }
@@ -41,12 +41,10 @@ RSpec.describe QcResultFactory, type: :model, qc_result: true do
   end
 
   describe QcResultFactory::Resource do
-
     let(:asset) { create(:asset) }
     let(:qc_result_attributes) { attributes_for(:qc_result) }
 
     context 'Asset' do
-
       let(:attributes) { { uuid: asset.uuid }.merge(qc_result_attributes) }
 
       it 'is not valid unless the resource exists' do
@@ -59,7 +57,7 @@ RSpec.describe QcResultFactory, type: :model, qc_result: true do
         expect(QcResultFactory::Resource.new(attributes.except(:key))).to_not be_valid
       end
 
-      it "#save should create a qc_result record if valid" do
+      it '#save should create a qc_result record if valid' do
         resource = QcResultFactory::Resource.new(attributes)
         expect(resource.save).to be_truthy
         expect(QcResult.find(resource.qc_result.id)).to be_present
@@ -70,24 +68,20 @@ RSpec.describe QcResultFactory, type: :model, qc_result: true do
 
       it 'produces a sensible error message identifier' do
         expect(QcResultFactory::Resource.new(attributes).message_id).to eq("Uuid - #{asset.uuid}")
-        expect(QcResultFactory::Resource.new(qc_result_attributes).message_id).to eq("Uuid - blank")
+        expect(QcResultFactory::Resource.new(qc_result_attributes).message_id).to eq('Uuid - blank')
       end
-
     end
 
     context 'Plate' do
-
       let(:plate) { create(:plate_with_empty_wells, well_count: 12) }
 
       it 'is not valid unless the well location is valid' do
         expect(QcResultFactory::Resource.new(qc_result_attributes.merge(uuid: plate.uuid, well_location: plate.wells.first.map.description))).to be_valid
         expect(QcResultFactory::Resource.new(qc_result_attributes.merge(uuid: plate.uuid, well_location: 'Z999'))).to_not be_valid
       end
-
     end
 
     context 'Sample' do
-
       let(:sample) { create(:sample_with_well) }
 
       it 'creates the asset as the primary receptacle' do
@@ -95,5 +89,4 @@ RSpec.describe QcResultFactory, type: :model, qc_result: true do
       end
     end
   end
-
 end

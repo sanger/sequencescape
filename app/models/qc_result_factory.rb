@@ -1,5 +1,8 @@
-class QcResultFactory
+# frozen_string_literal: true
 
+# QcResultFactory
+# creates a QcResult record from API request
+class QcResultFactory
   include ActiveModel::Model
 
   validate :check_resources
@@ -9,7 +12,7 @@ class QcResultFactory
   end
 
   def resources
-    @resource ||= []
+    @resources ||= []
   end
 
   def build_resources(assets)
@@ -28,15 +31,15 @@ class QcResultFactory
     resources.collect(&:qc_result)
   end
 
+  # QcResultFactory::Resource
   class Resource
-
     include ActiveModel::Model
 
     attr_accessor :uuid, :well_location, :key, :value, :units, :cv, :assay_type, :assay_version
 
     attr_reader :asset, :qc_result
 
-    validates_presence_of :uuid
+    validates :uuid, presence: true
 
     validate :check_asset, :check_qc_result
 
@@ -45,11 +48,10 @@ class QcResultFactory
 
       @asset = build_asset
       @qc_result = QcResult.new(asset: asset, key: key, value: value, units: units, cv: cv, assay_type: assay_type, assay_version: assay_version)
-
     end
 
     def message_id
-      "Uuid - " << (uuid || 'blank')
+      'Uuid - ' << (uuid || 'blank')
     end
 
     # This is where the complexity is.
@@ -60,13 +62,13 @@ class QcResultFactory
     # If a well location is passed then assume it is a plate so we need to return the associated well.
     def build_asset
       uuid_object = Uuid.find_by(external_id: uuid)
-      return unless uuid_object.present?
-      asset = if uuid_object.resource_type == "Sample"
-        Sample.find(uuid_object.resource_id).primary_receptacle
-      else
-        Asset.find(uuid_object.resource_id)
-      end
-      return asset unless well_location.present?
+      return if uuid_object.blank?
+      asset = if uuid_object.resource_type == 'Sample'
+                Sample.find(uuid_object.resource_id).primary_receptacle
+              else
+                Asset.find(uuid_object.resource_id)
+              end
+      return asset if well_location.blank?
       plate = Plate.find(asset.id)
       plate.find_well_by_map_description(well_location)
     end
