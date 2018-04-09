@@ -23,6 +23,6 @@ RSpec.describe Api::V2::QcResultsController, type: :request, qc_result: true do
     end.to_not change(QcResult, :count)
     expect(response).to have_http_status(:unprocessable_entity)
     json = ActiveSupport::JSON.decode(response.body)
-    expect(json['uuid']).to_not be_empty
+    expect(json.keys.length).to eq(1)
   end
 end

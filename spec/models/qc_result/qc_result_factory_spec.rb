@@ -7,7 +7,8 @@ RSpec.describe QcResultFactory, type: :model, qc_result: true do
     let(:asset_1) { attributes_for(:qc_result).merge(uuid: create(:asset).uuid) }
     let(:asset_2) { attributes_for(:qc_result).merge(uuid: create(:asset).uuid) }
     let(:asset_3) { attributes_for(:qc_result).merge(uuid: create(:asset).uuid) }
-    let(:asset_invalid) { attributes_for(:qc_result) }
+    let(:asset_invalid_uuid) { attributes_for(:qc_result) }
+    let(:asset_invalid_key) { attributes_for(:qc_result).except(:key).merge(uuid: create(:asset).uuid) }
 
     it 'creates a resource for each item passed' do
       factory = QcResultFactory.new([asset_1, asset_2, asset_3])
@@ -21,8 +22,18 @@ RSpec.describe QcResultFactory, type: :model, qc_result: true do
       expect(QcResult.all.count).to eq(3)
     end
 
+    it 'produces sensible error messages if the resource is not valid' do
+      factory = QcResultFactory.new([asset_1, asset_2, asset_3, asset_invalid_uuid])
+      expect(factory).to_not be_valid
+      expect(factory.errors.full_messages.first).to include(factory.resources.last.message_id)
+
+      factory = QcResultFactory.new([asset_1, asset_2, asset_3, asset_invalid_key])
+      expect(factory).to_not be_valid
+      expect(factory.errors.full_messages.first).to include(factory.resources.last.message_id)
+    end
+
     it '#save does not save any of the resources unless they are all valid' do
-      factory = QcResultFactory.new([asset_1, asset_2, asset_3, asset_invalid])
+      factory = QcResultFactory.new([asset_1, asset_2, asset_3, asset_invalid_key])
       expect(factory).to_not be_valid
       expect(factory.save).to be_falsey
       expect(QcResult.all).to be_empty
@@ -55,6 +66,11 @@ RSpec.describe QcResultFactory, type: :model, qc_result: true do
 
         resource = QcResultFactory::Resource.new(attributes.except(:uuid))
         expect(resource.save).to be_falsey
+      end
+
+      it 'produces a sensible error message identifier' do
+        expect(QcResultFactory::Resource.new(attributes).message_id).to eq("Uuid - #{asset.uuid}")
+        expect(QcResultFactory::Resource.new(qc_result_attributes).message_id).to eq("Uuid - blank")
       end
 
     end

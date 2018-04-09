@@ -48,6 +48,10 @@ class QcResultFactory
 
     end
 
+    def message_id
+      "Uuid - " << (uuid || 'blank')
+    end
+
     # This is where the complexity is.
     # First we need to find the uuid object.
     # Then we need to return the asset it relates to.
@@ -92,8 +96,11 @@ class QcResultFactory
   def check_resources
     resources.each do |resource|
       next if resource.valid?
-      resource.errors.each do |key, value|
-        errors.add key, value
+      ''.tap do |resource_errors|
+        resource.errors.each do |key, value|
+          resource_errors << "#{key} #{value} "
+        end
+        errors.add(resource.message_id, resource_errors)
       end
     end
   end
