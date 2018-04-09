@@ -1,0 +1,44 @@
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2018 Genome Research Ltd.%>
+
+<% add :menu, "All Tag Layout Templates" => tag_layout_templates_path(@asset) %>
+
+<p>
+  <b>Name:</b>
+  <%=h @tag_layout_template.name %>
+</p>
+
+<p>
+  <b>Tag Group:</b>
+  <% if @tag_layout_template.tag_group.nil? %>
+ 	<%=h 'na' %>
+  <% else %>
+  	<%=link_to "#{@tag_layout_template.tag_group&.name}", @tag_layout_template.tag_group %>
+  <% end %>
+</p>
+
+<p>
+  <b>Tag2 Group:</b>
+  <% if @tag_layout_template.tag2_group.nil? %>
+ 	<%=h 'na' %>
+  <% else %>
+  	<%=link_to "#{@tag_layout_template.tag2_group&.name}", @tag_layout_template.tag2_group %>
+  <% end %>
+</p>
+
+<p>
+  <b>Direction the tags are laid out by:</b>
+  <%=h @tag_layout_template.direction %>
+</p>
+
+<p>
+  <b>Walking by:</b>
+  <%=h @tag_layout_template.walking_by %>
+</p>
+<br>
+<%= link_to 'To tag groups list', tag_groups_path %>
+<br>
+<%= link_to 'To tag layout templates list', tag_layout_templates_path %>

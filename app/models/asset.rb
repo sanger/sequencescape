@@ -82,6 +82,7 @@ class Asset < ApplicationRecord
   # Orders
   has_many :submitted_assets
   has_many :orders, through: :submitted_assets
+  has_many :ordered_studies, through: :orders, source: :study
   has_many :messengers, as: :target, inverse_of: :target
   has_one :custom_metadatum_collection
   has_one :creation_request, class_name: 'Request', foreign_key: :target_asset_id
@@ -276,7 +277,7 @@ class Asset < ApplicationRecord
 
   # All studies related to this asset
   def related_studies
-    (orders.map(&:study) + studies).compact.uniq
+    (ordered_studies + studies).compact.uniq
   end
 
   # Returns the request options used to create this asset.  By default assumed to be empty.

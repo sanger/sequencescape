@@ -8,95 +8,39 @@
 # TagSubstitution.new(see_initialize_documentations).save
 # Returns false if things failed
 class TagSubstitution
-  include ActiveModel::Validations
+  include ActiveModel::Model
 
-  validate :substitutions_valid
+  attr_accessor :user, :ticket, :comment
+  attr_reader :substitutions
+  attr_writer :name
 
-  def substitutions_valid
-    valid = true
-    @substitutions.each do |sub|
-      next if sub.valid?
-      errors.add(:substitution, sub.errors.full_messages)
-      valid = false
-    end
-    valid
-  end
-
-  class Substitution
-    extend ActiveModel::Naming
-    include ActiveModel::Conversion
-    include ActiveModel::Validations
-
-    attr_reader :sample_id, :library_id, :original_tag_id, :substitute_tag_id, :original_tag2_id, :substitute_tag2_id
-
-    validates_presence_of :sample_id, :library_id
-    validates_presence_of :original_tag_id, if: :substitute_tag_id
-    validates_presence_of :original_tag2_id, if: :substitute_tag2_id
-
-    validates_presence_of :matching_aliquots, message: 'could not be found'
-
-    def initialize(attributes)
-      @sample_id  = attributes.delete(:sample_id)
-      @library_id = attributes.delete(:library_id)
-      @original_tag_id = attributes.delete(:original_tag_id)
-      @substitute_tag_id = attributes.delete(:substitute_tag_id)
-      @original_tag2_id = attributes.delete(:original_tag2_id)
-      @substitute_tag2_id = attributes.delete(:substitute_tag2_id)
-      @other_attributes = attributes
-    end
-
-    def matching_aliquots
-      @matching_aliquots ||= find_matching_aliquots
-    end
-
-    def rebroadcast_lanes
-      Lane.with_required_aliquots(matching_aliquots).each(&:rebroadcast)
-    end
-
-    # Nullify tags sets all tags to null. We need to do this first
-    # as otherwise we introduce tag clashes while performing substitutions
-    def nullify_tags
-      tags_hash = {}
-      tags_hash[:tag_id]  = nil if original_tag_id
-      tags_hash[:tag2_id] = nil if original_tag2_id
-      # We DO NOT want to trigger validations here
-      Aliquot.where(id: matching_aliquots).update_all(tags_hash) if tags_hash.present? # rubocop:disable Rails/SkipsModelValidations
-    end
-
-    def substitute_tags
-      Aliquot.where(id: matching_aliquots).find_each do |aliquot|
-        aliquot.tag_id = substitute_tag_id if original_tag_id
-        aliquot.tag2_id = substitute_tag2_id if original_tag2_id
-        aliquot.update_attributes(@other_attributes)
-        aliquot.save!
-      end
-      rebroadcast_lanes
-    end
-
-    private
-
-    def find_matching_aliquots
-      attributes = { sample_id: sample_id, library_id: library_id }
-      attributes[:tag_id] = original_tag_id if original_tag_id
-      attributes[:tag2_id] = original_tag2_id if original_tag2_id
-      Aliquot.where(attributes).pluck(:id)
-    end
-  end
-  # substitutions: Provide an array of hashes describing your desired substitutions
-  # {
-  #   sample_id: The id of the sample to change,
-  #   libary_id: The corresponding library id,
-  #   original_tag_id: The original tag id, [Required if substitute_tag_id supplied]
-  #   substitute_tag_id: the replacement tag id, [Optional]
-  #   original_tag2_id: The original tag2 id, [Required if original_tag2_id supplied]
-  #   substitute_tag2_id: The replacement tag2 id [Optional]
-  # }
   # Named arguments:
+  # substitutions: Provide an array of hashes describing your desired substitutions
+  #   {
+  #     sample_id: The id of the sample to change,
+  #     libary_id: The corresponding library id,
+  #     original_tag_id: The original tag id, [Required if substitute_tag_id supplied]
+  #     substitute_tag_id: the replacement tag id, [Optional]
+  #     original_tag2_id: The original tag2 id, [Required if original_tag2_id supplied]
+  #     substitute_tag2_id: The replacement tag2 id [Optional]
+  #   }
   # user: the user performing the substitution [optional]
   # ticket: support ticket number [optional]
   # comment: any additional comment [optional]
-  def initialize(substitutions, user: nil, ticket: nil, comment: nil)
-    @user, @ticket, @comment = user, ticket, comment
+
+  validates_presence_of :substitutions
+  validate :substitutions_valid?, if: :substitutions
+  validate :no_duplicate_tag_pairs, if: :substitutions
+
+  def substitutions_valid?
+    @substitutions.reduce(true) do |valid, sub|
+      next valid if sub.valid?
+      errors.add(:substitution, sub.errors.full_messages)
+      valid && false
+    end
+  end
+
+  def substitutions=(substitutions)
     @substitutions = substitutions.map { |attrs| Substitution.new(attrs) }
   end
 
@@ -106,7 +50,87 @@ class TagSubstitution
     ActiveRecord::Base.transaction do
       @substitutions.each(&:nullify_tags)
       @substitutions.each(&:substitute_tags)
+      rebroadcast_lanes
+      apply_comments
     end
     true
+  rescue ActiveRecord::RecordNotUnique => exception
+    # We'll specifically handle tag clashes here so that we can produce more informative messages
+    raise exception unless /aliquot_tags_and_tag2s_are_unique_within_receptacle/.match?(exception.message)
+    errors.add(:base, 'A tag clash was detected while performing the substitutions. No changes have been made.')
+    false
+  end
+
+  #
+  # Provide an asset to build a tag substitution form
+  # Will auto populate the fields on substitutions
+  # @param asset [Receptacle] The receptacle which you want to base your substitutions on
+  #
+  # @return [type] [description]
+  def template_asset=(asset)
+    @substitutions = asset.aliquots.includes(:sample).map do |aliquot|
+      Substitution.new(aliquot: aliquot)
+    end
+    @name = asset.display_name
+  end
+
+  def name
+    @name ||= 'Custom'
+  end
+
+  def no_duplicate_tag_pairs
+    tag_pairs.each_with_object(Set.new) do |pair, set|
+      errors.add(:base, "Tag pair #{pair.join('-')} features multiple times in the pool.") if set.include?(pair)
+      set << pair
+    end
+  end
+
+  private
+
+  def tag_pairs
+    @substitutions.each_with_object([]) do |sub, substitutions|
+      next unless sub.tag_substitutions?
+      tag, tag2 = sub.tag_pair
+      substitutions << [oligo_index[tag], oligo_index[tag2]]
+    end
+  end
+
+  def comment_header
+    header = +"Tag substitution performed.\n"
+    header << "Referenced ticket no: #{@ticket}\n" if @ticket
+    header << "Comment: #{@comment}\n" if @comment
+    header
+  end
+
+  def comment_text
+    @comment_text ||= @substitutions.each_with_object(comment_header) do |substitution, comment|
+      comment << substitution.comment(oligo_index) << "\n"
+    end
+  end
+
+  def commented_assets
+    @commented_assets ||= (Tube.with_required_aliquots(all_aliquots).pluck(:id) + Lane.with_required_aliquots(all_aliquots).pluck(:id)).uniq
+  end
+
+  def apply_comments
+    Comment.create!(commented_assets.map do |asset_id|
+      { commentable_id: asset_id, commentable_type: 'Asset', user_id: @user&.id, description: comment_text }
+    end)
+  end
+
+  def oligo_index
+    @oligo_index ||= Hash[Tag.find(all_tags).pluck(:id, :oligo)]
+  end
+
+  def all_tags
+    @all_tags ||= @substitutions.flat_map(&:tag_ids)
+  end
+
+  def all_aliquots
+    @all_aliquots ||= @substitutions.flat_map(&:matching_aliquots)
+  end
+
+  def rebroadcast_lanes
+    Lane.with_required_aliquots(all_aliquots).for_rebroadcast.find_each(&:rebroadcast)
   end
 end

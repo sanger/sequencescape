@@ -1,0 +1,39 @@
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2018 Genome Research Ltd.%>
+
+<h1>New Tag Layout Template</h1>
+
+<%= form_for(@tag_layout_template, html: {class: 'submit_once'}) do |f| %>
+  <%= f.error_messages %>
+  <div class='form-group'>
+    <%= f.label :name, 'Tag Layout Template name' %><br>
+    <%= f.text_field :name, { class: 'form-control' } %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :tag_group, 'Tag Group' %><br>
+    <%= f.select :tag_group_id, TagGroup.visible.pluck(:name, :id), { prompt: 'Select tag group...', selected: @tag_layout_template.tag_group_id }, { class: 'form-control select2' }  %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :tag2_group, 'Tag2 Group' %><br>
+    <%= f.select :tag2_group_id, TagGroup.visible.pluck(:name, :id), { prompt: 'Select tag2 group...' }, { class: 'form-control select2' } %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :direction, 'Direction the tags are laid out by' %><br>
+    <%= f.select :direction_algorithm, options_for_select(@direction_algorithms), { prompt: 'Select direction algorithm...' }, { class: 'form-control select2' } %>
+  </div>
+
+  <%= f.hidden_field 'walking_algorithm', value: 'TagLayout::WalkWellsOfPlate' %>
+
+  <div class="form-group actions-group">
+    <%= f.submit('Create tag layout template', class: 'disable_on_submit btn btn-success') %>
+  </div>
+<% end %>
+
+<br>
+<%= link_to 'Back to tag groups list', tag_groups_path %>
