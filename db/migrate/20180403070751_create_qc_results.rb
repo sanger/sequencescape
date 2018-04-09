@@ -5,7 +5,7 @@ class CreateQcResults < ActiveRecord::Migration[5.1]
       t.string :key
       t.string :value
       t.string :units
-      t.decimal :cv
+      t.float :cv
       t.string :assay_type
       t.string :assay_version
       t.timestamps

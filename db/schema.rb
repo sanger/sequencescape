@@ -1055,7 +1055,7 @@ ActiveRecord::Schema.define(version: 20180403070751) do
     t.string "key"
     t.string "value"
     t.string "units"
-    t.decimal "cv", precision: 10
+    t.float "cv", limit: 24
     t.string "assay_type"
     t.string "assay_version"
     t.datetime "created_at", null: false

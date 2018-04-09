@@ -5,6 +5,8 @@ module Api
     class QcResultResource < JSONAPI::Resource
 
       attributes :key, :value, :units, :cv, :assay_type, :assay_version
+
+      has_one :asset
     end
   end
 end
