@@ -1,0 +1,35 @@
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2018 Genome Research Ltd.%>
+
+<h1>Listing Tag Layout Templates</h1>
+
+<table width="100%" cellspacing="0" cellpadding="5">
+  <thead>
+    <th>Name</th>
+    <th>Tag Group</th>
+    <th>Tag2 Group</th>
+    <th>Direction tags are laid out</th>
+    <th>Walking by</th>
+    <th></th>
+  </thead>
+  <tbody>
+  <% for tag_layout_template in @tag_layout_templates %>
+    <tr>
+      <td><%=h tag_layout_template.name %></td>
+      <td><%=h tag_layout_template.tag_group&.name || 'na' %></td>
+      <td><%=h tag_layout_template.tag2_group&.name || 'na' %></td>
+      <td><%=h tag_layout_template.direction %></td>
+      <td><%=h tag_layout_template.walking_by %></td>
+      <td><%= link_to 'Show', tag_layout_template %></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+
+<script type="text/javascript">$('table tbody > tr:nth-child(even)').addClass('roweven');</script>
+
+<br>
+<%= link_to 'To tag groups list', tag_groups_path %>
