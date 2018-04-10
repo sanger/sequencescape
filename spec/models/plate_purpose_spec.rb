@@ -14,7 +14,9 @@ describe PlatePurpose, type: :model do
       it { is_expected.to be_a expected_plate_class }
 
       it 'set an appropriate barcode prefix' do
-        expect(subject.barcode_prefix.prefix).to eq barcode_prefix
+        human_barcode = subject.human_barcode
+        matched = SBCF::HUMAN_BARCODE_FORMAT.match(human_barcode)
+        expect(matched[:prefix]).to eq barcode_prefix
       end
 
       it 'builds a plate of the correct size' do

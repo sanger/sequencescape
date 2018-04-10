@@ -9,15 +9,14 @@ class RobotVerification
 
   def validate_barcode_params(barcode_hash)
     return yield('No barcodes specified')      if barcode_hash.nil?
-    yield('Worksheet barcode invalid')         if barcode_hash[:batch_barcode].nil?             or not Batch.valid_barcode?(barcode_hash[:batch_barcode])
-    yield('Tecan robot barcode invalid')       if barcode_hash[:robot_barcode].nil?             or not Robot.valid_barcode?(barcode_hash[:robot_barcode])
-    yield('User barcode invalid')              if barcode_hash[:user_barcode].nil?              or not User.valid_barcode?(barcode_hash[:user_barcode])
-    yield('Destination plate barcode invalid') if barcode_hash[:destination_plate_barcode].nil? or Plate.find_by(barcode: Barcode.number_to_human(barcode_hash[:destination_plate_barcode])).nil?
+    yield('Worksheet barcode invalid')         if barcode_hash[:batch_barcode].blank?             or not Batch.valid_barcode?(barcode_hash[:batch_barcode])
+    yield('Tecan robot barcode invalid')       if barcode_hash[:robot_barcode].blank?             or not Robot.valid_barcode?(barcode_hash[:robot_barcode])
+    yield('User barcode invalid')              if barcode_hash[:user_barcode].blank?              or not User.valid_barcode?(barcode_hash[:user_barcode])
+    yield('Destination plate barcode invalid') if barcode_hash[:destination_plate_barcode].blank? or not Plate.with_barcode(barcode_hash[:destination_plate_barcode]).exists?
   end
 
   def expected_layout(batch, destination_plate_barcode)
-    plate_barcode = Barcode.number_to_human(destination_plate_barcode) || Plate.find_from_machine_barcode(destination_plate_barcode).barcode
-    batch.tecan_layout_plate_barcodes(plate_barcode)
+    batch.tecan_layout_plate_barcodes(destination_plate_barcode)
   end
 
   def valid_source_plates_on_robot?(beds, plates, robot, batch, all_expected_plate_layout)
@@ -83,7 +82,7 @@ class RobotVerification
   def set_plate_types(plate_types_params)
     plate_types_params.each do |plate_barcode, plate_type|
       next if plate_barcode.blank? || plate_type.blank?
-      plate = Plate.with_machine_barcode(plate_barcode).first or raise "Unable to locate plate #{plate_barcode.inspect} for robot verification"
+      plate = Plate.with_barcode(plate_barcode).first or raise "Unable to locate plate #{plate_barcode.inspect} for robot verification"
       plate.set_plate_type(plate_type)
     end
   end

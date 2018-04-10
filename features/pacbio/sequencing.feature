@@ -7,8 +7,6 @@ Feature: Push samples through the PacBio pipeline for sequencing
 
     Given I have an active study called "Test study"
     Given I am on the show page for study "Test study"
-
-    Given I have a sample tube "111" in study "Test study" in asset group "Test study group"
     And the plate barcode webservice returns "99997..99999"
     And the reference genome "Mouse" exists
     Given the study "Test study" has a reference genome of "Mouse"
@@ -26,8 +24,8 @@ Feature: Push samples through the PacBio pipeline for sequencing
     When I follow "Binding Kit Box Barcode"
     When I fill in "Binding Kit Box Barcode" with "777"
     And I press "Next step"
-    When I select "<movie_length_1>" from "Movie length for 333"
-    When I select "<movie_length_2>" from "Movie length for 444"
+    When I select "<movie_length_1>" from "Movie length for NT333U"
+    When I select "<movie_length_2>" from "Movie length for NT444D"
     And I press "Next step"
     Then I should not see "Invalid movie length"
     Examples:
@@ -40,8 +38,8 @@ Feature: Push samples through the PacBio pipeline for sequencing
     When I follow "Binding Kit Box Barcode"
     When I fill in "Binding Kit Box Barcode" with "777"
     And I press "Next step"
-    When I select "30" from "Movie length for 333"
-    And I select "60" from "Movie length for 444"
+    When I select "30" from "Movie length for NT333U"
+    And I select "60" from "Movie length for NT444D"
     And I press "Next step"
     And I press "Next step"
     Then I should see "Layout tubes on a plate"
@@ -51,10 +49,10 @@ Feature: Push samples through the PacBio pipeline for sequencing
    And I press "Next step"
 
    Given the UUID for the last batch is "00000000-1111-2222-3333-444444444445"
-   And the UUID for well "A1" on plate "99999" is "00000000-1111-2222-3333-444444444441"
-   And the UUID for well "B1" on plate "99999" is "00000000-1111-2222-3333-444444444442"
-   And the UUID for Library "333" is "00000000-1111-2222-3333-444444444443"
-   And the UUID for Library "444" is "00000000-1111-2222-3333-444444444444"
+   And the UUID for well "A1" on plate "DN99999" is "00000000-1111-2222-3333-444444444441"
+   And the UUID for well "B1" on plate "DN99999" is "00000000-1111-2222-3333-444444444442"
+   And the UUID for Library "NT333U" is "00000000-1111-2222-3333-444444444443"
+   And the UUID for Library "NT444D" is "00000000-1111-2222-3333-444444444444"
    And all requests have sequential UUIDs based on "00000000-1111-2222-3333"
 
    Then the PacBio manifest for the last batch should look like:
@@ -69,8 +67,8 @@ Feature: Push samples through the PacBio pipeline for sequencing
      When I follow "Binding Kit Box Barcode"
      When I fill in "Binding Kit Box Barcode" with "777"
      And I press "Next step"
-     When I select "30" from "Movie length for 333"
-     And I select "60" from "Movie length for 444"
+     When I select "30" from "Movie length for NT333U"
+     And I select "60" from "Movie length for NT444D"
      And I press "Next step"
      And I press "Next step"
      Then I should see "Layout tubes on a plate"
@@ -79,10 +77,10 @@ Feature: Push samples through the PacBio pipeline for sequencing
      When I press "Next step"
 
      Given the UUID for the last batch is "00000000-1111-2222-3333-444444444445"
-     And the UUID for well "A1" on plate "99999" is "00000000-1111-2222-3333-444444444441"
-     And the UUID for well "B1" on plate "99999" is "00000000-1111-2222-3333-444444444442"
-     And the UUID for Library "333" is "00000000-1111-2222-3333-444444444443"
-     And the UUID for Library "444" is "00000000-1111-2222-3333-444444444444"
+     And the UUID for well "A1" on plate "DN99999" is "00000000-1111-2222-3333-444444444441"
+     And the UUID for well "B1" on plate "DN99999" is "00000000-1111-2222-3333-444444444442"
+     And the UUID for Library "NT333U" is "00000000-1111-2222-3333-444444444443"
+     And the UUID for Library "NT444D" is "00000000-1111-2222-3333-444444444444"
      And all requests have sequential UUIDs based on "00000000-1111-2222-3333"
 
      Then I should see "Validate Sample Sheet"
@@ -99,8 +97,8 @@ Feature: Push samples through the PacBio pipeline for sequencing
     When I follow "Binding Kit Box Barcode"
     When I fill in "Binding Kit Box Barcode" with "777"
     And I press "Next step"
-    When I select "30" from "Movie length for 333"
-    And I select "60" from "Movie length for 444"
+    When I select "30" from "Movie length for NT333U"
+    And I select "60" from "Movie length for NT444D"
     And I press "Next step"
     And I press "Next step"
     Then I should see "Layout tubes on a plate"

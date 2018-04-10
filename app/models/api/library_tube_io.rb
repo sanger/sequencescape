@@ -19,7 +19,7 @@ class Api::LibraryTubeIO < Api::Base
         scope :including_associations_for_json, -> {
           includes([
             :uuid_object,
-            :barcode_prefix, {
+            :primary_barcode, {
               source_request: [:uuid_object, :request_metadata],
               primary_aliquot: { sample: :uuid_object, tag: [:uuid_object, { tag_group: :uuid_object }] }
             },
@@ -41,7 +41,7 @@ class Api::LibraryTubeIO < Api::Base
   map_attribute_to_json_attribute(:uuid)
   map_attribute_to_json_attribute(:id)
   map_attribute_to_json_attribute(:name)
-  map_attribute_to_json_attribute(:barcode)
+  map_attribute_to_json_attribute(:barcode_number, 'barcode')
   map_attribute_to_json_attribute(:qc_state)
   map_attribute_to_json_attribute(:closed)
   map_attribute_to_json_attribute(:two_dimensional_barcode)
@@ -55,9 +55,7 @@ class Api::LibraryTubeIO < Api::Base
     map_attribute_to_json_attribute(:content, 'scanned_in_date')
   end
 
-  with_association(:barcode_prefix) do
-    map_attribute_to_json_attribute(:prefix, 'barcode_prefix')
-  end
+  map_attribute_to_json_attribute(:prefix, 'barcode_prefix')
 
   with_association(:primary_aliquot_if_unique) do
     with_association(:sample) do

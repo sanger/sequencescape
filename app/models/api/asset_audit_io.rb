@@ -16,7 +16,7 @@ class Api::AssetAuditIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        scope :including_associations_for_json, -> { includes([:uuid_object, { asset: [:uuid_object, :barcode_prefix] }]) }
+        scope :including_associations_for_json, -> { includes([:uuid_object, { asset: [:uuid_object, :primary_barcode] }]) }
       end
     end
   end
@@ -33,10 +33,7 @@ class Api::AssetAuditIO < Api::Base
 
   with_association(:asset) do
     map_attribute_to_json_attribute(:uuid, 'plate_uuid')
-    map_attribute_to_json_attribute(:barcode, 'plate_barcode')
-
-    with_association(:barcode_prefix) do
-      map_attribute_to_json_attribute(:prefix, 'plate_barcode_prefix')
-    end
+    map_attribute_to_json_attribute(:barcode_number, 'plate_barcode')
+    map_attribute_to_json_attribute(:prefix, 'plate_barcode_prefix')
   end
 end

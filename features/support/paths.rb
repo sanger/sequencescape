@@ -220,7 +220,7 @@ module NavigationHelpers
       request_path(request)
 
     when /the events page for asset with barcode "(\d+)"/
-      asset = Asset.find_from_machine_barcode($1)
+      asset = Asset.find_from_barcode($1)
       history_asset_path(asset)
 
     when /the event history page for sample with sanger_sample_id "([^"]+)"/

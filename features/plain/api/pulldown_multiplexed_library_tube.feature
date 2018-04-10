@@ -14,7 +14,7 @@ Feature: Interacting with pulldown_multiplexed_library_tubes through the API
     And the UUID for the pulldown multiplexed library tube "Testing the JSON API" is "00000000-1111-2222-3333-444444444444"
 
     When I GET the API path "/pulldown_multiplexed_library_tubes"
-    Then ignoring "internal_id" the JSON should be:
+    Then ignoring "internal_id|barcode" the JSON should be:
       """
       [
         {
@@ -40,7 +40,7 @@ Feature: Interacting with pulldown_multiplexed_library_tubes through the API
     Given a pulldown multiplexed library tube called "Testing the JSON API" exists
     And the UUID for the pulldown multiplexed library tube "Testing the JSON API" is "00000000-1111-2222-3333-444444444444"
     When I GET the API path "/pulldown_multiplexed_library_tubes/00000000-1111-2222-3333-444444444444"
-    Then ignoring "internal_id" the JSON should be:
+    Then ignoring "internal_id|barcode" the JSON should be:
       """
       {
         "pulldown_multiplexed_library_tube": {

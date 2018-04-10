@@ -34,11 +34,11 @@ Then /^the last report for "([^"]*)" should be:$/ do |study_name, expected_resul
 end
 
 Given /^study "([^"]*)" has a plate "([^"]*)"$/ do |study_name, plate_barcode|
-  plate = Plate.create!(barcode: plate_barcode, plate_purpose: PlatePurpose.find_by(name: 'Stock Plate'))
+  plate = FactoryGirl.create(:plate, barcode: plate_barcode, plate_purpose: PlatePurpose.find_by(name: 'Stock Plate'), well_count: 3, well_order: :row_order)
   samples = []
-  1.upto(3) do |i|
-    well = Well.create!(plate: plate, map_id: i)
-    well.aliquots.create!(sample: Sample.create!(name: "Sample_#{plate_barcode}_#{i}"))
+  plate.wells.each_with_index do |well, i|
+    # well = Well.create!(plate: plate, map_id: i)
+    well.aliquots.create!(sample: Sample.create!(name: "Sample_#{plate_barcode}_#{i + 1}"))
     well.well_attribute.update_attributes!(
       gender_markers: %w(F F F F),
       sequenom_count: 29,

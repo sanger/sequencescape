@@ -2,29 +2,6 @@ require 'rails_helper'
 
 RSpec.describe Asset, type: :model do
   context 'An asset' do
-    context 'with a barcode' do
-      setup do
-        @asset = create :asset
-        @result_hash = @asset.barcode_and_created_at_hash
-      end
-      it 'return a hash with the barcode and created_at time' do
-        assert @result_hash.present?
-        assert @result_hash.is_a?(Hash)
-        assert @result_hash[:barcode].is_a?(String)
-        assert @result_hash[:created_at].is_a?(ActiveSupport::TimeWithZone)
-      end
-    end
-
-    context 'without a barcode' do
-      setup do
-        @asset = create :asset, barcode: nil
-        @result_hash = @asset.barcode_and_created_at_hash
-      end
-      it 'return an empty hash' do
-        assert @result_hash.blank?
-      end
-    end
-
     context '#scanned_in_date' do
       setup do
         @scanned_in_asset = create :asset
@@ -97,6 +74,68 @@ RSpec.describe Asset, type: :model do
 
       it 'set the correct parents' do
         assert_equal @parents, @asset.reload.parents
+      end
+    end
+  end
+  context 'when checking scopes' do
+    describe '#with_barcode' do
+      let!(:ean13_plates_list) { create_list(:plate, 2) }
+      #    let!(:fluidigm_plates_list) { create_list(:plate_with_fluidigm_barcode, 2) }
+
+      let(:plate_ean13_1) { ean13_plates_list[0] }
+      let(:plate_ean13_2) { ean13_plates_list[1] }
+
+      #   let(:plate_fluidigm_1) { fluidigm_plates_list[0] }
+      #  let(:plate_fluidigm_2) { fluidigm_plates_list[1] }
+
+      it 'correctly finds a single ean13 barcode' do
+        expect(Asset.with_barcode(plate_ean13_1.machine_barcode)).to match_array([plate_ean13_1])
+      end
+
+      it 'does not find anything when sent a non-valid ean13 barcode' do
+        expect(Asset.with_barcode('1234567890123')).to match_array([])
+      end
+
+      it 'correctly finds a plate with a single fluidigm barcode' do
+        #    expect(Asset.with_barcode(plate_fluidigm_1.fluidigm_barcode)).to match_array([plate_fluidigm_1])
+      end
+
+      it 'does not find anything when sent any other string' do
+        expect(Asset.with_barcode('INVALID123ABC')).to match_array([])
+      end
+
+      it 'finds plates when sent a mixture of valid barcodes' do
+        bcs = [
+          plate_ean13_1.machine_barcode,
+          #     plate_fluidigm_1.fluidigm_barcode,
+          plate_ean13_2.machine_barcode,
+          #    plate_fluidigm_2.fluidigm_barcode
+        ]
+        expected_result = [
+          plate_ean13_1,
+          #   plate_fluidigm_1,
+          plate_ean13_2,
+          #  plate_fluidigm_2
+        ]
+        expect(Asset.with_barcode(bcs)).to match_array(expected_result)
+      end
+
+      it 'finds plates when sent a mixture of valid and invalid barcodes' do
+        bcs = [
+          plate_ean13_1.machine_barcode,
+          'RUBBISH123',
+          # plate_fluidigm_1.fluidigm_barcode,
+          plate_ean13_2.machine_barcode,
+          '1234567890123',
+          # plate_fluidigm_2.fluidigm_barcode
+        ]
+        expected_result = [
+          plate_ean13_1,
+          # plate_fluidigm_1,
+          plate_ean13_2,
+          # plate_fluidigm_2
+        ]
+        expect(Asset.with_barcode(bcs)).to match_array(expected_result)
       end
     end
   end

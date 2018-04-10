@@ -8,7 +8,7 @@ class Transfer::BetweenPlateAndTubes < Transfer
   DESTINATION_INCLUDES = {
     destination: [
       :uuid_object,
-      :barcode_prefix
+      :primary_barcode
     ]
   }
 
@@ -61,8 +61,8 @@ class Transfer::BetweenPlateAndTubes < Transfer
 
   def barcode_to_hash(barcoded)
     yield({
-      number: barcoded.barcode,
-      prefix: barcoded.barcode_prefix.prefix,
+      number: barcoded.barcode_number,
+      prefix: barcoded.prefix,
       two_dimensional: barcoded.two_dimensional_barcode,
       ean13: barcoded.ean13_barcode,
       type: barcoded.barcode_type
@@ -113,9 +113,9 @@ class Transfer::BetweenPlateAndTubes < Transfer
     stock_plates = source_wells.map(&:plate).uniq
     raise StandardError, 'There appears to be no stock plate!' if stock_plates.empty?
     plate_name = if stock_plates.size > 1
-                   "#{stock_plates.first.sanger_human_barcode}+"
+                   "#{stock_plates.first.human_barcode}+"
                  else
-                   stock_plates.first.sanger_human_barcode
+                   stock_plates.first.human_barcode
                  end
     first, last = source_wells.first.map_description, source_wells.last.map_description
     "#{plate_name} #{first}:#{last}"

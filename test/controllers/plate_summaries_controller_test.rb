@@ -40,19 +40,19 @@ class PlateSummariesControllerTest < ActionController::TestCase
       context '#search' do
         should 'find expected plates' do
           plates = {
-            @source_plate_a => [@source_plate_a.sanger_human_barcode,
+            @source_plate_a => [@source_plate_a.human_barcode,
                                 @source_plate_a.ean13_barcode,
-                                @child_plate_a.sanger_human_barcode,
+                                @child_plate_a.human_barcode,
                                 @child_plate_a.ean13_barcode],
-            @source_plate_b => [@source_plate_b.sanger_human_barcode,
+            @source_plate_b => [@source_plate_b.human_barcode,
                                 @source_plate_b.ean13_barcode,
-                                @child_plate_b.sanger_human_barcode,
+                                @child_plate_b.human_barcode,
                                 @child_plate_b.ean13_barcode]
           }
           plates.each do |plate, barcodes|
             barcodes.each do |barcode|
               get :search, params: { plate_barcode: barcode }
-              assert_redirected_to plate_summary_path(plate.sanger_human_barcode)
+              assert_redirected_to plate_summary_path(plate.human_barcode)
             end
           end
         end
@@ -74,13 +74,13 @@ class PlateSummariesControllerTest < ActionController::TestCase
         end
 
         should 'return expected plate' do
-          get :show, params: { id: @source_plate_a.sanger_human_barcode }
+          get :show, params: { id: @source_plate_a.human_barcode }
           assert_response :success
           assert_equal @source_plate_a, assigns(:plate)
         end
 
         should 'show the metadata for the plate' do
-          get :show, params: { id: @child_plate_a.sanger_human_barcode }
+          get :show, params: { id: @child_plate_a.human_barcode }
           assert_response :success
           assert_equal @collection.metadata.count, assigns(:plate).metadata.count
         end

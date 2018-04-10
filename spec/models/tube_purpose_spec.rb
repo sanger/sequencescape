@@ -11,7 +11,7 @@ describe Tube::Purpose, type: :model do
       it { is_expected.to be_a expected_tube_class }
 
       it 'set an appropriate barcode prefix' do
-        expect(subject.barcode_prefix.prefix).to eq barcode_prefix
+        expect(subject.primary_barcode.prefix.human).to eq barcode_prefix
       end
 
       it 'sets itself as the purpose' do

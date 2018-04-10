@@ -27,8 +27,8 @@
           <% end %>
         </td>
         <td><%= asset.label %></td>
-        <% unless asset.barcode.nil? %>
-          <td><%= "Barcode: #{asset.barcode}" %></td>
+        <% unless asset.barcode_number.nil? %>
+          <td><%= "Barcode: #{asset.barcode_number}" %></td>
         <% else %>
           <td></td>
         <% end %>

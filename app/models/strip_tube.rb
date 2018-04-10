@@ -23,10 +23,11 @@ class StripTube < Plate
     source_plates
   end
 
-  # Until we no how barcodes are going to work, we'll just override this
+  # Until we know how barcodes are going to work, we'll just override this
   def self.create_with_barcode!(*args, &block)
     attributes = args.extract_options!
-    barcode    = args.first || attributes[:barcode]
-    create!(attributes.merge(barcode: barcode), &block)
+    attributes.delete(:barcode)
+    attributes.delete(:sanger_barcode)
+    create!(attributes, &block)
   end
 end

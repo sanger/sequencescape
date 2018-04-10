@@ -63,7 +63,7 @@ class PlatesControllerTest < ActionController::TestCase
             setup do
               @well = create :well
               @parent_plate.wells << [@well]
-              @parent_raw_barcode = Barcode.calculate_barcode(@prefix, @parent_plate.barcode.to_i)
+              @parent_raw_barcode = @parent_plate.machine_barcode
             end
 
             context "and we don't select any dilution factor" do
@@ -121,7 +121,7 @@ class PlatesControllerTest < ActionController::TestCase
                 setup do
                   @well2 = create :well
                   @parent_plate2.wells << [@well2]
-                  @parent2_raw_barcode = Barcode.calculate_barcode(@prefix, @parent_plate2.barcode.to_i)
+                  @parent2_raw_barcode = @parent_plate2.machine_barcode
                 end
 
                 context 'and first parent has a dilution factor of 3.53, and second parent with 4.56' do
@@ -235,7 +235,7 @@ class PlatesControllerTest < ActionController::TestCase
         context 'Create Pico Assay Plates' do
           context 'with one source plate' do
             setup do
-              @parent_raw_barcode = Barcode.calculate_barcode(@prefix, @parent_plate.barcode.to_i)
+              @parent_raw_barcode = @parent_plate.machine_barcode
             end
 
             context 'without a dilution factor' do
@@ -280,9 +280,9 @@ class PlatesControllerTest < ActionController::TestCase
           context 'with 3 source plates' do
             setup do
               @picoassayplate_count = PicoAssayPlate.count
-              @parent_raw_barcode  = Barcode.calculate_barcode(@prefix, @parent_plate.barcode.to_i)
-              @parent_raw_barcode2 = Barcode.calculate_barcode(@prefix, @parent_plate2.barcode.to_i)
-              @parent_raw_barcode3 = Barcode.calculate_barcode(@prefix, @parent_plate3.barcode.to_i)
+              @parent_raw_barcode  = @parent_plate.machine_barcode
+              @parent_raw_barcode2 = @parent_plate2.machine_barcode
+              @parent_raw_barcode3 = @parent_plate3.machine_barcode
               post :create, params: { plates: { creator_id: @pico_assay_plate_creator.id, barcode_printer: @barcode_printer.id, source_plates: "#{@parent_raw_barcode}\n#{@parent_raw_barcode2}\t#{@parent_raw_barcode3}", user_barcode: '2470000100730' } }
             end
 

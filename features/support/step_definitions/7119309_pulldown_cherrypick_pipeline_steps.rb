@@ -11,7 +11,7 @@ Given(/^plate "([^"]*)" with (\d+) samples in study "([^"]*)" exists$/) do |plat
 end
 
 Given(/^plate "([^"]*)" has concentration results$/) do |plate_barcode|
-  plate = Plate.find_by(barcode: plate_barcode)
+  plate = Plate.find_from_barcode('DN' + plate_barcode)
   plate.wells.each_with_index do |well, index|
     well.well_attribute.update_attributes!(concentration: index * 40)
   end
@@ -20,7 +20,7 @@ end
 Given(/^plate "([^"]*)" has nonzero concentration results$/) do |plate_barcode|
   step(%Q{plate "#{plate_barcode}" has concentration results})
 
-  plate = Plate.find_by(barcode: plate_barcode)
+  plate = Plate.find_from_barcode('DN' + plate_barcode)
   plate.wells.each_with_index do |well, _index|
     if well.well_attribute.concentration == 0.0
       well.well_attribute.update_attributes!(concentration: 1)
@@ -29,7 +29,7 @@ Given(/^plate "([^"]*)" has nonzero concentration results$/) do |plate_barcode|
 end
 
 Given(/^plate "([^"]*)" has measured volume results$/) do |plate_barcode|
-  plate = Plate.find_by(barcode: plate_barcode)
+  plate = Plate.find_from_barcode('DN' + plate_barcode)
   plate.wells.each_with_index do |well, index|
     well.well_attribute.update_attributes!(measured_volume: index * 11)
   end

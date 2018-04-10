@@ -9,19 +9,26 @@ FactoryGirl.define do
     end
   end
 
-  factory :tube do
+  trait :tube_barcode do
+    transient do
+      barcode_number { barcode }
+      barcode { generate :barcode_number }
+      prefix 'NT'
+    end
+    sanger_barcode { { prefix: prefix, number: barcode_number } }
+  end
+
+  factory :tube, traits: [:tube_barcode] do
     name { generate :asset_name }
     association(:purpose, factory: :tube_purpose)
   end
 
-  factory :empty_sample_tube, class: SampleTube do
+  factory :empty_sample_tube, class: SampleTube, traits: [:tube_barcode] do
     name                { generate :asset_name }
     value               ''
     descriptors         []
     descriptor_fields   []
     qc_state            ''
-    resource            nil
-    barcode
     purpose { Tube::Purpose.standard_sample_tube }
   end
 
@@ -43,21 +50,19 @@ FactoryGirl.define do
     end
   end
 
-  factory :qc_tube do
-    barcode
-  end
+  factory :qc_tube, traits: [:tube_barcode]
 
-  factory :multiplexed_library_tube do
-    name    { |_a| generate :asset_name }
+  factory :multiplexed_library_tube, traits: [:tube_barcode] do
+    name    { generate :asset_name }
     purpose { Tube::Purpose.standard_mx_tube }
   end
 
-  factory :pulldown_multiplexed_library_tube do
-    name { |_a| generate :asset_name }
+  factory :pulldown_multiplexed_library_tube, traits: [:tube_barcode] do
+    name { generate :asset_name }
     public_name 'ABC'
   end
 
-  factory :stock_multiplexed_library_tube do
+  factory :stock_multiplexed_library_tube, traits: [:tube_barcode] do
     name    { |_a| generate :asset_name }
     purpose { Tube::Purpose.stock_mx_tube }
 
@@ -66,8 +71,7 @@ FactoryGirl.define do
     end
   end
 
-  factory(:empty_library_tube, class: LibraryTube) do
-    qc_state ''
+  factory(:empty_library_tube, traits: [:tube_barcode], class: LibraryTube) do
     name     { generate :asset_name }
     purpose  { Tube::Purpose.standard_library_tube }
 
@@ -93,7 +97,7 @@ FactoryGirl.define do
     end
   end
 
-  factory(:tagged_library_tube, class: LibraryTube) do
+  factory(:tagged_library_tube, class: LibraryTube, traits: [:tube_barcode]) do
     transient do
       tag_map_id 1
     end
@@ -103,11 +107,18 @@ FactoryGirl.define do
     end
   end
 
-  factory :pac_bio_library_tube do
+  factory :pac_bio_library_tube, traits: [:tube_barcode] do
     transient do
       aliquot { build(:tagged_aliquot) }
+      prep_kit_barcode 999
+      smrt_cells_available 1
     end
-    barcode
+    pac_bio_library_tube_metadata_attributes do
+      {
+        prep_kit_barcode: prep_kit_barcode,
+        smrt_cells_available: smrt_cells_available
+      }
+    end
     after(:build) do |t, evaluator|
       t.aliquots << evaluator.aliquot
     end

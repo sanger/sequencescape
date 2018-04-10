@@ -28,7 +28,7 @@ class Tube < Receptacle
   end
 
   def barcode!
-    self.barcode ||= AssetBarcode.new_barcode
+    self.sanger_barcode = { number: AssetBarcode.new_barcode, prefix: default_prefix } unless barcode_number
     save!
   end
 
@@ -51,7 +51,7 @@ class Tube < Receptacle
     ancestors.order(created_at: :desc).find_by(plate_purpose_id: ancestor_purpose_id)
   end
 
-  alias_method :friendly_name, :sanger_human_barcode
+  alias_method :friendly_name, :human_barcode
 
   def self.delegate_to_purpose(*methods)
     methods.each do |method|
@@ -74,10 +74,15 @@ class Tube < Receptacle
 
   def self.create_with_barcode!(*args, &block)
     attributes = args.extract_options!
-    barcode    = args.first || attributes[:barcode]
-    raise "Barcode: #{barcode} already used!" if barcode.present? and find_by(barcode: barcode).present?
+    barcode    = args.first || attributes.delete(:barcode)
+    prefix     = attributes.delete(:barcode_prefix)&.prefix || default_prefix
+    if barcode.present?
+      human = SBCF::SangerBarcode.new(prefix: prefix, number: barcode).human_barcode
+      raise "Barcode: #{barcode} already used!" if Barcode.where(barcode: human).exists?
+    end
     barcode ||= AssetBarcode.new_barcode
-    create!(attributes.merge(barcode: barcode), &block)
+    primary_barcode = Barcode.build_sanger_ean13(prefix: prefix, number: barcode)
+    create!(attributes.merge(primary_barcode: primary_barcode), &block)
   end
 end
 

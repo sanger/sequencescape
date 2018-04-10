@@ -192,10 +192,10 @@ RSpec.describe LocationReport, type: :model do
     end
 
     context 'when checking report generation' do
-      let(:plt_1_line) { "#{plate_1.machine_barcode},#{plate_1.sanger_human_barcode},#{plt_1_purpose},#{plt_1_created},#{locn_prefix} - Shelf 1,LabWhere,#{study_1.name},#{study_1.id},#{study_1_sponsor}" }
-      let(:plt_2_line_1) { "#{plate_2.machine_barcode},#{plate_2.sanger_human_barcode},#{plt_2_purpose},#{plt_2_created},#{locn_prefix} - Shelf 2,LabWhere,#{study_1.name},#{study_1.id},#{study_1_sponsor}" }
-      let(:plt_2_line_2) { "#{plate_2.machine_barcode},#{plate_2.sanger_human_barcode},#{plt_2_purpose},#{plt_2_created},#{locn_prefix} - Shelf 2,LabWhere,#{study_2.name},#{study_2.id},#{study_2_sponsor}" }
-      let(:plt_3_line) { "#{plate_3.machine_barcode},#{plate_3.sanger_human_barcode},#{plt_3_purpose},#{plt_3_created},#{locn_prefix} - Shelf 3,LabWhere,#{study_2.name},#{study_2.id},#{study_2_sponsor}" }
+      let(:plt_1_line) { "#{plate_1.machine_barcode},#{plate_1.human_barcode},#{plt_1_purpose},#{plt_1_created},#{locn_prefix} - Shelf 1,LabWhere,#{study_1.name},#{study_1.id},#{study_1_sponsor}" }
+      let(:plt_2_line_1) { "#{plate_2.machine_barcode},#{plate_2.human_barcode},#{plt_2_purpose},#{plt_2_created},#{locn_prefix} - Shelf 2,LabWhere,#{study_1.name},#{study_1.id},#{study_1_sponsor}" }
+      let(:plt_2_line_2) { "#{plate_2.machine_barcode},#{plate_2.human_barcode},#{plt_2_purpose},#{plt_2_created},#{locn_prefix} - Shelf 2,LabWhere,#{study_2.name},#{study_2.id},#{study_2_sponsor}" }
+      let(:plt_3_line) { "#{plate_3.machine_barcode},#{plate_3.human_barcode},#{plt_3_purpose},#{plt_3_created},#{locn_prefix} - Shelf 3,LabWhere,#{study_2.name},#{study_2.id},#{study_2_sponsor}" }
 
       before(:each) do
         plate_1
@@ -357,7 +357,7 @@ RSpec.describe LocationReport, type: :model do
           let(:start_date) { '2017-01-01 00:00:00' }
           let(:end_date) { '2017-03-01 00:00:00' }
           let(:plt_4_created) { plate_4.created_at.strftime('%Y-%m-%d %H:%M:%S') }
-          let(:plt_4_line) { "#{plate_4.machine_barcode},#{plate_4.sanger_human_barcode},Unknown,#{plt_4_created},#{locn_prefix} - Shelf 1,LabWhere,#{study_1.name},#{study_1.id},#{study_1_sponsor}" }
+          let(:plt_4_line) { "#{plate_4.machine_barcode},#{plate_4.human_barcode},Unknown,#{plt_4_created},#{locn_prefix} - Shelf 1,LabWhere,#{study_1.name},#{study_1.id},#{study_1_sponsor}" }
           let(:expected_lines) { [headers_line, plt_4_line] }
 
           before(:each) do
@@ -405,7 +405,7 @@ RSpec.describe LocationReport, type: :model do
         end
 
         context 'when using human readable barcodes' do
-          let(:barcodes_text) { "#{plate_1.sanger_human_barcode} #{plate_3.sanger_human_barcode}" }
+          let(:barcodes_text) { "#{plate_1.human_barcode} #{plate_3.human_barcode}" }
           let(:expected_lines) { [headers_line, plt_1_line, plt_3_line] }
 
           it_behaves_like 'a successful report'

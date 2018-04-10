@@ -172,28 +172,10 @@ class WellTest < ActiveSupport::TestCase
       end
 
       context 'for a tecan' do
-        context 'with valid inputs' do
-          setup do
-            @well.map = Map.first
-          end
-          should 'return true' do
-            assert !@well.map.nil?
-            assert @well.valid_well_on_plate
-          end
-        end
         should 'have a parent plate' do
           parent = @well.plate
           assert parent.is_a?(Plate)
           assert_equal parent.id, @plate.id
-        end
-
-        context 'with nil parameters' do
-          setup do
-            @well_nil = Well.new
-          end
-          should 'return false' do
-            assert_equal false, @well_nil.valid_well_on_plate
-          end
         end
       end
     end

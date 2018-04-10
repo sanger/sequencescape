@@ -39,7 +39,7 @@ Feature: Upload volume results from the volume checker robot
       | 1234567 | B10  |0.0             |
       | 1234567 | B11  |0.0064          |
       | 1234567 | B12  |0.0547          |
-    Given I have a DNA QC submission for plate "1234567"
+    Given I have a DNA QC submission for plate "DN1234567"
     Given I am on the show page for pipeline "DNA QC"
     When I check "Select DN1234567T for batch"
     And I select "Create Batch" from the first "action_on_requests"

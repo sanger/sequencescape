@@ -11,7 +11,7 @@ class AssetShape < ApplicationRecord
   validates_numericality_of :horizontal_ratio, :vertical_ratio
 
   def self.default_id
-    AssetShape.find_by(name: 'Standard').id
+    @default_id ||= default.id
   end
 
   def self.default

@@ -36,8 +36,9 @@ Given /^I have created a sequenom plate$/ do
 end
 
 Given /^there is a (\d+) well "([^"]*)" plate with a barcode of "([^"]*)"$/ do |number_of_wells, plate_purpose_name, plate_barcode|
+  bc = SBCF::SangerBarcode.from_machine(plate_barcode)
   new_plate = Plate.create!(
-    barcode: Barcode.number_to_human(plate_barcode.to_s),
+    primary_barcode: Barcode.build_sanger_ean13(prefix: bc.prefix.human, number: bc.number),
     plate_purpose: PlatePurpose.find_by(name: plate_purpose_name)
   )
   sample = FactoryGirl.create :sample_with_gender, name: "#{plate_barcode}_x"
@@ -56,7 +57,7 @@ Then /^the table of sequenom plates should be:$/ do |expected_results_table|
 end
 
 Given(/^plate "([^"]*)" has (\d+) blank samples$/) do |plate_barcode, number_of_blanks|
-  plate = Plate.find_by(barcode: plate_barcode)
+  plate = Plate.find_from_barcode('DN' + plate_barcode)
   study = plate.studies.first # we need to propagate the study to the new aliquots
   plate.wells.each_with_index do |well, index|
     break if index >= number_of_blanks.to_i

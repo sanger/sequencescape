@@ -51,6 +51,7 @@ plate_purposes = <<~EOS
   - name: Pico Assay Plates
   - name: Pico Assay B
     target_type: PicoAssayPlate
+    prefix: PB
   - name: Gel Dilution Plates
   - name: Pulldown Aliquot
     prefix: FA

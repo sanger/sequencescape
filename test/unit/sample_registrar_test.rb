@@ -59,7 +59,7 @@ class SampleRegistrarTest < ActiveSupport::TestCase
 
       should 'set the barcode on the sample tube based on the AssetBarcode service' do
         sample_tube = SampleTube.last
-        assert_equal(AssetBarcode.last.id.to_s, sample_tube.barcode)
+        assert_equal(AssetBarcode.last.id.to_s, sample_tube.barcode_number)
       end
 
       should 'put the sample into the study' do

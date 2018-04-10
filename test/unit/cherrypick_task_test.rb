@@ -91,7 +91,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
 
         should 'fill plate with empty wells' do
           expected, requests = [@expected_partial], @requests.slice(0, 5)
-          expected.first.concat(requests.map { |request| [request.id, request.asset.plate.barcode, request.asset.map.description] })
+          expected.first.concat(requests.map { |request| [request.id, request.asset.plate.human_barcode, request.asset.map.description] })
           pad_expected_plate_with_empty_wells(@template, expected.first)
 
           plates, source_plates = @task.pick_onto_partial_plate(requests, @template, @robot, @batch, @partial)
@@ -125,7 +125,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
             plate.tap do
               request = @requests[row - 1]
               plate.concat([CherrypickTask::TEMPLATE_EMPTY_WELL])
-              plate.push([request.id, request.asset.plate.barcode, request.asset.map.description])
+              plate.push([request.id, request.asset.plate.human_barcode, request.asset.map.description])
               plate.concat([CherrypickTask::EMPTY_WELL])
             end
           end
@@ -162,10 +162,10 @@ class CherrypickTaskTest < ActiveSupport::TestCase
 
           expected_partial = []
           expected_partial.concat([CherrypickTask::TEMPLATE_EMPTY_WELL] * 3) # Column 1
-          expected_partial.concat(requests.slice(0, 6).map { |request| [request.id, request.asset.plate.barcode, request.asset.map.description] })
+          expected_partial.concat(requests.slice(0, 6).map { |request| [request.id, request.asset.plate.human_barcode, request.asset.map.description] })
           expected_partial.concat([CherrypickTask::TEMPLATE_EMPTY_WELL] * 3) # Column 12
 
-          expected_second = requests.slice(6, 6).map { |request| [request.id, request.asset.plate.barcode, request.asset.map.description] }
+          expected_second = requests.slice(6, 6).map { |request| [request.id, request.asset.plate.human_barcode, request.asset.map.description] }
           pad_expected_plate_with_empty_wells(@template, expected_second)
 
           plates, source_plates = @task.pick_onto_partial_plate(requests, @template, @robot, @batch, @partial)
@@ -183,7 +183,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
 
           @template.set_control_well(1)
 
-          @control_plate = ControlPlate.create!(barcode: (@barcode += 1), size: 12, plate_purpose: @mini_plate_purpose).tap do |plate|
+          @control_plate = ControlPlate.create!(sanger_barcode: { human_barcode: generate(:sanger_barcode) }, size: 12, plate_purpose: @mini_plate_purpose).tap do |plate|
             Map.where_plate_size(12).where_description(['A1', 'C1', 'A2']).all.each do |location|
               well = plate.wells.create!(map: location)
               well.aliquots.create!(sample: create(:sample))
@@ -205,7 +205,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
 
           # To check the control well we have to account for the well being picked being random
           assert_equal(@batch.requests.first.id, control_well_details[0], 'Incorrect control request ID')
-          assert_equal(@control_plate.barcode.to_s, control_well_details[1], 'Incorrect control plate barcode')
+          assert_equal(@control_plate.reload.human_barcode, control_well_details[1], 'Incorrect control plate barcode')
           assert(['A1', 'C1', 'A2'].include?(control_well_details[2]), 'Incorrect control well location')
         end
 
@@ -223,7 +223,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
 
         should 'add the control plate to the source list' do
           plates, source_plates = @task.pick_onto_partial_plate([], @template, @robot, @batch, @partial)
-          assert(source_plates.include?(@control_plate.barcode.to_s), 'control plate not part of sources')
+          assert(source_plates.include?(@control_plate.reload.human_barcode), 'control plate not part of sources')
         end
       end
     end
@@ -244,14 +244,14 @@ class CherrypickTaskTest < ActiveSupport::TestCase
 
         should 'pick vertically when the plate purpose says so' do
           @target_purpose.update_attributes!(cherrypick_direction: 'column')
-          @expected = @requests.map { |request| [request.id, request.asset.plate.barcode, request.asset.map.description] }
+          @expected = @requests.map { |request| [request.id, request.asset.plate.human_barcode, request.asset.map.description] }
         end
 
         should 'pick horizontally when the plate purpose says so' do
           @target_purpose.update_attributes!(cherrypick_direction: 'row')
           @expected = (1..12).map do |index|
             request = @requests[@asset_shape.vertical_to_horizontal(index, @requests.size) - 1]
-            [request.id, request.asset.plate.barcode, request.asset.map.description]
+            [request.id, request.asset.plate.human_barcode, request.asset.map.description]
           end
         end
       end
@@ -270,7 +270,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
           plates = (1..3).map { |_| @mini_plate_purpose.create!(barcode: (@barcode += 1)) }
           @requests = plates.map { |p| create(:well_request, asset: p.wells.first) }
           @expected = @requests.map do |request|
-            [request.id, request.asset.plate.barcode, request.asset.map.description]
+            [request.id, request.asset.plate.human_barcode, request.asset.map.description]
           end.in_groups_of(2).map do |group|
             group.compact!
             pad_expected_plate_with_empty_wells(@template, group)
@@ -280,13 +280,13 @@ class CherrypickTaskTest < ActiveSupport::TestCase
         should 'not generate a second plate if beds are not full' do
           plates, source_plates = @task.pick_new_plate(@requests.slice(0, 2), @template, @robot, @batch, @target_purpose)
           assert_equal(@expected.slice(0, 1), plates, 'Incorrect plate pick')
-          assert_equal(Set.new(@requests.slice(0, 2).map(&:asset).map(&:plate).map(&:barcode)), source_plates, 'Incorrect source plates used')
+          assert_equal(Set.new(@requests.slice(0, 2).map(&:asset).map(&:plate).map(&:human_barcode)), source_plates, 'Incorrect source plates used')
         end
 
         should 'generate new plate when all source beds are full' do
           plates, source_plates = @task.pick_new_plate(@requests, @template, @robot, @batch, @target_purpose)
           assert_equal(@expected, plates, 'Incorrect plate pick')
-          assert_equal(Set.new(@requests.map(&:asset).map(&:plate).map(&:barcode)), source_plates, 'Incorrect source plates used')
+          assert_equal(Set.new(@requests.map(&:asset).map(&:plate).map(&:human_barcode)), source_plates, 'Incorrect source plates used')
         end
       end
     end
