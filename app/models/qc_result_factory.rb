@@ -51,7 +51,7 @@ class QcResultFactory
     end
 
     def message_id
-      'Uuid - ' << (uuid || 'blank')
+      "Uuid - #{(uuid || 'blank')}"
     end
 
     # This is where the complexity is.
@@ -98,7 +98,7 @@ class QcResultFactory
   def check_resources
     resources.each do |resource|
       next if resource.valid?
-      ''.tap do |resource_errors|
+      String.new.tap do |resource_errors|
         resource.errors.each do |key, value|
           resource_errors << "#{key} #{value} "
         end
