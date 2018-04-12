@@ -209,6 +209,7 @@ en:
     errors:
       location_report_form_invalid: "The location report form was invalid and could not be saved."
       no_report_name_found: "Please give the report a name (no symbols except underscores)."
+      labwhere_location_not_found: "LabWhere location not found, please scan or enter a valid location barcode."
       no_valid_barcodes_found: "No correctly formatted barcodes were found, please enter human-readable or scannable barcodes separated with spaces or commas."
       no_rows_found: "That selection returns no plates, no report generated."
       invalid_barcodes_found: "Invalid barcodes found, no report generated: "

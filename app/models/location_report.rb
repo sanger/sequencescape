@@ -32,11 +32,17 @@ class LocationReport < ApplicationRecord
   validates :name, presence: true
   validates :report_type, presence: true
   validate :any_select_field_present?
+  validate :location_barcode_present?
 
   def any_select_field_present?
     return unless report_type == 'type_selection'
     attr_list = %i[faculty_sponsor_ids study_id start_date end_date plate_purpose_ids barcodes]
     errors.add(:base, I18n.t('location_reports.errors.no_selection_fields_filled')) if attr_list.all? { |attr| send(attr).blank? }
+  end
+
+  def location_barcode_present?
+    return unless report_type == 'type_labwhere'
+    errors.add(:location_barcode, I18n.t('location_reports.errors.no_location_barcode_found')) if location_barcode.blank?
   end
 
   def column_headers
@@ -92,6 +98,8 @@ class LocationReport < ApplicationRecord
   def generate_plates_list
     @plates_list = if type_selection?
                      search_for_plates_by_selection
+                   elsif type_labwhere?
+                     search_for_plates_by_labwhere_locn_bc
                    else
                      []
                    end
@@ -114,7 +122,6 @@ class LocationReport < ApplicationRecord
 
   def generate_study_cols_for_row(cur_study)
     return %w[Unknown Unknown] if cur_study.blank?
-
     # NB. some older studies may not have a name
     cols = [] << (cur_study.name || cur_study.id)
     cols << cur_study.id
@@ -132,5 +139,28 @@ class LocationReport < ApplicationRecord
       barcodes:             barcodes
     }
     Plate.search_for_plates(params)
+  end
+
+  def search_for_plates_by_labwhere_locn_bc
+    @labware_barcodes = []
+    begin
+      get_labwares_per_location(location_barcode) unless location_barcode.nil?
+    rescue LabWhereClient::LabwhereException
+      return []
+    end
+    return [] if @labware_barcodes.blank?
+    params = {
+      barcodes: @labware_barcodes
+    }
+    Plate.search_for_plates(params)
+  end
+
+  def get_labwares_per_location(curr_locn_bc)
+    # collect any labware barcodes at this level
+    curr_locn_labwares = LabWhereClient::Location.labwares(curr_locn_bc)
+    curr_locn_labwares.map { |curr_labware| @labware_barcodes << curr_labware.barcode } if curr_locn_labwares.present?
+    # search recursively in any child locations
+    curr_locn_children = LabWhereClient::Location.children(curr_locn_bc)
+    curr_locn_children.each { |curr_locn| get_labwares_per_location(curr_locn.barcode) } if curr_locn_children.present?
   end
 end

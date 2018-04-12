@@ -8,7 +8,7 @@
 
 ##
 # This form object class handles the user interaction for creating new Location Reports.
-# It sensibility checks the user-entered list of barcode sequences or selection parameters
+# It sense checks the user-entered list of barcode sequences or other selection parameters
 # before creating the Location Report model.
 class LocationReport::FormObject
   include ActiveModel::Model
@@ -18,6 +18,7 @@ class LocationReport::FormObject
   attr_accessor :user,
                 :name,
                 :report_type,
+                :location_barcode,
                 :faculty_sponsor_ids,
                 :study_id,
                 :start_date,
@@ -32,11 +33,13 @@ class LocationReport::FormObject
   # Validations
   validate :name_present?
   validates :report_type, presence: true
-  validate :are_both_dates_present_if_used?
+  validate :location_barcode_present?
+  validate :both_dates_present_if_used?
   validate :end_date_after_start_date?
-  validate :are_entered_barcodes_valid?
+  validate :entered_barcodes_valid?
   validate :any_select_field_present?
-  validate :are_any_plates_found?
+  validate :plates_found_by_selection?
+  validate :labwhere_location_exists?
 
   def save
     if valid?
@@ -65,7 +68,12 @@ class LocationReport::FormObject
     errors.add(:report_name, I18n.t('location_reports.errors.no_report_name_found')) if name.blank?
   end
 
-  def are_both_dates_present_if_used?
+  def location_barcode_present?
+    return unless report_type == 'type_labwhere'
+    errors.add(:location_barcode, I18n.t('location_reports.errors.no_location_barcode_found')) if location_barcode.blank?
+  end
+
+  def both_dates_present_if_used?
     errors.add(:start_date, I18n.t('location_reports.errors.both_dates_required')) if (start_date.blank? && end_date.present?) || (start_date.present? && end_date.blank?)
   end
 
@@ -73,7 +81,7 @@ class LocationReport::FormObject
     barcodes_text&.squish&.split(/[\s\,]+/) || []
   end
 
-  def are_entered_barcodes_valid?
+  def entered_barcodes_valid?
     return if barcodes_text.blank?
     invalid_barcodes = []
     valid_barcodes = {}
@@ -120,14 +128,18 @@ class LocationReport::FormObject
     errors.add(:base, I18n.t('location_reports.errors.no_selection_fields_filled')) if attr_list.all? { |attr| send(attr).blank? }
   end
 
-  def are_any_plates_found?
+  def plates_found_by_selection?
     return unless report_type == 'type_selection'
     errors.add(:base, I18n.t('location_reports.errors.no_rows_found')) unless search_for_plates_by_selection.any?
   end
 
+  def labwhere_location_exists?
+    return unless report_type == 'type_labwhere'
+    errors.add(:base, I18n.t('location_reports.errors.labwhere_location_not_found')) if find_labwhere_location.blank?
+  end
+
   def end_date_after_start_date?
     return if start_date.blank? || end_date.blank?
-
     errors.add(:end_date, I18n.t('location_reports.errors.end_date_after_start_date')) if end_date < start_date
   end
 
@@ -143,9 +155,18 @@ class LocationReport::FormObject
     Plate.search_for_plates(params)
   end
 
+  def find_labwhere_location
+    locn_info = LabWhereClient::Location.find_by_barcode(location_barcode) # rubocop:disable Rails/DynamicFindBy
+    return locn_info.name if locn_info.present?
+    nil
+  rescue LabWhereClient::LabwhereException
+    nil
+  end
+
   def persist!
     LocationReport.transaction do
       @location_report                     = LocationReport.new(user: user, name: name, report_type: report_type)
+      @location_report.location_barcode    = location_barcode if location_barcode.present?
       @location_report.faculty_sponsor_ids = faculty_sponsor_ids if faculty_sponsor_ids.present?
       @location_report.study_id            = study_id if study_id.present?
       @location_report.start_date          = start_date&.to_datetime if start_date.present?

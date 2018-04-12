@@ -63,6 +63,7 @@ RSpec.describe LocationReport::FormObject, type: :model do
         :location_report_form_object,
         report_type: report_type,
         name: name,
+        location_barcode: location_barcode,
         faculty_sponsor_ids: faculty_sponsor_ids,
         study_id: study_id,
         start_date: start_date,
@@ -73,6 +74,7 @@ RSpec.describe LocationReport::FormObject, type: :model do
     end
     let(:report_type) { nil }
     let(:name) { nil }
+    let(:location_barcode) { nil }
     let(:faculty_sponsor_ids) { nil }
     let(:study_id) { nil }
     let(:start_date) { nil }
@@ -217,6 +219,7 @@ RSpec.describe LocationReport::FormObject, type: :model do
     end
 
     context 'when using multiple barcodes and criteria that result in no plates found' do
+      let(:report_type) { 'type_selection' }
       let(:barcodes) { [plate_1.machine_barcode, plate_2.machine_barcode, plate_3.machine_barcode] }
       let(:start_date) { '2016-11-15 00:00:00' }
       let(:end_date) { '2016-11-17 00:00:00' }
@@ -226,7 +229,7 @@ RSpec.describe LocationReport::FormObject, type: :model do
       end
     end
 
-    context 'when a valid form object model is saved' do
+    context 'when a valid selection form object model is saved' do
       let(:name) { 'Test name' }
       let(:report_type) { 'type_selection' }
       let(:faculty_sponsor_ids) { [study_1_sponsor.id] }
@@ -257,6 +260,75 @@ RSpec.describe LocationReport::FormObject, type: :model do
         expect(location_report_form_object.location_report.end_date.strftime('%Y-%m-%d %H:%M:%S')).to eq('2016-03-01 00:00:00')
         expect(location_report_form_object.location_report.plate_purpose_ids).to eq([plt_1_purpose.id])
         expect(location_report_form_object.location_report.barcodes).to eq([plate_1.machine_barcode.to_s])
+      end
+    end
+
+    context 'when a labwhere location is supplied' do
+      let(:report_type) { 'type_labwhere' }
+      let(:locn_prefix) { 'Sanger - Ogilvie - AA209 - Freezer 1' }
+
+      before(:each) do
+        allow(LabWhereClient::Location).to receive(:find_by_barcode)
+          .with('1001')
+          .and_return(
+            LabWhereClient::Location.new(
+              'name' => 'Shelf 1',
+              'parentage' => locn_prefix
+            )
+          )
+
+        allow(LabWhereClient::Location).to receive(:find_by_barcode)
+          .with('9999')
+          .and_return(nil)
+      end
+
+      context 'for a valid location' do
+        let(:location_barcode) { '1001' }
+
+        it 'the model is valid' do
+          expect(location_report_form_object).to be_valid
+        end
+      end
+
+      context 'for an invalid location' do
+        let(:location_barcode) { '9999' }
+
+        it 'the model is not valid' do
+          expect(location_report_form_object).to_not be_valid
+        end
+      end
+    end
+
+    context 'when a valid labwhere form object model is saved' do
+      let(:name) { 'Test name' }
+      let(:report_type) { 'type_labwhere' }
+      let(:location_barcode) { '1001' }
+
+      before(:each) do
+        allow(LabWhereClient::Location).to receive(:find_by_barcode)
+          .with('1001')
+          .and_return(
+            LabWhereClient::Location.new(
+              'name' => 'Shelf 1',
+              'parentage' => locn_prefix
+            )
+          )
+
+        location_report_form_object.save
+      end
+
+      it 'creates a location report' do
+        expect(location_report_form_object.location_report).to be_present
+      end
+
+      it 'creates a valid location report' do
+        expect(location_report_form_object.location_report).to be_valid
+      end
+
+      it 'correctly records the form object information in the location report' do
+        expect(location_report_form_object.location_report.name).to eq('Test_name')
+        expect(location_report_form_object.location_report.report_type).to eq('type_labwhere')
+        expect(location_report_form_object.location_report.location_barcode).to eq('1001')
       end
     end
   end

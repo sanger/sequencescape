@@ -9,6 +9,12 @@
 </p>
 <div class="row justify-content-between">
 	<div class="col-md">
+	<%= panel(:info,title: "Create a report from a LabWhere location",class: "creation",id: "new_location_report_from_labwhere_location") do %>
+	<%= render partial: 'location_labwhere_form', locals: { form_object: @form_object } %>
+	<% end %>
+	</div>
+  
+	<div class="col-md">
 	<%= panel(:info,title: "Create a report by selection",class: "creation",id: "new_location_report_from_selection") do %>
 	  <%= render partial: 'location_plate_selection_form', locals: { form_object: @form_object, faculty_sponsors: @faculty_sponsors, studies: @studies, plate_purposes: @plate_purposes } %>
 	<% end %>
