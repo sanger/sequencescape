@@ -6,7 +6,7 @@
 # Copyright (C) 2018 Genome Research Ltd.
 
 require 'rails_helper'
-require 'helpers/lab_where_client_helper'
+require 'support/lab_where_client_helper'
 
 RSpec.configure do |c|
   c.include LabWhereClientHelper
