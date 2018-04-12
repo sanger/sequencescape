@@ -54,23 +54,43 @@ module BootstrapHelper
   # </div>
   def summary(type = :default, options = {})
     bs_type = bootstrapify(type.to_s)
-    title = options.delete(:title) || 'Summary'
+    options[:title] ||=  'Summary'
     size = options.delete(:size) || '6'
+    # options[:class] ||= String.new
+    # options[:class] << " card card-#{bs_type} mb-3"
+
+    # content_tag(:div, options) do
+    #   content_tag(:h3, title, class: 'card-header reduced') <<
+    #     content_tag(:table, class: 'table table-summary') do
+    #       String.new.html_safe.tap do |rows|
+    #         yield.each do |key, value|
+    #           rows << content_tag(:tr) do
+    #             content_tag(:th, key) << content_tag(:td, value)
+    #           end
+    #         end
+    #       end
+    #     end
+    #  end
+    #end
+    bs_custom_panel(type, :table, { class: 'table table-summary' }, options) do
+     String.new.html_safe.tap do |rows|
+       yield.each do |key, value|
+         rows << content_tag(:tr) do
+           content_tag(:th, key) << content_tag(:td, value)
+         end
+       end
+     end
+    end
+  end
+
+  def bs_custom_panel(type, body_type, body_options, options, &block)
+    title = options.delete(:title)
     options[:class] ||= String.new
-    options[:class] << " card card-#{bs_type}"
-    content_tag(:div, class: "col-md-#{size}") do
-      content_tag(:div, options) do
-        content_tag(:h3, title, class: 'card-header reduced') <<
-          content_tag(:table, class: 'table table-summary') do
-            String.new.html_safe.tap do |rows|
-              yield.each do |key, value|
-                rows << content_tag(:tr) do
-                  content_tag(:th, key) << content_tag(:td, value)
-                end
-              end
-            end
-          end
-      end
+    options[:class] << " card card-style-#{type} mb-3"
+    content_tag(:div, options) do
+      out = String.new.html_safe
+      out << content_tag(:h3, title, class: 'card-header-custom') unless title.nil?
+      out << content_tag(body_type, body_options, &block)
     end
   end
 

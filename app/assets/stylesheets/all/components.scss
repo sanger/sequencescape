@@ -46,6 +46,11 @@ table.table-dense-information tbody {
   @extend .text-white;
 }
 
+.card-style-filters {
+  @extend .bg-light;
+}
+
+
 // Apply basic button formatting to all buttons
 input[type=submit] {
   @extend .btn;

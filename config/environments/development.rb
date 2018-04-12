@@ -62,3 +62,6 @@ Rails.application.configure do
     end
   end
 end
+
+Rack::MiniProfiler.config.position = 'right'
+
