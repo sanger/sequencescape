@@ -58,7 +58,6 @@ namespace :limber do
         barcode_for_tecan: 'ean13_barcode'
       )
     end
-
   end
 
   desc 'Create the limber request types'
