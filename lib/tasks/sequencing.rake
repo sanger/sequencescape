@@ -6,7 +6,7 @@ namespace :sequencing do
 
   namespace :novaseq do
     desc 'Setting up NovaSeq 6000 PE pipeline'
-    task :setup do
+    task setup: :environment do
       ActiveRecord::Base.transaction do
         unless RequestType.where(key: 'illumina_htp_novaseq_6000_paired_end_sequencing').exists?
           RequestType.create!(key: 'illumina_htp_novaseq_6000_paired_end_sequencing',
@@ -35,7 +35,7 @@ namespace :sequencing do
           ) do |pipeline|
             pipeline.request_types = RequestType.where(key: 'illumina_htp_novaseq_6000_paired_end_sequencing')
             pipeline.build_workflow(name: 'NovaSeq 6000 PE').tap do |wf|
-              build_tasks_for(wf, true)
+              build_tasks_for(wf)
             end
             add_information_types_to(pipeline)
           end

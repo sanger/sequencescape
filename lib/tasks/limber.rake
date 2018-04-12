@@ -7,7 +7,18 @@ namespace :limber do
 
   desc 'Create the Limber cherrypick plate'
   task create_plates: :environment do
-    ['LB Cherrypick', 'scRNA Stock', 'LBR Cherrypick'].each do |name|
+    purposes = [{ name: 'LB Cherrypick',
+                  size: 96 },
+                { name: 'scRNA Stock',
+                  size: 96 },
+                { name: 'LBR Cherrypick',
+                  size: 96 },
+                { name: 'GBS Stock',
+                  size: 384 }]
+
+    purposes.each do |purpose|
+      name = purpose[:name]
+      size = purpose[:size]
       # Caution: This is provided to help setting up limber development environments
       next if Purpose.where(name: name).exists?
       if Rails.env.production?
@@ -26,14 +37,28 @@ namespace :limber do
         target_type: 'Plate',
         stock_plate: true,
         default_state: 'pending',
-        barcode_printer_type_id: BarcodePrinterType.find_by(name: '96 Well Plate'),
+        barcode_printer_type_id: BarcodePrinterType.find_by(name: "#{size} Well Plate"),
         cherrypickable_target: true,
         cherrypick_direction: 'column',
-        size: 96,
+        size: size,
         asset_shape: AssetShape.default,
         barcode_for_tecan: 'ean13_barcode'
       )
     end
+
+    unless Purpose.where(name: 'LB Lib PCR-XP').exists?
+      PlatePurpose.create!(
+        name: 'LB Lib PCR-XP',
+        target_type: 'Plate',
+        default_state: 'pending',
+        barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
+        cherrypickable_target: false,
+        size: 96,
+        asset_shape: AssetShape.find_by(name: 'Standard'),
+        barcode_for_tecan: 'ean13_barcode'
+      )
+    end
+
   end
 
   desc 'Create the limber request types'
