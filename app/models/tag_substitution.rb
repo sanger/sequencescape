@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # A TagSubstitution may be used to replace tags in the event of
 # accidental mistagging.
 # Currently it supports:
@@ -28,7 +30,7 @@ class TagSubstitution
   # ticket: support ticket number [optional]
   # comment: any additional comment [optional]
 
-  validates_presence_of :substitutions
+  validates :substitutions, presence: true
   validate :substitutions_valid?, if: :substitutions
   validate :no_duplicate_tag_pairs, if: :substitutions
 
