@@ -41,7 +41,6 @@ module BootstrapHelper
 
   # Summary composits a panel with a table to deliver
   # a list of key-value pairs
-  # <div class="col-md-6">
   #   <div class="card card-default">
   #     <h3 class="card-header">Summary</h3>
   #     <table class='table table-summary'>
@@ -51,46 +50,16 @@ module BootstrapHelper
   #       </tr>
   #     </table>
   #   </div>
-  # </div>
   def summary(type = :default, options = {})
-    bs_type = bootstrapify(type.to_s)
-    options[:title] ||=  'Summary'
-    size = options.delete(:size) || '6'
-    # options[:class] ||= String.new
-    # options[:class] << " card card-#{bs_type} mb-3"
-
-    # content_tag(:div, options) do
-    #   content_tag(:h3, title, class: 'card-header reduced') <<
-    #     content_tag(:table, class: 'table table-summary') do
-    #       String.new.html_safe.tap do |rows|
-    #         yield.each do |key, value|
-    #           rows << content_tag(:tr) do
-    #             content_tag(:th, key) << content_tag(:td, value)
-    #           end
-    #         end
-    #       end
-    #     end
-    #  end
-    #end
+    options[:title] ||= 'Summary'
     bs_custom_panel(type, :table, { class: 'table table-summary' }, options) do
-     String.new.html_safe.tap do |rows|
-       yield.each do |key, value|
-         rows << content_tag(:tr) do
-           content_tag(:th, key) << content_tag(:td, value)
-         end
-       end
-     end
-    end
-  end
-
-  def bs_custom_panel(type, body_type, body_options, options, &block)
-    title = options.delete(:title)
-    options[:class] ||= String.new
-    options[:class] << " card card-style-#{type} mb-3"
-    content_tag(:div, options) do
-      out = String.new.html_safe
-      out << content_tag(:h3, title, class: 'card-header-custom') unless title.nil?
-      out << content_tag(body_type, body_options, &block)
+      String.new.html_safe.tap do |rows|
+        yield.each do |key, value|
+          rows << content_tag(:tr) do
+            content_tag(:th, key) << content_tag(:td, value)
+          end
+        end
+      end
     end
   end
 
