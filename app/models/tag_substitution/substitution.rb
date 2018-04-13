@@ -12,10 +12,10 @@ class TagSubstitution::Substitution
   attr_reader :tag_substitution
 
   delegate :friendly_name, to: :sample, prefix: true
-  validates_presence_of :sample_id, :library_id
-  validates_presence_of :original_tag_id, if: :substitute_tag_id
-  validates_presence_of :original_tag2_id, if: :substitute_tag2_id
-  validates_presence_of :matching_aliquots, message: 'could not be found'
+  validates :sample_id, :library_id, presence: true
+  validates :original_tag_id, presence: { if: :substitute_tag_id }
+  validates :original_tag2_id, presence: { if: :substitute_tag2_id }
+  validates :matching_aliquots, presence: { message: 'could not be found' }
 
   #
   # Generate a tag substitutes for a single library
