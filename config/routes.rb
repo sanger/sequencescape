@@ -446,12 +446,16 @@ Sequencescape::Application.routes.draw do
     resources :tags, except: [:destroy, :index, :create, :new, :edit]
   end
 
+  resources :tag_layout_templates, only: [:index, :new, :create, :show]
+
   resources :assets do
     collection do
       get :snp_register
       get :reception
       post :print_labels
     end
+
+    resources :tag_substitutions, only: :new
 
     member do
       get :parent_assets
@@ -508,6 +512,8 @@ Sequencescape::Application.routes.draw do
   resources :sequenom_qc_plates
   resources :pico_dilutions
   resources :study_reports
+
+  resources :tag_substitutions, only: :create
 
   resources :sample_logistics do
     collection do

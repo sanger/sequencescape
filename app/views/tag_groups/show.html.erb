@@ -6,16 +6,18 @@
 
 <% add :menu, "All Tag Groups" => tag_groups_path(@asset) %>
 
+<%= page_title('Tag Group', @tag_group.name) %>
+
 <p>
   <b>Name:</b>
   <%=h @tag_group.name %>
 </p>
 
 <%= render partial: "shared/tags_list", locals: { tag_group: @tag_group, tags: @tag_group.tags } %>
-
-
 <script type="text/javascript">$('table tbody > tr:nth-child(even)').addClass('roweven');</script>
+<br>
 <% if current_user.administrator? %>
-  <%= link_to 'Edit', edit_tag_group_path(@tag_group) %> |
+<%= link_to 'Create a new tag layout template from this tag group', new_tag_layout_template_path(tag_group_id: @tag_group.id) %>
+<br>
 <% end %>
-<%= link_to 'Back', tag_groups_path %>
+<%= link_to 'Back to tag groups list', tag_groups_path %>

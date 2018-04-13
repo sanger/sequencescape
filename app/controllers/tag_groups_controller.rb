@@ -4,8 +4,11 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
+##
+# This class is the controller for Tag Groups, which are basically used to record the grouping
+# of a set of Sequencing Tags. It allows you to create and view Tag Groups.
 class TagGroupsController < ApplicationController
-  before_action :admin_login_required, only: [:new, :edit, :create, :update]
+  before_action :admin_login_required, only: [:new, :create]
 
   def index
     @tag_groups = TagGroup.all
@@ -23,55 +26,34 @@ class TagGroupsController < ApplicationController
     end
   end
 
+  ##
+  # The new method uses a form object to handle the naming of the Tag Group and the input
+  # and validation of the Tag oligo sequences.
   def new
-    @number_of_tags = params[:number_of_tags]
-    @tag_group = TagGroup.new
+    @form_object = TagGroup::FormObject.new
 
     respond_to do |format|
       format.html
     end
   end
 
-  def edit
-    @tag_group = TagGroup.find(params[:id])
-  end
-
+  ##
+  # The create method uses a form object to validate the user input of the oligo sequences
+  # and handle the creation of Tags within a new Tag Group.
   def create
-    @tag_group = TagGroup.new(tag_group_params)
-    @tags = @tag_group.tags.build(tag_params)
+    @form_object = TagGroup::FormObject.new(tag_group_form_object_params)
 
     respond_to do |format|
-      if @tag_group.save
+      if @form_object.save
         flash[:notice] = 'Tag Group was successfully created.'
-        format.html { redirect_to(@tag_group) }
+        format.html { redirect_to(@form_object.tag_group) }
       else
-        format.html { redirect_to(@tag_group) }
+        format.html { render action: 'new' }
       end
     end
   end
 
-  def update
-    @tag_group = TagGroup.find(params[:id])
-
-    respond_to do |format|
-      if @tag_group.update_attributes(tag_group_params)
-        flash[:notice] = 'Tag Group was successfully updated.'
-        format.html { redirect_to(@tag_group) }
-      else
-        format.html { render action: 'edit' }
-      end
-    end
-  end
-
-  def tag_group_params
-    params.require(:tag_group).permit(:name)
-  end
-
-  # Permits oligo and mapi_id, filters out any unfilled fields
-  def tag_params
-    params.permit(tags: [:map_id, :oligo])
-          .fetch(:tags, {})
-          .reject { |_index, attributes| attributes[:oligo].blank? }
-          .values.map(&:to_h)
+  def tag_group_form_object_params
+    params.require(:tag_group).permit(:name, :oligos_text)
   end
 end

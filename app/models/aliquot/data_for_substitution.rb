@@ -15,13 +15,6 @@ module Aliquot::DataForSubstitution
       .merge(other_attributes_for_substitution)
   end
 
-  def aliquot_identifiers
-    {
-      sample_id: sample_id,
-      library_id: library_id
-    }
-  end
-
   def tag_id_substitution
     return {} if changes[:tag_id].blank?
     { original_tag_id: original_tag_id,
@@ -56,5 +49,14 @@ module Aliquot::DataForSubstitution
 
   def changes
     @changes ||= saved_changes
+  end
+
+  private
+
+  def aliquot_identifiers
+    {
+      sample_id: sample_id,
+      library_id: library_id
+    }
   end
 end

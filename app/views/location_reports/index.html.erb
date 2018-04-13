@@ -16,6 +16,6 @@
 </div>
 
 <h2>Location Reports</h2>
-<%= will_paginate @location_reports %>
+<%= pagination @location_reports %>
 <%= render partial: 'location_reports', locals: { location_reports: @location_reports } %>
-<%= will_paginate @location_reports %>
+<%= pagination @location_reports %>

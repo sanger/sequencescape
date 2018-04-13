@@ -1,0 +1,81 @@
+<% add :about, "Allows correction of tag errors for one or more libraries." %>
+<%= page_title 'Tag Substitution', @tag_substitution.name %>
+<p class="lead">This page allows you to perform tag substitutions for cases where an incorrect tag was either recorded for a particular library, or where a lab mistake resulted in an incorrect tag being applied.</p>
+<p>This page should only be used in cases where a mistake occurred at the point at which tags were either applied or recorded. If the mistake occurred later in the library preparation process, such as mistake in pooling, or a tube swap, then this page will result in incorrect information being recorded.</p>
+<p>This form will modify <em>all</em> instances of a particular library, including those on other sequencing lanes.</p>
+
+<%= tabulated_error_messages_for('tag_substitution') %>
+
+<%= form_for(@tag_substitution) do |form| %>
+  <%# We redirect back to the asset we started from %>
+  <%= hidden_field_tag :asset_id, @asset_id %>
+  <%= form.hidden_field :name %>
+  <%= field_set_tag 'Summary' do %>
+    <div class="grid-form">
+      <%= form.label :ticket, 'Ticket number' %>
+      <div class="field"><%= form.text_field :ticket %></div>
+    </div>
+    <div class="grid-form">
+      <%= form.label :comment, 'Reason' %>
+      <div class="field">
+        <%= form.select :comment, options_for_select(@suggested_reasons), prompt: 'Select a reason, or type a new one.', required: true %>
+        <small class="form-help">If providing a custom reason, please double check that a suitable reason is not already available in the drop-down. Please double check the guidelines above to confirm that this is the correct action.</small>
+      </div>
+    </div>
+  <% end %>
+  <%= field_set_tag 'Substitutions' do %>
+    <p>The lists of tags below only contain those in the tag group used for the original pool. If you wish to add additional tag groups to the list select the tag group from the list below and click 'Add tags to list'</p>
+    <div class="simple-inline-form">
+      <label for="tag_group_list">Tag groups</label>
+      <select id="tag-group-list" name="tag_group_list"></select>
+      <button id="add-tag-group-list" class='btn btn-default' type='button'>Add tags to list</button>
+    </div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Sample</th><th>Library id</th><th>Original Tag</th><th>Substitute Tag</th><th>Original Tag 2</th><th>Substitute Tag 2</th></tr>
+        </tr>
+      </thead>
+      <tbody>
+        <% @tag_substitution.substitutions.each do |substitution| %>
+          <%= form.fields_for :substitutions, substitution, index: nil do |sub| %>
+            <tr>
+              <td><%= sub.hidden_field :sample_id %><%= substitution.sample_id %>: <%= substitution.sample_friendly_name %></td>
+              <td><%= sub.hidden_field :library_id %><%= substitution.library_id %></td>
+              <td><%= sub.hidden_field :original_tag_id %><%= tag_name(substitution.original_tag_id) %></td>
+              <td><%= sub.select :substitute_tag_id, tag_options_for(substitution.substitute_tag_id), {}, class: 'select2 tag-list' %></td>
+              <td><%= sub.hidden_field :original_tag2_id %><%= tag_name(substitution.original_tag2_id) %></td>
+              <td><%= sub.select :substitute_tag2_id, tag_options_for(substitution.substitute_tag2_id), {}, class: 'select2 tag-list' %></td>
+            </tr>
+          <% end %>
+        <% end %>
+      </tbody>
+    </table>
+    <%= form.submit 'Substitute Tags', disable_with: 'Substituting...', class: 'btn-success btn-lg btn' %>
+  <% end %>
+<% end %>
+
+<script>
+  $(function() {
+
+    var tagGroupsList = <%= tags_in_groups.to_json.html_safe %>;
+
+    $("#tag-group-list").select2({
+      theme: "bootstrap4",
+      data: $.map(tagGroupsList, function (obj, key) {
+        return { id: key, text: key };
+      })
+    });
+
+    $('#add-tag-group-list').click(function(){
+      var tagGroup = $("#tag-group-list").val();
+      var optgroup = document.createElement('optgroup');
+      optgroup.label = tagGroup;
+      $.each(tagGroupsList[tagGroup], function (index, obj) {
+        optgroup.append(new Option(obj[0], obj[1]));
+      });
+      $(".tag-list").append(optgroup);
+    });
+  });
+
+</script>
