@@ -9,7 +9,7 @@
 
 <%= form_tag(batch_stock_assets_path(@batch), multipart: true) do %>
   <%= hidden_field_tag "batch_id", "#{@batch.id}" %>
-  <table>
+  <table class="table">
     <thead>
       <th>Name</th>
       <th>Volume (&#181;L)</th>
