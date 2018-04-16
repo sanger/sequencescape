@@ -8,9 +8,9 @@
 <%- add :menu, "Back to all users" => admin_users_path %>
 
 <%= page_title "Edit profile", @user.name %>
-<%= panel :default do %>
+
 <%= form_for :user, url: admin_user_path(@user), html: {method: :put, class: 'horizontal-form'} do |f| %>
-  <%= bs_column do %>
+  <div class="columnize">
     <%= panel :info, title:"User Details" do %>
       <%= form_group do %>
         <label for="user_first_name">First name</label>
@@ -25,9 +25,7 @@
         <%= f.text_field :email, class: 'form-control' %>
       <% end %>
     <% end %>
-  <% end %>
 
-  <%= bs_column do %>
     <%= panel :info, title:"Roles" do %>
       <%= form_group do %>
         <label for="role_administrator">Administrator</label>?
@@ -62,28 +60,22 @@
         <%= check_box_tag "role[slf_gel]", "checked", @user.has_role?("slf_gel") %>
        <% end %>
     <% end %>
-  <% end %>
-
+  </div>
   <%= submit_tag "Update", class: 'btn btn-success' %> or <%= link_to 'cancel', "javascript:history.back();" %>
 <% end %>
-<% end %>
-<hr>
-<h3><% unless @user.name.empty? %><%=h @user.name %><% else %><%=h @user.login %><% end %>'s roles (<%= link_to "Add new role", edit_admin_user_path(@user, anchor: "add_new_role")-%>)</h3>
-<div class="help">You edit these roles independently of any changes above.</div>
-<div id="role_list">
-  <% if @users_roles.empty? %>
-    <h3 style="text-align:center"><%= display_empty_table "This user has no roles. Use the form below to add the first one" -%></h3>
-  <% else %>
-    <%= render partial: "roles" -%>
+<div class="columnize">
+  <%= panel(:info, title: "#{@user.name}'s roles") do %>
+    <div class="help">You edit these roles independently of any changes above.</div>
+    <div id="role_list">
+      <% if @users_roles.empty? %>
+        <%= alert(:warning) { "This user has no roles. Use the form below to add the first one" } %>
+      <% else %>
+        <%= render partial: "roles" -%>
+      <% end %>
+    </div>
   <% end %>
-</div>
-<br/>
-<hr>
-<%= panel(title: 'Add new roles') do %>
-  <%= bs_column(6,'lg') do %>
+  <%= panel(:info, title: 'Add new roles') do %>
     <%= render partial: "add_role", locals: {role_class_name: 'Study', authorizable_type: @studies} %>
-  <% end %>
-  <%= bs_column(6,'lg') do %>
     <%= render partial: "add_role", locals: {role_class_name: 'Project', authorizable_type: @projects} %>
   <% end %>
-<% end %>
+</div>
