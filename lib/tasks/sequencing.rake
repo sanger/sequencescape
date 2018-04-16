@@ -64,23 +64,9 @@ def build_tasks_for(workflow)
     ])
   end
 
-  SetDescriptorsTask.create!(name: 'Read 1', sorted: 2, workflow: workflow) do |task|
+  SetDescriptorsTask.create!(name: 'Read 1 & 2', sorted: 2, workflow: workflow) do |task|
     task.descriptors.build([
       { kind: 'Text', sorter: 1, name: 'Chip Barcode', required: true },
-      { kind: 'Text', sorter: 2, name: 'Operator' },
-      { kind: 'Text', sorter: 3, name: 'Pipette Carousel' },
-      { kind: 'Text', sorter: 4, name: 'Kit library tube' },
-      { kind: 'Text', sorter: 5, name: 'Buffer cartridge' },
-      { kind: 'Text', sorter: 6, name: 'Cluster cartridge' },
-      { kind: 'Text', sorter: 7, name: 'SBS cartridge' },
-      { kind: 'Text', sorter: 8, name: 'iPCR batch #' },
-      { kind: 'Text', sorter: 9, name: 'Comment' }
-    ])
-  end
-
-  SetDescriptorsTask.create!(name: 'Read 2', sorted: 2, workflow: workflow) do |task|
-    task.descriptors.build([
-      { kind: 'Text', sorter: 1, name: 'Chip Barcode' },
       { kind: 'Text', sorter: 2, name: 'Operator' },
       { kind: 'Text', sorter: 3, name: 'Pipette Carousel' },
       { kind: 'Text', sorter: 4, name: 'Kit library tube' },

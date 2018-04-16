@@ -186,7 +186,7 @@ namespace :limber do
                                     .find_or_create_by!(name: catalogue_name)
         Limber::Helper::TemplateConstructor.new(prefix: prefix,
                                                 catalogue: catalogue,
-                                                sequencing: params[:sequencing_list])
+                                                sequencing: params[:sequencing_list]).build!
       end
 
       lcbm_catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'LCMB')
