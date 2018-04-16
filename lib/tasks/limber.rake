@@ -5,7 +5,14 @@ namespace :limber do
   desc 'Setup all the necessary limber records'
   task setup: ['limber:create_submission_templates', 'limber:create_searches', 'limber:create_tag_templates']
 
-  desc 'Create the Limber cherrypick plate'
+  desc 'Create Barcode Printer Types'
+  task create_barcode_printer_types: :environment do
+    BarcodePrinterType384DoublePlate.find_or_create_by!(name: '384 Well Plate Double',
+                                                        printer_type_id: 10,
+                                                        label_template_name: 'plate_6mm_double')
+  end
+
+  desc 'Create the Limber cherrypick plates'
   task create_plates: :environment do
     purposes = [{ name: 'LB Cherrypick',
                   size: 96 },
@@ -54,7 +61,10 @@ namespace :limber do
       %w[WGS LCMB].each do |prefix|
         Limber::Helper::RequestTypeConstructor.new(prefix).build!
       end
-      Limber::Helper::RequestTypeConstructor.new('PCR Free', default_purpose: 'PF Cherrypicked').build!
+      Limber::Helper::RequestTypeConstructor.new(
+        'PCR Free',
+        default_purpose: 'PF Cherrypicked'
+      ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
         'ISC',
@@ -141,7 +151,7 @@ namespace :limber do
   end
 
   desc 'Create the limber submission templates'
-  task create_submission_templates: [:environment, :create_request_types] do
+  task create_submission_templates: [:environment, :create_request_types, :create_barcode_printer_types] do
     puts 'Creating submission templates....'
     ActiveRecord::Base.transaction do
       %w[WGS ISC ReISC].each do |prefix|
