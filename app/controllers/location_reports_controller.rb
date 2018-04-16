@@ -6,6 +6,11 @@
 # authorship of this file.
 # Copyright (C) 2018 Genome Research Ltd.
 
+##
+# This class handles creating and viewing Location Reports, which match up plates to their
+# recorded physical location, and to their Studies and Faculty Sponser (can be multiple per
+# plate). These reports are used by the Sample Management team to manage storage space in
+# freezers and to locate old plates for return to their owners or disposal.
 class LocationReportsController < ApplicationController
   before_action :login_required
 

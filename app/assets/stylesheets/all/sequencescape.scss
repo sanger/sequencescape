@@ -47,6 +47,12 @@ h3.card-header-custom {
   }
 }
 
+.simple-inline-form {
+  @extend .form-group;
+  @extend .form-inline;
+  label { @extend .mr-2; }
+}
+
 /* Formats the tubes in the layout_tubes_on_plate task */
 .library_tube { margin:0.1em; padding:0.2em; background:#E3EEFC; border-radius:5px; }
 .tube_tag {padding: 0.2em; margin-left:0.2em; background: #6997BF; color: white; border-radius:5px; }
@@ -100,6 +106,23 @@ div.quota {
   // padding-left: 3px;
   // background: #CBDCEF;
   // border: 1px solid #7BBDD8;
+}
+
+.grid-form {
+  @extend .form-group;
+  @extend .row;
+  label {
+    @extend .col-sm-2;
+    @extend .col-form-label;
+  }
+  div.field {
+    @extend .col-sm-10;
+    input { @extend .form-control; }
+    select { @extend .custom-select; }
+    .form-help {
+      @extend .text-muted;
+    }
+  }
 }
 
 #barcode_list li {
@@ -347,6 +370,7 @@ table.sample_list td:first-child {text-align:right; padding-right:0.5em;}
 
 .columnize {
   column-count: 2;
+  @extend .mb-3;
 }
 
 .loading {
