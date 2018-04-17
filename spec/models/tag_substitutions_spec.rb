@@ -73,7 +73,7 @@ describe TagSubstitution do
         [
           { sample_id: sample_a.id, library_id: library_tube_a.id, original_tag_id: sample_a_orig_tag.id, substitute_tag_id: sample_a_new_tag.id },
           { sample_id: sample_b.id, library_id: library_tube_b.id, original_tag_id: sample_b_orig_tag.id, substitute_tag_id: sample_b_new_tag.id },
-          { sample_id: mx_aliquot_c.sample_id, library_id: library_tube_b.id, original_tag_id: mx_aliquot_c.tag_id, substitute_tag_id: mx_aliquot_c.tag_id },
+          { sample_id: mx_aliquot_c.sample_id, library_id: library_tube_b.id, original_tag_id: mx_aliquot_c.tag_id, substitute_tag_id: mx_aliquot_c.tag_id }
         ]
       end
 

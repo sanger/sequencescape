@@ -118,7 +118,7 @@ class TagSubstitution::Substitution
   #
   # @return [Array<Integer>] All tag ids which should correspond to actual tags. -1, nil etc. are ignored.
   def tag_ids
-    [original_tag_id, substitute_tag_id, original_tag2_id, substitute_tag2_id].select { |tag_id| tag_id.positive? }
+    [original_tag_id, substitute_tag_id, original_tag2_id, substitute_tag2_id].select { |id| id&.positive? }
   end
 
   #
