@@ -3,6 +3,12 @@
 require 'factory_girl'
 
 FactoryGirl.define do
+  trait :scanned_into_lab do
+    after(:build) do |asset, _evaluator|
+      asset.create_scanned_into_lab_event!(content: '2018-01-01')
+    end
+  end
+
   factory :tube do
     name { generate :asset_name }
     association(:purpose, factory: :tube_purpose)
@@ -77,13 +83,6 @@ FactoryGirl.define do
 
     factory(:library_tube) do
       transient { sample_count 1 }
-
-      # TODO: better name
-      factory(:library_tube_with_ancestors) do
-        after(:create) do |library_tube|
-          library_tube.ancestors << create(:plate, plate_purpose: PlatePurpose.stock_plate_purpose)
-        end
-      end
     end
 
     factory(:library_tube_with_barcode) do

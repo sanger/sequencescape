@@ -4,31 +4,30 @@
 # authorship of this file.
 # Copyright (C) 2011,2015 Genome Research Ltd.%>
 
-<h2>Bulk submission successfully made</h2>
+<%= page_title 'Bulk Submission', 'Created' %>
+
+<p class="lead">Your bulk submission has been processed.</p>
 
 <% @these_subs.each do |submission| %>
   <%= render partial: 'submissions/warnings', locals: { presenter: submission } %>
 <% end %>
+<%= panel do %>
+  <h2 class="card-title">Submissions</h2>
 
-<h2>Your submissions:</h2>
-  <div class='quota_title'>
-    <strong>Submissions</strong>
-  </div>
-  <div class="quota">
-    <table width='100%' cellpadding='3' cellspacing='0' class='sortable'>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Details</th>
-        </tr>
-      </thead>
-      <% @these_subs.each do |submission| %>
-        <tr>
-          <td><%= link_to submission.id, submission_path(submission.id) %></td>
-          <td><%= submission.name %>
-          <td><%= @sub_details[submission.id] %></td>
-        </tr>
-      <% end %>
-      </table>
-  </div>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Details</th>
+      </tr>
+    </thead>
+    <% @these_subs.each do |submission| %>
+      <tr>
+        <td><%= link_to submission.id, submission_path(submission.id) %></td>
+        <td><%= submission.name %></td>
+        <td><%= @sub_details[submission.id] %></td>
+      </tr>
+    <% end %>
+  </table>
+<% end %>

@@ -13,6 +13,7 @@ module SearchBehaviour
 
   def search
     t = Time.now
+    @query = params[:q]
     perform_search(params[:q].strip) unless params[:q].blank? || query_invalid?
     @search_took = Time.now - t
     @render_start = Time.now
@@ -26,7 +27,7 @@ module SearchBehaviour
 
   def perform_search(query)
     searchable_classes.each do |clazz|
-      instance_variable_set("@#{clazz.name.underscore.pluralize}", clazz.for_search_query(query, extended).all)
+      instance_variable_set("@#{clazz.name.underscore.pluralize}", clazz.for_search_query(query, extended))
     end
   end
 

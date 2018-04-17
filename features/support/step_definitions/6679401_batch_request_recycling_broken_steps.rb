@@ -40,8 +40,6 @@ end
 # This is a complete hack to get this to work: it knows where the wells are and goes to get them.  It knows
 # where the empty cells are and it goes and gets them too.
 When /^I drag (\d+) wells to the scratch pad$/ do |count|
-  # The new style moves the scratch pad outside the viewport, we enlarge the viewport for this test
-  page.driver.resize(1440, 2000)
   dest_pad = find('#scratch_pad tr:first-child td:first-child') or raise StandardError, 'Could not find scratch pad'
 
   (1..count.to_i).each do |index|
@@ -69,10 +67,10 @@ def build_batch_for(name, count)
   assets = Array.new(count.to_i) do
     asset_attributes = {}
     if submission_details.key?(:holder_type)
-      asset_attributes[:plate] = FactoryGirl.create(submission_details[:holder_type])
+      asset_attributes[:plate] = FactoryGirl.create(submission_details[:holder_type], :scanned_into_lab)
       asset_attributes[:map_id] = 1
     end
-    FactoryGirl.create(submission_details[:asset_type], asset_attributes)
+    FactoryGirl.create(submission_details[:asset_type], :scanned_into_lab, asset_attributes)
   end
 
   rts = pipeline.request_types.reject(&:deprecated?).map(&:id)

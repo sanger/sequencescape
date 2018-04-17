@@ -9,9 +9,7 @@ require 'test_helper'
 class BatchTest < ActiveSupport::TestCase
   context 'A batch' do
     context 'on its own' do
-      setup do
-        @batch = build :batch
-      end
+      setup { @batch = build :batch }
 
       should 'have begin in pending then change to started' do
         assert_equal @batch.state, 'pending'
@@ -762,6 +760,8 @@ class BatchTest < ActiveSupport::TestCase
       @library_tube = create :library_tube, sample_count: 1
       @library_creation_request = create(:library_creation_request_for_testing_sequencing_requests, target_asset: @library_tube)
       @pipeline = create :sequencing_pipeline
+
+      @library_tube.create_scanned_into_lab_event!(content: '2018-01-01')
 
       @batch = build :batch, pipeline: @pipeline
       @request_type = @batch.pipeline.request_types.first

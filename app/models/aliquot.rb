@@ -46,6 +46,7 @@ class Aliquot < ApplicationRecord
 
   # It may have a bait library but not necessarily.
   belongs_to :bait_library, optional: true
+  belongs_to :primer_panel
 
   # It can belong to a library asset
   belongs_to :library, class_name: 'Receptacle', optional: true

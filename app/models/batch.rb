@@ -55,11 +55,15 @@ class Batch < ApplicationRecord
 
   # Named scope for search by query string behavior
   scope :for_search_query, ->(query, _with_includes) {
-    conditions = { id: query }
-    if user = User.find_by(login: query)
-      conditions = { user_id: user }
+    user = User.find_by(login: query)
+    if user
+      where(user_id: user)
+    # Annoyingly if our number is out of range, rails throws an exception
+    elsif (-2147483648...2147483648).cover?(query.to_i)
+      where(id: query)
+    else
+      none
     end
-    where(conditions)
   }
 
   scope :includes_for_ui,    -> { limit(5).includes(:user, :assignee, :pipeline) }
@@ -518,7 +522,7 @@ class Batch < ApplicationRecord
   end
 
   def rebroadcast
-    messengers.each(&:broadcast)
+    messengers.each(&:queue_for_broadcast)
   end
 
   private

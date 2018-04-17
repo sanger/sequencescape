@@ -27,5 +27,26 @@ RSpec.describe Postman::Message do
       expect(main_exchange).to receive(:ack).with('delivery_tag')
       subject.process
     end
+
+    it 'acknowledges the message if the record is destroyed' do
+      allow(Sample).to receive(:find).with(1).and_raise(ActiveRecord::RecordNotFound)
+      expect(main_exchange).to receive(:ack).with('delivery_tag')
+      subject.process
+    end
+
+    it 'deadletters the message if an exception is raised' do
+      allow(Sample).to receive(:find).with(1).and_return(sample)
+      allow(sample).to receive(:broadcast).and_raise(NameError, "undefined local variable or method `fasdgsf' for main:Object'")
+      expect(main_exchange).to receive(:nack).with('delivery_tag')
+      subject.process
+    end
+
+    it 'requeues the message if a database connection exception is raised' do
+      allow(Sample).to receive(:find).with(1).and_raise(ActiveRecord::StatementInvalid,
+                                                        'Mysql2::Error: MySQL server has gone away: SELECT  `batches`.* FROM `batches` ORDER BY `batches`.`id` ASC LIMIT 1')
+      expect(main_exchange).to receive(:nack).with('delivery_tag', false, true)
+      expect(postman).to receive(:pause!)
+      subject.process
+    end
   end
 end

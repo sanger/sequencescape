@@ -7,22 +7,35 @@ RSpec.describe SequencingRequest, type: :model do
   describe '#ready?' do
     subject { sequencing_request.ready? }
 
-    context 'with no upstream requests as target' do
-      it { is_expected.to be true }
+    context 'with a reception event' do
+      setup do
+        library_tube.create_scanned_into_lab_event!(content: '2018-01-01')
+      end
+
+      context 'with no upstream requests as target' do
+        it { is_expected.to be true }
+      end
+
+      context 'with empty assets' do
+        let(:library_tube) { create :empty_library_tube }
+        it { is_expected.to be false }
+      end
     end
 
-    context 'with missing assets' do
-      let(:library_tube) { nil }
-      it { is_expected.to be false }
-    end
+    context 'with no reception event' do
+      context 'with missing assets' do
+        let(:library_tube) { nil }
+        it { is_expected.to be false }
+      end
 
-    context 'with empty assets' do
-      let(:library_tube) { create :empty_library_tube }
-      it { is_expected.to be false }
+      context 'with no upstream requests as target' do
+        it { is_expected.to be false }
+      end
     end
 
     context 'with upstream requests' do
       before do
+        library_tube.create_scanned_into_lab_event!(content: '2018-01-01')
         create  :library_creation_request_for_testing_sequencing_requests,
                 target_asset: library_tube,
                 state: library_request_1_state
