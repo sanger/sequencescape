@@ -1,10 +1,11 @@
+require 'active_record'
 require 'active_support'
 require 'active_support/core_ext'
 
 class Postman
-  # A message takes a rabbitMQ message, and handles its acknowledgement
-  # or rejection.
-  class Message
+  # An artificial subclass of ActiveRecord::StatementInvalid that
+  # just detects issues with the database connection
+  class ConnectionMissing < ActiveRecord::StatementInvalid
     # Database connection messages indicated temporary issues connecting to the database
     # We handle them separately to ensure we can recover from network issues.
     DATABASE_CONNECTION_MESSAGES = [
@@ -13,6 +14,18 @@ class Postman
       /Mysql2::Error: Can't connect to local MySQL server through socket/ # , 2002, 2001, 2003, 2004, 2005
     ].freeze
 
+    def self.===(other)
+      other.is_a?(ActiveRecord::StatementInvalid) && database_connection_error?(other)
+    end
+
+    def self.database_connection_error?(exception)
+      DATABASE_CONNECTION_MESSAGES.any? { |regex| regex.match?(exception.message) }
+    end
+  end
+
+  # A message takes a rabbitMQ message, and handles its acknowledgement
+  # or rejection.
+  class Message
     attr_reader :delivery_info, :metadata, :payload, :postman
 
     delegate :warn, :info, :error, :debug, to: :logger
@@ -36,15 +49,11 @@ class Postman
       begin
         broadcast_payload
         ack
-      rescue ActiveRecord::StatementInvalid => exception
-        if database_connection_error?(exception)
-          # We have some temporary database issues. Requeue the message and pause
-          # until the issue is resolved.
-          requeue(exception)
-          postman.pause!
-        else
-          deadletter(exception)
-        end
+      rescue Postman::ConnectionMissing => exception
+        # We have some temporary database issues. Requeue the message and pause
+        # until the issue is resolved.
+        requeue(exception)
+        postman.pause!
       rescue StandardError => exception
         deadletter(exception)
       end
@@ -59,7 +68,11 @@ class Postman
       raise StandardError, "Payload #{payload} is not an array" unless json.is_a?(Array)
       raise StandardError, "Payload #{payload} is not the correct length" unless json.length == 2
       klass = json.first.constantize
-      klass.find(json.last).broadcast
+      begin
+        klass.find(json.last).broadcast
+      rescue ActiveRecord::RecordNotFound
+        debug "#{payload} not found."
+      end
     end
 
     def headers
@@ -72,10 +85,6 @@ class Postman
       delivery_info.delivery_tag
     end
 
-    def database_connection_error?(exception)
-      DATABASE_CONNECTION_MESSAGES.any? { |regex| regex.match?(exception.message) }
-    end
-
     def ack
       main_exchange.ack(delivery_tag)
     end
@@ -84,7 +93,7 @@ class Postman
     # immediate reprocessing.
     def requeue(exception)
       warn "Re-queue: #{payload}"
-      warn exception.message
+      warn "Exception: #{exception.message}"
       main_exchange.nack(delivery_tag, false, true)
     end
 
@@ -92,7 +101,7 @@ class Postman
     # Will end up getting dead-lettered
     def deadletter(exception)
       error "Deadletter: #{payload}"
-      error exception.message
+      error "Exception: #{exception.message}"
       main_exchange.nack(delivery_tag)
     end
   end
