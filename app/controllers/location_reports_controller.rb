@@ -15,8 +15,9 @@ class LocationReportsController < ApplicationController
   before_action :login_required
 
   def index
-    setup_form_selects
-    @form_object = LocationReport::FormObject.new(user: @current_user)
+    @location_reports = LocationReport.order(id: :desc).page(params[:page])
+    @location_report_form = LocationReport::LocationReportForm.new
+    @location_report_form.user = @current_user
 
     respond_to do |format|
       format.html
@@ -35,33 +36,29 @@ class LocationReportsController < ApplicationController
   end
 
   def create
-    @form_object = LocationReport::FormObject.new(location_report_for_object_params)
-    @form_object.user = @current_user
+    @location_report_form = LocationReport::LocationReportForm.new(location_report_params)
+    @location_report_form.user = @current_user
 
     respond_to do |format|
-      if @form_object.save
+      if @location_report_form.save
         flash[:notice] = I18n.t('location_reports.success')
         format.html { redirect_to location_reports_path }
       else
-        error_messages          = @form_object.errors.full_messages.join('; ')
-        flash.now[:error]       = "Failed to create report: #{error_messages}"
-        setup_form_selects
-        @form_object.errors.clear
+        error_messages    = @location_report_form.errors.full_messages.join('; ')
+        flash.now[:error] = "Failed to create report: #{error_messages}"
+        @location_reports = LocationReport.order(id: :desc).page(params[:page])
         format.html { render action: 'index' }
       end
     end
   end
 
+  #######
+
   private
 
-  def setup_form_selects
-    @faculty_sponsors       = FacultySponsor.alphabetical.pluck(:name, :id)
-    @studies                = Study.alphabetical.pluck(:name, :id)
-    @plate_purposes         = PlatePurpose.alphabetical.pluck(:name, :id)
-    @location_reports       = LocationReport.order(id: :desc).page(params[:page])
-  end
+  #######
 
-  def location_report_for_object_params
-    params.require(:location_report).permit(:report_type, :name, :location_barcode, :barcodes_text, :study_id, :start_date, :end_date, faculty_sponsor_ids: [], plate_purpose_ids: [])
+  def location_report_params
+    params.require(:location_report).permit(:report_type, :name, :location_barcode, :barcodes, :barcodes_text, :study_id, :start_date, :end_date, :barcodes, :barcodes_text, faculty_sponsor_ids: [], plate_purpose_ids: [])
   end
 end

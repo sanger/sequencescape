@@ -6,6 +6,8 @@
 
 <% add :menu, "All Tag Groups" => tag_groups_path(@asset) %>
 
+<%= page_title('Tag Group', @tag_group.name) %>
+
 <p>
   <b>Name:</b>
   <%=h @tag_group.name %>

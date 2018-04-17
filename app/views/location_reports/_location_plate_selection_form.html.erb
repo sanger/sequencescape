@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2018 Genome Research Ltd.%>
 
-<%= form_for(form_object, html: {class: 'submit_once', id: 'new_report_from_selection'}) do |f| %>
+<%= form_for(location_report_form, html: {class: 'submit_once', id: 'new_report_from_selection'}) do |f| %>
   <div class='form-group'>
     <%= f.label 'name', 'Report name' %><br>
     <%= f.text_field :name, class: 'form-control' %>
@@ -12,12 +12,12 @@
 
   <div class='form-group'>
     <%= f.label 'faculty_sponsor_ids', 'Faculty Sponsors (can select multiple)' %>
-    <%= f.select :faculty_sponsor_ids, options_for_select(faculty_sponsors, form_object.faculty_sponsor_ids), { include_hidden: false }, { class: 'form-control select2', :multiple => true } %>
+    <%= f.select :faculty_sponsor_ids, options_for_select(FacultySponsor.alphabetical.pluck(:name, :id), location_report_form.faculty_sponsor_ids), { include_hidden: false }, { class: 'form-control select2', :multiple => true } %>
   </div>
 
   <div class='form-group'>
     <%= f.label 'study_id', 'Study' %>
-    <%= f.select :study_id, studies, { prompt: 'Select a study...', include_blank: true }, { class: 'form-control select2' } %>
+    <%= f.select :study_id, Study.alphabetical.pluck(:name, :id), { prompt: 'Select a study...', include_blank: true }, { class: 'form-control select2' } %>
   </div>
 
   <div class="row">
@@ -38,7 +38,7 @@
 
   <div class='form-group'>
     <%= f.label 'plate_purpose_ids', 'Plate purposes (can select multiple)' %>
-    <%= f.select :plate_purpose_ids, options_for_select(plate_purposes, form_object.plate_purpose_ids), { include_hidden: false }, { class: 'form-control select2', :multiple => true } %>
+    <%= f.select :plate_purpose_ids, options_for_select(PlatePurpose.alphabetical.pluck(:name, :id), location_report_form.plate_purpose_ids), { include_hidden: false }, { class: 'form-control select2', :multiple => true } %>
   </div>
 
   <div class="form-group">

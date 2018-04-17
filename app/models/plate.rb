@@ -326,7 +326,6 @@ class Plate < Asset
   }
 
   def self.search_for_plates(params)
-    # faculty_sponsor_ids: nil, study_id: nil, plate_purpose_ids: nil, start_date: nil, end_date: nil, barcodes: nil)
     with_faculty_sponsor_ids(params[:faculty_sponsor_ids] || nil)
       .with_study_id(params[:study_id] || nil)
       .with_plate_purpose_ids(params[:plate_purpose_ids] || nil)

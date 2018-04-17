@@ -153,7 +153,7 @@ feature 'Location reports' do
         fill_in 'List of Barcodes (separated by new lines, spaces or commas)', with: 'INVALIDBC'
       end
       click_button('Create report from selection')
-      expect(page).to have_content 'Failed to create report: Barcodes text Invalid barcodes found, no report generated: INVALIDBC'
+      expect(page).to have_content 'Barcodes text Invalid barcodes found, no report generated: INVALIDBC'
     end
 
     scenario 'with a mix of valid and invalid barcodes' do
