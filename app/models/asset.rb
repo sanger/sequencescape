@@ -171,9 +171,9 @@ class Asset < ApplicationRecord
     search << ')'
 
     if with_includes
-      where(search, arguments)
+      where(search, arguments).includes(requests: [:pipeline, :batch]).order('requests.pipeline_id ASC')
     else
-      where(search, arguments).includes(:requests).order('requests.pipeline_id ASC')
+      where(search, arguments)
     end
   }
 

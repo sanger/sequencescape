@@ -4,9 +4,11 @@
 .user-session-controls {
   @extend .small;
   @extend .row;
+  @extend .ml-1;
 
   ul {
     @extend .list-inline;
+    @extend .mb-0;
 
     li {
       @extend .list-inline-item;
