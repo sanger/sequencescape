@@ -99,14 +99,15 @@ class TagSubstitution
 
   def comment_header
     header = +"Tag substitution performed.\n"
-    header << "Referenced ticket no: #{@ticket}\n" if @ticket
-    header << "Comment: #{@comment}\n" if @comment
+    header << "Referenced ticket no: #{@ticket}\n" if @ticket.present?
+    header << "Comment: #{@comment}\n" if @comment.present?
     header
   end
 
   def comment_text
     @comment_text ||= @substitutions.each_with_object(comment_header) do |substitution, comment|
-      comment << substitution.comment(oligo_index) << "\n"
+      substitution_comment = substitution.comment(oligo_index)
+      comment << substitution_comment << "\n" if substitution_comment.present?
     end
   end
 
@@ -115,7 +116,7 @@ class TagSubstitution
   end
 
   def apply_comments
-    Comment.create!(commented_assets.map do |asset_id|
+    Comment.import(commented_assets.map do |asset_id|
       { commentable_id: asset_id, commentable_type: 'Asset', user_id: @user&.id, description: comment_text }
     end)
   end
