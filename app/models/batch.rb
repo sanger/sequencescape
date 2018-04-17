@@ -522,7 +522,7 @@ class Batch < ApplicationRecord
   end
 
   def rebroadcast
-    messengers.each(&:broadcast)
+    messengers.each(&:queue_for_broadcast)
   end
 
   private
