@@ -19,7 +19,7 @@ FactoryGirl.define do
     end
   end
 
-  factory(:location_report_form_object, class: LocationReport::FormObject) do
+  factory(:location_report_form, class: LocationReport::LocationReportForm) do
     skip_create
 
     user

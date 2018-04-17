@@ -145,7 +145,7 @@ feature 'Creating location reports from selected criteria' do
       fill_in 'location_report_barcodes_text', with: 'INVALIDBC'
     end
     click_button('Create report from selection')
-    expect(page).to have_content 'Failed to create report: Barcodes text Invalid barcodes found, no report generated: INVALIDBC'
+    expect(page).to have_content 'Barcodes text Invalid barcodes found, no report generated: INVALIDBC'
   end
 
   scenario 'with a mix of valid and invalid barcodes' do
