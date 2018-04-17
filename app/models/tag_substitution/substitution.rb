@@ -8,14 +8,14 @@
 class TagSubstitution::Substitution
   include ActiveModel::Model
 
-  attr_accessor :sample_id, :library_id, :original_tag_id, :substitute_tag_id, :original_tag2_id, :substitute_tag2_id
-  attr_reader :tag_substitution
+  attr_accessor :sample_id, :library_id
+  attr_reader :tag_substitution, :original_tag_id, :substitute_tag_id, :original_tag2_id, :substitute_tag2_id
 
   delegate :friendly_name, to: :sample, prefix: true
-  validates_presence_of :sample_id, :library_id
-  validates_presence_of :original_tag_id, if: :substitute_tag_id
-  validates_presence_of :original_tag2_id, if: :substitute_tag2_id
-  validates_presence_of :matching_aliquots, message: 'could not be found'
+  validates :sample_id, :library_id, presence: true
+  validates :original_tag_id, presence: { if: :substitute_tag_id }
+  validates :original_tag2_id, presence: { if: :substitute_tag2_id }
+  validates :matching_aliquots, presence: { message: 'could not be found' }
 
   #
   # Generate a tag substitutes for a single library
@@ -32,6 +32,22 @@ class TagSubstitution::Substitution
   def initialize(attributes)
     super(attributes.extract!(:sample_id, :library_id, :original_tag_id, :substitute_tag_id, :original_tag2_id, :substitute_tag2_id, :aliquot))
     @other_attributes = attributes
+  end
+
+  def original_tag_id=(tag_id)
+    @original_tag_id = tag_id.to_i if tag_id.present?
+  end
+
+  def substitute_tag_id=(tag_id)
+    @substitute_tag_id = tag_id.to_i if tag_id.present?
+  end
+
+  def original_tag2_id=(tag2_id)
+    @original_tag2_id = tag2_id.to_i if tag2_id.present?
+  end
+
+  def substitute_tag2_id=(tag2_id)
+    @substitute_tag2_id = tag2_id.to_i if tag2_id.present?
   end
 
   # Used when seeding from a template asset
@@ -87,6 +103,7 @@ class TagSubstitution::Substitution
   #
   # @return [String] A description of the substitution
   def comment(oligo_index)
+    return '' unless updated?
     comment = +"Sample #{sample_id}:"
     comment << " Tag changed from #{oligo_index[original_tag_id]} to #{oligo_index[substitute_tag_id]};" if substitute_tag?
     comment << " Tag2 changed from #{oligo_index[original_tag2_id]} to #{oligo_index[substitute_tag2_id]};" if substitute_tag2?
@@ -101,7 +118,7 @@ class TagSubstitution::Substitution
   #
   # @return [Array<Integer>] All tag ids which should correspond to actual tags. -1, nil etc. are ignored.
   def tag_ids
-    [original_tag_id, substitute_tag_id, original_tag2_id, substitute_tag2_id].select { |tag_id| tag_id.to_i.positive? }
+    [original_tag_id, substitute_tag_id, original_tag2_id, substitute_tag2_id].select { |tag_id| tag_id.positive? }
   end
 
   #
@@ -109,7 +126,7 @@ class TagSubstitution::Substitution
   #
   # @return [Array<Integer>] Array of tag_id, followed by tag2_id.
   def tag_pair
-    [substitute_tag_id.to_i, substitute_tag2_id.to_i]
+    [substitute_tag_id, substitute_tag2_id]
   end
 
   def tag_substitutions?
@@ -117,6 +134,10 @@ class TagSubstitution::Substitution
   end
 
   private
+
+  def updated?
+    substitute_tag? || substitute_tag2? || @other_attributes.present?
+  end
 
   def substitute_tag?
     original_tag_id && original_tag_id != substitute_tag_id

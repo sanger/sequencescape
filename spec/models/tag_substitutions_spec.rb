@@ -60,6 +60,7 @@ describe TagSubstitution do
     let!(:library_aliquot_b) { create :aliquot, sample: sample_b, tag: sample_b_orig_tag, tag2: sample_b_orig_tag2, library: library_tube_b, receptacle: library_tube_b }
     let!(:mx_aliquot_a) { create :aliquot, sample: sample_a, tag: sample_a_orig_tag, tag2: sample_a_orig_tag2, library: library_tube_a, receptacle: mx_library_tube }
     let!(:mx_aliquot_b) { create :aliquot, sample: sample_b, tag: sample_b_orig_tag, tag2: sample_b_orig_tag2, library: library_tube_b, receptacle: mx_library_tube }
+    let!(:mx_aliquot_c) { create :tagged_aliquot, library: library_tube_b, receptacle: mx_library_tube }
 
     let!(:lane) { create :lane }
     let!(:lane_aliquot_a) { create :aliquot, sample: sample_a, tag: sample_a_orig_tag, tag2: sample_a_orig_tag2, library: library_tube_a, receptacle: lane }
@@ -71,7 +72,8 @@ describe TagSubstitution do
       let(:instructions) do
         [
           { sample_id: sample_a.id, library_id: library_tube_a.id, original_tag_id: sample_a_orig_tag.id, substitute_tag_id: sample_a_new_tag.id },
-          { sample_id: sample_b.id, library_id: library_tube_b.id, original_tag_id: sample_b_orig_tag.id, substitute_tag_id: sample_b_new_tag.id }
+          { sample_id: sample_b.id, library_id: library_tube_b.id, original_tag_id: sample_b_orig_tag.id, substitute_tag_id: sample_b_new_tag.id },
+          { sample_id: mx_aliquot_c.sample_id, library_id: library_tube_b.id, original_tag_id: mx_aliquot_c.tag_id, substitute_tag_id: mx_aliquot_c.tag_id },
         ]
       end
 
@@ -161,7 +163,7 @@ describe TagSubstitution do
         subject { TagSubstitution.new(template_asset: mx_library_tube) }
 
         it 'populates the basics' do
-          expect(subject.substitutions.length).to eq 2
+          expect(subject.substitutions.length).to eq mx_library_tube.aliquots.count
           indexed = subject.substitutions.index_by(&:sample_id)
           a = indexed[sample_a.id]
           expect(a.library_id).to eq library_tube_a.id
