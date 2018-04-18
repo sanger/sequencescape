@@ -374,7 +374,8 @@ class Plate < Asset
         end
       end
     end
-    return if queries.blank?
+    # guard against nil case by returning none
+    return none if queries.blank?
 
     # Here we chain together our various request scope queries using or, allowing us to retrieve them in a single query.
     init_qry = queries.pop
