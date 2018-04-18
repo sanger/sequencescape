@@ -217,6 +217,7 @@ en:
       no_selection_fields_filled: "Please use at least one of the selection criteria."
       end_date_after_start_date: "The end date must be the same as or after the start date."
       both_dates_required: "Both start and end date are required if either one is used."
+      barcodes_maxlength_exceeded: "The length of the text in the barcodes field is too long, please reduce."
   tag_groups:
     success: 'The Tag Layout Template has been successfully created.'
     errors:

@@ -32,7 +32,7 @@ class LocationReport < ApplicationRecord
   validates :name, presence: true
   validates :report_type, presence: true
   validate :check_location_barcode, :check_any_select_field_present, :check_both_dates_present_if_used,
-           :check_end_date_same_or_after_start_date, :check_any_plates_found
+           :check_end_date_same_or_after_start_date, :check_maxlength_of_barcodes, :check_any_plates_found
 
   def check_any_select_field_present
     return unless report_type == 'type_selection'
@@ -42,24 +42,32 @@ class LocationReport < ApplicationRecord
 
   def check_location_barcode
     return unless report_type == 'type_labwhere'
-    errors.add(:location_barcode, I18n.t('location_reports.errors.no_location_barcode_found')) if location_barcode.blank?
+    return if location_barcode.present?
+    errors.add(:location_barcode, I18n.t('location_reports.errors.no_location_barcode_found'))
   end
 
   def check_both_dates_present_if_used
     return unless report_type == 'type_selection'
-    return if start_date.blank? && end_date.blank?
-    errors.add(:start_date, I18n.t('location_reports.errors.both_dates_required')) if (start_date.blank? && end_date.present?) || (start_date.present? && end_date.blank?)
+    return if (start_date.blank? && end_date.blank?) || (start_date.present? && end_date.present?)
+    errors.add(:start_date, I18n.t('location_reports.errors.both_dates_required'))
   end
 
   def check_end_date_same_or_after_start_date
     return unless report_type == 'type_selection'
-    return if start_date.blank? || end_date.blank?
-    errors.add(:end_date, I18n.t('location_reports.errors.end_date_after_start_date')) if end_date < start_date
+    return if (start_date.blank? || end_date.blank?) || end_date >= start_date
+    errors.add(:end_date, I18n.t('location_reports.errors.end_date_after_start_date'))
   end
 
   def check_any_plates_found
     return unless report_type == 'type_selection'
-    errors.add(:base, I18n.t('location_reports.errors.no_rows_found')) unless search_for_plates_by_selection.any?
+    return if search_for_plates_by_selection.any?
+    errors.add(:base, I18n.t('location_reports.errors.no_rows_found'))
+  end
+
+  def check_maxlength_of_barcodes
+    return unless report_type == 'type_selection'
+    return if barcodes.blank? || (barcodes.to_yaml.size <= column_for_attribute(:barcodes).limit)
+    errors.add(:barcodes_text, I18n.t('location_reports.errors.barcodes_maxlength_exceeded'))
   end
 
   def column_headers

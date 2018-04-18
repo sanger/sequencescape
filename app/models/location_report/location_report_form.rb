@@ -25,19 +25,16 @@ class LocationReport::LocationReportForm
                 :end_date,
                 :plate_purpose_ids,
                 :barcodes,
-                :invalid_barcodes,
-                :location_report
+                :invalid_barcodes
 
   attr_reader :barcodes_text,
               :name
 
-  # validations
-  validate :check_labwhere_location_exists, :check_for_valid_barcodes, :check_for_invalid_barcodes,
-           :check_location_report
+  attr_writer :location_report
 
-  def initialize(params = nil)
-    super
-  end
+  # validations
+  validate :check_labwhere_location_exists, :check_maxlength_of_barcodes, :check_for_valid_barcodes,
+           :check_for_invalid_barcodes, :check_location_report
 
   def barcodes_text=(input_text)
     @barcodes_text = input_text
@@ -49,24 +46,8 @@ class LocationReport::LocationReportForm
     @name = Time.current.to_formatted_s(:number) if input_name.blank?
   end
 
-  def save
-    fetch_or_create_location_report.save if valid?
-  end
-
-  # form builder methods (e.g. form_to) need the Active Model name to be set
-  def self.model_name
-    ActiveModel::Name.new(LocationReport)
-  end
-
-  #######
-
-  private
-
-  #######
-
-  def fetch_or_create_location_report
-    return location_report unless location_report.nil?
-    self.location_report = LocationReport.new(
+  def location_report
+    @location_report || @location_report = LocationReport.new(
       user: user,
       name: name,
       report_type: report_type,
@@ -80,25 +61,47 @@ class LocationReport::LocationReportForm
     )
   end
 
+  def save
+    location_report.save if valid?
+  end
+
+  # form builder methods (e.g. form_to) need the Active Model name to be set
+  def self.model_name
+    ActiveModel::Name.new(LocationReport)
+  end
+
+  #######
+
+  private
+
+  #######
+
   def check_labwhere_location_exists
     return unless report_type == 'type_labwhere'
-    errors.add(:base, I18n.t('location_reports.errors.labwhere_location_not_found')) if find_labwhere_location.blank?
+    return if find_labwhere_location.present?
+    errors.add(:base, I18n.t('location_reports.errors.labwhere_location_not_found'))
+  end
+
+  def check_maxlength_of_barcodes
+    return unless report_type == 'type_selection'
+    return if barcodes_text.blank? || barcodes_text.length <= 60000
+    errors.add(:barcodes_text, I18n.t('location_reports.errors.barcodes_maxlength_exceeded'))
   end
 
   def check_for_valid_barcodes
     return unless report_type == 'type_selection'
-    return if barcodes_text.blank?
-    errors.add(:barcodes_text, I18n.t('location_reports.errors.no_valid_barcodes_found')) if barcodes.blank?
+    return if barcodes_text.blank? || barcodes.present?
+    errors.add(:barcodes_text, I18n.t('location_reports.errors.no_valid_barcodes_found'))
   end
 
   def check_for_invalid_barcodes
     return unless report_type == 'type_selection'
-    return if barcodes_text.blank?
-    errors.add(:barcodes_text, I18n.t('location_reports.errors.invalid_barcodes_found') + invalid_barcodes.join(',')) if invalid_barcodes.present?
+    return if barcodes_text.blank? || invalid_barcodes.blank?
+    errors.add(:barcodes_text, I18n.t('location_reports.errors.invalid_barcodes_found') + invalid_barcodes.join(','))
   end
 
   def check_location_report
-    return if fetch_or_create_location_report.valid?
+    return if location_report.valid?
     add_location_errors
   end
 

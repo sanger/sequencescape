@@ -43,7 +43,7 @@
 
   <div class="form-group">
     <%= f.label "barcodes_text", 'List of Barcodes (separated by new lines, spaces or commas)' %><br/>
-    <%= f.text_area :barcodes_text, {prompt: 'Enter barcodes...', size: '50x6', class: 'form-control'} %>
+    <%= f.text_area :barcodes_text, {prompt: 'Enter barcodes...', size: '50x6', maxlength: 60000, class: 'form-control'} %>
   </div>
 
   <%= f.hidden_field :report_type, value: 'type_selection' %>
