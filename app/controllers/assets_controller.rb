@@ -305,8 +305,7 @@ class AssetsController < ApplicationController
 
   def lookup
     if params[:asset] && params[:asset][:barcode]
-      id = params[:asset][:barcode][3, 7]
-      @assets = Asset.where(barcode: id).limit(50).page(params[:page])
+      @assets = Asset.with_barcode(params[:asset][:barcode]).limit(50).page(params[:page])
 
       if @assets.size == 1
         redirect_to @assets.first

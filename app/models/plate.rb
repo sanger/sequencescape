@@ -470,28 +470,6 @@ class Plate < Asset
     true
   end
 
-  def self.create_from_rack_csv(file_location, plate_barcode)
-    plate = create(name: "Plate #{plate_barcode}", barcode: plate_barcode, size: 96)
-
-    CSV.foreach(file_location) do |row|
-      map = Map.find_for_cell_location(row.first, plate.size)
-      if row.last.strip.blank?
-        well = plate.wells.create(map_id: map.id)
-      else
-        asset = Asset.find_by(two_dimensional_barcode: row.last.strip)
-        if asset.nil?
-          well = plate.wells.create(map_id: map.id)
-        else
-          well = plate.wells.create(sample: asset.sample, map_id: map.id)
-          well.name = "#{asset} #{well.id}"
-          well.save
-          AssetLink.create_edge(asset, well)
-        end
-      end
-    end
-    plate
-  end
-
   def submission_time(current_time)
     current_time.strftime('%Y-%m-%dT%H_%M_%SZ')
   end
