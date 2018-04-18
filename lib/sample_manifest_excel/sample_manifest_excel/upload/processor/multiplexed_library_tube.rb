@@ -1,5 +1,3 @@
-require 'tag_substitution.rb'
-
 module SampleManifestExcel
   module Upload
     module Processor
