@@ -185,6 +185,9 @@ namespace :limber do
       'scRNA' => {
         sequencing_list: base_without_hiseq
       },
+      'scRNA-384' => {
+        sequencing_list: base_without_hiseq
+      },
       'RNAA' => {
         sequencing_list: base_without_hiseq
       },
