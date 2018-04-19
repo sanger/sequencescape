@@ -36,20 +36,15 @@ Given /^I have created a sequenom plate$/ do
 end
 
 Given /^there is a (\d+) well "([^"]*)" plate with a barcode of "([^"]*)"$/ do |number_of_wells, plate_purpose_name, plate_barcode|
-  bc = SBCF::SangerBarcode.from_machine(plate_barcode)
-  new_plate = Plate.create!(
-    primary_barcode: Barcode.build_sanger_ean13(prefix: bc.prefix.human, number: bc.number),
-    plate_purpose: PlatePurpose.find_by(name: plate_purpose_name)
-  )
+  new_plate = FactoryGirl.create :plate,
+                                 sanger_barcode: { machine_barcode: plate_barcode },
+                                 plate_purpose: PlatePurpose.find_by(name: plate_purpose_name)
+
   sample = FactoryGirl.create :sample_with_gender, name: "#{plate_barcode}_x"
 
   1.upto(number_of_wells.to_i) do |i|
     new_plate.wells.create!(map_id: i).aliquots.create!(sample: sample)
   end
-
-  new_plate.wells.first.primary_aliquot.sample.sample_metadata.update_attributes!(
-    gender: 'male'
-  )
 end
 
 Then /^the table of sequenom plates should be:$/ do |expected_results_table|

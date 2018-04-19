@@ -39,7 +39,7 @@ class IlluminaHtp::InitialStockTubePurpose < IlluminaHtp::StockTubePurpose
                      outr: { submission_id: submission_id, request_type_id: outr_request_type, state: Request::Statemachine::OPENED_STATE },
                      tfr:  { submission_id: submission_id, state: TransferRequest::ACTIVE_STATES }
                    )
-                   .includes(:uuid_object, :primary_barcode)
+                   .includes(:uuid_object, :barcodes)
 
     siblings.map { |s| s.id.nil? ? :no_tube : { name: s.name, uuid: s.uuid, ean13_barcode: s.ean13_barcode, state: s.quick_state } }
   end

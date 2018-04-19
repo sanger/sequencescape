@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180409144103) do
+ActiveRecord::Schema.define(version: 20180423080956) do
 
   create_table "aker_containers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "barcode"
@@ -834,12 +834,12 @@ ActiveRecord::Schema.define(version: 20180409144103) do
 
   create_table "plate_metadata", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.integer "plate_id"
-    t.string "infinium_barcode"
+    t.string "infinium_barcode_bkp"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string "fluidigm_barcode", limit: 10
+    t.string "fluidigm_barcode_bkp", limit: 10
     t.decimal "dilution_factor", precision: 5, scale: 2, default: "1.0"
-    t.index ["fluidigm_barcode"], name: "index_on_fluidigm_barcode", unique: true
+    t.index ["fluidigm_barcode_bkp"], name: "index_on_fluidigm_barcode", unique: true
     t.index ["plate_id"], name: "index_plate_metadata_on_plate_id"
   end
 

@@ -8,7 +8,7 @@ class Transfer::BetweenPlateAndTubes < Transfer
   DESTINATION_INCLUDES = {
     destination: [
       :uuid_object,
-      :primary_barcode
+      :barcodes
     ]
   }
 

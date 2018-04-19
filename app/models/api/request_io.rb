@@ -24,12 +24,12 @@ class Api::RequestIO < Api::Base
             :user, {
               asset: [
                 :uuid_object,
-                :primary_barcode,
+                :barcodes,
                 { primary_aliquot: { sample: :uuid_object } }
               ],
               target_asset: [
                 :uuid_object,
-                :primary_barcode,
+                :barcodes,
                 { primary_aliquot: { sample: :uuid_object } }
               ],
               initial_study: :uuid_object,

@@ -19,7 +19,7 @@ class Api::LibraryTubeIO < Api::Base
         scope :including_associations_for_json, -> {
           includes([
             :uuid_object,
-            :primary_barcode, {
+            :barcodes, {
               source_request: [:uuid_object, :request_metadata],
               primary_aliquot: { sample: :uuid_object, tag: [:uuid_object, { tag_group: :uuid_object }] }
             },

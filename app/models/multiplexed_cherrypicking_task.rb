@@ -28,7 +28,7 @@ class MultiplexedCherrypickingTask < Task
   end
 
   def included_for_render_task
-    [requests: { asset: [:samples, { plate: :primary_barcode }, :map] }]
+    [requests: { asset: [:samples, { plate: :barcodes }, :map] }]
   end
 
   def render_task(workflow, params)

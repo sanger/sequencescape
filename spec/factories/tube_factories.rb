@@ -23,6 +23,11 @@ FactoryGirl.define do
     association(:purpose, factory: :tube_purpose)
   end
 
+  factory :unbarcoded_tube, class: Tube do
+    name { generate :asset_name }
+    association(:purpose, factory: :tube_purpose)
+  end
+
   factory :empty_sample_tube, class: SampleTube, traits: [:tube_barcode] do
     name                { generate :asset_name }
     value               ''

@@ -3,20 +3,42 @@
 FactoryGirl.define do
   sequence(:barcode_number) { |i| i }
 
-  factory :sanger_ean13, class: Barcode do
-    transient do
-      prefix 'DN'
-      barcode_number
+  factory :barcode, aliases: [:external] do
+    association(:asset, factory: :asset)
+    sequence(:barcode) { |i| "EXT_#{i}_A" }
+    format 'external'
+
+    factory :sanger_ean13 do
+      transient do
+        prefix 'DN'
+        barcode_number
+      end
+      format 'sanger_ean13'
+      barcode { SBCF::SangerBarcode.new(prefix: prefix, number: barcode_number).human_barcode }
+
+      factory :sanger_ean13_tube do
+        transient do
+          prefix 'NT'
+        end
+      end
     end
 
-    association(:asset, factory: :asset)
-    format 'sanger_ean13'
-    barcode { SBCF::SangerBarcode.new(prefix: prefix, number: barcode_number).human_barcode }
-
-    factory :sanger_ean13_tube do
+    factory :infinium do
       transient do
-        prefix 'NT'
+        prefix 'WG'
+        suffix 'DNA'
+        sequence(:number) { |i| i.to_s.rjust(7, '0') }
       end
+      format 'infinium'
+      barcode { "#{prefix}#{number}-#{suffix}" }
+    end
+
+    factory :fluidigm do
+      transient do
+        sequence(:number) { |i| '1' + i.to_s.rjust(9, '0') }
+      end
+      format 'fluidigm'
+      barcode { number }
     end
   end
 end

@@ -58,13 +58,14 @@ Given /^study "([^"]*)" has a plate "([^"]*)"$/ do |study_name, plate_barcode|
 end
 
 Given /^study "([^"]*)" has a plate "([^"]*)" to be volume checked$/ do |study_name, plate_barcode|
-  plate = Plate.create!(barcode: plate_barcode, plate_purpose: PlatePurpose.find_by(name: 'Stock Plate'))
-  1.upto(24) do |i|
-    well = Well.create!(plate: plate, map_id: i)
-    well.aliquots.create!(sample: Sample.create!(name: "Sample_#{plate_barcode}_#{i}"))
-  end
-
   study = Study.find_by(name: study_name)
+  plate = FactoryGirl.create :plate, purpose: PlatePurpose.find_by(name: 'Stock Plate'),
+                                     barcode: plate_barcode,
+                                     well_count: 24,
+                                     well_factory: :untagged_well,
+                                     well_order: :row_order,
+                                     studies: [study]
+
   RequestFactory.create_assets_requests(plate.wells, study)
 end
 

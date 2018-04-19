@@ -47,9 +47,7 @@ class ImportFluidigmDataTest < ActiveSupport::TestCase
     plate_target = create :plate,         name: "Cherrypicked #{barcode}",
                                           size: 192,
                                           barcode: barcode,
-                                          plate_metadata_attributes: {
-                                            fluidigm_barcode: fluidigm_barcode
-                                          }
+                                          fluidigm_barcode: fluidigm_barcode
 
     well_target = Well.new
     plate_target.add_and_save_well(well_target)

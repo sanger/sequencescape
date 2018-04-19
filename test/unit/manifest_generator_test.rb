@@ -341,7 +341,9 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
 
         @study1.study_metadata.study_name_abbreviation = 'STUDY'
 
-        @plate1 = create(:plate, barcode: 11111, size: 96, name: 'Plate 1', plate_metadata_attributes: { infinium_barcode: '12345' })
+        @plate_1_barcode_number = 11111
+
+        @plate1 = create(:plate, barcode: 11111, size: 96, name: 'Plate 1', infinium_barcode: 'WG0012345-DNA')
 
         @well1 = create(:well).tap { |well| well.aliquots.create!(sample: @sample1) }
         @well2 = create(:well).tap { |well| well.aliquots.create!(sample: @sample2) }
@@ -369,9 +371,9 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
       end
 
       should 'Create a single manifest file' do
-        data =  "1,#{@plate1.infinium_barcode},A01,0,#{@plate1.barcode_number}_A01_#{@sample1.sanger_sample_id},Species 1,U,,15,50,-,,0,,,,-\n"
-        data += "2,#{@plate1.infinium_barcode},A02,0,#{@plate1.barcode_number}_A02_#{@sample2.sanger_sample_id},Homo sapiens,U,,15,50,-,,0,,,,-\n"
-        data += "3,#{@plate1.infinium_barcode},B01,0,#{@plate1.barcode_number}_B01_#{@sample3.sanger_sample_id},Homo sapiens,U,,15,50,-,,0,,,,-\n"
+        data =  "1,#{@plate1.infinium_barcode},A01,0,#{@plate_1_barcode_number}_A01_#{@sample1.sanger_sample_id},Species 1,U,,15,50,-,,0,,,,-\n"
+        data += "2,#{@plate1.infinium_barcode},A02,0,#{@plate_1_barcode_number}_A02_#{@sample2.sanger_sample_id},Homo sapiens,U,,15,50,-,,0,,,,-\n"
+        data += "3,#{@plate1.infinium_barcode},B01,0,#{@plate_1_barcode_number}_B01_#{@sample3.sanger_sample_id},Homo sapiens,U,,15,50,-,,0,,,,-\n"
 
         template = headers + data
 
@@ -380,7 +382,8 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
 
       context 'Several Plates and Single Study' do
         setup do
-          @plate2 = create(:plate, barcode: 22222, size: 96, name: 'Plate 2', plate_metadata_attributes: { infinium_barcode: '987654' })
+          @plate_2_barcode_number = 22222
+          @plate2 = create(:plate, barcode: @plate_2_barcode_number, size: 96, name: 'Plate 2', infinium_barcode: 'WG0012346-DNA')
 
           @sample4 = create :sample, name: 'Sample4', sanger_sample_id: 'STUDY_1_4'
           @study1.samples << @sample4
@@ -409,12 +412,12 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
         end
 
         should 'Create a single manifest file' do
-          data =  "1,#{@plate1.infinium_barcode},A01,0,#{@plate1.barcode_number}_A01_#{@sample1.sanger_sample_id},Species 1,U,,15,50,-,,0,,,,-\n"
-          data += "2,#{@plate1.infinium_barcode},A02,0,#{@plate1.barcode_number}_A02_#{@sample2.sanger_sample_id},Homo sapiens,U,,15,50,-,,0,,,,-\n"
-          data += "3,#{@plate1.infinium_barcode},B01,0,#{@plate1.barcode_number}_B01_#{@sample3.sanger_sample_id},Homo sapiens,U,,15,50,-,,0,,,,-\n"
-          data += "4,#{@plate2.infinium_barcode},A01,0,#{@plate2.barcode_number}_A01_#{@sample4.sanger_sample_id},Homo sapiens,U,,15,50,-,,0,,,,-\n"
-          data += "5,#{@plate2.infinium_barcode},A02,0,#{@plate2.barcode_number}_A02_#{@sample4.sanger_sample_id},Homo sapiens,U,,15,50,-,,0,,,,-\n"
-          data += "6,#{@plate2.infinium_barcode},B01,0,#{@plate2.barcode_number}_B01_#{@sample4.sanger_sample_id},Homo sapiens,U,,15,50,-,,0,,,,-\n"
+          data =  "1,#{@plate1.infinium_barcode},A01,0,#{@plate_1_barcode_number}_A01_#{@sample1.sanger_sample_id},Species 1,U,,15,50,-,,0,,,,-\n"
+          data += "2,#{@plate1.infinium_barcode},A02,0,#{@plate_1_barcode_number}_A02_#{@sample2.sanger_sample_id},Homo sapiens,U,,15,50,-,,0,,,,-\n"
+          data += "3,#{@plate1.infinium_barcode},B01,0,#{@plate_1_barcode_number}_B01_#{@sample3.sanger_sample_id},Homo sapiens,U,,15,50,-,,0,,,,-\n"
+          data += "4,#{@plate2.infinium_barcode},A01,0,#{@plate_2_barcode_number}_A01_#{@sample4.sanger_sample_id},Homo sapiens,U,,15,50,-,,0,,,,-\n"
+          data += "5,#{@plate2.infinium_barcode},A02,0,#{@plate_2_barcode_number}_A02_#{@sample4.sanger_sample_id},Homo sapiens,U,,15,50,-,,0,,,,-\n"
+          data += "6,#{@plate2.infinium_barcode},B01,0,#{@plate_2_barcode_number}_B01_#{@sample4.sanger_sample_id},Homo sapiens,U,,15,50,-,,0,,,,-\n"
 
           template = headers + data
           assert_equal template.split(/\n/), remove_date(@manifest).split(/\n/)

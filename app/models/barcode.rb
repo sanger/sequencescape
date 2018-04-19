@@ -23,6 +23,8 @@ class Barcode < ApplicationRecord
   # Caution! Do not adjust the index of existing formats.
   enum format: [:sanger_ean13, :infinium, :fluidigm, :external]
 
+  validate :barcode_valid?
+
   scope(:sanger_barcode, lambda do |prefix, number|
     human_barcode = SBCF::SangerBarcode.from_prefix_and_number(prefix, number).human_barcode
     where(format: :sanger_ean13, barcode: human_barcode)
@@ -39,8 +41,7 @@ class Barcode < ApplicationRecord
   # Extract barcode from user input
   def self.extract_barcode(barcode)
     [barcode.to_s].tap do |barcodes|
-      barcodes << SBCF::SangerBarcode.from_machine(barcode.to_s).human_barcode if SBCF::MACHINE_BARCODE_FORMAT.match?(barcode.to_s)
-      barcodes << SBCF::SangerBarcode.from_human(barcode.to_s).human_barcode if SBCF::HUMAN_BARCODE_FORMAT.match?(barcode.to_s)
+      barcodes << SBCF::SangerBarcode.from_user_input(barcode.to_s).human_barcode
     end.compact.uniq
   end
 
@@ -52,11 +53,16 @@ class Barcode < ApplicationRecord
     format.classify
   end
 
+  # If the barcode changes, we'll need a new handler. This allows handlers themselves to be immutable.
+  def barcode=(new_barcode)
+    @handler = nil
+    super
+  end
+
   private
 
-  # Re-serialize our barcode, just in case it has been changed.
-  def serialize_barcode
-    self.barcode = handler.serialize_barcode if @handler.present?
+  def barcode_valid?
+    errors.add(:barcode, "is not an acceptable #{format} barcode") unless handler.valid?
   end
 
   def handler_class

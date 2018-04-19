@@ -58,7 +58,7 @@ class AssetsController < ApplicationController
   end
 
   def create
-    count = (params.fetch(:count).presence || 1).to_i
+    count = (params.fetch(:count, nil).presence || 1).to_i
     saved = true
 
     begin

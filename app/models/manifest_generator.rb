@@ -23,7 +23,8 @@ class ManifestGenerator
         plate = Plate.find(plate_id)
         plate_label = institute_plate_label(plate)
         plate.wells.order(:id).each do |well|
-          csv << generate_manifest_row(well, plate.barcode_number, plate_label).unshift(row)
+          barcode = plate.barcodes.sanger_ean13.first&.number.to_s
+          csv << generate_manifest_row(well, barcode, plate_label).unshift(row)
           row = row + 1
         end
       end

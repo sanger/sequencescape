@@ -14,7 +14,7 @@ Given /^the barcode for the asset "([^\"]+)" is "([^\"]+)"$/ do |name, barcode|
   if asset.primary_barcode
     asset.primary_barcode.update!(barcode: barcode)
   else
-    asset.primary_barcode = FactoryGirl.create(:sanger_ean13_tube, barcode: barcode)
+    asset.barcodes << FactoryGirl.create(:sanger_ean13_tube, barcode: barcode)
   end
 end
 

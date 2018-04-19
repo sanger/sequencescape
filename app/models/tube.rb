@@ -81,8 +81,8 @@ class Tube < Receptacle
       raise "Barcode: #{barcode} already used!" if Barcode.where(barcode: human).exists?
     end
     barcode ||= AssetBarcode.new_barcode
-    primary_barcode = Barcode.build_sanger_ean13(prefix: prefix, number: barcode)
-    create!(attributes.merge(primary_barcode: primary_barcode), &block)
+    primary_barcode = { prefix: prefix, number: barcode }
+    create!(attributes.merge(sanger_barcode: primary_barcode), &block)
   end
 end
 

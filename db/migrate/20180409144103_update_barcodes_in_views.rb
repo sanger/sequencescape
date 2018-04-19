@@ -191,7 +191,7 @@ class UpdateBarcodesInViews < ActiveRecord::Migration[5.1]
            `pm`.`infinium_barcode` AS `infinium_barcode`
         FROM (((((`assets` `p`
             left join `uuids` `u` on(((`u`.`resource_id` = `p`.`id`) and (`u`.`resource_type` = 'Asset'))))
-            left join `barcodes` `bc` on (`p`.`id` = `bc`.`asset_id` AND `bc`.`format` = 1))
+            left join `barcodes` `bc` on (`p`.`id` = `bc`.`asset_id` AND `bc`.`format` = 0))
             left join `plate_purposes` `pp` on((`pp`.`id` = `p`.`plate_purpose_id`)))
             left join `uuids` `u1` on(((`u1`.`resource_id` = `pp`.`id`) and (`u1`.`resource_type` = 'PlatePurpose'))))
             left join `plate_metadata` `pm` on((`p`.`id` = `pm`.`plate_id`))) where (`p`.`sti_type` = 'Plate')

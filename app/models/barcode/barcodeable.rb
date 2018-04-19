@@ -7,7 +7,7 @@ module Barcode::Barcodeable
       # Default prefix is the fallback prefix if no purpose is available.
       class_attribute :default_prefix
 
-      has_one :primary_barcode, -> { order(id: :desc) }, foreign_key: :asset_id, inverse_of: :asset, dependent: :destroy, class_name: 'Barcode'
+      # has_one :barcodes, -> { order(id: :desc) }, foreign_key: :asset_id, inverse_of: :asset, dependent: :destroy, class_name: 'Barcode'
 
       delegate :ean13_barcode, :machine_barcode, :human_barcode, to: :primary_barcode, allow_nil: true
     end
@@ -29,10 +29,6 @@ module Barcode::Barcodeable
     primary_barcode&.barcode_prefix
   end
 
-  def human_barcode
-    human_barcode
-  end
-
   def barcode_summary
     {
       type: barcode_type,
@@ -52,12 +48,28 @@ module Barcode::Barcodeable
     barcodes.detect(&:sanger_ean13?)
   end
 
+  def primary_barcode
+    barcodes.last
+  end
+
   def sanger_barcode=(attributes)
-    self.primary_barcode = Barcode.build_sanger_ean13(attributes)
-    # We've effectively modified the barcodes relationship, so lets reset it.
-    # This probably indicates we should handle primary barcode ourself, and load
-    # all barcodes whenever.
-    barcodes.reset
+    barcodes << Barcode.build_sanger_ean13(attributes)
+  end
+
+  def infinium_barcode
+    barcodes.detect(&:infinium?)&.machine_barcode
+  end
+
+  def infinium_barcode=(barcode)
+    barcodes.infinium.first_or_initialize.barcode = barcode
+  end
+
+  def fluidigm_barcode
+    barcodes.detect(&:fluidigm?)&.machine_barcode
+  end
+
+  def fluidigm_barcode=(barcode)
+    barcodes.fluidigm.first_or_initialize.barcode = barcode
   end
 
   deprecate def barcode!

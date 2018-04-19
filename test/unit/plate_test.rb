@@ -10,7 +10,7 @@ class PlateTest < ActiveSupport::TestCase
   def create_plate_with_fluidigm(fluidigm_barcode)
     barcode = '1234567'
     purpose = create :plate_purpose
-    purpose.create!(:do_not_create_wells, name: "Cherrypicked #{barcode}", size: 192, barcode: barcode, plate_metadata_attributes: { fluidigm_barcode: fluidigm_barcode })
+    purpose.create!(:do_not_create_wells, name: "Cherrypicked #{barcode}", size: 192, barcode: barcode, fluidigm_barcode: fluidigm_barcode)
   end
 
   context '' do
