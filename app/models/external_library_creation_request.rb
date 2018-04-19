@@ -11,6 +11,7 @@ class ExternalLibraryCreationRequest < SystemRequest
     # We have a vastly simplified two state state machine. Requests are passed once the manifest is processed
     state :pending, initial: true
     state :passed, enter: :on_passed
+    state :failed
     state :cancelled
 
     event :_manifest_processed do

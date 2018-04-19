@@ -21,6 +21,8 @@ namespace :limber do
                 { name: 'LBR Cherrypick',
                   size: 96 },
                 { name: 'scRNA-384 Stock',
+                  size: 384 },
+                { name: 'GBS Stock',
                   size: 384 }]
 
     purposes.each do |purpose|
@@ -49,6 +51,19 @@ namespace :limber do
         cherrypick_direction: 'column',
         size: size,
         asset_shape: AssetShape.default,
+        barcode_for_tecan: 'ean13_barcode'
+      )
+    end
+
+    unless Purpose.where(name: 'LB Lib PCR-XP').exists?
+      PlatePurpose.create!(
+        name: 'LB Lib PCR-XP',
+        target_type: 'Plate',
+        default_state: 'pending',
+        barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
+        cherrypickable_target: false,
+        size: 96,
+        asset_shape: AssetShape.find_by(name: 'Standard'),
         barcode_for_tecan: 'ean13_barcode'
       )
     end
@@ -151,33 +166,47 @@ namespace :limber do
   end
 
   desc 'Create the limber submission templates'
-  task create_submission_templates: [:environment, :create_request_types, :create_barcode_printer_types] do
+  task create_submission_templates: [:environment, :create_request_types, :create_barcode_printer_types, 'sequencing:novaseq:setup'] do
     puts 'Creating submission templates....'
+
+    base_list = Limber::Helper::ACCEPTABLE_SEQUENCING_REQUESTS
+    base_with_novaseq = base_list + ['illumina_htp_novaseq_6000_paired_end_sequencing']
+    base_without_hiseq = base_list - ['illumina_b_hiseq_x_paired_end_sequencing']
+    st_params = {
+      'WGS' => {
+        sequencing_list: base_with_novaseq
+      },
+      'ISC' => {
+        sequencing_list: base_list
+      },
+      'ReISC' => {
+        sequencing_list: base_list
+      },
+      'scRNA' => {
+        sequencing_list: base_without_hiseq
+      },
+      'RNAA' => {
+        sequencing_list: base_without_hiseq
+      },
+      'RNAAG' => {
+        sequencing_list: base_without_hiseq
+      },
+      'PCR Free' => {
+        sequencing_list: base_with_novaseq,
+        catalogue_name: 'PFHSqX'
+      }
+    }
+
     ActiveRecord::Base.transaction do
-      %w[WGS ISC ReISC].each do |prefix|
-        catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: prefix)
-        Limber::Helper::TemplateConstructor.new(prefix: prefix, catalogue: catalogue).build!
-      end
-      'PCR Free'.tap do |prefix|
-        catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'PFHSqX')
-        Limber::Helper::TemplateConstructor.new(
-          name: prefix,
-          role: prefix,
-          type: "limber_#{prefix.downcase.tr(' ', '_')}",
-          catalogue: catalogue
-        ).build!
+      st_params.each do |prefix, params|
+        catalogue_name = (params[:catalogue_name] || prefix)
+        catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct')
+                                    .find_or_create_by!(name: catalogue_name)
+        Limber::Helper::TemplateConstructor.new(prefix: prefix,
+                                                catalogue: catalogue,
+                                                sequencing: params[:sequencing_list]).build!
       end
 
-      %w[scRNA scRNA-384 RNAA RNAAG].each do |prefix|
-        catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: prefix)
-        Limber::Helper::TemplateConstructor.new(
-          name: prefix,
-          role: prefix,
-          type: "limber_#{prefix.downcase.tr(' ', '_')}",
-          catalogue: catalogue,
-          sequencing: Limber::Helper::ACCEPTABLE_SEQUENCING_REQUESTS - ['illumina_b_hiseq_x_paired_end_sequencing']
-        ).build!
-      end
       lcbm_catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'LCMB')
       Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: 'LCMB', catalogue: lcbm_catalogue).build!
       gbs_catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'GBS')
