@@ -84,7 +84,7 @@ module SampleManifestExcel
     end
 
     def find_by_or_null(key, value)
-      find_by(key, value) || SampleManifestExcel::NullColumn.new
+      find_by(key, value) || SampleManifestExcel::NullObjects::NullColumn.new
     end
 
     def with_specialised_fields

@@ -6,7 +6,7 @@ module SampleManifestExcel
       # Currently only supports tubes.
       class Base
         include ActiveModel::Model
-        include SubclassChecker
+        include SampleManifestExcel::SubclassChecker
 
         has_subclasses :one_d_tube, :multiplexed_library_tube, :library_tube, modual: to_s.deconstantize
 

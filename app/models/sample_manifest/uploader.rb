@@ -19,7 +19,7 @@ class SampleManifest::Uploader
 
   def initialize(filename, configuration, user)
     @filename = filename
-    @configuration = configuration || SampleManifestExcel::NullConfiguration.new
+    @configuration = configuration || SampleManifestExcel::NullObjects::NullConfiguration.new
     @user = user
     @tag_group = create_tag_group
     @upload = SampleManifestExcel::Upload::Base.new(filename: filename, column_list: self.configuration.columns.all, start_row: SampleManifestExcel::FIRST_ROW)

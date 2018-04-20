@@ -24,7 +24,6 @@ module SampleManifestExcel
       # Creates the specialised fields for updating the sample based on the passed columns
       def initialize(attributes = {})
         super
-
         @sanger_sample_id ||= if columns.present? && data.present?
                                 value(:sanger_sample_id)
                               end

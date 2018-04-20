@@ -25,10 +25,10 @@ module SampleManifestExcel
 
       def initialize(attributes = {})
         super
-        @data = Data.new(filename, start_row)
+        @data = Upload::Data.new(filename, start_row)
         @columns = column_list.extract(data.header_row || [])
         @sanger_sample_id_column = columns.find_by(:name, :sanger_sample_id)
-        @rows = Rows.new(data, columns)
+        @rows = Upload::Rows.new(data, columns)
         @sample_manifest = get_sample_manifest
         @processor = create_processor
         @reuploaded = @sample_manifest.completed? if sample_manifest.present?
@@ -82,14 +82,14 @@ module SampleManifestExcel
         if sample_manifest.present?
           case sample_manifest.asset_type
           when '1dtube'
-            Processor::OneDTube.new(self)
+            Upload::Processor::OneDTube.new(self)
           when 'library'
-            Processor::LibraryTube.new(self)
+            Upload::Processor::LibraryTube.new(self)
           when 'multiplexed_library'
-            Processor::MultiplexedLibraryTube.new(self)
+            Upload::Processor::MultiplexedLibraryTube.new(self)
           end
         else
-          SampleManifestExcel::NullProcessor.new(self)
+          SampleManifestExcel::NullObjects::NullProcessor.new(self)
         end
       end
 
