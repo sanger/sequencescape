@@ -4,7 +4,7 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
-Then /^the "([^\"]+)" fields listed below should be displayed:$/ do |_workflow_name, table|
+Then /^the fields listed below should be displayed:$/ do |_workflow_name, table|
   table.hashes.each do |details|
     assert(page.find_field(details['field']))
   end
