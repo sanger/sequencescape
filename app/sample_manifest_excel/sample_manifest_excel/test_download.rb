@@ -1,4 +1,8 @@
+# frozen_string_literal: true
+
 module SampleManifestExcel
+  ##
+  # Test download
   class TestDownload
     include ActiveModel::Model
     include Helpers::Download

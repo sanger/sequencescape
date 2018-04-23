@@ -1,5 +1,9 @@
+# frozen_string_literal: true
+
 module SampleManifestExcel
   module Worksheet
+    ##
+    # Ranges worksheet
     class RangesWorksheet < Base
       # Using axlsx worksheet creates worksheet with all the ranges listed on worksheet.
       # Also updates ranges with absolute reference (adds worksheet name to ranges references, i.e. 'Ranges!$A$5:$F$5'),

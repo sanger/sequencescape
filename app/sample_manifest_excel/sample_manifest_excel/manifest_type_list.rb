@@ -1,4 +1,8 @@
+# frozen_string_literal: true
+
 module SampleManifestExcel
+  ##
+  # ManifestTypeList
   class ManifestTypeList
     include Enumerable
     include Comparable
@@ -25,12 +29,10 @@ module SampleManifestExcel
     end
 
     def by_asset_type(asset_type)
-      return self unless asset_type.present?
+      return self if asset_type.blank?
       ManifestTypeList.new do |list|
         manifest_types.each do |k, manifest_type|
-          if manifest_type.asset_type == asset_type
-            list.manifest_types[k] = manifest_type
-          end
+          list.manifest_types[k] = manifest_type if manifest_type.asset_type == asset_type
         end
       end
     end
@@ -40,10 +42,12 @@ module SampleManifestExcel
       manifest_types <=> other.manifest_types
     end
 
+    ##
+    # ManifestType
     class ManifestType
       include Helpers::Attributes
 
-      set_attributes :name, :columns, :heading, :asset_type
+      setup_attributes :name, :columns, :heading, :asset_type
 
       def initialize(attributes = {})
         super

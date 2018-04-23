@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_excel: true do
@@ -9,12 +11,12 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
   end
 
   let(:columns)       { SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup }
-  let(:data)          {
+  let(:data)          do
     [sample_tube.samples.first.assets.first.sanger_human_barcode, sample_tube.samples.first.sanger_sample_id,
      'AA', '', 'My reference genome', 'My New Library Type', 200, 1500, 'SCG--1222_A01', '', 1, 1, 'Unknown', '', '', '',
      'Cell Line', 'Nov-16', 'Nov-16', '', 'No', '', 'OTHER', '', '', '', '', '', 'SCG--1222_A01',
      9606, 'Homo sapiens', '', '', '', '', 11, 'Unknown']
-  }
+  end
   let!(:library_type) { create(:library_type, name: 'My New Library Type') }
   let!(:reference_genome) { create(:reference_genome, name: 'My reference genome') }
   let!(:sample_tube)  { create(:sample_tube_with_sanger_sample_id) }
@@ -65,7 +67,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
   end
 
   it 'is not valid unless metadata is valid' do
-    row = SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns)
+    SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns)
     expect(SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns)).to be_valid
     data[16] = 'Cell-line'
     expect(SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns)).to_not be_valid
@@ -102,7 +104,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
   it 'updates the sample' do
     row = SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns)
     row.update_sample(tag_group)
-    metadata = row.metadata
+    row.metadata
     expect(row).to be_sample_updated
   end
 
@@ -142,7 +144,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
         row.update_sample(tag_group)
         row.transfer_aliquot
       end
-      expect(rows.all? { |row| row.aliquot_transferred? }).to be_truthy
+      expect(rows.all?(&:aliquot_transferred?)).to be_truthy
       mx_library_tube.samples.each_with_index do |sample, i|
         expect(sample.aliquots.first.tag.oligo).to eq(tags[i][:tag_oligo])
         expect(sample.aliquots.first.tag2.oligo).to eq(tags[i][:tag2_oligo])

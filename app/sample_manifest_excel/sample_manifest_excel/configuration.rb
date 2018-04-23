@@ -1,8 +1,13 @@
+# frozen_string_literal: true
+
 module SampleManifestExcel
+  ##
+  # Configuration class for sample manifests handling fornatting, manifest types,
+  # ranges and columns.
   class Configuration
     include Helpers
 
-    FILES = [:conditional_formattings, :manifest_types, :ranges, :columns]
+    FILES = [:conditional_formattings, :manifest_types, :ranges, :columns].freeze
 
     attr_accessor :folder, :tag_group, *FILES
     attr_reader :loaded, :files
@@ -18,12 +23,11 @@ module SampleManifestExcel
     end
 
     def load!
-      if folder.present?
-        FILES.each do |file|
-          send("#{file}=", load_file(folder, file.to_s))
-        end
-        @loaded = true
+      return if folder.blank?
+      FILES.each do |file|
+        send("#{file}=", load_file(folder, file.to_s))
       end
+      @loaded = true
     end
 
     def conditional_formattings=(conditional_formattings)
@@ -42,8 +46,6 @@ module SampleManifestExcel
       @manifest_types = ManifestTypeList.new(manifest_types).freeze
     end
 
-    attr_writer :tag_group
-
     def loaded?
       loaded
     end
@@ -57,6 +59,8 @@ module SampleManifestExcel
         columns == other.columns
     end
 
+    ##
+    # Columns
     class Columns
       attr_reader :all
 

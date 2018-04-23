@@ -1,11 +1,13 @@
+# frozen_string_literal: true
+
 module SampleManifestExcel
   module NullObjects
+    ##
+    # NullProcessor
     class NullProcessor
-      def initialize(_upload)
-      end
+      def initialize(_upload); end
 
-      def run(tag_group)
-      end
+      def run(tag_group); end
 
       def samples_updated?
         false

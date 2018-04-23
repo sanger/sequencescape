@@ -1,5 +1,9 @@
+# frozen_string_literal: true
+
 module SampleManifestExcel
   module SpecialisedField
+    ##
+    # Base
     module Base
       extend ActiveSupport::Concern
 
@@ -15,8 +19,7 @@ module SampleManifestExcel
 
       delegate :present?, to: :value, prefix: true
 
-      def update(_attributes = {})
-      end
+      def update(_attributes = {}); end
     end
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # Creates a Sample Manifest Excel spreadsheet from a Sample Manifest object
 module SampleManifestExcel

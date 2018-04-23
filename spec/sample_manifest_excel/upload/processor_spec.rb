@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_manifest_excel: true do
@@ -41,7 +43,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
         processor = SampleManifestExcel::Upload::Processor::OneDTube.new(upload)
         processor.run(tag_group)
         expect(processor).to be_samples_updated
-        expect(upload.rows.all? { |row| row.sample_updated? }).to be_truthy
+        expect(upload.rows.all?(&:sample_updated?)).to be_truthy
       end
 
       it 'will update the sample manifest' do
@@ -66,7 +68,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
           processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(upload)
           processor.run(tag_group)
           expect(processor).to be_samples_updated
-          expect(upload.rows.all? { |row| row.sample_updated? }).to be_truthy
+          expect(upload.rows.all?(&:sample_updated?)).to be_truthy
         end
 
         it 'will update the sample manifest' do
@@ -80,7 +82,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
           processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(upload)
           processor.run(tag_group)
           expect(processor).to be_aliquots_transferred
-          expect(upload.rows.all? { |row| row.aliquot_transferred? }).to be_truthy
+          expect(upload.rows.all?(&:aliquot_transferred?)).to be_truthy
         end
 
         it 'will be processed' do

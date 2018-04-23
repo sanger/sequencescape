@@ -1,4 +1,8 @@
+# frozen_string_literal: true
+
 module SampleManifestExcel
+  ##
+  # NullValidation
   class NullValidation
     ##
     # Always returns :null range
@@ -8,8 +12,7 @@ module SampleManifestExcel
 
     ##
     # Does nothing
-    def update(attributes = {})
-    end
+    def update(attributes = {}); end
 
     ##
     # A null validation is always empty.

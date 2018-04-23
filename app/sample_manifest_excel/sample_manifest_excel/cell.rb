@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SampleManifestExcel
   ##
   # Holds the reference of a cell in an Excel spreadsheet based on its x (row) and y (column) position.
@@ -8,9 +10,9 @@ module SampleManifestExcel
     # x and y position are required.
     # The row is held as is.
     # The column is converted to an alphanumberic character e.g 1 = "A", 27 = "AA"
-    def initialize(x, y)
-      @row = x
-      @column = to_alpha(y)
+    def initialize(x_row, y_col)
+      @row = x_row
+      @column = to_alpha(y_col)
     end
 
     ##
@@ -41,8 +43,8 @@ module SampleManifestExcel
 
     private
 
-    def to_alpha(n)
-      (n - 1) < 26 ? ((n - 1) % 26 + 65).chr : ((n - 1) / 26 + 64).chr + ((n - 1) % 26 + 65).chr
+    def to_alpha(num)
+      (num - 1) < 26 ? ((num - 1) % 26 + 65).chr : ((num - 1) / 26 + 64).chr + ((num - 1) % 26 + 65).chr
     end
   end
 end

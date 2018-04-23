@@ -1,9 +1,14 @@
+# frozen_string_literal: true
+
 module SampleManifestExcel
   module Worksheet
+    ##
+    # Base class for worksheets
     class Base
       include ActiveModel::Model
 
-      attr_accessor :workbook, :axlsx_worksheet, :columns, :name, :ranges, :password
+      attr_accessor :workbook, :axlsx_worksheet, :columns, :ranges, :password
+      attr_writer :name
 
       def initialize(attributes = {})
         super
@@ -18,8 +23,8 @@ module SampleManifestExcel
       end
 
       # Adds n empty rows
-      def add_rows(n)
-        n.times { |_i| add_row }
+      def add_rows(num_rows)
+        num_rows.times { |_i| add_row }
       end
 
       # Assigns name to a worksheet depending on axlsx worksheet name. Used to assign
@@ -42,7 +47,7 @@ module SampleManifestExcel
       # Adds axlsx worksheet to a workbook, to a particular place.
 
       def insert_axlsx_worksheet(name, index = 0)
-        @axlsx_worksheet ||= workbook.insert_worksheet(index, name: name)
+        @axlsx_worksheet ||= workbook.insert_worksheet(index, name: name) # rubocop:disable Naming/MemoizedInstanceVariableName
       end
 
       # Creates a worksheet, empty one in this case

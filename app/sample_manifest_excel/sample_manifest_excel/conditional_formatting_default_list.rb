@@ -1,4 +1,8 @@
+# frozen_string_literal: true
+
 module SampleManifestExcel
+  ##
+  # Default list of conditional formattings for a single entity e.g. Column.
   class ConditionalFormattingDefaultList
     include List
 

@@ -1,8 +1,13 @@
+# frozen_string_literal: true
+
 module SampleManifestExcel
+  ##
+  # Default conditional formatting rule.
+  # See conditional formatting.
   class ConditionalFormattingDefault
     include Helpers::Attributes
 
-    set_attributes :type, :style, :options
+    setup_attributes :type, :style, :options
 
     def initialize(attributes = {})
       super

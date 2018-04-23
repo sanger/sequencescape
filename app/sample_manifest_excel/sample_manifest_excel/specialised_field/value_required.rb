@@ -1,5 +1,9 @@
+# frozen_string_literal: true
+
 module SampleManifestExcel
   module SpecialisedField
+    ##
+    # ValueRequired
     module ValueRequired
       extend ActiveSupport::Concern
 

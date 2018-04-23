@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 require 'pry'
 
@@ -61,12 +63,12 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
   end
 
   context 'data worksheet' do
-    let!(:worksheet) {
+    let!(:worksheet) do
       SampleManifestExcel::Worksheet::DataWorksheet.new(workbook: workbook,
                                                         columns: SampleManifestExcel.configuration.columns.plate_full.dup,
                                                         sample_manifest: sample_manifest, ranges: SampleManifestExcel.configuration.ranges.dup,
                                                         password: '1111')
-    }
+    end
 
     before(:each) do
       save_file
@@ -116,7 +118,7 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
     end
 
     it 'updates all of the columns' do
-      expect(worksheet.columns.values.all? { |column| column.updated? }).to be_truthy
+      expect(worksheet.columns.values.all?(&:updated?)).to be_truthy
     end
 
     it 'panes should be frozen correctly' do
@@ -155,7 +157,7 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
     it 'set absolute references in ranges' do
       range = range_list.ranges.values.first
       expect(range.absolute_reference).to eq("Ranges!#{range.fixed_reference}")
-      expect(range_list.all? { |_k, range| range.absolute_reference.present? }).to be_truthy
+      expect(range_list.all? { |_k, rng| rng.absolute_reference.present? }).to be_truthy
     end
   end
 
@@ -174,17 +176,19 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
   end
 
   context 'test worksheet' do
-    let(:data)        {
-      { library_type: 'My personal library type', insert_size_from: 200, insert_size_to: 1500,
+    let(:data) do
+      {
+        library_type: 'My personal library type', insert_size_from: 200, insert_size_to: 1500,
         supplier_name: 'SCG--1222_A0', volume: 1, concentration: 1, gender: 'Unknown', dna_source: 'Cell Line',
         date_of_sample_collection: 'Nov-16', date_of_sample_extraction: 'Nov-16', sample_purified: 'No',
-        sample_public_name: 'SCG--1222_A0', sample_taxon_id: 9606, sample_common_name: 'Homo sapiens', phenotype: 'Unknown' }.with_indifferent_access
-    }
+        sample_public_name: 'SCG--1222_A0', sample_taxon_id: 9606, sample_common_name: 'Homo sapiens', phenotype: 'Unknown'
+      }.with_indifferent_access
+    end
 
-    let(:attributes) {
+    let(:attributes) do
       { workbook: workbook, columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup,
         data: data, no_of_rows: 5, study: 'WTCCC', supplier: 'Test supplier', count: 1, type: 'Tubes' }
-    }
+    end
 
     context 'in a valid state' do
       let!(:worksheet) { SampleManifestExcel::Worksheet::TestWorksheet.new(attributes) }
@@ -219,7 +223,7 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
 
       it 'adds the data' do
         data.each do |heading, value|
-          column = worksheet.columns.find_by(:name, heading).number
+          worksheet.columns.find_by(:name, heading).number
           expect(spreadsheet.sheet(0).cell(worksheet.first_row, worksheet.columns.find_by(:name, heading).number)).to eq(value.to_s)
           expect(spreadsheet.sheet(0).cell(worksheet.last_row, worksheet.columns.find_by(:name, heading).number)).to eq(value.to_s)
         end
@@ -270,7 +274,7 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
 
     context 'in an invalid state' do
       it 'without a library type' do
-        worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes.merge(validation_errors: [:library_type]))
+        SampleManifestExcel::Worksheet::TestWorksheet.new(attributes.merge(validation_errors: [:library_type]))
         save_file
         expect(LibraryType.find_by(name: data[:library_type])).to be_nil
       end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SampleManifestExcel
   ##
   # A list will create a struct of objects.
@@ -49,6 +51,8 @@ module SampleManifestExcel
     included do
     end
 
+    ##
+    # ClassMethods
     module ClassMethods
       ##
       # Set up the list
@@ -75,21 +79,19 @@ module SampleManifestExcel
 
         alias_method args.first, :values
 
-        unless const_defined?(list_model)
-          list_model_const = Object.const_set(list_model, Struct.new(*options[:keys]) do
-            def fetch(key)
-              if members.include?(key)
-                self[key]
-              else
-                {}
-              end
+        return if const_defined?(list_model)
+        list_model_const = Object.const_set(list_model, Struct.new(*options[:keys]) do
+          def fetch(key)
+            if members.include?(key)
+              self[key]
+            else
+              {}
             end
-          end)
-
-          define_method :list_model do
-            list_model_const
           end
+        end)
 
+        define_method :list_model do
+          list_model_const
         end
       end
     end

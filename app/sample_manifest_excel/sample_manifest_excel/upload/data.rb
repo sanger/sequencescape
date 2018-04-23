@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SampleManifestExcel
   module Upload
     ##
@@ -41,8 +43,8 @@ module SampleManifestExcel
 
       ##
       # Return a column of data for a particular column number
-      def column(n)
-        data.map { |row| row[n - 1] }
+      def column(col_num)
+        data.map { |row| row[col_num - 1] }
       end
 
       def inspect

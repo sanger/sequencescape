@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SampleManifestExcel
   module SpecialisedField
     ##
@@ -21,7 +23,8 @@ module SampleManifestExcel
       private
 
       def check_reference_genome_exists
-        errors.add(:base, "could not find #{value} reference genome.") if reference_genome.blank?
+        return if reference_genome.present?
+        errors.add(:base, "could not find #{value} reference genome.")
       end
     end
   end

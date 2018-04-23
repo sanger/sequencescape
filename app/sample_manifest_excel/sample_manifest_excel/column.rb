@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SampleManifestExcel
   ##
   # Column creates a particular column with all the information about this column (name, heading,
@@ -7,8 +9,8 @@ module SampleManifestExcel
   class Column
     include Helpers::Attributes
 
-    set_attributes :name, :heading, :number, :type, :validation, :value, :unlocked, :conditional_formattings, :attribute, :range,
-                   defaults: { number: 0, type: :string, conditional_formattings: {}, validation: NullValidation.new }
+    setup_attributes :name, :heading, :number, :type, :validation, :value, :unlocked, :conditional_formattings, :attribute, :range,
+                     defaults: { number: 0, type: :string, conditional_formattings: {}, validation: NullValidation.new }
 
     validates_presence_of :name, :heading
 
@@ -71,9 +73,7 @@ module SampleManifestExcel
     end
 
     def update_metadata(metadata, value)
-      if metadata_field?
-        metadata.send("#{name}=", value)
-      end
+      metadata.send("#{name}=", value) if metadata_field?
     end
 
     def attribute_value(detail)
@@ -85,11 +85,9 @@ module SampleManifestExcel
     end
 
     def specialised_field
-      begin
-        @specialised_field ||= SampleManifestExcel.const_get(classify_name, false)
-      rescue NameError
-        nil
-      end
+      @specialised_field ||= SampleManifestExcel.const_get(classify_name, false)
+    rescue NameError
+      nil
     end
 
     ##
@@ -120,7 +118,7 @@ module SampleManifestExcel
 
     ##
     # Set the column number and return the column
-    def set_number(number)
+    def setup_column_number(number)
       self.number = number
       self
     end
@@ -136,6 +134,7 @@ module SampleManifestExcel
       ArgumentBuilder.new(args, key, conditional_formattings).to_h
     end
 
+    # Builds arguments
     class ArgumentBuilder
       attr_reader :arguments
 
@@ -155,10 +154,9 @@ module SampleManifestExcel
       private
 
       def combine_conditional_formattings(defaults)
-        if arguments[:conditional_formattings].present?
-          arguments[:conditional_formattings].each do |k, cf|
-            arguments[:conditional_formattings][k] = defaults.find_by(:type, k).combine(cf)
-          end
+        return if arguments[:conditional_formattings].blank?
+        arguments[:conditional_formattings].each do |k, cf|
+          arguments[:conditional_formattings][k] = defaults.find_by(:type, k).combine(cf)
         end
       end
     end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe SampleManifestExcel::ColumnList, type: :model, sample_manifest_excel: true do
@@ -63,7 +65,7 @@ RSpec.describe SampleManifestExcel::ColumnList, type: :model, sample_manifest_ex
   it '#extract doesnt affect original list of columns' do
     column_number = column_list.values[4].number
     names = column_list.names[0..2] + column_list.names[4..5]
-    list = column_list.extract(names)
+    column_list.extract(names)
     expect(column_list.values[4].number).to eq(column_number)
   end
 
@@ -81,7 +83,7 @@ RSpec.describe SampleManifestExcel::ColumnList, type: :model, sample_manifest_ex
 
   it '#update updates columns' do
     column_list.update(10, 15, ranges, Axlsx::Workbook.new.add_worksheet)
-    expect(column_list.all? { |column| column.updated? }).to be_truthy
+    expect(column_list.all?(&:updated?)).to be_truthy
   end
 
   it 'duplicates correctly' do
@@ -90,7 +92,7 @@ RSpec.describe SampleManifestExcel::ColumnList, type: :model, sample_manifest_ex
     expect(column_list.count).to eq(n)
     expect(dupped.count).to eq(n)
     column_list.update(10, 15, ranges, Axlsx::Workbook.new.add_worksheet)
-    expect(dupped.any? { |column| column.updated? }).to be_falsey
+    expect(dupped.any?(&:updated?)).to be_falsey
   end
 
   it 'must have some columns to be valid' do
@@ -98,8 +100,8 @@ RSpec.describe SampleManifestExcel::ColumnList, type: :model, sample_manifest_ex
     expect(SampleManifestExcel::ColumnList.new(nil, conditional_formattings)).to_not be_valid
   end
 
-  it '#find_by_or_null returns a null object if none exists for key and value' do
-    expect(column_list.find_by_or_null(:name, :bad_value).number).to eq(-1) # rubocop:disable all
+  it '#find_column_or_null returns a null object if none exists for key and value' do
+    expect(column_list.find_column_or_null(:name, :bad_value).number).to eq(-1)
   end
 
   it '#except will remove the offending column' do

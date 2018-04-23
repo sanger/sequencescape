@@ -1,4 +1,8 @@
+# frozen_string_literal: true
+
 module SampleManifestExcel
+  ##
+  # SubclassChecker
   module SubclassChecker
     extend ActiveSupport::Concern
 
@@ -14,20 +18,20 @@ module SampleManifestExcel
     #
     # Example:
     #  def MyClass
-    #   has_subclasses :my_subclass_1, :my_subclass_2, :my_subclass_3
+    #   subclasses? :my_subclass_1, :my_subclass_2, :my_subclass_3
     #  end
     #  my_subclass_1 = MySubclass1.new
     #  my_subclass_1.my_subclass_1? => true
     #  my_subclass_1.my_subclass_2? => false
     #
     module ClassMethods
-      def has_subclasses(*classes)
+      def subclasses?(*classes)
         options = classes.extract_options!
         classes.each do |klass|
           object_type = if options[:modual]
                           "#{options[:modual]}::#{klass.to_s.classify}"
                         else
-                          (klass.to_s.classify).to_s
+                          klass.to_s.classify.to_s
                         end
           define_method "#{klass}?" do
             type == object_type

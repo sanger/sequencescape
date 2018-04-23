@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe SampleManifestExcel, type: :model, sample_manifest_excel: true do

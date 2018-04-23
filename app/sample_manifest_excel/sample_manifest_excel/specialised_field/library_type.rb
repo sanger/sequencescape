@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SampleManifestExcel
   module SpecialisedField
     ##
@@ -10,17 +12,14 @@ module SampleManifestExcel
       validate :check_library_type_exists
 
       def update(attributes = {})
-        if valid? && attributes[:aliquot].present?
-          attributes[:aliquot].library_type = value
-        end
+        attributes[:aliquot].library_type = value if valid? && attributes[:aliquot].present?
       end
 
       private
 
       def check_library_type_exists
-        unless ::LibraryType.find_by(name: value).present?
-          errors.add(:base, "could not find #{value} library type.")
-        end
+        return if ::LibraryType.find_by(name: value).present?
+        errors.add(:base, "could not find #{value} library type.")
       end
     end
   end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SampleManifestExcel
   ##
   # Core Extensions provide extensions to standard classes

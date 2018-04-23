@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SampleManifestExcel
   module Helpers
     ##
@@ -9,8 +11,10 @@ module SampleManifestExcel
       include ActiveRecord::AttributeAssignment
       include Comparable
 
+      ##
+      # ClassMethods
       module ClassMethods
-        def set_attributes(*attributes)
+        def setup_attributes(*attributes)
           options = attributes.extract_options!
 
           attr_accessor(*attributes)

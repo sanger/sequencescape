@@ -1,22 +1,6 @@
+# frozen_string_literal: true
+
 module SampleManifestExcel
-  class NullRange
-    ##
-    # Always returns A1:A10.
-    def reference
-      'A1:A10'
-    end
-
-    ##
-    # Always returns worksheet1!A1:A10
-    def absolute_reference
-      "worksheet1!#{reference}"
-    end
-
-    def ==(other)
-      other.is_a?(self.class)
-    end
-  end
-
   ##
   # A range of cells signified by a reference.
   # The options are a range of text values which are used to validate a value.
@@ -25,9 +9,9 @@ module SampleManifestExcel
   class Range
     include Helpers::Attributes
 
-    set_attributes :options, :identifier, :name, :scope, :first_row, :last_row, :first_column, :last_column, :worksheet_name, defaults: { first_column: 1, options: {} }
+    setup_attributes :options, :identifier, :name, :scope, :first_row, :last_row, :first_column, :last_column, :worksheet_name, defaults: { first_column: 1, options: {} }
 
-    attr_reader :first_cell, :last_cell, :reference, :absolute_reference
+    attr_reader :first_cell
 
     ##
     # If the range is valid i.e. has a first row then a first cell and last cell are created
@@ -35,10 +19,9 @@ module SampleManifestExcel
     def initialize(attributes = {})
       super(default_attributes.merge(attributes))
 
-      if valid?
-        @first_cell = Cell.new(first_row, first_column)
-        @last_cell = Cell.new(last_row, last_column) unless dynamic?
-      end
+      return unless valid?
+      @first_cell = Cell.new(first_row, first_column)
+      @last_cell = Cell.new(last_row, last_column) unless dynamic?
     end
 
     # If not defined and options are empty is set to first column.
@@ -108,13 +91,13 @@ module SampleManifestExcel
       if worksheet_name.present?
         "#{worksheet_name}!#{fixed_reference}"
       else
-        (fixed_reference).to_s
+        fixed_reference.to_s
       end
     end
 
     ##
     # Set the worksheet name and return the range
-    def set_worksheet_name(worksheet_name)
+    def set_worksheet_name(worksheet_name) # rubocop:disable Naming/AccessorMethodName
       self.worksheet_name = worksheet_name
       self
     end

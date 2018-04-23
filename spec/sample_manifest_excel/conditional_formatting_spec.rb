@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe SampleManifestExcel::ConditionalFormatting, type: :model, sample_manifest_excel: true do
@@ -22,11 +24,11 @@ RSpec.describe SampleManifestExcel::ConditionalFormatting, type: :model, sample_
     let(:conditional_formatting) { SampleManifestExcel::ConditionalFormatting.new(rule) }
 
     it 'has some options' do
-      expect(conditional_formatting.options).to eq((rule[:options]))
+      expect(conditional_formatting.options).to eq(rule[:options])
     end
 
     it 'has a style' do
-      expect(conditional_formatting.style).to eq((rule[:style]))
+      expect(conditional_formatting.style).to eq(rule[:style])
     end
 
     it 'will not have a formula' do

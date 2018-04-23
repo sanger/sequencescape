@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'tag_substitution.rb'
 
 module SampleManifestExcel
@@ -8,17 +10,16 @@ module SampleManifestExcel
       # *Checks that the tag sequences are unique
       # *If valid transfers aliquots from library tubes to multiplexed library tubes.
       # *If manifest was reuploaded, updates downstream aliquots (instead of transfer)
-      class MultiplexedLibraryTube < Base
+      class MultiplexedLibraryTube < SampleManifestExcel::Upload::Processor::Base
         include Tags::Validator::Uniqueness
 
         attr_writer :substitutions
 
         def run(tag_group)
-          if valid?
-            update_samples_and_aliquots(tag_group)
-            cancel_unprocessed_external_library_creation_requests
-            update_sample_manifest
-          end
+          return unless valid?
+          update_samples_and_aliquots(tag_group)
+          cancel_unprocessed_external_library_creation_requests
+          update_sample_manifest
         end
 
         def update_samples_and_aliquots(tag_group)
@@ -46,9 +47,7 @@ module SampleManifestExcel
         # and add the remaining aliquots there
         # Also it does not make sense in real life
         def cancel_unprocessed_external_library_creation_requests
-          upload.sample_manifest.pending_external_library_creation_requests.each do |request|
-            request.cancel!
-          end
+          upload.sample_manifest.pending_external_library_creation_requests.each(&:cancel!)
         end
 
         def substitutions
@@ -56,7 +55,7 @@ module SampleManifestExcel
         end
 
         def aliquots_transferred?
-          upload.rows.all? { |row| row.aliquot_transferred? }
+          upload.rows.all?(&:aliquot_transferred?)
         end
 
         def downstream_aliquots_updated?

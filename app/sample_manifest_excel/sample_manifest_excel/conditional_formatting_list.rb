@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SampleManifestExcel
   ##
   # A list of conditional formattings for a single entity e.g. Column.
@@ -22,9 +24,7 @@ module SampleManifestExcel
         conditional_formatting.update(attributes)
       end
 
-      if attributes[:worksheet].present? && conditional_formattings.any?
-        @saved = attributes[:worksheet].add_conditional_formatting(attributes[:reference], options)
-      end
+      @saved = attributes[:worksheet].add_conditional_formatting(attributes[:reference], options) if attributes[:worksheet].present? && conditional_formattings.any?
 
       self
     end

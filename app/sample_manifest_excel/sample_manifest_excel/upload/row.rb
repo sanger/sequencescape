@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SampleManifestExcel
   module Upload
     ##
@@ -24,9 +26,7 @@ module SampleManifestExcel
       # Creates the specialised fields for updating the sample based on the passed columns
       def initialize(attributes = {})
         super
-        @sanger_sample_id ||= if columns.present? && data.present?
-                                value(:sanger_sample_id)
-                              end
+        @sanger_sample_id ||= value(:sanger_sample_id) if columns.present? && data.present?
         @sample ||= Sample.find_by(sanger_sample_id: sanger_sample_id)
         @specialised_fields = create_specialised_fields
       end
@@ -34,14 +34,14 @@ module SampleManifestExcel
       ##
       # Finds the data value for a particular column.
       # Offset by 1. Columns have numbers data is an array
-      def at(n)
-        data[n - 1]
+      def at(col_num)
+        data[col_num - 1]
       end
 
       ##
       # Find a value based on a column name
       def value(key)
-        at(columns.find_by_or_null(:name, key).number)
+        at(columns.find_column_or_null(:name, key).number)
       end
 
       def first?
@@ -72,13 +72,12 @@ module SampleManifestExcel
       # *Updating the sample metadata
       # *Saving the aliquot, metadata and sample
       def update_sample(tag_group)
-        if valid?
-          update_specialised_fields(tag_group)
-          update_metadata_fields # can be removed from here as it is called for validation
-          aliquot.save
-          metadata.save
-          @sample_updated = sample.save
-        end
+        return unless valid?
+        update_specialised_fields(tag_group)
+        update_metadata_fields # can be removed from here as it is called for validation
+        aliquot.save
+        metadata.save
+        @sample_updated = sample.save
       end
 
       def update_specialised_fields(tag_group)
@@ -98,11 +97,10 @@ module SampleManifestExcel
       # If it is a multiplexed library tube the aliquot is transferred
       # from the library tube to a multiplexed library tube and stated set to passed.
       def transfer_aliquot
-        if valid?
-          sample.primary_receptacle.requests.each do |request|
-            request.manifest_processed!
-            @aliquot_transferred = true
-          end
+        return unless valid?
+        sample.primary_receptacle.requests.each do |request|
+          request.manifest_processed!
+          @aliquot_transferred = true
         end
       end
 
@@ -116,55 +114,47 @@ module SampleManifestExcel
 
       def empty?
         primary_column = 'supplier_name'
-        if columns.present? && columns.valid? && columns.names.include?(primary_column)
-          value(primary_column).blank?
-        end
+        value(primary_column).blank? if columns.present? && columns.valid? && columns.names.include?(primary_column)
       end
 
       private
 
       def sample_can_be_updated
-        if errors.empty?
-          check_primary_receptacle
-          check_specialised_fields
-          check_sample_metadata
-        end
+        return unless errors.empty?
+        check_primary_receptacle
+        check_specialised_fields
+        check_sample_metadata
       end
 
       def check_primary_receptacle
-        errors.add(:base, "#{row_title} Does not have a primary receptacle.") unless sample.primary_receptacle.present?
+        return if sample.primary_receptacle.present?
+        errors.add(:base, "#{row_title} Does not have a primary receptacle.")
       end
 
       def check_specialised_fields
-        if errors.empty?
-          specialised_fields.each do |specialised_field|
-            unless specialised_field.valid?
-              errors.add(:base, "#{row_title} #{specialised_field.errors.full_messages.join(', ')}")
-            end
-          end
+        return unless errors.empty?
+        specialised_fields.each do |specialised_field|
+          errors.add(:base, "#{row_title} #{specialised_field.errors.full_messages.join(', ')}") unless specialised_field.valid?
         end
       end
 
       def check_sample_metadata
         # it has to be called here, otherwise metadata errors will not appear
         update_metadata_fields
-        unless metadata.valid?
-          errors.add(:base, "#{row_title} #{metadata.errors.full_messages.join(', ')}")
-        end
+        return if metadata.valid?
+        errors.add(:base, "#{row_title} #{metadata.errors.full_messages.join(', ')}")
       end
 
       def check_sample_present
-        unless sample_present?
-          errors.add(:base, "#{row_title} Sample can't be blank.")
-        end
+        return if sample_present?
+        errors.add(:base, "#{row_title} Sample can't be blank.")
       end
 
       def create_specialised_fields
-        if columns.present? && data.present? && sample.present?
-          [].tap do |specialised_fields|
-            columns.with_specialised_fields.each do |column|
-              specialised_fields << column.specialised_field.new(value: at(column.number), sample: sample)
-            end
+        return unless columns.present? && data.present? && sample.present?
+        [].tap do |specialised_fields|
+          columns.with_specialised_fields.each do |column|
+            specialised_fields << column.specialised_field.new(value: at(column.number), sample: sample)
           end
         end
       end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SampleManifestExcel
   ##
   # Applied to conditional formatting to highlight important information in a spreadsheet.
@@ -10,7 +12,7 @@ module SampleManifestExcel
   class Formula
     include Helpers::Attributes
 
-    set_attributes :type, :first_cell_reference, :absolute_reference, :operator, :operand, defaults: { type: :len, operator: '>', operand: 999 }
+    setup_attributes :type, :first_cell_reference, :absolute_reference, :operator, :operand, defaults: { type: :len, operator: '>', operand: 999 }
 
     def initialize(attributes = {})
       super(default_attributes.merge(attributes.slice(*self.attributes)))

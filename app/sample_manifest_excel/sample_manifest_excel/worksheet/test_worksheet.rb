@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SampleManifestExcel
   module Worksheet
     ##
@@ -5,9 +7,9 @@ module SampleManifestExcel
     class TestWorksheet < Base
       include Helpers::Worksheet
 
-      attr_accessor :data, :no_of_rows, :study, :supplier, :count, :type, :validation_errors, :missing_columns, :manifest_type, :partial
-
+      attr_accessor :data, :no_of_rows, :study, :supplier, :count, :type, :validation_errors, :missing_columns, :partial
       attr_reader :dynamic_attributes, :tags
+      attr_writer :manifest_type
 
       def initialize(attributes = {})
         super
@@ -66,13 +68,13 @@ module SampleManifestExcel
         @assets ||= []
       end
 
-      def add_cell_data(column, n, partial)
-        if partial && empty_row?(n)
-          (data[column.name] || dynamic_attributes[n][column.name]) unless empty_columns.include?(column.name)
-        elsif validation_errors.include?(:insert_size_from) && column.name == 'insert_size_from' && n == first_row
+      def add_cell_data(column, row_num, partial)
+        if partial && empty_row?(row_num)
+          (data[column.name] || dynamic_attributes[row_num][column.name]) unless empty_columns.include?(column.name)
+        elsif validation_errors.include?(:insert_size_from) && column.name == 'insert_size_from' && row_num == first_row
           nil
         else
-          data[column.name] || dynamic_attributes[n][column.name]
+          data[column.name] || dynamic_attributes[row_num][column.name]
         end
       end
 
@@ -80,12 +82,12 @@ module SampleManifestExcel
         first_row..last_row
       end
 
-      def empty_row?(n)
-        (n == last_row) || (n == (last_row - 1))
+      def empty_row?(row_num)
+        (row_num == last_row) || (row_num == (last_row - 1))
       end
 
       def empty_columns
-        ['supplier_name', 'tag_oligo', 'tag2_oligo']
+        %w[supplier_name tag_oligo tag2_oligo]
       end
 
       def manifest_type
@@ -103,7 +105,7 @@ module SampleManifestExcel
       private
 
       def create_asset
-        asset = if ['multiplexed_library', 'library'].include? manifest_type
+        asset = if %w[multiplexed_library library].include? manifest_type
                   FactoryGirl.create(:library_tube_with_barcode)
                 else
                   FactoryGirl.create(:sample_tube_with_sanger_sample_id)
@@ -133,15 +135,13 @@ module SampleManifestExcel
       end
 
       def create_library_type
-        unless validation_errors.include?(:library_type)
-          LibraryType.where(name: data[:library_type]).first_or_create
-        end
+        return if validation_errors.include?(:library_type)
+        LibraryType.where(name: data[:library_type]).first_or_create
       end
 
       def create_reference_genome
-        unless validation_errors.include?(:reference_genome)
-          ReferenceGenome.where(name: data[:reference_genome]).first_or_create
-        end
+        return if validation_errors.include?(:reference_genome)
+        ReferenceGenome.where(name: data[:reference_genome]).first_or_create
       end
 
       def create_tags

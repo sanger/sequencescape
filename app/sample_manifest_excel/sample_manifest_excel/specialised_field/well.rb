@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SampleManifestExcel
   module SpecialisedField
     ##
@@ -13,9 +15,8 @@ module SampleManifestExcel
       private
 
       def check_container
-        unless value == sample.wells.first.map.description
-          errors.add(:sample, 'You can not move samples between plates or modify barcodes')
-        end
+        return if value == sample.wells.first.map.description
+        errors.add(:sample, 'You can not move samples between plates or modify barcodes')
       end
     end
   end

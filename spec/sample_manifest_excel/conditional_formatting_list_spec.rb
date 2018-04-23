@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe SampleManifestExcel::ConditionalFormattingList, type: :model, sample_manifest_excel: true do
@@ -20,7 +22,7 @@ RSpec.describe SampleManifestExcel::ConditionalFormattingList, type: :model, sam
 
   it '#update updates all of the conditional formatting rules' do
     conditional_formatting_list.update(options)
-    expect(conditional_formatting_list.all? { |conditional_formatting| conditional_formatting.styled? }).to be_truthy
+    expect(conditional_formatting_list.all?(&:styled?)).to be_truthy
   end
 
   it '#update should update the worksheet with conditional formatting rules' do
@@ -48,12 +50,12 @@ RSpec.describe SampleManifestExcel::ConditionalFormattingList, type: :model, sam
     expect(SampleManifestExcel::ConditionalFormattingList.new(rules)).to eq(conditional_formatting_list)
     rules.shift
     expect(SampleManifestExcel::ConditionalFormattingList.new(rules)).to_not eq(conditional_formatting_list)
-    expect(SampleManifestExcel::ConditionalFormattingList.new(rules)).to_not eq(Array.new)
+    expect(SampleManifestExcel::ConditionalFormattingList.new(rules)).to_not eq([])
   end
 
   it 'should be duplicated correctly' do
     dup = conditional_formatting_list.dup
     conditional_formatting_list.update(options)
-    expect(dup.any? { |conditional_formatting| conditional_formatting.styled? }).to be_falsey
+    expect(dup.any?(&:styled?)).to be_falsey
   end
 end

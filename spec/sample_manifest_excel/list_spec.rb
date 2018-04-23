@@ -1,10 +1,16 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe SampleManifestExcel::List, type: :model, sample_manifest_excel: true do
   class ListItem
     attr_reader :attr_a, :attr_b, :attr_c, :attr_d
     def initialize(attr_a, attr_b, attr_c, attr_d, valid = true)
-      @attr_a, @attr_b, @attr_c, @attr_d, @valid = attr_a, attr_b, attr_c, attr_d, valid
+      @attr_a = attr_a
+      @attr_b = attr_b
+      @attr_c = attr_c
+      @attr_d = attr_d
+      @valid = valid
     end
 
     def valid?
@@ -21,14 +27,14 @@ RSpec.describe SampleManifestExcel::List, type: :model, sample_manifest_excel: t
   let(:item_2) { ListItem.new('e', 'f', 'g', 'h') }
   let(:item_3) { ListItem.new('i', 'j', 'k', 'l') }
   let(:item_4) { ListItem.new('m', 'n', 'o', 'p', false) }
-  let(:my_list) {
+  let(:my_list) do
     MyList.new do |list|
       list.add item_1
       list.add item_2
       list.add item_3
       list.add item_4
     end
-  }
+  end
 
   it 'has the correct number of items' do
     expect(my_list.count).to eq(3)
@@ -67,9 +73,9 @@ RSpec.describe SampleManifestExcel::List, type: :model, sample_manifest_excel: t
   end
 
   it 'each key should pull back the attributes for that key' do
-    expect(my_list.attr_as).to eq(['a', 'e', 'i'])
-    expect(my_list.attr_bs).to eq(['b', 'f', 'j'])
-    expect(my_list.attr_cs).to eq(['c', 'g', 'k'])
+    expect(my_list.attr_as).to eq(%w[a e i])
+    expect(my_list.attr_bs).to eq(%w[b f j])
+    expect(my_list.attr_cs).to eq(%w[c g k])
   end
 
   it 'copy adds a copy of the object to the list' do

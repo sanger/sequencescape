@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SampleManifestExcel
   # A collection of columns
   class ColumnList
@@ -60,7 +62,7 @@ module SampleManifestExcel
     end
 
     def add_with_number(column, column_list = nil)
-      add column.set_number((column_list || self).next_number)
+      add column.setup_column_number((column_list || self).next_number)
       self
     end
 
@@ -83,7 +85,7 @@ module SampleManifestExcel
       super
     end
 
-    def find_by_or_null(key, value)
+    def find_column_or_null(key, value)
       find_by(key, value) || SampleManifestExcel::NullObjects::NullColumn.new
     end
 
@@ -114,9 +116,7 @@ module SampleManifestExcel
     end
 
     def check_nil_keys
-      if bad_keys.any?
-        errors.add(:columns, "#{bad_keys.join(',')} are not valid.")
-      end
+      errors.add(:columns, "#{bad_keys.join(',')} are not valid.") if bad_keys.any?
     end
   end
 end

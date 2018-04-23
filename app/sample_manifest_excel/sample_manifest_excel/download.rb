@@ -1,4 +1,8 @@
+# frozen_string_literal: true
+
 module SampleManifestExcel
+  ##
+  # Download
   class Download
     include ActiveModel::Model
     include Helpers::Download
@@ -12,10 +16,9 @@ module SampleManifestExcel
       @range_list = range_list
       @column_list = column_list
 
-      if valid?
-        @ranges_worksheet = Worksheet::RangesWorksheet.new(ranges: range_list, workbook: workbook, password: password)
-        @data_worksheet = Worksheet::DataWorksheet.new(workbook: workbook, columns: column_list, sample_manifest: sample_manifest, ranges: range_list, password: password)
-      end
+      return unless valid?
+      @ranges_worksheet = Worksheet::RangesWorksheet.new(ranges: range_list, workbook: workbook, password: password)
+      @data_worksheet = Worksheet::DataWorksheet.new(workbook: workbook, columns: column_list, sample_manifest: sample_manifest, ranges: range_list, password: password)
     end
 
     def password

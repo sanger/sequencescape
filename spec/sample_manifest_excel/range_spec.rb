@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe SampleManifestExcel::Range, type: :model, sample_manifest_excel: true do
-  let(:options) { ['option1', 'option2', 'option3'] }
+  let(:options) { %w[option1 option2 option3] }
 
   it 'should be comparable' do
     attributes = { options: options, first_column: 4, first_row: 5, last_column: 8, last_row: 10, worksheet_name: 'Sheet1' }

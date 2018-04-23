@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SampleManifestExcel
   ##
   # An Excel validation
@@ -8,7 +10,7 @@ module SampleManifestExcel
   class Validation
     include Helpers::Attributes
 
-    set_attributes :options, :range_name
+    setup_attributes :options, :range_name
 
     def initialize(attributes = {})
       super
@@ -21,13 +23,9 @@ module SampleManifestExcel
     # If a worksheet is passed then the data validation is added using the reference is passed
     # and the options for the validation.
     def update(attributes = {})
-      if range_required?
-        options[:formula1] = attributes[:range].absolute_reference
-      end
-
-      if attributes[:worksheet].present?
-        @worksheet_validation = attributes[:worksheet].add_data_validation(attributes[:reference], options)
-      end
+      options[:formula1] = attributes[:range].absolute_reference if range_required?
+      return if attributes[:worksheet].blank?
+      @worksheet_validation = attributes[:worksheet].add_data_validation(attributes[:reference], options)
     end
 
     ##

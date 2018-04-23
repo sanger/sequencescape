@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SampleManifestExcel
   module SpecialisedField
     ##
@@ -12,9 +14,8 @@ module SampleManifestExcel
 
       def check_equality
         accession_number = sample.sample_metadata.sample_ebi_accession_number
-        if value.present? && accession_number.present?
-          errors.add(:base, 'The accession number does not match the existing accession number.')
-        end
+        return unless value.present? && accession_number.present?
+        errors.add(:base, 'The accession number does not match the existing accession number.')
       end
     end
   end

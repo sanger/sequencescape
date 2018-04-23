@@ -1,12 +1,14 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe SampleManifestExcel::ConditionalFormattingDefault, type: :model, sample_manifest_excel: true do
   context 'basic' do
-    let(:options) {
+    let(:options) do
       { style: { bg_color: '82CAFA', type: :dxf },
         options: { type: :cellIs, formula: 'FALSE', operator: :equal, priority: 1 },
         type: 'a_type' }.with_indifferent_access
-    }
+    end
 
     let(:conditional_formatting_default) { SampleManifestExcel::ConditionalFormattingDefault.new(options) }
 
@@ -36,11 +38,11 @@ RSpec.describe SampleManifestExcel::ConditionalFormattingDefault, type: :model, 
   end
 
   context 'expression' do
-    let(:options) {
+    let(:options) do
       { style: { bg_color: 'FF0000', type: :dxf },
         options: { type: :expression, priority: 2 },
         type: :another_type }.with_indifferent_access
-    }
+    end
     let(:conditional_formatting_default) { SampleManifestExcel::ConditionalFormattingDefault.new(options) }
 
     it 'must be an expression' do
@@ -55,11 +57,11 @@ RSpec.describe SampleManifestExcel::ConditionalFormattingDefault, type: :model, 
   end
 
   context 'with formula' do
-    let(:options) {
+    let(:options) do
       { style: { bg_color: 'FF0000', type: :dxf },
         options: { type: :expression, priority: 2 },
         type: :len }.with_indifferent_access
-    }
+    end
     let(:conditional_formatting_default) { SampleManifestExcel::ConditionalFormattingDefault.new(options) }
 
     it 'must be an expression' do

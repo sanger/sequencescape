@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SampleManifestExcel
   ##
   # A single conditional formatting rule.
@@ -8,7 +10,7 @@ module SampleManifestExcel
   class ConditionalFormatting
     include Helpers::Attributes
 
-    set_attributes :name, :options, :style, :formula
+    setup_attributes :name, :options, :style, :formula
 
     validates_presence_of :name, :options
 
@@ -22,14 +24,8 @@ module SampleManifestExcel
     # If conditional formatting has a formula then update the formula option
     # with the passed attributes.
     def update(attributes = {})
-      if attributes[:worksheet].present?
-        options['dxfId'] = attributes[:worksheet].workbook.styles.add_style(style)
-      end
-
-      if formula.present?
-        options['formula'] = formula.update(attributes).to_s
-      end
-
+      options['dxfId'] = attributes[:worksheet].workbook.styles.add_style(style) if attributes[:worksheet].present?
+      options['formula'] = formula.update(attributes).to_s if formula.present?
       self
     end
 
@@ -59,9 +55,7 @@ module SampleManifestExcel
 
     def initialize_dup(source)
       self.options = source.options.dup
-      if source.formula.present?
-        self.formula = source.formula.to_h
-      end
+      self.formula = source.formula.to_h if source.formula.present?
       super
     end
 

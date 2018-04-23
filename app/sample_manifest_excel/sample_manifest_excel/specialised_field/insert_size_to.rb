@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SampleManifestExcel
   module SpecialisedField
     ##
@@ -11,9 +13,8 @@ module SampleManifestExcel
       validates_numericality_of :value, greater_than: 0, message: "'insert size to' must be greater than 0"
 
       def update(attributes = {})
-        if valid? && attributes[:aliquot].present?
-          attributes[:aliquot].insert_size_to = value
-        end
+        return unless valid? && attributes[:aliquot].present?
+        attributes[:aliquot].insert_size_to = value
       end
     end
   end

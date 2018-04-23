@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SampleManifestExcel
   ##
   # A list of ranges which can be added to a Worksheet
@@ -30,7 +32,7 @@ module SampleManifestExcel
     ##
     # Each range needs a worksheet name to be used as an absolute reference.
     # for when it is added to a validation on another worksheet.
-    def set_worksheet_names(worksheet_name)
+    def set_worksheet_names(worksheet_name) # rubocop:disable Naming/AccessorMethodName
       each { |_k, range| range.set_worksheet_name(worksheet_name) }
       self
     end

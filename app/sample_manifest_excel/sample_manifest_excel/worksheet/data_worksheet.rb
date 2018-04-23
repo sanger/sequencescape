@@ -1,9 +1,12 @@
+# frozen_string_literal: true
+
 module SampleManifestExcel
   module Worksheet
+    ##
     # DataWorksheet creates a data worksheet to be filled in by a client.
-
     class DataWorksheet < Base
-      attr_accessor :sample_manifest, :type
+      attr_accessor :sample_manifest
+      attr_writer :type
 
       include Helpers::Worksheet
 
@@ -94,15 +97,15 @@ module SampleManifestExcel
 
       def add_multiplexed_library_tube_barcode
         if sample_manifest.asset_type == 'multiplexed_library'
-          add_row ['Multiplexed library tube barcode:', get_multiplexed_library_tube_barcode]
+          add_row ['Multiplexed library tube barcode:', find_multiplexed_library_tube_barcode]
         else
           add_row
         end
       end
 
-      def get_multiplexed_library_tube_barcode
-        Tube.find_by_barcode(sample_manifest.barcodes.first.gsub(/\D/, '')).requests.first.target_asset.sanger_human_barcode
-      rescue
+      def find_multiplexed_library_tube_barcode
+        Tube.find_by(barcode: sample_manifest.barcodes.first.gsub(/\D/, '')).requests.first.target_asset.sanger_human_barcode
+      rescue StandardError
         ''
       end
     end

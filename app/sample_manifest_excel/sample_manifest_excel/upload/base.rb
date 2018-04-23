@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SampleManifestExcel
   module Upload
     ##
@@ -29,7 +31,7 @@ module SampleManifestExcel
         @columns = column_list.extract(data.header_row || [])
         @sanger_sample_id_column = columns.find_by(:name, :sanger_sample_id)
         @rows = Upload::Rows.new(data, columns)
-        @sample_manifest = get_sample_manifest
+        @sample_manifest = derive_sample_manifest
         @processor = create_processor
         @reuploaded = @sample_manifest.completed? if sample_manifest.present?
       end
@@ -42,7 +44,7 @@ module SampleManifestExcel
       # The sample manifest is retrieved by taking the sample from the first row and retrieving
       # its sample manifest.
       # If it can't be found the upload will fail.
-      def get_sample_manifest
+      def derive_sample_manifest
         return unless start_row.present? && sanger_sample_id_column.present?
         sample = Sample.find_by(sanger_sample_id: data.cell(1, sanger_sample_id_column.number))
         sample.sample_manifest if sample.present?
@@ -106,10 +108,9 @@ module SampleManifestExcel
       end
 
       def check_object(object)
-        unless object.valid?
-          object.errors.each do |key, value|
-            errors.add key, value
-          end
+        return if object.valid?
+        object.errors.each do |key, value|
+          errors.add key, value
         end
       end
 
