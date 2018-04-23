@@ -9,7 +9,7 @@ class MigrateSangerBarcodesToNewTables < ActiveRecord::Migration[5.1]
     Barcode.transaction do
       Asset.where.not(barcode_bkp: nil).in_batches.each_with_index do |batch, i|
         say "Fetching batch #{i}"
-        barcodes = batch.pluck(:id, :barcode, :barcode_prefix_id_bkp)
+        barcodes = batch.pluck(:id, :barcode_bkp, :barcode_prefix_id_bkp)
         say "From #{barcodes.first.first} to #{barcodes.last.first}"
         say 'Building hashes'
         barcodes_hash = barcodes.map do |asset_id, number, prefix_id|
