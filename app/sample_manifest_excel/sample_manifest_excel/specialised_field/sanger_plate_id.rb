@@ -16,7 +16,7 @@ module SampleManifestExcel
       private
 
       def check_container
-        return if value == sample.assets.first.sanger_human_barcode
+        return if value == sample.assets.first.human_barcode
         errors.add(:sample, 'You can not move samples between plates or modify barcodes')
       end
     end

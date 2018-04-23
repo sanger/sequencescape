@@ -112,22 +112,6 @@ class BatchTest < ActiveSupport::TestCase
         end
       end
     end
-
-    context 'create requests' do
-      setup do
-        @asset_count = Asset.count
-        @requests    = Array.new(4) { create(:request, request_type: @pipeline.request_types.last) }
-        @batch       = @pipeline.batches.create!(requests: @requests)
-      end
-
-      should 'change Asset.count by 8' do
-        assert_equal 8,  Asset.count - @asset_count, 'Expected Asset.count to change by 8'
-      end
-
-      should 'not have same asset name' do
-        assert_not_equal Asset.first.name, Asset.last.name
-      end
-    end
   end
 
   context 'batch #has_event(event_name)' do
@@ -412,13 +396,13 @@ class BatchTest < ActiveSupport::TestCase
 
       should 'return true if the tubes are scanned in in the correct order' do
         number_of_batch_events = @batch.lab_events.size
-        assert @batch.verify_tube_layout([654321, 123456])
+        assert @batch.verify_tube_layout([@asset2.machine_barcode, @asset1.machine_barcode])
         assert_equal number_of_batch_events + 1, @batch.lab_events.size
       end
 
       should 'return false and add errors to the batch if the tubes are not in the correct order' do
         number_of_batch_events = @batch.lab_events.size
-        refute @batch.verify_tube_layout([123456, 654321])
+        refute @batch.verify_tube_layout([@asset1.machine_barcode, @asset2.machine_barcode])
         refute @batch.errors.empty?
         assert_equal number_of_batch_events, @batch.lab_events.size
       end

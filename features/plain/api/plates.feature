@@ -13,7 +13,7 @@ Feature: Interacting with plates through the API
   Scenario: Listing all of the plates that exist
     Given a plate called "Testing the JSON API" exists with purpose "Stock Plate"
     And the UUID for the plate "Testing the JSON API" is "00000000-1111-2222-3333-444444444444"
-    And the infinium barcode for plate "Testing the JSON API" is "WG123456"
+    And the infinium barcode for plate "Testing the JSON API" is "WG1234567-DNA"
 
     When I GET the API path "/plates"
     Then ignoring "updated_at|id|barcode|plate_purpose_uuid|plate_purpose_internal_id" the JSON should be:
@@ -25,7 +25,7 @@ Feature: Interacting with plates through the API
             "size": 96,
             "barcode_prefix": "DN",
             "plate_purpose_name": "Stock Plate",
-            "infinium_barcode": "WG123456",
+            "infinium_barcode": "WG1234567-DNA",
 
             "created_at": "2010-09-16T13:45:00+01:00",
             "uuid": "00000000-1111-2222-3333-444444444444",
@@ -45,7 +45,7 @@ Feature: Interacting with plates through the API
   Scenario: Retrieving the JSON for a particular plate
     Given a plate called "Testing the JSON API" exists with purpose "Stock Plate"
     And the UUID for the plate "Testing the JSON API" is "00000000-1111-2222-3333-444444444444"
-    And the infinium barcode for plate "Testing the JSON API" is "WG123456"
+    And the infinium barcode for plate "Testing the JSON API" is "WG1234567-DNA"
 
     When I GET the API path "/plates/00000000-1111-2222-3333-444444444444"
     Then ignoring "updated_at|id|barcode|plate_purpose_uuid|plate_purpose_internal_id" the JSON should be:
@@ -56,7 +56,7 @@ Feature: Interacting with plates through the API
           "size": 96,
           "barcode_prefix": "DN",
           "plate_purpose_name": "Stock Plate",
-          "infinium_barcode": "WG123456",
+          "infinium_barcode": "WG1234567-DNA",
 
           "created_at": "2010-09-16T13:45:00+01:00",
           "uuid": "00000000-1111-2222-3333-444444444444",

@@ -21,7 +21,7 @@ class PlateSummariesController < ApplicationController
     if candidate_plate.nil? || candidate_plate.source_plate.nil?
       redirect_back fallback_location: root_path, flash: { error: "No suitable plates found for barcode #{params[:plate_barcode]}" }
     else
-      redirect_to plate_summary_path(candidate_plate.source_plate.sanger_human_barcode)
+      redirect_to plate_summary_path(candidate_plate.source_plate.human_barcode)
     end
   end
 end

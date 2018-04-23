@@ -18,47 +18,6 @@ class ReceptionsControllerTest < ActionController::TestCase
 
     should_require_login
 
-    context '#import_from_snp' do
-      context 'with 1 plate' do
-        setup do
-          @plate_count = Plate.count
-          post :import_from_snp, params: { snp_plates: { '1' => '1234' } }
-        end
-
-        should 'change Plate.count by 1' do
-          assert_equal 1, Plate.count - @plate_count, 'Expected Plate.count to change by 1'
-        end
-        should respond_with :redirect
-        should set_flash.to(/queued to be imported/)
-      end
-
-      context 'with 3 plates' do
-        setup do
-          @plate_count = Plate.count
-          post :import_from_snp, params: { snp_plates: { '1' => '1234', '5' => '7654', '10' => '3456' } }
-        end
-
-        should 'change Plate.count by 3' do
-          assert_equal 3, Plate.count - @plate_count, 'Expected Plate.count to change by 3'
-        end
-        should respond_with :redirect
-        should set_flash.to(/queued to be imported/)
-      end
-
-      context 'with 3 plates plus blanks' do
-        setup do
-          @plate_count = Plate.count
-          post :import_from_snp, params: { snp_plates: { '1' => '1234', '7' => '', '5' => '7654', '2' => '', '10' => '3456' } }
-        end
-
-        should 'change Plate.count by 3' do
-          assert_equal 3, Plate.count - @plate_count, 'Expected Plate.count to change by 3'
-        end
-        should respond_with :redirect
-        should set_flash.to(/queued to be imported/)
-      end
-    end
-
     context '#confirm reception' do
       context 'where asset exists' do
         setup do
@@ -95,18 +54,16 @@ class ReceptionsControllerTest < ActionController::TestCase
       end
     end
 
-    ['index', 'snp_import'].each do |controller_method|
-      context "##{controller_method}" do
-        setup do
-          @asset_count = Asset.count
-          get controller_method, params: { id: @plate.id }
-        end
+    context '#index' do
+      setup do
+        @asset_count = Asset.count
+        get :index, params: { id: @plate.id }
+      end
 
-        should respond_with :success
+      should respond_with :success
 
-        should 'change Asset.count by 0' do
-          assert_equal 0, Asset.count - @asset_count, 'Expected Asset.count to change by 0'
-        end
+      should 'change Asset.count by 0' do
+        assert_equal 0, Asset.count - @asset_count, 'Expected Asset.count to change by 0'
       end
     end
   end

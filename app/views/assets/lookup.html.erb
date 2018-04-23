@@ -8,7 +8,7 @@
 <% add :menu, "Reception" => "reception" -%>
 <% add :back_menu, "Back to pipelines" => pipelines_path -%>
 
-<div class="page-header"><h1>FIND ASSET</h1></div>
+<div class="page-header"><h1>Find Asset</h1></div>
 <div class="content">
   <center>
     <div id='form'>
@@ -16,7 +16,7 @@
         <strong>Scan your asset:</strong>
       </div>
       <br />
-      <%= form_for(:asset) do |f| %>
+      <%= form_for(:asset, method: :get) do |f| %>
         <div class='entry'>
           <%= text_field :asset, :barcode, { class: 'big' } %>
         </div>

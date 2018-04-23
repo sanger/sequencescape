@@ -9,11 +9,11 @@ module LabelPrinter
       end
 
       def top_right(plate)
-        "#{plate.prefix} #{plate.barcode}"
+        "#{plate.prefix} #{plate.barcode_number}"
       end
 
       def bottom_right(plate)
-        "#{plate.name_for_label} #{plate.barcode}"
+        "#{plate.name_for_label} #{plate.barcode_number}"
       end
     end
   end

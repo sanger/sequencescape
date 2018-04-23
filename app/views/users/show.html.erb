@@ -21,7 +21,7 @@
     Your profile not complete!
   <% end %>
 <% end %>
-
+<div class="card-columns">
 <%= summary do
  [
   ['First name', @user.first_name.blank? ? "Unknown" : @user.first_name ],
@@ -31,7 +31,6 @@
 end %>
 
 <% logged_in_user? do -%>
-<div class="col-md-6">
   <%= panel(:info, title:'API access') do %>
     <dl>
       <dt>API Key</dt>
@@ -39,5 +38,5 @@ end %>
     </dl>
     <p>You can use your API key to access your studies, samples and requests programmatically.</p>
   <% end %>
-</div>
 <% end %>
+</div>

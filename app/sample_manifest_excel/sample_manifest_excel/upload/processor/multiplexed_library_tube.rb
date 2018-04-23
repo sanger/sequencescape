@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'tag_substitution.rb'
-
 module SampleManifestExcel
   module Upload
     module Processor

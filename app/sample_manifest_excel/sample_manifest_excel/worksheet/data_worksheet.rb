@@ -104,7 +104,7 @@ module SampleManifestExcel
       end
 
       def find_multiplexed_library_tube_barcode
-        Tube.find_by(barcode: sample_manifest.barcodes.first.gsub(/\D/, '')).requests.first.target_asset.sanger_human_barcode
+        Tube.with_barcode(sample_manifest.barcodes).first.requests.first.target_asset.human_barcode
       rescue StandardError
         ''
       end

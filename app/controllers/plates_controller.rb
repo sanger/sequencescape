@@ -62,7 +62,8 @@ class PlatesController < ApplicationController
 
   def create_sample_tubes
     barcode_printer = BarcodePrinter.find(params[:plates][:barcode_printer])
-    plates = Plate.plates_from_scanned_plates_and_typed_plate_ids(params[:plates][:source_plates])
+    barcode_array = params[:plates][:source_plates].scan(/\w+/)
+    plates = Plate.with_barcode(barcode_array)
     study = Study.find(params[:plates][:study])
 
     respond_to do |format|

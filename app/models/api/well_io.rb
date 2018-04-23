@@ -55,7 +55,7 @@ class Api::WellIO < Api::Base
   end
 
   with_association(:plate) do
-    map_attribute_to_json_attribute(:barcode, 'plate_barcode')
+    map_attribute_to_json_attribute(:barcode_number, 'plate_barcode')
     map_attribute_to_json_attribute(:uuid, 'plate_uuid')
 
     extra_json_attributes do |object, json_attributes|

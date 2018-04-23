@@ -19,7 +19,7 @@ describe '/api/1/extraction_attributes' do
           }
         }}
       authorized_api_request :post, subject, payload
-      expect(JSON.parse(response.body)).to include_json(JSON.parse(payload))
+      expect(JSON.parse(response.body)).to include_json(JSON.parse(payload)), response.body
       expect(status).to eq(response_code)
     end
 

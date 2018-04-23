@@ -22,7 +22,7 @@ class SequenomQcPlate < Plate
       if plate_barcode.blank?
         nil
       else
-        parents.detect { |plate| plate.barcode == plate_barcode }
+        parents.detect { |plate| plate.barcode_number == plate_barcode }
       end
     end
   end
@@ -68,7 +68,7 @@ class SequenomQcPlate < Plate
 
       # Plate name e.g. QC1234_1235_1236_1237_20100801
       self.name = "#{plate_prefix}#{plate_number(input_plate_names)}#{plate_date}"
-      self.barcode = PlateBarcode.create.barcode
+      self.sanger_barcode = { number: PlateBarcode.create.barcode, prefix: default_prefix }
     end
     true
   end
@@ -82,7 +82,7 @@ class SequenomQcPlate < Plate
   end
 
   def connect_input_plates(input_plate_barcodes)
-    self.parents = Plate.with_machine_barcode(input_plate_barcodes)
+    self.parents = Plate.with_barcode(input_plate_barcodes)
   end
 
   protected
@@ -152,7 +152,7 @@ class SequenomQcPlate < Plate
     input_plate_names.each do |_source_plate_number, source_plate_barcode|
       next if source_plate_barcode.blank?
 
-      source_plate = Plate.find_from_machine_barcode(source_plate_barcode)
+      source_plate = Plate.find_from_barcode(source_plate_barcode)
 
       if source_plate.nil?
         errors.add(:base, "Source Plate: #{source_plate_barcode} cannot be found")
@@ -188,7 +188,7 @@ class SequenomQcPlate < Plate
     input_plate_names.each do |_source_plate_number, source_plate_barcode|
       next if source_plate_barcode.blank?
 
-      source_plate = Plate.find_from_machine_barcode(source_plate_barcode)
+      source_plate = Plate.find_from_barcode(source_plate_barcode)
 
       if source_plate.nil?
         errors.add(:base, "Source Plate: #{source_plate_barcode} cannot be found")

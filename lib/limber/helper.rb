@@ -109,7 +109,7 @@ module Limber::Helper
     def prefix=(prefix)
       @name ||= prefix
       @role ||= prefix
-      @type ||= "limber_#{prefix.downcase}"
+      @type ||= "limber_#{prefix.downcase.tr(' ', '_')}"
     end
 
     def sequencing=(sequencing_array)

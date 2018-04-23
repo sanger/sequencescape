@@ -98,7 +98,7 @@ RSpec.describe SampleManifestExcel::SpecialisedField, type: :model, sample_manif
 
   describe 'Sanger Plate Id' do
     it 'will not be valid unless the value matches the sanger human barcode' do
-      expect(SampleManifestExcel::SpecialisedField::SangerPlateId.new(value: sample.wells.first.plate.sanger_human_barcode, sample: sample)).to be_valid
+      expect(SampleManifestExcel::SpecialisedField::SangerPlateId.new(value: sample.wells.first.plate.human_barcode, sample: sample)).to be_valid
       expect(SampleManifestExcel::SpecialisedField::SangerPlateId.new(value: '1234', sample: sample)).to_not be_valid
     end
   end
@@ -111,7 +111,7 @@ RSpec.describe SampleManifestExcel::SpecialisedField, type: :model, sample_manif
 
   describe 'Sanger Tube Id' do
     it 'will not be valid unless the value matches the sanger human barcode' do
-      expect(SampleManifestExcel::SpecialisedField::SangerTubeId.new(value: sample.assets.first.sanger_human_barcode, sample: sample)).to be_valid
+      expect(SampleManifestExcel::SpecialisedField::SangerTubeId.new(value: sample.assets.first.human_barcode, sample: sample)).to be_valid
       expect(SampleManifestExcel::SpecialisedField::SangerTubeId.new(value: '1234', sample: sample)).to_not be_valid
     end
   end

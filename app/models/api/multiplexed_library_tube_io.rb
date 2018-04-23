@@ -15,7 +15,7 @@ class Api::MultiplexedLibraryTubeIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        scope :including_associations_for_json, -> { includes([:uuid_object, :barcode_prefix, :scanned_into_lab_event]) }
+        scope :including_associations_for_json, -> { includes([:uuid_object, :barcodes, :scanned_into_lab_event]) }
         alias_method(:json_root, :url_name)
       end
     end
@@ -34,7 +34,7 @@ class Api::MultiplexedLibraryTubeIO < Api::Base
   map_attribute_to_json_attribute(:uuid)
   map_attribute_to_json_attribute(:id)
   map_attribute_to_json_attribute(:name)
-  map_attribute_to_json_attribute(:barcode)
+  map_attribute_to_json_attribute(:barcode_number, 'barcode')
   map_attribute_to_json_attribute(:concentration)
   map_attribute_to_json_attribute(:volume)
   map_attribute_to_json_attribute(:qc_state)
@@ -44,9 +44,7 @@ class Api::MultiplexedLibraryTubeIO < Api::Base
   map_attribute_to_json_attribute(:updated_at)
   map_attribute_to_json_attribute(:public_name)
 
-  with_association(:barcode_prefix) do
-    map_attribute_to_json_attribute(:prefix, 'barcode_prefix')
-  end
+  map_attribute_to_json_attribute(:prefix, 'barcode_prefix')
 
   with_association(:scanned_into_lab_event) do
     map_attribute_to_json_attribute(:content, 'scanned_in_date')

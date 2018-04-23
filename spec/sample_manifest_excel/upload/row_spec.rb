@@ -12,7 +12,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
 
   let(:columns)       { SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup }
   let(:data)          do
-    [sample_tube.samples.first.assets.first.sanger_human_barcode, sample_tube.samples.first.sanger_sample_id,
+    [sample_tube.samples.first.assets.first.human_barcode, sample_tube.samples.first.sanger_sample_id,
      'AA', '', 'My reference genome', 'My New Library Type', 200, 1500, 'SCG--1222_A01', '', 1, 1, 'Unknown', '', '', '',
      'Cell Line', 'Nov-16', 'Nov-16', '', 'No', '', 'OTHER', '', '', '', '', '', 'SCG--1222_A01',
      9606, 'Homo sapiens', '', '', '', '', 11, 'Unknown']
@@ -109,7 +109,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
   end
 
   it 'knows if it is empty' do
-    empty_data = [sample_tube.samples.first.assets.first.sanger_human_barcode, sample_tube.samples.first.sanger_sample_id,
+    empty_data = [sample_tube.samples.first.assets.first.human_barcode, sample_tube.samples.first.sanger_sample_id,
                   '', '', '', '', '', '', '', '', '', '', '', '', '',
                   '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
                   '', '', '', '', '', '', '', sample_tube.samples.first.sanger_sample_id, '']
@@ -131,7 +131,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
       library_tubes.each_with_index do |tube, i|
         create(:external_multiplexed_library_tube_creation_request, asset: tube, target_asset: mx_library_tube)
         row_data = data.dup
-        row_data[0] = tube.samples.first.assets.first.sanger_human_barcode
+        row_data[0] = tube.samples.first.assets.first.human_barcode
         row_data[1] = tube.samples.first.sanger_sample_id
         row_data[2] = tags[i][:tag_oligo]
         row_data[3] = tags[i][:tag2_oligo]

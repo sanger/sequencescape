@@ -90,7 +90,6 @@ Lint/HandleExceptions:
 # Offense count: 25
 Lint/IneffectiveAccessModifier:
   Exclude:
-    - 'app/controllers/sequenom_controller.rb'
     - 'app/helpers/plates_helper.rb'
     - 'app/models/event_sender.rb'
     - 'app/models/manifest_generator.rb'
@@ -235,7 +234,6 @@ Lint/UselessAssignment:
     - 'app/controllers/batches_controller.rb'
     - 'app/controllers/projects_controller.rb'
     - 'app/controllers/samples_controller.rb'
-    - 'app/controllers/sequenom_controller.rb'
     - 'app/controllers/studies/sample_registration_controller.rb'
     - 'app/controllers/studies_controller.rb'
     - 'app/helpers/application_helper.rb'
@@ -1411,7 +1409,6 @@ Style/Alias:
     - 'app/api/core/registry.rb'
     - 'app/controllers/lab_searches_controller.rb'
     - 'app/controllers/searches_controller.rb'
-    - 'app/controllers/sequenom_controller.rb'
     - 'app/models/aliquot.rb'
     - 'app/models/api/messages/flowcell_io.rb'
     - 'app/models/barcode.rb'
@@ -1726,7 +1723,6 @@ Style/BracesAroundHashParameters:
 # Offense count: 7
 Style/CaseEquality:
   Exclude:
-    - 'app/controllers/sequenom_controller.rb'
     - 'app/models/fluidigm_file.rb'
     - 'app/models/parsers/bioanalysis_csv_parser.rb'
 
@@ -2117,7 +2113,6 @@ Style/Documentation:
     - 'app/controllers/sdb/sample_manifests_controller.rb'
     - 'app/controllers/sdb/suppliers_controller.rb'
     - 'app/controllers/searches_controller.rb'
-    - 'app/controllers/sequenom_controller.rb'
     - 'app/controllers/sequenom_qc_plates_controller.rb'
     - 'app/controllers/sessions_controller.rb'
     - 'app/controllers/stock_stampers_controller.rb'
@@ -2918,7 +2913,6 @@ Style/EmptyCaseCondition:
     - 'app/api/core/endpoint/basic_handler/actions.rb'
     - 'app/api/core/io/json/grammar.rb'
     - 'app/controllers/api/orders_controller.rb'
-    - 'app/controllers/sequenom_controller.rb'
     - 'app/models/aliquot.rb'
     - 'app/models/aliquot/deprecated_behaviours.rb'
     - 'app/models/asset.rb'
@@ -3470,7 +3464,6 @@ Style/FrozenStringLiteralComment:
     - 'app/controllers/sdb/sample_manifests_controller.rb'
     - 'app/controllers/sdb/suppliers_controller.rb'
     - 'app/controllers/searches_controller.rb'
-    - 'app/controllers/sequenom_controller.rb'
     - 'app/controllers/sequenom_qc_plates_controller.rb'
     - 'app/controllers/sessions_controller.rb'
     - 'app/controllers/stock_assets_controller.rb'
@@ -4985,7 +4978,6 @@ Style/IdenticalConditionalBranches:
   Exclude:
     - 'app/controllers/plates_controller.rb'
     - 'app/controllers/requests_controller.rb'
-    - 'app/controllers/sequenom_controller.rb'
     - 'app/controllers/studies/documents_controller.rb'
     - 'app/controllers/tag_groups_controller.rb'
     - 'features/support/step_definitions/api_steps.rb'

@@ -36,7 +36,7 @@ class Event::SampleLogisticsQcEvent < Event
     if asset.is_a?(Well)
       pico_qc_message(asset, "Pico result for well #{asset.id} with #{result}", 'pico_analysed')
     elsif asset.is_a?(Plate)
-      pico_qc_message(asset, "Pico result for plate #{asset.barcode} with #{result}", 'pico_analysed')
+      pico_qc_message(asset, "Pico result for plate #{asset.barcode_number} with #{result}", 'pico_analysed')
     end
   end
 end

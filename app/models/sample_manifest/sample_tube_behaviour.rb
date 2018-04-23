@@ -30,7 +30,7 @@ module SampleManifest::SampleTubeBehaviour
         {
           sample: sample,
           container: {
-            barcode: sample.primary_receptacle.sanger_human_barcode
+            barcode: sample.primary_receptacle.human_barcode
           }
         }
       end
@@ -47,7 +47,7 @@ module SampleManifest::SampleTubeBehaviour
     def details
       samples.each do |sample|
         yield({
-          barcode: sample.assets.first.sanger_human_barcode,
+          barcode: sample.assets.first.human_barcode,
           sample_id: sample.sanger_sample_id
         })
       end
@@ -57,7 +57,7 @@ module SampleManifest::SampleTubeBehaviour
       [].tap do |details|
         samples.each do |sample|
           details << {
-            barcode: sample.assets.first.sanger_human_barcode,
+            barcode: sample.assets.first.human_barcode,
             sample_id: sample.sanger_sample_id
           }
         end
@@ -65,7 +65,7 @@ module SampleManifest::SampleTubeBehaviour
     end
 
     def validate_sample_container(sample, row)
-      manifest_barcode, primary_barcode = row['SANGER TUBE ID'], sample.primary_receptacle.sanger_human_barcode
+      manifest_barcode, primary_barcode = row['SANGER TUBE ID'], sample.primary_receptacle.human_barcode
       return if primary_barcode == manifest_barcode
       yield("You cannot move samples between tubes or modify their barcodes: #{sample.sanger_sample_id} should be in '#{primary_barcode}' but the manifest is trying to put it in '#{manifest_barcode}'")
     end

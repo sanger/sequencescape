@@ -59,7 +59,12 @@ Given /^the plate "(.*?)" has additional wells$/ do |name|
 end
 
 Given /^a transfer plate called "([^\"]+)" exists as a child of "([^\"]+)"$/ do |name, parent|
-  parent_plate = Plate.find_by(name: parent) or raise "Cannot find parent plate #{parent.inspect}"
+  parent_plate = Plate.find_by!(name: parent)
+  AssetLink.create!(ancestor: parent_plate, descendant: FactoryGirl.create(:transfer_plate, name: name))
+end
+
+Given(/^a transfer plate called "([^"]*)" exists as a child of plate (\d+)$/) do |name, parent_id|
+  parent_plate = Plate.find(parent_id)
   AssetLink.create!(ancestor: parent_plate, descendant: FactoryGirl.create(:transfer_plate, name: name))
 end
 

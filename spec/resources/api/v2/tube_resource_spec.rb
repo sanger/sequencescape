@@ -2,7 +2,7 @@ require 'rails_helper'
 require './app/resources/api/v2/tube_resource'
 
 RSpec.describe Api::V2::TubeResource, type: :resource do
-  let(:resource_model) { create :tube, barcode: 1 }
+  let(:resource_model) { create :tube, barcode_number: 1 }
   subject(:resource) { described_class.new(resource_model, {}) }
 
   # Test attributes
@@ -33,6 +33,6 @@ RSpec.describe Api::V2::TubeResource, type: :resource do
   # Add tests for any custom methods you've added.
   describe '#labware_barcode' do
     subject { resource.labware_barcode }
-    it { is_expected.to eq('ean13_barcode' => '3980000001795', 'sanger_human_barcode' => 'NT1O') }
+    it { is_expected.to eq('ean13_barcode' => '3980000001795', 'human_barcode' => 'NT1O') }
   end
 end

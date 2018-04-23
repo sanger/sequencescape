@@ -13,7 +13,7 @@ class BroadcastEvent::SequencingStart < BroadcastEvent
   has_subjects(:sequencing_source_labware, :source_labware)
   has_subjects(:study, :studies)
   has_subjects(:project, :projects)
-  has_subjects(:stock_plate, :original_stock_plates)
+  has_subjects(:stock_plate) { |batch, _e| batch.source_labware.map(&:original_stock_plates).flatten.uniq }
   has_subjects(:library_source_labware) { |batch, _e| batch.source_labware.map(&:library_source_plates).flatten.uniq }
   has_subjects(:sample, :samples)
 

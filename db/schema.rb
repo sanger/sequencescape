@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180323134506) do
+ActiveRecord::Schema.define(version: 20180423080956) do
 
   create_table "aker_containers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "barcode"
@@ -87,7 +87,7 @@ ActiveRecord::Schema.define(version: 20180323134506) do
     t.index ["asset_id"], name: "index_asset_audits_on_asset_id"
   end
 
-  create_table "asset_barcodes", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "asset_barcodes", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", comment: "AL" do |t|
   end
 
   create_table "asset_creation_parents", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -150,7 +150,7 @@ ActiveRecord::Schema.define(version: 20180323134506) do
     t.text "descriptors"
     t.text "descriptor_fields"
     t.string "sti_type", limit: 50
-    t.string "barcode"
+    t.string "barcode_bkp"
     t.string "qc_state", limit: 20
     t.boolean "resource"
     t.datetime "created_at"
@@ -164,12 +164,12 @@ ActiveRecord::Schema.define(version: 20180323134506) do
     t.string "two_dimensional_barcode"
     t.integer "plate_purpose_id"
     t.decimal "volume", precision: 10, scale: 2
-    t.integer "barcode_prefix_id"
+    t.integer "barcode_prefix_id_bkp"
     t.decimal "concentration", precision: 18, scale: 8
     t.integer "legacy_sample_id"
     t.integer "legacy_tag_id"
-    t.index ["barcode"], name: "index_assets_on_barcode"
-    t.index ["barcode_prefix_id"], name: "index_assets_on_barcode_prefix_id"
+    t.index ["barcode_bkp"], name: "index_assets_on_barcode_bkp"
+    t.index ["barcode_prefix_id_bkp"], name: "index_assets_on_barcode_prefix_id_bkp"
     t.index ["sti_type", "plate_purpose_id"], name: "index_assets_on_plate_purpose_id_sti_type"
     t.index ["sti_type", "updated_at"], name: "index_assets_on_sti_type_and_updated_at"
     t.index ["sti_type"], name: "index_assets_on_sti_type"
@@ -254,6 +254,16 @@ ActiveRecord::Schema.define(version: 20180323134506) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer "barcode_printer_type_id"
+  end
+
+  create_table "barcodes", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "asset_id", null: false
+    t.string "barcode", null: false
+    t.integer "format", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["asset_id"], name: "index_barcodes_on_asset_id"
+    t.index ["barcode"], name: "index_barcodes_on_barcode"
   end
 
   create_table "batch_requests", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -824,12 +834,12 @@ ActiveRecord::Schema.define(version: 20180323134506) do
 
   create_table "plate_metadata", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.integer "plate_id"
-    t.string "infinium_barcode"
+    t.string "infinium_barcode_bkp"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string "fluidigm_barcode", limit: 10
+    t.string "fluidigm_barcode_bkp", limit: 10
     t.decimal "dilution_factor", precision: 5, scale: 2, default: "1.0"
-    t.index ["fluidigm_barcode"], name: "index_on_fluidigm_barcode", unique: true
+    t.index ["fluidigm_barcode_bkp"], name: "index_on_fluidigm_barcode", unique: true
     t.index ["plate_id"], name: "index_plate_metadata_on_plate_id"
   end
 
@@ -866,6 +876,8 @@ ActiveRecord::Schema.define(version: 20180323134506) do
     t.string "barcode_for_tecan", default: "ean13_barcode", null: false
     t.integer "source_purpose_id"
     t.integer "lifespan"
+    t.integer "barcode_prefix_id"
+    t.index ["barcode_prefix_id"], name: "fk_rails_763bed2756"
     t.index ["target_type"], name: "index_plate_purposes_on_target_type"
     t.index ["type"], name: "index_plate_purposes_on_type"
   end
@@ -1888,8 +1900,10 @@ ActiveRecord::Schema.define(version: 20180323134506) do
   end
 
   add_foreign_key "aliquots", "primer_panels"
+  add_foreign_key "barcodes", "assets"
   add_foreign_key "billing_items", "requests"
   add_foreign_key "billing_products", "billing_product_catalogues"
+  add_foreign_key "plate_purposes", "barcode_prefixes"
   add_foreign_key "qc_files", "assets"
   add_foreign_key "request_types", "billing_product_catalogues"
   add_foreign_key "requests", "billing_products"
