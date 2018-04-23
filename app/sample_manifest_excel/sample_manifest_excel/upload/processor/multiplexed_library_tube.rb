@@ -8,6 +8,7 @@ module SampleManifestExcel
       # *Checks that the tag sequences are unique
       # *If valid transfers aliquots from library tubes to multiplexed library tubes.
       # *If manifest was reuploaded, updates downstream aliquots (instead of transfer)
+      # TODO: had to explicitly specify the namespace for Base here otherwise it picks up Upload::Base
       class MultiplexedLibraryTube < SampleManifestExcel::Upload::Processor::Base
         include Tags::Validator::Uniqueness
 

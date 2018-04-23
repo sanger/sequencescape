@@ -30,3 +30,4 @@ public/public
 doc/*
 .yardoc/*
 config/aker.yml
+test_file.xlsx
