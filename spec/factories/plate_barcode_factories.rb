@@ -13,6 +13,7 @@ FactoryGirl.define do
   factory :plate_barcode_printer_type, class: BarcodePrinterType96Plate do
     sequence(:name) { |i| "96 Well Plate #{i}" }
     printer_type_id 1
+    type 'BarcodePrinterType96Plate'
     label_template_name 'sqsc_96plate_label_template'
   end
 end
