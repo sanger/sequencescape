@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module LabelPrinter
   module Label
     module MultipleDoubleLabels
@@ -21,4 +23,3 @@ module LabelPrinter
     end
   end
 end
-

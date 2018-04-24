@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module LabelPrinter
   module Label
     class SampleManifestPlateDouble < BasePlateDouble
@@ -14,9 +16,9 @@ module LabelPrinter
           barcode: barcode(plate) }
       end
 
-      def create_extra_label(plate)
+      def create_extra_label(_plate)
         { left_text: date_today,
-          right_text: @sample_manifest.purpose.name}
+          right_text: @sample_manifest.purpose.name }
       end
 
       def plates

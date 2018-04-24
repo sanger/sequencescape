@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe LabelPrinter::Label::SampleManifestPlateDouble do
@@ -19,13 +21,14 @@ describe LabelPrinter::Label::SampleManifestPlateDouble do
               left_text: plate.sanger_human_barcode,
               right_text: "#{sample_manifest.study.abbreviation} #{plate.barcode}",
               barcode: plate.ean13_barcode
-            }},
-            {
-            extra_label: {
-              left_text: Date.today.strftime('%e-%^b-%Y'),
-              right_text: sample_manifest.purpose.name
-            }}
-          ]
+            }
+          },
+                 {
+                   extra_label: {
+                     left_text: Date.today.strftime('%e-%^b-%Y'),
+                     right_text: sample_manifest.purpose.name
+                   }
+                 }]
         }
       }
       expect(subject.to_h).to eq(expected_label)

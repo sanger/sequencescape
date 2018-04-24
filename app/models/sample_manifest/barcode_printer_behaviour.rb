@@ -17,7 +17,7 @@ module SampleManifest::BarcodePrinterBehaviour
       printers += BarcodePrinter.alphabetical
     else
       printer_type_classes.each do |printer_type_class|
-        BarcodePrinterType.where(type: printer_type_class).each do |printer_type|
+        BarcodePrinterType.where(type: printer_type_class).find_each do |printer_type|
           printers += printer_type.barcode_printers unless printer_type.nil?
         end
       end
