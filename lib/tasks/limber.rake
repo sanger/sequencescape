@@ -5,7 +5,14 @@ namespace :limber do
   desc 'Setup all the necessary limber records'
   task setup: ['limber:create_submission_templates', 'limber:create_searches', 'limber:create_tag_templates']
 
-  desc 'Create the Limber cherrypick plate'
+  desc 'Create Barcode Printer Types'
+  task create_barcode_printer_types: :environment do
+    BarcodePrinterType384DoublePlate.find_or_create_by!(name: '384 Well Plate Double',
+                                                        printer_type_id: 10,
+                                                        label_template_name: 'plate_6mm_double')
+  end
+
+  desc 'Create the Limber cherrypick plates'
   task create_plates: :environment do
     purposes = [{ name: 'LB Cherrypick',
                   size: 96 },
@@ -13,6 +20,8 @@ namespace :limber do
                   size: 96 },
                 { name: 'LBR Cherrypick',
                   size: 96 },
+                { name: 'scRNA-384 Stock',
+                  size: 384 },
                 { name: 'GBS Stock',
                   size: 384 }]
 
@@ -67,7 +76,10 @@ namespace :limber do
       %w[WGS LCMB].each do |prefix|
         Limber::Helper::RequestTypeConstructor.new(prefix).build!
       end
-      Limber::Helper::RequestTypeConstructor.new('PCR Free', default_purpose: 'PF Cherrypicked').build!
+      Limber::Helper::RequestTypeConstructor.new(
+        'PCR Free',
+        default_purpose: 'PF Cherrypicked'
+      ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
         'ISC',
@@ -106,6 +118,12 @@ namespace :limber do
         'scRNA',
         library_types: ['scRNA'],
         default_purpose: 'scRNA Stock'
+      ).build!
+
+      Limber::Helper::RequestTypeConstructor.new(
+        'scRNA-384',
+        library_types: ['scRNA 384'],
+        default_purpose: 'scRNA-384 Stock'
       ).build!
 
       unless RequestType.where(key: 'limber_multiplexing').exists?
@@ -148,7 +166,7 @@ namespace :limber do
   end
 
   desc 'Create the limber submission templates'
-  task create_submission_templates: [:environment, :create_request_types, 'sequencing:novaseq:setup'] do
+  task create_submission_templates: [:environment, :create_request_types, :create_barcode_printer_types, 'sequencing:novaseq:setup'] do
     puts 'Creating submission templates....'
 
     base_list = Limber::Helper::ACCEPTABLE_SEQUENCING_REQUESTS
@@ -165,6 +183,9 @@ namespace :limber do
         sequencing_list: base_list
       },
       'scRNA' => {
+        sequencing_list: base_without_hiseq
+      },
+      'scRNA-384' => {
         sequencing_list: base_without_hiseq
       },
       'RNAA' => {
