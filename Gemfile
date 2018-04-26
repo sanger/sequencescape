@@ -99,6 +99,8 @@ group :default do
   # Using it to maintain our warren's of bunnies.
   # Or the connection pool of RabbitMQ channels to get technical
   gem 'connection_pool'
+
+  gem 'rack-cors', require: 'rack/cors'
 end
 
 group :warehouse do
