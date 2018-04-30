@@ -60,7 +60,7 @@ module SampleManifestExcel
 
         def check_upload_type
           return if upload.instance_of?(SampleManifestExcel::Upload::Base)
-          errors.add(:base, 'This is not an upload.')
+          errors.add(:base, 'This is not a recognised upload type.')
         end
       end
     end

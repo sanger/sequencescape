@@ -9,6 +9,7 @@ FactoryGirl.define do
     supplier 'Test Supplier'
     count 1
     partial false
+    cgap false
     type 'Tubes'
     manifest_type '1dtube'
     data do
@@ -19,7 +20,7 @@ FactoryGirl.define do
     end
 
     initialize_with do
-      new(data: data, columns: columns, validation_errors: validation_errors, no_of_rows: no_of_rows, partial: partial,
+      new(data: data, columns: columns, validation_errors: validation_errors, no_of_rows: no_of_rows, partial: partial, cgap: cgap,
           study: study, supplier: supplier, count: count, type: type, manifest_type: manifest_type)
     end
 
@@ -29,6 +30,11 @@ FactoryGirl.define do
     # 2 empty rows do not have supplier_sample_name and tags
     factory :test_partial_download, class: SampleManifestExcel::TestDownload do
       partial true
+    end
+
+    # in cgap download, the sanger_tube_id column values are cgap barcodes
+    factory :test_cgap_download, class: SampleManifestExcel::TestDownload do
+      cgap true
     end
   end
 end

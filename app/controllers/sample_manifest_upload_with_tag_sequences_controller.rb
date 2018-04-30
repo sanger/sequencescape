@@ -18,7 +18,7 @@ class SampleManifestUploadWithTagSequencesController < ApplicationController
           flash[:notice] = 'Sample manifest successfully uploaded.'
           redirect_to '/sample_manifest_upload_with_tag_sequences/new'
         else
-          flash.now[:error] = 'Oh dear. Your sample manifest couldn\'t be uploaded.'
+          flash.now[:error] = 'The sample manifest couldn\'t be uploaded.'
           render :new
         end
       else

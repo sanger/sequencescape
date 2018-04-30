@@ -72,6 +72,14 @@ module Barcode::Barcodeable
     barcodes.fluidigm.first_or_initialize.barcode = barcode
   end
 
+  def cgap_barcode
+    barcodes.detect(&:cgap?)&.machine_barcode
+  end
+
+  def cgap_barcode=(barcode)
+    barcodes.cgap.first_or_initialize.barcode = barcode
+  end
+
   deprecate def barcode!
     barcode
   end

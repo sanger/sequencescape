@@ -33,6 +33,18 @@ feature 'Sample manifest with tag sequences' do
       end
     end
 
+    context 'cgap foreign barcode replacement' do
+      let(:download) { build(:test_cgap_download, columns: columns) }
+
+      scenario 'upload' do
+        login_user(user)
+        visit('sample_manifest_upload_with_tag_sequences/new')
+        attach_file('File to upload', test_file)
+        click_button('Upload manifest')
+        expect(page).to have_content('Sample manifest successfully uploaded.')
+      end
+    end
+
     context 'invalid' do
       let(:download) { build(:test_download, columns: columns, validation_errors: [:library_type]) }
 

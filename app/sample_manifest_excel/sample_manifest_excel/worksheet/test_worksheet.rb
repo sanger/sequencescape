@@ -7,7 +7,7 @@ module SampleManifestExcel
     class TestWorksheet < Base
       include Helpers::Worksheet
 
-      attr_accessor :data, :no_of_rows, :study, :supplier, :count, :type, :validation_errors, :missing_columns, :partial
+      attr_accessor :data, :no_of_rows, :study, :supplier, :count, :type, :validation_errors, :missing_columns, :partial, :cgap
       attr_reader :dynamic_attributes, :tags
       attr_writer :manifest_type
 
@@ -59,7 +59,12 @@ module SampleManifestExcel
               sample.save
             end
             dynamic_attributes[i][:sanger_sample_id] = sample.sanger_sample_id
-            dynamic_attributes[i][:sanger_tube_id] = asset.human_barcode
+            if cgap
+              row_num = (i - first_row) + 1
+              dynamic_attributes[i][:sanger_tube_id] = "CGAP-#{row_num.to_s(16).upcase}#{(row_num % 16).to_s(16).upcase}"
+            else
+              dynamic_attributes[i][:sanger_tube_id] = asset.human_barcode
+            end
           end
         end
       end
