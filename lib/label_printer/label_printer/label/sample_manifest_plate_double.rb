@@ -1,0 +1,30 @@
+# frozen_string_literal: true
+
+module LabelPrinter
+  module Label
+    class SampleManifestPlateDouble < BasePlateDouble
+      attr_reader :sample_manifest, :only_first_label
+
+      def initialize(options)
+        @sample_manifest = options[:sample_manifest]
+        @only_first_label = options[:only_first_label]
+      end
+
+      def create_label(plate)
+        { left_text: plate.sanger_human_barcode,
+          right_text: "#{sample_manifest.study.abbreviation} #{plate.barcode}",
+          barcode: barcode(plate) }
+      end
+
+      def create_extra_label(_plate)
+        { left_text: date_today,
+          right_text: @sample_manifest.purpose.name }
+      end
+
+      def plates
+        return [sample_manifest.printables.first] if only_first_label
+        sample_manifest.printables
+      end
+    end
+  end
+end
