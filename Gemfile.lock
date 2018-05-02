@@ -282,6 +282,7 @@ GEM
     rack (2.0.4)
     rack-acceptable (0.1.0)
       rack (>= 1.1.0)
+    rack-cors (1.0.2)
     rack-mini-profiler (0.10.5)
       rack (>= 1.2.0)
     rack-protection (2.0.1)
@@ -493,6 +494,7 @@ DEPENDENCIES
   psd_logger!
   puma
   rack-acceptable
+  rack-cors
   rack-mini-profiler
   rails (~> 5.1.2)
   rails-controller-testing
