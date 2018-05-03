@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180323134506) do
+ActiveRecord::Schema.define(version: 20180502101116) do
 
   create_table "aker_containers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "barcode"
@@ -19,8 +19,8 @@ ActiveRecord::Schema.define(version: 20180323134506) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "aker_work_orders", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer "aker_id"
+  create_table "aker_jobs", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "aker_job_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -1264,6 +1264,15 @@ ActiveRecord::Schema.define(version: 20180323134506) do
     t.index ["user_id"], name: "index_roles_users_on_user_id"
   end
 
+  create_table "sample_jobs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "sample_id"
+    t.bigint "job_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["job_id"], name: "index_sample_jobs_on_job_id"
+    t.index ["sample_id"], name: "index_sample_jobs_on_sample_id"
+  end
+
   create_table "sample_manifests", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -1349,15 +1358,6 @@ ActiveRecord::Schema.define(version: 20180323134506) do
     t.integer "sample_id"
     t.integer "sample_tube_id"
     t.integer "asset_group_id"
-  end
-
-  create_table "sample_work_orders", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.bigint "sample_id"
-    t.bigint "work_order_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["sample_id"], name: "index_sample_work_orders_on_sample_id"
-    t.index ["work_order_id"], name: "index_sample_work_orders_on_work_order_id"
   end
 
   create_table "samples", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|

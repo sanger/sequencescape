@@ -13,7 +13,8 @@ module Aker
     class Material
       include ActiveModel::Model
 
-      attr_reader :name, :gender, :donor_id, :phenotype, :sample_common_name, :container, :model
+      attr_accessor :container
+      attr_reader :name, :gender, :donor_id, :phenotype, :sample_common_name, :model
 
       validates_presence_of :name, :gender
 
@@ -29,7 +30,7 @@ module Aker
         @donor_id = params[:donor_id]
         @phenotype = params[:phenotype]
         @sample_common_name = params[:common_name]
-        @container = Aker::Factories::Container.new(params[:container])
+        @container = nil
       end
 
       ##
