@@ -22,9 +22,10 @@ FactoryGirl.define do
     modules { ['module 1', 'module 2'] }
     comment 'Cook for 20 minutes.'
     desired_date '2017-08-01'
-    container { container }
-    materials { [build(:material_json).with_indifferent_access,
-        build(:material_json).with_indifferent_access] }
+    container { build(:container_json) }
+    materials { [
+        build(:material_json),
+        build(:material_json)] }
 
     initialize_with { attributes.stringify_keys }
 
