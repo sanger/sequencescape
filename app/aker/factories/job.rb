@@ -6,7 +6,7 @@ module Aker
     class Job
       include ActiveModel::Model
       ATTRIBUTES = %i[job_id work_order_id product_name process_name process_uuid modules product_version product_uuid project_uuid project_name cost_code container materials comment desired_date data_release_uuid].freeze
-      DEFAULT_ATTRIBUTES = { container: {}, materials: {} }.freeze
+      DEFAULT_ATTRIBUTES = { materials: {} }.freeze
 
       attr_accessor(*ATTRIBUTES)
       attr_reader :aker_job_id, :model
@@ -20,17 +20,13 @@ module Aker
       end
 
       def initialize(params = {})
+        @container_params = params[:container].to_h.with_indifferent_access
         super(DEFAULT_ATTRIBUTES.merge(params))
-
         @aker_job_id = job_id
       end
 
-      def container=(container)
-        @container = create_container(container)
-      end
-
       def materials=(materials)
-        @materials = create_materials(materials)
+        @materials = build_materials(materials)
       end
 
       ##
@@ -68,16 +64,19 @@ module Aker
         end
       end
 
-      def create_materials(materials)
+      def build_materials(materials)
         (materials || []).collect do |material|
           indifferent_material = material.to_h.with_indifferent_access
-          Sample.find_by(name: indifferent_material[:_id]) || Aker::Factories::Material.new(indifferent_material).tap { |m| m.container=@container}
+          binding.pry
+          Sample.find_by(name: indifferent_material[:_id]) ||
+          Aker::Factories::Material.new(indifferent_material).tap do |m|
+            m.container=build_container(m, indifferent_material[:address])
+         end
         end
       end
 
-      def create_container(container)
-        indifferent_container = container.to_h.with_indifferent_access
-        @container = Aker::Factories::Container.new(indifferent_container)
+      def build_container(material, address)
+        Aker::Factories::Container.new(@container_params.merge({address: address}))
       end
 
       def check_materials

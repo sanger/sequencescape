@@ -23,9 +23,7 @@ module Aker
 
       def create
         return unless valid?
-        @model = Aker::Container.find_or_create_by(barcode: barcode) do |c|
-          c.address = address
-        end
+        @model = Aker::Container.find_or_create_by(barcode: barcode, address: address)
       end
 
       def as_json(_options = {})
