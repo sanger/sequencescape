@@ -33,7 +33,7 @@ feature 'Sample manifest with tag sequences' do
       end
     end
 
-    context 'cgap foreign barcode replacement' do
+    context 'valid cgap foreign barcodes' do
       let(:download) { build(:test_cgap_download, columns: columns) }
 
       scenario 'upload' do
@@ -61,6 +61,30 @@ feature 'Sample manifest with tag sequences' do
         visit('sample_manifest_upload_with_tag_sequences/new')
         click_button('Upload manifest')
         expect(page).to have_content('No file attached')
+      end
+    end
+
+    context 'invalid for cgap barcodes' do
+      let(:download) { build(:test_cgap_download, columns: columns, validation_errors: [:library_type]) }
+
+      scenario 'validation errors' do
+        login_user(user)
+        visit('sample_manifest_upload_with_tag_sequences/new')
+        attach_file('File to upload', test_file)
+        click_button('Upload manifest')
+        expect(page).to have_content('The following error messages prevented the sample manifest from being uploaded')
+      end
+    end
+
+    context 'invalid for duplicate cgap barcodes' do
+      let(:download) { build(:test_cgap_download, columns: columns, validation_errors: [:sample_tube_id_duplicates]) }
+
+      scenario 'validation errors' do
+        login_user(user)
+        visit('sample_manifest_upload_with_tag_sequences/new')
+        attach_file('File to upload', test_file)
+        click_button('Upload manifest')
+        expect(page).to have_content('The following error messages prevented the sample manifest from being uploaded')
       end
     end
   end

@@ -60,8 +60,12 @@ module SampleManifestExcel
             end
             dynamic_attributes[i][:sanger_sample_id] = sample.sanger_sample_id
             if cgap
-              row_num = (i - first_row) + 1
-              dynamic_attributes[i][:sanger_tube_id] = "CGAP-#{row_num.to_s(16).upcase}#{(row_num % 16).to_s(16).upcase}"
+              tube_row_num = (i - first_row) + 1
+              dynamic_attributes[i][:sanger_tube_id] = if validation_errors.include?(:sample_tube_id_duplicates) && tube_row_num < 3
+                                                         'CGAP-99999'
+                                                       else
+                                                         "CGAP-#{tube_row_num.to_s(16).upcase}#{(tube_row_num % 16).to_s(16).upcase}"
+                                                       end
             else
               dynamic_attributes[i][:sanger_tube_id] = asset.human_barcode
             end

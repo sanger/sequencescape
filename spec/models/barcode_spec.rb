@@ -214,7 +214,7 @@ describe Barcode, type: :model do
   end
 
   context 'foreign - CGAP format' do
-    let(:barcode) { build :cgap_barcode, barcode: barcode_value, format: barcode_format }
+    let(:barcode) { build :cgap, barcode: barcode_value, format: barcode_format }
 
     let(:barcode_value) { 'CGAP-ABC123' }
     let(:barcode_format) { 'cgap' }

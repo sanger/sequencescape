@@ -110,9 +110,35 @@ RSpec.describe SampleManifestExcel::SpecialisedField, type: :model, sample_manif
   end
 
   describe 'Sanger Tube Id' do
-    it 'will not be valid unless the value matches the sanger human barcode' do
-      expect(SampleManifestExcel::SpecialisedField::SangerTubeId.new(value: sample.assets.first.human_barcode, sample: sample)).to be_valid
-      expect(SampleManifestExcel::SpecialisedField::SangerTubeId.new(value: '1234', sample: sample)).to_not be_valid
+    let!(:sample_1) { create(:sample) }
+    let!(:sample_1_tube) { create(:sample_tube_with_sanger_sample_id, sample: sample_1) }
+
+    it 'will be valid if the value matches the sanger human barcode' do
+      expect(SampleManifestExcel::SpecialisedField::SangerTubeId.new(value: sample_1_tube.human_barcode, sample: sample_1)).to be_valid
+      expect(SampleManifestExcel::SpecialisedField::SangerTubeId.new(value: '1234', sample: sample_1)).to_not be_valid
+    end
+
+    describe 'with foreign barcodes' do
+      let!(:sample_2) { create(:sample) }
+      let!(:sample_tube_2) { create(:sample_tube_with_sanger_sample_id, sample: sample_2) }
+
+      it 'will be valid if the value matches an unused cgap foreign barcode' do
+        expect(SampleManifestExcel::SpecialisedField::SangerTubeId.new(value: 'CGAP-ABC001', sample: sample_1)).to be_valid
+      end
+
+      it 'will not be valid if the value matches an already used cgap foreign barcode' do
+        sample_1_tube.barcodes << Barcode.new(format: :cgap, barcode: 'CGAP-ABC011')
+        expect(SampleManifestExcel::SpecialisedField::SangerTubeId.new(value: 'CGAP-ABC011', sample: sample_2)).to_not be_valid
+      end
+
+      it 'will be valid to overwrite a foreign barcode with a new foreign barcode of the same format' do
+        sample_1_tube.barcodes << Barcode.new(format: :cgap, barcode: 'CGAP-ABC011')
+        field = SampleManifestExcel::SpecialisedField::SangerTubeId.new(value: 'CGAP-ABC022', sample: sample_1)
+        expect(field).to be_valid
+        expect(field.update(aliquot: sample_1_tube.aliquots.first)).to be_present
+        expect(sample_1_tube.barcodes.find { |item| item[:barcode] == 'CGAP-ABC011' }).to be_nil
+        expect(sample_1_tube.barcodes.find { |item| item[:barcode] == 'CGAP-ABC022' }).to_not be_nil
+      end
     end
   end
 

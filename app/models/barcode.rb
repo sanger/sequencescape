@@ -23,7 +23,7 @@ class Barcode < ApplicationRecord
   # Caution! Do not adjust the index of existing formats.
   enum format: [:sanger_ean13, :infinium, :fluidigm, :external, :cgap]
 
-  FOREIGN_BARCODE_FORMATS = %i[cgap]
+  FOREIGN_BARCODE_FORMATS = %i[cgap].freeze
 
   validate :barcode_valid?
 
@@ -54,6 +54,11 @@ class Barcode < ApplicationRecord
       return cur_format if bc.handler.valid?
     end
     nil
+  end
+
+  def self.unique_for_format?(barcode_format, search_barcode)
+    return unless barcode_format.present? && search_barcode.present?
+    Barcode.find_by(format: barcode_format, barcode: search_barcode)
   end
 
   def handler
