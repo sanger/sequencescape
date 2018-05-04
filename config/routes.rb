@@ -21,6 +21,8 @@ Sequencescape::Application.routes.draw do
       jsonapi_resources :work_orders
       jsonapi_resources :studies
       jsonapi_resources :projects
+      jsonapi_resources :qc_results
+      jsonapi_resources :assets
     end
   end
 
