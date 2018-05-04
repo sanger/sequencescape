@@ -31,9 +31,9 @@
     <dt>Actions:</dt>
     <dd>
       <div class="btn-group">
-        <div class="pull-left"><%= button_to 'Complete', complete_aker_job_path(job), class: 'btn btn-danger' %></div>
+        <div class="pull-left"><%= button_to 'Complete', complete_aker_job_path(job.aker_job_id), class: 'btn btn-danger' %></div>
         &nbsp;
-        <div class="pull-right"><%= button_to 'Cancel', cancel_aker_job_path(job), class: 'btn btn-danger' %></div>
+        <div class="pull-right"><%= button_to 'Cancel', cancel_aker_job_path(job.aker_job_id), class: 'btn btn-danger' %></div>
       </div>
     </dd>
   </li>

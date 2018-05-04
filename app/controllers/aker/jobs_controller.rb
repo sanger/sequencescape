@@ -6,18 +6,18 @@ module Aker
       @jobs = Aker::Job.paginate(page: params[:page], per_page: 10).order(created_at: :desc)
     end
 
-    # def show
-    #   @job = current_resource
-    #   recover_from_connection_refused do
-    #     @aker_job = JSON.parse(RestClient::Request.execute(
-    #       verify_ssl: false,
-    #       method: :get,
-    #       url: "#{Rails.configuration.aker['urls']['work_orders']}/jobs/#{@job.aker_job_id}",
-    #       headers: { content_type: :json, Accept: :json },
-    #       proxy: nil
-    #     ).body)['job']
-    #   end
-    # end
+    def show
+      @job = current_resource
+      recover_from_connection_refused do
+        @aker_job = JSON.parse(RestClient::Request.execute(
+          verify_ssl: false,
+          method: :get,
+          url: "#{Rails.configuration.aker['urls']['work_orders']}/jobs/#{@job.aker_job_id}",
+          headers: { content_type: :json, Accept: :json },
+          proxy: nil
+        ).body)['job']
+      end
+    end
 
     def start
       job = current_resource
@@ -29,7 +29,6 @@ module Aker
           headers: { content_type: :json },
           proxy: nil
         )
-        flash[:notice] = JSON.parse(response.body)['message']
 
         render json: response.body, status: :ok
       end
@@ -46,7 +45,6 @@ module Aker
           headers: { content_type: :json },
           proxy: nil
         )
-        flash[:notice] = JSON.parse(response.body)['message']
 
         render json: response.body, status: :ok
       end
@@ -63,7 +61,6 @@ module Aker
           headers: { content_type: :json },
           proxy: nil
         )
-        flash[:notice] = JSON.parse(response.body)['message']
 
         render json: response.body, status: :ok
       end

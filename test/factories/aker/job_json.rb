@@ -7,7 +7,6 @@ FactoryGirl.define do
     transient do
       study { create(:study) }
     end
-
     sequence(:job_id) { |n| n }
     sequence(:work_order_id) { |n| n }
     product_name '30x Human Whole Genome Shotgun (WGS) with PCR'

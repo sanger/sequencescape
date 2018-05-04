@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe 'Jobs', type: :feature, aker: true do
   let!(:jobs) { create_list(:aker_job_with_samples, 5) }
   let!(:job) { jobs.first }
-  let(:get_url) { "#{Rails.configuration.aker['urls']['work_orders']}/jobs/#{job.aker_id}" }
+  let(:get_url) { "#{Rails.configuration.aker['urls']['work_orders']}/jobs/#{job.aker_job_id}" }
   let(:request) { RestClient::Request.new(method: :get, url: get_url) }
   let(:job_json) do
     File.read(File.join('spec', 'data', 'aker', 'job.json'))
@@ -23,7 +23,7 @@ RSpec.describe 'Jobs', type: :feature, aker: true do
       end
 
       scenario 'view a job' do
-        visit aker_job_path(job)
+        visit aker_job_path(job.aker_job_id)
         expect(page).to have_content('Jobs')
         json = JSON.parse(job_json)['job']
         within('.job') do
@@ -44,7 +44,7 @@ RSpec.describe 'Jobs', type: :feature, aker: true do
 
       scenario 'complete' do
         allow(RestClient::Request).to receive(:execute)
-          .with(verify_ssl: false, method: :post,
+          .with(verify_ssl: false, method: :put,
                 url: "#{get_url}/complete", payload: {
                   job: { job_id: job.aker_job_id,
                                 comment: nil }
@@ -66,7 +66,7 @@ RSpec.describe 'Jobs', type: :feature, aker: true do
 
       scenario 'cancel' do
         allow(RestClient::Request).to receive(:execute)
-          .with(verify_ssl: false, method: :post,
+          .with(verify_ssl: false, method: :put,
                 url: "#{get_url}/cancel", payload: {
                   job: { job_id: job.aker_job_id,
                                 comment: nil }
@@ -88,7 +88,7 @@ RSpec.describe 'Jobs', type: :feature, aker: true do
 
   context 'completed or cancelled' do
     scenario 'view' do
-      visit aker_job_path(job)
+      visit aker_job_path(job.aker_job_id)
       expect(page).to_not have_button('Complete')
       expect(page).to_not have_button('Cancel')
     end

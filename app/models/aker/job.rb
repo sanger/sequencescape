@@ -9,7 +9,7 @@ module Aker
       {
         job: {
           id: id,
-          aker_job_id: aker_id
+          aker_job_id: aker_job_id
         }
       }
     end
