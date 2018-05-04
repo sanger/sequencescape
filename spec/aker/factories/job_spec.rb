@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Aker::Factories::Job, type: :model, aker: true do
-  let(:params) { build(:aker_job_json).with_indifferent_access }
+  let(:params) { build(:aker_job_json).to_h.with_indifferent_access }
 
   it 'is valid with aker job id, data_release_uuid and materials' do
     job = Aker::Factories::Job.new(params)
