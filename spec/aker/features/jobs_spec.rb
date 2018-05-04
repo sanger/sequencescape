@@ -36,61 +36,10 @@ RSpec.describe 'Jobs', type: :feature, aker: true do
           expect(page).to have_content(json['comment'])
           expect(page).to have_content(json['desired_date'])
           expect(page).to have_content(json['status'])
-          expect(page).to have_button('Complete')
-          expect(page).to have_button('Cancel')
           expect(page).to have_css('.sample', count: job.samples.count)
         end
       end
 
-      scenario 'complete' do
-        allow(RestClient::Request).to receive(:execute)
-          .with(verify_ssl: false, method: :put,
-                url: "#{get_url}/complete", payload: {
-                  job: { job_id: job.aker_job_id,
-                                comment: nil }
-                }.to_json,
-                headers: { content_type: :json },
-                proxy: nil).and_return(RestClient::Response
-              .create(job_json,
-                      Net::HTTPResponse.new('1.1', 200, ''), request))
-
-        visit aker_jobs_path
-        within("#aker_job_#{job.id}") do
-          click_link "Job #{job.aker_job_id}"
-        end
-        click_button 'Complete'
-        expect(page).to have_content(job.aker_job_id)
-      end
-
-      scenario 'complete new or updated materials'
-
-      scenario 'cancel' do
-        allow(RestClient::Request).to receive(:execute)
-          .with(verify_ssl: false, method: :put,
-                url: "#{get_url}/cancel", payload: {
-                  job: { job_id: job.aker_job_id,
-                                comment: nil }
-                }.to_json,
-                headers: { content_type: :json },
-                proxy: nil).and_return(RestClient::Response
-                .create(job_json,
-                        Net::HTTPResponse.new('1.1', 200, ''), request))
-
-        visit aker_jobs_path
-        within("#aker_job_#{job.id}") do
-          click_link "Job #{job.aker_job_id}"
-        end
-        click_button 'Cancel'
-        expect(page).to have_content(job.aker_job_id)
-      end
-    end
-  end
-
-  context 'completed or cancelled' do
-    scenario 'view' do
-      visit aker_job_path(job.aker_job_id)
-      expect(page).to_not have_button('Complete')
-      expect(page).to_not have_button('Cancel')
     end
   end
 end

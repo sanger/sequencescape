@@ -26,19 +26,6 @@
   <li class="list-group-item">
     <dt>Status:</dt> <dd><span class="badge badge-secondary"><%= @aker_job['status'] %></span></dd>
   </li>
-<% unless (aker_job['status']=='completed') || (aker_job['status']=='cancelled') %>
-  <li class="list-group-item">
-    <dt>Actions:</dt>
-    <dd>
-      <div class="btn-group">
-        <div class="pull-left"><%= button_to 'Complete', complete_aker_job_path(job.aker_job_id), class: 'btn btn-danger' %></div>
-        &nbsp;
-        <div class="pull-right"><%= button_to 'Cancel', cancel_aker_job_path(job.aker_job_id), class: 'btn btn-danger' %></div>
-      </div>
-    </dd>
-  </li>
-<% end %>
-
   <li class="list-group-item">
     <dt>Samples:</dt>
     <dd>
