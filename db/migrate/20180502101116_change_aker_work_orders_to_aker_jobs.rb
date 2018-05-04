@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# Changing work orders to jobs
 class ChangeAkerWorkOrdersToAkerJobs < ActiveRecord::Migration[5.1]
   def change
     rename_table :aker_work_orders, :aker_jobs

@@ -39,7 +39,6 @@ RSpec.describe 'Jobs', type: :feature, aker: true do
           expect(page).to have_css('.sample', count: job.samples.count)
         end
       end
-
     end
   end
 end

@@ -1,4 +1,8 @@
+# frozen_string_literal: true
+
 module Aker
+  # Provide index and show actions to display jobs inside Sequencescapew, and start, complete and cancel
+  # endpoints to change the status of the jobs from the inbox application
   class JobsController < ApplicationController
     before_action :login_required, except: %i[start complete cancel show index]
 

@@ -22,9 +22,12 @@ FactoryGirl.define do
     comment 'Cook for 20 minutes.'
     desired_date '2017-08-01'
     container { build(:container_json) }
-    materials { [
+    materials do
+      [
         build(:material_json),
-        build(:material_json)] }
+        build(:material_json)
+      ]
+    end
 
     initialize_with { attributes.stringify_keys }
 

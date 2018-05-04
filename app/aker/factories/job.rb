@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Aker
   module Factories
     ##
@@ -68,14 +70,14 @@ module Aker
         (materials || []).collect do |material|
           indifferent_material = material.to_h.with_indifferent_access
           Sample.find_by(name: indifferent_material[:_id]) ||
-          Aker::Factories::Material.new(indifferent_material).tap do |m|
-            m.container=build_container(m, indifferent_material[:address])
-         end
+            Aker::Factories::Material.new(indifferent_material).tap do |m|
+              m.container = build_container(m, indifferent_material[:address])
+            end
         end
       end
 
-      def build_container(material, address)
-        Aker::Factories::Container.new(@container_params.merge({address: address}))
+      def build_container(_material, address)
+        Aker::Factories::Container.new(@container_params.merge(address: address))
       end
 
       def check_materials

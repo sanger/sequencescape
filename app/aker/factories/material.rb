@@ -70,7 +70,7 @@ module Aker
 
       def check_container
         if container.nil?
-          errors.add(:container, 'This material has no container') 
+          errors.add(:container, 'This material has no container')
           return
         end
         return if container.valid?
