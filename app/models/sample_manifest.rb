@@ -23,6 +23,11 @@ class SampleManifest < ApplicationRecord
   # 1) Subsequent serialization by the delayed job
   # 2) The addition of a 'too many errors' message
   LIMIT_ERROR_LENGTH = 50000
+  # In addition we truncate individual messages, this ensures that we don't
+  # inadvertently filter out ALL our errors if the first message is especially long.
+  # We don't re-use the figure above as that would prevent any display of subsequent
+  # messages, which probably indicate a different issue.
+  INDIVIDUAL_ERROR_LIMIT = LIMIT_ERROR_LENGTH / 10
 
   module Associations
     def self.included(base)
@@ -72,7 +77,9 @@ class SampleManifest < ApplicationRecord
   def truncate_errors
     if last_errors && last_errors.join.length > LIMIT_ERROR_LENGTH
 
-      full_last_errors = last_errors
+      # First we truncate individual error messages. This ensures that it the first message is already
+      # longer than out max limit, we still show something.
+      full_last_errors = last_errors.map {|error| error.truncate(INDIVIDUAL_ERROR_LIMIT) }
 
       removed_errors = 0
 
@@ -81,7 +88,7 @@ class SampleManifest < ApplicationRecord
         removed_errors += 1
       end
 
-      full_last_errors << "There were too many errors to record. #{removed_errors} additional errors are not shown."
+      full_last_errors << "There were too many errors to record. #{removed_errors} additional errors are not shown." if removed_errors > 0
 
       self.last_errors = full_last_errors
 

@@ -637,7 +637,9 @@ ActiveRecord::Schema.define(version: 20180502101116) do
     t.bigint "user_id", null: false
     t.string "name", null: false
     t.integer "report_type", null: false
-    t.string "barcodes"
+    t.string "location_barcode"
+    t.text "barcodes"
+    t.string "faculty_sponsor_ids"
     t.bigint "study_id"
     t.string "plate_purpose_ids"
     t.datetime "start_date"

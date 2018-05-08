@@ -325,14 +325,23 @@ class Plate < Asset
     ])
   }
 
-  def self.search_for_plates(study_id: nil, plate_purpose_ids: nil, start_date: nil, end_date: nil)
-    with_study_id(study_id)
-      .with_plate_purpose_ids(plate_purpose_ids)
-      .created_after(start_date)
-      .created_before(end_date)
+  def self.search_for_plates(params)
+    with_faculty_sponsor_ids(params[:faculty_sponsor_ids] || nil)
+      .with_study_id(params[:study_id] || nil)
+      .with_plate_purpose_ids(params[:plate_purpose_ids] || nil)
+      .created_on_or_after(params[:start_date] || nil)
+      .created_on_or_before(params[:end_date] || nil)
+      .with_scanned_ean13_barcodes(params[:barcodes] || nil)
       .where.not(barcode: nil)
       .distinct
   end
+
+  scope :with_faculty_sponsor_ids, ->(faculty_sponsor_ids) {
+    if faculty_sponsor_ids.present?
+      joins(studies: { study_metadata: :faculty_sponsor })
+        .where(faculty_sponsors: { id: faculty_sponsor_ids })
+    end
+  }
 
   scope :with_study_id, ->(study_id) {
     joins(:studies).where(studies: { id: study_id }) if study_id.present?
@@ -342,12 +351,35 @@ class Plate < Asset
     joins(:plate_purpose).where(plate_purposes: { id: plate_purpose_ids }) if plate_purpose_ids.present?
   }
 
-  scope :created_after, ->(date) {
+  scope :created_on_or_after, ->(date) {
     where('assets.created_at >= ?', date.midnight) if date.present?
   }
 
-  scope :created_before, ->(date) {
+  scope :created_on_or_before, ->(date) {
     where('assets.created_at <= ?', date.end_of_day) if date.present?
+  }
+
+  scope :with_scanned_ean13_barcodes, ->(barcodes) {
+    return if barcodes.blank?
+    queries = []
+    barcodes.flatten.map do |source_barcode|
+      case source_barcode.to_s
+      when /^\d{13}$/ # An EAN13 barcode
+        barcode_number = Barcode.number_to_human(source_barcode)
+        prefix_string  = Barcode.prefix_from_barcode(source_barcode)
+        barcode_prefix = BarcodePrefix.find_by(prefix: prefix_string)
+
+        unless barcode_number.nil? or prefix_string.nil? or barcode_prefix.nil?
+          queries << where(barcode: barcode_number, barcode_prefix_id: barcode_prefix.id)
+        end
+      end
+    end
+    # guard against nil case by returning none
+    return none if queries.blank?
+
+    # Here we chain together our various request scope queries using or, allowing us to retrieve them in a single query.
+    init_qry = queries.pop
+    asset_scope = queries.reduce(init_qry) { |scope, query| scope.or(query) }
   }
 
   def maps
