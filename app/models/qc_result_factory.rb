@@ -75,7 +75,9 @@ class QcResultFactory
 
     def save
       return false unless valid?
-      qc_result.save
+      if qc_result.save
+        broadcast_qc_result
+      end
     end
 
     private
@@ -90,6 +92,10 @@ class QcResultFactory
       qc_result.errors.each do |k, v|
         errors.add(k, v)
       end
+    end
+
+    def broadcast_qc_result
+      Messenger.new(target: qc_result, template: 'QcResultIO', root: 'qc_result').broadcast
     end
   end
 

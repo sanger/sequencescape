@@ -11,6 +11,7 @@ class Tube < Receptacle
   include Asset::Ownership::Unowned
   include Transfer::Associations
   include Transfer::State::TubeState
+  include Api::Messages::QcResultIO::TubeExtensions
 
   extend QcFile::Associations
   has_qc_files
