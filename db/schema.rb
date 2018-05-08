@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180403070751) do
+ActiveRecord::Schema.define(version: 20180418110057) do
 
   create_table "aker_containers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "barcode"
@@ -637,7 +637,9 @@ ActiveRecord::Schema.define(version: 20180403070751) do
     t.bigint "user_id", null: false
     t.string "name", null: false
     t.integer "report_type", null: false
-    t.string "barcodes"
+    t.string "location_barcode"
+    t.text "barcodes"
+    t.string "faculty_sponsor_ids"
     t.bigint "study_id"
     t.string "plate_purpose_ids"
     t.datetime "start_date"

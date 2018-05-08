@@ -111,6 +111,21 @@ FactoryGirl.define do
         end
       end
     end
+
+    factory :plate_with_fluidigm_barcode do
+      transient do
+        sample_count 8
+        well_factory :tagged_well
+      end
+
+      size 192
+
+      after(:create) do |plate, _evaluator|
+        plate.plate_metadata.update!(
+          fluidigm_barcode: (1000000000 + plate.id).to_s
+        )
+      end
+    end
   end
 
   # StripTubes are effectively thin plates
