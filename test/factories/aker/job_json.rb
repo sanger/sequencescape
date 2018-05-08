@@ -7,7 +7,6 @@ FactoryGirl.define do
     transient do
       study { create(:study) }
     end
-
     sequence(:job_id) { |n| n }
     sequence(:work_order_id) { |n| n }
     product_name '30x Human Whole Genome Shotgun (WGS) with PCR'
@@ -22,9 +21,13 @@ FactoryGirl.define do
     modules { ['module 1', 'module 2'] }
     comment 'Cook for 20 minutes.'
     desired_date '2017-08-01'
-    container { container }
-    materials { [build(:material_json).with_indifferent_access,
-        build(:material_json).with_indifferent_access] }
+    container { build(:container_json) }
+    materials do
+      [
+        build(:material_json),
+        build(:material_json)
+      ]
+    end
 
     initialize_with { attributes.stringify_keys }
 

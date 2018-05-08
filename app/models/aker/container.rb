@@ -1,4 +1,5 @@
 module Aker
+  # Phisical container for the biomaterial
   class Container < ApplicationRecord
     has_many :samples, dependent: :destroy
 

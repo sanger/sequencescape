@@ -9,7 +9,7 @@ FactoryGirl.define do
     donor_id 'd'
     phenotype 'p'
     common_name 'Mouse'
-    sequence(:address) {|n| "A:#{n}" }
+    sequence(:address) { |n| "A:#{n}" }
 
     initialize_with { attributes.stringify_keys }
   end

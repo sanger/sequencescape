@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Aker
   module Factories
     ##
@@ -20,7 +22,7 @@ module Aker
       end
 
       def initialize(params = {})
-        @container_params = params[:container].to_h.with_indifferent_access
+        @container_params = params.to_h.with_indifferent_access[:container]
         super(DEFAULT_ATTRIBUTES.merge(params))
         @aker_job_id = job_id
       end
@@ -67,16 +69,15 @@ module Aker
       def build_materials(materials)
         (materials || []).collect do |material|
           indifferent_material = material.to_h.with_indifferent_access
-          binding.pry
           Sample.find_by(name: indifferent_material[:_id]) ||
-          Aker::Factories::Material.new(indifferent_material).tap do |m|
-            m.container=build_container(m, indifferent_material[:address])
-         end
+            Aker::Factories::Material.new(indifferent_material).tap do |m|
+              m.container = build_container(m, indifferent_material[:address])
+            end
         end
       end
 
-      def build_container(material, address)
-        Aker::Factories::Container.new(@container_params.merge({address: address}))
+      def build_container(_material, address)
+        Aker::Factories::Container.new(@container_params.merge(address: address))
       end
 
       def check_materials

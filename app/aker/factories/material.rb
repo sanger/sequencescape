@@ -69,6 +69,10 @@ module Aker
       private
 
       def check_container
+        if container.nil?
+          errors.add(:container, 'This material has no container')
+          return
+        end
         return if container.valid?
         container.errors.each do |key, value|
           errors.add key, value

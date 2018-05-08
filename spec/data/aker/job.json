@@ -1,6 +1,6 @@
 {
-   "work_order":{
-      "work_order_id":1,
+   "job":{
+      "job_id":1,
       "product_name":"30x Human Whole Genome Shotgun (WGS) with PCR",
       "product_version":20170324,
       "product_uuid":"d0c6ea76-e5ef-4685-8c77-ec3699b0dddc",
@@ -16,10 +16,7 @@
             "donor_id":"d",
             "phenotype":"p",
             "common_name":"Mouse",
-            "container":{
-               "barcode":"AKER-PLATE-48",
-               "address":"A:1"
-            }
+            "address":"A:1"
          },
          {
             "_id":"678ac243-22d4-4857-953a-8cc58da5e056",
@@ -27,11 +24,12 @@
             "donor_id":"dp",
             "phenotype":"p",
             "common_name":"Mouse",
-            "container":{
-               "barcode":"AKER-TUBE-49"
-            }
+            "address":"B:1"
          }
       ],
+      "container": {
+         "barcode": "AKER-PLATE-48"
+      },
       "comment":"Cook for 20 minutes.",
       "desired_date":"2017-08-01"
    }

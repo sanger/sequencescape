@@ -12,14 +12,14 @@
 
 ActiveRecord::Schema.define(version: 20180502101116) do
 
-  create_table "aker_containers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "aker_containers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "barcode"
     t.string "address"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "aker_jobs", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "aker_jobs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "aker_job_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -845,8 +845,7 @@ ActiveRecord::Schema.define(version: 20180502101116) do
   create_table "plate_purpose_relationships", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.integer "parent_id"
     t.integer "child_id"
-    t.integer "transfer_request_type_id"
-    t.integer "transfer_request_class_name", default: 0, null: false
+    t.integer "transfer_request_type_id", null: false
   end
 
   create_table "plate_purposes", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -1226,7 +1225,7 @@ ActiveRecord::Schema.define(version: 20180502101116) do
     t.string "sti_type"
     t.integer "order_id"
     t.integer "request_purpose"
-    t.bigint "work_order_id"
+    t.integer "work_order_id"
     t.integer "billing_product_id"
     t.index ["asset_id"], name: "index_requests_on_asset_id"
     t.index ["billing_product_id"], name: "index_requests_on_billing_product_id"
@@ -1386,11 +1385,13 @@ ActiveRecord::Schema.define(version: 20180502101116) do
     t.boolean "consent_withdrawn", default: false, null: false
     t.integer "work_order_id"
     t.integer "container_id"
+    t.index ["container_id"], name: "index_samples_on_container_id"
     t.index ["created_at"], name: "index_samples_on_created_at"
     t.index ["name"], name: "index_samples_on_name"
     t.index ["sample_manifest_id"], name: "index_samples_on_sample_manifest_id"
     t.index ["sanger_sample_id"], name: "index_samples_on_sanger_sample_id"
     t.index ["updated_at"], name: "index_samples_on_updated_at"
+    t.index ["work_order_id"], name: "index_samples_on_work_order_id"
   end
 
   create_table "sanger_sample_ids", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -1863,15 +1864,14 @@ ActiveRecord::Schema.define(version: 20180502101116) do
     t.index ["work_completion_id"], name: "fk_rails_5ea64f1af2"
   end
 
-  create_table "work_order_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "work_order_types", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["name"], name: "index_work_order_types_on_name", unique: true
   end
 
-  create_table "work_orders", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.bigint "work_order_type_id", null: false
+  create_table "work_orders", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+    t.integer "work_order_type_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "state", null: false
