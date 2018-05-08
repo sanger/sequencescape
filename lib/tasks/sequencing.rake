@@ -59,7 +59,7 @@ def build_tasks_for(workflow)
       { kind: 'Text', sorter: 8, name: 'Pipette Carousel' },
       { kind: 'Text', sorter: 9, name: 'PhiX lot #' },
       { kind: 'Text', sorter: 10, name: 'PhiX %' },
-      { kind: 'Text', sorter: 11, name: 'Lane loading concentration (nM)' },
+      { kind: 'Text', sorter: 11, name: 'Lane loading concentration (pM)' },
       { kind: 'Text', sorter: 12, name: 'Comment' }
     ])
   end
