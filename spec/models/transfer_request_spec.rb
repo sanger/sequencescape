@@ -68,7 +68,6 @@ RSpec.describe TransferRequest, type: :model do
         expect(destination.aliquots.first.insert_size).to eq(library_request.insert_size)
         expect(destination.aliquots.first.primer_panel).to eq(library_request.primer_panel)
       end
-
     end
 
     context 'with a started outer request' do
