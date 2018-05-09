@@ -1,11 +1,12 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe Api::Messages::QcResultIO do
-
   subject { Api::Messages::QcResultIO.to_hash(qc_result) }
 
   let(:sample_tube) { create :sample_tube }
-  let(:expected_json) {
+  let(:expected_json) do
     { 'assay' => qc_result.assay,
       'value' => qc_result.value,
       'units' => qc_result.units,
@@ -15,9 +16,8 @@ describe Api::Messages::QcResultIO do
       'aliquots' => [{
         'id_library_lims' => nil,
         'sample_uuid' => qc_result.asset.aliquots.first.sample.uuid
-      }]
-    }
-  }
+      }] }
+  end
 
   context 'the qc_result asset is a well' do
     let(:aliquots) { create_list(:aliquot, 1, library: sample_tube) }
@@ -27,8 +27,7 @@ describe Api::Messages::QcResultIO do
     it 'generates a valid json' do
       actual = subject.as_json
       actual.delete('date')
-      expected_json.fetch('aliquots').first.merge!(
-        {'id_library_lims' => sample_tube.external_identifier})
+      expected_json.fetch('aliquots').first['id_library_lims'] = sample_tube.external_identifier
       expect(actual).to eq(expected_json)
     end
   end

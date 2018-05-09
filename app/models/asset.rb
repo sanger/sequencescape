@@ -13,7 +13,7 @@ class Asset < ApplicationRecord
   include AssetLink::Associations
   include SharedBehaviour::Named
   include Api::Messages::QcResultIO::AssetExtensions
-  
+
   # Key/value stores and attributes
   include ExternalProperties
   acts_as_descriptable :serialized

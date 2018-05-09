@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Api::Messages::QcResultIO < Api::Base
   module Extensions
     def assay
@@ -7,13 +9,12 @@ class Api::Messages::QcResultIO < Api::Base
 
   module AliquotExtensions
     def library_identifier
-      library.external_identifier unless library.nil?
+      library&.external_identifier
     end
   end
 
   module AssetExtensions
-    def labware_purpose
-    end
+    def labware_purpose; end
   end
 
   module WellExtensions
@@ -24,7 +25,7 @@ class Api::Messages::QcResultIO < Api::Base
 
   module TubeExtensions
     def labware_purpose
-      purpose.name unless purpose.nil?
+      purpose&.name
     end
   end
 

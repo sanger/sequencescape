@@ -75,9 +75,7 @@ class QcResultFactory
 
     def save
       return false unless valid?
-      if qc_result.save
-        broadcast_qc_result
-      end
+      broadcast_qc_result if qc_result.save
     end
 
     private
