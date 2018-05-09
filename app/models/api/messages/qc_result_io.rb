@@ -30,6 +30,12 @@ class Api::Messages::QcResultIO < Api::Base
 
   renders_model(::QcResult)
 
+  map_attribute_to_json_attribute(:assay)
+  map_attribute_to_json_attribute(:value)
+  map_attribute_to_json_attribute(:units)
+  map_attribute_to_json_attribute(:key, 'qc_type')
+  map_attribute_to_json_attribute(:updated_at, 'date')
+
   with_association(:asset) do
     map_attribute_to_json_attribute(:labware_purpose)
     map_attribute_to_json_attribute(:external_identifier, 'id_pool_lims')
@@ -40,9 +46,4 @@ class Api::Messages::QcResultIO < Api::Base
       end
     end
   end
-  map_attribute_to_json_attribute(:assay)
-  map_attribute_to_json_attribute(:value)
-  map_attribute_to_json_attribute(:units)
-  map_attribute_to_json_attribute(:key, 'qc_type')
-  map_attribute_to_json_attribute(:updated_at, 'date')
 end
