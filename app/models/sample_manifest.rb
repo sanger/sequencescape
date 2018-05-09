@@ -29,6 +29,10 @@ class SampleManifest < ApplicationRecord
   # messages, which probably indicate a different issue.
   INDIVIDUAL_ERROR_LIMIT = LIMIT_ERROR_LENGTH / 10
 
+  # Samples have a similar issue when generating update events
+  # This limit sets a very comfortable safety margin.
+  SAMPLES_PER_EVENT = 3000
+
   module Associations
     def self.included(base)
       base.has_many(:sample_manifests)
@@ -140,7 +144,11 @@ class SampleManifest < ApplicationRecord
   end
 
   def updated_broadcast_event(user_updating_manifest, updated_samples_ids)
-    BroadcastEvent::SampleManifestUpdated.create!(seed: self, user: user_updating_manifest, properties: { updated_samples_ids: updated_samples_ids })
+    # We chunk samples into groups of 3000 to avoid issues with the column size in broadcast_events.properties
+    # In practice we have 11 characters per sample with current id lengths. This allows for up to 21 characters
+    updated_samples_ids.each_slice(SAMPLES_PER_EVENT) do |chunked_sample_ids|
+      BroadcastEvent::SampleManifestUpdated.create!(seed: self, user: user_updating_manifest, properties: { updated_samples_ids: chunked_sample_ids })
+    end
   end
 
   private
