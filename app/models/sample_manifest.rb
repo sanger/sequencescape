@@ -79,7 +79,7 @@ class SampleManifest < ApplicationRecord
 
       # First we truncate individual error messages. This ensures that it the first message is already
       # longer than out max limit, we still show something.
-      full_last_errors = last_errors.map {|error| error.truncate(INDIVIDUAL_ERROR_LIMIT) }
+      full_last_errors = last_errors.map { |error| error.truncate(INDIVIDUAL_ERROR_LIMIT) }
 
       removed_errors = 0
 
