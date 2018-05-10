@@ -20,7 +20,7 @@ module SampleManifestExcel
         # if this tube's list of barcodes already contains a foreign barcode with the same format then update the existing one
         foreign_barcode = attributes[:aliquot].receptacle.barcodes.find { |item| item[:format] == foreign_barcode_format.to_s }
         if foreign_barcode.present?
-          foreign_barcode.update(barcode: value)
+          foreign_barcode.update(barcode: value) unless foreign_barcode.barcode == value
         else
           attributes[:aliquot].receptacle.barcodes << Barcode.new(format: foreign_barcode_format, barcode: value)
         end

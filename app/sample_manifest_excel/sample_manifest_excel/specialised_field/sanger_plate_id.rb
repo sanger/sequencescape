@@ -11,13 +11,41 @@ module SampleManifestExcel
       include Base
       include ValueRequired
 
+      attr_reader :foreign_barcode_format
+
       validate :check_container
+
+      def update(attributes = {})
+        return unless valid? && attributes[:aliquot].present? && foreign_barcode_format.present?
+        # checking if the plate this well belongs to already has this foreign barcode set in its list of barcodes.
+        # or if it contains a foreign barcode with the same format, then update that existing one
+        foreign_barcode = attributes[:aliquot].receptacle.plate.barcodes.find { |item| item[:format] == foreign_barcode_format.to_s }
+        if foreign_barcode.present?
+          foreign_barcode.update(barcode: value) unless foreign_barcode.barcode == value
+        else
+          attributes[:aliquot].receptacle.plate.barcodes << Barcode.new(format: foreign_barcode_format, barcode: value)
+        end
+      end
 
       private
 
       def check_container
         return if value == sample.assets.first.human_barcode
-        errors.add(:sample, 'You can not move samples between plates or modify barcodes')
+        check_for_foreign_barcode
+      end
+
+      def check_for_foreign_barcode
+        @foreign_barcode_format = Barcode.matches_any_foreign_barcode_format?(value)
+        if foreign_barcode_format.present?
+          check_foreign_barcode_unique
+        else
+          errors.add(:sample, 'If you modify the sample container barcode it must be to a valid foreign barcode format')
+        end
+      end
+
+      def check_foreign_barcode_unique
+        return if Barcode.unique_for_format?(foreign_barcode_format, value).blank?
+        errors.add(:sample, 'The sample container foreign barcode is already in use.')
       end
     end
   end

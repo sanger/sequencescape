@@ -97,9 +97,34 @@ RSpec.describe SampleManifestExcel::SpecialisedField, type: :model, sample_manif
   end
 
   describe 'Sanger Plate Id' do
-    it 'will not be valid unless the value matches the sanger human barcode' do
-      expect(SampleManifestExcel::SpecialisedField::SangerPlateId.new(value: sample.wells.first.plate.human_barcode, sample: sample)).to be_valid
-      expect(SampleManifestExcel::SpecialisedField::SangerPlateId.new(value: '1234', sample: sample)).to_not be_valid
+    let!(:sample_1) { create(:sample_with_well) }
+    let!(:sample_1_plate) { sample_1.wells.first.plate }
+
+    it 'will be valid if the value matches the sanger human barcode' do
+      expect(SampleManifestExcel::SpecialisedField::SangerPlateId.new(value: sample_1_plate.human_barcode, sample: sample_1)).to be_valid
+      expect(SampleManifestExcel::SpecialisedField::SangerPlateId.new(value: '1234', sample: sample_1)).to_not be_valid
+    end
+
+    describe 'with foreign barcodes' do
+      let!(:sample_2) { create(:sample_with_well) }
+      
+      it 'will be valid if the value matches an unused cgap foreign barcode' do
+        expect(SampleManifestExcel::SpecialisedField::SangerPlateId.new(value: 'CGAP-ABC001', sample: sample_1)).to be_valid
+      end
+
+      it 'will not be valid if the value matches an already used cgap foreign barcode' do
+        sample_1_plate.barcodes << Barcode.new(format: :cgap, barcode: 'CGAP-ABC011')
+        expect(SampleManifestExcel::SpecialisedField::SangerPlateId.new(value: 'CGAP-ABC011', sample: sample_2)).to_not be_valid
+      end
+
+      it 'will be valid to overwrite a foreign barcode with a new foreign barcode of the same format' do
+        sample_1_plate.barcodes << Barcode.new(format: :cgap, barcode: 'CGAP-ABC011')
+        field = SampleManifestExcel::SpecialisedField::SangerPlateId.new(value: 'CGAP-ABC022', sample: sample_1)
+        expect(field).to be_valid
+        expect(field.update(aliquot: sample_1.wells.first.aliquots.first)).to be_present
+        expect(sample_1_plate.barcodes.find { |item| item[:barcode] == 'CGAP-ABC011' }).to be_nil
+        expect(sample_1_plate.barcodes.find { |item| item[:barcode] == 'CGAP-ABC022' }).to_not be_nil
+      end
     end
   end
 
