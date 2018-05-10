@@ -16,7 +16,7 @@ module LabelPrinter
       end
 
       def assets
-        _assets.each { |asset| asset.barcode! unless asset.barcode.present? }
+        _assets.each { |asset| asset.barcode! unless asset.barcode_number.present? }
       end
 
       def _assets

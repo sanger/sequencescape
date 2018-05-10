@@ -19,15 +19,13 @@ module Submission::DelayedJobBehaviour
     ActiveRecord::Base.transaction do
       finalize_build!
     end
-  rescue Submission::ProjectValidation::Error => project_exception
-    fail_set_message_and_save(project_exception.message)
   rescue ActiveRecord::StatementInvalid => sql_exception
     # If an SQL problems occurs, it's more likely that's it's
     # a one shot one, e.g. timeout , deadlock etc ...
     # So we don't want the submission to fail but the delayed job to
     # retry later. Therefore the DelayedJob should fail
     raise sql_exception
-  rescue ActiveRecord::RecordInvalid => exception
+  rescue ActiveRecord::RecordInvalid, Submission::ProjectValidation::Error => exception
     fail_set_message_and_save(exception.message)
   rescue => exception
     fail_set_message_and_save("#{exception.message}\n#{exception.backtrace.join("\n")}")

@@ -5,8 +5,8 @@
 # Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.%>
 
 <tr class="<%= cycle("rowodd", "roweven") %>">
-  <td ><%= link_to(h(asset.display_name), asset_url(asset), target: "_blank") %></td>
-  <td><%= asset.respond_to?(:sanger_human_barcode) ? asset.sanger_human_barcode : '' %></td>
+  <td><%= link_to(h(asset.display_name), asset_url(asset), target: "_blank") %></td>
+  <td><%= asset.respond_to?(:human_barcode) ? asset.human_barcode : '' %></td>
   <td colspan="3">
     <% unless asset.requests.empty? %>
       <table border="0" cellpadding="3" cellspacing="0" width="100%">

@@ -240,7 +240,7 @@ namespace :uat do
           plate.wells.each { |w|
             w.aliquots.create!(
               sample: Sample.create!(
-                name: "sample_in_#{w.plate.sanger_human_barcode}#{w.map.description}",
+                name: "sample_in_#{w.plate.human_barcode}#{w.map.description}",
                 studies: [study],
                 sample_metadata_attributes: {
                   sample_ebi_accession_number: 'XXX',
@@ -250,17 +250,17 @@ namespace :uat do
               study: study
             )
           }
-          puts "Stock: #{plate.ean13_barcode}-#{plate.sanger_human_barcode}"
+          puts "Stock: #{plate.ean13_barcode}-#{plate.human_barcode}"
         end
         (1..4).each do |i|
           child = Purpose.find_by(name: 'Cherrypicked').create!(barcode: i + (10 * study.id))
           child.wells.each { |w| w.aliquots << stock.wells.located_at(w.map_description).first.aliquots.first.clone }
-          puts "Cherrypicked: #{child.ean13_barcode}-#{child.sanger_human_barcode}"
+          puts "Cherrypicked: #{child.ean13_barcode}-#{child.human_barcode}"
         end
         (1..4).each do |i|
           child = Purpose.find_by(name: 'ILC Stock').create!(barcode: i + 4 + (10 * study.id))
           child.wells.each { |w| w.aliquots << stock.wells.located_at(w.map_description).first.aliquots.first.clone }
-          puts "ILC Stock: #{child.ean13_barcode}-#{child.sanger_human_barcode}"
+          puts "ILC Stock: #{child.ean13_barcode}-#{child.human_barcode}"
         end
       end
       user = User.last

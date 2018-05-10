@@ -33,6 +33,6 @@ RSpec.describe Api::V2::ReceptacleResource, type: :resource do
   # Add tests for any custom methods you've added.
   # describe '#labware_barcode' do
   #   subject { resource.labware_barcode }
-  #   it { is_expected.to eq('ean13_barcode' => '', 'sanger_human_barcode' => '') }
+  #   it { is_expected.to eq('ean13_barcode' => '', 'human_barcode' => '') }
   # end
 end

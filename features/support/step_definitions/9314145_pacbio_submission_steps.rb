@@ -27,7 +27,7 @@ Given /^I have a PacBio submission$/ do
     study: study,
     project: project,
     user: User.last,
-    assets: Plate.find_by(barcode: 1234567).wells.all,
+    assets: Plate.find_from_barcode('DN1234567').wells.all,
     request_options: { :multiplier => { '1' => '1', '3' => '1' }, 'insert_size' => '500', 'sequencing_type' => 'Standard' }
   )
   step('1 pending delayed jobs are processed')
@@ -38,9 +38,10 @@ Then /^I should have (\d+) PacBioSequencingRequests$/ do |number_of_requests|
 end
 
 Given /^I have a plate for PacBio$/ do
-  plate = PlatePurpose.stock_plate_purpose.create!(:without_wells, barcode: 1234567) do |plate|
-    plate.wells.build(map: Map.find_by(asset_size: 96, description: 'A1'), aliquots: SampleTube.find_by(barcode: 111).aliquots.map(&:dup))
-    plate.wells.build(map: Map.find_by(asset_size: 96, description: 'B1'), aliquots: SampleTube.find_by(barcode: 222).aliquots.map(&:dup)) if SampleTube.find_by(barcode: 222).present?
+  plate = FactoryGirl.create(:plate, well_count: 2, barcode: 1234567)
+  plate.wells.each do |well|
+    sample = FactoryGirl.create(:sample, name: "Sample_#{well.map_description}")
+    well.aliquots << FactoryGirl.create(:untagged_aliquot, sample: sample)
   end
   AssetGroup.create!(name: 'PacBio group', study: Study.find_by(name: 'Test study')).assets << plate.wells
 end
@@ -56,31 +57,22 @@ Given /^I have a PacBio Library Prep batch$/ do
   step('I am on the show page for pipeline "PacBio Library Prep"')
   step('I check "Select DN1234567T for batch"')
   step('I press the first "Submit"')
-  step('Well "1234567":"A1" has a PacBioLibraryTube "333"')
-  step('Well "1234567":"B1" has a PacBioLibraryTube "444"')
-end
-
-Given /^SampleTube "([^\"]*)" has a PacBioLibraryTube "([^\"]*)"$/ do |sample_tube_barcode, library_tube_barcode|
-  sample_tube = SampleTube.find_by(barcode: sample_tube_barcode)
-  request = Request.find_by(asset_id: sample_tube.id)
-  request.target_asset.update_attributes!(barcode: library_tube_barcode)
+  step('Well "DN1234567":"A1" has a PacBioLibraryTube "NT333U"')
+  step('Well "DN1234567":"B1" has a PacBioLibraryTube "NT444D"')
 end
 
 Given /^Well "([^\"]*)":"([^"]*)" has a PacBioLibraryTube "([^"]*)"$/ do |plate_barcode, well, library_tube_barcode|
-  well = Plate.find_by(barcode: plate_barcode).wells.located_at(well).first
+  well = Plate.find_from_barcode(plate_barcode).wells.located_at(well).first
   request = Request.find_by(asset_id: well.id)
-  request.target_asset.update_attributes!(barcode: library_tube_barcode, name: well.display_name)
+  tube = request.target_asset
+  tube.update_attributes!(name: well.display_name)
+  tube.primary_barcode.update!(barcode: library_tube_barcode)
 end
 
 Given /^I have a fast PacBio sequencing batch$/ do
-  step('I have a sample tube "111" in study "Test study" in asset group "Test study group"')
-  step('I have a sample tube "222" in study "Test study" in asset group "Test study group"')
-  step('the sample tubes are part of the study')
   step('I have a PacBio submission')
-  library_1 = PacBioLibraryTube.create!(barcode: '333', aliquots: SampleTube.find_by(barcode: 111).aliquots.map(&:dup))
-  library_1.pac_bio_library_tube_metadata.update_attributes!(prep_kit_barcode: '999', smrt_cells_available: 3)
-  library_2 = PacBioLibraryTube.create!(barcode: '444', aliquots: SampleTube.find_by(barcode: 222).aliquots.map(&:dup))
-  library_2.pac_bio_library_tube_metadata.update_attributes!(prep_kit_barcode: '999', smrt_cells_available: 1)
+  library_1 = FactoryGirl.create :pac_bio_library_tube, smrt_cells_available: 3, barcode: '333'
+  library_2 = FactoryGirl.create :pac_bio_library_tube, barcode: '444'
   PacBioSequencingRequest.first.update_attributes!(asset: library_1)
   PacBioSequencingRequest.last.update_attributes!(asset: library_2)
   step('I am on the show page for pipeline "PacBio Sequencing"')
@@ -97,8 +89,8 @@ Given /^I have a PacBio sequencing batch$/ do
   step('I fill in "DNA Template Prep Kit Box Barcode" with "999"')
   step('I press "Next step"')
   step('I press "Next step"')
-  step('I select "Pass" from "QC PacBioLibraryTube 333"')
-  step('I select "Pass" from "QC PacBioLibraryTube 444"')
+  step('I select "Pass" from "QC PacBioLibraryTube NT333U"')
+  step('I select "Pass" from "QC PacBioLibraryTube NT444D"')
   step('I press "Next step"')
   step('I press "Release this batch"')
   step('I am on the show page for pipeline "PacBio Sequencing"')
@@ -106,32 +98,31 @@ Given /^I have a PacBio sequencing batch$/ do
   step('I check the invisible "Select Request 0"')
   step('I check the invisible "Select Request 1"')
   step('I press the first "Submit"')
-  step('the sample tubes are part of the study')
 end
 
 Given /^the sample tubes are part of the study$/ do
-  sample_tube = SampleTube.find_by(barcode: 111)
+  sample_tube = SampleTube.find_from_barcode('NT111')
   sample_tube.primary_aliquot.sample.sample_metadata.update_attributes!(sample_common_name: 'Homo Sapien', sample_taxon_id: 9606)
   Study.find_by(name: 'Test study').samples << sample_tube.primary_aliquot.sample
 
-  sample_tube = SampleTube.find_by(barcode: 222)
+  sample_tube = SampleTube.find_from_barcode('NT222')
   sample_tube.primary_aliquot.sample.sample_metadata.update_attributes!(sample_common_name: 'Flu', sample_taxon_id: 123, sample_strain_att: 'H1N1')
   Study.find_by(name: 'Test study').samples << sample_tube.primary_aliquot.sample
 end
 
 Given /^sample tube "([^"]*)" is part of study "([^"]*)"$/ do |barcode, study_name|
-  sample_tube = SampleTube.find_by(barcode: barcode)
+  sample_tube = SampleTube.find_from_barcode("NT#{barcode}")
   Study.find_by(name: study_name).samples << sample_tube.primary_aliquot.sample
 end
 
 Then /^(\d+) PacBioSequencingRequests for "([^"]*)" should be "([^"]*)"$/ do |number_of_requests, asset_barcode, state|
-  library_tube = PacBioLibraryTube.find_by(barcode: asset_barcode)
+  library_tube = PacBioLibraryTube.find_from_barcode(asset_barcode)
   assert_equal number_of_requests.to_i, PacBioSequencingRequest.where(asset_id: library_tube.id, state: state).count
 end
 
 Then /^the PacBioSamplePrepRequests for "([^"]*)" should be "([^"]*)"$/ do |asset_barcode, state|
   plate_barcode, location = asset_barcode.split(':')
-  well = Plate.find_by(barcode: plate_barcode.gsub(/[A-Z]/, '')).wells.located_at(location).first
+  well = Plate.find_from_barcode(plate_barcode).wells.located_at(location).first
   assert_equal 1, PacBioSamplePrepRequest.where(asset_id: well.id, state: state).count
 end
 
@@ -150,13 +141,13 @@ Then /^the PacBio manifest for the last batch should look like:$/ do |expected_r
 end
 
 Given /^the UUID for well "([^"]*)" on plate "([^"]*)" is "([^"]*)"$/ do |well_position, plate_barcode, uuid|
-  plate = Plate.find_by(barcode: plate_barcode)
+  plate = Plate.find_from_barcode(plate_barcode)
   well = plate.find_well_by_name(well_position)
   step(%Q{the UUID for the well with ID #{well.id} is "#{uuid}"})
 end
 
 Given /^the UUID for Library "([^"]*)" is "([^"]*)"$/ do |barcode, uuid|
-  step(%Q{the UUID for the asset with ID #{Asset.find_by(barcode: barcode).id} is "#{uuid}"})
+  step(%Q{the UUID for the asset with ID #{Asset.find_from_barcode(barcode).id} is "#{uuid}"})
 end
 
 Then /^the PacBio sample prep worksheet should look like:$/ do |expected_results_table|
@@ -178,7 +169,7 @@ Given /^I have progressed to the Reference Sequence task$/ do
 end
 
 Then /^the PacBioLibraryTube "(.*?)" should have (\d+) SMRTcells$/ do |barcode, cells|
-  assert_equal PacBioLibraryTube.find_by(barcode: barcode).pac_bio_library_tube_metadata.smrt_cells_available || 0, cells.to_i
+  assert_equal PacBioLibraryTube.find_from_barcode(barcode).pac_bio_library_tube_metadata.smrt_cells_available || 0, cells.to_i
 end
 
 Given /^the reference genome "([^"]*)" exists$/ do |name|

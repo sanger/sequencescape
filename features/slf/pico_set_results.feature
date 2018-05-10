@@ -6,7 +6,6 @@ Feature: Upload Pico Green concentration results from the Pico Green application
     And the "96 Well Plate" barcode printer "xyz" exists
     And the plate barcode webservice returns "1234567"
     Given all of this is happening at exactly "14-Feb-2011 23:00:00+01:00"
-    Given a plate with purpose "Pico Standard" and barcode "1234567" exists
 
   @qc_event @study_report @qc_study_report
   Scenario: upload concentration results from the pico application

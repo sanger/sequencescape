@@ -32,33 +32,33 @@ Given /^the plate with barcode "([^\"]+)" has events:$/ do |barcode, events_tabl
 end
 
 Given /^plate "([^"]*)" has "([^"]*)" wells$/ do |plate_barcode, number_of_wells|
-  plate = Plate.find_by(barcode: plate_barcode)
+  plate = Plate.find_from_barcode('DN' + plate_barcode)
   1.upto(number_of_wells.to_i) do |i|
     Well.create!(plate: plate, map_id: i)
   end
 end
 
 Given /^plate "([^"]*)" has "([^"]*)" wells with samples$/ do |plate_barcode, number_of_wells|
-  plate = Plate.find_by(barcode: plate_barcode)
+  plate = Plate.find_from_barcode('DN' + plate_barcode)
   plate.wells = Array.new(number_of_wells.to_i) do |i|
     FactoryGirl.create(:untagged_well, map_id: i + 1)
   end
 end
 
 Then /^plate with barcode "([^"]*)" should exist$/ do |plate_barcode|
-  plate = Plate.find_from_machine_barcode(plate_barcode)
+  plate = Plate.find_from_barcode(plate_barcode)
   assert_not_nil plate
 end
 
 Then /^plate with barcode "([^"]*)" is part of study "([^"]*)"$/ do |plate_barcode, study_name|
-  plate = Plate.find_from_machine_barcode(plate_barcode)
+  plate = Plate.find_from_barcode(plate_barcode)
   assert_not_nil plate
   study = Study.find_by(name: study_name)
   assert_equal study, plate.study
 end
 
 Given /^plate "([^"]*)" has concentration and sequenom results$/ do |plate_barcode|
-  plate = Plate.find_from_machine_barcode(plate_barcode)
+  plate = Plate.find_from_barcode(plate_barcode)
   plate.wells.walk_in_column_major_order do |well, index|
     well.well_attribute.update_attributes!(
       pico_pass: 'Pass',
@@ -70,7 +70,7 @@ Given /^plate "([^"]*)" has concentration and sequenom results$/ do |plate_barco
 end
 
 Given /^plate "([^\"]*)" has concentration and volume results$/ do |plate_barcode|
-  plate = Plate.find_from_machine_barcode(plate_barcode)
+  plate = Plate.find_from_barcode(plate_barcode)
   plate.wells.each_with_index do |well, index|
     well.well_attribute.update_attributes!(
       current_volume: 10 + (index % 30),
@@ -80,7 +80,7 @@ Given /^plate "([^\"]*)" has concentration and volume results$/ do |plate_barcod
 end
 
 Given /^plate "([^\"]*)" has low concentration and volume results$/ do |plate_barcode|
-  plate = Plate.find_from_machine_barcode(plate_barcode)
+  plate = Plate.find_from_barcode(plate_barcode)
   plate.wells.each_with_index do |well, index|
     well.well_attribute.update_attributes!(
       current_volume: 10 + (index % 30),
@@ -90,7 +90,7 @@ Given /^plate "([^\"]*)" has low concentration and volume results$/ do |plate_ba
 end
 
 Given /^plate "([^\"]*)" has concentration and high volume results$/ do |plate_barcode|
-  plate = Plate.find_from_machine_barcode(plate_barcode)
+  plate = Plate.find_from_barcode(plate_barcode)
   plate.wells.each_with_index do |well, index|
     well.well_attribute.update_attributes!(
       current_volume: 30 + (index % 30),
@@ -100,13 +100,13 @@ Given /^plate "([^\"]*)" has concentration and high volume results$/ do |plate_b
 end
 
 Given /^plate with barcode "([^"]*)" has a well$/ do |plate_barcode|
-  plate = Plate.find_by(barcode: plate_barcode)
+  plate = Plate.find_from_barcode('DN' + plate_barcode)
   well  = FactoryGirl.create(:empty_well).tap { |well| well.aliquots.create!(sample: FactoryGirl.create(:sample, name: 'Sample1')) }
   plate.add_and_save_well(well, 0, 0)
 end
 
 Then /^plate "([^"]*)" should have a child plate of type "([^"]*)"$/ do |machine_barcode, plate_type|
-  plate = Asset.find_from_machine_barcode(machine_barcode)
+  plate = Asset.find_from_barcode(machine_barcode)
   assert plate
   assert plate.child.is_a?(plate_type.constantize)
 end
@@ -118,16 +118,15 @@ Then(/^output all plates for debugging purposes$/) do
   p Asset.all.to_a
 end
 
-Given /^a plate of type "([^"]*)" with barcode "([^"]*)" exists$/ do |plate_type, machine_barcode|
-  plate_type.constantize.create!(
-    barcode: Barcode.number_to_human(machine_barcode.to_s),
-    plate_purpose: "#{plate_type}Purpose".constantize.first
-  )
+Given /^a plate with barcode "([^"]*)" exists$/ do |machine_barcode|
+  bc = SBCF::SangerBarcode.from_machine(machine_barcode)
+  raise 'Currently only supports DN barcodes' unless bc.prefix.human == 'DN'
+  FactoryGirl.create :plate, barcode: bc.number
 end
 
 Given /^a "([^"]*)" plate purpose and of type "([^"]*)" with barcode "([^"]*)" exists$/ do |plate_purpose_name, plate_type, machine_barcode|
   plate_type.constantize.create!(
-    barcode: Barcode.number_to_human(machine_barcode.to_s),
+    sanger_barcode: { machine_barcode: machine_barcode },
     plate_purpose: PlatePurpose.find_by(name: plate_purpose_name),
     name: machine_barcode
   )
@@ -143,22 +142,21 @@ Given /^the plate with ID (\d+) has a plate purpose of "([^\"]+)"$/ do |id, name
 end
 
 Given /^a plate with purpose "([^"]*)" and barcode "([^"]*)" exists$/ do |plate_purpose_name, machine_barcode|
-  # Plate.create!(:barcode =>Barcode.number_to_human("#{machine_barcode}"), :plate_purpose => PlatePurpose.find_by_name(plate_purpose_name))
   FactoryGirl.create(:plate,
-                     barcode: Barcode.number_to_human(machine_barcode.to_s),
+                     sanger_barcode: { machine_barcode: machine_barcode },
                      plate_purpose: Purpose.find_by(name: plate_purpose_name))
 end
 
 Given /^a stock plate with barcode "([^"]*)" exists$/ do |machine_barcode|
   @stock_plate = FactoryGirl.create(:plate,
                                     name: 'A_TEST_STOCK_PLATE',
-                                    barcode: Barcode.number_to_human(machine_barcode.to_s),
+                                    sanger_barcode: { machine_barcode: machine_barcode },
                                     plate_purpose: PlatePurpose.find_by(name: 'Stock Plate'))
 end
 
 Then /^plate "([^"]*)" is the parent of plate "([^"]*)"$/ do |parent_plate_barcode, child_plate_barcode|
-  parent_plate = Asset.find_from_machine_barcode(parent_plate_barcode)
-  child_plate = Asset.find_from_machine_barcode(child_plate_barcode)
+  parent_plate = Asset.find_from_barcode(parent_plate_barcode)
+  child_plate = Asset.find_from_barcode(child_plate_barcode)
   assert parent_plate
   assert child_plate
   parent_plate.children << child_plate
@@ -175,11 +173,11 @@ Given /^well "([^"]*)" is holded by plate "([^"]*)"$/ do |well_uuid, plate_uuid|
   well = Uuid.find_by(external_id: well_uuid).resource
   plate = Uuid.find_by(external_id: plate_uuid).resource
   well.update_attributes!(plate: plate, map: Map.find_by(description: 'A1'))
-  plate.update_attributes!(barcode: 1)
+  step("the barcode for plate #{plate.id} is \"DN1S\"")
 end
 
-Then /^plate "([^"]*)" should have a purpose of "([^"]*)"$/ do |_plate_barcode, plate_purpose_name|
-  assert_equal plate_purpose_name, Plate.find_by(barcode: '1234567').plate_purpose.name
+Then /^plate "([^"]*)" should have a purpose of "([^"]*)"$/ do |plate_barcode, plate_purpose_name|
+  assert_equal plate_purpose_name, Plate.find_from_barcode("DN#{plate_barcode}").plate_purpose.name
 end
 
 Given /^the well with ID (\d+) contains the sample "([^\"]+)"$/ do |well_id, name|
@@ -249,7 +247,7 @@ Given /^([0-9]+) wells on (the plate "[^\"]+"|the last plate|the plate with ID [
 end
 
 Given /^plate "([^"]*)" has "([^"]*)" wells with aliquots$/ do |plate_barcode, number_of_wells|
-  plate = Plate.find_by(barcode: plate_barcode)
+  plate = Plate.find_from_barcode('DN' + plate_barcode)
   plate.wells = Array.new(number_of_wells.to_i) do |i|
     FactoryGirl.build :untagged_well, map_id: i + 1
   end
@@ -272,12 +270,12 @@ Given /^(passed|started|pending|failed) transfer requests exist between (\d+) we
 end
 
 Then /^the plate with the barcode "(.*?)" should have a label of "(.*?)"$/ do |barcode, label|
-  plate = Plate.find_by!(barcode: barcode)
+  plate = Plate.find_from_barcode('DN' + barcode)
   assert_equal label, plate.role
 end
 
 Then(/^the volume of each well in "(.*?)" should be:$/) do |machine, table|
-  plate = Plate.with_machine_barcode(machine).first
+  plate = Plate.with_barcode(machine).first
   table.rows.each { |well, volume| assert_equal volume.to_f, plate.wells.located_at(well).first.get_current_volume }
 end
 

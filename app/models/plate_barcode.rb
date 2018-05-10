@@ -12,12 +12,7 @@ class PlateBarcode < ActiveResource::Base
     MockBarcode = Struct.new(:barcode)
 
     def self.create
-      if @barcode.nil?
-        @barcode = Asset.where('barcode is not null and barcode!="9999999" and length(barcode)=7')
-                        .order('barcode desc').first.try(:barcode).to_i
-
-        @barcode = 9000000 if @barcode.zero?
-      end
+      @barcode ||= Barcode.sanger_ean13.where('barcode LIKE "DN%"').order(barcode: :desc).first&.number || 9000000
       MockBarcode.new(@barcode += 1)
     end
   end

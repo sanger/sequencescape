@@ -20,7 +20,7 @@
   </thead>
   <tbody>
   <% if @all_labels.last.nil? -%>
-  <tr><td>No source plates found for this batch</td></tr>
+    <tr><td>No source plates found for this batch</td></tr>
   <% else -%>
     <% count = 0%>
     <% @all_labels.last.sort{ |a,b| a[1].to_i <=> b[1].to_i }.each do |plate_label, bed_label| %>

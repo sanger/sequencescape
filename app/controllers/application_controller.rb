@@ -68,11 +68,6 @@ class ApplicationController < ActionController::Base
     response.headers['Expires'] = 'Fri, 01 Jan 1990 00:00:00 GMT'
   end
 
-  def first_param(key)
-    value = params[key]
-    value ? value.first : nil
-  end
-
   def evil_parameter_hack!
     # WARNING! This hack is purely in place while we manually update ALL our
     # existing controllers to support Strong Parameters. It should under

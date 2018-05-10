@@ -26,7 +26,7 @@ Feature: Push samples through the PacBio pipeline with javascript
     When I check "Select DN1234567T for batch"
     When I press the first "Submit"
     When I follow "DNA Template Prep Kit Box Barcode"
-    Given Well "1234567":"A1" has a PacBioLibraryTube "333"
+    Given Well "DN1234567T":"A1" has a PacBioLibraryTube "NT333U"
     When I fill in "DNA Template Prep Kit Box Barcode" with "999"
     And I press "Next step"
     And I press "Next step"
@@ -38,7 +38,7 @@ Feature: Push samples through the PacBio pipeline with javascript
     When I follow "Binding Kit Box Barcode"
     When I fill in "Binding Kit Box Barcode" with "777"
     And I press "Next step"
-    When I select "30" from "Movie length for 333"
+    When I select "30" from "Movie length for NT333U"
     And I press "Next step"
     Then I should see "Layout tubes on a plate"
     When I drag the library tube to well "A1"
@@ -59,8 +59,6 @@ Feature: Push samples through the PacBio pipeline with javascript
     Then I should see "Your 1 label(s) have been sent to printer xyz"
 
   Scenario: Print out the library tube barcodes
-    Given I have a sample tube "111" in study "Test study" in asset group "Test study group"
-    Given sample tube "111" is part of study "Test study"
     Given I have a PacBio Library Prep batch
     When I follow "Print labels"
     When I select "xyz" from "Print to"

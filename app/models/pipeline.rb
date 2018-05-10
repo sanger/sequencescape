@@ -111,11 +111,6 @@ class Pipeline < ApplicationRecord
     requests.group_requests(option).all.group_by(&grouping_function(option))
   end
 
-  def finish_batch(batch, user)
-    batch.complete!(user)
-  end
-  deprecate finish_batch: 'use batch#complete! instead'
-
   def post_finish_batch(batch, user)
   end
 
@@ -129,11 +124,6 @@ class Pipeline < ApplicationRecord
       EventSender.send_request_update(request.id, 'complete', "Completed pipeline: #{name}")
     end
   end
-
-  def release_batch(batch, user)
-    batch.release!(user)
-  end
-  deprecate release_batch: 'use batch#release! instead'
 
   def on_start_batch(batch, user)
     # Do nothing

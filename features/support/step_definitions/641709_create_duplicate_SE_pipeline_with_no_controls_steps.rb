@@ -13,6 +13,6 @@ end
 
 When /^I select eight requests$/ do
   Request.limit(8).order(id: :desc).each do |request|
-    step(%Q{I check "Select #{request.asset.sti_type} #{request.asset.barcode} for batch"})
+    step(%Q{I check "Select #{request.asset.sti_type} #{request.asset.human_barcode} for batch"})
   end
 end

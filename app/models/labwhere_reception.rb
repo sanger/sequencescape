@@ -63,7 +63,7 @@ class LabwhereReception
   end
 
   def assets
-    @assets ||= Asset.with_machine_barcode(asset_barcodes)
+    @assets ||= Asset.with_barcode(asset_barcodes)
   end
 
   def missing_barcodes

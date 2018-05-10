@@ -14,6 +14,7 @@
 # D . . . . . . . . .
 #
 map_data = []
+standard_shape_id = AssetShape.find_by(name: 'Standard').id
 [96, 384].each do |plate_size|
   Map.plate_dimensions(plate_size) do |width, height|
     details = (0...plate_size).map do |index|
@@ -21,7 +22,7 @@ map_data = []
         location_id: index + 1,
         description: Map::Coordinate.horizontal_plate_position_to_description(index + 1, plate_size),
         asset_size: plate_size,
-        asset_shape: AssetShape.find_by(name: 'Standard')
+        asset_shape_id: standard_shape_id
       }
     end
 
@@ -34,10 +35,9 @@ map_data = []
   end
 end
 
-map_data.each do |details|
-  Map.create(details)
-end
+map_data.concat(FluidigmHelper.map_configuration_for(6, 16, AssetShape.find_by(name: 'Fluidigm96').id))
+map_data.concat(FluidigmHelper.map_configuration_for(12, 16, AssetShape.find_by(name: 'Fluidigm192').id))
 
-Map.create!(FluidigmHelper.map_configuration_for(6, 16, AssetShape.find_by(name: 'Fluidigm96').id) + FluidigmHelper.map_configuration_for(12, 16, AssetShape.find_by(name: 'Fluidigm192').id))
+Map.import(map_data)
 
 AssetShape.find_by(name: 'StripTubeColumn').generate_map(8)

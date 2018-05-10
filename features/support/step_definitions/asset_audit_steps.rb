@@ -9,7 +9,7 @@ Given /^asset audit with ID (\d+) is for plate with ID (\d+)$/ do |asset_audit_i
 end
 
 Given /^the barcode for plate (\d+) is "([^"]*)"$/ do |plate_id, barcode|
-  Plate.find(plate_id).update_attributes!(barcode: barcode)
+  Plate.find(plate_id).primary_barcode.update!(barcode: barcode)
 end
 
 Then /^the activity logging table should be:$/ do |expected_results_table|
