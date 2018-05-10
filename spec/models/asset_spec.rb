@@ -1,102 +1,180 @@
 require 'rails_helper'
 
 RSpec.describe Asset, type: :model do
-  context 'An asset' do
+  context 'when setting up an asset' do
     context 'with a barcode' do
-      setup do
-        @asset = create :asset
-        @result_hash = @asset.barcode_and_created_at_hash
+      let(:asset) { create(:asset) }
+      let(:result_hash) { asset.barcode_and_created_at_hash }
+
+      it 'the returned result hash is present' do
+        expect(result_hash).to be_present
       end
-      it 'return a hash with the barcode and created_at time' do
-        assert @result_hash.present?
-        assert @result_hash.is_a?(Hash)
-        assert @result_hash[:barcode].is_a?(String)
-        assert @result_hash[:created_at].is_a?(ActiveSupport::TimeWithZone)
+
+      it 'the returned result is a hash' do
+        expect(result_hash).to be_a(Hash)
+      end
+
+      it 'the returned barcode is a string' do
+        expect(result_hash[:barcode]).to be_a(String)
+      end
+
+      it 'the returned created at is a time with zone' do
+        expect(result_hash[:created_at]).to be_a(ActiveSupport::TimeWithZone)
       end
     end
 
     context 'without a barcode' do
-      setup do
-        @asset = create :asset, barcode: nil
-        @result_hash = @asset.barcode_and_created_at_hash
-      end
-      it 'return an empty hash' do
-        assert @result_hash.blank?
+      let(:asset) { create(:asset, barcode: nil) }
+      let(:result_hash) { asset.barcode_and_created_at_hash }
+
+      it 'the returned hash is empty' do
+        expect(result_hash).to be_blank
       end
     end
 
     context '#scanned_in_date' do
-      setup do
-        @scanned_in_asset = create :asset
-        @unscanned_in_asset = create :asset
-        @scanned_in_event = create :event, content: Time.zone.today.to_s, message: 'scanned in', family: 'scanned_into_lab', eventful_type: 'Asset', eventful_id: @scanned_in_asset.id
-      end
-      it 'return a date if it has been scanned in' do
-        assert_equal Time.zone.today.to_s, @scanned_in_asset.scanned_in_date
+      let(:scanned_in_asset) { create(:asset) }
+      let(:unscanned_in_asset) { create(:asset) }
+      let!(:scanned_in_event) do
+        create(
+          :event,
+          content: Time.zone.today.to_s,
+          message: 'scanned in',
+          family: 'scanned_into_lab',
+          eventful_type: 'Asset',
+          eventful_id: scanned_in_asset.id
+        )
       end
 
-      it "return nothing if it hasn't been scanned in" do
-        assert @unscanned_in_asset.scanned_in_date.blank?
+      it 'returns a date if it has been scanned in' do
+        expect(scanned_in_asset.scanned_in_date).to eq(Time.zone.today.to_s)
+      end
+
+      it "returns nothing if it hasn't been scanned in" do
+        expect(unscanned_in_asset.scanned_in_date).to be_blank
       end
     end
   end
 
   context '#assign_relationships' do
     context 'with the correct arguments' do
-      setup do
-        @asset = create :asset
-        @parent_asset_1 = create :asset
-        @parent_asset_2 = create :asset
-        @parents = [@parent_asset_1, @parent_asset_2]
-        @child_asset = create :asset
+      let(:asset) { create(:asset) }
+      let(:parent_asset_1) { create(:asset) }
+      let(:parent_asset_2) { create(:asset) }
+      let(:parents) { [parent_asset_1, parent_asset_2] }
+      let(:child_asset) { create(:asset) }
 
-        @asset.assign_relationships(@parents, @child_asset)
+      before(:each) do
+        asset.assign_relationships(parents, child_asset)
       end
 
-      it 'add 2 parents to the asset' do
-        assert_equal 2, @asset.reload.parents.size
+      it 'adds 2 parents to the asset' do
+        expect(asset.reload.parents.size).to eq(2)
       end
 
-      it 'add 1 child to the asset' do
-        assert_equal 1, @asset.reload.children.size
+      it 'adds 1 child to the asset' do
+        expect(asset.reload.children.size).to eq(1)
       end
 
-      it 'set the correct child' do
-        assert_equal @child_asset, @asset.reload.children.first
+      it 'sets the correct child' do
+        expect(child_asset).to eq(asset.reload.children.first)
       end
 
-      it 'set the correct parents' do
-        assert_equal @parents, @asset.reload.parents
+      it 'sets the correct parents' do
+        expect(parents).to eq(asset.reload.parents)
       end
     end
 
     context 'with the wrong arguments' do
-      setup do
-        @asset = create :asset
-        @parent_asset_1 = create :asset
-        @parent_asset_2 = create :asset
-        @asset.parents = [@parent_asset_1, @parent_asset_2]
-        @parents = [@parent_asset_1, @parent_asset_2]
-        @asset.reload
-        @child_asset = create :asset
+      let(:asset) { create(:asset) }
+      let(:parent_asset_1) { create(:asset) }
+      let(:parent_asset_2) { create(:asset) }
+      let(:parents) { [parent_asset_1, parent_asset_2] }
+      let(:child_asset) { create(:asset) }
 
-        @asset.assign_relationships(@asset.parents, @child_asset)
+      before(:each) do
+        asset.parents = [parent_asset_1, parent_asset_2]
+        asset.reload
+        asset.assign_relationships(asset.parents, child_asset)
       end
 
-      it 'add 2 parents to the asset' do
-        assert_equal 2, @asset.reload.parents.size
+      it 'adds 2 parents to the asset' do
+        expect(asset.reload.parents.size).to eq(2)
       end
 
-      it 'add 1 child to the asset' do
-        assert_equal 1, @asset.reload.children.size
+      it 'adds 1 child to the asset' do
+        expect(asset.reload.children.size).to eq(1)
       end
 
-      it 'set the correct child' do
-        assert_equal @child_asset, @asset.reload.children.first
+      it 'sets the correct child' do
+        expect(child_asset).to eq(asset.reload.children.first)
       end
 
-      it 'set the correct parents' do
-        assert_equal @parents, @asset.reload.parents
+      it 'sets the correct parents' do
+        expect(parents).to eq(asset.reload.parents)
+      end
+    end
+  end
+
+  context 'when checking scopes' do
+    context '#with_machine_barcode' do
+      let!(:ean13_plates_list) { create_list(:plate_with_tagged_wells, 2) }
+      let!(:fluidigm_plates_list) { create_list(:plate_with_fluidigm_barcode, 2) }
+
+      let(:plate_ean13_1) { ean13_plates_list[0] }
+      let(:plate_ean13_2) { ean13_plates_list[1] }
+
+      let(:plate_fluidigm_1) { fluidigm_plates_list[0] }
+      let(:plate_fluidigm_2) { fluidigm_plates_list[1] }
+
+      it 'correctly finds a single ean13 barcode' do
+        expect(Asset.with_machine_barcode(plate_ean13_1.machine_barcode)).to match_array([plate_ean13_1])
+      end
+
+      it 'does not find anything when sent a non-valid ean13 barcode' do
+        expect(Asset.with_machine_barcode('1234567890123')).to match_array([])
+      end
+
+      it 'correctly finds a plate with a single fluidigm barcode' do
+        expect(Asset.with_machine_barcode(plate_fluidigm_1.fluidigm_barcode)).to match_array([plate_fluidigm_1])
+      end
+
+      it 'does not find anything when sent any other string' do
+        expect(Asset.with_machine_barcode('INVALID123ABC')).to match_array([])
+      end
+
+      it 'finds plates when sent a mixture of valid barcodes' do
+        bcs = [
+          plate_ean13_1.machine_barcode,
+          plate_fluidigm_1.fluidigm_barcode,
+          plate_ean13_2.machine_barcode,
+          plate_fluidigm_2.fluidigm_barcode
+        ]
+        expected_result = [
+          plate_ean13_1,
+          plate_fluidigm_1,
+          plate_ean13_2,
+          plate_fluidigm_2
+        ]
+        expect(Asset.with_machine_barcode(bcs)).to match_array(expected_result)
+      end
+
+      it 'finds plates when sent a mixture of valid and invalid barcodes' do
+        bcs = [
+          plate_ean13_1.machine_barcode,
+          'RUBBISH123',
+          plate_fluidigm_1.fluidigm_barcode,
+          plate_ean13_2.machine_barcode,
+          '1234567890123',
+          plate_fluidigm_2.fluidigm_barcode
+        ]
+        expected_result = [
+          plate_ean13_1,
+          plate_fluidigm_1,
+          plate_ean13_2,
+          plate_fluidigm_2
+        ]
+        expect(Asset.with_machine_barcode(bcs)).to match_array(expected_result)
       end
     end
   end

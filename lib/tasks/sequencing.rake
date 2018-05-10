@@ -46,8 +46,8 @@ namespace :sequencing do
 end
 
 def build_tasks_for(workflow)
-  AddSpikedInControlTask.create!(name: 'Add Spiked in control', sorted: 0, workflow: workflow)
-  SetDescriptorsTask.create!(name: 'Loading', sorted: 1, workflow: workflow) do |task|
+  AddSpikedInControlTask.create!(name: 'Add Spiked in control', sorted: 0, lab_activity: true, workflow: workflow)
+  SetDescriptorsTask.create!(name: 'Loading', sorted: 1, lab_activity: true, workflow: workflow) do |task|
     task.descriptors.build([
       { kind: 'Text', sorter: 1, name: 'Chip Barcode', required: true },
       { kind: 'Text', sorter: 2, name: 'Operator' },
@@ -64,7 +64,7 @@ def build_tasks_for(workflow)
     ])
   end
 
-  SetDescriptorsTask.create!(name: 'Read 1 & 2', sorted: 2, workflow: workflow) do |task|
+  SetDescriptorsTask.create!(name: 'Read 1 & 2', sorted: 2, lab_activity: true, workflow: workflow) do |task|
     task.descriptors.build([
       { kind: 'Text', sorter: 1, name: 'Chip Barcode', required: true },
       { kind: 'Text', sorter: 2, name: 'Operator' },
