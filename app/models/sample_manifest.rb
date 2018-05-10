@@ -83,7 +83,7 @@ class SampleManifest < ApplicationRecord
 
       # First we truncate individual error messages. This ensures that it the first message is already
       # longer than out max limit, we still show something.
-      full_last_errors = last_errors.map {|error| error.truncate(INDIVIDUAL_ERROR_LIMIT) }
+      full_last_errors = last_errors.map { |error| error.truncate(INDIVIDUAL_ERROR_LIMIT) }
 
       removed_errors = 0
 
@@ -92,7 +92,7 @@ class SampleManifest < ApplicationRecord
         removed_errors += 1
       end
 
-      full_last_errors << "There were too many errors to record. #{removed_errors} additional errors are not shown." if removed_errors > 0
+      full_last_errors << "There were too many errors to record. #{removed_errors} additional errors are not shown." if removed_errors.positive?
 
       self.last_errors = full_last_errors
 
