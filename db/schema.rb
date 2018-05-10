@@ -647,7 +647,9 @@ ActiveRecord::Schema.define(version: 20180423080956) do
     t.bigint "user_id", null: false
     t.string "name", null: false
     t.integer "report_type", null: false
-    t.string "barcodes"
+    t.string "location_barcode"
+    t.text "barcodes"
+    t.string "faculty_sponsor_ids"
     t.bigint "study_id"
     t.string "plate_purpose_ids"
     t.datetime "start_date"
@@ -1060,6 +1062,19 @@ ActiveRecord::Schema.define(version: 20180423080956) do
     t.index ["product_criteria_id"], name: "fk_qc_reports_to_product_criteria"
     t.index ["report_identifier"], name: "index_qc_reports_on_report_identifier", unique: true
     t.index ["study_id"], name: "fk_qc_reports_to_studies"
+  end
+
+  create_table "qc_results", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "asset_id"
+    t.string "key"
+    t.string "value"
+    t.string "units"
+    t.float "cv", limit: 24
+    t.string "assay_type"
+    t.string "assay_version"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["asset_id"], name: "index_qc_results_on_asset_id"
   end
 
   create_table "qcable_creators", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|

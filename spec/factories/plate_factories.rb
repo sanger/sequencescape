@@ -112,6 +112,15 @@ FactoryGirl.define do
         end
       end
     end
+
+    factory :plate_with_fluidigm_barcode do
+      transient do
+        sample_count 8
+        well_factory :tagged_well
+      end
+      sequence(:fluidigm_barcode) { |i| (1000000000 + i).to_s }
+      size 192
+    end
   end
 
   factory(:full_plate, class: Plate, traits: [:plate_barcode, :with_wells]) do

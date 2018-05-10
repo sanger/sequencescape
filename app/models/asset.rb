@@ -173,6 +173,16 @@ class Asset < ApplicationRecord
     joins(:barcodes).where(barcodes: { barcode: db_barcodes }).distinct
   }
 
+  # In contrast to with_barocde, filter_by_barcode only filters in the event
+  # a parameter is supplied. eg. an empty string does not filter the data
+  scope :filter_by_barcode, ->(*barcodes) {
+    db_barcodes = barcodes.flatten.each_with_object([]) do |source_bc, store|
+      next if source_bc.blank?
+      store.concat(Barcode.extract_barcode(source_bc))
+    end
+    db_barcodes.blank? ? joins(:barcodes) : joins(:barcodes).where(barcodes: { barcode: db_barcodes }).distinct
+  }
+
   scope :source_assets_from_machine_barcode, ->(destination_barcode) {
     destination_asset = find_from_barcode(destination_barcode)
     if destination_asset

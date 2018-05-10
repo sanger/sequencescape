@@ -321,14 +321,22 @@ class Plate < Asset
     ])
   }
 
-  def self.search_for_plates(study_id: nil, plate_purpose_ids: nil, start_date: nil, end_date: nil)
-    with_study_id(study_id)
-      .with_plate_purpose_ids(plate_purpose_ids)
-      .created_after(start_date)
-      .created_before(end_date)
-      .joins(:barcodes)
+  def self.search_for_plates(params)
+    with_faculty_sponsor_ids(params[:faculty_sponsor_ids] || nil)
+      .with_study_id(params[:study_id] || nil)
+      .with_plate_purpose_ids(params[:plate_purpose_ids] || nil)
+      .created_on_or_after(params[:start_date] || nil)
+      .created_on_or_before(params[:end_date] || nil)
+      .filter_by_barcode(params[:barcodes] || nil)     #  .where.not(barcode: nil)
       .distinct
   end
+
+  scope :with_faculty_sponsor_ids, ->(faculty_sponsor_ids) {
+    if faculty_sponsor_ids.present?
+      joins(studies: { study_metadata: :faculty_sponsor })
+        .where(faculty_sponsors: { id: faculty_sponsor_ids })
+    end
+  }
 
   scope :with_study_id, ->(study_id) {
     joins(:studies).where(studies: { id: study_id }) if study_id.present?
@@ -338,11 +346,11 @@ class Plate < Asset
     joins(:plate_purpose).where(plate_purposes: { id: plate_purpose_ids }) if plate_purpose_ids.present?
   }
 
-  scope :created_after, ->(date) {
+  scope :created_on_or_after, ->(date) {
     where('assets.created_at >= ?', date.midnight) if date.present?
   }
 
-  scope :created_before, ->(date) {
+  scope :created_on_or_before, ->(date) {
     where('assets.created_at <= ?', date.end_of_day) if date.present?
   }
 

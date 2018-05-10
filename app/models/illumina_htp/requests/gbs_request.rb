@@ -9,7 +9,7 @@ module IlluminaHtp::Requests
   #
   class GbsRequest < StdLibraryRequest
     fragment_size_details(:no_default, :no_default)
-    delegate :primer_panel, to: :request_metadata
+    delegate :primer_panel, :primer_panel_id, to: :request_metadata
 
     Metadata.class_eval do
       belongs_to :primer_panel
@@ -30,7 +30,7 @@ module IlluminaHtp::Requests
         project_id: initial_project_id,
         library_type: library_type,
         insert_size: insert_size,
-        primer_panel_id: primer_panel
+        primer_panel_id: primer_panel_id
       }
     end
 
