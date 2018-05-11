@@ -75,11 +75,11 @@ module Aker
     def recover_from_connection_refused
       yield
     rescue Errno::ECONNREFUSED
-      render json: {error: 'Cannot connect with Aker Work orders service. Please contact the administrators'}
+      render json: { error: 'Cannot connect with Aker Work orders service. Please contact the administrators' }
     rescue RestClient::NotFound
-      render json: {error: 'The work order was not found in Aker Work orders service.'}
+      render json: { error: 'The work order was not found in Aker Work orders service.' }
     rescue RestClient::InternalServerError
-      render json: {error: 'There was a problem in the Aker Work orders service. Please contact the administrators'}
+      render json: { error: 'There was a problem in the Aker Work orders service. Please contact the administrators' }
     end
 
     def current_resource
