@@ -7,9 +7,11 @@ describe Api::Messages::QcResultIO do
 
   let(:sample_tube) { create :sample_tube }
   let(:expected_json) do
-    { 'assay' => qc_result.assay,
+    { 'id_qc_result_lims' => qc_result.id,
+      'assay' => qc_result.assay,
       'value' => qc_result.value,
       'units' => qc_result.units,
+      'cv'    => qc_result.cv,
       'qc_type' => qc_result.key,
       'id_pool_lims' => qc_result.asset.external_identifier,
       'labware_purpose' => qc_result.asset.labware_purpose,
@@ -26,7 +28,8 @@ describe Api::Messages::QcResultIO do
 
     it 'generates a valid json' do
       actual = subject.as_json
-      actual.delete('date')
+      actual.delete('date_created')
+      actual.delete('date_updated')
       expected_json.fetch('aliquots').first['id_library_lims'] = sample_tube.external_identifier
       expect(actual).to eq(expected_json)
     end
@@ -37,7 +40,8 @@ describe Api::Messages::QcResultIO do
 
     it 'generates a valid json' do
       actual = subject.as_json
-      actual.delete('date')
+      actual.delete('date_created')
+      actual.delete('date_updated')
       expect(actual).to eq(expected_json)
     end
   end

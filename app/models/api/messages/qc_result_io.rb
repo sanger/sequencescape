@@ -31,11 +31,14 @@ class Api::Messages::QcResultIO < Api::Base
 
   renders_model(::QcResult)
 
+  map_attribute_to_json_attribute(:id, 'id_qc_result_lims')
   map_attribute_to_json_attribute(:assay)
   map_attribute_to_json_attribute(:value)
   map_attribute_to_json_attribute(:units)
+  map_attribute_to_json_attribute(:cv)
   map_attribute_to_json_attribute(:key, 'qc_type')
-  map_attribute_to_json_attribute(:updated_at, 'date')
+  map_attribute_to_json_attribute(:created_at, 'date_created')
+  map_attribute_to_json_attribute(:updated_at, 'date_updated')
 
   with_association(:asset) do
     map_attribute_to_json_attribute(:labware_purpose)
