@@ -17,6 +17,8 @@ RSpec.describe Api::V2::PlateResource, type: :resource do
     it { is_expected.to_not have_updatable_field(:uuid) }
     it { is_expected.to_not have_updatable_field(:name) }
     it { is_expected.to_not have_updatable_field(:labware_barcode) }
+    it { is_expected.to_not have_updatable_field(:state) }
+    it { is_expected.to_not have_updatable_field(:pools) }
 
     # Updatable fields
     # eg. it { is_expected.to have_updatable_field(:state) }
@@ -38,7 +40,7 @@ RSpec.describe Api::V2::PlateResource, type: :resource do
   end
 
   context 'on a plate' do
-    let(:expected_barcode_hash) { { 'ean13_barcode' => '1220000011748', 'sanger_human_barcode' => 'DN11J' } }
+    let(:expected_barcode_hash) { { 'ean13_barcode' => '1220000011748', 'human_barcode' => 'DN11J' } }
     it_behaves_like 'a plate resource'
   end
 end

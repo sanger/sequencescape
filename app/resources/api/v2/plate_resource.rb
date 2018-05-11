@@ -9,7 +9,7 @@ module Api
 
       immutable # uncomment to make the resource immutable
 
-      default_includes :uuid_object, :barcode_prefix
+      default_includes :uuid_object, :barcodes
 
       # Associations:
       has_many :samples, readonly: true
@@ -21,10 +21,11 @@ module Api
       attribute :uuid, readonly: true
       attribute :name, delegate: :display_name, readonly: true
       attribute :labware_barcode, readonly: true
+      attribute :pools, readonly: true
 
       # Filters
       filter :barcode, apply: (lambda do |records, value, _options|
-        records.with_machine_barcode(value)
+        records.with_barcode(value)
       end)
 
       # Custom methods
@@ -33,7 +34,7 @@ module Api
       def labware_barcode
         {
           'ean13_barcode' => _model.ean13_barcode,
-          'sanger_human_barcode' => _model.sanger_human_barcode
+          'human_barcode' => _model.human_barcode
         }
       end
 

@@ -9,8 +9,9 @@ RSpec.describe Api::V2::WellResource, type: :resource do
     # Test attributes
     it { is_expected.to have_attribute :uuid }
     it { is_expected.to have_attribute :name }
-    # it { is_expected.to have_attribute :labware_barcodes }
-    # it { is_expected.to have_attribute :position }
+    it { is_expected.to have_attribute :state }
+    #it { is_expected.to have_attribute :labware_barcodes }
+    #it { is_expected.to have_attribute :position }
 
     # Read only attributes (almost certainly id, uuid)
     it { is_expected.to_not have_updatable_field(:id) }

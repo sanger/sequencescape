@@ -22,6 +22,7 @@ module Api
       attribute :name, delegate: :display_name, readonly: true
       attribute :position, readonly: true
       attribute :labware_barcode, readonly: true
+      attribute :state, readonly: true
 
       # Filters
 

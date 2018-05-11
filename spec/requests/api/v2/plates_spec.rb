@@ -25,20 +25,20 @@ describe 'Plates API', with: :api_v2 do
 
     it 'sends an individual plate' do
       api_get "/api/v2/plates/#{resource_model.id}"
-      expect(response).to have_http_status(:success)
+      expect(response).to have_http_status(:success), response.body
       expect(json.dig('data', 'type')).to eq('plates')
     end
 
     it 'filters by barcode' do
       api_get "/api/v2/plates?filter[barcode]=#{resource_model.ean13_barcode}"
-      expect(response).to have_http_status(:success)
+      expect(response).to have_http_status(:success), response.body
       expect(json['data'].length).to eq(1)
     end
 
-    # it 'filtering by human barcode' do
-    #   api_get "/api/v2/plates?filter[barcode]=#{resource_model.sanger_human_barcode}"
-    #   expect(response).to have_http_status(:success)
-    #   expect(json['data'].length).to eq(1)
-    # end
+    it 'filtering by human barcode' do
+      api_get "/api/v2/plates?filter[barcode]=#{resource_model.human_barcode}"
+      expect(response).to have_http_status(:success), response.body
+      expect(json['data'].length).to eq(1)
+    end
   end
 end
