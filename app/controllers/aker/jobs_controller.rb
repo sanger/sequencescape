@@ -75,14 +75,11 @@ module Aker
     def recover_from_connection_refused
       yield
     rescue Errno::ECONNREFUSED
-      flash[:error] = 'Cannot connect with Aker Work orders service. Please contact the administrators'
-      redirect_to aker_jobs_path
+      render json: {error: 'Cannot connect with Aker Work orders service. Please contact the administrators'}
     rescue RestClient::NotFound
-      flash[:error] = 'The work order was not found in Aker Work orders service.'
-      redirect_to aker_jobs_path
+      render json: {error: 'The work order was not found in Aker Work orders service.'}
     rescue RestClient::InternalServerError
-      flash[:error] = 'There was a problem in the Aker Work orders service. Please contact the administrators'
-      redirect_to aker_jobs_path
+      render json: {error: 'There was a problem in the Aker Work orders service. Please contact the administrators'}
     end
 
     def current_resource
