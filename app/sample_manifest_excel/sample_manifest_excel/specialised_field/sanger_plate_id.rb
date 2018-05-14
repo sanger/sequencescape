@@ -30,7 +30,7 @@ module SampleManifestExcel
       private
 
       def check_container
-        return if value == sample.assets.first.human_barcode
+        return if value == sample.wells.first.plate.human_barcode
         check_for_foreign_barcode
       end
 
