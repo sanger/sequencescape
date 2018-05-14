@@ -107,7 +107,7 @@ RSpec.describe SampleManifestExcel::SpecialisedField, type: :model, sample_manif
 
     describe 'with foreign barcodes' do
       let!(:sample_2) { create(:sample_with_well) }
-      
+
       it 'will be valid if the value matches an unused cgap foreign barcode' do
         expect(SampleManifestExcel::SpecialisedField::SangerPlateId.new(value: 'CGAP-ABC001', sample: sample_1)).to be_valid
       end

@@ -177,7 +177,7 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
     end
   end
 
-  context 'test worksheet' do
+  context 'test worksheet for tubes' do
     let(:data) do
       {
         library_type: 'My personal library type', insert_size_from: 200, insert_size_to: 1500,
@@ -252,6 +252,16 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
       end
     end
 
+    context 'foreign barcodes' do
+      it 'creates a sheet containing foreign barcodes if requested' do
+        worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes.merge(cgap: true))
+        save_file
+        ((worksheet.first_row)..worksheet.last_row).each do |i|
+          expect(spreadsheet.sheet(0).cell(i, worksheet.columns.find_by(:name, :sanger_tube_id).number)).to include('CGAP-')
+        end
+      end
+    end
+
     context 'manifest type' do
       it 'defaults to 1dtube' do
         worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes)
@@ -298,6 +308,100 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
         worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes.merge(validation_errors: [:sample_manifest]))
         save_file
         sample = Sample.find_by(sanger_sample_id: spreadsheet.sheet(0).cell(worksheet.first_row + 1, worksheet.columns.find_by(:name, :sanger_sample_id).number).to_i)
+        expect(sample.sample_manifest).to be_nil
+      end
+    end
+  end
+
+  context 'test worksheet for plates' do
+    let(:data) do
+      {
+        supplier_name: 'SCG--1222_A0', volume: 1, concentration: 1, gender: 'Unknown', dna_source: 'Cell Line',
+        date_of_sample_collection: 'Nov-16', date_of_sample_extraction: 'Nov-16', sample_purified: 'No',
+        sample_public_name: 'SCG--1222_A0', sample_taxon_id: 9606, sample_common_name: 'Homo sapiens', phenotype: 'Unknown'
+      }.with_indifferent_access
+    end
+
+    let(:attributes) do
+      { workbook: workbook, columns: SampleManifestExcel.configuration.columns.plate_default.dup,
+        data: data, no_of_rows: 5, study: 'WTCCC', supplier: 'Test supplier', count: 1, type: 'Plates',
+        num_plates: 2, num_samples_per_plate: 3, manifest_type: 'plate' }
+    end
+
+    context 'in a valid state' do
+      let!(:worksheet) { SampleManifestExcel::Worksheet::TestWorksheet.new(attributes) }
+
+      before(:each) do
+        save_file
+      end
+
+      it 'will have an axlsx worksheet' do
+        expect(worksheet.axlsx_worksheet).to be_present
+      end
+
+      it 'last row should be correct' do
+        expect(worksheet.last_row).to eq(worksheet.first_row + (attributes[:num_plates] * attributes[:num_samples_per_plate]) - 1)
+      end
+
+      it 'adds title and description' do
+        expect(spreadsheet.sheet(0).cell(1, 1)).to eq('DNA Collections Form')
+        expect(spreadsheet.sheet(0).cell(5, 1)).to eq('Study:')
+        expect(spreadsheet.sheet(0).cell(5, 2)).to eq(sample_manifest.study.abbreviation)
+        expect(spreadsheet.sheet(0).cell(6, 1)).to eq('Supplier:')
+        expect(spreadsheet.sheet(0).cell(6, 2)).to eq(sample_manifest.supplier.name)
+        expect(spreadsheet.sheet(0).cell(7, 1)).to eq('No. Plates Sent:')
+        expect(spreadsheet.sheet(0).cell(7, 2)).to eq(sample_manifest.count.to_s)
+      end
+
+      it 'adds standard headings to worksheet' do
+        worksheet.columns.headings.each_with_index do |heading, i|
+          expect(spreadsheet.sheet(0).cell(9, i + 1)).to eq(heading)
+        end
+      end
+
+      it 'adds the data' do
+        data.each do |heading, value|
+          worksheet.columns.find_by(:name, heading).number
+          expect(spreadsheet.sheet(0).cell(worksheet.first_row, worksheet.columns.find_by(:name, heading).number)).to eq(value.to_s)
+          expect(spreadsheet.sheet(0).cell(worksheet.last_row, worksheet.columns.find_by(:name, heading).number)).to eq(value.to_s)
+        end
+      end
+
+      it 'creates the samples, plates and wells' do
+        ((worksheet.first_row)..worksheet.last_row).each do |i|
+          sample = Sample.find_by(sanger_sample_id: spreadsheet.sheet(0).cell(i, worksheet.columns.find_by(:name, :sanger_sample_id).number))
+          expect(sample).to be_present
+          expect(sample.sample_manifest).to be_present
+          expect(spreadsheet.sheet(0).cell(i, worksheet.columns.find_by(:name, :sanger_plate_id).number)).to eq(sample.assets.first.plate.human_barcode)
+          expect(spreadsheet.sheet(0).cell(i, worksheet.columns.find_by(:name, :well).number)).to eq(sample.assets.first.map_description)
+        end
+      end
+    end
+
+    context 'foreign barcodes' do
+      it 'creates a sheet containing foreign barcodes if requested' do
+        worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes.merge(cgap: true))
+        save_file
+        ((worksheet.first_row)..worksheet.last_row).each do |i|
+          expect(spreadsheet.sheet(0).cell(i, worksheet.columns.find_by(:name, :sanger_plate_id).number)).to include('CGAP-')
+        end
+      end
+    end
+
+    context 'manifest type' do
+      it 'creates plates for plate' do
+        worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes)
+        save_file
+        expect(worksheet.sample_manifest.asset_type).to eq('plate')
+        expect(worksheet.assets.all? { |asset| asset.type == 'plate' }).to be_truthy
+      end
+    end
+
+    context 'in an invalid state' do
+      it 'without a sample manifest' do
+        worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes.merge(validation_errors: [:sample_manifest]))
+        save_file
+        sample = Sample.find_by(sanger_sample_id: spreadsheet.sheet(0).cell(worksheet.first_row, worksheet.columns.find_by(:name, :sanger_sample_id).number))
         expect(sample.sample_manifest).to be_nil
       end
     end
