@@ -34,7 +34,7 @@ feature 'Sample manifest with tag sequences' do
     end
 
     context 'valid cgap foreign barcodes' do
-      let(:download) { build(:test_cgap_download, columns: columns) }
+      let(:download) { build(:test_download_tubes_cgap, columns: columns) }
 
       scenario 'upload' do
         login_user(user)
@@ -65,7 +65,7 @@ feature 'Sample manifest with tag sequences' do
     end
 
     context 'invalid for cgap barcodes' do
-      let(:download) { build(:test_cgap_download, columns: columns, validation_errors: [:library_type]) }
+      let(:download) { build(:test_download_tubes_cgap, columns: columns, validation_errors: [:library_type]) }
 
       scenario 'validation errors' do
         login_user(user)
@@ -77,7 +77,7 @@ feature 'Sample manifest with tag sequences' do
     end
 
     context 'invalid for duplicate cgap barcodes' do
-      let(:download) { build(:test_cgap_download, columns: columns, validation_errors: [:sample_tube_id_duplicates]) }
+      let(:download) { build(:test_download_tubes_cgap, columns: columns, validation_errors: [:sample_tube_id_duplicates]) }
 
       scenario 'validation errors' do
         login_user(user)

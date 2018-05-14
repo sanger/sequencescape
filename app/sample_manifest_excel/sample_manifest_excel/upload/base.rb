@@ -89,6 +89,8 @@ module SampleManifestExcel
             Upload::Processor::LibraryTube.new(self)
           when 'multiplexed_library'
             Upload::Processor::MultiplexedLibraryTube.new(self)
+          when 'plate'
+            Upload::Processor::Plate.new(self)
           end
         else
           SampleManifestExcel::NullObjects::NullProcessor.new(self)

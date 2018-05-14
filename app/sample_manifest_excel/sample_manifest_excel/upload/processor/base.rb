@@ -5,12 +5,11 @@ module SampleManifestExcel
     module Processor
       ##
       # Uploads will be processed slightly differently based on the manifest type.
-      # Currently only supports tubes.
       class Base
         include ActiveModel::Model
         include SampleManifestExcel::SubclassChecker
 
-        subclasses? :one_d_tube, :multiplexed_library_tube, :library_tube, modual: to_s.deconstantize
+        subclasses? :one_d_tube, :multiplexed_library_tube, :library_tube, :plate, modual: to_s.deconstantize
 
         attr_reader :upload
         validates_presence_of :upload

@@ -33,7 +33,7 @@ FactoryGirl.define do
     end
 
     # in cgap download, the sanger_tube_id column values are cgap barcodes
-    factory :test_cgap_download, class: SampleManifestExcel::TestDownload do
+    factory :test_download_tubes_cgap, class: SampleManifestExcel::TestDownload do
       cgap true
     end
   end
