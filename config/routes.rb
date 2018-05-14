@@ -648,16 +648,17 @@ Sequencescape::Application.routes.draw do
   namespace :api do
     namespace :v2 do
       namespace :aker do
-        resources :work_orders, only: [:create]
+        resources :jobs, only: [:create]
       end
     end
   end
 
   namespace :aker do
-    resources :work_orders, only: [:index, :show] do
+    resources :jobs, only: [:index, :show] do
       member do
-        post 'complete'
-        post 'cancel'
+        put 'start'
+        put 'complete'
+        put 'cancel'
       end
     end
   end

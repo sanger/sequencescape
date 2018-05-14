@@ -1,16 +1,22 @@
 require 'rails_helper'
 
 RSpec.describe Aker::Factories::Container, type: :model, aker: true do
+  let(:json) do
+    file = File.read(File.join('spec', 'data', 'aker', 'job.json'))
+    JSON.parse(file).with_indifferent_access
+  end
+  let(:material) do
+    json[:job][:materials].first
+  end
   let(:params) do
-    file = File.read(File.join('spec', 'data', 'aker', 'work_order.json'))
-    JSON.parse(file).with_indifferent_access[:work_order][:materials].first[:container]
+    json[:job][:container]
   end
 
   it 'is valid with barcode and address' do
-    container = Aker::Factories::Container.new(params)
+    container = Aker::Factories::Container.new(params.merge(address: material[:address]))
     expect(container).to be_valid
     expect(container.barcode).to eq(params[:barcode])
-    expect(container.address).to eq(params[:address])
+    expect(container.address).to eq(material[:address])
   end
 
   it 'must have a barcode' do

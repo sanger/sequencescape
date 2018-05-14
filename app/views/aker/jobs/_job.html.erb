@@ -1,0 +1,43 @@
+<dl class="list-group">
+  <li class="list-group-item">
+    <dt>Product name:</dt> <dd><%= aker_job['product_name'] %></dd>
+  </li>
+  <li class="list-group-item">
+    <dt>Product version:</dt> <dd><%= aker_job['product_version'] %></dd>
+  </li>
+  <li class="list-group-item">
+    <dt>Product UUID:</dt> <dd><%= aker_job['product_uuid'] %></dd>
+  </li>
+  <li class="list-group-item">
+    <dt>Project UUID:</dt> <dd><%= aker_job['project_uuid'] %></dd>
+  </li>
+  <li class="list-group-item">
+    <dt>Project Name:</dt> <dd><%= aker_job['project_name'] %></dd>
+  </li>
+  <li class="list-group-item">
+    <dt>Cost code:</dt> <dd><%= aker_job['cost_code'] %></dd>
+  </li>
+  <li class="list-group-item">
+    <dt>Comment:</dt> <dd><%= aker_job['comment'] %></dd>
+  </li>
+  <li class="list-group-item">
+    <dt>Desired date:</dt> <dd><%= aker_job['desired_date'] %></dd>
+  </li>
+  <li class="list-group-item">
+    <dt>Status:</dt> <dd><span class="badge badge-secondary"><%= @aker_job['status'] %></span></dd>
+  </li>
+  <li class="list-group-item">
+    <dt>Samples:</dt>
+    <dd>
+    <ul class="list-group">
+
+      <% job.samples.each do |sample| %>
+        <li class='sample list-group-item'>
+          <%= sample.name %>
+        </li>
+      <% end %>
+    </ul>
+    </dd>
+  </li>
+</dl>
+
