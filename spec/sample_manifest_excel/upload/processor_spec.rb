@@ -204,6 +204,25 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
           expect(processor).to be_processed
         end
 
+        context 'partial' do
+          let!(:download) { build(:test_download_plates_partial, columns: plate_columns) }
+
+          it 'will process a partial upload' do
+            processor = SampleManifestExcel::Upload::Processor::Plate.new(upload)
+            expect(upload.sample_manifest.samples.map do |sample|
+              sample.reload
+              sample.sample_metadata.concentration.nil?
+            end.count).to eq(4)
+            processor.update_samples(nil)
+            expect(upload.sample_manifest.samples.map do |sample|
+              sample.reload
+              sample.sample_metadata.concentration.nil?
+            end.count(true)).to eq(2)
+            processor.update_sample_manifest
+            expect(processor).to be_processed
+          end
+        end
+
         context 'when using foreign barcodes' do
           let!(:download)     { build(:test_download_plates_cgap, columns: plate_columns) }
 
@@ -226,6 +245,25 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
             processor.run(nil)
             expect(processor).to be_processed
           end
+
+          context 'partial' do
+            let!(:download) { build(:test_download_plates_partial_cgap, columns: plate_columns) }
+
+            it 'will process a partial upload' do
+              processor = SampleManifestExcel::Upload::Processor::Plate.new(upload)
+              expect(upload.sample_manifest.samples.map do |sample|
+                sample.reload
+                sample.sample_metadata.concentration.nil?
+              end.count).to eq(4)
+              processor.update_samples(nil)
+              expect(upload.sample_manifest.samples.map do |sample|
+                sample.reload
+                sample.sample_metadata.concentration.nil?
+              end.count(true)).to eq(2)
+              processor.update_sample_manifest
+              expect(processor).to be_processed
+            end
+          end
         end
       end
 
@@ -239,8 +277,6 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
           end
         end
       end
-      # - it 'detects duplicate barcodes for multiple plates'
-      # - it 'handles a partial upload'
     end
 
     after(:each) do

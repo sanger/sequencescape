@@ -29,11 +29,8 @@ module SampleManifestExcel
             next if plate_id_for_sample.nil?
 
             if unique_bcs.key?(plate_barcode)
-              # ok if barcode same as other rows for this plate
-              next if unique_bcs[plate_barcode] == plate_id_for_sample
-
-              # duplicated on another plate on this sheet
-              return true
+              # check if duplicate
+              return true unless unique_bcs[plate_barcode] == plate_id_for_sample
             else
               # new plate not seen before
               unique_bcs[plate_barcode] = plate_id_for_sample
