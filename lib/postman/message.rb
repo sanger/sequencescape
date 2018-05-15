@@ -96,7 +96,7 @@ class Postman
       warn "Re-queue: #{payload}"
       warn "Re-queue Exception: #{exception.message}"
       main_exchange.nack(delivery_tag, false, true)
-      warn "Re-queue nacked"
+      warn 'Re-queue nacked'
     end
 
     # Reject the message without re-queuing
@@ -105,7 +105,7 @@ class Postman
       error "Deadletter: #{payload}"
       error "Deadletter Exception: #{exception.message}"
       main_exchange.nack(delivery_tag)
-      error "Deadletter nacked"
+      error 'Deadletter nacked'
     end
   end
 end
