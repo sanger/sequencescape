@@ -11,7 +11,8 @@ class Postman
     DATABASE_CONNECTION_MESSAGES = [
       /Mysql2::Error: closed MySQL connection:/, # 2013,
       /Mysql2::Error: MySQL server has gone away/, # 2006
-      /Mysql2::Error: Can't connect to local MySQL server through socket/ # , 2002, 2001, 2003, 2004, 2005
+      /Mysql2::Error: Can't connect to local MySQL server through socket/, # , 2002, 2001, 2003, 2004, 2005,
+      /Mysql2::Error: MySQL client is not connected/
     ].freeze
 
     def self.===(other)
@@ -93,16 +94,18 @@ class Postman
     # immediate reprocessing.
     def requeue(exception)
       warn "Re-queue: #{payload}"
-      warn "Exception: #{exception.message}"
+      warn "Re-queue Exception: #{exception.message}"
       main_exchange.nack(delivery_tag, false, true)
+      warn "Re-queue nacked"
     end
 
     # Reject the message without re-queuing
     # Will end up getting dead-lettered
     def deadletter(exception)
       error "Deadletter: #{payload}"
-      error "Exception: #{exception.message}"
+      error "Deadletter Exception: #{exception.message}"
       main_exchange.nack(delivery_tag)
+      error "Deadletter nacked"
     end
   end
 end
