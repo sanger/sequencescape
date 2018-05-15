@@ -53,6 +53,23 @@ RSpec.describe TransferRequest, type: :model do
       end
     end
 
+    context 'with a primer panel' do
+      let(:library_request) do
+        create :gbs_request,
+               state: 'pending',
+               asset: source,
+               initial_study: example_study,
+               initial_project: example_project
+      end
+
+      it 'sets appropriate metadata on the aliquots' do
+        subject
+        expect(destination.aliquots.first.library_type).to eq(library_request.library_type)
+        expect(destination.aliquots.first.insert_size).to eq(library_request.insert_size)
+        expect(destination.aliquots.first.primer_panel).to eq(library_request.primer_panel)
+      end
+    end
+
     context 'with a started outer request' do
       let(:library_state) { 'started' }
 

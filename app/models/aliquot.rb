@@ -137,7 +137,7 @@ class Aliquot < ApplicationRecord
   # Any options passed in as parameters will override the aliquot defaults
   def dup(params = {})
     super().tap do |cloned_aliquot|
-      cloned_aliquot.attributes = params
+      cloned_aliquot.assign_attributes(params)
     end
   end
 

@@ -23,6 +23,15 @@ class SampleManifest < ApplicationRecord
   # 1) Subsequent serialization by the delayed job
   # 2) The addition of a 'too many errors' message
   LIMIT_ERROR_LENGTH = 50000
+  # In addition we truncate individual messages, this ensures that we don't
+  # inadvertently filter out ALL our errors if the first message is especially long.
+  # We don't re-use the figure above as that would prevent any display of subsequent
+  # messages, which probably indicate a different issue.
+  INDIVIDUAL_ERROR_LIMIT = LIMIT_ERROR_LENGTH / 10
+
+  # Samples have a similar issue when generating update events
+  # This limit sets a very comfortable safety margin.
+  SAMPLES_PER_EVENT = 3000
 
   module Associations
     def self.included(base)
@@ -72,7 +81,9 @@ class SampleManifest < ApplicationRecord
   def truncate_errors
     if last_errors && last_errors.join.length > LIMIT_ERROR_LENGTH
 
-      full_last_errors = last_errors
+      # First we truncate individual error messages. This ensures that it the first message is already
+      # longer than out max limit, we still show something.
+      full_last_errors = last_errors.map { |error| error.truncate(INDIVIDUAL_ERROR_LIMIT) }
 
       removed_errors = 0
 
@@ -81,7 +92,7 @@ class SampleManifest < ApplicationRecord
         removed_errors += 1
       end
 
-      full_last_errors << "There were too many errors to record. #{removed_errors} additional errors are not shown."
+      full_last_errors << "There were too many errors to record. #{removed_errors} additional errors are not shown." if removed_errors.positive?
 
       self.last_errors = full_last_errors
 
@@ -133,7 +144,11 @@ class SampleManifest < ApplicationRecord
   end
 
   def updated_broadcast_event(user_updating_manifest, updated_samples_ids)
-    BroadcastEvent::SampleManifestUpdated.create!(seed: self, user: user_updating_manifest, properties: { updated_samples_ids: updated_samples_ids })
+    # We chunk samples into groups of 3000 to avoid issues with the column size in broadcast_events.properties
+    # In practice we have 11 characters per sample with current id lengths. This allows for up to 21 characters
+    updated_samples_ids.each_slice(SAMPLES_PER_EVENT) do |chunked_sample_ids|
+      BroadcastEvent::SampleManifestUpdated.create!(seed: self, user: user_updating_manifest, properties: { updated_samples_ids: chunked_sample_ids })
+    end
   end
 
   private

@@ -11,45 +11,63 @@ class LocationReport < ApplicationRecord
   extend DbFile::Uploader
 
   # attributes / variables
-  attr_accessor :barcodes_list
+  serialize :faculty_sponsor_ids, Array
   serialize :plate_purpose_ids, Array
   serialize :barcodes, Array
   self.per_page = 20
-  enum report_type: %i[type_barcodes type_selection]
+  enum report_type: %i[type_selection type_labwhere]
 
   # relations
-  belongs_to :study
+  belongs_to :study, required: false
   belongs_to :user
 
   # scopes
-  scope :for_user, ->(user) { where(user_id: user.id) }
+  scope :for_user, ->(user) { where(user_id: user) }
 
   # actions
-  before_validation :generate_name, on: %i[create build]
-  before_validation :check_entered_barcodes, on: %i[create build], if: :type_barcodes?
   after_create :schedule_report
   has_uploaded :report, serialization_column: 'report_filename'
 
   # validations
+  validates :name, presence: true
   validates :report_type, presence: true
-  validates :barcodes, presence: { if: :type_barcodes? }
-  validate :barcodes_are_recognised, on: %i[create build], if: :type_barcodes?
-  validates :study, presence: true, if: :type_selection?, allow_nil: true
-  validates :start_date, presence: { if: :type_selection? }
-  validates :end_date, presence: { if: :type_selection?, date: { after_or_equal_to: :start_date } }
-  validate :plates_are_found, on: %i[create], if: :type_selection?
+  validate :check_location_barcode, :check_any_select_field_present, :check_both_dates_present_if_used,
+           :check_end_date_same_or_after_start_date, :check_maxlength_of_barcodes, :check_any_plates_found
 
-  def barcodes_text
-    barcodes_list.join(' ') unless @barcodes_list.nil?
+  def check_any_select_field_present
+    return unless report_type == 'type_selection'
+    attr_list = %i[faculty_sponsor_ids study_id start_date end_date plate_purpose_ids barcodes]
+    errors.add(:base, I18n.t('location_reports.errors.no_selection_fields_filled')) if attr_list.all? { |attr| send(attr).blank? }
   end
 
-  # converts the barcodes entered by the user into a list
-  def barcodes_text=(value)
-    self.barcodes_list = if value.nil?
-                           []
-                         else
-                           value.strip.split(/[\s]+/)
-                         end
+  def check_location_barcode
+    return unless report_type == 'type_labwhere'
+    return if location_barcode.present?
+    errors.add(:location_barcode, I18n.t('location_reports.errors.no_location_barcode_found'))
+  end
+
+  def check_both_dates_present_if_used
+    return unless report_type == 'type_selection'
+    return if (start_date.blank? && end_date.blank?) || (start_date.present? && end_date.present?)
+    errors.add(:start_date, I18n.t('location_reports.errors.both_dates_required'))
+  end
+
+  def check_end_date_same_or_after_start_date
+    return unless report_type == 'type_selection'
+    return if (start_date.blank? || end_date.blank?) || end_date >= start_date
+    errors.add(:end_date, I18n.t('location_reports.errors.end_date_after_start_date'))
+  end
+
+  def check_any_plates_found
+    return unless report_type == 'type_selection'
+    return if search_for_plates_by_selection.any?
+    errors.add(:base, I18n.t('location_reports.errors.no_rows_found'))
+  end
+
+  def check_maxlength_of_barcodes
+    return unless report_type == 'type_selection'
+    return if barcodes.blank? || (barcodes.to_yaml.size <= column_for_attribute(:barcodes).limit)
+    errors.add(:barcodes_text, I18n.t('location_reports.errors.barcodes_maxlength_exceeded'))
   end
 
   def column_headers
@@ -69,27 +87,6 @@ class LocationReport < ApplicationRecord
         update_attributes!(report: tempfile)
       end
     end
-  end
-
-  def check_entered_barcodes
-    @invalid_barcodes_list = []
-    barcodes_list.each do |cur_bc|
-      if barcode_is_human_readable?(cur_bc)
-        barcodes << Barcode.human_to_machine_barcode(cur_bc).to_s
-      elsif barcode_is_ean13?(cur_bc)
-        barcodes << cur_bc
-      else
-        @invalid_barcodes_list << cur_bc
-      end
-    end
-  end
-
-  def barcodes_are_recognised
-    errors.add(:base, I18n.t('location_reports.errors.invalid_barcodes_found') + @invalid_barcodes_list.join(',')) unless @invalid_barcodes_list.size.zero?
-  end
-
-  def plates_are_found
-    errors.add(:base, I18n.t('location_reports.errors.no_rows_found')) unless search_for_plates_by_selection.any?
   end
 
   def schedule_report
@@ -117,13 +114,17 @@ class LocationReport < ApplicationRecord
     end
   end
 
+  #######
+
   private
 
+  #######
+
   def generate_plates_list
-    @plates_list = if type_barcodes?
-                     Plate.with_barcode(barcodes)
-                   elsif type_selection?
+    @plates_list = if type_selection?
                      search_for_plates_by_selection
+                   elsif type_labwhere?
+                     search_for_plates_by_labwhere_locn_bc
                    else
                      []
                    end
@@ -146,7 +147,6 @@ class LocationReport < ApplicationRecord
 
   def generate_study_cols_for_row(cur_study)
     return %w[Unknown Unknown] if cur_study.blank?
-
     # NB. some older studies may not have a name
     cols = [] << (cur_study.name || cur_study.id)
     cols << cur_study.id
@@ -154,25 +154,38 @@ class LocationReport < ApplicationRecord
     cols << (cur_study.study_metadata.faculty_sponsor&.name || 'Unknown')
   end
 
-  def generate_name
-    self.name = name.gsub(/[^A-Za-z0-9_\-\.\s]/, '').squish.gsub(/\s/, '_') if name.present?
-    self.name = Time.current.to_formatted_s(:number) if name.blank?
-  end
-
   def search_for_plates_by_selection
-    Plate.search_for_plates(
+    params = {
+      faculty_sponsor_ids:  faculty_sponsor_ids,
       study_id:             study_id,
       start_date:           start_date,
       end_date:             end_date,
-      plate_purpose_ids:    plate_purpose_ids
-    )
+      plate_purpose_ids:    plate_purpose_ids,
+      barcodes:             barcodes
+    }
+    Plate.search_for_plates(params)
   end
 
-  def barcode_is_human_readable?(bc)
-    bc.match?(/\A([A-z]{2})([0-9]{1,7})[A-z]{0,1}\z/)
+  def search_for_plates_by_labwhere_locn_bc
+    @labware_barcodes = []
+    begin
+      get_labwares_per_location(location_barcode) unless location_barcode.nil?
+    rescue LabWhereClient::LabwhereException
+      return []
+    end
+    return [] if @labware_barcodes.blank?
+    params = {
+      barcodes: @labware_barcodes
+    }
+    Plate.search_for_plates(params)
   end
 
-  def barcode_is_ean13?(bc)
-    bc.match?(/^\d{13}$/)
+  def get_labwares_per_location(curr_locn_bc)
+    # collect any labware barcodes at this level
+    curr_locn_labwares = LabWhereClient::Location.labwares(curr_locn_bc)
+    curr_locn_labwares.map { |curr_labware| @labware_barcodes << curr_labware.barcode } if curr_locn_labwares.present?
+    # search recursively in any child locations
+    curr_locn_children = LabWhereClient::Location.children(curr_locn_bc)
+    curr_locn_children.each { |curr_locn| get_labwares_per_location(curr_locn.barcode) } if curr_locn_children.present?
   end
 end
