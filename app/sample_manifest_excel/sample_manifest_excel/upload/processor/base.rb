@@ -67,7 +67,7 @@ module SampleManifestExcel
         # Uniqueness of foreign barcodes in the database is checked in the specialised field sanger_tube_id.
         def check_for_barcodes_unique
           return unless any_duplicate_barcodes?
-          errors.add(:base, 'When uploading tubes the barcode must be unique for each tube.')
+          errors.add(:base, 'Duplicate barcodes detected, the barcode must be unique for each tube.')
         end
 
         def any_duplicate_barcodes?

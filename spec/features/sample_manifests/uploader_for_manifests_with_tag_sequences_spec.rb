@@ -146,6 +146,100 @@ feature 'Sample manifest with tag sequences' do
     end
   end
 
+  context 'plate sample manifest' do
+    let!(:user)     { create :admin }
+    let(:columns)   { SampleManifestExcel.configuration.columns.plate_default.dup }
+    let(:test_file) { 'test_file.xlsx' }
+
+    before(:each) do
+      download.save(test_file)
+      Delayed::Worker.delay_jobs = false
+    end
+
+    context 'valid' do
+      let(:download) { build(:test_download_plates, columns: columns) }
+
+      scenario 'upload' do
+        login_user(user)
+        visit('sample_manifest_upload_with_tag_sequences/new')
+        attach_file('File to upload', test_file)
+        click_button('Upload manifest')
+        expect(page).to have_content('Sample manifest successfully uploaded.')
+      end
+    end
+
+    context 'valid partial' do
+      let(:download) { build(:test_download_plates_partial, columns: columns) }
+
+      scenario 'upload' do
+        login_user(user)
+        visit('sample_manifest_upload_with_tag_sequences/new')
+        attach_file('File to upload', test_file)
+        click_button('Upload manifest')
+        expect(page).to have_content('Sample manifest successfully uploaded.')
+      end
+    end
+
+    context 'valid cgap foreign barcodes' do
+      let(:download) { build(:test_download_plates_cgap, columns: columns) }
+
+      scenario 'upload' do
+        login_user(user)
+        visit('sample_manifest_upload_with_tag_sequences/new')
+        attach_file('File to upload', test_file)
+        click_button('Upload manifest')
+        expect(page).to have_content('Sample manifest successfully uploaded.')
+      end
+    end
+
+    context 'valid cgap foreign barcodes partial' do
+      let(:download) { build(:test_download_plates_partial_cgap, columns: columns) }
+
+      scenario 'upload' do
+        login_user(user)
+        visit('sample_manifest_upload_with_tag_sequences/new')
+        attach_file('File to upload', test_file)
+        click_button('Upload manifest')
+        expect(page).to have_content('Sample manifest successfully uploaded.')
+      end
+    end
+
+    context 'invalid no file' do
+      let(:download) { build(:test_download_plates, columns: columns) }
+
+      scenario 'no file' do
+        login_user(user)
+        visit('sample_manifest_upload_with_tag_sequences/new')
+        click_button('Upload manifest')
+        expect(page).to have_content('No file attached')
+      end
+    end
+
+    context 'invalid for unrecognised foreign barcodes' do
+      let(:download) { build(:test_download_plates_cgap, columns: columns, validation_errors: [:sample_plate_id_unrecognised_foreign]) }
+
+      scenario 'validation errors' do
+        login_user(user)
+        visit('sample_manifest_upload_with_tag_sequences/new')
+        attach_file('File to upload', test_file)
+        click_button('Upload manifest')
+        expect(page).to have_content('The following error messages prevented the sample manifest from being uploaded')
+      end
+    end
+
+    context 'invalid for duplicate cgap barcodes' do
+      let(:download) { build(:test_download_plates_cgap, columns: columns, validation_errors: [:sample_plate_id_duplicates]) }
+
+      scenario 'validation errors' do
+        login_user(user)
+        visit('sample_manifest_upload_with_tag_sequences/new')
+        attach_file('File to upload', test_file)
+        click_button('Upload manifest')
+        expect(page).to have_content('The following error messages prevented the sample manifest from being uploaded')
+      end
+    end
+  end
+
   after(:all) do
     SampleManifestExcel.reset!
   end

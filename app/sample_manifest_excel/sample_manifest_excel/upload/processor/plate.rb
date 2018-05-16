@@ -12,7 +12,7 @@ module SampleManifestExcel
         # Uniqueness of foreign barcodes in the database is checked in the specialised field sanger_plate_id.
         def check_for_barcodes_unique
           return unless any_duplicate_barcodes?
-          errors.add(:base, 'When uploading plates the barcode must be unique for each plate.')
+          errors.add(:base, 'Duplicate barcodes detected, the barcode must be unique for each plate.')
         end
 
         def any_duplicate_barcodes?

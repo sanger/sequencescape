@@ -4,16 +4,17 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
 
-<h2>Upload a sample manifest (only if it includes tag sequences)</h2>
+<h2>Upload a sample manifest</h2>
+<p>Use this manifest upload screen for tube samples with tag sequences, and for tube and plate samples with foreign barcodes.</p>
 
 <%= form_tag(sample_manifest_upload_with_tag_sequences_path, multipart: true) do -%>
   <fieldset>
     <div class="form-group">
-      <%= label_tag :upload, 'File to upload' %>
+      <%= label_tag :upload, 'File to upload:' %></br>
       <%= file_field_tag :upload %>
     </div>
     <div class="form-group">
-      <%= submit_tag 'Upload manifest' %>
+      <%= submit_tag 'Upload manifest', class: 'btn btn-success' %>
     </div>
   </fieldset>
 <% end -%>

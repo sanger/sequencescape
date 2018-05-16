@@ -101,6 +101,8 @@ module SampleManifestExcel
           dynamic_attributes[sheet_row][:sanger_plate_id] = if cgap
                                                               if validation_errors.include?(:sample_plate_id_duplicates)
                                                                 'CGAP-99999'
+                                                              elsif validation_errors.include?(:sample_plate_id_unrecognised_foreign)
+                                                                "INVALID-#{cur_sample.assets.first.plate.id.to_s.upcase}#{(cur_sample.assets.first.plate.id % 10).to_s.upcase}"
                                                               else
                                                                 "CGAP-#{cur_sample.assets.first.plate.id.to_s(16).upcase}#{(cur_sample.assets.first.plate.id % 16).to_s(16).upcase}"
                                                               end
@@ -122,7 +124,7 @@ module SampleManifestExcel
 
       def create_tube_samples
         first_to_last.each do |sheet_row|
-          create_asset do |asset|
+          create_tube_asset do |asset|
             sample = asset.samples.first
             unless validation_errors.include?(:sample_manifest)
               sample.sample_manifest = sample_manifest
@@ -182,7 +184,7 @@ module SampleManifestExcel
         end
       end
 
-      def create_asset
+      def create_tube_asset
         asset = if %w[multiplexed_library library].include? manifest_type
                   FactoryGirl.create(:library_tube_with_barcode)
                 else
