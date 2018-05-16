@@ -249,7 +249,7 @@ class Study < ApplicationRecord
   # See app/models/study/metadata.rb for further customization
 
   # Scopes
-  scope :for_search_query, ->(query, _with_includes) {
+  scope :for_search_query, ->(query) {
                              joins(:study_metadata).where(['name LIKE ? OR studies.id=? OR prelim_id=?', "%#{query}%", query, query])
                            }
 

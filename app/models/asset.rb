@@ -135,51 +135,26 @@ class Asset < ApplicationRecord
   scope :include_plates_with_children, ->(filter) { filter ? all : without_children }
 
   # Named scope for search by query string behaviour
-  scope :for_search_query, ->(query, with_includes) {
-    search = '(assets.sti_type != "Well") AND ((assets.name IS NOT NULL AND assets.name LIKE :name)'
-    arguments = { name: "%#{query}%" }
-
-    # The entire string consists of one of more numeric characters, treat it as an id or barcode
-    if /\A\d+\z/.match?(query)
-      search << ' OR (assets.id = :id) OR (assets.barcode = :barcode)'
-      arguments[:id] = query.to_i
-      arguments[:barcode] = query.to_s
-    end
-
-    # If We're a Sanger Human barcode
-    if match = /\A([A-z]{2})(\d{1,7})[A-z]{0,1}\z/.match(query)
-      prefix_id = BarcodePrefix.find_by(prefix: match[1]).try(:id)
-      number = match[2]
-      search << ' OR (assets.barcode = :barcode AND assets.barcode_prefix_id = :prefix_id)' unless prefix_id.nil?
-      arguments[:barcode] = number
-      arguments[:prefix_id] = prefix_id
-    end
-
-    search << ')'
-
-    if with_includes
-      where(search, arguments).includes(requests: [:pipeline, :batch]).order('requests.pipeline_id ASC')
-    else
-      where(search, arguments)
-    end
+  scope :for_search_query, ->(query) {
+    barcode_compatible.where.not(sti_type: 'Well').where('assets.name LIKE :name', name: "%#{query}%")
+      .or( barcode_compatible.with_safe_id(query) )
+      .or( with_barcode(query) )
   }
+
+  scope :for_lab_searches_display, -> { includes(:barcodes, requests: [:pipeline, :batch]).order('requests.pipeline_id ASC') }
+
+  scope :barcode_compatible, -> { joins(:barcodes).references(:barcodes).distinct }
 
   # We accept not only an individual barcode but also an array of them.
   scope :with_barcode, ->(*barcodes) {
-    db_barcodes = barcodes.flatten.each_with_object([]) do |source_bc, store|
-      next if source_bc.blank?
-      store.concat(Barcode.extract_barcode(source_bc))
-    end
+    db_barcodes = Barcode.extract_barcodes(barcodes)
     joins(:barcodes).where(barcodes: { barcode: db_barcodes }).distinct
   }
 
   # In contrast to with_barocde, filter_by_barcode only filters in the event
   # a parameter is supplied. eg. an empty string does not filter the data
   scope :filter_by_barcode, ->(*barcodes) {
-    db_barcodes = barcodes.flatten.each_with_object([]) do |source_bc, store|
-      next if source_bc.blank?
-      store.concat(Barcode.extract_barcode(source_bc))
-    end
+    db_barcodes = Barcode.extract_barcodes(barcodes)
     db_barcodes.blank? ? joins(:barcodes) : joins(:barcodes).where(barcodes: { barcode: db_barcodes }).distinct
   }
 
