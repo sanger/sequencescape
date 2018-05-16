@@ -219,8 +219,8 @@ class Sample < ApplicationRecord
   broadcast_via_warren
 
   # Aker
-  has_many :sample_work_orders
-  has_many :work_orders, class_name: 'Aker::WorkOrder', through: :sample_work_orders
+  has_many :sample_jobs
+  has_many :jobs, class_name: 'Aker::Job', through: :sample_jobs
   belongs_to :container, class_name: 'Aker::Container'
 
   validates_presence_of :name
