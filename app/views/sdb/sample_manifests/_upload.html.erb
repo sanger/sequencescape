@@ -5,15 +5,24 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
 
 <h2>Upload a sample manifest</h2>
+<p>This sample manifest upload screen handles plates, tubes with tag sequences, and plates or tubes with foreign barcodes.</br>
 
 <div class='alert alert-warning'>
-  <strong>Warning!</strong> New sample manifests with Tag Sequences should be uploaded using the new page.
+  <strong>Warning!</strong> Sample manifests for tubes with tag groups should be uploaded using <%= link_to('this', controller: '/sample_manifest_upload_with_tag_sequences', action: 'new') %> page.
 </div>
 
-<%= form_for :sample_manifest, url: upload_sample_manifests_url, html: { multipart: true } do |form| -%>
-  <label style='display: none;' for="sample_manifest_uploaded">File to upload</label>
-  <%= form.file_field :uploaded, required: true %><br/><br />
-  <%= form.check_box :override %><label  for="sample_manifest_override">Override previously uploaded samples</label>
-  <br/><br />
-  <%= form.submit 'Upload manifest', class: 'btn btn-success' %>
-<% end %>
+<%= form_tag(upload_sample_manifests_path, multipart: true) do -%>
+<fieldset>
+    <div class="form-group">
+      <%= label_tag :sample_manifest_uploaded, 'File to upload' %></br>
+      <%= file_field_tag :uploaded, required: true %>
+    </div>
+    <div class="form-group">
+      <%= label_tag :sample_manifest_override, 'Override previously uploaded samples' %></br>
+      <%= check_box_tag :override %>
+    </div>
+    <div class="form-group">
+      <%= submit_tag 'Upload manifest', class: 'btn btn-success' %>
+    </div>
+  </fieldset>
+<% end -%>

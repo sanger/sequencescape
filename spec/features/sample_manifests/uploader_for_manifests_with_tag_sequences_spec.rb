@@ -26,8 +26,9 @@ feature 'Sample manifest with tag sequences' do
 
       scenario 'upload' do
         login_user(user)
-        visit('sample_manifest_upload_with_tag_sequences/new')
-        attach_file('File to upload', test_file)
+        visit('/sdb/')
+        click_on 'View all manifests'
+        attach_file('uploaded', test_file)
         click_button('Upload manifest')
         expect(page).to have_content('Sample manifest successfully uploaded.')
       end
@@ -38,8 +39,9 @@ feature 'Sample manifest with tag sequences' do
 
       scenario 'upload' do
         login_user(user)
-        visit('sample_manifest_upload_with_tag_sequences/new')
-        attach_file('File to upload', test_file)
+        visit('/sdb/')
+        click_on 'View all manifests'
+        attach_file('uploaded', test_file)
         click_button('Upload manifest')
         expect(page).to have_content('Sample manifest successfully uploaded.')
       end
@@ -50,15 +52,17 @@ feature 'Sample manifest with tag sequences' do
 
       scenario 'validation errors' do
         login_user(user)
-        visit('sample_manifest_upload_with_tag_sequences/new')
-        attach_file('File to upload', test_file)
+        visit('/sdb/')
+        click_on 'View all manifests'
+        attach_file('uploaded', test_file)
         click_button('Upload manifest')
         expect(page).to have_content('The following error messages prevented the sample manifest from being uploaded')
       end
 
       scenario 'no file' do
         login_user(user)
-        visit('sample_manifest_upload_with_tag_sequences/new')
+        visit('/sdb/')
+        click_on 'View all manifests'
         click_button('Upload manifest')
         expect(page).to have_content('No file attached')
       end
@@ -69,8 +73,9 @@ feature 'Sample manifest with tag sequences' do
 
       scenario 'validation errors' do
         login_user(user)
-        visit('sample_manifest_upload_with_tag_sequences/new')
-        attach_file('File to upload', test_file)
+        visit('/sdb/')
+        click_on 'View all manifests'
+        attach_file('uploaded', test_file)
         click_button('Upload manifest')
         expect(page).to have_content('The following error messages prevented the sample manifest from being uploaded')
       end
@@ -81,8 +86,9 @@ feature 'Sample manifest with tag sequences' do
 
       scenario 'validation errors' do
         login_user(user)
-        visit('sample_manifest_upload_with_tag_sequences/new')
-        attach_file('File to upload', test_file)
+        visit('/sdb/')
+        click_on 'View all manifests'
+        attach_file('uploaded', test_file)
         click_button('Upload manifest')
         expect(page).to have_content('The following error messages prevented the sample manifest from being uploaded')
       end
@@ -104,8 +110,9 @@ feature 'Sample manifest with tag sequences' do
       # upload
       expect(download.worksheet.multiplexed_library_tube.aliquots.count).to eq 0
       login_user(user)
-      visit('sample_manifest_upload_with_tag_sequences/new')
-      attach_file('File to upload', test_file)
+      visit('/sdb/')
+      click_on 'View all manifests'
+      attach_file('uploaded', test_file)
       click_button('Upload manifest')
       expect(page).to have_content('Sample manifest successfully uploaded.')
       expect(download.worksheet.multiplexed_library_tube.aliquots.count).to eq 6
@@ -123,8 +130,9 @@ feature 'Sample manifest with tag sequences' do
       expect(download.worksheet.multiplexed_library_tube.aliquots.all? { |a| a.library_type == 'My personal library type' }).to be_truthy
 
       login_user(user)
-      visit('sample_manifest_upload_with_tag_sequences/new')
-      attach_file('File to upload', test_file)
+      visit('/sdb/')
+      click_on 'View all manifests'
+      attach_file('uploaded', test_file)
       click_button('Upload manifest')
       expect(page).to have_content('Sample manifest successfully uploaded.')
 
@@ -137,8 +145,9 @@ feature 'Sample manifest with tag sequences' do
 
       scenario 'validation errors' do
         login_user(user)
-        visit('sample_manifest_upload_with_tag_sequences/new')
-        attach_file('File to upload', test_file)
+        visit('/sdb/')
+        click_on 'View all manifests'
+        attach_file('uploaded', test_file)
         click_button('Upload manifest')
         expect(page).to have_content('The following error messages prevented the sample manifest from being uploaded')
         expect(page).to have_content('Same tags AA, TT are used on rows 10, 15.')
@@ -161,8 +170,9 @@ feature 'Sample manifest with tag sequences' do
 
       scenario 'upload' do
         login_user(user)
-        visit('sample_manifest_upload_with_tag_sequences/new')
-        attach_file('File to upload', test_file)
+        visit('/sdb/')
+        click_on 'View all manifests'
+        attach_file('uploaded', test_file)
         click_button('Upload manifest')
         expect(page).to have_content('Sample manifest successfully uploaded.')
       end
@@ -173,8 +183,9 @@ feature 'Sample manifest with tag sequences' do
 
       scenario 'upload' do
         login_user(user)
-        visit('sample_manifest_upload_with_tag_sequences/new')
-        attach_file('File to upload', test_file)
+        visit('/sdb/')
+        click_on 'View all manifests'
+        attach_file('uploaded', test_file)
         click_button('Upload manifest')
         expect(page).to have_content('Sample manifest successfully uploaded.')
       end
@@ -185,8 +196,9 @@ feature 'Sample manifest with tag sequences' do
 
       scenario 'upload' do
         login_user(user)
-        visit('sample_manifest_upload_with_tag_sequences/new')
-        attach_file('File to upload', test_file)
+        visit('/sdb/')
+        click_on 'View all manifests'
+        attach_file('uploaded', test_file)
         click_button('Upload manifest')
         expect(page).to have_content('Sample manifest successfully uploaded.')
       end
@@ -197,8 +209,9 @@ feature 'Sample manifest with tag sequences' do
 
       scenario 'upload' do
         login_user(user)
-        visit('sample_manifest_upload_with_tag_sequences/new')
-        attach_file('File to upload', test_file)
+        visit('/sdb/')
+        click_on 'View all manifests'
+        attach_file('uploaded', test_file)
         click_button('Upload manifest')
         expect(page).to have_content('Sample manifest successfully uploaded.')
       end
@@ -209,7 +222,8 @@ feature 'Sample manifest with tag sequences' do
 
       scenario 'no file' do
         login_user(user)
-        visit('sample_manifest_upload_with_tag_sequences/new')
+        visit('/sdb/')
+        click_on 'View all manifests'
         click_button('Upload manifest')
         expect(page).to have_content('No file attached')
       end
@@ -220,8 +234,9 @@ feature 'Sample manifest with tag sequences' do
 
       scenario 'validation errors' do
         login_user(user)
-        visit('sample_manifest_upload_with_tag_sequences/new')
-        attach_file('File to upload', test_file)
+        visit('/sdb/')
+        click_on 'View all manifests'
+        attach_file('uploaded', test_file)
         click_button('Upload manifest')
         expect(page).to have_content('The following error messages prevented the sample manifest from being uploaded')
       end
@@ -232,8 +247,9 @@ feature 'Sample manifest with tag sequences' do
 
       scenario 'validation errors' do
         login_user(user)
-        visit('sample_manifest_upload_with_tag_sequences/new')
-        attach_file('File to upload', test_file)
+        visit('/sdb/')
+        click_on 'View all manifests'
+        attach_file('uploaded', test_file)
         click_button('Upload manifest')
         expect(page).to have_content('The following error messages prevented the sample manifest from being uploaded')
       end

@@ -11,23 +11,23 @@ class SampleManifestUploadWithTagSequencesController < ApplicationController
   end
 
   def create
-    if params[:upload].present?
-      @uploader = SampleManifest::Uploader.new(params[:upload].open, SampleManifestExcel.configuration, current_user)
-      if @uploader.valid?
-        if @uploader.run!
-          flash[:notice] = 'Sample manifest successfully uploaded.'
-          redirect_to '/sample_manifest_upload_with_tag_sequences/new'
-        else
-          flash.now[:error] = 'The sample manifest couldn\'t be uploaded.'
-          render :new
-        end
-      else
-        flash.now[:error] = @uploader.errors.full_messages.unshift('The following error messages prevented the sample manifest from being uploaded:')
-        render :new
-      end
-    else
-      flash.now[:error] = 'No file attached'
-      render :new
+    if params[:uploaded].blank?
+      flash[:error] = 'No CSV file uploaded'
+      return
     end
+
+    @sample_manifest = SampleManifest.find_sample_manifest_from_uploaded_spreadsheet(params[:uploaded])
+    if @sample_manifest.nil?
+      flash[:error] = 'Cannot find details about the sample manifest'
+      return
+    end
+
+    @sample_manifest.update(uploaded: params[:uploaded])
+    @sample_manifest.process(current_user, params[:override] == '1')
+    flash[:notice] = 'Manifest being processed'
+  rescue CSV::MalformedCSVError
+    flash[:error] = 'Invalid CSV file'
+  ensure
+    redirect_to @sample_manifest.present? ? sample_manifests_study_path(@sample_manifest.study) : sample_manifests_path
   end
 end

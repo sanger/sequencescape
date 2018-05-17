@@ -55,9 +55,8 @@ feature 'track SampleManifest updates' do
              ['Created by Sample Manifest', '2010-07-12', 'Monday 12 July, 2010', 'john']]
     expect(fetch_table('table#events')).to eq(table)
 
-    visit('/sdb/')
-    click_on 'View all manifests'
-    attach_file('File to upload', 'test/data/test_blank_wells.csv')
+    visit('/sample_manifest_upload_with_tag_sequences/new')
+    attach_file('uploaded', 'test/data/test_blank_wells.csv')
     click_button 'Upload manifest'
     Delayed::Worker.new.work_off
 
@@ -79,9 +78,8 @@ feature 'track SampleManifest updates' do
 
     # A different user logs in and updates the manifest
     login_user new_user
-    visit('/sdb/')
-    click_on 'View all manifests'
-    attach_file('File to upload', 'test/data/test_blank_wells_with_no_blanks.csv')
+    visit('/sample_manifest_upload_with_tag_sequences/new')
+    attach_file('uploaded', 'test/data/test_blank_wells_with_no_blanks.csv')
 
     # upload without override
     click_button 'Upload manifest'
@@ -104,12 +102,11 @@ feature 'track SampleManifest updates' do
              ['Updated by Sample Manifest', '2010-07-12', 'Monday 12 July, 2010', 'jane']]
     expect(fetch_table('table#events')).to eq(table)
 
-    visit('/sdb/')
-    click_on 'View all manifests'
-    attach_file('File to upload', 'test/data/test_blank_wells_with_no_blanks_new_data.csv')
+    visit('/sample_manifest_upload_with_tag_sequences/new')
+    attach_file('uploaded', 'test/data/test_blank_wells_with_no_blanks_new_data.csv')
 
     # upload with override
-    check 'Override previously uploaded samples'
+    check 'override'
     click_button 'Upload manifest'
     Delayed::Worker.new.work_off
 
