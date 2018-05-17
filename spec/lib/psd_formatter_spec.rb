@@ -4,9 +4,9 @@ require 'ostruct'
 describe PsdFormatter do
   let(:deployment_info) do
     OpenStruct.new(
-      :name => 'Sequencescape',
-      :version => '10.3.0',
-      :environment => 'test'
+      name: 'Sequencescape',
+      version: '10.3.0',
+      environment: 'test'
     )
   end
 
