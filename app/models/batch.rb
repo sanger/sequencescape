@@ -54,17 +54,16 @@ class Batch < ApplicationRecord
   after_save :rebroadcast
 
   # Named scope for search by query string behavior
-  scope :for_search_query, ->(query, _with_includes) {
+  scope :for_search_query, ->(query) {
     user = User.find_by(login: query)
     if user
       where(user_id: user)
-    # Annoyingly if our number is out of range, rails throws an exception
-    elsif (-2147483648...2147483648).cover?(query.to_i)
-      where(id: query)
     else
-      none
+      with_safe_id(query) # Ensures extra long input (most likely barcodes) doesn't throw an exception
     end
   }
+
+  scope :for_lab_searches_display, -> {}
 
   scope :includes_for_ui,    -> { limit(5).includes(:user, :assignee, :pipeline) }
   scope :pending_for_ui,     -> { where(state: 'pending',   production_state: nil).latest_first }

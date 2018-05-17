@@ -219,8 +219,8 @@ class Sample < ApplicationRecord
   broadcast_via_warren
 
   # Aker
-  has_many :sample_work_orders
-  has_many :work_orders, class_name: 'Aker::WorkOrder', through: :sample_work_orders
+  has_many :sample_jobs
+  has_many :jobs, class_name: 'Aker::Job', through: :sample_jobs
   belongs_to :container, class_name: 'Aker::Container'
 
   validates_presence_of :name
@@ -258,7 +258,7 @@ class Sample < ApplicationRecord
 
   scope :with_gender, ->(*_names) { joins(:sample_metadata).where.not(sample_metadata: { gender: nil }) }
 
-  scope :for_search_query, ->(query, _with_includes) {
+  scope :for_search_query, ->(query) {
     # Note: This search is performed in two stages so that we can make best use of our indicies
     # A naive search forces a full table lookup for all queries, ignoring the index in the sample metadata table
     # instead favouring the sample_id index. Rather than trying to bend MySQL to our will, we'll solve the

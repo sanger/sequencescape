@@ -1,13 +1,22 @@
 require 'rails_helper'
 
 RSpec.describe Aker::Factories::Material, type: :model, aker: true do
+  let(:json) do
+    file = File.read(File.join('spec', 'data', 'aker', 'job.json'))
+    JSON.parse(file).with_indifferent_access
+  end
   let(:params) do
-    file = File.read(File.join('spec', 'data', 'aker', 'work_order.json'))
-    JSON.parse(file).with_indifferent_access[:work_order][:materials].first
+    json[:job][:materials].first
+  end
+  let(:container_params) do
+    json[:job][:container]
   end
 
   it 'is valid with all relevant attributes' do
     material = Aker::Factories::Material.new(params)
+    material.container = Aker::Factories::Container.new(container_params)
+    material.create
+
     expect(material).to be_valid
     expect(material.name).to eq(params[:_id])
     expect(material.gender).to eq(params[:gender])
@@ -33,12 +42,17 @@ RSpec.describe Aker::Factories::Material, type: :model, aker: true do
   end
 
   it 'is not valid unless the container is valid' do
-    material = Aker::Factories::Material.new(params.merge(container: params[:container].except(:barcode)))
+    material = Aker::Factories::Material.new(params)
+    material.container = Aker::Factories::Container.new(container_params.except(:barcode))
+    material.create
+
     expect(material).to_not be_valid
   end
 
   it '#create persists the material if it is valid' do
-    material = Aker::Factories::Material.create(params)
+    material = Aker::Factories::Material.new(params)
+    material.container = Aker::Factories::Container.new(container_params)
+    material.create
     expect(material).to be_present
     sample = Sample.find_by(name: material.name)
     expect(sample).to be_present
