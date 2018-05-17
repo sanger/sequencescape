@@ -78,16 +78,18 @@ class AssetShape < ApplicationRecord
   def generate_map(size)
     raise StandardError, 'Map already exists' if Map.find_by(asset_size: size, asset_shape_id: id).present?
     ActiveRecord::Base.transaction do
-      (0...size).each do |i|
-        Map.create!(
+      map_data = Array.new(size) do |i|
+        {
           asset_size: size,
-          asset_shape_id: id,
+          asset_shape: id,
           location_id: i + 1,
           row_order: i,
           column_order: horizontal_to_vertical(i, size) || 0,
           description: location_from_index(i, size)
-        )
+        }
       end
+      p map_data
+      Map.import(map_data)
     end
   end
 end

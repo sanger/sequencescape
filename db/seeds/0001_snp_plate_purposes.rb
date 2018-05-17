@@ -205,31 +205,6 @@ plate_purposes = <<~EOS
     stock_plate: true
 EOS
 
-AssetShape.create!(
-  name: 'Standard',
-  horizontal_ratio: 3,
-  vertical_ratio: 2,
-  description_strategy: 'Map::Coordinate'
-)
-AssetShape.create!(
-  name: 'Fluidigm96',
-  horizontal_ratio: 3,
-  vertical_ratio: 8,
-  description_strategy: 'Map::Sequential'
-)
-AssetShape.create!(
-  name: 'Fluidigm192',
-  horizontal_ratio: 3,
-  vertical_ratio: 4,
-  description_strategy: 'Map::Sequential'
-)
-AssetShape.create!(
-  name: 'StripTubeColumn',
-  horizontal_ratio: 1,
-  vertical_ratio: 8,
-  description_strategy: 'Map::Sequential'
-)
-
 YAML::load(plate_purposes).each do |plate_purpose|
   attributes = plate_purpose.reverse_merge(
     'type' => 'PlatePurpose',

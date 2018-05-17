@@ -88,7 +88,7 @@ class Map < ApplicationRecord
     end
 
     def self.location_from_index(index, size)
-      horizontal_plate_position_to_description(index - 1, size)
+      horizontal_plate_position_to_description(index + 1, size)
     end
 
     class << self
