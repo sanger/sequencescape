@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This file is part of SEQUENCESCAPE; it is distributed under the terms of
 # GNU General Public License version 1 or later;
 # Please refer to the LICENSE and README files for information on licensing and
@@ -14,27 +16,27 @@ describe Well do
 
     context 'with gender_markers results' do
       setup do
-        @well.well_attribute.update_attributes!(gender_markers: ['M', 'F', 'F'])
+        @well.well_attribute.update!(gender_markers: %w[M F F])
       end
       it 'create an event if nothings changed and there are no previous events' do
-        @well.update_gender_markers!(['M', 'F', 'F'], 'SNP')
+        @well.update_gender_markers!(%w[M F F], 'SNP')
         assert_equal 1, @well.events.count
       end
 
       it 'an event for each resource if nothings changed' do
-        @well.update_gender_markers!(['M', 'F', 'F'], 'MSPEC')
+        @well.update_gender_markers!(%w[M F F], 'MSPEC')
         assert_equal 1, @well.events.count
         assert 'MSPEC', @well.events.last.content
-        @well.update_gender_markers!(['M', 'F', 'F'], 'SNP')
+        @well.update_gender_markers!(%w[M F F], 'SNP')
         assert_equal 2, @well.events.count
         assert 'SNP', @well.events.last.content
       end
 
       it 'only 1 event if nothings changed for the same resource' do
-        @well.update_gender_markers!(['M', 'F', 'F'], 'SNP')
+        @well.update_gender_markers!(%w[M F F], 'SNP')
         assert_equal 1, @well.events.count
         assert 'SNP', @well.events.last.content
-        @well.update_gender_markers!(['M', 'F', 'F'], 'SNP')
+        @well.update_gender_markers!(%w[M F F], 'SNP')
         assert_equal 1, @well.events.count
         assert 'SNP', @well.events.last.content
       end
@@ -42,10 +44,10 @@ describe Well do
 
     context 'without gender_markers results' do
       it 'an event for each resource if its changed' do
-        @well.update_gender_markers!(['M', 'F', 'F'], 'MSPEC')
+        @well.update_gender_markers!(%w[M F F], 'MSPEC')
         assert_equal 1, @well.events.count
         assert 'MSPEC', @well.events.last.content
-        @well.update_gender_markers!(['M', 'F', 'F'], 'SNP')
+        @well.update_gender_markers!(%w[M F F], 'SNP')
         assert_equal 2, @well.events.count
         assert 'SNP', @well.events.last.content
       end
@@ -53,7 +55,7 @@ describe Well do
 
     context 'with sequenom_count results' do
       setup do
-        @well.well_attribute.update_attributes!(sequenom_count: 5)
+        @well.well_attribute.update!(sequenom_count: 5)
       end
 
       it 'add an event if its changed' do
@@ -93,7 +95,7 @@ describe Well do
       norm_plates.each_with_index do |plate, plate_index|
         plate.wells.each_with_index do |w, well_index|
           conc = well_plate_concentrations[well_index][plate_index]
-          w.well_attribute.update_attributes(concentration: conc)
+          w.well_attribute.update(concentration: conc)
           stock_plate.wells[well_index].target_wells << w
         end
       end
@@ -198,7 +200,7 @@ describe Well do
           minimum_volume = 10
           maximum_volume = 50
           robot_minimum_picking_volume = 1.0
-          @source_well.well_attribute.update_attributes!(concentration: measured_concentration, measured_volume: measured_volume, current_volume: current_volume)
+          @source_well.well_attribute.update!(concentration: measured_concentration, measured_volume: measured_volume, current_volume: current_volume)
           @target_well.volume_to_cherrypick_by_nano_grams(minimum_volume, maximum_volume, target_ng, @source_well, robot_minimum_picking_volume)
         end
         it "output stock_to_pick #{stock_to_pick} for a target of #{target_ng} with vol #{measured_volume} and conc #{measured_concentration}" do
@@ -226,7 +228,7 @@ describe Well do
           stock_to_pick = 0.1
           buffer_added = 9.9
           robot_minimum_picking_volume = nil
-          @source_well.well_attribute.update_attributes!(concentration: @measured_concentration, measured_volume: @measured_volume)
+          @source_well.well_attribute.update!(concentration: @measured_concentration, measured_volume: @measured_volume)
           @target_well.volume_to_cherrypick_by_nano_grams(@minimum_volume, @maximum_volume, @target_ng, @source_well, robot_minimum_picking_volume)
           assert_equal stock_to_pick, @target_well.get_picked_volume
           assert_equal buffer_added, @target_well.well_attribute.buffer_volume
@@ -235,7 +237,7 @@ describe Well do
           stock_to_pick = 1
           buffer_added = 9
           robot_minimum_picking_volume = 1.0
-          @source_well.well_attribute.update_attributes!(concentration: @measured_concentration, measured_volume: @measured_volume)
+          @source_well.well_attribute.update!(concentration: @measured_concentration, measured_volume: @measured_volume)
           @target_well.volume_to_cherrypick_by_nano_grams(@minimum_volume, @maximum_volume, @target_ng, @source_well, robot_minimum_picking_volume)
           assert_equal stock_to_pick, @target_well.get_picked_volume
           assert_equal buffer_added, @target_well.well_attribute.buffer_volume
@@ -244,7 +246,7 @@ describe Well do
           stock_to_pick = 10.0
           buffer_added = 0.0
           robot_minimum_picking_volume = 10.0
-          @source_well.well_attribute.update_attributes!(concentration: @measured_concentration, measured_volume: @measured_volume)
+          @source_well.well_attribute.update!(concentration: @measured_concentration, measured_volume: @measured_volume)
           @target_well.volume_to_cherrypick_by_nano_grams(@minimum_volume, @maximum_volume, @target_ng, @source_well, robot_minimum_picking_volume)
           assert_equal stock_to_pick, @target_well.get_picked_volume
           assert_equal buffer_added, @target_well.well_attribute.buffer_volume
@@ -253,7 +255,7 @@ describe Well do
           stock_to_pick = 5.0
           buffer_added = 5.0
           robot_minimum_picking_volume = 5.0
-          @source_well.well_attribute.update_attributes!(concentration: @measured_concentration, measured_volume: @measured_volume)
+          @source_well.well_attribute.update!(concentration: @measured_concentration, measured_volume: @measured_volume)
           @target_well.volume_to_cherrypick_by_nano_grams(@minimum_volume, @maximum_volume, @target_ng, @source_well, robot_minimum_picking_volume)
           assert_equal stock_to_pick, @target_well.get_picked_volume
           assert_equal buffer_added, @target_well.well_attribute.buffer_volume
@@ -278,9 +280,9 @@ describe Well do
       end
 
       it 'sets the buffer volume' do
-        vol_to_pick = @well.volume_to_cherrypick_by_nano_grams_per_micro_litre(5.0, 50.0, 200.0, 20)
+        @well.volume_to_cherrypick_by_nano_grams_per_micro_litre(5.0, 50.0, 200.0, 20)
         assert_equal 3.75, @well.get_buffer_volume
-        vol_to_pick = @well.volume_to_cherrypick_by_nano_grams_per_micro_litre(13.0, 30.0, 100.0, 20)
+        @well.volume_to_cherrypick_by_nano_grams_per_micro_litre(13.0, 30.0, 100.0, 20)
         assert_equal 9.1, @well.get_buffer_volume
       end
 
@@ -301,9 +303,9 @@ describe Well do
       ].each do |volume_required, concentration_required, source_concentration, source_volume, robot_minimum_pick_volume, volume_obtained, buffer_volume_obtained, scenario|
         context "when testing #{scenario}" do
           setup do
-            @result_volume = ('%.1f' % @well.volume_to_cherrypick_by_nano_grams_per_micro_litre(volume_required,
-                                                                                                concentration_required, source_concentration, source_volume, robot_minimum_pick_volume)).to_f
-            @result_buffer_volume = ('%.1f' % @well.get_buffer_volume).to_f
+            @result_volume = format('%.1f', @well.volume_to_cherrypick_by_nano_grams_per_micro_litre(volume_required,
+                                                                                                     concentration_required, source_concentration, source_volume, robot_minimum_pick_volume)).to_f
+            @result_buffer_volume = format('%.1f', @well.get_buffer_volume).to_f
           end
           it 'gets correct volume quantity' do
             assert_equal volume_obtained, @result_volume
@@ -319,9 +321,9 @@ describe Well do
         @our_product_criteria = create :product_criteria
         @other_criteria = create :product_criteria
 
-        @old_report = create :qc_report, product_criteria: @our_product_criteria, created_at: Time.now - 1.day, report_identifier: "A#{Time.now}"
-        @current_report = create :qc_report, product_criteria: @our_product_criteria, created_at: Time.now - 1.hour, report_identifier: "B#{Time.now}"
-        @unrelated_report = create :qc_report, product_criteria: @other_criteria, created_at: Time.now, report_identifier: "C#{Time.now}"
+        @old_report = create :qc_report, product_criteria: @our_product_criteria, created_at: Time.zone.now - 1.day, report_identifier: "A#{Time.zone.now}"
+        @current_report = create :qc_report, product_criteria: @our_product_criteria, created_at: Time.zone.now - 1.hour, report_identifier: "B#{Time.zone.now}"
+        @unrelated_report = create :qc_report, product_criteria: @other_criteria, created_at: Time.zone.now, report_identifier: "C#{Time.zone.now}"
 
         @stock_well = create :well
 
@@ -338,55 +340,16 @@ describe Well do
         assert_equal [@expected_metric], @well.latest_stock_metrics(@our_product_criteria.product)
       end
     end
-  end
 
-  context 'can be rendered as a stock resource' do
-    setup do
-      Timecop.freeze(DateTime.parse('2012-03-11 10:22:42')) do
-        @well = create :well, map: Map.find_by!(description: 'A1'), plate: create(:plate, barcode: '12345'), well_attribute: create(:complete_well_attribute)
-        @study = create :study
-        @sample = create :sample
-        @aliquot = create :aliquot, study: @study, sample: @sample, receptacle: @well
-        @messenger = Messenger.new(target: @well, template: 'WellStockResourceIO', root: 'stock_resource')
+    describe '#register_stock!' do
+      subject { @well.register_stock! }
+
+      it 'allow registration of messengers' do
+        expect { subject }.to change { Messenger.count }.by(1)
+        expect(subject.root).to eq 'stock_resource'
+        expect(subject.template).to eq 'WellStockResourceIO'
+        expect(subject.target).to eq @well
       end
-    end
-
-    it 'render what we expect' do
-      assert_equal({
-                     'lims' => 'SQSCP',
-                     'stock_resource' => {
-                       'created_at' => '2012-03-11T10:22:42+00:00',
-                       'updated_at' => '2012-03-11T10:22:42+00:00',
-                       'samples' => [
-                         'sample_uuid' => @sample.uuid,
-                         'study_uuid' => @study.uuid
-                       ],
-                       'stock_resource_id' => @well.id,
-                       'stock_resource_uuid' => @well.uuid,
-                       'machine_barcode' => '1220012345855',
-                       'human_barcode' => 'DN12345U',
-                       'labware_coordinate' => 'A1',
-
-                       'current_volume' => 15.0,
-                       'initial_volume' => nil,
-                       'concentration'  => 23.2,
-
-                       'gel_pass' => 'Pass',
-                       'pico_pass' => 'Pass',
-                       'snp_count' => 2,
-
-                       'labware_type' => 'well'
-                     }
-                   }, JSON.parse(@messenger.to_json))
-    end
-
-    it 'allow registration of messengers' do
-      @messenger_count = Messenger.count
-      @well.register_stock!
-      assert_equal 1, Messenger.count - @messenger_count
-      assert_equal 'stock_resource', Messenger.last.root
-      assert_equal 'WellStockResourceIO', Messenger.last.template
-      assert_equal @well, Messenger.last.target
     end
   end
 end
