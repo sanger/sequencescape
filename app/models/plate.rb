@@ -327,7 +327,7 @@ class Plate < Asset
       .with_plate_purpose_ids(params[:plate_purpose_ids] || nil)
       .created_on_or_after(params[:start_date] || nil)
       .created_on_or_before(params[:end_date] || nil)
-      .filter_by_barcode(params[:barcodes] || nil)     #  .where.not(barcode: nil)
+      .filter_by_barcode(params[:barcodes] || nil) #  .where.not(barcode: nil)
       .distinct
   end
 

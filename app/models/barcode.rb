@@ -61,6 +61,13 @@ class Barcode < ApplicationRecord
     Barcode.find_by(format: barcode_format, barcode: search_barcode)
   end
 
+  def self.extract_barcodes(barcodes)
+    barcodes.flatten.each_with_object([]) do |source_bc, store|
+      next if source_bc.blank?
+      store.concat(Barcode.extract_barcode(source_bc))
+    end
+  end
+
   def handler
     @handler ||= handler_class.new(barcode)
   end
