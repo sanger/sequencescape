@@ -11,11 +11,11 @@
 <% end %>
 
 
-<%= page_title "Print Labels", "#{@printable.label} #{@printable.id} (#{@printable.sanger_human_barcode})" %>
+<%= page_title "Print Labels", "#{@printable.label} #{@printable.id} (#{@printable.human_barcode})" %>
 <% unless @direct_printing %>
   <%= alert(:warning) do %>
     <strong>Caution!</strong>
-    <p>The <%= @asset.label %> <%= @asset.display_name %> is not barcoded directly. This page is for printing barcodes for <%= @printable.label %> <%= @printable.sanger_human_barcode %> instead.</p>
+    <p>The <%= @asset.label %> <%= @asset.display_name %> is not barcoded directly. This page is for printing barcodes for <%= @printable.label %> <%= @printable.human_barcode %> instead.</p>
   <% end %>
 <% end %>
 <%= render partial: 'print_form', locals: { asset: @printable } %>

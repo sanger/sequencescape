@@ -13,7 +13,7 @@ class PicoSetResultsController < ApplicationController
     pico_set_result = params[:pico_set_result]
 
     if pico_set_result
-      pico_assay_plate = PicoAssayPlate.find_from_machine_barcode(pico_set_result[:assay_barcode])
+      pico_assay_plate = PicoAssayPlate.find_from_barcode(pico_set_result[:assay_barcode])
     end
 
     message = {}

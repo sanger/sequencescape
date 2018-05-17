@@ -12,7 +12,6 @@ class Lane < Receptacle
     'Failed on yield but sufficient data for experiment',
     'Failed on quality but sufficient data for experiment',
     'Failed on adapter contamination but data sufficient for experiment'
-
   ]
 
   LIST_REASONS_POSITIVE = [

@@ -27,8 +27,16 @@ module SearchBehaviour
 
   def perform_search(query)
     searchable_classes.each do |clazz|
-      instance_variable_set("@#{clazz.name.underscore.pluralize}", clazz.for_search_query(query, extended))
+      clazz_search(clazz, query)
     end
+  end
+
+  def clazz_search(clazz, query)
+    instance_variable_set("@#{clazz.name.underscore.pluralize}", clazz_query(clazz, query))
+  end
+
+  def clazz_query(clazz, query)
+    clazz.for_search_query(query)
   end
 
   def each_non_empty_search_result

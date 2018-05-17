@@ -39,7 +39,7 @@ class CreatorTest < ActiveSupport::TestCase
     user = create :user
     plate_count = Plate.count
 
-    @creator.execute(parent.ean13_barcode, barcode_printer, user)
+    @creator.execute(parent.machine_barcode, barcode_printer, user)
     assert_equal 1, Plate.count - plate_count
     child = parent.reload.children.first
 
@@ -47,7 +47,7 @@ class CreatorTest < ActiveSupport::TestCase
 
     parent.wells.each_with_index do |well, i|
       matching_aliquots = (well.aliquots.first =~ child.wells[i].aliquots.first)
-      assert matching_aliquots, "Aliquots do not match in #{well.map_description}"
+      assert matching_aliquots, "Aliquots do not match in #{well.map_description}: #{well.aliquots.first} !~= #{child.wells[i].aliquots.first}"
     end
   end
 end

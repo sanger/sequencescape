@@ -278,7 +278,7 @@ class Request < ApplicationRecord
 
   scope :for_request_types, ->(types) { joins(:request_type).where(request_types: { key: types }) }
 
-  scope :for_search_query, ->(query, _with_includes) {
+  scope :for_search_query, ->(query) {
                              where(['id=?', query])
                            }
 

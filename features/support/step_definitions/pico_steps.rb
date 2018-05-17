@@ -14,7 +14,7 @@ When /^I post the JSON below to update the plate:$/ do |update_json|
 end
 
 Then /^well "([^"]*)" on plate "([^"]*)" should have a concentration of (\d+\.\d+)$/ do |well_description, raw_barcode, concentration|
-  plate = Plate.find_from_machine_barcode(raw_barcode)
+  plate = Plate.find_from_barcode(raw_barcode)
   well = plate.find_well_by_name(well_description)
   assert_equal well.get_concentration, concentration.to_f
 end

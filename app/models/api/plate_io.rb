@@ -16,7 +16,7 @@ class Api::PlateIO < Api::Base
       base.class_eval do
         extend ClassMethods
 
-        scope :including_associations_for_json, -> { includes([:uuid_object, :plate_metadata, :barcode_prefix, { plate_purpose: :uuid_object }]) }
+        scope :including_associations_for_json, -> { includes([:uuid_object, :plate_metadata, :barcodes, { plate_purpose: :uuid_object }]) }
         alias_method(:json_root, :url_name)
       end
     end
@@ -30,15 +30,13 @@ class Api::PlateIO < Api::Base
   map_attribute_to_json_attribute(:uuid)
   map_attribute_to_json_attribute(:id)
   map_attribute_to_json_attribute(:name)
-  map_attribute_to_json_attribute(:barcode)
+  map_attribute_to_json_attribute(:barcode_number, 'barcode')
   map_attribute_to_json_attribute(:size)
   map_attribute_to_json_attribute(:created_at)
   map_attribute_to_json_attribute(:updated_at)
 
-  with_association(:plate_metadata) do
-    map_attribute_to_json_attribute(:infinium_barcode)
-    map_attribute_to_json_attribute(:fluidigm_barcode)
-  end
+  map_attribute_to_json_attribute(:infinium_barcode)
+  map_attribute_to_json_attribute(:fluidigm_barcode)
 
   with_association(:plate_purpose, if_nil_use: :stock_plate_purpose) do
     map_attribute_to_json_attribute(:name, 'plate_purpose_name')
@@ -50,7 +48,5 @@ class Api::PlateIO < Api::Base
     end
   end
 
-  with_association(:barcode_prefix) do
-    map_attribute_to_json_attribute(:prefix, 'barcode_prefix')
-  end
+  map_attribute_to_json_attribute(:prefix, 'barcode_prefix')
 end

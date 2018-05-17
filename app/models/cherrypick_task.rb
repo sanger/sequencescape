@@ -24,7 +24,7 @@ class CherrypickTask < Task
       # NOTE: 'sample' here is not a Sequencescape sample but a random selection from the wells.
       @owner.send(:generate_control_request, ControlPlate.first.illumina_wells.sample).tap do |request|
         @batch.requests << request
-        yield([request.id, request.asset.plate.barcode, request.asset.map.description])
+        yield([request.id, request.asset.plate.human_barcode, request.asset.map.description])
         @control_added = true
       end
     end
@@ -196,7 +196,7 @@ class CherrypickTask < Task
 
     # Ensure that a non-empty plate is stored and that the control plate is added if it has been used
     push_completed_plate.call unless current_plate.empty?
-    source_plates << ControlPlate.first.barcode if batch.control_added?
+    source_plates << ControlPlate.first.human_barcode if batch.control_added?
 
     [plates, source_plates]
   end
@@ -218,21 +218,27 @@ class CherrypickTask < Task
     return false
   end
 
-  def build_plate_wells_from_requests(requests)
-    Request.select(['requests.id AS id', 'plates.barcode AS barcode', 'maps.description AS description'])
-           .joins([
-             'INNER JOIN assets wells ON requests.asset_id=wells.id',
-             'INNER JOIN container_associations ON container_associations.content_id=wells.id',
-             'INNER JOIN assets plates ON plates.id=container_associations.container_id',
-             'INNER JOIN maps ON wells.map_id=maps.id'
-           ])
-           .order('plates.barcode ASC, maps.column_order ASC')
-           .where(requests: { id: requests })
-           .all.map do |request|
-      [request.id, request.barcode, request.description]
-    end
+  def create_control_request_from_well(control_param)
+    return nil unless control_param.match?(/control/)
+    well = get_well_from_control_param(control_param)
+    return nil if well.nil?
+    generate_control_request(well)
   end
-  private :build_plate_wells_from_requests
+
+  # Sublime syntax highlighting is broken / This comment fixes it.
+
+  private
+
+  def build_plate_wells_from_requests(requests)
+    Request.joins([
+      'INNER JOIN assets wells ON requests.asset_id=wells.id',
+      'INNER JOIN container_associations ON container_associations.content_id=wells.id',
+      'INNER JOIN barcodes ON barcodes.asset_id = container_associations.container_id',
+      'INNER JOIN maps ON wells.map_id=maps.id'
+    ]).order('container_associations.container_id ASC, maps.column_order ASC')
+           .where(requests: { id: requests })
+           .pluck('requests.id', 'barcodes.barcode', 'maps.description').uniq
+  end
 
   def generate_control_request(well)
     # TODO: create a genotyping request for the control request
@@ -242,19 +248,10 @@ class CherrypickTask < Task
       target_asset: Well.create!(aliquots: well.aliquots.map(&:dup))
     )
   end
-  private :generate_control_request
 
   def get_well_from_control_param(control_param)
     control_param.scan(/([\d]+)/)
     well_id = $1.to_i
     Well.find_by(id: well_id)
-  end
-  private :get_well_from_control_param
-
-  def create_control_request_from_well(control_param)
-    return nil unless control_param.match?(/control/)
-    well = get_well_from_control_param(control_param)
-    return nil if well.nil?
-    generate_control_request(well)
   end
 end

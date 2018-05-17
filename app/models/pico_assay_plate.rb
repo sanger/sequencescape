@@ -5,8 +5,6 @@
 # Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
 
 class PicoAssayPlate < Plate
-  self.prefix = 'PA'
-
   class WellDetail
     attr_accessor :map, :parent_plate
 

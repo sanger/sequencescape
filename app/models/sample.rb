@@ -258,7 +258,7 @@ class Sample < ApplicationRecord
 
   scope :with_gender, ->(*_names) { joins(:sample_metadata).where.not(sample_metadata: { gender: nil }) }
 
-  scope :for_search_query, ->(query, _with_includes) {
+  scope :for_search_query, ->(query) {
     # Note: This search is performed in two stages so that we can make best use of our indicies
     # A naive search forces a full table lookup for all queries, ignoring the index in the sample metadata table
     # instead favouring the sample_id index. Rather than trying to bend MySQL to our will, we'll solve the

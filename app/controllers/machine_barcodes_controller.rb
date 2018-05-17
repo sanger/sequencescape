@@ -10,7 +10,7 @@ class MachineBarcodesController < ApplicationController
   before_action :evil_parameter_hack!
 
   def show
-    asset = Asset.with_machine_barcode(params[:id]).first
+    asset = Asset.with_barcode(params[:id]).first
     summary = asset.present? ? asset.summary_hash : {}
     status = asset.present? ? 200 : 404
     respond_to do |format|

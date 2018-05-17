@@ -13,7 +13,10 @@
 <tbody>
 <% @requests.each do |request| %>
   <tr>
-    <td><%= label_tag( "request[#{request.id}]", "QC PacBioLibraryTube #{request.target_asset.barcode}", style: 'display:none;') %><%= request.target_asset.barcode %></td>
+    <td>
+      <%= label_tag( "request[#{request.id}]", "QC PacBioLibraryTube #{request.target_asset.human_barcode}", style: 'display:none;') %>
+      <%= request.target_asset.human_barcode %>
+    </td>
     <td><%= select_tag("request[#{request.id}]", options_for_select({"Pass"=>"passed", "Fail"=>"failed"}, 'passed')) %></td>
   </tr>
 <% end%>

@@ -46,7 +46,7 @@ RSpec.describe Api::V2::WellResource, type: :resource do
   context 'on a plate' do
     let(:plate) { create :plate, barcode: '11' }
     let(:position) { create :map, description: 'A1' }
-    let(:expected_barcode_hash) { { 'ean13_barcode' => '1220000011748', 'sanger_human_barcode' => 'DN11J' } }
+    let(:expected_barcode_hash) { { 'ean13_barcode' => '1220000011748', 'human_barcode' => 'DN11J' } }
     let(:expected_position) { { 'name' => 'A1' } }
     it_behaves_like 'a well resource'
   end
@@ -54,7 +54,7 @@ RSpec.describe Api::V2::WellResource, type: :resource do
   context 'off a plate' do
     let(:plate) { nil }
     let(:position) { nil }
-    let(:expected_barcode_hash) { { 'ean13_barcode' => nil, 'sanger_human_barcode' => nil } }
+    let(:expected_barcode_hash) { { 'ean13_barcode' => nil, 'human_barcode' => nil } }
     let(:expected_position) { { 'name' => nil } }
     it_behaves_like 'a well resource'
   end

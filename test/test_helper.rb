@@ -39,7 +39,6 @@ class ActiveSupport::TestCase
   extend Sanger::Testing::View::Macros
   extend Sanger::Testing::Model::Macros
   include FactoryGirl::Syntax::Methods
-  include Minitest::Profiler
 
   # Transactional fixtures accelerate your tests by wrapping each test method
   # in a transaction that's rolled back on completion.  This ensures that the

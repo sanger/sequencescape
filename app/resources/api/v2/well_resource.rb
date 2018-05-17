@@ -9,7 +9,7 @@ module Api
 
       immutable # uncomment to make the resource immutable
 
-      default_includes :uuid_object, :map, plate: :barcode_prefix
+      default_includes :uuid_object, :map, plate: :barcodes
 
       # Associations:
       has_many :samples, readonly: true
@@ -30,7 +30,7 @@ module Api
       def labware_barcode
         {
           'ean13_barcode' => _model.plate&.ean13_barcode,
-          'sanger_human_barcode' => _model.plate&.sanger_human_barcode
+          'human_barcode' => _model.plate&.human_barcode
         }
       end
 

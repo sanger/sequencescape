@@ -130,7 +130,7 @@ end
 Then /^the samples should be tagged in library and multiplexed library tubes with:$/ do |table|
   pooled_aliquots = MultiplexedLibraryTube.last.aliquots.map { |a| [a.sample.sanger_sample_id, a.tag.map_id, a.library_id] }
   table.hashes.each do |expected_data|
-    lt = LibraryTube.find_by(barcode: expected_data[:tube_barcode].gsub('NT', ''))
+    lt = LibraryTube.find_from_barcode(expected_data[:tube_barcode])
     assert_equal 1, lt.aliquots.count, 'Wrong number of aliquots'
     assert_equal expected_data[:sanger_sample_id], lt.aliquots.first.sample.sanger_sample_id, "sanger_sample_id: #{expected_data[:sanger_sample_id]} #{lt.aliquots.first.sample.sanger_sample_id}"
     assert_equal expected_data[:tag_group], lt.aliquots.first.tag.try(:tag_group).try(:name), "tag_group: #{expected_data[:tag_group]} #{lt.aliquots.first.tag.try(:tag_group).try(:name)}"
@@ -173,7 +173,7 @@ When /^I visit the sample manifest new page without an asset type$/ do
 end
 
 Given /^plate "([^"]*)" has samples with known sanger_sample_ids$/ do |plate_barcode|
-  sequence_sanger_sample_ids_for(Plate.find_by(barcode: plate_barcode)) do |index|
+  sequence_sanger_sample_ids_for(Plate.find_from_barcode('DN' + plate_barcode)) do |index|
     "ABC_#{index}"
   end
 end
@@ -191,7 +191,7 @@ Then /^the last created sample manifest should be:$/ do |table|
   end
 
   table.rows.each_with_index do |row, index|
-    expected = [Barcode.barcode_to_human(Barcode.calculate_barcode(Plate.prefix, row[0].to_i)), row[1]]
+    expected = [Barcode.barcode_to_human(Barcode.calculate_barcode(Plate.default_prefix, row[0].to_i)), row[1]]
     got      = [@worksheet.cell(offset + index + 1, 1), @worksheet.cell(offset + index + 1, 2)]
     assert_equal(expected, got, "Unexpected manifest row #{index}")
   end
@@ -231,11 +231,11 @@ Given /^the sample manifest with ID (\d+) has been processed$/ do |id|
 end
 
 Given /^sample tubes are expected by the last manifest$/ do
-  SampleManifest.last.update_attributes(barcodes: SampleTube.all.map(&:sanger_human_barcode))
+  SampleManifest.last.update_attributes(barcodes: SampleTube.all.map(&:human_barcode))
 end
 
 Given /^library tubes are expected by the last manifest$/ do
-  SampleManifest.last.update_attributes(barcodes: LibraryTube.all.map(&:sanger_human_barcode))
+  SampleManifest.last.update_attributes(barcodes: LibraryTube.all.map(&:human_barcode))
 end
 
 Then /^print any manifest errors for debugging$/ do
