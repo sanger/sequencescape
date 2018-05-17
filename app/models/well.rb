@@ -13,6 +13,7 @@ class Well < Receptacle
   include StudyReport::WellDetails
   include Tag::Associations
   include Api::Messages::FluidigmPlateIO::WellExtensions
+  include Api::Messages::QcResultIO::WellExtensions
 
   class Link < ApplicationRecord
     # Caution! We are using delete_all and import to manage well links.
