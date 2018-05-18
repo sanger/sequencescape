@@ -294,9 +294,8 @@ def assign_asset_to_study(asset, study_name)
                 [asset.id]
               end
 
-  if asset.can_be_created?
-    RequestFactory.create_assets_requests(Asset.find(asset_ids), study)
-  end
+  RequestFactory.create_assets_requests(Asset.find(asset_ids), study)
+
   Asset.where(id: asset_ids).includes(:aliquots).each do |asset|
     asset.aliquots.each do |aliquot|
       aliquot.update_attributes!(study_id: study.id)

@@ -3,6 +3,7 @@
 # QcResult
 class QcResult < ApplicationRecord
   belongs_to :asset, required: true
+  belongs_to :qc_assay, required: false
   after_save :update_asset
 
   validates :key, :value, :units, presence: true
