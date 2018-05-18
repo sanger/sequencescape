@@ -414,10 +414,6 @@ class Asset < ApplicationRecord
     Request.find_all_target_asset(id).size > 1
   end
 
-  def can_be_created?
-    false
-  end
-
   def compatible_purposes
     Purpose.none
   end
@@ -468,6 +464,10 @@ class Asset < ApplicationRecord
   def register_stock!
     raise StandardError, "No stock template configured for #{self.class.name}. If #{self.class.name} is a stock, set stock_template on the class." if stock_message_template.nil?
     Messenger.create!(target: self, template: stock_message_template, root: 'stock_resource')
+  end
+
+  def update_from_qc(qc_result)
+    Rails.logger.info "#{self.class.name} #{id} updated by QcResult #{qc_result.id}"
   end
 
   private

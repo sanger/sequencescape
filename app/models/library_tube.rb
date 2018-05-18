@@ -17,10 +17,6 @@ class LibraryTube < Tube
     true
   end
 
-  def can_be_created?
-    true
-  end
-
   scope :include_tag, -> { includes(aliquots: { tag: [:uuid_object, { tag_group: :uuid_object }] }) }
 
   def sorted_tags_for_select
