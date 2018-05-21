@@ -748,26 +748,53 @@ class Plate < Asset
     'plate'
   end
 
+  def labwhere_location
+    @labwhere_location ||= lookup_labwhere_location
+  end
+
+  def ets_location
+    @ets_location ||= lookup_ets_location
+  end
+
   private
 
   def obtain_storage_location
-    # From LabWhere
-    info_from_labwhere = LabWhereClient::Labware.find_by_barcode(ean13_barcode) # rubocop:disable Rails/DynamicFindBy
-    unless info_from_labwhere.nil? || info_from_labwhere.location.nil?
+    if labwhere_location.present?
       @storage_location_service = 'LabWhere'
-      return info_from_labwhere.location.location_info
+      return labwhere_location
+    elsif ets_location.present?
+      @storage_location_service = 'ETS'
+      return ets_location
+    else
+      @storage_location_service = 'None'
+      return 'Not found in LabWhere nor ETS'
     end
+  end
 
-    # From ETS
-    @storage_location_service = 'ETS'
+  def lookup_ets_location
     return 'Control' if is_a?(ControlPlate)
     return '' if barcode.blank?
-    return %w(storage_area storage_device building_area building).map do |key|
-      get_external_value(key)
-    end.compact.join(' - ')
-  rescue LabWhereClient::LabwhereException => e
-    @storage_location_service = 'None'
-    return "Not found (#{e.message})"
+    cas_location = Cas::StoredEntity.storage_location(barcode, barcode_prefix.prefix)
+    if cas_location.present?
+      if cas_location.rows.first.present?
+        return cas_location.rows.first.join(' - ')
+      else
+        return nil
+      end
+    else
+      return 'Cannot connect to Cas database'
+    end
+  end
+
+  def lookup_labwhere_location
+    begin
+      info_from_labwhere = LabWhereClient::Labware.find_by_barcode(machine_barcode) # rubocop:disable Rails/DynamicFindBy
+    rescue LabWhereClient::LabwhereException => e
+      return "Not found (#{e.message})"
+    end
+    if info_from_labwhere.present? && info_from_labwhere.location.present?
+      return info_from_labwhere.location.location_info
+    end
   end
 
   def lookup_stock_plate
