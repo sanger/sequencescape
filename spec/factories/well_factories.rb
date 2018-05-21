@@ -13,10 +13,6 @@ FactoryGirl.define do
       project { build :project }
       aliquot_options { |_e, well| { study: study, project: project, receptacle: well } }
     end
-    value               ''
-    qc_state            ''
-    resource            nil
-    barcode             nil
     association(:well_attribute, strategy: :build)
 
     factory :untagged_well, parent: :well do

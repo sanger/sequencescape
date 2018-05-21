@@ -15,9 +15,8 @@ module Tasks::AttachInfiniumBarcodeHandler
       next if barcode.blank?
       plate = Plate.find_by(id: plate_id)
       return false if plate.nil?
-      # TODO[xxx]: validation of the infinium barcode should be in Plate::Metadata class
-      return false unless plate.valid_infinium_barcode?(barcode)
       plate.infinium_barcode = barcode
+      return false unless plate.save
     end
     true
   end

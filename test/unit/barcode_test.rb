@@ -42,13 +42,6 @@ class BarcodeTest < ActiveSupport::TestCase
       @human = 'ID2O'
     end
 
-    should_eventually 'be splittable' do
-      prefix, number, check = Barcode.split_barcode(@barcode)
-      assert_equal '247', prefix
-      assert_equal 2, number
-      assert_equal '799', check
-    end
-
     should 'have a human form' do
       assert_equal @human, Barcode.barcode_to_human(@barcode)
     end

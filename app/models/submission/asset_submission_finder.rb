@@ -26,11 +26,8 @@ module Submission::AssetSubmissionFinder
     barcodes, well_list = details['barcode'], details['plate well']
     errors.add(:spreadsheet, 'You can only specify one plate per asset group') unless barcodes.uniq.one?
     barcode = barcodes.first
-
-    match = /^([A-Z]{2})(\d+)[A-Z]$/.match(barcode) or raise StandardError, 'Plate Barcode should be human readable (e.g. DN111111K)'
-    prefix = BarcodePrefix.find_by(prefix: match[1]) or raise StandardError, "Cannot find barcode prefix #{match[1].inspect} for #{details['rows']}"
-    plate  = Plate.find_by(barcode_prefix_id: prefix.id, barcode: match[2]) or raise StandardError, "Cannot find plate with barcode #{barcode} for #{details['rows']}"
-
+    plate = Plate.find_from_barcode(barcode)
+    raise StandardError, "Cannot find plate with barcode #{barcode} for #{details['rows']}" if plate.nil?
     well_locations = well_list.map(&:strip)
     wells = plate.wells.including_samples.located_at(well_locations)
     raise StandardError, "Too few wells found for #{details['rows']}: #{wells.map(&:map).map(&:description).inspect}" if wells.length != well_locations.size
@@ -38,12 +35,9 @@ module Submission::AssetSubmissionFinder
   end
 
   def find_tubes_including_samples_for!(details)
-    prefix_cache = Hash.new { |cache, prefix| cache[prefix] = BarcodePrefix.find_by(prefix: prefix) }
-
     details['barcode'].map do |barcode|
-      match = /^([A-Z]{2})(\d+)[A-Z]$/.match(barcode) or raise StandardError, 'Tube Barcode should be human readable (e.g. NT2P)'
-      prefix = prefix_cache[match[1]] or raise StandardError, "Cannot find barcode prefix #{match[1].inspect} for #{details['rows']}"
-      Tube.including_samples.find_by(barcode_prefix_id: prefix.id, barcode: match[2]) or raise StandardError, "Cannot find tube with barcode #{barcode} for #{details['rows']}."
+      SBCF::HUMAN_BARCODE_FORMAT.match?(barcode) or raise StandardError, 'Tube Barcode should be human readable (e.g. NT2P)'
+      Tube.including_samples.find_from_barcode(barcode) or raise StandardError, "Cannot find tube with barcode #{barcode} for rows #{details['rows']}."
     end
   end
 end

@@ -31,7 +31,7 @@ module SampleManifest::LibraryBehaviour
         {
           sample: sample,
           container: {
-            barcode: sample.primary_receptacle.sanger_human_barcode
+            barcode: sample.primary_receptacle.human_barcode
           },
           library_information: sample.primary_receptacle.library_information
         }
@@ -49,7 +49,7 @@ module SampleManifest::LibraryBehaviour
     def details
       samples.each do |sample|
         yield({
-          barcode: sample.assets.first.sanger_human_barcode,
+          barcode: sample.assets.first.human_barcode,
           sample_id: sample.sanger_sample_id
         })
       end
@@ -59,7 +59,7 @@ module SampleManifest::LibraryBehaviour
       [].tap do |details|
         samples.each do |sample|
           details << {
-            barcode: sample.assets.first.sanger_human_barcode,
+            barcode: sample.assets.first.human_barcode,
             sample_id: sample.sanger_sample_id
           }
         end

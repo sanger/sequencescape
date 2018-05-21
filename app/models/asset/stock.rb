@@ -14,11 +14,9 @@ module Asset::Stock
         has_one_as_child(:stock_asset, ->() { where(sti_type: stock_asset_type_name) })
 
         def create_stock_asset!(attributes = {}, &block)
-          self.class.stock_asset_type.create!(attributes.reverse_merge(
-                                                name:     "(s) #{name}",
-                                                barcode:  AssetBarcode.new_barcode,
-                                                aliquots: aliquots.map(&:dup),
-                                                purpose:  self.class.stock_asset_purpose
+          self.class.stock_asset_purpose.create!(attributes.reverse_merge(
+                                                   name: "(s) #{name}",
+                                                   aliquots: aliquots.map(&:dup)
           ), &block)
         end
 

@@ -276,7 +276,7 @@ Then /^I should see the study for study list "([^\"]+)"$/ do |study_list|
 end
 
 Given /^asset with barcode "([^"]*)" belongs to study "([^"]*)"$/ do |raw_barcode, study_name|
-  asset = Asset.find_from_machine_barcode(raw_barcode) or raise StandardError, "Cannot find asset with machine barcode #{raw_barcode.inspect}"
+  asset = Asset.find_from_barcode(raw_barcode) or raise StandardError, "Cannot find asset with machine barcode #{raw_barcode.inspect}"
   assign_asset_to_study(asset, study_name)
 end
 

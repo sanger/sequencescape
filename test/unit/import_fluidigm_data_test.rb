@@ -47,9 +47,7 @@ class ImportFluidigmDataTest < ActiveSupport::TestCase
     plate_target = create :plate,         name: "Cherrypicked #{barcode}",
                                           size: 192,
                                           barcode: barcode,
-                                          plate_metadata_attributes: {
-                                            fluidigm_barcode: fluidigm_barcode
-                                          }
+                                          fluidigm_barcode: fluidigm_barcode
 
     well_target = Well.new
     plate_target.add_and_save_well(well_target)
@@ -66,9 +64,9 @@ class ImportFluidigmDataTest < ActiveSupport::TestCase
   context 'With a fluidigm file' do
     setup do
       @fluidigm_file = create_fluidigm_file
-      @stock_plate = create_stock_plate('87654321')
-      @plate1 = create_plate_with_fluidigm('12345671', '1381832088', @stock_plate)
-      @plate2 = create_plate_with_fluidigm('12345672', '1234567891', @stock_plate)
+      @stock_plate = create_stock_plate('8765432')
+      @plate1 = create_plate_with_fluidigm('1234567', '1381832088', @stock_plate)
+      @plate2 = create_plate_with_fluidigm('1234568', '1234567891', @stock_plate)
     end
 
     context 'before uploading the fluidigm file to a corresponding plate' do

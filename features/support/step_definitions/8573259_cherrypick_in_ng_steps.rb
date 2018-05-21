@@ -7,7 +7,7 @@
 Given /^I have a "([^"]*)" submission with plate "([^"]*)"$/ do |submission_template_name, plate_barcode|
   project = FactoryGirl.create :project
   study = FactoryGirl.create :study
-  plate = Plate.find_by(barcode: plate_barcode)
+  plate = Plate.find_from_barcode('DN' + plate_barcode)
 
   # Maintain the order of the wells as though they have been submitted by the user, rather than
   # relying on the ordering within sequencescape.  Some of the plates are created with less than

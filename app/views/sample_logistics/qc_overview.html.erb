@@ -36,7 +36,7 @@
            <%= link_to study.name, study_path(study) %>
          <% end %>
       </td>
-      <td><%= link_to stock_plate.barcode, asset_path(stock_plate) %></td>
+      <td><%= link_to stock_plate.human_barcode, asset_path(stock_plate) %></td>
       <td><%= received_date %></td>
       <td><%= qc_started_date %></td>
       <td><%= volume_check_date %></td>

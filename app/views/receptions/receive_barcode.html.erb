@@ -12,7 +12,7 @@
       <% @assets.each do |asset| %>
       <tr>
         <td><%= link_to asset.name, asset_path(asset)   %></td>
-        <td><%= asset.sanger_human_barcode %></td>
+        <td><%= asset.human_barcode %></td>
         <td><%= asset.sti_type %></td>
       </tr>
       <% end %>

@@ -5,22 +5,7 @@
 # Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 module Batch::TecanBehaviour
-  def validate_for_tecan(target_barcode)
-    return false if user_id.nil?
-    return false if requests.nil? || requests.size == 0
-
-    requests.where(state: 'passed').find_each do |request|
-      next unless request.target_asset.plate.barcode == target_barcode
-      return false unless Well.find(request.asset).valid_well_on_plate
-      return false unless Well.find(request.target_asset).valid_well_on_plate
-    end
-    true
-  end
-
   def generate_tecan_data(target_barcode, override_plate_type = nil)
-    # very slow
-    # return nil unless validate_for_tecan(target_barcode)
-
     data_object = {
       'user' => user.login,
       'time' => Time.now,
@@ -29,16 +14,13 @@ module Batch::TecanBehaviour
     }
 
     requests.includes([{ asset: :plate }, { target_asset: :plate }]).where(state: 'passed').find_each do |request|
-      destination_barcode = request.target_asset.plate.barcode
-      next unless destination_barcode == target_barcode
+      target_plate = request.target_asset.plate
+      next unless [target_plate.human_barcode, target_plate.machine_barcode].include?(target_barcode)
 
       full_source_barcode = request.asset.plate.barcode_for_tecan
       full_destination_barcode = request.target_asset.plate.barcode_for_tecan
 
-      source_plate_name = request.asset.plate.stock_plate_name.tr('_', "\s")
-      if override_plate_type
-        source_plate_name = override_plate_type
-      end
+      source_plate_name = override_plate_type.presence || request.asset.plate.stock_plate_name.tr('_', "\s")
 
       if data_object['source'][full_source_barcode].nil?
         data_object['source'][full_source_barcode] = { 'name' => source_plate_name, 'plate_size' => request.asset.plate.size }
@@ -75,24 +57,4 @@ module Batch::TecanBehaviour
     data_object = generate_tecan_data(target_barcode, plate_type)
     Sanger::Robots::Tecan::Generator.mapping(data_object, volume_required.to_i)
   end
-
-  def tecan_gwl_file(target_barcode, volume_required = 13)
-    data_object = generate_tecan_data(target_barcode)
-    gwl_data = Sanger::Robots::Tecan::Generator.mapping(data_object, volume_required.to_i)
-    begin
-      year = Time.now.year
-      base_directory = "#{configatron.tecan_files_location}/#{year}"
-      unless File.exist?(base_directory)
-        FileUtils.mkdir base_directory
-      end
-      destinationbarcode = data_object['destination'].keys.join('_')
-      gwl_file = File.new("#{base_directory}/#{destinationbarcode}_batch_#{id}.gwl", 'w')
-      gwl_file.write(gwl_data)
-      gwl_file.close
-    rescue
-      return false
-    end
-    true
-  end
-  deprecate tecan_gwl_file: "this is writing to the Sequencescape data directory. I don't believe it is used."
 end

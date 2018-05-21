@@ -11,7 +11,7 @@ module ModelExtensions::Request
         includes(
           asset: [
             :uuid_object,
-            :barcode_prefix,
+            :barcodes,
             :scanned_into_lab_event,
             { aliquots: [:sample, :tag] }
           ]
@@ -21,7 +21,7 @@ module ModelExtensions::Request
         includes(
           target_asset: [
             :uuid_object,
-            :barcode_prefix,
+            :barcodes,
             { aliquots: [:sample, :tag] }
           ]
         )

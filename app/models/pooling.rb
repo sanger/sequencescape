@@ -7,12 +7,15 @@ class Pooling
   validates_presence_of :source_assets, message: 'were not scanned or were not found in sequencescape'
   validate :all_source_assets_are_in_sqsc, if: :source_assets?
   validate :source_assets_can_be_pooled, if: :source_assets?
+  validate :expected_numbers_found, if: :source_assets?
 
   def execute
+    return false unless valid?
     @stock_mx_tube = Tube::Purpose.stock_mx_tube.create!(name: '(s)') if stock_mx_tube_required?
     @standard_mx_tube = Tube::Purpose.standard_mx_tube.create!
     transfer
     execute_print_job
+    true
   end
 
   def transfer
@@ -70,7 +73,7 @@ class Pooling
       asset = Asset.find_from_any_barcode(barcode)
       @assets_not_in_sqsc << barcode unless asset.present?
       asset
-    end.compact
+    end.compact.uniq
   end
 
   def assets_not_in_sqsc
@@ -78,7 +81,11 @@ class Pooling
   end
 
   def all_source_assets_are_in_sqsc
-    errors.add(:source_assets, "with barcode(s) #{assets_not_in_sqsc.join(', ')} were not found in sequencescape") unless assets_not_in_sqsc.empty?
+    errors.add(:source_assets, "with barcode(s) #{assets_not_in_sqsc.join(', ')} were not found in sequencescape") if assets_not_in_sqsc.present?
+  end
+
+  def expected_numbers_found
+    errors.add(:source_assets, "found #{source_assets.length} assets, but #{barcodes.length} barcodes were scanned.") if source_assets.length != barcodes.length
   end
 
   def source_assets_can_be_pooled
@@ -92,7 +99,7 @@ class Pooling
         asset.aliquots.each { |aliquot| @tags_combinations << aliquot.tags_combination }
       end
     end
-    errors.add(:source_assets, "with barcode(s) #{assets_with_no_aliquot.join(', ')} do not have any aliquots") unless assets_with_no_aliquot.empty?
+    errors.add(:source_assets, "with barcode(s) #{assets_with_no_aliquot.join(', ')} do not have any aliquots") if assets_with_no_aliquot.present?
     errors.add(:tags_combinations, tags_clash_message) if duplicates.present?
   end
 
@@ -115,7 +122,7 @@ class Pooling
   end
 
   def success
-    "Samples were transferred successfully to standard_mx_tube #{standard_mx_tube.sanger_human_barcode} " +
-      ("and stock_mx_tube #{stock_mx_tube.sanger_human_barcode} " if stock_mx_tube.present?).to_s
+    "Samples were transferred successfully to standard_mx_tube #{standard_mx_tube.human_barcode} " +
+      ("and stock_mx_tube #{stock_mx_tube.human_barcode} " if stock_mx_tube.present?).to_s
   end
 end

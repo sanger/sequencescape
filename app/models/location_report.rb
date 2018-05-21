@@ -137,7 +137,7 @@ class LocationReport < ApplicationRecord
 
   def generate_plate_cols_for_row(cur_plate)
     cols = [] << cur_plate.machine_barcode
-    cols << cur_plate.sanger_human_barcode
+    cols << cur_plate.human_barcode
     # NB. some older plates do not have a purpose
     cols << (cur_plate.plate_purpose&.name || 'Unknown')
     cols << cur_plate.created_at.strftime('%Y-%m-%d %H:%M:%S')
