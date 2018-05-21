@@ -27,8 +27,8 @@ module SampleManifestExcel
       def initialize(attributes = {})
         super
         @sanger_sample_id ||= value(:sanger_sample_id) if columns.present? && data.present?
-        @sample ||= Sample.find_by(sanger_sample_id: sanger_sample_id)
-        @specialised_fields = create_specialised_fields
+        @sample ||= Sample.find_by(sanger_sample_id: sanger_sample_id) if sanger_sample_id.present?
+        @specialised_fields = create_specialised_fields if sanger_sample_id.present?
       end
 
       ##
@@ -114,7 +114,8 @@ module SampleManifestExcel
 
       def empty?
         primary_column = 'supplier_name'
-        value(primary_column).blank? if columns.present? && columns.valid? && columns.names.include?(primary_column)
+        return true unless sample.present? && columns.present? && columns.valid? && columns.names.include?(primary_column)
+        value(primary_column).blank?
       end
 
       private

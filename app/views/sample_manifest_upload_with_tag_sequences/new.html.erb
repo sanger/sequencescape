@@ -8,17 +8,17 @@
 <p>Use this manifest upload screen only for tube samples with old style tag groups.</br>
 
 <div class='alert alert-warning'>
-  <strong>Warning!</strong> New sample manifests for plates, tubes with tag sequences, and for plates and tubes with foreign barcodes should be uploaded using <a href="<%= sample_manifests_path %>">this</a> page.
+  <strong>Warning!</strong> New sample manifests for plates, tubes with tag sequences, and for plates and tubes with foreign barcodes should be uploaded using <a href="<%= sample_manifests_path %>">the sample manifests page</a>.
 </div>
 
 <%= form_tag(sample_manifest_upload_with_tag_sequences_path, multipart: true) do -%>
   <fieldset>
     <div class="form-group">
-      <%= label_tag :sample_manifest_uploaded, 'File to upload' %></br>
+      <%= label_tag :uploaded, 'File to upload', style: "display: none;" %></br>
       <%= file_field_tag :uploaded, required: true %>
     </div>
     <div class="form-group">
-      <%= label_tag :sample_manifest_override, 'Override previously uploaded samples' %>
+      <%= label_tag :override, 'Override previously uploaded samples' %></br>
       <%= check_box_tag :override %>
     </div>
     <div class="form-group">

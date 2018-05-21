@@ -16,7 +16,7 @@ class Sdb::SampleManifestsController < Sdb::BaseController
       if @uploader.valid?
         if @uploader.run!
           flash[:notice] = 'Sample manifest successfully uploaded.'
-          redirect_to '/sample_manifest_upload_with_tag_sequences/new'
+          redirect_to @sample_manifest.present? ? sample_manifests_study_path(@sample_manifest.study) : sample_manifests_path
         else
           flash.now[:error] = 'The sample manifest couldn\'t be uploaded.'
           render '/sample_manifest_upload_with_tag_sequences/new'

@@ -24,7 +24,7 @@ database_suffix
 app/sample_manifest_excel/doc/
 coverage
 .yardoc
-rerun
+rerun*
 spec/examples.txt
 public/public
 doc/*
