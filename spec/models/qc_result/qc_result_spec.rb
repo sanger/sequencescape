@@ -40,3 +40,16 @@ RSpec.describe QcResult, type: :model, qc_result: true do
     end
   end
 end
+
+describe QcResult, warren: true do
+  let(:warren) { Warren.handler }
+
+  setup { warren.clear_messages }
+  let(:resource) { build :qc_result }
+  let(:routing_key) { 'test.message.qc_result.' }
+
+  it 'broadcasts the resource' do
+    resource.save!
+    expect(warren.messages_matching(routing_key)).to eq(1)
+  end
+end

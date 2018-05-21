@@ -122,6 +122,28 @@ class RequestType < ApplicationRecord
     find_by(key: 'genotyping') or raise 'Cannot find genotyping request type'
   end
 
+  def self.create_asset
+    create_with(
+      name: 'Create Asset',
+      order: 1,
+      asset_type: 'Asset',
+      request_class_name: 'CreateAssetRequest',
+      request_purpose: :internal
+    ).find_or_create_by!(key: 'create_asset')
+  end
+
+  def self.external_multiplexed_library_creation
+    create_with(
+      asset_type: 'LibraryTube',
+      for_multiplexing: true,
+      initial_state: 'pending',
+      order: 0,
+      name: 'External Multiplexed Library Creation',
+      request_class_name: 'ExternalLibraryCreationRequest',
+      request_purpose: :standard
+    ).find_or_create_by!(key: 'external_multiplexed_library_creation')
+  end
+
   def request_class
     request_class_name&.constantize
   end

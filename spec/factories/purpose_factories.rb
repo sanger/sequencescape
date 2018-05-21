@@ -58,6 +58,18 @@ FactoryGirl.define do
     prefix 'NT'
     name        { generate :purpose_name }
     target_type 'MultiplexedLibraryTube'
+
+    factory :sample_tube_purpose do
+      target_type 'SampleTube'
+    end
+
+    factory :library_tube_purpose do
+      target_type 'SampleTube'
+    end
+
+    factory :mx_tube_purpose do
+      target_type 'MultiplexedLibraryTube'
+    end
   end
 
   factory :illumina_htp_mx_tube_purpose, class: IlluminaHtp::MxTubePurpose do

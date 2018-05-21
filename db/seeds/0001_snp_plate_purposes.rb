@@ -59,36 +59,11 @@ plate_purposes = <<~EOS
     stock_plate: true
 EOS
 
-standard_shape = AssetShape.create!(
-  name: 'Standard',
-  horizontal_ratio: 3,
-  vertical_ratio: 2,
-  description_strategy: 'Map::Coordinate'
-)
-AssetShape.create!(
-  name: 'Fluidigm96',
-  horizontal_ratio: 3,
-  vertical_ratio: 8,
-  description_strategy: 'Map::Sequential'
-)
-AssetShape.create!(
-  name: 'Fluidigm192',
-  horizontal_ratio: 3,
-  vertical_ratio: 4,
-  description_strategy: 'Map::Sequential'
-)
-AssetShape.create!(
-  name: 'StripTubeColumn',
-  horizontal_ratio: 1,
-  vertical_ratio: 8,
-  description_strategy: 'Map::Sequential'
-)
-
 YAML::load(plate_purposes).each do |plate_purpose|
   attributes = plate_purpose.reverse_merge(
     'type' => 'PlatePurpose',
     'cherrypickable_target' => false,
-    'asset_shape_id' => standard_shape.id,
+    'asset_shape_id' => AssetShape.default_id,
     'prefix' => 'DN',
     'target_type' => 'Plate'
   )
@@ -113,7 +88,7 @@ ActiveRecord::Base.transaction do
     barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
     cherrypickable_target: true,
     cherrypick_direction: 'column',
-    asset_shape: AssetShape.find_by(name: 'Standard')
+    asset_shape_id: AssetShape.default_id
   )
   PlatePurpose.create!(
     name: 'STA2',
@@ -121,7 +96,7 @@ ActiveRecord::Base.transaction do
     barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
     cherrypickable_target: true,
     cherrypick_direction: 'column',
-    asset_shape: AssetShape.find_by(name: 'Standard')
+    asset_shape_id: AssetShape.default_id
   )
   PlatePurpose.create!(
     name: 'SNP Type',
@@ -129,7 +104,7 @@ ActiveRecord::Base.transaction do
     barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
     cherrypickable_target: true,
     cherrypick_direction: 'column',
-    asset_shape: AssetShape.find_by(name: 'Standard')
+    asset_shape_id: AssetShape.default_id
   )
   PlatePurpose.create!(
     name: 'Fluidigm 96-96',
@@ -155,7 +130,7 @@ PlatePurpose.create!(
   barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
   cherrypickable_target: false,
   size: 96,
-  asset_shape: AssetShape.find_by(name: 'Standard'),
+  asset_shape_id: AssetShape.default_id,
   barcode_for_tecan: 'ean13_barcode'
 )
 MessengerCreator.create!(purpose: Purpose.find_by(name: 'Stock Plate'), root: 'stock_resource', template: 'WellStockResourceIO', target_finder_class: 'WellFinder')

@@ -22,11 +22,6 @@ class AssetShape < ApplicationRecord
     horizontal_ratio == 3 && vertical_ratio == 2
   end
 
-  def multiplier(size)
-    ((size / (vertical_ratio * horizontal_ratio))**0.5).to_i
-  end
-  private :multiplier
-
   def plate_height(size)
     multiplier(size) * vertical_ratio
   end
@@ -51,11 +46,22 @@ class AssetShape < ApplicationRecord
     interlace(well_position, plate_size)
   end
 
-  def interlace(i, size)
-    m, d = (i - 1).divmod(size / 2)
-    2 * d + 1 + m
+  def generate_map(size)
+    raise StandardError, 'Map already exists' if Map.find_by(asset_size: size, asset_shape_id: id).present?
+    ActiveRecord::Base.transaction do
+      map_data = Array.new(size) do |i|
+        {
+          asset_size: size,
+          asset_shape_id: id,
+          location_id: i + 1,
+          row_order: i,
+          column_order: (horizontal_to_vertical(i + 1, size) || 1) - 1,
+          description: location_from_index(i, size)
+        }
+      end
+      Map.import(map_data)
+    end
   end
-  private :interlace
 
   def alternate_position(well_position, size, *dimensions)
     return nil unless Map.valid_well_position?(well_position)
@@ -65,29 +71,23 @@ class AssetShape < ApplicationRecord
     return nil unless (0...divisor).cover?(row)
     alternate = (row * multiplier) + column + 1
   end
-  private :alternate_position
 
   def location_from_row_and_column(row, column, size = 96)
     description_strategy.constantize.location_from_row_and_column(row, column, plate_width(size), size)
   end
 
-  def location_from_index(index, size = 96)
-    description_strategy.constantize.location_from_index(index, size)
+  private
+
+  def multiplier(size)
+    ((size / (vertical_ratio * horizontal_ratio))**0.5).to_i
   end
 
-  def generate_map(size)
-    raise StandardError, 'Map already exists' if Map.find_by(asset_size: size, asset_shape_id: id).present?
-    ActiveRecord::Base.transaction do
-      (0...size).each do |i|
-        Map.create!(
-          asset_size: size,
-          asset_shape_id: id,
-          location_id: i + 1,
-          row_order: i,
-          column_order: horizontal_to_vertical(i, size) || 0,
-          description: location_from_index(i, size)
-        )
-      end
-    end
+  def interlace(i, size)
+    m, d = (i - 1).divmod(size / 2)
+    2 * d + 1 + m
+  end
+
+  def location_from_index(index, size = 96)
+    description_strategy.constantize.location_from_index(index, size)
   end
 end

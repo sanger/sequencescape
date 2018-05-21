@@ -88,7 +88,7 @@ class Map < ApplicationRecord
     end
 
     def self.location_from_index(index, size)
-      horizontal_plate_position_to_description(index - 1, size)
+      horizontal_plate_position_to_description(index + 1, size)
     end
 
     class << self
@@ -274,15 +274,6 @@ class Map < ApplicationRecord
   scope :in_reverse_column_major_order, -> { order('column_order DESC') }
 
   class << self
-    # Caution! Only use for seeds. Not valid elsewhere
-    def plate_dimensions(plate_size)
-      case plate_size
-      when 96  then yield(12, 8)
-      when 384 then yield(24, 16)
-      else raise StandardError, "Cannot determine plate dimensions for #{plate_size}"
-      end
-    end
-
     # Walking in column major order goes by the columns: A1, B1, C1, ... A2, B2, ...
     def walk_plate_in_column_major_order(size, asset_shape = nil)
       asset_shape ||= AssetShape.default_id

@@ -12,6 +12,7 @@ class Asset < ApplicationRecord
   include ModelExtensions::Asset
   include AssetLink::Associations
   include SharedBehaviour::Named
+  include Api::Messages::QcResultIO::AssetExtensions
 
   # Key/value stores and attributes
   include ExternalProperties
@@ -57,6 +58,7 @@ class Asset < ApplicationRecord
   has_many :asset_audits
   has_many :volume_updates, foreign_key: :target_id
   has_many :barcodes, foreign_key: :asset_id, inverse_of: :asset, dependent: :destroy
+  has_many :qc_results, dependent: :destroy
 
   # TODO: Remove 'requests' and 'source_request' as they are abiguous
   # :requests should go before :events_on_requests, through: :requests
