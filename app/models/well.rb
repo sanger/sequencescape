@@ -224,6 +224,7 @@ class Well < Receptacle
     super || build_well_attribute
   end
 
+  delegate :measured_volume, :measured_volume=, to: :well_attribute
   delegate_to_well_attribute(:pico_pass)
   delegate_to_well_attribute(:sequenom_count)
   delegate_to_well_attribute(:gel_pass)
@@ -343,10 +344,6 @@ class Well < Receptacle
     plate.purpose.try(:name) || 'Unknown plate purpose'
   end
 
-  def can_be_created?
-    plate.stock_plate?
-  end
-
   def latest_stock_metrics(product)
     # If we don't have any stock wells, use ourself. If it is a stock well, we'll find our
     # qc metric. If its not a stock well, then a metric won't be present anyway
@@ -358,6 +355,10 @@ class Well < Receptacle
 
   def source_plate
     plate && plate.source_plate
+  end
+
+  def update_from_qc(qc_result)
+    Well::AttributeUpdater.update(self, qc_result)
   end
 
   private
