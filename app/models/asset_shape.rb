@@ -63,17 +63,6 @@ class AssetShape < ApplicationRecord
     end
   end
 
-  private
-
-  def multiplier(size)
-    ((size / (vertical_ratio * horizontal_ratio))**0.5).to_i
-  end
-
-  def interlace(i, size)
-    m, d = (i - 1).divmod(size / 2)
-    2 * d + 1 + m
-  end
-
   def alternate_position(well_position, size, *dimensions)
     return nil unless Map.valid_well_position?(well_position)
     divisor, multiplier = dimensions.map { |n| send("plate_#{n}", size) }
@@ -85,6 +74,17 @@ class AssetShape < ApplicationRecord
 
   def location_from_row_and_column(row, column, size = 96)
     description_strategy.constantize.location_from_row_and_column(row, column, plate_width(size), size)
+  end
+
+  private
+
+  def multiplier(size)
+    ((size / (vertical_ratio * horizontal_ratio))**0.5).to_i
+  end
+
+  def interlace(i, size)
+    m, d = (i - 1).divmod(size / 2)
+    2 * d + 1 + m
   end
 
   def location_from_index(index, size = 96)
