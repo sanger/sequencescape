@@ -137,8 +137,7 @@ class PlatePurpose < Purpose
   has_many :plates, foreign_key: :plate_purpose_id
 
   def self.stock_plate_purpose
-    # IDs copied from SNP
-    PlatePurpose.find(2)
+    PlatePurpose.create_with(stock_plate: true, cherrypickable_target: true).find_or_create_by!(name: 'Stock Plate')
   end
 
   def size

@@ -22,7 +22,7 @@ FactoryGirl.define do
     qc_state            ''
     resource            nil
     barcode
-    purpose { Tube::Purpose.standard_sample_tube }
+    association(:purpose, factory: :sample_tube_purpose) # { Tube::Purpose.standard_sample_tube }
   end
 
   factory :sample_tube, parent: :empty_sample_tube do
@@ -48,8 +48,8 @@ FactoryGirl.define do
   end
 
   factory :multiplexed_library_tube do
-    name    { |_a| generate :asset_name }
-    purpose { Tube::Purpose.standard_mx_tube }
+    name { |_a| generate :asset_name }
+    association(:purpose, factory: :mx_tube_purpose) # { Tube::Purpose.standard_mx_tube }
   end
 
   factory :pulldown_multiplexed_library_tube do
@@ -69,7 +69,7 @@ FactoryGirl.define do
   factory(:empty_library_tube, class: LibraryTube) do
     qc_state ''
     name     { generate :asset_name }
-    purpose  { Tube::Purpose.standard_library_tube }
+    association(:purpose, factory: :library_tube_purpose) #  { Tube::Purpose.standard_library_tube }
 
     transient do
       sample_count 0

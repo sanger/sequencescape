@@ -53,5 +53,17 @@ FactoryGirl.define do
   factory :tube_purpose, class: Tube::Purpose do
     name        { generate :purpose_name }
     target_type 'MultiplexedLibraryTube'
+
+    factory :sample_tube_purpose do
+      target_type 'SampleTube'
+    end
+
+    factory :library_tube_purpose do
+      target_type 'SampleTube'
+    end
+
+    factory :mx_tube_purpose do
+      target_type 'MultiplexedLibraryTube'
+    end
   end
 end
