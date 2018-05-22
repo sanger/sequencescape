@@ -11,12 +11,12 @@ module Aker
     end
 
     def show
-      @job = current_resource
+      job = current_resource
       recover_from_connection_refused do
         @aker_job = JSON.parse(RestClient::Request.execute(
           verify_ssl: false,
           method: :get,
-          url: "#{Rails.configuration.aker['urls']['work_orders']}/jobs/#{@job.aker_job_id}",
+          url: "#{job.job_url}",
           headers: { content_type: :json, Accept: :json },
           proxy: nil
         ).body)['job']
@@ -29,7 +29,7 @@ module Aker
         response = RestClient::Request.execute(
           verify_ssl: false,
           method: :put,
-          url: "#{Rails.configuration.aker['urls']['work_orders']}/jobs/#{job.aker_job_id}/start",
+          url: "#{job.job_url}/start",
           headers: { content_type: :json },
           proxy: nil
         )
@@ -44,7 +44,7 @@ module Aker
         response = RestClient::Request.execute(
           verify_ssl: false,
           method: :put,
-          url: "#{Rails.configuration.aker['urls']['work_orders']}/jobs/#{job.aker_job_id}/complete",
+          url: "#{job.job_url}/complete",
           payload: { job: { job_id: job.aker_job_id, comment: params[:comment] } }.to_json,
           headers: { content_type: :json },
           proxy: nil
@@ -60,7 +60,7 @@ module Aker
         response = RestClient::Request.execute(
           verify_ssl: false,
           method: :put,
-          url: "#{Rails.configuration.aker['urls']['work_orders']}/jobs/#{job.aker_job_id}/cancel",
+          url: "#{job.job_url}/cancel",
           payload: { job: { job_id: job.aker_job_id, comment: params[:comment] } }.to_json,
           headers: { content_type: :json },
           proxy: nil
@@ -85,5 +85,6 @@ module Aker
     def current_resource
       @current_resource ||= Aker::Job.find_by(aker_job_id: params[:id]) if params[:id]
     end
+
   end
 end
