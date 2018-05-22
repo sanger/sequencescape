@@ -10,6 +10,9 @@ class Sdb::SampleManifestsController < Sdb::BaseController
 
   LIMIT_ERROR_LENGTH = 10000
 
+  # NB. this upload method is currently being used for the NEW style tag sequence or foreign barcode manifests.
+  # The goal is to eventually have one sample manifest codebase, but we have temporarily switched around the upload page views
+  # so the newer style takes priority.
   def upload
     if params[:uploaded].present?
       @uploader = SampleManifest::Uploader.new(params[:uploaded].open, SampleManifestExcel.configuration, current_user)

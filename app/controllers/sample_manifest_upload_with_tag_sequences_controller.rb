@@ -10,6 +10,9 @@ class SampleManifestUploadWithTagSequencesController < ApplicationController
   def new
   end
 
+  # NB. this method is currently being used for uploading the OLD style tag group manifests
+  # The goal is to eventually have one sample manifest codebase, but we have temporarily switched around the upload page views
+  # so the newer style takes priority.
   def create
     if params[:uploaded].blank?
       flash[:error] = 'No CSV file uploaded'

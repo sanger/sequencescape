@@ -4,9 +4,9 @@ module SampleManifestExcel
   module SpecialisedField
     ##
     # A required field if it is a plate manifest.
-    # No update required.
-    # Checked to ensure that it is the same as the sanger human barcode for sample.
-    # Not updated
+    # Checked to ensure that it is the same as the sanger human barcode for sample,
+    # or is a valid foreign barcode.
+    # Updated if there is a valid foreign barcode.
     class SangerPlateId
       include Base
       include ValueRequired
