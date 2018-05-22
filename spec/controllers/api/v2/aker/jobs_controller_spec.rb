@@ -36,7 +36,6 @@ RSpec.describe Api::V2::Aker::JobsController, type: :request, aker: true do
     expect(response).to have_http_status(:unprocessable_entity)
   end
 
-
   it 'returns an error if somebody tries to create an job without materials' do
     params['job'].delete('materials')
     expect do
@@ -44,5 +43,4 @@ RSpec.describe Api::V2::Aker::JobsController, type: :request, aker: true do
     end.to_not change(Aker::Job, :count)
     expect(response).to have_http_status(:unprocessable_entity)
   end
-
 end

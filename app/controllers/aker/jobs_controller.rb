@@ -16,8 +16,8 @@ module Aker
         @aker_job = JSON.parse(RestClient::Request.execute(
           verify_ssl: false,
           method: :get,
-          url: "#{@job.aker_job_url}",
-          headers: { content_type: :json},
+          url: @job.aker_job_url.to_s,
+          headers: { content_type: :json },
           proxy: nil
         ).body)['job']
       end
@@ -82,6 +82,5 @@ module Aker
     def set_job
       @job ||= Aker::Job.find_by(aker_job_id: params[:id]) if params[:id]
     end
-
   end
 end
