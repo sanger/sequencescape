@@ -44,6 +44,8 @@ feature 'Sample manifest with tag sequences' do
         attach_file('uploaded', test_file)
         click_button('Upload manifest')
         expect(page).to have_content('Sample manifest successfully uploaded.')
+        click_on 'Manifest_'
+        expect(page).to have_content('CGAP-', count: 6)
       end
     end
 
@@ -201,6 +203,8 @@ feature 'Sample manifest with tag sequences' do
         attach_file('uploaded', test_file)
         click_button('Upload manifest')
         expect(page).to have_content('Sample manifest successfully uploaded.')
+        click_on 'Manifest_'
+        expect(page).to have_content('CGAP-', count: 2)
       end
     end
 
@@ -214,6 +218,8 @@ feature 'Sample manifest with tag sequences' do
         attach_file('uploaded', test_file)
         click_button('Upload manifest')
         expect(page).to have_content('Sample manifest successfully uploaded.')
+        click_on 'Manifest_'
+        expect(page).to have_content('CGAP-', count: 1)
       end
     end
 
