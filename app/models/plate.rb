@@ -774,7 +774,7 @@ class Plate < Asset
   def lookup_ets_location
     return 'Control' if is_a?(ControlPlate)
     return '' if barcode.blank?
-    cas_location = Cas::StoredEntity.storage_location(barcode, barcode_prefix.prefix)
+    cas_location = Cas::StoredEntity.storage_location(barcode, prefix)
     if cas_location.present?
       if cas_location.rows.first.present?
         cas_location.rows.first.join(' - ')
