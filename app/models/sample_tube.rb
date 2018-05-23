@@ -19,10 +19,6 @@ class SampleTube < Tube
     record.label = 'SampleTube' if record.label.blank?
   end
 
-  def can_be_created?
-    true
-  end
-
   private
 
   def generate_name_from_aliquots

@@ -9,6 +9,7 @@
 class Aliquot < ApplicationRecord
   include Uuid::Uuidable
   include Api::Messages::FlowcellIO::AliquotExtensions
+  include Api::Messages::QcResultIO::AliquotExtensions
   include AliquotIndexer::AliquotScopes
   include Api::AliquotIO::Extensions
   include DataForSubstitution

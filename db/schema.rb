@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180502101116) do
+ActiveRecord::Schema.define(version: 20180518121202) do
 
   create_table "aker_containers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "barcode"
@@ -1004,6 +1004,11 @@ ActiveRecord::Schema.define(version: 20180502101116) do
     t.index ["state"], name: "index_projects_on_state"
   end
 
+  create_table "qc_assays", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "qc_decision_qcables", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.integer "qc_decision_id", null: false
     t.integer "qcable_id", null: false
@@ -1074,7 +1079,9 @@ ActiveRecord::Schema.define(version: 20180502101116) do
     t.string "assay_version"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "qc_assay_id"
     t.index ["asset_id"], name: "index_qc_results_on_asset_id"
+    t.index ["qc_assay_id"], name: "index_qc_results_on_qc_assay_id"
   end
 
   create_table "qcable_creators", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -1920,6 +1927,7 @@ ActiveRecord::Schema.define(version: 20180502101116) do
   add_foreign_key "billing_products", "billing_product_catalogues"
   add_foreign_key "plate_purposes", "barcode_prefixes"
   add_foreign_key "qc_files", "assets"
+  add_foreign_key "qc_results", "qc_assays"
   add_foreign_key "request_types", "billing_product_catalogues"
   add_foreign_key "requests", "billing_products"
   add_foreign_key "requests", "work_orders"

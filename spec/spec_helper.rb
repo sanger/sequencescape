@@ -25,6 +25,8 @@ require 'support/user_login'
 require 'jsonapi/resources/matchers'
 require 'aasm/rspec'
 
+require './lib/plate_map_generation'
+
 require 'pry'
 
 Capybara.register_driver :chrome do |app|
@@ -91,6 +93,7 @@ RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
 
   config.before(:suite) do
+    PlateMapGeneration.generate!
     FactoryGirl.find_definitions
   end
 

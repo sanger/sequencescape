@@ -689,7 +689,7 @@ class Plate < Asset
     # From ETS
     @storage_location_service = 'ETS'
     return 'Control' if is_a?(ControlPlate)
-    return '' if barcode.blank?
+    return '' if primary_barcode.blank?
     return %w(storage_area storage_device building_area building).map do |key|
       get_external_value(key)
     end.compact.join(' - ')

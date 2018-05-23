@@ -15,14 +15,19 @@ class QcResultFactory
     @resources ||= []
   end
 
+  def qc_assay
+    @qc_assay ||= QcAssay.new
+  end
+
   def build_resources(assets)
     assets.each do |asset|
-      resources << Resource.new(asset)
+      resources << Resource.new(asset.merge(qc_assay: qc_assay))
     end
   end
 
   def save
     return false unless valid?
+    qc_assay.save
     resources.collect(&:save)
     true
   end
@@ -35,7 +40,7 @@ class QcResultFactory
   class Resource
     include ActiveModel::Model
 
-    attr_accessor :uuid, :well_location, :key, :value, :units, :cv, :assay_type, :assay_version
+    attr_accessor :uuid, :well_location, :key, :value, :units, :cv, :assay_type, :assay_version, :qc_assay
 
     attr_reader :asset, :qc_result
 

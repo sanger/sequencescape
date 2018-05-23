@@ -34,7 +34,7 @@ FactoryGirl.define do
     descriptors         []
     descriptor_fields   []
     qc_state            ''
-    purpose { Tube::Purpose.standard_sample_tube }
+    association(:purpose, factory: :sample_tube_purpose) # { Tube::Purpose.standard_sample_tube }
   end
 
   factory :sample_tube, parent: :empty_sample_tube do
@@ -58,8 +58,8 @@ FactoryGirl.define do
   factory :qc_tube, traits: [:tube_barcode]
 
   factory :multiplexed_library_tube, traits: [:tube_barcode] do
-    name    { generate :asset_name }
-    purpose { Tube::Purpose.standard_mx_tube }
+    name { |_a| generate :asset_name }
+    association(:purpose, factory: :mx_tube_purpose) # { Tube::Purpose.standard_mx_tube }
   end
 
   factory :pulldown_multiplexed_library_tube, traits: [:tube_barcode] do
@@ -77,8 +77,8 @@ FactoryGirl.define do
   end
 
   factory(:empty_library_tube, traits: [:tube_barcode], class: LibraryTube) do
-    name     { generate :asset_name }
-    purpose  { Tube::Purpose.standard_library_tube }
+    name { generate :asset_name }
+    association(:purpose, factory: :library_tube_purpose) #  { Tube::Purpose.standard_library_tube }
 
     transient do
       sample_count 0
