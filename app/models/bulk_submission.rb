@@ -331,9 +331,10 @@ class BulkSubmission
 
       if attributes[:asset_group].nil?
         attributes[:assets] = found_assets
-      else
-        raise StandardError, "Asset Group '#{attributes[:asset_group].name}' contains different assets to those you specified. You may be reusing an asset group name" if found_assets.present? && found_assets != attributes[:asset_group].assets
+      elsif found_assets.present? && found_assets != attributes[:asset_group].assets
+        raise StandardError, "Asset Group '#{attributes[:asset_group].name}' contains different assets to those you specified. You may be reusing an asset group name"
       end
+
       add_study_to_assets(found_assets, study)
 
       # Create the order.  Ensure that the number of lanes is correctly set.

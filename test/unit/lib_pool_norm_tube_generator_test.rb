@@ -13,6 +13,7 @@ class LibPoolNormTubeGeneratorTest < ActiveSupport::TestCase
   def setup
     @user = create(:admin)
     @study = create(:study)
+    create :between_tubes_transfer_template # Needed by LibPoolNormTubeGenerator.new
   end
 
   def mock_transfer(generator)
@@ -29,13 +30,13 @@ class LibPoolNormTubeGeneratorTest < ActiveSupport::TestCase
 
   test 'should not be valid without a user' do
     plate = valid_plate
-    Plate.stubs(:with_machine_barcode).returns(Plate.where(id: plate.id))
+    Plate.stubs(:with_barcode).returns(Plate.where(id: plate.id))
     refute LibPoolNormTubeGenerator.new(plate.ean13_barcode, nil, study).valid?
   end
 
   test 'should not be valid without a study' do
     plate = valid_plate
-    Plate.stubs(:with_machine_barcode).returns(Plate.where(id: plate.id))
+    Plate.stubs(:with_barcode).returns(Plate.where(id: plate.id))
     refute LibPoolNormTubeGenerator.new(plate.ean13_barcode, user, nil).valid?
   end
 
@@ -47,7 +48,7 @@ class LibPoolNormTubeGeneratorTest < ActiveSupport::TestCase
   test 'should not be valid unless the plate is a Lib PCR-XP plate' do
     plate = create(:plate)
     plate.stubs(:state).returns('qc_complete')
-    Plate.stubs(:with_machine_barcode).returns(Plate.where(id: plate.id))
+    Plate.stubs(:with_barcode).returns(Plate.where(id: plate.id))
     refute LibPoolNormTubeGenerator.new(plate.ean13_barcode, user, study).valid?
   end
 
@@ -56,8 +57,7 @@ class LibPoolNormTubeGeneratorTest < ActiveSupport::TestCase
 
     setup do
       @plate = valid_plate
-      Plate.stubs(:with_machine_barcode).returns(Plate.where(id: plate.id))
-      create :between_tubes_transfer_template # Needed by LibPoolNormTubeGenerator.new
+      Plate.stubs(:with_barcode).returns(Plate.where(id: plate.id))
       @generator = LibPoolNormTubeGenerator.new(plate.ean13_barcode, user, study)
       generator.stubs(:plate).returns(valid_plate)
     end

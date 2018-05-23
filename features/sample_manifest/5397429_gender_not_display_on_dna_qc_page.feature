@@ -9,7 +9,7 @@ Feature: Gender not displaying on the DNA QC page
 @manifest
   Scenario: Uploading via a sample manifest
     When I upload "test/data/5397429_gender_not_display_on_dna_qc_page.csv" as a sample manifest for study "Study B"
-    Given I have a DNA QC submission for plate "1234567"
+    Given I have a DNA QC submission for plate "DN1234567"
 
     When I start request 1 in the "DNA QC" pipeline
     Then I should see dna qc table:

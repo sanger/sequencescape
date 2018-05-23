@@ -14,7 +14,7 @@ class SampleManifestMultiplexTest < ActiveSupport::TestCase
     @study_abbreviation = 'WTCCC'
     @prefix = 'NT'
     @tube1 = manifest.send(:core_behaviour).multiplexed_library_tube
-    @barcode1 = tube1.barcode
+    @barcode1 = tube1.barcode_number
 
     options = { sample_manifest: @manifest, only_first_label: false }
     @tube_label = LabelPrinter::Label::SampleManifestMultiplex.new(options)

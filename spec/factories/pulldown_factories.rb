@@ -21,75 +21,6 @@ FactoryGirl.define do
     end
   end
 
-  factory(:full_plate, class: Plate) do
-    size 96
-    plate_purpose
-
-    transient do
-      well_count 96
-      occupied_map_locations do
-        Map.where_plate_size(size).where_plate_shape(AssetShape.default).where(well_order => (0...well_count))
-      end
-      well_order :column_order
-      well_factory :well
-    end
-
-    after(:create) do |plate, evaluator|
-      plate.wells = evaluator.occupied_map_locations.map do |map|
-        create(evaluator.well_factory, map: map)
-      end
-    end
-
-    # A plate that has exactly the right number of wells!
-    factory :pooling_plate do
-      plate_purpose { create :pooling_plate_purpose }
-      transient do
-        well_count 6
-        well_factory :tagged_well
-      end
-    end
-
-    factory :non_stock_pooling_plate do
-      plate_purpose
-
-      transient do
-        well_count 6
-        well_factory :empty_well
-      end
-    end
-
-    factory :input_plate_for_pooling do
-      association(:plate_purpose, factory: :input_plate_purpose)
-      transient do
-        well_count 6
-        well_factory :tagged_well
-      end
-    end
-
-    factory(:full_stock_plate) do
-      plate_purpose { PlatePurpose.stock_plate_purpose }
-
-      factory(:partial_plate) do
-        transient { well_count 48 }
-      end
-
-      factory(:plate_for_strip_tubes) do
-        transient do
-          well_count 8
-          well_factory :tagged_well
-        end
-      end
-
-      factory(:two_column_plate) do
-        transient { well_count 16 }
-      end
-    end
-
-    factory(:full_plate_with_samples) do
-      transient { well_factory :tagged_well }
-    end
-  end
-
   # Transfers and their templates
   factory(:transfer_between_plates, class: Transfer::BetweenPlates) do
     user
@@ -126,9 +57,8 @@ FactoryGirl.define do
       transfers nil
     end
 
-    factory(:between_tubes_transfer_template) do
-      name 'Transfer from tube to tube by submission'
-      transfer_class_name 'Transfer::BetweenTubesBySubmission.name'
+    factory :between_tubes_transfer_template do
+      transfer_class_name 'Transfer::BetweenTubesBySubmission'
       transfers nil
     end
   end
@@ -179,31 +109,11 @@ FactoryGirl.define do
     walking_algorithm   'TagLayout::WalkWellsOfPlate'
   end
 
-  factory(:parent_plate_purpose, class: PlatePurpose) do
-    name 'Parent plate purpose'
-  end
-
-  # Plate creations
-  factory(:pooling_plate_purpose, class: PlatePurpose) do
-    sequence(:name) { |i| "Pooling purpose #{i}" }
-    stock_plate true
-  end
-
-  factory(:initial_downstream_plate_purpose, class: Pulldown::InitialDownstreamPlatePurpose) do
-    name { generate :pipeline_name }
-  end
-
   factory(:plate_creation) do
     user
-    barcode
+    barcode { generate :barcode_number }
     association(:parent, factory: :full_plate, well_count: 2)
     association(:child_purpose, factory: :plate_purpose)
-  end
-
-  # Tube creations
-  factory(:child_tube_purpose, class: Tube::Purpose) do
-    sequence(:name) { |n| "Child tube purpose #{n}" }
-    target_type 'Tube'
   end
 
   factory(:tube_creation) do
@@ -248,7 +158,7 @@ FactoryGirl.define do
   end
 
   factory(:isc_request, class: Pulldown::Requests::IscLibraryRequest, aliases: [:pulldown_isc_request]) do
-    request_type { |_target| RequestType.find_by(name: 'Pulldown ISC') || raise(StandardError, "Could not find 'Pulldown ISC' request type") }
+    request_type { RequestType.find_by!(name: 'Pulldown ISC') }
     asset        { |target| target.association(:well_with_sample_and_plate) }
     target_asset { |target| target.association(:empty_well) }
     request_purpose :standard

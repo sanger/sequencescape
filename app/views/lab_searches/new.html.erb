@@ -7,7 +7,7 @@
 <% add :about, "You can search for batches, users, libraries and requests here." -%>
 
 <div>
-  <%= page_title 'Search', @query %>
+  <%= page_title 'Lab Search', @query %>
 
   <%= form_tag('/lab_searches/new', method: :get, class: 'form-inline') do -%>
     <div>Search for: <%= search_field_tag "q", @query, class: 'form-control' -%> <%= submit_tag "Go", class: 'btn' -%></div>

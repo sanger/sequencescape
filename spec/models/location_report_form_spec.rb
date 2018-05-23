@@ -131,17 +131,17 @@ RSpec.describe LocationReport::LocationReportForm, type: :model do
       end
 
       it 'is not valid if there is a poorly formatted barcode in the list' do
-        location_report_form.barcodes_text = "#{plate_1.machine_barcode} INVALID123 #{plate_2.sanger_human_barcode}"
+        location_report_form.barcodes_text = "#{plate_1.machine_barcode} INVALID123 #{plate_2.human_barcode}"
         expect(location_report_form).to_not be_valid
       end
 
       it 'is valid to use human readable barcodes' do
-        location_report_form.barcodes_text = plate_1.sanger_human_barcode.to_s
+        location_report_form.barcodes_text = plate_1.human_barcode.to_s
         expect(location_report_form).to be_valid
       end
 
       it 'is valid to use human readable barcodes missing the final check digit character' do
-        location_report_form.barcodes_text = plate_1.sanger_human_barcode.to_s[0...-1]
+        location_report_form.barcodes_text = plate_1.human_barcode.to_s[0...-1]
         expect(location_report_form).to be_valid
       end
 
@@ -157,7 +157,7 @@ RSpec.describe LocationReport::LocationReportForm, type: :model do
 
       context 'when barcodes are input with varied spacing or spaces at the beginning or end' do
         before(:each) do
-          location_report_form.barcodes_text = " #{plate_1.machine_barcode} #{plate_2.sanger_human_barcode}     #{plate_3.machine_barcode}        "
+          location_report_form.barcodes_text = " #{plate_1.machine_barcode} #{plate_2.human_barcode}     #{plate_3.machine_barcode}        "
         end
 
         it 'the model is valid' do

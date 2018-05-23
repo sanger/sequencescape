@@ -43,7 +43,7 @@ class LibraryTubeTest < ActiveSupport::TestCase
         end
 
         should 'have a different barcode' do
-          assert_not_equal(@library_tube.barcode, @stock.barcode)
+          assert_not_equal(@library_tube.human_barcode, @stock.human_barcode)
         end
       end
 
@@ -57,7 +57,7 @@ class LibraryTubeTest < ActiveSupport::TestCase
         end
 
         should 'set the barcode' do
-          assert_equal '1111', @stock.barcode
+          assert_equal '1111', @stock.barcode_number
         end
       end
     end

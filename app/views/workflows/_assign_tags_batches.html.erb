@@ -38,7 +38,7 @@
                   <%= link_to request.asset.display_name, asset_url(request.asset), target: "_blank" %>
                 </td>
                 <td class="request-asset-name">
-                  <%= link_to(request.target_asset.sanger_human_barcode, asset_url(request.target_asset), target: "_blank") if request.target_asset %>
+                  <%= link_to(request.target_asset.human_barcode, asset_url(request.target_asset), target: "_blank") if request.target_asset %>
                 </td>
               <% else %>
                 <td class="request-asset-name">&nbsp;</td>

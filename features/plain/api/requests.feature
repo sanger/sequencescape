@@ -100,7 +100,6 @@ Feature: Interacting with requests through the API
             "state": "pending",
 
             "target_asset_closed": false,
-            "target_asset_state": "",
             "created_at": "2010-09-16T16:15:00+01:00",
             "source_asset_two_dimensional_barcode": null,
             "target_asset_type": "library_tubes",
@@ -120,7 +119,6 @@ Feature: Interacting with requests through the API
             "submission_uuid": "11111111-2222-3333-4444-111111111111",
             "submission_url": "http://localhost:3000/0_5/submissions/11111111-2222-3333-4444-111111111111",
             "target_asset_name": "Study testing the JSON API - Target asset",
-            "source_asset_state": "",
             "source_asset_name": "Tube",
             "source_asset_barcode_prefix": "NT",
             "target_asset_barcode_prefix": "DN",
@@ -241,7 +239,6 @@ Feature: Interacting with requests through the API
 
           "source_asset_uuid": "aaaaaaaa-1111-2222-3333-000000000001",
           "source_asset_name": "Study testing the JSON API - Source asset",
-          "source_asset_state": "",
           "source_asset_type": "library_tubes",
           "source_asset_closed": false,
           "source_asset_two_dimensional_barcode": null,
@@ -250,7 +247,6 @@ Feature: Interacting with requests through the API
           "target_asset_two_dimensional_barcode": null,
           "target_asset_name": "Study testing the JSON API - Target asset",
           "target_asset_type": "library_tubes",
-          "target_asset_state": "",
           "target_asset_closed": false,
 
           "source_asset_barcode_prefix": "DN",
@@ -310,7 +306,6 @@ Feature: Interacting with requests through the API
 
           "source_asset_uuid": "aaaaaaaa-1111-2222-3333-000000000001",
           "source_asset_name": "Study testing the JSON API - Source asset",
-          "source_asset_state": "",
           "source_asset_type": "library_tubes",
           "source_asset_closed": false,
           "source_asset_two_dimensional_barcode": null,
@@ -319,7 +314,6 @@ Feature: Interacting with requests through the API
           "target_asset_two_dimensional_barcode": null,
           "target_asset_name": "Study testing the JSON API - Target asset",
           "target_asset_type": "library_tubes",
-          "target_asset_state": "",
           "target_asset_closed": false,
 
           "source_asset_barcode_prefix": "DN",

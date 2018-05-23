@@ -12,7 +12,7 @@ module StudyReport::WellDetails
           :map,
           :well_attribute,
           :events,
-          { plate: [:plate_purpose, :events], primary_aliquot: { sample: [:sample_metadata, { sample_manifest: :supplier }, :external_properties] } },
+          { plate: [:plate_purpose, :events, :barcodes], primary_aliquot: { sample: [:sample_metadata, { sample_manifest: :supplier }, :external_properties] } },
           { latest_child_well: [:map, { plate: [:plate_purpose, :plate_metadata] }] }
         ])
       }
@@ -36,7 +36,7 @@ module StudyReport::WellDetails
                    pico: well_attribute.pico_pass,
                    is_in_fluidigm: fluidigm_stamp_date,
                    gel: well_attribute.gel_pass,
-                   plate_barcode: plate.barcode,
+                   plate_barcode: plate.barcode_number,
                    measured_volume: well_attribute.measured_volume,
                    current_volume: well_attribute.current_volume,
                    gel_qc_date: gel_qc_date,
@@ -54,8 +54,8 @@ module StudyReport::WellDetails
       if latest_plate && latest_plate.plate_purpose
         qc_data[:genotyping_plate_purpose] = latest_plate.plate_purpose.name
         qc_data[:genotyping_infinium_barcode] = latest_plate.infinium_barcode
-        qc_data[:genotyping_barcode] = latest_plate.barcode if latest_plate.barcode
-        qc_data[:genotyping_well] = latest_child_well.map_description if latest_plate.barcode
+        qc_data[:genotyping_barcode] = latest_plate.barcode_number if latest_plate.barcode_number
+        qc_data[:genotyping_well] = latest_child_well.map_description if latest_plate.barcode_number
       end
     end
 

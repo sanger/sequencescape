@@ -16,16 +16,7 @@ unless Rails.env.test?
       'Dilution Plates'     => ['Working Dilution', 'Pico Dilution'],
       'Pico Assay Plates'   => ['Pico Assay A', 'Pico Assay B'],
       'Pico Assay B'        => ['Pico Assay A', 'Pico Assay B'],
-      'Gel Dilution Plates' => ['Gel Dilution'],
-      'Pulldown Aliquot'    => ['Sonication'],
-      'Sonication'          => ['Run of Robot'],
-      'Run of Robot'        => ['EnRichment 1'],
-      'EnRichment 1'        => ['EnRichment 2'],
-      'EnRichment 2'        => ['EnRichment 3'],
-      'EnRichment 3'        => ['EnRichment 4'],
-      'EnRichment 4'        => ['Sequence Capture'],
-      'Sequence Capture'    => ['Pulldown PCR'],
-      'Pulldown PCR'        => ['Pulldown qPCR']
+      'Gel Dilution Plates' => ['Gel Dilution']
     }
 
     PlatePurpose.where(name: [

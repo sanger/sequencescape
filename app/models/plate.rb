@@ -19,6 +19,10 @@ class Plate < Asset
   include PlateCreation::CreationChild
 
   extend QcFile::Associations
+
+  # Shouldn't actually be falling back to this, but its here just in case
+  self.default_prefix = 'DN'
+
   has_qc_files
 
   belongs_to :plate_purpose, foreign_key: :plate_purpose_id
@@ -107,6 +111,7 @@ class Plate < Asset
 
   # The default state for a plate comes from the plate purpose
   delegate :default_state, to: :plate_purpose, allow_nil: true
+
   def state
     plate_purpose.state_of(self)
   end
@@ -126,7 +131,7 @@ class Plate < Asset
   def summary_hash
     {
       asset_id: id,
-      barcode: { ean13_barcode: ean13_barcode, human_readable: sanger_human_barcode },
+      barcode: { ean13_barcode: ean13_barcode, human_readable: human_barcode },
       occupied_wells: wells.with_aliquots.include_map.map(&:map_description)
     }
   end
@@ -145,10 +150,7 @@ class Plate < Asset
   delegate :barcode_type, to: :plate_purpose, allow_nil: true
   delegate :asset_shape, to: :plate_purpose, allow_nil: true
   delegate :supports_multiple_submissions?, to: :plate_purpose
-  delegate :fluidigm_barcode, to: :plate_metadata
   delegate :dilution_factor, :dilution_factor=, to: :plate_metadata
-
-  validates_length_of :fluidigm_barcode, is: 10, allow_blank: true
 
   scope :include_for_show, ->() {
     includes(
@@ -185,14 +187,10 @@ class Plate < Asset
     waiting_submissions.presence || in_progress_submissions
   end
 
-  def prefix
-    barcode_prefix.try(:prefix) || self.class.prefix
-  end
-
   def barcode_dilution_factor_created_at_hash
-    return {} if barcode.blank?
+    return {} if primary_barcode.blank?
     {
-      barcode: generate_machine_barcode,
+      barcode: ean13_barcode.to_s,
       dilution_factor: dilution_factor.to_s,
       created_at: created_at
     }
@@ -238,9 +236,7 @@ class Plate < Asset
 
   scope :include_wells_and_attributes, -> { includes(wells: %i(map well_attribute)) }
 
-  # has_many :wells, :as => :holder, :class_name => "Well"
   DEFAULT_SIZE = 96
-  self.prefix = 'DN'
 
   self.per_page = 50
 
@@ -331,8 +327,7 @@ class Plate < Asset
       .with_plate_purpose_ids(params[:plate_purpose_ids] || nil)
       .created_on_or_after(params[:start_date] || nil)
       .created_on_or_before(params[:end_date] || nil)
-      .with_scanned_ean13_barcodes(params[:barcodes] || nil)
-      .where.not(barcode: nil)
+      .filter_by_barcode(params[:barcodes] || nil) #  .where.not(barcode: nil)
       .distinct
   end
 
@@ -357,29 +352,6 @@ class Plate < Asset
 
   scope :created_on_or_before, ->(date) {
     where('assets.created_at <= ?', date.end_of_day) if date.present?
-  }
-
-  scope :with_scanned_ean13_barcodes, ->(barcodes) {
-    return if barcodes.blank?
-    queries = []
-    barcodes.flatten.map do |source_barcode|
-      case source_barcode.to_s
-      when /^\d{13}$/ # An EAN13 barcode
-        barcode_number = Barcode.number_to_human(source_barcode)
-        prefix_string  = Barcode.prefix_from_barcode(source_barcode)
-        barcode_prefix = BarcodePrefix.find_by(prefix: prefix_string)
-
-        unless barcode_number.nil? or prefix_string.nil? or barcode_prefix.nil?
-          queries << where(barcode: barcode_number, barcode_prefix_id: barcode_prefix.id)
-        end
-      end
-    end
-    # guard against nil case by returning none
-    return none if queries.blank?
-
-    # Here we chain together our various request scope queries using or, allowing us to retrieve them in a single query.
-    init_qry = queries.pop
-    asset_scope = queries.reduce(init_qry) { |scope, query| scope.or(query) }
   }
 
   def maps
@@ -468,6 +440,10 @@ class Plate < Asset
     end
   end
 
+  def stock_role
+    well_requests_as_source.first&.role
+  end
+
   # A plate has a sample with the specified name if any of its wells have that sample.
   def sample?(sample_name)
     wells.any? do |well|
@@ -488,54 +464,8 @@ class Plate < Asset
     plate_purpose.present? ? send(:"#{plate_purpose.barcode_for_tecan}") : ean13_barcode
   end
 
-  delegate :infinium_barcode, to: :plate_metadata
-
-  def infinium_barcode=(barcode)
-    plate_metadata.infinium_barcode = barcode
-    plate_metadata.save!
-  end
-
-  def valid_infinium_barcode?(_barcode)
-    true
-  end
-
-  def self.create_from_rack_csv(file_location, plate_barcode)
-    plate = create(name: "Plate #{plate_barcode}", barcode: plate_barcode, size: 96)
-
-    CSV.foreach(file_location) do |row|
-      map = Map.find_for_cell_location(row.first, plate.size)
-      if row.last.strip.blank?
-        well = plate.wells.create(map_id: map.id)
-      else
-        asset = Asset.find_by(two_dimensional_barcode: row.last.strip)
-        if asset.nil?
-          well = plate.wells.create(map_id: map.id)
-        else
-          well = plate.wells.create(sample: asset.sample, map_id: map.id)
-          well.name = "#{asset} #{well.id}"
-          well.save
-          AssetLink.create_edge(asset, well)
-        end
-      end
-    end
-    plate
-  end
-
   def submission_time(current_time)
     current_time.strftime('%Y-%m-%dT%H_%M_%SZ')
-  end
-
-  def self.create_plates_with_barcodes(params)
-    begin
-      params[:snp_plates].each do |_index, plate_barcode_id|
-        next if plate_barcode_id.blank?
-        plate = Plate.create(barcode: plate_barcode_id.to_s, name: "Plate #{plate_barcode_id}", size: DEFAULT_SIZE)
-        plate.save!
-      end
-    rescue ActiveRecord::RecordInvalid
-      return false
-    end
-    true
   end
 
   def self.plate_ids_from_requests(requests)
@@ -579,7 +509,7 @@ class Plate < Asset
 
   def self.create_sample_tubes_asset_group_and_print_barcodes(plates, barcode_printer, study)
     return nil if plates.empty?
-    plate_barcodes = plates.map { |plate| plate.barcode }
+    plate_barcodes = plates.map { |plate| plate.barcode_number }
     asset_group = AssetGroup.find_or_create_asset_group("#{plate_barcodes.join('-')} #{Time.now.to_formatted_s(:sortable)} ", study)
     plates.each do |plate|
       next if plate.wells.empty?
@@ -617,24 +547,16 @@ class Plate < Asset
 
   def self.create_with_barcode!(*args, &block)
     attributes = args.extract_options!
-    barcode    = args.first || attributes[:barcode]
-    # If this gets called on plate_purpose.plates it implicitly scopes
-    # plate to the plate purpose of choice.
-    barcode    = nil if barcode.present? and unscoped.find_by(barcode: barcode).present?
-    barcode  ||= PlateBarcode.create.barcode
-    create!(attributes.merge(barcode: barcode), &block)
+    attributes[:sanger_barcode] = safe_sanger_barcode(attributes[:sanger_barcode] || {})
+    create!(attributes, &block)
   end
 
-  #--
-  # NOTE: I'm getting odd behaviour where '&method(:find_from_machine_barcode)' raises a SecurityError.  I haven't
-  # been able to track down why, and it only happens under 'rake cucumber', so somewhere something is doing something
-  # nasty.
-  #++
-  def self.plates_from_scanned_plates_and_typed_plate_ids(source_plate_barcodes)
-    scanned_plates = source_plate_barcodes.scan(/\d+/).map { |v| find_from_machine_barcode(v) }
-    typed_plates   = source_plate_barcodes.scan(/\d+/).map { |v| find_by(barcode: v) }
-
-    (scanned_plates | typed_plates).compact
+  def self.safe_sanger_barcode(sanger_barcode)
+    if sanger_barcode[:number].blank? || Barcode.sanger_barcode(sanger_barcode[:prefix], sanger_barcode[:number]).exists?
+      { number: PlateBarcode.create.barcode, prefix: sanger_barcode[:prefix] }
+    else
+      sanger_barcode
+    end
   end
 
   def number_of_blank_samples
@@ -667,8 +589,6 @@ class Plate < Asset
 
   extend Metadata
   has_metadata do
-    custom_attribute(:infinium_barcode)
-    custom_attribute(:fluidigm_barcode)
   end
 
   def height
@@ -743,9 +663,17 @@ class Plate < Asset
     super(barcode.to_s)
   end
 
-  alias_method :friendly_name, :sanger_human_barcode
+  alias_method :friendly_name, :human_barcode
   def subject_type
     'plate'
+  end
+
+  # Plates use a different counter to tubes, and prior to the foreign barcodes update
+  # this method would have fallen back to Barcodable#generate tubes, and potentially generated
+  # an invalid plate barcode. In the future we probably want to scrap this approach entirely,
+  # and generate all barcodes in the plate style. (That is, as part of the factory on, eg. plate purpose)
+  def generate_barcode
+    raise StandardError, "#generate_barcode has been called on plate, which wasn't supposed to happen, and probably indicates a bug."
   end
 
   private
@@ -761,7 +689,7 @@ class Plate < Asset
     # From ETS
     @storage_location_service = 'ETS'
     return 'Control' if is_a?(ControlPlate)
-    return '' if barcode.blank?
+    return '' if primary_barcode.blank?
     return %w(storage_area storage_device building_area building).map do |key|
       get_external_value(key)
     end.compact.join(' - ')
@@ -776,7 +704,7 @@ class Plate < Asset
   end
 
   def set_plate_name_and_size
-    self.name = "Plate #{barcode}" if name.blank?
+    self.name = "Plate #{human_barcode}" if name.blank?
     self.size = default_plate_size if size.nil?
   end
 end

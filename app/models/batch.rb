@@ -54,17 +54,16 @@ class Batch < ApplicationRecord
   after_save :rebroadcast
 
   # Named scope for search by query string behavior
-  scope :for_search_query, ->(query, _with_includes) {
+  scope :for_search_query, ->(query) {
     user = User.find_by(login: query)
     if user
       where(user_id: user)
-    # Annoyingly if our number is out of range, rails throws an exception
-    elsif (-2147483648...2147483648).cover?(query.to_i)
-      where(id: query)
     else
-      none
+      with_safe_id(query) # Ensures extra long input (most likely barcodes) doesn't throw an exception
     end
   }
+
+  scope :for_lab_searches_display, -> {}
 
   scope :includes_for_ui,    -> { limit(5).includes(:user, :assignee, :pipeline) }
   scope :pending_for_ui,     -> { where(state: 'pending',   production_state: nil).latest_first }
@@ -78,8 +77,8 @@ class Batch < ApplicationRecord
     includes(requests: [
       :uuid_object, :request_metadata, :request_type,
       { submission: :uuid_object },
-      { asset: [:uuid_object, :barcode_prefix, { aliquots: [:sample, :tag] }] },
-      { target_asset: [:uuid_object, :barcode_prefix, { aliquots: [:sample, :tag] }] }
+      { asset: [:uuid_object, { aliquots: [:sample, :tag] }] },
+      { target_asset: [:uuid_object, { aliquots: [:sample, :tag] }] }
     ])
   }
 
@@ -251,8 +250,6 @@ class Batch < ApplicationRecord
     Plate.output_by_batch(self).with_wells_and_requests.first
   end
 
-  ## WARNING! This method is used in the sanger barcode gem. Do not remove it without
-  ## refactoring the sanger barcode gem.
   def output_plate_purpose
     output_plates[0].plate_purpose unless output_plates[0].nil?
   end
@@ -261,25 +258,13 @@ class Batch < ApplicationRecord
     requests.first.try(:role)
   end
 
-  def output_plate_in_batch?(barcode)
-    return false if barcode.nil?
-    return false if Plate.find_by(barcode: barcode).nil?
-    output_plates.any? { |plate| plate.barcode == barcode }
-  end
-
   def plate_group_barcodes
     return nil unless pipeline.group_by_parent || requests.first.target_asset.is_a?(Well)
-    latest_plate_group = output_plate_group
-    return latest_plate_group unless latest_plate_group.empty?
-    input_plate_group
+    output_plate_group.presence || input_plate_group
   end
 
   def plate_barcode(barcode)
-    if barcode
-      barcode
-    else
-      requests.first.target_asset.plate.barcode
-    end
+    barcode.presence || requests.first.target_asset.plate.human_barcode
   end
 
   def mpx_library_name
@@ -319,8 +304,8 @@ class Batch < ApplicationRecord
   def verify_tube_layout(barcodes, user = nil)
     requests.each do |request|
       barcode = barcodes[request.position - 1]
-      unless barcode == request.asset.barcode.to_i
-        expected_barcode = request.asset.sanger_human_barcode
+      unless barcode == request.asset.machine_barcode
+        expected_barcode = request.asset.human_barcode
         errors.add(:base, "The tube at position #{request.position} is incorrect: expected #{expected_barcode}.")
       end
     end
@@ -542,7 +527,7 @@ class Batch < ApplicationRecord
       # we need to call downstream request before setting the target_asset
       # otherwise, the request use the target asset to find the next request
       target_asset = asset_type.create! do |asset|
-        asset.barcode = AssetBarcode.new_barcode unless [Lane, Well].include?(asset_type)
+        asset.generate_barcode
         asset.generate_name(request.asset.name)
       end
 

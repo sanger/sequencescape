@@ -67,11 +67,6 @@ FactoryGirl.define do
     key 'Illumina_Lib_PCR_XP_Lib_Pool'
   end
 
-  factory :illumina_htp_mx_tube_purpose, class: IlluminaHtp::MxTubePurpose do
-    sequence(:name) { |n| "Illumina HTP Mx Tube Purpose #{n}" }
-    target_type 'MultiplexedLibraryTube'
-  end
-
   factory :lib_pool_tube, class: StockMultiplexedLibraryTube do
     name { |_a| FactoryGirl.generate :asset_name }
     association(:purpose, factory: :illumina_htp_initial_stock_tube_purpose)

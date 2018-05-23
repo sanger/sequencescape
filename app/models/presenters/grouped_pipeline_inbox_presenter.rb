@@ -144,7 +144,7 @@ module Presenters
     end
 
     def barcode
-      parent.sanger_human_barcode
+      parent.human_barcode
     end
 
     def wells
@@ -168,7 +168,7 @@ module Presenters
     end
 
     def stock_barcode
-      parent.source_plate.try(:sanger_human_barcode) || 'Unknown'
+      parent.source_plate.try(:human_barcode) || 'Unknown'
     end
 
     def still_required

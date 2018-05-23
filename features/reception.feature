@@ -5,7 +5,7 @@ Feature: I want to scan an asset into a lab reception freezer
     And I am on the homepage
 
     Scenario: Scan a plate into SLF
-      Given a plate of type "Plate" with barcode "1221234567841" exists
+      Given a plate with barcode "1221234567841" exists
       When I follow "Reception"
       Then I should see "Scan your sample"
       And I fill in "barcode_0" with "1221234567841"

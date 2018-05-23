@@ -167,10 +167,10 @@ RSpec.describe LocationReport, type: :model do
         let(:name) { 'Test_Report_Name' }
         let(:report_type) { :type_selection }
 
-        let(:plt_1_line) { "#{plate_1.machine_barcode},#{plate_1.sanger_human_barcode},#{plt_1_purpose},#{plt_1_created},#{locn_prefix} - Shelf 1,LabWhere,#{study_1.name},#{study_1.id},#{study_1_sponsor.name}" }
-        let(:plt_2_line_1) { "#{plate_2.machine_barcode},#{plate_2.sanger_human_barcode},#{plt_2_purpose},#{plt_2_created},#{locn_prefix} - Shelf 2,LabWhere,#{study_1.name},#{study_1.id},#{study_1_sponsor.name}" }
-        let(:plt_2_line_2) { "#{plate_2.machine_barcode},#{plate_2.sanger_human_barcode},#{plt_2_purpose},#{plt_2_created},#{locn_prefix} - Shelf 2,LabWhere,#{study_2.name},#{study_2.id},#{study_2_sponsor.name}" }
-        let(:plt_3_line) { "#{plate_3.machine_barcode},#{plate_3.sanger_human_barcode},#{plt_3_purpose},#{plt_3_created},#{locn_prefix} - Shelf 3,LabWhere,#{study_2.name},#{study_2.id},#{study_2_sponsor.name}" }
+        let(:plt_1_line) { "#{plate_1.machine_barcode},#{plate_1.human_barcode},#{plt_1_purpose},#{plt_1_created},#{locn_prefix} - Shelf 1,LabWhere,#{study_1.name},#{study_1.id},#{study_1_sponsor.name}" }
+        let(:plt_2_line_1) { "#{plate_2.machine_barcode},#{plate_2.human_barcode},#{plt_2_purpose},#{plt_2_created},#{locn_prefix} - Shelf 2,LabWhere,#{study_1.name},#{study_1.id},#{study_1_sponsor.name}" }
+        let(:plt_2_line_2) { "#{plate_2.machine_barcode},#{plate_2.human_barcode},#{plt_2_purpose},#{plt_2_created},#{locn_prefix} - Shelf 2,LabWhere,#{study_2.name},#{study_2.id},#{study_2_sponsor.name}" }
+        let(:plt_3_line) { "#{plate_3.machine_barcode},#{plate_3.human_barcode},#{plt_3_purpose},#{plt_3_created},#{locn_prefix} - Shelf 3,LabWhere,#{study_2.name},#{study_2.id},#{study_2_sponsor.name}" }
 
         before(:each) do
           [
@@ -288,7 +288,7 @@ RSpec.describe LocationReport, type: :model do
           let(:start_date) { '2017-01-01 00:00:00' }
           let(:end_date) { '2017-03-01 00:00:00' }
           let(:plt_4_created) { plate_4.created_at.strftime('%Y-%m-%d %H:%M:%S') }
-          let(:plt_4_line) { "#{plate_4.machine_barcode},#{plate_4.sanger_human_barcode},Unknown,#{plt_4_created},#{locn_prefix} - Shelf 1,LabWhere,#{study_1.name},#{study_1.id},#{study_1_sponsor.name}" }
+          let(:plt_4_line) { "#{plate_4.machine_barcode},#{plate_4.human_barcode},Unknown,#{plt_4_created},#{locn_prefix} - Shelf 1,LabWhere,#{study_1.name},#{study_1.id},#{study_1_sponsor.name}" }
           let(:expected_lines) { [headers_line, plt_4_line] }
 
           before(:each) do
@@ -364,7 +364,7 @@ RSpec.describe LocationReport, type: :model do
 
         describe 'when a single labware in the location' do
           let(:location_barcode) { 'locn-1-at-lvl-1' }
-          let(:plt_1_line) { "#{plate_1.machine_barcode},#{plate_1.sanger_human_barcode},#{plt_1_purpose},#{plt_1_created},#{locn_prefix} - Shelf 1,LabWhere,#{study_1.name},#{study_1.id},#{study_1_sponsor.name}" }
+          let(:plt_1_line) { "#{plate_1.machine_barcode},#{plate_1.human_barcode},#{plt_1_purpose},#{plt_1_created},#{locn_prefix} - Shelf 1,LabWhere,#{study_1.name},#{study_1.id},#{study_1_sponsor.name}" }
           let(:expected_lines) { [headers_line, plt_1_line] }
 
           before(:each) do
@@ -381,9 +381,9 @@ RSpec.describe LocationReport, type: :model do
 
         describe 'when multiple labwares in same sub-location' do
           let(:location_barcode) { 'locn-1-at-lvl-1' }
-          let(:plt_1_line) { "#{plate_1.machine_barcode},#{plate_1.sanger_human_barcode},#{plt_1_purpose},#{plt_1_created},#{locn_prefix} - Shelf 1 - Box 1,LabWhere,#{study_1.name},#{study_1.id},#{study_1_sponsor.name}" }
-          let(:plt_2_line_1) { "#{plate_2.machine_barcode},#{plate_2.sanger_human_barcode},#{plt_2_purpose},#{plt_2_created},#{locn_prefix} - Shelf 1 - Box 1,LabWhere,#{study_1.name},#{study_1.id},#{study_1_sponsor.name}" }
-          let(:plt_2_line_2) { "#{plate_2.machine_barcode},#{plate_2.sanger_human_barcode},#{plt_2_purpose},#{plt_2_created},#{locn_prefix} - Shelf 1 - Box 1,LabWhere,#{study_2.name},#{study_2.id},#{study_2_sponsor.name}" }
+          let(:plt_1_line) { "#{plate_1.machine_barcode},#{plate_1.human_barcode},#{plt_1_purpose},#{plt_1_created},#{locn_prefix} - Shelf 1 - Box 1,LabWhere,#{study_1.name},#{study_1.id},#{study_1_sponsor.name}" }
+          let(:plt_2_line_1) { "#{plate_2.machine_barcode},#{plate_2.human_barcode},#{plt_2_purpose},#{plt_2_created},#{locn_prefix} - Shelf 1 - Box 1,LabWhere,#{study_1.name},#{study_1.id},#{study_1_sponsor.name}" }
+          let(:plt_2_line_2) { "#{plate_2.machine_barcode},#{plate_2.human_barcode},#{plt_2_purpose},#{plt_2_created},#{locn_prefix} - Shelf 1 - Box 1,LabWhere,#{study_2.name},#{study_2.id},#{study_2_sponsor.name}" }
           let(:expected_lines) { [headers_line, plt_1_line, plt_2_line_1, plt_2_line_2] }
 
           before(:each) do
@@ -413,9 +413,9 @@ RSpec.describe LocationReport, type: :model do
 
         describe 'when multiple labwares in different sub-locations ' do
           let(:location_barcode) { 'locn-1-at-lvl-1' }
-          let(:plt_1_line) { "#{plate_1.machine_barcode},#{plate_1.sanger_human_barcode},#{plt_1_purpose},#{plt_1_created},#{locn_prefix} - Shelf 1 - Box 1,LabWhere,#{study_1.name},#{study_1.id},#{study_1_sponsor.name}" }
-          let(:plt_2_line_1) { "#{plate_2.machine_barcode},#{plate_2.sanger_human_barcode},#{plt_2_purpose},#{plt_2_created},#{locn_prefix} - Shelf 1 - Box 2,LabWhere,#{study_1.name},#{study_1.id},#{study_1_sponsor.name}" }
-          let(:plt_2_line_2) { "#{plate_2.machine_barcode},#{plate_2.sanger_human_barcode},#{plt_2_purpose},#{plt_2_created},#{locn_prefix} - Shelf 1 - Box 2,LabWhere,#{study_2.name},#{study_2.id},#{study_2_sponsor.name}" }
+          let(:plt_1_line) { "#{plate_1.machine_barcode},#{plate_1.human_barcode},#{plt_1_purpose},#{plt_1_created},#{locn_prefix} - Shelf 1 - Box 1,LabWhere,#{study_1.name},#{study_1.id},#{study_1_sponsor.name}" }
+          let(:plt_2_line_1) { "#{plate_2.machine_barcode},#{plate_2.human_barcode},#{plt_2_purpose},#{plt_2_created},#{locn_prefix} - Shelf 1 - Box 2,LabWhere,#{study_1.name},#{study_1.id},#{study_1_sponsor.name}" }
+          let(:plt_2_line_2) { "#{plate_2.machine_barcode},#{plate_2.human_barcode},#{plt_2_purpose},#{plt_2_created},#{locn_prefix} - Shelf 1 - Box 2,LabWhere,#{study_2.name},#{study_2.id},#{study_2_sponsor.name}" }
           let(:expected_lines) { [headers_line, plt_1_line, plt_2_line_1, plt_2_line_2] }
 
           before(:each) do
@@ -446,10 +446,10 @@ RSpec.describe LocationReport, type: :model do
 
         describe 'when multiple labwares at different levels' do
           let(:location_barcode) { 'locn-1-at-lvl-1' }
-          let(:plt_1_line) { "#{plate_1.machine_barcode},#{plate_1.sanger_human_barcode},#{plt_1_purpose},#{plt_1_created},#{locn_prefix} - Shelf 1,LabWhere,#{study_1.name},#{study_1.id},#{study_1_sponsor.name}" }
-          let(:plt_2_line_1) { "#{plate_2.machine_barcode},#{plate_2.sanger_human_barcode},#{plt_2_purpose},#{plt_2_created},#{locn_prefix} - Shelf 1 - Tray 1,LabWhere,#{study_1.name},#{study_1.id},#{study_1_sponsor.name}" }
-          let(:plt_2_line_2) { "#{plate_2.machine_barcode},#{plate_2.sanger_human_barcode},#{plt_2_purpose},#{plt_2_created},#{locn_prefix} - Shelf 1 - Tray 1,LabWhere,#{study_2.name},#{study_2.id},#{study_2_sponsor.name}" }
-          let(:plt_3_line) { "#{plate_3.machine_barcode},#{plate_3.sanger_human_barcode},#{plt_3_purpose},#{plt_3_created},#{locn_prefix} - Shelf 1 - Tray 1 - Box 1,LabWhere,#{study_2.name},#{study_2.id},#{study_2_sponsor.name}" }
+          let(:plt_1_line) { "#{plate_1.machine_barcode},#{plate_1.human_barcode},#{plt_1_purpose},#{plt_1_created},#{locn_prefix} - Shelf 1,LabWhere,#{study_1.name},#{study_1.id},#{study_1_sponsor.name}" }
+          let(:plt_2_line_1) { "#{plate_2.machine_barcode},#{plate_2.human_barcode},#{plt_2_purpose},#{plt_2_created},#{locn_prefix} - Shelf 1 - Tray 1,LabWhere,#{study_1.name},#{study_1.id},#{study_1_sponsor.name}" }
+          let(:plt_2_line_2) { "#{plate_2.machine_barcode},#{plate_2.human_barcode},#{plt_2_purpose},#{plt_2_created},#{locn_prefix} - Shelf 1 - Tray 1,LabWhere,#{study_2.name},#{study_2.id},#{study_2_sponsor.name}" }
+          let(:plt_3_line) { "#{plate_3.machine_barcode},#{plate_3.human_barcode},#{plt_3_purpose},#{plt_3_created},#{locn_prefix} - Shelf 1 - Tray 1 - Box 1,LabWhere,#{study_2.name},#{study_2.id},#{study_2_sponsor.name}" }
           let(:expected_lines) { [headers_line, plt_1_line, plt_2_line_1, plt_2_line_2, plt_3_line] }
 
           before(:each) do

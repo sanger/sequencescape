@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
 
 <p>
-Plate <%= h(@asset.display_name) %> Barcode <%= @asset.sanger_human_barcode  %>
+Plate <%= h(@asset.display_name) %> Barcode <%= @asset.human_barcode  %>
 </p>
 
 <%= render partial: "shared/show_plate", locals: {plate: @asset} %>
