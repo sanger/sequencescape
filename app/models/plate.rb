@@ -777,11 +777,9 @@ class Plate < Asset
     cas_location = Cas::StoredEntity.storage_location(barcode, barcode_prefix.prefix)
     if cas_location.present?
       if cas_location.rows.first.present?
-        return cas_location.rows.first.join(' - ')
-      else
-        return nil
+        cas_location.rows.first.join(' - ')
       end
-    else
+    elsif cas_location.nil?
       return 'Cannot connect to Cas database'
     end
   end
