@@ -22,7 +22,7 @@ class RobotProperty < ApplicationRecord
     end
   end
 
-  def sanger_human_barcode
+  def human_barcode
     return nil unless name.nil?
     'BD' + value.to_s + Barcode.calculate_checksum('BD', value.to_i)
   end

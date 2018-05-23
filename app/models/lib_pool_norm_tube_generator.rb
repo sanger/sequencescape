@@ -17,7 +17,7 @@ class LibPoolNormTubeGenerator
   end
 
   def transfer_template
-    @transfer_template ||= TransferTemplate.find_by(name: 'Transfer from tube to tube by submission')
+    @transfer_template ||= TransferTemplate.find_by!(transfer_class_name: 'Transfer::BetweenTubesBySubmission')
   end
 
   def plate=(barcode)
@@ -25,7 +25,7 @@ class LibPoolNormTubeGenerator
   end
 
   def set_plate(barcode)
-    Plate.with_machine_barcode(barcode).includes(wells: { requests: [:request_type, :target_asset] }).first
+    Plate.with_barcode(barcode).includes(wells: { requests: [:request_type, :target_asset] }).first
   end
 
   def lib_pool_tubes
@@ -46,7 +46,7 @@ class LibPoolNormTubeGenerator
             pass_and_complete(create_lib_pool_norm_tube(tube))
           end
 
-          @asset_group = AssetGroup.create(assets: destination_tubes, study: study, name: "#{plate.sanger_human_barcode}_qc_completed_tubes")
+          @asset_group = AssetGroup.create(assets: destination_tubes, study: study, name: "#{plate.human_barcode}_qc_completed_tubes")
         end
         true
       rescue => e

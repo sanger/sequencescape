@@ -5,21 +5,19 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 class DilutionPlate < Plate
-  PICO_TYPES = [PicoAssayPlate, PicoAssayAPlate, PicoAssayBPlate].map(&:name)
-
-  has_many :pico_descendants, ->() { where(sti_type: PICO_TYPES) }, through: :links_as_ancestor, source: :descendant, class_name: 'PicoAssayPlate'
-  has_many :pico_children,    ->() { where(sti_type: PICO_TYPES) }, through: :links_as_parent,   source: :descendant, class_name: 'PicoAssayPlate'
+  has_many :pico_descendants, ->() { where(sti_type: 'PicoAssayPlate') }, through: :links_as_ancestor, source: :descendant, class_name: 'PicoAssayPlate'
+  has_many :pico_children,    ->() { where(sti_type: 'PicoAssayPlate') }, through: :links_as_parent,   source: :descendant, class_name: 'PicoAssayPlate'
 
   # Note: joins here fails as it doesn't populate the associations
   # includes ends up generating invalid sql, as rails doesn't seem to know how to apply conditions to a has_many through
   # Eager load works just fine however. This effectively uses the join SQL, but populates the association
   scope :with_pico_children,  -> {
-    eager_load(pico_children: [:barcode_prefix, :plate_metadata])
+    eager_load(pico_children: [:barcodes, :plate_metadata])
       .where.not(pico_children_assets: { id: nil })
   }
 
   scope :for_pico_view, -> {
-    preload(:barcode_prefix, :plate_metadata)
+    preload(:barcodes, :plate_metadata)
   }
 
   def to_pico_hash

@@ -30,8 +30,7 @@ Feature: Bulk Submission
     And the sample 'Sampletest' should not belong to study 'StudyB'
 
     When I upload a file with a plate 'AssetTest' with a well in location 'A1' that contains the sample 'SampleTest' for study 'StudyB'
-
-    Then I should see "Bulk submission successfully made"
+    Then I should see "Your bulk submission has been processed"
 
     Then the sample 'Sampletest' should belong to study 'StudyA'
     And the sample 'Sampletest' should belong to study 'StudyB'
@@ -39,7 +38,7 @@ Feature: Bulk Submission
 
   Scenario: Uploading a valid file with bait library specified should set the bait library name
     When I upload a file with 2 valid SC submissions
-    Then I should see "Your submissions:"
+    Then I should see "Your bulk submission has been processed."
      And there should be an order with the bait library name set to "Bait library 1"
      And there should be an order with the bait library name set to "Bait library 2"
      And the last submission should have a priority of 1

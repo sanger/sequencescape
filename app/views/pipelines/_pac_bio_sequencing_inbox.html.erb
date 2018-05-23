@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.%>
 
 <%= render partial: "batch_statuses" %>
-<%= render partial: 'pipeline_limit' %>
+<%= render partial: 'pipeline_limit', locals: { requests_waiting: @requests_waiting } %>
 
 <% if @requests_waiting == 0 -%>
   There are no outstanding requests for this pipeline.
@@ -91,7 +91,7 @@
                 <%= link_to request_asset.name, asset_path(request.asset_id) %>
               </td>
               <td class='request'> <!-- Asset -->
-                <%=  link_to "#{request_asset.sti_type} #{request_asset.barcode}", asset_path(request.asset_id) %>
+                <%=  link_to "#{request_asset.sti_type} #{request_asset.human_barcode}", asset_path(request.asset_id) %>
               </td>
               <td class='request'>
                 <%= request_tag %>

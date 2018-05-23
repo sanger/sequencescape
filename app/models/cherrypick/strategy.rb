@@ -195,7 +195,7 @@ class Cherrypick::Strategy
     end
 
     def barcode
-      @barcode ||= @request.asset.plate.sanger_human_barcode
+      @barcode ||= @request.asset.plate.human_barcode
     end
 
     def representation

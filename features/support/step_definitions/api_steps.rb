@@ -350,7 +350,8 @@ end
 
 Given /^the infinium barcode for plate "([^"]*)" is "([^"]*)"$/ do |plate_name, infinium_barcode|
   plate = Plate.find_by(name: plate_name)
-  plate.plate_metadata.update_attributes!(infinium_barcode: infinium_barcode)
+  plate.infinium_barcode = infinium_barcode
+  plate.save!
 end
 
 Given /^no (plate purpose|request type)s exist$/ do |model|

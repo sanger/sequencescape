@@ -9,6 +9,7 @@
 class Aliquot < ApplicationRecord
   include Uuid::Uuidable
   include Api::Messages::FlowcellIO::AliquotExtensions
+  include Api::Messages::QcResultIO::AliquotExtensions
   include AliquotIndexer::AliquotScopes
   include Api::AliquotIO::Extensions
   include DataForSubstitution
@@ -46,6 +47,7 @@ class Aliquot < ApplicationRecord
 
   # It may have a bait library but not necessarily.
   belongs_to :bait_library
+  belongs_to :primer_panel
 
   # It can belong to a library asset
   belongs_to :library, class_name: 'Receptacle'
@@ -139,7 +141,7 @@ class Aliquot < ApplicationRecord
   # Any options passed in as parameters will override the aliquot defaults
   def dup(params = {})
     super().tap do |cloned_aliquot|
-      cloned_aliquot.attributes = params
+      cloned_aliquot.assign_attributes(params)
     end
   end
 
@@ -174,10 +176,11 @@ class Aliquot < ApplicationRecord
   # - They have matching tag2s
   # If either aliquot is missing a tag, that tag is ignored
   # This method is primarily provided for legacy reasons. #matches? is much more robust
-  def =~(object)
-    (sample_id == object.sample_id) &&
-      (untagged? || object.untagged? || (tag_id == object.tag_id)) &&
-      (no_tag2?  || object.no_tag2?  || (tag2_id == object.tag2_id))
+  def =~(other)
+    other &&
+      (sample_id == other.sample_id) &&
+      (untagged? || other.untagged? || (tag_id == other.tag_id)) &&
+      (no_tag2?  || other.no_tag2?  || (tag2_id == other.tag2_id))
   end
 
   def matches?(object)

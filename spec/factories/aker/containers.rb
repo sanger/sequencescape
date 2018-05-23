@@ -7,9 +7,10 @@ FactoryGirl.define do
     end
 
     barcode { "AKER-#{index}" }
+  end
 
-    factory :container_with_address do
-      address { "A:#{index}" }
-    end
+  factory :container_with_address, class: Aker::Container do
+    barcode { 'AKER-1' }
+    address { 'A:1' }
   end
 end

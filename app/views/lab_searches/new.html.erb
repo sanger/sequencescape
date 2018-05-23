@@ -7,12 +7,12 @@
 <% add :about, "You can search for batches, users, libraries and requests here." -%>
 
 <div>
-  <div class="page-header"><h1>Search</h1></div>
-  <div class="info">
-    <%= form_tag('/lab_searches/new', method: :get, class: 'form-inline') do -%>
-      <div>Search for: <%= text_field_tag "q", nil, class: 'form-control' -%> <%= submit_tag "Go", class: 'form-control' -%></div>
-    <% end -%>
-  </div>
+  <%= page_title 'Lab Search', @query %>
+
+  <%= form_tag('/lab_searches/new', method: :get, class: 'form-inline') do -%>
+    <div>Search for: <%= search_field_tag "q", @query, class: 'form-control' -%> <%= submit_tag "Go", class: 'btn' -%></div>
+  <% end -%>
+
   <% unless params["q"].blank? -%>
     <div id="results">
       <%= render partial: "search" %>

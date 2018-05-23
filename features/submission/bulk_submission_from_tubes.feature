@@ -20,8 +20,7 @@ Feature: Bulk Submission
 
   Scenario: Uploading a valid file with 1 submission
     When I upload a file with valid data for 1 tube submissions
-    Then I should see "Bulk submission successfully made"
-    And I should see "Your submissions:"
+    And I should see "Your bulk submission has been processed."
     And the last submission should contain two assets
     And the last submission should contain the tube with barcode "1"
     And the last submission should contain the tube with barcode "2"
@@ -29,6 +28,6 @@ Feature: Bulk Submission
   Scenario: With clashing asset groups
     And the study "abc123_study" has an asset group of 2 samples in "sample tube" called "novel_asset_group"
     When I upload a file with valid data for 1 tube submissions
-    Then I should not see "Bulk submission successfully made"
+    Then I should not see "Your bulk submission has been processed"
     And I should see "Asset Group 'novel_asset_group' contains different assets to those you specified. You may be reusing an asset group name"
 

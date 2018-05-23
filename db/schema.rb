@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180323154438) do
+ActiveRecord::Schema.define(version: 20180518121202) do
 
   create_table "aker_containers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "barcode"
@@ -19,8 +19,8 @@ ActiveRecord::Schema.define(version: 20180323154438) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "aker_work_orders", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer "aker_id"
+  create_table "aker_jobs", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "aker_job_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -89,7 +89,7 @@ ActiveRecord::Schema.define(version: 20180323154438) do
     t.index ["asset_id"], name: "index_asset_audits_on_asset_id"
   end
 
-  create_table "asset_barcodes", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "asset_barcodes", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", comment: "AL" do |t|
   end
 
   create_table "asset_creation_parents", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -152,7 +152,7 @@ ActiveRecord::Schema.define(version: 20180323154438) do
     t.text "descriptors"
     t.text "descriptor_fields"
     t.string "sti_type", limit: 50
-    t.string "barcode"
+    t.string "barcode_bkp"
     t.string "qc_state", limit: 20
     t.boolean "resource"
     t.datetime "created_at"
@@ -166,12 +166,12 @@ ActiveRecord::Schema.define(version: 20180323154438) do
     t.string "two_dimensional_barcode"
     t.integer "plate_purpose_id"
     t.decimal "volume", precision: 10, scale: 2
-    t.integer "barcode_prefix_id"
+    t.integer "barcode_prefix_id_bkp"
     t.decimal "concentration", precision: 18, scale: 8
     t.integer "legacy_sample_id"
     t.integer "legacy_tag_id"
-    t.index ["barcode"], name: "index_assets_on_barcode"
-    t.index ["barcode_prefix_id"], name: "index_assets_on_barcode_prefix_id"
+    t.index ["barcode_bkp"], name: "index_assets_on_barcode_bkp"
+    t.index ["barcode_prefix_id_bkp"], name: "index_assets_on_barcode_prefix_id_bkp"
     t.index ["sti_type", "plate_purpose_id"], name: "index_assets_on_plate_purpose_id_sti_type"
     t.index ["sti_type", "updated_at"], name: "index_assets_on_sti_type_and_updated_at"
     t.index ["sti_type"], name: "index_assets_on_sti_type"
@@ -256,6 +256,16 @@ ActiveRecord::Schema.define(version: 20180323154438) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer "barcode_printer_type_id"
+  end
+
+  create_table "barcodes", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "asset_id", null: false
+    t.string "barcode", null: false
+    t.integer "format", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["asset_id"], name: "index_barcodes_on_asset_id"
+    t.index ["barcode"], name: "index_barcodes_on_barcode"
   end
 
   create_table "batch_requests", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -639,7 +649,9 @@ ActiveRecord::Schema.define(version: 20180323154438) do
     t.bigint "user_id", null: false
     t.string "name", null: false
     t.integer "report_type", null: false
-    t.string "barcodes"
+    t.string "location_barcode"
+    t.text "barcodes"
+    t.string "faculty_sponsor_ids"
     t.bigint "study_id"
     t.string "plate_purpose_ids"
     t.datetime "start_date"
@@ -826,12 +838,12 @@ ActiveRecord::Schema.define(version: 20180323154438) do
 
   create_table "plate_metadata", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.integer "plate_id"
-    t.string "infinium_barcode"
+    t.string "infinium_barcode_bkp"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string "fluidigm_barcode", limit: 10
+    t.string "fluidigm_barcode_bkp", limit: 10
     t.decimal "dilution_factor", precision: 5, scale: 2, default: "1.0"
-    t.index ["fluidigm_barcode"], name: "index_on_fluidigm_barcode", unique: true
+    t.index ["fluidigm_barcode_bkp"], name: "index_on_fluidigm_barcode", unique: true
     t.index ["plate_id"], name: "index_plate_metadata_on_plate_id"
   end
 
@@ -868,6 +880,8 @@ ActiveRecord::Schema.define(version: 20180323154438) do
     t.string "barcode_for_tecan", default: "ean13_barcode", null: false
     t.integer "source_purpose_id"
     t.integer "lifespan"
+    t.integer "barcode_prefix_id"
+    t.index ["barcode_prefix_id"], name: "fk_rails_763bed2756"
     t.index ["target_type"], name: "index_plate_purposes_on_target_type"
     t.index ["type"], name: "index_plate_purposes_on_type"
   end
@@ -992,6 +1006,11 @@ ActiveRecord::Schema.define(version: 20180323154438) do
     t.index ["state"], name: "index_projects_on_state"
   end
 
+  create_table "qc_assays", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "qc_decision_qcables", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.integer "qc_decision_id", null: false
     t.integer "qcable_id", null: false
@@ -1050,6 +1069,21 @@ ActiveRecord::Schema.define(version: 20180323154438) do
     t.index ["product_criteria_id"], name: "fk_qc_reports_to_product_criteria"
     t.index ["report_identifier"], name: "index_qc_reports_on_report_identifier", unique: true
     t.index ["study_id"], name: "fk_qc_reports_to_studies"
+  end
+
+  create_table "qc_results", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "asset_id"
+    t.string "key"
+    t.string "value"
+    t.string "units"
+    t.float "cv", limit: 24
+    t.string "assay_type"
+    t.string "assay_version"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "qc_assay_id"
+    t.index ["asset_id"], name: "index_qc_results_on_asset_id"
+    t.index ["qc_assay_id"], name: "index_qc_results_on_qc_assay_id"
   end
 
   create_table "qcable_creators", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -1266,6 +1300,15 @@ ActiveRecord::Schema.define(version: 20180323154438) do
     t.index ["user_id"], name: "index_roles_users_on_user_id"
   end
 
+  create_table "sample_jobs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "sample_id"
+    t.bigint "job_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["job_id"], name: "index_sample_jobs_on_job_id"
+    t.index ["sample_id"], name: "index_sample_jobs_on_sample_id"
+  end
+
   create_table "sample_manifests", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -1351,15 +1394,6 @@ ActiveRecord::Schema.define(version: 20180323154438) do
     t.integer "sample_id"
     t.integer "sample_tube_id"
     t.integer "asset_group_id"
-  end
-
-  create_table "sample_work_orders", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.bigint "sample_id"
-    t.bigint "work_order_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["sample_id"], name: "index_sample_work_orders_on_sample_id"
-    t.index ["work_order_id"], name: "index_sample_work_orders_on_work_order_id"
   end
 
   create_table "samples", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -1891,9 +1925,12 @@ ActiveRecord::Schema.define(version: 20180323154438) do
 
   add_foreign_key "aliquots", "primer_panels"
   add_foreign_key "aliquots", "requests"
+  add_foreign_key "barcodes", "assets"
   add_foreign_key "billing_items", "requests"
   add_foreign_key "billing_products", "billing_product_catalogues"
+  add_foreign_key "plate_purposes", "barcode_prefixes"
   add_foreign_key "qc_files", "assets"
+  add_foreign_key "qc_results", "qc_assays"
   add_foreign_key "request_types", "billing_product_catalogues"
   add_foreign_key "requests", "billing_products"
   add_foreign_key "requests", "work_orders"

@@ -6,59 +6,19 @@
 # Copyright (C) 2018 Genome Research Ltd.
 
 require 'rails_helper'
+require 'support/lab_where_client_helper'
 
-feature 'Creating location reports from entered barcodes' do
-  let(:user) { create(:admin) }
-  let!(:study_1) { create(:study) }
-  let!(:plate_1) do
-    create(
-      :plate_with_wells_for_specified_studies,
-      studies: [study_1],
-      name: 'Plate_1',
-      created_at: '2016-02-01 00:00:00'
-    )
-  end
-
-  scenario 'with a single valid barcode' do
-    login_user user
-    visit location_reports_path
-    expect(page).to have_content 'Plate Location Reports'
-    within('#new_report_from_barcodes') do
-      fill_in 'name', with: 'Test report'
-      fill_in 'location_report_barcodes_text', with: plate_1.machine_barcode
-    end
-    click_button('Create report from barcodes')
-    expect(page).to have_content 'Your report has been requested and will be listed at the bottom of this page when complete.'
-  end
-
-  scenario 'with a single invalid barcode' do
-    login_user user
-    visit location_reports_path
-    expect(page).to have_content 'Plate Location Reports'
-    within('#new_report_from_barcodes') do
-      fill_in 'name', with: 'Test report'
-      fill_in 'location_report_barcodes_text', with: 'INVALIDBC'
-    end
-    click_button('Create report from barcodes')
-    expect(page).to have_content "Failed to create report: Barcodes can't be blank; Invalid barcodes found, no report generated: INVALIDBC"
-  end
-
-  scenario 'with a mix of valid and invalid barcodes' do
-    login_user user
-    visit location_reports_path
-    expect(page).to have_content 'Plate Location Reports'
-    within('#new_report_from_barcodes') do
-      fill_in 'name', with: 'Test report'
-      fill_in 'location_report_barcodes_text', with: "#{plate_1.machine_barcode} INVALIDBC"
-    end
-    click_button('Create report from barcodes')
-    expect(page).to have_content 'Failed to create report: Invalid barcodes found, no report generated: INVALIDBC'
-  end
+RSpec.configure do |c|
+  c.include LabWhereClientHelper
 end
 
-feature 'Creating location reports from selected criteria' do
+feature 'Location reports' do
   let(:user) { create(:admin) }
+
   let!(:study_1) { create(:study) }
+  let!(:study_2) { create(:study) }
+  let(:study_1_faculty_sponsor) { study_1.study_metadata.faculty_sponsor.name }
+
   let!(:plate_1) do
     create(
       :plate_with_wells_for_specified_studies,
@@ -78,87 +38,189 @@ feature 'Creating location reports from selected criteria' do
     )
   end
 
-  scenario 'with a start and end date selected' do
-    login_user user
-    visit location_reports_path
-    expect(page).to have_content 'Plate Location Reports'
-    within('#new_report_from_selection') do
-      fill_in 'name', with: 'Test report'
-      fill_in 'location_report_start_date', with: '01/01/2016'
-      fill_in 'location_report_end_date', with: '01/09/2016'
-    end
-    click_button('Create report from selection')
-    expect(page).to have_content 'Your report has been requested and will be listed at the bottom of this page when complete.'
+  let!(:plate_3) do
+    create(
+      :plate_with_wells_for_specified_studies,
+      studies: [study_2],
+      name: 'Plate_3',
+      created_at: '2016-10-01 00:00:00'
+    )
   end
 
-  scenario 'with a study, start and end date selected' do
-    login_user user
-    visit location_reports_path
-    expect(page).to have_content 'Plate Location Reports'
-    within('#new_report_from_selection') do
-      fill_in 'name', with: 'Test report'
-      select(study_1.name, from: 'location_report_study_id')
-      fill_in 'location_report_start_date', with: '01/01/2016'
-      fill_in 'location_report_end_date', with: '01/09/2016'
+  feature 'by selection' do
+    scenario 'with a start and end date selected' do
+      login_user user
+      visit location_reports_path
+      expect(page).to have_content 'Plate Location Reports'
+      within('#new_report_from_selection') do
+        fill_in 'Report name', with: 'Test report'
+        fill_in 'Start date', with: '01/01/2016'
+        fill_in 'End date', with: '01/09/2016'
+      end
+      click_button('Create report from selection')
+      expect(page).to have_content 'Your report has been requested and will be listed at the bottom of this page when complete.'
     end
-    click_button('Create report from selection')
-    expect(page).to have_content 'Your report has been requested and will be listed at the bottom of this page when complete.'
+
+    scenario 'with a faculty sponsor and start and end date selected' do
+      login_user user
+      visit location_reports_path
+      expect(page).to have_content 'Plate Location Reports'
+      within('#new_report_from_selection') do
+        fill_in 'Report name', with: 'Test report'
+        select(study_1_faculty_sponsor, from: 'Faculty Sponsors (can select multiple)')
+        fill_in 'Start date', with: '01/01/2016'
+        fill_in 'End date', with: '01/11/2016'
+      end
+      click_button('Create report from selection')
+      expect(page).to have_content 'Your report has been requested and will be listed at the bottom of this page when complete.'
+    end
+
+    scenario 'with a study, start and end date selected' do
+      login_user user
+      visit location_reports_path
+      expect(page).to have_content 'Plate Location Reports'
+      within('#new_report_from_selection') do
+        fill_in 'Report name', with: 'Test report'
+        select(study_1.name, from: 'Study')
+        fill_in 'Start date', with: '01/01/2016'
+        fill_in 'End date', with: '01/09/2016'
+      end
+      click_button('Create report from selection')
+      expect(page).to have_content 'Your report has been requested and will be listed at the bottom of this page when complete.'
+    end
+
+    scenario 'with a start and end date and a purpose seleced' do
+      login_user user
+      visit location_reports_path
+      expect(page).to have_content 'Plate Location Reports'
+      within('#new_report_from_selection') do
+        fill_in 'Report name', with: 'Test report'
+        fill_in 'Start date', with: '01/01/2016'
+        fill_in 'End date', with: '01/09/2016'
+        select(plt_1_purpose, from: 'Plate purposes (can select multiple)')
+      end
+      click_button('Create report from selection')
+      expect(page).to have_content 'Your report has been requested and will be listed at the bottom of this page when complete.'
+    end
+
+    scenario 'with a faculty_sponsor, study, start and end date and a purpose selected' do
+      login_user user
+      visit location_reports_path
+      expect(page).to have_content 'Plate Location Reports'
+      within('#new_report_from_selection') do
+        fill_in 'Report name', with: 'Test report'
+        select(study_1_faculty_sponsor, from: 'Faculty Sponsors (can select multiple)')
+        select(study_1.name, from: 'Study')
+        fill_in 'Start date', with: '01/01/2016'
+        fill_in 'End date', with: '01/09/2016'
+        select(plt_1_purpose, from: 'Plate purposes (can select multiple)')
+      end
+      click_button('Create report from selection')
+      expect(page).to have_content 'Your report has been requested and will be listed at the bottom of this page when complete.'
+    end
+
+    scenario 'without a start date selected' do
+      login_user user
+      visit location_reports_path
+      expect(page).to have_content 'Plate Location Reports'
+      within('#new_report_from_selection') do
+        fill_in 'Report name', with: 'Test report'
+        select(study_1.name, from: 'Study')
+        fill_in 'End date', with: '01/09/2016'
+      end
+      click_button('Create report from selection')
+      expect(page).to have_content 'Failed to create report: Start date Both start and end date are required if either one is used.'
+    end
+
+    scenario 'with a single valid barcode' do
+      login_user user
+      visit location_reports_path
+      expect(page).to have_content 'Plate Location Reports'
+      within('#new_report_from_selection') do
+        fill_in 'Report name', with: 'Test report'
+        fill_in 'List of Barcodes (separated by new lines, spaces or commas)', with: plate_1.machine_barcode
+      end
+      click_button('Create report from selection')
+      expect(page).to have_content 'Your report has been requested and will be listed at the bottom of this page when complete.'
+    end
+
+    scenario 'with a single invalid barcode' do
+      login_user user
+      visit location_reports_path
+      expect(page).to have_content 'Plate Location Reports'
+      within('#new_report_from_selection') do
+        fill_in 'Report name', with: 'Test report'
+        fill_in 'List of Barcodes (separated by new lines, spaces or commas)', with: 'INVALIDBC'
+      end
+      click_button('Create report from selection')
+      expect(page).to have_content 'Barcodes text Invalid barcodes found, no report generated: INVALIDBC'
+    end
+
+    scenario 'with a mix of valid and invalid barcodes' do
+      login_user user
+      visit location_reports_path
+      expect(page).to have_content 'Plate Location Reports'
+      within('#new_report_from_selection') do
+        fill_in 'Report name', with: 'Test report'
+        fill_in 'List of Barcodes (separated by new lines, spaces or commas)', with: "#{plate_1.machine_barcode} INVALIDBC"
+      end
+      click_button('Create report from selection')
+      expect(page).to have_content 'Failed to create report: Barcodes text Invalid barcodes found, no report generated: INVALIDBC'
+    end
+
+    scenario 'with selection criteria that find no results' do
+      login_user user
+      visit location_reports_path
+      expect(page).to have_content 'Plate Location Reports'
+      within('#new_report_from_selection') do
+        fill_in 'Report name', with: 'Test report'
+        select(study_1.name, from: 'Study')
+        fill_in 'Start date', with: '01/01/2017'
+        fill_in 'End date', with: '01/09/2017'
+        select(plt_1_purpose, from: 'Plate purposes (can select multiple)')
+      end
+      click_button('Create report from selection')
+      expect(page).to have_content 'Failed to create report: That selection returns no plates, no report generated.'
+    end
   end
 
-  scenario 'with a start and end date and a purpose seleced' do
-    login_user user
-    visit location_reports_path
-    expect(page).to have_content 'Plate Location Reports'
-    within('#new_report_from_selection') do
-      fill_in 'name', with: 'Test report'
-      fill_in 'location_report_start_date', with: '01/01/2016'
-      fill_in 'location_report_end_date', with: '01/09/2016'
-      select(plt_1_purpose, from: 'location_report_plate_purpose_ids')
-    end
-    click_button('Create report from selection')
-    expect(page).to have_content 'Your report has been requested and will be listed at the bottom of this page when complete.'
-  end
+  feature 'by labwhere location' do
+    let(:labwhere_locn_prefix) { 'Building - Room - Freezer' }
 
-  scenario 'with a study, start and end date and a purpose selected' do
-    login_user user
-    visit location_reports_path
-    expect(page).to have_content 'Plate Location Reports'
-    within('#new_report_from_selection') do
-      fill_in 'name', with: 'Test report'
-      select(study_1.name, from: 'location_report_study_id')
-      fill_in 'location_report_start_date', with: '01/01/2016'
-      fill_in 'location_report_end_date', with: '01/09/2016'
-      select(plt_1_purpose, from: 'location_report_plate_purpose_ids')
-    end
-    click_button('Create report from selection')
-    expect(page).to have_content 'Your report has been requested and will be listed at the bottom of this page when complete.'
-  end
+    scenario 'with a valid labwhere location barcode' do
+      # set up LabWhere stubs
+      labwhere_locn_bc = 'lw-mylocn-123'
+      p1 = { lw_barcode: plate_1.machine_barcode, lw_locn_name: 'Shelf 1', lw_locn_parentage: labwhere_locn_prefix }
+      stub_lwclient_locn_find_by_bc(locn_barcode: labwhere_locn_bc, locn_name: 'Shelf 1', locn_parentage: labwhere_locn_prefix)
+      stub_lwclient_locn_children(labwhere_locn_bc, [])
+      stub_lwclient_locn_labwares(labwhere_locn_bc, [p1])
+      stub_lwclient_labware_find_by_bc(p1)
 
-  scenario 'without a start date selected' do
-    login_user user
-    visit location_reports_path
-    expect(page).to have_content 'Plate Location Reports'
-    within('#new_report_from_selection') do
-      fill_in 'name', with: 'Test report'
-      select(study_1.name, from: 'location_report_study_id')
-      fill_in 'location_report_end_date', with: '01/09/2016'
+      login_user user
+      visit location_reports_path
+      expect(page).to have_content 'Plate Location Reports'
+      within('#new_report_from_labwhere_location') do
+        fill_in 'Report name', with: 'Test report'
+        fill_in 'LabWhere location barcode', with: labwhere_locn_bc
+      end
+      click_button('Create report from labwhere')
+      expect(page).to have_content 'Your report has been requested and will be listed at the bottom of this page when complete.'
     end
-    click_button('Create report from selection')
-    expect(page).to have_content 'Failed to create report: Start date can\'t be blank'
-  end
 
-  scenario 'with selection criteria that find no results' do
-    login_user user
-    visit location_reports_path
-    expect(page).to have_content 'Plate Location Reports'
-    within('#new_report_from_selection') do
-      fill_in 'name', with: 'Test report'
-      select(study_1.name, from: 'location_report_study_id')
-      fill_in 'location_report_start_date', with: '01/01/2017'
-      fill_in 'location_report_end_date', with: '01/09/2017'
-      select(plt_1_purpose, from: 'location_report_plate_purpose_ids')
+    scenario 'with an invalid labwhere location barcode' do
+      # set up LabWhere stubs
+      labwhere_locn_bc = 'lw-fake-locn'
+      stub_lwclient_locn_find_by_bc(locn_barcode: labwhere_locn_bc, locn_name: nil, locn_parentage: nil)
+
+      login_user user
+      visit location_reports_path
+      expect(page).to have_content 'Plate Location Reports'
+      within('#new_report_from_labwhere_location') do
+        fill_in 'Report name', with: 'Test report'
+        fill_in 'LabWhere location barcode', with: labwhere_locn_bc
+      end
+      click_button('Create report from labwhere')
+      expect(page).to have_content 'Failed to create report: LabWhere location not found, please scan or enter a valid location barcode.'
     end
-    click_button('Create report from selection')
-    expect(page).to have_content 'Failed to create report: That selection returns no plates, no report generated.'
   end
 end

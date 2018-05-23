@@ -23,16 +23,9 @@ class Io::Plate < Io::Asset
                                         priority => priority
 
                                source_plate.uuid  => stock_plate.uuid
-                            source_plate.barcode  => stock_plate.barcode.number
-              source_plate.barcode_prefix.prefix  => stock_plate.barcode.prefix
-            source_plate.two_dimensional_barcode  => stock_plate.barcode.two_dimensional
-                      source_plate.ean13_barcode  => stock_plate.barcode.ean13
-                       source_plate.barcode_type  => stock_plate.barcode.type
+                    source_plate.barcode_summary  => stock_plate.barcode
 
-                                         barcode  => barcode.number
-                           barcode_prefix.prefix  => barcode.prefix
-                         two_dimensional_barcode  => barcode.two_dimensional
-                                   ean13_barcode  => barcode.ean13
-                                    barcode_type  => barcode.type
+                                  barcode_summary  => barcode
+
   ")
 end

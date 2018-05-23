@@ -13,7 +13,7 @@ module LabelPrinter
       end
 
       def middle_line(tube)
-        tube.sanger_human_barcode
+        tube.human_barcode
       end
     end
   end

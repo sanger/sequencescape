@@ -19,9 +19,6 @@ FactoryGirl.define do
     name                { |_a| generate :asset_name }
     value               ''
     qc_state            ''
-    resource            nil
-    barcode
-    barcode_prefix { |b| b.association(:barcode_prefix) }
   end
 
   factory :plate_creator_purpose, class: Plate::Creator::PurposeRelationship do |_t|
@@ -31,68 +28,6 @@ FactoryGirl.define do
 
   factory :plate_creator, class: Plate::Creator do
     name { generate :plate_creator_name }
-  end
-
-  factory :control_plate do
-    plate_purpose { PlatePurpose.find_by(name: 'Stock plate') }
-    name                'Control Plate name'
-    value               ''
-    descriptors         []
-    descriptor_fields   []
-    qc_state            ''
-    resource            nil
-    sti_type            'ControlPlate'
-    barcode
-  end
-
-  factory :dilution_plate do
-    plate_purpose { PlatePurpose.find_by!(name: 'Stock plate') }
-    barcode
-    with_wells
-    size 96
-  end
-  factory :gel_dilution_plate do
-    plate_purpose { PlatePurpose.find_by!(name: 'Gel Dilution') }
-    barcode
-    with_wells
-    size 96
-  end
-  factory :pico_assay_a_plate do
-    plate_purpose { PlatePurpose.find_by!(name: 'Pico Assay A') }
-    barcode
-    with_wells
-    size 96
-  end
-  factory :pico_assay_b_plate do
-    plate_purpose { PlatePurpose.find_by!(name: 'Pico Assay B') }
-    barcode
-    with_wells
-    size 96
-  end
-  factory :pico_assay_plate do
-    plate_purpose { PlatePurpose.find_by!(name: 'Stock plate') }
-    barcode
-    with_wells
-    size 96
-  end
-  factory :pico_dilution_plate do
-    plate_purpose { PlatePurpose.find_by!(name: 'Pico Dilution') }
-    barcode
-    with_wells
-    size 96
-  end
-  factory :sequenom_qc_plate do
-    sequence(:name) { |i| "Sequenom #{i}" }
-    plate_purpose { PlatePurpose.find_by!(name: 'Sequenom') }
-    barcode
-    with_wells
-    size 96
-  end
-  factory :working_dilution_plate do
-    plate_purpose { PlatePurpose.find_by!(name: 'Working Dilution') }
-    barcode
-    with_wells
-    size 96
   end
 
   factory :control do
@@ -367,6 +302,33 @@ FactoryGirl.define do
     end
   end
 
+  factory(:tag_group_form_object, class: TagGroup::FormObject) do
+    skip_create
+
+    sequence(:name) { |n| "Tag Group #{n}" }
+
+    transient do
+      oligos_count 0
+    end
+
+    after(:build) do |tag_group_form_object, evaluator|
+      if evaluator.oligos_count > 0
+        o_list = []
+        evaluator.oligos_count.times do |i|
+          # generates a series of 8-character oligos
+          o_list << (16384 + i).to_s(4).tr('0', 'A').tr('1', 'T').tr('2', 'C').tr('3', 'G')
+        end
+        tag_group_form_object.oligos_text = o_list.join(' ')
+      end
+    end
+
+    factory :tag_group_form_object_with_oligos do
+      transient do
+        oligos_count 5
+      end
+    end
+  end
+
   factory :assign_tags_task do
   end
 
@@ -383,7 +345,6 @@ FactoryGirl.define do
   end
 
   factory :strip_tube_creation_task do
-    purpose_id { create(:strip_tube_purpose, name: 'Strip Tube Purpose').id }
   end
 
   factory :plate_transfer_task do

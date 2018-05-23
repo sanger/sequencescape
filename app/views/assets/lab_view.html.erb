@@ -4,70 +4,70 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2013,2015,2016 Genome Research Ltd.%>
 <%= page_title "Lab View", Date.today %>
-<div class="info">
-  <%= form_for(@asset, as: :asset, url: { controller: "assets", action: "update", id: @asset.id, lab_view: true }, html: { method: :put }) do |f| %>
-    <table>
-      <tr><td>Name: </td><td><%= h(@asset.display_name) %></td></tr>
-      <tr><td>Type: </td><td><%= @asset.sti_type %></td></tr>
-      <tr><td>Barcode: </td><td><%= @asset.barcode %></td></tr>
-      <tr><td>Batches: </td></tr>
+<%= form_for(@asset, as: :asset, url: { controller: "assets", action: "update", id: @asset.id, lab_view: true }, html: { method: :put }) do |f| %>
+  <%= panel do %>
+    <table class="table">
+      <tr><th>Name</th><td><%= h(@asset.display_name) %></td></tr>
+      <tr><th>Type</th><td><%= @asset.sti_type %></td></tr>
+      <tr><th>Barcode</th><td><%= @asset.human_barcode %></td></tr>
+      <tr><th>Batches</th><td><ul class="list-unstyled mb-0">
       <% requests = Request.where(asset_id: @asset.id).or(Request.where(target_asset_id: @asset.id)) %>
       <% requests.each do |request| %>
         <% request.batches.each do |batch| %>
-          <tr><td></td><td><%= link_to "#{batch.id} - #{batch.pipeline.name}", controller: :batches, action: :show, id: batch.id %></td><tr/>
+          <li><%= link_to "#{batch.id} - #{batch.pipeline.name}", batch %></li>
         <% end %>
       <% end %>
-      <tr><td>Studies: </td></tr>
+      </ul></td></tr>
+      <tr><th>Studies</th><td><ul class="list-unstyled mb-0">
       <% @asset.studies.uniq.each do |study| %>
-        <tr><td></td><td><%= link_to "#{study.id} - #{study.name}", controller: :studies, action: :show, id: study.id %></td></tr>
+        <li><%= link_to "#{study.id} - #{study.name}", study %></li>
       <% end %>
-      <tr><td>&nbsp;</td></tr>
-      <tr></tr>
-      <tr><td>Volume (&#181;L): </td><td><%= f.text_field :volume %></td></tr>
-      <tr><td>Concentration (nM): </td><td><%= f.text_field :concentration %></td></tr>
-      <tr><td>&nbsp;</td></tr>
+      </ul></td></tr>
+      <tr><th><%= f.label :volume, 'Volume (µL)' %></th><td><%= f.text_field :volume %></td></tr>
+      <tr><th><%= f.label :concentration, 'Concentration (nM)' %></th><td><%= f.text_field :concentration %></td></tr>
       <tr><td></td><td><%= submit_tag 'Update' %></td></tr>
     </table>
-
-    <% unless @asset.parents.empty? %>
-      <div class="info">
-        <%= pluralize @asset.parents.size, "Source" %>
-        <table width='50%' class='sortable'>
-          <thead>
+  <% end %>
+  <div class="columnize">
+  <% unless @asset.parents.empty? %>
+    <%= panel do %>
+      <h3><%= pluralize @asset.parents.size, "Source" %></h3>
+      <table class='sortable'>
+        <thead>
+          <tr>
+            <th>Asset</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @asset.parents.each do |parent| %>
             <tr>
-              <th>Asset</th>
+              <td><%= link_to "#{(parent.label or "").humanize} #{parent.id}", action: :lab_view, barcode: parent.barcode %></td>
             </tr>
-          </thead>
-          <tbody>
-            <% @asset.parents.each do |parent| %>
-              <tr>
-                <td><%= link_to "#{(parent.label or "").humanize} #{parent.id}", action: :lab_view, barcode: parent.barcode %></td>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
-        <br />
-      </div>
-    <% end %>
-    <% unless @asset.children.empty? %>
-      <div class="info">
-        <%= pluralize @asset.children.size, "Target" %>
-        <table width='50%' class='sortable'>
-          <thead>
-            <tr>
-              <th>Asset</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% @asset.children.each do |child| %>
-              <tr>
-                <td><%= link_to "#{(child.label or "").humanize} #{child.id}", action: :lab_view, barcode: child.barcode %></td>
-              </tr>
-            <% end %>
-          </tbody>
-        </table><br />
-      </div>
+          <% end %>
+        </tbody>
+      </table>
     <% end %>
   <% end %>
-</div>
+  <% unless @asset.children.empty? %>
+    <%= panel do %>
+      <h3><%= pluralize @asset.children.size, "Target" %></h3>
+      <table class='sortable'>
+        <thead>
+          <tr>
+            <th>Asset</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @asset.children.each do |child| %>
+            <tr>
+              <td><%= link_to "#{(child.label or "").humanize} #{child.id}", action: :lab_view, barcode: child.barcode %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% end %>
+  <% end %>
+  </div>
+<% end %>
+
 <%= render partial: "find_form" %>

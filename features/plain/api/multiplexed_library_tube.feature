@@ -14,7 +14,7 @@ Feature: Interacting with multiplexed_library_tubes through the API
     And the UUID for the multiplexed library tube "Testing the JSON API" is "00000000-1111-2222-3333-444444444444"
     And tube "Testing the JSON API" has a public name of "ABC"
     When I GET the API path "/multiplexed_library_tubes"
-    Then ignoring "id" the JSON should be:
+    Then ignoring "id|barcode" the JSON should be:
       """
       [
         {
@@ -42,7 +42,7 @@ Feature: Interacting with multiplexed_library_tubes through the API
     Given a multiplexed library tube called "Testing the JSON API" exists
     And the UUID for the multiplexed library tube "Testing the JSON API" is "00000000-1111-2222-3333-444444444444"
     When I GET the API path "/multiplexed_library_tubes/00000000-1111-2222-3333-444444444444"
-    Then ignoring "id" the JSON should be:
+    Then ignoring "id|barcode" the JSON should be:
       """
       {
         "multiplexed_library_tube": {

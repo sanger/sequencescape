@@ -50,19 +50,27 @@ Transform /^the plate with ID (\d+)$/ do |id|
   Plate.find(id)
 end
 
-Given /^(the .+) has a barcode of "([^\"]+)"$/ do |asset, barcode|
-  asset.update_attributes!(barcode: Barcode.number_to_human(barcode.to_i))
+Given /^(the .+) has a barcode of "([^\"]+)"$/ do |barcoded, barcode|
+  # Annoyingly this is used for batches, as well as labware
+  if barcoded.respond_to?(:primary_barcode)
+    bc = SBCF::SangerBarcode.from_machine(barcode).human_barcode
+    barcoded.primary_barcode.update(barcode: bc)
+  else
+    barcoded.update_attributes!(barcode: Barcode.number_to_human(barcode.to_i))
+  end
 end
 
 Given /^the barcode of the last sample tube is "([^\"]+)"$/ do |barcode|
+  bc = SBCF::SangerBarcode.new(prefix: 'NT', number: barcode).human_barcode
   tube = SampleTube.last or raise StandardError, 'There appear to be no sample tubes'
-  tube.update_attributes!(barcode: barcode)
+  tube.primary_barcode.update!(barcode: bc)
 end
 
 Given /^sample tubes are barcoded sequentially from (\d+)$/ do |initial|
   counter = initial.to_i
   SampleTube.order(:id).each do |asset|
-    asset.update_attributes!(barcode: counter)
+    bc = SBCF::SangerBarcode.new(prefix: 'NT', number: counter).human_barcode
+    asset.primary_barcode.update!(barcode: bc)
     counter += 1
   end
 end
@@ -70,7 +78,8 @@ end
 Given /^library tubes are barcoded sequentially from (\d+)$/ do |initial|
   counter = initial.to_i
   LibraryTube.order(:id).each do |asset|
-    asset.update_attributes!(barcode: counter)
+    bc = SBCF::SangerBarcode.new(prefix: 'NT', number: counter).human_barcode
+    asset.primary_barcode.update!(barcode: bc)
     counter += 1
   end
 end

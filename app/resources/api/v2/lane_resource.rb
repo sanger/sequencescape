@@ -28,7 +28,7 @@ module Api
       # def labware_barcode
       #   {
       #     ean13_barcode: _model.labware.ean13_barcode,
-      #     sanger_human_barcode: _model.labware.sanger_human_barcode
+      #     human_barcode: _model.labware.human_barcode
       #   }
       # end
 

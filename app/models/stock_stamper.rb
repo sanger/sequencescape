@@ -1,7 +1,8 @@
 class StockStamper
   include ActiveModel::Model
 
-  attr_accessor :user, :user_barcode, :plate, :plate_type, :source_plate_barcode, :source_plate_type_name, :destination_plate_barcode, :destination_plate_type_name, :overage, :file_content
+  attr_accessor :user_barcode, :source_plate_barcode, :source_plate_type_name, :destination_plate_barcode, :overage, :file_content
+  attr_reader :destination_plate_type_name, :user_barcode, :user, :plate_type, :plate
 
   validates_presence_of :user_barcode, :source_plate_barcode, :source_plate_type_name, :destination_plate_barcode, :destination_plate_type_name, :overage
 
@@ -11,9 +12,6 @@ class StockStamper
   validate :plates_barcodes_should_be_identical
 
   def initialize(attributes = { overage: 1.2 })
-    self.plate = attributes[:destination_plate_barcode]
-    self.plate_type = attributes[:destination_plate_type_name]
-    self.user = attributes[:user_barcode]
     super
   end
 
@@ -45,7 +43,7 @@ class StockStamper
         }
       }
     }
-    plate.wells.each do |well|
+    plate.wells.without_blank_samples.each do |well|
       next unless well.get_current_volume
       data_object['destination'][destination_barcode]['mapping'] << {
         'src_well'  => [source_barcode, well.map.description],
@@ -69,6 +67,22 @@ class StockStamper
     @wells_with_excess ||= []
   end
 
+  def destination_plate_type_name=(type_name)
+    @destination_plate_type_name = type_name
+    @plate_type = PlateType.find_by(name: type_name)
+  end
+
+  def user_barcode=(barcode)
+    @user_barcode = barcode
+    return unless User.valid_barcode?(barcode)
+    @user = User.find_by(barcode: Barcode.barcode_to_human!(barcode, 'ID'))
+  end
+
+  def destination_plate_barcode=(barcode)
+    @destination_plate_barcode = barcode
+    @plate = Plate.with_barcode(barcode).first
+  end
+
   private
 
   def destination_plate_barcode?
@@ -90,18 +104,6 @@ class StockStamper
       wells_with_excess << well.map_description
       plate_type.maximum_volume.to_f
     end
-  end
-
-  def plate=(plate)
-    @plate = Plate.find_by(barcode: Barcode.number_to_human(plate))
-  end
-
-  def plate_type=(plate_type)
-    @plate_type = PlateType.find_by(name: plate_type)
-  end
-
-  def user=(user)
-    @user = User.find_by(barcode: Barcode.barcode_to_human!(user, 'ID')) if User.valid_barcode?(user)
   end
 
   def plates_barcodes_should_be_identical

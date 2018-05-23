@@ -1,5 +1,3 @@
-require 'tag_substitution.rb'
-
 module SampleManifestExcel
   module Upload
     module Processor
@@ -34,7 +32,11 @@ module SampleManifestExcel
         # actual aliquots in multiplexed library tube and other aliquots downstream are updated by this method
         # library updates all aliquots in one go, doing it row by row is inefficient and may trigger tag clash
         def update_downstream_aliquots
-          @downstream_aliquots_updated = TagSubstitution.new(substitutions.compact).save
+          @downstream_aliquots_updated = if substitutions.compact.blank?
+                                           true
+                                         else
+                                           TagSubstitution.new(substitutions: substitutions.compact).save
+                                         end
         end
 
         # if partial manifest was uploaded, we do not want to give an option to upload the remaining samples

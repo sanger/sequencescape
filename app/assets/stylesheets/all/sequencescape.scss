@@ -26,6 +26,10 @@ li a:visited { color: #444488; }
   }
 }
 
+.batch-statuses {
+  @extend .card;
+}
+
 // The default bootstrap size is uncomfortably large
 h3.card-header-custom {
   @extend .card-header;
@@ -41,6 +45,12 @@ h3.card-header-custom {
     @extend .nav-tabs;
     @extend .card-header-tabs;
   }
+}
+
+.simple-inline-form {
+  @extend .form-group;
+  @extend .form-inline;
+  label { @extend .mr-2; }
 }
 
 /* Formats the tubes in the layout_tubes_on_plate task */
@@ -72,6 +82,12 @@ h3.card-header-custom {
   @extend .btn-lg;
 }
 
+.alert-submission_warning {
+  @extend .alert-danger;
+  h4 { @extend .alert-heading; }
+  a { @extend .alert-link; }
+}
+
 .alert-user_guide {
   @extend .alert-info;
   a {
@@ -90,6 +106,23 @@ div.quota {
   // padding-left: 3px;
   // background: #CBDCEF;
   // border: 1px solid #7BBDD8;
+}
+
+.grid-form {
+  @extend .form-group;
+  @extend .row;
+  label {
+    @extend .col-sm-2;
+    @extend .col-form-label;
+  }
+  div.field {
+    @extend .col-sm-10;
+    input { @extend .form-control; }
+    select { @extend .custom-select; }
+    .form-help {
+      @extend .text-muted;
+    }
+  }
 }
 
 #barcode_list li {
@@ -337,6 +370,7 @@ table.sample_list td:first-child {text-align:right; padding-right:0.5em;}
 
 .columnize {
   column-count: 2;
+  @extend .mb-3;
 }
 
 .loading {

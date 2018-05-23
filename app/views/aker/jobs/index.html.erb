@@ -1,0 +1,19 @@
+<nav aria-label="breadcrumb" role="navigation">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item" aria-current="page"><a href="<%= aker_jobs_path %>">Aker Jobs</a></li>
+  </ol>
+</nav>
+<% if @jobs %>
+  <section class='jobs'>
+    <%= pagination @jobs %>
+    <ul class="list-group">
+    <% @jobs.each do |job| %>
+    <li class="job list-group-item" id="<%= dom_id(job) %>">
+      <%= link_to "Job #{job.aker_job_id}" , aker_job_url(job.aker_job_id) %> 
+      <span class="pull-right"><%=  job.created_at %></span>
+    </li>
+    <% end %>
+  </ul>
+  <%= pagination @jobs %>
+  </section>
+<% end %>

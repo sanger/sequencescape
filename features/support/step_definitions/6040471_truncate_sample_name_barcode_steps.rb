@@ -31,7 +31,7 @@ Given /^I have an asset group "([^"]*)" which is part of "([^"]*)"$/ do |asset_g
 end
 
 Given /^asset group "([^\"]*)" contains a "([^\"]*)" called "([^\"]*)"$/ do |asset_group_name, asset_type, asset_name|
-  asset = eval(asset_type).create!(name: asset_name, barcode: '17')
+  asset = eval(asset_type).create!(name: asset_name, sanger_barcode: { number: '17', prefix: 'NT' })
   asset_group = AssetGroup.find_by(name: asset_group_name)
   asset_group.assets << asset
   asset_group.save!

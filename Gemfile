@@ -99,6 +99,11 @@ group :default do
   # Using it to maintain our warren's of bunnies.
   # Or the connection pool of RabbitMQ channels to get technical
   gem 'connection_pool'
+
+  gem 'rack-cors', require: 'rack/cors'
+
+  # Adds easy conversions between units
+  gem 'ruby-units'
 end
 
 group :warehouse do
@@ -146,6 +151,7 @@ group :test do
   # Temporarily lock minitest to a specific version due to incompatibilities
   # with rails versions.
   gem 'minitest', '5.10.3'
+  gem 'minitest-profiler'
 end
 
 group :test, :cucumber do
@@ -159,6 +165,8 @@ group :test, :cucumber do
   gem 'timecop', require: false
   gem 'simplecov', require: false
   gem 'database_cleaner'
+  gem 'capybara'
+  gem 'capybara-selenium'
   # Simplifies shared transactions between server and test threads
   # See: http://technotes.iangreenleaf.com/posts/the-one-true-guide-to-database-transactions-with-capybara.html
   # Essentially does two things:
@@ -169,10 +177,8 @@ end
 
 group :cucumber do
   gem 'rubyzip'
-  gem 'capybara'
   gem 'mime-types'
   gem 'cucumber-rails', require: false
-  gem 'poltergeist'
   gem 'webmock'
   gem 'knapsack'
 end
