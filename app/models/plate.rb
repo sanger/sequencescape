@@ -659,9 +659,9 @@ class Plate < Asset
 
   # Barcode is stored as a string, yet in a number of places is treated as
   # a number. If we convert it before searching, things are faster!
-  def find_by_barcode(barcode)
-    super(barcode.to_s)
-  end
+  # def find_by_barcode(barcode)
+  #   super(barcode.to_s)
+  # end
 
   alias_method :friendly_name, :human_barcode
   def subject_type
@@ -701,7 +701,7 @@ class Plate < Asset
 
   def lookup_ets_location
     return 'Control' if is_a?(ControlPlate)
-    return '' if barcode.blank?
+    return '' if barcode_number.blank?
     cas_location = Cas::StoredEntity.storage_location(barcode_number, prefix)
     if cas_location.present?
       if cas_location.rows.first.present?

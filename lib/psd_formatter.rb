@@ -1,7 +1,11 @@
-class PsdFormatter < ::Logger::Formatter
+require 'syslog/logger'
+require 'ostruct'
+
+class PsdFormatter < Syslog::Logger::Formatter
 
   def initialize(deployment_info)
-    @app_tag = "#{deployment_info.name}:#{deployment_info.version}:#{deployment_info.environment}"
+    info = OpenStruct.new(deployment_info)
+    @app_tag = "#{info.name}:#{info.version}:#{info.environment}"
     super()
   end
 
