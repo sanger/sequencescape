@@ -16,14 +16,12 @@
   <thead>
   <th>Template Name</th>
   <th>Size</th>
-  <th>Control Well</th>
   <th>Delete</th>
   </thead>
 <% @patterns.each do |pattern| %>
 <tr>
   <td><%= link_to pattern.name, edit_plate_template_path(pattern.id) %></td>
   <td><%= pattern.size %></td>
-  <td><%= pattern.control_well? ? "Control": "" %></td>
   <td><%= link_to 'Delete', pattern, confirm: 'Are you sure?', method: :delete %></td>
 </tr>
 <% end %>

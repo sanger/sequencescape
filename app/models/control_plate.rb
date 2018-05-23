@@ -5,9 +5,4 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 class ControlPlate < Plate
-  ILLUMINA_CONTROL_WELL_LOCATIONS = ['A1', 'C1', 'E1']
-
-  def illumina_wells
-    wells.includes(:map).where(maps: { description: ILLUMINA_CONTROL_WELL_LOCATIONS, asset_size: 96 })
-  end
 end

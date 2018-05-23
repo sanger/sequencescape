@@ -434,12 +434,6 @@ class Plate < Asset
     purpose.try(:name) || 'Unknown plate purpose'
   end
 
-  def control_well_exists?
-    Request.into_by_id(wells.map(&:id)).any? do |request|
-      request.asset.plate.is_a?(ControlPlate)
-    end
-  end
-
   def stock_role
     well_requests_as_source.first&.role
   end
