@@ -21,8 +21,6 @@ Feature: Full sample manifest
 
   Scenario: Create a plate manifest and upload a manifest file and process it
     Given a manifest has been created for "Test study"
-    When I follow "the old sample manifest upload page"
-    Then I should see "Upload a sample manifest"
     When I fill in "File to upload" with the file "test/data/full_manifest.csv"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed

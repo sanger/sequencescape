@@ -44,8 +44,6 @@ Feature: Sample manifest
 
   Scenario: Create a mx manifest
 
-    When I follow "the old sample manifest upload page"
-    Then I should see "Upload a sample manifest"
     When I fill in "File to upload" with the file "test/data/multiplexed_library_manifest.csv"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed
@@ -73,8 +71,6 @@ Feature: Sample manifest
       | NT84         | tube_sample_4         | test tag group | 5         | Standard     | 100              | 200            |            |            |
       | NT85         | tube_sample_5         | test tag group | 7         | Standard     | 100              | 200            |            |            |
 
-    When I follow "the old sample manifest upload page"
-    Then I should see "Upload a sample manifest"
     When I fill in "File to upload" with the file "test/data/updated_multiplexed_library_manifest.csv"
     And I check "Override previously uploaded samples"
     And I press "Upload manifest"
@@ -105,8 +101,6 @@ Scenario: Create a dual indexed mx manifest
     Given I have a tag group called "test tag group2" with 2 tags
     And I have a tag group called "test tag group3" with 2 tags
 
-    When I follow "the old sample manifest upload page"
-    Then I should see "Upload a sample manifest"
     When I fill in "File to upload" with the file "test/data/multiplexed_di_library_manifest.csv"
     And I press "Upload manifest"
     Given 1 pending delayed jobs are processed

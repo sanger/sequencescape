@@ -4,25 +4,20 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
 
-<h2>Upload a sample manifest</h2>
-<p>Use this manifest upload screen only for tube samples with old style tag groups.</br>
+<h2>Upload a sample manifest (only if it includes tag sequences, or is for plates or tubes with foreign barcodes)</h2>
 
 <div class='alert alert-warning'>
-  <strong>Warning!</strong> New sample manifests for plates, tubes with tag sequences, and for plates and tubes with foreign barcodes should be uploaded using <a href="<%= sample_manifests_path %>">the sample manifests page</a>.
+  <strong>Warning!</strong> Older sample manifests for plates, or for tubes with tag groups should be uploaded <a href="<%= sample_manifests_path %>">using the sample manifests page</a>.
 </div>
 
 <%= form_tag(sample_manifest_upload_with_tag_sequences_path, multipart: true) do -%>
   <fieldset>
     <div class="form-group">
-      <%= label_tag :uploaded, 'File to upload', style: "display: none;" %></br>
-      <%= file_field_tag :uploaded, required: true %>
+      <%= label_tag :upload, 'File to upload' %>
+      <%= file_field_tag :upload %>
     </div>
     <div class="form-group">
-      <%= label_tag :override, 'Override previously uploaded samples' %></br>
-      <%= check_box_tag :override %>
-    </div>
-    <div class="form-group">
-      <%= submit_tag 'Upload manifest', class: 'btn btn-success' %>
+      <%= submit_tag 'Upload manifest' %>
     </div>
   </fieldset>
 <% end -%>

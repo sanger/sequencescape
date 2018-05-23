@@ -10,27 +10,24 @@ class SampleManifestUploadWithTagSequencesController < ApplicationController
   def new
   end
 
-  # NB. this method is currently being used for uploading the OLD style tag group manifests
-  # The goal is to eventually have one sample manifest codebase, but we have temporarily switched around the upload page views
-  # so the newer style takes priority.
   def create
-    if params[:uploaded].blank?
-      flash[:error] = 'No CSV file uploaded'
-      return
+    if params[:upload].present?
+      @uploader = SampleManifest::Uploader.new(params[:upload].open, SampleManifestExcel.configuration, current_user)
+      if @uploader.valid?
+        if @uploader.run!
+          flash[:notice] = 'Sample manifest successfully uploaded.'
+          redirect_to '/sample_manifest_upload_with_tag_sequences/new'
+        else
+          flash.now[:error] = 'Your sample manifest couldn\'t be uploaded.'
+          render :new
+        end
+      else
+        flash.now[:error] = @uploader.errors.full_messages.unshift('The following error messages prevented the sample manifest from being uploaded:')
+        render :new
+      end
+    else
+      flash.now[:error] = 'No file attached'
+      render :new
     end
-
-    @sample_manifest = SampleManifest.find_sample_manifest_from_uploaded_spreadsheet(params[:uploaded])
-    if @sample_manifest.nil?
-      flash[:error] = 'Cannot find details about the sample manifest'
-      return
-    end
-
-    @sample_manifest.update(uploaded: params[:uploaded])
-    @sample_manifest.process(current_user, params[:override] == '1')
-    flash[:notice] = 'Manifest being processed'
-  rescue CSV::MalformedCSVError
-    flash[:error] = 'Invalid CSV file'
-  ensure
-    redirect_to @sample_manifest.present? ? sample_manifests_study_path(@sample_manifest.study) : sample_manifests_path
   end
 end
