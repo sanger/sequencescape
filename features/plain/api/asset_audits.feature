@@ -11,7 +11,7 @@ Feature: Interacting with asset_audits through the API
 
   Scenario: Listing all of the asset_audits that exist
     Given the plate exists with ID 1
-      And the barcode for plate 1 is "123"
+      And the barcode for plate 1 is "DN123H"
       And the UUID for the plate with ID 1 is "00000000-1111-2222-3333-444444444999"
     Given the asset audit exists with ID 1
       And the UUID for the asset audit with ID 1 is "00000000-1111-2222-3333-444444444444"
@@ -47,7 +47,7 @@ Feature: Interacting with asset_audits through the API
 
   Scenario: Retrieving the JSON for a particular asset_audit
     Given the plate exists with ID 1
-      And the barcode for plate 1 is "123"
+      And the barcode for plate 1 is "DN123H"
       And the UUID for the plate with ID 1 is "00000000-1111-2222-3333-444444444999"
     Given the asset audit exists with ID 1
       And the UUID for the asset audit with ID 1 is "00000000-1111-2222-3333-444444444444"

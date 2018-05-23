@@ -14,7 +14,7 @@ module Tasks::PlateTransferHandler
   end
 
   def includes_for_plate_creation
-    [{ asset: [:map, { plate: [:plate_purpose, :barcode_prefix] }, :aliquots] }, { target_asset: [:pac_bio_library_tube_metadata] }]
+    [{ asset: [:map, { plate: [:plate_purpose, :barcodes] }, :aliquots] }, { target_asset: [:pac_bio_library_tube_metadata] }]
   end
 
   def find_or_create_target(task)

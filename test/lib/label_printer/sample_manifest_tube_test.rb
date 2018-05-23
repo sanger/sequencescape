@@ -16,7 +16,7 @@ class SampleManifestTubeTest < ActiveSupport::TestCase
     @tubes = [tube1, tube2, tube3]
 
     @prefix = 'NT'
-    @barcode1 = tube1.barcode
+    @barcode1 = tube1.barcode_number
 
     options = { sample_manifest: @manifest, only_first_label: false }
     @tube_label = LabelPrinter::Label::SampleManifestTube.new(options)

@@ -27,7 +27,7 @@ class LotTest < ActiveSupport::TestCase
 
     context '#lot' do
       setup do
-        PlateBarcode.stubs(:create).returns(OpenStruct.new(barcode: (FactoryGirl.generate :sanger_barcode)))
+        PlateBarcode.stubs(:create).returns(create(:plate_barcode))
         @lot = create :lot
         @mock_asset = Asset.new
         @mock_asset.stubs(:save!).returns(true)

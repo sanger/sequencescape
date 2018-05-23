@@ -73,15 +73,6 @@ class PipelinesControllerTest < ActionController::TestCase
       should respond_with :success
     end
 
-    context '#training_batch' do
-      setup do
-        @pipeline = FactoryGirl.create :pipeline
-        get :training_batch, params: { id: @pipeline.id.to_s }
-      end
-
-      should respond_with :success
-    end
-
     context '#activate' do
       setup do
         @pipeline = FactoryGirl.create :pipeline

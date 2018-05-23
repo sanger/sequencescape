@@ -42,7 +42,7 @@ class MultiplexedLibraryTubeTest < ActiveSupport::TestCase
         end
 
         should 'have a different barcode' do
-          assert_not_equal(@multiplexed_library_tube.barcode, @stock.barcode)
+          assert_not_equal(@multiplexed_library_tube.barcode_number, @stock.barcode_number)
         end
       end
 
@@ -56,7 +56,7 @@ class MultiplexedLibraryTubeTest < ActiveSupport::TestCase
         end
 
         should 'set the barcode' do
-          assert_equal '1111', @stock.barcode
+          assert_equal '1111', @stock.barcode_number.to_s
         end
       end
     end

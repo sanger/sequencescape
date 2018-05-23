@@ -9,8 +9,7 @@ RSpec.describe Api::V2::WellResource, type: :resource do
     # Test attributes
     it { is_expected.to have_attribute :uuid }
     it { is_expected.to have_attribute :name }
-    # it { is_expected.to have_attribute :labware_barcodes }
-    # it { is_expected.to have_attribute :position }
+    it { is_expected.to have_attribute :state }
 
     # Read only attributes (almost certainly id, uuid)
     it { is_expected.to_not have_updatable_field(:id) }
@@ -29,6 +28,7 @@ RSpec.describe Api::V2::WellResource, type: :resource do
     it { is_expected.to have_many(:samples).with_class_name('Sample') }
     it { is_expected.to have_many(:projects).with_class_name('Project') }
     it { is_expected.to have_many(:studies).with_class_name('Study') }
+    it { is_expected.to have_many(:qc_results).with_class_name('QcResult') }
 
     # Custom method tests
     # Add tests for any custom methods you've added.
@@ -46,7 +46,7 @@ RSpec.describe Api::V2::WellResource, type: :resource do
   context 'on a plate' do
     let(:plate) { create :plate, barcode: '11' }
     let(:position) { create :map, description: 'A1' }
-    let(:expected_barcode_hash) { { 'ean13_barcode' => '1220000011748', 'sanger_human_barcode' => 'DN11J' } }
+    let(:expected_barcode_hash) { { 'ean13_barcode' => '1220000011748', 'human_barcode' => 'DN11J' } }
     let(:expected_position) { { 'name' => 'A1' } }
     it_behaves_like 'a well resource'
   end
@@ -54,7 +54,7 @@ RSpec.describe Api::V2::WellResource, type: :resource do
   context 'off a plate' do
     let(:plate) { nil }
     let(:position) { nil }
-    let(:expected_barcode_hash) { { 'ean13_barcode' => nil, 'sanger_human_barcode' => nil } }
+    let(:expected_barcode_hash) { { 'ean13_barcode' => nil, 'human_barcode' => nil } }
     let(:expected_position) { { 'name' => nil } }
     it_behaves_like 'a well resource'
   end

@@ -101,6 +101,9 @@ group :default do
   gem 'connection_pool'
 
   gem 'rack-cors', require: 'rack/cors'
+
+  # Adds easy conversions between units
+  gem 'ruby-units'
 end
 
 group :warehouse do

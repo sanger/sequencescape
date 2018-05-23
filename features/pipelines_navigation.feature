@@ -10,14 +10,6 @@ Feature: Pipeline navigation
     Then I should see "Initial QC"
     Then I should see "Print worksheet"
 
-  Scenario: Make training batch
-    Given I have a batch in "Cluster formation SE"
-    Given I have a control called "PhiX" for "Cluster formation SE"
-    Given I am on the show page for pipeline "Cluster formation SE"
-    When I follow "Make training batch"
-    When I press "Create batch"
-    Then I should see "Edit batch"
-
   Scenario: Creating a batch removes the request from the inbox
     Given I have a request for "Illumina-C Library preparation"
     Given I am on the show page for pipeline "Illumina-C Library preparation"

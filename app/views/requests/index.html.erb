@@ -50,7 +50,7 @@
         <tr>
           <td>
             <% if request.asset %>
-              <%= link_to "#{request.asset.label} #{request.asset.barcode}", asset_url(request.asset) %>
+              <%= link_to "#{request.asset.label} #{request.asset.human_barcode}", asset_url(request.asset) %>
             <% end %>
           </td>
 

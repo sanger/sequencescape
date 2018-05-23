@@ -15,11 +15,20 @@ RSpec.describe QcResultFactory, type: :model, qc_result: true do
       expect(factory.resources.count).to eq(3)
     end
 
+    it 'creates an assay to group all items passed' do
+      factory = QcResultFactory.new([asset_1, asset_2, asset_3])
+      expect(factory.qc_assay).to be_a(QcAssay)
+      factory.resources.each do |resource|
+        expect(resource.qc_assay).to eq(factory.qc_assay)
+      end
+    end
+
     it '#save saves all of the resources if they are valid' do
       factory = QcResultFactory.new([asset_1, asset_2, asset_3])
       expect(factory).to be_valid
       expect(factory.save).to be_truthy
       expect(QcResult.all.count).to eq(3)
+      expect(QcAssay.all.count).to eq(1)
     end
 
     it 'produces sensible error messages if the resource is not valid' do
@@ -37,6 +46,7 @@ RSpec.describe QcResultFactory, type: :model, qc_result: true do
       expect(factory).to_not be_valid
       expect(factory.save).to be_falsey
       expect(QcResult.all).to be_empty
+      expect(QcAssay.all).to be_empty
     end
   end
 

@@ -53,7 +53,7 @@ Feature: The bottom of the illumina_b pipeline
       """
       {
         "plate": {
-          "name": "Plate 1000002",
+          "name": "Plate DN1000002N",
           "uuid": "00000000-1111-2222-3333-000000000002"
         }
       }

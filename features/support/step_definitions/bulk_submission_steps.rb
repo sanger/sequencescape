@@ -32,7 +32,8 @@ When /^I have a plate '(.*)' that has a well in location 'A1' that contains the 
 end
 
 When /^the plate '(.*)' has a barcode '(.*)'$/ do |name, barcode|
-  Plate.find_by(name: name).update_attributes(barcode: barcode)
+  bc = SBCF::SangerBarcode.new(prefix: 'DN', number: barcode).human_barcode
+  Plate.find_by(name: name).primary_barcode.update(barcode: bc)
 end
 
 When /^the sample '(.*)' belongs to study '(.*)'$/ do |sample_name, study_name|
@@ -108,5 +109,5 @@ Then /^the last submission should contain two assets$/ do
 end
 
 Then /^the last submission should contain the tube with barcode "(.*?)"$/ do |barcode|
-  assert Submission.last.orders.reduce([]) { |assets, order| assets.concat(order.assets) }.detect { |a| a.barcode == barcode }
+  assert Submission.last.orders.reduce([]) { |assets, order| assets.concat(order.assets) }.detect { |a| a.barcode_number == barcode }
 end

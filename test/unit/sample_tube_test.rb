@@ -10,7 +10,7 @@ require 'timecop'
 class SampleTubeTest < ActiveSupport::TestCase
   context 'A Sample tube' do
     setup do
-      AssetBarcode.expects :new_barcode
+      AssetBarcode.expects(:new_barcode).returns(generate(:barcode_number))
     end
 
     should 'use the AssetBarcode service' do

@@ -12,7 +12,7 @@ class Api::Messages::WellStockResourceIO < Api::Base
 
   with_association(:plate) do
     map_attribute_to_json_attribute(:ean13_barcode, 'machine_barcode')
-    map_attribute_to_json_attribute(:sanger_human_barcode, 'human_barcode')
+    map_attribute_to_json_attribute(:human_barcode, 'human_barcode')
   end
 
   map_attribute_to_json_attribute(:map_description, 'labware_coordinate')
