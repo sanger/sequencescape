@@ -58,7 +58,7 @@ FactoryGirl.define do
   factory :qc_tube, traits: [:tube_barcode]
 
   factory :multiplexed_library_tube, traits: [:tube_barcode] do
-    name { |_a| generate :asset_name }
+    name { generate :asset_name }
     association(:purpose, factory: :mx_tube_purpose) # { Tube::Purpose.standard_mx_tube }
   end
 
@@ -139,7 +139,7 @@ FactoryGirl.define do
   # relationships.
   factory :full_multiplexed_library_tube, parent: :multiplexed_library_tube do
     after(:create) do |tube|
-      tube.parents << (1..5).map { |_| create(:multiplexed_library_creation_request).target_asset }
+      tube.parents << Array.new(5) { create(:multiplexed_library_creation_request, target_asset: tube).asset }
     end
   end
 

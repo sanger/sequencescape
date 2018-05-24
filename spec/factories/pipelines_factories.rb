@@ -348,7 +348,7 @@ FactoryGirl.define do
   end
 
   factory :plate_transfer_task do
-    purpose_id { Purpose.find_by(name: 'PacBio Sheared').id }
+    purpose_id { create(:plate_purpose).id }
   end
 
   factory :cherrypick_task do |_t|
