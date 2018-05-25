@@ -14,7 +14,7 @@ namespace :working do
   end
 
   desc 'Provide a user, study and projects'
-  task basic: :env_check do
+  task basic: ['working:env_check', :environment] do
     seeder = WorkingSetup::StandardSeeder.new
     seeder.user
     seeder.study
