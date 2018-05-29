@@ -274,9 +274,12 @@ GEM
     path_expander (1.0.2)
     popper_js (1.12.9)
     powerpack (0.1.1)
-    pry (0.11.0)
+    pry (0.10.4)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
+      slop (~> 3.4)
+    pry-nav (0.2.4)
+      pry (>= 0.9.10, < 0.11.0)
     public_suffix (3.0.1)
     puma (3.11.3)
     rack (2.0.4)
@@ -395,6 +398,7 @@ GEM
       rack (~> 2.0)
       rack-protection (= 2.0.1)
       tilt (~> 2.0)
+    slop (3.6.0)
     spreadsheet (1.1.4)
       ruby-ole (>= 1.0)
     sprockets (3.7.1)
@@ -492,6 +496,7 @@ DEPENDENCIES
   net-ldap
   nokogiri
   pry
+  pry-nav
   psd_logger!
   puma
   rack-acceptable

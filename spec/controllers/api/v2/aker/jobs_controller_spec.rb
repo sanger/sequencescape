@@ -3,6 +3,10 @@
 require 'rails_helper'
 
 RSpec.describe Api::V2::Aker::JobsController, type: :request, aker: true do
+  before do
+    @purpose = FactoryGirl.create :aker_plate_purpose
+  end
+  
   let(:params) { { job: build(:aker_job_json) }.to_h.with_indifferent_access }
 
   it 'creates a new job' do

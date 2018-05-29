@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe Aker::Container, type: :model, aker: true do
+  before do
+    @purpose = FactoryGirl.create :aker_plate_purpose
+  end
+  
   it 'is not valid without a barcode' do
     expect(build(:container, barcode: nil)).to_not be_valid
   end

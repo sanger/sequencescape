@@ -1,6 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe Aker::Factories::Container, type: :model, aker: true do
+  before do
+    @purpose = FactoryGirl.create :aker_plate_purpose
+  end
   let(:json) do
     file = File.read(File.join('spec', 'data', 'aker', 'job.json'))
     JSON.parse(file).with_indifferent_access
@@ -36,6 +39,7 @@ RSpec.describe Aker::Factories::Container, type: :model, aker: true do
   it '#create finds the container if it already exists' do
     ar_container = Aker::Container.create(params)
     container = Aker::Factories::Container.create(params)
+
     expect(container).to eq(ar_container)
   end
 

@@ -552,6 +552,7 @@ class Plate < Asset
   end
 
   def self.safe_sanger_barcode(sanger_barcode)
+    binding.pry
     if sanger_barcode[:number].blank? || Barcode.sanger_barcode(sanger_barcode[:prefix], sanger_barcode[:number]).exists?
       { number: PlateBarcode.create.barcode, prefix: sanger_barcode[:prefix] }
     else

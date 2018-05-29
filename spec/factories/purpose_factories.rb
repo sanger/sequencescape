@@ -38,6 +38,12 @@ FactoryGirl.define do
     target_type 'Plate'
     asset_shape { AssetShape.default }
 
+    factory :aker_plate_purpose do
+      name 'Aker Plate'
+      stock_plate true
+      prefix 'AK'
+    end
+    
     factory :source_plate_purpose do
       after(:build) do |source_plate_purpose, _evaluator|
         source_plate_purpose.source_purpose = source_plate_purpose
