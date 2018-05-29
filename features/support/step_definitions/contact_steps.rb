@@ -25,21 +25,6 @@
 #
 # so we must use an xpath expression to recognise and validate them individually
 
-Then /^I (should|should not) see the following contacts$/ do |assertion, table|
-  table.hashes.each do |hash|
-    xpath = '//div[@class="info"]/h2[text()="' + hash['role'] + '" or text()="' + hash['role'].pluralize + '"]/following-sibling::ul[1]/li/a[text()="' + hash[:name] + '"]'
-    if assertion == 'should'
-      assert_have_xpath xpath
-    else
-      assert_have_no_xpath xpath
-    end
-  end
-end
-
 When /^I delete the attached file "([^"]+)"$/ do |filename|
   click_link("Delete #{filename}")
-end
-
-When /^I delete the attached Listing Document for "([^"]*)"$/ do |file_name|
-  step(%Q{I delete the attached file "#{file_name}"})
 end

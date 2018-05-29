@@ -23,9 +23,6 @@ Feature: Searching sequencescape
       | Sample  | sample  | SampleForThis  |
       | Asset   | asset   | This Asset     |
 
-  @wip
-  Scenario: Searching for a request
-
   Scenario: No matching results
     When I fill in "Search for" with "No way this will ever match anything!"
     And I press "Go"

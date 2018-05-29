@@ -74,16 +74,6 @@ Given /^a study report is generated for study "([^"]*)"$/ do |study_name|
   study_report.perform
 end
 
-Then /^each sample name and sanger ID exists in study "([^"]*)"$/ do |study_name|
-  study  = Study.find_by(name: study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
-  report = study.study_reports.last or raise StandardError, "Study #{study_name.inspect} has no study reports"
-
-  CSV.parse(report.report.file.read).each_with_index do |row, index|
-    next if row[1].empty? || index == 0
-    assert_not_nil study.samples.find_by(sanger_sample_id: row[3])
-  end
-end
-
 Given /^each sample was updated by a sample manifest$/ do
   Sample.find_each do |sample|
     sample.update_attributes!(updated_by_manifest: true)

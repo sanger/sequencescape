@@ -100,6 +100,11 @@ FactoryGirl.define do
     end
   end
 
+  factory :tag_layout_template_submission, class: TagLayout::TemplateSubmission do
+    submission
+    tag_layout_template
+  end
+
   factory(:tag_layout) do
     user      { |target| target.association(:user) }
     plate     { |target| target.association(:full_plate_with_samples) }

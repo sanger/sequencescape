@@ -4,10 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
-Given /^I have a released cherrypicking batch$/ do
-  step("I have a released cherrypicking batch with 96 samples and the minimum robot pick is '1.0'")
-end
-
 Given(/^I have a released cherrypicking batch with (\d+) samples and the minimum robot pick is "([^"]*)"$/) do |number_of_samples, minimum_robot_pick|
   step("I have a cherrypicking batch with #{number_of_samples} samples")
   step('a plate barcode webservice is available and returns "99999"')
@@ -111,16 +107,4 @@ end
 
 Then /^the source plates should be sorted by bed:$/ do |expected_results_table|
   expected_results_table.diff!(table(fetch_table('table#source_beds')))
-end
-
-Given /^the minimum robot pick is ([0-9\.]+)$/ do |volume|
-  configatron.tecan_minimum_volume = volume.to_f
-end
-
-Before('@tecan') do
-  @cache_tecan_minimum = configatron.tecan_minimum_volume
-end
-
-After('@tecan') do
-  configatron.tecan_minimum_volume = @cache_tecan_minimum
 end

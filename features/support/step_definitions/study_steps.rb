@@ -4,22 +4,8 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2015,2016 Genome Research Ltd.
 
-Given /^study "([^\"]*)" has property "([^\"]*)" set to "([^\"]*)"$/ do |study_name, property_name, value|
-  study = Study.first(conditions: { name: study_name }) or raise StandardError, "Study '#{study_name}' does not exist"
-  study.properties.set(property_name.downcase.gsub(/[^a-z0-9]+/, '_'), value)
-end
-
 Given /^I have a study called "([^\"]*)"$/ do |study|
   FactoryGirl.create :study, name: study, state: 'pending'
-end
-
-Given /^I have a study called "([^\"]*)" that requires ethical approval and has HMDMC approval number "(.*?)"$/ do |study, number|
-  study = FactoryGirl.create :study, name: study
-  study.study_metadata.contains_human_dna = 'Yes'
-  study.study_metadata.contaminated_human_dna = 'No'
-  study.study_metadata.commercially_available = 'No'
-  study.study_metadata.hmdmc_approval_number = number
-  study.save
 end
 
 Given /^a study "(.*?)" is pending$/ do |study|
@@ -35,34 +21,6 @@ end
 Given /^I have an "([^\"]*)" study called "([^\"]*)"$/ do |status, study|
   step %Q{I have a study called "#{study}"}
   step %Q{study "#{study}" status is "#{status}"}
-end
-
-Given /^study "([^\"]*)" has samples registered$/ do |study|
-  proj = Study.find_by(name: study)
-  user = User.find_by login: 'user'
-  new_sample_group = FactoryGirl.create :sample_group, name: 'new_sample_group', user: user, study: proj
-  samples = {
-    '0' => {
-      'name' => 'SUPPLIER SAMPLE NAME',
-      'sample_metadata_attributes' => {
-        'organism' => 'COHORT',
-        'gc_content' => 'Neutral',
-        'scientific_rationale' => 'GEOGRAPHICAL REGION',
-        'concentration' => 'COUNTRY OF ORIGIN'
-      }
-    },
-    '1' => {
-      'name' => 'Sample_987654',
-      'sample_metadata_attributes' => {
-        'organism' => 'BSP',
-        'gc_content' => 'Neutral',
-        'scientific_rationale' => 'north ',
-        'concentration' => '123456'
-      }
-    }
-  }
-  sample_registrar = SampleRegistrar.new
-  sample_registrar.create('samples' => samples, 'study_id' => proj.id, 'sample_group' => { 'id' => new_sample_group.id.to_s }, 'current_user' => user)
 end
 
 Given /^study "([^\"]*)" has assets registered$/ do |study|
@@ -100,10 +58,6 @@ Given /^I have an active study called "([^\"]*)"$/ do |study_name|
   step %Q{study "#{study_name}" status is "active"}
 end
 
-Given /^I am visiting "([^\"]*)" page with ID "([^\"]*)" homepage$/ do |_page, id|
-  visit study_information_path(Study.find(id))
-end
-
 Given /^I am visiting study "([^\"]*)" homepage$/ do |study_name|
   study = Study.find_by(name: study_name)
   visit study_information_path(study)
@@ -122,11 +76,8 @@ def given_fixed_study_metadata(attribute, value, regexp)
 end
 
 given_fixed_study_metadata(:contaminated_human_dna,  Study::YES, /^the study "([^\"]+)" has samples contaminated with human DNA$/)
-given_fixed_study_metadata(:contaminated_human_dna,  Study::NO,  /^the study "([^\"]+)" does not have any samples contaminated with human DNA$/)
 given_fixed_study_metadata(:remove_x_and_autosomes,  Study::YES, /^the study "([^\"]+)" has samples which need x and autosome data removed$/)
-given_fixed_study_metadata(:remove_x_and_autosomes,  Study::NO,  /^the study "([^\"]+)" does not have any samples which need x and autosome data removed$/)
 given_fixed_study_metadata(:contains_human_dna,      Study::YES, /^the study "([^\"]+)" contains human DNA$/)
-given_fixed_study_metadata(:contains_human_dna,      Study::NO,  /^the study "([^\"]+)" does not contain human DNA$/)
 given_fixed_study_metadata(:commercially_available,  Study::YES, /^the study "([^\"]+)" contains samples commercially available$/)
 given_fixed_study_metadata(:commercially_available,  Study::NO,  /^the study "([^\"]+)" does not contain samples commercially available$/)
 
@@ -189,11 +140,6 @@ Given /^the (abstract|description|title) of study "([^\"]+)" is "([^\"]*)"$/ do 
   study.save!
 end
 
-Then /^the description of the study "([^\"]+)" should be "([^\"]+)"$/ do |name, description|
-  study = Study.find_by(name: name) or raise StandardError, "There appears to be no study named '#{name}'"
-  assert_equal(description, study.study_metadata.study_description)
-end
-
 Given /^the study "([^\"]+)" is delayed for (3|6|9|12) months because "([^\"]+)"$/ do |name, period, reason|
   study = Study.find_by(name: name) or raise StandardError, "There appears to be no study named '#{name}'"
   study.update_attributes!(
@@ -218,33 +164,9 @@ Given /^study "([^\"]*)" has asset and assetgroup$/ do |study|
   proj = Study.find_by(name: study)
   user = User.find_by login: 'user'
 
-  id_asset_group = FactoryGirl.create :asset_group, name: 'new_asset_group', user: user, study: proj
+  id_asset_group = FactoryGirl.create :asset_group, user: user, study: proj
   id_asset = FactoryGirl.create :sample_tube, name: 'Cucumberirbattle', barcode: 'barcode', closed: '0'
   id_aga = FactoryGirl.create :asset_group_asset, asset_id: id_asset.id, asset_group_id: id_asset_group.id
-end
-
-Given /^study "([^\"]*)" has asset and assetgroup called "([^\"]*)"$/ do |study, new_asset_group|
-  proj = Study.find_by(name: study)
-  user = User.find_by login: 'user'
-
-  id_asset_group = FactoryGirl.create :asset_group, name: new_asset_group, user: user, study: proj
-  id_asset = FactoryGirl.create :sample_tube, name: 'Cucumberirbattle', barcode: 'barcode', closed: '0'
-  id_aga = FactoryGirl.create :asset_group_asset, asset_id: id_asset.id, asset_group_id: id_asset_group.id
-end
-
-Given /^study "([^\"]*)" has plate and assetgroup$/ do |study_name|
-  study = Study.find_by(name: study_name)
-  user = User.find_by login: 'user'
-
-  id_asset_group = FactoryGirl.create :asset_group, name: 'new_asset_group', user: user, study: study
-  sample = FactoryGirl.create :sample
-  study.samples << sample
-  map   = FactoryGirl.create :map
-  plate = FactoryGirl.create :plate, name: 'Cucumberirbattle', barcode: '123', closed: '0'
-  well = FactoryGirl.create :well, name: 'Well 1', closed: '0', sample: sample, map: map
-  well.plate = plate
-  well.save
-  id_aga = FactoryGirl.create :asset_group_asset, asset_id: well.id, asset_group_id: id_asset_group.id
 end
 
 Given /^study "([^\"]*)" has an accession number$/ do |name|
@@ -254,21 +176,8 @@ Given /^study "([^\"]*)" has an accession number$/ do |name|
   study.save!
 end
 
-Given /^study "([^\"]*)" DNA properties value$/ do |name|
-  study = Study.find_by(name: name) or raise StandardError, "Cannot find study with name '#{name}'"
-  study.study_metadata.contains_human_dna = Study::YES
-  study.study_metadata.contaminated_human_dna = Study::NO
-  study.save!
-end
-
 Given /^a study will appear in the study list "([^\"]+)"$/ do |study_list|
   FactoryGirl.create(:"study_for_study_list_#{ study_list.downcase.gsub(/[^a-z0-9]+/, '_') }", user: User.find_by(login: 'listing_studies_user'))
-end
-
-Then /^I should see the studies for the following study lists:$/ do |table|
-  table.raw.each do |study_list|
-    step %Q{I should see the study for study list "#{study_list}"}
-  end
 end
 
 Then /^I should see the study for study list "([^\"]+)"$/ do |study_list|
@@ -369,16 +278,6 @@ end
 Given /^a study named "([^\"]+)" exists for array express/ do |study_name|
   step(%Q{a study named "#{study_name}" exists for accession})
   step %Q{the study "#{study_name}" is a "Whole Genome Sequencing" study}
-end
-
-Given /^study "([^"]*)" has a study title of "([^"]*)"$/ do |study_name, study_title|
-  study = Study.find_by(name: study_name)
-  study.study_metadata.update_attributes!(study_study_title: study_title)
-end
-
-Given /^study "([^"]*)" has an ENA project ID of "([^"]*)"$/ do |study_name, ena_project_id|
-  study = Study.find_by(name: study_name)
-  study.study_metadata.update_attributes!(study_project_id: ena_project_id)
 end
 
 Given /^I create study "([^"]*)" with faculty sponsor "([^"]*)"$/ do |study_name, faculty_sponsor|

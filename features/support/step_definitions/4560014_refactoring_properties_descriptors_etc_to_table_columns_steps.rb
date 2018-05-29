@@ -74,22 +74,6 @@ Given /^I have already made a "([^\"]+)" request with ID (\d+) within the study 
   step(%Q{I have already made 1 "#{type}" request with IDs starting at #{id} within the study "#{study_name}" for the project "#{project_name}"})
 end
 
-Given /^the sample in (well|sample tube) "([^\"]+)" is registered under the study "([^\"]+)"$/ do |_, asset_name, study_name|
-  asset = Asset.find_by(name: asset_name) or raise StandardError, "Cannot find asset #{tube_name.inspect}"
-  study = Study.find_by(name: study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
-  study.samples << asset.aliquots.map(&:sample)
-end
-
-Given /^the sample in the last (well|sample tube) is registered under the study "([^\"]+)"$/ do |_, study_name|
-  asset = Asset.last or raise StandardError, "Cannot find asset #{tube_name.inspect}"
-  study = Study.find_by(name: study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
-  study.samples << asset.aliquots.map(&:sample)
-end
-
-Given /^the study "([^\"]+)" has an asset group of (\d+) samples called "([^\"]+)"$/ do |study_name, count, group_name|
-  step(%Q{the study "#{study_name}" has an asset group of #{count} samples in "sample tube" called "#{group_name}"})
-end
-
 Given /^the study "([^\"]+)" has an asset group of (\d+) samples in "([^\"]+)" called "([^\"]+)"$/ do |study_name, count, asset_type, group_name|
   study = Study.find_by(name: study_name) or raise StandardError, "Cannot find study named #{study_name.inspect}"
 
@@ -107,25 +91,10 @@ Given /^the study "([^\"]+)" has an asset group of (\d+) samples in "([^\"]+)" c
   end
   asset_group = FactoryGirl.create(:asset_group, name: group_name, study: study, assets: assets)
 end
-Then /^I should see the submission request types of:$/ do |list|
-  list.raw.each do |row|
-    assert(page.has_css?('#request_types_for_submission li', text: row.first), "Expected row with #{row.first.inspect}")
-  end
-end
-
-Given /^the last "pending" submission is made$/ do
-  submission = Submission.last(conditions: { state: 'pending' }) or raise StandardError, "There are no 'pending' submissions"
-  submission.finalize_build!
-end
 
 Then /^I should see the following request information:$/ do |expected|
   # The request info is actually a series of tables. fetch_table just grabs the first.
   # This is silly, but attempting to fix it is probably more hassle than its worth.
   actual = Hash[page.all('.info .property_group_general tr').map { |row| row.all('td').map(&:text) }]
   assert_equal expected.rows_hash, actual
-end
-
-Given /^all of the wells are on a "([^\"]+)" plate$/ do |plate_purpose_name|
-  plate_purpose = PlatePurpose.find_by(name: plate_purpose_name) or raise StandardError, "Cannot find plate purpose #{plate_purpose_name.inspect}"
-  plate_purpose.create!(true, barcode: 'random_plate').wells << Well.all
 end

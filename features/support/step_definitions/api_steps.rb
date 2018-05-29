@@ -124,12 +124,6 @@ When /^I make an authorised (GET|DELETE) (?:(?:for|of) )?the API path "(\/[^\"]*
   end
 end
 
-When /^I make an authorised (PUT|POST) (?:to )?the API path "(\/[^\"]*)"$/ do |action, path|
-  api_request(action, path, nil) do |headers|
-    headers['HTTP_X_SEQUENCESCAPE_CLIENT_ID'] = 'cucumber'
-  end
-end
-
 When /^I make an authorised (POST|PUT) with the following JSON to the API path "(\/[^\"]*)":$/ do |action, path, serialized_json|
   api_request(action, path, serialized_json) do |headers|
     headers['HTTP_X_SEQUENCESCAPE_CLIENT_ID'] = 'cucumber'
@@ -175,13 +169,6 @@ Then /^ignoring "([^\"]+)" the JSON should be:$/ do |key_list, serialised_json|
   rescue
     puts page.source
     raise
-  end
-end
-
-Then /^ignoring everything but "([^\"]+)" the JSON should be:$/ do |key_list, serialised_json|
-  keys = key_list.split('|')
-  assert_json_equal(serialised_json, page.source) do |key|
-    not keys.include?(key.to_s)
   end
 end
 
@@ -334,12 +321,6 @@ Given /^project "([^"]*)" has an owner called "([^"]*)"$/ do |project_name, logi
   project = Project.find_by(name: project_name)
   user = FactoryGirl.create :user, login: login_name, first_name: 'John', last_name: 'Doe', email: "#{login_name}@example.com"
   user.is_owner_of(project)
-end
-
-Given /^lane "([^"]*)" has qc_state "([^"]*)"$/ do |lane_uuid, state|
-  lane = Lane.find(Uuid.find_id(lane_uuid))
-  lane.qc_state = state
-  lane.save!
 end
 
 Given /^the sanger sample id for sample "([^"]*)" is "([^"]*)"$/ do |uuid_value, sanger_sample_id|

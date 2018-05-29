@@ -10,20 +10,6 @@ Then(/^I should see dna qc table:$/) do |expected_results_table|
   expected_results_table.diff!(actual_table)
 end
 
-When(/^I select "([^"]*)" for the first row of the plate$/) do |qc_result|
-  1.upto(12) do |i|
-    step(%Q{I select "#{qc_result}" from "Plate 1234567 QC status A#{i}"})
-  end
-end
-
-When(/^I select "([^"]*)" for the remaining rows of the plate$/) do |qc_result|
-  1.upto(12) do |i|
-    ('B'..'H').each do |r|
-      step(%Q{I select "#{qc_result}" from "Plate 1234567 QC status #{r}#{i}"})
-    end
-  end
-end
-
 Given(/^a plate template exists$/) do
   FactoryGirl.create :plate_template
 end
@@ -31,14 +17,6 @@ end
 Given(/^a robot exists$/) do
   robot = FactoryGirl.create :robot
   robot.robot_properties.create(key: 'max_plates', value: '21')
-end
-
-Then(/^the manifest for study "([^"]*)" with plate "([^"]*)" should be:$/) do |study_name, plate_barcode, expected_results_table|
-  study = Study.find_by(name: study_name)
-  plate = Plate.find_by(barcode: plate_barcode)
-  manifest = CSV.parse(ManifestGenerator.generate_manifest_for_plate_ids([plate.id], study))
-  manifest.shift(3)
-  expected_results_table.diff!(manifest)
 end
 
 Given(/^I have a plate "([^"]*)" in study "([^"]*)" with (\d+) samples in asset group "([^"]*)"$/) do |plate_barcode, study_name, number_of_samples, asset_group_name|
@@ -59,20 +37,6 @@ Given(/^I have a "([^"]*)" plate "([^"]*)" in study "([^"]*)" with (\d+) samples
                             study: study)
     end
   end
-end
-
-Given(/^plate "([^"]*)" in study "([^"]*)" is in asset group "([^"]*)"$/) do |plate_barcode, study_name, asset_group_name|
-  study = Study.find_by(name: study_name)
-  plate = Plate.find_by(barcode: plate_barcode)
-  asset_group = AssetGroup.find_or_create_by(name: asset_group_name, study_id: study.id)
-  plate.wells.each do |well|
-    asset_group.assets << well
-  end
-  asset_group.save!
-end
-
-Given(/^I have a cherrypicking batch$/) do
-  step('I have a cherrypicking batch with 96 samples')
 end
 
 Given(/^I have a cherrypicking batch with (\d+) samples$/) do |number_of_samples|
@@ -104,12 +68,6 @@ When(/^I complete the cherrypicking batch with "([^"]*)" plate purpose but dont 
   step(%Q{I select "#{plate_purpose_name}" from "Output plate purpose"})
   step('I press "Next step"')
   step('I press "Next step"')
-end
-
-When(/^I complete the cherrypicking batch with "([^"]*)" plate purpose$/) do |plate_purpose_name|
-  step(%Q{I complete the cherrypicking batch with "#{plate_purpose_name}" plate purpose but dont release it})
-  step('I press "Release this batch"')
-  step 'I should see "Batch released"'
 end
 
 Given(/^I have a cherrypicked plate with barcode "([^"]*)" and plate purpose "([^"]*)"$/) do |plate_barcode, plate_purpose_name|
@@ -179,46 +137,4 @@ Given(/^I have a Cherrypicking submission for asset group "([^"]*)"$/) do |asset
     assets: asset_group.assets
   )
   step('1 pending delayed jobs are processed')
-end
-
-Given(/^the internal QC plates are created$/) do
-  step('I follow "Pipelines"')
-  step('I follow "Create Plate Barcodes"')
-  step('I select "Pico Standard" from "Plate purpose"')
-  step('I select "xyz" from "Barcode printer"')
-  step('I fill in "User barcode" with "2470000100730"')
-  step('I press "Submit"')
-  step('I fill in "Source plates" with "1221234567841"')
-  step('I fill in "User barcode" with "2470000100730"')
-  step('I select "Working dilution" from "Plate purpose"')
-  step('I select "xyz" from "Barcode printer"')
-  step('I press "Submit"')
-  step('I fill in "Source plates" with "6251234567836"')
-  step('I fill in "User barcode" with "2470000100730"')
-  step('I select "Pico dilution" from "Plate purpose"')
-  step('I select "xyz" from "Barcode printer"')
-  step('I press "Submit"')
-  step('I fill in "Source plates" with "4361234567667"')
-  step('I fill in "User barcode" with "2470000100730"')
-  step('I select "Pico Assay Plates" from "Plate purpose"')
-  step('I select "xyz" from "Barcode printer"')
-  step('I press "Submit"')
-  step('I fill in "Source plates" with "6251234567836"')
-  step('I fill in "User barcode" with "2470000100730"')
-  step('I select "Gel Dilution Plates" from "Plate purpose"')
-  step('I select "xyz" from "Barcode printer"')
-  step('I press "Submit"')
-  step 'plate with barcode "4331234567653" is part of study "Test study"'
-  step('plate with barcode "4341234567737" is part of study "Test study"')
-  step('plate with barcode "1931234567771" is part of study "Test study"')
-  step('5 pending delayed jobs are processed')
-
-  # print sequenome barcode
-  step('I am on the new Sequenom QC Plate page')
-  step('I fill in "User barcode" with "2470000100730"')
-  step('I fill in "Plate 1" with "6251234567836"')
-  step('I fill in "Number of Plates" with "1"')
-  step('I select "xyz" from "Barcode Printer"')
-  step('I press "Create new Plate"')
-  step('all pending delayed jobs are processed')
 end

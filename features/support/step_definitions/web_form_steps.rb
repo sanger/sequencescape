@@ -31,15 +31,6 @@ Then /^the field labeled "([^\"]*)" should not be disabled$/ do |label|
   find_field(label)
 end
 
-When /^I press exactly "([^\"]*)"$/ do |button|
-  click_button(/\A#{button}\z/)
-end
-
-Then /^the field "([^\"]*)" should be empty$/ do |field|
-  field_value = field_labeled(field).attribute('value')
-  assert(field_value.blank?, "Field #{field.inspect} is not blank")
-end
-
 ########################################################################################
 # Keep these!
 ########################################################################################
@@ -74,15 +65,6 @@ Then /^I should see the (required )?(text|select|textarea) field "([^\"]+)"$/ do
   locate_labeled_field_type(field, type)
 end
 
-Then /^I should not see the (text|select|textarea) field "([^\"]+)"$/ do |type, field|
-  begin
-    locate_labeled_field_type(field, type)
-    assert(false, "The field #{field.inspect} exists!")
-  rescue Capybara::ElementNotFound => exception
-    # This is fine!
-  end
-end
-
 Then /^I should see the (required )?select field "([^\"]+)" with options "([^\"]+(?:\/[^\"]+)+)"$/ do |required, field, options|
   assert_label_exists(field, required)
   element = locate_labeled_field_type(field, 'select')
@@ -90,13 +72,7 @@ Then /^I should see the (required )?select field "([^\"]+)" with options "([^\"]
     element.all('option').detect { |o| o.text == option } or raise Capybara::ElementNotFound, "Field #{field.inspect} has no option #{option.inspect}"
   end
 end
-Then /^I should see the (required )?select field "([^\"]+)" without options "([^\"]+(?:\/[^\"]+)+)"$/ do |required, field, options|
-  assert_label_exists(field, required)
-  element = locate_labeled_field_type(field, 'select')
-  options.split('/').each do |option|
-    element.all('option').none? { |o| o.text == option } or raise Capybara::ElementNotFound, "Field #{field.inspect} has option #{option.inspect}"
-  end
-end
+
 Then /^I should see the (required )?select field "([^\"]+)" with the option "([^\"]+)"$/ do |required, field, option|
   assert_label_exists(field, required)
   element = locate_labeled_field_type(field, 'select')
@@ -140,35 +116,8 @@ When /^I fill in "([^\"]*)" with(?: the)? multiline text:?$/ do |field, value|
   end
 end
 
-When /^I press enter on "([^\"]*)"$/ do |field|
-  find_field(field).native.send_key(:Enter)
-end
-
 When /^I fill in the hidden field "([^"]*)" with "([^\"]+)"$/ do |field, value|
   find("input##{field}", visible: false).set(value)
-end
-
-Then /^"([^\"]+)" should be selected from "([^\"]+)"$/ do |value, name|
-  selected = find_field(name).find('option[selected]').text
-  assert_equal(value, selected, "Field #{name.inspect} does not have the correct value selected")
-end
-
-Then /^"([^\"]+)" should be selected from a disabled "([^\"]+)"$/ do |value, name|
-  selected = find_field(name, disabled: true).find('option[selected]').text
-  assert_equal(value, selected, "Field #{name.inspect} does not have the correct value selected")
-end
-
-Then /^I expect an exception to be raised when I press "([^"]*)"(?: within "([^"]*)")?$/ do |button, selector|
-  begin
-    with_scope(selector) do
-      click_button(button)
-    end
-    fail('No exception raised!')
-  rescue RuntimeError => exception # 'fail' raises, so we need to check that
-    raise
-  rescue => exception
-    # Good, that was expected
-  end
 end
 
 When /^I accept the action$/ do
