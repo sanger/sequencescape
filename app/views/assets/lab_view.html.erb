@@ -41,7 +41,7 @@
         <tbody>
           <% @asset.parents.each do |parent| %>
             <tr>
-              <td><%= link_to "#{(parent.label or "").humanize} #{parent.id}", action: :lab_view, barcode: parent.barcode %></td>
+              <td><%= link_to "#{(parent.label or "").humanize} #{parent.id}", action: :lab_view, barcode: parent.human_barcode %></td>
             </tr>
           <% end %>
         </tbody>
@@ -60,7 +60,7 @@
         <tbody>
           <% @asset.children.each do |child| %>
             <tr>
-              <td><%= link_to "#{(child.label or "").humanize} #{child.id}", action: :lab_view, barcode: child.barcode %></td>
+              <td><%= link_to "#{(child.label or "").humanize} #{child.id}", action: :lab_view, barcode: child.human_barcode %></td>
             </tr>
           <% end %>
         </tbody>
