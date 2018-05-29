@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 module Pipeline::InboxExtensions
-  def inbox(show_held_requests = true, current_page = 1, action = nil)
+  def inbox(show_held_requests = true, current_page = 1, search_action = nil)
     requests = proxy_association.scope
     pipeline = proxy_association.owner
     # Build a list of methods to invoke to build the correct request list
@@ -14,14 +14,14 @@ module Pipeline::InboxExtensions
     actions << ((pipeline.group_by_parent? or show_held_requests) ? :full_inbox : :pipeline_pending)
     actions << [(pipeline.group_by_parent? ? :holder_located : :with_present_asset)]
 
-    if action != :count
+    if search_action != :count
       actions << :include_request_metadata if pipeline.request_information_types.exists?
       actions << (pipeline.group_by_submission? ? :ordered_for_submission_grouped_inbox : :ordered_for_ungrouped_inbox)
       actions << pipeline.inbox_eager_loading
     end
 
-    if action.present?
-      actions << [action]
+    if search_action.present?
+      actions << [search_action]
     elsif pipeline.paginate?
       actions << [:paginate, { per_page: 50, page: current_page }]
     end

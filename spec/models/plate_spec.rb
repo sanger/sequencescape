@@ -32,14 +32,6 @@ describe Plate do
   describe '#pools' do
     include_context 'a limber target plate with submissions'
 
-    before do
-      target_plate.wells.each do |well|
-        source_well = input_plate.wells.located_at(well.map_description).first
-        well.stock_wells << source_well
-        create :transfer_request, asset: source_well, target_asset: well, submission_id: source_well.requests.first.submission_id
-      end
-    end
-
     subject { target_plate.pools }
 
     context 'before passing' do

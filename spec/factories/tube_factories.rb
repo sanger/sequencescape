@@ -72,7 +72,7 @@ FactoryGirl.define do
     purpose { Tube::Purpose.stock_mx_tube }
 
     factory :new_stock_multiplexed_library_tube do |_t|
-      purpose { |a| a.association(:new_stock_tube_purpose) }
+      association(:purpose, factory: :new_stock_tube_purpose)
     end
   end
 
