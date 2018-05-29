@@ -35,6 +35,7 @@ module DownloadHelpers
   end
 
   def self.create_directory
+    PATH.parent.mkdir unless PATH.parent.exist?
     PATH.mkdir
   end
 end
