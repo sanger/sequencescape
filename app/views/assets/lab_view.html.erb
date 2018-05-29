@@ -60,7 +60,13 @@
         <tbody>
           <% @asset.children.each do |child| %>
             <tr>
-              <td><%= link_to "#{(child.label or "").humanize} #{child.id}", action: :lab_view, barcode: child.human_barcode %></td>
+              <td>
+                <% if child.respond_to?(:human_barcode) %>
+                  <%= link_to "#{(child.label or "").humanize} #{child.id}", action: :lab_view, barcode: child.human_barcode %>
+                <% else %>
+                  <%= link_to "#{(child.label or "").humanize} #{child.id}", asset_path(child) %>
+                <% end %>
+                </td>
             </tr>
           <% end %>
         </tbody>
