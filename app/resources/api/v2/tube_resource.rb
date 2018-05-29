@@ -28,7 +28,7 @@ module Api
       def labware_barcode
         {
           'ean13_barcode' => _model.ean13_barcode,
-          'sanger_human_barcode' => _model.sanger_human_barcode
+          'human_barcode' => _model.human_barcode
         }
       end
 

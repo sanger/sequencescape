@@ -46,8 +46,8 @@ namespace :sequencing do
 end
 
 def build_tasks_for(workflow)
-  AddSpikedInControlTask.create!(name: 'Add Spiked in control', sorted: 0, workflow: workflow)
-  SetDescriptorsTask.create!(name: 'Loading', sorted: 1, workflow: workflow) do |task|
+  AddSpikedInControlTask.create!(name: 'Add Spiked in control', sorted: 0, lab_activity: true, workflow: workflow)
+  SetDescriptorsTask.create!(name: 'Loading', sorted: 1, lab_activity: true, workflow: workflow) do |task|
     task.descriptors.build([
       { kind: 'Text', sorter: 1, name: 'Chip Barcode', required: true },
       { kind: 'Text', sorter: 2, name: 'Operator' },
@@ -59,12 +59,12 @@ def build_tasks_for(workflow)
       { kind: 'Text', sorter: 8, name: 'Pipette Carousel' },
       { kind: 'Text', sorter: 9, name: 'PhiX lot #' },
       { kind: 'Text', sorter: 10, name: 'PhiX %' },
-      { kind: 'Text', sorter: 11, name: 'Lane loading concentration (nM)' },
+      { kind: 'Text', sorter: 11, name: 'Lane loading concentration (pM)' },
       { kind: 'Text', sorter: 12, name: 'Comment' }
     ])
   end
 
-  SetDescriptorsTask.create!(name: 'Read 1 & 2', sorted: 2, workflow: workflow) do |task|
+  SetDescriptorsTask.create!(name: 'Read 1 & 2', sorted: 2, lab_activity: true, workflow: workflow) do |task|
     task.descriptors.build([
       { kind: 'Text', sorter: 1, name: 'Chip Barcode', required: true },
       { kind: 'Text', sorter: 2, name: 'Operator' },

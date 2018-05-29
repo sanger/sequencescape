@@ -34,12 +34,6 @@ GIT
     irods_reader (0.0.2)
 
 GIT
-  remote: git://github.com/sanger/psd_logger.git
-  revision: dd2d634114df75b1d8535715c169a7fc99521389
-  specs:
-    psd_logger (0.1.6)
-
-GIT
   remote: git://github.com/sanger/ruby_walk.git
   revision: 6e86c0413ab508933de899d7a3c6bc3b415e2acb
   specs:
@@ -47,10 +41,10 @@ GIT
 
 GIT
   remote: git://github.com/sanger/sanger_barcode_format.git
-  revision: f409a218a74a1d1571383ceaf693fe296eb6beb7
+  revision: ea1fa6840c8d41f8ce9ccf32b422f44d6edda859
   branch: development
   specs:
-    sanger_barcode_format (0.0.2)
+    sanger_barcode_format (0.0.3)
 
 GEM
   remote: https://rubygems.org/
@@ -113,7 +107,7 @@ GEM
       tzinfo (~> 1.1)
     addressable (2.5.2)
       public_suffix (>= 2.0.2, < 4.0)
-    amq-protocol (2.2.0)
+    amq-protocol (2.3.0)
     arel (8.0.0)
     ast (2.4.0)
     autoprefixer-rails (8.0.0)
@@ -126,8 +120,8 @@ GEM
     bullet (5.6.1)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.10.0)
-    bunny (2.7.0)
-      amq-protocol (>= 2.2.0)
+    bunny (2.9.2)
+      amq-protocol (~> 2.3.0)
     cancan (1.6.10)
     capybara (2.17.0)
       addressable
@@ -158,7 +152,7 @@ GEM
     connection_pool (2.2.1)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
-    crass (1.0.3)
+    crass (1.0.4)
     cucumber (2.4.0)
       builder (>= 2.1.2)
       cucumber-core (~> 1.5.0)
@@ -278,10 +272,11 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
     public_suffix (3.0.1)
-    puma (3.11.0)
+    puma (3.11.3)
     rack (2.0.4)
     rack-acceptable (0.1.0)
       rack (>= 1.1.0)
+    rack-cors (1.0.2)
     rack-mini-profiler (0.10.5)
       rack (>= 1.2.0)
     rack-protection (2.0.1)
@@ -307,8 +302,8 @@ GEM
     rails-dom-testing (2.0.3)
       activesupport (>= 4.2.0)
       nokogiri (>= 1.6)
-    rails-html-sanitizer (1.0.3)
-      loofah (~> 2.0)
+    rails-html-sanitizer (1.0.4)
+      loofah (~> 2.2, >= 2.2.2)
     rails-perftest (0.0.7)
     railties (5.1.4)
       actionpack (= 5.1.4)
@@ -359,6 +354,7 @@ GEM
     ruby-plsql (0.6.0)
     ruby-prof (0.17.0)
     ruby-progressbar (1.9.0)
+    ruby-units (2.3.0)
     ruby_parser (3.10.1)
       sexp_processor (~> 4.9)
     rubyzip (1.2.1)
@@ -490,9 +486,9 @@ DEPENDENCIES
   net-ldap
   nokogiri
   pry
-  psd_logger!
   puma
   rack-acceptable
+  rack-cors
   rack-mini-profiler
   rails (~> 5.1.2)
   rails-controller-testing
@@ -504,6 +500,7 @@ DEPENDENCIES
   rubocop
   ruby-oci8
   ruby-prof
+  ruby-units
   ruby_walk (>= 0.0.3)!
   rubyzip
   sanger_barcode_format!

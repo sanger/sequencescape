@@ -10,7 +10,7 @@
 <%= pagination @plates %>
 <% @plates.each do |plate| %>
   <li class="list_group-item">
-    <%= link_to plate.sanger_human_barcode, plate_summary_path(plate.sanger_human_barcode) %>
+    <%= link_to plate.human_barcode, plate_summary_path(plate.human_barcode) %>
   </li>
 <% end %>
 </ul>

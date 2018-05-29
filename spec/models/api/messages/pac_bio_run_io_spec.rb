@@ -24,14 +24,14 @@ RSpec.describe Api::Messages::PacBioRunIO, type: :model do
     {
       'pac_bio_run_id' => pac_bio_batch.id,
       'pac_bio_run_uuid' => pac_bio_batch.uuid,
-      'plate_barcode' => plate.sanger_human_barcode,
+      'plate_barcode' => plate.human_barcode,
       'plate_uuid_lims' => plate.uuid,
       'wells' => [
         {
           'well_label' => 'A1',
           'well_uuid_lims' => well_a1.uuid,
           'samples' => [{
-            'pac_bio_library_tube_id_lims' => library_tube_1.sanger_human_barcode,
+            'pac_bio_library_tube_id_lims' => library_tube_1.human_barcode,
             'pac_bio_library_tube_uuid' => library_tube_1.uuid,
             'pac_bio_library_tube_name' => library_tube_1.name,
             'pac_bio_library_tube_legacy_id' => library_tube_1.id,
@@ -45,7 +45,7 @@ RSpec.describe Api::Messages::PacBioRunIO, type: :model do
           'well_label' => 'B1',
           'well_uuid_lims' => well_b1.uuid,
           'samples' => [{
-            'pac_bio_library_tube_id_lims' => library_tube_2.sanger_human_barcode,
+            'pac_bio_library_tube_id_lims' => library_tube_2.human_barcode,
             'pac_bio_library_tube_uuid' => library_tube_2.uuid,
             'pac_bio_library_tube_name' => library_tube_2.name,
             'pac_bio_library_tube_legacy_id' => library_tube_2.id,

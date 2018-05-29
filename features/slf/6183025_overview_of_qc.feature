@@ -26,7 +26,7 @@ Feature: display an overview of all plates going through QC in SLF
      When I follow "QC overview"
      Then the overview of the plates should look like:
        | Study      | Stock   | QC started        | Pico Analysed | Gel Analysed | Sequenom Stamp |
-       | Test Study | 1234567 | 2011-02-14        |               |              |                |
+       | Test Study | DN1234567T | 2011-02-14        |               |              |                |
      Given I am on the Qc reports homepage
       When I select "Test Study" from "Study"
      And I press "Submit"
@@ -49,7 +49,7 @@ Feature: display an overview of all plates going through QC in SLF
      When I follow "QC overview"
      Then the overview of the plates should look like:
      | Study      | Stock   | QC started        | Pico Analysed | Gel Analysed | Sequenom Stamp |
-     | Test Study | 1234567 | 2011-02-14        |               |              |                |
+     | Test Study | DN1234567T | 2011-02-14        |               |              |                |
 
    @barcode-service
    Scenario: A plate has had pico assays and has been analysed
@@ -63,7 +63,7 @@ Feature: display an overview of all plates going through QC in SLF
      When I follow "QC overview"
      Then the overview of the plates should look like:
      | Study      | Stock   | QC started        | Pico Analysed | Gel Analysed | Sequenom Stamp |
-     | Test Study | 1234567 | 2011-02-14        | 2011-02-14    |              |                |
+     | Test Study | DN1234567T | 2011-02-14        | 2011-02-14    |              |                |
 
    @barcode-service
    Scenario: A plate has only completed Gel
@@ -76,7 +76,7 @@ Feature: display an overview of all plates going through QC in SLF
      When I follow "QC overview"
      Then the overview of the plates should look like:
      | Study      | Stock   | QC started        | Pico Analysed | Gel Analysed | Sequenom Stamp |
-     | Test Study | 1234567 | 2011-02-14        |               | 2011-02-14   |                |
+     | Test Study | DN1234567T | 2011-02-14        |               | 2011-02-14   |                |
 
    @barcode-service
    Scenario: A plate hasnt had a sequenom plate generated
@@ -92,7 +92,7 @@ Feature: display an overview of all plates going through QC in SLF
      When I follow "QC overview"
      Then the overview of the plates should look like:
      | Study      | Stock   | QC started        | Pico Analysed | Gel Analysed | Sequenom Stamp |
-     | Test Study | 1234567 | 2011-02-14        | 2011-02-14    | 2011-02-14   |                |
+     | Test Study | DN1234567T | 2011-02-14        | 2011-02-14    | 2011-02-14   |                |
 
   @barcode-service @qc_event
    Scenario: A plate has fully completed QC
@@ -120,7 +120,7 @@ Feature: display an overview of all plates going through QC in SLF
      When I follow "QC overview"
      Then the overview of the plates should look like:
      | Study      | Stock   | QC started        | Pico Analysed | Gel Analysed | Sequenom Stamp |
-     | Test Study | 1234567 | 2011-02-14        | 2011-02-14    | 2011-02-14   | 2011-02-14     |
+     | Test Study | DN1234567T | 2011-02-14        | 2011-02-14    | 2011-02-14   | 2011-02-14     |
 
      Given I am on the Qc reports homepage
       When I select "Test Study" from "Study"

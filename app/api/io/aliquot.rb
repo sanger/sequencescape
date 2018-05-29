@@ -10,6 +10,7 @@ class Io::Aliquot < Core::Io::Base
 
   PRELOADS = [
     :bait_library,
+    :primer_panel,
     {
       tag: :tag_group,
       tag2: :tag_group,

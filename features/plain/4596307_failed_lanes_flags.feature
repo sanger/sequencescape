@@ -39,27 +39,3 @@ Feature: Pipeline shows status of requests in pipeline
     Then the page should contain the following
       | request type        | requested | pending | started | passed | failed | cancelled |
       | Library preparation | 2         | 0       | 2       | 1      | 1      | 0         |
-
-  Scenario: I make a training batch for SE pipeline
-    Given I am on the show page for pipeline "Cluster formation SE"
-    When I follow "Make training batch"
-    When I press "Create batch"
-    Then I should see "Edit batch"
-
-    When I follow "Specify Dilution Volume"
-    Then I should see "View all batches"
-
-    When I press "Next step"
-    Then I should see "Source barcode"
-
-    When I press "Next step"
-    Then I should see "Quality control"
-
-    When I press "Next step"
-    Then I should see "Lin/block/hyb/load"
-
-    When I press "Next step"
-    Then I should see "Specify Dilution Volume"
-
-    When I press "Release this batch"
-    Then I should see "Batch released"

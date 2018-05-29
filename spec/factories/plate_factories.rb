@@ -44,16 +44,17 @@ FactoryGirl.define do
     end
   end
 
-  factory :plate do
-    plate_purpose
-    name 'Plate name'
-    value ''
-    qc_state ''
-    resource nil
-    barcode
-    size 96
+  trait :plate_barcode do
+    transient do
+      barcode { generate :barcode_number }
+      prefix 'DN'
+    end
+    sanger_barcode { { prefix: prefix, number: barcode } }
+  end
 
-    with_wells
+  factory :plate, traits: [:plate_barcode, :with_wells] do
+    plate_purpose
+    size 96
 
     factory :input_plate do
       association(:plate_purpose, factory: :input_plate_purpose)
@@ -124,6 +125,113 @@ FactoryGirl.define do
         end
       end
     end
+
+    factory :plate_with_fluidigm_barcode do
+      transient do
+        sample_count 8
+        well_factory :tagged_well
+      end
+      sequence(:fluidigm_barcode) { |i| (1000000000 + i).to_s }
+      size 192
+    end
+  end
+
+  factory(:full_plate, class: Plate, traits: [:plate_barcode, :with_wells]) do
+    size 96
+    plate_purpose
+
+    transient do
+      well_count 96
+    end
+
+    # A plate that has exactly the right number of wells!
+    factory :pooling_plate do
+      plate_purpose { create :pooling_plate_purpose }
+      transient do
+        well_count 6
+        well_factory :tagged_well
+      end
+    end
+
+    factory :non_stock_pooling_plate do
+      plate_purpose
+
+      transient do
+        well_count 6
+        well_factory :empty_well
+      end
+    end
+
+    factory :input_plate_for_pooling do
+      association(:plate_purpose, factory: :input_plate_purpose)
+      transient do
+        well_count 6
+        well_factory :tagged_well
+      end
+    end
+
+    factory(:full_stock_plate) do
+      plate_purpose { PlatePurpose.stock_plate_purpose }
+
+      factory(:partial_plate) do
+        transient { well_count 48 }
+      end
+
+      factory(:plate_for_strip_tubes) do
+        transient do
+          well_count 8
+          well_factory :tagged_well
+        end
+      end
+
+      factory(:two_column_plate) do
+        transient { well_count 16 }
+      end
+    end
+
+    factory(:full_plate_with_samples) do
+      transient { well_factory :tagged_well }
+    end
+  end
+
+  factory :control_plate, traits: [:plate_barcode, :with_wells] do
+    plate_purpose { PlatePurpose.find_by(name: 'Stock plate') }
+    name 'Control Plate name'
+  end
+
+  factory :dilution_plate, traits: [:plate_barcode, :with_wells] do
+    plate_purpose { PlatePurpose.find_by!(name: 'Stock plate') }
+    size 96
+  end
+  factory :gel_dilution_plate, traits: [:plate_barcode, :with_wells] do
+    plate_purpose { PlatePurpose.find_by!(name: 'Gel Dilution') }
+    size 96
+  end
+  factory :pico_assay_plate, traits: [:plate_barcode, :with_wells] do
+    plate_purpose { PlatePurpose.find_by!(name: 'Stock plate') }
+    size 96
+
+    factory :pico_assay_a_plate, traits: [:plate_barcode, :with_wells] do
+      plate_purpose { PlatePurpose.find_by!(name: 'Pico Assay A') }
+      size 96
+    end
+    factory :pico_assay_b_plate, traits: [:plate_barcode, :with_wells] do
+      plate_purpose { PlatePurpose.find_by!(name: 'Pico Assay B') }
+      size 96
+    end
+  end
+  factory :pico_dilution_plate, traits: [:plate_barcode, :with_wells] do
+    plate_purpose { PlatePurpose.find_by!(name: 'Pico Dilution') }
+    size 96
+  end
+  factory :sequenom_qc_plate, traits: [:plate_barcode, :with_wells] do
+    sequence(:name) { |i| "Sequenom #{i}" }
+    plate_purpose { PlatePurpose.find_by!(name: 'Sequenom') }
+    size 96
+  end
+  factory :working_dilution_plate, traits: [:plate_barcode, :with_wells] do
+    plate_purpose { PlatePurpose.find_by!(name: 'Working Dilution') }
+    size 96
   end
 
   # StripTubes are effectively thin plates

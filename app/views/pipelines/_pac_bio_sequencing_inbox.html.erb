@@ -91,7 +91,7 @@
                 <%= link_to request_asset.name, asset_path(request.asset_id) %>
               </td>
               <td class='request'> <!-- Asset -->
-                <%=  link_to "#{request_asset.sti_type} #{request_asset.barcode}", asset_path(request.asset_id) %>
+                <%=  link_to "#{request_asset.sti_type} #{request_asset.human_barcode}", asset_path(request.asset_id) %>
               </td>
               <td class='request'>
                 <%= request_tag %>

@@ -94,8 +94,8 @@ class RequestType < ApplicationRecord
     new_request = klass.public_send(construct_method, attributes) do |request|
       request.request_type = self
       request.request_purpose ||= request_purpose
-      request.billing_product = find_product_for_request(request)
       yield(request) if block_given?
+      request.billing_product = find_product_for_request(request)
     end
     # Prevent us caching all our requests
     requests.reset
@@ -120,6 +120,28 @@ class RequestType < ApplicationRecord
 
   def self.genotyping
     find_by(key: 'genotyping') or raise 'Cannot find genotyping request type'
+  end
+
+  def self.create_asset
+    create_with(
+      name: 'Create Asset',
+      order: 1,
+      asset_type: 'Asset',
+      request_class_name: 'CreateAssetRequest',
+      request_purpose: :internal
+    ).find_or_create_by!(key: 'create_asset')
+  end
+
+  def self.external_multiplexed_library_creation
+    create_with(
+      asset_type: 'LibraryTube',
+      for_multiplexing: true,
+      initial_state: 'pending',
+      order: 0,
+      name: 'External Multiplexed Library Creation',
+      request_class_name: 'ExternalLibraryCreationRequest',
+      request_purpose: :standard
+    ).find_or_create_by!(key: 'external_multiplexed_library_creation')
   end
 
   def request_class
@@ -161,6 +183,15 @@ class RequestType < ApplicationRecord
 
   def find_product_for_request(request)
     billing_product_catalogue.find_product_for_request(request) if billing_product_catalogue.present?
+  end
+
+  # Returns the validator for a given option.
+  def validator_for(request_option)
+    if request_type_validators.loaded?
+      request_type_validators.detect { |rtv| rtv.request_option == request_option.to_s }
+    else
+      request_type_validators.find_by(request_option: request_option.to_s)
+    end || RequestType::Validator::NullValidator.new
   end
 
   delegate :pool_count,             to: :pooling_method

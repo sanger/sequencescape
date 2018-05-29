@@ -18,7 +18,7 @@ And I have a "full" authorised user with the key "cucumber"
   Scenario: Reading the JSON for a UUID
     Given a sample tube called "Testing the API" with ID 1
     And the UUID for the sample tube "Testing the API" is "00000000-1111-2222-3333-444444444444"
-    And the barcode for the sample tube "Testing the API" is "42"
+    And the barcode for the sample tube "Testing the API" is "NT42F"
 
     Given a sample called "sample_testing_the_api" exists
     And the UUID for the sample "sample_testing_the_api" is "00000000-1111-2222-3333-888888888888"

@@ -82,7 +82,7 @@ Given(/^I have a cherrypicked plate with barcode "([^"]*)" and plate purpose "([
 end
 
 Given(/^well "([^"]*)" on plate "([^"]*)" has a genotyping_done status of "([^"]*)"$/) do |well_description, plate_barcode, genotyping_status|
-  plate = Plate.find_by(barcode: plate_barcode)
+  plate = Plate.find_from_barcode('DN' + plate_barcode)
   well = plate.find_well_by_name(well_description)
   well.primary_aliquot.sample.external_properties.create!(key: 'genotyping_done', value: genotyping_status)
 end
@@ -103,7 +103,7 @@ Given(/^I have a DNA QC submission for plate "([^"]*)"$/) do |plate_barcode|
 end
 
 Given(/^I have a "([^"]*)" submission for plate "([^"]*)" with project "([^"]*)" and study "([^"]*)"$/) do |submission_template_name, plate_barcode, project_name, study_name|
-  plate = Plate.find_by(barcode: plate_barcode)
+  plate = Plate.find_from_barcode(plate_barcode)
   project = Project.find_by(name: project_name)
   study = Study.find_by(name: study_name)
 

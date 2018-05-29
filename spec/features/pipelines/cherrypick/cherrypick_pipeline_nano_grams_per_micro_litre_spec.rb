@@ -45,6 +45,9 @@ feature 'cherrypick pipeline - nano grams per micro litre', js: true do
       assets: assets
     )
     Delayed::Worker.new.work_off
+    # Make sure everything has built correctly, as otherwise downstream
+    # failures are quite uninformative
+    expect(submission.state).not_to eq('failed'), "Submission failed: #{submission.message}"
 
     stub_request(:post, "#{configatron.plate_barcode_service}plate_barcodes.xml").to_return(
       headers: { 'Content-Type' => 'text/xml' },
@@ -112,15 +115,15 @@ feature 'cherrypick pipeline - nano grams per micro litre', js: true do
     fill_in('1220099999705', with: '1220099999705')
 
     click_button 'Verify'
-    expect(page).to have_content('Download TECAN file')
+    click_link('Download TECAN file')
+    # Tecan file generation is slow. Can probably be sped up, but for the moment...
+    generated_file = DownloadHelpers.downloaded_file("#{batch.id}_batch_DN99999F.gwl")
 
-    plate = Plate.find_from_machine_barcode('1220099999705')
-    generated_file = batch.tecan_gwl_file_as_text(plate.barcode, batch.total_volume_to_cherrypick, 'ABgene 0765')
-    generated_lines = generated_file.split(/\n/)
+    generated_lines = generated_file.lines
     generated_lines.shift(2)
     expect(generated_lines).to be_truthy
-    tecan_file =
-      "C;
+    tecan_file = <<~TECAN
+      C;
       A;BUFF;;96-TROUGH;1;;49.1
       D;1220099999705;;ABgene 0800;1;;49.1
       W;
@@ -163,29 +166,15 @@ feature 'cherrypick pipeline - nano grams per micro litre', js: true do
       C; SCRC2 = 1220000010734
       C; SCRC3 = 1220000005877
       C;
-      C; DEST1 = 1220099999705"
+      C; DEST1 = 1220099999705
+      TECAN
 
-    tecan_file_lines = tecan_file.lines.map(&:strip)
+    tecan_file_lines = tecan_file.lines
 
-    generated_lines.each_with_index do |generated_line, index|
-      if defined?(JRuby)
-        expect(generated_line).to eq(tecan_file_lines[index])
-      else
-        # MRI and Jruby have different float rounding behaviour
-        # Both are valid, here we relax constraints for MRI.
-        # The relaxed constraints are a little more permissive than
-        # would be ideal.
-        compare_lines_in_mri(tecan_file_lines[index], generated_line)
-      end
+    expect(generated_lines.length).to eq(tecan_file_lines.length)
+
+    tecan_file_lines.each_with_index do |expected_line, index|
+      expect(expected_line).to eq(generated_lines[index])
     end
-  end
-
-  def compare_lines_in_mri(tecan_file_line, generated_line)
-    _expect_line, expect_root, expect_round = /(.*)(\.\d)/.match(tecan_file_line)
-    _actual_line, actual_root, actual_round = /(.*)(\.\d)/.match(generated_line)
-    expect(expect_root).to eq(actual_root)
-    valid_end = (expect_round == actual_round) || # The rounded digets match
-                (expect_round.to_i - actual_round.to_i == 1) && (actual_round.to_i.even?) # The digit has been rounded down to even
-    expect(valid_end).to be true
   end
 end

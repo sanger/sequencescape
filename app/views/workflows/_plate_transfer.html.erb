@@ -9,7 +9,7 @@
   <dt>Plate type</dt>
   <dd><%= @target.plate_purpose.name %></dd>
   <dt>Barcode</dt>
-  <dd><%= @target.sanger_human_barcode %></dd>
+  <dd><%= @target.human_barcode %></dd>
 </dl>
 <%= render partial: 'assets/print_form', locals: { asset: @target} %>
 

@@ -46,8 +46,8 @@ module WorkingSetup
       purpose = Purpose.find_by!(name: name)
       number.times do
         purpose.create!.tap do |plate|
-          plate.wells.each { |w| w.aliquots.create!(sample: Sample.create!(name: "sample_#{plate.sanger_human_barcode}_#{w.map.description}", studies: [study, study_b])) }
-          puts "#{name}: #{plate.ean13_barcode}-#{plate.sanger_human_barcode}"
+          plate.wells.each { |w| w.aliquots.create!(sample: Sample.create!(name: "sample_#{plate.human_barcode}_#{w.map.description}", studies: [study, study_b])) }
+          puts "#{name}: #{plate.ean13_barcode}-#{plate.human_barcode}"
         end
       end
     end

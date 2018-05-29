@@ -151,7 +151,7 @@ module Submission::FlexibleRequestGraph
     def create_target_asset(source_asset = nil)
       request_type.create_target_asset! do |asset|
         asset.generate_barcode
-        asset.generate_name(source_asset.try(:name) || asset.barcode.to_s)
+        asset.generate_name(source_asset.try(:name) || asset.try(:human_barcode)&.to_s)
       end
     end
   end

@@ -41,25 +41,15 @@ class WorkCompletion::TubeCompletion
     end
   end
 
-  # This method is probably horrifically broken.
-  # It is also dependant of requests being from wells
   def detect_upstream_requests
-    wells = collect_upstream_wells([], target_tube)
-    # Not great, but substantially faster than the alternative of just grabbing
-    # everything through well.
-    CustomerRequest.includes(:submission, source_well: { target_wells: :submissions })
-                   .where(target_wells_assets: { id: wells })
-                   .where('requests.submission_id = transfer_requests.submission_id')
-  end
-
-  # This isn't very OO. I'm trying to keep the horror confined until
-  # we have a stable solution
-  def collect_upstream_wells(collection, asset)
-    if asset.is_a?(Well)
-      collection << asset
-    else
-      asset.upstream_assets.each { |next_asset| collect_upstream_wells(collection, next_asset) }
-    end
-    collection
+    CustomerRequest.includes(
+      { submission: :orders },
+      { request_type: :request_type_validators },
+      { target_asset: :aliquots },
+      :request_events,
+      :billing_product,
+      :billing_items,
+      :request_metadata
+    ).where(id: target_tube.aliquots.pluck(:request_id))
   end
 end

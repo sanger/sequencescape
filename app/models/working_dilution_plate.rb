@@ -5,8 +5,6 @@
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 class WorkingDilutionPlate < DilutionPlate
-  self.prefix = 'WD'
-
   def update_qc_values_with_parser(parser, scale: nil)
     ActiveRecord::Base.transaction do
       super

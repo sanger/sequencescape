@@ -10,12 +10,12 @@ class AssetPlateTest < ActiveSupport::TestCase
     @plate_name = 'Plate name'
     @barcode1 = '11111'
     @prefix = 'DN'
-    @plate1 = create :child_plate, barcode: barcode1
+    @plate1 = create :child_plate, barcode: barcode1, name: @plate_name
     @plate2 = create :child_plate
     @plates = [plate1, plate2]
     @plate_label = LabelPrinter::Label::AssetPlate.new(plates)
     @label = { top_left: (Date.today.strftime('%e-%^b-%Y')).to_s,
-               bottom_left: (plate1.sanger_human_barcode).to_s,
+               bottom_left: (plate1.human_barcode).to_s,
                top_right: "#{prefix} #{barcode1}",
                bottom_right: "#{plate_name} #{barcode1}",
                top_far_right: nil,

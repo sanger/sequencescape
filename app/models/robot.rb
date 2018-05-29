@@ -12,10 +12,10 @@ class Robot < ApplicationRecord
   has_many :robot_properties
   has_one :max_plates_property, ->() { where(key: 'max_plates') }, class_name: 'RobotProperty'
 
-  scope :with_machine_barcode, ->(barcode) {
-                                 return none unless Barcode.prefix_from_barcode(barcode) == prefix
-                                 where(barcode: Barcode.number_to_human(barcode))
-                               }
+  scope :with_barcode, ->(barcode) {
+                         return none unless Barcode.prefix_from_barcode(barcode) == prefix
+                         where(barcode: Barcode.number_to_human(barcode))
+                       }
 
   scope :include_properties, -> { includes(:robot_properties) }
 

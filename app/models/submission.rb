@@ -55,7 +55,7 @@ class Submission < ApplicationRecord
 
   scope :latest_first, -> { order('id DESC') }
 
-  scope :for_search_query, ->(query, _with_includes) { where(name: query) }
+  scope :for_search_query, ->(query) { where(name: query) }
 
   def self.render_class
     Api::SubmissionIO

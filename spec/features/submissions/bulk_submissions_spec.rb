@@ -30,22 +30,27 @@ feature 'Bulk submission', js: false do
     end
   end
 
+  let(:library_request_type) { create :library_request_type }
+  let(:sequencing_request_type) { create :sequencing_request_type, read_lengths: [100], default: 100 }
+
+  let(:submission_template_hash) do
+    {
+      name: template_name,
+      submission_class_name: 'LinearSubmission',
+      product_catalogue: 'Generic',
+      superceded_by_id: deprecated ? -2 : -1,
+      submission_parameters: { info_differential: 5,
+                               request_options: { 'fragment_size_required_to' => '400',
+                                                  'fragment_size_required_from' => '100' },
+                               request_types: [library_request_type.key, sequencing_request_type.key] }
+    }
+  end
+
+  let(:deprecated) { false }
+
   context 'with default encoding' do
-    before do
-      submission_template_hash = {
-        name: 'Illumina-A - Cherrypick for pulldown - Pulldown WGS - HiSeq Paired end sequencing',
-        submission_class_name: 'LinearSubmission',
-        product_catalogue: 'Generic',
-        superceeded_by_id: -2,
-        submission_parameters: { info_differential: 5,
-                                 request_options: { 'fragment_size_required_to' => '400',
-                                                    'fragment_size_required_from' => '100' },
-                                 request_types: %w[cherrypick_for_pulldown
-                                                   pulldown_wgs
-                                                   illumina_a_hiseq_paired_end_sequencing] }
-      }
-      SubmissionSerializer.construct!(submission_template_hash)
-    end
+    let(:template_name) { 'Illumina-A - Cherrypick for pulldown - Pulldown WGS - HiSeq Paired end sequencing' }
+    before { SubmissionSerializer.construct!(submission_template_hash) }
     let(:encoding) { nil }
 
     context 'with one submission' do
@@ -86,21 +91,8 @@ feature 'Bulk submission', js: false do
       let(:submission_count) { 0 }
 
       context 'Uploading a valid file with 1 submission but a deprecated template' do
-        setup do
-          submission_template_hash = {
-            name: 'Cherrypick for pulldown - Pulldown WGS - HiSeq Paired end sequencing',
-            submission_class_name: 'LinearSubmission',
-            product_catalogue: 'Generic',
-            superceded_by_id: -2,
-            submission_parameters: { info_differential: 5,
-                                     request_options: { 'fragment_size_required_to' => '400',
-                                                        'fragment_size_required_from' => '100' },
-                                     request_types: %w[cherrypick_for_pulldown
-                                                       pulldown_wgs
-                                                       illumina_a_hiseq_paired_end_sequencing] }
-          }
-          SubmissionSerializer.construct!(submission_template_hash)
-        end
+        let(:template_name) { 'Cherrypick for pulldown - Pulldown WGS - HiSeq Paired end sequencing' }
+        let(:deprecated) { true }
         let(:file_name) { '1_deprecated_rows.csv' }
         let(:expected_content) { "Template: 'Cherrypick for pulldown - Pulldown WGS - HiSeq Paired end sequencing' is deprecated and no longer in use." }
         it_behaves_like 'bulk submission file upload'

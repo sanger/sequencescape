@@ -16,7 +16,7 @@ module LabelPrinter
       end
 
       def middle_line(tube)
-        tube.barcode
+        tube.barcode_number
       end
 
       def bottom_line(_tube)
@@ -28,7 +28,7 @@ module LabelPrinter
       end
 
       def round_label_bottom_line(tube)
-        tube.barcode
+        tube.barcode_number
       end
 
       def barcode(tube)

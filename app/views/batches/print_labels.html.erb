@@ -30,7 +30,7 @@
         <% if ! @batch.multiplexed? %>
           <% @batch.requests.map{ |r| r.target_asset }.uniq.map{|asset| asset.source_request }.each do |request| -%>
             <tr>
-              <td width="35%" class="item"><label for="printable[<%= request.id %>]">Tube <%= request.target_asset.barcode %></label></td>
+              <td width="35%" class="item"><label for="printable[<%= request.id %>]">Tube <%= request.target_asset.human_barcode %></label></td>
               <td width="65%"><input type='checkbox' checked='on' value='on' name='printable[<%= request.id %>]' id='printable[<%= request.id %>]' ></td>
             </tr>
           <% end -%>

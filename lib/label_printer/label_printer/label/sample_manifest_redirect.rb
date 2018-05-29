@@ -5,13 +5,18 @@ module LabelPrinter
 
       def initialize(options)
         @sample_manifest = options[:sample_manifest]
+        @printer_type_class = options[:printer_type_class]
         @options = options
       end
 
       def to_h
         case sample_manifest.asset_type
         when 'plate'
-          SampleManifestPlate.new(options).to_h
+          if @printer_type_class.double_label?
+            SampleManifestPlateDouble.new(options).to_h
+          else
+            SampleManifestPlate.new(options).to_h
+          end
         when '1dtube'
           SampleManifestTube.new(options).to_h
         when 'library'

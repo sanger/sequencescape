@@ -99,6 +99,11 @@ group :default do
   # Using it to maintain our warren's of bunnies.
   # Or the connection pool of RabbitMQ channels to get technical
   gem 'connection_pool'
+
+  gem 'rack-cors', require: 'rack/cors'
+
+  # Adds easy conversions between units
+  gem 'ruby-units'
 end
 
 group :warehouse do
@@ -179,8 +184,6 @@ group :cucumber do
 end
 
 group :deployment do
-  gem 'psd_logger',
-      :github => 'sanger/psd_logger'
   gem 'gmetric', '~>0.1.3'
   gem 'exception_notification'
 end

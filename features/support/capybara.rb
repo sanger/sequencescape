@@ -1,8 +1,8 @@
 require 'selenium/webdriver'
 
-Capybara.configure do |config|
-  config.server = :puma
-end
+# Capybara.configure do |config|
+#   config.server = :puma
+# end
 
 Capybara.register_driver :headless_chrome do |app|
   options = Selenium::WebDriver::Chrome::Options.new

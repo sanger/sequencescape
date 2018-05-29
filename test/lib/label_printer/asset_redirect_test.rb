@@ -10,8 +10,8 @@ class AssetGroupRedirectTest < ActiveSupport::TestCase
       @barcode1 = '11111'
       @barcode2 = '22222'
       @barcode3 = '33333'
-      asset1 = create :child_plate, barcode: barcode1
-      asset2 = create :child_plate, barcode: barcode2
+      asset1 = create :child_plate, barcode: barcode1, name: @asset_name
+      asset2 = create :child_plate, barcode: barcode2, name: @asset_name
       asset3 = create :child_plate, barcode: barcode3
       options = { printables: { (asset1.id).to_s => 'true', (asset2.id).to_s => 'true', (asset3.id).to_s => 'false' } }
       @asset_redirect = LabelPrinter::Label::AssetRedirect.new(options)
@@ -19,14 +19,14 @@ class AssetGroupRedirectTest < ActiveSupport::TestCase
 
       @labels = [{ main_label:
                   { top_left: (Date.today.strftime('%e-%^b-%Y')).to_s,
-                    bottom_left: (asset1.sanger_human_barcode).to_s,
+                    bottom_left: (asset1.human_barcode).to_s,
                     top_right: "#{prefix} #{barcode1}",
                     bottom_right: "#{asset_name} #{barcode1}",
                     top_far_right: nil,
                     barcode: (asset1.ean13_barcode).to_s } },
                  { main_label:
                    { top_left: (Date.today.strftime('%e-%^b-%Y')).to_s,
-                     bottom_left: (asset2.sanger_human_barcode).to_s,
+                     bottom_left: (asset2.human_barcode).to_s,
                      top_right: "#{prefix} #{barcode2}",
                      bottom_right: "#{asset_name} #{barcode2}",
                      top_far_right: nil,
@@ -47,13 +47,13 @@ class AssetGroupRedirectTest < ActiveSupport::TestCase
       @asset_name = 'Plate name'
       @prefix = 'DN'
       @barcode1 = '11111'
-      @asset = create :child_plate, barcode: barcode1
+      @asset = create :child_plate, barcode: barcode1, name: @asset_name
       options = { printables: asset }
       @asset_redirect = LabelPrinter::Label::AssetRedirect.new(options)
 
       @labels = [{ main_label:
                   { top_left: (Date.today.strftime('%e-%^b-%Y')).to_s,
-                    bottom_left: (asset.sanger_human_barcode).to_s,
+                    bottom_left: (asset.human_barcode).to_s,
                     top_right: "#{prefix} #{barcode1}",
                     bottom_right: "#{asset_name} #{barcode1}",
                     top_far_right: nil,

@@ -39,7 +39,7 @@ module Submission::LinearRequestGraph
   def create_target_asset_for!(request_type, source_asset = nil)
     request_type.create_target_asset! do |asset|
       asset.generate_barcode
-      asset.generate_name(source_asset.try(:name) || asset.barcode.to_s)
+      asset.generate_name(source_asset&.name || asset.try(:human_barcode))
     end
   end
   private :create_target_asset_for!

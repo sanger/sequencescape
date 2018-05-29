@@ -57,7 +57,7 @@ module SampleManifestExcel
               sample.save
             end
             dynamic_attributes[i][:sanger_sample_id] = sample.sanger_sample_id
-            dynamic_attributes[i][:sanger_tube_id] = asset.sanger_human_barcode
+            dynamic_attributes[i][:sanger_tube_id] = asset.human_barcode
           end
         end
       end
