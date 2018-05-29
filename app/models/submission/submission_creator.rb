@@ -260,7 +260,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
     plates_wells.map do |plate_wells|
       plate_barcode, well_locations = plate_wells.split(':')
       begin
-        plate = Plate.find_from_machine_barcode(Barcode.human_to_machine_barcode(plate_barcode))
+        plate = Plate.find_from_barcode(Barcode.human_to_machine_barcode(plate_barcode))
       rescue SBCF::BarcodeError => exception
         raise InvalidInputException, "Invalid Barcode #{plate_barcode}: #{exception}"
       end
@@ -278,7 +278,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
       when /^[a-z,A-Z][0-9]+$/ # A well
         well = plate.find_well_by_name(map_description)
         if well.nil? or well.aliquots.empty?
-          raise InvalidInputException, "Well #{map_description} on #{plate.sanger_human_barcode} does not exist or is empty."
+          raise InvalidInputException, "Well #{map_description} on #{plate.human_barcode} does not exist or is empty."
         else
           well
         end

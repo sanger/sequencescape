@@ -17,14 +17,6 @@
     <%= text_field_tag "name", pattern.name %>
   <% end -%>
   <br />
-  <label>Illumina Control well:</label>
-  <% if pattern.nil? || pattern.descriptor_value('control_well').nil? -%>
-    <%= check_box_tag "control_well", 1 %>
-  <% elsif pattern.control_well? -%>
-    <%= check_box_tag "control_well", 1, true %>
-  <% else%>
-    <%= check_box_tag "control_well", 1 %>
-  <% end -%>
 
   <p>Click to leave positions empty.</p>
   <table class="plate" width="100%">

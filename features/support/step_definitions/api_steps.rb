@@ -124,12 +124,6 @@ When /^I make an authorised (GET|DELETE) (?:(?:for|of) )?the API path "(\/[^\"]*
   end
 end
 
-When /^I make an authorised (PUT|POST) (?:to )?the API path "(\/[^\"]*)"$/ do |action, path|
-  api_request(action, path, nil) do |headers|
-    headers['HTTP_X_SEQUENCESCAPE_CLIENT_ID'] = 'cucumber'
-  end
-end
-
 When /^I make an authorised (POST|PUT) with the following JSON to the API path "(\/[^\"]*)":$/ do |action, path, serialized_json|
   api_request(action, path, serialized_json) do |headers|
     headers['HTTP_X_SEQUENCESCAPE_CLIENT_ID'] = 'cucumber'
@@ -175,13 +169,6 @@ Then /^ignoring "([^\"]+)" the JSON should be:$/ do |key_list, serialised_json|
   rescue
     puts page.source
     raise
-  end
-end
-
-Then /^ignoring everything but "([^\"]+)" the JSON should be:$/ do |key_list, serialised_json|
-  keys = key_list.split('|')
-  assert_json_equal(serialised_json, page.source) do |key|
-    not keys.include?(key.to_s)
   end
 end
 
@@ -336,12 +323,6 @@ Given /^project "([^"]*)" has an owner called "([^"]*)"$/ do |project_name, logi
   user.is_owner_of(project)
 end
 
-Given /^lane "([^"]*)" has qc_state "([^"]*)"$/ do |lane_uuid, state|
-  lane = Lane.find(Uuid.find_id(lane_uuid))
-  lane.qc_state = state
-  lane.save!
-end
-
 Given /^the sanger sample id for sample "([^"]*)" is "([^"]*)"$/ do |uuid_value, sanger_sample_id|
   sample = Sample.find(Uuid.find_id(uuid_value))
   sample.sanger_sample_id = sanger_sample_id
@@ -350,7 +331,8 @@ end
 
 Given /^the infinium barcode for plate "([^"]*)" is "([^"]*)"$/ do |plate_name, infinium_barcode|
   plate = Plate.find_by(name: plate_name)
-  plate.plate_metadata.update_attributes!(infinium_barcode: infinium_barcode)
+  plate.infinium_barcode = infinium_barcode
+  plate.save!
 end
 
 Given /^no (plate purpose|request type)s exist$/ do |model|

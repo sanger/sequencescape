@@ -132,8 +132,7 @@ feature 'track SampleManifest updates' do
              ['Updated by Sample Manifest', '2010-07-12', 'Monday 12 July, 2010', 'jane']]
 
     expect(fetch_table('table#events')).to eq(table)
-
-    asset = Asset.find_from_machine_barcode('1221234567841')
+    asset = Asset.find_from_barcode('1221234567841')
     visit(history_asset_path(asset))
     table = [['Message', 'Content', 'Created at', 'Created by'],
              ['Created by Sample Manifest', '2010-07-12', 'Monday 12 July, 2010', 'john'],

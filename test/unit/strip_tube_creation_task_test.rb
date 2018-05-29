@@ -27,9 +27,10 @@ class StripTubeCreationTest < TaskTestBase
       @pipeline       = create :pipeline
       @batch          = create :batch, pipeline: @pipeline
       @task           = create :strip_tube_creation_task, workflow: @pipeline.workflow
+      @purpose        = create :strip_tube_purpose
       @task.descriptors <<
         Descriptor.new(name: 'test', selection: [1, 2, 4, 6, 12], key: 'strips_to_create') <<
-        Descriptor.new(name: 'test2', value: 'Strip Tube Purpose', key: 'strip_tube_purpose')
+        Descriptor.new(name: 'test2', value: @purpose.name, key: 'strip_tube_purpose')
       @plate = create :plate_for_strip_tubes
 
       @submission = create :submission

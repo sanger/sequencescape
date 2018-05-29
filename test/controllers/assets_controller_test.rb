@@ -21,7 +21,7 @@ class AssetsControllerTest < ActionController::TestCase
       FactoryGirl.create(:sample, name: 'phiX_for_spiked_buffers') # Required by controller
       @asset_count = Asset.count
 
-      @barcode = FactoryGirl.generate :sanger_barcode
+      @barcode = { number: FactoryGirl.generate(:barcode_number), prefix: 'NT' }
 
       @json_data = json_new_asset(@barcode)
 
@@ -113,7 +113,7 @@ class AssetsControllerTest < ActionController::TestCase
         "api_key": "abc",
         "asset": {
           "sti_type": "SampleTube",
-          "barcode": "#{barcode}",
+          "sanger_barcode": #{barcode.to_json},
           "label": "SampleTube"
         }
       }

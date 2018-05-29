@@ -96,7 +96,7 @@ Feature: Printing new plate barcodes
   @xml @qc_event
   Scenario: Create all QC plates for SLF
     Given a plate with purpose "Stock plate" and barcode "1221234567841" exists
-    And a plate of type "Plate" with barcode "1220001454858" exists
+    And a plate with barcode "1220001454858" exists
     Given I am on the new plate page
     Then I should see "Create Plates"
 

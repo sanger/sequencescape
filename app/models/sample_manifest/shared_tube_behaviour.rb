@@ -15,12 +15,12 @@ module SampleManifest::SharedTubeBehaviour
       sanger_sample_id = SangerSampleId.generate_sanger_sample_id!(study_abbreviation, sanger_ids.shift)
 
       tubes << tube
-      samples_data << [tube.barcode, sanger_sample_id, tube.prefix]
+      samples_data << [tube, sanger_sample_id]
     end
 
-    self.barcodes = tubes.map(&:sanger_human_barcode)
+    self.barcodes = tubes.map(&:human_barcode)
 
-    tube_sample_creation(samples_data, study.id)
+    tube_sample_creation(samples_data)
     delayed_generate_asset_requests(tubes.map(&:id), study.id)
     save!
     tubes
@@ -32,10 +32,9 @@ module SampleManifest::SharedTubeBehaviour
 
   private
 
-  def tube_sample_creation(samples_data, _study_id)
-    study.samples << samples_data.map do |barcode, sanger_sample_id, _prefix|
+  def tube_sample_creation(samples_data)
+    study.samples << samples_data.map do |tube, sanger_sample_id|
       create_sample(sanger_sample_id).tap do |sample|
-        tube = Tube.find_by(barcode: barcode) or raise ActiveRecord::RecordNotFound, "Cannot find sample tube with barcode #{barcode.inspect}"
         attributes = core_behaviour.assign_library? ? { sample: sample, library_id: tube.id, study: study } : { sample: sample, study: study }
         tube.aliquots.create!(attributes)
       end

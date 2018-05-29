@@ -12,8 +12,9 @@ class OligoEnumerator
   #
   # @param [Integer] size The number of tags to generate
   #
-  def initialize(size)
+  def initialize(size, initial = 0)
     @size = size
+    @initial = initial
   end
 
   def last
@@ -22,7 +23,7 @@ class OligoEnumerator
 
   def each
     @size.times do |i|
-      yield tag(i)
+      yield tag(i + @initial)
     end
   end
 

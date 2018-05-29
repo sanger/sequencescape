@@ -22,18 +22,20 @@ class Io::Tube < Io::Asset
                             purpose.name => label.text
 
                        source_plate.uuid  => stock_plate.uuid
-                    source_plate.barcode  => stock_plate.barcode.number
-      source_plate.barcode_prefix.prefix  => stock_plate.barcode.prefix
+             source_plate.barcode_number  => stock_plate.barcode.number
+                     source_plate.prefix  => stock_plate.barcode.prefix
     source_plate.two_dimensional_barcode  => stock_plate.barcode.two_dimensional
               source_plate.ean13_barcode  => stock_plate.barcode.ean13
+            source_plate.machine_barcode  => stock_plate.barcode.machine
                source_plate.barcode_type  => stock_plate.barcode.type
 
-                               aliquots  => aliquots
+                          barcode_number  => barcode.number
+                                  prefix  => barcode.prefix
+                 two_dimensional_barcode  => barcode.two_dimensional
+                         machine_barcode  => stock_plate.barcode.machine
+                           ean13_barcode  => barcode.ean13
+                            barcode_type  => barcode.type
 
-                                barcode  => barcode.number
-                  barcode_prefix.prefix  => barcode.prefix
-                two_dimensional_barcode  => barcode.two_dimensional
-                          ean13_barcode  => barcode.ean13
-                           barcode_type  => barcode.type
+                               aliquots  => aliquots
   ")
 end

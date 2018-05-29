@@ -5,8 +5,17 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 Given /^the barcode for the sample tube "([^\"]+)" is "([^\"]+)"$/ do |name, barcode|
-  sample_tube = SampleTube.find_by(name: name) or raise StandardError, "Cannot find sample tube #{name.inspect}"
-  sample_tube.update_attributes!(barcode: barcode)
+  sample_tube = SampleTube.find_by!(name: name)
+  sample_tube.primary_barcode.update!(barcode: barcode)
+end
+
+Given /^the barcode for the asset "([^\"]+)" is "([^\"]+)"$/ do |name, barcode|
+  asset = Asset.find_by!(name: name)
+  if asset.primary_barcode
+    asset.primary_barcode.update!(barcode: barcode)
+  else
+    asset.barcodes << FactoryGirl.create(:sanger_ean13_tube, barcode: barcode)
+  end
 end
 
 Given /^tube "([^"]*)" has a public name of "([^"]*)"$/ do |name, public_name|
@@ -19,11 +28,6 @@ end
 
 Given /^(?:I have )?a (sample|library) tube called "([^\"]+)"$/ do |tube_type, name|
   FactoryGirl.create(:"#{ tube_type }_tube", name: name)
-end
-
-Given /^(?:I have )?a well called "([^\"]+)"$/ do |_name|
-  sample = FactoryGirl.create(:sample)
-  FactoryGirl.create(:well, sample: sample)
 end
 
 Then /^the name of (the .+) should be "([^\"]+)"$/ do |asset, name|

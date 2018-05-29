@@ -28,7 +28,7 @@ class MultiplexedCherrypickingTask < Task
   end
 
   def included_for_render_task
-    [requests: { asset: [:samples, { plate: :barcode_prefix }, :map] }]
+    [requests: { asset: [:samples, { plate: :barcodes }, :map] }]
   end
 
   def render_task(workflow, params)
@@ -47,7 +47,7 @@ class MultiplexedCherrypickingTask < Task
   end
 
   def target_plate(barcode, plate_purpose_id)
-    return Plate.with_machine_barcode(barcode).first unless barcode.blank?
+    return Plate.with_barcode(barcode).first unless barcode.blank?
     PlatePurpose.find(plate_purpose_id).create!
   end
 end

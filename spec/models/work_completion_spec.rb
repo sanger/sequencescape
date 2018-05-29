@@ -37,14 +37,15 @@ describe WorkCompletion do
         create :library_submission, assets: input_plate2.wells, request_types: submission_request_types
       end
 
+      let(:library_requests_submission2) { target_submission2.requests.where(request_type_id: library_request_type.id) }
+      let(:multiplex_requests_submission2) { target_submission2.requests.where(request_type_id: multiplex_request_type.id) }
+
       let(:all_library_requests) do
-        library_requests +
-          target_submission2.requests.where(request_type_id: library_request_type.id)
+        library_requests + library_requests_submission2
       end
 
       let(:all_multiplex_requests) do
-        multiplex_requests +
-          target_submission.requests.where(request_type_id: multiplex_request_type.id)
+        multiplex_requests + multiplex_requests_submission2
       end
 
       it 'has built correctly' do

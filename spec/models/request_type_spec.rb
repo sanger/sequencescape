@@ -70,6 +70,17 @@ describe RequestType do
         )
         expect(request.billing_product).to eq billing_product
       end
+
+      it 'should assign the right product to request when assigning attributes from a block' do
+        request = request_type.create! do |req|
+          req.request_metadata_attributes = {
+            read_length: 250,
+            fragment_size_required_to: 150,
+            fragment_size_required_from: 150
+          }
+        end
+        expect(request.billing_product).to eq billing_product
+      end
     end
   end
 end

@@ -15,7 +15,7 @@ class Sequenom384PlateTest < ActiveSupport::TestCase
     @purpose = 'Sequenom'
     @plate_label = LabelPrinter::Label::Sequenom384Plate.new(options)
     @label = { top_left: (Date.today.strftime('%e-%^b-%Y')).to_s,
-               bottom_left: (plate1.sanger_human_barcode).to_s,
+               bottom_left: (plate1.human_barcode).to_s,
                top_right: (top).to_s,
                bottom_right: (bottom).to_s,
                barcode: (plate1.ean13_barcode).to_s }

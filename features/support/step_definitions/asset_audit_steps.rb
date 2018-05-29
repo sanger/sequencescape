@@ -9,17 +9,9 @@ Given /^asset audit with ID (\d+) is for plate with ID (\d+)$/ do |asset_audit_i
 end
 
 Given /^the barcode for plate (\d+) is "([^"]*)"$/ do |plate_id, barcode|
-  Plate.find(plate_id).update_attributes!(barcode: barcode)
+  Plate.find(plate_id).primary_barcode.update!(barcode: barcode)
 end
 
 Then /^the activity logging table should be:$/ do |expected_results_table|
   expected_results_table.diff!(table(fetch_table('table#asset_audits')))
-end
-
-Then /^there is a broadcast event for the last asset audit created$/ do
-  audit = AssetAudit.last
-  assert audit.present?, 'AssetAudit not found'
-  e = BroadcastEvent::AssetAudit.find_by(seed_id: audit.id, seed_type: 'AssetAudit')
-  assert e.present?, 'No event for last audit'
-  e.to_json
 end

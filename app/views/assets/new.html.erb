@@ -24,33 +24,35 @@
 
     <div class='section'>3. If applicable, scan in the 'parent' asset's barcode,</div>
     <div class='section'>
-      <%= label_tag "parent_asset_", "Parent Asset", {style: 'display:none;'} %><%= text_field :parent_asset, nil %>
+      <%= label_tag :parent_asset, "Parent Asset", {style: 'display:none;'} %>
+      <%= text_field_tag :parent_asset %>
     </div>
     <div class='section'>and enter how much (in &#181;L) was taken from it.</div>
     <div class='section'>
-      <%= label_tag "parent_volume_", "vol.", {style: 'display:none;'} %><%= text_field :parent_volume, nil %> &#181;L
+      <%= label_tag "parent_volume", "vol.", {style: 'display:none;'} %>
+      <%= text_field_tag :parent_volume %> &#181;L
     </div>
 
     <div class='section'>The new asset will be tagged with the following tag number:</div>
     <div class='section'>
-      <%= label_tag "tag_", "Tag", {style: 'display:none;'} %>
-      <%= text_field :tag, nil, { readonly: true, value: "#{@phix_tag.map_id}" } %>
+      <%= label_tag "tag", "Tag", {style: 'display:none;'} %>
+      <%= text_field_tag :tag, @phix_tag.map_id, readonly: true %>
     </div>
     <div class='section'>The sequence for this tag is:</div>
     <div class='section'>
-    <%= label_tag "tag_sequence_", "Tag Sequence", {style: 'display:none;'} %>
-    <%= text_field :tag_sequence, nil, { readonly: true, value: "#{@phix_tag.oligo}", disabled: true } %>
+    <%= label_tag "tag_sequence", "Tag Sequence", {style: 'display:none;'} %>
+    <%= text_field_tag :tag_sequence, @phix_tag.oligo, readonly: true, disabled: true %>
     </div>
 
     <div class='section'>4. Provide the concentration (in nM).</div>
     <div class='section'><%= label_tag "asset_concentration", "Concentration", {style: 'display:none;'} %><%= f.text_field :concentration  %> nM</div>
 
     <div class='section'>5. Provide the volume (in &#181;L). </div>
-    <div class='section'><%= label_tag "asset_volume", "Volume", {style: 'display:none;'} %><%= f.text_field :volume%> &#181;L</div>
+    <div class='section'><%= label_tag "asset_volume", "Volume", {style: 'display:none;'} %><%= f.text_field :volume %> &#181;L</div>
     <div class='section'><p>(NB, this should include any amount taken from the 'parent'.</p><p>This does not need to be entered if it is only an aliquot of the parent.)</p></div>
 
     <div class='section'>6. If you want to create multiple identical assets, provide the number you would like.</div>
-    <div class='section'><%= label_tag "count_", "Count", {style: 'display:none;'} %><%= text_field :count, nil%></div>
+    <div class='section'><%= label_tag "count", "Count", {style: 'display:none;'} %><%= text_field_tag :count, 1 %></div>
   </div>
   <div class='section'>
   <%= f.submit "Create" %>

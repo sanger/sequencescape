@@ -6,6 +6,10 @@ module Api
     class QcResultResource < JSONAPI::Resource
       attributes :key, :value, :units, :cv, :assay_type, :assay_version
 
+      # We expose created at to allow us to find the most recent
+      # measurement
+      attribute :created_at, readonly: true
+
       has_one :asset
     end
   end

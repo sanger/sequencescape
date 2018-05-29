@@ -46,16 +46,16 @@
     <th>Concentration</th>
     <td><%= @asset.concentration %> nM</td>
   </tr>
-  <% if @asset.respond_to?(:sanger_human_barcode) %>
+  <% if @asset.respond_to?(:human_barcode) %>
     <tr>
       <th>Human barcode</th>
-      <td><%= @asset.sanger_human_barcode %></td>
+      <td><%= @asset.human_barcode %></td>
     </tr>
   <% end %>
   <% if  @source_plate %>
     <tr>
       <th>Summary page</th>
-      <td><%= link_to "Summary for #{@source_plate.sanger_human_barcode}", plate_summary_path(@source_plate.sanger_human_barcode) %></td>
+      <td><%= link_to "Summary for #{@source_plate.human_barcode}", plate_summary_path(@source_plate.human_barcode) %></td>
     </tr>
   <% end %>
   <% if @asset.respond_to?(:plate) %>
@@ -63,7 +63,7 @@
       <th>Plate</th>
       <td>
         <% if @asset.plate.present? %>
-          <%= link_to @asset.plate.sanger_human_barcode, asset_path(@asset.plate) %>
+          <%= link_to @asset.plate.human_barcode, asset_path(@asset.plate) %>
         <% else %>
           No plate
         <% end %>

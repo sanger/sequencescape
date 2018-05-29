@@ -4,6 +4,8 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
+# Indicates a plate used in the gel dilution process.
+# While there is no behaviour associated with this plate
+# it is used to scope the plate display in the gel dilutions controller
 class GelDilutionPlate < WorkingDilutionPlate
-  self.prefix = 'GD'
 end

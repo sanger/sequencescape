@@ -23,7 +23,7 @@ class PlateVolume < ApplicationRecord
   private :calculate_barcode_from_filename
 
   def update_well_volumes
-    plate = Plate.include_wells_and_attributes.find_from_machine_barcode(barcode) or throw :no_source_plate
+    plate = Plate.include_wells_and_attributes.find_from_barcode(barcode) or throw :no_source_plate
     location_to_well = plate.wells.map_from_locations
 
     extract_well_volumes do |well_description, volume|

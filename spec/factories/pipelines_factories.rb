@@ -19,9 +19,6 @@ FactoryGirl.define do
     name                { |_a| generate :asset_name }
     value               ''
     qc_state            ''
-    resource            nil
-    barcode
-    barcode_prefix { |b| b.association(:barcode_prefix) }
   end
 
   factory :plate_creator_purpose, class: Plate::Creator::PurposeRelationship do |_t|
@@ -31,68 +28,6 @@ FactoryGirl.define do
 
   factory :plate_creator, class: Plate::Creator do
     name { generate :plate_creator_name }
-  end
-
-  factory :control_plate do
-    plate_purpose { PlatePurpose.find_by(name: 'Stock plate') }
-    name                'Control Plate name'
-    value               ''
-    descriptors         []
-    descriptor_fields   []
-    qc_state            ''
-    resource            nil
-    sti_type            'ControlPlate'
-    barcode
-  end
-
-  factory :dilution_plate do
-    plate_purpose { PlatePurpose.find_by!(name: 'Stock plate') }
-    barcode
-    with_wells
-    size 96
-  end
-  factory :gel_dilution_plate do
-    plate_purpose { PlatePurpose.find_by!(name: 'Gel Dilution') }
-    barcode
-    with_wells
-    size 96
-  end
-  factory :pico_assay_a_plate do
-    plate_purpose { PlatePurpose.find_by!(name: 'Pico Assay A') }
-    barcode
-    with_wells
-    size 96
-  end
-  factory :pico_assay_b_plate do
-    plate_purpose { PlatePurpose.find_by!(name: 'Pico Assay B') }
-    barcode
-    with_wells
-    size 96
-  end
-  factory :pico_assay_plate do
-    plate_purpose { PlatePurpose.find_by!(name: 'Stock plate') }
-    barcode
-    with_wells
-    size 96
-  end
-  factory :pico_dilution_plate do
-    plate_purpose { PlatePurpose.find_by!(name: 'Pico Dilution') }
-    barcode
-    with_wells
-    size 96
-  end
-  factory :sequenom_qc_plate do
-    sequence(:name) { |i| "Sequenom #{i}" }
-    plate_purpose { PlatePurpose.find_by!(name: 'Sequenom') }
-    barcode
-    with_wells
-    size 96
-  end
-  factory :working_dilution_plate do
-    plate_purpose { PlatePurpose.find_by!(name: 'Working Dilution') }
-    barcode
-    with_wells
-    size 96
   end
 
   factory :control do
@@ -410,7 +345,6 @@ FactoryGirl.define do
   end
 
   factory :strip_tube_creation_task do
-    purpose_id { create(:strip_tube_purpose, name: 'Strip Tube Purpose').id }
   end
 
   factory :plate_transfer_task do

@@ -263,7 +263,7 @@ And I have a "full" authorised user with the key "cucumber"
       """
       {
         "plate": {
-          "name": "Plate 1000002",
+          "name": "Plate DN1000002N",
           "uuid": "00000000-1111-2222-3333-000000000002"
         }
       }
@@ -587,7 +587,7 @@ And I have a "full" authorised user with the key "cucumber"
       """
       {
         "plate": {
-          "name": "Plate 1000002",
+          "name": "Plate DN1000002N",
           "uuid": "00000000-1111-2222-3333-000000000002"
         }
       }

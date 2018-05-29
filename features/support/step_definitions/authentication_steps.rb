@@ -33,22 +33,9 @@ Given /^there is at least one administrator$/ do
   FactoryGirl.create :admin
 end
 
-Given /^I am not logged in$/ do
-  @current_user = nil
-end
-
-Then /^I should not be on the login page$/ do
-  # assert_no_tag :tag => :title, :child => "Sequencescape : Login"
-  'I should not see "Sequencescape : Login" within "title"'
-end
-
 Then /^I should be logged in as "([^\"]*)"$/ do |login|
   user = User.find_by(login: login)
   assert @current_user == user
-end
-
-Given /^a user with human barcode "(ID\d+.)" exists$/ do |human_barcode|
-  FactoryGirl.create(:user, barcode: human_barcode)
 end
 
 Given /^user "([^"]*)" has nil first and last names$/ do |login|

@@ -11,15 +11,3 @@ end
 Given /^(?:a|the) (well) (?:named|called) "([^\"]+)" exists$/ do |type, _|
   FactoryGirl.create(type.gsub(/[^a-z0-9]+/, '_').to_sym)
 end
-
-Given /^(?:a|the) properly created ((?:multiplexed )?library tube) (?:named|called) "([^\"]+)" exists$/ do |type, name|
-  FactoryGirl.create(:"full_#{type.gsub(/[^a-z0-9]+/, '_')}", name: name)
-end
-
-Given /^(?:an|the) improperly created ((?:multiplexed )?library tube) (?:named|called) "([^\"]+)" exists$/ do |type, name|
-  FactoryGirl.create(:"broken_#{type.gsub(/[^a-z0-9]+/, '_')}", name: name)
-end
-
-Given /^an (item) named "([^\"]+)" exists$/ do |type, name|
-  FactoryGirl.create(type.gsub(/[^a-z0-9]+/, '_').to_sym, name: name)
-end

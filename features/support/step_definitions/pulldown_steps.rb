@@ -71,16 +71,6 @@ Given /^"([^\"]+)" of (the plate .+) have been (submitted to "[^"]+")$/ do |rang
   )
 end
 
-Given /^"([^\"]+)" of (the plate .+) and (the plate .+) both been (submitted to "[^"]+")$/ do |range, plate, plate2, template|
-  request_options = { read_length: 100, fragment_size_required_from: 100, fragment_size_required_to: 200 }
-  request_options[:bait_library_name] = 'Human all exon 50MB' if template.name.match?(/Pulldown I?SC/)
-  create_submission_of_assets(
-    template,
-    plate.wells.select(&range.method(:include?)) + plate2.wells.select(&range.method(:include?)),
-    request_options
-  )
-end
-
 Given /^"([^\"]+)" of (the plate .+) are part of the same submission$/ do |range, plate|
   submission = FactoryGirl.create :submission
   plate.wells.select(&range.method(:include?)).each do |well|
@@ -153,9 +143,7 @@ end
 Given /^(all submissions) have been worked until the last plate of the "Pulldown WGS" pipeline$/ do |submissions|
   work_pipeline_for(submissions, 'WGS lib pool')
 end
-Given /^(all submissions) have been worked until the last plate of the "Pulldown SC" pipeline$/ do |submissions|
-  work_pipeline_for(submissions, 'SC cap lib pool')
-end
+
 Given /^(all submissions) have been worked until the last plate of the "Pulldown ISC" pipeline$/ do |submissions|
   work_pipeline_for(submissions, 'ISC cap lib pool')
 end
@@ -205,10 +193,6 @@ Then /^all "([^\"]+)" requests should have the following details:$/ do |name, ta
     [attribute, value]
   end]
   assert_equal([expected], results, 'Request details are not identical')
-end
-
-Given /^"([^\"]+-[^\"]+)" of the plate with ID (\d+) are empty$/ do |range, id|
-  Plate.find(id).wells.select(&range.method(:include?)).each { |well| well.aliquots.clear }
 end
 
 Given /^all requests are in the last submission$/ do

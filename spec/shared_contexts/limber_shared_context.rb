@@ -7,7 +7,7 @@ shared_context 'a limber target plate with submissions' do
   # The input plate represents the plate going into the pipeline
   # from which the requests will be made.
   let(:tested_wells) { 3 }
-  let(:input_plate) { create :input_plate, well_count: tested_wells }
+  let(:input_plate) { create :input_plate, well_count: tested_wells, well_factory: :tagged_well }
   let(:library_request_type) { create :library_request_type }
   let(:multiplex_request_type) { create :multiplex_request_type }
   let(:submission_request_types) { [library_request_type, multiplex_request_type] }
@@ -27,13 +27,16 @@ shared_context 'a limber target plate with submissions' do
   let(:multiplex_requests) { target_submission.requests.where(request_type_id: multiplex_request_type.id) }
   let(:decoy_submission_requests) { decoy_submission.requests.where(request_type_id: library_request_type.id) }
 
-  # Build the requests we'll use. The order here is important, as submissions depend on it for finding the
-  # next request in a submission
-  before do
+  let(:build_library_requests) do
     input_plate.wells.each do |well|
       create :library_request, request_type: library_request_type, asset: well, submission: target_submission, state: 'started'
       create :library_request, request_type: library_request_type, asset: well, submission: decoy_submission, state: 'started'
     end
+  end
+  # Build the requests we'll use. The order here is important, as submissions depend on it for finding the
+  # next request in a submission
+  before do
+    build_library_requests
     submission_request_types[1..-1].each do |downstream_type|
       input_plate.wells.count.times do
         create :multiplex_request, request_type: downstream_type, submission: target_submission

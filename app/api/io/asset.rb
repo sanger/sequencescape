@@ -7,7 +7,7 @@
 class Io::Asset < Core::Io::Base
   set_model_for_input(::Asset)
   set_json_root(:asset)
-  set_eager_loading { |model| model.include_barcode_prefix }
+  set_eager_loading { |model| model }
 
   define_attribute_and_json_mapping("
                          name  => name

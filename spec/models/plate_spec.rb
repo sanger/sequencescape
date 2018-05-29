@@ -4,18 +4,33 @@ require 'rails_helper'
 require 'shared_contexts/limber_shared_context'
 
 describe Plate do
+  context 'barcodes' do
+    # Maintaining existing barcode behaviour
+    context 'sanger barcodes' do
+      let(:prefix) { 'DN' }
+      let(:barcode_prefix) { create :barcode_prefix, prefix: prefix }
+      let(:plate) { create :plate, prefix: prefix, barcode: '12345' }
+
+      describe '#human_barcode' do
+        subject { plate.human_barcode }
+        it { is_expected.to eq 'DN12345U' }
+      end
+
+      describe '#human_barcode' do
+        subject { plate.human_barcode }
+        it { is_expected.to eq 'DN12345U' }
+      end
+
+      describe '#ean13_barcode' do
+        subject { plate.ean13_barcode }
+        it { is_expected.to eq '1220012345855' }
+      end
+    end
+  end
   # Pools are horrendously complicated
 
   describe '#pools' do
     include_context 'a limber target plate with submissions'
-
-    before do
-      target_plate.wells.each do |well|
-        source_well = input_plate.wells.located_at(well.map_description).first
-        well.stock_wells << source_well
-        create :transfer_request, asset: source_well, target_asset: well, submission_id: source_well.requests.first.submission_id
-      end
-    end
 
     subject { target_plate.pools }
 

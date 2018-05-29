@@ -190,9 +190,6 @@ class BatchesControllerTest < ActionController::TestCase
             should '#add control' do
               get :add_control, params: { id: @batch_one, control: { id: @cn.id } }
             end
-            should '#create_training_batchl' do
-              get :create_training_batch, params: { id: @batch_one, control: { id: @cn.id } }
-            end
           end
         end
 
@@ -377,7 +374,7 @@ class BatchesControllerTest < ActionController::TestCase
 
         RestClient.expects(:post)
 
-        post :print_plate_barcodes, params: { printer: barcode_printer.name, count: '3', printable: { @batch.output_plates.first.barcode.to_s => 'on' }, batch_id: @batch.id.to_s }
+        post :print_plate_barcodes, params: { printer: barcode_printer.name, count: '3', printable: { @batch.output_plates.first.human_barcode => 'on' }, batch_id: @batch.id.to_s }
       end
 
       should '#print_barcodes should send print request' do

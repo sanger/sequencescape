@@ -9,9 +9,7 @@ describe '/api/1/plate-uuid' do
   let(:authorised_app) { create :api_application }
   let(:uuid) { plate.uuid }
 
-  let(:plate) do
-    create :plate, barcode: '1'
-  end
+  let(:plate) { create :plate, barcode: '1' }
 
   before do
     custom_metadata_collection
@@ -63,6 +61,10 @@ describe '/api/1/plate-uuid' do
           "type": 1
         },
 
+        "stock_plate": {
+          "barcode": {}
+        },
+
         "uuid": "#{uuid}"
       }
     })
@@ -74,5 +76,73 @@ describe '/api/1/plate-uuid' do
     api_request :get, subject
     expect(JSON.parse(response.body)).to include_json(JSON.parse(response_body))
     expect(status).to eq(response_code)
+  end
+
+  context 'with a stock plate' do
+    let(:response_body) do
+      %({
+        "plate": {
+          "actions": {
+            "read": "http://www.example.com/api/1/#{uuid}"
+          },
+          "plate_purpose": {
+            "actions": {
+              "read": "http://www.example.com/api/1/#{purpose.uuid}"
+            }
+          },
+          "wells": {
+            "actions": {
+              "read": "http://www.example.com/api/1/#{uuid}/wells"
+            }
+          },
+          "submission_pools": {
+            "actions": {
+              "read": "http://www.example.com/api/1/#{uuid}/submission_pools"
+            }
+          },
+          "custom_metadatum_collection": {
+            "actions": {
+              "read": "http://www.example.com/api/1/#{custom_metadata_collection.uuid}"
+            }
+          },
+          "transfer_request_collections": {
+            "size": 0,
+            "actions": {
+              "read": "http://www.example.com/api/1/#{uuid}/transfer_request_collections"
+            }
+          },
+
+
+          "barcode": {
+            "prefix": "DN",
+            "number": "1",
+            "ean13": "1220000001831",
+            "type": 1
+          },
+
+          "stock_plate": {
+            "barcode": {
+              "number":"2",
+              "prefix":"DN",
+              "ean13":"1220000002845",
+              "machine":"1220000002845"
+            },
+            "uuid":"#{stock_plate&.uuid}"
+          },
+
+          "uuid": "#{uuid}"
+        }
+      })
+    end
+
+    let(:stock_plate) { create(:full_stock_plate, barcode: 2) }
+    let(:plate) { create :plate, parents: [stock_plate], barcode: 1 }
+    let(:response_code) { 200 }
+
+    it 'supports resource reading' do
+      api_request :get, subject
+      expect(JSON.parse(response.body)).to include_json(JSON.parse(response_body))
+      expect(status).to eq(response_code)
+    end
   end
 end

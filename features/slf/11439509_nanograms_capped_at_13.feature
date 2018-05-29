@@ -131,7 +131,7 @@ Feature: Picking more than 13 minimum volume should render in tecan file
     C;
     C; DEST1 = 1220099999705
     """
-    When I follow "Print worksheet for Plate 99999"
+    When I follow "Print worksheet for Plate DN99999F"
     Then I should see the cherrypick worksheet table:
      | 1                                 | 2                                |
      | B1        222        v150.0 b0.0  | C3        333        v30.0 b0.0  |

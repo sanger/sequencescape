@@ -61,7 +61,7 @@ Feature: Pick by micro litre (stock transfer) using the Tecan robot
     C;
     C; DEST1 = 1220099999705
     """
-    When I follow "Print worksheet for Plate 99999"
+    When I follow "Print worksheet for Plate DN99999F"
     Then I should see the cherrypick worksheet table:
       | 1                                   |
       | A1        1        v<volume>.0 b0.0 |

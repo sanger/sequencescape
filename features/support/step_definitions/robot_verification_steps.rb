@@ -4,10 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
-Given /^I have a released cherrypicking batch$/ do
-  step("I have a released cherrypicking batch with 96 samples and the minimum robot pick is '1.0'")
-end
-
 Given(/^I have a released cherrypicking batch with (\d+) samples and the minimum robot pick is "([^"]*)"$/) do |number_of_samples, minimum_robot_pick|
   step("I have a cherrypicking batch with #{number_of_samples} samples")
   step('a plate barcode webservice is available and returns "99999"')
@@ -98,8 +94,8 @@ end
 
 Then /^the downloaded tecan file for batch "([^"]*)" and plate "([^"]*)" is$/ do |batch_barcode, plate_barcode, tecan_file|
   batch = Batch.find_by(barcode: Barcode.number_to_human(batch_barcode)) or raise StandardError, "Cannot find batch with barcode #{batch_barcode.inspect}"
-  plate = Plate.find_from_machine_barcode(plate_barcode) or raise StandardError, "Cannot find plate with machine barcode #{plate_barcode.inspect}"
-  generated_file = batch.tecan_gwl_file_as_text(plate.barcode, batch.total_volume_to_cherrypick, 'ABgene 0765')
+  plate = Plate.find_from_barcode(plate_barcode) or raise StandardError, "Cannot find plate with machine barcode #{plate_barcode.inspect}"
+  generated_file = batch.tecan_gwl_file_as_text(plate.human_barcode, batch.total_volume_to_cherrypick, 'ABgene 0765')
   generated_lines = generated_file.split(/\n/)
   generated_lines.shift(2)
   assert_not_nil generated_lines
@@ -111,16 +107,4 @@ end
 
 Then /^the source plates should be sorted by bed:$/ do |expected_results_table|
   expected_results_table.diff!(table(fetch_table('table#source_beds')))
-end
-
-Given /^the minimum robot pick is ([0-9\.]+)$/ do |volume|
-  configatron.tecan_minimum_volume = volume.to_f
-end
-
-Before('@tecan') do
-  @cache_tecan_minimum = configatron.tecan_minimum_volume
-end
-
-After('@tecan') do
-  configatron.tecan_minimum_volume = @cache_tecan_minimum
 end

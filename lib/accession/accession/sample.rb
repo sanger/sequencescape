@@ -28,7 +28,6 @@ module Accession
       @studies = set_studies
       @tags = standard_tags.extract(sample.sample_metadata)
       @service = Service.new(studies_valid? ? studies.keys.first : nil)
-      # binding.pry
     end
 
     def name
