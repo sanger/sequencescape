@@ -12,12 +12,6 @@ describe Barcode, type: :model do
       subject { barcode.machine_barcode }
       it { is_expected.to eq machine_barcode }
     end
-
-    describe '#summary' do
-      subject { barcode.summary }
-      it { is_expected.to be_a Hash }
-      it { is_expected.to eq summary }
-    end
   end
 
   shared_examples 'a composable barcode' do
@@ -76,14 +70,6 @@ describe Barcode, type: :model do
     let(:machine_barcode) { '1220012345855' }
     let(:ean13_barcode) { '1220012345855' }
     let(:code128_barcode) { '1220012345855' }
-    let(:summary) do
-      {
-        number: '12345',
-        prefix: 'DN',
-        ean13: '1220012345855',
-        machine_barcode: '1220012345855'
-      }
-    end
     it_behaves_like 'a basic barcode'
     it_behaves_like 'a composable barcode'
     it_behaves_like 'an ean13 barcode'
@@ -112,13 +98,7 @@ describe Barcode, type: :model do
     let(:human_barcode) { 'WG0010602-DNA' }
     let(:machine_barcode) { 'WG0010602-DNA' }
     let(:code128_barcode) { 'WG0010602-DNA' }
-    let(:summary) do
-      {
-        number: '10602',
-        prefix: 'WG',
-        machine_barcode: 'WG0010602-DNA'
-      }
-    end
+
     it_behaves_like 'a basic barcode'
     it_behaves_like 'a composable barcode'
     it_behaves_like 'not an ean13 barcode'
@@ -142,13 +122,6 @@ describe Barcode, type: :model do
     let(:code128_barcode) { '1662051218' }
     let(:prefix) { nil }
 
-    let(:summary) do
-      {
-        number: '1662051218',
-        prefix: nil,
-        machine_barcode: '1662051218'
-      }
-    end
     it_behaves_like 'a basic barcode'
     it_behaves_like 'not an ean13 barcode'
     it_behaves_like 'a code128 barcode'
@@ -174,13 +147,6 @@ describe Barcode, type: :model do
     let(:code128_barcode) { 'EXT_135432_D' }
     let(:prefix) { nil }
 
-    let(:summary) do
-      {
-        number: '135432',
-        prefix: 'EXT_',
-        machine_barcode: 'EXT_135432_D'
-      }
-    end
     it_behaves_like 'a basic barcode'
     it_behaves_like 'not an ean13 barcode'
     it_behaves_like 'a composable barcode'
@@ -200,13 +166,6 @@ describe Barcode, type: :model do
     let(:code128_barcode) { 'Q123RT12E45' }
     let(:prefix) { nil }
 
-    let(:summary) do
-      {
-        number: '',
-        prefix: nil,
-        machine_barcode: 'Q123RT12E45'
-      }
-    end
     it_behaves_like 'a basic barcode'
     it_behaves_like 'not an ean13 barcode'
     it_behaves_like 'a composable barcode'
