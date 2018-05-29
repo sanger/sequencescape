@@ -67,11 +67,15 @@ FactoryGirl.define do
     end
 
     factory :sequencing_request_type do
+      transient do
+        read_lengths [37, 54, 76, 108]
+        default 54
+      end
       asset_type     'LibraryTube'
       request_class  SequencingRequest
 
-      after(:build) do |request_type|
-        srv = create(:sequencing_request_type_validator, request_type: request_type)
+      after(:build) do |request_type, ev|
+        srv = create(:sequencing_request_type_validator, request_type: request_type, options: ev.read_lengths, default: ev.default)
         request_type.request_type_validators << srv
       end
     end

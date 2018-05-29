@@ -800,9 +800,11 @@ unless Rails.env.test?
       [95, 'GATGAATC'],
       [96, 'GCCAAGAC']] }
 
-  TagGroup.create!(tag_group_names.map { |n| { name: n } })
-  tags.each do |tag_group_name, tags_in_group|
-    tag_group = TagGroup.find_by(name: tag_group_name) or raise ActiveRecord::RecordNotFound, "Cannot find tag group #{tag_group_name.inspect}"
-    tags_in_group.each { |m, o| tag_group.tags.create!(map_id: m, oligo: o) }
+  TagGroup.import(tag_group_names.map { |n| { name: n } })
+  groups = Hash[TagGroup.pluck(:name, :id)]
+  tag_options = tags.flat_map do |tag_group_name, tags_in_group|
+    tag_group_id = groups[tag_group_name]
+    tags_in_group.map { |m, o| { map_id: m, oligo: o, tag_group_id: tag_group_id } }
   end
+  Tag.import(tag_options)
 end

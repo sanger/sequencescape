@@ -189,12 +189,6 @@ Given /^the UUID of the last (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) created is 
   target.uuid_object.update_attributes!(external_id: uuid_value)
 end
 
-Given /^(\d+) (#{PLURAL_MODELS_BASED_ON_ID_REGEXP}) exist with IDs starting at (\d+)$/ do |count, model, id|
-  (0...count.to_i).each do |index|
-    step("the #{model.singularize} exists with ID #{id.to_i + index}")
-  end
-end
-
 # TODO: It's 'UUID' not xxxing 'uuid'.
 Given /^I have an (event|external release event) with uuid "([^"]*)"$/ do |model, uuid_value|
   set_uuid_for(model.gsub(/\s+/, '_').downcase.gsub(/[^\w]+/, '_').camelize.constantize.create!(message: model), uuid_value)
@@ -245,6 +239,6 @@ Given /^plate "([^"]*)" is a source plate of "([^"]*)"$/ do |source_plate_uuid, 
 end
 
 Given /^the UUID for well (\d+) on plate "(.*?)" is "(.*?)"$/ do |well_id, plate_name, uuid|
-  plate = Plate.find_by(name: plate_name) || Plate.find_by(barcode: plate_name)
+  plate = Plate.find_by(name: plate_name) || Plate.find_from_barcode(plate_name)
   set_uuid_for(plate.wells[well_id.to_i - 1], uuid)
 end

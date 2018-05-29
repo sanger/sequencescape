@@ -16,6 +16,7 @@ Sequencescape::Application.routes.draw do
       jsonapi_resources :tubes
       jsonapi_resources :lanes
       jsonapi_resources :wells
+      jsonapi_resources :plates
       jsonapi_resources :receptacles
       jsonapi_resources :samples
       jsonapi_resources :work_orders
@@ -103,7 +104,6 @@ Sequencescape::Application.routes.draw do
       post :swap
       get :gwl_file
       post :fail_items
-      post :create_training_batch
       post :reset_batch
       get :download_spreadsheet
       get :edit_volume_and_concentration
@@ -391,7 +391,6 @@ Sequencescape::Application.routes.draw do
       get :show_comments
       get :batches
       get :summary
-      get :training_batch
       get :setup_inbox
       get :set_inbox
     end
@@ -436,7 +435,6 @@ Sequencescape::Application.routes.draw do
     end
   end
 
-  get 'assets/snp_import' => 'assets#snp_import'
   get 'assets/lookup' => 'assets#lookup', :as => :assets_lookup
   get 'assets/receive_barcode' => 'assets#receive_barcode'
   get 'assets/import_from_snp' => 'assets#import_from_snp'
@@ -496,20 +494,10 @@ Sequencescape::Application.routes.draw do
   resources :receptions, only: [:index] do
     collection do
       post :confirm_reception
-      get :snp_register
       get :reception
-      get :snp_import
-      get :receive_snp_barcode
       post :receive_barcode
-      get :import_from_snp
     end
   end
-
-  match 'sequenom/index' => 'sequenom#index', :as => :sequenom_root, :via => 'get'
-  match 'sequenom/search' => 'sequenom#search', :as => :sequenom_search, :via => 'post'
-  match 'sequenom/:id' => 'sequenom#show', :as => :sequenom_plate, :via => 'get'
-  match 'sequenom/:id' => 'sequenom#update', :as => :sequenom_update, :via => 'put'
-  match 'sequenom/quick' => 'sequenom#quick_update', :as => :sequenom_quick_update, :via => 'post'
 
   resources :sequenom_qc_plates
   resources :pico_dilutions
@@ -648,16 +636,17 @@ Sequencescape::Application.routes.draw do
   namespace :api do
     namespace :v2 do
       namespace :aker do
-        resources :work_orders, only: [:create]
+        resources :jobs, only: [:create]
       end
     end
   end
 
   namespace :aker do
-    resources :work_orders, only: [:index, :show] do
+    resources :jobs, only: [:index, :show] do
       member do
-        post 'complete'
-        post 'cancel'
+        put 'start'
+        put 'complete'
+        put 'cancel'
       end
     end
   end

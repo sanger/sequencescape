@@ -17,10 +17,6 @@ Given /^all pending delayed jobs (?:are|have been) processed$/ do
   step("#{count} pending delayed jobs are processed")
 end
 
-Then /^I should have (\d+) delayed jobs with a priority of (\d+)$/ do |number, priority|
-  assert_equal(number.to_i, Delayed::Job.count(conditions: { priority: priority }))
-end
-
 Then /^the last delayed job should have a priority of (\d+)$/ do |priority|
   assert_equal(priority.to_i, Delayed::Job.last.priority)
 end

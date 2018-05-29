@@ -13,22 +13,6 @@ Given /^the study "(.*)" has a abbreviation$/ do |study_name|
   study.study_metadata.study_name_abbreviation = 'TEST'
 end
 
-Given /^sample information is updated from the manifest for study "([^"]*)"$/ do |study_name|
-  study = Study.find_by(name: study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
-  study.samples.each_with_index do |sample, index|
-    sample.update_attributes!(
-      sanger_sample_id: sample.name,
-      sample_metadata_attributes: {
-        gender: 'Female',
-        dna_source: 'Blood',
-        sample_sra_hold: 'Hold'
-      }
-    )
-    sample.name = "#{study.abbreviation}#{index + 1}"
-    sample.save(validate: false)
-  end
-end
-
 Given /^the last sample has been updated by a manifest$/ do
   sample = Sample.last or raise StandardError, 'There appear to be no samples'
   sample.update_attributes!(updated_by_manifest: true)
@@ -66,15 +50,6 @@ Given /^I reset all of the sanger sample ids to a known number sequence$/ do
   end
   LibraryTube.order(:id).each_with_index do |tube, idx|
     tube.aliquots.first.sample.update_attributes!(sanger_sample_id: "tube_sample_#{idx + 1}")
-  end
-end
-
-Then /^sample "([^"]*)" should have empty supplier name set to "([^"]*)"$/ do |sanger_sample_id, boolean_string|
-  sample = Sample.find_by(sanger_sample_id: sanger_sample_id)
-  if boolean_string == 'true'
-    assert sample.empty_supplier_sample_name
-  else
-    assert !sample.empty_supplier_sample_name
   end
 end
 
@@ -130,7 +105,7 @@ end
 Then /^the samples should be tagged in library and multiplexed library tubes with:$/ do |table|
   pooled_aliquots = MultiplexedLibraryTube.last.aliquots.map { |a| [a.sample.sanger_sample_id, a.tag.map_id, a.library_id] }
   table.hashes.each do |expected_data|
-    lt = LibraryTube.find_by(barcode: expected_data[:tube_barcode].gsub('NT', ''))
+    lt = LibraryTube.find_from_barcode(expected_data[:tube_barcode])
     assert_equal 1, lt.aliquots.count, 'Wrong number of aliquots'
     assert_equal expected_data[:sanger_sample_id], lt.aliquots.first.sample.sanger_sample_id, "sanger_sample_id: #{expected_data[:sanger_sample_id]} #{lt.aliquots.first.sample.sanger_sample_id}"
     assert_equal expected_data[:tag_group], lt.aliquots.first.tag.try(:tag_group).try(:name), "tag_group: #{expected_data[:tag_group]} #{lt.aliquots.first.tag.try(:tag_group).try(:name)}"
@@ -173,7 +148,7 @@ When /^I visit the sample manifest new page without an asset type$/ do
 end
 
 Given /^plate "([^"]*)" has samples with known sanger_sample_ids$/ do |plate_barcode|
-  sequence_sanger_sample_ids_for(Plate.find_by(barcode: plate_barcode)) do |index|
+  sequence_sanger_sample_ids_for(Plate.find_from_barcode('DN' + plate_barcode)) do |index|
     "ABC_#{index}"
   end
 end
@@ -191,7 +166,7 @@ Then /^the last created sample manifest should be:$/ do |table|
   end
 
   table.rows.each_with_index do |row, index|
-    expected = [Barcode.barcode_to_human(Barcode.calculate_barcode(Plate.prefix, row[0].to_i)), row[1]]
+    expected = [Barcode.barcode_to_human(Barcode.calculate_barcode(Plate.default_prefix, row[0].to_i)), row[1]]
     got      = [@worksheet.cell(offset + index + 1, 1), @worksheet.cell(offset + index + 1, 2)]
     assert_equal(expected, got, "Unexpected manifest row #{index}")
   end
@@ -231,11 +206,11 @@ Given /^the sample manifest with ID (\d+) has been processed$/ do |id|
 end
 
 Given /^sample tubes are expected by the last manifest$/ do
-  SampleManifest.last.update_attributes(barcodes: SampleTube.all.map(&:sanger_human_barcode))
+  SampleManifest.last.update_attributes(barcodes: SampleTube.all.map(&:human_barcode))
 end
 
 Given /^library tubes are expected by the last manifest$/ do
-  SampleManifest.last.update_attributes(barcodes: LibraryTube.all.map(&:sanger_human_barcode))
+  SampleManifest.last.update_attributes(barcodes: LibraryTube.all.map(&:human_barcode))
 end
 
 Then /^print any manifest errors for debugging$/ do
@@ -244,10 +219,6 @@ Then /^print any manifest errors for debugging$/ do
     SampleManifest.last.last_errors.each { |error| puts error }
     puts '=' * 80
   end
-end
-
-Then /^library_id should be set as required$/ do
-  pending # express the regexp above with the code you wish you had
 end
 
 Given(/^the configuration exists for creating sample manifest Excel spreadsheets$/) do

@@ -4,10 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2011,2012,2014,2015 Genome Research Ltd.
 
-Given /^a (plate|tube) purpose "([^"]+)" with UUID "([^"]+)"$/ do |type, name, uuid_value|
-  set_uuid_for(FactoryGirl.create("#{type}_purpose", name: name), uuid_value)
-end
-
 Transform /^the plate purpose "([^\"]+)"$/ do |name|
   PlatePurpose.find_by(name: name) or raise StandardError, "Cannot find plate purpose #{name.inspect}"
 end

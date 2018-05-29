@@ -13,6 +13,7 @@ class Well < Receptacle
   include StudyReport::WellDetails
   include Tag::Associations
   include Api::Messages::FluidigmPlateIO::WellExtensions
+  include Api::Messages::QcResultIO::WellExtensions
 
   class Link < ApplicationRecord
     # Caution! We are using delete_all and import to manage well links.
@@ -223,6 +224,7 @@ class Well < Receptacle
     super || build_well_attribute
   end
 
+  delegate :measured_volume, :measured_volume=, to: :well_attribute
   delegate_to_well_attribute(:pico_pass)
   delegate_to_well_attribute(:sequenom_count)
   delegate_to_well_attribute(:gel_pass)
@@ -305,17 +307,6 @@ class Well < Receptacle
   # def map_description
   delegate :description, to: :map, prefix: true, allow_nil: true
 
-  def valid_well_on_plate
-    return false unless is_a?(Well)
-    well_plate = plate
-    return false unless well_plate.is_a?(Plate)
-    return false if well_plate.barcode.blank?
-    return false if map_id.nil?
-    return false unless map.description.is_a?(String)
-
-    true
-  end
-
   def create_child_sample_tube
     Tube::Purpose.standard_sample_tube.create!(map: map, aliquots: aliquots.map(&:dup)).tap do |sample_tube|
       AssetLink.create_edge(self, sample_tube)
@@ -343,7 +334,7 @@ class Well < Receptacle
   end
 
   def display_name
-    plate_name = plate.present? ? plate.sanger_human_barcode : '(not on a plate)'
+    plate_name = plate.present? ? plate.human_barcode : '(not on a plate)'
     plate_name ||= plate.display_name # In the even the plate is barcodeless (ie strip tubes) use its name
     "#{plate_name}:#{map ? map.description : ''}"
   end
@@ -351,10 +342,6 @@ class Well < Receptacle
   def details
     return 'Not yet picked' if plate.nil?
     plate.purpose.try(:name) || 'Unknown plate purpose'
-  end
-
-  def can_be_created?
-    plate.stock_plate?
   end
 
   def latest_stock_metrics(product)
@@ -368,6 +355,10 @@ class Well < Receptacle
 
   def source_plate
     plate && plate.source_plate
+  end
+
+  def update_from_qc(qc_result)
+    Well::AttributeUpdater.update(self, qc_result)
   end
 
   private

@@ -39,7 +39,7 @@ module Tasks::StripTubeCreationHandler
       return false
     end
 
-    base_name = source_plate.sanger_human_barcode
+    base_name = source_plate.human_barcode
 
     strip_purpose = Purpose.find_by(name: task.descriptors.find_by!(key: 'strip_tube_purpose').value)
 

@@ -34,11 +34,11 @@ Then /^the last report for "([^"]*)" should be:$/ do |study_name, expected_resul
 end
 
 Given /^study "([^"]*)" has a plate "([^"]*)"$/ do |study_name, plate_barcode|
-  plate = Plate.create!(barcode: plate_barcode, plate_purpose: PlatePurpose.find_by(name: 'Stock Plate'))
+  plate = FactoryGirl.create(:plate, barcode: plate_barcode, plate_purpose: PlatePurpose.find_by(name: 'Stock Plate'), well_count: 3, well_order: :row_order)
   samples = []
-  1.upto(3) do |i|
-    well = Well.create!(plate: plate, map_id: i)
-    well.aliquots.create!(sample: Sample.create!(name: "Sample_#{plate_barcode}_#{i}"))
+  plate.wells.each_with_index do |well, i|
+    # well = Well.create!(plate: plate, map_id: i)
+    well.aliquots.create!(sample: Sample.create!(name: "Sample_#{plate_barcode}_#{i + 1}"))
     well.well_attribute.update_attributes!(
       gender_markers: %w(F F F F),
       sequenom_count: 29,
@@ -58,29 +58,20 @@ Given /^study "([^"]*)" has a plate "([^"]*)"$/ do |study_name, plate_barcode|
 end
 
 Given /^study "([^"]*)" has a plate "([^"]*)" to be volume checked$/ do |study_name, plate_barcode|
-  plate = Plate.create!(barcode: plate_barcode, plate_purpose: PlatePurpose.find_by(name: 'Stock Plate'))
-  1.upto(24) do |i|
-    well = Well.create!(plate: plate, map_id: i)
-    well.aliquots.create!(sample: Sample.create!(name: "Sample_#{plate_barcode}_#{i}"))
-  end
-
   study = Study.find_by(name: study_name)
+  plate = FactoryGirl.create :plate, purpose: PlatePurpose.find_by(name: 'Stock Plate'),
+                                     barcode: plate_barcode,
+                                     well_count: 24,
+                                     well_factory: :untagged_well,
+                                     well_order: :row_order,
+                                     studies: [study]
+
   RequestFactory.create_assets_requests(plate.wells, study)
 end
 
 Given /^a study report is generated for study "([^"]*)"$/ do |study_name|
   study_report = StudyReport.create!(study: Study.find_by(name: study_name))
   study_report.perform
-end
-
-Then /^each sample name and sanger ID exists in study "([^"]*)"$/ do |study_name|
-  study  = Study.find_by(name: study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
-  report = study.study_reports.last or raise StandardError, "Study #{study_name.inspect} has no study reports"
-
-  CSV.parse(report.report.file.read).each_with_index do |row, index|
-    next if row[1].empty? || index == 0
-    assert_not_nil study.samples.find_by(sanger_sample_id: row[3])
-  end
 end
 
 Given /^each sample was updated by a sample manifest$/ do

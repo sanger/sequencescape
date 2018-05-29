@@ -26,11 +26,11 @@
      <tbody>
        <% source_plate_colour = {} %>
        <% robot_plate_layout[1].sort{|a,b| a[1]<=>b[1]}.each do |barcode,index| -%>
-         <% plate = Plate.find_from_machine_barcode(barcode) %>
+         <% plate = Plate.find_from_barcode(barcode) %>
          <% source_plate_colour["#{barcode}"] = "colour#{index%12}" %>
        <tr>
          <td>SCRC<%= index %></td>
-         <td><%= plate.barcode %></td>
+         <td><%= plate.barcode_number %></td>
          <td><strong><%= barcode %></strong></td>
          <td ><%= plate.storage_location %></td>
        </tr>
@@ -52,10 +52,10 @@
      </thead>
      <tbody>
        <% robot_plate_layout[0].sort{|a,b| a[1]<=>b[1]}.each do |barcode,index| -%>
-         <% plate = Plate.find_from_machine_barcode(barcode) %>
+         <% plate = Plate.find_from_barcode(barcode) %>
        <tr>
          <td>DEST<%= index %></td>
-         <th><%= plate.barcode %></td>
+         <th><%= plate.barcode_number %></td>
          <td><strong><%= barcode %></strong></td>
          <td><%= plate.wells.count %></td>
        </tr>
@@ -68,7 +68,7 @@
 
 <div id="plate_layouts">
   <% robot_plate_layout[0].sort{|a,b| a[1]<=>b[1]}.each do |barcode,index| -%>
-      <% plate = Plate.find_from_machine_barcode(barcode) %>
+      <% plate = Plate.find_from_barcode(barcode) %>
       <% if plate.buffer_required? %>
         <h3> Buffer Required </h3>
       <% end %>
@@ -105,7 +105,7 @@
                   <td>
                 <% end -%>
                 <%= source_well.map.description %>
-                <%= source_well.plate.barcode %>
+                <%= source_well.plate.barcode_number %>
                 v<%= "%.#{configatron.tecan_precision}f" % well.get_picked_volume %> b<%= "%.#{configatron.tecan_precision}f" % well.get_buffer_volume %>
               <% else %>
               <td>

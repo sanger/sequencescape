@@ -4,25 +4,12 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
-Then /^I should see barcode "([^"]*)"$/ do |machine_barcode|
-  barcode = Barcode.barcode_to_human(machine_barcode)
-  step %Q{I should see "#{barcode}"}
-end
-
 Given /^the plate barcode webservice returns "([1-9][0-9]*)"$/ do |barcode|
   FakeBarcodeService.instance.barcode(barcode)
 end
 
 Given /^a plate barcode webservice is available and returns "(\d+)"$/ do |barcode|
   step(%Q{the plate barcode webservice returns "#{barcode}"})
-end
-
-Given /^the plate barcode printing service will error$/ do
-  FakeBarcodeService.instance.push_printing_error
-end
-
-Given /^the plate barcode service is available with barcodes "([1-9][0-9]*)\.\.([1-9][0-9]*)"$/ do |start, finish|
-  (start.to_i..finish.to_i).each { |i| step(%Q{the plate barcode webservice returns "#{i}"}) }
 end
 
 Given /^the plate barcode webservice returns "([1-9][0-9]*)\.\.([1-9][0-9]*)"$/ do |start, finish|
@@ -50,19 +37,27 @@ Transform /^the plate with ID (\d+)$/ do |id|
   Plate.find(id)
 end
 
-Given /^(the .+) has a barcode of "([^\"]+)"$/ do |asset, barcode|
-  asset.update_attributes!(barcode: Barcode.number_to_human(barcode.to_i))
+Given /^(the .+) has a barcode of "([^\"]+)"$/ do |barcoded, barcode|
+  # Annoyingly this is used for batches, as well as labware
+  if barcoded.respond_to?(:primary_barcode)
+    bc = SBCF::SangerBarcode.from_machine(barcode).human_barcode
+    barcoded.primary_barcode.update(barcode: bc)
+  else
+    barcoded.update_attributes!(barcode: Barcode.number_to_human(barcode.to_i))
+  end
 end
 
 Given /^the barcode of the last sample tube is "([^\"]+)"$/ do |barcode|
+  bc = SBCF::SangerBarcode.new(prefix: 'NT', number: barcode).human_barcode
   tube = SampleTube.last or raise StandardError, 'There appear to be no sample tubes'
-  tube.update_attributes!(barcode: barcode)
+  tube.primary_barcode.update!(barcode: bc)
 end
 
 Given /^sample tubes are barcoded sequentially from (\d+)$/ do |initial|
   counter = initial.to_i
   SampleTube.order(:id).each do |asset|
-    asset.update_attributes!(barcode: counter)
+    bc = SBCF::SangerBarcode.new(prefix: 'NT', number: counter).human_barcode
+    asset.primary_barcode.update!(barcode: bc)
     counter += 1
   end
 end
@@ -70,7 +65,8 @@ end
 Given /^library tubes are barcoded sequentially from (\d+)$/ do |initial|
   counter = initial.to_i
   LibraryTube.order(:id).each do |asset|
-    asset.update_attributes!(barcode: counter)
+    bc = SBCF::SangerBarcode.new(prefix: 'NT', number: counter).human_barcode
+    asset.primary_barcode.update!(barcode: bc)
     counter += 1
   end
 end

@@ -19,7 +19,9 @@ class Tag2LayoutTemplate < ApplicationRecord
 
   # Create a TagLayout instance that does the actual work of laying out the tags.
   def create!(attributes = {}, &block)
-    Tag2Layout.create!(attributes.merge(default_attributes), &block)
+    Tag2Layout.create!(attributes.merge(default_attributes), &block).tap do |t2layout|
+      record_template_use(t2layout.plate)
+    end
   end
 
   def stamp_to(_)
@@ -28,7 +30,13 @@ class Tag2LayoutTemplate < ApplicationRecord
 
   private
 
+  def record_template_use(plate)
+    plate.submissions.each do |submission|
+      Tag2Layout::TemplateSubmission.create!(submission: submission, tag2_layout_template: self)
+    end
+  end
+
   def default_attributes
-    { tag: tag, layout_template: self }
+    { tag: tag }
   end
 end

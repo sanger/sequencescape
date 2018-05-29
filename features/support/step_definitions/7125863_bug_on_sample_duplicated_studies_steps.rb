@@ -18,10 +18,6 @@ Given /^the sample named "([^"]*)" belongs to the study named "([^"]*)"$/ do |na
   bind_sample_to_study(name_sample, name_study)
 end
 
-Given /^an import SNP with study "([^"]*)" bounded to sample "([^"]*)"$/ do |study_name, name_sample|
-  step %Q{a study named "#{study_name}" to the sample named "#{name_sample}"}
-end
-
 When /^I try to set the sample named "([^"]*)" as belonging to the study named "([^"]*)"$/ do |sample_name, study_name|
   assert_raises(ActiveRecord::RecordInvalid) do
     bind_sample_to_study(sample_name, study_name)

@@ -4,10 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
-Given /^there is a plate purpose named "([^\"]+)"$/ do |name|
-  PlatePurpose.first(conditions: { name: name })
-end
-
 Then /^the fields listed below should be displayed:$/ do |table|
   table.hashes.each do |details|
     assert(page.find_field(details['field']))

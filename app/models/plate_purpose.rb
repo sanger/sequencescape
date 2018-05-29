@@ -5,6 +5,8 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 class PlatePurpose < Purpose
+  self.default_prefix = 'DN'
+
   # includes / extends
   include SharedBehaviour::Named
   include Purpose::Relationship::Associations
@@ -137,8 +139,7 @@ class PlatePurpose < Purpose
   has_many :plates, foreign_key: :plate_purpose_id
 
   def self.stock_plate_purpose
-    # IDs copied from SNP
-    PlatePurpose.find(2)
+    PlatePurpose.create_with(stock_plate: true, cherrypickable_target: true).find_or_create_by!(name: 'Stock Plate')
   end
 
   def size
@@ -158,7 +159,10 @@ class PlatePurpose < Purpose
     do_not_create_wells = args.first.present?
     attributes[:size] ||= size
     attributes[:purpose] = self
-    pla = target_class.create_with_barcode!(attributes, &block).tap do |plate|
+    number = attributes.delete(:barcode)
+    prefix = (attributes.delete(:barcode_prefix) || barcode_prefix).prefix
+    attributes[:sanger_barcode] ||= { prefix: prefix, number: number }
+    target_class.create_with_barcode!(attributes, &block).tap do |plate|
       plate.wells.construct! unless do_not_create_wells
     end
   end

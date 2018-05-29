@@ -4,20 +4,8 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
-When /^I attach a valid excel file$/ do
-  attach_file(:file, File.join(Rails.root, 'public', 'data', 'sample_information.xls'))
-end
-
 Then /^a "([^\"]*)" number of "([^\"]*)" should be created$/ do |num, records|
   assert_equal num.to_i, records.humanize.constantize.count
-end
-
-Then /^No records of "([^\"]*)" should be created$/ do |records|
-  assert_equal [], records.humanize.constantize.count
-end
-
-Then /^I should see an error "([^\"]*)"$/ do |msg|
-  assert_contain msg
 end
 
 Then /^the following samples should be in the sample registration fields:$/ do |table|
@@ -80,17 +68,6 @@ Then /^the reference genome for the sample "([^\"]+)" should be "([^\"]+)"$/ do 
   assert_equal(genome, sample.sample_metadata.reference_genome.name)
 end
 
-Then /^the UUID for the sample "([^\"]+)" should be "([^\"]+)"$/ do |name, uuid|
-  sample = Sample.find_by(name: name) or raise StandardError, "Cannot find sample with name #{name.inspect}"
-  assert_equal(uuid, sample.uuid)
-end
-
-Then /^the XML root attribute "([^\"]+)" sent to the accession service for sample "([^\"]+)" should be not present$/ do |xml_attr, sample_name|
-  sample = Sample.find_by(name: sample_name) or raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
-  xml = FakeAccessionService.instance.sent.last['SAMPLE'].to_s
-  assert_equal(true, Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/@#{xml_attr}").length == 0)
-end
-
 Then /^the XML root attribute "([^\"]+)" sent to the accession service for sample "([^\"]+)" should be "(.*?)"$/ do |xml_attr, sample_name, value|
   sample = Sample.find_by(name: sample_name) or raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
   xml = FakeAccessionService.instance.sent.last['SAMPLE'].to_s
@@ -106,22 +83,10 @@ Then /^the XML sent for sample "([^\"]+)" validates with the schema "([^\"]+)"$/
   assert(result.length == 0, result.map(&:message).join(''))
 end
 
-Then /^the XML identifier tag "([^\"]+)" sent to the accession service for sample "([^\"]+)" should be not present$/ do |xml_attr, sample_name|
-  sample = Sample.find_by(name: sample_name) or raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
-  xml = FakeAccessionService.instance.sent.last['SAMPLE'].to_s
-  assert_equal(true, Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/IDENTIFIERS/#{xml_attr}").length == 0)
-end
-
 Then /^the XML tag "([^\"]+)" sent to the accession service for sample "([^\"]+)" should be not present$/ do |xml_attr, sample_name|
   sample = Sample.find_by(name: sample_name) or raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
   xml = FakeAccessionService.instance.sent.last['SAMPLE'].to_s
   assert_equal(true, Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/#{xml_attr}").length == 0)
-end
-
-Then /^the XML identifier tag "([^\"]+)" sent to the accession service for sample "([^\"]+)" should be "(.*?)"$/ do |xml_attr, sample_name, value|
-  sample = Sample.find_by(name: sample_name) or raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
-  xml = FakeAccessionService.instance.sent.last['SAMPLE'].to_s
-  assert_equal(value, Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/IDENTIFIERS/#{xml_attr}").text)
 end
 
 Then /^the XML tag "([^\"]+)" sent to the accession service for sample "([^\"]+)" should be "(.*?)"$/ do |xml_attr, sample_name, value|
@@ -170,21 +135,6 @@ Given /^the sample "([^\"]+)" is in the (sample tube|well) "([^\"]+)"$/ do |samp
   asset.aliquots.create!(sample: sample)
 end
 
-Then /^sample "([^"]*)" should have an accession number of "([^"]*)"$/ do |sample_name, accession_number|
-  sample = Sample.find_by(name: sample_name) or raise StandardError, "Cannot find sample #{sample_name.inspect}"
-  assert_equal accession_number, sample.sample_metadata.sample_ebi_accession_number
-end
-
-Then /^sample "([^"]*)" should not have an accession number of "([^"]*)"$/ do |sample_name, accession_number|
-  sample = Sample.find_by(name: sample_name) or raise StandardError, "Cannot find sample #{sample_name.inspect}"
-  assert accession_number != sample.sample_metadata.sample_ebi_accession_number
-end
-
-Given /^the sample "([^"]*)" should not have an accession number$/ do |sample_name|
-  sample = Sample.find_by(name: sample_name) or raise StandardError, "Cannot find sample #{sample_name.inspect}"
-  assert_nil sample.sample_metadata.sample_ebi_accession_number
-end
-
 Given(/^the sample "([^\"]+)" has the accession number "([^\"]+)"$/) do |name, value|
   sample = Sample.find_by!(name: name)
   sample.sample_metadata.sample_ebi_accession_number = value.presence
@@ -206,31 +156,6 @@ Given /^sample "([^"]*)" came from a sample manifest$/ do |sample_name|
   sample = Sample.find_by(name: sample_name)
   sample_manifest = FactoryGirl.create(:sample_manifest, id: 1)
   sample.update_attributes!(sample_manifest: sample_manifest)
-end
-
-Given /^study "([^\"]+)" has the following samples in sample tubes:$/ do |study_name, table|
-  study = Study.find_by(name: study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
-  table.hashes.each do |details|
-    sample_tube_name = details['sample tube']
-    sample_name = details['sample']
-
-    sample = Sample.find_by(name: sample_name)
-    step %Q{I have a sample called "#{sample_name}"} unless sample
-    step(%Q{sample "#{sample_name}" is in a sample tube named "#{sample_tube_name}"})
-    step(%Q{the sample "#{sample_name}" belongs to the study "#{study_name}"})
-    step(%Q{the asset "#{sample_tube_name}" belongs to study "#{study_name}"})
-  end
-end
-
-Then /^the sample "([^"]*)" should belong to the study named "([^"]*)"$/ do |sample_name, study_name|
-  sample = Sample.find_by(name: sample_name) or raise StandardError, "Cannot find sample #{sample_name.inspect}"
-  study  = Study.find_by(name: study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
-  assert study.samples.include?(sample)
-end
-Then /^the sample "([^"]*)" should not belong to the study named "([^"]*)"$/ do |sample_name, study_name|
-  sample = Sample.find_by(name: sample_name) or raise StandardError, "Cannot find sample #{sample_name.inspect}"
-  study  = Study.find_by(name: study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
-  assert !study.samples.include?(sample)
 end
 
 Given /^a sample named "([^\"]+)" exists for accession/ do |sample_name|
@@ -302,14 +227,4 @@ Given /^there are no samples$/ do
   # That trigger when they die
   Sample.delete_all
   Uuid.where(resource_type: 'Sample').each(&:destroy)
-end
-
-Given /^the sample "(.*?)" should have an accesionable flag$/ do |name|
-  sample = Sample.find_by(name: name) or raise StandardError, "Cannot find the sample #{name.inspect}"
-  assert sample.accession_could_be_generated?
-end
-
-Given /^the sample "(.*?)" should not have an accesionable flag$/ do |name|
-  sample = Sample.find_by(name: name) or raise StandardError, "Cannot find the sample #{name.inspect}"
-  assert !sample.accession_could_be_generated?
 end

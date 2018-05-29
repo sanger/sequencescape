@@ -8,7 +8,7 @@ class ExampleLabel
   def create_label(asset)
     { left: asset.name,
       right: asset.prefix,
-      barcode: asset.barcode }
+      barcode: asset.barcode_number }
   end
 end
 

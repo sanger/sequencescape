@@ -79,7 +79,7 @@ class PacBio::SampleSheet
       well.uuid,
       concat(library_tubes, :uuid),
       batch.uuid,
-      well.plate.barcode,
+      well.plate.barcode_number,
       concat(requests, :uuid),
       nil,
       nil

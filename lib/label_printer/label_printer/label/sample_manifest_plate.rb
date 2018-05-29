@@ -13,7 +13,7 @@ module LabelPrinter
       end
 
       def bottom_right(plate)
-        "#{sample_manifest.study.abbreviation} #{plate.barcode}"
+        "#{sample_manifest.study.abbreviation} #{plate.barcode_number}"
       end
 
       def plates

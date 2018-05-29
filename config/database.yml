@@ -58,6 +58,14 @@ development_snp:
   host: localhost
   port: 1524
 
+development_cas:
+  adapter: oracle_enhanced
+  database: casp.world
+  username: read_only
+  password: read_only
+  host: localhost
+  port: 1524
+
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
