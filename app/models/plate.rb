@@ -659,13 +659,21 @@ class Plate < Asset
 
   # Barcode is stored as a string, yet in a number of places is treated as
   # a number. If we convert it before searching, things are faster!
-  def find_by_barcode(barcode)
-    super(barcode.to_s)
-  end
+  # def find_by_barcode(barcode)
+  #   super(barcode.to_s)
+  # end
 
   alias_method :friendly_name, :human_barcode
   def subject_type
     'plate'
+  end
+
+  def labwhere_location
+    @labwhere_location ||= lookup_labwhere_location
+  end
+
+  def ets_location
+    @ets_location ||= lookup_ets_location
   end
 
   # Plates use a different counter to tubes, and prior to the foreign barcodes update
@@ -679,23 +687,40 @@ class Plate < Asset
   private
 
   def obtain_storage_location
-    # From LabWhere
-    info_from_labwhere = LabWhereClient::Labware.find_by_barcode(ean13_barcode) # rubocop:disable Rails/DynamicFindBy
-    unless info_from_labwhere.nil? || info_from_labwhere.location.nil?
+    if labwhere_location.present?
       @storage_location_service = 'LabWhere'
+      return labwhere_location
+    elsif ets_location.present?
+      @storage_location_service = 'ETS'
+      return ets_location
+    else
+      @storage_location_service = 'None'
+      return 'Not found in LabWhere nor ETS'
+    end
+  end
+
+  def lookup_ets_location
+    return 'Control' if is_a?(ControlPlate)
+    return '' if barcode_number.blank?
+    cas_location = Cas::StoredEntity.storage_location(barcode_number, prefix)
+    if cas_location.present?
+      if cas_location.rows.first.present?
+        cas_location.rows.first.join(' - ')
+      end
+    elsif cas_location.nil?
+      return 'Cannot connect to Cas database'
+    end
+  end
+
+  def lookup_labwhere_location
+    begin
+      info_from_labwhere = LabWhereClient::Labware.find_by_barcode(machine_barcode) # rubocop:disable Rails/DynamicFindBy
+    rescue LabWhereClient::LabwhereException => e
+      return "Not found (#{e.message})"
+    end
+    if info_from_labwhere.present? && info_from_labwhere.location.present?
       return info_from_labwhere.location.location_info
     end
-
-    # From ETS
-    @storage_location_service = 'ETS'
-    return 'Control' if is_a?(ControlPlate)
-    return '' if primary_barcode.blank?
-    return %w(storage_area storage_device building_area building).map do |key|
-      get_external_value(key)
-    end.compact.join(' - ')
-  rescue LabWhereClient::LabwhereException => e
-    @storage_location_service = 'None'
-    return "Not found (#{e.message})"
   end
 
   def lookup_stock_plate
