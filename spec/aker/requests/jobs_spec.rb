@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe Aker::JobsController, type: :request, aker: true do
   let!(:job) { create(:aker_job) }
-  let(:url) { "#{Rails.configuration.aker['urls']['work_orders']}/jobs/#{job.aker_job_id}" }
+  let(:url) { job.aker_job_url }
   let(:request) { RestClient::Request.new(method: :put, url: url) }
 
   scenario 'start a job' do

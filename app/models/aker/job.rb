@@ -7,6 +7,7 @@ module Aker
     has_many :samples, through: :sample_jobs
 
     validates :aker_job_id, presence: true
+    validates :aker_job_url, presence: true
 
     def as_json(_options = {})
       {
