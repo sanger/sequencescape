@@ -434,12 +434,6 @@ class Plate < Asset
     purpose.try(:name) || 'Unknown plate purpose'
   end
 
-  def control_well_exists?
-    Request.into_by_id(wells.map(&:id)).any? do |request|
-      request.asset.plate.is_a?(ControlPlate)
-    end
-  end
-
   def stock_role
     well_requests_as_source.first&.role
   end
@@ -464,10 +458,6 @@ class Plate < Asset
     plate_purpose.present? ? send(:"#{plate_purpose.barcode_for_tecan}") : ean13_barcode
   end
 
-  def submission_time(current_time)
-    current_time.strftime('%Y-%m-%dT%H_%M_%SZ')
-  end
-
   def self.plate_ids_from_requests(requests)
     plate_ids = []
     requests.map do |request|
@@ -478,14 +468,6 @@ class Plate < Asset
     end
 
     plate_ids.uniq
-  end
-
-  def plate_asset_group_name(current_time)
-    if barcode
-      barcode + "_asset_group_#{submission_time(current_time)}"
-    else
-      id + "_asset_group_#{submission_time(current_time)}"
-    end
   end
 
   # Should return true if any samples on the plate contains gender information
