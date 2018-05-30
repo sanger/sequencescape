@@ -696,7 +696,7 @@ class Plate < Asset
 
   def lookup_labwhere_location
     begin
-      info_from_labwhere = LabWhereClient::Labware.find_by_barcode(machine_barcode) # rubocop:disable Rails/DynamicFindBy
+      info_from_labwhere = LabWhereClient::Labware.find_by_barcode(machine_barcode)
     rescue LabWhereClient::LabwhereException => e
       return "Not found (#{e.message})"
     end

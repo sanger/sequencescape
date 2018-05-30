@@ -99,7 +99,7 @@ RSpec.describe SampleManifestExcel::ColumnList, type: :model, sample_manifest_ex
   end
 
   it '#find_by_or_null returns a null object if none exists for key and value' do
-    expect(column_list.find_by_or_null(:name, :bad_value).number).to eq(-1) # rubocop:disable all
+    expect(column_list.find_by_or_null(:name, :bad_value).number).to eq(-1)
   end
 
   it '#except will remove the offending column' do

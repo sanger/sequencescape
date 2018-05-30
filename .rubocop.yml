@@ -49,13 +49,12 @@ Metrics/BlockLength:
 # We have a few custom find_by methods which we maintain.
 # At least for now. find_by_id_or_name is a bit clunky.
 Rails/DynamicFindBy:
-  Exclude:
-    - 'lib/sample_manifest_excel/**/*'
-    - 'test/lib/sample_manifest_excel/**/*'
   Whitelist:
     - find_by_sql
     - find_by_id_or_name
     - find_by_id_or_name!
+    - find_by_barcode
+    - find_by_or_null
 Metrics/MethodLength:
   Exclude:
     - 'db/migrate/*'
