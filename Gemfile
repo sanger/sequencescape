@@ -143,6 +143,7 @@ group :test do
   gem 'rspec-rails', require: false
   # Rails performance tests
   gem 'rails-perftest'
+  gem 'test-prof'
   # Provides json expectations for rspec. Makes test more readable,
   # and test failures more descriptive.
   gem 'rspec-json_expectations', require: false

@@ -76,11 +76,12 @@ FactoryGirl.define do
 
   factory :well_for_location_report, parent: :well do
     transient do
-      study { create(:study) }
+      study
+      project
     end
 
     after(:create) do |well, evaluator|
-      well.aliquots << build(:tagged_aliquot, receptacle: well, study: evaluator.study)
+      well.aliquots << build(:untagged_aliquot, receptacle: well, study: evaluator.study, project: evaluator.project)
     end
   end
 end

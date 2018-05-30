@@ -30,8 +30,10 @@ describe IlluminaHtp::InitialStockTubePurpose do
     context 'with siblings' do
       let(:sibling_submission) { current_submission }
       let(:parents_sibling_well) { create :well }
-      it { is_expected.to be_a Array }
-      it { is_expected.to include(sibling_tube_hash) }
+      it 'works', :aggregate_failures do
+        is_expected.to be_a Array
+        is_expected.to include(sibling_tube_hash)
+      end
     end
 
     context 'with wells which are also siblings' do
@@ -39,15 +41,19 @@ describe IlluminaHtp::InitialStockTubePurpose do
       let(:sibling_tube) { create(:well) }
       let(:parents_sibling_well) { create :well }
 
-      it { is_expected.to be_a Array }
-      it { is_expected.not_to include(sibling_tube) }
+      it 'works', :aggregate_failures do
+        is_expected.to be_a Array
+        is_expected.not_to include(sibling_tube)
+      end
     end
 
     context 'with unrelated requests out the same well' do
       let(:sibling_submission) { create :submission }
       let(:parents_sibling_well) { parent_well }
-      it { is_expected.to be_a Array }
-      it { is_expected.not_to include(sibling_tube_hash) }
+      it 'works', :aggregate_failures do
+        is_expected.to be_a Array
+        is_expected.not_to include(sibling_tube_hash)
+      end
     end
 
     context 'with related requests out the same well' do
@@ -55,8 +61,10 @@ describe IlluminaHtp::InitialStockTubePurpose do
         let(:sibling_submission) { current_submission }
         let(:parents_sibling_well) { parent_well }
         let(:sibling_state) { 'cancelled' }
-        it { is_expected.to be_a Array }
-        it { is_expected.not_to include(sibling_tube_hash) }
+        it 'works', :aggregate_failures do
+          is_expected.to be_a Array
+          is_expected.not_to include(sibling_tube_hash)
+        end
       end
 
       context 'which are pending' do

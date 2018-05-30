@@ -1,4 +1,10 @@
 inherit_from: .rubocop_todo.yml
+require:
+ - 'test_prof/rubocop'
+RSpec/AggregateFailures:
+  Enabled: true
+  Include:
+    - 'spec/**/*.rb'
 AllCops:
   TargetRubyVersion: 2.4
   Include:

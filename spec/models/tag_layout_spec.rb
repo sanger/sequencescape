@@ -35,7 +35,7 @@ describe TagLayout do
   end
 
   context 'substitutions' do
-    let(:tag_layout) { create :tag_layout }
+    let(:tag_layout) { build_stubbed :tag_layout }
     it 'defaults to an empty hash' do
       expect(tag_layout.substitutions).to eq({})
     end
