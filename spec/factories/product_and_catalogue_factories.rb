@@ -4,9 +4,9 @@
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2015 Genome Research Ltd.
-FactoryGirl.define do
+FactoryBot.define do
   factory :product_catalogue do
-    name { |_x| FactoryGirl.generate :product_catalogue_name }
+    name { |_x| FactoryBot.generate :product_catalogue_name }
 
     factory :single_product_catalogue do
       selection_behaviour 'SingleProduct'
@@ -18,7 +18,7 @@ FactoryGirl.define do
   end
 
   factory :product do
-    name            { FactoryGirl.generate :product_name }
+    name            { FactoryBot.generate :product_name }
     deprecated_at   nil
   end
 

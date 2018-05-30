@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :broadcast_event_asset_audit, class: BroadcastEvent::AssetAudit do
     association(:seed, factory: :asset_audit)
   end

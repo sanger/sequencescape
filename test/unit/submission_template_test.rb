@@ -11,7 +11,7 @@ class SubmissionTemplateTest < ActiveSupport::TestCase
     should validate_presence_of :product_catalogue
 
     setup do
-      @template = FactoryGirl.build :submission_template
+      @template = FactoryBot.build :submission_template
       @product = create(:product)
       @template.product_catalogue.products << @product
     end

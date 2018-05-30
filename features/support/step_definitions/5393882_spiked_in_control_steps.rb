@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 Given /^I have a hybridization spiked buffer called "([^\"]+)"$/ do |name|
-  FactoryGirl.create(:spiked_buffer, name: name)
+  FactoryBot.create(:spiked_buffer, name: name)
 end
 
 Then /^the "([^\"]+)" of the asset "([^\"]+)" should be "([^\"]+)"$/ do |field, id, value|

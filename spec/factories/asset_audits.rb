@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   factory(:asset_audit) do
     message 'Some message'
     key 'some_key'

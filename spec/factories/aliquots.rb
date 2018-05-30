@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :aliquot, aliases: [:tagged_aliquot, :dual_tagged_aliquot] do
     sample
     study

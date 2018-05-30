@@ -15,9 +15,9 @@ class PicoDilutionsControllerTest < ActionController::TestCase
 
     context 'with assay plates ' do
       setup do
-        @pico_dilution_plate = FactoryGirl.create :pico_dilution_plate, barcode: '2222'
-        @assay_plate_a = FactoryGirl.create :pico_assay_a_plate, barcode: '9999'
-        @assay_plate_b = FactoryGirl.create :pico_assay_b_plate, barcode: '8888'
+        @pico_dilution_plate = FactoryBot.create :pico_dilution_plate, barcode: '2222'
+        @assay_plate_a = FactoryBot.create :pico_assay_a_plate, barcode: '9999'
+        @assay_plate_b = FactoryBot.create :pico_assay_b_plate, barcode: '8888'
         AssetLink.create_edge!(@pico_dilution_plate, @assay_plate_a)
         AssetLink.create_edge!(@pico_dilution_plate, @assay_plate_b)
       end

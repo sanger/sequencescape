@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :column_list, class: SampleManifestExcel::ColumnList do
     initialize_with { new(build_list(:column, 5)) }
 

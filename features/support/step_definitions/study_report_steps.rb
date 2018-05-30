@@ -11,14 +11,14 @@ end
 Given /^there is (\d+) pending report for study "([^"]*)"$/ do |num_reports, study_name|
   study = Study.find_by(name: study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
   1.upto(num_reports.to_i) do
-    FactoryGirl.create :pending_study_report, study: study, user: @current_user
+    FactoryBot.create :pending_study_report, study: study, user: @current_user
   end
 end
 
 Given /^there is (\d+) completed report for study "([^"]*)"$/ do |num_reports, study_name|
   study = Study.find_by(name: study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
   1.upto(num_reports.to_i) do
-    FactoryGirl.create :completed_study_report, study: study, user: @current_user
+    FactoryBot.create :completed_study_report, study: study, user: @current_user
   end
 end
 
@@ -34,7 +34,7 @@ Then /^the last report for "([^"]*)" should be:$/ do |study_name, expected_resul
 end
 
 Given /^study "([^"]*)" has a plate "([^"]*)"$/ do |study_name, plate_barcode|
-  plate = FactoryGirl.create(:plate, barcode: plate_barcode, plate_purpose: PlatePurpose.find_by(name: 'Stock Plate'), well_count: 3, well_order: :row_order)
+  plate = FactoryBot.create(:plate, barcode: plate_barcode, plate_purpose: PlatePurpose.find_by(name: 'Stock Plate'), well_count: 3, well_order: :row_order)
   samples = []
   plate.wells.each_with_index do |well, i|
     # well = Well.create!(plate: plate, map_id: i)
@@ -59,12 +59,12 @@ end
 
 Given /^study "([^"]*)" has a plate "([^"]*)" to be volume checked$/ do |study_name, plate_barcode|
   study = Study.find_by(name: study_name)
-  plate = FactoryGirl.create :plate, purpose: PlatePurpose.find_by(name: 'Stock Plate'),
-                                     barcode: plate_barcode,
-                                     well_count: 24,
-                                     well_factory: :untagged_well,
-                                     well_order: :row_order,
-                                     studies: [study]
+  plate = FactoryBot.create :plate, purpose: PlatePurpose.find_by(name: 'Stock Plate'),
+                                    barcode: plate_barcode,
+                                    well_count: 24,
+                                    well_factory: :untagged_well,
+                                    well_order: :row_order,
+                                    studies: [study]
 
   RequestFactory.create_assets_requests(plate.wells, study)
 end

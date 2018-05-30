@@ -7,7 +7,7 @@
 Given /^the following custom texts are defined$/ do |table|
   # table is a Cucumber::Ast::Table
   table.hashes.each do |hash|
-    ct = FactoryGirl.create(:custom_text, hash)
+    ct = FactoryBot.create(:custom_text, hash)
     ct.save
   end
 end

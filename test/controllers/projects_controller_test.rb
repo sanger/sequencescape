@@ -21,7 +21,7 @@ class ProjectsControllerTest < ActionController::TestCase
     setup do
       @controller = ProjectsController.new
       @request    = ActionController::TestRequest.create(@controller)
-      @user = FactoryGirl.create :user
+      @user = FactoryBot.create :user
 
       @user.has_role('owner')
       session[:user] = @user.id
@@ -38,10 +38,10 @@ class ProjectsControllerTest < ActionController::TestCase
 
     context '#create' do
       setup do
-        @request_type_1 = FactoryGirl.create :request_type
+        @request_type_1 = FactoryBot.create :request_type
       end
 
-      context 'successfullyFactoryGirl.create a new project' do
+      context 'successfullyFactoryBot.create a new project' do
         setup do
           @project_counter = Project.count
           post :create, params: { 'project' => {
@@ -104,7 +104,7 @@ class ProjectsControllerTest < ActionController::TestCase
   context "POST '/create'" do
     context 'with JSON data' do
       setup do
-        @user = FactoryGirl.create :user, api_key: 'abc'
+        @user = FactoryBot.create :user, api_key: 'abc'
         @user.has_role('owner')
         session[:user] = @user.id
 

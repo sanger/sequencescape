@@ -184,7 +184,7 @@ class BatchesControllerTest < ActionController::TestCase
         context '#edit' do
           context 'with control' do
             setup do
-              @cn = FactoryGirl.create :control, name: 'Control 1', item_id: 2, pipeline: @pipeline
+              @cn = FactoryBot.create :control, name: 'Control 1', item_id: 2, pipeline: @pipeline
               @pipeline.controls << @cn
             end
             should '#add control' do
@@ -210,8 +210,8 @@ class BatchesControllerTest < ActionController::TestCase
           setup do
             @old_count = Batch.count
 
-            @request_three = @pipeline.request_types.first.create!(asset: @library1, project: FactoryGirl.create(:project))
-            @request_four  = @pipeline.request_types.first.create!(asset: @library2, project: FactoryGirl.create(:project))
+            @request_three = @pipeline.request_types.first.create!(asset: @library1, project: FactoryBot.create(:project))
+            @request_four  = @pipeline.request_types.first.create!(asset: @library2, project: FactoryBot.create(:project))
           end
 
           context 'redirect to #show new batch' do
@@ -227,7 +227,7 @@ class BatchesControllerTest < ActionController::TestCase
 
           context 'redirect to action #control' do
             setup do
-              @cn = FactoryGirl.create :control, name: 'Control 1', item_id: 2, pipeline: @pipeline
+              @cn = FactoryBot.create :control, name: 'Control 1', item_id: 2, pipeline: @pipeline
               @pipeline.controls << @cn
               post :create, params: { id: @pipeline.id, request: { @request_three.id => '0', @request_four.id => '1' } }
             end
@@ -321,8 +321,8 @@ class BatchesControllerTest < ActionController::TestCase
     context 'Find by barcode (found)' do
       setup do
         @controller.stubs(:current_user).returns(@admin)
-        @batch = FactoryGirl.create :batch
-        request = FactoryGirl.create :request
+        @batch = FactoryBot.create :batch
+        request = FactoryBot.create :request
         @batch.requests << request
         r = @batch.requests.first
         @e = r.lab_events.create(description: 'Cluster generation')

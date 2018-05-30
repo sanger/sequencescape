@@ -7,7 +7,7 @@
 # especially if you change them, otherwise merges could get messy.
 
 # The factories in here, at time of writing could do with a bit of TLC.
-FactoryGirl.define do
+FactoryBot.define do
   # Allows a plate to automatically generate wells. Invluded in most plate factories already
   # If you inherit from the standard plate, you do not need to include this.
   trait :with_wells do

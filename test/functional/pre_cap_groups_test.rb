@@ -58,7 +58,7 @@ class PreCapGroupsTest < ActiveSupport::TestCase
           @transfer = Transfer::BetweenPlates.create!(
             source: @plate.reload,
             destination: @target_plate.reload,
-            user: FactoryGirl.create(:user),
+            user: FactoryBot.create(:user),
             transfers: { 'A1' => ['A1', 'B1'], 'B1' => ['A1'], 'C1' => ['A1'], 'D1' => ['B1', 'C1'], 'E1' => ['C1'], 'F1' => ['C1'] }
           )
         end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :plate_barcode do
     sequence(:barcode) { |i| i }
     skip_create

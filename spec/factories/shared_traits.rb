@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   # Automatically add samples to an asset
   trait :with_sample_builder do
     transient do

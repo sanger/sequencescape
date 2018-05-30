@@ -38,10 +38,10 @@ RSpec.describe SampleManifestExcel::ConditionalFormattingList, type: :model, sam
 
   # TODO: This is in the wrong place. Probably should be tested in conditional formatting. Getting formula from worksheet is ugly.
   it '#update with formula should correctly assign the formula to the worksheet' do
-    conditional_formatting_list = SampleManifestExcel::ConditionalFormattingList.new(rule_1: FactoryGirl.attributes_for(:conditional_formatting_with_formula))
+    conditional_formatting_list = SampleManifestExcel::ConditionalFormattingList.new(rule_1: FactoryBot.attributes_for(:conditional_formatting_with_formula))
     conditional_formatting_list.update(options)
     expect(conditional_formatting_list).to be_saved
-    expect(worksheet.conditional_formatting_rules.to_a.first.rules.first.formula.first).to eq(ERB::Util.html_escape(SampleManifestExcel::Formula.new(options.merge(FactoryGirl.attributes_for(:conditional_formatting_with_formula)[:formula])).to_s))
+    expect(worksheet.conditional_formatting_rules.to_a.first.rules.first.formula.first).to eq(ERB::Util.html_escape(SampleManifestExcel::Formula.new(options.merge(FactoryBot.attributes_for(:conditional_formatting_with_formula)[:formula])).to_s))
   end
 
   it 'should be comparable' do
