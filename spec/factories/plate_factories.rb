@@ -113,6 +113,8 @@ FactoryGirl.define do
     factory :plate_with_wells_for_specified_studies do
       transient do
         studies { create_list(:study, 2) }
+        project nil
+
         occupied_map_locations do
           Map.where_plate_size(size).where_plate_shape(AssetShape.default).where(well_order => (0...studies.size))
         end
@@ -121,7 +123,7 @@ FactoryGirl.define do
 
       after(:create) do |plate, evaluator|
         plate.wells = evaluator.occupied_map_locations.map.with_index do |map, i|
-          create(:well_for_location_report, map: map, study: evaluator.studies[i])
+          create(:well_for_location_report, map: map, study: evaluator.studies[i], project: nil)
         end
       end
     end
