@@ -6,7 +6,7 @@
 # authorship of this file.
 # Copyright (C) 2011,2012,2015,2016 Genome Research Ltd.
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :well, aliases: [:empty_well] do
     transient do
       study { build :study }

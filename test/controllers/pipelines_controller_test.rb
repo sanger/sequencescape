@@ -12,7 +12,7 @@ class PipelinesControllerTest < ActionController::TestCase
     setup do
       @controller = PipelinesController.new
       @request    = ActionController::TestRequest.create(@controller)
-      @user = FactoryGirl.create :user
+      @user = FactoryBot.create :user
       session[:user] = @user.id
     end
     should_require_login
@@ -27,7 +27,7 @@ class PipelinesControllerTest < ActionController::TestCase
 
     context '#batches' do
       setup do
-        @pipeline = FactoryGirl.create :pipeline
+        @pipeline = FactoryBot.create :pipeline
       end
       context 'without any pipeline batches' do
         setup do
@@ -39,7 +39,7 @@ class PipelinesControllerTest < ActionController::TestCase
 
       context 'with 1 batch' do
         setup do
-          FactoryGirl.create :batch, pipeline: @pipeline
+          FactoryBot.create :batch, pipeline: @pipeline
           get :batches, params: { id: @pipeline.id.to_s }
         end
 
@@ -49,14 +49,14 @@ class PipelinesControllerTest < ActionController::TestCase
 
     context '#show' do
       setup do
-        @pipeline = FactoryGirl.create :pipeline
+        @pipeline = FactoryBot.create :pipeline
         get :show, params: { id: @pipeline }
       end
 
       should respond_with :success
       context 'and no batches' do
         setup do
-          @pipeline = FactoryGirl.create :pipeline
+          @pipeline = FactoryBot.create :pipeline
           get :show, params: { id: @pipeline }
         end
 
@@ -66,7 +66,7 @@ class PipelinesControllerTest < ActionController::TestCase
 
     context '#setup_inbox' do
       setup do
-        @pipeline = FactoryGirl.create :pipeline
+        @pipeline = FactoryBot.create :pipeline
         get :setup_inbox, params: { id: @pipeline.id.to_s }
       end
 
@@ -75,7 +75,7 @@ class PipelinesControllerTest < ActionController::TestCase
 
     context '#activate' do
       setup do
-        @pipeline = FactoryGirl.create :pipeline
+        @pipeline = FactoryBot.create :pipeline
         get :activate, params: { id: @pipeline.id.to_s }
       end
 
@@ -84,7 +84,7 @@ class PipelinesControllerTest < ActionController::TestCase
 
     context '#deactivate' do
       setup do
-        @pipeline = FactoryGirl.create :pipeline
+        @pipeline = FactoryBot.create :pipeline
         get :deactivate, params: { id: @pipeline.id.to_s }
       end
 

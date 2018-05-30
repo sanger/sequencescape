@@ -5,7 +5,7 @@
 # authorship of this file.
 # Copyright (C) 2018 Genome Research Ltd.
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :location_report, class: LocationReport do
     user
     sequence(:name) { |n| "Location Report #{n}" }

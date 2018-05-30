@@ -15,7 +15,7 @@ class DummyWorkflowController < WorkflowsController
   end
 
   def current_user
-    @current_user ||= FactoryGirl.create(:user)
+    @current_user ||= FactoryBot.create(:user)
   end
 end
 

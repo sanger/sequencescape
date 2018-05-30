@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :work_order_type do
     sequence(:name) { |i| "work_order_#{i}" }
   end

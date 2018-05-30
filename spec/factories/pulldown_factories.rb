@@ -5,7 +5,7 @@
 # authorship of this file.
 # Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
 # A plate that has exactly the right number of wells!
-FactoryGirl.define do
+FactoryBot.define do
   factory(:transfer_plate, class: Plate) do
     transient do
       well_count { 3 }

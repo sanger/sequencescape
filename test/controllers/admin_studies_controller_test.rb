@@ -18,9 +18,9 @@ module Admin
 
       context 'management UI' do
         setup do
-          @user = FactoryGirl.create :admin
-          @study = FactoryGirl.create :study
-          @request_type = FactoryGirl.create :request_type
+          @user = FactoryBot.create :admin
+          @study = FactoryBot.create :study
+          @request_type = FactoryBot.create :request_type
           session[:user] = @user.id
           @emails = ActionMailer::Base.deliveries
           @emails.clear

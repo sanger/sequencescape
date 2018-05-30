@@ -120,7 +120,7 @@ When /^I get the XML for the sample "([^\"]+)"$/ do |name|
 end
 
 Given /^I have a sample called "([^"]*)" with metadata$/ do |name|
-  sample = FactoryGirl.create :sample, name: name
+  sample = FactoryBot.create :sample, name: name
 end
 
 Given /^the sample "([^"]*)" has a supplier name of "([^"]*)"$/ do |sample_name, supplier_name|
@@ -154,7 +154,7 @@ end
 
 Given /^sample "([^"]*)" came from a sample manifest$/ do |sample_name|
   sample = Sample.find_by(name: sample_name)
-  sample_manifest = FactoryGirl.create(:sample_manifest, id: 1)
+  sample_manifest = FactoryBot.create(:sample_manifest, id: 1)
   sample.update_attributes!(sample_manifest: sample_manifest)
 end
 

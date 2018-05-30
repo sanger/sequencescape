@@ -16,16 +16,16 @@ def upload_custom_row_submission
 end
 
 When /^I have a sample '(.*)'$/ do |sample_name|
-  FactoryGirl.create :sample, name: sample_name
+  FactoryBot.create :sample, name: sample_name
 end
 
 When /^I have a study '(.*)'$/ do |study_name|
-  FactoryGirl.create :study, name: study_name
+  FactoryBot.create :study, name: study_name
 end
 
 When /^I have a plate '(.*)' that has a well in location 'A1' that contains the sample '(.*)'$/ do |asset_name, sample_name|
   sample = Sample.find_by(name: sample_name)
-  plate =  FactoryGirl.create :plate, name: asset_name
+  plate =  FactoryBot.create :plate, name: asset_name
   plate.wells.construct!
   well = plate.wells.first
   well.aliquots.create!(sample: sample)

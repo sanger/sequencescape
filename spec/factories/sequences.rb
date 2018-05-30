@@ -4,7 +4,7 @@
 # Please refer to the LICENSE and README files for information on licensing and
 # authorship of this file.
 # Copyright (C) 2011,2012,2015 Genome Research Ltd.
-FactoryGirl.define do
+FactoryBot.define do
   sequence :asset_group_name do |n|
     "Asset_Group #{n}"
   end

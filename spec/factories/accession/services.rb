@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :ena_service, class: Accession::Service do
     study_type 'open'
     initialize_with { new(study_type) }

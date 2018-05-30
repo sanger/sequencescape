@@ -5,11 +5,11 @@
 # Copyright (C) 2011,2012,2014,2015 Genome Research Ltd.
 
 Given /^the ((?:entire plate |inverted )?tag layout template) "([^"]+)" exists$/ do |style, name|
-  FactoryGirl.create(style.tr(' ', '_'), name: name)
+  FactoryBot.create(style.tr(' ', '_'), name: name)
 end
 
 Given /^the tag 2 layout template "([^"]+)" exists$/ do |name|
-  FactoryGirl.create(:tag2_layout_template, name: name, oligo: 'AAA')
+  FactoryBot.create(:tag2_layout_template, name: name, oligo: 'AAA')
 end
 
 TAG_LAYOUT_TEMPLATE_REGEXP = 'tag layout template "[^\"]+"'
@@ -124,7 +124,7 @@ def pool_by_strategy(source, destination, pooling_strategy)
     wells_for_source, wells_for_destination = source_wells.slice!(0, pool), destination_wells.slice!(0, pool)
     wells_for_source.zip(wells_for_destination).each do |w|
       TransferRequest.create!(asset: w.first, target_asset: w.last, submission_id: submission_id)
-      FactoryGirl.create :request_without_submission, asset: w.first, target_asset: w.last, submission_id: submission_id
+      FactoryBot.create :request_without_submission, asset: w.first, target_asset: w.last, submission_id: submission_id
     end
   end
 end

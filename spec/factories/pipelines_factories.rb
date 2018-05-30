@@ -5,12 +5,12 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
 
-require 'factory_girl'
+require 'factory_bot'
 require 'control_request_type_creation'
 
 Pipeline.send(:include, ControlRequestTypeCreation)
 
-FactoryGirl.define do
+FactoryBot.define do
   sequence :plate_creator_name do |n|
     "Plate Creator #{n}"
   end
@@ -101,7 +101,7 @@ FactoryGirl.define do
   end
 
   factory :sequencing_pipeline do
-    name                  { FactoryGirl.generate :pipeline_name }
+    name                  { FactoryBot.generate :pipeline_name }
     automated             false
     active                true
     next_pipeline_id      nil
@@ -116,7 +116,7 @@ FactoryGirl.define do
   end
 
   factory :pac_bio_sequencing_pipeline do
-    name { FactoryGirl.generate :pipeline_name }
+    name { FactoryBot.generate :pipeline_name }
     active true
     association(:workflow, factory: :lab_workflow_for_pipeline)
     control_request_type_id(-1)
@@ -127,7 +127,7 @@ FactoryGirl.define do
   end
 
   factory :qc_pipeline do
-    name                  { |_a| FactoryGirl.generate :pipeline_name }
+    name                  { |_a| FactoryBot.generate :pipeline_name }
     automated             false
     active                true
     next_pipeline_id      nil
@@ -141,7 +141,7 @@ FactoryGirl.define do
   end
 
   factory :library_creation_pipeline do
-    name                  { |_a| FactoryGirl.generate :pipeline_name }
+    name                  { |_a| FactoryBot.generate :pipeline_name }
     automated             false
     active                true
     next_pipeline_id      nil
@@ -174,7 +174,7 @@ FactoryGirl.define do
   end
 
   factory :pulldown_library_creation_pipeline do
-    name                  { |_a| FactoryGirl.generate :pipeline_name }
+    name                  { |_a| FactoryBot.generate :pipeline_name }
     automated             false
     active                true
     next_pipeline_id      nil
@@ -203,7 +203,7 @@ FactoryGirl.define do
   end
 
   factory :lab_workflow, class: Workflow do
-    name                  { FactoryGirl.generate :lab_workflow_name }
+    name                  { FactoryBot.generate :lab_workflow_name }
     item_limit            2
     locale                'Internal'
     # Bit grim. Otherwise pipeline behaves a little weird and tries to build a second workflow.
@@ -211,7 +211,7 @@ FactoryGirl.define do
   end
 
   factory :lab_workflow_for_pipeline, class: Workflow do
-    name                  { |_a| FactoryGirl.generate :lab_workflow_name }
+    name                  { |_a| FactoryBot.generate :lab_workflow_name }
     item_limit            2
     locale                'Internal'
   end

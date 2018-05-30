@@ -38,14 +38,14 @@ end
 
 Given /^plate with barcode "([^"]*)" has a well$/ do |plate_barcode|
   plate = Plate.find_from_barcode('DN' + plate_barcode)
-  well  = FactoryGirl.create(:empty_well).tap { |well| well.aliquots.create!(sample: FactoryGirl.create(:sample, name: 'Sample1')) }
+  well  = FactoryBot.create(:empty_well).tap { |well| well.aliquots.create!(sample: FactoryBot.create(:sample, name: 'Sample1')) }
   plate.add_and_save_well(well, 0, 0)
 end
 
 Given /^a plate with barcode "([^"]*)" exists$/ do |machine_barcode|
   bc = SBCF::SangerBarcode.from_machine(machine_barcode)
   raise 'Currently only supports DN barcodes' unless bc.prefix.human == 'DN'
-  FactoryGirl.create :plate, barcode: bc.number
+  FactoryBot.create :plate, barcode: bc.number
 end
 
 Given /^a "([^"]*)" plate purpose and of type "([^"]*)" with barcode "([^"]*)" exists$/ do |plate_purpose_name, plate_type, machine_barcode|
@@ -66,16 +66,16 @@ Given /^the plate with ID (\d+) has a plate purpose of "([^\"]+)"$/ do |id, name
 end
 
 Given /^a plate with purpose "([^"]*)" and barcode "([^"]*)" exists$/ do |plate_purpose_name, machine_barcode|
-  FactoryGirl.create(:plate,
-                     sanger_barcode: { machine_barcode: machine_barcode },
-                     plate_purpose: Purpose.find_by(name: plate_purpose_name))
+  FactoryBot.create(:plate,
+                    sanger_barcode: { machine_barcode: machine_barcode },
+                    plate_purpose: Purpose.find_by(name: plate_purpose_name))
 end
 
 Given /^a stock plate with barcode "([^"]*)" exists$/ do |machine_barcode|
-  @stock_plate = FactoryGirl.create(:plate,
-                                    name: 'A_TEST_STOCK_PLATE',
-                                    sanger_barcode: { machine_barcode: machine_barcode },
-                                    plate_purpose: PlatePurpose.find_by(name: 'Stock Plate'))
+  @stock_plate = FactoryBot.create(:plate,
+                                   name: 'A_TEST_STOCK_PLATE',
+                                   sanger_barcode: { machine_barcode: machine_barcode },
+                                   plate_purpose: PlatePurpose.find_by(name: 'Stock Plate'))
 end
 
 Then /^plate "([^"]*)" is the parent of plate "([^"]*)"$/ do |parent_plate_barcode, child_plate_barcode|
@@ -110,13 +110,13 @@ Given /^a "([^\"]+)" plate called "([^\"]+)" exists$/ do |name, plate_name|
 end
 
 Given(/^a plate called "([^"]*)" exists with purpose "([^"]*)"$/) do |name, purpose_name|
-  purpose = Purpose.find_by(name: purpose_name) || FactoryGirl.create(:plate_purpose, name: purpose_name)
-  FactoryGirl.create(:plate, name: name, purpose: purpose)
+  purpose = Purpose.find_by(name: purpose_name) || FactoryBot.create(:plate_purpose, name: purpose_name)
+  FactoryBot.create(:plate, name: name, purpose: purpose)
 end
 
 Given(/^a full plate called "([^"]*)" exists with purpose "([^"]*)" and barcode "([^"]*)"$/) do |name, purpose_name, barcode|
-  purpose = Purpose.find_by(name: purpose_name) || FactoryGirl.create(:plate_purpose, name: purpose_name)
-  FactoryGirl.create(:full_plate, well_factory: :untagged_well, name: name, purpose: purpose, barcode: barcode)
+  purpose = Purpose.find_by(name: purpose_name) || FactoryBot.create(:plate_purpose, name: purpose_name)
+  FactoryBot.create(:full_plate, well_factory: :untagged_well, name: name, purpose: purpose, barcode: barcode)
 end
 
 Given /^a "([^\"]+)" plate called "([^\"]+)" exists with barcode "([^\"]+)"$/ do |name, plate_name, barcode|
@@ -132,20 +132,20 @@ end
 
 Given /^all wells on (the plate "[^\"]+") have unique samples$/ do |plate|
   plate.wells.each do |well|
-    FactoryGirl.create :untagged_aliquot, receptacle: well
+    FactoryBot.create :untagged_aliquot, receptacle: well
   end
 end
 
 Given /^([0-9]+) wells on (the plate "[^\"]+"|the last plate|the plate with ID [\d]+) have unique samples$/ do |number, plate|
   plate.wells.in_column_major_order[0, number.to_i].each do |well|
-    FactoryGirl.create :untagged_aliquot, receptacle: well
+    FactoryBot.create :untagged_aliquot, receptacle: well
   end
 end
 
 Given /^plate "([^"]*)" has "([^"]*)" wells with aliquots$/ do |plate_barcode, number_of_wells|
   plate = Plate.find_from_barcode('DN' + plate_barcode)
   plate.wells = Array.new(number_of_wells.to_i) do |i|
-    FactoryGirl.build :untagged_well, map_id: i + 1
+    FactoryBot.build :untagged_well, map_id: i + 1
   end
 end
 
@@ -159,7 +159,7 @@ Given /^(passed|started|pending|failed) transfer requests exist between (\d+) we
   source = Plate.find_by(name: source_name)
   destination = Plate.find_by(name: dest_name)
   count.to_i.times do |i|
-    FactoryGirl.create(:transfer_request, asset: source.wells.in_row_major_order[i], target_asset: destination.wells.in_row_major_order[i], state: state)
+    FactoryBot.create(:transfer_request, asset: source.wells.in_row_major_order[i], target_asset: destination.wells.in_row_major_order[i], state: state)
     Well::Link.create!(source_well: source.wells.in_row_major_order[i], target_well: destination.wells.in_row_major_order[i], type: 'stock')
   end
   AssetLink.create(ancestor: source, descendant: destination)
@@ -176,7 +176,7 @@ Then(/^the volume of each well in "(.*?)" should be:$/) do |machine, table|
 end
 
 Given /^I have a plate with uuid "([^"]*)" with the following wells:$/ do |uuid, well_details|
-  # plate = FactoryGirl.create :plate, :barcode => plate_barcode
+  # plate = FactoryBot.create :plate, :barcode => plate_barcode
   plate = Uuid.find_by(external_id: uuid).resource
   well_details.hashes.each do |well_detail|
     well = Well.create!(map: Map.find_by(description: well_detail[:well_location], asset_size: 96), plate: plate)

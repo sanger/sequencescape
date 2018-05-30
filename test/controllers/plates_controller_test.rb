@@ -13,9 +13,9 @@ class PlatesControllerTest < ActionController::TestCase
       @controller = PlatesController.new
       @request    = ActionController::TestRequest.create(@controller)
 
-      @pico_assay_plate_creator = FactoryGirl.create :plate_creator, plate_purposes: PlatePurpose.where(name: ['Pico Assay A', 'Pico Assay B'])
-      @dilution_plates_creator = FactoryGirl.create :plate_creator, plate_purposes: PlatePurpose.where(name: 'Working dilution')
-      @gel_dilution_plates_creator = FactoryGirl.create :plate_creator, plate_purposes: PlatePurpose.where(name: 'Gel Dilution Plates')
+      @pico_assay_plate_creator = FactoryBot.create :plate_creator, plate_purposes: PlatePurpose.where(name: ['Pico Assay A', 'Pico Assay B'])
+      @dilution_plates_creator = FactoryBot.create :plate_creator, plate_purposes: PlatePurpose.where(name: 'Working dilution')
+      @gel_dilution_plates_creator = FactoryBot.create :plate_creator, plate_purposes: PlatePurpose.where(name: 'Gel Dilution Plates')
 
       @barcode_printer = create :barcode_printer
       @plate_barcode = mock('plate barcode')
@@ -27,13 +27,13 @@ class PlatesControllerTest < ActionController::TestCase
 
     context 'with a logged in user' do
       setup do
-        @user = FactoryGirl.create :user, barcode: 'ID100I'
+        @user = FactoryBot.create :user, barcode: 'ID100I'
         @user.is_administrator
         session[:user] = @user.id
 
-        @parent_plate = FactoryGirl.create :plate, barcode: '5678'
-        @parent_plate2 = FactoryGirl.create :plate, barcode: '1234'
-        @parent_plate3 = FactoryGirl.create :plate, barcode: '987'
+        @parent_plate = FactoryBot.create :plate, barcode: '5678'
+        @parent_plate2 = FactoryBot.create :plate, barcode: '1234'
+        @parent_plate3 = FactoryBot.create :plate, barcode: '987'
       end
 
       context '#new' do

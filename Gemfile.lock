@@ -188,10 +188,10 @@ GEM
       actionmailer (>= 4.0, < 6)
       activesupport (>= 4.0, < 6)
     execjs (2.7.0)
-    factory_girl (4.8.0)
+    factory_bot (4.10.0)
       activesupport (>= 3.0.0)
-    factory_girl_rails (4.8.0)
-      factory_girl (~> 4.8.0)
+    factory_bot_rails (4.10.0)
+      factory_bot (~> 4.10.0)
       railties (>= 3.0.0)
     ffi (1.9.23)
     flay (2.10.0)
@@ -464,7 +464,7 @@ DEPENDENCIES
   delayed_job_active_record
   dynamic_form
   exception_notification
-  factory_girl_rails
+  factory_bot_rails
   flay
   flog
   formtastic

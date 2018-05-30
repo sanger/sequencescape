@@ -156,7 +156,7 @@ group :test do
 end
 
 group :test, :cucumber do
-  gem 'factory_girl_rails', require: false
+  gem 'factory_bot_rails', require: false
   gem 'launchy', require: false
   gem 'mocha', require: false # avoids load order problems
   gem 'nokogiri', require: false
