@@ -153,7 +153,7 @@ class LocationReport::LocationReportForm
   end
 
   def find_labwhere_location
-    locn_info = LabWhereClient::Location.find_by_barcode(location_barcode) # rubocop:disable Rails/DynamicFindBy
+    locn_info = LabWhereClient::Location.find_by_barcode(location_barcode)
     return locn_info.name if locn_info.present?
     nil
   rescue LabWhereClient::LabwhereException
