@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :billing_field, class: Billing::Field do
     sequence(:order) { |n| n }
     name { "field_#{order}" }

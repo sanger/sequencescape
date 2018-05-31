@@ -104,9 +104,9 @@ class QcReport::FileTest < ActiveSupport::TestCase
 
     context 'On overriding' do
       setup do
-        @product = FactoryGirl.build :product, name: 'Demo Product'
-        @criteria = FactoryGirl.build :product_criteria, product: @product, version: 1
-        @study = FactoryGirl.build :study, name: 'Example study'
+        @product = FactoryBot.build :product, name: 'Demo Product'
+        @criteria = FactoryBot.build :product_criteria, product: @product, version: 1
+        @study = FactoryBot.build :study, name: 'Example study'
         Timecop.freeze(DateTime.parse('01/01/2015')) do
           @report = create :qc_report, study: @study,
                                        exclude_existing: false,
@@ -135,9 +135,9 @@ class QcReport::FileTest < ActiveSupport::TestCase
 
     context 'With missing assets' do
       setup do
-        @product = FactoryGirl.build :product, name: 'Demo Product'
-        @criteria = FactoryGirl.build :product_criteria, product: @product, version: 1
-        @study = FactoryGirl.build :study, name: 'Example study'
+        @product = FactoryBot.build :product, name: 'Demo Product'
+        @criteria = FactoryBot.build :product_criteria, product: @product, version: 1
+        @study = FactoryBot.build :study, name: 'Example study'
         Timecop.freeze(DateTime.parse('01/01/2015')) do
           @report = create :qc_report, study: @study,
                                        exclude_existing: false,

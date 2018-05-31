@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :billing_item, class: Billing::Item do
     request
     project_cost_code 'cost_code'

@@ -13,15 +13,15 @@ Given /^I am logged in as "(.*)"$/ do |login|
 end
 
 Given /^I am an? "([^\"]*)" user logged in as "([^\"]*)"$/ do |role_name, login|
-  @current_user = FactoryGirl.create(:user,
-                                     login: login,
-                                     first_name: 'John',
-                                     last_name: 'Doe',
-                                     password: 'generic',
-                                     password_confirmation: 'generic',
-                                     email: "#{login}@example.com")
+  @current_user = FactoryBot.create(:user,
+                                    login: login,
+                                    first_name: 'John',
+                                    last_name: 'Doe',
+                                    password: 'generic',
+                                    password_confirmation: 'generic',
+                                    email: "#{login}@example.com")
 
-  @current_user.roles << FactoryGirl.create(:role, name: role_name)
+  @current_user.roles << FactoryBot.create(:role, name: role_name)
 
   visit '/login'
   fill_in('login', with: login)
@@ -30,7 +30,7 @@ Given /^I am an? "([^\"]*)" user logged in as "([^\"]*)"$/ do |role_name, login|
 end
 
 Given /^there is at least one administrator$/ do
-  FactoryGirl.create :admin
+  FactoryBot.create :admin
 end
 
 Then /^I should be logged in as "([^\"]*)"$/ do |login|

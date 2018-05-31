@@ -5,15 +5,15 @@
 # Copyright (C) 2007-2011,2014,2015 Genome Research Ltd.
 
 Given /^user "([^"]*)" exists$/ do |user_name|
-  FactoryGirl.create :user, login: user_name, first_name: user_name.titlecase, last_name: 'Smith'
+  FactoryBot.create :user, login: user_name, first_name: user_name.titlecase, last_name: 'Smith'
 end
 
 Given /^a user with an api key of "([^"]*)" exists$/ do |api_key|
-  @current_user = FactoryGirl.create :user, api_key: api_key
+  @current_user = FactoryBot.create :user, api_key: api_key
 end
 
 Given /^I have an active project called "([^"]*)"$/ do |project_name|
-  FactoryGirl.create :project, name: project_name
+  FactoryBot.create :project, name: project_name
 end
 
 Then /^the role list table should look like:$/ do |expected_results_table|
@@ -30,12 +30,12 @@ Given /^user "([^"]*)" exists with barcode "([^"]*)"$/ do |user_name, barcode|
   if User.find_by(login: user_name)
     User.find_by(login: user_name).update_attributes!(barcode: barcode)
   else
-    FactoryGirl.create :user, barcode: barcode, login: user_name
+    FactoryBot.create :user, barcode: barcode, login: user_name
   end
 end
 
 Given /^the user with login "([^\"]+)" exists$/ do |login|
-  User.find_by(login: login) || FactoryGirl.create(:user, login: login)
+  User.find_by(login: login) || FactoryBot.create(:user, login: login)
 end
 
 Then /^the user (\d+) should validate the swipecard code "([^\"]+)"/ do |user_id, code|

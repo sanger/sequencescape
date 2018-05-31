@@ -21,12 +21,12 @@ Given /^I have an order created with the following details based on the template
       end
     [k.to_sym, v]
   end
-  user = User.find_by(login: 'abc123') || FactoryGirl.create(:user, login: 'abc123')
+  user = User.find_by(login: 'abc123') || FactoryBot.create(:user, login: 'abc123')
   order = template.create_order!({ user: user }.merge(Hash[order_attributes]))
 end
 
 Given /^an order template called "([^\"]+)" with UUID "([^"]+)"$/ do |name, uuid_value|
-  set_uuid_for(FactoryGirl.create(:submission_template, name: name), uuid_value)
+  set_uuid_for(FactoryBot.create(:submission_template, name: name), uuid_value)
 end
 
 Given /^the UUID for the order template "([^\"]+)" is "([^\"]+)"$/ do |name, uuid_value|

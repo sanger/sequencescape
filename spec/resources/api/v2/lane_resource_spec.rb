@@ -6,11 +6,11 @@ RSpec.describe Api::V2::LaneResource, type: :resource do
   subject { described_class.new(resource_model, {}) }
 
   # Test attributes
-  it { is_expected.to have_attribute :uuid }
-
-  # Read only attributes (almost certainly id, uuid)
-  it { is_expected.to_not have_updatable_field(:id) }
-  it { is_expected.to_not have_updatable_field(:uuid) }
+  it 'works', :aggregate_failures do
+    is_expected.to have_attribute :uuid
+    is_expected.to_not have_updatable_field(:id)
+    is_expected.to_not have_updatable_field(:uuid)
+  end
 
   # Updatable fields
   # eg. it { is_expected.to have_updatable_field(:state) }

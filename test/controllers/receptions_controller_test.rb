@@ -10,10 +10,10 @@ class ReceptionsControllerTest < ActionController::TestCase
     setup do
       @controller = ReceptionsController.new
       @request    = ActionController::TestRequest.create(@controller)
-      @user = FactoryGirl.create :user
+      @user = FactoryBot.create :user
       session[:user] = @user.id
-      @plate = FactoryGirl.create :plate
-      @sample_tube = FactoryGirl.create :sample_tube
+      @plate = FactoryBot.create :plate
+      @sample_tube = FactoryBot.create :sample_tube
     end
 
     should_require_login

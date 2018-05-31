@@ -5,8 +5,8 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 Given /^I have a "([^"]*)" submission with plate "([^"]*)"$/ do |submission_template_name, plate_barcode|
-  project = FactoryGirl.create :project
-  study = FactoryGirl.create :study
+  project = FactoryBot.create :project
+  study = FactoryBot.create :study
   plate = Plate.find_from_barcode('DN' + plate_barcode)
 
   # Maintain the order of the wells as though they have been submitted by the user, rather than
@@ -28,8 +28,8 @@ Given /^I have a "([^"]*)" submission with plate "([^"]*)"$/ do |submission_temp
 end
 
 Given /^I have a cherrypicking submission for plate "([^"]*)"$/ do |plate_barcode|
-  project = FactoryGirl.create :project
-  study = FactoryGirl.create :study
+  project = FactoryBot.create :project
+  study = FactoryBot.create :study
   plate = Plate.find_by(barcode: plate_barcode)
 
   submission_template = SubmissionTemplate.find_by(name: 'Cherrypick')

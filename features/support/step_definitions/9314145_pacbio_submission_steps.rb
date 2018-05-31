@@ -6,11 +6,11 @@
 
 Given /^I have a sample tube "([^"]*)" in study "([^"]*)" in asset group "([^"]*)"$/ do |sample_tube_barcode, study_name, asset_group_name|
   study = Study.find_by(name: study_name)
-  sample_tube = FactoryGirl.create(:sample_tube, barcode: sample_tube_barcode)
+  sample_tube = FactoryBot.create(:sample_tube, barcode: sample_tube_barcode)
   sample_tube.primary_aliquot.sample.rename_to!("Sample_#{sample_tube_barcode}")
   asset_group = AssetGroup.find_by(name: asset_group_name)
   if asset_group.nil?
-    asset_group = FactoryGirl.create(:asset_group, name: asset_group_name, study: study)
+    asset_group = FactoryBot.create(:asset_group, name: asset_group_name, study: study)
   end
 
   asset_group.assets << sample_tube
@@ -34,16 +34,16 @@ Given /^I have a PacBio submission$/ do
 end
 
 Given /^I have a plate for PacBio$/ do
-  plate = FactoryGirl.create(:plate, well_count: 2, barcode: 1234567)
+  plate = FactoryBot.create(:plate, well_count: 2, barcode: 1234567)
   plate.wells.each do |well|
-    sample = FactoryGirl.create(:sample, name: "Sample_#{well.map_description}")
-    well.aliquots << FactoryGirl.create(:untagged_aliquot, sample: sample)
+    sample = FactoryBot.create(:sample, name: "Sample_#{well.map_description}")
+    well.aliquots << FactoryBot.create(:untagged_aliquot, sample: sample)
   end
   AssetGroup.create!(name: 'PacBio group', study: Study.find_by(name: 'Test study')).assets << plate.wells
 end
 
 Given(/^I have a plate for PacBio in study "([^"]*)"$/) do |study_name|
-  plate = FactoryGirl.create :plate_with_untagged_wells, sample_count: 1, barcode: '1234567'
+  plate = FactoryBot.create :plate_with_untagged_wells, sample_count: 1, barcode: '1234567'
   AssetGroup.create!(name: 'PacBio group', study: Study.find_by(name: study_name)).assets << plate.wells
 end
 
@@ -67,8 +67,8 @@ end
 
 Given /^I have a fast PacBio sequencing batch$/ do
   step('I have a PacBio submission')
-  library_1 = FactoryGirl.create :pac_bio_library_tube, smrt_cells_available: 3, barcode: '333'
-  library_2 = FactoryGirl.create :pac_bio_library_tube, barcode: '444'
+  library_1 = FactoryBot.create :pac_bio_library_tube, smrt_cells_available: 3, barcode: '333'
+  library_2 = FactoryBot.create :pac_bio_library_tube, barcode: '444'
   PacBioSequencingRequest.first.update_attributes!(asset: library_1)
   PacBioSequencingRequest.last.update_attributes!(asset: library_2)
   step('I am on the show page for pipeline "PacBio Sequencing"')
@@ -154,7 +154,7 @@ Then /^the PacBioLibraryTube "(.*?)" should have (\d+) SMRTcells$/ do |barcode, 
 end
 
 Given /^the reference genome "([^"]*)" exists$/ do |name|
-  FactoryGirl.create :reference_genome, name: name
+  FactoryBot.create :reference_genome, name: name
 end
 
 Then /^the sample reference sequence table should look like:$/ do |expected_results_table|

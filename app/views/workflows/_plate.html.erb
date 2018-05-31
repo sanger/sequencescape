@@ -8,7 +8,7 @@
 <%= hidden_field_tag 'rows', plate_rows %>
 <%= hidden_field_tag 'columns', plate_cols %>
 <%= hidden_field_tag 'plate_size', plate_cols*plate_rows %>
-<% unless @plate.nil?-%><%= hidden_field_tag 'plate_barcode', @plate.barcode %><% end -%>
+<% unless @plate.nil?-%><%= hidden_field_tag 'plate_barcode', @plate.human_barcode %><% end -%>
 
 <table id="plate_<%=index+1-%>" class="plate destination_plate" width="100%">
   <thead>

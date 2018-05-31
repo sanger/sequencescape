@@ -103,8 +103,8 @@ module Tasks::CherrypickHandler
       partial_plate = nil
       plate_barcode = params[:plate_barcode]
       fluidigm_plate = params[:fluidigm_plate]
-      (partial_plate = Plate.find_from_barcode(plate_barcode)) || raise(ActiveRecord::RecordNotFound, "No plate with barcode #{plate_barcode}") unless plate_barcode.nil?
-      (partial_plate = Plate.find_from_barcode(fluidigm_plate)) || raise(ActiveRecord::RecordNotFound, "No plate with barcode #{fluidigm_plate}") if fluidigm_plate.present?
+      partial_plate = Plate.find_from_barcode(fluidigm_plate.presence || plate_barcode)
+      raise(Cherrypick::Error, "No plate with barcode #{plate_barcode}") if partial_plate.nil? && plate_barcode.present?
 
       # Ensure that we have a plate purpose for any plates we are creating
       plate_purpose = PlatePurpose.find(params[:plate_purpose_id])

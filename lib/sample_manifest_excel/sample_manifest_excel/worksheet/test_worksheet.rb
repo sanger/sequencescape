@@ -93,20 +93,20 @@ module SampleManifestExcel
       end
 
       def sample_manifest
-        @sample_manifest ||= FactoryGirl.create(:sample_manifest, asset_type: manifest_type, rapid_generation: true)
+        @sample_manifest ||= FactoryBot.create(:sample_manifest, asset_type: manifest_type, rapid_generation: true)
       end
 
       def multiplexed_library_tube
-        @multiplexed_library_tube ||= FactoryGirl.create(:multiplexed_library_tube)
+        @multiplexed_library_tube ||= FactoryBot.create(:multiplexed_library_tube)
       end
 
       private
 
       def create_asset
         asset = if ['multiplexed_library', 'library'].include? manifest_type
-                  FactoryGirl.create(:library_tube_with_barcode)
+                  FactoryBot.create(:library_tube_with_barcode)
                 else
-                  FactoryGirl.create(:sample_tube_with_sanger_sample_id)
+                  FactoryBot.create(:sample_tube_with_sanger_sample_id)
                 end
         assets << asset
         yield(asset) if block_given?
@@ -114,7 +114,7 @@ module SampleManifestExcel
 
       def create_requests
         assets.each do |asset|
-          FactoryGirl.create(:external_multiplexed_library_tube_creation_request, asset: asset, target_asset: multiplexed_library_tube) if manifest_type == 'multiplexed_library'
+          FactoryBot.create(:external_multiplexed_library_tube_creation_request, asset: asset, target_asset: multiplexed_library_tube) if manifest_type == 'multiplexed_library'
         end
       end
 

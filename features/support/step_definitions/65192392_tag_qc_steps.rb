@@ -122,7 +122,7 @@ Given /^I have a qc library created$/ do
     batch.id = 12345
     batch.save!
   end
-  FactoryGirl.create :request_without_submission, asset: stc.children.first, batch: batch
+  FactoryBot.create :request_without_submission, asset: stc.children.first, batch: batch
   # Batch.find(12345).batch_requests.create!(:request=>Request.create!(:asset=>stc.children.first),:position=>1)
 end
 

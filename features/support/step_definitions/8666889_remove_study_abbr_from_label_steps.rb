@@ -25,11 +25,11 @@ When /^I print the following labels$/ do |table|
 end
 
 Given /^I have a "([^"]*)" submission with (\d+) sample tubes as part of "([^"]*)" and "([^"]*)"$/ do |submission_template_name, number_of_tubes, study_name, project_name|
-  project = FactoryGirl.create :project, name: project_name
-  study = FactoryGirl.create :study, name: study_name
+  project = FactoryBot.create :project, name: project_name
+  study = FactoryBot.create :study, name: study_name
   sample_tubes = []
   1.upto(number_of_tubes.to_i) do |i|
-    sample_tubes << FactoryGirl.create(:sample_tube, name: "Sample Tube #{i}", barcode: i.to_s)
+    sample_tubes << FactoryBot.create(:sample_tube, name: "Sample Tube #{i}", barcode: i.to_s)
   end
 
   submission_template = SubmissionTemplate.find_by(name: submission_template_name)

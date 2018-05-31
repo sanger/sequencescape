@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :accession_tag, class: Accession::Tag do
     name      :tag_1
     groups    [:group_1, :group_2]

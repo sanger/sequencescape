@@ -11,10 +11,10 @@ end
 Given(/^that there are (\d+) requests in that pipeline$/) do |number_requests|
   asset_type = pipeline_name_to_asset_type(@pipeline.name)
   number_requests.to_i.times do
-    request = FactoryGirl.create(
+    request = FactoryBot.create(
       :request_with_submission,
       request_type: @pipeline.request_types.last,
-      asset: FactoryGirl.create(asset_type)
+      asset: FactoryBot.create(asset_type)
     )
 
     request.asset.save!
