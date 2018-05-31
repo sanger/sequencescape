@@ -1801,7 +1801,6 @@ Style/CommentedKeyword:
     - 'app/models/api/messages/fluidigm_plate_io.rb'
     - 'app/models/bulk_submission.rb'
     - 'app/models/dna_qc_task.rb'
-    - 'app/models/plate_template_task.rb'
     - 'app/uploaders/polymorphic_uploader.rb'
 
 # Offense count: 14
@@ -2409,7 +2408,6 @@ Style/Documentation:
     - 'app/models/plate_purpose/stock.rb'
     - 'app/models/plate_purpose/works_on_library_requests.rb'
     - 'app/models/plate_template.rb'
-    - 'app/models/plate_template_task.rb'
     - 'app/models/plate_transfer_task.rb'
     - 'app/models/plate_type.rb'
     - 'app/models/plate_volume.rb'
@@ -3828,7 +3826,6 @@ Style/FrozenStringLiteralComment:
     - 'app/models/plate_purpose/stock.rb'
     - 'app/models/plate_purpose/works_on_library_requests.rb'
     - 'app/models/plate_template.rb'
-    - 'app/models/plate_template_task.rb'
     - 'app/models/plate_transfer_task.rb'
     - 'app/models/plate_type.rb'
     - 'app/models/plate_volume.rb'
