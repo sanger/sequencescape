@@ -24,7 +24,6 @@ module Tasks::PlateTemplateHandler
                  else
                    PlateTemplate.find(params[:plate_template]['0'].to_i).size
                  end
-
     parsed_plate_details = parse_uploaded_spreadsheet_layout(params[:file].read, plate_size)
     @spreadsheet_layout = map_parsed_spreadsheet_to_plate(parsed_plate_details, @batch, plate_size)
 
@@ -53,18 +52,20 @@ module Tasks::PlateTemplateHandler
   private :parse_spreadsheet_row
 
   def map_parsed_spreadsheet_to_plate(mapped_plate_wells, batch, plate_size)
+    barcodes = Set.new
     plates = mapped_plate_wells.map do |_plate_key, mapped_wells|
       (0...plate_size).map do |i|
         well, location, request_id = CherrypickTask::EMPTY_WELL, *mapped_wells[i]
         if request_id.present?
           asset = batch.requests.find(request_id).asset
-          well  = [request_id, asset.plate.barcode_number, asset.display_name]
+          barcodes << asset.plate.barcode_number
+          well = [request_id, asset.plate.barcode_number, asset.display_name]
         end
         well
       end
     end
 
-    [plates, plates.map { |_, barcode, _| barcode }.uniq]
+    [plates, barcodes.to_a]
   end
   private :map_parsed_spreadsheet_to_plate
 

@@ -17,7 +17,7 @@ FactoryBot.define do
     end
 
     after(:build) do |batch, evaluator|
-      batch.batch_requests = create_list(:batch_request, evaluator.request_count, batch: batch) if evaluator.request_count.positive?
+      batch.batch_requests = build_list(evaluator.batch_request_factory, evaluator.request_count, batch: batch) if evaluator.request_count.positive?
     end
 
     factory :multiplexed_batch do
@@ -26,6 +26,17 @@ FactoryBot.define do
 
     factory :sequencing_batch do
       association(:pipeline, factory: :sequencing_pipeline)
+    end
+  end
+
+  factory :cherrypicking_batch, class: Batch do
+    transient do
+      request_count 0
+    end
+
+    association(:pipeline, factory: :cherrypick_pipeline)
+    after(:build) do |batch, evaluator|
+      batch.requests = build_list(:cherrypick_request_for_pipeline, evaluator.request_count, request_type: batch.pipeline.request_types.first) if evaluator.request_count.positive?
     end
   end
 

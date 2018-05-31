@@ -202,7 +202,7 @@ FactoryBot.define do
     pipeline_administrator true
   end
 
-  factory :lab_workflow, class: Workflow do
+  factory :workflow, aliases: [:lab_workflow] do
     name                  { FactoryBot.generate :lab_workflow_name }
     item_limit            2
     locale                'Internal'
@@ -220,6 +220,11 @@ FactoryBot.define do
     batch
     request
     sequence(:position) { |i| i }
+
+    factory :cherrypick_batch_request do
+      batch
+      association(:request, factory: :cherrypick_request)
+    end
   end
 
   factory :request_information_type do
