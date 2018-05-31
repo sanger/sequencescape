@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   sequence(:barcode_number) { |i| i }
 
   factory :barcode, aliases: [:external] do

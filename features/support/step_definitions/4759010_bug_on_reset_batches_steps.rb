@@ -6,17 +6,13 @@
 
 Given /^sequencescape is setup for 4759010$/ do
   # Number of tags here needs to be the same as the number of requests below.
-  group = FactoryGirl.create(:tag_group, name: 'Tag group for 4759010', tag_count: 10)
-end
-
-Given /^a batch in "Cluster formation PE" has been setup for feature 4759010$/ do
-  pending
+  group = FactoryBot.create(:tag_group, name: 'Tag group for 4759010', tag_count: 10)
 end
 
 Given /^a batch in "Illumina-B MX Library Preparation" has been setup for feature 4759010$/ do
   pipeline    = Pipeline.find_by(name: 'Illumina-B MX Library Preparation') or raise StandardError, "Cannot find pipeline 'Illumina-B MX Library Preparation'"
-  batch       = FactoryGirl.create :batch, pipeline: pipeline, state: 'pending'
-  asset_group = FactoryGirl.create(:asset_group)
+  batch       = FactoryBot.create :batch, pipeline: pipeline, state: 'pending'
+  asset_group = FactoryBot.create(:asset_group)
 
   submission =  FactoryHelp::submission(
     asset_group: asset_group,
@@ -36,10 +32,10 @@ Given /^a batch in "Illumina-B MX Library Preparation" has been setup for featur
 
   10.times do |_|
     # Ensure that the source and destination assets are setup correctly
-    source      = FactoryGirl.create(pipeline.request_types.last.asset_type.underscore)
-    destination = FactoryGirl.create("empty_#{pipeline.asset_type.underscore}")
+    source      = FactoryBot.create(pipeline.request_types.last.asset_type.underscore)
+    destination = FactoryBot.create("empty_#{pipeline.asset_type.underscore}")
 
-    request = FactoryGirl.create :request, request_type: RequestType.find_by(key: 'illumina_b_multiplexed_library_creation'), submission_id: submission.id, asset: source, target_asset: destination
+    request = FactoryBot.create :request, request_type: RequestType.find_by(key: 'illumina_b_multiplexed_library_creation'), submission_id: submission.id, asset: source, target_asset: destination
 
     batch.requests << request
     asset_group.assets << source
@@ -47,12 +43,8 @@ Given /^a batch in "Illumina-B MX Library Preparation" has been setup for featur
 
   pipeline = Pipeline.find_by(name: 'Cluster formation PE') or raise StandardError, "Cannot find pipeline '#{name}'"
 
-  request  = FactoryGirl.create :request, request_type: pipeline.request_types.last, submission_id: submission.id, asset: FactoryGirl.create(asset_type)
+  request  = FactoryBot.create :request, request_type: pipeline.request_types.last, submission_id: submission.id, asset: FactoryBot.create(asset_type)
   request.asset.save!
   # batch.requests << request
   asset_group.assets << request.asset
-end
-
-When /^I select all requests$/ do
-  page.all('.request_checkbox').each { |checkbox| checkbox.set(true) }
 end

@@ -1,4 +1,10 @@
 inherit_from: .rubocop_todo.yml
+require:
+ - 'test_prof/rubocop'
+RSpec/AggregateFailures:
+  Enabled: true
+  Include:
+    - 'spec/**/*.rb'
 AllCops:
   TargetRubyVersion: 2.4
   Include:
@@ -56,6 +62,8 @@ Rails/DynamicFindBy:
     - find_by_sql
     - find_by_id_or_name
     - find_by_id_or_name!
+    - find_by_barcode
+    - find_by_or_null
 Metrics/MethodLength:
   Exclude:
     - 'db/migrate/*'

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :tag2_layout do
     association(:plate, factory: :plate_with_untagged_wells)
     tag
@@ -13,5 +13,10 @@ FactoryGirl.define do
     end
     sequence(:name) { |n| "Tag 2 layout template #{n}" }
     tag { |tag| tag.association :tag, oligo: oligo }
+  end
+
+  factory :tag2_layout_template_submission, class: Tag2Layout::TemplateSubmission do
+    submission
+    tag2_layout_template
   end
 end

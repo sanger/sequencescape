@@ -9,13 +9,13 @@ require 'test_helper'
 class MessengerCreatorTest < ActiveSupport::TestCase
   context '#messenger_creator' do
     setup do
-      @purpose = FactoryGirl.build :plate_purpose
-      @plate =   FactoryGirl.build :plate, plate_purpose: @purpose
+      @purpose = FactoryBot.build :plate_purpose
+      @plate =   FactoryBot.build :plate, plate_purpose: @purpose
     end
 
     context 'with SelfFinder' do
       setup do
-        @messenger_creator = FactoryGirl.build :messenger_creator, purpose: @purpose
+        @messenger_creator = FactoryBot.build :messenger_creator, purpose: @purpose
         @start_count = Messenger.count
       end
 

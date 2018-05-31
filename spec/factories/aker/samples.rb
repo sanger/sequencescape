@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :sample_for_job, class: Sample do
     sequence(:name) { |n| "2be2072d-7c96-49c3-b7ac-9c51d01c109b#{n}" }
     container

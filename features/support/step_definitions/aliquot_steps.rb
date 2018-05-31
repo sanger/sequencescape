@@ -18,22 +18,10 @@ Then /^the aliquots of (the .+) should be the same as the wells "([^\"]+)" of (t
   )
 end
 
-Then /^the aliquot (\d+) should belong to the study named "([^\"]*)"$/ do |aliquot_id, study_name|
-  aliquot = Aliquot.find(aliquot_id) or raise StandardError, "Cannot find aliquot #{aliquot_id}"
-  study = Study.find_by(name: study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
-  assert_equal study, aliquot.study
-end
-
-Then /^all aliquots in asset (\d+) should belong to the study named "([^\"]*)"$/ do |asset_id, study_name|
-  asset = Asset.find(asset_id) or raise StandardError, "Cannot find Asset #{asset_id}"
-  study = Study.find_by(name: study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
-  asset.aliquots.each { |a| assert_equal study, a.study }
-end
-
 Given /^the sample tube "([^\"]+)" has (\d+) aliquots$/ do |tube_name, number|
   tube = SampleTube.find_by(name: tube_name) or raise "Can't find SampleTube named #{tube_name}"
   1.upto(number.to_i - tube.aliquots.size).each do |_i|
-    tube.aliquots << FactoryGirl.create(:aliquot, tag: FactoryGirl.create(:tag), receptacle: tube)
+    tube.aliquots << FactoryBot.create(:aliquot, tag: FactoryBot.create(:tag), receptacle: tube)
   end
 end
 

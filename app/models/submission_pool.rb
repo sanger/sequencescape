@@ -45,6 +45,8 @@ class SubmissionPool < ApplicationRecord
   self.table_name = 'submissions'
 
   belongs_to :outer_request, class_name: 'Request'
+  has_many :tag_layout_template_submissions, class_name: 'TagLayout::TemplateSubmission', foreign_key: 'submission_id'
+  has_many :tag_layout_templates, through: :tag_layout_template_submissions
   has_many :tag2_layout_template_submissions, class_name: 'Tag2Layout::TemplateSubmission', foreign_key: 'submission_id'
   has_many :tag2_layout_templates, through: :tag2_layout_template_submissions
 
@@ -93,5 +95,9 @@ class SubmissionPool < ApplicationRecord
 
   def used_tag2_layout_templates
     tag2_layout_templates.map { |template| { 'uuid' => template.uuid, 'name' => template.name } }
+  end
+
+  def used_tag_layout_templates
+    tag_layout_templates.map { |template| { 'uuid' => template.uuid, 'name' => template.name } }
   end
 end

@@ -124,12 +124,6 @@ When /^I make an authorised (GET|DELETE) (?:(?:for|of) )?the API path "(\/[^\"]*
   end
 end
 
-When /^I make an authorised (PUT|POST) (?:to )?the API path "(\/[^\"]*)"$/ do |action, path|
-  api_request(action, path, nil) do |headers|
-    headers['HTTP_X_SEQUENCESCAPE_CLIENT_ID'] = 'cucumber'
-  end
-end
-
 When /^I make an authorised (POST|PUT) with the following JSON to the API path "(\/[^\"]*)":$/ do |action, path, serialized_json|
   api_request(action, path, serialized_json) do |headers|
     headers['HTTP_X_SEQUENCESCAPE_CLIENT_ID'] = 'cucumber'
@@ -175,13 +169,6 @@ Then /^ignoring "([^\"]+)" the JSON should be:$/ do |key_list, serialised_json|
   rescue
     puts page.source
     raise
-  end
-end
-
-Then /^ignoring everything but "([^\"]+)" the JSON should be:$/ do |key_list, serialised_json|
-  keys = key_list.split('|')
-  assert_json_equal(serialised_json, page.source) do |key|
-    not keys.include?(key.to_s)
   end
 end
 
@@ -293,7 +280,7 @@ Given /^the (library tube|plate) "([^\"]+)" is a child of the (sample tube|plate
   parent.children << child
   if [parent, child].all? { |a| a.is_a?(Receptacle) }
     child.aliquots = []
-    FactoryGirl.create(:transfer_request, asset: parent, target_asset: child)
+    FactoryBot.create(:transfer_request, asset: parent, target_asset: child)
     child.save!
   end
 end
@@ -303,21 +290,21 @@ Given /^the well "([^\"]+)" is a child of the well "([^\"]+)"$/ do |child_name, 
   child  = Uuid.find_by(external_id: child_name).resource or raise StandardError, "Cannot find #{child_name.inspect}"
   parent.children << child
   child.aliquots.clear
-  FactoryGirl.create(:transfer_request, asset: parent, target_asset: child)
+  FactoryBot.create(:transfer_request, asset: parent, target_asset: child)
   child.save!
 end
 
 Given /^the sample "([^\"]+)" is in (\d+) sample tubes? with sequential IDs starting at (\d+)$/ do |name, count, base_id|
   sample = Sample.find_by(name: name) or raise StandardError, "Cannot find the sample #{name.inspect}"
   (1..count.to_i).each do |index|
-    FactoryGirl.create(:empty_sample_tube, name: "#{name} sample tube #{index}", id: (base_id.to_i + index - 1)).tap do |sample_tube|
+    FactoryBot.create(:empty_sample_tube, name: "#{name} sample tube #{index}", id: (base_id.to_i + index - 1)).tap do |sample_tube|
       sample_tube.aliquots.create!(sample: sample)
     end
   end
 end
 
 Given /^the pathogen project called "([^"]*)" exists$/ do |project_name|
-  project = FactoryGirl.create :project, name: project_name, approved: true, state: 'active'
+  project = FactoryBot.create :project, name: project_name, approved: true, state: 'active'
   project.update_attributes!(project_metadata_attributes: {
                                project_manager: ProjectManager.find_by(name: 'Unallocated'),
                                project_cost_code: 'ABC',
@@ -332,14 +319,8 @@ end
 
 Given /^project "([^"]*)" has an owner called "([^"]*)"$/ do |project_name, login_name|
   project = Project.find_by(name: project_name)
-  user = FactoryGirl.create :user, login: login_name, first_name: 'John', last_name: 'Doe', email: "#{login_name}@example.com"
+  user = FactoryBot.create :user, login: login_name, first_name: 'John', last_name: 'Doe', email: "#{login_name}@example.com"
   user.is_owner_of(project)
-end
-
-Given /^lane "([^"]*)" has qc_state "([^"]*)"$/ do |lane_uuid, state|
-  lane = Lane.find(Uuid.find_id(lane_uuid))
-  lane.qc_state = state
-  lane.save!
 end
 
 Given /^the sanger sample id for sample "([^"]*)" is "([^"]*)"$/ do |uuid_value, sanger_sample_id|

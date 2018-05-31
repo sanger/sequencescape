@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :test_download_plates, class: SampleManifestExcel::TestDownload do
-    columns { FactoryGirl.build(:column_list) }
+    columns { FactoryBot.build(:column_list) }
     validation_errors []
     num_plates 2
     num_samples_per_plate 2

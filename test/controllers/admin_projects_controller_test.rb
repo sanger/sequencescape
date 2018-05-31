@@ -23,10 +23,10 @@ module Admin
         setup do
           @user     = create :admin, email: 'project.owner@example.com'
           @project  = create :project, approved: false
-          role = FactoryGirl.create :owner_role, authorizable: @project
+          role = FactoryBot.create :owner_role, authorizable: @project
           role.users << @user
-          @request_type = FactoryGirl.create :request_type
-          @other_request_type = FactoryGirl.create :request_type
+          @request_type = FactoryBot.create :request_type
+          @other_request_type = FactoryBot.create :request_type
           session[:user] = @user.id
           @emails = ActionMailer::Base.deliveries
           @emails.clear

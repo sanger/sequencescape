@@ -22,24 +22,24 @@ module Admin
                 actions: ['show', 'edit', 'index'],
                 formats: ['html'],
                 defaults: { login: 'abc1234' },
-                user: -> { FactoryGirl.create(:admin) },
+                user: -> { FactoryBot.create(:admin) },
 
                 # Setup needed because 'edit' assumes presence of at least one Study and Project
                 setup: lambda do
-                  FactoryGirl.create(:study)
-                  FactoryGirl.create(:project)
+                  FactoryBot.create(:study)
+                  FactoryBot.create(:project)
                 end
       )
 
       context '#filter' do
         setup do
-          @user = FactoryGirl.create :user
-          @admin = FactoryGirl.create :admin
+          @user = FactoryBot.create :user
+          @admin = FactoryBot.create :admin
 
           session[:user] = @admin
 
-          @user_to_find = FactoryGirl.create :user, first_name: 'Some', last_name: 'Body', login: 'sb1'
-          @another_user = FactoryGirl.create :user, first_name: 'No', last_name: 'One', login: 'no1'
+          @user_to_find = FactoryBot.create :user, first_name: 'Some', last_name: 'Body', login: 'sb1'
+          @another_user = FactoryBot.create :user, first_name: 'No', last_name: 'One', login: 'no1'
         end
 
         should 'find a user based on name' do

@@ -58,7 +58,7 @@ module Tasks::PlateTemplateHandler
         well, location, request_id = CherrypickTask::EMPTY_WELL, *mapped_wells[i]
         if request_id.present?
           asset = batch.requests.find(request_id).asset
-          well  = [request_id, asset.plate.barcode, asset.display_name]
+          well  = [request_id, asset.plate.barcode_number, asset.display_name]
         end
         well
       end

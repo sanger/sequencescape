@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :study_metadata, class: Study::Metadata do
     faculty_sponsor
     study_description           'Some study on something'

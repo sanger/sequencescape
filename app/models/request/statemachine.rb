@@ -11,8 +11,8 @@ require 'aasm'
 module Request::Statemachine
   COMPLETED_STATE = ['passed', 'failed']
   OPENED_STATE    = ['pending', 'blocked', 'started']
-  ACTIVE = QUOTA_COUNTED = %w(passed pending blocked started)
-  INACTIVE = QUOTA_EXEMPTED = ['failed', 'cancelled']
+  ACTIVE = %w(passed pending blocked started)
+  INACTIVE = ['failed', 'cancelled']
 
   module ClassMethods
     def redefine_aasm(options = {}, &block)

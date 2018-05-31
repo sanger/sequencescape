@@ -174,18 +174,21 @@ class Asset < ApplicationRecord
     end
   }
 
-  def self.find_from_any_barcode(source_barcode)
-    if source_barcode.blank?
-      nil
-    elsif /\A[0-9]{1,7}\z/.match?(source_barcode) # Just a number
-      joins(:barcodes).where('barcodes.barcode LIKE "__?_"', source_barcode)
-    else
-      find_from_barcode(source_barcode)
+  class << self
+    def find_from_any_barcode(source_barcode)
+      if source_barcode.blank?
+        nil
+      elsif /\A[0-9]{1,7}\z/.match?(source_barcode) # Just a number
+        joins(:barcodes).where('barcodes.barcode LIKE "__?_"', source_barcode)
+      else
+        find_from_barcode(source_barcode)
+      end
     end
-  end
 
-  def self.find_from_barcode(source_barcode)
-    with_barcode(source_barcode).first
+    def find_by_barcode(source_barcode)
+      with_barcode(source_barcode).first
+    end
+    alias find_from_barcode find_by_barcode
   end
 
   def summary_hash
@@ -418,6 +421,15 @@ class Asset < ApplicationRecord
 
   def compatible_purposes
     Purpose.none
+  end
+
+  # Most assets don't have a barcode
+  def barcode_number
+    nil
+  end
+
+  def prefix
+    nil
   end
 
   # By default only barcodeable assets generate barcodes

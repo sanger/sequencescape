@@ -8,11 +8,11 @@
 
 # The factories in here, at time of writing could do with a bit of TLC.
 # - Remove references to existing request types, build one instead!
-# - All factories MUST be valid unless begining with invalid_ (allows us to lint factory girl)
+# - All factories MUST be valid unless begining with invalid_ (allows us to lint factory bot)
 # - Factories names after a class, eg. request, should NOT inherit. Use traits if there is shared behaviour.
 # - Factories names after a class should avoid creating associations, except where they are required for the
 #   request to be valid.
-FactoryGirl.define do
+FactoryBot.define do
   factory :multiplexed_library_creation_request, parent: :request  do
     sti_type      { RequestType.find_by(name: 'Multiplexed library creation').request_class_name }
     asset         { |asset| asset.association(:sample_tube)  }

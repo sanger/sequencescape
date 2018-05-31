@@ -134,26 +134,6 @@ Feature: Access state changes through the API
      And the state of transfer requests to "A1-A1" on the plate "Destination plate" should be "failed"
      And the state of transfer requests to "B1-B1" on the plate "Destination plate" should be "pending"
 
-  @read @wip
-  Scenario: Reading the JSON for a UUID
-    Given the state change exists with ID 1
-      And the UUID for the state change with ID 1 is "00000000-1111-2222-3333-444444444444"
-
-    When I GET the API path "/00000000-1111-2222-3333-444444444444"
-    Then the HTTP response should be "200 OK"
-     And the JSON should match the following for the specified fields:
-      """
-      {
-        "state_change": {
-          "actions": {
-            "read": "http://www.example.com/api/1/00000000-1111-2222-3333-444444444444"
-          },
-
-          "uuid": "00000000-1111-2222-3333-444444444444"
-        }
-      }
-      """
-
   @create
   Scenario: Changing the state of only one well on the plate with pulldown requests
     Given the UUID of the next state change created will be "11111111-2222-3333-4444-000000000001"

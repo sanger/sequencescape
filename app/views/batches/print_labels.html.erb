@@ -37,7 +37,7 @@
         <% else %>
           <% @batch.requests.each do |request| -%>
             <tr>
-              <td width="35%" class="item"><%= request.target_asset.barcode %> - Tag <%= request.tag_number %></td>
+              <td width="35%" class="item"><%= request.target_asset.human_barcode %> - Tag <%= request.tag_number %></td>
               <td width="65%"><input type='checkbox' checked='on' name='printable[<%= request.id %>]'></td>
             </tr>
           <% end -%>

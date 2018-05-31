@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :aker_job, class: Aker::Job do
     sequence(:aker_job_id) { |n| n }
 

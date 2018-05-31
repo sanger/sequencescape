@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :test_download, class: SampleManifestExcel::TestDownload do
-    columns { FactoryGirl.build(:column_list) }
+    columns { FactoryBot.build(:column_list) }
     validation_errors []
     no_of_rows 5
     study 'WTCCC'

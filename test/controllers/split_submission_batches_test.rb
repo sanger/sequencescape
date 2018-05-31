@@ -10,19 +10,19 @@ require 'submissions_controller'
 class SplitSubmissionBatchesTest < ActionController::TestCase
   context 'when I have a submission' do
     setup do
-      @user = FactoryGirl.create :user
+      @user = FactoryBot.create :user
       @controller = SubmissionsController.new
       @request    = ActionController::TestRequest.create(@controller)
       @plate_purpose = PlatePurpose.find_by(name: 'Stock plate')
       @controller.stubs(:logged_in?).returns(@user)
       session[:user] = @user.id
-      @project = FactoryGirl.create :project
-      @study = FactoryGirl.create :study
-      @asset1 = FactoryGirl.create :sample_tube
-      @asset2 = FactoryGirl.create :sample_tube
-      @asset3 = FactoryGirl.create :sample_tube
-      @asset4 = FactoryGirl.create :sample_tube
-      @asset_group = FactoryGirl.create :asset_group
+      @project = FactoryBot.create :project
+      @study = FactoryBot.create :study
+      @asset1 = FactoryBot.create :sample_tube
+      @asset2 = FactoryBot.create :sample_tube
+      @asset3 = FactoryBot.create :sample_tube
+      @asset4 = FactoryBot.create :sample_tube
+      @asset_group = FactoryBot.create :asset_group
       @asset_group.assets << @asset1 << @asset2 << @asset3 << @asset4
       @sequencing_pipeline = Pipeline.find_by(name: 'Cluster formation SE')
     end
@@ -105,7 +105,7 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
       setup do
         # We're using the submissions controller as things are a bit screwy if we go to the plate creator (PlateCreater) directly
         # However, as this seems to relate to the multiplier, it may be related to out problem.
-        # @asset_group.assets.each_with_index {|a,i| tag=FactoryGirl.create :tag; a.aliquots.first.update_attributes!(:tag=>tag)}
+        # @asset_group.assets.each_with_index {|a,i| tag=FactoryBot.create :tag; a.aliquots.first.update_attributes!(:tag=>tag)}
         submission_template_hash = { name: 'Illumina-C - Multiplexed Library Creation - Single ended sequencing',
                                      submission_class_name: 'LinearSubmission',
                                      product_catalogue: 'Generic',

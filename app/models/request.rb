@@ -306,6 +306,8 @@ class Request < ApplicationRecord
 
   delegate :study, :study_id, to: :asset, allow_nil: true
 
+  delegate :validator_for, to: :request_type
+
   def self.delegate_validator
     DelegateValidation::AlwaysValidValidator
   end
@@ -336,10 +338,6 @@ class Request < ApplicationRecord
 
   def self.accessioning_required?
     false
-  end
-
-  def validator_for(request_option)
-    request_type.request_type_validators.find_by(request_option: request_option.to_s) || RequestType::Validator::NullValidator.new
   end
 
   def current_request_event
@@ -398,7 +396,8 @@ class Request < ApplicationRecord
   def aliquot_attributes
     {
       study_id: initial_study_id,
-      project_id: initial_project_id
+      project_id: initial_project_id,
+      request_id: id
     }
   end
 

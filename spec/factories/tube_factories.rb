@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'factory_girl'
+require 'factory_bot'
 
-FactoryGirl.define do
+FactoryBot.define do
   trait :scanned_into_lab do
     after(:build) do |asset, _evaluator|
       asset.create_scanned_into_lab_event!(content: '2018-01-01')
@@ -72,7 +72,7 @@ FactoryGirl.define do
     purpose { Tube::Purpose.stock_mx_tube }
 
     factory :new_stock_multiplexed_library_tube do |_t|
-      purpose { |a| a.association(:new_stock_tube_purpose) }
+      association(:purpose, factory: :new_stock_tube_purpose)
     end
   end
 
