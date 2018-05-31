@@ -338,6 +338,10 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
             expect(s1.sample_metadata.concentration).to eq('1')
             expect(s1.sample_metadata.gender).to eq('Unknown')
           end
+
+          after(:each) do
+            File.delete(new_test_file) if File.exist?(new_test_file)
+          end
         end
       end
 
