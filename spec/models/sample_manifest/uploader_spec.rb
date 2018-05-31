@@ -99,5 +99,4 @@ RSpec.describe SampleManifest::Uploader, type: :model, sample_manifest_excel: tr
   after(:all) do
     SampleManifestExcel.reset!
   end
-
 end

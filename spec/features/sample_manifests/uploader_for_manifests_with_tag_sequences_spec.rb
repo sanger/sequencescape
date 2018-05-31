@@ -51,7 +51,7 @@ feature 'Sample manifest with tag sequences' do
         s1 = Sample.find_by(sanger_sample_id: download.worksheet.axlsx_worksheet.rows[10].cells[1].value)
         visit("/samples/#{s1.id}")
         expect(page).to have_content("Sequencescape Sample ID: #{s1.id}")
-        expect(page).to have_content("Gender: Unknown")
+        expect(page).to have_content('Gender: Unknown')
 
         # re-upload with override set - should see change to sample
         # login_user(user)
@@ -61,7 +61,7 @@ feature 'Sample manifest with tag sequences' do
         click_button('Upload manifest')
         visit("/samples/#{s1.id}")
         expect(page).to have_content("Sequencescape Sample ID: #{s1.id}")
-        expect(page).to have_content("Gender: Female")
+        expect(page).to have_content('Gender: Female')
       end
     end
 
