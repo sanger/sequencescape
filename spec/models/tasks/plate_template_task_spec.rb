@@ -54,4 +54,11 @@ RSpec.describe PlateTemplateTask, type: :model do
       task.do_task(workflow_controller, params)
     end
   end
+
+  describe Tasks::PlateTemplateHandler do
+    describe '::generate_spreadsheet' do
+      subject { Tasks::PlateTemplateHandler.generate_spreadsheet(batch) }
+      it { is_expected.to be_a String }
+    end
+  end
 end

@@ -20,7 +20,7 @@ module Tasks::PlateTemplateHandler
   def self.generate_spreadsheet(batch)
     CSV.generate(row_sep: "\r\n") do |csv|
       csv << ['Request ID', 'Sample Name', 'Source Plate', 'Source Well', 'Plate', 'Destination Well']
-      batch.requests.each { |r| csv << [r.id, r.asset.sample.name, r.asset.plate.human_barcode, r.asset.map_description, '', ''] }
+      batch.requests.each { |r| csv << [r.id, r.asset.samples.first&.name, r.asset.plate.human_barcode, r.asset.map_description, '', ''] }
     end
   end
 end

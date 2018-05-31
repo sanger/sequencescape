@@ -35,8 +35,13 @@ FactoryBot.define do
     end
 
     association(:pipeline, factory: :cherrypick_pipeline)
+
     after(:build) do |batch, evaluator|
-      batch.requests = build_list(:cherrypick_request_for_pipeline, evaluator.request_count, request_type: batch.pipeline.request_types.first) if evaluator.request_count.positive?
+      next if evaluator.request_count.zero?
+      study = build(:study)
+      project = build(:project)
+      request_type = batch.pipeline.request_types.first
+      batch.requests = build_list(:cherrypick_request_for_pipeline, evaluator.request_count, request_type: request_type, initial_study: study, initial_project: project)
     end
   end
 
