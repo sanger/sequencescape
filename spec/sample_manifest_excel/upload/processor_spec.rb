@@ -39,26 +39,64 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
       end
 
       context '1dtube' do
-        let!(:download) { build(:test_download, columns: tube_columns) }
+        context 'valid' do
+          let!(:download) { build(:test_download, columns: tube_columns) }
 
-        it 'will update the samples' do
-          processor = SampleManifestExcel::Upload::Processor::OneDTube.new(upload)
-          processor.run(tag_group)
-          expect(processor).to be_samples_updated
-          expect(upload.rows.all?(&:sample_updated?)).to be_truthy
+          it 'will update the samples' do
+            processor = SampleManifestExcel::Upload::Processor::OneDTube.new(upload)
+            processor.run(tag_group)
+            expect(processor).to be_samples_updated
+            expect(upload.rows.all?(&:sample_updated?)).to be_truthy
+          end
+
+          it 'will update the sample manifest' do
+            processor = SampleManifestExcel::Upload::Processor::OneDTube.new(upload)
+            processor.run(tag_group)
+            expect(processor).to be_sample_manifest_updated
+            expect(upload.sample_manifest.uploaded.filename).to eq(test_file)
+          end
+
+          it 'will be processed' do
+            processor = SampleManifestExcel::Upload::Processor::OneDTube.new(upload)
+            processor.run(tag_group)
+            expect(processor).to be_processed
+          end
         end
 
-        it 'will update the sample manifest' do
-          processor = SampleManifestExcel::Upload::Processor::OneDTube.new(upload)
-          processor.run(tag_group)
-          expect(processor).to be_sample_manifest_updated
-          expect(upload.sample_manifest.uploaded.filename).to eq(test_file)
-        end
+        context 'manifest reuploaded and overriden' do
+          let!(:download) { build(:test_download, columns: tube_columns, manifest_type: '1dtube') }
+          let!(:new_test_file) { 'new_test_file.xlsx' }
 
-        it 'will be processed' do
-          processor = SampleManifestExcel::Upload::Processor::OneDTube.new(upload)
-          processor.run(tag_group)
-          expect(processor).to be_processed
+          before(:each) do
+            upload.process(tag_group)
+            upload.complete
+          end
+
+          it 'will update the aliquots if aliquots data has changed and override is set true' do
+            download.worksheet.axlsx_worksheet.rows[10].cells[11].value = '50'
+            download.worksheet.axlsx_worksheet.rows[10].cells[12].value = 'Female'
+            download.save(new_test_file)
+            reupload = SampleManifestExcel::Upload::Base.new(filename: new_test_file, column_list: tube_columns, start_row: 9, override: true)
+            processor = SampleManifestExcel::Upload::Processor::OneDTube.new(reupload)
+            processor.update_samples(tag_group)
+            expect(reupload.rows.all?(&:sample_updated?)).to be_truthy
+            s1 = Sample.find_by(sanger_sample_id: download.worksheet.axlsx_worksheet.rows[10].cells[1].value)
+            expect(s1.sample_metadata.concentration).to eq('50')
+            expect(s1.sample_metadata.gender).to eq('Female')
+          end
+
+          it 'will not update the aliquots if aliquots data has changed and override is set false' do
+            download.worksheet.axlsx_worksheet.rows[10].cells[11].value = '50'
+            download.worksheet.axlsx_worksheet.rows[10].cells[12].value = 'Female'
+            download.save(new_test_file)
+            reupload = SampleManifestExcel::Upload::Base.new(filename: new_test_file, column_list: tube_columns, start_row: 9)
+            processor = SampleManifestExcel::Upload::Processor::OneDTube.new(reupload)
+            processor.update_samples(tag_group)
+            expect(reupload.rows.all?(&:sample_updated?)).to be_falsey
+            s1 = Sample.find_by(sanger_sample_id: download.worksheet.axlsx_worksheet.rows[10].cells[1].value)
+            expect(s1.sample_metadata.concentration).to eq('1')
+            expect(s1.sample_metadata.gender).to eq('Unknown')
+          end
         end
       end
 
@@ -109,7 +147,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
           end
         end
 
-        context 'manifest reuploaded' do
+        context 'manifest reuploaded and overriden' do
           let!(:download) { build(:test_download, columns: tube_columns, manifest_type: 'multiplexed_library') }
           let!(:new_test_file) { 'new_test_file.xlsx' }
 
@@ -122,7 +160,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
             download.worksheet.axlsx_worksheet.rows[10].cells[6].value = '100'
             download.worksheet.axlsx_worksheet.rows[11].cells[7].value = '1000'
             download.save(new_test_file)
-            reupload = SampleManifestExcel::Upload::Base.new(filename: new_test_file, column_list: tube_columns, start_row: 9)
+            reupload = SampleManifestExcel::Upload::Base.new(filename: new_test_file, column_list: tube_columns, start_row: 9, override: true)
             processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(reupload)
             processor.update_samples_and_aliquots(tag_group)
             expect(processor.substitutions[1]).to include('insert_size_from' => 100)
@@ -130,13 +168,13 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
             expect(processor.downstream_aliquots_updated?).to be_truthy
           end
 
-          it 'will update the aliquots downstream if taggs were swapped' do
+          it 'will update the aliquots downstream if tags were swapped' do
             tag_oligo_1 = download.worksheet.axlsx_worksheet.rows[10].cells[2].value
             tag_oligo_2 = download.worksheet.axlsx_worksheet.rows[11].cells[2].value
             download.worksheet.axlsx_worksheet.rows[10].cells[2].value = tag_oligo_2
             download.worksheet.axlsx_worksheet.rows[11].cells[2].value = tag_oligo_1
             download.save(new_test_file)
-            reupload = SampleManifestExcel::Upload::Base.new(filename: new_test_file, column_list: tube_columns, start_row: 9)
+            reupload = SampleManifestExcel::Upload::Base.new(filename: new_test_file, column_list: tube_columns, start_row: 9, override: true)
             processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(reupload)
             processor.update_samples_and_aliquots(tag_group)
             expect(processor.downstream_aliquots_updated?).to be_truthy
@@ -144,7 +182,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
 
           it 'will not update the aliquots downstream if there is nothing to update' do
             download.save(new_test_file)
-            reupload = SampleManifestExcel::Upload::Base.new(filename: new_test_file, column_list: tube_columns, start_row: 9)
+            reupload = SampleManifestExcel::Upload::Base.new(filename: new_test_file, column_list: tube_columns, start_row: 9, override: true)
             processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(reupload)
             processor.update_samples_and_aliquots(tag_group)
             expect(processor.substitutions.compact).to be_empty
@@ -263,6 +301,42 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
               processor.update_sample_manifest
               expect(processor).to be_processed
             end
+          end
+        end
+
+        context 'manifest reuploaded and overriden' do
+          let!(:download) { build(:test_download_plates, columns: plate_columns) }
+          let!(:new_test_file) { 'new_test_file.xlsx' }
+
+          before(:each) do
+            upload.process(nil)
+            upload.complete
+          end
+
+          it 'will update the aliquots if aliquots data has changed and override is set true' do
+            download.worksheet.axlsx_worksheet.rows[10].cells[6].value = '50'
+            download.worksheet.axlsx_worksheet.rows[10].cells[7].value = 'Female'
+            download.save(new_test_file)
+            reupload = SampleManifestExcel::Upload::Base.new(filename: new_test_file, column_list: plate_columns, start_row: 9, override: true)
+            processor = SampleManifestExcel::Upload::Processor::Plate.new(reupload)
+            processor.update_samples(nil)
+            expect(reupload.rows.all?(&:sample_updated?)).to be_truthy
+            s1 = Sample.find_by(sanger_sample_id: download.worksheet.axlsx_worksheet.rows[10].cells[2].value)
+            expect(s1.sample_metadata.concentration).to eq('50')
+            expect(s1.sample_metadata.gender).to eq('Female')
+          end
+
+          it 'will not update the aliquots if aliquots data has changed and override is set false' do
+            download.worksheet.axlsx_worksheet.rows[10].cells[6].value = '50'
+            download.worksheet.axlsx_worksheet.rows[10].cells[7].value = 'Female'
+            download.save(new_test_file)
+            reupload = SampleManifestExcel::Upload::Base.new(filename: new_test_file, column_list: plate_columns, start_row: 9)
+            processor = SampleManifestExcel::Upload::Processor::Plate.new(reupload)
+            processor.update_samples(nil)
+            expect(reupload.rows.all?(&:sample_updated?)).to be_falsey
+            s1 = Sample.find_by(sanger_sample_id: download.worksheet.axlsx_worksheet.rows[10].cells[2].value)
+            expect(s1.sample_metadata.concentration).to eq('1')
+            expect(s1.sample_metadata.gender).to eq('Unknown')
           end
         end
       end

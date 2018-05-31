@@ -14,7 +14,7 @@ module SampleManifestExcel
     class Base
       include ActiveModel::Model
 
-      attr_accessor :filename, :column_list, :start_row
+      attr_accessor :filename, :column_list, :start_row, :override
 
       attr_reader :spreadsheet, :columns, :sanger_sample_id_column, :rows, :sample_manifest, :data, :processor
 
@@ -32,6 +32,7 @@ module SampleManifestExcel
         @sanger_sample_id_column = columns.find_by(:name, :sanger_sample_id)
         @rows = Upload::Rows.new(data, columns)
         @sample_manifest = derive_sample_manifest
+        @override = override || false
         @processor = create_processor
         @reuploaded = @sample_manifest.completed? if sample_manifest.present?
       end

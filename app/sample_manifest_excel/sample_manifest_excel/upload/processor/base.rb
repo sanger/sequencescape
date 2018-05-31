@@ -30,7 +30,7 @@ module SampleManifestExcel
 
         def update_samples(tag_group)
           upload.rows.each do |row|
-            row.update_sample(tag_group)
+            row.update_sample(tag_group, upload.override)
           end
         end
 

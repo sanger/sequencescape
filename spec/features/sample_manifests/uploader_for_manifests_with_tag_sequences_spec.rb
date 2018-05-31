@@ -31,6 +31,38 @@ feature 'Sample manifest with tag sequences' do
         click_button('Upload manifest')
         expect(page).to have_content('Sample manifest successfully uploaded.')
       end
+
+      scenario 'reupload and override' do
+        login_user(user)
+        visit('sample_manifest_upload_with_tag_sequences/new')
+        attach_file('File to upload', test_file)
+        click_button('Upload manifest')
+        expect(page).to have_content('Sample manifest successfully uploaded.')
+
+        # modify the upload file
+        download.worksheet.axlsx_worksheet.rows[10].cells[12].value = 'Female'
+        download.save(test_file)
+
+        # re-upload without override set - should be no change
+        # login_user(user)
+        visit('/sample_manifest_upload_with_tag_sequences/new')
+        attach_file('File to upload', test_file)
+        click_button('Upload manifest')
+        s1 = Sample.find_by(sanger_sample_id: download.worksheet.axlsx_worksheet.rows[10].cells[1].value)
+        visit("/samples/#{s1.id}")
+        expect(page).to have_content("Sequencescape Sample ID: #{s1.id}")
+        expect(page).to have_content("Gender: Unknown")
+
+        # re-upload with override set - should see change to sample
+        # login_user(user)
+        visit('/sample_manifest_upload_with_tag_sequences/new')
+        attach_file('File to upload', test_file)
+        check('Override previously uploaded samples')
+        click_button('Upload manifest')
+        visit("/samples/#{s1.id}")
+        expect(page).to have_content("Sequencescape Sample ID: #{s1.id}")
+        expect(page).to have_content("Gender: Female")
+      end
     end
 
     context 'valid cgap foreign barcodes' do
@@ -100,7 +132,7 @@ feature 'Sample manifest with tag sequences' do
       Delayed::Worker.delay_jobs = false
     end
 
-    scenario 'upload and reupload' do
+    scenario 'upload and reupload with override' do
       # upload
       expect(download.worksheet.multiplexed_library_tube.aliquots.count).to eq 0
       login_user(user)
@@ -125,6 +157,7 @@ feature 'Sample manifest with tag sequences' do
       login_user(user)
       visit('sample_manifest_upload_with_tag_sequences/new')
       attach_file('File to upload', test_file)
+      check('Override previously uploaded samples')
       click_button('Upload manifest')
       expect(page).to have_content('Sample manifest successfully uploaded.')
 

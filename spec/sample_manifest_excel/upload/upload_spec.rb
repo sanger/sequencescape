@@ -180,6 +180,27 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
         expect(upload).to_not be_processed
       end
     end
+
+    context 'plate' do
+      let!(:columns) { SampleManifestExcel.configuration.columns.plate_full.dup }
+      let!(:download) { build(:test_download_plates, columns: columns) }
+
+      before(:each) do
+        download.save(test_file)
+      end
+
+      it 'should have the correct processor' do
+        upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: columns, start_row: 9)
+        expect(upload.processor).to_not be_nil
+        expect(upload.processor).to be_plate
+      end
+
+      it 'updates all of the data' do
+        upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: columns, start_row: 9)
+        upload.process(nil)
+        expect(upload).to be_processed
+      end
+    end
   end
 
   after(:each) do

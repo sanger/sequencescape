@@ -68,15 +68,17 @@ module SampleManifestExcel
 
       ##
       # Updating the sample involves:
+      # *Checking it is ok to update row
       # *Updating all of the specialised fields in the aliquot
       # *Updating the sample metadata
       # *Saving the aliquot, metadata and sample
-      def update_sample(tag_group)
+      def update_sample(tag_group, override)
         return unless valid?
+        return if sample.updated_by_manifest && !override
         update_specialised_fields(tag_group)
-        update_metadata_fields # can be removed from here as it is called for validation
         aliquot.save
         metadata.save
+        sample.updated_by_manifest = true
         @sample_updated = sample.save
       end
 
@@ -105,7 +107,7 @@ module SampleManifestExcel
       end
 
       def sample_updated?
-        @sample_updated
+        @sample_updated || false
       end
 
       def aliquot_transferred?

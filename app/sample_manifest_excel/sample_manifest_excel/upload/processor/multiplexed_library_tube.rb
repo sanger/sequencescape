@@ -23,7 +23,7 @@ module SampleManifestExcel
 
         def update_samples_and_aliquots(tag_group)
           upload.rows.each do |row|
-            row.update_sample(tag_group)
+            row.update_sample(tag_group, upload.override)
             row.transfer_aliquot unless upload.reuploaded?
             substitutions << row.aliquot.substitution_hash if upload.reuploaded?
           end
