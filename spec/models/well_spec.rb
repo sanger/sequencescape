@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-
 require 'timecop'
 
 describe Well do

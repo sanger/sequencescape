@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-
 FactoryBot.define do
   factory :well, aliases: [:empty_well] do
     transient do

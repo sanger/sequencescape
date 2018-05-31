@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-
 ##
 # This form object class handles the user interaction for creating new Tag Groups.
 # It sensibility checks the user-entered list of Tag oligo sequences before creating

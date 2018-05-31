@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-
 module Pulldown::Requests
   # Indexed Sequences Capture
   # Samples are tagged, pooled to together in pre-capture pools

@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-
 class LocationReport < ApplicationRecord
   # includes / extends
   extend DbFile::Uploader

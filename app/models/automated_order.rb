@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-
 # An automated order is created by an external application, such as Limber.
 # Retrieval of studies/projects is surprisingly expensive, and isn't
 # relevant for cross-project/study stuff anyway.

@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-
 module IlluminaHtp::Requests
   # Used in the old-style WGS and ICS pipelines to reflect the shared portion
   class SharedLibraryPrep < StdLibraryRequest

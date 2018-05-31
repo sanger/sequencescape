@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-
 # Lays out the tags so that they are column ordered.
 module TagLayout::InColumnsThenRows
   def self.direction

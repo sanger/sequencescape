@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-
 #
 # Generated when the QC complete message comes back from NPG. Indicates that the sequencing process
 # is completed, and that data should be available to the customer

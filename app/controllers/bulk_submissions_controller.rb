@@ -1,6 +1,5 @@
 # Encoding: utf-8
 
-
 require 'formtastic'
 
 class BulkSubmissionsController < ApplicationController

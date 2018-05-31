@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-
 module ::Core::Io::Json
   class Stream
     # An interface matches object who respond to the provided method

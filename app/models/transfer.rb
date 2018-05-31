@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-
 class Transfer < ApplicationRecord
   include Uuid::Uuidable
 

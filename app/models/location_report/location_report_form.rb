@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-
 ##
 # This form object class handles the user interaction for creating new Location Reports.
 # It sensibility checks the user-entered list of barcode sequences or selection parameters

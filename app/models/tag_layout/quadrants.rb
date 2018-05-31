@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-
 # Tags are arranged in quadrants in the case of some 384 well plates.
 # Essentially a 96 well plate of tags is transferred onto the same target
 # plate four times, such that each cluster of 4 wells contains the same tag.

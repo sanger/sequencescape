@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-
 # Provides behaviour to walk downstream and remove aliquots from
 # any downstream assets in the event of a retrospective fail.
 module Aliquot::Remover

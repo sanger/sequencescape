@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-
 ##
 # Helper module for tests using requiring stub methods for the LabWhere client endpoints.
 module LabWhereClientHelper

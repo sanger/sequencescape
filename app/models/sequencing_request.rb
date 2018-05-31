@@ -1,6 +1,5 @@
 # encoding: utf-8
 
-
 class SequencingRequest < CustomerRequest
   extend Request::AccessioningRequired
   include Api::Messages::FlowcellIO::LaneExtensions

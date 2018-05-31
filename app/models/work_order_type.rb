@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-
 # A work order type is a simple string identifier of the entire work order
 # As initial work orders correspond to single request workflow it will initially
 # reflect the request type of the provided request.

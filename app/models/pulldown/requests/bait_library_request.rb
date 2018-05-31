@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-
 module Pulldown::Requests
   # Include in request classes to allow the recording of a bait library
   module BaitLibraryRequest

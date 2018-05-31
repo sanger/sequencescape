@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-
 # A few helpers used in pipeline workflows
 module WorkflowsHelper
   # Returns descriptor from params, if it's not there try the @study.

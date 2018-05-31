@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-
 module Pulldown::Requests
   # Uses to re-pool previously made libraries with a different bait
   # (Or the same bait, if someone just wants more material, or to adjust pooling)

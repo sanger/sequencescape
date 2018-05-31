@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-
 ##
 # This class handles creating and viewing Location Reports, which match up plates to their
 # recorded physical location, and to their Studies and Faculty Sponser (can be multiple per

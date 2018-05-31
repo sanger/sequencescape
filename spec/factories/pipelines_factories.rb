@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-
 require 'factory_bot'
 require 'control_request_type_creation'
 

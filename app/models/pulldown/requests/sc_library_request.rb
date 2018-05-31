@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-
 module Pulldown::Requests
   # Sequences capute
   # See ISC

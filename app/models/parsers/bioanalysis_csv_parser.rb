@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 class Parsers::BioanalysisCsvParser
   class InvalidFile < StandardError; end
 

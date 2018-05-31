@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-
 # A workflow describes a series of Tasks which are processed as
 # part of taking a Batch through a Pipeline
 class Workflow < ApplicationRecord

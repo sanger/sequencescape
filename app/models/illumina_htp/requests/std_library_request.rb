@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-
 module IlluminaHtp::Requests
   # The basic request for limber library requests
   # Also used as the base class of some of the older WGS requests

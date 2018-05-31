@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-
 # Every request "moving" an asset from somewhere to somewhere else without really transforming it
 # (chemically) as, cherrypicking, pooling, spreading on the floor etc
 class TransferRequest < ApplicationRecord

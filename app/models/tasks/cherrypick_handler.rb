@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-
 # Gets included in the workflows controller and processed cherrypicking
 # CAUTION! This pattern is best avoided.
 module Tasks::CherrypickHandler

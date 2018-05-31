@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-
 module IlluminaHtp::Requests
   # A Library completion request is the second part of a two stage
   # library creation process. Used primarily in the old IlluminaB

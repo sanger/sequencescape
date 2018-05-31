@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-
 class Admin::PrimerPanelsController < ApplicationController
   before_action :admin_login_required
   before_action :discover_primer_panel, only: [:edit, :update]

@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-
 FactoryBot.define do
   factory :lot_type do
     sequence(:name) { |n| "lot_type#{n}" }

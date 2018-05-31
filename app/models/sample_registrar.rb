@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-
 require 'rexml/text'
 # An instance of this class is responsible for the registration of a sample and its sample tube.
 # You can think of this as a binding between those two, within the context of a user, study and

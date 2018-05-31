@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-
 # General purpose flexible search. Can eventually replace a number of existing searches.
 # Allows the user to customise the parameters.
 class Search::FindPlates < Search

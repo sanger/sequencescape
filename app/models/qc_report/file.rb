@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-
 class QcReport::File
   ACCEPTED_MIMETYPE = 'text/csv'
   ACCEPTED_EXTENSTION = 'csv'

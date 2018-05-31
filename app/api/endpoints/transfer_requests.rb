@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-
 # TransferRequests are exposed via the API and allow
 # you to access their source and target assets, and their submissions
 class ::Endpoints::TransferRequests < ::Core::Endpoint::Base

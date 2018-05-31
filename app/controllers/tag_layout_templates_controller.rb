@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-
 ##
 # This class handles creating and viewing Tag Layout Templates, which describe how
 # the Tags in a Tag Group are to be laid out in their labware container. For example
