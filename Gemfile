@@ -144,6 +144,7 @@ group :test do
   gem 'rspec-rails', require: false
   # Rails performance tests
   gem 'rails-perftest'
+  gem 'test-prof'
   # Provides json expectations for rspec. Makes test more readable,
   # and test failures more descriptive.
   gem 'rspec-json_expectations', require: false
@@ -156,7 +157,7 @@ group :test do
 end
 
 group :test, :cucumber do
-  gem 'factory_girl_rails', require: false
+  gem 'factory_bot_rails', require: false
   gem 'launchy', require: false
   gem 'mocha', require: false # avoids load order problems
   gem 'nokogiri', require: false

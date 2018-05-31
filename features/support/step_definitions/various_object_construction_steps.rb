@@ -5,9 +5,9 @@
 # Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
 
 Given /^(?:a|the) (project|study|sample|sample tube|library tube|plate|lane|pulldown multiplexed library tube|multiplexed library tube|faculty sponsor) (?:named|called) "([^\"]+)" exists$/ do |type, name|
-  FactoryGirl.create(type.gsub(/[^a-z0-9]+/, '_').to_sym, name: name)
+  FactoryBot.create(type.gsub(/[^a-z0-9]+/, '_').to_sym, name: name)
 end
 
 Given /^(?:a|the) (well) (?:named|called) "([^\"]+)" exists$/ do |type, _|
-  FactoryGirl.create(type.gsub(/[^a-z0-9]+/, '_').to_sym)
+  FactoryBot.create(type.gsub(/[^a-z0-9]+/, '_').to_sym)
 end

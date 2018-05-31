@@ -13,14 +13,14 @@ module Studies
       setup do
         @controller = Studies::SampleRegistrationController.new
         @request    = ActionController::TestRequest.create(@controller)
-        @study      = FactoryGirl.create :study
+        @study      = FactoryBot.create :study
       end
 
       should_require_login(:index, parent: 'study')
 
       context 'when logged in' do
         setup do
-          @user = FactoryGirl.create :user
+          @user = FactoryBot.create :user
           @controller.stubs(:logged_in?).returns(@user)
           session[:user] = @user.id
         end

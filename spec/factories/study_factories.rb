@@ -8,7 +8,7 @@
 ####################################################################################################################
 # This user is used when setting up relations to the studies and as the login for the feature.  It isn't actually
 # required (as the login step does this) but it's here for clarity should that ever change.
-FactoryGirl.define do
+FactoryBot.define do
   factory :study do
     name { generate :study_name }
     user
@@ -101,7 +101,7 @@ FactoryGirl.define do
     factory(:study_for_study_list_pending_ethical_approval) do
       name               'Study: Pending ethical approval'
       ethically_approved false
-      study_metadata_attributes { FactoryGirl.attributes_for :study_metadata_for_study_list_pending_ethical_approval }
+      study_metadata_attributes { FactoryBot.attributes_for :study_metadata_for_study_list_pending_ethical_approval }
     end
 
     factory(:study_for_study_list_remove_x_and_autosomes) do

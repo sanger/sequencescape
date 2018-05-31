@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2014,2015 Genome Research Ltd.
 
 Given /^user "([^"]*)" owns all requests$/ do |user_name|
-  user = FactoryGirl.create :user, login: user_name
+  user = FactoryBot.create :user, login: user_name
   Request.find_each do |request|
     request.update_attributes!(user: user)
   end

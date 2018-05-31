@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :range, class: SampleManifestExcel::Range do
     options %w[option1 option2 option3]
     first_row 1

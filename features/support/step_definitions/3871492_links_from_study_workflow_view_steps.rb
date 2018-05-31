@@ -37,7 +37,7 @@ Given /^study "([^"]+)" has made the following "([^"]+)" requests:$/ do |study_n
       requests.select { |r| r.samples.include?(sample) }.map(&:destroy) if requests.present?
     else
       count.to_i.times do |_index|
-        FactoryGirl.create(
+        FactoryBot.create(
           :request,
           request_type: request_type,
           user: @current_user,

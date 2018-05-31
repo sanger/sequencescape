@@ -14,7 +14,7 @@ Given /^the barcode for the asset "([^\"]+)" is "([^\"]+)"$/ do |name, barcode|
   if asset.primary_barcode
     asset.primary_barcode.update!(barcode: barcode)
   else
-    asset.barcodes << FactoryGirl.create(:sanger_ean13_tube, barcode: barcode)
+    asset.barcodes << FactoryBot.create(:sanger_ean13_tube, barcode: barcode)
   end
 end
 
@@ -23,11 +23,11 @@ Given /^tube "([^"]*)" has a public name of "([^"]*)"$/ do |name, public_name|
 end
 
 Given /^(?:I have )?a phiX tube called "([^\"]+)"$/ do |name|
-  FactoryGirl.create(:sample_tube, name: name, study: nil, project: nil)
+  FactoryBot.create(:sample_tube, name: name, study: nil, project: nil)
 end
 
 Given /^(?:I have )?a (sample|library) tube called "([^\"]+)"$/ do |tube_type, name|
-  FactoryGirl.create(:"#{ tube_type }_tube", name: name)
+  FactoryBot.create(:"#{ tube_type }_tube", name: name)
 end
 
 Then /^the name of (the .+) should be "([^\"]+)"$/ do |asset, name|

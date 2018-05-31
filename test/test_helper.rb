@@ -13,7 +13,7 @@ require 'minitest/autorun'
 require 'shoulda/context'
 require 'shoulda/matchers'
 require 'rails/test_help'
-require 'factory_girl'
+require 'factory_bot'
 require 'webmock/minitest'
 
 begin
@@ -40,7 +40,7 @@ class ActiveSupport::TestCase
   extend Sanger::Testing::Controller::Macros
   extend Sanger::Testing::View::Macros
   extend Sanger::Testing::Model::Macros
-  include FactoryGirl::Syntax::Methods
+  include FactoryBot::Syntax::Methods
 
   # Transactional fixtures accelerate your tests by wrapping each test method
   # in a transaction that's rolled back on completion.  This ensures that the
@@ -83,7 +83,7 @@ class ActiveSupport::TestCase
 end
 
 class ActionController::TestCase
-  include FactoryGirl::Syntax::Methods
+  include FactoryBot::Syntax::Methods
 end
 
 require 'mocha'

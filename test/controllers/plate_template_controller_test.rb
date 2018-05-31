@@ -10,7 +10,7 @@ require 'assets_controller'
 class PlateTemplatesControllerTest < ActionController::TestCase
   context '#PlateTemplates controller' do
     setup do
-      @user = FactoryGirl.create(:slf_manager)
+      @user = FactoryBot.create(:slf_manager)
       session[:user] = @user.id
     end
     should_require_login

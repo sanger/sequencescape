@@ -22,7 +22,7 @@ module Admin
           'user', parent: 'role',
                   actions: ['index'],
                   ignore_actions: ['show', 'create'],
-                  user: -> { FactoryGirl.create(:admin) },
+                  user: -> { FactoryBot.create(:admin) },
                   formats: ['html']
         )
       end

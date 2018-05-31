@@ -472,12 +472,15 @@ class Batch < ApplicationRecord
     true
   end
 
-  def self.find_from_barcode(code)
-    human_batch_barcode = Barcode.number_to_human(code)
-    batch = Batch.find_by(barcode: human_batch_barcode)
-    batch ||= Batch.find_by(id: human_batch_barcode)
+  class << self
+    def find_by_barcode(code)
+      human_batch_barcode = Barcode.number_to_human(code)
+      batch = Batch.find_by(barcode: human_batch_barcode)
+      batch ||= Batch.find_by(id: human_batch_barcode)
 
-    batch
+      batch
+    end
+    alias_method :find_from_barcode, :find_by_barcode
   end
 
   def request_count

@@ -19,7 +19,7 @@ module Admin
 
       context '#create' do
         setup do
-          FactoryGirl.create :program, name: 'My unique name of program'
+          FactoryBot.create :program, name: 'My unique name of program'
         end
 
         should 'create a new program' do
@@ -39,7 +39,7 @@ module Admin
 
       context '#edit' do
         setup do
-          @program = FactoryGirl.create :program, name: 'My program name'
+          @program = FactoryBot.create :program, name: 'My program name'
         end
 
         should 'edit the name of the new program' do

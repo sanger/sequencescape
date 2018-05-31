@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   trait :library_request_validators do
     after(:build) do |request_type|
       request_type.library_types_request_types << create(:library_types_request_type, request_type: request_type)

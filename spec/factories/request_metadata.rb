@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :request_metadata, class: Request::Metadata do
     read_length 76
     customer_accepts_responsibility false
@@ -95,7 +95,7 @@ FactoryGirl.define do
   # set default  metadata factories to every request types which have been defined yet
   RequestType.all.each do |rt|
     factory_name =  :"request_metadata_for_#{rt.name.downcase.gsub(/[^a-z]+/, '_')}"
-    next if FactoryGirl.factories.registered?(factory_name)
+    next if FactoryBot.factories.registered?(factory_name)
     factory(factory_name, parent: :request_metadata)
   end
 end

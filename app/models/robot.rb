@@ -23,20 +23,23 @@ class Robot < ApplicationRecord
     max_plates_property.try(:value).to_i
   end
 
-  def self.prefix
-    'RB'
-  end
+  class << self
+    def prefix
+      'RB'
+    end
 
-  def self.find_from_barcode(code)
-    human_robot_barcode = Barcode.number_to_human(code)
-    Robot.find_by(barcode: human_robot_barcode) || Robot.find_by(id: human_robot_barcode)
-  end
+    def find_by_barcode(code)
+      human_robot_barcode = Barcode.number_to_human(code)
+      Robot.find_by(barcode: human_robot_barcode) || Robot.find_by(id: human_robot_barcode)
+    end
 
-  def self.valid_barcode?(code)
-    Barcode.barcode_to_human!(code, prefix)
-    find_from_barcode(code) # an exception is raise if not found
-    true
-  rescue
-    false
+    def valid_barcode?(code)
+      Barcode.barcode_to_human!(code, prefix)
+      find_from_barcode(code) # an exception is raise if not found
+      true
+    rescue
+      false
+    end
+    alias find_from_barcode find_by_barcode
   end
 end

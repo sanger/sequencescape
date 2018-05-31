@@ -6,7 +6,7 @@
 # authorship of this file.
 # Copyright (C) 2011,2012,2015,2016 Genome Research Ltd.
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :well, aliases: [:empty_well] do
     transient do
       study { build :study }
@@ -76,11 +76,12 @@ FactoryGirl.define do
 
   factory :well_for_location_report, parent: :well do
     transient do
-      study { create(:study) }
+      study
+      project
     end
 
     after(:create) do |well, evaluator|
-      well.aliquots << build(:tagged_aliquot, receptacle: well, study: evaluator.study)
+      well.aliquots << build(:untagged_aliquot, receptacle: well, study: evaluator.study, project: evaluator.project)
     end
   end
 end

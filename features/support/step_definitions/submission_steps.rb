@@ -5,7 +5,7 @@
 # Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 Given /^I have an empty submission$/ do
-  FactoryGirl.create(:submission_without_order)
+  FactoryBot.create(:submission_without_order)
 end
 
 When /^the state of the submission with UUID "([^"]+)" is "([^"]+)"$/ do |uuid, state|
@@ -33,7 +33,7 @@ Then /^the submission with UUID "([^"]+)" should have (\d+) "([^"]+)" requests?$
 end
 
 Given /^the request type "([^\"]+)" exists$/ do |name|
-  FactoryGirl.create(:request_type, name: name)
+  FactoryBot.create(:request_type, name: name)
 end
 
 def submission_in_state(state, attributes = {})

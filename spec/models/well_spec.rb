@@ -77,14 +77,18 @@ describe Well do
 
       context 'units: nM' do
         let(:units) { 'nM' }
-        it { expect(well.get_concentration).to eq(nil) }
-        it { expect(well.get_molarity).to eq(100) }
+        it 'works', :aggregate_failures do
+          expect(well.get_concentration).to eq(nil)
+          expect(well.get_molarity).to eq(100)
+        end
       end
 
       context 'units: ng/ul' do
         let(:units) { 'ng/ul' }
-        it { expect(well.get_concentration).to eq(100) }
-        it { expect(well.get_molarity).to eq(nil) }
+        it 'works', :aggregate_failures do
+          expect(well.get_concentration).to eq(100)
+          expect(well.get_molarity).to eq(nil)
+        end
       end
     end
 
@@ -104,22 +108,28 @@ describe Well do
       let(:key) { 'snp_count' }
       let(:units) { 'bases' }
       let(:value) { 100 }
-      it { expect(well.get_sequenom_count).to eq(100) }
-      it { expect(well.events.reload.last.content).to eq 'assay 1' }
+      it 'works', :aggregate_failures do
+        expect(well.get_sequenom_count).to eq(100)
+        expect(well.events.reload.last.content).to eq 'assay 1'
+      end
     end
     context 'key: loci_passed' do
       let(:key) { 'snp_count' }
       let(:units) { 'bases' }
       let(:value) { 100 }
-      it { expect(well.get_sequenom_count).to eq(100) }
-      it { expect(well.events.reload.last.content).to eq 'assay 1' }
+      it 'works', :aggregate_failures do
+        expect(well.get_sequenom_count).to eq(100)
+        expect(well.events.reload.last.content).to eq 'assay 1'
+      end
     end
     context 'key: gender_markers' do
       let(:key) { 'gender_markers' }
       let(:units) { 'bases' }
       let(:value) { 'MFU' }
-      it { expect(well.get_gender_markers).to eq(%w[M F Unknown]) }
-      it { expect(well.events.reload.last.content).to eq 'assay 1' }
+      it 'works', :aggregate_failures do
+        expect(well.get_gender_markers).to eq(%w[M F Unknown])
+        expect(well.events.reload.last.content).to eq 'assay 1'
+      end
     end
   end
 
