@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe Aker::Job, type: :model, aker: true do
   before do
-    @purpose = FactoryGirl.create :aker_plate_purpose
+    @purpose = FactoryBot.create :aker_plate_purpose
   end
 
   it 'is not valid without an Aker Job ID' do

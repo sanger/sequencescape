@@ -5,7 +5,7 @@ RSpec.describe Aker::Factories::Material, type: :model, aker: true do
   include BarcodeHelper
   before do
     mock_plate_barcode_service
-    FactoryGirl.create :aker_plate_purpose
+    FactoryBot.create :aker_plate_purpose
   end
 
   let(:json) do

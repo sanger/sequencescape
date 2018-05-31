@@ -7,7 +7,7 @@ RSpec.describe Api::V2::Aker::JobsController, type: :request, aker: true do
   include BarcodeHelper
   before do
     mock_plate_barcode_service
-    @purpose = FactoryGirl.create :aker_plate_purpose
+    @purpose = FactoryBot.create :aker_plate_purpose
   end
 
   let(:params) { { job: build(:aker_job_json) }.to_h.with_indifferent_access }

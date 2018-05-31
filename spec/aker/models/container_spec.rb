@@ -5,7 +5,7 @@ RSpec.describe Aker::Container, type: :model, aker: true do
   include BarcodeHelper
   before do
     mock_plate_barcode_service
-    @purpose = FactoryGirl.create :aker_plate_purpose
+    @purpose = FactoryBot.create :aker_plate_purpose
   end
 
   it 'is not valid without a barcode' do
