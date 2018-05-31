@@ -29,22 +29,6 @@ FactoryBot.define do
     end
   end
 
-  factory :cherrypicking_batch, class: Batch do
-    transient do
-      request_count 0
-    end
-
-    association(:pipeline, factory: :cherrypick_pipeline)
-
-    after(:build) do |batch, evaluator|
-      next if evaluator.request_count.zero?
-      study = build(:study)
-      project = build(:project)
-      request_type = batch.pipeline.request_types.first
-      batch.requests = build_list(:cherrypick_request_for_pipeline, evaluator.request_count, request_type: request_type, initial_study: study, initial_project: project)
-    end
-  end
-
   factory :pac_bio_sequencing_batch, class: Batch do
     transient do
       target_plate { create(:plate_with_tagged_wells, sample_count: request_count) }

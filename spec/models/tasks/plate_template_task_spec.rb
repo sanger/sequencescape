@@ -7,9 +7,26 @@ require 'rails_helper'
 RSpec.describe PlateTemplateTask, type: :model do
   subject(:task) { create :plate_template_task }
 
-  let(:batch) { create :cherrypicking_batch, request_count: 8 }
+  let(:pipeline) { create :cherrypick_pipeline }
+  let(:requests) do
+    requests = []
+    plate_a.wells.each do |well|
+      requests << create(:cherrypick_request, asset: well, request_type: pipeline.request_types.first)
+    end
+    plate_b.wells.each do |well|
+      requests << create(:cherrypick_request, asset: well, request_type: pipeline.request_types.first)
+    end
+    requests
+  end
+  let(:plate_a_barcode_number) { '1' }
+  let(:plate_b_barcode_number) { '2' }
+  let(:plate_a) { create :plate, barcode: plate_a_barcode_number, well_count: 4, well_factory: :untagged_well }
+  let(:plate_b) { create :plate, barcode: plate_b_barcode_number, well_count: 4, well_factory: :untagged_well }
+
+  let(:batch) { create :batch, requests: requests, pipeline: pipeline }
   let(:request) { instance_double(ActionDispatch::Request, parameters: params) }
-  let(:workflow) { create :workflow }
+  let(:workflow) { pipeline.workflow }
+
   let(:payload) do
     CSV.generate do |csv|
       csv << ['Request ID', 'Sample Name', 'Plate', 'Destination Well']
@@ -21,9 +38,18 @@ RSpec.describe PlateTemplateTask, type: :model do
   let(:spreadsheet_layout) do
     [
       [
-        batch.requests.each_with_index.map { |r, _i| [r.id, r.asset.plate.barcode_number, r.asset.display_name] }.concat(Array.new(96 - 8, [0, 'Empty', '']))
+        [
+          [requests[0].id, plate_a_barcode_number, 'DN1S:A1'],
+          [requests[1].id, plate_a_barcode_number, 'DN1S:B1'],
+          [requests[2].id, plate_a_barcode_number, 'DN1S:C1'],
+          [requests[3].id, plate_a_barcode_number, 'DN1S:D1'],
+          [requests[4].id, plate_b_barcode_number, 'DN2T:A1'],
+          [requests[5].id, plate_b_barcode_number, 'DN2T:B1'],
+          [requests[6].id, plate_b_barcode_number, 'DN2T:C1'],
+          [requests[7].id, plate_b_barcode_number, 'DN2T:D1']
+        ].concat(Array.new(96 - 8, [0, 'Empty', '']))
       ],
-      batch.requests.map { |r| r.asset.plate.barcode_number }.uniq
+      %w[1 2]
     ]
   end
 
@@ -57,8 +83,21 @@ RSpec.describe PlateTemplateTask, type: :model do
 
   describe Tasks::PlateTemplateHandler do
     describe '::generate_spreadsheet' do
+      let(:output) do
+        CSV.generate(row_sep: "\r\n") do |csv|
+          csv << ['Request ID', 'Sample Name', 'Source Plate', 'Source Well', 'Plate', 'Destination Well']
+          csv << [requests[0].id, requests[0].asset.samples.first.name, 'DN1S', 'A1', '', '']
+          csv << [requests[1].id, requests[1].asset.samples.first.name, 'DN1S', 'B1', '', '']
+          csv << [requests[2].id, requests[2].asset.samples.first.name, 'DN1S', 'C1', '', '']
+          csv << [requests[3].id, requests[3].asset.samples.first.name, 'DN1S', 'D1', '', '']
+          csv << [requests[4].id, requests[4].asset.samples.first.name, 'DN2T', 'A1', '', '']
+          csv << [requests[5].id, requests[5].asset.samples.first.name, 'DN2T', 'B1', '', '']
+          csv << [requests[6].id, requests[6].asset.samples.first.name, 'DN2T', 'C1', '', '']
+          csv << [requests[7].id, requests[7].asset.samples.first.name, 'DN2T', 'D1', '', '']
+        end
+      end
       subject { Tasks::PlateTemplateHandler.generate_spreadsheet(batch) }
-      it { is_expected.to be_a String }
+      it { is_expected.to eq(output) }
     end
   end
 end
