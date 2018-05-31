@@ -423,6 +423,15 @@ class Asset < ApplicationRecord
     Purpose.none
   end
 
+  # Most assets don't have a barcode
+  def barcode_number
+    nil
+  end
+
+  def prefix
+    nil
+  end
+
   # By default only barcodeable assets generate barcodes
   def generate_barcode
     nil
