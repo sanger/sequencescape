@@ -1,9 +1,12 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
+require 'support/barcode_helper'
 
 RSpec.describe Api::V2::Aker::JobsController, type: :request, aker: true do
+  include BarcodeHelper
   before do
+    mock_plate_barcode_service
     @purpose = FactoryGirl.create :aker_plate_purpose
   end
   

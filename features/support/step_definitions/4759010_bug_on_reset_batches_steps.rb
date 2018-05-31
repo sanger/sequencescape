@@ -9,10 +9,6 @@ Given /^sequencescape is setup for 4759010$/ do
   group = FactoryGirl.create(:tag_group, name: 'Tag group for 4759010', tag_count: 10)
 end
 
-Given /^a batch in "Cluster formation PE" has been setup for feature 4759010$/ do
-  pending
-end
-
 Given /^a batch in "Illumina-B MX Library Preparation" has been setup for feature 4759010$/ do
   pipeline    = Pipeline.find_by(name: 'Illumina-B MX Library Preparation') or raise StandardError, "Cannot find pipeline 'Illumina-B MX Library Preparation'"
   batch       = FactoryGirl.create :batch, pipeline: pipeline, state: 'pending'
@@ -51,8 +47,4 @@ Given /^a batch in "Illumina-B MX Library Preparation" has been setup for featur
   request.asset.save!
   # batch.requests << request
   asset_group.assets << request.asset
-end
-
-When /^I select all requests$/ do
-  page.all('.request_checkbox').each { |checkbox| checkbox.set(true) }
 end

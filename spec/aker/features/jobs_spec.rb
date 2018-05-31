@@ -1,9 +1,18 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
+require 'support/barcode_helper'
 
 RSpec.describe 'Jobs', type: :feature, aker: true do
-  let!(:jobs) { create_list(:aker_job_with_samples, 5) }
+  include BarcodeHelper
+  before do
+    @purpose = FactoryGirl.create :aker_plate_purpose    
+    mock_plate_barcode_service
+  end
+
+  let!(:jobs) { 
+    create_list(:aker_job_with_samples, 5) 
+  }
   let!(:job) { jobs.first }
   let(:get_url) { "#{Rails.configuration.aker['urls']['work_orders']}/jobs/#{job.aker_job_id}" }
   let(:request) { RestClient::Request.new(method: :get, url: get_url) }

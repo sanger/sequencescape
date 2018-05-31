@@ -4,8 +4,6 @@
 # authorship of this file.
 # Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
-require File.join(File.dirname(__FILE__), %w[.. test_helper])
-
 class TaskTestBase < ActiveSupport::TestCase
   class << self
     def expected_partial(name)

@@ -9,20 +9,26 @@ module Aker
 
     validates :barcode, presence: true, uniqueness: { scope: :address }
 
-    before_save :update_asset!
+    before_save :connect_asset!
 
-    def update_asset!
-      return @asset if @asset
+    def connect_asset!
+      return asset if asset
       labware = find_or_create_asset_by_aker_barcode!
-      @asset ||= address ? labware.wells.located_at(address) : labware
+      assign_attributes(asset: address ? labware.wells.located_at(address_for_ss).first : labware)
     end
 
     def find_or_create_asset_by_aker_barcode!
       labware = Asset.find_from_barcode(barcode)
       unless labware
-        labware = PlatePurpose.find_by(name: STOCK_PLATE_PURPOSE).create!(barcode: barcode)
+        labware = PlatePurpose.find_by(name: STOCK_PLATE_PURPOSE).create!
+        labware.aker_barcode = barcode
+        labware.save!
       end
-      labware      
+      labware
+    end
+
+    def address_for_ss
+      address.gsub(/:/,'')
     end
 
     def as_json(_options = {})

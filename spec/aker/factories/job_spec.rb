@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
+require 'support/barcode_helper'
 
 RSpec.describe Aker::Factories::Job, type: :model, aker: true do
+  include BarcodeHelper
   before do
-    FactoryGirl.create :aker_plate_purpose
+    @purpose = FactoryGirl.create :aker_plate_purpose
+    mock_plate_barcode_service
   end
 
   let(:params) { build(:aker_job_json).to_h.with_indifferent_access }

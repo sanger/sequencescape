@@ -38,11 +38,14 @@ module Aker
       def create
         return unless valid?
         @model = Sample.create(attributes)
-        put_sample_in_container(@model, container)
+        container_model = container.create
+        put_sample_in_container(@model, container_model)
         @model
       end
 
       def put_sample_in_container(sample, container)
+        container.save if container.asset.nil?
+
         if (container.asset.aliquots.where(sample: sample).count == 0)
           container.asset.aliquots.create!(sample: sample)
         end

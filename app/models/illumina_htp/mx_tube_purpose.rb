@@ -26,11 +26,11 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
   end
 
   def stock_plate(tube)
-    tube.requests_as_target.where_is_a?(CustomerRequest).where.not(requests: { asset_id: nil }).first&.asset&.plate
+    tube.requests_as_target.where.not(requests: { asset_id: nil }).first&.asset&.plate
   end
 
   def source_plate(tube)
-    source_plate_scope(tube).first
+    super || source_plate_scope(tube).first
   end
 
   def library_source_plates(tube)

@@ -51,15 +51,6 @@ module Barcode::FormatHandlers
     def barcode_prefix
       prefix.human
     end
-
-    def summary
-      {
-        number: number.to_s,
-        prefix: barcode_prefix,
-        ean13: ean13_barcode,
-        machine_barcode: ean13_barcode
-      }
-    end
   end
 
   # A basic class for barodes that can be validated and decomposed by simple regular expressions
@@ -90,14 +81,6 @@ module Barcode::FormatHandlers
 
     def code128_barcode?
       true
-    end
-
-    def summary
-      {
-        number: number.to_s,
-        prefix: barcode_prefix,
-        machine_barcode: machine_barcode
-      }
     end
 
     def valid?
@@ -131,5 +114,9 @@ module Barcode::FormatHandlers
     def valid?
       true
     end
+  end
+
+  class AkerBarcode < BaseRegExBarcode
+    self.format = /\AAKER-[0-9]*\z/
   end
 end

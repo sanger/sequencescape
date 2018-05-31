@@ -15,6 +15,12 @@ class Io::Qcable < Core::Io::Base
             stamp_qcable.bed => stamp_bed
                  stamp_index => stamp_index
 
-      asset.barcode_summary  => barcode
+         asset.barcode_number  => barcode.number
+                 asset.prefix  => barcode.prefix
+asset.two_dimensional_barcode  => barcode.two_dimensional
+          asset.ean13_barcode  => barcode.ean13
+        asset.machine_barcode  => barcode.machine
+           asset.barcode_type  => barcode.type
+
   ")
 end

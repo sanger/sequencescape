@@ -68,38 +68,6 @@ class PlateTest < ActiveSupport::TestCase
         assert_equal false, Plate.find(@plate.id).sample?('abcdef')
       end
     end
-
-    context '#control_well_exists?' do
-      setup do
-        @control_plate = create :control_plate, barcode: 134443
-        map = Map.find_by(description: 'A1', asset_size: 96)
-        @control_well_asset = Well.new(map: map)
-        @control_plate.add_and_save_well @control_well_asset
-        @control_plate.reload
-      end
-      context 'where control well is present' do
-        setup do
-          @plate_cw = Plate.create!
-          @plate_cw.add_and_save_well Well.new
-          @plate_cw.reload
-          create :well_request, asset: @control_well_asset, target_asset: @plate_cw.child
-        end
-        should 'return true' do
-          assert @plate_cw.control_well_exists?
-        end
-      end
-
-      context 'where control well is not present' do
-        setup do
-          @plate_no_cw = create :plate
-          @plate_no_cw.add_and_save_well Well.new
-          @plate_no_cw.reload
-        end
-        should 'return false' do
-          assert_equal false, @plate_no_cw.control_well_exists?
-        end
-      end
-    end
   end
 
   context '#iteration' do

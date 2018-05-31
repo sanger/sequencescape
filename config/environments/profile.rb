@@ -2,7 +2,7 @@ Rails.application.configure do
   # Used for accurately profiling calls.
 
   # We NEED to cache classes for ruby-rpof
-  config.cache_classes = false
+  config.cache_classes = true
   # Eager load on boot
   config.eager_load = true
 

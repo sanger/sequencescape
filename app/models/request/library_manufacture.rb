@@ -9,9 +9,9 @@
 module Request::LibraryManufacture
   def self.included(base)
     base::Metadata.class_eval do
-      custom_attribute(:fragment_size_required_from, required: true, integer: true)
-      custom_attribute(:fragment_size_required_to,   required: true, integer: true)
-      custom_attribute(:library_type,                required: true, validator: true, selection: true)
+      custom_attribute(:fragment_size_required_from, required: true, integer: true, on: :create)
+      custom_attribute(:fragment_size_required_to,   required: true, integer: true, on: :create)
+      custom_attribute(:library_type,                required: true, validator: true, selection: true, on: :create)
     end
 
     base.class_eval do

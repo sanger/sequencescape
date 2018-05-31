@@ -44,14 +44,6 @@ Then /^the application information box is not shown$/ do
   assert page.has_no_xpath?('//*[@id="app-info-box"]')
 end
 
-Given /^I am viewing the "([^\"]*)" page$/ do |url|
-  visit url
-end
-
-Then /^I should be at (.+)$/ do |path|
-  assert_equal URI.parse(current_url).path, path
-end
-
 Given /^I am editing the custom text field "([^\"]+)"$/ do |name|
   field = CustomText.find_by(identifier: name) or raise StandardError, "Cannot find custom text field #{name.inspect}"
   visit edit_admin_custom_text_path(field)
@@ -61,13 +53,6 @@ Then /^the page should contain the following$/ do |table|
   # table is a Cucumber::Ast::Table
   table.hashes.each do |hash|
     step "I should see \"#{hash[:text]}\""
-  end
-end
-
-When /^I fill in the following fields$/ do |table|
-  # table is a Cucumber::Ast::Table
-  table.hashes.each do |hash|
-    step(%Q{I fill in the field labeled "Custom text #{hash[:label]}" with "#{hash[:value]}"})
   end
 end
 

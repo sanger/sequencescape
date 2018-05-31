@@ -94,8 +94,8 @@ class RequestType < ApplicationRecord
     new_request = klass.public_send(construct_method, attributes) do |request|
       request.request_type = self
       request.request_purpose ||= request_purpose
-      request.billing_product = find_product_for_request(request)
       yield(request) if block_given?
+      request.billing_product = find_product_for_request(request)
     end
     # Prevent us caching all our requests
     requests.reset
@@ -183,6 +183,15 @@ class RequestType < ApplicationRecord
 
   def find_product_for_request(request)
     billing_product_catalogue.find_product_for_request(request) if billing_product_catalogue.present?
+  end
+
+  # Returns the validator for a given option.
+  def validator_for(request_option)
+    if request_type_validators.loaded?
+      request_type_validators.detect { |rtv| rtv.request_option == request_option.to_s }
+    else
+      request_type_validators.find_by(request_option: request_option.to_s)
+    end || RequestType::Validator::NullValidator.new
   end
 
   delegate :pool_count,             to: :pooling_method

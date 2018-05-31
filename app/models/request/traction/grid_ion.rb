@@ -16,6 +16,10 @@ class Request
 
       destroy_aasm
 
+      def passed?
+        state == 'passed'
+      end
+
       # We've destroyed the stat_machine, but its validation remains.
       # Here we override it to allow custom states.
       def aasm_validate_states

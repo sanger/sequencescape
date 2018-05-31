@@ -4,6 +4,8 @@
 # authorship of this file.
 # Copyright (C) 2014,2015,2016 Genome Research Ltd.
 
+raise StandardError, 'Your database is already seeded.' if ApiApplication.find_by(name: 'Default Application')
+
 ApiApplication.new(
   name: 'Default Application',
   key: configatron.api.authorisation_code,

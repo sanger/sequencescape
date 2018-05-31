@@ -43,33 +43,10 @@ Given /^I have a request for "([^\"]*)"$/ do |pipeline_name|
   create_request_for_pipeline(pipeline_name)
 end
 
-Given /^I have (\d+) requests for "([^"]*)" that are part of the same submission$/ do |count, pipeline_name|
-  pipeline   = Pipeline.find_by(name: pipeline_name) or raise StandardError, "Cannot find pipeline #{pipeline_name.inspect}"
-  submission = FactoryGirl.create(:submission, request_types: [pipeline.request_types.last.id])
-  (1..count.to_i).each do |_|
-    create_request_for_pipeline(pipeline_name, submission: submission)
-  end
-end
-
-Given /^all requests are in the "([^"]*)" state$/ do |state|
-  Request.update_all("state=#{state.inspect}")
-end
-
-Given /^all requests for the submission with UUID "([^\"]+)" are in the "([^\"]+)" state$/ do |uuid, state|
-  submission = Uuid.lookup_single_uuid(uuid).resource
-  Request.update_all("state=#{state.inspect}", ['submission_id=?', submission.id])
-end
-
 Given /^I on batch page$/ do
   visit "/batches/#{Batch.last.id}"
 end
 
-Given /^I am viewing the pipeline page$/ do
-  visit "/pipelines/#{Pipeline.last.id}"
-end
-
-Given /^I have data loaded from SNP$/ do
-end
 When /^I check request "(\d+)" for pipeline "([^"]+)"/ do |request_number, pipeline_name|
   # TODO: find the request checkboxes in the current page (by name "request_... ") so we don't need
   # do give the pipelin name
@@ -88,31 +65,6 @@ Then /^the requests from "([^\"]+)" batches should not be in the inbox$/ do |nam
       assert page.has_no_xpath?("//*[@id='request_#{request.id}']")
     end
   end
-end
-
-When /^I fill in the plate barcode$/ do
-  step(%Q{I fill in "barcode_0" with "#{Plate.last.ean13_barcode}"})
-  #  puts "Plate #{Plate.last.id} -- #{Plate.last.location_id}"
-end
-
-Then /^I have added some output plates$/ do
-  batch = Batch.last
-  well = FactoryGirl.create :well
-  FactoryGirl.create :map, description: 'A1'
-  well_request = FactoryGirl.create :request, target_asset: well
-  plate = FactoryGirl.create :plate
-  plate.add_well_by_map_description(well, 'A1')
-  batch.requests << well_request
-  batch.save
-end
-
-Then /^the pipeline inbox should be:$/ do |expected_results_table|
-  expected_results_table.diff!(table(fetch_table('table#pipeline_inbox')))
-end
-
-When /^I click on the last "([^\"]*)" batch$/ do |status|
-  batch = Batch.last(conditions: { state: status })
-  step(%Q{I follow "#{status} batch #{batch.id}"})
 end
 
 Given /^the maximum batch size for the pipeline "([^\"]+)" is (\d+)$/ do |name, max_size|

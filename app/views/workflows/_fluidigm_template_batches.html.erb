@@ -23,7 +23,7 @@
       <%- end %>
       <tr>
         <td><label for="plate_template_0">Plate Template</label>:</td>
-        <td><%= select("plate_template", "0", @plate_templates.collect {|p| [ (p.control_well? ? p.name+" - control well" : p.name), p.id ] })  %></td>
+        <td><%= select("plate_template", "0", @plate_templates.pluck(:name, :id))  %></td>
       </tr>
     </table>
     <p class='help-block'>Templates define which wells to leave empty on a plate when you cherrypick samples. You can add to an existing partial plate by scanning the barcode, or entering the plate ID.  The plate must have been previously picked in SequenceScape.  Wells can be rearranged in the next step.</p>

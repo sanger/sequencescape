@@ -3,8 +3,8 @@
 FactoryGirl.define do
   factory :container_json, class: Hash do
     skip_create
-
-    sequence(:barcode) { |_i| 'AKER-{i}' }
+    address { 'A:1' }
+    sequence(:barcode) { |_i| "AKER-#{_i}" }
 
     initialize_with { attributes.stringify_keys }
   end

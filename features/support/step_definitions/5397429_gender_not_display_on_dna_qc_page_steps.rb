@@ -26,16 +26,6 @@ Given /^the manifests are successfully processed$/ do
   assert(manifests.all? { |m| m.last_errors.blank? }, "There are sample manifests with errors: #{manifests.inspect}")
 end
 
-When /^I create a submission with plate "([^\"]+)" for study "([^\"]+)" under project "([^\"]+)"$/ do |plate, study, project|
-  step(%Q{I am on the show page for study "#{study}"})
-  step('I follow "Submit plates"')
-  step(%Q{I select "#{project}" from "Project"})
-  step(%Q{I fill in "Barcodes" with "#{plate}"})
-  step('I press "Submit"')
-
-  step('1 pending delayed jobs are processed')
-end
-
 When /^I start request (\d+) in the "([^\"]+)" pipeline$/ do |index, pipeline|
   step('I follow "Pipelines"')
   step(%Q{I follow "#{pipeline}"})

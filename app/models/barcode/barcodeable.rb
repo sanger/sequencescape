@@ -29,13 +29,6 @@ module Barcode::Barcodeable
     primary_barcode&.barcode_prefix
   end
 
-  def barcode_summary
-    {
-      type: barcode_type,
-      two_dimensional: two_dimensional_barcode
-    }.merge(primary_barcode.try(:summary) || {})
-  end
-
   def external_identifier
     human_barcode
   end
@@ -80,6 +73,13 @@ module Barcode::Barcodeable
     barcodes.external.first_or_initialize.barcode = barcode
   end
 
+  def aker_barcode
+    barcodes.detect(&:aker_barcode?)&.machine_barcode
+  end
+
+  def aker_barcode=(barcode)
+    barcodes.aker_barcode.first_or_initialize.barcode = barcode
+  end  
 
   deprecate def barcode!
     barcode

@@ -7,11 +7,12 @@
 class PlateTemplate < Plate
   include Lot::Template
 
+  scope :with_sizes, ->(sizes) { where(size: sizes) }
+
   def update_params!(details = {})
     self.name = details[:name]
     wells.delete_all
     self.size = (details[:rows]).to_i * (details[:cols]).to_i
-    set_control_well(details[:control_well]) unless set_control_well(details[:control_well]).nil?
     save!
 
     unless details[:wells].nil?
@@ -29,23 +30,4 @@ class PlateTemplate < Plate
       end
     end
   end
-
-  def set_control_well(result)
-    add_descriptor(Descriptor.new(name: 'control_well', value: result))
-    save
-  end
-
-  def control_well?
-    return false if descriptors.nil?
-    1 == descriptor_value('control_well').to_i
-  end
-
-  def without_control_wells?
-    return true if descriptors.nil?
-    0 == descriptor_value('control_well').to_i
-  end
-
-  scope :with_sizes, ->(sizes) {
-    where(['size IN (?)', sizes])
-  }
 end

@@ -49,10 +49,6 @@ When /^(?:|I )follow "([^"]*)"(?: within "([^"]*)")?$/ do |link, selector|
   end
 end
 
-When /^I follow first "(.*?)"$/ do |link|
-  first('a', text: link).click
-end
-
 When(/^(?:|I )fill in "([^"]*)" with "([^"]*)"(?: within "([^"]*)")?$/) do |field, value, selector|
   with_scope(selector) do
     fill_in(field, with: value)
@@ -62,12 +58,6 @@ end
 When(/^(?:|I )fill in "([^"]*)" with the file "([^"]*)"(?: within "([^"]*)")?$/) do |field, value, selector|
   with_scope(selector) do
     attach_file(field, value)
-  end
-end
-
-When(/^(?:|I )fill in "([^"]*)" for "([^"]*)"(?: within "([^"]*)")?$/) do |value, field, selector|
-  with_scope(selector) do
-    fill_in(field, with: value)
   end
 end
 
@@ -87,16 +77,6 @@ When(/^(?:|I )fill in the following(?: within "([^"]*)")?:$/) do |selector, fiel
   with_scope(selector) do
     fields.rows_hash.each do |name, value|
       step %Q{I fill in "#{name}" with "#{value}"}
-    end
-  end
-end
-
-# [xxx] I've added this as there isn't currently a matcher for this in websteps but there
-# probably will be one in the future so it'll need watching...
-When /^(?:|I )select from the following(?: within "([^"]*)")?:$/ do |selector, fields|
-  with_scope(selector) do
-    fields.rows_hash.each do |field, value|
-      select(value, from: field)
     end
   end
 end
@@ -138,44 +118,10 @@ When /^(?:|I )attach the file "([^\"]*)" to "([^\"]*)"(?: within "([^\"]*)")?$/ 
   end
 end
 
-Then /^(?:|I )should see JSON:$/ do |expected_json|
-  require 'json'
-  expected = JSON.pretty_generate(JSON.parse(expected_json))
-  actual   = JSON.pretty_generate(JSON.parse(response.body))
-  expected.should == actual
-end
-
 Then /^(?:|I )should see "([^\"]*)"(?: within "([^\"]*)")?$/ do |text, selector|
   with_scope(selector) do
     assert page.has_content?(text), "Could not see #{text} on page."
   end
-end
-
-Then /^(?:|I )should see \/([^\/]*)\/(?: within "([^\"]*)")?$/ do |regexp, selector|
-  regexp = Regexp.new(regexp)
-  with_scope(selector) do
-    if page.respond_to? :should
-      page.should have_xpath('//*', text: regexp)
-    else
-      assert page.has_xpath?('//*', text: regexp)
-    end
-  end
-end
-
-Then /^I should see "(.*?)" once$/ do |text|
-  if page.respond_to? :should
-    page.should have_content(text, count: 1)
-  else
-    assert page.has_content?(text, count: 1)
-  end
-end
-
-Then /^I should see "(.*?)" within the javascript$/ do |text|
-  assert all('script', visible: false).any? { |s| s.native.text.include?(text) }, "Didn't find #{text} in javascript"
-end
-
-Then /^I should not see "(.*?)" within the javascript$/ do |text|
-  assert all('script', visible: false).none? { |s| s.native.text.include?(text) }, "Found #{text} in javascript"
 end
 
 Then /^(?:|I )should not see "([^"]*)"(?: within "([^"]*)")?$/ do |text, selector|
@@ -199,18 +145,6 @@ Then /^the "([^"]*)" field(?: within "([^"]*)")? should contain "([^"]*)"$/ do |
       field_value.should =~ /#{value}/
     else
       assert_match(/#{value}/, field_value)
-    end
-  end
-end
-
-Then /^the "([^"]*)" field(?: within "([^"]*)")? should not contain "([^"]*)"$/ do |field, selector, value|
-  with_scope(selector) do
-    field = find_field(field)
-    field_value = (field.tag_name == 'textarea') ? field.text : field.value
-    if field_value.respond_to? :should_not
-      field_value.should_not =~ /#{value}/
-    else
-      assert_no_match(/#{value}/, field_value)
     end
   end
 end
@@ -240,14 +174,6 @@ end
 Then /^(?:|I )should be on (.+)$/ do |page_name|
   current_path = URI.parse(current_url).path
   assert_equal path_to(page_name), current_path
-end
-
-Then /^(?:|I )should have the following query string:$/ do |expected_pairs|
-  query = URI.parse(current_url).query
-  actual_params = query ? CGI.parse(query) : {}
-  expected_params = {}
-  expected_pairs.rows_hash.each_pair { |k, v| expected_params[k] = v.split(',') }
-  assert_equal expected_params, actual_params
 end
 
 Then /^show me the page$/ do

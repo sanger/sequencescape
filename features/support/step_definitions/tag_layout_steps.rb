@@ -42,11 +42,6 @@ Given /^the tag group for (#{TAG_LAYOUT_TEMPLATE_REGEXP}) contains the following
   replace_tag_layout_tags(template, table.hashes)
 end
 
-Given /^the tag group for (#{TAG_LAYOUT_TEMPLATE_REGEXP}) has tags (\d+)\.\.(\d+)$/ do |template, low, high|
-  tag_range = Range.new(low.to_i, high.to_i)
-  replace_tag_layout_tags(template, tag_range.map { |index| { index: index, oligo: "TAG#{index}" } })
-end
-
 # assert simply isn't good enough for displaying the oligos and working out what has gone wrong so this
 # method turns a map of well-oligo values to a plate view of how the oligos are laid out.  This can then
 # be used for eye checking to see what's going on.
@@ -113,23 +108,6 @@ Then /^the tag 2 layout on the plate "([^"]+)" should be:$/ do |name, table|
   )
 end
 
-Then /^the tags assigned to the plate "([^"]+)" should be:$/ do |name, table|
-  check_tag_layout(
-    name, WellRange.new('A1', 'H12'),
-    Hash[table.hashes.map { |a| [a['well'], a['tag']] }]
-  )
-end
-
-Then /^the tags assigned to the plate "([^"]+)" should be (\d+)\.\.(\d+) for wells "([^"]+)"$/ do |name, low, high, range|
-  tag_range = Range.new(low.to_i, high.to_i)
-  raise StandardError, "Tag range #{tag_range.inspect} is not the same size as well range #{range.inspect}" unless tag_range.to_a.size == range.size
-
-  check_tag_layout(
-    name, range,
-    Hash[range.to_a.zip(tag_range.to_a.map { |v| "TAG#{v}" })]
-  )
-end
-
 Given /^the UUID for the plate associated with the tag layout with ID (\d+) is "([^"]+)"$/ do |id, uuid_value|
   set_uuid_for(TagLayout.find(id).plate, uuid_value)
 end
@@ -172,11 +150,4 @@ end
 
 Given /^well "(.*?)" on the plate "(.*?)" is empty$/ do |well, plate|
   Plate.find_by!(name: plate).wells.located_at(well).first.aliquots.each(&:destroy)
-end
-
-Given /^the tag2 layout template "(.*?)" is associated with the last submission$/ do |template|
-  Tag2Layout::TemplateSubmission.create!(
-    tag2_layout_template: Tag2LayoutTemplate.find_by!(name: template),
-    submission: Submission.last
-  )
 end

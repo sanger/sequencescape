@@ -37,7 +37,7 @@ class Purpose < ApplicationRecord
   end
 
   def barcode_type
-    barcode_printer_type.printer_type_id
+    barcode_printer_type&.printer_type_id
   end
 
   def target_class

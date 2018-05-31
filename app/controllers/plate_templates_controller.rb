@@ -37,7 +37,7 @@ class PlateTemplatesController < ApplicationController
     end
 
     pattern = PlateTemplate.new
-    pattern.update_params!(name: params[:name], user_id: current_user.id, wells: params[:empty_well], control_well: params[:control_well], rows: params[:rows], cols: params[:cols])
+    pattern.update_params!(name: params[:name], user_id: current_user.id, wells: params[:empty_well], rows: params[:rows], cols: params[:cols])
     flash[:notice] = 'Template saved'
     redirect_to plate_templates_path
   end
@@ -50,7 +50,7 @@ class PlateTemplatesController < ApplicationController
 
   def update
     pattern = PlateTemplate.find(params[:id])
-    pattern.update_params!(name: params[:name], user_id: current_user.id, control_well: params[:control_well], wells: params[:empty_well], rows: params[:rows], cols: params[:cols])
+    pattern.update_params!(name: params[:name], user_id: current_user.id, wells: params[:empty_well], rows: params[:rows], cols: params[:cols])
     flash[:notice] = 'Template updated'
     redirect_to plate_templates_path
   end

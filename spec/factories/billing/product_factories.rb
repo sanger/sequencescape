@@ -6,5 +6,9 @@ FactoryGirl.define do
     sequence(:name) { |n| "Product #{n}" }
     identifier 'test'
     category 'sequencing'
+
+    factory :library_creation_billing_product do
+      category 'library_creation'
+    end
   end
 end

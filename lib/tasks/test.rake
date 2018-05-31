@@ -1,3 +1,15 @@
+Rake::Task['test'].clear
+
+task :test do
+  $LOAD_PATH << 'test'
+  if ENV.key?('TEST')
+    Rails::TestUnit::Runner.rake_run([ENV['TEST']])
+  else
+    test_folders = FileList['test/*'].exclude('test/performance', 'test/*.*')
+    Rails::TestUnit::Runner.rake_run(test_folders)
+  end
+end
+
 namespace :test do
   # lib/tasks/factory_girl.rake
   namespace :factory_girl do
