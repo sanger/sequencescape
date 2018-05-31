@@ -46,9 +46,7 @@ module Aker
       def put_sample_in_container(sample, container)
         container.save if container.asset.nil?
 
-        if (container.asset.aliquots.where(sample: sample).count == 0)
-          container.asset.aliquots.create!(sample: sample)
-        end
+        container.asset.aliquots.create!(sample: sample) if container.asset.aliquots.where(sample: sample).count == 0
       end
 
       ##

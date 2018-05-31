@@ -1,7 +1,6 @@
 require 'rails_helper'
 require 'support/barcode_helper'
 
-
 RSpec.describe Aker::Factories::Container, type: :model, aker: true do
   include BarcodeHelper
   before do

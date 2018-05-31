@@ -3,10 +3,9 @@ module BarcodeHelper
 
   def mock_plate_barcode_service
     @num_barcode = 1000
-    allow(PlateBarcode).to receive(:create) do 
+    allow(PlateBarcode).to receive(:create) do
       @num_barcode += 1
       build(:plate_barcode, barcode: @num_barcode)
-    end    
+    end
   end
-
 end

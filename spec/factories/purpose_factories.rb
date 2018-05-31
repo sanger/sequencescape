@@ -43,7 +43,7 @@ FactoryGirl.define do
       stock_plate true
       prefix 'AK'
     end
-    
+
     factory :source_plate_purpose do
       after(:build) do |source_plate_purpose, _evaluator|
         source_plate_purpose.source_purpose = source_plate_purpose

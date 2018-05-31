@@ -6,13 +6,13 @@ require 'support/barcode_helper'
 RSpec.describe 'Jobs', type: :feature, aker: true do
   include BarcodeHelper
   before do
-    @purpose = FactoryGirl.create :aker_plate_purpose    
+    @purpose = FactoryGirl.create :aker_plate_purpose
     mock_plate_barcode_service
   end
 
-  let!(:jobs) { 
-    create_list(:aker_job_with_samples, 5) 
-  }
+  let!(:jobs) do
+    create_list(:aker_job_with_samples, 5)
+  end
   let!(:job) { jobs.first }
   let(:get_url) { "#{Rails.configuration.aker['urls']['work_orders']}/jobs/#{job.aker_job_id}" }
   let(:request) { RestClient::Request.new(method: :get, url: get_url) }

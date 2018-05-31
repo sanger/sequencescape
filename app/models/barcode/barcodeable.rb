@@ -79,7 +79,7 @@ module Barcode::Barcodeable
 
   def aker_barcode=(barcode)
     barcodes.aker_barcode.first_or_initialize.barcode = barcode
-  end  
+  end
 
   deprecate def barcode!
     barcode

@@ -12,10 +12,10 @@ FactoryGirl.define do
   factory :container_with_address, class: Aker::Container do
     transient do
       sequence(:index) { |n| n }
-      sequence(:address_for_aker) { |value|
+      sequence(:address_for_aker) do |value|
         quotient, remainder = value.divmod(12)
-        "#{('A'..'Z').to_a[quotient % 8]}:#{(remainder % 12)+1}" 
-      }      
+        "#{('A'..'Z').to_a[quotient % 8]}:#{(remainder % 12) + 1}"
+      end
     end
 
     barcode { 'AKER-1' }

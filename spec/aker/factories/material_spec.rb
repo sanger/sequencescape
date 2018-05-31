@@ -1,14 +1,13 @@
 require 'rails_helper'
 require 'support/barcode_helper'
 
-
 RSpec.describe Aker::Factories::Material, type: :model, aker: true do
   include BarcodeHelper
   before do
     mock_plate_barcode_service
     FactoryGirl.create :aker_plate_purpose
   end
-  
+
   let(:json) do
     file = File.read(File.join('spec', 'data', 'aker', 'job.json'))
     JSON.parse(file).with_indifferent_access

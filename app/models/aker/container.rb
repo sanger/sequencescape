@@ -1,7 +1,7 @@
 module Aker
   # Phisical container for the biomaterial
   class Container < ApplicationRecord
-    STOCK_PLATE_PURPOSE = 'Aker Plate'
+    STOCK_PLATE_PURPOSE = 'Aker Plate'.freeze
 
     has_many :samples, dependent: :destroy
 
@@ -28,7 +28,7 @@ module Aker
     end
 
     def address_for_ss
-      address.gsub(/:/,'')
+      address.delete(':')
     end
 
     def as_json(_options = {})
@@ -37,6 +37,5 @@ module Aker
         address: address
       }.compact
     end
-
   end
 end
