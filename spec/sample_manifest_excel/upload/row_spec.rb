@@ -103,7 +103,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
 
   it 'updates the sample' do
     row = SampleManifestExcel::Upload::Row.new(number: 1, data: data, columns: columns)
-    row.update_sample(tag_group)
+    row.update_sample(tag_group, false)
     row.metadata
     expect(row).to be_sample_updated
   end
@@ -141,7 +141,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
 
     it 'transfers stuff' do
       rows.each do |row|
-        row.update_sample(tag_group)
+        row.update_sample(tag_group, false)
         row.transfer_aliquot
       end
       expect(rows.all?(&:aliquot_transferred?)).to be_truthy
