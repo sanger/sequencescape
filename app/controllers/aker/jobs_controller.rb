@@ -45,7 +45,7 @@ module Aker
           verify_ssl: false,
           method: :put,
           url: "#{Rails.configuration.aker['urls']['work_orders']}/jobs/#{job.aker_job_id}/complete",
-          payload: { job: { job_id: job.aker_job_id, comment: params[:comment] } }.to_json,
+          payload: job.finish_message.to_json,
           headers: { content_type: :json },
           proxy: nil
         )
@@ -61,7 +61,7 @@ module Aker
           verify_ssl: false,
           method: :put,
           url: "#{Rails.configuration.aker['urls']['work_orders']}/jobs/#{job.aker_job_id}/cancel",
-          payload: { job: { job_id: job.aker_job_id, comment: params[:comment] } }.to_json,
+          payload: job.finish_message.to_json,
           headers: { content_type: :json },
           proxy: nil
         )
