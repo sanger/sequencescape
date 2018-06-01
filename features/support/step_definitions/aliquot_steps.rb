@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2011,2012,2015 Genome Research Ltd.
 
 # Comparing aliquots is about comparing their sample & tag, not their ID nor the receptacle they are in.
 def assert_equal_aliquots(expected, received)

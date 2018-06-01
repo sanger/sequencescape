@@ -1,11 +1,5 @@
 # frozen_string_literal: true
 
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
-
 # Handles display of plate template options (first page of cherrypicking)
 # and the processing of any uploaded spreadsheets to set a layout
 class PlateTemplateTask < Task
@@ -62,6 +56,7 @@ class PlateTemplateTask < Task
     attr_reader :requests, :plate_size, :csv_string
   end
 
+  # Presenter, seemingly used in DnaQCHandler
   class PlateTemplateData < Task::RenderElement
     attr_reader :testing
     alias_attribute :well, :asset
