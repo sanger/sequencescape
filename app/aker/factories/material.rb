@@ -46,7 +46,10 @@ module Aker
       def put_sample_in_container(sample, container)
         container.save if container.asset.nil?
 
-        container.asset.aliquots.create!(sample: sample) if container.asset.aliquots.where(sample: sample).count == 0
+        if container.asset.aliquots.where(sample: sample).count == 0
+          raise 'The contents of this plate are not up to date with aker job message' if container.asset.aliquots.count > 0
+          container.asset.aliquots.create!(sample: sample) 
+        end
       end
 
       ##

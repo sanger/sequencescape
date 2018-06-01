@@ -25,6 +25,7 @@ ActiveRecord::Schema.define(version: 20180523155212) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "job_url"
+    t.string "aker_job_url", default: "", null: false
   end
 
   create_table "aliquot_indices", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|

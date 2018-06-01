@@ -6,6 +6,10 @@ module Aker
     has_many :sample_jobs, dependent: :destroy
     has_many :samples, through: :sample_jobs
 
+    has_many :containers, through: :samples
+
+    has_many :assets, through: :containers
+
     validates :aker_job_id, presence: true
 
     def as_json(_options = {})
