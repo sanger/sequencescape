@@ -1,7 +1,7 @@
 module Aker
   # Phisical container for the biomaterial
   class Container < ApplicationRecord
-    STOCK_PLATE_PURPOSE = 'Aker Plate'.freeze
+    STOCK_PLATE_PURPOSE = 'Stock Plate'.freeze
 
     has_many :samples, dependent: :destroy
 

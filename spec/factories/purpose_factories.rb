@@ -38,11 +38,7 @@ FactoryBot.define do
     target_type 'Plate'
     asset_shape { AssetShape.default }
 
-    factory :aker_plate_purpose do
-      name 'Aker Plate'
-      stock_plate true
-      prefix 'AK'
-    end
+    factory :aker_plate_purpose { PlatePurpose.stock_plate_purpose }
 
     factory :source_plate_purpose do
       after(:build) do |source_plate_purpose, _evaluator|
