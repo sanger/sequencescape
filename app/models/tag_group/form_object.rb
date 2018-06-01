@@ -1,11 +1,5 @@
 # frozen_string_literal: true
 
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2018 Genome Research Ltd.
-
 ##
 # This form object class handles the user interaction for creating new Tag Groups.
 # It sensibility checks the user-entered list of Tag oligo sequences before creating
