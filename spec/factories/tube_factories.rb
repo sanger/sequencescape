@@ -86,7 +86,8 @@ FactoryBot.define do
       aliquot_factory { :untagged_aliquot }
     end
 
-    after(:create) do |library_tube, evaluator|
+    after(:build) do |library_tube, evaluator|
+      next if evaluator.sample_count.zero?
       library_tube.aliquots = evaluator.samples.map { |s| create(evaluator.aliquot_factory, sample: s, library_type: 'Standard', receptacle: library_tube) }
     end
 

@@ -18,12 +18,12 @@ FactoryBot.define do
     asset         { |asset| asset.association(:sample_tube)  }
     target_asset  { |asset| asset.association(:library_tube) }
     request_type  { RequestType.find_by(name: 'Multiplexed library creation') }
-    after(:create) do |request|
-      request.request_metadata.update_attributes!(
+    request_metadata_attributes do
+      {
         fragment_size_required_from: 150,
         fragment_size_required_to: 400,
         library_type: 'Standard'
-      )
+      }
     end
   end
 
@@ -65,12 +65,12 @@ FactoryBot.define do
   factory(:library_creation_request, parent: :request, class: LibraryCreationRequest) do
     asset         { |asset| asset.association(:sample_tube) }
     request_type  { RequestType.find_by!(name: 'Library creation') }
-    after(:create) do |request|
-      request.request_metadata.update_attributes!(
+    request_metadata_attributes do
+      {
         fragment_size_required_from: 100,
         fragment_size_required_to: 200,
         library_type: 'Standard'
-      )
+      }
     end
   end
 

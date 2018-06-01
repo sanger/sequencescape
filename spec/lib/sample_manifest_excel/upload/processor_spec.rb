@@ -126,7 +126,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
           expect(processor.downstream_aliquots_updated?).to be_truthy
         end
 
-        it 'will update the aliquots downstream if taggs were swapped' do
+        it 'will update the aliquots downstream if tags were swapped' do
           tag_oligo_1 = download.worksheet.axlsx_worksheet.rows[10].cells[2].value
           tag_oligo_2 = download.worksheet.axlsx_worksheet.rows[11].cells[2].value
           download.worksheet.axlsx_worksheet.rows[10].cells[2].value = tag_oligo_2
@@ -144,7 +144,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
           processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(reupload)
           processor.update_samples_and_aliquots(tag_group)
           expect(processor.substitutions.compact).to be_empty
-          expect(processor.downstream_aliquots_updated?).to be_truthy
+          expect(processor.downstream_aliquots_updated?).to be false
         end
 
         after(:each) do
