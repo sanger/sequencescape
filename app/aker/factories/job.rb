@@ -7,13 +7,13 @@ module Aker
     # Validates presence of aker_job_id and ensures that there is at least one material.
     class Job
       include ActiveModel::Model
-      ATTRIBUTES = %i[job_id work_order_id product_name process_name process_uuid modules product_version product_uuid project_uuid project_name cost_code container materials comment desired_date data_release_uuid].freeze
+      ATTRIBUTES = %i[job_id work_order_id aker_job_url product_name process_name process_uuid modules product_version product_uuid project_uuid project_name cost_code container materials comment desired_date data_release_uuid].freeze
       DEFAULT_ATTRIBUTES = { materials: {} }.freeze
 
       attr_accessor(*ATTRIBUTES)
       attr_reader :aker_job_id, :model
 
-      validates_presence_of :aker_job_id, :data_release_uuid, :materials
+      validates_presence_of :aker_job_id, :data_release_uuid, :materials, :aker_job_url
 
       validate :check_materials, :check_study
 
@@ -35,7 +35,7 @@ module Aker
       # Persists a Job and all associated materials.
       def create
         return unless valid?
-        @model = Aker::Job.create(aker_job_id: aker_job_id, samples: collect_materials)
+        @model = Aker::Job.create(aker_job_id: aker_job_id, samples: collect_materials, aker_job_url: aker_job_url)
       end
 
       def as_json(_options = {})

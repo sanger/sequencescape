@@ -14,7 +14,7 @@ RSpec.describe 'Jobs', type: :feature, aker: true do
     create_list(:aker_job_with_samples, 5)
   end
   let!(:job) { jobs.first }
-  let(:get_url) { "#{Rails.configuration.aker['urls']['work_orders']}/jobs/#{job.aker_job_id}" }
+  let(:get_url) { job.aker_job_url }
   let(:request) { RestClient::Request.new(method: :get, url: get_url) }
   let(:job_json) do
     File.read(File.join('spec', 'data', 'aker', 'job.json'))
@@ -28,7 +28,7 @@ RSpec.describe 'Jobs', type: :feature, aker: true do
   context 'existing job' do
     context 'active' do
       before(:each) do
-        allow(RestClient::Request).to receive(:execute).with(verify_ssl: false, method: :get, url: get_url, headers: { content_type: :json, Accept: :json }, proxy: nil).and_return(RestClient::Response.create(job_json, Net::HTTPResponse.new('1.1', 200, ''), request))
+        allow(RestClient::Request).to receive(:execute).with(verify_ssl: false, method: :get, url: get_url, headers: { content_type: :json }, proxy: nil).and_return(RestClient::Response.create(job_json, Net::HTTPResponse.new('1.1', 200, ''), request))
       end
 
       scenario 'view a job' do
