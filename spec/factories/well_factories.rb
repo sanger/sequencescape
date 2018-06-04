@@ -1,12 +1,6 @@
 # frozen_string_literal: true
 
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2011,2012,2015,2016 Genome Research Ltd.
-
-FactoryGirl.define do
+FactoryBot.define do
   factory :well, aliases: [:empty_well] do
     transient do
       study { build :study }
@@ -76,11 +70,12 @@ FactoryGirl.define do
 
   factory :well_for_location_report, parent: :well do
     transient do
-      study { create(:study) }
+      study
+      project
     end
 
     after(:create) do |well, evaluator|
-      well.aliquots << build(:tagged_aliquot, receptacle: well, study: evaluator.study)
+      well.aliquots << build(:untagged_aliquot, receptacle: well, study: evaluator.study, project: evaluator.project)
     end
   end
 end

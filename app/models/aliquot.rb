@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 # An aliquot can be considered to be an amount of a material in a liquid.  The material could be the DNA
 # of a sample, or it might be a library (a combination of the DNA sample and a tag).
@@ -46,11 +41,14 @@ class Aliquot < ApplicationRecord
   belongs_to :sample
 
   # It may have a bait library but not necessarily.
-  belongs_to :bait_library
+  belongs_to :bait_library, optional: true
   belongs_to :primer_panel
 
   # It can belong to a library asset
-  belongs_to :library, class_name: 'Receptacle'
+  belongs_to :library, class_name: 'Receptacle', optional: true
+
+  belongs_to :request
+
   composed_of :insert_size, mapping: [%w{insert_size_from from}, %w{insert_size_to to}], class_name: 'Aliquot::InsertSize', allow_nil: true
 
   has_one :aliquot_index, dependent: :destroy
@@ -94,11 +92,11 @@ class Aliquot < ApplicationRecord
   # in transfer request to fail, without any visible sign that something had gone wrong. This essentially meant that tag clashes
   # would result in sample dropouts. (presumably because << triggers save not save!)
   def untagged?
-    tag_id.nil? or tag_id == UNASSIGNED_TAG
+    tag_id.nil? || tag_id == UNASSIGNED_TAG
   end
 
   def no_tag2?
-    tag2_id.nil? or tag2_id == UNASSIGNED_TAG
+    tag2_id.nil? || tag2_id == UNASSIGNED_TAG
   end
 
   def tagged?

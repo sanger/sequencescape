@@ -7,7 +7,7 @@
 # especially if you change them, otherwise merges could get messy.
 
 # The factories in here, at time of writing could do with a bit of TLC.
-FactoryGirl.define do
+FactoryBot.define do
   # Allows a plate to automatically generate wells. Invluded in most plate factories already
   # If you inherit from the standard plate, you do not need to include this.
   trait :with_wells do
@@ -27,6 +27,19 @@ FactoryGirl.define do
     after(:build) do |plate, evaluator|
       plate.wells = evaluator.well_locations.map do |map|
         build(evaluator.well_factory, map: map, study: evaluator.studies_cycle.next, project: evaluator.projects_cycle.next)
+      end
+    end
+  end
+
+  trait :with_submissions do
+    transient do
+      submission_count { 1 }
+      submissions { create_list :submission, submission_count }
+      submission_cycle { submissions.cycle }
+    end
+    after(:create) do |plate, evaluator|
+      plate.wells.each do |well|
+        well.transfer_requests_as_target << create(:transfer_request, target_asset: well, submission: evaluator.submission_cycle.next)
       end
     end
   end
@@ -100,6 +113,8 @@ FactoryGirl.define do
     factory :plate_with_wells_for_specified_studies do
       transient do
         studies { create_list(:study, 2) }
+        project nil
+
         occupied_map_locations do
           Map.where_plate_size(size).where_plate_shape(AssetShape.default).where(well_order => (0...studies.size))
         end
@@ -108,7 +123,7 @@ FactoryGirl.define do
 
       after(:create) do |plate, evaluator|
         plate.wells = evaluator.occupied_map_locations.map.with_index do |map, i|
-          create(:well_for_location_report, map: map, study: evaluator.studies[i])
+          create(:well_for_location_report, map: map, study: evaluator.studies[i], project: nil)
         end
       end
     end

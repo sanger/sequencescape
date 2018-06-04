@@ -1,6 +1,14 @@
 development:
   type: log
   config:
+    server:
+      host: localhost
+      port: 5672
+      username: guest
+      password: guest
+      vhost: /
+      frame_max: 0
+      heartbeat: 30
     exchange: psd.sequencescape
   subscriptions:
     queue_broadcast_consumer:
@@ -8,7 +16,7 @@ development:
       queue: psd.queue_broadcast
       routing_keys:
         - development.queue_broadcast.#
-      deadletter_exchange: deadletters
+      deadletter_exchange: psd.deadletters
 profile:
   type: log
 test:

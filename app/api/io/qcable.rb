@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2014,2015 Genome Research Ltd.
 
 class Io::Qcable < Core::Io::Base
   set_model_for_input(::Qcable)
@@ -15,6 +10,12 @@ class Io::Qcable < Core::Io::Base
             stamp_qcable.bed => stamp_bed
                  stamp_index => stamp_index
 
-      asset.barcode_summary  => barcode
+         asset.barcode_number  => barcode.number
+                 asset.prefix  => barcode.prefix
+asset.two_dimensional_barcode  => barcode.two_dimensional
+          asset.ean13_barcode  => barcode.ean13
+        asset.machine_barcode  => barcode.machine
+           asset.barcode_type  => barcode.type
+
   ")
 end

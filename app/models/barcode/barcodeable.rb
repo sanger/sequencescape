@@ -29,13 +29,6 @@ module Barcode::Barcodeable
     primary_barcode&.barcode_prefix
   end
 
-  def barcode_summary
-    {
-      type: barcode_type,
-      two_dimensional: two_dimensional_barcode
-    }.merge(primary_barcode.try(:summary) || {})
-  end
-
   def external_identifier
     human_barcode
   end

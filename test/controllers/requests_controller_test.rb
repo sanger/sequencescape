@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2013,2014,2015 Genome Research Ltd.
 
 require 'test_helper'
 require 'requests_controller'
@@ -12,7 +7,7 @@ class RequestsControllerTest < ActionController::TestCase
     setup do
       @controller = RequestsController.new
       @request    = ActionController::TestRequest.create(@controller)
-      @user = FactoryGirl.create :admin
+      @user = FactoryBot.create :admin
     end
 
     should_require_login
@@ -23,7 +18,7 @@ class RequestsControllerTest < ActionController::TestCase
       end
 
       should 'cancel request' do
-        request = FactoryGirl.create :request, user: @user, request_type: FactoryGirl.create(:request_type), study: FactoryGirl.create(:study, name: 'ReqCon2')
+        request = FactoryBot.create :request, user: @user, request_type: FactoryBot.create(:request_type), study: FactoryBot.create(:study, name: 'ReqCon2')
         get :cancel, params: { id: request.id }
 
         assert_equal flash[:notice], "Request #{request.id} has been cancelled"
@@ -32,7 +27,7 @@ class RequestsControllerTest < ActionController::TestCase
       end
 
       should 'cancel started request' do
-        request = FactoryGirl.create :request, state: 'started', user: @user, request_type: FactoryGirl.create(:request_type), study: FactoryGirl.create(:study, name: 'ReqCon2')
+        request = FactoryBot.create :request, state: 'started', user: @user, request_type: FactoryBot.create(:request_type), study: FactoryBot.create(:study, name: 'ReqCon2')
         get :cancel, params: { id: request.id }
 
         assert_equal flash[:error], "Request #{request.id} in progress. Can't be cancelled"
@@ -46,7 +41,7 @@ class RequestsControllerTest < ActionController::TestCase
       end
 
       should 'when quotas is copied and redirect' do
-        @request_initial = FactoryGirl.create :request, user: @user, request_type: FactoryGirl.create(:request_type), study: FactoryGirl.create(:study, name: 'ReqCon2')
+        @request_initial = FactoryBot.create :request, user: @user, request_type: FactoryBot.create(:request_type), study: FactoryBot.create(:study, name: 'ReqCon2')
         get :copy, params: { id: @request_initial.id }
 
         @new_request = Request.last
@@ -55,7 +50,7 @@ class RequestsControllerTest < ActionController::TestCase
       end
 
       should 'set failed requests to pending' do
-        @request_initial = FactoryGirl.create :request, user: @user, request_type: FactoryGirl.create(:request_type), study: FactoryGirl.create(:study, name: 'ReqCon2'), state: 'failed'
+        @request_initial = FactoryBot.create :request, user: @user, request_type: FactoryBot.create(:request_type), study: FactoryBot.create(:study, name: 'ReqCon2'), state: 'failed'
         get :copy, params: { id: @request_initial.id }
 
         @new_request = Request.last
@@ -71,7 +66,7 @@ class RequestsControllerTest < ActionController::TestCase
         @prop_value_before = '999'
         @prop_value_after = 666
 
-        @our_request = FactoryGirl.create :request, user: @user, request_type: FactoryGirl.create(:request_type), study: FactoryGirl.create(:study, name: 'ReqCon')
+        @our_request = FactoryBot.create :request, user: @user, request_type: FactoryBot.create(:request_type), study: FactoryBot.create(:study, name: 'ReqCon')
         @params = { request_metadata_attributes: { read_length: '37' }, state: 'pending', request_type_id: @our_request.request_type_id }
       end
 
@@ -103,9 +98,9 @@ class RequestsControllerTest < ActionController::TestCase
         @controller.stubs(:logged_in?).returns(@user)
         session[:user] = @user.id
 
-        @project = FactoryGirl.create(:project_with_order, name: 'Prj1')
-        @reqwest = FactoryGirl.create :request, user: @user, request_type: FactoryGirl.create(:request_type), study: FactoryGirl.create(:study, name: 'ReqCon XXX'),
-                                                project: @project
+        @project = FactoryBot.create(:project_with_order, name: 'Prj1')
+        @reqwest = FactoryBot.create :request, user: @user, request_type: FactoryBot.create(:request_type), study: FactoryBot.create(:study, name: 'ReqCon XXX'),
+                                               project: @project
       end
 
       context 'update invalid and failed' do

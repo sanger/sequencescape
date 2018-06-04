@@ -172,36 +172,3 @@ And I have a "full" authorised user with the key "cucumber"
       | bulk    | {"lookup":[]}      | "lookup":["can't be blank"]               |
       | bulk    | {}                 | "lookup":["should be an array of tuples"] |
       | bulk    |                    | "lookup":["should be an array of tuples"] |
-
-    @wip
-    Scenarios: Where the JSON is completely invalid
-      | service | posted_json                        | errors                                    |
-      | lookup  | {"lookup":{"model":"foo", "id":1}} | "model":["is not included in the list"]   |
-      | lookup  | []                                 | "lookup":["should be a tuple"]            |
-      | bulk    | []                                 | "lookup":["should be an array of tuples"] |
-
-  @error @wip
-  Scenario Outline: Unsupported HTTP methods
-    When I <method> the API path "/uuids/<service>"
-    Then the HTTP response should be "405 Method Not Allowed"
-    And the HTTP "Allow" should be "POST"
-    And the JSON should be:
-      """
-      {
-        "general": [ "unsupported action" ]
-      }
-      """
-
-    @individual
-    Scenarios: Individual lookup
-      | service | method |
-      | lookup  | GET    |
-      | lookup  | PUT    |
-      | lookup  | DELETE |
-
-    @bulk
-    Scenarios: Bulk lookup
-      | service | method |
-      | bulk    | GET    |
-      | bulk    | PUT    |
-      | bulk    | DELETE |

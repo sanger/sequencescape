@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :plate_with_3_wells, parent: :plate do
     size 96
     after(:create) do |plate|
@@ -68,7 +68,7 @@ FactoryGirl.define do
   end
 
   factory :lib_pool_tube, class: StockMultiplexedLibraryTube do
-    name { |_a| FactoryGirl.generate :asset_name }
+    name { |_a| FactoryBot.generate :asset_name }
     association(:purpose, factory: :illumina_htp_initial_stock_tube_purpose)
     after(:create) { |tube| create(:transfer_request, target_asset: tube) }
   end

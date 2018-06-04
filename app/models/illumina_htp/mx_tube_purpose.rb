@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2013,2014,2015,2016 Genome Research Ltd.
 require_dependency 'tube/purpose'
 
 class IlluminaHtp::MxTubePurpose < Tube::Purpose
@@ -26,11 +21,11 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
   end
 
   def stock_plate(tube)
-    tube.requests_as_target.where_is_a?(CustomerRequest).where.not(requests: { asset_id: nil }).first&.asset&.plate
+    tube.requests_as_target.where.not(requests: { asset_id: nil }).first&.asset&.plate
   end
 
   def source_plate(tube)
-    source_plate_scope(tube).first
+    super || source_plate_scope(tube).first
   end
 
   def library_source_plates(tube)

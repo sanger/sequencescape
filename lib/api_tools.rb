@@ -1,7 +1,3 @@
-# This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
 module ApiTools
   def self.included(base)
     base.extend(ClassMethods)
@@ -38,14 +34,13 @@ module ApiTools
     for_api.to_yaml(options)
   end
 
-  def url_name
+  def json_root
     self.class.to_s.underscore
   end
-  alias_method(:json_root, :url_name)
 
-  def url
-    [configatron.api_url, API_VERSION, url_name.pluralize, uuid].join('/')
-  end
+  # def url
+  #   [configatron.api_url, API_VERSION, url_name.pluralize, uuid].join('/')
+  # end
 end
 
 class ActiveRecord::Base

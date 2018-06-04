@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 class Api::RequestIO < Api::Base
   module Extensions
@@ -37,12 +32,10 @@ class Api::RequestIO < Api::Base
             }
           ])
         }
-
-        alias_method(:json_root, :url_name)
       end
     end
 
-    def url_name
+    def json_root
       'request' # frozen for subclass of the API
     end
   end
@@ -70,18 +63,15 @@ class Api::RequestIO < Api::Base
   with_association(:submission) do
     map_attribute_to_json_attribute(:uuid, 'submission_uuid')
     map_attribute_to_json_attribute(:id, 'submission_internal_id')
-    map_attribute_to_json_attribute(:url, 'submission_url')
   end
 
   with_association(:initial_study) do
-    map_attribute_to_json_attribute(:url, 'study_url')
     map_attribute_to_json_attribute(:uuid, 'study_uuid')
     map_attribute_to_json_attribute(:id, 'study_internal_id')
     map_attribute_to_json_attribute(:name, 'study_name')
   end
 
   with_association(:initial_project) do
-    map_attribute_to_json_attribute(:url, 'project_url')
     map_attribute_to_json_attribute(:uuid, 'project_uuid')
     map_attribute_to_json_attribute(:id, 'project_internal_id')
     map_attribute_to_json_attribute(:name, 'project_name')

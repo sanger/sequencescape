@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 require 'test_helper'
 
@@ -17,11 +12,11 @@ module Studies
         @study_count_a = Study.count
         @controller = Studies::AssetGroupsController.new
         @request    = ActionController::TestRequest.create(@controller)
-        @user = FactoryGirl.create :user
+        @user = FactoryBot.create :user
         session[:user] = @user.id
         @controller.stubs(:logged_in?).returns(@user)
-        @study = FactoryGirl.create :study
-        @asset_group = FactoryGirl.create :asset_group
+        @study = FactoryBot.create :study
+        @asset_group = FactoryBot.create :asset_group
       end
 
       ['index', 'new'].each do |controller_method|

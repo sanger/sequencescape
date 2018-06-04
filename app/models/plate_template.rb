@@ -1,17 +1,13 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2014,2015 Genome Research Ltd.
 
 class PlateTemplate < Plate
   include Lot::Template
+
+  scope :with_sizes, ->(sizes) { where(size: sizes) }
 
   def update_params!(details = {})
     self.name = details[:name]
     wells.delete_all
     self.size = (details[:rows]).to_i * (details[:cols]).to_i
-    set_control_well(details[:control_well]) unless set_control_well(details[:control_well]).nil?
     save!
 
     unless details[:wells].nil?
@@ -29,23 +25,4 @@ class PlateTemplate < Plate
       end
     end
   end
-
-  def set_control_well(result)
-    add_descriptor(Descriptor.new(name: 'control_well', value: result))
-    save
-  end
-
-  def control_well?
-    return false if descriptors.nil?
-    1 == descriptor_value('control_well').to_i
-  end
-
-  def without_control_wells?
-    return true if descriptors.nil?
-    0 == descriptor_value('control_well').to_i
-  end
-
-  scope :with_sizes, ->(sizes) {
-    where(['size IN (?)', sizes])
-  }
 end

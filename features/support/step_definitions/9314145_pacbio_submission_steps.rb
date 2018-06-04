@@ -1,16 +1,11 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 Given /^I have a sample tube "([^"]*)" in study "([^"]*)" in asset group "([^"]*)"$/ do |sample_tube_barcode, study_name, asset_group_name|
   study = Study.find_by(name: study_name)
-  sample_tube = FactoryGirl.create(:sample_tube, barcode: sample_tube_barcode)
+  sample_tube = FactoryBot.create(:sample_tube, barcode: sample_tube_barcode)
   sample_tube.primary_aliquot.sample.rename_to!("Sample_#{sample_tube_barcode}")
   asset_group = AssetGroup.find_by(name: asset_group_name)
   if asset_group.nil?
-    asset_group = FactoryGirl.create(:asset_group, name: asset_group_name, study: study)
+    asset_group = FactoryBot.create(:asset_group, name: asset_group_name, study: study)
   end
 
   asset_group.assets << sample_tube
@@ -33,21 +28,17 @@ Given /^I have a PacBio submission$/ do
   step('1 pending delayed jobs are processed')
 end
 
-Then /^I should have (\d+) PacBioSequencingRequests$/ do |number_of_requests|
-  assert_equal number_of_requests.to_i, PacBioSequencingRequest.count
-end
-
 Given /^I have a plate for PacBio$/ do
-  plate = FactoryGirl.create(:plate, well_count: 2, barcode: 1234567)
+  plate = FactoryBot.create(:plate, well_count: 2, barcode: 1234567)
   plate.wells.each do |well|
-    sample = FactoryGirl.create(:sample, name: "Sample_#{well.map_description}")
-    well.aliquots << FactoryGirl.create(:untagged_aliquot, sample: sample)
+    sample = FactoryBot.create(:sample, name: "Sample_#{well.map_description}")
+    well.aliquots << FactoryBot.create(:untagged_aliquot, sample: sample)
   end
   AssetGroup.create!(name: 'PacBio group', study: Study.find_by(name: 'Test study')).assets << plate.wells
 end
 
 Given(/^I have a plate for PacBio in study "([^"]*)"$/) do |study_name|
-  plate = FactoryGirl.create :plate_with_untagged_wells, sample_count: 1, barcode: '1234567'
+  plate = FactoryBot.create :plate_with_untagged_wells, sample_count: 1, barcode: '1234567'
   AssetGroup.create!(name: 'PacBio group', study: Study.find_by(name: study_name)).assets << plate.wells
 end
 
@@ -71,8 +62,8 @@ end
 
 Given /^I have a fast PacBio sequencing batch$/ do
   step('I have a PacBio submission')
-  library_1 = FactoryGirl.create :pac_bio_library_tube, smrt_cells_available: 3, barcode: '333'
-  library_2 = FactoryGirl.create :pac_bio_library_tube, barcode: '444'
+  library_1 = FactoryBot.create :pac_bio_library_tube, smrt_cells_available: 3, barcode: '333'
+  library_2 = FactoryBot.create :pac_bio_library_tube, barcode: '444'
   PacBioSequencingRequest.first.update_attributes!(asset: library_1)
   PacBioSequencingRequest.last.update_attributes!(asset: library_2)
   step('I am on the show page for pipeline "PacBio Sequencing"')
@@ -126,11 +117,6 @@ Then /^the PacBioSamplePrepRequests for "([^"]*)" should be "([^"]*)"$/ do |asse
   assert_equal 1, PacBioSamplePrepRequest.where(asset_id: well.id, state: state).count
 end
 
-Then /^the plate layout should look like:$/ do |expected_results_table|
-  actual_table = table(fetch_table('table.plate'))
-  expected_results_table.diff!(actual_table)
-end
-
 Then /^the PacBio manifest for the last batch should look like:$/ do |expected_results_table|
   pac_bio_run_file = PacBio::SampleSheet.new.create_csv_from_batch(Batch.last)
   csv_rows = pac_bio_run_file.split(/\r\n/)
@@ -158,27 +144,12 @@ Then /^the PacBio sample prep worksheet should look like:$/ do |expected_results
   expected_results_table.diff!(actual_table)
 end
 
-Given /^I have progressed to the Reference Sequence task$/ do
-  step('I have a PacBio sequencing batch')
-  step('I follow "Binding Kit Box Barcode"')
-  step('I fill in "Binding Kit Box Barcode" with "777"')
-  step('I press "Next step"')
-  step('I select "30" from "Movie length for 333"')
-  step('I select "60" from "Movie length for 444"')
-  step('I press "Next step"')
-end
-
 Then /^the PacBioLibraryTube "(.*?)" should have (\d+) SMRTcells$/ do |barcode, cells|
   assert_equal PacBioLibraryTube.find_from_barcode(barcode).pac_bio_library_tube_metadata.smrt_cells_available || 0, cells.to_i
 end
 
 Given /^the reference genome "([^"]*)" exists$/ do |name|
-  FactoryGirl.create :reference_genome, name: name
-end
-
-Given /^the sample in tube "([^"]*)" has a reference genome of "([^"]*)"$/ do |barcode, reference_genome_name|
-  sample_tube = SampleTube.find_by(barcode: barcode)
-  sample_tube.primary_aliquot.sample.sample_metadata.update_attributes!(reference_genome: ReferenceGenome.find_by(name: reference_genome_name))
+  FactoryBot.create :reference_genome, name: name
 end
 
 Then /^the sample reference sequence table should look like:$/ do |expected_results_table|

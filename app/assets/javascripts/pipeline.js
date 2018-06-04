@@ -1,9 +1,3 @@
-//This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-//Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-//Copyright (C) 2015,2016 Genome Research Ltd.
-//This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
-//Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-//Copyright (C) 2007-2011,2013 Genome Research Ltd.
 function select_requests_by_group(elementId,size,value) {
   for (var i = 1; i < size+1; i++) {
 	$('#' + elementId + '_' + i + ' input[type=checkbox]')[0].checked = value;

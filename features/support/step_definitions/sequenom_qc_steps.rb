@@ -1,13 +1,8 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 # TODO: Remove these methods from Plate because it's bad to do this in a test
 class Plate
   def add_wells_to_plate(number_of_wells)
-    sample = FactoryGirl.create(:sample)
+    sample = FactoryBot.create(:sample)
     1.upto(number_of_wells.to_i) do |i|
       wells.create!(map_id: i).tap { |well| well.aliquots.create!(sample: sample) }
     end
@@ -15,7 +10,7 @@ class Plate
 
   def self.create_source_plates(source_barcodes, first_well_gender = true, number_of_wells = 96)
     source_barcodes.each do |encoded_barcode|
-      plate = FactoryGirl.create(:plate, barcode: Barcode.number_to_human(encoded_barcode))
+      plate = FactoryBot.create(:plate, barcode: Barcode.number_to_human(encoded_barcode))
       plate.add_wells_to_plate(number_of_wells)
 
       # Unless we say otherwise give the first sample on the plate

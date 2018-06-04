@@ -441,10 +441,7 @@ border: 1px solid #d7d7d7;
 img {
 border: 0px;
 }
-input#stage_button {
-margin-top: 50px;
-margin-left: 30px;
-}
+input#stage_links { @extend .m-3; }
 
 td.bar {
 border-right: 1px solid #ccc;

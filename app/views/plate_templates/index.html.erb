@@ -1,8 +1,3 @@
-<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.%>
 
 <div class="page-header"><h1>Plate Templates</h1></div>
 <div class="newtemplate">
@@ -16,14 +11,12 @@
   <thead>
   <th>Template Name</th>
   <th>Size</th>
-  <th>Control Well</th>
   <th>Delete</th>
   </thead>
 <% @patterns.each do |pattern| %>
 <tr>
   <td><%= link_to pattern.name, edit_plate_template_path(pattern.id) %></td>
   <td><%= pattern.size %></td>
-  <td><%= pattern.control_well? ? "Control": "" %></td>
   <td><%= link_to 'Delete', pattern, confirm: 'Are you sure?', method: :delete %></td>
 </tr>
 <% end %>

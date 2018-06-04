@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 require 'test_helper'
 
@@ -15,9 +10,9 @@ class PicoDilutionsControllerTest < ActionController::TestCase
 
     context 'with assay plates ' do
       setup do
-        @pico_dilution_plate = FactoryGirl.create :pico_dilution_plate, barcode: '2222'
-        @assay_plate_a = FactoryGirl.create :pico_assay_a_plate, barcode: '9999'
-        @assay_plate_b = FactoryGirl.create :pico_assay_b_plate, barcode: '8888'
+        @pico_dilution_plate = FactoryBot.create :pico_dilution_plate, barcode: '2222'
+        @assay_plate_a = FactoryBot.create :pico_assay_a_plate, barcode: '9999'
+        @assay_plate_b = FactoryBot.create :pico_assay_b_plate, barcode: '8888'
         AssetLink.create_edge!(@pico_dilution_plate, @assay_plate_a)
         AssetLink.create_edge!(@pico_dilution_plate, @assay_plate_b)
       end

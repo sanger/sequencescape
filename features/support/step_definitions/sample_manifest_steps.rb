@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 Given /^a supplier called "(.*)" exists$/ do |supplier_name|
   Supplier.create!(name: supplier_name)
@@ -11,22 +6,6 @@ end
 Given /^the study "(.*)" has a abbreviation$/ do |study_name|
   study = Study.find_by(name: study_name)
   study.study_metadata.study_name_abbreviation = 'TEST'
-end
-
-Given /^sample information is updated from the manifest for study "([^"]*)"$/ do |study_name|
-  study = Study.find_by(name: study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
-  study.samples.each_with_index do |sample, index|
-    sample.update_attributes!(
-      sanger_sample_id: sample.name,
-      sample_metadata_attributes: {
-        gender: 'Female',
-        dna_source: 'Blood',
-        sample_sra_hold: 'Hold'
-      }
-    )
-    sample.name = "#{study.abbreviation}#{index + 1}"
-    sample.save(validate: false)
-  end
 end
 
 Given /^the last sample has been updated by a manifest$/ do
@@ -66,15 +45,6 @@ Given /^I reset all of the sanger sample ids to a known number sequence$/ do
   end
   LibraryTube.order(:id).each_with_index do |tube, idx|
     tube.aliquots.first.sample.update_attributes!(sanger_sample_id: "tube_sample_#{idx + 1}")
-  end
-end
-
-Then /^sample "([^"]*)" should have empty supplier name set to "([^"]*)"$/ do |sanger_sample_id, boolean_string|
-  sample = Sample.find_by(sanger_sample_id: sanger_sample_id)
-  if boolean_string == 'true'
-    assert sample.empty_supplier_sample_name
-  else
-    assert !sample.empty_supplier_sample_name
   end
 end
 
@@ -149,7 +119,7 @@ end
 Given /^a manifest has been created for "([^"]*)"$/ do |study_name|
   study = Study.find_by!(name: study_name)
   supplier = Supplier.find_by!(name: 'Test supplier name')
-  sample_manifest = FactoryGirl.create :sample_manifest, study: study, supplier: supplier, user: User.find_by(first_name: 'john')
+  sample_manifest = FactoryBot.create :sample_manifest, study: study, supplier: supplier, user: User.find_by(first_name: 'john')
   sample_manifest.generate
   visit(url_for(sample_manifest))
   step('I reset all of the sanger sample ids to a known number sequence')
@@ -244,10 +214,6 @@ Then /^print any manifest errors for debugging$/ do
     SampleManifest.last.last_errors.each { |error| puts error }
     puts '=' * 80
   end
-end
-
-Then /^library_id should be set as required$/ do
-  pending # express the regexp above with the code you wish you had
 end
 
 Given(/^the configuration exists for creating sample manifest Excel spreadsheets$/) do

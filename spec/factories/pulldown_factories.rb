@@ -1,11 +1,7 @@
 # frozen_string_literal: true
 
-# This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
 # A plate that has exactly the right number of wells!
-FactoryGirl.define do
+FactoryBot.define do
   factory(:transfer_plate, class: Plate) do
     transient do
       well_count { 3 }
@@ -98,6 +94,11 @@ FactoryGirl.define do
     factory(:entire_plate_tag_layout_template) do
       walking_algorithm   'TagLayout::WalkWellsOfPlate'
     end
+  end
+
+  factory :tag_layout_template_submission, class: TagLayout::TemplateSubmission do
+    submission
+    tag_layout_template
   end
 
   factory(:tag_layout) do

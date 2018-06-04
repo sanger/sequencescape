@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 require 'timeout'
 require 'tecan_file_generation'
@@ -472,12 +467,15 @@ class Batch < ApplicationRecord
     true
   end
 
-  def self.find_from_barcode(code)
-    human_batch_barcode = Barcode.number_to_human(code)
-    batch = Batch.find_by(barcode: human_batch_barcode)
-    batch ||= Batch.find_by(id: human_batch_barcode)
+  class << self
+    def find_by_barcode(code)
+      human_batch_barcode = Barcode.number_to_human(code)
+      batch = Batch.find_by(barcode: human_batch_barcode)
+      batch ||= Batch.find_by(id: human_batch_barcode)
 
-    batch
+      batch
+    end
+    alias_method :find_from_barcode, :find_by_barcode
   end
 
   def request_count

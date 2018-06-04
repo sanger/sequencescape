@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 require 'test_helper'
 require 'admin/projects_controller'
@@ -23,10 +18,10 @@ module Admin
         setup do
           @user     = create :admin, email: 'project.owner@example.com'
           @project  = create :project, approved: false
-          role = FactoryGirl.create :owner_role, authorizable: @project
+          role = FactoryBot.create :owner_role, authorizable: @project
           role.users << @user
-          @request_type = FactoryGirl.create :request_type
-          @other_request_type = FactoryGirl.create :request_type
+          @request_type = FactoryBot.create :request_type
+          @other_request_type = FactoryBot.create :request_type
           session[:user] = @user.id
           @emails = ActionMailer::Base.deliveries
           @emails.clear

@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2013,2014,2015,2016 Genome Research Ltd.
 
 require 'test_helper'
 require 'projects_controller'
@@ -21,7 +16,7 @@ class ProjectsControllerTest < ActionController::TestCase
     setup do
       @controller = ProjectsController.new
       @request    = ActionController::TestRequest.create(@controller)
-      @user = FactoryGirl.create :user
+      @user = FactoryBot.create :user
 
       @user.has_role('owner')
       session[:user] = @user.id
@@ -38,10 +33,10 @@ class ProjectsControllerTest < ActionController::TestCase
 
     context '#create' do
       setup do
-        @request_type_1 = FactoryGirl.create :request_type
+        @request_type_1 = FactoryBot.create :request_type
       end
 
-      context 'successfullyFactoryGirl.create a new project' do
+      context 'successfullyFactoryBot.create a new project' do
         setup do
           @project_counter = Project.count
           post :create, params: { 'project' => {
@@ -104,7 +99,7 @@ class ProjectsControllerTest < ActionController::TestCase
   context "POST '/create'" do
     context 'with JSON data' do
       setup do
-        @user = FactoryGirl.create :user, api_key: 'abc'
+        @user = FactoryBot.create :user, api_key: 'abc'
         @user.has_role('owner')
         session[:user] = @user.id
 

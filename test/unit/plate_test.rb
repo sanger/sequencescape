@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 require 'test_helper'
 
@@ -66,38 +61,6 @@ class PlateTest < ActiveSupport::TestCase
       end
       should 'not find the sample name if its invalid' do
         assert_equal false, Plate.find(@plate.id).sample?('abcdef')
-      end
-    end
-
-    context '#control_well_exists?' do
-      setup do
-        @control_plate = create :control_plate, barcode: 134443
-        map = Map.find_by(description: 'A1', asset_size: 96)
-        @control_well_asset = Well.new(map: map)
-        @control_plate.add_and_save_well @control_well_asset
-        @control_plate.reload
-      end
-      context 'where control well is present' do
-        setup do
-          @plate_cw = Plate.create!
-          @plate_cw.add_and_save_well Well.new
-          @plate_cw.reload
-          create :well_request, asset: @control_well_asset, target_asset: @plate_cw.child
-        end
-        should 'return true' do
-          assert @plate_cw.control_well_exists?
-        end
-      end
-
-      context 'where control well is not present' do
-        setup do
-          @plate_no_cw = create :plate
-          @plate_no_cw.add_and_save_well Well.new
-          @plate_no_cw.reload
-        end
-        should 'return false' do
-          assert_equal false, @plate_no_cw.control_well_exists?
-        end
       end
     end
   end

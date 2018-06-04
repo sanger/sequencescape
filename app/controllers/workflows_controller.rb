@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 class WorkflowsController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
@@ -10,7 +5,7 @@ class WorkflowsController < ApplicationController
   before_action :evil_parameter_hack!
   before_action :find_workflow_by_id, only: [:show, :batches]
 
-  attr_accessor :plate_purpose_options
+  attr_accessor :plate_purpose_options, :spreadsheet_layout, :batch
 
   include Tasks::AddSpikedInControlHandler
   include Tasks::AssignTagsHandler

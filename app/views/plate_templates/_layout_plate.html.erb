@@ -1,8 +1,3 @@
-<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.%>
 
 <% if target_action =="update" %>
   <% html_options = {method: :put} %>
@@ -17,14 +12,6 @@
     <%= text_field_tag "name", pattern.name %>
   <% end -%>
   <br />
-  <label>Illumina Control well:</label>
-  <% if pattern.nil? || pattern.descriptor_value('control_well').nil? -%>
-    <%= check_box_tag "control_well", 1 %>
-  <% elsif pattern.control_well? -%>
-    <%= check_box_tag "control_well", 1, true %>
-  <% else%>
-    <%= check_box_tag "control_well", 1 %>
-  <% end -%>
 
   <p>Click to leave positions empty.</p>
   <table class="plate" width="100%">

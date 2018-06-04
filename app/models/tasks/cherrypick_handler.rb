@@ -1,9 +1,7 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
+# frozen_string_literal: true
 
+# Gets included in the workflows controller and processed cherrypicking
+# CAUTION! This pattern is best avoided.
 module Tasks::CherrypickHandler
   def self.included(base)
     base.class_eval do
@@ -12,15 +10,13 @@ module Tasks::CherrypickHandler
   end
 
   def render_cherrypick_task(_task, params)
-    unless flash[:error].blank?
+    if flash[:error].present?
       redirect_to action: 'stage', batch_id: @batch.id, workflow_id: @workflow.id, id: (@stage - 1).to_s
       return
     end
 
     plate_template = nil
-    unless params[:plate_template].blank?
-      plate_template = PlateTemplate.find(params[:plate_template]['0'].to_i)
-    end
+    plate_template = PlateTemplate.find(params[:plate_template]['0'].to_i) if params[:plate_template].present?
     if plate_template.nil?
       flash[:error] = 'Please select a template'
       redirect_to action: 'stage', batch_id: @batch.id, workflow_id: @workflow.id, id: (@stage - 1).to_s
@@ -59,9 +55,9 @@ module Tasks::CherrypickHandler
     @map_info = if @spreadsheet_layout
                   @spreadsheet_layout
                 elsif @plate.present?
-                  @task.pick_onto_partial_plate(@requests, plate_template, @robot, @batch, @plate)
+                  @task.pick_onto_partial_plate(@requests, plate_template, @robot, @plate)
                 else
-                  @task.pick_new_plate(@requests, plate_template, @robot, @batch, @plate_purpose)
+                  @task.pick_new_plate(@requests, plate_template, @robot, @plate_purpose)
                 end
     @plates = @map_info[0]
     @source_plate_ids = @map_info[1]
@@ -85,28 +81,24 @@ module Tasks::CherrypickHandler
       @nano_grams_total_nano_grams = params[:nano_grams][:total_nano_grams]
       @nano_grams_robot_minimum_picking_volume = params[:nano_grams][:robot_minimum_picking_volume]
     end
-    if params[:micro_litre]
-      @micro_litre_volume_required = params[:micro_litre][:volume_required]
-    end
+    @micro_litre_volume_required = params[:micro_litre][:volume_required] if params[:micro_litre]
     @cherrypick_action = params[:cherrypick][:action]
     @plate_purpose_id = params[:plate_purpose_id]
     @fluidigm_barcode = params[:fluidigm_plate]
   end
 
-  def do_cherrypick_task(task, params)
+  def do_cherrypick_task(_task, params)
     plates = params[:plate]
     size = params[:plate_size]
     plate_type = params[:plate_type]
 
     ActiveRecord::Base.transaction do
       # Determine if there is a standard plate to use.
-      partial_plate, plate_barcode, fluidigm_plate = nil, params[:plate_barcode], params[:fluidigm_plate]
-      unless plate_barcode.nil?
-        partial_plate = Plate.find_from_barcode(plate_barcode) or raise ActiveRecord::RecordNotFound, "No plate with barcode #{plate_barcode}"
-      end
-      if fluidigm_plate.present?
-        partial_plate = Plate.find_from_barcode(fluidigm_plate) or raise ActiveRecord::RecordNotFound, "No plate with barcode #{fluidigm_plate}"
-      end
+      partial_plate = nil
+      plate_barcode = params[:plate_barcode]
+      fluidigm_plate = params[:fluidigm_plate]
+      (partial_plate = Plate.find_from_barcode(plate_barcode)) || raise(ActiveRecord::RecordNotFound, "No plate with barcode #{plate_barcode}") unless plate_barcode.nil?
+      (partial_plate = Plate.find_from_barcode(fluidigm_plate)) || raise(ActiveRecord::RecordNotFound, "No plate with barcode #{fluidigm_plate}") if fluidigm_plate.present?
 
       # Ensure that we have a plate purpose for any plates we are creating
       plate_purpose = PlatePurpose.find(params[:plate_purpose_id])
@@ -129,25 +121,26 @@ module Tasks::CherrypickHandler
       # All of the requests we're going to be using should be part of the batch.  If they are not
       # then we have an error, so we can pre-map them for quick lookup.  We're going to pre-cache a
       # whole load of wells so that they can be retrieved quickly and easily.
-      wells = Hash[Well.includes(:well_attribute).find(@batch.requests.map(&:target_asset_id)).map { |w| [w.id, w] }]
+      wells = Well.includes(:well_attribute).find(@batch.requests.map(&:target_asset_id)).index_by(&:id)
       request_and_well = Hash[@batch.requests.includes(:request_metadata).map { |r| [r.id.to_i, [r, wells[r.target_asset_id]]] }]
-      used_requests, plates_and_wells, plate_and_requests = [], Hash.new { |h, k| h[k] = [] }, Hash.new { |h, k| h[k] = [] }
+      used_requests = []
+      plates_and_wells = Hash.new { |h, k| h[k] = [] }
+      plate_and_requests = Hash.new { |h, k| h[k] = [] }
 
       # If we overflow the plate we create a new one, even if we subsequently clear the fields.
       plates_with_samples = plates.reject { |_pid, rows| rows.values.map(&:values).flatten.all?(&:empty?) }
 
-      if fluidigm_plate.present? && plates_with_samples.to_h.size > 1
-        raise Cherrypick::Error, 'Sorry, You cannot pick to multiple fluidigm plates in one batch.'
-      end
+      raise Cherrypick::Error, 'Sorry, You cannot pick to multiple fluidigm plates in one batch.' if fluidigm_plate.present? && plates_with_samples.to_h.size > 1
 
       plates_with_samples.each do |_id, plate_params|
         # The first time round this loop we'll either have a plate, from the partial_plate, or we'll
         # be needing to create a new one.
         plate = partial_plate
         if plate.nil?
-          barcode = { prefix: plate_purpose.prefix, number: PlateBarcode.create.barcode }
-          plate   = plate_purpose.create!(:do_not_create_wells, name: "Cherrypicked #{barcode}", size: size, sanger_barcode: barcode) do |new_plate|
-            new_plate.fluidigm_barcode = fluidigm_plate unless fluidigm_plate.blank?
+          barcode_number = PlateBarcode.create.barcode
+          barcode = { prefix: plate_purpose.prefix, number: barcode_number }
+          plate   = plate_purpose.create!(:do_not_create_wells, name: "Cherrypicked #{barcode_number}", size: size, sanger_barcode: barcode) do |new_plate|
+            new_plate.fluidigm_barcode = fluidigm_plate if fluidigm_plate.present?
           end
         end
 
@@ -157,12 +150,8 @@ module Tasks::CherrypickHandler
         plate_params.each do |row, row_params|
           row = row.to_i
           row_params.each do |col, request_id|
-            request, well =
-              case
-              when request_id.blank? then next
-              when request_id.match?(/control/) then create_control_request_and_add_to_batch(task, request_id)
-              else request_and_well[request_id.gsub('well_', '').to_i] or raise ActiveRecord::RecordNotFound, "Cannot find request #{request_id.inspect}"
-              end
+            next if request_id.blank?
+            request, well = request_and_well[request_id.gsub('well_', '').to_i] || raise(ActiveRecord::RecordNotFound, "Cannot find request #{request_id.inspect}")
 
             # NOTE: Performance enhancement here
             # This collects the wells together for the plate they should be on, and modifies
@@ -181,9 +170,12 @@ module Tasks::CherrypickHandler
       end
 
       # Attach the wells into their plate for maximum efficiency.
-      plates_and_wells.each do |plate, wells|
-        wells.each { |w| w.well_attribute.save!; w.save! }
-        plate.wells << wells
+      plates_and_wells.each do |plate, plate_wells|
+        plate_wells.each do |w|
+          w.well_attribute.save!
+          w.save!
+        end
+        plate.wells << plate_wells
       end
 
       links = plate_and_requests.flat_map do |target_plate, requests|
@@ -196,15 +188,7 @@ module Tasks::CherrypickHandler
 
       # Now pass each of the requests we used and ditch any there weren't back into the inbox.
       used_requests.map(&:pass!)
-      (@batch.requests - used_requests).each do |unused_request|
-        unused_request.recycle_from_batch!
-      end
+      (@batch.requests - used_requests).each(&:recycle_from_batch!)
     end
-  end
-
-  def create_control_request_and_add_to_batch(task, control_param)
-    control_request = task.create_control_request_from_well(control_param) or raise StandardError, 'Control request not created!'
-    @batch.requests << control_request
-    [control_request, control_request.target_asset]
   end
 end

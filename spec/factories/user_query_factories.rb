@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :user_query do
     user { create :user, login: 'user_abc', email: 'user_abc@example.com' }
     url 'www.example.com/some_page'

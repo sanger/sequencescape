@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 def sort_arrays(xml_data)
   if xml_data.is_a?(Hash)
@@ -46,19 +41,10 @@ Then /^the text of the XML element "([^"]+)" should be "([^"]+)"/ do |xpath, val
   assert node
   assert_equal value, node.text
 end
-# Use for complete collections of instances E.g. index pages.
-When /^I request XML from (.+)$/ do |page_name|
-  page.driver.get(path_to(page_name), nil, 'HTTP_ACCEPT' => 'application/xml')
-end
 
 # Use for individual instances E.g. the Study named "Something Or Other"
 When /^I request XML for (.+)$/ do |page_name|
   page.driver.get(path_to(page_name), nil, 'HTTP_ACCEPT' => 'application/xml')
-end
-
-When /^I make a request for XML for a custom text identified by "([^"]*)"$/ do |identifier|
-  custom_text = CustomText.find_by(identifier: identifier) or raise StandardError, "Cannot find custom text #{identifier.inspect}"
-  page.driver.get("#{path_to('the custom texts admin page')}/#{custom_text.id}", nil, 'HTTP_ACCEPT' => 'application/xml')
 end
 
 When /^I (POST|PUT) the following XML to "(\/[^\"]+)":$/ do |action, path, xml|
