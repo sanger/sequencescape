@@ -21,12 +21,10 @@ class Api::LibraryTubeIO < Api::Base
             :scanned_into_lab_event
           ])
         }
-
-        alias_method(:json_root, :url_name)
       end
     end
 
-    def url_name
+    def json_root
       'library_tube'
     end
   end

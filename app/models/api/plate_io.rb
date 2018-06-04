@@ -12,11 +12,10 @@ class Api::PlateIO < Api::Base
         extend ClassMethods
 
         scope :including_associations_for_json, -> { includes([:uuid_object, :plate_metadata, :barcodes, { plate_purpose: :uuid_object }]) }
-        alias_method(:json_root, :url_name)
       end
     end
 
-    def url_name
+    def json_root
       'plate'
     end
   end

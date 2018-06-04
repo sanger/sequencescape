@@ -92,10 +92,9 @@ class Submission < ApplicationRecord
     requests.all?(&:cancellable?)
   end
 
-  def url_name
+  def json_root
     'submission'
   end
-  alias_method(:json_root, :url_name)
 
   def subject_type
     'submission'

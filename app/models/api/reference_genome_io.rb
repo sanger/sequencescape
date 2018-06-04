@@ -10,12 +10,10 @@ class Api::ReferenceGenomeIO < Api::Base
     def self.included(base)
       base.class_eval do
         extend ClassMethods
-
-        alias_method(:json_root, :url_name)
       end
     end
 
-    def url_name
+    def json_root
       'reference_genome'
     end
   end

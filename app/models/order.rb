@@ -174,10 +174,9 @@ class Order < ApplicationRecord
     assets
   end
 
-  def url_name
+  def json_root
     'order'
   end
-  alias_method(:json_root, :url_name)
 
   def asset_uuids
     assets.select { |asset| asset.present? }.map(&:uuid) if assets

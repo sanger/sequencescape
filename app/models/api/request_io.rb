@@ -32,12 +32,10 @@ class Api::RequestIO < Api::Base
             }
           ])
         }
-
-        alias_method(:json_root, :url_name)
       end
     end
 
-    def url_name
+    def json_root
       'request' # frozen for subclass of the API
     end
   end

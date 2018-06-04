@@ -34,14 +34,13 @@ module ApiTools
     for_api.to_yaml(options)
   end
 
-  def url_name
+  def json_root
     self.class.to_s.underscore
   end
-  alias_method(:json_root, :url_name)
 
-  def url
-    [configatron.api_url, API_VERSION, url_name.pluralize, uuid].join('/')
-  end
+  # def url
+  #   [configatron.api_url, API_VERSION, url_name.pluralize, uuid].join('/')
+  # end
 end
 
 class ActiveRecord::Base

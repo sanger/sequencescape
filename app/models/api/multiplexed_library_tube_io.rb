@@ -11,11 +11,10 @@ class Api::MultiplexedLibraryTubeIO < Api::Base
         extend ClassMethods
 
         scope :including_associations_for_json, -> { includes([:uuid_object, :barcodes, :scanned_into_lab_event]) }
-        alias_method(:json_root, :url_name)
       end
     end
 
-    def url_name
+    def json_root
       'multiplexed_library_tube'
     end
   end

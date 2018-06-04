@@ -12,11 +12,10 @@ class Api::SampleIO < Api::Base
         extend ClassMethods
 
         scope :including_associations_for_json, -> { includes([:uuid_object, { sample_metadata: :reference_genome }, { studies: [:study_metadata, :uuid_object] }]) }
-        alias_method(:json_root, :url_name)
       end
     end
 
-    def url_name
+    def json_root
       'sample'
     end
   end
