@@ -16,7 +16,7 @@ feature 'cherrypick for fluidigm pipeline - micro litre', js: true do
   let(:barcode) { 99999 }
   let(:robot) { create :robot, barcode: '444' }
   let!(:plate_template) { create :plate_template }
-  let(:request_types) { create_list(:cherrypick_request_type, 3).map(&:key) }
+  let(:request_types) { pipeline.request_types.map(&:key) }
 
   before(:each) do
     assets = plates.each_with_object([]) do |plate, assets|
