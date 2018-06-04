@@ -89,10 +89,6 @@ Given /^I am using the latest version of the API$/ do
   step(%Q{I am using version "#{::Core::Service::API_VERSION}" of the API})
 end
 
-Given /^I am using version "([^\"]+)" of a legacy API$/ do |version|
-  @api_path = version
-end
-
 When /^I (GET|PUT|POST|DELETE) the API path "(\/[^\"]*)"$/ do |action, path|
   json_api_request(action, path, nil)
 end

@@ -8,7 +8,8 @@ RSpec.describe Api::PlatePurposeIO, type: :model do
   let(:expected_json) do
     {
       'uuid' => subject.uuid,
-      'internal_id' => subject.id
+      'internal_id' => subject.id,
+      'name' => subject.name
     }
   end
 

@@ -3,12 +3,18 @@
 require 'rails_helper'
 
 RSpec.describe Api::StudySampleIO, type: :model do
-  subject { create :study_sample }
+  let(:study) { create :study }
+  let(:sample) { create :sample }
+  subject { create :study_sample, study: study, sample: sample }
 
   let(:expected_json) do
     {
       'uuid' => subject.uuid,
-      'id' => subject.id
+      'id' => subject.id,
+      'sample_internal_id' => sample.id,
+      'sample_uuid' => sample.uuid,
+      'study_internal_id' => study.id,
+      'study_uuid' => study.uuid
     }
   end
 
