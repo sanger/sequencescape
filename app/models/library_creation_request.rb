@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 class LibraryCreationRequest < CustomerRequest
   # NOTE: Do not alter the order here:
@@ -49,7 +44,8 @@ class LibraryCreationRequest < CustomerRequest
       study_id: initial_study_id,
       project_id: initial_project_id,
       library_type: library_type,
-      insert_size: insert_size
+      insert_size: insert_size,
+      request_id: id
     }
   end
 end

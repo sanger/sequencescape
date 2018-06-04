@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 require 'test_helper'
 
@@ -12,7 +7,7 @@ module Api
       setup do
         @controller = Api::SubmissionsController.new
         @request    = ActionController::TestRequest.create(@controller)
-        @user = FactoryGirl.create :user
+        @user = FactoryBot.create :user
         @controller.stubs(:logged_in?).returns(@user)
         session[:user] = @user.id
       end
@@ -20,11 +15,11 @@ module Api
       context '#create' do
         setup do
           @submission_count = Submission.count
-          template = FactoryGirl.create :submission_template
-          study = FactoryGirl.create :study
-          project = FactoryGirl.create :project
-          sample_tube = FactoryGirl.create :sample_tube
-          rt = FactoryGirl.create :request_type
+          template = FactoryBot.create :submission_template
+          study = FactoryBot.create :study
+          project = FactoryBot.create :project
+          sample_tube = FactoryBot.create :sample_tube
+          rt = FactoryBot.create :request_type
           template.request_types << rt
 
           post :create, params: { order: { project_id: project.id, study_id: study.id, sample_tubes: [sample_tube.id.to_s], number_of_lanes: '2', type: template.key } }

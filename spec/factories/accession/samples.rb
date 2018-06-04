@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :sample_metadata_for_accessioning, class: Sample::Metadata do
     sample_taxon_id 1
     sample_common_name 'A common name'

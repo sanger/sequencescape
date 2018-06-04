@@ -33,7 +33,7 @@ module SampleManifestExcel
         # library updates all aliquots in one go, doing it row by row is inefficient and may trigger tag clash
         def update_downstream_aliquots
           @downstream_aliquots_updated = if substitutions.compact.blank?
-                                           true
+                                           false
                                          else
                                            TagSubstitution.new(substitutions: substitutions.compact).save
                                          end
@@ -67,7 +67,7 @@ module SampleManifestExcel
 
         def aliquots_updated?
           if upload.reuploaded?
-            downstream_aliquots_updated?
+            downstream_aliquots_updated? || substitutions.compact.blank?
           else
             aliquots_transferred?
           end

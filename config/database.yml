@@ -51,12 +51,16 @@ development_local_cas:
 
 ##  Oracle legacy
 development_snp:
-  adapter: oracle_enhanced
-  database: snp.world
-  username: read_only
-  password: read_only
-  host: localhost
-  port: 1524
+  adapter: nulldb
+  database: snp
+  username: username
+  password: password
+
+development_cas:
+  adapter: nulldb
+  database: cas
+  username: username
+  password: password
 
 
 # Warning: The database defined as "test" will be erased and

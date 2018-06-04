@@ -8,22 +8,22 @@
 
 # The factories in here, at time of writing could do with a bit of TLC.
 # - Remove references to existing request types, build one instead!
-# - All factories MUST be valid unless begining with invalid_ (allows us to lint factory girl)
+# - All factories MUST be valid unless begining with invalid_ (allows us to lint factory bot)
 # - Factories names after a class, eg. request, should NOT inherit. Use traits if there is shared behaviour.
 # - Factories names after a class should avoid creating associations, except where they are required for the
 #   request to be valid.
-FactoryGirl.define do
+FactoryBot.define do
   factory :multiplexed_library_creation_request, parent: :request  do
     sti_type      { RequestType.find_by(name: 'Multiplexed library creation').request_class_name }
     asset         { |asset| asset.association(:sample_tube)  }
     target_asset  { |asset| asset.association(:library_tube) }
     request_type  { RequestType.find_by(name: 'Multiplexed library creation') }
-    after(:create) do |request|
-      request.request_metadata.update_attributes!(
+    request_metadata_attributes do
+      {
         fragment_size_required_from: 150,
         fragment_size_required_to: 400,
         library_type: 'Standard'
-      )
+      }
     end
   end
 
@@ -65,12 +65,12 @@ FactoryGirl.define do
   factory(:library_creation_request, parent: :request, class: LibraryCreationRequest) do
     asset         { |asset| asset.association(:sample_tube) }
     request_type  { RequestType.find_by!(name: 'Library creation') }
-    after(:create) do |request|
-      request.request_metadata.update_attributes!(
+    request_metadata_attributes do
+      {
         fragment_size_required_from: 100,
         fragment_size_required_to: 200,
         library_type: 'Standard'
-      )
+      }
     end
   end
 

@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2014,2015,2016 Genome Research Ltd.
 
 require 'test_helper'
 
@@ -11,7 +6,7 @@ class SubmissionTemplateTest < ActiveSupport::TestCase
     should validate_presence_of :product_catalogue
 
     setup do
-      @template = FactoryGirl.build :submission_template
+      @template = FactoryBot.build :submission_template
       @product = create(:product)
       @template.product_catalogue.products << @product
     end

@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 require 'test_helper'
 class ReceptionsControllerTest < ActionController::TestCase
@@ -10,10 +5,10 @@ class ReceptionsControllerTest < ActionController::TestCase
     setup do
       @controller = ReceptionsController.new
       @request    = ActionController::TestRequest.create(@controller)
-      @user = FactoryGirl.create :user
+      @user = FactoryBot.create :user
       session[:user] = @user.id
-      @plate = FactoryGirl.create :plate
-      @sample_tube = FactoryGirl.create :sample_tube
+      @plate = FactoryBot.create :plate
+      @sample_tube = FactoryBot.create :sample_tube
     end
 
     should_require_login

@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 Given /^I am using "(.*)" to authenticate$/ do |auth_method|
   configatron.authentication = auth_method
@@ -13,15 +8,15 @@ Given /^I am logged in as "(.*)"$/ do |login|
 end
 
 Given /^I am an? "([^\"]*)" user logged in as "([^\"]*)"$/ do |role_name, login|
-  @current_user = FactoryGirl.create(:user,
-                                     login: login,
-                                     first_name: 'John',
-                                     last_name: 'Doe',
-                                     password: 'generic',
-                                     password_confirmation: 'generic',
-                                     email: "#{login}@example.com")
+  @current_user = FactoryBot.create(:user,
+                                    login: login,
+                                    first_name: 'John',
+                                    last_name: 'Doe',
+                                    password: 'generic',
+                                    password_confirmation: 'generic',
+                                    email: "#{login}@example.com")
 
-  @current_user.roles << FactoryGirl.create(:role, name: role_name)
+  @current_user.roles << FactoryBot.create(:role, name: role_name)
 
   visit '/login'
   fill_in('login', with: login)
@@ -30,25 +25,12 @@ Given /^I am an? "([^\"]*)" user logged in as "([^\"]*)"$/ do |role_name, login|
 end
 
 Given /^there is at least one administrator$/ do
-  FactoryGirl.create :admin
-end
-
-Given /^I am not logged in$/ do
-  @current_user = nil
-end
-
-Then /^I should not be on the login page$/ do
-  # assert_no_tag :tag => :title, :child => "Sequencescape : Login"
-  'I should not see "Sequencescape : Login" within "title"'
+  FactoryBot.create :admin
 end
 
 Then /^I should be logged in as "([^\"]*)"$/ do |login|
   user = User.find_by(login: login)
   assert @current_user == user
-end
-
-Given /^a user with human barcode "(ID\d+.)" exists$/ do |human_barcode|
-  FactoryGirl.create(:user, barcode: human_barcode)
 end
 
 Given /^user "([^"]*)" has nil first and last names$/ do |login|

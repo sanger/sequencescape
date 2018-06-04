@@ -1,21 +1,16 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2015 Genome Research Ltd.
 
 require 'test_helper'
 
 class MessengerCreatorTest < ActiveSupport::TestCase
   context '#messenger_creator' do
     setup do
-      @purpose = FactoryGirl.build :plate_purpose
-      @plate =   FactoryGirl.build :plate, plate_purpose: @purpose
+      @purpose = FactoryBot.build :plate_purpose
+      @plate =   FactoryBot.build :plate, plate_purpose: @purpose
     end
 
     context 'with SelfFinder' do
       setup do
-        @messenger_creator = FactoryGirl.build :messenger_creator, purpose: @purpose
+        @messenger_creator = FactoryBot.build :messenger_creator, purpose: @purpose
         @start_count = Messenger.count
       end
 

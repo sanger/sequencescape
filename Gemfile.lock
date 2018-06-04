@@ -34,12 +34,6 @@ GIT
     irods_reader (0.0.2)
 
 GIT
-  remote: git://github.com/sanger/psd_logger.git
-  revision: dd2d634114df75b1d8535715c169a7fc99521389
-  specs:
-    psd_logger (0.1.6)
-
-GIT
   remote: git://github.com/sanger/ruby_walk.git
   revision: 6e86c0413ab508933de899d7a3c6bc3b415e2acb
   specs:
@@ -200,10 +194,10 @@ GEM
       actionmailer (>= 4.0, < 6)
       activesupport (>= 4.0, < 6)
     execjs (2.7.0)
-    factory_girl (4.9.0)
+    factory_bot (4.10.0)
       activesupport (>= 3.0.0)
-    factory_girl_rails (4.9.0)
-      factory_girl (~> 4.9.0)
+    factory_bot_rails (4.10.0)
+      factory_bot (~> 4.10.0)
       railties (>= 3.0.0)
     ffi (1.9.23)
     flay (2.12.0)
@@ -410,6 +404,7 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
+    test-prof (0.5.0)
     therubyracer (0.12.3)
       libv8 (~> 3.16.14.15)
       ref
@@ -475,7 +470,7 @@ DEPENDENCIES
   delayed_job_active_record
   dynamic_form
   exception_notification
-  factory_girl_rails
+  factory_bot_rails
   flay
   flog
   formtastic
@@ -498,7 +493,6 @@ DEPENDENCIES
   net-ldap
   nokogiri
   pry
-  psd_logger!
   puma
   rack-acceptable
   rack-cors
@@ -524,6 +518,7 @@ DEPENDENCIES
   simplecov
   sinatra
   spreadsheet
+  test-prof
   therubyracer
   timecop
   traceroute

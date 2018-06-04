@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
 
 class PlateTemplatesController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
@@ -37,7 +32,7 @@ class PlateTemplatesController < ApplicationController
     end
 
     pattern = PlateTemplate.new
-    pattern.update_params!(name: params[:name], user_id: current_user.id, wells: params[:empty_well], control_well: params[:control_well], rows: params[:rows], cols: params[:cols])
+    pattern.update_params!(name: params[:name], user_id: current_user.id, wells: params[:empty_well], rows: params[:rows], cols: params[:cols])
     flash[:notice] = 'Template saved'
     redirect_to plate_templates_path
   end
@@ -50,7 +45,7 @@ class PlateTemplatesController < ApplicationController
 
   def update
     pattern = PlateTemplate.find(params[:id])
-    pattern.update_params!(name: params[:name], user_id: current_user.id, control_well: params[:control_well], wells: params[:empty_well], rows: params[:rows], cols: params[:cols])
+    pattern.update_params!(name: params[:name], user_id: current_user.id, wells: params[:empty_well], rows: params[:rows], cols: params[:cols])
     flash[:notice] = 'Template updated'
     redirect_to plate_templates_path
   end

@@ -58,12 +58,3 @@ Feature: Recycling requests in the Cherrypicking pipeline
       | number to remove |
       | 5                |
       | 3                |
-
-  @wip
-  Scenario: The requests are not in an appropriate state to be recycled
-    Given all of the requests in the "Cherrypick" pipeline are in the "blocked" state
-
-    When I check "Remove request 1"
-    And I select "Other" from "Select failure reason"
-    And I press "Fail items/batch"
-    Then I should see "Failed to remove"

@@ -1,24 +1,19 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 require 'test_helper'
 
 class RobotVerificationsControllerTest < ActionController::TestCase
   context 'RobotVerificationsController' do
     setup do
-      FactoryGirl.create :plate_type, name: 'ABgene_0765', maximum_volume: 800
+      FactoryBot.create :plate_type, name: 'ABgene_0765', maximum_volume: 800
       @controller = RobotVerificationsController.new
       @request    = ActionController::TestRequest.create(@controller)
-      @user = FactoryGirl.create :user, barcode: 'ID41440E'
+      @user = FactoryBot.create :user, barcode: 'ID41440E'
       @controller.stubs(:logged_in?).returns(@user)
       session[:user] = @user.id
 
-      @batch = FactoryGirl.create :batch, barcode: '6262'
-      @robot = FactoryGirl.create :robot, barcode: '1'
-      @plate = FactoryGirl.create :plate, barcode: '142334'
+      @batch = FactoryBot.create :batch, barcode: '6262'
+      @robot = FactoryBot.create :robot, barcode: '1'
+      @plate = FactoryBot.create :plate, barcode: '142334'
     end
 
     context '#index' do
@@ -38,13 +33,13 @@ class RobotVerificationsControllerTest < ActionController::TestCase
         count = 1
         @expected_layout[1].each do |barcode, bed_number|
           @robot.robot_properties.create(key: "SCRC#{bed_number}", value: bed_number)
-          @source_plate = FactoryGirl.create :plate, barcode: barcode
-          well = FactoryGirl.create :well, map_id: Map.for_position_on_plate(count, 96, @source_plate.asset_shape).first.id
-          target_well = FactoryGirl.create :well, map_id: Map.for_position_on_plate(count, 96, @source_plate.asset_shape).first.id
-          target_well.well_attribute = FactoryGirl.create :well_attribute
+          @source_plate = FactoryBot.create :plate, barcode: barcode
+          well = FactoryBot.create :well, map_id: Map.for_position_on_plate(count, 96, @source_plate.asset_shape).first.id
+          target_well = FactoryBot.create :well, map_id: Map.for_position_on_plate(count, 96, @source_plate.asset_shape).first.id
+          target_well.well_attribute = FactoryBot.create :well_attribute
           @source_plate.add_and_save_well(well)
           @plate.add_and_save_well(target_well)
-          well_request = FactoryGirl.create :request, state: 'passed'
+          well_request = FactoryBot.create :request, state: 'passed'
           well_request.asset = well
           well_request.target_asset = target_well
           well_request.save
@@ -261,12 +256,12 @@ class RobotVerificationsControllerTest < ActionController::TestCase
 
     context '#submission' do
       setup do
-        @well = FactoryGirl.create :well
-        @well_request = FactoryGirl.create :request, state: 'passed'
+        @well = FactoryBot.create :well
+        @well_request = FactoryBot.create :request, state: 'passed'
 
-        @target_well = FactoryGirl.create :well
+        @target_well = FactoryBot.create :well
         @plate.add_and_save_well(@well)
-        @source_plate = FactoryGirl.create :plate, barcode: '1234'
+        @source_plate = FactoryBot.create :plate, barcode: '1234'
         @source_plate.add_and_save_well(@target_well)
         @well_request.asset = @well
         @well_request.target_asset = @target_well

@@ -1,8 +1,3 @@
-<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
 
 <%= form_for :study, url: managed_update_admin_study_path(study), html: { id: "update_form", method: "put", multipart: true, class: 'form-horizontal' }, update: "editor_update", loading: "show_update_loader();", complete: "hide_update_loader();" do |form| %>
   <% if study %>

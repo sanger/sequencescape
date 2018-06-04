@@ -1,8 +1,3 @@
-<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
 
 <% add :about, I18n.t("studies.about") -%>
 <% add :menu, "Study history" => study_events_path(@study) -%>
@@ -29,7 +24,7 @@
     </tr>
     <tr>
       <td class="item">Study reference genome:</td>
-      <td><strong><%= h(@study.study_metadata.reference_genome.name) %></strong></td>
+      <td><strong><%= @study.study_metadata.reference_genome&.name %></strong></td>
     </tr>
   </tbody>
 </table>

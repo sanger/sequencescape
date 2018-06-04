@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2013,2015,2016 Genome Research Ltd.
 
 class Api::StudyIO < Api::Base
   module Extensions
@@ -52,7 +47,7 @@ class Api::StudyIO < Api::Base
           json_attributes['updated_at']   = user_role.updated_at if json_attributes['updated_at'] < user_role.updated_at
         end
       end
-    end if object.respond_to?(:roles)
+    end
   end
 
   with_association(:study_metadata) do
@@ -101,6 +96,4 @@ class Api::StudyIO < Api::Base
     map_attribute_to_json_attribute(:s3_email_list)
     map_attribute_to_json_attribute(:data_deletion_period)
   end
-
-  self.related_resources = [:samples, :projects]
 end

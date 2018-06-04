@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 When /^I upload "([^\"]+)" as a sample manifest for study "([^\"]+)"$/ do |filename, name|
   step('a supplier called "Test supplier name" exists')
@@ -24,16 +19,6 @@ Given /^the manifests are successfully processed$/ do
 
   manifests = SampleManifest.all
   assert(manifests.all? { |m| m.last_errors.blank? }, "There are sample manifests with errors: #{manifests.inspect}")
-end
-
-When /^I create a submission with plate "([^\"]+)" for study "([^\"]+)" under project "([^\"]+)"$/ do |plate, study, project|
-  step(%Q{I am on the show page for study "#{study}"})
-  step('I follow "Submit plates"')
-  step(%Q{I select "#{project}" from "Project"})
-  step(%Q{I fill in "Barcodes" with "#{plate}"})
-  step('I press "Submit"')
-
-  step('1 pending delayed jobs are processed')
 end
 
 When /^I start request (\d+) in the "([^\"]+)" pipeline$/ do |index, pipeline|

@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2015,2016 Genome Research Ltd.
 
 # minitest/autorun doesn't seem to be sufficient to load in Minitest::Skip which is required
 # for assert_raises.
@@ -16,10 +11,6 @@ end
 
 Given /^the sample named "([^"]*)" belongs to the study named "([^"]*)"$/ do |name_sample, name_study|
   bind_sample_to_study(name_sample, name_study)
-end
-
-Given /^an import SNP with study "([^"]*)" bounded to sample "([^"]*)"$/ do |study_name, name_sample|
-  step %Q{a study named "#{study_name}" to the sample named "#{name_sample}"}
 end
 
 When /^I try to set the sample named "([^"]*)" as belonging to the study named "([^"]*)"$/ do |sample_name, study_name|

@@ -1,11 +1,5 @@
 # frozen_string_literal: true
 
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2018 Genome Research Ltd.
-
 ##
 # This form object class handles the user interaction for creating new Location Reports.
 # It sensibility checks the user-entered list of barcode sequences or selection parameters
@@ -153,7 +147,7 @@ class LocationReport::LocationReportForm
   end
 
   def find_labwhere_location
-    locn_info = LabWhereClient::Location.find_by_barcode(location_barcode) # rubocop:disable Rails/DynamicFindBy
+    locn_info = LabWhereClient::Location.find_by_barcode(location_barcode)
     return locn_info.name if locn_info.present?
     nil
   rescue LabWhereClient::LabwhereException

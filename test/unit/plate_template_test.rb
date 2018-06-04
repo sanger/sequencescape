@@ -1,47 +1,8 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 require 'test_helper'
 
 class PlateTemplateTest < ActiveSupport::TestCase
   context 'A plate template' do
-    [1, 0, '1'].each_with_index do |i, index|
-      context "with a control well set to #{i} - #{index}" do
-        setup do
-          @template = create :plate_template
-          @template.set_control_well(i)
-        end
-
-        should 'be saved' do
-          assert_equal 1, @template.descriptors.size
-        end
-      end
-    end
-    context 'with a control well set to 0' do
-      setup do
-        @template = create :plate_template
-        @template.set_control_well(0)
-      end
-
-      should 'return boolean' do
-        assert_equal false, @template.control_well?
-      end
-    end
-
-    context 'with a control well set to 1' do
-      setup do
-        @template = create :plate_template
-        @template.set_control_well(1)
-      end
-
-      should 'return boolean' do
-        assert @template.control_well?
-      end
-    end
-
     context 'with no empty wells' do
       setup do
         @template = create :plate_template

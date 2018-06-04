@@ -1,13 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
-
-Then /^I should see barcode "([^"]*)"$/ do |machine_barcode|
-  barcode = Barcode.barcode_to_human(machine_barcode)
-  step %Q{I should see "#{barcode}"}
-end
 
 Given /^the plate barcode webservice returns "([1-9][0-9]*)"$/ do |barcode|
   FakeBarcodeService.instance.barcode(barcode)
@@ -15,14 +5,6 @@ end
 
 Given /^a plate barcode webservice is available and returns "(\d+)"$/ do |barcode|
   step(%Q{the plate barcode webservice returns "#{barcode}"})
-end
-
-Given /^the plate barcode printing service will error$/ do
-  FakeBarcodeService.instance.push_printing_error
-end
-
-Given /^the plate barcode service is available with barcodes "([1-9][0-9]*)\.\.([1-9][0-9]*)"$/ do |start, finish|
-  (start.to_i..finish.to_i).each { |i| step(%Q{the plate barcode webservice returns "#{i}"}) }
 end
 
 Given /^the plate barcode webservice returns "([1-9][0-9]*)\.\.([1-9][0-9]*)"$/ do |start, finish|

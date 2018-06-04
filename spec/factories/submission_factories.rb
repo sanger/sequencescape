@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
-# This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2011,2012 Genome Research Ltd.
-FactoryGirl.define do
+FactoryBot.define do
   factory :submission__ do
     user
     factory :submission_without_order
@@ -84,7 +80,7 @@ class FactoryHelp
       value = options.delete(option)
       submission_options[option] = value if value
     end
-    submission = FactoryGirl.create(:order_with_submission, options).submission
+    submission = FactoryBot.create(:order_with_submission, options).submission
     # trying to skip StateMachine
     submission.update_attributes!(submission_options) if submission_options.present?
     submission.reload

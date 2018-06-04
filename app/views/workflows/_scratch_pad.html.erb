@@ -1,8 +1,3 @@
-<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.%>
 
 <h2>Scratch Pad</h2>
 <p>Anything in this table will not be cherrypicked.</p>
@@ -14,11 +9,4 @@
     <% plate_ids << "scratch_[#{row}]" %>
   <% end %>
 </table>
-
-<% if (control_plate = ControlPlate.first).present? %>
-  <h3>Controls</h3>
-  <%= render partial: 'control_table', locals: {table_name: "Illumina", wells: control_plate.illumina_wells, control_plate: control_plate,  plate_class: plate_class, row_number: 0} %>
-  <%= render partial: 'control_table', locals: {table_name: "Affy", wells: control_plate.affy_wells, control_plate: control_plate,  plate_class: plate_class, row_number: 1} %>
-  <% plate_ids << 'control_[0]' << 'control_[1]' %>
-<% end %>
 

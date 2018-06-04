@@ -1,12 +1,6 @@
 # frozen_string_literal: true
 
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2014,2015 Genome Research Ltd.
-
-FactoryGirl.define do
+FactoryBot.define do
   factory :lot_type do
     sequence(:name) { |n| "lot_type#{n}" }
     template_class 'PlateTemplate'
@@ -18,12 +12,12 @@ FactoryGirl.define do
   end
 
   factory :pending_purpose, parent: :tube_purpose do
-    name { FactoryGirl.generate :purpose_name }
+    name { FactoryBot.generate :purpose_name }
     default_state 'pending'
   end
 
   factory :created_purpose, parent: :tube_purpose do
-    name { FactoryGirl.generate :purpose_name }
+    name { FactoryBot.generate :purpose_name }
     default_state 'created'
   end
 
@@ -56,7 +50,7 @@ FactoryGirl.define do
   factory :qcable do
     # Note: We don't use the automatic association building here as
     # we rely on attributes_for, which doesn't seem to handle it well.
-    # Incidentally we use attributes_for here as factory_girl instantiates
+    # Incidentally we use attributes_for here as factory_bot instantiates
     # the object before setting attributes, which messes up the state machine
     # callbacks.
     lot { create :lot }

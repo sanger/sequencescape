@@ -1,16 +1,6 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 Given /^I have an empty submission$/ do
-  FactoryGirl.create(:submission_without_order)
-end
-
-Given /^all submissions have been built$/ do
-  Submission.all.map(&:built!)
-  step 'all pending delayed jobs are processed'
+  FactoryBot.create(:submission_without_order)
 end
 
 When /^the state of the submission with UUID "([^"]+)" is "([^"]+)"$/ do |uuid, state|
@@ -38,13 +28,7 @@ Then /^the submission with UUID "([^"]+)" should have (\d+) "([^"]+)" requests?$
 end
 
 Given /^the request type "([^\"]+)" exists$/ do |name|
-  FactoryGirl.create(:request_type, name: name)
-end
-
-Then /^the (library tube) "([^\"]+)" should have (\d+) "([^\"]+)" requests$/ do |asset_model, asset_name, count, request_type_name|
-  asset        = asset_model.gsub(/\s+/, '_').classify.constantize.find_by(name: asset_name) or raise StandardError, "Could not find #{asset_model} #{asset_name.inspect}"
-  request_type = RequestType.find_by(name: request_type_name) or raise StandardError, "Could not find request type #{request_type_name.inspect}"
-  assert_equal(count.to_i, asset.requests.where(request_type_id: request_type.id).count, "Number of #{request_type_name.inspect} requests incorrect")
+  FactoryBot.create(:request_type, name: name)
 end
 
 def submission_in_state(state, attributes = {})
@@ -106,14 +90,6 @@ def with_request_type_scope(name, &block)
   with_scope("#request_type_options_for_#{request_type.id}", &block)
 end
 
-When /^I fill in the request fields with sensible values for "([^\"]+)"$/ do |name|
-  with_request_type_scope(name) do
-    SENSIBLE_DEFAULTS_FOR_REQUEST_TYPE[name].each do |field, value|
-      value.is_a?(Proc) ? value.call(self, field) : fill_in(field, with: value)
-    end
-  end
-end
-
 When /^I fill in "([^\"]+)" with "([^\"]+)" for the "([^\"]+)" request type$/ do |name, value, type|
   with_request_type_scope(type) do
     fill_in(name, with: value)
@@ -124,32 +100,6 @@ When /^I select "([^\"]+)" from "([^\"]+)" for the "([^\"]+)" request type$/ do 
   with_request_type_scope(type) do
     select(value, from: name)
   end
-end
-
-Then /^the source asset of the last "([^\"]+)" request should be a "([^\"]+)"$/ do |request_type_name, asset_type|
-  request_type = RequestType.find_by(name: request_type_name) or raise StandardError, "Cannot find request type #{request_type_name.inspect}"
-  request      = request_type.requests.last or raise StandardError, "There are no #{request_type_name.inspect} requests!"
-  assert_equal(asset_type.gsub(/\s+/, '_').classify.constantize, request.asset.class, 'Source asset is of invalid type')
-end
-
-Given /^the last submission wants (\d+) runs of the "([^\"]+)" requests$/ do |count, type|
-  submission   = Submission.last or raise StandardError, 'There appear to be no submissions'
-  request_type = RequestType.find_by(name: type) or raise StandardError, "Cannot find request type #{type.inspect}"
-  submission.request_options              ||= {}
-  submission.request_options[:multiplier] ||= Hash[submission.request_types.map { |t| [t, 1] }]
-  submission.request_options[:multiplier][request_type.id.to_i] = count.to_i
-  submission.save!
-end
-
-Given /^the sample tubes are part of submission "([^\"]*)"$/ do |submission_uuid|
-  submission = Uuid.find_by(external_id: submission_uuid).resource or raise StandardError, 'Couldnt find object for UUID'
-  Asset.all.map { |asset| submission.orders.first.assets << asset }
-end
-
-Then /^I create the order and submit the submission/ do
-  step 'I choose "build_submission_yes"'
-  step 'I press "Create Order"'
-  step 'I press "Submit"'
 end
 
 Given /^I have a "([^\"]*)" submission with the following setup:$/ do |template_name, table|

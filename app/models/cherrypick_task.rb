@@ -1,33 +1,9 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 class CherrypickTask < Task
   EMPTY_WELL          = [0, 'Empty', '']
   TEMPLATE_EMPTY_WELL = [0, '---', '']
 
   def create_render_element(request)
-  end
-
-  class BatchWrapper
-    def initialize(owner, batch)
-      @owner, @batch, @control_added = owner, batch, false
-    end
-
-    def control_added?
-      @control_added
-    end
-
-    def create_control_request_view_details
-      # NOTE: 'sample' here is not a Sequencescape sample but a random selection from the wells.
-      @owner.send(:generate_control_request, ControlPlate.first.illumina_wells.sample).tap do |request|
-        @batch.requests << request
-        yield([request.id, request.asset.plate.human_barcode, request.asset.map.description])
-        @control_added = true
-      end
-    end
   end
 
   # An instance of this class represents the target plate being picked onto.  It can have a template
@@ -39,8 +15,8 @@ class CherrypickTask < Task
       const_get("by_#{cherrypick_direction}".classify)
     end
 
-    def initialize(batch, template, asset_shape = nil, partial = nil)
-      @wells, @size, @batch, @shape = [], template.size, batch, asset_shape || AssetShape.default
+    def initialize(template, asset_shape = nil, partial = nil)
+      @wells, @size, @shape = [], template.size, asset_shape || AssetShape.default
       initialize_already_occupied_wells_from(template, partial)
       add_any_wells_from_template_or_partial(@wells)
     end
@@ -121,8 +97,6 @@ class CherrypickTask < Task
           plate.wells.each { |w| wells[w.map.horizontal_plate_position] = w.map.description }
         end
       end
-
-      @control_well_required = template.control_well? && (partial.nil? || !partial.control_well_exists?)
     end
     private :initialize_already_occupied_wells_from
 
@@ -131,13 +105,6 @@ class CherrypickTask < Task
     # the next position on the pick plate is known to be empty.
     def add_any_wells_from_template_or_partial(wells)
       wells << CherrypickTask::TEMPLATE_EMPTY_WELL until wells.size >= @size or @used_wells[well_position(wells)].nil?
-      return unless @control_well_required and wells.size == (@size - 1)
-
-      # Control well is always in the bottom right corner of the plate
-      @batch.create_control_request_view_details do |control_request_view|
-        wells << control_request_view
-        @control_well_required = false
-      end
     end
     private :add_any_wells_from_template_or_partial
 
@@ -147,37 +114,36 @@ class CherrypickTask < Task
     private :add_empty_well
   end
 
-  def pick_new_plate(requests, template, robot, batch, plate_purpose)
+  def pick_new_plate(requests, template, robot, plate_purpose)
     target_type = PickTarget.for(plate_purpose)
-    perform_pick(requests, robot, batch) do |batch|
-      target_type.new(batch, template, plate_purpose.try(:asset_shape))
+    perform_pick(requests, robot) do
+      target_type.new(template, plate_purpose.try(:asset_shape))
     end
   end
 
-  def pick_onto_partial_plate(requests, template, robot, batch, partial_plate)
+  def pick_onto_partial_plate(requests, template, robot, partial_plate)
     purpose = partial_plate.plate_purpose
     target_type = PickTarget.for(purpose)
 
-    perform_pick(requests, robot, batch) do |batch|
-      target_type.new(batch, template, purpose.try(:asset_shape), partial_plate).tap do
+    perform_pick(requests, robot) do
+      target_type.new(template, purpose.try(:asset_shape), partial_plate).tap do
         partial_plate = nil # Ensure that subsequent calls have no partial plate
       end
     end
   end
 
-  def perform_pick(requests, robot, batch)
+  def perform_pick(requests, robot)
     max_plates = robot.max_beds
     raise StandardError, 'The chosen robot has no beds!' if max_plates.zero?
 
-    batch                          = BatchWrapper.new(self, batch)
-    plates, current_plate          = [], yield(batch)
+    plates, current_plate          = [], yield
     source_plates, current_sources = Set.new, Set.new
     plates_hash                    = build_plate_wells_from_requests(requests)
 
     push_completed_plate = lambda do
       plates << current_plate.completed_view
       current_sources.clear
-      current_plate = yield(batch)
+      current_plate = yield
     end
 
     plates_hash.each do |request_id, plate_barcode, well_location|
@@ -194,9 +160,8 @@ class CherrypickTask < Task
       push_completed_plate.call if current_plate.full?
     end
 
-    # Ensure that a non-empty plate is stored and that the control plate is added if it has been used
+    # Ensure that a non-empty plate is stored
     push_completed_plate.call unless current_plate.empty?
-    source_plates << ControlPlate.first.human_barcode if batch.control_added?
 
     [plates, source_plates]
   end
@@ -218,15 +183,6 @@ class CherrypickTask < Task
     return false
   end
 
-  def create_control_request_from_well(control_param)
-    return nil unless control_param.match?(/control/)
-    well = get_well_from_control_param(control_param)
-    return nil if well.nil?
-    generate_control_request(well)
-  end
-
-  # Sublime syntax highlighting is broken / This comment fixes it.
-
   private
 
   def build_plate_wells_from_requests(requests)
@@ -238,20 +194,5 @@ class CherrypickTask < Task
     ]).order('container_associations.container_id ASC, maps.column_order ASC')
            .where(requests: { id: requests })
            .pluck('requests.id', 'barcodes.barcode', 'maps.description').uniq
-  end
-
-  def generate_control_request(well)
-    # TODO: create a genotyping request for the control request
-    # Request.create(:state => "pending", :sample => well.sample, :asset => well, :target_asset => Well.create(:sample => well.sample, :name => well.sample.name))
-    workflow.pipeline.control_request_type.create_control!(
-      asset: well,
-      target_asset: Well.create!(aliquots: well.aliquots.map(&:dup))
-    )
-  end
-
-  def get_well_from_control_param(control_param)
-    control_param.scan(/([\d]+)/)
-    well_id = $1.to_i
-    Well.find_by(id: well_id)
   end
 end

@@ -44,8 +44,11 @@ feature 'Viewing an asset' do
       it_behaves_like 'an asset'
     end
 
-    context 'Not in labwhere' do
-      setup { allow(LabWhereClient::Labware).to receive(:find_by_barcode).with(asset.machine_barcode).and_return(nil) }
+    context 'Not in labwhere nor ETS' do
+      setup do
+        allow(LabWhereClient::Labware).to receive(:find_by_barcode).with(asset.machine_barcode).and_return(nil)
+        allow(Cas::StoredEntity).to receive(:storage_location).with(asset.barcode_number, asset.prefix).and_return([])
+      end
       it_behaves_like 'an asset'
     end
   end

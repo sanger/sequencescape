@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 require 'test_helper'
 
@@ -19,7 +14,7 @@ module Admin
 
       context '#create' do
         setup do
-          FactoryGirl.create :program, name: 'My unique name of program'
+          FactoryBot.create :program, name: 'My unique name of program'
         end
 
         should 'create a new program' do
@@ -39,7 +34,7 @@ module Admin
 
       context '#edit' do
         setup do
-          @program = FactoryGirl.create :program, name: 'My program name'
+          @program = FactoryBot.create :program, name: 'My program name'
         end
 
         should 'edit the name of the new program' do
