@@ -31,15 +31,15 @@ module Aker
     end
 
     def changed_containers
+      []
     end
 
     def material_message(sample)
       well_attr = sample.container.asset.well_attribute
-      {
-        "_id": sample.uuid,
-        "concentration": well_attr.concentration,
-        "measured_volume": well_attr.measured_volume
-      }      
+      obj = {"_id": sample.name}
+      obj["concentration"] = well_attr.concentration if well_attr.concentration
+      obj["volume"] = well_attr.measured_volume if well_attr.measured_volume
+      obj
     end
 
     def container_message(container)
@@ -47,21 +47,21 @@ module Aker
     end
 
     def containers_message
-      changed_containers.map(&:container_message)
+      changed_containers.map {|c| container_message(c) }
     end
 
     def updated_materials_message
-      updated_materials.map(&:material_message)
+      updated_materials.map {|m| material_message(m) }
     end
 
     def new_materials_message
-      new_materials.map(&:material_message)
+      new_materials.map {|m| material_message(m) }
     end
 
     def finish_message
       {
         job: { 
-          job_id: job.aker_job_id, 
+          job_id: aker_job_id, 
           comment: '',
           updated_materials: updated_materials_message,
           new_materials: new_materials_message,
