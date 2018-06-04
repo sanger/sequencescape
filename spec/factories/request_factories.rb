@@ -12,7 +12,7 @@
 # - Factories names after a class, eg. request, should NOT inherit. Use traits if there is shared behaviour.
 # - Factories names after a class should avoid creating associations, except where they are required for the
 #   request to be valid.
-FactoryGirl.define do
+FactoryBot.define do
   factory :multiplexed_library_creation_request, parent: :request do
     sti_type      'MultiplexedLibraryCreationRequest'
     asset         { |asset| asset.association(:sample_tube)  }
