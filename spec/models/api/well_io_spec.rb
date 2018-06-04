@@ -31,8 +31,6 @@ RSpec.describe Api::WellIO, type: :model do
       'sample_uuid' => sample.uuid,
       'sample_internal_id' => sample.id,
       'sample_name' => sample.name,
-      'lanes' => "http://localhost:3000/0_5/wells/#{subject.uuid}/lanes",
-      'requests' => "http://localhost:3000/0_5/wells/#{subject.uuid}/requests",
       'genotyping_status' => nil,
       'genotyping_snp_plate_id' => ''
     }

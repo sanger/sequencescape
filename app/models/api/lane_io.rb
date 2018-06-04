@@ -14,10 +14,6 @@ class Api::LaneIO < Api::Base
         scope :including_associations_for_json, -> { includes([:uuid_object]) }
       end
     end
-
-    def related_resources
-      ['parents']
-    end
   end
   renders_model(::Lane)
 
@@ -29,6 +25,4 @@ class Api::LaneIO < Api::Base
   map_attribute_to_json_attribute(:two_dimensional_barcode)
   map_attribute_to_json_attribute(:created_at)
   map_attribute_to_json_attribute(:updated_at)
-
-  self.related_resources = [:requests]
 end

@@ -84,6 +84,4 @@ class Api::LibraryTubeIO < Api::Base
       json_attributes['fragment_size_required_to']   = object.request_metadata.fragment_size_required_to     if object.respond_to?(:fragment_size_required_to)
     end
   end
-
-  self.related_resources = [:lanes, :requests]
 end

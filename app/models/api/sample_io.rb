@@ -64,8 +64,6 @@ class Api::SampleIO < Api::Base
     map_attribute_to_json_attribute(:donor_id)
   end
 
-  self.related_resources = [:sample_tubes]
-
   extra_json_attributes do |_object, json_attributes|
     if json_attributes['reference_genome'].blank?
       json_attributes['reference_genome'] = nil

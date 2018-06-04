@@ -21,10 +21,6 @@ class Api::ProjectIO < Api::Base
         }
       end
     end
-
-    def related_resources
-      ['studies']
-    end
   end
 
   renders_model(::Project)

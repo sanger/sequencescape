@@ -235,10 +235,6 @@ Then /^the HTTP response body should be empty$/ do
   assert(page.source.blank?, 'The response body is not blank')
 end
 
-Then /^the JSON should be an empty array$/ do
-  assert_hash_equal([], decode_json(page.source, 'Received'), 'The JSON is not an empty array')
-end
-
 Then /^the JSON should not contain "([^\"]+)" within any element of "([^\"]+)"$/ do |name, path|
   json = decode_json(page.source, 'Received')
   target = path.split('.').inject(json) { |s, p| s.try(:[], p) } or raise StandardError, "Could not find #{path.inspect} in JSON"

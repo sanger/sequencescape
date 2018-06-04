@@ -65,6 +65,4 @@ class Api::WellIO < Api::Base
       map_attribute_to_json_attribute(:name, 'sample_name')
     end
   end
-
-  self.related_resources = [:lanes, :requests]
 end

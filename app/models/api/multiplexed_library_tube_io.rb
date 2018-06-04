@@ -15,10 +15,6 @@ class Api::MultiplexedLibraryTubeIO < Api::Base
       end
     end
 
-    def related_resources
-      ['parents', 'children', 'requests']
-    end
-
     def url_name
       'multiplexed_library_tube'
     end
@@ -44,6 +40,4 @@ class Api::MultiplexedLibraryTubeIO < Api::Base
   with_association(:scanned_into_lab_event) do
     map_attribute_to_json_attribute(:content, 'scanned_in_date')
   end
-
-  self.related_resources = [:lanes, :requests]
 end
