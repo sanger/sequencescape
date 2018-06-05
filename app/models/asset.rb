@@ -174,7 +174,7 @@ class Asset < ApplicationRecord
       if source_barcode.blank?
         nil
       elsif /\A[0-9]{1,7}\z/.match?(source_barcode) # Just a number
-        joins(:barcodes).where('barcodes.barcode LIKE "__?_"', source_barcode)
+        joins(:barcodes).where('barcodes.barcode LIKE "__?_"', source_barcode).first # rubocop:disable Rails/FindBy
       else
         find_from_barcode(source_barcode)
       end
