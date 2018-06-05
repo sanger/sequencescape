@@ -82,8 +82,8 @@ RSpec.describe Api::RequestIO, type: :model do
         'id' => subject.id,
         'state' => subject.state,
         'request_type' => subject.request_type.name,
-        'fragment_size_required_from' => '1',
-        'fragment_size_required_to' => '20',
+        'fragment_size_required_from' => '100',
+        'fragment_size_required_to' => '200',
         'library_type' => 'Standard'
       }
     end
