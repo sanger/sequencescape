@@ -15,18 +15,63 @@ addons:
 cache: bundler
 bundler_args: --without warehouse deployment
 env:
-  matrix:
-    - "DB_REQUIRED='true' RAILS_ENV=test TZ=Europe/London SUITE='rake test' RUBYOPT='-W0'" # RUBYOPT disables warnings turned on by default in rake 11. See note in README
-    - "DB_REQUIRED='true' RAILS_ENV=test TZ=Europe/London SUITE='rspec'"
-    - "DB_REQUIRED='true' RAILS_ENV=cucumber CI_NODE_TOTAL=2 CI_NODE_INDEX=0 JRUBY_OPTS='' PRECOMPILE_ASSETS=true CUCUMBER_FORMAT=DebugFormatter TZ=Europe/London SUITE='rake knapsack:cucumber'"
-    - "DB_REQUIRED='true' RAILS_ENV=cucumber CI_NODE_TOTAL=2 CI_NODE_INDEX=1 JRUBY_OPTS='' PRECOMPILE_ASSETS=true CUCUMBER_FORMAT=DebugFormatter TZ=Europe/London SUITE='rake knapsack:cucumber'"
-    - "SUITE=rubocop"
-before_script:
+  global:
+    - TZ=Europe/London
+    - CUCUMBER_FORMAT=DebugFormatter
+    - 'PATH=$PATH:/usr/lib/chromium-browser/'
+    - 'DISPLAY=:99.0'
+before_install:
   - 'mv config/aker.yml.example config/aker.yml'
-  - 'export PATH=$PATH:/usr/lib/chromium-browser/'
-  - 'export DISPLAY=:99.0'
   - 'sh -e /etc/init.d/xvfb start'
-  - 'if [[ "$DB_REQUIRED" == "true" ]]; then bundle exec rake db:setup; fi'
-  - 'if [[ "$PRECOMPILE_ASSETS" == "true" ]]; then bundle exec rake assets:precompile; fi'
 script:
   - "bundle exec $SUITE"
+jobs:
+  include:
+    # Cron task runs all tests in a single ~50m task for coverage specs
+  - if: type = cron
+    script: './run_coverage'
+    before_script:
+    - 'curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter'
+    - 'chmod +x ./cc-test-reporter'
+    - './cc-test-reporter before-build'
+    after_script:
+    - './cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT'
+    # Rubocop
+  - if: type != cron
+    env: SUITE=rubocop
+    # Minitest
+  - if: type != cron
+    env:
+    - "SUITE='rake test'"
+    - 'RAILS_ENV=test'
+    - "RUBYOPT='-W0'"
+    before_script:
+    - bundle exec rake db:setup
+    script: bundle exec rake test
+    # Rspec
+  - if: type != cron
+    env:
+    - 'SUITE=rspec'
+    - 'RAILS_ENV=test'
+    before_script:
+    - bundle exec rake db:setup
+    # Cucumber node 0
+  - if: type != cron
+    env:
+    - "SUITE='rake knapsack:cucumber'"
+    - 'RAILS_ENV=cucumber'
+    - CI_NODE_TOTAL=2
+    - CI_NODE_INDEX=0
+    before_script:
+    - bundle exec rake assets:precompile
+    - bundle exec rake db:setup
+    # Cucumber node 1
+  - if: type != cron
+    env:
+    - "SUITE='rake knapsack:cucumber'"
+    - 'RAILS_ENV=cucumber'
+    - CI_NODE_TOTAL=2
+    - CI_NODE_INDEX=1
+    before_script:
+    - bundle exec rake assets:precompile
+    - bundle exec rake db:setup
