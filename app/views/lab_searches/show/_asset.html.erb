@@ -7,9 +7,9 @@
       <table border="0" cellpadding="3" cellspacing="0" width="100%">
         <% asset.requests.each do |request| %>
           <tr>
-            <td><%= request.pipeline.name unless request.pipeline_id.nil? %></td>
+            <td><%= request.pipeline&.name %></td>
             <td><%= link_to request.id, request_path(id: request.id) %></td>
-            <td><%= request.batch.try(:id) %></td>
+            <td><%= request.batch&.id %></td>
           </tr>
         <% end %>
       </table>

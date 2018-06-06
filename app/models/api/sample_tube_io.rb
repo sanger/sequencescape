@@ -41,6 +41,4 @@ class Api::SampleTubeIO < Api::Base
       map_attribute_to_json_attribute(:name, 'sample_name')
     end
   end
-
-  self.related_resources = [:library_tubes, :requests]
 end

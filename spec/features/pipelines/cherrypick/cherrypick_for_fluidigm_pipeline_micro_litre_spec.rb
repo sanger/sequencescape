@@ -16,6 +16,7 @@ feature 'cherrypick for fluidigm pipeline - micro litre', js: true do
   let(:barcode) { 99999 }
   let(:robot) { create :robot, barcode: '444' }
   let!(:plate_template) { create :plate_template }
+  let(:request_types) { pipeline.request_types.map(&:key) }
 
   before(:each) do
     assets = plates.each_with_object([]) do |plate, assets|
@@ -31,7 +32,7 @@ feature 'cherrypick for fluidigm pipeline - micro litre', js: true do
       submission_class_name: 'LinearSubmission',
       product_catalogue: 'Generic',
       submission_parameters: { info_differential: 6,
-                               request_types: %w[pick_to_sta pick_to_sta2 pick_to_snp_type pick_to_fluidigm] }
+                               request_types: request_types }
     }
     submission_template = SubmissionSerializer.construct!(submission_template_hash)
     submission = submission_template.create_and_build_submission!(

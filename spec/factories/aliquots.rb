@@ -18,6 +18,13 @@ FactoryBot.define do
       tag
       tag2 nil
     end
+
+    factory :minimal_aliquot do
+      study nil
+      project nil
+      tag nil
+      tag2 nil
+    end
   end
 
   factory :spiked_buffer do

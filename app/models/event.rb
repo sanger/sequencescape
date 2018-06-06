@@ -1,6 +1,5 @@
 
 class Event < ApplicationRecord
-  include Api::EventIO::Extensions
   include Uuid::Uuidable
 
   self.per_page = 500

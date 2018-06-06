@@ -35,7 +35,7 @@ RSpec.describe StudiesController do
           'name' => 'hello',
           'reference_genome_id' => reference_genome.id,
           'study_metadata_attributes' => {
-            'faculty_sponsor_id' => FacultySponsor.create!(name: 'Me'),
+            'faculty_sponsor_id' => create(:faculty_sponsor, name: 'Me'),
             'study_description' => 'some new study',
             'program_id' => program.id,
             'contains_human_dna' => 'No',

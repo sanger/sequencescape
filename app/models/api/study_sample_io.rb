@@ -32,6 +32,4 @@ class Api::StudySampleIO < Api::Base
     map_attribute_to_json_attribute(:id, 'study_internal_id')
     map_attribute_to_json_attribute(:uuid, 'study_uuid')
   end
-
-  self.related_resources = [:samples, :studies]
 end
