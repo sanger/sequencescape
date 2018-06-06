@@ -43,7 +43,7 @@ RSpec.describe 'Jobs', type: :feature, aker: true do
           expect(page).to have_content(json['project_name'])
           expect(page).to have_content(json['cost_code'])
           expect(page).to have_content(json['comment'])
-          expect(page).to have_content(json['desired_date'])
+          expect(page).to have_content(json['priority'])
           expect(page).to have_content(json['status'])
           expect(page).to have_css('.sample', count: job.samples.count)
         end

@@ -26,7 +26,7 @@ RSpec.describe Aker::Factories::Job, type: :model, aker: true do
     expect(job.project_name).to eq(params[:project_name])
     expect(job.cost_code).to eq(params[:cost_code])
     expect(job.comment).to eq(params[:comment])
-    expect(job.desired_date).to eq(params[:desired_date])
+    expect(job.priority).to eq(params[:priority])
     expect(job.data_release_uuid).to eq(params[:data_release_uuid])
     expect(job.modules).to eq(params[:modules])
     expect(job.container).to eq(params[:container])

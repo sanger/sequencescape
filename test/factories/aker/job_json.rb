@@ -21,7 +21,8 @@ FactoryBot.define do
     data_release_uuid { study.uuid }
     modules { ['module 1', 'module 2'] }
     comment 'Cook for 20 minutes.'
-    desired_date '2017-08-01'
+    priority 'standard'
+
     container { build(:container_json) }
     materials do
       [

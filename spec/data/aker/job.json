@@ -31,6 +31,6 @@
          "barcode": "AKER-48"
       },
       "comment":"Cook for 20 minutes.",
-      "desired_date":"2017-08-01"
+      "priority":"standard"
    }
 }

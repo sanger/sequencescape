@@ -7,7 +7,7 @@ module Aker
     # Validates presence of aker_job_id and ensures that there is at least one material.
     class Job
       include ActiveModel::Model
-      ATTRIBUTES = %i[job_id work_order_id aker_job_url product_name process_name process_uuid modules product_version product_uuid project_uuid project_name cost_code container materials comment desired_date data_release_uuid].freeze
+      ATTRIBUTES = %i[job_id work_order_id aker_job_url product_name process_name process_uuid modules product_version product_uuid project_uuid project_name cost_code container materials comment priority data_release_uuid].freeze
       DEFAULT_ATTRIBUTES = { materials: {} }.freeze
 
       attr_accessor(*ATTRIBUTES)
