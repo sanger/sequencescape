@@ -62,11 +62,10 @@ module Aker
       {
         job: { 
           job_id: aker_job_id, 
-          comment: '',
           updated_materials: updated_materials_message,
           new_materials: new_materials_message,
           containers: containers_message
-        } 
+        }
       }
     end
   end

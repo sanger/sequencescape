@@ -30,12 +30,16 @@ RSpec.describe Aker::JobsController, type: :request, aker: true do
       method: :put,
       url: "#{url}/complete",
       payload: {
-        job: { job_id: job.aker_job_id, comment: 'Complete it' }
+        job: { job_id: job.aker_job_id, 
+          updated_materials: [], new_materials: [], containers: [] 
+        }
       }.to_json,
       headers: { content_type: :json },
       proxy: nil
     ).and_return(
-      RestClient::Response.create({ job: { id: job.aker_job_id, comment: 'Complete it' } }.to_json,
+      RestClient::Response.create({ job: { id: job.aker_job_id, 
+        updated_materials: [], new_materials: [], containers: [] 
+      } }.to_json,
                                   Net::HTTPResponse.new('1.1', 200, ''), request)
     )
 
@@ -50,12 +54,16 @@ RSpec.describe Aker::JobsController, type: :request, aker: true do
       method: :put,
       url: "#{url}/cancel",
       payload: {
-        job: { job_id: job.aker_job_id, comment: 'Cancel it' }
+        job: { job_id: job.aker_job_id, 
+          updated_materials: [], new_materials: [], containers: [] 
+        }
       }.to_json,
       headers: { content_type: :json },
       proxy: nil
     ).and_return(RestClient::Response.create({
-      job: { id: job.aker_job_id, comment: 'Cancel it' }
+      job: { id: job.aker_job_id, 
+        updated_materials: [], new_materials: [], containers: [] 
+      }
     }.to_json,
                                              Net::HTTPResponse.new('1.1', 200, ''), request))
 
