@@ -180,6 +180,8 @@ group :cucumber do
   gem 'rubyzip'
   gem 'mime-types'
   gem 'cucumber-rails', require: false
+  # Cucumber 3 removes Transform in favour of ParameterType. We may be able to migrate
+  gem 'cucumber', '~>2.99.0'
   gem 'webmock'
   gem 'knapsack'
 end

@@ -5256,7 +5256,7 @@ Style/LineEndConcatenation:
     - 'test/unit/tasks/generate_manifest_task_test.rb'
 
 # Offense count: 9
-Style/MethodMissing:
+Style/MissingRespondToMissing:
   Exclude:
     - 'app/api/core/endpoint/basic_handler/actions/guards.rb'
     - 'app/models/request_type/validator.rb'
