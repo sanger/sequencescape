@@ -49,14 +49,14 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
 
     it 'be Tubes for a library tube based manifest' do
       sample_manifest = create(:tube_sample_manifest, asset_type: 'library')
-      column_list = SampleManifestExcel.configuration.columns.tube_full.dup
+      column_list = SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup
       worksheet = SampleManifestExcel::Worksheet::DataWorksheet.new(options.merge(columns: column_list, sample_manifest: sample_manifest))
       expect(worksheet.type).to eq('Tubes')
     end
 
     it 'be Tubes for a multiplexed library tube' do
       sample_manifest = create(:tube_sample_manifest, asset_type: 'multiplexed_library')
-      column_list = SampleManifestExcel.configuration.columns.tube_full.dup
+      column_list = SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup
       worksheet = SampleManifestExcel::Worksheet::DataWorksheet.new(options.merge(columns: column_list, sample_manifest: sample_manifest))
       expect(worksheet.type).to eq('Tubes')
     end
@@ -166,7 +166,7 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
       sample_manifest = create(:tube_sample_manifest, asset_type: 'multiplexed_library', rapid_generation: true)
       sample_manifest.generate
       worksheet = SampleManifestExcel::Worksheet::DataWorksheet.new(workbook: workbook,
-                                                                    columns: SampleManifestExcel.configuration.columns.tube_full.dup,
+                                                                    columns: SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup,
                                                                     sample_manifest: sample_manifest, ranges: SampleManifestExcel.configuration.ranges.dup,
                                                                     password: '1111')
       save_file
@@ -177,7 +177,7 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
     end
   end
 
-  context 'test worksheet for tubes' do
+  context 'test worksheet for library tubes' do
     let(:data) do
       {
         library_type: 'My personal library type', insert_size_from: 200, insert_size_to: 1500,
@@ -269,18 +269,18 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
         expect(worksheet.sample_manifest.asset_type).to eq('1dtube')
       end
 
-      it 'creates a multiplexed library tube for multiplexed_library' do
-        worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes.merge(manifest_type: 'multiplexed_library'))
-        save_file
-        expect(worksheet.sample_manifest.asset_type).to eq('multiplexed_library')
-        expect(worksheet.assets.all? { |asset| asset.requests.first.target_asset == worksheet.multiplexed_library_tube }).to be_truthy
-      end
-
       it 'creates library tubes for library' do
         worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes.merge(manifest_type: 'library'))
         save_file
         expect(worksheet.sample_manifest.asset_type).to eq('library')
         expect(worksheet.assets.all? { |asset| asset.type == 'library_tube' }).to be_truthy
+      end
+
+      it 'creates a multiplexed library tube for multiplexed_library' do
+        worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes.merge(manifest_type: 'multiplexed_library'))
+        save_file
+        expect(worksheet.sample_manifest.asset_type).to eq('multiplexed_library')
+        expect(worksheet.assets.all? { |asset| asset.requests.first.target_asset == worksheet.multiplexed_library_tube }).to be_truthy
       end
     end
 

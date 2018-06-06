@@ -25,8 +25,9 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
     let(:test_file)               { 'test_file.xlsx' }
 
     describe 'for tube manifests' do
-      let(:tube_columns)            { SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup }
-      let!(:tag_group)              { create(:tag_group) }
+      let(:tube_library_columns)              { SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup }
+      let(:tube_multiplexed_library_columns)  { SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup }
+      let!(:tag_group)                        { create(:tag_group) }
 
       before(:each) do
         barcode = double('barcode')
@@ -35,12 +36,16 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
 
         download.worksheet.sample_manifest.generate
         download.save(test_file)
-        @upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: tube_columns, start_row: 9)
+        # @upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: tube_library_columns, start_row: 9)
       end
 
       context '1dtube' do
+        before(:each) do
+          @upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: tube_library_columns, start_row: 9)
+        end
+
         context 'valid' do
-          let!(:download) { build(:test_download, columns: tube_columns) }
+          let!(:download) { build(:test_download, columns: tube_library_columns) }
 
           it 'will update the samples' do
             processor = SampleManifestExcel::Upload::Processor::OneDTube.new(upload)
@@ -64,7 +69,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
         end
 
         context 'manifest reuploaded and overriden' do
-          let!(:download) { build(:test_download, columns: tube_columns, manifest_type: '1dtube') }
+          let!(:download) { build(:test_download, columns: tube_library_columns, manifest_type: '1dtube') }
           let!(:new_test_file) { 'new_test_file.xlsx' }
 
           before(:each) do
@@ -76,7 +81,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
             download.worksheet.axlsx_worksheet.rows[10].cells[11].value = '50'
             download.worksheet.axlsx_worksheet.rows[10].cells[12].value = 'Female'
             download.save(new_test_file)
-            reupload = SampleManifestExcel::Upload::Base.new(filename: new_test_file, column_list: tube_columns, start_row: 9, override: true)
+            reupload = SampleManifestExcel::Upload::Base.new(filename: new_test_file, column_list: tube_library_columns, start_row: 9, override: true)
             processor = SampleManifestExcel::Upload::Processor::OneDTube.new(reupload)
             processor.update_samples(tag_group)
             expect(reupload.rows.all?(&:sample_updated?)).to be_truthy
@@ -89,7 +94,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
             download.worksheet.axlsx_worksheet.rows[10].cells[11].value = '50'
             download.worksheet.axlsx_worksheet.rows[10].cells[12].value = 'Female'
             download.save(new_test_file)
-            reupload = SampleManifestExcel::Upload::Base.new(filename: new_test_file, column_list: tube_columns, start_row: 9)
+            reupload = SampleManifestExcel::Upload::Base.new(filename: new_test_file, column_list: tube_library_columns, start_row: 9)
             processor = SampleManifestExcel::Upload::Processor::OneDTube.new(reupload)
             processor.update_samples(tag_group)
             expect(reupload.rows.all?(&:sample_updated?)).to be_falsey
@@ -97,12 +102,20 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
             expect(s1.sample_metadata.concentration).to eq('1')
             expect(s1.sample_metadata.gender).to eq('Unknown')
           end
+
+          after(:each) do
+            File.delete(new_test_file) if File.exist?(new_test_file)
+          end
         end
       end
 
       context 'Multiplexed Library Tube' do
+        before(:each) do
+          @upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: tube_multiplexed_library_columns, start_row: 9)
+        end
+
         context 'valid' do
-          let!(:download) { build(:test_download, columns: tube_columns, manifest_type: 'multiplexed_library') }
+          let!(:download) { build(:test_download, manifest_type: 'multiplexed_library', columns: tube_multiplexed_library_columns) }
 
           it 'will update the samples' do
             processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(upload)
@@ -133,7 +146,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
         end
 
         context 'partial' do
-          let!(:download) { build(:test_partial_download, manifest_type: 'multiplexed_library', columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup) }
+          let!(:download) { build(:test_partial_download, manifest_type: 'multiplexed_library', columns: tube_multiplexed_library_columns) }
 
           it 'will process partial upload and cancel unprocessed requests' do
             processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(upload)
@@ -148,7 +161,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
         end
 
         context 'manifest reuploaded and overriden' do
-          let!(:download) { build(:test_download, columns: tube_columns, manifest_type: 'multiplexed_library') }
+          let!(:download) { build(:test_download, manifest_type: 'multiplexed_library', columns: tube_multiplexed_library_columns) }
           let!(:new_test_file) { 'new_test_file.xlsx' }
 
           before(:each) do
@@ -160,7 +173,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
             download.worksheet.axlsx_worksheet.rows[10].cells[6].value = '100'
             download.worksheet.axlsx_worksheet.rows[11].cells[7].value = '1000'
             download.save(new_test_file)
-            reupload = SampleManifestExcel::Upload::Base.new(filename: new_test_file, column_list: tube_columns, start_row: 9, override: true)
+            reupload = SampleManifestExcel::Upload::Base.new(filename: new_test_file, column_list: tube_multiplexed_library_columns, start_row: 9, override: true)
             processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(reupload)
             processor.update_samples_and_aliquots(tag_group)
             expect(processor.substitutions[1]).to include('insert_size_from' => 100)
@@ -174,7 +187,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
             download.worksheet.axlsx_worksheet.rows[10].cells[2].value = tag_oligo_2
             download.worksheet.axlsx_worksheet.rows[11].cells[2].value = tag_oligo_1
             download.save(new_test_file)
-            reupload = SampleManifestExcel::Upload::Base.new(filename: new_test_file, column_list: tube_columns, start_row: 9, override: true)
+            reupload = SampleManifestExcel::Upload::Base.new(filename: new_test_file, column_list: tube_multiplexed_library_columns, start_row: 9, override: true)
             processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(reupload)
             processor.update_samples_and_aliquots(tag_group)
             expect(processor.downstream_aliquots_updated?).to be_truthy
@@ -182,7 +195,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
 
           it 'will not update the aliquots downstream if there is nothing to update' do
             download.save(new_test_file)
-            reupload = SampleManifestExcel::Upload::Base.new(filename: new_test_file, column_list: tube_columns, start_row: 9, override: true)
+            reupload = SampleManifestExcel::Upload::Base.new(filename: new_test_file, column_list: tube_multiplexed_library_columns, start_row: 9, override: true)
             processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(reupload)
             processor.update_samples_and_aliquots(tag_group)
             expect(processor.substitutions.compact).to be_empty
@@ -195,7 +208,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
         end
 
         context 'mismatched tags' do
-          let!(:download) { build(:test_download, columns: tube_columns, manifest_type: 'multiplexed_library', validation_errors: [:tags]) }
+          let!(:download) { build(:test_download, manifest_type: 'multiplexed_library', columns: tube_multiplexed_library_columns, validation_errors: [:tags]) }
 
           it 'will not be valid' do
             processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(upload)

@@ -127,7 +127,7 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
       end
     end
 
-    context 'library' do
+    context 'library tube with tag sequences' do
       let!(:columns) { SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup }
       let!(:download) { build(:test_download, columns: columns, manifest_type: 'library') }
 
@@ -148,7 +148,7 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
       end
     end
 
-    context 'multiplexed library tube' do
+    context 'multiplexed library tube with tag sequences' do
       let!(:columns) {  SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup }
       let!(:download) { build(:test_download, columns: columns, manifest_type: 'multiplexed_library') }
 
