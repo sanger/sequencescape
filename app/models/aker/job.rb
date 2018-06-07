@@ -35,11 +35,7 @@ module Aker
     end
 
     def material_message(sample)
-      well_attr = sample.container.asset.well_attribute
-      obj = {"_id": sample.name}
-      obj["concentration"] = well_attr.concentration if well_attr.concentration
-      obj["volume"] = well_attr.measured_volume if well_attr.measured_volume
-      obj
+      Aker::Material.new(sample).attributes
     end
 
     def container_message(container)

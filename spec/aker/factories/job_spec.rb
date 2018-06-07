@@ -51,6 +51,19 @@ RSpec.describe Aker::Factories::Job, type: :model, aker: true do
     expect(job).to_not be_valid
   end
 
+  it '#create updates the materials if they already exist' do
+    job = Aker::Factories::Job.create(params)
+    expect(job).to be_present
+    material = job.samples.first
+    material.sample_metadata.update_attributes(sample_common_name: 'Some name')
+    material.sample_metadata.reload
+    expect(material.sample_metadata.sample_common_name).to eq('Some name')
+    job = Aker::Factories::Job.create(params)
+    expect(job).to be_present
+    material.sample_metadata.reload
+    expect(material.sample_metadata.sample_common_name).not_to eq('Some name')
+  end
+
   it '#create persists the job if it is valid' do
     job = Aker::Factories::Job.create(params)
     expect(job).to be_present

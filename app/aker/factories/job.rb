@@ -69,7 +69,11 @@ module Aker
       def build_materials(materials)
         (materials || []).collect do |material|
           indifferent_material = material.to_h.with_indifferent_access
-          Sample.find_by(name: indifferent_material[:_id]) ||
+          sample = Sample.find_by(name: indifferent_material[:_id])
+          if sample
+            Aker::Material.new(sample).update_attributes(indifferent_material)
+          end
+          sample ||
             Aker::Factories::Material.new(indifferent_material).tap do |m|
               m.container = build_container(m, indifferent_material[:address])
             end
