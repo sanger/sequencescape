@@ -167,14 +167,7 @@ module IlluminaHtp::PlatePurposes
         flow.shift,
         stock_plate: true,
         default_state: 'passed',
-        cherrypickable_target: true,
-        cherrypick_filters: [
-          'Cherrypick::Strategy::Filter::ByOverflow',
-          'Cherrypick::Strategy::Filter::ByEmptySpaceUsage',
-          'Cherrypick::Strategy::Filter::BestFit',
-          'Cherrypick::Strategy::Filter::BySpecies',
-          'Cherrypick::Strategy::Filter::InternallyOrderPlexBySubmission'
-        ]
+        cherrypickable_target: true
       )
 
       flow.each do |name|
