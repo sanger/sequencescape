@@ -23,12 +23,6 @@ class PlatePurpose < Purpose
   end
   scope :considered_stock_plate, -> { where(stock_plate: true) }
 
-  serialize :cherrypick_filters
-  validates_presence_of(:cherrypick_filters, if: :cherrypickable_target?)
-  before_validation(if: :cherrypickable_target?) do |r|
-    r[:cherrypick_filters] ||= ['Cherrypick::Strategy::Filter::ShortenPlexesToFit']
-  end
-
   before_validation :set_default_target_type
   before_validation :set_default_printer_type
 
@@ -44,10 +38,6 @@ class PlatePurpose < Purpose
   end
   alias_method :library_source_plates, :source_plates
 
-  def cherrypick_strategy
-    Cherrypick::Strategy.new(self)
-  end
-
   def cherrypick_completed(plate)
     messenger_creators.each { |creator| creator.create!(plate) }
   end
@@ -58,10 +48,6 @@ class PlatePurpose < Purpose
 
   def plate_width
     asset_shape.plate_width(size)
-  end
-
-  def cherrypick_filters
-    self[:cherrypick_filters].map(&:constantize)
   end
 
   # The state of a plate is based on the transfer requests.
