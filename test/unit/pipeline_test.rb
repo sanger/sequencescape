@@ -44,14 +44,14 @@ class PipelineTest < ActiveSupport::TestCase
       should 'check that all the requests has the read_length attribute defined' do
         @request2.request_metadata.read_length = nil
         @batch = @pipeline.batches.create(requests: [@request1, @request2])
-        assert !@pipeline.is_read_length_consistent_for_batch?(@batch)
+        assert_not @pipeline.is_read_length_consistent_for_batch?(@batch)
       end
 
       should 'check that the read_length attribute is the same in all the requests' do
         @request1.request_metadata.read_length = 76
         @request2.request_metadata.read_length = 100
         @batch = @pipeline.batches.create(requests: [@request1, @request2])
-        assert !@pipeline.is_read_length_consistent_for_batch?(@batch)
+        assert_not @pipeline.is_read_length_consistent_for_batch?(@batch)
       end
 
       should 'check that other pipelines are not affected by different read_length attributes' do

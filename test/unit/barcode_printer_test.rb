@@ -10,7 +10,7 @@ class BarcodePrinterTest < ActiveSupport::TestCase
   end
 
   test 'should know if it can print on plates with 384 wells' do
-    refute barcode_printer.plate384_printer?
+    assert_not barcode_printer.plate384_printer?
     assert printer_for_384_wells_plate.plate384_printer?
   end
 

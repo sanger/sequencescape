@@ -267,7 +267,7 @@ class BatchesControllerTest < ActionController::TestCase
 
           should 'render fail reasons when external' do
             get :fail, params: { id: @batch_two.id }
-            assert !@batch_two.workflow.source_is_internal?
+            assert_not @batch_two.workflow.source_is_internal?
             assert_response :success
             assert assigns(:fail_reasons)
           end

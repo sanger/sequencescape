@@ -74,7 +74,7 @@ class ProductCriteria::Basic
   # the database is actually more tricky than it sounds as your trying to load the latest
   # record from multiple different wells simultaneously.
   def most_recent_concentration_from_target_well_by_updating_date
-    @target_wells.sort_by { |w| w.well_attribute.updated_at }.last.get_concentration if @target_wells
+    @target_wells.max_by { |w| w.well_attribute.updated_at }.get_concentration if @target_wells
   end
 
   def concentration_from_normalization
@@ -125,7 +125,7 @@ class ProductCriteria::Basic
   end
 
   def known_marker?(marker)
-    GENDER_MARKER_MAPS.values.include?(marker)
+    GENDER_MARKER_MAPS.value?(marker)
   end
 
   def invalid(attribute, message)

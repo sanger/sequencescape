@@ -25,31 +25,31 @@ class LibPoolNormTubeGeneratorTest < ActiveSupport::TestCase
   end
 
   test 'should not be valid without a valid plate barcode' do
-    refute LibPoolNormTubeGenerator.new('dodgy barcode', user, study).valid?
+    assert_not LibPoolNormTubeGenerator.new('dodgy barcode', user, study).valid?
   end
 
   test 'should not be valid without a user' do
     plate = valid_plate
     Plate.stubs(:with_barcode).returns(Plate.where(id: plate.id))
-    refute LibPoolNormTubeGenerator.new(plate.ean13_barcode, nil, study).valid?
+    assert_not LibPoolNormTubeGenerator.new(plate.ean13_barcode, nil, study).valid?
   end
 
   test 'should not be valid without a study' do
     plate = valid_plate
     Plate.stubs(:with_barcode).returns(Plate.where(id: plate.id))
-    refute LibPoolNormTubeGenerator.new(plate.ean13_barcode, user, nil).valid?
+    assert_not LibPoolNormTubeGenerator.new(plate.ean13_barcode, user, nil).valid?
   end
 
   test 'should not be valid unless the state of the plate is qc complete' do
     plate = create(:lib_pcr_xp_plate_with_tubes)
-    refute LibPoolNormTubeGenerator.new(plate.ean13_barcode, user, study).valid?
+    assert_not LibPoolNormTubeGenerator.new(plate.ean13_barcode, user, study).valid?
   end
 
   test 'should not be valid unless the plate is a Lib PCR-XP plate' do
     plate = create(:plate)
     plate.stubs(:state).returns('qc_complete')
     Plate.stubs(:with_barcode).returns(Plate.where(id: plate.id))
-    refute LibPoolNormTubeGenerator.new(plate.ean13_barcode, user, study).valid?
+    assert_not LibPoolNormTubeGenerator.new(plate.ean13_barcode, user, study).valid?
   end
 
   context 'with a valid plate' do
@@ -64,7 +64,7 @@ class LibPoolNormTubeGeneratorTest < ActiveSupport::TestCase
 
     should 'be valid, lib pool tubes should have the correct number, have a transfer template' do
       assert generator.valid?
-      refute generator.lib_pool_tubes.empty?
+      assert_not generator.lib_pool_tubes.empty?
       assert_equal generator.plate.wells.length, generator.lib_pool_tubes.length
       assert generator.transfer_template.present?
     end
@@ -74,7 +74,7 @@ class LibPoolNormTubeGeneratorTest < ActiveSupport::TestCase
       mock_transfer(generator)
       assert generator.create!
       assert generator.lib_pool_tubes.all? { |lpt| lpt.reload.state == 'qc_complete' }, "States were: #{generator.lib_pool_tubes.map(&:state)}"
-      refute generator.destination_tubes.empty?
+      assert_not generator.destination_tubes.empty?
       assert_equal generator.lib_pool_tubes.length, generator.destination_tubes.length
       assert generator.destination_tubes.all? { |dt| dt.reload.state == 'qc_complete' }, "States were: #{generator.destination_tubes.map(&:state)}"
       assert generator.asset_group.present?

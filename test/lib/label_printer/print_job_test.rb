@@ -45,20 +45,20 @@ class PrintJobTest < ActiveSupport::TestCase
 
   test '#execute is false if printer is not registered in ss' do
     print_job = LabelPrinter::PrintJob.new('not_registered', LabelPrinter::Label::PlateCreator, {})
-    refute print_job.execute
+    assert_not print_job.execute
     assert_equal 1, print_job.errors.count
   end
 
   test '#execute is false if pmb is down' do
     print_job = LabelPrinter::PrintJob.new(barcode_printer.name, LabelPrinter::Label::PlateCreator, {})
     RestClient.expects(:post).raises(Errno::ECONNREFUSED)
-    refute print_job.execute
+    assert_not print_job.execute
     assert_equal 1, print_job.errors.count
   end
 
   test '#execute is false if something goes wrong within pmb' do
     RestClient.expects(:post).raises(RestClient::UnprocessableEntity)
-    refute print_job.execute
+    assert_not print_job.execute
     assert_equal 1, print_job.errors.count
   end
 end

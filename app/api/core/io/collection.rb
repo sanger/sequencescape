@@ -11,7 +11,7 @@ module ::Core::Io::Collection
                     stream: stream,
                     target: object,
                     nested: true
-          )
+                  )
         )
       end
     end
