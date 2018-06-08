@@ -1,9 +1,10 @@
 
 class LabEvent < ApplicationRecord
+  include ActiveRecord::Acts::Descriptable
+
   belongs_to :batch
   belongs_to :user
   belongs_to :eventful, polymorphic: true
-  acts_as_descriptable :serialized
 
   before_validation :unescape_for_descriptors
 
@@ -18,6 +19,10 @@ class LabEvent < ApplicationRecord
       "%Chip Barcode: #{barcode}%"
     ])
   end
+
+  delegate :flowcell, :eventful_studies, :samples, to: :eventful
+
+  after_create :generate_broadcast_event
 
   def unescape_for_descriptors
     self[:descriptors] = (self[:descriptors] || {}).to_h.each_with_object({}) do |(key, value), hash|
@@ -42,5 +47,9 @@ class LabEvent < ApplicationRecord
 
   def add_new_descriptor(name, value)
     add_descriptor Descriptor.new(name: name, value: value)
+  end
+
+  def generate_broadcast_event
+    BroadcastEvent::LabEvent.create!(seed: self, user: user)
   end
 end

@@ -13,7 +13,8 @@
         "work",
         "db/archived_migrations",
         ".yardoc",
-        "doc"
+        "doc",
+        "coverage"
       ],
       "file_exclude_patterns":[
         ".swp",
