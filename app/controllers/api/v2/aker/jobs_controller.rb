@@ -9,14 +9,24 @@ module Api
         skip_before_action :verify_authenticity_token
 
         def create
-          @job = ::Aker::Factories::Job.new(params[:job].permit!)
-          if @job.valid?
+          jobs = params[:data]
 
-            @job.create
-            render json: @job, status: :created
-          else
+          begin
+            ActiveRecord::Base.transaction do
+              jobs.each do |job|
+                @job = ::Aker::Factories::Job.new(job[:attributes].permit!)
+                if @job.valid?
+                  @job.create
+                else
+                  raise "Job #{job.id} is not valid."
+                end
+              end
+              render json: @job, status: :created
+            end
+          rescue => e
             render json: @job.errors, status: :unprocessable_entity
           end
+
         end
       end
     end
