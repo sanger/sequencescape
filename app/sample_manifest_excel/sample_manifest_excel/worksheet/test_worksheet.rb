@@ -51,7 +51,7 @@ module SampleManifestExcel
       end
 
       def manifest_type
-        @manifest_type ||= '1dtube'
+        @manifest_type ||= 'tube_default'
       end
 
       def sample_manifest
@@ -59,10 +59,14 @@ module SampleManifestExcel
       end
 
       def create_sample_manifest
-        if %w[plate].include? manifest_type
+        if %w[plate_default plate_full plate_rnachip].include? manifest_type
           FactoryBot.create(:sample_manifest_with_samples_for_plates, num_plates: num_plates, num_samples_per_plate: num_samples_per_plate, rapid_generation: true)
+        elsif %w[tube_library_with_tag_sequences].include? manifest_type
+          FactoryBot.create(:sample_manifest, asset_type: 'library', rapid_generation: true)
+        elsif %w[tube_multiplexed_library tube_multiplexed_library_with_tag_sequences].include? manifest_type
+          FactoryBot.create(:sample_manifest, asset_type: 'multiplexed_library', rapid_generation: true)
         else
-          FactoryBot.create(:sample_manifest, asset_type: manifest_type, rapid_generation: true)
+          FactoryBot.create(:sample_manifest, asset_type: '1dtube', rapid_generation: true)
         end
       end
 
@@ -185,7 +189,7 @@ module SampleManifestExcel
       end
 
       def create_tube_asset
-        asset = if %w[multiplexed_library library].include? manifest_type
+        asset = if %w[tube_multiplexed_library tube_library_with_tag_sequences tube_multiplexed_library_with_tag_sequences].include? manifest_type
                   FactoryBot.create(:library_tube_with_barcode)
                 else
                   FactoryBot.create(:sample_tube_with_sanger_sample_id)
@@ -196,7 +200,7 @@ module SampleManifestExcel
 
       def create_tube_requests
         assets.each do |asset|
-          FactoryBot.create(:external_multiplexed_library_tube_creation_request, asset: asset, target_asset: multiplexed_library_tube) if manifest_type == 'multiplexed_library'
+          FactoryBot.create(:external_multiplexed_library_tube_creation_request, asset: asset, target_asset: multiplexed_library_tube) if %w[tube_multiplexed_library tube_multiplexed_library_with_tag_sequences].include? manifest_type
         end
       end
 
@@ -211,9 +215,16 @@ module SampleManifestExcel
       end
 
       def create_tags
-        oligos = Tags::ExampleData.new.take(first_row, last_row, validation_errors.include?(:tags))
-        dynamic_attributes.each do |k, _v|
-          dynamic_attributes[k].merge!(oligos[k])
+        if %w[tube_multiplexed_library_with_tag_sequences tube_library_with_tag_sequences].include? manifest_type
+          oligos = Tags::ExampleData.new.take(first_row, last_row, validation_errors.include?(:tags))
+          dynamic_attributes.each do |k, _v|
+            dynamic_attributes[k].merge!(oligos[k])
+          end
+        elsif %w[tube_multiplexed_library].include? manifest_type
+          groups_and_indexes = Tags::ExampleData.new.take_as_groups_and_indexes(first_row, last_row, validation_errors.include?(:tags))
+          dynamic_attributes.each do |k, _v|
+            dynamic_attributes[k].merge!(groups_and_indexes[k])
+          end
         end
       end
     end

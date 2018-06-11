@@ -243,11 +243,36 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
       it 'creates a library type' do
         expect(LibraryType.find_by(name: data[:library_type])).to be_present
       end
+    end
+
+    context 'in a valid state with sequence tags' do
+      let!(:worksheet) { SampleManifestExcel::Worksheet::TestWorksheet.new(attributes.merge(manifest_type: 'tube_library_with_tag_sequences')) }
+
+      before(:each) do
+        save_file
+      end
 
       it 'adds some tags' do
         ((worksheet.first_row + 1)..worksheet.last_row).each do |i|
           expect(spreadsheet.sheet(0).cell(i, worksheet.columns.find_by(:name, :tag_oligo).number)).to be_present
           expect(spreadsheet.sheet(0).cell(i, worksheet.columns.find_by(:name, :tag2_oligo).number)).to be_present
+        end
+      end
+    end
+
+    context 'in a valid state with tag groups and indexes' do
+      let!(:worksheet) { SampleManifestExcel::Worksheet::TestWorksheet.new(attributes.merge(manifest_type: 'tube_multiplexed_library', columns: SampleManifestExcel.configuration.columns.tube_multiplexed_library.dup)) }
+
+      before(:each) do
+        save_file
+      end
+
+      it 'adds tag group and index values' do
+        ((worksheet.first_row + 1)..worksheet.last_row).each do |i|
+          expect(spreadsheet.sheet(0).cell(i, worksheet.columns.find_by(:name, :tag_group).number)).to be_present
+          expect(spreadsheet.sheet(0).cell(i, worksheet.columns.find_by(:name, :tag_index).number)).to be_present
+          expect(spreadsheet.sheet(0).cell(i, worksheet.columns.find_by(:name, :tag2_group).number)).to be_present
+          expect(spreadsheet.sheet(0).cell(i, worksheet.columns.find_by(:name, :tag2_index).number)).to be_present
         end
       end
     end
@@ -262,22 +287,30 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
       end
     end
 
-    context 'manifest type' do
+    context 'asset type' do
       it 'defaults to 1dtube' do
         worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes)
         save_file
         expect(worksheet.sample_manifest.asset_type).to eq('1dtube')
+        expect(worksheet.assets.all? { |asset| asset.type == 'sample_tube' }).to be_truthy
       end
 
-      it 'creates library tubes for library' do
-        worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes.merge(manifest_type: 'library'))
+      it 'creates library tubes for library with tag sequences' do
+        worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes.merge(manifest_type: 'tube_library_with_tag_sequences'))
         save_file
         expect(worksheet.sample_manifest.asset_type).to eq('library')
         expect(worksheet.assets.all? { |asset| asset.type == 'library_tube' }).to be_truthy
       end
 
-      it 'creates a multiplexed library tube for multiplexed_library' do
-        worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes.merge(manifest_type: 'multiplexed_library'))
+      it 'creates a multiplexed library tube for multiplexed_library with tag sequences' do
+        worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes.merge(manifest_type: 'tube_multiplexed_library_with_tag_sequences'))
+        save_file
+        expect(worksheet.sample_manifest.asset_type).to eq('multiplexed_library')
+        expect(worksheet.assets.all? { |asset| asset.requests.first.target_asset == worksheet.multiplexed_library_tube }).to be_truthy
+      end
+
+      it 'creates a multiplexed library tube for multiplexed_library with tag group and index' do
+        worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes.merge(manifest_type: 'tube_multiplexed_library', columns: SampleManifestExcel.configuration.columns.tube_multiplexed_library.dup))
         save_file
         expect(worksheet.sample_manifest.asset_type).to eq('multiplexed_library')
         expect(worksheet.assets.all? { |asset| asset.requests.first.target_asset == worksheet.multiplexed_library_tube }).to be_truthy
@@ -291,11 +324,18 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
         expect(LibraryType.find_by(name: data[:library_type])).to be_nil
       end
 
-      it 'with a duplicate tag group' do
-        worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes.merge(validation_errors: [:tags]))
+      it 'with duplicate tag sequences' do
+        worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes.merge(manifest_type: 'tube_multiplexed_library_with_tag_sequences', columns: SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup, validation_errors: [:tags]))
         save_file
         expect(spreadsheet.sheet(0).cell(worksheet.first_row, worksheet.columns.find_by(:name, :tag_oligo).number)).to eq(spreadsheet.sheet(0).cell(worksheet.last_row, worksheet.columns.find_by(:name, :tag_oligo).number))
         expect(spreadsheet.sheet(0).cell(worksheet.first_row, worksheet.columns.find_by(:name, :tag2_oligo).number)).to eq(spreadsheet.sheet(0).cell(worksheet.last_row, worksheet.columns.find_by(:name, :tag2_oligo).number))
+      end
+
+      it 'with duplicate tag groups and indexes' do
+        worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes.merge(manifest_type: 'tube_multiplexed_library', columns: SampleManifestExcel.configuration.columns.tube_multiplexed_library.dup, validation_errors: [:tags]))
+        save_file
+        expect(spreadsheet.sheet(0).cell(worksheet.first_row, worksheet.columns.find_by(:name, :tag_group).number)).to eq(spreadsheet.sheet(0).cell(worksheet.last_row, worksheet.columns.find_by(:name, :tag_group).number))
+        expect(spreadsheet.sheet(0).cell(worksheet.first_row, worksheet.columns.find_by(:name, :tag_index).number)).to eq(spreadsheet.sheet(0).cell(worksheet.last_row, worksheet.columns.find_by(:name, :tag_index).number))
       end
 
       it 'without insert size from' do
@@ -325,7 +365,7 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
     let(:attributes) do
       { workbook: workbook, columns: SampleManifestExcel.configuration.columns.plate_default.dup,
         data: data, no_of_rows: 5, study: 'WTCCC', supplier: 'Test supplier', count: 1, type: 'Plates',
-        num_plates: 2, num_samples_per_plate: 3, manifest_type: 'plate' }
+        num_plates: 2, num_samples_per_plate: 3, manifest_type: 'plate_default' }
     end
 
     context 'in a valid state' do
