@@ -6,7 +6,7 @@ RSpec.describe SampleManifestExcel::Tags, type: :model, sample_manifest_excel: t
   describe 'example_data' do
     let(:data) { SampleManifestExcel::Tags::ExampleData.new }
 
-    it 'can produce a list of tags of an appropriate length' do
+    it 'can produce a list of sequence tags of an appropriate length' do
       tags = data.take(0, 4)
       expect(tags.length).to eq(5)
       expect(tags[0]).to have_key(:tag_oligo)
@@ -14,8 +14,23 @@ RSpec.describe SampleManifestExcel::Tags, type: :model, sample_manifest_excel: t
       expect(tags[tags.keys.first]).to_not eq(tags[tags.keys.last])
     end
 
-    it 'can produce a list of tags with a duplicate' do
+    it 'can produce a list of sequence tags with a duplicate' do
       tags = data.take(0, 4, true)
+      expect(tags[tags.keys.first]).to eq(tags[tags.keys.last])
+    end
+
+    it 'can produce a list of tag groups and indexes' do
+      tags = data.take_as_groups_and_indexes(0, 4)
+      expect(tags.length).to eq(5)
+      expect(tags[0]).to have_key(:tag_group)
+      expect(tags[0]).to have_key(:tag_index)
+      expect(tags[0]).to have_key(:tag2_group)
+      expect(tags[0]).to have_key(:tag2_index)
+      expect(tags[tags.keys.first]).to_not eq(tags[tags.keys.last])
+    end
+
+    it 'can produce a list of tag groups and indexes with a duplicate' do
+      tags = data.take_as_groups_and_indexes(0, 4, true)
       expect(tags[tags.keys.first]).to eq(tags[tags.keys.last])
     end
   end
@@ -40,13 +55,27 @@ RSpec.describe SampleManifestExcel::Tags, type: :model, sample_manifest_excel: t
     end
 
     let(:test_file) { 'test.xlsx' }
-    let(:columns)   { SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup }
 
-    it 'fails if the tags are invalid' do
-      download = build(:test_download, columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup, manifest_type: 'multiplexed_library', validation_errors: [:tags])
-      download.save(test_file)
-      upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup, start_row: 9)
-      expect(TestTagChecker.new(upload)).to_not be_valid
+    context 'tag sequences' do
+      let(:columns)   { SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup }
+
+      it 'fails if the tags are invalid' do
+        download = build(:test_download, columns: SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup, manifest_type: 'tube_multiplexed_library_with_tag_sequences', validation_errors: [:tags])
+        download.save(test_file)
+        upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup, start_row: 9)
+        expect(TestTagChecker.new(upload)).to_not be_valid
+      end
+    end
+
+    context 'tag groups and indexes' do
+      let(:columns)   { SampleManifestExcel.configuration.columns.tube_multiplexed_library.dup }
+
+      it 'fails if the tags are invalid' do
+        download = build(:test_download, columns: SampleManifestExcel.configuration.columns.tube_multiplexed_library.dup, manifest_type: 'tube_multiplexed_library', validation_errors: [:tags])
+        download.save(test_file)
+        upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: SampleManifestExcel.configuration.columns.tube_multiplexed_library.dup, start_row: 9)
+        expect(TestTagChecker.new(upload)).to_not be_valid
+      end
     end
 
     after(:each) do
