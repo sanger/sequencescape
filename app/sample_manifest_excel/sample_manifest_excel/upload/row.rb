@@ -29,6 +29,7 @@ module SampleManifestExcel
         @sanger_sample_id ||= value(:sanger_sample_id) if columns.present? && data.present?
         @sample ||= Sample.find_by(sanger_sample_id: sanger_sample_id) if sanger_sample_id.present?
         @specialised_fields = create_specialised_fields if sanger_sample_id.present?
+        link_tag_groups_and_indexes
       end
 
       ##
@@ -160,6 +161,17 @@ module SampleManifestExcel
             specialised_fields << column.specialised_field.new(value: at(column.number), sample: sample)
           end
         end
+      end
+
+      # link fields together for tag groups and indexes
+      def link_tag_groups_and_indexes
+        sf_tag_index = specialised_fields.find_all { |sf| sf.instance_of? SpecialisedField::TagIndex }.first
+        return if sf_tag_index.blank?
+        sf_tag_index.sf_tag_group = specialised_fields.find_all { |sf| sf.instance_of? SpecialisedField::TagGroup }.first
+
+        sf_tag2_index = specialised_fields.find_all { |sf| sf.instance_of? SpecialisedField::Tag2Index }.first
+        return if sf_tag2_index.blank?
+        sf_tag2_index.sf_tag2_group = specialised_fields.find_all { |sf| sf.instance_of? SpecialisedField::Tag2Group }.first
       end
     end
   end

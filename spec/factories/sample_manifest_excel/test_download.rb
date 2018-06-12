@@ -11,7 +11,7 @@ FactoryBot.define do
     partial false
     cgap false
     type 'Tubes'
-    manifest_type '1dtube'
+    manifest_type 'tube_full'
     data do
       { library_type: 'My personal library type', reference_genome: 'My reference genome', insert_size_from: 200, insert_size_to: 1500,
         supplier_name: 'SCG--1222_A0', volume: 1, concentration: 1, gender: 'Unknown', dna_source: 'Cell Line',

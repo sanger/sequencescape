@@ -35,7 +35,7 @@ module SampleManifestExcel
       end
 
       def compute_last_row
-        if %w[plate].include? manifest_type
+        if %w[plate_default plate_full plate_rnachip].include? manifest_type
           first_row + (num_plates * num_samples_per_plate) - 1
         else
           first_row + no_of_rows

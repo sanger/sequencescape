@@ -57,7 +57,7 @@ RSpec.describe SampleManifestExcel::Tags, type: :model, sample_manifest_excel: t
     let(:test_file) { 'test.xlsx' }
 
     context 'tag sequences' do
-      let(:columns)   { SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup }
+      let(:columns) { SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup }
 
       it 'fails if the tags are invalid' do
         download = build(:test_download, columns: SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup, manifest_type: 'tube_multiplexed_library_with_tag_sequences', validation_errors: [:tags])
@@ -68,7 +68,7 @@ RSpec.describe SampleManifestExcel::Tags, type: :model, sample_manifest_excel: t
     end
 
     context 'tag groups and indexes' do
-      let(:columns)   { SampleManifestExcel.configuration.columns.tube_multiplexed_library.dup }
+      let(:columns) { SampleManifestExcel.configuration.columns.tube_multiplexed_library.dup }
 
       it 'fails if the tags are invalid' do
         download = build(:test_download, columns: SampleManifestExcel.configuration.columns.tube_multiplexed_library.dup, manifest_type: 'tube_multiplexed_library', validation_errors: [:tags])

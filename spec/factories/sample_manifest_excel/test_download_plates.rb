@@ -11,7 +11,7 @@ FactoryBot.define do
     partial false
     cgap false
     type 'Plates'
-    manifest_type 'plate'
+    manifest_type 'plate_full'
     data do
       {
         supplier_name: 'SCG--1222_A0', volume: 1, concentration: 1, gender: 'Unknown', dna_source: 'Cell Line',

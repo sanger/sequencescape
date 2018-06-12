@@ -20,14 +20,14 @@ RSpec.describe SampleManifest::Uploader, type: :model, sample_manifest_excel: tr
   end
 
   it 'will not be valid without some configuration' do
-    download = build(:test_download, manifest_type: 'library', columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup)
+    download = build(:test_download, manifest_type: 'tube_library_with_tag_sequences', columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup)
     download.save(test_file)
     expect(SampleManifest::Uploader.new(test_file, nil, user, false)).to_not be_valid
   end
 
   it 'will not be valid without a tag group' do
     SampleManifestExcel.configuration.tag_group = nil
-    download = build(:test_download, manifest_type: 'library', columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup)
+    download = build(:test_download, manifest_type: 'tube_library_with_tag_sequences', columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup)
     download.save(test_file)
     expect(SampleManifest::Uploader.new(test_file, SampleManifestExcel.configuration, user, false)).to_not be_valid
     SampleManifestExcel.configuration.tag_group = 'My Magic Tag Group'
@@ -41,7 +41,7 @@ RSpec.describe SampleManifest::Uploader, type: :model, sample_manifest_excel: tr
 
   it 'will upload a valid sample manifest' do
     broadcast_events_count = BroadcastEvent.count
-    download = build(:test_download, manifest_type: 'library', columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup)
+    download = build(:test_download, manifest_type: 'tube_library_with_tag_sequences', columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup)
     download.save(test_file)
     Delayed::Worker.delay_jobs = false
     uploader = SampleManifest::Uploader.new(test_file, SampleManifestExcel.configuration, user, false)
@@ -54,7 +54,7 @@ RSpec.describe SampleManifest::Uploader, type: :model, sample_manifest_excel: tr
   end
 
   it 'will not upload an invalid sample manifest' do
-    download = build(:test_download, manifest_type: 'multiplexed_library', columns: SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup, validation_errors: [:tags])
+    download = build(:test_download, manifest_type: 'tube_multiplexed_library_with_tag_sequences', columns: SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup, validation_errors: [:tags])
     download.save(test_file)
     uploader = SampleManifest::Uploader.new(test_file, SampleManifestExcel.configuration, user, false)
     expect(uploader).to_not be_valid
@@ -64,7 +64,7 @@ RSpec.describe SampleManifest::Uploader, type: :model, sample_manifest_excel: tr
   end
 
   it 'will upload a valid partial tube sample manifest' do
-    download = build(:test_partial_download, manifest_type: 'library', columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup)
+    download = build(:test_partial_download, manifest_type: 'tube_library_with_tag_sequences', columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup)
     download.save(test_file)
     Delayed::Worker.delay_jobs = false
     uploader = SampleManifest::Uploader.new(test_file, SampleManifestExcel.configuration, user, false)
@@ -75,7 +75,7 @@ RSpec.describe SampleManifest::Uploader, type: :model, sample_manifest_excel: tr
   end
 
   it 'will upload a valid partial multiplexed library tube sample manifest' do
-    download = build(:test_partial_download, manifest_type: 'multiplexed_library', columns: SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup)
+    download = build(:test_partial_download, manifest_type: 'tube_multiplexed_library_with_tag_sequences', columns: SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup)
     download.save(test_file)
     Delayed::Worker.delay_jobs = false
     uploader = SampleManifest::Uploader.new(test_file, SampleManifestExcel.configuration, user, false)

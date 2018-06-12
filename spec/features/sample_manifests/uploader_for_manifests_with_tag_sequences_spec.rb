@@ -125,7 +125,7 @@ feature 'Sample manifest with tag sequences' do
     let!(:user)     { create :admin }
     let(:columns)   { SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup }
     let(:test_file) { 'test_file.xlsx' }
-    let(:download) { build(:test_download, columns: columns, manifest_type: 'multiplexed_library') }
+    let(:download) { build(:test_download, columns: columns, manifest_type: 'tube_multiplexed_library_with_tag_sequences') }
 
     before(:each) do
       download.save(test_file)
@@ -166,7 +166,7 @@ feature 'Sample manifest with tag sequences' do
     end
 
     context 'invalid' do
-      let(:download) { build(:test_download, columns: columns, manifest_type: 'multiplexed_library', validation_errors: %i[library_type tags]) }
+      let(:download) { build(:test_download, columns: columns, manifest_type: 'tube_multiplexed_library_with_tag_sequences', validation_errors: %i[library_type tags]) }
 
       scenario 'validation errors' do
         login_user(user)
