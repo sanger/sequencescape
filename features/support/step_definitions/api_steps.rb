@@ -89,10 +89,6 @@ Given /^I am using the latest version of the API$/ do
   step(%Q{I am using version "#{::Core::Service::API_VERSION}" of the API})
 end
 
-Given /^I am using version "([^\"]+)" of a legacy API$/ do |version|
-  @api_path = version
-end
-
 When /^I (GET|PUT|POST|DELETE) the API path "(\/[^\"]*)"$/ do |action, path|
   json_api_request(action, path, nil)
 end
@@ -237,10 +233,6 @@ end
 
 Then /^the HTTP response body should be empty$/ do
   assert(page.source.blank?, 'The response body is not blank')
-end
-
-Then /^the JSON should be an empty array$/ do
-  assert_hash_equal([], decode_json(page.source, 'Received'), 'The JSON is not an empty array')
 end
 
 Then /^the JSON should not contain "([^\"]+)" within any element of "([^\"]+)"$/ do |name, path|

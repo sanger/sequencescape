@@ -21,10 +21,6 @@ class Api::ProjectIO < Api::Base
         }
       end
     end
-
-    def related_resources
-      ['studies']
-    end
   end
 
   renders_model(::Project)
@@ -53,21 +49,13 @@ class Api::ProjectIO < Api::Base
   end
 
   extra_json_attributes do |object, json_attributes|
-    json_attributes['uuid'] = object.uuid if object.respond_to?(:uuid)
-
-    # Users and roles
-    if object.respond_to?(:user)
-      json_attributes['user'] = object.user.nil? ? 'unknown' : object.user.login
-    end
-    if object.respond_to?(:roles)
-      object.roles.each do |role|
-        json_attributes[role.name.underscore] = role.users.map do |user|
-          {
-            login: user.login,
-            email: user.email,
-            name: user.name
-          }
-        end
+    object.roles.each do |role|
+      json_attributes[role.name.underscore] = role.users.map do |user|
+        {
+          login: user.login,
+          email: user.email,
+          name: user.name
+        }
       end
     end
   end

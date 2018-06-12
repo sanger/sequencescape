@@ -56,9 +56,6 @@ class Api::Base
         end
         json_attributes.update(helper.alias.to_s => all_targets)
       end
-      related_resources.each do |relation|
-        json_attributes[relation.to_s] = File.join(object.url, relation.to_s)
-      end
       extra_json_attribute_handlers.each do |handler|
         handler.call(object, json_attributes)
       end
@@ -135,10 +132,6 @@ class Api::Base
   def self.map_attribute_to_json_attribute(attribute, json_attribute = attribute)
     self.attribute_to_json_attribute_mappings = attribute_to_json_attribute_mappings.merge(attribute.to_sym => json_attribute.to_s)
   end
-
-  # Contains a list of resources that are related and should be exposed as URLs
-  class_attribute :related_resources
-  self.related_resources = []
 
   # Contains the mapping from the ActiveRecord association to the I/O object that can output it.
   class_attribute :associations, instance_writer: false

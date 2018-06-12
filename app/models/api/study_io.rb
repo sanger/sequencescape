@@ -47,7 +47,7 @@ class Api::StudyIO < Api::Base
           json_attributes['updated_at']   = user_role.updated_at if json_attributes['updated_at'] < user_role.updated_at
         end
       end
-    end if object.respond_to?(:roles)
+    end
   end
 
   with_association(:study_metadata) do
@@ -96,6 +96,4 @@ class Api::StudyIO < Api::Base
     map_attribute_to_json_attribute(:s3_email_list)
     map_attribute_to_json_attribute(:data_deletion_period)
   end
-
-  self.related_resources = [:samples, :projects]
 end

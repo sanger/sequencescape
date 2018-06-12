@@ -101,7 +101,7 @@ module Request::Statemachine
           transitions to: :cancelled, from: [:failed, :passed]
         end
 
-        event :cancel_from_upstream do
+        event :cancel_from_upstream, manual_only?: true do
           transitions to: :cancelled, from: [:pending]
         end
 
@@ -109,11 +109,11 @@ module Request::Statemachine
           transitions to: :cancelled, from: [:pending, :hold]
         end
 
-        event :submission_cancelled do
+        event :submission_cancelled, manual_only?: true do
           transitions to: :cancelled, from: [:pending, :cancelled]
         end
 
-        event :fail_from_upstream do
+        event :fail_from_upstream, manual_only?: true do
           transitions to: :cancelled, from: [:pending]
           transitions to: :failed,    from: [:started]
           transitions to: :failed,    from: [:passed]
@@ -222,7 +222,7 @@ module Request::Statemachine
   # Determines the most likely event that should be fired when transitioning between the two states.  If there is
   # only one option then that is what is returned, otherwise an exception is raised.
   def suggested_transition_to(target)
-    valid_events = aasm.events(permitted: true).select { |e| e.transitions_to_state?(target.to_sym) }
+    valid_events = aasm.events(permitted: true).select { |e| !e.options[:manual_only?] && e.transitions_to_state?(target.to_sym) }
     raise StandardError, "No obvious transition from #{state.inspect} to #{target.inspect}" unless valid_events.size == 1
     valid_events.first.name
   end

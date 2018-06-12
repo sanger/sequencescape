@@ -13,17 +13,17 @@
 # - Factories names after a class should avoid creating associations, except where they are required for the
 #   request to be valid.
 FactoryBot.define do
-  factory :multiplexed_library_creation_request, parent: :request  do
-    sti_type      { RequestType.find_by(name: 'Multiplexed library creation').request_class_name }
+  factory :multiplexed_library_creation_request, parent: :request do
+    sti_type      'MultiplexedLibraryCreationRequest'
     asset         { |asset| asset.association(:sample_tube)  }
     target_asset  { |asset| asset.association(:library_tube) }
-    request_type  { RequestType.find_by(name: 'Multiplexed library creation') }
-    after(:create) do |request|
-      request.request_metadata.update_attributes!(
+    association(:request_type, factory: :multiplexed_library_creation_request_type)
+    request_metadata_attributes do
+      {
         fragment_size_required_from: 150,
         fragment_size_required_to: 400,
         library_type: 'Standard'
-      )
+      }
     end
   end
 
@@ -40,7 +40,10 @@ FactoryBot.define do
     # Ensure that the request metadata is correctly setup based on the request type
     after(:build) do |request|
       next if request.request_type.nil?
-      request.request_metadata_attributes = attributes_for(:"request_metadata_for_#{request.request_type.name.downcase.gsub(/[^a-z]+/, '_')}") if request.request_metadata.new_record?
+      # This is all a bit 'clever' and should be simplified
+      # We could use the request class is removing it completely is tricky
+      metadata_factory = :"request_metadata_for_#{request.request_type.name.downcase.gsub(/[^a-z]+/, '_')}"
+      request.request_metadata_attributes = attributes_for(metadata_factory) if request.request_metadata.new_record? && FactoryBot.factories.registered?(metadata_factory)
       request.sti_type = request.request_type.request_class_name
     end
 
@@ -63,14 +66,13 @@ FactoryBot.define do
   end
 
   factory(:library_creation_request, parent: :request, class: LibraryCreationRequest) do
-    asset         { |asset| asset.association(:sample_tube) }
-    request_type  { RequestType.find_by!(name: 'Library creation') }
-    after(:create) do |request|
-      request.request_metadata.update_attributes!(
-        fragment_size_required_from: 100,
+    association(:asset, factory: :sample_tube)
+    association(:request_type, factory: :library_creation_request_type)
+
+    request_metadata_attributes do
+      { fragment_size_required_from: 100,
         fragment_size_required_to: 200,
-        library_type: 'Standard'
-      )
+        library_type: 'Standard' }
     end
   end
 
@@ -188,7 +190,7 @@ FactoryBot.define do
   end
 
   factory(:library_creation_request_for_testing_sequencing_requests, class: Request::LibraryCreation) do
-    request_type { |_target| RequestType.find_by!(name: 'Library creation') }
+    association(:request_type, factory: :library_creation_request_type)
     request_purpose :standard
     asset        { |target| target.association(:well_with_sample_and_plate) }
     target_asset { |target| target.association(:empty_well) }
@@ -199,7 +201,7 @@ FactoryBot.define do
   end
 
   factory(:external_multiplexed_library_tube_creation_request, class: ExternalLibraryCreationRequest) do
-    request_type { |_target| RequestType.find_by!(name: 'External Multiplexed Library Creation') }
+    request_type { RequestType.external_multiplexed_library_creation }
     request_purpose :standard
     asset { create(:library_tube) }
     target_asset { create(:multiplexed_library_tube) }

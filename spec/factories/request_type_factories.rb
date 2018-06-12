@@ -22,6 +22,11 @@ FactoryBot.define do
       request_class CustomerRequest
     end
 
+    factory :cherrypick_request_type do
+      request_class CherrypickRequest
+      asset_type 'Well'
+    end
+
     factory :well_request_type do
       asset_type 'Well'
       request_class CustomerRequest

@@ -37,37 +37,31 @@ class Api::AliquotIO < Api::Base
   map_attribute_to_json_attribute('library_type')
 
   with_association(:study) do
-    map_attribute_to_json_attribute(:url, 'study_url')
     map_attribute_to_json_attribute(:uuid, 'study_uuid')
     map_attribute_to_json_attribute(:id, 'study_internal_id')
   end
 
   with_association(:project) do
-    map_attribute_to_json_attribute(:url, 'project_url')
     map_attribute_to_json_attribute(:uuid, 'project_uuid')
     map_attribute_to_json_attribute(:id, 'project_internal_id')
   end
 
   with_association(:sample) do
-    map_attribute_to_json_attribute(:url, 'sample_url')
     map_attribute_to_json_attribute(:uuid, 'sample_uuid')
     map_attribute_to_json_attribute(:id, 'sample_internal_id')
   end
 
   with_association(:tag) do
-    map_attribute_to_json_attribute(:url, 'tag_url')
     map_attribute_to_json_attribute(:uuid, 'tag_uuid')
     map_attribute_to_json_attribute(:id, 'tag_internal_id')
   end
   with_association(:receptacle) do
-    map_attribute_to_json_attribute(:url, 'receptacle_url')
     map_attribute_to_json_attribute(:uuid, 'receptacle_uuid')
     map_attribute_to_json_attribute(:id, 'receptacle_internal_id')
     map_attribute_to_json_attribute(:type, 'receptacle_type')
   end
 
   with_association(:library) do
-    map_attribute_to_json_attribute(:url, 'library_url')
     map_attribute_to_json_attribute(:uuid, 'library_uuid')
     map_attribute_to_json_attribute(:id, 'library_internal_id')
   end
@@ -80,5 +74,4 @@ class Api::AliquotIO < Api::Base
       map_attribute_to_json_attribute(:name, 'bait_library_supplier_name')
     end
   end
-  # self.related_resources = [ :library_tubes, :requests ]
 end

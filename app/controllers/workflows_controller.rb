@@ -5,7 +5,7 @@ class WorkflowsController < ApplicationController
   before_action :evil_parameter_hack!
   before_action :find_workflow_by_id, only: [:show, :batches]
 
-  attr_accessor :plate_purpose_options
+  attr_accessor :plate_purpose_options, :spreadsheet_layout, :batch
 
   include Tasks::AddSpikedInControlHandler
   include Tasks::AssignTagsHandler
