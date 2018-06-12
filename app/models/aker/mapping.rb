@@ -30,7 +30,7 @@ module Aker
         if table_name
           setting_attrs = attributes_for_table(table_name, attrs)
           model = model_for_table(table_name)
-          model.update_attributes(setting_attrs)
+          model.update_attributes!(setting_attrs)
         end
       end
     end

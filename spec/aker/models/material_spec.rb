@@ -36,7 +36,7 @@ RSpec.describe Aker::Material, type: :model, aker: true do
       Aker::Material.set_config(config)
     end
     context '#attributes' do
-      it 'generates an attributes object using the config definition and translating' do
+      it 'generates an attributes object and adds the sample name as id' do
         container = double(:container)
         asset = double(:asset)
         well_attribute = double(:well_attribute, {measured_volume: 14, concentration: 0.5})

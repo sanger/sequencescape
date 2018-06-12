@@ -7,7 +7,7 @@ module Aker
     # Validates presence of aker_job_id and ensures that there is at least one material.
     class Job
       include ActiveModel::Model
-      ATTRIBUTES = %i[job_id work_order_id aker_job_url product_name process_name process_uuid modules product_version product_uuid project_uuid project_name cost_code container materials comment desired_date data_release_uuid].freeze
+      ATTRIBUTES = %i[job_id work_order_id aker_job_url product_name process_name process_uuid modules product_version product_uuid project_uuid project_name cost_code container materials comment desired_date data_release_uuid priority].freeze
       DEFAULT_ATTRIBUTES = { materials: {} }.freeze
 
       attr_accessor(*ATTRIBUTES)
@@ -71,7 +71,11 @@ module Aker
           indifferent_material = material.to_h.with_indifferent_access
           sample = Sample.find_by(name: indifferent_material[:_id])
           if sample
-            Aker::Material.new(sample).update_attributes(indifferent_material)
+            sample_material = Aker::Material.new(sample)
+            sample_material.update_attributes(indifferent_material)
+            if sample_material.container.address != indifferent_material[:address]
+              sample_material.container.update_attributes(address: indifferent_material[:address])
+            end
           end
           sample ||
             Aker::Factories::Material.new(indifferent_material).tap do |m|

@@ -23,6 +23,7 @@ FactoryBot.define do
     comment 'Cook for 20 minutes.'
     desired_date '2017-08-01'
     container { build(:container_json) }
+    priority 'something'
     materials do
       [
         build(:material_json),

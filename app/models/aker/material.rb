@@ -2,6 +2,10 @@
 module Aker
   class Material < Aker::Mapping
 
+    def container
+      sample.container
+    end
+
     def sample
       @instance
     end

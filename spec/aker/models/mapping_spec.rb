@@ -94,11 +94,11 @@ RSpec.describe Aker::Mapping, aker: true do
     end
     context '#update_attributes' do
       it 'updates an attribute translating to the right column of the model' do
-        expect(some_model).to receive(:update_attributes).with(measured_volume: 44)
+        expect(some_model).to receive(:update_attributes!).with(measured_volume: 44)
         mapping.update_attributes(volume: 44)
       end
     end    
 
   end
-  
+
 end
