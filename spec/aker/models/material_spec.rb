@@ -1,12 +1,14 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe Aker::Material, type: :model, aker: true do
-  let(:sample) {create :sample }
+  let(:sample) { create :sample }
   let(:mapping) { Aker::Material.new(sample) }
 
   it_behaves_like 'a mapping between an Aker model and Sequencescape'
 
-  let(:config) {
+  let(:config) do
     {
       # Maps SS models with Aker attributes
       map_ss_tables_with_aker: {
@@ -29,8 +31,8 @@ RSpec.describe Aker::Material, type: :model, aker: true do
 
       # Aker attributes allowed to update from SS into Aker
       updatable_attrs_from_ss_into_aker: [:volume, :concentration]
-    }    
-  }
+    }
+  end
   context 'with a custom config' do
     before do
       Aker::Material.set_config(config)
@@ -39,7 +41,7 @@ RSpec.describe Aker::Material, type: :model, aker: true do
       it 'generates an attributes object and adds the sample name as id' do
         container = double(:container)
         asset = double(:asset)
-        well_attribute = double(:well_attribute, {measured_volume: 14, concentration: 0.5})
+        well_attribute = double(:well_attribute, measured_volume: 14, concentration: 0.5)
         allow(sample).to receive(:container).and_return(container)
         allow(container).to receive(:asset).and_return(asset)
         allow(asset).to receive(:well_attribute).and_return(well_attribute)
@@ -49,11 +51,11 @@ RSpec.describe Aker::Material, type: :model, aker: true do
     end
     context '#update_attributes' do
       before do
-        sample.sample_metadata.update_attributes(gender: 'Male')
+        sample.sample_metadata.update(gender: 'Male')
       end
       it 'updates an attribute' do
         expect(sample.sample_metadata.gender).to eq('Male')
-        mapping.update_attributes(gender: 'Female')
+        mapping.update(gender: 'Female')
         sample.sample_metadata.reload
         expect(sample.sample_metadata.gender).to eq('Female')
       end
@@ -67,7 +69,7 @@ RSpec.describe Aker::Material, type: :model, aker: true do
         it 'returns nil if there is no model object for the table name' do
           expect(mapping.send(:model_for_table, :sample_metadatas)).to eq(nil)
         end
-      end      
+      end
     end
   end
 end

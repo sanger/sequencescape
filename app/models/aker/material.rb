@@ -1,10 +1,9 @@
 
+# frozen_string_literal: true
+
 module Aker
   class Material < Aker::Mapping
-
-    def container
-      sample.container
-    end
+    delegate :container, to: :sample
 
     def sample
       @instance
@@ -22,6 +21,5 @@ module Aker
       return sample.container.asset.well_attribute if table_name == :well_attribute
       nil
     end
-
   end
 end

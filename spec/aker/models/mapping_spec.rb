@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 shared_examples 'a mapping between an Aker model and Sequencescape', aker: true do
-  let(:config) {
+  let(:config) do
     {
       # Maps SS models with Aker attributes
       map_ss_tables_with_aker: {
@@ -24,16 +26,14 @@ shared_examples 'a mapping between an Aker model and Sequencescape', aker: true 
 
       # Aker attributes allowed to update from SS into Aker
       updatable_attrs_from_ss_into_aker: [:volume, :concentration]
-    }    
-  }
+    }
+  end
   context 'with a custom config' do
     before do
       Aker::Mapping.set_config(config)
     end
 
     context 'with private methods' do
-      
-
       context '#table_for_attr' do
         it 'gives back a table name from an attribute name' do
           expect(mapping.send(:table_for_attr, :volume)).to eq(:well_attribute)
@@ -45,21 +45,20 @@ shared_examples 'a mapping between an Aker model and Sequencescape', aker: true 
 
       context '#attributes_for_table' do
         it 'filters out the attributes that do not belong to the table' do
-          expect(mapping.send(:attributes_for_table, :sample_metadata, {gender: 'Male', volume: 33})).to eq({gender: 'Male'})
+          expect(mapping.send(:attributes_for_table, :sample_metadata, gender: 'Male', volume: 33)).to eq(gender: 'Male')
         end
         it 'translates the valid attribute to the SS nomenclature using the config ' do
-          expect(mapping.send(:attributes_for_table, :well_attribute, {gender: 'Male', volume: 33})).to eq({measured_volume: 33})
+          expect(mapping.send(:attributes_for_table, :well_attribute, gender: 'Male', volume: 33)).to eq(measured_volume: 33)
         end
-
       end
 
       context '#valid_attrs' do
         it 'filters out the attributes that do not have a valid key' do
-          expect(mapping.send(:valid_attrs, [:gender], {gender: 'Male', volume: 33})).to eq({gender: 'Male'})
+          expect(mapping.send(:valid_attrs, [:gender], gender: 'Male', volume: 33)).to eq(gender: 'Male')
         end
 
         it 'translates the valid attribute to the SS nomenclature using the config ' do
-          expect(mapping.send(:valid_attrs, [:volume], {gender: 'Male', volume: 33})).to eq({measured_volume: 33})
+          expect(mapping.send(:valid_attrs, [:volume], gender: 'Male', volume: 33)).to eq(measured_volume: 33)
         end
       end
 
@@ -68,9 +67,7 @@ shared_examples 'a mapping between an Aker model and Sequencescape', aker: true 
           expect(mapping.send(:aker_attr_name, :volume)).to eq(:measured_volume)
         end
       end
-
     end
-
   end
 end
 
@@ -92,13 +89,11 @@ RSpec.describe Aker::Mapping, aker: true do
         expect(mapping.attributes).to eq(volume: 33, concentration: 0.3)
       end
     end
-    context '#update_attributes' do
+    context '#update' do
       it 'updates an attribute translating to the right column of the model' do
-        expect(some_model).to receive(:update_attributes!).with(measured_volume: 44)
-        mapping.update_attributes(volume: 44)
+        expect(some_model).to receive(:update!).with(measured_volume: 44)
+        mapping.update(volume: 44)
       end
-    end    
-
+    end
   end
-
 end

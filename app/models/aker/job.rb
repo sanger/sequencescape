@@ -38,26 +38,26 @@ module Aker
       Aker::Material.new(sample).attributes
     end
 
-    def container_message(container)
+    def container_message(_container)
       {}
     end
 
     def containers_message
-      changed_containers.map {|c| container_message(c) }
+      changed_containers.map { |c| container_message(c) }
     end
 
     def updated_materials_message
-      updated_materials.map {|m| material_message(m) }
+      updated_materials.map { |m| material_message(m) }
     end
 
     def new_materials_message
-      new_materials.map {|m| material_message(m) }
+      new_materials.map { |m| material_message(m) }
     end
 
     def finish_message
       {
-        job: { 
-          job_id: aker_job_id, 
+        job: {
+          job_id: aker_job_id,
           updated_materials: updated_materials_message,
           new_materials: new_materials_message,
           containers: containers_message

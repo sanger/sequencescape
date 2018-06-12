@@ -72,10 +72,7 @@ module Aker
           sample = Sample.find_by(name: indifferent_material[:_id])
           if sample
             sample_material = Aker::Material.new(sample)
-            sample_material.update_attributes(indifferent_material)
-            if sample_material.container.address != indifferent_material[:address]
-              sample_material.container.update_attributes(address: indifferent_material[:address])
-            end
+            sample_material.update(indifferent_material)
           end
           sample ||
             Aker::Factories::Material.new(indifferent_material).tap do |m|

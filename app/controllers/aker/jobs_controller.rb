@@ -59,7 +59,7 @@ module Aker
         )
 
         render json: response.body, status: :ok
-      end      
+      end
     end
 
     def recover_from_connection_refused

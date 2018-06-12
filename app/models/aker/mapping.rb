@@ -1,12 +1,14 @@
+# frozen_string_literal: true
+
 #
 # This class synchronizes the data between Aker biomaterial fields and SS by mapping tables and columns in SS with
 # property names from Aker materials service
 #
 # To be able to update between Aker and SS we need to map the Aker field names with the corresponding SS
-# tables and columns. 
+# tables and columns.
 #
 # IMPORTANT!!
-# The configuration is defined in config/initializers/aker.rb. Please read the documentation in that file
+#  The configuration is defined in config/initializers/aker.rb. Please read the documentation in that file
 # before editing this class.
 
 module Aker
@@ -24,14 +26,13 @@ module Aker
       @@CONFIG = config
     end
 
-    def update_attributes(attrs)
+    def update(attrs)
       attrs.keys.each do |attr_name|
         table_name = table_for_attr(attr_name)
-        if table_name
-          setting_attrs = attributes_for_table(table_name, attrs)
-          model = model_for_table(table_name)
-          model.update_attributes!(setting_attrs)
-        end
+        next unless table_name
+        setting_attrs = attributes_for_table(table_name, attrs)
+        model = model_for_table(table_name)
+        model.update!(setting_attrs)
       end
     end
 
@@ -40,21 +41,19 @@ module Aker
 
       @@CONFIG[:updatable_attrs_from_ss_into_aker].each do |k|
         table_name = table_for_attr(k)
-        model =  model_for_table(table_name)
+        model = model_for_table(table_name)
         if model
           attr_name = aker_attr_name(k)
           value = model.send(attr_name)
         end
-        if value
-          obj[k] = value
-        end
+        obj[k] = value if value
       end
       obj
     end
 
     private
 
-    def model_for_table(table_name)
+    def model_for_table(_table_name)
       raise 'Not implemented'
     end
 
@@ -75,13 +74,12 @@ module Aker
     end
 
     def valid_attrs(valid_keys, attrs)
-      obj = attrs.select{|k,v| valid_keys.include?(k.to_sym)}
+      obj = attrs.select { |k, _v| valid_keys.include?(k.to_sym) }
       memo = {}
-      obj.each_pair do |k,v|
+      obj.each_pair do |k, v|
         memo[aker_attr_name(k.to_sym)] = v
       end
       memo
     end
-
   end
 end

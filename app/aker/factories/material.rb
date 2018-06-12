@@ -20,7 +20,6 @@ module Aker
 
       validate :check_container
 
-
       def self.create(params)
         new(params).create
       end
@@ -49,7 +48,7 @@ module Aker
 
         if container.asset.aliquots.where(sample: sample).count == 0
           raise 'The contents of this plate are not up to date with aker job message' if container.asset.aliquots.count > 0
-          container.asset.aliquots.create!(sample: sample) 
+          container.asset.aliquots.create!(sample: sample)
         end
       end
 
@@ -91,7 +90,6 @@ module Aker
           errors.add key, value
         end
       end
-
     end
   end
 end
