@@ -8,7 +8,7 @@
 <p>This sample manifest upload screen handles tubes with tag sequences, and plates or tubes with foreign barcodes.</p>
 
 <div class='alert alert-warning'>
-  <strong>Warning!</strong> Older sample manifests for plates, or for tubes with tag groups should be uploaded <a href="<%= sample_manifests_path %>">using the old sample manifest upload page</a>.
+  <strong>Warning!</strong> This upload page should cope with both old and new plate and tube sample manifests, including tube manifests with tag groups and indexes or with tag sequences, and plate or tube manifests with foreign barcodes. It does not handle some of the obsolete columns from the older manifests which will need to be removed before upload.</br>Alternatively, you can still <a href="<%= sample_manifests_path %>">use the old sample manifest upload page here</a>.
 </div>
 
 <%= form_tag(sample_manifest_upload_with_tag_sequences_path, multipart: true) do -%>
