@@ -172,10 +172,43 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
         expect(upload).to be_processed
       end
 
-      it 'fails if the tags are invalid' do
+      it 'fails if tags are duplicated' do
         download = build(:test_download, columns: tube_multiplex_library_with_tag_seq_cols, manifest_type: 'tube_multiplexed_library_with_tag_sequences', validation_errors: [:tags])
         download.save(test_file)
         upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: tube_multiplex_library_with_tag_seq_cols, start_row: 9)
+        upload.process(tag_group)
+        expect(upload).to_not be_processed
+      end
+    end
+
+    context 'multiplexed library tube with tag groups and indexes' do
+      let!(:multiplex_library_with_tag_grp_cols) { SampleManifestExcel.configuration.columns.tube_multiplexed_library.dup }
+      let!(:download) { build(:test_download, columns: multiplex_library_with_tag_grp_cols, manifest_type: 'tube_multiplexed_library') }
+
+      before(:each) do
+        download.save(test_file)
+      end
+
+      it 'should have the correct processor' do
+        download = build(:test_download, columns: multiplex_library_with_tag_grp_cols, manifest_type: 'tube_multiplexed_library')
+        download.save(test_file)
+        upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: multiplex_library_with_tag_grp_cols, start_row: 9)
+        expect(upload.processor).to_not be_nil
+        expect(upload.processor).to be_multiplexed_library_tube
+      end
+
+      it 'updates all of the data' do
+        download = build(:test_download, columns: multiplex_library_with_tag_grp_cols, manifest_type: 'tube_multiplexed_library')
+        download.save(test_file)
+        upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: multiplex_library_with_tag_grp_cols, start_row: 9)
+        upload.process(tag_group)
+        expect(upload).to be_processed
+      end
+
+      it 'fails if tags are duplicated' do
+        download = build(:test_download, columns: multiplex_library_with_tag_grp_cols, manifest_type: 'tube_multiplexed_library', validation_errors: [:tags])
+        download.save(test_file)
+        upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: multiplex_library_with_tag_grp_cols, start_row: 9)
         upload.process(tag_group)
         expect(upload).to_not be_processed
       end
