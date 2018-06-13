@@ -76,12 +76,12 @@ module Aker
           end
           sample ||
             Aker::Factories::Material.new(indifferent_material).tap do |m|
-              m.container = build_container(m, indifferent_material[:address])
+              m.container = build_container(indifferent_material[:address])
             end
         end
       end
 
-      def build_container(_material, address)
+      def build_container(address)
         Aker::Factories::Container.new(@container_params.merge(address: address))
       end
 

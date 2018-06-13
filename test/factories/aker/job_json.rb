@@ -18,12 +18,13 @@ FactoryBot.define do
     project_uuid { SecureRandom.uuid }
     project_name 'MyProject'
     cost_code 'S1234'
+    desired_date '10/10/2018'
     data_release_uuid { study.uuid }
     modules { ['module 1', 'module 2'] }
     comment 'Cook for 20 minutes.'
-    desired_date '2017-08-01'
+    priority 'standard'
+
     container { build(:container_json) }
-    priority 'something'
     materials do
       [
         build(:material_json),
