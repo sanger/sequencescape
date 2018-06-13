@@ -86,10 +86,10 @@ module SampleManifestExcel
 
       def create_plate_dynamic_attributes
         @dynamic_attributes = initialize_dynamic_attributes
-        setup_sample_dynamic_attributes
+        create_plate_samples
       end
 
-      def setup_sample_dynamic_attributes
+      def create_plate_samples
         sm_samples = sample_manifest.samples
         sample_index = 0
         first_to_last.each do |sheet_row|
@@ -115,7 +115,6 @@ module SampleManifestExcel
                                                             end
           # set the well position
           dynamic_attributes[sheet_row][:well] = cur_sample.assets.first.map_description
-
           sample_index += 1
         end
       end
@@ -183,6 +182,8 @@ module SampleManifestExcel
           (data[column.name] || dynamic_attributes[row_num][column.name]) unless empty_columns.include?(column.name)
         elsif validation_errors.include?(:insert_size_from) && column.name == 'insert_size_from' && row_num == first_row
           nil
+        elsif validation_errors.include?(:sanger_sample_id_invalid) && column.name == 'sanger_sample_id' && row_num == first_row
+          'ABC'
         else
           data[column.name] || dynamic_attributes[row_num][column.name]
         end
