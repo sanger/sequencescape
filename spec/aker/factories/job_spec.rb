@@ -6,7 +6,6 @@ require 'support/barcode_helper'
 RSpec.describe Aker::Factories::Job, type: :model, aker: true do
   include BarcodeHelper
   before do
-    @purpose = FactoryBot.create :aker_plate_purpose
     mock_plate_barcode_service
   end
 

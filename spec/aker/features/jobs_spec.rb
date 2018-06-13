@@ -1,15 +1,8 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require 'support/barcode_helper'
 
 RSpec.describe 'Jobs', type: :feature, aker: true do
-  include BarcodeHelper
-  before do
-    @purpose = FactoryBot.create :aker_plate_purpose
-    mock_plate_barcode_service
-  end
-
   let!(:jobs) do
     create_list(:aker_job_with_samples, 5)
   end

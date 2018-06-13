@@ -1,11 +1,9 @@
 require 'rails_helper'
-require 'support/barcode_helper'
 
 RSpec.describe Aker::Factories::Material, type: :model, aker: true do
   include BarcodeHelper
   before do
     mock_plate_barcode_service
-    FactoryBot.create :aker_plate_purpose
   end
 
   let(:json) do
