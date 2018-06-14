@@ -47,7 +47,7 @@ module Sanger
                   end
                 end
                 should 'not redirect' do
-                  assert !(300..307).to_a.include?(@response.code)
+                  assert_not (300..307).to_a.include?(@response.code)
                 end
               end
               context 'when not logged in' do

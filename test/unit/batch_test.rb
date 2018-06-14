@@ -211,7 +211,7 @@ class BatchTest < ActiveSupport::TestCase
         assert @batch.plate_ids_in_study(@study1).include?(@plate2.id)
       end
       should 'not return a plate id where they are not in the given study' do
-        assert !@batch.plate_ids_in_study(@study2).include?(@plate1.id)
+        assert_not @batch.plate_ids_in_study(@study2).include?(@plate1.id)
       end
     end
   end
@@ -335,7 +335,7 @@ class BatchTest < ActiveSupport::TestCase
         end
 
         should 'not fail the batch' do
-          refute @batch.failed?
+          assert_not @batch.failed?
         end
 
         should 'create failures on failed requests' do
@@ -397,8 +397,8 @@ class BatchTest < ActiveSupport::TestCase
 
       should 'return false and add errors to the batch if the tubes are not in the correct order' do
         number_of_batch_events = @batch.lab_events.size
-        refute @batch.verify_tube_layout([@asset1.machine_barcode, @asset2.machine_barcode])
-        refute @batch.errors.empty?
+        assert_not @batch.verify_tube_layout([@asset1.machine_barcode, @asset2.machine_barcode])
+        assert_not @batch.errors.empty?
         assert_equal number_of_batch_events, @batch.lab_events.size
       end
 

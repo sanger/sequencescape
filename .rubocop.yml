@@ -7,10 +7,6 @@ RSpec/AggregateFailures:
     - 'spec/**/*.rb'
 AllCops:
   TargetRubyVersion: 2.4
-  Include:
-    - Rakefile
-    - config.ru
-    - lib/**/*.rake
   Exclude:
     - db/schema.rb
     - db/views_schema.rb

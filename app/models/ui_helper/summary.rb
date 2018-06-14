@@ -38,7 +38,7 @@ module UiHelper
             timestamp: event.created_at,
             external_message: "Run #{event.identifier}",
             external_link: "#{configatron.run_information_url}#{event.identifier}"
-      ))
+          ))
     end
 
     def load_study(study)
@@ -49,7 +49,7 @@ module UiHelper
               timestamp: event.created_at,
               external_message: "Study #{study.id}",
               external_link: ''
-        ))
+            ))
       end
     end
 

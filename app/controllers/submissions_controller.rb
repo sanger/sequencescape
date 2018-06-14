@@ -25,7 +25,7 @@ class SubmissionsController < ApplicationController
              },
              layout: false
     else
-      render partial: 'order_errors', layout: false, status: 422
+      render partial: 'order_errors', layout: false, status: :unprocessable_entity
     end
   end
 
