@@ -110,12 +110,13 @@ Given(/^I have a "([^"]*)" submission for plate "([^"]*)" with project "([^"]*)"
   wells.compact!
 
   submission_template = SubmissionTemplate.find_by(name: submission_template_name)
-  submission = submission_template.create_and_build_submission!(
+  order = submission_template.create_with_submission!(
     study: study,
     project: project,
     user: User.last,
     assets: wells
   )
+  order.submission.built!
   step('1 pending delayed jobs are processed')
 end
 
@@ -125,11 +126,12 @@ Given(/^I have a Cherrypicking submission for asset group "([^"]*)"$/) do |asset
   asset_group = AssetGroup.find_by(name: asset_group_name)
 
   submission_template = SubmissionTemplate.find_by(name: 'Cherrypick')
-  submission = submission_template.create_and_build_submission!(
+  order = submission_template.create_with_submission!(
     study: study,
     project: project,
     user: User.last,
     assets: asset_group.assets
   )
+  order.submission.built!
   step('1 pending delayed jobs are processed')
 end

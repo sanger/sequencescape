@@ -1,34 +1,22 @@
 # Encoding: utf-8
 
-class ActiveRecord::Base
-  class << self
-    def find_by_id_or_name!(id, name)
-      find_by_id_or_name(id, name) || raise(ActiveRecord::RecordNotFound, "Could not find #{self.name}: #{id || name}")
+module ArrayWithFieldList
+  # Previously this was extending Array globally.
+  # https://ruby-doc.org/core-2.4.2/doc/syntax/refinements_rdoc.html
+  refine Array do
+    def comma_separate_field_list_for_display(*fields)
+      field_list(*fields).join(', ')
     end
 
-    def find_by_id_or_name(id, name)
-      return find(id) unless id.blank?
-      raise StandardError, 'Must specify at least ID or name' if name.blank?
-      find_by(name: name)
+    def field_list(*fields)
+      map { |row| fields.map { |field| row[field] } }.flatten.delete_if(&:blank?)
     end
-  end
-end
-
-class Array
-  def comma_separate_field_list(*fields)
-    field_list(*fields).join(',')
-  end
-
-  def comma_separate_field_list_for_display(*fields)
-    field_list(*fields).join(', ')
-  end
-
-  def field_list(*fields)
-    map { |row| fields.map { |field| row[field] } }.flatten.delete_if(&:blank?)
   end
 end
 
 class BulkSubmission
+  # Activates the ArrayWithFieldList refinements for this class
+  using ArrayWithFieldList
   # This is the default output from excel
   DEFAULT_ENCODING = 'Windows-1252'
 
@@ -274,77 +262,75 @@ class BulkSubmission
 
   # Returns an order for the given details
   def prepare_order(details)
-    begin
-      # Retrieve common attributes
-      study   = Study.find_by_id_or_name!(details['study id'], details['study name'])
-      project = Project.find_by_id_or_name!(details['project id'], details['project name'])
-      user    = User.find_by(login: details['user login']) or raise StandardError, "Cannot find user #{details['user login'].inspect}"
+    # Retrieve common attributes
+    study   = Study.find_by_id_or_name!(details['study id'], details['study name'])
+    project = Project.find_by_id_or_name!(details['project id'], details['project name'])
+    user    = User.find_by(login: details['user login']) or raise StandardError, "Cannot find user #{details['user login'].inspect}"
 
-      # The order attributes are initially
-      attributes = {
-        study: study,
-        project: project,
-        user: user,
-        comments: details['comments'],
-        request_options: extract_request_options(details),
-        pre_cap_group: details['pre-capture group']
-      }
+    # The order attributes are initially
+    attributes = {
+      study: study,
+      project: project,
+      user: user,
+      comments: details['comments'],
+      request_options: extract_request_options(details),
+      pre_cap_group: details['pre-capture group']
+    }
 
-      # Deal with the asset group: either it's one we should be loading, or one we should be creating.
+    # Deal with the asset group: either it's one we should be loading, or one we should be creating.
 
-      attributes[:asset_group] = study.asset_groups.find_by_id_or_name(details['asset group id'], details['asset group name'])
-      attributes[:asset_group_name] = details['asset group name'] if attributes[:asset_group].nil?
+    attributes[:asset_group] = study.asset_groups.find_by_id_or_name(details['asset group id'], details['asset group name'])
+    attributes[:asset_group_name] = details['asset group name'] if attributes[:asset_group].nil?
 
-      ##
-      # We go ahead and find our assets regardless of whether we have an asset group.
-      # While this takes longer, it helps to detect cases where an asset group name has been
-      # reused. This is a common cause of submission problems.
+    ##
+    # We go ahead and find our assets regardless of whether we have an asset group.
+    # While this takes longer, it helps to detect cases where an asset group name has been
+    # reused. This is a common cause of submission problems.
 
-      # Locate either the assets by name or ID, or find the plate and it's well
-      if is_plate?(details)
+    # Locate either the assets by name or ID, or find the plate and it's well
+    if is_plate?(details)
 
-        found_assets = find_wells_including_samples_for!(details)
-      # We've probably got a tube
-      elsif is_tube?(details)
+      found_assets = find_wells_including_samples_for!(details)
+    # We've probably got a tube
+    elsif is_tube?(details)
 
-        found_assets = find_tubes_including_samples_for!(details)
+      found_assets = find_tubes_including_samples_for!(details)
 
-      else
+    else
 
-        asset_ids, asset_names = details.fetch('asset ids', ''), details.fetch('asset names', '')
-        found_assets = if attributes[:asset_group] && asset_ids.blank? && asset_names.blank?
-                         []
-                       else
-                         Array(find_all_assets_by_id_or_name_including_samples!(asset_ids, asset_names)).uniq
-                       end
+      asset_ids, asset_names = details.fetch('asset ids', ''), details.fetch('asset names', '')
+      found_assets = if attributes[:asset_group] && asset_ids.blank? && asset_names.blank?
+                       []
+                     else
+                       Array(find_all_assets_by_id_or_name_including_samples!(asset_ids, asset_names)).uniq
+                     end
 
-        assets_found, expecting = found_assets.map { |asset| "#{asset.name}(#{asset.id})" }, asset_ids.size + asset_names.size
-        raise StandardError, "Too few assets found for #{details['rows']}: #{assets_found.inspect}"  if assets_found.size < expecting
-        raise StandardError, "Too many assets found for #{details['rows']}: #{assets_found.inspect}" if assets_found.size > expecting
+      assets_found, expecting = found_assets.map { |asset| "#{asset.name}(#{asset.id})" }, asset_ids.size + asset_names.size
+      raise StandardError, "Too few assets found for #{details['rows']}: #{assets_found.inspect}"  if assets_found.size < expecting
+      raise StandardError, "Too many assets found for #{details['rows']}: #{assets_found.inspect}" if assets_found.size > expecting
 
-      end
-
-      if attributes[:asset_group].nil?
-        attributes[:assets] = found_assets
-      elsif found_assets.present? && found_assets != attributes[:asset_group].assets
-        raise StandardError, "Asset Group '#{attributes[:asset_group].name}' contains different assets to those you specified. You may be reusing an asset group name"
-      end
-
-      add_study_to_assets(found_assets, study)
-
-      # Create the order.  Ensure that the number of lanes is correctly set.
-      sub_template      = find_template(details['template name'])
-      number_of_lanes   = details.fetch('number of lanes', 1).to_i
-
-      sub_template.new_order(attributes).tap do |new_order|
-        new_order.request_type_multiplier do |multiplexed_request_type_id|
-          new_order.request_options[:multiplier][multiplexed_request_type_id] = number_of_lanes
-        end
-      end
-    rescue => exception
-      errors.add :spreadsheet, "There was a problem on row(s) #{details['rows']}: #{exception.message}"
-      nil
     end
+
+    if attributes[:asset_group].nil?
+      attributes[:assets] = found_assets
+    elsif found_assets.present? && found_assets != attributes[:asset_group].assets
+      raise StandardError, "Asset Group '#{attributes[:asset_group].name}' contains different assets to those you specified. You may be reusing an asset group name"
+    end
+
+    add_study_to_assets(found_assets, study)
+
+    # Create the order.  Ensure that the number of lanes is correctly set.
+    sub_template      = find_template(details['template name'])
+    number_of_lanes   = details.fetch('number of lanes', 1).to_i
+
+    sub_template.new_order(attributes).tap do |new_order|
+      new_order.request_type_multiplier do |multiplexed_request_type_id|
+        new_order.request_options[:multiplier][multiplexed_request_type_id] = number_of_lanes
+      end
+    end
+  rescue => exception
+    errors.add :spreadsheet, "There was a problem on row(s) #{details['rows']}: #{exception.message}"
+    nil
   end
 
   # Returns the SubmissionTemplate and checks that it is valid

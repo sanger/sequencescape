@@ -85,26 +85,9 @@ class Submission < ApplicationRecord
 
   scope :for_search_query, ->(query) { where(name: query) }
 
+  # The class used to render warehouse messages
   def self.render_class
     Api::SubmissionIO
-  end
-
-  def self.build!(options)
-    submission_options = {}
-    [:message, :priority].each do |option|
-      value = options.delete(option)
-      submission_options[option] = value if value
-    end
-    ActiveRecord::Base.transaction do
-      order = Order.prepare!(options)
-      order.create_submission({ user_id: order.user_id }.merge(submission_options))
-      order.save! # doesn't save submission id otherwise
-      study_name = order.study.try(:name)
-      order.submission.update_attributes!(name: study_name) if study_name
-      order.submission.reload
-      order.submission.built!
-      order.submission
-    end
   end
 
   # Once submissions progress beyond building, destruction is a risky action and should be prevented.
@@ -130,10 +113,6 @@ class Submission < ApplicationRecord
     end
   end
 
-  def empty_of_orders?
-    orders.empty?
-  end
-
   def requests_cancellable?
     requests.all?(&:cancellable?)
   end
@@ -146,16 +125,6 @@ class Submission < ApplicationRecord
     'submission'
   end
   alias_attribute :friendly_name, :name
-
-  def safe_to_delete?
-    ActiveSupport::Deprecation.warn 'Submission#safe_to_delete? may not recognise all states'
-    if ready?
-      return true
-    else
-      requests_in_progress = requests.select { |r| r.state != 'pending' || r.state != 'waiting' }
-      requests_in_progress.empty? ? true : false
-    end
-  end
 
   def process_submission!
     # for now, we just delegate the requests creation to orders
@@ -338,15 +307,6 @@ class Submission < ApplicationRecord
       raise RuntimeError, "Mismatched multiplier information for submission #{id}" unless multipliers.one?
       # Now we can take the group of requests from next_possible_requests that tie up.
       cache[request_type_id] = multipliers.first
-    end
-  end
-
-  def cancel_all_requests_on_destruction
-    ActiveRecord::Base.transaction do
-      requests.find_each do |request|
-        request.submission_cancelled! # Cancel first to prevent event doing something stupid
-        request.events.create!(message: "Submission #{id} as destroyed")
-      end
     end
   end
 

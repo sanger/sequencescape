@@ -118,24 +118,6 @@ class Order < ApplicationRecord
     def render_class
       Api::OrderIO
     end
-
-    # TODO[xxx]: I don't like the name but this should disappear once the UI has been fixed
-    # JG: I'm trying to kill this method, as the vast majority of stuff is now
-    # created through submission_tempalte.new_order with submissions getting
-    # assigned as appropriate. I *think* it's just request_additional_sequencing
-    # that goes through here.
-    def prepare!(options)
-      constructor = options.delete(:template) || self
-      constructor.create_order!(options.merge(assets: options.fetch(:assets, [])))
-    end
-
-    # only needed to note
-    # JG: Not sure where this is used. Not quite sure what the above comment
-    # means by 'note'
-    def build!(options)
-      # call submission with appropriate Order subclass
-      Submission.build!({ template: self }.merge(options))
-    end
   end
 
   # We can't destroy orders once the submission has been finalized for building

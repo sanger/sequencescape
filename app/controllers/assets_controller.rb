@@ -261,16 +261,30 @@ class AssetsController < ApplicationController
 
     request_options = params.fetch(:request, {}).fetch(:request_metadata_attributes, {})
     request_options[:multiplier] = { @request_type.id => params[:count].to_i } unless params[:count].blank?
-    submission = ReRequestSubmission.build!(
+    # submission = Submission.build!(
+    #   template: ReRequestSubmission,
+    #   study: @study,
+    #   project: @project,
+    #   user: current_user,
+    #   assets: [@asset],
+    #   request_types: [@request_type.id],
+    #   request_options: request_options.to_unsafe_h,
+    #   comments: params[:comments],
+    #   priority: params[:priority]
+    # )
+    submission = Submission.new(priority: params[:priority], name: @study.try(:name), user: current_user)
+    resub = ReRequestSubmission.new(
       study: @study,
       project: @project,
       user: current_user,
       assets: [@asset],
       request_types: [@request_type.id],
       request_options: request_options.to_unsafe_h,
-      comments: params[:comments],
-      priority: params[:priority]
+      submission: submission,
+      comments: params[:comments]
     )
+    resub.save!
+    submission.built!
 
     respond_to do |format|
       flash[:notice] = 'Created request'

@@ -65,7 +65,7 @@ FactoryBot.define do
     name { generate :asset_name }
     association(:purpose, factory: :mx_tube_purpose)
     after(:build) do |tube, evaluator|
-      tube.aliquots = build_list(:tagged_aliquot, evaluator.sample_count)
+      tube.aliquots = build_list(:tagged_aliquot, evaluator.sample_count) unless evaluator.sample_count == 0
     end
   end
 

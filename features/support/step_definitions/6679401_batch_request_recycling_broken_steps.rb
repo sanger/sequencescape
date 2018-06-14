@@ -71,7 +71,7 @@ def build_batch_for(name, count)
   rts = pipeline.request_types.reject(&:deprecated?).map(&:id)
   # Build a submission that should end up in the appropriate inbox, once all of the assets have been
   # deemed as scanned into the lab!
-  LinearSubmission.build!(
+  FactoryBot.create(:linear_submission,
     study: FactoryBot.create(:study),
     project: FactoryBot.create(:project),
     user: user,
@@ -82,7 +82,7 @@ def build_batch_for(name, count)
 
     # Request parameter options
     request_options: submission_details[:request_options]
-  )
+  ).submission.built!
   step('all pending delayed jobs are processed')
 
   # step build a batch that will hold all of these requests, ensuring that it appears to be at least started

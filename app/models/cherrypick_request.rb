@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
 # This class is due to replace CherrypickForPulldownRequest
 class CherrypickRequest < CustomerRequest
