@@ -165,7 +165,7 @@ end
 
 def strip_extraneous_fields(left, right)
   if left.is_a?(Hash) and right.is_a?(Hash)
-    right.delete_if { |k, _| not left.keys.include?(k) }
+    right.delete_if { |k, _| not left.key?(k) }
     left.each { |key, value| strip_extraneous_fields(value, right[key]) }
     right
   elsif left.is_a?(Array) and right.is_a?(Array)

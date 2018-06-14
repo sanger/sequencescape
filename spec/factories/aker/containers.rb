@@ -28,7 +28,7 @@ FactoryBot.define do
   factory :container, class: Aker::Container, traits: [:plate_exists_in_sequencescape]
 
   factory :container_with_address, class: Aker::Container, traits: [
-    :plate_exists_in_sequencescape, 
+    :plate_exists_in_sequencescape,
     :with_address_for_aker
-    ]
+  ]
 end

@@ -72,7 +72,7 @@ class EventFactoryTest < ActiveSupport::TestCase
           last_mail = ActionMailer::Base.deliveries.last
           assert_match(/Project approved/, last_mail.subject)
           assert last_mail.bcc.include?('south@example.com')
-          assert !last_mail.bcc.include?('')
+          assert_not last_mail.bcc.include?('')
           assert_match(/Project approved/, last_mail.text_part.body.to_s)
         end
       end
@@ -103,7 +103,7 @@ class EventFactoryTest < ActiveSupport::TestCase
           assert last_mail.bcc.include?('north@example.com')
           assert last_mail.bcc.include?('south@example.com')
           assert last_mail.bcc.include?('west@example.com')
-          assert !last_mail.bcc.include?('')
+          assert_not last_mail.bcc.include?('')
           assert_match(/Project approved/, last_mail.text_part.body.to_s)
         end
       end
@@ -133,16 +133,16 @@ class EventFactoryTest < ActiveSupport::TestCase
           last_mail = ActionMailer::Base.deliveries.last
           assert_match(/Project approved/, last_mail.subject)
           assert last_mail.bcc.include?('south@example.com')
-          assert !last_mail.bcc.include?('')
+          assert_not last_mail.bcc.include?('')
           assert_match(/Project approved/, last_mail.text_part.body.to_s)
         end
       end
 
       context 'send no email to adminstrator nor to approver' do
         ActionMailer::Base.deliveries.each do |d|
-          assert !d.bcc.include?('west@example.com')
-          assert !d.bcc.include?('north@example.com')
-          assert !d.bcc.include?('')
+          assert_not d.bcc.include?('west@example.com')
+          assert_not d.bcc.include?('north@example.com')
+          assert_not d.bcc.include?('')
         end
       end
     end

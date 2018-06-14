@@ -44,7 +44,7 @@ class UserTest < ActiveSupport::TestCase
       end
 
       should 'not be able to access admin functions' do
-        assert !@user.administrator?
+        assert_not @user.administrator?
       end
 
       should 'be able to access manager functions' do
@@ -66,15 +66,15 @@ class UserTest < ActiveSupport::TestCase
       end
 
       should 'not be able to access admin functions' do
-        assert !@user.administrator?
+        assert_not @user.administrator?
       end
 
       should 'not be able to access manager functions' do
-        assert !@user.manager_or_administrator?
+        assert_not @user.manager_or_administrator?
       end
 
       should 'not have access to privileged functions generally' do
-        assert !@user.privileged?
+        assert_not @user.privileged?
       end
     end
 

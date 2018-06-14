@@ -76,9 +76,9 @@ RSpec.describe Aker::Factories::Job, type: :model, aker: true do
     job = Aker::Factories::Job.create(params)
     material = job.samples.first
     wrong_container_params = params[:container].merge(barcode: 'WRONG', address: 'BAD')
-    expect {
+    expect do
       Aker::Factories::Job.create(params.merge(job_uuid: SecureRandom.uuid, container: wrong_container_params))
-    }.to raise_error(ActiveRecord::RecordInvalid)
+    end.to raise_error(ActiveRecord::RecordInvalid)
   end
 
   it '#as_json returns job' do

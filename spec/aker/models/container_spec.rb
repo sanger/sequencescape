@@ -31,5 +31,4 @@ RSpec.describe Aker::Container, type: :model, aker: true do
       expect(container).to be_valid
     end
   end
-
 end

@@ -59,7 +59,6 @@ RSpec.describe Aker::Material, type: :model, aker: true do
         sample.sample_metadata.reload
         expect(sample.sample_metadata.gender).to eq('Female')
       end
-
     end
 
     context 'with private methods' do

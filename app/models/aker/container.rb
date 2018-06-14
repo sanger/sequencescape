@@ -15,15 +15,11 @@ module Aker
     validate :not_change_address
 
     def not_change_barcode
-      if (persisted? && (barcode_changed?))
-        errors.add(:barcode, 'Cannot modify barcode')
-      end
+      errors.add(:barcode, 'Cannot modify barcode') if persisted? && barcode_changed?
     end
 
     def not_change_address
-      if (persisted? && (barcode_changed?))
-        errors.add(:address, 'Cannot modify address')
-      end      
+      errors.add(:address, 'Cannot modify address') if persisted? && barcode_changed?
     end
 
     def connect_asset!

@@ -19,7 +19,6 @@ module Aker
 
       validate :check_container
 
-
       def self.create(params)
         new(params).create
       end

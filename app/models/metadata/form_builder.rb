@@ -119,7 +119,7 @@ class Metadata::FormBuilder < Metadata::BuilderBase
                related: related,
                changing_fields: @changing
              }
-    )) unless related.empty?
+           )) unless related.empty?
   end
 
   private

@@ -3,7 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe Aker::Job, type: :model, aker: true do
-
   it 'is not valid without an Aker Job ID' do
     expect(build(:aker_job, aker_job_id: nil)).to_not be_valid
   end

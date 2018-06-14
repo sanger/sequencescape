@@ -26,7 +26,6 @@ module Api
           rescue StandardError => e
             render json: e.message, status: :unprocessable_entity
           end
-
         end
       end
     end

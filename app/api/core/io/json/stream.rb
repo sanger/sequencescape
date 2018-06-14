@@ -68,7 +68,7 @@ module ::Core::Io::Json
                     stream: self,
                     object: object,
                     nested: true
-          )
+                  )
         )
       end
     end

@@ -31,8 +31,8 @@ class FluidigmFileTest < ActiveSupport::TestCase
     end
 
     should 'validate plate' do
-      assert  @fluidigm.for_plate?('1381832088')
-      assert !@fluidigm.for_plate?('1381832089')
+      assert @fluidigm.for_plate?('1381832088')
+      assert_not @fluidigm.for_plate?('1381832089')
     end
 
     should 'find 95 wells' do

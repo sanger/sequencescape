@@ -46,7 +46,7 @@ class AttachInfiniumBarcodeTest < TaskTestBase
         end
 
         should 'return false' do
-          assert !@returned_task_value
+          assert_not @returned_task_value
         end
       end
     end

@@ -46,7 +46,7 @@ module Aker
       _each_model_and_setting_attrs_for(attrs) do |model, setting_attrs|
         model.update!(setting_attrs)
       end
-    end    
+    end
 
     def attributes
       obj = {}
@@ -71,7 +71,7 @@ module Aker
 
         # Ignore attributes that dont belong to any model
         next true unless table_name
-        
+
         setting_attrs = attributes_for_table(table_name, attrs)
         model = model_for_table(table_name)
         yield model, setting_attrs
