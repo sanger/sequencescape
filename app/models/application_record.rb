@@ -19,7 +19,7 @@ class ApplicationRecord < ActiveRecord::Base
     end
 
     def find_by_id_or_name(id, name)
-      return find(id) unless id.blank?
+      return find(id) if id.present?
       raise StandardError, 'Must specify at least ID or name' if name.blank?
       find_by(name: name)
     end

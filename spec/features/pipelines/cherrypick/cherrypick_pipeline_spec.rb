@@ -22,10 +22,10 @@ feature 'cherrypick pipeline', js: true do
   let!(:target_purpose) { create :plate_purpose }
 
   before(:each) do
-    assets = plates.each_with_object([]) do |plate, assets|
-      assets.concat(plate.wells)
+    assets = plates.each_with_object([]) do |plate, wells|
+      wells.concat(plate.wells)
       plate.wells.each_with_index do |well, index|
-        well.well_attribute.update_attributes!(
+        well.well_attribute.update!(
           measured_volume: 30 + (index % 30),
           current_volume: 30 + (index % 30),
           concentration: 205 + (index % 50)
@@ -102,7 +102,7 @@ feature 'cherrypick pipeline', js: true do
     expect(page).to have_content('Batch released!')
 
     batch = Batch.last
-    batch.update_attributes!(barcode: Barcode.number_to_human(550000555760))
+    batch.update!(barcode: Barcode.number_to_human(550000555760))
 
     visit robot_verifications_path
     fill_in('Scan user ID', with: '2470041440697')

@@ -72,17 +72,16 @@ def build_batch_for(name, count)
   # Build a submission that should end up in the appropriate inbox, once all of the assets have been
   # deemed as scanned into the lab!
   FactoryBot.create(:linear_submission,
-    study: FactoryBot.create(:study),
-    project: FactoryBot.create(:project),
-    user: user,
+                    study: FactoryBot.create(:study),
+                    project: FactoryBot.create(:project),
+                    user: user,
 
-    # Setup the assets so that they have samples and they are scanned into the correct lab.
-    assets: assets,
-    request_types: [rts.first],
+                    # Setup the assets so that they have samples and they are scanned into the correct lab.
+                    assets: assets,
+                    request_types: [rts.first],
 
-    # Request parameter options
-    request_options: submission_details[:request_options]
-  ).submission.built!
+                    # Request parameter options
+                    request_options: submission_details[:request_options]).submission.built!
   step('all pending delayed jobs are processed')
 
   # step build a batch that will hold all of these requests, ensuring that it appears to be at least started

@@ -13,12 +13,11 @@ feature 'Asset submission', js: true do
   let(:selected_read_length) { 76 }
   let!(:original_request) do
     create(request_factory,
-                       study: study,
-                       project: project,
-                       asset: asset,
-                       request_type: original_request_type)
+           study: study,
+           project: project,
+           asset: asset,
+           request_type: original_request_type)
   end
-
 
   shared_examples 'it allows additional sequencing' do
     scenario 'request additional sequencing' do
@@ -95,10 +94,10 @@ feature 'Asset submission', js: true do
       let(:project) { asset.aliquots.first.project }
       let!(:original_request) do
         create(request_factory,
-                           study: nil,
-                           project: nil,
-                           asset: asset,
-                           request_type: original_request_type)
+               study: nil,
+               project: nil,
+               asset: asset,
+               request_type: original_request_type)
       end
       let(:selected_read_length) { 108 }
       it_behaves_like 'it allows cross study sequencing'

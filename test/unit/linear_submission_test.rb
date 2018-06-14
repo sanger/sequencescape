@@ -114,13 +114,12 @@ class LinearSubmissionTest < ActiveSupport::TestCase
                 @mpx_request_type_ids = [@mpx_request_type.id, @sequencing_request_type_2.id, @sequencing_request_type.id]
 
                 @multiple_mpx_submission = create(:linear_submission,
-                  study: @study,
-                  project: @project,
-                  user: @user,
-                  assets: @mpx_assets,
-                  request_types: @mpx_request_type_ids,
-                  request_options: @request_options
-                ).submission
+                                                  study: @study,
+                                                  project: @project,
+                                                  user: @user,
+                                                  assets: @mpx_assets,
+                                                  request_types: @mpx_request_type_ids,
+                                                  request_options: @request_options).submission
                 @multiple_mpx_submission.built!
 
                 @comment_count = Comment.count
@@ -153,14 +152,13 @@ class LinearSubmissionTest < ActiveSupport::TestCase
           @request_type_ids = [@request_type_1.id, @library_creation_request_type.id, @sequencing_request_type.id]
 
           @submission = create(:linear_submission,
-            study: @study,
-            project: @project,
-            user: @user,
-            assets: @assets,
-            request_types: @request_type_ids,
-            request_options: @request_options,
-            comments: 'This is a comment'
-          ).submission
+                               study: @study,
+                               project: @project,
+                               user: @user,
+                               assets: @assets,
+                               request_types: @request_type_ids,
+                               request_options: @request_options,
+                               comments: 'This is a comment').submission
           @submission.built!
         end
 
@@ -265,24 +263,22 @@ class LinearSubmissionTest < ActiveSupport::TestCase
         @se_request_type = create :request_type, asset_type: 'LibraryTube', initial_state: 'pending', name: 'SE sequencing', order: 2, key: 'se_sequencing'
 
         @submission_with_multiplication_factor = create(:linear_submission,
-          study: @study,
-          project: @project,
-          user: @user,
-          assets: [@asset_1, @asset_2],
-          request_types: [@lib_request_type.id, @pe_request_type.id],
-          request_options: { :multiplier => { @pe_request_type.id.to_s.to_sym => '5', @lib_request_type.id.to_s.to_sym => '1' }, 'read_length' => '108', 'fragment_size_required_from' => '150', 'fragment_size_required_to' => '200' },
-          comments: ''
-        ).submission
+                                                        study: @study,
+                                                        project: @project,
+                                                        user: @user,
+                                                        assets: [@asset_1, @asset_2],
+                                                        request_types: [@lib_request_type.id, @pe_request_type.id],
+                                                        request_options: { :multiplier => { @pe_request_type.id.to_s.to_sym => '5', @lib_request_type.id.to_s.to_sym => '1' }, 'read_length' => '108', 'fragment_size_required_from' => '150', 'fragment_size_required_to' => '200' },
+                                                        comments: '').submission
         @submission_with_multiplication_factor.built!
         @mx_submission_with_multiplication_factor = create(:linear_submission,
-          study: @study,
-          project: @project,
-          user: @user,
-          assets: [@asset_1, @asset_2],
-          request_types: [@mx_request_type.id, @pe_request_type.id],
-          request_options: { :multiplier => { @pe_request_type.id.to_s.to_sym => '5', @mx_request_type.id.to_s.to_sym => '1' }, 'read_length' => '108', 'fragment_size_required_from' => '150', 'fragment_size_required_to' => '200' },
-          comments: ''
-        ).submission
+                                                           study: @study,
+                                                           project: @project,
+                                                           user: @user,
+                                                           assets: [@asset_1, @asset_2],
+                                                           request_types: [@mx_request_type.id, @pe_request_type.id],
+                                                           request_options: { :multiplier => { @pe_request_type.id.to_s.to_sym => '5', @mx_request_type.id.to_s.to_sym => '1' }, 'read_length' => '108', 'fragment_size_required_from' => '150', 'fragment_size_required_to' => '200' },
+                                                           comments: '').submission
         @mx_submission_with_multiplication_factor.built!
       end
 

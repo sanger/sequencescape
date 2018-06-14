@@ -206,7 +206,7 @@ class Order < ApplicationRecord
     matching_orders = Order.containing_samples(all_samples)
                            .where(template_name: template_name)
                            .includes(:submission, assets: :samples)
-                           .where.not(orders: { id: id} )
+                           .where.not(orders: { id: id })
                            .where('orders.created_at > ?', DateTime.current - timespan)
     return false if matching_orders.empty?
     matching_samples = matching_orders.map(&:samples).flatten & all_samples

@@ -28,13 +28,12 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
       context 'multiplexed submission' do
         setup do
           @mpx_submission = create(:flexible_submission,
-            study: @study,
-            project: @project,
-            user: @user,
-            assets: @assets,
-            request_types: @request_type_ids,
-            request_options: @request_options
-          ).submission
+                                   study: @study,
+                                   project: @project,
+                                   user: @user,
+                                   assets: @assets,
+                                   request_types: @request_type_ids,
+                                   request_options: @request_options).submission
           @mpx_submission.built!
         end
 
@@ -70,15 +69,14 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
           end
 
           @mpx_submission = create(:flexible_submission,
-            study: @study,
-            project: @project,
+                                   study: @study,
+                                   project: @project,
 
-            user: @user,
-            assets: @assets,
-            request_types: @request_type_ids,
-            request_options: @request_options,
-            product: @our_product_criteria.product
-          ).submission
+                                   user: @user,
+                                   assets: @assets,
+                                   request_types: @request_type_ids,
+                                   request_options: @request_options,
+                                   product: @our_product_criteria.product).submission
           @mpx_submission.built!
         end
 
@@ -101,23 +99,21 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
         context 'specified at submission' do
           setup do
             @xs_mpx_submission = create(:flexible_submission,
-              study: @study,
-              project: @project,
-              user: @user,
-              assets: @assets.slice(0, 8),
-              request_types: @request_type_ids,
-              request_options: @request_options
-            ).submission
+                                        study: @study,
+                                        project: @project,
+                                        user: @user,
+                                        assets: @assets.slice(0, 8),
+                                        request_types: @request_type_ids,
+                                        request_options: @request_options).submission
             @xs_mpx_submission.built!
             @order_b = create(:flexible_submission,
-              study: @study_b,
-              project: @project_b,
-              user: @user,
-              assets: @assets.slice(8, 8),
-              request_types: @request_type_ids,
-              request_options: @request_options,
-              submission: @xs_mpx_submission
-            )
+                              study: @study_b,
+                              project: @project_b,
+                              user: @user,
+                              assets: @assets.slice(8, 8),
+                              request_types: @request_type_ids,
+                              request_options: @request_options,
+                              submission: @xs_mpx_submission)
             @xs_mpx_submission.orders << @order_b
             @xs_mpx_submission.save!
           end
@@ -148,13 +144,12 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
           should 'not be valid for unpooled assets' do
             assert_raise(ActiveRecord::RecordInvalid) do
               create(:flexible_submission,
-                study: nil,
-                project: nil,
-                user: @user,
-                assets: @assets,
-                request_types: @request_type_ids,
-                request_options: @request_options
-              ).submission
+                     study: nil,
+                     project: nil,
+                     user: @user,
+                     assets: @assets,
+                     request_types: @request_type_ids,
+                     request_options: @request_options).submission
             end
           end
 
@@ -163,13 +158,12 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
               @request_count = Request.count
               @pooled = create :cross_pooled_well
               @sub = create(:flexible_submission,
-                study: nil,
-                project: nil,
-                user: @user,
-                assets: [@pooled],
-                request_types: @request_type_ids,
-                request_options: @request_options
-              ).submission
+                            study: nil,
+                            project: nil,
+                            user: @user,
+                            assets: [@pooled],
+                            request_types: @request_type_ids,
+                            request_options: @request_options).submission
               @sub.built!
               @sub.process!
             end
@@ -203,13 +197,12 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
       context 'multiplexed submission' do
         setup do
           @mpx_submission = create(:flexible_submission,
-            study: @study,
-            project: @project,
-            user: @user,
-            assets: @assets,
-            request_types: @request_type_ids,
-            request_options: @request_options
-          ).submission
+                                   study: @study,
+                                   project: @project,
+                                   user: @user,
+                                   assets: @assets,
+                                   request_types: @request_type_ids,
+                                   request_options: @request_options).submission
           @mpx_submission.built!
         end
 
@@ -260,14 +253,13 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
         @request_type_ids = [@mx_request_type.id, @pe_request_type.id]
 
         @mx_submission_with_multiplication_factor = create(:flexible_submission,
-          study: @study,
-          project: @project,
-          user: @user,
-          assets: @assets,
-          request_types: @request_type_ids,
-          request_options: { :multiplier => { @pe_request_type.id.to_s.to_sym => '2', @mx_request_type.id.to_s.to_sym => '1' }, 'read_length' => '108', 'fragment_size_required_from' => '150', 'fragment_size_required_to' => '200' },
-          comments: ''
-        ).submission
+                                                           study: @study,
+                                                           project: @project,
+                                                           user: @user,
+                                                           assets: @assets,
+                                                           request_types: @request_type_ids,
+                                                           request_options: { :multiplier => { @pe_request_type.id.to_s.to_sym => '2', @mx_request_type.id.to_s.to_sym => '1' }, 'read_length' => '108', 'fragment_size_required_from' => '150', 'fragment_size_required_to' => '200' },
+                                                           comments: '').submission
         @mx_submission_with_multiplication_factor.built!
       end
 
@@ -305,13 +297,12 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
         context 'for multiplexed libraries and sequencing' do
           setup do
             @mx_submission_with_multiplication_factor = create(:flexible_submission,
-              study: @study,
-              project: @project,
-              user: @user,
-              assets: @assets,
-              request_types: @mx_request_type_ids,
-              comments: ''
-            ).submission
+                                                               study: @study,
+                                                               project: @project,
+                                                               user: @user,
+                                                               assets: @assets,
+                                                               request_types: @mx_request_type_ids,
+                                                               comments: '').submission
           end
 
           should 'multiply the sequencing' do
@@ -328,13 +319,12 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
         context 'for unplexed libraries and sequencing' do
           setup do
             @ux_submission_with_multiplication_factor = create(:flexible_submission,
-              study: @study,
-              project: @project,
-              user: @user,
-              assets: @assets,
-              request_types: @ux_request_type_ids,
-              comments: ''
-            ).submission
+                                                               study: @study,
+                                                               project: @project,
+                                                               user: @user,
+                                                               assets: @assets,
+                                                               request_types: @ux_request_type_ids,
+                                                               comments: '').submission
           end
 
           should 'multiply the library creation' do
