@@ -165,7 +165,7 @@ class LinearSubmissionTest < ActiveSupport::TestCase
         end
 
         should 'not be a multiplexed submission' do
-          assert !@submission.multiplexed?
+          assert_not @submission.multiplexed?
         end
 
         should 'save request_types as array of Integers' do

@@ -89,7 +89,7 @@ class AssignTubestoMultiplexedWellsTaskTest < ActiveSupport::TestCase
         end
 
         should 'return false' do
-          assert !@task.do_task(@workflows_controller, @params)
+          assert_not @task.do_task(@workflows_controller, @params)
         end
 
         should 'set a flash[:notice] for failure' do
@@ -119,7 +119,7 @@ class AssignTubestoMultiplexedWellsTaskTest < ActiveSupport::TestCase
         end
 
         should 'return false' do
-          assert !@task.do_task(@workflows_controller, @params)
+          assert_not @task.do_task(@workflows_controller, @params)
         end
 
         should 'set a flash[:notice] for failure' do

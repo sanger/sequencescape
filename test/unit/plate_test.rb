@@ -241,13 +241,13 @@ class PlateTest < ActiveSupport::TestCase
     end
 
     should 'not find plates without owners' do
-      refute_includes Plate.with_descendants_owned_by(@user), @source_plate
+      assert_not_includes Plate.with_descendants_owned_by(@user), @source_plate
     end
 
     should 'allow filtering of source plates' do
       plates = Plate.source_plates
       assert_includes plates, @source_plate
-      refute_includes plates, @child_plate
+      assert_not_includes plates, @child_plate
     end
   end
 

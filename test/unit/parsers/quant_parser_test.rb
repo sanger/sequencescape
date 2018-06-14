@@ -131,7 +131,7 @@ class QuantParserTest < ActiveSupport::TestCase
       end
 
       should 'detect that the format is not correct' do
-        refute Parsers::QuantParser.parses?(@csv)
+        assert_not Parsers::QuantParser.parses?(@csv)
       end
     end
   end

@@ -25,7 +25,7 @@ Then /^I should see the manifest table:$/ do |expected_results_table|
 end
 
 def sequence_sanger_sample_ids_for(plate)
-  plate.wells.walk_in_column_major_order do |well, index|
+  plate.wells.in_column_major_order.each_with_index do |well, index|
     well.primary_aliquot.sample.update_attributes!(sanger_sample_id: yield(index))
   end
 end
