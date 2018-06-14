@@ -72,6 +72,15 @@ RSpec.describe Aker::Factories::Job, type: :model, aker: true do
     expect(Aker::Factories::Job.create(params.except(:materials))).to be_nil
   end
 
+  it '#create will fail if the materials exist but the containers has changed' do
+    job = Aker::Factories::Job.create(params)
+    material = job.samples.first
+    wrong_container_params = params[:container].merge(barcode: 'WRONG', address: 'BAD')
+    expect {
+      Aker::Factories::Job.create(params.merge(job_uuid: SecureRandom.uuid, container: wrong_container_params))
+    }.to raise_error
+  end
+
   it '#as_json returns job' do
     job = Aker::Factories::Job.new(params)
     json = job.as_json[:job]

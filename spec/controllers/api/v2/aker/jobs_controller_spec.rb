@@ -44,6 +44,14 @@ RSpec.describe Api::V2::Aker::JobsController, type: :request, aker: true do
       expect(response).to have_http_status(:unprocessable_entity)
     end
 
+    it 'returns an error if somebody tries to create an job without job_uuid' do
+      params['data'][0]['attributes'].delete('job_uuid')
+      expect do
+        post api_v2_aker_jobs_path, params: params
+      end.to_not change(Aker::Job, :count)
+      expect(response).to have_http_status(:unprocessable_entity)
+    end    
+
     it 'returns an error if somebody tries to create an job without materials' do
       params['data'][0]['attributes'].delete('materials')
       expect do
@@ -81,4 +89,5 @@ RSpec.describe Api::V2::Aker::JobsController, type: :request, aker: true do
     end
 
   end
+
 end

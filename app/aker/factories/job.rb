@@ -73,8 +73,8 @@ module Aker
           if sample
             sample_material = Aker::Material.new(sample)
             ActiveRecord::Base.transaction do
-              sample_material.update(indifferent_material)
-              sample_material.container.update(@container_params.merge(address: indifferent_material[:address]))
+              sample_material.update!(indifferent_material)
+              sample_material.container.update!(@container_params.merge(address: indifferent_material[:address]))
             end
           end
           sample ||

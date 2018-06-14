@@ -91,9 +91,26 @@ RSpec.describe Aker::Mapping, aker: true do
     end
     context '#update' do
       it 'updates an attribute translating to the right column of the model' do
-        expect(some_model).to receive(:update!).with(measured_volume: 44)
-        mapping.update(volume: 44)
+        allow(some_model).to receive(:update).with(measured_volume: 44).and_return(true)
+        allow(some_model).to receive(:update).with(gender: 'Male').and_return(true)
+        expect(mapping.update(volume: 44, gender: 'Male')).to eq(true)
+      end
+      it 'returns false when it cannot update one of the attrs' do
+        allow(some_model).to receive(:update).with(gender: 'Male').and_return(true)
+        allow(some_model).to receive(:update).with(measured_volume: 44).and_return(false)
+        expect(mapping.update(volume: 44, gender: 'Male')).to eq(false)
       end
     end
+    context '#update!' do
+      it 'updates an attribute translating to the right column of the model' do
+        allow(some_model).to receive(:update).with(measured_volume: 44).and_return(true)
+        expect(mapping.update(volume: 44)).to eq(true)
+      end
+      it 'raises error when it cannot update one of the attrs' do
+        allow(some_model).to receive(:update!).with(gender: 'Male').and_return(true)
+        allow(some_model).to receive(:update!).with(measured_volume: 44).and_return(false)
+        expect{mapping.update!(volume: 44, gender: 'Male')}.to raise_error
+      end
+    end    
   end
 end

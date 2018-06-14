@@ -26,15 +26,27 @@ module Aker
       @@CONFIG = config
     end
 
+    # def update(attrs)
+    #   attrs.keys.each do |attr_name|
+    #     table_name = table_for_attr(attr_name)
+    #     next unless table_name
+    #     setting_attrs = attributes_for_table(table_name, attrs)
+    #     model = model_for_table(table_name)
+    #     model.update!(setting_attrs)
+    #   end
+    # end
+
     def update(attrs)
-      attrs.keys.each do |attr_name|
-        table_name = table_for_attr(attr_name)
-        next unless table_name
-        setting_attrs = attributes_for_table(table_name, attrs)
-        model = model_for_table(table_name)
-        model.update!(setting_attrs)
+      _each_model_and_setting_attrs_for(attrs) do |model, setting_attrs|
+        model.update(setting_attrs)
       end
     end
+
+    def update!(attrs)
+      _each_model_and_setting_attrs_for(attrs) do |model, setting_attrs|
+        model.update!(setting_attrs)
+      end
+    end    
 
     def attributes
       obj = {}
@@ -52,6 +64,19 @@ module Aker
     end
 
     private
+
+    def _each_model_and_setting_attrs_for(attrs)
+      attrs.keys.all? do |attr_name|
+        table_name = table_for_attr(attr_name)
+
+        # Ignore attributes that dont belong to any model
+        next true unless table_name
+        
+        setting_attrs = attributes_for_table(table_name, attrs)
+        model = model_for_table(table_name)
+        yield model, setting_attrs
+      end
+    end
 
     def model_for_table(_table_name)
       raise 'Not implemented'
