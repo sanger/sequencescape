@@ -199,7 +199,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
             processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(reupload)
             processor.update_samples_and_aliquots(tag_group)
             expect(processor.substitutions.compact).to be_empty
-            expect(processor.downstream_aliquots_updated?).to be_truthy
+            expect(processor.downstream_aliquots_updated?).to be_falsey
           end
 
           after(:each) do
@@ -312,7 +312,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
             processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(reupload)
             processor.update_samples_and_aliquots(nil)
             expect(processor.substitutions.compact).to be_empty
-            expect(processor.downstream_aliquots_updated?).to be_truthy
+            expect(processor.downstream_aliquots_updated?).to be_falsey
           end
 
           after(:each) do
