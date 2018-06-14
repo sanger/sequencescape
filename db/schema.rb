@@ -1937,6 +1937,8 @@ ActiveRecord::Schema.define(version: 20180613160225) do
     t.index ["pipeline_id"], name: "index_workflows_on_pipeline_id"
   end
 
+  add_foreign_key "aliquots", "primer_panels"
+  add_foreign_key "aliquots", "requests"
   add_foreign_key "barcodes", "assets"
   add_foreign_key "billing_items", "requests"
   add_foreign_key "billing_products", "billing_product_catalogues"
