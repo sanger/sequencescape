@@ -231,6 +231,6 @@ module SampleManifest::InputBehaviour
   # updates the manifest barcode list e.g. after applying a foreign barcode
   def update_barcodes
     self.barcodes = labware.map(&:human_barcode)
-    save
+    save!
   end
 end
