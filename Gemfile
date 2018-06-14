@@ -131,7 +131,7 @@ group :development do
 end
 
 group :development, :test, :cucumber do
-  gem 'pry-nav'
+  gem 'pry'
 end
 
 group :profile do

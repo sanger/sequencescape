@@ -38,8 +38,6 @@ FactoryBot.define do
     target_type 'Plate'
     asset_shape { AssetShape.default }
 
-    factory :aker_plate_purpose { PlatePurpose.stock_plate_purpose }
-
     factory :source_plate_purpose do
       after(:build) do |source_plate_purpose, _evaluator|
         source_plate_purpose.source_purpose = source_plate_purpose

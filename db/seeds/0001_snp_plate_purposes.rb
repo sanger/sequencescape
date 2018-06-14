@@ -50,8 +50,6 @@ plate_purposes = <<~EOS
   - name: Gel Dilution Plates
   - name: Pulldown Aliquot
     prefix: FA
-  - name: Aker Plate
-    stock_plate: true
   - name: Pre-Extracted Plate
     stock_plate: true
 EOS
