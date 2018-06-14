@@ -12,7 +12,7 @@ RSpec.describe SampleManifestExcel::Upload::Data, type: :model, sample_manifest_
 
   let(:test_file)               { 'test_file.xlsx' }
   let(:columns)                 { SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup }
-  let!(:download)               { build(:test_download, columns: columns) }
+  let!(:download)               { build(:test_download_tubes, columns: columns) }
 
   before(:each) do
     download.save(test_file)

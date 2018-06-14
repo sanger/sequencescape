@@ -18,32 +18,32 @@ RSpec.describe SampleManifestExcel::Upload::Rows, type: :model, sample_manifest_
   end
 
   it 'is not valid without some columns' do
-    download = build(:test_download, columns: columns)
+    download = build(:test_download_tubes, columns: columns)
     download.save(test_file)
     expect(SampleManifestExcel::Upload::Rows.new(SampleManifestExcel::Upload::Data.new(test_file, 9), nil)).to_not be_valid
   end
 
   it 'is not valid unless all of the rows are valid' do
-    download = build(:test_download, columns: columns, validation_errors: [:insert_size_from])
+    download = build(:test_download_tubes, columns: columns, validation_errors: [:insert_size_from])
     download.save(test_file)
     expect(SampleManifestExcel::Upload::Rows.new(SampleManifestExcel::Upload::Data.new(test_file, 9), columns)).to_not be_valid
   end
 
   it 'is valid if some rows are empty' do
-    download = build(:test_partial_download, columns: columns)
+    download = build(:test_download_tubes_tubes_partial, columns: columns)
     download.save(test_file)
     expect(SampleManifestExcel::Upload::Rows.new(SampleManifestExcel::Upload::Data.new(test_file, 9), columns)).to be_valid
   end
 
   it 'creates the row number relative to the start row' do
-    download = build(:test_download, columns: columns, validation_errors: [:insert_size_from])
+    download = build(:test_download_tubes, columns: columns, validation_errors: [:insert_size_from])
     download.save(test_file)
     rows = SampleManifestExcel::Upload::Rows.new(SampleManifestExcel::Upload::Data.new(test_file, 9), columns)
     expect(rows.first.number).to eq(10)
   end
 
   it 'knows values for all rows at particular column' do
-    download = build(:test_download, columns: columns, validation_errors: [:insert_size_from])
+    download = build(:test_download_tubes, columns: columns, validation_errors: [:insert_size_from])
     download.save(test_file)
     rows = SampleManifestExcel::Upload::Rows.new(SampleManifestExcel::Upload::Data.new(test_file, 9), columns)
     # column 7 is insert_size_from

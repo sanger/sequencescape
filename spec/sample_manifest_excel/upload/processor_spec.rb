@@ -45,7 +45,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
         end
 
         context 'valid' do
-          let!(:download) { build(:test_download, columns: library_with_tag_seq_cols, manifest_type: 'tube_library_with_tag_sequences') }
+          let!(:download) { build(:test_download_tubes, columns: library_with_tag_seq_cols, manifest_type: 'tube_library_with_tag_sequences') }
 
           it 'will update the samples' do
             processor = SampleManifestExcel::Upload::Processor::OneDTube.new(upload)
@@ -69,7 +69,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
         end
 
         context 'manifest reuploaded and overriden' do
-          let!(:download) { build(:test_download, columns: library_with_tag_seq_cols, manifest_type: 'tube_library_with_tag_sequences') }
+          let!(:download) { build(:test_download_tubes, columns: library_with_tag_seq_cols, manifest_type: 'tube_library_with_tag_sequences') }
           let!(:new_test_file) { 'new_test_file.xlsx' }
 
           before(:each) do
@@ -115,7 +115,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
         end
 
         context 'valid' do
-          let!(:download) { build(:test_download, manifest_type: 'tube_multiplexed_library_with_tag_sequences', columns: multiplex_library_with_tag_seq_cols) }
+          let!(:download) { build(:test_download_tubes, manifest_type: 'tube_multiplexed_library_with_tag_sequences', columns: multiplex_library_with_tag_seq_cols) }
 
           it 'will update the samples' do
             processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(upload)
@@ -146,7 +146,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
         end
 
         context 'partial' do
-          let!(:download) { build(:test_partial_download, manifest_type: 'tube_multiplexed_library_with_tag_sequences', columns: multiplex_library_with_tag_seq_cols) }
+          let!(:download) { build(:test_download_tubes_partial, manifest_type: 'tube_multiplexed_library_with_tag_sequences', columns: multiplex_library_with_tag_seq_cols) }
 
           it 'will process partial upload and cancel unprocessed requests' do
             processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(upload)
@@ -161,7 +161,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
         end
 
         context 'manifest reuploaded and overriden' do
-          let!(:download) { build(:test_download, manifest_type: 'tube_multiplexed_library_with_tag_sequences', columns: multiplex_library_with_tag_seq_cols) }
+          let!(:download) { build(:test_download_tubes, manifest_type: 'tube_multiplexed_library_with_tag_sequences', columns: multiplex_library_with_tag_seq_cols) }
           let!(:new_test_file) { 'new_test_file.xlsx' }
 
           before(:each) do
@@ -208,7 +208,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
         end
 
         context 'mismatched tags' do
-          let!(:download) { build(:test_download, manifest_type: 'tube_multiplexed_library_with_tag_sequences', columns: multiplex_library_with_tag_seq_cols, validation_errors: [:tags]) }
+          let!(:download) { build(:test_download_tubes, manifest_type: 'tube_multiplexed_library_with_tag_sequences', columns: multiplex_library_with_tag_seq_cols, validation_errors: [:tags]) }
 
           it 'will not be valid' do
             processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(upload)
@@ -224,7 +224,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
         end
 
         context 'valid' do
-          let!(:download) { build(:test_download, manifest_type: 'tube_multiplexed_library', columns: multiplex_library_with_tag_grps_cols) }
+          let!(:download) { build(:test_download_tubes, manifest_type: 'tube_multiplexed_library', columns: multiplex_library_with_tag_grps_cols) }
 
           it 'will update the samples' do
             processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(upload)
@@ -255,7 +255,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
         end
 
         context 'partial' do
-          let!(:download) { build(:test_partial_download, manifest_type: 'tube_multiplexed_library', columns: multiplex_library_with_tag_grps_cols) }
+          let!(:download) { build(:test_download_tubes_partial, manifest_type: 'tube_multiplexed_library', columns: multiplex_library_with_tag_grps_cols) }
 
           it 'will process partial upload and cancel unprocessed requests' do
             processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(upload)
@@ -270,7 +270,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
         end
 
         context 'manifest reuploaded and overriden' do
-          let!(:download) { build(:test_download, manifest_type: 'tube_multiplexed_library', columns: multiplex_library_with_tag_grps_cols) }
+          let!(:download) { build(:test_download_tubes, manifest_type: 'tube_multiplexed_library', columns: multiplex_library_with_tag_grps_cols) }
           let!(:new_test_file) { 'new_test_file.xlsx' }
 
           before(:each) do
@@ -321,7 +321,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
         end
 
         context 'mismatched tags' do
-          let!(:download) { build(:test_download, manifest_type: 'tube_multiplexed_library', columns: multiplex_library_with_tag_grps_cols, validation_errors: [:tags]) }
+          let!(:download) { build(:test_download_tubes, manifest_type: 'tube_multiplexed_library', columns: multiplex_library_with_tag_grps_cols, validation_errors: [:tags]) }
 
           it 'will not be valid' do
             processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(upload)

@@ -15,7 +15,7 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
   let(:columns)                 { SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup }
 
   it 'is valid if all of the headings relate to a column' do
-    download = build(:test_download, columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup)
+    download = build(:test_download_tubes, columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup)
     download.save(test_file)
     upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: columns, start_row: 9)
     expect(upload.columns.count).to eq(columns.count)
@@ -23,7 +23,7 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
   end
 
   it 'is invalid if any of the headings do not relate to a column' do
-    download = build(:test_download, columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup.with(:my_dodgy_column))
+    download = build(:test_download_tubes, columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup.with(:my_dodgy_column))
     download.save(test_file)
     upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: columns, start_row: 9)
     expect(upload).to_not be_valid
@@ -31,26 +31,26 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
   end
 
   it 'is invalid if there is no sanger sample id column' do
-    download = build(:test_download, columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup.except(:sanger_sample_id))
+    download = build(:test_download_tubes, columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup.except(:sanger_sample_id))
     download.save(test_file)
     upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: columns, start_row: 9)
     expect(upload).to_not be_valid
   end
 
   it 'is not valid unless all of the rows are valid' do
-    download = build(:test_download, columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup, validation_errors: [:library_type])
+    download = build(:test_download_tubes, columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup, validation_errors: [:library_type])
     download.save(test_file)
     upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: columns, start_row: 9)
     expect(upload).to_not be_valid
 
-    download = build(:test_download, columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup, validation_errors: [:insert_size_from])
+    download = build(:test_download_tubes, columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup, validation_errors: [:insert_size_from])
     download.save(test_file)
     upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: columns, start_row: 9)
     expect(upload).to_not be_valid
   end
 
   it 'is not valid unless there is an associated sample manifest' do
-    download = build(:test_download, columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup, validation_errors: [:sample_manifest])
+    download = build(:test_download_tubes, columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup, validation_errors: [:sample_manifest])
     download.save(test_file)
 
     upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: columns, start_row: 9)
@@ -58,7 +58,7 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
   end
 
   it 'when completed changes sample manifest status to completed' do
-    download = build(:test_download, columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup)
+    download = build(:test_download_tubes, columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup)
     download.save(test_file)
     upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: columns, start_row: 9)
     expect(upload.sample_manifest.state).to eq 'pending'
@@ -68,7 +68,7 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
   end
 
   it 'knows how to create sample_manifest.updated broadcast event' do
-    download = build(:test_download, columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup)
+    download = build(:test_download_tubes, columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup)
     download.save(test_file)
     upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: columns, start_row: 9)
     user = create :user, login: 'test_user'
@@ -76,7 +76,7 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
     # subjects are 1 study, 6 tubes and 6 samples
     expect(BroadcastEvent.first.subjects.count).to eq 13
 
-    download = build(:test_download, columns: SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup, manifest_type: 'tube_multiplexed_library_with_tag_sequences')
+    download = build(:test_download_tubes, columns: SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup, manifest_type: 'tube_multiplexed_library_with_tag_sequences')
     download.save(test_file)
     upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: columns, start_row: 9)
     expect { upload.broadcast_sample_manifest_updated_event(user) }.to change { BroadcastEvent.count }.by(1)
@@ -85,7 +85,7 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
   end
 
   it 'should know if it is initial or reupload' do
-    download = build(:test_download, columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup)
+    download = build(:test_download_tubes, columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup)
     download.save(test_file)
     upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: columns, start_row: 9)
     expect(upload.reuploaded?).to be_falsey
@@ -108,7 +108,7 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
   describe '#processor' do
     context '1dtube' do
       let!(:columns) { SampleManifestExcel.configuration.columns.tube_full.dup }
-      let!(:download) { build(:test_download, columns: columns) }
+      let!(:download) { build(:test_download_tubes, columns: columns) }
 
       before(:each) do
         download.save(test_file)
@@ -129,7 +129,7 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
 
     context 'library tube with tag sequences' do
       let!(:columns) { SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup }
-      let!(:download) { build(:test_download, columns: columns, manifest_type: 'tube_library_with_tag_sequences') }
+      let!(:download) { build(:test_download_tubes, columns: columns, manifest_type: 'tube_library_with_tag_sequences') }
 
       before(:each) do
         download.save(test_file)
@@ -150,14 +150,14 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
 
     context 'multiplexed library tube with tag sequences' do
       let!(:tube_multiplex_library_with_tag_seq_cols) { SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup }
-      let!(:download) { build(:test_download, columns: tube_multiplex_library_with_tag_seq_cols, manifest_type: 'tube_multiplexed_library_with_tag_sequences') }
+      let!(:download) { build(:test_download_tubes, columns: tube_multiplex_library_with_tag_seq_cols, manifest_type: 'tube_multiplexed_library_with_tag_sequences') }
 
       before(:each) do
         download.save(test_file)
       end
 
       it 'should have the correct processor' do
-        download = build(:test_download, columns: tube_multiplex_library_with_tag_seq_cols, manifest_type: 'tube_multiplexed_library_with_tag_sequences')
+        download = build(:test_download_tubes, columns: tube_multiplex_library_with_tag_seq_cols, manifest_type: 'tube_multiplexed_library_with_tag_sequences')
         download.save(test_file)
         upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: tube_multiplex_library_with_tag_seq_cols, start_row: 9)
         expect(upload.processor).to_not be_nil
@@ -165,7 +165,7 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
       end
 
       it 'updates all of the data' do
-        download = build(:test_download, columns: tube_multiplex_library_with_tag_seq_cols, manifest_type: 'tube_multiplexed_library_with_tag_sequences')
+        download = build(:test_download_tubes, columns: tube_multiplex_library_with_tag_seq_cols, manifest_type: 'tube_multiplexed_library_with_tag_sequences')
         download.save(test_file)
         upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: tube_multiplex_library_with_tag_seq_cols, start_row: 9)
         upload.process(tag_group)
@@ -173,7 +173,7 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
       end
 
       it 'fails if tags are duplicated' do
-        download = build(:test_download, columns: tube_multiplex_library_with_tag_seq_cols, manifest_type: 'tube_multiplexed_library_with_tag_sequences', validation_errors: [:tags])
+        download = build(:test_download_tubes, columns: tube_multiplex_library_with_tag_seq_cols, manifest_type: 'tube_multiplexed_library_with_tag_sequences', validation_errors: [:tags])
         download.save(test_file)
         upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: tube_multiplex_library_with_tag_seq_cols, start_row: 9)
         upload.process(tag_group)
@@ -183,14 +183,14 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
 
     context 'multiplexed library tube with tag groups and indexes' do
       let!(:multiplex_library_with_tag_grp_cols) { SampleManifestExcel.configuration.columns.tube_multiplexed_library.dup }
-      let!(:download) { build(:test_download, columns: multiplex_library_with_tag_grp_cols, manifest_type: 'tube_multiplexed_library') }
+      let!(:download) { build(:test_download_tubes, columns: multiplex_library_with_tag_grp_cols, manifest_type: 'tube_multiplexed_library') }
 
       before(:each) do
         download.save(test_file)
       end
 
       it 'should have the correct processor' do
-        download = build(:test_download, columns: multiplex_library_with_tag_grp_cols, manifest_type: 'tube_multiplexed_library')
+        download = build(:test_download_tubes, columns: multiplex_library_with_tag_grp_cols, manifest_type: 'tube_multiplexed_library')
         download.save(test_file)
         upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: multiplex_library_with_tag_grp_cols, start_row: 9)
         expect(upload.processor).to_not be_nil
@@ -198,7 +198,7 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
       end
 
       it 'updates all of the data' do
-        download = build(:test_download, columns: multiplex_library_with_tag_grp_cols, manifest_type: 'tube_multiplexed_library')
+        download = build(:test_download_tubes, columns: multiplex_library_with_tag_grp_cols, manifest_type: 'tube_multiplexed_library')
         download.save(test_file)
         upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: multiplex_library_with_tag_grp_cols, start_row: 9)
         upload.process(tag_group)
@@ -206,7 +206,7 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
       end
 
       it 'fails if tags are duplicated' do
-        download = build(:test_download, columns: multiplex_library_with_tag_grp_cols, manifest_type: 'tube_multiplexed_library', validation_errors: [:tags])
+        download = build(:test_download_tubes, columns: multiplex_library_with_tag_grp_cols, manifest_type: 'tube_multiplexed_library', validation_errors: [:tags])
         download.save(test_file)
         upload = SampleManifestExcel::Upload::Base.new(filename: test_file, column_list: multiplex_library_with_tag_grp_cols, start_row: 9)
         upload.process(tag_group)
