@@ -2,43 +2,40 @@
 <%= panel('success',title:"Order added to submission at: #{order.created_at.to_formatted_s(:day_full_with_time)}") do %>
   <%- form ||= nil %>
   <span class="completed badge">✔</span>
+  <dl class="order-summary">
 
-  <h4>
     <% if order.study.present? %>
-      Study:
-      <%= link_to(order.study.name, order.study, target: "_blank") %>
+      <dt>Study</dt>
+      <dd><%= link_to(order.study.name, order.study, target: "_blank") %></dd>
     <% else %>
-      Cross Studies:
-      <% order.source_asset_studies.each do |study| %>
-        <%= link_to(study.name, study, target: "_blank") %>
-      <% end %>
+      <dt>Cross Studies</dt>
+      <dd>
+        <% order.source_asset_studies.each do |study| %>
+          <%= link_to(study.name, study, target: "_blank") %>
+        <% end %>
+      </dd>
     <% end %>
-  </h4>
 
-  <h4>
     <% if order.project.present? %>
-      Project:
-      <%= link_to(order.project.name, order.project, target: "_blank") %>
+      <dt>Project</dt>
+      <dd><%= link_to(order.project.name, order.project, target: "_blank") %></dd>
     <% else %>
-      Cross Projects:
-      <% order.source_asset_projects.each do |project| %>
-        <%= link_to(project.name, project, target: "_blank") %>
-      <% end %>
+      <dt>Cross Projects</dt>
+      <dd>
+        <% order.source_asset_projects.each do |project| %>
+          <%= link_to(project.name, project, target: "_blank") %>
+        <% end %>
+      </dd>
     <% end %>
-  </h4>
 
   <% if order.asset_group.present? -%>
-    <h4>
-      Asset Group:
-      <%= link_to(h(order.asset_group.name), study_asset_group_path(order.study, order.asset_group), target: "_blank") %>
-    </h4>
+    <dt>Asset Group</dt>
+    <dd><%= link_to(h(order.asset_group.name), study_asset_group_path(order.study, order.asset_group), target: "_blank") %></dd>
   <% elsif order.assets.present? -%>
-    <h4>Samples:</h4>
-    <div class="sub-panel">
-      <p><%= order_sample_names(order) %></p>
-    </div>
+    <dt>Samples</dt>
+    <dd><%= order.samples.pluck(:name).join(', ') %></dd>
   <% else -%>
-    <h4>There are no assets in this order, it maybe damaged or very out of date</h4>
+    There are no assets in this order, it maybe damaged or very out of date
   <% end -%>
 
   <% unless order.request_types.blank? %>
