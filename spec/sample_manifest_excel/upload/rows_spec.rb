@@ -30,7 +30,7 @@ RSpec.describe SampleManifestExcel::Upload::Rows, type: :model, sample_manifest_
   end
 
   it 'is valid if some rows are empty' do
-    download = build(:test_download_tubes_tubes_partial, columns: columns)
+    download = build(:test_download_tubes_partial, columns: columns)
     download.save(test_file)
     expect(SampleManifestExcel::Upload::Rows.new(SampleManifestExcel::Upload::Data.new(test_file, 9), columns)).to be_valid
   end
