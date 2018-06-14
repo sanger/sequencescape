@@ -108,8 +108,8 @@ RSpec.describe Aker::Mapping, aker: true do
       end
       it 'raises error when it cannot update one of the attrs' do
         allow(some_model).to receive(:update!).with(gender: 'Male').and_return(true)
-        allow(some_model).to receive(:update!).with(measured_volume: 44).and_return(false)
-        expect{mapping.update!(volume: 44, gender: 'Male')}.to raise_error
+        allow(some_model).to receive(:update!).with(measured_volume: 44).and_raise('boom!')
+        expect{mapping.update!(volume: 44, gender: 'Male')}.to raise_error('boom!')
       end
     end    
   end
