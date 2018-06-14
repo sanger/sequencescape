@@ -62,7 +62,8 @@ module SampleManifestExcel
     end
 
     def add_with_number(column, column_list = nil)
-      add column.setup_column_number((column_list || self).next_number)
+      column.number = (column_list || self).next_number
+      add column
       self
     end
 

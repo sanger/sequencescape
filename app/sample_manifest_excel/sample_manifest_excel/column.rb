@@ -116,11 +116,8 @@ module SampleManifestExcel
       self
     end
 
-    ##
-    # Set the column number and return the column
-    def setup_column_number(number)
-      self.number = number
-      self
+    def number=(new_number)
+      @number = new_number
     end
 
     def initialize_dup(source)
