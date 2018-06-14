@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2015,2016 Genome Research Ltd.
 
 class ProductCriteria::Basic
   SUPPORTED_WELL_ATTRIBUTES = [:gel_pass, :concentration, :rin, :current_volume, :pico_pass, :gender_markers, :measured_volume, :initial_volume, :molarity, :sequenom_count]
@@ -79,7 +74,7 @@ class ProductCriteria::Basic
   # the database is actually more tricky than it sounds as your trying to load the latest
   # record from multiple different wells simultaneously.
   def most_recent_concentration_from_target_well_by_updating_date
-    @target_wells.sort_by { |w| w.well_attribute.updated_at }.last.get_concentration if @target_wells
+    @target_wells.max_by { |w| w.well_attribute.updated_at }.get_concentration if @target_wells
   end
 
   def concentration_from_normalization
@@ -130,7 +125,7 @@ class ProductCriteria::Basic
   end
 
   def known_marker?(marker)
-    GENDER_MARKER_MAPS.values.include?(marker)
+    GENDER_MARKER_MAPS.value?(marker)
   end
 
   def invalid(attribute, message)

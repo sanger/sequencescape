@@ -1,8 +1,8 @@
 Sequencescape - A open source project and lab management systems
-Copyright (C) 2007-2010,2011,2012,2013,2014,2015  Genome Research Ltd.
 
 Authors:
 Andrew Page <andrewjpage@gmail.com>
+Andrew Sparkes <as28@sanger.ac.uk>
 Arfon Smith <as8@sanger.ac.uk>
 Beth Jones <bj2@sanger.ac.uk>
 Cinzia Malangone <cm10@sanger.ac.uk>
@@ -10,10 +10,12 @@ Conny Brunnkvist <cb16@sanger.ac.uk>
 Constantine Nicolou <cn5@sanger.ac.uk>
 David Franklin <df2@sanger.ac.uk>
 Eduardo Martin Rojo <emr@sanger.ac.uk>
+Harriet Craven <hc6@sanger.ac.uk>
 James Glover <james.glover@sanger.ac.uk>
 Jens Raaby <jr16@sanger.ac.uk>
 Kate Taylor <kt6@sanger.ac.uk>
 Lars G T Jorgensen <lj3@sanger.ac.uk>
+Luca Da Rin Fioretto <ldrf@sanger.ac.uk>
 Matthew Astley <mca@sanger.ac.uk>
 Matthew Denner <md12@sanger.ac.uk>
 Matt Wood <mw4@sanger.ac.uk>
@@ -24,6 +26,9 @@ Paul Thornthwaite <pt2@sanger.ac.uk>
 Paul Western <pw6@sanger.ac.uk>
 Sean Dunn <sd9@sanger.ac.uk>
 Simon Holroyd <holroyd@sanger.ac.uk>
+Stephen Inglis <si5@sanger.ac.uk>
+Yana Proskurina <yp3@sanger.ac.uk>
+
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -36,5 +41,15 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA  02110-1301 USA
+along with this program; if not, see <http://www.gnu.org/licenses/>.
+
+
+The usage of a range of years within a copyright statement contained within
+this distribution should be interpreted as being equivalent to a list of years
+including the first and last year specified and all consecutive years between
+them. For example, a copyright statement that reads "Copyright (c) 2005, 2007-
+2009, 2011-2012" should be interpreted as being identical to a statement that
+reads "Copyright (c) 2005, 2007, 2008, 2009, 2011, 2012" and a copyright
+statement that reads "Copyright (c) 2005-2012" should be interpreted as being
+identical to a statement that reads "Copyright (c) 2005, 2006, 2007, 2008, 2009
+, 2010 , 2011 , 2012".

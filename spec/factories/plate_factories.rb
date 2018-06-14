@@ -197,42 +197,42 @@ FactoryBot.define do
   end
 
   factory :control_plate, traits: [:plate_barcode, :with_wells] do
-    plate_purpose { PlatePurpose.find_by(name: 'Stock plate') }
+    plate_purpose # { PlatePurpose.find_by(name: 'Stock plate') }
     name 'Control Plate name'
   end
 
-  factory :dilution_plate, traits: [:plate_barcode, :with_wells] do
-    plate_purpose { PlatePurpose.find_by!(name: 'Stock plate') }
-    size 96
-  end
-  factory :gel_dilution_plate, traits: [:plate_barcode, :with_wells] do
-    plate_purpose { PlatePurpose.find_by!(name: 'Gel Dilution') }
-    size 96
-  end
+  # factory :dilution_plate, traits: [:plate_barcode, :with_wells] do
+  #   plate_purpose { PlatePurpose.find_by!(name: 'Stock plate') }
+  #   size 96
+  # end
+  # factory :gel_dilution_plate, traits: [:plate_barcode, :with_wells] do
+  #   plate_purpose { PlatePurpose.find_by!(name: 'Gel Dilution') }
+  #   size 96
+  # end
   factory :pico_assay_plate, traits: [:plate_barcode, :with_wells] do
-    plate_purpose { PlatePurpose.find_by!(name: 'Stock plate') }
+    plate_purpose # { PlatePurpose.find_by!(name: 'Stock plate') }
     size 96
 
     factory :pico_assay_a_plate, traits: [:plate_barcode, :with_wells] do
-      plate_purpose { PlatePurpose.find_by!(name: 'Pico Assay A') }
+      plate_purpose # { PlatePurpose.find_by!(name: 'Pico Assay A') }
       size 96
     end
     factory :pico_assay_b_plate, traits: [:plate_barcode, :with_wells] do
-      plate_purpose { PlatePurpose.find_by!(name: 'Pico Assay B') }
+      plate_purpose # { PlatePurpose.find_by!(name: 'Pico Assay B') }
       size 96
     end
   end
   factory :pico_dilution_plate, traits: [:plate_barcode, :with_wells] do
-    plate_purpose { PlatePurpose.find_by!(name: 'Pico Dilution') }
+    plate_purpose # { PlatePurpose.find_by!(name: 'Pico Dilution') }
     size 96
   end
   factory :sequenom_qc_plate, traits: [:plate_barcode, :with_wells] do
     sequence(:name) { |i| "Sequenom #{i}" }
-    plate_purpose { PlatePurpose.find_by!(name: 'Sequenom') }
+    plate_purpose # { PlatePurpose.find_by!(name: 'Sequenom') }
     size 96
   end
   factory :working_dilution_plate, traits: [:plate_barcode, :with_wells] do
-    plate_purpose { PlatePurpose.find_by!(name: 'Working Dilution') }
+    plate_purpose # { PlatePurpose.find_by!(name: 'Working Dilution') }
     size 96
   end
 

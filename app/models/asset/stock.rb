@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2011,2014,2015 Genome Research Ltd.
 
 module Asset::Stock
   # Extending this module will allow an asset to have a stock asset and be able to
@@ -17,7 +12,7 @@ module Asset::Stock
           self.class.stock_asset_purpose.create!(attributes.reverse_merge(
                                                    name: "(s) #{name}",
                                                    aliquots: aliquots.map(&:dup)
-          ), &block)
+                                                 ), &block)
         end
 
         def new_stock_asset(attributes = {}, &block)
@@ -25,7 +20,7 @@ module Asset::Stock
                                             name:     "(s) #{name}",
                                             aliquots: aliquots.map(&:dup),
                                             purpose:  self.class.stock_asset_purpose
-          ), &block)
+                                          ), &block)
         end
 
         delegate :is_a_stock_asset?, to: 'self.class'

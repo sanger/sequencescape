@@ -12,4 +12,8 @@ FactoryBot.define do
       after(:build) { |project| project.orders ||= [create(:order, project: project)] }
     end
   end
+
+  factory :project_manager do
+    sequence(:name) { |i| "Project Manager #{i}" }
+  end
 end

@@ -1,7 +1,3 @@
-# This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2014,2015 Genome Research Ltd.
 module ForeignKeyConstraint
   def add_constraint(table, modl, options = {})
     parse_options(table, modl, options) do |table, modl, as, fk|
