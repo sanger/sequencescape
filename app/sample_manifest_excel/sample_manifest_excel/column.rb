@@ -116,10 +116,6 @@ module SampleManifestExcel
       self
     end
 
-    def number=(new_number)
-      @number = new_number
-    end
-
     def initialize_dup(source)
       self.range = {}
       self.validation = source.validation
