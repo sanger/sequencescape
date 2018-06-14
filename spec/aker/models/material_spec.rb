@@ -49,7 +49,7 @@ RSpec.describe Aker::Material, type: :model, aker: true do
         expect(mapping.attributes).to eq(volume: 14, concentration: 0.5, '_id': sample.name)
       end
     end
-    context '#update_attributes' do
+    context '#update' do
       before do
         sample.sample_metadata.update(gender: 'Male')
       end
@@ -59,6 +59,7 @@ RSpec.describe Aker::Material, type: :model, aker: true do
         sample.sample_metadata.reload
         expect(sample.sample_metadata.gender).to eq('Female')
       end
+
     end
 
     context 'with private methods' do

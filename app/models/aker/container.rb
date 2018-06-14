@@ -11,6 +11,21 @@ module Aker
 
     before_save :connect_asset!
 
+    validate :not_change_barcode
+    validate :not_change_address
+
+    def not_change_barcode
+      if (persisted? && (barcode_changed?))
+        errors.add(:barcode, 'Cannot modify barcode')
+      end
+    end
+
+    def not_change_address
+      if (persisted? && (barcode_changed?))
+        errors.add(:address, 'Cannot modify address')
+      end      
+    end
+
     def connect_asset!
       return asset if asset
       labware = find_or_create_asset_by_aker_barcode!

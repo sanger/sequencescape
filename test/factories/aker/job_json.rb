@@ -8,6 +8,7 @@ FactoryBot.define do
       study { create(:study) }
     end
     sequence(:job_id) { |n| n }
+    job_uuid { SecureRandom.uuid }
     sequence(:work_order_id) { |n| n }
     aker_job_url 'someurl'
     product_name '30x Human Whole Genome Shotgun (WGS) with PCR'

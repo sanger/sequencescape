@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180607094002) do
+ActiveRecord::Schema.define(version: 20180613160225) do
 
   create_table "aker_containers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "barcode"
@@ -24,7 +24,9 @@ ActiveRecord::Schema.define(version: 20180607094002) do
     t.integer "aker_job_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "aker_job_url", null: false
+    t.string "aker_job_url", default: "", null: false
+    t.string "job_uuid"
+    t.index ["job_uuid"], name: "index_aker_jobs_on_job_uuid", unique: true
   end
 
   create_table "aliquot_indices", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -91,7 +93,7 @@ ActiveRecord::Schema.define(version: 20180607094002) do
     t.index ["asset_id"], name: "index_asset_audits_on_asset_id"
   end
 
-  create_table "asset_barcodes", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "asset_barcodes", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", comment: "AL" do |t|
   end
 
   create_table "asset_creation_parents", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -1935,8 +1937,6 @@ ActiveRecord::Schema.define(version: 20180607094002) do
     t.index ["pipeline_id"], name: "index_workflows_on_pipeline_id"
   end
 
-  add_foreign_key "aliquots", "primer_panels"
-  add_foreign_key "aliquots", "requests"
   add_foreign_key "barcodes", "assets"
   add_foreign_key "billing_items", "requests"
   add_foreign_key "billing_products", "billing_product_catalogues"

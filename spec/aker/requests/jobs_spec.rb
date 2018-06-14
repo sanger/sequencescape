@@ -19,7 +19,7 @@ RSpec.describe Aker::JobsController, type: :request, aker: true do
                                   Net::HTTPResponse.new('1.1', 200, ''), request)
     )
 
-    put start_aker_job_path(job.aker_job_id)
+    put start_aker_job_path(job.job_uuid)
 
     expect(response).to have_http_status :ok
   end
@@ -41,7 +41,7 @@ RSpec.describe Aker::JobsController, type: :request, aker: true do
                                   Net::HTTPResponse.new('1.1', 200, ''), request)
     )
 
-    put complete_aker_job_path(job.aker_job_id), params: { comment: 'Complete it' }
+    put complete_aker_job_path(job.job_uuid), params: { comment: 'Complete it' }
 
     expect(response).to have_http_status :ok
   end
@@ -63,7 +63,7 @@ RSpec.describe Aker::JobsController, type: :request, aker: true do
     }.to_json,
                                              Net::HTTPResponse.new('1.1', 200, ''), request))
 
-    put cancel_aker_job_path(job.aker_job_id), params: { comment: 'Cancel it' }
+    put cancel_aker_job_path(job.job_uuid), params: { comment: 'Cancel it' }
 
     expect(response).to have_http_status :ok
   end

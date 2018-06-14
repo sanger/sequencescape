@@ -17,4 +17,19 @@ RSpec.describe Aker::Container, type: :model, aker: true do
     container = create(:container)
     expect(container.as_json).to eq('barcode': container.barcode)
   end
+
+  context 'when updating a container' do
+    let(:container) { create(:container_with_address) }
+
+    it 'is not valid if the update has different data' do
+      container.update(barcode: 'NOT GOOD ONE', address: 'NOT GOOD ONE')
+      expect(container).to_not be_valid
+    end
+
+    it 'is valid if the updated data is equal to the contents of the database' do
+      container.update(barcode: container.barcode, address: container.address)
+      expect(container).to be_valid
+    end
+  end
+
 end

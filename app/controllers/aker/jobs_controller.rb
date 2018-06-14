@@ -73,7 +73,7 @@ module Aker
     end
 
     def set_job
-      @job ||= Aker::Job.find_by(aker_job_id: params[:id]) if params[:id]
+      @job ||= Aker::Job.find_by(job_uuid: params[:id]) if params[:id]
     end
   end
 end

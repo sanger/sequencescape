@@ -11,6 +11,7 @@ module Aker
     has_many :assets, through: :containers
 
     validates :aker_job_id, presence: true
+    validates :job_uuid, presence: true
     validates :aker_job_url, presence: true
 
     def as_json(_options = {})

@@ -6,6 +6,8 @@ FactoryBot.define do
 
     aker_job_url 'someurl'
 
+    job_uuid { SecureRandom.uuid }
+
     factory :aker_job_with_samples do
       samples { create_list(:sample_for_job, 5) }
     end

@@ -57,7 +57,7 @@ RSpec.describe Aker::Factories::Job, type: :model, aker: true do
     material.sample_metadata.update(sample_common_name: 'Some name')
     material.sample_metadata.reload
     expect(material.sample_metadata.sample_common_name).to eq('Some name')
-    job = Aker::Factories::Job.create(params)
+    job = Aker::Factories::Job.create(params.merge(job_uuid: SecureRandom.uuid))
     expect(job).to be_present
     material.sample_metadata.reload
     expect(material.sample_metadata.sample_common_name).not_to eq('Some name')

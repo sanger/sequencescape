@@ -12,13 +12,13 @@ module Aker
     #  * sample_common_name (Aker: common name)
     class Material
       include ActiveModel::Model
-
       attr_accessor :container
       attr_reader :name, :gender, :donor_id, :phenotype, :sample_common_name, :model
 
       validates_presence_of :name, :gender
 
       validate :check_container
+
 
       def self.create(params)
         new(params).create

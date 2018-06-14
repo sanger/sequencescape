@@ -25,7 +25,7 @@ RSpec.describe 'Jobs', type: :feature, aker: true do
       end
 
       scenario 'view a job' do
-        visit aker_job_path(job.aker_job_id)
+        visit aker_job_path(job.job_uuid)
         expect(page).to have_content('Jobs')
         json = JSON.parse(job_json)['job']
         within('.job') do
