@@ -90,8 +90,6 @@ class Order < ApplicationRecord
   validate :assets_are_appropriate
   validate :no_consent_withdrawl
 
-  # validates_presence_of :submission
-
   before_destroy :is_building_submission?
   after_destroy :on_delete_destroy_submission
 
@@ -122,20 +120,27 @@ class Order < ApplicationRecord
     end
 
     # TODO[xxx]: I don't like the name but this should disappear once the UI has been fixed
+    # JG: I'm trying to kill this method, as the vast majority of stuff is now
+    # created through submission_tempalte.new_order with submissions getting
+    # assigned as appropriate. I *think* it's just request_additional_sequencing
+    # that goes through here.
     def prepare!(options)
       constructor = options.delete(:template) || self
       constructor.create_order!(options.merge(assets: options.fetch(:assets, [])))
     end
 
     # only needed to note
+    # JG: Not sure where this is used. Not quite sure what the above comment
+    # means by 'note'
     def build!(options)
       # call submission with appropriate Order subclass
       Submission.build!({ template: self }.merge(options))
     end
   end
 
+  # We can't destroy orders once the submission has been finalized for building
   def is_building_submission?
-    submission.building?
+    throw :abort unless submission.building?
   end
 
   def on_delete_destroy_submission
@@ -216,7 +221,11 @@ class Order < ApplicationRecord
   end
 
   def duplicates_within(timespan)
-    matching_orders = Order.containing_samples(all_samples).where(template_name: template_name).includes(:submission, assets: :samples).where('orders.id != ?', id).where('orders.created_at > ?', DateTime.current - timespan)
+    matching_orders = Order.containing_samples(all_samples)
+                           .where(template_name: template_name)
+                           .includes(:submission, assets: :samples)
+                           .where.not(orders: { id: id} )
+                           .where('orders.created_at > ?', DateTime.current - timespan)
     return false if matching_orders.empty?
     matching_samples = matching_orders.map(&:samples).flatten & all_samples
     matching_submissions = matching_orders.map(&:submission).uniq

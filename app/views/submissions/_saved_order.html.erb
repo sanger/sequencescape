@@ -42,39 +42,30 @@
   <% end -%>
 
   <% unless order.request_types.blank? %>
-    <h4>Request types:</h4>
-    <ul id="request_types_for_submission">
+    <dt>Request types</dt><dd><ul>
       <% RequestType.order(:order).find(order.request_types).each do |request_type| %>
         <li><%= request_description(presenter, request_type) %></li>
       <% end %>
-    </ul>
+    </ul></dd>
   <% end %>
 
   <% unless order.request_options['pre_capture_plex_level'].nil? %>
-    <h4>
-      Pre-capture plexing level:
-      <%= order.request_options['pre_capture_plex_level'] %>
-    </h4>
-        <h4>
-      Pre-capture plex group:
-      <%= order.pre_cap_group %>
-    </h4>
+    <dt>Pre-capture plexing level</dt>
+    <dd><%= order.request_options['pre_capture_plex_level'] %></dd>
+    <dt>Pre-capture plex group</dt>
+    <dd><%= order.pre_cap_group %></dd>
   <% end %>
 
   <% unless order.request_options['gigabases_expected'].nil? %>
-    <h4>
-      Gigabases expected:
-      <%= order.request_options['gigabases_expected'] %>
-    </h4>
+    <dt>Gigabases expected</dt>
+    <dd><%= order.request_options['gigabases_expected'] %></dd>
   <% end %>
 
-  <h4>Comments:</h4>
-  <div class="sub-panel">
-    <%= "<ul>#{order.comments}</ul>" unless order.comments.nil? %>
-  <div id="order-controls" class="buttons">
-  </div>
+  <dt>Comments</dt>
+  <dl><%= order.comments.presence || 'No comments' %></dl>
+  </dl>
 
-  </div>
+  <div id="order-controls" class="buttons"></div>
 
     <%= form_tag(order_path(order.id), method: :put, class: "comments-box") do -%>
       <%= text_area_tag :comments, nil, placeholder: "Write a new comment here", class: "form-control", id: 'comments-input' %>
@@ -82,7 +73,6 @@
       id: "add-comment",
       class: "btn btn-default add-comment" %>
     <% end %>
-
 
   <% if form.present? -%>
     <div class="save-buttons">

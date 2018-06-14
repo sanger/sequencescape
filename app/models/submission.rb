@@ -1,4 +1,23 @@
+# frozen_string_literal: true
 
+# A Submission collects multiple Orders together, to define a body of work.
+# In the case of non-multiplexed requests the submission is largely redundant,
+# but for multiplexed requests it usually helps define which assets will get
+# pooled together at multiplexing. There are two Order subclasses which are important
+# when it comes to submissions:
+# LinearSubmission => Most orders fall in this category. If the submission is multiplexed
+#                     results in a single pool for the whole submissions.
+# FlexibleSubmission => Allows request types to specify their own pooling rules, which are
+#                       used to define pools at the submission level.
+# While orders are mostly in charge of building their own requests, Submissions trigger this
+# behaviour, and handle multiplexing between orders.
+# JG: We may be able to consider relaxing the restrictions in check_orders_compatible? to
+# allow us to have mixed submissions. This would avoid the need for complicating the submission
+# builders further, and would give finer grained control of the way orders were processed.
+# Essentially when it game to stuff like G&T you'd have two separate orders, and then the submission
+# would determine they were pooled together. This would mean a slight increase in bulk-submission complexity
+# (Each sample would be listed twice) but a massive increase in flexibility, while allowing up to
+# defer submission changes until flexible pooling.
 class Submission < ApplicationRecord
   include Uuid::Uuidable
   extend  Submission::StateMachine
@@ -15,23 +34,37 @@ class Submission < ApplicationRecord
   belongs_to :user, required: true
 
   # Created during the lifetime ...
-  has_many :requests, inverse_of: :submission
+  # Once a submission has requests we REALLY shouldn't be destroying it.
+  has_many :requests, inverse_of: :submission, dependent: :restrict_with_exception
+  # Items are a legacy item that used to represent libraries which had yet to be made.
+  # JG: I don't think we have any behaviour that depends on them. They can probably be removed.
   has_many :items, through: :requests
   has_many :events, through: :requests
-  has_many :orders, inverse_of: :submission
+  # Orders are the main submission workhorses, and do most the heavy lifting. They group together
+  # assets, under a study and project, and collect together the request types which will be built,
+  # and the request options.
+  # Currently submissions check that all their orders have the same request types, and check that
+  # #check_orders_compatible? but in practice we probably only NEED to ensure that sequencing request
+  # types / read_lengths match.
+  # Submissions with orders cannot be destroyed
+  has_many :orders, inverse_of: :submission, dependent: :restrict_with_error
   has_many :studies, through: :orders
+  # JG: Comments are a bit broken, but not sure how best to fix them. Orders set them on request,
+  # but essentially this just sets the same comment on each request. And then we also have comments on
+  # asset, but then plate also want to show the request comments. Its probably a case of simplifying things
+  # and JUST allowing comments on submissions
   has_many :comments_from_requests, through: :requests, source: :comments
 
   # Required at initial construction time ...
   validate :validate_orders_are_compatible, if: :building?
 
-  before_destroy :building?, :empty_of_orders?
-  # Before destroying this instance we should cancel all of the requests it has made
-  before_destroy :cancel_all_requests_on_destruction
+  # We gate submission destruction. Should probably just prevent this.
+  before_destroy :prevent_destruction_unless_building?
 
   accepts_nested_attributes_for :orders, update_only: true
   broadcast_via_warren
 
+  # Used in the v1 API
   scope :including_associations_for_json, -> {
     includes([
       :uuid_object,
@@ -74,12 +107,25 @@ class Submission < ApplicationRecord
     end
   end
 
+  # Once submissions progress beyond building, destruction is a risky action and should be prevented.
+  def prevent_destruction_unless_building?
+    return if building?
+    errors.add(:base, "can only be destroyed when in the 'building' stage. Later submissions should be cancelled.")
+    trhow :abort
+  end
+
+  # As mentioned above, comments are broken. Not quite sure why we're overriding it here
   def comments
     orders.pluck(:comments).compact
   end
 
+  # Adds the given comment to all requests in the submission
+  # @param description [String] The comment to add to the submission
+  # @param user [User] The user making the comment
+  #
+  # @return [Void]
   def add_comment(description, user)
-    requests.map do |request|
+    requests.each do |request|
       request.add_comment(description, user)
     end
   end
