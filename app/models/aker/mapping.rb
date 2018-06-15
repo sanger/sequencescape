@@ -26,16 +26,6 @@ module Aker
       @@CONFIG = config
     end
 
-    # def update(attrs)
-    #   attrs.keys.each do |attr_name|
-    #     table_name = table_for_attr(attr_name)
-    #     next unless table_name
-    #     setting_attrs = attributes_for_table(table_name, attrs)
-    #     model = model_for_table(table_name)
-    #     model.update!(setting_attrs)
-    #   end
-    # end
-
     def update(attrs)
       _each_model_and_setting_attrs_for(attrs) do |model, setting_attrs|
         model.update(setting_attrs)
@@ -55,7 +45,7 @@ module Aker
         table_name = table_for_attr(k)
         model = model_for_table(table_name)
         if model
-          attr_name = aker_attr_name(k)
+          attr_name = aker_attr_name(table_name, k)
           value = model.send(attr_name)
         end
         obj[k] = value if value
@@ -91,18 +81,18 @@ module Aker
 
     def attributes_for_table(table_name, attrs)
       valid_keys = @@CONFIG[:map_ss_tables_with_aker][table_name] & @@CONFIG[:updatable_attrs_from_aker_into_ss]
-      valid_attrs(valid_keys, attrs)
+      valid_attrs(table_name, valid_keys, attrs)
     end
 
-    def aker_attr_name(field_name)
-      @@CONFIG[:map_aker_with_ss_columns][field_name] || field_name
+    def aker_attr_name(table_name, field_name)
+      @@CONFIG[:map_aker_with_ss_columns][table_name][field_name] || field_name
     end
 
-    def valid_attrs(valid_keys, attrs)
+    def valid_attrs(table_name, valid_keys, attrs)
       obj = attrs.select { |k, _v| valid_keys.include?(k.to_sym) }
       memo = {}
       obj.each_pair do |k, v|
-        memo[aker_attr_name(k.to_sym)] = v
+        memo[aker_attr_name(table_name, k.to_sym)] = v
       end
       memo
     end

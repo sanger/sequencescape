@@ -14,8 +14,12 @@ shared_examples 'a mapping between an Aker model and Sequencescape', aker: true 
 
       # Maps SS column names with Aker attributes (if the name is different)
       map_aker_with_ss_columns: {
-        volume: :measured_volume,
-        common_name: :sample_common_name
+        well_attribute: {
+          volume: :measured_volume
+        },
+        sample_metadata: {
+          common_name: :sample_common_name
+        }
       },
 
       # Aker attributes allowed to update from Aker into SS
@@ -54,17 +58,17 @@ shared_examples 'a mapping between an Aker model and Sequencescape', aker: true 
 
       context '#valid_attrs' do
         it 'filters out the attributes that do not have a valid key' do
-          expect(mapping.send(:valid_attrs, [:gender], gender: 'Male', volume: 33)).to eq(gender: 'Male')
+          expect(mapping.send(:valid_attrs, :sample_metadata, [:gender], gender: 'Male', volume: 33)).to eq(gender: 'Male')
         end
 
         it 'translates the valid attribute to the SS nomenclature using the config ' do
-          expect(mapping.send(:valid_attrs, [:volume], gender: 'Male', volume: 33)).to eq(measured_volume: 33)
+          expect(mapping.send(:valid_attrs, :well_attribute, [:volume], gender: 'Male', volume: 33)).to eq(measured_volume: 33)
         end
       end
 
       context '#aker_attr_name' do
         it 'translates the valid attribute to the SS nomenclature using the config ' do
-          expect(mapping.send(:aker_attr_name, :volume)).to eq(:measured_volume)
+          expect(mapping.send(:aker_attr_name, :well_attribute, :volume)).to eq(:measured_volume)
         end
       end
     end

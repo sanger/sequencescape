@@ -19,7 +19,7 @@ module Aker
       return sample if table_name == :samples
       return sample.sample_metadata if table_name == :sample_metadata
       if table_name == :well_attribute
-        if sample.container.is_plate?
+        if sample.container.is_a_well?
           return sample.container.asset.well_attribute
         else
           return sample.container.asset

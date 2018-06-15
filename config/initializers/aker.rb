@@ -26,10 +26,14 @@ Aker::Material.set_config(
     well_attribute: [:volume, :concentration]
   },
 
-  # Maps SS column names with Aker attributes (if the name is different)
+  # Maps SS column names from models with Aker attributes (if the name is different)
   map_aker_with_ss_columns: {
-    volume: :measured_volume,
-    common_name: :sample_common_name
+    well_attribute: {
+      volume: :measured_volume
+    },
+    sample_metadata: {
+      common_name: :sample_common_name
+    }
   },
 
   # Aker attributes allowed to update from Aker into SS

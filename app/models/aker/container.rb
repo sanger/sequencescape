@@ -17,6 +17,18 @@ module Aker
       errors.add(:address, 'Cannot modify address') if persisted? && address_changed?
     end
 
+    def is_a_well?
+      if asset
+        asset.is_a? Well
+      else
+        !self.class.is_tube_address?(address)
+      end
+    end
+
+    def self.is_tube_address?(address)
+      (address =~ /^\d/) || (address.nil?)
+    end
+
     def as_json(_options = {})
       {
         barcode: barcode,

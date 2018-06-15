@@ -19,8 +19,12 @@ RSpec.describe Aker::Material, type: :model, aker: true do
 
       # Maps SS column names with Aker attributes (if the name is different)
       map_aker_with_ss_columns: {
-        volume: :measured_volume,
-        common_name: :sample_common_name
+        well_attribute: {
+          volume: :measured_volume
+        },
+        sample_metadata: {
+          common_name: :sample_common_name
+        }
       },
 
       # Aker attributes allowed to update from Aker into SS
@@ -44,7 +48,7 @@ RSpec.describe Aker::Material, type: :model, aker: true do
         well_attribute = double(:well_attribute, measured_volume: 14, concentration: 0.5)
         allow(sample).to receive(:container).and_return(container)
         allow(container).to receive(:asset).and_return(asset)
-        allow(container).to receive(:is_plate?).and_return(true)
+        allow(container).to receive(:is_a_well?).and_return(true)
         allow(asset).to receive(:well_attribute).and_return(well_attribute)
 
         expect(mapping.attributes).to eq(volume: 14, concentration: 0.5, '_id': sample.name)
@@ -67,8 +71,29 @@ RSpec.describe Aker::Material, type: :model, aker: true do
         it 'gives back a model object from a table name' do
           expect(mapping.send(:model_for_table, :sample_metadata)).to eq(sample.sample_metadata)
         end
+        context 'when the asset is a plate' do
+          let(:plate) { create :full_stock_plate }
+          let(:well) { plate.wells.first }
+          let(:container) { create :container, asset: well }
+          before do
+            allow(sample).to receive(:container).and_return(container)
+          end
+          it 'returns the model for the well_attribute' do
+            expect(mapping.send(:model_for_table, :well_attribute)).to eq(well.well_attribute)
+          end
+        end
+        context 'when the asset is a tube' do
+          let(:tube) { create :tube }
+          let(:container) { create :container, asset: tube }
+          before do
+            allow(sample).to receive(:container).and_return(container)
+          end
+          it 'returns the model for the well_attribute' do
+            expect(mapping.send(:model_for_table, :well_attribute)).to eq(tube)
+          end
+        end
         it 'returns nil if there is no model object for the table name' do
-          expect(mapping.send(:model_for_table, :sample_metadatas)).to eq(nil)
+          expect(mapping.send(:model_for_table, :bubidibu)).to eq(nil)
         end
       end
     end
