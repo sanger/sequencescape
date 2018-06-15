@@ -114,4 +114,11 @@ RSpec.describe Aker::Factories::Job, type: :model, aker: true do
     job = Aker::Factories::Job.new(params.merge(data_release_uuid: study.uuid))
     expect(job).to_not be_valid
   end
+
+  it 'ignores extra container params' do
+    extra_container_params = params[:container].merge(container_id: 123, num_of_rows: 1, num_of_cols: 2)
+    job = Aker::Factories::Job.create(params.merge(container: extra_container_params))
+    job = Aker::Job.find_by(aker_job_id: job.aker_job_id)
+    expect(job).to be_present
+  end
 end

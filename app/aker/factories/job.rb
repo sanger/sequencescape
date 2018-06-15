@@ -9,6 +9,7 @@ module Aker
       include ActiveModel::Model
       ATTRIBUTES = %i[job_id job_uuid work_order_id aker_job_url product_name process_name process_uuid modules product_version product_uuid project_uuid project_name cost_code container materials comment desired_date data_release_uuid priority].freeze
       DEFAULT_ATTRIBUTES = { materials: {} }.freeze
+      IGNORE_ATTRIBUTES = ['container_id', 'num_of_rows', 'num_of_cols']
 
       attr_accessor(*ATTRIBUTES)
       attr_reader :aker_job_id, :model
@@ -22,7 +23,7 @@ module Aker
       end
 
       def initialize(params = {})
-        @container_params = params.to_h.with_indifferent_access[:container]
+        @container_params = params.to_h.with_indifferent_access[:container].reject { |k,v| IGNORE_ATTRIBUTES.include?(k) }
         super(DEFAULT_ATTRIBUTES.merge(params))
         @aker_job_id = job_id
       end
@@ -111,6 +112,7 @@ module Aker
           material.instance_of?(Aker::Factories::Material) ? material.create : material
         end
       end
+
     end
   end
 end
