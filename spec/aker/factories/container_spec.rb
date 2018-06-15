@@ -62,7 +62,7 @@ RSpec.describe Aker::Factories::Container, type: :model, aker: true do
       container = Aker::Factories::Container.create(params.merge(address: '1'))
       asset = Asset.with_barcode(params[:barcode]).first
       expect(asset.is_a?(Tube)).to eq(true)
-    end    
+    end
 
     it 'reuses an already created asset when the container already exists' do
       tube = create(:tube)

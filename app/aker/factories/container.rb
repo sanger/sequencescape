@@ -42,7 +42,6 @@ module Aker
         !Aker::Container.is_tube_address?(address)
       end
 
-
       private
 
       def create_asset!

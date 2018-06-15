@@ -26,7 +26,7 @@ module Aker
     end
 
     def self.is_tube_address?(address)
-      (address =~ /^\d/) || (address.nil?)
+      (address =~ /^\d/) || address.nil?
     end
 
     def as_json(_options = {})
