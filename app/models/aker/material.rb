@@ -28,10 +28,9 @@ module Aker
       nil
     end
 
-  def aker_attr_name(table_name, field_name)
-    super(table_name, field_name) if container.is_a_well?
-    field_name
-  end
-
+    def aker_attr_name(table_name, field_name)
+      super(table_name, field_name) if container.is_a_well?
+      field_name
+    end
   end
 end
