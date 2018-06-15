@@ -1,7 +1,6 @@
 module Aker
   # Phisical container for the biomaterial
   class Container < ApplicationRecord
-
     has_many :samples, dependent: :destroy
 
     belongs_to :asset
@@ -17,7 +16,6 @@ module Aker
     def not_change_address
       errors.add(:address, 'Cannot modify address') if persisted? && address_changed?
     end
-
 
     def as_json(_options = {})
       {

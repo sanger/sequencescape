@@ -30,7 +30,6 @@ RSpec.describe Aker::Factories::Container, type: :model, aker: true do
   end
 
   context '#create' do
-
     it 'persists the container if it is valid' do
       container = Aker::Factories::Container.create(params)
       expect(container).to be_present
@@ -56,7 +55,7 @@ RSpec.describe Aker::Factories::Container, type: :model, aker: true do
     it 'creates a tube when the container is a tube' do
       container = Aker::Factories::Container.create(params)
       asset = Asset.with_barcode(params[:barcode]).first
-      expect(asset.is_a?(Tube)).to eq(true)      
+      expect(asset.is_a?(Tube)).to eq(true)
     end
 
     it 'reuses an already created asset when the container already exists' do
