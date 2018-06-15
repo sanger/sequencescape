@@ -5,6 +5,7 @@ module Aker
     # At this stage it is not defined.
     # Must have a barcode
     class Container
+
       include ActiveModel::Model
 
       attr_reader :barcode, :address, :model
@@ -23,12 +24,49 @@ module Aker
 
       def create
         return unless valid?
-        @model = Aker::Container.find_or_create_by(barcode: barcode, address: address)
+        @model = Aker::Container.find_by(barcode: barcode, address: address)
+        if !@model
+          @model = Aker::Container.create(barcode: barcode, address: address)
+          @labware = find_or_create_asset_by_aker_barcode!
+          # Connects Aker container with asset. If is a plate, connects with the well, if is a tube, directly with
+          # the tube
+          @model.update_attributes(asset: is_plate? ? @labware.wells.located_at(address_for_ss).first : @labware)
+        end
+        @model
       end
 
       def as_json(_options = {})
         model.as_json
       end
+
+      def is_plate?
+        !address.nil?
+      end
+
+      private
+
+      def create_asset!
+        if is_plate?
+          PlatePurpose.stock_plate_purpose.create!
+        else
+          Tube::Purpose.standard_sample_tube.create!
+        end
+      end
+
+      def find_or_create_asset_by_aker_barcode!
+        labware = Asset.find_from_barcode(barcode)
+        unless labware
+          labware = create_asset!
+          labware.aker_barcode = barcode
+          labware.save!
+        end
+        labware
+      end
+
+      def address_for_ss
+        address.delete(':')
+      end
+
     end
   end
 end

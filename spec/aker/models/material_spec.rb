@@ -44,6 +44,7 @@ RSpec.describe Aker::Material, type: :model, aker: true do
         well_attribute = double(:well_attribute, measured_volume: 14, concentration: 0.5)
         allow(sample).to receive(:container).and_return(container)
         allow(container).to receive(:asset).and_return(asset)
+        allow(container).to receive(:is_plate?).and_return(true)
         allow(asset).to receive(:well_attribute).and_return(well_attribute)
 
         expect(mapping.attributes).to eq(volume: 14, concentration: 0.5, '_id': sample.name)
