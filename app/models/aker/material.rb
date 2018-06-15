@@ -29,7 +29,7 @@ module Aker
     end
 
     def aker_attr_name(table_name, field_name)
-      super(table_name, field_name) if container.is_a_well?
+      return super(table_name, field_name) unless container && !container.is_a_well?
       field_name
     end
   end
