@@ -253,7 +253,13 @@ class Map < ApplicationRecord
   end
 
   def self.find_for_cell_location(cell_location, asset_size)
-    find_by(description: cell_location.sub(/0(\d)$/, '\1'), asset_size: asset_size)
+    find_by(description: strip_description(cell_location), asset_size: asset_size)
+  end
+
+  # Stip any leading zeros from the well name
+  # eg. A01 => A1
+  def self.strip_description(description)
+    description.sub(/0(\d)$/, '\1')
   end
 
   def self.pad_description(map)
