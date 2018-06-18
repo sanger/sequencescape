@@ -29,7 +29,7 @@ module Aker
           @labware = find_or_create_asset_by_aker_barcode!
           # Connects Aker container with asset. If is a plate, connects with the well, if is a tube, directly with
           # the tube
-          @model.update(asset: is_a_well? ? @labware.wells.located_at(address_for_ss).first : @labware)
+          @model.update(asset: a_well? ? @labware.wells.located_at(address_for_ss).first : @labware)
         end
         @model
       end
@@ -38,14 +38,14 @@ module Aker
         model.as_json
       end
 
-      def is_a_well?
-        !Aker::Container.is_tube_address?(address)
+      def a_well?
+        !Aker::Container.tube_address?(address)
       end
 
       private
 
       def create_asset!
-        if is_a_well?
+        if a_well?
           PlatePurpose.stock_plate_purpose.create!
         else
           Tube::Purpose.standard_sample_tube.create!

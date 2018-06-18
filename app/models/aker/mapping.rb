@@ -1,29 +1,25 @@
 # frozen_string_literal: true
 
-#
-# This class synchronizes the data between Aker biomaterial fields and SS by mapping tables and columns in SS with
-# property names from Aker materials service
-#
-# To be able to update between Aker and SS we need to map the Aker field names with the corresponding SS
-# tables and columns.
-#
-# IMPORTANT!!
-#  The configuration is defined in config/initializers/aker.rb. Please read the documentation in that file
-# before editing this class.
-
 module Aker
+  #
+  # This class synchronizes the data between Aker biomaterial fields and SS by mapping tables and columns in SS with
+  # property names from Aker materials service
+  #
+  # To be able to update between Aker and SS we need to map the Aker field names with the corresponding SS
+  # tables and columns.
+  #
+  # IMPORTANT!!
+  # Read the docs in config/initializers/aker.rb before editing this file
   class Mapping
-    @@CONFIG = nil
-
     attr_accessor :instance
 
-    def initialize(instance)
-      raise 'Please update config/initializers/aker.rb with a config that describes the mapping.' if @@CONFIG.nil?
-      @instance = instance
+    class << self
+      attr_accessor :config
     end
 
-    def self.set_config(config)
-      @@CONFIG = config
+    def initialize(instance)
+      raise 'Please update config/initializers/aker.rb with a config that describes the mapping.' if config.nil?
+      @instance = instance
     end
 
     def update(attrs)
@@ -41,7 +37,7 @@ module Aker
     def attributes
       obj = {}
 
-      @@CONFIG[:updatable_attrs_from_ss_into_aker].each do |k|
+      config[:updatable_attrs_from_ss_into_aker].each do |k|
         table_name = table_for_attr(k)
         model = model_for_table(table_name)
         if model
@@ -54,6 +50,10 @@ module Aker
     end
 
     private
+
+    def config
+      self.class.config
+    end
 
     def _each_model_and_setting_attrs_for(attrs)
       attrs.keys.all? do |attr_name|
@@ -73,19 +73,19 @@ module Aker
     end
 
     def table_for_attr(attr_name)
-      @@CONFIG[:map_ss_tables_with_aker].keys.each do |table_name|
-        return table_name if @@CONFIG[:map_ss_tables_with_aker][table_name].include?(attr_name.to_sym)
+      config[:map_ss_tables_with_aker].keys.each do |table_name|
+        return table_name if config[:map_ss_tables_with_aker][table_name].include?(attr_name.to_sym)
       end
       nil
     end
 
     def attributes_for_table(table_name, attrs)
-      valid_keys = @@CONFIG[:map_ss_tables_with_aker][table_name] & @@CONFIG[:updatable_attrs_from_aker_into_ss]
+      valid_keys = config[:map_ss_tables_with_aker][table_name] & config[:updatable_attrs_from_aker_into_ss]
       valid_attrs(table_name, valid_keys, attrs)
     end
 
     def aker_attr_name(table_name, field_name)
-      @@CONFIG[:map_aker_with_ss_columns][table_name][field_name] || field_name
+      config[:map_aker_with_ss_columns][table_name][field_name] || field_name
     end
 
     def valid_attrs(table_name, valid_keys, attrs)

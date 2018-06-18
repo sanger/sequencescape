@@ -14,7 +14,7 @@ module Api
           begin
             ActiveRecord::Base.transaction do
               @jobs = param_jobs.map do |param_job|
-                job = ::Aker::Factories::Job.new(param_job[:attributes].permit!)
+                ::Aker::Factories::Job.new(param_job[:attributes].permit!)
               end
               if @jobs.all?(&:valid?)
                 @jobs.each(&:create)

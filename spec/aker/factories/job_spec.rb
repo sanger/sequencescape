@@ -74,8 +74,7 @@ RSpec.describe Aker::Factories::Job, type: :model, aker: true do
   end
 
   it '#create will fail if the materials exist but the containers has changed' do
-    job = Aker::Factories::Job.create(params)
-    material = job.samples.first
+    Aker::Factories::Job.create(params)
     wrong_container_params = params[:container].merge(barcode: 'WRONG', address: 'BAD')
     expect do
       Aker::Factories::Job.create(params.merge(job_uuid: SecureRandom.uuid, container: wrong_container_params))

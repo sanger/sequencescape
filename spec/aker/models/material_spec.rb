@@ -39,7 +39,7 @@ RSpec.describe Aker::Material, type: :model, aker: true do
   end
   context 'with a custom config' do
     before do
-      Aker::Material.set_config(config)
+      Aker::Material.config = config
     end
     context '#attributes' do
       it 'generates an attributes object and adds the sample name as id' do
@@ -48,7 +48,7 @@ RSpec.describe Aker::Material, type: :model, aker: true do
         well_attribute = double(:well_attribute, measured_volume: 14, concentration: 0.5)
         allow(sample).to receive(:container).and_return(container)
         allow(container).to receive(:asset).and_return(asset)
-        allow(container).to receive(:is_a_well?).and_return(true)
+        allow(container).to receive(:a_well?).and_return(true)
         allow(asset).to receive(:well_attribute).and_return(well_attribute)
 
         expect(mapping.attributes).to eq(volume: 14, concentration: 0.5, '_id': sample.name)

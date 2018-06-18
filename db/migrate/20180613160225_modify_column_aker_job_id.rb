@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# Adds a Job uuid colum to find jobs by its Aker uuid
+#
 class ModifyColumnAkerJobId < ActiveRecord::Migration[5.1]
   def change
     ActiveRecord::Base.transaction do

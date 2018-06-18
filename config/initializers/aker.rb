@@ -18,7 +18,7 @@
 # SS updates will occur on update_attributes() calls
 # Aker updates will happen on job completion, because the job message for the material is generated from
 # the attributes() method of this class.
-Aker::Material.set_config(
+Aker::Material.config = {
   # Maps SS models with Aker attributes
   map_ss_tables_with_aker: {
     samples: [],
@@ -44,4 +44,4 @@ Aker::Material.set_config(
 
   # Aker attributes allowed to update from SS into Aker
   updatable_attrs_from_ss_into_aker: [:volume, :concentration]
-)
+}

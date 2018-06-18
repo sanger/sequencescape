@@ -34,7 +34,7 @@ shared_examples 'a mapping between an Aker model and Sequencescape', aker: true 
   end
   context 'with a custom config' do
     before do
-      Aker::Mapping.set_config(config)
+      Aker::Mapping.config = config
     end
 
     context 'with private methods' do

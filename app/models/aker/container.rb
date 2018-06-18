@@ -17,15 +17,15 @@ module Aker
       errors.add(:address, 'Cannot modify address') if persisted? && address_changed?
     end
 
-    def is_a_well?
+    def a_well?
       if asset
         asset.is_a? Well
       else
-        !self.class.is_tube_address?(address)
+        !self.class.tube_address?(address)
       end
     end
 
-    def self.is_tube_address?(address)
+    def self.tube_address?(address)
       (address =~ /^\d/) || address.nil?
     end
 
