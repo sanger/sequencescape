@@ -194,10 +194,10 @@ class CherrypickTask < Task
       'INNER JOIN maps ON wells.map_id=maps.id'
     ]).order('barcodes.id DESC, container_associations.container_id ASC, maps.column_order ASC')
            .where(requests: { id: requests })
-           .pluck('requests.id', 'barcodes.barcode', 'maps.description').uniq.reject do |l| 
-            value = processed_request_ids.include?(l[0])
-            processed_request_ids.push(l[0])
-            value
-          end
+           .pluck('requests.id', 'barcodes.barcode', 'maps.description').uniq.reject do |l|
+      value = processed_request_ids.include?(l[0])
+      processed_request_ids.push(l[0])
+      value
+    end
   end
 end
