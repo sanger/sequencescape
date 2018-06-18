@@ -7,7 +7,7 @@ RSpec.describe Aker::Factories::Job, type: :model, aker: true do
   include BarcodeHelper
   before do
     mock_plate_barcode_service
-    create :sample_tube_purpose, name: 'Standard sample'
+    build(:sample_tube_purpose, name: 'Standard sample').save
   end
 
   let(:params) { build(:aker_job_json).to_h.with_indifferent_access }

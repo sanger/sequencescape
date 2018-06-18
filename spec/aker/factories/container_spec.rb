@@ -4,7 +4,7 @@ RSpec.describe Aker::Factories::Container, type: :model, aker: true do
   include BarcodeHelper
   before do
     mock_plate_barcode_service
-    create :sample_tube_purpose, name: 'Standard sample'
+    build(:sample_tube_purpose, name: 'Standard sample').save
   end
   let(:json) do
     file = File.read(File.join('spec', 'data', 'aker', 'job.json'))
