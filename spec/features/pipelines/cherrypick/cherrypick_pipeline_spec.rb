@@ -62,7 +62,7 @@ feature 'cherrypick pipeline', js: true do
     expect(page).to_not have_content('DN1S')
   end
 
-  scenario 'required volume is 13' do
+  scenario 'Pick by µl - 13' do
     login_user(user)
     visit pipeline_path(pipeline)
     check('Select DN1S for batch')
@@ -73,7 +73,7 @@ feature 'cherrypick pipeline', js: true do
     click_link 'Select Plate Template'
     select(plate_template.name, from: 'Plate Template')
     select(target_purpose.name, from: 'Output plate purpose')
-    choose('cherrypick_action_micro_litre')
+    choose('Pick by µl')
     fill_in('micro_litre_volume_required', with: '13')
     click_button 'Next step'
     click_button 'Next step'
@@ -81,7 +81,7 @@ feature 'cherrypick pipeline', js: true do
     expect(page).to have_content('Batch released!')
   end
 
-  scenario 'required volume is 65 by ng per ul' do
+  scenario 'Pick by ng/µl: 65, conc default' do
     create :plate_type, name: 'ABgene_0765', maximum_volume: 800
     plate_type_list = PlateType.all.pluck(:name).join(' ')
     login_user(user)
@@ -94,8 +94,11 @@ feature 'cherrypick pipeline', js: true do
     click_link 'Select Plate Template'
     select(plate_template.name, from: 'Plate Template')
     select(target_purpose.name, from: 'Output plate purpose')
-    fill_in('nano_grams_per_micro_litre_volume_required', with: '65')
-    fill_in('nano_grams_per_micro_litre_robot_minimum_picking_volume', with: '1.0')
+    choose('Pick by ng/µl')
+    fill_in('Volume Required', with: '65')
+    within('#pick_by_nano_grams_per_micro_litre') do
+      fill_in('Robot Minimum Picking Volume', with: '1.0')
+    end
     click_button 'Next step'
     click_button 'Next step'
     click_button 'Release this batch'
@@ -197,7 +200,7 @@ feature 'cherrypick pipeline', js: true do
     end
   end
 
-  scenario 'robot minimum picking volume is 2.0 by ng' do
+  scenario 'Pick by ng' do
     login_user(user)
     visit pipeline_path(pipeline)
     check('Select DN1S for batch')
@@ -208,12 +211,70 @@ feature 'cherrypick pipeline', js: true do
     click_link 'Select Plate Template'
     select(plate_template.name, from: 'Plate Template')
     select(target_purpose.name, from: 'Output plate purpose')
-    choose('cherrypick_action_nano_grams')
-    fill_in('nano_grams_robot_minimum_picking_volume', with: '2.0')
+    choose('Pick by ng')
+    within('#pick_by_nano_grams') do
+      fill_in('Robot Minimum Picking Volume', with: '2.0')
+      fill_in('Quantity to pick', with: 10000)
+      fill_in('Minimum Volume', with: 20)
+      fill_in('Maximum Volume', with: 150)
+    end
     click_button 'Next step'
     click_button 'Next step'
     click_button 'Release this batch'
     expect(page).to have_content('Batch released!')
+    click_link('Tecan file')
+    batch = Batch.last
+    # We proceed to check the generated TECAN file here.
+    # This is an import of an old test which appeared to address
+    # a bug in which the maximum picking volume would not go above
+    # 13ul. Unfortunately there is no further information recorded.
+    # Maintaining this as an integration test, as it could be a case
+    # of values getting passed through from the front end incorrectly.
+    generated_file = DownloadHelpers.downloaded_file("#{batch.id}_batch_DN99999F.gwl")
+    generated_lines = generated_file.lines
+    # Shift off the comment lines
+    generated_lines.shift(2)
+
+    expected_file = <<~TECAN
+      C;
+      C; This file created by user_abc12 on 2018-06-14 17:09:13 +0100
+      C;
+      A;1220000001831;;ABgene 0765;1;;30.0
+      D;1220099999705;;ABgene 0800;1;;30.0
+      W;
+      A;1220000001831;;ABgene 0765;2;;31.0
+      D;1220099999705;;ABgene 0800;2;;31.0
+      W;
+      A;1220000010734;;ABgene 0765;1;;30.0
+      D;1220099999705;;ABgene 0800;3;;30.0
+      W;
+      A;1220000010734;;ABgene 0765;2;;31.0
+      D;1220099999705;;ABgene 0800;4;;31.0
+      W;
+      A;1220000005877;;ABgene 0765;1;;30.0
+      D;1220099999705;;ABgene 0800;5;;30.0
+      W;
+      A;1220000005877;;ABgene 0765;2;;31.0
+      D;1220099999705;;ABgene 0800;6;;31.0
+      W;
+      C;
+      C; SCRC1 = 1220000001831
+      C; SCRC2 = 1220000010734
+      C; SCRC3 = 1220000005877
+      C;
+      C; DEST1 = 1220099999705
+      TECAN
+
+    expected_file_lines = expected_file.lines
+    # Shift off the comment lines
+    expected_file_lines.shift(2)
+
+    expect(generated_lines.length).to eq(expected_file_lines.length)
+
+    expected_file_lines.each_with_index do |expected_line, index|
+      expect(expected_line).to eq(generated_lines[index])
+    end
+
     within('#output_assets') do
       click_link 'Show plate'
     end
