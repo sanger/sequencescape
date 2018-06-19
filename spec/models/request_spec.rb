@@ -10,7 +10,7 @@ RSpec.describe Request do
       @order1 = create :order, study: study, project: project, submission: submission
       @order2 = create :order,  study: study, project: project, submission: submission
       @order3 = create :order,  study: study, project: project, submission: submission
-      @order4 = create :order_with_submission,  study: study, project: project
+      @order4 = create :order_with_submission, study: study, project: project
 
       @sequencing_request = create :request_with_sequencing_request_type, submission: submission
       @request = create :request, order: @order1, submission: submission, asset: @asset
@@ -108,7 +108,6 @@ RSpec.describe Request do
 
   describe '#copy' do
     setup do
-
       @request_type = create :request_type
       @item         = create :item
       @request = create :request, request_type: @request_type, study: study, item: @item, state: 'failed'
@@ -153,8 +152,7 @@ RSpec.describe Request do
 
   describe '#state' do
     setup do
-
-      @item  = create :item
+      @item = create :item
       @request = create :request_suitable_for_starting, study: study, item: @item
       @user = create :admin
       @user.has_role 'owner', study
