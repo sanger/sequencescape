@@ -1,6 +1,5 @@
+# frozen_string_literal: true
 
-class UnrepeatableSequencingPipeline < SequencingPipeline
-  def request_actions
-    [:fail]
-  end
+# Deprecated 19 June 2018
+class UnrepeatableSequencingPipeline < LegacyPipeline
 end

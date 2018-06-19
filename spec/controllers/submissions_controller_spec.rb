@@ -7,6 +7,8 @@ RSpec.describe SubmissionsController, type: :controller do
 
   it_behaves_like 'it requires login'
 
+  let(:request_type) { create :well_request_type }
+
   context 'Submissions controller' do
     setup do
       @user       = create :user
@@ -33,7 +35,7 @@ RSpec.describe SubmissionsController, type: :controller do
                                    product_catalogue: 'Generic',
                                    submission_parameters: { info_differential: 5,
                                                             asset_input_methods: ['select an asset group', 'enter a list of sample names found on plates'],
-                                                            request_types: ['cherrypick_for_pulldown'] } }
+                                                            request_types: [request_type.key] } }
       @submission_template = SubmissionSerializer.construct!(submission_template_hash)
     end
 

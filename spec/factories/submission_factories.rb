@@ -52,11 +52,21 @@ FactoryBot.define do
   end
 
   factory :linear_submission do
+    study
+    project
+    user
     submission
+    assets                { create_list(:sample_tube, 1) }
+    request_types         { [create(:request_type).id] }
   end
 
   factory :flexible_submission do
+    study
+    project
+    user
     submission
+    assets                { create_list(:sample_tube, 1) }
+    request_types         { [create(:request_type).id] }
   end
 
   factory :automated_order do

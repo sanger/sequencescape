@@ -93,10 +93,6 @@ Given(/^well "([^"]*)" has a genotyping status of "([^"]*)"$/) do |uuid, genotyp
   well.aliquots.create!(sample: sample)
 end
 
-Given(/^I have a DNA QC submission for plate "([^"]*)"$/) do |plate_barcode|
-  step %Q{I have a "DNA QC" submission for plate "#{plate_barcode}" with project "Test project" and study "Study B"}
-end
-
 Given(/^I have a "([^"]*)" submission for plate "([^"]*)" with project "([^"]*)" and study "([^"]*)"$/) do |submission_template_name, plate_barcode, project_name, study_name|
   plate = Plate.find_from_barcode(plate_barcode)
   project = Project.find_by(name: project_name)

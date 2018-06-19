@@ -201,6 +201,7 @@ feature 'cherrypick pipeline', js: true do
   end
 
   scenario 'Pick by ng' do
+    create :plate_type, name: 'ABgene_0765', maximum_volume: 800
     login_user(user)
     visit pipeline_path(pipeline)
     check('Select DN1S for batch')

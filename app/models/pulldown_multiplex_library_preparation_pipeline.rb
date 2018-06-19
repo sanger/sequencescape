@@ -1,7 +1,5 @@
+# frozen_string_literal: true
 
-class PulldownMultiplexLibraryPreparationPipeline < Pipeline
-  self.inbox_partial = 'group_by_parent'
-  ALWAYS_SHOW_RELEASE_ACTIONS = true
-
-  self.batch_worksheet = 'legacy_worksheet'
+# Deprecated 19 June 2018
+class PulldownMultiplexLibraryPreparationPipeline < LegacyPipeline
 end

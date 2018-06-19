@@ -160,6 +160,10 @@ FactoryBot.define do
   end
 
   factory(:isc_request, class: Pulldown::Requests::IscLibraryRequest, aliases: [:pulldown_isc_request]) do
+    transient do
+      bait_library { BaitLibrary.first || create(:bait_library) }
+    end
+
     association(:request_type, factory: :library_creation_request_type)
     asset        { |target| target.association(:well_with_sample_and_plate) }
     target_asset { |target| target.association(:empty_well) }
@@ -168,7 +172,7 @@ FactoryBot.define do
       {
         fragment_size_required_from: 100,
         fragment_size_required_to: 400,
-        bait_library: BaitLibrary.first || create(:bait_library),
+        bait_library: bait_library,
         library_type: create(:library_type).name
       }
     end

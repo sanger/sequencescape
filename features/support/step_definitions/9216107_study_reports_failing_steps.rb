@@ -1,12 +1,4 @@
 
-Given /^each well in "([^"]*)" has a DNA QC request$/ do |study_name|
-  study = Study.find_by(name: study_name)
-  request_type = RequestType.find_by(key: 'dna_qc')
-  Well.find_each do |well|
-    FactoryBot.create(:request, request_type: request_type, asset: well, study: study, state: 'passed')
-  end
-end
-
 Given /^each well in "([^"]*)" has a child sample tube$/ do |study_name|
   study = Study.find_by(name: study_name)
   Well.find_each do |well|

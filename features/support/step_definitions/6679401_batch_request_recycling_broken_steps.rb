@@ -164,7 +164,6 @@ end
 
 GENOTYPING_PIPELINES = [
   'Manual Quality Control',
-  'DNA QC',
   'Cherrypick',
   'Genotyping'
 ].map(&Regexp.method(:escape)).join('|')

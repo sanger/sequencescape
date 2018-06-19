@@ -94,7 +94,6 @@ Feature: create a report on the current state of a study going through QC
 
   Scenario: The wells have child sample tubes and wells on child plates
     Given study "Study B" has a plate "1234567"
-    Given each well in "Study B" has a DNA QC request
     Given each well in "Study B" has a child sample tube
     Given each well in "Study B" has a child well on a plate
     Given a study report is generated for study "Study B"
@@ -107,7 +106,6 @@ Feature: create a report on the current state of a study going through QC
 
   Scenario: The wells have child wells and sample tubes (reversed)
     Given study "Study B" has a plate "1234567"
-    Given each well in "Study B" has a DNA QC request
     Given each well in "Study B" has a child well on a plate
     Given each well in "Study B" has a child sample tube
     Given a study report is generated for study "Study B"
@@ -130,7 +128,6 @@ Feature: create a report on the current state of a study going through QC
 
   Scenario: The wells have qc status but havent been cherrypicked
     Given study "Study B" has a plate "1234567"
-    Given each well in "Study B" has a DNA QC request
     Given a study report is generated for study "Study B"
     Then the last report for "Study B" should be:
       | Study   | Plate   | Well |
