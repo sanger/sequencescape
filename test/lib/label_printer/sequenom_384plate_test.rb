@@ -28,6 +28,6 @@ class Sequenom384PlateTest < ActiveSupport::TestCase
   test 'should return the right values' do
     assert_equal (top).to_s, plate_label.top_right(plate1)
     assert_equal (bottom).to_s, plate_label.bottom_right(plate1)
-    refute plate_label.top_far_right(plate1)
+    assert_not plate_label.top_far_right(plate1)
   end
 end

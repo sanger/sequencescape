@@ -105,9 +105,7 @@ Given(/^I have a "([^"]*)" submission for plate "([^"]*)" with project "([^"]*)"
   # Maintain the order of the wells as though they have been submitted by the user, rather than
   # relying on the ordering within sequencescape.  Some of the plates are created with less than
   # the total wells needed (which is bad).
-  wells = []
-  plate.wells.walk_in_column_major_order { |well, _| wells << well }
-  wells.compact!
+  wells = plate.wells.in_column_major_order.to_a
 
   submission_template = SubmissionTemplate.find_by(name: submission_template_name)
   submission = submission_template.create_and_build_submission!(

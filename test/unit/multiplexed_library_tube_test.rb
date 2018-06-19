@@ -14,7 +14,7 @@ class MultiplexedLibraryTubeTest < ActiveSupport::TestCase
       end
 
       should "return false if it doesn't have a stock asset" do
-        assert !@multiplexed_library_tube.has_stock_asset?
+        assert_not @multiplexed_library_tube.has_stock_asset?
       end
 
       should 'return true if it does have a stock asset' do

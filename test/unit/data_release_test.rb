@@ -56,7 +56,7 @@ class DataReleaseTest < ActiveSupport::TestCase
           @study.save!
         end
         should 'return false' do
-          assert !@study.ena_accession_required?
+          assert_not @study.ena_accession_required?
         end
       end
 
@@ -108,7 +108,7 @@ class DataReleaseTest < ActiveSupport::TestCase
                   end
 
                   should 'not required ena accession number' do
-                    assert !@study.ena_accession_required?
+                    assert_not @study.ena_accession_required?
                   end
                 end
               end

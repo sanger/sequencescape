@@ -9,7 +9,7 @@ class StockMultiplexedLibraryTubeTest < ActiveSupport::TestCase
 
     context '#has_stock_asset?' do
       should 'return false' do
-        assert !@stock_multiplexed_library.has_stock_asset?
+        assert_not @stock_multiplexed_library.has_stock_asset?
       end
     end
 

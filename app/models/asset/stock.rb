@@ -12,7 +12,7 @@ module Asset::Stock
           self.class.stock_asset_purpose.create!(attributes.reverse_merge(
                                                    name: "(s) #{name}",
                                                    aliquots: aliquots.map(&:dup)
-          ), &block)
+                                                 ), &block)
         end
 
         def new_stock_asset(attributes = {}, &block)
@@ -20,7 +20,7 @@ module Asset::Stock
                                             name:     "(s) #{name}",
                                             aliquots: aliquots.map(&:dup),
                                             purpose:  self.class.stock_asset_purpose
-          ), &block)
+                                          ), &block)
         end
 
         delegate :is_a_stock_asset?, to: 'self.class'

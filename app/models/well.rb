@@ -321,7 +321,7 @@ class Well < Receptacle
 
   # If we eager load, things fair badly, and we end up returning all children.
   def find_latest_child_well
-    latest_child_well.sort_by(&:id).last
+    latest_child_well.max_by(&:id)
   end
 
   validate(on: :save) do |record|

@@ -80,7 +80,7 @@ class SequencingQcBatchTest < ActiveSupport::TestCase
 
       should 'return false if the state is not manual QC' do
         @batch.stubs(:qc_state).returns('qc_completed')
-        assert !@batch.processing_in_manual_qc?
+        assert_not @batch.processing_in_manual_qc?
       end
     end
 
