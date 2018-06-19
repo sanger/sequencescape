@@ -28,45 +28,41 @@
 #   author_link: 'http://www.sanger.ac.uk/Users/mw4/',
 #   author_name: 'Matt Wood'
 
-module ActiveRecord # :nodoc:
-  module Acts #:nodoc:
-    module Descriptable
-      def self.included(base)
-        base.class_eval do
-          serialize :descriptors
-          serialize :descriptor_fields, Array
-        end
-      end
+module ActsAsDescriptable # :nodoc:
+  def self.included(base)
+    base.class_eval do
+      serialize :descriptors
+      serialize :descriptor_fields, Array
+    end
+  end
 
-      def descriptors
-        [].tap do |response|
-          each_descriptor do |field, value|
-            response.push(Descriptor.new(name: field, value: value))
-          end
-        end
+  def descriptors
+    [].tap do |response|
+      each_descriptor do |field, value|
+        response.push(Descriptor.new(name: field, value: value))
       end
+    end
+  end
 
-      def descriptor_value(key)
-        descriptor_hash.fetch(key, '')
-      end
+  def descriptor_value(key)
+    descriptor_hash.fetch(key, '')
+  end
 
-      def add_descriptor(descriptor)
-        write_attribute(:descriptors,       descriptor_hash.merge(descriptor.name => descriptor.value))
-        write_attribute(:descriptor_fields, descriptor_fields.push(descriptor.name))
-      end
+  def add_descriptor(descriptor)
+    write_attribute(:descriptors,       descriptor_hash.merge(descriptor.name => descriptor.value))
+    write_attribute(:descriptor_fields, descriptor_fields.push(descriptor.name))
+  end
 
-      def descriptor_hash
-        read_attribute(:descriptors) || {}
-      end
+  def descriptor_hash
+    read_attribute(:descriptors) || {}
+  end
 
-      private
+  private
 
-      def each_descriptor
-        descriptor_fields.each do |field|
-          next if field.blank?
-          yield(field, descriptor_hash[field])
-        end
-      end
+  def each_descriptor
+    descriptor_fields.each do |field|
+      next if field.blank?
+      yield(field, descriptor_hash[field])
     end
   end
 end

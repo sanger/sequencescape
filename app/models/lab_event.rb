@@ -1,6 +1,7 @@
+require_dependency 'broadcast_event/lab_event'
 
 class LabEvent < ApplicationRecord
-  include ActiveRecord::Acts::Descriptable
+  include ActsAsDescriptable
 
   belongs_to :batch
   belongs_to :user
