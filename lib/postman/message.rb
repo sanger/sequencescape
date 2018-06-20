@@ -24,6 +24,8 @@ class Postman
     end
   end
 
+  InvalidPayload = Class.new(StandardError)
+
   # A message takes a rabbitMQ message, and handles its acknowledgement
   # or rejection.
   class Message
@@ -65,15 +67,25 @@ class Postman
     private
 
     def broadcast_payload
-      json = JSON.parse(payload)
-      raise StandardError, "Payload #{payload} is not an array" unless json.is_a?(Array)
-      raise StandardError, "Payload #{payload} is not the correct length" unless json.length == 2
       klass = json.first.constantize
-      begin
-        klass.find(json.last).broadcast
-      rescue ActiveRecord::RecordNotFound
-        debug "#{payload} not found."
-      end
+      klass.find(json.last).broadcast
+    rescue ActiveRecord::RecordNotFound
+      debug "#{payload} not found."
+    rescue InvalidPayload => exception
+      warn exception.message
+    end
+
+    def json
+      @json ||= extract_json
+    end
+
+    def extract_json
+      json = JSON.parse(payload)
+      raise InvalidPayload, "Payload #{payload} is not an array" unless json.is_a?(Array)
+      raise InvalidPayload, "Payload #{payload} is not the correct length" unless json.length == 2
+      json
+    rescue JSON::ParserError => exception
+      raise InvalidPayload, "Payload #{payload} is not JSON: #{exception.message}"
     end
 
     def headers
