@@ -25,17 +25,17 @@ class Batch < ApplicationRecord
 
   has_many :failures, as: :failable
   has_many :messengers, as: :target, inverse_of: :target
-  has_many :batch_requests, ->() { includes(:request).order(:position, :request_id) }, inverse_of: :batch
-  has_many :requests, ->() { distinct }, through: :batch_requests, inverse_of: :batch
+  has_many :batch_requests, -> { includes(:request).order(:position, :request_id) }, inverse_of: :batch
+  has_many :requests, -> { distinct }, through: :batch_requests, inverse_of: :batch
   has_many :assets, through: :requests, source: :target_asset
   has_many :target_assets, through: :requests
-  has_many :source_assets, ->() { distinct }, through: :requests, source: :asset
-  has_many :submissions, ->() { distinct }, through: :requests
-  has_many :orders, ->() { distinct }, through: :requests
-  has_many :studies, ->() { distinct }, through: :orders
-  has_many :projects,  ->() { distinct }, through: :orders
-  has_many :aliquots,  ->() { distinct }, through: :source_assets
-  has_many :samples, ->() { distinct }, through: :assets, source: :samples
+  has_many :source_assets, -> { distinct }, through: :requests, source: :asset
+  has_many :submissions, -> { distinct }, through: :requests
+  has_many :orders, -> { distinct }, through: :requests
+  has_many :studies, -> { distinct }, through: :orders
+  has_many :projects, -> { distinct }, through: :orders
+  has_many :aliquots, -> { distinct }, through: :source_assets
+  has_many :samples, -> { distinct }, through: :source_assets, source: :samples
 
   has_many_events
   has_many_lab_events
@@ -83,6 +83,8 @@ class Batch < ApplicationRecord
   delegate :size, to: :requests
   delegate :sequencing?, to: :pipeline
 
+  alias friendly_name id
+
   def study
     studies.first
   end
@@ -93,6 +95,18 @@ class Batch < ApplicationRecord
     unless requests.all?(&:ready?)
       errors.add :base, 'All requests must be ready to be added to a batch'
     end
+  end
+
+  def subject_type
+    sequencing? ? 'flowcell' : 'batch'
+  end
+
+  def eventful_studies
+    requests.reduce([]) { |studies, request| studies.concat(request.eventful_studies) }.uniq
+  end
+
+  def flowcell
+    self if sequencing?
   end
 
   def cluster_formation_requests_must_be_over_minimum

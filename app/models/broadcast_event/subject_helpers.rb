@@ -13,10 +13,14 @@ module BroadcastEvent::SubjectHelpers
     end
 
     def as_json(*_args)
-      Hash[json_fields.map { |f| [f, send(f)] }]
+      json_fields.each_with_object({}) { |field, hash| hash[field] = send(field) }
     end
 
-    delegate :friendly_name, :uuid, :subject_type, to: :target
+    def broadcastable?
+      @target.present?
+    end
+
+    delegate :friendly_name, :uuid, :subject_type, to: :target, allow_nil: true
   end
 
   module SimpleTargetLookup

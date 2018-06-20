@@ -7,7 +7,7 @@ FactoryBot.define do
   end
 
   factory :submission do
-    user  { |user| user.association(:user) }
+    user
   end
 
   factory :submission_template do

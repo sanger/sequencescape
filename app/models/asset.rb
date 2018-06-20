@@ -11,7 +11,7 @@ class Asset < ApplicationRecord
 
   # Key/value stores and attributes
   include ExternalProperties
-  acts_as_descriptable :serialized
+  include ActsAsDescriptable
 
   include Uuid::Uuidable
 
