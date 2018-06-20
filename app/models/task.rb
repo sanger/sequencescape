@@ -2,9 +2,7 @@
 class Task < ApplicationRecord
   belongs_to :workflow, class_name: 'Workflow', foreign_key: :pipeline_workflow_id
   has_many :families
-  has_many :descriptors, class_name: 'Descriptor', dependent: :destroy
-
-  acts_as_descriptable :active
+  has_many :descriptors, -> { order('sorter') }, dependent: :destroy
 
   self.inheritance_column = 'sti_type'
 

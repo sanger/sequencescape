@@ -31,9 +31,9 @@ class BroadcastEvent < ApplicationRecord
 
   # Returns an array of all subjects
   def subjects
-    self.class.subject_associations.map do |sa|
+    self.class.subject_associations.flat_map do |sa|
       sa.for(seed, self)
-    end.flatten
+    end.select(&:broadcastable?)
   end
 
   # Returns a hash of all metadata

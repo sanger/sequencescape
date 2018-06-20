@@ -10,9 +10,7 @@ class AssetAudit < ApplicationRecord
   validates_presence_of :asset, :key
   validates_format_of :key, with: /\A[\w_]+\z/i, message: I18n.t('asset_audit.key_format'), on: :create
 
-  # Disabled in the initial events release. One enabling ensure historical audits
-  # get broadcast
-  # after_create :broadcast_event
+  after_create :broadcast_event
 
   private
 
