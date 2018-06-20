@@ -149,7 +149,7 @@ describe BulkSubmission, with: :uploader do
   end
 
   context 'a submission with bait libraries' do
-    let(:spreadsheet_filename) { '2_valid_SC_submissions.csv' }
+    let(:spreadsheet_filename) { '2_valid_sc_submissions.csv' }
     let!(:bait_library) { create :bait_library, name: 'Bait library 1' }
     let!(:bait_library_2) { create :bait_library, name: 'Bait library 2' }
 
