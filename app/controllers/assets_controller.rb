@@ -261,19 +261,9 @@ class AssetsController < ApplicationController
 
     request_options = params.fetch(:request, {}).fetch(:request_metadata_attributes, {})
     request_options[:multiplier] = { @request_type.id => params[:count].to_i } unless params[:count].blank?
-    # submission = Submission.build!(
-    #   template: ReRequestSubmission,
-    #   study: @study,
-    #   project: @project,
-    #   user: current_user,
-    #   assets: [@asset],
-    #   request_types: [@request_type.id],
-    #   request_options: request_options.to_unsafe_h,
-    #   comments: params[:comments],
-    #   priority: params[:priority]
-    # )
     submission = Submission.new(priority: params[:priority], name: @study.try(:name), user: current_user)
-    resub = ReRequestSubmission.new(
+    # Despite its name, this is actually an order.
+    resubmission_order = ReRequestSubmission.new(
       study: @study,
       project: @project,
       user: current_user,
@@ -283,7 +273,7 @@ class AssetsController < ApplicationController
       submission: submission,
       comments: params[:comments]
     )
-    resub.save!
+    resubmission_order.save!
     submission.built!
 
     respond_to do |format|
