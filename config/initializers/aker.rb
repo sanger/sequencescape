@@ -28,6 +28,9 @@ Aker::Material.config = {
 
   # Maps SS column names from models with Aker attributes (if the name is different)
   map_aker_with_ss_columns: {
+    well_attribute: {
+      volume: :current_volume
+    },
     sample_metadata: {
       common_name: :sample_common_name
     }
