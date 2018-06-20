@@ -49,9 +49,9 @@ class PlateVolume < ApplicationRecord
   end
 
   class << self
-    def process_all_volume_check_files
+    def process_all_volume_check_files(folder = configatron.plate_volume_files)
       all_plate_volume_file_names.each do |filename|
-        File.open(File.join(configatron.plate_volume_files, filename), 'r') do |file|
+        File.open(File.join(folder, filename), 'r') do |file|
           catch(:no_source_plate) { handle_volume(filename, file) }
         end
       end
