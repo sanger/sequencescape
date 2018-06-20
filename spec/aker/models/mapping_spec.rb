@@ -3,38 +3,9 @@
 require 'rails_helper'
 
 shared_examples 'a mapping between an Aker model and Sequencescape', aker: true do
-  let(:config) do
-    {
-      # Maps SS models with Aker attributes
-      map_ss_tables_with_aker: {
-        samples: [],
-        sample_metadata: [:gender, :donor_id, :phenotype, :common_name],
-        well_attribute: [:volume, :concentration]
-      },
-
-      # Maps SS column names with Aker attributes (if the name is different)
-      map_aker_with_ss_columns: {
-        well_attribute: {
-          volume: :measured_volume
-        },
-        sample_metadata: {
-          common_name: :sample_common_name
-        }
-      },
-
-      # Aker attributes allowed to update from Aker into SS
-      updatable_attrs_from_aker_into_ss: [
-        :gender, :donor_id, :phenotype, :common_name,
-        :volume, :concentration
-      ],
-
-      # Aker attributes allowed to update from SS into Aker
-      updatable_attrs_from_ss_into_aker: [:volume, :concentration]
-    }
-  end
   context 'with a custom config' do
     before do
-      Aker::Mapping.config = config
+      Aker::Mapping.config = my_config
     end
 
     context 'with private methods' do
@@ -70,6 +41,12 @@ shared_examples 'a mapping between an Aker model and Sequencescape', aker: true 
         it 'translates the valid attribute to the SS nomenclature using the config ' do
           expect(mapping.send(:aker_attr_name, :well_attribute, :volume)).to eq(:measured_volume)
         end
+        it 'returns the passed attr name when no translation is defined for the attribute ' do
+          expect(mapping.send(:aker_attr_name, :well_attribute, :volume2)).to eq(:volume2)
+        end
+        it 'returns the passed attr name when no model translation is defined' do
+          expect(mapping.send(:aker_attr_name, :unknown_model, :unknown_attribute)).to eq(:unknown_attribute)
+        end
       end
     end
   end
@@ -78,6 +55,39 @@ end
 RSpec.describe Aker::Mapping, aker: true do
   let(:instance) { double('some model') }
   let(:mapping) { Aker::Mapping.new(instance) }
+  let(:my_config) do
+    {
+      # Maps SS models with Aker attributes
+      map_ss_tables_with_aker: {
+        samples: [],
+        sample_metadata: [:gender, :donor_id, :phenotype, :common_name],
+        well_attribute: [:volume, :concentration]
+      },
+
+      # Maps SS column names with Aker attributes (if the name is different)
+      map_aker_with_ss_columns: {
+        well_attribute: {
+          volume: :measured_volume
+        },
+        sample_metadata: {
+          common_name: :sample_common_name
+        }
+      },
+
+      # Aker attributes allowed to update from Aker into SS
+      updatable_attrs_from_aker_into_ss: [
+        :gender, :donor_id, :phenotype, :common_name,
+        :volume, :concentration
+      ],
+
+      # Aker attributes allowed to update from SS into Aker
+      updatable_attrs_from_ss_into_aker: [:volume, :concentration]
+    }
+  end
+
+  before do
+    Aker::Mapping.config = my_config
+  end
 
   it_behaves_like 'a mapping between an Aker model and Sequencescape'
 

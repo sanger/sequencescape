@@ -23,15 +23,12 @@ module Aker
 
       def create
         return unless valid?
-        @model = Aker::Container.find_by(barcode: barcode, address: address)
-        unless @model
-          @model = Aker::Container.create(barcode: barcode, address: address)
+        @model = Aker::Container.find_or_create_by(barcode: barcode, address: address) do |m|
           @labware = find_or_create_asset_by_aker_barcode!
           # Connects Aker container with asset. If is a plate, connects with the well, if is a tube, directly with
           # the tube
-          @model.update(asset: a_well? ? @labware.wells.located_at(address_for_ss).first : @labware)
+          m.update(asset: a_well? ? @labware.wells.located_at(address_for_ss).first : @labware)
         end
-        @model
       end
 
       def as_json(_options = {})

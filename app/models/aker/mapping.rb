@@ -35,18 +35,17 @@ module Aker
     end
 
     def attributes
-      obj = {}
-
-      config[:updatable_attrs_from_ss_into_aker].each do |k|
-        table_name = table_for_attr(k)
-        model = model_for_table(table_name)
-        if model
-          attr_name = aker_attr_name(table_name, k)
-          value = model.send(attr_name)
+      {}.tap do |obj|
+        config[:updatable_attrs_from_ss_into_aker].each do |k|
+          table_name = table_for_attr(k)
+          model = model_for_table(table_name)
+          if model
+            attr_name = aker_attr_name(table_name, k)
+            value = model.send(attr_name)
+          end
+          obj[k] = value if value
         end
-        obj[k] = value if value
       end
-      obj
     end
 
     private
@@ -85,6 +84,7 @@ module Aker
     end
 
     def aker_attr_name(table_name, field_name)
+      return field_name unless config[:map_aker_with_ss_columns][table_name]
       config[:map_aker_with_ss_columns][table_name][field_name] || field_name
     end
 
