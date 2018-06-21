@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 Then(/^I should see dna qc table:$/) do |expected_results_table|
   actual_table = table(fetch_table('table#sortable_batches'))
@@ -110,9 +105,7 @@ Given(/^I have a "([^"]*)" submission for plate "([^"]*)" with project "([^"]*)"
   # Maintain the order of the wells as though they have been submitted by the user, rather than
   # relying on the ordering within sequencescape.  Some of the plates are created with less than
   # the total wells needed (which is bad).
-  wells = []
-  plate.wells.walk_in_column_major_order { |well, _| wells << well }
-  wells.compact!
+  wells = plate.wells.in_column_major_order.to_a
 
   submission_template = SubmissionTemplate.find_by(name: submission_template_name)
   submission = submission_template.create_and_build_submission!(

@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2014,2015 Genome Research Ltd.
 
 class Api::Messages::FlowcellIO < Api::Base
   MANUAL_QC_BOOLS = { 'passed' => true, 'failed' => false }
@@ -28,7 +23,7 @@ class Api::Messages::FlowcellIO < Api::Base
           lab_events.each { |e| e.descriptor_value_for(flowcell_identifier).tap { |bc| return bc unless bc.nil? } }
         end
 
-        def samples
+        def lane_samples
           some_untagged = target_asset.aliquots.any?(&:untagged?)
           target_asset.aliquots.reject do |a|
             (spiked_in_buffer.present? && spiked_in_buffer.primary_aliquot =~ a) or
@@ -66,7 +61,7 @@ class Api::Messages::FlowcellIO < Api::Base
           MANUAL_QC_BOOLS[target_asset.try(:qc_state)]
         end
 
-        def samples
+        def lane_samples
           []
         end
 
@@ -175,7 +170,7 @@ class Api::Messages::FlowcellIO < Api::Base
     map_attribute_to_json_attribute(:product_line, 'team')
     map_attribute_to_json_attribute(:request_purpose, 'purpose')
 
-    with_nested_has_many_association(:samples) do # actually aliquots
+    with_nested_has_many_association(:lane_samples, as: :samples) do # actually aliquots
       map_attribute_to_json_attribute(:aliquot_index_value, 'tag_index')
       map_attribute_to_json_attribute(:suboptimal, 'suboptimal')
 

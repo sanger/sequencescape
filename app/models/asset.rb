@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 require 'eventful_record'
 require 'external_properties'
@@ -16,7 +11,7 @@ class Asset < ApplicationRecord
 
   # Key/value stores and attributes
   include ExternalProperties
-  acts_as_descriptable :serialized
+  include ActsAsDescriptable
 
   include Uuid::Uuidable
 
@@ -179,7 +174,7 @@ class Asset < ApplicationRecord
       if source_barcode.blank?
         nil
       elsif /\A[0-9]{1,7}\z/.match?(source_barcode) # Just a number
-        joins(:barcodes).where('barcodes.barcode LIKE "__?_"', source_barcode)
+        joins(:barcodes).where('barcodes.barcode LIKE "__?_"', source_barcode).first # rubocop:disable Rails/FindBy
       else
         find_from_barcode(source_barcode)
       end

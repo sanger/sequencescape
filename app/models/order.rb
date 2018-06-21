@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 class Order < ApplicationRecord
   module InstanceMethods
@@ -179,10 +174,9 @@ class Order < ApplicationRecord
     assets
   end
 
-  def url_name
+  def json_root
     'order'
   end
-  alias_method(:json_root, :url_name)
 
   def asset_uuids
     assets.select { |asset| asset.present? }.map(&:uuid) if assets

@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 # This is a module containing the standard statemachine for a request that needs it.
 # It provides various callbacks that can be hooked in to by the derived classes.
@@ -106,7 +101,7 @@ module Request::Statemachine
           transitions to: :cancelled, from: [:failed, :passed]
         end
 
-        event :cancel_from_upstream do
+        event :cancel_from_upstream, manual_only?: true do
           transitions to: :cancelled, from: [:pending]
         end
 
@@ -114,11 +109,11 @@ module Request::Statemachine
           transitions to: :cancelled, from: [:pending, :hold]
         end
 
-        event :submission_cancelled do
+        event :submission_cancelled, manual_only?: true do
           transitions to: :cancelled, from: [:pending, :cancelled]
         end
 
-        event :fail_from_upstream do
+        event :fail_from_upstream, manual_only?: true do
           transitions to: :cancelled, from: [:pending]
           transitions to: :failed,    from: [:started]
           transitions to: :failed,    from: [:passed]
@@ -227,8 +222,8 @@ module Request::Statemachine
   # Determines the most likely event that should be fired when transitioning between the two states.  If there is
   # only one option then that is what is returned, otherwise an exception is raised.
   def suggested_transition_to(target)
-    valid_events = aasm.events(permitted: true).select { |e| e.transitions_to_state?(target.to_sym) }
-    raise StandardError, "No obvious transition from #{current.inspect} to #{target.inspect}" unless valid_events.size == 1
+    valid_events = aasm.events(permitted: true).select { |e| !e.options[:manual_only?] && e.transitions_to_state?(target.to_sym) }
+    raise StandardError, "No obvious transition from #{state.inspect} to #{target.inspect}" unless valid_events.size == 1
     valid_events.first.name
   end
 end

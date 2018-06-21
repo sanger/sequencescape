@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2014,2015 Genome Research Ltd.
 
 module Qcable::Statemachine
   def self.included(base)
@@ -99,7 +94,7 @@ module Qcable::Statemachine
     valid_events = aasm.events(permitted: true).select do |e|
       e.options[:allow_automated?] && e.transitions_to_state?(target&.to_sym)
     end
-    raise StandardError, "No obvious transition from #{current.inspect} to #{target.inspect}" unless valid_events.size == 1
+    raise StandardError, "No obvious transition from #{state.inspect} to #{target.inspect}" unless valid_events.size == 1
     valid_events.first.name
   end
 end

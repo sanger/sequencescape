@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2013,2014,2015,2016 Genome Research Ltd.
 
 module IlluminaHtp::PlatePurposes
   PLATE_PURPOSE_FLOWS = [
@@ -172,14 +167,7 @@ module IlluminaHtp::PlatePurposes
         flow.shift,
         stock_plate: true,
         default_state: 'passed',
-        cherrypickable_target: true,
-        cherrypick_filters: [
-          'Cherrypick::Strategy::Filter::ByOverflow',
-          'Cherrypick::Strategy::Filter::ByEmptySpaceUsage',
-          'Cherrypick::Strategy::Filter::BestFit',
-          'Cherrypick::Strategy::Filter::BySpecies',
-          'Cherrypick::Strategy::Filter::InternallyOrderPlexBySubmission'
-        ]
+        cherrypickable_target: true
       )
 
       flow.each do |name|
@@ -227,7 +215,7 @@ module IlluminaHtp::PlatePurposes
                                                 cherrypick_direction: 'column',
                                                 stock_plate: self::OUTPUT_PLATE_PURPOSES.include?(plate_purpose_name),
                                                 asset_shape_id: AssetShape.default.id
-      )).tap do |plate_purpose|
+                                              )).tap do |plate_purpose|
         plate_purpose.barcode_printer_type = BarcodePrinterType.find_by(type: 'BarcodePrinterType96Plate') || plate_purpose.barcode_printer_type
       end
     end
@@ -239,7 +227,7 @@ module IlluminaHtp::PlatePurposes
                         name: tube_purpose_name,
                         target_type: target_type,
                         barcode_printer_type: BarcodePrinterType.find_by(type: 'BarcodePrinterType1DTube')
-      ))
+                      ))
     end
     private :create_tube_purpose
 

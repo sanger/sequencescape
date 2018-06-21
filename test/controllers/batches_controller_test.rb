@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 require 'test_helper'
 require 'batches_controller'
@@ -272,7 +267,7 @@ class BatchesControllerTest < ActionController::TestCase
 
           should 'render fail reasons when external' do
             get :fail, params: { id: @batch_two.id }
-            assert !@batch_two.workflow.source_is_internal?
+            assert_not @batch_two.workflow.source_is_internal?
             assert_response :success
             assert assigns(:fail_reasons)
           end

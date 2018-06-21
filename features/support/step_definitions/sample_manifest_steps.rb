@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 Given /^a supplier called "(.*)" exists$/ do |supplier_name|
   Supplier.create!(name: supplier_name)
@@ -30,7 +25,7 @@ Then /^I should see the manifest table:$/ do |expected_results_table|
 end
 
 def sequence_sanger_sample_ids_for(plate)
-  plate.wells.walk_in_column_major_order do |well, index|
+  plate.wells.in_column_major_order.each_with_index do |well, index|
     well.primary_aliquot.sample.update_attributes!(sanger_sample_id: yield(index))
   end
 end

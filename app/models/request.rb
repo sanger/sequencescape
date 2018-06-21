@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 require 'aasm'
 
@@ -59,6 +54,7 @@ class Request < ApplicationRecord
   has_many :samples, through: :asset, source: :samples
   has_many :qc_metric_requests
   has_many :qc_metrics, through: :qc_metric_requests
+  has_many :asset_studies, through: :asset, source: :studies
 
   has_many :request_events, ->() { order(:current_from) }, inverse_of: :request do
     def date_for_state(state)
@@ -74,6 +70,8 @@ class Request < ApplicationRecord
     end
   end
   has_many :upstream_requests, through: :asset, source: :requests_as_target
+
+  delegate :flowcell, to: :batch, allow_nil: true
 
   belongs_to :billing_product, class_name: 'Billing::Product'
   has_many :billing_items, class_name: 'Billing::Item'
@@ -278,9 +276,7 @@ class Request < ApplicationRecord
 
   scope :for_request_types, ->(types) { joins(:request_type).where(request_types: { key: types }) }
 
-  scope :for_search_query, ->(query) {
-                             where(['id=?', query])
-                           }
+  scope :for_search_query, ->(query) { where(['id=?', query]) }
 
   scope :find_all_target_asset, ->(target_asset_id) {
     where(['target_asset_id = ?', target_asset_id.to_s])
@@ -338,6 +334,14 @@ class Request < ApplicationRecord
 
   def self.accessioning_required?
     false
+  end
+
+  def source_labware
+    asset.labware
+  end
+
+  def eventful_studies
+    initial_study.present? ? [initial_study] : asset_studies
   end
 
   def current_request_event

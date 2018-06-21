@@ -1,10 +1,5 @@
 # frozen_string_literal: true
 
-# This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2011,2012,2013,2014,2015 Genome Research Ltd.
-
 require 'factory_bot'
 require 'control_request_type_creation'
 
@@ -202,7 +197,7 @@ FactoryBot.define do
     pipeline_administrator true
   end
 
-  factory :lab_workflow, class: Workflow do
+  factory :workflow, aliases: [:lab_workflow] do
     name                  { FactoryBot.generate :lab_workflow_name }
     item_limit            2
     locale                'Internal'
@@ -220,6 +215,11 @@ FactoryBot.define do
     batch
     request
     sequence(:position) { |i| i }
+
+    factory :cherrypick_batch_request do
+      batch
+      association(:request, factory: :cherrypick_request)
+    end
   end
 
   factory :request_information_type do
@@ -348,7 +348,7 @@ FactoryBot.define do
   end
 
   factory :plate_transfer_task do
-    purpose_id { Purpose.find_by(name: 'PacBio Sheared').id }
+    purpose_id { create(:plate_purpose).id }
   end
 
   factory :cherrypick_task do |_t|

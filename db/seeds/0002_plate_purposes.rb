@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2012,2013,2014,2015 Genome Research Ltd.
 
 ActiveRecord::Base.transaction do
   # And here is pulldown
@@ -15,13 +10,7 @@ ActiveRecord::Base.transaction do
     stock_plate_purpose = PlatePurpose::Input.create!(
       name: flow.shift,
       default_state: 'passed',
-      stock_plate: true,
-      cherrypick_filters: [
-        'Cherrypick::Strategy::Filter::ByOverflow',
-        'Cherrypick::Strategy::Filter::ByEmptySpaceUsage',
-        'Cherrypick::Strategy::Filter::BestFit',
-        'Cherrypick::Strategy::Filter::BySpecies'
-      ]
+      stock_plate: true
     )
     pipeline_name       = /^([^\s]+)/.match(stock_plate_purpose.name)[1] # Hack but works!
     request_type        = RequestType.find_by(name: "Illumina-A Pulldown #{pipeline_name}") or raise StandardError, "Cannot find pulldown pipeline for #{pipeline_name}"

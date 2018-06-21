@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2011,2012,2014,2015 Genome Research Ltd.
 
 Given /^the ((?:entire plate |inverted )?tag layout template) "([^"]+)" exists$/ do |style, name|
   FactoryBot.create(style.tr(' ', '_'), name: name)
@@ -114,10 +109,8 @@ end
 
 def pool_by_strategy(source, destination, pooling_strategy)
   Rails.logger.info("Pooling strategy does not fit plate size #{source.size}: #{pooling_strategy.inspect}") unless pooling_strategy.sum == source.size
-
-  source_wells, destination_wells = [], []
-  source.wells.walk_in_column_major_order { |well, _| source_wells << well }
-  destination.wells.walk_in_column_major_order { |well, _| destination_wells << well }
+  source_wells = source.wells.in_column_major_order.to_a
+  destination_wells = destination.wells.in_column_major_order.to_a
 
   pooling_strategy.each_with_index do |pool, _old_submission_id|
     submission_id = Submission.create!(user: User.first || User.create!(login: 'a')).id

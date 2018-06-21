@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
 
 # This may create invalid UUID external_id values but it means that we don't have to conform to the
 # standard in our features.
@@ -94,10 +89,6 @@ Given /^I am using the latest version of the API$/ do
   step(%Q{I am using version "#{::Core::Service::API_VERSION}" of the API})
 end
 
-Given /^I am using version "([^\"]+)" of a legacy API$/ do |version|
-  @api_path = version
-end
-
 When /^I (GET|PUT|POST|DELETE) the API path "(\/[^\"]*)"$/ do |action, path|
   json_api_request(action, path, nil)
 end
@@ -174,7 +165,7 @@ end
 
 def strip_extraneous_fields(left, right)
   if left.is_a?(Hash) and right.is_a?(Hash)
-    right.delete_if { |k, _| not left.keys.include?(k) }
+    right.delete_if { |k, _| not left.key?(k) }
     left.each { |key, value| strip_extraneous_fields(value, right[key]) }
     right
   elsif left.is_a?(Array) and right.is_a?(Array)
@@ -242,10 +233,6 @@ end
 
 Then /^the HTTP response body should be empty$/ do
   assert(page.source.blank?, 'The response body is not blank')
-end
-
-Then /^the JSON should be an empty array$/ do
-  assert_hash_equal([], decode_json(page.source, 'Received'), 'The JSON is not an empty array')
 end
 
 Then /^the JSON should not contain "([^\"]+)" within any element of "([^\"]+)"$/ do |name, path|

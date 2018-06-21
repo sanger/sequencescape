@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2013,2015 Genome Research Ltd.
 
 class Api::ReferenceGenomeIO < Api::Base
   module Extensions
@@ -15,12 +10,10 @@ class Api::ReferenceGenomeIO < Api::Base
     def self.included(base)
       base.class_eval do
         extend ClassMethods
-
-        alias_method(:json_root, :url_name)
       end
     end
 
-    def url_name
+    def json_root
       'reference_genome'
     end
   end

@@ -1,6 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-# Copyright (C) 2007-2011,2012,2014,2015,2016 Genome Research Ltd.
 
 require 'test_helper'
 
@@ -43,7 +40,7 @@ class SampleTest < ActiveSupport::TestCase
           @sample.sample_metadata.sample_ebi_accession_number = nil
         end
         should 'return false' do
-          assert !@sample.accession_number?
+          assert_not @sample.accession_number?
         end
       end
       context 'with a blank accession number' do
@@ -51,7 +48,7 @@ class SampleTest < ActiveSupport::TestCase
           @sample.sample_metadata.sample_ebi_accession_number = ''
         end
         should 'return false' do
-          assert !@sample.accession_number?
+          assert_not @sample.accession_number?
         end
       end
       context 'with a valid accession number' do
