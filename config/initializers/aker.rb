@@ -38,8 +38,7 @@ Aker::Material.config = {
 
   # Aker attributes allowed to update from Aker into SS
   updatable_attrs_from_aker_into_ss: [
-    :gender, :donor_id, :phenotype, :common_name,
-    :volume, :concentration
+    :gender, :donor_id, :phenotype, :common_name
   ],
 
   # Aker attributes allowed to update from SS into Aker
