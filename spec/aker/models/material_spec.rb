@@ -66,9 +66,9 @@ RSpec.describe Aker::Material, type: :model, aker: true do
         expect(sample.sample_metadata.gender).to eq('Female')
       end
     end
-    // TODO
-    // Private methods should not be tested, but through using public methods.
-    // Maybe this method should be public.
+    # TODO
+    # Private methods should not be tested, but through using public methods.
+    # Maybe this method should be public.
     context 'with private methods' do
       context '#model_for_table' do
         it 'gives back a model object from a table name' do
