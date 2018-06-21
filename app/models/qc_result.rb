@@ -12,6 +12,16 @@ class QcResult < ApplicationRecord
 
   validates :key, :value, :units, presence: true
 
+  def unit_value
+    # Don't cache to avoid the need to worry about cache invalidation
+    Unit.new(value, unit)
+  end
+
+  def unit_value=(unit_value)
+    self.value = unit_value.scalar
+    self.units = unit_value.units
+  end
+
   private
 
   def update_asset

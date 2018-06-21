@@ -261,16 +261,6 @@ class Well < Receptacle
 
   delegate_to_well_attribute(:gender_markers)
 
-  def update_qc_values_with_hash(updated_data, scale)
-    ActiveRecord::Base.transaction do
-      scale.each do |attribute, multiplier|
-        value = extract_float(updated_data[attribute])
-        next if value.blank?
-        send(attribute, value * multiplier)
-      end
-    end
-  end
-
   def update_gender_markers!(gender_markers, resource)
     if well_attribute.gender_markers == gender_markers
       gender_marker_event = events.where(family: 'update_gender_markers').order('id desc').first
@@ -354,15 +344,5 @@ class Well < Receptacle
 
   def update_from_qc(qc_result)
     Well::AttributeUpdater.update(self, qc_result)
-  end
-
-  private
-
-  def extract_float(value)
-    # If we're already numeric, we don't care.
-    return value if value.is_a?(Numeric) || value.nil?
-    matches = /\A\({0,1}(?<decimal>\d+\.{0,1}\d*)/.match(value.strip)
-    return nil if matches.nil?
-    matches[:decimal].to_f
   end
 end

@@ -64,7 +64,7 @@ describe PlateVolume do
     # We don't use two separate contexts as we want to make sure we handle all plates
     # in each update
     it 'updates measured and current volumes' do
-      wells = plate_with_barcodes_in_csv.wells.reload.index_by(&:map_description)
+      wells = plate_with_barcodes_in_csv.wells.includes(:well_attribute, :map).index_by(&:map_description)
       plate_a_expected_volumes.each do |well_name, volume|
         well_attribute = wells[well_name].well_attribute
         expect(well_attribute.measured_volume).to eq volume
@@ -72,11 +72,18 @@ describe PlateVolume do
       end
     end
     it 'updates measured and current volumes for plate_without_barcodes_in_csv' do
-      wells = plate_without_barcodes_in_csv.wells.reload.index_by(&:map_description)
+      wells = plate_without_barcodes_in_csv.wells.includes(:well_attribute, :map).index_by(&:map_description)
       plate_b_expected_volumes.each do |well_name, volume|
         well_attribute = wells[well_name].well_attribute
         expect(well_attribute.measured_volume).to eq volume
         expect(well_attribute.current_volume).to eq volume
+      end
+    end
+    it 'generates a QcResult for each well' do
+      plate_with_barcodes_in_csv.wells.includes(:well_attribute, :map).each do |well|
+        expect(well.qc_results).to be_one
+        expect(well.qc_results.first.key).to eq('Volume')
+        expect(well.qc_results.first.assay_type).to eq('Volume Check')
       end
     end
   end

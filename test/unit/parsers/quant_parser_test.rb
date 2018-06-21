@@ -34,6 +34,11 @@ class QuantParserTest < ActiveSupport::TestCase
           @wells = @plate.reload.wells.index_by(&:map_description)
         end
 
+        should 'return basic metadata' do
+          assert_equal 'QuantEssential', @parser.assay_type
+          assert_equal 'v0.1', @parser.assay_version
+        end
+
         should 'update well attributes with the file contents' do
           [['A1', 35, 7.5],
            ['A2', 56, 8.1],
