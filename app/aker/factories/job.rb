@@ -83,6 +83,7 @@ module Aker
             ActiveRecord::Base.transaction do
               sample_material.update!(indifferent_material)
               sample_material.container.update!(@container_params.merge(address: indifferent_material[:address]))
+              Aker::Factories::Material.put_sample_in_study(sample, study)
             end
           end
           sample ||

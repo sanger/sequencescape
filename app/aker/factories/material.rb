@@ -19,8 +19,30 @@ module Aker
 
       validate :check_container
 
-      def self.create(params)
-        new(params).create
+      class << self
+        def create(params)
+          new(params).create
+        end
+
+        def put_sample_in_container(sample, container)
+          return container.save if container.asset.nil?
+
+          raise 'The contents of this plate are not up to date with aker job message' if container_not_having_sample?(container, sample) && container_has_aliquots?(container)
+          container.asset.aliquots.create!(sample: sample) if container_not_having_sample?(container, sample)
+        end
+
+        def put_sample_in_study(sample, study)
+          sample.studies << study unless sample.studies.include?(study) if study
+        end
+
+        def container_not_having_sample?(container, sample)
+          container.asset.aliquots.where(sample: sample).count.zero?
+        end
+
+        def container_has_aliquots?(container)
+          container.asset.aliquots.count.positive?
+        end
+
       end
 
       def initialize(params)
@@ -38,29 +60,11 @@ module Aker
         return unless valid?
         @model = Sample.create(attributes)
         container_model = container.create
-        put_sample_in_container(@model, container_model)
-        put_sample_in_study(@model, study) if study
+        self.class.put_sample_in_container(@model, container_model)
+        self.class.put_sample_in_study(@model, study)
         @model
       end
 
-      def container_not_having_sample?(container, sample)
-        container.asset.aliquots.where(sample: sample).count.zero?
-      end
-
-      def container_has_aliquots?(container)
-        container.asset.aliquots.count.positive?
-      end
-
-      def put_sample_in_container(sample, container)
-        return container.save if container.asset.nil?
-
-        raise 'The contents of this plate are not up to date with aker job message' if container_not_having_sample?(container, sample) && container_has_aliquots?(container)
-        container.asset.aliquots.create!(sample: sample) if container_not_having_sample?(container, sample)
-      end
-
-      def put_sample_in_study(sample, study)
-        sample.studies << study unless sample.studies.include?(study)
-      end
 
       ##
       # Convert attributes to SampleMetadata and Container
