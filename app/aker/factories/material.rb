@@ -32,7 +32,7 @@ module Aker
         end
 
         def put_sample_in_study(sample, study)
-          sample.studies << study unless sample.studies.include?(study) if study
+          sample.studies << study if study && !sample.studies.include?(study)
         end
 
         def container_not_having_sample?(container, sample)
@@ -42,7 +42,6 @@ module Aker
         def container_has_aliquots?(container)
           container.asset.aliquots.count.positive?
         end
-
       end
 
       def initialize(params)
@@ -64,7 +63,6 @@ module Aker
         self.class.put_sample_in_study(@model, study)
         @model
       end
-
 
       ##
       # Convert attributes to SampleMetadata and Container

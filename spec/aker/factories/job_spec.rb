@@ -109,7 +109,6 @@ RSpec.describe Aker::Factories::Job, type: :model, aker: true do
   end
 
   it 'creating a job with existing materials will add the study to the list of studies for the sample' do
-
     study = create :study
     create :uuid, external_id: study.uuid
     params[:data_release_uuid] = study.uuid

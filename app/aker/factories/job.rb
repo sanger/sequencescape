@@ -107,7 +107,6 @@ module Aker
         end
       end
 
-
       def check_study
         study = Uuid.find_by(external_id: data_release_uuid)
         if study.nil?
