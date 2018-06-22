@@ -15,7 +15,3 @@ Given /^I have already made a request for library tube "([^\"]+)" within the stu
     }
   )
 end
-
-When /^I follow the "([^\"]+)" request$/ do |request_type|
-  step(%Q{I follow "#{request_type} request"})
-end

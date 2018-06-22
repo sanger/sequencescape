@@ -48,10 +48,6 @@ class SubmissionTemplate < ApplicationRecord
     end
   end
 
-  def create_and_build_submission!(attributes)
-    Submission.build!(attributes.merge(template: self))
-  end
-
   def create_order!(attributes)
     new_order(attributes).tap do |order|
       yield(order) if block_given?

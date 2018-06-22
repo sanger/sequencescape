@@ -39,38 +39,6 @@ Feature: Upload volume results from the volume checker robot
       | 1234567 | B10  |0.0             |
       | 1234567 | B11  |0.0064          |
       | 1234567 | B12  |0.0547          |
-    Given I have a DNA QC submission for plate "DN1234567"
-    Given I am on the show page for pipeline "DNA QC"
-    When I check "Select DN1234567T for batch"
-    And I select "Create Batch" from the first "action_on_requests"
-    And I press the first "Submit"
-    When I follow "QC result"
-    Then I should see dna qc table:
-      | Well | Volume  |
-      | A1   | 55.3281 |
-      | B1   | 53.0664 |
-      | A2   | 25.296  |
-      | B2   | 51.5682 |
-      | A3   | 0.1074  |
-      | B3   | 0.0746  |
-      | A4   | 0.0547  |
-      | B4   | 0.0064  |
-      | A5   | 0.0     |
-      | B5   | 0.0     |
-      | A6   | 0.0     |
-      | B6   | 0.0     |
-      | A7   | 0.0     |
-      | B7   | 0.0     |
-      | A8   | 0.0     |
-      | B8   | 0.0     |
-      | A9   | 0.0     |
-      | B9   | 0.0     |
-      | A10  | 0.0     |
-      | B10  | 0.0     |
-      | A11  | 0.0722  |
-      | B11  | 0.0064  |
-      | A12  | 0.0794  |
-      | B12  | 0.0547  |
 
 
   Scenario: Update current volume results on 3 plates

@@ -106,6 +106,18 @@ FactoryBot.define do
     end
   end
 
+  factory :cherrypick_for_fluidigm_request do
+    transient do
+      target_purpose { create :plate_purpose }
+    end
+    association :asset, factory: :well
+    association :target_asset, factory: :well
+    request_purpose :standard
+    request_metadata_attributes do
+      { target_purpose: target_purpose }
+    end
+  end
+
   factory :request_without_assets, parent: :request_base do
     transient do
       user_login { 'abc123' }

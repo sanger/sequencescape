@@ -2,79 +2,67 @@
 <%= panel('success',title:"Order added to submission at: #{order.created_at.to_formatted_s(:day_full_with_time)}") do %>
   <%- form ||= nil %>
   <span class="completed badge">✔</span>
+  <dl class="order-summary">
 
-  <h4>
     <% if order.study.present? %>
-      Study:
-      <%= link_to(order.study.name, order.study, target: "_blank") %>
+      <dt>Study</dt>
+      <dd><%= link_to(order.study.name, order.study, target: "_blank") %></dd>
     <% else %>
-      Cross Studies:
-      <% order.source_asset_studies.each do |study| %>
-        <%= link_to(study.name, study, target: "_blank") %>
-      <% end %>
+      <dt>Cross Studies</dt>
+      <dd>
+        <% order.source_asset_studies.each do |study| %>
+          <%= link_to(study.name, study, target: "_blank") %>
+        <% end %>
+      </dd>
     <% end %>
-  </h4>
 
-  <h4>
     <% if order.project.present? %>
-      Project:
-      <%= link_to(order.project.name, order.project, target: "_blank") %>
+      <dt>Project</dt>
+      <dd><%= link_to(order.project.name, order.project, target: "_blank") %></dd>
     <% else %>
-      Cross Projects:
-      <% order.source_asset_projects.each do |project| %>
-        <%= link_to(project.name, project, target: "_blank") %>
-      <% end %>
+      <dt>Cross Projects</dt>
+      <dd>
+        <% order.source_asset_projects.each do |project| %>
+          <%= link_to(project.name, project, target: "_blank") %>
+        <% end %>
+      </dd>
     <% end %>
-  </h4>
 
   <% if order.asset_group.present? -%>
-    <h4>
-      Asset Group:
-      <%= link_to(h(order.asset_group.name), study_asset_group_path(order.study, order.asset_group), target: "_blank") %>
-    </h4>
+    <dt>Asset Group</dt>
+    <dd><%= link_to(h(order.asset_group.name), study_asset_group_path(order.study, order.asset_group), target: "_blank") %></dd>
   <% elsif order.assets.present? -%>
-    <h4>Samples:</h4>
-    <div class="sub-panel">
-      <p><%= order_sample_names(order) %></p>
-    </div>
+    <dt>Samples</dt>
+    <dd><%= order.samples.pluck(:name).join(', ') %></dd>
   <% else -%>
-    <h4>There are no assets in this order, it maybe damaged or very out of date</h4>
+    There are no assets in this order, it maybe damaged or very out of date
   <% end -%>
 
   <% unless order.request_types.blank? %>
-    <h4>Request types:</h4>
-    <ul id="request_types_for_submission">
+    <dt>Request types</dt><dd><ul>
       <% RequestType.order(:order).find(order.request_types).each do |request_type| %>
         <li><%= request_description(presenter, request_type) %></li>
       <% end %>
-    </ul>
+    </ul></dd>
   <% end %>
 
   <% unless order.request_options['pre_capture_plex_level'].nil? %>
-    <h4>
-      Pre-capture plexing level:
-      <%= order.request_options['pre_capture_plex_level'] %>
-    </h4>
-        <h4>
-      Pre-capture plex group:
-      <%= order.pre_cap_group %>
-    </h4>
+    <dt>Pre-capture plexing level</dt>
+    <dd><%= order.request_options['pre_capture_plex_level'] %></dd>
+    <dt>Pre-capture plex group</dt>
+    <dd><%= order.pre_cap_group %></dd>
   <% end %>
 
   <% unless order.request_options['gigabases_expected'].nil? %>
-    <h4>
-      Gigabases expected:
-      <%= order.request_options['gigabases_expected'] %>
-    </h4>
+    <dt>Gigabases expected</dt>
+    <dd><%= order.request_options['gigabases_expected'] %></dd>
   <% end %>
 
-  <h4>Comments:</h4>
-  <div class="sub-panel">
-    <%= "<ul>#{order.comments}</ul>" unless order.comments.nil? %>
-  <div id="order-controls" class="buttons">
-  </div>
+  <dt>Comments</dt>
+  <dl><%= order.comments.presence || 'No comments' %></dl>
+  </dl>
 
-  </div>
+  <div id="order-controls" class="buttons"></div>
 
     <%= form_tag(order_path(order.id), method: :put, class: "comments-box") do -%>
       <%= text_area_tag :comments, nil, placeholder: "Write a new comment here", class: "form-control", id: 'comments-input' %>
@@ -82,7 +70,6 @@
       id: "add-comment",
       class: "btn btn-default add-comment" %>
     <% end %>
-
 
   <% if form.present? -%>
     <div class="save-buttons">
