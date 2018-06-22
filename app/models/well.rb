@@ -229,7 +229,6 @@ class Well < Receptacle
   writer_for_well_attribute_as_float(:rin)
 
   delegate_to_well_attribute(:concentration)
-  alias_method(:get_pico_result, :get_concentration)
   writer_for_well_attribute_as_float(:concentration)
 
   delegate_to_well_attribute(:molarity)
