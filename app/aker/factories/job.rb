@@ -8,7 +8,7 @@ module Aker
     class Job
       include ActiveModel::Model
       ATTRIBUTES = %i[job_id job_uuid work_order_id aker_job_url product_name process_name process_uuid modules product_version product_uuid project_uuid project_name cost_code container materials comment desired_date data_release_uuid priority].freeze
-      DEFAULT_ATTRIBUTES = { materials: {} }.freeze
+      DEFAULT_ATTRIBUTES = { data_release_uuid: nil, materials: {} }.freeze
       IGNORE_ATTRIBUTES = %w[container_id num_of_rows num_of_cols].freeze
 
       attr_accessor(*ATTRIBUTES)
@@ -43,6 +43,13 @@ module Aker
         {
           job: json_attributes
         }
+      end
+
+      def study
+        return @study if @study
+        uuid = Uuid.find_by(external_id: data_release_uuid)
+        return nil unless uuid
+        @study = Study.find(uuid.resource_id)
       end
 
       private
@@ -81,6 +88,7 @@ module Aker
           sample ||
             Aker::Factories::Material.new(indifferent_material).tap do |m|
               m.container = build_container(indifferent_material[:address])
+              m.study = study
             end
         end
       end
@@ -97,6 +105,7 @@ module Aker
           end
         end
       end
+
 
       def check_study
         study = Uuid.find_by(external_id: data_release_uuid)

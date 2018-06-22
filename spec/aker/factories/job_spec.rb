@@ -98,6 +98,28 @@ RSpec.describe Aker::Factories::Job, type: :model, aker: true do
     expect(job.samples.count).to eq(params[:materials].count)
   end
 
+  it 'creating a job will set the samples in the study specified (when provided)' do
+    study = create :study
+    create :uuid, external_id: study.uuid
+    params[:data_release_uuid] = study.uuid
+    job = Aker::Factories::Job.create(params)
+    job = Aker::Job.find_by(aker_job_id: job.aker_job_id)
+    expect(job).to be_present
+    expect(job.samples.map(&:studies).flatten.uniq.sort).to eq([study])
+  end
+
+  it 'creating a job with existing materials will add the study to the list of studies for the sample' do
+
+    study = create :study
+    create :uuid, external_id: study.uuid
+    params[:data_release_uuid] = study.uuid
+    params[:materials].each { |material| Aker::Factories::Material.create(material) }
+    job = Aker::Factories::Job.create(params)
+    job = Aker::Job.find_by(aker_job_id: job.aker_job_id)
+    expect(job).to be_present
+    expect(job.samples.map(&:studies).flatten.uniq.sort).to eq([study].sort)
+  end
+
   it 'is not valid unless there is a data release uuid (study)' do
     job = Aker::Factories::Job.new(params.except(:data_release_uuid))
     expect(job).to_not be_valid
