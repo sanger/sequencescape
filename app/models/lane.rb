@@ -39,7 +39,7 @@ class Lane < Receptacle
   end
 
   def friendly_name
-    name # TODO: Maybe add location?
+    name.presence || id # TODO: Maybe add location?
   end
 
   def source_labwares
