@@ -8,7 +8,9 @@ FactoryBot.define do
       study { create(:study) }
     end
     sequence(:job_id) { |n| n }
+    job_uuid { SecureRandom.uuid }
     sequence(:work_order_id) { |n| n }
+    aker_job_url 'someurl'
     product_name '30x Human Whole Genome Shotgun (WGS) with PCR'
     process_name 'Process name'
     process_uuid { SecureRandom.uuid }
@@ -17,10 +19,12 @@ FactoryBot.define do
     project_uuid { SecureRandom.uuid }
     project_name 'MyProject'
     cost_code 'S1234'
+    desired_date '10/10/2018'
     data_release_uuid { study.uuid }
     modules { ['module 1', 'module 2'] }
     comment 'Cook for 20 minutes.'
-    desired_date '2017-08-01'
+    priority 'standard'
+
     container { build(:container_json) }
     materials do
       [

@@ -1,8 +1,15 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
+require 'support/barcode_helper'
 
 RSpec.describe Aker::Factories::Job, type: :model, aker: true do
+  include BarcodeHelper
+  before do
+    mock_plate_barcode_service
+    build(:sample_tube_purpose, name: 'Standard sample').save
+  end
+
   let(:params) { build(:aker_job_json).to_h.with_indifferent_access }
 
   it 'is valid with aker job id, data_release_uuid and materials' do
@@ -19,7 +26,7 @@ RSpec.describe Aker::Factories::Job, type: :model, aker: true do
     expect(job.project_name).to eq(params[:project_name])
     expect(job.cost_code).to eq(params[:cost_code])
     expect(job.comment).to eq(params[:comment])
-    expect(job.desired_date).to eq(params[:desired_date])
+    expect(job.priority).to eq(params[:priority])
     expect(job.data_release_uuid).to eq(params[:data_release_uuid])
     expect(job.modules).to eq(params[:modules])
     expect(job.container).to eq(params[:container])
@@ -44,6 +51,19 @@ RSpec.describe Aker::Factories::Job, type: :model, aker: true do
     expect(job).to_not be_valid
   end
 
+  it '#create updates the materials if they already exist' do
+    job = Aker::Factories::Job.create(params)
+    expect(job).to be_present
+    material = job.samples.first
+    material.sample_metadata.update(sample_common_name: 'Some name')
+    material.sample_metadata.reload
+    expect(material.sample_metadata.sample_common_name).to eq('Some name')
+    job = Aker::Factories::Job.create(params.merge(job_uuid: SecureRandom.uuid))
+    expect(job).to be_present
+    material.sample_metadata.reload
+    expect(material.sample_metadata.sample_common_name).not_to eq('Some name')
+  end
+
   it '#create persists the job if it is valid' do
     job = Aker::Factories::Job.create(params)
     expect(job).to be_present
@@ -51,6 +71,14 @@ RSpec.describe Aker::Factories::Job, type: :model, aker: true do
     expect(job).to be_present
     expect(job.samples.count).to eq(params[:materials].count)
     expect(Aker::Factories::Job.create(params.except(:materials))).to be_nil
+  end
+
+  it '#create will fail if the materials exist but the containers has changed' do
+    Aker::Factories::Job.create(params)
+    wrong_container_params = params[:container].merge(barcode: 'WRONG', address: 'BAD')
+    expect do
+      Aker::Factories::Job.create(params.merge(job_uuid: SecureRandom.uuid, container: wrong_container_params))
+    end.to raise_error(ActiveRecord::RecordInvalid)
   end
 
   it '#as_json returns job' do
@@ -84,5 +112,12 @@ RSpec.describe Aker::Factories::Job, type: :model, aker: true do
     study = create(:study_for_study_list_inactive)
     job = Aker::Factories::Job.new(params.merge(data_release_uuid: study.uuid))
     expect(job).to_not be_valid
+  end
+
+  it 'ignores extra container params' do
+    extra_container_params = params[:container].merge(container_id: 123, num_of_rows: 1, num_of_cols: 2)
+    job = Aker::Factories::Job.create(params.merge(container: extra_container_params))
+    job = Aker::Job.find_by(aker_job_id: job.aker_job_id)
+    expect(job).to be_present
   end
 end
