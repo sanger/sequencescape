@@ -254,7 +254,7 @@ class Submission < ApplicationRecord
     return request.target_asset.requests.where(submission_id: id, request_type_id: next_request_type_id) if request.target_asset.present?
     next_requests_to_connect(request, next_request_type_id)
   end
-  
+
   def name
     super.presence || "##{id} #{study_names.truncate(128)}"
   end
