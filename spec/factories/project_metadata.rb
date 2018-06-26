@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   factory  :budget_division do
     name { |_a| generate :budget_division_name }
   end

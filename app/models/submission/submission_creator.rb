@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2012,2013,2014,2015,2016 Genome Research Ltd.
 
 require 'aasm'
 
@@ -260,7 +255,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
     plates_wells.map do |plate_wells|
       plate_barcode, well_locations = plate_wells.split(':')
       begin
-        plate = Plate.find_from_barcode(Barcode.human_to_machine_barcode(plate_barcode))
+        plate = Plate.find_from_barcode(plate_barcode)
       rescue SBCF::BarcodeError => exception
         raise InvalidInputException, "Invalid Barcode #{plate_barcode}: #{exception}"
       end

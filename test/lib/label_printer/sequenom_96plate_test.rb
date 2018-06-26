@@ -12,7 +12,7 @@ class Sequenom96PlateTest < ActiveSupport::TestCase
     @top = '134443  9168137'
     @bottom = '163993  160200 '
     options = { plates: [plate1], count: 1 }
-    @purpose = 'Sequenom'
+    @purpose = @plate1.purpose.name
     @plate_label = LabelPrinter::Label::Sequenom96Plate.new(options)
     @label = { top_left: (Date.today.strftime('%e-%^b-%Y')).to_s,
                bottom_left: (plate1.human_barcode).to_s,

@@ -14,7 +14,7 @@ class Postman
       @type = type
     end
 
-    delegate :nack, :ack, to: :channel
+    delegate :nack, :reject, :ack, to: :channel
 
     def subscribe(consumer_tag, &block)
       channel.prefetch(10)

@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 require 'control_request_type_creation'
 
@@ -737,54 +732,6 @@ CherrypickPipeline.create!(name: 'Cherrypick') do |pipeline|
   end
 end
 
-CherrypickForPulldownPipeline.create!(name: 'Cherrypicking for Pulldown', active: false) do |pipeline|
-  pipeline.asset_type          = 'Well'
-  pipeline.sorter              = 13
-  pipeline.automated           = false
-  pipeline.active              = true
-  pipeline.group_by_parent     = true
-
-  cherrypicking_attributes = lambda do |request_type|
-    request_type.initial_state     = 'pending'
-    request_type.target_asset_type = 'Well'
-    request_type.asset_type        = 'Well'
-    request_type.order             = 1
-    request_type.request_class     = CherrypickForPulldownRequest
-    request_type.multiples_allowed = false
-    request_type.for_multiplexing  = false
-  end
-
-  pipeline.request_types << RequestType.create!(key: 'cherrypick_for_pulldown', name: 'Cherrypicking for Pulldown',  &cherrypicking_attributes)
-
-  pipeline.request_types << RequestType.create!(key: 'cherrypick_for_illumina',   name: 'Cherrypick for Illumina',   &cherrypicking_attributes)
-  pipeline.request_types << RequestType.create!(key: 'cherrypick_for_illumina_b', name: 'Cherrypick for Illumina-B', &cherrypicking_attributes)
-  pipeline.request_types << RequestType.create!(key: 'cherrypick_for_illumina_c', name: 'Cherrypick for Illumina-C', &cherrypicking_attributes)
-  pipeline.workflow = Workflow.create!(name: 'Cherrypicking for Pulldown')
-end
-
-DnaQcPipeline.create!(name: 'DNA QC') do |pipeline|
-  pipeline.sorter              = 9
-  pipeline.automated           = false
-  pipeline.active              = true
-  pipeline.group_by_parent     = true
-
-  pipeline.request_types << RequestType.create!(key: 'dna_qc', name: 'DNA QC', no_target_asset: true) do |request_type|
-    request_type.initial_state     = 'pending'
-    request_type.asset_type        = 'Well'
-    request_type.order             = 1
-    request_type.request_class     = QcRequest
-    request_type.multiples_allowed = false
-  end
-
-  pipeline.workflow = Workflow.create!(name: 'DNA QC').tap do |workflow|
-    [
-      { class: DnaQcTask, name: 'QC result', sorted: 1, batched: false, interactive: false }
-    ].each do |details|
-      details.delete(:class).create!(details.merge(workflow: workflow))
-    end
-  end
-end
-
 GenotypingPipeline.create!(name: 'Genotyping') do |pipeline|
   pipeline.sorter = 11
   pipeline.automated = false
@@ -835,9 +782,6 @@ PulldownMultiplexLibraryPreparationPipeline.create!(name: 'Pulldown Multiplex Li
     end
   end
 end
-
-set_pipeline_flow_to('Cherrypicking for Pulldown' => 'Pulldown Multiplex Library Preparation')
-set_pipeline_flow_to('DNA QC' => 'Cherrypick')
 
 PacBioSamplePrepPipeline.create!(name: 'PacBio Library Prep') do |pipeline|
   pipeline.sorter               = 14

@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 # It associates a name to a pre-filled submission (subclass) and a serialized set of attributes
 # We could have use a Prototype Factory , and so just associate a name to existing submission
@@ -51,10 +46,6 @@ class SubmissionTemplate < ApplicationRecord
         cloned.update_attributes!(name: name)
       end
     end
-  end
-
-  def create_and_build_submission!(attributes)
-    Submission.build!(attributes.merge(template: self))
   end
 
   def create_order!(attributes)

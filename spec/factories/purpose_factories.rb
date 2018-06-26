@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :purpose do
     prefix 'DN'
     name { generate :purpose_name }
@@ -37,6 +37,10 @@ FactoryGirl.define do
     association(:barcode_printer_type, factory: :plate_barcode_printer_type)
     target_type 'Plate'
     asset_shape { AssetShape.default }
+
+    factory :aker_plate_purpose do
+      PlatePurpose.stock_plate_purpose
+    end
 
     factory :source_plate_purpose do
       after(:build) do |source_plate_purpose, _evaluator|

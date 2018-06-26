@@ -16,4 +16,4 @@ SimpleCov.configure do
   # You can add_filter here to add anything else you don't want to cover
 end
 
-SimpleCov.start 'rails' if ENV["COVERAGE"]
+SimpleCov.start 'rails'

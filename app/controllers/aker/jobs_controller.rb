@@ -38,27 +38,22 @@ module Aker
     end
 
     def complete
-      recover_from_connection_refused do
-        response = RestClient::Request.execute(
-          verify_ssl: false,
-          method: :put,
-          url: "#{@job.aker_job_url}/complete",
-          payload: { job: { job_id: @job.aker_job_id, comment: params[:comment] } }.to_json,
-          headers: { content_type: :json },
-          proxy: nil
-        )
-
-        render json: response.body, status: :ok
-      end
+      _finish_action("#{@job.aker_job_url}/complete")
     end
 
     def cancel
+      _finish_action("#{@job.aker_job_url}/cancel")
+    end
+
+    private
+
+    def _finish_action(url)
       recover_from_connection_refused do
         response = RestClient::Request.execute(
           verify_ssl: false,
           method: :put,
-          url: "#{@job.aker_job_url}/cancel",
-          payload: { job: { job_id: @job.aker_job_id, comment: params[:comment] } }.to_json,
+          url: url,
+          payload: @job.finish_message.to_json,
           headers: { content_type: :json },
           proxy: nil
         )
@@ -66,8 +61,6 @@ module Aker
         render json: response.body, status: :ok
       end
     end
-
-    private
 
     def recover_from_connection_refused
       yield
@@ -80,7 +73,7 @@ module Aker
     end
 
     def set_job
-      @job ||= Aker::Job.find_by(aker_job_id: params[:id]) if params[:id]
+      @job ||= Aker::Job.find_by(job_uuid: params[:id]) if params[:id]
     end
   end
 end

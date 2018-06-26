@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2015 Genome Research Ltd.
 
 require 'test_helper'
 require 'sessions_controller'
@@ -15,9 +10,9 @@ class SessionsControllerTest < ActionController::TestCase
   def setup
     @controller = SessionsController.new
     @request    = ActionController::TestRequest.create(@controller)
-    @user = FactoryGirl.create(:user, login: 'john', email: 'john@beatles.com',
-                                      password: 'test', password_confirmation: 'test',
-                                      created_at: 5.days.ago.to_s)
+    @user = FactoryBot.create(:user, login: 'john', email: 'john@beatles.com',
+                                     password: 'test', password_confirmation: 'test',
+                                     created_at: 5.days.ago.to_s)
   end
 
   def test_should_login_and_redirect

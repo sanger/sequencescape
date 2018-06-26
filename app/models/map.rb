@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 class Map < ApplicationRecord
   validates_presence_of :description, :asset_size, :location_id, :row_order, :column_order, :asset_shape
@@ -258,7 +253,13 @@ class Map < ApplicationRecord
   end
 
   def self.find_for_cell_location(cell_location, asset_size)
-    find_by(description: cell_location.sub(/0(\d)$/, '\1'), asset_size: asset_size)
+    find_by(description: strip_description(cell_location), asset_size: asset_size)
+  end
+
+  # Stip any leading zeros from the well name
+  # eg. A01 => A1
+  def self.strip_description(description)
+    description.sub(/0(\d)$/, '\1')
   end
 
   def self.pad_description(map)

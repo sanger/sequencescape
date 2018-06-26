@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :asset_group do
     name { |_a| generate :asset_group_name }
     study

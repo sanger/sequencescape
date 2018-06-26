@@ -1,6 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-# Copyright (C) 2011,2012,2013,2015 Genome Research Ltd.
 
 def upload_submission_spreadsheet(name, encoding = nil)
   attach_file('bulk_submission_spreadsheet', File.join(Rails.root, 'features', 'submission', 'csv', "#{name}.csv"))
@@ -16,16 +13,16 @@ def upload_custom_row_submission
 end
 
 When /^I have a sample '(.*)'$/ do |sample_name|
-  FactoryGirl.create :sample, name: sample_name
+  FactoryBot.create :sample, name: sample_name
 end
 
 When /^I have a study '(.*)'$/ do |study_name|
-  FactoryGirl.create :study, name: study_name
+  FactoryBot.create :study, name: study_name
 end
 
 When /^I have a plate '(.*)' that has a well in location 'A1' that contains the sample '(.*)'$/ do |asset_name, sample_name|
   sample = Sample.find_by(name: sample_name)
-  plate =  FactoryGirl.create :plate, name: asset_name
+  plate =  FactoryBot.create :plate, name: asset_name
   plate.wells.construct!
   well = plate.wells.first
   well.aliquots.create!(sample: sample)

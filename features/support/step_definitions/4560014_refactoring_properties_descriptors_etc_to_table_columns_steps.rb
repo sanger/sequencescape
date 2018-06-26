@@ -1,24 +1,19 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 # NOTE: The UUIDs for the requests are generated as sequential numbers from the study UUID
 def create_request(request_type, study, project, asset, target_asset, additional_options = {})
-  request = FactoryGirl.create(:request_with_submission,
-                               additional_options.merge(
-                                 study: study, project: project,
-                                 asset: asset,
-                                 target_asset: target_asset,
-                                 request_type: request_type,
-                                 request_metadata_attributes: {
-                                   fragment_size_required_to: 1,
-                                   fragment_size_required_from: 999,
-                                   library_type: 'Standard',
-                                   read_length: (request_type.request_class == HiSeqSequencingRequest ? 50 : 76)
-                                 }
-                               ))
+  request = FactoryBot.create(:request_with_submission,
+                              additional_options.merge(
+                                study: study, project: project,
+                                asset: asset,
+                                target_asset: target_asset,
+                                request_type: request_type,
+                                request_metadata_attributes: {
+                                  fragment_size_required_to: 1,
+                                  fragment_size_required_from: 999,
+                                  library_type: 'Standard',
+                                  read_length: (request_type.request_class == HiSeqSequencingRequest ? 50 : 76)
+                                }
+                              ))
   request.id = additional_options[:id] if additional_options.key?(:id) # Force ID hack!
 
   # should be on target asset when we'll use target_asset
@@ -43,7 +38,7 @@ Given /^the (sample|library) tube "([^\"]+)" has been involved in a "([^\"]+)" r
   project      = Project.find_by(name: project_name) or raise StandardError, "Cannot find the project named #{project_name.inspect}"
   request_type = RequestType.find_by(name: request_type_name) or raise StandardError, "Cannot find request type #{request_type_name.inspect}"
   asset = "#{tube_type}_tube".camelize.constantize.find_by(name: tube_name) or raise StandardError, "Cannot find #{tube_type} tube named #{tube_name.inspect}"
-  target_asset = FactoryGirl.create(request_type.asset_type.underscore, name: "#{study_name} - Target asset")
+  target_asset = FactoryBot.create(request_type.asset_type.underscore, name: "#{study_name} - Target asset")
 
   create_request(request_type, study, project, asset, target_asset)
 end
@@ -52,8 +47,8 @@ Given /^I have already made a "([^\"]+)" request within the study "([^\"]+)" for
   study        = Study.find_by(name: study_name) or raise StandardError, "Cannot find study named #{study_name.inspect}"
   project      = Project.find_by(name: project_name) or raise StandardError, "Cannot find the project named #{project_name.inspect}"
   request_type = RequestType.find_by(name: type) or raise StandardError, "Cannot find request type #{type.inspect}"
-  asset = FactoryGirl.create(request_type.asset_type.underscore, name: "#{study_name} - Source asset")
-  target_asset = FactoryGirl.create(request_type.asset_type.underscore, name: "#{study_name} - Target asset")
+  asset = FactoryBot.create(request_type.asset_type.underscore, name: "#{study_name} - Source asset")
+  target_asset = FactoryBot.create(request_type.asset_type.underscore, name: "#{study_name} - Target asset")
 
   create_request(request_type, study, project, asset, target_asset)
 end
@@ -64,8 +59,8 @@ Given /^I have already made (\d+) "([^\"]+)" requests? with IDs starting at (\d+
   request_type = RequestType.find_by(name: type) or raise StandardError, "Cannot find request type #{type.inspect}"
 
   (0...count.to_i).each do |index|
-    asset = FactoryGirl.create(request_type.asset_type.underscore, name: "#{study_name} - Source asset #{index + 1}")
-    target_asset = FactoryGirl.create(request_type.asset_type.underscore, name: "#{study_name} - Target asset #{index + 1}")
+    asset = FactoryBot.create(request_type.asset_type.underscore, name: "#{study_name} - Source asset #{index + 1}")
+    target_asset = FactoryBot.create(request_type.asset_type.underscore, name: "#{study_name} - Target asset #{index + 1}")
     create_request(request_type, study, project, asset, target_asset, id: id.to_i + index)
   end
 end
@@ -80,16 +75,16 @@ Given /^the study "([^\"]+)" has an asset group of (\d+) samples in "([^\"]+)" c
   assets = (1..count.to_i).map do |i|
     sample_name = "#{group_name} sample #{i}".gsub(/\s+/, '_').downcase
     param = asset_type == 'well' ? { id: 90 + i } : { name: "#{group_name}, #{asset_type} #{i}" }
-    FactoryGirl.create(asset_type.gsub(/[^a-z0-9_-]+/, '_'), param).tap do |asset|
+    FactoryBot.create(asset_type.gsub(/[^a-z0-9_-]+/, '_'), param).tap do |asset|
       if asset.primary_aliquot.present?
         asset.primary_aliquot.sample.tap { |s| s.name = sample_name; s.save(validate: false); s.studies << study }
       else
-        asset.aliquots.create!(sample: FactoryGirl.create(:sample, name: sample_name), study: study)
+        asset.aliquots.create!(sample: FactoryBot.create(:sample, name: sample_name), study: study)
         asset.aliquots.each { |a| study.samples << a.sample }
       end
     end
   end
-  asset_group = FactoryGirl.create(:asset_group, name: group_name, study: study, assets: assets)
+  asset_group = FactoryBot.create(:asset_group, name: group_name, study: study, assets: assets)
 end
 
 Then /^I should see the following request information:$/ do |expected|

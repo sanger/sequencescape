@@ -17,7 +17,9 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
-require 'factory_girl'
+require 'simplecov'
+
+require 'factory_bot'
 require 'capybara/rspec'
 require 'selenium/webdriver'
 require 'webmock/rspec'
@@ -90,11 +92,11 @@ RSpec.configure do |config|
   # triggering implicit auto-inclusion in groups with matching metadata.
   config.shared_context_metadata_behavior = :apply_to_host_groups
 
-  config.include FactoryGirl::Syntax::Methods
+  config.include FactoryBot::Syntax::Methods
 
   config.before(:suite) do
     PlateMapGeneration.generate!
-    FactoryGirl.find_definitions
+    FactoryBot.find_definitions
   end
 
   # The settings below are suggested to provide a good initial experience

@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2013,2015 Genome Research Ltd.
 
 class Api::LibraryTubeIO < Api::Base
   module Extensions
@@ -26,12 +21,10 @@ class Api::LibraryTubeIO < Api::Base
             :scanned_into_lab_event
           ])
         }
-
-        alias_method(:json_root, :url_name)
       end
     end
 
-    def url_name
+    def json_root
       'library_tube'
     end
   end
@@ -89,6 +82,4 @@ class Api::LibraryTubeIO < Api::Base
       json_attributes['fragment_size_required_to']   = object.request_metadata.fragment_size_required_to     if object.respond_to?(:fragment_size_required_to)
     end
   end
-
-  self.related_resources = [:lanes, :requests]
 end

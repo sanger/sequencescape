@@ -1,11 +1,7 @@
-<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2015 Genome Research Ltd.%>
-
+<div class="card-columns">
 <div id='pick_by_nano_grams_per_micro_litre'>
 <fieldset>
+  <strong>Either</strong>
     <table cellspacing='0' cellpadding='0'>
       <tr>
         <td><label for="cherrypick_action_nano_grams_per_micro_litre">Pick by ng/&micro;l</label>:</td>
@@ -13,15 +9,15 @@
       </tr>
       <%= fields_for :nano_grams_per_micro_litre do |ff|%>
         <tr>
-          <td><label for="volume_required">Volume Required</label> (&micro;l):</td>
+          <td><%= ff.label 'volume_required', 'Volume Required' %> (&micro;l):</td>
           <td><%= ff.text_field 'volume_required', value: '65', size: 5 %></td>
         </tr>
         <tr>
-          <td><label for="concentration_required">Concentration Required</label> (ng/&micro;l):</td>
+          <td><%= ff.label 'concentration_required', "Concentration Required" %> (ng/&micro;l):</td>
           <td><%= ff.text_field 'concentration_required', value: '50', size: 5  %></td>
         </tr>
         <tr>
-          <td><label for="robot_minimum_picking_volume">Robot Minimum Picking Volume</label> (&micro;l):</td>
+          <td><%= ff.label 'robot_minimum_picking_volume', 'Robot Minimum Picking Volume' %> (&micro;l):</td>
           <td><%= ff.text_field 'robot_minimum_picking_volume', value: 1.0, size: 5, type: 'number', step: 0.1, min: 1, max: 9 %></td>
         </tr>
       <% end %>
@@ -29,10 +25,9 @@
 </fieldset>
 </div>
 
-<strong>OR</strong>
-
 <div id='pick_by_nano_grams'>
 <fieldset>
+  <strong>Or</strong>
     <table cellspacing='0' cellpadding='0'>
       <tr>
         <td><label for="cherrypick_action_nano_grams">Pick by ng</label>:</td>
@@ -40,19 +35,19 @@
       </tr>
       <%= fields_for :nano_grams do |ff|%>
         <tr>
-          <td><label for="total_nano_grams">Quantity to pick</label> (ng):</td>
+          <td><%= ff.label 'total_nano_grams', 'Quantity to pick' %> (ng):</td>
           <td><%= ff.text_field 'total_nano_grams', value: '1000', size: 5  %></td>
         </tr>
         <tr>
-          <td><label for="minimum_volume">Minimum Volume</label> (&micro;/l):</td>
+          <td><%= ff.label 'minimum_volume', 'Minimum Volume' %> (&micro;/l):</td>
           <td><%= ff.text_field 'minimum_volume', value: '10', size: 5  %></td>
         </tr>
         <tr>
-          <td><label for="maximum_volume">Maximum Volume</label> (&micro;/l):</td>
+          <td><%= ff.label 'maximum_volume', 'Maximum Volume' %> (&micro;/l):</td>
           <td><%= ff.text_field 'maximum_volume', value: '50', size: 5 %></td>
         </tr>
         <tr>
-          <td><label for="robot_minimum_picking_volume">Robot Minimum Picking Volume</label> (&micro;l):</td>
+          <td><%= ff.label 'robot_minimum_picking_volume', 'Robot Minimum Picking Volume' %> (&micro;l):</td>
           <td><%= ff.text_field 'robot_minimum_picking_volume', value: 1.0, size: 5, type: 'number', step: 0.1, min: 1, max: 9 %></td>
         </tr>
       <% end %>
@@ -60,9 +55,9 @@
 </fieldset>
 </div>
 
-<strong>OR</strong>
 <div id='pick_by_micro_litre'>
 <fieldset>
+  <strong>Or</strong>
     <table cellspacing='0' cellpadding='0'>
       <tr>
         <td><label for="cherrypick_action_micro_litre">Pick by &micro;l</label>:</td>
@@ -70,10 +65,11 @@
       </tr>
       <%= fields_for :micro_litre do |ff|%>
         <tr>
-          <td><label for="volume_required">Volume</label> (&micro;l):</td>
+          <td><%= ff.label 'volume_required', 'Volume' %> (&micro;l):</td>
           <td><%= ff.text_field 'volume_required', value: '13', size: 5 %></td>
         </tr>
       <% end %>
     </table>
 </fieldset>
+</div>
 </div>

@@ -11,16 +11,16 @@ class TransferRequestCollectionTest < ActionDispatch::PerformanceTest
 
   def setup
     ao = {
-      sample: FactoryGirl.create(:sample),
-      study: FactoryGirl.create(:study),
-      project: FactoryGirl.create(:project)
+      sample: FactoryBot.create(:sample),
+      study: FactoryBot.create(:study),
+      project: FactoryBot.create(:project)
     }
-    asset = FactoryGirl.create_list(:untagged_well, SIZE, aliquot_options: ao)
-    target_asset = FactoryGirl.create_list(:empty_well, SIZE)
+    asset = FactoryBot.create_list(:untagged_well, SIZE, aliquot_options: ao)
+    target_asset = FactoryBot.create_list(:empty_well, SIZE)
     @transfer_requests_attributes = Array.new(SIZE) do |i|
       { asset_id: asset[i].id, target_asset_id: target_asset[i].id }
     end
-    @user = FactoryGirl.create :user
+    @user = FactoryBot.create :user
   end
 
   test 'TransferRequestCollection::Create' do

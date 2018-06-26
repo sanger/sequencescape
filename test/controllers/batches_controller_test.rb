@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 require 'test_helper'
 require 'batches_controller'
@@ -184,7 +179,7 @@ class BatchesControllerTest < ActionController::TestCase
         context '#edit' do
           context 'with control' do
             setup do
-              @cn = FactoryGirl.create :control, name: 'Control 1', item_id: 2, pipeline: @pipeline
+              @cn = FactoryBot.create :control, name: 'Control 1', item_id: 2, pipeline: @pipeline
               @pipeline.controls << @cn
             end
             should '#add control' do
@@ -210,8 +205,8 @@ class BatchesControllerTest < ActionController::TestCase
           setup do
             @old_count = Batch.count
 
-            @request_three = @pipeline.request_types.first.create!(asset: @library1, project: FactoryGirl.create(:project))
-            @request_four  = @pipeline.request_types.first.create!(asset: @library2, project: FactoryGirl.create(:project))
+            @request_three = @pipeline.request_types.first.create!(asset: @library1, project: FactoryBot.create(:project))
+            @request_four  = @pipeline.request_types.first.create!(asset: @library2, project: FactoryBot.create(:project))
           end
 
           context 'redirect to #show new batch' do
@@ -227,7 +222,7 @@ class BatchesControllerTest < ActionController::TestCase
 
           context 'redirect to action #control' do
             setup do
-              @cn = FactoryGirl.create :control, name: 'Control 1', item_id: 2, pipeline: @pipeline
+              @cn = FactoryBot.create :control, name: 'Control 1', item_id: 2, pipeline: @pipeline
               @pipeline.controls << @cn
               post :create, params: { id: @pipeline.id, request: { @request_three.id => '0', @request_four.id => '1' } }
             end
@@ -272,7 +267,7 @@ class BatchesControllerTest < ActionController::TestCase
 
           should 'render fail reasons when external' do
             get :fail, params: { id: @batch_two.id }
-            assert !@batch_two.workflow.source_is_internal?
+            assert_not @batch_two.workflow.source_is_internal?
             assert_response :success
             assert assigns(:fail_reasons)
           end
@@ -321,8 +316,8 @@ class BatchesControllerTest < ActionController::TestCase
     context 'Find by barcode (found)' do
       setup do
         @controller.stubs(:current_user).returns(@admin)
-        @batch = FactoryGirl.create :batch
-        request = FactoryGirl.create :request
+        @batch = FactoryBot.create :batch
+        request = FactoryBot.create :request
         @batch.requests << request
         r = @batch.requests.first
         @e = r.lab_events.create(description: 'Cluster generation')

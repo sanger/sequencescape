@@ -1,11 +1,6 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 Given /^I have an empty submission$/ do
-  FactoryGirl.create(:submission_without_order)
+  FactoryBot.create(:submission_without_order)
 end
 
 When /^the state of the submission with UUID "([^"]+)" is "([^"]+)"$/ do |uuid, state|
@@ -33,7 +28,7 @@ Then /^the submission with UUID "([^"]+)" should have (\d+) "([^"]+)" requests?$
 end
 
 Given /^the request type "([^\"]+)" exists$/ do |name|
-  FactoryGirl.create(:request_type, name: name)
+  FactoryBot.create(:request_type, name: name)
 end
 
 def submission_in_state(state, attributes = {})
@@ -126,14 +121,13 @@ Given /^I have a "([^\"]*)" submission with the following setup:$/ do |template_
     end
   end
 
-  Submission.build!(
-    template: submission_template,
+  submission_template.create_with_submission!(
     project: Project.find_by(name: params['Project']),
     study: Study.find_by(name: params['Study']),
     asset_group: AssetGroup.find_by(name: params['Asset Group']),
     user: @current_user,
     request_options: request_options
-  )
+  ).submission.built!
 
   # step(%Q{1 pending delayed jobs are processed})
 end

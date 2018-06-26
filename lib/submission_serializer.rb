@@ -1,7 +1,3 @@
-# This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2015 Genome Research Ltd.
 
 # Provides a means of serializing and serializing submission templates.
 # Example serialization:
@@ -78,7 +74,7 @@ module SubmissionSerializer
       sp[:request_options][:initial_state] = new_initial
     end
 
-    sp[:request_type_ids_list] = ensp[:request_types].map { |rtk| [RequestType.find_by!(key: rtk).id] }
+    sp[:request_type_ids_list] = ensp[:request_types].map { |rtk| [(RequestType.find_by(key: rtk).try(:id) || raise(StandardError, "Could not find #{rtk}"))] }
     sp[:order_role_id] = OrderRole.find_or_create_by(role: ensp[:order_role]).id if ensp[:order_role]
 
     SubmissionTemplate.create!(st)

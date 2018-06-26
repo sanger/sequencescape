@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 Given /^I have created a sequenom plate$/ do
   input_plate_names = {
@@ -36,11 +31,11 @@ Given /^I have created a sequenom plate$/ do
 end
 
 Given /^there is a (\d+) well "([^"]*)" plate with a barcode of "([^"]*)"$/ do |number_of_wells, plate_purpose_name, plate_barcode|
-  new_plate = FactoryGirl.create :plate,
-                                 sanger_barcode: { machine_barcode: plate_barcode },
-                                 plate_purpose: PlatePurpose.find_by(name: plate_purpose_name)
+  new_plate = FactoryBot.create :plate,
+                                sanger_barcode: { machine_barcode: plate_barcode },
+                                plate_purpose: PlatePurpose.find_by(name: plate_purpose_name)
 
-  sample = FactoryGirl.create :sample_with_gender, name: "#{plate_barcode}_x"
+  sample = FactoryBot.create :sample_with_gender, name: "#{plate_barcode}_x"
 
   1.upto(number_of_wells.to_i) do |i|
     new_plate.wells.create!(map_id: i).aliquots.create!(sample: sample)

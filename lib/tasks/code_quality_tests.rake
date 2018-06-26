@@ -91,11 +91,11 @@ namespace :test do
                        ' -exec ruby -c {} \; ) 2>&1'
       pipe = IO.popen(super_find_cmd.to_s)
       pipe.each do |line| # From the perspective of the new pseudo terminal
-        if line !~ /Syntax OK/
+        if /Syntax OK/.match?(line)
+          putc '.'
+        else
           putc 'W'
           warnings << line
-        else
-          putc '.'
         end
         STDOUT.flush
       end

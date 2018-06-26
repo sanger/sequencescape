@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180523155212) do
+ActiveRecord::Schema.define(version: 20180613160225) do
 
   create_table "aker_containers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "barcode"
@@ -25,6 +25,8 @@ ActiveRecord::Schema.define(version: 20180523155212) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "aker_job_url", default: "", null: false
+    t.string "job_uuid"
+    t.index ["job_uuid"], name: "index_aker_jobs_on_job_uuid", unique: true
   end
 
   create_table "aliquot_indices", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -876,7 +878,6 @@ ActiveRecord::Schema.define(version: 20180523155212) do
     t.integer "barcode_printer_type_id"
     t.boolean "cherrypickable_target", default: true, null: false
     t.string "cherrypick_direction", default: "column", null: false
-    t.string "cherrypick_filters"
     t.integer "size", default: 96
     t.integer "asset_shape_id", default: 1, null: false
     t.string "barcode_for_tecan", default: "ean13_barcode", null: false

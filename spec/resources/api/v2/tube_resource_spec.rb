@@ -6,28 +6,17 @@ RSpec.describe Api::V2::TubeResource, type: :resource do
   subject(:resource) { described_class.new(resource_model, {}) }
 
   # Test attributes
-  it { is_expected.to have_attribute :uuid }
-  it { is_expected.to have_attribute :name }
-  # it { is_expected.to have_attribute :labware_barcodes }
-  # it { is_expected.to have_attribute :position }
-
-  # Read only attributes (almost certainly id, uuid)
-  it { is_expected.to_not have_updatable_field(:id) }
-  it { is_expected.to_not have_updatable_field(:uuid) }
-  it { is_expected.to_not have_updatable_field(:name) }
-  # it { is_expected.to_not have_updatable_field(:position) }
-  it { is_expected.to_not have_updatable_field(:labware_barcode) }
-
-  # Updatable fields
-  # eg. it { is_expected.to have_updatable_field(:state) }
-
-  # Filters
-  # eg. it { is_expected.to filter(:order_type) }
-
-  # Associations
-  it { is_expected.to have_many(:samples).with_class_name('Sample') }
-  it { is_expected.to have_many(:projects).with_class_name('Project') }
-  it { is_expected.to have_many(:studies).with_class_name('Study') }
+  it 'works', :aggregate_failures do
+    is_expected.to have_attribute :uuid
+    is_expected.to have_attribute :name
+    is_expected.to_not have_updatable_field(:id)
+    is_expected.to_not have_updatable_field(:uuid)
+    is_expected.to_not have_updatable_field(:name)
+    is_expected.to_not have_updatable_field(:labware_barcode)
+    is_expected.to have_many(:samples).with_class_name('Sample')
+    is_expected.to have_many(:projects).with_class_name('Project')
+    is_expected.to have_many(:studies).with_class_name('Study')
+  end
 
   # Custom method tests
   # Add tests for any custom methods you've added.

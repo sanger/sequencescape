@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
 
 # This may create invalid UUID external_id values but it means that we don't have to conform to the
 # standard in our features.
@@ -94,10 +89,6 @@ Given /^I am using the latest version of the API$/ do
   step(%Q{I am using version "#{::Core::Service::API_VERSION}" of the API})
 end
 
-Given /^I am using version "([^\"]+)" of a legacy API$/ do |version|
-  @api_path = version
-end
-
 When /^I (GET|PUT|POST|DELETE) the API path "(\/[^\"]*)"$/ do |action, path|
   json_api_request(action, path, nil)
 end
@@ -174,7 +165,7 @@ end
 
 def strip_extraneous_fields(left, right)
   if left.is_a?(Hash) and right.is_a?(Hash)
-    right.delete_if { |k, _| not left.keys.include?(k) }
+    right.delete_if { |k, _| not left.key?(k) }
     left.each { |key, value| strip_extraneous_fields(value, right[key]) }
     right
   elsif left.is_a?(Array) and right.is_a?(Array)
@@ -244,10 +235,6 @@ Then /^the HTTP response body should be empty$/ do
   assert(page.source.blank?, 'The response body is not blank')
 end
 
-Then /^the JSON should be an empty array$/ do
-  assert_hash_equal([], decode_json(page.source, 'Received'), 'The JSON is not an empty array')
-end
-
 Then /^the JSON should not contain "([^\"]+)" within any element of "([^\"]+)"$/ do |name, path|
   json = decode_json(page.source, 'Received')
   target = path.split('.').inject(json) { |s, p| s.try(:[], p) } or raise StandardError, "Could not find #{path.inspect} in JSON"
@@ -280,7 +267,7 @@ Given /^the (library tube|plate) "([^\"]+)" is a child of the (sample tube|plate
   parent.children << child
   if [parent, child].all? { |a| a.is_a?(Receptacle) }
     child.aliquots = []
-    FactoryGirl.create(:transfer_request, asset: parent, target_asset: child)
+    FactoryBot.create(:transfer_request, asset: parent, target_asset: child)
     child.save!
   end
 end
@@ -290,21 +277,21 @@ Given /^the well "([^\"]+)" is a child of the well "([^\"]+)"$/ do |child_name, 
   child  = Uuid.find_by(external_id: child_name).resource or raise StandardError, "Cannot find #{child_name.inspect}"
   parent.children << child
   child.aliquots.clear
-  FactoryGirl.create(:transfer_request, asset: parent, target_asset: child)
+  FactoryBot.create(:transfer_request, asset: parent, target_asset: child)
   child.save!
 end
 
 Given /^the sample "([^\"]+)" is in (\d+) sample tubes? with sequential IDs starting at (\d+)$/ do |name, count, base_id|
   sample = Sample.find_by(name: name) or raise StandardError, "Cannot find the sample #{name.inspect}"
   (1..count.to_i).each do |index|
-    FactoryGirl.create(:empty_sample_tube, name: "#{name} sample tube #{index}", id: (base_id.to_i + index - 1)).tap do |sample_tube|
+    FactoryBot.create(:empty_sample_tube, name: "#{name} sample tube #{index}", id: (base_id.to_i + index - 1)).tap do |sample_tube|
       sample_tube.aliquots.create!(sample: sample)
     end
   end
 end
 
 Given /^the pathogen project called "([^"]*)" exists$/ do |project_name|
-  project = FactoryGirl.create :project, name: project_name, approved: true, state: 'active'
+  project = FactoryBot.create :project, name: project_name, approved: true, state: 'active'
   project.update_attributes!(project_metadata_attributes: {
                                project_manager: ProjectManager.find_by(name: 'Unallocated'),
                                project_cost_code: 'ABC',
@@ -319,7 +306,7 @@ end
 
 Given /^project "([^"]*)" has an owner called "([^"]*)"$/ do |project_name, login_name|
   project = Project.find_by(name: project_name)
-  user = FactoryGirl.create :user, login: login_name, first_name: 'John', last_name: 'Doe', email: "#{login_name}@example.com"
+  user = FactoryBot.create :user, login: login_name, first_name: 'John', last_name: 'Doe', email: "#{login_name}@example.com"
   user.is_owner_of(project)
 end
 

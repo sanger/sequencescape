@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
 
 require 'carrierwave'
 
@@ -23,12 +18,12 @@ class PlateVolume < ApplicationRecord
   private :calculate_barcode_from_filename
 
   def update_well_volumes
-    plate = Plate.include_wells_and_attributes.find_from_barcode(barcode) or throw :no_source_plate
-    location_to_well = plate.wells.map_from_locations
+    plate = Plate.find_by_barcode(barcode) or throw :no_source_plate
+    location_to_well = plate.wells.includes(:map, :well_attribute).indexed_by_location
 
     extract_well_volumes do |well_description, volume|
-      map  = Map.find_for_cell_location(well_description, plate.size) or raise "Cannot find location for #{well_description.inspect} on plate size #{plate.size}"
-      well = location_to_well[map]
+      short_well_description = Map.strip_description(well_description)
+      well = location_to_well[short_well_description]
       well.well_attribute.update_attributes!(measured_volume: volume.to_f) if well.present?
     end
   end

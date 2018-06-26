@@ -1,13 +1,8 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.
 
 Given /^the following custom texts are defined$/ do |table|
   # table is a Cucumber::Ast::Table
   table.hashes.each do |hash|
-    ct = FactoryGirl.create(:custom_text, hash)
+    ct = FactoryBot.create(:custom_text, hash)
     ct.save
   end
 end

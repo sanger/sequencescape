@@ -1,14 +1,9 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2014,2015 Genome Research Ltd.
 
 Given /^I have a pipeline called "([^\"]*)"$/ do |name|
-  request_type = FactoryGirl.create :request_type
-  pipeline = FactoryGirl.create :pipeline, name: name, request_types: [request_type]
+  request_type = FactoryBot.create :request_type
+  pipeline = FactoryBot.create :pipeline, name: name, request_types: [request_type]
   pipeline.workflow.update_attributes!(item_limit: 8)
-  task = FactoryGirl.create :task, name: 'Task1', workflow: pipeline.workflow
+  task = FactoryBot.create :task, name: 'Task1', workflow: pipeline.workflow
 end
 
 Given /^I have a batch in "([^\"]*)"$/ do |pipeline|
@@ -16,11 +11,11 @@ Given /^I have a batch in "([^\"]*)"$/ do |pipeline|
 end
 
 Given /^I have a "([^\"]*)" batch in "([^\"]*)"$/ do |state, pipeline|
-  @batch = FactoryGirl.create :batch, pipeline: Pipeline.find_by(name: pipeline), state: state, production_state: nil
+  @batch = FactoryBot.create :batch, pipeline: Pipeline.find_by(name: pipeline), state: state, production_state: nil
 end
 
 Given /^I have a control called "([^\"]*)" for "([^\"]*)"$/ do |name, pipeline_name|
-  control = FactoryGirl.create :control, name: name, pipeline: Pipeline.find_by(name: pipeline_name)
+  control = FactoryBot.create :control, name: name, pipeline: Pipeline.find_by(name: pipeline_name)
 end
 
 def pipeline_name_to_asset_type(pipeline_name)
@@ -31,9 +26,9 @@ end
 
 def create_request_for_pipeline(pipeline_name, options = {})
   pipeline = Pipeline.find_by(name: pipeline_name) or raise StandardError, "Cannot find pipeline #{pipeline_name.inspect}"
-  request_metadata = FactoryGirl.create :"request_metadata_for_#{pipeline.request_types.first.key}"
-  request_parameters = options.merge(request_type: pipeline.request_types.last, asset: FactoryGirl.create(pipeline_name_to_asset_type(pipeline_name)), request_metadata: request_metadata)
-  FactoryGirl.create(:request_with_submission, request_parameters).tap do |request|
+  request_metadata = FactoryBot.create :"request_metadata_for_#{pipeline.request_types.first.key}"
+  request_parameters = options.merge(request_type: pipeline.request_types.last, asset: FactoryBot.create(pipeline_name_to_asset_type(pipeline_name)), request_metadata: request_metadata)
+  FactoryBot.create(:request_with_submission, request_parameters).tap do |request|
     request.asset.update_attributes!(barcode: request.asset.id % 9999999)
     request.asset.create_scanned_into_lab_event!(content: '2018-01-01')
   end

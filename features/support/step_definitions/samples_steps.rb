@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 Then /^a "([^\"]*)" number of "([^\"]*)" should be created$/ do |num, records|
   assert_equal num.to_i, records.humanize.constantize.count
@@ -120,7 +115,7 @@ When /^I get the XML for the sample "([^\"]+)"$/ do |name|
 end
 
 Given /^I have a sample called "([^"]*)" with metadata$/ do |name|
-  sample = FactoryGirl.create :sample, name: name
+  sample = FactoryBot.create :sample, name: name
 end
 
 Given /^the sample "([^"]*)" has a supplier name of "([^"]*)"$/ do |sample_name, supplier_name|
@@ -154,7 +149,7 @@ end
 
 Given /^sample "([^"]*)" came from a sample manifest$/ do |sample_name|
   sample = Sample.find_by(name: sample_name)
-  sample_manifest = FactoryGirl.create(:sample_manifest, id: 1)
+  sample_manifest = FactoryBot.create(:sample_manifest, id: 1)
   sample.update_attributes!(sample_manifest: sample_manifest)
 end
 

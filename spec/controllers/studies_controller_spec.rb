@@ -17,8 +17,10 @@ RSpec.describe StudiesController do
 
   describe '#new' do
     setup { get :new }
-    it { is_expected.to respond_with :success }
-    it { is_expected.to render_template :new }
+    it 'works', :aggregate_failures do
+      is_expected.to respond_with :success
+      is_expected.to render_template :new
+    end
   end
 
   describe '#create' do
@@ -33,7 +35,7 @@ RSpec.describe StudiesController do
           'name' => 'hello',
           'reference_genome_id' => reference_genome.id,
           'study_metadata_attributes' => {
-            'faculty_sponsor_id' => FacultySponsor.create!(name: 'Me'),
+            'faculty_sponsor_id' => create(:faculty_sponsor, name: 'Me'),
             'study_description' => 'some new study',
             'program_id' => program.id,
             'contains_human_dna' => 'No',
@@ -45,8 +47,10 @@ RSpec.describe StudiesController do
           }
         } }
       end
-      it { is_expected.to set_flash.to('Your study has been created') }
-      it { is_expected.to redirect_to('study path') { study_path(Study.last) } }
+      it 'works', :aggregate_failures do
+        is_expected.to set_flash.to('Your study has been created')
+        is_expected.to redirect_to('study path') { study_path(Study.last) }
+      end
       it 'changes Study.count by 1' do
         assert_equal 1, Study.count - @study_count
       end
@@ -82,7 +86,9 @@ RSpec.describe StudiesController do
       post :grant_role, params: { role: { user: user.id, authorizable_type: 'manager' }, id: study.id }, xhr: true
     end
 
-    it { is_expected.to respond_with :ok }
-    it { is_expected.to set_flash.now.to('Role added') }
+    it 'works', :aggregate_failures do
+      is_expected.to respond_with :ok
+      is_expected.to set_flash.now.to('Role added')
+    end
   end
 end

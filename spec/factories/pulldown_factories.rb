@@ -1,11 +1,7 @@
 # frozen_string_literal: true
 
-# This file is part of SEQUENCESCAPE is distributed under the terms of GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
 # A plate that has exactly the right number of wells!
-FactoryGirl.define do
+FactoryBot.define do
   factory(:transfer_plate, class: Plate) do
     transient do
       well_count { 3 }
@@ -130,7 +126,8 @@ FactoryGirl.define do
       mock_request_type = create(:library_creation_request_type)
 
       # Ensure that the parent plate will pool into two children by setting up a dummy stock plate
-      stock_plate = PlatePurpose.find(2).create!(:do_not_create_wells, barcode: '999999') { |p| p.wells = [create(:empty_well), create(:empty_well)] }
+      # stock_plate = PlatePurpose.find(2).create!(:do_not_create_wells, barcode: '999999') { |p| p.wells = [create(:empty_well), create(:empty_well)] }
+      stock_plate = create :full_stock_plate, well_count: 2, barcode: '999999'
       stock_wells = stock_plate.wells
 
       AssetLink.create!(ancestor: stock_plate, descendant: tube_creation.parent)
@@ -163,15 +160,21 @@ FactoryGirl.define do
   end
 
   factory(:isc_request, class: Pulldown::Requests::IscLibraryRequest, aliases: [:pulldown_isc_request]) do
-    request_type { RequestType.find_by!(name: 'Pulldown ISC') }
+    transient do
+      bait_library { BaitLibrary.first || create(:bait_library) }
+    end
+
+    association(:request_type, factory: :library_creation_request_type)
     asset        { |target| target.association(:well_with_sample_and_plate) }
     target_asset { |target| target.association(:empty_well) }
     request_purpose :standard
-    after(:build) do |request|
-      request.request_metadata.fragment_size_required_from = 100
-      request.request_metadata.fragment_size_required_to   = 400
-      request.request_metadata.bait_library                = BaitLibrary.first || create(:bait_library)
-      request.request_metadata.library_type                = create(:library_type)
+    request_metadata_attributes do
+      {
+        fragment_size_required_from: 100,
+        fragment_size_required_to: 400,
+        bait_library: bait_library,
+        library_type: create(:library_type).name
+      }
     end
   end
 

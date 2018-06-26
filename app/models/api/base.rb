@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2014,2015,2016 Genome Research Ltd.
 
 class Api::Base
   # TODO[xxx]: This class is in a state of flux at the moment, please don't hack at this too much!
@@ -60,9 +55,6 @@ class Api::Base
           helper.to_hash(value)
         end
         json_attributes.update(helper.alias.to_s => all_targets)
-      end
-      related_resources.each do |relation|
-        json_attributes[relation.to_s] = File.join(object.url, relation.to_s)
       end
       extra_json_attribute_handlers.each do |handler|
         handler.call(object, json_attributes)
@@ -140,10 +132,6 @@ class Api::Base
   def self.map_attribute_to_json_attribute(attribute, json_attribute = attribute)
     self.attribute_to_json_attribute_mappings = attribute_to_json_attribute_mappings.merge(attribute.to_sym => json_attribute.to_s)
   end
-
-  # Contains a list of resources that are related and should be exposed as URLs
-  class_attribute :related_resources
-  self.related_resources = []
 
   # Contains the mapping from the ActiveRecord association to the I/O object that can output it.
   class_attribute :associations, instance_writer: false

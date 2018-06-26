@@ -1,33 +1,25 @@
-<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2011,2012,2015 Genome Research Ltd.%>
 
 <% add :about, "Submission Inbox" -%>
 <% add :manager_option, "Start a new Submission" => new_submission_path -%>
 <% add :manager_option, "Start a Bulk Submission" => {controller: "/bulk_submissions", action: "new"} -%>
-<div class="page-header"><h1>Submissions Inbox for <%= current_user.name %></h1></div>
+<%= page_title("Submissions", current_user.name) %>
 
-<div class="sub-panel">
-  <h2><%= pluralize(@building.count, 'Submission' )%> Currently Open for Building</h2>
-  <%= render partial: "list",
-    locals: { submissions: @building }
-  %>
-</div>
+<%= panel do %>
+  <h2 class="card-title">Editable <%= pluralize(@building.count, 'Submission' )%></h2>
+  <p class="lead">Submissions which are still being edited and have not yet been submitted.</p>
+  <%= render partial: "list", locals: { submissions: @building } %>
+<% end %>
 
-<div class="sub-panel">
-  <h2><%= pluralize(@pending .count, 'Submission' )%> Closed Pending Processing</h2>
-  <%= render partial: "list",
-    locals: { submissions: @pending }
-  %>
-</div>
+<%= panel do %>
+  <h2 class="card-title">Pending <%= pluralize(@pending .count, 'Submission' )%></h2>
+  <p class="lead">Submissions which have been queued for processing, and are no longer editable.</p>
+  <%= render partial: "list", locals: { submissions: @pending } %>
+<% end %>
 
 
-<div class="sub-panel">
-  <h2>Last 10 Completed Submissions</h2>
-  <%= render partial: "list",
-    locals: { submissions: @ready }
-  %>
-</div>
+<%= panel do %>
+  <h2 class="card-title">Last 10 Completed Submissions</h2>
+  <p class="lead">The most recent submissions which have finished processing and are ready for work.</p>
+  <%= render partial: "list", locals: { submissions: @ready } %>
+<% end %>
 

@@ -1,6 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-# Copyright (C) 2007-2011,2015,2016 Genome Research Ltd.
 
 require 'test_helper'
 
@@ -59,7 +56,7 @@ class DataReleaseTest < ActiveSupport::TestCase
           @study.save!
         end
         should 'return false' do
-          assert !@study.ena_accession_required?
+          assert_not @study.ena_accession_required?
         end
       end
 
@@ -111,7 +108,7 @@ class DataReleaseTest < ActiveSupport::TestCase
                   end
 
                   should 'not required ena accession number' do
-                    assert !@study.ena_accession_required?
+                    assert_not @study.ena_accession_required?
                   end
                 end
               end

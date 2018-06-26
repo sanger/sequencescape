@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   trait :library_request_validators do
     after(:build) do |request_type|
       request_type.library_types_request_types << create(:library_types_request_type, request_type: request_type)
@@ -20,6 +20,11 @@ FactoryGirl.define do
 
     factory :customer_request_type do
       request_class CustomerRequest
+    end
+
+    factory :cherrypick_request_type do
+      request_class CherrypickRequest
+      asset_type 'Well'
     end
 
     factory :well_request_type do
@@ -51,6 +56,12 @@ FactoryGirl.define do
       after(:build) do |request_type|
         request_type.library_types_request_types << create(:library_types_request_type, request_type: request_type)
         request_type.request_type_validators << create(:library_request_type_validator, request_type: request_type)
+      end
+
+      factory :isc_library_request_type do
+        asset_type 'Well'
+        target_asset_type 'MultiplexedLibraryTube'
+        request_class Pulldown::Requests::IscLibraryRequest
       end
     end
 

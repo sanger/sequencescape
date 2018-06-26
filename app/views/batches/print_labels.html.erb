@@ -1,8 +1,3 @@
-<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2015 Genome Research Ltd.%>
 
 <% add :about, "Print labels" -%>
 <% add :back_menu, "Back to batch" => batch_path(@batch) -%>
@@ -37,7 +32,7 @@
         <% else %>
           <% @batch.requests.each do |request| -%>
             <tr>
-              <td width="35%" class="item"><%= request.target_asset.barcode %> - Tag <%= request.tag_number %></td>
+              <td width="35%" class="item"><%= request.target_asset.human_barcode %> - Tag <%= request.tag_number %></td>
               <td width="65%"><input type='checkbox' checked='on' name='printable[<%= request.id %>]'></td>
             </tr>
           <% end -%>

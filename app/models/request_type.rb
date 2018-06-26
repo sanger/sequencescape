@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 class RequestType < ApplicationRecord
   include RequestType::Validation
@@ -112,10 +107,6 @@ class RequestType < ApplicationRecord
 
   def create_control!(attributes = {}, &block)
     construct_request(:create!, attributes, ControlRequest, &block)
-  end
-
-  def self.dna_qc
-    find_by(key: 'dna_qc') or raise 'Cannot find dna_qc request type'
   end
 
   def self.genotyping

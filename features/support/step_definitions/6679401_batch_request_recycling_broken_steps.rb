@@ -1,15 +1,10 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 Given /^study "([^\"]+)" has an asset group called "([^\"]+)" with (\d+) wells$/ do |study_name, group_name, count|
   study = Study.find_by(name: study_name) or raise StandardError, "Cannot find the study #{study_name.inspect}"
 
-  plate = FactoryGirl.create(:plate)
+  plate = FactoryBot.create(:plate)
   study.asset_groups.create!(name: group_name).tap do |asset_group|
-    asset_group.assets << (1..count.to_i).map { |index| FactoryGirl.create(:well, plate: plate, map: Map.map_96wells[index - 1]) }
+    asset_group.assets << (1..count.to_i).map { |index| FactoryBot.create(:well, plate: plate, map: Map.map_96wells[index - 1]) }
   end
 end
 
@@ -34,7 +29,7 @@ Then /^the batch (input|output) asset table should be:$/ do |name, expected_tabl
 end
 
 Given /^the plate template "([^\"]+)" exists$/ do |name|
-  FactoryGirl.create(:plate_template, name: name)
+  FactoryBot.create(:plate_template, name: name)
 end
 
 # This is a complete hack to get this to work: it knows where the wells are and goes to get them.  It knows
@@ -62,32 +57,31 @@ def build_batch_for(name, count)
   pipeline           = Pipeline.find_by(name: name) or raise StandardError, "Cannot find pipeline #{name.inspect}"
   submission_details = yield(pipeline)
 
-  user = FactoryGirl.create(:user)
+  user = FactoryBot.create(:user)
 
   assets = Array.new(count.to_i) do
     asset_attributes = {}
     if submission_details.key?(:holder_type)
-      asset_attributes[:plate] = FactoryGirl.create(submission_details[:holder_type], :scanned_into_lab)
+      asset_attributes[:plate] = FactoryBot.create(submission_details[:holder_type], :scanned_into_lab)
       asset_attributes[:map_id] = 1
     end
-    FactoryGirl.create(submission_details[:asset_type], :scanned_into_lab, asset_attributes)
+    FactoryBot.create(submission_details[:asset_type], :scanned_into_lab, asset_attributes)
   end
 
   rts = pipeline.request_types.reject(&:deprecated?).map(&:id)
   # Build a submission that should end up in the appropriate inbox, once all of the assets have been
   # deemed as scanned into the lab!
-  LinearSubmission.build!(
-    study: FactoryGirl.create(:study),
-    project: FactoryGirl.create(:project),
-    user: user,
+  FactoryBot.create(:linear_submission,
+                    study: FactoryBot.create(:study),
+                    project: FactoryBot.create(:project),
+                    user: user,
 
-    # Setup the assets so that they have samples and they are scanned into the correct lab.
-    assets: assets,
-    request_types: [rts.first],
+                    # Setup the assets so that they have samples and they are scanned into the correct lab.
+                    assets: assets,
+                    request_types: [rts.first],
 
-    # Request parameter options
-    request_options: submission_details[:request_options]
-  )
+                    # Request parameter options
+                    request_options: submission_details[:request_options]).submission.built!
   step('all pending delayed jobs are processed')
 
   # step build a batch that will hold all of these requests, ensuring that it appears to be at least started
@@ -170,7 +164,6 @@ end
 
 GENOTYPING_PIPELINES = [
   'Manual Quality Control',
-  'DNA QC',
   'Cherrypick',
   'Genotyping'
 ].map(&Regexp.method(:escape)).join('|')

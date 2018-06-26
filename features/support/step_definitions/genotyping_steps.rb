@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
 
 Then(/^I should see dna qc table:$/) do |expected_results_table|
   actual_table = table(fetch_table('table#sortable_batches'))
@@ -11,16 +6,16 @@ Then(/^I should see dna qc table:$/) do |expected_results_table|
 end
 
 Given(/^a plate template exists$/) do
-  FactoryGirl.create :plate_template
+  FactoryBot.create :plate_template
 end
 
 Given(/^a robot exists$/) do
-  robot = FactoryGirl.create :robot
+  robot = FactoryBot.create :robot
   robot.robot_properties.create(key: 'max_plates', value: '21')
 end
 
 Given(/^I have a plate "([^"]*)" in study "([^"]*)" with (\d+) samples in asset group "([^"]*)"$/) do |plate_barcode, study_name, number_of_samples, asset_group_name|
-  purpose = FactoryGirl.create :plate_purpose
+  purpose = FactoryBot.create :plate_purpose
   purpose_name = purpose.name
   step(%Q{I have a "#{purpose_name}" plate "#{plate_barcode}" in study "#{study_name}" with #{number_of_samples} samples in asset group "#{asset_group_name}"})
 end
@@ -28,12 +23,12 @@ end
 Given(/^I have a "([^"]*)" plate "([^"]*)" in study "([^"]*)" with (\d+) samples in asset group "([^"]*)"$/) do |purpose_name, plate_barcode, study_name, number_of_samples, asset_group_name|
   study = Study.find_by(name: study_name)
   purpose = Purpose.find_by(name: purpose_name)
-  plate = FactoryGirl.create(:plate, purpose: purpose, barcode: plate_barcode)
+  plate = FactoryBot.create(:plate, purpose: purpose, barcode: plate_barcode)
 
   asset_group = study.asset_groups.find_by(name: asset_group_name) || study.asset_groups.create!(name: asset_group_name)
   asset_group.assets << (1..number_of_samples.to_i).map do |index|
-    FactoryGirl.create(:well, plate: plate, map_id: index).tap do |well|
-      well.aliquots.create!(sample: FactoryGirl.create(:sample, name: "Sample_#{plate_barcode}_#{index}"),
+    FactoryBot.create(:well, plate: plate, map_id: index).tap do |well|
+      well.aliquots.create!(sample: FactoryBot.create(:sample, name: "Sample_#{plate_barcode}_#{index}"),
                             study: study)
     end
   end
@@ -54,7 +49,7 @@ Given(/^I have a cherrypicking batch with (\d+) samples$/) do |number_of_samples
 end
 
 Given(/^a robot exists with barcode "([^"]*)"$/) do |robot_barcode|
-  robot = FactoryGirl.create :robot, barcode: robot_barcode
+  robot = FactoryBot.create :robot, barcode: robot_barcode
   robot.robot_properties.create(key: 'max_plates', value: '21')
   robot.robot_properties.create(key: 'SCRC1', value: '1')
   robot.robot_properties.create(key: 'SCRC2', value: '2')
@@ -90,16 +85,12 @@ end
 Given(/^well "([^"]*)" has a genotyping status of "([^"]*)"$/) do |uuid, genotyping_status|
   well = Uuid.find_by(external_id: uuid).resource
 
-  sample = FactoryGirl.create(:sample, name: 'Testing_the_JSON_API')
+  sample = FactoryBot.create(:sample, name: 'Testing_the_JSON_API')
   sample.external_properties.create!(key: 'genotyping_done', value: genotyping_status)
   sample.external_properties.create!(key: 'genotyping_snp_plate_id')
 
   well.aliquots.clear
   well.aliquots.create!(sample: sample)
-end
-
-Given(/^I have a DNA QC submission for plate "([^"]*)"$/) do |plate_barcode|
-  step %Q{I have a "DNA QC" submission for plate "#{plate_barcode}" with project "Test project" and study "Study B"}
 end
 
 Given(/^I have a "([^"]*)" submission for plate "([^"]*)" with project "([^"]*)" and study "([^"]*)"$/) do |submission_template_name, plate_barcode, project_name, study_name|
@@ -110,17 +101,16 @@ Given(/^I have a "([^"]*)" submission for plate "([^"]*)" with project "([^"]*)"
   # Maintain the order of the wells as though they have been submitted by the user, rather than
   # relying on the ordering within sequencescape.  Some of the plates are created with less than
   # the total wells needed (which is bad).
-  wells = []
-  plate.wells.walk_in_column_major_order { |well, _| wells << well }
-  wells.compact!
+  wells = plate.wells.in_column_major_order.to_a
 
   submission_template = SubmissionTemplate.find_by(name: submission_template_name)
-  submission = submission_template.create_and_build_submission!(
+  order = submission_template.create_with_submission!(
     study: study,
     project: project,
     user: User.last,
     assets: wells
   )
+  order.submission.built!
   step('1 pending delayed jobs are processed')
 end
 
@@ -130,11 +120,12 @@ Given(/^I have a Cherrypicking submission for asset group "([^"]*)"$/) do |asset
   asset_group = AssetGroup.find_by(name: asset_group_name)
 
   submission_template = SubmissionTemplate.find_by(name: 'Cherrypick')
-  submission = submission_template.create_and_build_submission!(
+  order = submission_template.create_with_submission!(
     study: study,
     project: project,
     user: User.last,
     assets: asset_group.assets
   )
+  order.submission.built!
   step('1 pending delayed jobs are processed')
 end

@@ -7,7 +7,7 @@
 # especially if you change them, otherwise merges could get messy.
 
 # The factories in here, at time of writing could do with a bit of TLC.
-FactoryGirl.define do
+FactoryBot.define do
   # Allows a plate to automatically generate wells. Invluded in most plate factories already
   # If you inherit from the standard plate, you do not need to include this.
   trait :with_wells do
@@ -113,6 +113,8 @@ FactoryGirl.define do
     factory :plate_with_wells_for_specified_studies do
       transient do
         studies { create_list(:study, 2) }
+        project nil
+
         occupied_map_locations do
           Map.where_plate_size(size).where_plate_shape(AssetShape.default).where(well_order => (0...studies.size))
         end
@@ -121,7 +123,7 @@ FactoryGirl.define do
 
       after(:create) do |plate, evaluator|
         plate.wells = evaluator.occupied_map_locations.map.with_index do |map, i|
-          create(:well_for_location_report, map: map, study: evaluator.studies[i])
+          create(:well_for_location_report, map: map, study: evaluator.studies[i], project: nil)
         end
       end
     end
@@ -195,42 +197,34 @@ FactoryGirl.define do
   end
 
   factory :control_plate, traits: [:plate_barcode, :with_wells] do
-    plate_purpose { PlatePurpose.find_by(name: 'Stock plate') }
+    plate_purpose
     name 'Control Plate name'
   end
 
-  factory :dilution_plate, traits: [:plate_barcode, :with_wells] do
-    plate_purpose { PlatePurpose.find_by!(name: 'Stock plate') }
-    size 96
-  end
-  factory :gel_dilution_plate, traits: [:plate_barcode, :with_wells] do
-    plate_purpose { PlatePurpose.find_by!(name: 'Gel Dilution') }
-    size 96
-  end
   factory :pico_assay_plate, traits: [:plate_barcode, :with_wells] do
-    plate_purpose { PlatePurpose.find_by!(name: 'Stock plate') }
+    plate_purpose
     size 96
 
     factory :pico_assay_a_plate, traits: [:plate_barcode, :with_wells] do
-      plate_purpose { PlatePurpose.find_by!(name: 'Pico Assay A') }
+      plate_purpose
       size 96
     end
     factory :pico_assay_b_plate, traits: [:plate_barcode, :with_wells] do
-      plate_purpose { PlatePurpose.find_by!(name: 'Pico Assay B') }
+      plate_purpose
       size 96
     end
   end
   factory :pico_dilution_plate, traits: [:plate_barcode, :with_wells] do
-    plate_purpose { PlatePurpose.find_by!(name: 'Pico Dilution') }
+    plate_purpose
     size 96
   end
   factory :sequenom_qc_plate, traits: [:plate_barcode, :with_wells] do
     sequence(:name) { |i| "Sequenom #{i}" }
-    plate_purpose { PlatePurpose.find_by!(name: 'Sequenom') }
+    plate_purpose
     size 96
   end
   factory :working_dilution_plate, traits: [:plate_barcode, :with_wells] do
-    plate_purpose { PlatePurpose.find_by!(name: 'Working Dilution') }
+    plate_purpose
     size 96
   end
 

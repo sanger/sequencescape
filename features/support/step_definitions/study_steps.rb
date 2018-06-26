@@ -1,11 +1,6 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2013,2015,2016 Genome Research Ltd.
 
 Given /^I have a study called "([^\"]*)"$/ do |study|
-  FactoryGirl.create :study, name: study, state: 'pending'
+  FactoryBot.create :study, name: study, state: 'pending'
 end
 
 Given /^a study "(.*?)" is pending$/ do |study|
@@ -26,7 +21,7 @@ end
 Given /^study "([^\"]*)" has assets registered$/ do |study|
   proj = Study.find_by(name: study)
   user = User.find_by login: 'user'
-  new_sample_group = FactoryGirl.create :asset_group, name: 'new_asset_group', user: user, study: proj
+  new_sample_group = FactoryBot.create :asset_group, name: 'new_asset_group', user: user, study: proj
 end
 
 Given /^the following user records$/ do |table|
@@ -35,7 +30,7 @@ Given /^the following user records$/ do |table|
       usr.first_name = hash['first_name']
       usr.last_name = hash['last_name']
     else
-      usr = FactoryGirl.create(:user, hash)
+      usr = FactoryBot.create(:user, hash)
     end
     usr.save
   end
@@ -45,8 +40,8 @@ Given /^user "([^\"]*)" is an? "([^\"]*)" of study "([^\"]*)"$/ do |login, role_
   proj = Study.find_by(name: study)
   role = Role.find_by(name: role_name, authorizable_type: 'Study', authorizable_id: proj.id)
   if role.nil?
-    role = FactoryGirl.create :role, name: role_name, authorizable_type: 'Study',
-                                     authorizable_id: proj.id, created_at: Time.now, updated_at: Time.now
+    role = FactoryBot.create :role, name: role_name, authorizable_type: 'Study',
+                                    authorizable_id: proj.id, created_at: Time.now, updated_at: Time.now
   end
   usr = User.find_by(login: login)
   usr.roles << role
@@ -164,9 +159,9 @@ Given /^study "([^\"]*)" has asset and assetgroup$/ do |study|
   proj = Study.find_by(name: study)
   user = User.find_by login: 'user'
 
-  id_asset_group = FactoryGirl.create :asset_group, user: user, study: proj
-  id_asset = FactoryGirl.create :sample_tube, name: 'Cucumberirbattle', barcode: 'barcode', closed: '0'
-  id_aga = FactoryGirl.create :asset_group_asset, asset_id: id_asset.id, asset_group_id: id_asset_group.id
+  id_asset_group = FactoryBot.create :asset_group, user: user, study: proj
+  id_asset = FactoryBot.create :sample_tube, name: 'Cucumberirbattle', barcode: 'barcode', closed: '0'
+  id_aga = FactoryBot.create :asset_group_asset, asset_id: id_asset.id, asset_group_id: id_asset_group.id
 end
 
 Given /^study "([^\"]*)" has an accession number$/ do |name|
@@ -177,7 +172,7 @@ Given /^study "([^\"]*)" has an accession number$/ do |name|
 end
 
 Given /^a study will appear in the study list "([^\"]+)"$/ do |study_list|
-  FactoryGirl.create(:"study_for_study_list_#{ study_list.downcase.gsub(/[^a-z0-9]+/, '_') }", user: User.find_by(login: 'listing_studies_user'))
+  FactoryBot.create(:"study_for_study_list_#{ study_list.downcase.gsub(/[^a-z0-9]+/, '_') }", user: User.find_by(login: 'listing_studies_user'))
 end
 
 Then /^I should see the study for study list "([^\"]+)"$/ do |study_list|
@@ -223,7 +218,7 @@ end
 
 Given /^the study "([^\"]+)" has a (library tube) called "([^\"]+)"$/ do |study_name, asset_model, asset_name|
   study = Study.find_by(name: study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
-  asset = FactoryGirl.create(asset_model.gsub(/\s+/, '_').to_sym, name: asset_name)
+  asset = FactoryBot.create(asset_model.gsub(/\s+/, '_').to_sym, name: asset_name)
   step %Q(the asset "#{asset_name}" belongs to study "#{study_name}")
 end
 
@@ -304,7 +299,7 @@ When /^I have an? (managed|open) study without a data release group called "(.*?
     name: study_name,
     study_metadata_attributes: {
       program: Program.find_by(name: 'General'),
-      faculty_sponsor: FactoryGirl.create(:faculty_sponsor),
+      faculty_sponsor: FactoryBot.create(:faculty_sponsor),
       study_type: StudyType.last,
       data_release_strategy: managed,
       study_description: 'blah',

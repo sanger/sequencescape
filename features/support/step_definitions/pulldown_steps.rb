@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2011,2012,2013,2014,2015 Genome Research Ltd.
 
 Transform /^submitted to "([^\"]+)"$/ do |name|
   SubmissionTemplate.find_by(name: name) or raise StandardError, "Cannot find submission template #{name.inspect}"
@@ -50,13 +45,13 @@ Transform /^([A-H]\d+)-([A-H]\d+)$/ do |start, finish|
 end
 
 def create_submission_of_assets(template, assets, request_options = {})
-  template.create_and_build_submission!(
-    user: FactoryGirl.create(:user),
-    study: FactoryGirl.create(:study),
-    project: FactoryGirl.create(:project),
+  template.create_with_submission!(
+    user: FactoryBot.create(:user),
+    study: FactoryBot.create(:study),
+    project: FactoryBot.create(:project),
     assets: assets,
     request_options: request_options
-  )
+  ).submission.built!
   step 'all pending delayed jobs are processed'
 end
 
@@ -72,9 +67,9 @@ Given /^"([^\"]+)" of (the plate .+) have been (submitted to "[^"]+")$/ do |rang
 end
 
 Given /^"([^\"]+)" of (the plate .+) are part of the same submission$/ do |range, plate|
-  submission = FactoryGirl.create :submission
+  submission = FactoryBot.create :submission
   plate.wells.select(&range.method(:include?)).each do |well|
-    FactoryGirl.create :transfer_request, submission: submission, target_asset: well
+    FactoryBot.create :transfer_request, submission: submission, target_asset: well
   end
 end
 
@@ -115,13 +110,13 @@ def work_pipeline_for(submissions, name, template = nil)
   source_plate = source_plates.first
 
   source_plate.wells.with_aliquots.each do |w|
-    FactoryGirl.create(:tag).tag!(w) unless w.primary_aliquot.tag.present? # Ensure wells are tagged
+    FactoryBot.create(:tag).tag!(w) unless w.primary_aliquot.tag.present? # Ensure wells are tagged
     w.requests_as_source.first.start! # Ensure request is considered started
   end
 
   final_plate_type.create!.tap do |final_plate|
     AssetLink.create!(ancestor: source_plate, descendant: final_plate)
-    template.create!(source: source_plate, destination: final_plate, user: FactoryGirl.create(:user))
+    template.create!(source: source_plate, destination: final_plate, user: FactoryBot.create(:user))
   end
 end
 
@@ -206,16 +201,16 @@ Given /^all transfer requests are in the last submission$/ do
 end
 
 Given /^(the plate .+) will pool into 1 tube$/ do |plate|
-  stock_plate = PlatePurpose.find(2).create!(:do_not_create_wells) { |p| p.wells = [FactoryGirl.create(:empty_well)] }
+  stock_plate = PlatePurpose.find(2).create!(:do_not_create_wells) { |p| p.wells = [FactoryBot.create(:empty_well)] }
   stock_well  = stock_plate.wells.first
-  submission  = Submission.create!(user: FactoryGirl.create(:user))
+  submission  = Submission.create!(user: FactoryBot.create(:user))
 
   AssetLink.create!(ancestor: stock_plate, descendant: plate)
 
   plate.wells.in_column_major_order.readonly(false).each do |well|
-    FactoryGirl.create(:transfer_request, asset: stock_well, target_asset: well, submission: submission)
+    FactoryBot.create(:transfer_request, asset: stock_well, target_asset: well, submission: submission)
     well.stock_wells.attach!([stock_well])
-    FactoryGirl.create :library_creation_request, asset: stock_well, target_asset: well, submission: submission
+    FactoryBot.create :library_creation_request, asset: stock_well, target_asset: well, submission: submission
   end
 end
 

@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 Sequencescape::Application.routes.draw do
   root to: 'homes#show'
@@ -509,94 +504,6 @@ Sequencescape::Application.routes.draw do
     collection do
       get :lab
       get :qc_overview
-    end
-  end
-
-  scope '0_5', module: 'api' do
-    resources 'asset_audits', only: [:index, :show]
-    resources 'asset_links', only: [:index, :show]
-    resources 'batch_requests', only: [:index, :show]
-    resources 'batches', only: [:index, :show] do
-      member do
-        get :children
-        get :parents
-      end
-    end
-    resources 'billing_events', only: [:index, :show]
-    resources 'events', only: [:index, :show]
-    resources 'lanes', only: [:index, :show] do
-      member do
-        get :children
-        get :parents
-      end
-    end
-    resources 'library_tubes', only: [:index, :show] do
-      member do
-        get :children
-        get :parents
-      end
-
-      resources 'lanes', only: [:index, :show]
-      resources 'requests', only: [:index, :show]
-    end
-    resources 'multiplexed_library_tubes', only: [:index, :show] do
-      member do
-        get :children
-        get :parents
-      end
-    end
-    resources 'pulldown_multiplexed_library_tubes', only: [:index, :show]
-    resources 'plate_purposes', only: [:index, :show]
-
-    resources 'plates', only: [:index, :show] do
-      member do
-        get :children
-        get :parents
-      end
-    end
-
-    resources 'sample_tubes', only: [:index, :show] do
-      resources 'library_tubes', only: [:index, :show]
-      resources 'requests', only: [:index, :show]
-      member do
-        get :children
-        get :parents
-      end
-    end
-
-    resources 'study_samples', only: [:index, :show]
-    resources 'submissions', only: [:index, :show] do
-      resources 'orders', only: [:index, :show]
-    end
-    resources 'orders', only: [:index, :show]
-    resources 'tags', only: [:index, :show]
-    resources 'wells', only: [:index, :show] do
-      member do
-        get :children
-        get :parents
-      end
-    end
-    resources 'aliquots', only: [:index, :show]
-
-    resources 'projects', except: :destroy do
-      resources 'studies', except: :destroy
-    end
-    resources 'requests', except: :destroy
-    resources 'samples', except: :destroy do
-      member do
-        get :children
-        get :parents
-      end
-      resources 'sample_tubes', only: [:index, :show] do
-        member do
-          get :children
-          get :parents
-        end
-      end
-    end
-    resources 'studies', except: :destroy do
-      resources 'samples', except: :destroy
-      resources 'projects', except: :destroy
     end
   end
 

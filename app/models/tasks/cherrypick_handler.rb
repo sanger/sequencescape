@@ -1,11 +1,5 @@
 # frozen_string_literal: true
 
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2012,2013,2014,2015 Genome Research Ltd.
-
 # Gets included in the workflows controller and processed cherrypicking
 # CAUTION! This pattern is best avoided.
 module Tasks::CherrypickHandler
@@ -143,8 +137,9 @@ module Tasks::CherrypickHandler
         # be needing to create a new one.
         plate = partial_plate
         if plate.nil?
-          barcode = { prefix: plate_purpose.prefix, number: PlateBarcode.create.barcode }
-          plate   = plate_purpose.create!(:do_not_create_wells, name: "Cherrypicked #{barcode}", size: size, sanger_barcode: barcode) do |new_plate|
+          barcode_number = PlateBarcode.create.barcode
+          barcode = { prefix: plate_purpose.prefix, number: barcode_number }
+          plate   = plate_purpose.create!(:do_not_create_wells, name: "Cherrypicked #{barcode_number}", size: size, sanger_barcode: barcode) do |new_plate|
             new_plate.fluidigm_barcode = fluidigm_plate if fluidigm_plate.present?
           end
         end

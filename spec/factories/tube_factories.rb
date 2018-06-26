@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'factory_girl'
+require 'factory_bot'
 
-FactoryGirl.define do
+FactoryBot.define do
   trait :scanned_into_lab do
     after(:build) do |asset, _evaluator|
       asset.create_scanned_into_lab_event!(content: '2018-01-01')
@@ -58,8 +58,15 @@ FactoryGirl.define do
   factory :qc_tube, traits: [:tube_barcode]
 
   factory :multiplexed_library_tube, traits: [:tube_barcode] do
-    name { |_a| generate :asset_name }
-    association(:purpose, factory: :mx_tube_purpose) # { Tube::Purpose.standard_mx_tube }
+    transient do
+      sample_count 0
+    end
+
+    name { generate :asset_name }
+    association(:purpose, factory: :mx_tube_purpose)
+    after(:build) do |tube, evaluator|
+      tube.aliquots = build_list(:tagged_aliquot, evaluator.sample_count) unless evaluator.sample_count == 0
+    end
   end
 
   factory :pulldown_multiplexed_library_tube, traits: [:tube_barcode] do
@@ -86,7 +93,8 @@ FactoryGirl.define do
       aliquot_factory { :untagged_aliquot }
     end
 
-    after(:create) do |library_tube, evaluator|
+    after(:build) do |library_tube, evaluator|
+      next if evaluator.sample_count.zero?
       library_tube.aliquots = evaluator.samples.map { |s| create(evaluator.aliquot_factory, sample: s, library_type: 'Standard', receptacle: library_tube) }
     end
 
@@ -139,7 +147,7 @@ FactoryGirl.define do
   # relationships.
   factory :full_multiplexed_library_tube, parent: :multiplexed_library_tube do
     after(:create) do |tube|
-      tube.parents << (1..5).map { |_| create(:multiplexed_library_creation_request).target_asset }
+      tube.parents << Array.new(5) { create(:multiplexed_library_creation_request, target_asset: tube).asset }
     end
   end
 

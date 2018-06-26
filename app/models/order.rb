@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2011,2012,2013,2014,2015,2016 Genome Research Ltd.
 
 class Order < ApplicationRecord
   module InstanceMethods
@@ -95,8 +90,6 @@ class Order < ApplicationRecord
   validate :assets_are_appropriate
   validate :no_consent_withdrawl
 
-  # validates_presence_of :submission
-
   before_destroy :is_building_submission?
   after_destroy :on_delete_destroy_submission
 
@@ -125,22 +118,11 @@ class Order < ApplicationRecord
     def render_class
       Api::OrderIO
     end
-
-    # TODO[xxx]: I don't like the name but this should disappear once the UI has been fixed
-    def prepare!(options)
-      constructor = options.delete(:template) || self
-      constructor.create_order!(options.merge(assets: options.fetch(:assets, [])))
-    end
-
-    # only needed to note
-    def build!(options)
-      # call submission with appropriate Order subclass
-      Submission.build!({ template: self }.merge(options))
-    end
   end
 
+  # We can't destroy orders once the submission has been finalized for building
   def is_building_submission?
-    submission.building?
+    throw :abort unless submission.building?
   end
 
   def on_delete_destroy_submission
@@ -179,10 +161,9 @@ class Order < ApplicationRecord
     assets
   end
 
-  def url_name
+  def json_root
     'order'
   end
-  alias_method(:json_root, :url_name)
 
   def asset_uuids
     assets.select { |asset| asset.present? }.map(&:uuid) if assets
@@ -222,7 +203,11 @@ class Order < ApplicationRecord
   end
 
   def duplicates_within(timespan)
-    matching_orders = Order.containing_samples(all_samples).where(template_name: template_name).includes(:submission, assets: :samples).where('orders.id != ?', id).where('orders.created_at > ?', DateTime.current - timespan)
+    matching_orders = Order.containing_samples(all_samples)
+                           .where(template_name: template_name)
+                           .includes(:submission, assets: :samples)
+                           .where.not(orders: { id: id })
+                           .where('orders.created_at > ?', DateTime.current - timespan)
     return false if matching_orders.empty?
     matching_samples = matching_orders.map(&:samples).flatten & all_samples
     matching_submissions = matching_orders.map(&:submission).uniq

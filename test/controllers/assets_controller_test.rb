@@ -1,8 +1,3 @@
-# This file is part of SEQUENCESCAPE; it is distributed under the terms of
-# GNU General Public License version 1 or later;
-# Please refer to the LICENSE and README files for information on licensing and
-# authorship of this file.
-# Copyright (C) 2007-2011,2013,2015 Genome Research Ltd.
 
 require 'test_helper'
 
@@ -18,10 +13,10 @@ class AssetsControllerTest < ActionController::TestCase
 
   context '#create a new asset with JSON input' do
     setup do
-      FactoryGirl.create(:sample, name: 'phiX_for_spiked_buffers') # Required by controller
+      FactoryBot.create(:sample, name: 'phiX_for_spiked_buffers') # Required by controller
       @asset_count = Asset.count
 
-      @barcode = { number: FactoryGirl.generate(:barcode_number), prefix: 'NT' }
+      @barcode = { number: FactoryBot.generate(:barcode_number), prefix: 'NT' }
 
       @json_data = json_new_asset(@barcode)
 

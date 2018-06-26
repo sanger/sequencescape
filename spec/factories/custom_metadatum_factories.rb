@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :custom_metadatum do
     sequence(:key) { |n| "Key #{n}" }
     value 'a bit of metadata'
