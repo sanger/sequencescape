@@ -4,8 +4,6 @@
 # maximum block size in the todo yaml.
 unless Rails.env.test?
   ActiveRecord::Base.transaction do
-    cherrypick = RequestType.find_by(name: 'Cherrypicking for Pulldown') or raise StandardError, 'Cannot find Cherrypicking for Pulldown request type'
-
     pipeline_name = 'Illumina-B STD'
 
     IlluminaB::PlatePurposes.create_tube_purposes
@@ -127,7 +125,7 @@ unless Rails.env.test?
 
       RequestType.where(name: sequencing_request_type_names_for('Illumina-B')).find_each do |sequencing_request_type|
         submission                   = LinearSubmission.new
-        submission.request_type_ids  = [cherrypick.id, pulldown_request_types.map(&:id), sequencing_request_type.id].flatten
+        submission.request_type_ids  = [pulldown_request_types.map(&:id), sequencing_request_type.id].flatten
         submission.info_differential = nil
         submission.request_options   = defaults
         submission.request_type_ids  = [pulldown_request_types.map(&:id), sequencing_request_type.id].flatten
@@ -144,7 +142,7 @@ unless Rails.env.test?
 
       RequestType.where(name: sequencing_request_type_names_for('Illumina-A')).find_each do |sequencing_request_type|
         submission                   = LinearSubmission.new
-        submission.request_type_ids  = [cherrypick.id, pulldown_request_types.map(&:id), sequencing_request_type.id].flatten
+        submission.request_type_ids  = [pulldown_request_types.map(&:id), sequencing_request_type.id].flatten
         submission.info_differential = nil
         submission.request_options   = defaults
 

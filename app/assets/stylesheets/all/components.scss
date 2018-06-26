@@ -110,3 +110,9 @@ nav.toc {
     span { @extend .page-link; }
   }
 }
+
+dl.order-summary {
+  @extend .row;
+  dt { @extend .col-2; text-align: right }
+  dd { @extend .col-10; }
+}

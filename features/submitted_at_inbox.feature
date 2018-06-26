@@ -10,9 +10,3 @@ Feature: Sequencing pipelines should display submitted at date.
     Given I am on the show page for pipeline "HiSeq Cluster formation PE (spiked in controls)"
     And I should see "Submitted at"
     And I should see "2010-10-23"
-
-  Scenario: Grouped Sequencing page
-    Given Pipeline "HiSeq X PE (spiked in controls) from strip-tubes" and a setup for submitted at
-    Given I am on the show page for pipeline "HiSeq X PE (spiked in controls) from strip-tubes"
-    And I should see "Submitted at"
-    And I should see "2010-10-23"

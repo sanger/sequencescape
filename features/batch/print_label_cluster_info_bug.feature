@@ -21,4 +21,3 @@ Feature: Change the side links in a batch depending on the pipeline
       | Genotyping                        | should not see | should not see | should see      |
       | Illumina-B MX Library Preparation | should not see | should see     | should see      |
       | Cherrypick                        | should not see | should not see | should see      |
-      | DNA QC                            | should not see | should not see | should see      |

@@ -19,7 +19,7 @@
       <tr>
         <td><%= link_to study.name, study_path(study) %></td>
         <td><%= link_to plate.name, show_plate_asset_path(plate) %></td>
-        <td><label style="display:none" for="barcodes_<%= plate.id %>">Infinium barcode for plate <%= plate.barcode %></label><%= text_field_tag "barcodes[#{plate.id}]" %></td>
+        <td><%= text_field_tag "barcodes[#{plate.id}]" %></td>
       </tr>
     <% end %>
   <% end %>
