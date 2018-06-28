@@ -3,7 +3,7 @@ require_dependency 'broadcast_event/lab_event'
 class LabEvent < ApplicationRecord
   include ActsAsDescriptable
 
-  CHIP_BARCODE_STEPS = ['Cluster generation', 'Add flowcell chip barcode', 'Loading']
+  CHIP_BARCODE_STEPS = ['Cluster generation', 'Add flowcell chip barcode', 'Loading'].freeze
 
   belongs_to :batch
   belongs_to :user
