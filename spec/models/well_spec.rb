@@ -125,6 +125,12 @@ describe Well do
         expect(well.events.reload.last.content).to eq 'assay 1'
       end
     end
+    context 'key: RIN' do
+      let(:key) { 'RIN' }
+      let(:units) { 'RIN' }
+      let(:value) { 6 }
+      it { expect(well.get_rin).to eq(6) }
+    end
   end
 
   it 'return a correct hash of target wells' do

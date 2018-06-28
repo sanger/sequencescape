@@ -1,5 +1,12 @@
+# frozen_string_literal: true
+
 class Parsers::BioanalysisCsvParser
   class InvalidFile < StandardError; end
+
+  class_attribute :assay_type, :assay_version
+
+  self.assay_type = 'bioanalyser'
+  self.assay_version = 'v0.1'
 
   attr_reader :content
 
@@ -138,8 +145,8 @@ class Parsers::BioanalysisCsvParser
   def each_well_and_parameters
     parsed_content.each do |well, values|
       yield(well, {
-        set_concentration: values[:peak_table][field_name_for(:concentration)],
-        set_molarity: values[:peak_table][field_name_for(:molarity)]
+        'Concentration' => Unit.new(values[:peak_table][field_name_for(:concentration)], 'ng/ul'),
+        'Molarity' => Unit.new(values[:peak_table][field_name_for(:molarity)], 'nmol/l')
       })
     end
   end

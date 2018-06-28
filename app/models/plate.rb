@@ -583,15 +583,15 @@ class Plate < Asset
     @well_hash ||= wells.include_map.includes(:well_attribute).index_by(&:map_description)
   end
 
-  def update_qc_values_with_parser(parser, scale: nil)
+  def update_qc_values_with_parser(parser)
     ActiveRecord::Base.transaction do
+      qc_assay = QcAssay.new
       parser.each_well_and_parameters do |position, well_updates|
         # We might have a nil well if a plate was only partially cherrypicked
-        well = well_hash[position]
-        scale ||= well_updates.keys.map { |k| [k, 1] }
-        next if well.nil?
-        well.update_qc_values_with_hash(well_updates, scale)
-        well.save!
+        well = well_hash[position] || next
+        well_updates.each do |attribute, value|
+          QcResult.create!(asset: well, key: attribute, unit_value: value, assay_type: parser.assay_type, assay_version: parser.assay_version, qc_assay: qc_assay)
+        end
       end
     end
     true
