@@ -30,14 +30,6 @@ Given(/^plate "([^"]*)" has measured volume results$/) do |plate_barcode|
   end
 end
 
-Then /^I should see the cherrypick worksheet table:$/ do |expected_results_table|
-  actual_table = table(fetch_table('table.plate_layout'))
-  expected_results_table.column_names.each do |column_name|
-    expected_results_table.map_column!(column_name.to_s) { |text| text.squish }
-  end
-  expected_results_table.diff!(actual_table)
-end
-
 Given(/^I have a tag group called "([^"]*)" with (\d+) tags$/) do |tag_group_name, number_of_tags|
   oligos = %w(ATCACG CGATGT TTAGGC TGACCA)
   tag_group = TagGroup.create!(name: tag_group_name)

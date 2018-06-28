@@ -109,10 +109,6 @@ class RequestType < ApplicationRecord
     construct_request(:create!, attributes, ControlRequest, &block)
   end
 
-  def self.dna_qc
-    find_by(key: 'dna_qc') or raise 'Cannot find dna_qc request type'
-  end
-
   def self.genotyping
     find_by(key: 'genotyping') or raise 'Cannot find genotyping request type'
   end

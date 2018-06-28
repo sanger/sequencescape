@@ -1,6 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe Aker::Factories::Material, type: :model, aker: true do
+  include BarcodeHelper
+  before do
+    mock_plate_barcode_service
+  end
+
   let(:json) do
     file = File.read(File.join('spec', 'data', 'aker', 'job.json'))
     JSON.parse(file).with_indifferent_access
@@ -14,7 +19,7 @@ RSpec.describe Aker::Factories::Material, type: :model, aker: true do
 
   it 'is valid with all relevant attributes' do
     material = Aker::Factories::Material.new(params)
-    material.container = Aker::Factories::Container.new(container_params)
+    material.container = Aker::Factories::Container.new(container_params.merge(address: params[:address]))
     material.create
 
     expect(material).to be_valid
@@ -43,7 +48,7 @@ RSpec.describe Aker::Factories::Material, type: :model, aker: true do
 
   it 'is not valid unless the container is valid' do
     material = Aker::Factories::Material.new(params)
-    material.container = Aker::Factories::Container.new(container_params.except(:barcode))
+    material.container = Aker::Factories::Container.new(container_params.merge(address: params[:address]).except(:barcode))
     material.create
 
     expect(material).to_not be_valid
@@ -51,7 +56,7 @@ RSpec.describe Aker::Factories::Material, type: :model, aker: true do
 
   it '#create persists the material if it is valid' do
     material = Aker::Factories::Material.new(params)
-    material.container = Aker::Factories::Container.new(container_params)
+    material.container = Aker::Factories::Container.new(container_params.merge(address: params[:address]))
     material.create
     expect(material).to be_present
     sample = Sample.find_by(name: material.name)

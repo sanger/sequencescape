@@ -1,4 +1,5 @@
+# frozen_string_literal: true
 
-class QcPipeline < Pipeline
-  self.inbox_partial = 'deprecated_inbox'
+# Deprecated 22nd March 2017
+class QcPipeline < LegacyPipeline
 end

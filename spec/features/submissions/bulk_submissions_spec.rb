@@ -23,9 +23,7 @@ feature 'Bulk submission', js: false do
   shared_examples 'bulk submission file upload' do
     it 'allows file upload' do
       process_submission(file_name, encoding)
-      Array[expected_content].flatten.each do |content|
-        expect(page).to have_content content
-      end
+      expect(page).to have_content expected_content
       expect(Submission.count).to eq(submission_count) if submission_count
     end
   end
@@ -58,19 +56,30 @@ feature 'Bulk submission', js: false do
 
       context 'Uploading a valid file with 1 submission' do
         let(:file_name) { '1_valid_rows.csv' }
-        let(:expected_content) { ['Your bulk submission has been processed', 'Your bulk submission has been processed.'] }
+        let(:expected_content) { 'Your bulk submission has been processed.' }
+        it_behaves_like 'bulk submission file upload'
+
+        it 'sets bait library' do
+        end
+      end
+
+      context 'With an empty column' do
+        # Files can have empty columns appended onto the end.
+        # We should just ignore these.
+        let(:template_name) { 'Example template' }
+        let(:file_name) { 'with_empty_column.csv' }
+        let(:expected_content) { 'Your bulk submission has been processed' }
         it_behaves_like 'bulk submission file upload'
       end
-      # context "Uploading a valid file with bait library specified should set the bait library name" do
-      #   # Given I have a well called "testing123"
-      #   # And the sample in the last well is registered under the study "abc123_study"
-      #   When I upload a file with 2 valid SC submissions
-      #   let(:expected_content) { "Your bulk submission has been processed." }
-      #    And there should be an order with the bait library name set to "Bait library 1"
-      #    And there should be an order with the bait library name set to "Bait library 2"
-      #    And the last submission should have a priority of 1
-      #   it_behaves_like 'bulk submission file upload'
-      # end
+
+      context 'With a moved header' do
+        # Occasionally users move the header row around, and insert or delete rows.
+        # We should still be able to process the file
+        let(:template_name) { 'Example template' }
+        let(:file_name) { 'with_moved_header.csv' }
+        let(:expected_content) { 'Your bulk submission has been processed' }
+        it_behaves_like 'bulk submission file upload'
+      end
     end
 
     context 'Uploading a valid file with gb expected specified should set the gb expected' do
@@ -80,9 +89,7 @@ feature 'Bulk submission', js: false do
 
       it 'allows file upload' do
         process_submission(file_name)
-        Array[expected_content].flatten.each do |content|
-          expect(page).to have_content content
-        end
+        expect(page).to have_content expected_content
         expect(Order.last.request_options['gigabases_expected']).to eq('1.35')
       end
     end
@@ -145,6 +152,14 @@ feature 'Bulk submission', js: false do
           click_button 'Create Bulk submission'
           expect(page).to have_content("can't be blank")
         end
+      end
+
+      context 'With no header iver one column' do
+        # If a header is missing, let the user know, rather than doing something unexpected
+        let(:template_name) { 'Example template' }
+        let(:file_name) { 'with_headerless_column.csv' }
+        let(:expected_content) { 'Row 2, column 4 contains data but no heading.' }
+        it_behaves_like 'bulk submission file upload'
       end
     end
   end
