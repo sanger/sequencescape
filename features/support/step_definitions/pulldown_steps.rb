@@ -45,13 +45,13 @@ Transform /^([A-H]\d+)-([A-H]\d+)$/ do |start, finish|
 end
 
 def create_submission_of_assets(template, assets, request_options = {})
-  template.create_and_build_submission!(
+  template.create_with_submission!(
     user: FactoryBot.create(:user),
     study: FactoryBot.create(:study),
     project: FactoryBot.create(:project),
     assets: assets,
     request_options: request_options
-  )
+  ).submission.built!
   step 'all pending delayed jobs are processed'
 end
 

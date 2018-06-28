@@ -18,13 +18,15 @@ Given /^I have a PacBio submission$/ do
   study = Study.find_by(name: 'Test study')
 
   submission_template = SubmissionTemplate.find_by(name: 'PacBio')
-  submission = submission_template.create_and_build_submission!(
+  order = submission_template.create_with_submission!(
     study: study,
     project: project,
     user: User.last,
     assets: Plate.find_from_barcode('DN1234567').wells.all,
+    submission: FactoryBot.build(:submission),
     request_options: { :multiplier => { '1' => '1', '3' => '1' }, 'insert_size' => '500', 'sequencing_type' => 'Standard' }
   )
+  order.submission.built!
   step('1 pending delayed jobs are processed')
 end
 

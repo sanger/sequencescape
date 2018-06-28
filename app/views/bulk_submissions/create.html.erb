@@ -20,7 +20,7 @@
     <% @these_subs.each do |submission| %>
       <tr>
         <td><%= link_to submission.id, submission_path(submission.id) %></td>
-        <td><%= submission.name %></td>
+        <td><%= link_to submission.name, submission_path(submission.id) %></td>
         <td><%= @sub_details[submission.id] %></td>
       </tr>
     <% end %>

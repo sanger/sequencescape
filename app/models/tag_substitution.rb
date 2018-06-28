@@ -52,9 +52,9 @@ class TagSubstitution
     ActiveRecord::Base.transaction do
       @substitutions.each(&:nullify_tags)
       @substitutions.each(&:substitute_tags)
-      rebroadcast_lanes
       apply_comments
     end
+    rebroadcast_flowcells
     true
   rescue ActiveRecord::RecordNotUnique => exception
     # We'll specifically handle tag clashes here so that we can produce more informative messages
@@ -112,7 +112,7 @@ class TagSubstitution
   end
 
   def commented_assets
-    @commented_assets ||= (Tube.with_required_aliquots(all_aliquots).pluck(:id) + Lane.with_required_aliquots(all_aliquots).pluck(:id)).uniq
+    @commented_assets ||= (Tube.with_required_aliquots(all_aliquots).pluck(:id) + lane_ids).uniq
   end
 
   def apply_comments
@@ -133,7 +133,11 @@ class TagSubstitution
     @all_aliquots ||= @substitutions.flat_map(&:matching_aliquots)
   end
 
-  def rebroadcast_lanes
-    Lane.with_required_aliquots(all_aliquots).for_rebroadcast.find_each(&:rebroadcast)
+  def lane_ids
+    @lane_ids ||= Lane.with_required_aliquots(all_aliquots).pluck(:id)
+  end
+
+  def rebroadcast_flowcells
+    Batch.joins(:requests).where(requests: { target_asset_id: lane_ids }).distinct.each(&:rebroadcast)
   end
 end

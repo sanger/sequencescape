@@ -9,13 +9,22 @@ module Api
         skip_before_action :verify_authenticity_token
 
         def create
-          @job = ::Aker::Factories::Job.new(params[:job].permit!)
-          if @job.valid?
+          ActiveRecord::Base.transaction do
+            @msg = create_job_response(params)
+            raise ActiveRecord::Rollback unless @msg[:status] == :created
+          end
+          render @msg
+        rescue StandardError => e
+          render json: e.message, status: :unprocessable_entity
+        end
 
-            @job.create
-            render json: @job, status: :created
-          else
-            render json: @job.errors, status: :unprocessable_entity
+        private
+
+        def create_job_response(params)
+          params[:data].each_with_object(json: [], status: :created) do |param_job, response|
+            job = ::Aker::Factories::Job.new(param_job[:attributes].permit!)
+            return { json: job.errors, status: :unprocessable_entity } unless job.valid?
+            response[:json].push(job.create)
           end
         end
       end

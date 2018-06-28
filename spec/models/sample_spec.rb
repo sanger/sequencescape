@@ -1,6 +1,7 @@
 require 'rails_helper'
+require 'support/barcode_helper'
 
-RSpec.describe Sample, type: :model, accession: true do
+RSpec.describe Sample, type: :model, accession: true, aker: true do
   include MockAccession
 
   context 'accessioning' do
@@ -66,6 +67,10 @@ RSpec.describe Sample, type: :model, accession: true do
   end
 
   context 'Aker' do
+    include BarcodeHelper
+    before do
+      mock_plate_barcode_service
+    end
     it 'can have many work orders' do
       job = create(:aker_job)
       expect(create(:sample, jobs: [job]).jobs).to include(job)
