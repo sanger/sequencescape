@@ -256,8 +256,7 @@ class Submission < ApplicationRecord
   end
 
   def name
-    given_name = super || study_names
-    given_name.presence || "##{id}"
+    super.presence || "##{id} #{study_names.truncate(128)}"
   end
 
   def study_names
