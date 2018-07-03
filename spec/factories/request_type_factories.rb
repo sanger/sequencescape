@@ -57,6 +57,12 @@ FactoryBot.define do
         request_type.library_types_request_types << create(:library_types_request_type, request_type: request_type)
         request_type.request_type_validators << create(:library_request_type_validator, request_type: request_type)
       end
+
+      factory :isc_library_request_type do
+        asset_type 'Well'
+        target_asset_type 'MultiplexedLibraryTube'
+        request_class Pulldown::Requests::IscLibraryRequest
+      end
     end
 
     factory :pac_bio_sequencing_request_type do

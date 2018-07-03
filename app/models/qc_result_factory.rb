@@ -27,7 +27,6 @@ class QcResultFactory
 
   def save
     return false unless valid?
-    qc_assay.save
     resources.collect(&:save)
     true
   end
@@ -52,7 +51,7 @@ class QcResultFactory
       super(attributes)
 
       @asset = build_asset
-      @qc_result = QcResult.new(asset: asset, key: key, value: value, units: units, cv: cv, assay_type: assay_type, assay_version: assay_version)
+      @qc_result = QcResult.new(asset: asset, key: key, value: value, units: units, cv: cv, assay_type: assay_type, assay_version: assay_version, qc_assay: qc_assay)
     end
 
     def message_id

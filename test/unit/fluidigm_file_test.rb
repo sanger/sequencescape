@@ -6,7 +6,7 @@ class FluidigmFileTest < ActiveSupport::TestCase
   XY = 'M'
   XX = 'F'
   YY = 'F'
-  NC = 'Unknown'
+  NC = 'U'
 
   context 'A fluidigm file' do
     setup do

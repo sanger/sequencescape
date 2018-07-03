@@ -64,7 +64,7 @@ class FluidigmFile
     end
 
     def gender
-      @@gender_map[result] || 'Unknown'
+      @@gender_map[result] || 'U'
     end
 
     def pass?

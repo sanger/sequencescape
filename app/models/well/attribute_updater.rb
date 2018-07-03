@@ -65,6 +65,17 @@ module Well::AttributeUpdater
 
     def update
       well.measured_volume = target_value
+      well.save
+    end
+  end
+
+  # Update the RIN. Note: Rin is actually unitless, the specified units here
+  # maintains compatibility with other QC systems.
+  class Rin < Base
+    self.target_units = 'RIN'
+
+    def update
+      well.well_attribute.update!(rin: target_value)
     end
   end
 
@@ -91,7 +102,7 @@ module Well::AttributeUpdater
     end
   end
 
-  # Updates concentration of molarity
+  # Updates concentration or molarity
   class Concentration < Base
     def concentration?
       original_value.compatible?('ng/ul')
@@ -122,6 +133,7 @@ module Well::AttributeUpdater
     'loci_passed' => SnpCount,
     'gender_markers' => GenderMarkers,
     'concentration' => Concentration,
-    'molarity' => Concentration
+    'molarity' => Concentration,
+    'rin' => Rin
   }.freeze
 end

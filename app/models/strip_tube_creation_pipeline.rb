@@ -1,5 +1,5 @@
+# frozen_string_literal: true
 
-class StripTubeCreationPipeline < Pipeline
-  self.inbox_partial = 'group_by_parent'
-  self.purpose_information = false
+# Deprecated 19 June 2018
+class StripTubeCreationPipeline < LegacyPipeline
 end

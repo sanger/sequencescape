@@ -1,6 +1,11 @@
 class Parsers::PlateReaderParser
   class InvalidFile < StandardError; end
 
+  class_attribute :assay_type, :assay_version
+
+  self.assay_type = 'Plate Reader'
+  self.assay_version = 'v0.1'
+
   def headers
     @content[0]
   end
@@ -59,7 +64,7 @@ class Parsers::PlateReaderParser
 
   def each_well_and_parameters
     locations.each do |location_name|
-      yield(location_name, { set_concentration: concentration(location_name) })
+      yield(location_name, { 'Concentration' => Unit.new(concentration(location_name), 'ng/ul') })
     end
   end
 end

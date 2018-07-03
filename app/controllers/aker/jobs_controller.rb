@@ -4,6 +4,7 @@ module Aker
   # Provide index and show actions to display jobs inside Sequencescapew, and start, complete and cancel
   # endpoints to change the status of the jobs from the inbox application
   class JobsController < ApplicationController
+    before_action :set_job
     before_action :login_required, except: %i[start complete cancel show index]
 
     def index
@@ -11,25 +12,23 @@ module Aker
     end
 
     def show
-      @job = current_resource
       recover_from_connection_refused do
         @aker_job = JSON.parse(RestClient::Request.execute(
           verify_ssl: false,
           method: :get,
-          url: "#{Rails.configuration.aker['urls']['work_orders']}/jobs/#{@job.aker_job_id}",
-          headers: { content_type: :json, Accept: :json },
+          url: @job.aker_job_url.to_s,
+          headers: { content_type: :json },
           proxy: nil
         ).body)['job']
       end
     end
 
     def start
-      job = current_resource
       recover_from_connection_refused do
         response = RestClient::Request.execute(
           verify_ssl: false,
           method: :put,
-          url: "#{Rails.configuration.aker['urls']['work_orders']}/jobs/#{job.aker_job_id}/start",
+          url: "#{@job.aker_job_url}/start",
           headers: { content_type: :json },
           proxy: nil
         )
@@ -39,29 +38,22 @@ module Aker
     end
 
     def complete
-      job = current_resource
-      recover_from_connection_refused do
-        response = RestClient::Request.execute(
-          verify_ssl: false,
-          method: :put,
-          url: "#{Rails.configuration.aker['urls']['work_orders']}/jobs/#{job.aker_job_id}/complete",
-          payload: { job: { job_id: job.aker_job_id, comment: params[:comment] } }.to_json,
-          headers: { content_type: :json },
-          proxy: nil
-        )
-
-        render json: response.body, status: :ok
-      end
+      _finish_action("#{@job.aker_job_url}/complete")
     end
 
     def cancel
-      job = current_resource
+      _finish_action("#{@job.aker_job_url}/cancel")
+    end
+
+    private
+
+    def _finish_action(url)
       recover_from_connection_refused do
         response = RestClient::Request.execute(
           verify_ssl: false,
           method: :put,
-          url: "#{Rails.configuration.aker['urls']['work_orders']}/jobs/#{job.aker_job_id}/cancel",
-          payload: { job: { job_id: job.aker_job_id, comment: params[:comment] } }.to_json,
+          url: url,
+          payload: @job.finish_message.to_json,
           headers: { content_type: :json },
           proxy: nil
         )
@@ -69,8 +61,6 @@ module Aker
         render json: response.body, status: :ok
       end
     end
-
-    private
 
     def recover_from_connection_refused
       yield
@@ -82,8 +72,8 @@ module Aker
       render json: { error: 'There was a problem in the Aker Work orders service. Please contact the administrators' }
     end
 
-    def current_resource
-      @current_resource ||= Aker::Job.find_by(aker_job_id: params[:id]) if params[:id]
+    def set_job
+      @job ||= Aker::Job.find_by(job_uuid: params[:id]) if params[:id]
     end
   end
 end

@@ -29,6 +29,9 @@ RSpec.describe QcResultFactory, type: :model, qc_result: true do
       expect(factory.save).to be_truthy
       expect(QcResult.all.count).to eq(3)
       expect(QcAssay.all.count).to eq(1)
+      QcResult.all.each do |qc_result|
+        expect(qc_result.qc_assay).to eq QcAssay.last
+      end
     end
 
     it 'produces sensible error messages if the resource is not valid' do

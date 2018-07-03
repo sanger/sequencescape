@@ -65,6 +65,22 @@ module Barcode::Barcodeable
     barcodes.fluidigm.first_or_initialize.barcode = barcode
   end
 
+  def external_barcode
+    barcodes.detect(&:external?)&.machine_barcode
+  end
+
+  def external_barcode=(barcode)
+    barcodes.external.first_or_initialize.barcode = barcode
+  end
+
+  def aker_barcode
+    barcodes.detect(&:aker_barcode?)&.machine_barcode
+  end
+
+  def aker_barcode=(barcode)
+    barcodes.aker_barcode.first_or_initialize.barcode = barcode
+  end
+
   deprecate def barcode!
     barcode
   end
