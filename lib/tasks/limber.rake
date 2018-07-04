@@ -102,8 +102,20 @@ namespace :limber do
       ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
+        'RNAR',
+        library_types: ['RNA Ribo'],
+        default_purpose: 'LBR Cherrypick'
+      ).build!
+
+      Limber::Helper::RequestTypeConstructor.new(
         'RNAAG',
         library_types: ['RNA Poly A Globin'],
+        default_purpose: 'LBR Cherrypick'
+      ).build!
+
+      Limber::Helper::RequestTypeConstructor.new(
+        'RNARG',
+        library_types: ['RNA Ribo Globin'],
         default_purpose: 'LBR Cherrypick'
       ).build!
 
@@ -191,7 +203,13 @@ namespace :limber do
       'RNAA' => {
         sequencing_list: base_without_hiseq
       },
+      'RNAR' => {
+        sequencing_list: base_without_hiseq
+      },
       'RNAAG' => {
+        sequencing_list: base_without_hiseq
+      },
+      'RNARG' => {
         sequencing_list: base_without_hiseq
       },
       'PCR Free' => {
