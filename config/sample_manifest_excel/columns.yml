@@ -1,11 +1,13 @@
 sanger_plate_id:
   heading: SANGER PLATE ID
+  unlocked: true
   attribute: :barcode
 well:
   heading: WELL
   attribute: :position
 sanger_tube_id:
   heading: SANGER TUBE ID
+  unlocked: true
   attribute: :barcode
 sanger_sample_id:
   heading: SANGER SAMPLE ID

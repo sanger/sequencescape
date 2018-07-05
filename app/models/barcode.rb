@@ -16,7 +16,7 @@ class Barcode < ApplicationRecord
   after_commit :broadcast_barcode
 
   # Caution! Do not adjust the index of existing formats.
-  enum format: [:sanger_ean13, :infinium, :fluidigm, :external, :aker_barcode]
+  enum format: [:sanger_ean13, :infinium, :fluidigm, :external, :aker_barcode, :cgap]
 
   validate :barcode_valid?
 
@@ -38,6 +38,20 @@ class Barcode < ApplicationRecord
     [barcode.to_s].tap do |barcodes|
       barcodes << SBCF::SangerBarcode.from_user_input(barcode.to_s).human_barcode
     end.compact.uniq
+  end
+
+  # check if a given barcode string matches any foreign barcode format
+  def self.matches_any_foreign_barcode_format?(possible_barcode)
+    FOREIGN_BARCODE_FORMATS.each do |cur_format|
+      bc = Barcode.new(format: cur_format, barcode: possible_barcode)
+      return cur_format if bc.handler.valid?
+    end
+    nil
+  end
+
+  def self.unique_for_format?(barcode_format, search_barcode)
+    return unless barcode_format.present? && search_barcode.present?
+    Barcode.find_by(format: barcode_format, barcode: search_barcode)
   end
 
   def self.extract_barcodes(barcodes)

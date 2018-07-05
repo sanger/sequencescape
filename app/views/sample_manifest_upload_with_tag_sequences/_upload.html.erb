@@ -1,0 +1,27 @@
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2018 Genome Research Ltd.%>
+
+<h2>Upload a sample manifest</h2>
+<p>This sample manifest upload screen handles tubes with tag sequences, and plates or tubes with foreign barcodes.</p>
+
+<div class='alert alert-warning'>
+  <strong>Warning!</strong> This upload page should cope with both old and new plate and tube sample manifests, including tube manifests with tag groups and indexes or with tag sequences, and plate or tube manifests with foreign barcodes. It does not handle some of the obsolete columns from the older manifests which will need to be removed before upload.</br>Alternatively, you can still <a href="<%= sample_manifests_path %>">use the old sample manifest upload page here</a>.
+</div>
+
+<%= form_tag(sample_manifest_upload_with_tag_sequences_path, multipart: true) do -%>
+  <fieldset>
+    <div class="form-group">
+      <%= label_tag :upload, 'File to upload', style: "display: none;" %></br>
+      <%= file_field_tag :upload %>
+    </div>
+    <div class="form-group">
+      <%= check_box_tag :override %>&nbsp;<%= label_tag :override, 'Override previously uploaded samples' %>
+    </div>
+    <div class="form-group">
+      <%= submit_tag 'Upload manifest', class: 'btn btn-success' %>
+    </div>
+  </fieldset>
+<% end -%>

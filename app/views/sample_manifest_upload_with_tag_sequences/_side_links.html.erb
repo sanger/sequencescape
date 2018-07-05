@@ -1,0 +1,18 @@
+<%# This file is part of SEQUENCESCAPE; it is distributed under the terms of
+# GNU General Public License version 1 or later;
+# Please refer to the LICENSE and README files for information on licensing and
+# authorship of this file.
+# Copyright (C) 2018 Genome Research Ltd.%>
+
+<% add :menu, "SampleDB Home" => '/sdb/' %>
+<% add :menu, "&nbsp;" => '' -%>
+
+<%= render partial: "shared/create_manifests_side_links", locals: { study_id: @study_id } %>
+
+<% add :menu, "View all manifests" => sample_manifests_path %>
+<% add :menu, "&nbsp;" => '' -%>
+<% add :menu, "Create supplier" => new_supplier_path %>
+<% add :menu, "View all suppliers" => suppliers_path %>
+<% add :menu, "&nbsp;" => '' -%>
+<% add :menu, "Create Study" => new_study_path() %>
+<% add :menu, "Create Project" => new_project_path() %>

@@ -9,7 +9,7 @@
 class SampleManifest::Uploader
   include ActiveModel::Validations
 
-  attr_reader :filename, :configuration, :tag_group, :upload, :user
+  attr_reader :filename, :configuration, :tag_group, :upload, :user, :override
 
   validates :filename, :configuration, :tag_group, :user, presence: true
 
@@ -17,12 +17,18 @@ class SampleManifest::Uploader
 
   delegate :processed?, to: :upload
 
-  def initialize(filename, configuration, user)
+  def initialize(filename, configuration, user, override)
     @filename = filename
-    @configuration = configuration || SampleManifestExcel::NullConfiguration.new
+    @configuration = configuration || SampleManifestExcel::NullObjects::NullConfiguration.new
     @user = user
+    @override = override
     @tag_group = create_tag_group
-    @upload = SampleManifestExcel::Upload::Base.new(filename: filename, column_list: self.configuration.columns.all, start_row: SampleManifestExcel::FIRST_ROW)
+    @upload = SampleManifestExcel::Upload::Base.new(
+      filename: filename,
+      column_list: self.configuration.columns.all,
+      start_row: SampleManifestExcel::FIRST_ROW,
+      override: override
+    )
   end
 
   def run!

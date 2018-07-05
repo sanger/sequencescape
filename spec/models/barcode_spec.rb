@@ -171,4 +171,30 @@ describe Barcode, type: :model do
     it_behaves_like 'a composable barcode'
     it_behaves_like 'a code128 barcode'
   end
+
+  context 'foreign - CGAP format' do
+    let(:barcode) { build :cgap, barcode: barcode_value, format: barcode_format }
+
+    let(:barcode_value) { 'CGAP-ABC123' }
+    let(:barcode_format) { 'cgap' }
+    let(:number) { 'ABC12' }
+    let(:barcode_prefix) { 'CGAP-' }
+    let(:suffix) { '3' }
+    let(:human_barcode) { 'CGAP-ABC123' }
+    let(:machine_barcode) { 'CGAP-ABC123' }
+    let(:code128_barcode) { 'CGAP-ABC123' }
+    let(:prefix) { nil }
+
+    let(:summary) do
+      {
+        number: 'ABC12',
+        prefix: 'CGAP-',
+        machine_barcode: 'CGAP-ABC123'
+      }
+    end
+    it_behaves_like 'a basic barcode'
+    it_behaves_like 'not an ean13 barcode'
+    it_behaves_like 'a composable barcode'
+    it_behaves_like 'a code128 barcode'
+  end
 end
