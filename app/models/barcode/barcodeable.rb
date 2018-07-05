@@ -72,7 +72,7 @@ module Barcode::Barcodeable
   def cgap_barcode=(barcode)
     barcodes.cgap.first_or_initialize.barcode = barcode
   end
-  
+
   def external_barcode
     barcodes.detect(&:external?)&.machine_barcode
   end
