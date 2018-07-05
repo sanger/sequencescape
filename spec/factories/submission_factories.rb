@@ -7,7 +7,7 @@ FactoryBot.define do
   end
 
   factory :submission do
-    user  { |user| user.association(:user) }
+    user
   end
 
   factory :submission_template do
@@ -49,6 +49,24 @@ FactoryBot.define do
     factory :library_order do
       request_options { { fragment_size_required_from: 100, fragment_size_required_to: 200, library_type: 'Standard' } }
     end
+  end
+
+  factory :linear_submission do
+    study
+    project
+    user
+    submission
+    assets                { create_list(:sample_tube, 1) }
+    request_types         { [create(:request_type).id] }
+  end
+
+  factory :flexible_submission do
+    study
+    project
+    user
+    submission
+    assets                { create_list(:sample_tube, 1) }
+    request_types         { [create(:request_type).id] }
   end
 
   factory :automated_order do

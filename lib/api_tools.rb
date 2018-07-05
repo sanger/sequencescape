@@ -37,10 +37,6 @@ module ApiTools
   def json_root
     self.class.to_s.underscore
   end
-
-  # def url
-  #   [configatron.api_url, API_VERSION, url_name.pluralize, uuid].join('/')
-  # end
 end
 
 class ActiveRecord::Base

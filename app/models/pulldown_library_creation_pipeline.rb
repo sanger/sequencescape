@@ -1,5 +1,5 @@
+# frozen_string_literal: true
 
-class PulldownLibraryCreationPipeline < LibraryCreationPipeline
-  self.pulldown = true
-  self.prints_a_worksheet_per_task = true
+# Deprecated 19 June 2018
+class PulldownLibraryCreationPipeline < LegacyPipeline
 end

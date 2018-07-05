@@ -14,7 +14,6 @@ class WorkflowsController < ApplicationController
   include Tasks::AttachInfiniumBarcodeHandler
   include Tasks::BindingKitBarcodeHandler
   include Tasks::CherrypickHandler
-  include Tasks::DnaQcHandler
   include Tasks::GenerateManifestHandler
   include Tasks::MovieLengthHandler
   include Tasks::PlateTemplateHandler

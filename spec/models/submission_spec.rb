@@ -34,71 +34,57 @@ RSpec.describe Submission, type: :model do
     end
   end
 
-  context '#orders compatible' do
-    setup do
-      @study1 = create :study
-      @study2 = create :study
+  context '#orders' do
+    let!(:request_type_1) { create(:request_type) }
+    let!(:request_type_2) { create(:request_type) }
+    let!(:request_type_3) { create(:request_type) }
+    let!(:request_type_4) { create(:request_type) }
+    let!(:request_type_for_multiplexing) { create(:request_type, for_multiplexing: true) }
 
-      @project =  create :project
-      @project2 = create :project
-
-      @asset1 = create :empty_sample_tube
-      @asset1.aliquots.create!(sample: create(:sample, studies: [@study1]))
-      @asset2 = create :empty_sample_tube
-      @asset2.aliquots.create!(sample: create(:sample, studies: [@study2]))
-
-      @reference_genome1 = create :reference_genome, name: 'genome 1'
-      @reference_genome2 = create :reference_genome, name: 'genome 2'
-
-      @order1 = create :order, study: @study1, assets: [@asset1], project: @project
-      @order2 = create :order, study: @study2, assets: [@asset2], project: @project
+    it 'are compatible if all request types after multiplexing requests are the same and all read lengths are the same' do
+      request_types = [request_type_1.id, request_type_2.id, request_type_for_multiplexing.id, request_type_3.id, request_type_4.id]
+      order1 = create(:order, request_types: request_types, request_options: { read_length: 100 })
+      order2 = create(:order, request_types: request_types, request_options: { read_length: 100 })
+      order3 = create(:order, request_types: request_types, request_options: { read_length: 100 })
+      order4 = create(:order, request_types: [request_type_1.id] + request_types, request_options: { read_length: 100 })
+      expect(build(:submission, orders: [order1, order2, order3, order4])).to be_valid
     end
 
-    context 'with compatible requests' do
-      setup do
-        @order2.request_types = @order1.request_types
-      end
+    it 'are compatible if there are no request types for multiplexing' do
+      order1 = create(:order, request_types: [request_type_1.id, request_type_2.id], request_options: { read_length: 100 })
+      order2 = create(:order, request_types: [request_type_3.id, request_type_1.id, request_type_4.id], request_options: { read_length: 100 })
+      order3 = create(:order, request_types: [request_type_1.id], request_options: { read_length: 100 })
+      order4 = create(:order, request_types: [request_type_4.id, request_type_3.id], request_options: { read_length: 100 })
+      expect(build(:submission, orders: [order1, order2, order3, order4])).to be_valid
+    end
 
-      context 'and study with same reference genome' do
-        setup do
-          @study1.reference_genome = @reference_genome1
-          @study2.reference_genome = @reference_genome1
-        end
+    it 'are not compatible with different request types after a multiplexed request types' do
+      request_types = [request_type_1.id, request_type_2.id, request_type_for_multiplexing.id, request_type_3.id]
+      order1 = create(:order, request_types: request_types, request_options: { read_length: 100 })
+      order2 = create(:order, request_types: request_types, request_options: { read_length: 100 })
+      order3 = create(:order, request_types: request_types, request_options: { read_length: 100 })
+      request_types[3] = request_type_4.id
+      order4 = create(:order, request_types: request_types, request_options: { read_length: 100 })
+      expect(build(:submission, orders: [order1, order2, order3, order4])).to_not be_valid
+    end
 
-        it 'be compatible' do
-          assert orders_compatible?(@order1, @order2)
-        end
-      end
-      context 'and study with different contaminated human DNA policy' do
-        setup do
-          @study1.study_metadata.contaminated_human_dna = true
-          @study2.study_metadata.contaminated_human_dna = false
-        end
+    it 'are not compatible if any of the read lengths are different' do
+      request_types = [request_type_1.id, request_type_2.id, request_type_for_multiplexing.id, request_type_3.id]
+      order1 = create(:order, request_types: request_types, request_options: { read_length: 100 })
+      order2 = create(:order, request_types: request_types, request_options: { read_length: 100 })
+      order3 = create(:order, request_types: request_types, request_options: { read_length: 200 })
+      order4 = create(:order, request_types: request_types, request_options: { read_length: 100 })
+      expect(build(:submission, orders: [order1, order2, order3, order4])).to_not be_valid
+    end
 
-        it 'be incompatible' do
-          assert_equal false, orders_compatible?(@order1, @order2)
-        end
-      end
-
-      context 'and incompatible request options' do
-        setup do
-          @order1.request_options = { option: 'value' }
-        end
-
-        it 'be incompatible' do
-          assert_equal false, orders_compatible?(@order1, @order2, :request_options)
-        end
-      end
-
-      context 'and different projects' do
-        setup do
-          @order2.project = @project2
-        end
-
-        it 'be incompatible' do
-          assert_equal false, orders_compatible?(@order1, @order2)
-        end
-      end
+    it 'are not compatible if at least one of the request types are not for multiplexing' do
+      request_types = [request_type_1.id, request_type_2.id, request_type_for_multiplexing.id, request_type_3.id]
+      order1 = create(:order, request_types: request_types, request_options: { read_length: 100 })
+      order2 = create(:order, request_types: request_types, request_options: { read_length: 100 })
+      order3 = create(:order, request_types: request_types, request_options: { read_length: 100 })
+      request_types = [request_type_1.id, request_type_2.id, request_type_3.id, request_type_4.id]
+      order4 = create(:order, request_types: request_types, request_options: { read_length: 100 })
+      expect(build(:submission, orders: [order1, order2, order3, order4])).to_not be_valid
     end
   end
 

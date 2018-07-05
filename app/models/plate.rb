@@ -34,22 +34,14 @@ class Plate < Asset
 
     # Build empty wells for the plate.
     def construct!
-      proxy_association.owner.maps.in_row_major_order.pluck(:id).map do |location_id|
+      plate = proxy_association.owner
+      plate.maps.in_row_major_order.pluck(:id).map do |location_id|
         Well.create!(map_id: location_id)
       end.tap do |wells|
-        ContainerAssociation.import(wells.map { |w| { content_id: w.id, container_id: proxy_association.owner.id } })
-        # If the well association has already been loaded, reload it. Otherwise rails will continue
-        # to think the plate has no wells.
-        proxy_association.reload if proxy_association.loaded?
-      end
-    end
-
-    def map_from_locations
-      {}.tap do |location_to_well|
-        walk_in_column_major_order do |well, _|
-          raise "Duplicated well at #{well.map.description}" if location_to_well.key?(well.map)
-          location_to_well[well.map] = well
-        end
+        ContainerAssociation.import(wells.map { |well| { content_id: well.id, container_id: plate.id } })
+        # We've modified the association indirectly, so need to ensure we discard any already loaded wells
+        # as otherwise rails will continue to believe the plate has no wells.
+        proxy_association.reset
       end
     end
 
@@ -61,16 +53,6 @@ class Plate < Asset
     # Yields each pool and the wells that are in it
     def walk_in_pools(&block)
       with_pool_id.group_by(&:pool_id).each(&block)
-    end
-
-    # Walks the wells A1, B1, C1, ... A2, B2, C2, ... H12
-    def walk_in_column_major_order
-      in_column_major_order.each { |well| yield(well, well.map.column_order) }
-    end
-
-    # Walks the wells A1, A2, ... B1, B2, ... H12
-    def walk_in_row_major_order
-      in_row_major_order.each { |well| yield(well, well.map.row_order) }
     end
 
     def in_preferred_order
@@ -228,8 +210,6 @@ class Plate < Asset
     wells.first.try(:study)
   end
   deprecate study: 'Plates can belong to multiple studies, use #studies instead.'
-
-  scope :include_wells_and_attributes, -> { includes(wells: %i(map well_attribute)) }
 
   DEFAULT_SIZE = 96
 
@@ -603,15 +583,15 @@ class Plate < Asset
     @well_hash ||= wells.include_map.includes(:well_attribute).index_by(&:map_description)
   end
 
-  def update_qc_values_with_parser(parser, scale: nil)
+  def update_qc_values_with_parser(parser)
     ActiveRecord::Base.transaction do
+      qc_assay = QcAssay.new
       parser.each_well_and_parameters do |position, well_updates|
         # We might have a nil well if a plate was only partially cherrypicked
-        well = well_hash[position]
-        scale ||= well_updates.keys.map { |k| [k, 1] }
-        next if well.nil?
-        well.update_qc_values_with_hash(well_updates, scale)
-        well.save!
+        well = well_hash[position] || next
+        well_updates.each do |attribute, value|
+          QcResult.create!(asset: well, key: attribute, unit_value: value, assay_type: parser.assay_type, assay_version: parser.assay_version, qc_assay: qc_assay)
+        end
       end
     end
     true

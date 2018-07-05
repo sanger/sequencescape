@@ -7,7 +7,7 @@ class TestSeed
   include ActiveModel::AttributeMethods
   define_attribute_methods :uuid, :friendly_name, :subject_type, :single_relation, :many_relation, :dynamic_relation, :id, :data_method_a
 
-  attr_accessor :uuid, :friendly_name, :subject_type, :single_relation, :many_relation, :dynamic_relation, :id, :data_method_a
+  attr_accessor :uuid, :friendly_name, :subject_type, :single_relation, :many_relation, :dynamic_relation, :id, :data_method_a, :nil_relation
 
   def self.primary_key
     :id
@@ -19,6 +19,7 @@ class TestSeed
       'friendly_name' => @friendly_name,
       'subject_type' => @subject_type,
       'single_relation' => @single_relation,
+      'nil_relation' => @nil_relation,
       'many_relation' => @many_relation,
       'dynamic_relation' => @dynamic_relation,
       'id' => @id,
@@ -61,6 +62,8 @@ class ExampleEvent < BroadcastEvent
   seed_subject :seed
   # Methods that yield a single object
   has_subject :single, :single_relation
+  # Methods that yield a single object (that can be nil)
+  has_subject :nil, :nil_relation
   # Methods that yield an array
   has_subjects :many, :many_relation
   # Blocks that define more complicated relationships

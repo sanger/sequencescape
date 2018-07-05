@@ -9,6 +9,7 @@ feature 'cherrypick for fluidigm pipeline - micro litre', js: true do
   let(:study) { create :study }
   let(:pipeline_name) { 'Cherrypick for Fluidigm' }
   let(:pipeline) { Pipeline.find_by(name: pipeline_name) }
+  let(:submission) { create :submission }
   let(:plate1) { create :plate_with_untagged_wells, sample_count: 2, barcode: '1' }
   let(:plate2) { create :plate_with_untagged_wells, sample_count: 2, barcode: '10' }
   let(:plate3) { create :plate_with_untagged_wells, sample_count: 2, barcode: '5' }
@@ -27,22 +28,9 @@ feature 'cherrypick for fluidigm pipeline - micro litre', js: true do
         )
       end
     end
-    submission_template_hash = {
-      name: 'Cherrypick for Fluidigm',
-      submission_class_name: 'LinearSubmission',
-      product_catalogue: 'Generic',
-      submission_parameters: { info_differential: 6,
-                               request_types: request_types }
-    }
-    submission_template = SubmissionSerializer.construct!(submission_template_hash)
-    submission = submission_template.create_and_build_submission!(
-      study: study,
-      project: project,
-      user: user,
-      assets: assets,
-      request_options: { target_purpose_name: 'Fluidigm 96-96' }
-    )
-    Delayed::Worker.new.work_off
+    assets.each do |asset|
+      create :cherrypick_for_fluidigm_request, asset: asset, request_type: pipeline.request_types.first, submission: submission, study: study, project: project
+    end
 
     stub_request(:post, "#{configatron.plate_barcode_service}plate_barcodes.xml").to_return(
       headers: { 'Content-Type' => 'text/xml' },

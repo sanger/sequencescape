@@ -16,9 +16,7 @@ class Barcode < ApplicationRecord
   after_commit :broadcast_barcode
 
   # Caution! Do not adjust the index of existing formats.
-  enum format: [:sanger_ean13, :infinium, :fluidigm, :external, :cgap]
-
-  FOREIGN_BARCODE_FORMATS = %i[cgap].freeze
+  enum format: [:sanger_ean13, :infinium, :fluidigm, :external, :aker_barcode, :cgap]
 
   validate :barcode_valid?
 

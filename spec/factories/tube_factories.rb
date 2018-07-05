@@ -58,8 +58,15 @@ FactoryBot.define do
   factory :qc_tube, traits: [:tube_barcode]
 
   factory :multiplexed_library_tube, traits: [:tube_barcode] do
+    transient do
+      sample_count 0
+    end
+
     name { generate :asset_name }
-    association(:purpose, factory: :mx_tube_purpose) # { Tube::Purpose.standard_mx_tube }
+    association(:purpose, factory: :mx_tube_purpose)
+    after(:build) do |tube, evaluator|
+      tube.aliquots = build_list(:tagged_aliquot, evaluator.sample_count) unless evaluator.sample_count == 0
+    end
   end
 
   factory :pulldown_multiplexed_library_tube, traits: [:tube_barcode] do

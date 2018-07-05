@@ -18,10 +18,7 @@ Feature: If a batch is released, the section Action/Task shouldn't be shown unle
     | Cluster formation PE                   | pending     | should               |
     | Illumina-B MX Library Preparation      | pending     | should               |
     | Illumina-C Library preparation         | pending     | should               |
-    | Pulldown Multiplex Library Preparation | released    | should               |
-    | Cherrypicking for Pulldown             | released    | should               |
     | Genotyping                             | released    | should               |
-    | DNA QC                                 | released    | should               |
     | Cherrypick                             | released    | should               |
     | PacBio Library Prep                    | released    | should               |
     | PacBio Sequencing                      | released    | should               |

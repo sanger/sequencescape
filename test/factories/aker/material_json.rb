@@ -9,7 +9,10 @@ FactoryBot.define do
     donor_id 'd'
     phenotype 'p'
     common_name 'Mouse'
-    sequence(:address) { |n| "A:#{n}" }
+    sequence(:address) do |value|
+      quotient, remainder = value.divmod(12)
+      "#{('A'..'Z').to_a[quotient % 8]}:#{(remainder % 12) + 1}"
+    end
 
     initialize_with { attributes.stringify_keys }
   end

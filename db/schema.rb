@@ -10,19 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180607094002) do
+ActiveRecord::Schema.define(version: 20180613160225) do
 
   create_table "aker_containers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "barcode"
     t.string "address"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "asset_id"
   end
 
   create_table "aker_jobs", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "aker_job_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "aker_job_url", default: "", null: false
+    t.string "job_uuid"
+    t.index ["job_uuid"], name: "index_aker_jobs_on_job_uuid", unique: true
   end
 
   create_table "aliquot_indices", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|

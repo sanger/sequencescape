@@ -93,10 +93,6 @@ Given(/^well "([^"]*)" has a genotyping status of "([^"]*)"$/) do |uuid, genotyp
   well.aliquots.create!(sample: sample)
 end
 
-Given(/^I have a DNA QC submission for plate "([^"]*)"$/) do |plate_barcode|
-  step %Q{I have a "DNA QC" submission for plate "#{plate_barcode}" with project "Test project" and study "Study B"}
-end
-
 Given(/^I have a "([^"]*)" submission for plate "([^"]*)" with project "([^"]*)" and study "([^"]*)"$/) do |submission_template_name, plate_barcode, project_name, study_name|
   plate = Plate.find_from_barcode(plate_barcode)
   project = Project.find_by(name: project_name)
@@ -105,17 +101,16 @@ Given(/^I have a "([^"]*)" submission for plate "([^"]*)" with project "([^"]*)"
   # Maintain the order of the wells as though they have been submitted by the user, rather than
   # relying on the ordering within sequencescape.  Some of the plates are created with less than
   # the total wells needed (which is bad).
-  wells = []
-  plate.wells.walk_in_column_major_order { |well, _| wells << well }
-  wells.compact!
+  wells = plate.wells.in_column_major_order.to_a
 
   submission_template = SubmissionTemplate.find_by(name: submission_template_name)
-  submission = submission_template.create_and_build_submission!(
+  order = submission_template.create_with_submission!(
     study: study,
     project: project,
     user: User.last,
     assets: wells
   )
+  order.submission.built!
   step('1 pending delayed jobs are processed')
 end
 
@@ -125,11 +120,12 @@ Given(/^I have a Cherrypicking submission for asset group "([^"]*)"$/) do |asset
   asset_group = AssetGroup.find_by(name: asset_group_name)
 
   submission_template = SubmissionTemplate.find_by(name: 'Cherrypick')
-  submission = submission_template.create_and_build_submission!(
+  order = submission_template.create_with_submission!(
     study: study,
     project: project,
     user: User.last,
     assets: asset_group.assets
   )
+  order.submission.built!
   step('1 pending delayed jobs are processed')
 end

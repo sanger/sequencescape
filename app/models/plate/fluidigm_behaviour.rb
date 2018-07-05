@@ -31,12 +31,17 @@ module Plate::FluidigmBehaviour
   end
 
   def apply_fluidigm_data(fluidigm_file)
+    qc_assay = QcAssay.new
     raise FluidigmError, 'File does not match plate' unless fluidigm_file.for_plate?(fluidigm_barcode)
-
     wells.located_at(fluidigm_file.well_locations).include_stock_wells.each do |well|
       well.stock_wells.each do |sw|
-        sw.update_gender_markers!(fluidigm_file.well_at(well.map_description).gender_markers, 'FLUIDIGM')
-        sw.update_sequenom_count!(fluidigm_file.well_at(well.map_description).count, 'FLUIDIGM')
+        gender_markers = fluidigm_file.well_at(well.map_description).gender_markers.join('')
+        loci_passed = fluidigm_file.well_at(well.map_description).count
+        QcResult.create!([
+          # Capitalization/formatting here is to maintain consistency with the keys used by Carol Scott for the GBS process
+          { asset: sw, key: 'Gender_Markers', assay_type: 'FLUIDIGM', assay_version: 'v0.1', value: gender_markers, units: 'bases', qc_assay: qc_assay },
+          { asset: sw, key: 'Loci_passed', assay_type: 'FLUIDIGM', assay_version: 'v0.1', value: loci_passed, units: 'bases', qc_assay: qc_assay }
+        ])
       end
     end
     events.updated_fluidigm_plate!('FLUIDIGM_DATA')

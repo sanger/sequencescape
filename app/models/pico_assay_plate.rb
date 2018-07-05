@@ -1,12 +1,13 @@
 
 class PicoAssayPlate < Plate
   class WellDetail
-    attr_accessor :map, :parent_plate
+    attr_accessor :map, :parent_plate, :qc_assay
 
-    def initialize(details, parent_plate)
+    def initialize(details, parent_plate, qc_assay)
       @map = details[:map]
       @concentration = details[:concentration]
       @parent_plate = parent_plate
+      @qc_assay = qc_assay
     end
 
     def target_map
@@ -43,18 +44,19 @@ class PicoAssayPlate < Plate
     end
 
     def update_well_concentraion!
-      target_well.set_concentration(concentration)
+      QcResult.create!(asset: target_well, qc_assay: qc_assay, key: 'Concentration', value: concentration, units: 'ng/ul', assay_type: 'PicoGreen', assay_version: 'v0.1')
     end
   end
 
   def upload_pico_results(state, failure_reason, well_details)
+    qc_assay = QcAssay.new
     return false if state.nil? || well_details.blank? || stock_plate.nil?
 
     ActiveRecord::Base.transaction do
       event = stock_plate.events.create_pico!(state)
       # Adds a failure reason if it is available.
       event.update_attributes(descriptor_key: failure_reason) unless failure_reason.nil?
-      well_details.each { |details| WellDetail.new(details[:well], self).grade_as!(state) }
+      well_details.each { |details| WellDetail.new(details[:well], self, qc_assay).grade_as!(state) }
     end
   end
 end
