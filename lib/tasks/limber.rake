@@ -217,7 +217,7 @@ namespace :limber do
       },
       'GnT MDA' => {
         sequencing_list: ['illumina_b_hiseq_x_paired_end_sequencing']
-      },
+      }
     }
 
     ActiveRecord::Base.transaction do
