@@ -4,6 +4,6 @@
     <% sample_manifest.barcodes.each do |barcode| %>
       <%= form.hidden_field :barcodes, multiple: true, value: barcode %>
     <% end %>
-    <%= form.submit 'Pool' %>
+    <%= form.submit 'Pool', class: 'btn btn-success' %>
   <% end %>
 <% end %>

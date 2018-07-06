@@ -40,5 +40,16 @@ FactoryBot.define do
       format 'fluidigm'
       barcode { number }
     end
+
+    factory :cgap do
+      transient do
+        prefix 'CGAP-'
+        sequence(:number) { |i| i.to_s(16).upcase }
+        # we do not attempt to calculate a valid checksum here
+        sequence(:suffix) { |i| (i % 16).to_s(16).upcase }
+      end
+      format 'cgap'
+      barcode { "#{prefix}#{number}#{suffix}" }
+    end
   end
 end
