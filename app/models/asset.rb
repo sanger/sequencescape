@@ -55,9 +55,6 @@ class Asset < ApplicationRecord
   has_many :barcodes, foreign_key: :asset_id, inverse_of: :asset, dependent: :destroy
   has_many :qc_results, dependent: :destroy
 
-  
-
-
   # TODO: Remove 'requests' and 'source_request' as they are abiguous
   # :requests should go before :events_on_requests, through: :requests
   has_many :requests

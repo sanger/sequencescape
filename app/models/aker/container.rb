@@ -19,7 +19,7 @@ module Aker
 
     def amount
       return (volume.to_f * concentration.to_f).to_s if volume && concentration
-      return nil
+      nil
     end
 
     def not_change_barcode

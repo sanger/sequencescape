@@ -56,14 +56,14 @@ RSpec.describe Aker::Mapping, aker: true do
   let(:instance) { double('some model') }
   let(:mapping) { Aker::Mapping.new(instance) }
   let(:my_config) do
-    %Q{
+    %(
     sample_metadata.gender              <=   gender
     sample_metadata.donor_id            <=   donor_id
     sample_metadata.phenotype           <=   phenotype
     sample_metadata.sample_common_name  <=   common_name
-    well_attribute.measured_volume      <=>  volume      
+    well_attribute.measured_volume      <=>  volume
     well_attribute.concentration        <=>  concentration
-    }
+    )
   end
 
   before do
@@ -99,7 +99,7 @@ RSpec.describe Aker::Mapping, aker: true do
     context '#update!' do
       it 'updates an attribute translating to the right column of the model' do
         allow(some_model).to receive(:update).with(measured_volume: 44).and_return(true)
-        expect{mapping.update!(volume: 44)}.not_to raise_error
+        expect { mapping.update!(volume: 44) }.not_to raise_error
       end
       it 'raises error when it cannot update one of the attrs' do
         allow(some_model).to receive(:update).with(gender: 'Male').and_return(true)

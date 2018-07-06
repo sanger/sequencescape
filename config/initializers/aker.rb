@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-Aker::Material.config = 
-  %Q{
+Aker::Material.config =
+  %(
     sample_metadata.gender              <=   gender
     sample_metadata.donor_id            <=   donor_id
     sample_metadata.phenotype           <=   phenotype
@@ -9,4 +9,4 @@ Aker::Material.config =
     volume                               =>  volume
     concentration                        =>  concentration
     amount                               =>  amount
-  }
+  )

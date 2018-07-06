@@ -8,7 +8,7 @@ module Aker
     delegate :container, to: :sample
     delegate :volume, :concentration, :amount, to: :container
 
-    alias :sample :instance
+    alias sample instance
 
     # Defines the attributes that will be sent back to Aker
     def attributes
@@ -18,7 +18,7 @@ module Aker
     end
 
     # Defines the table related with a model in the config provided
-    def model_for_table(table_name, attr_name=nil)
+    def model_for_table(table_name, _attr_name = nil)
       return sample if table_name == :samples
       return sample.sample_metadata if table_name == :sample_metadata
       return sample.container.asset.well_attribute if table_name == :well_attribute && sample.container.a_well?
@@ -30,6 +30,5 @@ module Aker
       return super(table_name, field_name) unless container && !container.a_well?
       field_name
     end
-
   end
 end

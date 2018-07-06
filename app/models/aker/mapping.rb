@@ -14,7 +14,6 @@ module Aker
     attr_accessor :instance
 
     class << self
-
       attr_reader :config
 
       def config=(config_str)
@@ -30,7 +29,7 @@ module Aker
     def update(attrs)
       val = true
       _each_model_and_setting_attrs_for(attrs) do |model, setting_attrs|
-        val = val && set_value_for(model, setting_attrs)
+        val &&= set_value_for(model, setting_attrs)
       end
       val
     end
@@ -44,7 +43,7 @@ module Aker
         config[:updatable_attrs_from_ss_into_aker].each do |k|
           table_name = table_for_attr(k)
           value = get_value_for(
-            model_for_table(table_name, k), 
+            model_for_table(table_name, k),
             aker_attr_name(table_name, k)
           )
           obj[k] = value
@@ -65,7 +64,7 @@ module Aker
 
     def set_value_for(model, setting_attrs)
       return model.update(setting_attrs) unless model.nil?
-      setting_attrs.each_pair do |k,v|
+      setting_attrs.each_pair do |k, v|
         send(:"#{k}=", v)
       end
       true
