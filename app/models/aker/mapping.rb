@@ -9,12 +9,17 @@ module Aker
   # tables and columns.
   #
   # IMPORTANT!!
-  # Read the docs in config/initializers/aker.rb before editing this file
+  # Read the docs in models/aker/config_parser.rb before editing this file
   class Mapping
     attr_accessor :instance
 
     class << self
-      attr_accessor :config
+
+      attr_reader :config
+
+      def config=(config_str)
+        @config = Aker::ConfigParser.new.parse(config_str)
+      end
     end
 
     def initialize(instance)
@@ -23,51 +28,59 @@ module Aker
     end
 
     def update(attrs)
+      val = true
       _each_model_and_setting_attrs_for(attrs) do |model, setting_attrs|
-        model.update(setting_attrs)
+        val = val && set_value_for(model, setting_attrs)
       end
+      val
     end
 
     def update!(attrs)
-      _each_model_and_setting_attrs_for(attrs) do |model, setting_attrs|
-        model.update!(setting_attrs)
-      end
+      raise 'Error while saving attributes' unless update(attrs)
     end
 
     def attributes
       {}.tap do |obj|
         config[:updatable_attrs_from_ss_into_aker].each do |k|
           table_name = table_for_attr(k)
-          model = model_for_table(table_name)
-          if model
-            attr_name = aker_attr_name(table_name, k)
-            value = model.send(attr_name)
-          end
-          obj[k] = value if value
+          value = get_value_for(
+            model_for_table(table_name, k), 
+            aker_attr_name(table_name, k)
+          )
+          obj[k] = value
         end
       end
     end
-
-    private
 
     def config
       self.class.config
     end
 
+    private
+
+    def get_value_for(model, attr_name)
+      return model.send(attr_name) unless model.nil?
+      send(attr_name)
+    end
+
+    def set_value_for(model, setting_attrs)
+      return model.update(setting_attrs) unless model.nil?
+      setting_attrs.each_pair do |k,v|
+        send(:"#{k}=", v)
+      end
+      true
+    end
+
     def _each_model_and_setting_attrs_for(attrs)
       attrs.keys.all? do |attr_name|
         table_name = table_for_attr(attr_name)
-
-        # Ignore attributes that dont belong to any model
-        next true unless table_name
-
         setting_attrs = attributes_for_table(table_name, attrs)
-        model = model_for_table(table_name)
+        model = model_for_table(table_name, attr_name)
         yield model, setting_attrs
       end
     end
 
-    def model_for_table(_table_name)
+    def model_for_table(_table_name, _attr_name)
       raise 'Not implemented'
     end
 
@@ -75,7 +88,7 @@ module Aker
       config[:map_ss_tables_with_aker].keys.each do |table_name|
         return table_name if config[:map_ss_tables_with_aker][table_name].include?(attr_name.to_sym)
       end
-      nil
+      :self
     end
 
     def attributes_for_table(table_name, attrs)

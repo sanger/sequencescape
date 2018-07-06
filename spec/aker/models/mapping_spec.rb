@@ -13,8 +13,8 @@ shared_examples 'a mapping between an Aker model and Sequencescape', aker: true 
         it 'gives back a table name from an attribute name' do
           expect(mapping.send(:table_for_attr, :volume)).to eq(:well_attribute)
         end
-        it 'returns nil if there is no table for the attribute' do
-          expect(mapping.send(:table_for_attr, :volumes)).to eq(nil)
+        it 'returns :self if there is no table for the attribute' do
+          expect(mapping.send(:table_for_attr, :volumes)).to eq(:self)
         end
       end
 
@@ -56,32 +56,13 @@ RSpec.describe Aker::Mapping, aker: true do
   let(:instance) { double('some model') }
   let(:mapping) { Aker::Mapping.new(instance) }
   let(:my_config) do
-    {
-      # Maps SS models with Aker attributes
-      map_ss_tables_with_aker: {
-        samples: [],
-        sample_metadata: [:gender, :donor_id, :phenotype, :common_name],
-        well_attribute: [:volume, :concentration]
-      },
-
-      # Maps SS column names with Aker attributes (if the name is different)
-      map_aker_with_ss_columns: {
-        well_attribute: {
-          volume: :measured_volume
-        },
-        sample_metadata: {
-          common_name: :sample_common_name
-        }
-      },
-
-      # Aker attributes allowed to update from Aker into SS
-      updatable_attrs_from_aker_into_ss: [
-        :gender, :donor_id, :phenotype, :common_name,
-        :volume, :concentration
-      ],
-
-      # Aker attributes allowed to update from SS into Aker
-      updatable_attrs_from_ss_into_aker: [:volume, :concentration]
+    %Q{
+    sample_metadata.gender              <=   gender
+    sample_metadata.donor_id            <=   donor_id
+    sample_metadata.phenotype           <=   phenotype
+    sample_metadata.sample_common_name  <=   common_name
+    well_attribute.measured_volume      <=>  volume      
+    well_attribute.concentration        <=>  concentration
     }
   end
 
@@ -118,11 +99,11 @@ RSpec.describe Aker::Mapping, aker: true do
     context '#update!' do
       it 'updates an attribute translating to the right column of the model' do
         allow(some_model).to receive(:update).with(measured_volume: 44).and_return(true)
-        expect(mapping.update(volume: 44)).to eq(true)
+        expect{mapping.update!(volume: 44)}.not_to raise_error
       end
       it 'raises error when it cannot update one of the attrs' do
-        allow(some_model).to receive(:update!).with(gender: 'Male').and_return(true)
-        allow(some_model).to receive(:update!).with(measured_volume: 44).and_raise('boom!')
+        allow(some_model).to receive(:update).with(gender: 'Male').and_return(true)
+        allow(some_model).to receive(:update).with(measured_volume: 44).and_raise('boom!')
         expect { mapping.update!(volume: 44, gender: 'Male') }.to raise_error('boom!')
       end
     end

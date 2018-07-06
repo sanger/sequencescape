@@ -55,6 +55,9 @@ class Asset < ApplicationRecord
   has_many :barcodes, foreign_key: :asset_id, inverse_of: :asset, dependent: :destroy
   has_many :qc_results, dependent: :destroy
 
+  
+
+
   # TODO: Remove 'requests' and 'source_request' as they are abiguous
   # :requests should go before :events_on_requests, through: :requests
   has_many :requests
@@ -99,6 +102,8 @@ class Asset < ApplicationRecord
   has_one_event_with_family 'moved_to_2d_tube'
 
   delegate :metadata, to: :custom_metadatum_collection
+
+  delegate :last_qc_result_for, to: :qc_results
 
   broadcast_via_warren
 
@@ -477,6 +482,10 @@ class Asset < ApplicationRecord
 
   def update_from_qc(qc_result)
     Rails.logger.info "#{self.class.name} #{id} updated by QcResult #{qc_result.id}"
+  end
+
+  def get_qc_result_value_for(key)
+    last_qc_result_for(key).pluck(:value).first
   end
 
   private
