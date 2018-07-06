@@ -1,37 +1,26 @@
 
 class Studies::InformationController < ApplicationController
+  BASIC_TABS = [
+    %w[summary Summary],
+    ['sample-progress', 'Sample progress'],
+    ['assets-progress', 'Assets progress']
+  ].freeze
+
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
-  before_action :discover_study, :standard_request_types
-
-  before_action :setup_tabs, only: %i[show show_summary]
-
-  def setup_tabs
-    @total_requests = compute_total_request
-    @cache          = { total: @total_requests }
-
-    # Request types are already loaded, so we sort in ruby
-    @request_types  = standard_request_types.order(:order).reject { |r| @total_requests[r].zero? }
-
-    @basic_tabs = ['Summary', 'Sample progress', 'Assets progress']
-    @summaries = @basic_tabs + @request_types.map(&:name)
-  end
-  private :setup_tabs
+  before_action :discover_study
 
   def show
-    @default_tab_label = 'Sample progress'
-    @summary = params[:summary].to_i
-    @summary = @basic_tabs.index(@default_tab_label) if params[:summary].nil?
+    @summary = params[:summary] || 'sample-progress'
+    @request_types = RequestType.where(id: @study.requests.distinct.pluck(:request_type_id)).standard.order(:order, :id)
+    @summaries = BASIC_TABS + @request_types.pluck(:key, :name)
 
     @submissions = @study.submissions
     @awaiting_submissions = @study.submissions.where.not(state: 'ready')
 
     # We need to propagate the extra_parameters - as page - to the summary partial
-    @extra_params = params.dup
-    %i[summary study_id id action controller].each do |key|
-      @extra_params.delete key
-    end
+    @extra_params = params.except(%i[summary study_id id action controller])
 
     respond_to do |format|
       format.html
@@ -50,26 +39,24 @@ class Studies::InformationController < ApplicationController
     page_params = { page: params[:page] || 1, per_page: params[:per_page] || 50 }
 
     if request.xhr?
-      @default_tab_label = 'Assets progress'
-      @summary = params[:summary].to_i
-      @summary = @basic_tabs.index(@default_tab_label) if params[:summary].nil?
+      @summary = params[:summary] || 'assets-progress'
+      @summary = BASIC_TABS.index(@default_tab_label) if params[:summary].nil?
 
-      case @summaries[@summary]
-      when 'Sample progress'
+      case params[:summary]
+      when 'sample-progress'
         @page_elements = @study.samples.paginate(page_params)
+        @request_types = RequestType.where(id: @study.requests.distinct.pluck(:request_type_id)).standard.order(:order, :id)
         render partial: 'sample_progress'
-      when 'Assets progress'
+      when 'assets-progress'
         @asset_type = Receptacle.descendants.detect { |cls| cls.name == params[:asset_type] } || Receptacle
         @asset_type_name = params.fetch(:asset_type, 'All Assets').underscore.humanize
         @page_elements = @study.assets_through_aliquots.of_type(@asset_type).paginate(page_params)
-        @cache[:passed] = @passed_asset_request
-        @cache[:failed] = @failed_asset_request
         render partial: 'asset_progress'
-      when 'Summary'
+      when 'summary'
         @page_elements = @study.assets_through_requests.for_summary.paginate(page_params)
         render partial: 'summary'
-      else
-        @request_type = @request_types[@summary - @basic_tabs.size]
+      else # A request_type key
+        @request_type = RequestType.find_by!(key: params[:summary])
         # The include here doesn't load ALL the requests, only those matching the given request type. Ideally we'd just grab the counts,
         # but unfortunately we need to have at least the request id available for linking to in cases where we have
         # only one request in a particular state.
@@ -98,29 +85,7 @@ class Studies::InformationController < ApplicationController
     end
   end
 
-  def compute_total_request
-    report = @study.total_requests_report(standard_request_types)
-    standard_request_types.each_with_object({}) do |rt, total_requests|
-      total_requests[rt] = report[rt.id] || 0
-    end
-  end
-
-  def group_count(enumerable)
-    map = Hash.new { |hash, key| hash[key] = Hash.new 0 } # defining default value for nested hash
-    enumerable.each do |e|
-      groups = yield(e)
-      groups.each do |g_id, count|
-        map[g_id.to_i][e] = count
-      end
-    end
-    map
-  end
-
   private
-
-  def standard_request_types
-    @standard_request_types ||= RequestType.standard
-  end
 
   def discover_study
     @study = Study.find(params[:study_id])

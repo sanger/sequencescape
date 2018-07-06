@@ -342,4 +342,43 @@ RSpec.describe Request do
     request = Request.new
     expect(request.billing_product_identifier).to be nil
   end
+
+  describe '::progress_statistics' do
+    let(:request_type1) { create :request_type }
+    let(:request_type2) { create :request_type }
+
+    setup do
+      create_list :request, 2, state: 'pending', request_type: request_type1
+      create_list :request, 1, state: 'started', request_type: request_type1
+      create_list :request, 3, state: 'passed', request_type: request_type1
+      create_list :request, 1, state: 'failed', request_type: request_type1
+      create_list :request, 2, state: 'pending', request_type: request_type2
+      create_list :request, 1, state: 'started', request_type: request_type2
+      create_list :request, 3, state: 'cancelled', request_type: request_type2
+      create_list :request, 1, state: 'failed', request_type: request_type2
+    end
+
+    subject { Request.progress_statistics }
+
+    it 'returns a summary' do
+      expect(subject[request_type1]).to be_a Request::Statistics::Counter
+      expect(subject[request_type1].total).to eq(7)
+      expect(subject[request_type1].progress).to eq(50)
+      expect(subject[request_type1].pending).to eq(2)
+      expect(subject[request_type1].failed).to eq(1)
+      expect(subject[request_type1].passed).to eq(3)
+      expect(subject[request_type1].cancelled).to eq(0)
+      expect(subject[request_type1].completed).to eq(4)
+      expect(subject[request_type1].started).to eq(1)
+      expect(subject[request_type2]).to be_a Request::Statistics::Counter
+      expect(subject[request_type2].total).to eq(7)
+      expect(subject[request_type2].progress).to eq(0)
+      expect(subject[request_type2].pending).to eq(2)
+      expect(subject[request_type2].failed).to eq(1)
+      expect(subject[request_type2].passed).to eq(0)
+      expect(subject[request_type2].cancelled).to eq(3)
+      expect(subject[request_type2].completed).to eq(1)
+      expect(subject[request_type2].started).to eq(1)
+    end
+  end
 end
