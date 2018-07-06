@@ -1,25 +1,26 @@
 # frozen_string_literal: true
 
 module Aker
+  # Translates config in initializers/aker.rb to a mapping object from Aker::Mapping
+  # Parses expressions like:
+  #
+  #    sample_metadata.gender              <=   gender
+  #      |
+  #       -> It will update gender from Aker into sample_metadata.gender
+  #
+  #    sample_metadata.sample_common_name   =>   common_name
+  #      |
+  #       -> Update sample_common_name from sample_metadata into common_name in Aker
+  #
+  #     volume                             <=   volume
+  #      |
+  #       -> Update volume from Aker into Sequencescape using the setter method (volume=) in the mapping class
+  #
+  #    concentration                       <=>  concentration
+  #      |
+  #       -> Updates both ways, from Aker into Sequencescape and from Sequencescape into Aker
+  #
   class ConfigParser
-    # This config setting defines the mapping between models and attributes in Sequencescape and
-    # attributes from the biomaterials service in Aker, as defined by the Job creation.
-
-    # To add a new mapping field from Aker:
-    #
-    # 1. Add the field name from aker as a value inside the corresponding list for the key with the SS table name
-    #     in MAP_SS_TABLES_WITH_AKER
-    # 2. Add the field name from aker as a key linked with a column name for SS in MAP_AKER_WITH_SS_COLUMNS
-    #
-    # After this, if we want to update a new property from Aker into SS models we have to add the field name
-    # from aker inside the list UPDATABLE_ATTRS_FROM_AKER_INTO_SS.
-    #
-    # If we want to update a change in SS into the properties of Aker in the biomaterial service we have to add
-    # the field name from aker inside the list UPDATABLE_ATTRS_FROM_SS_INTO_AKER.
-    #
-    # SS updates will occur on update_attributes() calls
-    # Aker updates will happen on job completion, because the job message for the material is generated from
-    # the attributes() method of this class.
     attr_accessor :config
 
     def initialize(config = nil)

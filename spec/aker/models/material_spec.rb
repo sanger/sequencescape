@@ -22,32 +22,7 @@ RSpec.describe Aker::Material, type: :model, aker: true do
     well_attribute.concentration        <=>  concentration
     )
   end
-  # {
-  #   # Maps SS models with Aker attributes
-  #   map_ss_tables_with_aker: {
-  #     samples: [],
-  #     sample_metadata: [:gender, :donor_id, :phenotype, :common_name],
-  #     well_attribute: [:volume, :concentration]
-  #   },
 
-  #   # Maps SS column names with Aker attributes (if the name is different)
-  #   map_aker_with_ss_columns: {
-  #     well_attribute: {
-  #       volume: :measured_volume
-  #     },
-  #     sample_metadata: {
-  #       common_name: :sample_common_name
-  #     }
-  #   },
-
-  #   # Aker attributes allowed to update from Aker into SS
-  #   updatable_attrs_from_aker_into_ss: [
-  #     :gender, :donor_id, :phenotype, :common_name,
-  #     :volume, :concentration
-  #   ],
-
-  #   # Aker attributes allowed to update from SS into Aker
-  #   updatable_attrs_from_ss_into_aker: [:volume, :concentration]
   context 'with a custom config' do
     context '#attributes' do
       it 'generates an attributes object and adds the sample name as id' do
@@ -62,26 +37,6 @@ RSpec.describe Aker::Material, type: :model, aker: true do
         expect(mapping.attributes).to eq(volume: 14, concentration: 0.5, '_id': sample.name)
       end
 
-      context 'with any not defined attribute for sequencescape side' do
-        let(:my_config) do
-          %(
-            bubidibu         =>  blublublu
-          )
-        end
-        before do
-          Aker::Mapping.config = my_config
-        end
-
-        it 'will try to get its value by calling the method in the material object' do
-          mapping.instance_eval do
-            def bubidibu; end
-          end
-          allow(mapping).to receive(:bubidibu).and_return('a value')
-          expect(mapping).to receive(:bubidibu)
-          expect(mapping.attributes[:blublublu]).to eq('a value')
-        end
-      end
-
       context 'working with qc results' do
         let(:my_config) do
           %(
@@ -94,7 +49,7 @@ RSpec.describe Aker::Material, type: :model, aker: true do
         let(:container) { create :container, asset: asset }
 
         before do
-          Aker::Mapping.config = my_config
+          Aker::Material.config = my_config
           allow(sample).to receive(:container).and_return(container)
           @conc_a = create :qc_result, key: 'Concentration', value: 33, asset: asset
           @conc_b = create :qc_result, key: 'Concentration', value: 44, asset: asset
