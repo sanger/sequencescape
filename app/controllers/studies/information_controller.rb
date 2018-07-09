@@ -1,4 +1,6 @@
+# frozen_string_literal: true
 
+# Responsible for displaying overcomplicated reporting pages
 class Studies::InformationController < ApplicationController
   BASIC_TABS = [
     %w[summary Summary],
@@ -30,12 +32,6 @@ class Studies::InformationController < ApplicationController
   end
 
   def show_summary
-    # Dirty : in ajax request, paramter are escaped twice ...
-    params.each do |key, value|
-      new_key = key.sub(/^amp;/, '')
-      next if new_key == key
-      params[new_key] = value
-    end
     page_params = { page: params[:page] || 1, per_page: params[:per_page] || 50 }
 
     if request.xhr?
@@ -48,6 +44,7 @@ class Studies::InformationController < ApplicationController
         @request_types = RequestType.where(id: @study.requests.distinct.pluck(:request_type_id)).standard.order(:order, :id)
         render partial: 'sample_progress'
       when 'assets-progress'
+        @request_types = RequestType.where(id: @study.requests.distinct.pluck(:request_type_id)).standard.order(:order, :id)
         @asset_type = Receptacle.descendants.detect { |cls| cls.name == params[:asset_type] } || Receptacle
         @asset_type_name = params.fetch(:asset_type, 'All Assets').underscore.humanize
         @page_elements = @study.assets_through_aliquots.of_type(@asset_type).paginate(page_params)
