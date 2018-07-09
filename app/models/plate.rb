@@ -29,7 +29,7 @@ class Plate < Asset
   has_qc_files
 
   belongs_to :plate_purpose, foreign_key: :plate_purpose_id, inverse_of: :plates
-  belongs_to :purpose, foreign_key: :plate_purpose_id, inverse_of: :plates
+  belongs_to :purpose, foreign_key: :plate_purpose_id
 
   has_many :container_associations, foreign_key: :container_id, inverse_of: :plate, dependent: :destroy
   has_many :wells, through: :container_associations, inverse_of: :plate do
