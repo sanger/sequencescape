@@ -23,7 +23,9 @@ namespace :limber do
                 { name: 'scRNA-384 Stock',
                   size: 384 },
                 { name: 'GBS Stock',
-                  size: 384 }]
+                  size: 384 },
+                { name: 'GnT Stock',
+                  size: 96 }]
 
     purposes.each do |purpose|
       name = purpose[:name]
@@ -138,6 +140,18 @@ namespace :limber do
         default_purpose: 'scRNA-384 Stock'
       ).build!
 
+      Limber::Helper::RequestTypeConstructor.new(
+        'GnT Picoplex',
+        library_types: ['GnT Picoplex'],
+        default_purpose: 'GnT Stock'
+      ).build!
+
+      Limber::Helper::RequestTypeConstructor.new(
+        'GnT MDA',
+        library_types: ['GnT scRNA', 'GnT MDA'],
+        default_purpose: 'GnT Stock'
+      ).build!
+
       unless RequestType.where(key: 'limber_multiplexing').exists?
         RequestType.create!(
           name: 'Limber Multiplexing',
@@ -215,6 +229,12 @@ namespace :limber do
       'PCR Free' => {
         sequencing_list: base_with_novaseq,
         catalogue_name: 'PFHSqX'
+      },
+      'GnT Picoplex' => {
+        sequencing_list: base_without_hiseq
+      },
+      'GnT MDA' => {
+        sequencing_list: ['illumina_b_hiseq_x_paired_end_sequencing']
       }
     }
 
