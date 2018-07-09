@@ -1,6 +1,14 @@
 
+# frozen_string_literal: true
+
 require 'lab_where_client'
 
+#
+# A plate is a piece of labware made up of a number of 'wells'. This class represents the physical piece of plastic.
+# PlatePuprose: describes the role a plate has in the lab. In some cases a plate's purpose may change as it gets processed.
+# Well: Plates can have multiple wells (most often 96 or 384) each of which can contain multiple samples.
+# PlateType: Identifies the plates form factor, typically provided by robots to ensure tips are positioned correctly.
+#
 class Plate < Asset
   include Api::PlateIO::Extensions
   include ModelExtensions::Plate
@@ -20,10 +28,10 @@ class Plate < Asset
 
   has_qc_files
 
-  belongs_to :plate_purpose, foreign_key: :plate_purpose_id
-  belongs_to :purpose, foreign_key: :plate_purpose_id
+  belongs_to :plate_purpose, foreign_key: :plate_purpose_id, inverse_of: :plates
+  belongs_to :purpose, foreign_key: :plate_purpose_id, inverse_of: :plates
 
-  has_many :container_associations, foreign_key: :container_id, inverse_of: :plate
+  has_many :container_associations, foreign_key: :container_id, inverse_of: :plate, dependent: :destroy
   has_many :wells, through: :container_associations, inverse_of: :plate do
     def attach(records)
       ActiveRecord::Base.transaction do
@@ -69,22 +77,22 @@ class Plate < Asset
   has_many :conatined_aliquots, through: :wells, source: :aliquots
 
   # We also look up studies and projects through wells
-  has_many :studies, ->() { distinct }, through: :wells
-  has_many :projects, ->() { distinct }, through: :wells
+  has_many :studies, -> { distinct }, through: :wells
+  has_many :projects, -> { distinct }, through: :wells
   has_many :well_requests_as_target, through: :wells, source: :requests_as_target
   has_many :well_requests_as_source, through: :wells, source: :requests_as_source
-  has_many :orders_as_target, ->() { distinct }, through: :well_requests_as_target, source: :order
+  has_many :orders_as_target, -> { distinct }, through: :well_requests_as_target, source: :order
   # We use stock well associations here as stock_wells is already used to generate some kind of hash.
-  has_many :stock_requests, ->() { distinct }, through: :stock_well_associations, source: :requests
-  has_many :stock_well_associations, ->() { distinct }, through: :wells, source: :stock_wells
-  has_many :stock_orders, ->() { distinct }, through: :stock_requests, source: :order
+  has_many :stock_requests, -> { distinct }, through: :stock_well_associations, source: :requests
+  has_many :stock_well_associations, -> { distinct }, through: :wells, source: :stock_wells
+  has_many :stock_orders, -> { distinct }, through: :stock_requests, source: :order
   has_many :extraction_attributes, foreign_key: 'target_id'
   has_many :siblings, through: :parents, source: :children
   # Transfer requests into a plate are the requests leading into the wells of said plate.
   has_many :transfer_requests, through: :wells, source: :transfer_requests_as_target
   has_many :transfer_requests_as_source, through: :wells
   has_many :transfer_requests_as_target, through: :wells
-  has_many :transfer_request_collections, ->() { distinct }, through: :transfer_requests_as_source
+  has_many :transfer_request_collections, -> { distinct }, through: :transfer_requests_as_source
 
   # The default state for a plate comes from the plate purpose
   delegate :default_state, to: :plate_purpose, allow_nil: true
@@ -118,7 +126,7 @@ class Plate < Asset
   end
 
   def source_plate
-    purpose && purpose.source_plate(self)
+    purpose&.source_plate(self)
   end
 
   SAMPLE_PARTIAL = 'assets/samples_partials/plate_samples'
@@ -129,12 +137,12 @@ class Plate < Asset
   delegate :supports_multiple_submissions?, to: :plate_purpose
   delegate :dilution_factor, :dilution_factor=, to: :plate_metadata
 
-  scope :include_for_show, ->() {
+  scope :include_for_show, -> {
     includes(
       requests: :request_metadata,
       wells: [
         :map_id,
-        { aliquots: %i(samples tag tag2) }
+        { aliquots: %i[samples tag tag2] }
       ]
     )
   }
@@ -147,11 +155,11 @@ class Plate < Asset
   has_many :in_progress_submissions, -> { distinct }, through: :transfer_requests_as_target, source: :submission
 
   def submission_ids
-    @siat ||= in_progress_submissions.pluck(:submission_id)
+    @submission_ids ||= in_progress_submissions.pluck(:submission_id)
   end
 
   def submission_ids_as_source
-    @sias ||= waiting_submissions.pluck(:submission_id)
+    @submission_ids_as_source ||= waiting_submissions.pluck(:submission_id)
   end
 
   # Prioritised the submissions that have been made from the plate
@@ -250,7 +258,7 @@ class Plate < Asset
   #->() {where(:assets=>{:sti_type=>[Plate,*Plate.descendants].map(&:name)})},
   has_many :descendant_plates, class_name: 'Plate', through: :links_as_ancestor, foreign_key: :ancestor_id, source: :descendant
   has_many :descendant_lanes,  class_name: 'Lane', through: :links_as_ancestor, foreign_key: :ancestor_id, source: :descendant
-  has_many :tag_layouts
+  has_many :tag_layouts, dependent: :destroy
 
   scope :with_descendants_owned_by, ->(user) {
     joins(descendant_plates: :plate_owner)
@@ -263,7 +271,7 @@ class Plate < Asset
       .where('plate_purposes.id = plate_purposes.source_purpose_id')
   }
 
-  scope :with_wells_and_requests, ->() {
+  scope :with_wells_and_requests, -> {
     eager_load(wells: [
       :uuid_object, :map,
       {
@@ -293,21 +301,14 @@ class Plate < Asset
     end
   }
 
-  scope :with_study_id, ->(study_id) {
-    joins(:studies).where(studies: { id: study_id }) if study_id.present?
-  }
+  scope :with_study_id, ->(study_id) { joins(:studies).where(studies: { id: study_id }) if study_id.present? }
 
   scope :with_plate_purpose_ids, ->(plate_purpose_ids) {
     joins(:plate_purpose).where(plate_purposes: { id: plate_purpose_ids }) if plate_purpose_ids.present?
   }
 
-  scope :created_on_or_after, ->(date) {
-    where('assets.created_at >= ?', date.midnight) if date.present?
-  }
-
-  scope :created_on_or_before, ->(date) {
-    where('assets.created_at <= ?', date.end_of_day) if date.present?
-  }
+  scope :created_on_or_after, ->(date) { where('assets.created_at >= ?', date.midnight) if date.present? }
+  scope :created_on_or_before, ->(date) { where('assets.created_at <= ?', date.end_of_day) if date.present? }
 
   def maps
     Map.where_plate_size(size).where_plate_shape(asset_shape)
@@ -335,9 +336,7 @@ class Plate < Asset
 
   def add_well(well, row = nil, col = nil)
     add_well_holder(well)
-    if row
-      well.map = find_map_by_rowcol(row, col)
-    end
+    well.map = find_map_by_rowcol(row, col) if row
   end
 
   def add_well_by_map_description(well, map_description)
@@ -358,10 +357,10 @@ class Plate < Asset
       wells.located_at_position(well_name).first
     end
   end
-  alias :find_well_by_map_description :find_well_by_name
+  alias find_well_by_map_description find_well_by_name
 
   def plate_rows
-    ('A'..((?A.getbyte(0) + height - 1).chr).to_s).to_a
+    ('A'..('A'.getbyte(0) + height - 1).chr.to_s).to_a
   end
 
   def plate_columns
@@ -396,12 +395,10 @@ class Plate < Asset
     @storage_location ||= obtain_storage_location
   end
 
-  def storage_location_service
-    @storage_location_service
-  end
+  attr_reader :storage_location_service
 
   def barcode_for_tecan
-    raise StandardError, 'Purpose is not valid' if plate_purpose.present? and not plate_purpose.valid?
+    raise StandardError, 'Purpose is not valid' if plate_purpose.present? && !plate_purpose.valid?
     plate_purpose.present? ? send(:"#{plate_purpose.barcode_for_tecan}") : ean13_barcode
   end
 
@@ -430,8 +427,8 @@ class Plate < Asset
 
   def self.create_sample_tubes_asset_group_and_print_barcodes(plates, barcode_printer, study)
     return nil if plates.empty?
-    plate_barcodes = plates.map { |plate| plate.barcode_number }
-    asset_group = AssetGroup.find_or_create_asset_group("#{plate_barcodes.join('-')} #{Time.now.to_formatted_s(:sortable)} ", study)
+    plate_barcodes = plates.map(&:barcode_number)
+    asset_group = AssetGroup.find_or_create_asset_group("#{plate_barcodes.join('-')} #{Time.current.to_formatted_s(:sortable)} ", study)
     plates.each do |plate|
       next if plate.wells.empty?
       asset_group.assets << plate.create_sample_tubes_and_print_barcodes(barcode_printer)
@@ -489,7 +486,7 @@ class Plate < Asset
   end
 
   def scored?
-    wells.any? { |w| w.get_gel_pass }
+    wells.any?(&:get_gel_pass)
   end
 
   def buffer_required?
@@ -536,7 +533,7 @@ class Plate < Asset
   end
 
   def convert_to(new_purpose)
-    update_attributes!(plate_purpose: new_purpose)
+    update!(plate_purpose: new_purpose)
   end
 
   def compatible_purposes
@@ -578,7 +575,7 @@ class Plate < Asset
     ]).find_by(['ca.container_id = ?', id]).try(:name) || 'UNKNOWN'
   end
 
-  alias_method :friendly_name, :human_barcode
+  alias friendly_name human_barcode
   def subject_type
     'plate'
   end
@@ -608,13 +605,13 @@ class Plate < Asset
   def obtain_storage_location
     if labwhere_location.present?
       @storage_location_service = 'LabWhere'
-      return labwhere_location
+      labwhere_location
     elsif ets_location.present?
       @storage_location_service = 'ETS'
-      return ets_location
+      ets_location
     else
       @storage_location_service = 'None'
-      return 'Not found in LabWhere nor ETS'
+      'Not found in LabWhere nor ETS'
     end
   end
 
@@ -623,9 +620,7 @@ class Plate < Asset
     return '' if barcode_number.blank?
     cas_location = Cas::StoredEntity.storage_location(barcode_number, prefix)
     if cas_location.present?
-      if cas_location.rows.first.present?
-        cas_location.rows.first.join(' - ')
-      end
+      cas_location.rows.first.join(' - ') if cas_location.rows.first.present?
     elsif cas_location.nil?
       return 'Cannot connect to Cas database'
     end
@@ -637,9 +632,7 @@ class Plate < Asset
     rescue LabWhereClient::LabwhereException => e
       return "Not found (#{e.message})"
     end
-    if info_from_labwhere.present? && info_from_labwhere.location.present?
-      return info_from_labwhere.location.location_info
-    end
+    return info_from_labwhere.location.location_info if info_from_labwhere.present? && info_from_labwhere.location.present?
   end
 
   def lookup_stock_plate
