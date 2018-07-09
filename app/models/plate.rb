@@ -586,12 +586,6 @@ class Plate < Asset
     ]).find_by(['ca.container_id = ?', id]).try(:name) || 'UNKNOWN'
   end
 
-  # Barcode is stored as a string, yet in a number of places is treated as
-  # a number. If we convert it before searching, things are faster!
-  # def find_by_barcode(barcode)
-  #   super(barcode.to_s)
-  # end
-
   alias_method :friendly_name, :human_barcode
   def subject_type
     'plate'
