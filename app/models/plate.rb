@@ -225,28 +225,8 @@ class Plate < Asset
       .includes(:events, :asset_audits)
   }
 
-  # TODO: Make these more railsy
-  scope :with_sample, ->(sample) {
-    select('assets.*').distinct
-                      .joins([
-                        'LEFT OUTER JOIN container_associations AS wscas ON wscas.container_id = assets.id',
-                        'LEFT JOIN assets AS wswells ON wswells.id = content_id',
-                        'LEFT JOIN aliquots AS wsaliquots ON wsaliquots.receptacle_id = wswells.id'
-                      ])
-                      .where(['wsaliquots.sample_id IN(?)', Array(sample)])
-  }
-
-  scope :with_requests, ->(requests) {
-                          select('assets.*').distinct
-                                            .joins([
-                                              'INNER JOIN container_associations AS wrca ON wrca.container_id = assets.id',
-                                              'INNER JOIN requests AS wrr ON wrr.asset_id = wrca.content_id'
-                                            ]).where([
-                                              'wrr.id IN (?)',
-                                              requests.map(&:id)
-                                            ])
-                        }
-
+  scope :with_sample, ->(sample) { includes(:contained_samples).where(samples: { id: sample }) }
+  scope :with_requests, ->(requests) { includes(wells: :requests).where(requests: { id: requests }).distinct }
   scope :output_by_batch, ->(batch) {
     joins(wells: { requests_as_target: :batch })
       .where(batches: { id: batch })
@@ -434,15 +414,7 @@ class Plate < Asset
   end
 
   def self.plate_ids_from_requests(requests)
-    plate_ids = []
-    requests.map do |request|
-      next if request.asset.nil?
-      next unless request.asset.is_a?(Well)
-      next if request.asset.plate.nil?
-      plate_ids << request.asset.plate.id
-    end
-
-    plate_ids.uniq
+    with_requests(requests).pluck(:id)
   end
 
   # Should return true if any samples on the plate contains gender information
