@@ -42,5 +42,4 @@ class Transfer::FromPlateToTube < Transfer
   def default_to_all_wells
     self.transfers ||= source.wells.includes(:map).map(&:map_description)
   end
-
 end
