@@ -5,6 +5,8 @@ class Transfer::FromPlateToTube < Transfer
   include TransfersBySchema
   include TransfersToKnownDestination
 
+  before_validation :default_to_all_wells
+
   # The values in the transfers must be an array and must be valid well positions on the plate.
   validates_each(:transfers) do |record, _attribute, value|
     if not value.is_a?(Array)
@@ -14,10 +16,14 @@ class Transfer::FromPlateToTube < Transfer
     end
   end
 
+  after_create :update_tube_name
+
+  private
+
   def each_transfer
     # Partition the source plate wells into ones that are good and others that are bad.  The
     # bad wells will be eliminated after we've done the transfers for the good ones.
-    bad_wells, good_wells = source.wells.located_at_position(transfers).with_pool_id.partition do |well|
+    bad_wells, good_wells = source.wells.includes(:aliquots, :transfer_requests_as_target).located_at_position(transfers).with_pool_id.partition do |well|
       well.nil? or well.aliquots.empty? or well.failed? or well.cancelled?
     end
 
@@ -26,14 +32,15 @@ class Transfer::FromPlateToTube < Transfer
     # Eliminate any of the transfers that were not made because of the bad source wells
     self.transfers = transfers - bad_wells.map { |well| well.map.description }
   end
-  private :each_transfer
-
-  after_create :update_tube_name
 
   def update_tube_name
     source_barcode = source.source_plate.try(:human_barcode)
     range = "#{transfers.first}:#{transfers.last}"
     destination.update_attributes!(name: "#{source_barcode} #{range}")
   end
-  private :update_tube_name
+
+  def default_to_all_wells
+    self.transfers ||= source.wells.includes(:map).map(&:map_description)
+  end
+
 end
