@@ -368,21 +368,13 @@ class Plate < Asset
     (1..width)
   end
 
-  def get_plate_type
-    if descriptor_value('Plate Type').nil?
-      plate_type = get_external_value('plate_type_description')
-      set_plate_type(plate_type)
-    end
-    descriptor_value('Plate Type')
-  end
-
   def set_plate_type(result)
     add_descriptor(Descriptor.new(name: 'Plate Type', value: result))
     save
   end
 
-  def stock_plate_name
-    (get_plate_type == 'Stock Plate' || get_plate_type.blank?) ? PlateType.first.name : get_plate_type
+  def plate_type
+    plate_type_descriptor.presence || PlateType.first.name
   end
 
   def details
@@ -608,6 +600,10 @@ class Plate < Asset
   end
 
   private
+
+  def plate_type_descriptor
+    descriptor_value('Plate Type')
+  end
 
   def obtain_storage_location
     if labwhere_location.present?
