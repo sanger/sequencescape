@@ -56,7 +56,7 @@ class Submission < ApplicationRecord
   has_many :comments_from_requests, through: :requests, source: :comments
 
   # Required at initial construction time ...
-  validate :validate_orders_are_compatible, if: :building?
+  validates_with OrderCompatibilityValidator, if: :building?
 
   # We gate submission destruction. Should probably just prevent this.
   before_destroy :prevent_destruction_unless_building?
@@ -186,15 +186,6 @@ class Submission < ApplicationRecord
     @not_ready_samples_names ||= not_ready_samples.map(&:name).join(', ')
   end
 
-  # this method is part of the submission
-  # not order, because it is submission
-  # which decide if orders are compatible or not
-  def check_orders_compatible?(a, b)
-    errors.add(:request_types, 'are incompatible') if a.request_types != b.request_types
-    errors.add(:request_options, 'are incompatible') unless request_options_compatible?(a, b)
-    check_studies_compatible?(a.study, b.study)
-  end
-
   def request_options_compatible?(a, b)
     a.request_options.reject { |k, _| PER_ORDER_REQUEST_OPTIONS.include?(k) } == b.request_options.reject { |k, _| PER_ORDER_REQUEST_OPTIONS.include?(k) }
   end
@@ -313,14 +304,5 @@ class Submission < ApplicationRecord
     ActiveRecord::Base.transaction do
       requests.each(&:submission_cancelled!)
     end
-  end
-
-  # Order needs to have the 'structure'
-  def validate_orders_are_compatible
-    return true if orders.size < 2
-    # check every order against the first one
-    first_order = orders.first
-    orders[1..-1].each { |o| check_orders_compatible?(o, first_order) }
-    return false if errors.count > 0
   end
 end

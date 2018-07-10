@@ -51,6 +51,9 @@ Metrics/BlockLength:
 # We have a few custom find_by methods which we maintain.
 # At least for now. find_by_id_or_name is a bit clunky.
 Rails/DynamicFindBy:
+  Exclude:
+    - 'app/sample_manifest_excel/**/*'
+    - 'test/app/sample_manifest_excel/**/*'
   Whitelist:
     - find_by_sql
     - find_by_id_or_name

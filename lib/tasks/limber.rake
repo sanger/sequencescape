@@ -23,7 +23,9 @@ namespace :limber do
                 { name: 'scRNA-384 Stock',
                   size: 384 },
                 { name: 'GBS Stock',
-                  size: 384 }]
+                  size: 384 },
+                { name: 'GnT Stock',
+                  size: 96 }]
 
     purposes.each do |purpose|
       name = purpose[:name]
@@ -102,8 +104,20 @@ namespace :limber do
       ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
+        'RNAR',
+        library_types: ['RNA Ribo'],
+        default_purpose: 'LBR Cherrypick'
+      ).build!
+
+      Limber::Helper::RequestTypeConstructor.new(
         'RNAAG',
         library_types: ['RNA Poly A Globin'],
+        default_purpose: 'LBR Cherrypick'
+      ).build!
+
+      Limber::Helper::RequestTypeConstructor.new(
+        'RNARG',
+        library_types: ['RNA Ribo Globin'],
         default_purpose: 'LBR Cherrypick'
       ).build!
 
@@ -124,6 +138,18 @@ namespace :limber do
         'scRNA-384',
         library_types: ['scRNA 384'],
         default_purpose: 'scRNA-384 Stock'
+      ).build!
+
+      Limber::Helper::RequestTypeConstructor.new(
+        'GnT Picoplex',
+        library_types: ['GnT Picoplex'],
+        default_purpose: 'GnT Stock'
+      ).build!
+
+      Limber::Helper::RequestTypeConstructor.new(
+        'GnT MDA',
+        library_types: ['GnT scRNA', 'GnT MDA'],
+        default_purpose: 'GnT Stock'
       ).build!
 
       unless RequestType.where(key: 'limber_multiplexing').exists?
@@ -191,12 +217,24 @@ namespace :limber do
       'RNAA' => {
         sequencing_list: base_without_hiseq
       },
+      'RNAR' => {
+        sequencing_list: base_without_hiseq
+      },
       'RNAAG' => {
+        sequencing_list: base_without_hiseq
+      },
+      'RNARG' => {
         sequencing_list: base_without_hiseq
       },
       'PCR Free' => {
         sequencing_list: base_with_novaseq,
         catalogue_name: 'PFHSqX'
+      },
+      'GnT Picoplex' => {
+        sequencing_list: base_without_hiseq
+      },
+      'GnT MDA' => {
+        sequencing_list: ['illumina_b_hiseq_x_paired_end_sequencing']
       }
     }
 

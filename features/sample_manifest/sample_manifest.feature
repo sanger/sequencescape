@@ -321,7 +321,7 @@ Feature: Sample manifest
     Given a manifest has been created for "Test study"
     When I fill in "File to upload" with the file "test/data/test_is_control_is_resubmit.csv"
     And I press "Upload manifest"
-    Given the manifests are successfully processed
+    Given 1 pending delayed jobs are processed
     When I refresh the page
     Then I should see the manifest table:
       | Contains | Study      | Supplier           | Manifest       | Upload             | Errors | State     |
