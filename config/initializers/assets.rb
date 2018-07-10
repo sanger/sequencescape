@@ -1,6 +1,5 @@
 Rails.application.config.assets.precompile += [
   'sessions.css',
-  'tabview.css',
   'print.css',
   'scanned_barcode.js',
   'pipeline.js',
