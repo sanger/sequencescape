@@ -39,7 +39,7 @@ Rails.application.configure do
   end
 
   # Raise an error on page load if there are pending migrations.
-  custom_db = ENV.fetch('DATABASE_URL').present?
+  custom_db = ENV.fetch('DATABASE_URL', nil).present?
   config.active_record.migration_error = custom_db ? false : :page_load
 
   # Debug mode disables concatenation and preprocessing of assets.

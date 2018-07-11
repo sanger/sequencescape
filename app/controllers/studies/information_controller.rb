@@ -36,9 +36,8 @@ class Studies::InformationController < ApplicationController
 
     if request.xhr?
       @summary = params[:summary] || 'assets-progress'
-      @summary = BASIC_TABS.index(@default_tab_label) if params[:summary].nil?
 
-      case params[:summary]
+      case @summary
       when 'sample-progress'
         @page_elements = @study.samples.paginate(page_params)
         @request_types = RequestType.where(id: @study.requests.distinct.pluck(:request_type_id)).standard.order(:order, :id)

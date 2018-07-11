@@ -20,7 +20,7 @@ RSpec.describe Request::Statistics::Counter do
     expect(subject.progress).to eq(57)
     expect(subject.pending).to eq(3)
     expect(subject.failed).to eq(3)
-    expect(subject.passed).to eq(1)
+    expect(subject.passed).to eq(4)
     expect(subject.cancelled).to eq(3)
     expect(subject.completed).to eq(7)
     expect(subject.started).to eq(0)

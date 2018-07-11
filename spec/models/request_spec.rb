@@ -371,7 +371,7 @@ RSpec.describe Request do
       expect(subject[request_type1].completed).to eq(4)
       expect(subject[request_type1].started).to eq(1)
       expect(subject[request_type2]).to be_a Request::Statistics::Counter
-      expect(subject[request_type2].total).to eq(7)
+      expect(subject[request_type2].total).to eq(4)
       expect(subject[request_type2].progress).to eq(0)
       expect(subject[request_type2].pending).to eq(2)
       expect(subject[request_type2].failed).to eq(1)
