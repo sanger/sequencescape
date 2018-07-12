@@ -23,9 +23,11 @@ namespace :limber do
                 { name: 'scRNA-384 Stock',
                   size: 384 },
                 { name: 'GBS Stock',
-                  size: 384 },
-                { name: 'GnT Stock',
-                  size: 96 }]
+                  size: 384 }
+                # GnT Pipeline requires UAT
+                # { name: 'GnT Stock',
+                #   size: 96 }
+                ]
 
     purposes.each do |purpose|
       name = purpose[:name]
@@ -140,17 +142,18 @@ namespace :limber do
         default_purpose: 'scRNA-384 Stock'
       ).build!
 
-      Limber::Helper::RequestTypeConstructor.new(
-        'GnT Picoplex',
-        library_types: ['GnT Picoplex'],
-        default_purpose: 'GnT Stock'
-      ).build!
+      # GnT Pipeline requires UAT
+      # Limber::Helper::RequestTypeConstructor.new(
+      #   'GnT Picoplex',
+      #   library_types: ['GnT Picoplex'],
+      #   default_purpose: 'GnT Stock'
+      # ).build!
 
-      Limber::Helper::RequestTypeConstructor.new(
-        'GnT MDA',
-        library_types: ['GnT scRNA', 'GnT MDA'],
-        default_purpose: 'GnT Stock'
-      ).build!
+      # Limber::Helper::RequestTypeConstructor.new(
+      #   'GnT MDA',
+      #   library_types: ['GnT scRNA', 'GnT MDA'],  # 'GnT scRNA' should be a default_purpose of 'scRNA'.
+      #   default_purpose: 'GnT Stock'              # It requires default_purpose to accept an array.
+      # ).build!
 
       unless RequestType.where(key: 'limber_multiplexing').exists?
         RequestType.create!(
@@ -229,13 +232,14 @@ namespace :limber do
       'PCR Free' => {
         sequencing_list: base_with_novaseq,
         catalogue_name: 'PFHSqX'
-      },
-      'GnT Picoplex' => {
-        sequencing_list: base_without_hiseq
-      },
-      'GnT MDA' => {
-        sequencing_list: ['illumina_b_hiseq_x_paired_end_sequencing']
       }
+      # GnT pipeline requires UAT
+      # 'GnT Picoplex' => {
+      #   sequencing_list: base_without_hiseq
+      # },
+      # 'GnT MDA' => {
+      #   sequencing_list: ['illumina_b_hiseq_x_paired_end_sequencing']
+      # }
     }
 
     ActiveRecord::Base.transaction do
