@@ -23,11 +23,10 @@ namespace :limber do
                 { name: 'scRNA-384 Stock',
                   size: 384 },
                 { name: 'GBS Stock',
-                  size: 384 }
+                  size: 384 }]
                 # GnT Pipeline requires UAT
                 # { name: 'GnT Stock',
-                #   size: 96 }
-                ]
+                  # size: 96 }
 
     purposes.each do |purpose|
       name = purpose[:name]
