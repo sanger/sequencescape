@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# Disabling rubocop temporarily to preserve nice comments format
+# rubocop:disable all
+
 # We'll try and do this through the API with the live version
 namespace :limber do
   desc 'Setup all the necessary limber records'
@@ -23,10 +26,11 @@ namespace :limber do
                 { name: 'scRNA-384 Stock',
                   size: 384 },
                 { name: 'GBS Stock',
-                  size: 384 }]
+                  size: 384 },
                 # GnT Pipeline requires UAT
                 # { name: 'GnT Stock',
-                  # size: 96 }
+                #   size: 96 }
+                ]
 
     purposes.each do |purpose|
       name = purpose[:name]
@@ -272,3 +276,5 @@ namespace :limber do
     end
   end
 end
+
+# rubocop:enable all
