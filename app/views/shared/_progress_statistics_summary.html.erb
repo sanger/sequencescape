@@ -1,0 +1,35 @@
+<div class="request_progress">
+  <div class="request_progress_header">
+    <span class="request_type_name">Request Type</span>
+    <div class="key">
+      <span class="progress-state-started">started</span>
+      <span class="progress-state-passed">passed</span>
+      <span class="progress-state-failed">failed</span>
+      <span class="progress-state-other">other</span>
+    </div>
+    <span class="request_progress_totals">Completed/Total</span>
+  </div>
+  <% statistics.sort_by { |rt,_| [rt.order, rt.id] }.each do |request_type, statistics| %>
+  <div class="request_progress_section">
+    <span class="request_type_name"><%= request_type.name %></span>
+    <div class="bar-container">
+      <div class="progress">
+        <% statistics.states(exclude: ['pending']).each do |state, absolute, percentage| %>
+          <div class="progress-bar progress-state-<%= state %>"
+               role="progressbar"
+               style="width: <%= percentage %>%"
+               aria-valuenow="<%= absolute %>"
+               title="<%= state %> <%= absolute %>"
+               aria-valuemin="0" aria-valuemax="<%= statistics.total %>"><%= absolute %></div>
+        <% end %>
+      </div>
+    </div>
+    <span class="request_progress_totals">
+      <%= statistics.completed %>/<%= statistics.total %>
+      <% unless statistics.cancelled.zero? %>
+        <small>(<%= statistics.cancelled %> cancelled)</small>
+      <% end %>
+    </span>
+  </div>
+  <% end %>
+</div>
