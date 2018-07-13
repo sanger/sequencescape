@@ -220,6 +220,40 @@ class BatchesControllerTest < ActionController::TestCase
             end
           end
 
+          context 'hide_requests' do
+            setup do
+              post :create, params: {
+                id: @pipeline.id,
+                request: { @request_three.id => '0', @request_four.id => '1' },
+                action_on_requests: 'hide_from_inbox'
+              }
+            end
+
+            should 'hide the requests from the inbox' do
+              assert_redirected_to pipeline_path(@pipeline)
+              assert_equal 'Requests hidden from inbox', flash[:notice]
+              refute @request_three.reload.hold?
+              assert @request_four.reload.hold?
+            end
+          end
+
+          context 'cancel_requests' do
+            setup do
+              post :create, params: {
+                id: @pipeline.id,
+                request: { @request_three.id => '0', @request_four.id => '1' },
+                action_on_requests: 'cancel_requests'
+              }
+            end
+
+            should 'cancel the requests' do
+              assert_redirected_to pipeline_path(@pipeline)
+              assert_equal 'Requests cancelled', flash[:notice]
+              refute @request_three.reload.cancelled?
+              assert @request_four.reload.cancelled?
+            end
+          end
+
           context 'redirect to action #control' do
             setup do
               @cn = FactoryBot.create :control, name: 'Control 1', item_id: 2, pipeline: @pipeline

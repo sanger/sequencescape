@@ -90,9 +90,9 @@ class BatchesController < ApplicationController
 
     case params[:action_on_requests]
     when 'cancel_requests'
-      return cancel_requests(requests)
+      transition_requests(requests, :cancel_before_started!, 'Requests cancelled')
     when 'hide_from_inbox'
-      return hide_from_inbox(requests)
+      transition_requests(requests, :hold!, 'Requests hidden from inbox')
     else
       # This is the standard create action
       standard_create(requests)
@@ -490,25 +490,11 @@ class BatchesController < ApplicationController
     nil
   end
 
-  def hide_from_inbox(requests)
-    ActiveRecord::Base.transaction do
-      requests.map(&:hold!)
-    end
+  def transition_requests(requests, transition, message)
+    ApplicationRecord.transaction { requests.each(&transition) }
 
     respond_to do |format|
-      flash[:notice] = 'Requests hidden from inbox'
-      format.html { redirect_to controller: :pipelines, action: :show, id: @pipeline.id }
-      format.xml  { head :ok }
-    end
-  end
-
-  def cancel_requests(requests)
-    ActiveRecord::Base.transaction do
-      requests.map(&:cancel_before_started!)
-    end
-
-    respond_to do |format|
-      flash[:notice] = 'Requests canceled'
+      flash[:notice] = message
       format.html { redirect_to controller: :pipelines, action: :show, id: @pipeline.id }
       format.xml  { head :ok }
     end
