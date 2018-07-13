@@ -9,7 +9,7 @@ class BatchesController < ApplicationController
 
   before_action :login_required, except: %i[released qc_criteria]
   before_action :find_batch_by_id, only: %i[
-    show edit update qc_information qc_batch save fail fail_items
+    show edit update qc_information qc_batch save fail
     fail_batch control add_control print_labels print_plate_labels print_multiplex_labels
     print verify verify_tube_layout reset_batch previous_qc_state filtered swap
     download_spreadsheet gwl_file pacbio_sample_sheet sample_prep_worksheet
@@ -185,37 +185,14 @@ class BatchesController < ApplicationController
 
   def fail_items
     ActiveRecord::Base.transaction do
-      if params[:failure][:reason].empty?
-        flash[:error] = 'Please specify a failure reason for this batch'
-        redirect_to action: :fail, id: @batch.id
+      fail_params = params.permit(:id, requested_fail: {}, requested_remove: {}, failure: [:reason, :comment, :fail_but_charge])
+      fail_and_remover = Batch::RequestFailAndRemover.new(fail_params)
+      if fail_and_remover.save
+        flash[:notice] = fail_and_remover.notice
       else
-        reason = params[:failure][:reason]
-        comment = params[:failure][:comment]
-        requests = params[:requested_fail] || {}
-        fail_but_charge = params[:failure][:fail_but_charge] == '1'
-        requests_for_removal = params[:requested_remove] || {}
-        # Check to see if the user is trying to remove AND fail the same request.
-        diff = requests_for_removal.keys & requests.keys
-
-        if diff.empty?
-          if requests.empty? && requests_for_removal.empty?
-            flash[:error] = 'Please select an item to fail or remove'
-          else
-            unless requests.empty?
-              @batch.fail_batch_items(requests, reason, comment, fail_but_charge)
-              flash[:notice] = "#{requests.keys.to_sentence} set to failed.#{fail_but_charge ? ' The customer will still be charged.' : ''}"
-            end
-
-            unless requests_for_removal.empty?
-              @batch.remove_request_ids(requests_for_removal.keys, reason, comment)
-              flash[:notice] = "#{requests_for_removal.keys.to_sentence} removed."
-            end
-          end
-        else
-          flash[:error] = "Fail and remove were both selected for the following - #{diff.to_sentence} this is not supported."
-        end
-        redirect_to action: 'fail', id: @batch.id
+        flash[:error] = fail_and_remover.errors.full_messages.join(';')
       end
+      redirect_to action: :fail, id: params[:id]
     end
   end
 

@@ -116,7 +116,7 @@ RSpec.describe SampleManifestExcel::Range, type: :model, sample_manifest_excel: 
     end
 
     it 'knows it is dynamic' do
-      refute range.static?
+      assert_not range.static?
       assert range.dynamic?
     end
 

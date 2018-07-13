@@ -232,7 +232,7 @@ class BatchesControllerTest < ActionController::TestCase
             should 'hide the requests from the inbox' do
               assert_redirected_to pipeline_path(@pipeline)
               assert_equal 'Requests hidden from inbox', flash[:notice]
-              refute @request_three.reload.hold?
+              assert_not @request_three.reload.hold?
               assert @request_four.reload.hold?
             end
           end
@@ -249,7 +249,7 @@ class BatchesControllerTest < ActionController::TestCase
             should 'cancel the requests' do
               assert_redirected_to pipeline_path(@pipeline)
               assert_equal 'Requests cancelled', flash[:notice]
-              refute @request_three.reload.cancelled?
+              assert_not @request_three.reload.cancelled?
               assert @request_four.reload.cancelled?
             end
           end
