@@ -630,7 +630,7 @@ class Plate < Asset
   end
 
   def ets_location
-    @ets_location ||= lookup_ets_location
+    @ets_location ||= lookup_ets_location if Sequencescape::Application.config.ets_enabled
   end
 
   # Plates use a different counter to tubes, and prior to the foreign barcodes update
