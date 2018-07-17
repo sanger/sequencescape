@@ -116,21 +116,6 @@ class Submission < ApplicationRecord
   end
   alias_attribute :friendly_name, :name
 
-  def process_submission!
-    # for now, we just delegate the requests creation to orders
-    ActiveRecord::Base.transaction do
-      multiplexing_assets = nil
-      orders.each do |order|
-        order.build_request_graph!(multiplexing_assets) { |a| multiplexing_assets ||= a }
-      end
-
-      PreCapturePool::Builder.new(self).build!
-
-      errors.add(:requests, 'No requests have been created for this submission') if requests.empty?
-      raise ActiveRecord::RecordInvalid, self if errors.present?
-    end
-  end
-
   def multiplexed?
     orders.any? { |o| RequestType.find(o.request_types).any?(&:for_multiplexing?) }
   end
@@ -163,7 +148,7 @@ class Submission < ApplicationRecord
     @not_ready_samples_names ||= not_ready_samples.map(&:name).join(', ')
   end
 
-  # This is no longer valid.
+  # @deprecated This is no longer valid. Orders may now have different request_types
   def request_type_ids
     return [] if orders.blank?
 
@@ -240,6 +225,31 @@ class Submission < ApplicationRecord
   end
 
   private
+
+  #
+  # Triggered automatically via the state machine on entry into the state
+  # 'processing'. Builds the request graph, and any required assets for all
+  # the orders in the submission.
+  #
+  # If you want to trigger submission building correctly, you should go via the
+  # state machine, by calling {#process!}. This will ensure that state is correctly
+  # maintained, and that all callbacks are processed.
+  #
+  # @return [void]
+  def process_submission!
+    # for now, we just delegate the requests creation to orders
+    ActiveRecord::Base.transaction do
+      multiplexing_assets = nil
+      orders.each do |order|
+        order.build_request_graph!(multiplexing_assets) { |a| multiplexing_assets ||= a }
+      end
+
+      PreCapturePool::Builder.new(self).build!
+
+      errors.add(:requests, 'No requests have been created for this submission') if requests.empty?
+      raise ActiveRecord::RecordInvalid, self if errors.present?
+    end
+  end
 
   # When passing libraries we may end up iterating over requests in a submission
   # We should have the same submission instance, so just cache the query result here.
