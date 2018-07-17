@@ -100,6 +100,8 @@ class Asset < ApplicationRecord
 
   delegate :metadata, to: :custom_metadatum_collection
 
+  delegate :last_qc_result_for, to: :qc_results
+
   broadcast_via_warren
 
   after_create :generate_name_with_id, if: :name_needs_to_be_generated?
@@ -477,6 +479,10 @@ class Asset < ApplicationRecord
 
   def update_from_qc(qc_result)
     Rails.logger.info "#{self.class.name} #{id} updated by QcResult #{qc_result.id}"
+  end
+
+  def get_qc_result_value_for(key)
+    last_qc_result_for(key).pluck(:value).first
   end
 
   private

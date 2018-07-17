@@ -8,13 +8,33 @@ module Aker
   # To be able to update between Aker and SS we need to map the Aker field names with the corresponding SS
   # tables and columns.
   #
-  # IMPORTANT!!
-  # Read the docs in config/initializers/aker.rb before editing this file
+  # The config setting defines the mapping between models and attributes in Sequencescape and
+  # attributes from the biomaterials service in Aker, as defined by the Job creation.
+
+  # To add a new mapping field from Aker:
+  #
+  # 1. Add the field name from aker as a value inside the corresponding list for the key with the SS table name
+  #     in MAP_SS_TABLES_WITH_AKER
+  # 2. Add the field name from aker as a key linked with a column name for SS in MAP_AKER_WITH_SS_COLUMNS
+  #
+  # After this, if we want to update a new property from Aker into SS models we have to add the field name
+  # from aker inside the list UPDATABLE_ATTRS_FROM_AKER_INTO_SS.
+  #
+  # If we want to update a change in SS into the properties of Aker in the biomaterial service we have to add
+  # the field name from aker inside the list UPDATABLE_ATTRS_FROM_SS_INTO_AKER.
+  #
+  # SS updates will occur on update_attributes() calls
+  # Aker updates will happen on job completion, because the job message for the material is generated from
+  # the attributes() method of this class.
   class Mapping
     attr_accessor :instance
 
     class << self
-      attr_accessor :config
+      def config=(config_str)
+        @config = Aker::ConfigParser.new.parse(config_str)
+      end
+
+      attr_reader :config
     end
 
     def initialize(instance)
@@ -23,69 +43,78 @@ module Aker
     end
 
     def update(attrs)
+      val = true
       _each_model_and_setting_attrs_for(attrs) do |model, setting_attrs|
-        model.update(setting_attrs)
+        val &&= set_value_for(model, setting_attrs)
       end
+      val
     end
 
     def update!(attrs)
-      _each_model_and_setting_attrs_for(attrs) do |model, setting_attrs|
-        model.update!(setting_attrs)
-      end
+      raise 'Error while saving attributes' unless update(attrs)
     end
 
     def attributes
       {}.tap do |obj|
         config[:updatable_attrs_from_ss_into_aker].each do |k|
           table_name = table_for_attr(k)
-          model = model_for_table(table_name)
-          if model
-            attr_name = aker_attr_name(table_name, k)
-            value = model.send(attr_name)
-          end
-          obj[k] = value if value
+          value = get_value_for(
+            model_for_table(table_name, k),
+            aker_attr_name(table_name, k)
+          )
+          obj[k] = value
         end
       end
     end
-
-    private
 
     def config
       self.class.config
     end
 
+    private
+
+    def get_value_for(model, attr_name)
+      return model.send(attr_name) unless model.nil?
+      send(attr_name)
+    end
+
+    def set_value_for(model, setting_attrs)
+      return model.update(setting_attrs) unless model.nil?
+      setting_attrs.each_pair do |k, v|
+        send(:"#{k}=", v)
+      end
+      true
+    end
+
     def _each_model_and_setting_attrs_for(attrs)
       attrs.keys.all? do |attr_name|
         table_name = table_for_attr(attr_name)
-
-        # Ignore attributes that dont belong to any model
-        next true unless table_name
-
         setting_attrs = attributes_for_table(table_name, attrs)
-        model = model_for_table(table_name)
+        model = model_for_table(table_name, attr_name)
         yield model, setting_attrs
       end
     end
 
-    def model_for_table(_table_name)
+    def model_for_table(_table_name, _attr_name)
       raise 'Not implemented'
     end
 
     def table_for_attr(attr_name)
       config[:map_ss_tables_with_aker].keys.each do |table_name|
-        return table_name if config[:map_ss_tables_with_aker][table_name].include?(attr_name.to_sym)
+        return table_name if config[:map_ss_tables_with_aker][table_name || :self].include?(attr_name.to_sym)
       end
-      nil
+      :self
     end
 
     def attributes_for_table(table_name, attrs)
       valid_keys = config[:map_ss_tables_with_aker][table_name] & config[:updatable_attrs_from_aker_into_ss]
+      return {} unless valid_keys
       valid_attrs(table_name, valid_keys, attrs)
     end
 
     def aker_attr_name(table_name, field_name)
       return field_name unless config[:map_aker_with_ss_columns][table_name]
-      config[:map_aker_with_ss_columns][table_name][field_name] || field_name
+      config[:map_aker_with_ss_columns][table_name || :self][field_name] || field_name
     end
 
     def valid_attrs(table_name, valid_keys, attrs)
