@@ -16,11 +16,11 @@ RSpec.describe SampleManifestExcel::RangeList, type: :model, sample_manifest_exc
   it 'should create the right ranges' do
     static_range = range_list.first[1]
     dynamic_range = range_list.find_by(ranges.keys.last)
-    assert_not static_range.dynamic?
+    expect(static_range).not_to be_dynamic
     assert static_range.static?
     assert static_range.name
     assert dynamic_range.dynamic?
-    assert_not dynamic_range.static?
+    expect(dynamic_range).not_to be_static
     assert dynamic_range.name
   end
 
