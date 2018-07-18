@@ -9,5 +9,35 @@ FactoryBot.define do
     cv 2.34
     assay_type 'qPCR'
     assay_version '1.0'
+
+    factory :qc_result_volume do
+      key 'Volume'
+      value '50'
+      units 'ul'
+    end
+
+    factory :qc_result_concentration do
+      key 'Concentration'
+      value '50'
+      units 'ng/ul'
+    end
+
+    factory :qc_result_molarity do
+      key 'Molarity'
+      value '5.43'
+      units 'nM'
+    end
+
+    factory :qc_result_rin do
+      key 'RIN'
+      value '50'
+      units 'RIN'
+    end
+
+    factory :qc_result_snp_count do
+      key 'snp_count'
+      value '100'
+      units 'bases'
+    end
   end
 end
