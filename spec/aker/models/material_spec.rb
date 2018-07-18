@@ -13,34 +13,16 @@ RSpec.describe Aker::Material, type: :model, aker: true do
   it_behaves_like 'a mapping between an Aker model and Sequencescape'
 
   let(:my_config) do
-    {
-      # Maps SS models with Aker attributes
-      map_ss_tables_with_aker: {
-        samples: [],
-        sample_metadata: [:gender, :donor_id, :phenotype, :common_name],
-        well_attribute: [:volume, :concentration]
-      },
-
-      # Maps SS column names with Aker attributes (if the name is different)
-      map_aker_with_ss_columns: {
-        well_attribute: {
-          volume: :measured_volume
-        },
-        sample_metadata: {
-          common_name: :sample_common_name
-        }
-      },
-
-      # Aker attributes allowed to update from Aker into SS
-      updatable_attrs_from_aker_into_ss: [
-        :gender, :donor_id, :phenotype, :common_name,
-        :volume, :concentration
-      ],
-
-      # Aker attributes allowed to update from SS into Aker
-      updatable_attrs_from_ss_into_aker: [:volume, :concentration]
-    }
+    %(
+    sample_metadata.gender              <=   gender
+    sample_metadata.donor_id            <=   donor_id
+    sample_metadata.phenotype           <=   phenotype
+    sample_metadata.sample_common_name  <=   common_name
+    well_attribute.measured_volume      <=>  volume
+    well_attribute.concentration        <=>  concentration
+    )
   end
+
   context 'with a custom config' do
     context '#attributes' do
       it 'generates an attributes object and adds the sample name as id' do
@@ -53,6 +35,37 @@ RSpec.describe Aker::Material, type: :model, aker: true do
         allow(asset).to receive(:well_attribute).and_return(well_attribute)
 
         expect(mapping.attributes).to eq(volume: 14, concentration: 0.5, '_id': sample.name)
+      end
+
+      context 'working with qc results' do
+        let(:my_config) do
+          %(
+            concentration         =>  concentration
+            volume                =>  volume
+            amount                =>  amount
+          )
+        end
+        let(:asset) { create :asset }
+        let(:container) { create :container, asset: asset }
+
+        before do
+          Aker::Material.config = my_config
+          allow(sample).to receive(:container).and_return(container)
+          @conc_a = create :qc_result, key: 'Concentration', value: 33, asset: asset
+          @conc_b = create :qc_result, key: 'Concentration', value: 44, asset: asset
+
+          @vol_a = create :qc_result, key: 'Volume', value: 0.33, asset: asset
+          @vol_b = create :qc_result, key: 'Volume', value: 0.44, asset: asset
+        end
+        it 'returns the concentration from it' do
+          expect(mapping.attributes[:concentration]).to eq(@conc_b.value)
+        end
+        it 'returns the volume from it' do
+          expect(mapping.attributes[:volume]).to eq(@vol_b.value)
+        end
+        it 'returns the amount from it' do
+          expect(mapping.attributes[:amount]).to eq((@conc_b.value.to_f * @vol_b.value.to_f).to_s)
+        end
       end
     end
     context '#update' do

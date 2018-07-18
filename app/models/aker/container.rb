@@ -9,6 +9,19 @@ module Aker
     validate :not_change_barcode
     validate :not_change_address
 
+    def volume
+      asset.get_qc_result_value_for('Volume') || asset.well_attribute.current_volume
+    end
+
+    def concentration
+      asset.get_qc_result_value_for('Concentration') || asset.well_attribute.concentration
+    end
+
+    def amount
+      return (volume.to_f * concentration.to_f).to_s if volume && concentration
+      nil
+    end
+
     def not_change_barcode
       errors.add(:barcode, 'Cannot modify barcode') if persisted? && barcode_changed?
     end
