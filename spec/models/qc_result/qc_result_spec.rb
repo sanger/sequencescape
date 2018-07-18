@@ -33,7 +33,7 @@ RSpec.describe QcResult, type: :model, qc_result: true do
 
   it '#order_by_date' do
     create(:qc_result, created_at: Date.yesterday)
-    create(:qc_result, created_at: Date.today)
+    create(:qc_result, created_at: Time.zone.today)
     tomorrow = create(:qc_result, created_at: Date.tomorrow)
     expect(QcResult.order_by_date.count).to eq(3)
     expect(QcResult.order_by_date.first).to eq(tomorrow)

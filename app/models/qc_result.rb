@@ -15,7 +15,7 @@ class QcResult < ApplicationRecord
   scope :order_by_date, -> { order(created_at: :desc) }
 
   def self.by_key
-    order_by_date.group_by {|qc_result| qc_result.key.downcase }
+    order_by_date.group_by { |qc_result| qc_result.key.downcase }
   end
 
   def unit_value
