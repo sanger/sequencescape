@@ -12,6 +12,8 @@ class QcResult < ApplicationRecord
 
   validates :key, :value, :units, presence: true
 
+  scope :last_qc_result_for, ->(key) { where(key: key).order(id: :desc).limit(1) }
+
   scope :order_by_date, -> { order(created_at: :desc) }
 
   def self.by_key

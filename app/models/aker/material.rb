@@ -6,10 +6,9 @@ module Aker
   # This class allows to read and update the data to keep in sync Aker and Sequencescape copy of the sample
   class Material < Aker::Mapping
     delegate :container, to: :sample
+    delegate :volume, :concentration, :amount, to: :container
 
-    def sample
-      @instance
-    end
+    alias sample instance
 
     # Defines the attributes that will be sent back to Aker
     def attributes
@@ -19,7 +18,7 @@ module Aker
     end
 
     # Defines the table related with a model in the config provided
-    def model_for_table(table_name)
+    def model_for_table(table_name, _attr_name = nil)
       return sample if table_name == :samples
       return sample.sample_metadata if table_name == :sample_metadata
       return sample.container.asset.well_attribute if table_name == :well_attribute && sample.container.a_well?

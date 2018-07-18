@@ -934,11 +934,6 @@ td.commentable a {
   border-top: none;
 }
 
-/* fix for autocomplete menu size */
-body.yui-skin-sam ul.ui-menu {
-  font-size: 12px;
-}
-
 #add-order {
   @extend .mt-3;
   @extend .mb-3;
@@ -1295,8 +1290,6 @@ ul.nav.nav-tabs > li.selected > a {
   border-bottom-color: transparent;
   cursor: default;
 }
-
-ul#orders .yui-content li[data-tab-content] h3 { display: none;}
 
 div.grouper { padding-left: 1em; padding-right: 1em;}
 

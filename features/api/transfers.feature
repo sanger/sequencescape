@@ -72,7 +72,7 @@ And I have a "full" authorised user with the key "cucumber"
           },
 
           "uuid": "00000000-1111-2222-3333-444444444444",
-          "transfers": [ "A1", "B1" ]
+          "transfers": [ "A1", "B1", "C1" ]
         }
       }
       """

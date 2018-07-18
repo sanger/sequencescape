@@ -1,31 +1,47 @@
-
-
-  <table class="table">
-    <thead>
-      <tr>
-      <th>Request type</th>
-      <th>Requested</th>
-      <th>Pending</th>
-      <th>Started</th>
-      <th>Passed</th>
-      <th>Failed</th>
-      <th>Cancelled</th>
-      </tr>
-    </thead>
-    <% @study.request_progress do |results| %>
-      <% request_types.each do |request_type| %>
-        <% statistics = results[request_type] %>
-        <% next if statistics.total.zero? -%>
-        <tr>
-          <td><%= request_type.name %></td>
-          <td><%= request_link(@study, statistics.total, request_type) %></td>
-          <td><%= request_link(@study, statistics.pending, request_type, 'pending') %></td>
-          <td><%= request_link(@study, statistics.started, request_type, 'started') %></td>
-          <td><%= request_link(@study, statistics.passed, request_type, 'passed') %></td>
-          <td><%= request_link(@study, statistics.failed, request_type, 'failed') %></td>
-          <td><%= request_link(@study, statistics.cancelled, request_type, 'cancelled') %></td>
-        </tr>
-      <% end %>
+<div class="assets tabbed-panel">
+  <header class='card-header'>
+    <ul class="nav nav-tabs card-header-tabs" role="tablist">
+      <%= tab 'Overview', active: true %>
+      <%= tab 'Details' %>
+    </ul>
+  </header>
+  <div class="tab-content" id="myTabContent">
+    <%= tab_pane('Overview', active: true) do %>
+      <div class="card-body">
+        <% @study.request_progress do |results| %>
+          <%= render partial: 'shared/progress_statistics_summary', locals: { statistics: results } %>
+        <% end %>
+      </div>
     <% end %>
-  </table>
+    <%= tab_pane('Details') do %>
+      <table class="table">
+        <thead>
+          <tr>
+          <th>Request type</th>
+          <th>Requested</th>
+          <th>Pending</th>
+          <th>Started</th>
+          <th>Passed</th>
+          <th>Failed</th>
+          <th class="table-secondary">Cancelled</th>
+          </tr>
+        </thead>
+        <% @study.request_progress do |results| %>
+          <% request_types.each do |request_type| %>
+            <% statistics = results[request_type] %>
+            <tr>
+              <td><%= request_type.name %></td>
+              <td><%= request_link(@study, statistics.total, request_type) %></td>
+              <td><%= request_link(@study, statistics.pending, request_type, 'pending') %></td>
+              <td><%= request_link(@study, statistics.started, request_type, 'started') %></td>
+              <td><%= request_link(@study, statistics.passed, request_type, 'passed') %></td>
+              <td><%= request_link(@study, statistics.failed, request_type, 'failed') %></td>
+              <td class="table-secondary"><%= request_link(@study, statistics.cancelled, request_type, 'cancelled') %></td>
+            </tr>
+          <% end %>
+        <% end %>
+      </table>
+    <% end %>
+  </div>
+</div>
 

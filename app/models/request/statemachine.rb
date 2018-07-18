@@ -8,6 +8,7 @@ module Request::Statemachine
   OPENED_STATE    = ['pending', 'blocked', 'started']
   ACTIVE = %w(passed pending blocked started)
   INACTIVE = ['failed', 'cancelled']
+  SORT_ORDER = %w[pending blocked hold started passed failed cancelled]
 
   module ClassMethods
     def redefine_aasm(options = {}, &block)
