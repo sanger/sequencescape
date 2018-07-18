@@ -39,16 +39,7 @@ RSpec.describe Study, type: :model do
     study.save!
 
     expect(study).to be_valid
-    expect(study.cancelled_requests(request_type)).to eq(3)
-    expect(study.completed_requests(request_type)).to eq(4)
-    expect(study.completed_requests(request_type_2)).to eq(1)
-    expect(study.completed_requests(request_type_3)).to eq(2)
-    expect(study.passed_requests(request_type)).to eq(3)
-    expect(study.failed_requests(request_type)).to eq(1)
-    expect(study.pending_requests(request_type)).to eq(1)
-    expect(study.pending_requests(request_type_2)).to eq(0)
-    expect(study.pending_requests(request_type_3)).to eq(1)
-    expect(study.total_requests(request_type)).to eq(8)
+    # New tests here?
   end
 
   it 'validates uniqueness of name (case sensitive)' do
@@ -390,25 +381,29 @@ RSpec.describe Study, type: :model do
     end
 
     context '#each_well_for_qc_report_in_batches' do
-      let!(:study)  { create(:study) }
-      let!(:well_1) { create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: PlatePurpose.find_by(name: 'Stock Plate'))) }
-      let!(:well_2) { create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: PlatePurpose.find_by(name: 'ISC lib PCR-XP'))) }
-      let!(:well_3) { create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: create(:plate_purpose, name: 'Lib PCR-XP'))) }
-      let!(:well_4) { create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: create(:plate_purpose, name: 'PF Post Shear'))) }
+      let!(:study) { create(:study) }
+      let(:purpose_1) { PlatePurpose.stock_plate_purpose }
+      let(:purpose_2) { create :plate_purpose }
+      let(:purpose_3) { create :plate_purpose }
+      let(:purpose_4) { create :plate_purpose }
+      let!(:well_1) { create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: purpose_1)) }
+      let!(:well_2) { create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: purpose_2)) }
+      let!(:well_3) { create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: purpose_3)) }
+      let!(:well_4) { create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: purpose_4)) }
 
       it 'will limit by stock plate purposes if there are no plate purposes' do
         wells_count = 0
-        study.each_well_for_qc_report_in_batches(false, 'Bespoke RNA') { |wells| wells.each { |_well| wells_count += 1 } }
+        study.each_well_for_qc_report_in_batches(false, 'Bespoke RNA') { |wells| wells_count += wells.length }
         expect(wells_count).to eq(1)
       end
 
       it 'will limit by passed plates purposes' do
         wells_count = 0
-        study.each_well_for_qc_report_in_batches(false, 'Bespoke RNA', ['ISC lib PCR-XP', 'Lib PCR-XP', 'PF Post Shear']) { |wells| wells.each { |_well| wells_count += 1 } }
+        study.each_well_for_qc_report_in_batches(false, 'Bespoke RNA', [purpose_2.name, purpose_3.name, purpose_4.name]) { |wells| wells_count += wells.length }
         expect(wells_count).to eq(3)
 
         wells_count = 0
-        study.each_well_for_qc_report_in_batches(false, 'Bespoke RNA', ['ISC lib PCR-XP', 'Lib PCR-XP']) { |wells| wells.each { |_well| wells_count += 1 } }
+        study.each_well_for_qc_report_in_batches(false, 'Bespoke RNA', [purpose_2.name, purpose_3.name]) { |wells| wells_count += wells.length }
         expect(wells_count).to eq(2)
       end
     end

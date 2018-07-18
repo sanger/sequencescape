@@ -46,6 +46,8 @@ end %>
   </div>
 <% end -%>
 
+<%= render partial: 'shared/progress_statistics_summary', locals: { statistics: @presenter.submission.requests.progress_statistics } %>
+
 <ul id="orders">
 <% @presenter.submission.orders.each do |order| %>
   <li class="pane order active completed">

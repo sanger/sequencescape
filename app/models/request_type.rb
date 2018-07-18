@@ -81,9 +81,6 @@ class RequestType < ApplicationRecord
                                  ])
                                }
 
-  # Temporary scope: Remove once converted to enum
-  scope :standard, -> { where(request_purpose: :standard) }
-
   def construct_request(construct_method, attributes, klass = request_class)
     raise RequestType::DeprecatedError if deprecated?
     new_request = klass.public_send(construct_method, attributes) do |request|
