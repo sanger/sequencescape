@@ -85,7 +85,7 @@ namespace :limber do
       end
       Limber::Helper::RequestTypeConstructor.new(
         'PCR Free',
-        default_purpose: 'PF Cherrypicked'
+        default_purposes: ['PF Cherrypicked']
       ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
@@ -98,64 +98,66 @@ namespace :limber do
         'GBS',
         request_class: 'IlluminaHtp::Requests::GbsRequest',
         library_types: ['GBS'],
-        default_purpose: 'GBS Stock',
+        default_purposes: ['GBS Stock'],
         for_multiplexing: true
       ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
         'RNAA',
         library_types: ['RNA PolyA'],
-        default_purpose: 'LBR Cherrypick'
+        default_purposes: ['LBR Cherrypick']
       ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
         'RNAR',
         library_types: ['RNA Ribo'],
-        default_purpose: 'LBR Cherrypick'
+        default_purposes: ['LBR Cherrypick']
       ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
         'RNAAG',
         library_types: ['RNA Poly A Globin'],
-        default_purpose: 'LBR Cherrypick'
+        default_purposes: ['LBR Cherrypick']
       ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
         'RNARG',
         library_types: ['RNA Ribo Globin'],
-        default_purpose: 'LBR Cherrypick'
+        default_purposes: ['LBR Cherrypick']
       ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
         'ReISC',
         request_class: 'Pulldown::Requests::ReIscLibraryRequest',
         library_types: ['Agilent Pulldown'],
-        default_purpose: 'LB Lib PCR-XP'
+        default_purposes: ['LB Lib PCR-XP']
       ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
         'scRNA',
         library_types: ['scRNA'],
-        default_purpose: 'scRNA Stock'
+        default_purposes: ['scRNA Stock'
+                          # 'GnT Stock'  # Wating for UAT
+                         ]
       ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
         'scRNA-384',
         library_types: ['scRNA 384'],
-        default_purpose: 'scRNA-384 Stock'
+        default_purposes: ['scRNA-384 Stock']
       ).build!
 
       # GnT Pipeline requires UAT
       # Limber::Helper::RequestTypeConstructor.new(
       #   'GnT Picoplex',
       #   library_types: ['GnT Picoplex'],
-      #   default_purpose: 'GnT Stock'
+      #   default_purposes: ['GnT Stock']
       # ).build!
 
       # Limber::Helper::RequestTypeConstructor.new(
       #   'GnT MDA',
-      #   library_types: ['GnT scRNA', 'GnT MDA'],  # 'GnT scRNA' should be a default_purpose of 'scRNA'.
-      #   default_purpose: 'GnT Stock'              # It requires default_purpose to accept an array.
+      #   library_types: ['GnT scRNA', 'GnT MDA'],
+      #   default_purposes: ['GnT Stock']
       # ).build!
 
       unless RequestType.where(key: 'limber_multiplexing').exists?
