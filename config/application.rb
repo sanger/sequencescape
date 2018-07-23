@@ -95,6 +95,8 @@ module Sequencescape
       g.fixture_replacement :factory_bot, dir: 'spec/factories'
     end
 
+    config.ets_enabled = false
+
     # Rails 5
 
     config.middleware.insert_before 0, Rack::Cors do
