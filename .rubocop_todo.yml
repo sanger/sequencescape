@@ -382,7 +382,6 @@ Naming/HeredocDelimiterNaming:
 Naming/MemoizedInstanceVariableName:
   Exclude:
     - 'app/controllers/batches_controller.rb'
-    - 'app/controllers/npg_actions/assets_controller.rb'
     - 'app/helpers/workflows_helper.rb'
     - 'app/models/batch/pipeline_behaviour.rb'
     - 'app/models/fluidigm_file.rb'
@@ -1883,7 +1882,6 @@ Style/Documentation:
     - 'app/controllers/lab_searches_controller.rb'
     - 'app/controllers/labwhere_receptions_controller.rb'
     - 'app/controllers/machine_barcodes_controller.rb'
-    - 'app/controllers/npg_actions/assets_controller.rb'
     - 'app/controllers/orders_controller.rb'
     - 'app/controllers/pico_dilutions_controller.rb'
     - 'app/controllers/pico_set_results_controller.rb'
@@ -3184,7 +3182,6 @@ Style/FrozenStringLiteralComment:
     - 'app/controllers/lab_searches_controller.rb'
     - 'app/controllers/labwhere_receptions_controller.rb'
     - 'app/controllers/machine_barcodes_controller.rb'
-    - 'app/controllers/npg_actions/assets_controller.rb'
     - 'app/controllers/orders_controller.rb'
     - 'app/controllers/pico_dilutions_controller.rb'
     - 'app/controllers/pico_set_results_controller.rb'
@@ -4579,7 +4576,6 @@ Style/GuardClause:
     - 'app/controllers/admin/projects_controller.rb'
     - 'app/controllers/admin/studies_controller.rb'
     - 'app/controllers/assets_controller.rb'
-    - 'app/controllers/npg_actions/assets_controller.rb'
     - 'app/controllers/orders_controller.rb'
     - 'app/controllers/plates_controller.rb'
     - 'app/controllers/receptions_controller.rb'
@@ -4662,7 +4658,6 @@ Style/IfUnlessModifier:
     - 'app/controllers/batches/comments_controller.rb'
     - 'app/controllers/batches_controller.rb'
     - 'app/controllers/events_controller.rb'
-    - 'app/controllers/npg_actions/assets_controller.rb'
     - 'app/controllers/pico_set_results_controller.rb'
     - 'app/controllers/pipelines_controller.rb'
     - 'app/controllers/plate_templates_controller.rb'
@@ -5179,7 +5174,6 @@ Style/ParallelAssignment:
 Style/ParenthesesAroundCondition:
   Exclude:
     - 'app/api/core/io/base/json_formatting_behaviour.rb'
-    - 'app/controllers/npg_actions/assets_controller.rb'
     - 'app/helpers/application_helper.rb'
     - 'app/models/illumina_htp/pooled_plate_purpose.rb'
     - 'app/models/movie_length_task.rb'
@@ -5358,7 +5352,6 @@ Style/RedundantParentheses:
     - 'app/controllers/admin/studies_controller.rb'
     - 'app/controllers/assets_controller.rb'
     - 'app/controllers/batches_controller.rb'
-    - 'app/controllers/npg_actions/assets_controller.rb'
     - 'app/controllers/sdb/sample_manifests_controller.rb'
     - 'app/models/asset_barcode.rb'
     - 'app/models/bait_library.rb'
