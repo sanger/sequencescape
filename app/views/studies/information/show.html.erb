@@ -2,7 +2,7 @@
 <% add :about, "This page details the current status of a study." -%>
 <% if @study.approved? && @study.active? -%>
   <% add :manager_option, "Create Submission" => new_submission_path(study_id: @study.id) -%>
-    <% add :manager_option, "Start a Bulk Submission" => {controller: "/bulk_submissions", action: "new"} -%>
+  <% add :manager_option, "Start a Bulk Submission" => {controller: "/bulk_submissions", action: "new"} -%>
 <% end -%>
 <% if current_user.is_administrator? || current_user.is_manager?(@study) %>
   <% add :manager_option, "Register samples" => study_sample_registration_index_path(@study) -%>
@@ -77,7 +77,7 @@
       <% else -%>
         <% if (@submissions.exists?) || (@study.requests.count > 0) -%>
           <%= render partial: "submission_warning" %>
-          <%= render partial: "study_summary", locals: { request_types: @standard_request_types } %>
+          <%= render partial: "study_summary", locals: { request_types: @request_types } %>
           <%= render partial: "items", locals: {summary: @summary} %>
         <% else -%>
           <% if @study.active? %>
@@ -90,7 +90,7 @@
     <% end %>
   <% else %>
     <%= render partial: "submission_warning" %>
-    <%= render partial: "study_summary", locals: { request_types: @standard_request_types } %>
+    <%= render partial: "study_summary", locals: { request_types: @request_types } %>
     <%= render partial: "items", locals: {summary: @summary} %>
   <% end -%>
 </div>

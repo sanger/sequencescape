@@ -12,6 +12,8 @@ class QcResult < ApplicationRecord
 
   validates :key, :value, :units, presence: true
 
+  scope :last_qc_result_for, ->(key) { where(key: key).order(id: :desc).limit(1) }
+
   def unit_value
     # Don't cache to avoid the need to worry about cache invalidation
     Unit.new(value, unit)

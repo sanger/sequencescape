@@ -23,8 +23,6 @@ class Submission < ApplicationRecord
   extend  Submission::StateMachine
   include Submission::DelayedJobBehaviour
   include ModelExtensions::Submission
-  # TODO[mb14] check if really needed. We use them in project_test
-  include Request::Statistics::DeprecatedMethods
   include Submission::Priorities
 
   PER_ORDER_REQUEST_OPTIONS = ['pre_capture_plex_level', 'gigabases_expected']

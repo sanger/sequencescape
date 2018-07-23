@@ -51,17 +51,40 @@ RSpec.describe Aker::Factories::Job, type: :model, aker: true do
     expect(job).to_not be_valid
   end
 
-  it '#create updates the materials if they already exist' do
-    job = Aker::Factories::Job.create(params)
-    expect(job).to be_present
-    material = job.samples.first
-    material.sample_metadata.update(sample_common_name: 'Some name')
-    material.sample_metadata.reload
-    expect(material.sample_metadata.sample_common_name).to eq('Some name')
-    job = Aker::Factories::Job.create(params.merge(job_uuid: SecureRandom.uuid))
-    expect(job).to be_present
-    material.sample_metadata.reload
-    expect(material.sample_metadata.sample_common_name).not_to eq('Some name')
+  context 'when trying to update data from aker into ss' do
+    before do
+      job = Aker::Factories::Job.create(params)
+      expect(job).to be_present
+      @material = job.samples.first
+      @material.sample_metadata.update(sample_common_name: 'Some name')
+      @material.sample_metadata.reload
+      expect(@material.sample_metadata.sample_common_name).to eq('Some name')
+    end
+    context 'when the update from aker to ss is defined' do
+      before do
+        Aker::Material.config = %(
+          sample_metadata.sample_common_name  <=   common_name
+        )
+      end
+      it '#create updates the materials if they already exist' do
+        job = Aker::Factories::Job.create(params.merge(job_uuid: SecureRandom.uuid))
+        expect(job).to be_present
+        @material.sample_metadata.reload
+        expect(@material.sample_metadata.sample_common_name).not_to eq('Some name')
+      end
+    end
+
+    context 'when the update from aker to ss is not defined' do
+      before do
+        Aker::Material.config = ''
+      end
+      it '#create does not update the materials data if they already exist' do
+        job = Aker::Factories::Job.create(params.merge(job_uuid: SecureRandom.uuid))
+        expect(job).to be_present
+        @material.sample_metadata.reload
+        expect(@material.sample_metadata.sample_common_name).to eq('Some name')
+      end
+    end
   end
 
   it '#create persists the job if it is valid' do

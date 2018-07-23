@@ -35,7 +35,10 @@ FactoryBot.define do
     user
     source      { |target| target.association(:transfer_plate) }
     destination { |target| target.association(:library_tube) }
-    transfers(%w[A1 B1])
+
+    factory(:transfer_from_plate_to_tube_with_transfers) do
+      transfers(%w[A1 B1])
+    end
   end
 
   factory(:transfer_template) do

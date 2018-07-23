@@ -82,14 +82,6 @@ module Sequencescape
 
     config.cherrypickable_default_type = 'ABgene_0800'
 
-    # Jruby 1.7 seems to try and use the http.proxyX settings, but ignores the noProxyHost ENV.
-    if defined?(ENV_JAVA)
-      ENV_JAVA['http.proxyHost'] = nil
-      ENV_JAVA['http.proxyPort'] = nil
-      ENV_JAVA['https.proxyHost'] = nil
-      ENV_JAVA['https.proxyPort'] = nil
-    end
-
     config.aker = config_for(:aker).with_indifferent_access
 
     config.generators do |g|
