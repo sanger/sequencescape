@@ -19,40 +19,23 @@ class NpgActions::AssetsController < ApplicationController
   rescue_from(NPGActionInvalid, with: :rescue_error_bad_request)
 
   def fail
-    action_for_qc_state('fail', :create_fail!, :send_fail_event)
+    action_for_qc_state('fail')
   end
 
   def pass
-    action_for_qc_state('pass', :create_pass!, :send_pass_event)
+    action_for_qc_state('pass')
   end
 
   private
 
-  def action_for_qc_state(state, create_method_name, send_method_name)
+  def action_for_qc_state(state)
     ActiveRecord::Base.transaction do
-      if @last_npg_event.present?
+      if @last_event_family.present?
         # If we already have an event we check to see its state. If it matches,
         # we just continue to rendering, otherwise we blow up.
-        raise NPGActionInvalid, 'NPG user run this action. Please, contact USG' if @last_npg_event.family != state
+        raise NPGActionInvalid, 'NPG user run this action. Please, contact USG' if @last_event_family != state
       else
-        state_str = "#{state}ed"
-        batch = @request.batch
-        raise ActiveRecord::RecordNotFound, 'Unable to find a batch for the Request' if (batch.nil?)
-
-        @asset.set_qc_state(state_str)
-
-        @asset.events.send(
-          create_method_name,
-          params[:qc_information][:message] || 'No reason given'
-        )
-
-        message = "#{state}ed manual QC".capitalize
-        EventSender.send(send_method_name, @request.id, '', message, '', 'npg')
-
-        batch.npg_set_state
-
-        BroadcastEvent::SequencingComplete.create!(seed: @asset,
-                                                   properties: { result: state_str })
+        generate_events(state)
       end
 
       respond_to do |format|
@@ -62,15 +45,32 @@ class NpgActions::AssetsController < ApplicationController
     end
   end
 
+  def generate_events(state)
+    state_str = "#{state}ed"
+    batch = @request.batch
+    raise ActiveRecord::RecordNotFound, 'Unable to find a batch for the Request' if batch.nil?
+
+    @asset.set_qc_state(state_str)
+
+    @asset.events.create_state_update!(params[:qc_information][:message] || 'No reason given')
+
+    message = "#{state}ed manual QC".capitalize
+    EventSender.send_state_event(state, @request.id, '', message, '', 'npg')
+
+    batch.npg_set_state
+
+    BroadcastEvent::SequencingComplete.create!(seed: @asset,
+                                               properties: { result: state_str })
+  end
+
   def find_asset
-    @asset ||= Lane.find(params[:asset_id])
+    @asset = Lane.find(params[:asset_id])
   end
 
   def find_request
-    unless @asset.requests_as_target.one?
-      raise ActiveRecord::RecordNotFound, "Unable to find a request for Asset: #{params[:id]}"
-    end
-    @request ||= @asset.requests_as_target.includes(batch: { requests: :asset }).first
+    requests = @asset.requests_as_target
+    raise ActiveRecord::RecordNotFound, "Unable to find a request for Asset: #{params[:id]}" unless requests.one?
+    @request = requests.includes(batch: { requests: :asset }).first
   end
 
   def xml_valid?
@@ -78,9 +78,9 @@ class NpgActions::AssetsController < ApplicationController
   end
 
   def find_last_event
-    @last_npg_event = Event.family_pass_and_fail
-                           .npg_events(@request.id)
-                           .first
+    @last_event_family = Event.family_pass_and_fail
+                              .npg_events(@request.id)
+                              .first&.family
   end
 
   def rescue_error(exception)
