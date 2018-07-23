@@ -3,6 +3,8 @@ require_dependency 'broadcast_event/lab_event'
 class LabEvent < ApplicationRecord
   include ActsAsDescriptable
 
+  CHIP_BARCODE_STEPS = ['Cluster generation', 'Add flowcell chip barcode', 'Loading'].freeze
+
   belongs_to :batch
   belongs_to :user
   belongs_to :eventful, polymorphic: true
@@ -11,14 +13,9 @@ class LabEvent < ApplicationRecord
 
   scope :with_descriptor, ->(k, v) { where(['descriptors LIKE ?', "%#{k}: #{v}%"]) }
 
-  scope :barcode_code, ->(barcode) do
-    where(
-      description: ['Cluster generation', 'Add flowcell chip barcode'],
-      eventful_type: 'Request'
-    ).where([
-      'descriptors like ?',
-      "%Chip Barcode: #{barcode}%"
-    ])
+  scope :with_flowcell_barcode, ->(barcode) do
+    where(description: CHIP_BARCODE_STEPS)
+      .with_descriptor('Chip Barcode', barcode)
   end
 
   delegate :flowcell, :eventful_studies, :samples, to: :eventful
@@ -32,8 +29,7 @@ class LabEvent < ApplicationRecord
   end
 
   def self.find_batch_id_by_barcode(barcode)
-    events = barcode_code(barcode)
-    batch_ids = events.pluck(:batch_id).uniq
+    batch_ids = with_flowcell_barcode(barcode).distinct.pluck(:batch_id)
     batch_ids.first if batch_ids.one?
   end
 
