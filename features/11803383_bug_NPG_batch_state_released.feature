@@ -7,7 +7,7 @@ Feature: The XML for the sequencescape API. If all lanes are passed batch state 
   Scenario: POST XML to change qc_state on a asset
     Given I am on the last batch show page
     Then batch state should be "started"
-    When I POST following XML to change in passed the QC state on the last asset:
+    When I POST following XML to pass QC state on the last asset:
        """
       <?xml version="1.0" encoding="UTF-8"?><qc_information><message>NPG change status in failed</message></qc_information>
        """
