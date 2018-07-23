@@ -4,19 +4,17 @@
 # information in Sequencescape, passing the requests and creating
 # events as required.
 class NpgActions::AssetsController < ApplicationController
+  # Raised if an action is performed which contradicts a previous one
+  NPGActionInvalid = Class.new(StandardError)
+
   before_action :login_required, except: [:pass, :fail]
   before_action :find_asset, only: [:pass, :fail]
   before_action :find_request, only: [:pass, :fail]
   before_action :find_last_event, only: [:pass, :fail]
-  before_action :xml_valid?, only: [:pass, :fail]
+  before_action :qc_information, only: [:pass, :fail]
 
   rescue_from(ActiveRecord::RecordNotFound, with: :rescue_error)
-
-  XmlInvalid = Class.new(StandardError)
-  rescue_from(XmlInvalid, with: :rescue_error)
-
-  NPGActionInvalid = Class.new(StandardError)
-  rescue_from(NPGActionInvalid, with: :rescue_error_bad_request)
+  rescue_from(NPGActionInvalid, ActionController::ParameterMissing, with: :rescue_error_bad_request)
 
   def fail
     action_for_qc_state('fail')
@@ -30,10 +28,10 @@ class NpgActions::AssetsController < ApplicationController
 
   def action_for_qc_state(state)
     ActiveRecord::Base.transaction do
-      if @last_event_family.present?
+      if @last_event.present?
         # If we already have an event we check to see its state. If it matches,
         # we just continue to rendering, otherwise we blow up.
-        raise NPGActionInvalid, 'NPG user run this action. Please, contact USG' if @last_event_family != state
+        raise NPGActionInvalid, 'NPG user run this action. Please, contact USG' if @last_event.family != state
       else
         generate_events(state)
       end
@@ -47,12 +45,11 @@ class NpgActions::AssetsController < ApplicationController
 
   def generate_events(state)
     state_str = "#{state}ed"
-    batch = @request.batch
-    raise ActiveRecord::RecordNotFound, 'Unable to find a batch for the Request' if batch.nil?
+    batch = @request.batch || raise(ActiveRecord::RecordNotFound, 'Unable to find a batch for the Request')
 
     @asset.set_qc_state(state_str)
 
-    @asset.events.create_state_update!(params[:qc_information][:message] || 'No reason given')
+    @asset.events.create_state_update!(qc_information[:message] || 'No reason given')
 
     message = "#{state}ed manual QC".capitalize
     EventSender.send_state_event(state, @request.id, '', message, '', 'npg')
@@ -73,14 +70,14 @@ class NpgActions::AssetsController < ApplicationController
     @request = requests.includes(batch: { requests: :asset }).first
   end
 
-  def xml_valid?
-    raise XmlInvalid, 'XML invalid' if params[:qc_information].nil?
+  def find_last_event
+    @last_event = Event.family_pass_and_fail
+                       .npg_events(@request.id)
+                       .first
   end
 
-  def find_last_event
-    @last_event_family = Event.family_pass_and_fail
-                              .npg_events(@request.id)
-                              .first&.family
+  def qc_information
+    params.require(:qc_information).permit(:message)
   end
 
   def rescue_error(exception)

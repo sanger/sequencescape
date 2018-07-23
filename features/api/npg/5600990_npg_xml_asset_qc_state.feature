@@ -94,3 +94,16 @@ Feature: The XML for the sequencescape API
           </requests>
         </asset>
         """
+
+  Scenario: POST invalid XML to change qc_state on a asset. NPG did the same action before
+    Given a pass event for the request
+    When I POST following XML to pass QC state on the last asset:
+       """
+      <?xml version="1.0" encoding="UTF-8"?><unknown_attribute><message>NPG change status in passed</message></unknown_attribute>
+       """
+    Then the HTTP response should be "400"
+    And ignoring "id|name|sample_id|parents" the XML response should be:
+        """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <error><message>param is missing or the value is empty: qc_information</message></error>
+        """
