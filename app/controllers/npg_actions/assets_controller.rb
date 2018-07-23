@@ -1,9 +1,13 @@
+# frozen_string_literal: true
 
+# Takes QC decisions on lanes from NPG and records the
+# information in Sequencescape, passing the requests and creating
+# events as required.
 class NpgActions::AssetsController < ApplicationController
   before_action :login_required, except: [:pass, :fail]
   before_action :find_asset, only: [:pass, :fail]
   before_action :find_request, only: [:pass, :fail]
-  before_action :npg_action_invalid?, only: [:pass, :fail]
+  before_action :find_last_event, only: [:pass, :fail]
   before_action :xml_valid?, only: [:pass, :fail]
 
   rescue_from(ActiveRecord::RecordNotFound, with: :rescue_error)
@@ -12,7 +16,7 @@ class NpgActions::AssetsController < ApplicationController
   rescue_from(XmlInvalid, with: :rescue_error)
 
   NPGActionInvalid = Class.new(StandardError)
-  rescue_from(NPGActionInvalid, with: :rescue_error_internal_server_error)
+  rescue_from(NPGActionInvalid, with: :rescue_error_bad_request)
 
   def fail
     action_for_qc_state('fail', :create_fail!, :send_fail_event)
@@ -26,23 +30,30 @@ class NpgActions::AssetsController < ApplicationController
 
   def action_for_qc_state(state, create_method_name, send_method_name)
     ActiveRecord::Base.transaction do
-      state_str = "#{state}ed"
-      @asset.set_qc_state(state_str)
-      create_method = @asset.events.method(create_method_name)
-      send_method = EventSender.method(send_method_name)
+      if @last_npg_event.present?
+        # If we already have an event we check to see its state. If it matches,
+        # we just continue to rendering, otherwise we blow up.
+        raise NPGActionInvalid, 'NPG user run this action. Please, contact USG' if @last_npg_event.family != state
+      else
+        state_str = "#{state}ed"
+        batch = @request.batch
+        raise ActiveRecord::RecordNotFound, 'Unable to find a batch for the Request' if (batch.nil?)
 
-      create_method.call(params[:qc_information][:message] || 'No reason given')
+        @asset.set_qc_state(state_str)
 
-      request = @asset.source_request
-      batch = request.batch
-      raise ActiveRecord::RecordNotFound, 'Unable to find a batch for the Request' if (batch.nil?)
+        @asset.events.send(
+          create_method_name,
+          params[:qc_information][:message] || 'No reason given'
+        )
 
-      message = "#{state}ed manual QC".capitalize
-      send_method.call(request.id, '', message, '', 'npg', need_to_know_exceptions: true)
+        message = "#{state}ed manual QC".capitalize
+        EventSender.send(send_method_name, @request.id, '', message, '', 'npg')
 
-      batch.npg_set_state if (state == 'pass')
-      BroadcastEvent::SequencingComplete.create!(seed: @asset,
-                                                 properties: { result: state_str })
+        batch.npg_set_state
+
+        BroadcastEvent::SequencingComplete.create!(seed: @asset,
+                                                   properties: { result: state_str })
+      end
 
       respond_to do |format|
         format.xml  { render file: 'assets/show' }
@@ -56,34 +67,27 @@ class NpgActions::AssetsController < ApplicationController
   end
 
   def find_request
-    @asset ||= Lane.find(params[:asset_id])
-    if ((@asset.has_many_requests?) || (@asset.source_request.nil?))
+    unless @asset.requests_as_target.one?
       raise ActiveRecord::RecordNotFound, "Unable to find a request for Asset: #{params[:id]}"
     end
+    @request ||= @asset.requests_as_target.includes(batch: { requests: :asset }).first
   end
 
   def xml_valid?
     raise XmlInvalid, 'XML invalid' if params[:qc_information].nil?
   end
 
-  def npg_action_invalid?
-    @asset ||= Lane.find(params[:asset_id])
-    request = @asset.source_request
-    npg_events = Event.npg_events(request.id)
-    raise NPGActionInvalid, 'NPG user run this action. Please, contact USG' if npg_events.exists?
+  def find_last_event
+    @last_npg_event = Event.family_pass_and_fail
+                           .npg_events(@request.id)
+                           .first
   end
 
   def rescue_error(exception)
-    respond_to do |format|
-      format.html { render xml: "<error><message>#{exception.message}</message></error>", status: '404' }
-      format.xml { render xml: "<error><message>#{exception.message}</message></error>", status: '404' }
-    end
+    render xml: "<error><message>#{exception.message}</message></error>", status: '404'
   end
 
-  def rescue_error_internal_server_error(exception)
-    respond_to do |format|
-      format.html { render xml: "<error><message>#{exception.message}</message></error>", status: '500' }
-      format.xml { render xml: "<error><message>#{exception.message}</message></error>", status: '500' }
-    end
+  def rescue_error_bad_request(exception)
+    render xml: "<error><message>#{exception.message}</message></error>", status: '400'
   end
 end
