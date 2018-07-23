@@ -584,10 +584,6 @@ class Plate < Asset
     @labwhere_location ||= lookup_labwhere_location
   end
 
-  def ets_location
-    @ets_location ||= lookup_ets_location if Sequencescape::Application.config.ets_enabled
-  end
-
   # Plates use a different counter to tubes, and prior to the foreign barcodes update
   # this method would have fallen back to Barcodable#generate tubes, and potentially generated
   # an invalid plate barcode. In the future we probably want to scrap this approach entirely,
@@ -606,23 +602,9 @@ class Plate < Asset
     if labwhere_location.present?
       @storage_location_service = 'LabWhere'
       labwhere_location
-    elsif ets_location.present?
-      @storage_location_service = 'ETS'
-      ets_location
     else
       @storage_location_service = 'None'
-      'Not found in LabWhere nor ETS'
-    end
-  end
-
-  def lookup_ets_location
-    return 'Control' if is_a?(ControlPlate)
-    return '' if barcode_number.blank?
-    cas_location = Cas::StoredEntity.storage_location(barcode_number, prefix)
-    if cas_location.present?
-      cas_location.rows.first.join(' - ') if cas_location.rows.first.present?
-    elsif cas_location.nil?
-      return 'Cannot connect to Cas database'
+      'LabWhere location not set. Could this be in ETS?'
     end
   end
 
