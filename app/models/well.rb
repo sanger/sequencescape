@@ -216,8 +216,7 @@ class Well < Receptacle
     return well_attribute.gel_pass if key == 'gel_pass'
 
     results = qc_results_by_key[key]
-    return if results.nil?
-    results.first.value
+    results.first.value if results.present?
   end
 
   def generate_name(_)
