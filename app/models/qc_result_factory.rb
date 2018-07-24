@@ -27,7 +27,9 @@ class QcResultFactory
 
   def save
     return false unless valid?
-    resources.collect(&:save)
+    ActiveRecord::Base.transaction do
+      resources.collect(&:save)
+    end
     true
   end
 
@@ -79,14 +81,31 @@ class QcResultFactory
 
     def save
       return false unless valid?
+      update_parent_well
       qc_result.save
+    end
+
+    def working_dilution?
+      assay_type == 'Working dilution'
+    end
+
+    def concentration?
+      key == 'concentration'
+    end
+
+    def update_parent_well
+      return unless working_dilution? && concentration? && well_location.present?
+      plate = asset.plate.parent
+      well = plate.find_well_by_map_description(well_location)
+      parent_qc_result = QcResult.new(qc_result.attributes.merge(asset: well, value: value.to_f * plate.dilution_factor))
+      parent_qc_result.save!
     end
 
     private
 
     def check_asset
       return if asset.present?
-      errors.add(:uuid, 'does not belong to a valid asset')
+      errors.add(:uuid, "#{message_id} does not belong to a valid asset")
     end
 
     def check_qc_result

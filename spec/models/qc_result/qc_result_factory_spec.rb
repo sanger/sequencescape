@@ -101,5 +101,42 @@ RSpec.describe QcResultFactory, type: :model, qc_result: true do
         expect(QcResultFactory::Resource.new(qc_result_attributes.merge(uuid: sample.uuid)).asset).to eq(sample.primary_receptacle)
       end
     end
+
+    context 'Working Dilution' do
+      let!(:user) { create(:user) }
+      let!(:stock_plate) { create(:full_stock_plate, well_count: 3, dilution_factor: 10) }
+      let!(:working_dilution_plate) do
+        expect(PlateBarcode).to receive(:create).and_return(build(:plate_barcode, barcode: 1000))
+        creator = create(:plate_creator, name: 'Working dilution', plate_purposes: [PlatePurpose.find_by(name: 'Stock plate')])
+        creator.send(:create_plates, stock_plate.barcodes.first.ean13_barcode, user).first
+      end
+      let(:working_dilution_attributes) { qc_result_attributes.merge(key: 'concentration', assay_type: 'Working dilution', value: '3.4567', uuid: working_dilution_plate.uuid, well_location: working_dilution_plate.wells.first.map.description) }
+
+      it 'resource indicates if it is a working dilution' do
+        resource = QcResultFactory::Resource.new(working_dilution_attributes)
+        expect(resource).to be_working_dilution
+      end
+
+      it 'resource indicates if it is a concentration' do
+        resource = QcResultFactory::Resource.new(working_dilution_attributes)
+        expect(resource).to be_concentration
+      end
+
+      it '#update_parent_well creates a new qc result for the parent well' do
+        resource = QcResultFactory::Resource.new(working_dilution_attributes)
+        resource.update_parent_well
+        qc_result = QcResult.find_by(asset_id: stock_plate.wells.first.id)
+        expect(qc_result).to be_present
+        expect(qc_result.value).to eq('34.567')
+      end
+
+      it '#save will update the parent well if it is a working dilution' do
+        resource = QcResultFactory::Resource.new(working_dilution_attributes)
+        resource.save
+        qc_result = QcResult.find_by(asset_id: stock_plate.wells.first.id)
+        expect(qc_result).to be_present
+        expect(qc_result.value).to eq('34.567')
+      end
+    end
   end
 end
