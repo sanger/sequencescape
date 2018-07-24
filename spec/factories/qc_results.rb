@@ -11,19 +11,19 @@ FactoryBot.define do
     assay_version '1.0'
 
     factory :qc_result_volume do
-      key 'Volume'
+      key 'volume'
       value '50'
       units 'ul'
     end
 
     factory :qc_result_concentration do
-      key 'Concentration'
+      key 'concentration'
       value '50'
       units 'ng/ul'
     end
 
     factory :qc_result_molarity do
-      key 'Molarity'
+      key 'molarity'
       value '5.43'
       units 'nM'
     end
