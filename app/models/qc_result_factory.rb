@@ -43,7 +43,7 @@ class QcResultFactory
 
     attr_accessor :uuid, :well_location, :key, :value, :units, :cv, :assay_type, :assay_version, :qc_assay
 
-    attr_reader :asset, :qc_result
+    attr_reader :asset, :qc_result, :plate
 
     validates :uuid, presence: true
 
@@ -58,6 +58,10 @@ class QcResultFactory
 
     def message_id
       "Uuid - #{(uuid || 'blank')}"
+    end
+
+    def parent_plate
+      @parent_plate ||= plate.parent
     end
 
     # This is where the complexity is.
@@ -75,7 +79,7 @@ class QcResultFactory
                 Asset.find(uuid_object.resource_id)
               end
       return asset if well_location.blank?
-      plate = Plate.find(asset.id)
+      @plate = Plate.find(asset.id)
       plate.find_well_by_map_description(well_location)
     end
 
@@ -86,18 +90,22 @@ class QcResultFactory
     end
 
     def working_dilution?
-      assay_type == 'Working dilution'
+      return false if plate.blank?
+      plate.plate_purpose.name == 'Working Dilution'
     end
 
     def concentration?
       key == 'concentration'
     end
 
+    def can_update_parent_well?
+      working_dilution? && concentration? && well_location.present? && parent_plate.dilution_factor.present?
+    end
+
     def update_parent_well
-      return unless working_dilution? && concentration? && well_location.present?
-      plate = asset.plate.parent
-      well = plate.find_well_by_map_description(well_location)
-      parent_qc_result = QcResult.new(qc_result.attributes.merge(asset: well, value: value.to_f * plate.dilution_factor))
+      return unless can_update_parent_well?
+      well = parent_plate.find_well_by_map_description(well_location)
+      parent_qc_result = QcResult.new(qc_result.attributes.merge(asset: well, value: value.to_f * parent_plate.dilution_factor))
       parent_qc_result.save!
     end
 
