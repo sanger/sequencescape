@@ -135,10 +135,12 @@ namespace :limber do
 
       Limber::Helper::RequestTypeConstructor.new(
         'scRNA',
-        library_types: ['scRNA'],
+        library_types: ['scRNA',
+                       # 'GnT scRNA'  # Wating for UAT
+                       ],
         default_purposes: ['scRNA Stock'
                           # 'GnT Stock'  # Wating for UAT
-                         ]
+                          ]
       ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
@@ -156,7 +158,7 @@ namespace :limber do
 
       # Limber::Helper::RequestTypeConstructor.new(
       #   'GnT MDA',
-      #   library_types: ['GnT scRNA', 'GnT MDA'],
+      #   library_types: ['GnT MDA'],
       #   default_purposes: ['GnT Stock']
       # ).build!
 
