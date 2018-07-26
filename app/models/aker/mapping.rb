@@ -52,6 +52,7 @@ module Aker
 
     def update!(attrs)
       raise 'Error while saving attributes' unless update(attrs)
+      true
     end
 
     def attributes
@@ -87,10 +88,13 @@ module Aker
     end
 
     def _each_model_and_setting_attrs_for(attrs)
-      attrs.keys.all? do |attr_name|
+      yielded_models = []
+      attrs.keys.each do |attr_name|
         table_name = table_for_attr(attr_name)
         setting_attrs = attributes_for_table(table_name, attrs)
         model = model_for_table(table_name, attr_name)
+        next if yielded_models.include?(model) || setting_attrs.empty?
+        yielded_models.push(model)
         yield model, setting_attrs
       end
     end

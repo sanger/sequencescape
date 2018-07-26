@@ -3,7 +3,19 @@ require 'rails_helper'
 RSpec.describe Aker::Factories::Material, type: :model, aker: true do
   include BarcodeHelper
   before do
+    Aker::Material.config = my_config
     mock_plate_barcode_service
+  end
+
+  let(:my_config) do
+    %(
+    sample_metadata.gender              <=   gender
+    sample_metadata.donor_id            <=   donor_id
+    sample_metadata.phenotype           <=   phenotype
+    sample_metadata.sample_common_name  <=   common_name
+    well_attribute.measured_volume      <=>  volume
+    well_attribute.concentration        <=>  concentration
+    )
   end
 
   let(:json) do
@@ -17,58 +29,57 @@ RSpec.describe Aker::Factories::Material, type: :model, aker: true do
     json[:job][:container]
   end
 
-  it 'is valid with all relevant attributes' do
-    material = Aker::Factories::Material.new(params)
-    material.container = Aker::Factories::Container.new(container_params.merge(address: params[:address]))
-    material.create
+  let(:container) { Aker::Factories::Container.new(container_params.merge(address: params[:address])) }
+  let(:study) { create :study}
 
-    expect(material).to be_valid
-    expect(material.name).to eq(params[:_id])
-    expect(material.gender).to eq(params[:gender])
-    expect(material.donor_id).to eq(params[:donor_id])
-    expect(material.phenotype).to eq(params[:phenotype])
-    expect(material.sample_common_name).to eq(params[:common_name])
-    expect(material.container).to_not be_nil
+  it 'is valid with all relevant attributes' do
+    material = Aker::Factories::Material.new(params, container, study)
+    sample = material.create
+
+    expect(sample).to be_valid
+
+    expect(sample.uuid).to eq(params[:_id])
+    expect(sample.name).to eq(params[:supplier_name])
+    s = sample.sample_metadata
+    expect(s.gender.downcase).to eq(params[:gender].downcase)
+    expect(s.donor_id).to eq(params[:donor_id])
+    expect(s.phenotype).to eq(params[:phenotype])
+    expect(s.sample_common_name).to eq(params[:common_name])
+    expect(sample.wells.count).to eq(1)
   end
 
   it 'is not valid without a name' do
-    material = Aker::Factories::Material.new(params.except('_id'))
+    material = Aker::Factories::Material.new(params.except('_id'), container, study)
     expect(material).to_not be_valid
   end
 
   it 'is not valid without a gender' do
-    material = Aker::Factories::Material.new(params.except('gender'))
+    material = Aker::Factories::Material.new(params.except('gender'), container, study)
     expect(material).to_not be_valid
   end
 
   it 'is not valid without a container' do
-    material = Aker::Factories::Material.new(params.except('container'))
+    material = Aker::Factories::Material.new(params, nil, study)
     expect(material).to_not be_valid
   end
 
   it 'is not valid unless the container is valid' do
-    material = Aker::Factories::Material.new(params)
-    material.container = Aker::Factories::Container.new(container_params.merge(address: params[:address]).except(:barcode))
+    material = Aker::Factories::Material.new(params, 
+      Aker::Factories::Container.new(container_params.merge(address: params[:address]).except(:barcode)), 
+      study)
     material.create
 
     expect(material).to_not be_valid
   end
 
   it '#create persists the material if it is valid' do
-    material = Aker::Factories::Material.new(params)
-    material.container = Aker::Factories::Container.new(container_params.merge(address: params[:address]))
+    material = Aker::Factories::Material.new(params, container, study)
     material.create
     expect(material).to be_present
-    sample = Sample.find_by(name: material.name)
+    sample = Sample.find_by(name: params[:supplier_name])
     expect(sample).to be_present
-    expect(sample.container).to be_present
-    expect(Aker::Factories::Material.create(params.except('gender'))).to be_nil
+    expect(sample.wells.count).to eq(1)
+    expect(Aker::Factories::Material.new(params.except('gender'), container, study).create).to be_nil
   end
 
-  it '#as_json returns the correct attributes' do
-    material = Aker::Factories::Material.new(params)
-    material.create
-    expect(material.as_json).to eq(_id: material.name, gender: material.gender, donor_id: material.donor_id,
-                                   phenotype: material.phenotype, common_name: material.sample_common_name, container: material.container.as_json)
-  end
 end

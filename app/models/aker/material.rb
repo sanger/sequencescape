@@ -19,15 +19,16 @@ module Aker
 
     # Defines the table related with a model in the config provided
     def model_for_table(table_name, _attr_name = nil)
-      return sample if table_name == :samples
+      return sample if table_name == :sample
       return sample.sample_metadata if table_name == :sample_metadata
-      return sample.container.asset.well_attribute if table_name == :well_attribute && sample.container.a_well?
-      return sample.container.asset if table_name == :well_attribute && !sample.container.a_well?
+      return sample.container.asset.well_attribute if table_name == :well_attribute && sample && sample.container && sample.container.a_well?
+      return sample.container.asset if table_name == :well_attribute && sample && sample.container && !sample.container.a_well?
       nil
     end
 
     def aker_attr_name(table_name, field_name)
-      return super(table_name, field_name) unless container && !container.a_well?
+      return field_name unless sample
+      return super(table_name, field_name) unless (container && !container.a_well?)
       field_name
     end
   end
