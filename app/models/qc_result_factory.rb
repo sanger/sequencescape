@@ -90,8 +90,7 @@ class QcResultFactory
     end
 
     def working_dilution?
-      return false if plate.blank?
-      plate.plate_purpose.name == 'Working Dilution'
+      plate.instance_of? WorkingDilutionPlate
     end
 
     def concentration?
@@ -99,13 +98,13 @@ class QcResultFactory
     end
 
     def can_update_parent_well?
-      working_dilution? && concentration? && well_location.present? && parent_plate.dilution_factor.present?
+      working_dilution? && concentration? && well_location.present? && plate.dilution_factor.present?
     end
 
     def update_parent_well
       return unless can_update_parent_well?
       well = parent_plate.find_well_by_map_description(well_location)
-      parent_qc_result = QcResult.new(qc_result.attributes.merge(asset: well, value: value.to_f * parent_plate.dilution_factor))
+      parent_qc_result = QcResult.new(qc_result.attributes.merge(asset: well, value: value.to_f * plate.dilution_factor))
       parent_qc_result.save!
     end
 

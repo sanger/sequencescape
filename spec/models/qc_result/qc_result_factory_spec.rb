@@ -104,12 +104,11 @@ RSpec.describe QcResultFactory, type: :model, qc_result: true do
 
     context 'Working Dilution' do
       let!(:user) { create(:user) }
-      let!(:plate_creator) { create(:plate_creator, name: 'Working dilution', plate_purposes: [PlatePurpose.find_by(name: 'Working Dilution')]) }
       let(:attributes) { qc_result_attributes.merge(key: 'concentration', assay_type: 'Working dilution', value: '3.4567') }
 
       context 'with dilution factor' do
         let!(:stock_plate) { create(:full_stock_plate, well_count: 3, dilution_factor: 10) }
-        let!(:working_dilution_plate) { plate_creator.send(:create_plates, stock_plate.barcodes.first.ean13_barcode, user).first }
+        let!(:working_dilution_plate) { create(:working_dilution_plate, parents: [stock_plate], well_count: 3, dilution_factor: 10) }
         let(:working_dilution_attributes) { attributes.merge(uuid: working_dilution_plate.uuid, well_location: working_dilution_plate.wells.first.map.description) }
 
         it 'resource indicates if it is a working dilution' do
@@ -141,7 +140,7 @@ RSpec.describe QcResultFactory, type: :model, qc_result: true do
 
       context 'with no dilution factor' do
         let!(:stock_plate) { create(:full_stock_plate, well_count: 3, dilution_factor: nil) }
-        let!(:working_dilution_plate) { plate_creator.send(:create_plates, stock_plate.barcodes.first.ean13_barcode, user).first }
+        let!(:working_dilution_plate) { create(:working_dilution_plate, parents: [stock_plate], well_count: 3, dilution_factor: nil) }
         let(:working_dilution_attributes) { attributes.merge(uuid: working_dilution_plate.uuid, well_location: working_dilution_plate.wells.first.map.description) }
 
         it '#save will not update the parent well if it is a working dilution' do
