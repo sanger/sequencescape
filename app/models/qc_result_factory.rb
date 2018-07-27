@@ -27,7 +27,9 @@ class QcResultFactory
 
   def save
     return false unless valid?
-    resources.collect(&:save)
+    ActiveRecord::Base.transaction do
+      resources.collect(&:save)
+    end
     true
   end
 
@@ -41,7 +43,7 @@ class QcResultFactory
 
     attr_accessor :uuid, :well_location, :key, :value, :units, :cv, :assay_type, :assay_version, :qc_assay
 
-    attr_reader :asset, :qc_result
+    attr_reader :asset, :qc_result, :plate
 
     validates :uuid, presence: true
 
@@ -56,6 +58,10 @@ class QcResultFactory
 
     def message_id
       "Uuid - #{(uuid || 'blank')}"
+    end
+
+    def parent_plate
+      @parent_plate ||= plate.parent
     end
 
     # This is where the complexity is.
@@ -73,20 +79,40 @@ class QcResultFactory
                 Asset.find(uuid_object.resource_id)
               end
       return asset if well_location.blank?
-      plate = Plate.find(asset.id)
+      @plate = Plate.find(asset.id)
       plate.find_well_by_map_description(well_location)
     end
 
     def save
       return false unless valid?
+      update_parent_well
       qc_result.save
+    end
+
+    def working_dilution?
+      plate.instance_of? WorkingDilutionPlate
+    end
+
+    def concentration?
+      key == 'concentration'
+    end
+
+    def can_update_parent_well?
+      working_dilution? && concentration? && well_location.present? && plate.dilution_factor.present?
+    end
+
+    def update_parent_well
+      return unless can_update_parent_well?
+      well = parent_plate.find_well_by_map_description(well_location)
+      parent_qc_result = QcResult.new(qc_result.attributes.merge(asset: well, value: value.to_f * plate.dilution_factor))
+      parent_qc_result.save!
     end
 
     private
 
     def check_asset
       return if asset.present?
-      errors.add(:uuid, 'does not belong to a valid asset')
+      errors.add(:uuid, "#{message_id} does not belong to a valid asset")
     end
 
     def check_qc_result
