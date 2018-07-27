@@ -34,8 +34,8 @@ FactoryBot.define do
       units 'RIN'
     end
 
-    factory :qc_result_snp_count do
-      key 'snp_count'
+    factory :qc_result_loci_passed do
+      key 'loci_passed'
       value '100'
       units 'bases'
     end

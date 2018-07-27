@@ -1,8 +1,8 @@
 
 <% if value %>
-  <% if value.to_i < 50.0 %>
+  <% if value < 50.0 %>
     <% colour = "red" %>
-  <% elsif value.to_i < 60.0 %>
+  <% elsif value < 60.0 %>
     <% colour = "orange" %>
   <% else %>
     <% colour = "green" %>

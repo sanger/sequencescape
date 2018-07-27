@@ -10,11 +10,8 @@
 <h3>Quantity in ng</h3>
 <%= render partial: "qc_table", locals: { plate: @plate, qc_type: "quantity_in_nano_grams" } %>
 
-<h3>Sequenom Count</h3>
-<%= render partial: "qc_table", locals: { plate: @plate, qc_type: "snp_count" } %>
-
-<h3>Gel</h3>
-<%= render partial: "qc_table", locals: { plate: @plate, qc_type: "gel_pass" } %>
+<h3>SNP Count</h3>
+<%= render partial: "qc_table", locals: { plate: @plate, qc_type: "loci_passed" } %>
 
 <h3>RIN</h3>
 <%= render partial: "qc_table", locals: { plate: @plate, qc_type: "rin" } %>

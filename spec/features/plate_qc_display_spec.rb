@@ -11,7 +11,7 @@ feature 'Plate QC display' do
     scenario 'displays an empty table' do
       login_user user
       visit plate_path(plate)
-      %w[concentration volume quantity_in_nano_grams snp_count gel_pass rin].each do |qc_result|
+      %w[concentration volume quantity_in_nano_grams loci_passed rin].each do |qc_result|
         within("##{qc_result}") do
           expect(page).to have_selector('td', count: 126)
           expect(page).to have_selector('tr', count: 10)
@@ -30,8 +30,7 @@ feature 'Plate QC display' do
     let!(:plate) do
       plate = create(:plate, sample_count: 3)
       plate.wells.each do |well|
-        well.qc_results << [build(:qc_result_concentration), build(:qc_result_volume), build(:qc_result_snp_count), build(:qc_result_rin)]
-        well.well_attribute.update!(gel_pass: 'OK')
+        well.qc_results << [build(:qc_result_concentration), build(:qc_result_volume), build(:qc_result_loci_passed), build(:qc_result_rin)]
       end
       plate
     end
@@ -42,7 +41,7 @@ feature 'Plate QC display' do
     end
 
     scenario 'displays the correct data' do
-      %w[concentration volume quantity_in_nano_grams snp_count gel_pass rin].each do |qc_result|
+      %w[concentration volume quantity_in_nano_grams loci_passed rin].each do |qc_result|
         within("##{qc_result}") do
           plate.wells.each_with_index do |well, index|
             expect(page).to have_selector("tr[#{1 + index}]/td[2]", text: well.qc_result_for(qc_result))

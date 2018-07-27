@@ -415,42 +415,37 @@ describe Well do
 
   describe '#qc_result_for' do
     it 'concentration' do
-      qc_result_1 = build(:qc_result_concentration, value: '1', created_at: Date.yesterday)
-      qc_result_2 = build(:qc_result_concentration, value: '2', created_at: Time.zone.today)
+      qc_result_1 = build(:qc_result_concentration, value: '1.34523', created_at: Date.yesterday)
+      qc_result_2 = build(:qc_result_concentration, value: '2.34523', created_at: Time.zone.today)
       well = create(:well, qc_results: [qc_result_1, qc_result_2])
-      expect(well.qc_result_for('concentration')).to eq(qc_result_2.value)
+      expect(well.qc_result_for('concentration')).to eq(2.345)
     end
 
     it 'volume' do
-      qc_result_1 = build(:qc_result_volume, value: '1', created_at: Date.yesterday)
-      qc_result_2 = build(:qc_result_volume, value: '2', created_at: Time.zone.today)
+      qc_result_1 = build(:qc_result_volume, value: '1.34523', created_at: Date.yesterday)
+      qc_result_2 = build(:qc_result_volume, value: '2.34523', created_at: Time.zone.today)
       well = create(:well, qc_results: [qc_result_1, qc_result_2])
-      expect(well.qc_result_for('volume')).to eq(qc_result_2.value)
+      expect(well.qc_result_for('volume')).to eq(2.345)
     end
 
     it 'quantity_in_nano_grams' do
       well = create(:well)
-      well.update_from_qc(build(:qc_result_volume))
+      well.update_from_qc(build(:qc_result_volume, value: '1.34523'))
       expect(well.qc_result_for('quantity_in_nano_grams')).to be_present
     end
 
-    it 'snp_count' do
-      qc_result_1 = build(:qc_result_snp_count, created_at: Date.yesterday)
-      qc_result_2 = build(:qc_result_snp_count, created_at: Time.zone.today)
+    it 'loci_passed (snp_count)' do
+      qc_result_1 = build(:qc_result_loci_passed, value: '100', created_at: Date.yesterday)
+      qc_result_2 = build(:qc_result_loci_passed, value: '110', created_at: Time.zone.today)
       well = create(:well, qc_results: [qc_result_1, qc_result_2])
-      expect(well.qc_result_for('snp_count')).to eq(qc_result_2.value)
-    end
-
-    it 'gel_pass' do
-      well = create(:well, well_attribute_attributes: { gel_pass: 'OK' })
-      expect(well.qc_result_for('gel_pass')).to eq('OK')
+      expect(well.qc_result_for('loci_passed')).to eq(110)
     end
 
     it 'RIN' do
-      qc_result_1 = build(:qc_result_rin, created_at: Date.yesterday)
-      qc_result_2 = build(:qc_result_rin, created_at: Time.zone.today)
+      qc_result_1 = build(:qc_result_rin, value: '5', created_at: Date.yesterday)
+      qc_result_2 = build(:qc_result_rin, value: '6', created_at: Time.zone.today)
       well = create(:well, qc_results: [qc_result_1, qc_result_2])
-      expect(well.qc_result_for('rin')).to eq(qc_result_2.value)
+      expect(well.qc_result_for('rin')).to eq(6)
     end
   end
 end
