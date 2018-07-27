@@ -19,7 +19,7 @@ RSpec.describe Order, type: :model do
     end
 
     it 'not detect duplicates when there are none' do
-      refute @order.duplicates_within(1.month)
+      expect(@order.duplicates_within(1.month)).not_to be_truthy
     end
 
     context 'with the same asset in a different order' do
@@ -28,7 +28,7 @@ RSpec.describe Order, type: :model do
         @secondary_order = create :order, assets: [@asset_a], template_name: @other_template
       end
       it 'not detect duplicates' do
-        refute @order.duplicates_within(1.month)
+        expect(@order.duplicates_within(1.month)).not_to be_truthy
       end
     end
 
@@ -55,7 +55,7 @@ RSpec.describe Order, type: :model do
 
     context 'with no sequencing requests' do
       it 'not be a sequencing order' do
-        refute @order.is_a_sequencing_order?
+        expect(@order.is_a_sequencing_order?).to be false
       end
     end
 
@@ -66,7 +66,7 @@ RSpec.describe Order, type: :model do
           @order.request_types << @sequencing_request_type.id
         end
         it 'be a sequencing order' do
-          assert @order.is_a_sequencing_order?
+          expect(@order.is_a_sequencing_order?).to be true
         end
       end
     end
@@ -74,7 +74,7 @@ RSpec.describe Order, type: :model do
 
   it 'order should not be valid if study is not active' do
     order = build :order, study: study, assets: [asset], project: project
-    refute order.valid?
+    expect(order).to_not be_valid
   end
 
   it 'order should be valid if study is active on create' do

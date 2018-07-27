@@ -7,7 +7,7 @@ describe RequestType do
         let(:request_type) { create :multiplexed_library_creation_request_type }
 
         it 'return true' do
-          assert request_type.for_multiplexing?
+          expect(request_type).to be_for_multiplexing
         end
       end
 
@@ -15,7 +15,7 @@ describe RequestType do
         let(:request_type) { create :library_creation_request_type }
 
         it 'return false' do
-          refute request_type.for_multiplexing?
+          expect(request_type).not_to be_for_multiplexing
         end
       end
     end

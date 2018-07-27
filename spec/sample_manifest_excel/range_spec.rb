@@ -116,8 +116,8 @@ RSpec.describe SampleManifestExcel::Range, type: :model, sample_manifest_excel: 
     end
 
     it 'knows it is dynamic' do
-      refute range.static?
-      assert range.dynamic?
+      expect(range).to_not be_static
+      expect(range).to be_dynamic
     end
 
     it 'adjusts to changes in option number' do
