@@ -70,6 +70,7 @@ class Plate::Creator < ApplicationRecord
       # NOTE: Plate barcodes are not unique within certain laboratories.  That means that we cannot do:
       #  plates = Plate.with_barcode(*scanned_barcodes).all(:include => [ :location, { :wells => :aliquots } ])
       # Because then you get multiple matches.  So we take the first match, which is just not right.
+
       scanned_barcodes.each_with_object([]) do |scanned, plates|
         plate =
           Plate.with_barcode(scanned).eager_load(wells: :aliquots).first or
