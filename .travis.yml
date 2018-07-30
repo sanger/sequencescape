@@ -36,8 +36,10 @@ jobs:
     - "./cc-test-reporter before-build"
     after_script:
     - "./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT"
+  
   - if: type != cron
     env: SUITE=rubocop
+
   - if: type != cron
     env:
     - SUITE='rake test'
@@ -46,12 +48,14 @@ jobs:
     before_script:
     - bundle exec rake db:setup
     script: bundle exec rake test
+  
   - if: type != cron
     env:
     - SUITE=rspec
     - RAILS_ENV=test
     before_script:
     - bundle exec rake db:setup
+  
   - if: type != cron
     env:
     - SUITE='rake knapsack:cucumber'
@@ -61,6 +65,7 @@ jobs:
     before_script:
     - bundle exec rake assets:precompile
     - bundle exec rake db:setup
+  
   - if: type != cron
     env:
     - SUITE='rake knapsack:cucumber'
@@ -70,7 +75,9 @@ jobs:
     before_script:
     - bundle exec rake assets:precompile
     - bundle exec rake db:setup
+
   - stage: deploy
+    if: tag IS present
     before_script:
     - bundle exec rake assets:precompile
     script: "./compile-build"
