@@ -1,6 +1,6 @@
 language: ruby
 rvm:
-- 2.5.0
+- 2.4.1
 dist: xenial
 sudo: required
 services: mysql
@@ -82,6 +82,5 @@ jobs:
       on:
         tags: true
         repo: radome/sequencescape
-        branch: production
       api_key:
         secure: MpOafhFFbulyjia4ekaAIfFryw33nJTw3q1tWLVYcfG8T1UQNJ1AZB2ZKm0EW5N085n/1klZWMrX3oM26q+jRmolm22zGIheFY2bpYNGeXzc7B9F6FMSw7ZLPRWy2Jdmt7c7phGCVjraboYgpwTzY3WR1SZ9pwT4AEEgJPqpATzCl2AWXkYQnjk9Wq64kPyWeSLFTACc3h2WCKTCw5dPG24iz4EuGbT8kg/qTKee5R9T8zCCyehEyneBfXiNKlddy1t9RIjJji/freUEbMWjA9R9hFcg1YKf0CQm0oCtZXqOmMBQgtgg0xCMdw0bu6lzGWQq7LVmS0fzhcY/GoQOhYrJ8iT9JDZbNXVWARiqjevn1kJaSMpqEd+pK6/LL36WijdBZFeusvIReJOW2EcCsLO/yR5Pkyn2QBVlTd4PD+zdA5Fh84ryjHIH4O1xqlte0mgErYxoSjYc7iNrUoL/5aZxHDLYve7HdtioVPYbniLt4Zn3gctggPEc/yBZ+ddFRn0kkAuohTbko6dunefwzzGnnnei2LHMpbWVkXCV/TD9kGFwROsNhUb/4rmyRxl8R23qvGdmAlqR733/9IKZyaAiRtg5EoGwTr2VmBczOD1am5EXJxIUTeDGF8wdDTDDxZTiSqyByah//qaYw4K9M8go9eeTszgFSIYA+Sr60QU=
