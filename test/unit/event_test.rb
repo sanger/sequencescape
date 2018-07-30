@@ -92,16 +92,6 @@ class EventTest < ActiveSupport::TestCase
         should 'pass request' do
           assert @request.passed?
         end
-
-        context 'when passed twice' do
-          should 'should raise an exception' do
-            # This behaviour has changed.
-            assert_raise(AASM::InvalidTransition) do
-              event = Event.create(@settings)
-              event = Event.create(@settings)
-            end
-          end
-        end
       end
 
       context 'when fail' do

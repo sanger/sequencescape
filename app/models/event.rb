@@ -4,19 +4,13 @@ class Event < ApplicationRecord
 
   self.per_page = 500
   belongs_to :eventful, polymorphic: true
-  after_create :rescuing_update_request, unless: :need_to_know_exceptions?
-  after_create :update_request,          if: :need_to_know_exceptions?
+  after_create :update_request
 
-  scope :family_pass_and_fail, -> { where(family: ['pass', 'fail']).order('id DESC') }
-  scope :npg_events, ->(*args) { where(created_by: 'npg', eventful_id: args[0]) }
-
-  attr_writer :need_to_know_exceptions
-  def need_to_know_exceptions?
-    @need_to_know_exceptions
-  end
+  scope :family_pass_and_fail, -> { where(family: ['pass', 'fail']).order(id: :desc) }
+  scope :npg_events, ->(request_id) { where(created_by: 'npg', eventful_id: request_id) }
 
   def request?
-    eventful_type == 'Request' ? true : false
+    eventful.is_a?(Request)
   end
 
   private
@@ -24,19 +18,13 @@ class Event < ApplicationRecord
   include Event::AssetDescriptorUpdateEvent
   include Event::RequestDescriptorUpdateEvent
 
-  def rescuing_update_request
-    update_request
-  end
-
   def update_request
     if request?
       request = eventful
-      unless request.nil? or request.failed? or request.cancelled?
-        if family == 'fail'
-          request.fail!
-        elsif family == 'pass' # && !request.project.nil?
-          request.pass!
-        end
+      if family == 'fail' && request.may_fail?
+        request.fail!
+      elsif family == 'pass' && request.may_pass?
+        request.pass!
       end
     end
   end

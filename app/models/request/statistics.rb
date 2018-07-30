@@ -48,7 +48,7 @@ module Request::Statistics
     private
 
     def sorted_states
-      @statistics.sort_by { |state, _statistics| Request::Statemachine::SORT_ORDER.index(state) }
+      @statistics.sort_by { |state, _statistics| Request::Statemachine::SORT_ORDER.index(state) || state.each_byte.sum }
     end
   end
 
