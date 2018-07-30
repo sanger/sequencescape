@@ -6,8 +6,6 @@ sudo: required
 services: mysql
 addons:
   apt:
-    sources:
-    - google-chrome
     packages:
     - haveged
     - google-chrome-stable
