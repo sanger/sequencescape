@@ -4,7 +4,7 @@ FactoryBot.define do
   factory :material_json, class: Hash do
     skip_create
 
-    sequence(:_id) { |n| "#{SecureRandom.uuid}" }
+    sequence(:_id) { |_n| SecureRandom.uuid.to_s }
     gender 'male'
     donor_id 'd'
     sequence(:supplier_name) do |value|

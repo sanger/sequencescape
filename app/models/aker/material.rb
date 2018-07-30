@@ -28,7 +28,7 @@ module Aker
 
     def aker_attr_name(table_name, field_name)
       return field_name unless sample
-      table_name = :sample if (container && !container.a_well? && (table_name == :well_attribute))
+      table_name = :sample if container && !container.a_well? && (table_name == :well_attribute)
       super(table_name, field_name)
     end
   end

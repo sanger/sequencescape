@@ -15,15 +15,14 @@ module Aker
       attr_accessor :container, :study
       attr_reader :sample
 
-      #validates_presence_of :uuid, :gender
+      # validates_presence_of :uuid, :gender
 
       validate :check_container, :check_supplier_name, :check_uuid, :check_gender
 
       class << self
-
         def put_sample_in_container(sample, container)
           container.save if container.asset.nil?
-          sample.update_attributes(container: container)
+          sample.update(container: container)
           raise 'The contents of this plate are not up to date with aker job message' if container_not_having_sample?(container, sample) && container_has_aliquots?(container)
           container.asset.aliquots.create!(sample: sample) if container_not_having_sample?(container, sample)
         end
@@ -53,8 +52,8 @@ module Aker
         return unless valid?
 
         container_model = container.create
-        @sample = Sample.include_uuid.find_by(uuids: { external_id: @params[:_id]})
-        if !@sample
+        @sample = Sample.include_uuid.find_by(uuids: { external_id: @params[:_id] })
+        unless @sample
           @sample = Sample.create!(name: @params[:supplier_name])
           @sample.create_uuid_object!(external_id: @params[:_id])
         end
@@ -95,7 +94,6 @@ module Aker
       def check_uuid
         errors.add(:uuid, 'No uuid defined') unless @params[:_id]
       end
-
     end
   end
 end

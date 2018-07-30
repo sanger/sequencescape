@@ -106,7 +106,7 @@ RSpec.describe Aker::Factories::Job, type: :model, aker: true do
 
   it 'creating a job with existing materials will find those existing materials' do
     study = create :study
-    params[:materials].each do |material| 
+    params[:materials].each do |material|
       container = Aker::Factories::Container.new(params[:container].merge(address: material[:address]))
       m = Aker::Factories::Material.new(material, container, study)
       m.create
@@ -131,9 +131,9 @@ RSpec.describe Aker::Factories::Job, type: :model, aker: true do
     study = create :study
     create :uuid, external_id: study.uuid
     params[:data_release_uuid] = study.uuid
-    params[:materials].each do |material| 
+    params[:materials].each do |material|
       container = Aker::Factories::Container.new(params[:container].merge(address: material[:address]))
-      Aker::Factories::Material.new(material, container, study).create 
+      Aker::Factories::Material.new(material, container, study).create
     end
     job = Aker::Factories::Job.new(params).create
     job = Aker::Job.find_by(aker_job_id: job.aker_job_id)

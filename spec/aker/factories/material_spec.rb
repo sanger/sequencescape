@@ -30,7 +30,7 @@ RSpec.describe Aker::Factories::Material, type: :model, aker: true do
   end
 
   let(:container) { Aker::Factories::Container.new(container_params.merge(address: params[:address])) }
-  let(:study) { create :study}
+  let(:study) { create :study }
 
   it 'is valid with all relevant attributes' do
     material = Aker::Factories::Material.new(params, container, study)
@@ -64,9 +64,9 @@ RSpec.describe Aker::Factories::Material, type: :model, aker: true do
   end
 
   it 'is not valid unless the container is valid' do
-    material = Aker::Factories::Material.new(params, 
-      Aker::Factories::Container.new(container_params.merge(address: params[:address]).except(:barcode)), 
-      study)
+    material = Aker::Factories::Material.new(params,
+                                             Aker::Factories::Container.new(container_params.merge(address: params[:address]).except(:barcode)),
+                                             study)
     material.create
 
     expect(material).to_not be_valid
@@ -87,5 +87,4 @@ RSpec.describe Aker::Factories::Material, type: :model, aker: true do
     expect(sample.wells.count).to eq(1)
     expect(Aker::Factories::Material.new(params.except('gender'), container, study).create).to be_nil
   end
-
 end

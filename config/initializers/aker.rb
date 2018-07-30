@@ -2,7 +2,7 @@
 
 Aker::Material.config =
   %(
-    sample.name                         <=   supplier_name 
+    sample.name                         <=   supplier_name
     sample_metadata.sample_public_name  <=   supplier_name
     sample_metadata.sample_taxon_id     <=   taxon_id
     sample_metadata.gender              <=   gender

@@ -108,9 +108,7 @@ module Aker
     def tables_for_attr(attr_name)
       values = []
       config[:map_ss_tables_with_aker].keys.each do |table_name|
-        if config[:map_ss_tables_with_aker][table_name || :self].include?(attr_name.to_sym)
-          values.push(table_name)
-        end
+        values.push(table_name) if config[:map_ss_tables_with_aker][table_name || :self].include?(attr_name.to_sym)
       end
       return [:self] if values.empty?
       values

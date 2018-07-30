@@ -103,7 +103,6 @@ module Aker
           errors.add(:data_release_uuid, 'is not active') unless Study.find(study.resource_id).active?
         end
       end
-
     end
   end
 end
