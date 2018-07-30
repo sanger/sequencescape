@@ -10,11 +10,17 @@ module Aker
     validate :not_change_address
 
     def volume
-      asset.get_qc_result_value_for('Volume') || asset.well_attribute.current_volume
+      value = asset.get_qc_result_value_for('volume')
+      return value if value
+      return asset.volume unless a_well?
+      asset.well_attribute.current_volume
     end
 
     def concentration
-      asset.get_qc_result_value_for('Concentration') || asset.well_attribute.concentration
+      value = asset.get_qc_result_value_for('concentration')
+      return value if value
+      return asset.concentration unless a_well?
+      asset.well_attribute.concentration
     end
 
     def amount

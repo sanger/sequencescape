@@ -22,8 +22,8 @@ module Aker
       class << self
 
         def put_sample_in_container(sample, container)
-          return container.save if container.asset.nil?
-          binding.pry if container_not_having_sample?(container, sample) && container_has_aliquots?(container)
+          container.save if container.asset.nil?
+          sample.update_attributes(container: container)
           raise 'The contents of this plate are not up to date with aker job message' if container_not_having_sample?(container, sample) && container_has_aliquots?(container)
           container.asset.aliquots.create!(sample: sample) if container_not_having_sample?(container, sample)
         end
@@ -55,8 +55,8 @@ module Aker
         container_model = container.create
         @sample = Sample.include_uuid.find_by(uuids: { external_id: @params[:_id]})
         if !@sample
-          @sample = Sample.create(name: @params[:supplier_name])
-          @sample.create_uuid_object(external_id: @params[:_id])
+          @sample = Sample.create!(name: @params[:supplier_name])
+          @sample.create_uuid_object!(external_id: @params[:_id])
         end
 
         self.class.put_sample_in_container(@sample, container_model)

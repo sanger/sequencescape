@@ -13,7 +13,7 @@ module Aker
     # Defines the attributes that will be sent back to Aker
     def attributes
       attrs = super
-      attrs[:_id] = sample.name
+      attrs[:_id] = sample.uuid
       attrs
     end
 
@@ -28,8 +28,8 @@ module Aker
 
     def aker_attr_name(table_name, field_name)
       return field_name unless sample
-      return super(table_name, field_name) unless (container && !container.a_well?)
-      field_name
+      table_name = :sample if (container && !container.a_well? && (table_name == :well_attribute))
+      super(table_name, field_name)
     end
   end
 end

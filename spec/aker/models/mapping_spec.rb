@@ -11,10 +11,10 @@ shared_examples 'a mapping between an Aker model and Sequencescape', aker: true 
     context 'with private methods' do
       context '#table_for_attr' do
         it 'gives back a table name from an attribute name' do
-          expect(mapping.send(:table_for_attr, :volume)).to eq(:well_attribute)
+          expect(mapping.send(:tables_for_attr, :volume)).to eq([:well_attribute])
         end
         it 'returns :self if there is no table for the attribute' do
-          expect(mapping.send(:table_for_attr, :volumes)).to eq(:self)
+          expect(mapping.send(:tables_for_attr, :volumes)).to eq([:self])
         end
       end
 

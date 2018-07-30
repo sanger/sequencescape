@@ -72,6 +72,12 @@ RSpec.describe Aker::Factories::Material, type: :model, aker: true do
     expect(material).to_not be_valid
   end
 
+  it 'sets the container for the sample' do
+    material = Aker::Factories::Material.new(params, container, study)
+    material.create
+    expect(material.sample.container).to eq(container.model)
+  end
+
   it '#create persists the material if it is valid' do
     material = Aker::Factories::Material.new(params, container, study)
     material.create
