@@ -54,5 +54,20 @@ module Aker
         address: address
       }.compact
     end
+
+    def put_sample_in_container(sample, study)
+      save if asset.nil?
+      sample.update(container: self)
+      raise 'The contents of this plate are not up to date with aker job message' if !contains_sample?(sample) && has_aliquots?
+      asset.aliquots.create!(sample: sample, study: study) unless contains_sample?(sample)
+    end
+
+    def contains_sample?(sample)
+      asset.aliquots.where(sample: sample).count.positive?
+    end
+
+    def has_aliquots?
+      asset.aliquots.count.positive?
+    end
   end
 end

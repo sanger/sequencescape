@@ -19,31 +19,16 @@ module Aker
 
       validate :check_container, :check_supplier_name, :check_uuid, :check_gender
 
-      class << self
-        def put_sample_in_container(sample, container)
-          container.save if container.asset.nil?
-          sample.update(container: container)
-          raise 'The contents of this plate are not up to date with aker job message' if container_not_having_sample?(container, sample) && container_has_aliquots?(container)
-          container.asset.aliquots.create!(sample: sample) if container_not_having_sample?(container, sample)
-        end
-
-        def put_sample_in_study(sample, study)
-          sample.studies << study if study && !sample.studies.include?(study)
-        end
-
-        def container_not_having_sample?(container, sample)
-          container.asset.aliquots.where(sample: sample).count.zero?
-        end
-
-        def container_has_aliquots?(container)
-          container.asset.aliquots.count.positive?
-        end
-      end
-
       def initialize(params, container, study)
         @params = params
         @container = container
         @study = study
+      end
+
+      def create_sample!
+        sanger_sample_id = SangerSampleId.generate_sanger_sample_id!(study.abbreviation, sanger_sample_id)
+        @sample = Sample.create!(name: @params[:supplier_name], sanger_sample_id: sanger_sample_id)
+        @sample.create_uuid_object!(external_id: @params[:_id])
       end
 
       ##
@@ -53,17 +38,18 @@ module Aker
 
         container_model = container.create
         @sample = Sample.include_uuid.find_by(uuids: { external_id: @params[:_id] })
-        unless @sample
-          @sample = Sample.create!(name: @params[:supplier_name])
-          @sample.create_uuid_object!(external_id: @params[:_id])
-        end
+        create_sample! unless @sample
 
-        self.class.put_sample_in_container(@sample, container_model)
-        self.class.put_sample_in_study(@sample, study)
+        container_model.put_sample_in_container(sample, study)
+        put_study_in_sample(study)
 
         Aker::Material.new(@sample).update!(@params)
 
         @sample
+      end
+
+      def put_study_in_sample(study)
+        sample.studies << study if study && !sample.studies.include?(study)
       end
 
       def as_json
