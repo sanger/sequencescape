@@ -80,18 +80,18 @@ class BioanalysisCsvParserTest < ActiveSupport::TestCase
 
       should 'map by well' do
         results = [
-          ['A1', { 'Concentration' => Unit.new('25.65 ng/ul'), 'Molarity' => Unit.new('72.5 nmol/l') }],
-          ['B1', { 'Concentration' => Unit.new('18.06 ng/ul'), 'Molarity' => Unit.new('50.5 nmol/l') }],
-          ['C1', { 'Concentration' => Unit.new('27.44 ng/ul'), 'Molarity' => Unit.new('80.2 nmol/l') }],
-          ['D1', { 'Concentration' => Unit.new('26.69 ng/ul'), 'Molarity' => Unit.new('77.6 nmol/l') }],
-          ['E1', { 'Concentration' => Unit.new('27.06 ng/ul'), 'Molarity' => Unit.new('79.8 nmol/l') }],
-          ['F1', { 'Concentration' => Unit.new('17.60 ng/ul'), 'Molarity' => Unit.new('50.2 nmol/l') }],
-          ['G1', { 'Concentration' => Unit.new('27.24 ng/ul'), 'Molarity' => Unit.new('78.2 nmol/l') }],
-          ['H1', { 'Concentration' => Unit.new('15.67 ng/ul'), 'Molarity' => Unit.new('43.9 nmol/l') }],
-          ['A2', { 'Concentration' => Unit.new('22.59 ng/ul'), 'Molarity' => Unit.new('66.4 nmol/l') }],
-          ['B2', { 'Concentration' => Unit.new('26.26 ng/ul'), 'Molarity' => Unit.new('77.2 nmol/l') }],
-          ['C2', { 'Concentration' => Unit.new('10.65 ng/ul'), 'Molarity' => Unit.new('30.0 nmol/l') }],
-          ['D2', { 'Concentration' => Unit.new('25.38 ng/ul'), 'Molarity' => Unit.new('73.2 nmol/l') }]
+          ['A1', { 'concentration' => Unit.new('25.65 ng/ul'), 'molarity' => Unit.new('72.5 nmol/l') }],
+          ['B1', { 'concentration' => Unit.new('18.06 ng/ul'), 'molarity' => Unit.new('50.5 nmol/l') }],
+          ['C1', { 'concentration' => Unit.new('27.44 ng/ul'), 'molarity' => Unit.new('80.2 nmol/l') }],
+          ['D1', { 'concentration' => Unit.new('26.69 ng/ul'), 'molarity' => Unit.new('77.6 nmol/l') }],
+          ['E1', { 'concentration' => Unit.new('27.06 ng/ul'), 'molarity' => Unit.new('79.8 nmol/l') }],
+          ['F1', { 'concentration' => Unit.new('17.60 ng/ul'), 'molarity' => Unit.new('50.2 nmol/l') }],
+          ['G1', { 'concentration' => Unit.new('27.24 ng/ul'), 'molarity' => Unit.new('78.2 nmol/l') }],
+          ['H1', { 'concentration' => Unit.new('15.67 ng/ul'), 'molarity' => Unit.new('43.9 nmol/l') }],
+          ['A2', { 'concentration' => Unit.new('22.59 ng/ul'), 'molarity' => Unit.new('66.4 nmol/l') }],
+          ['B2', { 'concentration' => Unit.new('26.26 ng/ul'), 'molarity' => Unit.new('77.2 nmol/l') }],
+          ['C2', { 'concentration' => Unit.new('10.65 ng/ul'), 'molarity' => Unit.new('30.0 nmol/l') }],
+          ['D2', { 'concentration' => Unit.new('25.38 ng/ul'), 'molarity' => Unit.new('73.2 nmol/l') }]
         ]
         @parser.each_well_and_parameters do |*args|
           assert results.delete(args).present?, "#{args.inspect} was an unexpected result"
