@@ -68,18 +68,18 @@ class PlateReaderParserTest < ActiveSupport::TestCase
 
       should 'map by well' do
         results = [
-          ['A1', { 'Concentration' => Unit.new('75.783 ng/ul') }],
-          ['B1', { 'Concentration' => Unit.new('70.487 ng/ul') }],
-          ['C1', { 'Concentration' => Unit.new('78.785 ng/ul') }],
-          ['D1', { 'Concentration' => Unit.new('59.62 ng/ul') }],
-          ['E1', { 'Concentration' => Unit.new('38.78 ng/ul') }],
-          ['F1', { 'Concentration' => Unit.new('34.294 ng/ul') }],
-          ['G1', { 'Concentration' => Unit.new('25.496 ng/ul') }],
-          ['H1', { 'Concentration' => Unit.new('32.952 ng/ul') }],
-          ['A2', { 'Concentration' => Unit.new('76.92 ng/ul') }],
-          ['B2', { 'Concentration' => Unit.new('29.055 ng/ul') }],
-          ['C2', { 'Concentration' => Unit.new('76.69 ng/ul') }],
-          ['D2', { 'Concentration' => Unit.new('80.721 ng/ul') }]
+          ['A1', { 'concentration' => Unit.new('75.783 ng/ul') }],
+          ['B1', { 'concentration' => Unit.new('70.487 ng/ul') }],
+          ['C1', { 'concentration' => Unit.new('78.785 ng/ul') }],
+          ['D1', { 'concentration' => Unit.new('59.62 ng/ul') }],
+          ['E1', { 'concentration' => Unit.new('38.78 ng/ul') }],
+          ['F1', { 'concentration' => Unit.new('34.294 ng/ul') }],
+          ['G1', { 'concentration' => Unit.new('25.496 ng/ul') }],
+          ['H1', { 'concentration' => Unit.new('32.952 ng/ul') }],
+          ['A2', { 'concentration' => Unit.new('76.92 ng/ul') }],
+          ['B2', { 'concentration' => Unit.new('29.055 ng/ul') }],
+          ['C2', { 'concentration' => Unit.new('76.69 ng/ul') }],
+          ['D2', { 'concentration' => Unit.new('80.721 ng/ul') }]
         ]
         @parser.each_well_and_parameters do |*args|
           assert results.delete(args).present?, "#{args.inspect} was an unexpected result"
