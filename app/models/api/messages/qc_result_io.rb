@@ -38,7 +38,7 @@ class Api::Messages::QcResultIO < Api::Base
   map_attribute_to_json_attribute(:cv)
   map_attribute_to_json_attribute(:key, 'qc_type')
   map_attribute_to_json_attribute(:created_at, 'date_created')
-  map_attribute_to_json_attribute(:updated_at, 'date_updated')
+  map_attribute_to_json_attribute(:updated_at, 'last_updated')
 
   with_association(:asset) do
     map_attribute_to_json_attribute(:labware_purpose)
