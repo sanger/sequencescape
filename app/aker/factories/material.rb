@@ -27,7 +27,7 @@ module Aker
 
       def create_sample!
         sanger_sample_id = SangerSampleId.generate_sanger_sample_id!(study.abbreviation, sanger_sample_id)
-        @sample = Sample.create!(name: @params[:supplier_name], sanger_sample_id: sanger_sample_id)
+        @sample = Sample.create!(name: sanger_sample_id, sanger_sample_id: sanger_sample_id)
         @sample.create_uuid_object!(external_id: @params[:_id])
       end
 
