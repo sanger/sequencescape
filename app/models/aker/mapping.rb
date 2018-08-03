@@ -52,17 +52,19 @@ module Aker
 
     def update!(attrs)
       raise 'Error while saving attributes' unless update(attrs)
+      true
     end
 
     def attributes
       {}.tap do |obj|
         config[:updatable_attrs_from_ss_into_aker].each do |k|
-          table_name = table_for_attr(k)
-          value = get_value_for(
-            model_for_table(table_name, k),
-            aker_attr_name(table_name, k)
-          )
-          obj[k] = value
+          tables_for_attr(k).each do |table_name|
+            value = get_value_for(
+              model_for_table(table_name, k),
+              aker_attr_name(table_name, k)
+            )
+            obj[k] = value
+          end
         end
       end
     end
@@ -87,11 +89,15 @@ module Aker
     end
 
     def _each_model_and_setting_attrs_for(attrs)
-      attrs.keys.all? do |attr_name|
-        table_name = table_for_attr(attr_name)
-        setting_attrs = attributes_for_table(table_name, attrs)
-        model = model_for_table(table_name, attr_name)
-        yield model, setting_attrs
+      yielded_models = []
+      attrs.keys.each do |attr_name|
+        tables_for_attr(attr_name).each do |table_name|
+          setting_attrs = attributes_for_table(table_name, attrs)
+          model = model_for_table(table_name, attr_name)
+          next if yielded_models.include?(model) || setting_attrs.empty?
+          yielded_models.push(model)
+          yield model, setting_attrs
+        end
       end
     end
 
@@ -99,11 +105,13 @@ module Aker
       raise 'Not implemented'
     end
 
-    def table_for_attr(attr_name)
+    def tables_for_attr(attr_name)
+      values = []
       config[:map_ss_tables_with_aker].keys.each do |table_name|
-        return table_name if config[:map_ss_tables_with_aker][table_name || :self].include?(attr_name.to_sym)
+        values.push(table_name) if config[:map_ss_tables_with_aker][table_name || :self].include?(attr_name.to_sym)
       end
-      :self
+      return [:self] if values.empty?
+      values
     end
 
     def attributes_for_table(table_name, attrs)
