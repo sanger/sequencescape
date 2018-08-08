@@ -16,7 +16,10 @@ tar \
     --exclude='./log/*' \
     --exclude='./.bundle' \
     --exclude='./.codeclimate.yml' \
+    --exclude='./.gitignore' \
     --exclude='./.simplecov' \
+    --exclude='./.rspec' \
+    --exclude='./.rubocop*' \
     --exclude='./coverage' \
     --exclude='./features' \
     --exclude='./knapsack_cucumber_report.json' \
@@ -28,6 +31,7 @@ tar \
     --exclude='./yarn.lock' \
     --exclude='./*.swp' \
     --exclude='./.tags' \
+    --exclude='./.travis.yml' \
     --exclude='release.tar.gz' \
     -zcvf /tmp/release.tar.gz ./
 mv /tmp/release.tar.gz ./release.tar.gz
