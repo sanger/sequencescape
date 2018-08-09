@@ -5,7 +5,19 @@ require 'support/barcode_helper'
 
 RSpec.describe Aker::Factories::Job, type: :model, aker: true do
   include BarcodeHelper
+  let(:my_config) do
+    %(
+    sample_metadata.gender              <=   gender
+    sample_metadata.donor_id            <=   donor_id
+    sample_metadata.supplier_name       <=   supplier_name
+    sample_metadata.phenotype           <=   phenotype
+    sample_metadata.sample_common_name  <=   common_name
+    well_attribute.measured_volume      <=>  volume
+    well_attribute.concentration        <=>  concentration
+    )
+  end  
   before do
+    Aker::Material.config = my_config
     mock_plate_barcode_service
     build(:sample_tube_purpose, name: 'Standard sample').save
   end

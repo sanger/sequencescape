@@ -5,10 +5,23 @@ module Aker
   # Provides access to the information for an Aker Biomaterial that is spread into different Sequencescape tables.
   # This class allows to read and update the data to keep in sync Aker and Sequencescape copy of the sample
   class Material < Aker::Mapping
+    attr_accessor :instance
+
     delegate :container, to: :sample
     delegate :volume, :concentration, :amount, to: :container
 
     alias sample instance
+
+    def initialize(instance)
+      @instance = instance
+    end
+
+    class << self
+      def config
+        Aker::Material.config = Rails.configuration.aker[:material_mapping] if @config.nil?
+        @config
+      end
+    end
 
     # Defines the attributes that will be sent back to Aker
     def attributes

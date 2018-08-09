@@ -13,9 +13,6 @@ shared_examples 'a mapping between an Aker model and Sequencescape', aker: true 
         it 'gives back a table name from an attribute name' do
           expect(mapping.send(:table_names_for_attr, :volume)).to eq([:well_attribute])
         end
-        it 'returns :self if there is no table for the attribute' do
-          expect(mapping.send(:table_names_for_attr, :volumes)).to eq([:self])
-        end
       end
 
       context '#mapped_setting_attributes_for_table' do
@@ -31,11 +28,17 @@ shared_examples 'a mapping between an Aker model and Sequencescape', aker: true 
         it 'translates the valid attribute to the SS nomenclature using the config ' do
           expect(mapping.send(:columns_for_table_from_field, :well_attribute, :volume)).to eq([:measured_volume])
         end
-        it 'returns the passed attr name when no translation is defined for the attribute ' do
-          expect(mapping.send(:columns_for_table_from_field, :well_attribute, :volume2)).to eq([:volume2])
-        end
-        it 'returns the passed attr name when no model translation is defined' do
-          expect(mapping.send(:columns_for_table_from_field, :unknown_model, :unknown_attribute)).to eq([:unknown_attribute])
+
+        context 'when two colums receive the same attribute' do
+          let(:my_config) do
+            %(
+              well_attribute.measured_volume <= volume
+              well_attribute.current_volume  <= volume
+            )
+          end
+          it 'returns the list with both colums' do
+            expect(mapping.send(:columns_for_table_from_field, :well_attribute, :volume)).to eq([:measured_volume, :current_volume]) 
+          end
         end
       end
     end
@@ -44,7 +47,7 @@ end
 
 RSpec.describe Aker::Mapping, aker: true do
   let(:instance) { double('some model') }
-  let(:mapping) { Aker::Mapping.new(instance) }
+  let(:mapping) { Aker::Mapping.new }
   let(:my_config) do
     %(
     sample_metadata.gender              <=   gender
