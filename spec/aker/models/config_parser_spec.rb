@@ -29,8 +29,6 @@ RSpec.describe Aker::ConfigParser, aker: true do
     end
   end
   context 'when parsing a new config description' do
-    before do
-    end
     it 'returns the right config object content' do
       expect(Aker::ConfigParser.new.parse(
                %(

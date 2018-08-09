@@ -11,6 +11,7 @@ RSpec.describe Aker::Factories::Material, type: :model, aker: true do
     %(
     sample_metadata.gender              <=   gender
     sample_metadata.donor_id            <=   donor_id
+    sample_metadata.supplier_name       <=   supplier_name
     sample_metadata.phenotype           <=   phenotype
     sample_metadata.sample_common_name  <=   common_name
     well_attribute.measured_volume      <=>  volume
@@ -39,8 +40,9 @@ RSpec.describe Aker::Factories::Material, type: :model, aker: true do
     expect(sample).to be_valid
 
     expect(sample.uuid).to eq(params[:_id])
-    expect(sample.name).to eq(params[:supplier_name])
+    expect(sample.name).to match(Regexp.new("#{study.abbreviation}\\d+"))
     s = sample.sample_metadata
+    expect(s.supplier_name).to eq(params[:supplier_name])
     expect(s.gender.downcase).to eq(params[:gender].downcase)
     expect(s.donor_id).to eq(params[:donor_id])
     expect(s.phenotype).to eq(params[:phenotype])
@@ -82,7 +84,7 @@ RSpec.describe Aker::Factories::Material, type: :model, aker: true do
     material = Aker::Factories::Material.new(params, container, study)
     material.create
     expect(material).to be_present
-    sample = Sample.find_by(name: params[:supplier_name])
+    sample = Sample.include_uuid.find_by(uuids: { external_id: params[:_id] })
     expect(sample).to be_present
     expect(sample.wells.count).to eq(1)
     expect(Aker::Factories::Material.new(params.except('gender'), container, study).create).to be_nil

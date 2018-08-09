@@ -42,27 +42,33 @@ module Aker
       @instance = instance
     end
 
+
     def update(attrs)
       val = true
       _each_model_and_setting_attrs_for(attrs) do |model, setting_attrs|
-        val &&= set_value_for(model, setting_attrs)
+        val &&= update_model(model, setting_attrs)
       end
       val
     end
 
     def update!(attrs)
-      raise 'Error while saving attributes' unless update(attrs)
+      binding.pry unless update(attrs)
+      #raise 'Error while saving attributes' unless update(attrs)
       true
     end
 
     def attributes
       {}.tap do |obj|
         config[:updatable_attrs_from_ss_into_aker].each do |k|
-          tables_for_attr(k).each do |table_name|
-            value = get_value_for(
-              model_for_table(table_name, k),
-              aker_attr_name(table_name, k)
-            )
+          table_names_for_attr(k).each do |table_name|
+            model = model_for_table(table_name)
+
+            # If there is more than one column for the field name that can update, 
+            # we will raise exception as this is not consistent
+            columns = columns_for_table_from_field(table_name, k)
+            raise 'Aker Mapping - The field #{k} has more than one corresponding column' if columns.length > 1
+            value = get_value_for(model, columns.first)
+
             obj[k] = value
           end
         end
@@ -73,39 +79,44 @@ module Aker
       self.class.config
     end
 
-    private
-
-    def get_value_for(model, attr_name)
-      return model.send(attr_name) unless model.nil?
-      send(attr_name)
-    end
-
-    def set_value_for(model, setting_attrs)
+    # Gets a model instance and a hash of attributes and performs the update of fields on it
+    # If no model is provided, it will suppose it is self
+    def update_model(model, setting_attrs)
       return model.update(setting_attrs) unless model.nil?
       setting_attrs.each_pair do |k, v|
         send(:"#{k}=", v)
       end
       true
+    end    
+
+    # Gets the value of an attribute name for a model
+    def get_value_for(model, attr_name)
+      return model.send(attr_name) unless model.nil?
+      send(attr_name)
     end
 
+    # Given a hash of attributes, it generates a list of table names that will need update from it
+    def table_names_to_update(attrs)
+      attrs.keys.map{|attr_name| table_names_for_attr(attr_name)}.flatten.uniq
+    end
+
+    # Given a hash of attributes to update, it will generate the list of model instances to update and the
+    # corresponding specific attributes in each instance
     def _each_model_and_setting_attrs_for(attrs)
-      yielded_models = []
-      attrs.keys.each do |attr_name|
-        tables_for_attr(attr_name).each do |table_name|
-          setting_attrs = attributes_for_table(table_name, attrs)
-          model = model_for_table(table_name, attr_name)
-          next if yielded_models.include?(model) || setting_attrs.empty?
-          yielded_models.push(model)
-          yield model, setting_attrs
-        end
+      table_names_to_update(attrs).each do |table_name|
+        model = model_for_table(table_name)
+        setting_attrs = mapped_setting_attributes_for_table(table_name, attrs)
+        yield model, setting_attrs
       end
     end
 
-    def model_for_table(_table_name, _attr_name)
+    # Returns the model instance for the table name
+    def model_for_table(_table_name)
       raise 'Not implemented'
     end
 
-    def tables_for_attr(attr_name)
+    # Given an attribute name, it returns all the available table names that this attribute can update
+    def table_names_for_attr(attr_name)
       values = []
       config[:map_ss_tables_with_aker].keys.each do |table_name|
         values.push(table_name) if config[:map_ss_tables_with_aker][table_name || :self].include?(attr_name.to_sym)
@@ -114,24 +125,32 @@ module Aker
       values
     end
 
-    def attributes_for_table(table_name, attrs)
+    # Given a table name and a list of attributes, it returns a subset of attributes that will correspond
+    # to the update of this table name
+    def mapped_setting_attributes_for_table(table_name, attrs)
       valid_keys = config[:map_ss_tables_with_aker][table_name] & config[:updatable_attrs_from_aker_into_ss]
       return {} unless valid_keys
-      valid_attrs(table_name, valid_keys, attrs)
-    end
 
-    def aker_attr_name(table_name, field_name)
-      return field_name unless config[:map_aker_with_ss_columns][table_name]
-      config[:map_aker_with_ss_columns][table_name || :self][field_name] || field_name
-    end
-
-    def valid_attrs(table_name, valid_keys, attrs)
+      # Filter from valid_attrs
       obj = attrs.select { |k, _v| valid_keys.include?(k.to_sym) }
       memo = {}
       obj.each_pair do |k, v|
-        memo[aker_attr_name(table_name, k.to_sym)] = v
+        columns_for_table_from_field(table_name, k.to_sym).each do |column|
+          memo[column] = v
+        end
       end
       memo
     end
+
+    # Given a table name and an attribute name, it returns a list of colums of the table that corresponds to this attribute
+    #  Example:
+    #    well.name         <= supplier_name
+    #    well.supplier_name <= supplier_name
+    # It would return [:name, :supplier_name]
+    def columns_for_table_from_field(table_name, field_name)
+      return [field_name] unless config[:map_aker_with_ss_columns][table_name]
+      [config[:map_aker_with_ss_columns][table_name || :self][field_name] || field_name].flatten
+    end
+
   end
 end
