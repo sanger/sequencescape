@@ -61,46 +61,38 @@ module Aker
       ss_name, ss_model = ss.split('.').reverse.map(&:to_sym)
       ss_model = :self if ss_model.nil?
 
-      { 
+      {
         # Attribute name in Aker
-        aker_name: aker_name, 
-        # Left hand side string 
-        ss: ss, 
+        aker_name: aker_name,
+        # Left hand side string
+        ss: ss,
         # Sequencescape mapping model
         ss_model: ss_model,
         # Sequencescape mapping column
-        ss_name: ss_name, 
+        ss_name: ss_name,
         # Boolean specifying update from SS to Aker
-        ss_to_aker: ss_to_aker, 
+        ss_to_aker: ss_to_aker,
         # Boolean specifying update from Aker into SS
-        aker_to_ss: aker_to_ss 
+        aker_to_ss: aker_to_ss
       }
     end
 
-    private    
+    private
 
     def __parse_map_ss_columns_with_aker(token)
       unless token[:ss_model].nil?
-        if config[:map_ss_columns_with_aker][token[:ss_model]].nil?
-          config[:map_ss_columns_with_aker][token[:ss_model]] = {} 
-        end
-        if config[:map_ss_columns_with_aker][token[:ss_model]][token[:ss_name]].nil?
-          config[:map_ss_columns_with_aker][token[:ss_model]][token[:ss_name]] = [] 
-        end
+        config[:map_ss_columns_with_aker][token[:ss_model]] = {} if config[:map_ss_columns_with_aker][token[:ss_model]].nil?
+        config[:map_ss_columns_with_aker][token[:ss_model]][token[:ss_name]] = [] if config[:map_ss_columns_with_aker][token[:ss_model]][token[:ss_name]].nil?
 
         attr_name = token[:aker_name]
 
-        unless config[:map_ss_columns_with_aker][token[:ss_model]][token[:ss_name]].include?(attr_name)
-          config[:map_ss_columns_with_aker][token[:ss_model]][token[:ss_name]].push(attr_name)
-        end
+        config[:map_ss_columns_with_aker][token[:ss_model]][token[:ss_name]].push(attr_name) unless config[:map_ss_columns_with_aker][token[:ss_model]][token[:ss_name]].include?(attr_name)
       end
     end
 
     def __parse_updatable_attrs_from_aker_into_ss(token)
       if token[:aker_to_ss]
-        unless config[:updatable_attrs_from_aker_into_ss].include?(token[:aker_name])
-          config[:updatable_attrs_from_aker_into_ss].push(token[:aker_name]) 
-        end
+        config[:updatable_attrs_from_aker_into_ss].push(token[:aker_name]) unless config[:updatable_attrs_from_aker_into_ss].include?(token[:aker_name])
       end
     end
 
@@ -110,6 +102,5 @@ module Aker
         config[:updatable_columns_from_ss_into_aker][token[:ss_model]].push(token[:ss_name])
       end
     end
-
   end
 end

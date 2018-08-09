@@ -43,7 +43,7 @@ RSpec.describe Aker::ConfigParser, aker: true do
       end
       it 'returns the list with both columns' do
         expect(Aker::ConfigParser.new.parse(my_config)).to eq(
-          map_ss_columns_with_aker: {:t1 => {measured_volume: [:volume], current_volume: [:volume]}},
+          map_ss_columns_with_aker: { t1: { measured_volume: [:volume], current_volume: [:volume] } },
           updatable_attrs_from_aker_into_ss: [:volume],
           updatable_columns_from_ss_into_aker: {}
         )
@@ -59,56 +59,56 @@ RSpec.describe Aker::ConfigParser, aker: true do
       end
       it 'returns the list with both columns' do
         expect(Aker::ConfigParser.new.parse(my_config)).to eq(
-          map_ss_columns_with_aker: {:t1 => {measured_volume: [:volume], current_volume: [:volume]}},
+          map_ss_columns_with_aker: { t1: { measured_volume: [:volume], current_volume: [:volume] } },
           updatable_attrs_from_aker_into_ss: [],
-          updatable_columns_from_ss_into_aker: {t1: [:measured_volume, :current_volume]}
+          updatable_columns_from_ss_into_aker: { t1: [:measured_volume, :current_volume] }
         )
-      end      
+      end
     end
 
     context 'when two attributes update the same column (WHICH IS WRONG)' do
       let(:my_config) do
         %(
           t1.measured_volume <= volume
-          t1.measured_volume <= other_volume 
+          t1.measured_volume <= other_volume
         )
       end
       it 'returns the list with both columns' do
         expect(Aker::ConfigParser.new.parse(my_config)).to eq(
-          map_ss_columns_with_aker: {:t1 => {measured_volume: [:volume, :other_volume]}},
+          map_ss_columns_with_aker: { t1: { measured_volume: [:volume, :other_volume] } },
           updatable_attrs_from_aker_into_ss: [:volume, :other_volume],
           updatable_columns_from_ss_into_aker: {}
         )
-      end      
-    end    
+      end
+    end
 
     context 'with a standard config object' do
       let(:my_config) do
-         %(
-           sample_metadata.gender              <=   gender
-           sample_metadata.donor_id            <=   donor_id
-           sample_metadata.phenotype           <=   phenotype
-           sample_metadata.sample_common_name  <=   common_name
-           volume                               =>  volume
-           concentration                        =>  concentration
-           amount                               =>  amount
-         )
+        %(
+          sample_metadata.gender              <=   gender
+          sample_metadata.donor_id            <=   donor_id
+          sample_metadata.phenotype           <=   phenotype
+          sample_metadata.sample_common_name  <=   common_name
+          volume                               =>  volume
+          concentration                        =>  concentration
+          amount                               =>  amount
+        )
       end
       it 'returns the right config object content' do
         expect(Aker::ConfigParser.new.parse(my_config)).to eq(
           map_ss_columns_with_aker: {
             sample_metadata: {
-              gender: [:gender], donor_id: [:donor_id], phenotype: [:phenotype], 
+              gender: [:gender], donor_id: [:donor_id], phenotype: [:phenotype],
               sample_common_name: [:common_name]
             },
-            :self => {
+            self: {
               volume: [:volume],
               concentration: [:concentration],
               amount: [:amount]
             }
           },
           updatable_attrs_from_aker_into_ss: [:gender, :donor_id, :phenotype, :common_name],
-          updatable_columns_from_ss_into_aker: {:self => [:volume, :concentration, :amount]}
+          updatable_columns_from_ss_into_aker: { self: [:volume, :concentration, :amount] }
         )
       end
     end

@@ -15,7 +15,7 @@ RSpec.describe Aker::Factories::Job, type: :model, aker: true do
     well_attribute.measured_volume      <=>  volume
     well_attribute.concentration        <=>  concentration
     )
-  end  
+  end
   before do
     Aker::Material.config = my_config
     mock_plate_barcode_service

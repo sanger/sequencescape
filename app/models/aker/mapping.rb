@@ -27,7 +27,6 @@ module Aker
   # Aker updates will happen on job completion, because the job message for the material is generated from
   # the attributes() method of this class.
   class Mapping
-
     class << self
       def config=(config_str)
         @config = Aker::ConfigParser.new.parse(config_str)
@@ -75,7 +74,7 @@ module Aker
         send(:"#{k}=", v)
       end
       true
-    end    
+    end
 
     # Gets the value of an attribute name for a model
     def get_value_for(model, column_name)
@@ -86,11 +85,11 @@ module Aker
     # Given a table+column, it returns the list of Aker attribute names it maps to
     def attribute_names_for_column(table_name, column_name)
       config[:map_ss_columns_with_aker][table_name][column_name]
-    end    
+    end
 
     # Given a hash of attributes, it generates a list of table names that will be affected by the update
     def table_names_to_update(attrs)
-      attrs.keys.map{|attr_name| table_names_for_attr(attr_name)}.flatten.uniq
+      attrs.keys.map { |attr_name| table_names_for_attr(attr_name) }.flatten.uniq
     end
 
     # Given a hash of attributes to update, it will generate the list of model instances to update and the
@@ -112,7 +111,7 @@ module Aker
     def table_names_for_attr(attr_name)
       [].tap do |list|
         config[:map_ss_columns_with_aker].each do |table_name, column_object|
-          list.push(table_name) if column_object.values.flatten.include?(attr_name) && (!list.include?(table_name))
+          list.push(table_name) if column_object.values.flatten.include?(attr_name) && !list.include?(table_name)
         end
       end
     end
@@ -125,24 +124,22 @@ module Aker
     def columns_for_table_from_field(table_name, field_name)
       [].tap do |list|
         config[:map_ss_columns_with_aker][table_name].each do |column_name, field_names|
-          list.push(column_name) if field_names.include?(field_name) && (!list.include?(column_name))
+          list.push(column_name) if field_names.include?(field_name) && !list.include?(column_name)
         end
       end
-    end    
+    end
 
     # Given a table name and a list of attributes, it returns a subset of attributes that will correspond
     # to the update of this table name
     def mapped_setting_attributes_for_table(table_name, attrs)
       {}.tap do |update_obj|
         attrs.each do |k, v|
-          if config[:updatable_attrs_from_aker_into_ss].include?(k)
-            columns_for_table_from_field(table_name, k).each do |column_name|
-              update_obj[column_name] = v
-            end
+          next unless config[:updatable_attrs_from_aker_into_ss].include?(k)
+          columns_for_table_from_field(table_name, k).each do |column_name|
+            update_obj[column_name] = v
           end
         end
       end
     end
-
   end
 end
