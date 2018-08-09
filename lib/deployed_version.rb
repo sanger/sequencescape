@@ -1,7 +1,7 @@
+# frozen_string_literal: true
+
 module Deployed
   class RepoData
-    attr_reader :tag, :revision, :branch, :release, :major, :minor, :extra
-
     def tag
       @tag ||= read_file('TAG').strip
     end
@@ -23,7 +23,7 @@ module Deployed
     end
 
     def label
-      tag.present? ? tag : branch
+      tag.presence || branch
     end
 
     def major
@@ -43,7 +43,7 @@ module Deployed
     end
 
     def version_label
-      if major == 0 and minor == 0 and extra == 0
+      if major == 0 && minor == 0 && extra == 0
         'WIP'
       else
         "#{major}.#{minor}.#{extra}"
@@ -57,11 +57,9 @@ module Deployed
     end
 
     def read_file(filename)
-      begin
-        File.open(File.join(Rails.root, filename), 'r') { |f| f.readline }
-      rescue Errno::ENOENT, EOFError
-        ''
-      end
+      File.open(Rails.root.join(filename), 'r', &:readline)
+    rescue Errno::ENOENT, EOFError
+      ''
     end
   end
 
@@ -77,14 +75,14 @@ module Deployed
   VERSION_ID = REPO_DATA.version_label
 
   APP_NAME = 'Sequencescape'
-  RELEASE_NAME = REPO_DATA.release.present? ? REPO_DATA.release : 'unknown_release'
+  RELEASE_NAME = REPO_DATA.release.presence || 'unknown_release'
 
   MAJOR = REPO_DATA.major
   MINOR = REPO_DATA.minor
   EXTRA = REPO_DATA.extra
-  BRANCH = REPO_DATA.label.present? ? REPO_DATA.label : 'unknown_branch'
-  COMMIT = REPO_DATA.revision.present? ? REPO_DATA.revision : 'unknown_revision'
-  ABBREV_COMMIT = REPO_DATA.revision_short.present? ? REPO_DATA.revision_short : 'unknown_revision'
+  BRANCH = REPO_DATA.label.presence || 'unknown_branch'
+  COMMIT = REPO_DATA.revision.presence || 'unknown_revision'
+  ABBREV_COMMIT = REPO_DATA.revision_short.presence || 'unknown_revision'
 
   VERSION_STRING = "#{APP_NAME} #{VERSION_ID} [#{ENVIRONMENT}] #{BRANCH}@#{ABBREV_COMMIT}"
 
