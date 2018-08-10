@@ -13,6 +13,7 @@ echo 'Compiling tar.gz'
 tar \
     --exclude='./.git' \
     --exclude='./tmp' \
+    --exclude='./compile-build' \
     --exclude='./vendor/bundle' \
     --exclude='./node_modules' \
     --exclude='./log/*' \
