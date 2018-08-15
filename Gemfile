@@ -189,4 +189,5 @@ end
 group :deployment do
   gem 'gmetric', '~>0.1.3'
   gem 'exception_notification'
+  gem 'whenever', require: false
 end
