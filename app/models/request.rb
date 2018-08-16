@@ -290,7 +290,10 @@ class Request < ApplicationRecord
 
   # Class method calls
   has_metadata do
+    belongs_to :primer_panel
   end
+
+  has_one :primer_panel, through: :request_metadata
 
   # Delegations
   delegate :billable?, to: :request_type, allow_nil: true
@@ -303,6 +306,8 @@ class Request < ApplicationRecord
   delegate :study, :study_id, to: :asset, allow_nil: true
 
   delegate :validator_for, to: :request_type
+
+  delegate :role, to: :order_role, allow_nil: true
 
   def self.delegate_validator
     DelegateValidation::AlwaysValidValidator
@@ -531,10 +536,6 @@ class Request < ApplicationRecord
     # we should assume it it possible.
     return '' if submission.nil?
     submission.created_at.strftime('%Y-%m-%d')
-  end
-
-  def role
-    order.try(:role)
   end
 
   def ready?

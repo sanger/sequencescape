@@ -19,6 +19,7 @@ class Uuid < ApplicationRecord
 
         # Some named scopes ...
         scope :include_uuid, ->() { includes(:uuid_object) }
+        scope :with_uuid, ->(uuid) { include_uuid.where(uuids: { external_id: uuid }) }
       end
     end
 

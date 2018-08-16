@@ -33,13 +33,6 @@ class Plate < Asset
 
   has_many :container_associations, foreign_key: :container_id, inverse_of: :plate, dependent: :destroy
   has_many :wells, through: :container_associations, inverse_of: :plate do
-    def attach(records)
-      ActiveRecord::Base.transaction do
-        proxy_association.owner.wells << records
-      end
-    end
-    deprecate attach: 'Legacy method pre-jruby just use standard rails plate.wells << other_wells' # Legacy pre-jruby method to handle bulk import
-
     # Build empty wells for the plate.
     def construct!
       plate = proxy_association.owner
@@ -255,7 +248,6 @@ class Plate < Asset
       .joins(:container_associations)
       .where(container_associations: { content_id: wells.map(&:id) })
   }
-  #->() {where(:assets=>{:sti_type=>[Plate,*Plate.descendants].map(&:name)})},
   has_many :descendant_plates, class_name: 'Plate', through: :links_as_ancestor, foreign_key: :ancestor_id, source: :descendant
   has_many :descendant_lanes,  class_name: 'Lane', through: :links_as_ancestor, foreign_key: :ancestor_id, source: :descendant
   has_many :tag_layouts, dependent: :destroy

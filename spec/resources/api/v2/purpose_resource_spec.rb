@@ -1,18 +1,19 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require './app/resources/api/v2/<%= underscore %>_resource'
+require './app/resources/api/v2/purpose_resource'
 
-RSpec.describe Api::V2::<%= camelcase %>Resource, type: :resource do
-  let(:resource_model) { create :<%= underscore %> }
+RSpec.describe Api::V2::PurposeResource, type: :resource do
+  let(:resource_model) { create :purpose }
   subject { described_class.new(resource_model, {}) }
 
   # Test attributes
-  it { is_expected.to have_attribute :uuid }
-
-  # Read only attributes (almost certainly id, uuid)
-  it { is_expected.to_not have_updatable_field(:id) }
-  it { is_expected.to_not have_updatable_field(:uuid) }
+  it 'works', :aggregate_failures do
+    is_expected.to have_attribute :uuid
+    is_expected.to have_attribute :name
+    is_expected.to_not have_updatable_field(:id)
+    is_expected.to_not have_updatable_field(:uuid)
+  end
 
   # Updatable fields
   # eg. it { is_expected.to have_updatable_field(:state) }

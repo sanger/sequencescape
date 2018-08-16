@@ -1,6 +1,6 @@
 GIT
-  remote: git://github.com/rails/activeresource.git
-  revision: 44c1325eb5a2aa4dd760c73ec6116a2184c600b5
+  remote: https://github.com/rails/activeresource.git
+  revision: 0ae3010f505b5e6063b7acbcd22cc221995e7873
   branch: master
   specs:
     activeresource (5.0.0)
@@ -9,7 +9,7 @@ GIT
       activesupport (>= 5.0, < 7)
 
 GIT
-  remote: git://github.com/resgraph/acts-as-dag.git
+  remote: https://github.com/resgraph/acts-as-dag.git
   revision: 5e185dddff6563ee9ee92611555cd9d9a519d280
   branch: 5e185dddff6563ee9ee92611555cd9d9a519d280
   specs:
@@ -18,7 +18,7 @@ GIT
       activerecord (>= 4.0.0)
 
 GIT
-  remote: git://github.com/sanger/axlsx.git
+  remote: https://github.com/sanger/axlsx.git
   revision: 3555519d96329e2561406a8cb1e0350098026ee9
   branch: v2.0.2sgr
   specs:
@@ -28,19 +28,19 @@ GIT
       rubyzip (>= 1.2.1)
 
 GIT
-  remote: git://github.com/sanger/irods_reader.git
+  remote: https://github.com/sanger/irods_reader.git
   revision: 14db88aa7783118d2d4a8351c5028d07e6ee5644
   specs:
     irods_reader (0.0.2)
 
 GIT
-  remote: git://github.com/sanger/ruby_walk.git
+  remote: https://github.com/sanger/ruby_walk.git
   revision: 6e86c0413ab508933de899d7a3c6bc3b415e2acb
   specs:
     ruby_walk (0.0.3)
 
 GIT
-  remote: git://github.com/sanger/sanger_barcode_format.git
+  remote: https://github.com/sanger/sanger_barcode_format.git
   revision: ea1fa6840c8d41f8ce9ccf32b422f44d6edda859
   branch: development
   specs:
@@ -260,7 +260,7 @@ GEM
     net-ldap (0.16.1)
     netrc (0.11.0)
     nio4r (2.3.1)
-    nokogiri (1.8.2)
+    nokogiri (1.8.4)
       mini_portile2 (~> 2.3.0)
     parallel (1.12.1)
     parser (2.5.1.0)
@@ -281,7 +281,7 @@ GEM
       rack (>= 1.2.0)
     rack-protection (2.0.2)
       rack
-    rack-test (1.0.0)
+    rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rails (5.1.6)
       actioncable (= 5.1.6)

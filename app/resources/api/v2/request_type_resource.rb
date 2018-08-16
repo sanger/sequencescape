@@ -2,25 +2,24 @@
 
 module Api
   module V2
-    # Provides a JSON API representation of receptacle
+    # Provides a JSON API representation of request_type
     # See: http://jsonapi-resources.com/ for JSONAPI::Resource documentation
-    class ReceptacleResource < BaseResource
+    class RequestTypeResource < BaseResource
+      # Constants...
+
       immutable # uncomment to make the resource immutable
+
+      # model_name / model_hint if required
 
       default_includes :uuid_object
 
-      ::Tube.descendants.each do |subclass|
-        model_hint model: subclass, resource: :tube
-      end
-
       # Associations:
-      has_many :samples
-      has_many :studies
-      has_many :projects
 
       # Attributes
       attribute :uuid, readonly: true
-      attribute :name, delegate: :display_name, readonly: true
+      attribute :name, readonly: true
+      attribute :key, readonly: true
+      attribute :for_multiplexing, readonly: true
 
       # Filters
 
