@@ -97,6 +97,7 @@ class ImportWellAttributes
   end
 
   def import
+    return if well.nil?
     progress.progress(well, 'Begin import')
     process_simple_attributes
     process_advanced_volumes
