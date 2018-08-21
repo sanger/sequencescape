@@ -29,7 +29,7 @@ describe Api::Messages::QcResultIO do
     it 'generates a valid json' do
       actual = subject.as_json
       actual.delete('date_created')
-      actual.delete('date_updated')
+      actual.delete('last_updated')
       expected_json.fetch('aliquots').first['id_library_lims'] = sample_tube.external_identifier
       expect(actual).to eq(expected_json)
     end
@@ -41,7 +41,7 @@ describe Api::Messages::QcResultIO do
     it 'generates a valid json' do
       actual = subject.as_json
       actual.delete('date_created')
-      actual.delete('date_updated')
+      actual.delete('last_updated')
       expect(actual).to eq(expected_json)
     end
   end

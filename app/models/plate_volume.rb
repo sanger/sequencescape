@@ -38,7 +38,7 @@ class PlateVolume < ApplicationRecord
       short_well_description = Map.strip_description(well_description)
       well = location_to_well[short_well_description]
       next if well.blank?
-      QcResult.create(asset: well, key: 'Volume', value: volume, units: 'ul', assay_type: ASSAY_TYPE, assay_version: ASSAY_VERSION, qc_assay: qc_assay)
+      QcResult.create(asset: well, key: 'volume', value: volume, units: 'ul', assay_type: ASSAY_TYPE, assay_version: ASSAY_VERSION, qc_assay: qc_assay)
     end
   end
 

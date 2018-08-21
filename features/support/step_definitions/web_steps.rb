@@ -152,7 +152,7 @@ end
 
 Then /^the "([^"]*)" checkbox(?: within "([^"]*)")? should not be checked$/ do |label, selector|
   with_scope(selector) do
-    refute find_field(label).checked?
+    assert_not find_field(label).checked?
   end
 end
 

@@ -4,9 +4,9 @@ class Parsers::QuantParser
   HEADER_IDENTIFIER = 'Headers'.freeze
   LOCATION_HEADER = 'Well Location'.freeze
   COLUMN_MAPS = {
-    'concentration' => ['Concentration', 'ng/ul'],
-    'molarity'      => ['Molarity', 'nmol/l'],
-    'volume'        => %w[Volume ul],
+    'concentration' => ['concentration', 'ng/ul'],
+    'molarity'      => ['molarity', 'nmol/l'],
+    'volume'        => %w[volume ul],
     'rin'           => %w[RIN RIN]
   }.freeze
 

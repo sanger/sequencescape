@@ -50,11 +50,10 @@ class Api::WellIO < Api::Base
   end
 
   with_association(:plate) do
-    map_attribute_to_json_attribute(:barcode_number, 'plate_barcode')
     map_attribute_to_json_attribute(:uuid, 'plate_uuid')
-
-    extra_json_attributes do |object, json_attributes|
-      json_attributes['plate_barcode_prefix'] = object.prefix unless object.nil?
+    with_association(:sanger_barcode) do
+      map_attribute_to_json_attribute(:number_as_string, 'plate_barcode')
+      map_attribute_to_json_attribute(:barcode_prefix, 'plate_barcode_prefix')
     end
   end
 
