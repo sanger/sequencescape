@@ -12,6 +12,7 @@
       "materials":[
          {
             "_id":"2be2072d-7c96-49c3-b7ac-9c51d01c109b",
+            "supplier_name": "name1",
             "gender":"male",
             "donor_id":"d",
             "phenotype":"p",
@@ -20,6 +21,7 @@
          },
          {
             "_id":"678ac243-22d4-4857-953a-8cc58da5e056",
+            "supplier_name": "name2",
             "gender":"male",
             "donor_id":"dp",
             "phenotype":"p",

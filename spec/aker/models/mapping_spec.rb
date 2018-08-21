@@ -5,7 +5,7 @@ require_relative '../shared/a_mapping_between_an_aker_model_and_sequencescape'
 
 RSpec.describe Aker::Mapping, aker: true do
   let(:instance) { double('some model') }
-  let(:mapping) { Aker::Mapping.new(instance) }
+  let(:mapping) { Aker::Mapping.new }
   let(:my_config) do
     %(
     sample_metadata.gender              <=   gender
