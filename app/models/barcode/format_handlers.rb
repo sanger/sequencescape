@@ -44,6 +44,10 @@ module Barcode::FormatHandlers
       true
     end
 
+    def number_as_string
+      number.to_s
+    end
+
     def code128_barcode?
       true
     end
