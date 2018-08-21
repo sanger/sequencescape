@@ -31,3 +31,6 @@ doc/*
 .yardoc/*
 config/aker.yml
 test_file.xlsx
+node_modules
+sbin
+yarn.lock

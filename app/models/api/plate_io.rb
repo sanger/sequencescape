@@ -24,7 +24,10 @@ class Api::PlateIO < Api::Base
   map_attribute_to_json_attribute(:uuid)
   map_attribute_to_json_attribute(:id)
   map_attribute_to_json_attribute(:name)
-  map_attribute_to_json_attribute(:barcode_number, 'barcode')
+  with_association(:sanger_barcode) do
+    map_attribute_to_json_attribute(:number_as_string, 'barcode')
+    map_attribute_to_json_attribute(:barcode_prefix, 'barcode_prefix')
+  end
   map_attribute_to_json_attribute(:size)
   map_attribute_to_json_attribute(:created_at)
   map_attribute_to_json_attribute(:updated_at)
@@ -41,6 +44,4 @@ class Api::PlateIO < Api::Base
       PlatePurpose.find_by(name: 'Stock Plate')
     end
   end
-
-  map_attribute_to_json_attribute(:prefix, 'barcode_prefix')
 end
