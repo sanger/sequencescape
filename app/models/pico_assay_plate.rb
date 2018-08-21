@@ -44,7 +44,7 @@ class PicoAssayPlate < Plate
     end
 
     def update_well_concentraion!
-      QcResult.create!(asset: target_well, qc_assay: qc_assay, key: 'Concentration', value: concentration, units: 'ng/ul', assay_type: 'PicoGreen', assay_version: 'v0.1')
+      QcResult.create!(asset: target_well, qc_assay: qc_assay, key: 'concentration', value: concentration, units: 'ng/ul', assay_type: 'PicoGreen', assay_version: 'v0.1')
     end
   end
 
