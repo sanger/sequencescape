@@ -12,9 +12,6 @@
 
  <div id="header">
       <div class="page-header"><h1>Batch <%= @batch.id %></h1></div>
-      <div id="batchbarcode">
-        <img src='<%= "#{configatron.barcode_images_url}/barcode_images/ean13/0#{Barcode.calculate_barcode('BA',@batch.id)}" %>'/>
-      </div>
   </div>
 
 <div>
