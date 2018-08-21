@@ -86,8 +86,8 @@ class ImportFluidigmDataTest < ActiveSupport::TestCase
         assert_equal %w[M M M], well.get_gender_markers
         assert_equal 89, well.get_sequenom_count
         assert_equal 2, well.qc_results.count
-        assert_includes well.qc_results.map(&:key), 'Gender_Markers'
-        assert_includes well.qc_results.map(&:key), 'Loci_passed'
+        assert_includes well.qc_results.map(&:key), 'gender_markers'
+        assert_includes well.qc_results.map(&:key), 'loci_passed'
       end
     end
   end
