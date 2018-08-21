@@ -175,7 +175,7 @@ class ImportWellAttributes
   end
 
   def volume_results
-    @volume_results ||= well.qc_results.select { |result| result.key == 'volume' }.map(&:value)
+    @volume_results ||= well.qc_results.select { |result| result.key.casecmp?('volume') }.map(&:value)
   end
 
   def import_attribute(attribute, value, created_at = timestamp)
@@ -204,10 +204,10 @@ class ImportWellAttributes
   end
 
   def qc_result_for(key)
-    well.qc_results.detect { |result| result.key == key }
+    well.qc_results.detect { |result| result.key.casecmp? key }
   end
 
   def qc_result_exists?(key)
-    well.qc_results.detect { |result| result.key == key }.present?
+    qc_result_for(key).present?
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'a mapping between an Aker model and Sequencescape', aker: true do
   context 'with a custom config' do
     before do
