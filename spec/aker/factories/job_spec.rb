@@ -5,7 +5,19 @@ require 'support/barcode_helper'
 
 RSpec.describe Aker::Factories::Job, type: :model, aker: true do
   include BarcodeHelper
+  let(:my_config) do
+    %(
+    sample_metadata.gender              <=   gender
+    sample_metadata.donor_id            <=   donor_id
+    sample_metadata.supplier_name       <=   supplier_name
+    sample_metadata.phenotype           <=   phenotype
+    sample_metadata.sample_common_name  <=   common_name
+    well_attribute.measured_volume      <=>  volume
+    well_attribute.concentration        <=>  concentration
+    )
+  end
   before do
+    Aker::Material.config = my_config
     mock_plate_barcode_service
     build(:sample_tube_purpose, name: 'Standard sample').save
   end
@@ -104,17 +116,13 @@ RSpec.describe Aker::Factories::Job, type: :model, aker: true do
     end.to raise_error(ActiveRecord::RecordInvalid)
   end
 
-  it '#as_json returns job' do
-    job = Aker::Factories::Job.new(params)
-    json = job.as_json[:job]
-    Aker::Factories::Job::ATTRIBUTES.each do |attribute|
-      expect(json[attribute]).to be_present
-    end
-    expect(json[:materials].count).to eq(job.materials.count)
-  end
-
   it 'creating a job with existing materials will find those existing materials' do
-    params[:materials].each { |material| Aker::Factories::Material.create(material) }
+    study = create :study
+    params[:materials].each do |material|
+      container = Aker::Factories::Container.new(params[:container].merge(address: material[:address]))
+      m = Aker::Factories::Material.new(material, container, study)
+      m.create
+    end
     job = Aker::Factories::Job.create(params)
     job = Aker::Job.find_by(aker_job_id: job.aker_job_id)
     expect(job).to be_present
@@ -135,8 +143,11 @@ RSpec.describe Aker::Factories::Job, type: :model, aker: true do
     study = create :study
     create :uuid, external_id: study.uuid
     params[:data_release_uuid] = study.uuid
-    params[:materials].each { |material| Aker::Factories::Material.create(material) }
-    job = Aker::Factories::Job.create(params)
+    params[:materials].each do |material|
+      container = Aker::Factories::Container.new(params[:container].merge(address: material[:address]))
+      Aker::Factories::Material.new(material, container, study).create
+    end
+    job = Aker::Factories::Job.new(params).create
     job = Aker::Job.find_by(aker_job_id: job.aker_job_id)
     expect(job).to be_present
     expect(job.samples.map(&:studies).flatten.uniq.sort).to eq([study].sort)

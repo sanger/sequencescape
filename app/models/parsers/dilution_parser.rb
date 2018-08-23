@@ -7,7 +7,7 @@ class Parsers::DilutionParser
   # Parameters which get passed on unchanged
   UNSCALED = ['RIN'].freeze
   # Parameters which get multiplied by the scale factor
-  SCALED = %w[Concentration Molarity].freeze
+  SCALED = %w[concentration molarity].freeze
   # Other parameters (eg. volume) will not propagate
 
   attr_reader :original_parser, :scale_factor

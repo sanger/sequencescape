@@ -64,7 +64,7 @@ class Parsers::PlateReaderParser
 
   def each_well_and_parameters
     locations.each do |location_name|
-      yield(location_name, { 'Concentration' => Unit.new(concentration(location_name), 'ng/ul') })
+      yield(location_name, { 'concentration' => Unit.new(concentration(location_name), 'ng/ul') })
     end
   end
 end
