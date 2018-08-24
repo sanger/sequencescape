@@ -33,6 +33,8 @@ class LabwhereReception
   def save
     return false unless valid?
 
+   
+
     begin
       scan = LabWhereClient::Scan.create(
         location_barcode: location_barcode,
@@ -50,7 +52,7 @@ class LabwhereReception
     end
 
     assets.each do |asset|
-      asset.events.create_scanned_into_lab!(location_barcode)
+      asset.events.create_scanned_into_lab!(location_barcode, user.login)
       BroadcastEvent::LabwareReceived.create!(seed: asset, user: user, properties: { location_barcode: location_barcode })
     end
 
