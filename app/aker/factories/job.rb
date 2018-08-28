@@ -36,7 +36,7 @@ module Aker
       # Persists a Job and all associated materials.
       def create
         return unless valid?
-        @model = Aker::Job.create(aker_job_id: aker_job_id, job_uuid: job_uuid, samples: collect_materials, aker_job_url: aker_job_url)
+        @model = Aker::Job.create(aker_job_id: aker_job_id, job_uuid: job_uuid, samples: materials.map(&:create), aker_job_url: aker_job_url)
       end
 
       def as_json(_options = {})
@@ -77,20 +77,8 @@ module Aker
       def build_materials(materials)
         (materials || []).collect do |material|
           indifferent_material = material.to_h.with_indifferent_access
-          sample = Sample.find_by(name: indifferent_material[:_id])
-          if sample
-            sample_material = Aker::Material.new(sample)
-            ActiveRecord::Base.transaction do
-              sample_material.update!(indifferent_material)
-              sample_material.container.update!(@container_params.merge(address: indifferent_material[:address]))
-              Aker::Factories::Material.put_sample_in_study(sample, study)
-            end
-          end
-          sample ||
-            Aker::Factories::Material.new(indifferent_material).tap do |m|
-              m.container = build_container(indifferent_material[:address])
-              m.study = study
-            end
+          address = indifferent_material[:address]
+          Aker::Factories::Material.new(indifferent_material, build_container(address), study)
         end
       end
 
@@ -113,12 +101,6 @@ module Aker
           errors.add(:data_release_uuid, 'is unknown')
         else
           errors.add(:data_release_uuid, 'is not active') unless Study.find(study.resource_id).active?
-        end
-      end
-
-      def collect_materials
-        materials.collect do |material|
-          material.instance_of?(Aker::Factories::Material) ? material.create : material
         end
       end
     end

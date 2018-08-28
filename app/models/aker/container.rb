@@ -10,11 +10,17 @@ module Aker
     validate :not_change_address
 
     def volume
-      asset.get_qc_result_value_for('Volume') || asset.well_attribute.current_volume
+      value = asset.get_qc_result_value_for('volume')
+      return value if value
+      return asset.volume unless a_well?
+      asset.well_attribute.current_volume
     end
 
     def concentration
-      asset.get_qc_result_value_for('Concentration') || asset.well_attribute.concentration
+      value = asset.get_qc_result_value_for('concentration')
+      return value if value
+      return asset.concentration unless a_well?
+      asset.well_attribute.concentration
     end
 
     def amount
@@ -47,6 +53,21 @@ module Aker
         barcode: barcode,
         address: address
       }.compact
+    end
+
+    def put_sample_in_container(sample, study)
+      save if asset.nil?
+      sample.update(container: self)
+      raise 'The contents of this plate are not up to date with aker job message' if !contains_sample?(sample) && aliquots?
+      asset.aliquots.create!(sample: sample, study: study) unless contains_sample?(sample)
+    end
+
+    def contains_sample?(sample)
+      asset.aliquots.where(sample: sample).count.positive?
+    end
+
+    def aliquots?
+      asset.aliquots.count.positive?
     end
   end
 end

@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# Disabling rubocop temporarily to preserve nice comments format
+# rubocop:disable all
+
 # We'll try and do this through the API with the live version
 namespace :limber do
   desc 'Setup all the necessary limber records'
@@ -24,8 +27,10 @@ namespace :limber do
                   size: 384 },
                 { name: 'GBS Stock',
                   size: 384 },
-                { name: 'GnT Stock',
-                  size: 96 }]
+                # GnT Pipeline requires UAT
+                # { name: 'GnT Stock',
+                #   size: 96 }
+                ]
 
     purposes.each do |purpose|
       name = purpose[:name]
@@ -80,7 +85,7 @@ namespace :limber do
       end
       Limber::Helper::RequestTypeConstructor.new(
         'PCR Free',
-        default_purpose: 'PF Cherrypicked'
+        default_purposes: ['PF Cherrypicked']
       ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
@@ -93,64 +98,69 @@ namespace :limber do
         'GBS',
         request_class: 'IlluminaHtp::Requests::GbsRequest',
         library_types: ['GBS'],
-        default_purpose: 'GBS Stock',
+        default_purposes: ['GBS Stock'],
         for_multiplexing: true
       ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
         'RNAA',
         library_types: ['RNA PolyA'],
-        default_purpose: 'LBR Cherrypick'
+        default_purposes: ['LBR Cherrypick']
       ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
         'RNAR',
         library_types: ['RNA Ribo'],
-        default_purpose: 'LBR Cherrypick'
+        default_purposes: ['LBR Cherrypick']
       ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
         'RNAAG',
         library_types: ['RNA Poly A Globin'],
-        default_purpose: 'LBR Cherrypick'
+        default_purposes: ['LBR Cherrypick']
       ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
         'RNARG',
         library_types: ['RNA Ribo Globin'],
-        default_purpose: 'LBR Cherrypick'
+        default_purposes: ['LBR Cherrypick']
       ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
         'ReISC',
         request_class: 'Pulldown::Requests::ReIscLibraryRequest',
         library_types: ['Agilent Pulldown'],
-        default_purpose: 'LB Lib PCR-XP'
+        default_purposes: ['LB Lib PCR-XP']
       ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
         'scRNA',
-        library_types: ['scRNA'],
-        default_purpose: 'scRNA Stock'
+        library_types: ['scRNA',
+                       # 'GnT scRNA'  # Wating for UAT
+                       ],
+        default_purposes: ['scRNA Stock'
+                          # 'GnT Stock'  # Wating for UAT
+                          ]
       ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
         'scRNA-384',
         library_types: ['scRNA 384'],
-        default_purpose: 'scRNA-384 Stock'
+        default_purposes: ['scRNA-384 Stock']
       ).build!
 
-      Limber::Helper::RequestTypeConstructor.new(
-        'GnT Picoplex',
-        library_types: ['GnT Picoplex'],
-        default_purpose: 'GnT Stock'
-      ).build!
+      # GnT Pipeline requires UAT
+      # Limber::Helper::RequestTypeConstructor.new(
+      #   'GnT Picoplex',
+      #   library_types: ['GnT Picoplex'],
+      #   default_purposes: ['GnT Stock']
+      # ).build!
 
-      Limber::Helper::RequestTypeConstructor.new(
-        'GnT MDA',
-        library_types: ['GnT scRNA', 'GnT MDA'],
-        default_purpose: 'GnT Stock'
-      ).build!
+      # Limber::Helper::RequestTypeConstructor.new(
+      #   'GnT MDA',
+      #   library_types: ['GnT MDA'],
+      #   default_purposes: ['GnT Stock']
+      # ).build!
 
       unless RequestType.where(key: 'limber_multiplexing').exists?
         RequestType.create!(
@@ -229,13 +239,14 @@ namespace :limber do
       'PCR Free' => {
         sequencing_list: base_with_novaseq,
         catalogue_name: 'PFHSqX'
-      },
-      'GnT Picoplex' => {
-        sequencing_list: base_without_hiseq
-      },
-      'GnT MDA' => {
-        sequencing_list: ['illumina_b_hiseq_x_paired_end_sequencing']
       }
+      # GnT pipeline requires UAT
+      # 'GnT Picoplex' => {
+      #   sequencing_list: base_without_hiseq
+      # },
+      # 'GnT MDA' => {
+      #   sequencing_list: ['illumina_b_hiseq_x_paired_end_sequencing']
+      # }
     }
 
     ActiveRecord::Base.transaction do
@@ -269,3 +280,5 @@ namespace :limber do
     end
   end
 end
+
+# rubocop:enable all

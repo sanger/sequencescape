@@ -30,7 +30,7 @@ class PicoAssayPlate < Plate
       when 'failed' then grade_as_failed
       end
 
-      update_well_concentraion!
+      update_well_concentration!
     end
 
     def grade_as_passed
@@ -43,8 +43,8 @@ class PicoAssayPlate < Plate
       target_well.well_attribute.fail_pico_test
     end
 
-    def update_well_concentraion!
-      QcResult.create!(asset: target_well, qc_assay: qc_assay, key: 'Concentration', value: concentration, units: 'ng/ul', assay_type: 'PicoGreen', assay_version: 'v0.1')
+    def update_well_concentration!
+      QcResult.create!(asset: target_well, qc_assay: qc_assay, key: 'concentration', value: concentration, units: 'ng/ul', assay_type: 'PicoGreen', assay_version: 'v0.1')
     end
   end
 

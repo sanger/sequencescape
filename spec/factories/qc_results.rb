@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :qc_result do
     asset
-    key 'Molarity'
+    key 'molarity'
     value '5.43'
     units 'nM'
     cv 2.34

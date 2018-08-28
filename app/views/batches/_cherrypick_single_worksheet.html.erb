@@ -1,10 +1,10 @@
-
 <div id="header">
-    <div class="page-header"><h1>Batch <%= batch.id %> - <%= batch.studies.pluck(:name).join('; ') %></h1></div>
-    <div id="batchbarcode_<%= plate_barcode %>">
-      <img src='<%= "#{configatron.barcode_images_url}/barcode_images/ean13/0#{Barcode.calculate_barcode('BA',batch.id)}" %>' alt="batchbarcode_<%= plate_barcode %>"/>
-    </div>
+  <div class="page-header"><h1>Batch <%= batch.id %> - <%= batch.studies.pluck(:name).join('; ') %></h1></div>
 </div>
+
+<svg id="batchbarcode_<%= plate_barcode %>"></svg>
+
+<script type="text/javascript">JsBarcode("#batchbarcode_<%= plate_barcode %>", "<%= Barcode.calculate_barcode('BA',batch.id) %>", {format: "EAN13"});</script>
 
 <div id="plate_details">
   <div id="sourceplates">
