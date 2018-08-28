@@ -78,8 +78,6 @@ jobs:
 
   - stage: deploy
     if: tag IS present
-    before_script:
-    - bundle exec rake assets:precompile
     script: "./compile-build"
     deploy:
       provider: releases
