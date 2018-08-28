@@ -32,12 +32,14 @@ class SampleManifest::Uploader
   end
 
   def run!
-    if valid?
-      upload.process(tag_group)
-      upload.broadcast_sample_manifest_updated_event(user)
-      upload.complete if upload.processed?
-      # Delayed::Job.enqueue SampleManifestUploadProcessingJob.new(upload, tag_group)
+    return false unless valid?
+    upload.process(tag_group)
+    upload.broadcast_sample_manifest_updated_event(user)
+    if upload.processed?
+      upload.complete
+      true
     else
+      upload.fail
       false
     end
   end
