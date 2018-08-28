@@ -16,6 +16,11 @@ class QcResult < ApplicationRecord
   validates :key, :value, :units, presence: true
 
   scope :last_qc_result_for, ->(key) { where(key: key).order(created_at: :desc, id: :desc).limit(1) }
+  scope :order_by_date, -> { order(created_at: :desc) }
+
+  def self.by_key
+    order_by_date.group_by { |qc_result| qc_result.key.downcase }
+  end
 
   #
   # Returns a unit object, which allows easy conversion between different scales,

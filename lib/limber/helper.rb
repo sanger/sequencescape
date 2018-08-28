@@ -17,18 +17,18 @@ module Limber::Helper
   PRODUCTLINE = 'Illumina-Htp'
   DEFAULT_REQUEST_CLASS = 'IlluminaHtp::Requests::StdLibraryRequest'
   DEFAULT_LIBRARY_TYPES = ['Standard']
-  DEFAULT_PURPOSE = 'LB Cherrypick'
+  DEFAULT_PURPOSES = ['LB Cherrypick']
 
   class RequestTypeConstructor
     def initialize(prefix,
                    request_class: DEFAULT_REQUEST_CLASS,
                    library_types: DEFAULT_LIBRARY_TYPES,
-                   default_purpose: DEFAULT_PURPOSE,
+                   default_purposes: DEFAULT_PURPOSES,
                    for_multiplexing: false)
       @prefix = prefix
       @request_class = request_class
       @library_types = library_types
-      @default_purpose = default_purpose
+      @default_purposes = default_purposes
       @for_multiplexing = for_multiplexing
     end
 
@@ -52,7 +52,7 @@ module Limber::Helper
         request_purpose: :standard,
         for_multiplexing: @for_multiplexing
       ) do |rt|
-        rt.acceptable_plate_purposes << Purpose.find_by!(name: @default_purpose)
+        rt.acceptable_plate_purposes = PlatePurpose.where(name: @default_purposes)
         rt.library_types = @library_types.map { |name| LibraryType.find_or_create_by(name: name) }
       end
 
