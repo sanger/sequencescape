@@ -4,7 +4,7 @@ require 'rails_helper'
 require_relative '../shared/a_mapping_between_an_aker_model_and_sequencescape'
 
 RSpec.describe Aker::Material, type: :model, aker: true do
-  let(:sample) { create :sample }
+  let(:sample) { create :sample, name: 'test1' }
   let(:mapping) { Aker::Material.new(sample) }
 
   before do
@@ -26,7 +26,7 @@ RSpec.describe Aker::Material, type: :model, aker: true do
 
   context 'with a custom config' do
     context '#attributes' do
-      it 'generates an attributes object and adds the sample name as id' do
+      it 'generates an attributes object and adds the sample uuid as id' do
         container = double(:container)
         asset = double(:asset)
         well_attribute = double(:well_attribute, measured_volume: 14, concentration: 0.5)
@@ -35,7 +35,7 @@ RSpec.describe Aker::Material, type: :model, aker: true do
         allow(container).to receive(:a_well?).and_return(true)
         allow(asset).to receive(:well_attribute).and_return(well_attribute)
 
-        expect(mapping.attributes).to eq(volume: 14, concentration: 0.5, '_id': sample.name)
+        expect(mapping.attributes).to eq(volume: 14, concentration: 0.5, '_id': sample.uuid)
       end
 
       context 'working with qc results' do
@@ -78,6 +78,30 @@ RSpec.describe Aker::Material, type: :model, aker: true do
         mapping.update(gender: 'Female')
         sample.sample_metadata.reload
         expect(sample.sample_metadata.gender).to eq('Female')
+      end
+
+      context 'when the same value goes to two different models' do
+        before do
+          Aker::Material.config =
+            %(
+                sample.name                         <=   supplier_name
+                sample_metadata.sample_public_name  <=   supplier_name
+                sample_metadata.sample_taxon_id     <=   taxon_id
+                sample_metadata.gender              <=   gender
+                sample_metadata.donor_id            <=   donor_id
+                sample_metadata.phenotype           <=   phenotype
+                sample_metadata.sample_common_name  <=   common_name
+                volume                               =>  volume
+                concentration                        =>  concentration
+                amount                               =>  amount
+              )
+        end
+        it 'updates both values' do
+          mapping.update(supplier_name: 'test1')
+          expect(sample.name).to eq('test1')
+          sample.sample_metadata.reload
+          expect(sample.sample_metadata.sample_public_name).to eq('test1')
+        end
       end
     end
     # TODO

@@ -405,4 +405,47 @@ describe Well do
       expect(subject.target).to eq well
     end
   end
+
+  it '#with qc results will show the qc results by key' do
+    qc_results = [build(:qc_result_concentration), build(:qc_result_volume), build(:qc_result_molarity), build(:qc_result_rin)]
+    well = create(:well, qc_results: qc_results)
+    expect(well.qc_results_by_key.size).to eq(4)
+    expect(well.qc_results_by_key['concentration'].length).to eq(1)
+  end
+
+  describe '#qc_result_for' do
+    it 'concentration' do
+      qc_result_1 = build(:qc_result_concentration, value: '1.34523', created_at: Date.yesterday)
+      qc_result_2 = build(:qc_result_concentration, value: '2.34523', created_at: Time.zone.today)
+      well = create(:well, qc_results: [qc_result_1, qc_result_2])
+      expect(well.qc_result_for('concentration')).to eq(2.345)
+    end
+
+    it 'volume' do
+      qc_result_1 = build(:qc_result_volume, value: '1.34523', created_at: Date.yesterday)
+      qc_result_2 = build(:qc_result_volume, value: '2.34523', created_at: Time.zone.today)
+      well = create(:well, qc_results: [qc_result_1, qc_result_2])
+      expect(well.qc_result_for('volume')).to eq(2.345)
+    end
+
+    it 'quantity_in_nano_grams' do
+      well = create(:well)
+      well.update_from_qc(build(:qc_result_volume, value: '1.34523'))
+      expect(well.qc_result_for('quantity_in_nano_grams')).to be_present
+    end
+
+    it 'loci_passed (snp_count)' do
+      qc_result_1 = build(:qc_result_loci_passed, value: '100', created_at: Date.yesterday)
+      qc_result_2 = build(:qc_result_loci_passed, value: '110', created_at: Time.zone.today)
+      well = create(:well, qc_results: [qc_result_1, qc_result_2])
+      expect(well.qc_result_for('loci_passed')).to eq(110)
+    end
+
+    it 'RIN' do
+      qc_result_1 = build(:qc_result_rin, value: '5', created_at: Date.yesterday)
+      qc_result_2 = build(:qc_result_rin, value: '6', created_at: Time.zone.today)
+      well = create(:well, qc_results: [qc_result_1, qc_result_2])
+      expect(well.qc_result_for('rin')).to eq(6)
+    end
+  end
 end
