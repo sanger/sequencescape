@@ -21,7 +21,7 @@ class QcResult < ApplicationRecord
   def self.by_key
     order_by_date.group_by { |qc_result| qc_result.key.downcase }
   end
-  
+
   #
   # Returns a unit object, which allows easy conversion between different scales,
   # as well as performing arithmetic with different measurements.
