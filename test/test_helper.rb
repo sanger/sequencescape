@@ -32,8 +32,6 @@ PlateMapGeneration.generate!
 
 class ActiveSupport::TestCase
   extend Sanger::Testing::Controller::Macros
-  extend Sanger::Testing::View::Macros
-  extend Sanger::Testing::Model::Macros
   include FactoryBot::Syntax::Methods
 
   # Transactional fixtures accelerate your tests by wrapping each test method
