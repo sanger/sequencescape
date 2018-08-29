@@ -4,7 +4,7 @@
 
 <svg id="batchbarcode_<%= plate_barcode %>"></svg>
 
-<script type="text/javascript">JsBarcode("#batchbarcode_<%= plate_barcode %>", "<%= Barcode.calculate_barcode('BA',batch.id) %>", {format: "EAN13"});</script>
+<script type="text/javascript">JsBarcode("#batchbarcode_<%= plate_barcode %>", "<%= Barcode.calculate_barcode('BA',batch.id) %>", {format: "UPC"});</script>
 
 <div id="plate_details">
   <div id="sourceplates">
