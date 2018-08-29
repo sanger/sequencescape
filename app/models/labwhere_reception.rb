@@ -33,8 +33,6 @@ class LabwhereReception
   def save
     return false unless valid?
 
-   
-
     begin
       scan = LabWhereClient::Scan.create(
         location_barcode: location_barcode,
