@@ -36,14 +36,12 @@ RSpec.describe LabwhereReception do
     expect(labwhere_reception.errors).to_not be_empty
   end
 
-
   it 'does not scan the labware into the location if no barcodes scanned' do
     allow(LabWhereClient::Scan).to receive(:create).and_return(MockResponse.new(true, ''))
     labwhere_reception = LabwhereReception.new('12345', 'labwhere_location', [])
     expect(labwhere_reception.save).to be_falsey
     expect(labwhere_reception.errors).to_not be_empty
   end
-
 
   it 'does not scan the labware into the location if scan was not created' do
     allow(LabWhereClient::Scan).to receive(:create).and_return(MockResponse.new(false, ''))
@@ -57,5 +55,4 @@ RSpec.describe LabwhereReception do
     expect(labwhere_reception.save).to be_falsey
     expect(labwhere_reception.errors).to_not be_empty
   end
-
 end
