@@ -19,7 +19,7 @@ class Api::Messages::QcResultIO < Api::Base
 
   module WellExtensions
     def labware_purpose
-      plate.purpose.name
+      plate&.purpose&.name
     end
   end
 

@@ -38,9 +38,8 @@ module Plate::FluidigmBehaviour
         gender_markers = fluidigm_file.well_at(well.map_description).gender_markers.join('')
         loci_passed = fluidigm_file.well_at(well.map_description).count
         QcResult.create!([
-          # Capitalization/formatting here is to maintain consistency with the keys used by Carol Scott for the GBS process
-          { asset: sw, key: 'Gender_Markers', assay_type: 'FLUIDIGM', assay_version: 'v0.1', value: gender_markers, units: 'bases', qc_assay: qc_assay },
-          { asset: sw, key: 'Loci_passed', assay_type: 'FLUIDIGM', assay_version: 'v0.1', value: loci_passed, units: 'bases', qc_assay: qc_assay }
+          { asset: sw, key: 'gender_markers', assay_type: 'FLUIDIGM', assay_version: 'v0.1', value: gender_markers, units: 'bases', qc_assay: qc_assay },
+          { asset: sw, key: 'loci_passed', assay_type: 'FLUIDIGM', assay_version: 'v0.1', value: loci_passed, units: 'bases', qc_assay: qc_assay }
         ])
       end
     end
