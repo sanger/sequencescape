@@ -12,8 +12,8 @@ class PlateVolume < ApplicationRecord
   after_save :update_well_volumes
 
   # Is an update required given the timestamp specified
-  def update_required?(modified_timestamp = Time.now)
-    updated_at < modified_timestamp
+  def update_required?(modified_timestamp)
+    updated_at.to_i < modified_timestamp.to_i
   end
 
   def call(filename, file)
