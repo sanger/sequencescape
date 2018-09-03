@@ -1,0 +1,12 @@
+library_type:
+  identifier: :name
+  scope: :alphabetical
+primer_panel:
+  identifier: :name
+  scope: :alphabetical
+bait_library:
+  identifier: :name
+  scope: :visible
+submission_template:
+  identifier: :name
+  scope: :visible

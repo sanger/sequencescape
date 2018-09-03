@@ -13,7 +13,7 @@ module SampleManifestExcel
     attr_reader :loaded, :files
 
     def initialize
-      @files = FILES.dup
+      @files = self.class::FILES.dup
       yield self if block_given?
     end
 
@@ -24,7 +24,7 @@ module SampleManifestExcel
 
     def load!
       return if folder.blank?
-      FILES.each do |file|
+      @files.each do |file|
         send("#{file}=", load_file(folder, file.to_s))
       end
       @loaded = true

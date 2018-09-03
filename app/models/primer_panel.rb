@@ -9,6 +9,7 @@
 #
 class PrimerPanel < ApplicationRecord
   include ActiveModel::Validations
+  include SharedBehaviour::Named
 
   serialize :programs
   # The name: Used to identify the assay set.

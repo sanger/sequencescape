@@ -6,6 +6,7 @@ module SampleManifestExcel
     # A test worksheet is necessary for testing uploads.
     class TestWorksheet < Base
       include Helpers::Worksheet
+      self.worksheet_name = 'DNA Collections Form'
 
       attr_accessor :data, :no_of_rows, :study, :supplier, :count, :type, :validation_errors, :missing_columns, :partial, :cgap, :num_plates, :num_samples_per_plate
       attr_reader :dynamic_attributes, :tags

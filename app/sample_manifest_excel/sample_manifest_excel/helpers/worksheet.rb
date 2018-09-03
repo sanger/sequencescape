@@ -9,10 +9,6 @@ module SampleManifestExcel
                  wrap_text: { alignment: { horizontal: :center, vertical: :center, wrap_text: true },
                               border: { style: :thin, color: '00', edges: [:left, :right, :top, :bottom] } } }.freeze
 
-      def create_worksheet
-        insert_axlsx_worksheet('DNA Collections Form')
-      end
-
       def add_headers
         add_row columns.headings, styles[:wrap_text].reference
       end

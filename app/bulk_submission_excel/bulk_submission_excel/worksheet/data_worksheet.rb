@@ -1,48 +1,41 @@
 # frozen_string_literal: true
 
-module SampleManifestExcel
+module BulkSubmissionExcel
   module Worksheet
     ##
     # DataWorksheet creates a data worksheet to be filled in by a client.
-    class DataWorksheet < Base
-      attr_accessor :sample_manifest
-      attr_writer :type
+    class DataWorksheet < SampleManifestExcel::Worksheet::Base
+      attr_accessor :assets, :defaults
 
-      include Helpers::Worksheet
+      include SampleManifestExcel::Helpers::Worksheet
 
-      self.worksheet_name = 'DNA Collections Form'
+      self.worksheet_name = 'Submission Form'
 
       def initialize(attributes = {})
         super
         create_styles
-        add_title_and_description(sample_manifest.study.abbreviation, sample_manifest.supplier.name, sample_manifest.count)
+        add_title_and_description
         add_columns
         freeze_panes
       end
 
-      def type
-        @type ||= case sample_manifest.asset_type
-                  when '1dtube', 'multiplexed_library', 'library'
-                    'Tubes'
-                  when 'plate'
-                    'Plates'
-                  else
-                    ''
-                  end
+      def first_row
+        3
+      end
+
+      #
+      # Returns a hash of defaults where a value has been provided
+      #
+      # @return [Hash] Defaults where keys are present?
+      def present_defaults
+        defaults.select { |_k, v| v.present? }
       end
 
       # Adds title and description (study abbreviation, supplier name, number of assets sent)
       # to a worksheet.
 
-      def add_title_and_description(study, supplier, count)
-        add_row ['DNA Collections Form']
-        add_rows(2)
-        add_multiplexed_library_tube_barcode
-
-        add_row ['Study:', study]
-        add_row ['Supplier:', supplier]
-        add_row ["No. #{type} Sent:", count]
-        add_rows(1)
+      def add_title_and_description
+        add_row ['Bulk Submissions Form']
       end
 
       # Using axlsx worksheet creates data worksheet with title, description, all required columns, values,
@@ -53,9 +46,20 @@ module SampleManifestExcel
       def add_columns
         columns.update(first_row, last_row, ranges, axlsx_worksheet)
         add_headers
-        sample_manifest.details_array.each do |detail|
+        assets.each do |asset|
+          detail = build_details(asset)
           create_row(detail)
         end
+      end
+
+      # Extract the details for the given asset
+      def build_details(asset)
+        {
+          project_name: asset.projects.one? ? asset.projects.first.name : '',
+          study_name: asset.studies.one? ? asset.studies.first.name : '',
+          barcode: asset.labware_human_barcode,
+          plate_well: asset.respond_to?(:map_description) ? asset.map_description : nil
+        }.reverse_merge(present_defaults)
       end
 
       # Creates row filled in with required column values, also unlocks (adds unlock style)
@@ -94,21 +98,7 @@ module SampleManifestExcel
 
       # The row where the table with data end
       def last_row
-        @last_row ||= sample_manifest.details_array.count + first_row - 1
-      end
-
-      def add_multiplexed_library_tube_barcode
-        if sample_manifest.asset_type == 'multiplexed_library'
-          add_row ['Multiplexed library tube barcode:', find_multiplexed_library_tube_barcode]
-        else
-          add_row
-        end
-      end
-
-      def find_multiplexed_library_tube_barcode
-        Tube.with_barcode(sample_manifest.barcodes).first.requests.first.target_asset.human_barcode
-      rescue StandardError
-        ''
+        @last_row ||= assets.count + first_row - 1
       end
     end
   end

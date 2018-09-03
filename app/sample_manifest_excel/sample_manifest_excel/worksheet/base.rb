@@ -7,6 +7,9 @@ module SampleManifestExcel
     class Base
       include ActiveModel::Model
 
+      class_attribute :worksheet_name
+      self.worksheet_name = 'DNA Collections Form'
+
       attr_accessor :workbook, :axlsx_worksheet, :columns, :ranges, :password
       attr_writer :name
 
@@ -53,7 +56,7 @@ module SampleManifestExcel
       # Creates a worksheet, empty one in this case
 
       def create_worksheet
-        insert_axlsx_worksheet('Base')
+        insert_axlsx_worksheet(worksheet_name)
       end
     end
   end
