@@ -145,7 +145,7 @@ module SubmissionsHelper
 
   def submission_link(submission, options)
     link_text = content_tag(:strong, submission.name) << ' ' <<
-                content_tag(:span, submission.state, class: "batch-state badge badge-#{bootstrapify_submission_state(submission.state)}")
+                content_tag(:span, submission.state, class: "batch-state badge badge-#{submission.state}")
     link_to(link_text, submission_path(submission), options)
   end
 end

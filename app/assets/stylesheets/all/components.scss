@@ -117,6 +117,22 @@ dl.order-summary {
   dd { @extend .col-10; }
 }
 
+// State-colour extensions
+// These extend the bootstrap classes to cover our states
+.badge-building { @extend .badge-info; }
+.badge-cancelled { @extend .badge-secondary; }
+.badge-failed { @extend .badge-danger; }
+.badge-pending { @extend .badge-warning; }
+.badge-processing { @extend .badge-primary; }
+.badge-ready { @extend .badge-success; }
+.badge-active { @extend .badge-success; }
+.badge-inactive { @extned .badge-danger; }
+.badge-completed { @extend .badge-info; }
+.badge-discarded { @extend .badge-secondary; }
+.badge-released { @extend .badge-success; }
+.badge-started { @extend .badge-primary; }
+.badge-passed { @extend .badge-success; }
+
 // Request progress bars
 .request_progress {
   .request_progress_header {
