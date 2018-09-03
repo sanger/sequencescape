@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Pulldown::Requests
-  # Sequences capute
+  # Sequence capture
   # See ISC
   # Legacy version where samples were subject to pulldown before
   # pooling. Used more bait.
