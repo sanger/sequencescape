@@ -60,6 +60,8 @@ configatron.external_applications = [
   ['Crier', 'http://www.example.com']
 ]
 
+configatron.help_link_base_url = 'http://wwww.example.com'
+
 if Rails.env.development? || Rails.env.profile?
 
   configatron.asset_audits_url = 'http://localhost:3014/process_plates/new'
