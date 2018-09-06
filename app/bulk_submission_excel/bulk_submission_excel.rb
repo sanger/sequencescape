@@ -3,7 +3,7 @@
 ##
 # Creates a Bulk Submission Spreadsheet from a bulk submission object
 module BulkSubmissionExcel
-  Axlsx::Worksheet.send(:include, SampleManifestExcel::CoreExtensions::AxlsxWorksheet)
+  SequencescapeExcel.initialize
 
   class << self
     attr_writer :configuration

@@ -5,7 +5,7 @@ module BulkSubmissionExcel
   # Download
   class Download
     include ActiveModel::Model
-    include SampleManifestExcel::Helpers::Download
+    include SequencescapeExcel::Helpers::Download
 
     validates_presence_of :column_list, :range_list
 
@@ -22,7 +22,7 @@ module BulkSubmissionExcel
     end
 
     def ranges_worksheet
-      @ranges_worksheet ||= SampleManifestExcel::Worksheet::RangesWorksheet.new(ranges: range_list, workbook: workbook) if valid?
+      @ranges_worksheet ||= SequencescapeExcel::Worksheet::RangesWorksheet.new(ranges: range_list, workbook: workbook) if valid?
     end
 
     def submission_template_id=(id)

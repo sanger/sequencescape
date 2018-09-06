@@ -4,7 +4,7 @@ module BulkSubmissionExcel
   ##
   # Configuration class for sample manifests handling fornatting, manifest types,
   # ranges and columns.
-  class Configuration < SampleManifestExcel::Configuration
+  class Configuration < SequencescapeExcel::Configuration
     FILES = %i[conditional_formattings ranges columns].freeze
 
     def columns=(columns)

@@ -4,11 +4,11 @@ module SampleManifestExcel
   module Worksheet
     ##
     # DataWorksheet creates a data worksheet to be filled in by a client.
-    class DataWorksheet < Base
+    class DataWorksheet < SequencescapeExcel::Worksheet::Base
       attr_accessor :sample_manifest
       attr_writer :type
 
-      include Helpers::Worksheet
+      include SequencescapeExcel::Helpers::Worksheet
 
       self.worksheet_name = 'DNA Collections Form'
 

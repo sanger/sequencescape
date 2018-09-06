@@ -4,10 +4,10 @@ module BulkSubmissionExcel
   module Worksheet
     ##
     # DataWorksheet creates a data worksheet to be filled in by a client.
-    class DataWorksheet < SampleManifestExcel::Worksheet::Base
+    class DataWorksheet < SequencescapeExcel::Worksheet::Base
       attr_accessor :assets, :defaults
 
-      include SampleManifestExcel::Helpers::Worksheet
+      include SequencescapeExcel::Helpers::Worksheet
 
       self.worksheet_name = 'Submission Form'
 

@@ -42,21 +42,20 @@ RSpec.describe BulkSubmissionExcel::Configuration, type: :model, bulk_submission
     end
 
     it 'will load the columns' do
-      columns = SampleManifestExcel::ColumnList.new(configuration.load_file(folder, 'columns'), configuration.conditional_formattings)
+      columns = SequencescapeExcel::ColumnList.new(configuration.load_file(folder, 'columns'), configuration.conditional_formattings)
       expect(configuration.columns.all).to eq(columns)
     end
 
     it 'load the conditional formattings' do
-      expect(configuration.conditional_formattings).to eq(SampleManifestExcel::ConditionalFormattingDefaultList.new(configuration.load_file(folder, 'conditional_formattings')))
+      expect(configuration.conditional_formattings).to eq(SequencescapeExcel::ConditionalFormattingDefaultList.new(configuration.load_file(folder, 'conditional_formattings')))
     end
 
     it 'load the ranges' do
-      expect(configuration.ranges).to eq(SampleManifestExcel::RangeList.new(configuration.load_file(folder, 'ranges')))
+      expect(configuration.ranges).to eq(SequencescapeExcel::RangeList.new(configuration.load_file(folder, 'ranges')))
     end
 
     it 'freeze all of the configuration options' do
       expect(configuration.conditional_formattings).to be_frozen
-      expect(configuration.manifest_types).to be_frozen
       expect(configuration.ranges).to be_frozen
       expect(configuration.columns).to be_frozen
       expect(configuration.columns.all).to be_frozen
