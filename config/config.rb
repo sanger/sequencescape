@@ -93,7 +93,6 @@ if Rails.env.development? || Rails.env.profile?
   configatron.tecan_minimum_volume = 1.0
   configatron.two_d_barcode_files_location = "#{Rails.root}/data/2d"
   configatron.uploaded_spreadsheet.max_number_of_samples = 384
-  configatron.uploaded_spreadsheet.max_number_of_move_samples = 0
   configatron.xml_files_location = "#{Rails.root}/data/"
   configatron.data_sharing_contact.name = 'John Doe'
   configatron.data_sharing_contact.email = 'foo'
@@ -132,7 +131,6 @@ if Rails.env.test? || Rails.env.cucumber?
   configatron.tecan_precision = 1
   configatron.tecan_minimum_volume = 1.0
   configatron.uploaded_spreadsheet.max_number_of_samples = 380
-  configatron.uploaded_spreadsheet.max_number_of_move_samples = 0
 
   configatron.data_sharing_contact.name = 'John Doe'
   configatron.data_sharing_contact.email = 'foo'

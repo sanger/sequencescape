@@ -122,7 +122,7 @@
 
     delete SCAPE.submission.template_id;
 
-    $('#order-parameters').slideUp(function(){
+    $('#order-parameters').slideUp(100, function(){
       $(this).html('');
       currentPane.submission('markPaneIncomplete');
 
@@ -141,7 +141,7 @@
               currentPane.submission('markPaneComplete'):
               currentPane.submission('markPaneIncomplete');
 
-            $('#order-parameters').show(1000);
+            $('#order-parameters').show(100);
           }
         );
         return true;

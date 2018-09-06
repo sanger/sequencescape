@@ -19,8 +19,10 @@ RSpec.describe BulkSubmissionExcel::Download, type: :model, bulk_submission_exce
       assets: assets,
       column_list: columns,
       range_list: ranges,
-      user_login: 'abc123',
-      submission_template: submission_template
+      defaults: {
+        user_login: 'abc123',
+        template_name: submission_template.name
+      }
     )
   end
 

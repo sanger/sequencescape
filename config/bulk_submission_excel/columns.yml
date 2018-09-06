@@ -39,7 +39,7 @@ asset_group_name:
   heading: Asset Group Name
 fragment_size_from:
   heading: Fragment Size From
-  attribute: :fragment_size_from
+  attribute: :fragment_size_required_from
   unlocked: true
   validation:
     options:
@@ -56,7 +56,7 @@ fragment_size_from:
     is_text:
 fragment_size_to:
   heading: Fragment Size To
-  attribute: :fragment_size_to
+  attribute: :fragment_size_required_to
   unlocked: true
   validation:
     options:
@@ -77,6 +77,21 @@ fragment_size_to:
     is_text:
 pcr_cycles:
   heading: PCR Cycles
+  attribute: :pcr_cycles
+  unlocked: true
+  validation:
+    options:
+      type: :whole
+      operator: :greaterThanOrEqual
+      formula1: "0"
+      allowBlank: true
+      showInputMessage: true
+      promptTitle: "PCR Cycles"
+      prompt: "The number of PCR cycles required"
+  conditional_formattings:
+    empty_cell:
+    number_greater_than_zero:
+    is_text:
 library_type:
   heading: Library Type
   unlocked: true
@@ -115,18 +130,79 @@ bait_library:
   conditional_formattings:
     empty_cell:
     is_error:
-read_length:
-  heading: Read Length
-number_of_lanes:
-  heading: Number of lanes
-comments:
-  heading: Comments
 pre_capture_plex_level:
   heading: Pre-capture Plex Level
+  attribute: :pre_capture_plex_level
+  unlocked: true
+  validation:
+    options:
+      type: :whole
+      operator: :greaterThanOrEqual
+      formula1: "1"
+      allowBlank: false
+      showInputMessage: true
+      promptTitle: "Pre-capture plex level"
+      prompt: "Each pre-capture group will be split into pools of this size"
+  conditional_formattings:
+    empty_cell:
+    number_greater_than_one:
+    is_text:
 pre_capture_group:
   heading: Pre-capture Group
+  attribute: :pre_capture_group
+read_length:
+  heading: Read Length
+  attribute: :read_length
+  unlocked: true
+  validation:
+    options:
+      type: :whole
+      operator: :greaterThanOrEqual
+      formula1: "1"
+      allowBlank: false
+      showInputMessage: true
+      promptTitle: "Read length"
+      prompt: "The number of bases read during sequencing. Acceptable values depend on platform"
+  conditional_formattings:
+    empty_cell:
+    number_greater_than_one:
+    is_text:
+number_of_lanes:
+  heading: Number of lanes
+  attribute: :number_of_lanes
+  unlocked: true
+  validation:
+    options:
+      type: :whole
+      operator: :greaterThanOrEqual
+      formula1: "1"
+      allowBlank: false
+      showInputMessage: true
+      promptTitle: "Number of lanes"
+      prompt: "The number of lanes requested for the pool"
+  conditional_formattings:
+    empty_cell:
+    number_greater_than_one:
+    is_text:
 priority:
   heading: Priority
+  unlocked: true
+  validation:
+    options:
+      type: :list
+      formula1: "$A$1:$A$2"
+      allowBlank: true
+      showInputMessage: true
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Priority"
+      error: "Priority must be between 0 and 3"
+      promptTitle: "Priority"
+      prompt: "Select a priority level from 0 to 3 (3 being highest priority)"
+    range_name: :priority
+  conditional_formattings:
+    empty_cell:
+    is_error:
 primer_panel:
   heading: Primer Panel
   unlocked: true
@@ -146,5 +222,20 @@ primer_panel:
   conditional_formattings:
     empty_cell:
     is_error:
+comments:
+  heading: Comments
 gigabases_expected:
   heading: Gigabases Expected
+  attribute: gigabases_expected
+  validation:
+    options:
+      type: :decimal
+      operator: :greaterThanOrEqual
+      formula1: "0"
+      allowBlank: true
+      showInputMessage: true
+      promptTitle: "Gigabases expected"
+      prompt: "The expected yield of the sequencing runs. Used in reporting"
+  conditional_formattings:
+    is_text:
+    number_greater_than_zero:

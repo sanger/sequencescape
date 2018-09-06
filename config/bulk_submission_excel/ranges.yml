@@ -10,3 +10,9 @@ bait_library:
 submission_template:
   identifier: :name
   scope: :visible
+priority:
+  options:
+    - 0
+    - 1
+    - 2
+    - 3

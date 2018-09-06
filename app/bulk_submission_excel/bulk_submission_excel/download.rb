@@ -9,7 +9,7 @@ module BulkSubmissionExcel
 
     validates_presence_of :column_list, :range_list
 
-    attr_accessor :submission_template, :range_list, :column_list, :assets, :user_login
+    attr_accessor :submission_template, :range_list, :column_list, :assets, :defaults
 
     def initialize(*args)
       super
@@ -17,8 +17,20 @@ module BulkSubmissionExcel
       data_worksheet
     end
 
+    def new_record?
+      true
+    end
+
     def ranges_worksheet
       @ranges_worksheet ||= SampleManifestExcel::Worksheet::RangesWorksheet.new(ranges: range_list, workbook: workbook) if valid?
+    end
+
+    def submission_template_id=(id)
+      self.submission_template = SubmissionTemplate.find_by(id: id)
+    end
+
+    def submission_template_id
+      submission_template&.id
     end
 
     def data_worksheet
@@ -28,10 +40,7 @@ module BulkSubmissionExcel
         columns: column_list,
         assets: assets,
         ranges: range_list,
-        defaults: {
-          user_login: user_login,
-          template_name: submission_template.name
-        }
+        defaults: defaults
       )
     end
 
