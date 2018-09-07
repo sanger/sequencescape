@@ -244,6 +244,7 @@ namespace :limber do
       # 'GnT Picoplex' => {
       #   sequencing_list: base_without_hiseq
       # },
+      # # Use Limber::Helper::LibraryOnlyTemplateConstructor for this one.
       # 'GnT MDA' => {
       #   sequencing_list: ['illumina_b_hiseq_x_paired_end_sequencing']
       # }
