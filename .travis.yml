@@ -28,17 +28,19 @@ jobs:
   include:
   - stage: test
     if: type = cron
-    script: "./run_coverage"
     before_script:
     - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64
       > ./cc-test-reporter
     - chmod +x ./cc-test-reporter
     - "./cc-test-reporter before-build"
+    script: "./run_coverage"
+    name: "Coverage"
     after_script:
     - "./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT"
 
   - if: type != cron
     env: SUITE=rubocop
+    name: "Rubocop"
 
   - if: type != cron
     env:
@@ -48,6 +50,7 @@ jobs:
     before_script:
     - bundle exec rake db:setup
     script: bundle exec rake test
+    name: "Rake Test"
 
   - if: type != cron
     env:
@@ -55,6 +58,7 @@ jobs:
     - RAILS_ENV=test
     before_script:
     - bundle exec rake db:setup
+    name: "Rspec"
 
   - if: type != cron
     env:
@@ -65,6 +69,7 @@ jobs:
     before_script:
     - bundle exec rake assets:precompile
     - bundle exec rake db:setup
+    name: "Cucumber Test 1"
 
   - if: type != cron
     env:
@@ -75,10 +80,12 @@ jobs:
     before_script:
     - bundle exec rake assets:precompile
     - bundle exec rake db:setup
+    name: "Cucumber Test 2"
 
-  - stage: deploy
+  - stage: build
     if: tag IS present
     script: "./compile-build"
+    name: "Compile Build"
     deploy:
       provider: releases
       file: release.tar.gz
