@@ -126,7 +126,7 @@ dl.order-summary {
 .badge-processing { @extend .badge-primary; }
 .badge-ready { @extend .badge-success; }
 .badge-active { @extend .badge-success; }
-.badge-inactive { @extned .badge-danger; }
+.badge-inactive { @extend .badge-danger; }
 .badge-completed { @extend .badge-info; }
 .badge-discarded { @extend .badge-secondary; }
 .badge-released { @extend .badge-success; }
