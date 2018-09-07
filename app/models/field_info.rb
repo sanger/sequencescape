@@ -63,6 +63,7 @@ class FieldInfo
       combined.required ||= other.required
       # If kinds differ, we want to select the most restrictive (eg. selection over numeric)
       combined.kind = other.kind if combined.kind_priority < other.kind_priority
+      combined.default_value ||= other.default_value
     end
   end
 
