@@ -27,7 +27,7 @@ class Asset::Finder
   end
 
   def find_wells_in_array(plate, well_array)
-    return plate.wells.with_aliquots.distinct if well_array.empty?
+    return plate.wells.in_column_major_order.with_aliquots.distinct if well_array.empty?
     well_array.flat_map do |map_description|
       case map_description
       when /^[a-z,A-Z][0-9]+$/ # A well

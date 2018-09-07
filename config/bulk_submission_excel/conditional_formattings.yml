@@ -4,7 +4,7 @@ empty_cell:
     type: :dxf
   options:
     type: :cellIs
-    formula: 'FALSE' 
+    formula: 'FALSE'
     operator: :equal
     priority: 1
 len:

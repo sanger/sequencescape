@@ -41,6 +41,7 @@ fragment_size_from:
   heading: Fragment Size From
   attribute: :fragment_size_required_from
   unlocked: true
+  type: :integer
   validation:
     options:
       type: :whole
@@ -58,6 +59,7 @@ fragment_size_to:
   heading: Fragment Size To
   attribute: :fragment_size_required_to
   unlocked: true
+  type: :integer
   validation:
     options:
       type: :whole
@@ -79,6 +81,7 @@ pcr_cycles:
   heading: PCR Cycles
   attribute: :pcr_cycles
   unlocked: true
+  type: :integer
   validation:
     options:
       type: :whole
@@ -94,6 +97,7 @@ pcr_cycles:
     is_text:
 library_type:
   heading: Library Type
+  attribute: :library_type
   unlocked: true
   validation:
     options:
@@ -134,6 +138,7 @@ pre_capture_plex_level:
   heading: Pre-capture Plex Level
   attribute: :pre_capture_plex_level
   unlocked: true
+  type: :integer
   validation:
     options:
       type: :whole
@@ -154,6 +159,7 @@ read_length:
   heading: Read Length
   attribute: :read_length
   unlocked: true
+  type: :integer
   validation:
     options:
       type: :whole
@@ -171,6 +177,7 @@ number_of_lanes:
   heading: Number of lanes
   attribute: :number_of_lanes
   unlocked: true
+  type: :integer
   validation:
     options:
       type: :whole
@@ -226,7 +233,8 @@ comments:
   heading: Comments
 gigabases_expected:
   heading: Gigabases Expected
-  attribute: gigabases_expected
+  attribute: :gigabases_expected
+  type: :float
   validation:
     options:
       type: :decimal
