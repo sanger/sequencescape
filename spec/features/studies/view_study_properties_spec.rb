@@ -3,7 +3,7 @@ require 'rails_helper'
 feature 'View study properties' do
   let(:user) { create :admin }
   let(:prelim_id) { 'A1234' }
-  let(:study) { create(:study, study_metadata: create(:study_metadata, { prelim_id: prelim_id })) }
+  let(:study) { create(:study, study_metadata: create(:study_metadata, prelim_id: prelim_id)) }
 
   scenario 'view open study properties', js: true do
     login_user(user)
