@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_dependency 'sample_manifest_excel/upload/processor/base'
+
 module SampleManifestExcel
   module Upload
     module Processor
@@ -15,7 +17,7 @@ module SampleManifestExcel
         attr_writer :substitutions
 
         def run(tag_group)
-          return unless valid?
+          return false unless valid?
           update_samples_and_aliquots(tag_group)
           cancel_unprocessed_external_library_creation_requests
           update_sample_manifest

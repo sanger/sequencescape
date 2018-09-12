@@ -7,7 +7,7 @@ module SampleManifestExcel
       # Uploads will be processed slightly differently based on the manifest type.
       class Base
         include ActiveModel::Model
-        include SampleManifestExcel::SubclassChecker
+        include SequencescapeExcel::SubclassChecker
 
         subclasses? :one_d_tube, :multiplexed_library_tube, :library_tube, :plate, modual: to_s.deconstantize
 

@@ -1,46 +1,47 @@
+# frozen_string_literal: true
 
 require 'aasm'
 
+# Used to handle the rendering of the submission/order pages in the
+# web-based submission interface
 class Submission::SubmissionCreator < Submission::PresenterSkeleton
   SubmissionsCreaterError  = Class.new(StandardError)
   IncorrectParamsException = Class.new(SubmissionsCreaterError)
   InvalidInputException    = Class.new(SubmissionsCreaterError)
 
-  self.attributes = [
-    :id,
-    :template_id,
-    :sample_names_text,
-    :barcodes_wells_text,
-    :study_id,
-    :submission_id,
-    :project_name,
-    :plate_purpose_id,
-    :lanes_of_sequencing_required,
-    :comments,
-    :orders,
-    :order_params,
-    :asset_group_id,
-    :pre_capture_plex_group,
-    :gigabases_expected,
-    :priority
+  self.attributes = %i[
+    id
+    template_id
+    sample_names_text
+    barcodes_wells_text
+    study_id
+    submission_id
+    project_name
+    plate_purpose_id
+    lanes_of_sequencing_required
+    comments
+    orders
+    order_params
+    asset_group_id
+    pre_capture_plex_group
+    gigabases_expected
+    priority
   ]
 
   def build_submission!
-    begin
-      submission.built!
-    rescue AASM::InvalidTransition
-      submission.errors.add(:base, 'Submissions can not be edited once they are submitted for building.')
-    rescue ActiveRecord::RecordInvalid => exception
-      exception.record.errors.full_messages.each do |message|
-        submission.errors.add(:base, message)
-      end
-    rescue Submission::ProjectValidation::Error => exception
-      submission.errors.add(:base, exception.message)
+    submission.built!
+  rescue AASM::InvalidTransition
+    submission.errors.add(:base, 'Submissions can not be edited once they are submitted for building.')
+  rescue ActiveRecord::RecordInvalid => exception
+    exception.record.errors.full_messages.each do |message|
+      submission.errors.add(:base, message)
     end
+  rescue Submission::ProjectValidation::Error => exception
+    submission.errors.add(:base, exception.message)
   end
 
   def per_order_settings
-    [:pre_capture_plex_level, :gigabases_expected, :customer_accepts_responsibility]
+    %i[pre_capture_plex_level gigabases_expected customer_accepts_responsibility]
   end
 
   def find_asset_group
@@ -58,25 +59,6 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
 
   delegate :cross_compatible?, to: :order
 
-  def create_order
-    order_role = OrderRole.find_by(role: order_params.delete('order_role')) if order_params.present?
-    new_order = template.new_order(
-      study: study,
-      project: project,
-      user: @user,
-      request_options: order_params,
-      comments: comments,
-      pre_cap_group: pre_capture_plex_group,
-      order_role: order_role
-    )
-    new_order.request_type_multiplier do |sequencing_request_type_id|
-      new_order.request_options[:multiplier][sequencing_request_type_id] = (lanes_of_sequencing_required || 1)
-    end if order_params
-
-    new_order
-  end
-  private :create_order
-
   def order_params
     @order_params = @order_params.to_hash if @order_params.class == HashWithIndifferentAccess
     @order_params[:multiplier] = HashWithIndifferentAccess.new if @order_params && @order_params[:multiplier].nil?
@@ -88,15 +70,13 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
   end
 
   def order_fields
-    if order.input_field_infos.flatten.empty?
-      order.request_type_ids_list = order.request_types.map { |rt| [rt] }
-    end
+    order.request_type_ids_list = order.request_types.map { |rt| [rt] } if order.input_field_infos.flatten.empty?
     order.input_field_infos.reject { |info| per_order_settings.include?(info.key) }
   end
 
   # Return the submission's orders or a blank array
   def orders
-    return [] unless submission.present?
+    return [] if submission.blank?
     submission.try(:orders).map { |o| OrderPresenter.new(o) }
   end
 
@@ -110,7 +90,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
     begin
       ActiveRecord::Base.transaction do
         # Add assets to the order...
-        new_order = create_order.tap { |o| o.update_attributes!(order_assets) }
+        new_order = create_order.tap { |o| o.update!(order_assets) }
 
         if submission.present?
           # The submission should be destroyed if we delete the last order on it so
@@ -126,10 +106,8 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
       end
     rescue Submission::ProjectValidation::Error => project_exception
       order.errors.add(:base, project_exception.message)
-    rescue InvalidInputException => input_exception
+    rescue SubmissionsCreaterError, Asset::Finder::InvalidInputException => input_exception
       order.errors.add(:base, input_exception.message)
-    rescue IncorrectParamsException => exception
-      order.errors.add(:base, exception.message)
     rescue ActiveRecord::RecordInvalid => exception
       exception.record.errors.full_messages.each do |message|
         order.errors.add(:base, message)
@@ -142,7 +120,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
 
   # this is more order_receptacles, asset_group is actually receptacle group
   def order_assets
-    input_methods = [:asset_group_id, :sample_names_text, :barcodes_wells_text].select { |input_method| send(input_method).present? }
+    input_methods = %i[asset_group_id sample_names_text barcodes_wells_text].select { |input_method| send(input_method).present? }
 
     raise InvalidInputException, 'No Samples found' if input_methods.empty?
     raise InvalidInputException, 'Samples cannot be added from multiple sources at the same time.' unless input_methods.size == 1
@@ -207,12 +185,8 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
     @template ||= SubmissionTemplate.find(@template_id)
   end
 
-  def templates
-    @templates ||= SubmissionTemplate.visible.include_product_line
-  end
-
   def product_lines
-    templates.group_by { |t| t.product_line.try(:name) || 'General' }
+    SubmissionTemplate.grouped_by_product_lines
   end
 
   def template_id
@@ -222,7 +196,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
   # Returns an array of all the names of active projects associated with the
   # current user.
   def user_valid_projects
-    @user_active_projects ||= @user.valid_projects
+    @user_valid_projects ||= @user.valid_projects
   end
 
   def url(view)
@@ -235,55 +209,42 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
 
   private
 
+  def create_order
+    order_role = OrderRole.find_by(role: order_params.delete('order_role')) if order_params.present?
+    new_order = template.new_order(
+      study: study,
+      project: project,
+      user: @user,
+      request_options: order_params,
+      comments: comments,
+      pre_cap_group: pre_capture_plex_group,
+      order_role: order_role
+    )
+    if order_params
+      new_order.request_type_multiplier do |sequencing_request_type_id|
+        new_order.request_options[:multiplier][sequencing_request_type_id] = (lanes_of_sequencing_required || 1)
+      end
+    end
+
+    new_order
+  end
+
   # Returns Samples based on Sample name or Sanger ID
   # This is a legacy of the old controller...
   def find_samples_from_text(sample_text)
-    names = sample_text.lines.map(&:chomp).reject(&:blank?).map(&:strip)
+    names = sample_text.split(/\s+/)
 
     samples = Sample.includes(:assets).where(['name IN (:names) OR sanger_sample_id IN (:names)', { names: names }])
 
     name_set  = Set.new(names)
     found_set = Set.new(samples.map { |s| [s.name, s.sanger_sample_id] }.flatten)
     not_found = name_set - found_set
-    raise InvalidInputException, "#{Sample.table_name} #{not_found.to_a.join(", ")} not found" unless not_found.empty?
+    raise InvalidInputException, "#{Sample.table_name} #{not_found.to_a.join(', ')} not found" unless not_found.empty?
     samples
   end
 
   def find_assets_from_text(assets_text)
-    plates_wells = assets_text.lines.map(&:chomp).reject(&:blank?).map(&:strip)
-
-    plates_wells.map do |plate_wells|
-      plate_barcode, well_locations = plate_wells.split(':')
-      begin
-        plate = Plate.find_from_barcode(plate_barcode)
-      rescue SBCF::BarcodeError => exception
-        raise InvalidInputException, "Invalid Barcode #{plate_barcode}: #{exception}"
-      end
-      raise InvalidInputException, "No plate found for barcode #{plate_barcode}." if plate.nil?
-      well_array = (well_locations || '').split(',').reject(&:blank?).map(&:strip)
-
-      find_wells_in_array(plate, well_array)
-    end.flatten
-  end
-
-  def find_wells_in_array(plate, well_array)
-    return plate.wells.with_aliquots.distinct if well_array.empty?
-    well_array.map do |map_description|
-      case map_description
-      when /^[a-z,A-Z][0-9]+$/ # A well
-        well = plate.find_well_by_name(map_description)
-        if well.nil? or well.aliquots.empty?
-          raise InvalidInputException, "Well #{map_description} on #{plate.human_barcode} does not exist or is empty."
-        else
-          well
-        end
-      when /^[a-z,A-Z]$/ # A row
-        plate.wells.with_aliquots.in_plate_row(map_description, plate.size).distinct
-      when /^[0-9]+$/ # A column
-        plate.wells.with_aliquots.in_plate_column(map_description, plate.size).distinct
-      else
-        raise InvalidInputException, "#{map_description} is not a valid well location"
-      end
-    end
+    plates_wells = assets_text.split(/\s+/)
+    Asset::Finder.new(plates_wells).resolve
   end
 end

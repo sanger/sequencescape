@@ -3,7 +3,7 @@
 ##
 # Creates a Sample Manifest Excel spreadsheet from a Sample Manifest object
 module SampleManifestExcel
-  Axlsx::Worksheet.send(:include, CoreExtensions::AxlsxWorksheet)
+  SequencescapeExcel.initialize
 
   FIRST_ROW = 9
 

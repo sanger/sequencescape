@@ -11,12 +11,13 @@ FactoryBot.define do
   end
 
   factory :submission_template do
-    submission_class_name LinearSubmission.name
-    name                  'my_template'
-
     transient do
-      request_type_ids_list []
+      request_type_ids_list { request_types.map { |rt| [rt.id] } }
+      request_types []
     end
+
+    submission_class_name LinearSubmission.name
+    sequence(:name) { |i| "Template #{i}" }
     submission_parameters { { request_type_ids_list: request_type_ids_list } }
     product_catalogue { |pc| pc.association(:single_product_catalogue) }
 
@@ -24,11 +25,11 @@ FactoryBot.define do
       transient do
         request_types { [create(:library_request_type)] }
       end
-      sequence(:name) { |i| "Template #{i}" }
-      submission_parameters do
-        {
-          request_type_ids_list: request_types.map { |rt| [rt.id] }
-        }
+    end
+
+    factory :libray_and_sequencing_template do
+      transient do
+        request_types { [create(:library_request_type), create(:sequencing_request_type)] }
       end
     end
   end

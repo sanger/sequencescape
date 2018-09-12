@@ -1,4 +1,6 @@
 
+# frozen_string_literal: true
+
 # This module can be included into ActiveRecord::Base classes to get the ability to specify the attributes
 # that are present.  You can think of this as metadata being stored about the column in the table: it's
 # default value, whether it's required, if it has a set of values that are acceptable, or if it's numeric.
@@ -52,16 +54,17 @@ module Attributable
 
   def field_infos
     attribute_details.map do |detail|
-      detail.to_field_info(nil, self)
+      detail.to_field_info(self)
     end
   end
 
   def required?(field)
-    attribute   = attribute_details.detect { |attribute| attribute.name == field }
-    attribute ||= association_details.detect { |association| :"#{association.name}_id" == field }
-    attribute.try(:required?)
+    field_details = attribute_details.detect { |attribute| attribute.name == field } ||
+                    association_details.detect { |association| field == :"#{association.name}_id" }
+    field_details.try(:required?)
   end
 
+  # Class methods for attribute configuration
   module ClassMethods
     def custom_attribute(name, options = {}, override_previous = false)
       attribute = Attribute.new(self, name, options)
@@ -92,7 +95,7 @@ module Attributable
     end
 
     def attribute_details_for(attribute_name)
-      attribute_details.detect { |d| d.name.to_sym == attribute_name.to_sym } or raise StandardError, "Unknown attribute #{attribute_name}"
+      attribute_details.detect { |d| d.name.to_sym == attribute_name.to_sym } || raise(StandardError, "Unknown attribute #{attribute_name}")
     end
   end
 end
