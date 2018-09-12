@@ -28,8 +28,6 @@ module ApplicationHelper
       @admin_menu = add_link(@admin_menu, l, o, options)
     when :manager_option
       @manager_menu = add_link(@manager_menu, l, o, options)
-    when :banner
-      @banner = link
     when :legend_option
       @legend = add_link(@legend, l, o, options)
     when :tab

@@ -24,9 +24,13 @@ class SubmissionTemplate < ApplicationRecord
   LATEST_VERSION = -1
   SUPERCEDED_BY_UNKNOWN_TEMPLATE = -2
 
-  scope :hidden,               -> { order('product_line_id ASC').where(['superceded_by_id != ?', LATEST_VERSION]) }
-  scope :visible,              -> { order('product_line_id ASC').where(superceded_by_id: LATEST_VERSION) }
+  scope :hidden,               -> { order(product_line_id: :asc).where.not(superceded_by_id: LATEST_VERSION) }
+  scope :visible,              -> { order(product_line_id: :asc).where(superceded_by_id: LATEST_VERSION) }
   scope :include_product_line, -> { includes(:product_line) }
+
+  def self.grouped_by_product_lines
+    visible.include_product_line.group_by { |t| t.product_line.try(:name) || 'General' }
+  end
 
   def visible
     superceded_by_id == LATEST_VERSION
@@ -66,13 +70,33 @@ class SubmissionTemplate < ApplicationRecord
     duped_params = safely_duplicate(params)
     # NOTE: Stringifying request_option keys here is NOT a good idea as it affects multipliers
     attributes = submission_attributes.with_indifferent_access.deep_merge(duped_params)
-    infos      = SubmissionTemplate.unserialize(attributes.delete(:input_field_infos))
 
     submission_class.new(attributes).tap do |order|
       order.template_name = name
       order.product = product_for(attributes)
-      order.set_input_field_infos(infos) unless infos.nil?
     end
+  end
+
+  def submission_class
+    submission_class_name.constantize
+  end
+
+  def input_field_infos
+    FieldInfo.for_request_types(request_types)
+  end
+
+  def sequencing?
+    request_types.any?(&:sequencing)
+  end
+
+  private
+
+  def request_types
+    @request_types ||= RequestType.where(id: request_type_ids)
+  end
+
+  def request_type_ids
+    submission_parameters[:request_type_ids_list].flatten
   end
 
   # TODO[xxx]: This is a hack just so I can move forward but the request_types stuff should come directly
@@ -80,10 +104,9 @@ class SubmissionTemplate < ApplicationRecord
     return {} if submission_parameters.nil?
 
     submission_attributes = Marshal.load(Marshal.dump(submission_parameters)) # Deep clone
-    submission_attributes[:request_types] = submission_attributes[:request_type_ids_list].flatten
+    submission_attributes[:request_types] = request_type_ids
     submission_attributes
   end
-  private :submission_attributes
 
   # Takes in the parameters passed for the order and safely duplicates it so that it can be modified
   # without affecting the caller version.
@@ -102,36 +125,6 @@ class SubmissionTemplate < ApplicationRecord
                   else
                     v
                   end
-    end
-  end
-  private :safely_duplicate
-
-  # create a new template from a submission
-  def self.new_from_submission(name, submission)
-    submission_template = new(name: name)
-    submission_template.update_from_submission(submission)
-    submission_template
-  end
-
-  def update_from_submission(submission)
-    self.submission_class_name = submission.class.name
-    self.submission_parameters = submission.template_parameters
-  end
-
-  def submission_class
-    klass = submission_class_name.constantize
-    # TODO[mb14] Hack. This is to avoid to have to rename it in database or seen
-    # The hack is not needed for subclasses as they inherits from Order
-    klass == Submission ? Order : klass
-  end
-
-  private
-
-  def self.unserialize(object)
-    if object.respond_to? :map
-      object.map { |o| unserialize(o) }
-    else
-      object
     end
   end
 end

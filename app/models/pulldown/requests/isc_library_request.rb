@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Pulldown::Requests
-  # Indexed Sequences Capture
+  # Indexed Sequence Capture
   # Samples are tagged, pooled to together in pre-capture pools
   # then they are subject to sequence capture, which enriches
   # specific sections of DNA. This allows separation of DNA

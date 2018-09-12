@@ -66,7 +66,7 @@ class RequestType < ApplicationRecord
 
   serialize :request_parameters
 
-  delegate :accessioning_required?, to: :request_class
+  delegate :accessioning_required?, :sequencing?, to: :request_class
 
   # Couple of named scopes for finding billable types
   scope :billable, -> { where(billable: true) }
@@ -180,6 +180,10 @@ class RequestType < ApplicationRecord
     else
       request_type_validators.find_by(request_option: request_option.to_s)
     end || RequestType::Validator::NullValidator.new
+  end
+
+  def request_attributes
+    request_class::Metadata.attribute_details + request_class::Metadata.association_details
   end
 
   delegate :pool_count,             to: :pooling_method

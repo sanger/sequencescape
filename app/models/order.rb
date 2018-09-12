@@ -1,12 +1,27 @@
 
+# frozen_string_literal: true
+
+# And Order is used as the main means of requesting work in Sequencescape. Its
+# key components are:
+# Assets/AssetGroup: The assets on which the work will be conducted
+# Study: The study for which work is being undertaken
+# Project: The project who will be charged for the work
+# Request options: The parameters for the request which will be built. eg. read length
+# Request Types: An array of request type ids which will be built by the order.
+#                This is populated based on the submission template used.
+# Submission: Multiple orders may be grouped together in a submission. This
+#             associates the two sets of requests, and is usually used to determine
+#             what gets pooled together during multiplexing. As a result, sequencing
+#             requests may be shared between multiple orders.
 class Order < ApplicationRecord
+  # Ensure order methods behave correctly
   module InstanceMethods
     def complete_building
       # nothing just so mixin can use super
     end
   end
   AssetTypeError = Class.new(StandardError)
-  DefaultAssetInputMethods = ['select an asset group']
+  DEFAULT_ASSET_INPUT_METHODS = ['select an asset group'].freeze
 
   include InstanceMethods
   include Uuid::Uuidable
@@ -16,50 +31,12 @@ class Order < ApplicationRecord
   include Submission::AccessionBehaviour
   include ModelExtensions::Order
 
-  class CompositeAttribute
-    attr_reader :display_name, :key, :default, :options
-    def initialize(key)
-      @key = key
-    end
-
-    def add(attribute, metadata)
-      @display_name ||= attribute.display_name
-      @key            = attribute.assignable_attribute_name
-      @default      ||= attribute.find_default(nil, metadata)
-      @kind           = attribute.kind if @kind.nil? || attribute.required?
-      if attribute.selection?
-        new_options   = attribute.selection_options(metadata)
-        @options    ||= new_options if selection?
-        @options     &= new_options
-      end
-    end
-
-    def kind
-      @kind || FieldInfo::TEXT
-    end
-
-    def selection?
-      kind == FieldInfo::SELECTION
-    end
-
-    def to_field_infos
-      values = {
-        display_name: display_name,
-        key: key,
-        default_value: default,
-        kind: kind
-      }
-      values.update(selection: options) if selection?
-      FieldInfo.new(values)
-    end
-  end
-
   self.inheritance_column = 'sti_type'
   self.per_page = 500
 
   #  attributes which are not saved for a submission but can be pre-set via SubmissionTemplate
   # return a list of request_types lists  (a sequence of choices) to display in the new view
-  attr_writer :request_type_ids_list
+  attr_writer :request_type_ids_list, :input_field_infos
   attr_accessor :info_differential # aggrement text to display when creating a new submission
   attr_accessor :customize_partial # the name of a partial to render.
   attr_writer :asset_input_methods
@@ -75,9 +52,9 @@ class Order < ApplicationRecord
   # mixed pools, there is no study/project on the order itself.
   # In some cases, such as viewing submission, it can be useful to display
   # the associated studies/projects
-  has_many :source_asset_studies, ->() { distinct }, through: :assets, source: :studies
-  has_many :source_asset_projects, ->() { distinct }, through: :assets, source: :projects
-  has_many :requests, inverse_of: :order
+  has_many :source_asset_studies, -> { distinct }, through: :assets, source: :studies
+  has_many :source_asset_projects, -> { distinct }, through: :assets, source: :projects
+  has_many :requests, inverse_of: :order, dependent: :restrict_with_exception
 
   serialize :request_types
   serialize :item_options
@@ -90,7 +67,7 @@ class Order < ApplicationRecord
   validate :assets_are_appropriate
   validate :no_consent_withdrawl
 
-  before_destroy :is_building_submission?
+  before_destroy :building_submission?
   after_destroy :on_delete_destroy_submission
 
   acts_as_authorizable
@@ -100,7 +77,7 @@ class Order < ApplicationRecord
   scope :containing_samples, ->(samples) { joins(assets: :samples).where(samples: { id: samples }) }
   scope :for_studies, ->(*args) { where(study_id: args) }
 
-  scope :including_associations_for_json, -> {
+  scope :including_associations_for_json, lambda {
     includes([
       :uuid_object,
       { assets: [:uuid_object] },
@@ -113,7 +90,7 @@ class Order < ApplicationRecord
   delegate :role, to: :order_role, allow_nil: true
 
   class << self
-    alias_method :create_order!, :create!
+    alias create_order! create!
 
     def render_class
       Api::OrderIO
@@ -121,12 +98,12 @@ class Order < ApplicationRecord
   end
 
   # We can't destroy orders once the submission has been finalized for building
-  def is_building_submission?
+  def building_submission?
     throw :abort unless submission.building?
   end
 
   def on_delete_destroy_submission
-    if is_building_submission?
+    if building_submission?
       # After destroying an order, if it is the last order on it's submission
       # destroy the submission too.
       orders = submission.orders
@@ -136,11 +113,17 @@ class Order < ApplicationRecord
     false
   end
 
-  def cross_study_allowed; false; end
+  def cross_study_allowed
+    false
+  end
 
-  def cross_project_allowed; false; end
+  def cross_project_allowed
+    false
+  end
 
-  def cross_compatible?; false; end
+  def cross_compatible?
+    false
+  end
 
   # TODO: Figure out why eager loading aliquots/samples returns [] even when
   # we limit order_assets to receptacles.
@@ -155,9 +138,7 @@ class Order < ApplicationRecord
   end
 
   def all_assets
-    if assets.empty? && asset_group.present?
-      pull_assets_from_asset_group
-    end
+    pull_assets_from_asset_group if assets.empty? && asset_group.present?
     assets
   end
 
@@ -166,7 +147,7 @@ class Order < ApplicationRecord
   end
 
   def asset_uuids
-    assets.select { |asset| asset.present? }.map(&:uuid) if assets
+    assets&.select(&:present?)&.map(&:uuid)
   end
 
   def multiplexed?
@@ -181,7 +162,7 @@ class Order < ApplicationRecord
       request.initial_project             = project
       request.user                        = user
       request.request_metadata_attributes = em
-      request.state                       = initial_request_state(request_type)
+      request.state                       = request_type.initial_state
       request.order                       = self
 
       if request.asset.present?
@@ -190,24 +171,12 @@ class Order < ApplicationRecord
     end
   end
 
-  def duplicate(&block)
-    create_parameters = template_parameters
-    new_order = Order.create(create_parameters.merge(study: study,
-                                                     user: user, assets: assets, state: state,
-                                                     request_types: request_types,
-                                                     request_options: request_options,
-                                                     comments: comments,
-                                                     project_id: project_id), &block)
-    new_order.save
-    new_order
-  end
-
   def duplicates_within(timespan)
     matching_orders = Order.containing_samples(all_samples)
                            .where(template_name: template_name)
                            .includes(:submission, assets: :samples)
                            .where.not(orders: { id: id })
-                           .where('orders.created_at > ?', DateTime.current - timespan)
+                           .where('orders.created_at > ?', Time.current - timespan)
     return false if matching_orders.empty?
     matching_samples = matching_orders.map(&:samples).flatten & all_samples
     matching_submissions = matching_orders.map(&:submission).uniq
@@ -215,24 +184,12 @@ class Order < ApplicationRecord
     true
   end
 
-  def request_type_ids_list; @request_type_ids_list ||= [[]]; end
+  def request_type_ids_list
+    @request_type_ids_list ||= [[]]
+  end
 
-  def asset_input_methods; @asset_input_methods ||= DefaultAssetInputMethods; end
-
-  # return a hash with the values needed to be saved as a template
-  # beware nil values are filtered to not overwride default value set in the initializer
-  # (in case these default value are added after a template has been save)
-  # So don't forget to filter again if you override this method.
-  def template_parameters
-    {
-      request_options: request_options,
-      request_types: request_types,
-      comments: comments,
-      request_type_ids_list: request_type_ids_list,
-      info_differential: info_differential,
-      customize_partial: customize_partial,
-      asset_input_methods: asset_input_methods != DefaultAssetInputMethods ? asset_input_methods : nil
-    }.reject { |_k, v| v.nil? }
+  def asset_input_methods
+    @asset_input_methods ||= DEFAULT_ASSET_INPUT_METHODS
   end
 
   def request_types_list
@@ -243,47 +200,10 @@ class Order < ApplicationRecord
     RequestType.find(request_types.first)
   end
 
-  def filter_asset_groups(asset_groups)
-    asset_groups
-  end
-
-  def request_attributes
-    attributes = Hash.new { |hash, value| hash[value] = CompositeAttribute.new(value) }
-    request_types_list.flatten.each do |request_type|
-      mocked = mock_metadata_for(request_type)
-      request_type.request_class::Metadata.attribute_details.each do |att|
-        attributes[att.name].add(att, mocked)
-      end
-      request_type.request_class::Metadata.association_details.each do |att|
-        attributes[att.name].add(att, nil)
-      end
-    end
-
-    attributes.values
-  end
-
-  def mock_metadata_for(request_type)
-    # We have to create a mocked Metadata to point back at the appropriate request class, as request options
-    # are no longer hardcoded in RequestClasses. This is a bit messy, but the tendrils of the old system went
-    # deep. In hindsight it would probably have been easier to either:
-    # a) Start from scratch
-    # b) Not bother
-    mock_request = request_type.request_class.new(request_type: request_type)
-    request_type.request_class::Metadata.new(request: mock_request, owner: mock_request)
-  end
-
   # Return the list of input fields to edit when creating a new submission
   # Unless you are doing something fancy, fall back on the defaults
   def input_field_infos
-    return @input_field_infos if @input_field_infos
-    @cache_calc ||= compute_input_field_infos
-  end
-
-  # we don't call it input_field_infos= because it has a slightly different meanings
-  # if input_field_infos is computed it override the computation
-  # this is meant do be used only when creating submission template
-  def set_input_field_infos(infos)
-    @input_field_infos = infos
+    @input_field_infos ||= FieldInfo.for_request_types(request_types_list.flatten)
   end
 
   def next_request_type_id(request_type_id)
@@ -297,8 +217,8 @@ class Order < ApplicationRecord
   end
 
   # Returns true if this is an order for sequencing
-  def is_a_sequencing_order?
-    RequestType.find(request_types).any? { |rt| rt.request_class.sequencing? }
+  def sequencing_order?
+    RequestType.find(request_types).any?(&:sequencing?)
   end
 
   def collect_gigabases_expected?
@@ -306,8 +226,7 @@ class Order < ApplicationRecord
   end
 
   def add_comment(comment_str, user)
-    update_attribute(:comments, [comments, comment_str].compact.join('; '))
-    save!
+    update!(comments: [comments, comment_str].compact.join('; '))
 
     submission.requests.for_order_including_submission_based_requests(self).map do |request|
       request.add_comment(comment_str, user)
@@ -327,33 +246,18 @@ class Order < ApplicationRecord
   end
 
   def study_is_active
-    if study.present? && !study.active?
-      errors.add(:study, 'is not active')
-    end
+    errors.add(:study, 'is not active') if study.present? && !study.active?
   end
 
   # returns an array of samples, that potentially can not be included in submission
   def not_ready_samples
-    all_samples.reject { |sample| sample.can_be_included_in_submission? }
-  end
-
-  protected
-
-  # JG: Not entirely sure why this was flagged as protected, rather than private
-  def compute_input_field_infos
-    request_attributes.uniq.map do |combined|
-      combined.to_field_infos
-    end
+    all_samples.reject(&:can_be_included_in_submission?)
   end
 
   private
 
   def asset_applicable_to_type?(request_type, asset)
     request_type.asset_type == asset.asset_type_for_request_types.name
-  end
-
-  def initial_request_state(request_type)
-    (request_options || {}).fetch(:initial_state, {}).fetch(request_type.id, request_type.initial_state).to_s
   end
 
   def no_consent_withdrawl
