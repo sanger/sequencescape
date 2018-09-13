@@ -3,7 +3,6 @@
 require 'rails_helper'
 
 describe LabelPrinter::Label::AssetRedirect do
-
   shared_examples 'a correct filter' do
     subject { described_class.new(options).assets }
 
