@@ -1,0 +1,20 @@
+<%= javascript_include_tag('bulk_submissions') %>
+
+<%= form_for BulkSubmissionExcel::Download.new do |form| %>
+  <div class="form-group">
+    <%= form.label :asset_barcodes, 'Labware barcodes (and wells)' %>
+    <%= form.text_area :asset_barcodes, value: '', class: "submission_barcodes_wells_text form-control" %>
+    <p class="form-text text-muted">For example: DN123456P:A1,A2,A3 (Wells A1,A2,A3), DN123456P:1,2,3 (Columns 1,2,3), DN123456P:A,B (Rows A,B), DN123456P (Entire Plate), NT12345 (Tube)</p>
+  </div>
+  <div class="form-group">
+    <%= form.label(:submission_template_id, 'Submission Template') %>
+    <%= form.grouped_collection_select :submission_template_id,
+      SubmissionTemplate.grouped_by_product_lines, :last, :first, :id, :name,
+      {prompt: "Please select a template..."},
+      {class: 'form-control select2'}
+    %>
+  </div>
+  <div id='order-parameters'></div>
+  <%= hidden_field_tag 'defaults[user_login]', current_user.login %>
+  <%= form.submit 'Generate Template', class: 'btn btn-info btn-lg btn-block mb-3', data: { disable_with: false } %>
+<% end %>

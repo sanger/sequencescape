@@ -52,11 +52,17 @@
 <% add :legend_option, "#{image_tag('accept.png')} Passed" => "" -%>
 <% add :legend_option, "#{image_tag('delete.png')} Failed" => "" -%>
 
+<%= page_title @study.name, @study.id, titlecase: false %>
+<%= alert(:info) do %>
+  <h3>Bioinformatician?</h3>
+  <p>If you are comfortable in a database, and want programmatic or large scale access to information you may find
+    <%= help_link 'these resources', 'Useful+resources+for+bioinformaticians' %> useful.</p>
+<% end %>
+
 <div id='content-links'>
  <%= link_to "Study details", properties_study_path(@study) -%>
 </div>
 
-<%= page_title @study.name, @study.id, titlecase: false %>
 <div class='lead'>
   Created on <%= @study.created_at.to_formatted_s(:long) %> <%= @study.state.capitalize %> <br />
   Overall progress: <%= raw(progress_bar(@study.completed)) %>

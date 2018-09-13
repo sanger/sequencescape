@@ -55,7 +55,7 @@ RSpec.describe Order, type: :model do
 
     context 'with no sequencing requests' do
       it 'not be a sequencing order' do
-        expect(@order.is_a_sequencing_order?).to be false
+        expect(@order.sequencing_order?).to be false
       end
     end
 
@@ -66,7 +66,7 @@ RSpec.describe Order, type: :model do
           @order.request_types << @sequencing_request_type.id
         end
         it 'be a sequencing order' do
-          expect(@order.is_a_sequencing_order?).to be true
+          expect(@order.sequencing_order?).to be true
         end
       end
     end

@@ -5,7 +5,7 @@ module SampleManifestExcel
   # Test download
   class TestDownload
     include ActiveModel::Model
-    include Helpers::Download
+    include SequencescapeExcel::Helpers::Download
 
     attr_reader :worksheet
 

@@ -1,0 +1,47 @@
+<h4>Guidance</h4>
+  <p><%= help_link 'The complete guide to submissions', 'Submissions' %></p>
+<p>
+  The template contains the following columns:
+</p>
+<dl>
+  <dt>User login</dt>
+  <dd>Your login, or the person requesting the submission.</dd>
+  <dt>Template name</dt>
+  <dd>The submission template name that you would normally select from the submission drop down. A list is provided on
+    the right.</dd>
+  <dt>Project name</dt>
+  <dd>The project to use. Must be the same for all samples in an order.</dd>
+  <dt>Study name</dt>
+  <dd>The study to use. Must be the same for all samples in an order.</dd>
+  <dt>Submission name</dt>
+  <dd>The name of the submission, is mandatory. A submission can contain several orders.</dd>
+  <dt>Barcode</dt>
+  <dd>The human readable barcode (e.g. 'DN1234567K') of the plate or tube on which the submission is being made. If a plate, you must specify the well location.</dd>
+    and the latter is the well location (as in 'A1' or 'G5').</dd>
+  <dt>Plate Well</dt>
+  <dd>The well name for which the submission is being made. (eg. A1)</dd>
+  <dt>Asset group name</dt>
+  <dd>The name of a pre-existing asset group to use, or a new asset group to create.
+  For existing asset groups you can provide one row for the entire group. Asset groups are
+used to split a submission up into orders, and as a result must have the same request options (eg. study, project, read-length).</dd>
+  <dt>Fragment size from - fragment size to</dt>
+  <dd>The maximum and minimum insert size. (do not specify for pulldown templates)</dd>
+  <dt>PCR Cycles</dt>
+  <dd>Some processes have PCR programs that may have a variable number of cycles. Specify them here</dd>
+  <dt>Library type</dt>
+  <dd>The library type to create</dd>
+  <dt>Bait library name</dt>
+  <dd>The name of the bait library to apply (ISC templates only)</dd>
+  <dt>Pre-capture Plex Level</dt>
+  <dd>Each pre-capture group will be split into pools of this size</dd>
+  <dt>Pre-capture group</dt>
+  <dd>Apply the same pre-capture group to two different orders to ensure they get pooled together at the pre-capture stage (ISC templates only)</dd>
+  <dt>Read length</dt>
+  <dd>the read length being requested</dd>
+  <dt>Number of lanes</dt>
+  <dd>The number of lanes of sequencing requested per pool.</dd>
+  <dt>primer panel</dt>
+  <dd>The name of the primer panel to apply (GbS templates only)</dd>
+  <dt>Comments</dt><dd>Any comment to add to the submission</dd>
+  <dt>Gigabases Expected</dt><dd>The expected yield of the sequencing runs. Used in reporting</dd>
+</dl>
