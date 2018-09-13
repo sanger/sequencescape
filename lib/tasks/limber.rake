@@ -208,12 +208,13 @@ namespace :limber do
     base_list = Limber::Helper::ACCEPTABLE_SEQUENCING_REQUESTS
     base_with_novaseq = base_list + ['illumina_htp_novaseq_6000_paired_end_sequencing']
     base_without_hiseq = base_list - ['illumina_b_hiseq_x_paired_end_sequencing']
+    base_with_novaseq_no_hiseq = base_without_hiseq + ['illumina_htp_novaseq_6000_paired_end_sequencing']
     st_params = {
       'WGS' => {
         sequencing_list: base_with_novaseq
       },
       'ISC' => {
-        sequencing_list: base_list
+        sequencing_list: base_with_novaseq
       },
       'ReISC' => {
         sequencing_list: base_list
@@ -225,7 +226,7 @@ namespace :limber do
         sequencing_list: base_without_hiseq
       },
       'RNAA' => {
-        sequencing_list: base_without_hiseq
+        sequencing_list: base_with_novaseq_no_hiseq
       },
       'RNAR' => {
         sequencing_list: base_without_hiseq

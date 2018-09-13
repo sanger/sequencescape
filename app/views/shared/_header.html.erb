@@ -22,7 +22,7 @@
   </div>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-nav-items" aria-controls="main-nav-items" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
   <!-- The main body of the navbar. Collapses at low resolutions -->
-  <div id="main-nav-items" class="<%= phantom_js? ? 'legacy' : 'modern' %>">
+  <div id="main-nav-items" class="modern">
     <ul><%= render partial: 'shared/tab', collection: @tabs.items %></ul>
     <%= form_tag searches_path, method: :get, role: "search" do %>
       <div class="input-group">

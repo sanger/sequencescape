@@ -2,8 +2,6 @@
 /* Please use it instead of screen.css which is deprecated. */
 li a:visited { color: #444488; }
 
-// Bootstrap bug? Card headers have the wrong margins
-
 #main-content {
   @extend .container-fluid;
 }

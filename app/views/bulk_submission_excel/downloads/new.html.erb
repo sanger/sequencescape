@@ -1,0 +1,16 @@
+<%= hidden_field_tag 'defaults[template_name]', @submission_template.name %>
+<% @input_field_infos.sort_by(&:display_name).each do |field_info| -%>
+  <div class="form-group">
+    <%= label('defaults', field_info.key, field_info.display_name) %>
+    <%= field_input_tag(field_info, enforce_required: false, name_format: 'defaults[%s]') %>
+  </div>
+<% end -%>
+<div class="form-group">
+  <%= label('defaults', 'number_of_lanes', 'Lanes of sequencing') %>
+  <%= number_field_tag(
+      'defaults[number_of_lanes]',
+      1,
+      class: 'required form-control',
+      required: true
+    ) %>
+</div>

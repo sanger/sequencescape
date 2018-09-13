@@ -5,7 +5,7 @@ module SampleManifestExcel
   # Download
   class Download
     include ActiveModel::Model
-    include Helpers::Download
+    include SequencescapeExcel::Helpers::Download
 
     validates_presence_of :sample_manifest, :column_list, :range_list
 
@@ -17,7 +17,7 @@ module SampleManifestExcel
       @column_list = column_list
 
       return unless valid?
-      @ranges_worksheet = Worksheet::RangesWorksheet.new(ranges: range_list, workbook: workbook, password: password)
+      @ranges_worksheet = SequencescapeExcel::Worksheet::RangesWorksheet.new(ranges: range_list, workbook: workbook, password: password)
       @data_worksheet = Worksheet::DataWorksheet.new(workbook: workbook, columns: column_list, sample_manifest: sample_manifest, ranges: range_list, password: password)
     end
 

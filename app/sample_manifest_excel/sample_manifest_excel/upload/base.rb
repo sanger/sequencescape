@@ -94,7 +94,7 @@ module SampleManifestExcel
             Upload::Processor::Plate.new(self)
           end
         else
-          SampleManifestExcel::NullObjects::NullProcessor.new(self)
+          SequencescapeExcel::NullObjects::NullProcessor.new(self)
         end
       end
 
