@@ -1,6 +1,5 @@
 language: ruby
-rvm:
-- 2.5.1
+# We don't specify a list of ruby versions, as Travis will fall back to .ruby-version
 dist: xenial
 sudo: required
 services: mysql
