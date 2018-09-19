@@ -18,24 +18,6 @@ module ApplicationHelper
     end
   end
 
-  # PhantomJS is effectively an ancient browser, and struggles
-  # with bootstrap collapsible menus.
-  def phantom_js?
-    request.user_agent&.include?('PhantomJS')
-  end
-
-  def display_for_setting(setting)
-    display = true
-    if logged_in?
-      if current_user.setting_for? setting
-        if current_user.value_for(setting) == 'hide'
-          display = false
-        end
-      end
-    end
-    display
-  end
-
   def required_marker
     content_tag(:span, '&raquo;'.html_safe, class: 'required')
   end
@@ -67,7 +49,7 @@ module ApplicationHelper
   end
 
   def display_status(status)
-    content_tag(:span, status, class: "request-state badge badge-#{bootstrapify_request_state(status)}")
+    content_tag(:span, status, class: "request-state badge badge-#{status}")
   end
 
   def dynamic_link_to(summary_item)
@@ -144,10 +126,6 @@ module ApplicationHelper
     add :about, title
   end
 
-  def render_help(help = '')
-    add :help, help
-  end
-
   def tabulated_error_messages_for(*params)
     options = params.last.is_a?(Hash) ? params.pop.symbolize_keys : {}
     objects = params.collect { |object_name| instance_variable_get("@#{object_name}") }.compact
@@ -163,10 +141,6 @@ module ApplicationHelper
          raw(error_messages)
        end].join.html_safe
     end
-  end
-
-  def horizontal_tab(name, key, related_div, tab_no, active = false)
-    link_to name, '#', 'data-tab-refers': "##{related_div}", 'data-tab-group': tab_no, id: key.to_s, class: "nav-link #{active ? "active" : ""} tab#{tab_no}"
   end
 
   # <li class="nav-item">
@@ -254,12 +228,14 @@ module ApplicationHelper
     label_tag(name, text, options.merge(style: 'display:none;'))
   end
 
-  def non_breaking_space
-    '&nbsp;'.html_safe
-  end
-
   def help_text(&block)
     content_tag(:small, class: 'form-text text-muted col', &block)
+  end
+
+  def help_link(text, entry = '', options = {})
+    url = "#{configatron.help_link_base_url}/#{entry}"
+    options[:class] = "#{options[:class]} external_help"
+    link_to text, url, options
   end
 
   # The admin email address should be stored in config.yml for the current environment

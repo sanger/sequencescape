@@ -14,15 +14,6 @@ module Sanger
           end
         end
 
-        def should_have_successful_submission
-          # FIXME: routing doesnt work property
-          # should redirect_to("study workflow submission page"){ study_workflow_submission_url(@study, @workflow, @submission) }
-          should 'have a successful submission' do
-            assert_not_nil @controller.session.try(:[], :flash).try(:[], :notice).try(:include?, 'Submission successfully created')
-            assert_equal @submission_count + 1, Submission.count
-          end
-        end
-
         def should_require_login(*actions)
           params = (actions.pop if actions.last.is_a?(Hash)) || {}
           actions << :index if actions.empty?

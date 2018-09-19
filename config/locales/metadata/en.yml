@@ -49,6 +49,9 @@ en:
         customer_accepts_responsibility:
           label: Still charge on fail
 
+        pre_capture_plex_level:
+          label: Pre-capture pool size
+
         pcr_cycles:
           label: PCR Cycles
 

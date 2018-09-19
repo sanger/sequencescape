@@ -74,6 +74,8 @@ class Asset < ApplicationRecord
 
   belongs_to :map
 
+  delegate :human_barcode, to: :labware, prefix: true, allow_nil: true
+
   extend EventfulRecord
   has_many_events do
     event_constructor(:create_external_release!,       ExternalReleaseEvent,          :create_for_asset!)

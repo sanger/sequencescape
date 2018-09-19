@@ -19,7 +19,7 @@ class SampleManifest::Uploader
 
   def initialize(filename, configuration, user, override)
     @filename = filename
-    @configuration = configuration || SampleManifestExcel::NullObjects::NullConfiguration.new
+    @configuration = configuration || SequencescapeExcel::NullObjects::NullConfiguration.new
     @user = user
     @override = override
     @tag_group = create_tag_group

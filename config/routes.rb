@@ -256,6 +256,7 @@ Sequencescape::Application.routes.draw do
   end
 
   resources :bulk_submissions, only: [:index, :new, :create]
+  resources :bulk_submission_excel_downloads, only: [:create, :new], controller: 'bulk_submission_excel/downloads'
 
   resources :submissions do
     collection do

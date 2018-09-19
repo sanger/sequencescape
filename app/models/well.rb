@@ -206,6 +206,23 @@ class Well < Receptacle
     end
   end
 
+  def qc_results_by_key
+    @qc_results_by_key ||= qc_results.by_key
+  end
+
+  def qc_result_for(key)
+    result =  if key == 'quantity_in_nano_grams'
+                well_attribute.quantity_in_nano_grams
+              else
+                results = qc_results_by_key[key]
+                results.first.value if results.present?
+              end
+
+    return if result.nil?
+    return result.to_f.round(3) if result.to_s.include?('.')
+    result.to_i
+  end
+
   def generate_name(_)
     # Do nothing
   end

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_dependency 'sample_manifest_excel/upload/processor/base'
+
 module SampleManifestExcel
   module Upload
     module Processor

@@ -4,6 +4,7 @@
   <%= form.fields_for(:study_metadata, builder: Metadata::ViewBuilder) do |metadata_fields| %>
     <%= metadata_fields.association_attribute(:faculty_sponsor, :name, grouping: 'Specification') %>
     <%= metadata_fields.association_attribute(:program, :name, grouping: 'Specification') %>
+    <%= metadata_fields.plain_value(:prelim_id) %>
 
     <% metadata_fields.with_options(grouping: 'ENA requirement') do |group| %>
       <%= group.plain_value(:study_study_title) %>

@@ -31,6 +31,25 @@ RSpec.describe QcResult, type: :model, qc_result: true do
     expect(build(:qc_result).assay_version).to be_present
   end
 
+  it '#order_by_date' do
+    create(:qc_result, created_at: Date.yesterday)
+    create(:qc_result, created_at: Time.zone.today)
+    tomorrow = create(:qc_result, created_at: Date.tomorrow)
+    expect(QcResult.order_by_date.count).to eq(3)
+    expect(QcResult.order_by_date.first).to eq(tomorrow)
+  end
+
+  it '#by_key will return the qc results by key' do
+    create(:qc_result, key: 'Concentration')
+    create(:qc_result, key: 'Molarity')
+    create(:qc_result, key: 'Volume')
+    create(:qc_result, key: 'RIN')
+    results = QcResult.by_key
+    expect(results.size).to eq(4)
+    expect(results['concentration'].length).to eq(1)
+    expect(results['rin'].length).to eq(1)
+  end
+
   context 'with an asset' do
     let(:asset) { build :asset }
 

@@ -88,6 +88,34 @@ namespace :limber do
           seeder.tag_plates(lot_type: 'Pre Stamped Tags - 384', template: "GbS Tag Set #{set}")
         end
       end
+
+      desc 'Generate a mock WGS tag set if required'
+      task wgs_tag_set: ['working:env_check', :environment] do
+        ('A'..'D').each_with_index do |set, index|
+          ["pWGS UDI tag layout v2 #{set}", "TS_pWGS#{set}_UDI96"].each_with_index do |template_name, idx|
+            next if TagLayoutTemplate.find_by(name: template_name)
+            tg = TagGroup.create!(name: "WGS Test #{idx} - #{set}") do |group|
+              group.tags.build(OligoEnumerator.new(384, index * 384).each_with_index.map { |oligo, map_id| { oligo: oligo, map_id: map_id + 1 } })
+            end
+            TagLayoutTemplate.create!(
+              name: template_name,
+              direction_algorithm: 'TagLayout::InColumns',
+              walking_algorithm: 'TagLayout::WalkWellsOfPlate',
+              tag_group: tg, tag2_group: tg
+            )
+          end
+        end
+      end
+
+      desc 'Add tag plates for WGS: dev only'
+      task wgs_tag_plates: ['working:env_check', :environment, 'limber:dev:setup:wgs_tag_set'] do
+        seeder = WorkingSetup::StandardSeeder.new([])
+        ('A'..'D').each do |set|
+          ["pWGS UDI tag layout v2 #{set}", "TS_pWGS#{set}_UDI96"].each do |template_name|
+            seeder.tag_plates(lot_type: 'Pre Stamped Tags', template: template_name)
+          end
+        end
+      end
     end
   end
 end

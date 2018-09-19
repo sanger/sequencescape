@@ -45,7 +45,7 @@ module SampleManifestExcel
     ##
     # ManifestType
     class ManifestType
-      include Helpers::Attributes
+      include SequencescapeExcel::Helpers::Attributes
 
       setup_attributes :name, :columns, :heading, :asset_type
 

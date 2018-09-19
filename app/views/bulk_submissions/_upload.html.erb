@@ -1,0 +1,32 @@
+<%= alert(:info) do %>
+  Please note that <strong>all</strong> submissions in your file will be processed, or if there are any errors,
+  <strong>none</strong> of them will be processed. You will get feedback about any problems.</p>
+<% end %>
+<%= semantic_form_for @bulk_submission, html: { multipart: true } do |form|  %>
+  <%= form.semantic_errors :base %>
+  <%= form.inputs do %>
+    <%= form.input :spreadsheet, as: :file, required: true %>
+    <%= form.input :encoding, as: :select, collection: Encoding.list.map(&:to_s) %>
+    <span id="helpBlock" class="form-text text-muted">
+      Encoding describes the way special characters are stored in the CSV. By default Excel uses 'Windows-1252' format
+      on English language Windows systems. In most cases you can leave this option unchanged.</span>
+  <% end %>
+  <%= form.actions do %>
+    <%= form.action(:submit, button_html: { class:'btn btn-success btn-lg', data: { disable_with: 'Processing' }}) %>
+  <% end %>
+  <div id="being_created" style="display: none;">
+    <p>Your spreadsheet is being processed...</p>
+    <%= loading_bar %>
+  </div>
+<% end %>
+<script>
+(function($, undefined) {
+  $(document).on('dom:loaded', function() {
+    $('#new_bulk_submission').on('submit', function() {
+      $('#bulk_submission_submit').hide();
+      $('#being_created').show();
+      $('#loading').show();
+    });
+  });
+})(jQuery);
+</script>

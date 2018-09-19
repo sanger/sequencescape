@@ -134,33 +134,6 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
     end
   end
 
-  context 'validations ranges worksheet' do
-    let!(:range_list) { SampleManifestExcel.configuration.ranges.dup }
-    let!(:worksheet) { SampleManifestExcel::Worksheet::RangesWorksheet.new(workbook: workbook, ranges: range_list) }
-
-    before(:each) do
-      save_file
-    end
-
-    it 'has a axlsx worksheet' do
-      expect(worksheet.axlsx_worksheet).to be_present
-    end
-
-    it 'will add ranges to axlsx worksheet' do
-      range = worksheet.ranges.first.last
-      range.options.each_with_index do |option, i|
-        expect(spreadsheet.sheet(0).cell(1, i + 1)).to eq(option)
-      end
-      expect(spreadsheet.sheet(0).last_row).to eq(worksheet.ranges.count)
-    end
-
-    it 'set absolute references in ranges' do
-      range = range_list.ranges.values.first
-      expect(range.absolute_reference).to eq("Ranges!#{range.fixed_reference}")
-      expect(range_list.all? { |_k, rng| rng.absolute_reference.present? }).to be_truthy
-    end
-  end
-
   context 'multiplexed library tube worksheet' do
     it 'must have the multiplexed library tube barcode' do
       sample_manifest = create(:tube_sample_manifest, asset_type: 'multiplexed_library', rapid_generation: true)

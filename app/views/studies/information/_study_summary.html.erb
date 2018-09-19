@@ -27,8 +27,7 @@
           </tr>
         </thead>
         <% @study.request_progress do |results| %>
-          <% request_types.each do |request_type| %>
-            <% statistics = results[request_type] %>
+          <% results.sort_by {|rt,stats| [rt.order,rt.id] }.each do |request_type, statistics| %>
             <tr>
               <td><%= request_type.name %></td>
               <td><%= request_link(@study, statistics.total, request_type) %></td>

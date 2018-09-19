@@ -85,7 +85,7 @@ namespace :limber do
       end
       Limber::Helper::RequestTypeConstructor.new(
         'PCR Free',
-        default_purpose: 'PF Cherrypicked'
+        default_purposes: ['PF Cherrypicked']
       ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
@@ -98,39 +98,39 @@ namespace :limber do
         'GBS',
         request_class: 'IlluminaHtp::Requests::GbsRequest',
         library_types: ['GBS'],
-        default_purpose: 'GBS Stock',
+        default_purposes: ['GBS Stock'],
         for_multiplexing: true
       ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
         'RNAA',
         library_types: ['RNA PolyA'],
-        default_purpose: 'LBR Cherrypick'
+        default_purposes: ['LBR Cherrypick']
       ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
         'RNAR',
         library_types: ['RNA Ribo'],
-        default_purpose: 'LBR Cherrypick'
+        default_purposes: ['LBR Cherrypick']
       ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
         'RNAAG',
         library_types: ['RNA Poly A Globin'],
-        default_purpose: 'LBR Cherrypick'
+        default_purposes: ['LBR Cherrypick']
       ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
         'RNARG',
         library_types: ['RNA Ribo Globin'],
-        default_purpose: 'LBR Cherrypick'
+        default_purposes: ['LBR Cherrypick']
       ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
         'ReISC',
         request_class: 'Pulldown::Requests::ReIscLibraryRequest',
         library_types: ['Agilent Pulldown'],
-        default_purpose: 'LB Lib PCR-XP'
+        default_purposes: ['LB Lib PCR-XP']
       ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
@@ -142,7 +142,7 @@ namespace :limber do
       Limber::Helper::RequestTypeConstructor.new(
         'scRNA-384',
         library_types: ['scRNA 384'],
-        default_purpose: 'scRNA-384 Stock'
+        default_purposes: ['scRNA-384 Stock']
       ).build!
 
       # GnT Pipeline requires UAT
@@ -204,12 +204,13 @@ namespace :limber do
     base_list = Limber::Helper::ACCEPTABLE_SEQUENCING_REQUESTS
     base_with_novaseq = base_list + ['illumina_htp_novaseq_6000_paired_end_sequencing']
     base_without_hiseq = base_list - ['illumina_b_hiseq_x_paired_end_sequencing']
+    base_with_novaseq_no_hiseq = base_without_hiseq + ['illumina_htp_novaseq_6000_paired_end_sequencing']
     st_params = {
       'WGS' => {
         sequencing_list: base_with_novaseq
       },
       'ISC' => {
-        sequencing_list: base_list
+        sequencing_list: base_with_novaseq
       },
       'ReISC' => {
         sequencing_list: base_list
@@ -221,7 +222,7 @@ namespace :limber do
         sequencing_list: base_without_hiseq
       },
       'RNAA' => {
-        sequencing_list: base_without_hiseq
+        sequencing_list: base_with_novaseq_no_hiseq
       },
       'RNAR' => {
         sequencing_list: base_without_hiseq

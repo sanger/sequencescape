@@ -13,5 +13,7 @@ Rails.application.config.assets.precompile += [
   'pipeline.js',
   'pooling.js',
   'sample_move.js',
-  'submissions.js'
+  'submissions.js',
+  'bulk_submissions.js',
+  'JsBarcode.all.min.js'
 ]

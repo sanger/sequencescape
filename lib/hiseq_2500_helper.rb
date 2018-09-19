@@ -41,14 +41,14 @@ module Hiseq2500Helper
 
   def self.input_fields(sizes, libraries)
     [
-      FieldInfo.new(kind: 'Text', default_value: '', parameters: {}, display_name: 'Fragment size required (from)', key: 'fragment_size_required_from'),
-      FieldInfo.new(kind: 'Text', default_value: '', parameters: {}, display_name: 'Fragment size required (to)', key: 'fragment_size_required_to'),
+      FieldInfo.new(kind: 'Text', default_value: '', display_name: 'Fragment size required (from)', key: 'fragment_size_required_from'),
+      FieldInfo.new(kind: 'Text', default_value: '', display_name: 'Fragment size required (to)', key: 'fragment_size_required_to'),
       FieldInfo.new(
-        kind: 'Selection', default_value: 'Standard', parameters: { selection: libraries },
+        kind: 'Selection', default_value: 'Standard', selection: libraries,
         display_name: 'Library type',
         key: 'library_type'
       ),
-      FieldInfo.new(kind: 'Selection', default_value: sizes.last, parameters: { selection: sizes }, display_name: 'Read length', key: 'read_length')
+      FieldInfo.new(kind: 'Selection', default_value: sizes.last, selection: sizes, display_name: 'Read length', key: 'read_length')
     ]
   end
 
