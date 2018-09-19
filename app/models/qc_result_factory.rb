@@ -41,13 +41,13 @@ class QcResultFactory
   class Resource
     include ActiveModel::Model
 
-    attr_accessor :uuid, :well_location, :key, :value, :units, :cv, :assay_type, :assay_version, :qc_assay
+    attr_accessor :uuid, :barcode, :well_location, :key, :value, :units, :cv, :assay_type, :assay_version, :qc_assay
 
     attr_reader :asset, :qc_result, :plate
 
-    validates :uuid, presence: true
+    # validates :uuid, presence: true
 
-    validate :check_asset, :check_qc_result
+    validate :check_asset_identifier, :check_asset, :check_qc_result
 
     def initialize(attributes = {})
       super(attributes)
@@ -57,7 +57,7 @@ class QcResultFactory
     end
 
     def message_id
-      "Uuid - #{(uuid || 'blank')}"
+      "Asset identifier - #{(uuid || barcode || 'blank')}"
     end
 
     def parent_plate
@@ -71,13 +71,12 @@ class QcResultFactory
     # If the object is a tube then do nothing just return the asset.
     # If a well location is passed then assume it is a plate so we need to return the associated well.
     def build_asset
-      uuid_object = Uuid.find_by(external_id: uuid)
-      return if uuid_object.blank?
-      asset = if uuid_object.resource_type == 'Sample'
-                Sample.find(uuid_object.resource_id).primary_receptacle
-              else
-                Asset.find(uuid_object.resource_id)
+      asset = if uuid.present?
+                build_asset_by_uuid
+              elsif barcode.present?
+                build_asset_by_barcode
               end
+      return if asset.blank?
       return asset if well_location.blank?
       @plate = Plate.find(asset.id)
       plate.find_well_by_map_description(well_location)
@@ -120,6 +119,25 @@ class QcResultFactory
       qc_result.errors.each do |k, v|
         errors.add(k, v)
       end
+    end
+
+    def check_asset_identifier
+      return if uuid.present? || barcode.present?
+      errors.add(:base, 'must have an asset identifier - either a uuid or barcode')
+    end
+
+    def build_asset_by_uuid
+      uuid_object = Uuid.find_by(external_id: uuid)
+      return if uuid_object.blank?
+      if uuid_object.resource_type == 'Sample'
+        Sample.find(uuid_object.resource_id).primary_receptacle
+      else
+        Asset.find(uuid_object.resource_id)
+      end
+    end
+
+    def build_asset_by_barcode
+      Asset.find_by_barcode(barcode)
     end
   end
 

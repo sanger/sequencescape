@@ -80,8 +80,8 @@ RSpec.describe QcResultFactory, type: :model, qc_result: true do
       end
 
       it 'produces a sensible error message identifier' do
-        expect(QcResultFactory::Resource.new(attributes).message_id).to eq("Uuid - #{asset.uuid}")
-        expect(QcResultFactory::Resource.new(qc_result_attributes).message_id).to eq('Uuid - blank')
+        expect(QcResultFactory::Resource.new(attributes).message_id).to eq("Asset identifier - #{asset.uuid}")
+        expect(QcResultFactory::Resource.new(qc_result_attributes).message_id).to eq('Asset identifier - blank')
       end
     end
 
@@ -91,6 +91,17 @@ RSpec.describe QcResultFactory, type: :model, qc_result: true do
       it 'is not valid unless the well location is valid' do
         expect(QcResultFactory::Resource.new(qc_result_attributes.merge(uuid: plate.uuid, well_location: plate.wells.first.map.description))).to be_valid
         expect(QcResultFactory::Resource.new(qc_result_attributes.merge(uuid: plate.uuid, well_location: 'Z999'))).to_not be_valid
+      end
+    end
+
+    context 'Barcode' do
+      let(:plate) { create(:plate_with_empty_wells, well_count: 12) }
+
+      it 'will create a valid resource with a valid barcode' do
+        expect(QcResultFactory::Resource.new(qc_result_attributes.merge(barcode: plate.barcodes.first.barcode, well_location: plate.wells.first.map.description))).to be_valid
+      end
+
+      it 'will not create a valid resource with an invalid barcode' do
       end
     end
 
