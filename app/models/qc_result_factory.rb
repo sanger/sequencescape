@@ -41,9 +41,9 @@ class QcResultFactory
   class Resource
     include ActiveModel::Model
 
-    attr_accessor :uuid, :barcode, :well_location, :key, :value, :units, :cv, :assay_type, :assay_version, :qc_assay
+    attr_accessor :well_location, :key, :value, :units, :cv, :assay_type, :assay_version, :qc_assay
 
-    attr_reader :asset, :qc_result, :plate, :asset_identifier
+    attr_reader :asset, :qc_result, :plate, :asset_identifier, :uuid, :barcode
 
     validate :check_asset_identifier, :check_asset, :check_qc_result
 
@@ -68,10 +68,10 @@ class QcResultFactory
       uuid_object = Uuid.find_by(external_id: uuid)
       return if uuid_object.blank?
       @uuid = if uuid_object.resource_type == 'Sample'
-        Sample.find(uuid_object.resource_id).primary_receptacle
-      else
-        Asset.find(uuid_object.resource_id)
-      end
+                Sample.find(uuid_object.resource_id).primary_receptacle
+              else
+                Asset.find(uuid_object.resource_id)
+              end
     end
 
     def barcode=(barcode)
@@ -137,7 +137,6 @@ class QcResultFactory
       return if uuid.present? || barcode.present?
       errors.add(:base, 'must have an asset identifier - either a uuid or barcode')
     end
-
   end
 
   private
