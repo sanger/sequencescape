@@ -45,8 +45,6 @@ class QcResultFactory
 
     attr_reader :asset, :qc_result, :plate
 
-    # validates :uuid, presence: true
-
     validate :check_asset_identifier, :check_asset, :check_qc_result
 
     def initialize(attributes = {})
