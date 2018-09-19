@@ -8,6 +8,7 @@ Sequencescape::Application.routes.draw do
 
   namespace :api do
     namespace :v2 do
+      jsonapi_resources :pre_capture_pools
       jsonapi_resources :primer_panels
       jsonapi_resources :request_types
       jsonapi_resources :purposes
@@ -571,5 +572,5 @@ Sequencescape::Application.routes.draw do
   get 'authentication/restricted'
 
   # We removed workflows, which broke study links. Some customers may have their own studies bookmarked
-  get 'studies/:study_id/workflows/:id', to: redirect('studies/%{study_id}/information') # rubocop:disable Style/FormatStringToken
+  get 'studies/:study_id/workflows/:id', to: redirect('studies/%{study_id}/information')
 end

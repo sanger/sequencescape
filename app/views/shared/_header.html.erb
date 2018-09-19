@@ -1,14 +1,3 @@
-
-<div class="user-session-controls">
-  <ul>
-  <% if logged_in? -%>
-    <li><%= I18n.t('global_links.welcome') %> <%= link_to current_user.name, profile_path(current_user) %></li>
-    <li><%= link_to I18n.t('global_links.edit_profile'), edit_profile_path(current_user) %></li>
-    <li><%= link_to I18n.t('global_links.logout'), logout_path -%></li>
-  <% end -%>
-  </ul>
-</div>
-
 <nav class="main-nav">
   <div id="logo_container">
     <div id="sequencescape_logo"><%= link_to image_tag("sequencescape.gif"), '/' %></div>
@@ -22,14 +11,27 @@
   </div>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-nav-items" aria-controls="main-nav-items" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
   <!-- The main body of the navbar. Collapses at low resolutions -->
-  <div id="main-nav-items" class="<%= phantom_js? ? 'legacy' : 'modern' %>">
+  <div id="main-nav-items">
     <ul><%= render partial: 'shared/tab', collection: @tabs.items %></ul>
+    <div class="navbar-nav">
     <%= form_tag searches_path, method: :get, role: "search" do %>
       <div class="input-group">
         <%= select_tag :type, options_for_select(search_options,""), id: 'layout_search_options' %>
         <%= search_field_tag :q, "", size: 20, type: "search", placeholder: "name, id, barcode", id: 'layout_search' %>
       </div>
     <% end %>
+    <div class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <%= icon('fas', 'user-cog') %>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right text-dark" aria-labelledby="navbarDropdown">
+          <%= link_to current_user.name, profile_path(current_user), class: 'dropdown-item' %>
+          <%= link_to I18n.t('global_links.edit_profile'), edit_profile_path(current_user), class: 'dropdown-item' %>
+          <div class="dropdown-divider"></div>
+          <%= link_to I18n.t('global_links.logout'), logout_path, class: 'dropdown-item' -%>
+        </div>
+    </div>
+  </div>
   </div><!-- /.navbar-collapse -->
 </nav>
 

@@ -19,7 +19,9 @@ module Api
 
       # Attributes
       attribute :tag_oligo, readonly: true
+      attribute :tag_index, readonly: true
       attribute :tag2_oligo, readonly: true
+      attribute :tag2_index, readonly: true
       attribute :suboptimal, readonly: true
 
       # Filters
@@ -32,8 +34,16 @@ module Api
         _model.tag&.oligo
       end
 
+      def tag_index
+        _model.tag&.map_id
+      end
+
       def tag2_oligo
         _model.tag2&.oligo
+      end
+
+      def tag2_index
+        _model.tag2&.map_id
       end
 
       # Class method overrides

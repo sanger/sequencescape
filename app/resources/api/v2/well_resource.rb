@@ -19,7 +19,7 @@ module Api
       has_many :requests_as_source, readonly: true
       has_many :requests_as_target, readonly: true
       has_many :aliquots, readonly: true
-      has_many :downstream_assets, readonly: true
+      has_many :downstream_assets, readonly: true, polymorphic: true
 
       # Attributes
       attribute :uuid, readonly: true

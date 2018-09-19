@@ -23,12 +23,14 @@ class Request < ApplicationRecord
   PERMISSABLE_NEXT_REQUESTS = ->(request) { request.pending? or request.blocked? }
 
   # Class attributes
-  class_attribute :customer_request, :sequencing
+  class_attribute :customer_request, :sequencing, :pre_capture_pooled, :library_creation
 
   self.sequencing = false
   self.per_page = 500
   self.inheritance_column = 'sti_type'
   self.customer_request = false
+  self.pre_capture_pooled = false
+  self.library_creation = false
 
   # Associations
   has_many_events
@@ -75,6 +77,10 @@ class Request < ApplicationRecord
 
   belongs_to :billing_product, class_name: 'Billing::Product'
   has_many :billing_items, class_name: 'Billing::Item'
+
+  # Only actively used by poolable requests, but here to help with eager loading
+  has_one :pooled_request, dependent: :destroy, class_name: 'PreCapturePool::PooledRequest', foreign_key: :request_id, inverse_of: :request
+  has_one :pre_capture_pool, through: :pooled_request, inverse_of: :pooled_requests
 
   # A request_purpose is a simple means of distinguishing WHY a request was made.
   # cf. RequestType which defines how it will be fulfilled.
@@ -544,10 +550,6 @@ class Request < ApplicationRecord
 
   def target_purpose
     nil
-  end
-
-  def library_creation?
-    false
   end
 
   def product_line

@@ -1,7 +1,7 @@
 
 module IlluminaC::Requests
   class LibraryRequest < Request::LibraryCreation
-    def role; "#{request_metadata.library_type} #{order.role}"; end
+    def role; "#{request_metadata.library_type} #{super}"; end
 
     # Pop the request type in the pool information
     def update_pool_information(pool_information)

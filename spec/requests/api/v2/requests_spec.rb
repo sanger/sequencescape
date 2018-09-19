@@ -27,5 +27,11 @@ describe 'Requests API', with: :api_v2 do
       expect(response).to have_http_status(:success)
       expect(json.dig('data', 'type')).to eq('requests')
     end
+
+    it 'handles pre-capture pool inclusion' do
+      api_get "/api/v2/requests/#{resource_model.id}?include=pre_capture_pool"
+      expect(response).to have_http_status(:success), response.body
+      expect(json.dig('data', 'type')).to eq('requests')
+    end
   end
 end

@@ -27,6 +27,7 @@ module JSONAPI
   class ResourceSerializer
     def to_many_linkage(source, relationship)
       linkage = []
+
       linkage_types_and_values = if source.preloaded_fragments.key?(format_key(relationship.name))
                                    source.preloaded_fragments[format_key(relationship.name)].map do |_, resource|
                                      [relationship.type, resource.id]
@@ -37,7 +38,7 @@ module JSONAPI
                                    # MODIFICATION BEGINS
                                    if assoc.respond_to?(:loaded?) && assoc.loaded?
                                      assoc.map do |obj|
-                                       [source.class.resource_type_for(obj), obj.id]
+                                       [source.class.resource_type_for(obj)&.pluralize, obj.id]
                                      end
                                    else
                                      type_column = assoc.inheritance_column

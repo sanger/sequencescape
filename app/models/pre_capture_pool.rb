@@ -1,17 +1,21 @@
+# frozen_string_literal: true
 
+# A pre-capture pool is a group of requests which will be pooled together midway
+# through library preparation, particularly prior to capture in the indexed-sequence
+# capture (ISC) pipelines
+# We build pre capture groups at submission so that they are not affected by failing of wells or
+# re-arraying.
 class PreCapturePool < ApplicationRecord
-  # We build pre capture groups at submission so that they are not affected by failing of wells or
-  # re-arraying.
-
+  # INclude in request classes which allow pre-capture pooling
   module Poolable
     def self.included(base)
       base.class_eval do
-        has_one :pooled_request, dependent: :destroy, class_name: 'PreCapturePool::PooledRequest', foreign_key: :request_id, inverse_of: :request
-        has_one :pre_capture_pool, through: :pooled_request, inverse_of: :pooled_requests
+        self.pre_capture_pooled = true
       end
     end
   end
 
+  # Joins requests to pools
   class PooledRequest < ApplicationRecord
     belongs_to :request
     validates_presence_of :request
@@ -46,7 +50,7 @@ class PreCapturePool < ApplicationRecord
     private
 
     def poolable_type
-      @pt ||= RequestType.find(submission.request_type_ids).detect { |rt| rt.request_class.include?(Poolable) }
+      @pt ||= RequestType.find(submission.request_type_ids).detect { |rt| rt.request_class.pre_capture_pooled? }
     end
 
     def library_creation_type

@@ -26,9 +26,8 @@
   </head>
 
   <body class="<%= Rails.env %> <%= DeploymentEnvironment.role %>">
+    <header><%= render partial: 'shared/header' %></header>
     <div id='main-content'>
-
-      <header><%= render partial: 'shared/header' %></header>
 
       <section class="row">
         <section id="page-content">

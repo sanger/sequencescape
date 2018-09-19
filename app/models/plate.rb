@@ -36,7 +36,7 @@ class Plate < Asset
     # Build empty wells for the plate.
     def construct!
       plate = proxy_association.owner
-      plate.maps.in_row_major_order.pluck(:id).map do |location_id|
+      plate.maps.in_row_major_order.ids.map do |location_id|
         Well.create!(map_id: location_id)
       end.tap do |wells|
         ContainerAssociation.import(wells.map { |well| { content_id: well.id, container_id: plate.id } })
@@ -49,15 +49,6 @@ class Plate < Asset
     # Returns the wells with their pool identifier included
     def with_pool_id
       proxy_association.owner.plate_purpose.pool_wells(self)
-    end
-
-    # Yields each pool and the wells that are in it
-    def walk_in_pools(&block)
-      with_pool_id.group_by(&:pool_id).each(&block)
-    end
-
-    def in_preferred_order
-      proxy_association.owner.plate_purpose.in_preferred_order(self)
     end
 
     def indexed_by_location

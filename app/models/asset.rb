@@ -223,7 +223,7 @@ class Asset < ApplicationRecord
     {}
   end
 
-  def is_sequenceable?
+  def sequenceable?
     false
   end
 

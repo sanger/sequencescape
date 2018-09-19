@@ -11,6 +11,12 @@ RSpec.describe Api::V2::AliquotResource, type: :resource do
   it 'works', :aggregate_failures do
     is_expected.to have_attribute :tag_oligo
     is_expected.to have_attribute :tag2_oligo
+    # Not sure about these two. They become really tricky to
+    # handle if we re-factor tags. But v. useful to users
+    # Possibly store as some kind of metadata with other useful details
+    # (eg. tag set, lot number?)
+    is_expected.to have_attribute :tag_index
+    is_expected.to have_attribute :tag2_index
     is_expected.to have_attribute :suboptimal
     is_expected.to_not have_updatable_field(:id)
     is_expected.to_not have_updatable_field(:tag_oligo)
