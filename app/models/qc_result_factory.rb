@@ -43,7 +43,7 @@ class QcResultFactory
 
     attr_accessor :uuid, :barcode, :well_location, :key, :value, :units, :cv, :assay_type, :assay_version, :qc_assay
 
-    attr_reader :asset, :qc_result, :plate
+    attr_reader :asset, :qc_result, :plate, :asset_identifier
 
     validate :check_asset_identifier, :check_asset, :check_qc_result
 
@@ -55,11 +55,29 @@ class QcResultFactory
     end
 
     def message_id
-      "Asset identifier - #{(uuid || barcode || 'blank')}"
+      "Asset identifier - #{(asset_identifier || 'blank')}"
     end
 
     def parent_plate
       @parent_plate ||= plate.parent
+    end
+
+    def uuid=(uuid)
+      return if uuid.nil?
+      @asset_identifier = uuid
+      uuid_object = Uuid.find_by(external_id: uuid)
+      return if uuid_object.blank?
+      @uuid = if uuid_object.resource_type == 'Sample'
+        Sample.find(uuid_object.resource_id).primary_receptacle
+      else
+        Asset.find(uuid_object.resource_id)
+      end
+    end
+
+    def barcode=(barcode)
+      return if barcode.nil?
+      @asset_identifier = barcode
+      @barcode = Asset.find_by_barcode(barcode)
     end
 
     # This is where the complexity is.
@@ -69,11 +87,7 @@ class QcResultFactory
     # If the object is a tube then do nothing just return the asset.
     # If a well location is passed then assume it is a plate so we need to return the associated well.
     def build_asset
-      asset = if uuid.present?
-                build_asset_by_uuid
-              elsif barcode.present?
-                build_asset_by_barcode
-              end
+      asset = uuid || barcode
       return if asset.blank?
       return asset if well_location.blank?
       @plate = Plate.find(asset.id)
@@ -124,19 +138,6 @@ class QcResultFactory
       errors.add(:base, 'must have an asset identifier - either a uuid or barcode')
     end
 
-    def build_asset_by_uuid
-      uuid_object = Uuid.find_by(external_id: uuid)
-      return if uuid_object.blank?
-      if uuid_object.resource_type == 'Sample'
-        Sample.find(uuid_object.resource_id).primary_receptacle
-      else
-        Asset.find(uuid_object.resource_id)
-      end
-    end
-
-    def build_asset_by_barcode
-      Asset.find_by_barcode(barcode)
-    end
   end
 
   private
