@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'syslog/logger'
 require 'ostruct'
 
@@ -10,7 +12,7 @@ class PsdFormatter < Syslog::Logger::Formatter
     super()
   end
 
-  def call(severity, timestamp, progname, msg)
+  def call(severity, _timestamp, _progname, msg)
     thread_id = Thread.current.object_id
     format(LINE_FORMAT, thread_id, @app_tag, format_severity(severity), msg)
   end

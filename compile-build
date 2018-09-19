@@ -21,7 +21,7 @@ tar \
   --exclude='./.simplecov' \
   --exclude='./.tags' \
   --exclude='./.travis.yml' \
-  --exclude='./README' \
+  --exclude='./README*' \
   --exclude='./compile-build' \
   --exclude='./coverage' \
   --exclude='./features' \
@@ -30,7 +30,7 @@ tar \
   --exclude='./node_modules' \
   --exclude='./run_coverage' \
   --exclude='./sbin' \
-  --exclude='./sequencescape.sublime-project' \
+  --exclude='./*.sublime-project' \
   --exclude='./spec' \
   --exclude='./test' \
   --exclude='./tmp' \
