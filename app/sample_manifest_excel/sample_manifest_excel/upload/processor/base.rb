@@ -35,7 +35,7 @@ module SampleManifestExcel
         end
 
         def samples_updated?
-          upload.rows.all?(&:sample_updated?)
+          upload.rows.all?(&:sample_updated?) || log_error_and_return_false('could not update samples.')
         end
 
         def processed?
@@ -57,6 +57,12 @@ module SampleManifestExcel
         end
 
         private
+
+        # Log post processing checks and fail
+        def log_error_and_return_false(message)
+          upload.errors.add(:base, message)
+          false
+        end
 
         def check_upload_type
           return if upload.instance_of?(SampleManifestExcel::Upload::Base)

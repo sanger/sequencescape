@@ -43,7 +43,7 @@ class TagSubstitution
   end
 
   def substitutions=(substitutions)
-    @substitutions = substitutions.map { |attrs| Substitution.new(attrs) }
+    @substitutions = substitutions.map { |attrs| Substitution.new(attrs.dup) }
   end
 
   def save
