@@ -2,7 +2,6 @@ Sequencescape
 =============
 
 [![Build Status](https://travis-ci.org/radome/sequencescape.svg?branch=test_openstack)](https://travis-ci.org/radome/sequencescape)
-
 [![Maintainability](https://api.codeclimate.com/v1/badges/4e15fd15338168a2334b/maintainability)](https://codeclimate.com/github/radome/sequencescape/maintainability)
 
 
@@ -124,7 +123,7 @@ For tracking illumina instruments you need the NPG systems.
 NPG is linked to Sequencescape via a cluster formation batch
 which represents a flowcell.
 
-[NPG](http://www.sanger.ac.uk/resources/software/npg/)
+[NPG Software](http://www.sanger.ac.uk/resources/software/npg/)
 
 
 Copyright (c) 2007, 2010-2018  Genome Research Ltd.
