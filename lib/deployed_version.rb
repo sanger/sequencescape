@@ -18,6 +18,10 @@ module Deployed
       @release ||= read_file('RELEASE').strip
     end
 
+    def release_url
+      @release_url ||= read_file('REPO').strip
+    end
+
     def revision_short
       revision.slice 0..6
     end
@@ -84,7 +88,9 @@ module Deployed
   COMMIT = REPO_DATA.revision.presence || 'unknown_revision'
   ABBREV_COMMIT = REPO_DATA.revision_short.presence || 'unknown_revision'
 
-  VERSION_STRING = "#{APP_NAME} #{VERSION_ID} [#{ENVIRONMENT}] #{BRANCH}@#{ABBREV_COMMIT}"
+  VERSION_STRING = "#{APP_NAME} #{VERSION_ID} [#{ENVIRONMENT}]"
+  VERSION_COMMIT = "#{BRANCH}@#{ABBREV_COMMIT}"
+  REPO_URL       = REPO_DATA.release_url.presence || '#'
 
   require 'ostruct'
   DETAILS = OpenStruct.new(

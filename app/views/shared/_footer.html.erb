@@ -4,7 +4,7 @@
   <li><%= link_to "Feedback", "mailto:#{configatron.admin_email}" %></li>
 </ul>
 <ul class="deployment-info">
-  <li><%= Deployed::VERSION_STRING %></li>
+  <li><%= Deployed::VERSION_STRING %> <%= link_to Deployed::VERSION_COMMIT, Deployed::REPO_URL%></li>
   <li><%= Deployed::RELEASE_NAME %></li>
   <li><%= Deployed::HOSTNAME %></li>
 </ul>
