@@ -38,7 +38,7 @@ module ApplicationHelper
 
   def display_user_guide(display_text, link = nil)
     alert(:user_guide) do
-      link.present? ? link_to(display_text, link) : display_text
+      concat link.present? ? link_to(display_text, link) : display_text
     end
   end
 

@@ -27,7 +27,7 @@ class TransferRequest < ApplicationRecord
   scope :include_submission, -> { includes(submission: :uuid_object) }
   # Ensure that the source and the target assets are not the same, otherwise bad things will happen!
   validate :source_and_target_assets_are_different
-  validates :outer_request_candidates, length: { maximum: 1 }
+  validates :outer_request_candidates, length: { maximum: 1, message: 'can not be isolated from the possible requests' }, on: :create
 
   after_create(:perform_transfer_of_contents)
 

@@ -28,11 +28,11 @@
 
   <body class="<%= Rails.env %> <%= DeploymentEnvironment.role %>">
     <header><%= render partial: 'shared/header' %></header>
+    <%= render_flashes %>
     <div id='main-content'>
 
       <section class="row">
         <section id="page-content">
-          <%= render_flashes %>
           <div id="yield">
             <%= yield %>
           </div>

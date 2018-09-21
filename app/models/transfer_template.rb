@@ -22,17 +22,17 @@ class TransferTemplate < ApplicationRecord
     @transfer_class ||= transfer_class_name.constantize
   end
 
-  def create!
-    transfer_class.create!(transfer_attributes)
+  def create!(attributes)
+    transfer_class.create!(transfer_attributes(attributes))
   end
 
-  def preview!
-    transfer_class.preview!(transfer_attributes)
+  def preview!(attributes)
+    transfer_class.preview!(transfer_attributes(attributes))
   end
 
   private
 
-  def transfer_attributes
+  def transfer_attributes(attributes)
     attributes[:transfers] = transfers if transfers.present?
     attributes
   end
