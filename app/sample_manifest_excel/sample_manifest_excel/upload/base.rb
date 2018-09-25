@@ -75,6 +75,10 @@ module SampleManifestExcel
         sample_manifest.finished!
       end
 
+      def fail
+        sample_manifest.fail!
+      end
+
       def reuploaded?
         @reuploaded
       end
