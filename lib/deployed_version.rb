@@ -80,7 +80,7 @@ module Deployed
     def execute_command(cmd)
       _stdin, stdout, _stderr, _wait_thr = Open3.popen3(cmd)
       res = stdout.gets
-      res.strip unless res.nil?
+      res&.strip
     end
 
     def read_file(filename)
