@@ -5,15 +5,15 @@ require 'open3'
 module Deployed
   class RepoData
     def tag
-      @tag ||= get_git_tag || read_file('TAG').strip.presence
+      @tag ||= git_tag || read_file('TAG').strip.presence
     end
 
     def revision
-      @revision ||= get_git_rev || read_file('REVISION').strip.presence
+      @revision ||= git_rev || read_file('REVISION').strip.presence
     end
 
     def branch
-      @branch ||= get_git_branch || read_file('BRANCH').strip.presence
+      @branch ||= git_branch || read_file('BRANCH').strip.presence
     end
 
     def release
@@ -58,17 +58,17 @@ module Deployed
 
     private
 
-    def get_git_tag
+    def git_tag
       cmd = 'git tag -l --points-at HEAD --sort -version:refname | head -1'
       @git_tag ||= execute_command(cmd)
     end
 
-    def get_git_rev
+    def git_rev
       cmd = 'git rev-parse HEAD'
       @git_rev ||= execute_command(cmd)
     end
 
-    def get_git_branch
+    def git_branch
       cmd = 'git rev-parse --abbrev-ref HEAD'
       @git_branch ||= execute_command(cmd)
     end
