@@ -80,6 +80,9 @@ module SampleManifestExcel
       end
 
       def fail
+        # If we've failed, do not update the manifest file, trying to do so
+        # causes exceptions
+        sample_manifest.association(:uploaded_document).reset
         sample_manifest.fail!
       end
 
