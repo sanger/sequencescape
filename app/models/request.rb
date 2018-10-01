@@ -270,6 +270,7 @@ class Request < ApplicationRecord
         'MIN(requests.id) AS id',
         'MIN(requests.submission_id) AS submission_id',
         'MAX(requests.priority) AS max_priority',
+        'MIN(requests.order_id) AS order_id',
         'hl.container_id AS container_id',
         'count(DISTINCT requests.id) AS request_count',
         'MIN(requests.asset_id) AS asset_id',

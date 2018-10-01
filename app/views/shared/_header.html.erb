@@ -20,17 +20,22 @@
         <%= search_field_tag :q, "", size: 20, type: "search", placeholder: "name, id, barcode", id: 'layout_search' %>
       </div>
     <% end %>
-    <div class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <%= icon('fas', 'user-cog') %>
-        </a>
-        <div class="dropdown-menu dropdown-menu-right text-dark" aria-labelledby="navbarDropdown">
-          <%= link_to current_user.name, profile_path(current_user), class: 'dropdown-item' %>
-          <%= link_to I18n.t('global_links.edit_profile'), edit_profile_path(current_user), class: 'dropdown-item' %>
-          <div class="dropdown-divider"></div>
-          <%= link_to I18n.t('global_links.logout'), logout_path, class: 'dropdown-item' -%>
-        </div>
-    </div>
+    <% if logged_in? -%>
+      <div class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <%= icon('fas', 'user-cog') %>
+          </a>
+          <div class="dropdown-menu dropdown-menu-right text-dark" aria-labelledby="navbarDropdown">
+            <%= link_to current_user.name, profile_path(current_user), class: 'dropdown-item' %>
+            <%= link_to I18n.t('global_links.edit_profile'), edit_profile_path(current_user), class: 'dropdown-item' %>
+            <div class="dropdown-divider"></div>
+            <%= link_to I18n.t('global_links.logout'), logout_path, class: 'dropdown-item' -%>
+          </div>
+      </div>
+    <% else %>
+      <%# User is not logged in %>
+      <div class="nav-item"><%= icon('fas', 'user-alt-slash') %></div>
+    <% end %>
   </div>
   </div><!-- /.navbar-collapse -->
 </nav>

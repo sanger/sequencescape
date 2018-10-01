@@ -23,16 +23,17 @@ class StripTubeCreationTest < TaskTestBase
       @batch          = create :batch, pipeline: @pipeline
       @task           = create :strip_tube_creation_task, workflow: @pipeline.workflow
       @purpose        = create :strip_tube_purpose
+      @request_type   = create :well_request_type
       @task.descriptors <<
         Descriptor.new(name: 'test', selection: [1, 2, 4, 6, 12], key: 'strips_to_create') <<
         Descriptor.new(name: 'test2', value: @purpose.name, key: 'strip_tube_purpose')
       @plate = create :plate_for_strip_tubes
 
       @submission = create :submission
+      @order = create :order, submission: @submission, request_types: [@request_type.id], assets: @plate.wells.in_plate_column(1, 96)
 
-      @request_type = create :well_request_type
       @plate.wells.in_plate_column(1, 96).each do |well|
-        2.times { @batch.requests << build(:request_without_assets, asset: well, target_asset: nil, request_type: @request_type, submission: @submission) }
+        2.times { @batch.requests << build(:request_without_assets, asset: well, target_asset: nil, request_type: @request_type, submission: @submission, order: @order) }
       end
       @pipeline.request_types << @request_type
     end

@@ -200,6 +200,10 @@ class Submission < ApplicationRecord
   end
   deprecate request_type_ids: 'Orders may now have different request_types'
 
+  def order_request_type_ids
+    orders.flat_map(&:request_types).uniq.compact
+  end
+
   def next_requests_to_connect(request, next_request_type_id = nil)
     if next_request_type_id.nil?
       order = request.order.presence || orders.first
@@ -233,6 +237,7 @@ class Submission < ApplicationRecord
     # here so that the earliest requests, those created by the submission build, are always first;
     # any additional requests will have come from a sequencing batch being reset.
     order = request.order.presence || orders.first
+    return [] if order.nil?
     next_request_type_id = order.next_request_type_id(request.request_type_id) or return []
     return request.target_asset.requests.where(submission_id: id, request_type_id: next_request_type_id) if request.target_asset.present?
     next_requests_to_connect(request, next_request_type_id)
