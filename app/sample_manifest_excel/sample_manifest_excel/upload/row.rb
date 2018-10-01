@@ -102,8 +102,7 @@ module SampleManifestExcel
       def transfer_aliquot
         return unless valid?
         sample.primary_receptacle.requests.each do |request|
-          request.manifest_processed!
-          @aliquot_transferred = true
+          @aliquot_transferred = request.passed? || request.manifest_processed!
         end
       end
 
