@@ -41,13 +41,11 @@ class QcResultFactory
   class Resource
     include ActiveModel::Model
 
-    attr_accessor :uuid, :well_location, :key, :value, :units, :cv, :assay_type, :assay_version, :qc_assay
+    attr_accessor :well_location, :key, :value, :units, :cv, :assay_type, :assay_version, :qc_assay
 
-    attr_reader :asset, :qc_result, :plate
+    attr_reader :asset, :qc_result, :plate, :asset_identifier, :uuid, :barcode
 
-    validates :uuid, presence: true
-
-    validate :check_asset, :check_qc_result
+    validate :check_asset_identifier, :check_asset, :check_qc_result
 
     def initialize(attributes = {})
       super(attributes)
@@ -57,11 +55,29 @@ class QcResultFactory
     end
 
     def message_id
-      "Uuid - #{(uuid || 'blank')}"
+      "Asset identifier - #{(asset_identifier || 'blank')}"
     end
 
     def parent_plate
       @parent_plate ||= plate.parent
+    end
+
+    def uuid=(uuid)
+      return if uuid.nil?
+      @asset_identifier = uuid
+      uuid_object = Uuid.find_by(external_id: uuid)
+      return if uuid_object.blank?
+      @uuid = if uuid_object.resource_type == 'Sample'
+                Sample.find(uuid_object.resource_id).primary_receptacle
+              else
+                Asset.find(uuid_object.resource_id)
+              end
+    end
+
+    def barcode=(barcode)
+      return if barcode.nil?
+      @asset_identifier = barcode
+      @barcode = Asset.find_by_barcode(barcode)
     end
 
     # This is where the complexity is.
@@ -71,13 +87,8 @@ class QcResultFactory
     # If the object is a tube then do nothing just return the asset.
     # If a well location is passed then assume it is a plate so we need to return the associated well.
     def build_asset
-      uuid_object = Uuid.find_by(external_id: uuid)
-      return if uuid_object.blank?
-      asset = if uuid_object.resource_type == 'Sample'
-                Sample.find(uuid_object.resource_id).primary_receptacle
-              else
-                Asset.find(uuid_object.resource_id)
-              end
+      asset = uuid || barcode
+      return if asset.blank?
       return asset if well_location.blank?
       @plate = Plate.find(asset.id)
       plate.find_well_by_map_description(well_location)
@@ -120,6 +131,11 @@ class QcResultFactory
       qc_result.errors.each do |k, v|
         errors.add(k, v)
       end
+    end
+
+    def check_asset_identifier
+      return if uuid.present? || barcode.present?
+      errors.add(:base, 'must have an asset identifier - either a uuid or barcode')
     end
   end
 
