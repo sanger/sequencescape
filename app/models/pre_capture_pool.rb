@@ -59,12 +59,12 @@ class PreCapturePool < ApplicationRecord
     def walk_to_pooled_request(request)
       return request if request.pre_capture_pooled?
       next_requests = submission.next_requests(request)
-      raise StandardError, "Could not find pooled request for request #{request.id}" if next_request.empty?
+      raise StandardError, "Could not find pooled request for request #{request.id}" if next_requests.empty?
       next_requests.map { |next_request| walk_to_pooled_request(next_request) }
     end
 
     def poolable?
-      RequestType.find(submission.order_request_type_ids).detect { |rt| rt.request_class.pre_capture_pooled? }
+      RequestType.find(submission.order_request_type_ids).detect { |rt| rt.request_class.pre_capture_pooled? }.present?
     end
 
     def library_creation_type
