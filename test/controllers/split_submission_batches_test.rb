@@ -58,7 +58,7 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
              })
 
         Submission.last.built!
-        Delayed::Worker.new.work_off
+        Submission.last.build_batch
       end
 
       context 'and I batch up the library creation requests seperately' do

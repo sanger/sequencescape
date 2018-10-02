@@ -16,6 +16,7 @@ RSpec.describe Api::V2::TubeResource, type: :resource do
     is_expected.to have_many(:samples).with_class_name('Sample')
     is_expected.to have_many(:projects).with_class_name('Project')
     is_expected.to have_many(:studies).with_class_name('Study')
+    is_expected.to have_one(:purpose).with_class_name('Purpose')
   end
 
   # Custom method tests

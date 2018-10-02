@@ -20,7 +20,6 @@ module IlluminaHtp::Requests
       pool_information[:for_multiplexing] = request_type.for_multiplexing?
     end
 
-    delegate :role, to: :order
     delegate :acceptable_plate_purposes, to: :request_type
 
     validate :valid_purpose?, if: :asset_id_changed?

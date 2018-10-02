@@ -22,16 +22,18 @@ class TransferTemplate < ApplicationRecord
     @transfer_class ||= transfer_class_name.constantize
   end
 
-  def self.transfer_constructor(name)
-    line = __LINE__ + 1
-    class_eval("
-      def #{name}(attributes)
-        attributes.merge!(:transfers => self.transfers) unless self.transfers.blank?
-        transfer_class.#{name}(attributes)
-      end
-    ", __FILE__, line)
+  def create!(attributes)
+    transfer_class.create!(transfer_attributes(attributes))
   end
 
-  transfer_constructor(:create!)
-  transfer_constructor(:preview!)
+  def preview!(attributes)
+    transfer_class.preview!(transfer_attributes(attributes))
+  end
+
+  private
+
+  def transfer_attributes(attributes)
+    attributes[:transfers] = transfers if transfers.present?
+    attributes
+  end
 end

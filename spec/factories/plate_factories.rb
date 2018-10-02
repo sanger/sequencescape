@@ -70,7 +70,10 @@ FactoryBot.define do
         well_hash = evaluator.parent.wells.index_by(&:map_description)
         plate.wells.each do |well|
           well.stock_well_links << build(:stock_well_link, target_well: well, source_well: well_hash[well.map_description])
-          create :transfer_request, asset: well_hash[well.map_description], target_asset: well, submission: evaluator.submission
+          outer_request = well_hash[well.map_description].requests.detect do |r|
+            r.submission_id == evaluator.submission.id
+          end
+          create :transfer_request, asset: well_hash[well.map_description], target_asset: well, outer_request: outer_request
         end
       end
     end

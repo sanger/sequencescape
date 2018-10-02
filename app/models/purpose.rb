@@ -49,3 +49,4 @@ class Purpose < ApplicationRecord
 end
 
 require_dependency 'tube/purpose'
+require_dependency 'plate_purpose'

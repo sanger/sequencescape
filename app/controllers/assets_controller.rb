@@ -163,7 +163,7 @@ class AssetsController < ApplicationController
 
   private def asset_params
     permitted = [:volume, :concentration]
-    permitted << :name if current_user.administrator? #
+    permitted << :name if current_user.administrator?
     permitted << :plate_purpose_id if current_user.administrator? || current_user.lab_manager?
     params.require(:asset).permit(permitted)
   end

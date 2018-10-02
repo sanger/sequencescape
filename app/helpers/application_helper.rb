@@ -38,7 +38,7 @@ module ApplicationHelper
 
   def display_user_guide(display_text, link = nil)
     alert(:user_guide) do
-      link.present? ? link_to(display_text, link) : display_text
+      concat link.present? ? link_to(display_text, link) : display_text
     end
   end
 
@@ -192,9 +192,9 @@ module ApplicationHelper
 
   def display_ready_for_manual_qc(v)
     if v
-      image_tag('accept.png')
+      icon('far', 'check-circle')
     else
-      image_tag('error.png')
+      icon('fas', 'exclamation-circle', class: 'text-danger')
     end
   end
 
@@ -206,9 +206,9 @@ module ApplicationHelper
   def display_boolean_results(result)
     return 'NA' if (!result || result.empty?)
     if result == 'pass' || result == '1' || result == 'true'
-      return image_tag('accept.png', title: result)
+      return icon('far', 'check-circle', title: result)
     else
-      return image_tag('error.png', title: result)
+      return icon('fas', 'exclamation-circle', class: 'text-danger', title: result)
     end
   end
 

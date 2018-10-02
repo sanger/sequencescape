@@ -42,14 +42,7 @@ class WorkCompletion::TubeCompletion
   end
 
   def detect_upstream_requests
-    CustomerRequest.includes(
-      { submission: :orders },
-      { request_type: :request_type_validators },
-      { target_asset: :aliquots },
-      :request_events,
-      :billing_product,
-      :billing_items,
-      :request_metadata
-    ).where(id: target_tube.aliquots.pluck(:request_id))
+    CustomerRequest.includes(WorkCompletion::REQUEST_INCLUDES)
+                   .where(id: target_tube.aliquots.pluck(:request_id))
   end
 end

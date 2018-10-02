@@ -193,24 +193,21 @@ class Submission < ApplicationRecord
     errors.add(:study, "Can't mix X and autosome removal with non-removal") unless a.study_metadata.remove_x_and_autosomes == b.study_metadata.remove_x_and_autosomes
   end
 
-  # for the moment we consider that request types should be the same for all order
-  # so we can take the first one
+  # This is no longer valid.
   def request_type_ids
     return [] unless orders.present?
     orders.first.request_types.map(&:to_i)
   end
+  deprecate request_type_ids: 'Orders may now have different request_types'
 
-  def find_next_request_type_id(request_type_id)
-    request_type_ids[request_type_ids.index(request_type_id) + 1]  if request_type_ids.present?
-  end
-
-  def previous_request_type_id(request_type_id)
-    request_type_ids[request_type_ids.index(request_type_id) - 1]  if request_type_ids.present?
+  def order_request_type_ids
+    orders.flat_map(&:request_types).uniq.compact
   end
 
   def next_requests_to_connect(request, next_request_type_id = nil)
     if next_request_type_id.nil?
-      next_request_type_id = find_next_request_type_id(request.request_type_id) or return []
+      order = request.order.presence || orders.first
+      next_request_type_id = order.next_request_type_id(request.request_type_id) or return []
     end
     all_requests = request_cache_for(request.request_type_id, next_request_type_id).to_a
     sibling_requests, next_possible_requests = all_requests.partition { |r| r.request_type_id == request.request_type_id }
@@ -239,7 +236,9 @@ class Submission < ApplicationRecord
     # the requests in the subsequent request type, so that we can tie them up.  We order by ID
     # here so that the earliest requests, those created by the submission build, are always first;
     # any additional requests will have come from a sequencing batch being reset.
-    next_request_type_id = find_next_request_type_id(request.request_type_id) or return []
+    order = request.order.presence || orders.first
+    return [] if order.nil?
+    next_request_type_id = order.next_request_type_id(request.request_type_id) or return []
     return request.target_asset.requests.where(submission_id: id, request_type_id: next_request_type_id) if request.target_asset.present?
     next_requests_to_connect(request, next_request_type_id)
   end

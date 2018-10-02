@@ -14,14 +14,6 @@ Bundler/OrderedGems:
   Exclude:
     - 'Gemfile'
 
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: AllowBorderComment, AllowMarginComment.
-Layout/EmptyComment:
-  Exclude:
-    - 'app/controllers/assets_controller.rb'
-    - 'app/models/well.rb'
-
 # Offense count: 9
 Lint/AmbiguousBlockAssociation:
   Exclude:
@@ -164,12 +156,6 @@ Lint/ShadowingOuterLocalVariable:
     - 'test/unit/api/core/io/json/grammar_test.rb'
     - 'test/unit/api/core/io/json/stream_test.rb'
     - 'test/unit/cherrypick_task_test.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Lint/UnneededCopDisableDirective:
-  Exclude:
-    - 'config/routes.rb'
 
 # Offense count: 1
 Lint/UnreachableCode:

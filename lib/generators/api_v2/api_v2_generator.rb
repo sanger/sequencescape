@@ -28,11 +28,11 @@ class ApiV2Generator < Rails::Generators::NamedBase
   end
 
   def parameterized
-    name.underscore
+    name.underscore.pluralize
   end
 
   def key_formatted
-    name.underscore
+    name.underscore.pluralize
   end
 
   def json_route(routing_code)

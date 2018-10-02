@@ -112,7 +112,6 @@ class Well < Receptacle
       .where(aliquots: { study_id: study })
   }
 
-  #
   scope :without_report, ->(product_criteria) {
     joins([
       'LEFT OUTER JOIN qc_metrics AS wr_qcm ON wr_qcm.asset_id = assets.id',

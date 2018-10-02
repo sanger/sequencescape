@@ -33,6 +33,7 @@ module Submission::DelayedJobBehaviour
 
   def fail_set_message_and_save(message)
     fail!
+    Rails.logger.error(message)
     self.message = message[0..254]
     save(validate: false) # Just in case the cause is it being invalid!
   end
