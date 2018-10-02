@@ -128,6 +128,7 @@ group :development do
   gem 'rack-mini-profiler'
   # find unused routes and controller actions by runnung `rake traceroute` from CL
   gem 'traceroute'
+  gem 'travis'
 end
 
 group :development, :test, :cucumber do

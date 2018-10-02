@@ -33,14 +33,12 @@ jobs:
     - chmod +x ./cc-test-reporter
     - "./cc-test-reporter before-build"
     script: "./run_coverage"
-    name: "Coverage"
+    name: Coverage
     after_script:
     - "./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT"
-
   - if: type != cron
     env: SUITE=rubocop
-    name: "Rubocop"
-
+    name: Rubocop
   - if: type != cron
     env:
     - SUITE='rake test'
@@ -49,16 +47,14 @@ jobs:
     before_script:
     - bundle exec rake db:setup
     script: bundle exec rake test
-    name: "Rake Test"
-
+    name: Rake Test
   - if: type != cron
     env:
     - SUITE=rspec
     - RAILS_ENV=test
     before_script:
     - bundle exec rake db:setup
-    name: "Rspec"
-
+    name: Rspec
   - if: type != cron
     env:
     - SUITE='rake knapsack:cucumber'
@@ -68,8 +64,7 @@ jobs:
     before_script:
     - bundle exec rake assets:precompile
     - bundle exec rake db:setup
-    name: "Cucumber Test 1"
-
+    name: Cucumber Test 1
   - if: type != cron
     env:
     - SUITE='rake knapsack:cucumber'
@@ -79,12 +74,11 @@ jobs:
     before_script:
     - bundle exec rake assets:precompile
     - bundle exec rake db:setup
-    name: "Cucumber Test 2"
-
+    name: Cucumber Test 2
   - stage: build
     if: tag IS present
     script: "./compile-build"
-    name: "Compile Build"
+    name: Compile Build
     deploy:
       provider: releases
       file: release.tar.gz
@@ -92,6 +86,6 @@ jobs:
       skip_cleanup: true
       on:
         tags: true
-        repo: radome/sequencescape
+        repo: sanger/sequencescape
       api_key:
-        secure: MpOafhFFbulyjia4ekaAIfFryw33nJTw3q1tWLVYcfG8T1UQNJ1AZB2ZKm0EW5N085n/1klZWMrX3oM26q+jRmolm22zGIheFY2bpYNGeXzc7B9F6FMSw7ZLPRWy2Jdmt7c7phGCVjraboYgpwTzY3WR1SZ9pwT4AEEgJPqpATzCl2AWXkYQnjk9Wq64kPyWeSLFTACc3h2WCKTCw5dPG24iz4EuGbT8kg/qTKee5R9T8zCCyehEyneBfXiNKlddy1t9RIjJji/freUEbMWjA9R9hFcg1YKf0CQm0oCtZXqOmMBQgtgg0xCMdw0bu6lzGWQq7LVmS0fzhcY/GoQOhYrJ8iT9JDZbNXVWARiqjevn1kJaSMpqEd+pK6/LL36WijdBZFeusvIReJOW2EcCsLO/yR5Pkyn2QBVlTd4PD+zdA5Fh84ryjHIH4O1xqlte0mgErYxoSjYc7iNrUoL/5aZxHDLYve7HdtioVPYbniLt4Zn3gctggPEc/yBZ+ddFRn0kkAuohTbko6dunefwzzGnnnei2LHMpbWVkXCV/TD9kGFwROsNhUb/4rmyRxl8R23qvGdmAlqR733/9IKZyaAiRtg5EoGwTr2VmBczOD1am5EXJxIUTeDGF8wdDTDDxZTiSqyByah//qaYw4K9M8go9eeTszgFSIYA+Sr60QU=
+        secure: eWwbjG2LpK3cTHbqJfccIpcNj0PUl2YqGRYVAOQX+YPUtjOjnR4hqDMIUJTCVAHQ8PUC3yh/H7Sf4F7I5DQ5SdhY2Yeiusucig3V8yUdO6oHrpgaN2r9Nd/nM/vRxL7oVCI84Ahhu5mKL3x1PayTTpRjiu1KqL/BMbV//6s5jBs=
