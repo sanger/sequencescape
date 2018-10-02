@@ -1,4 +1,3 @@
-
 Given /^I have a library tube of stuff called "([^\"]+)"$/ do |name|
   # TODO: check if it should be :library_tube instead
   FactoryBot.create(:empty_library_tube, name: name)

@@ -1,4 +1,3 @@
-
 # TODO: Fix these
 module ApiRouting
   # Assets have a couple of extra actions that are always present: namely 'parents' and 'children'

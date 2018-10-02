@@ -1,4 +1,3 @@
-
 class AssignTubesToWellsTask < Task
   class AssignTubesToWellsData < Task::RenderElement
     def initialize(request)

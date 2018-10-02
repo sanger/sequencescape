@@ -1,4 +1,3 @@
-
 module Tasks::AssignTubesToWellsHandler
   # Plate is an option parameter for a target plate. Used in multiplexed
   # cherrypicking. In its absence a plate is created

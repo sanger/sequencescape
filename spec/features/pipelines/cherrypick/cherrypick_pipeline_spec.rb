@@ -187,7 +187,7 @@ feature 'cherrypick pipeline', js: true do
       C; SCRC3 = 1220000005877
       C;
       C; DEST1 = 1220099999705
-      TECAN
+    TECAN
 
     expected_file_lines = expected_file.lines
     # Shift off the comment lines
@@ -264,7 +264,7 @@ feature 'cherrypick pipeline', js: true do
       C; SCRC3 = 1220000005877
       C;
       C; DEST1 = 1220099999705
-      TECAN
+    TECAN
 
     expected_file_lines = expected_file.lines
     # Shift off the comment lines

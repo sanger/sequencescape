@@ -1,4 +1,3 @@
-
 module ModelExtensions::Submission
   def self.included(base)
     base.class_eval do

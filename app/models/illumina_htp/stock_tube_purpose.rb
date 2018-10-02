@@ -1,4 +1,3 @@
-
 class IlluminaHtp::StockTubePurpose < Tube::Purpose
   def create_with_request_options(_tube)
     raise 'Unimplemented behaviour'

@@ -1,4 +1,3 @@
-
 module Plate::FluidigmBehaviour
   class FluidigmError < StandardError; end
 

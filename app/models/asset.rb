@@ -1,4 +1,3 @@
-
 require 'eventful_record'
 require 'external_properties'
 

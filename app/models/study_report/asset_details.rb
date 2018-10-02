@@ -1,4 +1,3 @@
-
 module StudyReport::AssetDetails
   def qc_report
     qc_data = {

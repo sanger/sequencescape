@@ -1,4 +1,3 @@
-
 module Request::GroupingHelpers
   def group_requests_by_submission_id(requests)
     # NOTE: Not using group_by(&:submission_id) to maintain the order of the submissions from the order of the requests

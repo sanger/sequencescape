@@ -1,4 +1,3 @@
-
 # frozen_string_literal: true
 
 # This module can be included into ActiveRecord::Base classes to get the ability to specify the attributes

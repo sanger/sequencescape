@@ -1,4 +1,3 @@
-
 class ExtractionAttribute < ApplicationRecord
   include Uuid::Uuidable
 

@@ -1,4 +1,3 @@
-
 class Api::StudyIO < Api::Base
   module Extensions
     module ClassMethods

@@ -1,4 +1,3 @@
-
 # require './app/api/core/service'
 module Api
   class EndpointHandler < ::Core::Service

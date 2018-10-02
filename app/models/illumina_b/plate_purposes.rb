@@ -1,4 +1,3 @@
-
 module IlluminaB::PlatePurposes
   PLATE_PURPOSE_FLOWS = [
     %w(

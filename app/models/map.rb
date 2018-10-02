@@ -1,4 +1,3 @@
-
 class Map < ApplicationRecord
   validates_presence_of :description, :asset_size, :location_id, :row_order, :column_order, :asset_shape
   validates_numericality_of :asset_size, :row_order, :column_order

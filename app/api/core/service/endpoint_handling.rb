@@ -1,4 +1,3 @@
-
 module Core::Service::EndpointHandling
   def self.included(base)
     base.class_eval do

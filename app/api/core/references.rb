@@ -1,4 +1,3 @@
-
 module Core::References
   # Discards all of the references that this object is keeping to other objects.  This means that
   # all of the objects should be garbage collected, rather than a proportion that are external to an

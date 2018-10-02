@@ -1,4 +1,3 @@
-
 class Admin::Roles::UsersController < ApplicationController
   def index
     @role_name = params[:role_id]

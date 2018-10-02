@@ -1,4 +1,3 @@
-
 Given /^user "([^"]*)" exists$/ do |user_name|
   FactoryBot.create :user, login: user_name, first_name: user_name.titlecase, last_name: 'Smith'
 end

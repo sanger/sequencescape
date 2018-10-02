@@ -1,4 +1,3 @@
-
 module Core::Endpoint::BasicHandler::Actions::Factory
   class Nested < Core::Endpoint::BasicHandler
     def initialize(name, &block)

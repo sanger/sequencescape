@@ -1,4 +1,3 @@
-
 class AssetAudit < ApplicationRecord
   include Uuid::Uuidable
   include ::Io::AssetAudit::ApiIoSupport

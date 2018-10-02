@@ -1,4 +1,3 @@
-
 class FacultySponsor < ApplicationRecord
   include SharedBehaviour::Named
   extend Attributable::Association::Target

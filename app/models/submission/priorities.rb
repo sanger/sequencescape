@@ -1,4 +1,3 @@
-
 module Submission::Priorities
   def self.priorities
     %w(None Low Medium High)

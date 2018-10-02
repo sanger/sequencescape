@@ -1,4 +1,3 @@
-
 Given /^plate "([^"]*)" has "([^"]*)" wells$/ do |plate_barcode, number_of_wells|
   plate = Plate.find_from_barcode('DN' + plate_barcode)
   1.upto(number_of_wells.to_i) do |i|

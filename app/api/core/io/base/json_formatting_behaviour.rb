@@ -1,4 +1,3 @@
-
 module Core::Io::Base::JsonFormattingBehaviour
   def self.extended(base)
     base.class_eval do

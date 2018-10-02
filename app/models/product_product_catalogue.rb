@@ -1,4 +1,3 @@
-
 # Association between a product and a catalogue.
 # selection_criteria provides a means for catalogues with multiple
 # products to select a suitable one.

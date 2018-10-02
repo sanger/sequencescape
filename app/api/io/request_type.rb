@@ -1,4 +1,3 @@
-
 class ::Io::RequestType < ::Core::Io::Base
   set_model_for_input(::RequestType)
   set_json_root(:request_type)

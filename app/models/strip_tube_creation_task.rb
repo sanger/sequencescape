@@ -1,4 +1,3 @@
-
 class StripTubeCreationTask < Task
   belongs_to :purpose
 

@@ -1,4 +1,3 @@
-
 class TubeCreation < AssetCreation
   class ChildTube < ApplicationRecord
     self.table_name = ('tube_creation_children')

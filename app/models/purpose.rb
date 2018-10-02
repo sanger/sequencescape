@@ -1,4 +1,3 @@
-
 class Purpose < ApplicationRecord
   include Relationship::Associations
   include Uuid::Uuidable

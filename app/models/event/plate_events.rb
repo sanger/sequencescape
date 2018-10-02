@@ -1,4 +1,3 @@
-
 module Event::PlateEvents
   def gel_qc_date
     event_date('gel_analysed')

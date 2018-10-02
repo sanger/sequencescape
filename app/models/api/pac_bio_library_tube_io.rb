@@ -1,4 +1,3 @@
-
 class Api::PacBioLibraryTubeIO < Api::Base
   module Extensions
     module ClassMethods

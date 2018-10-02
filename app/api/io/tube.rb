@@ -1,4 +1,3 @@
-
 class Io::Tube < Io::Asset
   set_model_for_input(::Tube)
   set_json_root(:tube)

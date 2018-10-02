@@ -1,4 +1,3 @@
-
 class BaitLibraryType < ApplicationRecord
   include SharedBehaviour::Named
 

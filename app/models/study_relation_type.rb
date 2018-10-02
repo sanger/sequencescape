@@ -1,4 +1,3 @@
-
 class StudyRelationType < ApplicationRecord
   has_many :study_relations
   validates_uniqueness_of :name

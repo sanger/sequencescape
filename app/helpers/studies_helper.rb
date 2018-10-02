@@ -1,4 +1,3 @@
-
 module StudiesHelper
   def status_link_title
     if @study.inactive? || @study.pending?

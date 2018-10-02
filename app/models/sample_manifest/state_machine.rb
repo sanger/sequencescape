@@ -1,4 +1,3 @@
-
 require 'aasm'
 
 module SampleManifest::StateMachine

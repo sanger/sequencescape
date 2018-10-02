@@ -1,4 +1,3 @@
-
 module Core::Endpoint::BasicHandler::EndpointLookup
   EndpointError = Class.new(StandardError)
   MissingEndpoint = Class.new(EndpointError)

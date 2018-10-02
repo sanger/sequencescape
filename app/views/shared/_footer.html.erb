@@ -4,7 +4,7 @@
   <li><%= mail_to configatron.admin_email, icon('far', 'envelope ', 'Feedback') %></li>
 </ul>
 <ul class="deployment-info">
-  <li><%= icon('fas', 'code-branch', Deployed::VERSION_STRING) %></li>
+  <li><%= icon('fas', 'code-branch', Deployed::VERSION_STRING) %><%= link_to Deployed::VERSION_COMMIT, Deployed::REPO_URL%></li>
   <li><%= icon('far', 'calendar', Deployed::RELEASE_NAME) %></li>
   <li><%= icon('fas','server', Deployed::HOSTNAME) %></li>
 </ul>

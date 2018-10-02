@@ -1,4 +1,3 @@
-
 class SequenomQcPlate < Plate
   DEFAULT_SIZE = 384
   self.per_page = 50

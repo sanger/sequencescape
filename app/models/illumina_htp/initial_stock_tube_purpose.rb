@@ -1,4 +1,3 @@
-
 class IlluminaHtp::InitialStockTubePurpose < IlluminaHtp::StockTubePurpose
   def valid_transition?(outer_request, target_state)
     target_state != 'started' || outer_request.pending?

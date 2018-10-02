@@ -1,4 +1,3 @@
-
 module Presenters
   class BatchSubmenuPresenter
     attr_reader :options

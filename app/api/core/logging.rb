@@ -1,4 +1,3 @@
-
 module Core::Logging
   def self.logging_helper(name)
     module_eval <<-END_OF_HELPER

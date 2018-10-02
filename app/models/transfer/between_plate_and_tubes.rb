@@ -1,4 +1,3 @@
-
 class Transfer::BetweenPlateAndTubes < Transfer
   DESTINATION_INCLUDES = {
     destination: [

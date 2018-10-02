@@ -1,4 +1,3 @@
-
 class ::Io::Endpoints::Uuids::Search
   def self.model_for_input
     ::Uuids::Search

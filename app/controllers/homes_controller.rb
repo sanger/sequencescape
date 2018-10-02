@@ -1,4 +1,3 @@
-
 class HomesController < ApplicationController
   before_action :login_required
 

@@ -1,4 +1,3 @@
-
 module Limber::Helper
   require 'hiseq_2500_helper'
 

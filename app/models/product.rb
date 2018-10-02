@@ -1,4 +1,3 @@
-
 class Product < ApplicationRecord
   include SharedBehaviour::Indestructable
   include SharedBehaviour::Deprecatable

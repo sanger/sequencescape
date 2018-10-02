@@ -1,4 +1,3 @@
-
 Given /^Pipeline "([^"]*)" and a setup for 6218053$/ do |name|
   pipeline = Pipeline.find_by(name: name) or raise StandardError, "Cannot find pipeline '#{name}'"
   asset_type = pipeline_name_to_asset_type(name)

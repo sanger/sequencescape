@@ -1,4 +1,3 @@
-
 class AccessionService
   # We overide this in testing to do a bit of evesdropping
   class_attribute :rest_client_class

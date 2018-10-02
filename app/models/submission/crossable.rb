@@ -1,4 +1,3 @@
-
 module Submission::Crossable
   def cross_study_allowed
     assets.any? { |a| a.studies.distinct.many? }

@@ -1,4 +1,3 @@
-
 ##
 # Extended validators are used to provide extra validation
 # of submission. They are associated with request types

@@ -1,4 +1,3 @@
-
 class Request::LibraryCreation < CustomerRequest
   self.library_creation = true
   # Override the behaviour of Request so that we do not copy the aliquots from our source asset

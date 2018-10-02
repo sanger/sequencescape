@@ -1,4 +1,3 @@
-
 class IlluminaHtp::NormalizedPlatePurpose < PlatePurpose
   include PlatePurpose::RequestAttachment
   include PlatePurpose::BroadcastLibraryComplete

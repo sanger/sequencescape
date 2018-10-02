@@ -1,4 +1,3 @@
-
 # In contrast to pooling by submission, this method looks at submissions off the current
 # plate. This allows users to use QC feedback to decide how to multiplex their plate.
 class Transfer::FromPlateToTubeByMultiplex < Transfer::BetweenPlateAndTubes

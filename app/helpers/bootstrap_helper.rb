@@ -1,4 +1,3 @@
-
 module BootstrapHelper
   def panel(type = :default, options = {}, &block)
     bs_custom_panel(type, :div, { class: 'card-body' }, options, &block)

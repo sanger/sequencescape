@@ -1,4 +1,3 @@
-
 class ::Endpoints::Tag2LayoutTemplates < ::Core::Endpoint::Base
   model do
   end

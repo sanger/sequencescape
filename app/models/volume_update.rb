@@ -1,4 +1,3 @@
-
 # Performs a change of volume on a resource
 #
 #--

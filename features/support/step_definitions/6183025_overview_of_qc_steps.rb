@@ -1,4 +1,3 @@
-
 Then /^the overview of the plates should look like:$/ do |expected_results_table|
   expected_results_table.diff!(table(fetch_table('table#qc_overview_table')))
 end

@@ -1,4 +1,3 @@
-
 module PlatePurpose::RequestAttachment
   def transition_to(plate, state, user, contents = nil, customer_accepts_responsibility = false)
     super

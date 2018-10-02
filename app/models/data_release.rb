@@ -1,4 +1,3 @@
-
 module DataRelease
   # TODO[xxx]: All of this probably falls into the Study::Metadata class
 

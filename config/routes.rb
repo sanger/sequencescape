@@ -1,4 +1,3 @@
-
 Sequencescape::Application.routes.draw do
   root to: 'homes#show'
   resource :health, only: [:show]

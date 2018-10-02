@@ -1,4 +1,3 @@
-
 module PipelinesHelper
   def next_pipeline_name_for(request)
     submission         = request.submission or return nil

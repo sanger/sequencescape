@@ -1,4 +1,3 @@
-
 class Api::AssetLinkIO < Api::Base
   module Extensions
     module ClassMethods

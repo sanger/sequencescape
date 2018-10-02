@@ -1,4 +1,3 @@
-
 class Descriptor < ApplicationRecord
   belongs_to :task
   serialize :selection

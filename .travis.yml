@@ -1,77 +1,97 @@
 language: ruby
-rvm:
-  - 2.4.1
-dist: trusty
+# We don't specify a list of ruby versions, as Travis will fall back to .ruby-version
+dist: xenial
 sudo: required
 services: mysql
 addons:
   apt:
-    sources:
-      - google-chrome
     packages:
-      - haveged
-      - google-chrome-stable
-      - chromium-chromedriver
-cache: bundler
-bundler_args: --without warehouse deployment
+    - haveged
+    - google-chrome-stable
+    - chromium-chromedriver
+cache:
+  bundler: true
+bundler_args: "--without warehouse deployment"
 env:
   global:
-    - TZ=Europe/London
-    - CUCUMBER_FORMAT=DebugFormatter
-    - 'PATH=$PATH:/usr/lib/chromium-browser/'
-    - 'DISPLAY=:99.0'
+  - TZ=Europe/London
+  - CUCUMBER_FORMAT=DebugFormatter
+  - PATH=$PATH:/usr/lib/chromium-browser/
+  - DISPLAY=:99.0
 before_install:
-  - 'mv config/aker.yml.example config/aker.yml'
-  - 'sh -e /etc/init.d/xvfb start'
+- mv config/aker.yml.example config/aker.yml
+- sh -e /etc/init.d/xvfb start
 script:
-  - "bundle exec $SUITE"
+- bundle exec $SUITE
 jobs:
   include:
-    # Cron task runs all tests in a single ~50m task for coverage specs
-  - if: type = cron
-    script: './run_coverage'
+  - stage: test
+    if: type = cron
     before_script:
-    - 'curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter'
-    - 'chmod +x ./cc-test-reporter'
-    - './cc-test-reporter before-build'
+    - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64
+      > ./cc-test-reporter
+    - chmod +x ./cc-test-reporter
+    - "./cc-test-reporter before-build"
+    script: "./run_coverage"
+    name: "Coverage"
     after_script:
-    - './cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT'
-    # Rubocop
+    - "./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT"
+
   - if: type != cron
     env: SUITE=rubocop
-    # Minitest
+    name: "Rubocop"
+
   - if: type != cron
     env:
-    - "SUITE='rake test'"
-    - 'RAILS_ENV=test'
-    - "RUBYOPT='-W0'"
+    - SUITE='rake test'
+    - RAILS_ENV=test
+    - RUBYOPT='-W0'
     before_script:
     - bundle exec rake db:setup
     script: bundle exec rake test
-    # Rspec
+    name: "Rake Test"
+
   - if: type != cron
     env:
-    - 'SUITE=rspec'
-    - 'RAILS_ENV=test'
+    - SUITE=rspec
+    - RAILS_ENV=test
     before_script:
     - bundle exec rake db:setup
-    # Cucumber node 0
+    name: "Rspec"
+
   - if: type != cron
     env:
-    - "SUITE='rake knapsack:cucumber'"
-    - 'RAILS_ENV=cucumber'
+    - SUITE='rake knapsack:cucumber'
+    - RAILS_ENV=cucumber
     - CI_NODE_TOTAL=2
     - CI_NODE_INDEX=0
     before_script:
     - bundle exec rake assets:precompile
     - bundle exec rake db:setup
-    # Cucumber node 1
+    name: "Cucumber Test 1"
+
   - if: type != cron
     env:
-    - "SUITE='rake knapsack:cucumber'"
-    - 'RAILS_ENV=cucumber'
+    - SUITE='rake knapsack:cucumber'
+    - RAILS_ENV=cucumber
     - CI_NODE_TOTAL=2
     - CI_NODE_INDEX=1
     before_script:
     - bundle exec rake assets:precompile
     - bundle exec rake db:setup
+    name: "Cucumber Test 2"
+
+  - stage: build
+    if: tag IS present
+    script: "./compile-build"
+    name: "Compile Build"
+    deploy:
+      provider: releases
+      file: release.tar.gz
+      file_glob: true
+      skip_cleanup: true
+      on:
+        tags: true
+        repo: radome/sequencescape
+      api_key:
+        secure: MpOafhFFbulyjia4ekaAIfFryw33nJTw3q1tWLVYcfG8T1UQNJ1AZB2ZKm0EW5N085n/1klZWMrX3oM26q+jRmolm22zGIheFY2bpYNGeXzc7B9F6FMSw7ZLPRWy2Jdmt7c7phGCVjraboYgpwTzY3WR1SZ9pwT4AEEgJPqpATzCl2AWXkYQnjk9Wq64kPyWeSLFTACc3h2WCKTCw5dPG24iz4EuGbT8kg/qTKee5R9T8zCCyehEyneBfXiNKlddy1t9RIjJji/freUEbMWjA9R9hFcg1YKf0CQm0oCtZXqOmMBQgtgg0xCMdw0bu6lzGWQq7LVmS0fzhcY/GoQOhYrJ8iT9JDZbNXVWARiqjevn1kJaSMpqEd+pK6/LL36WijdBZFeusvIReJOW2EcCsLO/yR5Pkyn2QBVlTd4PD+zdA5Fh84ryjHIH4O1xqlte0mgErYxoSjYc7iNrUoL/5aZxHDLYve7HdtioVPYbniLt4Zn3gctggPEc/yBZ+ddFRn0kkAuohTbko6dunefwzzGnnnei2LHMpbWVkXCV/TD9kGFwROsNhUb/4rmyRxl8R23qvGdmAlqR733/9IKZyaAiRtg5EoGwTr2VmBczOD1am5EXJxIUTeDGF8wdDTDDxZTiSqyByah//qaYw4K9M8go9eeTszgFSIYA+Sr60QU=

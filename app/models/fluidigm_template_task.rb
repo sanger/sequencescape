@@ -1,4 +1,3 @@
-
 class FluidigmTemplateTask < PlateTemplateTask
   def partial
     'fluidigm_template_batches'
