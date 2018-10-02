@@ -1,4 +1,3 @@
-
 class Api::ReferenceGenomeIO < Api::Base
   module Extensions
     module ClassMethods

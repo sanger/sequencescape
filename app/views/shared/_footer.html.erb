@@ -1,10 +1,10 @@
 <ul class="contact">
   <li id="institute"><%= link_to I18n.t('application.institute'), I18n.t('application.institute_link') %></li>
   <li>A tool from <%= link_to configatron.fetch(:team_name,'LIMS and Informatics'), configatron.fetch(:team_url,'http://www.sanger.ac.uk/science/groups/production-software-development') %></li>
-  <li><%= link_to "Feedback", "mailto:#{configatron.admin_email}" %></li>
+  <li><%= mail_to configatron.admin_email, icon('far', 'envelope ', 'Feedback') %></li>
 </ul>
 <ul class="deployment-info">
-  <li><%= Deployed::VERSION_STRING %> <%= link_to Deployed::VERSION_COMMIT, Deployed::REPO_URL%></li>
-  <li><%= Deployed::RELEASE_NAME %></li>
-  <li><%= Deployed::HOSTNAME %></li>
+  <li><%= icon('fas', 'code-branch', Deployed::VERSION_STRING) %><%= link_to Deployed::VERSION_COMMIT, Deployed::REPO_URL%></li>
+  <li><%= icon('far', 'calendar', Deployed::RELEASE_NAME) %></li>
+  <li><%= icon('fas','server', Deployed::HOSTNAME) %></li>
 </ul>

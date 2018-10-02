@@ -1,4 +1,3 @@
-
 class Purpose < ApplicationRecord
   include Relationship::Associations
   include Uuid::Uuidable
@@ -49,3 +48,4 @@ class Purpose < ApplicationRecord
 end
 
 require_dependency 'tube/purpose'
+require_dependency 'plate_purpose'

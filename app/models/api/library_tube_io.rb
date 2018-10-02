@@ -1,4 +1,3 @@
-
 class Api::LibraryTubeIO < Api::Base
   module Extensions
     module ClassMethods

@@ -1,4 +1,3 @@
-
 class Admin::DelayedJobsController < ApplicationController
   before_action :admin_login_required
 

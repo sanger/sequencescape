@@ -1,4 +1,3 @@
-
 Sequencescape::Application.configure do
   # Edit at your own peril - it's recommended to regenerate this file
   # in the future when you upgrade to a newer version of Cucumber.

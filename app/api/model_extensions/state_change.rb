@@ -1,4 +1,3 @@
-
 # TODO: All of the behaviour in this file should really exist within the StateChange model.
 module ModelExtensions::StateChange
   def self.included(base)

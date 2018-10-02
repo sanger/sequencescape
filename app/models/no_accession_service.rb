@@ -1,4 +1,3 @@
-
 class NoAccessionService < AccessionService
   self.no_study_accession_needed = true
 

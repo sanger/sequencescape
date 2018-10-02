@@ -1,4 +1,3 @@
-
 class QcableCreator < ApplicationRecord
   include Uuid::Uuidable
 

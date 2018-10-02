@@ -1,4 +1,3 @@
-
 class ::Core::Io::Base
   extend ::Core::Logging
   extend ::Core::Benchmarking

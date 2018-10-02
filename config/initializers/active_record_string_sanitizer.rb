@@ -1,4 +1,3 @@
-
 module ActiveRecord::StringSanitizer
   def self.extended(base)
     base.instance_eval do

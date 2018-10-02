@@ -1,4 +1,3 @@
-
 require 'test_helper'
 
 class Core::Io::Json::GrammarTest < ActiveSupport::TestCase

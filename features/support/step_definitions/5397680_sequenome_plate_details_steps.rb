@@ -1,4 +1,3 @@
-
 Given /^I have created a sequenom plate$/ do
   input_plate_names = {
     1 => '1220125054743',

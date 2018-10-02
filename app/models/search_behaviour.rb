@@ -1,4 +1,3 @@
-
 module SearchBehaviour
   MINIMUM_QUERY_LENGTH = 3
 

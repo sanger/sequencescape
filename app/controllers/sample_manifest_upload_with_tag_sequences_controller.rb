@@ -1,4 +1,3 @@
-
 class SampleManifestUploadWithTagSequencesController < ApplicationController
   before_action :login_required
 
@@ -31,8 +30,8 @@ class SampleManifestUploadWithTagSequencesController < ApplicationController
   end
 
   def prepare_manifest_pagination
-    pending_sample_manifests = SampleManifest.pending_manifests.paginate(page: params[:page])
-    completed_sample_manifests = SampleManifest.completed_manifests.paginate(page: params[:page])
+    pending_sample_manifests = SampleManifest.pending_manifests.includes(:study, :supplier, :user, :uploaded_document).paginate(page: params[:page])
+    completed_sample_manifests = SampleManifest.completed_manifests.includes(:study, :supplier, :user, :uploaded_document).paginate(page: params[:page])
     @display_manifests = pending_sample_manifests | completed_sample_manifests
     @sample_manifests = SampleManifest.paginate(page: params[:page])
   end

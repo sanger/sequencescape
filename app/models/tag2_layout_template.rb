@@ -1,4 +1,3 @@
-
 # Tag 2 Layouts apply a single tag to the entire plate
 class Tag2LayoutTemplate < ApplicationRecord
   include Uuid::Uuidable

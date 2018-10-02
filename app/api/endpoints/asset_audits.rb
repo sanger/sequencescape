@@ -1,4 +1,3 @@
-
 class ::Endpoints::AssetAudits < ::Core::Endpoint::Base
   model do
     action(:create) do |request, _response|

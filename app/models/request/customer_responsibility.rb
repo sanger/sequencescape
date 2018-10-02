@@ -1,4 +1,3 @@
-
 module Request::CustomerResponsibility
   def self.included(base)
     base::Metadata.class_eval do

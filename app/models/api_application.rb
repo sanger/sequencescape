@@ -1,4 +1,3 @@
-
 class ApiApplication < ApplicationRecord
   include SharedBehaviour::Named
 

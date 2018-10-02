@@ -1,4 +1,3 @@
-
 class StudyReport < ApplicationRecord
   extend DbFile::Uploader
 

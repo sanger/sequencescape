@@ -11,6 +11,14 @@
 # creation requests.
 class WorkCompletion < ApplicationRecord
   include Uuid::Uuidable
+  # These includes are required for library passing
+  REQUEST_INCLUDES = [{ submission: :orders },
+                      { request_type: :request_type_validators },
+                      { target_asset: :aliquots },
+                      :request_events,
+                      :billing_product,
+                      :billing_items,
+                      :request_metadata].freeze
   # The user who performed the state change
   belongs_to :user, required: true
   # The plate on which requests were completed

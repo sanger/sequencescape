@@ -1,4 +1,3 @@
-
 Given /^I have a request (\d+) with a study (\d+)$/ do |request_id, study_id|
   study = FactoryBot.create(:study, id: study_id, name: 'Study 999')
   project = FactoryBot.create(:project, id: 1)

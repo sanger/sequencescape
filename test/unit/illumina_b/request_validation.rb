@@ -1,4 +1,3 @@
-
 require 'test_helper'
 require 'unit/illumina_b/request_statemachine_checks'
 

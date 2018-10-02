@@ -1,4 +1,3 @@
-
 module IlluminaHtp::PlatePurposes
   PLATE_PURPOSE_FLOWS = [
     [

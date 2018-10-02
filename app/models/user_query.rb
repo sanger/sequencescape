@@ -1,4 +1,3 @@
-
 class UserQuery
   include ActiveModel::Model
 

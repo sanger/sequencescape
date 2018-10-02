@@ -1,4 +1,3 @@
-
 require 'rails_helper'
 
 RSpec.describe SampleManifest, type: :model do

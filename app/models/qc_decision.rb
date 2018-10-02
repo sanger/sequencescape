@@ -1,4 +1,3 @@
-
 class QcDecision < ApplicationRecord
   include Uuid::Uuidable
 

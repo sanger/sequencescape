@@ -1,4 +1,3 @@
-
 class CherrypickTask < Task
   EMPTY_WELL          = [0, 'Empty', '']
   TEMPLATE_EMPTY_WELL = [0, '---', '']

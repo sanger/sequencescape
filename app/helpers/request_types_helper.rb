@@ -1,3 +1,2 @@
-
 module RequestTypesHelper
 end

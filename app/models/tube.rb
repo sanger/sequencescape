@@ -1,4 +1,3 @@
-
 class Tube < Receptacle
   include Barcode::Barcodeable
   include ModelExtensions::Tube

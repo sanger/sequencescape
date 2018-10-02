@@ -13,6 +13,8 @@ describe WorkCompletion do
         )
       end
 
+      let(:submission_request_types) { [library_request_type] }
+
       let(:target_tube) do
         tt = create :multiplexed_library_tube
         tt.parents << upstream_tube
@@ -31,14 +33,21 @@ describe WorkCompletion do
         ut
       end
 
-      let(:target_plate2) { create :target_plate, parent: input_plate2, well_count: tested_wells, submission: target_submission2 }
-      let(:input_plate2) { create :input_plate, well_count: tested_wells }
+      let(:target_plate2) do
+        build_library_requests2
+        create :target_plate, parent: input_plate2, well_count: tested_wells, submission: target_submission2
+      end
+      let(:input_plate2) { create :input_plate, well_count: tested_wells, well_factory: :tagged_well }
+      let(:build_library_requests2) do
+        input_plate2.wells.each do |well|
+          create_list :library_request, requests_per_well, request_type: library_request_type, asset: well, submission: target_submission2, state: 'started'
+        end
+      end
       let(:target_submission2) do
         create :library_submission, assets: input_plate2.wells, request_types: submission_request_types
       end
 
       let(:library_requests_submission2) { target_submission2.requests.where(request_type_id: library_request_type.id) }
-      let(:multiplex_requests_submission2) { target_submission2.requests.where(request_type_id: multiplex_request_type.id) }
 
       let(:all_library_requests) do
         library_requests + library_requests_submission2
@@ -57,10 +66,6 @@ describe WorkCompletion do
         expect(all_library_requests).to all(be_passed)
       end
 
-      it 'does not pass the multiplex requests' do
-        expect(all_multiplex_requests).to all(be_pending)
-      end
-
       it 'does not pass the decoy submission' do
         expect(decoy_submission_requests).to all(be_started)
       end
@@ -71,9 +76,32 @@ describe WorkCompletion do
           expect(request.target_asset).to eq(target_tube)
         end
       end
+    end
 
-      it 'joins up the multiplex requests' do
-        expect(all_multiplex_requests.map(&:asset).compact.uniq.size).to eq(1)
+    context 'with additional requests' do
+      let(:requests_per_well) { 2 }
+
+      before do
+        WorkCompletion.create!(
+          user: create(:user),
+          target: target_plate,
+          submissions: [target_submission]
+        )
+      end
+
+      let(:decoy_requests) { input_plate.wells.flat_map { |w| w.requests[1, 2].map(&:reload) } }
+      let(:library_requests) { input_plate.wells.map { |w| w.requests.first.reload } }
+
+      it 'passes the library requests' do
+        expect(library_requests).to all(be_passed)
+      end
+
+      it 'does not pass the multiplex requests' do
+        expect(multiplex_requests).to all(be_pending)
+      end
+
+      it 'does not pass the decoy requests' do
+        expect(decoy_requests).to all(be_started)
       end
     end
 

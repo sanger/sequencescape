@@ -1,4 +1,3 @@
-
 module Tasks::AssignTagsHandler
   def render_assign_tags_task(_task, params)
     @tag_group = TagGroup.find(params[:tag_group])

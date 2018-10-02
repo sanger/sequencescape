@@ -1,4 +1,3 @@
-
 class RequestType < ApplicationRecord
   include RequestType::Validation
 

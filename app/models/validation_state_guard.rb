@@ -1,4 +1,3 @@
-
 # It's such a common pattern in the code to have a guard on some our validations that this module provides
 # that facility.  You can declare a guard with:
 #

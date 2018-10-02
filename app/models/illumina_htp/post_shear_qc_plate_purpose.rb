@@ -1,4 +1,3 @@
-
 class IlluminaHtp::PostShearQcPlatePurpose < PlatePurpose
   alias_method(:default_transition_to, :transition_to)
 

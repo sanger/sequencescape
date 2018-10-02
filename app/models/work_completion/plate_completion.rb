@@ -22,8 +22,6 @@ class WorkCompletion::PlateCompletion
 
   def connect_requests
     target_wells.each do |target_well|
-      next if target_well.stock_wells.empty?
-      # Upstream requests our on our stock wells.
       detect_upstream_requests(target_well).each do |upstream|
         # We need to find the downstream requests BEFORE connecting the upstream
         # This is because submission.next_requests tries to take a shortcut through
@@ -46,18 +44,7 @@ class WorkCompletion::PlateCompletion
   end
 
   def detect_upstream_requests(target_well)
-    upstream_requests = target_well.stock_wells.each_with_object([]) do |source_well, found_upstream_requests|
-      # We may have multiple requests out of each well, however we're only concerned
-      # about those associated with the active submission.
-      # We've already eager loaded requests out of the stock wells, so filter in Ruby.
-      source_well.requests_as_source.each do |r|
-        found_upstream_requests << r if suitable_request?(r)
-      end
-    end
-    # We've looked at all the requests, on all the stock wells and still haven't found
-    # what we're looking for.
-    raise("Could not find matching upstream requests for #{target_well.map_description}") if upstream_requests.empty?
-    upstream_requests
+    target_well.aliquots.map(&:request)
   end
 
   def suitable_request?(request)
@@ -71,7 +58,7 @@ class WorkCompletion::PlateCompletion
 
   def target_wells
     @target_wells ||= target_plate.wells
-                                  .includes(:aliquots)
+                                  .includes(aliquots: { request: WorkCompletion::REQUEST_INCLUDES })
                                   .include_stock_wells_for_modification
                                   .includes(:transfer_requests_as_target)
                                   .where(transfer_requests: { submission_id: submission_ids })

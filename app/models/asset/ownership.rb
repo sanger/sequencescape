@@ -1,4 +1,3 @@
-
 module Asset::Ownership
   module ChangesOwner
     # Included in events which change ownership of plates

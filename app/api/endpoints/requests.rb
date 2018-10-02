@@ -1,4 +1,3 @@
-
 class ::Endpoints::Requests < ::Core::Endpoint::Base
   model do
   end

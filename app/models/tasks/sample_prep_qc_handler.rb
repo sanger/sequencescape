@@ -1,4 +1,3 @@
-
 module Tasks::SamplePrepQcHandler
   def render_sample_prep_qc_task(task, params)
     @requests = task.find_batch_requests(params[:batch_id])

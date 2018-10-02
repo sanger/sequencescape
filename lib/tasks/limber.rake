@@ -28,8 +28,8 @@ namespace :limber do
                 { name: 'GBS Stock',
                   size: 384 },
                 # GnT Pipeline requires UAT
-                # { name: 'GnT Stock',
-                #   size: 96 }
+                { name: 'GnT Stock',
+                  size: 96 }
                 ]
 
     purposes.each do |purpose|
@@ -135,12 +135,8 @@ namespace :limber do
 
       Limber::Helper::RequestTypeConstructor.new(
         'scRNA',
-        library_types: ['scRNA',
-                       # 'GnT scRNA'  # Wating for UAT
-                       ],
-        default_purposes: ['scRNA Stock'
-                          # 'GnT Stock'  # Wating for UAT
-                          ]
+        library_types: ['scRNA','GnT scRNA'],
+        default_purpose: ['scRNA Stock', 'GnT Stock']
       ).build!
 
       Limber::Helper::RequestTypeConstructor.new(
@@ -150,17 +146,17 @@ namespace :limber do
       ).build!
 
       # GnT Pipeline requires UAT
-      # Limber::Helper::RequestTypeConstructor.new(
-      #   'GnT Picoplex',
-      #   library_types: ['GnT Picoplex'],
-      #   default_purposes: ['GnT Stock']
-      # ).build!
+      Limber::Helper::RequestTypeConstructor.new(
+        'GnT Picoplex',
+        library_types: ['GnT Picoplex'],
+        default_purpose: 'GnT Stock'
+      ).build!
 
-      # Limber::Helper::RequestTypeConstructor.new(
-      #   'GnT MDA',
-      #   library_types: ['GnT MDA'],
-      #   default_purposes: ['GnT Stock']
-      # ).build!
+      Limber::Helper::RequestTypeConstructor.new(
+        'GnT MDA',
+        library_types: ['GnT MDA'],  # 'GnT scRNA' should be a default_purpose of 'scRNA'.
+        default_purpose: 'GnT Stock'              # It requires default_purpose to accept an array.
+      ).build!
 
       unless RequestType.where(key: 'limber_multiplexing').exists?
         RequestType.create!(
@@ -240,15 +236,14 @@ namespace :limber do
       'PCR Free' => {
         sequencing_list: base_with_novaseq,
         catalogue_name: 'PFHSqX'
-      }
+      },
       # GnT pipeline requires UAT
-      # 'GnT Picoplex' => {
-      #   sequencing_list: base_without_hiseq
-      # },
-      # # Use Limber::Helper::LibraryOnlyTemplateConstructor for this one.
-      # 'GnT MDA' => {
-      #   sequencing_list: ['illumina_b_hiseq_x_paired_end_sequencing']
-      # }
+      'GnT Picoplex' => {
+        sequencing_list: base_without_hiseq
+      },
+      'GnT MDA' => {
+        sequencing_list: ['illumina_b_hiseq_x_paired_end_sequencing']
+      }
     }
 
     ActiveRecord::Base.transaction do

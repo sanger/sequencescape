@@ -24,13 +24,13 @@
             <% else %>
               <td>
                 <% if request_type_statistics.passed > 0 %>
-                  <span style="display:none">passed</span><%= image_tag "accept.png" %>
+                  <span style="display:none">passed</span><%= icon('far', 'check-circle', title: 'Passed') %>
                 <% elsif request_type_statistics.started > 0 %>
-                  <span style="display:none">started</span><%= image_tag "cog.png" %>
+                  <span style="display:none">started</span><%= icon('fas', 'cog', title: 'Started') %>
                 <% elsif request_type_statistics.pending > 0 %>
-                  <span style="display:none">pending</span><%= image_tag "hourglass.png" %>
+                  <span style="display:none">pending</span><%= icon('fas', 'hourglass-start ', title: 'Pending') %>
                 <% elsif request_type_statistics.failed > 0 %>
-                  <span style="display:none">failed</span><%= image_tag "delete.png" %>
+                  <span style="display:none">failed</span><%= icon('fas', 'times-circle', title: 'Failed') %>
                 <% end %>
               </td>
             <% end %>

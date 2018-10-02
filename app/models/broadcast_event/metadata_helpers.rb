@@ -1,4 +1,3 @@
-
 module BroadcastEvent::MetadataHelpers
   class SimpleMetadataFinder
     attr_reader :name, :method

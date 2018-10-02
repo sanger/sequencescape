@@ -1,4 +1,3 @@
-
 class ::Endpoints::Tubes < ::Core::Endpoint::Base
   model do
   end

@@ -1,4 +1,3 @@
-
 require "#{Rails.root}/app/models/illumina_b/plate_purposes"
 
 class Search::FindIlluminaBStockPlates < Search::FindIlluminaBPlates

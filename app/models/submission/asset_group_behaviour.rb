@@ -1,4 +1,3 @@
-
 module Submission::AssetGroupBehaviour
   def self.included(base)
     base.class_eval do

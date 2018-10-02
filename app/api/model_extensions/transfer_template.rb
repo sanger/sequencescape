@@ -1,4 +1,3 @@
-
 # TODO: All of the behaviour in this file should really exist within the TransferTemplate model.
 module ModelExtensions::TransferTemplate
   def self.included(base)

@@ -1,4 +1,3 @@
-
 class Api::Messages::BarcodeIO < Api::Base
   renders_model(::Barcode)
 

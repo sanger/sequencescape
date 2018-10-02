@@ -1,4 +1,3 @@
-
 class BroadcastEvent::SequencingStart < BroadcastEvent
   set_event_type 'sequencing_start'
 

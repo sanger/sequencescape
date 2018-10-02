@@ -1,4 +1,3 @@
-
 class PipelinesRequestType < ApplicationRecord
   belongs_to :pipeline, inverse_of: :pipelines_request_types
   belongs_to :request_type, inverse_of: :pipelines_request_types

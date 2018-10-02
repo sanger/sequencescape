@@ -1,4 +1,3 @@
-
 module SampleManifest::PlateBehaviour
   module ClassMethods
     def create_for_plate!(attributes, *args, &block)

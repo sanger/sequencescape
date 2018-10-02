@@ -1,4 +1,3 @@
-
 class SetDescriptorsTask < Task
   def render_task(workflows_controller, params)
     super

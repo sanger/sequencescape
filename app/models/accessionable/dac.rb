@@ -1,4 +1,3 @@
-
 class Accessionable::Dac < Accessionable::Base
   attr_reader :contacts
   def initialize(study)

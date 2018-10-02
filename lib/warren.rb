@@ -1,4 +1,3 @@
-
 #
 # Module Warren provides connection pooling for RabbitMQ Connections
 #

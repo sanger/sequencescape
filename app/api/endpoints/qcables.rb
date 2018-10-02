@@ -1,4 +1,3 @@
-
 class ::Endpoints::Qcables < ::Core::Endpoint::Base
   model do
   end

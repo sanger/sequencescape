@@ -1,4 +1,3 @@
-
 Given /^the study "([^\"]+)" has an asset group called "([^\"]+)"$/ do |study_name, group_name|
   study = Study.find_by(name: study_name) or raise StandardError, "Could not find study #{study_name.inspect}"
   study.asset_groups.create!(name: group_name)

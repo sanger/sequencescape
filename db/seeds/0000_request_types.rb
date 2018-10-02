@@ -1,4 +1,3 @@
-
 RequestType.create_asset
 
 RequestType.create!(

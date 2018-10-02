@@ -1,4 +1,3 @@
-
 # Delegate validation is all about enabling one class to validate the information within an instance of
 # another class.  The case driving this is the ability for a Submission to validate that the request options
 # provided by the user are valid for the RequestType instances that the submission is going to use.  In that

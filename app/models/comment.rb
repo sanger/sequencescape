@@ -1,4 +1,3 @@
-
 class Comment < ApplicationRecord
   # include Uuid::Uuidable
   belongs_to :commentable, polymorphic: true

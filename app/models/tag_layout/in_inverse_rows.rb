@@ -1,4 +1,3 @@
-
 # Lays out the tags so that they are inverse row ordered.
 module TagLayout::InInverseRows
   def self.direction

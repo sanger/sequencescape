@@ -1,4 +1,3 @@
-
 # This class doesn't inherit from either library creation class because most of the behaviour is unwanted.
 # For example, we don't know the read length etc. when the request is created
 class ExternalLibraryCreationRequest < SystemRequest
@@ -30,9 +29,10 @@ class ExternalLibraryCreationRequest < SystemRequest
     pending?
   end
 
+  private
+
   def perform_transfer_of_contents
     target_asset.aliquots << asset.aliquots.map(&:dup)
     target_asset.save!
   end
-  private :perform_transfer_of_contents
 end

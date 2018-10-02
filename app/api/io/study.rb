@@ -1,4 +1,3 @@
-
 class Io::Study < Core::Io::Base
   set_model_for_input(::Study)
   set_json_root(:study)

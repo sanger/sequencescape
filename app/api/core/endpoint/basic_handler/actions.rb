@@ -1,4 +1,3 @@
-
 module Core::Endpoint::BasicHandler::Actions
   class UnsupportedAction < StandardError
     def initialize(action, _request)

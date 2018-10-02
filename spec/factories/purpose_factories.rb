@@ -8,6 +8,9 @@ FactoryBot.define do
 
     factory :stock_purpose do
       stock_plate true
+
+      factory :illumina_c_stock_purpose, class: IlluminaC::StockPurpose do
+      end
     end
 
     factory(:new_stock_tube_purpose, class: IlluminaHtp::StockTubePurpose) do
