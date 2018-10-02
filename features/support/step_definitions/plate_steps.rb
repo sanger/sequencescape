@@ -63,12 +63,14 @@ end
 Given /^a plate with purpose "([^"]*)" and barcode "([^"]*)" exists$/ do |plate_purpose_name, machine_barcode|
   FactoryBot.create(:plate,
                     sanger_barcode: { machine_barcode: machine_barcode },
+                    well_count: 8,
                     plate_purpose: Purpose.find_by(name: plate_purpose_name))
 end
 
 Given /^a stock plate with barcode "([^"]*)" exists$/ do |machine_barcode|
   @stock_plate = FactoryBot.create(:plate,
                                    name: 'A_TEST_STOCK_PLATE',
+                                   well_count: 8,
                                    sanger_barcode: { machine_barcode: machine_barcode },
                                    plate_purpose: PlatePurpose.find_by(name: 'Stock Plate'))
 end
@@ -106,12 +108,12 @@ end
 
 Given(/^a plate called "([^"]*)" exists with purpose "([^"]*)"$/) do |name, purpose_name|
   purpose = Purpose.find_by(name: purpose_name) || FactoryBot.create(:plate_purpose, name: purpose_name)
-  FactoryBot.create(:plate, name: name, purpose: purpose)
+  FactoryBot.create(:plate, name: name, purpose: purpose, well_count: 8)
 end
 
 Given(/^a full plate called "([^"]*)" exists with purpose "([^"]*)" and barcode "([^"]*)"$/) do |name, purpose_name, barcode|
   purpose = Purpose.find_by(name: purpose_name) || FactoryBot.create(:plate_purpose, name: purpose_name)
-  FactoryBot.create(:full_plate, well_factory: :untagged_well, name: name, purpose: purpose, barcode: barcode)
+  FactoryBot.create(:full_plate, well_factory: :untagged_well, name: name, purpose: purpose, barcode: barcode, well_count: 16)
 end
 
 Given /^a "([^\"]+)" plate called "([^\"]+)" exists with barcode "([^\"]+)"$/ do |name, plate_name, barcode|
