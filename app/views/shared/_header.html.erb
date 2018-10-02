@@ -23,7 +23,7 @@
     <% if logged_in? -%>
       <div class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <%= icon('fas', 'user-cog') %>
+            <%= icon('fas', 'user') %>
           </a>
           <div class="dropdown-menu dropdown-menu-right text-dark" aria-labelledby="navbarDropdown">
             <%= link_to current_user.name, profile_path(current_user), class: 'dropdown-item' %>
