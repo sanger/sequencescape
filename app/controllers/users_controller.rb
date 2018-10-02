@@ -12,6 +12,18 @@ class UsersController < ApplicationController
   end
 
   def show
+    barcode_printers = BarcodePrinter.alphabetical.includes(:barcode_printer_type)
+    @printer_list = barcode_printers.select { |printer| printer.barcode_printer_type.name == '96 Well Plate' }
+    begin
+      label_template = LabelPrinter::PmbClient.get_label_template_by_name('swipecard_barcode_big_5').fetch('data').first
+      @label_template_id ||= label_template['id']
+    rescue LabelPrinter::PmbException => e
+      @label_template_id = nil
+      flash[:error] = "Print My Barcode: #{e}"
+    rescue NoMethodError
+      @label_template_id = nil
+      flash[:error] = 'Wrong PMB Label Template'
+    end
   end
 
   def edit

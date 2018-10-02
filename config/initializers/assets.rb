@@ -14,5 +14,6 @@ Rails.application.config.assets.precompile += [
   'pooling.js',
   'sample_move.js',
   'submissions.js',
-  'JsBarcode.all.min.js'
+  'JsBarcode.all.min.js',
+  'print_swipecard.js'
 ]
