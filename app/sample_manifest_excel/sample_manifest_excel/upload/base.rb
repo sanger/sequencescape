@@ -34,7 +34,7 @@ module SampleManifestExcel
         @sample_manifest = derive_sample_manifest
         @override = override || false
         @processor = create_processor
-        @reuploaded = @sample_manifest.completed? if sample_manifest.present?
+        @reuploaded = !@sample_manifest.pending? if sample_manifest.present?
       end
 
       def inspect
@@ -59,6 +59,10 @@ module SampleManifestExcel
           sample_manifest.last_errors = nil
           sample_manifest.start!
           processor.run(tag_group)
+          return true if processed?
+          # One of out post processing checks failed, something went wrong, so we
+          # roll everything back
+          raise ActiveRecord::Rollback
         end
       end
 
@@ -76,6 +80,9 @@ module SampleManifestExcel
       end
 
       def fail
+        # If we've failed, do not update the manifest file, trying to do so
+        # causes exceptions
+        sample_manifest.association(:uploaded_document).reset
         sample_manifest.fail!
       end
 
