@@ -69,7 +69,11 @@ group :default do
   gem 'sass-rails'
   gem 'coffee-rails'
   gem 'select2-rails'
-  gem 'font-awesome-sass'
+  # Temporarily pin to earlier version
+  # Newer versions on font-awesome switch to sassc which will not
+  # compile on our older servers due to gcc version. We can update this
+  # as soon as we're migrated off the metal.
+  gem 'font-awesome-sass', '< 5.0.13'
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   gem 'therubyracer', platforms: :mri
