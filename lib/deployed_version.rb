@@ -113,7 +113,7 @@ module Deployed
 
   require 'ostruct'
   DETAILS = OpenStruct.new(
-    :name        => APP_NAME,
+    :name        => nil,
     :version     => VERSION_ID,
     :environment => ENVIRONMENT
   )

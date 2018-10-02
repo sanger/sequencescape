@@ -8,7 +8,7 @@ class PsdFormatter < Syslog::Logger::Formatter
 
   def initialize(deployment_info)
     info = OpenStruct.new(deployment_info)
-    @app_tag = "#{info.version}:#{info.environment}".freeze
+    @app_tag = [info.name, info.version, info.environment].compact.join(':').freeze
     super()
   end
 
