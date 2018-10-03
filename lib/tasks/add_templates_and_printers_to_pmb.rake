@@ -50,7 +50,7 @@ namespace :pmb do
           return label_types[name] if label_types.include? name
           label_type = eval "label_type_#{name.downcase}"
           res = RestClient.post(label_type_url, label_type.to_json, LabelPrinter::PmbClient.headers)
-          label_type_id = JSON.parse(res)['data']['id']
+          JSON.parse(res)['data']['id']
         end
 
         def sqsc_96plate_label_template
@@ -117,9 +117,45 @@ namespace :pmb do
                 ] } } }
         end
 
+        def swipecard_barcode_template
+          { data: {
+              attributes: {
+                name: 'swipecard_barcode_template',
+                label_type_id: get_label_type_id('Plate'),
+                labels_attributes: [{
+                  name: 'main',
+                  bitmaps_attributes: [{
+                    horizontal_magnification: '1',
+                    vertical_magnification: '1',
+                    font: 'N',
+                    space_adjustment: '00',
+                    rotational_angles: '00',
+                    x_origin: '0050',
+                    y_origin: '0050',
+                    field_name: 'left_text'
+                  }],
+                  barcodes_attributes: [{
+                    barcode_type: '9',
+                    one_module_width: '02',
+                    height: '0070',
+                    rotational_angle: nil,
+                    one_cell_width: nil,
+                    type_of_check_digit: nil,
+                    no_of_columns: nil,
+                    bar_height: nil,
+                    x_origin: '0300',
+                    y_origin: '0010',
+                    field_name: 'barcode'
+                  }]
+                }]
+              }
+            }
+          }
+        end
+
         def get_label_templates
           res = RestClient.get(label_template_url, LabelPrinter::PmbClient.headers)
-          label_templates = get_names_and_ids(res)
+          get_names_and_ids(res)
         end
 
         def create_label_template(name)
@@ -132,11 +168,11 @@ namespace :pmb do
         end
 
         def execute
-          label_template_96plate_name = 'sqsc_96plate_label_template'
-          label_template_1dtube_name = 'sqsc_1dtube_label_template'
-          label_template_384plate_name = 'sqsc_384plate_label_template'
-          label_templates = get_label_templates
-          unregistered_templates = [label_template_96plate_name, label_template_1dtube_name, label_template_384plate_name] - label_templates.keys
+          unregistered_templates = ['sqsc_96plate_label_template',
+                                    'sqsc_1dtube_label_template',
+                                    'sqsc_384plate_label_template',
+                                    'swipecard_barcode_template']
+          unregistered_templates -= get_label_templates.keys
           unless unregistered_templates.empty?
             get_label_types
             unregistered_templates.each { |name| create_label_template(name) }
@@ -164,7 +200,7 @@ namespace :pmb do
 
     def get_pmb_printers_names
       res = RestClient.get(printer_url, LabelPrinter::PmbClient.headers)
-      names = JSON.parse(res)['data'].map { |printer| printer['attributes']['name'] }
+      JSON.parse(res)['data'].map { |printer| printer['attributes']['name'] }
     end
 
     def printer_url
@@ -173,8 +209,7 @@ namespace :pmb do
 
     def add_printers
       sqsc_printers_names = BarcodePrinter.all.map { |p| p.name }
-      pmb_printers_names = get_pmb_printers_names
-      unregistered_printers = sqsc_printers_names - pmb_printers_names
+      unregistered_printers = sqsc_printers_names - get_pmb_printers_names
       unless unregistered_printers.empty?
         unregistered_printers.each { |name| register_printer(name) }
       end
