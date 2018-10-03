@@ -268,12 +268,27 @@ namespace :limber do
       catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'Generic')
       Limber::Helper::TemplateConstructor.new(prefix: 'Multiplexing', catalogue: catalogue).build!
 
+      unless RequestType.find_by(key: 'gbs_miseq_sequencing')
+        RequestType.create!(key: 'gbs_miseq_sequencing',
+                            name: 'GBS MiSeq sequencing',
+                            asset_type: 'LibraryTube',
+                            initial_state: 'pending',
+                            order: 2,
+                            request_class_name: 'MiSeqSequencingRequest',
+                            billable: true,
+                            request_purpose: :standard).tap do |rt|
+                              RequestType::Validator.create!(request_type: rt,
+                                                             request_option: 'read_length',
+                                                             valid_options: [25, 50, 130, 150, 250, 300])
+                            end
+      end
+
       unless SubmissionTemplate.find_by(name: 'MiSeq for GBS')
         SubmissionTemplate.create!(
           name: 'MiSeq for GBS',
           submission_class_name: 'AutomatedOrder',
           submission_parameters: {
-            request_type_ids_list: [RequestType.where(key: 'miseq_sequencing').pluck(:id)]
+            request_type_ids_list: [RequestType.where(key: 'gbs_miseq_sequencing').pluck(:id)]
           },
           product_line: ProductLine.find_by!(name: 'Illumina-HTP'),
           product_catalogue: ProductCatalogue.find_by!(name: 'Generic')
