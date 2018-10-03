@@ -52,6 +52,7 @@ configatron.sanger_auth_freshness = 60
 configatron.taxon_lookup_url = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/'
 configatron.tecan_files_location = "#{Rails.root}/data"
 configatron.tecan_minimum_volume = 1.0
+configatron.swipecard_pmb_template = 'swipecard_barcode'
 
 configatron.external_applications = [
   ['High Throughput Pipeline', 'http://www.example.com'],
