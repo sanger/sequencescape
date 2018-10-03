@@ -102,8 +102,7 @@ module SampleManifestExcel
       def transfer_aliquot
         return unless valid?
         sample.primary_receptacle.requests.each do |request|
-          request.manifest_processed!
-          @aliquot_transferred = true
+          @aliquot_transferred = request.passed? || request.manifest_processed!
         end
       end
 
@@ -165,13 +164,13 @@ module SampleManifestExcel
 
       # link fields together for tag groups and indexes
       def link_tag_groups_and_indexes
-        sf_tag_index = specialised_fields.find_all { |sf| sf.instance_of? SpecialisedField::TagIndex }.first
+        sf_tag_index = specialised_fields.detect { |sf| sf.instance_of? SequencescapeExcel::SpecialisedField::TagIndex }
         return if sf_tag_index.blank?
-        sf_tag_index.sf_tag_group = specialised_fields.find_all { |sf| sf.instance_of? SpecialisedField::TagGroup }.first
+        sf_tag_index.sf_tag_group = specialised_fields.detect { |sf| sf.instance_of? SequencescapeExcel::SpecialisedField::TagGroup }
 
-        sf_tag2_index = specialised_fields.find_all { |sf| sf.instance_of? SpecialisedField::Tag2Index }.first
+        sf_tag2_index = specialised_fields.detect { |sf| sf.instance_of? SequencescapeExcel::SpecialisedField::Tag2Index }
         return if sf_tag2_index.blank?
-        sf_tag2_index.sf_tag2_group = specialised_fields.find_all { |sf| sf.instance_of? SpecialisedField::Tag2Group }.first
+        sf_tag2_index.sf_tag2_group = specialised_fields.detect { |sf| sf.instance_of? SequencescapeExcel::SpecialisedField::Tag2Group }
       end
     end
   end

@@ -5,21 +5,28 @@ module LabelPrinter
 
       def initialize(options)
         @printables = options[:printables]
+        @printer_type_class = options[:printer_type_class]
       end
 
       def to_h
         if assets.first.is_a? Plate
-          AssetPlate.new(assets).to_h
+          if @printer_type_class.double_label?
+            AssetPlateDouble.new(assets).to_h
+          else
+            AssetPlate.new(assets).to_h
+          end
         elsif assets.first.is_a? Tube
           AssetTube.new(assets).to_h
         end
       end
 
       def assets
-        _assets.each { |asset| asset.barcode! unless asset.barcode_number.present? }
+        printable_assets.each { |asset| asset.barcode! unless asset.barcode_number.present? }
       end
 
-      def _assets
+      private
+
+      def printable_assets
         if printables.is_a? Asset
           [printables]
         else

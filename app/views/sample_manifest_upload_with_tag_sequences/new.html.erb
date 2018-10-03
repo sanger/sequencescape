@@ -3,6 +3,14 @@
 
 <%= page_title "Sample Manifests", "New and upload" %>
 
+<% if @uploader %>
+  <%= alert(:danger) do %>
+    <% @uploader.errors.full_messages.each do |message| %>
+      <p><%= message %></p>
+    <% end %>
+  <% end %>
+<% end %>
+
 <%= render partial: "upload" %>
 
 <%= pagination @sample_manifests %>

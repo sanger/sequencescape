@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_dependency 'sample_manifest_excel/upload/processor/base'
+
 module SampleManifestExcel
   module Upload
     module Processor
@@ -15,7 +17,7 @@ module SampleManifestExcel
         attr_writer :substitutions
 
         def run(tag_group)
-          return unless valid?
+          return false unless valid?
           update_samples_and_aliquots(tag_group)
           cancel_unprocessed_external_library_creation_requests
           update_sample_manifest
@@ -24,20 +26,20 @@ module SampleManifestExcel
         def update_samples_and_aliquots(tag_group)
           upload.rows.each do |row|
             row.update_sample(tag_group, upload.override)
-            row.transfer_aliquot unless upload.reuploaded?
+            row.transfer_aliquot # Requests are smart enough to only transfer once
             substitutions << row.aliquot.substitution_hash if upload.reuploaded?
           end
-          update_downstream_aliquots if upload.reuploaded? && substitutions.present?
+          update_downstream_aliquots if substitutions.present?
         end
 
         # if manifest is reuploaded, only aliquots, that are in 'fake' library tubes will be updated
         # actual aliquots in multiplexed library tube and other aliquots downstream are updated by this method
         # library updates all aliquots in one go, doing it row by row is inefficient and may trigger tag clash
         def update_downstream_aliquots
-          @downstream_aliquots_updated = if substitutions.compact.blank?
+          @downstream_aliquots_updated = if no_substitutions?
                                            false
                                          else
-                                           TagSubstitution.new(substitutions: substitutions.compact).save
+                                           TagSubstitution.new(substitutions: substitutions.compact, comment: 'Manifest updated').save
                                          end
         end
 
@@ -65,11 +67,17 @@ module SampleManifestExcel
           @processed ||= samples_updated? && aliquots_updated? && sample_manifest_updated?
         end
 
+        def no_substitutions?
+          substitutions.compact.all?(&:blank?)
+        end
+
         def aliquots_updated?
           if upload.reuploaded?
-            downstream_aliquots_updated? || substitutions.compact.blank?
+            downstream_aliquots_updated? ||
+              no_substitutions? ||
+              log_error_and_return_false('Could not update tags in other assets.')
           else
-            aliquots_transferred?
+            aliquots_transferred? || log_error_and_return_false('Could not transfer aliquots.')
           end
         end
       end

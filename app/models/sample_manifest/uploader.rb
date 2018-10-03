@@ -19,7 +19,7 @@ class SampleManifest::Uploader
 
   def initialize(filename, configuration, user, override)
     @filename = filename
-    @configuration = configuration || SampleManifestExcel::NullObjects::NullConfiguration.new
+    @configuration = configuration || SequencescapeExcel::NullObjects::NullConfiguration.new
     @user = user
     @override = override
     @tag_group = create_tag_group
@@ -32,12 +32,14 @@ class SampleManifest::Uploader
   end
 
   def run!
-    if valid?
-      upload.process(tag_group)
+    return false unless valid?
+    if upload.process(tag_group)
+      upload.complete
       upload.broadcast_sample_manifest_updated_event(user)
-      upload.complete if upload.processed?
-      # Delayed::Job.enqueue SampleManifestUploadProcessingJob.new(upload, tag_group)
+      true
     else
+      extract_errors
+      upload.fail
       false
     end
   end
@@ -50,6 +52,10 @@ class SampleManifest::Uploader
 
   def check_upload
     return true if upload.valid?
+    extract_errors
+  end
+
+  def extract_errors
     upload.errors.each do |key, value|
       errors.add key, value
     end

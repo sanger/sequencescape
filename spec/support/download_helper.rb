@@ -11,19 +11,25 @@ module DownloadHelpers
 
   def self.downloaded_file(file, timeout: TIMEOUT)
     wait_for_download(file, timeout)
-    File.read(PATH.join(file)).tap do |_|
+    File.read(path_to(file)).tap do |_|
       remove_downloads
     end
+  end
+
+  def self.path_to(file)
+    PATH.join(file)
   end
 
   def self.wait_for_download(file, timeout = TIMEOUT)
     Timeout.timeout(timeout) do
       sleep 0.1 until downloaded?(file)
     end
+  rescue Timeout::Error
+    raise StandardError, "Could not open #{file} after #{timeout} seconds"
   end
 
   def self.downloaded?(file)
-    !downloading? && PATH.join(file).exist?
+    !downloading? && path_to(file).exist?
   end
 
   def self.downloading?

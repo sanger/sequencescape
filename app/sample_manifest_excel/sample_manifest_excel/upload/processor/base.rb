@@ -7,7 +7,7 @@ module SampleManifestExcel
       # Uploads will be processed slightly differently based on the manifest type.
       class Base
         include ActiveModel::Model
-        include SampleManifestExcel::SubclassChecker
+        include SequencescapeExcel::SubclassChecker
 
         subclasses? :one_d_tube, :multiplexed_library_tube, :library_tube, :plate, modual: to_s.deconstantize
 
@@ -35,7 +35,7 @@ module SampleManifestExcel
         end
 
         def samples_updated?
-          upload.rows.all?(&:sample_updated?)
+          upload.rows.all?(&:sample_updated?) || log_error_and_return_false('could not update samples.')
         end
 
         def processed?
@@ -45,7 +45,9 @@ module SampleManifestExcel
         ##
         # Override the sample manifest with the raw uploaded data.
         def update_sample_manifest
-          @sample_manifest_updated = upload.sample_manifest.update(uploaded: File.open(upload.filename))
+          File.open(upload.filename) do |file|
+            @sample_manifest_updated = upload.sample_manifest.update(uploaded: file)
+          end
         end
 
         def sample_manifest_updated?
@@ -57,6 +59,12 @@ module SampleManifestExcel
         end
 
         private
+
+        # Log post processing checks and fail
+        def log_error_and_return_false(message)
+          upload.errors.add(:base, message)
+          false
+        end
 
         def check_upload_type
           return if upload.instance_of?(SampleManifestExcel::Upload::Base)
