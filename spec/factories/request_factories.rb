@@ -91,6 +91,7 @@ FactoryBot.define do
   factory(:multiplex_request, class: Request::Multiplexing) do
     asset nil
     association(:target_asset, factory: :multiplexed_library_tube)
+    association(:request_type, factory: :multiplex_request_type)
     request_purpose :standard
   end
 
