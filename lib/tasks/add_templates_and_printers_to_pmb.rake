@@ -118,7 +118,8 @@ namespace :pmb do
         end
 
         def swipecard_barcode_template
-          { data: {
+          {
+            data: {
               attributes: {
                 name: 'swipecard_barcode_template',
                 label_type_id: get_label_type_id('Plate'),
@@ -168,10 +169,10 @@ namespace :pmb do
         end
 
         def execute
-          unregistered_templates = ['sqsc_96plate_label_template',
-                                    'sqsc_1dtube_label_template',
-                                    'sqsc_384plate_label_template',
-                                    'swipecard_barcode_template']
+          unregistered_templates = %w[sqsc_96plate_label_template
+                                      sqsc_1dtube_label_template
+                                      sqsc_384plate_label_template
+                                      swipecard_barcode_template]
           unregistered_templates -= get_label_templates.keys
           unless unregistered_templates.empty?
             get_label_types
