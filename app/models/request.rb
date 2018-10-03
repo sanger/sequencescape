@@ -298,6 +298,7 @@ class Request < ApplicationRecord
   # Class method calls
   has_metadata do
     belongs_to :primer_panel
+    belongs_to :bait_library
   end
 
   has_one :primer_panel, through: :request_metadata
