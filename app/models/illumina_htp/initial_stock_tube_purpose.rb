@@ -22,16 +22,17 @@ class IlluminaHtp::InitialStockTubePurpose < IlluminaHtp::StockTubePurpose
   # We only pick up open requests, just in case a whole tube has failed / been cancelled.
   def sibling_tubes(tube)
     return [] if tube.submission.nil?
-    submission_id     = tube.submission.id
-    outr_request_type = tube.transfer_requests_as_target.first.outer_request.request_type_id
+    submission_id = tube.submission.id
 
     siblings = Tube.select('assets.*, tfr.state AS quick_state').distinct.joins([
       'LEFT JOIN transfer_requests AS tfr ON tfr.target_asset_id = assets.id',
-      'RIGHT OUTER JOIN requests AS outr ON outr.asset_id = tfr.asset_id AND outr.asset_id IS NOT NULL'
+      'RIGHT OUTER JOIN requests AS outr ON outr.asset_id = tfr.asset_id AND outr.asset_id IS NOT NULL',
+      'LEFT JOIN request_types AS rt ON rt.id = outr.request_type_id'
     ])
                    .where(
-                     outr: { submission_id: submission_id, request_type_id: outr_request_type, state: Request::Statemachine::OPENED_STATE },
-                     tfr:  { submission_id: submission_id, state: TransferRequest::ACTIVE_STATES }
+                     outr: { submission_id: submission_id, state: Request::Statemachine::OPENED_STATE },
+                     tfr:  { submission_id: submission_id, state: TransferRequest::ACTIVE_STATES },
+                     rt:   { for_multiplexing: true }
                    )
                    .includes(:uuid_object, :barcodes)
 
