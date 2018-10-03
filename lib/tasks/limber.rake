@@ -202,7 +202,11 @@ namespace :limber do
   end
 
   desc 'Create the limber submission templates'
-  task create_submission_templates: [:environment, :create_request_types, :create_barcode_printer_types, 'sequencing:novaseq:setup'] do
+  task create_submission_templates: [:environment,
+                                     :create_request_types,
+                                     :create_barcode_printer_types,
+                                     'sequencing:novaseq:setup',
+                                     'sequencing:gbs_miseq:setup'] do
     puts 'Creating submission templates....'
 
     base_list = Limber::Helper::ACCEPTABLE_SEQUENCING_REQUESTS
@@ -267,21 +271,6 @@ namespace :limber do
       Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: 'GBS', catalogue: gbs_catalogue).build!
       catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'Generic')
       Limber::Helper::TemplateConstructor.new(prefix: 'Multiplexing', catalogue: catalogue).build!
-
-      unless RequestType.find_by(key: 'gbs_miseq_sequencing')
-        RequestType.create!(key: 'gbs_miseq_sequencing',
-                            name: 'GBS MiSeq sequencing',
-                            asset_type: 'LibraryTube',
-                            initial_state: 'pending',
-                            order: 2,
-                            request_class_name: 'MiSeqSequencingRequest',
-                            billable: true,
-                            request_purpose: :standard).tap do |rt|
-                              RequestType::Validator.create!(request_type: rt,
-                                                             request_option: 'read_length',
-                                                             valid_options: [25, 50, 130, 150, 250, 300])
-                            end
-      end
 
       unless SubmissionTemplate.find_by(name: 'MiSeq for GBS')
         SubmissionTemplate.create!(
