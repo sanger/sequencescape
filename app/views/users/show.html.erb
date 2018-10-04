@@ -40,7 +40,11 @@ end %>
   <form>
     <table>
       <tr>
-        <td><label for="swipecard">Swipecard</label></td>
+        <th><label for="swipecard">Swipecard</label></th>
+        <th><label for="barcode-printer-list">Printer</label></th>
+        <th></th>
+      </tr>
+      <tr>
         <td><input type="password" id="swipecard" /></td>
         <td>
           <select name="printer" id="barcode-printer-list", class="form-control select2">
@@ -52,6 +56,7 @@ end %>
         <td>
           <input type="button" value="Print Barcode" id="print-btn" class="btn btn-success" <% if @label_template_id.nil? %>disabled<% end %> />
         </td>
+      </tr>
     </table>
     <div id="pmb-data" data-pmb-api="<%= configatron.pmb_api %>" data-pmb-template="<%= @label_template_id || 0 %>"></div>
   <%= javascript_include_tag 'print_swipecard.js' %>
