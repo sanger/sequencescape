@@ -69,6 +69,7 @@ class User < ApplicationRecord
   end
 
   def self.valid_barcode?(code)
+    # Remove this and use find_with_barcode_or_swipecard_code where needed
     begin
       human_code = Barcode.barcode_to_human!(code, prefix)
     rescue

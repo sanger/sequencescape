@@ -74,8 +74,9 @@ class StockStamper
 
   def user_barcode=(barcode)
     @user_barcode = barcode
-    return unless User.valid_barcode?(barcode)
-    @user = User.find_by(barcode: Barcode.barcode_to_human!(barcode, 'ID'))
+    user = User.find_with_barcode_or_swipecard_code(barcode)
+    return if user.nil?
+    @user = user
   end
 
   def destination_plate_barcode=(barcode)
