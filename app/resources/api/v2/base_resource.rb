@@ -33,11 +33,11 @@ module Api
       # Eager load specified models by default. Useful when attributes are
       # dependent on an associated model.
       def self.default_includes(*inclusions)
-        @default_includes = inclusions
+        @default_includes = inclusions.freeze
       end
 
       def self.inclusions
-        @default_includes || []
+        @default_includes || [].freeze
       end
 
       # Extends the default behaviour to add our default inclusions if provided
@@ -67,7 +67,7 @@ module Api
               model_includes.delete(key)
               # MODIFICATION BEGINS
               included_relationships = resolve_relationship_names_to_relations(relationship.resource_klass, value, options)
-              model_includes[relationship.relation_name(options)] = relationship.resource_klass.inclusions.concat(included_relationships)
+              model_includes[relationship.relation_name(options)] = relationship.resource_klass.inclusions + included_relationships
               # MODIFICATION ENDS
             end
             return model_includes
