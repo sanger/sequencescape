@@ -4,7 +4,7 @@ require 'rails_helper'
 require 'pry'
 
 feature 'stamping of stock', js: true do
-  let(:user) { create :admin, barcode: 'ID41440E' }
+  let(:user) { create :admin, barcode: 'ID41440E', swipecard_code: '1234567' }
   let(:plate) { create :plate_with_3_wells, barcode: '1' }
   let!(:barcode_printer) { create :barcode_printer }
 
@@ -24,7 +24,7 @@ feature 'stamping of stock', js: true do
     click_button 'Check the form'
     expect(page).to have_content('Plates barcodes are not identical')
     expect(page).to have_content("User barcode can't be blank")
-    fill_in('Scan user ID', with: '2470041440697')
+    fill_in('Scan user ID', with: '1234567')
     fill_in('Scan source plate', with: plate.ean13_barcode)
     fill_in('Scan destination plate', with: plate.ean13_barcode)
     select('ABgene_0800', from: 'stock_stamper_source_plate_type_name')
