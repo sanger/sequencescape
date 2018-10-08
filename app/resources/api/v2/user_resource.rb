@@ -13,7 +13,6 @@ module Api
 
       default_includes :uuid_object
 
-
       # Attributes
       attribute :uuid, readonly: true
       attribute :login, readonly: true
