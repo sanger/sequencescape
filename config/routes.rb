@@ -8,6 +8,7 @@ Sequencescape::Application.routes.draw do
 
   namespace :api do
     namespace :v2 do
+      jsonapi_resources :users
       jsonapi_resources :tubes
       jsonapi_resources :lanes
       jsonapi_resources :wells
@@ -543,6 +544,7 @@ Sequencescape::Application.routes.draw do
 
   namespace :api do
     namespace :v2 do
+      jsonapi_resources :users
       namespace :aker do
         resources :jobs, only: [:create]
       end
