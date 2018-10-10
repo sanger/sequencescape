@@ -48,3 +48,8 @@ library_type:
 reference_genome:
   identifier: :name
   scope: :alphabetical
+gc_content:
+  options:
+    - 'Neutral'
+    - 'High AT'
+    - 'High GC'
