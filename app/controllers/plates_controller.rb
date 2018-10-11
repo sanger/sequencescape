@@ -27,8 +27,7 @@ class PlatesController < ApplicationController
       barcode_printer       = BarcodePrinter.find(params[:plates][:barcode_printer])
       source_plate_barcodes = params[:plates][:source_plates]
 
-      user_barcode = Barcode.barcode_to_human(params[:plates][:user_barcode])
-      scanned_user = User.find_by(barcode: user_barcode) if user_barcode
+      scanned_user = User.find_with_barcode_or_swipecard_code(params[:plates][:user_barcode])
 
       respond_to do |format|
         if scanned_user.nil?
