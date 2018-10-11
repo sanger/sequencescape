@@ -7,7 +7,7 @@ class RobotVerificationsControllerTest < ActionController::TestCase
       FactoryBot.create :plate_type, name: 'ABgene_0765', maximum_volume: 800
       @controller = RobotVerificationsController.new
       @request    = ActionController::TestRequest.create(@controller)
-      @user = FactoryBot.create :user, barcode: 'ID41440E'
+      @user = FactoryBot.create :user, barcode: 'ID41440E', swipecard_code: '1234567'
       @controller.stubs(:logged_in?).returns(@user)
       session[:user] = @user.id
 
@@ -273,7 +273,7 @@ class RobotVerificationsControllerTest < ActionController::TestCase
           post :submission, params: { barcodes: { batch_barcode: '550006262686',
                                                   robot_barcode: '4880000001780',
                                                   destination_plate_barcode: '1220142334774',
-                                                  user_barcode: '2470041440697' } }
+                                                  user_barcode: '1234567' } }
         end
         should 'be successful' do
           assert_response :success
