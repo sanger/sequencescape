@@ -3,7 +3,7 @@ Sequencescape
 
 [![Build Status](https://travis-ci.org/radome/sequencescape.svg?branch=test_openstack)](https://travis-ci.org/radome/sequencescape)
 [![Maintainability](https://api.codeclimate.com/v1/badges/4e15fd15338168a2334b/maintainability)](https://codeclimate.com/github/radome/sequencescape/maintainability)
-
+[![Yard Docs](http://img.shields.io/badge/yard-docs-blue.svg)](https://www.rubydoc.info/github/sanger/sequencescape)
 
 Description
 -----------
