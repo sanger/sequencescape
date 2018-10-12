@@ -38,14 +38,19 @@ class SequenomQcPlate < Plate
   end
 
   def add_event_to_stock_plates(user_barcode)
-    return false unless user_barcode_exist?(user_barcode)
-    source_plates.each_with_index do |plate, _index|
-      next if plate.nil?
-      stock_plate = plate.stock_plate
-      next if stock_plate.nil?
-      stock_plate.events.create_sequenom_stamp!(User.lookup_by_barcode(user_barcode))
+    user = User.find_with_barcode_or_swipecard_code(user_barcode)
+    if user.nil?
+      errors.add(:base, 'Please scan your user barcode')
+      return false
+    else
+      source_plates.each_with_index do |plate, _index|
+        next if plate.nil?
+        stock_plate = plate.stock_plate
+        next if stock_plate.nil?
+        stock_plate.events.create_sequenom_stamp!(user)
+      end
+      events.create_sequenom_plate!(user)
     end
-    events.create_sequenom_plate!(User.lookup_by_barcode(user_barcode))
   end
 
   def compute_and_set_name(input_plate_names)
@@ -160,15 +165,6 @@ class SequenomQcPlate < Plate
   def at_least_one_source_plate?(input_plate_barcodes)
     if input_plate_barcodes.empty?
       errors.add(:base, 'At least one source input plate barcode must be entered.')
-    else
-      true
-    end
-  end
-
-  def user_barcode_exist?(user_barcode)
-    if User.lookup_by_barcode(user_barcode).nil?
-      errors.add(:base, 'Please scan your user barcode') if User.lookup_by_barcode(user_barcode).nil?
-      false
     else
       true
     end

@@ -16,6 +16,7 @@ Sequencescape::Application.routes.draw do
       jsonapi_resources :orders
       jsonapi_resources :aliquots
       jsonapi_resources :requests
+      jsonapi_resources :users
       jsonapi_resources :tubes
       jsonapi_resources :lanes
       jsonapi_resources :wells

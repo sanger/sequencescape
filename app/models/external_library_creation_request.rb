@@ -30,9 +30,10 @@ class ExternalLibraryCreationRequest < SystemRequest
     pending?
   end
 
+  private
+
   def perform_transfer_of_contents
     target_asset.aliquots << asset.aliquots.map(&:dup)
     target_asset.save!
   end
-  private :perform_transfer_of_contents
 end

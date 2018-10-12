@@ -198,7 +198,11 @@ namespace :limber do
   end
 
   desc 'Create the limber submission templates'
-  task create_submission_templates: [:environment, :create_request_types, :create_barcode_printer_types, 'sequencing:novaseq:setup'] do
+  task create_submission_templates: [:environment,
+                                     :create_request_types,
+                                     :create_barcode_printer_types,
+                                     'sequencing:novaseq:setup',
+                                     'sequencing:gbs_miseq:setup'] do
     puts 'Creating submission templates....'
 
     base_list = Limber::Helper::ACCEPTABLE_SEQUENCING_REQUESTS
@@ -268,7 +272,7 @@ namespace :limber do
           name: 'MiSeq for GBS',
           submission_class_name: 'AutomatedOrder',
           submission_parameters: {
-            request_type_ids_list: [RequestType.where(key: 'miseq_sequencing').pluck(:id)]
+            request_type_ids_list: [RequestType.where(key: 'gbs_miseq_sequencing').pluck(:id)]
           },
           product_line: ProductLine.find_by!(name: 'Illumina-HTP'),
           product_catalogue: ProductCatalogue.find_by!(name: 'Generic')
