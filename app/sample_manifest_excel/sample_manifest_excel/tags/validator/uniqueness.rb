@@ -14,16 +14,16 @@ module SampleManifestExcel
         end
 
         def check_tags
-          tag_oligos = upload.data_at(:tag_oligo)
-          tag2_oligos = upload.data_at(:tag2_oligo)
+          i7s = upload.data_at(:i7)
+          i5s = upload.data_at(:i5)
 
           tag_groups = upload.data_at(:tag_group)
           tag_indexes = upload.data_at(:tag_index)
           tag2_groups = upload.data_at(:tag2_group)
           tag2_indexes = upload.data_at(:tag2_index)
 
-          duplicates = if tag_oligos.present? && tag2_oligos.present?
-                         find_tags_clash(tag_oligos.zip(tag2_oligos))
+          duplicates = if i7s.present? && i5s.present?
+                         find_tags_clash(i7s.zip(i5s))
                        elsif tag_groups.present? && tag_indexes.present? && tag2_groups.present? && tag2_indexes.present?
                          check_tag_groups_and_indexes(tag_groups, tag_indexes, tag2_groups, tag2_indexes)
                        else
@@ -35,15 +35,15 @@ module SampleManifestExcel
         private
 
         def check_tag_groups_and_indexes(tag_groups, tag_indexes, tag2_groups, tag2_indexes)
-          tag_oligos  = []
-          tag2_oligos = []
+          i7s  = []
+          i5s = []
           tag_groups.each_with_index do |grp, index|
-            tag_oligos  << TagGroup.find_by(name: grp)&.tags&.find_by(map_id: tag_indexes[index])&.oligo
+            i7s  << TagGroup.find_by(name: grp)&.tags&.find_by(map_id: tag_indexes[index])&.oligo
           end
           tag2_groups.each_with_index do |grp, index|
-            tag2_oligos << TagGroup.find_by(name: grp)&.tags&.find_by(map_id: tag2_indexes[index])&.oligo
+            i5s << TagGroup.find_by(name: grp)&.tags&.find_by(map_id: tag2_indexes[index])&.oligo
           end
-          find_tags_clash(tag_oligos.zip(tag2_oligos))
+          find_tags_clash(i7s.zip(i5s))
         end
       end
     end

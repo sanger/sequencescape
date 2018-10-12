@@ -13,7 +13,7 @@ sanger_sample_id:
   heading: SANGER SAMPLE ID
   attribute: :sample_id
 tag_oligo:
-  heading: TAG OLIGO
+  heading: i7
   unlocked: true
   validation:
     options:
@@ -27,7 +27,7 @@ tag_oligo:
   conditional_formattings:
     empty_cell:
 tag2_oligo:
-  heading: TAG2 OLIGO
+  heading: i5
   unlocked: true
   validation:
     options:

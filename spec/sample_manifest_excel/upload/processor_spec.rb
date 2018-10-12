@@ -182,10 +182,10 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model, sample_mani
           end
 
           it 'will update the aliquots downstream if tags were swapped and override is set to true' do
-            tag_oligo_1 = download.worksheet.axlsx_worksheet.rows[10].cells[2].value
-            tag_oligo_2 = download.worksheet.axlsx_worksheet.rows[11].cells[2].value
-            download.worksheet.axlsx_worksheet.rows[10].cells[2].value = tag_oligo_2
-            download.worksheet.axlsx_worksheet.rows[11].cells[2].value = tag_oligo_1
+            i7_1 = download.worksheet.axlsx_worksheet.rows[10].cells[2].value
+            i7_2 = download.worksheet.axlsx_worksheet.rows[11].cells[2].value
+            download.worksheet.axlsx_worksheet.rows[10].cells[2].value = i7_2
+            download.worksheet.axlsx_worksheet.rows[11].cells[2].value = i7_1
             download.save(new_test_file)
             reupload = SampleManifestExcel::Upload::Base.new(filename: new_test_file, column_list: multiplex_library_with_tag_seq_cols, start_row: 9, override: true)
             processor = SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube.new(reupload)

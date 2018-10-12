@@ -133,8 +133,8 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
         row_data = data.dup
         row_data[0] = tube.samples.first.assets.first.human_barcode
         row_data[1] = tube.samples.first.sanger_sample_id
-        row_data[2] = tags[i][:tag_oligo]
-        row_data[3] = tags[i][:tag2_oligo]
+        row_data[2] = tags[i][:i7]
+        row_data[3] = tags[i][:i5]
         rows << SampleManifestExcel::Upload::Row.new(number: i + 1, data: row_data, columns: columns)
       end
     end
@@ -146,8 +146,8 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
       end
       expect(rows.all?(&:aliquot_transferred?)).to be_truthy
       mx_library_tube.samples.each_with_index do |sample, i|
-        expect(sample.aliquots.first.tag.oligo).to eq(tags[i][:tag_oligo])
-        expect(sample.aliquots.first.tag2.oligo).to eq(tags[i][:tag2_oligo])
+        expect(sample.aliquots.first.tag.oligo).to eq(tags[i][:i7])
+        expect(sample.aliquots.first.tag2.oligo).to eq(tags[i][:i5])
         sample.primary_receptacle.requests.each do |request|
           expect(request.state).to eq('passed')
         end
