@@ -17,7 +17,7 @@ class SubmissionPool < ApplicationRecord
 
   self.table_name = 'submissions'
 
-  has_one :outer_request, ->() { order(id: :asc, state: Request::Statemachine::ACTIVE) }, class_name: 'Request', foreign_key: :submission_id
+  has_one :outer_request, ->() { order(id: :asc).where(state: Request::Statemachine::ACTIVE) }, class_name: 'Request', foreign_key: :submission_id
   has_many :tag_layout_template_submissions, class_name: 'TagLayout::TemplateSubmission', foreign_key: 'submission_id'
   has_many :tag_layout_templates, through: :tag_layout_template_submissions
   has_many :tag2_layout_template_submissions, class_name: 'Tag2Layout::TemplateSubmission', foreign_key: 'submission_id'
