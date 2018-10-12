@@ -12,7 +12,7 @@ sanger_tube_id:
 sanger_sample_id:
   heading: SANGER SAMPLE ID
   attribute: :sample_id
-tag_oligo:
+i7:
   heading: i7
   unlocked: true
   validation:
@@ -26,7 +26,7 @@ tag_oligo:
       prompt: "Input tag oligo."
   conditional_formattings:
     empty_cell:
-tag2_oligo:
+i5:
   heading: i5
   unlocked: true
   validation:
