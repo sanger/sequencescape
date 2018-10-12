@@ -1,4 +1,3 @@
-
 module IlluminaC::Requests
   class LibraryRequest < Request::LibraryCreation
     def role; "#{request_metadata.library_type} #{super}"; end

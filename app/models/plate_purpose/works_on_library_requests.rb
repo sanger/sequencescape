@@ -1,4 +1,3 @@
-
 module PlatePurpose::WorksOnLibraryRequests
   def each_well_and_its_library_request(plate)
     well_to_stock_id = Hash[plate.stock_wells.map { |well, stock_wells| [well.id, stock_wells.first.id] }]

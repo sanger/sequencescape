@@ -1,4 +1,3 @@
-
 require 'aasm'
 
 class Request < ApplicationRecord

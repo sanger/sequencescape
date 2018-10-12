@@ -1,4 +1,3 @@
-
 class Accessionable::Base
   InvalidData = Class.new(AccessionService::AccessionServiceError)
   attr_reader :accession_number, :name, :date, :date_short

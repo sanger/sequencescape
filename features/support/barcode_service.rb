@@ -1,4 +1,3 @@
-
 require 'singleton'
 class FakeBarcodeService
   include Singleton

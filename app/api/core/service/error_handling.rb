@@ -1,4 +1,3 @@
-
 module Core::Service::ErrorHandling
   def self.registered(app)
     app.instance_eval do

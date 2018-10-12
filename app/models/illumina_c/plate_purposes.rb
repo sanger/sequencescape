@@ -1,4 +1,3 @@
-
 module IlluminaC::PlatePurposes
   PLATE_PURPOSE_FLOWS = [
     [

@@ -1,4 +1,3 @@
-
 class ::Endpoints::AssetGroups < ::Core::Endpoint::Base
   model do
   end

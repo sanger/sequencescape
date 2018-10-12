@@ -1,4 +1,3 @@
-
 class AssetLink < ApplicationRecord
   include Api::AssetLinkIO::Extensions
   include Uuid::Uuidable

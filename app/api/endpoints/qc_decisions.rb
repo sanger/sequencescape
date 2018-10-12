@@ -1,4 +1,3 @@
-
 class ::Endpoints::QcDecisions < ::Core::Endpoint::Base
   model do
     action(:create) do |request, _|

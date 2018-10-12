@@ -1,4 +1,3 @@
-
 class Well < Receptacle
   include Api::WellIO::Extensions
   include ModelExtensions::Well

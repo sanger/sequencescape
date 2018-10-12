@@ -1,4 +1,3 @@
-
 class Api::Messages::FluidigmPlateIO < Api::Base
   module WellExtensions
     def cost_code

@@ -1,4 +1,3 @@
-
 class ::Endpoints::Pipelines < ::Core::Endpoint::Base
   model do
   end

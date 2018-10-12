@@ -1,4 +1,3 @@
-
 module Sdb::SampleManifestsHelper
   def count_labels
     {

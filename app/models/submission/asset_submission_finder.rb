@@ -1,4 +1,3 @@
-
 module Submission::AssetSubmissionFinder
   def is_plate?(details)
     details['barcode'].present? and details['plate well'].present?

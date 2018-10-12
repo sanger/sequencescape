@@ -1,4 +1,3 @@
-
 class BudgetDivision < ApplicationRecord
   extend Attributable::Association::Target
 

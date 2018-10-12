@@ -1,4 +1,3 @@
-
 module PlatePurpose::Initial
   def self.included(base)
     base.class_eval do

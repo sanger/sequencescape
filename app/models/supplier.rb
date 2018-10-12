@@ -1,4 +1,3 @@
-
 class Supplier < ApplicationRecord
   include Uuid::Uuidable
   include ::Io::Supplier::ApiIoSupport

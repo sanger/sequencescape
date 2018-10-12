@@ -1,4 +1,3 @@
-
 module Swipecardable
   def swipecard_code=(code)
     self.encrypted_swipecard_code = User.encrypt_swipecard_code(code)

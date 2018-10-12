@@ -4,7 +4,7 @@ require 'ostruct'
 describe PsdFormatter do
   let(:deployment_info) do
     OpenStruct.new(
-      name: 'Sequencescape',
+      name: application_name,
       version: '10.3.0',
       environment: 'test'
     )
@@ -17,9 +17,27 @@ describe PsdFormatter do
     Rails.logger.formatter = PsdFormatter.new(deployment_info)
   end
 
-  it 'formats the log correctly' do
-    Rails.logger.info 'info message'
-    log.rewind
-    expect(log.read).to match(/\A\(thread-#{Thread.current.object_id}\) \[#{deployment_info.name}:#{deployment_info.version}:#{deployment_info.environment}\]  INFO -- : info message/)
+  # These two context handle the temporary need to deploy in two environments
+  # Once we are fully of the old metal, we only depend on the 'without application'
+  # name behaviour, and should probably use that regardless of whether a name is supplied.
+
+  context 'with an application name' do
+    let(:application_name) { 'Sequencescape' }
+
+    it 'formats the log correctly' do
+      Rails.logger.info 'info message'
+      log.rewind
+      expect(log.read).to match(/\A\(thread-#{Thread.current.object_id}\) \[#{application_name}:#{deployment_info.version}:#{deployment_info.environment}\]  INFO -- : info message/)
+    end
+  end
+
+  context 'without an application name' do
+    let(:application_name) { nil }
+
+    it 'formats the log correctly' do
+      Rails.logger.info 'info message'
+      log.rewind
+      expect(log.read).to match(/\A\(thread-#{Thread.current.object_id}\) \[#{deployment_info.version}:#{deployment_info.environment}\]  INFO -- : info message/)
+    end
   end
 end

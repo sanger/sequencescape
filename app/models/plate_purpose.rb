@@ -1,4 +1,3 @@
-
 class PlatePurpose < Purpose
   self.default_prefix = 'DN'
 

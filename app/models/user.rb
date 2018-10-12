@@ -1,4 +1,3 @@
-
 require 'net/ldap'
 require 'openssl'
 require 'digest/sha1'

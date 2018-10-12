@@ -1,4 +1,3 @@
-
 Then /^there should be (\d+) pre capture pools$/ do |pools|
   assert_equal pools.to_i, PreCapturePool.count
 end

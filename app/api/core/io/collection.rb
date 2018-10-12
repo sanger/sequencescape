@@ -1,4 +1,3 @@
-
 module ::Core::Io::Collection
   def as_json(options = {})
     results, base_stream = options[:object], options[:stream]

@@ -1,4 +1,3 @@
-
 unless Rails.env.test?
   rt = RequestType.create!(
     key: 'qc_miseq_sequencing',

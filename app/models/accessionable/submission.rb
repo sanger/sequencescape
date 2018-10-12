@@ -1,4 +1,3 @@
-
 class Accessionable::Submission < Accessionable::Base
   attr_reader :broker, :alias, :date, :accessionables, :contact
 

@@ -1,4 +1,3 @@
-
 class SequencingPipeline < Pipeline
   self.batch_worksheet = 'simplified_worksheet'
   self.sequencing = true

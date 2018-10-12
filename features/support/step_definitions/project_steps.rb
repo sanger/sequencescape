@@ -1,4 +1,3 @@
-
 Given /^I have a project called "([^\"]*)"$/ do |project|
   #  proj = FactoryBot.create :project_with_order, :name => project
   FactoryBot.create(:project, name: project)

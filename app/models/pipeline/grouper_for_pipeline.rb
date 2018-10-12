@@ -1,4 +1,3 @@
-
 class Pipeline::GrouperForPipeline
   delegate :requests, :group_by_parent?, :group_by_submission?, to: :@pipeline
 

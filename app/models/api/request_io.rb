@@ -1,4 +1,3 @@
-
 class Api::RequestIO < Api::Base
   module Extensions
     module ClassMethods

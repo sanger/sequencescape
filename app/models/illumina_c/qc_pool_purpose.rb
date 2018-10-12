@@ -1,4 +1,3 @@
-
 class IlluminaC::QcPoolPurpose < Tube::Purpose
   def transition_to(tube, state, _user, _ = nil, _customer_accepts_responsibility = false)
     ActiveRecord::Base.transaction do

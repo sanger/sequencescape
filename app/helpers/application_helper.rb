@@ -1,4 +1,3 @@
-
 module ApplicationHelper
   # Should return either the custom text or a blank string
   def custom_text(identifier, differential = nil)

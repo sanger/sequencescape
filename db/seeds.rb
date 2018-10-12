@@ -1,4 +1,3 @@
-
 # This file should contain all the record creation needed to seed the database with its default values.
 # The data can then be loaded with the rake db:seed (or created alongside the db with db:setup).
 
@@ -17,7 +16,7 @@ unless [:development, :test, :seeding, :cucumber].include?(Rails.env.to_sym)
 
     **********************************************************************************************************
     **********************************************************************************************************
-END_OF_MESSAGE
+  END_OF_MESSAGE
 end
 
 ActiveRecord::Base.transaction do

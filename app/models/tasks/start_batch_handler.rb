@@ -1,4 +1,3 @@
-
 module Tasks::StartBatchHandler
   def do_start_batch_task(task, params)
     return unless task.lab_activity?

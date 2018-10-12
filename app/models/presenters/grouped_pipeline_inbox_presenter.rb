@@ -1,4 +1,3 @@
-
 module Presenters
   class GroupedPipelineInboxPresenter
     class << self

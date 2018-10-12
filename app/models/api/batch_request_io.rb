@@ -1,4 +1,3 @@
-
 class Api::BatchRequestIO < Api::Base
   module Extensions
     module ClassMethods

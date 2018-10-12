@@ -132,6 +132,7 @@ group :development do
   gem 'rack-mini-profiler'
   # find unused routes and controller actions by runnung `rake traceroute` from CL
   gem 'traceroute'
+  gem 'travis'
 end
 
 group :development, :test, :cucumber do
@@ -193,4 +194,5 @@ end
 group :deployment do
   gem 'gmetric', '~>0.1.3'
   gem 'exception_notification'
+  gem 'whenever', require: false
 end

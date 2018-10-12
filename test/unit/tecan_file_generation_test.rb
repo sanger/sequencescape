@@ -1,4 +1,3 @@
-
 require 'test_helper'
 require 'tecan_file_generation'
 

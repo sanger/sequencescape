@@ -1,4 +1,3 @@
-
 class PacBioSamplePrepPipeline < Pipeline
   ALWAYS_SHOW_RELEASE_ACTIONS = true
 

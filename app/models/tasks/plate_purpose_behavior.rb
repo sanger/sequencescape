@@ -1,4 +1,3 @@
-
 module Tasks
   module PlatePurposeBehavior
     # Returns a list of valid plate purpose types based on the requests in the current batch.

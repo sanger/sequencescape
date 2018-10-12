@@ -1,4 +1,3 @@
-
 class ::Endpoints::SampleManifests < ::Core::Endpoint::Base
   model do
     # TODO: For the moment we have to disable the read functionality as it consumes too much memory.

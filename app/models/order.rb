@@ -1,4 +1,3 @@
-
 # frozen_string_literal: true
 
 # And Order is used as the main means of requesting work in Sequencescape. Its

@@ -1,4 +1,3 @@
-
 class Api::TagIO < Api::Base
   module Extensions
     module ClassMethods

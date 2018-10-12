@@ -1,4 +1,3 @@
-
 Transform /^submitted to "([^\"]+)"$/ do |name|
   SubmissionTemplate.find_by(name: name) or raise StandardError, "Cannot find submission template #{name.inspect}"
 end

@@ -1,4 +1,3 @@
-
 module ::Core::Endpoint::BasicHandler::Actions::Guards
   class Guard
     def initialize(method = nil, &block)

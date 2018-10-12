@@ -1,4 +1,3 @@
-
 class Uuid < ApplicationRecord
   # Allows tests to dictate the next UUID generted for a given class
   class_attribute :store_for_tests

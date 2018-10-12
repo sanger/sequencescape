@@ -1,4 +1,3 @@
-
 class IlluminaHtp::PooledPlatePurpose < PlatePurpose
   def transition_to(plate, state, user, contents = nil, customer_accepts_responsibility = false)
     ActiveRecord::Base.transaction do

@@ -1,4 +1,3 @@
-
 # rubocop:disable Metrics/BlockLength
 # TODO: This should probably still get refactored, but disabling this here allows us to drastically reduce the
 # maximum block size in the todo yaml.

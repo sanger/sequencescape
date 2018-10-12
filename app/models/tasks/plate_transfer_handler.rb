@@ -1,4 +1,3 @@
-
 module Tasks::PlateTransferHandler
   class InvalidBatch < StandardError; end
 

@@ -1,4 +1,3 @@
-
 class PacBioSamplePrepRequest < CustomerRequest
   has_metadata as: Request do
     custom_attribute(:insert_size)

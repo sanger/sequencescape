@@ -1,4 +1,3 @@
-
 class Health
   attr_reader :status, :message, :details
 

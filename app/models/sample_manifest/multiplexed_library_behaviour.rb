@@ -1,4 +1,3 @@
-
 module SampleManifest::MultiplexedLibraryBehaviour
   module ClassMethods
     def create_for_multiplexed_library!(attributes, *args, &block)

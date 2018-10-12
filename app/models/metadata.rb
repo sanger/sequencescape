@@ -1,4 +1,3 @@
-
 require_dependency 'attributable'
 
 module Metadata

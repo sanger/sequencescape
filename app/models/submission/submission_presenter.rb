@@ -1,4 +1,3 @@
-
 class Submission::SubmissionPresenter < Submission::PresenterSkeleton
   self.attributes = [:id]
 

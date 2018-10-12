@@ -1,4 +1,3 @@
-
 class TagGroup < ApplicationRecord
   include Uuid::Uuidable
 

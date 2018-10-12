@@ -1,4 +1,3 @@
-
 require 'test_helper'
 require 'csv'
 class ImportFluidigmDataTest < ActiveSupport::TestCase

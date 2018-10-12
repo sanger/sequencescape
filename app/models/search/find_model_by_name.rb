@@ -1,4 +1,3 @@
-
 class Search::FindModelByName < Search
   validates_presence_of :target_model_name
 

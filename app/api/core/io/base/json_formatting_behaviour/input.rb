@@ -1,4 +1,3 @@
-
 module ::Core::Io::Base::JsonFormattingBehaviour::Input
   class ReadOnlyAttribute < ::Core::Service::Error
     def initialize(attribute)

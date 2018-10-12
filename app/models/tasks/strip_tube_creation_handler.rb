@@ -1,4 +1,3 @@
-
 module Tasks::StripTubeCreationHandler
   def render_strip_tube_creation_task(task, _params)
     @tubes_requested = @batch.requests.first.asset.requests.for_pipeline(task.workflow.pipeline).count
