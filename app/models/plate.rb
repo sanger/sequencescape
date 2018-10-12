@@ -136,6 +136,8 @@ class Plate < Asset
   # May not have been started yet
   has_many :waiting_submissions, -> { distinct }, through: :well_requests_as_source, source: :submission
   # The requests which were being processed to make the plate
+  # This should probably be switched to going through aliquots, but not 100% certain that it wont cause side effects
+  # Might just be safer to wait until we've moved off onto the new api
   has_many :in_progress_submissions, -> { distinct }, through: :transfer_requests_as_target, source: :submission
 
   def submission_ids

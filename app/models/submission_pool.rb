@@ -5,29 +5,7 @@ class SubmissionPool < ApplicationRecord
     module Plate
       def self.included(base)
         base.class_eval do
-          # Rails 4 takes scopes as second argument, we can probably also tidy up and remove the counter_sql
-          # as it is the :group by seems to throw rails, and distinct will throw off out count.
-          has_many :submission_pools, ->() { select('submissions.*, requests.id AS outer_request_id').group('submissions.id').uniq },
-                   through: :well_requests_as_target do
-
-            def count(*args)
-              # Horrid hack due to the behaviour of count with a group_by
-              # We can't use uniq alone, as the outer_request_id makes
-              # the vairous rows unique.
-              s = super
-              return s if s.is_a?(Numeric)
-              s.length
-            end
-
-            def size(*args)
-              # Horrid hack due to the behaviour of count with a group_by
-              # We can't use uniq alone, as the outer_request_id makes
-              # the vairous rows unique.
-              s = super
-              return s if s.is_a?(Numeric)
-              s.length
-            end
-          end
+          has_many :submission_pools, ->() { distinct }, through: :well_requests_as_target
 
           def submission_pools
             SubmissionPool.for_plate(self)
@@ -39,51 +17,24 @@ class SubmissionPool < ApplicationRecord
 
   self.table_name = 'submissions'
 
-  belongs_to :outer_request, class_name: 'Request'
+  has_one :outer_request, ->() { order(id: :asc, state: Request::Statemachine::ACTIVE) }, class_name: 'Request', foreign_key: :submission_id
   has_many :tag_layout_template_submissions, class_name: 'TagLayout::TemplateSubmission', foreign_key: 'submission_id'
   has_many :tag_layout_templates, through: :tag_layout_template_submissions
   has_many :tag2_layout_template_submissions, class_name: 'Tag2Layout::TemplateSubmission', foreign_key: 'submission_id'
   has_many :tag2_layout_templates, through: :tag2_layout_template_submissions
 
   scope :include_uuid, ->() {}
-  scope :include_outer_request, ->() { includes(:outer_request) }
+  scope :for_plate, ->(plate) { where(id: plate.all_submission_ids) }
 
-  scope :for_plate, ->(plate) {
-    stock_plate = plate.stock_plate
-
-    return none if stock_plate.nil?
-
-    select('submissions.*, MIN(our.id) AS outer_request_id')
-      .joins([
-        'LEFT JOIN requests AS our ON our.submission_id = submissions.id',
-        'LEFT JOIN container_associations as spw ON spw.content_id = our.asset_id'
-      ])
-      .where(
-        spw: { container_id: stock_plate.id },
-        our: { state: Request::Statemachine::ACTIVE }
-      )
-      .group('submissions.id')
-  } do
-
-    def count(*_args)
-      # Horrid hack due to the behaviour of count with a group_by
-      # We can't use uniq alone, as the outer_request_id makes
-      # the vairous rows unique.
-      s = super(:id)
-      return s if s.is_a?(Numeric)
-      s.length
-    end
-
-    def size(*args)
-      # Horrid hack due to the behaviour of count with a group_by
-      # We can't use uniq alone, as the outer_request_id makes
-      # the vairous rows unique.
-      s = super
-      return s if s.is_a?(Numeric)
-      s.length
-    end
-  end
-
+  # JG [2018-10-12] LIMITATION: This currently uses the first request in a submission, so could cause
+  # confusion if we have, say, cherry-picking requests upstream of library creation.
+  # We currently have no submission templates like this active.
+  # This value is used to work out if we have a cross-plate pool and therefore need
+  # UDIs. Two things are likely to happen soon which make this concern redundant:
+  # 1) We'll switch to UDIs only -> Actually there at time of writing, but there may be one more lot of 168s comming in
+  # 2) Limber will be making the decision itself more directly
+  # It was agreed with Jamie that it was more important to detect clashes than it was to handle unlikely
+  # possible future scenarios.
   def plates_in_submission
     outer_request.submission_plate_count
   end
