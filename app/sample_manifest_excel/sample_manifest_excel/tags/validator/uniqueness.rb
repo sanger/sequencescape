@@ -35,10 +35,10 @@ module SampleManifestExcel
         private
 
         def check_tag_groups_and_indexes(tag_groups, tag_indexes, tag2_groups, tag2_indexes)
-          i7s  = []
+          i7s = []
           i5s = []
           tag_groups.each_with_index do |grp, index|
-            i7s  << TagGroup.find_by(name: grp)&.tags&.find_by(map_id: tag_indexes[index])&.oligo
+            i7s << TagGroup.find_by(name: grp)&.tags&.find_by(map_id: tag_indexes[index])&.oligo
           end
           tag2_groups.each_with_index do |grp, index|
             i5s << TagGroup.find_by(name: grp)&.tags&.find_by(map_id: tag2_indexes[index])&.oligo
