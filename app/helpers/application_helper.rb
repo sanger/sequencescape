@@ -49,6 +49,7 @@ module ApplicationHelper
   end
 
   def display_status(status)
+    return if status.blank?
     content_tag(:span, status, class: "request-state badge badge-#{status}")
   end
 
