@@ -22,8 +22,8 @@ i7:
       formula1: "255"
       allowBlank: false
       showInputMessage: true
-      promptTitle: "Tag oligo"
-      prompt: "Input tag oligo."
+      promptTitle: "i7"
+      prompt: "Input i7."
   conditional_formattings:
     empty_cell:
 i5:
@@ -36,8 +36,10 @@ i5:
       formula1: "255"
       allowBlank: false
       showInputMessage: true
-      promptTitle: "Tag2 oligo"
-      prompt: "Input tag2 oligo."
+      promptTitle: "i5"
+      prompt: "Input i5."
+  conditional_formattings:
+    empty_cell:
 tag_group:
   heading: TAG GROUP
   unlocked: true
