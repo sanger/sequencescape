@@ -31,6 +31,12 @@ module UiHelper
       end
     end
 
+    def load_request(request)
+      request.run_events.each do |event|
+        load_event(event)
+      end
+    end
+
     def load_event(event)
       add(SummaryItem.new(
             message: event.message,
