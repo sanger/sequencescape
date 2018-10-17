@@ -28,7 +28,8 @@ Getting started
 ---------------
 
 It is strongly recommended that you use a ruby version manager such as RVM to
-manage the Ruby version you are using.
+manage the Ruby version you are using. Sequencescape is developed using
+ruby-2.5.1.
 
 ```
     $ cp config/config.yml.example config/config.yml

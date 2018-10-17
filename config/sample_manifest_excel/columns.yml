@@ -559,8 +559,23 @@ sibling:
 gc_content:
   heading: GC CONTENT
   unlocked: true
+  validation:
+    options:
+      type: :list
+      formula1: "$A$1:$A$2"
+      allowBlank: false
+      showDropDown: false
+      showInputMessage: true
+      promptTitle: "GC Content"
+      prompt: "Please enter either Neutral, High AT or High GC"
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "GC Content"
+      error: "You must enter either Neutral, High AT or High GC"
+    :range_name: :gc_content
   conditional_formattings:
     empty_cell:
+    is_error:
 sample_public_name:
   heading: PUBLIC NAME
   unlocked: true

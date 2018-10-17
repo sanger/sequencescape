@@ -48,6 +48,8 @@ end %>
 
 <%= render partial: 'shared/progress_statistics_summary', locals: { statistics: @presenter.submission.requests.progress_statistics } %>
 
+<%= link_to('View all requests', [:requests,{submission_id: @presenter.submission.id }], class: 'btn btn-lg btn-primary col') %>
+
 <ul id="orders">
 <% @presenter.submission.orders.each do |order| %>
   <li class="pane order active completed">

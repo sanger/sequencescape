@@ -8,7 +8,7 @@ class SequenomQcPlatesControllerTest < ActionController::TestCase
     setup do
       @controller = SequenomQcPlatesController.new
       @request    = ActionController::TestRequest.create(@controller)
-      @user       = create :manager, barcode: 'ID99A'
+      @user       = create :manager, barcode: 'ID99A', swipecard_code: '1234567'
       @controller.stubs(:current_user).returns(@user)
     end
 
@@ -25,7 +25,7 @@ class SequenomQcPlatesControllerTest < ActionController::TestCase
 
       RestClient.expects(:post)
 
-      post :create, params: { 'user_barcode' => Barcode.human_to_machine_barcode(@user.barcode).to_s,
+      post :create, params: { 'user_barcode' => '1234567',
                               'input_plate_names' => { '1' => plate1.ean13_barcode.to_s, '2' => plate2.ean13_barcode.to_s, '3' => '', '4' => '' },
                               'plate_prefix' => 'QC',
                               'gender_check_bypass' => '1',

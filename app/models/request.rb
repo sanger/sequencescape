@@ -336,6 +336,14 @@ class Request < ApplicationRecord
     false
   end
 
+  def run_events
+    if events.loaded?
+      events.select { |e| e.message.starts_with?('Run') }
+    else
+      where('message LIKE "Run%"')
+    end
+  end
+
   def source_labware
     asset.labware
   end
