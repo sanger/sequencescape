@@ -38,7 +38,7 @@ jobs:
     - "./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT"
 
   - if: type != cron
-    env: SUITE=rubocop
+    env: SUITE='rubocop --parallel'
     name: "Rubocop"
 
   - if: type != cron
