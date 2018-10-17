@@ -11,7 +11,7 @@ sanger_sample_id:
   heading: SANGER SAMPLE ID
   attribute: :sample_id
 i7:
-  heading: i7
+  heading: i7 TAG SEQUENCE
   unlocked: true
   validation:
     options:
@@ -25,7 +25,7 @@ i7:
   conditional_formattings:
     empty_cell:
 i5:
-  heading: i5
+  heading: i5 TAG SEQUENCE
   unlocked: true
   validation:
     options:
