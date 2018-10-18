@@ -13,7 +13,7 @@ class Request::Multiplexing < CustomerRequest
     state :failed
     state :cancelled
 
-    event :submission_cancelled do
+    event :submission_cancelled, manual_only?: true do
       transitions to: :cancelled, from: [:pending, :cancelled]
     end
     event :start  do transitions to: :started,     from: [:pending] end
@@ -21,8 +21,12 @@ class Request::Multiplexing < CustomerRequest
     event :fail   do transitions to: :failed,      from: [:pending, :started] end
     event :cancel do transitions to: :cancelled,   from: [:started, :passed] end
 
+    event :cancel_before_started do
+      transitions to: :cancelled, from: [:pending, :hold]
+    end
+
     # If the library creation is failed, we're not going to be pooling.
-    event :fail_from_upstream do
+    event :fail_from_upstream, manual_only?: true do
       transitions to: :cancelled, from: [:pending]
       transitions to: :failed,    from: [:started]
       transitions to: :failed,    from: [:passed]

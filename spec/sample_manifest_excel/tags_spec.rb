@@ -9,8 +9,8 @@ RSpec.describe SampleManifestExcel::Tags, type: :model, sample_manifest_excel: t
     it 'can produce a list of sequence tags of an appropriate length' do
       tags = data.take(0, 4)
       expect(tags.length).to eq(5)
-      expect(tags[0]).to have_key(:tag_oligo)
-      expect(tags[0]).to have_key(:tag2_oligo)
+      expect(tags[0]).to have_key(:i7)
+      expect(tags[0]).to have_key(:i5)
       expect(tags[tags.keys.first]).to_not eq(tags[tags.keys.last])
     end
 

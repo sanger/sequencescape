@@ -227,8 +227,8 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
 
       it 'adds some tags' do
         ((worksheet.first_row + 1)..worksheet.last_row).each do |i|
-          expect(spreadsheet.sheet(0).cell(i, worksheet.columns.find_by(:name, :tag_oligo).number)).to be_present
-          expect(spreadsheet.sheet(0).cell(i, worksheet.columns.find_by(:name, :tag2_oligo).number)).to be_present
+          expect(spreadsheet.sheet(0).cell(i, worksheet.columns.find_by(:name, :i7).number)).to be_present
+          expect(spreadsheet.sheet(0).cell(i, worksheet.columns.find_by(:name, :i5).number)).to be_present
         end
       end
     end
@@ -300,8 +300,8 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
       it 'with duplicate tag sequences' do
         worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes.merge(manifest_type: 'tube_multiplexed_library_with_tag_sequences', columns: SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup, validation_errors: [:tags]))
         save_file
-        expect(spreadsheet.sheet(0).cell(worksheet.first_row, worksheet.columns.find_by(:name, :tag_oligo).number)).to eq(spreadsheet.sheet(0).cell(worksheet.last_row, worksheet.columns.find_by(:name, :tag_oligo).number))
-        expect(spreadsheet.sheet(0).cell(worksheet.first_row, worksheet.columns.find_by(:name, :tag2_oligo).number)).to eq(spreadsheet.sheet(0).cell(worksheet.last_row, worksheet.columns.find_by(:name, :tag2_oligo).number))
+        expect(spreadsheet.sheet(0).cell(worksheet.first_row, worksheet.columns.find_by(:name, :i7).number)).to eq(spreadsheet.sheet(0).cell(worksheet.last_row, worksheet.columns.find_by(:name, :i7).number))
+        expect(spreadsheet.sheet(0).cell(worksheet.first_row, worksheet.columns.find_by(:name, :i5).number)).to eq(spreadsheet.sheet(0).cell(worksheet.last_row, worksheet.columns.find_by(:name, :i5).number))
       end
 
       it 'with duplicate tag groups and indexes' do

@@ -23,15 +23,13 @@ large numbers of samples.
 Current installation supports a million sampled and 1.3 million pieces
 of labware and is used in a organisation of 900 people.
 
-
 Getting started
 ---------------
-
 It is strongly recommended that you use a ruby version manager such as RVM to
 manage the Ruby version you are using.
 
 ```
-    $ cp config/config.yml.example config/config.yml
+    $ cp config/aker.yml.example config/aker.yml
     $ $EDITOR config/config.yml
     $ gem install bundler
     $ bundle install
@@ -78,12 +76,9 @@ of Sequencescape these are listed bellow.
 Barcode printing
 ----------------
 
-Sequencescape expects a barcode printing SOAP service to run
-on the given URL. The WSDL of the service is defined in
-doc/barcode.wsdl. We will in the future work on extracting
-our barcoding Hitachi Printing Language generator. Which
-we use for barcode printing.
-
+Barcode printing is carried out by a separate REST service, PrintMyBarcode. The source
+for this is also available on GitHub
+https://github.com/sanger/print_my_barcode
 
 Plate barcode service
 ---------------------
@@ -103,7 +98,10 @@ Data warehousing
 ----------------
 
 There is a client application for building a data warehouse based
-on the information in Sequencescape.
+on the information in Sequencescape. This is driven asynchronously via RabbitMQ.
+See out various clients:
+https://github.com/sanger/unified_warehouse
+https://github.com/sanger/event_warehouse
 
 
 Ruby warnings and rake 11
