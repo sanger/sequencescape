@@ -12,6 +12,8 @@ module SampleManifest::MultiplexedLibraryBehaviour
     # for #multiplexed_library_tube
     MxLibraryTubeException = Class.new(ActiveRecord::RecordNotFound)
 
+    attr_accessor :tubes
+
     def initialize(manifest)
       @manifest = manifest
     end
@@ -165,9 +167,7 @@ module SampleManifest::MultiplexedLibraryBehaviour
   end
 
   def generate_mx_library
-    tubes = generate_tubes(Tube::Purpose.standard_library_tube)
-    Tube::Purpose.standard_mx_tube.create!.tap do |mx_tube|
-      RequestFactory.create_external_multiplexed_library_creation_requests(tubes, mx_tube, study)
-    end
+    @tubes = generate_tubes(Tube::Purpose.standard_library_tube)
+    Tube::Purpose.standard_mx_tube.create!
   end
 end

@@ -14,8 +14,12 @@ module SampleManifest::LibraryBehaviour
   end
 
   class Core
+
+    attr_reader :tubes
+
     def initialize(manifest)
       @manifest = manifest
+      @tubes = []
     end
 
     delegate :samples, to: :@manifest
@@ -34,7 +38,7 @@ module SampleManifest::LibraryBehaviour
     end
 
     def generate
-      generate_library
+      @tubes = generate_library
     end
 
     def updated_by!(user, samples)
@@ -65,8 +69,12 @@ module SampleManifest::LibraryBehaviour
       true
     end
 
-    def labware
+    def labware_from_samples
       samples.map { |sample| sample.assets.first }
+    end
+
+    def labware
+      labware_from_samples | tubes
     end
     alias printables labware
 
@@ -84,6 +92,6 @@ module SampleManifest::LibraryBehaviour
   end
 
   def generate_library
-    tubes = generate_tubes(Tube::Purpose.standard_library_tube)
+    generate_tubes(Tube::Purpose.standard_library_tube)
   end
 end

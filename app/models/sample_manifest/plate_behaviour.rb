@@ -15,6 +15,7 @@ module SampleManifest::PlateBehaviour
 
     def initialize(manifest)
       @manifest = manifest
+      @plates = []
     end
 
     def acceptable_purposes
@@ -91,6 +92,7 @@ module SampleManifest::PlateBehaviour
 
   class Core < Base
     def generate_wells(well_data, plates)
+      @plates = plates.sort_by(&:human_barcode)
       generate_wells_for_plates(well_data, plates, &@manifest.method(:generate_wells))
     end
 
@@ -126,8 +128,16 @@ module SampleManifest::PlateBehaviour
       end
     end
 
-    def labware
+    def labware_from_samples
       samples.map { |s| s.primary_receptacle.plate }.uniq
+    end
+
+    def labware=(labware)
+      @plates = labware
+    end
+
+    def labware
+      labware_from_samples | plates
     end
     alias printables labware
   end
@@ -174,20 +184,10 @@ module SampleManifest::PlateBehaviour
     self.barcodes = plates.map(&:human_barcode)
 
     save!
+    @plates = plates.sort_by(&:human_barcode)
   end
 
   def generate_wells(wells_for_plate, plate)
-    study.samples << wells_for_plate.map do |map, sanger_sample_id|
-      create_sample(sanger_sample_id).tap do |sample|
-        plate.wells.create!(map: map) do |well|
-          well.aliquots.build(sample: sample)
-          well.register_stock!
-        end
-      end
-    end
-
-    plate.events.created_using_sample_manifest!(user)
-
-    RequestFactory.create_assets_requests(plate.wells, study)
+    wells_for_plate.map { |map, _sanger_sample_id| plate.wells.create!(map: map) }
   end
 end

@@ -15,8 +15,6 @@ module SampleManifest::SharedTubeBehaviour
 
     self.barcodes = tubes.map(&:human_barcode)
 
-    tube_sample_creation(samples_data)
-    delayed_generate_asset_requests(tubes.map(&:id), study.id)
     save!
     tubes
   end

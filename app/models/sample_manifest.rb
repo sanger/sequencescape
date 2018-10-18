@@ -70,7 +70,7 @@ class SampleManifest < ApplicationRecord
   # and can even prevent manifest resubmission.
   before_save :truncate_errors
 
-  delegate :printables, :acceptable_purposes, :labware, :pending_external_library_creation_requests, to: :core_behaviour
+  delegate :printables, :acceptable_purposes, :labware, :labware=, :pending_external_library_creation_requests, to: :core_behaviour
   delegate :name, to: :supplier, prefix: true
 
   def truncate_errors

@@ -132,6 +132,7 @@ end
 
 group :development, :test, :cucumber do
   gem 'pry'
+  gem 'pry-stack_explorer'
 end
 
 group :profile do

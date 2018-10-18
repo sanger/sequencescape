@@ -11,14 +11,19 @@ module SampleManifest::SampleTubeBehaviour
   class Core
     include SampleManifest::CoreBehaviour::NoSpecializedValidation
 
-    def initialize(manifest)
-      @manifest = manifest
-    end
+    attr_reader :tubes
 
     delegate :generate_1dtubes, to: :@manifest
-    alias_method(:generate, :generate_1dtubes)
-
     delegate :samples, to: :@manifest
+
+    def initialize(manifest)
+      @manifest = manifest
+      @tubes = []
+    end
+
+    def generate
+      @tubes = generate_1dtubes
+    end
 
     def io_samples
       samples.map do |sample|
@@ -65,8 +70,12 @@ module SampleManifest::SampleTubeBehaviour
       yield("You cannot move samples between tubes or modify their barcodes: #{sample.sanger_sample_id} should be in '#{primary_barcode}' but the manifest is trying to put it in '#{manifest_barcode}'")
     end
 
-    def labware
+    def labware_from_samples
       samples.map { |sample| sample.assets.first }
+    end
+
+    def labware
+      labware_from_samples | tubes
     end
     alias printables labware
 
@@ -86,6 +95,6 @@ module SampleManifest::SampleTubeBehaviour
   end
 
   def generate_1dtubes
-    generate_tubes(Tube::Purpose.standard_sample_tube).each(&:register_stock!)
+    generate_tubes(Tube::Purpose.standard_sample_tube)
   end
 end
