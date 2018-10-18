@@ -3,13 +3,13 @@
 module SequencescapeExcel
   module SpecialisedField
     ##
-    # TagOligo
-    class TagOligo
+    # I5
+    class I5
       include Base
       include SampleManifestExcel::Tags::AliquotUpdater
       include SampleManifestExcel::Tags::Validator::Formatting
 
-      set_tag_name :tag
+      set_tag_name :tag2
     end
   end
 end
