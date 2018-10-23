@@ -24,10 +24,6 @@ class IlluminaHtp::StockTubePurpose < Tube::Purpose
   end
   private :terminated_states
 
-  def pool_id(tube)
-    tube.transfer_requests_as_target.first.submission_id
-  end
-
   def name_for_child_tube(tube)
     tube.name
   end

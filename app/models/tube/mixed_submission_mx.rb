@@ -16,10 +16,6 @@ class Tube::MixedSubmissionMx < Tube::Purpose
     end
   end
 
-  def pool_id(tube)
-    tube.submission.try(:id)
-  end
-
   def name_for_child_tube(tube)
     tube.name
   end

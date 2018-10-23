@@ -42,11 +42,11 @@ namespace :jsorm do
       puts "      static: { jsonapiType: '#{type}' },"
       puts '      attrs: {'
       resource._attributes.each_key do |attr|
-        jsoncase = attr.to_s.split('_').reduce { |w, s| s << w.upcase_first }
+        jsoncase = attr.to_s.split('_').reduce { |attribute, word| attribute << word.upcase_first }
         puts "        #{jsoncase}: attr(),"
       end
       resource._relationships.each do |attr, details|
-        jsoncase = attr.to_s.split('_').reduce { |w, s| s << w.upcase_first }
+        jsoncase = attr.to_s.split('_').reduce { |attribute, word| attribute << word.upcase_first }
         relation = details.is_a?(JSONAPI::Relationship::ToOne) ? 'belongsTo' : 'hasMany'
         puts "        #{jsoncase}: #{relation}(),"
       end

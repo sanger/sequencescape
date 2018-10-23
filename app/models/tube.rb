@@ -36,6 +36,10 @@ class Tube < Receptacle
     submissions.first
   end
 
+  def pool_id
+    submissions.ids.first
+  end
+
   def source_plate
     return nil if purpose.nil?
     @source_plate ||= purpose.source_plate(self)
@@ -56,7 +60,7 @@ class Tube < Receptacle
 
   # TODO: change column name to account for purpose, not plate_purpose!
   belongs_to :purpose, class_name: 'Tube::Purpose', foreign_key: :plate_purpose_id
-  delegate_to_purpose(:transition_to, :pool_id, :name_for_child_tube, :stock_plate)
+  delegate_to_purpose(:transition_to, :name_for_child_tube, :stock_plate)
   delegate :barcode_type, to: :purpose
 
   def name_for_label
