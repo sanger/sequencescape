@@ -82,7 +82,6 @@ context 'printing tubes' do
 end
 
 context 'base plate' do
-  
   it 'normal plate should output ean13 barcode' do
     plate = create(:plate)
     label = LabelPrinter::Label::AssetPlate.new([plate])
@@ -94,5 +93,4 @@ context 'base plate' do
     label = LabelPrinter::Label::AssetPlate.new([plate])
     expect(label.create_label(plate)[:barcode]).to eq(plate.human_barcode)
   end
-
 end
