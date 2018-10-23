@@ -24,10 +24,6 @@ class IlluminaHtp::StockTubePurpose < Tube::Purpose
   end
   private :terminated_states
 
-  def name_for_child_tube(tube)
-    tube.name
-  end
-
   def stock_plate(tube)
     return nil if tube.transfer_requests_as_target.empty?
 

@@ -15,8 +15,4 @@ class Tube::MixedSubmissionMx < Tube::Purpose
       request.transition_to(state)
     end
   end
-
-  def name_for_child_tube(tube)
-    tube.name
-  end
 end
