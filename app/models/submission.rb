@@ -11,13 +11,6 @@
 #                       used to define pools at the submission level.
 # While orders are mostly in charge of building their own requests, Submissions trigger this
 # behaviour, and handle multiplexing between orders.
-# JG: We may be able to consider relaxing the restrictions in check_orders_compatible? to
-# allow us to have mixed submissions. This would avoid the need for complicating the submission
-# builders further, and would give finer grained control of the way orders were processed.
-# Essentially when it game to stuff like G&T you'd have two separate orders, and then the submission
-# would determine they were pooled together. This would mean a slight increase in bulk-submission complexity
-# (Each sample would be listed twice) but a massive increase in flexibility, while allowing up to
-# defer submission changes until flexible pooling.
 class Submission < ApplicationRecord
   include Uuid::Uuidable
   extend  Submission::StateMachine
@@ -92,7 +85,7 @@ class Submission < ApplicationRecord
   def prevent_destruction_unless_building?
     return if building?
     errors.add(:base, "can only be destroyed when in the 'building' stage. Later submissions should be cancelled.")
-    trhow :abort
+    throw :abort
   end
 
   # As mentioned above, comments are broken. Not quite sure why we're overriding it here
@@ -211,7 +204,6 @@ class Submission < ApplicationRecord
     end
     all_requests = request_cache_for(request.request_type_id, next_request_type_id).to_a
     sibling_requests, next_possible_requests = all_requests.partition { |r| r.request_type_id == request.request_type_id }
-
     if request.request_type.for_multiplexing?
       # If we have no pooling behaviour specified, then we're pooling by submission.
       # We keep to the existing behaviour, to isolate risk
@@ -222,9 +214,9 @@ class Submission < ApplicationRecord
       return next_possible_requests.slice(index * number_to_return, number_to_return)
 
     else
-      divergence_ratio = divergence_ratio_cache_for(next_request_type_id)
-      index = sibling_requests.map(&:id).index(request.id)
-      next_possible_requests[index * divergence_ratio, [1, divergence_ratio].max]
+      divergence_ratio = divergence_ratio_for(next_request_type_id)
+      index = sibling_requests.select { |npr| npr.order_id.nil? || (npr.order_id == request.order_id) }.map(&:id).index(request.id)
+      next_possible_requests.select { |npr| npr.order_id.nil? || (npr.order_id == request.order_id) }[index * divergence_ratio, [1, divergence_ratio].max]
     end
   end
 
@@ -271,7 +263,7 @@ class Submission < ApplicationRecord
   # Divergence ratios are calculated from orders. we cache them per request type
   # A divergence ratio is the number of downstream requests made per upstream
   # request.
-  def divergence_ratio_cache_for(next_request_type_id)
+  def divergence_ratio_for(next_request_type_id)
     divergence_ratio_cache[next_request_type_id]
   end
 

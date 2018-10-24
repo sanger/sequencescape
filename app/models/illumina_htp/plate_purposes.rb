@@ -225,7 +225,7 @@ module IlluminaHtp::PlatePurposes
       purpose.create!(options.reverse_merge(
                         name: tube_purpose_name,
                         target_type: target_type,
-                        barcode_printer_type: BarcodePrinterType.find_by(type: 'BarcodePrinterType1DTube')
+                        barcode_printer_type: BarcodePrinterType1DTube.first
                       ))
     end
     private :create_tube_purpose

@@ -43,7 +43,7 @@ RSpec.describe StudiesController do
             'commercially_available' => 'No',
             'data_release_study_type_id' => data_release_study_type,
             'data_release_strategy' => 'open',
-            'study_type_id' => StudyType.find_by(name: 'Not specified').id
+            'study_type_id' => StudyType.find_or_create_by(name: 'Not specified').id
           }
         } }
       end
