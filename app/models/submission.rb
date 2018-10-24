@@ -197,14 +197,16 @@ class Submission < ApplicationRecord
     orders.flat_map(&:request_types).uniq.compact
   end
 
-  def next_requests_to_connect(request, next_request_type_id = nil)
-    if next_request_type_id.nil?
-      order = request.order.presence || orders.first
-      next_request_type_id = order.next_request_type_id(request.request_type_id) or return []
-    end
-    all_requests = request_cache_for(request.request_type_id, next_request_type_id).to_a
-    sibling_requests, next_possible_requests = all_requests.partition { |r| r.request_type_id == request.request_type_id }
-    if request.request_type.for_multiplexing?
+  def next_requests_via_submission(request)
+    # Pick out the siblings of the request, so we can work out where it is in the list, and all of
+    # the requests in the subsequent request type, so that we can tie them up.  We order by ID
+    # here so that the earliest requests, those created by the submission build, are always first;
+    # any additional requests will have come from a sequencing batch being reset.
+    all_requests = request_cache_for(request.request_type_id, request.next_request_type_id)
+    sibling_requests = all_requests[request.request_type_id]
+    next_possible_requests = all_requests[request.next_request_type_id]
+
+    if request.for_multiplexing?
       # If we have no pooling behaviour specified, then we're pooling by submission.
       # We keep to the existing behaviour, to isolate risk
       return next_possible_requests if request.request_type.pooling_method.nil?
@@ -214,25 +216,17 @@ class Submission < ApplicationRecord
       return next_possible_requests.slice(index * number_to_return, number_to_return)
 
     else
-      divergence_ratio = divergence_ratio_for(next_request_type_id)
-      index = sibling_requests.select { |npr| npr.order_id.nil? || (npr.order_id == request.order_id) }.map(&:id).index(request.id)
-      next_possible_requests.select { |npr| npr.order_id.nil? || (npr.order_id == request.order_id) }[index * divergence_ratio, [1, divergence_ratio].max]
+      multiplier = multiplier_for(request.next_request_type_id)
+      index = sibling_requests.select { |npr| npr.order_id.nil? || (npr.order_id == request.order_id) }.index(request)
+      next_possible_requests.select { |npr| npr.order_id.nil? || (npr.order_id == request.order_id) }[index * multiplier, multiplier]
     end
   end
 
   def next_requests(request)
     # We should never be receiving requests that are not part of our request graph.
     raise RuntimeError, "Request #{request.id} is not part of submission #{id}" unless request.submission_id == id
-
-    # Pick out the siblings of the request, so we can work out where it is in the list, and all of
-    # the requests in the subsequent request type, so that we can tie them up.  We order by ID
-    # here so that the earliest requests, those created by the submission build, are always first;
-    # any additional requests will have come from a sequencing batch being reset.
-    order = request.order.presence || orders.first
-    return [] if order.nil?
-    next_request_type_id = order.next_request_type_id(request.request_type_id) or return []
-    return request.target_asset.requests.where(submission_id: id, request_type_id: next_request_type_id) if request.target_asset.present?
-    next_requests_to_connect(request, next_request_type_id)
+    return [] if request.next_request_type_id.nil?
+    request.next_requests_via_asset || next_requests_via_submission(request)
   end
 
   def name
@@ -263,8 +257,8 @@ class Submission < ApplicationRecord
   # Divergence ratios are calculated from orders. we cache them per request type
   # A divergence ratio is the number of downstream requests made per upstream
   # request.
-  def divergence_ratio_for(next_request_type_id)
-    divergence_ratio_cache[next_request_type_id]
+  def multiplier_for(next_request_type_id)
+    multiplier_cache[next_request_type_id]
   end
 
   def request_cache
@@ -272,17 +266,18 @@ class Submission < ApplicationRecord
       cache[ids] = requests.with_request_type_id(ids)
                            .includes(:asset, :billing_product)
                            .order(id: :asc)
+                           .group_by(&:request_type_id)
     end
   end
 
-  def divergence_ratio_cache
-    @divergence_ratio_cache ||= Hash.new do |cache, request_type_id|
+  def multiplier_cache
+    @multiplier_cache ||= Hash.new do |cache, request_type_id|
       # If requests aren't multiplexed, then they may be batched separately, and we'll have issues
       # if downstream changes affect the ratio. We can use the multiplier on order however, as we
       # don't need to worry about divergence ratios f < 1
       # Determine the number of requests that should come next from the multipliers in the orders.
       # NOTE: This will only work whilst you order the same number of requests.
-      multipliers = orders.reduce(Set.new) { |set, order| set << (order.request_options.dig(:multiplier, request_type_id.to_s) || 1).to_i }
+      multipliers = orders.reduce(Set.new) { |set, order| set << order.multiplier_for(request_type_id) }
       raise RuntimeError, "Mismatched multiplier information for submission #{id}" unless multipliers.one?
       # Now we can take the group of requests from next_possible_requests that tie up.
       cache[request_type_id] = multipliers.first

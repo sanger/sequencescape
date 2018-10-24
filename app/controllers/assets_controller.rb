@@ -235,7 +235,7 @@ class AssetsController < ApplicationController
   end
 
   def new_request
-    @request_types = RequestType.applicable_for_asset(@asset)
+    @request_types = RequestType.standard.active.applicable_for_asset(@asset)
     # In rare cases the user links in to the 'new request' page
     # with a specific study specified. In even rarer cases this may
     # conflict with the assets primary study.

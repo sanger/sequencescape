@@ -1,8 +1,6 @@
 class CherrypickForPulldownPipeline < CherrypickingPipeline
   include Pipeline::InboxGroupedBySubmission
 
-  self.display_next_pipeline = true
-
   ALWAYS_SHOW_RELEASE_ACTIONS = true
 
   def post_finish_batch(batch, user)

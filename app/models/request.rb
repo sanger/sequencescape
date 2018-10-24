@@ -73,6 +73,7 @@ class Request < ApplicationRecord
   has_many :upstream_requests, through: :asset, source: :requests_as_target
 
   delegate :flowcell, to: :batch, allow_nil: true
+  delegate :for_multiplexing?, to: :request_type
 
   belongs_to :billing_product, class_name: 'Billing::Product'
   has_many :billing_items, class_name: 'Billing::Item'
@@ -478,6 +479,16 @@ class Request < ApplicationRecord
     end
   end
 
+  def next_request_type_id
+    # May be nil, so can't use lazy assignment
+    return @next_request_type_id if instance_variable_defined?('@next_request_type_id')
+    @next_request_type_id = calculate_next_request_type_id
+  end
+
+  def next_requests_via_asset
+    target_asset.requests.where(submission_id: submission_id, request_type_id: next_request_type_id) if target_asset.present?
+  end
+
   def target_tube
     target_asset if target_asset.is_a?(Tube)
   end
@@ -571,6 +582,13 @@ class Request < ApplicationRecord
   def manifest_processed!; end
 
   def billing_product_identifier; end
+
+  private
+
+  def calculate_next_request_type_id
+    safe_order = order || submission.orders.first
+    safe_order.next_request_type_id(request_type_id)
+  end
 end
 
 require_dependency 'system_request'

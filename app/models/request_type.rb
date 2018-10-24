@@ -69,16 +69,11 @@ class RequestType < ApplicationRecord
 
   # Couple of named scopes for finding billable types
   scope :billable, -> { where(billable: true) }
+  scope :active, -> { where(deprecated: false) }
   scope :non_billable, -> { where(billable: false) }
   scope :needing_target_asset, -> { where(target_purpose: nil, target_asset_type: nil) }
-  scope :applicable_for_asset, ->(asset) {
-                                 where([
-                                   'asset_type = ?
-                                    AND request_class_name != "ControlRequest"
-                                    AND deprecated IS FALSE',
-                                   asset.asset_type_for_request_types.name
-                                 ])
-                               }
+  scope :applicable_for_asset, ->(asset) { where(asset_type: asset.asset_type_for_request_types.name) }
+  scope :for_multiplexing, -> { where(for_multiplexing: true) }
 
   def construct_request(construct_method, attributes, klass = request_class)
     raise RequestType::DeprecatedError if deprecated?

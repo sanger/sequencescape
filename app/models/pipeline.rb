@@ -18,14 +18,13 @@ class Pipeline < ApplicationRecord
   self.inheritance_column = 'sti_type'
 
   # Custom class attributes
-  class_attribute :batch_worksheet, :display_next_pipeline, :requires_position,
+  class_attribute :batch_worksheet, :requires_position,
                   :inbox_partial, :library_creation, :pulldown, :prints_a_worksheet_per_task,
                   :genotyping, :sequencing, :purpose_information, :can_create_stock_assets,
                   :inbox_eager_loading
 
   # Pipeline defaults
   self.batch_worksheet = 'detailed_worksheet'
-  self.display_next_pipeline = false
   self.requires_position = true
   self.inbox_partial = 'default_inbox'
   self.library_creation = false
