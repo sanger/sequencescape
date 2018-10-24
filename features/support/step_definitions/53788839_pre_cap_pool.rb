@@ -14,10 +14,10 @@ end
 
 def pooled(plate, well, wells)
   initial_request = Plate.find_from_barcode('DN' + plate).wells.located_at(well).first.requests.first
-  group = Submission.last.next_requests(initial_request).first.pre_capture_pool
+  group = initial_request.next_requests.first.pre_capture_pool
   wells.each do |w|
     other_request = Plate.find_from_barcode('DN' + plate).wells.located_at(w).first.requests.first
-    group_b = Submission.last.next_requests(other_request).first.pre_capture_pool
+    group_b = other_request.next_requests.first.pre_capture_pool
     assert_equal group, group_b
   end
 end

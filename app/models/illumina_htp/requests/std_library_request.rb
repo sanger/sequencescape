@@ -31,7 +31,7 @@ module IlluminaHtp::Requests
     end
 
     def on_failed
-      submission.next_requests(self).each(&:failed_upstream!)
+      next_requests.each(&:failed_upstream!)
     end
   end
 end

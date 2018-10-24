@@ -29,7 +29,7 @@ module Tasks::AssignTagsHandler
 
         AssetLink.create_edge(request.target_asset, multiplexed_library)
 
-        request.next_requests(@batch.pipeline).each do |sequencing_request|
+        request.next_requests.select(&:pending).each do |sequencing_request|
           sequencing_request.update_attributes!(asset: multiplexed_library)
         end
 

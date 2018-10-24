@@ -16,11 +16,6 @@ class Request < ApplicationRecord
   extend EventfulRecord
   extend ::Metadata
 
-  # Constants
-  # This is used for the default next or previous request check.  It means that if the caller does not specify a
-  # block then we can use this one in its place.
-  PERMISSABLE_NEXT_REQUESTS = ->(request) { request.pending? or request.blocked? }
-
   # Class attributes
   class_attribute :customer_request, :sequencing, :pre_capture_pooled, :library_creation
 
@@ -457,26 +452,9 @@ class Request < ApplicationRecord
     v.nil? ? false : lab_events.with_descriptor(k, v).first
   end
 
-  def next_requests(pipeline, &block)
-    # TODO: remove pipeline parameters
-    # we filter according to the next pipeline
-    next_pipeline = pipeline.next_pipeline
-    # return [] if next_pipeline.nil?
-
-    block ||= PERMISSABLE_NEXT_REQUESTS
-
-    eligible_requests = if target_asset.present?
-                          target_asset.requests
-                        else
-                          return [] if submission.nil?
-                          submission.next_requests(self)
-                        end
-
-    eligible_requests.select do |r|
-      (next_pipeline.nil? or
-        next_pipeline.request_types_including_controls.include?(r.request_type)
-      ) and block.call(r)
-    end
+  def next_requests
+    return [] if submission.nil? || next_request_type_id.nil?
+    next_requests_via_asset || submission.next_requests_via_submission(self)
   end
 
   def next_request_type_id

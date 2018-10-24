@@ -513,7 +513,7 @@ class Batch < ApplicationRecord
   end
 
   def downstream_requests_needing_asset(request)
-    next_requests_needing_asset = request.next_requests(pipeline).select { |r| r.asset_id.blank? }
+    next_requests_needing_asset = request.next_requests.select { |r| r.asset_id.blank? }
     yield(next_requests_needing_asset) unless next_requests_needing_asset.blank?
   end
 
