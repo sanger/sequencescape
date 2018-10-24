@@ -273,8 +273,8 @@ tube_library_with_tag_sequences:
   columns:
     - :sanger_tube_id
     - :sanger_sample_id
-    - :tag_oligo
-    - :tag2_oligo
+    - :i7
+    - :i5
     - :reference_genome
     - :library_type
     - :insert_size_from
@@ -314,8 +314,8 @@ tube_multiplexed_library_with_tag_sequences:
   columns:
     - :sanger_tube_id
     - :sanger_sample_id
-    - :tag_oligo
-    - :tag2_oligo
+    - :i7
+    - :i5
     - :reference_genome
     - :library_type
     - :insert_size_from

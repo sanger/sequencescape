@@ -188,27 +188,27 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
     let!(:tag_group) { create(:tag_group) }
     let(:oligo) { 'AA' }
 
-    describe 'tag oligo' do
-      let(:tag_oligo) { SequencescapeExcel::SpecialisedField::TagOligo.new(value: oligo, sample: sample) }
+    describe 'tag oligo - i7' do
+      let(:i7) { SequencescapeExcel::SpecialisedField::I7.new(value: oligo, sample: sample) }
 
       it 'will not be valid if the tag does not contain A, C, G or T' do
-        expect(SequencescapeExcel::SpecialisedField::TagOligo.new(value: 'ACGT', sample: sample)).to be_valid
-        expect(SequencescapeExcel::SpecialisedField::TagOligo.new(value: 'acgt', sample: sample)).to be_valid
-        expect(SequencescapeExcel::SpecialisedField::TagOligo.new(value: 'acgt', sample: sample)).to be_valid
-        expect(SequencescapeExcel::SpecialisedField::TagOligo.new(value: 'aatc', sample: sample)).to be_valid
+        expect(SequencescapeExcel::SpecialisedField::I7.new(value: 'ACGT', sample: sample)).to be_valid
+        expect(SequencescapeExcel::SpecialisedField::I7.new(value: 'acgt', sample: sample)).to be_valid
+        expect(SequencescapeExcel::SpecialisedField::I7.new(value: 'acgt', sample: sample)).to be_valid
+        expect(SequencescapeExcel::SpecialisedField::I7.new(value: 'aatc', sample: sample)).to be_valid
 
-        expect(SequencescapeExcel::SpecialisedField::TagOligo.new(value: 'ACGT ACGT', sample: sample)).to_not be_valid
-        expect(SequencescapeExcel::SpecialisedField::TagOligo.new(value: 'BCGT', sample: sample)).to_not be_valid
-        expect(SequencescapeExcel::SpecialisedField::TagOligo.new(value: '-CGT', sample: sample)).to_not be_valid
-        expect(SequencescapeExcel::SpecialisedField::TagOligo.new(value: 'xCGT', sample: sample)).to_not be_valid
+        expect(SequencescapeExcel::SpecialisedField::I7.new(value: 'ACGT ACGT', sample: sample)).to_not be_valid
+        expect(SequencescapeExcel::SpecialisedField::I7.new(value: 'BCGT', sample: sample)).to_not be_valid
+        expect(SequencescapeExcel::SpecialisedField::I7.new(value: '-CGT', sample: sample)).to_not be_valid
+        expect(SequencescapeExcel::SpecialisedField::I7.new(value: 'xCGT', sample: sample)).to_not be_valid
       end
 
       it 'will add the value' do
-        expect(tag_oligo.value).to eq(oligo)
+        expect(i7.value).to eq(oligo)
       end
 
       it 'will update the aliquot and create the tag if oligo is present' do
-        tag_oligo.update(aliquot: aliquot, tag_group: tag_group)
+        i7.update(aliquot: aliquot, tag_group: tag_group)
         tag = tag_group.tags.find_by(oligo: oligo)
         expect(tag).to be_present
         expect(tag.oligo).to eq(oligo)
@@ -218,34 +218,34 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
       end
 
       it 'if oligo is not present aliquot tag should be -1' do
-        tag_oligo = SequencescapeExcel::SpecialisedField::TagOligo.new(value: nil, sample: sample)
-        tag_oligo.update(aliquot: aliquot, tag_group: tag_group)
+        i7 = SequencescapeExcel::SpecialisedField::I7.new(value: nil, sample: sample)
+        i7.update(aliquot: aliquot, tag_group: tag_group)
         aliquot.save
         expect(aliquot.tag_id).to eq(-1)
       end
 
       it 'will find the tag if it already exists' do
         tag = tag_group.tags.create(oligo: oligo, map_id: 10)
-        tag_oligo.update(aliquot: aliquot, tag_group: tag_group)
+        i7.update(aliquot: aliquot, tag_group: tag_group)
         aliquot.save
         expect(aliquot.tag).to eq(tag)
       end
     end
 
-    describe 'tag2 oligo' do
-      let(:tag2_oligo) { SequencescapeExcel::SpecialisedField::Tag2Oligo.new(value: oligo, sample: sample) }
+    describe 'tag2 oligo - i5' do
+      let(:i5) { SequencescapeExcel::SpecialisedField::I5.new(value: oligo, sample: sample) }
 
       it 'will not be valid if the tag does not contain A, C, G or T' do
-        expect(SequencescapeExcel::SpecialisedField::TagOligo.new(value: 'ACGT', sample: sample)).to be_valid
-        expect(SequencescapeExcel::SpecialisedField::TagOligo.new(value: 'BCGT', sample: sample)).to_not be_valid
+        expect(SequencescapeExcel::SpecialisedField::I5.new(value: 'ACGT', sample: sample)).to be_valid
+        expect(SequencescapeExcel::SpecialisedField::I5.new(value: 'BCGT', sample: sample)).to_not be_valid
       end
 
       it 'will add the value' do
-        expect(tag2_oligo.value).to eq(oligo)
+        expect(i5.value).to eq(oligo)
       end
 
       it 'will update the aliquot' do
-        tag2_oligo.update(aliquot: aliquot, tag_group: tag_group)
+        i5.update(aliquot: aliquot, tag_group: tag_group)
         aliquot.save
         expect(aliquot.tag2).to eq(tag_group.tags.find_by(oligo: oligo))
       end
