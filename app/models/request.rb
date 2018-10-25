@@ -564,8 +564,8 @@ class Request < ApplicationRecord
   private
 
   def calculate_next_request_type_id
-    safe_order = order || submission.orders.first
-    safe_order.next_request_type_id(request_type_id)
+    safe_order = order || submission&.orders&.first
+    safe_order&.next_request_type_id(request_type_id)
   end
 end
 
