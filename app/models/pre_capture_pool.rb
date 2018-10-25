@@ -58,7 +58,7 @@ class PreCapturePool < ApplicationRecord
 
     def walk_to_pooled_request(request)
       return request if request.pre_capture_pooled?
-      next_requests = submission.next_requests(request)
+      next_requests = request.next_requests
       raise StandardError, "Could not find pooled request for request #{request.id}" if next_requests.empty?
       next_requests.map { |next_request| walk_to_pooled_request(next_request) }
     end

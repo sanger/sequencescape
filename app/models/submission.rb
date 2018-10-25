@@ -197,7 +197,19 @@ class Submission < ApplicationRecord
     orders.flat_map(&:request_types).uniq.compact
   end
 
+  # You probably just want to call next_requests on request.
+  #
+  # Returns the next requests in the submission along from the one provides.
+  # Eg. Providing a library creation request will return multiplexing requests,
+  # and multiplexing requests return sequencing requests. You may get back more than
+  # one request.
+  # This makes certain assumptions about request number in submissions, and uses request
+  # offsets and request types to tie requests together.
+  # @param request [Request] The request to find the next request for
+  #
+  # @return [Array<Request>] An array of downstream requests
   def next_requests_via_submission(request)
+    raise RuntimeError, "Request #{request.id} is not part of submission #{id}" unless request.submission_id == id
     # Pick out the siblings of the request, so we can work out where it is in the list, and all of
     # the requests in the subsequent request type, so that we can tie them up.  We order by ID
     # here so that the earliest requests, those created by the submission build, are always first;
@@ -220,13 +232,6 @@ class Submission < ApplicationRecord
       index = sibling_requests.select { |npr| npr.order_id.nil? || (npr.order_id == request.order_id) }.index(request)
       next_possible_requests.select { |npr| npr.order_id.nil? || (npr.order_id == request.order_id) }[index * multiplier, multiplier]
     end
-  end
-
-  def next_requests(request)
-    # We should never be receiving requests that are not part of our request graph.
-    raise RuntimeError, "Request #{request.id} is not part of submission #{id}" unless request.submission_id == id
-    return [] if request.next_request_type_id.nil?
-    request.next_requests_via_asset || next_requests_via_submission(request)
   end
 
   def name

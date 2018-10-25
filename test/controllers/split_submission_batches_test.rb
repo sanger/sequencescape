@@ -72,25 +72,8 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
         end
 
         should 'before failing any sequencing requests' do
-          assert_equal LibraryCreationRequest.first.id + 4, LibraryCreationRequest.first.next_requests(@pipeline) { |_r| true }.first.id
-          assert_equal LibraryCreationRequest.all[2].id + 12, LibraryCreationRequest.all[2].next_requests(@pipeline) { |_r| true }.first.id
-        end
-
-        context 'afer failing sequencing requests' do
-          setup do
-            @sequencing_group = SequencingRequest.all[0..1]
-            @sequencing_group.each { |sr| sr.asset.create_scanned_into_lab_event!(content: '2018-01-01') }
-            @seq_batch = Batch.create!(requests: @sequencing_group, pipeline: @sequencing_pipeline)
-
-            @seq_batch.requests.map(&:start!)
-            @seq_batch.fail('just', 'because')
-            @seq_batch.requests.each { |r| @seq_batch.detach_request(r) }
-          end
-
-          should 'correctly identify the next requests' do
-            assert_equal LibraryCreationRequest.first.id + 4, LibraryCreationRequest.first.next_requests(@pipeline) { |_r| true }.first.id
-            assert_equal LibraryCreationRequest.all[2].id + 12, LibraryCreationRequest.all[2].next_requests(@pipeline) { |_r| true }.first.id
-          end
+          assert_equal LibraryCreationRequest.first.id + 4, LibraryCreationRequest.first.next_requests.first.id
+          assert_equal LibraryCreationRequest.all[2].id + 12, LibraryCreationRequest.all[2].next_requests.first.id
         end
       end
     end
@@ -132,10 +115,10 @@ class SplitSubmissionBatchesTest < ActionController::TestCase
       end
 
       should 'report correct groupings from the start' do
-        assert_equal MultiplexedLibraryCreationRequest.first.id + 4, MultiplexedLibraryCreationRequest.first.next_requests(@library_pipeline) { |_r| true }.first.id
-        assert_equal MultiplexedLibraryCreationRequest.first.id + 4, MultiplexedLibraryCreationRequest.all[2].next_requests(@library_pipeline) { |_r| true }.first.id
-        assert_equal 5, MultiplexedLibraryCreationRequest.first.next_requests(@library_pipeline) { |_r| true }.size
-        assert_equal MultiplexedLibraryCreationRequest.first.id + 8, MultiplexedLibraryCreationRequest.first.next_requests(@library_pipeline) { |_r| true }.last.id
+        assert_equal MultiplexedLibraryCreationRequest.first.id + 4, MultiplexedLibraryCreationRequest.first.next_requests.first.id
+        assert_equal MultiplexedLibraryCreationRequest.first.id + 4, MultiplexedLibraryCreationRequest.all[2].next_requests.first.id
+        assert_equal 5, MultiplexedLibraryCreationRequest.first.next_requests.size
+        assert_equal MultiplexedLibraryCreationRequest.first.id + 8, MultiplexedLibraryCreationRequest.first.next_requests.last.id
       end
     end
   end
