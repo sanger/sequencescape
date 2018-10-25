@@ -262,6 +262,7 @@ class Request < ApplicationRecord
 
     group(scrubbed_atts)
       .select([
+        'MIN(requests.sti_type) AS sti_type',
         'MIN(requests.id) AS id',
         'MIN(requests.submission_id) AS submission_id',
         'MAX(requests.priority) AS max_priority',
