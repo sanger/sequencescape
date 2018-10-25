@@ -57,6 +57,9 @@ class SampleManifest < ApplicationRecord
   has_many :samples
   accepts_nested_attributes_for :samples
 
+  has_many :sample_manifest_assets
+  has_many :assets, through: :sample_manifest_assets
+
   serialize :last_errors
   serialize :barcodes
 
