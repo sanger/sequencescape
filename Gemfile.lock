@@ -349,7 +349,7 @@ GEM
       rainbow (>= 2.2.2, < 4.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (~> 1.0, >= 1.0.1)
-    ruby-oci8 (2.2.5.1)
+    ruby-oci8 (2.2.6.1)
     ruby-ole (1.2.12.1)
     ruby-plsql (0.6.0)
     ruby-prof (0.17.0)
