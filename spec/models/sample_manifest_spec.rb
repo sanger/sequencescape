@@ -21,6 +21,7 @@ RSpec.describe SampleManifest, type: :model do
       @initial_library_tubes = LibraryTube.count
       @initial_mx_tubes      = MultiplexedLibraryTube.count
       @initial_broadcast_events = BroadcastEvent.count
+      @initial_sample_manifest_assets = SampleManifestAsset.count
     end
 
     context 'asset_type: plate' do
@@ -32,7 +33,7 @@ RSpec.describe SampleManifest, type: :model do
 
           setup { manifest.generate }
 
-          it "create #{count} plate(s) and #{count * 96} wells and samples in the right study" do
+          it "create #{count} plate(s) and #{count * 96} wells" do
             # expect(Sample.count - @initial_samples).to eq(count * 96)
             expect(Plate.count - @initial_plates).to eq(count * 1)
             expect(Well.count - @initial_wells).to eq(count * 96)
@@ -41,6 +42,12 @@ RSpec.describe SampleManifest, type: :model do
             # expect(manifest.samples.first.primary_aliquot.study).to eq(study)
             expect(manifest.labware.count).to eq(count)
             expect(manifest.labware.first).to be_a(Plate)
+          end
+
+          it "create #{count} sample manifest assets" do
+            expect(SampleManifestAsset.count - @initial_sample_manifest_assets).to eq(manifest.labware.count * 96)
+            wells = Plate.with_barcode(manifest.barcodes).map(&:wells).flatten!
+            expect(manifest.sample_manifest_assets.map(&:asset)).to eq(wells)
           end
         end
       end
@@ -84,15 +91,21 @@ RSpec.describe SampleManifest, type: :model do
 
           setup { manifest.generate }
 
-          it "create 1 tubes(s) and #{count} samples in the right study" do
+          it 'create 1 MX tube' do
             # assert_equal count, Sample.count                 - @initial_samples
             # We need to create library tubes as we have downstream dependencies that assume a unique library tube
-            assert_equal count, LibraryTube.count            - @initial_library_tubes
+            assert_equal count, LibraryTube.count - @initial_library_tubes
             # assert LibraryTube.last.aliquots.first.library_id
             assert_equal 1, MultiplexedLibraryTube.count - @initial_mx_tubes
             # assert_equal count, study.samples.count - @initial_in_study
             # expect(BroadcastEvent.count - @initial_broadcast_events).to eq 1
             # expect(manifest.samples.first.primary_aliquot.study).to eq(study)
+          end
+
+          it 'create sample manifest asset' do
+            assets = manifest.sample_manifest_assets.map(&:asset)
+            expect(assets.count).to eq(LibraryTube.count - @initial_library_tubes)
+            expect(assets).to eq(LibraryTube.with_barcode(manifest.barcodes))
           end
 
           describe '#labware' do
@@ -114,7 +127,7 @@ RSpec.describe SampleManifest, type: :model do
       context 'library tubes' do
         setup { manifest.generate }
 
-        it 'create 1 tubes and sample in the right study' do
+        it 'create 1 tube' do
           # assert_equal 1, Sample.count - @initial_samples
           # We need to create library tubes as we have downstream dependencies that assume a unique library tube
           assert_equal 1, LibraryTube.count - @initial_library_tubes
@@ -123,6 +136,12 @@ RSpec.describe SampleManifest, type: :model do
           # assert_equal 1, study.samples.count - @initial_in_study
           assert_equal @initial_sample_tubes, SampleTube.count
           # expect(manifest.samples.first.primary_aliquot.study).to eq(study)
+        end
+
+        it 'create sample manifest asset' do
+          assets = manifest.sample_manifest_assets.map(&:asset)
+          expect(assets.count).to eq(LibraryTube.count - @initial_library_tubes)
+          expect(assets).to eq(LibraryTube.with_barcode(manifest.barcodes))
         end
 
         describe '#labware' do
@@ -145,7 +164,7 @@ RSpec.describe SampleManifest, type: :model do
           let(:count) { count }
           setup { manifest.generate }
 
-          it "create #{count} tubes(s) and #{count} samples in the right study" do
+          it "create #{count} tubes(s)" do
             # assert_equal count, Sample.count - @initial_samples
             # We need to create library tubes as we have downstream dependencies that assume a unique library tube
             assert_equal count, SampleTube.count - @initial_sample_tubes
@@ -153,6 +172,12 @@ RSpec.describe SampleManifest, type: :model do
             # assert_equal count, study.samples.count - @initial_in_study
             # assert_equal count, Messenger.count - @initial_messenger_count
             # expect(manifest.samples.first.primary_aliquot.study).to eq(study)
+          end
+
+          it 'create sample manifest asset' do
+            assets = manifest.sample_manifest_assets.map(&:asset)
+            expect(assets.count).to eq(SampleTube.count - @initial_sample_tubes)
+            expect(assets).to eq(SampleTube.with_barcode(manifest.barcodes))
           end
 
           it 'create create asset requests when jobs are processed' do

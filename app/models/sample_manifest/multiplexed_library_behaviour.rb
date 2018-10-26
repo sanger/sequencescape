@@ -12,7 +12,7 @@ module SampleManifest::MultiplexedLibraryBehaviour
     # for #multiplexed_library_tube
     MxLibraryTubeException = Class.new(ActiveRecord::RecordNotFound)
 
-    attr_accessor :tubes
+    attr_accessor :library_tubes
 
     def initialize(manifest)
       @manifest = manifest
@@ -167,7 +167,7 @@ module SampleManifest::MultiplexedLibraryBehaviour
   end
 
   def generate_mx_library
-    @tubes = generate_tubes(Tube::Purpose.standard_library_tube)
+    @library_tubes = generate_tubes(Tube::Purpose.standard_library_tube)
     Tube::Purpose.standard_mx_tube.create!
   end
 end

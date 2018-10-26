@@ -188,6 +188,12 @@ module SampleManifest::PlateBehaviour
   end
 
   def generate_wells(wells_for_plate, plate)
-    wells_for_plate.map { |map, _sanger_sample_id| plate.wells.create!(map: map) }
+    wells_for_plate.map do |map, sanger_sample_id|
+      plate.wells.create!(map: map) do |well|
+        SampleManifestAsset.create(sanger_sample_id: sanger_sample_id,
+                             asset: well,
+                             sample_manifest: self)
+      end
+    end
   end
 end
