@@ -122,10 +122,11 @@ FactoryBot.define do
   factory(:tagged_library_tube, class: LibraryTube, traits: [:tube_barcode]) do
     transient do
       tag_map_id 1
+      sample { create(:sample_with_sanger_sample_id) }
     end
 
     after(:create) do |library_tube, evaluator|
-      library_tube.aliquots << build(:tagged_aliquot, tag: create(:tag, map_id: evaluator.tag_map_id), receptacle: library_tube)
+      library_tube.aliquots << build(:tagged_aliquot, tag: create(:tag, map_id: evaluator.tag_map_id), receptacle: library_tube, sample: evaluator.sample)
     end
   end
 
