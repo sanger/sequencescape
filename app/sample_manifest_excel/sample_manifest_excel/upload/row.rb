@@ -27,9 +27,19 @@ module SampleManifestExcel
       def initialize(attributes = {})
         super
         @sanger_sample_id ||= value(:sanger_sample_id) if columns.present? && data.present?
-        @sample ||= Sample.find_by(sanger_sample_id: sanger_sample_id) if sanger_sample_id.present?
+        @sample ||= find_or_create_sample if sanger_sample_id.present?
         @specialised_fields = create_specialised_fields if sanger_sample_id.present?
         link_tag_groups_and_indexes
+      end
+
+      def find_or_create_sample
+        sample = Sample.find_by(sanger_sample_id: sanger_sample_id)
+        if sample.present?
+          return sample
+        else
+          sample_manifest = SampleManifestAsset.find_by(sanger_sample_id: sanger_sample_id)&.sample_manifest
+          create_sample(sample_manifest)
+        end
       end
 
       ##
@@ -121,6 +131,14 @@ module SampleManifestExcel
       end
 
       private
+
+      def create_sample(sample_manifest)
+        if sample_manifest.present?
+          sample_manifest.create_sample(sanger_sample_id)
+        else
+          raise ArgumentError, 'sample_manifest is not present'
+        end
+      end
 
       def sample_can_be_updated
         return unless errors.empty?

@@ -46,7 +46,7 @@ RSpec.describe SampleManifest, type: :model do
 
           it "create #{count} sample manifest assets" do
             expect(SampleManifestAsset.count - @initial_sample_manifest_assets).to eq(manifest.labware.count * 96)
-            wells = Plate.with_barcode(manifest.barcodes).map(&:wells).flatten!
+            wells = Plate.with_barcode(manifest.barcodes).flat_map(&:wells)
             expect(manifest.sample_manifest_assets.map(&:asset)).to eq(wells)
           end
         end
