@@ -1,2 +1,1 @@
-
 ProjectManager.create! name: 'Unallocated'

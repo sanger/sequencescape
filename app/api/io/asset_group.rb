@@ -1,4 +1,3 @@
-
 class ::Io::AssetGroup < ::Core::Io::Base
   set_model_for_input(::AssetGroup)
   set_json_root(:asset_group)

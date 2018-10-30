@@ -1,4 +1,3 @@
-
 class BindingKitBarcodeTask < Task
   class BindingKitBarcodeData < Task::RenderElement
     def initialize(request)

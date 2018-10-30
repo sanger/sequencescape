@@ -1,4 +1,3 @@
-
 require 'control_request_type_creation'
 
 Pipeline.send(:include, ControlRequestTypeCreation)

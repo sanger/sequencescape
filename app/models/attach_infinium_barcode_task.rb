@@ -1,4 +1,3 @@
-
 class AttachInfiniumBarcodeTask < Task
   class AttachInfiniumBarcodeData < Task::RenderElement
     def initialize(request)

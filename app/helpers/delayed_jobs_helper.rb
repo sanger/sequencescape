@@ -1,4 +1,3 @@
-
 module DelayedJobsHelper
   def job_type(job)
     if job.name.match?(/StudyReport/)

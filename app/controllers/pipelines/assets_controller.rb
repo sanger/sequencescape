@@ -1,4 +1,3 @@
-
 # NOTE[xxx]: This controller may not be required but is here to support the Javascript used in the
 # library prep pipeline.
 class Pipelines::AssetsController < ApplicationController

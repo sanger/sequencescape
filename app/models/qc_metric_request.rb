@@ -1,4 +1,3 @@
-
 class QcMetricRequest < ApplicationRecord
   belongs_to :qc_metric
   belongs_to :request

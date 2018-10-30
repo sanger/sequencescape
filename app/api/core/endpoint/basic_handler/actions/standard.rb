@@ -1,4 +1,3 @@
-
 module Core::Endpoint::BasicHandler::Actions::Standard
   def self.extended(base)
     base.class_eval do

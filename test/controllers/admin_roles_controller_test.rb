@@ -1,4 +1,3 @@
-
 require 'test_helper'
 require 'admin/roles_controller'
 module Admin

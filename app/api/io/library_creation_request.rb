@@ -1,4 +1,3 @@
-
 class Io::LibraryCreationRequest < ::Io::Request
   set_model_for_input(::LibraryCreationRequest)
   set_json_root(:library_creation_request)

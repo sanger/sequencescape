@@ -1,4 +1,3 @@
-
 class Event::SampleManifestEvent < Event
   def self.created_sample!(sample, user)
     create!(

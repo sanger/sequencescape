@@ -1,4 +1,3 @@
-
 module FieldInfosHelper
   def field_info_id(path, field)
     path = path.clone

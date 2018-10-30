@@ -15,6 +15,12 @@ namespace :limber do
         seeder.create_purposes
       end
 
+      desc 'Create 4 GnT Stock plates'
+      task gnt: ['limber:setup'] do
+        seeder = WorkingSetup::StandardSeeder.new([['GnT Stock', 4]])
+        seeder.create_purposes
+      end
+
       desc 'Create 4 scRNA Stock plates'
       task scrna: ['limber:setup'] do
         seeder = WorkingSetup::StandardSeeder.new([['scRNA Stock', 4]])

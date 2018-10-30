@@ -1,4 +1,3 @@
-
 class StudySample < ApplicationRecord
   include Api::StudySampleIO::Extensions
 

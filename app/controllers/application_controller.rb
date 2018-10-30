@@ -1,4 +1,3 @@
-
 require 'exceptions'
 require 'authenticated_system'
 

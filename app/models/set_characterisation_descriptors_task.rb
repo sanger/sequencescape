@@ -1,4 +1,3 @@
-
 class SetCharacterisationDescriptorsTask < Task
   def partial
     'set_characterisation_descriptors'

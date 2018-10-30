@@ -1,4 +1,3 @@
-
 class ::Endpoints::Tag2Layouts < ::Core::Endpoint::Base
   model do
     action(:create, to: :standard_create!)

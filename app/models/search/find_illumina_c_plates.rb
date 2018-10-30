@@ -1,4 +1,3 @@
-
 require "#{Rails.root}/app/models/illumina_c/plate_purposes"
 
 class Search::FindIlluminaCPlates < Search

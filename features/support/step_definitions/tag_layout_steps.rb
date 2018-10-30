@@ -1,4 +1,3 @@
-
 Given /^the ((?:entire plate |inverted )?tag layout template) "([^"]+)" exists$/ do |style, name|
   FactoryBot.create(style.tr(' ', '_'), name: name)
 end

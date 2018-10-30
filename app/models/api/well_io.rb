@@ -1,4 +1,3 @@
-
 class Api::WellIO < Api::Base
   module Extensions
     module ClassMethods

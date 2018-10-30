@@ -47,10 +47,10 @@
 
 <% add :menu, "Accession all Samples" => accession_all_samples_study_path(@study) -%>
 
-<% add :legend_option, "#{image_tag('hourglass.png')} Pending" => "" -%>
-<% add :legend_option, "#{image_tag('cog.png')} Started" => "" -%>
-<% add :legend_option, "#{image_tag('accept.png')} Passed" => "" -%>
-<% add :legend_option, "#{image_tag('delete.png')} Failed" => "" -%>
+<% add :legend_option, icon('fas', 'hourglass-start', 'Pending') => "" -%>
+<% add :legend_option, icon('fas', 'cog', 'Started') => "" -%>
+<% add :legend_option, icon('far', 'check-circle', 'Passed') => "" -%>
+<% add :legend_option, icon('far', 'times-circle', 'Failed') => "" -%>
 
 <%= page_title @study.name, @study.id, titlecase: false %>
 <%= alert(:info) do %>

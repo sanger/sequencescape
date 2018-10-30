@@ -1,4 +1,3 @@
-
 class TagLayout::WalkWellsByPools < TagLayout::Walker
   self.walking_by = 'wells in pools'
 

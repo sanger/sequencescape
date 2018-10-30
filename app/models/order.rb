@@ -1,4 +1,3 @@
-
 # frozen_string_literal: true
 
 # And Order is used as the main means of requesting work in Sequencescape. Its
@@ -151,7 +150,11 @@ class Order < ApplicationRecord
   end
 
   def multiplexed?
-    RequestType.find(request_types).any?(&:for_multiplexing?)
+    RequestType.where(id: request_types).for_multiplexing.exists?
+  end
+
+  def multiplier_for(request_type_id)
+    (request_options.dig(:multiplier, request_type_id.to_s) || 1).to_i
   end
 
   def create_request_of_type!(request_type, attributes = {})

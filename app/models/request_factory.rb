@@ -1,4 +1,3 @@
-
 class RequestFactory
   def self.copy_request(request)
     ActiveRecord::Base.transaction do

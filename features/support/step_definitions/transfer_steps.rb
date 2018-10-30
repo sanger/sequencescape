@@ -1,4 +1,3 @@
-
 TRANSFER_TYPES = [
   'between plates',
   'from plate to tube'

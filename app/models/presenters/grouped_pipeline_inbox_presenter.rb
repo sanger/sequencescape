@@ -1,4 +1,3 @@
-
 module Presenters
   class GroupedPipelineInboxPresenter
     class << self
@@ -18,7 +17,6 @@ module Presenters
     add_field 'Wells',          :wells,          if: :purpose_important?
     add_field 'Plate Purpose',  :plate_purpose,  if: :purpose_important?
     add_field 'Pick To',        :pick_to,        if: :purpose_important?
-    add_field 'Next Pipeline',  :next_pipeline,  if: :display_next_pipeline?
     add_field 'Submission',     :submission_id,  if: :group_by_submission?
     add_field 'Study',          :study,          if: :group_by_submission?
     add_field 'Stock Barcode',  :stock_barcode,  if: :show_stock?
@@ -69,10 +67,6 @@ module Presenters
 
     def purpose_important?
       pipeline.purpose_information?
-    end
-
-    def display_next_pipeline?
-      pipeline.display_next_pipeline?
     end
 
     def select_partial_requests?
@@ -152,10 +146,6 @@ module Presenters
 
     def pick_to
       target_purpose_for(request)
-    end
-
-    def next_pipeline
-      next_pipeline_name_for(request)
     end
 
     def study

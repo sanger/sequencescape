@@ -1,4 +1,3 @@
-
 # Contacts are displayed without any identifying tags
 # in HTML that looks like this:-
 #

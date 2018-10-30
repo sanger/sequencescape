@@ -1,4 +1,3 @@
-
 class PrepKitBarcodeTask < Task
   class PrepKitBarcodeData < Task::RenderElement
     def initialize(request)

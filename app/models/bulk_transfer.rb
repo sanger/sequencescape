@@ -1,4 +1,3 @@
-
 class BulkTransfer < ApplicationRecord
   include Uuid::Uuidable
 

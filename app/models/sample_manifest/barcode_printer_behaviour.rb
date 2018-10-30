@@ -1,4 +1,3 @@
-
 module SampleManifest::BarcodePrinterBehaviour
   ASSET_TYPE_TO_PRINTER_TYPE = {
     '1dtube' => [BarcodePrinterType1DTube],

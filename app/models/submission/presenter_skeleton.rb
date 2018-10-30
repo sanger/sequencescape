@@ -1,4 +1,3 @@
-
 class Submission::PresenterSkeleton
   class_attribute :attributes, instance_writer: false
   self.attributes = Array.new

@@ -7,7 +7,7 @@ RSpec.describe Api::V2::Aker::JobsController, type: :request, aker: true do
   include BarcodeHelper
   before do
     mock_plate_barcode_service
-    @purpose = FactoryBot.create :aker_plate_purpose
+    PlatePurpose.stock_plate_purpose
   end
 
   context 'when there is one job in the message' do

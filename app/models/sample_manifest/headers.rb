@@ -1,4 +1,3 @@
-
 module SampleManifest::Headers
   def self.valid?(name)
     METADATA_ATTRIBUTES_TO_CSV_COLUMNS.has_value?(name) || CORE_FIELDS.include?(name)

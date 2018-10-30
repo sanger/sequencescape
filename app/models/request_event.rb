@@ -1,4 +1,3 @@
-
 class RequestEvent < ApplicationRecord
   belongs_to :request, inverse_of: :request_events
 

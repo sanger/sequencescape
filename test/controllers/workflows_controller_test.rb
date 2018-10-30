@@ -1,4 +1,3 @@
-
 require 'test_helper'
 
 ActionController::TestCase.send(:include, AuthenticatedTestHelper)

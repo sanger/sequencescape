@@ -1,4 +1,3 @@
-
 class PicoAssayPlate < Plate
   class WellDetail
     attr_accessor :map, :parent_plate, :qc_assay

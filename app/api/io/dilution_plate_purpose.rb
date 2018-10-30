@@ -1,4 +1,3 @@
-
 class Io::DilutionPlatePurpose < Io::PlatePurpose
   set_model_for_input(::DilutionPlatePurpose)
   set_json_root(:dilution_plate_purpose)

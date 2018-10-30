@@ -1,4 +1,3 @@
-
 class ::Io::PlateConversion < ::Core::Io::Base
   set_model_for_input(::PlateConversion)
   set_json_root(:plate_conversion)

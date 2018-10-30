@@ -1,4 +1,3 @@
-
 class LibraryCreationPipeline < Pipeline
   self.library_creation = true
   self.can_create_stock_assets = true

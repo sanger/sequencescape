@@ -1,4 +1,3 @@
-
 class BaitLibraryLayout < ApplicationRecord
   include Uuid::Uuidable
   include ModelExtensions::BaitLibraryLayout

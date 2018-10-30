@@ -1,4 +1,3 @@
-
 class ::Io::Transfer::BetweenSpecificTubes < ::Core::Io::Base
   set_model_for_input(::Transfer::BetweenSpecificTubes)
   set_json_root(:transfer)

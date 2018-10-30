@@ -1,4 +1,3 @@
-
 require 'test_helper'
 require 'admin/studies_controller'
 module Admin

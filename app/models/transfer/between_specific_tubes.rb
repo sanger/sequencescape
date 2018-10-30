@@ -1,4 +1,3 @@
-
 class Transfer::BetweenSpecificTubes < Transfer
   include TransfersToKnownDestination
 

@@ -1,4 +1,3 @@
-
 module BroadcastEvent::SubjectHelpers
   class Subject
     attr_reader :target, :role_type

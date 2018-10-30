@@ -1,4 +1,3 @@
-
 class Uuid < ApplicationRecord
   # Allows tests to dictate the next UUID generted for a given class
   class_attribute :store_for_tests
@@ -19,6 +18,7 @@ class Uuid < ApplicationRecord
 
         # Some named scopes ...
         scope :include_uuid, ->() { includes(:uuid_object) }
+        scope :with_uuid, ->(uuid) { include_uuid.where(uuids: { external_id: uuid }) }
       end
     end
 

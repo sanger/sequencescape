@@ -1,4 +1,3 @@
-
 module UiHelper
   class SummaryItem
     attr_accessor :message
