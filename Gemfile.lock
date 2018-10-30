@@ -121,8 +121,8 @@ GEM
     bullet (5.7.6)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11.0)
-    bunny (2.9.2)
-      amq-protocol (~> 2.3.0)
+    bunny (2.12.0)
+      amq-protocol (~> 2.3, >= 2.3.0)
     cancan (1.6.10)
     capybara (2.18.0)
       addressable
