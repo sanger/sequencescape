@@ -135,6 +135,9 @@ module SampleManifestExcel
       def create_sample(sample_manifest)
         if sample_manifest.present?
           sample_manifest.create_sample(sanger_sample_id)
+          # TODO: Build aliquot, register stock, create events, etc.
+          #       Define public methods in sample_manifest behaviours to do
+          #       that
         else
           raise ArgumentError, 'sample_manifest is not present'
         end
