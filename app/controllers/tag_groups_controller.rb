@@ -1,4 +1,3 @@
-
 ##
 # This class is the controller for Tag Groups, which are basically used to record the grouping
 # of a set of Sequencing Tags. It allows you to create and view Tag Groups.

@@ -1,4 +1,3 @@
-
 class Api::SubmissionIO < Api::Base
   renders_model(::Submission)
 

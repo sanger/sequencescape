@@ -1,4 +1,3 @@
-
 class Metadata::FormBuilder < Metadata::BuilderBase
   def initialize(*args, &block)
     super

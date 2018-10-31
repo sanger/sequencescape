@@ -1,4 +1,3 @@
-
 class AssetBarcode < ApplicationRecord
   # This class only a concurrency safe counter to generate asset barcode
   def self.new_barcode(prefix = Tube.default_prefix)

@@ -1,4 +1,3 @@
-
 module Core::Endpoint::BasicHandler::Actions::Bound
   def bind_action(name, options, &block)
     class_handler = Class.new(Handler).tap { |handler| self.class.const_set(options[:as].to_s.camelize, handler) }

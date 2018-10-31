@@ -39,6 +39,7 @@ Rails.application.configure do
 
   config.ets_enabled = true
 
+  config.disable_animations = true
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
 end

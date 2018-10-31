@@ -13,7 +13,7 @@ class MultiplexedLibraryTube < Tube
   end
 
   # You can do sequencing with this asset type, even though the request types suggest otherwise!
-  def is_sequenceable?
+  def sequenceable?
     true
   end
 

@@ -1,4 +1,3 @@
-
 class Endpoints::Studies < Core::Endpoint::Base
   model do
   end

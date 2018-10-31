@@ -1,4 +1,3 @@
-
 module Submission::ProjectValidation
   def self.included(base)
     base.class_eval do

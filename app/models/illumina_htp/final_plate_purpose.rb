@@ -1,4 +1,3 @@
-
 class IlluminaHtp::FinalPlatePurpose < PlatePurpose
   include PlatePurpose::Library
 

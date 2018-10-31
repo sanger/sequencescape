@@ -1,4 +1,3 @@
-
 require 'rexml/text'
 class Sample < ApplicationRecord
   GC_CONTENTS     = ['Neutral', 'High AT', 'High GC']

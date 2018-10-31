@@ -1,4 +1,3 @@
-
 class AssetCreation < ApplicationRecord
   include Uuid::Uuidable
   include Asset::Ownership::ChangesOwner

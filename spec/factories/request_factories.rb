@@ -91,6 +91,7 @@ FactoryBot.define do
   factory(:multiplex_request, class: Request::Multiplexing) do
     asset nil
     association(:target_asset, factory: :multiplexed_library_tube)
+    association(:request_type, factory: :multiplex_request_type)
     request_purpose :standard
   end
 
@@ -201,15 +202,12 @@ FactoryBot.define do
     end
   end
 
-  factory(:library_creation_request_for_testing_sequencing_requests, class: Request::LibraryCreation) do
+  factory(:request_library_creation, class: Request::LibraryCreation, aliases: [:library_creation_request_for_testing_sequencing_requests]) do
     association(:request_type, factory: :library_creation_request_type)
     request_purpose :standard
     asset        { |target| target.association(:well_with_sample_and_plate) }
     target_asset { |target| target.association(:empty_well) }
-    after(:build) do |request|
-      request.request_metadata.fragment_size_required_from = 300
-      request.request_metadata.fragment_size_required_to   = 500
-    end
+    request_metadata_attributes { { fragment_size_required_from: 300, fragment_size_required_to: 500 } }
   end
 
   factory(:external_multiplexed_library_tube_creation_request, class: ExternalLibraryCreationRequest) do

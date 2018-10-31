@@ -1,3 +1,2 @@
-
 class Fragment < Asset
 end

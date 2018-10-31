@@ -1,4 +1,3 @@
-
 class RobotVerification
   attr_reader :errors
 

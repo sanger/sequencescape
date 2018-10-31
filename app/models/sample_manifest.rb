@@ -1,4 +1,3 @@
-
 class SampleManifest < ApplicationRecord
   include Uuid::Uuidable
   include ModelExtensions::SampleManifest

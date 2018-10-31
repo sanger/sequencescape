@@ -1,4 +1,3 @@
-
 class SamplePrepQcTask < Task
   class SamplePrepQcData < Task::RenderElement
     def initialize(request)

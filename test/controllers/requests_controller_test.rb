@@ -1,4 +1,3 @@
-
 require 'test_helper'
 require 'requests_controller'
 

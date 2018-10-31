@@ -1,4 +1,3 @@
-
 Given /^I have administrative role$/ do
   @current_user.is_administrator
 end

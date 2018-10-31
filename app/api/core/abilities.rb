@@ -1,4 +1,3 @@
-
 # The classes within this namespace are responsible for defining the abilities of the user and the application
 # that are accessing the API.
 #

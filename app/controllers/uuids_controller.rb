@@ -1,4 +1,3 @@
-
 class UuidsController < ApplicationController
   def show
     uuid = Uuid.find_by!(external_id: params[:id])

@@ -1,4 +1,3 @@
-
 module Accessionable
   class Sample < Base
     attr_reader :common_name, :taxon_id, :links, :tags

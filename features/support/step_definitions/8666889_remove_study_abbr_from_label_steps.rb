@@ -1,4 +1,3 @@
-
 When /^I print the following labels$/ do |table|
   label_bitmaps = {}
   table.hashes.each do |h|

@@ -1,4 +1,3 @@
-
 class QcFile < ApplicationRecord
   extend DbFile::Uploader
   include Uuid::Uuidable

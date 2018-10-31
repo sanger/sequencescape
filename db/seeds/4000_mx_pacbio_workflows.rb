@@ -1,4 +1,3 @@
-
 unless Rails.env.test?
   PacBioSamplePrepPipeline.create!(name: 'PacBio Tagged Library Prep') do |pipeline|
     pipeline.sorter               = 14

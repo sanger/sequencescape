@@ -1,4 +1,3 @@
-
 # Assigns multiple tags to each well.
 
 class TagLayout::AsGroupByPlate < TagLayout::Walker

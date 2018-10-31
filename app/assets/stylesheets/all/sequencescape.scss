@@ -88,10 +88,48 @@ h3.card-header-custom {
 
 .alert-user_guide {
   @extend .alert-info;
-  a {
-    @extend .alert-link;
+
+  a { @extend .alert-link; }
+  @extend .row;
+  &:before {
+    @extend .fas;
+    padding-right: 0.5em;
+    font-size: 30px;
+    float: left;
+    content: fa-content($fa-var-info-circle);
   }
 }
+
+.alert-error, .alert-alert {
+  @extend .row;
+  &:before {
+    @extend .fas;
+    padding-right: 0.5em;
+    font-size: 30px;
+    content: fa-content($fa-var-exclamation-circle);
+  }
+}
+
+.alert-notice {
+  @extend .row;
+  &:before {
+    @extend .fas;
+    padding-right: 0.5em;
+    font-size: 30px;
+    content: fa-content($fa-var-check-circle);
+  }
+}
+
+.alert-notice, .alert-passed { @extend .alert-success; }
+.alert-error, .alert-alert, .alert-failed { @extend .alert-danger; }
+.alert-pending { @extend .alert-warning; }
+.alert-started { @extend .alert-primary; }
+.alert-cancelled { @extend .alert-warning; }
+.text-notice, .text-passed { @extend .text-success; }
+.text-error, .text-alert, .text-failed { @extend .text-danger; }
+.text-pending { @extend .text-muted; }
+.text-started { @extend .text-primary; }
+.text-cancelled { @extend .text-warning; }
 
 div.quota {
   @extend .card;
@@ -281,27 +319,6 @@ list-style: none;
 .bullet {
 color: #E85C00;
 }
-
-.callout p {
-  font-size: 10px;
-  line-height: 14px;
-}
-
-.callout {
-  border: 1px solid #aad4f4;
-  box-shadow: 0 1px 5px #D6E1EE;
-  -moz-box-shadow: 0 1px 5px #D6E1EE;
-
-  margin-bottom: 3px;
-  -moz-border-radius: 5px;
-  -webkit-border-radius: 5px;
-  border-radius: 5px;
-  background: #d2e2f7;
-  color: #222931;
-  padding: 5px;
-  font-size: 12px;
-
-}
 .center {
 text-align: center;
 }
@@ -311,37 +328,6 @@ color: #000;
 }
 .failed {
 color: #f00;
-}
-.fileDownload {
-border: 2px solid #FC6;
-background: white;
--moz-border-radius: 3px;
--webkit-border-radius: 3px;
-border-radius: 3px;
-width: 200px;
-padding: 2px;
-margin: 2px;
-
-}
-
-.flash {
-  background: #6CF;
-  -moz-border-radius-topright: 3px;
-  -webkit-border-top-right-radius: 3px;
-  border-top-right-radius: 3px;
-  -moz-border-radius-topleft: 3px;
-  -webkit-border-top-left-radius: 3px;
-  border-top-left-radius: 3px;
-  border-top: 1px solid #57B2DF;
-  border-left: 1px solid #57B2DF;
-  border-right: 1px solid #57B2DF;
-  color: #fff;
-  font-weight: bold;
-  padding: 5px 10px 5px 10px;
-  display: block;
-  line-height: 16px;
-  font-size: 12px;
-
 }
 
 .helper {

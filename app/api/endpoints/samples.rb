@@ -1,4 +1,3 @@
-
 class ::Endpoints::Samples < ::Core::Endpoint::Base
   model do
   end

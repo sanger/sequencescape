@@ -1,4 +1,3 @@
-
 class Event < ApplicationRecord
   include Uuid::Uuidable
 

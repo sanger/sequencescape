@@ -1,4 +1,3 @@
-
 class Io::Aliquot < Core::Io::Base
   set_model_for_input(::Aliquot)
   set_json_root(:aliquot)

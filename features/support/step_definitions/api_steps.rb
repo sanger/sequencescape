@@ -1,4 +1,3 @@
-
 # This may create invalid UUID external_id values but it means that we don't have to conform to the
 # standard in our features.
 def recursive_diff(h1, h2)

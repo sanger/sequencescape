@@ -1,4 +1,3 @@
-
 class ::Endpoints::Searches < ::Core::Endpoint::Base
   module SearchActions
     def search_action(name)

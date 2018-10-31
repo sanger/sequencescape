@@ -1,4 +1,3 @@
-
 class StudyType < ApplicationRecord
   extend Attributable::Association::Target
 

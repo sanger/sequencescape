@@ -1,3 +1,2 @@
-
 module Pulldown::Requests
 end

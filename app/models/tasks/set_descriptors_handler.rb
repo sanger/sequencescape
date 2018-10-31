@@ -1,4 +1,3 @@
-
 module Tasks::SetDescriptorsHandler
   def do_set_descriptors_task(_task, params)
     @batch = Batch.includes(:requests, :pipeline, :lab_events).find(params[:batch_id])

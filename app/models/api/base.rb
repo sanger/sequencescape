@@ -1,4 +1,3 @@
-
 class Api::Base
   # TODO[xxx]: This class is in a state of flux at the moment, please don't hack at this too much!
   #

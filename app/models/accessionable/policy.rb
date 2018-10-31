@@ -1,4 +1,3 @@
-
 class Accessionable::Policy < Accessionable::Base
   attr_reader :policy_url, :dac_accession_number, :title
 

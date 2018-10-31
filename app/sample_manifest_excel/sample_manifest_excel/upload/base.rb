@@ -34,7 +34,6 @@ module SampleManifestExcel
         @sample_manifest = derive_sample_manifest
         @override = override || false
         @processor = create_processor
-        @reuploaded = !@sample_manifest.pending? if sample_manifest.present?
       end
 
       def inspect
@@ -84,10 +83,6 @@ module SampleManifestExcel
         # causes exceptions
         sample_manifest.association(:uploaded_document).reset
         sample_manifest.fail!
-      end
-
-      def reuploaded?
-        @reuploaded
       end
 
       private

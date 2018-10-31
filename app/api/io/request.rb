@@ -1,4 +1,3 @@
-
 class Io::Request < ::Core::Io::Base
   set_model_for_input(::Request)
   set_json_root(:request)

@@ -1,4 +1,3 @@
-
 class Api::OrderIO < Api::Base
   renders_model(::Order)
 

@@ -80,6 +80,69 @@ RSpec.describe TransferRequest, type: :model do
     end
   end
 
+  context 'with multiple library requests' do
+    before do
+      library_request
+      dummy_library_request
+    end
+
+    subject do
+      create :transfer_request,
+             asset: source,
+             target_asset: destination,
+             outer_request: library_request
+    end
+
+    let(:library_request) do
+      create :library_request,
+             asset: source,
+             initial_study: example_study,
+             initial_project: example_project,
+             state: library_state
+    end
+
+    let(:dummy_library_request) do
+      create :library_request,
+             asset: source,
+             initial_study: example_study,
+             initial_project: example_project,
+             state: library_state,
+             submission: library_request.submission
+    end
+
+    context 'with a pending library request' do
+      let(:library_state) { 'pending' }
+
+      it 'sets the target aliquots to the library request study and project' do
+        subject
+        expect(destination.aliquots.first.study).to eq(example_study)
+        expect(destination.aliquots.first.project).to eq(example_project)
+      end
+
+      it 'sets appropriate metadata on the aliquots' do
+        subject
+        expect(destination.aliquots.first.library_type).to eq(library_request.library_type)
+        expect(destination.aliquots.first.insert_size).to eq(library_request.insert_size)
+      end
+
+      it 'starts the library request when started' do
+        subject.start!
+        expect(library_request.reload.state).to eq('started')
+      end
+
+      it 'does not starts the dummy library request when started' do
+        subject.start!
+        expect(dummy_library_request.reload.state).to eq('pending')
+      end
+
+      # Users can jump straight to passed from pending. So we need to handle that as well.
+      it 'starts the library request when passed' do
+        subject.pass!
+        expect(library_request.reload.state).to eq('started')
+      end
+    end
+  end
+
   context 'TransferRequest' do
     context 'when using the constuctor' do
       let!(:transfer_request) { TransferRequest.create!(asset: source, target_asset: destination) }
@@ -149,13 +212,14 @@ RSpec.describe TransferRequest, type: :model do
 
     let(:library_request) do
       create :library_request,
-             asset: stock_asset
+             asset: stock_asset,
+             submission: create(:submission)
     end
 
     before do
       # A decoy library request, this is part of a different submission and
       # should be ignored
-      create :library_request, asset: stock_asset
+      create :library_request, asset: stock_asset, submission: create(:submission)
       last_well.stock_wells << stock_asset
     end
 
@@ -181,7 +245,7 @@ RSpec.describe TransferRequest, type: :model do
       context 'from a tube made from the last well' do
         let(:stock_asset) { create :well_with_sample_and_without_plate }
         let(:source_asset) { create :tube }
-        before { create :transfer_request, asset: last_well, target_asset: source_asset }
+        before { create :transfer_request, asset: last_well, target_asset: source_asset, submission: library_request.submission }
         it { is_expected.to eq library_request }
       end
     end

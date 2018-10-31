@@ -1,4 +1,3 @@
-
 class Core::Endpoint::BasicHandler
   module Json
     def actions(object, options)

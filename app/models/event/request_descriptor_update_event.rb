@@ -1,4 +1,3 @@
-
 module Event::RequestDescriptorUpdateEvent
   def self.included(base)
     base.after_create(:update_metadata_for_request, if: ->(event) { event.eventful.is_a?(Request) and not event.descriptor_key.blank? })

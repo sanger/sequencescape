@@ -1,4 +1,3 @@
-
 class ::Core::Registry
   include ::Singleton
   include ::Core::Logging

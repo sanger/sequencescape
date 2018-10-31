@@ -1,4 +1,3 @@
-
 # Picks the specified wells of a plate into an individual tube.  In this case transfers is an
 # array of well locations to transfer into the tube, and the destination is a tube.
 class Transfer::FromPlateToTube < Transfer

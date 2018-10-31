@@ -1,4 +1,3 @@
-
 # minitest/autorun doesn't seem to be sufficient to load in Minitest::Skip which is required
 # for assert_raises.
 require 'minitest/spec'

@@ -1,4 +1,3 @@
-
 class Endpoints::Orders < Core::Endpoint::Base
   model do
   end

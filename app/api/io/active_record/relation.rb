@@ -1,4 +1,3 @@
-
 class ::Io::ActiveRecord::Relation
   extend ::Core::Io::Collection
 

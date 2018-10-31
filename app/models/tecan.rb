@@ -1,3 +1,2 @@
-
 class Tecan < RobotVerification
 end

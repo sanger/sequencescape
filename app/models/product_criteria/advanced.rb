@@ -1,4 +1,3 @@
-
 # Advanced Product Criteria can have 'unprocessable' thresholds
 # as well as fails.
 class ProductCriteria::Advanced < ProductCriteria::Basic

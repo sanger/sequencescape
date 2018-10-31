@@ -1,4 +1,3 @@
-
 # Generate a few bait libraries.
 
 unless Rails.env.test?

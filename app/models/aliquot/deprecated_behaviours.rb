@@ -1,4 +1,3 @@
-
 # The following module is included where we have deprecated behaviours that rely on sample or request.
 module Aliquot::DeprecatedBehaviours
   module Request

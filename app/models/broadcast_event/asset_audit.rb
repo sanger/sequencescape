@@ -1,4 +1,3 @@
-
 class BroadcastEvent::AssetAudit < BroadcastEvent
   seed_class AssetAudit
 

@@ -1,4 +1,3 @@
-
 module Transfer::BuildsStockWellLinks
   def self.included(base)
     base.class_eval do
