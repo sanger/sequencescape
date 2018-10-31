@@ -49,7 +49,7 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    aasm (4.12.3)
+    aasm (5.0.1)
       concurrent-ruby (~> 1.0)
     actioncable (5.1.6)
       actionpack (= 5.1.6)
