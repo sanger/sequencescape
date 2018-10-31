@@ -1,4 +1,3 @@
-
 class RobotProperty < ApplicationRecord
   belongs_to :robot
 

@@ -1,4 +1,3 @@
-
 module PrototypeReplacementHelper
   # def button_to_remote(*args); end
 

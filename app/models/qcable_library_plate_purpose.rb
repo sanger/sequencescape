@@ -1,4 +1,3 @@
-
 class QcableLibraryPlatePurpose < PlatePurpose
   module ClassBehaviour
     def state_of(plate)

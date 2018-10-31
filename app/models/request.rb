@@ -1,4 +1,3 @@
-
 require 'aasm'
 
 class Request < ApplicationRecord
@@ -17,18 +16,15 @@ class Request < ApplicationRecord
   extend EventfulRecord
   extend ::Metadata
 
-  # Constants
-  # This is used for the default next or previous request check.  It means that if the caller does not specify a
-  # block then we can use this one in its place.
-  PERMISSABLE_NEXT_REQUESTS = ->(request) { request.pending? or request.blocked? }
-
   # Class attributes
-  class_attribute :customer_request, :sequencing
+  class_attribute :customer_request, :sequencing, :pre_capture_pooled, :library_creation
 
   self.sequencing = false
   self.per_page = 500
   self.inheritance_column = 'sti_type'
   self.customer_request = false
+  self.pre_capture_pooled = false
+  self.library_creation = false
 
   # Associations
   has_many_events
@@ -72,9 +68,14 @@ class Request < ApplicationRecord
   has_many :upstream_requests, through: :asset, source: :requests_as_target
 
   delegate :flowcell, to: :batch, allow_nil: true
+  delegate :for_multiplexing?, to: :request_type
 
   belongs_to :billing_product, class_name: 'Billing::Product'
   has_many :billing_items, class_name: 'Billing::Item'
+
+  # Only actively used by poolable requests, but here to help with eager loading
+  has_one :pooled_request, dependent: :destroy, class_name: 'PreCapturePool::PooledRequest', foreign_key: :request_id, inverse_of: :request
+  has_one :pre_capture_pool, through: :pooled_request, inverse_of: :pooled_requests
 
   # A request_purpose is a simple means of distinguishing WHY a request was made.
   # cf. RequestType which defines how it will be fulfilled.
@@ -261,9 +262,11 @@ class Request < ApplicationRecord
 
     group(scrubbed_atts)
       .select([
+        'MIN(requests.sti_type) AS sti_type',
         'MIN(requests.id) AS id',
         'MIN(requests.submission_id) AS submission_id',
         'MAX(requests.priority) AS max_priority',
+        'MIN(requests.order_id) AS order_id',
         'hl.container_id AS container_id',
         'count(DISTINCT requests.id) AS request_count',
         'MIN(requests.asset_id) AS asset_id',
@@ -288,9 +291,15 @@ class Request < ApplicationRecord
   scope :with_assets_for_starting_requests, -> { includes([:request_metadata, :request_events, { asset: :aliquots, target_asset: :aliquots }]) }
   scope :not_failed, -> { where(['state != ?', 'failed']) }
 
+  scope :multiplexed, -> { joins(:request_type).where(request_types: { for_multiplexing: true }) }
+
   # Class method calls
   has_metadata do
+    belongs_to :primer_panel
+    belongs_to :bait_library
   end
+
+  has_one :primer_panel, through: :request_metadata
 
   # Delegations
   delegate :billable?, to: :request_type, allow_nil: true
@@ -303,6 +312,8 @@ class Request < ApplicationRecord
   delegate :study, :study_id, to: :asset, allow_nil: true
 
   delegate :validator_for, to: :request_type
+
+  delegate :role, to: :order_role, allow_nil: true
 
   def self.delegate_validator
     DelegateValidation::AlwaysValidValidator
@@ -442,26 +453,19 @@ class Request < ApplicationRecord
     v.nil? ? false : lab_events.with_descriptor(k, v).first
   end
 
-  def next_requests(pipeline, &block)
-    # TODO: remove pipeline parameters
-    # we filter according to the next pipeline
-    next_pipeline = pipeline.next_pipeline
-    # return [] if next_pipeline.nil?
+  def next_requests
+    return [] if submission.nil? || next_request_type_id.nil?
+    next_requests_via_asset || submission.next_requests_via_submission(self)
+  end
 
-    block ||= PERMISSABLE_NEXT_REQUESTS
+  def next_request_type_id
+    # May be nil, so can't use lazy assignment
+    return @next_request_type_id if instance_variable_defined?('@next_request_type_id')
+    @next_request_type_id = calculate_next_request_type_id
+  end
 
-    eligible_requests = if target_asset.present?
-                          target_asset.requests
-                        else
-                          return [] if submission.nil?
-                          submission.next_requests(self)
-                        end
-
-    eligible_requests.select do |r|
-      (next_pipeline.nil? or
-        next_pipeline.request_types_including_controls.include?(r.request_type)
-      ) and block.call(r)
-    end
+  def next_requests_via_asset
+    target_asset.requests.where(submission_id: submission_id, request_type_id: next_request_type_id) if target_asset.present?
   end
 
   def target_tube
@@ -541,20 +545,12 @@ class Request < ApplicationRecord
     submission.created_at.strftime('%Y-%m-%d')
   end
 
-  def role
-    order.try(:role)
-  end
-
   def ready?
     true
   end
 
   def target_purpose
     nil
-  end
-
-  def library_creation?
-    false
   end
 
   def product_line
@@ -565,6 +561,13 @@ class Request < ApplicationRecord
   def manifest_processed!; end
 
   def billing_product_identifier; end
+
+  private
+
+  def calculate_next_request_type_id
+    safe_order = order || submission&.orders&.first
+    safe_order&.next_request_type_id(request_type_id)
+  end
 end
 
 require_dependency 'system_request'

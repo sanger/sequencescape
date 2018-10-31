@@ -1,4 +1,3 @@
-
 class Core::Endpoint::BasicHandler::Associations::HasMany::Handler < Core::Endpoint::BasicHandler
   include Core::Endpoint::BasicHandler::Paged
 

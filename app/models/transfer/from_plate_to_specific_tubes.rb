@@ -1,4 +1,3 @@
-
 class Transfer::FromPlateToSpecificTubes < Transfer::BetweenPlateAndTubes
   # Note: This class appears to have been unused since July 2014.
   # We still have persistent models in the database, so need to make

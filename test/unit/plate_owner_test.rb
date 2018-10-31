@@ -1,4 +1,3 @@
-
 require 'test_helper'
 require 'users_controller'
 

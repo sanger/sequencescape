@@ -8,6 +8,9 @@ FactoryBot.define do
 
     factory :stock_purpose do
       stock_plate true
+
+      factory :illumina_c_stock_purpose, class: IlluminaC::StockPurpose do
+      end
     end
 
     factory(:new_stock_tube_purpose, class: IlluminaHtp::StockTubePurpose) do
@@ -37,10 +40,6 @@ FactoryBot.define do
     association(:barcode_printer_type, factory: :plate_barcode_printer_type)
     target_type 'Plate'
     asset_shape { AssetShape.default }
-
-    factory :aker_plate_purpose do
-      PlatePurpose.stock_plate_purpose
-    end
 
     factory :source_plate_purpose do
       after(:build) do |source_plate_purpose, _evaluator|

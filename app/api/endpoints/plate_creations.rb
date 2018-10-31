@@ -1,4 +1,3 @@
-
 class ::Endpoints::PlateCreations < ::Core::Endpoint::Base
   model do
     action(:create, to: :standard_create!)

@@ -1,4 +1,3 @@
-
 class AliquotIndexer
   attr_reader :lane, :aliquots
 

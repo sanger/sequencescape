@@ -1,4 +1,3 @@
-
 # frozen_string_literal: true
 
 # This module can be included into ActiveRecord::Base classes to get the ability to specify the attributes
@@ -40,14 +39,18 @@ module Attributable
     end
   end
 
-  def attribute_value_pairs
-    attribute_details.each_with_object({}) do |attribute, hash|
+  # If we've eager loaded metadata, then we may be using the base class, rather than
+  # subclass specific forms. We can override the details used here
+  def attribute_value_pairs(details = attribute_details)
+    details.each_with_object({}) do |attribute, hash|
       hash[attribute] = attribute.from(self)
     end
   end
 
-  def association_value_pairs
-    association_details.each_with_object({}) do |attribute, hash|
+  # If we've eager loaded metadata, then we may be using the base class, rather than
+  # subclass specific forms. We can override the details used here
+  def association_value_pairs(details = association_details)
+    details.each_with_object({}) do |attribute, hash|
       hash[attribute] = attribute.from(self)
     end
   end

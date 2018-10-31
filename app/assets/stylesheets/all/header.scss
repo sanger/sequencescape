@@ -1,21 +1,6 @@
 // Controls the page header
 // Note: Some components MAY be elsewhere
 
-.user-session-controls {
-  @extend .small;
-  @extend .row;
-  @extend .ml-1;
-
-  ul {
-    @extend .list-inline;
-    @extend .mb-0;
-
-    li {
-      @extend .list-inline-item;
-    }
-  }
-}
-
 .main-nav {
   @extend .navbar;
   @extend .navbar-dark;
@@ -77,13 +62,6 @@ body.production {
   }
 }
 
-#main-nav-items.modern {
+#main-nav-items {
   @extend .collapse;
-}
-
-#main-nav-items.legacy {
-  ul {
-    display: inline-block;
-    li { display: inline-block; }
-  }
 }

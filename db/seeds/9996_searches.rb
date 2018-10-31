@@ -1,4 +1,3 @@
-
 # Here are a load of searches that can be performed through the API.
 
 unless Rails.env.test?

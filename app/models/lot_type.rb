@@ -1,4 +1,3 @@
-
 ##
 # A lot type governs the behaviour of a lot
 

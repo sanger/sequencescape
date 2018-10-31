@@ -1,4 +1,3 @@
-
 class DbFile < ApplicationRecord
   # This is the model for database storage
 

@@ -1,4 +1,3 @@
-
 # Pre_PCR plates will remain 'started; until the run is complete.
 
 class Search::FindOutstandingIlluminaBPrePcrPlates < Search

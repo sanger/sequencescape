@@ -1,4 +1,3 @@
-
 class EgaAccessionService < AccessionService
   self.priority = 2
   self.operational = true

@@ -1,4 +1,3 @@
-
 class CustomText < ApplicationRecord
   after_save :clear_text_cache!
 

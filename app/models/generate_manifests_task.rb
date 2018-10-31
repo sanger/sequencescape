@@ -1,4 +1,3 @@
-
 class GenerateManifestsTask < Task
   def self.generate_manifests(batch, study)
     ManifestGenerator.generate_manifests(batch, study)

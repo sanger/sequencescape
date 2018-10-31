@@ -53,6 +53,8 @@ configatron.taxon_lookup_url = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/'
 configatron.tecan_files_location = "#{Rails.root}/data"
 configatron.tecan_minimum_volume = 1.0
 
+configatron.help_link_base_url = 'https://ssg-confluence.internal.sanger.ac.uk/display/PSDPUB'
+
 configatron.external_applications = [
   ['High Throughput Pipeline', 'http://www.example.com'],
   ['Generic Lims', 'http://www.example.com'],

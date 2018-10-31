@@ -1,4 +1,3 @@
-
 class Api::PlateIO < Api::Base
   module Extensions
     module ClassMethods

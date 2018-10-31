@@ -1,4 +1,3 @@
-
 Given /^sequencescape is setup for 5600990$/ do
   lane = FactoryBot.create :lane, name: 'NPG_Action_Lane_Test', qc_state: 'passed', external_release: 1
   library_tube = FactoryBot.create :empty_library_tube

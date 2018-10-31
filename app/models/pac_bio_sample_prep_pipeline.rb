@@ -1,4 +1,3 @@
-
 class PacBioSamplePrepPipeline < Pipeline
   ALWAYS_SHOW_RELEASE_ACTIONS = true
 
@@ -16,14 +15,12 @@ class PacBioSamplePrepPipeline < Pipeline
   end
 
   def cancel_downstream_requests(request)
-    request.next_requests(self).each { |sequencing_request| sequencing_request.cancel_from_upstream! }
+    request.next_requests.select(&:pending?).each(&:cancel_from_upstream!)
   end
 
   def cancel_sequencing_requests_on_library_failure(batch)
     batch.requests.each do |request|
-      if request.failed?
-        cancel_downstream_requests(request)
-      end
+      cancel_downstream_requests(request) if request.failed?
     end
   end
 
@@ -39,12 +36,12 @@ class PacBioSamplePrepPipeline < Pipeline
   end
 
   def cancel_excess_downstream_requests(request, number_to_cancel)
-    request.next_requests(self).each_with_index do |sequencing_request, index|
+    request.next_requests.select(&:pending?).each_with_index do |sequencing_request, index|
       sequencing_request.cancel_from_upstream! if index < number_to_cancel
     end
   end
 
   def number_of_smrt_cells_requested(request)
-    request.next_requests(self).count
+    request.next_requests.select(&:pending?).count
   end
 end

@@ -1,4 +1,3 @@
-
 ##
 # A stamp is a means of transfering material from a lot
 # into a qcable.

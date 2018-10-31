@@ -1,4 +1,3 @@
-
 class PacBioSequencingPipeline < Pipeline
   include Pipeline::InboxGroupedBySubmission
 

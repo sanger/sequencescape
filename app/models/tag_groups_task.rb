@@ -1,4 +1,3 @@
-
 class TagGroupsTask < Task
   class TagGroupsData < Task::RenderElement
     alias_attribute :well, :asset

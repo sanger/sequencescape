@@ -1,4 +1,3 @@
-
 module Tasks::StripTubeCreationHandler
   def render_strip_tube_creation_task(task, _params)
     @tubes_requested = @batch.requests.first.asset.requests.for_pipeline(task.workflow.pipeline).count
@@ -45,7 +44,7 @@ module Tasks::StripTubeCreationHandler
       tube.size.times do |index|
         request = locations_requests[index].pop
         well    = tube.wells.in_column_major_order.all[index].id
-        request.submission.next_requests(request).each do |dsr|
+        request.next_requests.each do |dsr|
           dsr.update_attributes!(asset_id: well)
         end
         request.update_attributes!(target_asset_id: well)

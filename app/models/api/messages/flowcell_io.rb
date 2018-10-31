@@ -1,4 +1,3 @@
-
 class Api::Messages::FlowcellIO < Api::Base
   MANUAL_QC_BOOLS = { 'passed' => true, 'failed' => false }
 

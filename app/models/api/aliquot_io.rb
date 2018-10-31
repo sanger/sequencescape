@@ -1,4 +1,3 @@
-
 class Api::AliquotIO < Api::Base
   module Extensions
     module ClassMethods

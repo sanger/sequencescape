@@ -122,13 +122,17 @@ describe '/api/1/plate-uuid/submission_pools' do
     end
 
     context 'a multi plate submission and a used template on children' do
-      let(:plate_b) { create :input_plate, well_count: 2 }
-      let(:plate) { create :plate, well_count: 2, parents: [plate_b] }
-
-      before do
-        plate_b.wells.each do |well|
+      let(:plate_b) do
+        plate = create :input_plate, well_count: 2
+        plate.wells.each do |well|
           create :library_creation_request, asset: well, submission: submission, request_type: request_type
         end
+        plate
+      end
+
+      let(:plate) { create :target_plate, well_count: 2, parent: plate_b, submission: submission }
+
+      before do
         create :tag2_layout_template_submission, submission: submission, tag2_layout_template: tag2_layout_template
       end
 

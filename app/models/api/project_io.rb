@@ -1,4 +1,3 @@
-
 class Api::ProjectIO < Api::Base
   module Extensions
     module ClassMethods

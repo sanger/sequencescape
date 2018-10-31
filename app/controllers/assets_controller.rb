@@ -1,4 +1,3 @@
-
 class AssetsController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
@@ -163,7 +162,7 @@ class AssetsController < ApplicationController
 
   private def asset_params
     permitted = [:volume, :concentration]
-    permitted << :name if current_user.administrator? #
+    permitted << :name if current_user.administrator?
     permitted << :plate_purpose_id if current_user.administrator? || current_user.lab_manager?
     params.require(:asset).permit(permitted)
   end
@@ -236,7 +235,7 @@ class AssetsController < ApplicationController
   end
 
   def new_request
-    @request_types = RequestType.applicable_for_asset(@asset)
+    @request_types = RequestType.standard.active.applicable_for_asset(@asset)
     # In rare cases the user links in to the 'new request' page
     # with a specific study specified. In even rarer cases this may
     # conflict with the assets primary study.

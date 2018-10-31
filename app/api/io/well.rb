@@ -1,4 +1,3 @@
-
 class ::Io::Well < ::Core::Io::Base
   set_model_for_input(::Well)
   set_json_root(:well)

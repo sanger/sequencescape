@@ -1,4 +1,3 @@
-
 # This module can be included where the submission has a linear behaviour, with no branching.
 module Submission::LinearRequestGraph
   # TODO: When Item dies this code will not need to hand it around so much!

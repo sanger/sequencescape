@@ -1,4 +1,3 @@
-
 module Core::Endpoint::BasicHandler::Handlers
   # Handler that behaves like it never deals with any URLs
   NullHandler = Object.new.tap do |handler|

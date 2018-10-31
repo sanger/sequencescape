@@ -1,4 +1,3 @@
-
 When /^I upload "([^\"]+)" as a sample manifest for study "([^\"]+)"$/ do |filename, name|
   step('a supplier called "Test supplier name" exists')
   step('the "96 Well Plate" barcode printer "xyz" exists')

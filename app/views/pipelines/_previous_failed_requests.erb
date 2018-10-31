@@ -1,6 +1,6 @@
 
 <% if request.previous_failed_requests? %>
-  <%=  image_tag "error.png", size: "16x16", id: "failed" %>
+  <%= icon('fas', 'exclamation-circle', class: 'text-danger') %>
 <% else %>
-  <%=  image_tag "true.gif", size: "16x16", id: "passed" %>
+  <%=  icon('fas', 'check-circle', class: 'text-success') %>
 <% end %>

@@ -1,4 +1,3 @@
-
 class LabSearchesController < ApplicationController
   SEARCHABLE_CLASSES = [Batch, Asset]
 

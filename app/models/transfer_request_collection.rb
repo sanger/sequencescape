@@ -37,6 +37,7 @@ class TransferRequestCollection < ApplicationRecord
       parameter['asset'] = parameter.delete('source_asset') if parameter['source_asset'].present?
       parameter['target_asset_id'] = uuid_cache[[parameter.delete('target_asset'), 'Asset']] if parameter['target_asset'].is_a?(String)
       parameter['submission_id'] = uuid_cache[[parameter.delete('submission'), 'Submission']] if parameter['submission'].is_a?(String)
+      parameter['outer_request_id'] = uuid_cache[[parameter.delete('outer_request'), 'Request']] if parameter['outer_request'].is_a?(String)
       parameter
     end
     self.transfer_requests_attributes = updated_attributes

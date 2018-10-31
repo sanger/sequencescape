@@ -1,4 +1,3 @@
-
 Given /^I have an empty submission$/ do
   FactoryBot.create(:submission_without_order)
 end

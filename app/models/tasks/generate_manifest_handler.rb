@@ -1,4 +1,3 @@
-
 module Tasks::GenerateManifestHandler
   def manifest_filename(name, number)
     [name, number.to_s, 'manifest.csv'].join('_').gsub(/\s/, '_').gsub(/[^A-Za-z0-9_\-\.]/, '')

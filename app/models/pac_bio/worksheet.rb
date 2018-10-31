@@ -1,4 +1,3 @@
-
 class PacBio::Worksheet
   def initialize
   end

@@ -1,4 +1,3 @@
-
 Given /^I have a pipeline called "([^\"]*)"$/ do |name|
   request_type = FactoryBot.create :request_type
   pipeline = FactoryBot.create :pipeline, name: name, request_types: [request_type]

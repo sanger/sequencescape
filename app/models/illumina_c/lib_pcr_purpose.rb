@@ -1,4 +1,3 @@
-
 class IlluminaC::LibPcrPurpose < PlatePurpose
   include PlatePurpose::Library
 

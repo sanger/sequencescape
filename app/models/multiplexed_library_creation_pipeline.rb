@@ -1,4 +1,3 @@
-
 class MultiplexedLibraryCreationPipeline < LibraryCreationPipeline
   include Pipeline::InboxGroupedBySubmission
 

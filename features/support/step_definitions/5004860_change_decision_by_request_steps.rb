@@ -1,4 +1,3 @@
-
 Given /^sequencescape is setup for 5004860$/ do
   sample   = FactoryBot.create(:sample_tube)
   library1 = FactoryBot.create(:empty_library_tube, qc_state: 'pending')

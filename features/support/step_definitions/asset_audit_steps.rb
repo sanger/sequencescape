@@ -1,4 +1,3 @@
-
 Given /^asset audit with ID (\d+) is for plate with ID (\d+)$/ do |asset_audit_id, plate_id|
   AssetAudit.find(asset_audit_id).update_attributes!(asset: Plate.find(plate_id))
 end

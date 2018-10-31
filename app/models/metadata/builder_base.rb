@@ -1,4 +1,3 @@
-
 class Metadata::BuilderBase < ActionView::Helpers::FormBuilder
   attr_writer :locals
 

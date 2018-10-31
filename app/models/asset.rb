@@ -1,4 +1,3 @@
-
 require 'eventful_record'
 require 'external_properties'
 
@@ -139,25 +138,25 @@ class Asset < ApplicationRecord
   # Named scope for search by query string behaviour
   scope :for_search_query, ->(query) {
     barcode_compatible.where.not(sti_type: 'Well').where('assets.name LIKE :name', name: "%#{query}%")
-                      .or(barcode_compatible.with_safe_id(query))
-                      .or(with_barcode(query))
+                      .or(where.not(sti_type: 'Well').barcode_compatible.with_safe_id(query))
+                      .or(where.not(sti_type: 'Well').with_barcode(query))
   }
 
   scope :for_lab_searches_display, -> { includes(:barcodes, requests: [:pipeline, :batch]).order('requests.pipeline_id ASC') }
 
-  scope :barcode_compatible, -> { joins(:barcodes).references(:barcodes).distinct }
+  scope :barcode_compatible, -> { includes(:barcodes).references(:barcodes).distinct }
 
   # We accept not only an individual barcode but also an array of them.
   scope :with_barcode, ->(*barcodes) {
     db_barcodes = Barcode.extract_barcodes(barcodes)
-    joins(:barcodes).where(barcodes: { barcode: db_barcodes }).distinct
+    includes(:barcodes).where(barcodes: { barcode: db_barcodes }).distinct
   }
 
   # In contrast to with_barocde, filter_by_barcode only filters in the event
   # a parameter is supplied. eg. an empty string does not filter the data
   scope :filter_by_barcode, ->(*barcodes) {
     db_barcodes = Barcode.extract_barcodes(barcodes)
-    db_barcodes.blank? ? joins(:barcodes) : joins(:barcodes).where(barcodes: { barcode: db_barcodes }).distinct
+    db_barcodes.blank? ? includes(:barcodes) : includes(:barcodes).where(barcodes: { barcode: db_barcodes }).distinct
   }
 
   scope :source_assets_from_machine_barcode, ->(destination_barcode) {
@@ -226,7 +225,7 @@ class Asset < ApplicationRecord
     {}
   end
 
-  def is_sequenceable?
+  def sequenceable?
     false
   end
 

@@ -1,3 +1,2 @@
-
 class StripCreationRequest < CustomerRequest
 end

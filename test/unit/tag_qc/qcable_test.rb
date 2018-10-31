@@ -1,4 +1,3 @@
-
 require 'test_helper'
 require 'unit/tag_qc/qcable_statemachine_checks'
 

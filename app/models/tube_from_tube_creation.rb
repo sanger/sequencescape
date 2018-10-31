@@ -1,4 +1,3 @@
-
 class TubeFromTubeCreation < AssetCreation
   belongs_to :child, class_name: 'Tube'
   belongs_to :parent, class_name: 'Tube'

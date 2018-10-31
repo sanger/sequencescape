@@ -1,4 +1,3 @@
-
 class ::Io::User < ::Core::Io::Base
   set_model_for_input(::User)
   set_json_root(:user)

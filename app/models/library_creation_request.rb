@@ -1,4 +1,3 @@
-
 class LibraryCreationRequest < CustomerRequest
   # NOTE: Do not alter the order here:
   #

@@ -1,4 +1,3 @@
-
 require 'linefeed_fix'
 require 'csv'
 module SampleManifest::InputBehaviour

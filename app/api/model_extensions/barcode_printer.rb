@@ -1,4 +1,3 @@
-
 # TODO: All of the behaviour in this file should really exist within the BarcodePrinter model.
 module ModelExtensions::BarcodePrinter
   def self.included(base)
