@@ -138,8 +138,8 @@ class Asset < ApplicationRecord
   # Named scope for search by query string behaviour
   scope :for_search_query, ->(query) {
     barcode_compatible.where.not(sti_type: 'Well').where('assets.name LIKE :name', name: "%#{query}%")
-                      .or(barcode_compatible.with_safe_id(query))
-                      .or(with_barcode(query))
+                      .or(where.not(sti_type: 'Well').barcode_compatible.with_safe_id(query))
+                      .or(where.not(sti_type: 'Well').with_barcode(query))
   }
 
   scope :for_lab_searches_display, -> { includes(:barcodes, requests: [:pipeline, :batch]).order('requests.pipeline_id ASC') }
