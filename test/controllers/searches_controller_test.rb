@@ -19,6 +19,7 @@ class SearchesControllerTest < ActionController::TestCase
         @study2 = FactoryBot.create :study, name: 'Another study'
         @sample = FactoryBot.create :sample, name: 'FindMeSample'
         @asset = FactoryBot.create(:sample_tube, name: 'FindMeAsset')
+        @barcode = FactoryBot.create(:sanger_ean13, barcode_number: '5')
         @asset_group_to_find = FactoryBot.create :asset_group, name: 'FindMeAssetGroup', study: @study
         @asset_group_to_not_find = FactoryBot.create :asset_group, name: 'IgnoreAssetGroup'
 
@@ -80,6 +81,15 @@ class SearchesControllerTest < ActionController::TestCase
             should 'contain a link to the asset_group that was found' do
               assert_link_to study_asset_group_path(@asset_group_to_find.study, @asset_group_to_find)
             end
+          end
+        end
+
+        context 'with a barcode search' do
+          setup do
+            get :index, params: { q: 'DN5' }
+          end
+          should 'contain a link to the asset that was found' do
+            assert_link_to asset_path(@barcode.asset)
           end
         end
 

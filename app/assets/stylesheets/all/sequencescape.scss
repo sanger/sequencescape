@@ -348,6 +348,8 @@ table.sample_list td:first-child {text-align:right; padding-right:0.5em;}
   border-bottom: 1px solid #ccc;
 }
 
+.card { break-inside: avoid-column; }
+
 .columnize .info {
   @extend .card;
 }

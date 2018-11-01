@@ -26,7 +26,7 @@ module SearchBehaviour
   end
 
   def clazz_search(clazz, query)
-    instance_variable_set("@#{clazz.name.underscore.pluralize}", clazz_query(clazz, query))
+    instance_variable_set("@#{clazz.name.underscore.pluralize}", clazz_query(clazz, query).to_a)
   end
 
   def clazz_query(clazz, query)
