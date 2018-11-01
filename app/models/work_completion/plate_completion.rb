@@ -59,7 +59,6 @@ class WorkCompletion::PlateCompletion
     @target_wells ||= target_plate.wells
                                   .includes(aliquots: { request: WorkCompletion::REQUEST_INCLUDES })
                                   .include_stock_wells_for_modification
-                                  .includes(:transfer_requests_as_target)
-                                  .where(transfer_requests: { submission_id: submission_ids })
+                                  .where(requests: { submission_id: submission_ids })
   end
 end
