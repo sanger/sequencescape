@@ -7,7 +7,7 @@ module Api
       attributes :uuid
 
       filter :purpose_name, apply: (lambda do |records, value, _options|
-        records.joins('LEFT JOIN plate_purposes ON plate_purposes.id = assets.id').where(plate_purposes: { name: value })
+        records.joins('LEFT JOIN plate_purposes ON plate_purposes.id = assets.plate_purpose_id').where(plate_purposes: { name: value })
       end)
       filter :purpose_id, apply: ->(records, value, _options) { records.where(plate_purpose_id: value) }
     end
