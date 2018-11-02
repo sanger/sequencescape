@@ -3,15 +3,15 @@
 FactoryBot.define do
   factory :test_download_plates, class: SampleManifestExcel::TestDownload do
     columns { FactoryBot.build(:column_list) }
-    validation_errors []
-    num_plates 2
-    num_samples_per_plate 2
-    study 'WTCCC'
-    supplier 'Test Supplier'
-    partial false
-    cgap false
-    type 'Plates'
-    manifest_type 'plate_full'
+    validation_errors { [] }
+    num_plates { 2 }
+    num_samples_per_plate { 2 }
+    study { 'WTCCC' }
+    supplier { 'Test Supplier' }
+    partial { false }
+    cgap { false }
+    type { 'Plates' }
+    manifest_type { 'plate_full' }
     data do
       {
         supplier_name: 'SCG--1222_A0', volume: 1, concentration: 1, gender: 'Unknown', dna_source: 'Cell Line',
@@ -30,17 +30,17 @@ FactoryBot.define do
 
     # in partial download, last 2 rows are left empty
     factory :test_download_plates_partial, class: SampleManifestExcel::TestDownload do
-      partial true
+      partial { true }
     end
 
     # in cgap download, the sanger_plate_id column values are cgap barcodes
     factory :test_download_plates_cgap, class: SampleManifestExcel::TestDownload do
-      cgap true
+      cgap { true }
     end
 
     factory :test_download_plates_partial_cgap, class: SampleManifestExcel::TestDownload do
-      partial true
-      cgap true
+      partial { true }
+      cgap { true }
     end
   end
 end
