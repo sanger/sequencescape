@@ -14,7 +14,7 @@ FactoryBot.define do
     product_name { '30x Human Whole Genome Shotgun (WGS) with PCR' }
     process_name { 'Process name' }
     process_uuid { SecureRandom.uuid }
-    product_version 20170324
+    product_version { 20170324 }
     product_uuid { SecureRandom.uuid }
     project_uuid { SecureRandom.uuid }
     project_name { 'MyProject' }
