@@ -29,7 +29,7 @@ class TransferRequest < ApplicationRecord
   validate :source_and_target_assets_are_different
   validates :outer_request_candidates, length: { maximum: 1, message: 'can not be isolated from the possible requests' }, on: :create
 
-  after_create(:perform_transfer_of_contents)
+  after_create(:perform_transfer_of_contents, :transfer_stock_wells)
 
   # state machine
   aasm column: :state, whiny_persistence: true do
@@ -145,6 +145,11 @@ class TransferRequest < ApplicationRecord
     raise exception unless /aliquot_tags_and_tag2s_are_unique_within_receptacle/.match?(exception.message)
     errors.add(:asset, "contains aliquots which can't be transferred due to tag clash")
     raise Aliquot::TagClash, self
+  end
+
+  def transfer_stock_wells
+    return unless asset.is_a?(Well) && target_asset.is_a?(Well)
+    target_asset.stock_wells.attach!(asset.stock_wells_for_downstream_wells)
   end
 
   def aliquot_attributes

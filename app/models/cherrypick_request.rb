@@ -2,7 +2,7 @@
 
 # This class is due to replace CherrypickForPulldownRequest
 class CherrypickRequest < CustomerRequest
-  after_create :build_stock_well_links, :transfer_aliquots
+  after_create :transfer_aliquots
 
   def on_started
     # Aliquots are transferred on creation by transfer requests.
@@ -30,10 +30,5 @@ class CherrypickRequest < CustomerRequest
   # The transfer requests handle the actual transfer
   def transfer_aliquots
     TransferRequest.create(asset: asset, target_asset: target_asset, submission_id: submission_id)
-  end
-
-  def build_stock_well_links
-    stock_wells = asset.plate.try(:plate_purpose).try(:stock_plate?) ? [asset] : asset.stock_wells
-    target_asset.stock_wells.attach!(stock_wells)
   end
 end

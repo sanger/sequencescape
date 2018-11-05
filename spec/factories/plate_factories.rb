@@ -175,6 +175,10 @@ FactoryBot.define do
       end
     end
 
+    factory :stock_plate do
+      association(:plate_purpose, factory: :stock_plate_purpose)
+    end
+
     factory(:full_stock_plate) do
       plate_purpose { PlatePurpose.stock_plate_purpose }
 

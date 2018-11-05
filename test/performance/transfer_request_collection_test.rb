@@ -7,7 +7,7 @@ class TransferRequestCollectionTest < ActionDispatch::PerformanceTest
   # self.profile_options = { runs: 5, metrics: [:wall_time, :memory],
   #                          output: 'tmp/performance', formats: [:flat] }
 
-  SIZE = 6
+  SIZE = 96
 
   def setup
     ao = {
@@ -18,14 +18,23 @@ class TransferRequestCollectionTest < ActionDispatch::PerformanceTest
     asset = FactoryBot.create_list(:untagged_well, SIZE, aliquot_options: ao)
     target_asset = FactoryBot.create_list(:empty_well, SIZE)
     @transfer_requests_attributes = Array.new(SIZE) do |i|
-      { asset_id: asset[i].id, target_asset_id: target_asset[i].id }
+      { source_asset: asset[i].uuid, target_asset: target_asset[i].uuid }
     end
     @user = FactoryBot.create :user
+    @api_key = FactoryBot.create(:api_application).key
   end
 
-  test 'TransferRequestCollection::Create' do
-    ActiveRecord::Base.transaction do
-      TransferRequestCollection.create!(user: @user, transfer_requests_attributes: @transfer_requests_attributes)
-    end
+  # test 'TransferRequestCollection::Create' do
+  #   ActiveRecord::Base.transaction do
+  #     TransferRequestCollection.create!(user: @user, transfer_requests_attributes: @transfer_requests_attributes)
+  #   end
+  # end
+
+  test 'api/1/transfer_request_collection' do
+    post '/api/1/transfer_request_collection', params: { transfer_request_collection: {
+      user: @user.uuid,
+      transfer_requests: @transfer_requests_attributes
+    } }, headers: { content_type: 'application/json', accept: 'application/json', 'HTTP_X_SEQUENCESCAPE_CLIENT_ID' => @api_key }, as: :json
+    p response.body
   end
 end
