@@ -50,6 +50,10 @@ FactoryBot.define do
         stock_plate true
       end
     end
+
+    factory :stock_plate_purpose do
+      stock_plate { true }
+    end
   end
 
   factory :dilution_plate_purpose do

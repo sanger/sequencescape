@@ -25,14 +25,16 @@ class Well < Receptacle
 
   has_many :stock_wells, through: :stock_well_links, source: :source_well do
     def attach!(wells)
-      attach(wells).tap do |_|
-        proxy_association.owner.save!
-      end
+      Well::Link.import(attach(wells))
     end
 
     def attach(wells)
       proxy_association.owner.stock_well_links.build(wells.map { |well| { type: 'stock', source_well: well } })
     end
+  end
+
+  def stock_wells_for_downstream_wells
+    plate&.stock_plate? ? [self] : stock_wells
   end
 
   def subject_type
