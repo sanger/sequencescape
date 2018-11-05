@@ -29,6 +29,6 @@ class CherrypickRequest < CustomerRequest
 
   # The transfer requests handle the actual transfer
   def transfer_aliquots
-    TransferRequest.create(asset: asset, target_asset: target_asset, submission_id: submission_id)
+    TransferRequest.create!(asset: asset, target_asset: target_asset, outer_request: self)
   end
 end
