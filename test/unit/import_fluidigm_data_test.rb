@@ -40,7 +40,7 @@ class ImportFluidigmDataTest < ActiveSupport::TestCase
                           size: 96,
                           purpose: fgp,
                           well_count: 1,
-                          well_factory: :untagged_well,
+                          well_factory: :empty_well,
                           fluidigm_barcode: fluidigm_barcode
 
     well_target = plate_target.wells.first

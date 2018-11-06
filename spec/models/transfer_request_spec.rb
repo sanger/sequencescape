@@ -158,6 +158,20 @@ RSpec.describe TransferRequest, type: :model do
         expect(transfer_request.asset_id).to eq source.id
         expect(transfer_request.target_asset_id).to eq destination.id
       end
+
+      context 'when the source has stock wells' do
+        let(:source) { create :well_with_sample_and_without_plate, stock_wells: create_list(:well, 2) }
+        it 'should set the stock wells' do
+          expect(destination.stock_wells).to eq(source.stock_wells)
+        end
+      end
+
+      context 'when the source is a stock well' do
+        let(:source) { create :well_with_sample_and_without_plate, plate: create(:stock_plate) }
+        it 'should set the stock wells' do
+          expect(destination.stock_wells).to eq([source])
+        end
+      end
     end
 
     it 'should not permit transfers to the same asset' do
