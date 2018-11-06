@@ -1,4 +1,3 @@
-
 class IlluminaHtp::TransferablePlatePurpose < IlluminaHtp::FinalPlatePurpose
   include PlatePurpose::RequestAttachment
   include PlatePurpose::WorksOnLibraryRequests

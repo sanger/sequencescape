@@ -1,4 +1,3 @@
-
 module Tasks::BindingKitBarcodeHandler
   def render_binding_kit_barcode_task(task, params)
   end

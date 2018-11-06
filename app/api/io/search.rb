@@ -1,4 +1,3 @@
-
 class ::Io::Search < ::Core::Io::Base
   set_json_root(:search)
 

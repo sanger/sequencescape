@@ -1,4 +1,3 @@
-
 class ::Io::Transfer::FromPlateToTube < ::Core::Io::Base
   set_model_for_input(::Transfer::FromPlateToTube)
   set_json_root(:transfer)

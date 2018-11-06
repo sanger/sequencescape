@@ -1,4 +1,3 @@
-
 unless Rails.env.test?
   module SetupLibraryTypes
     def self.existing_associations_for(request_type)

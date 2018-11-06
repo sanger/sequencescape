@@ -1,4 +1,3 @@
-
 class SangerSampleId < ApplicationRecord
   class Factory
     def self.instance

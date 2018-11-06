@@ -133,8 +133,8 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
         row_data = data.dup
         row_data[0] = tube.samples.first.assets.first.human_barcode
         row_data[1] = tube.samples.first.sanger_sample_id
-        row_data[2] = tags[i][:tag_oligo]
-        row_data[3] = tags[i][:tag2_oligo]
+        row_data[2] = tags[i][:i7]
+        row_data[3] = tags[i][:i5]
         rows << SampleManifestExcel::Upload::Row.new(number: i + 1, data: row_data, columns: columns)
       end
     end
@@ -145,9 +145,48 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
         row.transfer_aliquot
       end
       expect(rows.all?(&:aliquot_transferred?)).to be_truthy
+      expect(rows.all?(&:reuploaded?)).to be_falsey
       mx_library_tube.samples.each_with_index do |sample, i|
-        expect(sample.aliquots.first.tag.oligo).to eq(tags[i][:tag_oligo])
-        expect(sample.aliquots.first.tag2.oligo).to eq(tags[i][:tag2_oligo])
+        expect(sample.aliquots.first.tag.oligo).to eq(tags[i][:i7])
+        expect(sample.aliquots.first.tag2.oligo).to eq(tags[i][:i5])
+        sample.primary_receptacle.requests.each do |request|
+          expect(request.state).to eq('passed')
+        end
+      end
+    end
+  end
+
+  context 'previously transferred aliquot on multiplex library tubes' do
+    attr_reader :rows
+
+    let!(:library_tubes) { create_list(:tagged_library_tube, 5) }
+    let!(:mx_library_tube) { create(:multiplexed_library_tube) }
+    let(:tags) { SampleManifestExcel::Tags::ExampleData.new.take(0, 4) }
+
+    before(:each) do
+      @rows = []
+      library_tubes.each_with_index do |tube, i|
+        rq = create(:external_multiplexed_library_tube_creation_request, asset: tube, target_asset: mx_library_tube)
+        rq.manifest_processed!
+        row_data = data.dup
+        row_data[0] = tube.samples.first.assets.first.human_barcode
+        row_data[1] = tube.samples.first.sanger_sample_id
+        row_data[2] = tags[i][:i7]
+        row_data[3] = tags[i][:i5]
+        rows << SampleManifestExcel::Upload::Row.new(number: i + 1, data: row_data, columns: columns)
+      end
+    end
+
+    it 'transfers stuff' do
+      rows.each do |row|
+        row.update_sample(tag_group, false)
+        row.transfer_aliquot
+      end
+      expect(rows.all?(&:aliquot_transferred?)).to be_truthy
+      expect(rows.all?(&:reuploaded?)).to be_truthy
+      mx_library_tube.samples.each_with_index do |sample, i|
+        expect(sample.aliquots.first.tag.oligo).to eq(tags[i][:i7])
+        expect(sample.aliquots.first.tag2.oligo).to eq(tags[i][:i5])
         sample.primary_receptacle.requests.each do |request|
           expect(request.state).to eq('passed')
         end

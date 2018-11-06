@@ -1,4 +1,3 @@
-
 class Event::SequenomLoading < Event
   def self.created_update_gender_makers!(asset, resource)
     create!(

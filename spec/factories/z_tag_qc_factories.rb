@@ -3,26 +3,26 @@
 FactoryBot.define do
   factory :lot_type do
     sequence(:name) { |n| "lot_type#{n}" }
-    template_class 'PlateTemplate'
+    template_class { 'PlateTemplate' }
     target_purpose { Tube::Purpose.stock_library_tube }
 
     factory :tag2_lot_type do
-      template_class 'Tag2LayoutTemplate'
+      template_class { 'Tag2LayoutTemplate' }
     end
   end
 
   factory :pending_purpose, parent: :tube_purpose do
     name { FactoryBot.generate :purpose_name }
-    default_state 'pending'
+    default_state { 'pending' }
   end
 
   factory :created_purpose, parent: :tube_purpose do
     name { FactoryBot.generate :purpose_name }
-    default_state 'created'
+    default_state { 'created' }
   end
 
   factory :qcable_creator do
-    count 0
+    count { 0 }
     user
     lot
   end
@@ -32,7 +32,7 @@ FactoryBot.define do
     lot_type
     association(:template, factory: :plate_template_with_well)
     user
-    received_at '2014-02-01'
+    received_at { '2014-02-01' }
 
     factory :tag2_lot do
       association(:lot_type, factory: :tag2_lot_type)
@@ -44,7 +44,7 @@ FactoryBot.define do
     lot
     user
     robot
-    tip_lot '555'
+    tip_lot { '555' }
   end
 
   factory :qcable do
@@ -57,15 +57,15 @@ FactoryBot.define do
     qcable_creator { create :qcable_creator }
 
     factory :qcable_with_asset do
-      state  'created'
+      state  { 'created' }
       asset  { create :full_plate }
     end
   end
 
   factory :plate_template_with_well, class: PlateTemplate do
     sequence(:name) { |n| "testtemplate#{n}" }
-    value     96
-    size      96
+    value     { 96 }
+    size      { 96 }
     wells { [create(:well_with_sample_and_without_plate, map: create(:map))] }
   end
 end

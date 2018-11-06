@@ -1,4 +1,3 @@
-
 class ReferenceGenome < ApplicationRecord
   extend Attributable::Association::Target
   include Api::ReferenceGenomeIO::Extensions

@@ -1,4 +1,3 @@
-
 Given /^a supplier called "(.*)" exists$/ do |supplier_name|
   Supplier.create!(name: supplier_name)
 end

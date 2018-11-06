@@ -9,10 +9,10 @@ FactoryBot.define do
   factory :study do
     name { generate :study_name }
     user
-    blocked              false
-    state                'active'
-    enforce_data_release false
-    enforce_accessioning false
+    blocked              { false }
+    state                { 'active' }
+    enforce_data_release { false }
+    enforce_accessioning { false }
     study_metadata
 
     # These have to build a user list
@@ -25,11 +25,11 @@ FactoryBot.define do
 
   factory(:managed_study, parent: :study) do
     transient do
-      accession_number nil
+      accession_number { nil }
     end
 
     sequence(:name) { |n| "Study#{n}: Manages" }
-    state 'active'
+    state { 'active' }
 
     after(:create) do |study, evaluator|
       study.study_metadata.update_attributes!(data_release_strategy: 'managed', study_ebi_accession_number: evaluator.accession_number)
@@ -38,11 +38,11 @@ FactoryBot.define do
 
   factory(:open_study, parent: :study) do
     transient do
-      accession_number nil
+      accession_number { nil }
     end
 
     sequence(:name) { |n| "Study#{n}: Open" }
-    state 'active'
+    state { 'active' }
 
     after(:create) do |study, evaluator|
       study.study_metadata.update_attributes!(data_release_strategy: 'open', study_ebi_accession_number: evaluator.accession_number)
@@ -50,8 +50,8 @@ FactoryBot.define do
   end
 
   factory(:not_app_study, parent: :study) do
-    name 'Study: Never'
-    state 'active'
+    name { 'Study: Never' }
+    state { 'active' }
     after(:create) do |study|
       study.study_metadata.update_attributes!(data_release_strategy: 'not applicable')
     end
@@ -72,7 +72,7 @@ FactoryBot.define do
   factory :study_for_study_list, parent: :study do
     transient do
       user
-      role_name 'manager'
+      role_name { 'manager' }
     end
 
     after(:build) do |study, evaluator|
@@ -81,60 +81,60 @@ FactoryBot.define do
 
     # The fairly obvious ones ;)
     factory(:study_for_study_list_pending) do
-      name  'Study: Pending'
-      state 'pending'
+      name  { 'Study: Pending' }
+      state { 'pending' }
     end
 
     factory(:study_for_study_list_active) do
-      name  'Study: Active'
-      state 'active'
+      name  { 'Study: Active' }
+      state { 'active' }
     end
 
     factory(:study_for_study_list_inactive) do
-      name  'Study: Inactive'
-      state 'inactive'
+      name  { 'Study: Inactive' }
+      state { 'inactive' }
     end
 
     factory(:study_for_study_list_pending_ethical_approval) do
-      name               'Study: Pending ethical approval'
-      ethically_approved false
+      name               { 'Study: Pending ethical approval' }
+      ethically_approved { false }
       study_metadata_attributes { FactoryBot.attributes_for :study_metadata_for_study_list_pending_ethical_approval }
     end
 
     factory(:study_for_study_list_remove_x_and_autosomes) do
-      name 'Study: Remove x and autosomes'
+      name { 'Study: Remove x and autosomes' }
       study_metadata_attributes { attributes_for(:study_metadata_for_study_list_remove_x_and_autosomes) }
     end
     factory(:study_for_study_list_contaminated_with_human_dna) do
-      name 'Study: Contaminated with human dna'
+      name { 'Study: Contaminated with human dna' }
       study_metadata_attributes { attributes_for(:study_metadata_for_study_list_contaminated_with_human_dna) }
     end
 
     # These have to build a user list
     factory(:study_for_study_list_managed_active) do
-      name  'Study: Managed & active'
-      state 'active'
+      name  { 'Study: Managed & active' }
+      state { 'active' }
     end
 
     factory(:study_for_study_list_managed_inactive) do
-      name  'Study: Managed & inactive'
-      state 'inactive'
+      name  { 'Study: Managed & inactive' }
+      state { 'inactive' }
     end
 
     factory(:study_for_study_list_followed) do
-      name 'Study: Followed'
+      name { 'Study: Followed' }
 
-      transient { role_name 'follower' }
+      transient { role_name { 'follower' } }
     end
 
     factory(:study_for_study_list_collaborations) do
-      name 'Study: Collaborations'
-      transient { role_name 'collaborator' }
+      name { 'Study: Collaborations' }
+      transient { role_name { 'collaborator' } }
     end
 
     factory(:study_for_study_list_interesting) do
-      name 'Study: Interesting'
-      transient { role_name 'follower' }
+      name { 'Study: Interesting' }
+      transient { role_name { 'follower' } }
     end
   end
 end

@@ -1,4 +1,3 @@
-
 class BatchRequest < ApplicationRecord
   include Api::BatchRequestIO::Extensions
   include Uuid::Uuidable

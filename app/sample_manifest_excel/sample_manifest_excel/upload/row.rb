@@ -101,9 +101,14 @@ module SampleManifestExcel
       # from the library tube to a multiplexed library tube and stated set to passed.
       def transfer_aliquot
         return unless valid?
-        sample.primary_receptacle.requests.each do |request|
+        sample.primary_receptacle.external_library_creation_requests.each do |request|
+          @reuploaded ||= request.passed?
           @aliquot_transferred = request.passed? || request.manifest_processed!
         end
+      end
+
+      def reuploaded?
+        @reuploaded || false
       end
 
       def sample_updated?

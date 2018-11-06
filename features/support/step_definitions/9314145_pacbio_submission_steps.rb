@@ -1,4 +1,3 @@
-
 Given /^I have a sample tube "([^"]*)" in study "([^"]*)" in asset group "([^"]*)"$/ do |sample_tube_barcode, study_name, asset_group_name|
   study = Study.find_by(name: study_name)
   sample_tube = FactoryBot.create(:sample_tube, barcode: sample_tube_barcode)

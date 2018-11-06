@@ -1,4 +1,3 @@
-
 class CreateAssetRequest < SystemRequest
   def initialize_aliquots
     # set study on aliquot

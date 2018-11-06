@@ -1,4 +1,3 @@
-
 class ::Endpoints::MultiplexedLibraryTubes < ::Endpoints::LibraryTubes
   instance do
     belongs_to(:custom_metadatum_collection, json: 'custom_metadatum_collection', to: 'custom_metadatum_collection')

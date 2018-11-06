@@ -1,4 +1,3 @@
-
 class FluidigmFile
   module Finder
     class Directory

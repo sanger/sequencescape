@@ -1,4 +1,3 @@
-
 module Request::Statistics
   class Counter
     def initialize(statistics = {})

@@ -1,4 +1,3 @@
-
 # Creating an instance of this class causes the target to become converted to the new
 # plate purpose
 class PlateConversion < ApplicationRecord

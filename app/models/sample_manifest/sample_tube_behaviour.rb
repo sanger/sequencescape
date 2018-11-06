@@ -1,4 +1,3 @@
-
 module SampleManifest::SampleTubeBehaviour
   module ClassMethods
     def create_for_sample_tube!(attributes, *args, &block)

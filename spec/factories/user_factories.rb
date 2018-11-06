@@ -2,13 +2,13 @@
 
 FactoryBot.define do
   factory :user do
-    first_name        'first_name'
-    last_name         'last_name'
+    first_name        { 'first_name' }
+    last_name         { 'last_name' }
     login
     email             { "#{login}@example.com".downcase }
-    api_key           '123456789'
-    password              'password'
-    password_confirmation 'password'
+    api_key           { '123456789' }
+    password              { 'password' }
+    password_confirmation { 'password' }
 
     factory :admin do
       roles { |role| [role.association(:admin_role)] }
@@ -35,7 +35,7 @@ FactoryBot.define do
     end
 
     factory :listing_studies_user do
-      login 'listing_studies_user'
+      login { 'listing_studies_user' }
     end
   end
 end

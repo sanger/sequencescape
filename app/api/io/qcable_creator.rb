@@ -1,4 +1,3 @@
-
 class Io::QcableCreator < Core::Io::Base
   set_model_for_input(::QcableCreator)
   set_json_root(:qcable_creator)

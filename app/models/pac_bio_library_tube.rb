@@ -1,4 +1,3 @@
-
 class PacBioLibraryTube < Tube
   include Api::PacBioLibraryTubeIO::Extensions
 

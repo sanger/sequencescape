@@ -1,4 +1,3 @@
-
 # A Tag is a short, know sequence of DNA which gets applied to a sample.
 # The tag remains attached through subsequent processing, and means that it is
 # possible to identify the origin of a sample if multiple samples are subsequently

@@ -5,7 +5,10 @@ require 'rails_helper'
 describe 'Tubes API', with: :api_v2 do
   context 'with multiple tubes' do
     before do
-      create_list(:tube, 5)
+      create_list(:tube, 1)
+      create_list(:sample_tube, 2)
+      create_list(:library_tube, 1)
+      create_list(:multiplexed_library_tube, 1)
     end
 
     it 'sends a list of tubes' do

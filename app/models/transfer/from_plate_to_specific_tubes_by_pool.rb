@@ -1,4 +1,3 @@
-
 class Transfer::FromPlateToSpecificTubesByPool < Transfer::BetweenPlateAndTubes
   attr_reader :targets
   def targets=(uuids_for_tubes)

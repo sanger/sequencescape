@@ -1,4 +1,3 @@
-
 module Tasks::PrepKitBarcodeHandler
   def render_prep_kit_barcode_task(task, params)
   end

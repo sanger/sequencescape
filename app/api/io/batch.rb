@@ -1,4 +1,3 @@
-
 class ::Io::Batch < ::Core::Io::Base
   set_model_for_input(::Batch)
   set_json_root(:batch)

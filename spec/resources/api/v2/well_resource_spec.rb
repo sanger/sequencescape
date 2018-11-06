@@ -10,13 +10,13 @@ RSpec.describe Api::V2::WellResource, type: :resource do
     it { is_expected.to have_attribute :uuid }
     it { is_expected.to have_attribute :name }
     it { is_expected.to have_attribute :state }
+    it { is_expected.to have_attribute(:position) }
 
     # Read only attributes (almost certainly id, uuid)
     it { is_expected.to_not have_updatable_field(:id) }
     it { is_expected.to_not have_updatable_field(:uuid) }
     it { is_expected.to_not have_updatable_field(:name) }
     it { is_expected.to_not have_updatable_field(:position) }
-    it { is_expected.to_not have_updatable_field(:labware_barcode) }
 
     # Updatable fields
     # eg. it { is_expected.to have_updatable_field(:state) }
@@ -29,13 +29,13 @@ RSpec.describe Api::V2::WellResource, type: :resource do
     it { is_expected.to have_many(:projects).with_class_name('Project') }
     it { is_expected.to have_many(:studies).with_class_name('Study') }
     it { is_expected.to have_many(:qc_results).with_class_name('QcResult') }
+    it { is_expected.to have_many(:requests_as_source).with_class_name('Request') }
+    it { is_expected.to have_many(:requests_as_target).with_class_name('Request') }
+    it { is_expected.to have_many(:aliquots).with_class_name('Aliquot') }
+    it { is_expected.to have_many(:downstream_assets) }
 
     # Custom method tests
     # Add tests for any custom methods you've added.
-    describe '#labware_barcode' do
-      subject { resource.labware_barcode }
-      it { is_expected.to eq(expected_barcode_hash) }
-    end
 
     describe '#position' do
       subject { resource.position }

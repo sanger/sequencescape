@@ -1,4 +1,3 @@
-
 class SubmittedAsset < ApplicationRecord
   belongs_to :order
   belongs_to :asset, class_name: 'Receptacle'

@@ -1,4 +1,3 @@
-
 class ::Io::BulkTransfer < ::Core::Io::Base
   set_model_for_input(::BulkTransfer)
   set_json_root(:bulk_transfer)

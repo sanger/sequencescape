@@ -1,4 +1,3 @@
-
 module Core::Endpoint::BasicHandler::Associations::BelongsTo
   class Handler
     include Core::Endpoint::BasicHandler::EndpointLookup

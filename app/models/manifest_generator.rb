@@ -1,4 +1,3 @@
-
 class ManifestGenerator
   QUOTE_CHAR = '!'
   DEFAULT_VOLUME = 13

@@ -51,7 +51,7 @@ module SampleManifestExcel
       end
 
       def empty_columns
-        %w[supplier_name tag_oligo tag2_oligo]
+        %w[supplier_name i7 i5]
       end
 
       def manifest_type

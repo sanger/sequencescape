@@ -1,4 +1,3 @@
-
 require 'aasm'
 
 module Submission::StateMachine

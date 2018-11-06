@@ -1,4 +1,3 @@
-
 class ProductCriteria < ApplicationRecord
   STAGE_STOCK = 'stock'
 

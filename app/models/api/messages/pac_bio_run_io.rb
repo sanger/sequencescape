@@ -1,4 +1,3 @@
-
 class Api::Messages::PacBioRunIO < Api::Base
   renders_model(::Batch)
 

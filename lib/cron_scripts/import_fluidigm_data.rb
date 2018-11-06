@@ -6,6 +6,6 @@ begin
   end
 rescue StandardError => exception
   ExceptionNotifier.notify_exception(exception,
-    :data => { :message => 'Import Fluidigm Data Cron Failed' })
+                                     :data => { :message => 'Import Fluidigm Data Cron Failed' })
   $stderr.puts exception.to_s
 end

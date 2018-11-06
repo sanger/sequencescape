@@ -40,5 +40,34 @@ describe 'Plates API', with: :api_v2 do
       expect(response).to have_http_status(:success), response.body
       expect(json['data'].length).to eq(1)
     end
+
+    # By default jsonapi_resource has two bugs which affect polymorphic relationships
+    # 1) It uses the default inheritnce_column `type` rather than the defined one
+    # 2) It directly uses the type field, rather than mapping it to a resource
+    # These tests validate both behaviours, as corrected in the monkey patch in
+    # config/initializers/patch_json_api_resource.rb
+    context 'with mixed ancestors' do
+      before do
+        resource_model.parents << create(:plate) << create(:multiplexed_library_tube)
+      end
+
+      it 'handles polymorphic relationships properly' do
+        api_get "/api/v2/plates/#{resource_model.id}/parents"
+        expect(response).to have_http_status(:success), response.body
+        expect(json['data'].length).to eq(2)
+        types = json['data'].map { |anc| anc['type'] }
+        expect(types).to include('plates')
+        expect(types).to include('tubes')
+      end
+
+      it 'handles polymorphic relationships properly' do
+        api_get "/api/v2/plates/#{resource_model.id}/relationships/parents"
+        expect(response).to have_http_status(:success), response.body
+        expect(json['data'].length).to eq(2)
+        types = json['data'].map { |anc| anc['type'] }
+        expect(types).to include('plates')
+        expect(types).to include('tubes')
+      end
+    end
   end
 end

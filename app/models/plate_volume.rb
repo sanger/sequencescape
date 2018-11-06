@@ -1,4 +1,3 @@
-
 require 'carrierwave'
 
 class PlateVolume < ApplicationRecord

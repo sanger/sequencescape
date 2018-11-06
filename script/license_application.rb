@@ -208,7 +208,7 @@ WTSI::LicenseApplication.new do |config|
   config.license_text = <<~HEREDOC
     This file is part of %s; it is distributed under the terms of GNU General Public License version 1 or later;
     Please refer to the LICENSE and README files for information on licensing and authorship of this file.
-HEREDOC
+  HEREDOC
   config.date_line = 'Copyright (C) %s Genome Research Ltd.'
   config.initial_range = (2007..2011)
 

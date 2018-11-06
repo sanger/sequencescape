@@ -1,4 +1,3 @@
-
 class Plate::Creator < ApplicationRecord
   PlateCreationError = Class.new(StandardError)
 

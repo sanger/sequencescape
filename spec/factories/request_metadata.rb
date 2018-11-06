@@ -2,13 +2,13 @@
 
 FactoryBot.define do
   factory :request_metadata, class: Request::Metadata do
-    read_length 76
-    customer_accepts_responsibility false
+    read_length { 76 }
+    customer_accepts_responsibility { false }
   end
 
   factory :request_traction_grid_ion_metadata, class: Request::Traction::GridIon::Metadata do
-    library_type 'Rapid'
-    data_type 'basecalls and raw data'
+    library_type { 'Rapid' }
+    data_type { 'basecalls and raw data' }
     association(:owner, factory: :request_traction_grid_ion)
   end
 
@@ -17,35 +17,35 @@ FactoryBot.define do
 
   # Pre-HiSeq sequencing
   factory :request_metadata_for_standard_sequencing, parent: :request_metadata do
-    fragment_size_required_from   1
-    fragment_size_required_to     21
-    read_length                   76
+    fragment_size_required_from   { 1 }
+    fragment_size_required_to     { 21 }
+    read_length                   { 76 }
 
     factory :request_metadata_for_single_ended_sequencing
     factory :request_metadata_for_paired_end_sequencing
   end
 
   factory :request_metadata_for_standard_sequencing_with_read_length, parent: :request_metadata, class: SequencingRequest::Metadata do
-    fragment_size_required_from   1
-    fragment_size_required_to     21
-    read_length                   76
+    fragment_size_required_from   { 1 }
+    fragment_size_required_to     { 21 }
+    read_length                   { 76 }
     association(:owner, factory: :sequencing_request)
   end
 
   # HiSeq sequencing
   factory :request_metadata_for_hiseq_sequencing, parent: :request_metadata do
-    fragment_size_required_from   1
-    fragment_size_required_to     21
-    read_length                   100
+    fragment_size_required_from   { 1 }
+    fragment_size_required_to     { 21 }
+    read_length                   { 100 }
 
     factory :request_metadata_for_hiseq_paired_end_sequencing
     factory :request_metadata_for_single_ended_hi_seq_sequencing
   end
 
   factory :hiseq_x_request_metadata, parent: :request_metadata do
-    fragment_size_required_from   1
-    fragment_size_required_to     21
-    read_length                   100
+    fragment_size_required_from   { 1 }
+    fragment_size_required_to     { 21 }
+    read_length                   { 100 }
 
     factory :request_metadata_for_illumina_a_hiseq_x_paired_end_sequencing
     factory :request_metadata_for_illumina_b_hiseq_x_paired_end_sequencing
@@ -57,9 +57,9 @@ FactoryBot.define do
     factory(:"request_metadata_for_illumina_#{p}_paired_end_sequencing", parent: :request_metadata_for_standard_sequencing) {}
     # HiSeq sequencing
     factory :"request_metadata_for_illumina_#{p}_hiseq_sequencing", parent: :request_metadata do
-      fragment_size_required_from   1
-      fragment_size_required_to     21
-      read_length                   100
+      fragment_size_required_from   { 1 }
+      fragment_size_required_to     { 21 }
+      read_length                   { 100 }
     end
     factory(:"request_metadata_for_illumina_#{p}_hiseq_paired_end_sequencing", parent: :request_metadata_for_hiseq_sequencing) {}
     factory(:"request_metadata_for_illumina_#{p}_single_ended_hi_seq_sequencing", parent: :request_metadata_for_hiseq_sequencing) {}
@@ -67,9 +67,9 @@ FactoryBot.define do
 
   # Library manufacture
   factory :request_metadata_for_library_manufacture, parent: :request_metadata do
-    fragment_size_required_from   1
-    fragment_size_required_to     20
-    library_type                  'Standard'
+    fragment_size_required_from   { 1 }
+    fragment_size_required_to     { 20 }
+    library_type                  { 'Standard' }
 
     # TODO: [JG] These are all redundnant,and are a symptom of both our tests dependency
     # on sangerisms within the code,

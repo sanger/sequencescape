@@ -1,4 +1,3 @@
-
 class BroadcastEvent::SampleManifestUpdated < BroadcastEvent
   set_event_type 'sample_manifest.updated'
 

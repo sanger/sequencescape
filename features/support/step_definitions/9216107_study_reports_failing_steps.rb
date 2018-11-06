@@ -1,4 +1,3 @@
-
 Given /^each well in "([^"]*)" has a child sample tube$/ do |study_name|
   study = Study.find_by(name: study_name)
   Well.find_each do |well|

@@ -1,4 +1,3 @@
-
 module Pipeline::InboxExtensions
   def inbox(show_held_requests = true, current_page = 1, search_action = nil)
     requests = proxy_association.scope

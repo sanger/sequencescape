@@ -1,4 +1,3 @@
-
 class TagLayout::WalkManualWellsOfPlate < TagLayout::Walker
   self.walking_by = 'wells of plate'
 

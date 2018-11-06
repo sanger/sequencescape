@@ -1,4 +1,3 @@
-
 require 'rexml/text'
 class Sample < ApplicationRecord
   GC_CONTENTS     = ['Neutral', 'High AT', 'High GC']
@@ -265,7 +264,7 @@ class Sample < ApplicationRecord
 
     # The query id is kept distinct from the metadata retrieved ids, as including a string in what is otherwise an array
     # of numbers seems to massively increase the query length.
-    where('name LIKE :wild OR id IN (:sm_ids) OR id = :query', wild: "%#{query}%", sm_ids: md, query: query)
+    where('name LIKE :wild OR id IN (:sm_ids) OR id = :qid', wild: "%#{query}%", sm_ids: md, query: query, qid: query.to_i)
   }
 
   scope :non_genotyped, -> { where("samples.id not in (select propertied_id from external_properties where propertied_type = 'Sample' and `key` = 'genotyping_done'  )") }

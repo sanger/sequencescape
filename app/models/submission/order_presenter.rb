@@ -1,4 +1,3 @@
-
 class OrderPresenter
   attr_accessor :study_id, :project_name, :plate_purpose_id, :sample_names_text, :lanes_of_sequencing_required, :comments
 

@@ -1,4 +1,3 @@
-
 class PacBio::SampleSheet
   def header_metadata(batch)
     [

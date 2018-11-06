@@ -1,4 +1,3 @@
-
 class ::Io::Lot < ::Core::Io::Base
   set_model_for_input(::Lot)
   set_json_root(:lot)

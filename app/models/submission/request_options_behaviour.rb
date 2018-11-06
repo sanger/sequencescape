@@ -1,4 +1,3 @@
-
 module Submission::RequestOptionsBehaviour
   # Ensures the hash gets loaded with indifferent access.
   # Note: We can't just specify the class, as otherwise legacy

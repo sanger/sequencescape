@@ -1,4 +1,3 @@
-
 class Sdb::SampleManifestsController < Sdb::BaseController
   before_action :set_sample_manifest_id, only: [:show, :generated, :print_labels]
   before_action :validate_type, only: [:new, :create]

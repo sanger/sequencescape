@@ -1,4 +1,3 @@
-
 class Metadata::ViewBuilder < Metadata::BuilderBase
   def initialize(*args, &block)
     super

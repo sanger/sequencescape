@@ -1,4 +1,3 @@
-
 module ::Core::Io::Json::Grammar
   module Intermediate
     attr_reader :children

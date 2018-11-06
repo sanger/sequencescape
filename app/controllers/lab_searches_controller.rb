@@ -1,10 +1,4 @@
-
 class LabSearchesController < ApplicationController
-  SEARCHABLE_CLASSES = [Batch, Asset]
-
-  # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
-  # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
-  before_action :evil_parameter_hack!
   include SearchBehaviour
   alias_method(:new, :search)
 
@@ -14,11 +8,11 @@ class LabSearchesController < ApplicationController
 
   private
 
-  def clazz_query(clazz, query)
-    super.for_lab_searches_display
-  end
-
-  def searchable_classes
-    SEARCHABLE_CLASSES
+  def perform_search(query)
+    @batches = Batch.for_search_query(query).to_a
+    @assets = (
+                Asset.for_search_query(query).for_lab_searches_display.to_a +
+                Asset.with_barcode(query).for_lab_searches_display.to_a
+              ).uniq
   end
 end

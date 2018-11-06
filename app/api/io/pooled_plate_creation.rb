@@ -1,4 +1,3 @@
-
 class ::Io::PooledPlateCreation < ::Core::Io::Base
   set_model_for_input(::PooledPlateCreation)
   set_json_root(:pooled_plate_creation)

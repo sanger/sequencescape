@@ -1,4 +1,3 @@
-
 class Event::SampleLogisticsQcEvent < Event
   def self.create_gel_qc_for_asset!(asset, result, user)
     if asset.is_a?(Well)

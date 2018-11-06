@@ -1,4 +1,3 @@
-
 # This class allows plates to be associated with wells. It was initially more flexible
 # but that flexibility has not been used and has resulted in complications elsewhere.
 class ContainerAssociation < ApplicationRecord
