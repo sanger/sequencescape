@@ -1,4 +1,3 @@
-
 Transform /^submitted to "([^\"]+)"$/ do |name|
   SubmissionTemplate.find_by(name: name) or raise StandardError, "Cannot find submission template #{name.inspect}"
 end
@@ -201,16 +200,18 @@ Given /^all transfer requests are in the last submission$/ do
 end
 
 Given /^(the plate .+) will pool into 1 tube$/ do |plate|
-  stock_plate = PlatePurpose.find(2).create!(:do_not_create_wells) { |p| p.wells = [FactoryBot.create(:empty_well)] }
-  stock_well  = stock_plate.wells.first
-  submission  = Submission.create!(user: FactoryBot.create(:user))
+  well_count = plate.wells.count
+  stock_plate = FactoryBot.create :full_stock_plate, well_count: well_count
+  stock_wells = stock_plate.wells
+  submission = Submission.create!(user: FactoryBot.create(:user))
 
   AssetLink.create!(ancestor: stock_plate, descendant: plate)
 
-  plate.wells.in_column_major_order.readonly(false).each do |well|
+  plate.wells.in_column_major_order.readonly(false).each_with_index do |well, i|
+    stock_well = stock_wells[i]
+    FactoryBot.create(:library_creation_request, asset: stock_well, target_asset: well, submission: submission)
     FactoryBot.create(:transfer_request, asset: stock_well, target_asset: well, submission: submission)
     well.stock_wells.attach!([stock_well])
-    FactoryBot.create :library_creation_request, asset: stock_well, target_asset: well, submission: submission
   end
 end
 

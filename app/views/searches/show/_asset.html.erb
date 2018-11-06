@@ -1,2 +1,2 @@
 
-<li><%= asset.label.titleize %>: <%= link_to(h(asset.display_name), asset_path(asset)) -%> (Barcode: <%= asset.human_barcode %>)</li>
+<li><%= asset.label.titleize %>: <%= link_to(h(asset.display_name), asset_path(asset)) -%> (Barcode: <%= asset.try(:human_barcode)||'None' %>)</li>

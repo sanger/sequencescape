@@ -1,4 +1,3 @@
-
 class Request::ChangeDecision
   include ::Validateable
 

@@ -4,7 +4,7 @@ class LibraryTube < Tube
   include Api::LibraryTubeIO::Extensions
   include ModelExtensions::LibraryTube
 
-  def is_sequenceable?
+  def sequenceable?
     true
   end
 
@@ -31,7 +31,7 @@ class LibraryTube < Tube
     # in sample_manifest `library` and `multiplexed library` behaviours
     # library_id should be removed from here at some point (20/04/2017)
     aliquots.first.update_attributes!(attributes.merge(library_id: id)) if first_update?
-    requests.each(&:manifest_processed!)
+    external_library_creation_requests.each(&:manifest_processed!)
   end
 
   def first_update?

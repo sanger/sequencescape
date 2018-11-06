@@ -1,4 +1,3 @@
-
 class Item < ApplicationRecord
   include Uuid::Uuidable
   include EventfulRecord

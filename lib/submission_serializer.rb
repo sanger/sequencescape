@@ -1,4 +1,3 @@
-
 # Provides a means of serializing and serializing submission templates.
 # Example serialization:
 # {

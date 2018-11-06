@@ -1,4 +1,3 @@
-
 class CherrypickPipeline < CherrypickingPipeline
   include Pipeline::InboxGroupedBySubmission
 

@@ -1,4 +1,3 @@
-
 class ::Io::PlateCreation < ::Core::Io::Base
   set_model_for_input(::PlateCreation)
   set_json_root(:plate_creation)

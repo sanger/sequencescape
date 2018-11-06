@@ -1,4 +1,3 @@
-
 class PacBioSequencingRequest < CustomerRequest
   include Request::CustomerResponsibility
 

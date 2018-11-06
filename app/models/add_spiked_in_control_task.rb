@@ -1,4 +1,3 @@
-
 class AddSpikedInControlTask < Task
   def partial
     'add_spiked_in_control'

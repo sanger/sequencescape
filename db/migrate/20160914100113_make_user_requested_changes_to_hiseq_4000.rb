@@ -1,4 +1,3 @@
-
 class MakeUserRequestedChangesToHiseq4000 < ActiveRecord::Migration
   def up
     ActiveRecord::Base.transaction do

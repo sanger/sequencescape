@@ -1,4 +1,3 @@
-
 module Tasks::AttachInfiniumBarcodeHandler
   def render_attach_infinium_barcode_task(_task, _params)
     @studies = @batch.studies

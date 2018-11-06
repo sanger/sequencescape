@@ -1,4 +1,3 @@
-
 class ::Io::SubmissionTemplate < ::Core::Io::Base
   set_model_for_input(::SubmissionTemplate)
   set_json_root(:order_template)

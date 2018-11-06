@@ -1,4 +1,3 @@
-
 Given /^no order templates exist$/ do
   SubmissionTemplate.destroy_all
 end

@@ -1,4 +1,3 @@
-
 Given /^the Stock Plate's Pico pass state is set to "([^"]*)"$/ do |current_state| # '
   current_state = nil if current_state.blank?
   @stock_plate.reload.wells.first.well_attribute.update_attributes(pico_pass: current_state)

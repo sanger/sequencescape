@@ -1,4 +1,3 @@
-
 class AssignTubesToMultiplexedWellsTask < Task
   belongs_to :purpose
 

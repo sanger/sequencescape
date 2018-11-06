@@ -1,4 +1,3 @@
-
 module Batch::TecanBehaviour
   def generate_tecan_data(target_barcode, override_plate_type = nil)
     data_object = {

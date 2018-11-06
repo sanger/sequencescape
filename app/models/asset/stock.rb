@@ -1,4 +1,3 @@
-
 module Asset::Stock
   # Extending this module will allow an asset to have a stock asset and be able to
   # create it.

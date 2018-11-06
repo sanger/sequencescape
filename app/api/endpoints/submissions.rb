@@ -1,4 +1,3 @@
-
 class Endpoints::Submissions < Core::Endpoint::Base
   model do
     action(:create) do |request, _|

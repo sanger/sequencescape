@@ -1,4 +1,3 @@
-
 unless Rails.env.test?
   ActiveRecord::Base.transaction do
     # Pulldown

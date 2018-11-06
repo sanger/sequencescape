@@ -1,4 +1,3 @@
-
 module AssetsHelper
   def well_identifier(plate_layout, row, column)
     plate_layout.cell_name_for_well_at(row, column)
@@ -58,7 +57,7 @@ module AssetsHelper
 
   # Returns true if the current user can request additional sequencing on the given asset, otherwise false
   def current_user_can_request_additional_sequencing_on?(asset)
-    asset.is_sequenceable? && # Asset must be sequenceable ...
+    asset.sequenceable? && # Asset must be sequenceable ...
       (current_user.is_administrator? || # ... user could be an administrator ...
         current_user.is_manager?) # ... or a manager
   end

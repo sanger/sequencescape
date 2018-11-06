@@ -1,4 +1,5 @@
 Rails.application.config.assets.precompile += [
+  'disable_animations.css',
   'sessions.css',
   'print.css',
   'scanned_barcode.js',

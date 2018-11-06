@@ -1,4 +1,3 @@
-
 class GenotypingPipeline < Pipeline
   include Pipeline::InboxGroupedBySubmission
 

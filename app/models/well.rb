@@ -1,4 +1,3 @@
-
 class Well < Receptacle
   include Api::WellIO::Extensions
   include ModelExtensions::Well
@@ -26,14 +25,16 @@ class Well < Receptacle
 
   has_many :stock_wells, through: :stock_well_links, source: :source_well do
     def attach!(wells)
-      attach(wells).tap do |_|
-        proxy_association.owner.save!
-      end
+      Well::Link.import(attach(wells))
     end
 
     def attach(wells)
       proxy_association.owner.stock_well_links.build(wells.map { |well| { type: 'stock', source_well: well } })
     end
+  end
+
+  def stock_wells_for_downstream_wells
+    plate&.stock_plate? ? [self] : stock_wells
   end
 
   def subject_type
@@ -112,7 +113,6 @@ class Well < Receptacle
       .where(aliquots: { study_id: study })
   }
 
-  #
   scope :without_report, ->(product_criteria) {
     joins([
       'LEFT OUTER JOIN qc_metrics AS wr_qcm ON wr_qcm.asset_id = assets.id',

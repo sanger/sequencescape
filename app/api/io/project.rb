@@ -1,4 +1,3 @@
-
 class Io::Project < Core::Io::Base
   set_model_for_input(::Project)
   set_json_root(:project)

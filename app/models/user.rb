@@ -1,4 +1,3 @@
-
 require 'net/ldap'
 require 'openssl'
 require 'digest/sha1'
@@ -41,21 +40,16 @@ class User < ApplicationRecord
 
   scope :owners, ->() { where.not(last_name: nil).joins(:roles).where(roles: { name: 'owner' }).order(:last_name).distinct }
 
+  scope :with_user_code, ->(*codes) { where(barcode: codes.map { |code| Barcode.barcode_to_human(code) }.compact).or(with_swipecard_code(codes)) }
+
   attr_accessor :password
 
   def self.prefix
     'ID'
   end
 
-  def self.lookup_by_barcode(user_barcode)
-    barcode = Barcode.barcode_to_human(user_barcode)
-    return find_by(barcode: barcode) if barcode
-    nil
-  end
-
   def self.find_with_barcode_or_swipecard_code(user_code)
-    lookup_by_barcode(user_code) ||
-      with_swipecard_code(user_code).first
+    with_user_code(user_code).first
   end
 
   # returns emails of all admins
@@ -66,17 +60,6 @@ class User < ApplicationRecord
   # Encrypts some data with the salt.
   def self.encrypt(password, salt)
     Digest::SHA1.hexdigest("--#{salt}--#{password}--")
-  end
-
-  def self.valid_barcode?(code)
-    begin
-      human_code = Barcode.barcode_to_human!(code, prefix)
-    rescue
-      return false
-    end
-    return false unless find_by(barcode: human_code)
-
-    true
   end
 
   def study_roles

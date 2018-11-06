@@ -1,4 +1,3 @@
-
 class RobotVerification
   attr_reader :errors
 
@@ -6,7 +5,7 @@ class RobotVerification
     return yield('No barcodes specified')      if barcode_hash.nil?
     yield('Worksheet barcode invalid')         if barcode_hash[:batch_barcode].blank?             or not Batch.valid_barcode?(barcode_hash[:batch_barcode])
     yield('Tecan robot barcode invalid')       if barcode_hash[:robot_barcode].blank?             or not Robot.valid_barcode?(barcode_hash[:robot_barcode])
-    yield('User barcode invalid')              if barcode_hash[:user_barcode].blank?              or not User.valid_barcode?(barcode_hash[:user_barcode])
+    yield('User barcode invalid')              if barcode_hash[:user_barcode].blank?              or not User.find_with_barcode_or_swipecard_code(barcode_hash[:user_barcode])
     yield('Destination plate barcode invalid') if barcode_hash[:destination_plate_barcode].blank? or not Plate.with_barcode(barcode_hash[:destination_plate_barcode]).exists?
   end
 

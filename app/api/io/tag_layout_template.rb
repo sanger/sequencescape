@@ -1,4 +1,3 @@
-
 class ::Io::TagLayoutTemplate < ::Core::Io::Base
   set_model_for_input(::TagLayoutTemplate)
   set_json_root(:tag_layout_template)

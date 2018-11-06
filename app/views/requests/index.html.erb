@@ -1,35 +1,23 @@
 
-<%- add :about, "Requests" %>
-<% if @study.nil? == false  %>
+<% if @study.present?  %>
   <% add :back_menu, I18n.t("navigation.menu.back_to_study") => study_path(@study) -%>
 <% elsif @requests.size > 1 && ! @requests.first.asset.try(:study).nil?  %>
   <% add :back_menu, I18n.t("navigation.menu.back_to_study") => study_path(@requests.first.study) -%>
 <% end %>
 
-<h1>
-  <% if @study && params[:state] && params[:attempt] %>
-    <%= params[:state].capitalize %> <%= @request_type.name.downcase %> requests for study '<%= @study.name %>' with <%= pluralize params[:attempt], 'attempt' %>
-  <% elsif @study && params[:state] %>
-    <%= params[:state].capitalize %> <%= @request_type.name.downcase %> requests for study '<%= @study.name %>'
-  <% elsif @study && @request_type %>
-    <%= @request_type.name %> requests for '<%= @study.name %>'
-  <% elsif @request_type && @item && params[:state] && params[:attempt] %>
-    <%= @request_type.name %> requests for '<%= @item.name %>'  with <%= pluralize params[:attempt], 'attempt' %>
-  <% elsif @item && params[:state] && params[:attempt] %>
-    Requests for '<%= @item.name %>' with <%= pluralize params[:attempt], 'attempt' %>
-  <% elsif @item && params[:state] %>
-    <%= params[:state].capitalize %> requests for '<%= @item.name %>'
-  <% elsif @item %>
-    Requests for '<%= @item.name %>'
-  <% end %>
-</h1>
+<%= page_title @request_type&.name || 'Requests', @subtitle %><%= display_status(params[:state]) %>
+<% if params[:attempt] %>
+  <%= pluralize params[:attempt], 'attempt' %>
+<% end %>
+
+<%= pagination @requests %>
 
 <% if @requests.empty? -%>
   <%= display_user_guide("There are no requests ") %>
 <% else -%>
-  <table cellpadding="4" cellspacing="0" width="100%" class="sortable">
+  <table class="sortable">
     <thead>
-      <tr class="<%= cycle("rowodd", "roweven") %>">
+      <tr>
         <th>Source asset</th>
         <th>Latest activity</th>
         <th>Request ID</th>
@@ -49,34 +37,23 @@
             <% end %>
           </td>
 
-          <% if request.asset %>
-            <% summary = UiHelper::Summary.new(); summary.load_asset(request.asset); summary_item = summary.summaries.first %>
+          <td>
+            <% summary = UiHelper::Summary.new(); summary.load_request(request); summary_item = summary.summaries.first %>
             <% if summary_item %>
-              <td>
                 <%= link_to(summary_item.message, summary_item.external_link.to_s) %>
-              </td>
-            <% else %>
-              <td></td>
             <% end %>
-          <% else %>
-            <td></td>
-          <% end %>
-
-        <td><%= link_to request.id, request_path(request) %></td>
-        <td><%= request.request_type.name unless request.request_type.nil? %></td>
-        <td><%= request.user.login unless request.user.blank? %></td>
-        <td><%= link_to(request.submission.study_names, submission_path(request.submission)) if request.submission %></td>
-        <td><%= request.created_at.to_formatted_s(:sortable) %></td>
-        <td><%= display_status(request.state) %></td>
-      </tr>
-    <% end -%>
-  </tbody>
-</table>
+          </td>
+          <td><%= link_to request.id, request_path(request) %></td>
+          <td><%= request.request_type.name unless request.request_type.nil? %></td>
+          <td><%= request.user.login unless request.user.blank? %></td>
+          <td><%= link_to(request.initial_study.name, study_path(request.initial_study)) if request.initial_study %></td>
+          <td><%= request.created_at.to_formatted_s(:sortable) %></td>
+          <td><%= display_status(request.state) %></td>
+        </tr>
+      <% end -%>
+    </tbody>
+  </table>
 <% end -%>
 <br />
 
-<div style="text-align: center;">
-  <% if @study.nil? && @item.nil? %>
-    <%= pagination @samples %>
-  <% end %>
-</div>
+<%= pagination @requests %>

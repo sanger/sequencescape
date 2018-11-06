@@ -1,4 +1,3 @@
-
 class MultiplexedCherrypickingTask < Task
   include Tasks::PlatePurposeBehavior
 

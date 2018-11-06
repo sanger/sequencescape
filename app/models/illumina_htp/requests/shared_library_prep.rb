@@ -4,7 +4,7 @@ module IlluminaHtp::Requests
   # Used in the old-style WGS and ICS pipelines to reflect the shared portion
   class SharedLibraryPrep < StdLibraryRequest
     def target_tube
-      @target_tube ||= submission.next_requests(self).detect(&:target_tube).try(:target_tube)
+      @target_tube ||= next_requests.detect(&:target_tube).try(:target_tube)
     end
 
     def failed_downstream!

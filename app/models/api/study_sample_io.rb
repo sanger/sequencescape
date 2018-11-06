@@ -1,4 +1,3 @@
-
 class Api::StudySampleIO < Api::Base
   module Extensions
     module ClassMethods

@@ -1,4 +1,3 @@
-
 #--
 # This is a complete hack of the standard behaviour and quite rightly so: people shouldn't be using it and
 # so it is going to go.  Rather than pollute the main API code with this rubbish it's here.

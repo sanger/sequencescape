@@ -12,8 +12,8 @@ sanger_tube_id:
 sanger_sample_id:
   heading: SANGER SAMPLE ID
   attribute: :sample_id
-tag_oligo:
-  heading: TAG OLIGO
+i7:
+  heading: i7 TAG SEQUENCE
   unlocked: true
   validation:
     options:
@@ -22,12 +22,12 @@ tag_oligo:
       formula1: "255"
       allowBlank: false
       showInputMessage: true
-      promptTitle: "Tag oligo"
-      prompt: "Input tag oligo."
+      promptTitle: "i7"
+      prompt: "Input i7."
   conditional_formattings:
     empty_cell:
-tag2_oligo:
-  heading: TAG2 OLIGO
+i5:
+  heading: i5 TAG SEQUENCE
   unlocked: true
   validation:
     options:
@@ -36,8 +36,10 @@ tag2_oligo:
       formula1: "255"
       allowBlank: false
       showInputMessage: true
-      promptTitle: "Tag2 oligo"
-      prompt: "Input tag2 oligo."
+      promptTitle: "i5"
+      prompt: "Input i5."
+  conditional_formattings:
+    empty_cell:
 tag_group:
   heading: TAG GROUP
   unlocked: true
@@ -559,8 +561,23 @@ sibling:
 gc_content:
   heading: GC CONTENT
   unlocked: true
+  validation:
+    options:
+      type: :list
+      formula1: "$A$1:$A$2"
+      allowBlank: false
+      showDropDown: false
+      showInputMessage: true
+      promptTitle: "GC Content"
+      prompt: "Please enter either Neutral, High AT or High GC"
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "GC Content"
+      error: "You must enter either Neutral, High AT or High GC"
+    :range_name: :gc_content
   conditional_formattings:
     empty_cell:
+    is_error:
 sample_public_name:
   heading: PUBLIC NAME
   unlocked: true

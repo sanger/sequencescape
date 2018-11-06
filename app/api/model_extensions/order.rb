@@ -1,4 +1,3 @@
-
 module ModelExtensions::Order
   class RequestOptionForValidation < OpenStruct
     delegate :errors, :include_unset_values?, to: :owner

@@ -9,7 +9,7 @@ module SampleManifestExcel
     class ExampleData
       BASES = %w[A C G T].freeze
 
-      attr_reader :tag_oligos, :tag2_oligos
+      attr_reader :i7s, :i5s
 
       def initialize
         create_products
@@ -23,7 +23,7 @@ module SampleManifestExcel
       def take(first, last, duplicate = false)
         {}.tap do |hsh|
           (first..last).each_with_index do |n, i|
-            hsh[n] = { tag_oligo: tag_oligos[i].join, tag2_oligo: tag2_oligos[i].join }
+            hsh[n] = { i7: i7s[i].join, i5: i5s[i].join }
           end
           hsh[last] = hsh[first] if duplicate
         end
@@ -48,8 +48,8 @@ module SampleManifestExcel
       private
 
       def create_products
-        @tag_oligos = BASES.product(BASES)
-        @tag2_oligos = tag_oligos.reverse
+        @i7s = BASES.product(BASES)
+        @i5s = i7s.reverse
       end
     end
   end

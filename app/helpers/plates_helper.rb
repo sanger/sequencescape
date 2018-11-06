@@ -1,4 +1,3 @@
-
 module PlatesHelper
   class AliquotError < StandardError; end
 

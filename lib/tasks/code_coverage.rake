@@ -1,4 +1,3 @@
-
 namespace :test do
   namespace :aggregate do
     desc 'Delete aggregate coverage data.'

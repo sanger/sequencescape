@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative '../multiple_double_labels'
+
 module LabelPrinter
   module Label
     class BasePlateDouble

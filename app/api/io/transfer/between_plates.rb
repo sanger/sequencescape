@@ -1,4 +1,3 @@
-
 class ::Io::Transfer::BetweenPlates < ::Core::Io::Base
   set_model_for_input(::Transfer::BetweenPlates)
   set_json_root(:transfer)

@@ -1,4 +1,3 @@
-
 class Io::StockMultiplexedLibraryTube < Io::Tube
   set_model_for_input(::StockMultiplexedLibraryTube)
   set_json_root(:tube)

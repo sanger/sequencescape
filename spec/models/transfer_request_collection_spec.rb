@@ -19,23 +19,156 @@ RSpec.describe TransferRequestCollection, type: :model, transfer_request_collect
       }
     end
 
-    describe '#save' do
-      let(:transfer_request) { subject.transfer_requests.first }
+    context 'and no outer requests' do
+      describe '#save' do
+        let(:transfer_request) { subject.transfer_requests.first }
 
-      before do
-        expect(subject.save).to be true
+        before do
+          expect(subject.save).to be true
+        end
+
+        it 'creates a transfer request' do
+          expect(subject.transfer_requests.count).to eq(1)
+        end
+
+        it 'sets the expected asset' do
+          expect(transfer_request.asset).to eq(asset)
+        end
+
+        it 'sets the expected target_asset' do
+          expect(transfer_request.target_asset).to eq(target_asset)
+        end
       end
+    end
 
-      it 'creates a transfer request' do
-        expect(subject.transfer_requests.count).to eq(1)
+    context 'and one outer request' do
+      let(:submission) { create :submission }
+      let!(:outer_request) { create :request, asset: asset, submission: submission }
+
+      describe '#save' do
+        let(:transfer_request) { subject.transfer_requests.first }
+
+        before do
+          expect(subject.save).to be true
+        end
+
+        it 'creates a transfer request' do
+          expect(subject.transfer_requests.count).to eq(1)
+        end
+
+        it 'sets the expected asset' do
+          expect(transfer_request.asset).to eq(asset)
+        end
+
+        it 'sets the expected target_asset' do
+          expect(transfer_request.target_asset).to eq(target_asset)
+        end
       end
+    end
 
-      it 'sets the expected asset' do
-        expect(transfer_request.asset).to eq(asset)
+    context 'and two outer requests' do
+      let(:submission_a) { create :submission }
+      let(:submission_b) { create :submission }
+      let!(:outer_request) { create :request, asset: asset, submission: submission_a }
+      let!(:other_outer_request) { create :request, asset: asset, submission: submission_b }
+
+      describe '#save' do
+        let(:transfer_request) { subject.transfer_requests.first }
+
+        context 'specifying submission' do
+          let(:creation_attributes) do
+            {
+              user: user,
+              transfer_requests_attributes: [
+                { asset: asset, target_asset: target_asset, submission: outer_request.submission }
+              ]
+            }
+          end
+
+          before do
+            expect(subject.save).to be true
+          end
+
+          it 'creates a transfer request' do
+            expect(subject.transfer_requests.count).to eq(1)
+          end
+
+          it 'sets the expected asset' do
+            expect(transfer_request.asset).to eq(asset)
+          end
+
+          it 'sets the expected target_asset' do
+            expect(transfer_request.target_asset).to eq(target_asset)
+          end
+
+          it 'sets submission id on the transfer request' do
+            expect(transfer_request.submission_id).to eq(outer_request.submission_id)
+          end
+
+          it 'sets request_id on the target aliquot' do
+            expect(target_asset.aliquots.first.request_id).to eq(outer_request.id)
+          end
+        end
       end
+    end
 
-      it 'sets the expected target_asset' do
-        expect(transfer_request.target_asset).to eq(target_asset)
+    context 'and two outer requests in the same submission' do
+      let(:submission) { create :submission }
+      let!(:outer_request) { create :request, asset: asset, submission: submission }
+      let!(:other_outer_request) { create :request, asset: asset, submission: submission }
+
+      describe '#save' do
+        let(:transfer_request) { subject.transfer_requests.first }
+
+        context 'specifying submission' do
+          let(:creation_attributes) do
+            {
+              user: user,
+              transfer_requests_attributes: [
+                { asset: asset, target_asset: target_asset, submission: outer_request.submission }
+              ]
+            }
+          end
+
+          it 'is invalid' do
+            expect(subject).not_to be_valid
+          end
+        end
+
+        context 'specifying outer_request' do
+          let(:creation_attributes) do
+            {
+              user: user,
+              transfer_requests_attributes: [
+                { asset: asset, target_asset: target_asset, outer_request: outer_request }
+              ]
+            }
+          end
+
+          before do
+            expect(subject.save).to be true
+          end
+
+          it 'creates a transfer request' do
+            expect(subject.transfer_requests.count).to eq(1)
+          end
+
+          it 'sets the expected asset' do
+            expect(transfer_request.asset).to eq(asset)
+          end
+
+          it 'sets the expected target_asset' do
+            expect(transfer_request.target_asset).to eq(target_asset)
+          end
+
+          it 'sets submission id on the transfer request' do
+            expect(transfer_request.submission_id).to eq(outer_request.submission_id)
+          end
+
+          it 'sets request_id on the target aliquot' do
+            expect(target_asset.aliquots.first.request_id).to eq(outer_request.id)
+          end
+        end
       end
     end
   end

@@ -6,8 +6,8 @@ FactoryBot.define do
   end
 
   factory :project_metadata, class: Project::Metadata do
-    project_cost_code 'Some Cost Code'
-    project_funding_model 'Internal'
+    project_cost_code { 'Some Cost Code' }
+    project_funding_model { 'Internal' }
     budget_division { |budget| budget.association(:budget_division) }
   end
 end

@@ -1,7 +1,7 @@
 
-<h1>New Tag Layout Template</h1>
+<%= page_title 'Tag Layout Template', 'New' %>
 
-<%= form_for(@tag_layout_template, html: {class: 'submit_once'}) do |f| %>
+<%= form_for(@tag_layout_template) do |f| %>
   <%= f.error_messages %>
   <div class='form-group'>
     <%= f.label :name, 'Tag Layout Template name' %><br>
@@ -26,7 +26,7 @@
   <%= f.hidden_field 'walking_algorithm', value: 'TagLayout::WalkWellsOfPlate' %>
 
   <div class="form-group actions-group">
-    <%= f.submit('Create tag layout template', class: 'disable_on_submit btn btn-success') %>
+    <%= f.submit('Create tag layout template', class: 'btn btn-success') %>
   </div>
 <% end %>
 

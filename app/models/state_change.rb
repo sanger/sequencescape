@@ -1,4 +1,3 @@
-
 # Performs a change of state on an asset.
 #
 #--

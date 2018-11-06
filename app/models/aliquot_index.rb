@@ -1,4 +1,3 @@
-
 class AliquotIndex < ApplicationRecord
   belongs_to :aliquot
   belongs_to :lane

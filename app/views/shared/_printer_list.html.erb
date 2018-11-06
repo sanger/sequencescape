@@ -1,6 +1,6 @@
 
 <div><label for="barcode_printer_list" style="display:none">Barcode Printer</label></div>
-<select name="printer" id="barcode_printer_list">
+<select name="printer" id="barcode_printer_list" class="select2">
    <% printer_list = BarcodePrinter.alphabetical.includes(:barcode_printer_type).all.group_by {|printer| "#{printer.barcode_printer_type.name} (#{printer.active? ? 'Active' : 'Inactive'})" } %>
    <% printer_list.each do |group, printers| %>
     <optgroup label="<%= group %>">

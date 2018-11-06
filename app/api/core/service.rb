@@ -1,4 +1,3 @@
-
 require 'sinatra/base'
 module Core
   class Service < Sinatra::Base

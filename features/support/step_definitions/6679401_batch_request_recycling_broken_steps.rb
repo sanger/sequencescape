@@ -1,4 +1,3 @@
-
 Given /^study "([^\"]+)" has an asset group called "([^\"]+)" with (\d+) wells$/ do |study_name, group_name, count|
   study = Study.find_by(name: study_name) or raise StandardError, "Cannot find the study #{study_name.inspect}"
 

@@ -1,4 +1,3 @@
-
 # Lays out the tags so that they are column ordered.
 module TagLayout::InColumns
   def self.direction

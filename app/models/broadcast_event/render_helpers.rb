@@ -1,4 +1,3 @@
-
 module BroadcastEvent::RenderHelpers
   # Controls our render.
   class Render

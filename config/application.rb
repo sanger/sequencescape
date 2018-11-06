@@ -96,6 +96,7 @@ module Sequencescape
     end
 
     config.ets_enabled = false
+    config.disable_animations = false
 
     # Rails 5
 

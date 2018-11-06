@@ -1,4 +1,3 @@
-
 class ::Io::Order < ::Core::Io::Base
   REQUEST_OPTIONS_FIELDS = Hash[{
     read_length: 'read_length',

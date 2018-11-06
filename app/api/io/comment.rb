@@ -1,4 +1,3 @@
-
 class Io::Comment < ::Core::Io::Base
   set_model_for_input(::Comment)
   set_json_root(:comment)

@@ -1,4 +1,3 @@
-
 class Sdb::SuppliersController < Sdb::BaseController
   # Show all suppliers
   def index

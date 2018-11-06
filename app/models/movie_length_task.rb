@@ -1,4 +1,3 @@
-
 class MovieLengthTask < Task
   class MovieLengthData < Task::RenderElement
     def initialize(request)

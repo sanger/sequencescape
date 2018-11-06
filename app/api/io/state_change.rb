@@ -1,4 +1,3 @@
-
 class ::Io::StateChange < ::Core::Io::Base
   set_model_for_input(::StateChange)
   set_json_root(:state_change)

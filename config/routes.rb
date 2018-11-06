@@ -1,4 +1,3 @@
-
 Sequencescape::Application.routes.draw do
   root to: 'homes#show'
   resource :health, only: [:show]
@@ -8,6 +7,15 @@ Sequencescape::Application.routes.draw do
 
   namespace :api do
     namespace :v2 do
+      jsonapi_resources :pre_capture_pools
+      jsonapi_resources :primer_panels
+      jsonapi_resources :request_types
+      jsonapi_resources :purposes
+      jsonapi_resources :submissions
+      jsonapi_resources :orders
+      jsonapi_resources :aliquots
+      jsonapi_resources :requests
+      jsonapi_resources :users
       jsonapi_resources :tubes
       jsonapi_resources :lanes
       jsonapi_resources :wells
@@ -19,6 +27,10 @@ Sequencescape::Application.routes.draw do
       jsonapi_resources :projects
       jsonapi_resources :qc_results
       jsonapi_resources :assets
+
+      namespace :aker do
+        resources :jobs, only: [:create]
+      end
     end
   end
 
@@ -541,14 +553,6 @@ Sequencescape::Application.routes.draw do
   post 'get_your_qc_completed_tubes_here' => 'get_your_qc_completed_tubes_here#create', as: :get_your_qc_completed_tubes_here
   resources :sample_manifest_upload_with_tag_sequences, only: [:new, :create]
 
-  namespace :api do
-    namespace :v2 do
-      namespace :aker do
-        resources :jobs, only: [:create]
-      end
-    end
-  end
-
   namespace :aker do
     resources :jobs, only: [:index, :show] do
       member do
@@ -569,5 +573,5 @@ Sequencescape::Application.routes.draw do
   get 'authentication/restricted'
 
   # We removed workflows, which broke study links. Some customers may have their own studies bookmarked
-  get 'studies/:study_id/workflows/:id', to: redirect('studies/%{study_id}/information') # rubocop:disable Style/FormatStringToken
+  get 'studies/:study_id/workflows/:id', to: redirect('studies/%{study_id}/information')
 end

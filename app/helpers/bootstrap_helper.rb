@@ -1,4 +1,3 @@
-
 module BootstrapHelper
   def panel(type = :default, options = {}, &block)
     bs_custom_panel(type, :div, { class: 'card-body' }, options, &block)
@@ -27,10 +26,9 @@ module BootstrapHelper
   #  block_content
   # </div>
   def alert(type = :default, options = {}, &block)
-    bs_type = bootstrapify(type.to_s)
     options[:class] ||= String.new
     options[:role] ||= 'alert'
-    options[:class] << " alert alert-#{bs_type}"
+    options[:class] << " alert alert-#{type}"
     content_tag(:div, options, &block)
   end
 
@@ -89,15 +87,6 @@ module BootstrapHelper
     content_tag(:div, class: "col-#{screen}-#{size}", &block)
   end
 
-  # def progress_bar(percent = 100, hidden=true, identifier = "loading")
-  #   display = hidden ? "display:none" : nil
-  #   content_tag(:div, :class=>'progress', :style => display,) do
-  #     content_tag("div", :id => identifier, :class => "progress-bar progress-bar-striped active", :role => 'progressbar') do
-  #       content_tag(:span,'Loading...',:class=>'sr-only')
-  #     end
-  #   end
-  # end
-
   def progress_bar(count)
     css_class = if count < 25
                   'bg-danger'
@@ -149,15 +138,5 @@ module BootstrapHelper
     args.last[:class] ||= ''
     args.last[:class] << ' custom-select'
     select(*args)
-  end
-
-  def bootstrapify(level)
-    {
-      'notice' => 'success', 'error' => 'danger',
-      'alert' => 'danger',
-      'pending' => 'muted', 'started' => 'primary',
-      'passed' => 'success', 'failed' => 'danger',
-      'cancelled' => 'warning'
-    }[level] || level
   end
 end

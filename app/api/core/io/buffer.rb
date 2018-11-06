@@ -1,4 +1,3 @@
-
 class ::Core::Io::Buffer
   def initialize(stream)
     @stream, @buffer = stream, StringIO.new

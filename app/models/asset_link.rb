@@ -1,12 +1,12 @@
-
 class AssetLink < ApplicationRecord
   include Api::AssetLinkIO::Extensions
+  include Uuid::Uuidable
 
   acts_as_dag_links node_class_name: 'Asset'
   broadcast_via_warren
 
   self.per_page = 500
-  include Uuid::Uuidable
+  self.lazy_uuid_generation = true
 
   def destroy!
   end
