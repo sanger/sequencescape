@@ -1,7 +1,7 @@
 Sequencescape
 =============
 
-[![Build Status](https://travis-ci.org/radome/sequencescape.svg?branch=test_openstack)](https://travis-ci.org/radome/sequencescape)
+[![Build Status](https://travis-ci.org/sanger/sequencescape.svg?branch=next_release)](https://travis-ci.org/radome/sequencescape)
 [![Maintainability](https://api.codeclimate.com/v1/badges/4e15fd15338168a2334b/maintainability)](https://codeclimate.com/github/radome/sequencescape/maintainability)
 [![Yard Docs](http://img.shields.io/badge/yard-docs-blue.svg)](https://www.rubydoc.info/github/sanger/sequencescape)
 
@@ -82,7 +82,7 @@ Barcode printing
 ----------------
 
 Barcode printing is carried out by a separate REST service, PrintMyBarcode. The source
-for this is also available on GitHub at [sanger/print\_my\_barcode](https://github.com/sanger/print_my_barcode)
+for this is also available on GitHub [sanger/print\_my\_barcode](https://github.com/sanger/print_my_barcode)
 
 Plate barcode service
 ---------------------
@@ -104,7 +104,9 @@ Data warehousing
 There is a client application for building a data warehouse based
 on the information in Sequencescape. This is driven asynchronously via RabbitMQ.
 See out various clients on GitHub:
+
 [sanger/unified\_warehouse](https://github.com/sanger/unified_warehouse)
+
 [sanger/event\_warehouse](https://github.com/sanger/event_warehouse)
 
 
