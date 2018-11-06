@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :plate_with_3_wells, parent: :plate do
-    size 96
+    size { 96 }
     after(:create) do |plate|
       plate.wells = Map.where_description(%w[A1 B2 E6])
                        .where_plate_size(plate.size)
@@ -17,7 +17,7 @@ FactoryBot.define do
   end
 
   factory :lib_pcr_xp_plate, parent: :plate do
-    size 96
+    size { 96 }
     plate_purpose { |_| PlatePurpose.find_by(name: 'Lib PCR-XP') }
 
     after(:create) do |plate|
@@ -33,7 +33,7 @@ FactoryBot.define do
   end
 
   factory :lib_pcr_xp_plate_with_tubes, parent: :plate do
-    size 96
+    size { 96 }
     plate_purpose
 
     after(:create) do |plate|
@@ -62,9 +62,9 @@ FactoryBot.define do
   end
 
   factory :lib_pcr_xp_request_type, parent: :request_type do
-    asset_type 'Well'
-    request_class CustomerRequest
-    key 'Illumina_Lib_PCR_XP_Lib_Pool'
+    asset_type { 'Well' }
+    request_class { CustomerRequest }
+    key { 'Illumina_Lib_PCR_XP_Lib_Pool' }
   end
 
   factory :lib_pool_tube, class: StockMultiplexedLibraryTube do

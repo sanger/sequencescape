@@ -14,7 +14,7 @@
 #   request to be valid.
 FactoryBot.define do
   factory :multiplexed_library_creation_request, parent: :request do
-    sti_type      'MultiplexedLibraryCreationRequest'
+    sti_type      { 'MultiplexedLibraryCreationRequest' }
     asset         { |asset| asset.association(:sample_tube)  }
     target_asset  { |asset| asset.association(:library_tube) }
     association(:request_type, factory: :multiplexed_library_creation_request_type)
@@ -29,13 +29,13 @@ FactoryBot.define do
 
   %w[failed passed pending cancelled].each do |request_state|
     factory :"#{request_state}_request", parent: :request do
-      state request_state
+      state { request_state }
     end
   end
 
   factory :request_base, class: Request do
     request_type
-    request_purpose :standard
+    request_purpose { :standard }
 
     # Ensure that the request metadata is correctly setup based on the request type
     after(:build) do |request|
@@ -48,15 +48,15 @@ FactoryBot.define do
     end
 
     factory :customer_request, class: CustomerRequest do
-      sti_type 'CustomerRequest' # Oddly, this seems to be necessary!
+      sti_type { 'CustomerRequest' } # Oddly, this seems to be necessary!
       association(:request_type, factory: :customer_request_type)
     end
   end
 
   factory :sequencing_request, class: SequencingRequest do
     association(:request_type, factory: :sequencing_request_type)
-    request_purpose :standard
-    sti_type 'SequencingRequest'
+    request_purpose { :standard }
+    sti_type { 'SequencingRequest' }
     request_metadata_attributes { attributes_for :request_metadata_for_standard_sequencing_with_read_length }
 
     factory(:sequencing_request_with_assets) do
@@ -80,7 +80,7 @@ FactoryBot.define do
   factory :library_request, class: IlluminaHtp::Requests::StdLibraryRequest do
     association(:asset, factory: :well)
     association(:request_type, factory: :library_request_type)
-    request_purpose :standard
+    request_purpose { :standard }
     request_metadata_attributes { attributes_for :request_metadata_for_library_manufacture }
 
     factory :gbs_request, class: IlluminaHtp::Requests::GbsRequest do
@@ -89,16 +89,16 @@ FactoryBot.define do
   end
 
   factory(:multiplex_request, class: Request::Multiplexing) do
-    asset nil
+    asset { nil }
     association(:target_asset, factory: :multiplexed_library_tube)
     association(:request_type, factory: :multiplex_request_type)
-    request_purpose :standard
+    request_purpose { :standard }
   end
 
   factory :cherrypick_request do
     association :asset, factory: :well
     association :target_asset, factory: :well
-    request_purpose :standard
+    request_purpose { :standard }
 
     # Adds the associations needed for processing down a pipeline
     factory :cherrypick_request_for_pipeline do
@@ -113,7 +113,7 @@ FactoryBot.define do
     end
     association :asset, factory: :well
     association :target_asset, factory: :well
-    request_purpose :standard
+    request_purpose { :standard }
     request_metadata_attributes do
       { target_purpose: target_purpose }
     end
@@ -126,7 +126,7 @@ FactoryBot.define do
 
     item
     project
-    state 'pending'
+    state { 'pending' }
     study
     user { User.find_by(login: user_login) || create(:user, login: user_login) }
   end
@@ -173,7 +173,7 @@ FactoryBot.define do
 
   factory :pooled_cherrypick_request do
     asset { |asset| asset.association(:well_with_sample_and_without_plate) }
-    request_purpose :standard
+    request_purpose { :standard }
   end
 
   factory :lib_pcr_xp_request, parent: :request_without_assets do
@@ -184,15 +184,15 @@ FactoryBot.define do
 
   factory :request_traction_grid_ion, class: Request::Traction::GridIon do
     association(:asset, factory: :well)
-    target_asset nil
-    request_purpose :standard
+    target_asset { nil }
+    request_purpose { :standard }
     association(:request_type, factory: :well_request_type)
     request_metadata_attributes { attributes_for(:request_traction_grid_ion_metadata) }
   end
 
   factory :request_without_submission, class: Request do
     request_type
-    request_purpose :standard
+    request_purpose { :standard }
 
     # Ensure that the request metadata is correctly setup based on the request type
     after(:build) do |request|
@@ -204,7 +204,7 @@ FactoryBot.define do
 
   factory(:request_library_creation, class: Request::LibraryCreation, aliases: [:library_creation_request_for_testing_sequencing_requests]) do
     association(:request_type, factory: :library_creation_request_type)
-    request_purpose :standard
+    request_purpose { :standard }
     asset        { |target| target.association(:well_with_sample_and_plate) }
     target_asset { |target| target.association(:empty_well) }
     request_metadata_attributes { { fragment_size_required_from: 300, fragment_size_required_to: 500 } }
@@ -212,7 +212,7 @@ FactoryBot.define do
 
   factory(:external_multiplexed_library_tube_creation_request, class: ExternalLibraryCreationRequest) do
     request_type { RequestType.external_multiplexed_library_creation }
-    request_purpose :standard
+    request_purpose { :standard }
     asset { create(:library_tube) }
     target_asset { create(:multiplexed_library_tube) }
   end
@@ -221,7 +221,7 @@ FactoryBot.define do
     target_asset    { |ta| ta.association(:pac_bio_library_tube) }
     asset           { |a|   a.association(:well) }
     submission      { |s|   s.association(:submission) }
-    request_purpose :standard
+    request_purpose { :standard }
   end
 
   factory :pac_bio_sequencing_request do
@@ -229,6 +229,6 @@ FactoryBot.define do
     asset           { |a|   a.association(:pac_bio_library_tube) }
     submission      { |s|   s.association(:submission) }
     request_type    { |s| s.association(:pac_bio_sequencing_request_type) }
-    request_purpose :standard
+    request_purpose { :standard }
   end
 end

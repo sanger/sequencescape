@@ -10,26 +10,26 @@ FactoryBot.define do
     receptacle
 
     factory :untagged_aliquot do
-      tag  nil
-      tag2 nil
+      tag  { nil }
+      tag2 { nil }
     end
 
     factory :single_tagged_aliquot do
       tag
-      tag2 nil
+      tag2 { nil }
     end
 
     factory :minimal_aliquot do
-      study nil
-      project nil
-      tag nil
-      tag2 nil
+      study { nil }
+      project { nil }
+      tag { nil }
+      tag2 { nil }
     end
   end
 
   factory :spiked_buffer do
     name { generate :asset_name }
     samples { [Sample.find_or_create_by!(name: 'phiX_for_spiked_buffers')] }
-    volume 50
+    volume { 50 }
   end
 end

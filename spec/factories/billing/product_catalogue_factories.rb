@@ -6,7 +6,7 @@ FactoryBot.define do
   end
 
   factory :miseq_paired_end_product_catalogue, class: Billing::ProductCatalogue do
-    name :miseq_paired_end
+    name { :miseq_paired_end }
     after(:create) do |catalogue|
       catalogue.billing_products.create!([
         { name: 'product_with_read_length_150', identifier: 150, category: 'sequencing' },
