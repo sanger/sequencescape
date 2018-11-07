@@ -26,7 +26,10 @@ FactoryBot.define do
   end
 
   factory :tagged_well, parent: :well, aliases: [:well_with_sample_and_without_plate] do
-    aliquots { build_list(:tagged_aliquot, 1, aliquot_options) }
+    transient do
+      aliquot_count { 1 }
+    end
+    aliquots { build_list(:tagged_aliquot, aliquot_count, aliquot_options) }
   end
 
   factory :well_with_sample_and_plate, parent: :tagged_well do

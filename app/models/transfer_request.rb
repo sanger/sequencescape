@@ -27,7 +27,7 @@ class TransferRequest < ApplicationRecord
   scope :include_submission, -> { includes(submission: :uuid_object) }
   # Ensure that the source and the target assets are not the same, otherwise bad things will happen!
   validate :source_and_target_assets_are_different
-  validates :outer_request_candidates, length: { maximum: 1, message: 'can not be isolated from the possible requests' }, on: :create
+  validate :outer_request_candidates_length, on: :create
 
   after_create(:perform_transfer_of_contents, :transfer_stock_wells)
 
@@ -89,6 +89,7 @@ class TransferRequest < ApplicationRecord
   # validation method
   def source_and_target_assets_are_different
     return true unless asset_id.present? && asset_id == target_asset_id
+
     errors.add(:asset, 'cannot be the same as the target')
     errors.add(:target_asset, 'cannot be the same as the source')
     false
@@ -120,10 +121,37 @@ class TransferRequest < ApplicationRecord
     end
   end
 
+  def outer_request_candidates_length
+    # Its a simple scenario, we avoid doing anything fancy and just give the thumbs up
+    return true if one_or_fewer_outer_requests?
+
+    # If we're a bit more complicated attempt to match up requests
+    # This operation is a bit expensive, but needs to handle scenarios where:
+    # 1) We've already done some pooling, and have multiple requests in and out
+    # 2) We've got multiple aliquots from a single request, such as in Chromium
+    # Failing silently at this point could result in aliquots being assigned to the wrong study
+    # or the correct request information being missing downstream. (Which is then tricky to diagnose and repair)
+    asset.aliquots.reduce(true) do |valid, aliquot|
+      compatible = next_request_index[aliquot.id].present?
+      errors.add(:outer_request, "not found for aliquot #{aliquot.id} with previous request #{aliquot.request}") unless compatible
+      valid && compatible
+    end
+  end
+
   private
+
+  def next_request_index
+    @next_request_index ||= asset.aliquots.each_with_object({}) do |aliquot, store|
+      store[aliquot.id] = outer_request_candidates.detect { |r| aliquot.request&.next_requests_via_submission&.include?(r) }
+    end
+  end
 
   def outer_request_candidates
     @outer_request ? [@outer_request] : sibling_requests.to_a
+  end
+
+  def one_or_fewer_outer_requests?
+    outer_request_candidates.length <= 1
   end
 
   # Determines the most likely event that should be fired when transitioning between the two states.  If there is
@@ -131,29 +159,38 @@ class TransferRequest < ApplicationRecord
   def suggested_transition_to(target)
     valid_events = aasm.events(permitted: true).select { |e| e.transitions_to_state?(target.to_sym) }
     raise StandardError, "No obvious transition from #{state.inspect} to #{target.inspect}" unless valid_events.size == 1
+
     valid_events.first.name
   end
 
   # after_create callback method
   def perform_transfer_of_contents
     return if asset.failed? || asset.cancelled?
-    target_asset.aliquots << asset.aliquots.map do |a|
-      a.dup(aliquot_attributes)
+
+    target_asset.aliquots << asset.aliquots.each_with_index.map do |aliquot, _index|
+      aliquot.dup(aliquot_attributes(aliquot))
     end
   rescue ActiveRecord::RecordNotUnique => exception
     # We'll specifically handle tag clashes here so that we can produce more informative messages
     raise exception unless /aliquot_tags_and_tag2s_are_unique_within_receptacle/.match?(exception.message)
+
     errors.add(:asset, "contains aliquots which can't be transferred due to tag clash")
     raise Aliquot::TagClash, self
   end
 
   def transfer_stock_wells
     return unless asset.is_a?(Well) && target_asset.is_a?(Well)
+
     target_asset.stock_wells.attach!(asset.stock_wells_for_downstream_wells)
   end
 
-  def aliquot_attributes
-    outer_request_candidates.first&.aliquot_attributes || {}
+  def aliquot_attributes(aliquot)
+    outer_request_for(aliquot)&.aliquot_attributes || {}
+  end
+
+  def outer_request_for(aliquot)
+    return outer_request_candidates.first if one_or_fewer_outer_requests?
+    next_request_index[aliquot.id]
   end
 
   # Run on start, or if start is bypassed
@@ -162,6 +199,7 @@ class TransferRequest < ApplicationRecord
       # We only want to start the matching requests. The conditional deals with situations
       # which pre-date aliquot association with request.
       next unless target_aliquot_requests.blank? || target_aliquot_requests.ids.include?(sr.id)
+
       sr.start! if sr.may_start?
     end
   end
