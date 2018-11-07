@@ -268,7 +268,8 @@ RSpec.describe TransferRequest, type: :model do
   context 'transfer downstream of pooling (such as in ISC)' do
     let(:library_request_type) { create :library_request_type }
     let(:multiplex_request_type) { create :multiplex_request_type }
-    let(:source_well_a) { create :tagged_well }
+    # In some cases (such as chromium) we have multiple aliquots pre library request
+    let(:source_well_a) { create :tagged_well, aliquot_count: 2 }
     let(:source_well_b) { create :tagged_well }
     let(:target_well) { create :empty_well }
     let(:submission) { create :submission }
@@ -293,7 +294,7 @@ RSpec.describe TransferRequest, type: :model do
 
     it 'associated each aliquot with a different library request' do
       create :transfer_request, asset: target_well, target_asset: multiplexed_library_tube, submission: submission
-      expect(multiplexed_library_tube.reload.aliquots.map(&:request_id)).to eq([multiplex_request_a.id, multiplex_request_b.id])
+      expect(multiplexed_library_tube.reload.aliquots.map(&:request_id)).to eq([multiplex_request_a.id, multiplex_request_a.id, multiplex_request_b.id])
     end
   end
 end

@@ -122,14 +122,29 @@ class TransferRequest < ApplicationRecord
   end
 
   def outer_request_candidates_length
-    # Its a simple scenario
+    # Its a simple scenario, we avoid doing anything fancy and just give the thumbs up
     return true if one_or_fewer_outer_requests?
-    return true if outer_request_candidates.length == asset.aliquots.size
 
-    errors.add(:outer_request, 'can not be isolated from the possible requests')
+    # If we're a bit more complicated attempt to match up requests
+    # This operation is a bit expensive, but needs to handle scenarios where:
+    # 1) We've already done some pooling, and have multiple requests in and out
+    # 2) We've got multiple aliquots from a single request, such as in Chromium
+    # Failing silently at this point could result in aliquots being assigned to the wrong study
+    # or the correct request information being missing downstream. (Which is then tricky to diagnose and repair)
+    asset.aliquots.reduce(true) do |valid, aliquot|
+      compatible = next_request_index[aliquot.id].present?
+      errors.add(:outer_request, "not found for aliquot #{aliquot.id} with previous request #{aliquot.request}") unless compatible
+      valid && compatible
+    end
   end
 
   private
+
+  def next_request_index
+    @next_request_index ||= asset.aliquots.each_with_object({}) do |aliquot, store|
+      store[aliquot.id] = outer_request_candidates.detect { |r| aliquot.request&.next_requests_via_submission&.include?(r) }
+    end
+  end
 
   def outer_request_candidates
     @outer_request ? [@outer_request] : sibling_requests.to_a
@@ -175,8 +190,7 @@ class TransferRequest < ApplicationRecord
 
   def outer_request_for(aliquot)
     return outer_request_candidates.first if one_or_fewer_outer_requests?
-
-    outer_request_candidates.detect { |r| aliquot.request.next_requests_via_submission.include?(r) }
+    next_request_index[aliquot.id]
   end
 
   # Run on start, or if start is bypassed
