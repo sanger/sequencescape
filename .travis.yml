@@ -22,59 +22,9 @@ before_install:
 - mv config/aker.yml.example config/aker.yml
 - sh -e /etc/init.d/xvfb start
 script:
-- bundle exec $SUITE
+- bundle exec rubocop
 jobs:
   include:
-  - stage: test
-    if: type = cron
-    before_script:
-    - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64
-      > ./cc-test-reporter
-    - chmod +x ./cc-test-reporter
-    - "./cc-test-reporter before-build"
-    script: "./run_coverage"
-    name: Coverage
-    after_script:
-    - "./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT"
-  - if: type != cron
-    env: SUITE=rubocop
-    name: Rubocop
-  - if: type != cron
-    env:
-    - SUITE='rake test'
-    - RAILS_ENV=test
-    - RUBYOPT='-W0'
-    before_script:
-    - bundle exec rake db:setup
-    script: bundle exec rake test
-    name: Rake Test
-  - if: type != cron
-    env:
-    - SUITE=rspec
-    - RAILS_ENV=test
-    before_script:
-    - bundle exec rake db:setup
-    name: Rspec
-  - if: type != cron
-    env:
-    - SUITE='rake knapsack:cucumber'
-    - RAILS_ENV=cucumber
-    - CI_NODE_TOTAL=2
-    - CI_NODE_INDEX=0
-    before_script:
-    - bundle exec rake assets:precompile
-    - bundle exec rake db:setup
-    name: Cucumber Test 1
-  - if: type != cron
-    env:
-    - SUITE='rake knapsack:cucumber'
-    - RAILS_ENV=cucumber
-    - CI_NODE_TOTAL=2
-    - CI_NODE_INDEX=1
-    before_script:
-    - bundle exec rake assets:precompile
-    - bundle exec rake db:setup
-    name: Cucumber Test 2
   - stage: build
     if: tag IS present
     script: "./compile-build"
