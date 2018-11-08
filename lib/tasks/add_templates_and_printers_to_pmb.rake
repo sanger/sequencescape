@@ -294,7 +294,7 @@ namespace :pmb do
           get_label_types
           registered_templates = get_label_templates
           unregistered_templates.each do |template|
-            unless registered_templates.has_key?(template[:name])
+            unless registered_templates.key?(template[:name])
               create_label_template(template[:name])
               register_label_template(template)
             end
