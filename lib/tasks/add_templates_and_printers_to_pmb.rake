@@ -19,26 +19,46 @@ namespace :pmb do
           @label_types
         end
 
-        def label_type_plate
-          { 'data' =>
-            { 'attributes' =>
-              { 'name' => 'Plate',
-                'feed_value' => '008',
-                'fine_adjustment' => '04',
-                'pitch_length' => '0110',
-                'print_width' => '0920',
-                'print_length' => '0080' } } }
-        end
-
-        def label_type_tube
-          { 'data' =>
-            { 'attributes' =>
-              { 'name' => 'Tube',
-                'feed_value' => '008',
-                'fine_adjustment' => '10',
-                'pitch_length' => '0430',
-                'print_width' => '0300',
-                'print_length' => '0400' } } }
+        def label_type_params(label_type_name)
+          label_params = {
+            plate: {
+              data: {
+                attributes: {
+                  name: 'Plate',
+                  feed_value: '008',
+                  fine_adjustment: '04',
+                  pitch_length: '0110',
+                  print_width: '0920',
+                  print_length: '0080'
+                }
+              }
+            },
+            tube: {
+              data: {
+                attributes: {
+                  name: 'Tube',
+                  feed_value: '008',
+                  fine_adjustment: '10',
+                  pitch_length: '0430',
+                  print_width: '0300',
+                  print_length: '0400'
+                }
+              }
+            },
+            'plate - 6mm': {
+              data: {
+                attributes: {
+                  name: 'plate - 6mm',
+                  feed_value: '008',
+                  fine_adjustment: '04',
+                  pitch_length: '0130',
+                  print_width: '0680',
+                  print_length: '0060'
+                }
+              }
+            }
+          }
+          label_params[label_type_name.to_sym]
         end
 
         def get_label_types
@@ -47,8 +67,8 @@ namespace :pmb do
         end
 
         def get_label_type_id(name)
-          return label_types[name] if label_types.include? name
-          label_type = eval "label_type_#{name.downcase}"
+          return label_types[name] if label_types.include? name.downcase
+          label_type = label_type_params(name)
           res = RestClient.post(label_type_url, label_type.to_json, LabelPrinter::PmbClient.headers)
           JSON.parse(res)['data']['id']
         end
@@ -154,39 +174,131 @@ namespace :pmb do
           }
         end
 
+        def plate_6mm_double
+          {
+            data: {
+              attributes: {
+                name: 'plate_6mm_double',
+                label_type_id: get_label_type_id('plate - 6mm'),
+                labels_attributes: [{
+                  name: 'main_label',
+                  bitmaps_attributes: [{
+                    x_origin: '0010',
+                    y_origin: '0040',
+                    field_name: 'left_text',
+                    horizontal_magnification: '08',
+                    vertical_magnification: '09',
+                    font: 'N',
+                    space_adjustment: '00',
+                    rotational_angles: '00'
+                  },
+                  {
+                    x_origin: '0470',
+                    y_origin: '0040',
+                    field_name: 'right_text',
+                    horizontal_magnification: '08',
+                    vertical_magnification: '09',
+                    font: 'N',
+                    space_adjustment: '00',
+                    rotational_angles: '00'
+                  }],
+                  barcodes_attributes: [{
+                    x_origin: '0210',
+                    y_origin: '0000',
+                    field_name: 'barcode',
+                    barcode_type: '5',
+                    one_module_width: '02',
+                    height: '0050',
+                    rotational_angle: nil,
+                    one_cell_width: nil,
+                    type_of_check_digit: '2',
+                    bar_height: nil,
+                    no_of_columns: nil
+                  }]
+                },
+                {
+                  name: 'extra_label',
+                  bitmaps_attributes: [{
+                    x_origin: '0010',
+                    y_origin: '0035',
+                    field_name: 'left_text',
+                    horizontal_magnification: '05',
+                    vertical_magnification: '06',
+                    font: 'N',
+                    space_adjustment: '00',
+                    rotational_angles: '00'
+                  },
+                  {
+                    x_origin: '0150',
+                    y_origin: '0035',
+                    field_name: 'right_text',
+                    horizontal_magnification: '06',
+                    vertical_magnification: '07',
+                    font: 'N',
+                    space_adjustment: '00',
+                    rotational_angles: '00'
+                  }]
+                }]
+              }
+            }
+          }
+        end
+
         def get_label_templates
           res = RestClient.get(label_template_url, LabelPrinter::PmbClient.headers)
           get_names_and_ids(res)
         end
 
         def create_label_template(name)
+          puts "Creating template: #{name}"
           label_template = eval name
           RestClient.post(label_template_url, label_template.to_json, LabelPrinter::PmbClient.headers)
         end
 
         def get_names_and_ids(res)
-          Hash[JSON.parse(res)['data'].map { |label_type| [label_type['attributes']['name'], label_type['id']] }]
+          Hash[JSON.parse(res)['data'].map { |label_type| [label_type['attributes']['name'].downcase, label_type['id']] }]
+        end
+
+        def register_label_template(template)
+          template = template[:type]&.first
+          if template.present?
+            puts "Registering template: #{template[:name]}"
+            template.label_template_name = template[:name]
+            template.save!
+          end
         end
 
         def execute
-          unregistered_templates = %w[sqsc_96plate_label_template
-                                      sqsc_1dtube_label_template
-                                      sqsc_384plate_label_template
-                                      swipecard_barcode_template]
-          unregistered_templates -= get_label_templates.keys
-          unless unregistered_templates.empty?
-            get_label_types
-            unregistered_templates.each { |name| create_label_template(name) }
+          unregistered_templates = [
+            {
+              name: 'sqsc_96plate_label_template',
+              type: BarcodePrinterType96Plate
+            },
+            {
+              name: 'sqsc_1dtube_label_template',
+              type: BarcodePrinterType1DTube
+            },
+            {
+              name: 'sqsc_384plate_label_template',
+              type: BarcodePrinterType384Plate
+            },
+            {
+              name: 'plate_6mm_double',
+              type: BarcodePrinterType384DoublePlate
+            },
+            {
+              name: 'swipecard_barcode_template',
+              type: nil
+            }
+          ]
+          get_label_types
+          registered_templates = get_label_templates
+          unregistered_templates.each do |template|
+            unless registered_templates.has_key?(template[:name])
+              create_label_template(template[:name])
+              register_label_template(template)
+            end
           end
-          type_tube = BarcodePrinterType1DTube.first
-          type_tube.label_template_name = label_template_1dtube_name
-          type_tube.save!
-          type_plate = BarcodePrinterType96Plate.first
-          type_plate.label_template_name = label_template_96plate_name
-          type_plate.save!
-          type_plate = BarcodePrinterType384Plate.first
-          type_plate.label_template_name = label_template_384plate_name
-          type_plate.save!
         end
       end
     end
