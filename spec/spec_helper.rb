@@ -62,6 +62,7 @@ Capybara.javascript_driver = ENV.fetch('JS_DRIVER', 'headless_chrome').to_sym
 WebMock.disable_net_connect!(allow_localhost: true)
 
 RSpec.configure do |config|
+  config.bisect_runner = :shell # Forking doesn't seem to work
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.
