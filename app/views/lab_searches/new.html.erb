@@ -5,7 +5,7 @@
   <%= page_title 'Lab Search', @query %>
 
   <%= form_tag('/lab_searches/new', method: :get, class: 'form-inline') do -%>
-    <div>Search for: <%= search_field_tag "q", @query, class: 'form-control' -%> <%= submit_tag "Go", class: 'btn' -%></div>
+    <div>Search for: <%= search_field_tag "q", @query, class: 'form-control' -%> <%= submit_tag "Go", class: 'btn btn-primary' -%></div>
   <% end -%>
 
   <% unless params["q"].blank? -%>

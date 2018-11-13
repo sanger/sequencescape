@@ -1,4 +1,3 @@
-
 class IlluminaC::LibPcrXpPurpose < PlatePurpose
   include PlatePurpose::RequestAttachment
 

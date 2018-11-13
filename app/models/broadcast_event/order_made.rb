@@ -1,4 +1,3 @@
-
 class BroadcastEvent::OrderMade < BroadcastEvent
   set_event_type 'order_made'
 

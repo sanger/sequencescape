@@ -1,4 +1,3 @@
-
 # Use in migrations to deprecate request classes
 # Usage:
 # include RequestClassDeprecator

@@ -1,4 +1,3 @@
-
 class ::Io::VolumeUpdate < ::Core::Io::Base
   set_model_for_input(::VolumeUpdate)
   set_json_root(:volume_update)

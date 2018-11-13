@@ -1,4 +1,3 @@
-
 module StandardNamedScopes
   def self.included(base)
     base.instance_eval do

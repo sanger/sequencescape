@@ -1,4 +1,3 @@
-
 module Core::Endpoint::BasicHandler::Associations::HasFile
   def has_file(options)
     ::Api::EndpointHandler.register_mimetype(options[:content_type])

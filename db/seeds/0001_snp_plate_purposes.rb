@@ -1,4 +1,3 @@
-
 # Initially copied from SNP
 plate_purposes = <<~EOS
   - name: Working Dilution

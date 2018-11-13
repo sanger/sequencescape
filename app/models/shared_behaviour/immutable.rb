@@ -1,4 +1,3 @@
-
 module SharedBehaviour::Immutable
   MUTABLE = ['deprecated_at', 'updated_at']
 

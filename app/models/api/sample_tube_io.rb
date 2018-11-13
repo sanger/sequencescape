@@ -1,4 +1,3 @@
-
 class Api::SampleTubeIO < Api::Base
   module Extensions
     module ClassMethods

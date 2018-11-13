@@ -4,12 +4,12 @@ FactoryBot.define do
   factory :qc_report do
     study
     product_criteria
-    exclude_existing false
+    exclude_existing { false }
   end
 
   factory :qc_metric do
     qc_report
     asset            { |a| a.association(:well) }
-    qc_decision      'passed'
+    qc_decision      { 'passed' }
   end
 end

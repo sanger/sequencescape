@@ -1,4 +1,3 @@
-
 class CherrypickForFluidigmRequest < CherrypickRequest
   has_metadata as: Request do
     belongs_to :target_purpose, class_name: 'Purpose'

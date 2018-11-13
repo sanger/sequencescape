@@ -1,4 +1,3 @@
-
 class PlatePurpose < Purpose
   self.default_prefix = 'DN'
 
@@ -79,7 +78,7 @@ class PlatePurpose < Purpose
     private
 
     def transition_state_requests(wells, state)
-      wells = wells.includes(:requests_as_target, transfer_requests_as_target: { asset: :requests })
+      wells = wells.includes(:requests_as_target, transfer_requests_as_target: :associated_requests)
       wells.each do |w|
         w.requests_as_target.each { |r| r.transition_to(state) }
         w.transfer_requests_as_target.each { |r| r.transition_to(state) }
@@ -125,14 +124,6 @@ class PlatePurpose < Purpose
 
   def size
     super || 96
-  end
-
-  def well_locations
-    in_preferred_order(Map.where_plate_size(size).where_plate_shape(asset_shape))
-  end
-
-  def in_preferred_order(relationship)
-    relationship.send("in_#{cherrypick_direction}_major_order")
   end
 
   def create!(*args, &block)

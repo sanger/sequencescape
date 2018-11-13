@@ -1,4 +1,3 @@
-
 class Search::FindPlatesForUser < Search
   def scope(user_criteria)
     # We find all plates that do not have transfers where they are the source.  Once a plate has been transferred (or marked

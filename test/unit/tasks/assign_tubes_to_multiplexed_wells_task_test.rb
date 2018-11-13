@@ -1,4 +1,3 @@
-
 require 'test_helper'
 
 # TODO: See below

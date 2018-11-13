@@ -1,4 +1,3 @@
-
 class Implement < ApplicationRecord
   validates_presence_of :name
   validates :barcode, presence: true, on: :update

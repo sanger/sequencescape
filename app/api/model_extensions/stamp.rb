@@ -1,4 +1,3 @@
-
 module ModelExtensions::Stamp
   def stamp_details=(details)
     stamp_qcables.build(details.map { |d| locate_qcable(d) })

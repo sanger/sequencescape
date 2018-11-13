@@ -1,4 +1,3 @@
-
 module Batch::PipelineBehaviour
   def self.included(base)
     base.class_eval do

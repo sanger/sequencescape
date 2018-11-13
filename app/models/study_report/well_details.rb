@@ -1,4 +1,3 @@
-
 module StudyReport::WellDetails
   def self.included(base)
     base.class_eval do

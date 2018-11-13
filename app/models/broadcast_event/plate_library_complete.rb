@@ -1,4 +1,3 @@
-
 class BroadcastEvent::PlateLibraryComplete < BroadcastEvent
   set_event_type 'library_complete'
 

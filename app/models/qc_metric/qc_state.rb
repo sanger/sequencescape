@@ -1,4 +1,3 @@
-
 module QcMetric::QcState
   State = Struct.new(:name, :automatic, :passed, :proceedable)
 

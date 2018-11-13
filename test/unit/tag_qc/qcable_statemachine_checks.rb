@@ -1,4 +1,3 @@
-
 module QcableStatemachineChecks
   class StatemachineHelper
     def initialize(owner, target, &block)

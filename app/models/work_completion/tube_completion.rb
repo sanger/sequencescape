@@ -25,8 +25,7 @@ class WorkCompletion::TubeCompletion
       # We need to find the downstream requests BEFORE connecting the upstream
       # This is because submission.next_requests tries to take a shortcut through
       # the target_asset if it is defined.
-      downstream = upstream.submission.next_requests(upstream)
-      downstream.each { |ds| ds.update_attributes!(asset: target_tube) }
+      upstream.next_requests.each { |ds| ds.update_attributes!(asset: target_tube) }
       # In some cases, such as the Illumina-C pipelines, requests might be
       # connected upfront. We don't want to touch these.
       upstream.target_asset ||= target_tube
@@ -42,14 +41,7 @@ class WorkCompletion::TubeCompletion
   end
 
   def detect_upstream_requests
-    CustomerRequest.includes(
-      { submission: :orders },
-      { request_type: :request_type_validators },
-      { target_asset: :aliquots },
-      :request_events,
-      :billing_product,
-      :billing_items,
-      :request_metadata
-    ).where(id: target_tube.aliquots.pluck(:request_id))
+    CustomerRequest.includes(WorkCompletion::REQUEST_INCLUDES)
+                   .where(id: target_tube.aliquots.pluck(:request_id))
   end
 end

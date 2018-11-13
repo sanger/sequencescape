@@ -1,4 +1,3 @@
-
 class RequestType::PoolingMethod < ApplicationRecord
   has_many :request_types
   validates_presence_of :pooling_behaviour

@@ -1,4 +1,3 @@
-
 module Cherrypick::VolumeByNanoGramsPerMicroLitre
   def volume_to_cherrypick_by_nano_grams_per_micro_litre(volume_required, concentration_required, source_concentration, source_volume, robot_minimum_picking_volume = 0.0)
     robot_minimum_picking_volume ||= 0

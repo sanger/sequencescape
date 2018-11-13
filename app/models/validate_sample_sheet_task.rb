@@ -1,4 +1,3 @@
-
 class ValidateSampleSheetTask < Task
   class ValidateSampleSheetData < Task::RenderElement
     def initialize(request)

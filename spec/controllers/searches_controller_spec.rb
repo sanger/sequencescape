@@ -78,20 +78,20 @@ RSpec.describe SearchesController do
       context 'With an ean13 barcode' do
         let(:query) { asset.ean13_barcode }
         it 'finds the asset' do
-          expect(assigns(:assets)).to include(asset)
+          expect(assigns(:barcodes)).to include(asset.barcodes.first)
         end
         it 'does not find other assets' do
-          expect(assigns(:assets)).not_to include(other_asset)
+          expect(assigns(:barcodes)).not_to include(other_asset.barcodes.first)
         end
       end
 
       context 'With an human barcode' do
         let(:query) { asset.human_barcode }
         it 'finds the asset' do
-          expect(assigns(:assets)).to include(asset)
+          expect(assigns(:barcodes)).to include(asset.barcodes.first)
         end
         it 'does not find other assets' do
-          expect(assigns(:assets)).not_to include(other_asset)
+          expect(assigns(:barcodes)).not_to include(other_asset.barcodes.first)
         end
       end
     end

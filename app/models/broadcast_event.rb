@@ -1,4 +1,3 @@
-
 class BroadcastEvent < ApplicationRecord
   EVENT_JSON_ROOT = 'event'
   UNKNOWN_USER_IDENTIFIER = 'UNKNOWN'

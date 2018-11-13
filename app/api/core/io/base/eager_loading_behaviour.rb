@@ -1,4 +1,3 @@
-
 module Core::Io::Base::EagerLoadingBehaviour
   def set_eager_loading
     singleton_class.class_eval do

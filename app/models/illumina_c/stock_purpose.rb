@@ -1,4 +1,3 @@
-
 class IlluminaC::StockPurpose < PlatePurpose
   include PlatePurpose::Stock
 
@@ -10,8 +9,16 @@ class IlluminaC::StockPurpose < PlatePurpose
     end
   end
 
+  private
+
   def transition_from(state)
     { 'pending' => :cancel_before_started!, 'started' => :cancel! }[state]
   end
-  private :transition_from
+
+  def calculate_state_of_well(wells_states)
+    cancelled = wells_states.delete('cancelled') if wells_states.count > 1
+    return wells_states.first if wells_states.one?
+    return :unready if wells_states.size > 1
+    cancelled || :unready
+  end
 end

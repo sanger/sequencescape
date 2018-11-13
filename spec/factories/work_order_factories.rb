@@ -7,6 +7,6 @@ FactoryBot.define do
 
   factory :work_order do
     work_order_type
-    state 'pending'
+    state { 'pending' }
   end
 end

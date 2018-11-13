@@ -1,4 +1,3 @@
-
 class Robot < ApplicationRecord
   include Uuid::Uuidable
   include ModelExtensions::Robot

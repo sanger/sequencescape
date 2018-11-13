@@ -1,4 +1,3 @@
-
 class ReRequestSubmission < Order
   include Submission::LinearRequestGraph
   include Submission::Crossable

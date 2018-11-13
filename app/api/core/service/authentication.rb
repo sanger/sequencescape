@@ -1,4 +1,3 @@
-
 module Core::Service::Authentication
   class UnauthenticatedError < Core::Service::Error
     def self.no_cookie!

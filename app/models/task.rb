@@ -1,4 +1,3 @@
-
 class Task < ApplicationRecord
   belongs_to :workflow, class_name: 'Workflow', foreign_key: :pipeline_workflow_id
   has_many :families

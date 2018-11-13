@@ -1,4 +1,3 @@
-
 class Io::Lane < Io::Asset
   set_model_for_input(::Lane)
   set_json_root(:lane)

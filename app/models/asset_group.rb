@@ -1,4 +1,3 @@
-
 class AssetGroup < ApplicationRecord
   include Uuid::Uuidable
   include ModelExtensions::AssetGroup

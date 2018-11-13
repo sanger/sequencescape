@@ -1,4 +1,3 @@
-
 class BarcodePrinter < ApplicationRecord
   include Uuid::Uuidable
 

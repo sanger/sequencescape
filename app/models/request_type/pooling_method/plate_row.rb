@@ -1,4 +1,3 @@
-
 ##
 # Set on a multiplexed request_type
 # Pools based on the row of the source asset.

@@ -1,4 +1,3 @@
-
 # TODO: All of the behaviour in this file should really exist within the PacBioLibraryTube model.
 module ModelExtensions::PacBioLibraryTube
   def self.included(base)

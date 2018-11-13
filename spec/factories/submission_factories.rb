@@ -13,10 +13,10 @@ FactoryBot.define do
   factory :submission_template do
     transient do
       request_type_ids_list { request_types.map { |rt| [rt.id] } }
-      request_types []
+      request_types { [] }
     end
 
-    submission_class_name LinearSubmission.name
+    submission_class_name { LinearSubmission.name }
     sequence(:name) { |i| "Template #{i}" }
     submission_parameters { { request_type_ids_list: request_type_ids_list } }
     product_catalogue { |pc| pc.association(:single_product_catalogue) }

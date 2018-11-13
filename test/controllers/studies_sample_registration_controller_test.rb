@@ -1,4 +1,3 @@
-
 require 'test_helper'
 require 'studies/sample_registration_controller'
 

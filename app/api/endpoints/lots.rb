@@ -1,4 +1,3 @@
-
 class ::Endpoints::Lots < ::Core::Endpoint::Base
   model do
   end

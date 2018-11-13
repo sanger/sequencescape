@@ -1,4 +1,3 @@
-
 require_dependency 'illumina_htp/plate_purposes'
 
 class Search::FindIlluminaAPlates < Search

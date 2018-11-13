@@ -29,7 +29,7 @@ module Api
 
       filter :state
       filter :order_type, apply: (lambda do |records, value, _options|
-        records.where(work_order_types: { name: value })
+        records.joins(:work_order_type).where(work_order_types: { name: value })
       end)
 
       def quantity
