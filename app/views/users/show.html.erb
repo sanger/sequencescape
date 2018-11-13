@@ -37,7 +37,7 @@ end %>
 </div>
 <div class="card-default">
 <%= panel(:default, title: 'Print Swipecard Barcode') do %>
-  <form>
+  <form onkeypress="return event.keyCode != 13;">
     <table>
       <tr>
         <th><label for="swipecard">Swipecard</label></th>
