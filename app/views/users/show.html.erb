@@ -59,6 +59,7 @@ end %>
       </tr>
     </table>
     <div id="pmb-data" data-pmb-api="<%= configatron.pmb_api %>" data-pmb-template="<%= @label_template_id || 0 %>"></div>
+    <div id="usr-data" data-usr-login="<%= @user.login %>"></div>
   <%= javascript_include_tag 'print_swipecard.js' %>
   </form>
 <% end %>

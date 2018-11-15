@@ -6,6 +6,7 @@
             var swipecard = $('#swipecard').val().trim();
             var printer_name = $('#barcode-printer-list').find(":selected").val();
             var label_template_id = $('#pmb-data').data('pmb-template');
+            var user_login = $('#usr-data').data('usr-login');
             var pmb_url = $('#pmb-data').data('pmb-api') + '/print_jobs';
             var print_job = {
                                 data: {
@@ -16,7 +17,7 @@
                                             body: [
                                                 {
                                                     main: {
-                                                        left_text: 'Swipecard',
+                                                        left_text: user_login,
                                                         barcode: swipecard
                                                     }
                                                 }
