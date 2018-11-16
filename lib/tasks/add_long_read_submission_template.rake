@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
 namespace :long_read do
   desc 'Create the long read request types'
@@ -28,7 +29,7 @@ namespace :long_read do
   end
 
   desc 'Create the long read submission templates'
-  task create_submission_template: %i(environment create_request_type) do
+  task create_submission_template: %i[environment create_request_type] do
     puts 'Creating submission templates....'
     ActiveRecord::Base.transaction do
       unless SubmissionTemplate.where(name: 'Long Read').exists?

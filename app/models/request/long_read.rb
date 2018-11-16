@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 require_dependency 'request'
 class Request
+  # LongRead request
   class LongRead < CustomerRequest
     self.sequencing = true
 
@@ -14,6 +17,5 @@ class Request
     def passed?
       state == 'passed'
     end
-
   end
 end
