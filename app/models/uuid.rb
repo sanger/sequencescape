@@ -117,6 +117,7 @@ class Uuid < ApplicationRecord
   # @return [String] the uuid .
   def self.find_uuid!(resource_type, resource_id)
     return unless resource_id # return nil for nil
+
     find_uuid(resource_type, resource_id) ||
       create!(resource_type: resource_type, resource_id: resource_id).external_id
   end
@@ -127,6 +128,7 @@ class Uuid < ApplicationRecord
   # @return [String] the uuid .
   def self.generate_uuids!(resource_type, resource_ids)
     return if resource_ids.empty?
+
     ids_missing_uuids = filter_uncreated_uuids(resource_type, resource_ids)
     uuids_to_create = ids_missing_uuids.map { |id| create!(resource_type: resource_type, resource_id: id, external_id: generate_uuid) }
     # Uuid.import uuids_to_create unless uuids_to_create.empty?

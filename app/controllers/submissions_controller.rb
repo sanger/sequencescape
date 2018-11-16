@@ -49,7 +49,7 @@ class SubmissionsController < ApplicationController
   end
 
   def change_priority
-    Submission.find(params[:id]).update_attributes!(priority: params[:submission][:priority])
+    Submission.find(params[:id]).update!(priority: params[:submission][:priority])
     redirect_to action: :show, id: params[:id]
   end
 

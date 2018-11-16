@@ -112,6 +112,7 @@ module BroadcastEvent::SubjectHelpers
     def has_subject(role_type, method = nil, &block)
       return subject_associations << SimpleSingleSubjectAssociation.new(role_type, method) unless method.nil?
       return subject_associations << BlockSingleSubjectAssociation.new(role_type, &block) unless block.nil?
+
       raise StandardError, "No block or method defined for #{role_type} on #{name}"
     end
 
@@ -119,6 +120,7 @@ module BroadcastEvent::SubjectHelpers
     def has_subjects(role_type, method = nil, &block)
       return subject_associations << SimpleManySubjectAssociation.new(role_type, method) unless method.nil?
       return subject_associations << BlockManySubjectAssociation.new(role_type, &block) unless block.nil?
+
       raise StandardError, "No block or method defined for #{role_type} on #{name}"
     end
 

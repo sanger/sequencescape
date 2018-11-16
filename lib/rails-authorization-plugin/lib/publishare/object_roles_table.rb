@@ -81,6 +81,7 @@ module Authorization
           unless authorizable_class.is_a? Class
             raise CannotGetAuthorizables, "Invalid argument: '#{authorizable_class}'. You must provide a class here."
           end
+
           begin
             authorizable_class.find(
               roles.where(authorizable_type: authorizable_class.base_class.to_s).map(&:authorizable_id).uniq

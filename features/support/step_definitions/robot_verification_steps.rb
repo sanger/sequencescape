@@ -74,12 +74,12 @@ end
 Given /^I have a released cherrypicking batch with 1 plate which doesnt need buffer$/ do
   step('I have a released cherrypicking batch with 1 samples and the minimum robot pick is "1"')
   plate = Plate.last
-  plate.wells.each { |well| well.well_attribute.update_attributes!(buffer_volume: nil) }
+  plate.wells.each { |well| well.well_attribute.update!(buffer_volume: nil) }
 end
 
 Given /^user "([^"]*)" has a user barcode of "([^"]*)"$/ do |login, user_barcode|
   user = User.find_by(login: login)
-  user.update_attributes!(barcode: user_barcode)
+  user.update!(barcode: user_barcode)
 end
 
 Transform /^the last batch$/ do |_|

@@ -21,6 +21,7 @@ module Core::Endpoint::BasicHandler::Actions::InnerAction
 
   def rooted_json(options, &block)
     return yield(options[:stream]) if @options.key?(:json)
+
     options[:stream].block(@options[:json].to_s, &block)
   end
   private :rooted_json

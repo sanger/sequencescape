@@ -110,6 +110,7 @@ class Aliquot < ApplicationRecord
     # Find the most highly tagged aliquot
     return 2 if dual_tagged?
     return 1 if tagged?
+
     0
   end
 

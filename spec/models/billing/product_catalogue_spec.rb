@@ -21,7 +21,7 @@ describe Billing::ProductCatalogue, billing: true do
 
   it 'finds the right product for a sequencing request' do
     request = create :sequencing_request
-    request.request_metadata.update_attributes(read_length: 150)
+    request.request_metadata.update(read_length: 150)
     create :billing_product, billing_product_catalogue: product_catalogue, identifier: 100
     product = create :billing_product, billing_product_catalogue: product_catalogue, identifier: 150
     expect(product_catalogue.find_product_for_request(request)).to eq product

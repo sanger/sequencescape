@@ -25,6 +25,7 @@ module ::Core::Endpoint::BasicHandler::Actions::Guards
 
     def execute(object)
       return true if @guards.empty?
+
       @guards.all? { |guard| guard.execute(object) }
     end
   end

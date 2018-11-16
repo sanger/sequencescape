@@ -17,6 +17,7 @@ module PlatePurpose::Stock
     end
 
     return UNREADY_STATE unless wells_states.count == ids_of_wells_with_aliquots.count
+
     calculate_state_of_plate(wells_states)
   end
 
@@ -25,6 +26,7 @@ module PlatePurpose::Stock
   def calculate_state_of_plate(wells_states)
     unique_states = wells_states.uniq
     return UNREADY_STATE if unique_states.include?(:unready)
+
     case unique_states.sort
     when ['failed'] then 'failed'
     when ['cancelled'] then 'cancelled'

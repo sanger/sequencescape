@@ -117,6 +117,7 @@ class BatchesController < ApplicationController
 
     @batch.batch_requests.each do |br|
       next unless br && params[br.request_id.to_s]
+
       qc_state = params[br.request_id.to_s]['qc_state']
       target = br.request.target_asset
       if qc_state == 'fail'
@@ -242,6 +243,7 @@ class BatchesController < ApplicationController
 
     @output_assets.each do |parent, _children|
       next if parent.nil?
+
       plate_barcode = parent.human_barcode
       @output_barcodes << plate_barcode if plate_barcode.present?
     end
@@ -493,6 +495,7 @@ class BatchesController < ApplicationController
 
       # If this isn't the exception we're expecting, re-raise it.
       raise exception unless /request_id/.match?(exception.message)
+
       # Find the requests which casued the clash.
       batched_requests = BatchRequest.where(request_id: requests.map(&:id)).pluck(:request_id)
       # Limit the length of the error message, otherwise big batches may generate errors which are too

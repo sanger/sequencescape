@@ -112,8 +112,10 @@ class User < ApplicationRecord
 
   def projects
     return Project.all if is_administrator?
+
     atuhorized = authorized_projects
     return Project.all if ((atuhorized.blank?) && (privileged?))
+
     atuhorized
   end
 
@@ -155,6 +157,7 @@ class User < ApplicationRecord
 
   def lab_manager?
     return @lab_manager if instance_variable_defined?('@lab_manager')
+
     @lab_manager = has_role? 'lab_manager'
   end
 
@@ -172,6 +175,7 @@ class User < ApplicationRecord
 
   def owner?(item)
     return false if item.nil?
+
     has_role? 'owner', item
   end
 
@@ -229,6 +233,7 @@ class User < ApplicationRecord
   # before filter
   def encrypt_password
     return if password.blank?
+
     self.salt = Digest::SHA1.hexdigest("--#{Time.now}--#{login}--") if new_record?
     self.crypted_password = encrypt(password)
   end

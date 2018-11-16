@@ -13,7 +13,7 @@ class ::Endpoints::SampleManifests < ::Core::Endpoint::Base
     action(:update) do |request, _response|
       ActiveRecord::Base.transaction do
         request.target.tap do |manifest|
-          manifest.update_attributes!(request.attributes(request.target), request.user)
+          manifest.update!(request.attributes(request.target), request.user)
         end
       end
     end

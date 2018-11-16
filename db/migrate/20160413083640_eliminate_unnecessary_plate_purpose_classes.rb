@@ -22,7 +22,8 @@ class EliminateUnnecessaryPlatePurposeClasses < ActiveRecord::Migration
       conversions.each do |name, (old_type, new_type)|
         purpose = Purpose.find_by(name: name)
         raise StandardError, "Unexpected class for #{name}: #{purpose.type} (expected #{old_type})" unless purpose.type == old_type
-        purpose.update_attributes!(type: new_type)
+
+        purpose.update!(type: new_type)
       end
     end
   end
@@ -32,7 +33,8 @@ class EliminateUnnecessaryPlatePurposeClasses < ActiveRecord::Migration
       conversions.each do |name, (old_type, new_type)|
         purpose = Purpose.find_by(name: name)
         raise StandardError, "Unexpected class for #{name}: #{purpose.type} (expected #{new_type})" unless purpose.type == new_type
-        purpose.update_attributes!(type: old_type)
+
+        purpose.update!(type: old_type)
       end
     end
   end

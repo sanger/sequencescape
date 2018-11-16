@@ -22,6 +22,7 @@ module Api
       def file_addition(action, http_method)
         send(http_method, %r{/([\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12})(?:/([^/]+(?:/[^/]+)*))?}, file_attatched: true) do
           raise Core::Service::ContentFiltering::InvalidRequestedContentTypeOnFile if request.acceptable_media_types.prioritize(registered_mimetypes).present?
+
           report('file') do
             filename = /filename="([^"]*)"/.match(request.env['HTTP_CONTENT_DISPOSITION']).try(:[], 1) || 'unnamed_file'
             begin
@@ -50,6 +51,7 @@ module Api
       def file_model_addition(action, http_method)
         send(http_method, %r{/([^\d/][^/]+(?:/[^/]+){0,2})}, file_attatched: true) do
           raise Core::Service::ContentFiltering::InvalidRequestedContentType if request.acceptable_media_types.prioritize(registered_mimetypes).present?
+
           report('model') do
             filename = /filename="([^"]*)"/.match(request.env['HTTP_CONTENT_DISPOSITION']).try(:[], 1) || 'unnamed_file'
             begin
@@ -161,6 +163,7 @@ module Api
           constant = nil
         end
         next unless constant
+
         return yield(constant, remainder)
       end
       raise StandardError, "Cannot route #{parts.join('/').inspect}"
@@ -201,6 +204,7 @@ module Api
       endpoint = endpoint_for_object(request.target)
       file_through = request.instance(action, endpoint).handled_by.file_through(request_accepted)
       raise Core::Service::ContentFiltering::InvalidRequestedContentType if file_through.nil?
+
       Rails.logger.info("API[endpoint]: File: #{requested_url} handled by #{endpoint.inspect}")
       file_through
     end

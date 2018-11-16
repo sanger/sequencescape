@@ -21,6 +21,7 @@ module StudiesHelper
 
   def display_file_icon(document)
     return icon('fas', 'exclamation-circle', class: 'text-danger') unless document
+
     case document.content_type
     when /pdf/
       icon('far', 'file-pdf', title: 'PDF')

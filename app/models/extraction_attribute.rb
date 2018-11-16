@@ -25,11 +25,13 @@ class ExtractionAttribute < ApplicationRecord
   def is_reracking?(well_info)
     well = well_info['resource']
     return false unless well
+
     (well.plate != target) || (well.map_description != well_info['location'])
   end
 
   def inject_resources(attr_well, attr_well_uuid_key, attr_well_resource_key)
     return unless attr_well
+
     if attr_well[attr_well_uuid_key]
       attr_well[attr_well_resource_key] = Uuid.find_by(external_id: attr_well[attr_well_uuid_key]).resource
     end
@@ -69,6 +71,7 @@ class ExtractionAttribute < ApplicationRecord
       # a well to rack. We should create a new well. For the moment, we'll fail in this situation
       raise WellNotExists
     end
+
     disallow_wells_with_multiple_samples!(destination_well, samples)
     samples.all? { |sample| !destination_well.samples.include?(sample) }
   end
@@ -78,6 +81,7 @@ class ExtractionAttribute < ApplicationRecord
     unless well_data['sample_tube_resource']
       raise SampleTubeNotExists
     end
+
     sample_tube = well_data['sample_tube_resource']
     aliquots = sample_tube.aliquots.map(&:dup)
     samples = sample_tube.samples
@@ -92,6 +96,7 @@ class ExtractionAttribute < ApplicationRecord
 
   def rerack_well(well_data)
     return unless well_data
+
     well = well_data['resource']
     previous_parent = well.parent
     actual_parent = target
@@ -100,8 +105,8 @@ class ExtractionAttribute < ApplicationRecord
     actual_map = target.maps.select { |m| m.description == location }.first
     raise WellNotExists if actual_map.nil?
 
-    actual_well_in_same_position_at_rack&.update_attributes(plate: nil)
-    well.update_attributes(plate: actual_parent, map: actual_map)
+    actual_well_in_same_position_at_rack&.update(plate: nil)
+    well.update(plate: actual_parent, map: actual_map)
   end
 
   private :update_performed

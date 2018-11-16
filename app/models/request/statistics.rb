@@ -41,6 +41,7 @@ module Request::Statistics
     # it wouldn't make sense to increment progress.
     def progress
       return 0 if passed.zero? # If there are no passed then the progress is 0% by definition
+
       (passed * 100) / (total - failed)
     end
 

@@ -122,7 +122,7 @@ namespace :billing do
       request_type = RequestType.find_by(key: request_type_key)
       product_catalogue = Billing::ProductCatalogue.find_by(name: product_catalogue_name)
       if request_type.present? && product_catalogue.present?
-        request_type.update_attributes(billing_product_catalogue: product_catalogue)
+        request_type.update(billing_product_catalogue: product_catalogue)
         puts "Product catalogue #{product_catalogue_name} was added to request type #{request_type_key}"
       end
     end

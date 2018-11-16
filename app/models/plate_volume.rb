@@ -17,17 +17,20 @@ class PlateVolume < ApplicationRecord
 
   def call(filename, file)
     return unless update_required?(file.stat.mtime)
+
     db_files.map(&:destroy)
     reload
-    update_attributes!(uploaded_file_name: filename, updated_at: file.stat.mtime, uploaded: file)
+    update!(uploaded_file_name: filename, updated_at: file.stat.mtime, uploaded: file)
   end
 
   private
 
   def calculate_barcode_from_filename
     return if uploaded_file_name.blank?
+
     match = uploaded_file_name.match(/^([\w-]+).csv/i)
     return if match.nil?
+
     self.barcode = match[1]
   end
 
@@ -37,6 +40,7 @@ class PlateVolume < ApplicationRecord
       short_well_description = Map.strip_description(well_description)
       well = location_to_well[short_well_description]
       next if well.blank?
+
       QcResult.create(asset: well, key: 'volume', value: volume, units: 'ul', assay_type: ASSAY_TYPE, assay_version: ASSAY_VERSION, qc_assay: qc_assay)
     end
   end
@@ -51,6 +55,7 @@ class PlateVolume < ApplicationRecord
 
   def extract_well_volumes
     return if uploaded.nil?
+
     head, *tail = CSV.parse(uploaded.file.read)
     tail.each { |(_barcode, location, volume)| yield(location, volume) }
   end

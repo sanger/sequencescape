@@ -63,6 +63,7 @@ class SampleRegistrar < ApplicationRecord
     helper     = AssetGroupHelper.new
     registrars = registration_attributes.map { |attributes| new(attributes.merge(asset_group_helper: helper)) }.reject(&:ignore?)
     raise NoSamplesError, registrars if registrars.empty?
+
     begin
       # We perform this in a database wide transaction because it is altering several tables.  It also locks
       # the tables from change whilst we validate our instances.
@@ -71,6 +72,7 @@ class SampleRegistrar < ApplicationRecord
         # problem at a time, and annoy our users no-end
         all_valid = registrars.inject(true) { |all_valid_so_far, registrar| registrar.valid? && all_valid_so_far }
         raise RegistrationError, registrars unless all_valid
+
         registrars.each(&:save!)
       end
 
@@ -125,6 +127,7 @@ class SampleRegistrar < ApplicationRecord
 
   def self.create_asset_group_by_name(name, study)
     return nil if name.blank?
+
     AssetGroup.find_by(name: name) || AssetGroup.create!(name: name, study: study)
   end
 
@@ -179,7 +182,7 @@ class SampleRegistrar < ApplicationRecord
     end.merge(
       'Asset group' => ->(attributes, value) { attributes[:asset_group_name] = value },
       'Sample name' => ->(attributes, value) { attributes[:sample_attributes][:name] = value },
-      '2D barcode'  => ->(attributes, value) { attributes[:sample_tube_attributes][:two_dimensional_barcode] = value },
+      '2D barcode' => ->(attributes, value) { attributes[:sample_tube_attributes][:two_dimensional_barcode] = value },
       'Reference Genome' => ->(attributes, value) { attributes[:sample_attributes][:sample_metadata_attributes][:reference_genome_id] = ReferenceGenome.find_by(name: value).try(:id) || 0 }
     )
 
@@ -216,6 +219,7 @@ class SampleRegistrar < ApplicationRecord
 
       used_definitions.each_with_index do |column_handler, index|
         next if column_handler.nil?
+
         value = worksheet.cell(row, index).to_s.gsub(/\000/, '').gsub(/\.0/, '').strip
         column_handler.call(attributes, value) if value.present?
       end

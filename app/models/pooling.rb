@@ -11,6 +11,7 @@ class Pooling
 
   def execute
     return false unless valid?
+
     @stock_mx_tube = Tube::Purpose.stock_mx_tube.create!(name: '(s)') if stock_mx_tube_required?
     @standard_mx_tube = Tube::Purpose.standard_mx_tube.create!
     transfer

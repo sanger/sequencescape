@@ -26,7 +26,7 @@ class Admin::BaitLibraries::BaitLibraryTypesController < ApplicationController
 
   def update
     respond_to do |format|
-      if @bait_library_type.update_attributes(params[:bait_library_type])
+      if @bait_library_type.update(params[:bait_library_type])
         flash[:notice] = 'Bait Library Type was successfully updated.'
         format.html { redirect_to(admin_bait_libraries_path) }
       else

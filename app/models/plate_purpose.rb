@@ -171,6 +171,7 @@ class PlatePurpose < Purpose
       queries << Request.where(asset_id: stock_wells, submission_id: submission_ids)
     end
     raise 'Apparently there are not requests on these wells?' if queries.empty?
+
     # Here we chain together our various request scope using or, allowing us to retrieve them in a single query.
     request_scope = queries.reduce(queries.pop) { |scope, query| scope.or(query) }
     request_scope.each do |request|

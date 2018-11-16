@@ -106,6 +106,7 @@ class Project < ApplicationRecord
 
   def submittable?
     return true if project_metadata.project_funding_model.present?
+
     errors.add(:base, 'No funding model specified')
     false
   end

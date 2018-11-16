@@ -12,6 +12,7 @@ class WorkingDilutionPlate < DilutionPlate
       # If we have multiple parents, or don't have a dilution
       # factor specified then move on.
       return true unless parents.one? && dilution_factor.present?
+
       multiplier = dilution_factor / (parent.dilution_factor || 1.0)
       dilution_parser = Parsers::DilutionParser.new(parser, multiplier)
       parent.update_qc_values_with_parser(dilution_parser)

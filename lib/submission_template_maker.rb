@@ -17,7 +17,7 @@ module SubmissionTemplateMaker
         }.reverse_merge(old_template.attributes).except!('created_at', 'updated_at')
       )
 
-      old_template.update_attributes(visible: false)
+      old_template.update(visible: false)
     end
   end
 

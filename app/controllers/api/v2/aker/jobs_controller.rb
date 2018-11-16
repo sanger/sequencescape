@@ -24,6 +24,7 @@ module Api
           params[:data].each_with_object(json: [], status: :created) do |param_job, response|
             job = ::Aker::Factories::Job.new(param_job[:attributes].permit!)
             return { json: job.errors, status: :unprocessable_entity } unless job.valid?
+
             response[:json].push(job.create)
           end
         end

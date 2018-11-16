@@ -26,6 +26,7 @@ class SpikedBuffer < LibraryTube
 
   def percentage_of_index
     return nil unless index
+
     100 * index.volume / volume
   end
 

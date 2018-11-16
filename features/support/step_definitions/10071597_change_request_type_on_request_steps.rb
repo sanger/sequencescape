@@ -4,7 +4,7 @@ Given /^sequencescape is setup for 10071597$/ do
   library_tube = FactoryBot.create :empty_library_tube
   request_type = RequestType.find_by(name: 'Illumina-B Paired end sequencing')
   request = FactoryBot.create :request, asset: library_tube, target_asset: lane, state: 'pending', project: project, request_type: request_type
-  project.update_attributes!(enforce_quotas: true)
+  project.update!(enforce_quotas: true)
 end
 
 Given /^last request the state "([^\"]*)"$/ do |state|

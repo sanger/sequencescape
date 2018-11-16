@@ -174,8 +174,8 @@ MultiplexedLibraryCreationPipeline.create!(name: 'Illumina-C MX Library Preparat
     workflow.locale = 'External'
   end.tap do |workflow|
     {
-      TagGroupsTask      => { name: 'Tag Groups',       sorted: 1, lab_activity: true },
-      AssignTagsTask     => { name: 'Assign Tags',      sorted: 2, lab_activity: true },
+      TagGroupsTask => { name: 'Tag Groups', sorted: 1, lab_activity: true },
+      AssignTagsTask => { name: 'Assign Tags', sorted: 2, lab_activity: true },
       SetDescriptorsTask => { name: 'Initial QC',       sorted: 3, batched: false, lab_activity: true },
       SetDescriptorsTask => { name: 'Gel',              sorted: 4, batched: false, lab_activity: true },
       SetDescriptorsTask => { name: 'Characterisation', sorted: 5, batched: true, lab_activity: true }
@@ -1035,11 +1035,6 @@ CherrypickPipeline.create!(
 ) do |pipeline|
 end
 
-tosta = RequestType.find_by(key: 'pick_to_sta').id
-tosta2 = RequestType.find_by(key: 'pick_to_sta2').id
-ptst = RequestType.find_by(key: 'pick_to_snp_type').id
-tofluidigm = RequestType.find_by(key: 'pick_to_fluidigm').id
-
 v4_requests_types_pe = ['a', 'b', 'c'].map do |pipeline|
   RequestType.create!(key: "illumina_#{pipeline}_hiseq_v4_paired_end_sequencing",
                       name: "Illumina-#{pipeline.upcase} HiSeq V4 Paired end sequencing",
@@ -1094,7 +1089,7 @@ st_x10 = [RequestType.create!(key: 'hiseq_x_paired_end_sequencing',
                               billable: true,
                               product_line: ProductLine.find_by(name: 'Illumina-B'))]
 
-v4_pipelines = ['(spiked in controls)', '(no controls)'].each do |type|
+['(spiked in controls)', '(no controls)'].each do |type|
   SequencingPipeline.create!(
     name: "HiSeq v4 PE #{type}",
     automated: false,
@@ -1163,7 +1158,7 @@ v4_pipelines = ['(spiked in controls)', '(no controls)'].each do |type|
   end
 end
 
-x10_pipelines = ['(spiked in controls)', '(no controls)'].each do |type|
+['(spiked in controls)', '(no controls)'].each do |type|
   SequencingPipeline.create!(
     name: "HiSeq X PE #{type}",
     automated: false,
@@ -1197,7 +1192,7 @@ x10_pipelines = ['(spiked in controls)', '(no controls)'].each do |type|
     pipeline.request_types = x10_requests_types
   end
 end
-st_x10_pipelines = ['(spiked in controls) from strip-tubes'].each do |type|
+['(spiked in controls) from strip-tubes'].each do |type|
   UnrepeatableSequencingPipeline.create!(
     name: "HiSeq X PE #{type}",
     automated: false,
@@ -1368,7 +1363,7 @@ RequestType.find_each do |request_type|
     # By request class
     'HiSeqSequencingRequest' => [50, 75, 100],
     'MiSeqSequencingRequest' => [25, 50, 130, 150, 250, 300],
-    'SequencingRequest'      => [37, 54, 76, 108]
+    'SequencingRequest' => [37, 54, 76, 108]
   }[request_type.request_class_name]
 
   RequestType::Validator.create!(request_type: request_type, request_option: 'read_length', valid_options: read_lengths) if read_lengths.present?

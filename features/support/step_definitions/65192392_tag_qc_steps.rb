@@ -46,7 +46,7 @@ end
 
 Given /^all qcables in lot "(.*?)" are "(.*?)"$/ do |lot_number, state|
   Lot.find_by(lot_number: lot_number).qcables.each do |qcable|
-    qcable.update_attributes!(state: state)
+    qcable.update!(state: state)
   end
 end
 
@@ -109,7 +109,7 @@ Given /^I have a qc library created$/ do
   tag_plate = qca.qcables.first.asset
   reporter_plate = qcb.qcables.first.asset
 
-  tag_plate.update_attributes!(plate_purpose: PlatePurpose.find_by(name: 'Tag PCR'))
+  tag_plate.update!(plate_purpose: PlatePurpose.find_by(name: 'Tag PCR'))
   Transfer::BetweenPlates.create!(user: user, source: reporter_plate, destination: tag_plate, transfers: { 'A1' => 'A1' })
   stc = SpecificTubeCreation.create!(parent: tag_plate, child_purposes: [Tube::Purpose.find_by(name: 'Tag MX')], user: user)
   batch = Batch.new(pipeline: Pipeline.find_by(name: 'MiSeq sequencing')).tap do |batch|
@@ -123,8 +123,8 @@ end
 Given /^the library is testing a reporter$/ do
   lot = Lot.find_by(lot_number: '1234567890')
   lot_b = Lot.find_by(lot_number: '1234567891')
-  lot.qcables.first.update_attributes!(state: 'exhausted')
-  lot_b.qcables.first.update_attributes!(state: 'pending')
+  lot.qcables.first.update!(state: 'exhausted')
+  lot_b.qcables.first.update!(state: 'pending')
 end
 
 Given /^the user with UUID "(.*?)" is a 'qa_manager'$/ do |uuid|

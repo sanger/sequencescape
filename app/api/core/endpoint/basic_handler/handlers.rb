@@ -34,6 +34,7 @@ module Core::Endpoint::BasicHandler::Handlers
 
   def handler_for(segment)
     return self if segment.nil?
+
     _handler_for(segment) || NullHandler
   end
   private :handler_for

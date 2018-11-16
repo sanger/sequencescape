@@ -13,6 +13,7 @@ module Aker
       value = asset.get_qc_result_value_for('volume')
       return value if value
       return asset.volume unless a_well?
+
       asset.well_attribute.current_volume
     end
 
@@ -20,11 +21,13 @@ module Aker
       value = asset.get_qc_result_value_for('concentration')
       return value if value
       return asset.concentration unless a_well?
+
       asset.well_attribute.concentration
     end
 
     def amount
       return (volume.to_f * concentration.to_f).to_s if volume && concentration
+
       nil
     end
 
@@ -59,6 +62,7 @@ module Aker
       save if asset.nil?
       sample.update(container: self)
       raise 'The contents of this plate are not up to date with aker job message' if !contains_sample?(sample) && aliquots?
+
       asset.aliquots.create!(sample: sample, study: study) unless contains_sample?(sample)
     end
 

@@ -36,6 +36,7 @@ namespace :jsorm do
     Api::V2.constants.each do |resource_key|
       resource = Api::V2.const_get(resource_key)
       next unless resource < Api::V2::BaseResource
+
       name = resource_key.to_s.gsub(/Resource/, '')
       type = resource._type
       puts "    #{name}: ApplicationRecord.extend({"

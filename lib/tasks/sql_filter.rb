@@ -4,5 +4,6 @@ require_relative 'uat_filters'
 while line = gets
   match = /^INSERT INTO `([^`]+)`/.match(line)
   next if match && UATFilters::FILTERED_TABLES.include?(match[1])
+
   puts line
 end

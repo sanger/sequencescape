@@ -57,6 +57,7 @@ class FieldInfo
   # @return [FieldInfo] The new, more restrictive field info
   def &(other)
     raise StandardError, "Attempted to combine #{key} with #{other.key} FieldInfos" unless key == other.key
+
     dup.tap do |combined|
       # Use set selector to filter to those common to all attributes
       combined.selection = [combined.selection, other.selection].compact.reduce(&:&)

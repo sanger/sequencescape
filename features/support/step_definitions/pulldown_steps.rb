@@ -123,10 +123,10 @@ def finalise_pipeline_for(plate)
   plate.purpose.connect_requests(plate, 'qc_complete')
   plate.wells.each do |well|
     well.requests_as_target.each do |r|
-      r.update_attributes!(state: 'passed')
+      r.update!(state: 'passed')
     end
     well.transfer_requests_as_target.each do |r|
-      r.update_attributes!(state: 'qc_complete')
+      r.update!(state: 'qc_complete')
     end
   end
 end

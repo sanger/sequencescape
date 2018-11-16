@@ -36,6 +36,7 @@ module PlatesHelper
       wells[:overide] = ['', '', 'NTC']
       plate.wells.each do |well|
         raise AliquotError if well.aliquots.count > 1
+
         wells[well.map.row_order] = well_properties(well)
       end
     end

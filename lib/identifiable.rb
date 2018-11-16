@@ -19,6 +19,7 @@ module Identifiable
 
   def set_external(resource_name, object_or_id)
     raise Exception.new, "Resource name can't be blank" if resource_name.blank?
+
     ident = identifier(resource_name) || identifiers.build(resource_name: resource_name)
     if object_or_id.is_a? Integer
       ident.external_id = object_or_id

@@ -18,6 +18,7 @@ module SampleManifestExcel
 
         def run(tag_group)
           return false unless valid?
+
           update_samples_and_aliquots(tag_group)
           cancel_unprocessed_external_library_creation_requests
           update_sample_manifest

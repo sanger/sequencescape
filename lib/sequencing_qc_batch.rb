@@ -49,6 +49,7 @@ module SequencingQcBatch
     define_method(:"qc_#{ direction }_state") do
       raise StandardError, "Current QC state appears to be invalid: '#{qc_state}'" unless qc_states.include?(qc_state.to_s)
       return nil if qc_state.to_s == qc_states.send(delimiter)
+
       return qc_states[qc_states.index(qc_state.to_s) + offset]
     end
   end
@@ -82,7 +83,7 @@ module SequencingQcBatch
   def qc_ready_for_manual
     ActiveRecord::Base.transaction do
       p = Pipeline.find(qc_pipeline_id)
-      update_attributes!(qc_pipeline_id: p.next_pipeline_id, qc_state: 'qc_manual')
+      update!(qc_pipeline_id: p.next_pipeline_id, qc_state: 'qc_manual')
     end
   end
 

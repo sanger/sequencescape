@@ -23,7 +23,7 @@ feature 'cherrypick for fluidigm pipeline - micro litre', js: true do
     assets = plates.each_with_object([]) do |plate, assets|
       assets.concat(plate.wells)
       plate.wells.each_with_index do |well, index|
-        well.well_attribute.update_attributes!(
+        well.well_attribute.update!(
           measured_volume: 30 + (index % 30)
         )
       end

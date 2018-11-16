@@ -18,6 +18,7 @@ module SequencescapeExcel
       # check the group exists here, check the group/index combination in tag2_index
       def check_tag2_group
         return if tag2_group_id.present?
+
         errors.add(:base, "could not find a tag2 group with name #{value}.")
       end
     end

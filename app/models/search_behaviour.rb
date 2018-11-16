@@ -42,6 +42,7 @@ module SearchBehaviour
 
   def query_invalid?
     return false if params[:q].length >= MINIMUM_QUERY_LENGTH
+
     flash.now[:error] = "Queries should be at least #{MINIMUM_QUERY_LENGTH} characters long"
   end
 end

@@ -139,6 +139,7 @@ class Parsers::BioanalysisCsvParser
 
   def get_parsed_attribute(plate_position, field)
     return nil if parsed_content.nil? || parsed_content[plate_position].nil?
+
     parsed_content[plate_position][:peak_table][field]
   end
 

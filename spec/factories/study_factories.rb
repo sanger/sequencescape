@@ -32,7 +32,7 @@ FactoryBot.define do
     state { 'active' }
 
     after(:create) do |study, evaluator|
-      study.study_metadata.update_attributes!(data_release_strategy: 'managed', study_ebi_accession_number: evaluator.accession_number)
+      study.study_metadata.update!(data_release_strategy: 'managed', study_ebi_accession_number: evaluator.accession_number)
     end
   end
 
@@ -45,7 +45,7 @@ FactoryBot.define do
     state { 'active' }
 
     after(:create) do |study, evaluator|
-      study.study_metadata.update_attributes!(data_release_strategy: 'open', study_ebi_accession_number: evaluator.accession_number)
+      study.study_metadata.update!(data_release_strategy: 'open', study_ebi_accession_number: evaluator.accession_number)
     end
   end
 
@@ -53,7 +53,7 @@ FactoryBot.define do
     name { 'Study: Never' }
     state { 'active' }
     after(:create) do |study|
-      study.study_metadata.update_attributes!(data_release_strategy: 'not applicable')
+      study.study_metadata.update!(data_release_strategy: 'not applicable')
     end
   end
 

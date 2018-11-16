@@ -24,13 +24,13 @@ module PlatePurpose::RequestAttachment
         # We need to find the downstream requests BEFORE connecting the upstream
         # This is because submission.next_requests tries to take a shortcut through
         # the target_asset if it is defined.
-        upstream.next_requests.each { |ds| ds.update_attributes!(asset: target_well) } if connect_downstream
+        upstream.next_requests.each { |ds| ds.update!(asset: target_well) } if connect_downstream
 
         # In some cases, such as the Illumina-C pipelines, requests might be
         # connected upfront. We don't want to touch these.
         next unless upstream.target_asset.nil?
 
-        upstream.update_attributes!(target_asset: target_well)
+        upstream.update!(target_asset: target_well)
         upstream.pass!
       end
     end

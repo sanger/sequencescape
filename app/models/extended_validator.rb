@@ -20,6 +20,7 @@ class ExtendedValidator < ApplicationRecord
 
   def import_behaviour
     return if behaviour.nil?
+
     behavior_module = "ExtendedValidator::#{behaviour}".constantize
     class_eval do
       include(behavior_module)

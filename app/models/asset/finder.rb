@@ -20,6 +20,7 @@ class Asset::Finder
     barcodes_wells.flat_map do |labware_barcode, well_locations|
       labware = Asset.find_by_barcode(labware_barcode)
       raise InvalidInputException, "No labware found for barcode #{labware_barcode}." if labware.nil?
+
       well_array = (well_locations || '').split(',').reject(&:blank?).map(&:strip)
 
       labware.respond_to?(:wells) ? find_wells_in_array(labware, well_array) : labware
@@ -28,11 +29,13 @@ class Asset::Finder
 
   def find_wells_in_array(plate, well_array)
     return plate.wells.in_column_major_order.with_aliquots.distinct if well_array.empty?
+
     well_array.flat_map do |map_description|
       case map_description
       when /^[a-z,A-Z][0-9]+$/ # A well
         well = plate.find_well_by_name(map_description)
         raise InvalidInputException, "Well #{map_description} on #{plate.human_barcode} does not exist or is empty." if well.nil? || well.aliquots.empty?
+
         well
       when /^[a-z,A-Z]$/ # A row
         plate.wells.with_aliquots.in_plate_row(map_description, plate.size).distinct
