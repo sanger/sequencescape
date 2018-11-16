@@ -29,6 +29,7 @@ class Request
       def register_work_orders
         # We go via order as we need to get a particular instance of submission
         return if order&.submission.nil?
+
         order.submission.register_callback(:once) do
           WorkOrder::Factory.new(order.submission).create_work_orders!
         end

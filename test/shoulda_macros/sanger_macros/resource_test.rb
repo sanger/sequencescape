@@ -47,7 +47,7 @@ module Sanger
 
                 @input_params.merge!(
                   "#{grand_parent_resource}_id" => grand_parent.id,
-                  "#{parent_resource}_id"       => parent.id
+                  "#{parent_resource}_id" => parent.id
                 )
               end
             elsif parent_resource

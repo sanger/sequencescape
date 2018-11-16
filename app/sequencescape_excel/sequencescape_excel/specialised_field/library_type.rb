@@ -19,6 +19,7 @@ module SequencescapeExcel
 
       def check_library_type_exists
         return if ::LibraryType.find_by(name: value).present?
+
         errors.add(:base, "could not find #{value} library type.")
       end
     end

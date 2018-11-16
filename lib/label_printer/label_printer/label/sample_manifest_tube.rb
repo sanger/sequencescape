@@ -14,6 +14,7 @@ module LabelPrinter
 
       def tubes
         return [sample_manifest.printables.first] if only_first_label
+
         sample_manifest.printables
       end
     end

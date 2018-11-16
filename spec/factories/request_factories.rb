@@ -40,6 +40,7 @@ FactoryBot.define do
     # Ensure that the request metadata is correctly setup based on the request type
     after(:build) do |request|
       next if request.request_type.nil?
+
       # This is all a bit 'clever' and should be simplified
       # We could use the request class is removing it completely is tricky
       metadata_factory = :"request_metadata_for_#{request.request_type.name.downcase.gsub(/[^a-z]+/, '_')}"
@@ -197,6 +198,7 @@ FactoryBot.define do
     # Ensure that the request metadata is correctly setup based on the request type
     after(:build) do |request|
       next if request.request_type.nil?
+
       request.request_metadata = build(:"request_metadata_for_#{request.request_type.name.downcase.gsub(/[^a-z]+/, '_')}") if request.request_metadata.new_record?
       request.sti_type = request.request_type.request_class_name
     end

@@ -45,6 +45,7 @@ class PlateTemplateTask < Task
 
     def parse_spreadsheet_row(request_id, plate_key, destination_well)
       return if request_id.blank? || request_id.to_i.zero?
+
       location = locations[destination_well] || return
       yield(plate_key.presence || 'default plate 1', request_id.to_i, location)
     end

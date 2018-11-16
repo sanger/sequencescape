@@ -7,6 +7,7 @@ module Parsers
 
   def self.parser_for(filename, content_type, content)
     return nil unless filename.downcase.end_with?('.csv') || content_type == 'text/csv'
+
     # While CSV tries to detect line endings, it isn't so great with some excel
     # exported CSVs, where a mix of \n and \r\n are used in the same document
     # This converts everything to \n before processing
@@ -25,6 +26,7 @@ module Parsers
       encoding = encodings.shift
       # Re-raise the exception if we've run out
       raise exception if encoding.nil?
+
       # Force the new encoding
       content.force_encoding(encoding)
       # Try again

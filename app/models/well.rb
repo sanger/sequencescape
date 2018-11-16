@@ -52,6 +52,7 @@ class Well < Receptacle
 
   def self.hash_stock_with_targets(wells, purpose_names)
     return {} unless purpose_names
+
     purposes = PlatePurpose.where(name: purpose_names)
     # We might need to be careful about this line in future.
     target_wells = Well.target_wells_for(wells).on_plate_purpose(purposes).preload(:well_attribute).with_concentration
@@ -219,6 +220,7 @@ class Well < Receptacle
 
     return if result.nil?
     return result.to_f.round(3) if result.to_s.include?('.')
+
     result.to_i
   end
 
@@ -340,6 +342,7 @@ class Well < Receptacle
 
   def details
     return 'Not yet picked' if plate.nil?
+
     plate.purpose.try(:name) || 'Unknown plate purpose'
   end
 

@@ -39,6 +39,7 @@ module Limber::Helper
     # already exists.
     def build!
       return true if RequestType.where(key: key).exists?
+
       rt = RequestType.create!(
         name: "Limber #{@prefix}",
         key: key,
@@ -117,6 +118,7 @@ module Limber::Helper
         raise "Must provide a #{value} or prefix" if send(value).nil?
       end
       raise 'Must provide a catalogue' if catalogue.nil?
+
       true
     end
 
@@ -134,6 +136,7 @@ module Limber::Helper
     def update!
       each_submission_template do |options|
         next if options[:submission_parameters][:input_field_infos].nil?
+
         SubmissionTemplate.find_by!(name: options[:name]).update_attributes!(submission_parameters: options[:submission_parameters])
       end
     end
@@ -168,6 +171,7 @@ module Limber::Helper
       cherrypick_options.each do |cherrypick|
         sequencing.each do |sequencing_request_type|
           next if SubmissionTemplate.where(name: name_for(cherrypick, sequencing_request_type)).exists?
+
           yield({
             name: name_for(cherrypick, sequencing_request_type),
             submission_class_name: 'LinearSubmission',

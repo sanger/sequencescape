@@ -373,6 +373,7 @@ class Request < ApplicationRecord
 
   def project_id=(project_id)
     raise RuntimeError, 'Initial project already set' if initial_project_id
+
     self.initial_project_id = project_id
   end
 
@@ -389,16 +390,19 @@ class Request < ApplicationRecord
 
   def project=(project)
     return unless project
+
     self.project_id = project.id
   end
 
   def study_id=(study_id)
     raise RuntimeError, 'Initial study already set' if initial_study_id
+
     self.initial_study_id = study_id
   end
 
   def study=(study)
     return unless study
+
     self.study_id = study.id
   end
 
@@ -406,6 +410,7 @@ class Request < ApplicationRecord
     return [initial_study] if initial_study.present?
     return asset.studies.uniq if asset.present?
     return submission.studies if submission.present?
+
     []
   end
 
@@ -426,8 +431,10 @@ class Request < ApplicationRecord
 
   def get_value(request_information_type)
     return '' unless request_metadata.respond_to?(request_information_type.key.to_sym)
+
     value = request_metadata.send(request_information_type.key.to_sym)
     return value.to_s if value.blank? or request_information_type.data_type != 'Date'
+
     value.to_date.strftime('%d %B %Y')
   end
 
@@ -455,12 +462,14 @@ class Request < ApplicationRecord
 
   def next_requests
     return [] if submission.nil? || next_request_type_id.nil?
+
     next_requests_via_asset || submission.next_requests_via_submission(self)
   end
 
   def next_request_type_id
     # May be nil, so can't use lazy assignment
     return @next_request_type_id if instance_variable_defined?('@next_request_type_id')
+
     @next_request_type_id = calculate_next_request_type_id
   end
 
@@ -482,12 +491,14 @@ class Request < ApplicationRecord
 
   def return_pending_to_inbox!
     raise StandardError, "Can only return pending requests, request is #{state}" unless pending?
+
     remove_unused_assets
   end
 
   def remove_unused_assets
     ActiveRecord::Base.transaction do
       return if target_asset.nil?
+
       target_asset.ancestors.clear
       target_asset.destroy
       save!
@@ -542,6 +553,7 @@ class Request < ApplicationRecord
     # Hopefully we shouldn't get any requests that don't have a submission. But validation is turned off, so
     # we should assume it it possible.
     return '' if submission.nil?
+
     submission.created_at.strftime('%Y-%m-%d')
   end
 
@@ -555,6 +567,7 @@ class Request < ApplicationRecord
 
   def product_line
     return nil if request_type.product_line.nil?
+
     request_type.product_line.name
   end
 

@@ -16,6 +16,7 @@ class Batch::RequestFailAndRemover
 
   def save
     return false unless valid?
+
     fail_requests if requested_fail.present?
     remove_requests if requested_remove.present?
     true
@@ -66,6 +67,7 @@ class Batch::RequestFailAndRemover
 
   def requests_selected?
     return if requested_remove.present? || requested_fail.present?
+
     errors.add(:base, 'Please select an item to fail or remove')
   end
 

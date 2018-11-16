@@ -17,6 +17,7 @@ module SequencescapeExcel
 
       def update(attributes = {})
         return unless valid? && attributes[:aliquot].present? && foreign_barcode_format.present?
+
         # if this tube's list of barcodes already contains a foreign barcode with the same format then update the existing one
         foreign_barcode = attributes[:aliquot].receptacle.barcodes.find { |item| item[:format] == foreign_barcode_format.to_s }
         if foreign_barcode.present?
@@ -34,6 +35,7 @@ module SequencescapeExcel
 
       def check_container
         return if value == sample.assets.first.human_barcode
+
         check_for_foreign_barcode
       end
 
@@ -48,6 +50,7 @@ module SequencescapeExcel
 
       def check_foreign_barcode_unique
         return if Barcode.unique_for_format?(foreign_barcode_format, value).blank?
+
         errors.add(:sample, 'The sample container foreign barcode is already in use.')
       end
     end

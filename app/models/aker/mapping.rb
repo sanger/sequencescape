@@ -45,6 +45,7 @@ module Aker
 
     def update!(attrs)
       raise 'Error while saving attributes' unless update(attrs)
+
       true
     end
 
@@ -55,6 +56,7 @@ module Aker
           column_names.each do |column_name|
             attribute_names_for_column(table_name, column_name).each do |attribute_name|
               raise 'Aker clash config problem' if obj[attribute_name]
+
               obj[attribute_name] = get_value_for(model, column_name)
             end
           end
@@ -70,6 +72,7 @@ module Aker
     # If no model is provided, it will suppose it is self
     def update_model(model, setting_attrs)
       return model.update(setting_attrs) unless model.nil?
+
       setting_attrs.each_pair do |k, v|
         send(:"#{k}=", v)
       end
@@ -79,6 +82,7 @@ module Aker
     # Gets the value of an attribute name for a model
     def get_value_for(model, column_name)
       return model.send(column_name) unless model.nil?
+
       send(column_name)
     end
 
@@ -135,6 +139,7 @@ module Aker
       {}.tap do |update_obj|
         attrs.each do |k, v|
           next unless config[:updatable_attrs_from_aker_into_ss].include?(k)
+
           columns_for_table_from_field(table_name, k).each do |column_name|
             update_obj[column_name] = v
           end

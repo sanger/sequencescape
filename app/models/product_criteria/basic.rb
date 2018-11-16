@@ -50,6 +50,7 @@ class ProductCriteria::Basic
 
   def total_micrograms
     return nil if current_volume.nil? || concentration.nil?
+
     (current_volume * concentration) / 1000.0
   end
 
@@ -99,6 +100,7 @@ class ProductCriteria::Basic
   def sample_gender
     markers = @well_or_metric.samples.map { |s| s.sample_metadata.gender && s.sample_metadata.gender.downcase.strip }.uniq
     return nil if markers.count > 1
+
     GENDER_MARKER_MAPS[markers.first]
   end
 
@@ -120,6 +122,7 @@ class ProductCriteria::Basic
     expected = sample_gender
     return false if expected.nil?
     return false unless known_marker?(marker)
+
     marker != expected
   end
 

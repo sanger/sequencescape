@@ -65,6 +65,7 @@ module Qcable::Statemachine
   def default_state
     # We validate the presence of lot, however initial state gets called BEFORE we reach validation
     return :created if lot.nil?
+
     asset_purpose.default_state.to_sym || :created
   end
 
@@ -94,6 +95,7 @@ module Qcable::Statemachine
       e.options[:allow_automated?] && e.transitions_to_state?(target&.to_sym)
     end
     raise StandardError, "No obvious transition from #{state.inspect} to #{target.inspect}" unless valid_events.size == 1
+
     valid_events.first.name
   end
 end

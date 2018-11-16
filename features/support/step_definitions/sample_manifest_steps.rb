@@ -75,6 +75,7 @@ Then /^the samples table should look like:$/ do |table|
     expected_data.each do |k, v|
       next if v.blank?
       next if [:sanger_sample_id, :empty_supplier_sample_name, :supplier_name, :sample_taxon_id].include?(:"#{k}")
+
       assert_equal(v, sample.sample_metadata.send(k), "Sample #{k} invalid for #{sanger_sample_id}")
     end
   end
@@ -130,8 +131,8 @@ Then /^the sample controls and resubmits should look like:$/ do |table|
     {
       'sanger_sample_id' => expected_data[:sanger_sample_id],
       'supplier_name' => sample.sample_metadata.supplier_name,
-      'is_control'       => sample.control.to_s,
-      'is_resubmit'      => sample.sample_metadata.is_resubmitted.to_s
+      'is_control' => sample.control.to_s,
+      'is_resubmit' => sample.sample_metadata.is_resubmitted.to_s
     }
   end
   assert_equal(table.hashes, found)

@@ -57,6 +57,7 @@ module Submission::LinearRequestGraph
   # that need creating.
   def create_request_chain!(request_type_and_multiplier_pairs, source_asset_qc_metric_and_item, multiplexing_assets, &block)
     raise StandardError, 'No request types specified!' if request_type_and_multiplier_pairs.empty?
+
     request_type, multiplier = request_type_and_multiplier_pairs.shift
 
     multiplier.times do |_|

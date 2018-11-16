@@ -39,6 +39,7 @@ end
 Given /^a plate with barcode "([^"]*)" exists$/ do |machine_barcode|
   bc = SBCF::SangerBarcode.from_machine(machine_barcode)
   raise 'Currently only supports DN barcodes' unless bc.prefix.human == 'DN'
+
   FactoryBot.create :plate, barcode: bc.number
 end
 

@@ -26,6 +26,7 @@ module Event::RequestDescriptorUpdateEvent
     end
 
     return if pass_or_fail_event?
+
     if library_creation_descriptor?
       request.pass!
     else

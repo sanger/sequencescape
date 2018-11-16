@@ -14,6 +14,7 @@ class Plate::CreatorParameters
 
   def plate_dilution_factor(plate)
     return plate.dilution_factor unless plate.nil?
+
     # If nobody specify any dilution factor (not even the PlateCreator), I can't assume any
     # default dilution factor. We'll fall back to database default value (if it has one)
     nil

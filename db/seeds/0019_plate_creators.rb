@@ -3,13 +3,13 @@ unless Rails.env.test?
     excluded = ['Dilution Plates']
     # Build the links between the parent and child plate purposes
     relationships = {
-      'Working Dilution'    => ['Working Dilution', 'Pico Dilution'],
-      'Pico Dilution'       => ['Working Dilution', 'Pico Dilution'],
-      'Pico Assay A'        => ['Pico Assay A', 'Pico Assay B'],
-      'Pulldown'            => ['Pulldown Aliquot'],
-      'Dilution Plates'     => ['Working Dilution', 'Pico Dilution'],
-      'Pico Assay Plates'   => ['Pico Assay A', 'Pico Assay B'],
-      'Pico Assay B'        => ['Pico Assay A', 'Pico Assay B'],
+      'Working Dilution' => ['Working Dilution', 'Pico Dilution'],
+      'Pico Dilution' => ['Working Dilution', 'Pico Dilution'],
+      'Pico Assay A' => ['Pico Assay A', 'Pico Assay B'],
+      'Pulldown' => ['Pulldown Aliquot'],
+      'Dilution Plates' => ['Working Dilution', 'Pico Dilution'],
+      'Pico Assay Plates' => ['Pico Assay A', 'Pico Assay B'],
+      'Pico Assay B' => ['Pico Assay A', 'Pico Assay B'],
       'Gel Dilution Plates' => ['Gel Dilution']
     }
 

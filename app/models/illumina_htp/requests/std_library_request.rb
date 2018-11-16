@@ -26,6 +26,7 @@ module IlluminaHtp::Requests
     def valid_purpose?
       return true if acceptable_plate_purposes.empty? ||
                      acceptable_plate_purposes.include?(asset.plate.purpose)
+
       errors.add(:asset, "#{asset.plate.purpose.name} is not a suitable plate purpose.")
       false
     end

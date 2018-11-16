@@ -97,6 +97,7 @@ module WTSI
     def excluded?(file_path)
       path = file_path.split('/')
       return excluded_root if path.one?
+
       excluded_folders.include?(path.first)
     end
   end
@@ -116,6 +117,7 @@ module WTSI
     def apply_license
       begin
         return if existing_license?
+
         STDOUT.print '.'
         first_line = old_file.gets
         new_file.write(first_line) if !first_line.nil? && first_line.match(/^#!/)

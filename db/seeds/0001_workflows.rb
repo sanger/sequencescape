@@ -174,8 +174,8 @@ MultiplexedLibraryCreationPipeline.create!(name: 'Illumina-C MX Library Preparat
     workflow.locale = 'External'
   end.tap do |workflow|
     {
-      TagGroupsTask      => { name: 'Tag Groups',       sorted: 1, lab_activity: true },
-      AssignTagsTask     => { name: 'Assign Tags',      sorted: 2, lab_activity: true },
+      TagGroupsTask => { name: 'Tag Groups', sorted: 1, lab_activity: true },
+      AssignTagsTask => { name: 'Assign Tags', sorted: 2, lab_activity: true },
       SetDescriptorsTask => { name: 'Initial QC',       sorted: 3, batched: false, lab_activity: true },
       SetDescriptorsTask => { name: 'Gel',              sorted: 4, batched: false, lab_activity: true },
       SetDescriptorsTask => { name: 'Characterisation', sorted: 5, batched: true, lab_activity: true }
@@ -1368,7 +1368,7 @@ RequestType.find_each do |request_type|
     # By request class
     'HiSeqSequencingRequest' => [50, 75, 100],
     'MiSeqSequencingRequest' => [25, 50, 130, 150, 250, 300],
-    'SequencingRequest'      => [37, 54, 76, 108]
+    'SequencingRequest' => [37, 54, 76, 108]
   }[request_type.request_class_name]
 
   RequestType::Validator.create!(request_type: request_type, request_option: 'read_length', valid_options: read_lengths) if read_lengths.present?

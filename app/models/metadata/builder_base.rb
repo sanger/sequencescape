@@ -38,6 +38,7 @@ class Metadata::BuilderBase < ActionView::Helpers::FormBuilder
 
   def render_view(type, field, options = {})
     return nil unless @filter.call(@object.class.metadata_attribute_path(field))
+
     view   = @views[type.to_sym] or raise StandardError, "View not registered for '#{type}'"
 
     locals = @locals.merge(

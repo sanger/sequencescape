@@ -15,20 +15,20 @@ class TagLayout < ApplicationRecord
   UnknownWalking = Struct.new(:walking_by)
 
   DIRECTIONS = {
-    'column'          => 'TagLayout::InColumns',
-    'row'             => 'TagLayout::InRows',
-    'inverse column'  => 'TagLayout::InInverseColumns',
-    'inverse row'     => 'TagLayout::InInverseRows',
+    'column' => 'TagLayout::InColumns',
+    'row' => 'TagLayout::InRows',
+    'inverse column' => 'TagLayout::InInverseColumns',
+    'inverse row' => 'TagLayout::InInverseRows',
     'column then row' => 'TagLayout::InColumnsThenRows'
   }.freeze
 
   WALKING_ALGORITHMS = {
-    'wells in pools'     => 'TagLayout::WalkWellsByPools',
-    'wells of plate'     => 'TagLayout::WalkWellsOfPlate',
-    'manual by pool'     => 'TagLayout::WalkManualWellsByPools',
-    'as group by plate'  => 'TagLayout::AsGroupByPlate',
-    'manual by plate'    => 'TagLayout::WalkManualWellsOfPlate',
-    'quadrants'          => 'TagLayout::Quadrants'
+    'wells in pools' => 'TagLayout::WalkWellsByPools',
+    'wells of plate' => 'TagLayout::WalkWellsOfPlate',
+    'manual by pool' => 'TagLayout::WalkManualWellsByPools',
+    'as group by plate' => 'TagLayout::AsGroupByPlate',
+    'manual by plate' => 'TagLayout::WalkManualWellsOfPlate',
+    'quadrants' => 'TagLayout::Quadrants'
   }.freeze
 
   self.inheritance_column = 'sti_type'

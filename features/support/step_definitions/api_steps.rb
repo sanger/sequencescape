@@ -66,6 +66,7 @@ end
 
 def api_request(action, path, body)
   raise StandardError, 'You must explicitly set the API version you are using' if @api_path.nil?
+
   @cookies ||= {}
 
   headers = {}
@@ -141,6 +142,7 @@ end
 When /^I retrieve the JSON for the last request in the study "([^\"]+)"$/ do |name|
   study = Study.find_by(name: name) or raise StandardError, "Cannot find the study #{name.inspect}"
   raise StandardError, "It appears there are no requests for study #{name.inspect}" if study.requests.empty?
+
   visit(url_for(controller: 'api/requests', action: 'show', id: study.requests.last, format: :json))
 end
 

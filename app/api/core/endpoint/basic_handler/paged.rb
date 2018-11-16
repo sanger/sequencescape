@@ -23,6 +23,7 @@ module Core::Endpoint::BasicHandler::Paged
   def action_updates_for(options)
     response = options[:response]
     return unless response.handled_by == self
+
     yield(pages_to_actions(response.object, options))
   end
   private :action_updates_for
@@ -40,6 +41,7 @@ module Core::Endpoint::BasicHandler::Paged
 
   def page_of_results(target, page = 1, model = target)
     raise ActiveRecord::RecordNotFound, 'before the start of the results' if page <= 0
+
     target.paginate(
       page: page,
       per_page: results_per_page,

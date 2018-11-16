@@ -25,6 +25,7 @@ module RecordLoader
       ActiveRecord::Base.transaction do
         @config.each do |name, config|
           next if existing_purposes.include?(name)
+
           create_purpose(name, config)
         end
       end

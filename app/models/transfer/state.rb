@@ -26,6 +26,7 @@ module Transfer::State
   def state_from(state_requests)
     unique_states = state_requests.map(&:state).uniq
     return unique_states.first if unique_states.size == 1
+
     ALL_STATES.detect { |s| unique_states.include?(s) } || default_state || 'unknown'
   end
 

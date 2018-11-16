@@ -125,6 +125,7 @@ class Batch < ApplicationRecord
     # We've deprecated the ability to fail a batch but not its requests.
     # Keep this check here until we're sure we haven't missed anything.
     raise StandardError, 'Can not fail batch without failing requests' if ignore_requests
+
     # create failures
     failures.create(reason: reason, comment: comment, notify_remote: false)
 
@@ -207,10 +208,12 @@ class Batch < ApplicationRecord
 
   def shift_item_positions(position, number)
     return unless number
+
     BatchRequest.transaction do
       batch_requests.each do |batch_request|
         next unless batch_request.position >= position
         next if batch_request.request.asset.try(:resource?)
+
         batch_request.move_to_position!(batch_request.position + number)
       end
     end
@@ -268,6 +271,7 @@ class Batch < ApplicationRecord
 
   def plate_group_barcodes
     return nil unless pipeline.group_by_parent || requests.first.target_asset.is_a?(Well)
+
     output_plate_group.presence || input_plate_group
   end
 
@@ -339,6 +343,7 @@ class Batch < ApplicationRecord
       request_ids.each do |request_id|
         request = Request.find(request_id)
         next if request.nil?
+
         request.failures.create(reason: reason, comment: comment, notify_remote: true)
         detach_request(request)
       end
@@ -388,6 +393,7 @@ class Batch < ApplicationRecord
 
   def parent_of_purpose(name)
     return nil if requests.empty?
+
     requests.first.asset.ancestors.joins(
       'INNER JOIN plate_purposes ON assets.plate_purpose_id = plate_purposes.id'
     )
@@ -453,11 +459,13 @@ class Batch < ApplicationRecord
     request = requests.first
     return DEFAULT_VOLUME unless request.asset.is_a?(Well)
     return DEFAULT_VOLUME unless request.target_asset.is_a?(Well)
+
     request.target_asset.get_requested_volume
   end
 
   def robot_verified!(user_id)
     return if has_event('robot verified')
+
     pipeline.robot_verified!(self)
     lab_events.create(description: 'Robot verified', message: 'Robot verification completed and source volumes updated.', user_id: user_id)
   end

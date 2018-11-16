@@ -33,6 +33,7 @@ class SampleManifest::Uploader
 
   def run!
     return false unless valid?
+
     if upload.process(tag_group)
       upload.complete
       upload.broadcast_sample_manifest_updated_event(user)
@@ -52,6 +53,7 @@ class SampleManifest::Uploader
 
   def check_upload
     return true if upload.valid?
+
     extract_errors
   end
 

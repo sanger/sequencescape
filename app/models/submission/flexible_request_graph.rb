@@ -29,9 +29,11 @@ module Submission::FlexibleRequestGraph
     def build!
       raise RequestChainError, 'Request chains can only be built once' if built?
       raise StandardError, 'No request types specified!' if request_types.empty?
+
       request_types.inject(source_assets_qc_metrics) do |source_assets_qc_metrics_memo, request_type|
         link = ChainLink.build!(request_type, multiplier_for(request_type), source_assets_qc_metrics_memo, self)
         break if preplexed && link.multiplexed?
+
         link.target_assets_qc_metrics
       end
       @built = true
@@ -156,6 +158,7 @@ module Submission::FlexibleRequestGraph
     def initialize(request_type, multiplier, assets, chain)
       raise RequestChainError unless request_type.for_multiplexing?
       raise RequestChainError, 'Cannot multiply multiplexed requests' if multiplier > 1
+
       super
     end
 
@@ -198,6 +201,7 @@ module Submission::FlexibleRequestGraph
 
     def initialize(request_type, multiplier, assets, chain)
       raise RequestChainError if request_type.for_multiplexing?
+
       super
     end
 

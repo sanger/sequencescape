@@ -42,11 +42,13 @@ class Tube < Receptacle
 
   def source_plate
     return nil if purpose.nil?
+
     @source_plate ||= purpose.source_plate(self)
   end
 
   def ancestor_of_purpose(ancestor_purpose_id)
     return self if plate_purpose_id == ancestor_purpose_id
+
     ancestors.order(created_at: :desc).find_by(plate_purpose_id: ancestor_purpose_id)
   end
 

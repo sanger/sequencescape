@@ -4,6 +4,7 @@ module Sanger
       class Generator
         def self.mapping(data_object, total_volume)
           raise ArgumentError, 'data_object needs to conform to an interface. WIP' if data_object.nil?
+
           dest_barcode_index = barcode_to_plate_index(data_object['destination'])
 
           source_barcode_index = source_barcode_to_plate_index(data_object['destination'])

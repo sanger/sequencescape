@@ -9,6 +9,7 @@ module SampleManifest::InputBehaviour
       spreadsheet_offset.upto(csv.size - 1) do |n|
         sanger_sample_id = SampleManifest.read_column_by_name(csv, n, 'SANGER SAMPLE ID', column_map)
         next if sanger_sample_id.blank?
+
         sample = Sample.find_by(sanger_sample_id: sanger_sample_id) or next
         return sample.sample_manifest
       end
@@ -18,6 +19,7 @@ module SampleManifest::InputBehaviour
     def read_column_by_name(csv, row, name, column_map, default_value = nil)
       col = column_map[name]
       return default_value unless col
+
       csv[row][col]
     end
 
@@ -56,6 +58,7 @@ module SampleManifest::InputBehaviour
 
   def clean_up_value(value)
     return '' if value.nil?
+
     value.strip
   end
   private :clean_up_value
@@ -73,6 +76,7 @@ module SampleManifest::InputBehaviour
 
   def strip_non_word_characters(value)
     return '' if value.nil?
+
     value.gsub(/[^:alnum:]+/, '')
   end
   private :strip_non_word_characters

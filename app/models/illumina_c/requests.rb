@@ -71,24 +71,24 @@ module IlluminaC::Requests
           for_multiplexing: false
         },
         {
-          name:               'Illumina-C Library Creation No PCR No Pooling',
-          key:                'illumina_c_no_pcr_no_pool',
+          name: 'Illumina-C Library Creation No PCR No Pooling',
+          key: 'illumina_c_no_pcr_no_pool',
           request_class_name: 'IlluminaC::Requests::NoPcrLibraryRequest',
-          for_multiplexing:   false
+          for_multiplexing: false
         },
         {
-          name:               'Illumina-C Chromium library creation',
-          key:                'illumina_c_chromium_library',
+          name: 'Illumina-C Chromium library creation',
+          key: 'illumina_c_chromium_library',
           request_class_name: 'IlluminaC::Requests::LibraryRequest', # See class deprecation notice above
-          for_multiplexing:   true,
-          target_purpose:     Purpose.find_by(name: 'ILC Lib Pool Norm')
+          for_multiplexing: true,
+          target_purpose: Purpose.find_by(name: 'ILC Lib Pool Norm')
         },
         {
-          name:               'Illumina-C Multiplexing',
-          key:                'illumina_c_multiplexing',
+          name: 'Illumina-C Multiplexing',
+          key: 'illumina_c_multiplexing',
           request_class_name: 'Request::AutoMultiplexing',
-          for_multiplexing:   true,
-          target_purpose:     Purpose.find_by(name: 'ILC Lib Pool Norm')
+          for_multiplexing: true,
+          target_purpose: Purpose.find_by(name: 'ILC Lib Pool Norm')
         }
       ].each do |params|
         params.merge!(

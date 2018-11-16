@@ -154,6 +154,7 @@ class QcReport < ApplicationRecord
   # of each other.
   def generate_report_identifier
     return true if study.nil? || product_criteria.nil?
+
     rid = [
       study.abbreviation,
       product_criteria.product.name,

@@ -84,7 +84,7 @@ def change_request_state(state, targets, direction, request_class)
 end
 
 {
-  'plate'                    => 'target.wells',
+  'plate' => 'target.wells',
   'multiplexed library tube' => 'target'
 }.each do |target, request_holder|
   line = __LINE__

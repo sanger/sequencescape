@@ -14,6 +14,7 @@ module SampleManifest::InputBehaviour::SampleUpdating
     def accession_number_from_manifest=(new_value)
       self.sample_ebi_accession_number ||= new_value
       return new_value unless new_value.present? && new_value != sample_ebi_accession_number
+
       errors.add(:sample_ebi_accession_number, 'can not be changed')
       raise ActiveRecord::RecordInvalid, self
     end

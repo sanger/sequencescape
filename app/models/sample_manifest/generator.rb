@@ -83,6 +83,7 @@ class SampleManifest::Generator
 
   def execute_print_job
     return unless print_job_required?
+
     if print_job.execute
       print_job_message[:notice] = print_job.success
     else

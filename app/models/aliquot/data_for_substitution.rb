@@ -5,6 +5,7 @@
 module Aliquot::DataForSubstitution
   def substitution_hash
     return if id_previously_changed?
+
     generate_substitution_hash if saved_changes?
   end
 
@@ -17,12 +18,14 @@ module Aliquot::DataForSubstitution
 
   def tag_id_substitution
     return {} if changes[:tag_id].blank?
+
     { original_tag_id: original_tag_id,
       substitute_tag_id: substitute_tag_id }
   end
 
   def tag2_id_substitution
     return {} if changes[:tag2_id].blank?
+
     { original_tag2_id: original_tag2_id,
       substitute_tag2_id: substitute_tag2_id }
   end

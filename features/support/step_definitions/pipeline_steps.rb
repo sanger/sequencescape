@@ -20,6 +20,7 @@ end
 def pipeline_name_to_asset_type(pipeline_name)
   return :sample_tube if pipeline_name.downcase.include?('library preparation')
   return :well if pipeline_name.downcase.include?('from strip-tubes')
+
   :library_tube
 end
 
@@ -54,6 +55,7 @@ end
 Then /^the requests from "([^\"]+)" batches should not be in the inbox$/ do |name|
   pipeline = Pipeline.find_by(name: name) or raise StandardError, "Cannot find pipeline #{name.inspect}"
   raise StandardError, "There are no batches in #{name.inspect}" if pipeline.batches.empty?
+
   pipeline.batches.each do |batch|
     batch.requests.each do |request|
       assert page.has_no_xpath?("//*[@id='request_#{request.id}']")

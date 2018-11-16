@@ -84,6 +84,7 @@ module WorkingSetup
     def create_or_find_user
       existing = User.find_by(login: 'admin')
       return existing if existing
+
       User.create!(login: 'admin', password: 'admin', swipecard_code: 'abcdef', barcode: 'ID99A', &:is_administrator)
     end
 
@@ -94,6 +95,7 @@ module WorkingSetup
     def create_project(name)
       existing = Project.find_by(name: name)
       return existing if existing
+
       Project.create!(
         name: name,
         enforce_quotas: false,
@@ -108,6 +110,7 @@ module WorkingSetup
     def create_study(name)
       existing = Study.find_by(name: name)
       return existing if existing
+
       Study.create!(
         name: name,
         study_metadata_attributes: {

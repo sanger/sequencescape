@@ -48,6 +48,7 @@ namespace :pmb do
 
         def get_label_type_id(name)
           return label_types[name] if label_types.include? name
+
           label_type = eval "label_type_#{name.downcase}"
           res = RestClient.post(label_type_url, label_type.to_json, LabelPrinter::PmbClient.headers)
           label_type_id = JSON.parse(res)['data']['id']
@@ -80,8 +81,8 @@ namespace :pmb do
           label_type_id = get_label_type_id('Plate')
           { 'data' =>
             { 'attributes' =>
-              { 'name' =>  'sqsc_384plate_label_template',
-                'label_type_id' =>  label_type_id,
+              { 'name' => 'sqsc_384plate_label_template',
+                'label_type_id' => label_type_id,
                 'labels_attributes' => [
                   { 'name' => 'main_label',
                     'bitmaps_attributes' => [
@@ -101,7 +102,7 @@ namespace :pmb do
           { 'data' =>
             { 'attributes' =>
               { 'name' => 'sqsc_1dtube_label_template',
-                'label_type_id' =>  label_type_id,
+                'label_type_id' => label_type_id,
                 'labels_attributes' => [
                   { 'name' => 'main_label',
                     'bitmaps_attributes' => [

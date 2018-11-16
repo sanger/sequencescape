@@ -27,6 +27,7 @@ class QcResultFactory
 
   def save
     return false unless valid?
+
     ActiveRecord::Base.transaction do
       resources.collect(&:save)
     end
@@ -64,9 +65,11 @@ class QcResultFactory
 
     def uuid=(uuid)
       return if uuid.nil?
+
       @asset_identifier = uuid
       uuid_object = Uuid.find_by(external_id: uuid)
       return if uuid_object.blank?
+
       @uuid = if uuid_object.resource_type == 'Sample'
                 Sample.find(uuid_object.resource_id).primary_receptacle
               else
@@ -76,6 +79,7 @@ class QcResultFactory
 
     def barcode=(barcode)
       return if barcode.nil?
+
       @asset_identifier = barcode
       @barcode = Asset.find_by_barcode(barcode)
     end
@@ -90,12 +94,14 @@ class QcResultFactory
       asset = uuid || barcode
       return if asset.blank?
       return asset if well_location.blank?
+
       @plate = Plate.find(asset.id)
       plate.find_well_by_map_description(well_location)
     end
 
     def save
       return false unless valid?
+
       update_parent_well
       qc_result.save
     end
@@ -114,6 +120,7 @@ class QcResultFactory
 
     def update_parent_well
       return unless can_update_parent_well?
+
       well = parent_plate.find_well_by_map_description(well_location)
       parent_qc_result = QcResult.new(qc_result.attributes.merge(asset: well, value: value.to_f * plate.dilution_factor))
       parent_qc_result.save!
@@ -123,11 +130,13 @@ class QcResultFactory
 
     def check_asset
       return if asset.present?
+
       errors.add(:uuid, "#{message_id} does not belong to a valid asset")
     end
 
     def check_qc_result
       return if qc_result.valid?
+
       qc_result.errors.each do |k, v|
         errors.add(k, v)
       end
@@ -135,6 +144,7 @@ class QcResultFactory
 
     def check_asset_identifier
       return if uuid.present? || barcode.present?
+
       errors.add(:base, 'must have an asset identifier - either a uuid or barcode')
     end
   end
@@ -144,6 +154,7 @@ class QcResultFactory
   def check_resources
     resources.each do |resource|
       next if resource.valid?
+
       String.new.tap do |resource_errors|
         resource.errors.each do |key, value|
           resource_errors << "#{key} #{value} "

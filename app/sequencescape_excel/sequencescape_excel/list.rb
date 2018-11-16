@@ -80,6 +80,7 @@ module SequencescapeExcel
         alias_method args.first, :values
 
         return if const_defined?(list_model)
+
         list_model_const = Object.const_set(list_model, Struct.new(*options[:keys]) do
           def fetch(key)
             if members.include?(key)
@@ -123,6 +124,7 @@ module SequencescapeExcel
     # add the item along with its attribute to each key
     def add(item)
       return unless item.valid?
+
       values << item
       keys.each do |key|
         items.fetch(key).store(item.send(key).to_s, item)
@@ -160,6 +162,7 @@ module SequencescapeExcel
 
     def <=>(other)
       return unless other.is_a?(self.class)
+
       values <=> other.values
     end
 

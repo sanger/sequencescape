@@ -13,11 +13,13 @@ module SampleManifestExcel
         # Uniqueness of foreign barcodes in the database is checked in the specialised field sanger_plate_id.
         def check_for_barcodes_unique
           return unless any_duplicate_barcodes?
+
           errors.add(:base, 'Duplicate barcodes detected, the barcode must be unique for each plate.')
         end
 
         def any_duplicate_barcodes?
           return false unless upload.respond_to?('rows')
+
           unique_bcs = {}
           upload.rows.each do |row|
             next if row.columns.blank? || row.data.blank?
@@ -43,6 +45,7 @@ module SampleManifestExcel
         def value_for_column(row, col_name)
           col_num = row.columns.find_column_or_null(:name, col_name).number
           return nil unless col_num.present? && col_num.positive?
+
           row.data[col_num - 1]
         end
 

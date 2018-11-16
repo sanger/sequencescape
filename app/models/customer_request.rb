@@ -11,6 +11,7 @@ class CustomerRequest < Request
 
   def update_responsibilities!
     return if qc_metrics.stock_metric.empty?
+
     customer_accepts_responsibility! if qc_metrics.stock_metric.all?(&:poor_quality_proceed)
   end
 

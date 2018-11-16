@@ -23,6 +23,7 @@ def read_user_id
       break if /rows selected/i.match?(l)
       break if /^$/.match?(l)
       raise Exception.new, "'#{l}' is not a valid id" unless /^\d+$/.match?(l)
+
       id = l.to_i
       user = f.gets.strip
 

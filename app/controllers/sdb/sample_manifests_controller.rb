@@ -104,6 +104,7 @@ class Sdb::SampleManifestsController < Sdb::BaseController
 
   def validate_type
     return true if SampleManifest.supported_asset_type?(params[:asset_type])
+
     flash[:error] = "'#{params[:asset_type]}' is not a supported manifest type."
     begin
       redirect_back fallback_location: root_path

@@ -194,6 +194,7 @@ class SamplesController < ApplicationController
 
   def redirect_if_not_owner_or_admin_otherwise
     return yield if current_user.owner?(@sample) or current_user.is_administrator? or current_user.is_manager?
+
     flash[:error] = 'Sample details can only be altered by the owner or an administrator or manager'
     redirect_to sample_path(@sample)
   end

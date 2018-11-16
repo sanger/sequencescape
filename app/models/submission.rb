@@ -84,6 +84,7 @@ class Submission < ApplicationRecord
   # Once submissions progress beyond building, destruction is a risky action and should be prevented.
   def prevent_destruction_unless_building?
     return if building?
+
     errors.add(:base, "can only be destroyed when in the 'building' stage. Later submissions should be cancelled.")
     throw :abort
   end
@@ -189,6 +190,7 @@ class Submission < ApplicationRecord
   # This is no longer valid.
   def request_type_ids
     return [] unless orders.present?
+
     orders.first.request_types.map(&:to_i)
   end
   deprecate request_type_ids: 'Orders may now have different request_types'
@@ -210,6 +212,7 @@ class Submission < ApplicationRecord
   # @return [Array<Request>] An array of downstream requests
   def next_requests_via_submission(request)
     raise RuntimeError, "Request #{request.id} is not part of submission #{id}" unless request.submission_id == id
+
     # Pick out the siblings of the request, so we can work out where it is in the list, and all of
     # the requests in the subsequent request type, so that we can tie them up.  We order by ID
     # here so that the earliest requests, those created by the submission build, are always first;
@@ -222,6 +225,7 @@ class Submission < ApplicationRecord
       # If we have no pooling behaviour specified, then we're pooling by submission.
       # We keep to the existing behaviour, to isolate risk
       return next_possible_requests if request.request_type.pooling_method.nil?
+
       # If we get here we've got custom pooling behaviour defined.
       index = request.request_type.pool_index_for_request(request)
       number_to_return = next_possible_requests.count / request.request_type.pool_count
@@ -284,6 +288,7 @@ class Submission < ApplicationRecord
       # NOTE: This will only work whilst you order the same number of requests.
       multipliers = orders.reduce(Set.new) { |set, order| set << order.multiplier_for(request_type_id) }
       raise RuntimeError, "Mismatched multiplier information for submission #{id}" unless multipliers.one?
+
       # Now we can take the group of requests from next_possible_requests that tie up.
       cache[request_type_id] = multipliers.first
     end

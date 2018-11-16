@@ -23,6 +23,7 @@ module Core::Service::ContentFiltering
     def process_request_body
       content = request.body.read
       raise Core::Service::ContentFiltering::InvalidBodyContentType if not content.blank? and !acceptable_types.include?(request.content_type)
+
       @json = content.blank? ? {} : MultiJson.load(content) if request.content_type == 'application/json' || content.blank?
     ensure
       # It's important to ensure that the body IO object has been rewound to the start for other requests.

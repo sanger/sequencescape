@@ -56,6 +56,7 @@ class PlateMapGeneration
   def save!
     # Abort if we've already generated our shape
     return true if AssetShape.find_by(name: @name)
+
     @shape = AssetShape.create!(name: @name, horizontal_ratio: @horizontal_ratio, vertical_ratio: @vertical_ratio, description_strategy: @description_strategy)
     @sizes.each { |size| @shape.generate_map(size) }
   end

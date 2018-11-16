@@ -87,6 +87,7 @@ def build_batch_for(name, count)
   # in some form.
   requests = pipeline.requests.ready_in_storage.all
   raise StandardError, "Pipeline has #{requests.size} requests waiting rather than #{count}" if requests.size != count.to_i
+
   batch = Batch.create!(pipeline: pipeline, user: user, requests: requests)
 end
 

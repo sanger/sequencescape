@@ -50,12 +50,12 @@ end
 # of the library that is being sequenced and the UI will populate that information.
 SENSIBLE_DEFAULTS_STANDARD = {
   'Fragment size required (from)' => 100,
-  'Fragment size required (to)'   => 200,
-  'Library type'                  => ->(step, field) { step.select('Standard', from: field) },
-  'Read length'                   => 76
+  'Fragment size required (to)' => 200,
+  'Library type' => ->(step, field) { step.select('Standard', from: field) },
+  'Read length' => 76
 }
 SENSIBLE_DEFAULTS_FOR_SEQUENCING = {
-  'Read length'                   => ->(step, field) { step.select('76', from: field) }
+  'Read length' => ->(step, field) { step.select('76', from: field) }
 }
 SENSIBLE_DEFAULTS_HISEQ = SENSIBLE_DEFAULTS_FOR_SEQUENCING.merge(
   'Read length' => ->(step, field) { step.select('100', from: field) }
@@ -65,20 +65,20 @@ SENSIBLE_DEFAULTS_FOR_REQUEST_TYPE = {
   'Library creation' => SENSIBLE_DEFAULTS_STANDARD,
   'Illumina-C Library creation' => SENSIBLE_DEFAULTS_STANDARD,
   'Multiplexed library creation' => SENSIBLE_DEFAULTS_STANDARD,
-  'Pulldown library creation'    => SENSIBLE_DEFAULTS_STANDARD,
-  'Single ended sequencing'      => SENSIBLE_DEFAULTS_FOR_SEQUENCING,
-  'Paired end sequencing'        => SENSIBLE_DEFAULTS_FOR_SEQUENCING,
+  'Pulldown library creation' => SENSIBLE_DEFAULTS_STANDARD,
+  'Single ended sequencing' => SENSIBLE_DEFAULTS_FOR_SEQUENCING,
+  'Paired end sequencing' => SENSIBLE_DEFAULTS_FOR_SEQUENCING,
 
   # HiSeq defaults
   'Single ended hi seq sequencing' => SENSIBLE_DEFAULTS_HISEQ,
-  'HiSeq Paired end sequencing'    => SENSIBLE_DEFAULTS_HISEQ,
+  'HiSeq Paired end sequencing' => SENSIBLE_DEFAULTS_HISEQ,
 
-  'Illumina-B Single ended sequencing'      => SENSIBLE_DEFAULTS_FOR_SEQUENCING,
-  'Illumina-B Paired end sequencing'        => SENSIBLE_DEFAULTS_FOR_SEQUENCING,
+  'Illumina-B Single ended sequencing' => SENSIBLE_DEFAULTS_FOR_SEQUENCING,
+  'Illumina-B Paired end sequencing' => SENSIBLE_DEFAULTS_FOR_SEQUENCING,
 
   # HiSeq defaults
   'Illumina-B Single ended hi seq sequencing' => SENSIBLE_DEFAULTS_HISEQ,
-  'Illumina-B HiSeq Paired end sequencing'    => SENSIBLE_DEFAULTS_HISEQ,
+  'Illumina-B HiSeq Paired end sequencing' => SENSIBLE_DEFAULTS_HISEQ,
 
   # PacBio defaults
   'PacBio Library Prep' => {}
