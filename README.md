@@ -1,8 +1,9 @@
 Sequencescape
 =============
 
-[![Build Status](https://travis-ci.org/radome/sequencescape.svg?branch=test_openstack)](https://travis-ci.org/radome/sequencescape)
-[![Maintainability](https://api.codeclimate.com/v1/badges/4e15fd15338168a2334b/maintainability)](https://codeclimate.com/github/radome/sequencescape/maintainability)
+[![Build Status](https://travis-ci.orgsanger/sequencescape.svg?branch=next_release)](https://travis-ci.org/radome/sequencescape)
+[![Maintainability](https://api.codeclimate.com/v1/badges/2e3913c21e32b86511e4/maintainability)](https://codeclimate.com/github/sanger/sequencescape/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/2e3913c21e32b86511e4/test_coverage)](https://codeclimate.com/github/sanger/sequencescape/test_coverage)
 [![Yard Docs](http://img.shields.io/badge/yard-docs-blue.svg)](https://www.rubydoc.info/github/sanger/sequencescape)
 
 Description
