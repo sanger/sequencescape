@@ -80,3 +80,17 @@ context 'printing tubes' do
     it_behaves_like 'asset labels creator'
   end
 end
+
+context 'base plate' do
+  it 'normal plate should output ean13 barcode' do
+    plate = create(:plate)
+    label = LabelPrinter::Label::AssetPlate.new([plate])
+    expect(label.create_label(plate)[:barcode]).to eq(plate.ean13_barcode)
+  end
+
+  it 'working dilution plate should output human readable barcode' do
+    plate = create(:working_dilution_plate)
+    label = LabelPrinter::Label::AssetPlate.new([plate])
+    expect(label.create_label(plate)[:barcode]).to eq(plate.human_barcode)
+  end
+end

@@ -4,7 +4,7 @@ FactoryBot.define do
   factory :aker_job, class: Aker::Job do
     sequence(:aker_job_id) { |n| n }
 
-    aker_job_url 'someurl'
+    aker_job_url { 'someurl' }
 
     job_uuid { SecureRandom.uuid }
 

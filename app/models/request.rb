@@ -298,6 +298,8 @@ class Request < ApplicationRecord
     belongs_to :primer_panel
     belongs_to :bait_library
   end
+  # Do NOT move above 'has_metadata'
+  include Request::CustomerResponsibility
 
   has_one :primer_panel, through: :request_metadata
 
