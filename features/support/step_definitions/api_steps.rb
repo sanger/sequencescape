@@ -57,11 +57,11 @@ Given /^no cookies are set for HTTP requests to the API$/ do
 end
 
 Given /^the WTSI single sign-on service recognises "([^\"]+)" as "([^\"]+)"$/ do |key, login|
-  User.find_or_create_by(login: login).update_attributes!(api_key: key)
+  User.find_or_create_by(login: login).update!(api_key: key)
 end
 
 Given /^the WTSI single sign-on service does not recognise "([^\"]+)"$/ do |cookie|
-  User.find_by(api_key: cookie).update_attributes!(api_key: nil)
+  User.find_by(api_key: cookie).update!(api_key: nil)
 end
 
 def api_request(action, path, body)
@@ -293,16 +293,16 @@ end
 
 Given /^the pathogen project called "([^"]*)" exists$/ do |project_name|
   project = FactoryBot.create :project, name: project_name, approved: true, state: 'active'
-  project.update_attributes!(project_metadata_attributes: {
-                               project_manager: ProjectManager.find_by(name: 'Unallocated'),
-                               project_cost_code: 'ABC',
-                               funding_comments: 'External funding',
-                               collaborators: 'No collaborators',
-                               external_funding_source: 'EU',
-                               budget_division: BudgetDivision.find_by(name: 'Pathogen (including malaria)'),
-                               sequencing_budget_cost_centre: 'Sanger',
-                               project_funding_model: 'Internal'
-                             })
+  project.update!(project_metadata_attributes: {
+                    project_manager: ProjectManager.find_by(name: 'Unallocated'),
+                    project_cost_code: 'ABC',
+                    funding_comments: 'External funding',
+                    collaborators: 'No collaborators',
+                    external_funding_source: 'EU',
+                    budget_division: BudgetDivision.find_by(name: 'Pathogen (including malaria)'),
+                    sequencing_budget_cost_centre: 'Sanger',
+                    project_funding_model: 'Internal'
+                  })
 end
 
 Given /^project "([^"]*)" has an owner called "([^"]*)"$/ do |project_name, login_name|

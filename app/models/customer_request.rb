@@ -16,7 +16,7 @@ class CustomerRequest < Request
   end
 
   def customer_accepts_responsibility!
-    request_metadata.update_attributes!(customer_accepts_responsibility: true)
+    request_metadata.update!(customer_accepts_responsibility: true)
   end
 
   #

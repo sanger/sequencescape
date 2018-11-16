@@ -88,7 +88,7 @@ class SamplesController < ApplicationController
     @sample = Sample.find(params[:id])
     redirect_if_not_owner_or_admin_otherwise do
       cleaned_params = clean_params_from_check(params[:sample]).permit(default_permitted_metadata_fields)
-      if @sample.update_attributes(cleaned_params)
+      if @sample.update(cleaned_params)
         flash[:notice] = 'Sample details have been updated'
         redirect_to sample_path(@sample)
       else

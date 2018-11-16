@@ -83,7 +83,7 @@ module SequencingQcBatch
   def qc_ready_for_manual
     ActiveRecord::Base.transaction do
       p = Pipeline.find(qc_pipeline_id)
-      update_attributes!(qc_pipeline_id: p.next_pipeline_id, qc_state: 'qc_manual')
+      update!(qc_pipeline_id: p.next_pipeline_id, qc_state: 'qc_manual')
     end
   end
 

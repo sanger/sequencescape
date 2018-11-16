@@ -14,7 +14,7 @@ class RequestEvent < ApplicationRecord
   def expire!(date_time)
     raise StandardError, 'This event has already expired!' unless current_to.nil?
 
-    update_attributes!(current_to: date_time)
+    update!(current_to: date_time)
   end
 
   def current?

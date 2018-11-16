@@ -4,7 +4,7 @@ end
 
 When /^the state of the submission with UUID "([^"]+)" is "([^"]+)"$/ do |uuid, state|
   submission = Uuid.with_external_id(uuid).first.try(:resource) or raise StandardError, "Could not find submission with UUID #{uuid.inspect}"
-  submission.update_attributes!(state: state)
+  submission.update!(state: state)
 end
 
 Then /^there should be no submissions to be processed$/ do
@@ -132,9 +132,9 @@ Given /^I have a "([^\"]*)" submission with the following setup:$/ do |template_
 end
 
 Then /^the last submission should have a priority of (\d+)$/ do |priority|
-  Submission.last.update_attributes!(priority: priority)
+  Submission.last.update!(priority: priority)
 end
 
 Given /^all the requests in the last submission are cancelled$/ do
-  Submission.last.requests.each { |r| r.update_attributes!(state: 'cancelled') }
+  Submission.last.requests.each { |r| r.update!(state: 'cancelled') }
 end

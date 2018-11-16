@@ -94,7 +94,7 @@ class Transfer::BetweenPlateAndTubes < Transfer
     tube_to_stock_wells.each do |tube, stock_wells|
       next unless apply_name?(tube)
 
-      tube.update_attributes!(name: tube_name_for(stock_wells))
+      tube.update!(name: tube_name_for(stock_wells))
     end
   end
 

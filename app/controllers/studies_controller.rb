@@ -99,7 +99,7 @@ class StudiesController < ApplicationController
     redirect_if_not_owner_or_admin
 
     ActiveRecord::Base.transaction do
-      @study.update_attributes!(params[:study])
+      @study.update!(params[:study])
       unless params[:study_owner_id].blank?
         owner = User.find(params[:study_owner_id])
         unless owner.is_owner?(@study)

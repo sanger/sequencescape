@@ -45,7 +45,7 @@ module Submission::AssetGroupBehaviour
       user: user,
       assets: assets
     )
-    update_attributes!(asset_group_id: asset_group.id)
+    update!(asset_group_id: asset_group.id)
   end
   private :create_our_asset_group
 

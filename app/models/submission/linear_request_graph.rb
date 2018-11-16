@@ -121,8 +121,8 @@ module Submission::LinearRequestGraph
 
   def associate_built_requests(assets)
     assets.map(&:requests).flatten.each do |request|
-      request.update_attributes!(initial_study: nil) if request.initial_study != study
-      request.update_attributes!(initial_project: nil) if request.initial_project != project
+      request.update!(initial_study: nil) if request.initial_study != study
+      request.update!(initial_project: nil) if request.initial_project != project
       comments.split("\n").each do |comment|
         request.comments.create!(user: user, description: comment)
       end if comments.present?

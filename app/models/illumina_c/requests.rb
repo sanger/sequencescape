@@ -38,7 +38,7 @@ module IlluminaC::Requests
     def update_request_types
       each_request_type do |params|
         key = params.delete(:key)
-        RequestType.find_by(key: key).update_attributes!(params)
+        RequestType.find_by(key: key).update!(params)
       end
     end
 

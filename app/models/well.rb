@@ -200,7 +200,7 @@ class Well < Receptacle
     def writer_for_well_attribute_as_float(attribute)
       class_eval <<-END_OF_METHOD_DEFINITION
         def set_#{attribute}(value)
-          self.well_attribute.update_attributes!(:#{attribute} => value.to_f)
+          self.well_attribute.update!(:#{attribute} => value.to_f)
         end
       END_OF_METHOD_DEFINITION
     end
@@ -289,14 +289,14 @@ class Well < Receptacle
       events.update_gender_markers!(resource)
     end
 
-    well_attribute.update_attributes!(gender_markers: gender_markers)
+    well_attribute.update!(gender_markers: gender_markers)
   end
 
   def update_sequenom_count!(sequenom_count, resource)
     unless well_attribute.sequenom_count == sequenom_count
       events.update_sequenom_count!(resource)
     end
-    well_attribute.update_attributes!(sequenom_count: sequenom_count)
+    well_attribute.update!(sequenom_count: sequenom_count)
   end
 
   # The sequenom pass value is either the string 'Unknown' or it is the combination of gender marker values.

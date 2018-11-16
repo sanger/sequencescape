@@ -23,7 +23,7 @@ module Aker
   # If we want to update a change in SS into the properties of Aker in the biomaterial service we have to add
   # the field name from aker inside the list UPDATABLE_ATTRS_FROM_SS_INTO_AKER.
   #
-  # SS updates will occur on update_attributes() calls
+  # SS updates will occur on update() calls
   # Aker updates will happen on job completion, because the job message for the material is generated from
   # the attributes() method of this class.
   class Mapping

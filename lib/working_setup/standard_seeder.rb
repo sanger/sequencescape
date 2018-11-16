@@ -62,7 +62,7 @@ module WorkingSetup
       )
       qcc = QcableCreator.create!(lot: lot, user: user, count: size)
       qcc.qcables.each do |qcable|
-        qcable.update_attributes!(state: 'available')
+        qcable.update!(state: 'available')
         puts "Tag Plate: #{qcable.asset.ean13_barcode}"
       end
     end

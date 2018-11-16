@@ -410,14 +410,14 @@ class Batch < ApplicationRecord
 
     ActiveRecord::Base.transaction do
       # Update the lab events for the request so that they reference the batch that the request is moving to
-      batch_request_left.request.lab_events.each  { |event| event.update_attributes!(batch_id: batch_request_right.batch_id) if event.batch_id == batch_request_left.batch_id  }
-      batch_request_right.request.lab_events.each { |event| event.update_attributes!(batch_id: batch_request_left.batch_id)  if event.batch_id == batch_request_right.batch_id }
+      batch_request_left.request.lab_events.each  { |event| event.update!(batch_id: batch_request_right.batch_id) if event.batch_id == batch_request_left.batch_id  }
+      batch_request_right.request.lab_events.each { |event| event.update!(batch_id: batch_request_left.batch_id)  if event.batch_id == batch_request_right.batch_id }
 
       # Swap the two batch requests so that they are correct.  This involves swapping both the batch and the lane but ensuring that the
       # two requests don't clash on position by removing one of them.
       original_left_batch_id, original_left_position, original_right_request_id = batch_request_left.batch_id, batch_request_left.position, batch_request_right.request_id
       batch_request_right.destroy
-      batch_request_left.update_attributes!(batch_id: batch_request_right.batch_id, position: batch_request_right.position)
+      batch_request_left.update!(batch_id: batch_request_right.batch_id, position: batch_request_right.position)
       batch_request_right = BatchRequest.create!(batch_id: original_left_batch_id, position: original_left_position, request_id: original_right_request_id)
 
       # Finally record the fact that the batch was swapped
@@ -554,7 +554,7 @@ class Batch < ApplicationRecord
         requests_to_update.concat(downstream_requests.map { |r| [r.id, target_asset.id] })
       end
 
-      request.update_attributes!(target_asset: target_asset)
+      request.update!(target_asset: target_asset)
 
       # All links between the two assets as new, so we can bulk create them!
       asset_links << [request.asset.id, request.target_asset.id]
@@ -563,7 +563,7 @@ class Batch < ApplicationRecord
     AssetLink::BuilderJob.create(asset_links)
 
     requests_to_update.each do |request_details|
-      Request.find(request_details.first).update_attributes!(asset_id: request_details.last)
+      Request.find(request_details.first).update!(asset_id: request_details.last)
     end
   end
 

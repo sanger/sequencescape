@@ -42,8 +42,8 @@ module SampleManifest::InputBehaviour
       # Ensure that we can update the samples of a manifest
       has_many :samples
       accepts_nested_attributes_for :samples
-      alias_method(:update_attributes_without_sample_manifest!, :update_attributes!)
-      alias_method(:update_attributes!, :update_attributes_with_sample_manifest!)
+      alias_method(:update_without_sample_manifest!, :update!)
+      alias_method(:update!, :update_with_sample_manifest!)
 
       # Can be removed once the initial changes have gone live.
       # Ensures code remains backwards compatible for existing jobs.
@@ -170,10 +170,10 @@ module SampleManifest::InputBehaviour
     return fail_with_errors!(sample_errors) unless sample_errors.empty?
 
     ActiveRecord::Base.transaction do
-      update_attributes!({
-                           override_previous_manifest: override_sample_information,
-                           samples_attributes: samples_to_updated_attributes.map(&:last)
-                         }, user_updating_manifest)
+      update!({
+                override_previous_manifest: override_sample_information,
+                samples_attributes: samples_to_updated_attributes.map(&:last)
+              }, user_updating_manifest)
 
       core_behaviour.updated_by!(user_updating_manifest, samples_to_updated_attributes.map(&:first).compact)
 
@@ -224,10 +224,10 @@ module SampleManifest::InputBehaviour
   end
   private :ensure_samples_are_being_updated_by_manifest
 
-  def update_attributes_with_sample_manifest!(attributes, user = nil)
+  def update_with_sample_manifest!(attributes, user = nil)
     ActiveRecord::Base.transaction do
       ensure_samples_are_being_updated_by_manifest(attributes, user)
-      update_attributes_without_sample_manifest!(attributes.with_indifferent_access)
+      update_without_sample_manifest!(attributes.with_indifferent_access)
     end
   end
 

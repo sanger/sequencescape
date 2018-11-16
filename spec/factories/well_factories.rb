@@ -64,7 +64,7 @@ FactoryBot.define do
     map { create(:map) }
 
     after(:create) do |well, evaluator|
-      well.aliquots.each { |a| a.update_attributes!(study: evaluator.study) }
+      well.aliquots.each { |a| a.update!(study: evaluator.study) }
     end
   end
 

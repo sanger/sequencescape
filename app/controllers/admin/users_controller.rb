@@ -41,7 +41,7 @@ class Admin::UsersController < ApplicationController
     end
 
     if @user.id == params[:id].to_i
-      @user.update_attributes(params[:user])
+      @user.update(params[:user])
     end
     if @user.save
       flash[:notice] = 'Profile updated'

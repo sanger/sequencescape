@@ -14,7 +14,7 @@ class TagsController < ApplicationController
 
   def update
     respond_to do |format|
-      if @tag.update_attributes(params[:tag])
+      if @tag.update(params[:tag])
         flash[:notice] = 'Tag was successfully updated.'
         format.html { redirect_to(@tag_group) }
       else

@@ -103,8 +103,8 @@ end
 # Bad, I know, but it gets the job done for the genotyping pipelines!
 Given /^the batch and all its requests are pending$/ do
   batch = Batch.first or raise StandardError, 'There appears to be no batches!'
-  batch.update_attributes!(state: 'pending')
-  batch.requests.each { |r| r.update_attributes!(state: 'pending') }
+  batch.update!(state: 'pending')
+  batch.requests.each { |r| r.update!(state: 'pending') }
 end
 
 SEQUENCING_PIPELINES = [

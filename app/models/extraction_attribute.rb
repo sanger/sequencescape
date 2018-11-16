@@ -105,8 +105,8 @@ class ExtractionAttribute < ApplicationRecord
     actual_map = target.maps.select { |m| m.description == location }.first
     raise WellNotExists if actual_map.nil?
 
-    actual_well_in_same_position_at_rack&.update_attributes(plate: nil)
-    well.update_attributes(plate: actual_parent, map: actual_map)
+    actual_well_in_same_position_at_rack&.update(plate: nil)
+    well.update(plate: actual_parent, map: actual_map)
   end
 
   private :update_performed

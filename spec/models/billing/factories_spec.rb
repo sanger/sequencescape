@@ -50,7 +50,7 @@ describe 'Billing::Factories', billing: true do
     subject do
       request.start!
       request.pass!
-      request.update_attributes(initial_project: create(:project))
+      request.update(initial_project: create(:project))
       Billing::Factory::LibraryCreation.new(request: request)
     end
 

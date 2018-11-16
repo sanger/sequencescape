@@ -228,7 +228,7 @@ class Sample < ApplicationRecord
 
   # this method has to be before validation_guarded_by
   def rename_to!(new_name)
-    update_attributes!(name: new_name)
+    update!(name: new_name)
   end
 
   validation_guard(:can_rename_sample)

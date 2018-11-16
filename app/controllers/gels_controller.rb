@@ -32,7 +32,7 @@ class GelsController < ApplicationController
     ActiveRecord::Base.transaction do
       params[:wells].keys.each do |well_id|
         well = Well.find(well_id)
-        well.well_attribute.update_attributes!(gel_pass: params[:wells][well_id][:qc_state])
+        well.well_attribute.update!(gel_pass: params[:wells][well_id][:qc_state])
         well.events.create_gel_qc!(params[:wells][well_id][:qc_state], current_user)
       end
       Plate.find(params[:id]).events.create_gel_qc!('', current_user)

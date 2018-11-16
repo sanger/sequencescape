@@ -8,7 +8,7 @@
 class Tag < ApplicationRecord
   module Associations
     def untag!
-      aliquots.first.try(:update_attributes!, tag: nil)
+      aliquots.first.try(:update!, tag: nil)
     end
   end
 

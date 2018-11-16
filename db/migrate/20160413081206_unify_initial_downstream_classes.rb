@@ -15,7 +15,7 @@ class UnifyInitialDownstreamClasses < ActiveRecord::Migration
       OLD_CLASSES.each do |old|
         RequestType.where(request_class_name: old).find_each do |rt|
           say "Updating: #{rt.name}"
-          rt.update_attributes!(request_class_name: NEW_CLASS)
+          rt.update!(request_class_name: NEW_CLASS)
           upd = Request.where(request_type_id: rt.id, sti_type: old).update_all(sti_type: NEW_CLASS)
           say "Updated #{upd} requests", true
           STATE_MIGRATIONS.fetch(old, []).each do |old_state, new_state|

@@ -1,7 +1,7 @@
 Given /^I have a pipeline called "([^\"]*)"$/ do |name|
   request_type = FactoryBot.create :request_type
   pipeline = FactoryBot.create :pipeline, name: name, request_types: [request_type]
-  pipeline.workflow.update_attributes!(item_limit: 8)
+  pipeline.workflow.update!(item_limit: 8)
   task = FactoryBot.create :task, name: 'Task1', workflow: pipeline.workflow
 end
 
@@ -29,7 +29,7 @@ def create_request_for_pipeline(pipeline_name, options = {})
   request_metadata = FactoryBot.create :"request_metadata_for_#{pipeline.request_types.first.key}"
   request_parameters = options.merge(request_type: pipeline.request_types.last, asset: FactoryBot.create(pipeline_name_to_asset_type(pipeline_name)), request_metadata: request_metadata)
   FactoryBot.create(:request_with_submission, request_parameters).tap do |request|
-    request.asset.update_attributes!(barcode: request.asset.id % 9999999)
+    request.asset.update!(barcode: request.asset.id % 9999999)
     request.asset.create_scanned_into_lab_event!(content: '2018-01-01')
   end
 end
@@ -65,15 +65,15 @@ end
 
 Given /^the maximum batch size for the pipeline "([^\"]+)" is (\d+)$/ do |name, max_size|
   pipeline = Pipeline.find_by(name: name) or raise StandardError, "Cannot find pipeline #{name.inspect}"
-  pipeline.update_attributes!(max_size: max_size.to_i)
+  pipeline.update!(max_size: max_size.to_i)
 end
 
 Given /^the pipeline "([^\"]+)" accepts "([^\"]+)" requests$/ do |pipeline_name, request_name|
   pipeline     = Pipeline.find_by(name: pipeline_name) or raise StandardError, "Cannot find pipeline #{pipeline_name.inspect}"
   request_type = RequestType.find_by(name: request_name) or raise StandardError, "Cannot find request type #{request_name.inspect}"
-  pipeline.update_attributes!(request_types: [request_type])
+  pipeline.update!(request_types: [request_type])
 end
 
 Given /^the last request is in the "([^\"]+)" state$/ do |state|
-  Request.last.update_attributes!(state: state)
+  Request.last.update!(state: state)
 end

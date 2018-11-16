@@ -34,7 +34,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input
     end)
 
     # Now the harder bit: for attribute we need to work out how we would fill in the attribute
-    # structure for an update_attributes! call.
+    # structure for an update! call.
     initial_structure = {}
     read_write.each do |json, attribute|
       steps       = attribute.split('.')

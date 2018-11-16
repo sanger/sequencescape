@@ -28,7 +28,7 @@ class CustomMetadatumCollectionTest < ActiveSupport::TestCase
 
   test 'should update metadata' do
     custom_metadatum_collection = create(:custom_metadatum_collection, metadata: ({ 'Key1' => 'Value1', 'Key2' => 'Value2' }))
-    custom_metadatum_collection.update_attributes(metadata: { 'Key1' => 'New value', 'Key3' => 'Value3' })
+    custom_metadatum_collection.update(metadata: { 'Key1' => 'New value', 'Key3' => 'Value3' })
     assert_equal 2, custom_metadatum_collection.custom_metadata.length
     assert_equal 'New value', custom_metadatum_collection.custom_metadata.first.value
     assert_equal 'Value3', custom_metadatum_collection.custom_metadata.last.value

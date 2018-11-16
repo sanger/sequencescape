@@ -114,7 +114,7 @@ module IlluminaC::Helper
       each_submission_template do |options|
         next if options[:submission_parameters][:input_field_infos].nil?
 
-        SubmissionTemplate.find_by!(name: options[:name]).update_attributes!(submission_parameters: options[:submission_parameters])
+        SubmissionTemplate.find_by!(name: options[:name]).update!(submission_parameters: options[:submission_parameters])
       end
     end
 

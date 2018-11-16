@@ -20,7 +20,7 @@ class PlateVolume < ApplicationRecord
 
     db_files.map(&:destroy)
     reload
-    update_attributes!(uploaded_file_name: filename, updated_at: file.stat.mtime, uploaded: file)
+    update!(uploaded_file_name: filename, updated_at: file.stat.mtime, uploaded: file)
   end
 
   private

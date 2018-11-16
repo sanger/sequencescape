@@ -77,7 +77,7 @@ class SampleManifest::Generator
     Tempfile.open("sample_manifest_#{sample_manifest.id}.xlsx") do |tempfile|
       download.save(tempfile.path)
       tempfile.open
-      sample_manifest.update_attributes!(generated: tempfile, password: download.password)
+      sample_manifest.update!(generated: tempfile, password: download.password)
     end
   end
 

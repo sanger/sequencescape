@@ -149,7 +149,7 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
         end
         context 'with external value set' do
           setup do
-            @sample.update_attributes!(control: true)
+            @sample.update!(control: true)
           end
           should 'return external value' do
             control = ManifestGenerator.well_sample_is_control(@well)
@@ -192,7 +192,7 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
           }.each do |expected, genders|
             Array(genders).each do |gender|
               should "see #{gender.inspect} as #{expected.inspect}" do
-                @sample.sample_metadata.update_attributes!(gender: gender)
+                @sample.sample_metadata.update!(gender: gender)
                 assert_equal(expected, ManifestGenerator.well_sample_gender(@well))
               end
             end
@@ -228,7 +228,7 @@ class ManifestGeneratorTest < ActiveSupport::TestCase
             end
             context 'with external value set' do
               setup do
-                @sample.sample_metadata.update_attributes!(parent => 2)
+                @sample.sample_metadata.update!(parent => 2)
               end
               should 'return external value' do
                 parent_value = ManifestGenerator.well_sample_parent(@well, parent)

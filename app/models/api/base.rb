@@ -13,8 +13,8 @@ class Api::Base
       model_class.create!(attributes_from_json(params))
     end
 
-    def update_attributes!(object, params)
-      object.update_attributes!(attributes_from_json(params))
+    def update!(object, params)
+      object.update!(attributes_from_json(params))
     end
 
     # Maps the attribute names in the errors to their JSON counterparts, so that the end user gets

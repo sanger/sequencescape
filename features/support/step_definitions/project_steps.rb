@@ -16,7 +16,7 @@ end
 
 Given /^project "([^\"]*)" has enforced quotas$/ do |name|
   project = Project.find_by(name: name) or raise StandardError, "Cannot find project with name #{name.inspect}"
-  project.update_attributes!(enforce_quotas: true)
+  project.update!(enforce_quotas: true)
 end
 
 Then /^I should see the project information:$/ do |expected_table|
@@ -27,7 +27,7 @@ Given /^the project "([^\"]*)" a budget division "([^\"]*)"$/ do |project_name, 
   project = Project.find_by(name: project_name) or raise StandardError, "Cannot find project #{project_name.inspect}"
   budget_division = BudgetDivision.find_by(name: budget_division_name) or raise StandardError, "Cannot find budget division #{budget_division_name.inspect}"
 
-  project.update_attributes!(project_metadata_attributes: {
-                               budget_division: budget_division
-                             })
+  project.update!(project_metadata_attributes: {
+                    budget_division: budget_division
+                  })
 end

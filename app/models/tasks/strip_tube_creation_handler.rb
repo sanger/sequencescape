@@ -45,9 +45,9 @@ module Tasks::StripTubeCreationHandler
         request = locations_requests[index].pop
         well    = tube.wells.in_column_major_order.all[index].id
         request.next_requests.each do |dsr|
-          dsr.update_attributes!(asset_id: well)
+          dsr.update!(asset_id: well)
         end
-        request.update_attributes!(target_asset_id: well)
+        request.update!(target_asset_id: well)
       end
     end
 

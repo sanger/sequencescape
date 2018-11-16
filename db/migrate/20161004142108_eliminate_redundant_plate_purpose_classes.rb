@@ -11,7 +11,7 @@ class EliminateRedundantPlatePurposeClasses < ActiveRecord::Migration
         next if purpose.nil?
 
         say "Migrating #{purpose.name}"
-        purpose.update_attributes!(type: 'PlatePurpose')
+        purpose.update!(type: 'PlatePurpose')
       end
     end
   end
@@ -23,7 +23,7 @@ class EliminateRedundantPlatePurposeClasses < ActiveRecord::Migration
         next if purpose.nil?
 
         say "Migrating #{purpose.name}"
-        purpose.update_attributes!(type: old_class)
+        purpose.update!(type: old_class)
       end
     end
   end

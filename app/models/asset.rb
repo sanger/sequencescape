@@ -290,7 +290,7 @@ class Asset < ApplicationRecord
   end
 
   def generate_name_with_id
-    update_attributes!(name: "#{name} #{id}")
+    update!(name: "#{name} #{id}")
   end
 
   def generate_name(new_name)
@@ -388,7 +388,7 @@ class Asset < ApplicationRecord
     raise StandardError, 'Cannot tag an empty asset'   if aliquots.empty?
     raise StandardError, 'Cannot tag multiple samples' if aliquots.size > 1
 
-    aliquots.first.update_attributes!(tags)
+    aliquots.first.update!(tags)
   end
   alias attach_tags attach_tag
 
@@ -403,7 +403,7 @@ class Asset < ApplicationRecord
     self.class.create!(name: name) do |new_asset|
       new_asset.aliquots = aliquots.map(&:dup)
       new_asset.volume   = transfer_volume
-      update_attributes!(volume: volume - transfer_volume) #  Update ourselves
+      update!(volume: volume - transfer_volume) #  Update ourselves
     end.tap do |new_asset|
       new_asset.add_parent(self)
     end

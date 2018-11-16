@@ -15,7 +15,7 @@ module Tasks::MovieLengthHandler
           return false
         end
 
-        asset.pac_bio_library_tube_metadata.update_attributes!(movie_length: movie_length)
+        asset.pac_bio_library_tube_metadata.update!(movie_length: movie_length)
       end
     end
 

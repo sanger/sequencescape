@@ -526,7 +526,7 @@ class Request < ApplicationRecord
 
   def update_priority
     priority = (self.priority + 1) % 4
-    submission.update_attributes!(priority: priority)
+    submission.update!(priority: priority)
   end
 
   def priority

@@ -50,16 +50,16 @@ unless Rails.env.test?
       ['Pico dilution', [4.0]]
     ].each do |name, values|
       c = Plate::Creator.find_by!(name: name)
-      c.update_attributes!(valid_options: {
-                             valid_dilution_factors: values
-                           })
+      c.update!(valid_options: {
+                  valid_dilution_factors: values
+                })
     end
     Plate::Creator.all.each do |c|
       if c.valid_options.nil?
         # Any other valid option will be set to 1
-        c.update_attributes!(valid_options: {
-                               valid_dilution_factors: [1.0]
-                             })
+        c.update!(valid_options: {
+                    valid_dilution_factors: [1.0]
+                  })
       end
     end
   end

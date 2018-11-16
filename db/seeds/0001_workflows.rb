@@ -1035,11 +1035,6 @@ CherrypickPipeline.create!(
 ) do |pipeline|
 end
 
-tosta = RequestType.find_by(key: 'pick_to_sta').id
-tosta2 = RequestType.find_by(key: 'pick_to_sta2').id
-ptst = RequestType.find_by(key: 'pick_to_snp_type').id
-tofluidigm = RequestType.find_by(key: 'pick_to_fluidigm').id
-
 v4_requests_types_pe = ['a', 'b', 'c'].map do |pipeline|
   RequestType.create!(key: "illumina_#{pipeline}_hiseq_v4_paired_end_sequencing",
                       name: "Illumina-#{pipeline.upcase} HiSeq V4 Paired end sequencing",
@@ -1094,7 +1089,7 @@ st_x10 = [RequestType.create!(key: 'hiseq_x_paired_end_sequencing',
                               billable: true,
                               product_line: ProductLine.find_by(name: 'Illumina-B'))]
 
-v4_pipelines = ['(spiked in controls)', '(no controls)'].each do |type|
+['(spiked in controls)', '(no controls)'].each do |type|
   SequencingPipeline.create!(
     name: "HiSeq v4 PE #{type}",
     automated: false,
@@ -1163,7 +1158,7 @@ v4_pipelines = ['(spiked in controls)', '(no controls)'].each do |type|
   end
 end
 
-x10_pipelines = ['(spiked in controls)', '(no controls)'].each do |type|
+['(spiked in controls)', '(no controls)'].each do |type|
   SequencingPipeline.create!(
     name: "HiSeq X PE #{type}",
     automated: false,
@@ -1197,7 +1192,7 @@ x10_pipelines = ['(spiked in controls)', '(no controls)'].each do |type|
     pipeline.request_types = x10_requests_types
   end
 end
-st_x10_pipelines = ['(spiked in controls) from strip-tubes'].each do |type|
+['(spiked in controls) from strip-tubes'].each do |type|
   UnrepeatableSequencingPipeline.create!(
     name: "HiSeq X PE #{type}",
     automated: false,

@@ -9,7 +9,7 @@ end
 
 Given /^the last sample has been updated by a manifest$/ do
   sample = Sample.last or raise StandardError, 'There appear to be no samples'
-  sample.update_attributes!(updated_by_manifest: true)
+  sample.update!(updated_by_manifest: true)
 end
 
 Then /^study "([^\"]*)" should have (\d+) samples$/ do |study_name, number_of_samples|
@@ -25,7 +25,7 @@ end
 
 def sequence_sanger_sample_ids_for(plate)
   plate.wells.in_column_major_order.each_with_index do |well, index|
-    well.primary_aliquot.sample.update_attributes!(sanger_sample_id: yield(index))
+    well.primary_aliquot.sample.update!(sanger_sample_id: yield(index))
   end
 end
 
@@ -40,10 +40,10 @@ Given /^I reset all of the sanger sample ids to a known number sequence$/ do
     index += plate.size
   end
   SampleTube.order(:id).each_with_index do |tube, idx|
-    tube.aliquots.first.sample.update_attributes!(sanger_sample_id: "tube_sample_#{idx + 1}")
+    tube.aliquots.first.sample.update!(sanger_sample_id: "tube_sample_#{idx + 1}")
   end
   LibraryTube.order(:id).each_with_index do |tube, idx|
-    tube.aliquots.first.sample.update_attributes!(sanger_sample_id: "tube_sample_#{idx + 1}")
+    tube.aliquots.first.sample.update!(sanger_sample_id: "tube_sample_#{idx + 1}")
   end
 end
 
@@ -170,28 +170,28 @@ end
 When /^the sample manifest with ID (\d+) is owned by study "([^\"]+)"$/ do |id, name|
   manifest = SampleManifest.find(id)
   study    = Study.find_by(name: name) or raise StandardError, "Cannot find study #{name.inspect}"
-  manifest.update_attributes!(study: study)
+  manifest.update!(study: study)
 end
 
 When /^the sample manifest with ID (\d+) is supplied by "([^\"]+)"$/ do |id, name|
   manifest = SampleManifest.find(id)
   supplier = Supplier.find_by(name: name) or raise StandardError, "Cannot find supplier #{name.inspect}"
-  manifest.update_attributes!(supplier: supplier)
+  manifest.update!(supplier: supplier)
 end
 
 Given /^the sample manifest with ID (\d+) is for (\d+) sample tube$/ do |id, count|
   manifest = SampleManifest.find(id)
-  manifest.update_attributes!(asset_type: '1dtube', count: count.to_i)
+  manifest.update!(asset_type: '1dtube', count: count.to_i)
 end
 
 Given /^the sample manifest with ID (\d+) is for (\d+) plates?$/ do |id, count|
   manifest = SampleManifest.find(id)
-  manifest.update_attributes!(asset_type: 'plate', count: count.to_i)
+  manifest.update!(asset_type: 'plate', count: count.to_i)
 end
 
 Given /^the sample manifest with ID (\d+) is for (\d+) libraries?$/ do |id, count|
   manifest = SampleManifest.find(id)
-  manifest.update_attributes!(asset_type: 'multiplexed_library', count: count.to_i)
+  manifest.update!(asset_type: 'multiplexed_library', count: count.to_i)
 end
 
 Given /^the sample manifest with ID (\d+) has been processed$/ do |id|
@@ -201,11 +201,11 @@ Given /^the sample manifest with ID (\d+) has been processed$/ do |id|
 end
 
 Given /^sample tubes are expected by the last manifest$/ do
-  SampleManifest.last.update_attributes(barcodes: SampleTube.all.map(&:human_barcode))
+  SampleManifest.last.update(barcodes: SampleTube.all.map(&:human_barcode))
 end
 
 Given /^library tubes are expected by the last manifest$/ do
-  SampleManifest.last.update_attributes(barcodes: LibraryTube.all.map(&:human_barcode))
+  SampleManifest.last.update(barcodes: LibraryTube.all.map(&:human_barcode))
 end
 
 Then /^print any manifest errors for debugging$/ do
