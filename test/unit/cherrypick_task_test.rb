@@ -74,12 +74,12 @@ class CherrypickTaskTest < ActiveSupport::TestCase
           expected = [@expected_partial]
           pad_expected_plate_with_empty_wells(@template, expected.first)
 
-          plates, source_plates = @task.pick_onto_partial_plate([], @template, @robot, @partial)
+          plates, _source_plates = @task.pick_onto_partial_plate([], @template, @robot, @partial)
           assert_equal(expected, plates, 'Incorrect partial plate representation')
         end
 
         should 'generate a second plate when the partial is full' do
-          plates, source_plates = @task.pick_onto_partial_plate(@requests, @template, @robot, @partial)
+          plates, _source_plates = @task.pick_onto_partial_plate(@requests, @template, @robot, @partial)
           assert_equal(2, plates.size, 'Incorrect number of plates')
         end
 
@@ -88,7 +88,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
           expected.first.concat(requests.map { |request| [request.id, request.asset.plate.human_barcode, request.asset.map.description] })
           pad_expected_plate_with_empty_wells(@template, expected.first)
 
-          plates, source_plates = @task.pick_onto_partial_plate(requests, @template, @robot, @partial)
+          plates, _source_plates = @task.pick_onto_partial_plate(requests, @template, @robot, @partial)
           assert_equal(expected, plates, 'Incorrect plate pick')
         end
       end

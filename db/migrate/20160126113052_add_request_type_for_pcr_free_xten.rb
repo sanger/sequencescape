@@ -26,7 +26,7 @@ class AddRequestTypeForPcrFreeXten < ActiveRecord::Migration
       rt.acceptable_plate_purposes << Purpose.find_by!(name: 'PF Cherrypicked')
 
       lt = LibraryType.find_or_create_by(name: 'HiSeqX PCR free')
-      rt_v = RequestType::Validator.create!(
+      RequestType::Validator.create!(
         request_type: rt,
         request_option: 'library_type',
         valid_options: RequestType::Validator::LibraryTypeValidator.new(rt.id)
@@ -41,18 +41,18 @@ class AddRequestTypeForPcrFreeXten < ActiveRecord::Migration
         RequestType.find_by(key: xtlb_name).library_types << lt
       end
 
-      st = SubmissionSerializer.construct!(name: 'IHTP - PCR Free Auto - HiSeq-X sequencing',
-                                           submission_class_name: 'FlexibleSubmission',
-                                           product_line: 'Illumina-HTP',
-                                           product_catalogue: 'PFHSqX',
-                                           submission_parameters: {
-                                             request_types: [
-                                               'htp_pcr_free_lib',
-                                               'illumina_htp_strip_tube_creation',
-                                               'illumina_b_hiseq_x_paired_end_sequencing'
-                                             ],
-                                             workflow: 'short_read_sequencing'
-                                           })
+      SubmissionSerializer.construct!(name: 'IHTP - PCR Free Auto - HiSeq-X sequencing',
+                                      submission_class_name: 'FlexibleSubmission',
+                                      product_line: 'Illumina-HTP',
+                                      product_catalogue: 'PFHSqX',
+                                      submission_parameters: {
+                                        request_types: [
+                                          'htp_pcr_free_lib',
+                                          'illumina_htp_strip_tube_creation',
+                                          'illumina_b_hiseq_x_paired_end_sequencing'
+                                        ],
+                                        workflow: 'short_read_sequencing'
+                                      })
     end
   end
 

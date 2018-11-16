@@ -44,7 +44,6 @@ module Sanger
             barcode_lookup
           end
 
-
           private
 
           def header(data_object)

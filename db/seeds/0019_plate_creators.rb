@@ -30,8 +30,7 @@ unless Rails.env.test?
     end
 
     plate_purpose = PlatePurpose.find_by!(name: 'Pre-Extracted Plate')
-    creator = Plate::Creator.create!(name: 'Pre-Extracted Plate', plate_purposes: [plate_purpose])
-    creator.parent_plate_purposes << Purpose.find_by!(name: 'Stock plate')
+    Plate::Creator.create!(name: 'Pre-Extracted Plate', plate_purposes: [plate_purpose], parent_plate_purposes: Purpose.where(name: 'Stock plate'))
 
     purposes_config = [
       [Plate::Creator.find_by!(name: 'Working dilution'), Purpose.find_by!(name: 'Stock plate')],

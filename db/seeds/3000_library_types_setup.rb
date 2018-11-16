@@ -147,9 +147,9 @@ unless Rails.env.test?
     valid_options: RequestType::Validator::LibraryTypeValidator.new(RequestType.find_by(key: 'illumina_c_chromium_library').id)
   )
   # PCR Free Hiseq X10 RequestTypeValidator
-  lt = LibraryType.find_or_create_by(name: 'HiSeqX PCR free')
+  LibraryType.find_or_create_by(name: 'HiSeqX PCR free')
   rt_pf = RequestType.find_by(key: 'htp_pcr_free_lib')
-  rt_v = RequestType::Validator.create!(
+  RequestType::Validator.create!(
     request_type: rt_pf,
     request_option: 'library_type',
     valid_options: RequestType::Validator::LibraryTypeValidator.new(rt_pf.id)

@@ -77,7 +77,9 @@ module RecordLoader
     end
 
     def barcode_printer_type(name)
-      @printer_cache ||= Hash.new { |hash, name| hash[name] = BarcodePrinterType.find_by(name: name) }
+      @printer_cache ||= Hash.new do |hash, uncached_type_name|
+        hash[uncached_type_name] = BarcodePrinterType.find_by(name: uncached_type_name)
+      end
       @printer_cache[name || DEFAULT_PRINTER_TYPE]
     end
 
