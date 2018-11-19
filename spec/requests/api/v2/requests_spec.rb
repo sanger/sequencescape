@@ -17,6 +17,20 @@ describe 'Requests API', with: :api_v2 do
     end
 
     # Check filters, ESPECIALLY if they aren't simple attribute filters
+
+    it 'filters by state' do
+      create_list(:request, 5, state: 'started')
+      api_get '/api/v2/requests?filter[state]=started'
+      expect(response).to have_http_status(:success)
+      expect(json['data'].length).to eq(5)
+    end
+
+    it 'filters by request type' do
+      create_list(:request, 5, request_type: create(:request_type, key: 'long_read'))
+      api_get '/api/v2/requests?filter[type]=long_read'
+      expect(response).to have_http_status(:success)
+      expect(json['data'].length).to eq(5)
+    end
   end
 
   context 'with a request' do
