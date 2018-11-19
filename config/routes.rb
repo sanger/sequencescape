@@ -287,12 +287,6 @@ Sequencescape::Application.routes.draw do
       get :print
       delete 'reset_qc_information/:event_id', action: :reset_qc_information
     end
-
-    collection do
-      get :incomplete_requests_for_family
-      get :pending
-      get :get_children_requests
-    end
   end
 
   resources :searches

@@ -8,14 +8,12 @@ RSpec.describe Api::V2::UserResource, type: :resource do
   subject { described_class.new(resource_model, {}) }
 
   # Test attributes
-  it { is_expected.to have_attribute :uuid }
-  it { is_expected.to have_attribute :login }
-
-  # Read only attributes (almost certainly id, uuid)
-  it { is_expected.to_not have_updatable_field(:id) }
-  it { is_expected.to_not have_updatable_field(:uuid) }
-  it { is_expected.to_not have_updatable_field(:login) }
-
-  # Filters
-  it { is_expected.to filter(:user_code) }
+  it 'works', :aggregate_failures do
+    is_expected.to have_attribute :uuid
+    is_expected.to have_attribute :login
+    is_expected.to_not have_updatable_field(:id)
+    is_expected.to_not have_updatable_field(:uuid)
+    is_expected.to_not have_updatable_field(:login)
+    is_expected.to filter(:user_code)
+  end
 end

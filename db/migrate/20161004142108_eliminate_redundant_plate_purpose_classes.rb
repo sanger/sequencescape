@@ -1,5 +1,5 @@
 class EliminateRedundantPlatePurposeClasses < ActiveRecord::Migration
-  class Purpose < ActiveRecord::Base
+  class Purpose < ApplicationRecord
     self.table_name = 'plate_purposes'
     self.inheritance_column = nil
   end

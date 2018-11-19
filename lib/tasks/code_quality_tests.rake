@@ -29,7 +29,7 @@ namespace :test do
           score > FLOG_COMPLEXITY_THRESHOLD
         end
       end
-      bad_methods.sort { |a, b| a[1] <=> b[1] }.each do |name, score|
+      bad_methods.sort_by { |a| a[1] }.each do |name, score|
         puts '%s: %d' % [name, score + 1]
       end
       raise "#{bad_methods.size} methods have a flog complexity > #{FLOG_COMPLEXITY_THRESHOLD}" unless bad_methods.empty?
