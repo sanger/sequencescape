@@ -5599,14 +5599,6 @@ Style/WhileUntilModifier:
   Exclude:
     - 'app/models/asset_barcode.rb'
 
-# Offense count: 343
-# Cop supports --auto-correct.
-# Configuration parameters: WordRegex.
-# SupportedStyles: percent, brackets
-Style/WordArray:
-  EnforcedStyle: percent
-  MinSize: 4
-
 # Offense count: 13
 # Cop supports --auto-correct.
 Style/ZeroLengthPredicate:
