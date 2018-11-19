@@ -1,4 +1,3 @@
-
 module IlluminaHtp::PlatePurposes
   PLATE_PURPOSE_FLOWS = [
     [
@@ -81,44 +80,44 @@ module IlluminaHtp::PlatePurposes
   }
 
   PLATE_PURPOSE_TYPE = {
-    'PF Cherrypicked'        => PlatePurpose::Input,
-    'PF Shear'               => PlatePurpose::InitialPurpose,
-    'PF Post Shear'          => PlatePurpose,
-    'PF Post Shear XP'       => PlatePurpose,
-    'PF Lib'                 => PlatePurpose,
-    'PF Lib XP'              => PlatePurpose,
-    'PF Lib XP2'             => IlluminaHtp::LibraryCompleteOnQcPurpose,
-    'PF EM Pool'             => PlatePurpose,
-    'PF Lib Norm'            => IlluminaHtp::PooledPlatePurpose,
-    'PF MiSeq Stock'         => IlluminaHtp::StockTubePurpose,
-    'PF MiSeq QC'            => IlluminaC::QcPoolPurpose,
-    'PF MiSeq QCR'           => IlluminaC::QcPoolPurpose,
+    'PF Cherrypicked' => PlatePurpose::Input,
+    'PF Shear' => PlatePurpose::InitialPurpose,
+    'PF Post Shear' => PlatePurpose,
+    'PF Post Shear XP' => PlatePurpose,
+    'PF Lib' => PlatePurpose,
+    'PF Lib XP' => PlatePurpose,
+    'PF Lib XP2' => IlluminaHtp::LibraryCompleteOnQcPurpose,
+    'PF EM Pool' => PlatePurpose,
+    'PF Lib Norm' => IlluminaHtp::PooledPlatePurpose,
+    'PF MiSeq Stock' => IlluminaHtp::StockTubePurpose,
+    'PF MiSeq QC' => IlluminaC::QcPoolPurpose,
+    'PF MiSeq QCR' => IlluminaC::QcPoolPurpose,
 
-    'Cherrypicked'        => PlatePurpose::Input,
-    'Shear'               => PlatePurpose::InitialPurpose,
-    'Post Shear'          => PlatePurpose,
-    'AL Libs'             => PlatePurpose,
-    'Lib PCR'             => PlatePurpose,
-    'Lib PCRR'            => PlatePurpose,
-    'Lib PCR-XP'          => IlluminaHtp::TransferablePlatePurpose,
-    'Lib PCRR-XP'         => IlluminaHtp::TransferablePlatePurpose,
-    'Lib Pool'            => IlluminaHtp::InitialStockTubePurpose,
-    'Lib Pool Pippin'     => IlluminaHtp::InitialStockTubePurpose,
-    'Lib Pool Norm'       => IlluminaHtp::MxTubePurpose,
-    'Lib Pool Conc'       => IlluminaHtp::StockTubePurpose,
-    'Lib Pool SS'         => IlluminaHtp::StockTubePurpose,
-    'Lib Pool SS-XP'      => IlluminaHtp::StockTubePurpose,
+    'Cherrypicked' => PlatePurpose::Input,
+    'Shear' => PlatePurpose::InitialPurpose,
+    'Post Shear' => PlatePurpose,
+    'AL Libs' => PlatePurpose,
+    'Lib PCR' => PlatePurpose,
+    'Lib PCRR' => PlatePurpose,
+    'Lib PCR-XP' => IlluminaHtp::TransferablePlatePurpose,
+    'Lib PCRR-XP' => IlluminaHtp::TransferablePlatePurpose,
+    'Lib Pool' => IlluminaHtp::InitialStockTubePurpose,
+    'Lib Pool Pippin' => IlluminaHtp::InitialStockTubePurpose,
+    'Lib Pool Norm' => IlluminaHtp::MxTubePurpose,
+    'Lib Pool Conc' => IlluminaHtp::StockTubePurpose,
+    'Lib Pool SS' => IlluminaHtp::StockTubePurpose,
+    'Lib Pool SS-XP' => IlluminaHtp::StockTubePurpose,
     'Lib Pool SS-XP-Norm' => IlluminaHtp::MxTubePurpose,
-    'Post Shear XP'       => PlatePurpose,
+    'Post Shear XP' => PlatePurpose,
 
-    'Post Shear QC'    => IlluminaHtp::PostShearQcPlatePurpose,
-    'Lib PCR-XP QC'    => PlatePurpose,
-    'Lib PCRR-XP QC'   => PlatePurpose,
-    'Lib Norm QC'      => PlatePurpose,
-    'PF EM Pool QC'    => PlatePurpose,
+    'Post Shear QC' => IlluminaHtp::PostShearQcPlatePurpose,
+    'Lib PCR-XP QC' => PlatePurpose,
+    'Lib PCRR-XP QC' => PlatePurpose,
+    'Lib Norm QC' => PlatePurpose,
+    'PF EM Pool QC' => PlatePurpose,
 
-    'Lib Norm'        => IlluminaHtp::InitialDownstreamPlatePurpose,
-    'Lib Norm 2'      => IlluminaHtp::NormalizedPlatePurpose,
+    'Lib Norm' => IlluminaHtp::InitialDownstreamPlatePurpose,
+    'Lib Norm 2' => IlluminaHtp::NormalizedPlatePurpose,
     'Lib Norm 2 Pool' => IlluminaHtp::PooledPlatePurpose,
 
     'Cap Lib Pool Norm' => IlluminaHtp::MxTubeNoQcPurpose
@@ -142,6 +141,7 @@ module IlluminaHtp::PlatePurposes
     def create_tube_flow(flow_o)
       flow = flow_o.clone
       raise 'Flow already exists' if Purpose.find_by(name: flow.first).present?
+
       create_tube_purpose(flow.pop, target_type: 'MultiplexedLibraryTube')
       flow.each(&method(:create_tube_purpose))
     end
@@ -149,6 +149,7 @@ module IlluminaHtp::PlatePurposes
     def create_qc_tube_flow(flow_o)
       flow = flow_o.clone
       raise 'Flow already exists' if Purpose.find_by(name: flow.first).present?
+
       flow.each do |purpose|
         create_tube_purpose(purpose, target_type: 'QcTube')
       end
@@ -163,6 +164,7 @@ module IlluminaHtp::PlatePurposes
     def create_plate_flow(flow_o)
       flow = flow_o.clone
       raise 'Flow already exists' if Purpose.find_by(name: flow.first).present?
+
       stock_plate = create_plate_purpose(
         flow.shift,
         stock_plate: true,
@@ -226,7 +228,7 @@ module IlluminaHtp::PlatePurposes
       purpose.create!(options.reverse_merge(
                         name: tube_purpose_name,
                         target_type: target_type,
-                        barcode_printer_type: BarcodePrinterType.find_by(type: 'BarcodePrinterType1DTube')
+                        barcode_printer_type: BarcodePrinterType1DTube.first
                       ))
     end
     private :create_tube_purpose

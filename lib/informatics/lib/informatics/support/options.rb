@@ -1,7 +1,7 @@
 module Informatics
   module Support
     class Options
-      attr_accessor :options
+      attr_reader :options
 
       def self.collect(*options)
         o = new
@@ -14,10 +14,6 @@ module Informatics
           opt = opt[0]
         end
         @options = opt
-      end
-
-      def options
-        @options
       end
 
       def first_key

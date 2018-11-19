@@ -151,6 +151,7 @@ module Tasks::CherrypickHandler
           row = row.to_i
           row_params.each do |col, request_id|
             next if request_id.blank?
+
             request, well = request_and_well[request_id.gsub('well_', '').to_i] || raise(ActiveRecord::RecordNotFound, "Cannot find request #{request_id.inspect}")
 
             # NOTE: Performance enhancement here

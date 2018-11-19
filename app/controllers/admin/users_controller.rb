@@ -1,4 +1,3 @@
-
 class Admin::UsersController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
@@ -42,7 +41,7 @@ class Admin::UsersController < ApplicationController
     end
 
     if @user.id == params[:id].to_i
-      @user.update_attributes(params[:user])
+      @user.update(params[:user])
     end
     if @user.save
       flash[:notice] = 'Profile updated'

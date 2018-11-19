@@ -1,4 +1,3 @@
-
 class QcDecision < ApplicationRecord
   include Uuid::Uuidable
 
@@ -40,6 +39,7 @@ class QcDecision < ApplicationRecord
 
   def user_has_permission
     return true if user.qa_manager?
+
     errors.add(:user, 'does not have permission to make qc decisions.')
     false
   end

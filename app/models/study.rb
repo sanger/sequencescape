@@ -1,4 +1,3 @@
-
 require 'aasm'
 
 class Study < ApplicationRecord
@@ -316,6 +315,7 @@ class Study < ApplicationRecord
 
   def validate_ethically_approved
     return true if valid_ethically_approved?
+
     message = ethical_approval_required? ? 'should be either true or false for this study.' : 'should be not applicable (null) not false.'
     errors.add(:ethically_approved, message)
     false

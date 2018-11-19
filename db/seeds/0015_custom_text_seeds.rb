@@ -1,4 +1,3 @@
-
 # Adds CustomText instances to be used by Sequencescape...
 
 unless Rails.env.test?

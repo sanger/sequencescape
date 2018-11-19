@@ -1,4 +1,3 @@
-
 class ::Io::Transfer::FromPlateToSpecificTubesByPool < ::Core::Io::Base
   set_model_for_input(::Transfer::FromPlateToSpecificTubesByPool)
   set_json_root(:transfer)

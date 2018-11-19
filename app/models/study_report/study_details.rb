@@ -1,4 +1,3 @@
-
 module StudyReport::StudyDetails
   BATCH_SIZE = 1000
 

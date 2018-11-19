@@ -1,4 +1,3 @@
-
 class DilutionPlate < Plate
   has_many :pico_descendants, ->() { where(sti_type: 'PicoAssayPlate') }, through: :links_as_ancestor, source: :descendant, class_name: 'PicoAssayPlate'
   has_many :pico_children,    ->() { where(sti_type: 'PicoAssayPlate') }, through: :links_as_parent,   source: :descendant, class_name: 'PicoAssayPlate'

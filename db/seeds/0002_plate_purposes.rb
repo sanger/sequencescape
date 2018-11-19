@@ -1,4 +1,3 @@
-
 ActiveRecord::Base.transaction do
   # And here is pulldown
   purpose_flows = Pulldown::PlatePurposes::PLATE_PURPOSE_FLOWS.clone

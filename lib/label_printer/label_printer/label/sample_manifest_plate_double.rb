@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'base_plate_double'
+
 module LabelPrinter
   module Label
     class SampleManifestPlateDouble < BasePlateDouble
@@ -23,6 +25,7 @@ module LabelPrinter
 
       def plates
         return [sample_manifest.printables.first] if only_first_label
+
         sample_manifest.printables
       end
     end

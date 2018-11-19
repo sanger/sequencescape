@@ -74,12 +74,14 @@ module Authorization
       def process_role_of_model(role_name, model_name)
         model = get_model(model_name)
         raise(ModelDoesntImplementRoles, "Model (#{model_name}) doesn't implement #accepts_role?") unless model.respond_to? :accepts_role?
+
         model.send(:accepts_role?, role_name, @current_user)
       end
 
       def process_role(role_name)
         return false if @current_user.nil? || @current_user == :false
         raise(UserDoesntImplementRoles, "User doesn't implement #has_role?") unless @current_user.respond_to? :has_role?
+
         @current_user.has_role?(role_name)
       end
     end
@@ -123,6 +125,7 @@ module Authorization
       def parse_authorization_expression(str)
         @stack = []
         raise AuthorizationExpressionInvalid, "Cannot parse authorization (#{str})" unless parse_expr(str)
+
         @stack.pop
       end
 
@@ -194,6 +197,7 @@ module Authorization
             @stack.push(false)
           else
             raise(UserDoesntImplementRoles, "User doesn't implement #has_role?") unless @current_user.respond_to? :has_role?
+
             @stack.push(@current_user.has_role?(role_name))
           end
           true

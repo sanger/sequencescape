@@ -1,4 +1,3 @@
-
 class Submission::PresenterSkeleton
   class_attribute :attributes, instance_writer: false
   self.attributes = Array.new
@@ -26,6 +25,7 @@ class Submission::PresenterSkeleton
 
   def lanes_of_sequencing
     return lanes_from_request_options if %{building pending}.include?(submission.state)
+
     lanes_from_request_counting
   end
 
@@ -44,6 +44,7 @@ class Submission::PresenterSkeleton
 
     instance_variable_name = :"@#{name_without_assignment}"
     return instance_variable_get(instance_variable_name) if name_without_assignment == name.to_sym
+
     instance_variable_set(instance_variable_name, args.first)
   end
 

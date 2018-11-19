@@ -1,4 +1,3 @@
-
 # It associates a name to a pre-filled submission (subclass) and a serialized set of attributes
 # We could have use a Prototype Factory , and so just associate a name to existing submission
 # but that doesn't work because the submission prototype doesn't pass the validation stage.
@@ -46,8 +45,8 @@ class SubmissionTemplate < ApplicationRecord
         yield(cloned) if block_given?
         name, cloned.name = cloned.name, "Superceding #{cloned.name}"
         cloned.save!
-        update_attributes!(superceded_by_id: cloned.id, superceded_at: Time.now)
-        cloned.update_attributes!(name: name)
+        update!(superceded_by_id: cloned.id, superceded_at: Time.now)
+        cloned.update!(name: name)
       end
     end
   end

@@ -1,4 +1,3 @@
-
 module Submission::AssetGroupBehaviour
   def self.included(base)
     base.class_eval do
@@ -37,6 +36,7 @@ module Submission::AssetGroupBehaviour
   # NOTE: We cannot name this method 'create_asset_group' because that's provided by 'has_one :asset_group'!
   def create_our_asset_group
     return nil if study.nil? && cross_study_allowed
+
     group_name = asset_group_name
     group_name = uuid if asset_group_name.blank?
 
@@ -45,7 +45,7 @@ module Submission::AssetGroupBehaviour
       user: user,
       assets: assets
     )
-    update_attributes!(asset_group_id: asset_group.id)
+    update!(asset_group_id: asset_group.id)
   end
   private :create_our_asset_group
 

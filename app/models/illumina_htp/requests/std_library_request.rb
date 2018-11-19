@@ -20,19 +20,19 @@ module IlluminaHtp::Requests
       pool_information[:for_multiplexing] = request_type.for_multiplexing?
     end
 
-    delegate :role, to: :order
     delegate :acceptable_plate_purposes, to: :request_type
 
     validate :valid_purpose?, if: :asset_id_changed?
     def valid_purpose?
       return true if acceptable_plate_purposes.empty? ||
                      acceptable_plate_purposes.include?(asset.plate.purpose)
+
       errors.add(:asset, "#{asset.plate.purpose.name} is not a suitable plate purpose.")
       false
     end
 
     def on_failed
-      submission.next_requests(self).each(&:failed_upstream!)
+      next_requests.each(&:failed_upstream!)
     end
   end
 end

@@ -1,4 +1,3 @@
-
 class IlluminaHtp::InitialDownstreamPlatePurpose < IlluminaHtp::DownstreamPlatePurpose
   # Initial plates in the pulldown pipelines change the state of the pulldown requests they are being
   # created for to exactly the same state.
@@ -25,6 +24,7 @@ class IlluminaHtp::InitialDownstreamPlatePurpose < IlluminaHtp::DownstreamPlateP
 
   def stock_wells(plate, contents)
     return plate.parent.wells unless contents.present?
+
     plate.parent.wells.located_at(contents)
   end
 end

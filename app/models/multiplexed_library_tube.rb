@@ -13,7 +13,7 @@ class MultiplexedLibraryTube < Tube
   end
 
   # You can do sequencing with this asset type, even though the request types suggest otherwise!
-  def is_sequenceable?
+  def sequenceable?
     true
   end
 
@@ -29,6 +29,7 @@ class MultiplexedLibraryTube < Tube
   def creation_requests
     direct = requests_as_target.where_is_a?(Request::LibraryCreation)
     return direct unless direct.empty?
+
     parents.includes(:creation_request).map(&:creation_request)
   end
 

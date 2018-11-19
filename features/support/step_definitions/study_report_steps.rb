@@ -1,4 +1,3 @@
-
 Then /^I should see qc reports table:$/ do |expected_results_table|
   expected_results_table.diff!(table(fetch_table('table#study_list')))
 end
@@ -34,7 +33,7 @@ Given /^study "([^"]*)" has a plate "([^"]*)"$/ do |study_name, plate_barcode|
   plate.wells.each_with_index do |well, i|
     # well = Well.create!(plate: plate, map_id: i)
     well.aliquots.create!(sample: Sample.create!(name: "Sample_#{plate_barcode}_#{i + 1}"))
-    well.well_attribute.update_attributes!(
+    well.well_attribute.update!(
       gender_markers: %w(F F F F),
       sequenom_count: 29,
       concentration: 1,
@@ -71,6 +70,6 @@ end
 
 Given /^each sample was updated by a sample manifest$/ do
   Sample.find_each do |sample|
-    sample.update_attributes!(updated_by_manifest: true)
+    sample.update!(updated_by_manifest: true)
   end
 end

@@ -1,4 +1,3 @@
-
 require 'test_helper'
 require './spec/lib/mock_parser'
 

@@ -1,4 +1,3 @@
-
 class Studies::AssetGroupsController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
@@ -63,7 +62,7 @@ class Studies::AssetGroupsController < ApplicationController
     @study = Study.find(params[:study_id])
 
     respond_to do |format|
-      if @asset_group.update_attributes(params[:asset_group])
+      if @asset_group.update(params[:asset_group])
         flash[:notice] = 'AssetGroup was successfully updated.'
         format.html { redirect_to study_asset_group_path(@study, @asset_group) }
         format.xml  { head :ok }

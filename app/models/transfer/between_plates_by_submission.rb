@@ -1,4 +1,3 @@
-
 # This is effectively pooling: all wells that have come from the same submission will be transferred
 # into the same well on the destination plate.
 class Transfer::BetweenPlatesBySubmission < Transfer
@@ -27,6 +26,7 @@ class Transfer::BetweenPlatesBySubmission < Transfer
       # Submission group 1 will go into A1, group 2 into B1, group 3 C1, etc.
       Map.walk_plate_in_column_major_order(source.size) do |position, index|
         next unless index < groups.size
+
         destination_well = destination.wells.located_at(position.description).first or
           raise StandardError, "The destination does not have a well at #{position.description}"
         groups[index].each do |source|

@@ -1,4 +1,3 @@
-
 class ::Endpoints::Tube::Purposes < ::Core::Endpoint::Base
   model do
     action(:create, to: :standard_create!)

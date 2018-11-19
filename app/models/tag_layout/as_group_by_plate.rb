@@ -1,4 +1,3 @@
-
 # Assigns multiple tags to each well.
 
 class TagLayout::AsGroupByPlate < TagLayout::Walker
@@ -23,6 +22,7 @@ class TagLayout::AsGroupByPlate < TagLayout::Walker
   # We don't support dual indexing here currently.
   def apply_tags(well, tag, tag2)
     raise StandardError, 'Dual indexing is not supported by this template' if tag2.present?
+
     tag.multitag!(well) unless well.aliquots.empty?
   end
 end

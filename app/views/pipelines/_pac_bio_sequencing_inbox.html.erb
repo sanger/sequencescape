@@ -40,12 +40,12 @@
               <% if request.ready? %>
                 <input type="checkbox" name="selectAll" onclick="select_requests_by_group(<%=  request_item.item_id %>,<%= requests.size %>, this.checked);" id="select_all_group_<%= index %>"></a>
               <% else %>
-                <%= image_tag "error.png", 'title' => I18n.t("requests.status.not_ready"), size: '16x16' %>
+                <%= icon('fas', 'exclamation-circle', class: 'text-danger', title: I18n.t("requests.status.not_ready")) %>
               <% end %>
             </td>
 
             <td class="request" width='2%'><!-- Notify -->
-              <a href="javascript:void(0)" onclick="showElement(<%=  request_item.item_id %>,<%= requests.size %>); return false;"><%= image_tag "information.png", size: "13x13" %></a>
+              <a href="javascript:void(0)" onclick="showElement(<%=  request_item.item_id %>,<%= requests.size %>); return false;"><%= icon('fas', 'info-circle', class: 'text-info') %></a>
             </td>
             <td class="request">&nbsp; <!-- Request ID--></td>
             <td class='request'><!-- Name --><%= h(request.asset.display_name) %></td>
@@ -76,7 +76,7 @@
                 <% if request.ready? %>
                   <%= check_box :request, request.id, value: request.id %>
                 <% else %>
-                  <%= image_tag "error.png", 'title' => I18n.t("requests.status.not_ready"), size: '16x16' %>
+                  <%= icon('fas', 'exclamation-circle', class: 'text-danger', title: I18n.t("requests.status.not_ready")) %>
                 <% end %>
               </td>
               <td class='request'> <!-- Request id -->

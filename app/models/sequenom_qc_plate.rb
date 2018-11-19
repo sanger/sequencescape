@@ -1,4 +1,3 @@
-
 class SequenomQcPlate < Plate
   DEFAULT_SIZE = 384
   self.per_page = 50
@@ -13,6 +12,7 @@ class SequenomQcPlate < Plate
 
   def source_plates
     return [] if parents.empty?
+
     source_barcodes.map do |plate_barcode|
       if plate_barcode.blank?
         nil
@@ -29,6 +29,7 @@ class SequenomQcPlate < Plate
   def populate_wells_from_source_plates
     source_plates.each_with_index do |plate, index|
       next if plate.nil?
+
       copy_source_wells!(plate, index)
     end
   end
@@ -45,8 +46,10 @@ class SequenomQcPlate < Plate
     else
       source_plates.each_with_index do |plate, _index|
         next if plate.nil?
+
         stock_plate = plate.stock_plate
         next if stock_plate.nil?
+
         stock_plate.events.create_sequenom_stamp!(user)
       end
       events.create_sequenom_plate!(user)

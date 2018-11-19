@@ -1,4 +1,3 @@
-
 class ReferenceGenomesController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
@@ -62,7 +61,7 @@ class ReferenceGenomesController < ApplicationController
     @reference_genome = ReferenceGenome.find(params[:id])
 
     respond_to do |format|
-      if @reference_genome.update_attributes(params[:reference_genome])
+      if @reference_genome.update(params[:reference_genome])
         format.html { redirect_to(@reference_genome, notice: 'Reference genome was successfully updated.') }
         format.xml  { head :ok }
       else

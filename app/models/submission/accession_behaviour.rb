@@ -1,4 +1,3 @@
-
 module Submission::AccessionBehaviour
   def self.included(base)
     base.class_eval do

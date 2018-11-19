@@ -1,4 +1,3 @@
-
 # This is a module containing the standard statemachine for a request that needs it.
 # It provides various callbacks that can be hooked in to by the derived classes.
 require 'aasm'
@@ -167,6 +166,7 @@ module Request::Statemachine
   def change_decision!
     return retrospective_fail! if passed?
     return retrospective_pass! if failed?
+
     raise StandardError, 'Can only use change decision on passed or failed requests'
   end
   deprecate change_decision!: 'Change decision is being deprecated in favour of retrospective_pass and retrospective_fail!'
@@ -225,6 +225,7 @@ module Request::Statemachine
   def suggested_transition_to(target)
     valid_events = aasm.events(permitted: true).select { |e| !e.options[:manual_only?] && e.transitions_to_state?(target.to_sym) }
     raise StandardError, "No obvious transition from #{state.inspect} to #{target.inspect}" unless valid_events.size == 1
+
     valid_events.first.name
   end
 end

@@ -6,6 +6,21 @@ module Api
     # See: http://jsonapi-resources.com/ for JSONAPI::Resource documentation
     class BaseResource < JSONAPI::Resource
       abstract
+
+      # Loaded on the base class so that they can be loaded globally.
+      Purpose.descendants.each do |subclass|
+        model_hint model: subclass, resource: :purpose
+      end
+      Plate.descendants.each do |subclass|
+        model_hint model: subclass, resource: :plate
+      end
+      Tube.descendants.each do |subclass|
+        model_hint model: subclass, resource: :tube
+      end
+      Request.descendants.each do |subclass|
+        model_hint model: subclass, resource: :request
+      end
+
       # This extension allows the readonly property to be used on attributes/relationships
       # prior to the 0.10 upgrade. This avoids the need to override updatable_fields on
       # every resource. Readonly does not work on attributes in 0.9 by default
@@ -18,17 +33,17 @@ module Api
       # Eager load specified models by default. Useful when attributes are
       # dependent on an associated model.
       def self.default_includes(*inclusions)
-        @default_includes = inclusions
+        @default_includes = inclusions.freeze
       end
 
       def self.inclusions
-        @default_includes
+        @default_includes || [].freeze
       end
 
-      # Extends the default bheaviour to add our default inclusions if provided
+      # Extends the default behaviour to add our default inclusions if provided
       def self.apply_includes(records, options = {})
         if @default_includes.present?
-          super.includes(*inclusions)
+          super.preload(*inclusions)
         else
           super
         end
@@ -50,18 +65,22 @@ module Api
               relationship = resource_klass._relationships[key]
               value = model_includes[key]
               model_includes.delete(key)
-              model_includes[relationship.relation_name(options)] = resolve_relationship_names_to_relations(relationship.resource_klass, value, options)
+              # MODIFICATION BEGINS
+              included_relationships = resolve_relationship_names_to_relations(relationship.resource_klass, value, options)
+              model_includes[relationship.relation_name(options)] = relationship.resource_klass.inclusions + included_relationships
+              # MODIFICATION ENDS
             end
             return model_includes
           when Symbol
             relationship = resource_klass._relationships[model_includes]
-            # rubocop:enable all
             # MODIFICATION BEGINS
-            inclusions = relationship.resource_klass.inclusions || []
+            # return relationship.relation_name(options)
+            inclusions = relationship.resource_klass.inclusions
             { relationship.relation_name(options) => inclusions }
-          # MODIFICATION ENDS
+            # MODIFICATION ENDS
         end
       end
+      # rubocop:enable all
     end
   end
 end

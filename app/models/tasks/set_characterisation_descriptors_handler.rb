@@ -1,4 +1,3 @@
-
 module Tasks::SetCharacterisationDescriptorsHandler
   def do_set_characterisation_descriptors_task(_task, params)
     @count = 0

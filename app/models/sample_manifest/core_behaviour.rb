@@ -1,4 +1,3 @@
-
 module SampleManifest::CoreBehaviour
   # Include in cores which exhibit the default behaviour
   module NoSpecializedValidation

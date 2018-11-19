@@ -71,7 +71,7 @@ class RequestsController < ApplicationController
     end
 
     begin
-      if @request.update_attributes(parameters)
+      if @request.update(parameters)
         flash[:notice] = 'Request details have been updated'
         redirect_to request_path(@request)
       else

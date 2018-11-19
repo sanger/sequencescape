@@ -1,4 +1,3 @@
-
 require 'test_helper'
 
 class PreCapGroupsTest < ActiveSupport::TestCase
@@ -72,7 +71,7 @@ class PreCapGroupsTest < ActiveSupport::TestCase
 
       context 'when some are started' do
         setup do
-          @pools[0, 2].each { |pl| pl.requests.each { |r| r.update_attributes!(state: 'started') } }
+          @pools[0, 2].each { |pl| pl.requests.each { |r| r.update!(state: 'started') } }
         end
 
         should 'still report all the pools' do

@@ -1,4 +1,3 @@
-
 # frozen_string_literal: true
 
 require 'lab_where_client'
@@ -33,17 +32,10 @@ class Plate < Asset
 
   has_many :container_associations, foreign_key: :container_id, inverse_of: :plate, dependent: :destroy
   has_many :wells, through: :container_associations, inverse_of: :plate do
-    def attach(records)
-      ActiveRecord::Base.transaction do
-        proxy_association.owner.wells << records
-      end
-    end
-    deprecate attach: 'Legacy method pre-jruby just use standard rails plate.wells << other_wells' # Legacy pre-jruby method to handle bulk import
-
     # Build empty wells for the plate.
     def construct!
       plate = proxy_association.owner
-      plate.maps.in_row_major_order.pluck(:id).map do |location_id|
+      plate.maps.in_row_major_order.ids.map do |location_id|
         Well.create!(map_id: location_id)
       end.tap do |wells|
         ContainerAssociation.import(wells.map { |well| { content_id: well.id, container_id: plate.id } })
@@ -56,15 +48,6 @@ class Plate < Asset
     # Returns the wells with their pool identifier included
     def with_pool_id
       proxy_association.owner.plate_purpose.pool_wells(self)
-    end
-
-    # Yields each pool and the wells that are in it
-    def walk_in_pools(&block)
-      with_pool_id.group_by(&:pool_id).each(&block)
-    end
-
-    def in_preferred_order
-      proxy_association.owner.plate_purpose.in_preferred_order(self)
     end
 
     def indexed_by_location
@@ -152,6 +135,8 @@ class Plate < Asset
   # May not have been started yet
   has_many :waiting_submissions, -> { distinct }, through: :well_requests_as_source, source: :submission
   # The requests which were being processed to make the plate
+  # This should probably be switched to going through aliquots, but not 100% certain that it wont cause side effects
+  # Might just be safer to wait until we've moved off onto the new api
   has_many :in_progress_submissions, -> { distinct }, through: :transfer_requests_as_target, source: :submission
 
   def submission_ids
@@ -174,6 +159,7 @@ class Plate < Asset
 
   def barcode_dilution_factor_created_at_hash
     return {} if primary_barcode.blank?
+
     {
       barcode: ean13_barcode.to_s,
       dilution_factor: dilution_factor.to_s,
@@ -255,7 +241,6 @@ class Plate < Asset
       .joins(:container_associations)
       .where(container_associations: { content_id: wells.map(&:id) })
   }
-  #->() {where(:assets=>{:sti_type=>[Plate,*Plate.descendants].map(&:name)})},
   has_many :descendant_plates, class_name: 'Plate', through: :links_as_ancestor, foreign_key: :ancestor_id, source: :descendant
   has_many :descendant_lanes,  class_name: 'Lane', through: :links_as_ancestor, foreign_key: :ancestor_id, source: :descendant
   has_many :tag_layouts, dependent: :destroy
@@ -326,6 +311,7 @@ class Plate < Asset
   def find_well_by_rowcol(row, col)
     map_description = map_description(row, col)
     return nil if map_description.nil?
+
     find_well_by_name(map_description)
   end
 
@@ -399,6 +385,7 @@ class Plate < Asset
 
   def barcode_for_tecan
     raise StandardError, 'Purpose is not valid' if plate_purpose.present? && !plate_purpose.valid?
+
     plate_purpose.present? ? send(:"#{plate_purpose.barcode_for_tecan}") : ean13_barcode
   end
 
@@ -427,14 +414,17 @@ class Plate < Asset
 
   def self.create_sample_tubes_asset_group_and_print_barcodes(plates, barcode_printer, study)
     return nil if plates.empty?
+
     plate_barcodes = plates.map(&:barcode_number)
     asset_group = AssetGroup.find_or_create_asset_group("#{plate_barcodes.join('-')} #{Time.current.to_formatted_s(:sortable)} ", study)
     plates.each do |plate|
       next if plate.wells.empty?
+
       asset_group.assets << plate.create_sample_tubes_and_print_barcodes(barcode_printer)
     end
 
     return nil if asset_group.assets.empty?
+
     asset_group.save!
 
     asset_group
@@ -442,6 +432,7 @@ class Plate < Asset
 
   def stock_plate?
     return true if plate_purpose.nil?
+
     plate_purpose.stock_plate? && plate_purpose.attatched?(self)
   end
 
@@ -451,11 +442,13 @@ class Plate < Asset
 
   def ancestor_of_purpose(ancestor_purpose_id)
     return self if plate_purpose_id == ancestor_purpose_id
+
     ancestors.order(created_at: :desc).find_by(plate_purpose_id: ancestor_purpose_id)
   end
 
   def ancestors_of_purpose(ancestor_purpose_id)
     return [self] if plate_purpose_id == ancestor_purpose_id
+
     ancestors.order(created_at: :desc).where(plate_purpose_id: ancestor_purpose_id)
   end
 

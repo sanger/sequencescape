@@ -1,4 +1,3 @@
-
 module BatchesHelper
   def purpose_for_plate(plate)
     if plate.plate_purpose.nil? || plate.plate_purpose.name.blank?
@@ -45,6 +44,7 @@ module BatchesHelper
 
   def workflow_name(batch)
     return unless batch and batch.workflow
+
     batch.workflow.name.gsub(/Cluster formation | \([^\)]*\)/, '')
   end
 

@@ -1,4 +1,3 @@
-
 require 'test_helper'
 
 # JG: We really shouldn't need item any more.

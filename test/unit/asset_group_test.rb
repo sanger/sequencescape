@@ -1,4 +1,3 @@
-
 require 'test_helper'
 
 class AssetGroupTest < ActiveSupport::TestCase
@@ -123,7 +122,7 @@ class AssetGroupTest < ActiveSupport::TestCase
         setup do
           5.times do |_i|
             asset = create(:sample_tube)
-            asset.primary_aliquot.sample.update_attributes!(sample_metadata_attributes: { sample_ebi_accession_number: 'ERS00001' })
+            asset.primary_aliquot.sample.update!(sample_metadata_attributes: { sample_ebi_accession_number: 'ERS00001' })
             @asset_group.assets << asset
           end
         end
@@ -137,7 +136,7 @@ class AssetGroupTest < ActiveSupport::TestCase
         context 'except 1 have accession numbers' do
           setup do
             asset = create(:sample_tube)
-            asset.primary_aliquot.sample.update_attributes!(sample_metadata_attributes: { sample_ebi_accession_number: '' })
+            asset.primary_aliquot.sample.update!(sample_metadata_attributes: { sample_ebi_accession_number: '' })
             @asset_group.assets << asset
           end
           should 'return false' do
@@ -149,7 +148,7 @@ class AssetGroupTest < ActiveSupport::TestCase
         setup do
           5.times do |_i|
             asset = create(:sample_tube)
-            asset.primary_aliquot.sample.update_attributes!(sample_metadata_attributes: { sample_ebi_accession_number: '' })
+            asset.primary_aliquot.sample.update!(sample_metadata_attributes: { sample_ebi_accession_number: '' })
             @asset_group.assets << asset
           end
         end

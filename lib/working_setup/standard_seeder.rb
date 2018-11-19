@@ -52,7 +52,7 @@ module WorkingSetup
       end
     end
 
-    def tag_plates(lot_type: 'IDT Tags', template: 'Sanger_168tags - 10 mer tags in columns ignoring pools (first oligo: ATCACGTT)')
+    def tag_plates(lot_type: 'IDT Tags', template: 'Sanger_168tags - 10 mer tags in columns ignoring pools (first oligo: ATCACGTT)', size: 30)
       puts 'Setting up tag plates...'
       lot = LotType.find_by!(name: lot_type).lots.create!(
         lot_number: Time.current.to_i.to_s,
@@ -60,9 +60,9 @@ module WorkingSetup
         user: user,
         received_at: Time.current
       )
-      qcc = QcableCreator.create!(lot: lot, user: user, count: 30)
+      qcc = QcableCreator.create!(lot: lot, user: user, count: size)
       qcc.qcables.each do |qcable|
-        qcable.update_attributes!(state: 'available')
+        qcable.update!(state: 'available')
         puts "Tag Plate: #{qcable.asset.ean13_barcode}"
       end
     end
@@ -84,6 +84,7 @@ module WorkingSetup
     def create_or_find_user
       existing = User.find_by(login: 'admin')
       return existing if existing
+
       User.create!(login: 'admin', password: 'admin', swipecard_code: 'abcdef', barcode: 'ID99A', &:is_administrator)
     end
 
@@ -94,6 +95,7 @@ module WorkingSetup
     def create_project(name)
       existing = Project.find_by(name: name)
       return existing if existing
+
       Project.create!(
         name: name,
         enforce_quotas: false,
@@ -108,6 +110,7 @@ module WorkingSetup
     def create_study(name)
       existing = Study.find_by(name: name)
       return existing if existing
+
       Study.create!(
         name: name,
         study_metadata_attributes: {

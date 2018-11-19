@@ -1,4 +1,3 @@
-
 class LibPoolNormTubeGenerator
   include ActiveModel::Validations
 

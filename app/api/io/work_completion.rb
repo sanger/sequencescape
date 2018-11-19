@@ -1,4 +1,3 @@
-
 class ::Io::WorkCompletion < ::Core::Io::Base
   set_model_for_input(::WorkCompletion)
   set_json_root(:work_completion)

@@ -1,4 +1,3 @@
-
 class Transfer::FromPlateToSpecificTubesByPool < Transfer::BetweenPlateAndTubes
   attr_reader :targets
   def targets=(uuids_for_tubes)
@@ -18,6 +17,7 @@ class Transfer::FromPlateToSpecificTubesByPool < Transfer::BetweenPlateAndTubes
 
   def locate_mx_library_tube_for(well, stock_wells)
     return nil if stock_wells.empty?
+
     @pools_to_tubes[well.pool_id]
   end
 end

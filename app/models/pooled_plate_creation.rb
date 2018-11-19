@@ -1,4 +1,3 @@
-
 # Creating an instance of this class causes a child plate, with the specified plate type, to be created from
 # the parent.
 class PooledPlateCreation < AssetCreation

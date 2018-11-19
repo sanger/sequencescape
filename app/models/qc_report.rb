@@ -1,4 +1,3 @@
-
 class QcReport < ApplicationRecord
   # :id => The primary key for internal use only
   # :report_identifier => A unique identifier exposed to customers
@@ -155,6 +154,7 @@ class QcReport < ApplicationRecord
   # of each other.
   def generate_report_identifier
     return true if study.nil? || product_criteria.nil?
+
     rid = [
       study.abbreviation,
       product_criteria.product.name,

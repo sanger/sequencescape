@@ -1,4 +1,3 @@
-
 class BulkTransfer < ApplicationRecord
   include Uuid::Uuidable
 
@@ -36,6 +35,7 @@ class BulkTransfer < ApplicationRecord
       errors.add(:source, 'is not a plate') unless source.is_a?(Plate)
       errors.add(:destination, 'is not a plate') unless destination.is_a?(Plate)
       raise ActiveRecord::RecordInvalid, self if errors.count > 0
+
       yield(source, destination, transfers)
     end
   end

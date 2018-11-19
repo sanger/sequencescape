@@ -1,4 +1,3 @@
-
 class PicoAssayPlate < Plate
   class WellDetail
     attr_accessor :map, :parent_plate, :qc_assay
@@ -55,7 +54,7 @@ class PicoAssayPlate < Plate
     ActiveRecord::Base.transaction do
       event = stock_plate.events.create_pico!(state)
       # Adds a failure reason if it is available.
-      event.update_attributes(descriptor_key: failure_reason) unless failure_reason.nil?
+      event.update(descriptor_key: failure_reason) unless failure_reason.nil?
       well_details.each { |details| WellDetail.new(details[:well], self, qc_assay).grade_as!(state) }
     end
   end

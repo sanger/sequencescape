@@ -1,4 +1,3 @@
-
 require 'test_helper'
 
 class CherrypickTaskTest < ActiveSupport::TestCase
@@ -64,7 +63,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
       context 'that is column picked and has left 2 columns filled' do
         setup do
           plate_purpose = @mini_plate_purpose
-          plate_purpose.update_attributes!(cherrypick_direction: 'column')
+          plate_purpose.update!(cherrypick_direction: 'column')
           @partial = plate_purpose.create!(:without_wells, barcode: (@barcode += 1)) do |partial|
             partial.wells.build(maps_for(6).map { |m| { map: m } })
           end
@@ -75,12 +74,12 @@ class CherrypickTaskTest < ActiveSupport::TestCase
           expected = [@expected_partial]
           pad_expected_plate_with_empty_wells(@template, expected.first)
 
-          plates, source_plates = @task.pick_onto_partial_plate([], @template, @robot, @partial)
+          plates, _source_plates = @task.pick_onto_partial_plate([], @template, @robot, @partial)
           assert_equal(expected, plates, 'Incorrect partial plate representation')
         end
 
         should 'generate a second plate when the partial is full' do
-          plates, source_plates = @task.pick_onto_partial_plate(@requests, @template, @robot, @partial)
+          plates, _source_plates = @task.pick_onto_partial_plate(@requests, @template, @robot, @partial)
           assert_equal(2, plates.size, 'Incorrect number of plates')
         end
 
@@ -89,7 +88,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
           expected.first.concat(requests.map { |request| [request.id, request.asset.plate.human_barcode, request.asset.map.description] })
           pad_expected_plate_with_empty_wells(@template, expected.first)
 
-          plates, source_plates = @task.pick_onto_partial_plate(requests, @template, @robot, @partial)
+          plates, _source_plates = @task.pick_onto_partial_plate(requests, @template, @robot, @partial)
           assert_equal(expected, plates, 'Incorrect plate pick')
         end
       end
@@ -97,7 +96,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
       context 'that is row picked and has top row filled' do
         setup do
           plate_purpose = @mini_plate_purpose
-          plate_purpose.update_attributes!(cherrypick_direction: 'row')
+          plate_purpose.update!(cherrypick_direction: 'row')
           @partial = plate_purpose.create!(:without_wells, barcode: (@barcode += 1)) do |partial|
             partial.wells.build(maps_for(4, 0, 'row').map { |m| { map: m } })
           end
@@ -184,12 +183,12 @@ class CherrypickTaskTest < ActiveSupport::TestCase
         end
 
         should 'pick vertically when the plate purpose says so' do
-          @target_purpose.update_attributes!(cherrypick_direction: 'column')
+          @target_purpose.update!(cherrypick_direction: 'column')
           @expected = @requests.map { |request| [request.id, request.asset.plate.human_barcode, request.asset.map.description] }
         end
 
         should 'pick horizontally when the plate purpose says so' do
-          @target_purpose.update_attributes!(cherrypick_direction: 'row')
+          @target_purpose.update!(cherrypick_direction: 'row')
           @expected = (1..12).map do |index|
             request = @requests[@asset_shape.vertical_to_horizontal(index, @requests.size) - 1]
             [request.id, request.asset.plate.human_barcode, request.asset.map.description]

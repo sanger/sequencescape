@@ -1,4 +1,3 @@
-
 # frozen_string_literal: true
 
 # And Order is used as the main means of requesting work in Sequencescape. Its
@@ -151,7 +150,11 @@ class Order < ApplicationRecord
   end
 
   def multiplexed?
-    RequestType.find(request_types).any?(&:for_multiplexing?)
+    RequestType.where(id: request_types).for_multiplexing.exists?
+  end
+
+  def multiplier_for(request_type_id)
+    (request_options.dig(:multiplier, request_type_id.to_s) || 1).to_i
   end
 
   def create_request_of_type!(request_type, attributes = {})
@@ -178,6 +181,7 @@ class Order < ApplicationRecord
                            .where.not(orders: { id: id })
                            .where('orders.created_at > ?', Time.current - timespan)
     return false if matching_orders.empty?
+
     matching_samples = matching_orders.map(&:samples).flatten & all_samples
     matching_submissions = matching_orders.map(&:submission).uniq
     yield matching_samples, matching_orders, matching_submissions if block_given?
@@ -262,6 +266,7 @@ class Order < ApplicationRecord
 
   def no_consent_withdrawl
     return true unless all_samples.any?(&:consent_withdrawn?)
+
     withdrawn_samples = all_samples.select(&:consent_withdrawn?).map(&:friendly_name)
     errors.add(:samples, "in this submission have had patient consent withdrawn: #{withdrawn_samples.to_sentence}")
     false
@@ -272,6 +277,7 @@ class Order < ApplicationRecord
       errors.add(:asset, "'#{asset.name}' is a #{asset.sti_type} which is not suitable for #{first_request_type.name} requests") unless asset_applicable_to_type?(first_request_type, asset)
     end
     return true if errors.empty?
+
     false
   end
 end

@@ -33,6 +33,7 @@ namespace :test do
         puts '%s: %d' % [name, score + 1]
       end
       raise "#{bad_methods.size} methods have a flog complexity > #{FLOG_COMPLEXITY_THRESHOLD}" unless bad_methods.empty?
+
       puts 'OK'
     end
 

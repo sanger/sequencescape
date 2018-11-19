@@ -1,4 +1,3 @@
-
 module SharedBehaviour::Indestructable
   def self.included(base)
     base.class_eval do

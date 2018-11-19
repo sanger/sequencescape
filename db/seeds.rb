@@ -1,4 +1,3 @@
-
 # This file should contain all the record creation needed to seed the database with its default values.
 # The data can then be loaded with the rake db:seed (or created alongside the db with db:setup).
 
@@ -17,7 +16,7 @@ unless [:development, :test, :seeding, :cucumber].include?(Rails.env.to_sym)
 
     **********************************************************************************************************
     **********************************************************************************************************
-END_OF_MESSAGE
+  END_OF_MESSAGE
 end
 
 ActiveRecord::Base.transaction do
@@ -27,12 +26,6 @@ ActiveRecord::Base.transaction do
     require seed_data_file
     Rails.logger.info("Seed data loaded from #{seed_data_file}")
   end
-
-  # If we have an environment variable that defines the seed version to use then we need to filter
-  # any that are not that version.
-  unfiltered, handler = handler, lambda do |seed_data_file|
-    unfiltered.call(seed_data_file) if seed_data_file.match?(%r{/#{ENV['VERSION']}_[^/]+\.rb$})
-  end unless ENV['VERSION'].blank?
 
   # Load all of the files under the 'seeds' directory in their sorted order.  This allows us to define
   # separate files for different sets of seed data and to govern the order they are created in.  For

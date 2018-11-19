@@ -1,4 +1,3 @@
-
 class Admin::StudiesController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
@@ -69,7 +68,7 @@ class Admin::StudiesController < ApplicationController
 
     ActiveRecord::Base.transaction do
       params[:study].delete(:ethically_approved) unless current_user.data_access_coordinator?
-      @study.update_attributes!(params[:study])
+      @study.update!(params[:study])
       flash[:notice] = 'Your study has been updated'
       redirect_to controller: 'admin/studies', action: 'update', id: @study.id
     end

@@ -1,4 +1,3 @@
-
 class Receptacle < Asset
   include Transfer::State
   include Aliquot::Remover

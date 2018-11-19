@@ -1,4 +1,3 @@
-
 class SampleTube < Tube
   include Api::SampleTubeIO::Extensions
   include ModelExtensions::SampleTube
@@ -18,6 +17,7 @@ class SampleTube < Tube
 
   def generate_name_from_aliquots
     return if name.present? || primary_aliquot.try(:sample).nil?
+
     self.name = primary_aliquot.sample.name
     save!
   end

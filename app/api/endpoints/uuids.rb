@@ -1,4 +1,3 @@
-
 #--
 # This is a complete hack of the standard behaviour and quite rightly so: people shouldn't be using it and
 # so it is going to go.  Rather than pollute the main API code with this rubbish it's here.
@@ -101,9 +100,9 @@ class ::Endpoints::Uuids < ::Core::Endpoint::Base
 
       {
         'model' => uuid.resource_type.underscore,
-        'id'    => uuid.resource_id,
-        'uuid'  => uuid.external_id,
-        'url'   => request.service.api_path(uuid.external_id)
+        'id' => uuid.resource_id,
+        'uuid' => uuid.external_id,
+        'url' => request.service.api_path(uuid.external_id)
       }
     end
     bound_action_does_not_require_an_io_class(:lookup)
@@ -120,9 +119,9 @@ class ::Endpoints::Uuids < ::Core::Endpoint::Base
       uuids.map do |uuid|
         {
           'model' => uuid.resource_type.underscore,
-          'id'    => uuid.resource_id,
-          'uuid'  => uuid.external_id,
-          'url'   => request.service.api_path(uuid.external_id)
+          'id' => uuid.resource_id,
+          'uuid' => uuid.external_id,
+          'url' => request.service.api_path(uuid.external_id)
         }
       end
     end

@@ -1,4 +1,3 @@
-
 class SamplesController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
@@ -89,7 +88,7 @@ class SamplesController < ApplicationController
     @sample = Sample.find(params[:id])
     redirect_if_not_owner_or_admin_otherwise do
       cleaned_params = clean_params_from_check(params[:sample]).permit(default_permitted_metadata_fields)
-      if @sample.update_attributes(cleaned_params)
+      if @sample.update(cleaned_params)
         flash[:notice] = 'Sample details have been updated'
         redirect_to sample_path(@sample)
       else
@@ -195,6 +194,7 @@ class SamplesController < ApplicationController
 
   def redirect_if_not_owner_or_admin_otherwise
     return yield if current_user.owner?(@sample) or current_user.is_administrator? or current_user.is_manager?
+
     flash[:error] = 'Sample details can only be altered by the owner or an administrator or manager'
     redirect_to sample_path(@sample)
   end

@@ -1,4 +1,3 @@
-
 module Core::Initializable
   class Initializer
     def initialize(owner)

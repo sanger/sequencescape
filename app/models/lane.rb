@@ -1,4 +1,3 @@
-
 class Lane < Receptacle
   include Api::LaneIO::Extensions
   include AliquotIndexer::Indexable

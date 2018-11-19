@@ -1,4 +1,3 @@
-
 class PlatePurpose < Purpose
   self.default_prefix = 'DN'
 
@@ -79,7 +78,7 @@ class PlatePurpose < Purpose
     private
 
     def transition_state_requests(wells, state)
-      wells = wells.includes(:requests_as_target, transfer_requests_as_target: { asset: :requests })
+      wells = wells.includes(:requests_as_target, transfer_requests_as_target: :associated_requests)
       wells.each do |w|
         w.requests_as_target.each { |r| r.transition_to(state) }
         w.transfer_requests_as_target.each { |r| r.transition_to(state) }
@@ -127,14 +126,6 @@ class PlatePurpose < Purpose
     super || 96
   end
 
-  def well_locations
-    in_preferred_order(Map.where_plate_size(size).where_plate_shape(asset_shape))
-  end
-
-  def in_preferred_order(relationship)
-    relationship.send("in_#{cherrypick_direction}_major_order")
-  end
-
   def create!(*args, &block)
     attributes          = args.extract_options!
     do_not_create_wells = args.first.present?
@@ -180,6 +171,7 @@ class PlatePurpose < Purpose
       queries << Request.where(asset_id: stock_wells, submission_id: submission_ids)
     end
     raise 'Apparently there are not requests on these wells?' if queries.empty?
+
     # Here we chain together our various request scope using or, allowing us to retrieve them in a single query.
     request_scope = queries.reduce(queries.pop) { |scope, query| scope.or(query) }
     request_scope.each do |request|

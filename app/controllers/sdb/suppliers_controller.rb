@@ -1,4 +1,3 @@
-
 class Sdb::SuppliersController < Sdb::BaseController
   # Show all suppliers
   def index
@@ -33,7 +32,7 @@ class Sdb::SuppliersController < Sdb::BaseController
     @supplier = Supplier.find(params[:id])
 
     respond_to do |format|
-      if @supplier.update_attributes(params[:supplier])
+      if @supplier.update(params[:supplier])
         flash[:notice] = 'Supplier was successfully updated'
         format.html { redirect_to(@supplier) }
       else

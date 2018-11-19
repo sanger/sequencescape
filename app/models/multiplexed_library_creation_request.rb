@@ -1,3 +1,2 @@
-
 class MultiplexedLibraryCreationRequest < LibraryCreationRequest
 end

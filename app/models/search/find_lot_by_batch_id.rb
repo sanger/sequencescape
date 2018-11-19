@@ -1,4 +1,3 @@
-
 class Search::FindLotByBatchId < Search
   def scope(criteria)
     root_asset = Batch.find_by(id: criteria['batch_id']).try(:parent_of_purpose, 'Tag PCR')

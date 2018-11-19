@@ -1,4 +1,3 @@
-
 class TagLayout::WalkWellsByPools < TagLayout::Walker
   self.walking_by = 'wells in pools'
 
@@ -12,6 +11,7 @@ class TagLayout::WalkWellsByPools < TagLayout::Walker
     end
     wells_in_groups.each_with_index do |current_group, group|
       next if group == 0
+
       prior_group = wells_in_groups[group - 1]
 
       current_group.each_with_index do |well_and_pool, index|

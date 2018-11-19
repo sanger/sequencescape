@@ -1,4 +1,3 @@
-
 require 'test_helper'
 
 class BatchTest < ActiveSupport::TestCase
@@ -56,7 +55,7 @@ class BatchTest < ActiveSupport::TestCase
 
     context '#shift_item_positions' do
       setup do
-        @requests.each { |r| r.update_attributes!(asset: nil) }
+        @requests.each { |r| r.update!(asset: nil) }
       end
 
       should 'move the requests that are at, and after, the position by the number and have no asset' do
@@ -445,7 +444,7 @@ class BatchTest < ActiveSupport::TestCase
 
       context 'underrun' do
         setup do
-          @pipeline.workflow.update_attributes!(item_limit: 4)
+          @pipeline.workflow.update!(item_limit: 4)
         end
 
         should 'return POSITIVE difference between batch.request_limit and batch.request_count' do
@@ -461,7 +460,7 @@ class BatchTest < ActiveSupport::TestCase
       end
 
       should 'return 0 if batch has no request_limit set' do
-        @pipeline.workflow.update_attributes!(item_limit: nil)
+        @pipeline.workflow.update!(item_limit: nil)
         assert_equal 0, @batch.underrun
       end
     end
@@ -536,7 +535,7 @@ class BatchTest < ActiveSupport::TestCase
       setup do
         @user = create :user
         @batch = create :batch, pipeline: @pipeline
-        @batch.update_attributes!(qc_state: 'qc_completed')
+        @batch.update!(qc_state: 'qc_completed')
       end
       should 'move batch to previous qc state' do
         assert_equal 'qc_completed', @batch.qc_state
@@ -692,7 +691,7 @@ class BatchTest < ActiveSupport::TestCase
       # to try and model what appears to be the intended behaviour.
       @pipeline = create :sequencing_pipeline
       @batch = create :batch, pipeline: @pipeline
-      @batch.update_attributes!(qc_state: 'qc_manual_in_progress')
+      @batch.update!(qc_state: 'qc_manual_in_progress')
       @requests = create_list :sequencing_request_with_assets, 2, state: 'started', request_type: @pipeline.request_types.first
       @batch.requests = @requests
     end
@@ -725,7 +724,7 @@ class BatchTest < ActiveSupport::TestCase
     context 'when some assets are a resource' do
       setup do
         @batch.requests.first.events.create!(family: 'pass')
-        @batch.requests.last.asset.update_attributes!(resource: true)
+        @batch.requests.last.asset.update!(resource: true)
         @batch.npg_set_state
       end
       should 'should complete the batch' do

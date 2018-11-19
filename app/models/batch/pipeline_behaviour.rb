@@ -1,4 +1,3 @@
-
 module Batch::PipelineBehaviour
   def self.included(base)
     base.class_eval do
@@ -27,6 +26,7 @@ module Batch::PipelineBehaviour
 
   def show_actions?
     return true if pipeline.is_a?(PulldownMultiplexLibraryPreparationPipeline) || pipeline.is_a?(CherrypickForPulldownPipeline)
+
     !released?
   end
 

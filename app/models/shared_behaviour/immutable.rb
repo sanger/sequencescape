@@ -1,4 +1,3 @@
-
 module SharedBehaviour::Immutable
   MUTABLE = ['deprecated_at', 'updated_at']
 
@@ -12,6 +11,7 @@ module SharedBehaviour::Immutable
 
   def save_allowed?
     return true if (changed - MUTABLE).empty?
+
     raise ActiveRecord::RecordNotSaved, 'This record is immutable. Deprecate it and create a replacement instead.'
   end
 end

@@ -1,10 +1,9 @@
-
 module Sdb::SampleManifestsHelper
   def count_labels
     {
-      '1dtube'              => 'Tubes required',
-      'plate'               => 'Plates required',
-      'library'             => 'Tubes required',
+      '1dtube' => 'Tubes required',
+      'plate' => 'Plates required',
+      'library' => 'Tubes required',
       'multiplexed_library' => 'Number of samples in library'
     }
   end

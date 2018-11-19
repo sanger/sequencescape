@@ -1,4 +1,3 @@
-
 module LabelPrinter
   module Label
     class BatchTube < BaseTube

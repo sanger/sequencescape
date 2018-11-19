@@ -1,4 +1,3 @@
-
 module DescriptorJavascriptHelper
   # The <tt>javascripts/descriptor.js</tt> needs a certain kind of setup to ensure that it behaves
   # properly and so this is what this method generates in the HTML.

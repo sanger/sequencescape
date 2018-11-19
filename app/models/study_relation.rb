@@ -1,4 +1,3 @@
-
 class StudyRelation < ApplicationRecord
   belongs_to :study
   belongs_to :related_study, class_name: 'Study'

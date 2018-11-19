@@ -1,4 +1,3 @@
-
 class Admin::RobotsController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
@@ -50,7 +49,7 @@ class Admin::RobotsController < ApplicationController
 
   def update
     respond_to do |format|
-      if @robot.update_attributes(params[:robot])
+      if @robot.update(params[:robot])
         flash[:notice] = 'Robot was successfully updated.'
         format.html { redirect_to admin_robot_path(@robot) }
         format.xml  { head :ok }

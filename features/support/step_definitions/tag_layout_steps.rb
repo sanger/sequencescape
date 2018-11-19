@@ -1,4 +1,3 @@
-
 Given /^the ((?:entire plate |inverted )?tag layout template) "([^"]+)" exists$/ do |style, name|
   FactoryBot.create(style.tr(' ', '_'), name: name)
 end
@@ -23,7 +22,7 @@ Given /^the tag group for (tag layout template .+) has (\d+) tags$/ do |template
 end
 
 Given /^the tag group for (#{TAG_LAYOUT_TEMPLATE_REGEXP}|#{TAG_LAYOUT_REGEXP}) is called "([^"]+)"$/ do |target, group_name|
-  target.tag_group.update_attributes!(name: group_name)
+  target.tag_group.update!(name: group_name)
 end
 
 def replace_tag_layout_tags(template, index_to_oligo)
@@ -60,6 +59,7 @@ def check_tag_layout(name, well_range, expected_wells_to_oligos)
   wells_to_oligos = Hash[
     plate.wells.map do |w|
       next unless well_range.include?(w)
+
       [w.map.description, w.primary_aliquot.try(:tag).try(:oligo) || '']
     end.compact
   ]
@@ -75,6 +75,7 @@ def check_tag2_layout(name, well_range, expected_wells_to_oligos)
   wells_to_oligos = Hash[
     plate.wells.map do |w|
       next unless well_range.include?(w)
+
       [w.map.description, w.primary_aliquot.try(:tag2).try(:oligo) || '']
     end.compact
   ]

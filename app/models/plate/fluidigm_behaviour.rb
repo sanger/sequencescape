@@ -1,4 +1,3 @@
-
 module Plate::FluidigmBehaviour
   class FluidigmError < StandardError; end
 
@@ -25,6 +24,7 @@ module Plate::FluidigmBehaviour
     ActiveRecord::Base.transaction do
       fluidigm_data = FluidigmFile::Finder.find(fluidigm_barcode)
       return false if fluidigm_data.empty? # Return false if we have no data
+
       apply_fluidigm_data(FluidigmFile.new(fluidigm_data.content))
       return true
     end
@@ -33,6 +33,7 @@ module Plate::FluidigmBehaviour
   def apply_fluidigm_data(fluidigm_file)
     qc_assay = QcAssay.new
     raise FluidigmError, 'File does not match plate' unless fluidigm_file.for_plate?(fluidigm_barcode)
+
     wells.located_at(fluidigm_file.well_locations).include_stock_wells.each do |well|
       well.stock_wells.each do |sw|
         gender_markers = fluidigm_file.well_at(well.map_description).gender_markers.join('')

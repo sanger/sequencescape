@@ -1,4 +1,3 @@
-
 ##
 # A request type validator belongs to a request type, and is responsible for
 # validating a single request option
@@ -40,6 +39,7 @@ class RequestType::Validator < ApplicationRecord
 
     def initialize(array, default)
       raise StandardError, 'Default is not in array' unless array.include?(default)
+
       @default = default
       @array = array
     end
@@ -90,8 +90,8 @@ class RequestType::Validator < ApplicationRecord
 
   def type_cast
     {
-      'read_length'   => :to_i,
-      'insert_size'   => :to_i
+      'read_length' => :to_i,
+      'insert_size' => :to_i
     }[request_option]
   end
 end

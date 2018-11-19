@@ -1,4 +1,3 @@
-
 module Tasks::AssignTagsToTubesHandler
   def do_assign_tags_to_destination_task(_task, params)
     @tag_group = TagGroup.find(params[:tag_group])

@@ -1,4 +1,3 @@
-
 class ::Endpoints::Users < ::Core::Endpoint::Base
   model do
   end

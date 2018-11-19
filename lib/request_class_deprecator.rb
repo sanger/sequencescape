@@ -1,4 +1,3 @@
-
 # Use in migrations to deprecate request classes
 # Usage:
 # include RequestClassDeprecator
@@ -25,7 +24,7 @@ module RequestClassDeprecator
     ActiveRecord::Base.transaction do
       RequestType.where(request_class_name: request_class_name).each do |rt|
         say "Deprecating: #{rt.name}"
-        rt.update_attributes!(deprecated: true)
+        rt.update!(deprecated: true)
 
         rt_requests = Request.where(request_type_id: rt.id, sti_type: request_class_name)
 

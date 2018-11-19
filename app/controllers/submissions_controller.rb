@@ -1,4 +1,3 @@
-
 class SubmissionsController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
@@ -50,7 +49,7 @@ class SubmissionsController < ApplicationController
   end
 
   def change_priority
-    Submission.find(params[:id]).update_attributes!(priority: params[:submission][:priority])
+    Submission.find(params[:id]).update!(priority: params[:submission][:priority])
     redirect_to action: :show, id: params[:id]
   end
 

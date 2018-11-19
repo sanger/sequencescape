@@ -1,4 +1,3 @@
-
 class SampleManifestUploadWithTagSequencesController < ApplicationController
   before_action :login_required
 

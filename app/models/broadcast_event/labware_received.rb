@@ -1,4 +1,3 @@
-
 class BroadcastEvent::LabwareReceived < BroadcastEvent
   set_event_type 'labware.received'
 

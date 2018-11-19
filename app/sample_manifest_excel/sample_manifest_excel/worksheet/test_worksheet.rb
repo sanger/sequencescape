@@ -211,11 +211,13 @@ module SampleManifestExcel
 
       def create_library_type
         return if validation_errors.include?(:library_type)
+
         LibraryType.where(name: data[:library_type]).first_or_create
       end
 
       def create_reference_genome
         return if validation_errors.include?(:reference_genome)
+
         ReferenceGenome.where(name: data[:reference_genome]).first_or_create
       end
 

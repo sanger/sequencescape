@@ -1,4 +1,3 @@
-
 class Core::Io::List
   include Core::Benchmarking
 

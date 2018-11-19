@@ -1,4 +1,3 @@
-
 Given /^I have a request (\d+) with a study (\d+)$/ do |request_id, study_id|
   study = FactoryBot.create(:study, id: study_id, name: 'Study 999')
   project = FactoryBot.create(:project, id: 1)
@@ -19,5 +18,5 @@ Given /^I have a request (\d+) without a request type$/ do |request_id|
               study: study, project: project,
               asset: FactoryBot.create(:sample_tube)
   )
-  request.update_attributes!(request_type: nil)
+  request.update!(request_type: nil)
 end

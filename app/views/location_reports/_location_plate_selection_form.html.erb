@@ -1,5 +1,5 @@
 
-<%= form_for(location_report_form, html: {class: 'submit_once', id: 'new_report_from_selection'}) do |f| %>
+<%= form_for(location_report_form, html: {id: 'new_report_from_selection'}) do |f| %>
   <div class='form-group'>
     <%= f.label 'name', 'Report name' %><br>
     <%= f.text_field :name, class: 'form-control' %>
@@ -44,6 +44,6 @@
   <%= f.hidden_field :report_type, value: 'type_selection' %>
 
   <div class='form-group actions-group'>
-    <%= f.submit('Create report from selection', autocomplete: 'off',class: 'disable_on_submit btn btn-success') %>
+    <%= f.submit('Create report from selection', autocomplete: 'off',class: 'btn btn-success') %>
   </div>
 <% end %>

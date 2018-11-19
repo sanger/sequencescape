@@ -1,4 +1,3 @@
-
 module SampleManifest::SharedTubeBehaviour
   def generate_tubes(purpose)
     sanger_ids = generate_sanger_ids(count)

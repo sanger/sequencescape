@@ -1,4 +1,3 @@
-
 class Admin::CustomTextsController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
@@ -48,7 +47,7 @@ class Admin::CustomTextsController < ApplicationController
 
   def update
     @custom_text = CustomText.find(params[:id])
-    if @custom_text.update_attributes(params[:custom_text])
+    if @custom_text.update(params[:custom_text])
       flash[:notice] = 'Details have been updated'
       redirect_to admin_custom_text_path(@custom_text)
     else

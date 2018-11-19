@@ -1,4 +1,3 @@
-
 class Admin::RobotPropertiesController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
@@ -42,7 +41,7 @@ class Admin::RobotPropertiesController < ApplicationController
 
   def update
     @robot_property = RobotProperty.find(params[:id])
-    if @robot_property.update_attributes(params[:robot_property])
+    if @robot_property.update(params[:robot_property])
       redirect_to [:admin, @robot, @robot_property]
     else
       render action: 'edit'

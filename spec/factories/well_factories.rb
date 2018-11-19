@@ -15,13 +15,13 @@ FactoryBot.define do
   end
 
   factory :well_attribute do
-    concentration       23.2
-    current_volume      15
+    concentration       { 23.2 }
+    current_volume      { 15 }
 
     factory :complete_well_attribute do
-      gel_pass            'Pass'
-      pico_pass           'Pass'
-      sequenom_count      2
+      gel_pass            { 'Pass' }
+      pico_pass           { 'Pass' }
+      sequenom_count      { 2 }
     end
   end
 
@@ -40,10 +40,10 @@ FactoryBot.define do
     after(:build) do |well|
       als = Array.new(2) do
         {
-          sample:  create(:sample),
-          study:   create(:study),
+          sample: create(:sample),
+          study: create(:study),
           project: create(:project),
-          tag:     create(:tag)
+          tag: create(:tag)
         }
       end
       well.aliquots.build(als)
@@ -53,7 +53,7 @@ FactoryBot.define do
   factory :well_link, class: Well::Link do
     association(:source_well, factory: :well)
     association(:target_well, factory: :well)
-    type 'stock'
+    type { 'stock' }
 
     factory :stock_well_link
   end
@@ -64,7 +64,7 @@ FactoryBot.define do
     map { create(:map) }
 
     after(:create) do |well, evaluator|
-      well.aliquots.each { |a| a.update_attributes!(study: evaluator.study) }
+      well.aliquots.each { |a| a.update!(study: evaluator.study) }
     end
   end
 

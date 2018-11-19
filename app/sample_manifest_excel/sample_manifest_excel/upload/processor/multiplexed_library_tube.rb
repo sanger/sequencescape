@@ -18,6 +18,7 @@ module SampleManifestExcel
 
         def run(tag_group)
           return false unless valid?
+
           update_samples_and_aliquots(tag_group)
           cancel_unprocessed_external_library_creation_requests
           update_sample_manifest
@@ -27,7 +28,7 @@ module SampleManifestExcel
           upload.rows.each do |row|
             row.update_sample(tag_group, upload.override)
             row.transfer_aliquot # Requests are smart enough to only transfer once
-            substitutions << row.aliquot.substitution_hash if upload.reuploaded?
+            substitutions << row.aliquot.substitution_hash if row.reuploaded?
           end
           update_downstream_aliquots if substitutions.present?
         end
@@ -72,13 +73,10 @@ module SampleManifestExcel
         end
 
         def aliquots_updated?
-          if upload.reuploaded?
-            downstream_aliquots_updated? ||
-              no_substitutions? ||
-              log_error_and_return_false('Could not update tags in other assets.')
-          else
-            aliquots_transferred? || log_error_and_return_false('Could not transfer aliquots.')
-          end
+          downstream_aliquots_updated? ||
+            no_substitutions? ||
+            log_error_and_return_false('Could not update tags in other assets.')
+          aliquots_transferred? || log_error_and_return_false('Could not transfer aliquots.')
         end
       end
     end

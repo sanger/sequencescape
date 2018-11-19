@@ -1,4 +1,3 @@
-
 module IlluminaB::PlatePurposes
   PLATE_PURPOSE_FLOWS = [
     %w(
@@ -39,16 +38,16 @@ module IlluminaB::PlatePurposes
   OUTPUT_PLATE_PURPOSES = []
 
   PLATE_PURPOSE_TYPE = {
-    'ILB_STD_INPUT'   => PlatePurpose::Input,
+    'ILB_STD_INPUT' => PlatePurpose::Input,
     'ILB_STD_COVARIS' => PlatePurpose::InitialPurpose,
-    'ILB_STD_SH'      => PlatePurpose,
-    'ILB_STD_PREPCR'  => PlatePurpose,
-    'ILB_STD_PCR'     => PlatePurpose,
-    'ILB_STD_PCRXP'   => IlluminaHtp::FinalPlatePurpose,
-    'ILB_STD_PCRR'    => PlatePurpose,
-    'ILB_STD_PCRRXP'  => IlluminaHtp::FinalPlatePurpose,
-    'ILB_STD_STOCK'   => IlluminaHtp::StockTubePurpose,
-    'ILB_STD_MX'      => IlluminaB::MxTubePurpose
+    'ILB_STD_SH' => PlatePurpose,
+    'ILB_STD_PREPCR' => PlatePurpose,
+    'ILB_STD_PCR' => PlatePurpose,
+    'ILB_STD_PCRXP' => IlluminaHtp::FinalPlatePurpose,
+    'ILB_STD_PCRR' => PlatePurpose,
+    'ILB_STD_PCRRXP' => IlluminaHtp::FinalPlatePurpose,
+    'ILB_STD_STOCK' => IlluminaHtp::StockTubePurpose,
+    'ILB_STD_MX' => IlluminaB::MxTubePurpose
   }
 
   def self.request_type_prefix

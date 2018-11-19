@@ -9,16 +9,16 @@ class TransferRequest < ApplicationRecord
 
   # States which are still considered to be processable (ie. not failed or cancelled)
   ACTIVE_STATES = %w[pending started passed qc_complete].freeze
-
-  has_many :transfer_request_collection_transfer_requests, dependent: :destroy
-  has_many :transfer_request_collections, through: :transfer_request_collection_transfer_requests, inverse_of: :transfer_requests
-
   # The assets on a request can be treated as a particular class when being used by certain pieces of code.  For instance,
   # QC might be performed on a source asset that is a well, in which case we'd like to load it as such.
   belongs_to :target_asset, class_name: 'Receptacle', inverse_of: :transfer_requests_as_source, required: true
   belongs_to :asset, class_name: 'Receptacle', inverse_of: :transfer_requests_as_source, required: true
 
   has_many :associated_requests, through: :asset, source: :requests_as_source
+  has_many :transfer_request_collection_transfer_requests, dependent: :destroy
+  has_many :transfer_request_collections, through: :transfer_request_collection_transfer_requests, inverse_of: :transfer_requests
+  has_many :target_aliquots, through: :target_asset, source: :aliquots
+  has_many :target_aliquot_requests, through: :target_aliquots, source: :request
 
   belongs_to :order
   belongs_to :submission
@@ -27,6 +27,7 @@ class TransferRequest < ApplicationRecord
   scope :include_submission, -> { includes(submission: :uuid_object) }
   # Ensure that the source and the target assets are not the same, otherwise bad things will happen!
   validate :source_and_target_assets_are_different
+  validates :outer_request_candidates, length: { maximum: 1, message: 'can not be isolated from the possible requests' }, on: :create
 
   after_create(:perform_transfer_of_contents)
 
@@ -88,6 +89,7 @@ class TransferRequest < ApplicationRecord
   # validation method
   def source_and_target_assets_are_different
     return true unless asset_id.present? && asset_id == target_asset_id
+
     errors.add(:asset, 'cannot be the same as the target')
     errors.add(:target_asset, 'cannot be the same as the source')
     false
@@ -95,6 +97,15 @@ class TransferRequest < ApplicationRecord
 
   def transition_to(target_state)
     aasm.fire!(suggested_transition_to(target_state))
+  end
+
+  def outer_request=(request)
+    @outer_request = request
+    self.submission_id = request.submission_id
+  end
+
+  def outer_request_id=(request_id)
+    self.outer_request = Request.find(request_id)
   end
 
   def outer_request
@@ -112,34 +123,45 @@ class TransferRequest < ApplicationRecord
 
   private
 
+  def outer_request_candidates
+    @outer_request ? [@outer_request] : sibling_requests.to_a
+  end
+
   # Determines the most likely event that should be fired when transitioning between the two states.  If there is
   # only one option then that is what is returned, otherwise an exception is raised.
   def suggested_transition_to(target)
     valid_events = aasm.events(permitted: true).select { |e| e.transitions_to_state?(target.to_sym) }
     raise StandardError, "No obvious transition from #{state.inspect} to #{target.inspect}" unless valid_events.size == 1
+
     valid_events.first.name
   end
 
   # after_create callback method
   def perform_transfer_of_contents
     return if asset.failed? || asset.cancelled?
+
     target_asset.aliquots << asset.aliquots.map do |a|
       a.dup(aliquot_attributes)
     end
   rescue ActiveRecord::RecordNotUnique => exception
     # We'll specifically handle tag clashes here so that we can produce more informative messages
     raise exception unless /aliquot_tags_and_tag2s_are_unique_within_receptacle/.match?(exception.message)
+
     errors.add(:asset, "contains aliquots which can't be transferred due to tag clash")
     raise Aliquot::TagClash, self
   end
 
   def aliquot_attributes
-    sibling_requests.first&.aliquot_attributes || {}
+    outer_request_candidates.first&.aliquot_attributes || {}
   end
 
   # Run on start, or if start is bypassed
   def on_started
     sibling_requests.each do |sr|
+      # We only want to start the matching requests. The conditional deals with situations
+      # which pre-date aliquot association with request.
+      next unless target_aliquot_requests.blank? || target_aliquot_requests.ids.include?(sr.id)
+
       sr.start! if sr.may_start?
     end
   end

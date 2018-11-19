@@ -7,7 +7,7 @@ FactoryBot.define do
 
     factory :custom_metadatum_collection_with_metadata do
       transient do
-        metadatum_count 5
+        metadatum_count { 5 }
       end
 
       after(:create) do |custom_metadatum_collection, evaluator|

@@ -1,4 +1,3 @@
-
 Given /^the barcode for the sample tube "([^\"]+)" is "([^\"]+)"$/ do |name, barcode|
   sample_tube = SampleTube.find_by!(name: name)
   sample_tube.primary_barcode.update!(barcode: barcode)
@@ -14,7 +13,7 @@ Given /^the barcode for the asset "([^\"]+)" is "([^\"]+)"$/ do |name, barcode|
 end
 
 Given /^tube "([^"]*)" has a public name of "([^"]*)"$/ do |name, public_name|
-  Asset.find_by(name: name).update_attributes!(public_name: public_name)
+  Asset.find_by(name: name).update!(public_name: public_name)
 end
 
 Given /^(?:I have )?a phiX tube called "([^\"]+)"$/ do |name|

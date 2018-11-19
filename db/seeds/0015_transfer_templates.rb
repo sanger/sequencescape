@@ -1,4 +1,3 @@
-
 unless Rails.env.test?
   COLUMN_RANGES = [
     (1..1),

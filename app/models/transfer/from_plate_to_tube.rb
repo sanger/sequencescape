@@ -1,4 +1,3 @@
-
 # Picks the specified wells of a plate into an individual tube.  In this case transfers is an
 # array of well locations to transfer into the tube, and the destination is a tube.
 class Transfer::FromPlateToTube < Transfer
@@ -27,7 +26,7 @@ class Transfer::FromPlateToTube < Transfer
   def update_tube_name
     source_barcode = source.source_plate.try(:human_barcode)
     range = "#{transfers.first}:#{transfers.last}"
-    destination.update_attributes!(name: "#{source_barcode} #{range}")
+    destination.update!(name: "#{source_barcode} #{range}")
   end
 
   def each_transfer

@@ -4,8 +4,8 @@ FactoryBot.define do
   factory :sample_manifest do
     study
     supplier
-    asset_type 'plate'
-    count 1
+    asset_type { 'plate' }
+    count { 1 }
 
     factory :sample_manifest_with_samples do
       samples { FactoryBot.create_list(:sample_with_well, 5) }
@@ -20,7 +20,7 @@ FactoryBot.define do
     end
 
     factory :tube_sample_manifest do
-      asset_type '1dtube'
+      asset_type { '1dtube' }
 
       factory :tube_sample_manifest_with_samples do
         samples { FactoryBot.create_list(:sample_tube, 5).map(&:samples).flatten }
@@ -37,8 +37,8 @@ FactoryBot.define do
 
     factory :sample_manifest_with_samples_for_plates do
       transient do
-        num_plates 2
-        num_samples_per_plate 2
+        num_plates { 2 }
+        num_samples_per_plate { 2 }
       end
 
       samples { FactoryBot.create_list(:plate_with_untagged_wells, num_plates, sample_count: num_samples_per_plate).map(&:contained_samples).flatten }
@@ -54,6 +54,6 @@ FactoryBot.define do
   end
 
   factory :supplier do
-    name 'Test supplier'
+    name { 'Test supplier' }
   end
 end

@@ -62,8 +62,10 @@ class Workflow < ApplicationRecord
 
   def change_sorter_of_all_tasks(value)
     return nil if tasks.nil?
+
     tasks.each do |task|
       next if (task.sorted + value).negative?
+
       task.sorted = task.sorted + value
       task.save
     end

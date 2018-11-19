@@ -1,4 +1,3 @@
-
 class ::Endpoints::TransferTemplates < ::Core::Endpoint::Base
   model do
   end

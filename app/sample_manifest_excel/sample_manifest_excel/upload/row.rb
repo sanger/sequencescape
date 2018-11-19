@@ -86,6 +86,7 @@ module SampleManifestExcel
       def update_sample(tag_group, override)
         return unless valid?
         return if sample.updated_by_manifest && !override
+
         update_specialised_fields(tag_group)
         aliquot.save
         metadata.save
@@ -111,9 +112,15 @@ module SampleManifestExcel
       # from the library tube to a multiplexed library tube and stated set to passed.
       def transfer_aliquot
         return unless valid?
-        sample.primary_receptacle.requests.each do |request|
+
+        sample.primary_receptacle.external_library_creation_requests.each do |request|
+          @reuploaded ||= request.passed?
           @aliquot_transferred = request.passed? || request.manifest_processed!
         end
+      end
+
+      def reuploaded?
+        @reuploaded || false
       end
 
       def sample_updated?
@@ -127,6 +134,7 @@ module SampleManifestExcel
       def empty?
         primary_column = 'supplier_name'
         return true unless sample.present? && columns.present? && columns.valid? && columns.names.include?(primary_column)
+
         value(primary_column).blank?
       end
 
@@ -145,6 +153,7 @@ module SampleManifestExcel
 
       def sample_can_be_updated
         return unless errors.empty?
+
         check_primary_receptacle
         check_specialised_fields
         check_sample_metadata
@@ -152,11 +161,13 @@ module SampleManifestExcel
 
       def check_primary_receptacle
         return if sample.primary_receptacle.present?
+
         errors.add(:base, "#{row_title} Does not have a primary receptacle.")
       end
 
       def check_specialised_fields
         return unless errors.empty?
+
         specialised_fields.each do |specialised_field|
           errors.add(:base, "#{row_title} #{specialised_field.errors.full_messages.join(', ')}") unless specialised_field.valid?
         end
@@ -166,16 +177,19 @@ module SampleManifestExcel
         # it has to be called here, otherwise metadata errors will not appear
         update_metadata_fields
         return if metadata.valid?
+
         errors.add(:base, "#{row_title} #{metadata.errors.full_messages.join(', ')}")
       end
 
       def check_sample_present
         return if sample_present?
+
         errors.add(:base, "#{row_title} Sample can't be blank.")
       end
 
       def create_specialised_fields
         return unless columns.present? && data.present? && sample.present?
+
         [].tap do |specialised_fields|
           columns.with_specialised_fields.each do |column|
             specialised_fields << column.specialised_field.new(value: at(column.number), sample: sample)
@@ -187,10 +201,12 @@ module SampleManifestExcel
       def link_tag_groups_and_indexes
         sf_tag_index = specialised_fields.detect { |sf| sf.instance_of? SequencescapeExcel::SpecialisedField::TagIndex }
         return if sf_tag_index.blank?
+
         sf_tag_index.sf_tag_group = specialised_fields.detect { |sf| sf.instance_of? SequencescapeExcel::SpecialisedField::TagGroup }
 
         sf_tag2_index = specialised_fields.detect { |sf| sf.instance_of? SequencescapeExcel::SpecialisedField::Tag2Index }
         return if sf_tag2_index.blank?
+
         sf_tag2_index.sf_tag2_group = specialised_fields.detect { |sf| sf.instance_of? SequencescapeExcel::SpecialisedField::Tag2Group }
       end
     end

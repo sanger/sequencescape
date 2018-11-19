@@ -52,12 +52,14 @@ class Plate::CommentsProxy
   def size(*args)
     s = super
     return s.length if s.respond_to?(:length)
+
     s
   end
 
   def count(*_args)
     s = super(:all)
     return s.length if s.respond_to?(:length)
+
     s
   end
 end

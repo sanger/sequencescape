@@ -1,4 +1,3 @@
-
 require_relative 'view/menu/item'
 require_relative 'view/menu/list'
 require_relative 'view/tabs/item'
