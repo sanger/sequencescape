@@ -46,10 +46,10 @@ class AddRequestTypeForPcrFreeXten < ActiveRecord::Migration
                                       product_line: 'Illumina-HTP',
                                       product_catalogue: 'PFHSqX',
                                       submission_parameters: {
-                                        request_types: [
-                                          'htp_pcr_free_lib',
-                                          'illumina_htp_strip_tube_creation',
-                                          'illumina_b_hiseq_x_paired_end_sequencing'
+                                        request_types: %w[
+                                          htp_pcr_free_lib
+                                          illumina_htp_strip_tube_creation
+                                          illumina_b_hiseq_x_paired_end_sequencing
                                         ],
                                         workflow: 'short_read_sequencing'
                                       })
@@ -60,7 +60,7 @@ class AddRequestTypeForPcrFreeXten < ActiveRecord::Migration
     ActiveRecord::Base.transaction do |_t|
       hiseqlt = LibraryType.find_by(name: 'HiSeqX PCR free')
       unless hiseqlt.nil?
-        ['illumina_a_hiseq_x_paired_end_sequencing', 'illumina_b_hiseq_x_paired_end_sequencing'].each do |rt_name|
+        %w[illumina_a_hiseq_x_paired_end_sequencing illumina_b_hiseq_x_paired_end_sequencing].each do |rt_name|
           rt = RequestType.find_by(key: rt_name)
           lib_types = rt.library_types
           unless lib_types.nil?

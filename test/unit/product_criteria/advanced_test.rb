@@ -17,7 +17,7 @@ class ProductCriteriaAdvancedTest < ActiveSupport::TestCase
 
     context 'with a list of target wells' do
       setup do
-        @well_attribute = create :well_attribute, concentration: 800, current_volume: 100, gel_pass: 'OKAY', gender_markers: ['M', 'M', 'U']
+        @well_attribute = create :well_attribute, concentration: 800, current_volume: 100, gel_pass: 'OKAY', gender_markers: %w[M M U]
         @well = create :well, well_attribute: @well_attribute
 
         @target_wells = create_list :well, 7

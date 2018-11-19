@@ -17,7 +17,7 @@ module Sanger
           raise Exception.new, ':actions need to be an Array' unless actions.instance_of?(Array)
 
           other_actions   = params[:other_actions] || []
-          formats         = params[:formats] || ['html', 'xml', 'json']
+          formats         = params[:formats] || %w[html xml json]
 
           context 'should be a resource' do
             setup do

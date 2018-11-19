@@ -56,7 +56,7 @@ class AssetGroupTest < ActiveSupport::TestCase
     end
 
     should 'report its asset types' do
-      assert_equal ['Tube', 'Well'], @asset_group.asset_types
+      assert_equal %w[Tube Well], @asset_group.asset_types
     end
 
     should 'not support automatic_move?' do

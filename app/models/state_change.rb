@@ -22,7 +22,7 @@ class StateChange < ApplicationRecord
   validates :reason, presence: true, if: :targetted_for_failure?
 
   def targetted_for_failure?
-    ['failed', 'cancelled'].include?(target_state)
+    %w[failed cancelled].include?(target_state)
   end
   private :targetted_for_failure?
 

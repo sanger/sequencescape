@@ -9,7 +9,7 @@ class IlluminaHtp::InitialStockTubePurpose < IlluminaHtp::StockTubePurpose
         request.transition_to(state)
         next unless request.outer_request.present?
 
-        new_outer_state = ['started', 'passed', 'qc_complete'].include?(state) ? 'started' : state
+        new_outer_state = %w[started passed qc_complete].include?(state) ? 'started' : state
         request.outer_request.customer_accepts_responsibility! if customer_accepts_responsibility
         request.outer_request.transition_to(new_outer_state)   if valid_transition?(request.outer_request, new_outer_state)
       end

@@ -39,12 +39,12 @@ class EliminateRedundantPlatePurposeClasses < ActiveRecord::Migration
       ['EnRichment 3', 'PulldownEnrichmentThreePlatePurpose'],
       ['EnRichment 2', 'PulldownEnrichmentTwoPlatePurpose'],
       ['Pulldown PCR', 'PulldownPcrPlatePurpose'],
-      ['Pulldown', 'PulldownPlatePurpose'],
+      %w[Pulldown PulldownPlatePurpose],
       ['Pulldown qPCR', 'PulldownQpcrPlatePurpose'],
       ['Run of Robot', 'PulldownRunOfRobotPlatePurpose'],
       ['Sequence Capture', 'PulldownSequenceCapturePlatePurpose'],
-      ['Sonication', 'PulldownSonicationPlatePurpose'],
-      ['Sequenom', 'QcPlatePurpose'],
+      %w[Sonication PulldownSonicationPlatePurpose],
+      %w[Sequenom QcPlatePurpose],
       ['Gel Dilution', 'WorkingDilutionPlatePurpose'],
       ['Gel Dilution Plates', 'WorkingDilutionPlatePurpose']
     ].each(&block)
