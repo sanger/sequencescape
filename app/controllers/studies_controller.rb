@@ -33,7 +33,7 @@ class StudiesController < ApplicationController
     setup_studies_from_scope(@exclude_nested_resource)
     respond_to do |format|
       format.html
-      format.xml  { render action: 'index' }
+      format.xml  { render(action: (@exclude_nested_resource ? 'index' : 'index_deprecated_xml')) }
       format.json { render json: Study.all.to_json }
     end
   end
