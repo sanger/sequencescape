@@ -13,8 +13,8 @@ FactoryBot.define do
 
     factory :sample_manifest_with_empty_plate do
       transient do
-        well_count 96
-        plate_count 1
+        well_count { 96 }
+        plate_count { 1 }
       end
       labware { FactoryBot.create_list(:plate_with_empty_wells, plate_count, well_count: well_count) }
     end
@@ -26,7 +26,7 @@ FactoryBot.define do
         samples { FactoryBot.create_list(:sample_tube, 5).map(&:samples).flatten }
 
         factory :tube_sample_manifest_with_tubes do
-          count 5
+          count { 5 }
 
           after(:build) do |sample_manifest|
             sample_manifest.barcodes = sample_manifest.labware.map(&:human_barcode)

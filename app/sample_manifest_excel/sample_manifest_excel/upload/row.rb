@@ -37,6 +37,7 @@ module SampleManifestExcel
         if sample.present?
           return sample
         else
+          binding.pry
           sample_manifest = SampleManifestAsset.find_by(sanger_sample_id: sanger_sample_id)&.sample_manifest
           create_sample(sample_manifest)
         end
