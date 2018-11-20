@@ -90,7 +90,7 @@ namespace :sequencing do
           RequestType::Validator.create!(request_type: rt,
                                          request_option: 'read_length',
                                          valid_options: [25, 50, 130, 150, 250, 300])
-          SequencingPipeline.find_by(name: 'MiSeq sequencing') << rt
+          SequencingPipeline.find_by(name: 'MiSeq sequencing').request_types << rt
         end
       end
     end
