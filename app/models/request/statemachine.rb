@@ -3,10 +3,10 @@
 require 'aasm'
 
 module Request::Statemachine
-  COMPLETED_STATE = ['passed', 'failed']
-  OPENED_STATE    = ['pending', 'blocked', 'started']
+  COMPLETED_STATE = %w[passed failed]
+  OPENED_STATE    = %w[pending blocked started]
   ACTIVE = %w(passed pending blocked started)
-  INACTIVE = ['failed', 'cancelled']
+  INACTIVE = %w[failed cancelled]
   SORT_ORDER = %w[pending blocked hold started passed failed cancelled]
 
   module ClassMethods
@@ -125,13 +125,13 @@ module Request::Statemachine
       scope :completed,        -> { where(state: COMPLETED_STATE) }
 
       scope :pipeline_pending, -> { where(state: 'pending') } #  we don't want the blocked one here }
-      scope :pending,          -> { where(state: ['pending', 'blocked']) } # block is a kind of substate of pending }
+      scope :pending,          -> { where(state: %w[pending blocked]) } # block is a kind of substate of pending }
 
       scope :started,          -> { where(state: 'started') }
       scope :cancelled,        -> { where(state: 'cancelled') }
 
       scope :opened,           -> { where(state: OPENED_STATE) }
-      scope :closed,           -> { where(state: ['passed', 'failed', 'cancelled']) }
+      scope :closed,           -> { where(state: %w[passed failed cancelled]) }
     end
   end
 

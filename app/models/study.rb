@@ -30,7 +30,7 @@ class Study < ApplicationRecord
   YES_OR_NO = [YES, NO]
   Other_type = 'Other'
 
-  STUDY_SRA_HOLDS = ['Hold', 'Public']
+  STUDY_SRA_HOLDS = %w[Hold Public]
 
   DATA_RELEASE_STRATEGY_OPEN = 'open'
   DATA_RELEASE_STRATEGY_MANAGED = 'managed'
@@ -302,7 +302,7 @@ class Study < ApplicationRecord
 
   scope :by_state, ->(state) { where(state: state) }
 
-  scope :by_user, ->(login) { joins(:roles, :users).where(roles: { name: ['follower', 'manager', 'owner'], users: { login: [login] } }) }
+  scope :by_user, ->(login) { joins(:roles, :users).where(roles: { name: %w[follower manager owner], users: { login: [login] } }) }
 
   # Delegations
   alias_attribute :friendly_name, :name

@@ -62,7 +62,7 @@ module Sanger
                 mapping_by_well[destination_position] << mapping
               end
 
-              mapping_by_well.sort { |a, b| a[0] <=> b[0] }.each do |_dest_position, mappings|
+              mapping_by_well.sort_by { |a| a[0] }.each do |_dest_position, mappings|
                 mappings.each do |mapping|
                   yield(mapping, dest_plate_barcode, plate_details)
                 end
@@ -106,11 +106,11 @@ module Sanger
 
           def footer(source_barcode_index, dest_barcode_index)
             footer = "C;\n"
-            source_barcode_index.sort { |a, b| a[1] <=> b[1] }.each do |barcode, index|
+            source_barcode_index.sort_by { |a| a[1] }.each do |barcode, index|
               footer += "C; SCRC#{index} = #{barcode}\n"
             end
             footer += "C;\n"
-            dest_barcode_index.sort { |a, b| a[1] <=> b[1] }.each do |barcode, index|
+            dest_barcode_index.sort_by { |a| a[1] }.each do |barcode, index|
               footer += "C; DEST#{index} = #{barcode}\n"
             end
             footer

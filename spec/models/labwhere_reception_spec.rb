@@ -24,8 +24,8 @@ RSpec.describe LabwhereReception do
   end
 
   it 'scans the labware into the location if the labware is not in ss' do
-    allow(LabWhereClient::Scan).to receive(:create).with(location_barcode: 'labwhere_location', user_code: '12345', labware_barcodes: ['1', '11111111111111']).and_return(MockResponse.new(true, ''))
-    labwhere_reception = LabwhereReception.new('12345', 'labwhere_location', ['1', '11111111111111'])
+    allow(LabWhereClient::Scan).to receive(:create).with(location_barcode: 'labwhere_location', user_code: '12345', labware_barcodes: %w[1 11111111111111]).and_return(MockResponse.new(true, ''))
+    labwhere_reception = LabwhereReception.new('12345', 'labwhere_location', %w[1 11111111111111])
     expect(labwhere_reception.save).to be_truthy
   end
 

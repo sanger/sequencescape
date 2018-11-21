@@ -72,7 +72,7 @@ module SequencingQcBatch
   state_transition_helper(:complete)
 
   def processing_in_manual_qc?
-    ['qc_manual_in_progress', 'qc_manual'].include?(qc_state)
+    %w[qc_manual_in_progress qc_manual].include?(qc_state)
   end
 
   def qc_pipeline_workflow_id

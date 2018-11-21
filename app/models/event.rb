@@ -5,7 +5,7 @@ class Event < ApplicationRecord
   belongs_to :eventful, polymorphic: true
   after_create :update_request
 
-  scope :family_pass_and_fail, -> { where(family: ['pass', 'fail']).order(id: :desc) }
+  scope :family_pass_and_fail, -> { where(family: %w[pass fail]).order(id: :desc) }
   scope :npg_events, ->(request_id) { where(created_by: 'npg', eventful_id: request_id) }
 
   def request?

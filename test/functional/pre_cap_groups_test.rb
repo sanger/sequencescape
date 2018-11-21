@@ -20,28 +20,28 @@ class PreCapGroupsTest < ActiveSupport::TestCase
 
     context 'with two distinct pools' do
       setup do
-        with_pools(['A1', 'B1', 'C1'], ['D1', 'E1', 'F1'])
+        with_pools(%w[A1 B1 C1], %w[D1 E1 F1])
       end
 
       should 'report two pools' do
         assert_equal([
-          [@pools[0].uuid, ['A1', 'B1', 'C1']],
-          [@pools[1].uuid, ['D1', 'E1', 'F1']]
+          [@pools[0].uuid, %w[A1 B1 C1]],
+          [@pools[1].uuid, %w[D1 E1 F1]]
         ], @plate.pre_cap_groups.map { |pool, options| [pool, options[:wells].sort] })
       end
     end
 
     context 'with overlapping distinct pools' do
       setup do
-        with_pools(['A1', 'B1', 'C1'], ['D1', 'E1', 'F1'], ['A1', 'D1'])
+        with_pools(%w[A1 B1 C1], %w[D1 E1 F1], %w[A1 D1])
       end
 
       context 'when all are pending' do
         should 'still report all the pools' do
           assert_equal([
-            [@pools[0].uuid, ['A1', 'B1', 'C1']],
-            [@pools[1].uuid, ['D1', 'E1', 'F1']],
-            [@pools[2].uuid, ['A1', 'D1']]
+            [@pools[0].uuid, %w[A1 B1 C1]],
+            [@pools[1].uuid, %w[D1 E1 F1]],
+            [@pools[2].uuid, %w[A1 D1]]
           ], @plate.pre_cap_groups.map { |pool, options| [pool, options[:wells].sort] })
         end
       end
@@ -53,7 +53,7 @@ class PreCapGroupsTest < ActiveSupport::TestCase
             source: @plate.reload,
             destination: @target_plate.reload,
             user: FactoryBot.create(:user),
-            transfers: { 'A1' => ['A1', 'B1'], 'B1' => ['A1'], 'C1' => ['A1'], 'D1' => ['B1', 'C1'], 'E1' => ['C1'], 'F1' => ['C1'] }
+            transfers: { 'A1' => %w[A1 B1], 'B1' => ['A1'], 'C1' => ['A1'], 'D1' => %w[B1 C1], 'E1' => ['C1'], 'F1' => ['C1'] }
           )
         end
 
@@ -76,9 +76,9 @@ class PreCapGroupsTest < ActiveSupport::TestCase
 
         should 'still report all the pools' do
           assert_equal([
-            [@pools[0].uuid, ['A1', 'B1', 'C1']],
-            [@pools[1].uuid, ['D1', 'E1', 'F1']],
-            [@pools[2].uuid, ['A1', 'D1']]
+            [@pools[0].uuid, %w[A1 B1 C1]],
+            [@pools[1].uuid, %w[D1 E1 F1]],
+            [@pools[2].uuid, %w[A1 D1]]
           ], @plate.pre_cap_groups.map { |pool, options| [pool, options[:wells].sort] })
         end
       end
@@ -96,21 +96,21 @@ class PreCapGroupsTest < ActiveSupport::TestCase
       @plate = create :input_plate_for_pooling
       @test_plate = create :non_stock_pooling_plate
       @pools = create_list :pre_capture_pool, 3
-      with_pools(['A1', 'B1', 'C1'], ['D1', 'E1', 'F1'])
+      with_pools(%w[A1 B1 C1], %w[D1 E1 F1])
       transfers = @test_plate.wells.each_with_object({}) { |w, hash| hash[w.map_description] = w.map_description }
       create :transfer_between_plates, transfers: transfers, source: @plate, destination: @test_plate
     end
 
     should 'report the pools from the stock plate' do
       assert_equal([
-        [@pools[0].uuid, ['A1', 'B1', 'C1']],
-        [@pools[1].uuid, ['D1', 'E1', 'F1']]
+        [@pools[0].uuid, %w[A1 B1 C1]],
+        [@pools[1].uuid, %w[D1 E1 F1]]
       ], @test_plate.pre_cap_groups.map { |pool, options| [pool, options[:wells].sort] })
     end
 
     context 'with repooling requests downstream' do
       setup do
-        @test_plate.wells.located_at(['A1', 'D1']).each do |well|
+        @test_plate.wells.located_at(%w[A1 D1]).each do |well|
           create(:re_isc_request,
                  asset: well,
                  pre_capture_pool: @pools[2],
@@ -119,9 +119,9 @@ class PreCapGroupsTest < ActiveSupport::TestCase
       end
       should 'include all pools' do
         assert_equal([
-          [@pools[0].uuid, ['A1', 'B1', 'C1']],
-          [@pools[1].uuid, ['D1', 'E1', 'F1']],
-          [@pools[2].uuid, ['A1', 'D1']]
+          [@pools[0].uuid, %w[A1 B1 C1]],
+          [@pools[1].uuid, %w[D1 E1 F1]],
+          [@pools[2].uuid, %w[A1 D1]]
         ], @test_plate.pre_cap_groups.map { |pool, options| [pool, options[:wells].sort] })
       end
     end

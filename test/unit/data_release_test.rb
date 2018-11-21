@@ -99,7 +99,7 @@ class DataReleaseTest < ActiveSupport::TestCase
                 @study.study_metadata.data_release_prevention_reason_comment = 'It just is'
               end
 
-              ['managed', 'open'].each do |strategy|
+              %w[managed open].each do |strategy|
                 context "and strategy is #{strategy}" do
                   setup do
                     @study.study_metadata.data_release_strategy = strategy
@@ -119,7 +119,7 @@ class DataReleaseTest < ActiveSupport::TestCase
                 @study.study_metadata.data_release_delay_reason = 'phd study'
               end
 
-              ['managed', 'open'].each do |strategy|
+              %w[managed open].each do |strategy|
                 context "and strategy is #{strategy}" do
                   setup do
                     @study.study_metadata.data_release_strategy       = strategy

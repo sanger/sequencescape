@@ -18,7 +18,7 @@ class Submission < ApplicationRecord
   include ModelExtensions::Submission
   include Submission::Priorities
 
-  PER_ORDER_REQUEST_OPTIONS = ['pre_capture_plex_level', 'gigabases_expected']
+  PER_ORDER_REQUEST_OPTIONS = %w[pre_capture_plex_level gigabases_expected]
 
   self.per_page = 500
 

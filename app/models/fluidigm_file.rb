@@ -51,7 +51,7 @@ class FluidigmFile
   class Assay
     attr_reader :name, :result
 
-    @@valid_markers = ['XX', 'XY', 'YY']
+    @@valid_markers = %w[XX XY YY]
     @@gender_map    = { 'XX' => 'F', 'YY' => 'F', 'XY' => 'M' }
 
     def initialize(name, result)

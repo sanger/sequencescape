@@ -1,5 +1,5 @@
 class UnifyInitialDownstreamClasses < ActiveRecord::Migration
-  class Request < ActiveRecord::Base
+  class Request < ApplicationRecord
     self.table_name = 'requests'
   end
 

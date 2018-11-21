@@ -4,7 +4,7 @@ class IlluminaHtp::InitialDownstreamPlatePurpose < IlluminaHtp::DownstreamPlateP
   def transition_to(plate, state, user, contents = nil, customer_accepts_responsibility = false)
     ActiveRecord::Base.transaction do
       super
-      new_outer_state = ['started', 'passed', 'qc_complete'].include?(state) ? 'started' : state
+      new_outer_state = %w[started passed qc_complete].include?(state) ? 'started' : state
 
       # CAUTION!
       # TODO: While the behaviour here wont cause us any issues, its actually subtly wrong.
