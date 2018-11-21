@@ -4,7 +4,7 @@ require 'rails_helper'
 require 'shared_contexts/limber_shared_context'
 
 describe Plate do
-  context 'labwhere'do
+  context 'labwhere' do
     MockResponse ||= Struct.new(:location)
     MockLocation ||= Struct.new(:location_info)
 
