@@ -2,22 +2,30 @@
 
 require 'rails_helper'
 require 'shared_contexts/limber_shared_context'
+require 'support/lab_where_client_helper'
+
+RSpec.configure do |c|
+  c.include LabWhereClientHelper
+end
 
 describe Plate do
   context 'labwhere' do
-    MockResponse ||= Struct.new(:location)
-    MockLocation ||= Struct.new(:location_info)
-
     let(:plate) { create :plate, barcode: 1 }
-    let(:mocked_response) { MockResponse.new(MockLocation.new('labwhere_location')) }
+    let(:parentage) { 'Sanger / Ogilvie / AA316' }
+    let(:location) { 'Shelf 1' }
 
-    it 'returns the correct labwhere location' do
-      allow(LabWhereClient::Labware).to receive(:find_by_barcode)
-        .with(plate.human_barcode)
-        .with(plate.machine_barcode)
-        .and_return(mocked_response)
-      expect(plate.labwhere_location).to eq('labwhere_location')
+    setup do
+      stub_lwclient_labware_find_by_bc(lw_barcode: plate.human_barcode,
+                                       lw_locn_name: location,
+                                       lw_locn_parentage: parentage)
+      stub_lwclient_labware_find_by_bc(lw_barcode: plate.machine_barcode,
+                                       lw_locn_name: location,
+                                       lw_locn_parentage: parentage)
     end
+
+    subject { plate.labwhere_location }
+
+    it { is_expected.to eq "#{parentage} - #{location}" }
   end
 
   context 'barcodes' do
