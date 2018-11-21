@@ -4,6 +4,22 @@ require 'rails_helper'
 require 'shared_contexts/limber_shared_context'
 
 describe Plate do
+  context 'labwhere'do
+    MockResponse ||= Struct.new(:location)
+    MockLocation ||= Struct.new(:location_info)
+
+    let(:plate) { create :plate, barcode: 1 }
+    let(:mocked_response) { MockResponse.new(MockLocation.new('labwhere_location')) }
+
+    it 'returns the correct labwhere location' do
+      allow(LabWhereClient::Labware).to receive(:find_by_barcode)
+        .with(plate.human_barcode)
+        .with(plate.machine_barcode)
+        .and_return(mocked_response)
+      expect(plate.labwhere_location).to eq('labwhere_location')
+    end
+  end
+
   context 'barcodes' do
     # Maintaining existing barcode behaviour
     context 'sanger barcodes' do
