@@ -464,6 +464,7 @@ class Request < ApplicationRecord
 
   def next_requests
     return [] if submission.nil? || next_request_type_id.nil?
+
     next_requests_via_asset || next_requests_via_submission
   end
 
