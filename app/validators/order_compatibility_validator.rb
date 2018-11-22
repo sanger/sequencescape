@@ -8,9 +8,11 @@ class OrderCompatibilityValidator < ActiveModel::Validator
   def validate(record)
     orders = record.orders
     return if orders.size < 2
+
     record.errors.add(:orders, 'are incompatible') unless read_lengths_identical?(orders)
     order_request_types = orders.collect { |order| OrderRequestTypes.new(order.request_types) }
     return if order_request_types.all?(&:not_for_multiplexing?)
+
     record.errors.add(:orders, 'are incompatible') if order_request_types.any?(&:not_for_multiplexing?)
     record.errors.add(:orders, 'are incompatible') unless order_request_types.all? { |request_types| request_types.post_for_multiplexing == order_request_types.first.post_for_multiplexing }
   end
@@ -42,6 +44,7 @@ class OrderCompatibilityValidator < ActiveModel::Validator
 
     def post_for_multiplexing
       return unless for_multiplexing?
+
       ids.split(for_multiplexing.id).last
     end
   end

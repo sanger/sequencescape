@@ -111,7 +111,7 @@ class Core::Io::Json::StreamTest < ActiveSupport::TestCase
       end
 
       should 'array' do
-        @value = ['a', 'b']
+        @value = %w[a b]
         @expected = '["a","b"]'
       end
 

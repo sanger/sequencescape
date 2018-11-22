@@ -5,9 +5,9 @@ class Parsers::QuantParser
   LOCATION_HEADER = 'Well Location'.freeze
   COLUMN_MAPS = {
     'concentration' => ['concentration', 'ng/ul'],
-    'molarity'      => ['molarity', 'nmol/l'],
-    'volume'        => %w[volume ul],
-    'rin'           => %w[RIN RIN]
+    'molarity' => ['molarity', 'nmol/l'],
+    'volume' => %w[volume ul],
+    'rin' => %w[RIN RIN]
   }.freeze
 
   # Extract decimals from columns.
@@ -42,6 +42,7 @@ class Parsers::QuantParser
     data_section.each do |row|
       # If location is nil or blank, ignore the row
       next if row[location_index].nil? || row[location_index].strip.blank?
+
       yield(row[location_index], qc_values_for_row(row))
     end
   end
@@ -68,6 +69,7 @@ class Parsers::QuantParser
     @header_options ||= headers_section.each_with_object([]).with_index do |(description, array), index|
       key, units = column_maps[description&.strip&.downcase]
       next if key.nil? # Our column is not one we are interested in
+
       array << [key, units, index]
     end
   end
@@ -76,6 +78,7 @@ class Parsers::QuantParser
     header_options.each_with_object({}) do |(key, units, index), hash|
       matches = VALUE_REGEX.match(row[index])
       next if matches.nil?
+
       hash[key] = Unit.new(matches[:decimal].to_f, units)
     end
   end

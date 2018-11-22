@@ -40,7 +40,7 @@ feature 'track SampleManifest updates' do
     expect(BroadcastEvent.count).to eq broadcast_events_count + 1
 
     samples = sample_manifest.samples.each_with_index do |sample, index|
-      sample.update_attributes(sanger_sample_id: "sample_#{index}")
+      sample.update(sanger_sample_id: "sample_#{index}")
     end
     sample1 = samples[1]
     sample7 = samples[7]

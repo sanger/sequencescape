@@ -17,7 +17,7 @@ class LinefeedFixTest < ActiveSupport::TestCase
     should 'return a readable string' do
       assert_equal "Example,colB\nUnparse,eg\n", LinefeedFix.scrub!(@string)
       # And just double check that we've generated a valid csv
-      assert_equal [['Example', 'colB'], ['Unparse', 'eg']], CSV.parse(@string)
+      assert_equal [%w[Example colB], %w[Unparse eg]], CSV.parse(@string)
     end
   end
 end

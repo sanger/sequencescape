@@ -30,7 +30,7 @@ class Study < ApplicationRecord
   YES_OR_NO = [YES, NO]
   Other_type = 'Other'
 
-  STUDY_SRA_HOLDS = ['Hold', 'Public']
+  STUDY_SRA_HOLDS = %w[Hold Public]
 
   DATA_RELEASE_STRATEGY_OPEN = 'open'
   DATA_RELEASE_STRATEGY_MANAGED = 'managed'
@@ -302,7 +302,7 @@ class Study < ApplicationRecord
 
   scope :by_state, ->(state) { where(state: state) }
 
-  scope :by_user, ->(login) { joins(:roles, :users).where(roles: { name: ['follower', 'manager', 'owner'], users: { login: [login] } }) }
+  scope :by_user, ->(login) { joins(:roles, :users).where(roles: { name: %w[follower manager owner], users: { login: [login] } }) }
 
   # Delegations
   alias_attribute :friendly_name, :name
@@ -315,6 +315,7 @@ class Study < ApplicationRecord
 
   def validate_ethically_approved
     return true if valid_ethically_approved?
+
     message = ethical_approval_required? ? 'should be either true or false for this study.' : 'should be not applicable (null) not false.'
     errors.add(:ethically_approved, message)
     false

@@ -33,7 +33,7 @@ RSpec.describe Study, type: :model do
     # we have to hack t
     requests.each do |request|
       request.asset.aliquots.each do |a|
-        a.update_attributes(study: study)
+        a.update(study: study)
       end
     end
     study.save!
@@ -276,25 +276,25 @@ RSpec.describe Study, type: :model do
       let!(:study)  { create(:managed_study) }
 
       it 'accept valid urls' do
-        expect(study.study_metadata.update_attributes!(dac_policy: 'http://www.example.com')).to be_truthy
+        expect(study.study_metadata.update!(dac_policy: 'http://www.example.com')).to be_truthy
         expect(study.study_metadata.dac_policy).to eq('http://www.example.com')
       end
 
       it 'reject free text' do
-        expect { study.study_metadata.update_attributes!(dac_policy: 'Not a URL') }.to raise_error(ActiveRecord::RecordInvalid)
+        expect { study.study_metadata.update!(dac_policy: 'Not a URL') }.to raise_error(ActiveRecord::RecordInvalid)
       end
 
       it 'reject invalid domains' do
-        expect { study.study_metadata.update_attributes!(dac_policy: 'http://internal.example.com') }.to raise_error(ActiveRecord::RecordInvalid)
+        expect { study.study_metadata.update!(dac_policy: 'http://internal.example.com') }.to raise_error(ActiveRecord::RecordInvalid)
       end
 
       it 'add http:// before testing a url' do
-        expect(study.study_metadata.update_attributes!(dac_policy: 'www.example.com')).to be_truthy
+        expect(study.study_metadata.update!(dac_policy: 'www.example.com')).to be_truthy
         expect(study.study_metadata.dac_policy).to eq('http://www.example.com')
       end
 
       it 'not add http for eg. https' do
-        expect(study.study_metadata.update_attributes!(dac_policy: 'https://www.example.com')).to be_truthy
+        expect(study.study_metadata.update!(dac_policy: 'https://www.example.com')).to be_truthy
         expect(study.study_metadata.dac_policy).to eq('https://www.example.com')
       end
 
@@ -311,14 +311,14 @@ RSpec.describe Study, type: :model do
       it 'accept valid data access group names' do
         # Valid names contain alphanumerics and underscores. They are limited to 32 characters, and cannot begin with a number
         ['goodname', 'g00dname', 'good_name', '_goodname', 'good-name', 'goodname1  goodname2'].each do |name|
-          expect(study.study_metadata.update_attributes!(data_access_group: name)).to be_truthy
+          expect(study.study_metadata.update!(data_access_group: name)).to be_truthy
           expect(study.study_metadata.data_access_group).to eq(name)
         end
       end
 
       it 'reject non-alphanumeric data access groups' do
         ['b@dname', '1badname', 'averylongbadnamewouldbebadsowesouldblockit', 'baDname'].each do |name|
-          expect { study.study_metadata.update_attributes!(data_access_group: name) }.to raise_error(ActiveRecord::RecordInvalid)
+          expect { study.study_metadata.update!(data_access_group: name) }.to raise_error(ActiveRecord::RecordInvalid)
         end
       end
     end
@@ -336,15 +336,15 @@ RSpec.describe Study, type: :model do
       let!(:study) { create(:study) }
 
       it 'accepts names shorter than 200 characters' do
-        expect(study.update_attributes!(name: 'Short name')).to be_truthy
+        expect(study.update!(name: 'Short name')).to be_truthy
       end
 
       it 'rejects names longer than 200 characters' do
-        expect { study.update_attributes!(name: 'a' * 201) }.to raise_error(ActiveRecord::RecordInvalid)
+        expect { study.update!(name: 'a' * 201) }.to raise_error(ActiveRecord::RecordInvalid)
       end
 
       it 'squish whitespace' do
-        expect(study.update_attributes!(name: '   Squish   double spaces and flanking whitespace but not double letters ')).to be_truthy
+        expect(study.update!(name: '   Squish   double spaces and flanking whitespace but not double letters ')).to be_truthy
         expect(study.name).to eq('Squish double spaces and flanking whitespace but not double letters')
       end
     end
@@ -370,7 +370,7 @@ RSpec.describe Study, type: :model do
       end
 
       it 'not include studies that do not have the correct data release timings' do
-        expect(study_7.study_metadata.update_attributes!(data_release_timing: Study::DATA_RELEASE_TIMING_NEVER, data_release_prevention_reason: 'data validity', data_release_prevention_approval: 'Yes', data_release_prevention_reason_comment: 'blah, blah, blah')).to be_truthy
+        expect(study_7.study_metadata.update!(data_release_timing: Study::DATA_RELEASE_TIMING_NEVER, data_release_prevention_reason: 'data validity', data_release_prevention_approval: 'Yes', data_release_prevention_reason_comment: 'blah, blah, blah')).to be_truthy
         expect(Study.for_sample_accessioning.count).to eq(4)
       end
 

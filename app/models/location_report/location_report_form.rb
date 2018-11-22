@@ -73,29 +73,34 @@ class LocationReport::LocationReportForm
   def check_labwhere_location_exists
     return unless report_type == 'type_labwhere'
     return if find_labwhere_location.present?
+
     errors.add(:base, I18n.t('location_reports.errors.labwhere_location_not_found'))
   end
 
   def check_maxlength_of_barcodes
     return unless report_type == 'type_selection'
     return if barcodes_text.blank? || barcodes_text.length <= 60000
+
     errors.add(:barcodes_text, I18n.t('location_reports.errors.barcodes_maxlength_exceeded'))
   end
 
   def check_for_valid_barcodes
     return unless report_type == 'type_selection'
     return if barcodes_text.blank? || barcodes.present?
+
     errors.add(:barcodes_text, I18n.t('location_reports.errors.no_valid_barcodes_found'))
   end
 
   def check_for_invalid_barcodes
     return unless report_type == 'type_selection'
     return if barcodes_text.blank? || invalid_barcodes.blank?
+
     errors.add(:barcodes_text, I18n.t('location_reports.errors.invalid_barcodes_found') + invalid_barcodes.join(','))
   end
 
   def check_location_report
     return if location_report.valid?
+
     add_location_errors
   end
 
@@ -133,6 +138,7 @@ class LocationReport::LocationReportForm
 
   def add_location_errors
     return if location_report.nil?
+
     location_report.errors.each do |key, value|
       errors.add key, value
     end
@@ -149,6 +155,7 @@ class LocationReport::LocationReportForm
   def find_labwhere_location
     locn_info = LabWhereClient::Location.find_by_barcode(location_barcode)
     return locn_info.name if locn_info.present?
+
     nil
   rescue LabWhereClient::LabwhereException
     nil

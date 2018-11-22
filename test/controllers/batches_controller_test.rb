@@ -153,7 +153,7 @@ class BatchesControllerTest < ActionController::TestCase
 
           @ws = @pipeline.workflow # :name => 'A New workflow', :item_limit => 2
           @ws_two = @pipeline_qc.workflow # :name => 'Another workflow', :item_limit => 2
-          @ws_two.update_attributes!(locale: 'External')
+          @ws_two.update!(locale: 'External')
 
           @batch_one = create(:batch, pipeline: @pipeline)
           @batch_two = create(:batch, pipeline: @pipeline_qc)

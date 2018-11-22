@@ -30,7 +30,7 @@ class BatchRequest < ApplicationRecord
   broadcast_via_warren
 
   def move_to_position!(position)
-    update_attributes!(sorting_requests_within_batch: true, position: position)
+    update!(sorting_requests_within_batch: true, position: position)
   end
 
   private

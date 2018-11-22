@@ -7,6 +7,7 @@ module Core::Endpoint::BasicHandler::Associations::HasFile
 
   def content_type(content_type)
     return nil unless @supported_types.present?
+
     @supported_types[content_type]
   end
 

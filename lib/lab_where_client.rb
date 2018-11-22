@@ -10,11 +10,13 @@ module LabWhereClient
 
     def path_to(instance, target)
       raise LabwhereException, 'LabWhere service URL not set' if base_url.nil?
+
       [base_url, instance.endpoint, target].compact.join('/')
     end
 
     def parse_json(str)
       return nil if str == 'null'
+
       JSON.parse(str)
     rescue JSON::ParserError => e
       raise LabwhereException.new(e), 'LabWhere is returning unexpected content', e.backtrace
@@ -90,6 +92,7 @@ module LabWhereClient
 
     def self.find_by_barcode(barcode)
       return nil if barcode.blank?
+
       attrs = LabWhere.new.get(self, barcode)
       new(attrs) unless attrs.nil?
     end
@@ -140,6 +143,7 @@ module LabWhereClient
 
     def self.find_by_barcode(barcode)
       return nil if barcode.blank?
+
       attrs = LabWhere.new.get(self, barcode)
       new(attrs) unless attrs.nil?
     end
@@ -156,15 +160,19 @@ module LabWhereClient
 
     def self.children(barcode)
       return [] if barcode.blank?
+
       attrs = LabWhere.new.get(self, "#{barcode}/children")
       return [] if attrs.nil?
+
       attrs.map { |locn_params| new(locn_params) }
     end
 
     def self.labwares(barcode)
       return [] if barcode.blank?
+
       attrs = LabWhere.new.get(self, "#{barcode}/labwares")
       return [] if attrs.nil?
+
       attrs.map { |labware_params| Labware.new(labware_params) }
     end
   end

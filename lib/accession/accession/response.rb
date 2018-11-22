@@ -29,6 +29,7 @@ module Accession
     # based on the xml receipt
     def accessioned?
       return false unless success?
+
       ActiveRecord::Type::Boolean.new.cast(
         xml.at('RECEIPT').attribute('success').value
       )
@@ -37,12 +38,14 @@ module Accession
     # If the request was successful and the receipt says so extract the accession number
     def accession_number
       return unless success?
+
       xml.at('SAMPLE').try(:attribute, 'accession').try(:value)
     end
 
     # If the request failed extract the errors from the receipt.
     def errors
       return unless success?
+
       xml.search('ERROR').collect(&:text)
     end
   end

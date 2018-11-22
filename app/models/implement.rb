@@ -5,6 +5,7 @@ class Implement < ApplicationRecord
 
   def generate_barcode
     raise Exception.new, "Can't generate barcode with a null ID" if id == 0
+
     b = Barcode.calculate_barcode(barcode_prefix, id)
     Barcode.barcode_to_human b
   end

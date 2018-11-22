@@ -14,6 +14,7 @@ module SequencescapeExcel
 
       def update(attributes = {})
         return unless valid?
+
         tag2 = ::Tag.find_by(tag_group_id: sf_tag2_group.tag2_group_id, map_id: value) if sf_tag2_group.present? && value.present?
         attributes[:aliquot].tag2 = tag2 if tag2.present? && tag2.oligo.present?
       end
@@ -26,6 +27,7 @@ module SequencescapeExcel
           errors.add(:base, "no corresponding tag2 group supplied for tag2 index #{value}")
         else
           return if ::Tag.find_by(tag_group_id: sf_tag2_group.tag2_group_id, map_id: value).present?
+
           errors.add(:base, "could not find a tag2 with tag_group_id #{sf_tag2_group.tag2_group_id} and tag index #{value}.")
         end
       end

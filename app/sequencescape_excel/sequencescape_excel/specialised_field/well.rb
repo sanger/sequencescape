@@ -16,6 +16,7 @@ module SequencescapeExcel
 
       def check_container
         return if value == sample.wells.first.map.description
+
         errors.add(:sample, 'You can not move samples between plates or modify barcodes')
       end
     end

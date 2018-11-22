@@ -31,6 +31,7 @@ module Tasks::AssignTubesToWellsHandler
   def do_assign_pick_volume_task(_task, params)
     @batch.requests.each do |r|
       next if r.target_asset.nil?
+
       r.target_asset.set_picked_volume(params[:micro_litre_volume_required].to_i)
     end
     true
@@ -48,6 +49,7 @@ module Tasks::AssignTubesToWellsHandler
       end
       # uniq! returns any duplicates, or nil if there are none
       next if unique_aliquots.map(&:tag_id).uniq!.nil?
+
       invalid_wells << well
     end
     invalid_wells
@@ -58,6 +60,7 @@ module Tasks::AssignTubesToWellsHandler
     invalid_wells = []
     @batch.requests.group_by { |request| params[:request_locations][request.id.to_s] }.each do |well, requests|
       next if requests.map { |r| r.shared_attributes }.uniq.count <= 1
+
       invalid_wells << well
     end
     invalid_wells

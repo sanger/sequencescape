@@ -60,6 +60,7 @@ namespace :limber do
       desc 'Generate a mock GbS tag set if required'
       task gbs_tag_set: ['working:env_check', :environment] do
         next if TagLayoutTemplate.find_by(name: 'GbS Tag Set A')
+
         ('A'..'D').each_with_index do |set, index|
           tg = TagGroup.create!(name: "GbS Test - #{set}") do |group|
             group.tags.build(OligoEnumerator.new(384, index * 384).each_with_index.map { |oligo, map_id| { oligo: oligo, map_id: map_id + 1 } })
@@ -94,6 +95,7 @@ namespace :limber do
         ('A'..'D').each_with_index do |set, index|
           ["pWGS UDI tag layout v2 #{set}", "TS_pWGS#{set}_UDI96"].each_with_index do |template_name, idx|
             next if TagLayoutTemplate.find_by(name: template_name)
+
             tg = TagGroup.create!(name: "WGS Test #{idx} - #{set}") do |group|
               group.tags.build(OligoEnumerator.new(384, index * 384).each_with_index.map { |oligo, map_id| { oligo: oligo, map_id: map_id + 1 } })
             end

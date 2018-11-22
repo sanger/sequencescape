@@ -35,6 +35,7 @@ module BulkSubmissionExcel
 
     def data_worksheet
       return nil unless valid?
+
       @data_worksheet ||= BulkSubmissionExcel::Worksheet::DataWorksheet.new(
         workbook: workbook,
         columns: column_list,

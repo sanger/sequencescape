@@ -12,12 +12,14 @@ module Billing
 
       def aliquots=(request)
         return unless request.present?
+
         @aliquots = request.target_asset.try(:aliquots)
       end
 
       # TODO: create should be abstracted.
       def create!
         return unless valid?
+
         aliquots.count_by_project_cost_code.each do |cost_code, count|
           Billing::Item.create!(
             request: request,

@@ -147,6 +147,7 @@ module Attributable
       return FieldInfo::SELECTION if selection?
       return FieldInfo::BOOLEAN if boolean?
       return FieldInfo::NUMERIC if integer? || float?
+
       FieldInfo::TEXT
     end
 

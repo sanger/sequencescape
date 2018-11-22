@@ -18,7 +18,7 @@ Asset ID,Total micrograms,Sanger sample,Comment,Qc Decision,Proceed
 }
 
   context 'A QcReportPresenter' do
-    STATE_ARRAY = ['passed', 'failed']
+    STATE_ARRAY = %w[passed failed]
 
     setup do
       @product = create :product, name: 'Demo Product'

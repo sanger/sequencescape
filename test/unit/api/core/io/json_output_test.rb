@@ -86,7 +86,7 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
           end
 
           should 'handle arrays' do
-            @value = ['1', '2', '3']
+            @value = %w[1 2 3]
           end
 
           should 'handle numbers' do

@@ -74,6 +74,7 @@ class Transfer::BetweenPlateAndTubes < Transfer
     source.stock_wells.each_with_object({}) do |(well, stock_wells), store|
       tube = locate_mx_library_tube_for(well, stock_wells)
       next if tube.nil? or should_well_not_be_transferred?(well)
+
       store[well] = [tube, stock_wells]
     end
   end
@@ -92,7 +93,8 @@ class Transfer::BetweenPlateAndTubes < Transfer
 
     tube_to_stock_wells.each do |tube, stock_wells|
       next unless apply_name?(tube)
-      tube.update_attributes!(name: tube_name_for(stock_wells))
+
+      tube.update!(name: tube_name_for(stock_wells))
     end
   end
 
@@ -106,6 +108,7 @@ class Transfer::BetweenPlateAndTubes < Transfer
     source_wells = source.plate_purpose.source_wells_for(stock_wells).sort { |w1, w2| w1.map.column_order <=> w2.map.column_order }
     stock_plates = source_wells.map(&:plate).uniq
     raise StandardError, 'There appears to be no stock plate!' if stock_plates.empty?
+
     plate_name = if stock_plates.size > 1
                    "#{stock_plates.first.human_barcode}+"
                  else

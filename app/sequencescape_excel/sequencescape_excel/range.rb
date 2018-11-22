@@ -20,6 +20,7 @@ module SequencescapeExcel
       super(default_attributes.merge(attributes))
 
       return unless valid?
+
       @first_cell = Cell.new(first_row, first_column)
       @last_cell = Cell.new(last_row, last_column) unless dynamic?
     end

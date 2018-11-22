@@ -18,7 +18,7 @@ module Studies
         @asset_group = FactoryBot.create :asset_group
       end
 
-      ['index', 'new'].each do |controller_method|
+      %w[index new].each do |controller_method|
         context "##{controller_method}" do
           setup do
             @assetgroup_count = AssetGroup.count

@@ -17,7 +17,7 @@ class Sdb::SampleManifestsController < Sdb::BaseController
       return
     end
 
-    @sample_manifest.update_attributes(params[:sample_manifest])
+    @sample_manifest.update(params[:sample_manifest])
     @sample_manifest.process(current_user, params[:sample_manifest][:override] == '1')
     flash[:notice] = 'Manifest being processed'
   rescue CSV::MalformedCSVError
@@ -104,6 +104,7 @@ class Sdb::SampleManifestsController < Sdb::BaseController
 
   def validate_type
     return true if SampleManifest.supported_asset_type?(params[:asset_type])
+
     flash[:error] = "'#{params[:asset_type]}' is not a supported manifest type."
     begin
       redirect_back fallback_location: root_path

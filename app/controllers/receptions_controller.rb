@@ -29,6 +29,7 @@ class ReceptionsController < ApplicationController
       else
         all_barcodes_blank = false
       end
+
       unless barcode.size == 13
         @errors << "Invalid barcode size for: #{barcode}"
         next

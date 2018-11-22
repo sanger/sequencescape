@@ -42,6 +42,7 @@ class AssetShape < ApplicationRecord
 
   def generate_map(size)
     raise StandardError, 'Map already exists' if Map.find_by(asset_size: size, asset_shape_id: id).present?
+
     ActiveRecord::Base.transaction do
       map_data = Array.new(size) do |i|
         {
@@ -59,10 +60,12 @@ class AssetShape < ApplicationRecord
 
   def alternate_position(well_position, size, *dimensions)
     return nil unless Map.valid_well_position?(well_position)
+
     divisor, multiplier = dimensions.map { |n| send("plate_#{n}", size) }
     column, row = (well_position - 1).divmod(divisor)
     return nil unless (0...multiplier).cover?(column)
     return nil unless (0...divisor).cover?(row)
+
     alternate = (row * multiplier) + column + 1
   end
 

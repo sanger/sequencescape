@@ -24,6 +24,7 @@ class Transfer < ApplicationRecord
   def self.preview!(attributes)
     new(attributes) do |transfer|
       raise ActiveRecord::RecordInvalid, transfer unless transfer.valid?
+
       transfer.unsaved_uuid!
       transfer.send(:each_transfer) do |source, destination|
         # Needs to do nothing at all as the transfers will be recorded

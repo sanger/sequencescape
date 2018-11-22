@@ -45,6 +45,7 @@ module SequencescapeExcel
 
     def <=>(other)
       return unless other.is_a?(self.class)
+
       ranges <=> other.ranges
     end
 

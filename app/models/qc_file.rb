@@ -56,6 +56,7 @@ class QcFile < ApplicationRecord
 
   def store_file_extracted_data
     return if parser.nil?
+
     asset.update_qc_values_with_parser(parser)
   end
 

@@ -36,6 +36,7 @@ class Qcable < ApplicationRecord
   scope :with_barcode, ->(*barcodes) {
     db_barcodes = barcodes.flatten.each_with_object([]) do |source_bc, store|
       next if source_bc.blank?
+
       store.concat(Barcode.extract_barcode(source_bc))
     end
     joins(:barcodes).where(barcodes: { barcode: db_barcodes }).distinct
@@ -43,6 +44,7 @@ class Qcable < ApplicationRecord
 
   def stamp_index
     return nil if stamp_qcable.nil?
+
     lot.qcables.stamped.index(self)
   end
 
@@ -54,6 +56,7 @@ class Qcable < ApplicationRecord
 
   def create_asset!
     return true if lot.nil?
+
     self.asset ||= asset_purpose.create!
   end
 end

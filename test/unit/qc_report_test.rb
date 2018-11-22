@@ -21,9 +21,9 @@ class QcReportTest < ActiveSupport::TestCase
           2.times do |i|
             attribute = create :well_attribute, current_volume: 500, concentration: 200
             sample = create(:study_sample, study: study).sample
-            sample.update_attributes!(sanger_sample_id: 'TEST1')
+            sample.update!(sanger_sample_id: 'TEST1')
             well = create :well, samples: [sample], plate: @stock_plate, map: create(:map, location_id: i), well_attribute: attribute
-            well.aliquots.each { |a| a.update_attributes!(study: study) }
+            well.aliquots.each { |a| a.update!(study: study) }
           end
         end
 
@@ -70,21 +70,21 @@ class QcReportTest < ActiveSupport::TestCase
 
         sample = create(:study_sample, study: @study).sample
         @unreported_sample = well = create :well, samples: [sample], plate: @stock_plate, map: create(:map, location_id: 1), well_attribute: @attribute
-        well.aliquots.each { |a| a.update_attributes!(study: @study) }
+        well.aliquots.each { |a| a.update!(study: @study) }
 
         sample = create(:study_sample, study: @study).sample
         well = create :well, samples: [sample], plate: @stock_plate, map: create(:map, location_id: 2), well_attribute: @attribute
-        well.aliquots.each { |a| a.update_attributes!(study: @study) }
+        well.aliquots.each { |a| a.update!(study: @study) }
         create :qc_metric, asset: well, qc_report: @matching_report
 
         sample = create(:study_sample, study: @study).sample
         @other_reported_sample = well = create :well, samples: [sample], plate: @stock_plate, map: create(:map, location_id: 3), well_attribute: @attribute
-        well.aliquots.each { |a| a.update_attributes!(study: @study) }
+        well.aliquots.each { |a| a.update!(study: @study) }
         create :qc_metric, asset: well, qc_report: @other_report
 
         sample = create(:study_sample, study: @study).sample
         well = create :well, samples: [sample], plate: @stock_plate, map: create(:map, location_id: 4), well_attribute: @attribute
-        well.aliquots.each { |a| a.update_attributes!(study: @study) }
+        well.aliquots.each { |a| a.update!(study: @study) }
         create :qc_metric, asset: well, qc_report: @matching_report
         create :qc_metric, asset: well, qc_report: @other_report
 

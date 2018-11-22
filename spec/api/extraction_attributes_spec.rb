@@ -61,8 +61,8 @@ describe '/api/1/extraction_attributes' do
           expect(target_plate.wells.located_at('A1').first.samples.include?(sample_tube.samples.first)).to eq(false)
         end
         it 'does not rack without error a tube in the well if the well already contains the sample for this tube' do
-          sample_tube.update_attributes(samples: target_plate.wells.located_at('A1').first.samples)
-          sample_tube2.update_attributes(samples: target_plate.wells.located_at('B1').first.samples)
+          sample_tube.update(samples: target_plate.wells.located_at('A1').first.samples)
+          sample_tube2.update(samples: target_plate.wells.located_at('B1').first.samples)
           authorized_api_request :post, subject, payload
           expect(status).to eq(response_code)
           expect(target_plate.wells.located_at('A1').first.samples.count).to eq(1)

@@ -136,7 +136,7 @@ end
 
 Given /^the study "([^\"]+)" is delayed for (3|6|9|12) months because "([^\"]+)"$/ do |name, period, reason|
   study = Study.find_by(name: name) or raise StandardError, "There appears to be no study named '#{name}'"
-  study.update_attributes!(
+  study.update!(
     study_metadata_attributes: {
       data_release_timing: 'delayed',
       data_release_delay_reason: 'other',
@@ -201,7 +201,7 @@ def assign_asset_to_study(asset, study_name)
 
   Asset.where(id: asset_ids).includes(:aliquots).each do |asset|
     asset.aliquots.each do |aliquot|
-      aliquot.update_attributes!(study_id: study.id)
+      aliquot.update!(study_id: study.id)
     end
   end
 end
@@ -311,5 +311,5 @@ When /^I have an? (managed|open) study without a data release group called "(.*?
 end
 
 Given /^the study "(.*?)" has a data access group of "(.*?)"$/ do |study_name, dag|
-  Study.find_by(name: study_name).study_metadata.update_attributes!(data_access_group: dag)
+  Study.find_by(name: study_name).study_metadata.update!(data_access_group: dag)
 end

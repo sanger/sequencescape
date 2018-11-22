@@ -61,7 +61,7 @@ class ReferenceGenomesController < ApplicationController
     @reference_genome = ReferenceGenome.find(params[:id])
 
     respond_to do |format|
-      if @reference_genome.update_attributes(params[:reference_genome])
+      if @reference_genome.update(params[:reference_genome])
         format.html { redirect_to(@reference_genome, notice: 'Reference genome was successfully updated.') }
         format.xml  { head :ok }
       else

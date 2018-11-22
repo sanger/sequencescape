@@ -37,7 +37,7 @@ Given /^(the .+) has a barcode of "([^\"]+)"$/ do |barcoded, barcode|
     bc = SBCF::SangerBarcode.from_machine(barcode).human_barcode
     barcoded.primary_barcode.update(barcode: bc)
   else
-    barcoded.update_attributes!(barcode: Barcode.number_to_human(barcode.to_i))
+    barcoded.update!(barcode: Barcode.number_to_human(barcode.to_i))
   end
 end
 

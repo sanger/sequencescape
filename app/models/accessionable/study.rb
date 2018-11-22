@@ -123,6 +123,7 @@ module Accessionable
 
     def build(xml)
       return if db_label.blank?
+
       xml.RELATED_STUDY {
         xml.RELATED_LINK {
           xml.DB db_label

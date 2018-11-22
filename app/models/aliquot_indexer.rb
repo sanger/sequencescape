@@ -29,6 +29,7 @@ class AliquotIndexer
 
   def phix_map_id
     return nil unless lane.spiked_in_buffer.present?
+
     @phix_map_id ||= lane.spiked_in_buffer.primary_aliquot.tag.try(:map_id)
   end
 

@@ -23,6 +23,7 @@ module Aker
 
       def create
         return unless valid?
+
         @model = Aker::Container.find_or_create_by(barcode: barcode, address: address) do |m|
           @labware = find_or_create_asset_by_aker_barcode!
           # Connects Aker container with asset. If is a plate, connects with the well, if is a tube, directly with

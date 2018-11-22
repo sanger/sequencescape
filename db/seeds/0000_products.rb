@@ -39,7 +39,7 @@ require './lib/product_helpers'
       nil => 'Generic',
       'MWGS' => 'MWGS',
       'PWGS' => 'PWGS',
-      'ISC'  => 'ISC',
+      'ISC' => 'ISC',
       'HSqX' => 'HSqX'
     }
   }

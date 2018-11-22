@@ -181,6 +181,7 @@ class Order < ApplicationRecord
                            .where.not(orders: { id: id })
                            .where('orders.created_at > ?', Time.current - timespan)
     return false if matching_orders.empty?
+
     matching_samples = matching_orders.map(&:samples).flatten & all_samples
     matching_submissions = matching_orders.map(&:submission).uniq
     yield matching_samples, matching_orders, matching_submissions if block_given?
@@ -265,6 +266,7 @@ class Order < ApplicationRecord
 
   def no_consent_withdrawl
     return true unless all_samples.any?(&:consent_withdrawn?)
+
     withdrawn_samples = all_samples.select(&:consent_withdrawn?).map(&:friendly_name)
     errors.add(:samples, "in this submission have had patient consent withdrawn: #{withdrawn_samples.to_sentence}")
     false
@@ -275,6 +277,7 @@ class Order < ApplicationRecord
       errors.add(:asset, "'#{asset.name}' is a #{asset.sti_type} which is not suitable for #{first_request_type.name} requests") unless asset_applicable_to_type?(first_request_type, asset)
     end
     return true if errors.empty?
+
     false
   end
 end

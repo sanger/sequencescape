@@ -13,6 +13,7 @@ class StudyType < ApplicationRecord
     unless study_type.nil?
       return study_type.valid_type
     end
+
     false
   end
 

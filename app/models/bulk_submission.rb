@@ -99,6 +99,7 @@ class BulkSubmission
   def valid_header?
     return false if headers.nil?
     return true if headers.include? 'submission name'
+
     errors.add :spreadsheet, "You submitted an incompatible spreadsheet. Please ensure your spreadsheet contains the 'submission name' column"
     false
   end
@@ -129,6 +130,7 @@ class BulkSubmission
       submission_details = submission_structure
 
       raise ActiveRecord::RecordInvalid, self if errors.count > 0
+
       # Within a single transaction process each of the rows of the CSV file as a separate submission.  Any name
       # fields need to be mapped to IDs, and the 'assets' field needs to be split up and processed if present.
       ActiveRecord::Base.transaction do
@@ -193,6 +195,7 @@ class BulkSubmission
 
   def validate_entry(header, pos, row, index)
     return [translate(header), row[pos].try(:strip)] unless header.nil? && row[pos].present?
+
     errors.add(:spreadsheet, "Row #{index}, column #{pos + 1} contains data but no heading.")
   end
   private :validate_entry
@@ -205,6 +208,7 @@ class BulkSubmission
     Hash.new { |h, i| h[i] = Array.new }.tap do |submission|
       csv_data_rows.each_with_index do |row, index|
         next if row.all?(&:nil?)
+
         details = Hash[headers.each_with_index.map { |header, pos| validate_entry(header, pos, row, index + start_row) }].merge('row' => index + start_row)
         submission[details['submission name']] << details
       end
@@ -337,6 +341,7 @@ class BulkSubmission
   def find_template(template_name)
     template = SubmissionTemplate.find_by(name: template_name) or raise StandardError, "Cannot find template #{template_name}"
     raise(StandardError, "Template: '#{template_name}' is deprecated and no longer in use.") unless template.visible
+
     template
   end
 

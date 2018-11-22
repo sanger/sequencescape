@@ -39,6 +39,7 @@ class AddBespokeRnaProduct < ActiveRecord::Migration
       selection_criterion: nil
     )
     return link.product unless link.nil?
+
     dna_product
   end
 
@@ -61,12 +62,14 @@ class AddBespokeRnaProduct < ActiveRecord::Migration
     DNA_LIBRARIES.each do |library_type_name|
       # Check if it exists
       next unless LibraryType.find_by(name: library_type_name)
+
       send(action, dna_product, library_type_name)
     end
 
     RNA_LIBRARIES.each do |library_type_name|
       # Check if it exists
       next unless  LibraryType.find_by(name: library_type_name)
+
       send(action, rna_product, library_type_name)
     end
   end
