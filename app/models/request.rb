@@ -464,8 +464,7 @@ class Request < ApplicationRecord
 
   def next_requests
     return [] if submission.nil? || next_request_type_id.nil?
-
-    next_requests_via_asset || submission.next_requests_via_submission(self)
+    next_requests_via_asset || next_requests_via_submission
   end
 
   def next_request_type_id
@@ -475,8 +474,13 @@ class Request < ApplicationRecord
     @next_request_type_id = calculate_next_request_type_id
   end
 
+  # CAUTION!: This may not behaves as expected. I'll be deprecating this soon.
   def next_requests_via_asset
     target_asset.requests.where(submission_id: submission_id, request_type_id: next_request_type_id) if target_asset.present?
+  end
+
+  def next_requests_via_submission
+    submission.next_requests_via_submission(self)
   end
 
   def target_tube

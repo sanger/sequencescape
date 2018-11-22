@@ -264,4 +264,37 @@ RSpec.describe TransferRequest, type: :model do
       end
     end
   end
+
+  context 'transfer downstream of pooling (such as in ISC)' do
+    let(:library_request_type) { create :library_request_type }
+    let(:multiplex_request_type) { create :multiplex_request_type }
+    # In some cases (such as chromium) we have multiple aliquots pre library request
+    let(:source_well_a) { create :tagged_well, aliquot_count: 2 }
+    let(:source_well_b) { create :tagged_well }
+    let(:target_well) { create :empty_well }
+    let(:submission) { create :submission }
+    let(:order) { create :library_order, submission: submission, request_types: [library_request_type.id, multiplex_request_type.id], assets: [source_well_a, source_well_b] }
+    let(:multiplexed_library_tube) { create :multiplexed_library_tube, aliquots: [] }
+    let(:library_request_a) { create :library_request, asset: source_well_a, target_asset: target_well, submission: submission, order: order, state: 'passed', request_type: library_request_type }
+    let(:library_request_b) { create :library_request, asset: source_well_b, target_asset: target_well, submission: submission, order: order, state: 'passed', request_type: library_request_type }
+    # While source and target assets are the same, we actually have two requests
+    let(:multiplex_request_a) { create :multiplex_request, asset: target_well, target_asset: multiplexed_library_tube, submission: submission,  order: order, request_type: multiplex_request_type }
+    let(:multiplex_request_b) { create :multiplex_request, asset: target_well, target_asset: multiplexed_library_tube, submission: submission,  order: order, request_type: multiplex_request_type }
+
+    # Order here matters
+    before do
+      order
+      library_request_a
+      library_request_b
+      multiplex_request_a
+      multiplex_request_b
+      create :transfer_request, asset: source_well_a, target_asset: target_well, submission: submission
+      create :transfer_request, asset: source_well_b, target_asset: target_well, submission: submission
+    end
+
+    it 'associated each aliquot with a different library request' do
+      create :transfer_request, asset: target_well, target_asset: multiplexed_library_tube, submission: submission
+      expect(multiplexed_library_tube.reload.aliquots.map(&:request_id)).to eq([multiplex_request_a.id, multiplex_request_a.id, multiplex_request_b.id])
+    end
+  end
 end
