@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require 'pry'
 
 RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_excel: true do
   attr_reader :sample_manifest, :spreadsheet
