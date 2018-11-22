@@ -1,5 +1,5 @@
 class UnifyInputPurposes < ActiveRecord::Migration
-  class Purpose < ActiveRecord::Base
+  class Purpose < ApplicationRecord
     self.inheritance_column = nil
     self.table_name = 'plate_purposes'
   end

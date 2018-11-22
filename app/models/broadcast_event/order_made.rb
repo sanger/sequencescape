@@ -23,8 +23,10 @@ class BroadcastEvent::OrderMade < BroadcastEvent
 
   def plates
     return @plates if @plates
+
     wells = seed.assets.select { |a| a.is_a?(Well) }
     return [] if wells.empty?
+
     @plates = Plate.with_wells(wells)
   end
 

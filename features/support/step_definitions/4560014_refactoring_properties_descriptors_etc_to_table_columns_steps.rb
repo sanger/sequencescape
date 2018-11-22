@@ -17,7 +17,7 @@ def create_request(request_type, study, project, asset, target_asset, additional
 
   # should be on target asset when we'll use target_asset
   asset.aliquots.each do |a|
-    a.update_attributes!(study_id: study.id)
+    a.update!(study_id: study.id)
   end
 
   # The UUID for the requests needs to be sequentially generated from the study UUID

@@ -101,7 +101,7 @@ class FactoryHelp
     end
     submission = FactoryBot.create(:order_with_submission, options).submission
     # trying to skip StateMachine
-    submission.update_attributes!(submission_options) if submission_options.present?
+    submission.update!(submission_options) if submission_options.present?
     submission.reload
   end
 end

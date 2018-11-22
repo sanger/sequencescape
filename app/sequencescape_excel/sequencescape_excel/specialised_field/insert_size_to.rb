@@ -14,6 +14,7 @@ module SequencescapeExcel
 
       def update(attributes = {})
         return unless valid? && attributes[:aliquot].present?
+
         attributes[:aliquot].insert_size_to = value
       end
     end

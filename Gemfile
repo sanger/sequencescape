@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 
 group :default do
@@ -6,8 +8,8 @@ group :default do
   # State machine
   gem 'aasm'
   gem 'configatron'
-  gem 'rest-client' # curb substitute.
   gem 'formtastic'
+  gem 'rest-client' # curb substitute.
 
   # Caching, primarily of batch.xml Can be removed once our xml interfaces are retired.
   gem 'actionpack-page_caching'
@@ -23,15 +25,15 @@ group :default do
   gem 'spreadsheet'
   gem 'will_paginate'
   # Will paginate clashes awkwardly with bootstrap
-  gem 'will_paginate-bootstrap'
-  gem 'net-ldap'
   gem 'carrierwave'
+  gem 'net-ldap'
+  gem 'will_paginate-bootstrap'
 
   # Provides eg. error_messages_for previously in rails 2, now deprecated.
   gem 'dynamic_form'
 
-  gem 'puma'
   gem 'daemons'
+  gem 'puma'
 
   # We pull down a slightly later version as there are commits on head
   # which we depend on, but don't have an official release yet.
@@ -43,18 +45,18 @@ group :default do
   gem 'delayed_job_active_record'
 
   gem 'ruby_walk', '>= 0.0.3',
-      :github => 'sanger/ruby_walk'
+      github: 'sanger/ruby_walk'
 
   gem 'irods_reader', '>=0.0.2',
-      :github => 'sanger/irods_reader'
+      github: 'sanger/irods_reader'
 
   # For the API level
-  gem 'uuidtools'
-  gem 'sinatra', require: false
-  gem 'rack-acceptable', require: 'rack/acceptable'
+  gem 'cancan'
   gem 'json'
   gem 'multi_json'
-  gem 'cancan'
+  gem 'rack-acceptable', require: 'rack/acceptable'
+  gem 'sinatra', require: false
+  gem 'uuidtools'
 
   # API v2
   gem 'jsonapi-resources'
@@ -62,12 +64,12 @@ group :default do
   # Bunny is a RabbitMQ client.
   gem 'bunny'
 
-  gem 'jquery-rails'
-  gem 'jquery-ui-rails'
-  gem 'jquery-tablesorter'
   gem 'bootstrap'
-  gem 'sass-rails'
   gem 'coffee-rails'
+  gem 'jquery-rails'
+  gem 'jquery-tablesorter'
+  gem 'jquery-ui-rails'
+  gem 'sass-rails'
   gem 'select2-rails'
   # Temporarily pin to earlier version
   # Newer versions on font-awesome switch to sassc which will not
@@ -162,18 +164,18 @@ group :test do
 end
 
 group :test, :cucumber do
+  gem 'capybara'
+  gem 'capybara-selenium'
+  gem 'database_cleaner'
   gem 'factory_bot_rails', require: false
+  gem 'jsonapi-resources-matchers', require: false
   gem 'launchy', require: false
   gem 'mocha', require: false # avoids load order problems
   gem 'nokogiri', require: false
   gem 'shoulda-context', require: false
   gem 'shoulda-matchers', require: false
-  gem 'jsonapi-resources-matchers', require: false
-  gem 'timecop', require: false
   gem 'simplecov', require: false
-  gem 'database_cleaner'
-  gem 'capybara'
-  gem 'capybara-selenium'
+  gem 'timecop', require: false
   # Simplifies shared transactions between server and test threads
   # See: http://technotes.iangreenleaf.com/posts/the-one-true-guide-to-database-transactions-with-capybara.html
   # Essentially does two things:
@@ -183,17 +185,17 @@ group :test, :cucumber do
 end
 
 group :cucumber do
-  gem 'rubyzip'
-  gem 'mime-types'
   gem 'cucumber-rails', require: false
+  gem 'mime-types'
+  gem 'rubyzip'
   # Cucumber 3 removes Transform in favour of ParameterType. We may be able to migrate
   gem 'cucumber', '~>2.99.0'
-  gem 'webmock'
   gem 'knapsack'
+  gem 'webmock'
 end
 
 group :deployment do
-  gem 'gmetric', '~>0.1.3'
   gem 'exception_notification'
+  gem 'gmetric', '~>0.1.3'
   gem 'whenever', require: false
 end

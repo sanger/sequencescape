@@ -5,14 +5,14 @@ class RequestcreateTest < ActiveSupport::TestCase
     context '.copy_request' do
       setup do
         @project = create(:project)
-        @project.project_metadata.update_attributes!(budget_division: BudgetDivision.create!(name: 'Test'))
+        @project.project_metadata.update!(budget_division: BudgetDivision.create!(name: 'Test'))
         @order = create(:order, project: @project)
         @request = create(:request, request_type: create(:request_type), project: @project, asset: create(:sample_tube), target_asset: create(:well))
       end
 
       context 'without quotas' do
         setup do
-          @project.update_attributes!(enforce_quotas: false)
+          @project.update!(enforce_quotas: false)
           @copy = RequestFactory.copy_request(@request)
         end
 
@@ -31,7 +31,7 @@ class RequestcreateTest < ActiveSupport::TestCase
 
       context 'with quotas' do
         setup do
-          @project.update_attributes!(enforce_quotas: true)
+          @project.update!(enforce_quotas: true)
         end
 
         should 'not fail' do

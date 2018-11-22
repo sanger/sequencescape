@@ -100,8 +100,8 @@ namespace :pmb do
           label_type_id = get_label_type_id('Plate')
           { 'data' =>
             { 'attributes' =>
-              { 'name' =>  'sqsc_384plate_label_template',
-                'label_type_id' =>  label_type_id,
+              { 'name' => 'sqsc_384plate_label_template',
+                'label_type_id' => label_type_id,
                 'labels_attributes' => [
                   { 'name' => 'main_label',
                     'bitmaps_attributes' => [
@@ -121,7 +121,7 @@ namespace :pmb do
           { 'data' =>
             { 'attributes' =>
               { 'name' => 'sqsc_1dtube_label_template',
-                'label_type_id' =>  label_type_id,
+                'label_type_id' => label_type_id,
                 'labels_attributes' => [
                   { 'name' => 'main_label',
                     'bitmaps_attributes' => [

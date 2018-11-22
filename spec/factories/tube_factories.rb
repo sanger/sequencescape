@@ -96,6 +96,7 @@ FactoryBot.define do
 
     after(:build) do |library_tube, evaluator|
       next if evaluator.sample_count.zero?
+
       library_tube.aliquots = evaluator.samples.map do |s|
         create(
           evaluator.aliquot_factory,

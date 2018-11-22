@@ -54,6 +54,7 @@ class Postman
 
   def pause!
     return unless running?
+
     unsubscribe!
     @recovery_attempts = 0
     @recover_at = Time.current
@@ -96,6 +97,7 @@ class Postman
   # 4. There doesn't seem to be much gained from spinning up the control loop in its own thread
   def subscribe!
     raise StandardError, 'Consumer already exists' unless @consumer.nil?
+
     @consumer ||= @main_exchange.subscribe(@consumer_tag) do |delivery_info, metadata, payload|
       process(delivery_info, metadata, payload)
     end
@@ -110,6 +112,7 @@ class Postman
   # Rest for database recovery and restore the consumer.
   def attempt_recovery
     return unless recovery_due?
+
     warn "Attempting recovery of database connection: #{@recovery_attempts}"
     if recovered?
       running!

@@ -90,15 +90,6 @@ unless Rails.env.test?
       RequestType.create!(shared_options_a.merge(request_type_options))
     end
 
-    sequencing_request_type_names = [
-      'Single ended sequencing',
-      'Single ended hi seq sequencing',
-      'Paired end sequencing',
-      'HiSeq Paired end sequencing',
-      'HiSeq 2500 Single end sequencing',
-      'HiSeq 2500 Paired end sequencing'
-    ]
-
     def sequencing_request_type_names_for(pipeline)
       [
         'Single ended sequencing',
@@ -152,7 +143,7 @@ unless Rails.env.test?
       RequestType.find_by(key: request).acceptable_plate_purposes << Purpose.find_by(name: purpose)
     end
 
-    re_request = RequestType.create!(
+    RequestType.create!(
       key: 'illumina_a_re_isc',
       name: 'Illumina-A ReISC',
       asset_type: 'Well',

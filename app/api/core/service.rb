@@ -166,7 +166,7 @@ module Core
 
       def update!(instance_attributes = attributes)
         ActiveRecord::Base.transaction do
-          target.tap { |o| o.update_attributes!(instance_attributes) }
+          target.tap { |o| o.update!(instance_attributes) }
         end
       end
     end

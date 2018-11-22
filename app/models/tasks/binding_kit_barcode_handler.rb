@@ -12,7 +12,7 @@ module Tasks::BindingKitBarcodeHandler
     requests = task.find_batch_requests(params[:batch_id])
     ActiveRecord::Base.transaction do
       requests.each do |request|
-        request.asset.pac_bio_library_tube_metadata.update_attributes!(binding_kit_barcode: barcode)
+        request.asset.pac_bio_library_tube_metadata.update!(binding_kit_barcode: barcode)
       end
     end
 

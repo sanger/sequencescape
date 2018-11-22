@@ -56,6 +56,7 @@ module Authorization
           elsif authorizable_object.respond_to?(:accepts_role?)
             return has_role?(role_name, authorizable_object)
           end
+
           false
         end
 

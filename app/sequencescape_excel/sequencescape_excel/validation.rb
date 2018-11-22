@@ -25,6 +25,7 @@ module SequencescapeExcel
     def update(attributes = {})
       options[:formula1] = attributes[:range].absolute_reference if range_required?
       return if attributes[:worksheet].blank?
+
       @worksheet_validation = attributes[:worksheet].add_data_validation(attributes[:reference], options)
     end
 

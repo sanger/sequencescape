@@ -83,7 +83,7 @@ RSpec.describe SequencingRequest, type: :model do
     end
 
     it 'should know #billing_product_identifier' do
-      sequencing_request.request_metadata.update_attributes(read_length: 150)
+      sequencing_request.request_metadata.update(read_length: 150)
       expect(sequencing_request.billing_product_identifier).to eq 150
     end
   end

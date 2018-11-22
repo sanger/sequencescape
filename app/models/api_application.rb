@@ -3,7 +3,7 @@ class ApiApplication < ApplicationRecord
 
   validates_presence_of :name, :key, :contact, :privilege
 
-  validates_inclusion_of :privilege, in: ['full', 'tag_plates']
+  validates_inclusion_of :privilege, in: %w[full tag_plates]
 
   validates_length_of :key, minimum: 20
 

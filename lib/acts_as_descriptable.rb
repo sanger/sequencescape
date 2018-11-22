@@ -62,6 +62,7 @@ module ActsAsDescriptable # :nodoc:
   def each_descriptor
     descriptor_fields.each do |field|
       next if field.blank?
+
       yield(field, descriptor_hash[field])
     end
   end

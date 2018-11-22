@@ -23,7 +23,7 @@ xml.studies(api_data) {
       xml.created_at study.created_at
       xml.updated_at study.updated_at
       xml.descriptors {
-        study.study_metadata.attribute_value_pairs.each do |attribute, name|
+        study.study_metadata.attribute_value_pairs.each do |attribute, _name|
           xml.descriptor {
             xml.name  attribute.to_field_info.display_name
             xml.value value

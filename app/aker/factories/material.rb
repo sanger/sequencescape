@@ -68,6 +68,7 @@ module Aker
           return
         end
         return if container.valid?
+
         container.errors.each do |key, value|
           errors.add key, value
         end

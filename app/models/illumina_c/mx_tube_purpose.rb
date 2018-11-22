@@ -2,6 +2,7 @@ class IlluminaC::MxTubePurpose < IlluminaHtp::MxTubePurpose
   def stock_plate(tube)
     lt = library_request(tube)
     return lt.asset.plate if lt.present?
+
     nil
   end
 

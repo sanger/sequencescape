@@ -1,5 +1,5 @@
 class LibPcrPlatesNoLongerNeedSpecialBehaviour < ActiveRecord::Migration
-  class PlatePurpose < ActiveRecord::Base
+  class PlatePurpose < ApplicationRecord
     self.table_name = 'plate_purposes'
     self.inheritance_column = nil
   end

@@ -72,7 +72,7 @@ class Admin::ProjectsController < ApplicationController
 
     pre_approved = @project.approved?
 
-    if @project.update_attributes(params[:project])
+    if @project.update(params[:project])
       if pre_approved == false && @project.approved == true
         EventFactory.project_approved(@project, current_user)
       end

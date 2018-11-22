@@ -5,7 +5,7 @@ xml.study(api_data) do |study|
   study.active @study.active?
   study.user_id @study.user_id
 
-  ['followers', 'managers', 'owners'].each do |type_of_user|
+  %w[followers managers owners].each do |type_of_user|
     users, singular_user = @study.send(type_of_user), type_of_user.singularize
     study.tag!(type_of_user) do |users_tag|
       users.each do |user|

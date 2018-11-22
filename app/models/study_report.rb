@@ -33,7 +33,7 @@ class StudyReport < ApplicationRecord
           tempfile.puts(CSV.generate_line(fields, csv_options))
         end
         tempfile.open # Reopen the temporary file
-        update_attributes!(report: tempfile)
+        update!(report: tempfile)
       end
     end
   end

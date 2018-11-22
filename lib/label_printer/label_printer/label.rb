@@ -9,6 +9,7 @@ module LabelPrinter
 
       def labels
         return [] unless assets
+
         { body: create_labels }
       end
 

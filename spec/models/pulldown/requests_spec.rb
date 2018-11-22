@@ -13,7 +13,7 @@ describe Pulldown::Requests do
         # I moved it here from minitest unit tests
         # but these libraries do not exist, test was never finished
         @request = create(:"pulldown_#{request_type}_request")
-        @request.asset.aliquots.each { |a| a.update_attributes!(project: create(:project)) }
+        @request.asset.aliquots.each { |a| a.update!(project: create(:project)) }
       end
     end
   end

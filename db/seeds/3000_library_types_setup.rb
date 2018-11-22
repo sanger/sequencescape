@@ -104,7 +104,7 @@ unless Rails.env.test?
     end
   end
 
-  ['a', 'b', 'c'].each do |pipeline|
+  %w[a b c].each do |pipeline|
     rt = RequestType.find_by(key: "illumina_#{pipeline}_hiseq_v4_paired_end_sequencing")
     RequestType::Validator.create!(request_type: rt, request_option: 'read_length', valid_options: [125, 75])
   end
@@ -147,15 +147,15 @@ unless Rails.env.test?
     valid_options: RequestType::Validator::LibraryTypeValidator.new(RequestType.find_by(key: 'illumina_c_chromium_library').id)
   )
   # PCR Free Hiseq X10 RequestTypeValidator
-  lt = LibraryType.find_or_create_by(name: 'HiSeqX PCR free')
+  LibraryType.find_or_create_by(name: 'HiSeqX PCR free')
   rt_pf = RequestType.find_by(key: 'htp_pcr_free_lib')
-  rt_v = RequestType::Validator.create!(
+  RequestType::Validator.create!(
     request_type: rt_pf,
     request_option: 'library_type',
     valid_options: RequestType::Validator::LibraryTypeValidator.new(rt_pf.id)
   )
 
-  ['a', 'b'].each do |pipeline|
+  %w[a b].each do |pipeline|
     rt = RequestType.find_by!(key: "illumina_#{pipeline}_hiseq_x_paired_end_sequencing")
     RequestType::Validator.create!(request_type: rt, request_option: 'read_length', valid_options: [150])
     rt.library_types << LibraryType.find_by(name: 'Standard')

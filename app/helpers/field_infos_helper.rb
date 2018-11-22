@@ -2,6 +2,7 @@ module FieldInfosHelper
   def field_info_id(path, field)
     path = path.clone
     return field if path.empty?
+
     first = path.shift
     to_bracketize = path + [field.key] # , "value"]
     to_join = [first] + to_bracketize.map { |w| "[#{w}]" }

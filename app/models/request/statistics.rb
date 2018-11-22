@@ -12,11 +12,11 @@ module Request::Statistics
     end
 
     def completed
-      ['passed', 'failed'].map(&method(:[])).sum
+      %w[passed failed].map(&method(:[])).sum
     end
 
     def pending
-      ['pending', 'blocked'].map(&method(:[])).sum
+      %w[pending blocked].map(&method(:[])).sum
     end
 
     [:started, :passed, :failed, :cancelled].each do |direct_type|
@@ -41,6 +41,7 @@ module Request::Statistics
     # it wouldn't make sense to increment progress.
     def progress
       return 0 if passed.zero? # If there are no passed then the progress is 0% by definition
+
       (passed * 100) / (total - failed)
     end
 

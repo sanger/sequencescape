@@ -67,7 +67,7 @@ class QcReport::FileTest < ActiveSupport::TestCase
         end
         @asset_ids = []
         2.times do |i|
-          create :qc_metric, qc_report: @report, qc_decision: ['passed', 'failed'][i], asset: create(:well, id: i + 1)
+          create :qc_metric, qc_report: @report, qc_decision: %w[passed failed][i], asset: create(:well, id: i + 1)
         end
         @file = fixture_file_upload("#{Rails.root}/test/data/qc_report.csv", 'text/csv')
 
@@ -88,7 +88,7 @@ class QcReport::FileTest < ActiveSupport::TestCase
 
       should 'not adjust the qc_decision flag' do
         @qcr_file.process
-        assert_equal ['passed', 'failed'], @report.qc_metrics.order('asset_id ASC').map(&:qc_decision)
+        assert_equal %w[passed failed], @report.qc_metrics.order('asset_id ASC').map(&:qc_decision)
       end
 
       teardown do
@@ -109,7 +109,7 @@ class QcReport::FileTest < ActiveSupport::TestCase
         end
         @asset_ids = []
         2.times do |i|
-          m = create :qc_metric, qc_report: @report, qc_decision: ['passed', 'failed'][i], asset: create(:well, id: i + 1)
+          m = create :qc_metric, qc_report: @report, qc_decision: %w[passed failed][i], asset: create(:well, id: i + 1)
           @asset_ids << m.asset_id
         end
         @file = fixture_file_upload("#{Rails.root}/test/data/qc_report.csv", 'text/csv')
@@ -119,7 +119,7 @@ class QcReport::FileTest < ActiveSupport::TestCase
 
       should 'adjust the qc_decision flag' do
         @qcr_file.process
-        assert_equal ['passed', 'manually_passed'], @report.qc_metrics.order(:asset_id).map(&:qc_decision)
+        assert_equal %w[passed manually_passed], @report.qc_metrics.order(:asset_id).map(&:qc_decision)
       end
 
       teardown do
@@ -140,7 +140,7 @@ class QcReport::FileTest < ActiveSupport::TestCase
         end
         @asset_ids = []
         2.times do |i|
-          create :qc_metric, qc_report: @report, qc_decision: ['passed', 'failed'][i]
+          create :qc_metric, qc_report: @report, qc_decision: %w[passed failed][i]
         end
         @file = fixture_file_upload("#{Rails.root}/test/data/qc_report.csv", 'text/csv')
 

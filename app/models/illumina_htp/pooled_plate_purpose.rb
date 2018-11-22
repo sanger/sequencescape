@@ -8,7 +8,7 @@ class IlluminaHtp::PooledPlatePurpose < PlatePurpose
           library_creation_request = well.stock_wells.first.requests.detect { |r| r.library_creation? }
           requests = library_creation_request.submission.next_requests_via_submission(library_creation_request)
           requests.reject { |r| r.asset.present? }.slice(0, 12).each do |r|
-            r.update_attributes!(asset: well)
+            r.update!(asset: well)
           end
         end
       end

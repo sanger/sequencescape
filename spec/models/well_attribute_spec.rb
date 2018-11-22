@@ -8,7 +8,7 @@ describe WellAttribute do
     well_attribute.save
     expect(well_attribute.current_volume).to eq 0.0
     expect(WellAttribute.last.current_volume).to eq 0.0
-    well_attribute.update_attributes!(current_volume: 1)
+    well_attribute.update!(current_volume: 1)
     expect(well_attribute.current_volume).to eq 1.0
     expect(WellAttribute.last.current_volume).to eq 1.0
   end

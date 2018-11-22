@@ -37,19 +37,19 @@ Then /^the "([^\"]*)" called "([^\"]*)" should exist$/ do |class_name, name|
 end
 
 Given /^the last bait library has type "([^\"]*)"$/ do |name|
-  BaitLibrary.last.update_attributes(
+  BaitLibrary.last.update(
     bait_library_type: BaitLibraryType.create!(name: name, category: 'standard')
   )
 end
 
 Given /^the last bait library has supplier "([^\"]*)"$/ do |name|
-  BaitLibrary.last.update_attributes(
+  BaitLibrary.last.update(
     bait_library_supplier: BaitLibrary::Supplier.create!(name: name)
   )
 end
 
 Given /^the last bait library is hidden$/ do
-  BaitLibrary.last.update_attributes(visible: false)
+  BaitLibrary.last.update(visible: false)
 end
 
 Then /^the submission with UUID "([^\"]*)" should not be ready$/ do |uuid|

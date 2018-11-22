@@ -77,12 +77,13 @@ class SampleManifest::Generator
     Tempfile.open("sample_manifest_#{sample_manifest.id}.xlsx") do |tempfile|
       download.save(tempfile.path)
       tempfile.open
-      sample_manifest.update_attributes!(generated: tempfile, password: download.password)
+      sample_manifest.update!(generated: tempfile, password: download.password)
     end
   end
 
   def execute_print_job
     return unless print_job_required?
+
     if print_job.execute
       print_job_message[:notice] = print_job.success
     else

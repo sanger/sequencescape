@@ -39,6 +39,7 @@ class PreCapturePool < ApplicationRecord
     def build!
       ActiveRecord::Base.transaction do
         return unless poolable?
+
         # We find the library creation requests sorted in column order
         # and then walk downstream until we get to the poolable requests.
         # It is these requests that get assigned to a pre-capture pool.
@@ -58,8 +59,10 @@ class PreCapturePool < ApplicationRecord
 
     def walk_to_pooled_request(request)
       return request if request.pre_capture_pooled?
+
       next_requests = request.next_requests
       raise StandardError, "Could not find pooled request for request #{request.id}" if next_requests.empty?
+
       next_requests.map { |next_request| walk_to_pooled_request(next_request) }
     end
 

@@ -30,6 +30,7 @@ module SampleManifestExcel
 
     def by_asset_type(asset_type)
       return self if asset_type.blank?
+
       ManifestTypeList.new do |list|
         manifest_types.each do |k, manifest_type|
           list.manifest_types[k] = manifest_type if manifest_type.asset_type == asset_type
@@ -39,6 +40,7 @@ module SampleManifestExcel
 
     def <=>(other)
       return unless other.is_a?(self.class)
+
       manifest_types <=> other.manifest_types
     end
 
@@ -59,6 +61,7 @@ module SampleManifestExcel
 
       def ==(other)
         return false unless other.is_a?(self.class)
+
         name == other.name &&
           columns == other.columns &&
           heading == other.heading &&

@@ -33,7 +33,7 @@ class Admin::BaitLibrariesController < ApplicationController
 
   def update
     respond_to do |format|
-      if @bait_library.update_attributes(params[:bait_library])
+      if @bait_library.update(params[:bait_library])
         flash[:notice] = 'Bait Library was successfully updated.'
         format.html { redirect_to(admin_bait_libraries_path) }
       else

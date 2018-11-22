@@ -46,6 +46,7 @@ class ::Core::Registry
 
   def register(model_class, io_class)
     raise StandardError, "Weird class (#{model_class.name.inspect} => #{model_class.inspect})" unless model_class.name.match?(/^[A-Z][A-Za-z0-9:]+$/)
+
     @model_class_to_target[model_class.name] = io_class
   end
   private :register

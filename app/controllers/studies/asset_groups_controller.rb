@@ -62,7 +62,7 @@ class Studies::AssetGroupsController < ApplicationController
     @study = Study.find(params[:study_id])
 
     respond_to do |format|
-      if @asset_group.update_attributes(params[:asset_group])
+      if @asset_group.update(params[:asset_group])
         flash[:notice] = 'AssetGroup was successfully updated.'
         format.html { redirect_to study_asset_group_path(@study, @asset_group) }
         format.xml  { head :ok }

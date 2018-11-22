@@ -52,6 +52,7 @@ class Request::ChangeDecision
 
   def execute!
     raise InvalidDecision, self unless valid?
+
     perform_decision_change!
   end
 

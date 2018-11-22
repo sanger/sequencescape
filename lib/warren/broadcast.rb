@@ -22,6 +22,7 @@ class Warren::Broadcast
 
     def exchange
       raise StandardError, 'No exchange configured' if @exchange_name.nil?
+
       @exchange ||= @bun_channel.topic(@exchange_name, auto_delete: false, durable: true)
     end
   end

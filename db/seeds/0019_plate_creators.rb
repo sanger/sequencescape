@@ -3,13 +3,13 @@ unless Rails.env.test?
     excluded = ['Dilution Plates']
     # Build the links between the parent and child plate purposes
     relationships = {
-      'Working Dilution'    => ['Working Dilution', 'Pico Dilution'],
-      'Pico Dilution'       => ['Working Dilution', 'Pico Dilution'],
-      'Pico Assay A'        => ['Pico Assay A', 'Pico Assay B'],
-      'Pulldown'            => ['Pulldown Aliquot'],
-      'Dilution Plates'     => ['Working Dilution', 'Pico Dilution'],
-      'Pico Assay Plates'   => ['Pico Assay A', 'Pico Assay B'],
-      'Pico Assay B'        => ['Pico Assay A', 'Pico Assay B'],
+      'Working Dilution' => ['Working Dilution', 'Pico Dilution'],
+      'Pico Dilution' => ['Working Dilution', 'Pico Dilution'],
+      'Pico Assay A' => ['Pico Assay A', 'Pico Assay B'],
+      'Pulldown' => ['Pulldown Aliquot'],
+      'Dilution Plates' => ['Working Dilution', 'Pico Dilution'],
+      'Pico Assay Plates' => ['Pico Assay A', 'Pico Assay B'],
+      'Pico Assay B' => ['Pico Assay A', 'Pico Assay B'],
       'Gel Dilution Plates' => ['Gel Dilution']
     }
 
@@ -30,8 +30,7 @@ unless Rails.env.test?
     end
 
     plate_purpose = PlatePurpose.find_by!(name: 'Pre-Extracted Plate')
-    creator = Plate::Creator.create!(name: 'Pre-Extracted Plate', plate_purposes: [plate_purpose])
-    creator.parent_plate_purposes << Purpose.find_by!(name: 'Stock plate')
+    Plate::Creator.create!(name: 'Pre-Extracted Plate', plate_purposes: [plate_purpose], parent_plate_purposes: Purpose.where(name: 'Stock plate'))
 
     purposes_config = [
       [Plate::Creator.find_by!(name: 'Working dilution'), Purpose.find_by!(name: 'Stock plate')],
@@ -50,16 +49,16 @@ unless Rails.env.test?
       ['Pico dilution', [4.0]]
     ].each do |name, values|
       c = Plate::Creator.find_by!(name: name)
-      c.update_attributes!(valid_options: {
-                             valid_dilution_factors: values
-                           })
+      c.update!(valid_options: {
+                  valid_dilution_factors: values
+                })
     end
     Plate::Creator.all.each do |c|
       if c.valid_options.nil?
         # Any other valid option will be set to 1
-        c.update_attributes!(valid_options: {
-                               valid_dilution_factors: [1.0]
-                             })
+        c.update!(valid_options: {
+                    valid_dilution_factors: [1.0]
+                  })
       end
     end
   end

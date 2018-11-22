@@ -77,6 +77,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
   # Return the submission's orders or a blank array
   def orders
     return [] if submission.blank?
+
     submission.try(:orders).map { |o| OrderPresenter.new(o) }
   end
 
@@ -175,6 +176,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
 
   def submission
     return nil unless id.present? || @submission
+
     @submission ||= Submission.find(id)
   end
 
@@ -240,6 +242,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton
     found_set = Set.new(samples.map { |s| [s.name, s.sanger_sample_id] }.flatten)
     not_found = name_set - found_set
     raise InvalidInputException, "#{Sample.table_name} #{not_found.to_a.join(', ')} not found" unless not_found.empty?
+
     samples
   end
 

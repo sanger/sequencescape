@@ -14,7 +14,7 @@ class RemovePlateTypesFromPlatePurposes < ActiveRecord::Migration
       PlatePurpose.create!(name: name, type: 'PlatePurpose', barcode_printer_type_id: 2, cherrypickable_source: true, target_type: 'Plate')
     end
 
-    ['ABgene_0765', 'FluidX075'].each do |name|
+    %w[ABgene_0765 FluidX075].each do |name|
       PlatePurpose.create!(name: name, type: 'PlatePurpose', barcode_printer_type_id: 2, cherrypickable_source: true, target_type: 'Plate', cherrypickable_target: false)
     end
   end

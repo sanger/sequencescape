@@ -38,7 +38,7 @@ describe Plate do
       let(:expected_pools_hash) do
         {
           target_submission.uuid => {
-            wells: ['A1', 'B1', 'C1'],
+            wells: %w[A1 B1 C1],
             insert_size: { from: 1, to: 20 },
             library_type: { name: 'Standard' },
             request_type: library_request_type.key, pcr_cycles: nil,
@@ -64,7 +64,7 @@ describe Plate do
         let(:expected_pools_hash) do
           {
             target_submission.uuid => {
-              wells: ['A1', 'B1', 'C1'],
+              wells: %w[A1 B1 C1],
               request_type: multiplex_request_type.key,
               pool_complete: false,
               for_multiplexing: true
@@ -80,7 +80,7 @@ describe Plate do
         let(:expected_pools_hash) do
           {
             target_submission.uuid => {
-              wells: ['A1', 'B1', 'C1'],
+              wells: %w[A1 B1 C1],
               insert_size: { from: 1, to: 20 },
               library_type: { name: 'Standard' },
               request_type: library_request_type.key, pcr_cycles: nil,
@@ -88,7 +88,7 @@ describe Plate do
               for_multiplexing: false
             },
             decoy_submission.uuid => {
-              wells: ['A1', 'B1', 'C1'],
+              wells: %w[A1 B1 C1],
               insert_size: { from: 1, to: 20 },
               library_type: { name: 'Standard' },
               request_type: library_request_type.key, pcr_cycles: nil,

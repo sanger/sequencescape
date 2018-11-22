@@ -33,6 +33,7 @@ module SequencescapeExcel
     # Two cells are comparable if their row and column are the same.
     def ==(other)
       return false unless other.is_a?(self.class)
+
       row == other.row &&
         column == other.column
     end
