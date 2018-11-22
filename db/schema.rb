@@ -1319,6 +1319,8 @@ ActiveRecord::Schema.define(version: 20181025124711) do
     t.bigint "sample_manifest_id"
     t.bigint "asset_id"
     t.string "sanger_sample_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["asset_id"], name: "index_sample_manifest_assets_on_asset_id"
     t.index ["sample_manifest_id"], name: "index_sample_manifest_assets_on_sample_manifest_id"
     t.index ["sanger_sample_id"], name: "index_sample_manifest_assets_on_sanger_sample_id"
