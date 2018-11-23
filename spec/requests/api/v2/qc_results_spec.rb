@@ -69,6 +69,5 @@ RSpec.describe Api::V2::QcResultsController, type: :request, qc_result: true do
       json = ActiveSupport::JSON.decode(response.body)
       expect(json.keys.length).to eq(1)
     end
-
   end
 end

@@ -15,7 +15,7 @@ module Api
       end
 
       def qc_assay_params
-        params.require(:data).require(:attributes).permit(:lot_number, :qc_results => [:barcode, :uuid, :well_location, :key, :value, :units, :cv, :assay_type, :assay_version])
+        params.require(:data).require(:attributes).permit(:lot_number, qc_results: %i[barcode uuid well_location key value units cv assay_type assay_version])
       end
     end
   end

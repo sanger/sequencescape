@@ -10,7 +10,6 @@ RSpec.describe QcResultFactory, type: :model, qc_result: true do
     let(:asset_invalid_uuid) { attributes_for(:qc_result) }
     let(:asset_invalid_key) { attributes_for(:qc_result).except(:key).merge(uuid: create(:asset).uuid) }
 
-
     context 'passed as an array' do
       it 'creates a resource for each item passed' do
         factory = QcResultFactory.new([asset_1, asset_2, asset_3])
@@ -56,13 +55,13 @@ RSpec.describe QcResultFactory, type: :model, qc_result: true do
     end
 
     context 'passed as an object' do
-       it 'creates a resource for each item passed' do
-        factory = QcResultFactory.new({ qc_results: [asset_1, asset_2, asset_3], lot_number: 'LN1234567'})
+      it 'creates a resource for each item passed' do
+        factory = QcResultFactory.new(qc_results: [asset_1, asset_2, asset_3], lot_number: 'LN1234567')
         expect(factory.resources.count).to eq(3)
       end
 
       it 'creates an assay to group all items passed' do
-        factory = QcResultFactory.new({ qc_results: [asset_1, asset_2, asset_3], lot_number: 'LN1234567'})
+        factory = QcResultFactory.new(qc_results: [asset_1, asset_2, asset_3], lot_number: 'LN1234567')
         expect(factory.qc_assay).to be_a(QcAssay)
         expect(factory.qc_assay.lot_number).to eq('LN1234567')
         factory.resources.each do |resource|
@@ -71,7 +70,7 @@ RSpec.describe QcResultFactory, type: :model, qc_result: true do
       end
 
       it '#save saves all of the resources if they are valid' do
-        factory = QcResultFactory.new({ qc_results: [asset_1, asset_2, asset_3], lot_number: 'LN1234567'})
+        factory = QcResultFactory.new(qc_results: [asset_1, asset_2, asset_3], lot_number: 'LN1234567')
         expect(factory).to be_valid
         expect(factory.save).to be_truthy
         expect(QcResult.all.count).to eq(3)
@@ -80,9 +79,7 @@ RSpec.describe QcResultFactory, type: :model, qc_result: true do
           expect(qc_result.qc_assay).to eq QcAssay.last
         end
       end
-
     end
-
   end
 
   describe QcResultFactory::Resource do

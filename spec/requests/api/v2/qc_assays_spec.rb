@@ -3,7 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe Api::V2::QcAssaysController, type: :request, qc_result: true do
-
   let(:asset_1) { attributes_for(:qc_result).merge(uuid: create(:asset).uuid) }
   let(:asset_2) { attributes_for(:qc_result).merge(uuid: create(:asset).uuid) }
   let(:asset_3) { attributes_for(:qc_result).merge(uuid: create(:asset).uuid) }
@@ -14,7 +13,7 @@ RSpec.describe Api::V2::QcAssaysController, type: :request, qc_result: true do
   end
 
   it 'creates a new qc assay' do
-    params = { data: { attributes: { qc_results: [asset_1, asset_2, asset_3], lot_number: 'LN1234567'} } }
+    params = { data: { attributes: { qc_results: [asset_1, asset_2, asset_3], lot_number: 'LN1234567' } } }
     post api_v2_qc_assays_path, params: params
     expect(QcResult.count).to eq(3)
     expect(QcAssay.count).to eq(1)
@@ -32,5 +31,4 @@ RSpec.describe Api::V2::QcAssaysController, type: :request, qc_result: true do
     json = ActiveSupport::JSON.decode(response.body)
     expect(json['errors'].length).to eq(1)
   end
-
 end
