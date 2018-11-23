@@ -187,13 +187,22 @@ module SampleManifest::PlateBehaviour
     @plates = plates.sort_by(&:human_barcode)
   end
 
+  def generate_sample_and_aliquot(sanger_sample_id, well)
+    create_sample(sanger_sample_id).tap do |sample|
+      well.aliquots.build(sample: sample)
+      well.register_stock!
+    end
+    RequestFactory.create_assets_requests([well], study)
+  end
+
   def generate_wells(wells_for_plate, plate)
     wells_for_plate.map do |map, sanger_sample_id|
       plate.wells.create!(map: map) do |well|
         SampleManifestAsset.create(sanger_sample_id: sanger_sample_id,
-                             asset: well,
-                             sample_manifest: self)
+                                   asset: well,
+                                   sample_manifest: self)
       end
     end
+    plate.events.created_using_sample_manifest!(user)
   end
 end

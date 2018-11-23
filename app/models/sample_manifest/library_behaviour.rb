@@ -40,6 +40,10 @@ module SampleManifest::LibraryBehaviour
       @tubes = generate_library
     end
 
+    def generate_sample_and_aliquot(sanger_sample_id, tube)
+      build_sample_and_aliquot(sanger_sample_id, tube)
+    end
+
     def updated_by!(user, samples)
       # Does nothing at the moment
     end

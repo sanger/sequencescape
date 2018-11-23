@@ -136,12 +136,9 @@ module SampleManifestExcel
       private
 
       def create_sample
-        sample_manifest = SampleManifestAsset.find_by(sanger_sample_id: sanger_sample_id)&.sample_manifest
-        if sample_manifest.present?
-          sample_manifest.create_sample(sanger_sample_id)
-          # TODO: Build aliquot, register stock, create events, etc.
-          #       Define public methods in sample_manifest behaviours to do
-          #       that
+        manifest_asset = SampleManifestAsset.find_by(sanger_sample_id: sanger_sample_id)
+        if manifest_asset.present?
+          manifest_asset.sample_manifest.create_sample_and_aliquot(sanger_sample_id, manifest_asset.asset)
         else
           errors.add(:base, "#{row_title} Cannot find sample manifest for Sanger ID: #{sanger_sample_id}")
           nil

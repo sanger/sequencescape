@@ -24,6 +24,12 @@ module SampleManifest::SampleTubeBehaviour
       @tubes = generate_1dtubes
     end
 
+    def generate_sample_and_aliquot(sanger_sample_id, tube)
+      sample = build_sample_and_aliquot(sanger_sample_id, tube)
+      tube.register_stock!
+      sample
+    end
+
     def io_samples
       samples.map do |sample|
         {

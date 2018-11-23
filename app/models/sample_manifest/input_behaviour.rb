@@ -10,10 +10,24 @@ module SampleManifest::InputBehaviour
         sanger_sample_id = SampleManifest.read_column_by_name(csv, n, 'SANGER SAMPLE ID', column_map)
         next if sanger_sample_id.blank?
 
-        sample = Sample.find_by(sanger_sample_id: sanger_sample_id) or next
+        sample = SampleManifest.find_or_create_sample(sanger_sample_id) or next
         return sample.sample_manifest
       end
       nil
+    end
+
+    def find_or_create_sample(sanger_sample_id)
+      sample = Sample.find_by(sanger_sample_id: sanger_sample_id)
+      sample.present? ? sample : create_sample(sanger_sample_id)
+    end
+
+    def create_sample(sanger_sample_id)
+      manifest_asset = SampleManifestAsset.find_by(sanger_sample_id: sanger_sample_id)
+      if manifest_asset.present?
+        manifest_asset.sample_manifest.create_sample_and_aliquot(sanger_sample_id, manifest_asset.asset)
+      else
+        raise StandardError, "Cannot find sample manifest for Sanger ID: #{sanger_sample_id}"
+      end
     end
 
     def read_column_by_name(csv, row, name, column_map, default_value = nil)

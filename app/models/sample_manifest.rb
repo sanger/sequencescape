@@ -126,8 +126,12 @@ class SampleManifest < ApplicationRecord
     nil
   end
 
+  def create_sample_and_aliquot(sanger_sample_id, asset)
+    core_behaviour.generate_sample_and_aliquot(sanger_sample_id, asset)
+  end
+
   def broadcast_event_subjects_ready?
-    samples.present? && labware.present? && study.present?
+    labware.present? && study.present?
   end
 
   def create_sample(sanger_sample_id)

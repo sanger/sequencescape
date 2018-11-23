@@ -23,6 +23,10 @@ module SampleManifest::MultiplexedLibraryBehaviour
       @mx_tube = generate_mx_library
     end
 
+    def generate_sample_and_aliquot(sanger_sample_id, tube)
+      build_sample_and_aliquot(sanger_sample_id, tube)
+    end
+
     delegate :samples, to: :@manifest
 
     def io_samples
